@@ -1,38 +1,49 @@
+"""Dealix - Main Application"""
+import logging
+from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from .core.config import settings
-from .core.database import engine, Base, AsyncSessionLocal
-from .api import api_router
 
-async def init_db():
-    async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.create_all)
-    from .models import User
-    from .core.security import hash_pw
-    from sqlalchemy import select
-    async with AsyncSessionLocal() as s:
-        r = await s.execute(select(User).where(User.email == settings.ADMIN_EMAIL))
-        if not r.scalar_one_or_none():
-            s.add(User(email=settings.ADMIN_EMAIL, name="Dealix Admin", hashed_password=hash_pw(settings.ADMIN_PASSWORD), role="SUPER_ADMIN"))
-            await s.commit()
-            print("Admin user created: " + settings.ADMIN_EMAIL)
+from app.core.config import settings
+from app.core.database import init_db, close_redis
+from app.api import api_router
 
-app = FastAPI(title=settings.APP_NAME, version=settings.APP_VERSION, docs_url="/docs")
-app.add_middleware(CORSMiddleware, allow_origins=settings.CORS_ORIGINS, allow_credentials=True, allow_methods=["*"], allow_headers=["*"])
-app.include_router(api_router, prefix="/api")
+logging.basicConfig(level=logging.INFO if settings.DEBUG else logging.WARNING)
+logger = logging.getLogger(__name__)
 
-@app.on_event("startup")
-async def startup():
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    logger.info("Starting Dealix...")
     await init_db()
-    print(f"\n{'='*50}")
-    print(f"  DEALIX API v{settings.APP_VERSION}")
-    print(f"  Admin: {settings.ADMIN_EMAIL}")
-    print(f"{'='*50}\n")
+    from app.extensions import init_redis
+    await init_redis()
+    logger.info("Dealix started successfully")
+    yield
+    await close_redis()
+    logger.info("Dealix shutdown complete")
 
-@app.get("/health")
-async def health():
-    return {"status": "healthy", "service": "dealix-api", "version": "1.0.0"}
+
+app = FastAPI(
+    title=settings.APP_NAME,
+    description="منصة Dealix لإدارة الصفقات والتسويق بالعمولة في السوق السعودي",
+    version="1.0.0",
+    docs_url="/docs" if settings.DEBUG else None,
+    redoc_url="/redoc" if settings.DEBUG else None,
+    lifespan=lifespan,
+)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=settings.ALLOWED_ORIGINS if not settings.is_production else [],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+app.include_router(api_router)
+
 
 @app.get("/")
 async def root():
-    return {"name": "Dealix API", "version": settings.APP_VERSION, "docs": "/docs", "health": "/health"}
+    return {"service": "Dealix API", "version": "1.0.0", "docs": "/docs"}
