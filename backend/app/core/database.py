@@ -64,3 +64,6 @@ async def close_redis():
 
 async def close_redis():
     pass
+
+async def close_redis():
+    pass
