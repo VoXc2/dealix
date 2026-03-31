@@ -23,3 +23,6 @@ pydantic-settings
 email-validator
 psycopg2-binary
 asyncpg
+email-validator
+pydantic-settings
+psycopg2-binary
