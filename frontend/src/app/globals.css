@@ -1,37 +1,8 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&family=Inter:wght@300;400;500;600;700;800&display=swap');
-
 :root {
-  --font-arabic: 'Tajawal', sans-serif;
-  --font-english: 'Inter', sans-serif;
-}
-
-* { margin: 0; padding: 0; box-sizing: border-box; }
-
-html { scroll-behavior: smooth; }
-
-body {
-  font-family: var(--font-arabic);
-  background-color: #f8fafc;
-  color: #1e293b;
-  direction: rtl;
-}
-
-[dir="ltr"] body { font-family: var(--font-english); }
-
-@layer components {
-  .btn-primary { @apply bg-primary-600 hover:bg-primary-700 text-white font-medium py-2.5 px-5 rounded-lg transition-colors duration-200; }
-  .btn-secondary { @apply bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium py-2.5 px-5 rounded-lg transition-colors duration-200; }
-  .btn-accent { @apply bg-accent-500 hover:bg-accent-600 text-white font-medium py-2.5 px-5 rounded-lg transition-colors duration-200; }
-  .btn-danger { @apply bg-red-600 hover:bg-red-700 text-white font-medium py-2.5 px-5 rounded-lg transition-colors duration-200; }
-  .card { @apply bg-white rounded-xl shadow-sm border border-gray-100 p-6; }
-  .input-field { @apply w-full px-4 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all; }
-  .badge { @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium; }
-  .badge-success { @apply badge bg-green-100 text-green-800; }
-  .badge-warning { @apply badge bg-yellow-100 text-yellow-800; }
-  .badge-danger { @apply badge bg-red-100 text-red-800; }
-  .badge-info { @apply badge bg-blue-100 text-blue-800; }
+  --primary: #2563eb;
 }
