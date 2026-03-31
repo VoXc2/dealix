@@ -3,9 +3,7 @@ from datetime import datetime
 from sqlalchemy import String, Boolean, DateTime, Enum as SAEnum
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 import enum
-
 from app.core.database import Base
-
 
 class UserRole(str, enum.Enum):
     SUPER_ADMIN = "super_admin"
@@ -17,17 +15,14 @@ class UserRole(str, enum.Enum):
     MERCHANT = "merchant"
     VIEWER = "viewer"
 
-
 class UserStatus(str, enum.Enum):
     ACTIVE = "active"
     INACTIVE = "inactive"
     SUSPENDED = "suspended"
     PENDING_VERIFICATION = "pending_verification"
 
-
 class User(Base):
     __tablename__ = "users"
-
     id: Mapped[int] = mapped_column(primary_key=True, index=True)
     email: Mapped[str] = mapped_column(String(255), unique=True, index=True, nullable=False)
     phone: Mapped[str | None] = mapped_column(String(20), unique=True, index=True)
@@ -47,8 +42,6 @@ class User(Base):
     timezone: Mapped[str] = mapped_column(String(50), default="Asia/Riyadh")
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=datetime.utcnow)
     updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=datetime.utcnow, onupdate=datetime.utcnow)
-
-    # Relationships
     organization_memberships: Mapped[list["OrganizationMember"]] = relationship(back_populates="user", lazy="selectin")
     owned_organizations: Mapped[list["Organization"]] = relationship(back_populates="owner", lazy="selectin")
     deals: Mapped[list["Deal"]] = relationship(back_populates="assigned_to_user", lazy="selectin")

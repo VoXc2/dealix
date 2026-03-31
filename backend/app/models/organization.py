@@ -3,9 +3,7 @@ from datetime import datetime
 from sqlalchemy import String, Boolean, DateTime, Text, Enum as SAEnum, Integer
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 import enum
-
 from app.core.database import Base
-
 
 class OrgType(str, enum.Enum):
     MERCHANT = "merchant"
@@ -13,17 +11,14 @@ class OrgType(str, enum.Enum):
     AGENCY = "agency"
     INDIVIDUAL = "individual"
 
-
 class OrgStatus(str, enum.Enum):
     ACTIVE = "active"
     INACTIVE = "inactive"
     SUSPENDED = "suspended"
     PENDING = "pending"
 
-
 class Organization(Base):
     __tablename__ = "organizations"
-
     id: Mapped[int] = mapped_column(primary_key=True, index=True)
     name: Mapped[str] = mapped_column(String(300), nullable=False)
     name_en: Mapped[str | None] = mapped_column(String(300))
@@ -47,22 +42,18 @@ class Organization(Base):
     stripe_customer_id: Mapped[str | None] = mapped_column(String(100))
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=datetime.utcnow)
     updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=datetime.utcnow, onupdate=datetime.utcnow)
-
     owner: Mapped["User"] = relationship(back_populates="owned_organizations", foreign_keys=[owner_id], lazy="selectin")
     members: Mapped[list["OrganizationMember"]] = relationship(back_populates="organization", lazy="selectin")
     deals: Mapped[list["Deal"]] = relationship(back_populates="organization", lazy="selectin")
     api_keys: Mapped[list["APIKey"]] = relationship(back_populates="organization", lazy="selectin")
 
-
 class OrganizationMember(Base):
     __tablename__ = "organization_members"
-
     id: Mapped[int] = mapped_column(primary_key=True, index=True)
     organization_id: Mapped[int] = mapped_column(index=True, nullable=False)
     user_id: Mapped[int] = mapped_column(index=True, nullable=False)
     role_in_org: Mapped[str] = mapped_column(String(50), default="member")
     is_primary: Mapped[bool] = mapped_column(Boolean, default=False)
     joined_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=datetime.utcnow)
-
     organization: Mapped["Organization"] = relationship(back_populates="members", lazy="selectin")
     user: Mapped["User"] = relationship(back_populates="organization_memberships", lazy="selectin")
