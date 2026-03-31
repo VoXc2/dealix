@@ -15,3 +15,5 @@ python-dotenv==1.0.1
 asyncpg
 psycopg2-binary
 asyncpg
+psycopg2-binary
+asyncpg
