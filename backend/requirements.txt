@@ -17,3 +17,6 @@ psycopg2-binary
 asyncpg
 psycopg2-binary
 asyncpg
+psycopg2-binary
+asyncpg
+pydantic-settings

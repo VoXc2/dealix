@@ -61,3 +61,6 @@ async def init_db() -> None:
 
 async def close_redis():
     pass
+
+async def close_redis():
+    pass
