@@ -1,0 +1,39 @@
+name: Build
+
+'on':
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch: {}
+
+jobs:
+  smoke:
+    name: Smoke Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Verify repository structure
+        run: |
+          echo "=== Dealix build ==="
+          test -d backend && echo "backend: ok"
+          test -d frontend && echo "frontend: ok"
+          test -f docs/registry/TRUTH.yaml && echo "truth registry: ok"
+          echo "=== done ==="
+
+  truth:
+    name: Validate Truth Registry
+    runs-on: ubuntu-latest
+    needs: smoke
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install PyYAML
+        run: pip install pyyaml
+      - name: Run validator
+        run: python scripts/validate_truth_registry.py
