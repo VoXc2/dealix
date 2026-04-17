@@ -1,6 +1,6 @@
 # === Core Framework ===
 fastapi==0.115.5
-uvicorn[standard]==0.32.1
+uvicorn[standard]==0.44.0
 pydantic>=2.10.0,<3
 pydantic-settings>=2.10.1,<3
 pydantic-extra-types[phonenumbers]>=2.0.0  # Saudi phone validation (+966)
