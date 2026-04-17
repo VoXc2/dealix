@@ -79,7 +79,7 @@ pandas==2.2.3
 numpy>=1.26.2,<2            # camel-tools requires numpy<2; langchain needs >=1.26.2 on Py3.12
 python-decouple==3.8
 paramiko==3.5.0
-qrcode==8.0
+qrcode==8.2
 Pillow==11.0.0
 xmltodict==0.14.2
 email-validator>=2.1.0
