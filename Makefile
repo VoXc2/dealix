@@ -1,49 +1,49 @@
-.PHONY: up down build logs migrate seed test
+# Dealix — Root Makefile
+# ═══════════════════════════════════════════════════════════════
+.PHONY: help install up down logs test lint format check validate clean
 
-# Start all services
-up:
+help:  ## عرض هذه الرسالة
+	@awk 'BEGIN {FS = ":.*##"; printf "\nأوامر Dealix المتاحة:\n"} /^[a-zA-Z_-]+:.*?##/ { printf "  \033[36m%-15s\033[0m %s\n", $$1, $$2 }' $(MAKEFILE_LIST)
+
+install:  ## تثبيت كل الاعتمادات (backend + frontend)
+	@echo "📦 Installing backend..."
+	$(MAKE) -C backend install
+	@echo "📦 Installing frontend..."
+	$(MAKE) -C frontend install
+
+up:  ## تشغيل كل الخدمات عبر docker-compose
 	docker compose up -d
 
-# Stop all services
-down:
+down:  ## إيقاف كل الخدمات
 	docker compose down
 
-# Build and start
-build:
-	docker compose up -d --build
+logs:  ## متابعة logs
+	docker compose logs -f --tail=100
 
-# View logs
-logs:
-	docker compose logs -f
+test:  ## تشغيل الاختبارات (backend + frontend)
+	$(MAKE) -C backend test
+	$(MAKE) -C frontend test
 
-# Backend logs only
-logs-backend:
-	docker compose logs -f backend celery_worker
+lint:  ## فحص الكود (ruff + eslint)
+	$(MAKE) -C backend lint
+	$(MAKE) -C frontend lint
 
-# Run database migrations
-migrate:
-	docker compose exec backend alembic upgrade head
+format:  ## تنسيق الكود (black + prettier)
+	$(MAKE) -C backend format
+	$(MAKE) -C frontend format
 
-# Create new migration
-migration:
-	docker compose exec backend alembic revision --autogenerate -m "$(msg)"
+check:  ## فحص شامل (lint + type check + security)
+	$(MAKE) -C backend check
+	$(MAKE) -C backend security
+	cd frontend && npx tsc --noEmit
 
-# Seed initial data
-seed:
-	docker compose exec backend python -m app.seeds.seed_data
+validate:  ## التحقق من Truth Registry
+	python3 scripts/validate_truth_registry.py
 
-# Run tests
-test:
-	docker compose exec backend pytest -v
-
-# Restart backend only
-restart-backend:
-	docker compose restart backend celery_worker celery_beat
-
-# Shell into backend
-shell:
-	docker compose exec backend bash
-
-# Check service health
-health:
-	curl -s http://localhost:8000/api/v1/health | python3 -m json.tool
+clean:  ## حذف ملفات مؤقتة + caches
+	find . -type d -name __pycache__ -exec rm -rf {} + 2>/dev/null || true
+	find . -type d -name .pytest_cache -exec rm -rf {} + 2>/dev/null || true
+	find . -type d -name .ruff_cache -exec rm -rf {} + 2>/dev/null || true
+	find . -type d -name .mypy_cache -exec rm -rf {} + 2>/dev/null || true
+	find . -type d -name node_modules -prune -exec rm -rf {} + 2>/dev/null || true
+	find . -type d -name .next -prune -exec rm -rf {} + 2>/dev/null || true
