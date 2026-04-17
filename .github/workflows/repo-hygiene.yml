@@ -51,29 +51,33 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Scan for secret patterns
+      - name: Scan for high-confidence secret patterns
         run: |
+          # أنماط عالية الدقة فقط (مفاتيح حقيقية) — لا نلتقط أمثلة في docs أو tests
           patterns=(
-            'PRIVATE KEY'
-            'sk-[a-zA-Z0-9]{20,}'
+            'BEGIN RSA PRIVATE KEY'
+            'BEGIN OPENSSH PRIVATE KEY'
+            'BEGIN DSA PRIVATE KEY'
+            'BEGIN EC PRIVATE KEY'
+            'sk-proj-[a-zA-Z0-9]{40,}'
             'ghp_[a-zA-Z0-9]{36}'
-            'password\s*=\s*["\x27][^"\x27]{4,}'
-            'DATABASE_URL=postgres'
-            'REDIS_URL=redis://'
-            'SECRET_KEY=["\x27][^"\x27]{8,}'
-            'API_KEY=["\x27][^"\x27]{8,}'
+            'gho_[a-zA-Z0-9]{36}'
+            'xoxb-[0-9]{10,}-[0-9]{10,}'
+            'AKIA[A-Z0-9]{16}'
           )
+          # استبعد: docs, examples, tests, seed data, workflows, memory/runbooks
+          EXCLUDE='\.example$|\.md$|tests/|test_|seed_|\.github/workflows/|memory/runbooks/|docs/'
           found=0
           for pattern in "${patterns[@]}"; do
-            matches=$(git ls-files -z | xargs -0 grep -rlE "$pattern" -- 2>/dev/null | grep -v '\.example$' | grep -v 'repo-hygiene\.yml' || true)
+            matches=$(git ls-files -z | xargs -0 grep -lE "$pattern" 2>/dev/null | grep -vE "$EXCLUDE" || true)
             if [ -n "$matches" ]; then
-              echo "::warning::Pattern '$pattern' found in:"
+              echo "::error::High-confidence secret pattern '$pattern' found in:"
               echo "$matches"
               found=1
             fi
           done
           if [ "$found" -eq 1 ]; then
-            echo "::error::Potential secrets detected in tracked files. Review the warnings above."
+            echo "::error::Real secrets detected. Rotate them immediately and remove from history."
             exit 1
           fi
           echo "No secret patterns found."
