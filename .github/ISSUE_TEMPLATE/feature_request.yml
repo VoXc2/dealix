@@ -1,0 +1,49 @@
+name: ✨ اقتراح ميزة | Feature Request
+description: اقتراح ميزة جديدة أو تحسين
+title: "[Feature] "
+labels: ["enhancement", "needs-discussion"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: ما المشكلة التي تحلّها هذه الميزة؟
+      placeholder: "مثال: المستخدم لا يستطيع تصدير بياناته"
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: الاقتراح
+      description: صف الحل المقترح بالتفصيل
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: بدائل نظرت فيها
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: الأولوية المقترحة
+      options:
+        - P0 - حرج (يسد الإطلاق)
+        - P1 - عالي (مطلوب للنسخة القادمة)
+        - P2 - متوسط (جيد لو توفر)
+        - P3 - منخفض (فكرة بعيدة)
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: invariants
+    attributes:
+      label: التحقق من الثوابت (Invariants)
+      options:
+        - label: "الميزة تحترم Arabic-first (RTL) UI"
+          required: true
+        - label: "الميزة لا تنتهك Truth Registry (لا ادعاء بدون دليل)"
+          required: true
+        - label: "الميزة لا تستخدم مصطلحات Claims Registry المحظورة"
+          required: true

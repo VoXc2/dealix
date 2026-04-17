@@ -1,0 +1,88 @@
+name: 🐛 بلاغ خطأ | Bug Report
+description: أبلِغ عن خطأ تم اكتشافه في Dealix
+title: "[Bug] "
+labels: ["bug", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        شكراً على الإبلاغ. املأ النموذج بأكبر دقة ممكنة.
+
+  - type: input
+    id: summary
+    attributes:
+      label: ملخص مختصر
+      placeholder: "مثال: زر الحفظ لا يستجيب في صفحة الـ Leads"
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: خطوات إعادة الإنتاج
+      description: اذكر الخطوات بالترتيب
+      placeholder: |
+        1. افتح /leads
+        2. اضغط "إضافة"
+        3. املأ النموذج
+        4. اضغط "حفظ"
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: السلوك المتوقع
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: السلوك الفعلي
+    validations:
+      required: true
+
+  - type: dropdown
+    id: severity
+    attributes:
+      label: درجة الخطورة
+      options:
+        - 🔴 حرج (يعطّل الإنتاج)
+        - 🟠 عالي (ميزة رئيسية لا تعمل)
+        - 🟡 متوسط (حل بديل موجود)
+        - 🟢 منخفض (تجميلي)
+    validations:
+      required: true
+
+  - type: dropdown
+    id: component
+    attributes:
+      label: المكوّن
+      options:
+        - Backend (FastAPI)
+        - Frontend (Next.js)
+        - AI Agents
+        - Database (PostgreSQL)
+        - Celery / Workers
+        - CI/CD
+        - Docs
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: environment
+    attributes:
+      label: البيئة
+      placeholder: |
+        - OS: Ubuntu 22.04
+        - Python: 3.12.x
+        - Node: 22.x
+        - Browser: Chrome 120
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs / Screenshots
+      render: shell

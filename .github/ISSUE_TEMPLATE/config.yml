@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 💬 سؤال عام
+    url: https://github.com/VoXc2/dealix/discussions
+    about: للأسئلة العامة، استخدم Discussions
+  - name: 🔒 بلاغ أمني
+    url: mailto:sami.assiri11@gmail.com
+    about: لا تفتح Issue عام — أرسل إيميل مباشرة
