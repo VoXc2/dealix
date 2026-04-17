@@ -7,7 +7,7 @@ pydantic-extra-types[phonenumbers]>=2.0.0  # Saudi phone validation (+966)
 python-multipart==0.0.12
 
 # === Database ===
-sqlalchemy==2.0.36
+sqlalchemy==2.0.49
 asyncpg==0.30.0
 psycopg2-binary==2.9.10
 alembic==1.14.0
