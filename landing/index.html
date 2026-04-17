@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Dealix — منصة المبيعات الذكية للسوق السعودي</title>
+  <meta name="description" content="Dealix هي منصة B2B Sales AI عربية تحوّل الرصاص إلى عقود موقّعة عبر 8 وكلاء ذكيين متخصصين، متوافقة مع ZATCA و PDPL و SDAIA و NCA." />
+  <meta name="theme-color" content="#064e3b" />
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Dealix — منصة المبيعات الذكية للسوق السعودي" />
+  <meta property="og:description" content="من الرصاص للعقد الموقّع. 8 وكلاء ذكيين، عربي أولاً، متوافق مع الأنظمة السعودية." />
+  <meta property="og:locale" content="ar_SA" />
+  <meta property="og:site_name" content="Dealix" />
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Dealix — منصة المبيعات الذكية" />
+  <meta name="twitter:description" content="من الرصاص للعقد الموقّع عبر 8 وكلاء AI متخصصين." />
+
+  <!-- Favicon (inline SVG) -->
+  <link rel="icon" type="image/svg+xml" href='data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><circle cx="16" cy="16" r="13" fill="none" stroke="%23059669" stroke-width="3"/><circle cx="16" cy="16" r="4" fill="%23d4a017"/></svg>' />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <!-- Skip to content -->
+  <a href="#main" class="sr-only skip-link">تخطَّ إلى المحتوى الرئيسي</a>
+
+  <!-- Navigation -->
+  <header class="nav" role="banner">
+    <div class="container nav__inner">
+      <a href="#top" class="nav__brand" aria-label="Dealix — الصفحة الرئيسية">
+        <svg class="nav__logo" viewBox="0 0 40 40" aria-hidden="true" fill="none">
+          <circle cx="20" cy="20" r="16" stroke="currentColor" stroke-width="2.5" opacity="0.35"/>
+          <circle cx="20" cy="20" r="10" stroke="currentColor" stroke-width="2.5"/>
+          <circle cx="20" cy="20" r="4" fill="var(--color-gold)"/>
+          <path d="M20 4 L20 10" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+          <path d="M20 30 L20 36" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+        </svg>
+        <span class="nav__brand-text">Dealix</span>
+      </a>
+
+      <nav class="nav__links" aria-label="التنقل الرئيسي">
+        <a href="#features">الميزات</a>
+        <a href="#agents">الوكلاء</a>
+        <a href="#pricing">التسعير</a>
+        <a href="#compliance">الامتثال</a>
+        <a href="#contact">تواصل</a>
+      </nav>
+
+      <div class="nav__actions">
+        <button class="theme-toggle" data-theme-toggle aria-label="تبديل الوضع الداكن">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        </button>
+        <a href="#contact" class="btn btn--primary btn--sm">احجز عرضاً تجريبياً</a>
+        <button class="nav__burger" aria-label="فتح القائمة" aria-expanded="false" data-menu-toggle>
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <!-- Hero -->
+    <section class="hero" id="top">
+      <div class="hero__bg" aria-hidden="true">
+        <div class="hero__blob hero__blob--1"></div>
+        <div class="hero__blob hero__blob--2"></div>
+      </div>
+      <div class="container hero__inner">
+        <div class="hero__content">
+          <span class="eyebrow">
+            <span class="eyebrow__dot"></span>
+            قيد الإطلاق — مرحلة Pilot مع شركاء مختارين
+          </span>
+          <h1 class="hero__title">
+            منصة المبيعات الذكية —
+            <span class="hero__title-accent">من الرصاص للعقد الموقّع</span>
+          </h1>
+          <p class="hero__subtitle">
+            ثمانية وكلاء ذكاء اصطناعي متخصصون، يعملون معاً عبر <strong>LLM Router</strong> سريع،
+            ويحترمون الأنظمة السعودية منذ اليوم الأول — ZATCA، PDPL، SDAIA، NCA.
+          </p>
+          <div class="hero__ctas">
+            <a href="#contact" class="btn btn--primary btn--lg">احجز عرضاً تجريبياً</a>
+            <a href="#how" class="btn btn--ghost btn--lg">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+              شاهد كيف يعمل
+            </a>
+          </div>
+
+          <!-- Trust strip -->
+          <div class="trust">
+            <span class="trust__label">بشراكة مع شركات سعودية في مرحلة التجربة:</span>
+            <div class="trust__logos" aria-label="شركاء المرحلة التجريبية">
+              <span class="trust__logo">نجد لوجستيات</span>
+              <span class="trust__logo">رؤية عقار</span>
+              <span class="trust__logo">تقنيات الصحراء</span>
+              <span class="trust__logo">مُدن للاستشارات</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="hero__visual" aria-hidden="true">
+          <div class="hero__card hero__card--main">
+            <div class="hero__card-header">
+              <div class="hero__card-dots">
+                <span></span><span></span><span></span>
+              </div>
+              <span class="hero__card-title">لوحة Dealix</span>
+            </div>
+            <div class="hero__card-body">
+              <div class="hero__metric">
+                <span class="hero__metric-label">رصاص مؤهَّل اليوم</span>
+                <span class="hero__metric-value">47</span>
+                <span class="hero__metric-trend">↑ 23%</span>
+              </div>
+              <div class="hero__agents">
+                <div class="hero__agent"><span class="hero__agent-dot"></span>المنسّق يعمل</div>
+                <div class="hero__agent"><span class="hero__agent-dot"></span>الباحث يجمع 12 شركة</div>
+                <div class="hero__agent"><span class="hero__agent-dot"></span>التواصل أرسل 8 رسائل</div>
+                <div class="hero__agent"><span class="hero__agent-dot"></span>المُغلِق في انتظار الموافقة</div>
+              </div>
+              <div class="hero__bar">
+                <div class="hero__bar-fill" style="--w: 68%"></div>
+                <span class="hero__bar-label">خط المبيعات هذا الشهر · 68%</span>
+              </div>
+            </div>
+          </div>
+          <div class="hero__card hero__card--float hero__card--wa" role="img" aria-label="إشعار واتساب">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="#25D366"><path d="M17.5 14c-.3-.1-1.7-.8-2-.9-.3-.1-.4-.1-.6.1s-.7.9-.8 1-.3.2-.6 0-1.2-.4-2.3-1.4c-.8-.7-1.4-1.7-1.6-1.9s0-.4.1-.5.3-.3.4-.5.1-.3.2-.5 0-.3 0-.5-.6-1.5-.8-2c-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.5.1-.7.3s-.9.9-.9 2.2.9 2.6 1 2.8 1.8 2.9 4.5 4c2.7 1.1 2.7.8 3.2.7.5-.1 1.7-.7 1.9-1.3.2-.6.2-1.2.2-1.3-.1-.1-.3-.1-.6-.3z"/><path d="M20.5 3.5C18.3 1.2 15.2 0 12 0 5.4 0 0 5.4 0 12c0 2.1.5 4.1 1.6 5.9L0 24l6.2-1.6c1.7.9 3.7 1.4 5.8 1.4 6.6 0 12-5.4 12-12 0-3.2-1.2-6.2-3.5-8.3zM12 22c-1.8 0-3.6-.5-5.1-1.4l-.4-.2-3.7.9.9-3.6-.2-.4C2.5 15.7 2 13.9 2 12 2 6.5 6.5 2 12 2s10 4.5 10 10-4.5 10-10 10z" opacity="0.9"/></svg>
+            <div>
+              <strong>رسالة جديدة</strong>
+              <span>شركة نجد — مهتم بعرض سعر</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Value Props -->
+    <section class="section" id="features" aria-labelledby="features-heading">
+      <div class="container">
+        <div class="section__head">
+          <span class="eyebrow">لماذا Dealix</span>
+          <h2 id="features-heading" class="section__title">ثلاث أفكار بسيطة، تصنع الفرق</h2>
+          <p class="section__lede">لسنا ترجمة لمنتج أمريكي. بُنيت Dealix في السعودية، بالعربي، للسوق السعودي.</p>
+        </div>
+
+        <div class="grid grid--3">
+          <article class="card card--feature">
+            <div class="card__icon card__icon--emerald">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h10M4 17h16"/></svg>
+            </div>
+            <h3 class="card__title">عربي أولاً</h3>
+            <p class="card__text">RTL حقيقي، ليس محوَّل. رسائل عربية فصحى أو بلهجة خليجية — الوكلاء يفهمون الفروقات ويكتبون كأنهم موظفو مبيعات محليون.</p>
+          </article>
+
+          <article class="card card--feature">
+            <div class="card__icon card__icon--slate">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 4 6v6c0 5 3.5 9.5 8 10 4.5-.5 8-5 8-10V6l-8-4z"/></svg>
+            </div>
+            <h3 class="card__title">متوافق سعودياً</h3>
+            <p class="card__text">نراعي ZATCA للفوترة، PDPL للبيانات الشخصية، SDAIA لأخلاقيات الذكاء الاصطناعي، و NCA للأمن السيبراني — من اليوم الأول.</p>
+          </article>
+
+          <article class="card card--feature">
+            <div class="card__icon card__icon--gold">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h7l-1 8 10-12h-7l1-8z"/></svg>
+            </div>
+            <h3 class="card__title">ذكاء سريع</h3>
+            <p class="card__text">LLM Router ذكي: Groq للسرعة القصوى، مع OpenAI كخيار احتياطي عند الحاجة. أفضل سعر وأفضل وقت استجابة تلقائياً.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- 8 AI Agents -->
+    <section class="section section--surface" id="agents" aria-labelledby="agents-heading">
+      <div class="container">
+        <div class="section__head">
+          <span class="eyebrow">الوكلاء الثمانية</span>
+          <h2 id="agents-heading" class="section__title">فريق كامل من الذكاء الاصطناعي، يعمل بصمت لصالحك</h2>
+          <p class="section__lede">كل وكيل متخصص في مهمة واحدة، ويتعاون مع البقية عبر المنسّق المركزي.</p>
+        </div>
+
+        <div class="grid grid--4">
+          <!-- 1 Orchestrator -->
+          <article class="agent">
+            <div class="agent__icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v6M12 17v6M4.22 4.22l4.24 4.24M15.54 15.54l4.24 4.24M1 12h6M17 12h6M4.22 19.78l4.24-4.24M15.54 8.46l4.24-4.24"/></svg>
+            </div>
+            <div class="agent__num">01</div>
+            <h3 class="agent__name">المنسّق <span>Orchestrator</span></h3>
+            <p class="agent__desc">يدير سير العمل بين كل الوكلاء، ويحدد مَن يتحرك متى، لضمان تسلسل منطقي لا فوضى.</p>
+            <span class="agent__feat">توزيع المهام لحظياً</span>
+          </article>
+
+          <!-- 2 Researcher -->
+          <article class="agent">
+            <div class="agent__icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+            </div>
+            <div class="agent__num">02</div>
+            <h3 class="agent__name">الباحث <span>Researcher</span></h3>
+            <p class="agent__desc">يجمع معلومات دقيقة عن الشركات المستهدفة من مصادر عامة موثوقة، ويبني ملفاً كاملاً لكل حساب.</p>
+            <span class="agent__feat">ملف 360° عن الشركة</span>
+          </article>
+
+          <!-- 3 Qualifier -->
+          <article class="agent">
+            <div class="agent__icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            </div>
+            <div class="agent__num">03</div>
+            <h3 class="agent__name">المؤهِّل <span>Qualifier</span></h3>
+            <p class="agent__desc">يقيّم جودة كل رصاص ويرتّب الأولويات وفق معايير BANT محلية، حتى يركّز فريقك على الأهم.</p>
+            <span class="agent__feat">ترتيب تلقائي بالأولوية</span>
+          </article>
+
+          <!-- 4 Outreach -->
+          <article class="agent">
+            <div class="agent__icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4z"/><path d="M22 2 11 13"/></svg>
+            </div>
+            <div class="agent__num">04</div>
+            <h3 class="agent__name">التواصل <span>Outreach</span></h3>
+            <p class="agent__desc">يصيغ رسائل مخصصة بالعربي الفصيح أو الخليجي، ويرسلها عبر WhatsApp أو الإيميل بتوقيت مثالي.</p>
+            <span class="agent__feat">رسائل مخصصة بالعربي</span>
+          </article>
+
+          <!-- 5 Closer -->
+          <article class="agent">
+            <div class="agent__icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+            </div>
+            <div class="agent__num">05</div>
+            <h3 class="agent__name">المُغلِق <span>Closer</span></h3>
+            <p class="agent__desc">يتابع المفاوضات، يقترح تكتيكات إغلاق تناسب الموقف، وينبّه لأي فرصة على وشك الفوات.</p>
+            <span class="agent__feat">اقتراح تكتيك الإغلاق</span>
+          </article>
+
+          <!-- 6 Compliance -->
+          <article class="agent">
+            <div class="agent__icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>
+            </div>
+            <div class="agent__num">06</div>
+            <h3 class="agent__name">الامتثال <span>Compliance</span></h3>
+            <p class="agent__desc">يتحقق من كل خطوة مقابل PDPL و ZATCA و SDAIA، ويحتفظ بسجل تدقيق بسلسلة hash لا يمكن تعديله.</p>
+            <span class="agent__feat">Audit trail بـ hash chain</span>
+          </article>
+
+          <!-- 7 Analytics -->
+          <article class="agent">
+            <div class="agent__icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="m7 14 4-4 4 4 5-5"/></svg>
+            </div>
+            <div class="agent__num">07</div>
+            <h3 class="agent__name">التحليلات <span>Analytics</span></h3>
+            <p class="agent__desc">لوحات بيانات حيّة تعرض مؤشرات المبيعات الرئيسية وتحدد أين تفقد الصفقات.</p>
+            <span class="agent__feat">KPIs ولوحات قابلة للتخصيص</span>
+          </article>
+
+          <!-- 8 WhatsApp -->
+          <article class="agent">
+            <div class="agent__icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M17.5 14c-.3-.1-1.7-.8-2-.9-.3-.1-.4-.1-.6.1s-.7.9-.8 1-.3.2-.6 0-1.2-.4-2.3-1.4c-.8-.7-1.4-1.7-1.6-1.9s0-.4.1-.5.3-.3.4-.5.1-.3.2-.5 0-.3 0-.5-.6-1.5-.8-2c-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.5.1-.7.3s-.9.9-.9 2.2.9 2.6 1 2.8 1.8 2.9 4.5 4c2.7 1.1 2.7.8 3.2.7.5-.1 1.7-.7 1.9-1.3.2-.6.2-1.2.2-1.3-.1-.1-.3-.1-.6-.3z"/><path d="M20.5 3.5C18.3 1.2 15.2 0 12 0 5.4 0 0 5.4 0 12c0 2.1.5 4.1 1.6 5.9L0 24l6.2-1.6c1.7.9 3.7 1.4 5.8 1.4 6.6 0 12-5.4 12-12 0-3.2-1.2-6.2-3.5-8.3zM12 22c-1.8 0-3.6-.5-5.1-1.4l-.4-.2-3.7.9.9-3.6-.2-.4C2.5 15.7 2 13.9 2 12 2 6.5 6.5 2 12 2s10 4.5 10 10-4.5 10-10 10z"/></svg>
+            </div>
+            <div class="agent__num">08</div>
+            <h3 class="agent__name">واتساب <span>WhatsApp</span></h3>
+            <p class="agent__desc">تكامل كامل مع WhatsApp Business API — المحادثات تدخل خط المبيعات وتخرج منه تلقائياً.</p>
+            <span class="agent__feat">WhatsApp Business API</span>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- How it works -->
+    <section class="section" id="how" aria-labelledby="how-heading">
+      <div class="container">
+        <div class="section__head">
+          <span class="eyebrow">كيف يعمل Dealix</span>
+          <h2 id="how-heading" class="section__title">أربع خطوات فقط، ثم مبيعاتك تشتغل بذاتها</h2>
+        </div>
+
+        <ol class="steps">
+          <li class="step">
+            <span class="step__num">1</span>
+            <h3 class="step__title">اربط بياناتك</h3>
+            <p class="step__text">CRM موجود، WhatsApp Business، الإيميل، Google Workspace — كلها تتكامل خلال دقائق.</p>
+          </li>
+          <li class="step">
+            <span class="step__num">2</span>
+            <h3 class="step__title">الوكلاء يبدؤون</h3>
+            <p class="step__text">الباحث يجمع، المؤهِّل يرتّب، التواصل يرسل. كل هذا يحدث تلقائياً، في الخلفية.</p>
+          </li>
+          <li class="step">
+            <span class="step__num">3</span>
+            <h3 class="step__title">أنت تراجع</h3>
+            <p class="step__text">تصلك اقتراحات ذكية: وافق، عدّل، أو ارفض. لا خطوة تتم بدون موافقة بشرية في الحالات الحساسة.</p>
+          </li>
+          <li class="step">
+            <span class="step__num">4</span>
+            <h3 class="step__title">المبيعات تنمو</h3>
+            <p class="step__text">تركّز طاقتك على الإغلاق، وتترك المتابعة والرسائل الروتينية للوكلاء.</p>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- Social proof -->
+    <section class="section section--surface" aria-labelledby="voices-heading">
+      <div class="container">
+        <div class="section__head">
+          <span class="eyebrow">أصوات من السوق</span>
+          <h2 id="voices-heading" class="section__title">personas محتملة نصمّم Dealix من أجلهم</h2>
+          <p class="section__lede">هذه اقتباسات توضيحية لشخصيات متوقعة في فئتنا المستهدفة — ليست شهادات من عملاء حاليين.</p>
+        </div>
+
+        <div class="grid grid--3">
+          <figure class="quote">
+            <blockquote class="quote__body">«أكبر مشكلة عندي إني أضيّع ساعات على رصاص مش مؤهَّل. لو فيه شي يرتّب لي قائمة الأولويات كل صباح، بيوفر علينا أسبوع عمل في الشهر.»</blockquote>
+            <figcaption class="quote__meta">
+              <span class="quote__avatar" aria-hidden="true">خ</span>
+              <div>
+                <strong>خالد المطيري</strong>
+                <span>مدير مبيعات — شركة لوجستيات في الرياض</span>
+              </div>
+            </figcaption>
+          </figure>
+
+          <figure class="quote">
+            <blockquote class="quote__body">«المشكلة مش في الـ AI، المشكلة في الامتثال. أي حل جديد لازم يمرّ على القانوني عندنا. محتاجين منتج بُني بالأساس للسعودية.»</blockquote>
+            <figcaption class="quote__meta">
+              <span class="quote__avatar" aria-hidden="true">ن</span>
+              <div>
+                <strong>نورة الدوسري</strong>
+                <span>رئيس العمليات — استشارات إدارية في جدة</span>
+              </div>
+            </figcaption>
+          </figure>
+
+          <figure class="quote">
+            <blockquote class="quote__body">«عملاؤنا يكلّمونا على WhatsApp، مش على إيميل. أي CRM لا يتكامل مع واتساب فعلياً، يعتبر غير مفيد بالنسبة لنا.»</blockquote>
+            <figcaption class="quote__meta">
+              <span class="quote__avatar" aria-hidden="true">ف</span>
+              <div>
+                <strong>فيصل القحطاني</strong>
+                <span>مؤسس — شركة تقنية ناشئة في الدمام</span>
+              </div>
+            </figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <!-- Pricing -->
+    <section class="section" id="pricing" aria-labelledby="pricing-heading">
+      <div class="container container--narrow">
+        <div class="section__head">
+          <span class="eyebrow">التسعير</span>
+          <h2 id="pricing-heading" class="section__title">باقة واحدة. كل شيء مشمول.</h2>
+          <p class="section__lede">لا درجات متفرّعة، لا رسوم خفية. سعر واحد واضح لفريق مبيعات كامل.</p>
+        </div>
+
+        <div class="pricing">
+          <div class="pricing__badge">الأكثر شعبية</div>
+          <div class="pricing__header">
+            <h3 class="pricing__plan">باقة Dealix الكاملة</h3>
+            <div class="pricing__price">
+              <span class="pricing__amount">1,499</span>
+              <span class="pricing__currency">ريال / شهرياً</span>
+            </div>
+            <p class="pricing__note">يُجدَّد شهرياً · إلغاء في أي وقت · VAT غير مشمولة</p>
+          </div>
+
+          <ul class="pricing__features" role="list">
+            <li><span class="check" aria-hidden="true">✓</span> الوكلاء الثمانية كاملين</li>
+            <li><span class="check" aria-hidden="true">✓</span> تكامل WhatsApp Business API</li>
+            <li><span class="check" aria-hidden="true">✓</span> دعم فني بالعربي عبر واتساب</li>
+            <li><span class="check" aria-hidden="true">✓</span> Tenant isolation كامل لبياناتك</li>
+            <li><span class="check" aria-hidden="true">✓</span> Audit trail بسلسلة hash لا تُعدَّل</li>
+            <li><span class="check" aria-hidden="true">✓</span> SLA توفر 99.5% شهرياً</li>
+            <li><span class="check" aria-hidden="true">✓</span> تكامل CRM (HubSpot, Salesforce, Zoho)</li>
+            <li><span class="check" aria-hidden="true">✓</span> تحديثات مستمرة للوكلاء</li>
+          </ul>
+
+          <a href="#contact" class="btn btn--primary btn--lg btn--block">ابدأ الآن</a>
+          <p class="pricing__foot">نقدّم فترة تجريبية مُعدَّلة حسب حاجتك — تواصل معنا.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Compliance -->
+    <section class="section section--dark" id="compliance" aria-labelledby="compliance-heading">
+      <div class="container">
+        <div class="section__head section__head--light">
+          <span class="eyebrow eyebrow--light">الامتثال والأمان</span>
+          <h2 id="compliance-heading" class="section__title">نحترم الأنظمة السعودية منذ اليوم الأول</h2>
+          <p class="section__lede">نحن لا نضيف الامتثال لاحقاً — بُني في الأساس عليه. كل وكيل يمرّ عبر طبقة Compliance قبل أي إجراء خارجي.</p>
+        </div>
+
+        <div class="badges">
+          <div class="badge">
+            <div class="badge__abbr">ZATCA</div>
+            <h3 class="badge__name">هيئة الزكاة والضريبة</h3>
+            <p class="badge__desc">تكامل مع متطلبات الفوترة الإلكترونية.</p>
+          </div>
+          <div class="badge">
+            <div class="badge__abbr">PDPL</div>
+            <h3 class="badge__name">نظام حماية البيانات</h3>
+            <p class="badge__desc">معالجة البيانات الشخصية وفق ضوابط PDPL السعودي.</p>
+          </div>
+          <div class="badge">
+            <div class="badge__abbr">SDAIA</div>
+            <h3 class="badge__name">الهيئة السعودية للبيانات والذكاء الاصطناعي</h3>
+            <p class="badge__desc">التزام بمبادئ أخلاقيات الذكاء الاصطناعي.</p>
+          </div>
+          <div class="badge">
+            <div class="badge__abbr">NCA</div>
+            <h3 class="badge__name">الهيئة الوطنية للأمن السيبراني</h3>
+            <p class="badge__desc">ضوابط أمنية متوائمة مع ECC-1:2018.</p>
+          </div>
+        </div>
+
+        <div class="truth-note">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+          <p><strong>شفافية:</strong> لا ندّعي أن ميزة «live» قبل مرور 30 يوماً من القياس الفعلي (Truth Registry). ما نعرضه هنا إما يعمل في Pilot، أو موسوم بوضوح كـ «قيد التطوير».</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="section" id="faq" aria-labelledby="faq-heading">
+      <div class="container container--narrow">
+        <div class="section__head">
+          <span class="eyebrow">الأسئلة الشائعة</span>
+          <h2 id="faq-heading" class="section__title">أسئلة نسمعها كثيراً</h2>
+        </div>
+
+        <div class="faq">
+          <details class="faq__item" open>
+            <summary class="faq__q">
+              هل بياناتي تُخزَّن داخل المملكة العربية السعودية؟
+              <span class="faq__icon" aria-hidden="true">+</span>
+            </summary>
+            <p class="faq__a">نعم. البيانات الحسّاسة تُخزَّن في مناطق سحابية داخل المملكة، مع نسخ احتياطية مُشفَّرة. نتوافق مع متطلبات PDPL الخاصة بتوطين البيانات للفئات الحساسة.</p>
+          </details>
+
+          <details class="faq__item">
+            <summary class="faq__q">
+              كيف تضمنون خصوصية محادثات WhatsApp؟
+              <span class="faq__icon" aria-hidden="true">+</span>
+            </summary>
+            <p class="faq__a">نستخدم WhatsApp Business API الرسمي من Meta، مع تشفير نقل عبر TLS 1.3، وتشفير تخزين بـ AES-256. الرسائل لا تُشارَك مع أي طرف ثالث، وكل وصول مُسجَّل في Audit trail.</p>
+          </details>
+
+          <details class="faq__item">
+            <summary class="faq__q">
+              هل يمكنني إلغاء الاشتراك في أي وقت؟
+              <span class="faq__icon" aria-hidden="true">+</span>
+            </summary>
+            <p class="faq__a">نعم، الاشتراك شهري بدون التزام طويل. يمكنك الإلغاء من لوحة التحكم في أي وقت، ونوفّر لك تصدير كامل لبياناتك خلال 14 يوماً من تاريخ الإلغاء.</p>
+          </details>
+
+          <details class="faq__item">
+            <summary class="faq__q">
+              ما نماذج الذكاء الاصطناعي التي يستخدمها النظام؟
+              <span class="faq__icon" aria-hidden="true">+</span>
+            </summary>
+            <p class="faq__a">نستخدم LLM Router ذكي: Groq كخيار أساسي للسرعة العالية والتكلفة المنخفضة، مع fallback إلى OpenAI GPT-4 للمهام المعقدة التي تتطلب استدلال عميق. الاختيار يتم تلقائياً حسب نوع المهمة.</p>
+          </details>
+
+          <details class="faq__item">
+            <summary class="faq__q">
+              كيف يتم التكامل مع CRM موجود لدينا؟
+              <span class="faq__icon" aria-hidden="true">+</span>
+            </summary>
+            <p class="faq__a">ندعم تكاملاً أصلياً مع HubSpot, Salesforce, Zoho, و Pipedrive عبر API رسمي. لـ CRM مخصص، نوفّر Webhook وواجهة REST قياسية موثّقة بالعربي والإنجليزي.</p>
+          </details>
+
+          <details class="faq__item">
+            <summary class="faq__q">
+              هل تُوجد فترة تجريبية مجانية؟
+              <span class="faq__icon" aria-hidden="true">+</span>
+            </summary>
+            <p class="faq__a">نحن في مرحلة Pilot مع عدد محدود من الشركاء. نقدّم إعداداً مُصمَّماً لكل فريق مع فترة تجريب مخصصة حسب حجمك — تواصل معنا لمناقشة التفاصيل.</p>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <!-- Final CTA -->
+    <section class="section cta" id="contact" aria-labelledby="cta-heading">
+      <div class="container container--narrow">
+        <div class="cta__card">
+          <h2 id="cta-heading" class="cta__title">جاهز تحوّل مبيعاتك؟</h2>
+          <p class="cta__text">اترك بريدك الإلكتروني، وسيتواصل معك أحد فريقنا خلال يوم عمل لترتيب عرض تجريبي مخصص.</p>
+          <form class="cta__form" action="#" method="post" novalidate onsubmit="return handleCtaSubmit(event)">
+            <label class="sr-only" for="email">البريد الإلكتروني</label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              placeholder="البريد الإلكتروني للعمل"
+              required
+              autocomplete="email"
+              dir="ltr"
+            />
+            <button type="submit" class="btn btn--primary btn--lg">احجز عرضاً</button>
+          </form>
+          <p class="cta__note" id="cta-response" aria-live="polite">بالضغط أنت توافق على تواصلنا بخصوص Dealix فقط. لن نستخدم بريدك لأي شيء آخر.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer" role="contentinfo">
+    <div class="container footer__inner">
+      <div class="footer__brand">
+        <a href="#top" class="nav__brand" aria-label="Dealix">
+          <svg class="nav__logo" viewBox="0 0 40 40" aria-hidden="true" fill="none">
+            <circle cx="20" cy="20" r="16" stroke="currentColor" stroke-width="2.5" opacity="0.35"/>
+            <circle cx="20" cy="20" r="10" stroke="currentColor" stroke-width="2.5"/>
+            <circle cx="20" cy="20" r="4" fill="var(--color-gold)"/>
+            <path d="M20 4 L20 10" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+            <path d="M20 30 L20 36" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+          </svg>
+          <span class="nav__brand-text">Dealix</span>
+        </a>
+        <p class="footer__tag">منصة B2B Sales AI للسوق السعودي. عربي أولاً، متوافق سعودياً.</p>
+      </div>
+
+      <div class="footer__cols">
+        <div class="footer__col">
+          <h4 class="footer__head">المنتج</h4>
+          <ul role="list">
+            <li><a href="#features">الميزات</a></li>
+            <li><a href="#agents">الوكلاء</a></li>
+            <li><a href="#pricing">التسعير</a></li>
+            <li><a href="#how">كيف يعمل</a></li>
+          </ul>
+        </div>
+        <div class="footer__col">
+          <h4 class="footer__head">الشركة</h4>
+          <ul role="list">
+            <li><a href="#top">عن Dealix</a></li>
+            <li><a href="#contact">تواصل</a></li>
+            <li><a href="#contact">وظائف</a></li>
+          </ul>
+        </div>
+        <div class="footer__col">
+          <h4 class="footer__head">الموارد</h4>
+          <ul role="list">
+            <li><a href="#faq">الأسئلة الشائعة</a></li>
+            <li><a href="#compliance">الامتثال</a></li>
+            <li><a href="#agents">دليل الوكلاء</a></li>
+          </ul>
+        </div>
+        <div class="footer__col">
+          <h4 class="footer__head">القانوني</h4>
+          <ul role="list">
+            <li><a href="#">سياسة الخصوصية</a></li>
+            <li><a href="#">شروط الاستخدام</a></li>
+            <li><a href="#">سياسة ملفات تعريف الارتباط</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="container footer__bottom">
+      <p>© 2026 Dealix — جميع الحقوق محفوظة.</p>
+      <p>
+        <a href="mailto:sami.assiri11@gmail.com" dir="ltr">sami.assiri11@gmail.com</a>
+      </p>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
