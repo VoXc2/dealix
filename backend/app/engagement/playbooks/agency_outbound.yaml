@@ -1,0 +1,63 @@
+# Dealix — Digital Agency Outbound Playbook
+# Target: Marketing and technology agencies in KSA / Gulf
+# Sequence: LinkedIn (Day 0) → Email (Day 3) → WhatsApp (Day 7) → Email follow-up (Day 14)
+# Strategy: Agencies respond better to LinkedIn-first (professional framing)
+
+name: agency_outbound
+description: >
+  Outbound sequence for digital marketing and technology agencies.
+  LinkedIn-first approach as agencies are active on professional networks.
+  Emphasise ROI and outcome-based pricing.
+target_sector: digital_agency
+
+channel_priority:
+  - linkedin
+  - email
+  - whatsapp
+  - sms
+
+steps:
+  - channel: linkedin
+    delay_days: 0
+    prompt_key: linkedin_connect_ar
+    condition: null
+    max_retries: 1
+    description: "LinkedIn connection request — mention shared interest in AI-driven growth"
+
+  - channel: email
+    delay_days: 3
+    prompt_key: email_cold_ar
+    condition: null
+    max_retries: 2
+    description: "Cold email at Day 3 — outcome-focused, mention agency case studies"
+
+  - channel: linkedin
+    delay_days: 5
+    prompt_key: linkedin_followup_ar
+    condition: connection_accepted
+    max_retries: 1
+    description: "LinkedIn follow-up after connection is accepted — share relevant case study"
+
+  - channel: whatsapp
+    delay_days: 7
+    prompt_key: whatsapp_outbound_ar
+    condition: no_email_reply
+    max_retries: 1
+    description: "WhatsApp outreach at Day 7 if no email reply"
+
+  - channel: email
+    delay_days: 14
+    prompt_key: email_followup_ar
+    condition: no_reply
+    max_retries: 1
+    description: "Follow-up email at Day 14 with a value-add (case study or benchmark)"
+
+  - channel: linkedin
+    delay_days: 21
+    prompt_key: linkedin_followup_ar
+    condition: no_reply
+    max_retries: 1
+    message_template: >
+      Hi {name}, sharing this brief benchmark from a similar agency: they reduced their lead qualification time by 60% using Dealix.
+      Happy to share a 2-minute overview if relevant.
+    description: "Final LinkedIn InMail at Day 21 — social proof + gentle close"

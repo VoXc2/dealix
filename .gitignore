@@ -169,3 +169,8 @@ temp/
 *.backup
 *.orig
 *.rej
+# local runtime files
+dealix_leads.db
+:memory:
+backend/:memory:
+backend/data/intelligence_demo_results.json

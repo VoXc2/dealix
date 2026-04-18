@@ -1,0 +1,99 @@
+# Dealix — Real Estate Outbound Playbook
+# Target: Real estate developers and brokerages in Saudi Arabia
+# Sequence: WhatsApp (Day 0) → WhatsApp (Day 2) → Email (Day 5) → WhatsApp (Day 10) → LinkedIn (Day 20)
+# Strategy: WhatsApp-heavy (real estate sector is very WhatsApp-centric in KSA)
+# Note: High-value deals (20K-100K SAR/month) — invest more touchpoints
+
+name: real_estate_outbound
+description: >
+  Outbound sequence for real estate developers and brokerages in KSA.
+  WhatsApp-dominant approach reflecting Gulf real estate communication norms.
+  Longer sequence due to high deal value and longer sales cycle.
+  Qualification focuses on number of units, off-plan vs. ready.
+target_sector: real_estate
+
+channel_priority:
+  - whatsapp
+  - email
+  - linkedin
+  - sms
+
+steps:
+  - channel: whatsapp
+    delay_days: 0
+    prompt_key: whatsapp_outbound_ar
+    condition: null
+    max_retries: 1
+    message_template: >
+      السلام عليكم،
+
+      أنا [الاسم] من Dealix — منصة ذكاء مبيعات عقارية.
+
+      لاحظت أن {company} لديها مشاريع قوية في السوق.
+      نظامنا يكتشف مشترين محتملين ويتواصل معهم تلقائياً عبر واتساب — بدون تدخل يدوي.
+
+      مطورون عقاريون يستخدمون النظام شهدوا تصريف أسرع للوحدات.
+      هل يناسبكم 15 دقيقة لعرض سريع؟
+    description: "First WhatsApp — real estate specific intro mentioning developer"
+
+  - channel: whatsapp
+    delay_days: 2
+    prompt_key: whatsapp_outbound_ar
+    condition: no_reply
+    max_retries: 1
+    description: "Quick follow-up at Day 2 (real estate moves fast)"
+
+  - channel: email
+    delay_days: 5
+    prompt_key: email_cold_ar
+    condition: no_reply
+    max_retries: 2
+    description: "Formal email at Day 5 — attach one-pager PDF if possible"
+
+  - channel: sms
+    delay_days: 7
+    prompt_key: sms_reminder_ar
+    condition: no_reply
+    max_retries: 1
+    message_template: "Dealix: مرحباً {name}، هل تلقيت رسالتنا بشأن اكتشاف مشترين تلقائياً؟ رد بـ نعم وسنتواصل. رد STOP للإلغاء"
+    description: "SMS nudge at Day 7"
+
+  - channel: whatsapp
+    delay_days: 10
+    prompt_key: whatsapp_outbound_ar
+    condition: no_reply
+    max_retries: 1
+    message_template: >
+      مرحباً {name}،
+
+      أتمنى أن تكون الأعمال في خير.
+      عندي نتيجة من مطور عقاري مشابه — زاد استفساراته الأسبوعية بنسبة 3x خلال شهر.
+
+      إذا كنتم تبحثون عن طريقة لتسريع تصريف الوحدات، يسعدني الشرح.
+      هل يناسبكم هذا الأسبوع؟
+    description: "Social proof WhatsApp at Day 10"
+
+  - channel: email
+    delay_days: 15
+    prompt_key: email_followup_ar
+    condition: no_reply
+    max_retries: 1
+    description: "Follow-up email at Day 15 with case study or market insight"
+
+  - channel: linkedin
+    delay_days: 20
+    prompt_key: linkedin_connect_ar
+    condition: no_reply
+    max_retries: 1
+    description: "LinkedIn connection request at Day 20 — professional credibility play"
+
+  - channel: whatsapp
+    delay_days: 30
+    prompt_key: whatsapp_outbound_ar
+    condition: no_reply
+    max_retries: 1
+    message_template: >
+      السلام عليكم {name}،
+      آخر تواصل من طرفنا — نعرف أن لديكم أولويات كثيرة.
+      إذا تغيرت الأوضاع أو أردتم رؤية كيف يعمل Dealix، بابنا مفتوح دائماً. 🏠
+    description: "Final WhatsApp at Day 30 — warm close"

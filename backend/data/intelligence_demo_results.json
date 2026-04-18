@@ -1,0 +1,428 @@
+{
+  "generated_at": "2026-04-18T14:09:16.238340",
+  "demo_version": "1.0.0",
+  "total_leads": 5,
+  "summary": {
+    "hot": 0,
+    "warm": 0,
+    "cool": 4,
+    "cold": 1,
+    "avg_score": 48.5
+  },
+  "leads": [
+    {
+      "rank": 1,
+      "company_name": "Salla",
+      "company_name_ar": "سلة",
+      "sector": "b2b_saas",
+      "city": "جدة",
+      "employee_count": 350,
+      "revenue_estimate_sar": 120000000.0,
+      "dealix_score": 54.0,
+      "priority_tier": "cool",
+      "status": "qualified",
+      "score_breakdown": {
+        "icp": 95.0,
+        "intent": 52.0,
+        "timing": 21.2,
+        "budget": 37.4,
+        "authority": 85.0,
+        "engagement": 0.0,
+        "total": 54.0
+      },
+      "contributing_signals": [
+        "ICP: القطاع: b2b_saas (90%)",
+        "ICP: الحجم المثالي: 350 موظف",
+        "ICP: لديه موقع إلكتروني",
+        "ICP: حضور على LinkedIn",
+        "ICP: تقنيات معروفة: 7 تقنية"
+      ],
+      "penalizing_factors": [
+        "Engagement: لا يوجد تاريخ تفاعل بعد (lead جديد)"
+      ],
+      "score_rationale": "Salla | 🟡 دافئ | إجمالي: 54/100\nالأقوى: ICP (95) | الأضعف: Engagement (0)\nICP:95 Intent:52 Timing:21 Budget:37 Authority:85 Engagement:0",
+      "tech_stack": [
+        "Google Analytics",
+        "Intercom",
+        "Cloudflare",
+        "Laravel",
+        "Vue.js"
+      ],
+      "decision_makers": [
+        {
+          "name": "Salah Al-Deen Al-Majali",
+          "title": "CEO",
+          "seniority": "c_level"
+        }
+      ],
+      "news_events": [
+        {
+          "headline": "سلة تتجاوز 50,000 تاجر على منصتها للتجارة الإلكترونية",
+          "source": "Argaam",
+          "sentiment": "positive"
+        }
+      ],
+      "hiring_signals": [
+        {
+          "job_title": "Senior Backend Engineer",
+          "seniority": "individual_contributor",
+          "source": "linkedin_jobs"
+        },
+        {
+          "job_title": "VP of Marketing",
+          "seniority": "vp",
+          "source": "linkedin_jobs"
+        },
+        {
+          "job_title": "Head of Sales",
+          "seniority": "director",
+          "source": "linkedin_jobs"
+        }
+      ],
+      "tender_wins": [],
+      "social_handles": {
+        "linkedin": "company/sallaksa",
+        "twitter": "salla",
+        "instagram": "salla"
+      },
+      "data_sources": [
+        "etimad",
+        "news",
+        "hiring",
+        "linkedin",
+        "tech_stack"
+      ],
+      "domain": "salla.com",
+      "website": "https://salla.com",
+      "ceo_name": "Salah Al-Deen Al-Majali",
+      "ceo_name_ar": "صلاح الدين المجالي"
+    },
+    {
+      "rank": 2,
+      "company_name": "Tabby",
+      "company_name_ar": "تابي",
+      "sector": "financial_services",
+      "city": "الرياض",
+      "employee_count": 500,
+      "revenue_estimate_sar": 280000000.0,
+      "dealix_score": 52.8,
+      "priority_tier": "cool",
+      "status": "qualified",
+      "score_breakdown": {
+        "icp": 75.0,
+        "intent": 58.0,
+        "timing": 25.5,
+        "budget": 41.6,
+        "authority": 95.0,
+        "engagement": 0.0,
+        "total": 52.8
+      },
+      "contributing_signals": [
+        "ICP: القطاع: financial_services (65%)",
+        "ICP: شركة كبيرة: 500 موظف",
+        "ICP: لديه موقع إلكتروني",
+        "ICP: حضور على LinkedIn",
+        "ICP: تقنيات معروفة: 7 تقنية"
+      ],
+      "penalizing_factors": [
+        "Engagement: لا يوجد تاريخ تفاعل بعد (lead جديد)"
+      ],
+      "score_rationale": "Tabby | 🟡 دافئ | إجمالي: 53/100\nالأقوى: Authority (95) | الأضعف: Engagement (0)\nICP:75 Intent:58 Timing:26 Budget:42 Authority:95 Engagement:0",
+      "tech_stack": [
+        "React",
+        "Node.js",
+        "Mixpanel",
+        "Braze",
+        "PostgreSQL"
+      ],
+      "decision_makers": [
+        {
+          "name": "Hosam Arab",
+          "title": "CEO & Co-Founder",
+          "seniority": "c_level"
+        },
+        {
+          "name": "Daniil Barkalov",
+          "title": "CTO",
+          "seniority": "c_level"
+        }
+      ],
+      "news_events": [
+        {
+          "headline": "تابي تجمع 200 مليون دولار في جولة Series D وتصل إلى تقييم 1.5 مليار دولار",
+          "source": "Magnitt",
+          "sentiment": "positive"
+        }
+      ],
+      "hiring_signals": [
+        {
+          "job_title": "Enterprise Sales Director",
+          "seniority": "director",
+          "source": "linkedin_jobs"
+        },
+        {
+          "job_title": "CFO",
+          "seniority": "c_level",
+          "source": "linkedin_jobs"
+        },
+        {
+          "job_title": "Mobile Engineer (iOS/Android)",
+          "seniority": "individual_contributor",
+          "source": "linkedin_jobs"
+        }
+      ],
+      "tender_wins": [],
+      "social_handles": {
+        "linkedin": "company/tabby-fintech",
+        "twitter": "tabby",
+        "instagram": "tabby"
+      },
+      "data_sources": [
+        "etimad",
+        "news",
+        "hiring",
+        "linkedin",
+        "tech_stack"
+      ],
+      "domain": "tabby.ai",
+      "website": "https://tabby.ai",
+      "ceo_name": "Hosam Arab",
+      "ceo_name_ar": "حسام عرب"
+    },
+    {
+      "rank": 3,
+      "company_name": "Foodics",
+      "company_name_ar": "فودكس",
+      "sector": "b2b_saas",
+      "city": "الرياض",
+      "employee_count": 400,
+      "revenue_estimate_sar": 150000000.0,
+      "dealix_score": 50.5,
+      "priority_tier": "cool",
+      "status": "qualified",
+      "score_breakdown": {
+        "icp": 95.0,
+        "intent": 64.0,
+        "timing": 19.7,
+        "budget": 38.6,
+        "authority": 20.0,
+        "engagement": 0.0,
+        "total": 50.5
+      },
+      "contributing_signals": [
+        "ICP: القطاع: b2b_saas (90%)",
+        "ICP: الحجم المثالي: 400 موظف",
+        "ICP: لديه موقع إلكتروني",
+        "ICP: حضور على LinkedIn",
+        "ICP: تقنيات معروفة: 6 تقنية"
+      ],
+      "penalizing_factors": [
+        "Authority: لا يوجد صانعو قرار معروفون",
+        "Engagement: لا يوجد تاريخ تفاعل بعد (lead جديد)"
+      ],
+      "score_rationale": "Foodics | 🟡 دافئ | إجمالي: 50/100\nالأقوى: ICP (95) | الأضعف: Engagement (0)\nICP:95 Intent:64 Timing:20 Budget:39 Authority:20 Engagement:0",
+      "tech_stack": [
+        "React",
+        "Ruby on Rails",
+        "HubSpot",
+        "PostgreSQL",
+        "AWS"
+      ],
+      "decision_makers": [],
+      "news_events": [
+        {
+          "headline": "فودكس تحصل على 170 مليون دولار في جولة Series C للتوسع في منطقة الشرق الأوسط وأفريقيا",
+          "source": "Wamda",
+          "sentiment": "positive"
+        }
+      ],
+      "hiring_signals": [
+        {
+          "job_title": "Sales Manager - KSA",
+          "seniority": "manager",
+          "source": "linkedin_jobs"
+        },
+        {
+          "job_title": "Customer Success Manager",
+          "seniority": "manager",
+          "source": "linkedin_jobs"
+        },
+        {
+          "job_title": "Senior Product Manager",
+          "seniority": "individual_contributor",
+          "source": "linkedin_jobs"
+        }
+      ],
+      "tender_wins": [],
+      "social_handles": {
+        "linkedin": "company/foodics",
+        "twitter": "FoodicsApp",
+        "instagram": null
+      },
+      "data_sources": [
+        "etimad",
+        "news",
+        "hiring",
+        "linkedin",
+        "tech_stack"
+      ],
+      "domain": "foodics.com",
+      "website": "https://foodics.com",
+      "ceo_name": "Ahmad Al-Zaini",
+      "ceo_name_ar": "أحمد الزيني"
+    },
+    {
+      "rank": 4,
+      "company_name": "ROSHN",
+      "company_name_ar": "روشن",
+      "sector": "real_estate",
+      "city": "الرياض",
+      "employee_count": 1000,
+      "revenue_estimate_sar": 5000000000.0,
+      "dealix_score": 50.4,
+      "priority_tier": "cool",
+      "status": "qualified",
+      "score_breakdown": {
+        "icp": 85.0,
+        "intent": 64.0,
+        "timing": 26.3,
+        "budget": 48.0,
+        "authority": 20.0,
+        "engagement": 0.0,
+        "total": 50.4
+      },
+      "contributing_signals": [
+        "ICP: القطاع: real_estate (85%)",
+        "ICP: شركة كبيرة: 1000 موظف",
+        "ICP: لديه موقع إلكتروني",
+        "ICP: حضور على LinkedIn",
+        "ICP: تقنيات معروفة: 7 تقنية"
+      ],
+      "penalizing_factors": [
+        "Authority: لا يوجد صانعو قرار معروفون",
+        "Engagement: لا يوجد تاريخ تفاعل بعد (lead جديد)"
+      ],
+      "score_rationale": "ROSHN | 🟡 دافئ | إجمالي: 50/100\nالأقوى: ICP (85) | الأضعف: Engagement (0)\nICP:85 Intent:64 Timing:26 Budget:48 Authority:20 Engagement:0",
+      "tech_stack": [
+        "Adobe Analytics",
+        "Cloudflare",
+        "Oracle",
+        "Salesforce",
+        "BIM 360"
+      ],
+      "decision_makers": [],
+      "news_events": [
+        {
+          "headline": "روشن تطلق مشروع سدرة في الرياض بـ 30,000 وحدة سكنية",
+          "source": "Arab News",
+          "sentiment": "positive"
+        }
+      ],
+      "hiring_signals": [
+        {
+          "job_title": "Digital Marketing Manager",
+          "seniority": "manager",
+          "source": "linkedin_jobs"
+        },
+        {
+          "job_title": "CRM Manager",
+          "seniority": "manager",
+          "source": "linkedin_jobs"
+        },
+        {
+          "job_title": "Head of Technology",
+          "seniority": "director",
+          "source": "linkedin_jobs"
+        }
+      ],
+      "tender_wins": [],
+      "social_handles": {
+        "linkedin": "company/roshn",
+        "twitter": "ROSHNsa",
+        "instagram": "roshn_sa"
+      },
+      "data_sources": [
+        "etimad",
+        "news",
+        "hiring",
+        "linkedin",
+        "tech_stack"
+      ],
+      "domain": "roshn.sa",
+      "website": "https://roshn.sa",
+      "ceo_name": "David Grover",
+      "ceo_name_ar": null
+    },
+    {
+      "rank": 5,
+      "company_name": "Noon Academy",
+      "company_name_ar": "أكاديمية نون",
+      "sector": "education",
+      "city": "الرياض",
+      "employee_count": 200,
+      "revenue_estimate_sar": 60000000.0,
+      "dealix_score": 34.7,
+      "priority_tier": "cold",
+      "status": "new",
+      "score_breakdown": {
+        "icp": 77.5,
+        "intent": 26.0,
+        "timing": 18.8,
+        "budget": 33.7,
+        "authority": 10.0,
+        "engagement": 0.0,
+        "total": 34.7
+      },
+      "contributing_signals": [
+        "ICP: القطاع: education (55%)",
+        "ICP: الحجم المثالي: 200 موظف",
+        "ICP: لديه موقع إلكتروني",
+        "ICP: حضور على LinkedIn",
+        "ICP: تقنيات معروفة: 6 تقنية"
+      ],
+      "penalizing_factors": [
+        "Authority: لا يوجد صانعو قرار معروفون",
+        "Engagement: لا يوجد تاريخ تفاعل بعد (lead جديد)"
+      ],
+      "score_rationale": "Noon Academy | 🔴 بارد | إجمالي: 35/100\nالأقوى: ICP (78) | الأضعف: Engagement (0)\nICP:78 Intent:26 Timing:19 Budget:34 Authority:10 Engagement:0",
+      "tech_stack": [
+        "Google Analytics",
+        "Intercom",
+        "Firebase",
+        "Node.js",
+        "React Native"
+      ],
+      "decision_makers": [],
+      "news_events": [],
+      "hiring_signals": [
+        {
+          "job_title": "Growth Marketing Lead",
+          "seniority": "manager",
+          "source": "linkedin_jobs"
+        },
+        {
+          "job_title": "Android Engineer",
+          "seniority": "individual_contributor",
+          "source": "linkedin_jobs"
+        }
+      ],
+      "tender_wins": [],
+      "social_handles": {
+        "linkedin": "company/noon-academy",
+        "twitter": "NoonAcademy",
+        "instagram": "noonacademy"
+      },
+      "data_sources": [
+        "etimad",
+        "news",
+        "hiring",
+        "linkedin",
+        "tech_stack"
+      ],
+      "domain": "noonacademy.com",
+      "website": "https://noonacademy.com",
+      "ceo_name": null,
+      "ceo_name_ar": null
+    }
+  ]
+}

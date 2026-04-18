@@ -1,0 +1,59 @@
+# Dealix — E-Commerce Outbound Playbook
+# Target: Salla / Zid / Shopify stores in Saudi Arabia
+# Sequence: WhatsApp (Day 0) → WhatsApp follow-up (Day 3) → Email (Day 7) → LinkedIn (Day 14)
+
+name: ecommerce_outbound
+description: >
+  Outbound sequence for e-commerce merchants (Salla, Zid, Shopify).
+  Focuses on quick WhatsApp conversion, with email and LinkedIn as fallbacks.
+target_sector: ecommerce
+
+channel_priority:
+  - whatsapp
+  - email
+  - linkedin
+  - sms
+
+steps:
+  - channel: whatsapp
+    delay_days: 0
+    prompt_key: whatsapp_outbound_ar
+    condition: null
+    max_retries: 1
+    description: "First WhatsApp message — personalised intro mentioning the store"
+
+  - channel: whatsapp
+    delay_days: 3
+    prompt_key: whatsapp_outbound_ar
+    condition: no_reply
+    max_retries: 1
+    message_template: >
+      مرحباً {name}،
+      أتابع رسالتي السابقة بشأن كيف يساعد Dealix متاجر مثل {company} على اكتشاف عملاء جدد تلقائياً.
+      هل لديك 10 دقائق هذا الأسبوع للحديث؟
+    description: "WhatsApp follow-up at Day 3 if no reply"
+
+  - channel: email
+    delay_days: 7
+    prompt_key: email_cold_ar
+    condition: no_reply
+    max_retries: 2
+    description: "Cold email at Day 7 — brief value proposition with single CTA"
+
+  - channel: whatsapp
+    delay_days: 10
+    prompt_key: whatsapp_outbound_ar
+    condition: no_reply
+    max_retries: 1
+    message_template: >
+      السلام عليكم {name}، آخر تواصل من طرفنا.
+      إذا لم يكن التوقيت مناسباً الآن، نسعد بالتواصل لاحقاً.
+      رد بـ "مهتم" إذا أردت معرفة المزيد عن Dealix. 🙏
+    description: "Final WhatsApp touchpoint — soft close"
+
+  - channel: linkedin
+    delay_days: 14
+    prompt_key: linkedin_connect_ar
+    condition: no_reply
+    max_retries: 1
+    description: "LinkedIn connection request at Day 14 if no engagement"
