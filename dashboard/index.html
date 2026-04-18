@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Dealix — لوحة العمليات الموحّدة</title>
-  <meta name="description" content="لوحة Dealix — منصة المبيعات الذكية بالعربية: Leads، Inbox موحّد، Pipeline، Agents، Playbooks، Analytics" />
+  <meta name="description" content="لوحة Dealix — منصة المبيعات الذكية بالعربية" />
   <meta name="theme-color" content="#064e3b" />
   <link rel="icon" type="image/svg+xml" href='data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><circle cx="16" cy="16" r="13" fill="none" stroke="%23059669" stroke-width="3"/><circle cx="16" cy="16" r="4" fill="%23d4a017"/></svg>' />
 
@@ -13,6 +13,7 @@
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
 
   <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="styles-v2.css" />
 </head>
 <body>
   <a href="#main" class="sr-only">تخطَّ إلى المحتوى</a>
@@ -53,10 +54,67 @@
       <symbol id="i-filter" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></symbol>
       <symbol id="i-external" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></symbol>
       <symbol id="i-logo" viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="16" stroke="currentColor" stroke-width="2.5" opacity="0.35"/><circle cx="20" cy="20" r="10" stroke="currentColor" stroke-width="2.5"/><circle cx="20" cy="20" r="4" fill="#d4a017"/><path d="M20 4 L20 10" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/><path d="M20 30 L20 36" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></symbol>
+      <symbol id="i-power" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18.36 6.64a9 9 0 1 1-12.73 0"/><line x1="12" y1="2" x2="12" y2="12"/></symbol>
+      <symbol id="i-logout" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></symbol>
+      <symbol id="i-refresh" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></symbol>
+      <symbol id="i-wifi-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="1" y1="1" x2="23" y2="23"/><path d="M16.72 11.06A10.94 10.94 0 0 1 19 12.55M5 12.55a10.94 10.94 0 0 1 5.17-2.39M10.71 5.05A16 16 0 0 1 22.58 9M1.42 9a15.91 15.91 0 0 1 4.7-2.88M8.53 16.11a6 6 0 0 1 6.95 0M12 20h.01"/></symbol>
+      <symbol id="i-eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></symbol>
+      <symbol id="i-lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></symbol>
+      <symbol id="i-command" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 3a3 3 0 0 0-3 3v12a3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3H6a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3V6a3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3h12a3 3 0 0 0 3-3 3 3 0 0 0-3-3z"/></symbol>
+      <symbol id="i-help" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3M12 17h.01"/></symbol>
+      <symbol id="i-download" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></symbol>
     </defs>
   </svg>
 
-  <div class="app">
+  <!-- ==== Login Screen (pre-auth) ==== -->
+  <div class="auth-gate" id="auth-gate" aria-hidden="true">
+    <div class="auth-gate__panel">
+      <div class="auth-gate__brand">
+        <svg class="auth-gate__logo" aria-hidden="true"><use href="#i-logo"/></svg>
+        <div>
+          <div class="auth-gate__title">Dealix</div>
+          <div class="auth-gate__sub">لوحة العمليات الموحّدة</div>
+        </div>
+      </div>
+
+      <h1 class="auth-gate__heading">أهلاً بعودتك</h1>
+      <p class="auth-gate__lead">ادخل على حسابك لإدارة الـ leads والمحادثات عبر WhatsApp والبريد والـ LinkedIn.</p>
+
+      <form class="auth-form" id="login-form" novalidate>
+        <div class="field">
+          <label for="login-email">البريد الإلكتروني</label>
+          <input type="email" id="login-email" name="email" autocomplete="email" required placeholder="you@company.sa" />
+        </div>
+        <div class="field">
+          <label for="login-password">كلمة المرور</label>
+          <input type="password" id="login-password" name="password" autocomplete="current-password" required placeholder="••••••••" />
+        </div>
+        <div class="auth-form__error" id="login-error" hidden></div>
+        <button type="submit" class="btn btn--primary btn--block" id="login-submit">
+          <svg><use href="#i-lock"/></svg>
+          <span>تسجيل الدخول</span>
+        </button>
+        <div class="auth-form__hint">
+          <strong>للمعاينة:</strong> استخدم <code>demo@dealix.sa</code> / <code>demo1234</code>
+        </div>
+      </form>
+    </div>
+    <div class="auth-gate__bg" aria-hidden="true"></div>
+  </div>
+
+  <!-- ==== Demo Mode Banner ==== -->
+  <div class="demo-banner" id="demo-banner" hidden>
+    <svg><use href="#i-alert"/></svg>
+    <span>وضع تجريبي — الداتا من مخزن مؤقت. الخادم غير متاح حالياً.</span>
+    <button class="btn btn--ghost btn--sm" id="demo-banner-retry"><svg><use href="#i-refresh"/></svg>إعادة المحاولة</button>
+  </div>
+
+  <div class="offline-banner" id="offline-banner" hidden>
+    <svg><use href="#i-wifi-off"/></svg>
+    <span>لا يوجد اتصال بالإنترنت</span>
+  </div>
+
+  <div class="app" id="app-shell" hidden>
     <!-- Sidebar -->
     <aside class="sidebar" id="sidebar" aria-label="التنقل الرئيسي">
       <div class="sidebar__brand">
@@ -76,12 +134,12 @@
         <button class="nav-item" data-route="leads">
           <svg class="nav-item__icon"><use href="#i-users"/></svg>
           <span>الـ Leads</span>
-          <span class="nav-item__badge" id="nav-leads-count">30</span>
+          <span class="nav-item__badge" id="nav-leads-count">—</span>
         </button>
         <button class="nav-item" data-route="inbox">
           <svg class="nav-item__icon"><use href="#i-inbox"/></svg>
           <span>Inbox الموحّد</span>
-          <span class="nav-item__badge" id="nav-inbox-count">5</span>
+          <span class="nav-item__badge" id="nav-inbox-count">—</span>
         </button>
         <button class="nav-item" data-route="pipeline">
           <svg class="nav-item__icon"><use href="#i-pipeline"/></svg>
@@ -114,11 +172,14 @@
       </nav>
 
       <div class="sidebar__footer">
-        <div class="avatar">ن.س</div>
+        <div class="avatar" id="sidebar-avatar">?.?</div>
         <div class="user-info">
-          <strong>نورة السلمان</strong>
-          <small>مديرة العمليات</small>
+          <strong id="sidebar-user-name">—</strong>
+          <small id="sidebar-tenant-name">—</small>
         </div>
+        <button class="icon-btn" id="sidebar-logout" aria-label="تسجيل الخروج" title="تسجيل الخروج">
+          <svg><use href="#i-logout"/></svg>
+        </button>
       </div>
     </aside>
 
@@ -133,25 +194,36 @@
 
         <div>
           <div class="header__title" id="page-title">نظرة عامة</div>
-          <div class="header__subtitle" id="page-subtitle">لمحة كاملة عن أداء اليوم — <span class="num">18 أبريل 2026</span></div>
+          <div class="header__subtitle" id="page-subtitle">—</div>
         </div>
 
         <div class="header__spacer"></div>
 
-        <div class="header__search">
+        <button class="readiness-pill" id="readiness-pill" title="حالة الخدمات" aria-label="حالة الخدمات">
+          <span class="readiness-pill__dot"></span>
+          <span id="readiness-pill-text">— خدمة</span>
+        </button>
+
+        <button class="ws-pill" id="ws-pill" title="حالة الاتصال المباشر" aria-label="حالة الاتصال المباشر">
+          <span class="ws-pill__dot" id="ws-dot"></span>
+          <span id="ws-pill-text">غير متصل</span>
+        </button>
+
+        <button class="header__cmd" id="cmd-open" aria-label="قائمة الأوامر">
           <svg><use href="#i-search"/></svg>
-          <input type="search" placeholder="ابحث عن شركة، lead، أو محادثة..." aria-label="بحث" />
-        </div>
+          <span>ابحث أو انتقل...</span>
+          <kbd>⌘K</kbd>
+        </button>
 
         <button class="icon-btn" id="theme-toggle" aria-label="تبديل الوضع الداكن">
           <svg id="theme-icon"><use href="#i-moon"/></svg>
         </button>
 
-        <button class="icon-btn" aria-label="إشعارات" onclick="showToast('لا توجد إشعارات جديدة')">
-          <svg><use href="#i-bell"/></svg>
+        <button class="icon-btn" id="shortcuts-open" aria-label="اختصارات لوحة المفاتيح" title="اختصارات (?)">
+          <svg><use href="#i-help"/></svg>
         </button>
 
-        <button class="btn btn--primary btn--sm" onclick="showToast('قريباً — إضافة lead يدوياً')">
+        <button class="btn btn--primary btn--sm" id="new-lead-btn">
           <svg><use href="#i-plus"/></svg>
           <span>lead جديد</span>
         </button>
@@ -160,46 +232,11 @@
       <main class="content" id="main">
         <!-- ===== Overview ===== -->
         <section class="page is-active" data-page="overview">
-          <div class="kpi-grid">
-            <div class="kpi" style="--_accent: var(--color-primary-soft); --_icon-bg: var(--color-primary-soft); --_icon-fg: var(--color-primary);">
-              <div class="kpi__label">
-                <span class="kpi__icon"><svg><use href="#i-users"/></svg></span>
-                <span>Leads نشطة</span>
-              </div>
-              <div class="kpi__value num" id="kpi-active">—</div>
-              <div class="kpi__delta">
-                <svg style="width:12px;height:12px"><use href="#i-arrow-up"/></svg>
-                <span class="num">+12%</span>
-                <span class="text-muted text-sm">مقابل الأسبوع الماضي</span>
-              </div>
-            </div>
-
-            <div class="kpi" style="--_accent: var(--color-danger-soft); --_icon-bg: var(--color-danger-soft); --_icon-fg: var(--color-danger);">
-              <div class="kpi__label">
-                <span class="kpi__icon"><svg><use href="#i-fire"/></svg></span>
-                <span>Leads ساخنة</span>
-              </div>
-              <div class="kpi__value num" id="kpi-hot">—</div>
-              <div class="kpi__delta"><svg style="width:12px;height:12px"><use href="#i-arrow-up"/></svg><span class="num">+5</span><span class="text-muted text-sm">هذا الأسبوع</span></div>
-            </div>
-
-            <div class="kpi" style="--_accent: var(--color-info-soft); --_icon-bg: var(--color-info-soft); --_icon-fg: var(--color-info);">
-              <div class="kpi__label">
-                <span class="kpi__icon"><svg><use href="#i-calendar"/></svg></span>
-                <span>اجتماعات الأسبوع</span>
-              </div>
-              <div class="kpi__value num" id="kpi-meetings">—</div>
-              <div class="kpi__delta"><svg style="width:12px;height:12px"><use href="#i-arrow-up"/></svg><span class="num">+8</span><span class="text-muted text-sm">مؤكَّدة</span></div>
-            </div>
-
-            <div class="kpi" style="--_accent: var(--color-gold-soft); --_icon-bg: var(--color-gold-soft); --_icon-fg: var(--color-gold);">
-              <div class="kpi__label">
-                <span class="kpi__icon"><svg><use href="#i-dollar"/></svg></span>
-                <span>قيمة الـ Pipeline</span>
-              </div>
-              <div class="kpi__value num" id="kpi-pipeline">—</div>
-              <div class="kpi__delta"><svg style="width:12px;height:12px"><use href="#i-arrow-up"/></svg><span class="num">+18%</span><span class="text-muted text-sm">ر.س شهرياً</span></div>
-            </div>
+          <div class="kpi-grid" id="kpi-grid">
+            <div class="kpi skeleton-card"></div>
+            <div class="kpi skeleton-card"></div>
+            <div class="kpi skeleton-card"></div>
+            <div class="kpi skeleton-card"></div>
           </div>
 
           <div class="grid-2">
@@ -211,7 +248,7 @@
                 </div>
                 <span class="badge badge--success badge--dot">مباشر</span>
               </div>
-              <div class="funnel" id="funnel"></div>
+              <div class="funnel" id="funnel"><div class="skeleton-block"></div></div>
             </div>
 
             <div class="card">
@@ -221,7 +258,7 @@
                   <div class="card__subtitle">آخر 10 إجراءات للوكلاء</div>
                 </div>
               </div>
-              <div class="activity" id="activity"></div>
+              <div class="activity" id="activity"><div class="skeleton-block"></div></div>
             </div>
           </div>
 
@@ -232,7 +269,7 @@
                 <div class="card__subtitle">معدلات التحويل عبر القنوات</div>
               </div>
             </div>
-            <div id="channels"></div>
+            <div id="channels"><div class="skeleton-block"></div></div>
           </div>
         </section>
 
@@ -241,11 +278,11 @@
           <div class="page__header">
             <div>
               <h2 class="page__title">كل الـ Leads</h2>
-              <div class="page__desc">30 شركة مكتشفة ومُأَهَّلة عبر 5 مصادر بيانات</div>
+              <div class="page__desc" id="leads-subtitle">—</div>
             </div>
             <div class="flex gap-sm">
-              <button class="btn btn--ghost" onclick="showToast('قريباً — تصدير CSV')"><svg><use href="#i-external"/></svg>تصدير</button>
-              <button class="btn btn--primary" onclick="showToast('قريباً — استيراد leads')"><svg><use href="#i-plus"/></svg>استيراد</button>
+              <button class="btn btn--ghost" id="leads-export"><svg><use href="#i-download"/></svg>تصدير CSV</button>
+              <button class="btn btn--primary" id="leads-import"><svg><use href="#i-plus"/></svg>استيراد</button>
             </div>
           </div>
 
@@ -259,10 +296,9 @@
             <button class="chip" data-filter="warm">دافئة</button>
             <button class="chip" data-filter="cool">باردة</button>
             <button class="chip" data-filter="cold">جامدة</button>
-            <button class="chip" onclick="showToast('قريباً — فلترة متقدّمة')"><svg style="width:13px;height:13px"><use href="#i-filter"/></svg>فلترة</button>
           </div>
 
-          <div class="table-wrap">
+          <div class="table-wrap" id="leads-table-wrap">
             <table class="table">
               <thead>
                 <tr>
@@ -292,6 +328,10 @@
 
           <div class="inbox">
             <div class="conv-list">
+              <div class="inbox-search">
+                <svg><use href="#i-search"/></svg>
+                <input type="search" id="conv-search" placeholder="ابحث في المحادثات..." />
+              </div>
               <div class="conv-list__tabs" id="channel-tabs">
                 <button class="conv-list__tab is-active" data-channel="all">الكل</button>
                 <button class="conv-list__tab" data-channel="whatsapp">واتساب</button>
@@ -311,20 +351,24 @@
                 </div>
               </div>
               <div class="thread__messages" id="thread-messages">
-                <div class="text-muted flex-center" style="height:100%;">اختر محادثة من القائمة لعرض الرسائل</div>
+                <div class="empty-state">
+                  <svg><use href="#i-inbox"/></svg>
+                  <strong>اختر محادثة من القائمة</strong>
+                  <small>ستظهر الرسائل هنا</small>
+                </div>
               </div>
               <div class="composer" id="composer" style="display:none;">
                 <div class="composer__suggestions" id="ai-suggestions">
                   <div class="composer__suggestions-label">
                     <svg><use href="#i-sparkles"/></svg>
-                    <span>مقترح الذكاء الاصطناعي</span>
+                    <span>مقترحات الذكاء الاصطناعي</span>
+                    <button class="btn btn--ghost btn--sm" id="btn-suggest" style="margin-inline-start:auto;"><svg><use href="#i-sparkles"/></svg>إعادة توليد</button>
                   </div>
                   <div id="suggestions-list"></div>
                 </div>
                 <div class="composer__input-row">
                   <textarea class="composer__textarea" id="composer-input" placeholder="اكتب رداً..."></textarea>
-                  <button class="btn btn--ghost btn--sm" id="btn-suggest"><svg><use href="#i-sparkles"/></svg>اقتراح</button>
-                  <button class="btn btn--primary btn--sm" onclick="sendReply()"><svg><use href="#i-send"/></svg>إرسال</button>
+                  <button class="btn btn--primary btn--sm" id="btn-send"><svg><use href="#i-send"/></svg>إرسال</button>
                 </div>
               </div>
             </div>
@@ -340,6 +384,17 @@
             </div>
             <div class="text-muted text-sm">إجمالي: <strong class="num" id="pipeline-total">—</strong> ر.س</div>
           </div>
+          <div class="toolbar" id="pipeline-filters">
+            <span class="text-sm text-muted" style="margin-inline-end:8px;">فلترة:</span>
+            <select class="select-chip" id="pipe-filter-sector"><option value="">كل القطاعات</option></select>
+            <select class="select-chip" id="pipe-filter-owner"><option value="">كل المالكين</option></select>
+            <select class="select-chip" id="pipe-filter-value">
+              <option value="">كل القيم</option>
+              <option value="0-100000">أقل من 100K</option>
+              <option value="100000-500000">100K – 500K</option>
+              <option value="500000-999999999">أكثر من 500K</option>
+            </select>
+          </div>
           <div class="kanban" id="kanban"></div>
         </section>
 
@@ -348,10 +403,10 @@
           <div class="page__header">
             <div>
               <h2 class="page__title">أسطول الوكلاء الذكيين</h2>
-              <div class="page__desc">7 وكلاء متخصصون يعملون على مدار الساعة</div>
+              <div class="page__desc">وكلاء متخصصون يعملون على مدار الساعة</div>
             </div>
             <div class="flex gap-sm">
-              <span class="status-dot status-dot--active">نشط الآن</span>
+              <span class="status-dot status-dot--active" id="agents-status-pill">نشط الآن</span>
             </div>
           </div>
           <div class="agents-grid" id="agents-grid"></div>
@@ -364,7 +419,7 @@
               <h2 class="page__title">Playbooks — تسلسلات الانخراط</h2>
               <div class="page__desc">قوالب تواصل تلقائية مُخصَّصة للقطاعات</div>
             </div>
-            <button class="btn btn--primary" onclick="showToast('قريباً — إنشاء playbook')"><svg><use href="#i-plus"/></svg>Playbook جديد</button>
+            <button class="btn btn--primary" id="new-playbook-btn"><svg><use href="#i-plus"/></svg>Playbook جديد</button>
           </div>
           <div id="playbooks-list"></div>
         </section>
@@ -376,7 +431,7 @@
               <h2 class="page__title">مصادر البيانات</h2>
               <div class="page__desc">حالة التكامل مع المصادر السعودية والعالمية</div>
             </div>
-            <button class="btn btn--ghost" onclick="showToast('جارٍ تحديث كل المصادر...')">مزامنة الكل</button>
+            <button class="btn btn--ghost" id="sources-refresh"><svg><use href="#i-refresh"/></svg>مزامنة الكل</button>
           </div>
           <div class="sources-grid" id="sources-grid"></div>
         </section>
@@ -388,6 +443,15 @@
               <h2 class="page__title">التحليلات</h2>
               <div class="page__desc">استخبارات الإيرادات وعائد الاستثمار</div>
             </div>
+            <div class="flex gap-sm">
+              <div class="segmented" id="range-segmented">
+                <button class="segmented__btn" data-range="7d">7 أيام</button>
+                <button class="segmented__btn is-active" data-range="30d">30 يوم</button>
+                <button class="segmented__btn" data-range="90d">90 يوم</button>
+                <button class="segmented__btn" data-range="ytd">YTD</button>
+              </div>
+              <button class="btn btn--ghost" id="analytics-export"><svg><use href="#i-download"/></svg>تصدير CSV</button>
+            </div>
           </div>
 
           <div class="grid-2">
@@ -395,11 +459,11 @@
               <div class="card__header">
                 <div>
                   <div class="card__title">الإيرادات الشهرية (MRR)</div>
-                  <div class="card__subtitle">ر.س — نوفمبر حتى أبريل 2026</div>
+                  <div class="card__subtitle">ر.س</div>
                 </div>
-                <span class="badge badge--success">+29% نمو شهري</span>
+                <span class="badge badge--success" id="mrr-growth">—</span>
               </div>
-              <div id="mrr-chart"></div>
+              <div id="mrr-chart"><div class="skeleton-block" style="height:220px"></div></div>
             </div>
 
             <div class="card">
@@ -413,23 +477,7 @@
             </div>
           </div>
 
-          <div class="grid-3 mt-3">
-            <div class="kpi" style="--_accent: var(--color-info-soft); --_icon-bg: var(--color-info-soft); --_icon-fg: var(--color-info);">
-              <div class="kpi__label"><span class="kpi__icon"><svg><use href="#i-target"/></svg></span><span>تكلفة العميل (CAC)</span></div>
-              <div class="kpi__value num">1,240 ر.س</div>
-              <div class="kpi__delta"><span class="num">−8%</span><span class="text-muted text-sm">مقابل الربع الماضي</span></div>
-            </div>
-            <div class="kpi" style="--_accent: var(--color-primary-soft); --_icon-bg: var(--color-primary-soft); --_icon-fg: var(--color-primary);">
-              <div class="kpi__label"><span class="kpi__icon"><svg><use href="#i-dollar"/></svg></span><span>قيمة العميل (LTV)</span></div>
-              <div class="kpi__value num">28,600 ر.س</div>
-              <div class="kpi__delta"><span class="num">+12%</span><span class="text-muted text-sm">23× CAC</span></div>
-            </div>
-            <div class="kpi" style="--_accent: var(--color-gold-soft); --_icon-bg: var(--color-gold-soft); --_icon-fg: var(--color-gold);">
-              <div class="kpi__label"><span class="kpi__icon"><svg><use href="#i-users"/></svg></span><span>تكلفة الـ lead</span></div>
-              <div class="kpi__value num">58 ر.س</div>
-              <div class="kpi__delta"><span class="num">−22%</span><span class="text-muted text-sm">بفضل التلقائي</span></div>
-            </div>
-          </div>
+          <div class="grid-3 mt-3" id="analytics-kpis"></div>
 
           <div class="card mt-3">
             <div class="card__header">
@@ -462,79 +510,196 @@
               <h2 class="page__title">الإعدادات</h2>
               <div class="page__desc">إدارة المؤسسة، الفريق، والتكاملات</div>
             </div>
+            <button class="btn btn--primary" id="settings-save"><svg><use href="#i-check"/></svg>حفظ التغييرات</button>
           </div>
-          <div class="settings-list">
-            <div class="settings-row">
-              <div>
-                <strong>معلومات المؤسسة</strong>
-                <small>اسم المؤسسة، الشعار، العملة الافتراضية</small>
+
+          <div class="settings-sections" id="settings-sections">
+            <!-- organization -->
+            <div class="card">
+              <div class="card__header">
+                <div><div class="card__title">معلومات المؤسسة</div><div class="card__subtitle">اسم المؤسسة، العملة، المنطقة الزمنية</div></div>
               </div>
-              <button class="btn btn--ghost btn--sm" onclick="showToast('قريباً — إعدادات المؤسسة')">تعديل</button>
+              <div class="form-grid">
+                <div class="field"><label>اسم المؤسسة</label><input type="text" id="s-org-name" /></div>
+                <div class="field"><label>العملة</label>
+                  <select id="s-org-currency"><option>SAR</option><option>USD</option><option>AED</option></select>
+                </div>
+                <div class="field"><label>المنطقة الزمنية</label>
+                  <select id="s-org-tz"><option>Asia/Riyadh</option><option>Asia/Dubai</option><option>UTC</option></select>
+                </div>
+              </div>
             </div>
-            <div class="settings-row">
-              <div>
-                <strong>إدارة الفريق</strong>
-                <small>4 أعضاء · 2 أدوار</small>
+
+            <!-- Team -->
+            <div class="card">
+              <div class="card__header">
+                <div><div class="card__title">إدارة الفريق</div><div class="card__subtitle">الأعضاء والأدوار</div></div>
+                <button class="btn btn--ghost btn--sm" id="invite-member">دعوة عضو</button>
               </div>
-              <button class="btn btn--ghost btn--sm" onclick="showToast('قريباً — إدارة الأعضاء')">إدارة</button>
+              <div id="team-list"></div>
             </div>
-            <div class="settings-row">
-              <div>
-                <strong>الفوترة والاشتراك</strong>
-                <small>الباقة: Growth · 1,800 ر.س/شهر · التجديد: 15 مايو 2026</small>
+
+            <!-- API Keys -->
+            <div class="card">
+              <div class="card__header">
+                <div><div class="card__title">مفاتيح API</div><div class="card__subtitle">Groq · Twilio · SendGrid — اضغط لعرض المفتاح كاملاً</div></div>
               </div>
-              <button class="btn btn--ghost btn--sm" onclick="showToast('قريباً — إدارة الاشتراك')">إدارة</button>
+              <div id="api-keys-list"></div>
             </div>
-            <div class="settings-row">
-              <div>
-                <strong>مفاتيح API</strong>
-                <small>3 مفاتيح نشطة · مفتاح الإنتاج مُستخدم آخر مرة منذ 12 دقيقة</small>
+
+            <!-- Notifications -->
+            <div class="card">
+              <div class="card__header">
+                <div><div class="card__title">الإشعارات</div><div class="card__subtitle">استلم التنبيهات في Slack</div></div>
               </div>
-              <button class="btn btn--ghost btn--sm" onclick="showToast('قريباً — إدارة المفاتيح')">عرض</button>
+              <div class="field"><label>Slack Webhook URL</label>
+                <input type="url" id="s-slack" placeholder="https://hooks.slack.com/services/..." />
+              </div>
             </div>
-            <div class="settings-row">
-              <div>
-                <strong>الامتثال والخصوصية</strong>
-                <small>ZATCA ✓ · PDPL ✓ · SDAIA ✓ · NCA ✓</small>
+
+            <!-- Billing -->
+            <div class="card">
+              <div class="card__header">
+                <div><div class="card__title">الفوترة والاشتراك</div><div class="card__subtitle">الباقة الحالية وطريقة الدفع</div></div>
               </div>
-              <button class="btn btn--ghost btn--sm" onclick="showToast('جميع الامتثالات نشطة')">عرض</button>
+              <div class="billing-card">
+                <div>
+                  <strong>Growth</strong><br>
+                  <small class="text-muted">1,800 ر.س/شهر · التجديد: 15 مايو 2026</small>
+                </div>
+                <button class="btn btn--ghost btn--sm" id="billing-manage">إدارة في Moyasar</button>
+              </div>
             </div>
-            <div class="settings-row">
-              <div>
-                <strong>الإشعارات</strong>
-                <small>البريد + WhatsApp + Slack</small>
+
+            <!-- Compliance -->
+            <div class="card">
+              <div class="card__header">
+                <div><div class="card__title">الامتثال والخصوصية</div><div class="card__subtitle">PDPL · ZATCA · SDAIA · NCA</div></div>
               </div>
-              <label class="toggle"><input type="checkbox" checked><span class="toggle__slider"></span></label>
+              <div class="field"><label class="toggle-inline"><input type="checkbox" id="s-pdpl" /> <span>تفعيل موافقة PDPL افتراضياً لكل lead</span></label></div>
+              <div class="field"><label>فترة الاحتفاظ بالبيانات (أيام)</label>
+                <input type="number" id="s-retention" min="30" max="3650" value="365" />
+              </div>
+              <div class="honesty-widget" id="honesty-widget">
+                <div class="honesty-widget__head">
+                  <svg><use href="#i-eye"/></svg>
+                  <strong>حالة الخدمات — شفافية كاملة</strong>
+                </div>
+                <div id="honesty-counts" class="honesty-widget__counts">—</div>
+                <button class="btn btn--ghost btn--sm" id="open-readiness-modal">عرض المصفوفة الكاملة</button>
+              </div>
             </div>
           </div>
         </section>
 
       </main>
+
+      <footer class="app-footer">
+        <div class="app-footer__left">
+          <span>Dealix · لوحة العمليات</span>
+        </div>
+        <div class="app-footer__right">
+          <span id="footer-readiness">📊 —</span>
+          <span>·</span>
+          <a href="#" id="footer-transparency">شفافية الخدمات</a>
+        </div>
+      </footer>
     </div>
   </div>
 
   <!-- Drawer for lead details -->
   <div class="drawer-backdrop" id="drawer-backdrop"></div>
-  <aside class="drawer" id="drawer" aria-labelledby="drawer-title" tabindex="-1">
+  <aside class="drawer" id="drawer" aria-labelledby="drawer-title" tabindex="-1" role="dialog" aria-modal="true">
     <div class="drawer__header">
       <div class="company-logo" id="drawer-logo">—</div>
       <div style="flex:1;min-width:0;">
         <div id="drawer-title" class="company-name" style="font-size:16px;">—</div>
         <div class="company-sub" id="drawer-sub">—</div>
       </div>
-      <button class="icon-btn" onclick="closeDrawer()" aria-label="إغلاق"><svg><use href="#i-x"/></svg></button>
+      <button class="icon-btn" id="drawer-close" aria-label="إغلاق"><svg><use href="#i-x"/></svg></button>
     </div>
     <div class="drawer__body" id="drawer-body"></div>
-    <div class="drawer__footer">
-      <button class="btn btn--ghost" onclick="showToast('قريباً — تسجيل ملاحظة')">ملاحظة</button>
-      <button class="btn btn--ghost" onclick="showToast('قريباً — إضافة مهمّة')">مهمّة</button>
-      <button class="btn btn--primary" style="margin-inline-start:auto" onclick="showToast('قريباً — بدء محادثة')"><svg><use href="#i-send"/></svg>تواصل الآن</button>
+    <div class="drawer__footer" id="drawer-footer">
+      <button class="btn btn--ghost" id="drawer-add-note">ملاحظة</button>
+      <button class="btn btn--ghost" id="drawer-schedule">جدولة مكالمة</button>
+      <button class="btn btn--primary" style="margin-inline-start:auto" id="drawer-whatsapp"><svg><use href="#i-whatsapp"/></svg>إرسال واتساب</button>
     </div>
   </aside>
+
+  <!-- Modals -->
+  <div class="modal-backdrop" id="modal-backdrop"></div>
+
+  <!-- Readiness modal -->
+  <div class="modal" id="readiness-modal" role="dialog" aria-modal="true" aria-labelledby="readiness-title" tabindex="-1">
+    <div class="modal__header">
+      <h3 id="readiness-title">مصفوفة جاهزية الخدمات</h3>
+      <button class="icon-btn" data-modal-close aria-label="إغلاق"><svg><use href="#i-x"/></svg></button>
+    </div>
+    <div class="modal__body">
+      <p class="text-muted text-sm">تقرير شفاف — لا نسوق أي خدمة "Live" إلا إذا اجتازت جميع البوابات. آخر تحديث: <span id="readiness-updated">—</span></p>
+      <div id="readiness-body"></div>
+    </div>
+  </div>
+
+  <!-- Shortcuts modal -->
+  <div class="modal" id="shortcuts-modal" role="dialog" aria-modal="true" aria-labelledby="shortcuts-title" tabindex="-1">
+    <div class="modal__header">
+      <h3 id="shortcuts-title">اختصارات لوحة المفاتيح</h3>
+      <button class="icon-btn" data-modal-close aria-label="إغلاق"><svg><use href="#i-x"/></svg></button>
+    </div>
+    <div class="modal__body">
+      <div class="shortcuts">
+        <div><kbd>⌘</kbd><kbd>K</kbd><span>قائمة الأوامر / بحث شامل</span></div>
+        <div><kbd>?</kbd><span>عرض الاختصارات</span></div>
+        <div><kbd>G</kbd><kbd>O</kbd><span>الانتقال إلى نظرة عامة</span></div>
+        <div><kbd>G</kbd><kbd>L</kbd><span>الانتقال إلى Leads</span></div>
+        <div><kbd>G</kbd><kbd>I</kbd><span>الانتقال إلى Inbox</span></div>
+        <div><kbd>G</kbd><kbd>P</kbd><span>الانتقال إلى Pipeline</span></div>
+        <div><kbd>N</kbd><span>lead جديد</span></div>
+        <div><kbd>Esc</kbd><span>إغلاق النافذة</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Source configure modal -->
+  <div class="modal" id="source-modal" role="dialog" aria-modal="true" aria-labelledby="source-title" tabindex="-1">
+    <div class="modal__header">
+      <h3 id="source-title">تهيئة المصدر</h3>
+      <button class="icon-btn" data-modal-close aria-label="إغلاق"><svg><use href="#i-x"/></svg></button>
+    </div>
+    <div class="modal__body" id="source-modal-body"></div>
+  </div>
+
+  <!-- Command palette -->
+  <div class="cmdk" id="cmdk" role="dialog" aria-modal="true" aria-labelledby="cmdk-label">
+    <div class="cmdk__panel">
+      <div class="cmdk__input-row">
+        <svg><use href="#i-search"/></svg>
+        <input type="text" id="cmdk-input" placeholder="ابحث أو نفّذ أمراً..." aria-label="قائمة الأوامر" />
+        <kbd>Esc</kbd>
+      </div>
+      <div class="cmdk__results" id="cmdk-results"></div>
+      <div class="cmdk__footer">
+        <span><kbd>↑</kbd><kbd>↓</kbd> للتنقّل</span>
+        <span><kbd>↵</kbd> لاختيار</span>
+      </div>
+    </div>
+  </div>
 
   <!-- Toast container -->
   <div class="toast-wrap" id="toasts" aria-live="polite"></div>
 
+  <!-- Mobile bottom tab bar -->
+  <nav class="bottom-tabs" id="bottom-tabs" aria-label="التنقل السريع">
+    <button class="bottom-tab is-active" data-route="overview"><svg><use href="#i-home"/></svg><span>لوحة</span></button>
+    <button class="bottom-tab" data-route="leads"><svg><use href="#i-users"/></svg><span>Leads</span></button>
+    <button class="bottom-tab" data-route="inbox"><svg><use href="#i-inbox"/></svg><span>Inbox</span></button>
+    <button class="bottom-tab" data-route="pipeline"><svg><use href="#i-pipeline"/></svg><span>Pipeline</span></button>
+    <button class="bottom-tab" data-route="settings"><svg><use href="#i-settings"/></svg><span>الإعدادات</span></button>
+  </nav>
+
+  <script src="js/api.js"></script>
+  <script src="js/ws.js"></script>
   <script src="app.js"></script>
 </body>
 </html>
