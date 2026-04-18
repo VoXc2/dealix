@@ -1,0 +1,44 @@
+{
+  "timestamp": "2026-04-18_1431",
+  "reviewer": "automated",
+  "tracks": [
+    {
+      "track": "revenue_os",
+      "steps": [
+        {
+          "name": "webhook_accepts_inbound",
+          "status": "Pass"
+        },
+        {
+          "name": "reply_is_twiml",
+          "status": "Pass"
+        },
+        {
+          "name": "db_persisted",
+          "status": "Pass",
+          "detail": {
+            "lead": [
+              "+966500000001",
+              1
+            ],
+            "msgs": 2
+          }
+        },
+        {
+          "name": "tenant_isolation",
+          "status": "N/A"
+        }
+      ],
+      "gates": {
+        "Gate1_Truth": "Pass",
+        "Gate2_Contracts": "Partial",
+        "Gate3_Trust": "Fail",
+        "Gate4_Durable": "Fail",
+        "Gate5_Isolation": "N/A",
+        "Gate6_Release": "Partial",
+        "Gate7_Observability": "Fail",
+        "Gate8_E2E": "Pass"
+      }
+    }
+  ]
+}

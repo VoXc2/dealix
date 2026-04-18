@@ -1,0 +1,490 @@
+# Dealix Service Readiness Matrix
+# ================================
+# Single source of truth for what each service actually is.
+# Every claim in marketing/landing/decks must match this file.
+#
+# Status values: Live | Partial | Pilot | Target | Deprecated
+# Gates:         Contract | Workflow | Abuse | Telemetry | Approval | Evidence | Executive
+#
+# Rule: A service cannot be marketed as "Live" unless ALL gates pass.
+# CI: scripts/validate_readiness_matrix.py enforces consistency.
+
+version: "1.0"
+last_updated: "2026-04-18"
+owner: "Sami Assiri"
+
+# ─── Global policy ─────────────────────────────────────────────────────
+policy:
+  marketing_can_claim_live_only_if:
+    - status: "Live"
+    - contract_test: "Pass"
+    - workflow_test: "Pass"
+    - abuse_test: "Pass"
+    - telemetry_visible: true
+  weekly_review_required: true
+  review_cadence: "Monday 09:00 Riyadh"
+
+# ─── Revenue OS ────────────────────────────────────────────────────────
+revenue_os:
+  lead_intake_whatsapp:
+    status: "Partial"           # demoted: abuse_test not Pass, no OTel
+    description: "WhatsApp inbound → Groq reply → DB store (PoC proven, not Live)"
+    contract_test: "Pass"
+    workflow_test: "Pass"
+    abuse_test: "Partial"        # missing: rate-limit abuse, spam flood
+    telemetry_visible: false     # TODO: add OTel
+    approval_enforced: "N/A"     # no approval required at intake
+    evidence_persisted: true
+    executive_visible: false     # TODO: surface in dashboard
+    last_verified: "2026-04-18"
+    owner: "Sami"
+    blockers: ["OTel integration", "Rate-limit abuse test"]
+
+  lead_intake_email:
+    status: "Target"
+    description: "Email reply → parse → lead"
+    contract_test: "Fail"
+    workflow_test: "Fail"
+    abuse_test: "Fail"
+    telemetry_visible: false
+    approval_enforced: "N/A"
+    evidence_persisted: false
+    executive_visible: false
+    last_verified: null
+    owner: "Sami"
+    blockers: ["SendGrid inbound parse webhook", "Email threading"]
+
+  lead_intake_linkedin:
+    status: "Target"
+    description: "LinkedIn reply via Unipile → lead"
+    contract_test: "Fail"
+    workflow_test: "Fail"
+    abuse_test: "Fail"
+    telemetry_visible: false
+    approval_enforced: "N/A"
+    evidence_persisted: false
+    executive_visible: false
+    last_verified: null
+    owner: "Sami"
+    blockers: ["Unipile subscription", "LinkedIn account connected"]
+
+  enrichment:
+    status: "Partial"
+    description: "6 sources integrated as stubs + seed data for Saudi companies"
+    contract_test: "Pass"          # Pydantic models validated
+    workflow_test: "Pass"          # parallel pipeline tested
+    abuse_test: "Partial"          # missing: source failure cascade
+    telemetry_visible: false
+    approval_enforced: "N/A"
+    evidence_persisted: true       # sources logged per lead
+    executive_visible: false
+    last_verified: "2026-04-18"
+    owner: "Sami"
+    blockers: ["Real API keys (Apollo/Hunter/Unipile/Perplexity)", "Cost caps per lead"]
+
+  qualification:
+    status: "Pilot"
+    description: "BANT/MEDDPICC via Groq agent in WhatsApp conversations"
+    contract_test: "Pass"          # prompt contract
+    workflow_test: "Partial"       # works in happy path only
+    abuse_test: "Fail"             # prompt injection not tested
+    telemetry_visible: false
+    approval_enforced: "N/A"
+    evidence_persisted: true
+    executive_visible: false
+    last_verified: "2026-04-18"
+    owner: "Sami"
+    blockers: ["Prompt injection tests", "Structured qualification output schema"]
+
+  routing:
+    status: "Partial"
+    description: "Playbook-based channel selection (ecommerce/agency/real_estate)"
+    contract_test: "Pass"
+    workflow_test: "Pass"
+    abuse_test: "Fail"
+    telemetry_visible: false
+    approval_enforced: "N/A"
+    evidence_persisted: false
+    executive_visible: false
+    last_verified: "2026-04-18"
+    owner: "Sami"
+    blockers: ["Cross-channel conflict resolution", "Consent check before route"]
+
+  outreach:
+    status: "Partial"              # demoted: abuse gates fail
+    description: "WhatsApp outbound proven; Email/LinkedIn stubs"
+    contract_test: "Pass"
+    workflow_test: "Pass"
+    abuse_test: "Fail"             # missing: quiet-hours, opt-out bypass
+    telemetry_visible: false
+    approval_enforced: "Partial"   # only for >10K SAR outbound
+    evidence_persisted: true
+    executive_visible: false
+    last_verified: "2026-04-18"
+    owner: "Sami"
+    blockers: ["Quiet hours enforcement", "Opt-out registry integration"]
+
+  proposal:
+    status: "Target"
+    description: "Auto-generated PDF quotation"
+    contract_test: "Fail"
+    workflow_test: "Fail"
+    abuse_test: "Fail"
+    telemetry_visible: false
+    approval_enforced: "Required"
+    evidence_persisted: false
+    executive_visible: false
+    last_verified: null
+    owner: "Sami"
+    blockers: ["Proposal template", "Price approval flow"]
+
+  approval:
+    status: "Target"
+    description: "Multi-step approval with timeout + escalation"
+    contract_test: "Fail"
+    workflow_test: "Fail"
+    abuse_test: "Fail"
+    telemetry_visible: false
+    approval_enforced: "N/A"
+    evidence_persisted: false
+    executive_visible: false
+    last_verified: null
+    owner: "Sami"
+    blockers: ["Workflow engine (Temporal or LangGraph)", "Approval UI"]
+
+  close:
+    status: "Target"
+    description: "E-signature + payment link via Moyasar"
+    contract_test: "Fail"
+    workflow_test: "Fail"
+    abuse_test: "Fail"
+    telemetry_visible: false
+    approval_enforced: "Required"
+    evidence_persisted: false
+    executive_visible: false
+    last_verified: null
+    owner: "Sami"
+    blockers: ["Moyasar signup", "E-signature vendor (DocuSign / local alt)"]
+
+  onboarding_handoff:
+    status: "Target"
+    description: "Won deal → CS agent trigger"
+    contract_test: "Fail"
+    workflow_test: "Fail"
+    abuse_test: "Fail"
+    telemetry_visible: false
+    approval_enforced: "N/A"
+    evidence_persisted: false
+    executive_visible: false
+    last_verified: null
+    owner: "Sami"
+    blockers: ["CS agent spec", "Handoff criteria"]
+
+# ─── Partnership OS ────────────────────────────────────────────────────
+partnership_os:
+  scout:
+    status: "Target"
+    description: "Discover potential partners via data sources"
+    contract_test: "Fail"
+    workflow_test: "Fail"
+    abuse_test: "Fail"
+    telemetry_visible: false
+    approval_enforced: "N/A"
+    evidence_persisted: false
+    executive_visible: false
+    last_verified: null
+    owner: "Sami"
+    blockers: ["Partner-specific scoring", "Ecosystem data source"]
+
+  fit_score:
+    status: "Target"
+    description: "Partner fit score (technical + commercial + strategic)"
+    contract_test: "Fail"
+    workflow_test: "Fail"
+    abuse_test: "Fail"
+    telemetry_visible: false
+    approval_enforced: "N/A"
+    evidence_persisted: false
+    executive_visible: false
+    last_verified: null
+    owner: "Sami"
+    blockers: ["Fit model definition"]
+
+  economics:
+    status: "Target"
+    description: "Revenue-share / referral / white-label model"
+    contract_test: "Fail"
+    workflow_test: "Fail"
+    abuse_test: "Fail"
+    telemetry_visible: false
+    approval_enforced: "Required"
+    evidence_persisted: false
+    executive_visible: false
+    last_verified: null
+    owner: "Sami"
+    blockers: ["Commercial templates"]
+
+  activation:
+    status: "Target"
+    contract_test: "Fail"
+    workflow_test: "Fail"
+    abuse_test: "Fail"
+    telemetry_visible: false
+    approval_enforced: "N/A"
+    evidence_persisted: false
+    executive_visible: false
+    last_verified: null
+    owner: "Sami"
+    blockers: []
+
+  scorecard:
+    status: "Target"
+    contract_test: "Fail"
+    workflow_test: "Fail"
+    abuse_test: "Fail"
+    telemetry_visible: false
+    approval_enforced: "N/A"
+    evidence_persisted: false
+    executive_visible: false
+    last_verified: null
+    owner: "Sami"
+    blockers: []
+
+# ─── Executive OS ──────────────────────────────────────────────────────
+executive_os:
+  weekly_pack:
+    status: "Target"
+    description: "Auto-generated weekly executive brief"
+    contract_test: "Fail"
+    workflow_test: "Fail"
+    abuse_test: "Fail"
+    telemetry_visible: false
+    approval_enforced: "N/A"
+    evidence_persisted: false
+    executive_visible: false       # self-reference: this IS the executive surface
+    last_verified: null
+    owner: "Sami"
+    blockers: ["Template", "Data aggregation layer"]
+
+  pending_decisions:
+    status: "Target"
+    contract_test: "Fail"
+    workflow_test: "Fail"
+    abuse_test: "Fail"
+    telemetry_visible: false
+    approval_enforced: "N/A"
+    evidence_persisted: false
+    executive_visible: false
+    last_verified: null
+    owner: "Sami"
+    blockers: []
+
+  blockers_view:
+    status: "Target"
+    contract_test: "Fail"
+    workflow_test: "Fail"
+    abuse_test: "Fail"
+    telemetry_visible: false
+    approval_enforced: "N/A"
+    evidence_persisted: false
+    executive_visible: false
+    last_verified: null
+    owner: "Sami"
+    blockers: []
+
+  risks_view:
+    status: "Target"
+    contract_test: "Fail"
+    workflow_test: "Fail"
+    abuse_test: "Fail"
+    telemetry_visible: false
+    approval_enforced: "N/A"
+    evidence_persisted: false
+    executive_visible: false
+    last_verified: null
+    owner: "Sami"
+    blockers: []
+
+  actual_vs_forecast:
+    status: "Target"
+    contract_test: "Fail"
+    workflow_test: "Fail"
+    abuse_test: "Fail"
+    telemetry_visible: false
+    approval_enforced: "N/A"
+    evidence_persisted: false
+    executive_visible: false
+    last_verified: null
+    owner: "Sami"
+    blockers: ["Forecast model"]
+
+  evidence_drilldown:
+    status: "Target"
+    description: "Click any metric → see source"
+    contract_test: "Fail"
+    workflow_test: "Fail"
+    abuse_test: "Fail"
+    telemetry_visible: false
+    approval_enforced: "N/A"
+    evidence_persisted: false
+    executive_visible: false
+    last_verified: null
+    owner: "Sami"
+    blockers: ["Evidence graph"]
+
+# ─── Compliance / PDPL ─────────────────────────────────────────────────
+compliance:
+  consent_required_send:
+    status: "Partial"
+    description: "Opt-in check before WhatsApp outbound"
+    contract_test: "Partial"
+    workflow_test: "Pass"
+    abuse_test: "Fail"
+    telemetry_visible: false
+    approval_enforced: "N/A"
+    evidence_persisted: true
+    executive_visible: false
+    last_verified: "2026-04-18"
+    owner: "Sami"
+    blockers: ["PDPL consent record schema", "Audit trail"]
+
+  revoke_consent:
+    status: "Target"
+    contract_test: "Fail"
+    workflow_test: "Fail"
+    abuse_test: "Fail"
+    telemetry_visible: false
+    approval_enforced: "N/A"
+    evidence_persisted: false
+    executive_visible: false
+    last_verified: null
+    owner: "Sami"
+    blockers: ["Revocation endpoint", "Propagation to all channels"]
+
+  right_to_export:
+    status: "Target"
+    contract_test: "Fail"
+    workflow_test: "Fail"
+    abuse_test: "Fail"
+    telemetry_visible: false
+    approval_enforced: "Required"
+    evidence_persisted: false
+    executive_visible: false
+    last_verified: null
+    owner: "Sami"
+    blockers: []
+
+  right_to_delete:
+    status: "Target"
+    contract_test: "Fail"
+    workflow_test: "Fail"
+    abuse_test: "Fail"
+    telemetry_visible: false
+    approval_enforced: "Required"
+    evidence_persisted: false
+    executive_visible: false
+    last_verified: null
+    owner: "Sami"
+    blockers: []
+
+  audit_trail:
+    status: "Partial"
+    description: "Messages persisted; full audit requires correlation_id on every action"
+    contract_test: "Fail"
+    workflow_test: "Partial"
+    abuse_test: "Fail"
+    telemetry_visible: false
+    approval_enforced: "N/A"
+    evidence_persisted: true
+    executive_visible: false
+    last_verified: "2026-04-18"
+    owner: "Sami"
+    blockers: ["Structured audit log schema"]
+
+  cross_border_restriction:
+    status: "Target"
+    description: "KSA customer data must not leave KSA without explicit authorization"
+    contract_test: "Fail"
+    workflow_test: "Fail"
+    abuse_test: "Fail"
+    telemetry_visible: false
+    approval_enforced: "Required"
+    evidence_persisted: false
+    executive_visible: false
+    last_verified: null
+    owner: "Sami"
+    blockers: ["KSA-resident infra (check Hetzner ar-1 or alternatives)"]
+
+# ─── Infra / Foundations ───────────────────────────────────────────────
+infra:
+  multi_tenant_rls:
+    status: "Target"
+    description: "Postgres RLS on every tenant-scoped table"
+    contract_test: "Fail"
+    workflow_test: "Fail"
+    abuse_test: "Fail"
+    telemetry_visible: false
+    approval_enforced: "N/A"
+    evidence_persisted: false
+    executive_visible: false
+    last_verified: null
+    owner: "Sami"
+    blockers: ["Postgres migration (current = SQLite)"]
+
+  durable_execution:
+    status: "Target"
+    description: "Workflow engine with checkpoints + idempotency"
+    contract_test: "Fail"
+    workflow_test: "Fail"
+    abuse_test: "Fail"
+    telemetry_visible: false
+    approval_enforced: "N/A"
+    evidence_persisted: false
+    executive_visible: false
+    last_verified: null
+    owner: "Sami"
+    blockers: ["Select: Temporal vs LangGraph vs Celery-SM"]
+
+  observability:
+    status: "Target"
+    description: "OpenTelemetry traces + structured logs"
+    contract_test: "Fail"
+    workflow_test: "Fail"
+    abuse_test: "Fail"
+    telemetry_visible: false
+    approval_enforced: "N/A"
+    evidence_persisted: false
+    executive_visible: false
+    last_verified: null
+    owner: "Sami"
+    blockers: ["OTel SDK integration", "Tempo/Jaeger instance"]
+
+  release_gate:
+    status: "Partial"
+    description: "CI runs tests; missing: OIDC, attestations, readiness validator"
+    contract_test: "Partial"
+    workflow_test: "Pass"
+    abuse_test: "Fail"
+    telemetry_visible: false
+    approval_enforced: "N/A"
+    evidence_persisted: true      # via git history
+    executive_visible: false
+    last_verified: "2026-04-18"
+    owner: "Sami"
+    blockers: ["OIDC for cloud deploy", "Artifact attestations", "validate_readiness_matrix.py"]
+
+# ─── Summary counters (auto-updated by validator) ─────────────────────
+summary:
+  total_services: 32
+  live: 0                           # no service passes ALL 8 gates yet
+  partial: 7
+  pilot: 1
+  target: 24
+  deprecated: 0
+  gates_passing_all: 0              # none yet pass ALL 8 gates
+  gates_passing_4_plus: 2
+  next_priorities:
+    - "observability (OTel)"
+    - "durable_execution (Temporal/LangGraph)"
+    - "multi_tenant_rls (Postgres migration)"
+    - "consent_revoke_export_delete (PDPL)"
