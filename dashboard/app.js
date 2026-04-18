@@ -1360,6 +1360,7 @@ function navigate(route) {
     analytics: ['التحليلات', 'استخبارات الإيرادات وعائد الاستثمار'],
     settings: ['الإعدادات', 'إدارة المؤسسة، الفريق، والتكاملات'],
     discover: ['اكتشاف ذكي', 'Lead Engine V2 — بحث عميق متعدد المصادر'],
+    outreach: ['التواصل المتعدد', 'حملات متعددة القنوات وسجل الإرسال'],
   };
   const [t, s] = titles[route] || [route, ''];
   $('#page-title').textContent = t;
@@ -1376,6 +1377,7 @@ function navigate(route) {
   if (route === 'analytics' && !state.analytics) { loadAgents().then(loadAnalytics); }
   if (route === 'settings' && !state.settings) loadSettings();
   if (route === 'discover') initDiscoverPage();
+  if (route === 'outreach') initOutreachPage();
 
   // Close mobile sidebar on nav
   if (window.innerWidth < 900) {
@@ -1984,3 +1986,179 @@ function exportV2(format) {
   const base = (window.__dlxStore && window.__dlxStore.api_base) || 'https://tire-foundation-transit-genome.trycloudflare.com';
   window.open(`${base}/api/v2/intelligence/jobs/${_v2CurrentJobId}/export?format=${format}`, '_blank');
 }
+
+/* ============================================================
+ * 14. Multi-Channel Outreach page
+ * ============================================================ */
+let _outreachInited = false;
+
+async function initOutreachPage() {
+  if (!_outreachInited) {
+    _outreachInited = true;
+    // New campaign button
+    const newBtn = document.getElementById('outreach-new-campaign');
+    if (newBtn) newBtn.addEventListener('click', () => openOutreachModal());
+    // Refresh buttons
+    const rcB = document.getElementById('outreach-refresh-campaigns');
+    if (rcB) rcB.addEventListener('click', () => loadOutreachCampaigns());
+    const rlB = document.getElementById('outreach-refresh-log');
+    if (rlB) rlB.addEventListener('click', () => loadOutreachLog());
+    // Launch button
+    const launch = document.getElementById('camp-launch-btn');
+    if (launch) launch.addEventListener('click', () => launchCampaign());
+    // Close modal handlers
+    document.querySelectorAll('[data-close="outreach-campaign-modal"]').forEach(el => {
+      el.addEventListener('click', () => {
+        document.getElementById('outreach-campaign-modal').style.display = 'none';
+      });
+    });
+  }
+  // Always refresh data on navigate
+  loadOutreachTemplates();
+  loadOutreachCampaigns();
+  loadOutreachLog();
+}
+
+function openOutreachModal() {
+  const m = document.getElementById('outreach-campaign-modal');
+  if (m) {
+    m.style.display = 'flex';
+    const nameEl = document.getElementById('camp-name');
+    if (nameEl) nameEl.value = 'حملة ' + new Date().toISOString().slice(0, 10);
+  }
+}
+
+async function loadOutreachTemplates() {
+  try {
+    const data = await apiClient.get('/outreach/templates');
+    const c = document.getElementById('outreach-templates');
+    if (!c) return;
+    const items = (data.items || []);
+    if (!items.length) { c.innerHTML = '<div class="empty-state">لا توجد قوالب</div>'; return; }
+    c.innerHTML = '<div style="display:grid;grid-template-columns:repeat(auto-fill, minmax(260px, 1fr));gap:12px;">' +
+      items.map(t => `
+        <div class="card" style="background:var(--surface-2);padding:12px;border-radius:8px;">
+          <div style="font-weight:700;margin-bottom:6px;color:var(--accent)">${escapeHtml(t.key)}</div>
+          <div style="font-size:12px;color:var(--text-secondary);white-space:pre-wrap;line-height:1.5">${escapeHtml(t.preview)}</div>
+        </div>
+      `).join('') + '</div>';
+  } catch (e) {
+    console.error('loadOutreachTemplates error', e);
+  }
+}
+
+async function loadOutreachCampaigns() {
+  try {
+    const data = await apiClient.get('/outreach/campaigns?limit=20');
+    const c = document.getElementById('outreach-campaigns-list');
+    if (!c) return;
+    const items = (data.items || []);
+    document.getElementById('out-kpi-campaigns').textContent = items.length;
+    if (!items.length) { c.innerHTML = '<div class="empty-state">لا توجد حملات بعد</div>'; return; }
+    c.innerHTML = items.map(cmp => {
+      const pct = cmp.total > 0 ? Math.round(((cmp.sent_count || 0) / cmp.total) * 100) : 0;
+      const statusColor = cmp.status === 'completed' ? '#10b981' : (cmp.status === 'running' ? '#3b82f6' : '#64748b');
+      return `
+        <div style="padding:12px;border-bottom:1px solid var(--border);">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+            <strong>${escapeHtml(cmp.name || '—')}</strong>
+            <span style="background:${statusColor};color:white;padding:2px 10px;border-radius:999px;font-size:11px;">${cmp.status}</span>
+          </div>
+          <div style="font-size:12px;color:var(--text-secondary);margin-bottom:6px;">
+            ${cmp.template_key || '—'} • ${cmp.channel || 'auto'} • ${cmp.total} lead
+          </div>
+          <div style="background:var(--surface-2);height:6px;border-radius:3px;overflow:hidden;">
+            <div style="background:${statusColor};height:100%;width:${pct}%;"></div>
+          </div>
+          <div style="font-size:11px;color:var(--text-secondary);margin-top:4px;">
+            ✓ ${cmp.sent_count || 0} • ⏱ ${cmp.deferred_count || 0} • ✗ ${cmp.failed_count || 0}
+          </div>
+        </div>
+      `;
+    }).join('');
+  } catch (e) {
+    console.error('loadOutreachCampaigns error', e);
+  }
+}
+
+async function loadOutreachLog() {
+  try {
+    const data = await apiClient.get('/outreach/log?limit=20');
+    const c = document.getElementById('outreach-log-list');
+    if (!c) return;
+    const items = (data.items || []);
+    const sent = items.filter(x => x.status === 'sent').length;
+    const deferred = items.filter(x => x.status === 'deferred').length;
+    const failed = items.filter(x => x.status === 'failed').length;
+    const setTxt = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+    setTxt('out-kpi-sent', sent);
+    setTxt('out-kpi-deferred', deferred);
+    setTxt('out-kpi-failed', failed);
+    if (!items.length) { c.innerHTML = '<div class="empty-state">لا توجد إرسالات بعد</div>'; return; }
+    const channelIcon = { whatsapp: '💬', email: '✉️', sms: '📱', linkedin: '💼', telegram: '✈️' };
+    const statusColor = { sent: '#10b981', deferred: '#f59e0b', failed: '#ef4444' };
+    c.innerHTML = items.map(it => `
+      <div style="padding:10px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
+        <div style="flex:1;min-width:0;">
+          <div style="font-size:13px;">
+            ${channelIcon[it.channel] || '•'} ${escapeHtml(it.channel || '')}
+            <span style="color:${statusColor[it.status] || '#64748b'};font-weight:600;margin-inline-start:8px;">${it.status}</span>
+          </div>
+          <div style="font-size:11px;color:var(--text-secondary);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">
+            ${escapeHtml((it.message || '').slice(0, 80))}
+          </div>
+          ${it.error ? `<div style="font-size:11px;color:#ef4444;">${escapeHtml(it.error)}</div>` : ''}
+        </div>
+        <div style="font-size:11px;color:var(--text-secondary);margin-inline-start:8px;white-space:nowrap;">
+          ${new Date(it.created_at).toLocaleTimeString('ar-SA', { hour: '2-digit', minute: '2-digit' })}
+        </div>
+      </div>
+    `).join('');
+  } catch (e) {
+    console.error('loadOutreachLog error', e);
+  }
+}
+
+async function launchCampaign() {
+  const name = document.getElementById('camp-name').value.trim();
+  const template = document.getElementById('camp-template').value;
+  const channelRaw = document.getElementById('camp-channel').value;
+  const channel = channelRaw === 'auto' ? null : channelRaw;
+  const segment = document.getElementById('camp-segment').value;
+  const respectHours = document.getElementById('camp-respect-hours').checked;
+  const dryRun = document.getElementById('camp-dry-run').checked;
+
+  if (!name) { alert('أدخل اسم الحملة'); return; }
+
+  // Collect leads with phones
+  try {
+    const leadsRes = await apiClient.get('/leads?limit=500');
+    let leads = (leadsRes.items || leadsRes || []).filter(l => l.phone);
+    if (segment === 'cold') leads = leads.filter(l => (l.priority_tier || 'cold') === 'cold');
+    else if (segment === 'recent') {
+      const cutoff = Date.now() - 7 * 86400000;
+      leads = leads.filter(l => l.first_seen && new Date(l.first_seen).getTime() > cutoff);
+    }
+    if (!leads.length) { alert('لا يوجد عملاء في هذه الشريحة'); return; }
+
+    const leadIds = leads.map(l => l.id);
+    const payload = {
+      name,
+      lead_ids: leadIds,
+      template_key: template,
+      channel,
+      respect_hours: respectHours,
+      dry_run: dryRun,
+    };
+    const res = await apiClient.post('/outreach/campaign', payload);
+    alert(`تم إطلاق الحملة بنجاح ✓\n\nالحملة: ${res.id}\nعدد العملاء: ${res.total}\nالحالة: ${res.status}`);
+    document.getElementById('outreach-campaign-modal').style.display = 'none';
+    // Refresh
+    setTimeout(() => { loadOutreachCampaigns(); loadOutreachLog(); }, 1000);
+  } catch (e) {
+    console.error('launchCampaign error', e);
+    alert('خطأ: ' + (e.message || e));
+  }
+}
+
+

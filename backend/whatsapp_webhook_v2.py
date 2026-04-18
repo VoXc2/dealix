@@ -178,9 +178,30 @@ async def whatsapp_webhook(
     lead_id = upsert_lead_sync(phone)
     msg_id = save_message_sync(phone, "in", user_msg, MessageSid)
 
-    # Build reply
-    history = get_history_sync(phone, limit=10)
-    reply = await groq_reply(user_msg, history)
+    # Build reply via conversation_ai (state machine + LLM + contact sharing)
+    reply = ""
+    ai_result = None
+    try:
+        from conversation_ai import generate_reply, update_lead_stage
+        ai_result = await generate_reply(
+            phone=phone,
+            tenant_id=DEFAULT_TENANT_ID,
+            inbound_text=user_msg,
+        )
+        reply = ai_result.get("text") or ""
+        # Persist new stage if it changed
+        new_stage = ai_result.get("stage")
+        prev_stage = ai_result.get("previous_stage")
+        if new_stage and new_stage != prev_stage:
+            try:
+                await update_lead_stage(phone, DEFAULT_TENANT_ID, new_stage)
+            except Exception as e:
+                print(f"[webhook] stage update failed: {e}")
+    except Exception as e:
+        print(f"[webhook] conversation_ai failed, falling back: {e}")
+        history = get_history_sync(phone, limit=10)
+        reply = await groq_reply(user_msg, history)
+
     out_id = save_message_sync(phone, "out", reply, None)
 
     # Publish events to dashboard WS bus

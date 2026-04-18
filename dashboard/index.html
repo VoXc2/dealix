@@ -163,6 +163,11 @@
           <svg class="nav-item__icon"><use href="#i-database"/></svg>
           <span>مصادر البيانات</span>
         </button>
+        <button class="nav-item" data-route="outreach">
+          <svg class="nav-item__icon"><use href="#i-send"/></svg>
+          <span>التواصل المتعدد</span>
+          <span class="nav-badge" style="background:#10b981;color:white;font-size:10px;padding:2px 6px;border-radius:10px;margin-inline-start:auto">جديد</span>
+        </button>
 
         <div class="sidebar__section-title">الأداء</div>
         <button class="nav-item" data-route="analytics">
@@ -534,6 +539,112 @@
           </div>
           <div class="sources-grid" id="sources-grid"></div>
         </section>
+
+        <!-- ===== Multi-Channel Outreach ===== -->
+        <section class="page" data-page="outreach">
+          <div class="page__header">
+            <div>
+              <h2 class="page__title">التواصل المتعدد</h2>
+              <div class="page__desc">حملات متعددة القنوات (WhatsApp / Email / SMS / LinkedIn)</div>
+            </div>
+            <button class="btn btn--primary" id="outreach-new-campaign">
+              <svg><use href="#i-plus"/></svg>حملة جديدة
+            </button>
+          </div>
+
+          <!-- KPI tiles -->
+          <div class="kpi-grid" style="grid-template-columns: repeat(4, 1fr); margin-bottom: 16px;">
+            <div class="kpi-card"><div class="kpi-card__label">رسائل مرسلة</div><div class="kpi-card__value" id="out-kpi-sent">—</div></div>
+            <div class="kpi-card"><div class="kpi-card__label">مؤجل (خارج العمل)</div><div class="kpi-card__value" id="out-kpi-deferred">—</div></div>
+            <div class="kpi-card"><div class="kpi-card__label">فشل</div><div class="kpi-card__value" id="out-kpi-failed">—</div></div>
+            <div class="kpi-card"><div class="kpi-card__label">حملات نشطة</div><div class="kpi-card__value" id="out-kpi-campaigns">—</div></div>
+          </div>
+
+          <!-- Two columns: Campaigns + Log -->
+          <div style="display:grid;grid-template-columns: 1fr 1fr;gap:16px;">
+            <div class="card">
+              <div class="card__head">
+                <h3 class="card__title">الحملات</h3>
+                <button class="btn btn--ghost btn--sm" id="outreach-refresh-campaigns"><svg><use href="#i-refresh"/></svg></button>
+              </div>
+              <div class="card__body" id="outreach-campaigns-list">
+                <div class="empty-state">لا توجد حملات بعد</div>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card__head">
+                <h3 class="card__title">سجل الإرسال الأخير</h3>
+                <button class="btn btn--ghost btn--sm" id="outreach-refresh-log"><svg><use href="#i-refresh"/></svg></button>
+              </div>
+              <div class="card__body" id="outreach-log-list">
+                <div class="empty-state">لا توجد إرسالات بعد</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Templates strip -->
+          <div class="card" style="margin-top:16px;">
+            <div class="card__head">
+              <h3 class="card__title">القوالب الجاهزة (عربي)</h3>
+            </div>
+            <div class="card__body" id="outreach-templates"></div>
+          </div>
+        </section>
+
+        <!-- New Campaign Modal -->
+        <div class="modal" id="outreach-campaign-modal" style="display:none;">
+          <div class="modal__backdrop" data-close="outreach-campaign-modal"></div>
+          <div class="modal__content" style="max-width:540px;">
+            <div class="modal__head">
+              <h3>حملة تواصل جديدة</h3>
+              <button class="btn btn--ghost btn--icon" data-close="outreach-campaign-modal">✕</button>
+            </div>
+            <div class="modal__body">
+              <div class="form-group">
+                <label>اسم الحملة</label>
+                <input type="text" id="camp-name" placeholder="مثلاً: حملة اللوجستيات أبريل"/>
+              </div>
+              <div class="form-group">
+                <label>القالب</label>
+                <select id="camp-template">
+                  <option value="cold_intro">تعرف أولي (cold intro)</option>
+                  <option value="value_add">رسالة قيمة (value add)</option>
+                  <option value="demo_invite">دعوة عرض (demo invite)</option>
+                  <option value="followup">متابعة (followup)</option>
+                  <option value="breakup">رسالة ختام (breakup)</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>القناة</label>
+                <select id="camp-channel">
+                  <option value="auto">تلقائي (الأفضل لكل lead)</option>
+                  <option value="whatsapp">WhatsApp</option>
+                  <option value="email">Email</option>
+                  <option value="sms">SMS</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>شريحة العملاء</label>
+                <select id="camp-segment">
+                  <option value="all">كل العملاء (بهاتف)</option>
+                  <option value="cold">باردون فقط</option>
+                  <option value="recent">جدد (آخر 7 أيام)</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label><input type="checkbox" id="camp-respect-hours" checked> احترم ساعات العمل السعودية (9 ص— 7 م)</label>
+              </div>
+              <div class="form-group">
+                <label><input type="checkbox" id="camp-dry-run"> تشغيل تجريبي (بدون إرسال فعلي)</label>
+              </div>
+            </div>
+            <div class="modal__foot">
+              <button class="btn btn--ghost" data-close="outreach-campaign-modal">إلغاء</button>
+              <button class="btn btn--primary" id="camp-launch-btn">إطلاق الحملة</button>
+            </div>
+          </div>
+        </div>
 
         <!-- ===== Analytics ===== -->
         <section class="page" data-page="analytics">
