@@ -1646,6 +1646,27 @@ function bindAppEvents() {
     const email = prompt('بريد العضو الجديد:');
     if (email) showToast(`تم إرسال دعوة إلى ${email} (قريباً — تفعيل فعلي)`);
   });
+
+  // Save API key
+  const apiKeySaveBtn = $('#api-key-save');
+  if (apiKeySaveBtn) {
+    apiKeySaveBtn.addEventListener('click', async () => {
+      const service = $('#api-key-service').value;
+      const value = $('#api-key-value').value.trim();
+      if (!value) { showToast('الصق المفتاح أولاً', 'err'); return; }
+      try {
+        apiKeySaveBtn.disabled = true;
+        await apiClient.post('/settings/api-keys', { service, value });
+        $('#api-key-value').value = '';
+        showToast(`حُفظ مفتاح ${service}`);
+        await loadSettings();
+      } catch (err) {
+        showToast('فشل حفظ المفتاح', 'err');
+      } finally {
+        apiKeySaveBtn.disabled = false;
+      }
+    });
+  }
   $('#billing-manage').addEventListener('click', () => showToast('ربط Moyasar في Roadmap (Q3)'));
   $('#new-lead-btn').addEventListener('click', () => showToast('قريباً — إضافة lead يدوياً'));
   $('#new-playbook-btn').addEventListener('click', () => showToast('قريباً — منشئ playbooks'));
@@ -1856,7 +1877,7 @@ async function startV2Discovery() {
   const leadLimit = depth === 'quick' ? 5 : depth === 'standard' ? 15 : 50;
 
   try {
-    const base = (window.__dlxStore && window.__dlxStore.api_base) || 'https://muze-flags-away-strengthen.trycloudflare.com';
+    const base = (window.__dlxStore && window.__dlxStore.api_base) || 'https://tire-foundation-transit-genome.trycloudflare.com';
     const resp = await fetch(base + '/api/v2/intelligence/discover', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -1883,7 +1904,7 @@ async function startV2Discovery() {
 }
 
 async function pollV2Job(jobId) {
-  const base = (window.__dlxStore && window.__dlxStore.api_base) || 'https://muze-flags-away-strengthen.trycloudflare.com';
+  const base = (window.__dlxStore && window.__dlxStore.api_base) || 'https://tire-foundation-transit-genome.trycloudflare.com';
   const progressBar = document.getElementById('v2-progress-bar');
   const progressText = document.getElementById('v2-progress-text');
   const meta = document.getElementById('v2-results-meta');
@@ -1914,7 +1935,7 @@ async function pollV2Job(jobId) {
 }
 
 async function loadV2Leads(jobId) {
-  const base = (window.__dlxStore && window.__dlxStore.api_base) || 'https://muze-flags-away-strengthen.trycloudflare.com';
+  const base = (window.__dlxStore && window.__dlxStore.api_base) || 'https://tire-foundation-transit-genome.trycloudflare.com';
   const list = document.getElementById('v2-leads-list');
   try {
     const resp = await fetch(base + '/api/v2/intelligence/jobs/' + jobId + '/leads');
@@ -1960,6 +1981,6 @@ function renderV2Lead(lead) {
 
 function exportV2(format) {
   if (!_v2CurrentJobId) return;
-  const base = (window.__dlxStore && window.__dlxStore.api_base) || 'https://muze-flags-away-strengthen.trycloudflare.com';
+  const base = (window.__dlxStore && window.__dlxStore.api_base) || 'https://tire-foundation-transit-genome.trycloudflare.com';
   window.open(`${base}/api/v2/intelligence/jobs/${_v2CurrentJobId}/export?format=${format}`, '_blank');
 }

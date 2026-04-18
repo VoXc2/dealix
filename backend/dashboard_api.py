@@ -566,10 +566,14 @@ class SettingsMe(BaseModel):
 
 
 class ApiKeysRequest(BaseModel):
+    # Legacy named fields (still supported)
     groq_key: str | None = None
     twilio_sid: str | None = None
     twilio_token: str | None = None
     sendgrid_key: str | None = None
+    # Generic single-key save (new)
+    service: str | None = None
+    value: str | None = None
 
 
 class StageMove(BaseModel):
@@ -1428,6 +1432,12 @@ async def update_api_keys(body: ApiKeysRequest, user=Depends(get_current_user)):
             keys["twilio_token"] = body.twilio_token
         if body.sendgrid_key:
             keys["sendgrid"] = body.sendgrid_key
+        # Generic service/value pair
+        if body.service and body.value:
+            allowed = {"groq", "twilio_sid", "twilio_token", "sendgrid", "openai", "moyasar", "twilio"}
+            svc = body.service.strip().lower()
+            if svc in allowed:
+                keys[svc] = body.value
 
         await db.execute(
             "UPDATE users SET api_keys=? WHERE id=?",

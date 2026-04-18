@@ -641,9 +641,20 @@
             <!-- API Keys -->
             <div class="card">
               <div class="card__header">
-                <div><div class="card__title">مفاتيح API</div><div class="card__subtitle">Groq · Twilio · SendGrid — اضغط لعرض المفتاح كاملاً</div></div>
+                <div><div class="card__title">مفاتيح API</div><div class="card__subtitle">Groq · Twilio · SendGrid — تُخزّن مشفّرة في قاعدة البيانات</div></div>
               </div>
               <div id="api-keys-list"></div>
+              <div style="display:grid; grid-template-columns: 1fr 2fr auto; gap:8px; margin-top:12px;">
+                <select id="api-key-service" class="input">
+                  <option value="groq">Groq</option>
+                  <option value="twilio">Twilio</option>
+                  <option value="sendgrid">SendGrid</option>
+                  <option value="openai">OpenAI</option>
+                  <option value="moyasar">Moyasar</option>
+                </select>
+                <input type="password" id="api-key-value" class="input" placeholder="الصق المفتاح…" />
+                <button class="btn btn--primary btn--sm" id="api-key-save">حفظ</button>
+              </div>
             </div>
 
             <!-- Notifications -->
