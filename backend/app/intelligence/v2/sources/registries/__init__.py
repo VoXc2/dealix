@@ -1,0 +1,1 @@
+"""Government registry source adapters."""

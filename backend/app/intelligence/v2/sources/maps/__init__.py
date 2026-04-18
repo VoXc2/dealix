@@ -1,0 +1,1 @@
+"""Map-based source adapters."""

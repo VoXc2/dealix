@@ -1359,6 +1359,7 @@ function navigate(route) {
     sources: ['مصادر البيانات', 'حالة التكامل مع المصادر'],
     analytics: ['التحليلات', 'استخبارات الإيرادات وعائد الاستثمار'],
     settings: ['الإعدادات', 'إدارة المؤسسة، الفريق، والتكاملات'],
+    discover: ['اكتشاف ذكي', 'Lead Engine V2 — بحث عميق متعدد المصادر'],
   };
   const [t, s] = titles[route] || [route, ''];
   $('#page-title').textContent = t;
@@ -1374,6 +1375,7 @@ function navigate(route) {
   if (route === 'sources' && !state.sources.length) loadSources();
   if (route === 'analytics' && !state.analytics) { loadAgents().then(loadAnalytics); }
   if (route === 'settings' && !state.settings) loadSettings();
+  if (route === 'discover') initDiscoverPage();
 
   // Close mobile sidebar on nav
   if (window.innerWidth < 900) {
@@ -1796,3 +1798,168 @@ window.addEventListener('DOMContentLoaded', boot);
 window.openDrawer = openDrawer;
 window.closeDrawer = closeDrawer;
 window.showToast = showToast;
+
+/* ========== Lead Engine V2 — Discover Page ========== */
+let _v2Initialized = false;
+let _v2CurrentJobId = null;
+
+function initDiscoverPage() {
+  if (_v2Initialized) return;
+  _v2Initialized = true;
+
+  const btn = document.getElementById('v2-discover-btn');
+  if (btn) btn.addEventListener('click', startV2Discovery);
+
+  const csvBtn = document.getElementById('v2-export-csv');
+  if (csvBtn) csvBtn.addEventListener('click', () => exportV2('csv'));
+  const jsonBtn = document.getElementById('v2-export-json');
+  if (jsonBtn) jsonBtn.addEventListener('click', () => exportV2('json'));
+
+  // Country → City auto-update
+  const countrySelect = document.getElementById('v2-country');
+  if (countrySelect) {
+    countrySelect.addEventListener('change', updateV2Cities);
+  }
+}
+
+function updateV2Cities() {
+  const country = document.getElementById('v2-country').value;
+  const citySelect = document.getElementById('v2-city');
+  const cities = {
+    SA: ['Riyadh:الرياض', 'Jeddah:جدة', 'Dammam:الدمام', 'Mecca:مكة', 'Medina:المدينة', 'Khobar:الخبر', 'Taif:الطائف', 'Abha:أبها', 'Tabuk:تبوك', 'Buraydah:بريدة'],
+    AE: ['Dubai:دبي', 'Abu Dhabi:أبوظبي', 'Sharjah:الشارقة', 'Ajman:عجمان'],
+    KW: ['Kuwait City:مدينة الكويت', 'Hawalli:حولي'],
+    QA: ['Doha:الدوحة', 'Al Rayyan:الريان'],
+    BH: ['Manama:المنامة', 'Riffa:الرفاع'],
+    OM: ['Muscat:مسقط', 'Salalah:صلالة']
+  };
+  citySelect.innerHTML = (cities[country] || []).map(c => {
+    const [en, ar] = c.split(':');
+    return `<option value="${en}">${ar}</option>`;
+  }).join('');
+}
+
+async function startV2Discovery() {
+  const btn = document.getElementById('v2-discover-btn');
+  const status = document.getElementById('v2-status');
+  const resultsCard = document.getElementById('v2-results-card');
+  const industry = document.getElementById('v2-industry').value;
+  const country = document.getElementById('v2-country').value;
+  const city = document.getElementById('v2-city').value;
+  const depth = document.getElementById('v2-depth').value;
+
+  btn.disabled = true;
+  btn.style.opacity = '0.6';
+  status.textContent = 'يتم إنشاء مهمة البحث...';
+  resultsCard.style.display = 'block';
+
+  const leadLimit = depth === 'quick' ? 5 : depth === 'standard' ? 15 : 50;
+
+  try {
+    const base = (window.__dlxStore && window.__dlxStore.api_base) || 'https://muze-flags-away-strengthen.trycloudflare.com';
+    const resp = await fetch(base + '/api/v2/intelligence/discover', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        icp: {
+          industries: [industry],
+          geo: { countries: [country], cities: [city] }
+        },
+        depth,
+        limit: leadLimit,
+        languages: ['ar', 'en']
+      })
+    });
+    if (!resp.ok) throw new Error('HTTP ' + resp.status);
+    const data = await resp.json();
+    _v2CurrentJobId = data.job_id;
+    status.textContent = '✓ بدأ البحث (' + data.job_id.slice(0, 8) + ')';
+    pollV2Job(data.job_id);
+  } catch (err) {
+    status.textContent = '❌ خطأ: ' + err.message;
+    btn.disabled = false;
+    btn.style.opacity = '1';
+  }
+}
+
+async function pollV2Job(jobId) {
+  const base = (window.__dlxStore && window.__dlxStore.api_base) || 'https://muze-flags-away-strengthen.trycloudflare.com';
+  const progressBar = document.getElementById('v2-progress-bar');
+  const progressText = document.getElementById('v2-progress-text');
+  const meta = document.getElementById('v2-results-meta');
+  const btn = document.getElementById('v2-discover-btn');
+
+  const maxPolls = 60; // 3 minutes max
+  for (let i = 0; i < maxPolls; i++) {
+    await new Promise(r => setTimeout(r, 3000));
+    try {
+      const resp = await fetch(base + '/api/v2/intelligence/jobs/' + jobId);
+      const data = await resp.json();
+      progressBar.style.width = (data.progress || 0) + '%';
+      progressText.textContent = `حالة: ${data.status} | التقدم: ${Math.round(data.progress || 0)}% | ${data.leads_found || 0} lead مكتشف | ${data.sources_completed?.length || 0} مصدر مكتمل`;
+      meta.textContent = `المصادر: ${(data.sources_completed || []).join('، ') || '—'}`;
+      if (data.status === 'completed' || data.status === 'failed') {
+        await loadV2Leads(jobId);
+        btn.disabled = false;
+        btn.style.opacity = '1';
+        return;
+      }
+    } catch (err) {
+      console.warn('poll error', err);
+    }
+  }
+  btn.disabled = false;
+  btn.style.opacity = '1';
+  progressText.textContent = '‫انتهت فترة الانتظار‬';
+}
+
+async function loadV2Leads(jobId) {
+  const base = (window.__dlxStore && window.__dlxStore.api_base) || 'https://muze-flags-away-strengthen.trycloudflare.com';
+  const list = document.getElementById('v2-leads-list');
+  try {
+    const resp = await fetch(base + '/api/v2/intelligence/jobs/' + jobId + '/leads');
+    const data = await resp.json();
+    if (!data.leads || !data.leads.length) {
+      list.innerHTML = '<div style="padding:24px;text-align:center;color:var(--text-secondary)">لم يتم العثور على leads</div>';
+      return;
+    }
+    list.innerHTML = data.leads.map(l => renderV2Lead(l)).join('');
+  } catch (err) {
+    list.innerHTML = '<div style="padding:24px;text-align:center;color:#ef4444">خطأ: ' + err.message + '</div>';
+  }
+}
+
+function renderV2Lead(lead) {
+  const tierColor = { hot: '#ef4444', warm: '#f59e0b', cold: '#6b7280' }[lead.tier] || '#6b7280';
+  const mock = lead.is_mock ? '<span style="background:#fbbf24;color:#000;padding:2px 6px;border-radius:4px;font-size:11px;margin-inline-start:6px">تجريبي</span>' : '';
+  const hiring = lead.is_hiring ? '<span style="background:#10b981;color:white;padding:2px 6px;border-radius:4px;font-size:11px;margin-inline-start:6px">💼 يوظف</span>' : '';
+  const points = (lead.talking_points_ar || []).map(p => `<li style="margin:4px 0;font-size:13px">${p}</li>`).join('');
+  const sources = (lead.sources || []).map(s => `<span style="background:var(--bg-muted);padding:2px 6px;border-radius:4px;font-size:11px;margin-inline-end:4px">${s}</span>`).join('');
+  return `
+    <div style="border:1px solid var(--border);border-radius:8px;padding:16px;margin:8px 0;background:var(--bg-elevated)">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px">
+        <div style="flex:1">
+          <div style="font-weight:700;font-size:15px">${lead.company_name_ar || lead.company_name}${mock}${hiring}</div>
+          <div style="font-size:13px;color:var(--text-secondary);margin-top:2px">${lead.company_name}</div>
+          <div style="font-size:12px;margin-top:6px">
+            ${lead.city ? '📍 ' + lead.city + ' ' : ''}
+            ${lead.phone ? '📞 ' + lead.phone + ' ' : ''}
+            ${lead.email ? '✉️ ' + lead.email + ' ' : ''}
+            ${lead.domain ? '🌐 ' + lead.domain : ''}
+          </div>
+        </div>
+        <div style="text-align:end">
+          <div style="background:${tierColor};color:white;padding:4px 10px;border-radius:999px;font-weight:700;font-size:13px">${lead.total_score}/100</div>
+          <div style="font-size:11px;color:var(--text-secondary);margin-top:4px">${lead.tier}</div>
+        </div>
+      </div>
+      ${points ? `<ul style="margin:12px 0 4px;padding-inline-start:20px">${points}</ul>` : ''}
+      <div style="margin-top:8px">${sources}</div>
+    </div>`;
+}
+
+function exportV2(format) {
+  if (!_v2CurrentJobId) return;
+  const base = (window.__dlxStore && window.__dlxStore.api_base) || 'https://muze-flags-away-strengthen.trycloudflare.com';
+  window.open(`${base}/api/v2/intelligence/jobs/${_v2CurrentJobId}/export?format=${format}`, '_blank');
+}

@@ -155,6 +155,10 @@
           <svg class="nav-item__icon"><use href="#i-book"/></svg>
           <span>Playbooks</span>
         </button>
+        <button class="nav-item" data-route="discover">
+          <svg><use href="#i-search"/></svg><span>اكتشاف ذكي</span>
+          <span class="nav-badge" style="background:#10b981;color:white;font-size:10px;padding:2px 6px;border-radius:10px;margin-inline-start:auto">V2</span>
+        </button>
         <button class="nav-item" data-route="sources">
           <svg class="nav-item__icon"><use href="#i-database"/></svg>
           <span>مصادر البيانات</span>
@@ -422,6 +426,101 @@
             <button class="btn btn--primary" id="new-playbook-btn"><svg><use href="#i-plus"/></svg>Playbook جديد</button>
           </div>
           <div id="playbooks-list"></div>
+        </section>
+
+        <!-- ===== Discover (Lead Engine V2) ===== -->
+        <section class="page" data-page="discover">
+          <div class="page__header">
+            <div>
+              <h2 class="page__title">اكتشاف ذكي — Lead Engine V2</h2>
+              <div class="page__desc">بحث عميق عبر 8+ مصادر (Google/Maps/LinkedIn/Bayt/سجل تجاري) بالذكاء الصناعي</div>
+            </div>
+            <span class="badge badge--success">Phase 1 — Live</span>
+          </div>
+
+          <div class="card">
+            <div class="card__header">
+              <div>
+                <div class="card__title">تعريف العميل المثالي (ICP)</div>
+                <div class="card__subtitle">حدّد الصناعة والجغرافيا والإشارات</div>
+              </div>
+            </div>
+            <div class="grid-2" style="gap:16px;margin-top:12px">
+              <div>
+                <label style="display:block;font-size:13px;font-weight:600;margin-bottom:6px">الصناعة</label>
+                <select id="v2-industry" style="width:100%;padding:10px;border:1px solid var(--border);border-radius:8px;background:var(--bg-elevated)">
+                  <option value="restaurants">مطاعم</option>
+                  <option value="retail">تجزئة</option>
+                  <option value="saas">SaaS</option>
+                  <option value="healthcare">رعاية صحية</option>
+                  <option value="real_estate">عقارات</option>
+                  <option value="education">تعليم</option>
+                  <option value="logistics">لوجستيات</option>
+                  <option value="finance">مالية</option>
+                  <option value="automotive">سيارات</option>
+                </select>
+              </div>
+              <div>
+                <label style="display:block;font-size:13px;font-weight:600;margin-bottom:6px">الدولة</label>
+                <select id="v2-country" style="width:100%;padding:10px;border:1px solid var(--border);border-radius:8px;background:var(--bg-elevated)">
+                  <option value="SA">السعودية 🇸🇦</option>
+                  <option value="AE">الإمارات 🇦🇪</option>
+                  <option value="KW">الكويت 🇰🇼</option>
+                  <option value="QA">قطر 🇶🇦</option>
+                  <option value="BH">البحرين 🇧🇭</option>
+                  <option value="OM">عُمان 🇴🇲</option>
+                </select>
+              </div>
+              <div>
+                <label style="display:block;font-size:13px;font-weight:600;margin-bottom:6px">المدينة</label>
+                <select id="v2-city" style="width:100%;padding:10px;border:1px solid var(--border);border-radius:8px;background:var(--bg-elevated)">
+                  <option value="Riyadh">الرياض</option>
+                  <option value="Jeddah">جدة</option>
+                  <option value="Dammam">الدمام</option>
+                  <option value="Mecca">مكة</option>
+                  <option value="Medina">المدينة</option>
+                  <option value="Khobar">الخبر</option>
+                  <option value="Taif">الطائف</option>
+                  <option value="Abha">أبها</option>
+                </select>
+              </div>
+              <div>
+                <label style="display:block;font-size:13px;font-weight:600;margin-bottom:6px">العمق</label>
+                <select id="v2-depth" style="width:100%;padding:10px;border:1px solid var(--border);border-radius:8px;background:var(--bg-elevated)">
+                  <option value="quick">سريع (5 leads، ~10 ثواني)</option>
+                  <option value="standard" selected>قياسي (15 lead، ~30 ثانية)</option>
+                  <option value="deep">عميق (50+ lead، ~3 دقائق)</option>
+                </select>
+              </div>
+            </div>
+            <div style="margin-top:16px;display:flex;gap:8px;align-items:center">
+              <button class="btn btn--primary" id="v2-discover-btn" style="padding:12px 24px">
+                <svg><use href="#i-search"/></svg>
+                ابدأ البحث الذكي
+              </button>
+              <div id="v2-status" style="font-size:13px;color:var(--text-secondary)"></div>
+            </div>
+          </div>
+
+          <div class="card" id="v2-results-card" style="margin-top:16px;display:none">
+            <div class="card__header">
+              <div>
+                <div class="card__title">النتائج</div>
+                <div class="card__subtitle" id="v2-results-meta">—</div>
+              </div>
+              <div class="flex gap-sm">
+                <button class="btn btn--ghost" id="v2-export-csv"><svg><use href="#i-download"/></svg>CSV</button>
+                <button class="btn btn--ghost" id="v2-export-json"><svg><use href="#i-download"/></svg>JSON</button>
+              </div>
+            </div>
+            <div id="v2-progress" style="margin:12px 0">
+              <div style="background:var(--bg-muted);border-radius:6px;height:8px;overflow:hidden">
+                <div id="v2-progress-bar" style="height:100%;background:linear-gradient(90deg,#10b981,#059669);width:0%;transition:width .3s"></div>
+              </div>
+              <div id="v2-progress-text" style="font-size:12px;margin-top:6px;color:var(--text-secondary)">—</div>
+            </div>
+            <div id="v2-leads-list"></div>
+          </div>
         </section>
 
         <!-- ===== Sources ===== -->

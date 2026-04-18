@@ -592,6 +592,14 @@ app = FastAPI(
     description="Production backend for the Dealix sales intelligence dashboard.",
 )
 
+# ── Lead Intelligence Engine V2 ───────────────────────────────────────────────
+try:
+    from app.intelligence.v2.api import router as v2_router
+    app.include_router(v2_router)
+    logger.info("[startup] Lead Intelligence Engine V2 mounted at /api/v2/intelligence")
+except Exception as _v2_err:
+    logger.warning(f"[startup] Intelligence V2 not loaded: {_v2_err}")
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=DASHBOARD_CORS_ORIGINS + ["*"],
