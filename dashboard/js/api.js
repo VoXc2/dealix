@@ -10,7 +10,7 @@ const _store = window.__dlxStore;
 const API_BASE_URL = (() => {
   if (_store.api_base) return _store.api_base;
   // Default production API (Cloudflare Tunnel)
-  const DEFAULT_API = 'https://tire-foundation-transit-genome.trycloudflare.com';
+  const DEFAULT_API = 'https://conduct-earthquake-mailing-constraint.trycloudflare.com';
   // If running on localhost, use same origin; otherwise use default API
   const origin = window.location.origin;
   if (origin.startsWith('http://localhost') || origin.startsWith('http://127.0.0.1')) {

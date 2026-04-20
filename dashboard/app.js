@@ -1879,7 +1879,7 @@ async function startV2Discovery() {
   const leadLimit = depth === 'quick' ? 5 : depth === 'standard' ? 15 : 50;
 
   try {
-    const base = (window.__dlxStore && window.__dlxStore.api_base) || 'https://tire-foundation-transit-genome.trycloudflare.com';
+    const base = (window.__dlxStore && window.__dlxStore.api_base) || 'https://conduct-earthquake-mailing-constraint.trycloudflare.com';
     const resp = await fetch(base + '/api/v2/intelligence/discover', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -1906,7 +1906,7 @@ async function startV2Discovery() {
 }
 
 async function pollV2Job(jobId) {
-  const base = (window.__dlxStore && window.__dlxStore.api_base) || 'https://tire-foundation-transit-genome.trycloudflare.com';
+  const base = (window.__dlxStore && window.__dlxStore.api_base) || 'https://conduct-earthquake-mailing-constraint.trycloudflare.com';
   const progressBar = document.getElementById('v2-progress-bar');
   const progressText = document.getElementById('v2-progress-text');
   const meta = document.getElementById('v2-results-meta');
@@ -1937,7 +1937,7 @@ async function pollV2Job(jobId) {
 }
 
 async function loadV2Leads(jobId) {
-  const base = (window.__dlxStore && window.__dlxStore.api_base) || 'https://tire-foundation-transit-genome.trycloudflare.com';
+  const base = (window.__dlxStore && window.__dlxStore.api_base) || 'https://conduct-earthquake-mailing-constraint.trycloudflare.com';
   const list = document.getElementById('v2-leads-list');
   try {
     const resp = await fetch(base + '/api/v2/intelligence/jobs/' + jobId + '/leads');
@@ -1983,7 +1983,7 @@ function renderV2Lead(lead) {
 
 function exportV2(format) {
   if (!_v2CurrentJobId) return;
-  const base = (window.__dlxStore && window.__dlxStore.api_base) || 'https://tire-foundation-transit-genome.trycloudflare.com';
+  const base = (window.__dlxStore && window.__dlxStore.api_base) || 'https://conduct-earthquake-mailing-constraint.trycloudflare.com';
   window.open(`${base}/api/v2/intelligence/jobs/${_v2CurrentJobId}/export?format=${format}`, '_blank');
 }
 
