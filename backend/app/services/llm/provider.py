@@ -159,14 +159,63 @@ class OpenAIProvider(BaseLLMProvider):
         )
 
 
-class LLMRouter:
+class LocalAIProvider(BaseLLMProvider):
     """
-    Intelligent LLM routing with automatic failover.
-    Primary: Groq (fast, free/cheap)
-    Fallback: OpenAI (reliable, high quality)
+    On-prem/self-hosted Ollama provider.
+
+    Used when LOCAL_LLM_ENABLED=1 and the daemon is reachable. It lets
+    Dealix run summarization, classification, drafting, and coding tasks
+    on the server itself — no cloud keys required. Gracefully reports
+    "unavailable" so the LLMRouter falls back to Groq/OpenAI.
     """
 
     def __init__(self):
+        from app.services.local_ai.router import get_local_router
+        self._local = get_local_router()
+
+    async def is_available(self) -> bool:
+        try:
+            return await self._local.is_available()
+        except Exception as e:
+            logger.debug(f"LocalAIProvider availability check failed: {e}")
+            return False
+
+    async def complete(self, system_prompt: str, user_message: str,
+                       temperature: float = None, max_tokens: int = None,
+                       json_mode: bool = False, task: str = "internal_drafting",
+                       **_: dict) -> LLMResponse:
+        result = await self._local.run(
+            task=task,
+            prompt=user_message,
+            system=system_prompt,
+            temperature=temperature if temperature is not None else settings.LLM_TEMPERATURE,
+            max_tokens=max_tokens or settings.LLM_MAX_TOKENS,
+            json_mode=json_mode,
+        )
+        if not result.success:
+            raise RuntimeError(f"Local LLM failed: {result.error}")
+        return LLMResponse(
+            content=result.content,
+            tokens_used=result.total_tokens,
+            latency_ms=result.latency_ms,
+            provider="local",
+            model=result.model,
+            raw=result.raw,
+        )
+
+
+class LLMRouter:
+    """
+    Intelligent LLM routing with automatic failover.
+
+    Order (default):
+      1. Local (Ollama) — when LOCAL_LLM_ENABLED=1 and daemon is up
+      2. Groq — fast, cheap cloud inference
+      3. OpenAI — reliable, high-quality fallback
+    """
+
+    def __init__(self):
+        self.local = LocalAIProvider()
         self.groq = GroqProvider()
         self.openai = OpenAIProvider()
         self._primary = settings.LLM_PRIMARY_PROVIDER
@@ -192,10 +241,14 @@ class LLMRouter:
             providers = [("openai", self.openai)]
         elif provider == "groq":
             providers = [("groq", self.groq)]
+        elif provider == "local":
+            providers = [("local", self.local)]
+        elif self._primary == "local":
+            providers = [("local", self.local), ("groq", self.groq), ("openai", self.openai)]
         elif self._primary == "groq":
-            providers = [("groq", self.groq), ("openai", self.openai)]
+            providers = [("local", self.local), ("groq", self.groq), ("openai", self.openai)]
         else:
-            providers = [("openai", self.openai), ("groq", self.groq)]
+            providers = [("local", self.local), ("openai", self.openai), ("groq", self.groq)]
 
         last_error = None
         for name, prov in providers:
@@ -214,6 +267,9 @@ class LLMRouter:
                     kwargs["fast"] = fast
                 elif name == "openai":
                     kwargs["mini"] = fast
+                elif name == "local":
+                    # Local provider does not use the fast/mini switch.
+                    pass
 
                 result = await prov.complete(**kwargs)
                 logger.info(

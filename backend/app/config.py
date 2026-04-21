@@ -63,11 +63,24 @@ class Settings(BaseSettings):
     EMBEDDING_DIMENSIONS: int = 1536
 
     # LLM defaults
-    LLM_PRIMARY_PROVIDER: str = "groq"  # groq, openai
+    LLM_PRIMARY_PROVIDER: str = "groq"  # local, groq, openai
     LLM_FALLBACK_PROVIDER: str = "groq"
     LLM_TEMPERATURE: float = 0.3
     LLM_MAX_TOKENS: int = 2048
     LLM_TIMEOUT: int = 30
+
+    # ── Local LLM (Ollama) ───────────────────────────────
+    # Self-hosted models served by Ollama on the same host.
+    # Safe defaults keep local mode OFF until a model has been pulled.
+    LOCAL_LLM_ENABLED: bool = False
+    LOCAL_LLM_BASE_URL: str = "http://localhost:11434"
+    LOCAL_LLM_DEFAULT_MODEL: str = ""   # e.g. "qwen2.5:7b-instruct"
+    LOCAL_LLM_ROUTER_MODEL: str = ""    # e.g. "qwen2.5:0.5b"
+    LOCAL_LLM_CODER_MODEL: str = ""     # e.g. "qwen2.5-coder:7b"
+    LOCAL_LLM_REASONER_MODEL: str = ""  # e.g. "qwen2.5:14b-instruct"
+    LOCAL_LLM_TIMEOUT_S: float = 120.0
+    LOCAL_LLM_RETRIES: int = 2
+    LOCAL_LLM_FORCE_TIER: str = ""      # nano/small/balanced/performance (override auto-detect)
 
     # ── WhatsApp Business API ────────────────────────────
     WHATSAPP_API_TOKEN: str = ""

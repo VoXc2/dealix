@@ -33,6 +33,7 @@ from app.api.v1 import model_routing as model_routing_router
 from app.api.v1 import saudi_compliance as saudi_compliance_router
 from app.api.v1 import forecast_control as forecast_control_router
 from app.api.v1 import approval_center as approval_center_router
+from app.api.v1 import local_ai as local_ai_router
 
 api_router = APIRouter()
 
@@ -113,6 +114,7 @@ api_router.include_router(evidence_packs_router.router)
 api_router.include_router(executive_room_router.router)
 api_router.include_router(connector_governance_router.router)
 api_router.include_router(model_routing_router.router)
+api_router.include_router(local_ai_router.router)
 api_router.include_router(saudi_compliance_router.router)
 api_router.include_router(forecast_control_router.router)
 api_router.include_router(approval_center_router.router)
