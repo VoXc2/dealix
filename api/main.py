@@ -1,0 +1,111 @@
+"""
+FastAPI application entry point.
+نقطة دخول تطبيق FastAPI.
+"""
+
+from __future__ import annotations
+
+from contextlib import asynccontextmanager
+from typing import AsyncIterator
+
+from fastapi import FastAPI, Request
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
+
+from api.middleware import RequestIDMiddleware
+from api.routers import agents, health, leads, sales, sectors, webhooks
+from core.config.settings import get_settings
+from core.errors import AICompanyError
+from core.logging import configure_logging, get_logger
+
+
+@asynccontextmanager
+async def lifespan(_app: FastAPI) -> AsyncIterator[None]:
+    """App startup/shutdown hook."""
+    configure_logging()
+    log = get_logger(__name__)
+    settings = get_settings()
+    log.info(
+        "app_startup",
+        app=settings.app_name,
+        version=settings.app_version,
+        env=settings.app_env,
+    )
+    yield
+    log.info("app_shutdown")
+
+
+def create_app() -> FastAPI:
+    """FastAPI factory."""
+    settings = get_settings()
+
+    app = FastAPI(
+        title=settings.app_name,
+        version=settings.app_version,
+        description=(
+            "Multi-agent AI platform for the Saudi Arabian market.\n\n"
+            "**Phase 8**: Auto Client Acquisition — intake, ICP match, "
+            "pain extraction, qualification, CRM sync, booking, proposals.\n\n"
+            "**Phase 9**: Autonomous Growth — sector intel, content, distribution, "
+            "enrichment, competitor analysis, market research."
+        ),
+        docs_url="/docs",
+        redoc_url="/redoc",
+        openapi_url="/openapi.json",
+        lifespan=lifespan,
+    )
+
+    # ── Middleware ──────────────────────────────────────────────
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=settings.cors_origin_list,
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
+    app.add_middleware(RequestIDMiddleware)
+
+    # ── Exception handlers ──────────────────────────────────────
+    @app.exception_handler(AICompanyError)
+    async def ai_company_error_handler(_: Request, exc: AICompanyError) -> JSONResponse:
+        return JSONResponse(
+            status_code=400,
+            content={"error": exc.__class__.__name__, "detail": str(exc)},
+        )
+
+    # ── Routers ─────────────────────────────────────────────────
+    app.include_router(health.router)
+    app.include_router(leads.router)
+    app.include_router(sales.router)
+    app.include_router(sectors.router)
+    app.include_router(agents.router)
+    app.include_router(webhooks.router)
+
+    # ── Root ────────────────────────────────────────────────────
+    @app.get("/", tags=["root"])
+    async def root() -> dict[str, object]:
+        return {
+            "name": settings.app_name,
+            "version": settings.app_version,
+            "status": "operational",
+            "env": settings.app_env,
+            "docs": "/docs",
+            "health": "/health",
+        }
+
+    return app
+
+
+app = create_app()
+
+
+if __name__ == "__main__":
+    import uvicorn
+
+    settings = get_settings()
+    uvicorn.run(
+        "api.main:app",
+        host=settings.app_host,
+        port=settings.app_port,
+        reload=settings.is_development,
+    )

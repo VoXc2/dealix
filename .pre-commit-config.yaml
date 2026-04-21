@@ -1,0 +1,93 @@
+# ═══════════════════════════════════════════════════════════════════
+# Pre-commit hooks — prevents secrets, enforces quality
+# يمنع تسريب الأسرار ويفرض جودة الكود
+# ═══════════════════════════════════════════════════════════════════
+# Install: pip install pre-commit && pre-commit install
+# ═══════════════════════════════════════════════════════════════════
+
+default_language_version:
+  python: python3.12
+
+repos:
+  # ── General hygiene ────────────────────────────────────────
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-toml
+      - id: check-json
+      - id: check-added-large-files
+        args: ["--maxkb=1024"]
+      - id: check-merge-conflict
+      - id: detect-private-key
+      - id: check-case-conflict
+      - id: check-executables-have-shebangs
+      - id: check-shebang-scripts-are-executable
+      - id: mixed-line-ending
+        args: ["--fix=lf"]
+
+  # ── Python formatting ──────────────────────────────────────
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.7.4
+    hooks:
+      - id: ruff
+        args: [--fix, --exit-non-zero-on-fix]
+      - id: ruff-format
+
+  - repo: https://github.com/psf/black
+    rev: 24.10.0
+    hooks:
+      - id: black
+        language_version: python3.12
+
+  # ── Type checking ──────────────────────────────────────────
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.13.0
+    hooks:
+      - id: mypy
+        additional_dependencies:
+          - pydantic>=2.9.0
+          - types-requests
+          - types-python-dateutil
+        args: [--ignore-missing-imports, --no-strict-optional]
+        exclude: ^(tests/|scripts/|docs/)
+
+  # ── SECURITY: Secret scanning (CRITICAL) ───────────────────
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.21.2
+    hooks:
+      - id: gitleaks
+        name: "🔒 Gitleaks — scan for committed secrets"
+
+  - repo: https://github.com/Yelp/detect-secrets
+    rev: v1.5.0
+    hooks:
+      - id: detect-secrets
+        name: "🔒 detect-secrets — baseline scan"
+        args: ["--baseline", ".secrets.baseline"]
+        exclude: .*\.lock$|.*\.md$
+
+  # ── Security: dependency vulnerabilities ───────────────────
+  - repo: https://github.com/PyCQA/bandit
+    rev: 1.8.0
+    hooks:
+      - id: bandit
+        name: "🔒 Bandit — Python security linter"
+        args: ["-c", "pyproject.toml", "-r", "."]
+        exclude: ^tests/
+
+  # ── Dockerfile ─────────────────────────────────────────────
+  - repo: https://github.com/hadolint/hadolint
+    rev: v2.13.1-beta
+    hooks:
+      - id: hadolint-docker
+        name: "🐳 Hadolint — Dockerfile linter"
+
+  # ── Markdown ───────────────────────────────────────────────
+  - repo: https://github.com/igorshubovych/markdownlint-cli
+    rev: v0.43.0
+    hooks:
+      - id: markdownlint
+        args: ["--disable", "MD013", "MD033", "MD041", "--"]
