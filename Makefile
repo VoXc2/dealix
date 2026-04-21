@@ -1,6 +1,7 @@
 # Dealix — Root Makefile
 # ═══════════════════════════════════════════════════════════════
-.PHONY: help install up down logs test lint format check validate clean
+.PHONY: help install up down logs test lint format check validate clean \
+        smoke-test launch-check launch-docs
 
 help:  ## عرض هذه الرسالة
 	@awk 'BEGIN {FS = ":.*##"; printf "\nأوامر Dealix المتاحة:\n"} /^[a-zA-Z_-]+:.*?##/ { printf "  \033[36m%-15s\033[0m %s\n", $$1, $$2 }' $(MAKEFILE_LIST)
@@ -47,3 +48,18 @@ clean:  ## حذف ملفات مؤقتة + caches
 	find . -type d -name .mypy_cache -exec rm -rf {} + 2>/dev/null || true
 	find . -type d -name node_modules -prune -exec rm -rf {} + 2>/dev/null || true
 	find . -type d -name .next -prune -exec rm -rf {} + 2>/dev/null || true
+
+smoke-test:  ## اختبار سريع لنقاط النهاية الأساسية (BASE_URL=... )
+	BASE_URL=$${BASE_URL:-http://localhost:8000} bash scripts/qa/smoke_test.sh
+
+launch-check:  ## فحص جاهزية الإطلاق (lint + smoke test)
+	@echo "→ lint"
+	-$(MAKE) lint
+	@echo "→ smoke test"
+	$(MAKE) smoke-test
+
+launch-docs:  ## سرد ملفات خطة الإطلاق
+	@echo "Launch-readiness documents:"
+	@ls -1 docs/launch-execution-plan.md docs/qa-acceptance-checklist.md \
+	       docs/operations-runbook.md    docs/sales-launch-kit.md \
+	       docs/metrics-and-kpis.md 2>/dev/null
