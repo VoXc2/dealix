@@ -343,3 +343,57 @@ LOG_LEVEL=INFO
 ```
 
 If any of these are missing, the backend may start but refuse to serve — check `docker compose logs backend` for `config validation error`.
+
+---
+
+## 14. Single-runtime rule & port hygiene
+
+On the production VM there is exactly one Dealix: the `dealix-api.service`
+systemd unit behind Nginx, using host PostgreSQL 16 and host Redis. Docker
+Compose on the server is a **development-only** convenience. Running both at
+once causes the conflicts observed during the `ai-company-saudi` merge:
+
+| Conflict | Symptom | Fix |
+|---|---|---|
+| Host Redis + container Redis on `:6379` | Second container restarts, or app sees stale data | `docker compose down` the container OR set `REDIS_PORT=6380` in `.env` |
+| Host Postgres + container Postgres on `:5432` | Container crashes on bind OR inserts land in the wrong DB | Stop the container OR set `POSTGRES_PORT=5433` |
+| `dealix-api.service` + container backend on `:8000` | 502s, intermittent routing | Stop the container OR set `BACKEND_PORT=8001` |
+| Mongo exposed on `0.0.0.0:27017` | Publicly reachable NoSQL, no auth | Do **not** run Mongo on the server. Dealix does not need it. |
+
+Run `scripts/server/server_doctor.sh` before any deploy; it enforces the
+single-listener rule on each of these ports and flags public DB exposure.
+
+## 15. Git checkout hygiene on the server
+
+- Prefer an SSH deploy key tied to the `dealix` user:
+  `ssh-keygen -t ed25519 -f ~/.ssh/dealix_deploy -C dealix-prod` and paste the
+  public key into the repo's **Deploy keys** (read-only).
+- If a PAT is unavoidable, use a **fine-grained** PAT scoped only to the
+  Dealix repo with `Contents:read`, and set an expiry ≤ 90 days. Never paste
+  the PAT into chat transcripts or logs.
+- If a PAT or `APP_SECRET` has ever been visible outside the server, rotate
+  immediately (see §16 and `docs/project-merge-ai-company-saudi.md` §6).
+
+## 16. Secret rotation — emergency path
+
+Use when a secret is suspected to have leaked (for example: `APP_SECRET` or
+a GitHub PAT was pasted into a chat, a `.env` was copied to an off-host
+machine, or a backup was exported without encryption).
+
+1. Generate the new value (`openssl rand -hex 32`).
+2. Update `/etc/dealix/env` (or the systemd drop-in) and restart
+   `dealix-api.service`.
+3. Verify `/health`.
+4. Revoke the old token in the provider console AFTER the new one is live.
+5. Scan git history: `gitleaks detect --source . --no-banner`.
+6. Record the rotation in `docs/execution_log.md`.
+
+## 17. Decommissioning a parallel stack
+
+If someone (or a prior you) has left a companion Docker stack running, use
+`scripts/server/decommission_ai_company_saudi.sh` — it is dry-run by default,
+touches only `ai-company-*` resources, and leaves Dealix alone. Pair it with
+`scripts/server/server_doctor.sh` to confirm a clean host before and after.
+
+After decommission, reboot the VM once to clear any pending kernel updates
+that were deferred during earlier `apt` operations.
