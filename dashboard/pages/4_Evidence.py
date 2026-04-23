@@ -43,7 +43,7 @@ c1.metric(
 c2.metric(
     "إجمالي عناصر DLQ",
     (
-        sum((queue.get("depth", 0) for queue in dlq_stats.values()))
+        sum(queue.get("depth", 0) for queue in dlq_stats.values())
         if isinstance(dlq_stats, dict)
         else 0
     ),
