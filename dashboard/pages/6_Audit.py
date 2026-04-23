@@ -22,11 +22,7 @@ def _headers() -> dict[str, str]:
 def _get(path: str) -> Any:
     try:
         response = httpx.get(f"{API}{path}", headers=_headers(), timeout=8)
-        return (
-            response.json()
-            if response.status_code == 200
-            else {"error": response.status_code}
-        )
+        return response.json() if response.status_code == 200 else {"error": response.status_code}
     except Exception as exc:
         return {"error": str(exc)}
 
@@ -37,9 +33,7 @@ approvals = _get("/api/v1/admin/approvals/stats")
 dlq = _get("/api/v1/admin/dlq/stats")
 
 c1, c2, c3, c4 = st.columns(4)
-c1.metric(
-    "الحالة العامة", health.get("status", "?") if isinstance(health, dict) else "?"
-)
+c1.metric("الحالة العامة", health.get("status", "?") if isinstance(health, dict) else "?")
 c2.metric(
     "الموافقات المعلقة",
     approvals.get("pending", 0) if isinstance(approvals, dict) else 0,
@@ -48,11 +42,7 @@ totals = costs.get("totals", {}) if isinstance(costs, dict) else {}
 c3.metric("إنفاق 24 ساعة", f"${totals.get('usd', 0)}")
 c4.metric(
     "عمق DLQ",
-    (
-        sum(queue.get("depth", 0) for queue in dlq.values())
-        if isinstance(dlq, dict)
-        else 0
-    ),
+    (sum(queue.get("depth", 0) for queue in dlq.values()) if isinstance(dlq, dict) else 0),
 )
 
 st.subheader("فحوصات الصحة")
