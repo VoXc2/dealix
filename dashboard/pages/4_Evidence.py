@@ -22,11 +22,7 @@ def _headers() -> dict[str, str]:
 def _get(path: str) -> Any:
     try:
         response = httpx.get(f"{API}{path}", headers=_headers(), timeout=8)
-        return (
-            response.json()
-            if response.status_code == 200
-            else {"error": response.status_code}
-        )
+        return response.json() if response.status_code == 200 else {"error": response.status_code}
     except Exception as exc:
         return {"error": str(exc)}
 
