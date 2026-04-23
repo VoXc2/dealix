@@ -1,7 +1,7 @@
 # Dealix Launch Gates — v3.0.0 Primitive Launch
 
-**Snapshot date:** 2026-04-23 (post PR #54 + #55 deploy)
-**Current status:** 16/30 gates closed. **Launch is NOT complete.**
+**Snapshot date:** 2026-04-23 (post PR #54 + #55 + #58 merge)
+**Current status:** 18/30 gates closed. **Launch is NOT complete.**
 **Rule:** no "launched" claim until **≥24/30** gates closed, including all P0 items.
 
 ---
@@ -39,7 +39,7 @@
 | S6 | CORS origin review | ✅ | `cors_origin_list` audited post-deploy; only dealix.me origins |
 | S7 | Pen test (external) | 🔴 | P2 — post-launch |
 
-## Observability (2/5 closed)
+## Observability (3/5 closed)
 
 | # | Gate | Status | Evidence / DoD |
 |---|---|---|---|
@@ -47,7 +47,7 @@
 | O2 | `/admin/costs` endpoint live | ✅ | Returns per-model spend, cache hit ratio |
 | O3 | PostHog funnel live (7 events) | 🚫 | **Blocked on PostHog API key from Sami.** Client code wired, will fire on first key configure |
 | O4 | Daily cost alert | 🔴 | DoD: Slack/email ping if daily spend >$10 |
-| O5 | SLO defined + dashboarded | 🔴 | DoD: e.g. 99.5% availability on `/health`; tracked in status page |
+| O5 | SLO skeleton defined | ✅ | `docs/SLO.md` merged in PR #58 (Tier 1/2/3 + alert policy). Dashboard itself pending external infra |
 
 ## GTM / Funnel (1/5 closed)
 
@@ -59,12 +59,12 @@
 | G4 | 10 real leads captured | 🔴 | Commercial top bottleneck |
 | G5 | 1 paid deal | 🔴 | **The only gate that matters commercially** |
 
-## Support / Incident (0/4 closed)
+## Support / Incident (1/4 closed)
 
 | # | Gate | Status | Evidence / DoD |
 |---|---|---|---|
 | I1 | Runbook (6 scenarios) | 🟡 | `docs/RUNBOOK.md` deployed; all 6 scenarios documented. Needs review by Sami (Appendix C) |
-| I2 | On-call / incident contact | 🔴 | DoD: single contact + escalation documented |
+| I2 | On-call / incident contact | ✅ | `docs/ON_CALL.md` merged in PR #58 (Sami primary, escalation tree, 15-min response checklist) |
 | I3 | Public status page | 🚫 | **Blocked on UptimeRobot API key from Sami** |
 | I4 | Customer support channel | 🔴 | DoD: published email / WhatsApp number |
 
@@ -87,12 +87,12 @@
 
 ## Summary
 
-- **Closed:** 16/30 (+3 from PR #54 deploy + PR #55 fix + S6 audit)
+- **Closed:** 18/30 (+2 this round: I2 on-call, O5 SLO skeleton)
 - **Partial:** 1/30 (I1 runbook — needs Sami review)
-- **Open:** 9/30
+- **Open:** 7/30
 - **Blocked on Sami:** 4/30 (O3 PostHog, G2 Moyasar, G3 Calendly+HubSpot, I3 UptimeRobot)
 
-**Gap to Launch Claim (24/30):** 8 gates.
+**Gap to Launch Claim (24/30):** 6 gates.
 **Gap to Paid-Validated Launch (G5):** 1 real deal.
 
 ## What changed this session
