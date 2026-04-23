@@ -3,8 +3,8 @@
 > المرجع الموحّد لكل أصول Dealix. ابدأ من هنا. كل شيء تحتاجه لإطلاق وبيع وتوسيع Dealix منظّم هنا.
 
 **آخر تحديث**: 23 أبريل 2026  
-**الإصدار**: v3 (الطبقة الاستراتيجية)  
-**إجمالي الملفات**: 26 ملف استراتيجي + README
+**الإصدار**: v4 (الدفاع والجاهزية)  
+**إجمالي الملفات**: 31 ملف استراتيجي + README
 
 ---
 
@@ -88,7 +88,7 @@
 
 ---
 
-### 🚀 الطبقة 4: الاستراتيجية والنمو (v3 — 8 ملفات) 🆕
+### 🚀 الطبقة 4: الاستراتيجية والنمو (v3 — 8 ملفات)
 للمستثمرين، التخطيط الطويل، والتأسيس القانوني.
 
 | الملف | الغرض | متى تستخدمه |
@@ -103,6 +103,24 @@
 | `DEALIX_MASTER_PLAYBOOK.md` | هذا الملف | المرجع |
 
 **متى تستخدمها؟** عند الجمع لـ seed، التخطيط الطويل، أو التأسيس الرسمي.
+
+---
+
+
+---
+
+### 🛡️ الطبقة 5: الدفاع والجاهزية (v4 — 5 ملفات) 🆕
+لمقابلات VCs، بناء الفريق، الهوية البصرية، وإدارة الأزمات.
+
+| الملف | الغرض | متى تستخدمه |
+|-------|-------|-------------|
+| `dealix_investor_faq.md` | 20 سؤال VC متوقع + ردود | مقابلات seed |
+| `dealix_hiring_plan.md` | خطة توظيف 12 شهر | بعد seed close |
+| `dealix_data_room.md` | فهرس due diligence | DD للـ VCs |
+| `dealix_brand_guidelines.md` | ألوان، خطوط، voice | كل asset جديد |
+| `dealix_crisis_playbook.md` | 6 سيناريوهات أزمة | عند الأزمات |
+
+**متى تستخدمها؟** قبل الـ seed round، بعد التوقيع، أو عند أي أزمة.
 
 ---
 
@@ -136,6 +154,21 @@
 1. `dealix_kpi_framework.md` (weekly scorecard)
 2. `dealix_90day_tracker.md` / `dealix_14day_tracker.md`
 3. `dealix_product_roadmap.md` (Q-by-Q)
+
+
+### "عندي مقابلة VC بكرة — وش أحضّر؟"
+1. `dealix_investor_faq.md` (20 سؤال متوقع)
+2. `dealix_pitch_deck.md` (practice 3 مرات)
+3. `dealix_financial_model.md` (احفظ الأرقام)
+4. `dealix_data_room.md` (جهّز للـ DD)
+
+### "بوظّف أول موظف — كيف؟"
+1. `dealix_hiring_plan.md` (الـ role + الراتب)
+2. `dealix_brand_guidelines.md` (culture onboarding)
+
+### "صار عندي أزمة (outage/PR/churn) — وش أعمل؟"
+1. `dealix_crisis_playbook.md` (الـ 6 سيناريوهات)
+2. نفّذ الـ playbook المحدد خطوة بخطوة
 
 ### "بسوّق — محتوى وش أنتج؟"
 1. `dealix_content_calendar.md` (90 يوم)
