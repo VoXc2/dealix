@@ -5,12 +5,11 @@ Model routing configuration — maps tasks to the best LLM provider.
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
-from enum import Enum
-from typing import Optional
+from dataclasses import dataclass
+from enum import StrEnum
 
 
-class Provider(str, Enum):
+class Provider(StrEnum):
     """Supported LLM providers | المزودون المدعومون."""
 
     ANTHROPIC = "anthropic"
@@ -21,7 +20,7 @@ class Provider(str, Enum):
     OPENAI = "openai"
 
 
-class Task(str, Enum):
+class Task(StrEnum):
     """Task categories — route each to the best provider | أنواع المهام."""
 
     # Reasoning / writing → Claude

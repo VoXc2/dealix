@@ -7,7 +7,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from datetime import datetime
-from enum import Enum
+from enum import StrEnum
 from typing import Any
 
 from core.agents.base import BaseAgent
@@ -21,7 +21,7 @@ from core.utils import (
 )
 
 
-class LeadSource(str, Enum):
+class LeadSource(StrEnum):
     """Lead source channels | مصادر العملاء."""
     WEBSITE = "website"
     WHATSAPP = "whatsapp"
@@ -33,7 +33,7 @@ class LeadSource(str, Enum):
     API = "api"
 
 
-class LeadStatus(str, Enum):
+class LeadStatus(StrEnum):
     """Lead stages through the funnel | مراحل العميل في القمع."""
     NEW = "new"
     QUALIFIED = "qualified"

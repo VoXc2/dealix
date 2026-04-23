@@ -18,7 +18,6 @@ from core.llm.base import Message
 from core.prompts import get_prompt
 from core.utils import detect_locale
 
-
 PAIN_KEYWORDS: dict[str, str] = {
     # Arabic
     "مشكلة": "general",

@@ -7,7 +7,6 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
-
 GCC_COUNTRIES: list[str] = [
     "Saudi Arabia", "UAE", "Kuwait", "Bahrain", "Qatar", "Oman",
 ]

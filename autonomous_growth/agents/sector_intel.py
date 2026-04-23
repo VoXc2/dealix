@@ -6,7 +6,7 @@ Sector Intelligence Agent — Saudi sector deep knowledge.
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from enum import Enum
+from enum import StrEnum
 from typing import Any
 
 from core.agents.base import BaseAgent
@@ -15,7 +15,7 @@ from core.llm.base import Message
 from core.prompts import get_prompt
 
 
-class SaudiSector(str, Enum):
+class SaudiSector(StrEnum):
     REAL_ESTATE = "real_estate"
     HEALTHCARE = "healthcare"
     EDUCATION = "education"

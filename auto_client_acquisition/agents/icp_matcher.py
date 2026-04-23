@@ -6,14 +6,14 @@ ICP Matcher Agent — scores how well a lead fits our Ideal Customer Profile.
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from enum import Enum
+from enum import StrEnum
 from typing import Any
 
 from auto_client_acquisition.agents.intake import Lead
 from core.agents.base import BaseAgent
 
 
-class Industry(str, Enum):
+class Industry(StrEnum):
     TECHNOLOGY = "technology"
     REAL_ESTATE = "real_estate"
     HEALTHCARE = "healthcare"
@@ -29,7 +29,7 @@ class Industry(str, Enum):
     OTHER = "other"
 
 
-class CompanySize(str, Enum):
+class CompanySize(StrEnum):
     MICRO = "micro"      # 1-9
     SMALL = "small"      # 10-49
     MEDIUM = "medium"    # 50-199
@@ -214,7 +214,7 @@ class ICPMatcherAgent(BaseAgent):
         return 0.9, f"Budget {budget:,.0f} SAR above target (still good)"
 
     def _match_pains(self, lead_pains: list[str], message: str | None) -> tuple[float, str]:
-        haystack = " ".join(lead_pains + [message or ""]).lower()
+        haystack = " ".join([*lead_pains, message or ""]).lower()
         if not haystack.strip():
             return 0.3, "No pain points provided"
         matches = [p for p in self.icp.pain_points if p.lower() in haystack]
