@@ -29,8 +29,12 @@ ENV PATH="/opt/venv/bin:$PATH"
 COPY pyproject.toml ./
 COPY requirements.txt* ./
 
+# Install deps and aggressively prune caches/metadata to shrink image
 RUN pip install --upgrade pip setuptools wheel \
-    && pip install -r requirements.txt
+    && pip install --no-cache-dir -r requirements.txt \
+    && find /opt/venv -type d -name __pycache__ -exec rm -rf {} + 2>/dev/null || true \
+    && find /opt/venv -type d -name tests -exec rm -rf {} + 2>/dev/null || true \
+    && find /opt/venv -type f -name "*.pyc" -delete 2>/dev/null || true
 
 # ──────────────────────────────────────────────────────────────
 # Stage 2 — Runtime: minimal image
@@ -60,10 +64,14 @@ COPY --chown=app:app . .
 
 USER app
 
+# Railway injects $PORT dynamically; default to 8000 for local dev
+ENV PORT=8000
 EXPOSE 8000
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD curl -fsS http://localhost:8000/health || exit 1
+# Healthcheck uses $PORT so it matches whatever the platform assigns
+HEALTHCHECK --interval=30s --timeout=5s --start-period=20s --retries=3 \
+    CMD curl -fsS http://localhost:${PORT:-8000}/health || exit 1
 
 ENTRYPOINT ["/usr/bin/tini", "--"]
-CMD ["uvicorn", "api.main:app", "--host", "0.0.0.0", "--port", "8000", "--workers", "2"]
+# Single worker keeps memory + startup time low on Railway starter plans
+CMD ["sh", "-c", "uvicorn api.main:app --host 0.0.0.0 --port ${PORT:-8000} --workers 1"]
