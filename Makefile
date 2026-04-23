@@ -77,7 +77,7 @@ db-init: ## Initialize database tables (dev only)
 
 # ── Docker ─────────────────────────────────────────────────────
 docker-build: ## Build Docker image
-	docker build -t ai-company-saudi:latest .
+	docker build -t dealix:latest .
 
 docker-up: ## Start full stack (app + postgres + redis + mongo)
 	docker compose up -d --build

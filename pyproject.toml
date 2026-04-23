@@ -3,8 +3,8 @@ requires = ["setuptools>=68", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "ai-company-saudi"
-version = "2.1.0"
+name = "dealix"
+version = "3.0.0"
 description = "Multi-agent AI system for the Saudi Arabian market | نظام متعدد الوكلاء للسوق السعودي"
 readme = "README.md"
 requires-python = ">=3.11"
@@ -90,9 +90,9 @@ ai-company = "cli:app"
 
 [project.urls]
 Homepage = "https://ai-company.sa"
-Repository = "https://github.com/ai-company-saudi/ai-company-saudi"
-Documentation = "https://github.com/ai-company-saudi/ai-company-saudi/tree/main/docs"
-Issues = "https://github.com/ai-company-saudi/ai-company-saudi/issues"
+Repository = "https://github.com/VoXc2/dealix"
+Documentation = "https://github.com/VoXc2/dealix/tree/main/docs"
+Issues = "https://github.com/VoXc2/dealix/issues"
 
 # ─────────────────────────────────────────────────────────────
 # Tool configurations

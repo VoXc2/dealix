@@ -1,3 +1,23 @@
+## [3.0.0] — 2026-04-23
+
+### 🚀 Production-ready with cost optimization
+
+This is the production-grade release of Dealix, renamed from ai-company-saudi.
+
+### ✨ Added (in this release cycle, more incoming)
+- Renamed project: ai-company-saudi → dealix
+- Prepared infrastructure for cost optimization layer
+- Clean history reset for consistent CI/CD
+
+### 🔄 Changed
+- Project name in pyproject.toml
+- App name in settings
+- Version bumped to 3.0.0
+
+### 🗑️ Removed
+- Orphan Dependabot branches (pointing to non-existent frontend/backend)
+
+
 # Changelog
 
 All notable changes to this project are documented in this file.

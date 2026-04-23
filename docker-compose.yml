@@ -6,8 +6,8 @@
 services:
   app:
     build: .
-    image: ai-company-saudi:latest
-    container_name: ai-company-app
+    image: dealix:latest
+    container_name: dealix-app
     env_file:
       - .env
     ports:
@@ -30,7 +30,7 @@ services:
 
   postgres:
     image: postgres:16-alpine
-    container_name: ai-company-postgres
+    container_name: dealix-postgres
     environment:
       POSTGRES_USER: ai_user
       POSTGRES_PASSWORD: ai_password
@@ -50,7 +50,7 @@ services:
 
   redis:
     image: redis:7-alpine
-    container_name: ai-company-redis
+    container_name: dealix-redis
     ports:
       - "6379:6379"
     command: ["redis-server", "--appendonly", "yes"]
@@ -62,7 +62,7 @@ services:
 
   mongo:
     image: mongo:7
-    container_name: ai-company-mongo
+    container_name: dealix-mongo
     ports:
       - "27017:27017"
     volumes:
