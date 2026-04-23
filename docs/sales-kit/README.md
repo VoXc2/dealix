@@ -1,9 +1,10 @@
 # Sales Kit — Dealix
 
-**الحزمة الكاملة:** من أول رسالة لنمو مستدام. 18 ملف محتوى + README.
+**الحزمة الكاملة:** من أول رسالة لنمو مستدام و seed round. 26 ملف محتوى + README.
 
 ## ابدأ من هنا
 
+**[DEALIX_MASTER_PLAYBOOK.md](./DEALIX_MASTER_PLAYBOOK.md)** — 🆕 المرجع الموحّد لكل الأصول  
 **[START_HERE.md](./START_HERE.md)** — خارطة طريق من 5 مراحل للوصول لأول عميل دفع.
 
 ---
@@ -16,7 +17,7 @@
 
 ### 💬 تواصل أول (Cold Outreach)
 - [dealix_personalized_messages.md](./dealix_personalized_messages.md) — 5 رسائل مخصصة لـ leads الحقيقيين
-- [dealix_followup_cadence.md](./dealix_followup_cadence.md) — 🆕 7 رسائل متابعة عبر 21 يوم
+- [dealix_followup_cadence.md](./dealix_followup_cadence.md) — 7 رسائل متابعة عبر 21 يوم
 
 ### 🎤 Demo & إقناع
 - [dealix_demo_script_30min.md](./dealix_demo_script_30min.md) — سكريبت 30 دقيقة دقيقة بدقيقة
@@ -26,22 +27,32 @@
 
 ### ✍️ إغلاق الصفقات
 - [dealix_pilot_agreement.md](./dealix_pilot_agreement.md) — عقد تجربة 7 أيام (Starter)
-- [dealix_enterprise_proposal.md](./dealix_enterprise_proposal.md) — 🆕 قالب proposal للـ Scale tier
+- [dealix_enterprise_proposal.md](./dealix_enterprise_proposal.md) — قالب proposal للـ Scale tier
 
 ### 🔒 الأمان والامتثال
-- [dealix_security_faq.md](./dealix_security_faq.md) — 🆕 20 سؤال أمني + أجوبة IT teams
-- [dealix_privacy_policy_ar.md](./dealix_privacy_policy_ar.md) — 🆕 PDPL + GDPR compliant
-- [dealix_terms_of_service_ar.md](./dealix_terms_of_service_ar.md) — 🆕 شروط خدمة سعودية
+- [dealix_security_faq.md](./dealix_security_faq.md) — 20 سؤال أمني + أجوبة IT teams
+- [dealix_privacy_policy_ar.md](./dealix_privacy_policy_ar.md) — PDPL + GDPR compliant
+- [dealix_terms_of_service_ar.md](./dealix_terms_of_service_ar.md) — شروط خدمة سعودية
 
 ### 🎯 بعد التوقيع
-- [dealix_customer_onboarding.md](./dealix_customer_onboarding.md) — 🆕 playbook 14 يوم للعميل الأول
+- [dealix_customer_onboarding.md](./dealix_customer_onboarding.md) — playbook 14 يوم للعميل الأول
 
 ### 📊 إدارة Pipeline
 - [dealix_14day_tracker.html](./dealix_14day_tracker.html) — متابع الصفقات بحفظ محلي (localStorage)
 
 ### 🌱 النمو المستدام
-- [dealix_content_calendar.md](./dealix_content_calendar.md) — 🆕 30 post جاهز للنشر
-- [dealix_referral_program.md](./dealix_referral_program.md) — 🆕 قناة نمو بـ CAC = 0
+- [dealix_content_calendar.md](./dealix_content_calendar.md) — 30 post جاهز للنشر
+- [dealix_referral_program.md](./dealix_referral_program.md) — قناة نمو بـ CAC = 0
+
+### 💼 الطبقة الاستراتيجية (v3) 🆕
+- [DEALIX_MASTER_PLAYBOOK.md](./DEALIX_MASTER_PLAYBOOK.md) — 🆕 المرجع الموحّد لكل الأصول
+- [dealix_financial_model.md](./dealix_financial_model.md) — 🆕 P&L 12 شهر + unit economics
+- [dealix_pitch_deck.md](./dealix_pitch_deck.md) — 🆕 15 شريحة لـ seed round
+- [dealix_battlecards.md](./dealix_battlecards.md) — 🆕 8 منافسين + كيف تفوز
+- [dealix_product_roadmap.md](./dealix_product_roadmap.md) — 🆕 Q2 2026 → Q4 2027
+- [dealix_kpi_framework.md](./dealix_kpi_framework.md) — 🆕 5 KPIs + scorecard أسبوعي
+- [dealix_video_scripts.md](./dealix_video_scripts.md) — 🆕 60s + 3min + 10min scripts
+- [dealix_saudi_business_setup.md](./dealix_saudi_business_setup.md) — 🆕 CR/VAT/ZATCA/بنك
 
 ---
 
@@ -59,12 +70,17 @@
 | بعد التوقيع | `customer_onboarding` |
 | النمو العضوي | `content_calendar` + `referral_program` |
 | متابعة pipeline | `14day_tracker` |
+| القياس والتحليل | `kpi_framework` |
+| جمع Seed | `pitch_deck` + `financial_model` + `battlecards` |
+| التخطيط الطويل | `product_roadmap` + `video_scripts` |
+| التأسيس الرسمي | `saudi_business_setup` |
+| المرجع الموحّد | `MASTER_PLAYBOOK` |
 
 ---
 
 ## 🎯 الهدف
 
-**أول 999 ريال في الحساب خلال 14 يوم.**
+**أول 999 ريال في الحساب خلال 14 يوم. 125k ر.س MRR بنهاية 2026. Seed round Q4 2026.**
 
 المسار:
 ```
@@ -75,13 +91,16 @@ Railway 12د
   → Demo 30د
   → Pilot 7 أيام
   → Starter ✅
+  → 10 عملاء → LLC
+  → 30k MRR → Seed conversations
+  → 125k MRR → Close seed
 ```
 
 ---
 
 ## 🔴 الخطوة الوحيدة المتبقية منك
 
-الكود كامل. الرسائل جاهزة. العقود جاهزة. الـ legal جاهز. الـ content جاهز.
+الكود كامل. الرسائل جاهزة. العقود جاهزة. الـ legal جاهز. الـ content جاهز. الاستراتيجية جاهزة.
 
 **ينقص فقط:** تنفيذ الـ 12 دقيقة Railway + Moyasar من [RAILWAY_MOYASAR_STEP_BY_STEP.md](./RAILWAY_MOYASAR_STEP_BY_STEP.md).
 
@@ -89,4 +108,4 @@ Railway 12د
 
 ---
 
-*آخر تحديث: 2026-04-23 | Version 2*
+*آخر تحديث: 2026-04-23 | Version 3 (Strategic Layer)*
