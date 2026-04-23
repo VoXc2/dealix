@@ -72,6 +72,14 @@ EXPOSE 8000
 HEALTHCHECK --interval=30s --timeout=5s --start-period=20s --retries=3 \
     CMD curl -fsS http://localhost:${PORT:-8000}/health || exit 1
 
+# Wrapper script so any start command (Dockerfile CMD, Procfile, Railway
+# startCommand override) works without shell-expansion gotchas.
+COPY --chown=app:app <<'EOF' /app/start.sh
+#!/bin/sh
+set -e
+exec uvicorn api.main:app --host 0.0.0.0 --port "${PORT:-8000}" --workers 1
+EOF
+RUN chmod +x /app/start.sh
+
 ENTRYPOINT ["/usr/bin/tini", "--"]
-# Single worker keeps memory + startup time low on Railway starter plans
-CMD ["sh", "-c", "uvicorn api.main:app --host 0.0.0.0 --port ${PORT:-8000} --workers 1"]
+CMD ["/app/start.sh"]
