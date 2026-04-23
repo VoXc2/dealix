@@ -207,5 +207,5 @@ async def sentry_check() -> dict[str, str]:
             level="info",
         )
         return {"status": "sent", "dsn_configured": str(bool(os.getenv("SENTRY_DSN")))}
-    except Exception as e:  # pragma: no cover
-        return {"status": "error", "error": str(e)[:200]}
+    except Exception:  # pragma: no cover
+        return {"status": "error", "error": "sentry_check_failed"}
