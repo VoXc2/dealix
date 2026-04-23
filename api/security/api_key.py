@@ -42,6 +42,7 @@ PUBLIC_PREFIXES: tuple[str, ...] = (
     "/redoc",
     "/static",
     "/api/v1/webhooks/",  # webhooks use signatures instead
+    "/api/v1/public/",  # public landing endpoints (demo-request, health)
 )
 
 
