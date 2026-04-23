@@ -200,7 +200,8 @@ def from_proposal_draft(
     evidence_items = [
         Evidence(
             source="generated.proposal.body",
-            excerpt=proposal.body_markdown[:500] + ("…" if len(proposal.body_markdown) > 500 else ""),
+            excerpt=proposal.body_markdown[:500]
+            + ("…" if len(proposal.body_markdown) > 500 else ""),
             confidence=1.0,
         ),
     ]

@@ -80,6 +80,7 @@ def create_app() -> FastAPI:
     # ── Observability ──────────────────────────────────────
     try:
         from dealix.observability import instrument_fastapi, setup_sentry, setup_tracing
+
         setup_sentry()
         setup_tracing(service_name=settings.app_name, version=settings.app_version)
         instrument_fastapi(app)

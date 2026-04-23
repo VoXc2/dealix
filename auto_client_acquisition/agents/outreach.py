@@ -70,11 +70,7 @@ class OutreachAgent(BaseAgent):
         if channel == "email":
             subject = self._build_subject(lead)
 
-        recipient = (
-            lead.contact_email
-            if channel == "email"
-            else lead.contact_phone
-        )
+        recipient = lead.contact_email if channel == "email" else lead.contact_phone
 
         message = OutreachMessage(
             channel=channel,

@@ -48,7 +48,7 @@ class DistributionPlan:
 
 # Best-practice posting times (Riyadh local)
 OPTIMAL_TIMES: dict[str, list[int]] = {
-    "linkedin": [8, 12, 17],    # 8am, noon, 5pm
+    "linkedin": [8, 12, 17],  # 8am, noon, 5pm
     "twitter": [9, 13, 19],
     "blog": [10],
     "email": [9],

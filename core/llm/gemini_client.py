@@ -74,9 +74,7 @@ class GeminiClient(LLMClient):
 
         candidates = data.get("candidates", [])
         if not candidates:
-            return LLMResponse(
-                content="", provider=self.provider_name, model=self.model, raw=data
-            )
+            return LLMResponse(content="", provider=self.provider_name, model=self.model, raw=data)
 
         parts = candidates[0].get("content", {}).get("parts", [])
         text = "".join(p.get("text", "") for p in parts)

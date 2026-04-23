@@ -1,4 +1,5 @@
 """Phase 8 agents package."""
+
 from auto_client_acquisition.agents.booking import BookingAgent
 from auto_client_acquisition.agents.crm import CRMAgent
 from auto_client_acquisition.agents.followup import FollowUpAgent

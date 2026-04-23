@@ -123,9 +123,7 @@ class DecisionOutput(BaseModel):
             or self.reversibility_class == ReversibilityClass.R3
         )
         if high_stakes and len(self.evidence) == 0:
-            raise ValueError(
-                "High-stakes decisions (A2+/R3) require at least one Evidence item"
-            )
+            raise ValueError("High-stakes decisions (A2+/R3) require at least one Evidence item")
         return self
 
     @property

@@ -10,6 +10,7 @@ Security model:
 
 Amount is in the smallest currency unit (SAR halalas) — 10 SAR = 1000.
 """
+
 from __future__ import annotations
 
 import base64

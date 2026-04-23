@@ -124,9 +124,7 @@ class ApprovalCenter:
             request.resolved_at = datetime.now(UTC)
         return request
 
-    def reject(
-        self, request_id: str, approver_id: str, reason: str = ""
-    ) -> ApprovalRequest:
+    def reject(self, request_id: str, approver_id: str, reason: str = "") -> ApprovalRequest:
         request = self._get(request_id)
         if request.status != ApprovalStatus.PENDING:
             return request
@@ -141,11 +139,7 @@ class ApprovalCenter:
         now = datetime.now(UTC)
         flipped: list[ApprovalRequest] = []
         for req in self._requests.values():
-            if (
-                req.status == ApprovalStatus.PENDING
-                and req.expires_at
-                and req.expires_at < now
-            ):
+            if req.status == ApprovalStatus.PENDING and req.expires_at and req.expires_at < now:
                 req.status = ApprovalStatus.TIMED_OUT
                 req.resolved_at = now
                 flipped.append(req)

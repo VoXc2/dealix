@@ -7,6 +7,7 @@ Storage model (Redis):
   dlq:<queue_name>:meta         — Hash of depth, last_error, last_at
   dlq:<queue_name>:retry_count  — Hash of item_id → attempts
 """
+
 from __future__ import annotations
 
 import json
@@ -24,7 +25,7 @@ log = logging.getLogger(__name__)
 class DLQItem:
     id: str = field(default_factory=lambda: uuid.uuid4().hex)
     queue: str = ""
-    source: str = ""           # e.g. "hubspot.webhook", "calendly.webhook", "outbound.send"
+    source: str = ""  # e.g. "hubspot.webhook", "calendly.webhook", "outbound.send"
     payload: dict[str, Any] = field(default_factory=dict)
     error: str = ""
     attempts: int = 0
@@ -62,24 +63,38 @@ class DLQ:
             log.warning("dlq_redis_unavailable %s", e)
             return None
 
-    def push(self, source: str, payload: dict[str, Any], error: str,
-             attempts: int = 0, metadata: dict[str, Any] | None = None) -> str | None:
+    def push(
+        self,
+        source: str,
+        payload: dict[str, Any],
+        error: str,
+        attempts: int = 0,
+        metadata: dict[str, Any] | None = None,
+    ) -> str | None:
         """Add a failed item to the DLQ. Returns item id or None on redis failure."""
         if not self._redis:
             return None
         item = DLQItem(
-            queue=self.queue, source=source, payload=payload,
-            error=error[:500], attempts=attempts, metadata=metadata or {},
+            queue=self.queue,
+            source=source,
+            payload=payload,
+            error=error[:500],
+            attempts=attempts,
+            metadata=metadata or {},
         )
         try:
             self._redis.lpush(self._key, item.to_json())
-            self._redis.hset(self._meta_key, mapping={
-                "last_error": error[:500],
-                "last_at": str(time.time()),
-                "last_source": source,
-            })
-            log.warning("dlq_push queue=%s source=%s id=%s err=%s",
-                        self.queue, source, item.id, error[:100])
+            self._redis.hset(
+                self._meta_key,
+                mapping={
+                    "last_error": error[:500],
+                    "last_at": str(time.time()),
+                    "last_source": source,
+                },
+            )
+            log.warning(
+                "dlq_push queue=%s source=%s id=%s err=%s", self.queue, source, item.id, error[:100]
+            )
             return item.id
         except Exception as e:  # pragma: no cover
             log.error("dlq_push_failed queue=%s err=%s", self.queue, e)
@@ -138,7 +153,7 @@ class DLQ:
 
 
 # Canonical queues for Dealix
-WEBHOOKS_DLQ = "webhooks"          # failed inbound webhooks (HubSpot/Calendly/Moyasar/n8n)
-OUTBOUND_DLQ = "outbound"          # failed outbound messages (email/WhatsApp/SMS)
-ENRICHMENT_DLQ = "enrichment"      # failed lead enrichment calls (Enrich.so, etc.)
-CRM_SYNC_DLQ = "crm_sync"          # failed HubSpot/CRM sync operations
+WEBHOOKS_DLQ = "webhooks"  # failed inbound webhooks (HubSpot/Calendly/Moyasar/n8n)
+OUTBOUND_DLQ = "outbound"  # failed outbound messages (email/WhatsApp/SMS)
+ENRICHMENT_DLQ = "enrichment"  # failed lead enrichment calls (Enrich.so, etc.)
+CRM_SYNC_DLQ = "crm_sync"  # failed HubSpot/CRM sync operations

@@ -21,6 +21,7 @@ Approvals Gate — حاجز موافقة بشرية على العمليات ال
 - أي action في CRITICAL_ACTIONS → موافقة مطلوبة حتى لو < threshold
 - TTL على الطلب المعلق = 24 ساعة، بعدها يرفض تلقائياً
 """
+
 from __future__ import annotations
 
 import json
@@ -36,16 +37,18 @@ OUTBOUND_THRESHOLD = 50  # عدد المستلمين الذي فوقه نطلب 
 RISK_THRESHOLD = 0.7
 PENDING_TTL_SECONDS = 24 * 60 * 60  # 24h
 
-CRITICAL_ACTIONS = frozenset({
-    "outbound_email_campaign",
-    "outbound_whatsapp_broadcast",
-    "outbound_sms_broadcast",
-    "crm_bulk_update",
-    "crm_bulk_delete",
-    "pricing_change",
-    "refund_issue",
-    "production_config_change",
-})
+CRITICAL_ACTIONS = frozenset(
+    {
+        "outbound_email_campaign",
+        "outbound_whatsapp_broadcast",
+        "outbound_sms_broadcast",
+        "crm_bulk_update",
+        "crm_bulk_delete",
+        "pricing_change",
+        "refund_issue",
+        "production_config_change",
+    }
+)
 
 
 class ApprovalStatus(StrEnum):
@@ -139,9 +142,7 @@ class ApprovalGate:
             risk_score=risk_score,
             requested_by=requested_by,
             requested_at=now,
-            status=(
-                ApprovalStatus.PENDING if needs_approval else ApprovalStatus.AUTO_APPROVED
-            ),
+            status=(ApprovalStatus.PENDING if needs_approval else ApprovalStatus.AUTO_APPROVED),
             reason=reason,
             expires_at=now + PENDING_TTL_SECONDS,
         )
@@ -162,10 +163,7 @@ class ApprovalGate:
             raw = raw.decode("utf-8")
         req = ApprovalRequest.from_json(raw)
         # انتهاء تلقائي
-        if (
-            req.status == ApprovalStatus.PENDING
-            and time.time() > req.expires_at
-        ):
+        if req.status == ApprovalStatus.PENDING and time.time() > req.expires_at:
             req.status = ApprovalStatus.EXPIRED
             await self._persist(req)
             await self.r.zrem(self.PENDING_INDEX, req.id)
@@ -188,9 +186,7 @@ class ApprovalGate:
             return None
         if req.status != ApprovalStatus.PENDING:
             return req  # idempotent — لا نغيّر قرار سابق
-        req.status = (
-            ApprovalStatus.APPROVED if decision.approved else ApprovalStatus.REJECTED
-        )
+        req.status = ApprovalStatus.APPROVED if decision.approved else ApprovalStatus.REJECTED
         req.decided_by = decision.decided_by
         req.decided_at = time.time()
         if decision.note:

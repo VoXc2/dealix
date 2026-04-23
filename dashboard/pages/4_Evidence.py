@@ -1,4 +1,5 @@
 """Evidence page — decision trail + reasoning."""
+
 from __future__ import annotations
 
 import os
@@ -10,7 +11,11 @@ import streamlit as st
 st.title("سجل القرارات والدليل")
 
 API = os.getenv("DEALIX_API_URL", "http://127.0.0.1:8001")
-H = {"X-API-Key": os.getenv("DEALIX_ADMIN_API_KEY", "")} if os.getenv("DEALIX_ADMIN_API_KEY") else {}
+H = (
+    {"X-API-Key": os.getenv("DEALIX_ADMIN_API_KEY", "")}
+    if os.getenv("DEALIX_ADMIN_API_KEY")
+    else {}
+)
 
 limit = st.slider("عدد الأحداث", 10, 200, 50)
 try:

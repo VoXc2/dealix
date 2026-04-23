@@ -25,15 +25,23 @@ def test_hubspot_valid():
     ts = "1700000000"
     sig = _hs(s, "POST", "https://api.dealix.sa/webhook", body, ts)
     assert verify_hubspot_signature(
-        method="POST", url="https://api.dealix.sa/webhook", body=body,
-        timestamp=ts, signature=sig, secret=s,
+        method="POST",
+        url="https://api.dealix.sa/webhook",
+        body=body,
+        timestamp=ts,
+        signature=sig,
+        secret=s,
     )
 
 
 def test_hubspot_invalid():
     assert not verify_hubspot_signature(
-        method="POST", url="https://api.dealix.sa/webhook",
-        body=b"x", timestamp="1", signature="wrong", secret="s",
+        method="POST",
+        url="https://api.dealix.sa/webhook",
+        body=b"x",
+        timestamp="1",
+        signature="wrong",
+        secret="s",
     )
 
 

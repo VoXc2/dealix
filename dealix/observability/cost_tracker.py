@@ -37,22 +37,22 @@ logger = logging.getLogger("dealix.costs")
 
 MODEL_PRICES: dict[str, dict[str, float]] = {
     # Anthropic
-    "claude-sonnet-4-5":         {"in": 3.00,  "out": 15.00, "cached": 0.30},
-    "claude-sonnet-4-5-20250929":{"in": 3.00,  "out": 15.00, "cached": 0.30},
-    "claude-opus-4":             {"in": 15.00, "out": 75.00, "cached": 1.50},
-    "claude-haiku-4":            {"in": 0.25,  "out": 1.25,  "cached": 0.03},
+    "claude-sonnet-4-5": {"in": 3.00, "out": 15.00, "cached": 0.30},
+    "claude-sonnet-4-5-20250929": {"in": 3.00, "out": 15.00, "cached": 0.30},
+    "claude-opus-4": {"in": 15.00, "out": 75.00, "cached": 1.50},
+    "claude-haiku-4": {"in": 0.25, "out": 1.25, "cached": 0.03},
     # Google
-    "gemini-2.5-flash":          {"in": 0.075, "out": 0.30,  "cached": 0.019},
-    "gemini-2.5-pro":            {"in": 1.25,  "out": 5.00,  "cached": 0.31},
+    "gemini-2.5-flash": {"in": 0.075, "out": 0.30, "cached": 0.019},
+    "gemini-2.5-pro": {"in": 1.25, "out": 5.00, "cached": 0.31},
     # DeepSeek
-    "deepseek-chat":             {"in": 0.14,  "out": 0.28,  "cached": 0.014},
-    "deepseek-reasoner":         {"in": 0.55,  "out": 2.19,  "cached": 0.14},
+    "deepseek-chat": {"in": 0.14, "out": 0.28, "cached": 0.014},
+    "deepseek-reasoner": {"in": 0.55, "out": 2.19, "cached": 0.14},
     # Zhipu GLM
-    "glm-4":                     {"in": 0.14,  "out": 0.28,  "cached": 0.014},
-    "glm-4-plus":                {"in": 0.70,  "out": 2.10,  "cached": 0.07},
+    "glm-4": {"in": 0.14, "out": 0.28, "cached": 0.014},
+    "glm-4-plus": {"in": 0.70, "out": 2.10, "cached": 0.07},
     # Groq (free tier)
-    "llama-3.3-70b-versatile":   {"in": 0.0,   "out": 0.0,   "cached": 0.0},
-    "llama-3.1-8b-instant":      {"in": 0.0,   "out": 0.0,   "cached": 0.0},
+    "llama-3.3-70b-versatile": {"in": 0.0, "out": 0.0, "cached": 0.0},
+    "llama-3.1-8b-instant": {"in": 0.0, "out": 0.0, "cached": 0.0},
 }
 
 
@@ -208,10 +208,18 @@ class CostTracker:
                              input_tokens, output_tokens, cached_tokens, cost_usd,
                              agent_name, latency_ms, status, error, created_at)
                            VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12)""",
-                        entry.request_id, entry.provider, entry.model,
-                        entry.input_tokens, entry.output_tokens, entry.cached_tokens,
-                        entry.cost_usd, entry.agent_name, entry.latency_ms,
-                        entry.status, entry.error, entry.created_at,
+                        entry.request_id,
+                        entry.provider,
+                        entry.model,
+                        entry.input_tokens,
+                        entry.output_tokens,
+                        entry.cached_tokens,
+                        entry.cost_usd,
+                        entry.agent_name,
+                        entry.latency_ms,
+                        entry.status,
+                        entry.error,
+                        entry.created_at,
                     )
         except Exception as exc:  # pragma: no cover — degrade gracefully
             logger.warning("cost_tracker: persistence failed: %s", exc)
@@ -254,6 +262,7 @@ class CostTracker:
                 """SELECT * FROM llm_calls
                     WHERE created_at >= $1 AND created_at <= $2
                     ORDER BY created_at DESC""",
-                since, until,
+                since,
+                until,
             )
         return [dict(r) for r in rows]

@@ -1,6 +1,7 @@
 """
 Async retry with exponential backoff + jitter, optional DLQ push on final failure.
 """
+
 from __future__ import annotations
 
 import asyncio
@@ -47,13 +48,22 @@ async def retry_with_backoff(
             delay += (secrets.randbelow(1000) / 1000.0) * (jitter * delay)
             log.warning(
                 "retry attempt=%d/%d delay=%.2fs source=%s err=%s",
-                attempt, max_attempts, delay, dlq_source, str(e)[:200],
+                attempt,
+                max_attempts,
+                delay,
+                dlq_source,
+                str(e)[:200],
             )
             await asyncio.sleep(delay)
 
     elapsed = time.time() - start
-    log.error("retry_exhausted attempts=%d elapsed=%.2fs source=%s err=%s",
-              max_attempts, elapsed, dlq_source, str(last_exc)[:200])
+    log.error(
+        "retry_exhausted attempts=%d elapsed=%.2fs source=%s err=%s",
+        max_attempts,
+        elapsed,
+        dlq_source,
+        str(last_exc)[:200],
+    )
     if dlq:
         dlq.push(
             source=dlq_source or "unknown",

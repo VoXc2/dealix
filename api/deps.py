@@ -1,4 +1,5 @@
 """FastAPI dependencies — shared Redis client, ApprovalGate, PostHog, etc."""
+
 from __future__ import annotations
 
 import os

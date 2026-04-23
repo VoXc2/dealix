@@ -29,6 +29,7 @@ log = logging.getLogger(__name__)
 @dataclass
 class BreakerState:
     """In-memory circuit breaker per connector."""
+
     failures: int = 0
     opened_at: float = 0.0
     threshold: int = 5
@@ -126,7 +127,9 @@ class ConnectorFacade:
         policy = self._policy(connector)
         if not policy.allow:
             return ConnectorResult(
-                ok=False, connector=connector, operation=operation,
+                ok=False,
+                connector=connector,
+                operation=operation,
                 error="connector_disabled_by_policy",
             )
 
@@ -134,7 +137,9 @@ class ConnectorFacade:
         if breaker.is_open():
             log.warning("circuit_open connector=%s op=%s", connector, operation)
             return ConnectorResult(
-                ok=False, connector=connector, operation=operation,
+                ok=False,
+                connector=connector,
+                operation=operation,
                 error=f"circuit_open_for_{int(breaker.cooldown_s)}s",
             )
 
@@ -166,7 +171,12 @@ class ConnectorFacade:
                 backoff = policy.backoff_base * (2 ** (attempt - 1))
                 log.warning(
                     "connector_retry",
-                    extra={"connector": connector, "op": operation, "attempt": attempt, "err": str(e)[:200]},
+                    extra={
+                        "connector": connector,
+                        "op": operation,
+                        "attempt": attempt,
+                        "err": str(e)[:200],
+                    },
                 )
                 if attempt < policy.max_retries:
                     await asyncio.sleep(backoff)
@@ -191,8 +201,9 @@ class ConnectorFacade:
                 metadata={"duration_ms": res.duration_ms},
             )
         except Exception as _dlq_err:  # pragma: no cover
-            log.warning("dlq_push_failed source=%s.%s err=%s",
-                        connector, operation, str(_dlq_err)[:200])
+            log.warning(
+                "dlq_push_failed source=%s.%s err=%s", connector, operation, str(_dlq_err)[:200]
+            )
         self._record(res)
         return res
 
@@ -212,8 +223,7 @@ class ConnectorFacade:
 
             conn = psycopg2.connect(dsn, connect_timeout=3)
             cur = conn.cursor()
-            cur.execute(
-                """
+            cur.execute("""
                 CREATE TABLE IF NOT EXISTS connector_audit (
                     id SERIAL PRIMARY KEY,
                     ts TIMESTAMPTZ DEFAULT now(),
@@ -221,8 +231,7 @@ class ConnectorFacade:
                     attempts INT, duration_ms DOUBLE PRECISION,
                     idempotency_key TEXT, error TEXT, meta JSONB
                 )
-                """
-            )
+                """)
             cur.execute(
                 """
                 INSERT INTO connector_audit
@@ -230,8 +239,13 @@ class ConnectorFacade:
                 VALUES (%s,%s,%s,%s,%s,%s,%s,%s)
                 """,
                 (
-                    r.connector, r.operation, r.ok, r.attempts,
-                    r.duration_ms, r.idempotency_key, r.error,
+                    r.connector,
+                    r.operation,
+                    r.ok,
+                    r.attempts,
+                    r.duration_ms,
+                    r.idempotency_key,
+                    r.error,
                     json.dumps(r.meta, default=str),
                 ),
             )
@@ -289,9 +303,9 @@ class HubSpotTwoWay:
                 f"{self.BASE}/crm/v3/objects/contacts/search",
                 headers=self._headers(),
                 json={
-                    "filterGroups": [{
-                        "filters": [{"propertyName": "email", "operator": "EQ", "value": email}]
-                    }],
+                    "filterGroups": [
+                        {"filters": [{"propertyName": "email", "operator": "EQ", "value": email}]}
+                    ],
                     "limit": 1,
                 },
             )

@@ -8,7 +8,12 @@ from __future__ import annotations
 from dataclasses import dataclass
 
 GCC_COUNTRIES: list[str] = [
-    "Saudi Arabia", "UAE", "Kuwait", "Bahrain", "Qatar", "Oman",
+    "Saudi Arabia",
+    "UAE",
+    "Kuwait",
+    "Bahrain",
+    "Qatar",
+    "Oman",
 ]
 
 VISION_2030_PROGRAMS: list[str] = [
@@ -46,6 +51,7 @@ SAUDI_REGULATORS: dict[str, str] = {
 @dataclass(frozen=True)
 class SaudiHoliday:
     """Major Saudi public holidays (approximate, Gregorian)."""
+
     name_ar: str
     name_en: str
     month: int
@@ -64,12 +70,27 @@ def is_gcc_country(country: str) -> bool:
         return False
     normalized = country.strip().lower()
     gcc_variants = {
-        "saudi arabia", "sa", "ksa", "السعودية", "المملكة العربية السعودية",
-        "uae", "ae", "الإمارات", "الامارات",
-        "kuwait", "kw", "الكويت",
-        "bahrain", "bh", "البحرين",
-        "qatar", "qa", "قطر",
-        "oman", "om", "عمان",
+        "saudi arabia",
+        "sa",
+        "ksa",
+        "السعودية",
+        "المملكة العربية السعودية",
+        "uae",
+        "ae",
+        "الإمارات",
+        "الامارات",
+        "kuwait",
+        "kw",
+        "الكويت",
+        "bahrain",
+        "bh",
+        "البحرين",
+        "qatar",
+        "qa",
+        "قطر",
+        "oman",
+        "om",
+        "عمان",
     }
     return normalized in gcc_variants
 

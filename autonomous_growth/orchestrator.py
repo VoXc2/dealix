@@ -64,9 +64,7 @@ class GrowthOrchestrator:
 
         # 1. Sector intel baseline
         try:
-            result.sector_intel = await self.sector_intel.run(
-                sector=sector, enrich_with_llm=False
-            )
+            result.sector_intel = await self.sector_intel.run(sector=sector, enrich_with_llm=False)
         except Exception as e:
             self.log.warning("sector_intel_failed", error=str(e))
             result.warnings.append(f"sector_intel_failed: {e}")

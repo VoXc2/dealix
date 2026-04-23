@@ -41,9 +41,7 @@ class N8NClient:
         retry=retry_if_exception_type((httpx.TimeoutException, httpx.HTTPStatusError)),
         reraise=True,
     )
-    async def send_event(
-        self, event_type: str, data: dict[str, Any]
-    ) -> N8NResult:
+    async def send_event(self, event_type: str, data: dict[str, Any]) -> N8NResult:
         """POST an event to the configured n8n webhook."""
         if not self.configured:
             return N8NResult(success=False, error="N8N_WEBHOOK_URL not configured")

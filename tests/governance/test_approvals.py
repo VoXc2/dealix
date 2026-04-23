@@ -1,4 +1,5 @@
 """Unit tests for ApprovalGate — fake Redis, no network."""
+
 from __future__ import annotations
 
 import time
@@ -117,9 +118,7 @@ async def test_requires_approval_over_amount(gate: ApprovalGate) -> None:
 
 @pytest.mark.asyncio
 async def test_decide_approve(gate: ApprovalGate) -> None:
-    req = await gate.request(
-        action="outbound_email_campaign", payload={"recipients": 100}
-    )
+    req = await gate.request(action="outbound_email_campaign", payload={"recipients": 100})
     assert req.status == ApprovalStatus.PENDING
 
     decided = await gate.decide(
@@ -134,9 +133,7 @@ async def test_decide_approve(gate: ApprovalGate) -> None:
 
 @pytest.mark.asyncio
 async def test_decide_reject(gate: ApprovalGate) -> None:
-    req = await gate.request(
-        action="outbound_whatsapp_broadcast", payload={"recipients": 200}
-    )
+    req = await gate.request(action="outbound_whatsapp_broadcast", payload={"recipients": 200})
     decided = await gate.decide(
         ApprovalDecision(request_id=req.id, approved=False, decided_by="sami")
     )
@@ -145,12 +142,8 @@ async def test_decide_reject(gate: ApprovalGate) -> None:
 
 @pytest.mark.asyncio
 async def test_decide_idempotent(gate: ApprovalGate) -> None:
-    req = await gate.request(
-        action="outbound_email_campaign", payload={"recipients": 100}
-    )
-    await gate.decide(
-        ApprovalDecision(request_id=req.id, approved=True, decided_by="sami")
-    )
+    req = await gate.request(action="outbound_email_campaign", payload={"recipients": 100})
+    await gate.decide(ApprovalDecision(request_id=req.id, approved=True, decided_by="sami"))
     # second decide should NOT change status
     second = await gate.decide(
         ApprovalDecision(request_id=req.id, approved=False, decided_by="sami2")
@@ -172,9 +165,7 @@ async def test_list_pending_excludes_decided(gate: ApprovalGate) -> None:
 
 @pytest.mark.asyncio
 async def test_expires_after_ttl(gate: ApprovalGate) -> None:
-    req = await gate.request(
-        action="outbound_email_campaign", payload={"recipients": 100}
-    )
+    req = await gate.request(action="outbound_email_campaign", payload={"recipients": 100})
     # fast-forward by mutating expires_at on the stored record
     key = gate._key(req.id)
     raw = await gate.r.get(key)

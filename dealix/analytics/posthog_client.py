@@ -10,6 +10,7 @@ Usage:
   await capture_event(FUNNEL_EVENTS.LEAD_CAPTURED, distinct_id="lead_123",
                       properties={"source": "landing", "plan_interest": "growth"})
 """
+
 from __future__ import annotations
 
 import asyncio
@@ -24,18 +25,19 @@ log = logging.getLogger(__name__)
 
 class FUNNEL_EVENTS:  # noqa: N801  (namespace constants)
     """Canonical funnel event names — [object] [verb] format."""
-    LANDING_VIEW      = "landing viewed"
-    DEMO_REQUESTED    = "demo requested"
-    LEAD_CAPTURED     = "lead captured"
-    LEAD_QUALIFIED    = "lead qualified"
-    MEETING_BOOKED    = "meeting booked"
-    PROPOSAL_SENT     = "proposal sent"
-    CHECKOUT_STARTED  = "checkout started"
+
+    LANDING_VIEW = "landing viewed"
+    DEMO_REQUESTED = "demo requested"
+    LEAD_CAPTURED = "lead captured"
+    LEAD_QUALIFIED = "lead qualified"
+    MEETING_BOOKED = "meeting booked"
+    PROPOSAL_SENT = "proposal sent"
+    CHECKOUT_STARTED = "checkout started"
     PAYMENT_SUCCEEDED = "payment succeeded"
-    PAYMENT_FAILED    = "payment failed"
-    DEAL_WON          = "deal won"
-    DEAL_LOST         = "deal lost"
-    WORKFLOW_FAILED   = "workflow failed"
+    PAYMENT_FAILED = "payment failed"
+    DEAL_WON = "deal won"
+    DEAL_LOST = "deal lost"
+    WORKFLOW_FAILED = "workflow failed"
 
 
 def _host() -> str:
@@ -80,7 +82,9 @@ async def capture_event(
 _BACKGROUND_TASKS: set[asyncio.Task] = set()
 
 
-def capture_event_sync(event: str, distinct_id: str, properties: dict[str, Any] | None = None) -> None:
+def capture_event_sync(
+    event: str, distinct_id: str, properties: dict[str, Any] | None = None
+) -> None:
     """Schedule an async capture without awaiting (best-effort)."""
     try:
         loop = asyncio.get_event_loop()

@@ -8,6 +8,7 @@ Usage:
     # ... process ...
     await store.mark(key="hubspot:evt:12345", ttl_seconds=3600*24)
 """
+
 from __future__ import annotations
 
 import hashlib
@@ -41,6 +42,7 @@ class IdempotencyStore:
         """Stable hash of arbitrary payload — useful for body-based idempotency."""
         if isinstance(payload, dict):
             import json
+
             data = json.dumps(payload, sort_keys=True, ensure_ascii=False).encode()
         elif isinstance(payload, bytes):
             data = payload

@@ -23,6 +23,7 @@ from core.utils import (
 
 class LeadSource(StrEnum):
     """Lead source channels | مصادر العملاء."""
+
     WEBSITE = "website"
     WHATSAPP = "whatsapp"
     EMAIL = "email"
@@ -35,6 +36,7 @@ class LeadSource(StrEnum):
 
 class LeadStatus(StrEnum):
     """Lead stages through the funnel | مراحل العميل في القمع."""
+
     NEW = "new"
     QUALIFIED = "qualified"
     DISCOVERY = "discovery"
@@ -130,9 +132,7 @@ class IntakeAgent(BaseAgent):
         if not locale:
             locale = detect_locale(message or company or name)
 
-        contact_channel = (
-            email or phone or str(payload.get("channel") or source.value)
-        )
+        contact_channel = email or phone or str(payload.get("channel") or source.value)
 
         # Dedup based on (email or phone) + company
         dedup_source = f"{email or phone or ''}|{company.lower()}"

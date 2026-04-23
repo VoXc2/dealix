@@ -43,9 +43,7 @@ class EventEnvelope(BaseModel):
     source: str = Field(..., description="e.g. 'dealix/phase8/intake'")
     type: str = Field(..., description="e.g. 'dealix.lead.intaken'")
     datacontenttype: str = "application/json"
-    dataschema: str | None = Field(
-        None, description="URI of the JSON Schema for `data`"
-    )
+    dataschema: str | None = Field(None, description="URI of the JSON Schema for `data`")
     time: str = Field(default_factory=_utcnow_iso)
     subject: str | None = Field(None, description="Subject within the source (e.g. lead_id)")
 

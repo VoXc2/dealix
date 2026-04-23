@@ -41,8 +41,10 @@ def mock_llm_response() -> LLMResponse:
 @pytest.fixture
 def mock_router(mock_llm_response: LLMResponse) -> Iterator[AsyncMock]:
     """Replace the global router with an AsyncMock returning mock_llm_response."""
-    with patch("core.llm.router.get_router") as mock_get, \
-         patch("core.agents.base.get_router") as mock_get2:
+    with (
+        patch("core.llm.router.get_router") as mock_get,
+        patch("core.agents.base.get_router") as mock_get2,
+    ):
         router_instance = AsyncMock()
         router_instance.run.return_value = mock_llm_response
         router_instance.available_providers.return_value = []

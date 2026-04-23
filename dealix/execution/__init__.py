@@ -116,9 +116,7 @@ class GovernedPipeline:
             self._audit_decision(result, decision)
 
         if underlying.qualification is not None:
-            decision = from_qualification(
-                lead_id=lead_id, qualification=underlying.qualification
-            )
+            decision = from_qualification(lead_id=lead_id, qualification=underlying.qualification)
             result.decisions.append(decision)
             self._audit_decision(result, decision)
 
@@ -139,9 +137,11 @@ class GovernedPipeline:
                         action=(
                             AuditAction.POLICY_ALLOWED
                             if policy_result.decision == PolicyDecision.ALLOW
-                            else AuditAction.POLICY_DENIED
-                            if policy_result.decision == PolicyDecision.DENY
-                            else AuditAction.POLICY_ESCALATED
+                            else (
+                                AuditAction.POLICY_DENIED
+                                if policy_result.decision == PolicyDecision.DENY
+                                else AuditAction.POLICY_ESCALATED
+                            )
                         ),
                         decision_id=decision.decision_id,
                         entity_id=decision.entity_id,
@@ -184,9 +184,7 @@ class GovernedPipeline:
         return result
 
     # ── internal ────────────────────────────────────────────────
-    def _audit_decision(
-        self, result: GovernedPipelineResult, decision: DecisionOutput
-    ) -> None:
+    def _audit_decision(self, result: GovernedPipelineResult, decision: DecisionOutput) -> None:
         entry = self._emit_audit(
             action=AuditAction.DECISION_EMITTED,
             decision_id=decision.decision_id,

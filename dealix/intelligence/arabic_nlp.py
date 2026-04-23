@@ -19,7 +19,7 @@ except ImportError:  # pragma: no cover
 
 # Regex for common Arabic operations
 _RE_TATWEEL = re.compile("\u0640")
-_RE_DIACRITICS = re.compile("[\u0610-\u061A\u064B-\u065F\u06D6-\u06ED]")
+_RE_DIACRITICS = re.compile("[\u0610-\u061a\u064b-\u065f\u06d6-\u06ed]")
 _RE_NON_ARABIC = re.compile(r"[^\u0600-\u06FF\s]")
 
 
@@ -61,7 +61,7 @@ def segment_arabic(text: str) -> list[str]:
 def arabic_ratio(text: str) -> float:
     if not text:
         return 0.0
-    arabic_chars = sum(1 for c in text if "\u0600" <= c <= "\u06FF")
+    arabic_chars = sum(1 for c in text if "\u0600" <= c <= "\u06ff")
     return arabic_chars / max(len(text), 1)
 
 

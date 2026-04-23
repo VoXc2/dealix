@@ -30,16 +30,17 @@ class Industry(StrEnum):
 
 
 class CompanySize(StrEnum):
-    MICRO = "micro"      # 1-9
-    SMALL = "small"      # 10-49
-    MEDIUM = "medium"    # 50-199
-    LARGE = "large"      # 200-999
+    MICRO = "micro"  # 1-9
+    SMALL = "small"  # 10-49
+    MEDIUM = "medium"  # 50-199
+    LARGE = "large"  # 200-999
     ENTERPRISE = "enterprise"  # 1000+
 
 
 @dataclass
 class ICP:
     """Ideal Customer Profile definition | تعريف العميل المثالي."""
+
     industries: list[Industry] = field(default_factory=list)
     company_sizes: list[CompanySize] = field(default_factory=list)
     regions: list[str] = field(default_factory=list)
@@ -50,6 +51,7 @@ class ICP:
 @dataclass
 class FitScore:
     """Result of ICP matching | نتيجة المطابقة."""
+
     overall_score: float
     industry_match: float
     size_match: float
@@ -94,16 +96,39 @@ DEFAULT_ICP = ICP(
     ],
     company_sizes=[CompanySize.SMALL, CompanySize.MEDIUM, CompanySize.LARGE],
     regions=[
-        "saudi arabia", "sa", "ksa", "uae", "ae", "kuwait", "kw",
-        "bahrain", "bh", "qatar", "qa", "oman", "om",
-        "السعودية", "الإمارات", "الكويت", "البحرين", "قطر", "عمان",
+        "saudi arabia",
+        "sa",
+        "ksa",
+        "uae",
+        "ae",
+        "kuwait",
+        "kw",
+        "bahrain",
+        "bh",
+        "qatar",
+        "qa",
+        "oman",
+        "om",
+        "السعودية",
+        "الإمارات",
+        "الكويت",
+        "البحرين",
+        "قطر",
+        "عمان",
     ],
     budget_range=(10_000, 200_000),
     pain_points=[
-        "lead management", "sales automation", "customer service",
-        "data analysis", "digital marketing", "crm",
-        "إدارة العملاء", "أتمتة المبيعات", "خدمة العملاء",
-        "تحليل البيانات", "التسويق الرقمي",
+        "lead management",
+        "sales automation",
+        "customer service",
+        "data analysis",
+        "digital marketing",
+        "crm",
+        "إدارة العملاء",
+        "أتمتة المبيعات",
+        "خدمة العملاء",
+        "تحليل البيانات",
+        "التسويق الرقمي",
     ],
 )
 

@@ -62,6 +62,7 @@ class DealRecord(Base):
 
 class AgentRunRecord(Base):
     """Audit log — every agent invocation."""
+
     __tablename__ = "agent_runs"
 
     id: Mapped[str] = mapped_column(String(64), primary_key=True)

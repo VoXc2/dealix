@@ -47,9 +47,7 @@ async def test_governed_pipeline_audits_every_step(sample_lead_payload, mock_rou
 
 
 @pytest.mark.asyncio
-async def test_governed_pipeline_escalates_high_stakes_actions(
-    sample_lead_payload, mock_router
-):
+async def test_governed_pipeline_escalates_high_stakes_actions(sample_lead_payload, mock_router):
     """When a tier-A lead is detected and a proposal is auto-generated,
     the proposal-send NextAction should be ESCALATED (never auto-allowed)."""
     mock_router.run.return_value.content = '{"ok": true}'
@@ -61,23 +59,17 @@ async def test_governed_pipeline_escalates_high_stakes_actions(
     )
 
     # Find any proposal_send action in the policy results
-    proposal_sends = [
-        (d, a, r)
-        for d, a, r in result.policy_results
-        if a == "proposal_send"
-    ]
+    proposal_sends = [(d, a, r) for d, a, r in result.policy_results if a == "proposal_send"]
     # If a proposal was generated, its send action must not be ALLOW
     if proposal_sends:
         for _d, _a, r in proposal_sends:
-            assert r.decision != PolicyDecision.ALLOW, (
-                f"proposal_send was {r.decision.value} — should be ESCALATE"
-            )
+            assert (
+                r.decision != PolicyDecision.ALLOW
+            ), f"proposal_send was {r.decision.value} — should be ESCALATE"
 
 
 @pytest.mark.asyncio
-async def test_governed_pipeline_creates_approval_requests(
-    sample_lead_payload, mock_router
-):
+async def test_governed_pipeline_creates_approval_requests(sample_lead_payload, mock_router):
     """Escalated actions must yield pending approval requests."""
     mock_router.run.return_value.content = '{"ok": true}'
     governed = GovernedPipeline()

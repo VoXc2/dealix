@@ -1,4 +1,5 @@
 """Phase 9 agents package."""
+
 from autonomous_growth.agents.competitor import CompetitorMonitorAgent
 from autonomous_growth.agents.content import ContentCreatorAgent, ContentPiece
 from autonomous_growth.agents.distribution import DistributionAgent, DistributionPlan

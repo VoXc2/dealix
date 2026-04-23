@@ -130,9 +130,7 @@ class EmailClient:
         if body_html:
             content.append({"type": "text/html", "value": body_html})
         if not content:
-            return EmailResult(
-                success=False, provider="sendgrid", error="No email body provided"
-            )
+            return EmailResult(success=False, provider="sendgrid", error="No email body provided")
 
         payload: dict[str, Any] = {
             "personalizations": personalizations,

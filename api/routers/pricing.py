@@ -9,6 +9,7 @@ Usage:
 Plans are intentionally NOT published on the public landing page; the checkout
 endpoint validates against `ALLOWED_PLANS` to prevent tampering.
 """
+
 from __future__ import annotations
 
 import logging
@@ -27,10 +28,14 @@ router = APIRouter(tags=["pricing"])
 
 # Prices in halalas (SAR x 100). Hidden from landing — only exposed when a lead qualifies.
 PLANS: dict[str, dict[str, Any]] = {
-    "starter":      {"name": "Starter",      "amount_halalas": 99900,   "monthly": True},   # 999 SAR/mo
-    "growth":       {"name": "Growth",       "amount_halalas": 299900,  "monthly": True},   # 2,999 SAR/mo
-    "scale":        {"name": "Scale",        "amount_halalas": 799900,  "monthly": True},   # 7,999 SAR/mo
-    "pilot_1sar":   {"name": "Pilot (1 SAR)", "amount_halalas": 100,    "monthly": False},  # E2E test transaction
+    "starter": {"name": "Starter", "amount_halalas": 99900, "monthly": True},  # 999 SAR/mo
+    "growth": {"name": "Growth", "amount_halalas": 299900, "monthly": True},  # 2,999 SAR/mo
+    "scale": {"name": "Scale", "amount_halalas": 799900, "monthly": True},  # 7,999 SAR/mo
+    "pilot_1sar": {
+        "name": "Pilot (1 SAR)",
+        "amount_halalas": 100,
+        "monthly": False,
+    },  # E2E test transaction
 }
 
 
@@ -121,7 +126,10 @@ async def moyasar_webhook(req: Request) -> dict[str, Any]:
         status = payment.get("status") or body.get("type")
         log.info(
             "moyasar_webhook ok id=%s type=%s status=%s amount=%s",
-            event_id, event_type, status, payment.get("amount"),
+            event_id,
+            event_type,
+            status,
+            payment.get("amount"),
         )
         # TODO: sync to HubSpot via ConnectorFacade in D+2 E2E test
         return {"status": "ok", "event_id": event_id, "event_type": event_type}

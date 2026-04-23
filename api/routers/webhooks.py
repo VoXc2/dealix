@@ -62,9 +62,7 @@ async def whatsapp_incoming(
             "message": msg["text"],
             "company": "",
         }
-        result = await pipeline.run(
-            payload=lead_payload, source=LeadSource.WHATSAPP
-        )
+        result = await pipeline.run(payload=lead_payload, source=LeadSource.WHATSAPP)
         processed.append(result.lead.id)
     logger.info("whatsapp_webhook_processed", count=len(processed))
     return {"processed": processed, "count": len(processed)}
@@ -83,5 +81,7 @@ async def calendly_webhook(payload: dict[str, Any]) -> dict[str, Any]:
 @router.post("/hubspot")
 async def hubspot_webhook(payload: dict[str, Any]) -> dict[str, Any]:
     """Receive HubSpot subscription events."""
-    logger.info("hubspot_webhook_received", n_events=len(payload) if isinstance(payload, list) else 1)
+    logger.info(
+        "hubspot_webhook_received", n_events=len(payload) if isinstance(payload, list) else 1
+    )
     return {"ok": True}
