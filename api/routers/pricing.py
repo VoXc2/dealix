@@ -12,6 +12,7 @@ endpoint validates against `ALLOWED_PLANS` to prevent tampering.
 
 from __future__ import annotations
 
+import hashlib
 import logging
 import os
 from typing import Any
@@ -25,6 +26,13 @@ from dealix.reliability.idempotency import IdempotencyStore
 log = logging.getLogger(__name__)
 
 router = APIRouter(tags=["pricing"])
+
+
+def _fingerprint(value: str) -> str:
+    if not value:
+        return ""
+    return hashlib.sha256(value.encode("utf-8")).hexdigest()[:12]
+
 
 # Prices in halalas (SAR x 100). Hidden from landing — only exposed when a lead qualifies.
 PLANS: dict[str, dict[str, Any]] = {
@@ -82,12 +90,16 @@ async def create_checkout(req: Request) -> dict[str, Any]:
                 "source": "dealix.checkout",
             },
         )
-    except Exception as e:
-        log.exception("moyasar_invoice_failed plan=%s email=%s", plan, email)
+    except Exception as exc:
+        log.exception(
+            "moyasar_invoice_failed plan=%s email_fp=%s",
+            plan,
+            _fingerprint(email),
+        )
         raise HTTPException(
             status_code=502,
-            detail=f"payment_provider_error: {str(e)[:200]}",
-        ) from e
+            detail="payment_provider_error",
+        ) from exc
 
     return {
         "invoice_id": invoice.get("id"),
@@ -106,8 +118,8 @@ async def moyasar_webhook(req: Request) -> dict[str, Any]:
     """
     try:
         body = await req.json()
-    except Exception as e:
-        raise HTTPException(status_code=400, detail="invalid_json") from e
+    except Exception as exc:
+        raise HTTPException(status_code=400, detail="invalid_json") from exc
 
     if not verify_webhook(body):
         log.warning("moyasar_webhook_bad_signature")
@@ -115,9 +127,10 @@ async def moyasar_webhook(req: Request) -> dict[str, Any]:
 
     event_id = str(body.get("id") or "")
     event_type = str(body.get("type") or "")
+    event_fp = _fingerprint(event_id)
     idem = IdempotencyStore(prefix="idem:moyasar:")
     if event_id and not idem.claim(event_id, ttl_seconds=7 * 86400):
-        log.info("moyasar_webhook_duplicate id=%s", event_id)
+        log.info("moyasar_webhook_duplicate event_fp=%s", event_fp)
         return {"status": "duplicate", "id": event_id}
 
     try:
@@ -125,20 +138,20 @@ async def moyasar_webhook(req: Request) -> dict[str, Any]:
         payment = data if data.get("object") in (None, "payment", "invoice") else {}
         status = payment.get("status") or body.get("type")
         log.info(
-            "moyasar_webhook ok id=%s type=%s status=%s amount=%s",
-            event_id,
+            "moyasar_webhook_processed event_fp=%s type=%s status=%s amount=%s",
+            event_fp,
             event_type,
             status,
             payment.get("amount"),
         )
         # TODO: sync to HubSpot via ConnectorFacade in D+2 E2E test
         return {"status": "ok", "event_id": event_id, "event_type": event_type}
-    except Exception as e:
-        log.exception("moyasar_webhook_processing_failed id=%s", event_id)
+    except Exception as exc:
+        log.exception("moyasar_webhook_processing_failed event_fp=%s", event_fp)
         DLQ(WEBHOOKS_DLQ).push(
             source="moyasar.webhook",
             payload=body,
-            error=str(e)[:500],
+            error=str(exc)[:500],
             metadata={"event_id": event_id, "event_type": event_type},
         )
         # Still 200 so Moyasar doesn't retry forever; we own replay via DLQ.
