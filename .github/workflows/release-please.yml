@@ -18,7 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ vars.ENABLE_RELEASE_PLEASE == 'true' }}
     steps:
-      - uses: googleapis/release-please-action@v4
+      - uses: googleapis/release-please-action@v5
         with:
           token: ${{ secrets.RELEASE_PLEASE_TOKEN || secrets.GITHUB_TOKEN }}
           release-type: python
