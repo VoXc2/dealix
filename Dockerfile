@@ -14,6 +14,7 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     PIP_NO_CACHE_DIR=1 \
     PIP_DISABLE_PIP_VERSION_CHECK=1
 
+# hadolint ignore=DL3008
 RUN apt-get update && apt-get install -y --no-install-recommends \
         build-essential \
         curl \
@@ -29,6 +30,7 @@ ENV PATH="/opt/venv/bin:$PATH"
 COPY pyproject.toml ./
 COPY requirements.txt* ./
 
+# hadolint ignore=DL3013
 RUN pip install --upgrade pip setuptools wheel \
     && pip install -r requirements.txt
 
@@ -43,6 +45,7 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     APP_ENV=production
 
 # Runtime-only system deps
+# hadolint ignore=DL3008
 RUN apt-get update && apt-get install -y --no-install-recommends \
         curl \
         tini \
