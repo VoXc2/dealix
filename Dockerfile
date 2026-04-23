@@ -7,7 +7,7 @@
 # ──────────────────────────────────────────────────────────────
 # Stage 1 — Builder: install deps into a venv
 # ──────────────────────────────────────────────────────────────
-FROM python:3.12-slim-bookworm AS builder
+FROM python:3.14-slim-bookworm AS builder
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
@@ -35,7 +35,7 @@ RUN pip install --upgrade pip setuptools wheel \
 # ──────────────────────────────────────────────────────────────
 # Stage 2 — Runtime: minimal image
 # ──────────────────────────────────────────────────────────────
-FROM python:3.12-slim-bookworm AS runtime
+FROM python:3.14-slim-bookworm AS runtime
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
