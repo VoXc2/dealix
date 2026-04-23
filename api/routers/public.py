@@ -57,9 +57,11 @@ async def demo_request(req: Request) -> dict[str, Any]:
     # Fire PostHog event (fire-and-forget — never blocks response)
     try:
         await capture_event(
-            FUNNEL_EVENTS.DEMO_REQUESTED
-            if hasattr(FUNNEL_EVENTS, "DEMO_REQUESTED")
-            else "demo_requested",
+            (
+                FUNNEL_EVENTS.DEMO_REQUESTED
+                if hasattr(FUNNEL_EVENTS, "DEMO_REQUESTED")
+                else "demo_requested"
+            ),
             distinct_id=email,
             properties={
                 "name": name,
