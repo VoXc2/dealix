@@ -3,7 +3,8 @@ PostHog capture via HTTP (no heavy SDK dependency, async, fire-and-forget).
 
 Env:
   POSTHOG_API_KEY     — project API key (phc_...)
-  POSTHOG_HOST        — https://eu.i.posthog.com (default) or https://us.i.posthog.com
+  POSTHOG_HOST        — https://us.i.posthog.com (default) or https://eu.i.posthog.com
+  POSTHOG_ENABLED     — optional, set to 'false' to disable without removing key
 
 Usage:
   from dealix.analytics import capture_event, FUNNEL_EVENTS
@@ -41,11 +42,17 @@ class FUNNEL_EVENTS:  # noqa: N801  (namespace constants)
 
 
 def _host() -> str:
-    return os.getenv("POSTHOG_HOST", "https://eu.i.posthog.com").rstrip("/")
+    # Dealix project is hosted on PostHog US Cloud (project id 394094).
+    # EU remains supported by setting POSTHOG_HOST=https://eu.i.posthog.com.
+    return os.getenv("POSTHOG_HOST", "https://us.i.posthog.com").rstrip("/")
 
 
 def _api_key() -> str:
     return os.getenv("POSTHOG_API_KEY", "")
+
+
+def _enabled() -> bool:
+    return os.getenv("POSTHOG_ENABLED", "true").lower() not in {"false", "0", "no", "off"}
 
 
 async def capture_event(
@@ -56,6 +63,8 @@ async def capture_event(
     timeout: float = 3.0,
 ) -> bool:
     """Fire-and-forget event capture. Never raises — returns False on failure."""
+    if not _enabled():
+        return False
     api_key = _api_key()
     if not api_key:
         log.debug("posthog_not_configured event=%s", event)

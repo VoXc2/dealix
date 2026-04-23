@@ -18,6 +18,7 @@ from typing import Any
 
 from fastapi import APIRouter, HTTPException, Request
 
+from dealix.analytics import FUNNEL_EVENTS, capture_event
 from dealix.payments import MoyasarClient, verify_webhook
 from dealix.reliability.dlq import DLQ, WEBHOOKS_DLQ
 from dealix.reliability.idempotency import IdempotencyStore
@@ -89,6 +90,20 @@ async def create_checkout(req: Request) -> dict[str, Any]:
             detail=f"payment_provider_error: {str(e)[:200]}",
         ) from e
 
+    # Fire CHECKOUT_STARTED funnel event (fire-and-forget).
+    await capture_event(
+        FUNNEL_EVENTS.CHECKOUT_STARTED,
+        distinct_id=str(lead_id or email),
+        properties={
+            "plan": plan,
+            "email": email,
+            "lead_id": lead_id,
+            "amount_halalas": plan_info["amount_halalas"],
+            "invoice_id": invoice.get("id"),
+            "source": "dealix.checkout",
+        },
+    )
+
     return {
         "invoice_id": invoice.get("id"),
         "status": invoice.get("status"),
@@ -131,6 +146,33 @@ async def moyasar_webhook(req: Request) -> dict[str, Any]:
             status,
             payment.get("amount"),
         )
+
+        # Fire PostHog funnel events — closes O3 gate when POSTHOG_API_KEY is set.
+        # Fire-and-forget; failures never block the 200 response to Moyasar.
+        metadata = payment.get("metadata") or {}
+        distinct_id = str(
+            metadata.get("lead_id")
+            or metadata.get("email")
+            or payment.get("id")
+            or event_id
+            or "unknown"
+        )
+        posthog_props = {
+            "payment_id": payment.get("id"),
+            "invoice_id": payment.get("invoice_id"),
+            "amount_halalas": payment.get("amount"),
+            "currency": payment.get("currency") or "SAR",
+            "plan": metadata.get("plan"),
+            "email": metadata.get("email"),
+            "status": status,
+            "event_type": event_type,
+            "source": "moyasar.webhook",
+        }
+        if event_type == "payment_paid" or status == "paid":
+            await capture_event(FUNNEL_EVENTS.PAYMENT_SUCCEEDED, distinct_id, posthog_props)
+        elif event_type == "payment_failed" or status == "failed":
+            await capture_event(FUNNEL_EVENTS.PAYMENT_FAILED, distinct_id, posthog_props)
+
         # TODO: sync to HubSpot via ConnectorFacade in D+2 E2E test
         return {"status": "ok", "event_id": event_id, "event_type": event_type}
     except Exception as e:
