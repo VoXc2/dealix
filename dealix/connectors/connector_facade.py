@@ -20,7 +20,37 @@ import time
 from dataclasses import asdict, dataclass, field
 from typing import Any, Awaitable, Callable
 
+from dealix.reliability.dlq import DLQ
+
 log = logging.getLogger(__name__)
+
+
+@dataclass
+class BreakerState:
+    """In-memory circuit breaker per connector."""
+    failures: int = 0
+    opened_at: float = 0.0
+    threshold: int = 5
+    cooldown_s: float = 30.0
+
+    def record_failure(self) -> None:
+        self.failures += 1
+        if self.failures >= self.threshold and not self.opened_at:
+            self.opened_at = time.time()
+
+    def record_success(self) -> None:
+        self.failures = 0
+        self.opened_at = 0.0
+
+    def is_open(self) -> bool:
+        if not self.opened_at:
+            return False
+        if time.time() - self.opened_at >= self.cooldown_s:
+            # half-open: reset and allow one trial
+            self.opened_at = 0.0
+            self.failures = 0
+            return False
+        return True
 
 
 @dataclass
@@ -65,10 +95,19 @@ def _idem_key(connector: str, operation: str, payload: Any) -> str:
 class ConnectorFacade:
     """Single entrypoint for connector calls with retry + policy + audit."""
 
-    def __init__(self, policies: dict[str, ConnectorPolicy] | None = None) -> None:
+    def __init__(
+        self,
+        policies: dict[str, ConnectorPolicy] | None = None,
+        dlq_queue: str = "outbound",
+    ) -> None:
         self.policies = {**DEFAULT_POLICIES, **(policies or {})}
         self._audit: list[ConnectorResult] = []
         self._max_audit = 1000
+        self._breakers: dict[str, BreakerState] = {}
+        self._dlq = DLQ(dlq_queue)
+
+    def _breaker(self, connector: str) -> BreakerState:
+        return self._breakers.setdefault(connector, BreakerState())
 
     def _policy(self, connector: str) -> ConnectorPolicy:
         return self.policies.get(connector, ConnectorPolicy())
@@ -88,6 +127,14 @@ class ConnectorFacade:
             return ConnectorResult(
                 ok=False, connector=connector, operation=operation,
                 error="connector_disabled_by_policy",
+            )
+
+        breaker = self._breaker(connector)
+        if breaker.is_open():
+            log.warning("circuit_open connector=%s op=%s", connector, operation)
+            return ConnectorResult(
+                ok=False, connector=connector, operation=operation,
+                error=f"circuit_open_for_{int(breaker.cooldown_s)}s",
             )
 
         idem = idempotency_key or _idem_key(connector, operation, payload)
@@ -110,6 +157,7 @@ class ConnectorFacade:
                     duration_ms=(time.perf_counter() - start) * 1000,
                     idempotency_key=idem,
                 )
+                breaker.record_success()
                 self._record(res)
                 return res
             except Exception as e:  # noqa: BLE001
@@ -131,6 +179,18 @@ class ConnectorFacade:
             duration_ms=(time.perf_counter() - start) * 1000,
             idempotency_key=idem,
         )
+        breaker.record_failure()
+        # Final failure → push to DLQ for operator replay
+        try:
+            self._dlq.push(
+                source=f"{connector}.{operation}",
+                payload={"payload": payload, "idempotency_key": idem},
+                error=res.error or "unknown",
+                attempts=policy.max_retries,
+                metadata={"duration_ms": res.duration_ms},
+            )
+        except Exception:  # pragma: no cover
+            pass
         self._record(res)
         return res
 

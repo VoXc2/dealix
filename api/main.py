@@ -13,7 +13,16 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
 from api.middleware import RequestIDMiddleware
-from api.routers import admin, agents, health, leads, sales, sectors, webhooks
+from api.routers import (
+    admin,
+    agents,
+    health,
+    leads,
+    pricing,
+    sales,
+    sectors,
+    webhooks,
+)
 from api.security import APIKeyMiddleware, setup_rate_limit
 from core.config.settings import get_settings
 from core.errors import AICompanyError
@@ -92,6 +101,7 @@ def create_app() -> FastAPI:
     app.include_router(sectors.router)
     app.include_router(agents.router)
     app.include_router(webhooks.router)
+    app.include_router(pricing.router)
     app.include_router(admin.router)
 
     # ── Root ────────────────────────────────────────────────────
