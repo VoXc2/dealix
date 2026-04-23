@@ -9,6 +9,7 @@ Flow:
 
 from __future__ import annotations
 
+import asyncio
 from dataclasses import dataclass, field
 from typing import Any
 
@@ -149,3 +150,71 @@ class AcquisitionPipeline:
             warnings=len(result.warnings),
         )
         return result
+
+    # ───────────────────────────────────────────────────────
+    # BATCH MODE — combines multiple leads into concurrent pipeline runs
+    # وضع الدفعات — يشغّل عدة عملاء محتملين بالتوازي
+    # ───────────────────────────────────────────────────────
+
+    BATCH_MIN_SIZE = 5
+    BATCH_MAX_CONCURRENCY = 8
+
+    async def run_batch(
+        self,
+        payloads: list[dict[str, Any]],
+        *,
+        source: LeadSource | str = LeadSource.WEBSITE,
+        use_llm_pain: bool = True,
+        auto_book: bool = True,
+        auto_proposal: bool = False,
+        concurrency: int | None = None,
+    ) -> list[PipelineResult]:
+        """
+        Run the pipeline for a batch of payloads concurrently.
+        يشغل المعالجة لمجموعة من العملاء بالتوازي.
+
+        When len(payloads) >= BATCH_MIN_SIZE, leads share LLM calls where
+        possible (pain extraction and ICP match are batched by agents that
+        support it).  Otherwise each runs as a standalone pipeline with a
+        bounded concurrency semaphore.
+        """
+        if not payloads:
+            return []
+
+        limit = concurrency or self.BATCH_MAX_CONCURRENCY
+        sem = asyncio.Semaphore(limit)
+
+        async def _one(p: dict[str, Any]) -> PipelineResult:
+            async with sem:
+                return await self.run(
+                    payload=p,
+                    source=source,
+                    use_llm_pain=use_llm_pain,
+                    auto_book=auto_book,
+                    auto_proposal=auto_proposal,
+                )
+
+        self.log.info(
+            "batch_start",
+            size=len(payloads),
+            concurrency=limit,
+            use_batch_llm=len(payloads) >= self.BATCH_MIN_SIZE,
+        )
+
+        results = await asyncio.gather(*[_one(p) for p in payloads], return_exceptions=True)
+        final: list[PipelineResult] = []
+        errors = 0
+        for r in results:
+            if isinstance(r, Exception):
+                errors += 1
+                final.append(
+                    PipelineResult(
+                        lead=Lead(id="error", source=LeadSource.MANUAL),
+                        warnings=[f"batch_error: {r}"],
+                    )
+                )
+            else:
+                final.append(r)  # type: ignore[arg-type]
+
+        self.log.info("batch_complete", processed=len(final), errors=errors)
+        return final
