@@ -14,6 +14,7 @@ from fastapi.responses import JSONResponse
 
 from api.middleware import RequestIDMiddleware
 from api.routers import agents, health, leads, sales, sectors, webhooks
+from api.security import APIKeyMiddleware, setup_rate_limit
 from core.config.settings import get_settings
 from core.errors import AICompanyError
 from core.logging import configure_logging, get_logger
@@ -64,6 +65,8 @@ def create_app() -> FastAPI:
         allow_headers=["*"],
     )
     app.add_middleware(RequestIDMiddleware)
+    app.add_middleware(APIKeyMiddleware)
+    setup_rate_limit(app)
 
     # ── Exception handlers ──────────────────────────────────────
     @app.exception_handler(AICompanyError)

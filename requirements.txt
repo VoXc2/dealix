@@ -47,3 +47,5 @@ google-api-python-client>=2.150.0
 google-auth-httplib2>=0.2.0
 google-auth-oauthlib>=1.2.0
 resend>=2.4.0
+slowapi>=0.1.9
+sentence-transformers>=2.2.2
