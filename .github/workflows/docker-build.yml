@@ -58,14 +58,14 @@ jobs:
       - name: Trivy scan
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:sha-${{ github.sha }}
+          image-ref: ${{ fromJSON(steps.meta.outputs.json).tags[0] }}
           format: sarif
           output: trivy-results.sarif
           severity: CRITICAL,HIGH
           exit-code: "0"
 
       - name: Upload Trivy results
-        if: always()
+        if: always() && hashFiles('trivy-results.sarif') != ''
         uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: trivy-results.sarif
@@ -74,12 +74,12 @@ jobs:
       - name: Generate SBOM
         uses: anchore/sbom-action@v0
         with:
-          image: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:sha-${{ github.sha }}
+          image: ${{ fromJSON(steps.meta.outputs.json).tags[0] }}
           format: spdx-json
           output-file: sbom.spdx.json
 
       - name: Upload SBOM artifact
-        if: always()
+        if: always() && hashFiles('sbom.spdx.json') != ''
         uses: actions/upload-artifact@v4
         with:
           name: sbom
