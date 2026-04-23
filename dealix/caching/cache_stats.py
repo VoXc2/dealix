@@ -24,6 +24,11 @@ def unregister(name: str) -> None:
         _registry.pop(name, None)
 
 
+def get_global_stats() -> dict[str, dict[str, float]]:
+    """Alias for snapshot() — returns all registered cache stats."""
+    return snapshot()
+
+
 def snapshot() -> dict[str, dict[str, float]]:
     """Return `{cache_name: stats_dict}` for every registered cache."""
     with _lock:
