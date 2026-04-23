@@ -143,6 +143,12 @@ ignore = [
 "tests/**/*.py" = ["S101", "S106", "S311"]
 "scripts/**/*.py" = ["S101"]
 
+[tool.bandit]
+# B104 hardcoded 0.0.0.0 bind — intentional for containerized deploy (documented in settings.py)
+# B110 try/except/pass — already ignored in ruff (best-effort paths)
+skips = ["B104", "B110"]
+exclude_dirs = ["tests", ".venv", "venv", "migrations", "build", "dist"]
+
 [tool.black]
 line-length = 100
 target-version = ["py311", "py312"]
