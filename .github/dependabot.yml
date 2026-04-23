@@ -22,11 +22,16 @@ updates:
     labels:
       - dependencies
       - ci
+    commit-message:
+      prefix: "chore(actions)"
 
   - package-ecosystem: docker
     directory: "/"
     schedule:
       interval: weekly
+      day: monday
     labels:
       - dependencies
       - docker
+    commit-message:
+      prefix: "chore(docker)"
