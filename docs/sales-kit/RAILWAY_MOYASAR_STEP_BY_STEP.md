@@ -1,3 +1,14 @@
+# ⚠️ ملاحظة أمنية
+
+**الأسرار الحقيقية محذوفة من هذا الملف.**
+استبدل `<YOUR_MOYASAR_WEBHOOK_SECRET>` و `<YOUR_APP_SECRET_KEY>` بقيمك الفعلية من:
+- **Railway Variables** (احفظها في Raw Editor، ليس في الكود)
+- **Moyasar Dashboard → Webhooks** (أنشئ secret جديد عند التدوير)
+
+⚠️ **إذا سبق ونُشر secret فعلي في هذا الملف — دوّره (rotate) فوراً من dashboard Moyasar.**
+
+---
+
 # ⚙️ Railway + Moyasar — خطوة بخطوة (12 دقيقة بالضبط)
 
 **الهدف:** Backend شغّال + Moyasar يستقبل دفعات حقيقية.
@@ -61,7 +72,7 @@ APP_ENV=production
 ENVIRONMENT=production
 APP_NAME=Dealix
 APP_VERSION=3.0.0
-APP_SECRET_KEY=ec11871ba7100c04368fd52d356fe0463c0d1e510fa8da0cbbc58abb3ff479c6
+APP_SECRET_KEY=<YOUR_APP_SECRET_KEY>
 APP_LOG_LEVEL=INFO
 LOG_LEVEL=INFO
 APP_DEFAULT_LOCALE=ar
@@ -76,7 +87,7 @@ APP_URL=https://dealix-production-up.railway.app
 
 # ── Moyasar Payments ──
 MOYASAR_SECRET_KEY=CHANGE_ME_sk_live_from_moyasar_dashboard
-MOYASAR_WEBHOOK_SECRET=9b4bf9e94175eb25cf4c8ec0c4e3915f518215503f848c633cf34c4598b7ff82
+MOYASAR_WEBHOOK_SECRET=<YOUR_MOYASAR_WEBHOOK_SECRET>
 
 # ── PostHog (اختياري لكن موصى به) ──
 POSTHOG_API_KEY=CHANGE_ME_phc_from_posthog
@@ -137,7 +148,7 @@ https://dashboard.moyasar.com/webhooks
 
 - **Secret:**
   ```
-  9b4bf9e94175eb25cf4c8ec0c4e3915f518215503f848c633cf34c4598b7ff82
+  <YOUR_MOYASAR_WEBHOOK_SECRET>
   ```
   (نفس قيمة `MOYASAR_WEBHOOK_SECRET` في Railway)
 
