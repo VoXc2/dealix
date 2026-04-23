@@ -52,6 +52,6 @@ st.markdown(
 col1, col2, col3 = st.columns(3)
 col1.metric("العملاء", "—", help="يعتمد على واجهات leads")
 col2.metric("إنفاق LLM اليوم", "— $", help="/api/v1/admin/costs")
-col3.metric("نسبة الكاش", "— %", help="/api/v1/admin/cache_stats")
+col3.metric("نسبة الكاش", "— %", help="/api/v1/admin/cache/stats")
 
 st.info("استخدم القائمة على اليسار للتنقل بين الصفحات.")
