@@ -34,3 +34,54 @@ async def ready() -> dict[str, str]:
 async def live() -> dict[str, str]:
     """Liveness probe."""
     return {"status": "alive"}
+
+
+@router.get("/health/deep")
+async def health_deep() -> dict[str, object]:
+    """Deep health check — verifies DB, Redis, LLM providers."""
+    import os
+    import time
+
+    checks: dict[str, dict[str, object]] = {}
+    overall = "ok"
+
+    # Postgres
+    t0 = time.perf_counter()
+    try:
+        import psycopg2  # type: ignore
+
+        dsn = os.getenv("DATABASE_URL") or os.getenv("DATABASE_DSN")
+        if dsn:
+            conn = psycopg2.connect(dsn, connect_timeout=3)
+            conn.cursor().execute("SELECT 1")
+            conn.close()
+            checks["postgres"] = {"status": "ok", "ms": round((time.perf_counter() - t0) * 1000, 1)}
+        else:
+            checks["postgres"] = {"status": "skip", "reason": "no DATABASE_URL"}
+    except Exception as e:  # pragma: no cover
+        checks["postgres"] = {"status": "fail", "error": str(e)[:200]}
+        overall = "degraded"
+
+    # Redis
+    t0 = time.perf_counter()
+    try:
+        import redis  # type: ignore
+
+        url = os.getenv("REDIS_URL")
+        if url:
+            r = redis.from_url(url, socket_timeout=3)
+            r.ping()
+            checks["redis"] = {"status": "ok", "ms": round((time.perf_counter() - t0) * 1000, 1)}
+        else:
+            checks["redis"] = {"status": "skip", "reason": "no REDIS_URL"}
+    except Exception as e:  # pragma: no cover
+        checks["redis"] = {"status": "fail", "error": str(e)[:200]}
+        overall = "degraded"
+
+    # LLM providers
+    providers = [p.value for p in get_model_router().available_providers()]
+    checks["llm_providers"] = {"status": "ok" if providers else "fail", "providers": providers}
+    if not providers:
+        overall = "degraded"
+
+    return {"status": overall, "checks": checks, "version": get_settings().app_version}
