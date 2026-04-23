@@ -15,9 +15,9 @@ import hmac
 import os
 from collections.abc import Awaitable, Callable, Iterable
 
-from fastapi import HTTPException, Request, status
+from fastapi import Request, status
 from starlette.middleware.base import BaseHTTPMiddleware
-from starlette.responses import Response
+from starlette.responses import JSONResponse, Response
 
 from core.logging import get_logger
 
@@ -33,6 +33,9 @@ PUBLIC_PATHS: set[str] = {
     "/health/live",
     "/health/ready",
     "/health/deep",
+    # Public pricing list — prospects need to see plans without an API key.
+    # Checkout + plan-specific tampering protection stays on /api/v1/checkout.
+    "/api/v1/pricing/plans",
 }
 PUBLIC_PREFIXES: tuple[str, ...] = (
     "/docs",
@@ -75,9 +78,13 @@ class APIKeyMiddleware(BaseHTTPMiddleware):
         provided = request.headers.get("X-API-Key")
         if not verify_api_key(provided, allowed):
             logger.warning("api_key_invalid", path=path, has_key=bool(provided))
-            raise HTTPException(
+            # Return a proper JSONResponse instead of raising HTTPException —
+            # BaseHTTPMiddleware does not route exceptions through FastAPI's
+            # exception handlers, so raising here produces a bare 500 at the
+            # edge. Returning a Response gives clients a clean 401.
+            return JSONResponse(
+                {"detail": "Invalid or missing X-API-Key"},
                 status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="Invalid or missing X-API-Key",
             )
 
         return await call_next(request)
