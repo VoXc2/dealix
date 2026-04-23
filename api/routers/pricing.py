@@ -12,13 +12,13 @@ endpoint validates against `ALLOWED_PLANS` to prevent tampering.
 
 from __future__ import annotations
 
+import hashlib
 import logging
 import os
 from typing import Any
 
 from fastapi import APIRouter, HTTPException, Request
 
-from dealix.analytics import FUNNEL_EVENTS, capture_event
 from dealix.payments import MoyasarClient, verify_webhook
 from dealix.reliability.dlq import DLQ, WEBHOOKS_DLQ
 from dealix.reliability.idempotency import IdempotencyStore
@@ -27,11 +27,30 @@ log = logging.getLogger(__name__)
 
 router = APIRouter(tags=["pricing"])
 
+
+def _fingerprint(value: str) -> str:
+    if not value:
+        return ""
+    return hashlib.sha256(value.encode("utf-8")).hexdigest()[:12]
+
+
 # Prices in halalas (SAR x 100). Hidden from landing — only exposed when a lead qualifies.
 PLANS: dict[str, dict[str, Any]] = {
-    "starter": {"name": "Starter", "amount_halalas": 99900, "monthly": True},  # 999 SAR/mo
-    "growth": {"name": "Growth", "amount_halalas": 299900, "monthly": True},  # 2,999 SAR/mo
-    "scale": {"name": "Scale", "amount_halalas": 799900, "monthly": True},  # 7,999 SAR/mo
+    "starter": {
+        "name": "Starter",
+        "amount_halalas": 99900,
+        "monthly": True,
+    },  # 999 SAR/mo
+    "growth": {
+        "name": "Growth",
+        "amount_halalas": 299900,
+        "monthly": True,
+    },  # 2,999 SAR/mo
+    "scale": {
+        "name": "Scale",
+        "amount_halalas": 799900,
+        "monthly": True,
+    },  # 7,999 SAR/mo
     "pilot_1sar": {
         "name": "Pilot (1 SAR)",
         "amount_halalas": 100,
@@ -46,7 +65,11 @@ async def list_plans() -> dict[str, Any]:
     return {
         "currency": "SAR",
         "plans": {
-            k: {"name": v["name"], "amount_sar": v["amount_halalas"] / 100, "monthly": v["monthly"]}
+            k: {
+                "name": v["name"],
+                "amount_sar": v["amount_halalas"] / 100,
+                "monthly": v["monthly"],
+            }
             for k, v in PLANS.items()
             if k != "pilot_1sar"  # hide pilot from public listing
         },
@@ -83,26 +106,16 @@ async def create_checkout(req: Request) -> dict[str, Any]:
                 "source": "dealix.checkout",
             },
         )
-    except Exception as e:
-        log.exception("moyasar_invoice_failed plan=%s email=%s", plan, email)
+    except Exception as exc:
+        log.exception(
+            "moyasar_invoice_failed plan=%s email_fp=%s",
+            plan,
+            _fingerprint(email),
+        )
         raise HTTPException(
             status_code=502,
-            detail=f"payment_provider_error: {str(e)[:200]}",
-        ) from e
-
-    # Fire CHECKOUT_STARTED funnel event (fire-and-forget).
-    await capture_event(
-        FUNNEL_EVENTS.CHECKOUT_STARTED,
-        distinct_id=str(lead_id or email),
-        properties={
-            "plan": plan,
-            "email": email,
-            "lead_id": lead_id,
-            "amount_halalas": plan_info["amount_halalas"],
-            "invoice_id": invoice.get("id"),
-            "source": "dealix.checkout",
-        },
-    )
+            detail="payment_provider_error",
+        ) from exc
 
     return {
         "invoice_id": invoice.get("id"),
@@ -121,8 +134,8 @@ async def moyasar_webhook(req: Request) -> dict[str, Any]:
     """
     try:
         body = await req.json()
-    except Exception as e:
-        raise HTTPException(status_code=400, detail="invalid_json") from e
+    except Exception as exc:
+        raise HTTPException(status_code=400, detail="invalid_json") from exc
 
     if not verify_webhook(body):
         log.warning("moyasar_webhook_bad_signature")
@@ -130,9 +143,10 @@ async def moyasar_webhook(req: Request) -> dict[str, Any]:
 
     event_id = str(body.get("id") or "")
     event_type = str(body.get("type") or "")
+    event_fp = _fingerprint(event_id)
     idem = IdempotencyStore(prefix="idem:moyasar:")
     if event_id and not idem.claim(event_id, ttl_seconds=7 * 86400):
-        log.info("moyasar_webhook_duplicate id=%s", event_id)
+        log.info("moyasar_webhook_duplicate event_fp=%s", event_fp)
         return {"status": "duplicate", "id": event_id}
 
     try:
@@ -140,47 +154,20 @@ async def moyasar_webhook(req: Request) -> dict[str, Any]:
         payment = data if data.get("object") in (None, "payment", "invoice") else {}
         status = payment.get("status") or body.get("type")
         log.info(
-            "moyasar_webhook ok id=%s type=%s status=%s amount=%s",
-            event_id,
+            "moyasar_webhook_processed event_fp=%s type=%s status=%s amount=%s",
+            event_fp,
             event_type,
             status,
             payment.get("amount"),
         )
-
-        # Fire PostHog funnel events — closes O3 gate when POSTHOG_API_KEY is set.
-        # Fire-and-forget; failures never block the 200 response to Moyasar.
-        metadata = payment.get("metadata") or {}
-        distinct_id = str(
-            metadata.get("lead_id")
-            or metadata.get("email")
-            or payment.get("id")
-            or event_id
-            or "unknown"
-        )
-        posthog_props = {
-            "payment_id": payment.get("id"),
-            "invoice_id": payment.get("invoice_id"),
-            "amount_halalas": payment.get("amount"),
-            "currency": payment.get("currency") or "SAR",
-            "plan": metadata.get("plan"),
-            "email": metadata.get("email"),
-            "status": status,
-            "event_type": event_type,
-            "source": "moyasar.webhook",
-        }
-        if event_type == "payment_paid" or status == "paid":
-            await capture_event(FUNNEL_EVENTS.PAYMENT_SUCCEEDED, distinct_id, posthog_props)
-        elif event_type == "payment_failed" or status == "failed":
-            await capture_event(FUNNEL_EVENTS.PAYMENT_FAILED, distinct_id, posthog_props)
-
         # TODO: sync to HubSpot via ConnectorFacade in D+2 E2E test
         return {"status": "ok", "event_id": event_id, "event_type": event_type}
-    except Exception as e:
-        log.exception("moyasar_webhook_processing_failed id=%s", event_id)
+    except Exception as exc:
+        log.exception("moyasar_webhook_processing_failed event_fp=%s", event_fp)
         DLQ(WEBHOOKS_DLQ).push(
             source="moyasar.webhook",
             payload=body,
-            error=str(e)[:500],
+            error=str(exc)[:500],
             metadata={"event_id": event_id, "event_type": event_type},
         )
         # Still 200 so Moyasar doesn't retry forever; we own replay via DLQ.
