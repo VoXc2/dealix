@@ -6,7 +6,9 @@ from dealix.intelligence.arabic_nlp import ArabicNLP, normalize_arabic, segment_
 
 
 def test_normalize_removes_diacritics():
-    assert "ه" in normalize_arabic("مَرْحَبَاً")
+    n = normalize_arabic("مَرْحَبَاً")
+    # tashkeel and tatweel removed, alef retained
+    assert n == "مرحبا"
 
 
 def test_normalize_hamza():
