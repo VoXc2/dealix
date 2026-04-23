@@ -13,7 +13,25 @@
 
 **[العربية](README.ar.md)** · **English**
 
+### [🚀 Deploy Guide](DEPLOYMENT.md) · [📦 .env Template](.env.example) · [🎯 Landing Page](landing/)
+
 </div>
+
+---
+
+## ⚡ Quick Deploy
+
+Any Docker-capable platform works. See [DEPLOYMENT.md](DEPLOYMENT.md) for Railway, Render, Fly.io, Heroku, DigitalOcean, AWS, self-hosted.
+
+```bash
+# Local
+docker build -t dealix .
+cp .env.example .env  # edit with real values
+docker run -p 8000:8000 --env-file .env dealix
+curl localhost:8000/health
+```
+
+**Public endpoints (no auth):** `/health`, `/api/v1/public/demo-request`, `/api/v1/pricing/plans`, `/api/v1/checkout`, `/api/v1/webhooks/moyasar`
 
 ---
 
