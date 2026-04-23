@@ -32,6 +32,7 @@ class LLMResponse:
     model: str
     input_tokens: int = 0
     output_tokens: int = 0
+    cached_tokens: int = 0
     finish_reason: str | None = None
     raw: dict[str, Any] = field(default_factory=dict)
 

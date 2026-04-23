@@ -29,6 +29,11 @@ class AnthropicClient(LLMClient):
     ) -> None:
         super().__init__(api_key=api_key, model=model, base_url=base_url, timeout=timeout)
 
+    # Min tokens to trigger prompt caching (Anthropic requires >=1024 for Sonnet).
+    CACHE_MIN_TOKENS: int = 1024
+    # Rough heuristic: 1 token ≈ 4 chars (Arabic slightly higher, still safe).
+    CACHE_MIN_CHARS: int = 4 * CACHE_MIN_TOKENS
+
     @retry(
         stop=stop_after_attempt(3),
         wait=wait_exponential(multiplier=1, min=2, max=10),
@@ -42,9 +47,20 @@ class AnthropicClient(LLMClient):
         max_tokens: int = 4096,
         temperature: float = 0.7,
         system: str | None = None,
+        cache_system: bool = True,
         **kwargs: Any,
     ) -> LLMResponse:
-        """Send chat completion to Anthropic API."""
+        """Send chat completion to Anthropic API with optional prompt caching.
+
+        When ``cache_system=True`` (default) and the system prompt is long enough,
+        the system field is sent as a cache-enabled content block:
+
+            system = [{"type": "text", "text": PROMPT,
+                       "cache_control": {"type": "ephemeral"}}]
+
+        Anthropic keeps cached prompts for ~5 minutes; subsequent calls with the
+        same prefix are billed at $0.30/mtok instead of $3/mtok (90% savings).
+        """
         # Separate system from messages (Anthropic API convention)
         clean_messages: list[dict[str, str]] = []
         extracted_system: str | None = system
@@ -62,7 +78,18 @@ class AnthropicClient(LLMClient):
             "messages": clean_messages,
         }
         if extracted_system:
-            payload["system"] = extracted_system
+            # Prompt-cache the system prompt when long enough. The system field
+            # accepts either a plain string or an array of content blocks.
+            if cache_system and len(extracted_system) >= self.CACHE_MIN_CHARS:
+                payload["system"] = [
+                    {
+                        "type": "text",
+                        "text": extracted_system,
+                        "cache_control": {"type": "ephemeral"},
+                    }
+                ]
+            else:
+                payload["system"] = extracted_system
 
         headers = {
             "x-api-key": self.api_key,
@@ -88,6 +115,8 @@ class AnthropicClient(LLMClient):
             model=data.get("model", self.model),
             input_tokens=usage.get("input_tokens", 0),
             output_tokens=usage.get("output_tokens", 0),
+            cached_tokens=usage.get("cache_read_input_tokens", 0)
+            + usage.get("cache_creation_input_tokens", 0),
             finish_reason=data.get("stop_reason"),
             raw=data,
         )

@@ -120,3 +120,131 @@ def get_provider_for_task(task: Task) -> Provider:
 def get_fallbacks(provider: Provider) -> list[Provider]:
     """Get fallback chain for a provider | سلسلة الاحتياط للمزود."""
     return FALLBACK_CHAIN.get(provider, [Provider.ANTHROPIC])
+
+
+# ═══════════════════════════════════════════════════════════════
+# SMART MODEL ROUTING — cost-aware exact model per task
+# توجيه ذكي يراعي التكلفة — نموذج محدد لكل مهمة
+# ═══════════════════════════════════════════════════════════════
+
+# Concrete model IDs per provider (cost-optimized picks)
+PROVIDER_MODELS: dict[Provider, ModelConfig] = {
+    Provider.ANTHROPIC: ModelConfig(
+        provider=Provider.ANTHROPIC,
+        model_id="claude-sonnet-4-5",
+        max_tokens=4096,
+        temperature=0.3,
+    ),
+    Provider.DEEPSEEK: ModelConfig(
+        provider=Provider.DEEPSEEK,
+        model_id="deepseek-chat",
+        max_tokens=4096,
+        temperature=0.2,
+    ),
+    Provider.GLM: ModelConfig(
+        provider=Provider.GLM,
+        model_id="glm-4",
+        max_tokens=4096,
+        temperature=0.3,
+    ),
+    Provider.GEMINI: ModelConfig(
+        provider=Provider.GEMINI,
+        model_id="gemini-2.5-flash",
+        max_tokens=8192,
+        temperature=0.3,
+    ),
+    Provider.GROQ: ModelConfig(
+        provider=Provider.GROQ,
+        model_id="llama-3.3-70b-versatile",
+        max_tokens=2048,
+        temperature=0.1,
+    ),
+    Provider.OPENAI: ModelConfig(
+        provider=Provider.OPENAI,
+        model_id="gpt-4o-mini",
+        max_tokens=4096,
+        temperature=0.3,
+    ),
+}
+
+
+# Cost hints (USD per 1M tokens) — input/output. Used by smart router.
+COST_HINTS: dict[Provider, tuple[float, float]] = {
+    Provider.ANTHROPIC: (3.00, 15.00),
+    Provider.DEEPSEEK: (0.14, 0.28),
+    Provider.GLM: (0.14, 0.28),
+    Provider.GEMINI: (0.075, 0.30),
+    Provider.GROQ: (0.00, 0.00),
+    Provider.OPENAI: (0.15, 0.60),
+}
+
+
+# Feature flags for Arabic-heavy content and token size thresholds
+ARABIC_THRESHOLD = 0.30      # ratio of Arabic chars → prefer GLM
+SHORT_EXTRACTION_TOKENS = 2000  # below this for code/extraction → DeepSeek
+CRITICAL_TASKS = {
+    Task.REASONING,
+    Task.PROPOSAL,
+    Task.ORCHESTRATION,
+}
+
+
+def _arabic_ratio(text: str) -> float:
+    if not text:
+        return 0.0
+    arabic = sum(1 for c in text if "\u0600" <= c <= "\u06FF")
+    return arabic / max(len(text), 1)
+
+
+def smart_route(
+    task: Task,
+    *,
+    text_sample: str = "",
+    est_tokens: int = 0,
+    critical: bool = False,
+) -> ModelConfig:
+    """
+    Cost-aware router | توجيه ذكي يراعي التكلفة.
+
+    Rules:
+      1. CLASSIFICATION/TRIAGE/TAGGING → Groq (free)
+      2. Arabic content (>30%) for non-critical → GLM
+      3. Short extraction/code → DeepSeek
+      4. Research → Gemini Flash
+      5. Critical reasoning/proposals → Anthropic (+ caching)
+      6. Else → provider from TASK_ROUTING
+    """
+    # 1. Free tier for classification
+    if task in {Task.CLASSIFICATION, Task.TRIAGE, Task.TAGGING, Task.FAST_VARIANTS}:
+        return PROVIDER_MODELS[Provider.GROQ]
+
+    # 2. Critical reasoning always Anthropic
+    if critical or task in CRITICAL_TASKS:
+        return PROVIDER_MODELS[Provider.ANTHROPIC]
+
+    # 3. Arabic-heavy → GLM (keeps cost low while handling Arabic well)
+    if text_sample and _arabic_ratio(text_sample) >= ARABIC_THRESHOLD:
+        if task not in {Task.RESEARCH, Task.MULTIMODAL}:
+            return PROVIDER_MODELS[Provider.GLM]
+
+    # 4. Short code/extraction → DeepSeek
+    if task in {Task.CODE, Task.IMPLEMENTATION, Task.DEBUG}:
+        return PROVIDER_MODELS[Provider.DEEPSEEK]
+    if task == Task.SUMMARY and 0 < est_tokens <= SHORT_EXTRACTION_TOKENS:
+        return PROVIDER_MODELS[Provider.DEEPSEEK]
+
+    # 5. Research → Gemini Flash
+    if task in {Task.RESEARCH, Task.MULTIMODAL, Task.SOURCE_ANALYSIS}:
+        return PROVIDER_MODELS[Provider.GEMINI]
+
+    # 6. Default — use static routing table
+    provider = get_provider_for_task(task)
+    return PROVIDER_MODELS[provider]
+
+
+def ordered_providers(task: Task, *, text_sample: str = "", critical: bool = False) -> list[Provider]:
+    """Return primary + fallback chain after smart routing."""
+    primary = smart_route(task, text_sample=text_sample, critical=critical).provider
+    chain = [primary] + [p for p in get_fallbacks(primary) if p != primary]
+    return chain
+
