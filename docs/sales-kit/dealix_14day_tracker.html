@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dealix — Pipeline Tracker (14 يوم)</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;600;700&display=swap">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'IBM Plex Sans Arabic', sans-serif;
+    background: #0f172a;
+    color: #e2e8f0;
+    padding: 24px;
+    min-height: 100vh;
+  }
+  h1 {
+    color: #22d3ee;
+    font-size: 28px;
+    margin-bottom: 6px;
+  }
+  .sub { color: #94a3b8; margin-bottom: 24px; font-size: 14px; }
+
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+  .stat {
+    background: #1e293b;
+    border: 1px solid #334155;
+    border-radius: 10px;
+    padding: 14px;
+    text-align: center;
+  }
+  .stat .n { font-size: 24px; color: #22d3ee; font-weight: 700; }
+  .stat .l { font-size: 12px; color: #94a3b8; margin-top: 4px; }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #1e293b;
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  th, td {
+    padding: 10px 8px;
+    text-align: right;
+    border-bottom: 1px solid #334155;
+    font-size: 13px;
+  }
+  th {
+    background: #0c4a6e;
+    color: #22d3ee;
+    font-weight: 600;
+    font-size: 12px;
+  }
+  input, select, textarea {
+    width: 100%;
+    background: transparent;
+    border: none;
+    color: #e2e8f0;
+    font-family: inherit;
+    font-size: 13px;
+    padding: 4px;
+  }
+  input:focus, select:focus, textarea:focus {
+    outline: 1px solid #22d3ee;
+    background: #0f172a;
+  }
+  .status-contacted { color: #94a3b8; }
+  .status-replied { color: #fbbf24; }
+  .status-demo { color: #22d3ee; }
+  .status-pilot { color: #10b981; }
+  .status-paid { color: #22d3ee; font-weight: 700; }
+  .status-dead { color: #64748b; text-decoration: line-through; }
+
+  .btns {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  button {
+    background: #22d3ee;
+    color: #0f172a;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-family: inherit;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 13px;
+  }
+  button.ghost {
+    background: transparent;
+    color: #22d3ee;
+    border: 1px solid #22d3ee;
+  }
+  .day-label { color: #64748b; font-size: 11px; }
+  .foot { margin-top: 24px; color: #64748b; font-size: 12px; text-align: center; }
+</style>
+</head>
+<body>
+  <h1>📊 Dealix — Pipeline Tracker 14 يوم</h1>
+  <p class="sub">يحفظ تلقائياً في متصفحك. الهدف: 999 ريال في الحساب خلال 14 يوم.</p>
+
+  <div class="stats">
+    <div class="stat"><div class="n" id="s-total">0</div><div class="l">تم التواصل</div></div>
+    <div class="stat"><div class="n" id="s-replied">0</div><div class="l">ردّوا</div></div>
+    <div class="stat"><div class="n" id="s-demo">0</div><div class="l">Demo محجوز</div></div>
+    <div class="stat"><div class="n" id="s-pilot">0</div><div class="l">في Pilot</div></div>
+    <div class="stat"><div class="n" id="s-paid">0</div><div class="l">دفعوا</div></div>
+    <div class="stat"><div class="n" id="s-rev">0</div><div class="l">إيراد (ريال)</div></div>
+  </div>
+
+  <div class="btns">
+    <button onclick="addRow()">+ إضافة Lead جديد</button>
+    <button class="ghost" onclick="exportCSV()">⬇️ تصدير CSV</button>
+    <button class="ghost" onclick="clearAll()">🗑️ مسح الكل</button>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>الاسم</th>
+        <th>الشركة</th>
+        <th>القطاع</th>
+        <th>القناة</th>
+        <th>تاريخ التواصل</th>
+        <th>الحالة</th>
+        <th>المبلغ</th>
+        <th>ملاحظات</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody id="rows"></tbody>
+  </table>
+
+  <p class="foot">
+    Dealix — Pipeline Tracker · آخر حفظ: <span id="saved">—</span><br>
+    نصيحة: راجعه يومياً بعد صلاة الظهر · ابدأ outreach من أعلى lead score
+  </p>
+
+<script>
+  const STORAGE = 'dealix_pipeline_v1';
+  const STATUSES = [
+    { v: 'contacted', t: 'تم التواصل' },
+    { v: 'replied', t: 'ردّ' },
+    { v: 'demo', t: 'Demo محجوز' },
+    { v: 'pilot', t: 'في Pilot' },
+    { v: 'paid', t: '✅ دفع' },
+    { v: 'dead', t: '❌ لا اهتمام' },
+  ];
+
+  let data = [];
+
+  function load() {
+    try { data = JSON.parse(localStorage.getItem(STORAGE) || '[]'); } catch { data = []; }
+    if (!data.length) {
+      // Seed with real leads
+      data = [
+        { id: 1, name: 'عبدالله العسيري', company: 'Lucidya', sector: 'SaaS', channel: 'LinkedIn', date: '', status: 'contacted', amount: 0, notes: 'نفس اسم العائلة — أعلى احتمال' },
+        { id: 2, name: 'عمر الخميس', company: 'BRKZ', sector: 'Construction', channel: 'LinkedIn', date: '', status: 'contacted', amount: 0, notes: 'Series A $17M — عنده budget' },
+        { id: 3, name: 'أحمد الحازمي', company: 'Foodics', sector: 'Restaurant Tech', channel: 'LinkedIn', date: '', status: 'contacted', amount: 0, notes: '15K+ عميل' },
+        { id: 4, name: 'رائد بن جويعد', company: 'مستشار رقمنة', sector: 'Consulting', channel: 'LinkedIn', date: '', status: 'contacted', amount: 0, notes: 'لـ referrals' },
+        { id: 5, name: 'فاطمة السبيعي', company: 'Startup', sector: 'B2B', channel: 'LinkedIn', date: '', status: 'contacted', amount: 0, notes: 'VP Sales' },
+      ];
+      save();
+    }
+    render();
+  }
+
+  function save() {
+    localStorage.setItem(STORAGE, JSON.stringify(data));
+    document.getElementById('saved').textContent = new Date().toLocaleString('ar-SA');
+    updateStats();
+  }
+
+  function render() {
+    const tbody = document.getElementById('rows');
+    tbody.innerHTML = '';
+    data.forEach((r, i) => {
+      const tr = document.createElement('tr');
+      tr.className = 'status-' + r.status;
+      tr.innerHTML = `
+        <td>${i + 1}</td>
+        <td><input value="${escape(r.name)}" onchange="update(${r.id},'name',this.value)"></td>
+        <td><input value="${escape(r.company)}" onchange="update(${r.id},'company',this.value)"></td>
+        <td><input value="${escape(r.sector)}" onchange="update(${r.id},'sector',this.value)"></td>
+        <td><input value="${escape(r.channel)}" onchange="update(${r.id},'channel',this.value)"></td>
+        <td><input type="date" value="${r.date}" onchange="update(${r.id},'date',this.value)"></td>
+        <td>
+          <select onchange="update(${r.id},'status',this.value)">
+            ${STATUSES.map(s => `<option value="${s.v}" ${r.status===s.v?'selected':''}>${s.t}</option>`).join('')}
+          </select>
+        </td>
+        <td><input type="number" value="${r.amount}" onchange="update(${r.id},'amount',+this.value)"></td>
+        <td><input value="${escape(r.notes)}" onchange="update(${r.id},'notes',this.value)"></td>
+        <td><button class="ghost" style="padding:4px 8px;font-size:11px" onclick="del(${r.id})">×</button></td>
+      `;
+      tbody.appendChild(tr);
+    });
+    updateStats();
+  }
+
+  function escape(s) { return String(s || '').replace(/"/g, '&quot;'); }
+
+  function update(id, field, value) {
+    const row = data.find(x => x.id === id);
+    if (row) { row[field] = value; save(); render(); }
+  }
+
+  function addRow() {
+    data.push({
+      id: Date.now(),
+      name: '', company: '', sector: '', channel: 'LinkedIn',
+      date: new Date().toISOString().slice(0, 10),
+      status: 'contacted', amount: 0, notes: ''
+    });
+    save(); render();
+  }
+
+  function del(id) {
+    if (!confirm('حذف هذا الـ lead؟')) return;
+    data = data.filter(x => x.id !== id);
+    save(); render();
+  }
+
+  function clearAll() {
+    if (!confirm('مسح كل البيانات؟ لا يمكن التراجع.')) return;
+    data = []; save(); load();
+  }
+
+  function updateStats() {
+    const total = data.length;
+    const replied = data.filter(x => ['replied','demo','pilot','paid'].includes(x.status)).length;
+    const demo = data.filter(x => ['demo','pilot','paid'].includes(x.status)).length;
+    const pilot = data.filter(x => ['pilot','paid'].includes(x.status)).length;
+    const paid = data.filter(x => x.status === 'paid').length;
+    const rev = data.filter(x => x.status === 'paid').reduce((s, x) => s + (+x.amount || 0), 0);
+
+    document.getElementById('s-total').textContent = total;
+    document.getElementById('s-replied').textContent = replied;
+    document.getElementById('s-demo').textContent = demo;
+    document.getElementById('s-pilot').textContent = pilot;
+    document.getElementById('s-paid').textContent = paid;
+    document.getElementById('s-rev').textContent = rev.toLocaleString('ar-SA');
+  }
+
+  function exportCSV() {
+    const headers = ['الاسم','الشركة','القطاع','القناة','التاريخ','الحالة','المبلغ','ملاحظات'];
+    const rows = data.map(r => [r.name, r.company, r.sector, r.channel, r.date, r.status, r.amount, r.notes]);
+    const csv = [headers, ...rows].map(row => row.map(c => `"${String(c).replace(/"/g,'""')}"`).join(',')).join('\n');
+    const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `dealix_pipeline_${new Date().toISOString().slice(0,10)}.csv`;
+    a.click();
+  }
+
+  load();
+</script>
+</body>
+</html>

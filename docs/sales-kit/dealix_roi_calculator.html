@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dealix — حاسبة ROI</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;600;700&display=swap">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'IBM Plex Sans Arabic', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    color: #e2e8f0;
+    min-height: 100vh;
+    padding: 40px 20px;
+  }
+  .container { max-width: 720px; margin: 0 auto; }
+  h1 {
+    font-size: 32px;
+    color: #22d3ee;
+    margin-bottom: 8px;
+  }
+  .sub { color: #94a3b8; margin-bottom: 32px; font-size: 15px; }
+  .card {
+    background: rgba(30, 41, 59, 0.6);
+    border: 1px solid #334155;
+    border-radius: 16px;
+    padding: 28px;
+    margin-bottom: 20px;
+    backdrop-filter: blur(8px);
+  }
+  .card h2 {
+    font-size: 18px;
+    color: #cbd5e1;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .card h2 .num {
+    background: #22d3ee;
+    color: #0f172a;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 700;
+  }
+  .field { margin-bottom: 16px; }
+  .field label {
+    display: block;
+    font-size: 14px;
+    color: #94a3b8;
+    margin-bottom: 8px;
+  }
+  .field input, .field select {
+    width: 100%;
+    padding: 12px 16px;
+    background: #0f172a;
+    border: 1px solid #475569;
+    border-radius: 8px;
+    color: #e2e8f0;
+    font-family: inherit;
+    font-size: 16px;
+    transition: border 0.2s;
+  }
+  .field input:focus, .field select:focus {
+    outline: none;
+    border-color: #22d3ee;
+  }
+  .results {
+    background: linear-gradient(135deg, #0c4a6e 0%, #0369a1 100%);
+    border: 2px solid #22d3ee;
+  }
+  .row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+  }
+  .row:last-child { border: none; }
+  .row .label { color: #cbd5e1; font-size: 15px; }
+  .row .value {
+    color: #fff;
+    font-size: 20px;
+    font-weight: 700;
+  }
+  .row.hero .value {
+    font-size: 32px;
+    color: #22d3ee;
+  }
+  .row.hero .label { color: #e2e8f0; font-size: 17px; font-weight: 600; }
+  .pill {
+    display: inline-block;
+    padding: 4px 12px;
+    background: #22d3ee;
+    color: #0f172a;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 700;
+    margin-right: 8px;
+  }
+  .cta {
+    display: block;
+    width: 100%;
+    padding: 16px;
+    background: #22d3ee;
+    color: #0f172a;
+    border: none;
+    border-radius: 12px;
+    font-family: inherit;
+    font-size: 17px;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 16px;
+    text-decoration: none;
+    text-align: center;
+    transition: transform 0.1s;
+  }
+  .cta:hover { transform: translateY(-2px); }
+  .foot { text-align: center; color: #64748b; font-size: 13px; margin-top: 24px; }
+  .warn { color: #fbbf24; font-size: 13px; margin-top: 8px; }
+</style>
+</head>
+<body>
+  <div class="container">
+    <h1>⚡ Dealix — حاسبة ROI</h1>
+    <p class="sub">احسب كم تخسر شهرياً من leads ضايعة — وكم ستستعيد مع Dealix</p>
+
+    <div class="card">
+      <h2><span class="num">1</span> بيانات شركتك الحالية</h2>
+
+      <div class="field">
+        <label>كم lead يصلكم شهرياً؟</label>
+        <input type="number" id="leads" value="100" min="10">
+      </div>
+
+      <div class="field">
+        <label>متوسط قيمة الصفقة (ريال)</label>
+        <input type="number" id="deal" value="5000" min="100" step="500">
+      </div>
+
+      <div class="field">
+        <label>نسبة التحويل الحالية (lead → عميل دافع)</label>
+        <select id="conversion">
+          <option value="0.02">2% (ضعيفة — leads غير مؤهلة)</option>
+          <option value="0.05" selected>5% (متوسطة — السعودية B2B)</option>
+          <option value="0.10">10% (جيدة)</option>
+          <option value="0.15">15% (ممتازة)</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label>كم من leads تضيع بسبب بطء الرد / عدم المتابعة؟</label>
+        <select id="lost">
+          <option value="0.20">20% (فريق مبيعات منظم جداً)</option>
+          <option value="0.30" selected>30% (متوسط السوق)</option>
+          <option value="0.40">40% (فريق صغير مشغول)</option>
+          <option value="0.50">50% (مشكلة كبيرة)</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="card results">
+      <h2><span class="num">2</span> نتائجك</h2>
+
+      <div class="row">
+        <span class="label">📉 الخسارة الشهرية الحالية</span>
+        <span class="value" id="currentLoss">—</span>
+      </div>
+      <div class="row">
+        <span class="label">📈 استعادة متوقعة مع Dealix (استعادة 50% من الضايع)</span>
+        <span class="value" id="recovery">—</span>
+      </div>
+      <div class="row">
+        <span class="label">💳 تكلفة Dealix Growth (شهري)</span>
+        <span class="value">2,999 ريال</span>
+      </div>
+      <div class="row hero">
+        <span class="label">🎯 صافي العائد الشهري</span>
+        <span class="value" id="netGain">—</span>
+      </div>
+      <div class="row hero">
+        <span class="label"><span class="pill">ROI</span> خلال 12 شهر</span>
+        <span class="value" id="annualRoi">—</span>
+      </div>
+      <p class="warn" id="warn" style="display:none;">⚠️ Dealix قد لا يناسبك إذا الأرقام صغيرة جداً — ركّز على زيادة leads أولاً</p>
+    </div>
+
+    <div class="card">
+      <h2><span class="num">3</span> الخطوة التالية</h2>
+      <p style="color: #cbd5e1; line-height: 1.8; margin-bottom: 12px;">
+        جرّب Dealix أسبوع كامل بـ <strong style="color: #22d3ee;">1 ريال فقط</strong>. نشغّله على leads شركتك الفعلية. إذا ما شفت النتائج — نرجع لك الريال ونفصل بأدب.
+      </p>
+      <a href="https://calendly.com/sami-assiri11/dealix-demo" class="cta" target="_blank">
+        احجز Demo 30 دقيقة مع سامي →
+      </a>
+    </div>
+
+    <p class="foot">
+      الحساب تقريبي — الأرقام الفعلية تعتمد على نوع leads، قطاعك، وجودة عرضكم.<br>
+      Dealix — AI Sales Rep بالعربي الخليجي · sami.assiri11@gmail.com
+    </p>
+  </div>
+
+<script>
+  function fmt(n) {
+    return new Intl.NumberFormat('ar-SA', { maximumFractionDigits: 0 }).format(Math.round(n)) + ' ريال';
+  }
+
+  function calc() {
+    const leads = +document.getElementById('leads').value || 0;
+    const deal = +document.getElementById('deal').value || 0;
+    const conversion = +document.getElementById('conversion').value;
+    const lostPct = +document.getElementById('lost').value;
+
+    const lostLeads = leads * lostPct;
+    const lostRevenue = lostLeads * conversion * deal;
+    const recovery = lostRevenue * 0.5; // conservative 50% recovery
+    const cost = 2999;
+    const netGain = recovery - cost;
+    const annualRoi = ((recovery * 12) - (cost * 12)) / (cost * 12);
+
+    document.getElementById('currentLoss').textContent = fmt(lostRevenue);
+    document.getElementById('recovery').textContent = fmt(recovery);
+    document.getElementById('netGain').textContent = fmt(netGain);
+    document.getElementById('annualRoi').textContent = Math.round(annualRoi * 100) + '%';
+
+    const warn = document.getElementById('warn');
+    if (netGain < 0) {
+      warn.style.display = 'block';
+      warn.textContent = '⚠️ مع هذه الأرقام Dealix ما يقدر يغطي تكلفته — راكّز على زيادة leads قبل.';
+    } else if (netGain < cost) {
+      warn.style.display = 'block';
+      warn.textContent = '⚡ العائد موجود لكن هامشي — الـ pilot 1 ريال يؤكد ROI قبل الالتزام';
+    } else {
+      warn.style.display = 'none';
+    }
+  }
+
+  ['leads','deal','conversion','lost'].forEach(id => {
+    document.getElementById(id).addEventListener('input', calc);
+  });
+  calc();
+</script>
+</body>
+</html>
