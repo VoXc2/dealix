@@ -49,7 +49,7 @@ c3.metric("إنفاق 24 ساعة", f"${totals.get('usd', 0)}")
 c4.metric(
     "عمق DLQ",
     (
-        sum((queue.get("depth", 0) for queue in dlq.values()))
+        sum(queue.get("depth", 0) for queue in dlq.values())
         if isinstance(dlq, dict)
         else 0
     ),
