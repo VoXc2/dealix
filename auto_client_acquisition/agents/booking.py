@@ -95,9 +95,7 @@ class BookingAgent(BaseAgent):
             confirm = self._confirm_message(
                 lead, "google", scheduled, link=None, meeting_minutes=meeting_minutes
             )
-            self.log.info(
-                "booking_google_scheduled", lead_id=lead.id, when=scheduled.isoformat()
-            )
+            self.log.info("booking_google_scheduled", lead_id=lead.id, when=scheduled.isoformat())
             return BookingResult(
                 booking_id=booking_id,
                 provider="google",
@@ -165,13 +163,9 @@ class BookingAgent(BaseAgent):
         if provider == "calendly" and link:
             if lead.locale == "ar":
                 return (
-                    f"مرحباً {lead.contact_name or ''}،\n"
-                    f"اختر الموعد المناسب لك من هنا: {link}"
+                    f"مرحباً {lead.contact_name or ''}،\n" f"اختر الموعد المناسب لك من هنا: {link}"
                 )
-            return (
-                f"Hi {lead.contact_name or ''},\n"
-                f"Pick a slot that works for you: {link}"
-            )
+            return f"Hi {lead.contact_name or ''},\n" f"Pick a slot that works for you: {link}"
         if provider == "google" and scheduled:
             return get_sales_script(
                 "demo_confirm",

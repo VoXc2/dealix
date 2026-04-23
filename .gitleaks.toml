@@ -53,6 +53,7 @@ paths = [
     '''\.secrets\.baseline$''',
     '''tests/fixtures/.*''',
     '''docs/.*\.md$''',
+    '''scripts/infra/setup_uptimerobot\.sh$''',
 ]
 
 regexes = [

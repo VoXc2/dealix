@@ -4,11 +4,11 @@ from __future__ import annotations
 
 from functools import lru_cache
 
-from auto_client_acquisition.pipeline import AcquisitionPipeline
-from autonomous_growth.orchestrator import GrowthOrchestrator
-from autonomous_growth.agents.sector_intel import SectorIntelAgent
-from autonomous_growth.agents.content import ContentCreatorAgent
 from auto_client_acquisition.agents.proposal import ProposalAgent
+from auto_client_acquisition.pipeline import AcquisitionPipeline
+from autonomous_growth.agents.content import ContentCreatorAgent
+from autonomous_growth.agents.sector_intel import SectorIntelAgent
+from autonomous_growth.orchestrator import GrowthOrchestrator
 
 
 @lru_cache(maxsize=1)

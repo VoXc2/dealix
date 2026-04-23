@@ -8,8 +8,8 @@ action is appended as an AuditEntry. Entries are append-only.
 from __future__ import annotations
 
 import uuid
-from datetime import datetime, timezone
-from enum import Enum
+from datetime import UTC, datetime
+from enum import StrEnum
 from typing import Any
 
 from pydantic import BaseModel, ConfigDict, Field
@@ -18,14 +18,14 @@ from dealix.classifications import ApprovalClass, ReversibilityClass, Sensitivit
 
 
 def _utcnow_iso() -> str:
-    return datetime.now(timezone.utc).isoformat()
+    return datetime.now(UTC).isoformat()
 
 
 def _new_audit_id() -> str:
     return f"aud_{uuid.uuid4().hex[:16]}"
 
 
-class AuditAction(str, Enum):
+class AuditAction(StrEnum):
     """The category of audited action."""
 
     DECISION_EMITTED = "decision.emitted"

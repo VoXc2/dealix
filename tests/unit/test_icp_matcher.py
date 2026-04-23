@@ -20,8 +20,8 @@ async def test_ideal_lead_scores_high(sample_lead_payload):
 
     assert 0 <= result.overall_score <= 1
     assert result.industry_match == 1.0  # technology is in target
-    assert result.region_match == 1.0    # Saudi Arabia
-    assert result.budget_match == 1.0    # 50k SAR in range
+    assert result.region_match == 1.0  # Saudi Arabia
+    assert result.budget_match == 1.0  # 50k SAR in range
     assert result.tier in {"A", "B"}
     assert result.recommendations
 

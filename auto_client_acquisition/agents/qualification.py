@@ -114,7 +114,7 @@ class QualificationAgent(BaseAgent):
         if answers:
             for q in questions:
                 key = q.bant
-                if key in answers and answers[key]:
+                if answers.get(key):
                     q.answered = True
                     q.answer = answers[key]
             authority_confirmed = bool(answers.get("authority"))

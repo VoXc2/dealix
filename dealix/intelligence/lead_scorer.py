@@ -11,22 +11,20 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
-from dealix.intelligence.arabic_nlp import arabic_ratio
-
 MODEL_PATH = Path(os.getenv("LEAD_SCORER_MODEL", "/opt/dealix/models/lead_scorer.pkl"))
 
 
 @dataclass
 class LeadFeatures:
-    company_size: int = 0          # employees
+    company_size: int = 0  # employees
     budget_usd: float = 0.0
-    urgency_score: float = 0.0     # 0-1 (from pain extractor)
+    urgency_score: float = 0.0  # 0-1 (from pain extractor)
     message_length: int = 0
     is_arabic: bool = False
     has_company_email: bool = False
     has_phone: bool = False
     pain_points_count: int = 0
-    sector_fit: float = 0.0        # 0-1 ICP sector match
+    sector_fit: float = 0.0  # 0-1 ICP sector match
 
     def to_vector(self) -> list[float]:
         return [
@@ -44,8 +42,8 @@ class LeadFeatures:
 
 @dataclass
 class ScoreResult:
-    score: float            # 0-1
-    tier: str               # cold / warm / hot
+    score: float  # 0-1
+    tier: str  # cold / warm / hot
     reasons: list[str] = field(default_factory=list)
     model: str = "heuristic"
 
@@ -55,26 +53,31 @@ def _heuristic_score(f: LeadFeatures) -> ScoreResult:
     reasons: list[str] = []
 
     if f.company_size >= 50:
-        score += 0.20; reasons.append("شركة بحجم مناسب")
+        score += 0.20
+        reasons.append("شركة بحجم مناسب")
     elif f.company_size >= 10:
         score += 0.10
 
     if f.budget_usd >= 10000:
-        score += 0.25; reasons.append("ميزانية جاهزة")
+        score += 0.25
+        reasons.append("ميزانية جاهزة")
     elif f.budget_usd >= 2000:
         score += 0.12
 
     if f.urgency_score >= 0.7:
-        score += 0.20; reasons.append("احتياج عاجل")
+        score += 0.20
+        reasons.append("احتياج عاجل")
     elif f.urgency_score >= 0.4:
         score += 0.10
 
     if f.has_company_email:
-        score += 0.08; reasons.append("إيميل شركة")
+        score += 0.08
+        reasons.append("إيميل شركة")
     if f.has_phone:
         score += 0.04
     if f.pain_points_count >= 2:
-        score += 0.08; reasons.append("نقاط ألم محددة")
+        score += 0.08
+        reasons.append("نقاط ألم محددة")
 
     score += 0.15 * f.sector_fit
     if f.sector_fit >= 0.7:
@@ -111,6 +114,8 @@ class LeadScorer:
             proba = self._model.predict_proba([features.to_vector()])[0][1]
             score = float(proba)
             tier = "hot" if score >= 0.7 else "warm" if score >= 0.45 else "cold"
-            return ScoreResult(score=round(score, 3), tier=tier, reasons=["ml_model"], model="sklearn")
+            return ScoreResult(
+                score=round(score, 3), tier=tier, reasons=["ml_model"], model="sklearn"
+            )
         except Exception:
             return _heuristic_score(features)

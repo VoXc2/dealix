@@ -41,7 +41,7 @@ class LeadRecord(Base):
     created_at: Mapped[datetime] = mapped_column(default=utcnow)
     updated_at: Mapped[datetime] = mapped_column(default=utcnow, onupdate=utcnow)
 
-    deals: Mapped[list["DealRecord"]] = relationship(back_populates="lead")
+    deals: Mapped[list[DealRecord]] = relationship(back_populates="lead")
 
 
 class DealRecord(Base):
@@ -57,11 +57,12 @@ class DealRecord(Base):
     created_at: Mapped[datetime] = mapped_column(default=utcnow)
     updated_at: Mapped[datetime] = mapped_column(default=utcnow, onupdate=utcnow)
 
-    lead: Mapped["LeadRecord"] = relationship(back_populates="deals")
+    lead: Mapped[LeadRecord] = relationship(back_populates="deals")
 
 
 class AgentRunRecord(Base):
     """Audit log — every agent invocation."""
+
     __tablename__ = "agent_runs"
 
     id: Mapped[str] = mapped_column(String(64), primary_key=True)

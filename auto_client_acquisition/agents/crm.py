@@ -83,9 +83,7 @@ class CRMAgent(BaseAgent):
         """Sync a lead to HubSpot: upsert contact, optionally create deal."""
         if not self._configured:
             self.log.warning("crm_not_configured")
-            return CRMSyncResult(
-                synced=False, reason="HubSpot not configured — skipped"
-            )
+            return CRMSyncResult(synced=False, reason="HubSpot not configured — skipped")
 
         try:
             contact_id = await self._upsert_contact(lead, fit_score)
@@ -93,9 +91,7 @@ class CRMAgent(BaseAgent):
             if create_deal and lead.company_name:
                 deal_id = await self._create_deal(lead, contact_id, fit_score)
 
-            self.log.info(
-                "crm_sync_ok", lead_id=lead.id, contact_id=contact_id, deal_id=deal_id
-            )
+            self.log.info("crm_sync_ok", lead_id=lead.id, contact_id=contact_id, deal_id=deal_id)
             return CRMSyncResult(synced=True, contact_id=contact_id, deal_id=deal_id)
         except Exception as e:
             self.log.exception("crm_sync_failed", error=str(e))
@@ -108,9 +104,7 @@ class CRMAgent(BaseAgent):
         retry=retry_if_exception_type((httpx.TimeoutException, httpx.HTTPStatusError)),
         reraise=True,
     )
-    async def _upsert_contact(
-        self, lead: Lead, fit: FitScore | None
-    ) -> str:
+    async def _upsert_contact(self, lead: Lead, fit: FitScore | None) -> str:
         """Create or update contact by email, return contact_id."""
         properties: dict[str, Any] = {
             "email": lead.contact_email or f"noemail+{lead.id}@ai-company.sa",
@@ -180,9 +174,7 @@ class CRMAgent(BaseAgent):
         retry=retry_if_exception_type((httpx.TimeoutException, httpx.HTTPStatusError)),
         reraise=True,
     )
-    async def _create_deal(
-        self, lead: Lead, contact_id: str, fit: FitScore | None
-    ) -> str:
+    async def _create_deal(self, lead: Lead, contact_id: str, fit: FitScore | None) -> str:
         """Create a deal and associate with contact."""
         stage = STATUS_TO_STAGE.get(lead.status, "appointmentscheduled")
         deal_name = f"{lead.company_name} — {lead.sector or 'Discovery'}"

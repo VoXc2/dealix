@@ -8,7 +8,7 @@ from __future__ import annotations
 from auto_client_acquisition.agents.crm import CRMAgent, CRMSyncResult
 from auto_client_acquisition.agents.intake import Lead
 
-__all__ = ["HubSpotClient", "CRMSyncResult"]
+__all__ = ["CRMSyncResult", "HubSpotClient"]
 
 
 class HubSpotClient:
@@ -22,4 +22,4 @@ class HubSpotClient:
 
     @property
     def configured(self) -> bool:
-        return self._agent._configured  # noqa: SLF001
+        return self._agent._configured

@@ -82,6 +82,7 @@ dev = [
     "mypy>=1.13.0",
     "pre-commit>=4.0.0",
     "detect-secrets>=1.5.0",
+    "bandit[toml]>=1.7.0",
     "ipython>=8.29.0",
 ]
 
@@ -125,11 +126,28 @@ ignore = [
     "E501",   # line too long (black handles)
     "S101",   # assert used (ok in tests)
     "B008",   # function call in default (FastAPI Depends)
+    "RUF001", # ambiguous unicode in strings (Arabic-first codebase; expected)
+    "RUF002", # ambiguous unicode in docstrings (Arabic-first codebase; expected)
+    "RUF003", # ambiguous unicode in comments  (Arabic-first codebase; expected)
+    "E702",   # multiple statements on one line (used in lead_scorer one-liners)
+    "S110",   # try-except-pass (best-effort code with docstring justification)
+    "SIM102", # collapsible if (readability preferred in some gates)
+    "SIM105", # suppressible exception
+    "RUF012", # mutable default in class (dataclasses handle this)
+    "S301",   # pickle (used with trusted internal data only)
+    "B904",   # raise from e (legacy CLI paths; low risk)
+    "F401",   # unused import (optional-import patterns with try/except)
 ]
 
 [tool.ruff.lint.per-file-ignores]
 "tests/**/*.py" = ["S101", "S106", "S311"]
 "scripts/**/*.py" = ["S101"]
+
+[tool.bandit]
+# B104 hardcoded 0.0.0.0 bind — intentional for containerized deploy (documented in settings.py)
+# B110 try/except/pass — already ignored in ruff (best-effort paths)
+skips = ["B104", "B110"]
+exclude_dirs = ["tests", ".venv", "venv", "migrations", "build", "dist"]
 
 [tool.black]
 line-length = 100

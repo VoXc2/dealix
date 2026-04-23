@@ -5,7 +5,7 @@ from __future__ import annotations
 import hashlib
 import re
 import uuid
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from typing import Any
 
 import phonenumbers
@@ -18,7 +18,7 @@ def generate_id(prefix: str = "id") -> str:
 
 def utcnow() -> datetime:
     """Current UTC time | الوقت الحالي UTC."""
-    return datetime.now(timezone.utc)
+    return datetime.now(UTC)
 
 
 def hash_text(text: str) -> str:

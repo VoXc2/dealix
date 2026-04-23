@@ -6,7 +6,7 @@ Model Router — intelligently routes tasks to LLM providers with fallback.
 from __future__ import annotations
 
 import logging
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from typing import Any
 
 from core.config.models import (
@@ -140,7 +140,9 @@ class ModelRouter:
                     self.usage[primary].fallbacks_triggered += 1
                     logger.warning(
                         "Task=%s fallback to provider=%s (primary=%s)",
-                        task.value, provider.value, primary.value,
+                        task.value,
+                        provider.value,
+                        primary.value,
                     )
 
                 response = await client.chat(
@@ -161,9 +163,7 @@ class ModelRouter:
                 )
                 continue
 
-        raise RuntimeError(
-            f"All providers failed for task {task.value}. Last error: {last_error}"
-        )
+        raise RuntimeError(f"All providers failed for task {task.value}. Last error: {last_error}")
 
     def usage_summary(self) -> dict[str, Any]:
         """Human-readable usage summary."""

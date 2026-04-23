@@ -17,10 +17,42 @@ import json
 import logging
 import os
 import time
+from collections.abc import Awaitable, Callable
 from dataclasses import asdict, dataclass, field
-from typing import Any, Awaitable, Callable
+from typing import Any
+
+from dealix.reliability.dlq import DLQ
 
 log = logging.getLogger(__name__)
+
+
+@dataclass
+class BreakerState:
+    """In-memory circuit breaker per connector."""
+
+    failures: int = 0
+    opened_at: float = 0.0
+    threshold: int = 5
+    cooldown_s: float = 30.0
+
+    def record_failure(self) -> None:
+        self.failures += 1
+        if self.failures >= self.threshold and not self.opened_at:
+            self.opened_at = time.time()
+
+    def record_success(self) -> None:
+        self.failures = 0
+        self.opened_at = 0.0
+
+    def is_open(self) -> bool:
+        if not self.opened_at:
+            return False
+        if time.time() - self.opened_at >= self.cooldown_s:
+            # half-open: reset and allow one trial
+            self.opened_at = 0.0
+            self.failures = 0
+            return False
+        return True
 
 
 @dataclass
@@ -65,10 +97,19 @@ def _idem_key(connector: str, operation: str, payload: Any) -> str:
 class ConnectorFacade:
     """Single entrypoint for connector calls with retry + policy + audit."""
 
-    def __init__(self, policies: dict[str, ConnectorPolicy] | None = None) -> None:
+    def __init__(
+        self,
+        policies: dict[str, ConnectorPolicy] | None = None,
+        dlq_queue: str = "outbound",
+    ) -> None:
         self.policies = {**DEFAULT_POLICIES, **(policies or {})}
         self._audit: list[ConnectorResult] = []
         self._max_audit = 1000
+        self._breakers: dict[str, BreakerState] = {}
+        self._dlq = DLQ(dlq_queue)
+
+    def _breaker(self, connector: str) -> BreakerState:
+        return self._breakers.setdefault(connector, BreakerState())
 
     def _policy(self, connector: str) -> ConnectorPolicy:
         return self.policies.get(connector, ConnectorPolicy())
@@ -86,8 +127,20 @@ class ConnectorFacade:
         policy = self._policy(connector)
         if not policy.allow:
             return ConnectorResult(
-                ok=False, connector=connector, operation=operation,
+                ok=False,
+                connector=connector,
+                operation=operation,
                 error="connector_disabled_by_policy",
+            )
+
+        breaker = self._breaker(connector)
+        if breaker.is_open():
+            log.warning("circuit_open connector=%s op=%s", connector, operation)
+            return ConnectorResult(
+                ok=False,
+                connector=connector,
+                operation=operation,
+                error=f"circuit_open_for_{int(breaker.cooldown_s)}s",
             )
 
         idem = idempotency_key or _idem_key(connector, operation, payload)
@@ -110,14 +163,20 @@ class ConnectorFacade:
                     duration_ms=(time.perf_counter() - start) * 1000,
                     idempotency_key=idem,
                 )
+                breaker.record_success()
                 self._record(res)
                 return res
-            except Exception as e:  # noqa: BLE001
+            except Exception as e:
                 last_err = e
                 backoff = policy.backoff_base * (2 ** (attempt - 1))
                 log.warning(
                     "connector_retry",
-                    extra={"connector": connector, "op": operation, "attempt": attempt, "err": str(e)[:200]},
+                    extra={
+                        "connector": connector,
+                        "op": operation,
+                        "attempt": attempt,
+                        "err": str(e)[:200],
+                    },
                 )
                 if attempt < policy.max_retries:
                     await asyncio.sleep(backoff)
@@ -131,6 +190,20 @@ class ConnectorFacade:
             duration_ms=(time.perf_counter() - start) * 1000,
             idempotency_key=idem,
         )
+        breaker.record_failure()
+        # Final failure → push to DLQ for operator replay
+        try:
+            self._dlq.push(
+                source=f"{connector}.{operation}",
+                payload={"payload": payload, "idempotency_key": idem},
+                error=res.error or "unknown",
+                attempts=policy.max_retries,
+                metadata={"duration_ms": res.duration_ms},
+            )
+        except Exception as _dlq_err:  # pragma: no cover
+            log.warning(
+                "dlq_push_failed source=%s.%s err=%s", connector, operation, str(_dlq_err)[:200]
+            )
         self._record(res)
         return res
 
@@ -150,8 +223,7 @@ class ConnectorFacade:
 
             conn = psycopg2.connect(dsn, connect_timeout=3)
             cur = conn.cursor()
-            cur.execute(
-                """
+            cur.execute("""
                 CREATE TABLE IF NOT EXISTS connector_audit (
                     id SERIAL PRIMARY KEY,
                     ts TIMESTAMPTZ DEFAULT now(),
@@ -159,8 +231,7 @@ class ConnectorFacade:
                     attempts INT, duration_ms DOUBLE PRECISION,
                     idempotency_key TEXT, error TEXT, meta JSONB
                 )
-                """
-            )
+                """)
             cur.execute(
                 """
                 INSERT INTO connector_audit
@@ -168,15 +239,21 @@ class ConnectorFacade:
                 VALUES (%s,%s,%s,%s,%s,%s,%s,%s)
                 """,
                 (
-                    r.connector, r.operation, r.ok, r.attempts,
-                    r.duration_ms, r.idempotency_key, r.error,
+                    r.connector,
+                    r.operation,
+                    r.ok,
+                    r.attempts,
+                    r.duration_ms,
+                    r.idempotency_key,
+                    r.error,
                     json.dumps(r.meta, default=str),
                 ),
             )
             conn.commit()
             conn.close()
-        except Exception:  # pragma: no cover
-            pass  # audit is best-effort
+        except Exception as _audit_err:  # pragma: no cover
+            # audit is best-effort — log for diagnosis but never fail the caller
+            log.debug("connector_audit_persist_failed err=%s", str(_audit_err)[:200])
 
     def audit_tail(self, n: int = 50) -> list[dict[str, Any]]:
         return [asdict(r) for r in self._audit[-n:]]
@@ -226,9 +303,9 @@ class HubSpotTwoWay:
                 f"{self.BASE}/crm/v3/objects/contacts/search",
                 headers=self._headers(),
                 json={
-                    "filterGroups": [{
-                        "filters": [{"propertyName": "email", "operator": "EQ", "value": email}]
-                    }],
+                    "filterGroups": [
+                        {"filters": [{"propertyName": "email", "operator": "EQ", "value": email}]}
+                    ],
                     "limit": 1,
                 },
             )

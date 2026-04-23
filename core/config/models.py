@@ -5,12 +5,11 @@ Model routing configuration — maps tasks to the best LLM provider.
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
-from enum import Enum
-from typing import Optional
+from dataclasses import dataclass
+from enum import StrEnum
 
 
-class Provider(str, Enum):
+class Provider(StrEnum):
     """Supported LLM providers | المزودون المدعومون."""
 
     ANTHROPIC = "anthropic"
@@ -21,7 +20,7 @@ class Provider(str, Enum):
     OPENAI = "openai"
 
 
-class Task(str, Enum):
+class Task(StrEnum):
     """Task categories — route each to the best provider | أنواع المهام."""
 
     # Reasoning / writing → Claude
@@ -76,23 +75,19 @@ TASK_ROUTING: dict[Task, Provider] = {
     Task.PROPOSAL: Provider.ANTHROPIC,
     Task.PAGE_COPY: Provider.ANTHROPIC,
     Task.ORCHESTRATION: Provider.ANTHROPIC,
-
     # Gemini — research, multimodal, sources
     Task.RESEARCH: Provider.GEMINI,
     Task.MULTIMODAL: Provider.GEMINI,
     Task.SOURCE_ANALYSIS: Provider.GEMINI,
-
     # Groq — fast, cheap
     Task.CLASSIFICATION: Provider.GROQ,
     Task.TAGGING: Provider.GROQ,
     Task.FAST_VARIANTS: Provider.GROQ,
     Task.TRIAGE: Provider.GROQ,
-
     # DeepSeek — code
     Task.CODE: Provider.DEEPSEEK,
     Task.IMPLEMENTATION: Provider.DEEPSEEK,
     Task.DEBUG: Provider.DEEPSEEK,
-
     # GLM — Arabic, Chinese, bulk
     Task.ARABIC_TASKS: Provider.GLM,
     Task.CHINESE_TASKS: Provider.GLM,
@@ -180,7 +175,7 @@ COST_HINTS: dict[Provider, tuple[float, float]] = {
 
 
 # Feature flags for Arabic-heavy content and token size thresholds
-ARABIC_THRESHOLD = 0.30      # ratio of Arabic chars → prefer GLM
+ARABIC_THRESHOLD = 0.30  # ratio of Arabic chars → prefer GLM
 SHORT_EXTRACTION_TOKENS = 2000  # below this for code/extraction → DeepSeek
 CRITICAL_TASKS = {
     Task.REASONING,
@@ -192,7 +187,7 @@ CRITICAL_TASKS = {
 def _arabic_ratio(text: str) -> float:
     if not text:
         return 0.0
-    arabic = sum(1 for c in text if "\u0600" <= c <= "\u06FF")
+    arabic = sum(1 for c in text if "\u0600" <= c <= "\u06ff")
     return arabic / max(len(text), 1)
 
 
@@ -242,9 +237,10 @@ def smart_route(
     return PROVIDER_MODELS[provider]
 
 
-def ordered_providers(task: Task, *, text_sample: str = "", critical: bool = False) -> list[Provider]:
+def ordered_providers(
+    task: Task, *, text_sample: str = "", critical: bool = False
+) -> list[Provider]:
     """Return primary + fallback chain after smart routing."""
     primary = smart_route(task, text_sample=text_sample, critical=critical).provider
     chain = [primary] + [p for p in get_fallbacks(primary) if p != primary]
     return chain
-

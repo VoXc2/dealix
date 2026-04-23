@@ -11,10 +11,10 @@ These drive policy evaluation, approval routing, and audit handling.
 
 from __future__ import annotations
 
-from enum import Enum
+from enum import Enum, StrEnum
 
 
-class ApprovalClass(str, Enum):
+class ApprovalClass(StrEnum):
     """Who must approve before this action executes.
 
     A0 — no approval (routine, reversible, non-sensitive)
@@ -42,7 +42,7 @@ class ApprovalClass(str, Enum):
         }[self]
 
 
-class ReversibilityClass(str, Enum):
+class ReversibilityClass(StrEnum):
     """How hard it is to undo this action.
 
     R0 — auto-reversible (draft email, internal note)
@@ -62,7 +62,7 @@ class ReversibilityClass(str, Enum):
         return self == ReversibilityClass.R3
 
 
-class SensitivityClass(str, Enum):
+class SensitivityClass(StrEnum):
     """Data / impact sensitivity of this action.
 
     S0 — public

@@ -14,7 +14,6 @@ import httpx
 from tenacity import retry, retry_if_exception_type, stop_after_attempt, wait_exponential
 
 from core.config.settings import get_settings
-from core.errors import IntegrationError
 from core.logging import get_logger
 
 logger = get_logger(__name__)
@@ -131,9 +130,7 @@ class EmailClient:
         if body_html:
             content.append({"type": "text/html", "value": body_html})
         if not content:
-            return EmailResult(
-                success=False, provider="sendgrid", error="No email body provided"
-            )
+            return EmailResult(success=False, provider="sendgrid", error="No email body provided")
 
         payload: dict[str, Any] = {
             "personalizations": personalizations,

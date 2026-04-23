@@ -12,7 +12,6 @@ Usage:
 from __future__ import annotations
 
 import asyncio
-import json
 from typing import Annotated
 
 import typer
@@ -157,6 +156,7 @@ def demo() -> None:
     """Run an end-to-end demo: Arabic lead → full pipeline."""
     _banner()
     from scripts.run_demo import main as demo_main
+
     asyncio.run(demo_main())
 
 
@@ -194,6 +194,7 @@ def menu() -> None:
 if __name__ == "__main__":
     # Default to menu if no args
     import sys
+
     if len(sys.argv) == 1:
         menu()
     else:

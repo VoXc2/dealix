@@ -51,8 +51,9 @@ class Analytics:
             row.status: row.count
             for row in (
                 await self.session.execute(
-                    select(LeadRecord.status, func.count(LeadRecord.id).label("count"))
-                    .group_by(LeadRecord.status)
+                    select(LeadRecord.status, func.count(LeadRecord.id).label("count")).group_by(
+                        LeadRecord.status
+                    )
                 )
             ).all()
         }
@@ -60,8 +61,9 @@ class Analytics:
             row.source: row.count
             for row in (
                 await self.session.execute(
-                    select(LeadRecord.source, func.count(LeadRecord.id).label("count"))
-                    .group_by(LeadRecord.source)
+                    select(LeadRecord.source, func.count(LeadRecord.id).label("count")).group_by(
+                        LeadRecord.source
+                    )
                 )
             ).all()
         }
@@ -69,8 +71,9 @@ class Analytics:
             (row.sector or "unknown"): row.count
             for row in (
                 await self.session.execute(
-                    select(LeadRecord.sector, func.count(LeadRecord.id).label("count"))
-                    .group_by(LeadRecord.sector)
+                    select(LeadRecord.sector, func.count(LeadRecord.id).label("count")).group_by(
+                        LeadRecord.sector
+                    )
                 )
             ).all()
         }
@@ -78,9 +81,7 @@ class Analytics:
         deals_total = (await self.session.scalar(select(func.count(DealRecord.id)))) or 0
         pipeline_sar = (await self.session.scalar(select(func.sum(DealRecord.amount)))) or 0.0
 
-        runs_total = (
-            await self.session.scalar(select(func.count(AgentRunRecord.id)))
-        ) or 0
+        runs_total = (await self.session.scalar(select(func.count(AgentRunRecord.id)))) or 0
         runs_errors = (
             await self.session.scalar(
                 select(func.count(AgentRunRecord.id)).where(AgentRunRecord.status == "error")

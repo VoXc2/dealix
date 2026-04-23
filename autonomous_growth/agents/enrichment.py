@@ -100,7 +100,7 @@ class EnrichmentAgent(BaseAgent):
                     f"technology, real_estate, healthcare, education, logistics, "
                     f"retail, finance, manufacturing, consulting, construction, "
                     f"oil_gas, tourism, other. "
-                    f"Respond with JSON: {{\"sector\": str, \"confidence\": 0-1, \"note\": str}}. "
+                    f'Respond with JSON: {{"sector": str, "confidence": 0-1, "note": str}}. '
                     f"If you don't know, say 'other' with low confidence."
                 )
                 response = await self.router.run(
@@ -113,9 +113,7 @@ class EnrichmentAgent(BaseAgent):
                 if parsed.get("sector") and parsed["sector"] != "other":
                     data.inferred_sector = parsed["sector"]
                     confidence = max(confidence, float(parsed.get("confidence", 0.3)))
-                    data.notes.append(
-                        f"Sector from name: {lead.company_name} → {parsed['sector']}"
-                    )
+                    data.notes.append(f"Sector from name: {lead.company_name} → {parsed['sector']}")
             except Exception as e:
                 self.log.warning("enrichment_llm_failed", error=str(e))
 

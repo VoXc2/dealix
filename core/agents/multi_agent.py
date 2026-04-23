@@ -50,13 +50,12 @@ class MultiAgentOrchestrator:
             ctx[key] = result
         return ctx
 
-    async def run_parallel(
-        self, calls: list[tuple[str, dict[str, Any]]]
-    ) -> dict[str, Any]:
+    async def run_parallel(self, calls: list[tuple[str, dict[str, Any]]]) -> dict[str, Any]:
         """
         Run multiple agents concurrently.
         نفّذ عدة وكلاء بالتوازي.
         """
+
         async def _run(key: str, kwargs: dict[str, Any]) -> tuple[str, Any]:
             agent = self.get(key)
             return key, await agent.run(**kwargs)

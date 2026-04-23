@@ -7,6 +7,7 @@ from dealix.classifications import (
     ReversibilityClass,
     SensitivityClass,
 )
+from dealix.contracts.audit_log import AuditAction, AuditEntry
 from dealix.contracts.decision import (
     DecisionOutput,
     Evidence,
@@ -17,7 +18,6 @@ from dealix.trust.approval import ApprovalCenter, ApprovalStatus
 from dealix.trust.audit import InMemoryAuditSink
 from dealix.trust.policy import PolicyDecision, PolicyEvaluator
 from dealix.trust.tool_verification import ToolVerificationLedger
-from dealix.contracts.audit_log import AuditAction, AuditEntry
 
 
 def _low_stakes_decision() -> DecisionOutput:

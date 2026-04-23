@@ -15,14 +15,14 @@ Per the blueprint, every high-stakes decision ships with a pack containing:
 from __future__ import annotations
 
 import uuid
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from typing import Any
 
 from pydantic import BaseModel, ConfigDict, Field
 
 
 def _utcnow_iso() -> str:
-    return datetime.now(timezone.utc).isoformat()
+    return datetime.now(UTC).isoformat()
 
 
 def _new_pack_id() -> str:
@@ -117,11 +117,7 @@ class EvidencePack(BaseModel):
     @property
     def is_complete(self) -> bool:
         """A pack is 'complete' when it has sources + model info + at least a draft memo."""
-        return (
-            len(self.sources) > 0
-            and self.model is not None
-            and self.memo is not None
-        )
+        return len(self.sources) > 0 and self.model is not None and self.memo is not None
 
     def to_json(self) -> str:
         return self.model_dump_json(indent=2)

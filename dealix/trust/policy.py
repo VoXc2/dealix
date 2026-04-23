@@ -11,9 +11,9 @@ designed so the internals can be swapped without changing callers.
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
-from enum import Enum
-from typing import Callable
+from collections.abc import Callable
+from dataclasses import dataclass
+from enum import StrEnum
 
 from dealix.classifications import (
     NEVER_AUTO_EXECUTE,
@@ -24,7 +24,7 @@ from dealix.classifications import (
 from dealix.contracts.decision import DecisionOutput, NextAction
 
 
-class PolicyDecision(str, Enum):
+class PolicyDecision(StrEnum):
     ALLOW = "allow"
     DENY = "deny"
     ESCALATE = "escalate"
@@ -54,9 +54,8 @@ class PolicyRule:
 # Built-in rules
 # ─────────────────────────────────────────────────────────────
 
-def _rule_never_auto_execute(
-    action: NextAction, decision: DecisionOutput
-) -> PolicyResult | None:
+
+def _rule_never_auto_execute(action: NextAction, decision: DecisionOutput) -> PolicyResult | None:
     if action.action_type in NEVER_AUTO_EXECUTE:
         return PolicyResult(
             decision=PolicyDecision.ESCALATE,
@@ -70,9 +69,7 @@ def _rule_never_auto_execute(
     return None
 
 
-def _rule_r3_blocks_auto(
-    action: NextAction, decision: DecisionOutput
-) -> PolicyResult | None:
+def _rule_r3_blocks_auto(action: NextAction, decision: DecisionOutput) -> PolicyResult | None:
     if action.reversibility_class == ReversibilityClass.R3:
         return PolicyResult(
             decision=PolicyDecision.ESCALATE,
@@ -102,9 +99,7 @@ def _rule_s3_requires_pdpl_check(
     if action.sensitivity_class == SensitivityClass.S3:
         # In a real deployment this checks the PDPL register for lawful basis
         # + purpose + consent status for the entity.
-        pdpl_checked = any(
-            p.policy_name == "pdpl_lawful_basis" for p in action.policy_requirements
-        )
+        pdpl_checked = any(p.policy_name == "pdpl_lawful_basis" for p in action.policy_requirements)
         if not pdpl_checked:
             return PolicyResult(
                 decision=PolicyDecision.ESCALATE,
@@ -187,9 +182,7 @@ class PolicyEvaluator:
     def __init__(self, rules: list[PolicyRule] | None = None) -> None:
         self.rules = rules if rules is not None else DEFAULT_RULES
 
-    def evaluate(
-        self, action: NextAction, decision: DecisionOutput
-    ) -> PolicyResult:
+    def evaluate(self, action: NextAction, decision: DecisionOutput) -> PolicyResult:
         """Evaluate one action; returns ALLOW if no rule matches."""
         for rule in self.rules:
             result = rule.evaluate(action, decision)

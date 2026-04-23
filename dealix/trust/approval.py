@@ -9,16 +9,17 @@ or a workflow runtime like Temporal).
 from __future__ import annotations
 
 import uuid
+from collections.abc import Callable
 from dataclasses import dataclass, field
-from datetime import datetime, timedelta, timezone
-from enum import Enum
-from typing import Any, Callable
+from datetime import UTC, datetime, timedelta
+from enum import StrEnum
+from typing import Any
 
 from dealix.classifications import ApprovalClass
 from dealix.contracts.decision import DecisionOutput, NextAction
 
 
-class ApprovalStatus(str, Enum):
+class ApprovalStatus(StrEnum):
     PENDING = "pending"
     GRANTED = "granted"
     REJECTED = "rejected"
@@ -41,7 +42,7 @@ class ApprovalRequest:
     granted_by: list[str] = field(default_factory=list)
     rejected_by: str | None = None
     reject_reason: str | None = None
-    created_at: datetime = field(default_factory=lambda: datetime.now(timezone.utc))
+    created_at: datetime = field(default_factory=lambda: datetime.now(UTC))
     expires_at: datetime | None = None
     resolved_at: datetime | None = None
     metadata: dict[str, Any] = field(default_factory=dict)
@@ -99,7 +100,7 @@ class ApprovalCenter:
             required_approvers=required_approvers,
             approvers_needed=required_approvers,
             evidence_pack_id=evidence_pack_id,
-            expires_at=datetime.now(timezone.utc) + ttl,
+            expires_at=datetime.now(UTC) + ttl,
         )
         self._requests[request.request_id] = request
         if self._notifier:
@@ -120,31 +121,25 @@ class ApprovalCenter:
         request.approvers_needed = max(0, request.approvers_needed - 1)
         if request.approvers_needed == 0:
             request.status = ApprovalStatus.GRANTED
-            request.resolved_at = datetime.now(timezone.utc)
+            request.resolved_at = datetime.now(UTC)
         return request
 
-    def reject(
-        self, request_id: str, approver_id: str, reason: str = ""
-    ) -> ApprovalRequest:
+    def reject(self, request_id: str, approver_id: str, reason: str = "") -> ApprovalRequest:
         request = self._get(request_id)
         if request.status != ApprovalStatus.PENDING:
             return request
         request.status = ApprovalStatus.REJECTED
         request.rejected_by = approver_id
         request.reject_reason = reason
-        request.resolved_at = datetime.now(timezone.utc)
+        request.resolved_at = datetime.now(UTC)
         return request
 
     def check_timeouts(self) -> list[ApprovalRequest]:
         """Mark expired pending requests as TIMED_OUT. Returns the flipped ones."""
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
         flipped: list[ApprovalRequest] = []
         for req in self._requests.values():
-            if (
-                req.status == ApprovalStatus.PENDING
-                and req.expires_at
-                and req.expires_at < now
-            ):
+            if req.status == ApprovalStatus.PENDING and req.expires_at and req.expires_at < now:
                 req.status = ApprovalStatus.TIMED_OUT
                 req.resolved_at = now
                 flipped.append(req)

@@ -36,8 +36,7 @@ st.sidebar.markdown("**v3.0.0**")
 st.sidebar.markdown(f"API: `{os.getenv('DEALIX_API_URL', 'http://127.0.0.1:8001')}`")
 
 st.title("لوحة تحكم Dealix")
-st.markdown(
-    """
+st.markdown("""
     مرحباً بك في لوحة تحكم Dealix.  اختر من القائمة الجانبية:
 
     - **Overview** — KPIs، حالة النظام، إنذارات
@@ -46,8 +45,7 @@ st.markdown(
     - **Evidence** — سجل القرارات والدليل
     - **Costs** — تحليل إنفاق LLM
     - **Audit** — سجل التكاملات والأحداث
-    """
-)
+    """)
 
 col1, col2, col3 = st.columns(3)
 col1.metric("عملاء هذا الشهر", "—", help="يتحدّث من /api/v1/admin/stats")

@@ -10,7 +10,7 @@ Every event in the platform carries this envelope for:
 from __future__ import annotations
 
 import uuid
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from typing import Any, Literal
 
 from pydantic import BaseModel, ConfigDict, Field
@@ -21,7 +21,7 @@ ActorType = Literal["system", "agent", "human", "workflow"]
 
 
 def _utcnow_iso() -> str:
-    return datetime.now(timezone.utc).isoformat()
+    return datetime.now(UTC).isoformat()
 
 
 def _new_event_id() -> str:
@@ -43,9 +43,7 @@ class EventEnvelope(BaseModel):
     source: str = Field(..., description="e.g. 'dealix/phase8/intake'")
     type: str = Field(..., description="e.g. 'dealix.lead.intaken'")
     datacontenttype: str = "application/json"
-    dataschema: str | None = Field(
-        None, description="URI of the JSON Schema for `data`"
-    )
+    dataschema: str | None = Field(None, description="URI of the JSON Schema for `data`")
     time: str = Field(default_factory=_utcnow_iso)
     subject: str | None = Field(None, description="Subject within the source (e.g. lead_id)")
 
