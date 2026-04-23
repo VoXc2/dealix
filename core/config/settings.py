@@ -29,9 +29,9 @@ class Settings(BaseSettings):
     )
 
     # ── App ─────────────────────────────────────────────────────
-    app_name: str = "AI Company Saudi Arabia"
-    app_env: Environment = "development"
+    app_name: str = "Dealix"
     app_version: str = "3.0.0"
+    app_env: Environment = "development"
     app_debug: bool = False
     app_host: str = "0.0.0.0"  # noqa: S104 — intentional for containerized deploy
     app_port: int = 8000
