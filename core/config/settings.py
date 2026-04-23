@@ -90,9 +90,9 @@ class Settings(BaseSettings):
         if not v:
             return "postgresql+asyncpg://ai_user:ai_password@localhost:5432/ai_company"
         if v.startswith("postgres://"):
-            v = "postgresql://" + v[len("postgres://"):]
+            v = "postgresql://" + v[len("postgres://") :]
         if v.startswith("postgresql://") and "+asyncpg" not in v:
-            v = "postgresql+asyncpg://" + v[len("postgresql://"):]
+            v = "postgresql+asyncpg://" + v[len("postgresql://") :]
         return v
 
     # ── WhatsApp Business ───────────────────────────────────────
