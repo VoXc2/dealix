@@ -69,8 +69,9 @@ class IdempotencyStore:
             # SET NX EX — atomic check-and-set
             result = self._redis.set(self._key(key), "1", nx=True, ex=ttl_seconds)
             return bool(result)
-        except Exception as e:  # pragma: no cover
-            log.warning("idem_mark_failed key=%s err=%s", key, e)
+        except Exception as exc:  # pragma: no cover
+            key_fp = hashlib.sha256(key.encode("utf-8")).hexdigest()[:12]
+            log.warning("idem_mark_failed key_fp=%s err_type=%s", key_fp, type(exc).__name__)
             return True
 
     def claim(self, key: str, ttl_seconds: int = 86400) -> bool:
