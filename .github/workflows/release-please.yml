@@ -1,6 +1,11 @@
 name: Release Please
 
+# NOTE: Default GITHUB_TOKEN can't create PRs unless repo setting
+# "Allow GitHub Actions to create and approve pull requests" is enabled.
+# Set repo variable ENABLE_RELEASE_PLEASE=true (or provide RELEASE_PLEASE_TOKEN)
+# to activate. Guarded so it doesn't mark main red on every push.
 on:
+  workflow_dispatch:
   push:
     branches: [main]
 
@@ -11,9 +16,11 @@ permissions:
 jobs:
   release-please:
     runs-on: ubuntu-latest
+    if: ${{ vars.ENABLE_RELEASE_PLEASE == 'true' }}
     steps:
       - uses: googleapis/release-please-action@v4
         with:
+          token: ${{ secrets.RELEASE_PLEASE_TOKEN || secrets.GITHUB_TOKEN }}
           release-type: python
           package-name: dealix
           changelog-types: |
