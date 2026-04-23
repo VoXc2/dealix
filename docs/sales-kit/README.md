@@ -1,6 +1,6 @@
 # Sales Kit — Dealix
 
-**الحزمة الكاملة:** من أول رسالة لنمو مستدام و seed round. 26 ملف محتوى + README.
+**الحزمة الكاملة:** من أول رسالة لنمو مستدام، seed round، وإدارة الأزمات. 31 ملف محتوى + README.
 
 ## ابدأ من هنا
 
@@ -54,6 +54,13 @@
 - [dealix_video_scripts.md](./dealix_video_scripts.md) — 🆕 60s + 3min + 10min scripts
 - [dealix_saudi_business_setup.md](./dealix_saudi_business_setup.md) — 🆕 CR/VAT/ZATCA/بنك
 
+### 🛡️ طبقة الدفاع والجاهزية (v4) 🆕
+- [dealix_investor_faq.md](./dealix_investor_faq.md) — 🆕 20 سؤال VC متوقع + ردود جاهزة
+- [dealix_hiring_plan.md](./dealix_hiring_plan.md) — 🆕 خطة توظيف 12 شهر (1 → 8 أشخاص)
+- [dealix_data_room.md](./dealix_data_room.md) — 🆕 فهرس due diligence كامل
+- [dealix_brand_guidelines.md](./dealix_brand_guidelines.md) — 🆕 الهوية البصرية (ألوان، خطوط، voice)
+- [dealix_crisis_playbook.md](./dealix_crisis_playbook.md) — 🆕 6 سيناريوهات أزمة + response plans
+
 ---
 
 ## 🗺️ خريطة حسب المرحلة
@@ -75,6 +82,10 @@
 | التخطيط الطويل | `product_roadmap` + `video_scripts` |
 | التأسيس الرسمي | `saudi_business_setup` |
 | المرجع الموحّد | `MASTER_PLAYBOOK` |
+| مقابلات VCs | `investor_faq` + `data_room` |
+| بناء الفريق | `hiring_plan` |
+| الهوية البصرية | `brand_guidelines` |
+| إدارة الأزمات | `crisis_playbook` |
 
 ---
 
@@ -108,4 +119,4 @@ Railway 12د
 
 ---
 
-*آخر تحديث: 2026-04-23 | Version 3 (Strategic Layer)*
+*آخر تحديث: 2026-04-23 | Version 4 (Defense & Readiness Layer)*
