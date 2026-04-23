@@ -3,14 +3,13 @@ from __future__ import annotations
 
 import os
 from functools import lru_cache
-from typing import Optional
 
 import redis.asyncio as aioredis
 
 from dealix.governance import ApprovalGate
 
-_redis: Optional[aioredis.Redis] = None
-_gate: Optional[ApprovalGate] = None
+_redis: aioredis.Redis | None = None
+_gate: ApprovalGate | None = None
 
 
 def _redis_url() -> str:

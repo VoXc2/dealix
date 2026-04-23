@@ -1,9 +1,9 @@
 """Observability: cost tracking, OpenTelemetry tracing, Sentry."""
 
 from dealix.observability.cost_tracker import (
+    MODEL_PRICES,
     CostEntry,
     CostTracker,
-    MODEL_PRICES,
     estimate_cost_usd,
 )
 from dealix.observability.otel import (
@@ -17,9 +17,9 @@ from dealix.observability.otel import (
 from dealix.observability.sentry import setup_sentry
 
 __all__ = [
+    "MODEL_PRICES",
     "CostEntry",
     "CostTracker",
-    "MODEL_PRICES",
     "agent_span",
     "estimate_cost_usd",
     "instrument_fastapi",

@@ -23,7 +23,7 @@ os.environ.setdefault("GLM_API_KEY", "test-glm-key")
 os.environ.setdefault("GOOGLE_API_KEY", "test-google-key")
 
 
-from core.llm.base import LLMResponse  # noqa: E402
+from core.llm.base import LLMResponse
 
 
 @pytest.fixture

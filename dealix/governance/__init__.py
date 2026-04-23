@@ -1,4 +1,4 @@
 """Dealix governance — approvals, policy, audit."""
-from dealix.governance.approvals import ApprovalGate, ApprovalRequest, ApprovalDecision
+from dealix.governance.approvals import ApprovalDecision, ApprovalGate, ApprovalRequest
 
-__all__ = ["ApprovalGate", "ApprovalRequest", "ApprovalDecision"]
+__all__ = ["ApprovalDecision", "ApprovalGate", "ApprovalRequest"]

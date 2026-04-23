@@ -2,7 +2,7 @@
 # ─────────────────────────────────────────────────────────────
 # setup_uptimerobot.sh — إنشاء monitors + alert contacts تلقائياً
 # Usage:
-#   export UPTIMEROBOT_API_KEY="u1234567-abc..."
+#   export UPTIMEROBOT_API_KEY="<your-uptimerobot-api-key-here>"
 #   export ALERT_EMAIL="sami.assiri11@gmail.com"
 #   # optional SMS (Twilio/Clicksend integrated in UptimeRobot):
 #   # export ALERT_SMS="+9665XXXXXXXX"

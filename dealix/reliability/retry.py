@@ -5,9 +5,10 @@ from __future__ import annotations
 
 import asyncio
 import logging
-import random
+import secrets
 import time
-from typing import Any, Awaitable, Callable, TypeVar
+from collections.abc import Awaitable, Callable
+from typing import Any, TypeVar
 
 from dealix.reliability.dlq import DLQ
 
@@ -42,7 +43,8 @@ async def retry_with_backoff(
             if attempt >= max_attempts:
                 break
             delay = min(max_delay, base_delay * (2 ** (attempt - 1)))
-            delay += random.uniform(0, jitter * delay)
+            # jitter is UX, not crypto — but use secrets to appease S311
+            delay += (secrets.randbelow(1000) / 1000.0) * (jitter * delay)
             log.warning(
                 "retry attempt=%d/%d delay=%.2fs source=%s err=%s",
                 attempt, max_attempts, delay, dlq_source, str(e)[:200],

@@ -25,7 +25,7 @@ log = logging.getLogger(__name__)
 
 router = APIRouter(tags=["pricing"])
 
-# Prices in halalas (SAR × 100). Hidden from landing — only exposed when a lead qualifies.
+# Prices in halalas (SAR x 100). Hidden from landing — only exposed when a lead qualifies.
 PLANS: dict[str, dict[str, Any]] = {
     "starter":      {"name": "Starter",      "amount_halalas": 99900,   "monthly": True},   # 999 SAR/mo
     "growth":       {"name": "Growth",       "amount_halalas": 299900,  "monthly": True},   # 2,999 SAR/mo
@@ -79,7 +79,10 @@ async def create_checkout(req: Request) -> dict[str, Any]:
         )
     except Exception as e:
         log.exception("moyasar_invoice_failed plan=%s email=%s", plan, email)
-        raise HTTPException(status_code=502, detail=f"payment_provider_error: {str(e)[:200]}")
+        raise HTTPException(
+            status_code=502,
+            detail=f"payment_provider_error: {str(e)[:200]}",
+        ) from e
 
     return {
         "invoice_id": invoice.get("id"),
@@ -98,8 +101,8 @@ async def moyasar_webhook(req: Request) -> dict[str, Any]:
     """
     try:
         body = await req.json()
-    except Exception:
-        raise HTTPException(status_code=400, detail="invalid_json")
+    except Exception as e:
+        raise HTTPException(status_code=400, detail="invalid_json") from e
 
     if not verify_webhook(body):
         log.warning("moyasar_webhook_bad_signature")

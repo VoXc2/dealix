@@ -13,7 +13,7 @@ from __future__ import annotations
 
 import hmac
 import os
-from typing import Awaitable, Callable, Iterable
+from collections.abc import Awaitable, Callable, Iterable
 
 from fastapi import HTTPException, Request, status
 from starlette.middleware.base import BaseHTTPMiddleware
@@ -54,10 +54,7 @@ def verify_api_key(key: str | None, allowed: Iterable[str] | None = None) -> boo
     if not allowed_keys:
         # No keys configured → allow (dev mode). Production MUST set API_KEYS.
         return True
-    for k in allowed_keys:
-        if hmac.compare_digest(k, key):
-            return True
-    return False
+    return any(hmac.compare_digest(k, key) for k in allowed_keys)
 
 
 class APIKeyMiddleware(BaseHTTPMiddleware):

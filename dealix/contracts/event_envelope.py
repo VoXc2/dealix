@@ -10,7 +10,7 @@ Every event in the platform carries this envelope for:
 from __future__ import annotations
 
 import uuid
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from typing import Any, Literal
 
 from pydantic import BaseModel, ConfigDict, Field
@@ -21,7 +21,7 @@ ActorType = Literal["system", "agent", "human", "workflow"]
 
 
 def _utcnow_iso() -> str:
-    return datetime.now(timezone.utc).isoformat()
+    return datetime.now(UTC).isoformat()
 
 
 def _new_event_id() -> str:

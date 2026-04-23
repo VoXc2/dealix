@@ -5,8 +5,8 @@ FastAPI application entry point.
 
 from __future__ import annotations
 
+from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
-from typing import AsyncIterator
 
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
@@ -79,7 +79,7 @@ def create_app() -> FastAPI:
 
     # ── Observability ──────────────────────────────────────
     try:
-        from dealix.observability import setup_tracing, setup_sentry, instrument_fastapi
+        from dealix.observability import instrument_fastapi, setup_sentry, setup_tracing
         setup_sentry()
         setup_tracing(service_name=settings.app_name, version=settings.app_version)
         instrument_fastapi(app)

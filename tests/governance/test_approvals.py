@@ -1,19 +1,17 @@
 """Unit tests for ApprovalGate — fake Redis, no network."""
 from __future__ import annotations
 
-import asyncio
 import time
 
 import pytest
 
 from dealix.governance.approvals import (
-    ApprovalDecision,
-    ApprovalGate,
-    ApprovalStatus,
-    CRITICAL_ACTIONS,
     OUTBOUND_THRESHOLD,
     PENDING_TTL_SECONDS,
     RISK_THRESHOLD,
+    ApprovalDecision,
+    ApprovalGate,
+    ApprovalStatus,
 )
 
 

@@ -22,8 +22,8 @@ from __future__ import annotations
 
 import json
 import time
-from dataclasses import dataclass, field
-from typing import Any, Optional, TYPE_CHECKING
+from dataclasses import dataclass
+from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
     import redis.asyncio as aioredis
@@ -80,7 +80,7 @@ class SemanticCache:
 
     def __init__(
         self,
-        redis: "aioredis.Redis",
+        redis: aioredis.Redis,
         *,
         namespace: str = "dealix:cache",
         threshold: float = DEFAULT_THRESHOLD,
@@ -96,10 +96,11 @@ class SemanticCache:
 
     # ─── public API ──────────────────────────────────────────────
 
-    async def lookup(self, query: str) -> Optional[CacheHit]:
+    async def lookup(self, query: str) -> CacheHit | None:
         """Return a CacheHit if a semantically similar entry exists."""
-        from dealix.caching.embeddings import LocalEmbedder
         import numpy as np
+
+        from dealix.caching.embeddings import LocalEmbedder
 
         try:
             q_vec = LocalEmbedder.embed(query)
@@ -115,7 +116,7 @@ class SemanticCache:
             payloads = await pipe.execute()
 
             best_sim = 0.0
-            best_hit: Optional[CacheHit] = None
+            best_hit: CacheHit | None = None
             for raw in payloads:
                 if not raw:
                     continue

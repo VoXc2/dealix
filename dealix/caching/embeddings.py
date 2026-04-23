@@ -44,7 +44,7 @@ class LocalEmbedder:
         return hashlib.sha256(text.encode("utf-8")).hexdigest()[:16]
 
     @classmethod
-    def embed(cls, text: str) -> "np.ndarray":
+    def embed(cls, text: str) -> np.ndarray:
         """Return a 384-dim float32 vector for ``text`` (L2-normalized)."""
         import numpy as np
 
@@ -53,7 +53,7 @@ class LocalEmbedder:
         return vec.astype(np.float32)
 
     @classmethod
-    def similarity(cls, a: "np.ndarray", b: "np.ndarray") -> float:
+    def similarity(cls, a: np.ndarray, b: np.ndarray) -> float:
         """Cosine similarity between two already-normalized vectors."""
         import numpy as np
 

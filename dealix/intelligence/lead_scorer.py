@@ -11,8 +11,6 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
-from dealix.intelligence.arabic_nlp import arabic_ratio
-
 MODEL_PATH = Path(os.getenv("LEAD_SCORER_MODEL", "/opt/dealix/models/lead_scorer.pkl"))
 
 

@@ -11,14 +11,13 @@ from dealix.classifications import (
     SensitivityClass,
     classify,
 )
+from dealix.contracts.audit_log import AuditAction, AuditEntry
 from dealix.contracts.decision import (
     DecisionOutput,
     Evidence,
     NextAction,
-    PolicyRequirement,
 )
 from dealix.contracts.event_envelope import EventEnvelope
-from dealix.contracts.audit_log import AuditAction, AuditEntry
 
 
 # ── Classifications ────────────────────────────────────────────

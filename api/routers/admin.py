@@ -2,17 +2,17 @@
 
 from __future__ import annotations
 
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 from typing import Any
 
 from fastapi import APIRouter, HTTPException, Query
 from pydantic import BaseModel, Field
 
-from dealix.caching.cache_stats import get_global_stats
-from dealix.governance import ApprovalDecision, ApprovalGate
-from dealix.observability.cost_tracker import CostTracker
-from dealix.reliability.dlq import DLQ, CRM_SYNC_DLQ, ENRICHMENT_DLQ, OUTBOUND_DLQ, WEBHOOKS_DLQ
 from api.deps import get_approval_gate
+from dealix.caching.cache_stats import get_global_stats
+from dealix.governance import ApprovalDecision
+from dealix.observability.cost_tracker import CostTracker
+from dealix.reliability.dlq import CRM_SYNC_DLQ, DLQ, ENRICHMENT_DLQ, OUTBOUND_DLQ, WEBHOOKS_DLQ
 
 router = APIRouter(prefix="/api/v1/admin", tags=["admin"])
 
@@ -25,7 +25,7 @@ async def costs(
     group_by: str = Query("model", regex="^(model|provider|task)$"),
 ) -> dict[str, Any]:
     """Aggregate LLM spend over the last N hours."""
-    since = datetime.now(timezone.utc) - timedelta(hours=window_hours)
+    since = datetime.now(UTC) - timedelta(hours=window_hours)
     entries = _tracker.query_window(since=since)
 
     total_usd = sum(e.cost_usd for e in entries)

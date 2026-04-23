@@ -2,8 +2,6 @@
 
 from __future__ import annotations
 
-import pytest
-
 from core.config.models import (
     FALLBACK_CHAIN,
     TASK_ROUTING,

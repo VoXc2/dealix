@@ -77,16 +77,21 @@ async def capture_event(
         return False
 
 
+_BACKGROUND_TASKS: set[asyncio.Task] = set()
+
+
 def capture_event_sync(event: str, distinct_id: str, properties: dict[str, Any] | None = None) -> None:
     """Schedule an async capture without awaiting (best-effort)."""
     try:
         loop = asyncio.get_event_loop()
         if loop.is_running():
-            loop.create_task(capture_event(event, distinct_id, properties))
+            task = loop.create_task(capture_event(event, distinct_id, properties))
+            _BACKGROUND_TASKS.add(task)
+            task.add_done_callback(_BACKGROUND_TASKS.discard)
         else:
             loop.run_until_complete(capture_event(event, distinct_id, properties))
-    except Exception:  # pragma: no cover
-        pass
+    except Exception as e:  # pragma: no cover
+        log.debug("posthog_capture_sync_failed err=%s", e)
 
 
 async def get_feature_flag(

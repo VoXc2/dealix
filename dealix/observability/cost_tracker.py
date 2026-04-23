@@ -24,8 +24,8 @@ import logging
 import uuid
 from collections import deque
 from dataclasses import asdict, dataclass, field
-from datetime import datetime, timezone
-from typing import Any, TYPE_CHECKING
+from datetime import UTC, datetime
+from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
     import asyncpg  # type: ignore
@@ -93,7 +93,7 @@ class CostEntry:
     latency_ms: float | None = None
     status: str = "ok"  # ok | error
     error: str | None = None
-    created_at: datetime = field(default_factory=lambda: datetime.now(tz=timezone.utc))
+    created_at: datetime = field(default_factory=lambda: datetime.now(tz=UTC))
 
     def to_dict(self) -> dict[str, Any]:
         d = asdict(self)
@@ -145,7 +145,7 @@ class CostTracker:
         buffer_size: int = 1000,
     ) -> None:
         self.dsn = dsn
-        self._pool: "asyncpg.Pool | None" = None
+        self._pool: asyncpg.Pool | None = None
         self._buffer: deque[CostEntry] = deque(maxlen=buffer_size)
         self._schema_ready = False
         self._lock = asyncio.Lock()
@@ -248,7 +248,7 @@ class CostTracker:
         await self._ensure_pool()
         if self._pool is None:
             return []
-        until = until or datetime.now(tz=timezone.utc)
+        until = until or datetime.now(tz=UTC)
         async with self._pool.acquire() as conn:
             rows = await conn.fetch(
                 """SELECT * FROM llm_calls

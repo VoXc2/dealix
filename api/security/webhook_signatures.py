@@ -11,7 +11,7 @@ import base64
 import hashlib
 import hmac
 import os
-from typing import Mapping
+from collections.abc import Mapping
 
 
 def _get_secret(env_var: str, override: str | None = None) -> str | None:

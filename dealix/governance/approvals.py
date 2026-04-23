@@ -26,12 +26,11 @@ from __future__ import annotations
 import json
 import time
 import uuid
-from dataclasses import dataclass, asdict, field
-from enum import Enum
-from typing import Any, Optional
+from dataclasses import asdict, dataclass
+from enum import StrEnum
+from typing import Any
 
 import redis.asyncio as redis
-
 
 OUTBOUND_THRESHOLD = 50  # عدد المستلمين الذي فوقه نطلب موافقة
 RISK_THRESHOLD = 0.7
@@ -49,7 +48,7 @@ CRITICAL_ACTIONS = frozenset({
 })
 
 
-class ApprovalStatus(str, Enum):
+class ApprovalStatus(StrEnum):
     PENDING = "pending"
     AUTO_APPROVED = "auto_approved"
     APPROVED = "approved"
@@ -68,7 +67,7 @@ class ApprovalRequest:
     status: ApprovalStatus
     reason: str = ""
     decided_by: str = ""
-    decided_at: Optional[float] = None
+    decided_at: float | None = None
     expires_at: float = 0.0
 
     def to_json(self) -> str:
@@ -77,7 +76,7 @@ class ApprovalRequest:
         return json.dumps(d, ensure_ascii=False)
 
     @classmethod
-    def from_json(cls, raw: str) -> "ApprovalRequest":
+    def from_json(cls, raw: str) -> ApprovalRequest:
         d = json.loads(raw)
         d["status"] = ApprovalStatus(d["status"])
         return cls(**d)
@@ -155,7 +154,7 @@ class ApprovalGate:
             await self.r.zadd(self.PENDING_INDEX, {req.id: now})
         return req
 
-    async def get(self, request_id: str) -> Optional[ApprovalRequest]:
+    async def get(self, request_id: str) -> ApprovalRequest | None:
         raw = await self.r.get(self._key(request_id))
         if not raw:
             return None
@@ -183,7 +182,7 @@ class ApprovalGate:
                 out.append(req)
         return out
 
-    async def decide(self, decision: ApprovalDecision) -> Optional[ApprovalRequest]:
+    async def decide(self, decision: ApprovalDecision) -> ApprovalRequest | None:
         req = await self.get(decision.request_id)
         if not req:
             return None

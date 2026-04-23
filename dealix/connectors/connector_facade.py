@@ -17,8 +17,9 @@ import json
 import logging
 import os
 import time
+from collections.abc import Awaitable, Callable
 from dataclasses import asdict, dataclass, field
-from typing import Any, Awaitable, Callable
+from typing import Any
 
 from dealix.reliability.dlq import DLQ
 
@@ -160,7 +161,7 @@ class ConnectorFacade:
                 breaker.record_success()
                 self._record(res)
                 return res
-            except Exception as e:  # noqa: BLE001
+            except Exception as e:
                 last_err = e
                 backoff = policy.backoff_base * (2 ** (attempt - 1))
                 log.warning(
@@ -189,8 +190,9 @@ class ConnectorFacade:
                 attempts=policy.max_retries,
                 metadata={"duration_ms": res.duration_ms},
             )
-        except Exception:  # pragma: no cover
-            pass
+        except Exception as _dlq_err:  # pragma: no cover
+            log.warning("dlq_push_failed source=%s.%s err=%s",
+                        connector, operation, str(_dlq_err)[:200])
         self._record(res)
         return res
 
@@ -235,8 +237,9 @@ class ConnectorFacade:
             )
             conn.commit()
             conn.close()
-        except Exception:  # pragma: no cover
-            pass  # audit is best-effort
+        except Exception as _audit_err:  # pragma: no cover
+            # audit is best-effort — log for diagnosis but never fail the caller
+            log.debug("connector_audit_persist_failed err=%s", str(_audit_err)[:200])
 
     def audit_tail(self, n: int = 50) -> list[dict[str, Any]]:
         return [asdict(r) for r in self._audit[-n:]]

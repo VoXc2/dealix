@@ -68,7 +68,7 @@ async def test_governed_pipeline_escalates_high_stakes_actions(
     ]
     # If a proposal was generated, its send action must not be ALLOW
     if proposal_sends:
-        for d, a, r in proposal_sends:
+        for _d, _a, r in proposal_sends:
             assert r.decision != PolicyDecision.ALLOW, (
                 f"proposal_send was {r.decision.value} — should be ESCALATE"
             )

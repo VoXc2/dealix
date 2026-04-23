@@ -11,9 +11,9 @@ designed so the internals can be swapped without changing callers.
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
-from enum import Enum
-from typing import Callable
+from collections.abc import Callable
+from dataclasses import dataclass
+from enum import StrEnum
 
 from dealix.classifications import (
     NEVER_AUTO_EXECUTE,
@@ -24,7 +24,7 @@ from dealix.classifications import (
 from dealix.contracts.decision import DecisionOutput, NextAction
 
 
-class PolicyDecision(str, Enum):
+class PolicyDecision(StrEnum):
     ALLOW = "allow"
     DENY = "deny"
     ESCALATE = "escalate"

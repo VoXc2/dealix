@@ -11,7 +11,7 @@ Per the blueprint, no critical output leaves the Decision Plane without:
 from __future__ import annotations
 
 import uuid
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from typing import Any, Literal
 
 from pydantic import BaseModel, ConfigDict, Field, model_validator
@@ -20,7 +20,7 @@ from dealix.classifications import ApprovalClass, ReversibilityClass, Sensitivit
 
 
 def _utcnow_iso() -> str:
-    return datetime.now(timezone.utc).isoformat()
+    return datetime.now(UTC).isoformat()
 
 
 def _new_decision_id() -> str:
@@ -116,7 +116,7 @@ class DecisionOutput(BaseModel):
 
     # ── Validators ──────────────────────────────────────────────
     @model_validator(mode="after")
-    def _evidence_required_for_high_stakes(self) -> "DecisionOutput":
+    def _evidence_required_for_high_stakes(self) -> DecisionOutput:
         """A-class A2+ or R3 decisions MUST carry at least one evidence item."""
         high_stakes = (
             self.approval_class in (ApprovalClass.A2, ApprovalClass.A3)
