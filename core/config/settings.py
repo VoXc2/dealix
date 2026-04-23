@@ -78,6 +78,23 @@ class Settings(BaseSettings):
     redis_url: str = "redis://localhost:6379/0"
     mongodb_uri: str = "mongodb://localhost:27017/ai_company"
 
+    @field_validator("database_url", mode="before")
+    @classmethod
+    def _ensure_asyncpg_driver(cls, v: str | None) -> str:
+        """Normalize Railway/Heroku postgres://… URLs to postgresql+asyncpg://…
+
+        Managed Postgres providers (Railway, Heroku, Render) export the URL
+        as ``postgres://`` or ``postgresql://``; SQLAlchemy async needs the
+        explicit ``postgresql+asyncpg://`` driver prefix.
+        """
+        if not v:
+            return "postgresql+asyncpg://ai_user:ai_password@localhost:5432/ai_company"
+        if v.startswith("postgres://"):
+            v = "postgresql://" + v[len("postgres://"):]
+        if v.startswith("postgresql://") and "+asyncpg" not in v:
+            v = "postgresql+asyncpg://" + v[len("postgresql://"):]
+        return v
+
     # ── WhatsApp Business ───────────────────────────────────────
     whatsapp_access_token: SecretStr | None = None
     whatsapp_phone_number_id: str | None = None
