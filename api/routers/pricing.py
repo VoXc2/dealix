@@ -36,9 +36,21 @@ def _fingerprint(value: str) -> str:
 
 # Prices in halalas (SAR x 100). Hidden from landing — only exposed when a lead qualifies.
 PLANS: dict[str, dict[str, Any]] = {
-    "starter": {"name": "Starter", "amount_halalas": 99900, "monthly": True},  # 999 SAR/mo
-    "growth": {"name": "Growth", "amount_halalas": 299900, "monthly": True},  # 2,999 SAR/mo
-    "scale": {"name": "Scale", "amount_halalas": 799900, "monthly": True},  # 7,999 SAR/mo
+    "starter": {
+        "name": "Starter",
+        "amount_halalas": 99900,
+        "monthly": True,
+    },  # 999 SAR/mo
+    "growth": {
+        "name": "Growth",
+        "amount_halalas": 299900,
+        "monthly": True,
+    },  # 2,999 SAR/mo
+    "scale": {
+        "name": "Scale",
+        "amount_halalas": 799900,
+        "monthly": True,
+    },  # 7,999 SAR/mo
     "pilot_1sar": {
         "name": "Pilot (1 SAR)",
         "amount_halalas": 100,
@@ -53,7 +65,11 @@ async def list_plans() -> dict[str, Any]:
     return {
         "currency": "SAR",
         "plans": {
-            k: {"name": v["name"], "amount_sar": v["amount_halalas"] / 100, "monthly": v["monthly"]}
+            k: {
+                "name": v["name"],
+                "amount_sar": v["amount_halalas"] / 100,
+                "monthly": v["monthly"],
+            }
             for k, v in PLANS.items()
             if k != "pilot_1sar"  # hide pilot from public listing
         },

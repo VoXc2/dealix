@@ -71,7 +71,9 @@ class IdempotencyStore:
             return bool(result)
         except Exception as exc:  # pragma: no cover
             key_fp = hashlib.sha256(key.encode("utf-8")).hexdigest()[:12]
-            log.warning("idem_mark_failed key_fp=%s err_type=%s", key_fp, type(exc).__name__)
+            log.warning(
+                "idem_mark_failed key_fp=%s err_type=%s", key_fp, type(exc).__name__
+            )
             return True
 
     def claim(self, key: str, ttl_seconds: int = 86400) -> bool:

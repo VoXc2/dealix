@@ -12,7 +12,13 @@ from api.deps import get_approval_gate
 from dealix.caching.cache_stats import get_global_stats
 from dealix.governance import ApprovalDecision
 from dealix.observability.cost_tracker import CostTracker
-from dealix.reliability.dlq import CRM_SYNC_DLQ, DLQ, ENRICHMENT_DLQ, OUTBOUND_DLQ, WEBHOOKS_DLQ
+from dealix.reliability.dlq import (
+    CRM_SYNC_DLQ,
+    DLQ,
+    ENRICHMENT_DLQ,
+    OUTBOUND_DLQ,
+    WEBHOOKS_DLQ,
+)
 
 router = APIRouter(prefix="/api/v1/admin", tags=["admin"])
 
@@ -66,7 +72,10 @@ async def cache_stats() -> dict[str, Any]:
 @router.get("/dlq/stats")
 async def dlq_stats() -> dict[str, Any]:
     """Dead-letter queue depth and last errors across all queues."""
-    return {q: DLQ(q).stats() for q in (WEBHOOKS_DLQ, OUTBOUND_DLQ, ENRICHMENT_DLQ, CRM_SYNC_DLQ)}
+    return {
+        q: DLQ(q).stats()
+        for q in (WEBHOOKS_DLQ, OUTBOUND_DLQ, ENRICHMENT_DLQ, CRM_SYNC_DLQ)
+    }
 
 
 @router.get("/dlq/{queue}/peek")
@@ -86,7 +95,9 @@ async def dlq_peek(queue: str, n: int = Query(10, ge=1, le=100)) -> dict[str, An
                 "attempts": it.attempts,
                 "first_seen_at": it.first_seen_at,
                 "last_attempt_at": it.last_attempt_at,
-                "payload_keys": list(it.payload.keys()) if isinstance(it.payload, dict) else [],
+                "payload_keys": (
+                    list(it.payload.keys()) if isinstance(it.payload, dict) else []
+                ),
             }
             for it in items
         ],

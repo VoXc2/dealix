@@ -21,7 +21,9 @@ def _headers() -> dict[str, str]:
 
 def _fetch_pending() -> list[dict[str, Any]]:
     try:
-        response = httpx.get(f"{API}/api/v1/admin/approvals/pending", headers=_headers(), timeout=8)
+        response = httpx.get(
+            f"{API}/api/v1/admin/approvals/pending", headers=_headers(), timeout=8
+        )
         if response.status_code != 200:
             st.error(f"فشل جلب الطلبات: {response.status_code}")
             return []

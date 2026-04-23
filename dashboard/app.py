@@ -36,8 +36,7 @@ st.sidebar.markdown("**v3.0.0**")
 st.sidebar.markdown(f"API: `{os.getenv('DEALIX_API_URL', 'http://127.0.0.1:8001')}`")
 
 st.title("لوحة تحكم Dealix")
-st.markdown(
-    """
+st.markdown("""
     مرحباً بك في لوحة تحكم Dealix. اختر من القائمة الجانبية:
 
     - **Overview** — حالة النظام، الصحة العميقة، وإنفاق النماذج
@@ -46,8 +45,7 @@ st.markdown(
     - **Evidence** — أدلة التشغيل الحالية من الموافقات وDLQ
     - **Costs** — تحليل إنفاق LLM
     - **Audit** — لقطة تدقيق تشغيلية من الصحة والتكاليف وDLQ
-    """
-)
+    """)
 
 col1, col2, col3 = st.columns(3)
 col1.metric("العملاء", "—", help="يعتمد على واجهات leads")

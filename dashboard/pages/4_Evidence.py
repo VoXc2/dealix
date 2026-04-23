@@ -22,7 +22,11 @@ def _headers() -> dict[str, str]:
 def _get(path: str) -> Any:
     try:
         response = httpx.get(f"{API}{path}", headers=_headers(), timeout=8)
-        return response.json() if response.status_code == 200 else {"error": response.status_code}
+        return (
+            response.json()
+            if response.status_code == 200
+            else {"error": response.status_code}
+        )
     except Exception as exc:
         return {"error": str(exc)}
 
@@ -32,10 +36,17 @@ pending = _get("/api/v1/admin/approvals/pending")
 dlq_stats = _get("/api/v1/admin/dlq/stats")
 
 c1, c2 = st.columns(2)
-c1.metric("موافقات معلقة", approval_stats.get("pending", 0) if isinstance(approval_stats, dict) else 0)
+c1.metric(
+    "موافقات معلقة",
+    approval_stats.get("pending", 0) if isinstance(approval_stats, dict) else 0,
+)
 c2.metric(
     "إجمالي عناصر DLQ",
-    sum((queue.get("depth", 0) for queue in dlq_stats.values())) if isinstance(dlq_stats, dict) else 0,
+    (
+        sum((queue.get("depth", 0) for queue in dlq_stats.values()))
+        if isinstance(dlq_stats, dict)
+        else 0
+    ),
 )
 
 st.subheader("الأدلة الحالية على القرارات المعلقة")
