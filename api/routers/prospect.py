@@ -21,6 +21,7 @@ from auto_client_acquisition.agents.prospector import (
     USE_CASES,
     ProspectorAgent,
 )
+from auto_client_acquisition.connectors.tech_detect import detect_stack
 
 router = APIRouter(prefix="/api/v1/prospect", tags=["prospect"])
 log = logging.getLogger(__name__)
@@ -69,6 +70,29 @@ async def discover(body: dict[str, Any] = Body(...)) -> dict[str, Any]:
             detail="prospector_error",
         ) from exc
 
+    return result.to_dict()
+
+
+@router.post("/enrich-tech")
+async def enrich_tech(body: dict[str, Any] = Body(...)) -> dict[str, Any]:
+    """
+    Detect tech stack for a domain using Dealix native detector (free, self-hosted).
+    Body: {"domain": "foodics.com", "extra_paths": ["/careers", "/contact"]}
+    """
+    domain = str(body.get("domain") or "").strip()
+    extra = body.get("extra_paths") or []
+    if not isinstance(extra, list):
+        extra = []
+    extra = [str(p)[:80] for p in extra[:5]]
+
+    if not domain or "." not in domain or len(domain) > 200:
+        raise HTTPException(status_code=400, detail="invalid_domain")
+
+    try:
+        result = await detect_stack(domain, timeout=10.0, extra_paths=extra)
+    except Exception as exc:  # noqa: BLE001
+        log.exception("tech_detect_failed domain=%s", domain)
+        raise HTTPException(status_code=502, detail="tech_detect_error") from exc
     return result.to_dict()
 
 
