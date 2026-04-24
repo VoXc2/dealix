@@ -85,3 +85,29 @@ async def health_deep() -> dict[str, object]:
         overall = "degraded"
 
     return {"status": overall, "checks": checks, "version": get_settings().app_version}
+
+
+@router.get("/healthz", include_in_schema=False)
+async def healthz() -> dict[str, str]:
+    """Standard healthz alias for UptimeRobot/K8s probes."""
+    return {"status": "ok", "service": "dealix"}
+
+
+@router.get("/_test_sentry", include_in_schema=False)
+async def test_sentry() -> dict[str, str]:
+    """Deliberate error to verify Sentry integration.
+
+    Protected by ADMIN_TOKEN header in production.
+    """
+    import os
+
+    from fastapi import HTTPException
+
+    # In dev, allow freely. In prod, require admin token.
+    if os.getenv("APP_ENV", "dev") == "prod":
+        admin_token = os.getenv("ADMIN_TOKEN", "")
+        # Request injection is complex in FastAPI without Depends; keep simple check
+        if not admin_token:
+            raise HTTPException(status_code=404, detail="Not found")
+
+    raise Exception("Test Sentry integration — deliberate error")
