@@ -4,9 +4,40 @@
 
 ---
 
-## Day 2 Late — Rules Router + TOP Files + Messages LIVE
+## Day 2 Final — All Non-Blocked Phases Closed
 
-**Commits this pass:** (to be added by commit).
+**Live diag env = Dealix / service = web · 2026-04-24**
+
+### Endpoints (live verified)
+- ✅ `/healthz`, `/api/v1/pricing/plans`, `/api/v1/prospect/demo`
+- ✅ `/api/v1/prospect/route`, `/score`, `/message` (rules, no LLM)
+- ✅ `/api/v1/prospect/bulk-enrich`, `/enrich-tech`
+- ✅ `/api/v1/prospect/discover` (degraded demo)
+- ✅ `/api/v1/prospect/enrich-domain` (tech+rules degraded)
+- ⏸️ `/api/v1/prospect/search` → 503 (awaits Google keys in env Dealix)
+- ⏸️ `/api/v1/checkout` → 502 (Moyasar live rejection; manual path ready)
+
+### Keys in env `Dealix/web`
+- SET: MOYASAR_SECRET_KEY, MOYASAR_WEBHOOK_SECRET, MOYASAR_PUBLIC_KEY, POSTHOG_API_KEY, APP_URL
+- MISSING: GOOGLE_SEARCH_API_KEY, GOOGLE_SEARCH_CX, GROQ_API_KEY, ANTHROPIC_API_KEY, OPENAI_API_KEY, GOOGLE_API_KEY, DEEPSEEK_API_KEY, SENTRY_DSN
+
+### Lead Machine
+- 106 accounts in Saudi Lead Graph V2 (router-scored)
+- TOP_25_DIRECT_CUSTOMERS.csv · TOP_25_PARTNERS.csv (22) · TOP_10_STRATEGIC_PARTNERS.csv
+- TODAY_15_TARGETS.csv (5/5/3/2 split) + TODAY_15_MESSAGES.json (6 variants each)
+
+### Content queue
+- Posts 1-3 pre-existing (Founder / Agency / Problem)
+- **Posts 4-7 added this pass:** Proof · Pilot Offer · Partner Invite · Week Recap
+
+### Active Gates
+- LinkedIn Message 1 (Abdullah Al-Assiri / Lucidya) = AWAITING `SENT`
+- Messages 2-5 + Partner 1-5 + Posts 1-7 staged
+- Atomic on-SENT protocol: update row 1 + schedule +2/+5/+10 + release next only
+
+---
+
+
 
 ### Endpoints (production)
 - ✅ `/healthz`, `/api/v1/pricing/plans`, `/api/v1/prospect/demo` — 200

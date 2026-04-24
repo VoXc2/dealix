@@ -252,3 +252,101 @@ voxc2.github.io/dealix
 3. **Respect opt-outs** immediately — add `opted_out` status, never message again.
 4. **Target compliant segments only:** founders + business accounts + partner prospects. NO B2C mass DMs.
 5. **Speed of reply** matters more than speed of sending. When someone replies: respond within 30 minutes.
+
+---
+
+## POST 4 — Day 4 — Proof / Early Learning Post
+
+```
+3 أيام منذ إطلاق Dealix. 3 أشياء تعلمتها:
+
+1. شركات B2B في السعودية يستقبلون 100-500 lead شهرياً ويردون على 30-40% فقط.
+   النصف الآخر يبرد خلال 24 ساعة.
+
+2. Dealix (AI sales rep بالخليجي) يرد خلال 45 ثانية على كل lead.
+   معناه: مضاعفة الـ conversion بدون توظيف SDR.
+
+3. الشركات اللي جربوها في 3 أيام - أكثر objection واحد سمعته:
+   "هل يتكلم عربي بشكل طبيعي؟"
+   الجواب: جرّبه بنفسك. 20 دقيقة demo بدون التزام.
+
+🌐 dealix.me
+📅 calendly.com/sami-assiri11/dealix-demo
+
+#BuildInPublic #SaudiSaaS #AI #Arabic
+```
+
+**Publishing rule:** Sami publishes at 9-11am Saudi time for max engagement.
+
+---
+
+## POST 5 — Day 5 — Manual Pilot Offer Post
+
+```
+عرض مفتوح — 7 أيام، 1 ريال.
+
+Dealix (AI sales rep بالخليجي) للشركات B2B:
+- يرد على leads خلال 45 ثانية
+- يؤهّل BANT
+- يحجز demos
+- يسلّم ملخص جاهز لفريق المبيعات
+
+الـ Pilot:
+✓ 7 أيام
+✓ 1 ريال فقط (قابل للاسترداد)
+✓ يدوي أولاً، ثم أتمتة
+✓ استرداد كامل لو ما أعجبك
+
+محدود — أول 5 شركات B2B سعودية.
+
+🌐 dealix.me
+📅 calendly.com/sami-assiri11/dealix-demo
+```
+
+---
+
+## POST 6 — Day 6 — Partner Invitation Post
+
+```
+للوكالات التسويقية في السعودية:
+
+Dealix = طبقة AI sales rep بالعربي تضعها فوق عملائك الحاليين.
+
+النتيجة المالية:
+- Setup: 3,000 - 15,000 ريال (يدفع العميل، تأخذ 100%)
+- Commission: 20-30% من MRR دائم (500 - 2,500 ريال شهري لكل عميل)
+- 5 عملاء = 2,500 - 12,500 ريال شهري إضافي
+
+صفر tech work. صفر code. عرض جاهز.
+
+5 وكالات فقط هذا الشهر.
+
+🤝 dealix.me/partners.html
+📅 calendly.com/sami-assiri11/dealix-demo
+```
+
+---
+
+## POST 7 — Day 7 — Recap + Next Week Teaser
+
+```
+أسبوع كامل من Dealix الإطلاق. النتائج الأولية:
+
+✓ [XX] DMs مرسلة
+✓ [XX] demos محجوزة
+✓ [XX] pilots مباشرة
+✓ أول [XX] ريال revenue
+
+التعلم الأكبر: الوعي بـ "سرعة الرد = فلوس ضائعة" موجود عند الجميع، لكن الحل الحقيقي نادر.
+
+الأسبوع القادم:
+- أول 3 case studies عامة
+- 10 وكالات شركاء
+- Moyasar automation كامل
+
+تابع #BuildInPublic مع Dealix.
+
+🌐 dealix.me
+```
+
+**Fill in [XX] with actual metrics from scorecard before publishing.**
