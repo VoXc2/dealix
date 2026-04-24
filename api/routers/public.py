@@ -136,6 +136,9 @@ async def partner_application(req: Request) -> dict[str, Any]:
                 "company": company,
                 "partnership_type": ptype,
                 "active_clients": active_clients,
+                "has_phone": bool(phone),
+                "has_services": bool(services),
+                "has_why": bool(why),
                 "source": "dealix.partners_page",
             },
         )
