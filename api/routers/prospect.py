@@ -26,7 +26,7 @@ from auto_client_acquisition.agents.rules_router import (
     route_account as _rules_route,
 )
 from auto_client_acquisition.connectors.google_search import google_search
-from auto_client_acquisition.connectors.tech_detect import detect_stack
+from auto_client_acquisition.connectors.tech_detect import detect_stack, extract_contact_info
 
 router = APIRouter(prefix="/api/v1/prospect", tags=["prospect"])
 log = logging.getLogger(__name__)
@@ -405,6 +405,148 @@ async def bulk_enrich(body: dict[str, Any] = Body(...)) -> dict[str, Any]:
             "total_signals_detected": total_signals,
         },
         "results": results,
+    }
+
+
+@router.post("/contacts")
+async def contacts(body: dict[str, Any] = Body(...)) -> dict[str, Any]:
+    """
+    Extract publicly listed contact info (emails, phones, WhatsApp, social) from a company's public pages.
+    LEGAL: public pages only; business contact only; no PII from private / authenticated sources.
+    Body: {"domain": "foodics.com"}
+    """
+    domain = str(body.get("domain") or "").strip()
+    if not domain or "." not in domain or len(domain) > 200:
+        raise HTTPException(status_code=400, detail="invalid_domain")
+    try:
+        return await extract_contact_info(domain, timeout=10.0)
+    except Exception as exc:
+        log.exception("contacts_failed domain=%s", domain)
+        raise HTTPException(status_code=502, detail="contact_extraction_error") from exc
+
+
+@router.post("/inbound/handle")
+async def inbound_handle(body: dict[str, Any] = Body(...)) -> dict[str, Any]:
+    """
+    Autonomous inbound handler — given an incoming lead message, classify, decide,
+    generate Arabic response, pick next_action.
+    Body:
+      {
+        "channel": "whatsapp|email|web_chat|linkedin|sms",
+        "from": "+966501234567" | "ali@example.com",
+        "company": "optional — extracted from domain if known",
+        "message": "the actual customer inquiry"
+      }
+    Returns:
+      {
+        "classification": "interested|price|demo|later|objection|...",
+        "opportunity_type": "DIRECT_CUSTOMER|...",
+        "response_ar": "...",
+        "next_action": "BOOK_DEMO|PREPARE_DM|...",
+        "should_escalate_to_human": bool,
+        "tracker_update": {status, sent_at, next_followup}
+      }
+    """
+    channel = str(body.get("channel") or "unknown").lower()
+    sender = str(body.get("from") or "").strip()
+    company = str(body.get("company") or "").strip()
+    message = str(body.get("message") or "").strip()
+
+    if len(message) < 2:
+        raise HTTPException(status_code=400, detail="message_required")
+
+    # Very simple offline classifier (same regex rules from scripts/dealix_reply_classifier.py)
+    import re
+    text = message.lower()
+    classification = "interested"  # default
+    rules = [
+        ("wants_demo",          r"demo|ديمو|عرض|تجربة"),
+        ("price",               r"كم\s*(السعر|يكلف|المبلغ)|السعر|price|pricing|كم\s*ريال"),
+        ("send_details",        r"ارسل|أرسل|تفاصيل|details|deck|presentation"),
+        ("later",               r"بعدين|لاحق|later|not\s*now|رمضان"),
+        ("not_relevant",        r"مو\s*مناسب|not\s*relevant|غير\s*مناسب|لا\s*نحتاج"),
+        ("budget_objection",    r"ميزانية|budget|غالي|مكلف"),
+        ("already_has_crm",     r"crm|salesforce|hubspot|zoho"),
+        ("arabic_concern",      r"لهجة|arabic.*quality|خليجي"),
+        ("privacy_concern",     r"خصوصية|pdpl|privacy|بيانات"),
+        ("partnership_interest",r"شراكة|partner|وكالة|reseller"),
+        ("referral_opportunity",r"أعرف|رشح|referral|intro"),
+    ]
+    for cat, pat in rules:
+        if re.search(pat, text):
+            classification = cat
+            break
+    # If very short greeting, treat as interested
+    if len(text) < 10 and any(g in text for g in ("مرحب", "سلام", "هلا", "hi", "hello")):
+        classification = "interested"
+
+    # Decide opportunity type from company name keywords
+    opp_type = "DIRECT_CUSTOMER"
+    if any(k in (company or "").lower() for k in ["agency", "وكالة", "marketing"]):
+        opp_type = "AGENCY_PARTNER"
+    elif any(k in (company or "").lower() for k in ["vc", "capital", "ventures", "fund"]):
+        opp_type = "INVESTOR_OR_ADVISOR"
+
+    # Build response
+    CAL = "https://calendly.com/sami-assiri11/dealix-demo"
+    responses = {
+        "interested":           f"هلا! شكراً على اهتمامك. خلني أحجز معك 20 دقيقة demo بدون أي التزام — تقدر تختار موعدك هنا: {CAL}",
+        "wants_demo":           f"ممتاز، نسوي demo. 20 دقيقة، اختار موعد: {CAL}",
+        "price":                f"Starter 999/شهر، Growth 2,999، Scale 7,999. في pilot بريال × 7 أيام بدون التزام. 20 دقيقة demo أفصّل الباقة المناسبة: {CAL}",
+        "send_details":         f"تفاصيل سريعة: Dealix = AI sales rep بالعربي الخليجي، يرد على leads خلال 45 ثانية، يؤهّل، ويحجز demos. الأفضل نشوفه معاً في 20 دقيقة على سيناريو شركتكم: {CAL}\nأو تصفح: https://dealix.me",
+        "later":                "تمام. متى الوقت المناسب يحتمل يكون؟ سأرجع في نفس اليوم بالظبط.",
+        "not_relevant":         "أحترم ذلك. سؤال أخير: هل تعرف شخص/شركة سعودية قد تستفيد من AI sales rep بالعربي؟ 10% من MRR لـ 12 شهر لكل referral. شكراً على وقتك.",
+        "budget_objection":     "أفهم. عرضنا pilot بريال واحد × 7 أيام — قابل للاسترداد 100% — هدفه يثبت ROI قبل أي التزام. مناسب؟",
+        "already_has_crm":      "Dealix ما يستبدل CRM — يشتغل كطبقة أولى فوقه. يرد بالعربي، يؤهّل، ويسلّم الـ CRM قائمة leads جاهزة. تكامل مباشر HubSpot/Salesforce/Zoho/webhook. 20 دقيقة demo: " + CAL,
+        "arabic_concern":       f"نقطة مهمة. Dealix خليجي حقيقي، ما يكتب 'حضرتك' و'تعطفكم'. 20 دقيقة demo تختبره بنفسك على سيناريو شركتكم: {CAL}",
+        "privacy_concern":      f"مصمم PDPL-compliant: بياناتكم في سيرفرات السعودية، opt-out في كل email، audit log كامل. 20 دقيقة نناقش compliance + demo: {CAL}",
+        "partnership_interest": f"ممتاز. 3 tiers:\n- Referral: 10% MRR × 12 شهر\n- Agency: setup 3-15K + 20-30% MRR\n- White-label (Scale)\n20 دقيقة partner call: https://dealix.me/partners.html",
+        "referral_opportunity": "شكراً! 10% من MRR × 12 شهر لأي عميل يجي عبرك. ممكن تخبرني بمعلومات الشركة والشخص؟",
+    }
+    response_ar = responses.get(classification, responses["interested"])
+
+    # Decide next action
+    action_map = {
+        "interested": "BOOK_DEMO",
+        "wants_demo": "BOOK_DEMO",
+        "price": "BOOK_DEMO",
+        "send_details": "PREPARE_DEMO_FLOW",
+        "later": "FOLLOW_UP",
+        "not_relevant": "STOP_CONTACT",
+        "budget_objection": "ROUTE_TO_MANUAL_PAYMENT",
+        "already_has_crm": "BOOK_DEMO",
+        "arabic_concern": "PREPARE_DEMO_FLOW",
+        "privacy_concern": "PREPARE_DEMO_FLOW",
+        "partnership_interest": "PREPARE_PARTNER_PITCH",
+        "referral_opportunity": "FOLLOW_UP",
+    }
+    next_action = action_map.get(classification, "ASK_HUMAN_FINAL_SEND")
+
+    # Escalation rule
+    escalate = classification in ("partnership_interest",) or opp_type == "INVESTOR_OR_ADVISOR"
+
+    from datetime import datetime, timedelta
+    now = datetime.utcnow().isoformat() + "Z"
+    next_followup = (datetime.utcnow() + timedelta(days=2)).date().isoformat()
+
+    return {
+        "classification": classification,
+        "opportunity_type": opp_type,
+        "response_ar": response_ar,
+        "next_action": next_action,
+        "should_escalate_to_human": escalate,
+        "channel_recommended_reply": channel,
+        "tracker_update": {
+            "reply_received_at": now,
+            "classification": classification,
+            "next_followup": next_followup,
+            "status": "engaged",
+        },
+        "compliance_note": (
+            "Response auto-generated using rules-based classifier + templated Khaliji Arabic. "
+            "No LLM used (deterministic). No personal PII stored beyond the inbound message. "
+            "Human review recommended for partnership/investor classifications."
+        ),
     }
 
 

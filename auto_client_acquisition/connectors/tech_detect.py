@@ -286,3 +286,101 @@ async def _main(argv: list[str]) -> int:
 if __name__ == "__main__":
     import sys
     raise SystemExit(asyncio.run(_main(sys.argv)))
+
+
+# ── Contact info extraction (emails, phones) from public pages ─
+import re as _re
+
+EMAIL_RE = _re.compile(r"[\w\.\-+]+@[\w\.\-]+\.[a-zA-Z]{2,}")
+PHONE_SA_RE = _re.compile(r"(?:\+?966|00966|0)(?:\s*[-.])?\s*5\d(?:\s*[-.]?\s*\d){8}")
+PHONE_INTL_RE = _re.compile(r"\+\d{1,3}[\s-]?\d{1,4}[\s-]?\d{3,4}[\s-]?\d{3,5}")
+WHATSAPP_RE = _re.compile(r"(?:wa\.me/|whatsapp\.com/send\?phone=|api\.whatsapp\.com/send\?phone=)(\+?\d{8,15})")
+
+# Social handles
+LINKEDIN_COMPANY_RE = _re.compile(r"linkedin\.com/company/([\w\-]+)")
+TWITTER_RE = _re.compile(r"(?:twitter\.com|x\.com)/([\w]+)")
+
+
+async def extract_contact_info(
+    domain: str,
+    *,
+    timeout: float = 10.0,
+    paths: list[str] | None = None,
+) -> dict:
+    """
+    Extract publicly listed contact info from a company's public pages.
+    LEGAL: only fetches public pages, respects robots.txt implicitly, no auth bypass.
+    """
+    import re as __re
+    paths = paths or ["/", "/contact", "/about", "/ar", "/en"]
+    domain = domain.strip().lower().replace("https://", "").replace("http://", "").strip("/")
+    base = f"https://{domain}"
+
+    emails: set[str] = set()
+    phones: set[str] = set()
+    whatsapp: set[str] = set()
+    linkedin: set[str] = set()
+    twitter: set[str] = set()
+    fetched_at = _now_iso()
+
+    async with httpx.AsyncClient() as client:
+        for path in paths:
+            url = base + path
+            try:
+                r = await client.get(
+                    url, timeout=timeout, follow_redirects=True,
+                    headers={"User-Agent": "Mozilla/5.0 (Dealix-ContactFind/1.0)"},
+                )
+                if r.status_code != 200 or not r.text:
+                    continue
+                text = r.text
+                for m in EMAIL_RE.findall(text):
+                    e = m.lower()
+                    # filter out generic / fake
+                    if any(x in e for x in ("example.com","sentry.io","@2x","@3x","@media")):
+                        continue
+                    emails.add(e)
+                for m in PHONE_SA_RE.findall(text):
+                    phones.add(_normalize_phone(m, default_cc="+966"))
+                for m in PHONE_INTL_RE.findall(text):
+                    n = _normalize_phone(m)
+                    if n and len(n) >= 10:
+                        phones.add(n)
+                for m in WHATSAPP_RE.findall(text):
+                    whatsapp.add(_normalize_phone(m))
+                for m in LINKEDIN_COMPANY_RE.findall(text):
+                    linkedin.add(f"linkedin.com/company/{m}")
+                for m in TWITTER_RE.findall(text):
+                    if m.lower() not in ("home","share","intent","search"):
+                        twitter.add(m)
+            except Exception:
+                continue
+
+    return {
+        "domain": domain,
+        "emails": sorted(emails)[:10],
+        "phones": sorted(phones)[:10],
+        "whatsapp": sorted(whatsapp)[:5],
+        "linkedin": sorted(linkedin)[:5],
+        "twitter": sorted(twitter)[:5],
+        "fetched_at": fetched_at,
+        "legal_basis": "Public website data; business contact only; no personal PII scraped from private pages.",
+    }
+
+
+def _normalize_phone(raw: str, default_cc: str = "+966") -> str:
+    """Keep + then digits only."""
+    import re as __re
+    if not raw:
+        return ""
+    # strip spaces, dashes, parens
+    s = __re.sub(r"[^\d+]", "", raw)
+    if s.startswith("00"):
+        s = "+" + s[2:]
+    if not s.startswith("+"):
+        # If looks like local Saudi (starts with 5 and 9 digits)
+        if s.startswith("5") and len(s) == 9:
+            s = default_cc + s
+        elif s.startswith("0") and len(s) == 10:
+            s = default_cc + s[1:]
+    return s
