@@ -97,3 +97,53 @@ async def demo_request(req: Request) -> dict[str, Any]:
 async def public_health() -> dict[str, Any]:
     """Unauthenticated health probe for landing page to show live status."""
     return {"ok": True, "service": "dealix-api"}
+
+
+@router.post("/partner-application")
+async def partner_application(req: Request) -> dict[str, Any]:
+    """Public partner signup — for agencies/freelancers/consultants."""
+    try:
+        body = await req.json()
+    except Exception:
+        # Also accept form-urlencoded submissions from Formspree-style forms
+        form = await req.form()
+        body = dict(form)
+
+    name = str(body.get("name") or "").strip()
+    company = str(body.get("company") or "").strip()
+    email = str(body.get("email") or "").strip()
+    phone = str(body.get("phone") or "").strip()
+    ptype = str(body.get("partnership_type") or body.get("type") or "referral").strip()
+    services = str(body.get("services") or "").strip()
+    active_clients = str(body.get("active_clients") or body.get("clients") or "0")
+    why = str(body.get("why") or "").strip()
+
+    if not name or not company or "@" not in email:
+        raise HTTPException(status_code=422, detail="missing_required_fields")
+
+    log.info(
+        "partner_application_received company=%s type=%s clients=%s",
+        company,
+        ptype,
+        active_clients,
+    )
+
+    try:
+        await capture_event(
+            "partner_application_submitted",
+            distinct_id=email or company or "anonymous",
+            properties={
+                "company": company,
+                "partnership_type": ptype,
+                "active_clients": active_clients,
+                "source": "dealix.partners_page",
+            },
+        )
+    except Exception:
+        log.warning("posthog_capture_failed", exc_info=True)
+
+    return {
+        "ok": True,
+        "message": "وصلنا طلبك. سنتواصل خلال 48 ساعة.",
+        "next_step": "email_review",
+    }
