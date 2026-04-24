@@ -227,6 +227,57 @@ async def enrich_domain(body: dict[str, Any] = Body(...)) -> dict[str, Any]:
     }
 
 
+@router.post("/bulk-enrich")
+async def bulk_enrich(body: dict[str, Any] = Body(...)) -> dict[str, Any]:
+    """
+    Bulk tech-detect enrichment for a list of domains.
+    Body: {"domains": ["foodics.com", "salla.sa", ...], "concurrency": 5}
+    Returns: {"results": {domain: tech_result, ...}, "summary": {...}}
+
+    Hard limit: 25 domains per request (prevent abuse).
+    """
+    domains_raw = body.get("domains") or []
+    if not isinstance(domains_raw, list):
+        raise HTTPException(status_code=400, detail="domains_must_be_list")
+
+    domains = [str(d).strip() for d in domains_raw if d and "." in str(d)]
+    domains = list(dict.fromkeys(domains))[:25]  # dedupe, cap
+
+    if not domains:
+        raise HTTPException(status_code=400, detail="no_valid_domains")
+
+    concurrency = int(body.get("concurrency") or 5)
+    concurrency = max(1, min(10, concurrency))
+
+    import asyncio as _asyncio
+    sem = _asyncio.Semaphore(concurrency)
+
+    async def _one(d: str) -> tuple[str, dict]:
+        async with sem:
+            try:
+                r = await detect_stack(d, timeout=10.0)
+                return d, r.to_dict()
+            except Exception as exc:  # noqa: BLE001
+                return d, {"status": "error", "error": str(exc), "domain": d}
+
+    pairs = await _asyncio.gather(*(_one(d) for d in domains))
+    results = dict(pairs)
+
+    total_tools = sum(len(r.get("tools", [])) for r in results.values())
+    total_signals = sum(len(r.get("signals", [])) for r in results.values())
+    ok_count = sum(1 for r in results.values() if r.get("status") == "ok")
+
+    return {
+        "summary": {
+            "domains_requested": len(domains),
+            "ok_count": ok_count,
+            "total_tools_detected": total_tools,
+            "total_signals_detected": total_signals,
+        },
+        "results": results,
+    }
+
+
 @router.post("/demo")
 async def demo() -> dict[str, Any]:
     """Canned demo response for landing UI preview. No LLM call."""
