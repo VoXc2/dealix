@@ -4,6 +4,10 @@
 
 Last updated: 2026-04-24 · Keep this file fresh — update it before/after every operating session.
 
+> 🌅 **Start here every morning:** [`docs/ops/TODAY.md`](TODAY.md) — the 60-minute command page.
+> 💰 **When a prospect says yes:** [`docs/ops/FIRST_REVENUE_ATTEMPT.md`](FIRST_REVENUE_ATTEMPT.md) — 15-min close-to-paid script.
+> 🧾 **Generate an invoice:** `bash docs/ops/moyasar_live_test.sh customer@email.com 999 starter`
+
 ---
 
 ## 🚦 Decision State
@@ -177,6 +181,9 @@ Tomorrow change  |        | __
 
 | File | Purpose |
 |------|---------|
+| `docs/ops/TODAY.md` | 🌅 Morning 60-min command page — open this first |
+| `docs/ops/FIRST_REVENUE_ATTEMPT.md` | 💰 15-min close-to-paid playbook |
+| `docs/ops/moyasar_live_test.sh` | 🧾 One-command invoice generator (Pilot/Starter/Growth/Scale) |
 | `docs/ops/pipeline_tracker.csv` | 50 leads, source of truth |
 | `docs/ops/launch_content_queue.md` | All outreach + content copy |
 | `docs/ops/today_send_queue.md` | Today's ready-to-send 10 messages |
