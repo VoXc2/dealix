@@ -6,7 +6,7 @@ dockerfilePath = "Dockerfile"
 # Intentionally NO startCommand — Dockerfile's CMD uses `sh -c` which
 # correctly expands Railway's injected $PORT. Overriding here bypasses
 # the shell and breaks ${PORT:-8000} → uvicorn treats it as literal.
-healthcheckPath = "/health"
+healthcheckPath = "/healthz"
 healthcheckTimeout = 300
 restartPolicyType = "ON_FAILURE"
 restartPolicyMaxRetries = 3
