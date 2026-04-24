@@ -76,19 +76,29 @@ async def discover(body: dict[str, Any] = Body(...)) -> dict[str, Any]:
 
 @router.get("/search-diag")
 async def search_diag() -> dict[str, Any]:
-    """Diagnose Google CSE env var presence without revealing values."""
+    """Diagnose env var presence without revealing values."""
     import os
     k = os.getenv("GOOGLE_SEARCH_API_KEY", "")
     c = os.getenv("GOOGLE_SEARCH_CX", "")
+    m = os.getenv("MOYASAR_SECRET_KEY", "")
+    w = os.getenv("MOYASAR_WEBHOOK_SECRET", "")
+
+    # Also list ALL env vars whose names start with target prefixes — helps detect typos
+    related = sorted([
+        name for name in os.environ.keys()
+        if name.startswith(("GOOGLE_", "MOYASAR_", "ANTHROPIC_", "POSTHOG_", "SENTRY_", "DATABASE_", "APP_URL", "PORT", "RAILWAY_"))
+    ])
     return {
-        "api_key_set": bool(k),
-        "api_key_length": len(k),
-        "api_key_prefix": k[:6] + "..." if k else "",
-        "cx_set": bool(c),
-        "cx_length": len(c),
-        "cx_prefix": c[:6] + "..." if c else "",
+        "GOOGLE_SEARCH_API_KEY": {"set": bool(k), "length": len(k), "prefix": (k[:6] + "...") if k else ""},
+        "GOOGLE_SEARCH_CX":      {"set": bool(c), "length": len(c), "prefix": (c[:6] + "...") if c else ""},
+        "MOYASAR_SECRET_KEY":    {"set": bool(m), "length": len(m), "prefix": (m[:6] + "...") if m else ""},
+        "MOYASAR_WEBHOOK_SECRET":{"set": bool(w), "length": len(w)},
+        "all_visible_env_var_names_starting_with_known_prefixes": related,
+        "railway_environment_name": os.getenv("RAILWAY_ENVIRONMENT_NAME", "(not set)"),
+        "railway_service_name": os.getenv("RAILWAY_SERVICE_NAME", "(not set)"),
+        "railway_project_name": os.getenv("RAILWAY_PROJECT_NAME", "(not set)"),
         "hint": (
-            "both_ok" if k and c else
+            "both_google_ok" if k and c else
             "api_key_missing_or_empty" if not k else
             "cx_missing_or_empty"
         ),
