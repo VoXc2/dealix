@@ -391,3 +391,166 @@
   // Initial page_view (even before consent — minimal, no PII)
   track('page_view_init', { path: location.pathname });
 })();
+
+// ====================================================================
+// PROSPECTOR (LIVE LEAD MACHINE) — calls /api/v1/prospect/discover
+// ====================================================================
+(function prospectorInit() {
+  const form = document.getElementById('prospector-form');
+  if (!form) return;
+
+  const icpEl = document.getElementById('prospector-icp');
+  const useCaseEl = document.getElementById('prospector-usecase');
+  const countEl = document.getElementById('prospector-count');
+  const submitBtn = document.getElementById('prospector-submit');
+  const statusEl = document.getElementById('prospector-status');
+  const resultsEl = document.getElementById('prospector-results');
+  const gridEl = document.getElementById('prospector-grid');
+  const countOutEl = document.getElementById('prospector-count-out');
+  const notesEl = document.getElementById('prospector-notes');
+
+  const API_BASE_PRIMARY = (window.DEALIX_API_BASE || 'https://web-dealix.up.railway.app').replace(/\/$/, '');
+  const API_BASE_FALLBACK = 'https://web-dealix.up.railway.app';
+
+  function setStatus(msg, kind) {
+    if (!msg) {
+      statusEl.hidden = true;
+      statusEl.textContent = '';
+      statusEl.className = 'prospector__status';
+      return;
+    }
+    statusEl.hidden = false;
+    statusEl.textContent = msg;
+    statusEl.className = 'prospector__status' + (kind ? ' prospector__status--' + kind : '');
+  }
+
+  function esc(s) {
+    return String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({
+      '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+    }[c]));
+  }
+
+  function renderCard(lead) {
+    const openings = lead.outreach_opening
+      ? `<div class="prospector-card__section">
+           <h4>سطر افتتاحي مقترح</h4>
+           <div class="prospector-card__opening">${esc(lead.outreach_opening)}</div>
+         </div>`
+      : '';
+
+    const dmHints = (lead.decision_maker_hints || []).filter(Boolean);
+    const signals = (lead.signals || []).filter(Boolean);
+
+    const links = [];
+    if (lead.website) links.push(`<a href="${esc(lead.website)}" target="_blank" rel="noopener">موقع</a>`);
+    if (lead.linkedin) links.push(`<a href="${esc(lead.linkedin)}" target="_blank" rel="noopener">LinkedIn</a>`);
+
+    return `
+      <article class="prospector-card">
+        <div class="prospector-card__head">
+          <div>
+            <h4 class="prospector-card__name">${esc(lead.company_ar)}</h4>
+            <span class="prospector-card__name-en">${esc(lead.company_en)}</span>
+          </div>
+          <span class="prospector-card__score" title="fit × confidence">${lead.fit_score}/${lead.confidence}</span>
+        </div>
+        <div class="prospector-card__meta">
+          <span>${esc(lead.industry || '—')}</span>
+          <span>${esc(lead.est_size || '—')}</span>
+        </div>
+        ${signals.length ? `
+          <div class="prospector-card__section">
+            <h4>إشارات</h4>
+            <ul>${signals.map(s => `<li>${esc(s)}</li>`).join('')}</ul>
+          </div>` : ''}
+        ${dmHints.length ? `
+          <div class="prospector-card__section">
+            <h4>متخذو قرار محتملون</h4>
+            <ul>${dmHints.map(s => `<li>${esc(s)}</li>`).join('')}</ul>
+          </div>` : ''}
+        ${openings}
+        ${lead.evidence ? `
+          <div class="prospector-card__section">
+            <h4>لماذا تطابق</h4>
+            <div>${esc(lead.evidence)}</div>
+          </div>` : ''}
+        ${links.length ? `<div class="prospector-card__links">${links.join(' · ')}</div>` : ''}
+      </article>
+    `;
+  }
+
+  function renderResults(data) {
+    const leads = Array.isArray(data.leads) ? data.leads : [];
+    countOutEl.textContent = `${leads.length} نتيجة من ${data.count_requested || leads.length} مطلوبة`;
+    gridEl.innerHTML = leads.map(renderCard).join('');
+    notesEl.textContent = data.search_notes || '';
+    resultsEl.hidden = leads.length === 0;
+  }
+
+  async function callApi(path, body) {
+    const attempt = async (base) => {
+      const r = await fetch(base + path, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body || {}),
+      });
+      return r;
+    };
+    try {
+      const r = await attempt(API_BASE_PRIMARY);
+      if (r.ok || (r.status >= 400 && r.status < 500)) return r;
+      // 5xx → try fallback
+      if (API_BASE_PRIMARY !== API_BASE_FALLBACK) return attempt(API_BASE_FALLBACK);
+      return r;
+    } catch (e) {
+      if (API_BASE_PRIMARY !== API_BASE_FALLBACK) return attempt(API_BASE_FALLBACK);
+      throw e;
+    }
+  }
+
+  form.addEventListener('submit', async (ev) => {
+    ev.preventDefault();
+    const icp = (icpEl.value || '').trim();
+    const use_case = useCaseEl.value || 'sales';
+    const count = parseInt(countEl.value || '10', 10);
+
+    if (icp.length < 20) {
+      setStatus('أضف وصفاً أطول (20 حرف على الأقل) للعميل المثالي.', 'error');
+      return;
+    }
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'يبحث...';
+    setStatus('يبحث عن leads مطابقة... (15-45 ثانية)', 'loading');
+    resultsEl.hidden = true;
+
+    try {
+      const t0 = performance.now();
+      const r = await callApi('/api/v1/prospect/discover', { icp, use_case, count });
+      const data = await r.json();
+      const dt = ((performance.now() - t0) / 1000).toFixed(1);
+
+      if (!r.ok) {
+        const detail = data && data.detail ? data.detail : ('HTTP ' + r.status);
+        throw new Error(detail);
+      }
+      renderResults(data);
+      setStatus(`اكتمل في ${dt} ثانية`, null);
+      setTimeout(() => setStatus(''), 3000);
+      if (window.track) window.track('prospector_run', { use_case, count, returned: (data.leads || []).length });
+    } catch (err) {
+      console.error('prospector error', err);
+      setStatus('حدث خطأ: ' + (err && err.message ? err.message : 'غير معروف') + ' — جرّب مرة ثانية.', 'error');
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'ابحث الآن';
+    }
+  });
+
+  // Prefill demo ICP on first load (only if empty)
+  if (icpEl && !icpEl.value) {
+    icpEl.setAttribute('data-default-demo',
+      'شركات SaaS B2B في السعودية بحجم 20-100 موظف، تبيع للشركات المتوسطة، أحد المؤسسين أعلن عن جولة تمويل في آخر 12 شهر.'
+    );
+  }
+})();

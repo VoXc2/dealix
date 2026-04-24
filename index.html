@@ -193,6 +193,78 @@
       </div>
     </section>
 
+    <!-- ============ PROSPECTOR MACHINE (LIVE) ============ -->
+    <section id="prospector" class="section section--muted">
+      <div class="container">
+        <header class="section__head">
+          <span class="kicker">ماكينة البحث</span>
+          <h2 class="section__title">جرّب ماكينة Dealix للبحث عن leads مباشرة</h2>
+          <p class="section__lead">اكتب وصف العميل المثالي بالعربي — وماكينة Dealix تبحث وتُخرج لك قائمة leads حقيقية مع إشارات الشراء وسطر افتتاحي مخصص. مجاناً، بدون تسجيل.</p>
+        </header>
+
+        <div class="prospector" id="prospector-app">
+          <form class="prospector__form" id="prospector-form" autocomplete="off">
+            <div class="prospector__field">
+              <label for="prospector-icp">وصف العميل المثالي (ICP)</label>
+              <textarea
+                id="prospector-icp"
+                name="icp"
+                rows="4"
+                minlength="20"
+                maxlength="2000"
+                required
+                placeholder="مثال: شركات SaaS سعودية B2B بحجم 20-100 موظف تبيع للمطاعم، أحد المؤسسين تعلن عن جولة تمويل في آخر 12 شهر."
+              ></textarea>
+            </div>
+
+            <div class="prospector__row">
+              <div class="prospector__field">
+                <label for="prospector-usecase">حالة الاستخدام</label>
+                <select id="prospector-usecase" name="use_case">
+                  <option value="sales">مبيعات B2B</option>
+                  <option value="partnership">شراكات استراتيجية</option>
+                  <option value="collaboration">تعاون / محتوى</option>
+                  <option value="investor">مستثمرون / VC</option>
+                  <option value="b2c_audience">جمهور B2C</option>
+                </select>
+              </div>
+
+              <div class="prospector__field">
+                <label for="prospector-count">عدد النتائج</label>
+                <select id="prospector-count" name="count">
+                  <option value="5">5</option>
+                  <option value="10" selected>10</option>
+                  <option value="15">15</option>
+                  <option value="20">20</option>
+                </select>
+              </div>
+
+              <div class="prospector__field prospector__field--submit">
+                <button type="submit" class="btn btn--primary" id="prospector-submit">
+                  ابحث الآن
+                </button>
+              </div>
+            </div>
+
+            <p class="prospector__note">
+              ⚡ نتائج حقيقية من محرك ذكاء اصطناعي — بدون اختلاق أسماء. قد يستغرق 15-45 ثانية.
+            </p>
+          </form>
+
+          <div class="prospector__status" id="prospector-status" hidden></div>
+
+          <div class="prospector__results" id="prospector-results" hidden>
+            <header class="prospector__results-head">
+              <h3>النتائج</h3>
+              <span class="prospector__count" id="prospector-count-out"></span>
+            </header>
+            <div class="prospector__grid" id="prospector-grid"></div>
+            <p class="prospector__notes" id="prospector-notes"></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <!-- ============ 3 PILLARS ============ -->
     <section id="pillars" class="section">
       <div class="container">
