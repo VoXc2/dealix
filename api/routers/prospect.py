@@ -21,6 +21,7 @@ from auto_client_acquisition.agents.prospector import (
     USE_CASES,
     ProspectorAgent,
 )
+from auto_client_acquisition.connectors.google_search import google_search
 from auto_client_acquisition.connectors.tech_detect import detect_stack
 
 router = APIRouter(prefix="/api/v1/prospect", tags=["prospect"])
@@ -71,6 +72,40 @@ async def discover(body: dict[str, Any] = Body(...)) -> dict[str, Any]:
         ) from exc
 
     return result.to_dict()
+
+
+@router.post("/search")
+async def search(body: dict[str, Any] = Body(...)) -> dict[str, Any]:
+    """
+    Run a Google Custom Search query using server-side keys.
+    Body: {"query": "...", "num": 10, "site": "linkedin.com" (optional), "lang": "ar"|"en"}
+    Returns: SearchResponse JSON.
+    """
+    q = str(body.get("query") or "").strip()
+    if len(q) < 3 or len(q) > 500:
+        raise HTTPException(status_code=400, detail="query_length_out_of_range")
+
+    num = int(body.get("num") or 10)
+    if num < 1 or num > 10:
+        raise HTTPException(status_code=400, detail="num_out_of_range: 1..10")
+
+    site = body.get("site")
+    site = str(site).strip() if site else None
+    lang = body.get("lang")
+    lang = str(lang).strip().lower() if lang else None
+    if lang and lang not in {"ar", "en", "fr", "es"}:
+        raise HTTPException(status_code=400, detail="unsupported_lang")
+
+    try:
+        resp = await google_search(q, num=num, site=site, lang=lang, timeout=10.0)
+    except Exception as exc:  # noqa: BLE001
+        log.exception("google_search_call_failed q=%r", q)
+        raise HTTPException(status_code=502, detail="search_error") from exc
+
+    if resp.status == "no_keys":
+        raise HTTPException(status_code=503, detail="search_not_configured")
+
+    return resp.to_dict()
 
 
 @router.post("/enrich-tech")
