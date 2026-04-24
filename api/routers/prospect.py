@@ -162,6 +162,71 @@ async def enrich_tech(body: dict[str, Any] = Body(...)) -> dict[str, Any]:
     return result.to_dict()
 
 
+@router.post("/enrich-domain")
+async def enrich_domain(body: dict[str, Any] = Body(...)) -> dict[str, Any]:
+    """
+    End-to-end enrichment: given a domain + opportunity hint, combine tech stack
+    detection + LLM analysis to return a full lead record per LEAD_OUTPUT_SCHEMA.
+
+    Body:
+      {
+        "domain": "foodics.com",
+        "opportunity_hint": "DIRECT_CUSTOMER|AGENCY_PARTNER|..." (optional),
+        "context_notes": "optional extra human context"
+      }
+
+    Returns: full lead object (opportunity_type, scores, signals, outreach opening, etc.)
+    """
+    domain = str(body.get("domain") or "").strip()
+    opportunity_hint = str(body.get("opportunity_hint") or "").strip().upper()
+    context_notes = str(body.get("context_notes") or "").strip()[:1000]
+
+    if not domain or "." not in domain or len(domain) > 200:
+        raise HTTPException(status_code=400, detail="invalid_domain")
+
+    # Step 1 — tech detection (free, always available)
+    try:
+        tech = await detect_stack(domain, timeout=10.0, extra_paths=["/careers", "/about"])
+    except Exception:
+        log.exception("tech_detect_failed domain=%s", domain)
+        tech = None
+
+    tech_dict = tech.to_dict() if tech else {"tools": [], "signals": [], "status": "unavailable"}
+
+    # Step 2 — LLM analysis using ProspectorAgent-style prompt but domain-scoped
+    from auto_client_acquisition.agents.prospector import ProspectorAgent, USE_CASES
+
+    agent = ProspectorAgent()
+    icp_text = (
+        f"الشركة: {domain}\n"
+        f"الأدوات المكتشفة عبر tech detector: "
+        f"{', '.join(t['name'] for t in tech_dict.get('tools', []))}\n"
+        f"الإشارات المستخرجة: "
+        f"{', '.join(s['evidence'] for s in tech_dict.get('signals', []))}\n"
+        + (f"سياق إضافي: {context_notes}\n" if context_notes else "")
+        + (f"تلميح لنوع الفرصة: {opportunity_hint}\n" if opportunity_hint else "")
+        + "\nحلّل هذه الشركة تحديداً: صنّف نوع الفرصة، احسب ال 4 scores، اقترح sequence من الخطوات، وأعد نفس شكل JSON كما هو محدد."
+    )
+    use_case = "sales"  # default; the LLM will classify opportunity_type freely
+
+    try:
+        result = await agent.run(icp=icp_text, use_case=use_case, count=1)
+    except Exception as exc:
+        log.exception("enrich_domain_llm_failed domain=%s", domain)
+        raise HTTPException(status_code=502, detail="enrichment_llm_error") from exc
+
+    leads = result.leads
+    lead_dict = leads[0].to_dict() if leads else None
+
+    return {
+        "domain": domain,
+        "tech": tech_dict,
+        "lead": lead_dict,
+        "search_notes": result.search_notes,
+        "fetched_at": tech_dict.get("fetched_at"),
+    }
+
+
 @router.post("/demo")
 async def demo() -> dict[str, Any]:
     """Canned demo response for landing UI preview. No LLM call."""
