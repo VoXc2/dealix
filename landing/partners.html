@@ -41,6 +41,10 @@
     .success{display:none;background:#d1fae5;border:1px solid #10b981;color:#065f46;padding:16px;border-radius:10px;margin-top:16px}
     .success.show{display:block}
   </style>
+  <script>
+    // Configure backend URL — points to Railway production
+    window.DEALIX_API_BASE = window.DEALIX_API_BASE || 'https://dealix-production-up.railway.app';
+  </script>
 </head>
 <body>
   <div class="w">
@@ -102,7 +106,7 @@
       </div>
     </div>
 
-    <form class="apply" id="partnerForm" action="https://formspree.io/f/YOUR_ID" method="POST">
+    <form class="apply" id="partnerForm" action="/api/v1/public/partner-application" data-api-path="/api/v1/public/partner-application" method="POST">
       <h2>طلب انضمام</h2>
       <p style="color:#64748b;margin:0 0 8px;font-size:14px">نراجع كل طلب خلال 48 ساعة ونرد برسالة تحدد المستوى المناسب.</p>
 
@@ -152,14 +156,43 @@
     document.getElementById('partnerForm').addEventListener('submit', async function(e){
       e.preventDefault();
       const form = e.target;
+      const btn = form.querySelector('button[type="submit"]');
+      const originalText = btn.textContent;
+      btn.disabled = true;
+      btn.textContent = 'جاري الإرسال...';
       const data = new FormData(form);
+      const payload = Object.fromEntries(data.entries());
       if (window.posthog) posthog.capture('partner_application_submitted', {type: data.get('partnership_type')});
+
+      const API_BASE = (window.DEALIX_API_BASE || '').replace(/\/$/, '');
+      const apiPath = form.dataset.apiPath || '/api/v1/public/partner-application';
+      const url = API_BASE + apiPath;
+
       try {
-        const res = await fetch(form.action, { method:'POST', body:data, headers:{'Accept':'application/json'} });
-        if (res.ok) { document.getElementById('successMsg').classList.add('show'); form.reset(); }
-        else { alert('حصل خطأ. راسلنا على: partners@dealix.sa'); }
+        const res = await fetch(url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        if (res.ok) {
+          document.getElementById('successMsg').classList.add('show');
+          form.reset();
+        } else {
+          // Fallback: open mailto if backend is unreachable
+          const body = encodeURIComponent(
+            Object.entries(payload).map(([k,v]) => `${k}: ${v}`).join('\n')
+          );
+          window.location.href = `mailto:partners@dealix.sa?subject=Partner%20Application%20-%20${encodeURIComponent(payload.company||'')}&body=${body}`;
+        }
       } catch (err) {
-        alert('حصل خطأ. راسلنا على: partners@dealix.sa');
+        alert('تعذر الإرسال مباشرة. سنفتح بريدك الآن لإرسال الطلب يدوياً.');
+        const body = encodeURIComponent(
+          Object.entries(payload).map(([k,v]) => `${k}: ${v}`).join('\n')
+        );
+        window.location.href = `mailto:partners@dealix.sa?subject=Partner%20Application&body=${body}`;
+      } finally {
+        btn.disabled = false;
+        btn.textContent = originalText;
       }
     });
   </script>
