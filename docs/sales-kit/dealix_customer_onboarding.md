@@ -1,316 +1,285 @@
-# Dealix — Customer Onboarding Playbook
+# 🎉 Dealix — Customer Onboarding Playbook
 
-## دليل الـ 14 يوم للعميل الأول: من التوقيع إلى التبنّي الكامل
-
-**المبدأ:** العميل اللي يوصل لـ first value خلال أسبوع — retention rate عنده 90%+. اللي ما يوصل — يُلغي خلال 60 يوم.
-
----
-
-## قبل Day 1: التحضير
-
-### لك (Sami):
-- [ ] العقد موقّع ومستلم
-- [ ] أول دفعة نجحت في Moyasar
-- [ ] حساب admin أُنشئ في Dealix
-- [ ] رسالة ترحيب مُجدولة للإرسال Day 1 8:00 ص
-- [ ] Calendly kickoff call مؤكد (Day 1 10:00 ص)
-
-### للعميل:
-- [ ] قائمة المستخدمين (أسماء + إيميلات + أدوار)
-- [ ] CRM حالي (اسمه + وصول للتصدير)
-- [ ] 5-10 leads نموذجية جاهزة للاستيراد
-- [ ] صلاحيات IT (SSO إن طُلب)
+**للتطبيق:** يوم توقيع العميل على pilot/عقد
+**المدة:** 7-14 يوم من التوقيع إلى "first value"
+**الهدف:** عميل يرى نتيجة ملموسة خلال أسبوع = احتفاظ عالٍ
 
 ---
 
-## اليوم 1 — Kickoff
+## 📐 فلسفة الـ Onboarding
 
-### 8:00 ص — Email ترحيب
+**قاعدة الـ 7 أيام:**
+لو العميل لم يرَ قيمة ملموسة خلال أسبوع من التوقيع، احتمال الـ churn بعد 3 شهور = 80%.
+لو رأى قيمة → 85% يصبح عميلاً دائماً.
 
-**Subject:** `أهلاً [اسم العميل] — رحلتك مع Dealix بدأت`
+**كل شي يُقاس بـ "first value moment":**
+- أول lead يتأهل تلقائياً
+- أول demo يُحجز بدون تدخل بشري
+- أول ساعة BDR محرّرة
 
-```
-السلام عليكم [الاسم]،
-
-مرحباً بك في عائلة Dealix.
-
-اليوم يبدأ الـ 14 يوم الأهم — هدفنا: أن يكون فريقك منتج بالكامل
-على المنصة بنهاية أسبوعين.
-
-مرفق:
-1. Welcome kit PDF
-2. روابط الوصول (SSO/username)
-3. جدول الـ onboarding
-
-لقاء اليوم 10:00 ص عبر Google Meet: [الرابط]
-
-في حال أي سؤال: أنا شخصياً مسؤول عن رحلتك الأولى.
-رقمي المباشر: [WhatsApp]
-
-أهلاً،
-سامي العسيري
-Founder & (مؤقتاً) CS Lead
-Dealix
-```
-
-### 10:00 ص — Kickoff Call (60 دقيقة)
-
-**Agenda:**
-1. (5د) تعارف الفريق
-2. (10د) إعادة تأكيد الأهداف (من discovery call)
-3. (15د) جولة سريعة على dashboard
-4. (10د) جدول الـ 14 يوم
-5. (10د) تخصيص success metrics
-6. (5د) Q&A
-7. (5د) Next steps
-
-**تُنتج من الجلسة:**
-- Shared doc: `[Company]_Dealix_Success_Plan.md`
-- 3 success metrics متفق عليها
-- قائمة المستخدمين النهائية
-- موعد تدريب الفريق (Day 3)
-
-### 4:00 م — رسالة متابعة
-
-```
-شكراً [الاسم] على الوقت اليوم.
-
-الملخص:
-- أهدافك: [A، B، C]
-- Success metrics: [1، 2، 3]
-- اجتماعاتنا التالية: [Day 3، Day 7، Day 14]
-
-اليوم 2 — سنشتغل على data migration.
-جهز export من [CRM القديم] بصيغة CSV.
-
-شكراً،
-سامي
-```
+اجعل هذا يحدث **خلال 72 ساعة من التوقيع**.
 
 ---
 
-## اليوم 2 — Data Migration
+## 🗓️ خطة الـ 14 يوم
 
-### الصباح
-- [ ] استلام CSV من العميل
-- [ ] Map الأعمدة لـ Dealix schema
-- [ ] Import dry-run على sandbox
-- [ ] تأكد لا توجد duplicates أو missing required fields
-- [ ] Import على production (مع backup قبل)
+### يوم 0 — التوقيع
 
-### بعد الظهر
-- [ ] إرسال تقرير import:
-  - X leads مُستوردة
-  - Y duplicates مُدمجة
-  - Z مشاكل (مع حل لكل مشكلة)
+**من Dealix (أنا):**
+- [ ] إرسال welcome email خلال ساعة من التوقيع
+- [ ] إرسال Calendly link لـ kick-off call (خلال 24 ساعة)
+- [ ] إضافة العميل لـ "Active Customers" في CRM
+- [ ] تحضير workspace مخصص في Dealix dashboard
 
+**Welcome Email Template:**
 ```
-[الاسم]، Data migration اكتمل:
+الموضوع: أهلاً بك في Dealix — لنبدأ خلال 24 ساعة
 
-✅ 847 lead مُستورد
-✅ 23 duplicate مدمج
-⚠️  12 lead ناقصها email — راجعها هنا: [رابط]
+[الاسم]،
 
-بكرة Day 3 — تدريب الفريق.
-Agenda مرفق.
-```
+مبروك على الخطوة! Dealix الآن جاهز لبدء العمل لـ [اسم شركتك].
 
----
+الخطوات التالية:
+1️⃣ احجز kick-off call (30 دقيقة): [Calendly link]
+2️⃣ أكمل نموذج setup السريع: [link]
+3️⃣ احضّر access لـ [CRM name] + موقع الشركة
 
-## اليوم 3 — تدريب الفريق
+خلال 72 ساعة من الآن:
+✅ Dealix يستقبل أول lead حقيقي
+✅ تشاهد أول conversation
+✅ تقرر: هل هذا يستحق؟
 
-### الجلسة 1 (45 دقيقة): للمستخدمين العاديين
-- تسجيل الدخول
-- إضافة lead جديد
-- تحديث stage
-- إضافة ملاحظة
-- البحث والفلترة
-- Mobile app
-
-### الجلسة 2 (30 دقيقة): للـ managers
-- Pipeline view
-- التقارير الأساسية
-- Assignment & routing
-- Alerts & notifications
-
-### الجلسة 3 (30 دقيقة): للـ admins
-- User management
-- Custom fields
-- Workflow automation
-- Integrations
-- Audit log
-
-### بعد التدريب:
-- [ ] إرسال recording لمن لم يحضر
-- [ ] cheat sheet PDF للمستخدمين
-- [ ] دعوة لـ Slack/WhatsApp group
-
----
-
-## اليوم 4-6 — Soft Launch
-
-### اليوم 4: فريق محدود (3-5 مستخدمين)
-- استخدام فعلي لـ نصف يوم
-- جمع feedback في اليوم التالي
-- إصلاح أي مشكلة عاجلة
-
-### اليوم 5: Check-in (15 دقيقة)
-أسئلة مُحددة:
-1. ما أعظم تحدي واجهك اليوم؟
-2. ما الشي اللي اشتغل بسلاسة؟
-3. هل اكتشفت ميزة ما تعرفها؟
-4. هل فيه شي تبينا نضيفه/نعدله؟
-
-### اليوم 6: إطلاق كامل الفريق
-- Go/no-go call 9:00 ص
-- إن go: notification لكل الفريق
-- مراقبة live للـ 4 ساعات أولى
-
----
-
-## اليوم 7 — Week 1 Review
-
-### KPIs الـ 7 أيام (مقارنة بالـ baseline)
-| Metric | قبل | بعد | التغيير |
-|--------|-----|-----|---------|
-| Active users | - | - | - |
-| Leads created | - | - | - |
-| Stage transitions | - | - | - |
-| Time per lead | - | - | - |
-
-### الجلسة (30 دقيقة)
-1. استعراض KPIs
-2. ما الذي اشتغل؟
-3. ما التحديات؟
-4. تعديلات للأسبوع الثاني
-5. Quick wins للأسبوع الجاي
-
-**Output:** Week 2 action plan مُوقّع من الطرفين.
-
----
-
-## اليوم 8-12 — Deepen Usage
-
-### التركيز على Advanced Features
-- Day 8: Workflow automations (أول 3)
-- Day 9: Custom reports (أول 2)
-- Day 10: Email/WhatsApp templates
-- Day 11: Integration مع CRM ثاني (إن موجود)
-- Day 12: Mobile app adoption
-
-### Daily check-in (5 دقائق كل يوم)
-عبر Slack/WhatsApp:
-```
-Good morning. Dealix pulse:
-- Active users أمس: X من Y
-- Leads added: Z
-- Any blockers?
-```
-
----
-
-## اليوم 13 — Deep Dive
-
-### Quarterly Business Review (60 دقيقة)
-مع: decision maker (CEO/CRO) + Sami
-
-**Agenda:**
-1. (15د) نتائج الـ 14 يوم vs الأهداف
-2. (15د) ROI الفعلي المحقق
-3. (15د) رحلة الـ 90 يوم القادمة
-4. (10د) طلبات features
-5. (5د) references + referrals
-
-**Output:**
-- Success scorecard
-- 90-day roadmap
-- NPS survey
-- طلب case study (إن النتائج قوية)
-
----
-
-## اليوم 14 — Handoff
-
-### Formal Handoff للـ CSM الدائم (عند scaling)
-- توثيق كامل في shared doc
-- Introduction للـ CSM الجديد
-- Weekly → Monthly check-in cadence
-- Escalation path واضح
-
-### رسالة ختامية
-```
-[الاسم]، مبروك — اكتملت رحلة onboarding الرسمية.
-
-النتائج:
-- [KPI 1]: +X%
-- [KPI 2]: Y عدد
-- [KPI 3]: Z ريال
-
-من اليوم:
-- Monthly check-in: [الموعد]
-- Support SLA العادي مفعّل
-- My direct line لا يزال متاح لأي escalation
-
-أفتخر بثقتك، ومتحمس للمرحلة التالية.
+متوفر 24/7 على WhatsApp: [رقمك]
 
 سامي
 ```
 
+### يوم 1 — Kick-off Call (30 دقيقة)
+
+**Agenda دقيقة بدقيقة:**
+
+**0-5 دقيقة:** Rapport + شكر
+- "شكراً على الثقة. اليوم نرسي الأسس — بعد 30 دقيقة يكون عندك Dealix جاهز للعمل."
+
+**5-15 دقيقة:** Discovery عميق
+- "أخبرني أكثر عن أنواع leads اللي تأتي لك"
+- "ما معلومات BANT اللي تريد الـ AI يجمعها؟"
+- "أي leads يجب رفضها فوراً؟ (مثل: طلاب، competitors)"
+- "لو حدّدت 3 shortcuts للـ BDR team، ما هي؟"
+
+**15-25 دقيقة:** التخصيص
+- Share screen → Dealix admin panel
+- معاً، نضبط:
+  - Tone of voice (formal/casual)
+  - Qualification questions (8 max)
+  - Booking calendar integration
+  - CRM sync
+
+**25-30 دقيقة:** الخطوات التالية
+- "خلال 48 ساعة: أشحن 10 test leads. راجعها وأرسل feedback."
+- "يوم 5: نُفعّل على 20% من leads الحقيقية"
+- "يوم 7: تقرير أسبوع أول + قرار — نكمل أم نعدّل؟"
+
+### يوم 2 — Technical Setup
+
+**Integration checklist:**
+- [ ] CRM webhook مُثبّت + tested
+- [ ] Calendar integration (Calendly/Google)
+- [ ] WhatsApp Business API (إذا طُلب)
+- [ ] Analytics pixel (Dealix sends events)
+- [ ] Branding (logo, colors in chat widget)
+- [ ] Custom domain (chat.customer.com → dealix)
+
+**Email بعد Setup:**
+```
+الموضوع: Setup مُكتمل — 10 test leads قادمة خلال ساعة
+
+[الاسم]،
+
+Dealix الآن مُتصل بـ [CRM]. إليك ما حصل:
+
+✅ Webhook integration tested
+✅ أسئلة التأهيل: [عرض القائمة]
+✅ Calendar sync: [التاريخ]
+✅ 10 test leads تُحقن خلال ساعة للمراجعة
+
+راجعها في dashboard.dealix.ai (login attached).
+
+أنتظر feedback يوم 3.
+
+سامي
+```
+
+### يوم 3 — Review Test Leads
+
+**اجتماع: 15 دقيقة (async محتمل)**
+
+**الأسئلة للعميل:**
+1. جودة الإجابات — هل التعامل طبيعي؟
+2. أسئلة التأهيل — هل تكفي؟
+3. التصنيف — تتفق مع تقييم Dealix؟
+
+**إذا كل شي OK → شحن 20% من leads الحقيقية**
+**إذا في مشاكل → تعديلات محددة، إعادة test**
+
+### يوم 4 — Team Training Call (60 دقيقة)
+
+**الحضور:**
+- BDRs
+- Sales managers
+- RevOps (إذا موجود)
+
+**Agenda:**
+
+**0-10:** كيف يعمل Dealix في خلفيتك
+- flow من lead لـ demo
+- كيف تقرأ الـ briefs
+
+**10-30:** Live demo على بيانات حقيقية
+- leads test تم جمعها يوم 2
+- اقرأ معهم — هذا lead A vs B vs C ليش؟
+
+**30-45:** Hand-off process
+- "لما Dealix يحجز demo، أنت تستقبل notification في Slack"
+- "قبل الـ demo بـ 10 دقائق، افتح الـ brief"
+- "الـ brief يحتوي: الاسم، الشركة، use case، budget range"
+
+**45-60:** Q&A + مخاوف
+
+### يوم 5 — Full Rollout
+
+- 100% من leads → Dealix
+- BDRs يستقبلون فقط leads فئة A
+- Sales managers يستقبلون dashboard يومي
+
+**Monitoring:**
+- فحص كل ساعة لأول 24 ساعة
+- أي escalation → رد خلال 10 دقائق
+
+### يوم 6 — Mid-week Check-in (15 دقيقة)
+
+**الأسئلة:**
+- "أي surprise سلبي خلال 24 ساعة؟"
+- "أي lead عدّل Dealix تصنيفه خطأ؟"
+- "هل BDRs راضين عن جودة الـ briefs؟"
+
+### يوم 7 — Week 1 Review (30 دقيقة)
+
+**Dashboard متضمّن:**
+- كم lead دخل
+- % تأهّل (vs قبل)
+- Demos محجوزة
+- ساعات BDR موفّرة (vs baseline)
+- NPS من BDRs (1-10)
+
+**قرار:**
+- ✅ نكمل + نزيد scope → commit للـ Starter/Growth/Scale الشهري
+- 🟡 تعديلات + أسبوع آخر من pilot (بدون تكلفة)
+- ❌ إلغاء — استرداد كامل + export بيانات
+
 ---
 
-## متابعة ما بعد Day 14
+## 📊 KPIs للـ Onboarding
 
-### Week 3-4: استقرار
-- Weekly KPI report آلي عبر Email
-- Monthly check-in (30 دقيقة)
+| المؤشر | الهدف | التنبيه |
+|---------|-------|---------|
+| Time to first lead | < 72 ساعة | > 5 أيام |
+| Training attendance | 100% | < 70% |
+| Setup call rating | ≥ 8/10 | < 7 |
+| First week qualification rate | > 25% | < 15% |
+| BDR NPS | ≥ 7 | < 5 |
 
-### Month 2-3: التوسيع
-- Quarterly Business Review
-- Feature adoption tracker
-- Expansion opportunities (upgrade tier)
-
-### Month 4+: Advocacy
-- طلب case study
-- طلب referrals
-- دعوة لـ customer advisory board
-- Beta testing للميزات الجديدة
+**إذا أي KPI في منطقة "تنبيه" → escalate إلى founder (أنت) مباشرة.**
 
 ---
 
-## إشارات الخطر (Red Flags)
+## 🎯 أول 30 يوم — Retention Playbook
 
-| الإشارة | الإجراء الفوري |
-|--------|----------------|
-| DAU ينخفض 30%+ لأسبوع | Call من Sami في 24 ساعة |
-| لا توجد leads مُضافة لـ 5 أيام | Check-in عاجل |
-| تذكرة P1 بدون حل | escalation لـ Sami مباشرة |
-| عدم حضور check-ins × 2 | Email من Sami شخصياً |
-| payment failure | call خلال ساعتين |
+### أسبوع 2: تعميق
+- Weekly metrics email (تلقائي)
+- Check-in call (30 دقيقة)
+- جمع feedback عن missing features
 
----
+### أسبوع 3: توسيع
+- Introduce advanced features (custom workflows)
+- A/B test مختلف qualification questions
+- Share industry benchmarks
 
-## قوالب سريعة
-
-### Day 1 Welcome Email — `/templates/welcome.md`
-### Data Migration Report — `/templates/migration_report.md`
-### Weekly KPI Report — `/templates/weekly_kpi.md`
-### QBR Deck — `/templates/qbr_deck.pptx`
-### Success Scorecard — `/templates/scorecard.md`
+### أسبوع 4: تجديد
+- Monthly business review (60 دقيقة)
+- ROI report (formal)
+- Expansion conversation (إذا النتائج ممتازة)
 
 ---
 
-## مقاييس نجاح الـ Onboarding
+## 🔔 إشارات خطر Churn
 
-| Metric | Target | Red |
-|--------|--------|-----|
-| Time to First Value | < 3 أيام | > 7 أيام |
-| Week 1 Active Users % | > 80% | < 50% |
-| Day 14 Full Adoption | > 90% | < 70% |
-| NPS Day 14 | > 50 | < 30 |
-| Day 30 Retention | > 95% | < 85% |
+### أخضر (صحي):
+- ✅ login أسبوعي
+- ✅ استجابة للـ emails خلال 3 أيام
+- ✅ tickets ≤ 2 أسبوعياً
+- ✅ NPS ≥ 8
 
-**Target الأعلى:** NPS > 70 ويشير العميل لعميل جديد خلال 90 يوم.
+### أصفر (انتبه):
+- ⚠️ no login لـ 10 أيام
+- ⚠️ no response لـ email ≥ 7 أيام
+- ⚠️ NPS 5-7
+- ⚠️ billing disputes
+
+**عند الأصفر:** founder يتصل مباشرة خلال 48 ساعة.
+
+### أحمر (خطر):
+- 🔴 no login لـ 21 يوم
+- 🔴 cancellation request
+- 🔴 team downsizing من العميل
+- 🔴 NPS < 5
+
+**عند الأحمر:**
+1. Emergency call خلال 24 ساعة
+2. "Save" offer (2 شهر مجاني + feature request prioritized)
+3. إذا رفض → exit interview مفصّل
 
 ---
 
-*آخر تحديث: 2026-04-23*
+## 📧 Email Cadence للعميل الجديد
+
+| اليوم | الموضوع | الهدف |
+|------|----------|--------|
+| 0 | Welcome + kick-off booking | معلومات + commitment |
+| 2 | Test leads ready | engagement |
+| 3 | Review feedback needed | participation |
+| 5 | Full rollout live | excitement |
+| 7 | Week 1 results | validation |
+| 14 | Month 1 halfway check | retention |
+| 28 | Month 1 review + renewal | expansion |
+| 45 | Feature showcase | education |
+| 60 | Q1 roadmap preview | loyalty |
+| 90 | Quarterly business review | strategic |
+
+---
+
+## 🏆 Success Metrics — أول 3 شهور
+
+**هدف Dealix لكل عميل:**
+- شهر 1: Break-even بالوقت المُوفّر
+- شهر 2: 2X ROI
+- شهر 3: Case study ready للنشر (بموافقة العميل)
+
+**تتبّع:**
+- Weekly: usage metrics
+- Monthly: ROI calculation
+- Quarterly: NPS + renewal probability
+
+---
+
+## 💡 قاعدة ذهبية
+
+**"أول عميل هو الأهم في تاريخ Dealix."**
+
+اقضِ 10 ساعات أسبوعياً على أول عميل لمدة شهر. هذا:
+- يضمن نجاحه (احتفاظ)
+- يعلّمك ماذا يحتاج السوق
+- يبني أول case study
+- ينتج أول referral
+
+**بعد أول 3 عملاء ناجحين:** أنت جاهز للتوسع.

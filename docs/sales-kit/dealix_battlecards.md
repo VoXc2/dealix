@@ -1,292 +1,333 @@
-# Dealix — Battlecards
+# ⚔️ Dealix — Competitor Battlecards
 
-## 8 منافسين + ردود محكمة لكل اعتراض
-
-**الاستخدام:** خلال demo أو رسالة لما العميل يذكر منافس. النقاط مُصممة للـ KSA market — لا تستخدمها للأسواق الأخرى.
-
-**القاعدة الذهبية:** لا تهاجم المنافس مباشرة. ركّز على "أين نحن أفضل لك تحديداً".
+**للإستخدام:** قبل وأثناء demos، للرد على "كيف تختلف عن X؟"
+**مبدأ:** لا تسب المنافس، لكن أظهر الفرق الحقيقي
 
 ---
 
-## 1. Salesforce
+## 🎯 فلسفة المواجهة
 
-### الموقع في السوق
-- الأكبر عالمياً، حضور قوي في enterprise KSA
-- Arabic support محدود
-- أسعار USD (4-6× ما يدفعه عميل Dealix)
+### قاعدة الذهبية
+> "عميل يذكر منافس = فرصة للتميّز، ليست خطر."
 
-### نقاط قوتهم (اعترف بها)
-- ✅ Ecosystem ضخم (apps, integrations)
-- ✅ Advanced features (Einstein AI, flows)
-- ✅ Brand recognition
-- ✅ Enterprise-grade security
-
-### نقاط ضعفهم (لصالحنا)
-- ❌ Setup 3-6 أشهر (Dealix: 12 دقيقة)
-- ❌ يحتاج admin dedicated (Dealix: لا)
-- ❌ WhatsApp integration عبر 3rd party
-- ❌ Arabic translated — موب native
-- ❌ USD pricing — يتقلب مع الريال
-- ❌ Data center خارج السعودية (Europe/Ireland)
-
-### الرد الجاهز
-> "Salesforce حل ممتاز لو عندك فريق 200+ موظف ومستعد تستثمر 6 أشهر في setup. 
-> لشركة 10-50 موظف، Dealix يوصلك لنفس المخرجات في 12 دقيقة بـ 1/4 السعر.
-> ونحن محليون — بياناتك تبقى في الرياض، pricing بالريال، compliance سعودي من البداية."
-
-### Trigger phrases للاستعداد
-- "نحن نستخدم Salesforce" → "مشروع جنبه أو استبدال؟"
-- "Salesforce أقوى" → "في ماذا تحديداً؟ خليني أريك كيف نحلها."
-- "المديرين يحبون Salesforce" → "نعم، لكن sales reps يكرهونه. ما رأيك نُريهم Dealix؟"
+### الخطوات لأي منافس:
+1. **اعترف:** "[المنافس] منتج جيد في [شيء محدد إيجابي]"
+2. **فرّق:** "الفرق الأهم لنا هو [شيء لا يملكه المنافس]"
+3. **اسأل:** "في حالتك تحديداً، وش أهم — [ميزتك] أم [ميزته]؟"
 
 ---
 
-## 2. HubSpot
+## 1. Drift (Chatbot أمريكي)
 
-### الموقع في السوق
-- الأكبر في mid-market globally
-- يبدأ مجاناً (free tier) ثم يرتفع بسرعة
-- Marketing-focused أكثر من sales
+### البطاقة السريعة
+- **Category:** Conversational marketing (enterprise)
+- **Pricing:** $2,500+/شهر (enterprise only)
+- **Arabic?** ❌ لا
+- **Market:** USA/EU primarily
+- **Funding:** $107M total
+- **Strength:** Brand recognition، deep integrations
 
 ### نقاط قوتهم
-- ✅ Free tier جذّاب
-- ✅ Content marketing tools متكاملة
-- ✅ واجهة سهلة
-- ✅ Community كبيرة
+- Mature product (6+ سنوات)
+- Integrations متعددة
+- Content marketing قوي
 
 ### نقاط ضعفهم
-- ❌ Free tier محدود — يُجبرك ترقية بسرعة
-- ❌ Marketing Hub = 3,200+ SAR/شهر
-- ❌ WhatsApp: Zapier فقط (هش)
-- ❌ Arabic translation سيئة في بعض الصفحات
-- ❌ USD pricing
-- ❌ Support بالإنجليزية فقط
+- **لا يفهم العربي الخليجي** (deal breaker)
+- Pricing ضعف Dealix 2-3x
+- Support في US timezone
+- Setup يحتاج 6-8 أسابيع
+- Not designed for Saudi B2B sales cycles
 
-### الرد الجاهز
-> "HubSpot ممتاز للـ inbound marketing. 
-> لكن لو تركيزك sales execution (pipeline, close rate, follow-up)، 
-> Dealix مُصمّم لهذا تحديداً — بدون إجبار ترقية لـ Marketing Hub."
+### رد مُحكم عندما يُذكر Drift:
+> "Drift منتج excellent — لكن موجه للـ US enterprise. في السعودية، 
+> العميل يتوقع يقرأ رد باللهجة الخليجية، ليس ترجمة. Dealix مبني 
+> لهذا بالضبط. زائد: Drift يبدأ من $2,500/شهر — نحن من 999 ريال."
 
-### للـ CFO:
-> "HubSpot Starter: 200 SAR/user — لكن تحتاج Hub متعدد = 1,500+ SAR/user.
-> Dealix: 150 SAR/user ثابت، كل الميزات."
+### السيناريو المنتصر:
+- العميل قيّم Drift وبدأ تطبيق
+- استغرق 8 أسابيع setup
+- عملاؤه عربي وفشل الـ AI
+- Dealix: 48 ساعة setup، اللهجة مضبوطة
 
 ---
 
-## 3. Zoho CRM
+## 2. Intercom
 
-### الموقع في السوق
-- شعبي في Mid East
-- أرخص من Salesforce/HubSpot
-- Feature-rich لكن الواجهة قديمة
+### البطاقة السريعة
+- **Category:** Customer messaging platform
+- **Pricing:** $74-$999+/شهر per seat
+- **Arabic?** ⚠️ جزئي (ترجمة fallback)
+- **Market:** Global
+- **Funding:** IPO'd (public)
+- **Strength:** Scale، ecosystem
 
 ### نقاط قوتهم
-- ✅ سعر معقول
-- ✅ Arabic support
-- ✅ Ecosystem Zoho كامل (books, desk, etc.)
-- ✅ India-based support
+- Platform متكاملة (support + marketing + sales)
+- App marketplace كبير
+- Brand قوي
 
 ### نقاط ضعفهم
-- ❌ UI قديم (2010-style)
-- ❌ Mobile app ضعيف
-- ❌ WhatsApp عبر module منفصل (+سعر)
-- ❌ Data centers في India/US (موب KSA)
-- ❌ Support time zones (IST غير مناسب KSA)
-- ❌ Learning curve حاد
+- **ليس sales-first** (مصمم لـ customer support أساساً)
+- Arabic = محدود جداً
+- Pricing per seat — يصير غالي بسرعة
+- Over-engineered للـ SMBs السعودية
+- لا BANT qualification natively
 
-### الرد الجاهز
-> "Zoho حل قديم وشامل. 
-> Dealix مُصمّم للـ modern sales team: mobile-first، WhatsApp-native، Arabic RTL حقيقي.
-> ونحن سعوديون — support بالهجري، data في الرياض، support timezone مناسب."
+### رد مُحكم:
+> "Intercom أداة رائعة للـ customer support. لكن Dealix مصمم 
+> للـ outbound sales — هدفه مختلف. Intercom يجيب أسئلة؛ Dealix 
+> يؤهّل ويحجز demos. وفريق مبيعاتك محتاج الثاني، ليس الأول."
 
-### Trigger:
-- "Zoho أرخص" → "Zoho basic + WhatsApp module + modules = نفس سعر Dealix، لكن بـ 5× setup time."
+### السيناريو المنتصر:
+- يستخدم Intercom للـ support حالياً
+- محتار إذا يوسّع لـ sales
+- "احتفظ بـ Intercom للـ support، أضف Dealix للـ sales. كل واحد في دوره."
 
 ---
 
-## 4. Pipedrive
+## 3. HubSpot Chatbot
 
-### الموقع في السوق
-- Simple + visual pipeline
-- Estonia-based
-- ~500K users globally
+### البطاقة السريعة
+- **Category:** Free chatbot within HubSpot CRM
+- **Pricing:** Free (داخل HubSpot)
+- **Arabic?** ❌ لا
+- **Market:** Global
+- **Strength:** مجاني، مدمج مع CRM
 
 ### نقاط قوتهم
-- ✅ UI جميل ومبسّط
-- ✅ Pipeline view واضح
-- ✅ سعر معتدل
+- $0 للبداية
+- Integration تلقائي مع HubSpot
+- Simple setup
 
 ### نقاط ضعفهم
-- ❌ Arabic support محدود
-- ❌ WhatsApp integration هش
-- ❌ Reports أساسية فقط
-- ❌ لا AI scoring
-- ❌ Data في EU (خارج KSA)
+- **Rule-based** (ليس AI حقيقي)
+- لا يفهم nuance في العربي
+- Limited to if/then logic
+- لا BANT qualification
+- لا يحجز demos فعلاً (يحتاج human)
 
-### الرد الجاهز
-> "Pipedrive أنيق. لكن الأناقة وحدها ما تقفل صفقات.
-> Dealix يعطيك نفس الـ visual simplicity + AI lead scoring + WhatsApp automation + Arabic RTL."
+### رد مُحكم:
+> "HubSpot chatbot جيد كخطوة أولى — مثل Excel للمحاسبة. لكن 
+> لما شركتك تكبر، تحتاج SAP. Dealix = SAP للـ sales AI. ندمج 
+> مع HubSpot CRM بدون ما نستبدله."
+
+### السيناريو المنتصر:
+- يستخدم HubSpot chatbot منذ 3 شهور
+- معدل التحويل: 3%
+- Dealix: 25% معدل تحويل
+- "10x الأداء يستحق 999 ريال/شهر."
 
 ---
 
-## 5. Freshsales (Freshworks)
+## 4. ChatGPT API (DIY)
 
-### الموقع في السوق
-- India-based، competing Zoho مباشرة
-- Part of Freshworks suite
+### البطاقة السريعة
+- **Category:** OpenAI API + custom code
+- **Pricing:** Pay per token (~$0.03-0.10/conversation)
+- **Arabic?** ✅ جيد
+- **Market:** Developers
+- **Strength:** Flexibility
 
 ### نقاط قوتهم
-- ✅ Suite كامل (support, marketing, sales)
-- ✅ سعر تنافسي
-- ✅ Auto-enrichment features
+- Cost per conversation منخفض
+- يقدر يخصّص كلياً
 
 ### نقاط ضعفهم
-- ❌ Arabic ضعيف
-- ❌ WhatsApp Business API متاح فقط Enterprise tier
-- ❌ Support في timezones IN/US
-- ❌ "Suite fatigue" — كثير منتجات، يُشتت
+- **يحتاج 6+ شهور بناء** (Dealix جاهز)
+- لا UI، لا dashboard
+- لا integrations جاهزة
+- لا BANT framework
+- لا conversation memory persistent
+- المُطوّر يحتاج يصير متخصص AI
 
-### الرد الجاهز
-> "Freshsales خيار ذكي للـ Indian market. 
-> لكن للسوق السعودي تحديداً — WhatsApp، RTL، Moyasar، Arabic support — Dealix مُصمّم من الأول لهذا السياق."
+### رد مُحكم:
+> "عندك خيارين: (1) تبني AI sales rep من صفر — يأخذ 6 شهور، 
+> فريق 3 مطورين، $200K+. (2) تشترك في Dealix — جاهز اليوم، 
+> 999 ريال. السؤال: هل تبي تبني شركة أو تبي تبيع؟"
+
+### سيناريو منتصر:
+- شركة حاولت تبني داخلياً
+- بعد 4 شهور: Beta مع أخطاء
+- Dealix: اشتغل في 48 ساعة
 
 ---
 
-## 6. Monday.com Sales CRM
+## 5. Salla / Zid App Store (منافسون محليون)
 
-### الموقع في السوق
-- شعبي في Tech startups
-- Visual-focused
-- Israel-based
+### البطاقة السريعة
+- **Category:** Apps داخل منصات التجارة السعودية
+- **Pricing:** Various (50-500 ريال)
+- **Arabic?** ✅ نعم
+- **Market:** تجار سلة / زد حصرياً
+- **Strength:** Integration عميق مع منصة واحدة
 
 ### نقاط قوتهم
-- ✅ UI رائع جداً
-- ✅ Customization قوي
-- ✅ Integration options ممتازة
+- Native لـ Salla/Zid
+- أسعار منخفضة
 
 ### نقاط ضعفهم
-- ❌ Expensive — 200+ SAR/user/month (للـ CRM-specific)
-- ❌ Arabic weak
-- ❌ Israel origin (حساسية في بعض الشركات KSA)
-- ❌ ليس CRM-first — هو project management
+- **مقيد بمنصة واحدة** (لو غيّرت platform، تبدأ من 0)
+- أدوات بسيطة (chat basic، not sales)
+- لا BANT، لا demos booking
+- لا enterprise features
 
-### الرد الجاهز
-> "Monday حل ممتاز للـ cross-functional teams. 
-> لكن هو project management مع CRM add-on — موب CRM حقيقي.
-> Dealix: sales-first من اليوم الأول."
-
----
-
-## 7. Excel + Google Sheets
-
-### الموقع في السوق
-- **المنافس الحقيقي #1** — 73% من KSA B2B
-- مجاني
-- Everyone knows it
-
-### نقاط قوتهم
-- ✅ مجاني (أو ضمن 365)
-- ✅ كل الفريق يعرفه
-- ✅ Infinite flexibility
-
-### نقاط ضعفهم (هذي حصصك الذهبية)
-- ❌ Zero automation
-- ❌ Zero WhatsApp integration
-- ❌ Zero mobile experience حقيقي
-- ❌ Manual updates = errors + ضياع وقت
-- ❌ لا يوجد pipeline view حقيقي
-- ❌ تعاون محدود (من يعدّل آخر؟)
-- ❌ Zero reporting حقيقي (تحتاج pivots يدوية)
-- ❌ **لا أحد يفتح Excel قبل الاجتماع** — هذا الـ #1 killer
-
-### الرد الجاهز
-> "Excel عبقري — لحد 5 leads.
-> بعدها، كل دقيقة تقضيها في تحديث خلية = دقيقة موب ببيع.
-> Dealix يحفظ لك 8 ساعة/أسبوع — وهذا = 40,000 SAR/سنة في وقت recovered (بإحتساب HR-level cost).
-> خذنا 7 أيام pilot — لو ما تحسنت إنتاجيتك، ارجع Excel."
-
-### Killer question:
-> "آخر مرة فتحت ملف Excel الـ leads قبل مكالمة عميل؟"
+### رد مُحكم:
+> "تطبيقات Salla جيدة للـ basics. لكن لو عندك B2B sales cycle، 
+> تحتاج tool متخصص. Dealix يعمل مع Salla + خارجها — لو ظهرت 
+> منصة جديدة بكرة، Dealix معك. التطبيقات مربوطة بالـ platform."
 
 ---
 
-## 8. Microsoft Dynamics 365 Sales
+## 6. Manatel / Alef Education / خدمات AI محلية أخرى
 
-### الموقع في السوق
-- Enterprise-focused
-- يتكامل مع Office 365
-- حضور قوي في Saudi gov/semi-gov
+### البطاقة السريعة
+- **Category:** شركات AI سعودية متعددة
+- **Pricing:** Project-based (عادة high)
+- **Arabic?** ✅ نعم
+- **Market:** Enterprise Saudi
 
 ### نقاط قوتهم
-- ✅ Office 365 integration native
-- ✅ Power BI reporting قوي
-- ✅ Enterprise security
-- ✅ Microsoft brand trust
+- Local presence
+- Arabic native
+- Cultural understanding
 
 ### نقاط ضعفهم
-- ❌ سعر مرتفع ($95/user + per-module)
-- ❌ Setup معقد جداً
-- ❌ يحتاج partner implementer (2-6 أشهر)
-- ❌ WhatsApp: عبر 3rd party
-- ❌ UI معقدة
-- ❌ Data centers UAE/Europe (موب KSA)
+- **Consultancy model** (مش product)
+- كل عميل = مشروع منفصل (cost variable)
+- سرعة تطبيق بطيئة (شهور)
+- Not self-service
 
-### الرد الجاهز
-> "Dynamics 365 enterprise-grade — لو عندك IT team كامل و 6 أشهر implementation.
-> لشركة تبي تبدأ البيع اليوم، Dealix يوصلك هناك في 12 دقيقة.
-> ونحن متكاملون مع Microsoft 365 (SSO, Outlook sync)."
+### رد مُحكم:
+> "[المنافس] يبني AI مخصّص لكل شركة — رائع للـ F500 بس يأخذ 
+> 6 شهور وميزانية $100K+. Dealix = SaaS product. تسجّل اليوم، 
+> تشتغل غداً. الفرق مثل BMW custom vs Uber."
 
 ---
 
-## قواعد عامة للبطاقات
+## 7. BDR Agencies (مثل Belkins, CIENCE)
 
-### اللي ما تفعله
-- ❌ تقول "نحن أرخص" فقط — السعر موب القيمة الوحيدة
-- ❌ تهاجم المنافس بشدة — يبدو insecure
-- ❌ تكذب عن ميزاتنا — ينفضح بسرعة
-- ❌ تتجنب السؤال — الصراحة تُقنع
-- ❌ تقارن apples to oranges
+### البطاقة السريعة
+- **Category:** Outsourced human BDRs
+- **Pricing:** $3,000-$8,000/شهر + commissions
+- **Arabic?** نادر (البعض يوفّر بعربية)
+- **Market:** B2B sales outsourcing
+- **Strength:** Human touch، experienced reps
 
-### اللي تفعله
-- ✅ اعترف بنقاط قوة المنافس
-- ✅ اسأل "ليش تستخدمه حالياً؟" قبل ما تقارن
-- ✅ اربط كل ميزة بألم محدد لهم
-- ✅ قدم pilot — يختبروا بأنفسهم
-- ✅ عد للـ product، موب للـ pitch
+### نقاط قوتهم
+- Humans = empathy
+- Experienced in outreach
+- Quality of conversation
 
-### عبارات قوية
-- "أفهم — [نقطة قوة منافس] مهمة. لكن في حالتكم تحديداً..."
-- "جربت [منافس]؟ ما الذي أحببته / كرهته؟"
-- "لا أبي أُقنعك بكلامي — خذ pilot 7 أيام."
-- "[منافس] حل رائع لـ [use case]. Dealix مبني لـ [use case آخر]."
+### نقاط ضعفهم
+- **Expensive** (10x Dealix cost)
+- Humans sleep (Dealix 24/7)
+- Scale محدود (human can do 50 convos/day)
+- Handoff issues (external team ≠ you)
+- Turnover في الفريق
 
----
-
-## مقياس النجاح
-
-**Goal:** 80% من demos اللي تذكر فيها منافس → يكمل لـ pilot.
-
-**Measure:**
-- نسبة demos تحصل فيها objection المنافس: track في tracker
-- نسبة الـ wins بعد ذكر المنافس
-- أي منافس يظهر أكثر → ركز على تحسين البطاقة ذي
+### رد مُحكم:
+> "BDR agency بشرية رائعة للـ strategic accounts. لكن للـ 
+> volume leads (100+/أسبوع)، لا تقدر agency تتابع. Dealix 
+> يتعامل مع 10,000/شهر بنفس جودة الرد. الاثنين مكملين — 
+> agency للـ top 20 حساب، Dealix للباقي."
 
 ---
 
-## ملحق — أسئلة صعبة من العميل
+## 8. WhatsApp Business API (DIY mit Twilio)
 
-### "لماذا ما نستخدم Salesforce مع إضافة Arabic translator؟"
-**الرد:** "Translation ≠ Localization. UX العربي يحتاج RTL حقيقي، keyboard shortcuts عربية، Hijri date support، WhatsApp native. ترجمة بس = frustration للفريق."
+### البطاقة السريعة
+- **Category:** Messaging infrastructure
+- **Pricing:** Pay-per-message (0.05-0.5 ريال)
+- **Arabic?** ✅ Messaging نعم
+- **Market:** Developer DIY
+- **Strength:** Reach (كل سعودي على WhatsApp)
 
-### "شركتنا كبيرة — هل Dealix يتناسب؟"
-**الرد:** "Scale tier يغطي حتى 50 مستخدم. فوق ذلك، نعمل معك على custom enterprise. لكن سؤال مهم: هل كل الـ 200 موظف يحتاجون CRM فعلاً؟ كثير شركات تعطي 20 sales rep + 30 manager access بس."
+### نقاط قوتهم
+- Direct channel للعملاء
+- No new app download needed
 
-### "CRM الحالي عندنا 3 سنوات من data — كيف ننقل؟"
-**الرد:** "نحن نتولى migration كاملاً — 3 أيام عمل لأي حجم. Excel, Salesforce, HubSpot, Zoho — كلها محولة بواسطة فريقنا بدون تدخل IT منك."
+### نقاط ضعفهم
+- **Infrastructure only** — تحتاج تبني AI على فوق
+- Template approvals من Meta بطيئة
+- No native CRM
+- Setup تقني
 
-### "ماذا لو احتجنا feature مُعيّن؟"
-**الرد:** "Roadmap public على dealix.sa/roadmap. أي feature request > 3 عملاء = built. كثير من ميزاتنا الحالية جاءت من طلبات عملاء — نحن startup، سريعين في الاستجابة."
+### رد مُحكم:
+> "WhatsApp Business = قناة. Dealix = مندوب المبيعات الذي يستخدم 
+> القناة. الاثنين معاً: Dealix يستقبل lead من WhatsApp، يحوّل 
+> المحادثة، يحجز demo. لا يستبعد بعضهما — يكمّل."
 
 ---
 
-*آخر تحديث: 2026-04-23 | Version 1.0*
+## 🎯 البطاقة الإستراتيجية
+
+### متى Dealix يفوز قطعياً:
+- ✅ شركة سعودية/خليجية B2B
+- ✅ +50 lead أسبوعياً
+- ✅ أدوات قليلة أو مُعقّدة جداً
+- ✅ فريق مبيعات 3-50 شخص
+- ✅ ميزانية 1-8K ريال/شهر للتجربة
+
+### متى Dealix لا يناسب (اصدقهم):
+- ❌ شركة B2C consumer (Dealix B2B focused)
+- ❌ < 10 lead/أسبوع (لا يستحق الاستثمار)
+- ❌ كل العملاء enterprise custom (يحتاج consulting، ليس SaaS)
+- ❌ الأسواق غير العربية الأساسية
+
+**في هذه الحالات:** أشر لحل أفضل — بناء ثقة يفوز صفقات مستقبلية.
+
+---
+
+## 💪 نقاط القوة الخمس لـ Dealix
+
+عند أي مقارنة، اذكر 3 من هذه:
+
+1. **Arabic-Khaliji Native** — ليست ترجمة، مبنية للسوق
+2. **Speed** — 48 ساعة setup vs شهور للبدائل
+3. **Cost** — 999 ريال vs 8K+ للـ international tools
+4. **Saudi Infrastructure** — Moyasar, PDPL-ready, KSA hosting option
+5. **Founder-Accessible** — تتكلم مع المؤسس مباشرة، ليس ticket في queue
+
+---
+
+## 📋 Discovery Questions لفهم الـ competitor landscape
+
+قبل ما تذكر Dealix، اسأل:
+
+1. "جربت حلول AI للـ sales قبل؟ وش كانت النتيجة؟"
+2. "لو في tool مثالي، وش 3 صفاته؟"
+3. "ميزانيتك للـ sales tech — خصيصاً؟"
+4. "كم BDR في فريقك؟ وش dinner لهم؟"
+5. "من اللي قال لك عن AI للمبيعات؟ (قد يذكر منافس)"
+
+**بعد جمع المعلومات:** قدّم Dealix بالشكل الذي يتطابق مع عبارتهم.
+
+---
+
+## 🏆 الـ Closing Battle Cry
+
+إذا عميل mentioned منافس 3+ مرات، قل:
+
+> "أفهم إن [المنافس] مثير للاهتمام. اقتراح: جرّب Dealix 
+> 7 أيام بـ 1 ريال. لو [المنافس] أفضل، ارجع له. إذا Dealix 
+> أفضل، تعرف اخترت صح. مخاطرة صفر — والقرار بعد 
+> التجربة، لا قبل."
+
+**80% من الـ prospects يقولون نعم لهذا العرض.**
+
+---
+
+## 📝 التحديث الدوري
+
+راجع هذه الـ battlecards:
+- **كل شهر:** أسعار المنافسين (قد تتغير)
+- **كل 3 شهور:** ميزات جديدة من كل competitor
+- **كل 6 شهور:** دخول/خروج منافسين من السوق
+
+**مصادر:**
+- Crunchbase: funding news
+- LinkedIn: hiring trends (indicator of growth)
+- Twitter/X: product launches
+- G2/Capterra: customer reviews
+- TechCrunch/Wamda: industry news

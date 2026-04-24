@@ -1,337 +1,352 @@
-# Dealix — KPI Framework
+# 📊 Dealix — KPI Framework & Weekly Scorecard
 
-## 5 Core KPIs + Weekly Scorecard + Monthly/Quarterly Review
-
-**Principle:** "ما تقيسه — لا تستطيع تحسينه." لكن قياس كل شي = قياس لا شي.
-
----
-
-## 1. The 5 Core KPIs
-
-### KPI 1: Monthly Recurring Revenue (MRR)
-
-**التعريف:** إجمالي الإيراد الشهري المتكرر من كل العملاء المدفوعين.
-
-**الصيغة:**
-```
-MRR = Σ (كل اشتراك نشط × السعر الشهري)
-```
-
-**Targets:**
-| Q | MRR Target | New MRR | Churn MRR | Net New |
-|---|-----------|---------|-----------|---------|
-| Q2 2026 | 10K | 15K | 1K | 14K |
-| Q3 2026 | 45K | 45K | 5K | 40K |
-| Q4 2026 | 120K | 85K | 10K | 75K |
-| Q1 2027 | 250K | 160K | 25K | 135K |
-
-**Dashboard source:** PostHog + internal DB
-**Owner:** Sami (Y1), Sales lead (Y2+)
-**Review cadence:** يومي (snapshot) + أسبوعي (trend)
+**الفلسفة:** ما لا يُقاس، لا يتحسّن.
+**القاعدة:** 5 KPIs أسبوعية — لا أكثر. التركيز = النجاح.
 
 ---
 
-### KPI 2: Customer Churn Rate (شهري)
+## 🎯 الـ 5 KPIs الأسبوعية (North Star Metrics)
 
-**التعريف:** % من العملاء اللي ألغوا خلال الشهر.
+هذه الـ 5 فقط — تُراقَب كل اثنين صباحاً:
 
-**الصيغة:**
-```
-Churn % = (عملاء ألغوا في الشهر / عملاء في بداية الشهر) × 100
-```
+### 1. MRR (Monthly Recurring Revenue)
+- **التعريف:** مجموع الاشتراكات الشهرية النشطة
+- **الهدف Y1:** نمو 25% شهرياً
+- **التنبيه:** < 15% شهرياً
+- **كيف تقيس:** مجموع (active_subscriptions × monthly_price)
 
-**Targets:**
-- Y1: < 7% شهري (منظر)
-- Y2: < 5%
-- Y3: < 3%
-- اعتبر كل > 10% emergency → root-cause analysis فوري
+### 2. New Customers (مدفوع)
+- **التعريف:** عملاء جُدد أكملوا دفعة أولى (مو trial)
+- **الهدف Y1:** 10-15 عميل/شهر بعد M6
+- **التنبيه:** 0 في أسبوع
+- **كيف تقيس:** COUNT(customer WHERE first_payment_date BETWEEN ...)
 
-**Warning signs:**
-- 2 أشهر متتالية > target → investigate
-- Churn من عملاء paid < 3 أشهر → onboarding issue
-- Churn من عملاء > 12 شهر → product stagnation
+### 3. Churn Rate (Monthly)
+- **التعريف:** % من العملاء الذين ألغوا
+- **الهدف:** < 3%
+- **التنبيه:** > 5%
+- **كيف تقيس:** (cancelled / start_of_month_active) × 100
 
-**Owner:** Sami / CSM
-**Review:** أسبوعي
+### 4. Pipeline Value (Weighted)
+- **التعريف:** مجموع opportunities في pipeline × probability
+- **الهدف:** 3x MRR الشهري المطلوب
+- **التنبيه:** < 2x
+- **كيف تقيس:** sum(deal_value × stage_probability)
 
----
-
-### KPI 3: Net Revenue Retention (NRR)
-
-**التعريف:** الإيراد من cohort العملاء القدامى هل ينمو أو ينقص.
-
-**الصيغة:**
-```
-NRR % = (MRR from cohort X today - churn + expansion) / (Original MRR from cohort X) × 100
-```
-
-**Targets:**
-- > 100% = ممتاز (expansion > churn)
-- > 110% = world-class
-- < 90% = red flag
-
-**كيف نرفعها:**
-- Starter → Growth upgrades (target 25% upgrade rate)
-- Growth → Scale upgrades
-- Feature add-ons (future)
-- Renewal discounts للـ annual pay
-
-**Owner:** Sami / Sales
-**Review:** شهري
+### 5. NPS (Net Promoter Score)
+- **التعريف:** رضا العملاء (0-100 scale)
+- **الهدف:** > 50 (Good) / > 70 (Great)
+- **التنبيه:** < 30
+- **كيف تقيس:** % Promoters - % Detractors (quarterly survey)
 
 ---
 
-### KPI 4: Customer Acquisition Cost (CAC)
-
-**التعريف:** تكلفة اكتساب عميل جديد (كل الجهد × السعر).
-
-**الصيغة:**
-```
-CAC = (Sales + Marketing + SDR + Tool costs) / New customers acquired
-```
-
-**Targets:**
-- Blended CAC < 1,500 SAR (Y1)
-- CAC by source:
-  - Referral: < 2,000 SAR (20% commission)
-  - Outbound: < 800 SAR (Sami time)
-  - Inbound (organic): < 300 SAR (content investment)
-
-**Ratio to watch:** LTV / CAC > 3× (must) > 5× (target) > 10× (excellent)
-
-**Dealix current:** LTV/CAC = 26× (من financial_model — excellent)
-
-**Owner:** Sami
-**Review:** شهري
-
----
-
-### KPI 5: Net Promoter Score (NPS)
-
-**التعريف:** "من 0-10، كم احتمال تنصح Dealix لصديق؟"
-
-**الصيغة:**
-```
-NPS = % Promoters (9-10) - % Detractors (0-6)
-```
-
-**Targets:**
-- Y1: > 40 (good)
-- Y2: > 50 (great)
-- Y3: > 60 (world-class)
-
-**Measurement:**
-- In-app prompt after 30 days of use
-- Follow-up quarterly
-- Deep-dive with detractors (call, not survey)
-
-**Actions by segment:**
-- **Promoters (9-10):** ask for referrals + case study
-- **Passives (7-8):** understand "what would make it 10?"
-- **Detractors (0-6):** call within 48h, address issue
-
-**Owner:** Sami / CSM
-**Review:** ربع سنوي + ad-hoc
-
----
-
-## 2. Supporting Metrics (الـ 5 الأساسية محمية بـ 15 supporting)
-
-### Revenue-side
-- **ARR** (MRR × 12)
-- **ACV** (average contract value)
-- **Expansion revenue %**
-- **Pipeline coverage** (3× of quota)
-- **Win rate** (closed-won / total deals)
-
-### Customer-side
-- **Time to first value** (< 3 أيام target)
-- **DAU / MAU ratio** (> 40% = sticky)
-- **Feature adoption rate** (% users using feature X)
-- **Support ticket volume** (ideal: decreasing per user)
-- **CSAT** (post-ticket satisfaction)
-
-### Operational
-- **Uptime %** (SLA target: 99.9%)
-- **Response time** (P50, P90, P99)
-- **Error rate** (Sentry)
-- **Cost per customer** (infra / total customers)
-- **Employee NPS** (eNPS, after first hire)
-
----
-
-## 3. Weekly Scorecard (Template)
-
-**كل أحد 9 AM — Sami يُحدث الملف ثم يرسل summary للـ advisors.**
+## 📋 Weekly Scorecard Template
 
 ```
-# Dealix Weekly — W[N] / 2026-MM-DD
+📅 Week of: [التاريخ]
+🎯 Goal: [الهدف الأساسي هذا الأسبوع]
 
-## 🎯 The 5 Core
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📊 PRIMARY METRICS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-| KPI | Last Week | This Week | Change | Target | Status |
-|-----|-----------|-----------|--------|--------|--------|
-| MRR | 8,500 | 12,500 | +47% | 10,000 | ✅ |
-| Churn | 0% | 0% | — | <7% | ✅ |
-| NRR | 100% | 104% | +4pp | >100% | ✅ |
-| CAC | 1,200 | 900 | -25% | <1,500 | ✅ |
-| NPS | 48 | 52 | +4 | >40 | ✅ |
+1. MRR:              [current] → [target] ([±%])
+2. New Customers:     [count] (week) / [count] (MTD)
+3. Churn:             [count] / [%]
+4. Pipeline:          [ريال] weighted
+5. NPS:               [score]
 
-## 📈 Wins
-- 3 new customers signed (+$X MRR)
-- Content post got 50K views
-- First Growth tier conversion
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📈 SECONDARY METRICS (Context)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-## ⚠️ Red Flags
-- Demo-to-close rate dropped from 40% → 25%
-- 2 support tickets P1 this week
-- Infra cost per customer +15% MoM
+Outreach:
+- Messages sent:      [count]
+- Reply rate:         [%]
+- Demos booked:       [count]
 
-## 🔬 Experiments (A/B this week)
-- [Active] Pricing page CTA: "Start pilot" vs "Book demo"
-- [Completed] LinkedIn outreach volume: 5 vs 10/day → 10 wins
-- [Next] Demo length: 30 min vs 20 min
+Product:
+- Active users/week:  [count]
+- Conversations:      [count]
+- Leads qualified:    [count]
 
-## 🎲 Predictions for Next Week
-- MRR target: 15,000
-- New customers: 4
-- Main risk: holiday week (-20% outreach volume)
+Financial:
+- Revenue collected:  [ريال]
+- Burn:              [ريال]
+- Cash balance:       [ريال]
 
-## 🔥 Priorities
-1. [P0] Close deals مع [شركة 1]
-2. [P0] Fix bug: WhatsApp thread sync
-3. [P1] Content: publish post على LinkedIn الثلاثاء
-4. [P1] Hire JD: Senior Engineer
-5. [P2] Reach out to 15 new leads
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+✅ WINS (3)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+1. [اكتب هنا]
+2. [اكتب هنا]  
+3. [اكتب هنا]
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+⚠️ MISSES (كن صريحاً)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+1. [ما الذي لم يسِر جيداً؟]
+2. [درس مستفاد؟]
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🎯 NEXT WEEK (Top 3)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+1. [أولوية 1]
+2. [أولوية 2]
+3. [أولوية 3]
 ```
 
----
-
-## 4. Monthly Review (آخر يوم من الشهر، 2 ساعة)
-
-### Agenda
-1. **(15د)** Review الـ 5 Core + Supporting
-2. **(30د)** Deep dive على أسوأ KPI
-3. **(30د)** Case studies وعرض للـ advisors
-4. **(15د)** Customer feedback themes
-5. **(15د)** Next month's OKRs
-6. **(15د)** Open questions
-
-### Deliverables
-- Monthly snapshot (1-page PDF)
-- Email لـ advisors + investors
-- Internal retro doc
+**مشاركة:** email لنفسك كل اثنين 8 صباحاً. أرشيف للـ patterns.
 
 ---
 
-## 5. Quarterly Business Review (QBR)
+## 📅 Monthly Deep Review
 
-### Agenda (نصف يوم — 4 ساعات)
-1. **(45د)** Deep dive على KPIs — annual trajectory
-2. **(60د)** Product roadmap review + adjustments
-3. **(30د)** Competitive analysis update
-4. **(45د)** Financials: burn, runway, fundraising
-5. **(30د)** Team: hires, retention, morale
-6. **(30د)** Big bets للربع القادم
+### أول يوم كل شهر (60 دقيقة)
 
-### Deliverables
-- Full QBR deck (20-30 شريحة)
-- Board meeting (لو funded)
-- OKRs للربع الجديد
-- Annual strategy adjustments (إن لزم)
+#### 1. Financial Review (15 دقيقة)
+- P&L الشهر
+- Cash position
+- Runway update
+- Unit economics (CAC, LTV, payback)
 
----
+#### 2. Product Review (15 دقيقة)
+- Features shipped
+- Bugs outstanding
+- Performance metrics
+- User feedback themes
 
-## 6. Data Infrastructure
+#### 3. Sales Review (15 دقيقة)
+- Pipeline by stage
+- Win/loss analysis
+- Sales cycle trends
+- Top deals at risk
 
-### Tools
-- **PostHog:** product analytics (events, funnels, cohorts)
-- **Moyasar dashboard:** revenue + churn
-- **Internal DB queries:** custom metrics (CSV exports)
-- **Google Sheets:** consolidation + charts
-- **Slack alerts:** anomaly detection (future)
+#### 4. Customer Review (15 دقيقة)
+- NPS changes
+- Usage patterns
+- Expansion opportunities
+- Churn reasons
 
-### Data quality rules
-- كل event له owner محدد
-- تعريف metric موثّق في wiki
-- revised quarterly
-
-### Visualization
-- Dashboard داخلية: لوحة Sami
-- Dashboard خارجي: للـ advisors (read-only)
-- Public: nothing (حتى Series A)
+**النتيجة:** Monthly report مكتوب، 2-3 صفحات max.
 
 ---
 
-## 7. OKRs (Objectives + Key Results)
+## 🎯 OKRs (Objectives & Key Results)
 
-### Q3 2026 OKRs (example)
+### النموذج:
 
-**Objective 1: Establish product-market fit**
-- KR1: 10 paying customers (was 0)
-- KR2: NPS ≥ 40
-- KR3: 1 case study published
-- KR4: Churn ≤ 5%
+**Objective:** (Qualitative، مُلهم، quarterly)
+- KR1: (Quantitative، محدد، Pass/Fail)
+- KR2:
+- KR3:
+- KR4:
 
-**Objective 2: Build repeatable acquisition**
-- KR1: CAC < 1,500 SAR
-- KR2: 2+ channels producing > 3 customers each
-- KR3: Demo → close rate > 30%
+### مثال: Q2 2026
 
-**Objective 3: Prepare for Q4 scale**
-- KR1: 1 senior engineer hired
-- KR2: 1 CSM hired
-- KR3: Scale tier spec'd
+**Objective:** Launch Dealix للإنتاج بنجاح وبناء قاعدة عملاء أولى
+- **KR1:** 20 عميل مدفوع بنهاية Q2
+- **KR2:** MRR ≥ 60K ريال بنهاية Q2
+- **KR3:** 99.9% uptime
+- **KR4:** NPS ≥ 50
 
-### OKR rules
-- 3-5 objectives max
-- 3-5 KRs per objective
-- Each KR: measurable + ambitious (70% achievement = success)
-- Quarterly only (not monthly)
+### Scoring:
+- **Pass:** 70%+ من الـ KR achieved
+- **Stretch pass:** 100%+
+- **Fail:** < 70%
 
----
-
-## 8. Alerts & Automation (Future Phase 2)
-
-### P1 Alerts (immediate Slack ping)
-- MRR drops > 10% in 1 day
-- Churn > 15% in a week
-- Uptime < 99% over 24h
-- Support P1 ticket > 2 in 24h
-
-### P2 Alerts (daily summary)
-- New customers signed
-- Demos completed
-- Content engagement
-- Competitor mentions
+**القاعدة:** 3 OKRs max per quarter. الكثرة = التشتت.
 
 ---
 
-## 9. الفلسفة
+## 📊 Dashboards الأساسية
 
-### ما يكسب أعلى الأولوية
-1. **Leading indicators** (pipeline, NPS trend, feature adoption)
-2. **Revenue quality** (NRR, expansion, not just MRR)
-3. **Customer-centric** (NPS, ticket resolution, time to value)
-4. **Efficiency** (CAC, LTV/CAC, burn multiple)
+### Dashboard 1: Business Health (Daily)
+مسؤول: Founder
 
-### ما نتجاهل (للآن)
-- Vanity metrics (followers, PR mentions)
-- Highly technical (server response, CPU) إلا إن تأثر العميل
-- Industry averages (نحن nice B2B Saudi — benchmarks العالمية موب مُناسبة كل مرة)
+**Widgets:**
+- MRR (current + 30-day trend)
+- Active customers
+- New signups today
+- Failed payments (need attention)
+- Support tickets open
+
+**Tool:** Google Sheets + Retool (MVP), Metabase/Looker (after M6)
+
+### Dashboard 2: Sales Pipeline (Weekly)
+مسؤول: Founder → BDR عند التوظيف
+
+**Widgets:**
+- Pipeline by stage (funnel)
+- Deals moving this week
+- Stuck deals (> 14 days no activity)
+- Win rate by source
+
+**Tool:** HubSpot pipeline + custom views
+
+### Dashboard 3: Product Analytics (Weekly)
+مسؤول: Founder (CTO eventually)
+
+**Widgets:**
+- Conversations/day
+- Lead qualification rate
+- Booking conversion
+- Error rates
+- Response times
+
+**Tool:** PostHog self-hosted
+
+### Dashboard 4: Customer Success (Monthly)
+مسؤول: CS Manager (عند التوظيف)
+
+**Widgets:**
+- Health scores per account
+- Usage trends (up/down)
+- NPS changes
+- Expansion opportunities
+- Churn risks
+
+**Tool:** Custom dashboard + Salesforce (eventually)
 
 ---
 
-## 10. Review Calendar
+## 🚨 Red Flags (إشارات خطر)
 
-| الإيقاع | اليوم/الوقت | الجلسة | المُشاركون |
-|---------|-----------|--------|-----------|
-| Daily | 9 AM | KPI snapshot check | Sami |
-| Weekly | Sunday 9 AM | Weekly scorecard | Sami + CSM (عند hiring) |
-| Monthly | Last Thursday | Monthly review | Sami + Advisors |
-| Quarterly | Week 13 | QBR | Team + Advisors |
-| Annual | December | Strategic planning | Team + Board |
+### Immediate action needed:
+
+1. **MRR drop > 10% in a week** → إجراء retention campaign
+2. **Churn > 5% monthly** → تحقيق الأسباب، call كل عميل مُلغي
+3. **Pipeline < 1.5x MRR target** → زيادة outreach فوراً
+4. **NPS < 30** → analysis الـ detractors، plan للتحسين
+5. **Cash runway < 6 شهور** → تسريع sales أو fundraise
+
+### Yellow flags (مراقبة):
+
+- CAC يرتفع > 30%
+- Sales cycle يطول > 40%
+- Support tickets > 20% زيادة
+- Team velocity يقل (PRs, features)
+- Customer health scores declining
 
 ---
 
-*آخر تحديث: 2026-04-23 | Version 1.0*
+## 💾 أدوات القياس (Tech Stack)
+
+### M1-M3 (Free/Cheap):
+- **Google Sheets** — financial + pipeline tracking
+- **PostHog self-hosted** — product analytics
+- **Stripe + Moyasar dashboards** — payments
+- **Plausible** — website analytics (privacy-first)
+- **Notion** — OKRs + documentation
+
+### M4-M9 (Scaling):
+- **HubSpot Free** — CRM
+- **Metabase** — business intelligence
+- **Linear** — product management
+- **Intercom** — customer messaging (eventually)
+
+### M10+:
+- **Salesforce** (if Enterprise-heavy)
+- **Looker** — advanced BI
+- **Segment** — data pipeline
+- **Zapier/Make** — integrations
+
+---
+
+## 📈 Benchmarks للـ SaaS سعودي
+
+مقارنة أدائك مع السوق:
+
+| Metric | أقل من المعدل | المعدل | فوق المعدل |
+|--------|----------------|---------|-------------|
+| Monthly churn | >6% | 3-5% | <3% |
+| Gross margin | <70% | 75-85% | >85% |
+| LTV:CAC | <3 | 3-5 | >5 |
+| Sales cycle | >60 days | 30-60 | <30 |
+| NPS | <30 | 30-50 | >50 |
+| Revenue/employee | <$100K | $100-200K | >$200K |
+| Monthly growth | <10% | 10-20% | >20% |
+
+**Dealix الحالي target:** "فوق المعدل" في كل المقاييس.
+
+---
+
+## 🎯 Weekly Rituals
+
+### الاثنين 8:00 ص — Planning
+- Review KPIs من الأسبوع السابق
+- كتابة الـ scorecard
+- تحديد الـ top 3 هذا الأسبوع
+
+### الثلاثاء-الخميس — Execution
+- 80% على الأولويات
+- 20% على maintenance + support
+
+### الجمعة 2:00 م — Retrospective
+- ما ذهب جيداً؟
+- ما الذي يحتاج تحسين؟
+- ماذا نغيّر الأسبوع القادم؟
+
+### السبت-الأحد — Rest (مهم!)
+- لا email
+- لا GitHub (إلا طوارئ)
+- إعادة الشحن
+
+**حرق نفسك = إفشال الشركة.**
+
+---
+
+## 🔍 Customer Interview Framework (Monthly)
+
+كل شهر، مكالمة 30 دقيقة مع 3-5 عملاء:
+
+### الأسئلة (بهذا الترتيب):
+
+1. "على مقياس 1-10، كم احتمال توصي بـ Dealix لصديق؟" (NPS)
+2. "ليش [الرقم] وليس [الرقم+1]؟" (improvement areas)
+3. "وش أكبر قيمة حصلت عليها حتى الآن؟" (strengths to amplify)
+4. "وش الميزة اللي إذا اضفناها، تستخدمها كل يوم؟" (roadmap input)
+5. "لو Dealix اختفى غداً، وش تستخدم؟" (competitive moat)
+6. "تعرف أحد مثلك يحتاج Dealix؟" (referral ask)
+
+**سجل المكالمة (بموافقة)، حلّل الـ patterns شهرياً.**
+
+---
+
+## 📊 Success Definitions (Long-term)
+
+### Y1 Success (Q1 2027):
+- ✅ 120+ عملاء
+- ✅ 4M+ ARR
+- ✅ EBITDA positive
+- ✅ NPS > 50
+- ✅ 5-7 team members
+- ✅ Seed round raised
+
+### Y2 Success (Q1 2028):
+- ✅ 360+ عملاء (3x growth)
+- ✅ 12M+ ARR
+- ✅ Profitable (30%+ margin)
+- ✅ NPS > 60
+- ✅ 12-15 team members
+- ✅ Expanded to UAE + Kuwait
+
+### Y3 Success (Q1 2029):
+- ✅ 1,000+ عملاء
+- ✅ 30M+ ARR
+- ✅ Series A closed
+- ✅ Regional leader in Arabic sales AI
+- ✅ 30-40 team members
+
+---
+
+## 🏆 الخلاصة
+
+**القياس = الوضوح = التحسين.**
+
+5 KPIs أسبوعياً. 1 OKR quarterly. Review شهري.
+
+لا تبني dashboards ممتدة قبل ما يكون عندك data. ابدأ بـ spreadsheet.
+
+**أهم شيء: اختر ما تقيس، قسه بصدق، وتصرف على ما تراه.**
