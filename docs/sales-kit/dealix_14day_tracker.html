@@ -2,265 +2,241 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dealix — Pipeline Tracker (14 يوم)</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;600;700&display=swap">
+<title>Dealix 14-Day Revenue Tracker</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
-    font-family: 'IBM Plex Sans Arabic', sans-serif;
-    background: #0f172a;
-    color: #e2e8f0;
-    padding: 24px;
-    min-height: 100vh;
-  }
-  h1 {
-    color: #22d3ee;
-    font-size: 28px;
-    margin-bottom: 6px;
-  }
-  .sub { color: #94a3b8; margin-bottom: 24px; font-size: 14px; }
-
-  .stats {
-    display: grid;
-    grid-template-columns: repeat(6, 1fr);
-    gap: 12px;
-    margin-bottom: 24px;
-  }
-  .stat {
-    background: #1e293b;
-    border: 1px solid #334155;
-    border-radius: 10px;
-    padding: 14px;
-    text-align: center;
-  }
-  .stat .n { font-size: 24px; color: #22d3ee; font-weight: 700; }
-  .stat .l { font-size: 12px; color: #94a3b8; margin-top: 4px; }
-
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    background: #1e293b;
-    border-radius: 10px;
-    overflow: hidden;
-  }
-  th, td {
-    padding: 10px 8px;
-    text-align: right;
-    border-bottom: 1px solid #334155;
-    font-size: 13px;
-  }
-  th {
-    background: #0c4a6e;
-    color: #22d3ee;
-    font-weight: 600;
-    font-size: 12px;
-  }
-  input, select, textarea {
-    width: 100%;
-    background: transparent;
-    border: none;
-    color: #e2e8f0;
-    font-family: inherit;
-    font-size: 13px;
-    padding: 4px;
-  }
-  input:focus, select:focus, textarea:focus {
-    outline: 1px solid #22d3ee;
-    background: #0f172a;
-  }
-  .status-contacted { color: #94a3b8; }
-  .status-replied { color: #fbbf24; }
-  .status-demo { color: #22d3ee; }
-  .status-pilot { color: #10b981; }
-  .status-paid { color: #22d3ee; font-weight: 700; }
-  .status-dead { color: #64748b; text-decoration: line-through; }
-
-  .btns {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 20px;
-  }
-  button {
-    background: #22d3ee;
-    color: #0f172a;
-    border: none;
-    padding: 10px 18px;
-    border-radius: 8px;
-    font-family: inherit;
-    font-weight: 600;
-    cursor: pointer;
-    font-size: 13px;
-  }
-  button.ghost {
-    background: transparent;
-    color: #22d3ee;
-    border: 1px solid #22d3ee;
-  }
-  .day-label { color: #64748b; font-size: 11px; }
-  .foot { margin-top: 24px; color: #64748b; font-size: 12px; text-align: center; }
+  body { font-family: -apple-system, 'Segoe UI', Arial, sans-serif; background: #0a0e27; color: #fff; padding: 24px; min-height: 100vh; }
+  .container { max-width: 1200px; margin: 0 auto; }
+  .header { margin-bottom: 32px; }
+  h1 { font-size: 2rem; background: linear-gradient(135deg, #3b82f6, #10b981); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 8px; }
+  .subtitle { color: #94a3b8; }
+  .goals { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 32px; }
+  .goal-card { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 20px; text-align: center; }
+  .goal-number { font-size: 2rem; font-weight: 700; color: #3b82f6; }
+  .goal-current { font-size: 1rem; color: #10b981; margin-top: 4px; }
+  .goal-label { font-size: 0.85rem; color: #94a3b8; margin-top: 6px; }
+  .progress-bar { background: rgba(255,255,255,0.08); height: 6px; border-radius: 3px; overflow: hidden; margin-top: 12px; }
+  .progress-fill { background: linear-gradient(90deg, #3b82f6, #10b981); height: 100%; transition: width 0.3s; }
+  table { width: 100%; background: rgba(255,255,255,0.04); border-radius: 12px; overflow: hidden; margin-bottom: 24px; }
+  th, td { padding: 12px; text-align: right; border-bottom: 1px solid rgba(255,255,255,0.06); }
+  th { background: rgba(59,130,246,0.1); font-weight: 600; font-size: 0.9rem; color: #cbd5e1; }
+  td { font-size: 0.9rem; }
+  tr:hover { background: rgba(255,255,255,0.03); }
+  input[type="checkbox"] { width: 18px; height: 18px; cursor: pointer; }
+  input[type="text"], input[type="number"] { background: transparent; border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 6px 10px; border-radius: 6px; font-size: 0.85rem; width: 100%; }
+  input[type="text"]:focus, input[type="number"]:focus { outline: none; border-color: #3b82f6; }
+  .day-header { background: rgba(16,185,129,0.1); font-weight: 600; color: #10b981; padding: 12px; border-radius: 8px; margin: 20px 0 12px; }
+  .tab-bar { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
+  .tab { padding: 10px 18px; background: rgba(255,255,255,0.05); border-radius: 8px; cursor: pointer; font-size: 0.9rem; }
+  .tab.active { background: linear-gradient(135deg, #3b82f6, #10b981); }
+  .panel { display: none; }
+  .panel.active { display: block; }
+  .status-badge { display: inline-block; padding: 3px 10px; border-radius: 12px; font-size: 0.75rem; }
+  .status-sent { background: rgba(59,130,246,0.2); color: #60a5fa; }
+  .status-replied { background: rgba(250,204,21,0.2); color: #fbbf24; }
+  .status-demo { background: rgba(168,85,247,0.2); color: #c084fc; }
+  .status-paid { background: rgba(16,185,129,0.2); color: #34d399; }
+  .export-btn { background: linear-gradient(135deg, #3b82f6, #10b981); color: #fff; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-size: 0.9rem; margin-left: 8px; }
 </style>
 </head>
 <body>
-  <h1>📊 Dealix — Pipeline Tracker 14 يوم</h1>
-  <p class="sub">يحفظ تلقائياً في متصفحك. الهدف: 999 ريال في الحساب خلال 14 يوم.</p>
-
-  <div class="stats">
-    <div class="stat"><div class="n" id="s-total">0</div><div class="l">تم التواصل</div></div>
-    <div class="stat"><div class="n" id="s-replied">0</div><div class="l">ردّوا</div></div>
-    <div class="stat"><div class="n" id="s-demo">0</div><div class="l">Demo محجوز</div></div>
-    <div class="stat"><div class="n" id="s-pilot">0</div><div class="l">في Pilot</div></div>
-    <div class="stat"><div class="n" id="s-paid">0</div><div class="l">دفعوا</div></div>
-    <div class="stat"><div class="n" id="s-rev">0</div><div class="l">إيراد (ريال)</div></div>
+<div class="container">
+  <div class="header">
+    <h1>🎯 Dealix — 14 Day Revenue Tracker</h1>
+    <p class="subtitle">من الإرسال لأول 999 ريال. حدّث كل مساء.</p>
   </div>
 
-  <div class="btns">
-    <button onclick="addRow()">+ إضافة Lead جديد</button>
-    <button class="ghost" onclick="exportCSV()">⬇️ تصدير CSV</button>
-    <button class="ghost" onclick="clearAll()">🗑️ مسح الكل</button>
+  <div class="goals">
+    <div class="goal-card">
+      <div class="goal-number" id="goal-messages">0/20</div>
+      <div class="goal-label">رسائل مرسلة</div>
+      <div class="progress-bar"><div class="progress-fill" id="p-msg" style="width:0%"></div></div>
+    </div>
+    <div class="goal-card">
+      <div class="goal-number" id="goal-replies">0/5</div>
+      <div class="goal-label">ردود إيجابية</div>
+      <div class="progress-bar"><div class="progress-fill" id="p-rep" style="width:0%"></div></div>
+    </div>
+    <div class="goal-card">
+      <div class="goal-number" id="goal-demos">0/3</div>
+      <div class="goal-label">Demos مكتملة</div>
+      <div class="progress-bar"><div class="progress-fill" id="p-dem" style="width:0%"></div></div>
+    </div>
+    <div class="goal-card">
+      <div class="goal-number" id="goal-paid">0/1</div>
+      <div class="goal-current" id="goal-revenue">0 ريال</div>
+      <div class="goal-label">عميل مدفوع</div>
+      <div class="progress-bar"><div class="progress-fill" id="p-paid" style="width:0%"></div></div>
+    </div>
   </div>
 
-  <table>
-    <thead>
-      <tr>
-        <th>#</th>
-        <th>الاسم</th>
-        <th>الشركة</th>
-        <th>القطاع</th>
-        <th>القناة</th>
-        <th>تاريخ التواصل</th>
-        <th>الحالة</th>
-        <th>المبلغ</th>
-        <th>ملاحظات</th>
-        <th></th>
-      </tr>
-    </thead>
-    <tbody id="rows"></tbody>
-  </table>
+  <div class="tab-bar">
+    <div class="tab active" onclick="showTab('pipeline')">Pipeline</div>
+    <div class="tab" onclick="showTab('daily')">Daily Log</div>
+    <div class="tab" onclick="showTab('notes')">Notes</div>
+    <button class="export-btn" onclick="exportCSV()">📥 Export CSV</button>
+  </div>
 
-  <p class="foot">
-    Dealix — Pipeline Tracker · آخر حفظ: <span id="saved">—</span><br>
-    نصيحة: راجعه يومياً بعد صلاة الظهر · ابدأ outreach من أعلى lead score
-  </p>
+  <div id="pipeline" class="panel active">
+    <table id="pipeline-table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>الشركة</th>
+          <th>الاسم</th>
+          <th>القناة</th>
+          <th>أُرسل</th>
+          <th>رد؟</th>
+          <th>Demo؟</th>
+          <th>Pilot؟</th>
+          <th>دفع؟</th>
+          <th>الحالة</th>
+          <th>ملاحظات</th>
+        </tr>
+      </thead>
+      <tbody id="pipeline-body"></tbody>
+    </table>
+  </div>
+
+  <div id="daily" class="panel">
+    <div id="daily-log"></div>
+  </div>
+
+  <div id="notes" class="panel">
+    <textarea id="notes-text" style="width:100%; min-height:400px; background:rgba(255,255,255,0.04); color:#fff; border:1px solid rgba(255,255,255,0.1); border-radius:12px; padding:16px; font-family:inherit; font-size:0.95rem;" placeholder="تعلمات من هذا الأسبوع...&#10;&#10;- ما شفت يشتغل:&#10;- ما ما يشتغل:&#10;- تحسينات للأسبوع القادم:"></textarea>
+  </div>
+</div>
 
 <script>
-  const STORAGE = 'dealix_pipeline_v1';
-  const STATUSES = [
-    { v: 'contacted', t: 'تم التواصل' },
-    { v: 'replied', t: 'ردّ' },
-    { v: 'demo', t: 'Demo محجوز' },
-    { v: 'pilot', t: 'في Pilot' },
-    { v: 'paid', t: '✅ دفع' },
-    { v: 'dead', t: '❌ لا اهتمام' },
-  ];
+const leads = [
+  {co:'Lucidya', name:'عبدالله العسيري', ch:'LinkedIn', tier:'A'},
+  {co:'Foodics', name:'Ahmad Al-Zaini', ch:'LinkedIn', tier:'A'},
+  {co:'Salla', name:'Nawaf Hariri', ch:'Twitter', tier:'A'},
+  {co:'Lean Tech', name:'Hisham Al-Falih', ch:'LinkedIn', tier:'A'},
+  {co:'BRKZ', name:'Ibrahim Manna', ch:'LinkedIn', tier:'A'},
+  {co:'Zid', name:'Sultan Mofarreh', ch:'LinkedIn', tier:'B'},
+  {co:'Sary', name:'Mohammed Aldossary', ch:'LinkedIn', tier:'B'},
+  {co:'Retailo', name:'Talha Ansari', ch:'LinkedIn', tier:'B'},
+  {co:'Rekaz', name:'TBD', ch:'LinkedIn', tier:'B'},
+  {co:'Glamera', name:'TBD', ch:'LinkedIn', tier:'B'},
+  {co:'Mozn', name:'TBD', ch:'LinkedIn', tier:'B'},
+  {co:'Mnzil', name:'TBD', ch:'LinkedIn', tier:'B'},
+  {co:'Logexa', name:'TBD', ch:'LinkedIn', tier:'B'},
+  {co:'Tamara', name:'TBD', ch:'LinkedIn', tier:'C'},
+  {co:'Nana', name:'TBD', ch:'LinkedIn', tier:'C'},
+  {co:'Jahez', name:'TBD', ch:'LinkedIn', tier:'C'},
+  {co:'Merit Incentives', name:'TBD', ch:'LinkedIn', tier:'C'},
+  {co:'Bayzat', name:'TBD', ch:'LinkedIn', tier:'C'},
+  {co:'SiFi', name:'TBD', ch:'LinkedIn', tier:'C'},
+  {co:'Hakbah', name:'TBD', ch:'LinkedIn', tier:'C'}
+];
 
-  let data = [];
+let state = JSON.parse(localStorage.getItem('dealix_tracker') || '{}');
 
-  function load() {
-    try { data = JSON.parse(localStorage.getItem(STORAGE) || '[]'); } catch { data = []; }
-    if (!data.length) {
-      // Seed with real leads
-      data = [
-        { id: 1, name: 'عبدالله العسيري', company: 'Lucidya', sector: 'SaaS', channel: 'LinkedIn', date: '', status: 'contacted', amount: 0, notes: 'نفس اسم العائلة — أعلى احتمال' },
-        { id: 2, name: 'عمر الخميس', company: 'BRKZ', sector: 'Construction', channel: 'LinkedIn', date: '', status: 'contacted', amount: 0, notes: 'Series A $17M — عنده budget' },
-        { id: 3, name: 'أحمد الحازمي', company: 'Foodics', sector: 'Restaurant Tech', channel: 'LinkedIn', date: '', status: 'contacted', amount: 0, notes: '15K+ عميل' },
-        { id: 4, name: 'رائد بن جويعد', company: 'مستشار رقمنة', sector: 'Consulting', channel: 'LinkedIn', date: '', status: 'contacted', amount: 0, notes: 'لـ referrals' },
-        { id: 5, name: 'فاطمة السبيعي', company: 'Startup', sector: 'B2B', channel: 'LinkedIn', date: '', status: 'contacted', amount: 0, notes: 'VP Sales' },
-      ];
-      save();
-    }
-    render();
+function save(){ localStorage.setItem('dealix_tracker', JSON.stringify(state)); updateGoals(); }
+
+function getField(idx, field){
+  const key = idx + '_' + field;
+  return state[key] || '';
+}
+
+function setField(idx, field, val){
+  state[idx + '_' + field] = val;
+  save();
+}
+
+function getStatus(idx){
+  if (getField(idx, 'paid')) return {label:'💰 مدفوع', cls:'status-paid'};
+  if (getField(idx, 'pilot')) return {label:'🎯 Pilot', cls:'status-demo'};
+  if (getField(idx, 'demo')) return {label:'📞 Demo', cls:'status-demo'};
+  if (getField(idx, 'reply')) return {label:'✉️ رد', cls:'status-replied'};
+  if (getField(idx, 'sent')) return {label:'📤 أُرسل', cls:'status-sent'};
+  return {label:'⚪ جديد', cls:''};
+}
+
+function render(){
+  const body = document.getElementById('pipeline-body');
+  body.innerHTML = leads.map((l, i) => {
+    const s = getStatus(i);
+    return `<tr>
+      <td>${i+1}</td>
+      <td><strong>${l.co}</strong> <small style="color:#64748b">[${l.tier}]</small></td>
+      <td>${l.name}</td>
+      <td>${l.ch}</td>
+      <td><input type="checkbox" ${getField(i,'sent')?'checked':''} onchange="setField(${i},'sent',this.checked); render();"></td>
+      <td><input type="checkbox" ${getField(i,'reply')?'checked':''} onchange="setField(${i},'reply',this.checked); render();"></td>
+      <td><input type="checkbox" ${getField(i,'demo')?'checked':''} onchange="setField(${i},'demo',this.checked); render();"></td>
+      <td><input type="checkbox" ${getField(i,'pilot')?'checked':''} onchange="setField(${i},'pilot',this.checked); render();"></td>
+      <td><input type="checkbox" ${getField(i,'paid')?'checked':''} onchange="setField(${i},'paid',this.checked); render();"></td>
+      <td><span class="status-badge ${s.cls}">${s.label}</span></td>
+      <td><input type="text" value="${getField(i,'notes')}" onchange="setField(${i},'notes',this.value)" placeholder="ملاحظات..."></td>
+    </tr>`;
+  }).join('');
+}
+
+function updateGoals(){
+  let sent=0, replied=0, demo=0, paid=0;
+  for(let i=0;i<leads.length;i++){
+    if(getField(i,'sent')) sent++;
+    if(getField(i,'reply')) replied++;
+    if(getField(i,'demo')) demo++;
+    if(getField(i,'paid')) paid++;
   }
+  document.getElementById('goal-messages').textContent = sent + '/20';
+  document.getElementById('goal-replies').textContent = replied + '/5';
+  document.getElementById('goal-demos').textContent = demo + '/3';
+  document.getElementById('goal-paid').textContent = paid + '/1';
+  document.getElementById('goal-revenue').textContent = (paid*999).toLocaleString('ar') + ' ريال';
 
-  function save() {
-    localStorage.setItem(STORAGE, JSON.stringify(data));
-    document.getElementById('saved').textContent = new Date().toLocaleString('ar-SA');
-    updateStats();
+  document.getElementById('p-msg').style.width = Math.min(100, (sent/20)*100) + '%';
+  document.getElementById('p-rep').style.width = Math.min(100, (replied/5)*100) + '%';
+  document.getElementById('p-dem').style.width = Math.min(100, (demo/3)*100) + '%';
+  document.getElementById('p-paid').style.width = paid>0 ? 100 : 0 + '%';
+}
+
+function renderDaily(){
+  const log = document.getElementById('daily-log');
+  let html = '';
+  for(let d=1; d<=14; d++){
+    const key = 'day'+d;
+    html += `<div class="day-header">اليوم ${d}</div>
+    <table style="margin-bottom:16px;">
+      <tr><td style="width:150px;">رسائل مرسلة:</td><td><input type="number" min="0" max="10" value="${state[key+'_sent']||''}" onchange="state['${key}_sent']=this.value; save();"></td></tr>
+      <tr><td>ردود:</td><td><input type="number" min="0" value="${state[key+'_rep']||''}" onchange="state['${key}_rep']=this.value; save();"></td></tr>
+      <tr><td>Demos محجوزة:</td><td><input type="number" min="0" value="${state[key+'_demo']||''}" onchange="state['${key}_demo']=this.value; save();"></td></tr>
+      <tr><td>تعلمات اليوم:</td><td><input type="text" value="${state[key+'_learn']||''}" onchange="state['${key}_learn']=this.value; save();" placeholder="ما تعلمت..."></td></tr>
+    </table>`;
   }
+  log.innerHTML = html;
+}
 
-  function render() {
-    const tbody = document.getElementById('rows');
-    tbody.innerHTML = '';
-    data.forEach((r, i) => {
-      const tr = document.createElement('tr');
-      tr.className = 'status-' + r.status;
-      tr.innerHTML = `
-        <td>${i + 1}</td>
-        <td><input value="${escape(r.name)}" onchange="update(${r.id},'name',this.value)"></td>
-        <td><input value="${escape(r.company)}" onchange="update(${r.id},'company',this.value)"></td>
-        <td><input value="${escape(r.sector)}" onchange="update(${r.id},'sector',this.value)"></td>
-        <td><input value="${escape(r.channel)}" onchange="update(${r.id},'channel',this.value)"></td>
-        <td><input type="date" value="${r.date}" onchange="update(${r.id},'date',this.value)"></td>
-        <td>
-          <select onchange="update(${r.id},'status',this.value)">
-            ${STATUSES.map(s => `<option value="${s.v}" ${r.status===s.v?'selected':''}>${s.t}</option>`).join('')}
-          </select>
-        </td>
-        <td><input type="number" value="${r.amount}" onchange="update(${r.id},'amount',+this.value)"></td>
-        <td><input value="${escape(r.notes)}" onchange="update(${r.id},'notes',this.value)"></td>
-        <td><button class="ghost" style="padding:4px 8px;font-size:11px" onclick="del(${r.id})">×</button></td>
-      `;
-      tbody.appendChild(tr);
-    });
-    updateStats();
-  }
+function showTab(t){
+  document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(x=>x.classList.remove('active'));
+  event.target.classList.add('active');
+  document.getElementById(t).classList.add('active');
+  if(t==='daily') renderDaily();
+}
 
-  function escape(s) { return String(s || '').replace(/"/g, '&quot;'); }
+function exportCSV(){
+  let csv = 'Company,Name,Channel,Tier,Sent,Replied,Demo,Pilot,Paid,Notes\n';
+  leads.forEach((l, i) => {
+    csv += `"${l.co}","${l.name}","${l.ch}","${l.tier}",${getField(i,'sent')?'Y':'N'},${getField(i,'reply')?'Y':'N'},${getField(i,'demo')?'Y':'N'},${getField(i,'pilot')?'Y':'N'},${getField(i,'paid')?'Y':'N'},"${getField(i,'notes').replace(/"/g,'""')}"\n`;
+  });
+  const blob = new Blob([csv], {type:'text/csv'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'dealix_pipeline_' + new Date().toISOString().slice(0,10) + '.csv';
+  a.click();
+}
 
-  function update(id, field, value) {
-    const row = data.find(x => x.id === id);
-    if (row) { row[field] = value; save(); render(); }
-  }
+// Notes persistence
+const notesEl = document.getElementById('notes-text');
+notesEl.value = state.notes || '';
+notesEl.addEventListener('input', e => { state.notes = e.target.value; save(); });
 
-  function addRow() {
-    data.push({
-      id: Date.now(),
-      name: '', company: '', sector: '', channel: 'LinkedIn',
-      date: new Date().toISOString().slice(0, 10),
-      status: 'contacted', amount: 0, notes: ''
-    });
-    save(); render();
-  }
-
-  function del(id) {
-    if (!confirm('حذف هذا الـ lead؟')) return;
-    data = data.filter(x => x.id !== id);
-    save(); render();
-  }
-
-  function clearAll() {
-    if (!confirm('مسح كل البيانات؟ لا يمكن التراجع.')) return;
-    data = []; save(); load();
-  }
-
-  function updateStats() {
-    const total = data.length;
-    const replied = data.filter(x => ['replied','demo','pilot','paid'].includes(x.status)).length;
-    const demo = data.filter(x => ['demo','pilot','paid'].includes(x.status)).length;
-    const pilot = data.filter(x => ['pilot','paid'].includes(x.status)).length;
-    const paid = data.filter(x => x.status === 'paid').length;
-    const rev = data.filter(x => x.status === 'paid').reduce((s, x) => s + (+x.amount || 0), 0);
-
-    document.getElementById('s-total').textContent = total;
-    document.getElementById('s-replied').textContent = replied;
-    document.getElementById('s-demo').textContent = demo;
-    document.getElementById('s-pilot').textContent = pilot;
-    document.getElementById('s-paid').textContent = paid;
-    document.getElementById('s-rev').textContent = rev.toLocaleString('ar-SA');
-  }
-
-  function exportCSV() {
-    const headers = ['الاسم','الشركة','القطاع','القناة','التاريخ','الحالة','المبلغ','ملاحظات'];
-    const rows = data.map(r => [r.name, r.company, r.sector, r.channel, r.date, r.status, r.amount, r.notes]);
-    const csv = [headers, ...rows].map(row => row.map(c => `"${String(c).replace(/"/g,'""')}"`).join(',')).join('\n');
-    const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8' });
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = `dealix_pipeline_${new Date().toISOString().slice(0,10)}.csv`;
-    a.click();
-  }
-
-  load();
+render();
+updateGoals();
 </script>
 </body>
 </html>

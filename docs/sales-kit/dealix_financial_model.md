@@ -1,254 +1,334 @@
-# Dealix — النموذج المالي
+# 💰 Dealix — النموذج المالي 12 شهر
 
-## P&L 12 شهر + Unit Economics + Cash Flow
-
-**آخر تحديث:** 2026-04-23 | **أفق التخطيط:** 2026-04 → 2029-12 (3 سنوات)
-
----
-
-## 1. الافتراضات الأساسية
-
-### التسعير (SAR، شامل VAT 15%)
-
-| الخطة | شهري | سنوي (خصم 15%) | Target % |
-|------|------|---------------|---------|
-| Pilot | 1 | — | 20% (conversion funnel) |
-| Starter | 999 | 10,189 | 40% |
-| Growth | 2,999 | 30,590 | 30% |
-| Scale | 7,999 | 81,590 | 10% |
-
-**ARPU مُرجّح:** (0.4 × 999) + (0.3 × 2,999) + (0.1 × 7,999) = **2,099 SAR/شهر** (بعد تجاوز Pilot)
-
-### معدلات النمو (شهر بشهر)
-
-| Metric | Y1 | Y2 | Y3 |
-|--------|----|----|----|
-| New customers/شهر | 2-15 | 20-50 | 80-150 |
-| Churn شهري | 5% | 4% | 3% |
-| Gross margin | 75% | 82% | 85% |
-
-### افتراضات التكلفة
-
-| البند | Y1/شهر | Y2/شهر | Y3/شهر |
-|------|--------|--------|--------|
-| Infrastructure (Railway + STC Cloud) | 1,500 | 8,000 | 25,000 |
-| SaaS tools (Moyasar + PostHog + Sentry) | 800 | 3,500 | 10,000 |
-| Founder salary (Sami) | 0 (Y1 Q1-Q2), 8K (Q3-Q4) | 25K | 40K |
-| Engineers (Y1: 0, Y2: 2, Y3: 5) | 0 | 40K | 100K |
-| Sales/CSM (Y1: 0, Y2: 1, Y3: 3) | 0 | 15K | 45K |
-| Marketing | 2,000 | 15,000 | 50,000 |
-| Legal + accounting | 1,500 | 3,000 | 6,000 |
-| Office + misc | 500 | 3,000 | 8,000 |
+**تاريخ البدء:** مايو 2026 (إطلاق رسمي)
+**الإطار الزمني:** 12 شهر (مايو 2026 - أبريل 2027)
+**العملة:** ريال سعودي
+**المؤسس:** سامي العسيري (100% ownership حالياً)
 
 ---
 
-## 2. P&L — السنة الأولى (شهر بشهر)
+## 📊 الفلسفة المالية
 
-**العملة: SAR | Customers = cumulative**
+Dealix = **Founder-led, revenue-first, capital-efficient.**
 
-| الشهر | New | Total | MRR | Churn | Net MRR | Costs | Net Profit |
-|-------|-----|-------|-----|-------|---------|-------|-----------|
-| M1 (Apr 26) | 2 | 2 | 2,000 | 0 | 2,000 | 6,300 | -4,300 |
-| M2 (May) | 3 | 5 | 5,500 | 100 | 5,400 | 6,300 | -900 |
-| M3 (Jun) | 4 | 9 | 10,000 | 275 | 9,725 | 6,300 | 3,425 |
-| M4 (Jul) | 5 | 13 | 15,500 | 500 | 15,000 | 6,300 | 8,700 |
-| M5 (Aug) | 6 | 18 | 22,000 | 775 | 21,225 | 14,300 | 6,925 |
-| M6 (Sep) | 8 | 25 | 31,500 | 1,100 | 30,400 | 14,300 | 16,100 |
-| M7 (Oct) | 10 | 33 | 43,500 | 1,575 | 41,925 | 14,300 | 27,625 |
-| M8 (Nov) | 12 | 43 | 58,500 | 2,175 | 56,325 | 14,300 | 42,025 |
-| M9 (Dec) | 14 | 55 | 76,500 | 2,925 | 73,575 | 14,300 | 59,275 |
-| M10 (Jan 27) | 14 | 66 | 93,500 | 3,825 | 89,675 | 14,300 | 75,375 |
-| M11 (Feb) | 15 | 77 | 112,500 | 4,675 | 107,825 | 14,300 | 93,525 |
-| M12 (Mar) | 15 | 87 | 132,500 | 5,625 | 126,875 | 14,300 | 112,575 |
-
-### Y1 Totals
-- **Ending customers:** 87
-- **Ending MRR:** 126,875 SAR
-- **Ending ARR:** ~1.52M SAR
-- **Total Revenue Y1:** ~580K SAR
-- **Total Costs Y1:** ~130K SAR
-- **Net Profit Y1:** ~450K SAR (من الشهر 3 onwards)
-- **Cash breakeven:** الشهر 3
+- لا استثمار خارجي في أول 6 شهور (proof of revenue أولاً)
+- كل ريال يدخل = يستثمر في النمو، لا trophy hiring
+- Runway = 18 شهر minimum قبل أي fundraise
+- Path to profitability قبل Series A
 
 ---
 
-## 3. Unit Economics
+## 💵 الباقات والإيرادات
 
-### LTV / CAC
+### هيكل الأسعار
 
-| Metric | القيمة | كيف |
-|--------|-------|-----|
-| **ARPU شهري** | 2,099 SAR | mix 40/30/10 |
-| **Gross Margin** | 75% | Y1 infra + support |
-| **Churn شهري** | 5% | conservative Y1 |
-| **Lifetime (أشهر)** | 20 | 1 / 0.05 |
-| **LTV** | 31,485 SAR | ARPU × GM × lifetime |
-| **CAC (ref: Referral)** | ~2,000 SAR | 20% commission على سنة |
-| **CAC (ref: Outbound)** | ~800 SAR | Sami time cost/customer |
-| **CAC (blended)** | 1,200 SAR | 60/40 mix |
-| **LTV/CAC** | **26×** | ممتاز (target > 3×) |
-| **Payback** | 1.1 شهر | (CAC / ARPU × GM) |
+| الباقة | السعر/شهر | الهدف الشهري | COGS | Gross Margin |
+|--------|-----------|---------------|------|--------------|
+| Starter | 999 | 50% من العملاء | 150 | 85% |
+| Growth | 2,999 | 35% من العملاء | 400 | 87% |
+| Scale | 7,999 | 15% من العملاء | 900 | 89% |
 
-### Rule of 40
-- Revenue growth: ~400% Y1 → Y2
-- Profit margin: ~30% Y1
-- **Rule of 40 score: 430** (excellent)
+**Weighted Average Revenue Per Account (ARPA):** 2,449 ريال/شهر
+
+### COGS Breakdown (لكل عميل)
+- Anthropic API (Claude): 60% of COGS
+- AWS hosting (shared infra): 20%
+- Moyasar fees (2.5% of revenue): 10%
+- Third-party tools (Sentry, PostHog): 10%
 
 ---
 
-## 4. النموذج 3 سنوات
+## 📈 توقعات الإيرادات (Conservative)
 
-| Year | Ending Customers | ARR (SAR) | Revenue (السنة) | Gross Profit | Net Profit |
-|------|------------------|-----------|-----------------|--------------|-----------|
-| Y1 (2026) | 87 | 1.52M | 580K | 435K | 450K |
-| Y2 (2027) | 380 | 9.5M | 5.5M | 4.5M | 2.8M |
-| Y3 (2028) | 1,200 | 30M | 20M | 17M | 11M |
-| Y4 target | 3,500 | 90M | 60M | 51M | 35M |
-| Y5 target | 8,000 | 200M | 140M | 119M | 80M |
+### New Customer Acquisition (شهرياً)
 
-**Upside scenarios (aggressive):**
-- Y1 ARR: 4.3M (لو 150 عميل بنهاية السنة — يحتاج 15 عميل/شهر بنمو قوي)
-- Y3 ARR: 50M (لو اختراق UAE + قطر + البحرين)
+| الشهر | Starter | Growth | Scale | Total New | Churn | Net New | Active |
+|-------|---------|---------|-------|-----------|-------|---------|--------|
+| M1 | 1 | 0 | 0 | 1 | 0 | 1 | 1 |
+| M2 | 2 | 1 | 0 | 3 | 0 | 3 | 4 |
+| M3 | 3 | 1 | 0 | 4 | 0 | 4 | 8 |
+| M4 | 4 | 2 | 0 | 6 | 1 | 5 | 13 |
+| M5 | 5 | 2 | 1 | 8 | 1 | 7 | 20 |
+| M6 | 6 | 3 | 1 | 10 | 1 | 9 | 29 |
+| M7 | 7 | 4 | 1 | 12 | 2 | 10 | 39 |
+| M8 | 8 | 5 | 2 | 15 | 2 | 13 | 52 |
+| M9 | 9 | 6 | 2 | 17 | 3 | 14 | 66 |
+| M10 | 10 | 7 | 3 | 20 | 3 | 17 | 83 |
+| M11 | 11 | 8 | 3 | 22 | 4 | 18 | 101 |
+| M12 | 12 | 9 | 4 | 25 | 5 | 20 | 121 |
 
----
+**Assumptions:**
+- Churn: 3% شهرياً (نموذجي لـ SaaS مبكر)
+- Sales cycle: 14-21 يوم
+- المصادر: 60% outbound، 30% inbound، 10% referral
 
-## 5. Cash Flow
+### MRR بـ نهاية كل شهر
 
-### Cash position (initial = 10K SAR من ميزانية Sami)
-
-| الشهر | Cash In | Cash Out | Net | Running |
-|-------|---------|----------|-----|---------|
-| M1 | 2,000 | 6,300 | -4,300 | 5,700 |
-| M2 | 5,500 | 6,300 | -800 | 4,900 |
-| M3 | 10,000 | 6,300 | +3,700 | 8,600 |
-| M6 | 31,500 | 14,300 | +17,200 | 30,000+ |
-| M12 | 132,500 | 14,300 | +118,200 | 500K+ |
-
-**تحليل:**
-- أقل نقطة cash: الشهر 2 (5,000 SAR)
-- Breakeven: الشهر 3
-- Positive cash flow مستمر: من M3
-- **لا حاجة لـ funding Y1 — bootstrappable**
-
----
-
-## 6. سيناريوهات
-
-### Best case (aggressive growth)
-- 150 عميل بنهاية Y1 → ARR 4.3M
-- يتطلب: 2 full-time hires في M6
-- Funding needed: 500K (للـ hires + marketing)
-
-### Base case (balanced — هذا النموذج)
-- 87 عميل → ARR 1.5M
-- Bootstrappable
-- Sami full-time + 1 part-time helper
-
-### Worst case (slow growth)
-- 30 عميل → ARR 450K
-- Sami يحافظ على full-time job
-- Part-time launch
+| الشهر | MRR | ARR (ٰSimulated) |
+|-------|-----|------------------|
+| M1 | 999 | 12K |
+| M2 | 5,997 | 72K |
+| M3 | 11,995 | 144K |
+| M4 | 20,988 | 252K |
+| M5 | 36,983 | 444K |
+| M6 | 57,971 | 696K |
+| M7 | 82,958 | 995K |
+| M8 | 120,935 | 1.45M |
+| M9 | 162,913 | 1.95M |
+| M10 | 218,878 | 2.63M |
+| M11 | 281,848 | 3.38M |
+| **M12** | **357,800** | **4.3M ARR** |
 
 ---
 
-## 7. Fundraising Strategy
+## 💸 التكاليف (Monthly)
 
-### متى تُفكّر في seed round?
+### M1-M3 (Solo founder)
+| البند | المبلغ |
+|-------|--------|
+| AWS hosting (shared) | 500 |
+| Anthropic API | 800 |
+| Moyasar fees | 25 |
+| Tools (Sentry, PostHog, Railway) | 400 |
+| Marketing (ads if any) | 0 |
+| Founder salary | 0 (bootstrap) |
+| **Total** | **1,725** |
 
-**Signals إيجابية:**
-- 30+ عملاء مدفوعين (Y1 M8-M10)
-- NRR > 110% (revenue من عملاء حاليين تنمو)
-- LTV/CAC > 3×
-- 3+ case studies موثقة
-- Pipeline mature (50+ qualified leads)
+### M4-M6 (بعد 10 عملاء)
+| البند | المبلغ |
+|-------|--------|
+| Infrastructure | 1,500 |
+| LLM API | 2,500 |
+| Tools | 600 |
+| Marketing (small experiments) | 2,000 |
+| Part-time BDR (freelance) | 5,000 |
+| Founder salary | 10,000 |
+| **Total** | **21,600** |
 
-**متى لا:**
-- قبل 10 عملاء — النموذج غير مُثبت
-- CAC > LTV/3 — الحل خاطئ
-- Churn > 10% شهري — المنتج ما يعلق
+### M7-M9 (30+ عملاء)
+| البند | المبلغ |
+|-------|--------|
+| Infrastructure | 4,000 |
+| LLM API | 8,000 |
+| Tools | 1,000 |
+| Marketing | 8,000 |
+| BDR (full-time) | 12,000 |
+| Customer Success (part-time) | 6,000 |
+| Founder salary | 15,000 |
+| **Total** | **54,000** |
 
-### حجم الجولة المقترح (Y1 M10-M12)
-- **Seed:** 1-2M SAR (266-533K USD)
-- **Dilution:** 10-15%
-- **Valuation pre-money:** 10-15M SAR
-- **Use of funds:**
-  - 40% Product (2 engineers)
-  - 30% GTM (1 sales + marketing)
-  - 20% Operations (CSM + legal)
-  - 10% Reserve
-
-### المستثمرون المستهدفون (KSA)
-- **STV (Saudi Telecom Ventures)** — enterprise SaaS
-- **Raed Ventures** — early-stage B2B
-- **Wa'ed (Aramco)** — Saudi startups
-- **IMPACT46** — regional SaaS
-- **Khwarizmi Ventures** — Tier 1 KSA VC
-
-### Angel investors المثاليون
-- مؤسسون سابقون لشركات SaaS سعودية ناجحة
-- VPs of Sales في شركات enterprise
-- Consultants في digitization (إحالات + نصائح)
-
----
-
-## 8. KPIs لمراقبة النموذج
-
-### يومي
-- New signups
-- MRR added/churned
-
-### أسبوعي
-- Qualified demos (> 15 دقيقة)
-- Pilot conversions
-- Support ticket volume
-
-### شهري
-- ARR growth
-- Gross margin
-- Churn rate
-- NPS
-- LTV/CAC
-
-### ربع سنوي
-- Net Revenue Retention (NRR)
-- Customer Acquisition Cost trends
-- Cohort retention
-- Feature adoption
-- Time to first value
+### M10-M12 (100+ عملاء)
+| البند | المبلغ |
+|-------|--------|
+| Infrastructure | 8,000 |
+| LLM API | 18,000 |
+| Tools | 2,000 |
+| Marketing | 15,000 |
+| BDR (x2) | 24,000 |
+| Customer Success (FT) | 12,000 |
+| Engineer #1 | 18,000 |
+| Founder salary | 20,000 |
+| **Total** | **117,000** |
 
 ---
 
-## 9. المخاطر المالية + Mitigations
+## 📊 P&L Projection (السنة الأولى)
 
-| المخاطرة | الاحتمال | الأثر | Mitigation |
-|---------|---------|------|-----------|
-| Churn > 10% | متوسط | عالي | Customer onboarding playbook + CSM مبكر |
-| CAC يرتفع × 2 | متوسط | عالي | Referral program + organic content |
-| منافس كبير يقلد | منخفض | متوسط | أول-mover في Arabic RTL + WhatsApp |
-| Infrastructure costs تنفجر | منخفض | متوسط | Reserved instances + multi-cloud |
-| Founder burnout | عالي | عالي | Hire CSM بالشهر 6 |
-| Regulatory shift (PDPL) | منخفض | متوسط | Compliance framework جاهز |
+| الشهر | Revenue | Costs | Net | Cumulative |
+|-------|---------|-------|-----|------------|
+| M1 | 999 | 1,725 | -726 | -726 |
+| M2 | 5,997 | 1,800 | 4,197 | 3,471 |
+| M3 | 11,995 | 1,900 | 10,095 | 13,566 |
+| M4 | 20,988 | 21,600 | -612 | 12,954 |
+| M5 | 36,983 | 25,000 | 11,983 | 24,937 |
+| M6 | 57,971 | 30,000 | 27,971 | 52,908 |
+| M7 | 82,958 | 54,000 | 28,958 | 81,866 |
+| M8 | 120,935 | 60,000 | 60,935 | 142,801 |
+| M9 | 162,913 | 70,000 | 92,913 | 235,714 |
+| M10 | 218,878 | 117,000 | 101,878 | 337,592 |
+| M11 | 281,848 | 130,000 | 151,848 | 489,440 |
+| M12 | 357,800 | 145,000 | 212,800 | 702,240 |
 
----
-
-## 10. ملاحظات ختامية
-
-**النموذج محافظ intentionally.** السيناريو base case مُحاط بـ assumptions stretched:
-- Churn 5% (صناعة: 3-6%)
-- ARPU 2,099 SAR (conservative mix)
-- نمو customers 15/شهر max Y1 (يقدر يكون أكثر)
-
-**النقاط الأقوى:**
-- Bootstrappable — لا حاجة funding Y1
-- Breakeven الشهر 3
-- LTV/CAC 26× — استثنائي
-- Rule of 40 = 430 — top decile
-
-**النقاط التي تحتاج attention:**
-- Sami single-founder — key-person risk
-- Customer concentration — أول 10 عملاء = 50% من MRR
-- No sales team — يعتمد على founder bandwidth
+**النتائج السنوية:**
+- Total Revenue: 1,360,265 ريال (~$362K)
+- Total Costs: 658,025 ريال
+- Net Profit: 702,240 ريال
+- EBITDA margin: 52% (ممتاز لـ SaaS)
 
 ---
 
-*آخر تحديث: 2026-04-23 | Version 1.0*
+## 🎯 Unit Economics
+
+### CAC (Customer Acquisition Cost)
+
+**M1-M6 (founder-led):**
+- Founder time على outbound: 40 ساعة/شهر × 200 ريال = 8,000 ريال
+- Tools: 500 ريال
+- New customers: 3-5/شهر
+- **CAC: 1,600-2,500 ريال**
+
+**M7-M12 (scaled):**
+- Marketing: 10,000 ريال
+- BDR salary: 12,000 ريال
+- Tools: 1,000 ريال
+- New customers: 15-25/شهر
+- **CAC: 920-1,500 ريال**
+
+### LTV (Lifetime Value)
+
+**With 3% monthly churn:**
+- Average lifetime: 33 شهر
+- ARPA: 2,449 ريال
+- Gross margin: 87%
+- **LTV: 70,260 ريال**
+
+### LTV:CAC Ratio
+- M1-M6: 70,260 / 2,000 = **35:1** ⭐ممتاز جداً
+- M7-M12: 70,260 / 1,200 = **58:1** ⭐⭐⭐استثنائي
+
+**Healthy SaaS:** 3:1 minimum. Dealix = 10x above healthy.
+
+---
+
+## 💰 Cash Flow & Runway
+
+### Starting Capital
+- Founder personal capital: 30,000 ريال (احتياطي فقط)
+- Revenue-funded from M1 onwards
+
+### Monthly Burn vs. Revenue
+| الفترة | Burn | Revenue | Net |
+|-------|------|---------|-----|
+| M1 | 1,725 | 999 | -726 |
+| M2-M3 | 1,850 | ~9K | +7K |
+| M4-M6 | 25,500 | ~39K | +13K |
+| M7-M9 | 61,000 | ~122K | +61K |
+| M10-M12 | 131,000 | ~286K | +155K |
+
+**Cash breakeven:** M2 (شهر 2) — نقطة استثنائية لـ SaaS
+
+---
+
+## 🚀 السنة الثانية (توقعات)
+
+### Growth Scenarios
+
+**Conservative:**
+- 2x customer growth
+- 240 عميل بحلول M24
+- MRR: 590K → ARR: 7M
+
+**Base case (our target):**
+- 3x customer growth
+- 360 عميل بحلول M24
+- MRR: 882K → ARR: 10.6M ⭐
+
+**Optimistic:**
+- 5x customer growth (viral inflection)
+- 600 عميل بحلول M24
+- MRR: 1.47M → ARR: 17.6M
+
+### Hiring Plan Y2
+- M13-M14: Engineer #2 + Customer Success Manager
+- M15-M16: Marketing lead + BDR #3
+- M17-M18: Head of Sales
+- M19-M20: Finance/Ops person
+- M21-M24: Engineer #3 + Data Scientist
+
+**Team size M24:** 10-12 شخص
+**Revenue per employee:** 88,000 ريال/شهر ($23K) — World-class
+
+---
+
+## 📉 السيناريوهات السلبية
+
+### Scenario A: Slow growth
+- 50% من التوقعات
+- M12 MRR: 180K بدل 358K
+- **Response:** قلّل hiring، استهدف profitability
+- Still cash-positive من M3
+
+### Scenario B: High churn
+- 6% monthly churn (بدل 3%)
+- LTV ينخفض للنصف
+- LTV:CAC = 17:1 (مازال ممتاز)
+- **Response:** ركّز على customer success، تحسين product-market fit
+
+### Scenario C: CAC يرتفع 2x
+- CAC: 3,000-5,000 بدل 1,500
+- Paid growth يصعب
+- **Response:** ركّز على referral + SEO (organic)
+
+### Scenario D: Competitor يدخل قوياً
+- شركة كبيرة تدخل السوق بـ $5M
+- **Response:** Defensibility من الـ data الخاصة + brand loyalty + Saudi-first
+
+---
+
+## 🎯 Funding Strategy
+
+### M1-M6: Bootstrap (لا استثمار)
+- Prove: PMF + repeatable sales
+- Goal: 20+ paying customers
+- Monthly burn: covered by revenue
+
+### M6-M9: Pre-seed (اختياري)
+- Amount: 500K-1M ريال
+- Purpose: تسريع hiring + marketing
+- Investors: Wamda, Raed, Saudi angels
+
+### M12-M18: Seed
+- Amount: 5-10M ريال
+- Valuation target: 30-50M ريال (15-20x ARR multiple)
+- Purpose: Scale operations، التوسّع للإمارات
+- Investors: STV, Sanabil, MEVP
+
+### M24+: Series A (إذا نمو متسارع)
+- Amount: 30-50M ريال
+- Valuation target: 150-300M ريال
+- Purpose: International expansion
+
+---
+
+## 📝 قواعد مالية صارمة
+
+1. **لا توظيف قبل 10x coverage:** كل hire يجب يجلب 10x راتبه في revenue
+2. **Cash reserve:** 6 شهور min runway دائماً
+3. **Customer concentration:** لا عميل يتجاوز 20% من MRR
+4. **No trophy hires:** كل موظف يجب يكون revenue-generator أو revenue-enabler
+5. **Dogfood everything:** كل أداة نبيعها نستخدمها داخلياً أولاً
+
+---
+
+## 🧮 Break-even Analysis
+
+**Fixed Costs:** 20,000 ريال/شهر (infrastructure + tools)
+**Gross Margin:** 87%
+
+**Customers لـ break-even:**
+- At ARPA 2,449: 20,000 / (2,449 × 0.87) = **9.4 عملاء**
+- في أي شهر بعد 10 عملاء → profitable on unit economics
+
+**حالياً:** نصل لـ break-even في M2-M3.
+
+---
+
+## 📊 KPIs Financial
+
+| KPI | الهدف Y1 | الفعلي M[X] |
+|-----|----------|--------------|
+| MRR | 358K | — |
+| ARR | 4.3M | — |
+| Customers | 120 | — |
+| ARPA | 2,449 | — |
+| Gross Margin | 87% | — |
+| Monthly Churn | < 3% | — |
+| CAC Payback | < 3 شهور | — |
+| LTV:CAC | > 20:1 | — |
+| Burn multiple | < 0.5 | — |
+
+**راجع هذا الجدول كل شهر** — النجاح يُقاس.
+
+---
+
+*هذا النموذج conservative جداً. Dealix في سوق سعودي AI ناطق = potential 10x من هذه الأرقام.*

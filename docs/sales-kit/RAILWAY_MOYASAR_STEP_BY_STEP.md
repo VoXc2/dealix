@@ -1,212 +1,232 @@
-# ⚠️ ملاحظة أمنية
+# 🚀 Dealix — Deploy نهائي خطوة بخطوة
 
-**الأسرار الحقيقية محذوفة من هذا الملف.**
-استبدل `<YOUR_MOYASAR_WEBHOOK_SECRET>` و `<YOUR_APP_SECRET_KEY>` بقيمك الفعلية من:
-- **Railway Variables** (احفظها في Raw Editor، ليس في الكود)
-- **Moyasar Dashboard → Webhooks** (أنشئ secret جديد عند التدوير)
-
-⚠️ **إذا سبق ونُشر secret فعلي في هذا الملف — دوّره (rotate) فوراً من dashboard Moyasar.**
+**وقت التنفيذ المتوقع:** 12 دقيقة بالضبط
+**المطلوب منك:** لابتوب + جوال + حساب Railway + حساب Moyasar
+**النتيجة:** Backend شغّال + يستقبل مدفوعات حقيقية
 
 ---
 
-# ⚙️ Railway + Moyasar — خطوة بخطوة (12 دقيقة بالضبط)
+# ⏱️ الجدول الزمني
 
-**الهدف:** Backend شغّال + Moyasar يستقبل دفعات حقيقية.
-
-**اللي ستسويه:** 3 مراحل، كل واحدة مقطعة لخطوات واضحة.
-
-**ملاحظة مهمة:** جرّبت الـ URL `dealix-production-up.railway.app` الآن — يرد لكن من Railway نفسه (404 من تطبيقك). يعني خدمتك لم تُنشر بعد أو Deploy متوقف. الخطوات أدناه تحل ذلك.
+| الخطوة | المدة | الحالة |
+|--------|-------|---------|
+| A. Railway Start Command | 1 دقيقة | ⬜ |
+| B. Railway Env Vars | 3 دقائق | ⬜ |
+| C. انتظار Deploy | 2 دقيقة | ⬜ |
+| D. Smoke Test | 1 دقيقة | ⬜ |
+| E. Moyasar Webhook | 3 دقائق | ⬜ |
+| F. اختبار 1 ريال | 2 دقيقة | ⬜ |
+| **الإجمالي** | **12 دقيقة** | |
 
 ---
 
-## 🅰️ المرحلة A — Railway Settings (5 دقائق)
+# 🅰️ الخطوة A — Railway Start Command
 
-### A1. افتح المشروع
-رابط مباشر: https://railway.com/project/54bb60b4-d059-4dd1-af57-bc44c702b9f0
+## A.1 افتح المشروع
+1. روح على: **https://railway.com/project/54bb60b4-d059-4dd1-af57-bc44c702b9f0**
+2. لو طلب تسجيل دخول — سجّل بحسابك
 
-### A2. اختر خدمة `dealix` من الـ sidebar
+## A.2 اختر الخدمة
+1. في الصفحة الرئيسية للمشروع، اضغط على **البطاقة اللي مكتوب عليها `dealix`**
+2. تفتح لك صفحة تفاصيل الخدمة
 
-### A3. تأكد أن الـ repo متصل بـ GitHub
-- **Settings** → **Source**
-- يجب أن يكون: `VoXc2/dealix` — branch: `main`
-- إذا لم يكن — اضغط **Connect GitHub Repo**
+## A.3 افتح Settings
+1. في الشريط العلوي للخدمة، اضغط **Settings** (آخر تاب)
+2. انزل لقسم **Deploy**
 
-### A4. امسح Start Command
-- **Settings** → **Deploy**
-- ابحث عن **Start Command**
-- **امسح المحتوى كامل** (يصير فارغ)
-- اضغط خارج الحقل → يحفظ تلقائياً
+## A.4 عدّل Start Command
+1. ابحث عن حقل **Custom Start Command**
+2. **احذف** أي محتوى موجود فيه
+3. **اكتب بدلاً:** `/app/start.sh`
+4. اضغط خارج الحقل — يحفظ تلقائياً
+5. **أو بدل الكتابة:** اترك الحقل فاضي تماماً — هذا أفضل (يستخدم الـ Dockerfile CMD الافتراضي)
 
-> ⚠️ سبب أهمية هذا: Railway UI Start Command يتجاوز Dockerfile. نريد Dockerfile يتحكم.
+### ✅ علامة النجاح
+- يظهر toast أخضر: `Service updated`
+- أو الحقل يحفظ بدون خطأ
 
-### A5. تأكد من Health Check
-- نفس قسم **Deploy**
-- **Healthcheck Path:** `/health`
-- **Healthcheck Timeout:** 300 ثانية
+---
 
-### A6. احفظ + نشر يدوي
-- **Deployments** → **Deploy** (زر أزرق في الأعلى)
-- انتظر 2-3 دقائق
+# 🅱️ الخطوة B — Env Vars Raw Editor
 
-**تحقق:**
+## B.1 افتح Variables
+1. في نفس الخدمة `dealix`، اضغط تاب **Variables**
+2. في أعلى يمين الصفحة، اضغط زر **Raw Editor** (أو ⚙️ → Raw Editor)
+
+## B.2 الصق المتغيرات
+1. **امسح كل المحتوى** الحالي
+2. افتح ملف `dealix_railway_vars.txt` من workspace بتاعك (الموجود من الجلسة السابقة)
+3. **انسخ محتواه بالكامل والصق** في Raw Editor
+
+### ⚠️ تذكير أمان
+الملف يحتوي مفاتيحك الحية: APP_SECRET_KEY, DATABASE_URL, MOYASAR_SECRET_KEY, POSTHOG_PROJECT_KEY. لا تشاركه مع أحد.
+
+## B.3 حفظ
+1. اضغط **Update Variables** (زر أزرق أسفل النافذة)
+2. Railway يبدأ redeploy تلقائياً
+
+### ✅ علامة النجاح
+- تشوف رسالة `Variables updated`
+- بعد ثواني: Deploy جديد يبدأ في تاب **Deployments**
+
+---
+
+# 🅾️ الخطوة C — انتظر Deploy Active
+
+## C.1 راقب Deployment
+1. اضغط تاب **Deployments**
+2. أعلى القائمة → الـ deployment الجديد حالته `Building` ثم `Deploying`
+3. انتظر 60–120 ثانية
+
+### ✅ علامة النجاح
 - Status يصير **Active** (أخضر)
-- Logs تعرض: `Uvicorn running on http://0.0.0.0:XXXX`
+- يظهر رابط الخدمة (`https://dealix-xxxx.up.railway.app`) — **انسخه**
 
-### A7. انسخ الـ Public URL
-- **Settings** → **Networking** → **Public Domain**
-- مثال: `dealix-production-up.railway.app`
-- **احفظ هذا الرابط** — ستستخدمه في B وفي Landing
+### ❌ علامة الفشل
+- Status: `Crashed` أو `Failed`
+- افتح Logs → شوف السطر الأحمر
+- **أشهر الأخطاء:**
+  - `port binding` → تأكد من Step A
+  - `DATABASE_URL` → تحقق من Step B
+  - `email-validator` → هذا مُصلح بالفعل في PR #68، لا يظهر إلا لو repo قديم
 
 ---
 
-## 🅱️ المرحلة B — Environment Variables (4 دقائق)
+# 🔵 الخطوة D — Smoke Test
 
-### B1. افتح Raw Editor
-- Service `dealix` → **Variables** → زر صغير أعلى يسار: **Raw Editor**
+## D.1 جهّز المسار
+1. افتح Terminal
+2. `cd` إلى workspace تبعك (حيث `dealix_smoke_test.sh`)
+3. **عدّل الـ URL داخل السكريبت** ليطابق رابط Railway الجديد
 
-### B2. الصق هذا المحتوى (عدّل CHANGE_ME الأربعة في النهاية)
-
-```env
-# ── Application Core ──
-APP_ENV=production
-ENVIRONMENT=production
-APP_NAME=Dealix
-APP_VERSION=3.0.0
-APP_SECRET_KEY=<YOUR_APP_SECRET_KEY>
-APP_LOG_LEVEL=INFO
-LOG_LEVEL=INFO
-APP_DEFAULT_LOCALE=ar
-APP_DEFAULT_CURRENCY=SAR
-APP_TIMEZONE=Asia/Riyadh
-
-# ── CORS (عدّل الدومين بعد ربط dealix.sa) ──
-CORS_ORIGINS=https://dealix.sa,https://www.dealix.sa,http://localhost:3000
-
-# ── Public URL (يُستخدم في Moyasar callback) ──
-APP_URL=https://dealix-production-up.railway.app
-
-# ── Moyasar Payments ──
-MOYASAR_SECRET_KEY=CHANGE_ME_sk_live_from_moyasar_dashboard
-MOYASAR_WEBHOOK_SECRET=<YOUR_MOYASAR_WEBHOOK_SECRET>
-
-# ── PostHog (اختياري لكن موصى به) ──
-POSTHOG_API_KEY=CHANGE_ME_phc_from_posthog
-POSTHOG_HOST=https://us.i.posthog.com
-
-# ── Calendly ──
-CALENDLY_URL=https://calendly.com/sami-assiri11/dealix-demo
-
-# ── WhatsApp (عدّل إذا ربطت Meta) ──
-WHATSAPP_VERIFY_TOKEN=CHANGE_ME
-WHATSAPP_ACCESS_TOKEN=CHANGE_ME
-```
-
-**قيم CHANGE_ME الأربعة:**
-1. `MOYASAR_SECRET_KEY` → من https://dashboard.moyasar.com/settings/basic-integration
-2. `POSTHOG_API_KEY` → من https://us.posthog.com/settings (اختياري)
-3. `WHATSAPP_VERIFY_TOKEN` → اختر أي نص عشوائي (ستضعه في Meta)
-4. `WHATSAPP_ACCESS_TOKEN` → من Meta Developer Console (اختياري الآن)
-
-### B3. احفظ
-- اضغط **Update Variables** (زر أزرق)
-- Railway سيعيد deploy تلقائياً
-
-### B4. أضف PostgreSQL إذا غير موجود
-- الخدمة الرئيسية → **+ New** → **Database** → **PostgreSQL**
-- Railway يحقن `DATABASE_URL` تلقائياً في `dealix` service
-
-### B5. تحقق من النشر
-- انتظر 60-90 ثانية
-- افتح terminal:
+## D.2 شغّل
 ```bash
-curl https://dealix-production-up.railway.app/health
-# يجب أن يرجع: {"status":"ok","service":"dealix-api"}
+bash dealix_smoke_test.sh
 ```
 
-إذا ما رجع 200 — راجع Railway Logs.
+### ✅ النتيجة المتوقعة
+```
+[1/5] /health ............. 200 OK ✅
+[2/5] /pricing/plans ...... 200 OK ✅
+[3/5] /api/v1/sectors ..... 200 OK ✅
+[4/5] /docs ............... 200 OK ✅
+[5/5] CORS preflight ...... 200 OK ✅
+
+🎉 Backend جاهز للإنتاج
+```
 
 ---
 
-## 🅲️ المرحلة C — Moyasar Webhook (3 دقائق)
+# 🟣 الخطوة E — Moyasar Webhook
 
-### C1. افتح Moyasar Dashboard
-https://dashboard.moyasar.com/webhooks
+## E.1 افتح Moyasar Dashboard
+1. روح على: **https://dashboard.moyasar.com**
+2. سجّل دخول
 
-### C2. اضغط **Add Webhook**
+## E.2 افتح Webhooks
+1. من الشريط الجانبي → **Settings** ثم **Webhooks**
+2. أو رابط مباشر: **https://dashboard.moyasar.com/settings/webhooks**
 
-### C3. عبّي:
-- **URL:**
-  ```
-  https://dealix-production-up.railway.app/api/v1/webhooks/moyasar
-  ```
-  (استبدل بـ Railway URL الفعلي إذا مختلف)
+## E.3 أضف Webhook
+1. اضغط **+ Add Webhook** (يمين أعلى)
+2. املأ النموذج:
 
-- **Events (اختر الثلاثة):**
-  - ☑ `payment_paid`
-  - ☑ `payment_failed`
-  - ☑ `payment_refunded`
+| الحقل | القيمة |
+|-------|---------|
+| URL | `https://<railway-url>/api/v1/webhooks/moyasar` |
+| Events | ✅ `payment_paid` ✅ `payment_failed` ✅ `payment_refunded` |
+| Secret | (انسخ من ملف `dealix_railway_vars.txt` قيمة `MOYASAR_WEBHOOK_SECRET`) |
+| Active | ✅ (مُفعّل) |
 
-- **Secret:**
-  ```
-  <YOUR_MOYASAR_WEBHOOK_SECRET>
-  ```
-  (نفس قيمة `MOYASAR_WEBHOOK_SECRET` في Railway)
+3. اضغط **Save**
 
-### C4. احفظ
-- Moyasar يرسل ping اختباري
-- يجب أن يظهر **Last Delivery: 200 OK**
+### ⚠️ تذكير مهم
+- استبدل `<railway-url>` بالرابط الحقيقي من خطوة C
+- **Secret نفسه** المستخدم في Railway وإلا webhook ما يشتغل
 
-### C5. بدّل لـ Live Keys (متى كنت جاهز)
-- **Settings** → **Basic Integration**
-- بدّل من `sk_test_*` لـ `sk_live_*`
-- حدّث `MOYASAR_SECRET_KEY` في Railway بنفس القيمة
+## E.4 Test Ping
+1. بعد الحفظ، اضغط على Webhook اللي أنشأته
+2. اضغط **Send Test Event**
+3. يجب أن يرجع **200 OK** خلال ثواني
+
+### ✅ علامة النجاح
+- Event status: `Delivered`
+- إذا `Failed`: افتح Railway Logs → ابحث عن `moyasar webhook` → شوف الخطأ
 
 ---
 
-## ✅ التحقق النهائي — اختبار 1 ريال
+# 🟢 الخطوة F — اختبار 1 ريال حقيقي
 
-شغّل السكريبت (موجود في `dealix_1_riyal_test.sh`):
+هذا يختبر end-to-end: Checkout → Moyasar → Webhook → DB
 
+## F.1 جهّز بطاقة اختبار
+Moyasar يوفر بطاقات test:
+
+| النتيجة | الرقم | CVV | تاريخ |
+|----------|-------|-----|-------|
+| نجاح | `4111 1111 1111 1111` | `123` | `12/30` |
+| فشل | `4000 0000 0000 0002` | `123` | `12/30` |
+
+## F.2 شغّل test script
 ```bash
 bash dealix_1_riyal_test.sh
 ```
+(موجود في workspace، جاهز للتنفيذ)
 
-التوقع:
-- ✅ `/health` → 200
-- ✅ `/api/v1/pricing/plans` → يرجع الباقات
-- ✅ `/api/v1/public/demo-request` → 200 + Calendly URL
-- ✅ `/api/v1/checkout` → يرجع `payment_url` من Moyasar
+### الخطوات داخل السكريبت
+1. ينشئ invoice في `/api/v1/checkout` بمبلغ 1 ريال
+2. يطبع رابط الدفع
+3. تفتح الرابط في المتصفح → تدفع ببطاقة التست
+4. السكريبت ينتظر webhook ثم يتحقق من DB
 
-**الخطوة النهائية:** افتح `payment_url` في المتصفح، ادفع 1 ريال ببطاقتك → ✅ **أول دفعة حقيقية في Dealix**.
-
----
-
-## 🚨 المشاكل الشائعة
-
-### `/health` يرجع 404
-- Railway لم ينشر بعد — راجع **Deployments** → شوف آخر deploy
-- إذا Failed → افتح Logs → ابحث عن `Error` أو `ModuleNotFoundError`
-- أرسل Logs وأنا أحلها
-
-### `/api/v1/checkout` يرجع 502
-- `MOYASAR_SECRET_KEY` خاطئ أو ما محدث
-- تأكد من الـ sk_live prefix وأنه الصحيح
-
-### Moyasar webhook 401
-- `MOYASAR_WEBHOOK_SECRET` في Railway **مختلف** عن اللي في Moyasar dashboard
-- تأكد من تطابقهما حرفياً (لا مسافات)
-
-### Landing form ما يرد
-- افتح Console في Chrome → ابحث عن `CORS` error
-- إذا موجود → أضف domain landing في `CORS_ORIGINS` وحدّث Railway
+### ✅ علامة النجاح النهائية
+- الدفع يظهر في Moyasar Dashboard
+- السطر في DB: `payment.status = "paid"`
+- السكريبت يطبع: `🎉 أول دفعة ناجحة`
 
 ---
 
-## 🎯 بعد نجاح الـ 3 مراحل
+# 🎯 بعد ما تنتهي
 
-1. افتح `dealix_personalized_messages.md`
-2. ابدأ بـ **عبدالله العسيري** (نفس اسم العائلة = أعلى فرصة)
-3. أرسل 2-3 رسائل اليوم
-4. افتح `dealix_14day_tracker.html` → سجّل كل رسالة
+**المتحقق الآن:**
+- ✅ Backend منشور على Railway
+- ✅ Moyasar يرسل webhooks بنجاح
+- ✅ دورة دفع كاملة end-to-end تعمل
+- ✅ النظام جاهز لاستقبال فلوس حقيقية من عملاء حقيقيين
 
-**الهدف:** أول pilot بـ 1 ريال خلال 7 أيام، أول Starter 999 خلال 14 يوم.
+**الخطوة التالية الوحيدة:** ابدأ outreach من `dealix_leads_20_real.md`
+
+---
+
+# 🚨 حل المشاكل الشائعة
+
+## المشكلة: `502 Bad Gateway` بعد Deploy
+**السبب:** Railway ما عرف الـ PORT
+**الحل:** في Settings → Deploy → تأكد إن Start Command إما فاضي أو `/app/start.sh`. لا تضع `python -m uvicorn` مباشرة.
+
+## المشكلة: Webhook يرجع `401 Unauthorized`
+**السبب:** Secret في Moyasar مختلف عن Railway
+**الحل:** قارن `MOYASAR_WEBHOOK_SECRET` في Railway Variables مع Secret في Moyasar Webhook → يجب أن يتطابقان حرفياً.
+
+## المشكلة: `database connection failed`
+**السبب:** Railway Postgres addon غير مفعّل أو DATABASE_URL تغيّر
+**الحل:** في Railway → أضف PostgreSQL service → انسخ `${{Postgres.DATABASE_URL}}` في Variables.
+
+## المشكلة: Smoke test يرجع 404 على كل endpoint
+**السبب:** الخدمة غير publicly accessible
+**الحل:** في Settings → Networking → فعّل **Public Networking** (Generate Domain).
+
+---
+
+# 📞 إذا حصلت مشكلة
+
+أرسل لي:
+1. Screenshot من Railway Deployments → Logs (آخر 50 سطر)
+2. Screenshot من Moyasar Dashboard → Webhooks (آخر event)
+3. الرسالة الخطأ بالضبط
+
+أقدر أحلّها خلال دقائق بدل ما تقضي ساعات.
+
+---
+
+**آخر نصيحة:** لا توقف في الـ deploy. لو حصلت مشكلة لأكثر من 30 دقيقة — انتقل مباشرة لـ outreach في نفس الوقت. بناء الـ pipeline الصباحي أهم من إصلاح bug صباحي.

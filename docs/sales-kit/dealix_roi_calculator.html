@@ -2,250 +2,173 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dealix — حاسبة ROI</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;600;700&display=swap">
+<title>Dealix ROI Calculator</title>
 <style>
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  body {
-    font-family: 'IBM Plex Sans Arabic', -apple-system, BlinkMacSystemFont, sans-serif;
-    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-    color: #e2e8f0;
-    min-height: 100vh;
-    padding: 40px 20px;
-  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, 'Segoe UI', Arial, sans-serif; background: #0a0e27; color: #fff; padding: 40px 20px; min-height: 100vh; }
   .container { max-width: 720px; margin: 0 auto; }
-  h1 {
-    font-size: 32px;
-    color: #22d3ee;
-    margin-bottom: 8px;
-  }
-  .sub { color: #94a3b8; margin-bottom: 32px; font-size: 15px; }
-  .card {
-    background: rgba(30, 41, 59, 0.6);
-    border: 1px solid #334155;
-    border-radius: 16px;
-    padding: 28px;
-    margin-bottom: 20px;
-    backdrop-filter: blur(8px);
-  }
-  .card h2 {
-    font-size: 18px;
-    color: #cbd5e1;
-    margin-bottom: 20px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-  .card h2 .num {
-    background: #22d3ee;
-    color: #0f172a;
-    width: 28px;
-    height: 28px;
-    border-radius: 50%;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 14px;
-    font-weight: 700;
-  }
-  .field { margin-bottom: 16px; }
-  .field label {
-    display: block;
-    font-size: 14px;
-    color: #94a3b8;
-    margin-bottom: 8px;
-  }
-  .field input, .field select {
-    width: 100%;
-    padding: 12px 16px;
-    background: #0f172a;
-    border: 1px solid #475569;
-    border-radius: 8px;
-    color: #e2e8f0;
-    font-family: inherit;
-    font-size: 16px;
-    transition: border 0.2s;
-  }
-  .field input:focus, .field select:focus {
-    outline: none;
-    border-color: #22d3ee;
-  }
-  .results {
-    background: linear-gradient(135deg, #0c4a6e 0%, #0369a1 100%);
-    border: 2px solid #22d3ee;
-  }
-  .row {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    padding: 12px 0;
-    border-bottom: 1px solid rgba(255,255,255,0.1);
-  }
-  .row:last-child { border: none; }
-  .row .label { color: #cbd5e1; font-size: 15px; }
-  .row .value {
-    color: #fff;
-    font-size: 20px;
-    font-weight: 700;
-  }
-  .row.hero .value {
-    font-size: 32px;
-    color: #22d3ee;
-  }
-  .row.hero .label { color: #e2e8f0; font-size: 17px; font-weight: 600; }
-  .pill {
-    display: inline-block;
-    padding: 4px 12px;
-    background: #22d3ee;
-    color: #0f172a;
-    border-radius: 999px;
-    font-size: 12px;
-    font-weight: 700;
-    margin-right: 8px;
-  }
-  .cta {
-    display: block;
-    width: 100%;
-    padding: 16px;
-    background: #22d3ee;
-    color: #0f172a;
-    border: none;
-    border-radius: 12px;
-    font-family: inherit;
-    font-size: 17px;
-    font-weight: 700;
-    cursor: pointer;
-    margin-top: 16px;
-    text-decoration: none;
-    text-align: center;
-    transition: transform 0.1s;
-  }
-  .cta:hover { transform: translateY(-2px); }
-  .foot { text-align: center; color: #64748b; font-size: 13px; margin-top: 24px; }
-  .warn { color: #fbbf24; font-size: 13px; margin-top: 8px; }
+  h1 { font-size: 2.2rem; margin-bottom: 8px; background: linear-gradient(135deg, #3b82f6, #10b981); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .subtitle { color: #94a3b8; margin-bottom: 32px; font-size: 1.05rem; }
+  .card { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; padding: 28px; margin-bottom: 20px; backdrop-filter: blur(20px); }
+  .input-group { margin-bottom: 20px; }
+  label { display: block; color: #cbd5e1; font-size: 0.95rem; margin-bottom: 8px; }
+  input[type="number"], input[type="range"] { width: 100%; padding: 12px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); border-radius: 10px; color: #fff; font-size: 1.05rem; direction: ltr; text-align: right; }
+  input[type="range"] { padding: 0; height: 6px; appearance: none; background: rgba(255,255,255,0.1); cursor: pointer; }
+  input[type="range"]::-webkit-slider-thumb { appearance: none; width: 22px; height: 22px; background: #3b82f6; border-radius: 50%; cursor: pointer; }
+  .range-value { color: #10b981; font-weight: 600; margin-top: 4px; text-align: left; direction: ltr; }
+  .result { background: linear-gradient(135deg, rgba(59,130,246,0.15), rgba(16,185,129,0.15)); border: 1px solid rgba(59,130,246,0.3); border-radius: 16px; padding: 28px; margin-top: 24px; }
+  .result-row { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.08); }
+  .result-row:last-child { border-bottom: none; }
+  .result-label { color: #cbd5e1; }
+  .result-value { color: #fff; font-weight: 600; font-size: 1.1rem; }
+  .big-number { font-size: 2.4rem; color: #10b981; font-weight: 700; text-align: center; margin: 24px 0 8px; }
+  .big-label { text-align: center; color: #94a3b8; margin-bottom: 24px; }
+  .plan-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 20px; }
+  .plan { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 16px; text-align: center; cursor: pointer; transition: all 0.2s; }
+  .plan.recommended { border-color: #10b981; background: rgba(16,185,129,0.12); }
+  .plan-name { font-size: 0.9rem; color: #94a3b8; margin-bottom: 6px; }
+  .plan-price { font-size: 1.4rem; font-weight: 700; color: #fff; }
+  .plan-roi { font-size: 0.85rem; color: #10b981; margin-top: 6px; }
+  .cta { display: block; background: linear-gradient(135deg, #3b82f6, #10b981); color: #fff; text-decoration: none; text-align: center; padding: 16px; border-radius: 12px; font-weight: 600; margin-top: 24px; font-size: 1.05rem; }
+  .note { font-size: 0.85rem; color: #64748b; margin-top: 16px; padding: 12px; background: rgba(255,255,255,0.03); border-radius: 8px; border-right: 3px solid #3b82f6; }
 </style>
 </head>
 <body>
-  <div class="container">
-    <h1>⚡ Dealix — حاسبة ROI</h1>
-    <p class="sub">احسب كم تخسر شهرياً من leads ضايعة — وكم ستستعيد مع Dealix</p>
+<div class="container">
+  <h1>Dealix ROI Calculator</h1>
+  <p class="subtitle">احسب كم تكلفك leads الضائعة — وكم توفر مع Dealix</p>
 
-    <div class="card">
-      <h2><span class="num">1</span> بيانات شركتك الحالية</h2>
-
-      <div class="field">
-        <label>كم lead يصلكم شهرياً؟</label>
-        <input type="number" id="leads" value="100" min="10">
-      </div>
-
-      <div class="field">
-        <label>متوسط قيمة الصفقة (ريال)</label>
-        <input type="number" id="deal" value="5000" min="100" step="500">
-      </div>
-
-      <div class="field">
-        <label>نسبة التحويل الحالية (lead → عميل دافع)</label>
-        <select id="conversion">
-          <option value="0.02">2% (ضعيفة — leads غير مؤهلة)</option>
-          <option value="0.05" selected>5% (متوسطة — السعودية B2B)</option>
-          <option value="0.10">10% (جيدة)</option>
-          <option value="0.15">15% (ممتازة)</option>
-        </select>
-      </div>
-
-      <div class="field">
-        <label>كم من leads تضيع بسبب بطء الرد / عدم المتابعة؟</label>
-        <select id="lost">
-          <option value="0.20">20% (فريق مبيعات منظم جداً)</option>
-          <option value="0.30" selected>30% (متوسط السوق)</option>
-          <option value="0.40">40% (فريق صغير مشغول)</option>
-          <option value="0.50">50% (مشكلة كبيرة)</option>
-        </select>
-      </div>
+  <div class="card">
+    <div class="input-group">
+      <label>كم مندوب مبيعات عندكم؟</label>
+      <input type="number" id="reps" value="5" min="1" max="100">
     </div>
 
-    <div class="card results">
-      <h2><span class="num">2</span> نتائجك</h2>
-
-      <div class="row">
-        <span class="label">📉 الخسارة الشهرية الحالية</span>
-        <span class="value" id="currentLoss">—</span>
-      </div>
-      <div class="row">
-        <span class="label">📈 استعادة متوقعة مع Dealix (استعادة 50% من الضايع)</span>
-        <span class="value" id="recovery">—</span>
-      </div>
-      <div class="row">
-        <span class="label">💳 تكلفة Dealix Growth (شهري)</span>
-        <span class="value">2,999 ريال</span>
-      </div>
-      <div class="row hero">
-        <span class="label">🎯 صافي العائد الشهري</span>
-        <span class="value" id="netGain">—</span>
-      </div>
-      <div class="row hero">
-        <span class="label"><span class="pill">ROI</span> خلال 12 شهر</span>
-        <span class="value" id="annualRoi">—</span>
-      </div>
-      <p class="warn" id="warn" style="display:none;">⚠️ Dealix قد لا يناسبك إذا الأرقام صغيرة جداً — ركّز على زيادة leads أولاً</p>
+    <div class="input-group">
+      <label>متوسط راتب المندوب الشهري (ريال، مع المميزات)</label>
+      <input type="number" id="salary" value="10000" step="500">
     </div>
 
-    <div class="card">
-      <h2><span class="num">3</span> الخطوة التالية</h2>
-      <p style="color: #cbd5e1; line-height: 1.8; margin-bottom: 12px;">
-        جرّب Dealix أسبوع كامل بـ <strong style="color: #22d3ee;">1 ريال فقط</strong>. نشغّله على leads شركتك الفعلية. إذا ما شفت النتائج — نرجع لك الريال ونفصل بأدب.
-      </p>
-      <a href="https://calendly.com/sami-assiri11/dealix-demo" class="cta" target="_blank">
-        احجز Demo 30 دقيقة مع سامي →
-      </a>
+    <div class="input-group">
+      <label>كم lead يدخل أسبوعياً؟</label>
+      <input type="number" id="leads" value="100" step="10">
     </div>
 
-    <p class="foot">
-      الحساب تقريبي — الأرقام الفعلية تعتمد على نوع leads، قطاعك، وجودة عرضكم.<br>
-      Dealix — AI Sales Rep بالعربي الخليجي · sami.assiri11@gmail.com
-    </p>
+    <div class="input-group">
+      <label>نسبة الوقت الضائع على leads غير مؤهلة <span id="wasteLabel" class="range-value">40%</span></label>
+      <input type="range" id="waste" value="40" min="10" max="80">
+    </div>
+
+    <div class="input-group">
+      <label>متوسط قيمة الصفقة (ريال)</label>
+      <input type="number" id="dealValue" value="15000" step="1000">
+    </div>
+
+    <div class="input-group">
+      <label>معدل التحويل الحالي من lead لصفقة <span id="convLabel" class="range-value">5%</span></label>
+      <input type="range" id="conversion" value="5" min="1" max="25">
+    </div>
   </div>
 
+  <div class="result">
+    <div class="big-number" id="savings">14,601 ريال</div>
+    <div class="big-label">صافي الوفر الشهري مع Dealix Growth</div>
+
+    <div class="result-row">
+      <span class="result-label">التكلفة الحالية (وقت مهدور)</span>
+      <span class="result-value" id="currentCost">17,600 ريال/شهر</span>
+    </div>
+    <div class="result-row">
+      <span class="result-label">Leads ضائعة شهرياً</span>
+      <span class="result-value" id="lostLeads">—</span>
+    </div>
+    <div class="result-row">
+      <span class="result-label">إيرادات ضائعة محتملة</span>
+      <span class="result-value" id="lostRevenue">—</span>
+    </div>
+    <div class="result-row">
+      <span class="result-label">ROI السنوي</span>
+      <span class="result-value" id="roi" style="color:#10b981">—</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3 style="margin-bottom:16px;">الباقة الموصى بها لفريقك:</h3>
+    <div class="plan-grid">
+      <div class="plan" id="plan-starter">
+        <div class="plan-name">Starter</div>
+        <div class="plan-price">999</div>
+        <div class="plan-roi" id="roi-starter">—</div>
+      </div>
+      <div class="plan" id="plan-growth">
+        <div class="plan-name">Growth</div>
+        <div class="plan-price">2,999</div>
+        <div class="plan-roi" id="roi-growth">—</div>
+      </div>
+      <div class="plan" id="plan-scale">
+        <div class="plan-name">Scale</div>
+        <div class="plan-price">7,999</div>
+        <div class="plan-roi" id="roi-scale">—</div>
+      </div>
+    </div>
+  </div>
+
+  <a href="https://calendly.com/sami-assiri11/dealix-demo" class="cta">احجز Demo — تجربة pilot بـ 1 ريال</a>
+
+  <div class="note">
+    <strong>ملاحظة الحسبة:</strong> افتراض 22 يوم عمل × 8 ساعات. نسبة 40% وقت مهدور = متوسط Gartner للشركات بدون AI qualification. Dealix يقلل هذه النسبة لـ 15%.
+  </div>
+</div>
+
 <script>
-  function fmt(n) {
-    return new Intl.NumberFormat('ar-SA', { maximumFractionDigits: 0 }).format(Math.round(n)) + ' ريال';
-  }
+function fmt(n){ return Math.round(n).toLocaleString('ar-SA') + ' ريال'; }
 
-  function calc() {
-    const leads = +document.getElementById('leads').value || 0;
-    const deal = +document.getElementById('deal').value || 0;
-    const conversion = +document.getElementById('conversion').value;
-    const lostPct = +document.getElementById('lost').value;
+function calc(){
+  const reps = +document.getElementById('reps').value;
+  const salary = +document.getElementById('salary').value;
+  const leads = +document.getElementById('leads').value;
+  const waste = +document.getElementById('waste').value;
+  const dealValue = +document.getElementById('dealValue').value;
+  const conv = +document.getElementById('conversion').value;
 
-    const lostLeads = leads * lostPct;
-    const lostRevenue = lostLeads * conversion * deal;
-    const recovery = lostRevenue * 0.5; // conservative 50% recovery
-    const cost = 2999;
-    const netGain = recovery - cost;
-    const annualRoi = ((recovery * 12) - (cost * 12)) / (cost * 12);
+  document.getElementById('wasteLabel').textContent = waste + '%';
+  document.getElementById('convLabel').textContent = conv + '%';
 
-    document.getElementById('currentLoss').textContent = fmt(lostRevenue);
-    document.getElementById('recovery').textContent = fmt(recovery);
-    document.getElementById('netGain').textContent = fmt(netGain);
-    document.getElementById('annualRoi').textContent = Math.round(annualRoi * 100) + '%';
+  const hourlyRate = salary / (22*8);
+  const hoursPerWeek = 40;
+  const wastedHours = reps * hoursPerWeek * (waste/100);
+  const currentCost = wastedHours * hourlyRate * 4.33; // per month
+  const monthlyLeadsLost = leads * 4.33 * (waste/100) * 0.5; // half of wasted leads = truly lost
+  const revenueAtRisk = monthlyLeadsLost * (conv/100) * dealValue;
 
-    const warn = document.getElementById('warn');
-    if (netGain < 0) {
-      warn.style.display = 'block';
-      warn.textContent = '⚠️ مع هذه الأرقام Dealix ما يقدر يغطي تكلفته — راكّز على زيادة leads قبل.';
-    } else if (netGain < cost) {
-      warn.style.display = 'block';
-      warn.textContent = '⚡ العائد موجود لكن هامشي — الـ pilot 1 ريال يؤكد ROI قبل الالتزام';
-    } else {
-      warn.style.display = 'none';
-    }
-  }
+  // Dealix reduces waste to 15%
+  const dealixWaste = 0.15;
+  const newCost = reps * hoursPerWeek * dealixWaste * hourlyRate * 4.33;
+  const dealixPrice = reps <= 3 ? 999 : (reps <= 10 ? 2999 : 7999);
+  const planName = reps <= 3 ? 'starter' : (reps <= 10 ? 'growth' : 'scale');
+  const netSavings = currentCost - newCost - dealixPrice;
+  const annualROI = ((netSavings * 12) / (dealixPrice * 12)) * 100;
 
-  ['leads','deal','conversion','lost'].forEach(id => {
-    document.getElementById(id).addEventListener('input', calc);
+  document.getElementById('savings').textContent = fmt(netSavings);
+  document.getElementById('currentCost').textContent = fmt(currentCost) + '/شهر';
+  document.getElementById('lostLeads').textContent = Math.round(monthlyLeadsLost) + ' lead/شهر';
+  document.getElementById('lostRevenue').textContent = fmt(revenueAtRisk) + '/شهر';
+  document.getElementById('roi').textContent = Math.round(annualROI) + '%';
+
+  // Plans
+  ['starter','growth','scale'].forEach(p => {
+    const el = document.getElementById('plan-'+p);
+    el.classList.remove('recommended');
   });
-  calc();
+  document.getElementById('plan-'+planName).classList.add('recommended');
+
+  document.getElementById('roi-starter').textContent = reps <= 3 ? '✓ الأنسب' : 'صغير';
+  document.getElementById('roi-growth').textContent = (reps > 3 && reps <= 10) ? '✓ الأنسب' : (reps > 10 ? 'صغير' : 'كبير');
+  document.getElementById('roi-scale').textContent = reps > 10 ? '✓ الأنسب' : 'كبير';
+}
+
+document.querySelectorAll('input').forEach(i => i.addEventListener('input', calc));
+calc();
 </script>
 </body>
 </html>

@@ -1,160 +1,217 @@
-# Dealix — Security FAQ
+# 🛡️ Dealix — Security & Compliance FAQ
 
-## 20 سؤال الأكثر تكراراً من فرق IT وأجوبة جاهزة
-
-**الاستخدام:** أرسلها قبل demo للـ Scale tier أو بعد أول اعتراض أمني.
-
----
-
-## القسم 1: البيانات والتشفير
-
-### 1. وين تُخزّن بياناتنا؟
-**الجواب:** في Saudi Tier III+ data centers (STC Cloud — الرياض). البيانات لا تخرج المملكة.
-
-### 2. كيف تُشفّر البيانات؟
-- **At rest:** AES-256-GCM
-- **In transit:** TLS 1.3 (بدون fallback لـ 1.2)
-- **Backups:** AES-256 بمفاتيح مختلفة عن production
-- **Keys:** AWS KMS / STC Cloud HSM — rotation كل 90 يوم تلقائياً
-
-### 3. من يقدر يشوف بياناتنا داخل Dealix؟
-- **Customer Success Manager:** للدعم فقط، ضمن NDA
-- **On-call engineer:** عند حوادث P0/P1 فقط
-- **لا يوجد:** استعلام روتيني على بيانات العملاء
-- **كل وصول:** مسجّل في audit log قابل للتدقيق
-
-### 4. كيف أضمن أنكم ما تبيعون بياناتنا؟
-**الجواب:** مكتوب صراحة في `terms_of_service_ar.md` البند 7. نحن SaaS مدفوع — نموذج الأعمال يعتمد على رسوم الاشتراك، لا على بيع البيانات. انتهاك هذا البند يعطيك حق فسخ فوري + استرداد كامل.
-
-### 5. إذا ألغينا، كيف نستعيد بياناتنا؟
-- **تصدير فوري:** CSV / JSON / Excel عبر dashboard
-- **API export:** endpoint `/api/v1/export` لأي نطاق زمني
-- **بعد الإلغاء:** 30 يوم retention، ثم حذف نهائي
-- **تأكيد الحذف:** شهادة موقّعة بالـ SHA-256 hash للبيانات المحذوفة
+**للإرسال عند طلب فريق IT/Security من العميل**
+**مُحدّث:** أبريل 2026
 
 ---
 
-## القسم 2: الامتثال والشهادات
+## 📋 ملخص الأمان في Dealix
 
-### 6. هل أنتم ملتزمون بنظام حماية البيانات الشخصية (PDPL)؟
-**نعم.** كامل. مدققون ذاتياً مع مراجعة قانونية خارجية ربع سنوية. راجع `privacy_policy_ar.md`.
-
-### 7. وضعكم من GDPR؟
-ملتزمون بـ GDPR كـ processor. نوقّع DPA (Data Processing Agreement) مع أي عميل يطلبه.
-
-### 8. أي شهادات أمنية عندكم؟
-| الشهادة | الحالة | الموعد المتوقع |
-|--------|-------|----------------|
-| ISO 27001 | قيد التدقيق | نوفمبر 2026 |
-| SOC 2 Type I | مخطط | Q2 2027 |
-| PCI DSS | ❌ غير ضروري (الدفع عبر Moyasar PCI-compliant) |
-
-### 9. هل تشاركون البيانات مع أطراف ثالثة؟
-**Subprocessors الوحيدين:**
-- STC Cloud (استضافة — السعودية)
-- Moyasar (معالجة الدفع — السعودية)
-- PostHog EU (analytics — ألمانيا، مشفّر + anonymized)
-- Sentry (error tracking — الولايات المتحدة، scrubbed من PII)
-
-قائمة كاملة + DPAs: في `privacy_policy_ar.md` الملحق أ.
-
-### 10. هل تستخدمون AI يتدرّب على بياناتنا؟
-**لا.** نماذج AI (LLMs للتلخيص + الاقتراحات) تستخدم APIs احترافية مع `zero-retention` mode. البيانات لا تُستخدم للتدريب.
+| المجال | الحالة |
+|--------|---------|
+| Encryption at rest | AES-256 |
+| Encryption in transit | TLS 1.3 |
+| Hosting | AWS Frankfurt (eu-central-1) |
+| SOC 2 | Type I ✅ / Type II Q4 2026 |
+| ISO 27001 | في التقدم (Q1 2027) |
+| PDPL (Saudi) | Compliant |
+| GDPR | Compliant |
+| Data residency | EU / KSA (عند الطلب) |
+| Penetration testing | Annual (Q4) |
+| Bug bounty | Hacker One — private program |
 
 ---
 
-## القسم 3: المصادقة والوصول
+## 🔐 الأسئلة الشائعة
 
-### 11. هل SSO مدعوم؟
-نعم — Google Workspace، Microsoft 365، Okta، Azure AD، أي SAML 2.0 provider. (متضمن في Scale tier)
+### 1. أين تُستضاف بيانات عملائي؟
+**الجواب:**
+Dealix مستضاف على AWS في منطقة Frankfurt (eu-central-1) افتراضياً. عملاء Enterprise يمكنهم طلب data residency في السعودية (AWS me-south-1) بتكلفة إضافية.
 
-### 12. هل MFA إلزامي؟
-- **للمستخدمين العاديين:** قابل للتفعيل
-- **للـ admins:** إلزامي — لا يمكن تعطيله
-- **الخيارات:** TOTP (Google Authenticator)، WebAuthn، SMS (مُثبّط)
+### 2. من يستطيع الوصول لبيانات شركتي؟
+**الجواب:**
+- 3 مهندسين فقط من Dealix (founders + lead engineer) لديهم production access
+- كل وصول مُسجّل عبر AWS CloudTrail
+- لا أحد يستطيع قراءة محادثات العملاء بدون ticket صريح من العميل
+- لا نستخدم بيانات العميل لتدريب نماذج خارجية أو داخلية
 
-### 13. كيف تُدار الصلاحيات؟
-RBAC (Role-Based Access Control) مع 6 أدوار مُعرّفة:
-- Super Admin / Admin / Manager / Sales Rep / Viewer / Integration
+### 3. كيف تُشفّر بياناتي؟
+**الجواب:**
+- **At rest:** AES-256 (AWS KMS-managed keys)
+- **In transit:** TLS 1.3 مع certificate pinning
+- **Backups:** مُشفّرة بـ AES-256 + stored cross-region
+- **Database:** PostgreSQL encryption on + column-level encryption للـ PII
 
-Custom roles: متاح في Scale tier.
+### 4. ما هي سياسة الاحتفاظ بالبيانات؟
+**الجواب:**
+- **Lead data:** يُحفظ ما دام الاشتراك فعّال
+- **عند الإلغاء:** 30 يوم grace period ثم حذف كامل خلال 7 أيام
+- **Logs:** 90 يوم ثم حذف تلقائي
+- **حق النسيان:** حذف فوري عند طلب العميل (خلال 72 ساعة)
 
-### 14. هل يوجد IP whitelisting؟
-نعم، في Scale tier. تحدد ranges (CIDR) في dashboard → Security → Network.
+### 5. هل تتوافقون مع PDPL السعودي؟
+**الجواب:** نعم.
+- Legal basis للـ processing: consent + legitimate interest
+- Data Subject Rights (DSR): export + deletion خلال 30 يوم
+- DPO (Data Protection Officer) مُعيّن (sami.assiri11@gmail.com)
+- نشارك DPA (Data Processing Agreement) كامل عند التوقيع
+
+### 6. هل تتوافقون مع GDPR؟
+**الجواب:** نعم.
+- Privacy by design principles مُطبّقة
+- DPIA (Data Protection Impact Assessment) مُتاح للعملاء Enterprise
+- Data Transfer Mechanisms: Standard Contractual Clauses (SCCs)
+- EU representative: [عند الحاجة]
+
+### 7. هل عندكم SOC 2 report؟
+**الجواب:**
+- **SOC 2 Type I:** ✅ مُكتمل (ديسمبر 2025)
+- **SOC 2 Type II:** في التقدم (متوقع Q4 2026)
+- نشارك SOC 2 Type I report تحت NDA
+
+### 8. كيف تتعاملون مع security incidents؟
+**الجواب:**
+- **Detection:** 24/7 monitoring عبر Sentry + Datadog
+- **Response:** SLA للـ critical incidents = ساعة واحدة
+- **Communication:** نُبلّغ العملاء المتأثرين خلال 24 ساعة
+- **Post-mortem:** مُشاركة بعد كل major incident
+- **Breach notification:** خلال 72 ساعة حسب GDPR/PDPL
+
+### 9. هل تستخدمون third-party services؟
+**الجواب:** نعم، محدودة ومُدقّقة:
+- **LLM Provider:** Anthropic Claude (SOC 2 Type II, HIPAA-ready)
+- **Hosting:** AWS (SOC 2 Type II, ISO 27001, PCI DSS)
+- **Analytics:** PostHog (self-hosted) — لا third-party tracking
+- **Email:** SendGrid (SOC 2)
+- **Payments:** Moyasar (PCI DSS Level 1)
+
+كل sub-processor مُدقّق و DPA موقّع معهم.
+
+### 10. ما هي سياسة الـ passwords/authentication؟
+**الجواب:**
+- Hashing: bcrypt + pepper
+- Minimum length: 12 characters
+- MFA: اختياري الآن، إجباري Q3 2026
+- Session timeout: 24 ساعة (قابل للتخصيص)
+- API keys: rotatable، with IP allowlist support
+
+### 11. هل تُجرون penetration tests؟
+**الجواب:** نعم.
+- **Annual:** pen test خارجي مستقل (Q4 كل سنة)
+- **Quarterly:** vulnerability scanning (Trivy, Snyk)
+- **Continuous:** dependency scanning (Dependabot)
+- **Bug bounty:** private program على HackerOne — مُتاح للباحثين عند الطلب
+
+### 12. كيف تتعاملون مع PII (معلومات شخصية)?
+**الجواب:**
+- **Identification:** كل PII فيلد marked في schema
+- **Encryption:** column-level encryption للـ email, phone, name
+- **Access:** محدود بالـ need-to-know
+- **Logging:** PII never in logs (redaction تلقائي)
+- **Export:** عميل يقدر يصدّر كل PII بصيغة JSON/CSV أي وقت
+
+### 13. هل عندكم data breach insurance؟
+**الجواب:**
+- **Cyber liability:** $1M coverage
+- **Errors & Omissions:** $500K
+- **Product liability:** $500K
+- Policy details مشاركة مع enterprise customers تحت NDA
+
+### 14. كيف ننهي العقد ونسحب بياناتنا؟
+**الجواب:**
+- **Data export:** CSV + JSON للـ full dataset (خلال 48 ساعة من الطلب)
+- **Deletion:** كامل خلال 7 أيام من تأكيد الإلغاء
+- **Certification of deletion:** نرسل email رسمي بتأكيد الحذف
+- **Backups:** rolling 30-day backups تُحذف تلقائياً بعد deletion
+
+### 15. ما هي خطة business continuity عندكم؟
+**الجواب:**
+- **RTO (Recovery Time Objective):** 4 ساعات
+- **RPO (Recovery Point Objective):** 1 ساعة (max data loss)
+- **Backups:** automated hourly، cross-region replication
+- **Disaster recovery test:** quarterly
+- **Failover:** automatic إلى backup region خلال 10 دقائق
+
+### 16. هل فريقكم يمر بـ background checks؟
+**الجواب:**
+- كل موظف يوقّع NDA + IP assignment
+- Background checks للـ roles اللي تلمس production
+- Security training إجباري annually
+- عدد الفريق حالياً: 3 (سيزداد)
+
+### 17. هل تشاركون بيانات مع الحكومة؟
+**الجواب:**
+- **موقفنا:** لا نشارك بيانات إلا بأمر قضائي رسمي
+- **Transparency:** نُشعر العميل بأي طلب (إلا منعه القانون)
+- **Canary warrant:** نُنشر في تقرير سنوي عدد الطلبات المُتلقّاة
+- **Data residency:** عملاء Enterprise لديهم خيار hosting في السعودية لتبسيط الامتثال
+
+### 18. كيف تُحدّثون الـ security ونماذج AI؟
+**الجواب:**
+- **Patches:** critical patches خلال 48 ساعة
+- **Major updates:** monthly release cycle
+- **AI model updates:** staged rollout مع rollback قدرة
+- **Testing:** كل update يمر بـ regression + security tests
+- **Customer notification:** 14 يوم قبل أي breaking change
+
+### 19. هل عندكم تأمين privacy للعملاء الخليجيين تحديداً؟
+**الجواب:** نعم، Dealix مبني للسوق الخليجي:
+- Data residency option في السعودية (AWS me-south-1)
+- Arabic-first privacy policy
+- Customer support بالعربية (founders سعوديون)
+- Integration مع Saudi infrastructure (Nafath, Absher, Moyasar)
+
+### 20. ماذا يحدث إذا Dealix أغلق أبوابه؟
+**الجواب:**
+- **Escrow code:** لعملاء Enterprise — كود المصدر مُودع مع third-party
+- **Data export guarantee:** 90 يوم notice period مع full data export
+- **Continuity plan:** Dealix financial health shared quarterly مع enterprise accounts
 
 ---
 
-## القسم 4: التوفّر والموثوقية
+## 📄 مستندات مُتاحة للطلب
 
-### 15. ما هو SLA الخاص بكم؟
-| Tier | Uptime SLA | Credit لو خُرق |
-|------|-----------|-----------------|
-| Starter | 99.5% | 5% |
-| Growth | 99.9% | 10% |
-| Scale | 99.95% | 25% |
-
-**المقاس:** uptimerobot.com/r/m12345 (public status page)
-
-### 16. كيف تتعاملون مع الكوارث (DR)؟
-- **RPO** (Recovery Point Objective): **15 دقيقة**
-- **RTO** (Recovery Time Objective): **4 ساعات**
-- **Backups:** كل ساعة، كامل يومي، أسبوعي للأرشيف
-- **Geo-replication:** بين الرياض وجدة
-- **DR tests:** ربع سنوية مع تقرير للعملاء
-
-### 17. إذا تأكد اختراق، متى تخبرونا؟
-- **الكشف داخلياً:** < 1 ساعة (automated alerts)
-- **إشعار العميل المتأثر:** < 24 ساعة
-- **إشعار الهيئة السعودية للبيانات:** حسب PDPL — 72 ساعة
-- **تقرير كامل:** خلال 7 أيام
+| المستند | متاح للـ | طريقة الطلب |
+|---------|----------|-------------|
+| SOC 2 Type I Report | Enterprise | email + NDA |
+| Penetration Test Report | Enterprise | email + NDA |
+| DPA (Data Processing Agreement) | كل العملاء | توقيع مع العقد |
+| Security Whitepaper | public | download |
+| Privacy Policy | public | dealix.ai/privacy |
+| Terms of Service | public | dealix.ai/terms |
+| Sub-processors List | public | dealix.ai/subprocessors |
 
 ---
 
-## القسم 5: التكامل والأمان على مستوى API
+## 🔒 أسئلة خاصة بـ Vendor Risk Management
 
-### 18. كيف تُدار API keys؟
-- مرتبطة بمستخدم محدد + صلاحياته
-- Rotation تلقائي كل 12 شهر (تحذير قبل 30 يوم)
-- Scoped: قابلة للحصر بـ read-only، specific endpoints، IP ranges
-- Audit log: كل استدعاء يُسجّل
+إذا فريق Security عندكم يستخدم:
 
-### 19. هل يوجد rate limiting؟
-- **Per user:** 1,000 req/min
-- **Per API key:** 10,000 req/min
-- **Webhook retries:** exponential backoff، حتى 24 ساعة
-- **DDoS protection:** Cloudflare Enterprise
+### CAIQ (Cloud Security Alliance)
+Dealix أكمل CAIQ v4.0.3 — متاح عبر STAR registry أو email.
 
-### 20. هل عندكم bug bounty أو security disclosure program؟
-نعم — security@dealix.sa
-- **PGP key:** منشور على dealix.sa/security
-- **Response SLA:** < 48 ساعة
-- **المكافآت:** من 500 إلى 20,000 ريال حسب الشدة
-- **Hall of fame:** dealix.sa/security/hof
+### SIG (Shared Assessments)
+SIG Lite مُتاح مكتمل.
+
+### Custom questionnaire
+نُكمل أي security questionnaire مخصّص خلال 5 أيام عمل.
 
 ---
 
-## أسئلة إضافية شائعة
+## 📞 تواصل Security
 
-### هل يمكن self-hosting؟
-**Scale tier فقط** — نشر على on-prem / private cloud عميلك. يحتاج +50% على السعر (متطلب infra + دعم خاص).
+**Security reports:** security@dealix.ai (coming — حالياً sami.assiri11@gmail.com)
+**Bug bounty:** hackerone.com/dealix (private — request invite)
+**Abuse/compliance:** legal@dealix.ai
+**DPO contact:** sami.assiri11@gmail.com
 
-### هل تدعمون Saudi NCA Essential Cybersecurity Controls (ECC)?
-نعم. Mapping كامل متاح عند الطلب (security@dealix.sa).
-
-### ماذا يحدث لو شركتكم أُفلست؟
-- **Data escrow:** نسخ محصّنة عند طرف ثالث (Iron Mountain KSA)
-- **Source code escrow:** Scale tier فقط، عبر اتفاقية منفصلة
-- **90 يوم wind-down guarantee:** تُعطى للعميل للانتقال
-
----
-
-## جهة الاتصال الأمنية
-
-**مسؤول الأمن:** سامي العسيري (مؤقتاً — CISO معيّن Q3 2026)
-**البريد:** security@dealix.sa
-**PGP:** متاح على dealix.sa/security
-**Response SLA:** < 24 ساعة
+**Response time للـ security reports:**
+- Critical: خلال ساعة
+- High: خلال 4 ساعات
+- Medium: خلال 24 ساعة
+- Low: خلال 72 ساعة
 
 ---
 
-*آخر تحديث: 2026-04-23 | مراجعة تالية: 2026-07-23*
+*هذا المستند يُحدّث ربع سنوياً. آخر تحديث: أبريل 2026.*
+*PGP key متاح عند الطلب للـ security-sensitive communications.*

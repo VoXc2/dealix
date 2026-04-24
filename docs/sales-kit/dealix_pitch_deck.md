@@ -1,393 +1,391 @@
-# Dealix — Pitch Deck للـ Seed Round
+# 🎤 Dealix — Pitch Deck (15 شريحة)
 
-## 15 شرائح | Target: 1-2M SAR | Valuation pre: 10-15M SAR
-
-**ملاحظة:** هذا النص مصدر الشرائح. يُحوّل لـ .pptx باستخدام template مناسب. كل شريحة ≤ 5 نقاط، بصري قوي، عربي RTL.
+**للإستخدام:** Seed round fundraising، partnership meetings، board updates
+**المدة المقترحة:** 10-12 دقيقة + Q&A
+**النسخة:** 1.0 (أبريل 2026)
 
 ---
 
-## Slide 1 — Cover
+## الشريحة 1: Cover
 
 ```
-Dealix
+████████████████████████████████
+        Dealix
+  مندوب مبيعات AI بالعربي الخليجي
+████████████████████████████████
 
-منصة مبيعات B2B مصممة للسوق السعودي
-WhatsApp-first • Arabic RTL • Vision 2030-ready
-
-[شعار Dealix]
-
-سامي العسيري — المؤسس
+Sami Assiri · Founder
 sami.assiri11@gmail.com
-[اليوم]
+April 2026 · Seed Round
 ```
 
-**ملاحظة بصرية:** خلفية عربية مُعاصرة، شعار Dealix واضح.
+**Design notes:** logo dark على background أسود، Arabic bold.
 
 ---
 
-## Slide 2 — The Problem
-
-**Header:** 73% من شركات B2B السعودية تُدير pipeline في Excel.
+## الشريحة 2: Problem
 
 ```
-المشكلة:
-• 61% يفقدون 5+ leads شهرياً (نسيان متابعة)
-• متوسط دورة البيع KSA: 47 يوم (العالم: 30 يوم)
-• 84% من sales reps يكرهون CRM الحالي
-• Salesforce/HubSpot: باهظة، إنجليزية-أولاً، WhatsApp integration هش
+شركات B2B في الخليج تفقد 70% من leads
 
-"CRMs العالمية: مبنية لسوق غير سوقنا."
+↓ لماذا؟
+
+• ردود البشر تأخر 4-24 ساعة
+• BDRs يقضون 60% على leads غير مؤهلة  
+• Chatbots الأجنبية لا تفهم العربية الخليجية
+• Competition يقفل الصفقات قبل ما يفتحوا جوالهم
+
+النتيجة: 40% churn في أول 30 يوم
 ```
 
-**Visual:** Infographic بـ 3 أرقام كبيرة.
+**Visual:** قمع مبيعات مع أرقام حمراء على كل مرحلة fall-off.
 
 ---
 
-## Slide 3 — The Why Now
+## الشريحة 3: Solution
 
 ```
-• Vision 2030: 185B SAR في digitization B2B بـ 2030
-• 85% من شركات KSA <200 موظف — ما يستهدفهم أحد جدياً
-• WhatsApp = 95% penetration (عكس email في US)
-• PDPL 2023: Saudi compliance = critical moat
-• AI في sales: 10× productivity — لكن يحتاج interface عربي
+Dealix = أول AI sales rep عربي خليجي حقيقي
+
+✅ يرد على كل lead خلال 45 ثانية
+✅ يؤهّل بـ BANT تلقائياً
+✅ يحجز demos مع فريقك
+✅ يعمل 24/7 باللهجة الطبيعية
+
+= فريقك يبدأ يومه بـ leads مؤهلة، لا reactive firefighting
 ```
 
-**Visual:** Timeline من 2020 → 2030 مع milestones.
+**Visual:** screenshot من Dealix في action، conversation حقيقية بالعربي.
 
 ---
 
-## Slide 4 — Our Solution
-
-**Header:** Dealix = المبيعات للشركات السعودية، مبنية من الأول.
+## الشريحة 4: Market
 
 ```
-3 مزايا جوهرية:
+السوق القابل للخدمة (SOM)
 
-1. WhatsApp-First
-   • كل lead يُتابع من WhatsApp Business
-   • Templates عربية معتمدة من Meta
-   • 1-click سجل مكالمة/رسالة
+📍 السعودية
+• 15,000+ شركة B2B
+• $3T Vision 2030 pipeline
+• 85% من الـ leads رقمية (ارتفاع من 45% في 2020)
 
-2. Arabic RTL حقيقي
-   • موب translated — مُصمّم عربي
-   • Voice-to-text باللهجة السعودية
-   • تقارير بالهجري + الميلادي
+📍 الخليج (UAE, Kuwait, Qatar, Bahrain, Oman)  
+• 40,000+ شركة B2B إضافية
+• نفس اللغة + نفس الديناميكيات
 
-3. Saudi-Native
-   • Moyasar mada + STC Pay
-   • STC Cloud — بيانات ما تخرج KSA
-   • PDPL-compliant من اليوم 1
+📊 TAM: $480M ARR (assuming $1K/company/month)
+💰 SAM: $180M ARR (realistic 3-year capture)
+🎯 SOM (أول سنتين): $18M ARR
 ```
 
-**Visual:** Screenshot dashboard عربي + WhatsApp thread.
+**Visual:** خريطة الخليج مع أرقام المدن.
 
 ---
 
-## Slide 5 — How It Works
-
-**Header:** من lead لصفقة في 30 ثانية.
+## الشريحة 5: Product
 
 ```
-1. استلام lead (WhatsApp / form / email)
+كيف يعمل Dealix (في 3 خطوات)
+
+1️⃣ LEAD INGEST
+   موقع / WhatsApp / Instagram / CRM webhook
    ↓
-2. AI scoring تلقائي (عربي + إنجليزي)
-   ↓
-3. Assignment ذكي (by territory + load)
-   ↓
-4. Follow-up cadence عربية (7 رسائل, 21 يوم)
-   ↓
-5. إغلاق + تحليل
-
-كل شي في واجهة واحدة. بدون 12 tab مفتوحة.
+2️⃣ AI CONVERSATION
+   Dealix يسأل 8 أسئلة BANT ذكية
+   يتكلم لهجة خليجية طبيعية
+   ↓  
+3️⃣ DELIVER
+   يحجز demo في calendar فريقك
+   ملخّص 1-صفحة قبل الـ demo
+   CRM sync تلقائي
 ```
 
-**Visual:** Flow diagram بأيقونات.
+**Visual:** 3 screenshots متتابعة تظهر flow.
 
 ---
 
-## Slide 6 — Traction
-
-**Header:** 87 عميل في Y1. Breakeven في شهر 3.
+## الشريحة 6: Demo / Product Screenshots
 
 ```
-[استبدل بأرقام حقيقية عند عمل الـ deck]
+[4 screenshots:]
+1. Chat widget على موقع العميل
+2. محادثة عربية طبيعية
+3. Qualification summary
+4. Dashboard للعميل
 
-Q2 2026 (اليوم):
-• Product: Live في production
-• Pilot customers: 5
-• Paid: $X MRR
-• Pipeline: $Y في demos مجدولة
-
-Trajectory متوقعة:
-• Q4 2026: 45 عميل, 45K SAR MRR
-• Q2 2027: 120 عميل, 120K SAR MRR
-• Q4 2027: 380 عميل, 800K SAR MRR (ARR 9.5M)
+النقطة الرئيسية:
+"لأول مرة، شركة سعودية تبيع لعملاء سعوديين
+عبر AI سعودي حقيقي."
 ```
-
-**Visual:** Chart tracker شهري + customer logos placeholder.
 
 ---
 
-## Slide 7 — Market
-
-**Header:** 12B SAR Saudi B2B SaaS market by 2028.
+## الشريحة 7: Business Model
 
 ```
-TAM (KSA):
-• 2026: 3.2B SAR
-• 2028: 7.5B SAR (CAGR 53%)
-• 2030: 12B SAR
+3 باقات SaaS + Enterprise
 
-SAM (Dealix target):
-• Shركات 10-200 موظف B2B
-• ~40,000 شركة
-• @ $500 avg ARPU/month
-• = 240M SAR/سنة
+• Starter  — 999 ريال/شهر (1-3 مندوبين)
+• Growth   — 2,999 ريال/شهر (4-10 مندوبين) ⭐
+• Scale    — 7,999 ريال/شهر (+10 مندوبين)
 
-SOM (Y3):
-• 1,200 عملاء = 30M SAR ARR
-• = 0.4% penetration SAM
+ARPA: 2,449 ريال/شهر
+Gross Margin: 87%
+Sales Cycle: 14-21 يوم
+Monthly Churn: < 3% (target)
+
+LTV:CAC = 35:1 (السنة الأولى)
 ```
 
-**Visual:** TAM/SAM/SOM funnel chart.
+**Visual:** جدول باقات مقارن بالمنافسة.
 
 ---
 
-## Slide 8 — Business Model
-
-**Header:** SaaS subscription. مُربح من الشهر الأول.
+## الشريحة 8: Traction
 
 ```
-الأسعار:
-• Pilot: 1 SAR (7 أيام — conversion tool)
-• Starter: 999 SAR/شهر (80% من العملاء)
-• Growth: 2,999 SAR/شهر
-• Scale: 7,999 SAR/شهر
+حيث نحن اليوم (أبريل 2026)
 
-Unit Economics:
-• ARPU: 2,099 SAR/شهر
-• Gross Margin: 75% → 85% (Y3)
-• LTV: 31,485 SAR
-• CAC: 1,200 SAR
-• LTV/CAC: 26× (target >3×)
-• Payback: 1.1 شهر
+✅ Backend production-ready (Railway)
+✅ 72 PRs مدموجة، 92% CI coverage  
+✅ Moyasar integration (SAR payments)
+✅ Anthropic Claude as AI layer
+✅ 20 lead حقيقي في outreach
+✅ عقود + policies جاهزة (PDPL, GDPR)
+
+في الطريق:
+📅 M1 (مايو): أول 5 عملاء مدفوعين
+📅 M3: 30K MRR
+📅 M6: 100K MRR
+📅 M12: 360K MRR (4.3M ARR)
 ```
 
-**Visual:** Pricing table + LTV/CAC comparison bar.
+**Visual:** traction chart + screenshot GitHub repo activity.
 
 ---
 
-## Slide 9 — Competitive Landscape
-
-**Header:** ما في أحد يفعل كل الثلاثة.
+## الشريحة 9: Competition
 
 ```
-                    | Salesforce | HubSpot | Zoho | Dealix |
-WhatsApp integration|     ❌     |    ⚠️    |  ⚠️   |   ✅    |
-Arabic RTL حقيقي    |     ⚠️     |    ⚠️    |  ⚠️   |   ✅    |
-Saudi data residency|     ❌     |    ❌    |  ❌   |   ✅    |
-PDPL ready          |     ⚠️     |    ⚠️    |  ⚠️   |   ✅    |
-Price (SAR/user/mo) |    600+    |   500+   | 200+ |   150   |
-Setup time          |  3 أشهر    |   1 شهر  | 3 أسابيع | 12 دقيقة |
-```
+نحن في فئة جديدة
 
-**Visual:** Comparison matrix (ما تخلي الـ row كثير).
+                   | Dealix | Drift/Intercom | Local Chatbots | BDR Agencies
+                   |--------|----------------|-----------------|---------------
+Arabic Khaliji     |  ✅    |       ❌       |    ترجمة       |      ✅
+Qualifies BANT     |  ✅    |       ⚠️       |       ❌        |      ✅
+Books demos        |  ✅    |       ⚠️       |       ❌        |      ✅
+24/7               |  ✅    |       ✅       |       ✅        |      ❌
+Cost per lead      | 2 ريال | 8 ريال         |  5 ريال         |  45 ريال
+Scalability        |  ✅✅  |       ✅       |       ⚠️        |      ❌
+
+Positioning: "نحن Drift، ولكن للعربي. نحن BDR، ولكن بلا تكلفة."
+```
 
 ---
 
-## Slide 10 — Traction (metrics الحقيقية)
-
-**Header:** الأرقام تتحدث.
+## الشريحة 10: Go-to-Market
 
 ```
-[يُملأ بعد 3-6 أشهر من launch]
+كيف نوصل للـ 100 عميل أولاً
 
-Month 3:
-• 9 paid customers
-• 10K SAR MRR
-• 2 case studies
-• 98% uptime
-• NPS 52
+Phase 1 (M1-M3): Founder-led outbound
+  • 20 lead/أسبوع من LinkedIn + referrals
+  • هدف: 10 عملاء مدفوعين
 
-Growth drivers:
-• 60% من الإحالات (warm intros)
-• 25% من LinkedIn
-• 15% من demos عضوية
+Phase 2 (M4-M6): Inbound engine  
+  • Build-in-public (LinkedIn, Twitter)
+  • SEO (20 مقال عربي شهرياً)
+  • هدف: 30 عميل
+
+Phase 3 (M7-M12): Sales team
+  • BDR #1 ثم BDR #2
+  • Partnership channels (Salla, Zid app stores)
+  • هدف: 120 عميل
+
+Phase 4 (Y2): Geographic expansion
+  • UAE, Kuwait, Qatar
+  • Localized for each market
 ```
 
-**Visual:** MRR growth chart + NPS breakdown.
+**Visual:** stages timeline مع customer counts.
 
 ---
 
-## Slide 11 — The Team
-
-**Header:** المؤسس يبني لوحده. Hiring coming.
+## الشريحة 11: Financial Projections
 
 ```
-سامي العسيري — Founder & CEO
-• [خلفيتك السابقة]
-• [خبرة في sales/tech]
-• [إنجازات سابقة]
-• @sami-assiri11
+12-Month Projection
 
-Q3 2026 Hires:
-• Senior Engineer (full-stack)
-• CSM (customer success)
+M3:  12K MRR   (144K ARR)    · 8 عملاء
+M6:  58K MRR   (696K ARR)   · 29 عميل  ⭐ break-even
+M9:  163K MRR  (1.95M ARR)  · 66 عميل
+M12: 358K MRR  (4.3M ARR)   · 121 عميل
 
-Advisors المستهدفون:
-• [VP Sales سابق شركة enterprise SaaS]
-• [Angel investor B2B SaaS سعودي]
-• [Legal advisor — Saudi tech law]
+Y2 Base Case: 10.6M ARR
+Y3 Base Case: 24M ARR
+
+Net Profit Y1: 702K (52% EBITDA margin)
+
+يقف على قدميه من M2 — لا يحتاج تمويل للبقاء.
+التمويل = لتسريع النمو، ليس للبقاء.
 ```
 
-**Visual:** Headshot + logos للشركات السابقة.
+**Visual:** growth chart + waterfall profit.
 
 ---
 
-## Slide 12 — Roadmap
-
-**Header:** من 87 عميل إلى 1,200 في 18 شهر.
+## الشريحة 12: Team
 
 ```
-Q2 2026 (الحين):
-• Launch v1.0
-• First 10 paying customers
-• Core features stable
+الفريق
 
-Q3 2026:
-• First 2 hires
-• UAE market research
-• Series of case studies
+سامي العسيري · Founder & CEO
+  • 5+ سنوات في SaaS sales
+  • Technical founder (Python, Arabic NLP)
+  • Networks: Lucidya, Foodics, Salla
 
-Q4 2026:
-• 50 customers
-• Scale tier launch
-• Seed funding close
+الجائزة في Y1:
+  • Co-founder / CTO (looking)
+  • BDR #1 (M4)
+  • Customer Success (M6)
 
-Q1-Q2 2027:
-• UAE launch
-• 120 customers
-• Enterprise features
-
-Q3-Q4 2027:
-• Qatar + Bahrain
-• 380 customers
-• Series A prep
+Advisors:
+  • [tba]
 ```
 
-**Visual:** Roadmap timeline.
+**Visual:** بورتريه احترافي + roadmap للـ hiring.
 
 ---
 
-## Slide 13 — The Ask
-
-**Header:** 1-2M SAR seed round.
+## الشريحة 13: Ask
 
 ```
-الهدف:
-1-2M SAR @ valuation pre-money 10-15M
+نبحث عن Seed من 1-2M ريال
 
-استخدام الأموال (18 شهر):
-• 40% Product (2 engineers) → 400-800K
-• 30% GTM (1 sales + marketing) → 300-600K
-• 20% Operations (CSM + legal) → 200-400K
-• 10% Reserve → 100-200K
+استخدام الأموال:
+  • 40% Engineering (CTO + 2 engineers)
+  • 30% Sales (2 BDRs + Head of Sales)
+  • 20% Marketing (content + paid experiments)
+  • 10% Operations (tools, legal, office)
 
-المخرجات المُستهدفة (Q4 2027):
-• 380 customers
-• ARR 9.5M
-• Net Revenue Retention > 110%
-• Series A-ready (5-10M SAR)
+Runway: 18 شهر على هذا الـ burn
+Milestones:
+  • M6: 30 عميل + Series A readiness
+  • M12: 120 عميل + geographic expansion
+
+Valuation target: 15-20M ريال post-money
+(10-15x ARR multiple on $360K ARR)
 ```
-
-**Visual:** Use of funds pie chart.
 
 ---
 
-## Slide 14 — Why Invest Now
-
-**Header:** 5 أسباب بسيطة.
+## الشريحة 14: Why Now
 
 ```
-1. Timing مثالي — Vision 2030 + PDPL + تحوّل digital
-2. السوق ضخم — 12B SAR by 2030, قليل من competition
-3. Unit Economics exceptional — LTV/CAC 26×, Payback 1.1 شهر
-4. Moat متعدد الطبقات — Saudi-native + language + compliance
-5. Founder hustle — 35+ ملف playbook مُثبت قبل الإطلاق
-```
+لماذا Dealix الآن؟
 
-**Visual:** 5 أيقونات كبيرة.
+1. AI ناضج للإنتاج (Claude 4.7 = breakthrough)
+2. السعودية تتبنى AI بسرعة (Vision 2030)
+3. لا منافس محلي جدّي
+4. Saudi VCs نشطون ($1.34B H1 2025)
+5. PDPL يحمي البيانات المحلية (barrier للأجانب)
+6. Solopreneur يقدر يبني في شهور ما كان يحتاج سنوات
+
+"Dealix في 2026 = Salesforce في 1999."
+```
 
 ---
 
-## Slide 15 — Thank You + Contact
+## الشريحة 15: Vision + Thank You
 
 ```
-لنبني معاً مستقبل المبيعات في السعودية.
+الرؤية
 
-سامي العسيري
+"كل شركة سعودية تبيع عبر AI محلي
+خلال 3 سنوات."
+
+Q1 2026: أول عميل
+Q4 2026: 120 عميل
+2028: الرائد في سوق الخليج
+2030: $100M ARR
+
+———————————
+
+Sami Assiri
 Founder, Dealix
 
 📧 sami.assiri11@gmail.com
-📱 [رقم الجوال]
-🌐 dealix.sa
-💼 linkedin.com/in/sami-assiri11
+📱 +966 [رقم]
+🌐 dealix.ai
 📅 calendly.com/sami-assiri11/dealix-demo
+
+نشكركم على وقتكم.
 ```
 
-**Visual:** Photo + QR codes for contact.
+---
+
+## 📋 قواعد تقديم الـ Deck
+
+### Opening (أول 2 دقيقة):
+- لا تقل "شكراً على وقتكم" — شاركهم سؤال
+- "كم مرة ضاعت صفقة عندكم بسبب رد متأخر؟"
+- استمع للإجابات قبل بدء الـ deck
+
+### أسلوب العرض:
+- شريحة كل 40-50 ثانية
+- لا تقرأ المحتوى — اشرح القصة
+- اسأل أسئلة كل 3 شرائح
+- الأرقام الأهم: احفظها ظهراً
+
+### Q&A (3-5 دقائق):
+- أسئلة متوقعة:
+  1. "كيف تختلف عن ChatGPT API؟" → prompted for sales + Saudi context + BANT
+  2. "ما defensibility؟" → Arabic training data + integrations + brand
+  3. "Churn mitigation؟" → customer success + high value
+  4. "لماذا لم تُطلق بعد؟" → Railway deploy هذا الأسبوع
+  5. "Unit economics؟" → 87% margin, 35:1 LTV:CAC
+
+### Closing:
+- "المستقبل الأفضل للـ Dealix = partner مثلكم"
+- اقترح الخطوة التالية (due diligence call)
+- Follow up خلال 24 ساعة
 
 ---
 
-## ملحق — Backup Slides (إذا طلبوا)
+## 📎 المرفقات اللي تُرسل بعد الاجتماع
 
-### A1 — Detailed Financials
-P&L كامل من financial_model.md
-
-### A2 — Customer Case Studies
-قصة لكل عميل نجح (بعد 3 أشهر)
-
-### A3 — Technical Architecture
-High-level infra diagram
-
-### A4 — Security & Compliance
-من security_faq.md
-
-### A5 — Competitor Deep Dive
-من battlecards.md
-
-### A6 — Product Demo
-10 screenshots مع annotations
+1. **Financial model** (Excel) — `dealix_financial_model.md` → Excel
+2. **One-pager** — `dealix_onepager.md` → PDF
+3. **Demo video** (60s) — link
+4. **Customer pipeline** — sanitized CSV
+5. **Team bios** — PDF
 
 ---
 
-## ملاحظات التسليم
+## 🎨 Design Guidelines لـ الـ Deck النهائي
 
-### للـ in-person pitch:
-- 20 دقيقة presentation + 10 Q&A
-- اطبع نسخة الـ deck (يحتفظ بها المستثمر)
-- اترك demo live 5 دقائق
-- تمتع بسؤال "ما اللي يخليك مختلف عن X?"
+عند تحويل للـ PowerPoint/Keynote:
 
-### للـ email pitch:
-- PDF version (< 5 MB)
-- 2-sentence intro email
-- Subject line: "[Dealix] Saudi B2B SaaS — seed — [Founder name intro]"
-- CTA واضح: "20 min call this week?"
+**Colors:**
+- Primary: #0a0e27 (الأسود الأزرق)
+- Accent: #3b82f6 (أزرق) + #10b981 (أخضر)
+- Text: #fff على الأسود، #0a0e27 على الأبيض
 
-### Red flags (تجنبها):
-- ❌ "أكبر في العالم"
-- ❌ "بدون منافسة"
-- ❌ Hockey stick projections بدون تبرير
-- ❌ "نحتاج X لأن..."
+**Typography:**
+- Arabic: Tajawal (Bold لـ headlines, Regular لـ body)
+- English: SF Pro / Inter
+- Numbers: Mono font (JetBrains Mono) للتأثير
 
-### Green flags (أكّد عليها):
-- ✅ أرقام حقيقية (حتى لو صغيرة)
-- ✅ قصص عملاء
-- ✅ اعرف ضعفك
-- ✅ خطة واضحة لـ cash
+**Layout:**
+- Max 30 كلمة لكل شريحة
+- Hero visual في كل شريحة
+- Footer: رقم الشريحة + Dealix logo
+
+**Tools للبناء:**
+- Pitch.com (مجاني، أسرع)
+- Keynote (macOS, best polish)
+- Figma + Pitch Deck template (custom)
 
 ---
 
-*آخر تحديث: 2026-04-23 | Version 1.0*
+**Pro tip:** بعد كل pitch، سجّل ملاحظات في `dealix_pitch_feedback.md` — وطوّر الـ deck كل 3 meetings.

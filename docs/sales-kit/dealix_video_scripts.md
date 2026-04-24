@@ -1,320 +1,352 @@
-# Dealix — Video Scripts
+# 🎬 Dealix — Video Scripts (60s + 3min + 10min)
 
-## 60s + 3min + 10min | Arabic (Saudi Gulf dialect)
-
-**استخدم:** التصوير بهاتف عادي. عدسة طبيعية. إضاءة نافذة. مكياج: لا. الصدق > الإنتاج.
-
----
-
-## Script 1: 60s Hook — LinkedIn / X / Instagram Reels
-
-**المكان:** الكمبيوتر + دبلوماسية — shot نصفي
-**الملابس:** قميص بسيط (ليس رسمي جداً)
-**الهدف:** كسر الـ scroll + زيارة الـ landing page
-
-### النص
-
-```
-[0-5s] 📊 Hook — close-up على شاشة تحتوي Excel pipeline
-"هذا Excel اللي يدير 90% من شركات السعودية pipeline مبيعاتها.
-شكلي المفضّل. لكن فيه مشكلة."
-
-[5-15s] 🎯 Problem
-"لكل خلية ما تُحدّث، شركة تخسر 300,000 ريال متوسط في صفقة ضائعة.
-أنا عشتها — VP Sales، اكتشفت الاثنين 7 leads ما تابعتها الأسبوع اللي راح."
-
-[15-30s] 💡 Solution
-"بنيت Dealix — منصة مبيعات سعودية حقيقية.
-• WhatsApp-first (موب email-first)
-• عربي RTL من الأول (موب ترجمة)
-• Moyasar للدفع (موب Stripe)
-• بياناتك في الرياض (موب Ireland)"
-
-[30-45s] 📈 Proof
-"Setup: 12 دقيقة.
-السعر: 999 ريال/شهر (Starter).
-pilot 7 أيام بريال واحد — بدون بطاقة بدون التزام."
-
-[45-60s] 🔥 CTA
-"احجز demo 15 دقيقة: calendly.com/sami-assiri11/dealix-demo
-أو زور dealix.sa.
-إذا شركتك 10-200 موظف B2B — لك.
-إذا Excel شغّال 100% عندك — ما تحتاجني.
-
-أنا سامي، ونكمل اللي يعجبك."
-```
-
-### Visual cues
-- 0-5s: Close-up Excel
-- 5-15s: Cut إلى Sami talking head
-- 15-30s: Split screen (Sami + Dealix dashboard preview)
-- 30-45s: Screen recording — signup flow + pricing
-- 45-60s: Sami talking head + Calendly link overlay
-
-### قواعد
-- **لا موسيقى** — يشتت عن الكلام
-- captions بالعربي (مهم للـ mute viewers)
-- End card: dealix.sa + LinkedIn handle
-- First frame: freeze + text overlay للـ hook
+**للاستخدام:**
+- 60s: Social media (LinkedIn, Twitter, Instagram Reels)
+- 3min: Landing page hero + email attachment
+- 10min: YouTube + deep demo
 
 ---
 
-## Script 2: 3 min Explainer — YouTube / Website Hero
+## 🎥 Video 1: 60-second Social Video
 
-**المكان:** مكتب مريح + 2-3 cuts لـ dashboard
-**الهدف:** فهم كامل للمنتج + قرار demo
+**الغرض:** hook attention + drive to demo booking
+**المنصات:** LinkedIn, Twitter/X, Instagram, TikTok
+**التكلفة:** DIY (iPhone + iMovie) → 0 ريال
 
-### النص
+### السكريبت (مكتوب بالعربي الخليجي):
 
 ```
-[0-15s] Cold Open
-"قبل سنتين، كنت أخسر صفقات بسبب خلية Excel ما حدّثتها.
-اليوم أبني الحل."
+[الثانية 0-3] Hook على الشاشة:
+"70% من leads الشركات السعودية تضيع"
 
-[15-30s] قدّم نفسك
-"أنا سامي العسيري — المؤسس لـ Dealix.
-منصة مبيعات B2B مصممة للسوق السعودي من الأول."
+[الثانية 3-8] وجه المؤسس يظهر:
+"السلام عليكم، أنا سامي."
+"مؤسس Dealix."
+"مندوب مبيعات AI بالعربي الخليجي."
 
-[30-60s] Problem Deep Dive
-"73% من شركات السعودية B2B تستخدم Excel.
-61% تفقد 5+ leads شهرياً — لأن:
-• Manual updates → errors
-• لا WhatsApp integration  
-• Mobile = لا شي
-• تعاون بين الفريق = مستحيل
+[الثانية 8-20] Split-screen:
+  اليسار: موظف متعب أمام الكمبيوتر
+  اليمين: رسائل لم يُرد عليها
 
-Salesforce؟ 3-6 أشهر setup + 4× السعر + إنجليزي.
-HubSpot؟ free حتى يجبرك ترقية.
-Zoho؟ 2010-style + support بالـ IST.
+"الواقع: فريق مبيعاتك يفتح جواله الصباح،
+يشوف 50 lead من أمس، ما قدر يرد على أحد."
 
-السوق السعودي يحتاج شي مختلف."
+[الثانية 20-30] Screen recording:
+Dealix يستقبل lead ويرد خلال 45 ثانية بالعربي
 
-[60-90s] Demo — Dashboard
-"[screen recording]
-هذا Dealix.
-• Pipeline view — drag & drop
-• WhatsApp thread لكل lead
-• AI scoring — Arabic + English
-• تقارير بالهجري والميلادي
-• Mobile app حقيقي (iOS + Android)
+"Dealix يرد على كل lead خلال 45 ثانية."
+"يسأل أسئلة التأهيل."
+"يحجز demo في تقويم فريقك."
 
-كل شي في واجهة عربية حقيقية. موب ترجمة."
+[الثانية 30-40] النتائج على الشاشة:
+✓ 38% معدل تأهيل (vs 11%)
+✓ 12 ساعة BDR محرّرة أسبوعياً
+✓ 0 leads ضائعة
 
-[90-120s] Pricing + Proof
-"الأسعار:
-• Pilot: 1 ريال، 7 أيام (conversion tool)
-• Starter: 999/شهر — حتى 5 مستخدمين
-• Growth: 2,999/شهر — حتى 20
-• Scale: 7,999/شهر — حتى 50 مستخدم
+"نتائج أول عميل: [أرقام حقيقية]"
 
-Setup: 12 دقيقة.
-Support: عربي، ساعات عمل السعودية.
-Data: في الرياض، PDPL-compliant.
-Moyasar للدفع — mada + STC Pay + Visa + Mastercard."
+[الثانية 40-55] CTA قوي:
+"Pilot لأسبوع بـ 1 ريال."
+"لو ما أعجبك، نرد لك الريال."
+"ابدأ اليوم: dealix.ai"
 
-[120-150s] Why Now
-"Vision 2030 + PDPL + تحول digital السعودي = 
-185B ريال سوق مُستهدف بحلول 2030.
-Dealix مُصمّم لهذا السياق.
-من ناس سعوديين.
-لناس سعوديين."
-
-[150-180s] CTA
-"3 خطوات:
-1. زور dealix.sa
-2. احجز demo 15 دقيقة
-3. ابدأ pilot بريال
-
-لو ما حسّن Dealix إنتاجيتك في 7 أيام، ارجع لـ Excel.
-ما أحاكمك.
-
-أنا متحمس أشوفك في demo.
-شكراً."
+[الثانية 55-60] End card:
+dealix.ai logo + "احجز demo الآن"
 ```
 
-### Visual cues
-- Talking head → dashboard screen recording → talking head cadence
-- Lower-third بالاسم + "Founder, Dealix"
-- End card: CTAs واضحة (3 buttons)
+### التصوير:
+- **الكاميرا:** iPhone 14+ (2x أو 3x lens)
+- **الصوت:** Lavalier mic ($20 على Amazon)
+- **الإضاءة:** نافذة طبيعية أو ring light
+- **Background:** بسيط، ما يشتت (جدار أبيض أو مكتب نظيف)
+- **الملابس:** قميص عربي أبيض أو أزرق (professional)
+
+### Post-production (iMovie/CapCut):
+- Subtitles عربي (كثيرون يشاهدون بدون صوت)
+- Music: upbeat, instrumental (from YouTube Audio Library)
+- Cuts every 3-5 seconds (retention)
+- Color grade: slightly warm
+
+### Format for each platform:
+- **LinkedIn:** 1:1 (square) — 60s max
+- **Twitter/X:** 16:9 — 2:20 max
+- **Instagram Reels:** 9:16 (vertical) — 60s
+- **TikTok:** 9:16 — 60s
 
 ---
 
-## Script 3: 10 min Deep Dive — YouTube / Podcast Main
+## 🎥 Video 2: 3-minute Product Demo
 
-**المكان:** stage setup — 2-camera (wide + medium)
-**الهدف:** thought leadership + educational content
-**توزيع:** منتج + قصة + industry insights
+**الغرض:** Landing page hero + email للـ warm leads
+**الجمهور:** Sales directors, founders considering AI
+**التكلفة:** 500-1,000 ريال (professional voiceover)
 
-### النص
+### السكريبت:
 
 ```
-[0-30s] Cold Open
-"إذا كان عندك فريق مبيعات في السعودية الحين — هناك 84% احتمال 
-إنهم يكرهون CRM اللي تستخدمونه.
-أنا سأريك كيف يُبنى CRM يُعشقون استخدامه.
-هذا Dealix."
+[0:00-0:20] المقدمة
+Visual: Dealix logo animation, city of Riyadh
 
-[30s-1:30] من أنا
-- خلفية (VP Sales سابقاً)
-- لحظة "click" — متى عرفت إن الحل ما يوجد
-- قرار البناء
-- أول 6 أشهر — الفشل والتعلم
+Voiceover:
+"في السعودية، شركات B2B تفقد ملايين الريالات شهرياً.
+ليس بسبب ضعف المنتج. ولا بسبب منافسة قوية.
+بل بسبب شيء بسيط: الـ leads تُنسى."
 
-[1:30-3:30] الصناعة في السعودية
-- أرقام سوق CRM السعودي
-- من يحتل السوق الآن (Salesforce, HubSpot, Zoho)
-- لماذا فشلوا في serve 85% من الشركات
-- الفرصة:
-  - WhatsApp adoption 95%+
-  - Arabic-first
-  - Vision 2030
-  - PDPL
+[0:20-0:40] المشكلة
+Visual: أرقام متحركة:
+- 4 ساعة: متوسط الرد
+- 40%: leads تُفقد
+- 60%: وقت مهدور
 
-[3:30-5:30] فلسفة Dealix
-- 3 مبادئ:
-  1. **Less is more** — 20% features = 300% value
-  2. **Sovereign data** — في الرياض، دائماً
-  3. **Arabic-first** — موب translated
-- كيف قادت هذه الفلسفة القرارات التقنية:
-  - اختيار Moyasar على Stripe
-  - STC Cloud على AWS
-  - Claude/GPT للـ AI (zero-retention mode)
+"عندما يدخل lead في الصباح، يأخذ الرد 4 ساعات.
+في هذه الـ 4 ساعات، ربحه المنافس.
+الفريق يعاني من ضغط متابعة leads غير مؤهّلة —
+ولا يكفي وقته للصفقات الحقيقية."
 
-[5:30-7:30] Product Demo (detailed)
-[screen recording — 2 minutes]
-- Pipeline view
-- WhatsApp integration
-- Mobile app
-- Reports
-- Automations (5 triggers فقط)
-- Custom fields
-- Settings + security
+[0:40-1:00] التحول
+Visual: chart يتحول من أحمر لأخضر
 
-[7:30-8:30] Stories from الميدان
-- "شركة logistics شالت Excel بعد 3 سنوات — هذا اللي حدث"
-- "VP Sales في startup: 'الفريق يفتحه 10× يومياً الآن'"
-- "owner: 'احصلت pipeline visibility أول مرة في 5 سنوات'"
+"لكن ماذا لو..."
+"كل lead يُرد عليه خلال 45 ثانية، 24/7؟"
+"كل محادثة تبدأ بسؤال ذكي بالعربي الخليجي؟"
+"كل lead مؤهّل ومحجوز له demo — قبل ما تفتح جوالك؟"
 
-[8:30-9:30] المستقبل
-- Q4 2026: Scale tier + Seed round
-- 2027: UAE + Qatar + Bahrain
-- 2030: pan-Arab leadership
-- Long-term: الذكاء الاصطناعي السعودي للمبيعات
+[1:00-1:40] Dealix Demo Live
+Visual: Screen recording لـ Dealix in action
 
-[9:30-10:00] Call to Action
-"3 خيارات حسب وضعك:
-1. لو sales founder/VP — ابدأ pilot اليوم
-2. لو VC/investor — تواصل عن seed round
-3. لو تفكر تبني SaaS سعودي — DM لي، أشاركك دروس مجانية
+"هذا Dealix."
+"مندوب مبيعات AI بالعربي الخليجي."
+"بنيته لشركات سعودية تواجه هذه المشكلة بالضبط."
 
-dealix.sa — كل شي هناك.
-شكراً على 10 دقايق من وقتك."
+[عرض المحادثة:]
+- Lead يدخل
+- Dealix يرد فوراً بالعربي
+- يسأل 8 أسئلة تأهيل ذكية
+- يصنّف الـ lead (A/B/C/D)
+- يحجز demo تلقائياً
+
+[1:40-2:15] التكاملات والنتائج
+Visual: logos: HubSpot, Zoho, Calendly, WhatsApp
+
+"يتكامل مع أدواتك الحالية:
+HubSpot، Zoho، Calendly، WhatsApp.
+خلال 48 ساعة من الاشتراك، Dealix يعمل لحسابك."
+
+"عملاؤنا الأوائل يرون:
+- 38% معدل تأهيل (ارتفاع من 11%)
+- 12 ساعة/أسبوع موفّرة لكل BDR
+- Zero leads ضائعة"
+
+[2:15-2:45] الأسعار + العرض
+Visual: 3 باقات على الشاشة
+
+"3 باقات، ما تحتاج بناء داخلي، ما تحتاج 6 شهور setup.
+Starter: 999 ريال/شهر.
+Growth: 2,999 ريال/شهر.
+Scale: 7,999 ريال/شهر."
+
+"بدون التزام طويل.
+جرّب pilot أسبوع بـ 1 ريال.
+لو ما أعجبك، نرد لك الريال."
+
+[2:45-3:00] CTA
+Visual: founder يظهر، rustic office في الرياض
+
+"أنا سامي العسيري، مؤسس Dealix.
+إذا أدركت أن الوقت = المال، وأن كل lead ضائع = ربح مفقود،
+تكلم معي. 30 دقيقة تكفي لتقييم الفرصة.
+dealix.ai — احجز demo اليوم."
 ```
 
-### Production notes
-- 2-camera setup (wide shot + close-up)
-- B-roll:
-  - Office shots
-  - Team meetings (بعد الـ hires)
-  - Customer testimonial clips
-  - Dashboard walk-throughs
-- Music: minimal, instrumental Arabic
-- Chapters: published as YouTube chapters for easy navigation
+### Production tips:
+- **Voiceover:** احجز professional voice talent (Fiverr, $200-500)
+  - Accent: Saudi male, clear, professional
+  - Example: ابحث عن "Saudi Arabic voiceover" على Fiverr
+- **Screen recordings:** 
+  - Tool: Loom (free) or Camtasia (paid)
+  - Resolution: 1080p minimum
+  - Cursor: highlight with yellow ring
+- **Motion graphics:**
+  - Tool: After Effects (professional) or Canva Pro (DIY)
+  - Keep it subtle — content > flash
+- **Music:** 
+  - Epidemic Sound, Artlist (subscription)
+  - Or YouTube Audio Library (free)
+  - Style: "Corporate upbeat" or "Inspiring minimal"
 
 ---
 
-## Script 4 (Bonus): 15s Teaser — TikTok / Reels
+## 🎥 Video 3: 10-minute Deep Demo
 
-**Hook فوراً:**
+**الغرض:** YouTube + "watch before demo" لـ serious prospects
+**الجمهور:** Decision-makers doing due diligence
+**التكلفة:** DIY with good mic + lighting = 0 ريال
 
-```
-[0-3s] "شركتك تخسر فلوس من Excel. وأنا السبب."
+### السكريبت (Outline, not word-by-word):
 
-[3-8s] 
-"أنا أكتشفت هذا قبل سنتين.
-بنيت الحل — Dealix."
+#### Chapter 1: The Problem (0:00-1:30)
+- السعودية = سوق B2B ضخم
+- المشكلة: leads تضيع
+- لماذا Chatbots الحالية تفشل (English-first)
+- احصائيات محددة من Gartner + Saudi studies
 
-[8-15s]
-"12 دقيقة للـ setup.
-999 ريال/شهر.
-dealix.sa
-#Dealix #SaudiTech"
-```
+#### Chapter 2: How Dealix Works (1:30-4:00)
+- Screen recording: Lead entry → response → booking
+- Explain: Why Arabic-khaliji native matters
+- Show: BANT framework in action
+- Integration points
 
----
+#### Chapter 3: Technology Deep-Dive (4:00-6:00)
+- Built on Anthropic Claude (latest model)
+- AWS Frankfurt hosting
+- Moyasar for payments
+- Security: SOC 2, PDPL, GDPR
+- Architecture diagram
 
-## ملاحظات إنتاج عامة
+#### Chapter 4: Customer Results (6:00-7:30)
+- Case study #1 (with permission)
+- Before/after metrics
+- Quote from customer
+- ROI calculation
 
-### الأدوات (budget-friendly)
-- **Camera:** iPhone 13+ (خلفي، 4K 30fps)
-- **Mic:** Rode Wireless GO II (300 SAR used)
-- **Light:** نافذة + reflector (100 SAR) أو softbox LED (400 SAR)
-- **Editing:** CapCut (مجاني) أو DaVinci Resolve (مجاني)
-- **Captions:** auto-generate ثم صحح يدوياً
+#### Chapter 5: Pricing & Packaging (7:30-8:30)
+- 3 tiers + pilot offer
+- What's included in each
+- When to choose which
+- Enterprise custom
 
-### قواعد التصوير
-- ✅ نظرة مباشرة للكاميرا (موب للقارئ)
-- ✅ تنفس طبيعي — خذ raum
-- ✅ سكوت > "um" أو "اممم"
-- ✅ 3-5 takes على الأقل
-- ❌ لا تحفظ النص حرفياً — احفظ الأفكار
-- ❌ لا تبالغ في التعابير
+#### Chapter 6: Onboarding Process (8:30-9:30)
+- Week 1: Setup
+- Week 2: Training
+- Week 3: Go-live
+- Week 4: Optimization
+- Ongoing: Success manager
 
-### قواعد الـ editing
-- ✅ cuts كل 3-7 seconds (للـ attention)
-- ✅ B-roll يدعم النقطة (not distract)
-- ✅ text overlay للأرقام المهمة
-- ✅ subtitles عربية واضحة
-- ❌ transitions مُفرطة
-- ❌ موسيقى عالية
-- ❌ color grading مُبالغ
+#### Chapter 7: Getting Started (9:30-10:00)
+- Book a demo (Calendly link)
+- Free pilot offer
+- Contact info
+- "Founder-led, reachable directly"
 
-### Publishing strategy
-- **60s:** 3× في الأسبوع (LinkedIn, X, Instagram)
-- **3min:** 1× أسبوعي (YouTube + website hero)
-- **10min:** 1× شهري (YouTube + newsletter link)
-- **15s:** يومي (TikTok, Reels) — لو عندك طاقة
-
-### Hashtags (ثابتة)
-`#Dealix #SaudiTech #SaaSSaudi #Vision2030 #SalesTech #B2BSales`
-
----
-
-## Script 5: Customer Testimonial (بعد 3 أشهر)
-
-**المكان:** مكتب العميل
-**الطول:** 90 ثانية
-**الهدف:** social proof + conversion
-
-### Structure
-
-```
-[0-15s] التعريف
-"أنا [الاسم]، [المنصب] في [الشركة]. 
-نحن في [قطاع] — حوالي [X] موظف."
-
-[15-40s] قبل Dealix
-"كنا نستخدم [Excel / قديم CRM].
-المشكلة كانت [1-2 pain points محددة].
-كل شهر نفقد [رقم] صفقة."
-
-[40-65s] الانتقال
-"اكتشفنا Dealix [كيف].
-الـ setup كان [كم دقيقة/ساعة].
-الفريق تأقلم خلال [كم يوم]."
-
-[65-90s] النتائج + التوصية
-"بعد 3 أشهر، حصل [تحسن محدد بالأرقام].
-[اقتباس قوي].
-لو كنت في شركة سعودية B2B — جرّبه."
-```
-
-### قواعد
-- لا تكتب النص للعميل — قدم prompts فقط
-- 3-5 takes — استخدم الأفضل
-- cuts مع footage من الدشبورد/المكتب
-- End card: name + company + quote
+### Production:
+- **Setting:** Your home office or coworking space
+- **Camera:** iPhone + gimbal OR webcam (Logitech Brio)
+- **Mic:** Blue Yeti or Rode NT-USB
+- **Editing:** Final Cut Pro, DaVinci Resolve (both free/cheap)
+- **B-roll:** Stock footage (Pexels, Unsplash video)
 
 ---
 
-*آخر تحديث: 2026-04-23 | Version 1.0*
+## 📱 Distribution Strategy
+
+### Initial Launch (Week 1):
+- **YouTube:** 10-min video (main)
+- **LinkedIn:** 60-sec version
+- **Twitter:** 60-sec + thread with screenshots
+- **Instagram Reels:** 60-sec (vertical)
+- **Website:** 3-min video as hero
+
+### Ongoing (Weekly):
+- **Every product update:** 2-min explainer
+- **Every case study:** 3-min customer story
+- **Every milestone:** 60-sec celebration + insights
+
+### Paid promotion (بعد M3):
+- **LinkedIn Ads:** targeting "Head of Sales" in KSA
+- **YouTube pre-roll:** on business/tech Arabic channels
+- **Instagram Stories:** to retarget website visitors
+
+---
+
+## 🎨 Video Brand Guidelines
+
+### Consistency across videos:
+
+**Colors:**
+- Primary: #0a0e27 (Dealix dark)
+- Accent: #3b82f6 (blue) + #10b981 (green)
+- Text: white on dark
+
+**Typography on screen:**
+- Arabic: Tajawal Bold
+- English: Inter Medium
+- Numbers: JetBrains Mono (for effect)
+
+**Logo usage:**
+- Always in top-left or bottom-right
+- Never stretched or colored wrong
+- Minimum 80px height
+
+**Transitions:**
+- Fade (for scene changes)
+- Cut (for fast cuts)
+- No fancy wipes or spins
+
+**Lower thirds:**
+- Format: [Name] | [Title]
+- Arabic on right, English on left
+- Show for 3-5 seconds
+
+---
+
+## 📊 Video KPIs to Track
+
+### For 60-sec social:
+- Views (first 3 seconds retention key)
+- Comments (engagement)
+- Profile visits (hook success)
+- DMs received (hot leads)
+
+### For 3-min landing:
+- Play rate (% visitors who click play)
+- Completion rate (% who watch fully)
+- Demo requests after watching
+- Time to conversion
+
+### For 10-min YouTube:
+- Watch time (more important than views)
+- Subscribers gained
+- Comments with questions
+- Click-through to dealix.ai
+
+---
+
+## 💡 Hook Variations للـ A/B Testing
+
+Try different openings on 60-sec videos:
+
+1. **Statistic hook:** "70% من leads السعودية تضيع..."
+2. **Question hook:** "كم عميل ضاع عندك هذا الأسبوع؟"
+3. **Story hook:** "قبل شهر، فقدت صفقة 200K بسبب رد متأخر..."
+4. **Contrast hook:** "في أمريكا، chatbots تعمل. في السعودية، تفشل. اليوم..."
+5. **Bold claim:** "Dealix = مندوب مبيعات 24/7 بـ 999 ريال/شهر."
+
+**Test, measure, double down على الأعلى retention.**
+
+---
+
+## 🎬 Video Production Checklist
+
+قبل التصوير:
+- [ ] سكريبت مراجع 3 مرات
+- [ ] ملابس + إضاءة جاهزة
+- [ ] Screen recording ready (for B-roll)
+- [ ] Mic tested
+- [ ] Backup recording device
+
+أثناء التصوير:
+- [ ] 3 takes على الأقل لكل مشهد
+- [ ] Smile في الكاميرا (energy!)
+- [ ] اتكلم أبطأ من العادي (video)
+- [ ] استخدم اليدين للتركيز
+
+بعد التصوير:
+- [ ] Import immediately (لا تنسَ!)
+- [ ] Rough cut في 24 ساعة
+- [ ] Final edit في 48 ساعة
+- [ ] شارك مع شخص واحد قبل النشر (feedback)
+- [ ] Publish + caption + hashtags
+
+---
+
+**الفيديو = أسرع طريقة لبناء credibility. استثمر 10 ساعات في 60 seconds — يخدم شركتك سنوات.**
