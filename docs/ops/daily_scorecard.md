@@ -10,6 +10,9 @@
 **Production:** ✅ Green (healthz 200, pricing 200, landing 200 — verified this session)
 **Custom Domain:** ✅ **https://dealix.me LIVE** with Let's Encrypt SSL (valid until 2026-07-23, auto-renew). GitHub Pages DNS check successful. www + all subpages serving 200 with proper cert.
 **API Custom Domain:** 🟡 api.dealix.me DNS + TXT verify in place; awaiting Sami click "Update" in Railway → Networking dialog to finalize SSL + routing.
+**Moyasar:** ✅ Webhook secret live (401 bad_signature on test confirms secret read). sk_live_ KYC-activated but key in Railway still returning 502 — likely paste whitespace; manual path unaffected.
+**Lead Intelligence Router v1:** ✅ Shipped — Prospector agent upgraded with 9 opportunity types + 100-pt scoring + risk levels + next-action enum. 5 specs in `docs/ops/lead_machine/`. Top-10 direct + Top-5 partner leads scored. Live UI on dealix.me.
+**Operating docs shipped today:** objection_library_ar · sector_playbooks · agency_partner_kit · reply_handling_log · manual_payment_log · partner_send_queue.
 
 ### Inputs (target → actual)
 | Metric | Target | Actual | Notes |

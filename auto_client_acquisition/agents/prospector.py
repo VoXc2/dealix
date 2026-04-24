@@ -37,40 +37,96 @@ USE_CASES = {
     "b2c_audience": "جمهور B2C — شرائح ديموغرافية محددة بسلوك شرائي واضح.",
 }
 
-SYSTEM_PROMPT = """أنت محلل أسواق خليجي خبير في السوق السعودي ومنطقة الخليج.
-مهمتك: توليد قائمة leads حقيقية مطابقة لوصف العميل المثالي (ICP).
+SYSTEM_PROMPT = """أنت Dealix Lead Intelligence Router — محلل GTM سعودي/خليجي سيادي.
+مهمتك: تحويل وصف العميل المثالي (ICP) إلى قائمة leads حقيقية قابلة للتنفيذ، مع تصنيف الفرصة، درجة تأهيل 100-نقطة، تقييم مخاطر، وقناة تواصل قانونية.
+
+منظومتك مبنية على مرجعين:
+- SIGNAL_TAXONOMY: 9 أنواع فرص (DIRECT_CUSTOMER, AGENCY_PARTNER, IMPLEMENTATION_PARTNER, REFERRAL_PARTNER, STRATEGIC_PARTNER, CONTENT_COLLABORATION, INVESTOR_OR_ADVISOR, SUPPLIER_OR_INTEGRATION, B2C_AUDIENCE)
+- ICP_SCORING_MODEL (100 نقطة): Fit 40 + Intent 30 + Accessibility 15 + Revenue Potential 15 → P0 (80+) | P1 (65-79) | P2 (45-64) | BACKLOG (<45)
 
 قواعد صارمة:
-1. **لا تختلق شركات**. اقترح فقط كيانات أنت متأكد منها من معرفتك الموسوعية.
+1. **لا تختلق شركات**. اقترح فقط كيانات أنت متأكد منها من معرفتك الموسوعية للسوق السعودي/الخليجي.
 2. إذا الطلب يصعب تلبيته بدقة، أرجع قائمة أقصر بدل اختراع أسماء.
-3. لكل lead، قدّر نسبة الثقة من 0-100 في صحة البيانات.
-4. للتخصصات السعودية/الخليجية، استخدم الاسم العربي الرسمي + الاسم الإنجليزي.
-5. المواقع (website) فقط لو متأكد — وإلا اترك الحقل فاضي (null).
-6. LinkedIn URLs فقط لو شبه متأكد من صحة الرابط — وإلا اتركه فاضي.
-7. أشر للإشارات المنشورة علناً فقط (إعلانات تمويل، إطلاقات، توظيف، تصريحات).
-8. أعد JSON صالح فقط بدون أي نص آخر.
+3. **URLs (website/linkedin):** فقط لو متأكد من صحتها — وإلا اترك null.
+4. **إشارات (signals):** فقط معلومات منشورة علناً (جولات تمويل، إعلانات توظيف، إطلاقات، تصريحات).
+5. **اللغة:** استخدم الاسم العربي الرسمي + الاسم الإنجليزي. سطر الافتتاح باللهجة الخليجية (ليس MSA).
+6. **الامتثال (compliance_note):** اذكر الأساس القانوني لكل lead — مصدر عام، لا scraping، لا bots، human-final-send على LinkedIn.
+7. **خطاب الافتتاح (outreach_opening):** ≤280 حرف، يذكر إشارة محددة واحدة من evidence.
+8. **JSON only** — بدون markdown code fences.
 
-تنسيق JSON المطلوب:
+تنسيق JSON المطلوب (v2 schema):
 {
   "leads": [
     {
       "company_ar": "الاسم العربي",
       "company_en": "English Name",
-      "industry": "SaaS / E-commerce / Fintech / ...",
+      "industry": "SaaS / E-commerce / Fintech / Agency / ...",
       "est_size": "1-10 | 10-50 | 50-200 | 200-1000 | 1000+",
       "website": "https://example.com or null",
       "linkedin": "https://linkedin.com/company/X or null",
+      "opportunity_type": "DIRECT_CUSTOMER|AGENCY_PARTNER|IMPLEMENTATION_PARTNER|REFERRAL_PARTNER|STRATEGIC_PARTNER|CONTENT_COLLABORATION|INVESTOR_OR_ADVISOR|SUPPLIER_OR_INTEGRATION|B2C_AUDIENCE",
       "decision_maker_hints": ["CEO الاسم", "CTO الاسم"],
       "signals": ["جولة Series A 2025", "توسع في الرياض"],
+      "fit_score": 35,
+      "intent_score": 22,
+      "access_score": 13,
+      "revenue_score": 12,
+      "priority_score": 82,
+      "priority_tier": "P0|P1|P2|BACKLOG",
+      "risk_level": "LOW|MEDIUM|HIGH|BLOCKED",
+      "recommended_channel": "LINKEDIN_MANUAL|EMAIL|WHATSAPP_WARM_ONLY|PARTNER_INTRO|PHONE|CONTENT_MENTION|IN_PERSON_EVENT|HOLD_FOR_APPROVAL",
+      "next_action": "PREPARE_DM|PREPARE_EMAIL|PREPARE_PARTNER_PITCH|BOOK_DEMO|RESEARCH_MORE|...",
       "outreach_opening": "سطر افتتاحي قصير باللهجة الخليجية يذكر إشارة واحدة محددة",
-      "fit_score": 85,
-      "confidence": 80,
-      "evidence": "السبب اللي خلاك تقترحه — معلومة واحدة محددة"
+      "message_angle": "الزاوية الأساسية للرسالة",
+      "reason": "سطر واحد — لماذا هذا lead مطابق ل ICP",
+      "evidence": "معلومة محددة تبرّر الترشيح",
+      "compliance_note": "e.g. Public business contact via LinkedIn; no bots; single personalized DM",
+      "confidence": 85
     }
   ],
-  "search_notes": "ملاحظات وجيزة — مصادر المعلومات وحدود الدقة"
+  "search_notes": "مصادر المعلومات، حدود الدقة، أي lead مشكوك فيه حُذف."
 }
+
+تفوّق على Apollo/ZoomInfo/Clay في:
+- الدقة السعودية (أسماء خليجية، لهجة، إشارات محلية من Wamda/MAGNiTT/MISA)
+- الشفافية (evidence لكل claim، لا بيانات مخترعة)
+- السلامة القانونية (PDPL-aware، لا scraping، لا LinkedIn bots)
+- الـ routing (كل lead معه next_action واضح، ليس مجرد اسم)
 """
+
+
+OPPORTUNITY_TYPES = {
+    "DIRECT_CUSTOMER",
+    "AGENCY_PARTNER",
+    "IMPLEMENTATION_PARTNER",
+    "REFERRAL_PARTNER",
+    "STRATEGIC_PARTNER",
+    "CONTENT_COLLABORATION",
+    "INVESTOR_OR_ADVISOR",
+    "SUPPLIER_OR_INTEGRATION",
+    "B2C_AUDIENCE",
+}
+PRIORITY_TIERS = {"P0", "P1", "P2", "BACKLOG"}
+RISK_LEVELS = {"LOW", "MEDIUM", "HIGH", "BLOCKED"}
+CHANNELS = {
+    "LINKEDIN_MANUAL",
+    "EMAIL",
+    "WHATSAPP_WARM_ONLY",
+    "PARTNER_INTRO",
+    "PHONE",
+    "CONTENT_MENTION",
+    "IN_PERSON_EVENT",
+    "HOLD_FOR_APPROVAL",
+}
+NEXT_ACTIONS = {
+    "RESEARCH_MORE", "ENRICH_ACCOUNT", "SCORE_LEAD",
+    "PREPARE_DM", "PREPARE_EMAIL", "PREPARE_WHATSAPP",
+    "PREPARE_PARTNER_PITCH", "PREPARE_INVESTOR_NOTE",
+    "PREPARE_DEMO_FLOW", "PREPARE_NEGOTIATION_RESPONSE",
+    "SEND_IF_AUTHORIZED", "ASK_HUMAN_FINAL_SEND",
+    "BOOK_DEMO", "REQUEST_PAYMENT", "ROUTE_TO_MANUAL_PAYMENT",
+    "ONBOARD_CUSTOMER", "FOLLOW_UP", "STOP_CONTACT", "DISQUALIFY",
+}
 
 
 @dataclass
@@ -81,12 +137,24 @@ class LeadCandidate:
     est_size: str
     website: str | None
     linkedin: str | None
+    opportunity_type: str
     decision_maker_hints: list[str]
     signals: list[str]
-    outreach_opening: str
     fit_score: int
-    confidence: int
+    intent_score: int
+    access_score: int
+    revenue_score: int
+    priority_score: int
+    priority_tier: str
+    risk_level: str
+    recommended_channel: str
+    next_action: str
+    outreach_opening: str
+    message_angle: str
+    reason: str
     evidence: str
+    compliance_note: str
+    confidence: int
 
     def to_dict(self) -> dict[str, Any]:
         return asdict(self)
@@ -158,8 +226,8 @@ class ProspectorAgent(BaseAgent):
             if lead is not None:
                 leads.append(lead)
 
-        # Sort by combined fit * confidence
-        leads.sort(key=lambda l: l.fit_score * l.confidence, reverse=True)
+        # Sort by priority_score (already weighted), then confidence
+        leads.sort(key=lambda l: (l.priority_score, l.confidence), reverse=True)
 
         return ProspectResult(
             use_case=use_case,
@@ -201,7 +269,22 @@ class ProspectorAgent(BaseAgent):
                 return {}
 
     @staticmethod
-    def _safe_lead(item: Any) -> LeadCandidate | None:
+    def _coerce_enum(value: Any, allowed: set[str], default: str) -> str:
+        v = str(value or "").strip().upper().replace("-", "_").replace(" ", "_")
+        return v if v in allowed else default
+
+    @staticmethod
+    def _derive_tier(score: int) -> str:
+        if score >= 80:
+            return "P0"
+        if score >= 65:
+            return "P1"
+        if score >= 45:
+            return "P2"
+        return "BACKLOG"
+
+    @classmethod
+    def _safe_lead(cls, item: Any) -> LeadCandidate | None:
         if not isinstance(item, dict):
             return None
         try:
@@ -209,6 +292,35 @@ class ProspectorAgent(BaseAgent):
             company_en = str(item.get("company_en") or "").strip()
             if not (company_ar or company_en):
                 return None
+
+            fit = int(max(0, min(40, item.get("fit_score") or 0)))
+            intent = int(max(0, min(30, item.get("intent_score") or 0)))
+            access = int(max(0, min(15, item.get("access_score") or 0)))
+            revenue = int(max(0, min(15, item.get("revenue_score") or 0)))
+            priority_raw = item.get("priority_score")
+            priority = (
+                int(max(0, min(100, priority_raw)))
+                if isinstance(priority_raw, (int, float))
+                else (fit + intent + access + revenue)
+            )
+            tier_raw = item.get("priority_tier")
+            tier = (
+                str(tier_raw).upper()
+                if str(tier_raw).upper() in PRIORITY_TIERS
+                else cls._derive_tier(priority)
+            )
+
+            opportunity_type = cls._coerce_enum(
+                item.get("opportunity_type"), OPPORTUNITY_TYPES, "DIRECT_CUSTOMER"
+            )
+            risk = cls._coerce_enum(item.get("risk_level"), RISK_LEVELS, "MEDIUM")
+            channel = cls._coerce_enum(
+                item.get("recommended_channel"), CHANNELS, "LINKEDIN_MANUAL"
+            )
+            next_action = cls._coerce_enum(
+                item.get("next_action"), NEXT_ACTIONS, "PREPARE_DM"
+            )
+
             return LeadCandidate(
                 company_ar=company_ar or company_en,
                 company_en=company_en or company_ar,
@@ -216,14 +328,29 @@ class ProspectorAgent(BaseAgent):
                 est_size=str(item.get("est_size") or "").strip(),
                 website=(str(item.get("website")).strip() if item.get("website") else None),
                 linkedin=(str(item.get("linkedin")).strip() if item.get("linkedin") else None),
+                opportunity_type=opportunity_type,
                 decision_maker_hints=[
                     str(x) for x in (item.get("decision_maker_hints") or []) if x
                 ][:5],
-                signals=[str(x) for x in (item.get("signals") or []) if x][:5],
+                signals=[str(x) for x in (item.get("signals") or []) if x][:8],
+                fit_score=fit,
+                intent_score=intent,
+                access_score=access,
+                revenue_score=revenue,
+                priority_score=priority,
+                priority_tier=tier,
+                risk_level=risk,
+                recommended_channel=channel,
+                next_action=next_action,
                 outreach_opening=str(item.get("outreach_opening") or "").strip()[:280],
-                fit_score=int(max(0, min(100, item.get("fit_score") or 0))),
-                confidence=int(max(0, min(100, item.get("confidence") or 0))),
+                message_angle=str(item.get("message_angle") or "").strip()[:280],
+                reason=str(item.get("reason") or "").strip()[:280],
                 evidence=str(item.get("evidence") or "").strip()[:280],
+                compliance_note=str(
+                    item.get("compliance_note")
+                    or "Public business contact; single personalized manual DM; no bots."
+                ).strip()[:280],
+                confidence=int(max(0, min(100, item.get("confidence") or 0))),
             )
         except Exception:
             return None
