@@ -48,7 +48,7 @@ nano /opt/dealix/.env
 
 ```env
 # PostHog (US Cloud — project 394094)
-POSTHOG_API_KEY=phc_ozKwVoKk3pPfEjyauTG64xeRPQbdXeMeBpPWjxGuWhK5
+POSTHOG_API_KEY=phc_YOUR_POSTHOG_KEY_HERE
 POSTHOG_HOST=https://us.i.posthog.com
 
 # Moyasar (Test mode — switch to sk_live_ only after pilot success)
