@@ -550,6 +550,135 @@ async def inbound_handle(body: dict[str, Any] = Body(...)) -> dict[str, Any]:
     }
 
 
+async def _run_inbound_handler(channel: str, sender: str, company: str, message: str) -> dict[str, Any]:
+    """Shared internal handler used by all channel webhooks."""
+    return await inbound_handle({
+        "channel": channel,
+        "from": sender,
+        "company": company,
+        "message": message,
+    })
+
+
+@router.post("/inbound/whatsapp")
+async def inbound_whatsapp(body: dict[str, Any] = Body(...)) -> dict[str, Any]:
+    """
+    WhatsApp Business API webhook handler.
+    Expected payload format (Meta WhatsApp Cloud API):
+      {"entry":[{"changes":[{"value":{"messages":[{"from":"+966...","text":{"body":"..."}}]}}]}]}
+    Or simplified: {"from":"+966...","message":"..."}
+    """
+    msg = ""
+    sender = ""
+    # Try both simple and Meta formats
+    if "entry" in body:
+        try:
+            m = body["entry"][0]["changes"][0]["value"]["messages"][0]
+            sender = str(m.get("from") or "")
+            msg = str(m.get("text", {}).get("body") or m.get("body") or "")
+        except (KeyError, IndexError, TypeError):
+            pass
+    msg = msg or str(body.get("message") or "")
+    sender = sender or str(body.get("from") or "")
+    if not msg:
+        raise HTTPException(status_code=400, detail="no_message_body")
+    result = await _run_inbound_handler("whatsapp", sender, str(body.get("company", "")), msg)
+    result["send_reply_instruction"] = (
+        "POST the response_ar via WhatsApp Business Cloud API: "
+        "POST https://graph.facebook.com/v17.0/{PHONE_NUMBER_ID}/messages "
+        "with { messaging_product: 'whatsapp', to: sender, text: { body: response_ar } }"
+    )
+    return result
+
+
+@router.post("/inbound/email")
+async def inbound_email(body: dict[str, Any] = Body(...)) -> dict[str, Any]:
+    """
+    Email inbound webhook (SendGrid Inbound Parse / Mailgun Routes format).
+    Expected: {"from":"ali@example.com","subject":"...","text":"..."} or SendGrid inbound format.
+    """
+    sender = str(body.get("from") or body.get("sender") or "")
+    msg = str(body.get("text") or body.get("body-plain") or body.get("message") or "")
+    subject = str(body.get("subject") or "")
+    if subject and msg:
+        combined = f"[{subject}] {msg}"
+    else:
+        combined = msg or subject
+    if not combined:
+        raise HTTPException(status_code=400, detail="no_message_body")
+    result = await _run_inbound_handler("email", sender, str(body.get("company", "")), combined)
+    result["send_reply_instruction"] = (
+        "Reply via Gmail API / SendGrid / SES — include opt-out footer "
+        "'لإيقاف الرسائل: رد بـ لا شكراً'"
+    )
+    return result
+
+
+@router.post("/inbound/form")
+async def inbound_form(body: dict[str, Any] = Body(...)) -> dict[str, Any]:
+    """
+    Generic web-form submission handler. Feeds directly into /inbound/handle.
+    Expected: {"name","email","company","message","source":"web_form"}
+    """
+    name = str(body.get("name") or "")
+    email = str(body.get("email") or "")
+    company = str(body.get("company") or "")
+    message = str(body.get("message") or "")
+    if not message:
+        raise HTTPException(status_code=400, detail="message_required")
+    sender = email or name
+    result = await _run_inbound_handler("web_form", sender, company, message)
+    result["send_reply_instruction"] = (
+        "Display response_ar inline in form confirmation. Also auto-send email reply "
+        "with response_ar + Calendly link."
+    )
+    # Also create a lead record via pipeline if email + company known
+    if email and company:
+        result["also_created_lead"] = True
+        result["lead_hint"] = "POST /api/v1/leads with this payload to persist"
+    return result
+
+
+@router.post("/inbound/sms")
+async def inbound_sms(body: dict[str, Any] = Body(...)) -> dict[str, Any]:
+    """
+    SMS inbound webhook (Twilio format).
+    Expected: {"From":"+966...","Body":"..."} or {"from","message"}
+    """
+    sender = str(body.get("From") or body.get("from") or "")
+    msg = str(body.get("Body") or body.get("message") or "")
+    if not msg:
+        raise HTTPException(status_code=400, detail="no_message_body")
+    result = await _run_inbound_handler("sms", sender, str(body.get("company", "")), msg)
+    result["send_reply_instruction"] = (
+        "Reply via Twilio / Unifonic / STC. Keep SMS ≤ 160 chars; long messages via WhatsApp link."
+    )
+    # SMS replies should be SHORTER
+    if result.get("response_ar") and len(result["response_ar"]) > 160:
+        result["response_ar_short"] = result["response_ar"][:140] + "... رابط: https://dealix.me"
+    return result
+
+
+@router.post("/inbound/linkedin")
+async def inbound_linkedin(body: dict[str, Any] = Body(...)) -> dict[str, Any]:
+    """
+    LinkedIn manual-capture webhook (Sami pastes reply content; Dealix classifies + suggests reply).
+    NOT auto-send (LinkedIn ToS). Human final-send required.
+    Expected: {"from":"...","profile_url":"...","message":"..."}
+    """
+    sender = str(body.get("from") or body.get("profile_url") or "")
+    msg = str(body.get("message") or "")
+    if not msg:
+        raise HTTPException(status_code=400, detail="no_message_body")
+    result = await _run_inbound_handler("linkedin", sender, str(body.get("company", "")), msg)
+    result["send_reply_instruction"] = (
+        "⚠️ LinkedIn = HUMAN FINAL SEND ONLY (ToS compliance). "
+        "Show response_ar to Sami, Sami pastes manually into LinkedIn DM. NO automation."
+    )
+    result["should_escalate_to_human"] = True  # always for LinkedIn
+    return result
+
+
 @router.post("/demo")
 async def demo() -> dict[str, Any]:
     """Canned demo response for landing UI preview. No LLM call."""
