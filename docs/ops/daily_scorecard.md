@@ -8,6 +8,8 @@
 
 **Date:** 2026-04-24 (continued session)
 **Production:** ✅ Green (healthz 200, pricing 200, landing 200 — verified this session)
+**Custom Domain:** ✅ **https://dealix.me LIVE** with Let's Encrypt SSL (valid until 2026-07-23, auto-renew). GitHub Pages DNS check successful. www + all subpages serving 200 with proper cert.
+**API Custom Domain:** 🟡 api.dealix.me DNS + TXT verify in place; awaiting Sami click "Update" in Railway → Networking dialog to finalize SSL + routing.
 
 ### Inputs (target → actual)
 | Metric | Target | Actual | Notes |

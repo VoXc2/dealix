@@ -33,12 +33,14 @@ Last updated: 2026-04-24 · Keep this file fresh — update it before/after ever
 
 | Purpose | URL |
 |---------|-----|
-| Backend API | https://web-dealix.up.railway.app |
+| **Homepage (custom domain)** | **https://dealix.me** ✅ SSL live |
+| Homepage (fallback) | https://voxc2.github.io/dealix/ |
+| Marketers page | https://dealix.me/marketers.html |
+| Pricing page | https://dealix.me/pricing.html |
+| Partners page | https://dealix.me/partners.html |
+| **Backend API (custom)** | https://api.dealix.me 🟡 Railway routing finalizing |
+| Backend API (fallback) | https://web-dealix.up.railway.app |
 | Backend docs | https://web-dealix.up.railway.app/docs |
-| Homepage | https://voxc2.github.io/dealix/ |
-| Marketers page | https://voxc2.github.io/dealix/marketers.html |
-| Pricing page | https://voxc2.github.io/dealix/pricing.html |
-| Partners page | https://voxc2.github.io/dealix/partners.html |
 | Book demo | https://calendly.com/sami-assiri11/dealix-demo |
 | Repo | https://github.com/VoXc2/dealix |
 
