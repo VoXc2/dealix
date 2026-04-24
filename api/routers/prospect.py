@@ -74,6 +74,27 @@ async def discover(body: dict[str, Any] = Body(...)) -> dict[str, Any]:
     return result.to_dict()
 
 
+@router.get("/search-diag")
+async def search_diag() -> dict[str, Any]:
+    """Diagnose Google CSE env var presence without revealing values."""
+    import os
+    k = os.getenv("GOOGLE_SEARCH_API_KEY", "")
+    c = os.getenv("GOOGLE_SEARCH_CX", "")
+    return {
+        "api_key_set": bool(k),
+        "api_key_length": len(k),
+        "api_key_prefix": k[:6] + "..." if k else "",
+        "cx_set": bool(c),
+        "cx_length": len(c),
+        "cx_prefix": c[:6] + "..." if c else "",
+        "hint": (
+            "both_ok" if k and c else
+            "api_key_missing_or_empty" if not k else
+            "cx_missing_or_empty"
+        ),
+    }
+
+
 @router.post("/search")
 async def search(body: dict[str, Any] = Body(...)) -> dict[str, Any]:
     """
