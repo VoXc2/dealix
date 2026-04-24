@@ -4,6 +4,49 @@
 
 ---
 
+## Day 2 Late — Rules Router + TOP Files + Messages LIVE
+
+**Commits this pass:** (to be added by commit).
+
+### Endpoints (production)
+- ✅ `/healthz`, `/api/v1/pricing/plans`, `/api/v1/prospect/demo` — 200
+- ✅ `/api/v1/prospect/enrich-tech` — 200 (free Saudi-tuned detector)
+- ✅ `/api/v1/prospect/bulk-enrich` — 200 (up to 25 domains/req)
+- ✅ `/api/v1/prospect/route` — **NEW** rules-based classifier + scorer
+- ✅ `/api/v1/prospect/score` — **NEW** 100-pt scoring only
+- ✅ `/api/v1/prospect/message` — **NEW** deterministic Arabic message generator
+- ✅ `/api/v1/prospect/discover` — now serves **degraded demo** if LLM missing
+- ✅ `/api/v1/prospect/enrich-domain` — now serves **tech + rules** if LLM missing
+- ⏸️ `/api/v1/prospect/search` — awaits Google keys in env Dealix (503 with clear hint)
+- ⏸️ `/api/v1/checkout` — Moyasar returns 502; manual path available
+
+### Lead Intelligence Router files
+- `SAUDI_LEAD_GRAPH_V2.csv` — all 106 accounts re-scored by rules router
+- `TOP_25_DIRECT_CUSTOMERS.csv` — ranked
+- `TOP_25_PARTNERS.csv` — ranked (22 rows)
+- `TOP_10_STRATEGIC_PARTNERS.csv`
+- `TODAY_15_TARGETS.csv` — 5 direct + 5 agency + 3 strategic + 2 content
+- `TODAY_15_MESSAGES.json` — LinkedIn + email + WhatsApp-warm + +2/+5/+10 follow-ups per target
+
+### Breakdown (rules-routed)
+- DIRECT_CUSTOMER: 59
+- AGENCY_PARTNER: 14
+- STRATEGIC_PARTNER: 11
+- REFERRAL_PARTNER: 8
+- INVESTOR_OR_ADVISOR: 8
+- CONTENT_COLLABORATION: 6
+
+### Top by rules priority_score
+1. Foodics (DIRECT, 78, P1)
+2. Lucidya (DIRECT, 70, P1)
+3. Sary (DIRECT, 61, P2)
+4. Hakbah (DIRECT, 61, P2)
+5. Lean (DIRECT, 58, P2)
+
+**Note on scoring:** rules router is conservative — uses only evidence present. Higher P0 scores require more detected signals (hiring posts, recent funding press, etc.) which need Google CSE to fetch, currently blocked.
+
+---
+
 ## Day 2 — Execution Day 1
 
 **Date:** 2026-04-24 (continued session)

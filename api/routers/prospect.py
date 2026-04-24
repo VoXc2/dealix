@@ -21,6 +21,10 @@ from auto_client_acquisition.agents.prospector import (
     USE_CASES,
     ProspectorAgent,
 )
+from auto_client_acquisition.agents.rules_router import (
+    generate_messages as _rules_generate_messages,
+    route_account as _rules_route,
+)
 from auto_client_acquisition.connectors.google_search import google_search
 from auto_client_acquisition.connectors.tech_detect import detect_stack
 
@@ -65,11 +69,14 @@ async def discover(body: dict[str, Any] = Body(...)) -> dict[str, Any]:
     try:
         result = await _agent.run(icp=icp, use_case=use_case, count=count)
     except Exception as exc:
-        log.exception("prospector_failed use_case=%s count=%d", use_case, count)
-        raise HTTPException(
-            status_code=502,
-            detail="prospector_error",
-        ) from exc
+        log.warning("prospector_llm_unavailable use_case=%s — serving degraded rules mode", use_case)
+        # Degraded mode: serve the canned demo with a status flag
+        demo_resp = await demo()
+        demo_resp["status"] = "degraded"
+        demo_resp["reason"] = "missing_llm_key"
+        demo_resp["hint"] = "Add GROQ_API_KEY (or ANTHROPIC_API_KEY) in Railway env 'Dealix' service 'web' to enable live discovery."
+        demo_resp["error_type"] = type(exc).__name__
+        return demo_resp
 
     return result.to_dict()
 
@@ -211,20 +218,143 @@ async def enrich_domain(body: dict[str, Any] = Body(...)) -> dict[str, Any]:
 
     try:
         result = await agent.run(icp=icp_text, use_case=use_case, count=1)
-    except Exception as exc:
-        log.exception("enrich_domain_llm_failed domain=%s", domain)
-        raise HTTPException(status_code=502, detail="enrichment_llm_error") from exc
-
-    leads = result.leads
-    lead_dict = leads[0].to_dict() if leads else None
+        leads = result.leads
+        lead_dict = leads[0].to_dict() if leads else None
+        search_notes = result.search_notes
+        status = "ok"
+    except Exception:
+        log.warning("enrich_domain_llm_unavailable domain=%s — serving tech-only + rules", domain)
+        # Degraded: run rules router over the tech signals to still produce actionable lead
+        signals_for_router = [
+            {"name": s.get("name", ""), "weight": s.get("weight", 0), "evidence": s.get("evidence", "")}
+            for s in tech_dict.get("signals", [])
+        ]
+        res = _rules_route(
+            company=domain.split(".")[0].replace("-", " ").title(),
+            sector="",
+            country="SA",
+            domain=domain,
+            signals=signals_for_router,
+            tags="",
+            decision_maker=None,
+        )
+        # Also produce messages deterministically
+        msgs = _rules_generate_messages(
+            company=domain.split(".")[0].replace("-", " ").title(),
+            decision_maker=None,
+            opportunity_type=res.opportunity_type,
+            signals=signals_for_router,
+        )
+        lead_dict = {
+            **res.to_dict(),
+            "company_en": domain.split(".")[0].replace("-", " ").title(),
+            "company_ar": "",
+            "website": f"https://{domain}",
+            "outreach_opening": msgs["linkedin"][:280],
+            "signals": signals_for_router,
+            "confidence": 60,
+        }
+        search_notes = "degraded mode — rules router + tech detect only (no LLM key)"
+        status = "degraded"
 
     return {
         "domain": domain,
         "tech": tech_dict,
         "lead": lead_dict,
-        "search_notes": result.search_notes,
+        "search_notes": search_notes,
         "fetched_at": tech_dict.get("fetched_at"),
+        "status": status,
     }
+
+
+@router.post("/route")
+async def route_endpoint(body: dict[str, Any] = Body(...)) -> dict[str, Any]:
+    """
+    Deterministic rule-based router — classify + score + route an account without LLM.
+    Body: {company, sector?, country?, domain?, signals?, tags?, decision_maker?, size_hint?, is_government?, desired_goal?}
+    """
+    company = str(body.get("company") or "").strip()
+    if not company:
+        raise HTTPException(status_code=400, detail="company_required")
+    res = _rules_route(
+        company=company,
+        sector=str(body.get("sector") or ""),
+        country=str(body.get("country") or ""),
+        domain=str(body.get("domain") or ""),
+        signals=body.get("signals") or [],
+        tags=str(body.get("tags") or ""),
+        decision_maker=body.get("decision_maker"),
+        size_hint=str(body.get("size_hint") or ""),
+        is_government=bool(body.get("is_government") or False),
+        desired_goal=body.get("desired_goal"),
+    )
+    return {"mode": "rules", "result": res.to_dict()}
+
+
+@router.post("/score")
+async def score_endpoint(body: dict[str, Any] = Body(...)) -> dict[str, Any]:
+    """
+    Score an account against the 100-pt ICP model. Same inputs as /route.
+    Returns only the score breakdown (no messages).
+    """
+    company = str(body.get("company") or "").strip()
+    if not company:
+        raise HTTPException(status_code=400, detail="company_required")
+    res = _rules_route(
+        company=company,
+        sector=str(body.get("sector") or ""),
+        country=str(body.get("country") or ""),
+        domain=str(body.get("domain") or ""),
+        signals=body.get("signals") or [],
+        tags=str(body.get("tags") or ""),
+        decision_maker=body.get("decision_maker"),
+        size_hint=str(body.get("size_hint") or ""),
+        is_government=bool(body.get("is_government") or False),
+    )
+    r = res.to_dict()
+    return {
+        "company": company,
+        "fit_score": r["fit_score"],
+        "intent_score": r["intent_score"],
+        "access_score": r["access_score"],
+        "revenue_score": r["revenue_score"],
+        "priority_score": r["priority_score"],
+        "priority_tier": r["priority_tier"],
+        "risk_level": r["risk_level"],
+        "opportunity_type": r["opportunity_type"],
+        "reason": r["reason"],
+    }
+
+
+@router.post("/message")
+async def message_endpoint(body: dict[str, Any] = Body(...)) -> dict[str, Any]:
+    """
+    Generate templated, signal-aware Arabic outreach for an account.
+    Body: {company, decision_maker?, opportunity_type?, signals?}
+    Returns: {linkedin, email, whatsapp_warm_only, follow_up_plus_2/5/10}
+    """
+    company = str(body.get("company") or "").strip()
+    if not company:
+        raise HTTPException(status_code=400, detail="company_required")
+
+    opp = str(body.get("opportunity_type") or "").strip().upper()
+    if not opp:
+        # Fall back: classify via rules
+        res = _rules_route(
+            company=company,
+            sector=str(body.get("sector") or ""),
+            tags=str(body.get("tags") or ""),
+            signals=body.get("signals") or [],
+        )
+        opp = res.opportunity_type
+
+    msgs = _rules_generate_messages(
+        company=company,
+        decision_maker=body.get("decision_maker"),
+        opportunity_type=opp,
+        signals=body.get("signals") or [],
+    )
+    return {"mode": "rules", "opportunity_type": opp, "messages": msgs}
 
 
 @router.post("/bulk-enrich")
