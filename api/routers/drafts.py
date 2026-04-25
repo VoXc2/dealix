@@ -608,6 +608,181 @@ async def dashboard_revenue_machine_today() -> dict[str, Any]:
     }
 
 
+# ── Gmail batch draft create (standalone, separate from revenue-machine/run) ─
+@router.post("/gmail/drafts/create-batch")
+async def gmail_drafts_create_batch(body: dict[str, Any] = Body(default={})) -> dict[str, Any]:
+    """
+    Create a batch of Gmail drafts from approved outreach queue rows.
+    Body:
+        max: int (default = EMAIL_BATCH_SIZE)
+        only_status: 'approved' (default) or 'queued'
+        create_in_inbox: bool (default True if Gmail OAuth configured)
+    """
+    max_n = int(body.get("max") or 10)
+    only_status = str(body.get("only_status") or "approved")
+    create_in_inbox = bool(body.get("create_in_inbox", True)) and gmail_is_configured()
+    if max_n < 1 or max_n > 50:
+        raise HTTPException(400, "max_out_of_range: 1..50")
+
+    created: list[dict[str, Any]] = []
+    failed: list[dict[str, Any]] = []
+
+    async with async_session_factory() as session:
+        try:
+            rows = (await session.execute(
+                select(OutreachQueueRecord).where(
+                    OutreachQueueRecord.status == only_status,
+                    OutreachQueueRecord.channel.in_(["email", "email_warm", "email_followup"]),
+                ).limit(max_n)
+            )).scalars().all()
+        except Exception as exc:  # noqa: BLE001
+            return {"status": "skipped_db_unreachable", "error": str(exc)}
+
+        for r in rows:
+            try:
+                contact = (await session.execute(
+                    select(ContactRecord).where(
+                        ContactRecord.account_id == r.lead_id,
+                        ContactRecord.email.is_not(None),
+                        ContactRecord.opt_out == False,  # noqa: E712
+                    ).limit(1)
+                )).scalar_one_or_none()
+                acc = (await session.execute(
+                    select(AccountRecord).where(AccountRecord.id == r.lead_id)
+                )).scalar_one_or_none()
+            except Exception as exc:  # noqa: BLE001
+                failed.append({"queue_id": r.id, "reason": f"db: {exc}"})
+                continue
+            if not contact or not contact.email:
+                failed.append({"queue_id": r.id, "reason": "no_contact_email"})
+                continue
+            subject = f"Dealix — تجربة تأهيل عملاء لـ {(acc.company_name if acc else 'فريقكم')[:60]}"
+            body_with_optout = append_opt_out_line(r.message)
+
+            draft = GmailDraftRecord(
+                id=_new_id("gd_"),
+                account_id=r.lead_id, queue_id=r.id,
+                to_email=contact.email, subject=subject[:500],
+                body_plain=body_with_optout,
+                sender_email=os.getenv("GMAIL_SENDER_EMAIL", ""),
+                status="created",
+            )
+            if create_in_inbox:
+                gres = await gmail_create_draft(
+                    to_email=contact.email, subject=subject, body_plain=body_with_optout,
+                )
+                if gres.status == "ok":
+                    draft.gmail_draft_id = gres.draft_id
+                    draft.gmail_message_id = gres.message_id
+                else:
+                    draft.discarded_reason = f"gmail_api: {gres.error}"[:255]
+            session.add(draft)
+            created.append({
+                "queue_id": r.id, "draft_id": draft.id,
+                "to_email": contact.email, "subject": subject,
+                "gmail_draft_id_in_inbox": draft.gmail_draft_id,
+            })
+
+        try:
+            await session.commit()
+        except Exception as exc:  # noqa: BLE001
+            await session.rollback()
+            return {"status": "commit_failed", "error": str(exc),
+                    "created": created, "failed": failed}
+
+    return {"status": "ok", "created_count": len(created), "failed_count": len(failed),
+            "created": created, "failed": failed}
+
+
+# ── Replies aliases (respond + route) ────────────────────────────
+@router.post("/replies/respond")
+async def replies_respond(body: dict[str, Any] = Body(...)) -> dict[str, Any]:
+    """
+    Stateless: generate a response draft for a reply without persisting.
+    Body: text (required), prefer_llm (default True)
+    """
+    from auto_client_acquisition.email.reply_classifier import classify_reply
+    text = str(body.get("text") or "").strip()
+    if not text:
+        raise HTTPException(400, "text_required")
+    classification = await classify_reply(text, prefer_llm=bool(body.get("prefer_llm", True)))
+    return {
+        "category": classification.category,
+        "confidence": classification.confidence,
+        "response_draft_ar": classification.response_draft_ar,
+        "auto_send_allowed": classification.auto_send_allowed,
+        "requires_human_review": classification.requires_human_review,
+    }
+
+
+@router.post("/replies/route")
+async def replies_route(body: dict[str, Any] = Body(...)) -> dict[str, Any]:
+    """
+    Stateless: route a reply to its deal_stage + next_action without persisting.
+    Body: text (required)
+    """
+    from auto_client_acquisition.email.reply_classifier import classify_reply
+    text = str(body.get("text") or "").strip()
+    if not text:
+        raise HTTPException(400, "text_required")
+    classification = await classify_reply(text, prefer_llm=bool(body.get("prefer_llm", True)))
+    return {
+        "category": classification.category,
+        "next_action": classification.next_action,
+        "deal_stage": classification.deal_stage,
+        "followup_days": classification.followup_days,
+        "requires_human_review": classification.requires_human_review,
+    }
+
+
+# ── Revenue dashboard history ─────────────────────────────────────
+@router.get("/dashboard/revenue-machine/history")
+async def dashboard_revenue_machine_history(days: int = 14) -> dict[str, Any]:
+    """Last N days of revenue machine output (default 14)."""
+    if days < 1 or days > 90:
+        raise HTTPException(400, "days_out_of_range: 1..90")
+    cutoff = _utcnow() - timedelta(days=days)
+    async with async_session_factory() as session:
+        try:
+            gmail_rows = (await session.execute(
+                select(GmailDraftRecord).where(GmailDraftRecord.created_at >= cutoff)
+            )).scalars().all()
+            linkedin_rows = (await session.execute(
+                select(LinkedInDraftRecord).where(LinkedInDraftRecord.created_at >= cutoff)
+            )).scalars().all()
+        except Exception as exc:  # noqa: BLE001
+            return {"status": "skipped_db_unreachable", "error": str(exc)}
+
+    # Aggregate by date
+    from collections import defaultdict
+    by_day: dict[str, dict[str, int]] = defaultdict(lambda: {
+        "gmail_drafts": 0, "gmail_sent": 0,
+        "linkedin_drafts": 0, "linkedin_sent": 0, "linkedin_replied": 0,
+    })
+    for r in gmail_rows:
+        d = r.created_at.date().isoformat()
+        by_day[d]["gmail_drafts"] += 1
+        if r.status == "sent": by_day[d]["gmail_sent"] += 1
+    for r in linkedin_rows:
+        d = r.created_at.date().isoformat()
+        by_day[d]["linkedin_drafts"] += 1
+        if r.status == "sent": by_day[d]["linkedin_sent"] += 1
+        if r.reply_received_at: by_day[d]["linkedin_replied"] += 1
+
+    series = sorted(
+        [{"date": d, **stats} for d, stats in by_day.items()],
+        key=lambda x: x["date"],
+    )
+    return {"status": "ok", "days_window": days, "series": series,
+            "totals": {
+                "gmail_drafts": sum(d["gmail_drafts"] for d in series),
+                "gmail_sent": sum(d["gmail_sent"] for d in series),
+                "linkedin_drafts": sum(d["linkedin_drafts"] for d in series),
+                "linkedin_sent": sum(d["linkedin_sent"] for d in series),
+                "linkedin_replied": sum(d["linkedin_replied"] for d in series),
+            }}
+
+
 # ── Daily report generator ─────────────────────────────────────────
 @router.post("/automation/daily-report/generate")
 async def automation_daily_report_generate() -> dict[str, Any]:

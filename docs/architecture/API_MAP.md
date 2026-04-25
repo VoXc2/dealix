@@ -1,5 +1,5 @@
 # Dealix API Map
-**Auto-generated** from `api/routers/*.py`. Total: 126 endpoints.
+**Auto-generated** from `api/routers/*.py`. Total: 130 endpoints.
 
 | Method | Path | Router | Function | Description |
 |---|---|---|---|---|
@@ -62,13 +62,17 @@
 | GET | `/api/v1/data/suppression` | data | `list_suppression` |  |
 | POST | `/api/v1/automation/daily-report/generate` | drafts | `automation_daily_report_generate` |  |
 | POST | `/api/v1/automation/revenue-machine/run` | drafts | `revenue_machine_run` |  |
+| GET | `/api/v1/dashboard/revenue-machine/history` | drafts | `dashboard_revenue_machine_history` | Last N days of revenue machine output (default 14). |
 | GET | `/api/v1/dashboard/revenue-machine/today` | drafts | `dashboard_revenue_machine_today` |  |
 | POST | `/api/v1/gmail/drafts/create` | drafts | `gmail_drafts_create` | Create a single Gmail draft. Body: to_email, subject, body_plain, account_id. |
+| POST | `/api/v1/gmail/drafts/create-batch` | drafts | `gmail_drafts_create_batch` |  |
 | GET | `/api/v1/gmail/drafts/today` | drafts | `gmail_drafts_today` |  |
 | POST | `/api/v1/linkedin/drafts/create` | drafts | `linkedin_drafts_create` | Create a LinkedIn draft. NEVER auto-sent. Body: company_name, message_ar, optional rest. |
 | GET | `/api/v1/linkedin/drafts/today` | drafts | `linkedin_drafts_today` |  |
 | POST | `/api/v1/linkedin/drafts/{draft_id}/manual-capture` | drafts | `linkedin_drafts_manual_capture` |  |
 | PATCH | `/api/v1/linkedin/drafts/{draft_id}/mark-sent` | drafts | `linkedin_drafts_mark_sent` | Sami marks 'I sent this manually'. Updates status + sent_at. |
+| POST | `/api/v1/replies/respond` | drafts | `replies_respond` |  |
+| POST | `/api/v1/replies/route` | drafts | `replies_route` |  |
 | POST | `/api/v1/email/connect/gmail` | email_send | `connect_gmail` | Returns the exact 8-step OAuth setup Sami runs once locally. |
 | POST | `/api/v1/email/replies/sync` | email_send | `replies_sync` |  |
 | POST | `/api/v1/email/send-approved` | email_send | `send_approved` |  |
@@ -137,7 +141,7 @@
 - **automation**: 5 endpoints
 - **autonomous**: 25 endpoints
 - **data**: 12 endpoints
-- **drafts**: 9 endpoints
+- **drafts**: 13 endpoints
 - **email_send**: 5 endpoints
 - **health**: 6 endpoints
 - **leads**: 6 endpoints
