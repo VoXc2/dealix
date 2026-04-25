@@ -1,5 +1,5 @@
 # Dealix API Map
-**Auto-generated** from `api/routers/*.py`. Total: 138 endpoints.
+**Auto-generated** from `api/routers/*.py`. Total: 139 endpoints.
 
 | Method | Path | Router | Function | Description |
 |---|---|---|---|---|
@@ -66,6 +66,7 @@
 | GET | `/api/v1/dashboard/dominance` | dominance | `dashboard_dominance` |  |
 | GET | `/api/v1/objections/bank` | dominance | `objections_bank` | Return all 13 objection categories with response drafts. |
 | POST | `/api/v1/offers/route` | dominance | `offers_route` |  |
+| POST | `/api/v1/partners/revenue-machine/run` | dominance | `partners_revenue_machine_run` |  |
 | GET | `/api/v1/signals/account/{account_id}` | dominance | `get_signals_for_account` | Return persisted SignalRecord rows + freshly-detected signals. |
 | POST | `/api/v1/automation/daily-report/generate` | drafts | `automation_daily_report_generate` |  |
 | GET | `/api/v1/automation/revenue-machine/export` | drafts | `revenue_machine_export` |  |
@@ -149,7 +150,7 @@
 - **automation**: 5 endpoints
 - **autonomous**: 25 endpoints
 - **data**: 12 endpoints
-- **dominance**: 7 endpoints
+- **dominance**: 8 endpoints
 - **drafts**: 14 endpoints
 - **email_send**: 5 endpoints
 - **health**: 6 endpoints

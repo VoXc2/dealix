@@ -473,6 +473,77 @@ async def customer_proof_pack(customer_id: str) -> dict[str, Any]:
 
 
 # ── Endpoint: GET dashboard/dominance ─────────────────────────────
+@router.post("/partners/revenue-machine/run")
+async def partners_revenue_machine_run(body: dict[str, Any] = Body(default={})) -> dict[str, Any]:
+    """
+    Partner-targeted daily run. Pulls top marketing/consulting partners,
+    generates partnership-pitch LinkedIn drafts (manual-send only).
+
+    Body: max_partners (default 10), city (optional)
+    """
+    max_partners = int(body.get("max_partners") or 10)
+    city = body.get("city")
+    partner_sectors = ["marketing_agency", "consulting_firm"]
+
+    async with async_session_factory() as session:
+        try:
+            q = select(AccountRecord).where(
+                AccountRecord.sector.in_(partner_sectors),
+                AccountRecord.status.in_(["enriched", "new"]),
+            )
+            if city:
+                q = q.where(AccountRecord.city == city)
+            q = q.order_by(AccountRecord.data_quality_score.desc()).limit(max_partners * 2)
+            partner_pool = (await session.execute(q)).scalars().all()
+        except Exception as exc:  # noqa: BLE001
+            return {"status": "skipped_db_unreachable", "error": str(exc)}
+
+        drafts_created: list[dict[str, Any]] = []
+        for acc in partner_pool[:max_partners]:
+            offer = route_offer(acc.sector)
+            search_query = f'"{acc.company_name}" {acc.city or "Saudi"} site:linkedin.com'
+            msg_ar = (
+                f"أهلاً [اسم المسؤول]،\n\n"
+                f"لاحظت أن {acc.company_name} يخدم عملاء في السوق السعودي.\n\n"
+                f"Dealix شريك resell — أنتم تبيعونه لعملائكم، 25% MRR شهرياً.\n"
+                f"3 عملاء وكالة = ~600-1500 ريال شهرياً passive recurring.\n\n"
+                f"رابط شامل: https://dealix.me/partners.html\n\n"
+                f"تناسبكم 20 دقيقة هذا الأسبوع نوضح؟\n\nسامي"
+            )
+            ld = LinkedInDraftRecord(
+                id=_new_id("ld_"), account_id=acc.id,
+                company_name=acc.company_name[:255], contact_name=None,
+                profile_search_query=search_query[:500],
+                company_context=f"Saudi {acc.sector} in {acc.city or '?'}",
+                reason_for_outreach="partnership_resell_pitch",
+                message_ar=msg_ar, message_en=None,
+                followup_day_3="متابعة سريعة — هل عندكم سؤال محدد قبل المكالمة؟",
+                followup_day_7="آخر متابعة. لو لاحقاً يناسب، أنا هنا.",
+                status="draft",
+            )
+            session.add(ld)
+            drafts_created.append({
+                "draft_id": ld.id, "company": acc.company_name,
+                "city": acc.city, "search_query": search_query,
+                "offer_tier": offer.get("pricing_tier"),
+            })
+
+        try:
+            await session.commit()
+        except Exception as exc:  # noqa: BLE001
+            await session.rollback()
+            return {"status": "commit_failed", "error": str(exc)}
+
+    return {
+        "status": "ok",
+        "partners_pool_size": len(partner_pool),
+        "drafts_created": len(drafts_created),
+        "drafts": drafts_created,
+        "approval_required": True,
+        "next_action": "Open /api/v1/linkedin/drafts/today to review + send manually",
+    }
+
+
 @router.get("/dashboard/dominance")
 async def dashboard_dominance() -> dict[str, Any]:
     """

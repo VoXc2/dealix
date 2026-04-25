@@ -383,6 +383,26 @@ class LinkedInDraftRecord(Base):
     updated_at: Mapped[datetime] = mapped_column(default=utcnow, onupdate=utcnow)
 
 
+class DataSourceProvenance(Base):
+    """Provenance record — every signal/account/contact pointer back to source.
+
+    Required for PDPL audit trail + to dedupe "same lead from 3 sources".
+    """
+
+    __tablename__ = "data_source_provenance"
+
+    id: Mapped[str] = mapped_column(String(64), primary_key=True)
+    entity_type: Mapped[str] = mapped_column(String(32), index=True)  # account|contact|signal|deal
+    entity_id: Mapped[str] = mapped_column(String(64), index=True)
+    source_name: Mapped[str] = mapped_column(String(255), index=True)
+    source_url: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    source_type: Mapped[str] = mapped_column(String(32))  # public|paid|partner|owned|google_maps|google_search|manual
+    allowed_use: Mapped[str] = mapped_column(String(128), default="business_contact_research_only")
+    collected_at: Mapped[datetime] = mapped_column(default=utcnow, index=True)
+    confidence: Mapped[float] = mapped_column(Float, default=0.5)
+    refresh_needed: Mapped[bool] = mapped_column(Boolean, default=False)
+
+
 class EmailSendLog(Base):
     """Auditable log of every email send attempt — required for compliance + bounce tracking."""
 
