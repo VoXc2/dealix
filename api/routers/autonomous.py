@@ -29,6 +29,23 @@ def _utcnow() -> datetime:
     return datetime.now(timezone.utc)
 
 
+async def _safe_commit(session, obj_to_add=None) -> bool:
+    """Try to add+commit; return True on success, False if DB unreachable."""
+    try:
+        if obj_to_add is not None:
+            session.add(obj_to_add)
+        await session.commit()
+        return True
+    except Exception as e:
+        import logging
+        logging.getLogger(__name__).warning("db_unreachable_skip: %s", str(e)[:120])
+        try:
+            await session.rollback()
+        except Exception:
+            pass
+        return False
+
+
 # ── Conversations ───────────────────────────────────────────────
 
 @router.post("/conversations")
@@ -58,10 +75,9 @@ async def create_conversation(body: dict[str, Any] = Body(...)) -> dict[str, Any
             escalation_required=bool(body.get("escalation_required", False)),
             auto_sent=bool(body.get("auto_sent", False)),
         )
-        session.add(rec)
-        await session.commit()
+        ok = await _safe_commit(session, rec)
 
-    return {"id": rec_id, "status": "logged", "created_at": _utcnow().isoformat()}
+    return {"id": rec_id, "status": "logged" if ok else "skipped_db_unreachable", "created_at": _utcnow().isoformat()}
 
 
 @router.get("/conversations")
@@ -123,9 +139,8 @@ async def create_deal(body: dict[str, Any] = Body(...)) -> dict[str, Any]:
             currency=str(body.get("currency") or "SAR"),
             stage=str(body.get("stage") or "new"),
         )
-        session.add(deal)
-        await session.commit()
-    return {"id": deal_id, "stage": "new", "created_at": _utcnow().isoformat()}
+        ok = await _safe_commit(session, deal)
+    return {"id": deal_id, "stage": "new", "status": "ok" if ok else "skipped_db_unreachable", "created_at": _utcnow().isoformat()}
 
 
 @router.patch("/deals/{deal_id}")
