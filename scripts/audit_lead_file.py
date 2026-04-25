@@ -88,7 +88,12 @@ def main() -> int:
     phones_normalized = 0
     emails_valid = 0
     domains_extractable = 0
-    keys_for_dedup: Counter[str] = Counter()
+    # Match server-side dedupe: collide on ANY of domain/phone/email/place_id/name+city
+    by_domain: Counter[str] = Counter()
+    by_phone: Counter[str] = Counter()
+    by_email: Counter[str] = Counter()
+    by_place: Counter[str] = Counter()
+    by_name_city: Counter[str] = Counter()
 
     for r in rows:
         nr = normalize_row(r)
@@ -101,14 +106,40 @@ def main() -> int:
         ok, why = is_acceptable(nr)
         if ok:
             accepted += 1
-            key = nr.get("normalized_name") or nr.get("domain") or nr.get("phone") or nr.get("email")
-            if key:
-                keys_for_dedup[key] += 1
+            d_val = nr.get("domain")
+            if d_val:
+                by_domain[d_val] += 1
+            p_val = nr.get("phone")
+            if p_val:
+                by_phone[p_val] += 1
+            e_val = nr.get("email")
+            if e_val:
+                by_email[e_val] += 1
+            pid_val = nr.get("google_place_id")
+            if pid_val:
+                by_place[pid_val] += 1
+            nk_val = nr.get("normalized_name")
+            if nk_val:
+                city = (nr.get("city") or "").strip().lower()
+                by_name_city[f"{nk_val}|{city}"] += 1
         else:
             rejected.append((r, why or ""))
 
-    dup_keys = sum(c for c in keys_for_dedup.values() if c > 1)
-    unique_keys = len(keys_for_dedup)
+    def _dup_count(c: Counter[str]) -> int:
+        return sum(v - 1 for v in c.values() if v > 1)
+
+    dup_by_kind = {
+        "domain": _dup_count(by_domain),
+        "phone": _dup_count(by_phone),
+        "email": _dup_count(by_email),
+        "place_id": _dup_count(by_place),
+        "name+city": _dup_count(by_name_city),
+    }
+    dup_keys = sum(dup_by_kind.values())
+    unique_keys = (
+        len(by_domain) + len(by_phone) + len(by_email)
+        + len(by_place) + len(by_name_city)
+    )
 
     print(f"\n📂 {p.name}")
     print(f"   rows: {n}")
@@ -117,7 +148,10 @@ def main() -> int:
     print(f"   phones normalized to +966: {phones_normalized} ({pct(phones_normalized, n)})")
     print(f"   valid emails: {emails_valid} ({pct(emails_valid, n)})")
     print(f"   extractable domains: {domains_extractable} ({pct(domains_extractable, n)})")
-    print(f"   dedup risk: {dup_keys} duplicate-key rows across {unique_keys} unique keys")
+    print(f"   dedup risk: {dup_keys} duplicate-key collisions across {unique_keys} unique keys")
+    for kind, count in dup_by_kind.items():
+        if count:
+            print(f"     · {kind}: {count} collision(s)")
 
     print("\n📊 field fill rate:")
     for k, c in field_present.most_common(20):
