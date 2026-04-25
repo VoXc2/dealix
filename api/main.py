@@ -24,6 +24,7 @@ from api.routers import (
     pricing,
     prospect,
     public,
+    revenue,
     sales,
     sectors,
     webhooks,
@@ -119,6 +120,7 @@ def create_app() -> FastAPI:
     app.include_router(autonomous.router)
     app.include_router(data.router)
     app.include_router(outreach.router)
+    app.include_router(revenue.router)
     app.include_router(public.router)
     app.include_router(admin.router)
 
