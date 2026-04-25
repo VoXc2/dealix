@@ -16,6 +16,7 @@ from api.middleware import RequestIDMiddleware
 from api.routers import (
     admin,
     agents,
+    autonomous,
     health,
     leads,
     pricing,
@@ -106,6 +107,7 @@ def create_app() -> FastAPI:
     app.include_router(webhooks.router)
     app.include_router(pricing.router)
     app.include_router(prospect.router)
+    app.include_router(autonomous.router)
     app.include_router(public.router)
     app.include_router(admin.router)
 

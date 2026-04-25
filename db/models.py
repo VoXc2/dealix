@@ -74,3 +74,39 @@ class AgentRunRecord(Base):
     output_summary: Mapped[str | None] = mapped_column(Text, nullable=True)
     error: Mapped[str | None] = mapped_column(Text, nullable=True)
     created_at: Mapped[datetime] = mapped_column(default=utcnow, index=True)
+
+
+class ConversationRecord(Base):
+    """Inbound message + outbound auto-response — full audit log."""
+
+    __tablename__ = "conversations"
+
+    id: Mapped[str] = mapped_column(String(64), primary_key=True)
+    lead_id: Mapped[str | None] = mapped_column(String(64), nullable=True, index=True)
+    channel: Mapped[str] = mapped_column(String(32), index=True)  # whatsapp/email/form/sms/linkedin
+    sender: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    inbound_message: Mapped[str] = mapped_column(Text, default="")
+    outbound_response: Mapped[str | None] = mapped_column(Text, nullable=True)
+    classification: Mapped[str | None] = mapped_column(String(64), nullable=True, index=True)
+    sentiment: Mapped[str | None] = mapped_column(String(16), nullable=True)
+    next_action: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    escalation_required: Mapped[bool] = mapped_column(default=False)
+    auto_sent: Mapped[bool] = mapped_column(default=False)
+    created_at: Mapped[datetime] = mapped_column(default=utcnow, index=True)
+
+
+class TaskRecord(Base):
+    """Follow-up tasks scheduled by the autonomous engine."""
+
+    __tablename__ = "tasks"
+
+    id: Mapped[str] = mapped_column(String(64), primary_key=True)
+    lead_id: Mapped[str | None] = mapped_column(String(64), nullable=True, index=True)
+    deal_id: Mapped[str | None] = mapped_column(String(64), nullable=True, index=True)
+    task_type: Mapped[str] = mapped_column(String(32), index=True)  # follow_up, demo, payment_check, onboarding
+    due_at: Mapped[datetime] = mapped_column(default=utcnow, index=True)
+    status: Mapped[str] = mapped_column(String(16), default="pending", index=True)  # pending, done, skipped
+    owner: Mapped[str] = mapped_column(String(64), default="auto")
+    notes: Mapped[str | None] = mapped_column(Text, nullable=True)
+    created_at: Mapped[datetime] = mapped_column(default=utcnow)
+    completed_at: Mapped[datetime | None] = mapped_column(nullable=True)
