@@ -388,6 +388,7 @@ async def company_intake(body: dict[str, Any] = Body(...)) -> dict[str, Any]:
     }
 
     rec_id = _new_id("co")
+    db_status = "ok"
     async with async_session_factory()() as session:
         rec = CompanyRecord(
             id=rec_id,
@@ -413,12 +414,13 @@ async def company_intake(body: dict[str, Any] = Body(...)) -> dict[str, Any]:
             offer_ladder=offer_ladder,
             automation_policy=automation_policy,
         )
-        session.add(rec)
-        await session.commit()
+        ok = await _safe_commit(session, rec)
+        db_status = "ok" if ok else "skipped_db_unreachable"
 
     return {
         "id": rec_id,
         "name": name,
+        "db_status": db_status,
         "icp_profile": icp_profile,
         "channel_plan": channel_plan,
         "offer_ladder": offer_ladder,
@@ -882,3 +884,15 @@ async def db_diag() -> dict[str, Any]:
         "raw_env_length": len(url),
         "settings_url_prefix": cfg_safe[:80],
     }
+
+
+# ── Aliases for /api/v1/integrations/* (matches external webhook config conventions) ──
+
+@router.post("/integrations/google-lead-form")
+async def alias_google_lead(body: dict[str, Any] = Body(...)) -> dict[str, Any]:
+    return await import_google_lead(body)
+
+
+@router.post("/integrations/meta-lead-form")
+async def alias_meta_lead(body: dict[str, Any] = Body(...)) -> dict[str, Any]:
+    return await import_meta_lead(body)

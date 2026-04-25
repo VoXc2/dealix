@@ -464,6 +464,8 @@ async def inbound_handle(body: dict[str, Any] = Body(...)) -> dict[str, Any]:
         ("price",               r"كم\s*(السعر|يكلف|المبلغ)|السعر|price|pricing|كم\s*ريال"),
         ("send_details",        r"ارسل|أرسل|تفاصيل|details|deck|presentation"),
         ("later",               r"بعدين|لاحق|later|not\s*now|رمضان"),
+        ("opt_out",             r"أوقف|إيقاف|stop|unsubscribe|لا\s*شكراً|انهاء"),
+        ("arabic_concern",       r"العربي|عربي\s*(مضبوط|طبيعي|سيء|سيئ|رديء)|arabic.*quality|خليجي|لهجة"),
         ("not_relevant",        r"مو\s*مناسب|not\s*relevant|غير\s*مناسب|لا\s*نحتاج"),
         ("budget_objection",    r"ميزانية|budget|غالي|مكلف"),
         ("already_has_crm",     r"crm|salesforce|hubspot|zoho"),
@@ -490,6 +492,7 @@ async def inbound_handle(body: dict[str, Any] = Body(...)) -> dict[str, Any]:
     # Build response
     CAL = "https://calendly.com/sami-assiri11/dealix-demo"
     responses = {
+        "opt_out":              "تمام، تم إيقاف الرسائل. شكراً لوقتك.",
         "interested":           f"هلا! شكراً على اهتمامك. خلني أحجز معك 20 دقيقة demo بدون أي التزام — تقدر تختار موعدك هنا: {CAL}",
         "wants_demo":           f"ممتاز، نسوي demo. 20 دقيقة، اختار موعد: {CAL}",
         "price":                f"Starter 999/شهر، Growth 2,999، Scale 7,999. في pilot بريال × 7 أيام بدون التزام. 20 دقيقة demo أفصّل الباقة المناسبة: {CAL}",
@@ -507,6 +510,7 @@ async def inbound_handle(body: dict[str, Any] = Body(...)) -> dict[str, Any]:
 
     # Decide next action
     action_map = {
+        "opt_out": "STOP_CONTACT",
         "interested": "BOOK_DEMO",
         "wants_demo": "BOOK_DEMO",
         "price": "BOOK_DEMO",
