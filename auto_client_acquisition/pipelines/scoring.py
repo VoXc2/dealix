@@ -103,10 +103,14 @@ def compute_lead_score(
         "saas", "fintech", "ecommerce", "real_estate", "real_estate_developer",
         "marketing_agency", "training_center", "consulting_firm", "accounting_firm",
         "law_firm", "logistics", "education",
+        # Lead-driven hospitality + events: every inquiry = booking-value
+        "events", "hospitality", "hotel", "wedding_hall", "event_venue",
+        "tourism_agency",
     }
     medium_value_sectors = {
         "dental_clinic", "medical_clinic", "cosmetic_clinic",
         "restaurant", "retail_store", "fitness_gym", "salon_spa", "auto_dealer",
+        "construction", "food_manufacturing", "retail",
     }
     if sector in high_value_sectors:
         fit += 25
