@@ -814,3 +814,36 @@ async def import_meta_lead(body: dict[str, Any] = Body(...)) -> dict[str, Any]:
         session.add(conv)
         await session.commit()
     return {"lead_id": rec_id, "source": "meta_lead_ads", "status": "captured"}
+
+
+@router.post("/admin/init-db")
+async def admin_init_db() -> dict[str, Any]:
+    """Force-create all tables. Idempotent. Public for debug — secure in prod."""
+    try:
+        from db.session import init_db
+        await init_db()
+        return {"status": "ok", "message": "All tables created or verified"}
+    except Exception as e:
+        log.exception("init_db_failed")
+        return {"status": "error", "error": str(e)[:500], "type": type(e).__name__}
+
+
+@router.post("/admin/test-insert")
+async def admin_test_insert() -> dict[str, Any]:
+    """Insert one test row and report exact error if it fails."""
+    try:
+        async with async_session_factory()() as session:
+            rec = ConversationRecord(
+                id=_new_id("test"),
+                channel="test",
+                sender="diagnostic",
+                inbound_message="test",
+                classification="test",
+                next_action="test",
+            )
+            session.add(rec)
+            await session.commit()
+            return {"status": "ok", "inserted_id": rec.id}
+    except Exception as e:
+        log.exception("test_insert_failed")
+        return {"status": "error", "error": str(e)[:500], "type": type(e).__name__}
