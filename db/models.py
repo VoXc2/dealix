@@ -110,3 +110,97 @@ class TaskRecord(Base):
     notes: Mapped[str | None] = mapped_column(Text, nullable=True)
     created_at: Mapped[datetime] = mapped_column(default=utcnow)
     completed_at: Mapped[datetime | None] = mapped_column(nullable=True)
+
+
+class CompanyRecord(Base):
+    """Subscriber company profile — one per Dealix customer."""
+
+    __tablename__ = "companies"
+
+    id: Mapped[str] = mapped_column(String(64), primary_key=True)
+    name: Mapped[str] = mapped_column(String(255))
+    website: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    industry: Mapped[str | None] = mapped_column(String(64), nullable=True, index=True)
+    country: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    city: Mapped[str | None] = mapped_column(String(128), nullable=True)
+    products: Mapped[str | None] = mapped_column(Text, nullable=True)
+    target_customer_type: Mapped[str | None] = mapped_column(Text, nullable=True)
+    average_deal_value: Mapped[float | None] = mapped_column(Float, nullable=True)
+    sales_cycle_length_days: Mapped[float | None] = mapped_column(Float, nullable=True)
+    current_lead_sources: Mapped[str | None] = mapped_column(Text, nullable=True)
+    current_crm: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    booking_link: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    sales_team_email: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    whatsapp_number: Mapped[str | None] = mapped_column(String(32), nullable=True)
+    tone_of_voice: Mapped[str] = mapped_column(String(64), default="professional_khaliji")
+    languages: Mapped[str] = mapped_column(String(64), default="ar,en")
+    pricing_rules: Mapped[str | None] = mapped_column(Text, nullable=True)
+    handoff_rules: Mapped[str | None] = mapped_column(Text, nullable=True)
+    privacy_requirements: Mapped[str | None] = mapped_column(Text, nullable=True)
+    success_metric: Mapped[str | None] = mapped_column(Text, nullable=True)
+    icp_profile: Mapped[dict] = mapped_column("icp_profile", JSON, default=dict)
+    channel_plan: Mapped[dict] = mapped_column("channel_plan", JSON, default=dict)
+    offer_ladder: Mapped[dict] = mapped_column("offer_ladder", JSON, default=dict)
+    automation_policy: Mapped[dict] = mapped_column("automation_policy", JSON, default=dict)
+    status: Mapped[str] = mapped_column(String(32), default="active", index=True)
+    created_at: Mapped[datetime] = mapped_column(default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(default=utcnow, onupdate=utcnow)
+
+
+class PartnerRecord(Base):
+    """Partner/agency record for distribution channel."""
+
+    __tablename__ = "partners"
+
+    id: Mapped[str] = mapped_column(String(64), primary_key=True)
+    company_name: Mapped[str] = mapped_column(String(255))
+    partner_type: Mapped[str] = mapped_column(String(32), index=True)  # AGENCY/IMPLEMENTATION/REFERRAL/STRATEGIC
+    contact_name: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    contact_email: Mapped[str | None] = mapped_column(String(255), nullable=True, index=True)
+    status: Mapped[str] = mapped_column(String(32), default="prospecting", index=True)  # prospecting/active/paused
+    commission_terms: Mapped[str | None] = mapped_column(Text, nullable=True)
+    setup_fee_sar: Mapped[float] = mapped_column(Float, default=0.0)
+    mrr_share_pct: Mapped[float] = mapped_column(Float, default=0.0)
+    clients_signed: Mapped[int] = mapped_column(default=0)
+    next_action: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    next_action_at: Mapped[datetime | None] = mapped_column(nullable=True)
+    notes: Mapped[str | None] = mapped_column(Text, nullable=True)
+    created_at: Mapped[datetime] = mapped_column(default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(default=utcnow, onupdate=utcnow)
+
+
+class CustomerRecord(Base):
+    """Customer = subscribed paying company. One per closed deal."""
+
+    __tablename__ = "customers"
+
+    id: Mapped[str] = mapped_column(String(64), primary_key=True)
+    company_id: Mapped[str | None] = mapped_column(String(64), nullable=True, index=True)
+    deal_id: Mapped[str | None] = mapped_column(String(64), nullable=True, index=True)
+    plan: Mapped[str] = mapped_column(String(32), default="pilot")  # pilot/starter/growth/scale
+    onboarding_status: Mapped[str] = mapped_column(String(32), default="kickoff_pending", index=True)
+    pilot_start_at: Mapped[datetime | None] = mapped_column(nullable=True)
+    pilot_end_at: Mapped[datetime | None] = mapped_column(nullable=True)
+    success_metric: Mapped[str | None] = mapped_column(Text, nullable=True)
+    daily_report_sent: Mapped[int] = mapped_column(default=0)
+    nps_score: Mapped[int | None] = mapped_column(nullable=True)
+    churn_risk: Mapped[str] = mapped_column(String(16), default="low")  # low/medium/high
+    created_at: Mapped[datetime] = mapped_column(default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(default=utcnow, onupdate=utcnow)
+
+
+class OutreachQueueRecord(Base):
+    """Outreach message queue — auto or human-approval."""
+
+    __tablename__ = "outreach_queue"
+
+    id: Mapped[str] = mapped_column(String(64), primary_key=True)
+    lead_id: Mapped[str | None] = mapped_column(String(64), nullable=True, index=True)
+    channel: Mapped[str] = mapped_column(String(32), index=True)
+    message: Mapped[str] = mapped_column(Text)
+    approval_required: Mapped[bool] = mapped_column(default=True)
+    status: Mapped[str] = mapped_column(String(32), default="queued", index=True)  # queued/approved/sent/skipped
+    due_at: Mapped[datetime] = mapped_column(default=utcnow, index=True)
+    sent_at: Mapped[datetime | None] = mapped_column(nullable=True)
+    risk_reason: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    created_at: Mapped[datetime] = mapped_column(default=utcnow)
