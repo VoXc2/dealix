@@ -1,5 +1,5 @@
 # Dealix API Map
-**Auto-generated** from `api/routers/*.py`. Total: 131 endpoints.
+**Auto-generated** from `api/routers/*.py`. Total: 138 endpoints.
 
 | Method | Path | Router | Function | Description |
 |---|---|---|---|---|
@@ -60,6 +60,13 @@
 | GET | `/api/v1/data/sources/catalog` | data | `list_data_sources` | Compliance-graded Saudi business data source catalog. |
 | POST | `/api/v1/data/suppression` | data | `add_suppression` |  |
 | GET | `/api/v1/data/suppression` | data | `list_suppression` |  |
+| POST | `/api/v1/accounts/{account_id}/brief` | dominance | `account_brief` |  |
+| POST | `/api/v1/automation/score-tuner/run` | dominance | `score_tuner_run` |  |
+| POST | `/api/v1/customers/{customer_id}/proof-pack` | dominance | `customer_proof_pack` |  |
+| GET | `/api/v1/dashboard/dominance` | dominance | `dashboard_dominance` |  |
+| GET | `/api/v1/objections/bank` | dominance | `objections_bank` | Return all 13 objection categories with response drafts. |
+| POST | `/api/v1/offers/route` | dominance | `offers_route` |  |
+| GET | `/api/v1/signals/account/{account_id}` | dominance | `get_signals_for_account` | Return persisted SignalRecord rows + freshly-detected signals. |
 | POST | `/api/v1/automation/daily-report/generate` | drafts | `automation_daily_report_generate` |  |
 | GET | `/api/v1/automation/revenue-machine/export` | drafts | `revenue_machine_export` |  |
 | POST | `/api/v1/automation/revenue-machine/run` | drafts | `revenue_machine_run` |  |
@@ -142,6 +149,7 @@
 - **automation**: 5 endpoints
 - **autonomous**: 25 endpoints
 - **data**: 12 endpoints
+- **dominance**: 7 endpoints
 - **drafts**: 14 endpoints
 - **email_send**: 5 endpoints
 - **health**: 6 endpoints
