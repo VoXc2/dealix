@@ -17,8 +17,10 @@ from api.routers import (
     admin,
     agents,
     autonomous,
+    data,
     health,
     leads,
+    outreach,
     pricing,
     prospect,
     public,
@@ -115,6 +117,8 @@ def create_app() -> FastAPI:
     app.include_router(pricing.router)
     app.include_router(prospect.router)
     app.include_router(autonomous.router)
+    app.include_router(data.router)
+    app.include_router(outreach.router)
     app.include_router(public.router)
     app.include_router(admin.router)
 

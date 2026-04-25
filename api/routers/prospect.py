@@ -85,29 +85,82 @@ async def discover(body: dict[str, Any] = Body(...)) -> dict[str, Any]:
 async def search_diag() -> dict[str, Any]:
     """Diagnose env var presence without revealing values."""
     import os
+    def _diag(value: str) -> dict[str, Any]:
+        return {"set": bool(value), "length": len(value)}
+
     k = os.getenv("GOOGLE_SEARCH_API_KEY", "")
     c = os.getenv("GOOGLE_SEARCH_CX", "")
+    gm = os.getenv("GOOGLE_MAPS_API_KEY", "")
+    tav = os.getenv("TAVILY_API_KEY", "")
+    fc = os.getenv("FIRECRAWL_API_KEY", "")
+    hu = os.getenv("HUNTER_API_KEY", "")
+    ab = os.getenv("ABSTRACT_API_KEY", "")
+    wp = os.getenv("WAPPALYZER_API_KEY", "")
+    serp = os.getenv("SERPAPI_API_KEY", "")
+    apify = os.getenv("APIFY_TOKEN", "")
+    grq = os.getenv("GROQ_API_KEY", "")
+    ant = os.getenv("ANTHROPIC_API_KEY", "")
+    oai = os.getenv("OPENAI_API_KEY", "")
+    sd = os.getenv("SENTRY_DSN", "")
+    db = os.getenv("DATABASE_URL", "")
+    sg = os.getenv("SENDGRID_API_KEY", "")
+    wa = os.getenv("WHATSAPP_ACCESS_TOKEN", "")
     m = os.getenv("MOYASAR_SECRET_KEY", "")
     w = os.getenv("MOYASAR_WEBHOOK_SECRET", "")
 
-    # Also list ALL env vars whose names start with target prefixes — helps detect typos
+    # All env vars whose names start with target prefixes — helps detect typos
     related = sorted([
         name for name in os.environ.keys()
-        if name.startswith(("GOOGLE_", "MOYASAR_", "ANTHROPIC_", "POSTHOG_", "SENTRY_", "DATABASE_", "APP_URL", "PORT", "RAILWAY_"))
+        if name.startswith((
+            "GOOGLE_", "MOYASAR_", "ANTHROPIC_", "OPENAI_", "GROQ_", "POSTHOG_",
+            "SENTRY_", "DATABASE_", "TAVILY_", "FIRECRAWL_", "HUNTER_", "ABSTRACT_",
+            "WAPPALYZER_", "SERPAPI_", "APIFY_", "SENDGRID_", "WHATSAPP_",
+            "APP_URL", "PORT", "RAILWAY_",
+        ))
     ])
+
+    # Tier readiness summary
+    tier1_ready = bool(db) and bool(grq or ant or oai) and bool(k and c) and bool(sd)
+    tier2_ready = bool(gm) and (bool(tav) or bool(fc) or bool(hu))
+
     return {
-        "GOOGLE_SEARCH_API_KEY": {"set": bool(k), "length": len(k), "prefix": (k[:6] + "...") if k else ""},
-        "GOOGLE_SEARCH_CX":      {"set": bool(c), "length": len(c), "prefix": (c[:6] + "...") if c else ""},
-        "MOYASAR_SECRET_KEY":    {"set": bool(m), "length": len(m), "prefix": (m[:6] + "...") if m else ""},
-        "MOYASAR_WEBHOOK_SECRET":{"set": bool(w), "length": len(w)},
+        # ── Layer 1 — Required now ──
+        "DATABASE_URL":          _diag(db),
+        "GOOGLE_SEARCH_API_KEY": {**_diag(k), "prefix": (k[:6] + "...") if k else ""},
+        "GOOGLE_SEARCH_CX":      {**_diag(c), "prefix": (c[:6] + "...") if c else ""},
+        "GROQ_API_KEY":          _diag(grq),
+        "ANTHROPIC_API_KEY":     _diag(ant),
+        "OPENAI_API_KEY":        _diag(oai),
+        "SENTRY_DSN":            _diag(sd),
+        # ── Layer 2 — Lead discovery power ──
+        "GOOGLE_MAPS_API_KEY":   {**_diag(gm), "prefix": (gm[:6] + "...") if gm else ""},
+        "TAVILY_API_KEY":        _diag(tav),
+        "FIRECRAWL_API_KEY":     _diag(fc),
+        "HUNTER_API_KEY":        _diag(hu),
+        "ABSTRACT_API_KEY":      _diag(ab),
+        "WAPPALYZER_API_KEY":    _diag(wp),
+        "SERPAPI_API_KEY":       _diag(serp),
+        "APIFY_TOKEN":           _diag(apify),
+        # ── Layer 3 — Channels ──
+        "SENDGRID_API_KEY":      _diag(sg),
+        "WHATSAPP_ACCESS_TOKEN": _diag(wa),
+        # ── Payments ──
+        "MOYASAR_SECRET_KEY":    {**_diag(m), "prefix": (m[:6] + "...") if m else ""},
+        "MOYASAR_WEBHOOK_SECRET":_diag(w),
+        # ── Tier readiness summary ──
+        "tier1_ready": tier1_ready,
+        "tier2_ready": tier2_ready,
         "all_visible_env_var_names_starting_with_known_prefixes": related,
         "railway_environment_name": os.getenv("RAILWAY_ENVIRONMENT_NAME", "(not set)"),
         "railway_service_name": os.getenv("RAILWAY_SERVICE_NAME", "(not set)"),
         "railway_project_name": os.getenv("RAILWAY_PROJECT_NAME", "(not set)"),
         "hint": (
-            "both_google_ok" if k and c else
-            "api_key_missing_or_empty" if not k else
-            "cx_missing_or_empty"
+            "ready_to_launch" if tier1_ready and tier2_ready else
+            "tier1_only" if tier1_ready else
+            "set_DATABASE_URL_first" if not db else
+            "set_GOOGLE_SEARCH_API_KEY_and_CX" if not (k and c) else
+            "set_GROQ_or_ANTHROPIC_or_OPENAI" if not (grq or ant or oai) else
+            "almost_there"
         ),
     }
 
