@@ -333,3 +333,29 @@ class SuppressionRecord(Base):
     domain: Mapped[str | None] = mapped_column(String(255), nullable=True, index=True)
     reason: Mapped[str] = mapped_column(String(128), default="opt_out")
     created_at: Mapped[datetime] = mapped_column(default=utcnow)
+
+
+class EmailSendLog(Base):
+    """Auditable log of every email send attempt — required for compliance + bounce tracking."""
+
+    __tablename__ = "email_send_log"
+
+    id: Mapped[str] = mapped_column(String(64), primary_key=True)
+    account_id: Mapped[str | None] = mapped_column(String(64), nullable=True, index=True)
+    queue_id: Mapped[str | None] = mapped_column(String(64), nullable=True, index=True)
+    to_email: Mapped[str] = mapped_column(String(255), index=True)
+    subject: Mapped[str] = mapped_column(String(500))
+    body_preview: Mapped[str] = mapped_column(Text, default="")
+    sender_email: Mapped[str] = mapped_column(String(255), default="")
+    status: Mapped[str] = mapped_column(String(32), default="queued", index=True)
+    # queued | sent | bounced | replied | opt_out | blocked_compliance | failed
+    gmail_message_id: Mapped[str | None] = mapped_column(String(128), nullable=True)
+    bounce_reason: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    reply_classification: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    reply_received_at: Mapped[datetime | None] = mapped_column(nullable=True)
+    sent_at: Mapped[datetime | None] = mapped_column(nullable=True, index=True)
+    batch_id: Mapped[str | None] = mapped_column(String(64), nullable=True, index=True)
+    sequence_step: Mapped[int] = mapped_column(Integer, default=0)  # 0=initial, 2/5/10 for follow-ups
+    compliance_check: Mapped[dict] = mapped_column("compliance_check_json", JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(default=utcnow, onupdate=utcnow)

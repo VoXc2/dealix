@@ -1,5 +1,5 @@
 # Dealix API Map
-**Auto-generated** from `api/routers/*.py`. Total endpoints: 107.
+**Auto-generated** from `api/routers/*.py`. Total: 117 endpoints.
 
 | Method | Path | Router | Function | Description |
 |---|---|---|---|---|
@@ -18,6 +18,11 @@
 | POST | `/api/v1/agents/intake` | agents | `run_intake` |  |
 | POST | `/api/v1/agents/pain-extractor` | agents | `run_pain_extractor` |  |
 | POST | `/api/v1/agents/research` | agents | `run_research` |  |
+| POST | `/api/v1/automation/daily-targeting/run` | automation | `run_daily_targeting` |  |
+| POST | `/api/v1/automation/followups/run` | automation | `run_followups` |  |
+| POST | `/api/v1/automation/reply/classify` | automation | `classify_reply_endpoint` | Health summary — counts of today's sends, replies, suppressions. |
+| GET | `/api/v1/automation/status` | automation | `automation_status` | Health summary — counts of today's sends, replies, suppressions. |
+| POST | `/api/v1/compliance/check-outreach` | automation | `compliance_check` |  |
 | GET | `/api/v1/admin/db-diag` | autonomous | `db_diag` | Show DATABASE_URL prefix (redacted) + try a simple query. |
 | POST | `/api/v1/admin/init-db` | autonomous | `admin_init_db` | Force-create all tables. Idempotent. Public for debug — secure in prod. |
 | POST | `/api/v1/admin/test-insert` | autonomous | `admin_test_insert` | Insert one test row and report exact error if it fails. |
@@ -55,6 +60,11 @@
 | GET | `/api/v1/data/sources/catalog` | data | `list_data_sources` | Compliance-graded Saudi business data source catalog. |
 | POST | `/api/v1/data/suppression` | data | `add_suppression` |  |
 | GET | `/api/v1/data/suppression` | data | `list_suppression` |  |
+| POST | `/api/v1/email/connect/gmail` | email_send | `connect_gmail` | Returns the exact 8-step OAuth setup Sami runs once locally. |
+| POST | `/api/v1/email/replies/sync` | email_send | `replies_sync` |  |
+| POST | `/api/v1/email/send-approved` | email_send | `send_approved` |  |
+| POST | `/api/v1/email/send-batch` | email_send | `send_batch` |  |
+| GET | `/api/v1/email/status` | email_send | `email_status` |  |
 | GET | `/_test_sentry` | health | `test_sentry` | Deliberate error to verify Sentry integration. |
 | GET | `/health` | health | `health` | Liveness + config summary. |
 | GET | `/health/deep` | health | `health_deep` | Deep health check — verifies DB, Redis, LLM providers. |
@@ -115,8 +125,10 @@
 
 - **admin**: 11 endpoints
 - **agents**: 4 endpoints
+- **automation**: 5 endpoints
 - **autonomous**: 25 endpoints
 - **data**: 12 endpoints
+- **email_send**: 5 endpoints
 - **health**: 6 endpoints
 - **leads**: 6 endpoints
 - **outreach**: 4 endpoints
