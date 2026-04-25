@@ -1,5 +1,5 @@
 # Dealix API Map
-**Auto-generated** from `api/routers/*.py`. Total: 130 endpoints.
+**Auto-generated** from `api/routers/*.py`. Total: 131 endpoints.
 
 | Method | Path | Router | Function | Description |
 |---|---|---|---|---|
@@ -61,6 +61,7 @@
 | POST | `/api/v1/data/suppression` | data | `add_suppression` |  |
 | GET | `/api/v1/data/suppression` | data | `list_suppression` |  |
 | POST | `/api/v1/automation/daily-report/generate` | drafts | `automation_daily_report_generate` |  |
+| GET | `/api/v1/automation/revenue-machine/export` | drafts | `revenue_machine_export` |  |
 | POST | `/api/v1/automation/revenue-machine/run` | drafts | `revenue_machine_run` |  |
 | GET | `/api/v1/dashboard/revenue-machine/history` | drafts | `dashboard_revenue_machine_history` | Last N days of revenue machine output (default 14). |
 | GET | `/api/v1/dashboard/revenue-machine/today` | drafts | `dashboard_revenue_machine_today` |  |
@@ -141,7 +142,7 @@
 - **automation**: 5 endpoints
 - **autonomous**: 25 endpoints
 - **data**: 12 endpoints
-- **drafts**: 13 endpoints
+- **drafts**: 14 endpoints
 - **email_send**: 5 endpoints
 - **health**: 6 endpoints
 - **leads**: 6 endpoints

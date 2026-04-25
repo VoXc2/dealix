@@ -783,6 +783,105 @@ async def dashboard_revenue_machine_history(days: int = 14) -> dict[str, Any]:
             }}
 
 
+# ── Export today's drafts as CSV (for offline review when Gmail OAuth missing) ─
+@router.get("/automation/revenue-machine/export")
+async def revenue_machine_export(format: str = "csv") -> dict[str, Any]:
+    """
+    Export today's drafts as CSV/Markdown so Sami can review them in Excel
+    or paste into Gmail manually when Gmail OAuth isn't yet configured.
+
+    format: csv | markdown
+    Writes to docs/ops/daily_reports/YYYY-MM-DD_drafts.csv (or .md).
+    """
+    if format not in {"csv", "markdown"}:
+        raise HTTPException(400, "format_must_be_csv_or_markdown")
+    today_start = _utcnow().replace(hour=0, minute=0, second=0, microsecond=0)
+
+    async with async_session_factory() as session:
+        try:
+            gmail_rows = (await session.execute(
+                select(GmailDraftRecord).where(
+                    GmailDraftRecord.created_at >= today_start
+                ).order_by(GmailDraftRecord.created_at)
+            )).scalars().all()
+            linkedin_rows = (await session.execute(
+                select(LinkedInDraftRecord).where(
+                    LinkedInDraftRecord.created_at >= today_start
+                ).order_by(LinkedInDraftRecord.created_at)
+            )).scalars().all()
+        except Exception as exc:  # noqa: BLE001
+            return {"status": "skipped_db_unreachable", "error": str(exc)}
+
+    out_dir = Path("docs/ops/daily_reports")
+    out_dir.mkdir(parents=True, exist_ok=True)
+    date_iso = today_start.date().isoformat()
+
+    if format == "csv":
+        import csv as _csv
+        gmail_path = out_dir / f"{date_iso}_gmail_drafts.csv"
+        with open(gmail_path, "w", encoding="utf-8", newline="") as f:
+            w = _csv.DictWriter(f, fieldnames=[
+                "draft_id", "to_email", "subject", "body_plain",
+                "status", "gmail_draft_id", "created_at",
+            ])
+            w.writeheader()
+            for r in gmail_rows:
+                w.writerow({
+                    "draft_id": r.id, "to_email": r.to_email,
+                    "subject": r.subject,
+                    "body_plain": (r.body_plain or "").replace("\n", " ⏎ "),
+                    "status": r.status, "gmail_draft_id": r.gmail_draft_id or "",
+                    "created_at": r.created_at.isoformat(),
+                })
+        linkedin_path = out_dir / f"{date_iso}_linkedin_drafts.csv"
+        with open(linkedin_path, "w", encoding="utf-8", newline="") as f:
+            w = _csv.DictWriter(f, fieldnames=[
+                "draft_id", "company_name", "search_query", "context",
+                "reason", "message_ar", "message_en", "status",
+            ])
+            w.writeheader()
+            for r in linkedin_rows:
+                w.writerow({
+                    "draft_id": r.id, "company_name": r.company_name,
+                    "search_query": r.profile_search_query,
+                    "context": r.company_context or "",
+                    "reason": r.reason_for_outreach or "",
+                    "message_ar": (r.message_ar or "").replace("\n", " ⏎ "),
+                    "message_en": (r.message_en or "").replace("\n", " ⏎ "),
+                    "status": r.status,
+                })
+        return {"status": "ok", "format": "csv",
+                "gmail_export": str(gmail_path),
+                "linkedin_export": str(linkedin_path),
+                "gmail_count": len(gmail_rows),
+                "linkedin_count": len(linkedin_rows)}
+
+    # markdown
+    md_path = out_dir / f"{date_iso}_drafts.md"
+    lines = [f"# Dealix — Drafts to Send  ({date_iso})\n\n"]
+    lines.append(f"## Gmail Drafts ({len(gmail_rows)})\n\n")
+    for i, r in enumerate(gmail_rows, 1):
+        lines.append(f"### {i}. To: `{r.to_email}`\n\n")
+        lines.append(f"**Subject:** {r.subject}\n\n")
+        lines.append("```\n" + (r.body_plain or "") + "\n```\n\n")
+        lines.append("---\n\n")
+    lines.append(f"\n## LinkedIn Drafts ({len(linkedin_rows)}) — manual send only\n\n")
+    for i, r in enumerate(linkedin_rows, 1):
+        lines.append(f"### {i}. {r.company_name}\n\n")
+        lines.append(f"**Search:** `{r.profile_search_query}`\n\n")
+        if r.reason_for_outreach:
+            lines.append(f"**Reason:** {r.reason_for_outreach}\n\n")
+        lines.append(f"**Message (Arabic):**\n\n```\n{r.message_ar}\n```\n\n")
+        if r.message_en:
+            lines.append(f"**Message (English):**\n\n```\n{r.message_en}\n```\n\n")
+        lines.append("---\n\n")
+    md_path.write_text("".join(lines), encoding="utf-8")
+    return {"status": "ok", "format": "markdown",
+            "report_path": str(md_path),
+            "gmail_count": len(gmail_rows),
+            "linkedin_count": len(linkedin_rows)}
+
+
 # ── Daily report generator ─────────────────────────────────────────
 @router.post("/automation/daily-report/generate")
 async def automation_daily_report_generate() -> dict[str, Any]:

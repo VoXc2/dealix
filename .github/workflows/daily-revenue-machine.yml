@@ -1,0 +1,66 @@
+name: Daily Revenue Machine
+
+# Runs the daily Dealix revenue machine on a cron + manual trigger.
+# 04:00 UTC = 07:00 Asia/Riyadh.
+
+on:
+  schedule:
+    - cron: "0 4 * * *"
+  workflow_dispatch:
+    inputs:
+      gmail_drafts:
+        description: "Gmail drafts to generate"
+        default: "50"
+      linkedin_drafts:
+        description: "LinkedIn drafts to generate"
+        default: "20"
+      call_scripts:
+        description: "Call scripts to generate"
+        default: "10"
+      create_in_gmail_inbox:
+        description: "Create drafts in Sami's Gmail inbox (true if OAuth configured)"
+        default: "true"
+
+jobs:
+  revenue-machine:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Run Daily Revenue Machine
+        env:
+          API_BASE: ${{ secrets.DEALIX_API_BASE }}
+          API_KEY: ${{ secrets.DEALIX_API_KEY }}
+        run: |
+          set -e
+          API="${API_BASE:-https://api.dealix.me}"
+
+          echo "═══ 1. Generating today's drafts ═══"
+          curl -fsS -X POST "$API/api/v1/automation/revenue-machine/run" \
+            -H "Content-Type: application/json" \
+            -H "Authorization: Bearer ${API_KEY:-}" \
+            -d '{
+              "daily_candidates": 200,
+              "gmail_drafts": ${{ github.event.inputs.gmail_drafts || 50 }},
+              "linkedin_drafts": ${{ github.event.inputs.linkedin_drafts || 20 }},
+              "call_scripts": ${{ github.event.inputs.call_scripts || 10 }},
+              "partner_intros": 10,
+              "approval_mode": "draft_only",
+              "create_in_gmail_drafts_in_inbox": ${{ github.event.inputs.create_in_gmail_inbox || 'true' }}
+            }' | tee revenue_run.json
+          jq '.produced // .' revenue_run.json
+
+          echo "═══ 2. Schedule follow-ups for prior sends ═══"
+          curl -fsS -X POST "$API/api/v1/automation/followups/run" \
+            -H "Content-Type: application/json" \
+            -H "Authorization: Bearer ${API_KEY:-}" -d '{}' | jq
+
+          echo "═══ 3. Generate today's daily report ═══"
+          curl -fsS -X POST "$API/api/v1/automation/daily-report/generate" \
+            -H "Authorization: Bearer ${API_KEY:-}" | jq '.report_path, .metrics'
+
+          echo "═══ 4. Export drafts as CSV (offline review) ═══"
+          curl -fsS "$API/api/v1/automation/revenue-machine/export?format=csv" \
+            -H "Authorization: Bearer ${API_KEY:-}" | jq
+
+          echo "✅ Revenue machine completed at $(date -u)"
