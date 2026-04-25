@@ -269,34 +269,41 @@ async def list_tasks(status: str = "pending", limit: int = 20) -> dict[str, Any]
 async def dashboard_metrics() -> dict[str, Any]:
     """
     Public/internal dashboard summary — counts + top of pipeline.
+    Resilient: if a table doesn't exist yet, returns 0 for that metric.
     """
+    async def _count(session, stmt):
+        try:
+            r = await session.execute(stmt)
+            return int(r.scalar() or 0)
+        except Exception as e:
+            log.warning("dashboard_query_skip: %s", str(e)[:120])
+            return 0
+
+    async def _sum(session, stmt):
+        try:
+            r = await session.execute(stmt)
+            return float(r.scalar() or 0.0)
+        except Exception as e:
+            log.warning("dashboard_query_skip: %s", str(e)[:120])
+            return 0.0
+
+    today_start = datetime.now(timezone.utc).replace(hour=0, minute=0, second=0, microsecond=0)
+
     async with async_session_factory()() as session:
-        leads_total = (await session.execute(select(func.count()).select_from(LeadRecord))).scalar() or 0
-        leads_new = (await session.execute(select(func.count()).select_from(LeadRecord).where(LeadRecord.status == "new"))).scalar() or 0
-        leads_qualified = (await session.execute(select(func.count()).select_from(LeadRecord).where(LeadRecord.status == "qualified"))).scalar() or 0
-        leads_won = (await session.execute(select(func.count()).select_from(LeadRecord).where(LeadRecord.status == "won"))).scalar() or 0
+        leads_total = await _count(session, select(func.count()).select_from(LeadRecord))
+        leads_new = await _count(session, select(func.count()).select_from(LeadRecord).where(LeadRecord.status == "new"))
+        leads_qualified = await _count(session, select(func.count()).select_from(LeadRecord).where(LeadRecord.status == "qualified"))
+        leads_won = await _count(session, select(func.count()).select_from(LeadRecord).where(LeadRecord.status == "won"))
 
-        deals_total = (await session.execute(select(func.count()).select_from(DealRecord))).scalar() or 0
-        deals_paid_count = (await session.execute(select(func.count()).select_from(DealRecord).where(DealRecord.stage == "paid"))).scalar() or 0
-        revenue_paid = (await session.execute(
-            select(func.coalesce(func.sum(DealRecord.amount), 0.0)).where(DealRecord.stage == "paid")
-        )).scalar() or 0.0
+        deals_total = await _count(session, select(func.count()).select_from(DealRecord))
+        deals_paid_count = await _count(session, select(func.count()).select_from(DealRecord).where(DealRecord.stage == "paid"))
+        revenue_paid = await _sum(session, select(func.coalesce(func.sum(DealRecord.amount), 0.0)).where(DealRecord.stage == "paid"))
 
-        conversations_total = (await session.execute(select(func.count()).select_from(ConversationRecord))).scalar() or 0
-        conversations_today = (await session.execute(
-            select(func.count()).select_from(ConversationRecord).where(
-                ConversationRecord.created_at >= datetime.now(timezone.utc).replace(hour=0, minute=0, second=0, microsecond=0)
-            )
-        )).scalar() or 0
+        conversations_total = await _count(session, select(func.count()).select_from(ConversationRecord))
+        conversations_today = await _count(session, select(func.count()).select_from(ConversationRecord).where(ConversationRecord.created_at >= today_start))
 
-        tasks_pending = (await session.execute(
-            select(func.count()).select_from(TaskRecord).where(TaskRecord.status == "pending")
-        )).scalar() or 0
-        tasks_overdue = (await session.execute(
-            select(func.count()).select_from(TaskRecord).where(
-                TaskRecord.status == "pending", TaskRecord.due_at < _utcnow()
-            )
-        )).scalar() or 0
+        tasks_pending = await _count(session, select(func.count()).select_from(TaskRecord).where(TaskRecord.status == "pending"))
+        tasks_overdue = await _count(session, select(func.count()).select_from(TaskRecord).where(TaskRecord.status == "pending", TaskRecord.due_at < _utcnow()))
 
     return {
         "as_of": _utcnow().isoformat(),
