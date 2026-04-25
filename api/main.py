@@ -44,6 +44,13 @@ async def lifespan(_app: FastAPI) -> AsyncIterator[None]:
         version=settings.app_version,
         env=settings.app_env,
     )
+    # Auto-create tables on boot (additive — safe with SQLAlchemy create_all)
+    try:
+        from db.session import init_db
+        await init_db()
+        log.info("db_init_complete")
+    except Exception as exc:
+        log.warning("db_init_skipped", error=str(exc))
     yield
     log.info("app_shutdown")
 
