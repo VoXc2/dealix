@@ -58,6 +58,101 @@ router = APIRouter(prefix="/api/v1/data", tags=["data"])
 log = logging.getLogger(__name__)
 
 
+# ── Data Source Catalog (compliance-graded) ──────────────────────
+SAUDI_DATA_SOURCE_CATALOG: list[dict[str, Any]] = [
+    {
+        "key": "riyadh_chamber",
+        "name_ar": "غرفة الرياض — دليل الأعضاء",
+        "name_en": "Riyadh Chamber of Commerce Member Directory",
+        "url": "https://chamber.org.sa",
+        "rating": "green",
+        "access_method": "public_web",
+        "coverage_city": ["riyadh"],
+        "coverage_sector": "all",
+        "ingest_strategy": "crawl_with_requests_bs4_provider",
+    },
+    {
+        "key": "jeddah_chamber",
+        "name_ar": "غرفة جدة — دليل الأعضاء",
+        "name_en": "Jeddah Chamber of Commerce Member Directory",
+        "url": "https://jcci.org.sa",
+        "rating": "green",
+        "access_method": "public_web",
+        "coverage_city": ["jeddah"],
+        "coverage_sector": "all",
+    },
+    {
+        "key": "eastern_chamber",
+        "name_ar": "غرفة الشرقية",
+        "name_en": "Asharqia Chamber",
+        "url": "https://chamber.org.sa/eastern",
+        "rating": "green",
+        "access_method": "public_web",
+        "coverage_city": ["dammam", "khobar", "jubail"],
+        "coverage_sector": "all",
+    },
+    {
+        "key": "data_gov_sa",
+        "name_ar": "بوابة البيانات المفتوحة (سدايا)",
+        "name_en": "SDAIA Open Data Portal",
+        "url": "https://data.gov.sa",
+        "rating": "green",
+        "access_method": "public_dataset_download",
+        "coverage_city": "all",
+        "coverage_sector": "all",
+    },
+    {
+        "key": "google_places",
+        "name_ar": "Google Places (Maps API)",
+        "name_en": "Google Places via MapsProvider chain",
+        "url": "internal:auto_client_acquisition.providers.maps",
+        "rating": "green",
+        "access_method": "api_with_key",
+        "coverage_city": "all",
+        "coverage_sector": "all",
+        "ingest_strategy": "store_place_id_only_per_terms",
+    },
+    {
+        "key": "saudi_contractors_authority",
+        "name_ar": "هيئة المقاولين السعودية",
+        "name_en": "Saudi Contractors Authority Registry",
+        "url": "https://sca.org.sa",
+        "rating": "green",
+        "access_method": "public_web",
+        "coverage_sector": ["construction"],
+    },
+    {
+        "key": "saudi_tourism_authority",
+        "name_ar": "هيئة السياحة السعودية",
+        "name_en": "Saudi Tourism Authority Registry",
+        "url": "https://scth.gov.sa",
+        "rating": "green",
+        "access_method": "public_web",
+        "coverage_sector": ["hospitality_events"],
+    },
+    {
+        "key": "linkedin",
+        "name_ar": "LinkedIn",
+        "name_en": "LinkedIn",
+        "url": "https://www.linkedin.com",
+        "rating": "red",
+        "access_method": "scraping_prohibited",
+        "ingest_strategy": "manual_research_only_no_bulk_ingest",
+        "note": "Dealix uses LinkedIn for human research + human send only — never for data ingestion.",
+    },
+    {
+        "key": "linkedin_chamber_other_yellow",
+        "name_ar": "أدلة تجارية مدفوعة",
+        "name_en": "Paid B2B Data Vendors (general)",
+        "url": "various",
+        "rating": "yellow",
+        "access_method": "purchase_with_documentation",
+        "ingest_strategy": "audit_lead_file_first_then_import",
+        "note": "Demand source documentation, allowed_use, last_updated, sample of 100 rows before paying.",
+    },
+]
+
+
 def _new_id(prefix: str = "") -> str:
     suffix = uuid.uuid4().hex[:24]
     return f"{prefix}{suffix}" if prefix else suffix
@@ -80,6 +175,22 @@ async def _safe_commit(session, *objs: Any) -> bool:
         except Exception:
             pass
         return False
+
+
+# ── Source catalog ────────────────────────────────────────────────
+@router.get("/sources/catalog")
+async def list_data_sources() -> dict[str, Any]:
+    """Compliance-graded Saudi business data source catalog."""
+    return {
+        "count": len(SAUDI_DATA_SOURCE_CATALOG),
+        "rating_legend": {
+            "green": "public + clearly permissive — direct ingest",
+            "yellow": "public but ToS-sensitive — lookup-only, manual approval",
+            "red": "scraping forbidden / paywalled-without-allowed-use — DO NOT INGEST",
+        },
+        "sources": SAUDI_DATA_SOURCE_CATALOG,
+        "doc": "See docs/ops/SAUDI_DATA_SOURCE_CATALOG.md for ingestion strategy per source.",
+    }
 
 
 # ── Import: register a dataset ────────────────────────────────────
