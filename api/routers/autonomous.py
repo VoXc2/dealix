@@ -847,3 +847,23 @@ async def admin_test_insert() -> dict[str, Any]:
     except Exception as e:
         log.exception("test_insert_failed")
         return {"status": "error", "error": str(e)[:500], "type": type(e).__name__}
+
+
+@router.get("/admin/db-diag")
+async def db_diag() -> dict[str, Any]:
+    """Show DATABASE_URL prefix (redacted) + try a simple query."""
+    import os
+    url = os.getenv("DATABASE_URL", "")
+    safe_url = (url[:30] + "..." + url[-20:]) if len(url) > 60 else url
+    try:
+        from core.config.settings import get_settings
+        s = get_settings()
+        cfg_url = s.database_url
+        cfg_safe = (cfg_url[:35] + "..." + cfg_url[-25:]) if len(cfg_url) > 70 else cfg_url
+    except Exception as e:
+        cfg_safe = f"settings_error: {e}"
+    return {
+        "raw_env_prefix": safe_url[:50],
+        "raw_env_length": len(url),
+        "settings_url_prefix": cfg_safe[:80],
+    }
