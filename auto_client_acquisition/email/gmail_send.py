@@ -36,6 +36,7 @@ log = logging.getLogger(__name__)
 
 OAUTH_TOKEN_URL = "https://oauth2.googleapis.com/token"
 GMAIL_SEND_URL = "https://gmail.googleapis.com/gmail/v1/users/me/messages/send"
+GMAIL_DRAFTS_URL = "https://gmail.googleapis.com/gmail/v1/users/me/drafts"
 
 
 @dataclass
@@ -161,6 +162,73 @@ async def send_email(
     return GmailSendResult(status="http_error", error=f"HTTP {r.status_code}: {r.text[:300]}")
 
 
+@dataclass
+class GmailDraftResult:
+    status: str  # ok | no_keys | auth_error | http_error
+    draft_id: str | None = None
+    message_id: str | None = None
+    error: str | None = None
+
+
+async def create_draft(
+    *,
+    to_email: str,
+    subject: str,
+    body_plain: str,
+    sender_name: str = "Sami | Dealix",
+    reply_to: str | None = None,
+) -> GmailDraftResult:
+    """
+    Create a Gmail draft via users.drafts.create. Sami reviews + sends manually.
+    Per Gmail API: requires gmail.compose or gmail.modify scope (gmail.send alone
+    is insufficient for drafts.create).
+    """
+    if not is_configured():
+        return GmailDraftResult(status="no_keys", error="GMAIL_* env vars not set")
+
+    sender_email = os.getenv("GMAIL_SENDER_EMAIL", "").strip()
+    list_unsub = os.getenv("GMAIL_LIST_UNSUBSCRIBE", sender_email)
+
+    async with httpx.AsyncClient() as client:
+        access_token = await _refresh_access_token(client)
+        if not access_token:
+            return GmailDraftResult(status="auth_error", error="failed_to_refresh_access_token")
+
+        raw = _build_rfc822(
+            sender_name=sender_name,
+            sender_email=sender_email,
+            to_email=to_email,
+            subject=subject,
+            body_plain=body_plain,
+            reply_to=reply_to,
+            list_unsubscribe_email=list_unsub,
+        )
+        b64 = base64.urlsafe_b64encode(raw).decode("ascii").rstrip("=")
+
+        try:
+            r = await client.post(
+                GMAIL_DRAFTS_URL,
+                headers={
+                    "Authorization": f"Bearer {access_token}",
+                    "Content-Type": "application/json",
+                },
+                json={"message": {"raw": b64}},
+                timeout=15.0,
+            )
+        except Exception as exc:  # noqa: BLE001
+            return GmailDraftResult(status="http_error", error=str(exc))
+
+    if r.status_code == 200:
+        body = r.json() or {}
+        msg = body.get("message") or {}
+        return GmailDraftResult(
+            status="ok",
+            draft_id=body.get("id"),
+            message_id=msg.get("id"),
+        )
+    return GmailDraftResult(status="http_error", error=f"HTTP {r.status_code}: {r.text[:300]}")
+
+
 # ── OAuth setup helper (Sami runs once locally) ────────────────────
 def get_oauth_setup_instructions() -> dict[str, Any]:
     """
@@ -168,7 +236,7 @@ def get_oauth_setup_instructions() -> dict[str, Any]:
     Used by /api/v1/email/connect/gmail when keys aren't configured yet.
     """
     return {
-        "needed_scope": "https://www.googleapis.com/auth/gmail.send",
+        "needed_scope": "https://www.googleapis.com/auth/gmail.compose",
         "steps": [
             "1. Open https://console.cloud.google.com/apis/credentials",
             "2. Create OAuth 2.0 Client ID — type: Desktop app — name: Dealix Gmail Sender",
@@ -188,7 +256,7 @@ def get_oauth_setup_instructions() -> dict[str, Any]:
             "from google_auth_oauthlib.flow import InstalledAppFlow\n"
             "flow = InstalledAppFlow.from_client_secrets_file(\n"
             "    'client_secret.json',\n"
-            "    scopes=['https://www.googleapis.com/auth/gmail.send'],\n"
+            "    scopes=['https://www.googleapis.com/auth/gmail.compose'],\n"
             ")\n"
             "creds = flow.run_local_server(port=0, prompt='consent', access_type='offline')\n"
             "print('REFRESH_TOKEN:', creds.refresh_token)"

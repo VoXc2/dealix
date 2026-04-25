@@ -335,6 +335,54 @@ class SuppressionRecord(Base):
     created_at: Mapped[datetime] = mapped_column(default=utcnow)
 
 
+class GmailDraftRecord(Base):
+    """Gmail draft created by the revenue machine — Sami reviews + sends."""
+
+    __tablename__ = "gmail_drafts"
+
+    id: Mapped[str] = mapped_column(String(64), primary_key=True)
+    account_id: Mapped[str | None] = mapped_column(String(64), nullable=True, index=True)
+    queue_id: Mapped[str | None] = mapped_column(String(64), nullable=True, index=True)
+    to_email: Mapped[str] = mapped_column(String(255), index=True)
+    subject: Mapped[str] = mapped_column(String(500))
+    body_plain: Mapped[str] = mapped_column(Text)
+    sender_email: Mapped[str] = mapped_column(String(255), default="")
+    gmail_draft_id: Mapped[str | None] = mapped_column(String(128), nullable=True, index=True)
+    gmail_message_id: Mapped[str | None] = mapped_column(String(128), nullable=True)
+    status: Mapped[str] = mapped_column(String(32), default="created", index=True)
+    # created | reviewed | sent | discarded | failed
+    sequence_step: Mapped[int] = mapped_column(Integer, default=0)
+    sent_at: Mapped[datetime | None] = mapped_column(nullable=True, index=True)
+    discarded_reason: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    created_at: Mapped[datetime] = mapped_column(default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(default=utcnow, onupdate=utcnow)
+
+
+class LinkedInDraftRecord(Base):
+    """LinkedIn drafts — manual send only (no automation per LinkedIn ToS)."""
+
+    __tablename__ = "linkedin_drafts"
+
+    id: Mapped[str] = mapped_column(String(64), primary_key=True)
+    account_id: Mapped[str | None] = mapped_column(String(64), nullable=True, index=True)
+    company_name: Mapped[str] = mapped_column(String(255))
+    contact_name: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    profile_search_query: Mapped[str] = mapped_column(String(500))
+    company_context: Mapped[str | None] = mapped_column(Text, nullable=True)
+    reason_for_outreach: Mapped[str | None] = mapped_column(Text, nullable=True)
+    message_ar: Mapped[str] = mapped_column(Text)
+    message_en: Mapped[str | None] = mapped_column(Text, nullable=True)
+    followup_day_3: Mapped[str | None] = mapped_column(Text, nullable=True)
+    followup_day_7: Mapped[str | None] = mapped_column(Text, nullable=True)
+    status: Mapped[str] = mapped_column(String(32), default="draft", index=True)
+    # draft | sent | replied | unreachable
+    sent_at: Mapped[datetime | None] = mapped_column(nullable=True)
+    reply_text: Mapped[str | None] = mapped_column(Text, nullable=True)
+    reply_received_at: Mapped[datetime | None] = mapped_column(nullable=True)
+    created_at: Mapped[datetime] = mapped_column(default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(default=utcnow, onupdate=utcnow)
+
+
 class EmailSendLog(Base):
     """Auditable log of every email send attempt — required for compliance + bounce tracking."""
 
