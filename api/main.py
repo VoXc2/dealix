@@ -18,9 +18,11 @@ from api.routers import (
     agents,
     automation,
     autonomous,
+    customer_success,
     data,
     dominance,
     drafts,
+    ecosystem,
     email_send,
     full_os,
     health,
@@ -131,6 +133,8 @@ def create_app() -> FastAPI:
     app.include_router(drafts.router)
     app.include_router(dominance.router)
     app.include_router(full_os.router)
+    app.include_router(customer_success.router)
+    app.include_router(ecosystem.router)
     app.include_router(public.router)
     app.include_router(admin.router)
 

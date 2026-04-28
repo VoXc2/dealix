@@ -427,3 +427,47 @@ class EmailSendLog(Base):
     compliance_check: Mapped[dict] = mapped_column("compliance_check_json", JSON, default=dict)
     created_at: Mapped[datetime] = mapped_column(default=utcnow)
     updated_at: Mapped[datetime] = mapped_column(default=utcnow, onupdate=utcnow)
+
+
+class WebhookSubscriptionRecord(Base):
+    """Outbound webhook subscription — Scale tier ecosystem play.
+
+    Customers register an HTTPS endpoint + secret. Dealix POSTs signed events
+    when matching activity occurs (lead.created, deal.won, payment.received...).
+    """
+
+    __tablename__ = "webhook_subscriptions"
+
+    id: Mapped[str] = mapped_column(String(64), primary_key=True)
+    customer_id: Mapped[str] = mapped_column(String(64), index=True)
+    endpoint_url: Mapped[str] = mapped_column(String(500))
+    secret: Mapped[str] = mapped_column(String(128))  # HMAC signing key — never exposed back
+    events: Mapped[list] = mapped_column(JSON, default=list)  # empty list = all events
+    description: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    enabled: Mapped[bool] = mapped_column(Boolean, default=True, index=True)
+    last_delivery_at: Mapped[datetime | None] = mapped_column(nullable=True)
+    last_status_code: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    consecutive_failures: Mapped[int] = mapped_column(Integer, default=0)
+    created_at: Mapped[datetime] = mapped_column(default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(default=utcnow, onupdate=utcnow)
+
+
+class WebhookDeliveryRecord(Base):
+    """Per-attempt delivery audit — debug + replay support."""
+
+    __tablename__ = "webhook_deliveries"
+
+    id: Mapped[str] = mapped_column(String(64), primary_key=True)
+    subscription_id: Mapped[str] = mapped_column(String(64), index=True)
+    customer_id: Mapped[str] = mapped_column(String(64), index=True)
+    event_id: Mapped[str] = mapped_column(String(64), index=True)
+    event_type: Mapped[str] = mapped_column(String(64), index=True)
+    attempt: Mapped[int] = mapped_column(Integer, default=1)
+    endpoint_url: Mapped[str] = mapped_column(String(500))
+    status_code: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    success: Mapped[bool] = mapped_column(Boolean, default=False, index=True)
+    error: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    duration_ms: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    request_signature: Mapped[str] = mapped_column(String(255), default="")
+    payload: Mapped[dict] = mapped_column("payload_json", JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(default=utcnow, index=True)
