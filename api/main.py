@@ -33,6 +33,7 @@ from api.routers import (
     prospect,
     public,
     revenue,
+    revenue_os,
     sales,
     sectors,
     webhooks,
@@ -137,6 +138,7 @@ def create_app() -> FastAPI:
     app.include_router(customer_success.router)
     app.include_router(ecosystem.router)
     app.include_router(command_center.router)
+    app.include_router(revenue_os.router)
     app.include_router(public.router)
     app.include_router(admin.router)
 
