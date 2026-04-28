@@ -1,5 +1,5 @@
 # Dealix API Map
-**Auto-generated** from `api/routers/*.py`. Total: 139 endpoints.
+**Auto-generated** from `api/routers/*.py`. Total: 145 endpoints.
 
 | Method | Path | Router | Function | Description |
 |---|---|---|---|---|
@@ -87,6 +87,12 @@
 | POST | `/api/v1/email/send-approved` | email_send | `send_approved` |  |
 | POST | `/api/v1/email/send-batch` | email_send | `send_batch` |  |
 | GET | `/api/v1/email/status` | email_send | `email_status` |  |
+| POST | `/api/v1/os/bulk-process` | full_os | `os_bulk_process` |  |
+| POST | `/api/v1/os/process` | full_os | `os_process` |  |
+| POST | `/api/v1/os/process-and-act` | full_os | `os_process_and_act` |  |
+| GET | `/api/v1/os/stages` | full_os | `list_stages` | Show all 12 stages + allowed transitions. |
+| POST | `/api/v1/os/test-send` | full_os | `os_test_send` |  |
+| GET | `/api/v1/os/whatsapp-providers` | full_os | `whatsapp_providers_status` | Which WhatsApp providers are configured + the smart-fallback chain order. |
 | GET | `/_test_sentry` | health | `test_sentry` | Deliberate error to verify Sentry integration. |
 | GET | `/health` | health | `health` | Liveness + config summary. |
 | GET | `/health/deep` | health | `health_deep` | Deep health check — verifies DB, Redis, LLM providers. |
@@ -153,6 +159,7 @@
 - **dominance**: 8 endpoints
 - **drafts**: 14 endpoints
 - **email_send**: 5 endpoints
+- **full_os**: 6 endpoints
 - **health**: 6 endpoints
 - **leads**: 6 endpoints
 - **outreach**: 4 endpoints

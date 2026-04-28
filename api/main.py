@@ -22,6 +22,7 @@ from api.routers import (
     dominance,
     drafts,
     email_send,
+    full_os,
     health,
     leads,
     outreach,
@@ -129,6 +130,7 @@ def create_app() -> FastAPI:
     app.include_router(email_send.router)
     app.include_router(drafts.router)
     app.include_router(dominance.router)
+    app.include_router(full_os.router)
     app.include_router(public.router)
     app.include_router(admin.router)
 
