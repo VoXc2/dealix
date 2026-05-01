@@ -27,13 +27,22 @@ uvicorn api.main:app --host 0.0.0.0 --port ${PORT:-8000}
 
 ## Smoke بعد النشر
 
-من جهازك:
+من جهازك (مسارات GET الحرجة، بدون أسرار في الريبو):
+
+```bash
+set STAGING_BASE_URL=https://<staging-host>
+python scripts/smoke_staging.py
+```
+
+أو:
 
 ```bash
 python scripts/smoke_local_api.py --base-url https://<staging-host>
 ```
 
-أو `curl` على `/` و`/health` ومسارات الـ API الحرجة.
+قالب متغيرات staging (بدون قيم حقيقية): [`.env.staging.example`](../.env.staging.example).
+
+Smoke يدوي من GitHub: `.github/workflows/staging-smoke.yml` بعد ضبط السر `STAGING_BASE_URL`.
 
 ## Rollback
 
