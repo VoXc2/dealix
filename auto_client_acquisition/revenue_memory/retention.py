@@ -47,11 +47,15 @@ def classify_retention_tier(event_type: str) -> str:
 
 
 def is_expired(event: RevenueEvent, *, now: datetime) -> bool:
-    """Whether the event has passed its retention window."""
+    """Whether the event has passed its retention window.
+
+    Legal-hold events never expire — PDPL Article on lawful basis records
+    requires indefinite retention for opt-outs / consents / DSR receipts.
+    """
     tier = classify_retention_tier(event.event_type)
     if tier == "legal_hold":
-        days = RETENTION_DAYS_LEGAL
-    elif tier == "operational":
+        return False  # never expires — preserves the audit trail forever
+    if tier == "operational":
         days = RETENTION_DAYS_OPERATIONAL
     else:
         days = RETENTION_DAYS_BUSINESS

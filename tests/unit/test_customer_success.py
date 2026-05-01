@@ -60,8 +60,11 @@ def test_health_buckets_in_order():
 
 def test_health_returns_drivers():
     h = compute_health(customer_id="c3", logins_last_30d=15, drafts_approved_last_30d=20)
-    assert isinstance(h.drivers, dict)
-    assert {"engagement", "outcomes", "adoption", "sentiment"}.issubset(h.drivers.keys())
+    # drivers is a list[str] of human-readable driver tags
+    assert isinstance(h.drivers, list)
+    # And the 4 dimension scores are exposed as named attributes
+    for dim in ("engagement", "outcomes", "adoption", "sentiment"):
+        assert hasattr(h, dim)
 
 
 # ── QBR generator ─────────────────────────────────────────────────
@@ -82,8 +85,9 @@ def test_qbr_returns_markdown():
 
 def test_qbr_sections_have_titles():
     qbr = generate_qbr(customer_id="c", customer_name="X")
+    # QBRSection is a dataclass with a title attribute
     for s in qbr.sections:
-        assert isinstance(s.get("title", ""), str)
+        assert isinstance(s.title, str)
 
 
 # ── Benchmarks — privacy guard ────────────────────────────────────
@@ -140,7 +144,8 @@ def test_compare_returns_position():
     )
     assert out is not None
     assert out.customer_id == "c1"
-    assert 0 <= out.percentile_rank <= 100
+    # Field is named `customer_percentile` (int 0-100)
+    assert 0 <= out.customer_percentile <= 100
 
 
 def test_compare_below_min_cohort_returns_none():
@@ -159,11 +164,11 @@ def test_pulse_skips_undersized_sectors():
     """Sectors with <5 samples must NOT appear in published pulse."""
     pulse = saudi_b2b_pulse(
         sector_data={
-            "clinics": [0.10, 0.12, 0.14, 0.15, 0.18, 0.20],
-            "tiny_sector": [0.10, 0.12],  # below min — must be excluded
+            "clinics": {"reply_rate": [0.10, 0.12, 0.14, 0.15, 0.18, 0.20]},
+            "tiny_sector": {"reply_rate": [0.10, 0.12]},  # below min — must be excluded
         }
     )
-    sector_names = [s["sector"] for s in pulse.get("sectors", [])]
+    sector_names = {b["sector"] for b in pulse.get("benchmarks", [])}
     assert "clinics" in sector_names
     assert "tiny_sector" not in sector_names
 
@@ -171,10 +176,11 @@ def test_pulse_skips_undersized_sectors():
 def test_pulse_returns_publishable_dict():
     pulse = saudi_b2b_pulse(
         sector_data={
-            "clinics": [0.10, 0.12, 0.14, 0.15, 0.18, 0.20],
-            "real_estate": [0.04, 0.06, 0.07, 0.09, 0.11],
+            "clinics": {"reply_rate": [0.10, 0.12, 0.14, 0.15, 0.18, 0.20]},
+            "real_estate": {"reply_rate": [0.04, 0.06, 0.07, 0.09, 0.11]},
         }
     )
     assert isinstance(pulse, dict)
-    assert "sectors" in pulse
-    assert "published_at" in pulse or "timestamp" in pulse or len(pulse) >= 1
+    assert "benchmarks" in pulse
+    assert pulse["report_name"] == "Saudi B2B Pulse"
+    assert pulse["min_cohort_for_publication"] >= 5
