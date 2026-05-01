@@ -19,6 +19,7 @@ from api.routers import (
     autonomous,
     health,
     leads,
+    personal_operator,
     pricing,
     prospect,
     public,
@@ -63,7 +64,8 @@ def create_app() -> FastAPI:
             "**Phase 9**: Autonomous Growth — sector intel, content, distribution, "
             "enrichment, competitor analysis, market research.\n\n"
             "**Phase 10 / v3**: Autonomous Saudi Revenue OS — revenue memory, "
-            "safe agent runtime, market radar, compliance OS, and revenue science."
+            "safe agent runtime, market radar, compliance OS, revenue science, "
+            "and Sami Personal Strategic Operator."
         ),
         docs_url="/docs",
         redoc_url="/redoc",
@@ -108,6 +110,7 @@ def create_app() -> FastAPI:
     app.include_router(prospect.router)
     app.include_router(autonomous.router)
     app.include_router(v3.router)
+    app.include_router(personal_operator.router)
     app.include_router(public.router)
     app.include_router(admin.router)
 
@@ -121,6 +124,7 @@ def create_app() -> FastAPI:
             "docs": "/docs",
             "health": "/health",
             "v3": "/api/v1/v3/command-center/snapshot",
+            "personal_operator": "/api/v1/personal-operator/daily-brief",
         }
 
     return app
