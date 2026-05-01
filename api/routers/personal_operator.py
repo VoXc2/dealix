@@ -14,8 +14,9 @@ from auto_client_acquisition.personal_operator import (
     draft_intro_message,
     suggest_opportunities,
 )
+from auto_client_acquisition.personal_operator.launch_report import build_launch_report
 from auto_client_acquisition.personal_operator.operator import apply_decision, launch_readiness_score
-from auto_client_acquisition.v3.project_intelligence import explain_project_intelligence_stack
+from auto_client_acquisition.v3.project_intelligence import answer_operator_question, explain_project_intelligence_stack
 
 router = APIRouter(prefix="/api/v1/personal-operator", tags=["personal-operator"])
 
@@ -24,9 +25,15 @@ def _opportunity_by_id(opportunity_id: str):
     for opportunity in suggest_opportunities(default_sami_profile()):
         if opportunity.id == opportunity_id:
             return opportunity
-    # Demo fallback because deterministic sample IDs change per process.
     opportunities = suggest_opportunities(default_sami_profile())
     return opportunities[0] if opportunities else None
+
+
+def _parse_decision(raw: Any) -> ApprovalDecision:
+    try:
+        return ApprovalDecision(str(raw).lower().strip())
+    except ValueError:
+        raise HTTPException(status_code=400, detail="invalid_decision") from None
 
 
 @router.get("/daily-brief")
@@ -43,11 +50,7 @@ async def opportunities() -> dict[str, Any]:
 
 @router.post("/opportunities")
 async def create_contextual_opportunities(body: dict[str, Any] = Body(default_factory=dict)) -> dict[str, Any]:
-    """Return operator opportunities with optional context.
-
-    Later this will use Supabase project memory + relationship graph. For now it
-    returns deterministic safe opportunities with the user context echoed.
-    """
+    """Return operator opportunities with optional context."""
     items = suggest_opportunities(default_sami_profile())
     return {
         "context_received": body,
@@ -61,8 +64,17 @@ async def decide_opportunity(opportunity_id: str, body: dict[str, Any] = Body(..
     opportunity = _opportunity_by_id(opportunity_id)
     if not opportunity:
         raise HTTPException(status_code=404, detail="opportunity_not_found")
-    decision = ApprovalDecision(body.get("decision", "draft"))
-    return {"opportunity": opportunity.to_card(), "decision": decision.value, "result": apply_decision(opportunity, decision)}
+    decision = _parse_decision(body.get("decision", "draft"))
+    result = apply_decision(opportunity, decision)
+    approval_required = bool(result.get("approval_required", decision != ApprovalDecision.SKIP))
+    next_action = str(result.get("next_action", "none"))
+    return {
+        "opportunity": opportunity.to_card(),
+        "decision": decision.value,
+        "result": result,
+        "approval_required": approval_required,
+        "next_action": next_action,
+    }
 
 
 @router.post("/messages/draft")
@@ -92,21 +104,17 @@ async def project_intelligence() -> dict[str, Any]:
 @router.post("/project/ask")
 async def ask_project(body: dict[str, Any] = Body(...)) -> dict[str, Any]:
     question = str(body.get("question", "وش ناقص المشروع؟"))
+    deep = bool(body.get("deep_scan", False))
+    root = str(body.get("root", "."))
+    answered = answer_operator_question(question, root=root, deep_scan=deep)
     readiness = launch_readiness_score()
     return {
         "question": question,
-        "answer_ar": (
-            "المشروع أساسه قوي، لكن ناقصه قبل الإطلاق: دمج PR v3، اختبارات، "
-            "ربط Supabase embeddings، WhatsApp approval buttons، Gmail draft، Calendar schedule، "
-            "واجهة Personal Operator، ومراقبة Langfuse/Sentry."
-        ),
+        "answer_ar": answered["answer_ar"],
+        "semantic_status_ar": answered["semantic_status_ar"],
+        "related_files": answered["related_files"],
+        "search_hits": answered.get("search_hits", []),
         "launch_readiness": readiness,
-        "recommended_next_files": [
-            "auto_client_acquisition/personal_operator/operator.py",
-            "api/routers/personal_operator.py",
-            "supabase/migrations/202605010001_v3_project_memory.sql",
-            "landing/personal-operator.html",
-        ],
     }
 
 
@@ -115,17 +123,24 @@ async def launch_readiness() -> dict[str, Any]:
     return launch_readiness_score()
 
 
+@router.get("/launch-report")
+async def launch_report() -> dict[str, Any]:
+    return build_launch_report().to_dict()
+
+
 @router.post("/meetings/schedule-draft")
 async def schedule_draft(body: dict[str, Any] = Body(default_factory=dict)) -> dict[str, Any]:
     return {
         "status": "calendar_draft_ready",
         "approval_required": True,
         "title": body.get("title", "Dealix Strategic Intro"),
+        "duration": int(body.get("duration_minutes", 30)),
         "duration_minutes": int(body.get("duration_minutes", 30)),
         "agenda_ar": [
             "تعريف سريع بـ Dealix",
             "أخذ رأي الشخص في التموضع والسوق",
             "تحديد فرصة تعاون أو intro قادمة",
         ],
+        "note_ar": "هذا المسار يجهز payload الاجتماع فقط. إنشاء حدث في Google Calendar يتطلب موافقة صريحة وطبقة تكامل.",
         "note": "This endpoint prepares the meeting payload. Actual Google Calendar creation should only happen after approval.",
     }

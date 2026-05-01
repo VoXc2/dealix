@@ -101,6 +101,9 @@ class Settings(BaseSettings):
     whatsapp_business_account_id: str | None = None
     whatsapp_verify_token: SecretStr | None = None
     whatsapp_app_secret: SecretStr | None = None
+    # Live WhatsApp Cloud API send — MUST remain False until webhook + opt-in + legal sign-off.
+    # Env: WHATSAPP_ALLOW_LIVE_SEND (default false).
+    whatsapp_allow_live_send: bool = False
 
     # ── Email ───────────────────────────────────────────────────
     email_provider: Literal["resend", "sendgrid", "smtp"] = "resend"

@@ -56,3 +56,6 @@ opentelemetry-instrumentation-fastapi>=0.62b0
 opentelemetry-instrumentation-httpx>=0.62b0
 opentelemetry-instrumentation-sqlalchemy>=0.62b0
 sentry-sdk[fastapi]>=2.58.0
+
+# IANA time zones on Windows (zoneinfo needs tzdata)
+tzdata>=2025.1

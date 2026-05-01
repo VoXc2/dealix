@@ -40,6 +40,24 @@
       <div class="card"><div class="metric">100%</div><h2>الهدف</h2><p>الوصول إلى نظام يستهدف، يقترح، يكتب، يراجع، ويحجز بموافقتك، ثم يتعلم من كل نتيجة.</p></div>
       <div class="card"><div class="metric">0</div><h2>إرسال تلقائي خطر</h2><p>أي رسالة خارجية أو WhatsApp cold أو LinkedIn DM تحتاج موافقة وسياسة أمان.</p></div>
     </section>
+
+    <section class="section card">
+      <h2>Project Memory</h2>
+      <p>فهرسة محلية + هجرة Supabase/pgvector — راجع <code>docs/SUPABASE_PROJECT_MEMORY_SETUP.md</code>.</p>
+    </section>
+
+    <section class="section card">
+      <h2>أمثلة API</h2>
+      <pre style="white-space:pre-wrap;background:#0b1410;padding:16px;border-radius:14px;border:1px solid #203b2d;font-size:14px">GET /api/v1/personal-operator/daily-brief
+GET /api/v1/personal-operator/opportunities
+GET /api/v1/personal-operator/launch-report
+GET /api/v1/v3/command-center/snapshot
+POST /api/v1/personal-operator/project/ask
+  { "question": "وش ناقص المشروع؟" }
+POST /api/v1/personal-operator/messages/draft
+  { "tone": "warm", "opportunity_id": "opp_internal_project" }</pre>
+      <p style="margin-top:12px;color:#9fb8ad"><b>ثقة:</b> لا يُرسل واتساب أو بريد خارجي تلقائياً — كل شيء مسودة حتى الموافقة.</p>
+    </section>
   </main>
 </body>
 </html>

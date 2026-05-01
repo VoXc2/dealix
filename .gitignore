@@ -143,3 +143,6 @@ playground/
 # ─────────────────────────────────────────────────────────────
 .langfuse/
 traces/
+
+# Local Dealix index output
+.dealix/

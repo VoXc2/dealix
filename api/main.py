@@ -17,6 +17,7 @@ from api.routers import (
     admin,
     agents,
     autonomous,
+    business,
     health,
     leads,
     personal_operator,
@@ -110,6 +111,7 @@ def create_app() -> FastAPI:
     app.include_router(prospect.router)
     app.include_router(autonomous.router)
     app.include_router(v3.router)
+    app.include_router(business.router)
     app.include_router(personal_operator.router)
     app.include_router(public.router)
     app.include_router(admin.router)
@@ -123,8 +125,10 @@ def create_app() -> FastAPI:
             "env": settings.app_env,
             "docs": "/docs",
             "health": "/health",
-            "v3": "/api/v1/v3/command-center/snapshot",
-            "personal_operator": "/api/v1/personal-operator/daily-brief",
+            "v3_command_center": "/api/v1/v3/command-center/snapshot",
+            "personal_operator_daily_brief": "/api/v1/personal-operator/daily-brief",
+            "personal_operator_launch_report": "/api/v1/personal-operator/launch-report",
+            "business_pricing": "/api/v1/business/pricing",
         }
 
     return app

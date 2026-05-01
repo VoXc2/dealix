@@ -57,6 +57,7 @@ dependencies = [
     "email-validator>=2.2.0",
     "phonenumbers>=8.13.0",
     "python-dateutil>=2.9.0",
+    "tzdata>=2025.1",
 
     # Observability
     "structlog>=24.4.0",

@@ -8,7 +8,7 @@ from fastapi import APIRouter, Body
 
 from auto_client_acquisition.v3.agents import AgentName, AgentTask, SafeAgentRuntime, agent_catalog
 from auto_client_acquisition.v3.compliance_os import ContactPolicyInput, assess_contactability, campaign_risk_report, ropa_stub
-from auto_client_acquisition.v3.market_radar import demo_signals, rank_opportunities, sector_heatmap
+from auto_client_acquisition.v3.market_radar import demo_signals, rank_opportunities, sector_heatmap, signal_catalog
 from auto_client_acquisition.v3.memory import EventType, RevenueEvent, demo_memory
 from auto_client_acquisition.v3.revenue_science import FunnelInputs, churn_risk_score, demo_forecast, forecast_revenue, impact_simulation
 
@@ -76,6 +76,11 @@ async def market_radar() -> dict[str, Any]:
         "opportunities": rank_opportunities(signals),
         "sector_heatmap": sector_heatmap(signals),
     }
+
+
+@router.get("/market-radar/signal-catalog")
+async def market_radar_signal_catalog() -> dict[str, Any]:
+    return {"count": len(signal_catalog()), "items": signal_catalog()}
 
 
 @router.post("/compliance/contactability")

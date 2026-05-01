@@ -190,3 +190,65 @@ def explain_project_intelligence_stack() -> dict[str, Any]:
             "Let agents understand project relationships before editing",
         ],
     }
+
+
+def should_block_embedding(text: str) -> tuple[bool, str]:
+    """Block embedding if content looks like secrets (never embed keys/tokens)."""
+    from auto_client_acquisition.personal_operator.memory import looks_like_secret
+
+    if looks_like_secret(text):
+        return True, "secret_pattern_detected"
+    return False, ""
+
+
+def answer_operator_question(
+    question: str,
+    *,
+    root: str | Path = ".",
+    deep_scan: bool = False,
+) -> dict[str, Any]:
+    """Grounded answers for Personal Operator; keyword search optional."""
+    q = question.strip().lower()
+    note_ar = (
+        "البحث الدلالي غير متصل بعد؛ نستخدم مخطط المشروع المعروف والوحدات الأساسية. "
+        "semantic search not connected yet; using project blueprint and known modules."
+    )
+    answer_ar = (
+        "ركّز على: Personal Operator API، ذاكرة المشروع (Supabase/pgvector)، اختبارات، "
+        "واتساب موافقات، Gmail/Calendar كمسودات فقط، ثم pilot لـ 10 عملاء."
+    )
+    related_files: list[str] = [
+        "api/main.py",
+        "api/routers/personal_operator.py",
+        "api/routers/v3.py",
+        "auto_client_acquisition/personal_operator/operator.py",
+        "auto_client_acquisition/v3/project_intelligence.py",
+    ]
+    if "ناقص" in question or "missing" in q:
+        answer_ar = (
+            "قبل التدشين: ربط embeddings بـ Supabase، سياسات RLS، تدفق واتساب بأزرار، "
+            "Gmail draft + Calendar draft بموافقة، تثبيت الاختبارات، ومراقبة (Sentry/OTel)."
+        )
+    elif "خطوة" in question or "next" in q:
+        answer_ar = "الخطوة التالية العملية: شغّل فهرسة المشروع، راجع تقرير الجاهزية، ثم ربط pilot مع قائمة 10 مؤسسين."
+    elif "ملف" in question or "files" in q or "pr" in q:
+        answer_ar = "أهم الملفات: `api/routers/personal_operator.py`, `auto_client_acquisition/personal_operator/`, `supabase/migrations/`."
+    elif "supabase" in q:
+        answer_ar = "أفضل مسار: Postgres + pgvector + Edge Function للـ embeddings، ومفتاح الخدمة فقط في السيرفر وليس في الواجهة."
+    elif "whatsapp" in q or "واتساب" in question or "buttons" in q:
+        answer_ar = "استخدم رسالتين كحد أقصى 3 أزرار لكل رسالة: قبول/تخطي/رسالة ثم اعتماد/تعديل/إلغاء. لا إرسال بارد."
+    elif "personal operator" in q or "مشغل" in question or "operator" in q:
+        answer_ar = "Personal Operator: daily brief + فرص + قرارات + مسودات برسالة عربية وموافقة صريحة قبل أي إرسال خارجي."
+
+    search_hits: list[dict[str, Any]] = []
+    if deep_scan:
+        docs = scan_project(root)
+        search_hits = naive_search(docs, question, limit=5)
+
+    return {
+        "question": question,
+        "answer_ar": answer_ar,
+        "semantic_status_ar": note_ar,
+        "related_files": related_files,
+        "search_hits": search_hits,
+    }

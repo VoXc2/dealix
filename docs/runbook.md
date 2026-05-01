@@ -1,187 +1,323 @@
-# Operations Runbook
+# Dealix Production Runbook
 
-Operational playbook for running AI Company Saudi in production.
-
----
-
-## 🚨 Incident response
-
-### Service down (500s or unreachable)
-
-```bash
-# 1. Check health endpoint
-curl -fv http://localhost:8000/health
-
-# 2. Check systemd (if bare metal)
-sudo systemctl status ai-company
-sudo journalctl -u ai-company -n 200 --no-pager
-
-# 3. Check Docker (if containerized)
-docker compose ps
-docker compose logs --tail=200 app
-
-# 4. Restart
-sudo systemctl restart ai-company  # or: docker compose restart app
-```
-
-### High error rate
-
-1. Check `usage_summary()` from the model router — which provider is failing?
-2. If one LLM is down, fallback chain should handle it — but confirm in logs.
-3. Check provider status pages (Anthropic, OpenAI, Google, Groq).
-4. If persistent: set `PREFERRED_PROVIDER` via env override to bypass the broken one.
-
-### Rate limit errors from an LLM
-
-- Groq and DeepSeek have generous limits but strict bursts.
-- Anthropic: switch to fallback (OpenAI) temporarily.
-- Long-term: enable prompt caching (Anthropic) or request a limit increase.
-
-### Webhook failures
-
-Check:
-- `WHATSAPP_VERIFY_TOKEN` matches what Meta is sending
-- `WHATSAPP_APP_SECRET` is set for signature verification
-- The public URL is reachable (test from a second host)
+**Version:** 1.0 (v3.0.0 Primitive Launch)
+**Owner:** Sami Assiri
+**Last updated:** 2026-04-23
+**Environment:** Production — `api.dealix.me`, `188.245.55.180`
 
 ---
 
-## 🔑 Secret rotation
+## 0. Contact & Access
 
-**Quarterly rotation schedule** (recommended):
+- **Server:** `ssh -o StrictHostKeyChecking=no -i ~/.ssh/dealix_deploy root@188.245.55.180`
+- **App dir:** `/opt/dealix`
+- **systemd unit:** `dealix-api.service`
+- **Database:** Postgres `postgresql://dealix@127.0.0.1:5432/dealix`
+- **Cache/queue:** Redis `127.0.0.1:6379/0`
+- **Nginx:** `api.dealix.me` → `127.0.0.1:8001`, `dealix.me` → `/var/www/dealix/landing`
+- **GitHub:** https://github.com/VoXc2/dealix (main protected, `gh` CLI with `api_credentials=["github"]`)
+- **Sentry:** DSN in `/opt/dealix/.env` → `SENTRY_DSN`
+- **UptimeRobot:** monitors `https://api.dealix.me/health`
+- **PostHog:** EU region `https://eu.i.posthog.com`
 
-1. Generate new key in the provider's dashboard
-2. Update `.env` or secrets manager
-3. Redeploy (`docker compose up -d` or `systemctl restart ai-company`)
-4. Verify `/health` shows the provider still in `providers` list
-5. Revoke the old key
-
-**Emergency rotation** (after suspected leak):
-- Do it **immediately** — don't wait for the deployment
-- Revoke old key BEFORE generating new one if exposure is severe
-- Run `gitleaks detect --source . --log-level debug` on git history
-- Scan GitHub → Settings → Security → Secret scanning alerts
-
----
-
-## 📊 Monitoring targets
-
-| Metric | Target | Alert threshold |
-| --- | --- | --- |
-| `/health` uptime | 99.9% | < 99.5% in 24h |
-| API p50 latency | < 2s | > 5s for 10min |
-| API p95 latency | < 10s | > 20s for 5min |
-| Error rate | < 1% | > 5% for 5min |
-| LLM fallback rate | < 5% | > 20% for 10min |
-| DB connection pool | < 80% | > 95% for 5min |
+### First rule
+**Never edit code or `.env` directly on the server.** All changes flow through GitHub PR → deploy script. Untracked production drift already cost 20 commits once — not again.
 
 ---
 
-## 💾 Backups
+## Scenario 1 — Routine Deploy (merge to main → prod)
 
-### PostgreSQL
+**When:** PR approved and merged to `main`.
 
-Daily backup cron (example for `postgres` container):
+1. **Verify CI green on main**
+   ```bash
+   gh run list --repo VoXc2/dealix --branch main --limit 3 --json name,status,conclusion
+   ```
+   All three latest must be `completed / success`. If not — **abort**.
 
-```bash
-# /etc/cron.daily/ai-company-backup
-#!/bin/bash
-BACKUP_DIR=/var/backups/ai-company
-DATE=$(date +%Y%m%d_%H%M%S)
-docker exec ai-company-postgres pg_dump -U ai_user ai_company | gzip > "$BACKUP_DIR/ai_company_$DATE.sql.gz"
-# Keep 30 days
-find "$BACKUP_DIR" -name "*.sql.gz" -mtime +30 -delete
-```
+2. **SSH to server**
+   ```bash
+   ssh -o StrictHostKeyChecking=no -i ~/.ssh/dealix_deploy root@188.245.55.180
+   ```
 
-### Restore
+3. **Snapshot current state (rollback safety)**
+   ```bash
+   cd /opt/dealix
+   git rev-parse HEAD > /opt/dealix/.last_good_sha
+   cp .env .env.bak.$(date -u +%Y%m%dT%H%M%SZ)
+   ```
 
-```bash
-gunzip -c backup.sql.gz | docker exec -i ai-company-postgres psql -U ai_user ai_company
-```
+4. **Pull + install + migrate**
+   ```bash
+   git fetch origin
+   git checkout main
+   git pull --ff-only origin main
+   /opt/dealix/.venv/bin/pip install -r requirements.txt
+   /opt/dealix/.venv/bin/alembic upgrade head
+   ```
 
----
+5. **Restart service**
+   ```bash
+   systemctl restart dealix-api
+   systemctl status dealix-api --no-pager
+   ```
 
-## 🧹 Maintenance windows
+6. **Health verification (all must pass)**
+   ```bash
+   curl -sf https://api.dealix.me/health
+   curl -sf https://api.dealix.me/health/deep | jq .
+   curl -sf https://api.dealix.me/api/v1/pricing/plans | jq '.plans | length'
+   ```
+   `/health/deep` must show `postgres`, `redis`, `llm_providers` all green.
 
-- **Dependencies**: review Dependabot PRs weekly (Monday mornings Riyadh time)
-- **LLM model versions**: review quarterly (Claude, Gemini, Llama all release updates frequently)
-- **Infrastructure**: OS + Docker updates monthly
-- **Certificate renewal**: Let's Encrypt auto-renews; monitor via `certbot renew --dry-run`
+7. **Trigger Sentry + PostHog probes**
+   ```bash
+   curl -sf -H "X-API-Key: $ADMIN_KEY" https://api.dealix.me/api/v1/admin/sentry-check
+   ```
+   Verify in Sentry + PostHog dashboards within 60s.
 
----
-
-## 📈 Scaling
-
-### Vertical (single-node)
-
-Start with 2 workers × 1 CPU × 1 GB RAM. Scale workers linearly with CPU cores:
-```bash
-uvicorn api.main:app --workers 4 --host 0.0.0.0 --port 8000
-```
-
-### Horizontal (multi-node)
-
-Requirements before scaling out:
-- Move from in-process dedup cache (`IntakeAgent._seen_hashes`) to Redis
-- Ensure Postgres connection pooling is tuned (`pool_size`, `max_overflow`)
-- Put nginx / cloud LB in front
-
----
-
-## 🔧 Common tasks
-
-### Rerun a lead through the pipeline
-
-```python
-# In a Python shell with venv activated:
-import asyncio
-from auto_client_acquisition.pipeline import AcquisitionPipeline
-
-p = AcquisitionPipeline()
-result = asyncio.run(p.run(payload={"company":"Test","name":"X","message":"test"}))
-print(result.to_dict())
-```
-
-### Test an LLM provider manually
-
-```python
-import asyncio
-from core.config.models import Task
-from core.llm import get_router
-
-router = get_router()
-print(router.available_providers())
-
-response = asyncio.run(
-    router.run(task=Task.REASONING, messages="Say hi in Arabic.")
-)
-print(response.content)
-print(router.usage_summary())
-```
-
-### Generate a proposal for an existing lead
-
-```bash
-curl -X POST http://localhost:8000/api/v1/sales/proposal \
-  -H "Content-Type: application/json" \
-  -d '{
-    "company_name": "شركة التجريب",
-    "sector": "healthcare",
-    "pain_points": ["بطء المواعيد","فوضى السجلات"],
-    "budget_hint": 45000,
-    "locale": "ar",
-    "region": "Saudi Arabia"
-  }'
-```
+**DoD:** Health green, Sentry ping received, no error spike in Sentry for 10 min.
 
 ---
 
-## 🔗 Useful links
+## Scenario 2 — Rollback (bad deploy, 5-min target)
 
-- FastAPI docs: https://fastapi.tiangolo.com
-- Anthropic API: https://docs.anthropic.com
-- Gemini API: https://ai.google.dev
-- Groq API: https://console.groq.com/docs
-- DeepSeek API: https://api-docs.deepseek.com
-- WhatsApp Cloud API: https://developers.facebook.com/docs/whatsapp/cloud-api
-- HubSpot API: https://developers.hubspot.com
+**Trigger:** error rate spike in Sentry, `/health/deep` red, 5xx surge, or user complaint post-deploy.
+
+1. **Announce in channel** (if you have one — otherwise note in GitHub issue):
+   > Rolling back prod to last good SHA due to <reason>.
+
+2. **SSH in, revert to last known-good SHA**
+   ```bash
+   ssh -i ~/.ssh/dealix_deploy root@188.245.55.180
+   cd /opt/dealix
+   LAST_GOOD=$(cat /opt/dealix/.last_good_sha)
+   git checkout "$LAST_GOOD"
+   /opt/dealix/.venv/bin/pip install -r requirements.txt
+   ```
+
+3. **Roll back migrations only if the bad deploy added new ones**
+   ```bash
+   # Check what the bad deploy added:
+   /opt/dealix/.venv/bin/alembic history | head
+   # Downgrade one step ONLY if necessary:
+   /opt/dealix/.venv/bin/alembic downgrade -1
+   ```
+   **Rule:** never downgrade more than 1 step without Sami's explicit approval.
+
+4. **Restart + verify**
+   ```bash
+   systemctl restart dealix-api
+   curl -sf https://api.dealix.me/health/deep | jq .
+   ```
+
+5. **Re-open main for fix via PR** (no direct commits to main; `main` is protected).
+
+**DoD:** health green on old SHA within 5 minutes, Sentry error rate back to baseline within 10 min.
+**Target:** <5 min from decision to rollback complete.
+
+---
+
+## Scenario 3 — Database Down / Unreachable
+
+**Signals:** `/health/deep` reports `postgres: error`, 500s on leads endpoints, Sentry `OperationalError`.
+
+1. **Triage — is it us or the DB?**
+   ```bash
+   ssh -i ~/.ssh/dealix_deploy root@188.245.55.180
+   systemctl status postgresql --no-pager
+   sudo -u postgres psql -c "SELECT 1;"
+   ```
+
+2. **If systemd says failed:**
+   ```bash
+   journalctl -u postgresql -n 200 --no-pager
+   systemctl restart postgresql
+   sleep 3
+   sudo -u postgres psql -c "SELECT 1;"
+   ```
+
+3. **If disk full** (most common real cause):
+   ```bash
+   df -h /
+   # Clear postgres WAL archives / old backups first:
+   du -sh /var/lib/postgresql/* /var/backups/postgres/* 2>/dev/null | sort -h
+   # DO NOT delete active WAL. Rotate old backups only.
+   ```
+
+4. **If connection pool exhausted** (API is up, DB healthy, but API can't connect):
+   ```bash
+   sudo -u postgres psql -c "SELECT count(*), state FROM pg_stat_activity GROUP BY state;"
+   systemctl restart dealix-api  # drops API's stale connections
+   ```
+
+5. **If DB corrupt / cannot start** → **restore from backup** (Scenario 5).
+
+6. **Post-incident:**
+   - Write a 5-line postmortem in `docs/incidents/YYYY-MM-DD.md`.
+   - If webhooks arrived during outage, drain `WEBHOOKS_DLQ`:
+     ```bash
+     curl -s -H "X-API-Key: $ADMIN_KEY" -X POST \
+       'https://api.dealix.me/api/v1/admin/dlq/webhooks/drain?limit=100'
+     ```
+
+**DoD:** `/health/deep` postgres green; no lost webhooks (DLQ drained or re-queued).
+
+---
+
+## Scenario 4 — LLM Provider Down (Anthropic / OpenAI / Google)
+
+**Signals:** Sentry shows provider timeouts, `/health/deep` `llm_providers` yellow/red, ConnectorFacade circuit breaker open, workflow failures in PostHog.
+
+1. **Confirm it's the provider, not us:**
+   - Check https://status.anthropic.com / https://status.openai.com / https://status.cloud.google.com.
+   - `curl https://api.anthropic.com/v1/messages -H "x-api-key: $ANTHROPIC_API_KEY" ...`
+
+2. **The circuit breaker should already be doing its job** — requests to the failing provider return fast with `CircuitOpenError`, DLQ absorbs the failures.
+
+3. **Verify breaker state:**
+   ```bash
+   curl -s -H "X-API-Key: $ADMIN_KEY" https://api.dealix.me/api/v1/admin/dlq/stats | jq .
+   ```
+   If `OUTBOUND_DLQ` or `ENRICHMENT_DLQ` is growing fast, breaker is protecting us — **no action on our side**.
+
+4. **Temporary failover** (if one provider is the primary and down for >30 min):
+   Edit `/opt/dealix/.env` → `LLM_PROVIDER_PRIORITY="openai,google,anthropic"` (reorder).
+   ```bash
+   systemctl restart dealix-api
+   ```
+   **Rule:** this is the ONLY allowed in-place `.env` edit. Commit the change back to `.env.example` (without secret) next business day.
+
+5. **When provider recovers:**
+   - Breaker auto-half-opens after 60s, then closes on first success.
+   - Drain the relevant DLQ to replay queued work:
+     ```bash
+     curl -s -H "X-API-Key: $ADMIN_KEY" -X POST \
+       'https://api.dealix.me/api/v1/admin/dlq/outbound/drain?limit=50'
+     ```
+
+**DoD:** `/health/deep` llm_providers green; DLQ depth returning to zero; no workflow failures in last 10 min.
+
+---
+
+## Scenario 5 — Backup Restoration (Data Loss / Corruption)
+
+**Trigger:** DB corrupt, accidental mass delete, ransomware, or monthly drill (required).
+
+### Preflight
+1. **Identify the target backup:**
+   ```bash
+   ls -lht /var/backups/postgres/*.sql.gz | head -5
+   ```
+2. **Never restore into production DB.** Restore into a staging clone first, validate, then swap.
+
+### Drill / Restore procedure (on staging — monthly required)
+1. **Create isolated DB:**
+   ```bash
+   sudo -u postgres createdb dealix_restore_test
+   ```
+2. **Restore:**
+   ```bash
+   BACKUP=/var/backups/postgres/dealix-YYYY-MM-DD.sql.gz
+   gunzip -c "$BACKUP" | sudo -u postgres psql dealix_restore_test
+   ```
+3. **Validate row counts against prod (sanity):**
+   ```bash
+   sudo -u postgres psql dealix_restore_test -c "SELECT 'leads' t, count(*) FROM leads UNION ALL SELECT 'users', count(*) FROM users;"
+   ```
+4. **Validate latest lead timestamp is within acceptable RPO (≤24h):**
+   ```bash
+   sudo -u postgres psql dealix_restore_test -c "SELECT max(created_at) FROM leads;"
+   ```
+5. **Teardown:**
+   ```bash
+   sudo -u postgres dropdb dealix_restore_test
+   ```
+
+### Real incident restore (production data loss)
+1. **Stop API to freeze writes:**
+   ```bash
+   systemctl stop dealix-api
+   ```
+2. **Rename current DB (do NOT drop — evidence):**
+   ```bash
+   sudo -u postgres psql -c "ALTER DATABASE dealix RENAME TO dealix_corrupt_$(date +%Y%m%d);"
+   sudo -u postgres createdb dealix
+   ```
+3. **Restore latest good backup:**
+   ```bash
+   gunzip -c "$BACKUP" | sudo -u postgres psql dealix
+   ```
+4. **Restart API + verify:**
+   ```bash
+   systemctl start dealix-api
+   curl -sf https://api.dealix.me/health/deep | jq .
+   ```
+5. **Postmortem mandatory** — how data was lost, why backup gap existed, what changed.
+
+**DoD (drill):** restore completes in ≤15 min, row counts ±5% of prod, max timestamp within RPO.
+**DoD (incident):** API back up, no data newer than last backup lost (document gap).
+
+---
+
+## Scenario 6 — Security Incident (suspected breach)
+
+**Signals:** unexplained admin API calls, fail2ban banning authorized IPs, unexpected outbound traffic, Sentry `PermissionError` spike, unknown webhook signatures failing.
+
+1. **Contain first, investigate second:**
+   ```bash
+   ssh -i ~/.ssh/dealix_deploy root@188.245.55.180
+   # Rotate ALL secrets immediately
+   cd /opt/dealix && bash scripts/rotate_secrets.sh
+   systemctl restart dealix-api
+   ```
+
+2. **Lock down UFW to known IPs only** (temporary):
+   ```bash
+   # Save current rules first:
+   ufw status numbered > /tmp/ufw.before.$(date +%s)
+   # Restrict SSH to your IP:
+   ufw delete allow 22/tcp || true
+   ufw allow from <YOUR_PUBLIC_IP> to any port 22
+   ```
+
+3. **Check auth logs:**
+   ```bash
+   journalctl -u ssh -n 500 --no-pager | grep -iE 'accepted|failed'
+   fail2ban-client status sshd
+   ```
+
+4. **Preserve evidence:**
+   ```bash
+   tar -czf /root/incident-$(date +%s).tgz /var/log/nginx /var/log/auth.log /var/log/dealix*
+   ```
+
+5. **Notify Sami, document in `docs/incidents/`, file GitHub security advisory if user data touched.**
+
+**DoD:** all secrets rotated, UFW locked, attacker IPs banned, incident doc drafted within 1h.
+
+---
+
+## Appendix A — Health Check Cheat Sheet
+
+| Signal | Command | Expected |
+|---|---|---|
+| Liveness | `curl -sf https://api.dealix.me/health` | 200 OK |
+| Deep health | `curl -sf https://api.dealix.me/health/deep` | postgres+redis+llm_providers green |
+| CI status | `gh run list --repo VoXc2/dealix --limit 3` | success |
+| DLQ depth | `GET /api/v1/admin/dlq/stats` | 0 across all queues |
+| Pending approvals | `GET /api/v1/admin/approvals/pending` | <10 |
+| Service status | `systemctl status dealix-api` | active (running) |
+| fail2ban | `fail2ban-client status sshd` | jail active |
+| Nginx | `systemctl status nginx` | active (running) |
+
+## Appendix B — Do-Not-Touch List
+
+- `main` branch: protected, no direct push
+- `/opt/dealix/.env.pre-v3.0.0.bak`: emergency reference, never delete
+- `server-backup-20260423-084442` branch: historical evidence, do not force-delete
+- Postgres `dealix_corrupt_*` dbs: keep for 7 days post-incident before dropping
+
+## Appendix C — Runbook Review
+
+Review every 4 weeks. If any command in this runbook failed during a real incident, update it **immediately** after that incident closes.
