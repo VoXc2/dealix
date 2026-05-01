@@ -15,7 +15,7 @@ from fastapi import APIRouter, Body, HTTPException
 from sqlalchemy import select, func
 
 from db.models import ConversationRecord, DealRecord, LeadRecord, TaskRecord
-from db.session import get_session
+from db.session import async_session_factory
 
 router = APIRouter(prefix="/api/v1", tags=["autonomous"])
 log = logging.getLogger(__name__)
@@ -27,6 +27,23 @@ def _new_id(prefix: str = "rec") -> str:
 
 def _utcnow() -> datetime:
     return datetime.now(timezone.utc)
+
+
+async def _safe_commit(session, obj_to_add=None) -> bool:
+    """Try to add+commit; return True on success, False if DB unreachable."""
+    try:
+        if obj_to_add is not None:
+            session.add(obj_to_add)
+        await session.commit()
+        return True
+    except Exception as e:
+        import logging
+        logging.getLogger(__name__).warning("db_unreachable_skip: %s", str(e)[:120])
+        try:
+            await session.rollback()
+        except Exception:
+            pass
+        return False
 
 
 # ── Conversations ───────────────────────────────────────────────
@@ -44,7 +61,7 @@ async def create_conversation(body: dict[str, Any] = Body(...)) -> dict[str, Any
         raise HTTPException(status_code=400, detail="channel_and_inbound_required")
 
     rec_id = _new_id("conv")
-    async with get_session() as session:
+    async with async_session_factory()() as session:
         rec = ConversationRecord(
             id=rec_id,
             lead_id=str(body.get("lead_id")) if body.get("lead_id") else None,
@@ -58,10 +75,9 @@ async def create_conversation(body: dict[str, Any] = Body(...)) -> dict[str, Any
             escalation_required=bool(body.get("escalation_required", False)),
             auto_sent=bool(body.get("auto_sent", False)),
         )
-        session.add(rec)
-        await session.commit()
+        ok = await _safe_commit(session, rec)
 
-    return {"id": rec_id, "status": "logged", "created_at": _utcnow().isoformat()}
+    return {"id": rec_id, "status": "logged" if ok else "skipped_db_unreachable", "created_at": _utcnow().isoformat()}
 
 
 @router.get("/conversations")
@@ -71,7 +87,7 @@ async def list_conversations(
     limit: int = 20,
 ) -> dict[str, Any]:
     limit = max(1, min(100, limit))
-    async with get_session() as session:
+    async with async_session_factory()() as session:
         stmt = select(ConversationRecord).order_by(ConversationRecord.created_at.desc()).limit(limit)
         if lead_id:
             stmt = stmt.where(ConversationRecord.lead_id == lead_id)
@@ -113,7 +129,7 @@ async def create_deal(body: dict[str, Any] = Body(...)) -> dict[str, Any]:
         raise HTTPException(status_code=400, detail="lead_id_required")
 
     deal_id = _new_id("deal")
-    async with get_session() as session:
+    async with async_session_factory()() as session:
         deal = DealRecord(
             id=deal_id,
             lead_id=lead_id,
@@ -123,9 +139,8 @@ async def create_deal(body: dict[str, Any] = Body(...)) -> dict[str, Any]:
             currency=str(body.get("currency") or "SAR"),
             stage=str(body.get("stage") or "new"),
         )
-        session.add(deal)
-        await session.commit()
-    return {"id": deal_id, "stage": "new", "created_at": _utcnow().isoformat()}
+        ok = await _safe_commit(session, deal)
+    return {"id": deal_id, "stage": "new", "status": "ok" if ok else "skipped_db_unreachable", "created_at": _utcnow().isoformat()}
 
 
 @router.patch("/deals/{deal_id}")
@@ -134,7 +149,7 @@ async def update_deal(deal_id: str, body: dict[str, Any] = Body(...)) -> dict[st
     Update deal stage/amount/payment_status. Common path: payment_requested → paid.
     Body: any subset of {stage, amount, currency}
     """
-    async with get_session() as session:
+    async with async_session_factory()() as session:
         result = await session.execute(select(DealRecord).where(DealRecord.id == deal_id))
         deal = result.scalar_one_or_none()
         if not deal:
@@ -154,7 +169,7 @@ async def update_deal(deal_id: str, body: dict[str, Any] = Body(...)) -> dict[st
 @router.get("/deals")
 async def list_deals(stage: str | None = None, limit: int = 20) -> dict[str, Any]:
     limit = max(1, min(100, limit))
-    async with get_session() as session:
+    async with async_session_factory()() as session:
         stmt = select(DealRecord).order_by(DealRecord.created_at.desc()).limit(limit)
         if stage:
             stmt = stmt.where(DealRecord.stage == stage)
@@ -196,7 +211,7 @@ async def create_task(body: dict[str, Any] = Body(...)) -> dict[str, Any]:
             pass
 
     task_id = _new_id("task")
-    async with get_session() as session:
+    async with async_session_factory()() as session:
         task = TaskRecord(
             id=task_id,
             lead_id=body.get("lead_id") or None,
@@ -214,7 +229,7 @@ async def create_task(body: dict[str, Any] = Body(...)) -> dict[str, Any]:
 
 @router.patch("/tasks/{task_id}")
 async def update_task(task_id: str, body: dict[str, Any] = Body(...)) -> dict[str, Any]:
-    async with get_session() as session:
+    async with async_session_factory()() as session:
         result = await session.execute(select(TaskRecord).where(TaskRecord.id == task_id))
         task = result.scalar_one_or_none()
         if not task:
@@ -237,7 +252,7 @@ async def update_task(task_id: str, body: dict[str, Any] = Body(...)) -> dict[st
 @router.get("/tasks")
 async def list_tasks(status: str = "pending", limit: int = 20) -> dict[str, Any]:
     limit = max(1, min(100, limit))
-    async with get_session() as session:
+    async with async_session_factory()() as session:
         result = await session.execute(
             select(TaskRecord)
             .where(TaskRecord.status == status)
@@ -269,34 +284,41 @@ async def list_tasks(status: str = "pending", limit: int = 20) -> dict[str, Any]
 async def dashboard_metrics() -> dict[str, Any]:
     """
     Public/internal dashboard summary — counts + top of pipeline.
+    Resilient: if a table doesn't exist yet, returns 0 for that metric.
     """
-    async with get_session() as session:
-        leads_total = (await session.execute(select(func.count()).select_from(LeadRecord))).scalar() or 0
-        leads_new = (await session.execute(select(func.count()).select_from(LeadRecord).where(LeadRecord.status == "new"))).scalar() or 0
-        leads_qualified = (await session.execute(select(func.count()).select_from(LeadRecord).where(LeadRecord.status == "qualified"))).scalar() or 0
-        leads_won = (await session.execute(select(func.count()).select_from(LeadRecord).where(LeadRecord.status == "won"))).scalar() or 0
+    async def _count(session, stmt):
+        try:
+            r = await session.execute(stmt)
+            return int(r.scalar() or 0)
+        except Exception as e:
+            log.warning("dashboard_query_skip: %s", str(e)[:120])
+            return 0
 
-        deals_total = (await session.execute(select(func.count()).select_from(DealRecord))).scalar() or 0
-        deals_paid_count = (await session.execute(select(func.count()).select_from(DealRecord).where(DealRecord.stage == "paid"))).scalar() or 0
-        revenue_paid = (await session.execute(
-            select(func.coalesce(func.sum(DealRecord.amount), 0.0)).where(DealRecord.stage == "paid")
-        )).scalar() or 0.0
+    async def _sum(session, stmt):
+        try:
+            r = await session.execute(stmt)
+            return float(r.scalar() or 0.0)
+        except Exception as e:
+            log.warning("dashboard_query_skip: %s", str(e)[:120])
+            return 0.0
 
-        conversations_total = (await session.execute(select(func.count()).select_from(ConversationRecord))).scalar() or 0
-        conversations_today = (await session.execute(
-            select(func.count()).select_from(ConversationRecord).where(
-                ConversationRecord.created_at >= datetime.now(timezone.utc).replace(hour=0, minute=0, second=0, microsecond=0)
-            )
-        )).scalar() or 0
+    today_start = datetime.now(timezone.utc).replace(hour=0, minute=0, second=0, microsecond=0)
 
-        tasks_pending = (await session.execute(
-            select(func.count()).select_from(TaskRecord).where(TaskRecord.status == "pending")
-        )).scalar() or 0
-        tasks_overdue = (await session.execute(
-            select(func.count()).select_from(TaskRecord).where(
-                TaskRecord.status == "pending", TaskRecord.due_at < _utcnow()
-            )
-        )).scalar() or 0
+    async with async_session_factory()() as session:
+        leads_total = await _count(session, select(func.count()).select_from(LeadRecord))
+        leads_new = await _count(session, select(func.count()).select_from(LeadRecord).where(LeadRecord.status == "new"))
+        leads_qualified = await _count(session, select(func.count()).select_from(LeadRecord).where(LeadRecord.status == "qualified"))
+        leads_won = await _count(session, select(func.count()).select_from(LeadRecord).where(LeadRecord.status == "won"))
+
+        deals_total = await _count(session, select(func.count()).select_from(DealRecord))
+        deals_paid_count = await _count(session, select(func.count()).select_from(DealRecord).where(DealRecord.stage == "paid"))
+        revenue_paid = await _sum(session, select(func.coalesce(func.sum(DealRecord.amount), 0.0)).where(DealRecord.stage == "paid"))
+
+        conversations_total = await _count(session, select(func.count()).select_from(ConversationRecord))
+        conversations_today = await _count(session, select(func.count()).select_from(ConversationRecord).where(ConversationRecord.created_at >= today_start))
+
+        tasks_pending = await _count(session, select(func.count()).select_from(TaskRecord).where(TaskRecord.status == "pending"))
+        tasks_overdue = await _count(session, select(func.count()).select_from(TaskRecord).where(TaskRecord.status == "pending", TaskRecord.due_at < _utcnow()))
 
     return {
         "as_of": _utcnow().isoformat(),
@@ -366,7 +388,8 @@ async def company_intake(body: dict[str, Any] = Body(...)) -> dict[str, Any]:
     }
 
     rec_id = _new_id("co")
-    async with get_session() as session:
+    db_status = "ok"
+    async with async_session_factory()() as session:
         rec = CompanyRecord(
             id=rec_id,
             name=name,
@@ -391,12 +414,13 @@ async def company_intake(body: dict[str, Any] = Body(...)) -> dict[str, Any]:
             offer_ladder=offer_ladder,
             automation_policy=automation_policy,
         )
-        session.add(rec)
-        await session.commit()
+        ok = await _safe_commit(session, rec)
+        db_status = "ok" if ok else "skipped_db_unreachable"
 
     return {
         "id": rec_id,
         "name": name,
+        "db_status": db_status,
         "icp_profile": icp_profile,
         "channel_plan": channel_plan,
         "offer_ladder": offer_ladder,
@@ -480,7 +504,7 @@ async def queue_outreach(body: dict[str, Any] = Body(...)) -> dict[str, Any]:
         raise HTTPException(status_code=400, detail="channel_and_message_required")
 
     rec_id = _new_id("queue")
-    async with get_session() as session:
+    async with async_session_factory()() as session:
         rec = OutreachQueueRecord(
             id=rec_id,
             lead_id=body.get("lead_id") or None,
@@ -497,7 +521,7 @@ async def queue_outreach(body: dict[str, Any] = Body(...)) -> dict[str, Any]:
 
 @router.patch("/outreach/queue/{queue_id}")
 async def update_queue_item(queue_id: str, body: dict[str, Any] = Body(...)) -> dict[str, Any]:
-    async with get_session() as session:
+    async with async_session_factory()() as session:
         result = await session.execute(select(OutreachQueueRecord).where(OutreachQueueRecord.id == queue_id))
         rec = result.scalar_one_or_none()
         if not rec:
@@ -513,7 +537,7 @@ async def update_queue_item(queue_id: str, body: dict[str, Any] = Body(...)) -> 
 @router.get("/outreach/queue")
 async def list_queue(status: str = "queued", limit: int = 50) -> dict[str, Any]:
     limit = max(1, min(200, limit))
-    async with get_session() as session:
+    async with async_session_factory()() as session:
         result = await session.execute(
             select(OutreachQueueRecord)
             .where(OutreachQueueRecord.status == status)
@@ -545,7 +569,7 @@ async def manual_payment_request(body: dict[str, Any] = Body(...)) -> dict[str, 
         raise HTTPException(status_code=400, detail="deal_id_required")
     method = body.get("method") or "bank_transfer"
 
-    async with get_session() as session:
+    async with async_session_factory()() as session:
         result = await session.execute(select(DealRecord).where(DealRecord.id == deal_id))
         deal = result.scalar_one_or_none()
         if not deal:
@@ -584,7 +608,7 @@ async def mark_paid(body: dict[str, Any] = Body(...)) -> dict[str, Any]:
     if not deal_id:
         raise HTTPException(status_code=400, detail="deal_id_required")
 
-    async with get_session() as session:
+    async with async_session_factory()() as session:
         result = await session.execute(select(DealRecord).where(DealRecord.id == deal_id))
         deal = result.scalar_one_or_none()
         if not deal:
@@ -637,7 +661,7 @@ async def customer_onboard(body: dict[str, Any] = Body(...)) -> dict[str, Any]:
     if not customer_id:
         raise HTTPException(status_code=400, detail="customer_id_required")
 
-    async with get_session() as session:
+    async with async_session_factory()() as session:
         result = await session.execute(select(CustomerRecord).where(CustomerRecord.id == customer_id))
         cust = result.scalar_one_or_none()
         if not cust:
@@ -670,7 +694,7 @@ async def partner_intake(body: dict[str, Any] = Body(...)) -> dict[str, Any]:
         "STRATEGIC":      "Co-selling / bundle / white-label option (Scale tier)",
     }.get(ptype, "Custom — TBD")
 
-    async with get_session() as session:
+    async with async_session_factory()() as session:
         rec = PartnerRecord(
             id=pid,
             company_name=name,
@@ -713,7 +737,7 @@ async def import_google_lead(body: dict[str, Any] = Body(...)) -> dict[str, Any]
     message = fields.get("Custom Question") or fields.get("MESSAGE") or "Google Ads lead"
 
     rec_id = _new_id("lead_gads")
-    async with get_session() as session:
+    async with async_session_factory()() as session:
         lead = LeadRecord(
             id=rec_id,
             source="google_ads",
@@ -780,7 +804,7 @@ async def import_meta_lead(body: dict[str, Any] = Body(...)) -> dict[str, Any]:
     msg = fields.get("message") or "Meta lead form"
 
     rec_id = _new_id("lead_meta")
-    async with get_session() as session:
+    async with async_session_factory()() as session:
         lead = LeadRecord(
             id=rec_id,
             source="meta_lead_ads",
@@ -807,3 +831,68 @@ async def import_meta_lead(body: dict[str, Any] = Body(...)) -> dict[str, Any]:
         session.add(conv)
         await session.commit()
     return {"lead_id": rec_id, "source": "meta_lead_ads", "status": "captured"}
+
+
+@router.post("/admin/init-db")
+async def admin_init_db() -> dict[str, Any]:
+    """Force-create all tables. Idempotent. Public for debug — secure in prod."""
+    try:
+        from db.session import init_db
+        await init_db()
+        return {"status": "ok", "message": "All tables created or verified"}
+    except Exception as e:
+        log.exception("init_db_failed")
+        return {"status": "error", "error": str(e)[:500], "type": type(e).__name__}
+
+
+@router.post("/admin/test-insert")
+async def admin_test_insert() -> dict[str, Any]:
+    """Insert one test row and report exact error if it fails."""
+    try:
+        async with async_session_factory()() as session:
+            rec = ConversationRecord(
+                id=_new_id("test"),
+                channel="test",
+                sender="diagnostic",
+                inbound_message="test",
+                classification="test",
+                next_action="test",
+            )
+            session.add(rec)
+            await session.commit()
+            return {"status": "ok", "inserted_id": rec.id}
+    except Exception as e:
+        log.exception("test_insert_failed")
+        return {"status": "error", "error": str(e)[:500], "type": type(e).__name__}
+
+
+@router.get("/admin/db-diag")
+async def db_diag() -> dict[str, Any]:
+    """Show DATABASE_URL prefix (redacted) + try a simple query."""
+    import os
+    url = os.getenv("DATABASE_URL", "")
+    safe_url = (url[:30] + "..." + url[-20:]) if len(url) > 60 else url
+    try:
+        from core.config.settings import get_settings
+        s = get_settings()
+        cfg_url = s.database_url
+        cfg_safe = (cfg_url[:35] + "..." + cfg_url[-25:]) if len(cfg_url) > 70 else cfg_url
+    except Exception as e:
+        cfg_safe = f"settings_error: {e}"
+    return {
+        "raw_env_prefix": safe_url[:50],
+        "raw_env_length": len(url),
+        "settings_url_prefix": cfg_safe[:80],
+    }
+
+
+# ── Aliases for /api/v1/integrations/* (matches external webhook config conventions) ──
+
+@router.post("/integrations/google-lead-form")
+async def alias_google_lead(body: dict[str, Any] = Body(...)) -> dict[str, Any]:
+    return await import_google_lead(body)
+
+
+@router.post("/integrations/meta-lead-form")
+async def alias_meta_lead(body: dict[str, Any] = Body(...)) -> dict[str, Any]:
+    return await import_meta_lead(body)

@@ -16,14 +16,26 @@ from api.middleware import RequestIDMiddleware
 from api.routers import (
     admin,
     agents,
+    automation,
     autonomous,
     business,
+    command_center,
+    customer_success,
+    data,
+    dominance,
+    drafts,
+    ecosystem,
+    email_send,
+    full_os,
     health,
     leads,
+    outreach,
     personal_operator,
     pricing,
     prospect,
     public,
+    revenue,
+    revenue_os,
     sales,
     sectors,
     v3,
@@ -47,6 +59,13 @@ async def lifespan(_app: FastAPI) -> AsyncIterator[None]:
         version=settings.app_version,
         env=settings.app_env,
     )
+    # Auto-create tables on boot (additive — safe with SQLAlchemy create_all)
+    try:
+        from db.session import init_db
+        await init_db()
+        log.info("db_init_complete")
+    except Exception as exc:
+        log.warning("db_init_skipped", error=str(exc))
     yield
     log.info("app_shutdown")
 
@@ -110,6 +129,18 @@ def create_app() -> FastAPI:
     app.include_router(pricing.router)
     app.include_router(prospect.router)
     app.include_router(autonomous.router)
+    app.include_router(data.router)
+    app.include_router(outreach.router)
+    app.include_router(revenue.router)
+    app.include_router(automation.router)
+    app.include_router(email_send.router)
+    app.include_router(drafts.router)
+    app.include_router(dominance.router)
+    app.include_router(full_os.router)
+    app.include_router(customer_success.router)
+    app.include_router(ecosystem.router)
+    app.include_router(command_center.router)
+    app.include_router(revenue_os.router)
     app.include_router(v3.router)
     app.include_router(business.router)
     app.include_router(personal_operator.router)

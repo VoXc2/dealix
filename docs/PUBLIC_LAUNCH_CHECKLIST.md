@@ -21,7 +21,7 @@
 ## تشغيل
 
 - [ ] SLOs (uptime، زمن استجابة API)
-- [ ] on-call + runbooks (`docs/RUNBOOK.md` محدّث)
+- [ ] on-call + runbooks (`docs/ops/DEPLOY_NOW.md` وملفات `docs/ops/`؛ الأرشيف: `docs/archive/runbook_lowercase_DEPRECATED.md`)
 - [ ] نسخ احتياطي واختبار استعادة
 
 ## GTM

@@ -121,6 +121,53 @@
             <p class="value dash-loading">...</p>
             <p class="subtitle">/api/v1/prospect/demo</p>
           </div>
+          <div class="dash-card" id="card-local-engine">
+            <h3>محرك العقاريين والعيادات المحلي</h3>
+            <p class="value dash-loading">...</p>
+            <p class="subtitle">/api/v1/leads/discover/local-industries</p>
+          </div>
+          <div class="dash-card" id="card-data-sources">
+            <h3>دليل مصادر البيانات</h3>
+            <p class="value dash-loading">...</p>
+            <p class="subtitle">/api/v1/data/sources/catalog</p>
+          </div>
+          <div class="dash-card" id="card-tier-readiness">
+            <h3>جاهزية المفاتيح</h3>
+            <p class="value dash-loading">...</p>
+            <p class="subtitle">/api/v1/prospect/search-diag</p>
+          </div>
+          <div class="dash-card" id="card-dashboard-metrics">
+            <h3>مؤشرات Lead Graph</h3>
+            <p class="value dash-loading">...</p>
+            <p class="subtitle">/api/v1/dashboard/metrics</p>
+          </div>
+        </div>
+
+        <div class="dash-section" id="local-engine-demo">
+          <h2>تجربة المحرك المحلي السعودي</h2>
+          <div style="display:flex; flex-wrap:wrap; gap:8px; margin-bottom:12px; align-items:center">
+            <select id="local-industry" style="padding:8px 12px; border-radius:8px; border:1px solid var(--border); font-family:inherit">
+              <option value="dental_clinic">عيادات أسنان</option>
+              <option value="real_estate" selected>مكاتب عقار</option>
+              <option value="real_estate_developer">تطوير عقاري</option>
+              <option value="training_center">مراكز تدريب</option>
+              <option value="marketing_agency">وكالات تسويق</option>
+              <option value="restaurant">مطاعم</option>
+              <option value="fitness_gym">صالات رياضية</option>
+              <option value="law_firm">مكاتب محاماة</option>
+              <option value="logistics">شحن ولوجستيات</option>
+            </select>
+            <select id="local-city" style="padding:8px 12px; border-radius:8px; border:1px solid var(--border); font-family:inherit">
+              <option value="riyadh" selected>الرياض</option>
+              <option value="jeddah">جدة</option>
+              <option value="dammam">الدمام</option>
+              <option value="khobar">الخبر</option>
+              <option value="mecca">مكة</option>
+              <option value="medina">المدينة</option>
+            </select>
+            <button id="local-run" type="button" style="padding:8px 18px; border-radius:8px; border:0; background:var(--brand,#1a73e8); color:white; font-weight:700; cursor:pointer">جرب الآن</button>
+          </div>
+          <div id="local-result" class="dash-loading">اختر القطاع والمدينة ثم اضغط «جرب الآن»</div>
         </div>
 
         <div class="dash-section">
@@ -166,12 +213,16 @@
     ];
 
     const ENDPOINTS = [
-      { key: 'backend',    label: 'Backend /healthz',           url: '/healthz',                            base: 'api' },
-      { key: 'pricing',    label: 'Pricing /api/v1/pricing/plans', url: '/api/v1/pricing/plans',           base: 'api' },
-      { key: 'prospector', label: 'Prospector demo',            url: '/api/v1/prospect/demo',               base: 'api', method: 'POST' },
-      { key: 'deep',       label: 'Deep health /health/deep',   url: '/health/deep',                        base: 'api' },
-      { key: 'landing',    label: 'Landing /',                  url: '/',                                    base: 'landing' },
-      { key: 'pricing_html',label:'Landing /pricing.html',      url: '/pricing.html',                        base: 'landing' }
+      { key: 'backend',    label: 'Backend /healthz',                  url: '/healthz',                                  base: 'api' },
+      { key: 'pricing',    label: 'Pricing /api/v1/pricing/plans',     url: '/api/v1/pricing/plans',                     base: 'api' },
+      { key: 'prospector', label: 'Prospector demo',                   url: '/api/v1/prospect/demo',                     base: 'api', method: 'POST' },
+      { key: 'deep',       label: 'Deep health /health/deep',          url: '/health/deep',                              base: 'api' },
+      { key: 'local-engine',     label: 'Local industries catalog',    url: '/api/v1/leads/discover/local-industries',  base: 'api' },
+      { key: 'data-sources',     label: 'Saudi data source catalog',   url: '/api/v1/data/sources/catalog',              base: 'api' },
+      { key: 'tier-readiness',   label: 'Provider tier readiness',     url: '/api/v1/prospect/search-diag',              base: 'api' },
+      { key: 'dashboard-metrics',label: 'Lead Graph metrics',          url: '/api/v1/dashboard/metrics',                 base: 'api' },
+      { key: 'landing',    label: 'Landing /',                         url: '/',                                          base: 'landing' },
+      { key: 'pricing_html',label:'Landing /pricing.html',             url: '/pricing.html',                              base: 'landing' }
     ];
 
     async function probe(ep) {
@@ -237,6 +288,53 @@
     document.getElementById('year').textContent = new Date().getFullYear();
     refresh();
     setInterval(refresh, 30000);
+
+    // ── Local Saudi Lead Engine demo widget ──────────────────────
+    document.getElementById('local-run')?.addEventListener('click', async () => {
+      const industry = document.getElementById('local-industry').value;
+      const city = document.getElementById('local-city').value;
+      const result = document.getElementById('local-result');
+      result.textContent = 'جاري البحث في Google Places...';
+      result.className = 'dash-loading';
+      let res, data, base;
+      for (const b of API_BASES) {
+        try {
+          res = await fetch(b + '/api/v1/leads/discover/local', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ industry, city, max_results: 10, hydrate_details: true }),
+          });
+          if (res.ok) { data = await res.json(); base = b; break; }
+        } catch (e) { /* try next */ }
+      }
+      if (!data) {
+        result.innerHTML = '<span class="dash-status-value err">⚠️ لم يتمكن من الاتصال بالخادم. تأكد أن الـ deploy مكتمل.</span>';
+        return;
+      }
+      const status = (data.data && data.data.status) || data.status || '';
+      if (status === 'no_key' || (data.data && data.data.status === 'no_key')) {
+        result.innerHTML = '<span class="dash-status-value warn">⚠️ المفتاح GOOGLE_MAPS_API_KEY غير مهيّأ في Railway. أضفه ثم Review → Deploy.</span>';
+        return;
+      }
+      const inner = data.data || data;
+      const results = inner.results || [];
+      if (!results.length) {
+        result.innerHTML = `<span class="dash-status-value warn">لم نجد نتائج لـ ${industry} في ${city}. جرب قطاعاً آخر.</span>`;
+        return;
+      }
+      const rows = results.slice(0, 10).map((r, i) => `
+        <div class="dash-status-row">
+          <span class="dash-status-label">${i + 1}. ${r.name || ''}</span>
+          <span class="dash-status-value">${r.phone || '—'} · ⭐ ${r.rating || '—'}</span>
+        </div>`).join('');
+      const chain = (data.chain || []).filter(c => c.available).map(c => c.name).join(' → ') || 'static';
+      result.innerHTML = `
+        <div style="margin-bottom:8px; font-size:13px; color:var(--muted)">
+          ${results.length} نتيجة عبر provider chain: <strong>${chain}</strong>
+        </div>
+        ${rows}`;
+      result.className = '';
+    });
   </script>
 </body>
 </html>
