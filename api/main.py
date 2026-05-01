@@ -24,6 +24,7 @@ from api.routers import (
     public,
     sales,
     sectors,
+    v3,
     webhooks,
 )
 from api.security import APIKeyMiddleware, setup_rate_limit
@@ -60,7 +61,9 @@ def create_app() -> FastAPI:
             "**Phase 8**: Auto Client Acquisition — intake, ICP match, "
             "pain extraction, qualification, CRM sync, booking, proposals.\n\n"
             "**Phase 9**: Autonomous Growth — sector intel, content, distribution, "
-            "enrichment, competitor analysis, market research."
+            "enrichment, competitor analysis, market research.\n\n"
+            "**Phase 10 / v3**: Autonomous Saudi Revenue OS — revenue memory, "
+            "safe agent runtime, market radar, compliance OS, and revenue science."
         ),
         docs_url="/docs",
         redoc_url="/redoc",
@@ -68,7 +71,6 @@ def create_app() -> FastAPI:
         lifespan=lifespan,
     )
 
-    # ── Middleware ──────────────────────────────────────────────
     app.add_middleware(
         CORSMiddleware,
         allow_origins=settings.cors_origin_list,
@@ -80,7 +82,6 @@ def create_app() -> FastAPI:
     app.add_middleware(APIKeyMiddleware)
     setup_rate_limit(app)
 
-    # ── Observability ──────────────────────────────────────
     try:
         from dealix.observability import instrument_fastapi, setup_sentry, setup_tracing
 
@@ -90,7 +91,6 @@ def create_app() -> FastAPI:
     except Exception:  # pragma: no cover
         pass
 
-    # ── Exception handlers ──────────────────────────────────────
     @app.exception_handler(AICompanyError)
     async def ai_company_error_handler(_: Request, exc: AICompanyError) -> JSONResponse:
         return JSONResponse(
@@ -98,7 +98,6 @@ def create_app() -> FastAPI:
             content={"error": exc.__class__.__name__, "detail": str(exc)},
         )
 
-    # ── Routers ─────────────────────────────────────────────────
     app.include_router(health.router)
     app.include_router(leads.router)
     app.include_router(sales.router)
@@ -108,10 +107,10 @@ def create_app() -> FastAPI:
     app.include_router(pricing.router)
     app.include_router(prospect.router)
     app.include_router(autonomous.router)
+    app.include_router(v3.router)
     app.include_router(public.router)
     app.include_router(admin.router)
 
-    # ── Root ────────────────────────────────────────────────────
     @app.get("/", tags=["root"])
     async def root() -> dict[str, object]:
         return {
@@ -121,6 +120,7 @@ def create_app() -> FastAPI:
             "env": settings.app_env,
             "docs": "/docs",
             "health": "/health",
+            "v3": "/api/v1/v3/command-center/snapshot",
         }
 
     return app
