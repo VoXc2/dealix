@@ -49,3 +49,21 @@ class LinkedInClient:
                 "route posts through n8n/Zapier with a user-owned connection."
             ),
         )
+
+    async def send_auto_dm(self, *, recipient_urn: str, text: str) -> LinkedInPostResult:
+        """
+        Auto-DM is permanently disabled. The linkedin_allow_auto_dm flag is a
+        belt-and-suspenders check — even if a future caller flips it to True,
+        LinkedIn's ToS forbids automation, so this method always returns disabled.
+        """
+        from core.config.settings import get_settings
+        flag_on = get_settings().linkedin_allow_auto_dm
+        logger.warning("linkedin_auto_dm_blocked flag_on=%s", flag_on)
+        return LinkedInPostResult(
+            success=False,
+            disabled=True,
+            reason=(
+                "LinkedIn auto-DM is forbidden by LinkedIn's User Agreement. "
+                "linkedin_allow_auto_dm=False is enforced; manual outreach only."
+            ),
+        )

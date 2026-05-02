@@ -58,6 +58,7 @@ FORBIDDEN_PATTERNS: tuple[str, ...] = (
 ALLOWED_CONTEXT_MARKERS: tuple[str, ...] = (
     "restricted_actions",
     "blocked_",
+    "_blocked",
     "blocked=",
     "blocked:",
     "blocked\"",
