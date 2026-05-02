@@ -4,6 +4,8 @@
 
 Dealix لا يُباع كـ CRM؛ يُباع كـ **Revenue OS سعودي سياقي** مع **مشغّل عربي** وتنفيذ آمن.
 
+المنصات العالمية تتحرك نحو **وكلاء AI داخل الـ CRM وسير العمل** (مثل Salesforce Agentforce مع التركيز على visibility/control، وHubSpot Breeze لإشارات الشراء والـ outreach). Dealix لا يفوز بمحاكاة سطح المكتب المؤسسي؛ يفوز كـ **طبقة تنفيذ إيرادات سعودية SMB-first**: عربي، واتساب-aware، موافقة أولاً، Proof Pack، وخدمة Pilot قبل الأتمتة الواسعة. التفصيل الكامل: [CATEGORY_DESIGN_AND_MASTER_OPERATING_SYSTEM_AR.md](strategic/CATEGORY_DESIGN_AND_MASTER_OPERATING_SYSTEM_AR.md) و [DEALIX_CATEGORY_EXECUTIVE_SUMMARY_EN.md](strategic/DEALIX_CATEGORY_EXECUTIVE_SUMMARY_EN.md).
+
 ## مصفوفة سريعة
 
 | منافس | يفعلون جيداً | ضعف في السعودية/GCC | كيف يفوز Dealix |
