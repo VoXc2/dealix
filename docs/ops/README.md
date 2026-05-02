@@ -7,3 +7,5 @@ Operational playbooks, queues, and checklists live in this folder.
 **Day-one execution:** [LAUNCH_DAY_ONE_KIT.md](LAUNCH_DAY_ONE_KIT.md) · [DAILY_OPERATING_LOOP.md](DAILY_OPERATING_LOOP.md) · [daily_scorecard.md](daily_scorecard.md)
 
 **Python governance pack location:** the `dealix/` directory at repo root is the **Python package** (contracts, trust). Ops markdown for humans lives under `docs/ops/`. See [dealix/docs/OPS_PACK_LOCATION.md](../../dealix/docs/OPS_PACK_LOCATION.md) if you expected `dealix/docs/ops/`.
+
+**Positioning — 25 radars (Arabic):** [SAUDI_REVENUE_EXECUTION_OS_RADARS_AR.md](../strategic/SAUDI_REVENUE_EXECUTION_OS_RADARS_AR.md) — Revenue Execution OS, ICP, compliance moat, loops, Proof, 90-day map, Do Not Build.

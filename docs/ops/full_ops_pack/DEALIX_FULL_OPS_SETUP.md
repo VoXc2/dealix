@@ -2,6 +2,8 @@
 
 This document is the **English/technical hub** for standing up Level 1: Google Sheet + Form + Apps Script + manual WhatsApp + staging API checks. Arabic execution order: [EXECUTE_NOW_AR.md](../EXECUTE_NOW_AR.md).
 
+**Why Level 1 exists (strategy):** Dealix wins as a **Saudi Revenue Execution OS**—loops with evidence—not as a generic AI or CRM. See [SAUDI_REVENUE_EXECUTION_OS_RADARS_AR.md](../../strategic/SAUDI_REVENUE_EXECUTION_OS_RADARS_AR.md).
+
 ---
 
 ## Overview
