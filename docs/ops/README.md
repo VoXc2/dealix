@@ -9,3 +9,5 @@ Operational playbooks, queues, and checklists live in this folder.
 **Python governance pack location:** the `dealix/` directory at repo root is the **Python package** (contracts, trust). Ops markdown for humans lives under `docs/ops/`. See [dealix/docs/OPS_PACK_LOCATION.md](../../dealix/docs/OPS_PACK_LOCATION.md) if you expected `dealix/docs/ops/`.
 
 **Positioning — 25 radars (Arabic):** [SAUDI_REVENUE_EXECUTION_OS_RADARS_AR.md](../strategic/SAUDI_REVENUE_EXECUTION_OS_RADARS_AR.md) — Revenue Execution OS, ICP, compliance moat, loops, Proof, 90-day map, Do Not Build.
+
+**Master OS + category design (Arabic):** [CATEGORY_DESIGN_AND_MASTER_OPERATING_SYSTEM_AR.md](../strategic/CATEGORY_DESIGN_AND_MASTER_OPERATING_SYSTEM_AR.md) — 7 layers, policy engine, GTM wedges, 12-month map, CEO dashboard, competitive framing. **Executive summary (English):** [DEALIX_CATEGORY_EXECUTIVE_SUMMARY_EN.md](../strategic/DEALIX_CATEGORY_EXECUTIVE_SUMMARY_EN.md).
