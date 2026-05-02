@@ -9,11 +9,26 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Python 3.12](https://img.shields.io/badge/python-3.12-blue.svg)](https://www.python.org/downloads/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.115-green)](https://fastapi.tiangolo.com/)
-[![Tests: 63 passing](https://img.shields.io/badge/tests-63%20passing-green)](tests/)
+[![Tests: 95 passing](https://img.shields.io/badge/tests-95%20passing-green)](tests/)
+[![Endpoints: 102](https://img.shields.io/badge/API%20endpoints-102-blue)](docs/architecture/API_MAP.md)
 
 **[العربية](README.ar.md)** · **English**
 
-### [🚀 Deploy Guide](DEPLOYMENT.md) · [📦 .env Template](.env.example) · [🎯 Landing Page](landing/)
+### [🚀 Deploy Now](docs/ops/DEPLOY_NOW.md) · [📦 .env Template](.env.example) · [🎯 Landing](landing/) · [🗺️ API Map](docs/architecture/API_MAP.md) · [🏢 Day 1 Plan](docs/business/FIRST_100_TARGETS_PLAN.md)
+
+---
+
+## 🎯 What's in this repo
+
+**Backend** — FastAPI + SQLAlchemy 2.0 async + Postgres. 13 routers / 102 endpoints. See [API_MAP.md](docs/architecture/API_MAP.md).
+
+**Lead Machine** — Provider adapter chains for Search / Maps / Crawler / Tech / EmailIntel that fall back gracefully when env keys are missing. See [PROVIDER_ADAPTERS.md](docs/architecture/PROVIDER_ADAPTERS.md).
+
+**Data Lake + Lead Graph** — 7-table compliant ingestion: `raw_lead_imports → raw_lead_rows → accounts → contacts → signals → lead_scores → data_suppression_list`. PDPL-aware (allowed_use, consent_status, opt_out, risk_level mandatory per row). See [DATA_LAKE_PLAYBOOK.md](docs/ops/DATA_LAKE_PLAYBOOK.md).
+
+**Frontend** — Static landing on GitHub Pages + interactive dashboard with live Saudi Lead Engine demo. See [landing/](landing/).
+
+**Day-1 Operating Kit** — 287 outreach-ready Saudi B2B accounts pre-built across 7 segments (real-estate / construction / hospitality / events / food / logistics / SaaS / agency). Pricing ladder + Pilot offer + Partner model + Channel templates. See [docs/business/](docs/business/).
 
 </div>
 

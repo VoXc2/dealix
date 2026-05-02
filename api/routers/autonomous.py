@@ -534,29 +534,7 @@ async def update_queue_item(queue_id: str, body: dict[str, Any] = Body(...)) -> 
     return {"id": queue_id, "status": rec.status}
 
 
-@router.get("/outreach/queue")
-async def list_queue(status: str = "queued", limit: int = 50) -> dict[str, Any]:
-    limit = max(1, min(200, limit))
-    async with async_session_factory()() as session:
-        result = await session.execute(
-            select(OutreachQueueRecord)
-            .where(OutreachQueueRecord.status == status)
-            .order_by(OutreachQueueRecord.due_at.asc())
-            .limit(limit)
-        )
-        rows = result.scalars().all()
-        return {
-            "count": len(rows),
-            "items": [
-                {
-                    "id": r.id, "lead_id": r.lead_id, "channel": r.channel,
-                    "message": r.message[:200], "status": r.status,
-                    "approval_required": r.approval_required, "risk_reason": r.risk_reason,
-                    "due_at": r.due_at.isoformat() if r.due_at else None,
-                }
-                for r in rows
-            ],
-        }
+# GET /api/v1/outreach/queue — use api.routers.outreach.list_queue (single canonical route).
 
 
 # ── Payments ─────────────────────────────────────────────────────

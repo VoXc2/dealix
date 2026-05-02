@@ -66,6 +66,9 @@ class WhatsAppClient:
         """Send a plain-text WhatsApp message."""
         if not self.configured:
             return WhatsAppMessageResult(success=False, error="WhatsApp not configured")
+        if not self.settings.whatsapp_allow_live_send:
+            logger.info("whatsapp_meta_send_blocked_by_policy", to_prefix=to[:6])
+            return WhatsAppMessageResult(success=False, error="whatsapp_allow_live_send_false")
 
         phone_id = self.settings.whatsapp_phone_number_id
         url = f"{self.BASE_URL}/{phone_id}/messages"
@@ -105,6 +108,9 @@ class WhatsAppClient:
         """Send a pre-approved template message."""
         if not self.configured:
             return WhatsAppMessageResult(success=False, error="WhatsApp not configured")
+        if not self.settings.whatsapp_allow_live_send:
+            logger.info("whatsapp_meta_template_blocked_by_policy", to_prefix=to[:6])
+            return WhatsAppMessageResult(success=False, error="whatsapp_allow_live_send_false")
 
         phone_id = self.settings.whatsapp_phone_number_id
         url = f"{self.BASE_URL}/{phone_id}/messages"

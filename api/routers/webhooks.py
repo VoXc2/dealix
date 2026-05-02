@@ -8,6 +8,7 @@ from fastapi import APIRouter, Header, HTTPException, Query, Request
 
 from api.dependencies import get_acquisition_pipeline
 from auto_client_acquisition.agents.intake import LeadSource
+from core.config.settings import get_settings
 from core.logging import get_logger
 from integrations.whatsapp import WhatsAppClient
 
@@ -38,9 +39,15 @@ async def whatsapp_incoming(
     """Handle incoming WhatsApp messages — route them as leads."""
     body = await request.body()
     client = WhatsAppClient()
+    settings = get_settings()
+    has_secret = bool(client.settings.whatsapp_app_secret)
 
-    # Signature verification (production only if app_secret configured)
-    if x_hub_signature_256 and not client.verify_signature(body, x_hub_signature_256):
+    # Staging/production with app secret: require valid Meta signature always.
+    if has_secret and settings.app_env in ("staging", "production"):
+        if not x_hub_signature_256 or not client.verify_signature(body, x_hub_signature_256):
+            logger.warning("whatsapp_missing_or_invalid_signature_strict_env")
+            raise HTTPException(status_code=403, detail="missing_or_invalid_signature")
+    elif x_hub_signature_256 and has_secret and not client.verify_signature(body, x_hub_signature_256):
         logger.warning("whatsapp_invalid_signature")
         raise HTTPException(status_code=403, detail="Invalid signature")
 

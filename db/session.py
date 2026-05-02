@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from collections.abc import AsyncGenerator
+from contextlib import asynccontextmanager
 from functools import lru_cache
 
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
@@ -30,6 +31,18 @@ def async_session_factory() -> async_sessionmaker[AsyncSession]:
 
 async def get_db() -> AsyncGenerator[AsyncSession, None]:
     """FastAPI dependency — async DB session."""
+    async with async_session_factory()() as session:
+        try:
+            yield session
+            await session.commit()
+        except Exception:
+            await session.rollback()
+            raise
+
+
+@asynccontextmanager
+async def get_session() -> AsyncGenerator[AsyncSession, None]:
+    """Async context manager for DB sessions (`async with get_session() as session:`)."""
     async with async_session_factory()() as session:
         try:
             yield session
