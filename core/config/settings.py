@@ -105,6 +105,12 @@ class Settings(BaseSettings):
     # Env: WHATSAPP_ALLOW_LIVE_SEND (default false).
     whatsapp_allow_live_send: bool = False
 
+    # ── Live action gates (PR 1: declared, enforced in audit) ───
+    # Default False everywhere; flip only after explicit opt-in + legal review.
+    gmail_allow_live_send: bool = False
+    moyasar_allow_live_charge: bool = False
+    linkedin_allow_auto_dm: bool = False  # ALWAYS False — LinkedIn ToS forbids automation
+
     # ── Email ───────────────────────────────────────────────────
     email_provider: Literal["resend", "sendgrid", "smtp"] = "resend"
     email_from: str = "noreply@ai-company.sa"

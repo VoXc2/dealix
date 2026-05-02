@@ -193,6 +193,38 @@ make run
 # → http://localhost:8000/docs
 ```
 
+## 🛡️ Architecture Guard (PR 1)
+
+Three scripts enforce the safety contract — run them locally before any commit
+that touches product code.
+
+```bash
+# Static checks: routers, forbidden patterns, ≤3 WhatsApp buttons,
+# safety flags, secrets hygiene, PDPL gates, autonomy modes.
+python scripts/repo_architecture_audit.py
+# → DEALIX_ARCH_AUDIT … RESULT: PASS
+
+# Full readiness: compileall + pytest + routes + smoke + audit + env + files.
+python scripts/launch_readiness_check.py
+# → DEALIX_LAUNCH_READINESS … RESULT: GO_PRIVATE_BETA
+
+# Live verification against a deployed environment (Railway/Render/Fly).
+python scripts/paid_beta_ready.py --base-url https://web-dealix.up.railway.app
+# → PAID_BETA_READY_CHECK … RESULT: PAID_BETA_READY
+```
+
+Live-action gates (default `false` everywhere — flip only with explicit opt-in
+and legal review):
+
+```
+WHATSAPP_ALLOW_LIVE_SEND=false
+GMAIL_ALLOW_LIVE_SEND=false
+MOYASAR_ALLOW_LIVE_CHARGE=false
+LINKEDIN_ALLOW_AUTO_DM=false   # always false — LinkedIn ToS forbids automation
+```
+
+CI runs the same audit on every PR via `.github/workflows/architecture_guard.yml`.
+
 Full stack (app + Postgres + Redis + Mongo):
 ```bash
 make docker-up
