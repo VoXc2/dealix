@@ -1,0 +1,144 @@
+/* =============================================================
+   Dealix Frontend — base.css
+   Design tokens + reset + typography (RTL Arabic-first)
+   Extends landing/styles.css; new tokens are additive.
+   ============================================================= */
+
+:root {
+  /* New executive Saudi palette (additive to existing tokens) */
+  --dx-navy:        #0A1F33;   /* trust + execution */
+  --dx-charcoal:    #1A1A1A;   /* base text */
+  --dx-emerald:     #0A4D3F;   /* growth (matches marketers.html) */
+  --dx-emerald-2:   #2D7A4F;   /* growth lighter */
+  --dx-gold:        #C9A961;   /* premium accent */
+  --dx-amber:       #D97706;   /* warning / risk */
+  --dx-blue-trust:  #1E40AF;   /* compliance / safety */
+  --dx-off-white:   #F4F0E8;   /* clean cream */
+  --dx-success:     #2D7A4F;
+  --dx-danger:      #B91C1C;
+
+  /* Risk levels (for cards + badges) */
+  --dx-risk-low:    #2D7A4F;
+  --dx-risk-medium: #D97706;
+  --dx-risk-high:   #B91C1C;
+
+  /* Spacing scale (rem-based) */
+  --dx-space-1: 0.25rem;
+  --dx-space-2: 0.5rem;
+  --dx-space-3: 0.75rem;
+  --dx-space-4: 1rem;
+  --dx-space-5: 1.5rem;
+  --dx-space-6: 2rem;
+  --dx-space-8: 3rem;
+  --dx-space-10: 4rem;
+
+  /* Typography scale */
+  --dx-text-xs:   0.75rem;
+  --dx-text-sm:   0.875rem;
+  --dx-text-base: 1rem;
+  --dx-text-lg:   1.125rem;
+  --dx-text-xl:   1.25rem;
+  --dx-text-2xl:  1.5rem;
+  --dx-text-3xl:  2rem;
+  --dx-text-4xl:  2.5rem;
+  --dx-text-5xl:  3.25rem;
+
+  /* Card radii */
+  --dx-radius-card: 14px;
+  --dx-radius-pill: 999px;
+
+  /* Card shadow */
+  --dx-shadow-card: 0 4px 16px rgba(15, 23, 42, 0.06);
+  --dx-shadow-card-hover: 0 12px 32px rgba(15, 23, 42, 0.10);
+}
+
+[data-theme="dark"] {
+  --dx-navy: #E2EFFE;
+  --dx-charcoal: #F1F5F9;
+  --dx-off-white: #0A0F1C;
+  --dx-shadow-card: 0 4px 16px rgba(0,0,0,0.4);
+  --dx-shadow-card-hover: 0 12px 32px rgba(0,0,0,0.55);
+}
+
+/* RTL helpers */
+[dir="rtl"] .dx-flip { transform: scaleX(-1); }
+
+/* Page-level scaffolding (used by new pages) */
+.dx-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg, #ffffff);
+  color: var(--text, var(--dx-charcoal));
+}
+
+.dx-page__main {
+  flex: 1;
+  padding-block: clamp(2rem, 4vw, 4rem);
+}
+
+.dx-section {
+  padding-block: clamp(3rem, 6vw, 5rem);
+}
+
+.dx-section--muted {
+  background: var(--bg-muted, #f8fafc);
+}
+
+.dx-section__head {
+  text-align: center;
+  max-width: 720px;
+  margin: 0 auto clamp(2rem, 4vw, 3.5rem);
+}
+
+.dx-section__kicker {
+  display: inline-block;
+  font-size: var(--dx-text-xs);
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--dx-emerald);
+  background: color-mix(in srgb, var(--dx-emerald) 8%, transparent);
+  border: 1px solid color-mix(in srgb, var(--dx-emerald) 25%, transparent);
+  padding: 0.4rem 0.9rem;
+  border-radius: var(--dx-radius-pill);
+  margin-bottom: 1rem;
+}
+
+.dx-section__title {
+  font-size: clamp(1.75rem, 3.5vw, 2.5rem);
+  line-height: 1.2;
+  font-weight: 700;
+  margin: 0 0 0.75rem;
+  letter-spacing: -0.02em;
+}
+
+.dx-section__lede {
+  font-size: clamp(1rem, 1.5vw, 1.125rem);
+  line-height: 1.7;
+  color: var(--text-muted, #475569);
+  margin: 0;
+}
+
+/* Container alignment with existing */
+.dx-container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding-inline: clamp(1rem, 4vw, 2.5rem);
+}
+
+/* Skip link for a11y */
+.dx-skip-link {
+  position: absolute;
+  inset-inline-start: -9999px;
+  top: 0;
+  background: var(--dx-navy);
+  color: #fff;
+  padding: 0.75rem 1.25rem;
+  z-index: 1000;
+  border-radius: 0 0 8px 0;
+}
+.dx-skip-link:focus {
+  inset-inline-start: 0;
+}

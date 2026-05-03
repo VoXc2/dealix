@@ -193,16 +193,20 @@ make run
 # → http://localhost:8000/docs
 ```
 
-## 🛡️ Architecture Guard (PR 1)
+## 🛡️ Architecture Guard (PR 1) + Frontend Product System (PR-FE-1)
 
-Three scripts enforce the safety contract — run them locally before any commit
-that touches product code.
+Four scripts enforce the safety contract — run them locally before any commit
+that touches product code or marketing pages.
 
 ```bash
 # Static checks: routers, forbidden patterns, ≤3 WhatsApp buttons,
 # safety flags, secrets hygiene, PDPL gates, autonomy modes.
 python scripts/repo_architecture_audit.py
 # → DEALIX_ARCH_AUDIT … RESULT: PASS
+
+# Frontend marketing claims: forbidden phrases, required CTAs/links, OG tags.
+python scripts/forbidden_claims_audit.py
+# → DEALIX_FORBIDDEN_CLAIMS_AUDIT … RESULT: PASS
 
 # Full readiness: compileall + pytest + routes + smoke + audit + env + files.
 python scripts/launch_readiness_check.py
@@ -212,6 +216,14 @@ python scripts/launch_readiness_check.py
 python scripts/paid_beta_ready.py --base-url https://web-dealix.up.railway.app
 # → PAID_BETA_READY_CHECK … RESULT: PAID_BETA_READY
 ```
+
+### Frontend Product System
+
+The `landing/` directory contains 25+ static HTML pages (no build pipeline).
+PR-FE-1 added the modular component library + 9 new pages
+(companies, services, private-beta, growth-os, agency-partner, operator,
+targeting, proof-pack, support). See [`landing/README.md`](landing/README.md)
+for layout, design tokens, and how to add new pages.
 
 Live-action gates (default `false` everywhere — flip only with explicit opt-in
 and legal review):

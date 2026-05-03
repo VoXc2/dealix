@@ -29,6 +29,9 @@ jobs:
           APP_ENV: test
         run: python scripts/repo_architecture_audit.py
 
+      - name: Forbidden claims audit (frontend)
+        run: python scripts/forbidden_claims_audit.py
+
       - name: Launch readiness check
         env:
           APP_ENV: test
