@@ -109,6 +109,8 @@ class Settings(BaseSettings):
     # Default False everywhere; flip only after explicit opt-in + legal review.
     gmail_allow_live_send: bool = False
     moyasar_allow_live_charge: bool = False
+    moyasar_secret_key: SecretStr | None = None  # sk_test_xxx or sk_live_xxx
+    moyasar_publishable_key: str | None = None   # pk_test_xxx or pk_live_xxx
     linkedin_allow_auto_dm: bool = False  # ALWAYS False — LinkedIn ToS forbids automation
     resend_allow_live_send: bool = False  # PR-BE-Auth: gate magic-link emails
     # PR-COMMERCIAL-CLOSE: 3 new gates for Sales/Growth WhatsApp + Calls.

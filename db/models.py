@@ -787,6 +787,44 @@ class ObjectionEventRecord(Base):
     created_at: Mapped[datetime] = mapped_column(default=utcnow)
 
 
+class ProspectRecord(Base):
+    """Founder-managed prospect tracker (CRM-lite).
+
+    One row per "person we want to talk to". Drives `dealix standup` and the
+    /api/v1/prospects/* endpoints. Status moves forward only:
+        identified -> messaged -> replied -> meeting -> pilot -> closed_won
+                                                              \\-> closed_lost
+    """
+
+    __tablename__ = "prospects"
+
+    id: Mapped[str] = mapped_column(String(64), primary_key=True)
+    name: Mapped[str] = mapped_column(String(255))
+    company: Mapped[str | None] = mapped_column(String(255), nullable=True, index=True)
+    role_title: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    linkedin_url: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    contact_email: Mapped[str | None] = mapped_column(String(255), nullable=True, index=True)
+    contact_phone: Mapped[str | None] = mapped_column(String(32), nullable=True)
+    sector: Mapped[str | None] = mapped_column(String(64), nullable=True, index=True)
+    city: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    relationship_type: Mapped[str] = mapped_column(String(32), default="cold")
+    # cold | warm_1st_degree | warm_2nd_degree | referral | ex_colleague | inbound
+    status: Mapped[str] = mapped_column(String(32), default="identified", index=True)
+    # identified | messaged | replied | meeting | pilot | closed_won | closed_lost
+    next_step_ar: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    next_step_due_at: Mapped[datetime | None] = mapped_column(nullable=True, index=True)
+    last_message_at: Mapped[datetime | None] = mapped_column(nullable=True)
+    last_reply_at: Mapped[datetime | None] = mapped_column(nullable=True)
+    notes_ar: Mapped[str | None] = mapped_column(Text, nullable=True)
+    expected_value_sar: Mapped[float] = mapped_column(Float, default=499.0)
+    deal_id: Mapped[str | None] = mapped_column(String(64), nullable=True, index=True)
+    customer_id: Mapped[str | None] = mapped_column(String(64), nullable=True, index=True)
+    actor: Mapped[str] = mapped_column(String(64), default="founder")
+    meta_json: Mapped[dict] = mapped_column("metadata", JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(default=utcnow, index=True)
+    updated_at: Mapped[datetime] = mapped_column(default=utcnow, onupdate=utcnow)
+
+
 class MeetingRecord(Base):
     """One row per meeting/call held with a customer or prospect.
 

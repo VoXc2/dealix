@@ -7,12 +7,19 @@ terminal view every morning.
 
 Commands:
     dealix today                    Founder daily summary (CEO brief + KPIs + incidents)
+    dealix standup                  60-second daily standup: today's queue + stale + wins
+    dealix prospects add            Add a prospect (interactive)
+    dealix prospects list           List prospects (--status / --due-hours filters)
+    dealix prospects advance <id>   Move prospect status forward (auto-emits RWU)
+    dealix funnel                   Show prospects funnel (count + expected SAR per stage)
+    dealix invoice <amount> <cust>  Create a payment-link invoice (Moyasar or manual fallback)
     dealix smoke                    Run staging_smoke against $DEALIX_BASE_URL
     dealix seed                     Run seed_commercial_demo against current DB
     dealix proof <customer_id>      Fetch and pretty-print a customer's Proof Pack
     dealix outreach pick [N]        Pick next N (default 5) outreach messages
     dealix run-window <window>      Trigger one daily-ops window (morning/midday/closing/scorecard)
     dealix gates                    Print all 8 live-action gates + their status
+    dealix activate-payments        Print exact env-var changes to flip Moyasar live charge
     dealix help                     Show this text
 
 Configuration:
@@ -311,6 +318,174 @@ def cmd_gates(_args) -> int:
     return 0
 
 
+# ── Standup / prospects / invoice / activate-payments ────────────
+
+
+def cmd_standup(_args) -> int:
+    """60-second morning routine — today's queue + stale + wins + funnel."""
+    data = _fetch("/api/v1/prospects/standup")
+    if not data or "_error" in data:
+        print(_c("✗ Could not reach /api/v1/prospects/standup", "red"))
+        print(_c(f"  base_url={_base_url()}", "dim"))
+        return 1
+
+    print(_hdr("DAILY STANDUP — " + str(data.get("as_of", ""))[:10]))
+
+    funnel = data.get("funnel") or {}
+    if funnel:
+        ladder = ("identified", "messaged", "replied", "meeting", "pilot",
+                  "closed_won", "closed_lost")
+        line = "  ".join(f"{s}:{funnel.get(s, 0)}" for s in ladder)
+        print(_c("  Funnel: ", "dim") + line)
+
+    due = data.get("due_today") or []
+    print(_kv("due today", len(due), color="yellow" if due else "green"))
+    for p in due[:10]:
+        nm = (p.get("name") or "")[:30]
+        co = (p.get("company") or "")[:25]
+        nx = (p.get("next_step_ar") or "")[:50]
+        print(f"    {_c('→', 'cyan')} {nm:30s}  {co:25s}  {_c(nx, 'dim')}")
+
+    stale = data.get("stale_messaged") or []
+    if stale:
+        print(_kv("stale (no reply >3d)", len(stale), color="yellow"))
+        for p in stale[:5]:
+            print(f"    {_c('⏳', 'yellow')} {(p.get('name') or '')[:30]:30s}  {(p.get('company') or '')[:25]:25s}")
+
+    wins = data.get("wins_yesterday") or []
+    if wins:
+        print(_kv("WINS yesterday", len(wins), color="green"))
+        for p in wins:
+            print(f"    {_c('🏆', 'green')} {(p.get('name') or '')[:30]:30s}  +{p.get('expected_value_sar', 0):.0f} SAR")
+
+    advice = data.get("advice_ar") or ""
+    if advice:
+        print(_c("\n  💡 " + advice, "magenta"))
+    return 0
+
+
+def cmd_prospects(args) -> int:
+    sub = (args.subcmd or "list").lower()
+    if sub == "add":
+        print("اسم الشخص: ", end="", flush=True); name = sys.stdin.readline().strip()
+        print("اسم الشركة: ", end="", flush=True); co = sys.stdin.readline().strip()
+        print("LinkedIn URL: ", end="", flush=True); li = sys.stdin.readline().strip()
+        print("القيمة المتوقعة (SAR، Enter = 499): ", end="", flush=True)
+        vraw = sys.stdin.readline().strip()
+        try:
+            v = float(vraw) if vraw else 499.0
+        except ValueError:
+            v = 499.0
+        print("نوع العلاقة (cold/warm_1st_degree/warm_2nd_degree/referral): ", end="", flush=True)
+        rel = sys.stdin.readline().strip() or "warm_1st_degree"
+        body = {
+            "name": name, "company": co, "linkedin_url": li,
+            "expected_value_sar": v, "relationship_type": rel,
+            "next_step_ar": "أرسل warm-intro DM",
+        }
+        out = _fetch("/api/v1/prospects", method="POST", json_body=body)
+        if not out or "_error" in out:
+            print(_c("✗ failed to create prospect", "red")); return 1
+        print(_c(f"✓ created {out.get('id')} — status={out.get('status')}", "green"))
+        return 0
+
+    if sub == "list":
+        qs = []
+        if getattr(args, "status", None):
+            qs.append(f"status={args.status}")
+        if getattr(args, "due_hours", None):
+            qs.append(f"due_by_hours={args.due_hours}")
+        path = "/api/v1/prospects" + ("?" + "&".join(qs) if qs else "")
+        out = _fetch(path)
+        if not out:
+            print(_c("✗ failed", "red")); return 1
+        rows = out.get("prospects") or []
+        print(_hdr(f"PROSPECTS ({out.get('count', 0)})"))
+        for p in rows[:30]:
+            print(f"  {p.get('id')}  {p.get('status', ''):14s}  {(p.get('name') or '')[:24]:24s}  {(p.get('company') or '')[:24]:24s}  {p.get('expected_value_sar', 0):>6.0f} SAR")
+        return 0
+
+    if sub == "advance":
+        pid = getattr(args, "prospect_id", None)
+        if not pid:
+            print(_c("✗ usage: dealix prospects advance <id> [target_status]", "red"))
+            return 2
+        body: dict[str, Any] = {}
+        target = getattr(args, "target", None)
+        if target:
+            body["target_status"] = target
+        out = _fetch(f"/api/v1/prospects/{pid}/advance", method="POST", json_body=body)
+        if not out:
+            print(_c("✗ failed", "red")); return 1
+        rwu = out.get("rwu_emitted") or "—"
+        print(_c(f"✓ {pid}: {out.get('from')} → {out.get('to')}  (RWU: {rwu})", "green"))
+        return 0
+
+    print(_c(f"unknown prospects subcommand: {sub}", "red"))
+    print("  usage: dealix prospects [add|list|advance]")
+    return 2
+
+
+def cmd_funnel(_args) -> int:
+    out = _fetch("/api/v1/prospects/funnel")
+    if not out:
+        print(_c("✗ failed", "red")); return 1
+    f = out.get("funnel") or {}
+    print(_hdr("PROSPECTS FUNNEL"))
+    total_sar = 0.0
+    for stage in ("identified", "messaged", "replied", "meeting", "pilot",
+                  "closed_won", "closed_lost"):
+        d = f.get(stage) or {"count": 0, "expected_value_sar": 0.0}
+        sar = d.get("expected_value_sar", 0.0)
+        if stage not in ("closed_lost",):
+            total_sar += sar
+        print(f"  {stage:14s}  count={d.get('count', 0):>3}   expected={sar:>8.0f} SAR")
+    print(_c(f"\n  Pipeline value (excl. closed_lost): {total_sar:.0f} SAR", "cyan"))
+    return 0
+
+
+def cmd_invoice(args) -> int:
+    body = {
+        "amount_sar": float(args.amount),
+        "customer_id": args.customer,
+        "description_ar": getattr(args, "description", None) or "Pilot Dealix — 7 أيام",
+    }
+    out = _fetch("/api/v1/payments/invoice", method="POST", json_body=body)
+    if not out:
+        print(_c("✗ failed to create invoice", "red")); return 1
+    print(_hdr("INVOICE CREATED"))
+    print(_kv("invoice_id", out.get("invoice_id")))
+    print(_kv("amount", f"{out.get('amount_sar', 0):.2f} SAR"))
+    print(_kv("mode", out.get("mode"), color="yellow" if out.get("mode") == "manual" else "green"))
+    print(_kv("status", out.get("status")))
+    print(_c(f"\n  📲 {out.get('instruction_ar', '')}\n", "cyan"))
+    print(_c(f"  URL → {out.get('url')}", "bold"))
+    return 0
+
+
+def cmd_activate_payments(_args) -> int:
+    """Print exact env changes to flip Moyasar live charge — no auto-flip for safety."""
+    state = _fetch("/api/v1/payments/state")
+    print(_hdr("ACTIVATE LIVE PAYMENTS"))
+    if state:
+        gates = state.get("gates") or {}
+        live = gates.get("live_charge", False)
+        ready = state.get("ready_to_flip_live_charge", False)
+        secret = state.get("moyasar_secret_configured", False)
+        print(_kv("MOYASAR_ALLOW_LIVE_CHARGE", "TRUE ✓" if live else "FALSE", color="green" if live else "yellow"))
+        print(_kv("MOYASAR_SECRET_KEY", "configured ✓" if secret else "MISSING", color="green" if secret else "red"))
+        print(_kv("ready to flip?", "YES" if ready else "NO — set secret first", color="green" if ready else "red"))
+
+    print(_c("\nSteps:", "bold"))
+    print("  1. Complete Moyasar merchant onboarding (KYB + DPA): https://moyasar.com")
+    print("  2. railway variables set MOYASAR_SECRET_KEY=sk_live_xxx --service web")
+    print("  3. railway variables set MOYASAR_ALLOW_LIVE_CHARGE=true --service web")
+    print("  4. After redeploy: dealix invoice 1 cus_demo  (test 1 SAR charge)")
+    print("  5. See: docs/MOYASAR_LIVE_CUTOVER.md\n")
+    print(_c("⚠ Until done, /api/v1/payments/charge returns 403 — invoices via /invoice work fine.", "yellow"))
+    return 0
+
+
 # ── Main ─────────────────────────────────────────────────────────
 
 
@@ -318,9 +493,12 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(prog="dealix", description="Dealix Founder CLI")
     sub = parser.add_subparsers(dest="cmd", required=False)
 
-    sub.add_parser("today",  help="Founder daily summary")
-    sub.add_parser("smoke",  help="Smoke test the API")
-    sub.add_parser("seed",   help="Seed demo commercial data")
+    sub.add_parser("today",   help="Founder daily summary")
+    sub.add_parser("standup", help="60s morning standup queue + funnel")
+    sub.add_parser("smoke",   help="Smoke test the API")
+    sub.add_parser("seed",    help="Seed demo commercial data")
+    sub.add_parser("funnel",  help="Show prospects funnel")
+    sub.add_parser("activate-payments", help="Print Moyasar live-charge activation steps")
 
     p_proof = sub.add_parser("proof", help="Fetch a customer's Proof Pack")
     p_proof.add_argument("customer_id")
@@ -328,6 +506,18 @@ def main(argv: list[str] | None = None) -> int:
     p_out = sub.add_parser("outreach", help="Pick next outreach messages")
     p_out.add_argument("subcmd", nargs="?", default="pick")
     p_out.add_argument("n", nargs="?", type=int, default=5)
+
+    p_pros = sub.add_parser("prospects", help="Manage prospects (add/list/advance)")
+    p_pros.add_argument("subcmd", nargs="?", default="list")
+    p_pros.add_argument("prospect_id", nargs="?")
+    p_pros.add_argument("target", nargs="?")
+    p_pros.add_argument("--status")
+    p_pros.add_argument("--due-hours", type=int, dest="due_hours")
+
+    p_inv = sub.add_parser("invoice", help="Create a payment-link invoice")
+    p_inv.add_argument("amount", type=float)
+    p_inv.add_argument("customer")
+    p_inv.add_argument("description", nargs="?")
 
     p_run = sub.add_parser("run-window", help="Trigger a daily-ops window")
     p_run.add_argument("window")
@@ -339,14 +529,19 @@ def main(argv: list[str] | None = None) -> int:
     cmd = args.cmd or "help"
 
     handlers = {
-        "today":      cmd_today,
-        "smoke":      cmd_smoke,
-        "seed":       cmd_seed,
-        "proof":      cmd_proof,
-        "outreach":   cmd_outreach,
-        "run-window": cmd_run_window,
-        "gates":      cmd_gates,
-        "help":       lambda _a: (parser.print_help(), 0)[1],
+        "today":              cmd_today,
+        "standup":            cmd_standup,
+        "smoke":              cmd_smoke,
+        "seed":               cmd_seed,
+        "proof":              cmd_proof,
+        "outreach":           cmd_outreach,
+        "prospects":          cmd_prospects,
+        "funnel":             cmd_funnel,
+        "invoice":            cmd_invoice,
+        "activate-payments":  cmd_activate_payments,
+        "run-window":         cmd_run_window,
+        "gates":              cmd_gates,
+        "help":               lambda _a: (parser.print_help(), 0)[1],
     }
     handler = handlers.get(cmd)
     if handler is None:
