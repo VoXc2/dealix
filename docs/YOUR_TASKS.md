@@ -10,6 +10,42 @@
 
 ---
 
+## ⚡ روتين الصباح (30 ثانية كل يوم — بعد الـ deploy)
+
+```bash
+export DEALIX_BASE_URL=https://app.dealix.me
+python scripts/dealix_cli.py today
+```
+
+ينتج تقرير ملوّن يحتوي:
+- CEO Brief (3 قرارات اليوم)
+- KPIs آخر 7 أيام (subscriptions، MRR، proof events، unsafe blocked)
+- Quality KPIs (acceptance rate، override rate، complaint rate)
+- AI cost (SAR + agent runs + latency)
+- Open incidents (P0/P1)
+- Recent daily-ops runs
+- 8 live-action gates status
+- Next morning actions
+
+أمر واحد = كل ما تحتاجه. **استبدل الـ 6 URLs السابقة بهذا.**
+
+أوامر CLI الأخرى:
+```bash
+python scripts/dealix_cli.py outreach pick 5     # أول 5 رسائل اليوم
+python scripts/dealix_cli.py run-window morning  # شغّل morning brief يدوياً
+python scripts/dealix_cli.py proof demo_cust_X  # Proof Pack لعميل
+python scripts/dealix_cli.py smoke              # smoke test كامل
+python scripts/dealix_cli.py gates              # تأكد كل الـ gates FALSE
+```
+
+اختصار:
+```bash
+sudo ln -s "$(pwd)/scripts/dealix_cli.py" /usr/local/bin/dealix
+# الآن: dealix today
+```
+
+---
+
 ## 🔴 D0 — اليوم (90 دقيقة)
 
 ### [1] Railway Deploy ⏱ 15 دقيقة

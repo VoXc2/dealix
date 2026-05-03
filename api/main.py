@@ -27,6 +27,7 @@ from api.routers import (
     daily_ops,
     data,
     delivery,
+    founder,
     dominance,
     drafts,
     ecosystem,
@@ -178,6 +179,7 @@ def create_app() -> FastAPI:
     app.include_router(calls_router.router)
     app.include_router(observability.router)
     app.include_router(daily_ops.router)
+    app.include_router(founder.router)
 
     @app.get("/", tags=["root"])
     async def root() -> dict[str, object]:
