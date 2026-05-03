@@ -80,3 +80,58 @@ async def weekly(days: int = Query(default=7, ge=1, le=90)) -> dict[str, Any]:
 async def today() -> dict[str, Any]:
     """Today's deterministic plan (focus segment, channels, message variants)."""
     return daily_plan_to_dict(build_daily_plan())
+
+
+@router.get("/playbook")
+async def playbook(sector: str | None = Query(default=None), days: int = Query(default=30, ge=7, le=180)) -> dict[str, Any]:
+    """Phase 3 — Playbook: best segment / channel / message + objection library
+    + channel performance, scoped to sector if provided.
+
+    Phase 3 lightweight — returns honest "small sample" warnings until
+    enough data accumulates (~30 events per channel).
+    """
+    from auto_client_acquisition.learning import (
+        analyze_channels,
+        mine_objections,
+        score_messages,
+    )
+    from db.models import ObjectionEventRecord
+
+    errors: dict[str, str] = {}
+    since = _now() - timedelta(days=days)
+
+    proof_events: list = []
+    objection_events: list = []
+    try:
+        async with get_session() as s:
+            proof_events = list((await s.execute(
+                select(ProofEventRecord).where(ProofEventRecord.occurred_at >= since)
+            )).scalars().all())
+    except Exception as exc:  # noqa: BLE001
+        errors["proof_events"] = f"{type(exc).__name__}: {str(exc)[:200]}"
+
+    try:
+        async with get_session() as s:
+            objection_events = list((await s.execute(
+                select(ObjectionEventRecord).where(ObjectionEventRecord.occurred_at >= since)
+            )).scalars().all())
+    except Exception as exc:  # noqa: BLE001
+        errors["objection_events"] = f"{type(exc).__name__}: {str(exc)[:200]}"
+
+    response: dict[str, Any] = {
+        "as_of": _now().isoformat(),
+        "since": since.isoformat(),
+        "days": days,
+        "sector": sector,
+        "channel_performance": analyze_channels(proof_events),
+        "message_experiments": score_messages(proof_events),
+        "objection_library": mine_objections(objection_events),
+        "phase": "phase_3_skeleton",
+        "trigger_for_full_phase_3_ar": (
+            "تنشيط الـ Learning Engine الكامل عند: ٣ Pilots مدفوعة + ≥٣٠ "
+            "محادثة (objection event أو message reply)."
+        ),
+    }
+    if errors:
+        response["_errors"] = errors
+    return response

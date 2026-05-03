@@ -52,6 +52,7 @@ from api.routers import (
     prospect,
     prospects,
     role_aliases,
+    sprints,
     public,
     revenue,
     revenue_os,
@@ -196,6 +197,7 @@ def create_app() -> FastAPI:
     app.include_router(companies.router)
     app.include_router(actions.router)
     app.include_router(learning.router)
+    app.include_router(sprints.router)
     app.include_router(role_aliases.router)
 
     @app.get("/", tags=["root"])

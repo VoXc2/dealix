@@ -887,3 +887,38 @@ class MeetingRecord(Base):
     actor: Mapped[str] = mapped_column(String(64), default="sales")
     meta_json: Mapped[dict] = mapped_column("metadata", JSON, default=dict)
     created_at: Mapped[datetime] = mapped_column(default=utcnow, index=True)
+
+
+class SprintRecord(Base):
+    """One row per 7-Day Growth Proof Sprint — the customer-facing delivery
+    cadence. Phase 2 (Delivery Engine).
+
+    Lifecycle:
+        started → day_1 → day_2 → ... → day_7 → completed
+                                              ↘ aborted
+
+    Each day-action emits matching RWUs into the Proof Ledger and surfaces
+    in /api/v1/companies/{customer_id}/workspace.
+    """
+
+    __tablename__ = "sprints"
+
+    id: Mapped[str] = mapped_column(String(64), primary_key=True)
+    customer_id: Mapped[str] = mapped_column(String(64), index=True)
+    service_id: Mapped[str] = mapped_column(String(64), default="growth_starter", index=True)
+    started_at: Mapped[datetime] = mapped_column(default=utcnow, index=True)
+    current_day: Mapped[int] = mapped_column(Integer, default=0)
+    status: Mapped[str] = mapped_column(String(32), default="started", index=True)
+    # started | day_1 | day_2 | ... | day_7 | completed | aborted
+    # Snapshot of the Service Contract at start time — so a contract change
+    # mid-sprint doesn't break delivery expectations.
+    contract_snapshot_json: Mapped[dict] = mapped_column(JSON, default=dict)
+    # Day outputs cached as JSON so the Customer Workspace + Proof Pack can
+    # render them without re-generating.
+    day_outputs_json: Mapped[dict] = mapped_column("day_outputs", JSON, default=dict)
+    completed_at: Mapped[datetime | None] = mapped_column(nullable=True)
+    proof_pack_event_id: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    actor: Mapped[str] = mapped_column(String(64), default="founder")
+    meta_json: Mapped[dict] = mapped_column("metadata", JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(default=utcnow, index=True)
+    updated_at: Mapped[datetime] = mapped_column(default=utcnow, onupdate=utcnow)
