@@ -22,7 +22,7 @@ def _stale_followup_threshold_hours() -> int:
 
 
 def _now() -> datetime:
-    return datetime.now(timezone.utc)
+    return datetime.now(timezone.utc).replace(tzinfo=None)
 
 
 def pipeline_snapshot(deals, sessions, objection_events) -> dict[str, Any]:
@@ -45,7 +45,9 @@ def pipeline_snapshot(deals, sessions, objection_events) -> dict[str, Any]:
         last = d.updated_at if d.updated_at else d.created_at
         if last is None:
             continue
-        last = last if last.tzinfo else last.replace(tzinfo=timezone.utc)
+        # Normalize to naive UTC for comparison (matches _now())
+        if last.tzinfo is not None:
+            last = last.astimezone(timezone.utc).replace(tzinfo=None)
         age_h = (_now() - last).total_seconds() / 3600.0
         if age_h >= _stale_followup_threshold_hours() and (d.stage or "") not in ("won", "lost", "closed"):
             followups_due += 1

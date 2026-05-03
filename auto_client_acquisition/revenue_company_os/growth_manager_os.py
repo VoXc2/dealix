@@ -18,7 +18,7 @@ from auto_client_acquisition.revenue_company_os.self_growth_mode import (
 
 
 def _now() -> datetime:
-    return datetime.now(timezone.utc)
+    return datetime.now(timezone.utc).replace(tzinfo=None)
 
 
 def yesterday_scorecard(yesterday_events) -> dict[str, Any]:

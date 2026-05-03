@@ -44,10 +44,11 @@ def _parse_since(since: str | None, default_days: int = 30) -> datetime:
     if since:
         try:
             v = datetime.fromisoformat(since)
-            return v if v.tzinfo else v.replace(tzinfo=timezone.utc)
+            # Normalize to naive UTC (matches DB TIMESTAMP columns)
+            return v.astimezone(timezone.utc).replace(tzinfo=None) if v.tzinfo else v
         except ValueError:
             pass
-    return datetime.now(timezone.utc) - timedelta(days=default_days)
+    return datetime.now(timezone.utc).replace(tzinfo=None) - timedelta(days=default_days)
 
 
 @router.get("/units")

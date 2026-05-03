@@ -133,8 +133,10 @@ async def today(days: int = Query(default=7, ge=1, le=30)) -> dict[str, Any]:
             "ticket_id": t.id,
             "priority": t.priority,
             "subject": t.subject[:80],
+            # Both sides naive (Mapped[datetime] columns are TIMESTAMP without tz)
             "age_hours": round(
-                ((_now() - t.created_at.replace(tzinfo=timezone.utc)).total_seconds() / 3600.0)
+                ((_now() - (t.created_at if t.created_at.tzinfo is None
+                            else t.created_at.replace(tzinfo=None))).total_seconds() / 3600.0)
                 if t.created_at else 0.0,
                 1,
             ),
