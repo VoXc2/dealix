@@ -20,6 +20,7 @@ Commands:
     dealix run-window <window>      Trigger one daily-ops window (morning/midday/closing/scorecard)
     dealix gates                    Print all 8 live-action gates + their status
     dealix activate-payments        Print exact env-var changes to flip Moyasar live charge
+    dealix first-customer-flow      End-to-end demo: prospect→pilot→invoice→Proof Pack
     dealix help                     Show this text
 
 Configuration:
@@ -463,6 +464,86 @@ def cmd_invoice(args) -> int:
     return 0
 
 
+def cmd_first_customer_flow(_args) -> int:
+    """End-to-end demo flow — proves the pipeline works from lead to Proof Pack.
+
+    Creates one synthetic prospect, walks them through every stage, generates
+    an invoice, confirms payment, and prints the Proof Pack URL. Useful for:
+      - Onboarding a new founder/operator
+      - Verifying production after deploy
+      - Demoing to investors / customers
+    """
+    import json as _json
+    print(_hdr("FIRST-CUSTOMER FLOW — E2E DEMO"))
+
+    # 1. Create prospect
+    print(_c("\n[1/8] Creating demo prospect…", "cyan"))
+    p = _fetch("/api/v1/prospects", method="POST", json_body={
+        "name": "عميل تجريبي",
+        "company": "شركة Demo Co",
+        "linkedin_url": "https://linkedin.com/in/demo",
+        "relationship_type": "warm_1st_degree",
+        "expected_value_sar": 499.0,
+        "next_step_ar": "warm-intro DM",
+    })
+    if not p or "id" not in p:
+        print(_c("  ✗ failed to create prospect", "red")); return 1
+    pid = p["id"]
+    print(_c(f"  ✓ prospect_id={pid}", "green"))
+
+    # 2-6. Advance through each stage
+    stages = [("messaged", "draft_created"), ("replied", "opportunity_created"),
+              ("meeting", "meeting_drafted"), ("pilot", "approval_collected")]
+    for i, (target, expected_rwu) in enumerate(stages, start=2):
+        print(_c(f"\n[{i}/8] Advancing to '{target}' (expect RWU: {expected_rwu})…", "cyan"))
+        a = _fetch(f"/api/v1/prospects/{pid}/advance", method="POST",
+                   json_body={"target_status": target})
+        if not a or "to" not in a:
+            print(_c(f"  ✗ failed: {a}", "red")); return 1
+        rwu = a.get("rwu_emitted") or "—"
+        print(_c(f"  ✓ {a['from']} → {a['to']}  (RWU: {rwu})", "green"))
+
+    # 7. Invoice 499 SAR
+    print(_c(f"\n[6/8] Creating Moyasar invoice 499 SAR…", "cyan"))
+    inv = _fetch("/api/v1/payments/invoice", method="POST", json_body={
+        "amount_sar": 499.0, "customer_id": pid,
+        "description_ar": "Pilot Dealix - 7 أيام (demo)",
+    })
+    if not inv or "invoice_id" not in inv:
+        print(_c("  ✗ failed to create invoice", "red")); return 1
+    print(_c(f"  ✓ invoice_id={inv['invoice_id']}  mode={inv.get('mode')}", "green"))
+    print(_c(f"  → URL: {inv.get('url')}", "dim"))
+
+    # 8. Confirm paid
+    print(_c(f"\n[7/8] Confirming payment received…", "cyan"))
+    cf = _fetch("/api/v1/payments/confirm", method="POST", json_body={"invoice_id": inv["invoice_id"]})
+    if not cf or cf.get("status") != "paid":
+        print(_c(f"  ✗ failed: {cf}", "red")); return 1
+    print(_c(f"  ✓ paid_at={cf.get('paid_at')}", "green"))
+
+    # 9. Close won → auto-creates customer
+    print(_c(f"\n[8/8] Closing won → auto-creating CustomerRecord…", "cyan"))
+    close = _fetch(f"/api/v1/prospects/{pid}/advance", method="POST",
+                   json_body={"target_status": "closed_won"})
+    if not close:
+        print(_c("  ✗ close failed", "red")); return 1
+    print(_c(f"  ✓ {close.get('from')} → closed_won  (RWU: {close.get('rwu_emitted')})", "green"))
+
+    # Read Proof Pack
+    print(_c("\n[Proof Pack JSON]", "bold"))
+    pack = _fetch(f"/api/v1/proof-ledger/customer/{pid}/pack")
+    if pack and "pack" in pack:
+        totals = pack["pack"].get("totals") or {}
+        print(_kv("created units", totals.get("created_units", 0), color="green"))
+        print(_kv("revenue impact (SAR)", totals.get("estimated_revenue_impact_sar", 0), color="green"))
+        print(_kv("event count", pack.get("event_count", 0)))
+
+    print(_c(f"\n  ✅ FLOW COMPLETE", "green"))
+    print(_c(f"  Open Proof Pack HTML: {_base_url()}/api/v1/proof-ledger/customer/{pid}/pack.html", "cyan"))
+    print(_c(f"  This was a demo prospect — clean it up: DELETE /prospects/{pid} (TODO)\n", "dim"))
+    return 0
+
+
 def cmd_activate_payments(_args) -> int:
     """Print exact env changes to flip Moyasar live charge — no auto-flip for safety."""
     state = _fetch("/api/v1/payments/state")
@@ -499,6 +580,7 @@ def main(argv: list[str] | None = None) -> int:
     sub.add_parser("seed",    help="Seed demo commercial data")
     sub.add_parser("funnel",  help="Show prospects funnel")
     sub.add_parser("activate-payments", help="Print Moyasar live-charge activation steps")
+    sub.add_parser("first-customer-flow", help="End-to-end demo: prospect→pilot→invoice→Proof Pack")
 
     p_proof = sub.add_parser("proof", help="Fetch a customer's Proof Pack")
     p_proof.add_argument("customer_id")
@@ -539,6 +621,7 @@ def main(argv: list[str] | None = None) -> int:
         "funnel":             cmd_funnel,
         "invoice":            cmd_invoice,
         "activate-payments":  cmd_activate_payments,
+        "first-customer-flow": cmd_first_customer_flow,
         "run-window":         cmd_run_window,
         "gates":              cmd_gates,
         "help":               lambda _a: (parser.print_help(), 0)[1],

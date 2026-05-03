@@ -99,11 +99,17 @@ _INTENT_KEYWORDS: list[tuple[str, list[str]]] = [
     # Dangerous asks first so they always win over friendly mappings (BLOCKED / forbidden).
     ("cold_whatsapp_request", [  # BLOCKED — forbidden intent
         "واتساب بارد", "cold whatsapp", "cold wa", "بلاست واتساب", "blast whatsapp",
-        "إرسال جماعي واتساب",
+        "إرسال جماعي واتساب", "إرسال جماعي", "mass send", "mass whatsapp",
+        "أرقام مشتراة", "قائمة مشتراة", "أرقام شريت", "purchased list",
+        "purchased numbers", "list i bought",
+        # Phrase patterns: "send WhatsApp to numbers/list (without consent)"
+        "أرسل واتساب لأرقام", "ارسل واتساب لأرقام", "أرسل واتساب لقائمة",
+        "ارسل واتساب لقائمة", "send whatsapp to numbers", "send whatsapp to list",
     ]),
     ("scraping_request", [  # BLOCKED — forbidden intent
         "scrape", "scraping", "نسحب البيانات", "نسحب بيانات", "auto-dm", "auto dm",
-        "أتمتة linkedin",
+        "أتمتة linkedin", "linkedin automation", "auto connection",
+        "نسحب linkedin", "scrape linkedin",
     ]),
     ("agency_client", [
         "وكالة", "agency", "عميلي", "my client", "أعمل لعميل",
@@ -170,11 +176,16 @@ async def chat_message(body: dict[str, Any] = Body(...)) -> dict[str, Any]:
 
     blocked = mapping["bundle_id"] == "BLOCKED"
     bundle = None if blocked else _bundle_summary(mapping["bundle_id"])
+    safety_note = (
+        mapping["reason_ar"] if blocked
+        else "كل outbound يمر بموافقتك. لا cold WhatsApp، لا scraping، لا live charge."
+    )
     return {
         "intent": intent,
         "blocked": blocked,
         "reason_ar": mapping["reason_ar"],
         "recommended_bundle": bundle,
+        "safety_note_ar": safety_note,
         "next_path": mapping["path"],
         "approval_first": True,
         "anti_claim_ar": (

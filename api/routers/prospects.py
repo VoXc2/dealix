@@ -26,7 +26,7 @@ from fastapi import APIRouter, Body, HTTPException, Query
 from sqlalchemy import func, select
 
 from auto_client_acquisition.revenue_company_os.proof_ledger import record as record_proof
-from db.models import ProspectRecord
+from db.models import CustomerRecord, ProspectRecord
 from db.session import get_session
 
 router = APIRouter(prefix="/api/v1/prospects", tags=["prospects"])
@@ -294,6 +294,22 @@ async def advance(prospect_id: str, body: dict[str, Any] = Body(default={})) -> 
         if new_status == "replied":
             row.last_reply_at = _now()
 
+        # On closed_won, auto-create CustomerRecord so Proof Pack and CS OS
+        # see this prospect as a real customer. Idempotent: skip if already linked.
+        if new_status == "closed_won" and not row.customer_id:
+            cust = CustomerRecord(
+                id=f"cus_{uuid.uuid4().hex[:14]}",
+                deal_id=row.deal_id,
+                plan="pilot",
+                onboarding_status="kickoff_pending",
+                pilot_start_at=_now(),
+                pilot_end_at=_now() + timedelta(days=7),
+                success_metric=f"Pilot 499 for {row.company or row.name}",
+                churn_risk="low",
+            )
+            session.add(cust)
+            row.customer_id = cust.id
+
         if (body or {}).get("next_step_ar"):
             row.next_step_ar = body["next_step_ar"]
         if (body or {}).get("next_step_due_at"):
@@ -303,10 +319,13 @@ async def advance(prospect_id: str, body: dict[str, Any] = Body(default={})) -> 
         proof_id: str | None = None
         if unit:
             try:
+                # Use the real customer_id once it exists; before that, use
+                # prospect_id as the label so the Proof Pack lookup works.
+                pack_key = row.customer_id or row.id
                 proof = await record_proof(
                     session,
                     unit_type=unit,
-                    customer_id=row.customer_id,
+                    customer_id=pack_key,
                     revenue_impact_sar=(
                         float(row.expected_value_sar) if new_status == "closed_won"
                         else None
