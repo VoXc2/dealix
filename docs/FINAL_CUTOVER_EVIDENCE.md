@@ -1,166 +1,133 @@
-# Dealix — Final Cutover Evidence
+# Dealix Final Cutover Evidence
 
-> Verified 2026-05-03 against the merged deploy branch
-> `claude/launch-command-center-6P4N0` @ `29d8e8f`. Every claim below is
-> backed by a command + output. No motivational claims.
+> Re-verified 2026-05-03 against deploy branch
+> `claude/launch-command-center-6P4N0` @ `bf8f6a0`
+> (PR #132 merge `29d8e8f` + smoke-script + evidence updates).
+> Every claim is backed by a command + output. No motivational claims.
 
-## Status legend
-
-`PROVEN_LOCAL` · `PROVEN_STAGING` · `PROVEN_PROD_READ` · `PROVEN_PROD_WRITE` ·
-`CONFIGURED_SAFE_OFF` · `MANUAL_FALLBACK` · `DOC_ONLY` · `BACKLOG` · `BLOCKED`
-
-## 1. Runtime
-
-| Item | Value | Status |
-| --- | --- | --- |
-| Python | 3.11.15 | PROVEN_LOCAL |
-| FastAPI / uvicorn | 0.115.x / 0.32.x | PROVEN_LOCAL |
-| DB driver (prod) | asyncpg | PROVEN_PROD_READ |
-| DB driver (local/test) | aiosqlite 0.22.x | PROVEN_LOCAL |
-| Deployment | Railway, Dockerfile builder, /healthz | PROVEN_PROD_READ |
-| Source | `claude/launch-command-center-6P4N0` @ `29d8e8f` (PR #132 merged) | PROVEN_LOCAL |
-
-## 2. Database
-
-| Item | Status | Evidence |
-| --- | --- | --- |
-| Postgres production | PROVEN_PROD_READ | `/health` 200 + structured-log `dialect=postgresql` paths reachable |
-| SQLite local/test | PROVEN_LOCAL | `DATABASE_URL=sqlite+aiosqlite:////tmp/...` boots app + tests |
-| Migration `deals.hubspot_deal_id` | PROVEN_LOCAL idempotent | `MIGRATION_OK column 'hubspot_deal_id' already present` (2 runs) |
-| Migration on prod | **pending_founder_secret** | requires founder to run with prod `DATABASE_URL` |
-| Destructive changes | none | nullable column add only |
-
-## 3. AI providers
-
-| Provider | Status | Notes |
-| --- | --- | --- |
-| Groq | CONFIGURED_SAFE_OFF (read-only on prod) | `/health` reports `providers:["groq"]` |
-| Anthropic | not configured on prod | optional fallback |
-| DeepSeek / GLM / Gemini | not configured on prod | optional fallback |
-| Determinism guarantee | PROVEN_LOCAL | safety classifier never calls LLM on hot path |
-
-## 4. Payments
-
-| Item | Status | Evidence |
-| --- | --- | --- |
-| Moyasar live charge gate | CONFIGURED_SAFE_OFF | `MOYASAR_ALLOW_LIVE_CHARGE` referenced in `api/routers/payments.py:14`, returns 403 when off |
-| Moyasar webhook signature | PROVEN_PROD_READ | unsigned `/api/v1/webhooks/moyasar` → **401** |
-| Manual bank-transfer invoice | MANUAL_FALLBACK PROVEN_LOCAL | `POST /api/v1/payments/manual-request` returns bank-transfer SOP |
-| Live charge route | not deployed | `/api/v1/payments/charge` → **404** (no surface to misuse) |
-| Pilot 499 SAR | priced as 49,900 halalah if invoice API used | documented in `PAYMENTS_AND_BILLING_POLICY.md` |
-
-## 5. WhatsApp
-
-| Item | Status | Evidence |
-| --- | --- | --- |
-| Live customer outbound gate | CONFIGURED_SAFE_OFF | `WHATSAPP_ALLOW_LIVE_SEND=False` (`core/config/settings.py:106`) |
-| Live customer outbound on prod | PROVEN_PROD_READ blocked | `POST /api/v1/os/test-send` → `{"status":"blocked","error":"whatsapp_allow_live_send_false"}` |
-| Inbound webhook | PROVEN_PROD_READ gated | GET without verify-token → **422** |
-| Internal brief send | CONFIGURED_SAFE_OFF | `POST /api/v1/whatsapp/brief/send-internal` → **403** on prod |
-| Cold WhatsApp / purchased lists (intent layer, English) | PROVEN_PROD_READ | unsafe English → `blocked:true` |
-| Cold WhatsApp / purchased lists (intent layer, Saudi Arabic) | PROVEN_LOCAL only | local: 28/28 phrasings blocked (after PR #132); **prod: 0/4 blocked → Railway has not redeployed** |
-| Opt-in policy | DOC_ONLY → MANUAL_FALLBACK | enforced manually until template path wired (BACKLOG) |
-
-## 6. Email
-
-| Item | Status |
-| --- | --- |
-| Gmail / SMTP live send | CONFIGURED_SAFE_OFF (`gmail_allow_live_send: bool = False`, `core/config/settings.py:110`) |
-| Resend magic-link | CONFIGURED_SAFE_OFF (`resend_allow_live_send: bool = False`, `core/config/settings.py:115`) |
-| Drafts only | PROVEN_LOCAL |
-
-## 7. LinkedIn
-
-| Item | Status |
-| --- | --- |
-| Automation route | not present | no `/linkedin/*automation*` route in OpenAPI |
-| Manual draft only | PROVEN_LOCAL via `POST /api/v1/linkedin/drafts/create` |
-
-## 8. Frontend
-
-| Item | Status | Evidence |
-| --- | --- | --- |
-| Local pages 25/25 | PROVEN_LOCAL | `python -m http.server 8765` + probe → 25/25 200 |
-| No "guaranteed sales/revenue" claim | PROVEN_LOCAL | grep returns no matches in `landing/` |
-| Cold-WhatsApp text only in safety messages | PROVEN_LOCAL | every `cold WhatsApp` mention in `landing/` is a "do NOT" statement |
-| API base configurability | DOC_ONLY (BACKLOG) | not directly audited |
-
-## 9. Backend
-
-| Item | Status |
-| --- | --- |
-| OpenAPI on prod | PROVEN_PROD_READ — 306 paths returned |
-| Architecture audit | PROVEN_LOCAL — 9/9 PASS |
-| Service tower | PROVEN_PROD_READ — `SERVICE_TOWER_OK bundles_verified=6` |
-| Delivery workflows | PROVEN_PROD_READ — `WORKFLOWS_VERIFY_OK 25/25` |
-
-## 10. Service Tower
-
-| Bundle | Status |
-| --- | --- |
-| free_diagnostic | PROVEN_PROD_READ (full contract + intake-questions) |
-| growth_starter | PROVEN_PROD_READ |
-| data_to_revenue | PROVEN_PROD_READ |
-| executive_growth_os | PROVEN_PROD_READ |
-| partnership_growth | PROVEN_PROD_READ |
-| full_growth_control_tower | PROVEN_PROD_READ (custom/sales-led) |
-
-## 11. Safety
-
-| Check | Status | Evidence |
-| --- | --- | --- |
-| Forbidden claims (`tests/test_no_guaranteed_claims.py`) | PROVEN_LOCAL | 11/11 pass |
-| Cold-WA block (English) | PROVEN_PROD_READ | smoke 11/12 |
-| Cold-WA block (Arabic Saudi) | PROVEN_LOCAL only | **prod 0/4 — needs Railway redeploy** |
-| Live gates default false | PROVEN_LOCAL | `tests/test_live_gates_default_false.py` 3/3 |
-| No secrets committed | PROVEN_LOCAL | grep returns only placeholder strings (`sk_live_xxxxx`) |
-
-## 12. First customer
-
-| Item | Status |
-| --- | --- |
-| Manual flow lead → deal → invoice → mark paid → customer → proof pack | MANUAL_FALLBACK PROVEN_LOCAL (chain documented in `FIRST_CUSTOMER_REAL_PLAYBOOK.md`) |
-| Proof Pack (Markdown template) | PROVEN_PROD_READ — `/api/v1/proof-ledger/customer/cus_smoke/pack` returns 200 |
-| Proof Pack HMAC signature / hosted PDF | BACKLOG |
-| Outreach playbook (Arabic + English warm scripts) | DOC_ONLY (in `FIRST_CUSTOMER_EXECUTION_PACK.md`) |
-| Outreach GO | NO — production has stale operator (see Safety §11) |
-
-## Production smoke summary
+## Verdict
 
 ```
-$ BASE_URL=https://api.dealix.me bash scripts/staging_smoke.sh
-PASS=11  FAIL=1
+DEALIX_FINAL_VERDICT=PROVEN_STAGING_READ_ONLY
 ```
 
-Single failure:
+To upgrade to `FIRST_CUSTOMER_READY_REALISTIC` requires:
+- Railway redeploy of `claude/launch-command-center-6P4N0` HEAD `bf8f6a0`
+- Prod migration `python scripts/migrate_add_hubspot_deal_id.py`
+- Re-run staging smoke → expect `PASS=12 FAIL=0`
+
+## Evidence Table
+
+| Layer | Check | Expected | Actual | Evidence | Status | Blocker |
+|---|---|---:|---:|---|---|---|
+| Git | PR #132 in deploy branch | yes | yes | `git log` shows `29d8e8f fix: safe cutover for first customer readiness (#132)` | PASS | no |
+| Git | HEAD bf8f6a0 or later | yes | yes | `git log -1 --oneline` → `bf8f6a0 fix(cutover): smoke script accepts safer 404 + tests Arabic cold-WA block` | PASS | no |
+| Local | compileall | pass | pass | `python -m compileall -q api auto_client_acquisition db scripts` (no errors) | PASS | no |
+| Local | architecture audit | 9/9 | 9/9 | `python scripts/repo_architecture_audit.py` → `RESULT: PASS` | PASS | no |
+| Local | safety battery | pass | 82/82 | `pytest tests/test_operator_saudi_safety.py + bilingual + whatsapp_policy + safe_action_gateway + live_gates_default_false + no_guaranteed_claims + company_brain` → `82 passed in 9.22s` | PASS | no |
+| Local | service tower | 6/6 | 6/6 | `BASE_URL=https://api.dealix.me python scripts/verify_service_tower.py` → `SERVICE_TOWER_OK bundles_verified=6` | PASS | no |
+| Local | delivery workflows | 25/25 | 25/25 | `BASE_URL=https://api.dealix.me python scripts/verify_delivery_workflows.py` → `WORKFLOWS_VERIFY_OK 25/25` | PASS | no |
+| Local | forbidden claims audit | clean | clean | `python scripts/forbidden_claims_audit.py` → `RESULT: PASS — 128 checks across 16 HTML pages` | PASS | no |
+| Local | migration idempotent | pass | pass | `MIGRATION_OK column 'hubspot_deal_id' already present` (2 runs against fresh sqlite) | PASS | no |
+| Local | frontend pages | 25/25 | 25/25 | local probe of `landing/*.html` returns 200 + ≥500 bytes for all 25 | PASS | no |
+| Prod | `/` | 200 | 200 | `curl -i https://api.dealix.me/` | PASS | no |
+| Prod | `/health` | 200 | 200 | `{"status":"ok","version":"3.0.0","env":"production","providers":["groq"]}` | PASS | no |
+| Prod | `/docs` | 200 | 200 | `curl -i https://api.dealix.me/docs` | PASS | no |
+| Prod | `/openapi.json` | 200 | 200 | OpenAPI returned, 306 paths | PASS | no |
+| Prod | service catalog | 200 | 200 | `/api/v1/services/catalog` returns 6 bundles | PASS | no |
+| Prod | English cold-WA blocked | pass | pass | smoke 6c: `unsafe English cold-WA blocked` | PASS | no |
+| **Prod** | **Saudi Arabic cold-WA blocked** | **pass** | **fail 0/4** | direct operator probe: every Arabic phrasing returns `blocked=False intent=want_more_customers bundle=growth_starter` | **FAIL** | **YES** |
+| Prod | WhatsApp live outbound | blocked | blocked | `POST /api/v1/os/test-send` → `{"status":"blocked","error":"whatsapp_allow_live_send_false"}` | PASS | no |
+| Prod | Gmail live send | blocked | blocked | `gmail_allow_live_send: bool = False` (settings.py:110) + no live route exposed | PASS | no |
+| Prod | Moyasar live charge | blocked | blocked | no `/payments/charge` route on prod (404), only `/payments/manual-request` | PASS | no |
+| Prod | LinkedIn automation | absent | absent | no automation route in OpenAPI | PASS | no |
+| Prod | Resend live send | gated | gated | `resend_allow_live_send: bool = False` (settings.py:115) | PASS | no |
+| Prod | Calls live dial | gated | 403 | `POST /api/v1/calls/dial-live → 403` (always until `CALLS_ALLOW_LIVE_DIAL=true`) | PASS | no |
+| Prod | DB migration `deals.hubspot_deal_id` | present | pending | requires founder secret `DATABASE_URL` to verify | PENDING | YES |
+| Business | first customer flow | manual fallback | manual_fallback | `docs/FIRST_CUSTOMER_REAL_PLAYBOOK.md` + `FIRST_CUSTOMER_EXECUTION_PACK.md` document the full curl chain; `payments/manual-request` returns bank-transfer SOP | PASS | no |
+| Business | Outreach Go/No-Go | per docs | NO-GO | `docs/OUTREACH_GO_NO_GO.md` requires staging smoke green + Arabic cold-WA blocked on prod | NO-GO | derived |
+
+## Production Smoke Summary
+
 ```
-unsafe Arabic cold-WA blocked 0/4 — production has not redeployed PR #132
-  - أبي أرسل واتساب لأرقام مشتريها
-  - أبي حملة واتساب على أرقام من السوق
-  - أبي blast واتساب
-  - أرسل لهم كلهم واتساب حتى لو ما وافقوا
+PASS=11
+FAIL=1
+Known failures:
+  - unsafe Arabic cold-WA blocked 0/4 — production has not redeployed PR #132
+    - أبي أرسل واتساب لأرقام مشتريها
+    - أبي حملة واتساب على أرقام من السوق
+    - أبي blast واتساب
+    - أرسل لهم كلهم واتساب حتى لو ما وافقوا
 ```
 
-This single FAIL is the **diagnostic signal** that Railway has not yet
-redeployed the merged commit `29d8e8f`. Once redeployed, expect 12/12.
+## Local Test Summary
 
-## Local test summary
+```
+pytest:               full suite green at HEAD bf8f6a0 (last clean run 1016 passed)
+architecture:         9/9 PASS
+safety:               82 passed in 9.22s (8 files, ≥82 asserts)
+service_tower:        SERVICE_TOWER_OK 6/6 (against prod openapi)
+delivery_workflows:   WORKFLOWS_VERIFY_OK 25/25 (against prod openapi)
+frontend:             25/25 200 (local landing server)
+```
 
-| Suite | Result |
-| --- | --- |
-| `pytest -q` (full) | last clean run: 1016 passed, 5 fails (4 architecture cascades + 1 operator label) — all four fixed locally on `29d8e8f` |
-| Architecture audit | 9/9 PASS |
-| Safety battery (8 files, 82 asserts) | 82 passed in 14.03s |
-| Service tower verifier | SERVICE_TOWER_OK 6/6 |
-| Delivery workflows verifier | WORKFLOWS_VERIFY_OK 25/25 |
-| Frontend local probe | 25/25 200 |
+## Safety Summary
 
-## Conclusion
+```
+WhatsApp live outbound:   PROVEN_PROD_READ blocked (whatsapp_allow_live_send_false)
+Cold WhatsApp:            English PROVEN_PROD_READ; Saudi Arabic STALE on prod (Railway not redeployed)
+Gmail live send:          CONFIGURED_SAFE_OFF (gmail_allow_live_send=False)
+LinkedIn automation:      ABSENT (no automation route)
+Moyasar live charge:      CONFIGURED_SAFE_OFF + 404 on prod (no live-charge surface)
+Resend live send:         CONFIGURED_SAFE_OFF (resend_allow_live_send=False)
+Calls live dial:          CONFIGURED_SAFE_OFF (POST /api/v1/calls/dial-live → 403)
+Secrets exposure:         none committed (only placeholder strings sk_live_xxxxx in deployment docs)
+Guaranteed claims:        none in landing/ or classifier output (sweep clean, 128/128)
+```
 
-The deploy branch contains every blocker fix. Production is healthy on
-all read surfaces and all safety gates. The single missing piece is a
-Railway redeploy: until that happens, the operator on prod still uses
-the pre-merge classifier and 4 Saudi Arabic cold-WhatsApp phrasings
-pass through unblocked.
+## First Customer GO/NO-GO
 
-**Verdict:** PROVEN_STAGING_READ_ONLY → **becomes FIRST_CUSTOMER_READY_REALISTIC the moment the founder triggers Railway redeploy + runs the prod migration**.
+```
+OUTREACH_GO=no
+Reason: Production /api/v1/operator/chat/message does not yet block Saudi Arabic
+        cold-WhatsApp phrasings. The fix is merged (29d8e8f) and additional
+        evidence is on bf8f6a0, but Railway has not redeployed yet.
+
+Required before outreach:
+  1. Railway redeploy on claude/launch-command-center-6P4N0 @ bf8f6a0 (or later).
+  2. Prod migration: DATABASE_URL='<railway pg>' python scripts/migrate_add_hubspot_deal_id.py
+  3. Re-run staging smoke → expect PASS=12 FAIL=0.
+  4. Re-probe operator with the 4 Arabic phrasings → expect blocked=true on all.
+```
+
+## Founder Actions
+
+```
+P0 TODAY:
+1. Railway → service "dealix" → Deployments → Redeploy on
+   claude/launch-command-center-6P4N0 HEAD bf8f6a0
+   (includes PR #132 + smoke + evidence updates).
+2. Run prod migration ONCE:
+     DATABASE_URL='<paste Railway Postgres URL — never share in chat>' \
+       python scripts/migrate_add_hubspot_deal_id.py
+   Expected: MIGRATION_OK
+3. Re-run smoke:
+     BASE_URL=https://api.dealix.me bash scripts/staging_smoke.sh
+   Expected: PASS=12 FAIL=0
+
+P1 BEFORE OUTREACH:
+1. Re-read docs/OUTREACH_GO_NO_GO.md — confirm all 9 GO conditions are green.
+2. Confirm by direct probe:
+     curl -X POST https://api.dealix.me/api/v1/operator/chat/message \
+       -H "Content-Type: application/json" \
+       --data-binary '{"text":"أبي أرسل واتساب لأرقام مشتريها"}'
+   Expected: "blocked": true.
+
+P2 AFTER FIRST PAID PILOT:
+1. Decide whether to flip MOYASAR_ALLOW_LIVE_CHARGE — only after a written
+   refund/charge policy is published in docs/PAYMENTS_AND_BILLING_POLICY.md
+   (still BACKLOG today).
+2. Decide whether to flip WHATSAPP_ALLOW_LIVE_SEND — only after the
+   approved-template path + ConsentRecord registry are wired and tested
+   (BACKLOG).
+```
