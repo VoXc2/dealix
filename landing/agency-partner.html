@@ -86,6 +86,37 @@
   <section class="dx-section dx-section--muted">
     <div class="dx-container">
       <div class="dx-section__head">
+        <span class="dx-section__kicker">KPIs (تجريبي افتراضياً)</span>
+        <h2 class="dx-section__title">لوحة قيادة الشريك</h2>
+        <p class="dx-section__lede">
+          مرّر <code>?partner_id=YOUR_ID</code> لعرض بياناتك الحقيقية من
+          <code>/api/v1/partners/{id}/dashboard</code>.
+        </p>
+      </div>
+      <div class="dx-cards-grid" data-partner-kpis>
+        <article class="dx-card" style="text-align:center;">
+          <div style="font-size:0.75rem; color:#475569; margin-bottom:0.25rem;">شركات تم جلبها</div>
+          <div style="font-size:1.5rem; font-weight:800; color:#0A4D3F;">3</div>
+        </article>
+        <article class="dx-card" style="text-align:center;">
+          <div style="font-size:0.75rem; color:#475569; margin-bottom:0.25rem;">تدفع حالياً</div>
+          <div style="font-size:1.5rem; font-weight:800; color:#0A4D3F;">2</div>
+        </article>
+        <article class="dx-card" style="text-align:center;">
+          <div style="font-size:0.75rem; color:#475569; margin-bottom:0.25rem;">MRR من إحالاتك</div>
+          <div style="font-size:1.5rem; font-weight:800; color:#0A4D3F;">3,498 ر.س</div>
+        </article>
+        <article class="dx-card" style="text-align:center;">
+          <div style="font-size:0.75rem; color:#475569; margin-bottom:0.25rem;">Commission المتوقع/شهر</div>
+          <div style="font-size:1.5rem; font-weight:800; color:#0A4D3F;">524.7 ر.س</div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="dx-section">
+    <div class="dx-container">
+      <div class="dx-section__head">
         <span class="dx-section__kicker">جدول العملاء (نموذج)</span>
         <h2 class="dx-section__title">مثال: ما يراه الشريك في البورتال</h2>
       </div>
@@ -102,20 +133,20 @@
               <th>Churn Risk</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody data-partner-customers>
             <tr>
               <td>شركة س للتدريب</td>
               <td>2026-02-15</td>
-              <td>Paying</td>
+              <td><span class="dx-pill dx-pill--success">يدفع</span></td>
               <td>Growth OS</td>
-              <td>2,999</td>
+              <td>2,999 ر.س</td>
               <td><span class="dx-pill dx-pill--success">نشط</span></td>
               <td><span class="dx-pill dx-pill--success">منخفض</span></td>
             </tr>
             <tr>
               <td>شركة ص للوجستيات</td>
               <td>2026-03-20</td>
-              <td>Pilot</td>
+              <td><span class="dx-pill dx-pill--info">تجريبي</span></td>
               <td>Pilot 499</td>
               <td>—</td>
               <td><span class="dx-pill dx-pill--info">تجريبي</span></td>
@@ -124,7 +155,7 @@
             <tr>
               <td>شركة ع للعقار</td>
               <td>2026-01-10</td>
-              <td>Churned</td>
+              <td><span class="dx-pill dx-pill--danger">ألغى</span></td>
               <td>—</td>
               <td>0</td>
               <td><span class="dx-pill dx-pill--danger">ألغى</span></td>
@@ -203,6 +234,7 @@
 <script src="assets/js/api.js"></script>
 <script src="assets/js/analytics.js"></script>
 <script src="assets/js/components-loader.js"></script>
+<script src="assets/js/partner-portal.js"></script>
 <script>if (window.DealixAnalytics) DealixAnalytics.pageView('agency-partner');</script>
 </body>
 </html>

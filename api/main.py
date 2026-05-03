@@ -19,6 +19,7 @@ from api.routers import (
     automation,
     autonomous,
     business,
+    cards,
     command_center,
     customer_success,
     data,
@@ -30,6 +31,7 @@ from api.routers import (
     health,
     leads,
     outreach,
+    partners,
     personal_operator,
     pricing,
     prospect,
@@ -38,6 +40,7 @@ from api.routers import (
     revenue_os,
     sales,
     sectors,
+    services,
     v3,
     webhooks,
 )
@@ -146,6 +149,9 @@ def create_app() -> FastAPI:
     app.include_router(personal_operator.router)
     app.include_router(public.router)
     app.include_router(admin.router)
+    app.include_router(partners.router)
+    app.include_router(services.router)
+    app.include_router(cards.router)
 
     @app.get("/", tags=["root"])
     async def root() -> dict[str, object]:

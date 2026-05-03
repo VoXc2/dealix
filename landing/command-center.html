@@ -173,8 +173,31 @@
     .disclaimer{background:#fffbeb;border:1px solid #fde68a;border-radius:10px;padding:16px;margin-top:20px;font-size:13px;color:#92400e;line-height:1.7}
     .disclaimer strong{color:#713f12}
   </style>
+  <link rel="stylesheet" href="assets/css/base.css">
+  <link rel="stylesheet" href="assets/css/components.css">
+  <link rel="stylesheet" href="assets/css/cards.css">
+  <link rel="stylesheet" href="assets/css/responsive.css">
 </head>
 <body>
+  <!-- PR-FE-4: Role-based Decision Cards (next best revenue decision per role) -->
+  <section class="dx-section" style="padding-block:1.5rem 2rem; background:#fff; border-bottom:1px solid #e2e8f0;">
+    <div class="dx-container">
+      <header style="display:flex; align-items:center; justify-content:space-between; gap:1rem; flex-wrap:wrap; margin-bottom:1rem;">
+        <div>
+          <h2 style="margin:0; font-size:1.25rem; font-weight:700;">قرارات اليوم — حسب الدور</h2>
+          <p style="margin:0.25rem 0 0; font-size:0.875rem; color:#475569;">
+            بدلاً من dashboards: كل دور يرى أهم 3 قرارات الآن، مع why_now وproof impact وbuttons ≤3.
+          </p>
+        </div>
+        <div data-role-switcher></div>
+      </header>
+      <div class="dx-cards-grid"
+           data-cards-feed
+           data-default-role="ceo"
+           aria-live="polite"></div>
+    </div>
+  </section>
+
   <div class="topbar">
     <div class="topbar-left">
       <div class="logo">D</div>
@@ -580,5 +603,11 @@
       كل التوصيات مبنية على Pulse القطاعي + بيانات شركتك التراكمية + 11 AI Agents يعملون 24/7.
     </div>
   </div>
+  <script src="assets/js/api.js"></script>
+  <script src="assets/js/analytics.js"></script>
+  <script src="assets/js/cards.js"></script>
+  <script>
+    if (window.DealixAnalytics) DealixAnalytics.pageView('command-center');
+  </script>
 </body>
 </html>

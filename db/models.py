@@ -38,6 +38,8 @@ class LeadRecord(Base):
     pain_points: Mapped[list] = mapped_column(JSON, default=list)
     meta_json: Mapped[dict] = mapped_column("metadata", JSON, default=dict)
     dedup_hash: Mapped[str] = mapped_column(String(32), default="", index=True)
+    # Attribution: which partner brought this lead (PR-BE-Attribution).
+    partner_id: Mapped[str | None] = mapped_column(String(64), nullable=True, index=True)
     created_at: Mapped[datetime] = mapped_column(default=utcnow)
     updated_at: Mapped[datetime] = mapped_column(default=utcnow, onupdate=utcnow)
 
@@ -54,6 +56,8 @@ class DealRecord(Base):
     amount: Mapped[float] = mapped_column(Float, default=0.0)
     currency: Mapped[str] = mapped_column(String(8), default="SAR")
     stage: Mapped[str] = mapped_column(String(64), default="new")
+    # Attribution: which partner closed/owns this deal (PR-BE-Attribution).
+    partner_id: Mapped[str | None] = mapped_column(String(64), nullable=True, index=True)
     created_at: Mapped[datetime] = mapped_column(default=utcnow)
     updated_at: Mapped[datetime] = mapped_column(default=utcnow, onupdate=utcnow)
 
@@ -471,3 +475,74 @@ class WebhookDeliveryRecord(Base):
     request_signature: Mapped[str] = mapped_column(String(255), default="")
     payload: Mapped[dict] = mapped_column("payload_json", JSON, default=dict)
     created_at: Mapped[datetime] = mapped_column(default=utcnow, index=True)
+
+
+# ── Attribution + revenue (PR-BE-Attribution) ─────────────────────
+
+
+class SubscriptionRecord(Base):
+    """One row per active customer subscription. Source of truth for MRR."""
+
+    __tablename__ = "subscriptions"
+
+    id: Mapped[str] = mapped_column(String(64), primary_key=True)
+    customer_id: Mapped[str] = mapped_column(String(64), index=True)
+    partner_id: Mapped[str | None] = mapped_column(String(64), nullable=True, index=True)
+    plan_id: Mapped[str] = mapped_column(String(64), index=True)
+    status: Mapped[str] = mapped_column(String(32), default="active", index=True)
+    # active | paused | canceled | past_due | trialing
+    started_at: Mapped[datetime] = mapped_column(default=utcnow, index=True)
+    current_period_start: Mapped[datetime | None] = mapped_column(nullable=True)
+    current_period_end: Mapped[datetime | None] = mapped_column(nullable=True)
+    mrr_sar: Mapped[float] = mapped_column(Float, default=0.0)
+    currency: Mapped[str] = mapped_column(String(8), default="SAR")
+    moyasar_subscription_id: Mapped[str | None] = mapped_column(String(64), nullable=True, index=True)
+    canceled_at: Mapped[datetime | None] = mapped_column(nullable=True)
+    cancel_reason: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    meta_json: Mapped[dict] = mapped_column("metadata", JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(default=utcnow, onupdate=utcnow)
+
+
+class PaymentRecord(Base):
+    """One row per Moyasar payment event (succeeded / refunded / failed)."""
+
+    __tablename__ = "payments"
+
+    id: Mapped[str] = mapped_column(String(64), primary_key=True)
+    subscription_id: Mapped[str | None] = mapped_column(String(64), nullable=True, index=True)
+    customer_id: Mapped[str | None] = mapped_column(String(64), nullable=True, index=True)
+    partner_id: Mapped[str | None] = mapped_column(String(64), nullable=True, index=True)
+    amount_sar: Mapped[float] = mapped_column(Float, default=0.0)
+    currency: Mapped[str] = mapped_column(String(8), default="SAR")
+    status: Mapped[str] = mapped_column(String(32), default="paid", index=True)
+    # paid | refunded | failed | pending
+    moyasar_payment_id: Mapped[str | None] = mapped_column(String(64), nullable=True, index=True)
+    moyasar_event_id: Mapped[str | None] = mapped_column(String(64), nullable=True, index=True)
+    paid_at: Mapped[datetime] = mapped_column(default=utcnow, index=True)
+    invoice_url: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    meta_json: Mapped[dict] = mapped_column("metadata", JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(default=utcnow, index=True)
+
+
+class FunnelEventRecord(Base):
+    """Unified funnel-stage transitions per lead/customer/partner.
+
+    Stages (forward-only sequence; some may be skipped):
+      lead → mql → sql → pilot → paying → renewed
+    Terminal: churned. (You can re-enter via new lead.)
+    """
+
+    __tablename__ = "funnel_events"
+
+    id: Mapped[str] = mapped_column(String(64), primary_key=True)
+    lead_id: Mapped[str | None] = mapped_column(String(64), nullable=True, index=True)
+    customer_id: Mapped[str | None] = mapped_column(String(64), nullable=True, index=True)
+    partner_id: Mapped[str | None] = mapped_column(String(64), nullable=True, index=True)
+    stage: Mapped[str] = mapped_column(String(32), index=True)
+    # lead | mql | sql | pilot | paying | renewed | churned
+    reason: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    actor: Mapped[str] = mapped_column(String(64), default="system")
+    occurred_at: Mapped[datetime] = mapped_column(default=utcnow, index=True)
+    meta_json: Mapped[dict] = mapped_column("metadata", JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(default=utcnow)
