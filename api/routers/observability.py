@@ -92,7 +92,7 @@ async def unsafe_summary(days: int = Query(default=7, ge=1, le=90)) -> dict[str,
 
 @router.get("/quality")
 async def quality_snapshot(days: int = Query(default=7, ge=1, le=90)) -> dict[str, Any]:
-    since = datetime.now(timezone.utc) - timedelta(days=days)
+    since = datetime.now(timezone.utc).replace(tzinfo=None) - timedelta(days=days)
     async with get_session() as s:
         proof = list((await s.execute(
             select(ProofEventRecord).where(ProofEventRecord.occurred_at >= since)

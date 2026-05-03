@@ -57,7 +57,8 @@ _GATES = (
 
 
 def _now() -> datetime:
-    return datetime.now(timezone.utc)
+    # Naive UTC for compatibility with existing TIMESTAMP (no tz) columns
+    return datetime.now(timezone.utc).replace(tzinfo=None)
 
 
 def _gates_status() -> dict[str, bool]:

@@ -51,7 +51,7 @@ def _new_id() -> str:
 
 
 def _now() -> datetime:
-    return datetime.now(timezone.utc)
+    return datetime.now(timezone.utc).replace(tzinfo=None)  # naive UTC for TIMESTAMP cols
 
 
 async def open_session(

@@ -50,7 +50,7 @@ def check_ready_to_deliver(session, contract, proof_events) -> QAResult:
         try:
             total = (session.deadline_at - session.started_at).total_seconds()
             from datetime import datetime, timezone
-            elapsed = (datetime.now(timezone.utc) - session.started_at.replace(tzinfo=timezone.utc)).total_seconds()
+            elapsed = (datetime.now(timezone.utc).replace(tzinfo=None) - session.started_at.replace(tzinfo=None)).total_seconds()
             if total > 0 and elapsed / total > 0.8:
                 warnings.append("sla:80pct_window_consumed")
         except Exception:

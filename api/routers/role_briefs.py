@@ -70,8 +70,10 @@ async def daily(
 async def _gather_data(role: str, *, partner_id: str | None, customer_id: str | None) -> dict[str, Any]:
     """Pull just enough rows for the requested role. Pure read."""
     settings = get_settings()
-    one_day_ago = datetime.now(timezone.utc) - timedelta(days=1)
-    seven_days_ago = datetime.now(timezone.utc) - timedelta(days=7)
+    # Naive UTC for compatibility with existing TIMESTAMP (no tz) columns
+    _now = datetime.now(timezone.utc).replace(tzinfo=None)
+    one_day_ago = _now - timedelta(days=1)
+    seven_days_ago = _now - timedelta(days=7)
 
     out: dict[str, Any] = {"settings": settings}
 

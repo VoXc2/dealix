@@ -62,7 +62,8 @@ router = APIRouter(prefix="/api/v1/partners", tags=["partners"])
 
 
 def _utcnow() -> datetime:
-    return datetime.now(timezone.utc)
+    # Naive UTC for compatibility with existing TIMESTAMP (no tz) columns
+    return datetime.now(timezone.utc).replace(tzinfo=None)
 
 
 async def _load_partner(partner_id: str) -> PartnerRecord:

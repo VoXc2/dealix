@@ -26,10 +26,13 @@ def status_for(
 ) -> SLAStatus:
     if deadline_at is None:
         return SLAStatus(None, False, None, "ok")
-    cur = now or datetime.now(timezone.utc)
-    # Tolerate naive deadline values returned by SQLite.
-    if deadline_at.tzinfo is None:
-        deadline_at = deadline_at.replace(tzinfo=timezone.utc)
+    cur = now or datetime.now(timezone.utc).replace(tzinfo=None)
+    # Normalize cur + deadline_at to NAIVE UTC for comparison (matches the
+    # naive convention used everywhere DB-side).
+    if cur.tzinfo is not None:
+        cur = cur.astimezone(timezone.utc).replace(tzinfo=None)
+    if deadline_at.tzinfo is not None:
+        deadline_at = deadline_at.astimezone(timezone.utc).replace(tzinfo=None)
     delta = (deadline_at - cur).total_seconds() / 3600.0
     if delta < 0:
         return SLAStatus(deadline_at, True, delta, "breach")
