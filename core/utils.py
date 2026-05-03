@@ -17,8 +17,17 @@ def generate_id(prefix: str = "id") -> str:
 
 
 def utcnow() -> datetime:
-    """Current UTC time | الوقت الحالي UTC."""
-    return datetime.now(UTC)
+    """Current UTC time as **naive** datetime | الوقت الحالي UTC.
+
+    Returns naive (no tzinfo) UTC because every Mapped[datetime] column in
+    db/models.py defaults to PostgreSQL's TIMESTAMP WITHOUT TIME ZONE.
+    asyncpg refuses to insert tz-aware datetimes into naive columns
+    (raises DataError: can't subtract offset-naive and offset-aware).
+
+    Convention across the codebase: all DB-bound timestamps are naive UTC.
+    Use this helper anywhere you'd otherwise call datetime.now(UTC).
+    """
+    return datetime.now(UTC).replace(tzinfo=None)
 
 
 def hash_text(text: str) -> str:
