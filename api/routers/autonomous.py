@@ -61,7 +61,7 @@ async def create_conversation(body: dict[str, Any] = Body(...)) -> dict[str, Any
         raise HTTPException(status_code=400, detail="channel_and_inbound_required")
 
     rec_id = _new_id("conv")
-    async with async_session_factory()() as session:
+    async with async_session_factory() as session:
         rec = ConversationRecord(
             id=rec_id,
             lead_id=str(body.get("lead_id")) if body.get("lead_id") else None,
@@ -87,7 +87,7 @@ async def list_conversations(
     limit: int = 20,
 ) -> dict[str, Any]:
     limit = max(1, min(100, limit))
-    async with async_session_factory()() as session:
+    async with async_session_factory() as session:
         stmt = select(ConversationRecord).order_by(ConversationRecord.created_at.desc()).limit(limit)
         if lead_id:
             stmt = stmt.where(ConversationRecord.lead_id == lead_id)
@@ -129,7 +129,7 @@ async def create_deal(body: dict[str, Any] = Body(...)) -> dict[str, Any]:
         raise HTTPException(status_code=400, detail="lead_id_required")
 
     deal_id = _new_id("deal")
-    async with async_session_factory()() as session:
+    async with async_session_factory() as session:
         deal = DealRecord(
             id=deal_id,
             lead_id=lead_id,
@@ -149,7 +149,7 @@ async def update_deal(deal_id: str, body: dict[str, Any] = Body(...)) -> dict[st
     Update deal stage/amount/payment_status. Common path: payment_requested → paid.
     Body: any subset of {stage, amount, currency}
     """
-    async with async_session_factory()() as session:
+    async with async_session_factory() as session:
         result = await session.execute(select(DealRecord).where(DealRecord.id == deal_id))
         deal = result.scalar_one_or_none()
         if not deal:
@@ -169,7 +169,7 @@ async def update_deal(deal_id: str, body: dict[str, Any] = Body(...)) -> dict[st
 @router.get("/deals")
 async def list_deals(stage: str | None = None, limit: int = 20) -> dict[str, Any]:
     limit = max(1, min(100, limit))
-    async with async_session_factory()() as session:
+    async with async_session_factory() as session:
         stmt = select(DealRecord).order_by(DealRecord.created_at.desc()).limit(limit)
         if stage:
             stmt = stmt.where(DealRecord.stage == stage)
@@ -211,7 +211,7 @@ async def create_task(body: dict[str, Any] = Body(...)) -> dict[str, Any]:
             pass
 
     task_id = _new_id("task")
-    async with async_session_factory()() as session:
+    async with async_session_factory() as session:
         task = TaskRecord(
             id=task_id,
             lead_id=body.get("lead_id") or None,
@@ -229,7 +229,7 @@ async def create_task(body: dict[str, Any] = Body(...)) -> dict[str, Any]:
 
 @router.patch("/tasks/{task_id}")
 async def update_task(task_id: str, body: dict[str, Any] = Body(...)) -> dict[str, Any]:
-    async with async_session_factory()() as session:
+    async with async_session_factory() as session:
         result = await session.execute(select(TaskRecord).where(TaskRecord.id == task_id))
         task = result.scalar_one_or_none()
         if not task:
@@ -252,7 +252,7 @@ async def update_task(task_id: str, body: dict[str, Any] = Body(...)) -> dict[st
 @router.get("/tasks")
 async def list_tasks(status: str = "pending", limit: int = 20) -> dict[str, Any]:
     limit = max(1, min(100, limit))
-    async with async_session_factory()() as session:
+    async with async_session_factory() as session:
         result = await session.execute(
             select(TaskRecord)
             .where(TaskRecord.status == status)
@@ -304,7 +304,7 @@ async def dashboard_metrics() -> dict[str, Any]:
 
     today_start = datetime.now(timezone.utc).replace(hour=0, minute=0, second=0, microsecond=0)
 
-    async with async_session_factory()() as session:
+    async with async_session_factory() as session:
         leads_total = await _count(session, select(func.count()).select_from(LeadRecord))
         leads_new = await _count(session, select(func.count()).select_from(LeadRecord).where(LeadRecord.status == "new"))
         leads_qualified = await _count(session, select(func.count()).select_from(LeadRecord).where(LeadRecord.status == "qualified"))
@@ -389,7 +389,7 @@ async def company_intake(body: dict[str, Any] = Body(...)) -> dict[str, Any]:
 
     rec_id = _new_id("co")
     db_status = "ok"
-    async with async_session_factory()() as session:
+    async with async_session_factory() as session:
         rec = CompanyRecord(
             id=rec_id,
             name=name,
@@ -504,7 +504,7 @@ async def queue_outreach(body: dict[str, Any] = Body(...)) -> dict[str, Any]:
         raise HTTPException(status_code=400, detail="channel_and_message_required")
 
     rec_id = _new_id("queue")
-    async with async_session_factory()() as session:
+    async with async_session_factory() as session:
         rec = OutreachQueueRecord(
             id=rec_id,
             lead_id=body.get("lead_id") or None,
@@ -521,7 +521,7 @@ async def queue_outreach(body: dict[str, Any] = Body(...)) -> dict[str, Any]:
 
 @router.patch("/outreach/queue/{queue_id}")
 async def update_queue_item(queue_id: str, body: dict[str, Any] = Body(...)) -> dict[str, Any]:
-    async with async_session_factory()() as session:
+    async with async_session_factory() as session:
         result = await session.execute(select(OutreachQueueRecord).where(OutreachQueueRecord.id == queue_id))
         rec = result.scalar_one_or_none()
         if not rec:
@@ -547,7 +547,7 @@ async def manual_payment_request(body: dict[str, Any] = Body(...)) -> dict[str, 
         raise HTTPException(status_code=400, detail="deal_id_required")
     method = body.get("method") or "bank_transfer"
 
-    async with async_session_factory()() as session:
+    async with async_session_factory() as session:
         result = await session.execute(select(DealRecord).where(DealRecord.id == deal_id))
         deal = result.scalar_one_or_none()
         if not deal:
@@ -586,7 +586,7 @@ async def mark_paid(body: dict[str, Any] = Body(...)) -> dict[str, Any]:
     if not deal_id:
         raise HTTPException(status_code=400, detail="deal_id_required")
 
-    async with async_session_factory()() as session:
+    async with async_session_factory() as session:
         result = await session.execute(select(DealRecord).where(DealRecord.id == deal_id))
         deal = result.scalar_one_or_none()
         if not deal:
@@ -639,7 +639,7 @@ async def customer_onboard(body: dict[str, Any] = Body(...)) -> dict[str, Any]:
     if not customer_id:
         raise HTTPException(status_code=400, detail="customer_id_required")
 
-    async with async_session_factory()() as session:
+    async with async_session_factory() as session:
         result = await session.execute(select(CustomerRecord).where(CustomerRecord.id == customer_id))
         cust = result.scalar_one_or_none()
         if not cust:
@@ -672,7 +672,7 @@ async def partner_intake(body: dict[str, Any] = Body(...)) -> dict[str, Any]:
         "STRATEGIC":      "Co-selling / bundle / white-label option (Scale tier)",
     }.get(ptype, "Custom — TBD")
 
-    async with async_session_factory()() as session:
+    async with async_session_factory() as session:
         rec = PartnerRecord(
             id=pid,
             company_name=name,
@@ -715,7 +715,7 @@ async def import_google_lead(body: dict[str, Any] = Body(...)) -> dict[str, Any]
     message = fields.get("Custom Question") or fields.get("MESSAGE") or "Google Ads lead"
 
     rec_id = _new_id("lead_gads")
-    async with async_session_factory()() as session:
+    async with async_session_factory() as session:
         lead = LeadRecord(
             id=rec_id,
             source="google_ads",
@@ -782,7 +782,7 @@ async def import_meta_lead(body: dict[str, Any] = Body(...)) -> dict[str, Any]:
     msg = fields.get("message") or "Meta lead form"
 
     rec_id = _new_id("lead_meta")
-    async with async_session_factory()() as session:
+    async with async_session_factory() as session:
         lead = LeadRecord(
             id=rec_id,
             source="meta_lead_ads",
@@ -881,7 +881,7 @@ async def admin_recreate_tables(tables: dict[str, Any] | None = None) -> dict[st
 async def admin_test_insert() -> dict[str, Any]:
     """Insert one test row and report exact error if it fails."""
     try:
-        async with async_session_factory()() as session:
+        async with async_session_factory() as session:
             rec = ConversationRecord(
                 id=_new_id("test"),
                 channel="test",
