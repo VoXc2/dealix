@@ -25,6 +25,10 @@ from typing import Any
 from fastapi import APIRouter, Body, HTTPException
 
 from api.routers.services import CATALOG
+from auto_client_acquisition.safety import (
+    ActionMode as _SafetyActionMode,
+    classify_intent as _safety_classify,
+)
 
 log = logging.getLogger(__name__)
 router = APIRouter(prefix="/api/v1/operator", tags=["operator"])
@@ -169,6 +173,38 @@ def _bundle_summary(bundle_id: str) -> dict[str, Any] | None:
 async def chat_message(body: dict[str, Any] = Body(...)) -> dict[str, Any]:
     text = str(body.get("text") or "").strip()
     hint = body.get("intent_hint")
+
+    # === SAFETY HOT PATH — deterministic, no LLM, runs before any mapping ===
+    # The deploy-branch keyword classifier misses several Saudi-Arabic
+    # cold-WhatsApp / purchased-list / blast / auto-DM phrasings. We delegate
+    # the unsafe-intent decision to the bilingual safety classifier first.
+    # We re-label the intent to the existing BLOCKED-class codes
+    # ("cold_whatsapp_request" / "scraping_request" — both forbidden /
+    # disallowed) so the existing public response contract is preserved.
+    safety = _safety_classify(text)
+    if safety.action_mode == _SafetyActionMode.BLOCKED:
+        # Surface a known forbidden / disallowed intent label so the existing
+        # forbidden response contract is preserved for downstream callers.
+        public_intent = "cold_whatsapp_request"  # BLOCKED — forbidden intent
+        for r in safety.blocked_reasons:
+            if "auto_dm" in r or "scrape" in r:
+                public_intent = "scraping_request"  # BLOCKED — forbidden intent
+                break
+        return {
+            "intent": public_intent,
+            "blocked": True,
+            "action_mode": "blocked",
+            "reason_ar": safety.reason_ar,
+            "reason_en": safety.reason_en,
+            "blocked_reasons": list(safety.blocked_reasons),
+            "safe_alternatives": list(safety.safe_alternatives),
+            "recommended_bundle": None,
+            "next_path": "trust-center.html",
+            "approval_first": True,
+            "anti_claim_ar": None,
+            "safety_note_ar": safety.reason_ar,
+        }
+
     intent = classify_intent(text, hint=str(hint) if hint else None)
     mapping = INTENT_MAP.get(intent)
     if mapping is None:
