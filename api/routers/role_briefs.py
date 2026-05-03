@@ -60,12 +60,18 @@ async def daily(
     errors: dict[str, str] = {}
     try:
         data = await _gather_data(role, partner_id=partner_id, customer_id=customer_id)
+    except HTTPException:
+        # 4xx semantic errors (e.g., partner_id required for agency) must
+        # propagate so FastAPI returns the correct status code.
+        raise
     except Exception as exc:  # noqa: BLE001
         errors["_gather_data"] = f"{type(exc).__name__}: {str(exc)[:300]}"
         data = {}
 
     try:
         brief = build(role, data=data)
+    except HTTPException:
+        raise
     except Exception as exc:  # noqa: BLE001
         errors["build"] = f"{type(exc).__name__}: {str(exc)[:300]}"
         brief = {
