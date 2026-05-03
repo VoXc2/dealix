@@ -66,86 +66,165 @@ def _gates_status() -> dict[str, bool]:
     return {g: bool(getattr(s, g, False)) for g in _GATES}
 
 
+def _to_naive(dt):
+    """Strip tz from a datetime if present (matches Mapped[datetime] columns)."""
+    if dt is None:
+        return None
+    return dt.astimezone(timezone.utc).replace(tzinfo=None) if dt.tzinfo else dt
+
+
 @router.get("/today")
 async def today(days: int = Query(default=7, ge=1, le=30)) -> dict[str, Any]:
-    """One-call summary for the founder's morning routine."""
+    """One-call summary for the founder's morning routine.
+
+    Defensive: each block is wrapped so a single bad row / missing table
+    doesn't 500 the whole endpoint. Errors are surfaced in `_errors` so
+    the caller can see what failed without losing the working sections.
+    """
     since = _now() - timedelta(days=days)
+    errors: dict[str, str] = {}
 
-    # 1. CEO brief (pure compute, no DB)
-    ceo_brief = build_role_brief("ceo", data={})
+    # 1. CEO brief (pure compute, no DB) ────────────────────────
+    try:
+        ceo_brief = build_role_brief("ceo", data={})
+    except Exception as exc:  # noqa: BLE001
+        errors["ceo_brief"] = f"{type(exc).__name__}: {str(exc)[:200]}"
+        ceo_brief = {"role": "ceo", "summary": {}, "top_decisions": []}
 
-    # 2. Aggregates (parallelize the DB-bound bits)
-    async with get_session() as s:
-        # Direct queries (small reads)
-        proof_q = await s.execute(
-            select(ProofEventRecord).where(ProofEventRecord.occurred_at >= since)
+    # 2. DB reads — each query independently fault-tolerant ────
+    proof_events: list = []
+    unsafe_events: list = []
+    tickets: list = []
+    objections: list = []
+    active_subs: list = []
+    recent_ops: list = []
+    cost_summary: dict = {"total_cost_sar": 0.0, "run_count": 0, "avg_latency_ms": 0.0, "error_rate": 0.0}
+    unsafe_summary: dict = {"total_blocked": 0, "no_unsafe_action_executed": True}
+
+    try:
+        async with get_session() as s:
+            try:
+                proof_events = list((await s.execute(
+                    select(ProofEventRecord).where(ProofEventRecord.occurred_at >= since)
+                )).scalars().all())
+            except Exception as exc:  # noqa: BLE001
+                errors["proof_events"] = f"{type(exc).__name__}: {str(exc)[:200]}"
+
+            try:
+                unsafe_events = list((await s.execute(
+                    select(UnsafeActionRecord).where(UnsafeActionRecord.occurred_at >= since)
+                )).scalars().all())
+            except Exception as exc:  # noqa: BLE001
+                errors["unsafe_events"] = f"{type(exc).__name__}: {str(exc)[:200]}"
+
+            try:
+                tickets = list((await s.execute(
+                    select(SupportTicketRecord).where(SupportTicketRecord.created_at >= since)
+                )).scalars().all())
+            except Exception as exc:  # noqa: BLE001
+                errors["tickets"] = f"{type(exc).__name__}: {str(exc)[:200]}"
+
+            try:
+                objections = list((await s.execute(
+                    select(ObjectionEventRecord).where(ObjectionEventRecord.occurred_at >= since)
+                )).scalars().all())
+            except Exception as exc:  # noqa: BLE001
+                errors["objections"] = f"{type(exc).__name__}: {str(exc)[:200]}"
+
+            try:
+                active_subs = list((await s.execute(
+                    select(SubscriptionRecord).where(SubscriptionRecord.status == "active")
+                )).scalars().all())
+            except Exception as exc:  # noqa: BLE001
+                errors["active_subs"] = f"{type(exc).__name__}: {str(exc)[:200]}"
+
+            try:
+                recent_ops = list((await s.execute(
+                    select(DailyOpsRunRecord)
+                    .order_by(DailyOpsRunRecord.started_at.desc())
+                    .limit(8)
+                )).scalars().all())
+            except Exception as exc:  # noqa: BLE001
+                errors["recent_ops"] = f"{type(exc).__name__}: {str(exc)[:200]}"
+
+            try:
+                cost_summary = await summarize_costs(s, days=days)
+            except Exception as exc:  # noqa: BLE001
+                errors["cost_summary"] = f"{type(exc).__name__}: {str(exc)[:200]}"
+
+            try:
+                unsafe_summary = await summarize_unsafe(s, days=days)
+            except Exception as exc:  # noqa: BLE001
+                errors["unsafe_summary"] = f"{type(exc).__name__}: {str(exc)[:200]}"
+    except Exception as exc:  # noqa: BLE001
+        errors["session"] = f"{type(exc).__name__}: {str(exc)[:200]}"
+
+    # 3. Pure computes (no DB) ──────────────────────────────────
+    try:
+        quality = compute_quality(
+            proof_events=proof_events,
+            objection_events=objections,
+            tickets=tickets,
+            unsafe_actions=unsafe_events,
         )
-        proof_events = list(proof_q.scalars().all())
+    except Exception as exc:  # noqa: BLE001
+        errors["quality"] = f"{type(exc).__name__}: {str(exc)[:200]}"
+        quality = {}
 
-        unsafe_q = await s.execute(
-            select(UnsafeActionRecord).where(UnsafeActionRecord.occurred_at >= since)
-        )
-        unsafe_events = list(unsafe_q.scalars().all())
+    try:
+        total_mrr = round(sum(float(getattr(x, "mrr_sar", 0) or 0.0) for x in active_subs), 2)
+    except Exception as exc:  # noqa: BLE001
+        errors["mrr"] = f"{type(exc).__name__}: {str(exc)[:200]}"
+        total_mrr = 0.0
 
-        tickets_q = await s.execute(
-            select(SupportTicketRecord).where(SupportTicketRecord.created_at >= since)
-        )
-        tickets = list(tickets_q.scalars().all())
+    try:
+        excellence = all_excellence()
+    except Exception as exc:  # noqa: BLE001
+        errors["excellence"] = f"{type(exc).__name__}: {str(exc)[:200]}"
+        excellence = {"summary": {}, "services": []}
 
-        objections_q = await s.execute(
-            select(ObjectionEventRecord).where(ObjectionEventRecord.occurred_at >= since)
-        )
-        objections = list(objections_q.scalars().all())
+    # 4. Open incidents (defensive against any missing field) ──
+    open_incidents: list = []
+    try:
+        for t in tickets:
+            if getattr(t, "priority", None) not in ("P0", "P1"):
+                continue
+            if getattr(t, "status", None) in ("resolved", "closed"):
+                continue
+            try:
+                created = _to_naive(getattr(t, "created_at", None))
+                age_hours = round((_now() - created).total_seconds() / 3600.0, 1) if created else 0.0
+            except Exception:
+                age_hours = 0.0
+            open_incidents.append({
+                "ticket_id": getattr(t, "id", None),
+                "priority": getattr(t, "priority", None),
+                "subject": (getattr(t, "subject", "") or "")[:80],
+                "age_hours": age_hours,
+            })
+    except Exception as exc:  # noqa: BLE001
+        errors["open_incidents"] = f"{type(exc).__name__}: {str(exc)[:200]}"
 
-        # Active subscriptions (no time filter — it's global state)
-        subs_q = await s.execute(
-            select(SubscriptionRecord).where(SubscriptionRecord.status == "active")
-        )
-        active_subs = list(subs_q.scalars().all())
+    # Defensive recent_daily_ops serializer
+    recent_ops_out = []
+    try:
+        for r in recent_ops:
+            try:
+                recent_ops_out.append({
+                    "run_id": getattr(r, "id", None),
+                    "window": getattr(r, "run_window", None),
+                    "started_at": (r.started_at.isoformat()
+                                   if getattr(r, "started_at", None) else None),
+                    "decisions": getattr(r, "decisions_total", 0),
+                    "risks_blocked": getattr(r, "risks_blocked_total", 0),
+                    "error": getattr(r, "error", None),
+                })
+            except Exception:
+                pass
+    except Exception as exc:  # noqa: BLE001
+        errors["recent_ops_serializer"] = f"{type(exc).__name__}: {str(exc)[:200]}"
 
-        ops_q = await s.execute(
-            select(DailyOpsRunRecord)
-            .order_by(DailyOpsRunRecord.started_at.desc())
-            .limit(8)
-        )
-        recent_ops = list(ops_q.scalars().all())
-
-        # Cost + unsafe summaries reuse the helpers we already have
-        cost_summary = await summarize_costs(s, days=days)
-        unsafe_summary = await summarize_unsafe(s, days=days)
-
-    quality = compute_quality(
-        proof_events=proof_events,
-        objection_events=objections,
-        tickets=tickets,
-        unsafe_actions=unsafe_events,
-    )
-
-    # MRR snapshot
-    total_mrr = round(sum(float(s.mrr_sar or 0.0) for s in active_subs), 2)
-
-    # Service Tower health
-    excellence = all_excellence()
-
-    # Open incidents (P0/P1 unresolved tickets)
-    open_incidents = [
-        {
-            "ticket_id": t.id,
-            "priority": t.priority,
-            "subject": t.subject[:80],
-            # Both sides naive (Mapped[datetime] columns are TIMESTAMP without tz)
-            "age_hours": round(
-                ((_now() - (t.created_at if t.created_at.tzinfo is None
-                            else t.created_at.replace(tzinfo=None))).total_seconds() / 3600.0)
-                if t.created_at else 0.0,
-                1,
-            ),
-        }
-        for t in tickets
-        if t.priority in ("P0", "P1") and t.status not in ("resolved", "closed")
-    ]
-
-    return {
+    response = {
         "as_of": _now().isoformat(),
         "window_days": days,
         "ceo_brief": ceo_brief,
@@ -154,34 +233,26 @@ async def today(days: int = Query(default=7, ge=1, le=30)) -> dict[str, Any]:
             "current_mrr_sar": total_mrr,
             "annual_run_rate_sar": round(total_mrr * 12.0, 2),
             "proof_events_emitted": len(proof_events),
-            "unsafe_actions_blocked": unsafe_summary["total_blocked"],
-            "no_unsafe_action_executed_invariant": unsafe_summary["no_unsafe_action_executed"],
+            "unsafe_actions_blocked": unsafe_summary.get("total_blocked", 0),
+            "no_unsafe_action_executed_invariant": unsafe_summary.get(
+                "no_unsafe_action_executed", True
+            ),
             "support_tickets_opened": len(tickets),
             "objections_handled": len(objections),
             "open_incidents_count": len(open_incidents),
         },
         "quality": quality,
         "cost": {
-            "total_sar": cost_summary["total_cost_sar"],
-            "run_count": cost_summary["run_count"],
-            "avg_latency_ms": cost_summary["avg_latency_ms"],
-            "error_rate": cost_summary["error_rate"],
+            "total_sar": cost_summary.get("total_cost_sar", 0.0),
+            "run_count": cost_summary.get("run_count", 0),
+            "avg_latency_ms": cost_summary.get("avg_latency_ms", 0.0),
+            "error_rate": cost_summary.get("error_rate", 0.0),
         },
-        "recent_daily_ops": [
-            {
-                "run_id": r.id,
-                "window": r.run_window,
-                "started_at": r.started_at.isoformat() if r.started_at else None,
-                "decisions": r.decisions_total,
-                "risks_blocked": r.risks_blocked_total,
-                "error": r.error,
-            }
-            for r in recent_ops
-        ],
+        "recent_daily_ops": recent_ops_out,
         "open_incidents": open_incidents,
         "policy": {
             "live_action_gates": _gates_status(),
-            "service_tower": excellence["summary"],
+            "service_tower": excellence.get("summary", {}),
         },
         "next_morning_actions_ar": [
             "افتح Approval queue ووافق على ما لا يحتاج نقاش",
@@ -190,6 +261,9 @@ async def today(days: int = Query(default=7, ge=1, le=30)) -> dict[str, Any]:
             "إذا في Pilot قيد التنفيذ: راجع Proof Pack progress",
         ],
     }
+    if errors:
+        response["_errors"] = errors  # surface what failed without 500ing
+    return response
 
 
 @router.get("/week")
