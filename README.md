@@ -215,7 +215,26 @@ python scripts/launch_readiness_check.py
 # Live verification against a deployed environment (Railway/Render/Fly).
 python scripts/paid_beta_ready.py --base-url https://web-dealix.up.railway.app
 # → PAID_BETA_READY_CHECK … RESULT: PAID_BETA_READY
+
+# Final launch gate (technical + commercial readiness in one script).
+python scripts/launch_checklist.py
+# → DEALIX_LAUNCH_CHECKLIST … RESULT: LAUNCH_READY (5/5)
+
+# Smoke a deployed staging URL.
+python scripts/staging_smoke.py --base-url https://app.dealix.me
+# → DEALIX_STAGING_SMOKE … RESULT: STAGING_SMOKE_PASS
 ```
+
+### Launch Day
+
+When you're ready to point real customers at Dealix, follow this order:
+
+1. **Pre-flight** — read [`docs/LAUNCH_DAY_CHECKLIST.md`](docs/LAUNCH_DAY_CHECKLIST.md) (D-7 → D+7).
+2. **Operations** — [`docs/RUNBOOK.md`](docs/RUNBOOK.md) covers the 4 daily windows + incident playbook + rollback.
+3. **Outreach** — [`docs/OUTREACH_PLAYBOOK.md`](docs/OUTREACH_PLAYBOOK.md) has 30 Saudi agency targets + 6 LinkedIn templates + objection responses.
+4. **First Pilot** — [`docs/FIRST_PILOT_INTAKE.md`](docs/FIRST_PILOT_INTAKE.md) is the intake form + Definition of Done + upgrade script for Pilot 499.
+5. **Daily Ops** — wire 4 cron jobs (`/api/v1/daily-ops/run`) at 08:30 / 12:30 / 16:30 / 18:00 KSA.
+6. **Observability** — `/api/v1/observability/{costs,unsafe,quality}/summary` + the live widgets at the top of `command-center.html`.
 
 ### Frontend Product System
 

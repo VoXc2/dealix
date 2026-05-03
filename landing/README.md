@@ -36,6 +36,12 @@ landing/
 
 ## Page list
 
+### PR-LAUNCH-FINAL (live wiring on top of design system)
+- `proof-pack.html` reads from `/api/v1/proof-ledger/customer/{id}/pack`
+  when `?customer_id=X` is in the URL. Falls back to demo otherwise.
+- `command-center.html` shows live `Daily Ops history` + `Cost summary` +
+  `Unsafe-actions blocked` widgets via `assets/js/command-center-widgets.js`.
+
 ### PR-FE-1 (new pages, full ops scaffolding)
 - `companies.html` — للشركات
 - `services.html` — Service Tower (5 bundles only)
