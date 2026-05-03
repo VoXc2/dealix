@@ -130,6 +130,10 @@ curl -X POST http://localhost:8000/api/v1/leads \
 
 MIT — راجع [LICENSE](LICENSE).
 
+## 🚀 خطة التدشين الشاملة
+
+مرجع واحد يربط التقني وLevel 1 Ops والبوابات والإطلاق العام: **[خطة التدشين — LAUNCH_MASTER_PLAN_AR.md](docs/LAUNCH_MASTER_PLAN_AR.md)** · **النجم الشمالي:** **[NORTH_STAR_AR.md](docs/strategic/NORTH_STAR_AR.md)** · **رحلة العميل الكاملة:** **[CUSTOMER_FULL_OPS_JOURNEY_AR.md](docs/CUSTOMER_FULL_OPS_JOURNEY_AR.md)**
+
 ---
 
 <div align="center" dir="rtl">

@@ -3,6 +3,8 @@
 **The single page Sami opens at 9am Day 1. Everything else is reference.**
 Copy · paste · send · log · move on.
 
+**Level 1 Full Ops (Sheet, Form, Apps Script, acceptance):** [full_ops_pack/DEALIX_FULL_OPS_SETUP.md](full_ops_pack/DEALIX_FULL_OPS_SETUP.md)
+
 ---
 
 ## ⚡ 9:00 — First send (Message 1 / Lucidya)
