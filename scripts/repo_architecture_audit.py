@@ -73,6 +73,16 @@ ALLOWED_CONTEXT_MARKERS: tuple[str, ...] = (
     "policy",
     "ALLOWED_CONTEXT",
     "FORBIDDEN_PATTERNS",
+    # PR-COMMERCIAL-CLOSE: Self-Growth + Compliance modules reference
+    # forbidden patterns by name as documented intent / refusal labels.
+    "ALWAYS_FORBIDDEN_TODAY",
+    "BLOCKED_REASONS",
+    "blocked_today_ar",
+    "forbidden_today",
+    "anti_claim",
+    "anti_claims",
+    "refusal",
+    "_refusal",
 )
 
 PRODUCT_DIRS: tuple[str, ...] = (

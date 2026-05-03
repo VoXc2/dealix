@@ -569,3 +569,126 @@ class FunnelEventRecord(Base):
     occurred_at: Mapped[datetime] = mapped_column(default=utcnow, index=True)
     meta_json: Mapped[dict] = mapped_column("metadata", JSON, default=dict)
     created_at: Mapped[datetime] = mapped_column(default=utcnow)
+
+
+# ── Proof Ledger + Service Delivery + Self-Growth (PR-COMMERCIAL-CLOSE) ──
+
+
+class ProofEventRecord(Base):
+    """One row per Revenue Work Unit emitted by Dealix on behalf of a customer.
+
+    A Proof Event is the smallest unit of "Dealix did something useful":
+      opportunity_created, draft_created, approval_collected, meeting_drafted,
+      followup_created, risk_blocked, partner_suggested, proof_generated,
+      payment_link_drafted.
+
+    The Proof Ledger aggregates these into the weekly Proof Pack.
+    """
+
+    __tablename__ = "proof_events"
+
+    id: Mapped[str] = mapped_column(String(64), primary_key=True)
+    customer_id: Mapped[str | None] = mapped_column(String(64), nullable=True, index=True)
+    partner_id: Mapped[str | None] = mapped_column(String(64), nullable=True, index=True)
+    service_id: Mapped[str | None] = mapped_column(String(64), nullable=True, index=True)
+    session_id: Mapped[str | None] = mapped_column(String(64), nullable=True, index=True)
+    unit_type: Mapped[str] = mapped_column(String(48), index=True)
+    # opportunity_created | target_ranked | draft_created | approval_collected |
+    # meeting_drafted | followup_created | risk_blocked | partner_suggested |
+    # proof_generated | payment_link_drafted
+    label_ar: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    revenue_impact_sar: Mapped[float] = mapped_column(Float, default=0.0)
+    weight: Mapped[float] = mapped_column(Float, default=1.0)
+    actor: Mapped[str] = mapped_column(String(64), default="system")
+    approval_required: Mapped[bool] = mapped_column(Boolean, default=False, index=True)
+    approved: Mapped[bool] = mapped_column(Boolean, default=False, index=True)
+    risk_level: Mapped[str] = mapped_column(String(8), default="low")  # low | medium | high
+    occurred_at: Mapped[datetime] = mapped_column(default=utcnow, index=True)
+    meta_json: Mapped[dict] = mapped_column("metadata", JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(default=utcnow)
+
+
+class ServiceSessionRecord(Base):
+    """One row per service execution — Pilot 499, Data to Revenue, Growth OS sprint, etc.
+
+    State machine:
+      new → waiting_inputs → in_progress → needs_approval → ready_to_deliver
+        → delivered → proof_generated → upgrade_pending → closed
+    """
+
+    __tablename__ = "service_sessions"
+
+    id: Mapped[str] = mapped_column(String(64), primary_key=True)
+    service_id: Mapped[str] = mapped_column(String(64), index=True)
+    customer_id: Mapped[str | None] = mapped_column(String(64), nullable=True, index=True)
+    partner_id: Mapped[str | None] = mapped_column(String(64), nullable=True, index=True)
+    status: Mapped[str] = mapped_column(String(32), default="new", index=True)
+    owner: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    started_at: Mapped[datetime] = mapped_column(default=utcnow, index=True)
+    deadline_at: Mapped[datetime | None] = mapped_column(nullable=True)
+    delivered_at: Mapped[datetime | None] = mapped_column(nullable=True)
+    closed_at: Mapped[datetime | None] = mapped_column(nullable=True)
+    sla_target_hours: Mapped[int] = mapped_column(Integer, default=168)  # 7 days default
+    breach_flag: Mapped[bool] = mapped_column(Boolean, default=False, index=True)
+    next_step: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    inputs_json: Mapped[dict] = mapped_column("inputs", JSON, default=dict)
+    deliverables_json: Mapped[list] = mapped_column("deliverables", JSON, default=list)
+    proof_pack_url: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    meta_json: Mapped[dict] = mapped_column("metadata", JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(default=utcnow, onupdate=utcnow)
+
+
+class GrowthExperimentRecord(Base):
+    """Self-Growth Mode — Dealix uses itself to grow Dealix.
+
+    Each row is one weekly experiment: "this week we test segment X via channel Y
+    with message Z". Closed with a Proof Pack-style scorecard.
+    """
+
+    __tablename__ = "growth_experiments"
+
+    id: Mapped[str] = mapped_column(String(64), primary_key=True)
+    week_iso: Mapped[str] = mapped_column(String(16), index=True)  # e.g. 2026-W18
+    hypothesis_ar: Mapped[str] = mapped_column(Text, default="")
+    segment: Mapped[str | None] = mapped_column(String(128), nullable=True, index=True)
+    channel: Mapped[str | None] = mapped_column(String(32), nullable=True)
+    message_ar: Mapped[str | None] = mapped_column(Text, nullable=True)
+    status: Mapped[str] = mapped_column(String(32), default="planned", index=True)
+    # planned | running | done | aborted
+    n_targets_planned: Mapped[int] = mapped_column(Integer, default=0)
+    n_drafts_created: Mapped[int] = mapped_column(Integer, default=0)
+    n_approvals_collected: Mapped[int] = mapped_column(Integer, default=0)
+    n_replies: Mapped[int] = mapped_column(Integer, default=0)
+    n_meetings: Mapped[int] = mapped_column(Integer, default=0)
+    n_pilots_offered: Mapped[int] = mapped_column(Integer, default=0)
+    n_pilots_paid: Mapped[int] = mapped_column(Integer, default=0)
+    learnings_ar: Mapped[str | None] = mapped_column(Text, nullable=True)
+    started_at: Mapped[datetime] = mapped_column(default=utcnow, index=True)
+    closed_at: Mapped[datetime | None] = mapped_column(nullable=True)
+    meta_json: Mapped[dict] = mapped_column("metadata", JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(default=utcnow)
+
+
+class ObjectionEventRecord(Base):
+    """Tracks objections faced + which response variant was used + outcome.
+
+    Powers the negotiation engine's self-improvement loop.
+    """
+
+    __tablename__ = "objection_events"
+
+    id: Mapped[str] = mapped_column(String(64), primary_key=True)
+    lead_id: Mapped[str | None] = mapped_column(String(64), nullable=True, index=True)
+    deal_id: Mapped[str | None] = mapped_column(String(64), nullable=True, index=True)
+    customer_id: Mapped[str | None] = mapped_column(String(64), nullable=True, index=True)
+    objection_class: Mapped[str] = mapped_column(String(48), index=True)
+    # price | timing | trust | already_have_agency | need_team_approval |
+    # not_priority | send_details | want_guarantee
+    raw_text: Mapped[str | None] = mapped_column(Text, nullable=True)
+    response_variant: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    outcome: Mapped[str] = mapped_column(String(32), default="open", index=True)
+    # open | won | lost | postponed | escalated
+    occurred_at: Mapped[datetime] = mapped_column(default=utcnow, index=True)
+    meta_json: Mapped[dict] = mapped_column("metadata", JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(default=utcnow)

@@ -55,6 +55,10 @@ FLAGS_DEFAULT_FALSE: tuple[str, ...] = (
     "gmail_allow_live_send",
     "moyasar_allow_live_charge",
     "linkedin_allow_auto_dm",
+    "resend_allow_live_send",          # PR-BE-Auth: gates magic-link emails
+    "whatsapp_allow_internal_send",    # PR-COMMERCIAL-CLOSE: gates internal manager briefs
+    "whatsapp_allow_customer_send",    # PR-COMMERCIAL-CLOSE: gates customer-facing WA
+    "calls_allow_live_dial",           # PR-COMMERCIAL-CLOSE: gates auto-dial (always False)
 )
 
 

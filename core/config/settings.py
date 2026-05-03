@@ -111,6 +111,11 @@ class Settings(BaseSettings):
     moyasar_allow_live_charge: bool = False
     linkedin_allow_auto_dm: bool = False  # ALWAYS False — LinkedIn ToS forbids automation
     resend_allow_live_send: bool = False  # PR-BE-Auth: gate magic-link emails
+    # PR-COMMERCIAL-CLOSE: 3 new gates for Sales/Growth WhatsApp + Calls.
+    whatsapp_allow_internal_send: bool = False  # internal manager briefs via WhatsApp
+    whatsapp_allow_customer_send: bool = False  # customer-facing WhatsApp messages
+    calls_allow_recommend: bool = True          # we DO recommend calls (read-only)
+    calls_allow_live_dial: bool = False         # we NEVER auto-dial
 
     # ── Email ───────────────────────────────────────────────────
     email_provider: Literal["resend", "sendgrid", "smtp"] = "resend"

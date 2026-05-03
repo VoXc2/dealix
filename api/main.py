@@ -20,10 +20,12 @@ from api.routers import (
     automation,
     autonomous,
     business,
+    calls as calls_router,
     cards,
     command_center,
     customer_success,
     data,
+    delivery,
     dominance,
     drafts,
     ecosystem,
@@ -31,21 +33,27 @@ from api.routers import (
     full_os,
     health,
     leads,
+    negotiation,
     operator,
     outreach,
     partners,
     personal_operator,
     pricing,
+    proof_ledger,
     prospect,
     public,
     revenue,
     revenue_os,
+    role_briefs,
     sales,
     sectors,
+    self_growth,
+    service_tower,
     services,
     support,
     v3,
     webhooks,
+    whatsapp_briefs,
 )
 from api.security import APIKeyMiddleware, setup_rate_limit
 from core.config.settings import get_settings
@@ -158,6 +166,14 @@ def create_app() -> FastAPI:
     app.include_router(auth.router)
     app.include_router(support.router)
     app.include_router(operator.router)
+    app.include_router(service_tower.router)
+    app.include_router(proof_ledger.router)
+    app.include_router(delivery.router)
+    app.include_router(negotiation.router)
+    app.include_router(self_growth.router)
+    app.include_router(role_briefs.router)
+    app.include_router(whatsapp_briefs.router)
+    app.include_router(calls_router.router)
 
     @app.get("/", tags=["root"])
     async def root() -> dict[str, object]:
