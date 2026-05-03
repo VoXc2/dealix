@@ -108,9 +108,19 @@ async def list_pending(
 
 @router.post("/{event_id}/approve")
 async def approve(event_id: str, body: dict[str, Any] = Body(default={})) -> dict[str, Any]:
-    """Approve a pending action. Sets approved=True + audit-logs."""
+    """Approve a pending action + (if gates allow) auto-execute it.
+
+    Rules:
+      1. Mark event approved=True, audit-log who approved + when.
+      2. Call auto_executor.auto_execute_approved(event):
+         - If channel allowed AND gate open → actually send (Resend, WA, etc.)
+         - If gate closed → kept as approved-but-not-sent (founder sends manually)
+         - If hard refusal channel (cold WA / linkedin auto-DM) → never executed
+      3. Append execution result to meta_json (audit trail).
+    """
     actor = str((body or {}).get("actor") or "founder")
     note = (body or {}).get("note") or None
+    skip_auto_execute = bool((body or {}).get("skip_auto_execute", False))
 
     async with get_session() as session:
         row = (await session.execute(
@@ -132,12 +142,42 @@ async def approve(event_id: str, body: dict[str, Any] = Body(default={})) -> dic
             "action_approved event_id=%s actor=%s unit_type=%s customer_id=%s",
             event_id, actor, row.unit_type, row.customer_id,
         )
+
+        # Attempt auto-execution unless caller opts out
+        execution: dict[str, Any] = {"executed": False, "skipped": True, "reason": "skip_auto_execute=true"}
+        if not skip_auto_execute:
+            try:
+                from auto_client_acquisition.execution.auto_executor import (
+                    auto_execute_approved,
+                )
+                result = await auto_execute_approved(row)
+                execution = {
+                    "executed": result.executed,
+                    "channel": result.channel,
+                    "transport": result.transport,
+                    "provider_id": result.provider_id,
+                    "reason": result.reason,
+                    "safe_to_retry": result.safe_to_retry,
+                }
+                # Persist execution result back into meta
+                meta["auto_execution"] = execution
+                row.meta_json = meta
+                await session.commit()
+                log.info(
+                    "auto_execute event_id=%s executed=%s channel=%s reason=%s",
+                    event_id, result.executed, result.channel, result.reason,
+                )
+            except Exception as exc:  # noqa: BLE001
+                log.warning("auto_execute_failed event_id=%s err=%s", event_id, exc)
+                execution = {"executed": False, "error": str(exc)[:200]}
+
         return {
             "status": "approved",
             "event_id": event_id,
             "unit_type": row.unit_type,
             "customer_id": row.customer_id,
             "approved_at": meta["approved_at"],
+            "auto_execution": execution,
         }
 
 

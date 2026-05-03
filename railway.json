@@ -14,6 +14,9 @@
     { "name": "daily-ops-morning",   "schedule": "30 5 * * *",  "command": "python scripts/cron_daily_ops.py --window morning   --quiet" },
     { "name": "daily-ops-midday",    "schedule": "30 9 * * *",  "command": "python scripts/cron_daily_ops.py --window midday    --quiet" },
     { "name": "daily-ops-closing",   "schedule": "30 13 * * *", "command": "python scripts/cron_daily_ops.py --window closing   --quiet" },
-    { "name": "daily-ops-scorecard", "schedule": "0 15 * * *",  "command": "python scripts/cron_daily_ops.py --window scorecard --quiet" }
+    { "name": "daily-ops-scorecard", "schedule": "0 15 * * *",  "command": "python scripts/cron_daily_ops.py --window scorecard --quiet" },
+    { "name": "dealix-self-ops",     "schedule": "0 3 * * *",   "command": "python scripts/cron_dealix_self_ops.py --quiet" },
+    { "name": "sprint-progression",  "schedule": "30 5 * * *",  "command": "python scripts/cron_sprint_auto_progression.py --quiet" },
+    { "name": "auto-followup",       "schedule": "0 7 * * *",   "command": "python scripts/cron_auto_followup.py --quiet" }
   ]
 }

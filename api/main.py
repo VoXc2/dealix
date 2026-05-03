@@ -36,6 +36,7 @@ from api.routers import (
     email_send,
     full_os,
     health,
+    inbound,
     intelligence,
     leads,
     meetings,
@@ -48,6 +49,7 @@ from api.routers import (
     payments,
     personal_operator,
     learning,
+    self_ops,
     pricing,
     proof_ledger,
     prospect,
@@ -200,6 +202,8 @@ def create_app() -> FastAPI:
     app.include_router(learning.router)
     app.include_router(sprints.router)
     app.include_router(intelligence.router)
+    app.include_router(self_ops.router)
+    app.include_router(inbound.router)
     app.include_router(role_aliases.router)
 
     @app.get("/", tags=["root"])
