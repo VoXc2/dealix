@@ -122,7 +122,8 @@ _INTENT_KEYWORDS: list[tuple[str, list[str]]] = [
     ]),
     ("want_daily_growth", [
         "تشغيل يومي", "daily", "يومي", "كروت قرارات", "executive", "command center",
-        "growth os",
+        "growth os", "تقرير", "report", "proof pack", "proof", "يثبت", "اثبت",
+        "إثبات", "اثبات",
     ]),
     ("want_more_customers", [
         "عملاء جدد", "عملاء", "leads", "زيادة المبيعات", "more customers",
