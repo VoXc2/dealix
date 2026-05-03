@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Company Brain — Dealix</title>
+<meta name="description" content="حرّر Company Brain للعميل — العرض، ICP، النبرة، القنوات المسموحة، والادعاءات المحظورة.">
+<meta name="robots" content="noindex,follow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="assets/css/base.css">
+<link rel="stylesheet" href="assets/css/components.css">
+<link rel="stylesheet" href="assets/css/responsive.css">
+<style>
+  .dx-brain { max-width:780px; margin:0 auto; padding:1rem; }
+  .dx-brain__hero { background:linear-gradient(135deg,#064e3b,#047857); color:#fff;
+                    border-radius:14px; padding:1.5rem; margin-bottom:1.5rem; }
+  .dx-brain__hero h1 { margin:0 0 .25rem 0; font-size:1.5rem; font-weight:700; }
+  .dx-brain__hero .meta { opacity:.85; font-size:.9rem; }
+  .dx-form-group { display:flex; flex-direction:column; gap:.4rem; margin-bottom:1.1rem; }
+  .dx-form-group label { font-weight:600; }
+  .dx-form-group input, .dx-form-group select, .dx-form-group textarea {
+    padding:.7rem .9rem; border:1px solid var(--dx-border, #d1d5db);
+    border-radius:8px; font-family:inherit; font-size:1rem;
+  }
+  .dx-form-group small { color:#6b7280; font-size:.85rem; }
+  .dx-form-row { display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
+  @media(max-width:600px){ .dx-form-row { grid-template-columns:1fr; } }
+  .dx-actions { display:flex; gap:.75rem; align-items:center; }
+  .dx-status { font-size:.9rem; padding:.5rem .75rem; border-radius:6px; display:none; }
+  .dx-status.is-shown { display:block; }
+  .dx-status.ok { background:#dcfce7; color:#065f46; }
+  .dx-status.error { background:#fee2e2; color:#991b1b; }
+  .dx-summary { background:#f1f5f9; border-radius:8px; padding:.75rem 1rem;
+                margin-bottom:1rem; font-size:.9rem; }
+  .dx-pill { display:inline-block; background:#e2e8f0; padding:.15rem .55rem;
+             border-radius:999px; font-size:.8rem; margin-inline-end:.3rem; }
+  .dx-pill--blocked { background:#fee2e2; color:#991b1b; }
+  .dx-pill--allowed { background:#dcfce7; color:#15803d; }
+</style>
+</head>
+<body class="dx-page">
+<a href="#dx-main" class="dx-skip-link">تجاوز إلى المحتوى</a>
+<div data-include="components/nav.html"></div>
+
+<main id="dx-main" class="dx-page__main">
+  <section class="dx-section">
+    <div class="dx-brain" id="dx-brain" data-customer-id="">
+      <div class="dx-brain__hero">
+        <h1>Company Brain</h1>
+        <div class="meta">
+          العميل: <span id="dx-cust-id">—</span> ·
+          آخر تحديث: <span id="dx-updated">—</span>
+        </div>
+      </div>
+
+      <div class="dx-status" id="dx-status" role="status"></div>
+
+      <div class="dx-summary" id="dx-summary">جاري التحميل…</div>
+
+      <div class="dx-form-row">
+        <div class="dx-form-group">
+          <label for="dx-company-name">اسم الشركة *</label>
+          <input id="dx-company-name" type="text">
+        </div>
+        <div class="dx-form-group">
+          <label for="dx-website">الموقع</label>
+          <input id="dx-website" type="url" placeholder="https://example.com">
+        </div>
+      </div>
+
+      <div class="dx-form-row">
+        <div class="dx-form-group">
+          <label for="dx-sector">القطاع</label>
+          <input id="dx-sector" type="text" placeholder="B2B SaaS، تدريب، استشارات...">
+        </div>
+        <div class="dx-form-group">
+          <label for="dx-city">المدينة</label>
+          <input id="dx-city" type="text" placeholder="الرياض / جدة / الدمام...">
+        </div>
+      </div>
+
+      <div class="dx-form-group">
+        <label for="dx-offer">العرض الرئيسي</label>
+        <textarea id="dx-offer" rows="2" placeholder="ماذا تقدم الشركة؟"></textarea>
+        <small>يستخدم في كل draft outreach (Sprint Day 3) + Proof Pack header.</small>
+      </div>
+
+      <div class="dx-form-group">
+        <label for="dx-icp">العميل المثالي (ICP)</label>
+        <textarea id="dx-icp" rows="2" placeholder="مثال: شركات سعودية B2B، 10-50 موظف، خدمات استشارية"></textarea>
+      </div>
+
+      <div class="dx-form-row">
+        <div class="dx-form-group">
+          <label for="dx-deal-value">متوسط الصفقة (SAR)</label>
+          <input id="dx-deal-value" type="number" min="0" step="100">
+        </div>
+        <div class="dx-form-group">
+          <label for="dx-tone">النبرة</label>
+          <select id="dx-tone">
+            <option value="professional_saudi_arabic">محترفة سعودية (افتراضي)</option>
+            <option value="formal_arabic">رسمية</option>
+            <option value="conversational_arabic">حوارية</option>
+            <option value="technical_arabic">تقنية</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="dx-form-group">
+        <label for="dx-approved-channels">القنوات المسموحة (افصل بفاصلة)</label>
+        <input id="dx-approved-channels" type="text" placeholder="linkedin_manual, email_draft, referral_intro">
+        <small>تستخدمها ChannelOrchestrator لاختيار أفضل قناة لكل فرصة.</small>
+      </div>
+
+      <div class="dx-form-group">
+        <label for="dx-blocked-channels">القنوات المحظورة (افصل بفاصلة)</label>
+        <input id="dx-blocked-channels" type="text" placeholder="cold_whatsapp, linkedin_auto_dm">
+        <small>cold_whatsapp + linkedin_auto_dm محظورة دائماً (PDPL/ToS).</small>
+      </div>
+
+      <div class="dx-form-group">
+        <label for="dx-forbidden-claims">ادعاءات محظورة في الـ outreach (افصل بفاصلة)</label>
+        <input id="dx-forbidden-claims" type="text" placeholder="نضمن, guaranteed, ضمان نتائج">
+        <small>تُفحص في كل draft قبل الإرسال (assert_safe).</small>
+      </div>
+
+      <div class="dx-actions">
+        <button id="dx-save" class="dx-btn dx-btn--primary">احفظ الـ Brain</button>
+        <button id="dx-reload" class="dx-btn dx-btn--ghost">أعد تحميل</button>
+      </div>
+
+      <p style="margin-top:1.5rem; color:#6b7280; font-size:.9rem;">
+        كل تغيير يحفظ عبر <code>PATCH /api/v1/companies/{customer_id}/brain</code>.
+        التغييرات تنعكس فوراً على Sprint Day 3 + كل LLM-personalized output.
+      </p>
+    </div>
+  </section>
+</main>
+
+<div data-include="components/footer.html"></div>
+<script src="assets/js/components-loader.js" defer></script>
+<script src="assets/js/api.js" defer></script>
+<script src="assets/js/brain-editor.js" defer></script>
+</body>
+</html>

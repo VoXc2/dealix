@@ -244,12 +244,122 @@ async def _generate_day(
 
 @router.post("/{sprint_id}/diagnostic/generate")
 async def day_1(sprint_id: str) -> dict[str, Any]:
-    return await _generate_day(sprint_id, 1, generate_diagnostic, label_ar="Mini Diagnostic")
+    """Day 1 — Mini Diagnostic. Deterministic baseline + LLM polish on
+    why_segment_ar / risk_to_avoid_ar with Brain context. Falls back to
+    template on any failure."""
+    from auto_client_acquisition.intelligence.smart_drafter import get_drafter
+
+    async with get_session() as session:
+        sprint = await _load_or_404(session, sprint_id)
+        brain = await _load_customer_brain(session, sprint.customer_id)
+
+        baseline = generate_diagnostic(brain)
+        drafter = get_drafter()
+
+        # LLM polish: enrich why_segment_ar with Brain context
+        polish_prompt = (
+            f"الشريحة المختارة: {baseline['best_segment_ar']}.\n"
+            f"شركة العميل: {brain.get('company_name','—')} في {brain.get('city','—')}.\n"
+            f"عرضهم: {brain.get('offer_ar','—')}.\n"
+            f"اكتب جملة واحدة عربية محددة (ليست عامة) تشرح لماذا هذه "
+            f"الشريحة الأنسب الآن — لا أكثر من ٢٠ كلمة، بنبرة سعودية محترمة. "
+            f"ممنوع 'نضمن' أو 'guaranteed'."
+        )
+        r1 = await drafter._safe_run(
+            "REASONING", polish_prompt,
+            max_tokens=80, temperature=0.6,
+            fallback=baseline.get("why_segment_ar", ""),
+        )
+
+        risk_prompt = (
+            f"شركة في قطاع {brain.get('sector','—')} في {brain.get('city','—')}.\n"
+            f"اذكر مخاطرة PDPL واحدة محددة يجب تجنبها هذا الأسبوع — ليست عامة. "
+            f"≤ ٢٥ كلمة عربي."
+        )
+        r2 = await drafter._safe_run(
+            "REASONING", risk_prompt,
+            max_tokens=80, temperature=0.5,
+            fallback=baseline.get("risk_to_avoid_ar", ""),
+        )
+
+        baseline["why_segment_ar"] = r1.text or baseline.get("why_segment_ar", "")
+        baseline["risk_to_avoid_ar"] = r2.text or baseline.get("risk_to_avoid_ar", "")
+        baseline["llm_enhanced"] = bool(r1.used_llm or r2.used_llm)
+        baseline["llm_provider"] = r1.provider or r2.provider
+        baseline["llm_safety_passed"] = r1.safety_passed and r2.safety_passed
+
+        outputs = dict(sprint.day_outputs_json or {})
+        outputs["day_1"] = baseline
+        sprint.day_outputs_json = outputs
+        sprint.current_day = max(sprint.current_day, 1)
+        sprint.status = "day_1"
+        proof_id = await _emit_day_proof(session, sprint, 1, "Mini Diagnostic (LLM-enhanced)")
+        await session.commit()
+        return {
+            "sprint_id": sprint_id,
+            "day": 1,
+            "output": baseline,
+            "proof_event_id": proof_id,
+            "status": sprint.status,
+        }
 
 
 @router.post("/{sprint_id}/opportunities/generate")
 async def day_2(sprint_id: str) -> dict[str, Any]:
-    return await _generate_day(sprint_id, 2, generate_opportunity_pack, label_ar="Opportunity Pack")
+    """Day 2 — Opportunity Pack. Each of the 10 opps gets a
+    ChannelOrchestrator-recommended channel based on Brain + active gates,
+    not a static template value."""
+    from auto_client_acquisition.intelligence.channel_orchestrator import recommend
+    from core.config.settings import get_settings
+
+    s = get_settings()
+    gates = {
+        "whatsapp_allow_customer_send": bool(getattr(s, "whatsapp_allow_customer_send", False)),
+        "whatsapp_allow_internal_send": bool(getattr(s, "whatsapp_allow_internal_send", False)),
+    }
+
+    async with get_session() as session:
+        sprint = await _load_or_404(session, sprint_id)
+        brain = await _load_customer_brain(session, sprint.customer_id)
+        baseline = generate_opportunity_pack(brain)
+
+        # For each opportunity, get a per-prospect channel recommendation.
+        # Synthetic prospect = no consent yet (new opp), no last inbound.
+        synthetic_prospect = {
+            "consent_status": "none",
+            "allowed_channels": [],
+            "blocked_channels": [],
+        }
+        for opp in baseline.get("opportunities", []):
+            recs = recommend(prospect=synthetic_prospect, brain=brain, gates=gates)
+            best = next((r for r in recs if r.allowed), None)
+            blocked = [
+                {"channel": r.channel, "reason_ar": r.reason_ar}
+                for r in recs if not r.allowed
+            ][:3]
+            opp["recommended_channel_ar"] = (
+                best.channel if best else opp.get("recommended_channel_ar", "manual")
+            )
+            opp["channel_score"] = best.score if best else 0.0
+            opp["channel_reason_ar"] = best.reason_ar if best else "—"
+            opp["channel_blocked_reasons"] = blocked
+
+        baseline["channel_orchestrator_active"] = True
+
+        outputs = dict(sprint.day_outputs_json or {})
+        outputs["day_2"] = baseline
+        sprint.day_outputs_json = outputs
+        sprint.current_day = max(sprint.current_day, 2)
+        sprint.status = "day_2"
+        proof_id = await _emit_day_proof(session, sprint, 2, "Opportunity Pack (channel-aware)")
+        await session.commit()
+        return {
+            "sprint_id": sprint_id,
+            "day": 2,
+            "output": baseline,
+            "proof_event_id": proof_id,
+            "status": sprint.status,
+        }
 
 
 @router.post("/{sprint_id}/messages/generate")
@@ -315,7 +425,59 @@ async def day_3(sprint_id: str) -> dict[str, Any]:
 
 @router.post("/{sprint_id}/meeting-prep")
 async def day_4(sprint_id: str) -> dict[str, Any]:
-    return await _generate_day(sprint_id, 4, generate_meeting_prep, label_ar="Meeting/Call Plan")
+    """Day 4 — Meeting Prep. Script + agenda stay deterministic
+    (operationally critical). Discovery questions get 1-2 Brain-aware
+    items appended via SmartDrafter."""
+    from auto_client_acquisition.intelligence.smart_drafter import get_drafter
+
+    async with get_session() as session:
+        sprint = await _load_or_404(session, sprint_id)
+        brain = await _load_customer_brain(session, sprint.customer_id)
+        baseline = generate_meeting_prep(brain)
+
+        drafter = get_drafter()
+        prompt = (
+            f"الشركة: {brain.get('company_name','—')} في {brain.get('sector','—')}.\n"
+            f"عرضهم: {brain.get('offer_ar','—')}.\n"
+            f"العميل المثالي: {brain.get('ideal_customer_ar','—')}.\n\n"
+            f"اقترح سؤالين فقط (سؤال واحد لكل سطر) لاجتماع discovery — "
+            f"يكشفان pain حقيقي مرتبط بهذا العرض. ليست عامة. عربي. "
+            f"ممنوع 'نضمن' أو وعود."
+        )
+        r = await drafter._safe_run(
+            "REASONING", prompt, max_tokens=200, temperature=0.6,
+            fallback="",
+        )
+
+        # Append the LLM questions if successful
+        smart_questions: list[str] = []
+        if r.used_llm and r.text:
+            for line in r.text.split("\n"):
+                line = line.strip().lstrip("- ").lstrip("•").strip()
+                if line and "?" in line or line.endswith("؟"):
+                    smart_questions.append(line)
+
+        baseline["discovery_questions_ar"] = (
+            list(baseline.get("discovery_questions_ar", [])) + smart_questions[:2]
+        )
+        baseline["llm_questions_added"] = len(smart_questions[:2])
+        baseline["llm_provider"] = r.provider
+        baseline["llm_safety_passed"] = r.safety_passed
+
+        outputs = dict(sprint.day_outputs_json or {})
+        outputs["day_4"] = baseline
+        sprint.day_outputs_json = outputs
+        sprint.current_day = max(sprint.current_day, 4)
+        sprint.status = "day_4"
+        proof_id = await _emit_day_proof(session, sprint, 4, "Meeting Prep (LLM-enhanced)")
+        await session.commit()
+        return {
+            "sprint_id": sprint_id,
+            "day": 4,
+            "output": baseline,
+            "proof_event_id": proof_id,
+            "status": sprint.status,
+        }
 
 
 @router.get("/{sprint_id}/review")
@@ -390,12 +552,43 @@ async def day_6(sprint_id: str) -> dict[str, Any]:
             risks_blocked=risks_blocked,
             revenue_impact_sar=revenue_total,
         )
+
+        # LLM executive summary — fallback to deterministic 1-liner
+        from auto_client_acquisition.intelligence.smart_drafter import get_drafter
+        drafter = get_drafter()
+        det_summary = (
+            f"خلال ٧ أيام: {counts.get('opportunity_created',0)} فرصة، "
+            f"{counts.get('draft_created',0)} مسودة، "
+            f"{counts.get('risk_blocked',0)} مخاطرة محظورة، "
+            f"أثر إيرادي تقديري {revenue_total:.0f} SAR."
+        )
+        summary_prompt = (
+            f"اكتب فقرة واحدة (3-4 أسطر) كـ executive summary لـ Proof Pack.\n"
+            f"الشركة: {brain.get('company_name','—')}.\n"
+            f"وحدات أُنجزت: {counts.get('opportunity_created',0)} فرصة، "
+            f"{counts.get('draft_created',0)} مسودة، "
+            f"{counts.get('meeting_drafted',0)} اجتماع.\n"
+            f"مخاطر تم منعها: {counts.get('risk_blocked',0)}.\n"
+            f"أثر إيرادي تقديري: {revenue_total:.0f} SAR.\n"
+            f"النبرة: محترفة سعودية. لا 'نضمن' ولا 'guaranteed'.\n"
+            f"اذكر الخطوة التالية المنطقية في الجملة الأخيرة."
+        )
+        r = await drafter._safe_run(
+            "SUMMARY", summary_prompt,
+            max_tokens=300, temperature=0.5,
+            fallback=det_summary,
+        )
+        output["executive_summary_ar"] = r.text or det_summary
+        output["llm_enhanced"] = bool(r.used_llm)
+        output["llm_provider"] = r.provider
+        output["llm_safety_passed"] = r.safety_passed
+
         outputs = dict(sprint.day_outputs_json or {})
         outputs["day_6"] = output
         sprint.day_outputs_json = outputs
         sprint.current_day = max(sprint.current_day, 6)
         sprint.status = "day_6"
-        proof_id = await _emit_day_proof(session, sprint, 6, "Proof Pack Draft")
+        proof_id = await _emit_day_proof(session, sprint, 6, "Proof Pack Draft (LLM-enhanced)")
         await session.commit()
         return {
             "sprint_id": sprint_id,

@@ -22,11 +22,16 @@ from __future__ import annotations
 
 from typing import Any
 
-from fastapi import APIRouter, Body, HTTPException
+from fastapi import APIRouter, Body, HTTPException, Query
+from sqlalchemy import select
 
+from auto_client_acquisition.intelligence.benchmarks import aggregate as aggregate_benchmarks
 from auto_client_acquisition.intelligence.channel_orchestrator import recommend
+from auto_client_acquisition.intelligence.forecast import project as project_forecast
 from auto_client_acquisition.intelligence.smart_drafter import get_drafter
 from core.config.settings import get_settings
+from db.models import CustomerRecord, ProofEventRecord, ProspectRecord, SubscriptionRecord
+from db.session import get_session
 
 router = APIRouter(prefix="/api/v1/intelligence", tags=["intelligence"])
 
@@ -137,6 +142,77 @@ async def draft(body: dict[str, Any] = Body(...)) -> dict[str, Any]:
             "output": result.output_tokens,
         },
     }
+
+
+@router.get("/forecast")
+async def forecast(horizon_days: int = Query(default=30, ge=7, le=365)) -> dict[str, Any]:
+    """Phase 5 light — linear pipeline + MRR projection. Defensive."""
+    from datetime import datetime, timedelta, timezone
+    errors: dict[str, str] = {}
+    prospects: list = []
+    events: list = []
+    subs: list = []
+
+    try:
+        async with get_session() as s:
+            prospects = list((await s.execute(select(ProspectRecord))).scalars().all())
+    except Exception as exc:  # noqa: BLE001
+        errors["prospects"] = f"{type(exc).__name__}: {str(exc)[:200]}"
+
+    try:
+        since = datetime.now(timezone.utc).replace(tzinfo=None) - timedelta(days=30)
+        async with get_session() as s:
+            events = list((await s.execute(
+                select(ProofEventRecord).where(ProofEventRecord.occurred_at >= since)
+            )).scalars().all())
+    except Exception as exc:  # noqa: BLE001
+        errors["events"] = f"{type(exc).__name__}: {str(exc)[:200]}"
+
+    try:
+        async with get_session() as s:
+            subs = list((await s.execute(
+                select(SubscriptionRecord).where(SubscriptionRecord.status == "active")
+            )).scalars().all())
+    except Exception as exc:  # noqa: BLE001
+        errors["subscriptions"] = f"{type(exc).__name__}: {str(exc)[:200]}"
+
+    result = project_forecast(
+        active_prospects=prospects,
+        past_events=events,
+        active_subscriptions=subs,
+        horizon_days=horizon_days,
+    )
+    if errors:
+        result["_errors"] = errors
+    return result
+
+
+@router.get("/benchmarks")
+async def benchmarks(sector: str | None = Query(default=None)) -> dict[str, Any]:
+    """Phase 5 light — sector-aggregated anonymized metrics."""
+    errors: dict[str, str] = {}
+    custs: list = []
+    events: list = []
+    try:
+        async with get_session() as s:
+            custs = list((await s.execute(select(CustomerRecord))).scalars().all())
+    except Exception as exc:  # noqa: BLE001
+        errors["customers"] = f"{type(exc).__name__}: {str(exc)[:200]}"
+
+    try:
+        async with get_session() as s:
+            events = list((await s.execute(select(ProofEventRecord))).scalars().all())
+    except Exception as exc:  # noqa: BLE001
+        errors["events"] = f"{type(exc).__name__}: {str(exc)[:200]}"
+
+    result = aggregate_benchmarks(
+        customers=custs,
+        proof_events=events,
+        sector_filter=sector,
+    )
+    if errors:
+        result["_errors"] = errors
+    return result
 
 
 @router.post("/channel-recommend")

@@ -274,3 +274,213 @@ async def today(days: int = Query(default=7, ge=1, le=30)) -> dict[str, Any]:
 async def week() -> dict[str, Any]:
     """Same as /today but explicitly week-windowed + roll-up."""
     return await today(days=7)
+
+
+@router.get("/digest")
+async def digest() -> dict[str, Any]:
+    """One-call Founder Daily Digest — replaces 6 separate calls.
+
+    Aggregates today's actionable surface:
+      - prospect standup queue (due today + stale messaged)
+      - pending approvals (count + top 5 oldest)
+      - active sprints (current_day + days_remaining)
+      - best channel pick (ChannelOrchestrator + warm Brain proxy)
+      - 3 LLM-drafted LinkedIn intros (or fallbacks) for top 3 prospects
+      - live-action gates snapshot
+      - LLM provider status
+
+    Defensive: per-section _errors map; never 500s.
+    """
+    from auto_client_acquisition.intelligence.channel_orchestrator import recommend
+    from auto_client_acquisition.intelligence.smart_drafter import get_drafter
+    from db.models import (
+        CustomerRecord, ProofEventRecord, ProspectRecord, SprintRecord,
+    )
+
+    now = _now()
+    errors: dict[str, str] = {}
+
+    # 1. Standup queue
+    standup = {"due_today": [], "stale_messaged": [], "wins_yesterday": []}
+    try:
+        eod = now.replace(hour=23, minute=59, second=59)
+        cutoff_3d = now - timedelta(days=3)
+        async with get_session() as s:
+            due = list((await s.execute(
+                select(ProspectRecord)
+                .where(
+                    ProspectRecord.next_step_due_at <= eod,
+                    ProspectRecord.status.notin_(("closed_won", "closed_lost", "retainer_won")),
+                )
+                .order_by(ProspectRecord.next_step_due_at.asc())
+                .limit(10)
+            )).scalars().all())
+            stale = list((await s.execute(
+                select(ProspectRecord)
+                .where(
+                    ProspectRecord.status == "messaged",
+                    ProspectRecord.last_message_at <= cutoff_3d,
+                )
+                .order_by(ProspectRecord.last_message_at.asc())
+                .limit(5)
+            )).scalars().all())
+        standup["due_today"] = [
+            {"id": p.id, "name": p.name, "company": p.company,
+             "next_step_ar": p.next_step_ar} for p in due
+        ]
+        standup["stale_messaged"] = [
+            {"id": p.id, "name": p.name, "company": p.company} for p in stale
+        ]
+    except Exception as exc:  # noqa: BLE001
+        errors["standup"] = f"{type(exc).__name__}: {str(exc)[:200]}"
+
+    # 2. Pending approvals
+    approvals = {"count": 0, "top_oldest": []}
+    try:
+        async with get_session() as s:
+            rows = list((await s.execute(
+                select(ProofEventRecord)
+                .where(
+                    ProofEventRecord.approval_required == True,  # noqa: E712
+                    ProofEventRecord.approved == False,  # noqa: E712
+                )
+                .order_by(ProofEventRecord.occurred_at.asc())
+                .limit(5)
+            )).scalars().all())
+        approvals["count"] = len(rows)
+        approvals["top_oldest"] = [
+            {
+                "event_id": r.id,
+                "unit_type": r.unit_type,
+                "label_ar": r.label_ar,
+                "customer_id": r.customer_id,
+                "age_hours": (
+                    round((now - r.occurred_at).total_seconds() / 3600.0, 1)
+                    if r.occurred_at else 0.0
+                ),
+            }
+            for r in rows
+        ]
+    except Exception as exc:  # noqa: BLE001
+        errors["approvals"] = f"{type(exc).__name__}: {str(exc)[:200]}"
+
+    # 3. Active sprints
+    active_sprints: list[dict[str, Any]] = []
+    try:
+        async with get_session() as s:
+            rows = list((await s.execute(
+                select(SprintRecord)
+                .where(SprintRecord.status.notin_(("completed", "aborted")))
+                .order_by(SprintRecord.started_at.desc())
+                .limit(10)
+            )).scalars().all())
+        for r in rows:
+            elapsed = (
+                (now - r.started_at).days if r.started_at else 0
+            )
+            active_sprints.append({
+                "sprint_id": r.id,
+                "customer_id": r.customer_id,
+                "service_id": r.service_id,
+                "current_day": r.current_day,
+                "days_remaining": max(0, 7 - max(r.current_day, elapsed)),
+                "status": r.status,
+            })
+    except Exception as exc:  # noqa: BLE001
+        errors["sprints"] = f"{type(exc).__name__}: {str(exc)[:200]}"
+
+    # 4. Best channel pick (proxy: most-recent customer's Brain or default)
+    best_channel: dict[str, Any] | None = None
+    try:
+        async with get_session() as s:
+            cust = (await s.execute(
+                select(CustomerRecord).order_by(CustomerRecord.created_at.desc()).limit(1)
+            )).scalar_one_or_none()
+        brain = {
+            "approved_channels": list(getattr(cust, "approved_channels", []) or [])
+                                 if cust else ["linkedin_manual"],
+            "blocked_channels": list(getattr(cust, "blocked_channels", []) or [])
+                                if cust else [],
+        }
+        recs = recommend(prospect={}, brain=brain, gates=_gates_status())
+        first = next((r for r in recs if r.allowed), None)
+        if first:
+            best_channel = {
+                "channel": first.channel,
+                "score": first.score,
+                "reason_ar": first.reason_ar,
+            }
+    except Exception as exc:  # noqa: BLE001
+        errors["best_channel"] = f"{type(exc).__name__}: {str(exc)[:200]}"
+
+    # 5. 3 LLM-drafted LinkedIn intros for the first 3 due_today prospects
+    intros: list[dict[str, Any]] = []
+    try:
+        drafter = get_drafter()
+        targets = (standup.get("due_today") or [])[:3]
+        # Use most-recent customer's Brain as the "voice"
+        async with get_session() as s:
+            cust = (await s.execute(
+                select(CustomerRecord).order_by(CustomerRecord.created_at.desc()).limit(1)
+            )).scalar_one_or_none()
+        brain = {
+            "company_name": getattr(cust, "company_name", "Dealix") if cust else "Dealix",
+            "offer_ar": getattr(cust, "offer_ar", None) or "Saudi Revenue OS",
+            "ideal_customer_ar": getattr(cust, "ideal_customer_ar", None) or "B2B 10-50",
+            "tone_ar": getattr(cust, "tone_ar", None) or "professional_saudi_arabic",
+            "forbidden_claims": list(getattr(cust, "forbidden_claims", []) or []),
+        }
+        for t in targets:
+            fallback = (
+                f"السلام عليكم {t.get('name', '')}، شفت آخر post لك — "
+                f"عندي زاوية ربما تفيد {t.get('company', 'شركتك')}. "
+                f"هل تتفضّل بـ ١٥ دقيقة هذا الأسبوع؟ (STOP للإلغاء)"
+            )
+            r = await drafter.draft_outreach_message(
+                brain,
+                prospect_hint=t.get("company") or t.get("name", ""),
+                fallback=fallback,
+            )
+            intros.append({
+                "prospect_id": t["id"],
+                "company": t.get("company"),
+                "draft_ar": r.text,
+                "llm_used": r.used_llm,
+                "provider": r.provider,
+                "fallback_reason": r.fallback_reason,
+                "approval_required": True,
+            })
+    except Exception as exc:  # noqa: BLE001
+        errors["intros"] = f"{type(exc).__name__}: {str(exc)[:200]}"
+
+    # 6. LLM provider status (one-line)
+    llm_providers: list[str] = []
+    try:
+        from core.llm.router import get_router
+        r = get_router()
+        llm_providers = [p.value for p in r.available_providers()]
+    except Exception:  # noqa: BLE001
+        llm_providers = []
+
+    response = {
+        "as_of": now.isoformat(),
+        "standup": standup,
+        "approvals": approvals,
+        "active_sprints": active_sprints,
+        "best_channel": best_channel,
+        "intros": intros,
+        "live_action_gates": _gates_status(),
+        "llm": {
+            "available_providers": llm_providers,
+            "providers_count": len(llm_providers),
+            "fallback_active": len(llm_providers) == 0,
+        },
+        "advice_ar": (
+            "إذا 0 ردود رغم 30 رسالة → بدّل القناة (WhatsApp 1st-degree)."
+            if len(standup["stale_messaged"]) >= 5 else
+            "ابدأ بالأهم: أرسل 6 رسائل LinkedIn warm من due_today الآن."
+        ),
+    }
+    if errors:
+        response["_errors"] = errors
+    return response

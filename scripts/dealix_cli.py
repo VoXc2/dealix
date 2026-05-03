@@ -25,6 +25,9 @@ Commands:
     dealix workspace <cus_id>       Print customer workspace
     dealix brain <cus_id>           Print Company Brain (12 fields + proof_summary)
     dealix learning weekly          Show this week's learning report
+    dealix forecast [days]          Phase 5: 30-day MRR projection (default horizon=30)
+    dealix benchmarks [sector]      Phase 5: sector-aggregated KPIs
+    dealix smart-launch             🚀 9 AM founder ritual — primes today's day
     dealix verify                   Run full_acceptance.sh + 6-layer audit
     dealix help                     Show this text
 
@@ -671,6 +674,138 @@ def cmd_verify(_args) -> int:
     return rc
 
 
+def cmd_forecast(args) -> int:
+    """Phase 5 — 30-day MRR projection."""
+    days = getattr(args, "days", 30) or 30
+    out = _fetch(f"/api/v1/intelligence/forecast?horizon_days={days}")
+    if not out:
+        print(_c("✗ failed", "red")); return 1
+    print(_hdr(f"FORECAST — horizon {days} days"))
+    print(_kv("pipeline (count)", out.get("pipeline_count", 0)))
+    print(_kv("pipeline value (SAR)", f"{out.get('pipeline_value_sar', 0):,.0f}"))
+    print(_kv("close rate", f"{out.get('expected_close_rate', 0):.2%}", color="cyan"))
+    print(_kv("confidence", out.get("expected_close_rate_confidence_ar", "—")))
+    print(_kv("projected revenue (SAR)", f"{out.get('projected_revenue_sar', 0):,.0f}", color="green"))
+    print(_kv("current MRR (SAR)", f"{out.get('current_mrr_sar', 0):,.0f}"))
+    print(_kv("current ARR (SAR)", f"{out.get('current_arr_sar', 0):,.0f}"))
+    print(_kv("projected MRR @ horizon", f"{out.get('projected_mrr_at_horizon_sar', 0):,.0f}", color="green"))
+    print(_kv("projected ARR @ horizon", f"{out.get('projected_arr_at_horizon_sar', 0):,.0f}", color="green"))
+    if out.get("note_ar"):
+        print(_c(f"\n  ℹ {out['note_ar']}", "dim"))
+    return 0
+
+
+def cmd_benchmarks(args) -> int:
+    sector = getattr(args, "sector", None)
+    qs = f"?sector={sector}" if sector else ""
+    out = _fetch(f"/api/v1/intelligence/benchmarks{qs}")
+    if not out:
+        print(_c("✗ failed", "red")); return 1
+    print(_hdr(f"BENCHMARKS{(' — ' + sector) if sector else ''}"))
+    print(_kv("total customers", out.get("total_customers", 0)))
+    print(_kv("sectors analyzed", out.get("sectors_analyzed", 0)))
+    if out.get("empty_ar"):
+        print(_c(f"\n  {out['empty_ar']}", "yellow"))
+        return 0
+    for sec in (out.get("sectors") or [])[:8]:
+        print(_c(f"\n  ── {sec['sector']} ({sec['sample_quality_ar']}) ──", "bold"))
+        print(_kv("  customers", sec.get("customers_count", 0)))
+        print(_kv("  avg proof events/customer", sec.get("avg_proof_events_per_customer", 0)))
+        atc = sec.get("avg_pilot_days_to_close")
+        print(_kv("  avg days to close", f"{atc:.1f}" if atc else "—"))
+        for rwu in sec.get("top_rwus", []):
+            print(f"    • {rwu['unit_type']:30s} ×{rwu['count']}")
+    return 0
+
+
+def cmd_smart_launch(_args) -> int:
+    """🚀 Founder daily ritual — primes the day in one shot.
+
+    Calls /api/v1/founder/digest, prints standup queue + LLM intros +
+    best channel + active sprints + approvals + LLM provider status.
+    """
+    print(_hdr("🚀 SMART LAUNCH — صباح الخير"))
+    out = _fetch("/api/v1/founder/digest")
+    if not out:
+        print(_c("✗ تعذّر الوصول إلى /api/v1/founder/digest", "red"))
+        print(_c(f"  base_url={_base_url()}", "dim"))
+        return 1
+
+    # ── LLM provider status ──
+    llm = out.get("llm") or {}
+    providers = llm.get("available_providers") or []
+    if providers:
+        print(_kv("🧠 LLM providers", ", ".join(providers), color="green"))
+    else:
+        print(_kv("🧠 LLM providers", "none — fallback path active", color="yellow"))
+    print()
+
+    # ── Today's queue ──
+    standup = out.get("standup") or {}
+    due = standup.get("due_today") or []
+    stale = standup.get("stale_messaged") or []
+    print(_c("📋 STANDUP", "bold"))
+    print(_kv("due today", len(due), color="yellow" if due else "green"))
+    for p in due[:6]:
+        print(f"   → {(p.get('name') or '')[:24]:24s}  {(p.get('company') or '')[:24]:24s}  {(p.get('next_step_ar') or '')[:40]}")
+    if stale:
+        print(_kv("stale (>3d)", len(stale), color="yellow"))
+    print()
+
+    # ── 3 LLM intros ──
+    intros = out.get("intros") or []
+    if intros:
+        print(_c("✍️  LINKEDIN INTROS (نسخ + الصق + خصّص)", "bold"))
+        for i, intro in enumerate(intros, 1):
+            llm_tag = "🧠 LLM" if intro.get("llm_used") else "📝 fallback"
+            print(_c(f"\n  [{i}] {intro.get('company') or '—'}  ({llm_tag})", "cyan"))
+            for line in (intro.get("draft_ar") or "").split("\n")[:6]:
+                print(f"      {line}")
+        print()
+
+    # ── Best channel ──
+    bc = out.get("best_channel")
+    if bc:
+        print(_c("📡 BEST CHANNEL TODAY", "bold"))
+        print(_kv("channel", bc.get("channel", "—"), color="green"))
+        print(_kv("score", bc.get("score", 0)))
+        print(_kv("reason", (bc.get("reason_ar") or "")[:80]))
+        print()
+
+    # ── Active sprints ──
+    sprints = out.get("active_sprints") or []
+    print(_c("🏃 ACTIVE SPRINTS", "bold"))
+    if sprints:
+        for s in sprints[:5]:
+            print(f"   • {s.get('sprint_id', '')}  customer={s.get('customer_id', '')}  day={s.get('current_day', 0)}/7  status={s.get('status', '')}")
+    else:
+        print(_c("   (no active sprints — start one with: dealix first-customer-flow)", "dim"))
+    print()
+
+    # ── Approvals ──
+    appr = out.get("approvals") or {}
+    cnt = appr.get("count", 0)
+    print(_c("✋ APPROVALS PENDING", "bold"))
+    print(_kv("count", cnt, color="yellow" if cnt else "green"))
+    for it in (appr.get("top_oldest") or [])[:3]:
+        print(f"   • {(it.get('label_ar') or it.get('unit_type'))[:50]:50s}  age={it.get('age_hours', 0):.1f}h")
+    print()
+
+    # ── Gates ──
+    gates = out.get("live_action_gates") or {}
+    all_false = all(not v for v in gates.values()) if gates else True
+    if gates:
+        flag = _c("8/8 FALSE ✓", "green") if all_false else _c("⚠ check gates!", "red")
+        print(_kv("🛡️  Live-action gates", flag))
+
+    # ── Advice ──
+    advice = out.get("advice_ar")
+    if advice:
+        print(_c(f"\n💡 {advice}", "magenta"))
+
+    return 0
+
+
 def cmd_activate_payments(_args) -> int:
     """Print exact env changes to flip Moyasar live charge — no auto-flip for safety."""
     state = _fetch("/api/v1/payments/state")
@@ -709,7 +844,14 @@ def main(argv: list[str] | None = None) -> int:
     sub.add_parser("activate-payments", help="Print Moyasar live-charge activation steps")
     sub.add_parser("first-customer-flow", help="End-to-end demo: prospect→pilot→invoice→Proof Pack")
     sub.add_parser("approvals", help="Interactive approval queue")
+    sub.add_parser("smart-launch", help="🚀 9 AM founder ritual — primes today's day")
     sub.add_parser("verify", help="Run full_acceptance.sh + 6-layer audit")
+
+    p_fc = sub.add_parser("forecast", help="Phase 5 — 30-day MRR projection")
+    p_fc.add_argument("days", nargs="?", type=int, default=30)
+
+    p_bm = sub.add_parser("benchmarks", help="Phase 5 — sector-aggregated KPIs")
+    p_bm.add_argument("sector", nargs="?", default=None)
 
     p_ws = sub.add_parser("workspace", help="Print customer workspace")
     p_ws.add_argument("customer_id")
@@ -764,6 +906,9 @@ def main(argv: list[str] | None = None) -> int:
         "workspace":          cmd_workspace,
         "brain":              cmd_brain,
         "learning":           cmd_learning,
+        "forecast":           cmd_forecast,
+        "benchmarks":         cmd_benchmarks,
+        "smart-launch":       cmd_smart_launch,
         "verify":             cmd_verify,
         "run-window":         cmd_run_window,
         "gates":              cmd_gates,
