@@ -30,9 +30,10 @@ from collections import defaultdict
 from datetime import datetime, timedelta, timezone
 from typing import Any
 
-from fastapi import APIRouter, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy import select
 
+from api.dependencies import get_optional_partner, require_partner
 from auto_client_acquisition.business.commission_calculator import (
     expected_monthly_commission,
     partner_scorecard,
@@ -51,6 +52,7 @@ from db.models import (
     SubscriptionRecord,
 )
 from db.session import get_session
+from dealix.auth.magic_link import MagicLinkPayload
 
 log = logging.getLogger(__name__)
 router = APIRouter(prefix="/api/v1/partners", tags=["partners"])
@@ -76,17 +78,32 @@ async def _load_partner(partner_id: str) -> PartnerRecord:
 
 
 @router.get("/me")
-async def get_me() -> dict[str, Any]:
-    """Resolve partner from auth context (placeholder).
+async def get_me(
+    payload: MagicLinkPayload | None = Depends(get_optional_partner),
+) -> dict[str, Any]:
+    """Resolve the current partner from the session cookie / Bearer token.
 
-    Until partner auth is wired, returns 401 unless `?demo=1` is set,
-    in which case returns a synthetic partner so the UI can render.
+    If unauthenticated, returns a synthetic demo partner with `is_demo=True`
+    so public pages can render without forcing login. Authenticated calls
+    return the real partner.
     """
+    if payload is None:
+        return {
+            "partner_id": "demo_partner",
+            "company_name": "Demo Partner",
+            "is_demo": True,
+            "note": "no session cookie; sign in via /api/v1/auth/magic-link/send",
+        }
+    async with get_session() as session:
+        row = await session.execute(
+            select(PartnerRecord).where(PartnerRecord.id == payload.sub)
+        )
+        partner = row.scalar_one_or_none()
     return {
-        "partner_id": "demo_partner",
-        "company_name": "Demo Partner",
-        "is_demo": True,
-        "note": "auth not wired yet; pass partner_id explicitly to other endpoints",
+        "partner_id": payload.sub,
+        "email": payload.email,
+        "company_name": (partner.company_name if partner else None),
+        "is_demo": False,
     }
 
 

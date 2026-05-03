@@ -525,6 +525,29 @@ class PaymentRecord(Base):
     created_at: Mapped[datetime] = mapped_column(default=utcnow, index=True)
 
 
+class SupportTicketRecord(Base):
+    """Support ticket — opened from landing/support.html or operator escalations."""
+
+    __tablename__ = "support_tickets"
+
+    id: Mapped[str] = mapped_column(String(64), primary_key=True)
+    subject: Mapped[str] = mapped_column(String(500), default="")
+    message: Mapped[str] = mapped_column(Text, default="")
+    name: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    email: Mapped[str] = mapped_column(String(255), index=True)
+    priority: Mapped[str] = mapped_column(String(8), default="P3", index=True)  # P0|P1|P2|P3
+    category: Mapped[str | None] = mapped_column(String(64), nullable=True, index=True)
+    partner_id: Mapped[str | None] = mapped_column(String(64), nullable=True, index=True)
+    customer_id: Mapped[str | None] = mapped_column(String(64), nullable=True, index=True)
+    status: Mapped[str] = mapped_column(String(32), default="open", index=True)
+    # open | in_progress | waiting_on_user | resolved | closed
+    sla_target_hours: Mapped[int] = mapped_column(Integer, default=48)
+    escalated: Mapped[bool] = mapped_column(Boolean, default=False)
+    meta_json: Mapped[dict] = mapped_column("metadata", JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(default=utcnow, index=True)
+    updated_at: Mapped[datetime] = mapped_column(default=utcnow, onupdate=utcnow)
+
+
 class FunnelEventRecord(Base):
     """Unified funnel-stage transitions per lead/customer/partner.
 

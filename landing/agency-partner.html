@@ -39,10 +39,18 @@
              data-track="cta_clicked" data-track-cta="agency_pilot" data-track-source="agency_partner_hero">
             ابدأ Agency Partner Pilot
           </a>
-          <a href="#how" class="dx-btn dx-btn--ghost dx-btn--lg"
-             data-track="cta_clicked" data-track-cta="how_it_works">
-            كيف يعمل البورتال؟
+          <a href="login.html" class="dx-btn dx-btn--ghost dx-btn--lg"
+             data-track="cta_clicked" data-track-cta="login" data-track-source="agency_partner_hero">
+            دخول الشركاء
           </a>
+        </div>
+        <div id="dx-auth-banner" style="margin-top:1.5rem; display:none;">
+          <span class="dx-pill dx-pill--success">
+            مرحباً <strong id="dx-auth-email"></strong> · جلستك مفعّلة
+          </span>
+          <button id="dx-logout-btn"
+                  class="dx-btn dx-btn--ghost dx-btn--sm"
+                  style="margin-inline-start:0.5rem;">تسجيل خروج</button>
         </div>
       </div>
     </div>
@@ -233,8 +241,33 @@
 
 <script src="assets/js/api.js"></script>
 <script src="assets/js/analytics.js"></script>
+<script src="assets/js/auth.js"></script>
 <script src="assets/js/components-loader.js"></script>
 <script src="assets/js/partner-portal.js"></script>
-<script>if (window.DealixAnalytics) DealixAnalytics.pageView('agency-partner');</script>
+<script>
+  (async function () {
+    if (window.DealixAuth) {
+      const me = await window.DealixAuth.getMe();
+      if (me.ok && me.data && me.data.partner_id) {
+        const banner = document.getElementById('dx-auth-banner');
+        const emailEl = document.getElementById('dx-auth-email');
+        if (banner) banner.style.display = '';
+        if (emailEl) emailEl.textContent = me.data.email || '';
+        try {
+          window.localStorage.setItem('dealix_partner_id', me.data.partner_id);
+        } catch (_) { /* ignore */ }
+      }
+    }
+    const logoutBtn = document.getElementById('dx-logout-btn');
+    if (logoutBtn) {
+      logoutBtn.addEventListener('click', async function () {
+        if (window.DealixAuth) await window.DealixAuth.logout();
+        try { window.localStorage.removeItem('dealix_partner_id'); } catch (_) {}
+        location.reload();
+      });
+    }
+    if (window.DealixAnalytics) DealixAnalytics.pageView('agency-partner');
+  })();
+</script>
 </body>
 </html>

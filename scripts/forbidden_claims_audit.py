@@ -88,9 +88,9 @@ NEGATIVE_MARKERS: tuple[str, ...] = (
 )
 
 
-# Files in PR-FE-1 audit scope. Future PRs expand this list.
-# Existing pages not yet refactored are intentionally NOT audited yet
-# (their copy/CTA alignment is deferred to PR-FE-5/6).
+# Audit scope. PR-FE-1 added the 9 new pages; PR-FE-5 added login;
+# PR-FE-6 brought the 6 existing pages into scope after compliance-ribbon
+# refresh + canonical + design-token imports.
 IN_SCOPE_FILES: tuple[str, ...] = (
     # 9 new pages created in PR-FE-1
     "companies.html",
@@ -102,6 +102,15 @@ IN_SCOPE_FILES: tuple[str, ...] = (
     "targeting.html",
     "proof-pack.html",
     "support.html",
+    # PR-FE-5 — passwordless login
+    "login.html",
+    # PR-FE-6 — refreshed existing pages
+    "index.html",
+    "command-center.html",
+    "pricing.html",
+    "marketers.html",
+    "partners.html",
+    "trust-center.html",
 )
 
 # Substrings that, when found in the page (anywhere) satisfy required-per-page.

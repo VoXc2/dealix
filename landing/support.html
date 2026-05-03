@@ -183,8 +183,9 @@
 <script src="assets/js/api.js"></script>
 <script src="assets/js/analytics.js"></script>
 <script src="assets/js/components-loader.js"></script>
+<script src="assets/js/support-bot.js"></script>
 <script>
-  // Minimal demo bot
+  // Bot UX: classify + show SLA. The actual ticket POST is handled by support-bot.js.
   document.addEventListener('click', function (ev) {
     const btn = ev.target.closest('[data-priority]');
     if (!btn) return;
@@ -209,18 +210,7 @@
     }, 350);
   });
 
-  // Ticket form: stub submit (real endpoint comes in PR-FE-5)
-  const form = document.getElementById('dx-ticket-form');
-  if (form) {
-    form.addEventListener('submit', function (ev) {
-      ev.preventDefault();
-      const status = document.getElementById('dx-ticket-status');
-      if (status) {
-        status.textContent = 'سنعالج تذكرتك خلال SLA المحدد. ستصل رسالة تأكيد على بريدك.';
-        status.style.color = 'var(--dx-emerald)';
-      }
-    });
-  }
+  // Ticket form submit is wired by assets/js/support-bot.js.
 
   if (window.DealixAnalytics) DealixAnalytics.pageView('support');
 </script>

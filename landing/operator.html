@@ -137,8 +137,9 @@
 <script src="assets/js/api.js"></script>
 <script src="assets/js/analytics.js"></script>
 <script src="assets/js/components-loader.js"></script>
+<script src="assets/js/operator.js"></script>
 <script>
-  // Minimal demo: route intent → bundle. Full intent engine arrives in PR-FE-3.
+  // Inline fallback: runs only if assets/js/operator.js fails to take over (no API).
   (function () {
     const INTENT_MAP = {
       want_more_customers: { bundle: 'Growth Starter', href: 'private-beta.html', why: 'أنسب لك Growth Starter — 10 فرص + رسائل + Proof Pack بـ 499 ريال.' },

@@ -16,6 +16,7 @@ from api.middleware import RequestIDMiddleware
 from api.routers import (
     admin,
     agents,
+    auth,
     automation,
     autonomous,
     business,
@@ -30,6 +31,7 @@ from api.routers import (
     full_os,
     health,
     leads,
+    operator,
     outreach,
     partners,
     personal_operator,
@@ -41,6 +43,7 @@ from api.routers import (
     sales,
     sectors,
     services,
+    support,
     v3,
     webhooks,
 )
@@ -152,6 +155,9 @@ def create_app() -> FastAPI:
     app.include_router(partners.router)
     app.include_router(services.router)
     app.include_router(cards.router)
+    app.include_router(auth.router)
+    app.include_router(support.router)
+    app.include_router(operator.router)
 
     @app.get("/", tags=["root"])
     async def root() -> dict[str, object]:

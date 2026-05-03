@@ -110,6 +110,7 @@ class Settings(BaseSettings):
     gmail_allow_live_send: bool = False
     moyasar_allow_live_charge: bool = False
     linkedin_allow_auto_dm: bool = False  # ALWAYS False — LinkedIn ToS forbids automation
+    resend_allow_live_send: bool = False  # PR-BE-Auth: gate magic-link emails
 
     # ── Email ───────────────────────────────────────────────────
     email_provider: Literal["resend", "sendgrid", "smtp"] = "resend"
