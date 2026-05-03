@@ -670,6 +670,99 @@ class GrowthExperimentRecord(Base):
     created_at: Mapped[datetime] = mapped_column(default=utcnow)
 
 
+class AgentRunCostRecord(Base):
+    """Per-agent-run cost + latency + tool calls — observability ledger.
+
+    The frame is:
+        agent_run_id ↔ AgentRunRecord (existing).
+        Each AgentRunCostRecord is a sibling that adds cost / quality fields
+        without bloating the existing audit table.
+    """
+
+    __tablename__ = "agent_run_costs"
+
+    id: Mapped[str] = mapped_column(String(64), primary_key=True)
+    agent_run_id: Mapped[str | None] = mapped_column(String(64), nullable=True, index=True)
+    agent_name: Mapped[str] = mapped_column(String(64), index=True)
+    service_id: Mapped[str | None] = mapped_column(String(64), nullable=True, index=True)
+    role: Mapped[str | None] = mapped_column(String(32), nullable=True, index=True)
+    customer_id: Mapped[str | None] = mapped_column(String(64), nullable=True, index=True)
+    partner_id: Mapped[str | None] = mapped_column(String(64), nullable=True, index=True)
+    cost_estimate_usd: Mapped[float] = mapped_column(Float, default=0.0)
+    cost_estimate_sar: Mapped[float] = mapped_column(Float, default=0.0)
+    latency_ms: Mapped[int] = mapped_column(Integer, default=0)
+    input_tokens: Mapped[int] = mapped_column(Integer, default=0)
+    output_tokens: Mapped[int] = mapped_column(Integer, default=0)
+    provider: Mapped[str | None] = mapped_column(String(32), nullable=True, index=True)
+    model: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    tool_calls_count: Mapped[int] = mapped_column(Integer, default=0)
+    error_type: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    occurred_at: Mapped[datetime] = mapped_column(default=utcnow, index=True)
+    meta_json: Mapped[dict] = mapped_column("metadata", JSON, default=dict)
+
+
+class UnsafeActionRecord(Base):
+    """Every blocked / refused action — feeds Compliance dashboard.
+
+    A 'blocked' record is GOOD news: Dealix refused to do something unsafe.
+    The compliance dashboard surfaces these as proof of safety, not failure.
+    """
+
+    __tablename__ = "unsafe_action_attempts"
+
+    id: Mapped[str] = mapped_column(String(64), primary_key=True)
+    actor: Mapped[str] = mapped_column(String(64), default="system")
+    pattern: Mapped[str] = mapped_column(String(64), index=True)
+    # cold_whatsapp | linkedin_auto_dm | mass_send | scrape_linkedin |
+    # purchase_phone_lists | guaranteed_claim | live_charge_attempt | ...
+    severity: Mapped[str] = mapped_column(String(8), default="medium", index=True)  # low|medium|high
+    source_module: Mapped[str | None] = mapped_column(String(128), nullable=True)
+    customer_id: Mapped[str | None] = mapped_column(String(64), nullable=True, index=True)
+    partner_id: Mapped[str | None] = mapped_column(String(64), nullable=True, index=True)
+    blocked_reason: Mapped[str] = mapped_column(String(255), default="policy")
+    occurred_at: Mapped[datetime] = mapped_column(default=utcnow, index=True)
+    meta_json: Mapped[dict] = mapped_column("metadata", JSON, default=dict)
+
+
+class QualityMetricRecord(Base):
+    """Time-series snapshot of quality KPIs (override rate, accept rate, etc.).
+
+    Written by the daily ops orchestrator; read by the observability dashboard.
+    """
+
+    __tablename__ = "quality_metrics"
+
+    id: Mapped[str] = mapped_column(String(64), primary_key=True)
+    metric: Mapped[str] = mapped_column(String(64), index=True)
+    value: Mapped[float] = mapped_column(Float, default=0.0)
+    sample_size: Mapped[int] = mapped_column(Integer, default=0)
+    role: Mapped[str | None] = mapped_column(String(32), nullable=True, index=True)
+    snapshot_at: Mapped[datetime] = mapped_column(default=utcnow, index=True)
+    meta_json: Mapped[dict] = mapped_column("metadata", JSON, default=dict)
+
+
+class DailyOpsRunRecord(Base):
+    """One row per Daily Ops Orchestrator run.
+
+    Captures the brief output for each role + the cost + the breach/risk
+    flags so we have an auditable history of "what happened today".
+    """
+
+    __tablename__ = "daily_ops_runs"
+
+    id: Mapped[str] = mapped_column(String(64), primary_key=True)
+    run_window: Mapped[str] = mapped_column(String(16), index=True)  # morning|midday|closing|scorecard
+    started_at: Mapped[datetime] = mapped_column(default=utcnow, index=True)
+    finished_at: Mapped[datetime | None] = mapped_column(nullable=True)
+    roles_processed: Mapped[list] = mapped_column("roles_processed", JSON, default=list)
+    decisions_total: Mapped[int] = mapped_column(Integer, default=0)
+    risks_blocked_total: Mapped[int] = mapped_column(Integer, default=0)
+    cost_estimate_sar: Mapped[float] = mapped_column(Float, default=0.0)
+    error: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    output_json: Mapped[dict] = mapped_column("output_json", JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(default=utcnow)
+
+
 class ObjectionEventRecord(Base):
     """Tracks objections faced + which response variant was used + outcome.
 

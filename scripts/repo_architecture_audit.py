@@ -83,6 +83,15 @@ ALLOWED_CONTEXT_MARKERS: tuple[str, ...] = (
     "anti_claims",
     "refusal",
     "_refusal",
+    # PR-8 Observability: refusal-pattern catalog (severity rules + frozensets)
+    "ToS",
+    "would have violated",
+    "_HIGH",
+    "_MEDIUM",
+    "severity",
+    "unsafe_action",
+    "blocked_reason",
+    "BLOCKED_REASON",
 )
 
 PRODUCT_DIRS: tuple[str, ...] = (

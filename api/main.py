@@ -24,6 +24,7 @@ from api.routers import (
     cards,
     command_center,
     customer_success,
+    daily_ops,
     data,
     delivery,
     dominance,
@@ -34,6 +35,7 @@ from api.routers import (
     health,
     leads,
     negotiation,
+    observability,
     operator,
     outreach,
     partners,
@@ -174,6 +176,8 @@ def create_app() -> FastAPI:
     app.include_router(role_briefs.router)
     app.include_router(whatsapp_briefs.router)
     app.include_router(calls_router.router)
+    app.include_router(observability.router)
+    app.include_router(daily_ops.router)
 
     @app.get("/", tags=["root"])
     async def root() -> dict[str, object]:
