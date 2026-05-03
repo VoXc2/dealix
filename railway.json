@@ -9,5 +9,11 @@
     "healthcheckTimeout": 300,
     "restartPolicyType": "ON_FAILURE",
     "restartPolicyMaxRetries": 3
-  }
+  },
+  "cron": [
+    { "name": "daily-ops-morning",   "schedule": "30 5 * * *",  "command": "python scripts/cron_daily_ops.py --window morning   --quiet" },
+    { "name": "daily-ops-midday",    "schedule": "30 9 * * *",  "command": "python scripts/cron_daily_ops.py --window midday    --quiet" },
+    { "name": "daily-ops-closing",   "schedule": "30 13 * * *", "command": "python scripts/cron_daily_ops.py --window closing   --quiet" },
+    { "name": "daily-ops-scorecard", "schedule": "0 15 * * *",  "command": "python scripts/cron_daily_ops.py --window scorecard --quiet" }
+  ]
 }

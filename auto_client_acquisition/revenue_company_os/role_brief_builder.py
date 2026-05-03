@@ -26,6 +26,7 @@ from typing import Any
 SUPPORTED_ROLES: tuple[str, ...] = (
     "ceo", "sales_manager", "growth_manager", "revops",
     "customer_success", "agency_partner", "finance", "compliance",
+    "meeting_intelligence",
 )
 
 
@@ -84,5 +85,11 @@ def build(role: str, *, data: dict[str, Any]) -> dict[str, Any]:
         return build_brief(
             proof_events=data.get("proof_events") or [],
             settings=data.get("settings"),
+        )
+    if role == "meeting_intelligence":
+        from auto_client_acquisition.revenue_company_os.call_meeting_intelligence_os import build_brief
+        return build_brief(
+            data.get("meetings") or [],
+            data.get("proof_events") or [],
         )
     raise ValueError(f"unknown_role: {role}")

@@ -55,6 +55,13 @@ class CardButton:
     primary: bool = False
 
 
+_RISK_TO_BADGE = {
+    RiskLevel.HIGH: "P1",
+    RiskLevel.MEDIUM: "P2",
+    RiskLevel.LOW: "P3",
+}
+
+
 @dataclass
 class Card:
     id: str
@@ -66,6 +73,7 @@ class Card:
     proof_impact: list[str] = field(default_factory=list)
     risk: RiskLevel = RiskLevel.LOW
     risk_note_ar: str | None = None
+    risk_badge: str | None = None  # P0|P1|P2|P3 — auto-derived from risk if absent
     buttons: list[CardButton] = field(default_factory=list)
     owner: str | None = None
     expires_at: datetime | None = None
@@ -81,6 +89,12 @@ class Card:
             raise ValueError(f"card {self.id} missing Arabic title")
         if not self.why_now_ar:
             raise ValueError(f"card {self.id} missing why_now")
+        if not self.risk_badge:
+            self.risk_badge = _RISK_TO_BADGE.get(self.risk, "P3")
+        if self.risk_badge not in ("P0", "P1", "P2", "P3"):
+            raise ValueError(
+                f"card {self.id} has invalid risk_badge {self.risk_badge!r}; must be P0|P1|P2|P3"
+            )
 
     def to_dict(self) -> dict[str, Any]:
         return {
@@ -93,6 +107,7 @@ class Card:
             "proof_impact": list(self.proof_impact),
             "risk": self.risk.value,
             "risk_note_ar": self.risk_note_ar,
+            "risk_badge": self.risk_badge,
             "buttons": [
                 {"label_ar": b.label_ar, "action": b.action, "primary": b.primary}
                 for b in self.buttons

@@ -785,3 +785,32 @@ class ObjectionEventRecord(Base):
     occurred_at: Mapped[datetime] = mapped_column(default=utcnow, index=True)
     meta_json: Mapped[dict] = mapped_column("metadata", JSON, default=dict)
     created_at: Mapped[datetime] = mapped_column(default=utcnow)
+
+
+class MeetingRecord(Base):
+    """One row per meeting/call held with a customer or prospect.
+
+    Source-of-truth for the Call & Meeting Intelligence OS. Logged by sales
+    after a meeting via POST /api/v1/meetings/log. Each record optionally
+    emits a meeting_held or meeting_closed Proof Event.
+    """
+
+    __tablename__ = "meetings"
+
+    id: Mapped[str] = mapped_column(String(64), primary_key=True)
+    customer_id: Mapped[str | None] = mapped_column(String(64), nullable=True, index=True)
+    lead_id: Mapped[str | None] = mapped_column(String(64), nullable=True, index=True)
+    deal_id: Mapped[str | None] = mapped_column(String(64), nullable=True, index=True)
+    occurred_at: Mapped[datetime] = mapped_column(default=utcnow, index=True)
+    duration_minutes: Mapped[int] = mapped_column(Integer, default=0)
+    channel: Mapped[str] = mapped_column(String(32), default="meet")
+    # meet | zoom | phone | in_person | whatsapp_call
+    outcome: Mapped[str] = mapped_column(String(32), default="held", index=True)
+    # held | closed_won | closed_lost | follow_up_required | rescheduled | no_show
+    notes_ar: Mapped[str | None] = mapped_column(Text, nullable=True)
+    next_action_ar: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    follow_up_due_at: Mapped[datetime | None] = mapped_column(nullable=True, index=True)
+    proof_event_id: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    actor: Mapped[str] = mapped_column(String(64), default="sales")
+    meta_json: Mapped[dict] = mapped_column("metadata", JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(default=utcnow, index=True)

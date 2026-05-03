@@ -12,7 +12,7 @@ from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
-from api.middleware import RequestIDMiddleware
+from api.middleware import RequestIDMiddleware, RoleActionGuardMiddleware
 from api.routers import (
     admin,
     agents,
@@ -35,8 +35,10 @@ from api.routers import (
     full_os,
     health,
     leads,
+    meetings,
     negotiation,
     observability,
+    onboarding,
     operator,
     outreach,
     partners,
@@ -118,6 +120,7 @@ def create_app() -> FastAPI:
         allow_headers=["*"],
     )
     app.add_middleware(RequestIDMiddleware)
+    app.add_middleware(RoleActionGuardMiddleware)
     app.add_middleware(APIKeyMiddleware)
     setup_rate_limit(app)
 
@@ -180,6 +183,8 @@ def create_app() -> FastAPI:
     app.include_router(observability.router)
     app.include_router(daily_ops.router)
     app.include_router(founder.router)
+    app.include_router(meetings.router)
+    app.include_router(onboarding.router)
 
     @app.get("/", tags=["root"])
     async def root() -> dict[str, object]:

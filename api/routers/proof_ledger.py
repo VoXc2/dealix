@@ -29,11 +29,13 @@ from datetime import datetime, timedelta, timezone
 from typing import Any
 
 from fastapi import APIRouter, Body, HTTPException, Query
+from fastapi.responses import HTMLResponse, Response
 
 from auto_client_acquisition.revenue_company_os.proof_ledger import (
     fetch_for_customer, fetch_for_partner, fetch_for_session, record, record_batch,
 )
 from auto_client_acquisition.revenue_company_os.proof_pack_builder import build_pack
+from auto_client_acquisition.revenue_company_os.proof_pack_pdf import render_html, render_pdf
 from auto_client_acquisition.revenue_company_os.revenue_work_units import RWU_CATALOG, known_unit_types
 from db.session import get_session
 
@@ -138,3 +140,77 @@ async def session_pack(session_id: str) -> dict[str, Any]:
         "event_count": len(events),
         "pack": build_pack(events, customer_label=f"session:{session_id}"),
     }
+
+
+@router.get("/customer/{customer_id}/pack.html", response_class=HTMLResponse)
+async def customer_pack_html(
+    customer_id: str,
+    since: str | None = Query(default=None),
+) -> HTMLResponse:
+    """Printable HTML version of the Proof Pack — browser saves as PDF.
+
+    This is the primary deliverable customers can share. The browser's
+    print-to-PDF produces a perfect Arabic-RTL document on any platform.
+    """
+    since_dt = _parse_since(since, default_days=30)
+    async with get_session() as session:
+        events = await fetch_for_customer(session, customer_id, since=since_dt, limit=2000)
+    pack = build_pack(events, customer_label=customer_id)
+    html = render_html(
+        pack,
+        customer_label=customer_id,
+        event_count=len(events),
+        since=since_dt,
+    )
+    return HTMLResponse(content=html, status_code=200)
+
+
+@router.get("/customer/{customer_id}/pack.pdf")
+async def customer_pack_pdf(
+    customer_id: str,
+    since: str | None = Query(default=None),
+):
+    """Real PDF if weasyprint is installed; otherwise serves the printable HTML
+    with Content-Disposition: inline so the browser opens it for save-as-PDF.
+    Either way, the customer gets a verifiable Proof Pack they can forward."""
+    since_dt = _parse_since(since, default_days=30)
+    async with get_session() as session:
+        events = await fetch_for_customer(session, customer_id, since=since_dt, limit=2000)
+    pack = build_pack(events, customer_label=customer_id)
+    pdf_bytes = render_pdf(
+        pack,
+        customer_label=customer_id,
+        event_count=len(events),
+        since=since_dt,
+    )
+    if pdf_bytes is not None:
+        return Response(
+            content=pdf_bytes,
+            media_type="application/pdf",
+            headers={"Content-Disposition": f'inline; filename="proof_pack_{customer_id}.pdf"'},
+        )
+    html = render_html(
+        pack,
+        customer_label=customer_id,
+        event_count=len(events),
+        since=since_dt,
+    )
+    return HTMLResponse(content=html, status_code=200)
+
+
+@router.get("/partner/{partner_id}/pack.html", response_class=HTMLResponse)
+async def partner_pack_html(
+    partner_id: str,
+    since: str | None = Query(default=None),
+) -> HTMLResponse:
+    since_dt = _parse_since(since, default_days=30)
+    async with get_session() as session:
+        events = await fetch_for_partner(session, partner_id, since=since_dt, limit=5000)
+    pack = build_pack(events, customer_label=f"agency:{partner_id}")
+    html = render_html(
+        pack,
+        customer_label=f"agency:{partner_id}",
+        event_count=len(events),
+        since=since_dt,
+    )
+    return HTMLResponse(content=html, status_code=200)

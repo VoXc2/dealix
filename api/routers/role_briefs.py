@@ -30,7 +30,7 @@ from auto_client_acquisition.revenue_company_os.role_brief_builder import (
 from auto_client_acquisition.revenue_company_os.proof_pack_builder import build_pack
 from core.config.settings import get_settings
 from db.models import (
-    CustomerRecord, DealRecord, FunnelEventRecord, ObjectionEventRecord,
+    CustomerRecord, DealRecord, FunnelEventRecord, MeetingRecord, ObjectionEventRecord,
     PartnerRecord, PaymentRecord, ProofEventRecord, ServiceSessionRecord,
     SubscriptionRecord, SupportTicketRecord,
 )
@@ -184,6 +184,17 @@ async def _gather_data(role: str, *, partner_id: str | None, customer_id: str | 
             events = list((await s.execute(
                 select(ProofEventRecord).where(ProofEventRecord.occurred_at >= one_day_ago).limit(500)
             )).scalars().all())
+        out["proof_events"] = events
+
+    if role == "meeting_intelligence":
+        async with get_session() as s:
+            meetings = list((await s.execute(
+                select(MeetingRecord).where(MeetingRecord.occurred_at >= seven_days_ago).limit(500)
+            )).scalars().all())
+            events = list((await s.execute(
+                select(ProofEventRecord).where(ProofEventRecord.occurred_at >= seven_days_ago).limit(500)
+            )).scalars().all())
+        out["meetings"] = meetings
         out["proof_events"] = events
 
     if role == "ceo":

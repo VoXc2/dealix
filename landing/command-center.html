@@ -222,6 +222,19 @@
     </div>
   </section>
 
+  <!-- PR-VISION-CLOSE: WhatsApp Brief Preview (read-only render + copy/send) -->
+  <section class="dx-section" style="padding-block:1.5rem; background:#fff; border-bottom:1px solid #e2e8f0;">
+    <div class="dx-container">
+      <header style="margin-bottom:1rem;">
+        <h2 style="margin:0; font-size:1.125rem; font-weight:700;">📲 WhatsApp Brief Preview</h2>
+        <p style="margin:0.25rem 0 0; font-size:0.8125rem; color:#475569;">
+          معاينة ما سيُرسَل عبر WhatsApp. الإرسال الفعلي مُعطَّل افتراضياً (gate=false). استخدم زر النسخ لإلصاق يدوي.
+        </p>
+      </header>
+      <div data-whatsapp-preview data-default-role="ceo"></div>
+    </div>
+  </section>
+
   <!-- PR-COMMERCIAL-CLOSE: Daily Role Brief (CEO/Sales/Growth/RevOps/CS/Finance/Compliance) -->
   <section class="dx-section dx-section--muted" style="padding-block:2rem;">
     <div class="dx-container">
@@ -645,6 +658,7 @@
   <script src="assets/js/cards.js"></script>
   <script src="assets/js/role-briefs.js"></script>
   <script src="assets/js/command-center-widgets.js"></script>
+  <script src="assets/js/whatsapp-preview.js"></script>
   <script>
     if (window.DealixAnalytics) DealixAnalytics.pageView('command-center');
   </script>

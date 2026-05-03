@@ -176,3 +176,75 @@ def _propose_next_experiment(by_unit: Counter[str]) -> str:
     if by_unit.get("proof_generated", 0) > 0:
         return "اختبر عرض Executive Growth OS فور تسليم Proof Pack الأول."
     return "اختبر تغيير الافتتاحية لـ 'Proof خلال 7 أيام' في 50% من الـ drafts."
+
+
+# ── Auto-loop (called by daily-ops closing window) ──────────────────
+
+
+def _new_experiment_id() -> str:
+    import uuid
+    return f"sgx_{uuid.uuid4().hex[:14]}"
+
+
+async def loop_once(today: _dt.date | None = None) -> dict[str, Any]:
+    """Idempotent self-growth tick: ensure today has one experiment recorded.
+
+    - If a GrowthExperimentRecord already exists for today's date in this
+      ISO week, return {"skipped": True, ...} without writing.
+    - Otherwise build today's plan, persist it as a GrowthExperimentRecord
+      with status="planned" + the daily plan dict in meta_json.
+
+    Pure ORM. Caller commits via the daily-ops orchestrator's session.
+    Used by scripts/cron_daily_ops.py at the closing window.
+    """
+    from sqlalchemy import select
+
+    from db.models import GrowthExperimentRecord
+    from db.session import get_session
+
+    today = today or _dt.date.today()
+    plan = build_daily_plan(today)
+
+    async with get_session() as session:
+        existing = (await session.execute(
+            select(GrowthExperimentRecord).where(
+                GrowthExperimentRecord.week_iso == plan.iso_week,
+                GrowthExperimentRecord.segment == plan.focus_segment_id,
+            )
+        )).scalar_one_or_none()
+
+        if existing is not None:
+            return {
+                "skipped": True,
+                "reason": "experiment_already_planned_this_week_for_segment",
+                "experiment_id": existing.id,
+                "week_iso": existing.week_iso,
+                "segment": existing.segment,
+            }
+
+        row = GrowthExperimentRecord(
+            id=_new_experiment_id(),
+            week_iso=plan.iso_week,
+            hypothesis_ar=plan.experiment_hypothesis_ar,
+            segment=plan.focus_segment_id,
+            channel="multi",  # plan covers 3 channels
+            message_ar=" || ".join(plan.message_variants_ar),
+            status="planned",
+            n_targets_planned=sum(int(c.get("count") or 0) for c in plan.channel_plan),
+            meta_json={
+                "plan": daily_plan_to_dict(plan),
+                "auto_recorded": True,
+                "source": "self_growth_mode.loop_once",
+            },
+        )
+        session.add(row)
+        await session.commit()
+
+    return {
+        "skipped": False,
+        "experiment_id": row.id,
+        "week_iso": row.week_iso,
+        "segment": row.segment,
+        "n_targets_planned": row.n_targets_planned,
+        "hypothesis_ar": row.hypothesis_ar,
+    }

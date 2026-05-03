@@ -7,6 +7,8 @@ Each unit is a small, verifiable thing Dealix did on behalf of a customer:
   - draft_created            — one Arabic outbound draft prepared
   - approval_collected       — one human approval recorded
   - meeting_drafted          — one meeting brief / scheduling draft
+  - meeting_held             — one customer meeting held (logged outcome)
+  - meeting_closed           — one meeting that closed a deal
   - followup_created         — one follow-up scheduled
   - risk_blocked             — one unsafe outbound blocked / channel protected
   - partner_suggested        — one partner shortlist entry
@@ -38,6 +40,8 @@ RWU_CATALOG: tuple[RWUDef, ...] = (
     RWUDef("draft_created",         "مسودة رسالة جاهزة",          0.7,  100.0),
     RWUDef("approval_collected",    "موافقة بشرية مُسجَّلة",       0.6,    0.0),
     RWUDef("meeting_drafted",       "اجتماع مُجهَّز",              1.2, 1000.0),
+    RWUDef("meeting_held",          "اجتماع تم عقده",             1.5,  800.0),
+    RWUDef("meeting_closed",        "اجتماع أغلق صفقة",           3.0, 5000.0),
     RWUDef("followup_created",      "متابعة مُجدوَلَة",            0.4,   75.0),
     RWUDef("risk_blocked",          "مخاطرة تم منعها",            1.0,  300.0),  # protecting future revenue
     RWUDef("partner_suggested",     "شريك مُقترَح",               0.8,  500.0),
