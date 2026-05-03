@@ -4,6 +4,8 @@
 
 **النجم الشمالي (ماذا نفوز وكيف نقيسه):** [strategic/NORTH_STAR_AR.md](strategic/NORTH_STAR_AR.md)
 
+**رحلة العميل الكاملة (جميع الجوانب — عربي):** [CUSTOMER_FULL_OPS_JOURNEY_AR.md](CUSTOMER_FULL_OPS_JOURNEY_AR.md)
+
 **قاعدة الإطلاق العام:** راجع [LAUNCH_GATES.md](LAUNCH_GATES.md) — لا تُعلن «إطلاقاً كاملاً» حتى تُستوفى القاعدة المذكورة هناك (≥24/30 بوابات + عناصر P0). قائمة عامة إضافية: [PUBLIC_LAUNCH_CHECKLIST.md](PUBLIC_LAUNCH_CHECKLIST.md).
 
 ---
@@ -23,6 +25,7 @@
 | استراتيجية الفئة | [`strategic/CATEGORY_DESIGN_AND_MASTER_OPERATING_SYSTEM_AR.md`](strategic/CATEGORY_DESIGN_AND_MASTER_OPERATING_SYSTEM_AR.md)، [`strategic/SAUDI_REVENUE_EXECUTION_OS_RADARS_AR.md`](strategic/SAUDI_REVENUE_EXECUTION_OS_RADARS_AR.md)، [`strategic/NORTH_STAR_AR.md`](strategic/NORTH_STAR_AR.md)، [`strategic/DEALIX_CATEGORY_EXECUTIVE_SUMMARY_EN.md`](strategic/DEALIX_CATEGORY_EXECUTIVE_SUMMARY_EN.md) |
 | v3 / Revenue Graph | [`DEALIX_V3_AUTONOMOUS_REVENUE_OS.md`](DEALIX_V3_AUTONOMOUS_REVENUE_OS.md)، [`../auto_client_acquisition/revenue_graph/`](../auto_client_acquisition/revenue_graph/)، [`../api/routers/command_center.py`](../api/routers/command_center.py) |
 | GTM | [`GTM_PLAYBOOK.md`](GTM_PLAYBOOK.md)، [`ops/LAUNCH_DAY_ONE_KIT.md`](ops/LAUNCH_DAY_ONE_KIT.md)، [`OFFER_LADDER.md`](OFFER_LADDER.md)، [`COMPETITIVE_POSITIONING.md`](COMPETITIVE_POSITIONING.md) |
+| وصول العميل (Full Ops journey) | [`CUSTOMER_FULL_OPS_JOURNEY_AR.md`](CUSTOMER_FULL_OPS_JOURNEY_AR.md) |
 | فوترة يدوية | [`ops/MANUAL_PAYMENT_SOP.md`](ops/MANUAL_PAYMENT_SOP.md)، [`BILLING_MOYASAR_RUNBOOK.md`](BILLING_MOYASAR_RUNBOOK.md) |
 | ما بعد الإطلاق (لا تُبنى قبل الإثبات) | [`ops/POST_LAUNCH_BACKLOG.md`](ops/POST_LAUNCH_BACKLOG.md) |
 
@@ -111,3 +114,4 @@
 | النجم الشمالي والقياس؟ | [strategic/NORTH_STAR_AR.md](strategic/NORTH_STAR_AR.md) |
 | هل نحن جاهزون تقنياً للإعلان؟ | [LAUNCH_GATES.md](LAUNCH_GATES.md) |
 | قائمة الإطلاق العام؟ | [PUBLIC_LAUNCH_CHECKLIST.md](PUBLIC_LAUNCH_CHECKLIST.md) |
+| ماذا يرى العميل من أول لمسة إلى Proof؟ | [CUSTOMER_FULL_OPS_JOURNEY_AR.md](CUSTOMER_FULL_OPS_JOURNEY_AR.md) |
