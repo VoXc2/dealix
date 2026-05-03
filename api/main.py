@@ -48,6 +48,7 @@ from api.routers import (
     proof_ledger,
     prospect,
     prospects,
+    role_aliases,
     public,
     revenue,
     revenue_os,
@@ -189,6 +190,7 @@ def create_app() -> FastAPI:
     app.include_router(onboarding.router)
     app.include_router(payments.router)
     app.include_router(prospects.router)
+    app.include_router(role_aliases.router)
 
     @app.get("/", tags=["root"])
     async def root() -> dict[str, object]:
