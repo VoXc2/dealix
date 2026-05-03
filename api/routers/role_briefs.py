@@ -50,17 +50,40 @@ async def daily(
     partner_id: str | None = Query(default=None),
     customer_id: str | None = Query(default=None),
 ) -> dict[str, Any]:
+    """Defensive: never 500. Captures gather/build errors into _errors so
+    the consumer (CLI / dashboard) keeps working with a degraded brief
+    instead of an opaque server error."""
     role = role.lower()
     if role not in SUPPORTED_ROLES:
         raise HTTPException(status_code=400, detail=f"unknown_role: {role}")
 
-    data = await _gather_data(role, partner_id=partner_id, customer_id=customer_id)
-    brief = build(role, data=data)
+    errors: dict[str, str] = {}
+    try:
+        data = await _gather_data(role, partner_id=partner_id, customer_id=customer_id)
+    except Exception as exc:  # noqa: BLE001
+        errors["_gather_data"] = f"{type(exc).__name__}: {str(exc)[:300]}"
+        data = {}
 
-    # Re-rank decisions through the priority engine for a stable Top-3.
-    decisions = brief.get("top_decisions") or []
-    brief["top_decisions"] = rank(decisions, top_n=3)
+    try:
+        brief = build(role, data=data)
+    except Exception as exc:  # noqa: BLE001
+        errors["build"] = f"{type(exc).__name__}: {str(exc)[:300]}"
+        brief = {
+            "role": role,
+            "brief_type": "degraded",
+            "summary": {},
+            "top_decisions": [],
+            "blocked_today_ar": [],
+        }
 
+    try:
+        decisions = brief.get("top_decisions") or []
+        brief["top_decisions"] = rank(decisions, top_n=3)
+    except Exception as exc:  # noqa: BLE001
+        errors["rank"] = f"{type(exc).__name__}: {str(exc)[:200]}"
+
+    if errors:
+        brief["_errors"] = errors
     return brief
 
 
