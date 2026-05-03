@@ -136,6 +136,22 @@ _COLD_BLAST_AR = (
     "بالكوم",          # "in bulk" colloquial
     "يشطح",            # Saudi slang: "let the bot go wild"
     "خل البوت يكلم",   # "let the bot talk to..."
+    "البوت يفتح محادثات",  # "bot opens conversations"
+    "البوت يفتح",          # bot initiates
+    "ارمي رسايل",          # "I throw messages" (mass send slang)
+    "ارمي رساي",
+    "رساي",                # Saudi colloquial "messages"
+    "ارمي واتساب",
+    "كل اللي عندي",        # "everyone I have"
+    "على كل اللي",         # "on everyone who"
+    "ارسل لهم كلهم",       # "send to all of them"
+    "ارسل للكل",           # "send to everyone"
+    "ارسلهم كلهم",
+    "حتى لو ما وافقوا",    # "even if they didn't agree"
+    "حتى لو ما وافق",
+    "ما يعرفوني",          # "people who don't know me"
+    "ما يعرفني",
+    "ناس ما يعرف",         # "people who don't know"
 )
 
 _COLD_BLAST_EN = (
@@ -185,9 +201,15 @@ _AUTO_DM_AR = (
     "خل البوت يكلم الناس",
     "البوت يشطح",
     "البوت يرسل بدون",
+    "البوت يفتح محادثات",      # bot initiates conversations
+    "البوت يفتح محادثات واتساب",
+    "البوت يكلم ناس",
     "ارسل تلقائي",
     "تلقائي للناس",
     "ارسل للناس بدون",
+    "ناس ما يعرفوني",          # people who don't know me
+    "ناس ما يعرفني",
+    "ما يعرفوني",
 )
 
 _AUTO_DM_EN = (
