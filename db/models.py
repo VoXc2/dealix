@@ -174,7 +174,12 @@ class PartnerRecord(Base):
 
 
 class CustomerRecord(Base):
-    """Customer = subscribed paying company. One per closed deal."""
+    """Customer = subscribed paying company. One per closed deal.
+
+    Carries the **Company Brain** — the 12 fields below that personalize every
+    role brief, draft, and Proof Pack to this specific customer's offer, ICP,
+    tone, allowed channels, and consent state.
+    """
 
     __tablename__ = "customers"
 
@@ -189,6 +194,25 @@ class CustomerRecord(Base):
     daily_report_sent: Mapped[int] = mapped_column(default=0)
     nps_score: Mapped[int | None] = mapped_column(nullable=True)
     churn_risk: Mapped[str] = mapped_column(String(16), default="low")  # low/medium/high
+    # ── PR-OS-FOUNDATION 1.7: Company Brain (12 fields) ──
+    company_name: Mapped[str] = mapped_column(String(255), default="")
+    website: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    sector: Mapped[str | None] = mapped_column(String(64), nullable=True, index=True)
+    city: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    offer_ar: Mapped[str | None] = mapped_column(Text, nullable=True)
+    ideal_customer_ar: Mapped[str | None] = mapped_column(Text, nullable=True)
+    average_deal_value_sar: Mapped[float] = mapped_column(Float, default=0.0)
+    approved_channels: Mapped[list] = mapped_column(
+        JSON, default=lambda: ["linkedin_manual", "email_draft"]
+    )
+    blocked_channels: Mapped[list] = mapped_column(
+        JSON, default=lambda: ["cold_whatsapp", "linkedin_auto_dm"]
+    )
+    tone_ar: Mapped[str] = mapped_column(String(64), default="professional_saudi_arabic")
+    forbidden_claims: Mapped[list] = mapped_column(
+        JSON, default=lambda: ["نضمن", "guaranteed"]
+    )
+    current_service_id: Mapped[str | None] = mapped_column(String(64), nullable=True)
     created_at: Mapped[datetime] = mapped_column(default=utcnow)
     updated_at: Mapped[datetime] = mapped_column(default=utcnow, onupdate=utcnow)
 
@@ -819,6 +843,17 @@ class ProspectRecord(Base):
     expected_value_sar: Mapped[float] = mapped_column(Float, default=499.0)
     deal_id: Mapped[str | None] = mapped_column(String(64), nullable=True, index=True)
     customer_id: Mapped[str | None] = mapped_column(String(64), nullable=True, index=True)
+    # ── PR-OS-FOUNDATION 1.1: Compliance / source-policy fields ──
+    source_type: Mapped[str] = mapped_column(String(32), default="manual", index=True)
+    # warm_linkedin | referral | inbound_wa | website_form | agency_partner | manual
+    consent_status: Mapped[str] = mapped_column(String(16), default="none", index=True)
+    # none | opt_in_recorded | opt_in_expired | opt_out
+    consent_source: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    last_customer_inbound_at: Mapped[datetime | None] = mapped_column(nullable=True)
+    allowed_channels: Mapped[list] = mapped_column(JSON, default=lambda: ["linkedin_manual"])
+    blocked_channels: Mapped[list] = mapped_column(JSON, default=lambda: ["whatsapp_outbound"])
+    risk_reason: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    human_approval_required: Mapped[bool] = mapped_column(Boolean, default=True)
     actor: Mapped[str] = mapped_column(String(64), default="founder")
     meta_json: Mapped[dict] = mapped_column("metadata", JSON, default=dict)
     created_at: Mapped[datetime] = mapped_column(default=utcnow, index=True)

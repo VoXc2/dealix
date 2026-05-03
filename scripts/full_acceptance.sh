@@ -101,6 +101,11 @@ BACKEND_PATHS=(
   "/api/v1/payments/state"
   "/api/v1/meetings/brief?role=meeting_intelligence"
   "/api/v1/proof-ledger/units"
+  "/api/v1/services/growth_starter/contract"
+  "/api/v1/actions/pending"
+  "/api/v1/actions/funnel"
+  "/api/v1/learning/weekly"
+  "/api/v1/companies"
 )
 for path in "${BACKEND_PATHS[@]}"; do
   code=$(curl -s -o /dev/null -w "%{http_code}" "$BASE_URL$path")
@@ -131,6 +136,65 @@ if [[ "$SPAWN_FRONT" == true ]]; then
   done
 else
   hdr "2. FRONTEND GATE — skipped (FRONT_URL is external)"
+fi
+
+# ── 6-Layer Verification (PR-OS-FOUNDATION 1.8) ──────────────────
+hdr "2.5 SIX-LAYER VERIFICATION"
+
+# Layer 2 — Empty File check (allow __init__.py — legitimate Python package markers)
+empty_files=$(find api auto_client_acquisition landing scripts docs tests \
+                -type f -size 0 2>/dev/null \
+                | grep -v __pycache__ \
+                | grep -v '/__init__\.py$' || true)
+if [[ -z "$empty_files" ]]; then
+  ok "Layer 2: no empty files"
+else
+  fail "Layer 2: empty files: $empty_files"
+fi
+
+# Layer 3 — Imports check
+if python -c "
+from api.main import app
+from api.routers import operator, prospects, payments, proof_ledger, role_briefs, whatsapp_briefs, services, meetings, onboarding, companies, actions, learning
+from auto_client_acquisition.revenue_company_os import role_brief_builder, proof_pack_builder, revenue_work_units, role_action_policy, self_growth_mode
+from auto_client_acquisition.compliance import forbidden_claims
+" 2>/dev/null; then
+  ok "Layer 3: imports clean"
+else
+  fail "Layer 3: import failure (run python -c '...' to see)"
+fi
+
+# Layer 4 — Router registration check
+if python "$REPO/scripts/check_routes_registered.py" > /tmp/dx_routes.log 2>&1; then
+  ok "Layer 4: $(tail -1 /tmp/dx_routes.log)"
+else
+  fail "Layer 4: $(cat /tmp/dx_routes.log | head -3)"
+fi
+
+# Layer 5 — Secrets scan. Exclude xxx/placeholder/example tokens and the
+# regex pattern itself (which appears literally in this script).
+# Real secrets are 20+ chars alphanumeric — placeholder tokens like
+# sk_live_xxx are short + look fake.
+secrets_found=$(grep -RniE '(sk_live_[a-zA-Z0-9]{20,}|ghp_[a-zA-Z0-9]{20,}|MOYASAR_SECRET=sk_live_[a-zA-Z0-9]{20,})' \
+                  --exclude-dir=.git --exclude-dir=__pycache__ --exclude-dir=node_modules \
+                  --exclude=".env*" --exclude="*.example.*" --exclude="*.md" \
+                  --exclude="full_acceptance.sh" --exclude="dealix_cli.py" --exclude="payments.py" \
+                  api auto_client_acquisition scripts 2>/dev/null || true)
+if [[ -z "$secrets_found" ]]; then
+  ok "Layer 5: no live secrets in code"
+else
+  fail "Layer 5: secrets found: $(echo "$secrets_found" | head -3)"
+fi
+
+# Layer 1 — Feature inventory (only if doc exists)
+if [[ -f "$REPO/docs/FEATURE_INVENTORY.md" ]]; then
+  if python "$REPO/scripts/feature_inventory.py" > /tmp/dx_inv.log 2>&1; then
+    ok "Layer 1: $(tail -1 /tmp/dx_inv.log)"
+  else
+    fail "Layer 1: feature_inventory failed: $(tail -3 /tmp/dx_inv.log)"
+  fi
+else
+  fail "Layer 1: docs/FEATURE_INVENTORY.md missing"
 fi
 
 # ── 3. Safety Gate ────────────────────────────────────────────────
@@ -187,7 +251,7 @@ PID=$(echo "$P" | python -c "import sys,json; print(json.load(sys.stdin).get('id
 [[ -n "$PID" ]] && ok "[1/8] prospect created: $PID" || { fail "[1/8] create prospect failed"; PID=""; }
 
 if [[ -n "$PID" ]]; then
-  for stage in messaged replied meeting pilot; do
+  for stage in messaged replied meeting_booked pilot_offered; do
     A=$(curl -s -X POST "$BASE_URL/api/v1/prospects/$PID/advance" \
         -H 'Content-Type: application/json' -d "{\"target_status\":\"$stage\"}")
     TO=$(echo "$A" | python -c "import sys,json; d=json.load(sys.stdin); print(d.get('to',''))")
@@ -207,10 +271,13 @@ if [[ -n "$PID" ]]; then
     [[ "$STATUS" == "paid" ]] && ok "[7/8] payment confirmed (paid)" || fail "payment confirm failed (status=$STATUS)"
   fi
 
-  CW=$(curl -s -X POST "$BASE_URL/api/v1/prospects/$PID/advance" \
-       -H 'Content-Type: application/json' -d '{"target_status":"closed_won"}')
-  CW_TO=$(echo "$CW" | python -c "import sys,json; print(json.load(sys.stdin).get('to',''))")
-  [[ "$CW_TO" == "closed_won" ]] && ok "[8/8] advance → closed_won (RWU: meeting_closed)" || fail "closed_won failed"
+  # Advance through invoice_sent → paid_or_committed → closed_won
+  for final in invoice_sent paid_or_committed closed_won; do
+    R=$(curl -s -X POST "$BASE_URL/api/v1/prospects/$PID/advance" \
+         -H 'Content-Type: application/json' -d "{\"target_status\":\"$final\"}")
+    TO=$(echo "$R" | python -c "import sys,json; print(json.load(sys.stdin).get('to',''))")
+    [[ "$TO" == "$final" ]] && ok "advance → $final" || fail "advance → $final failed (got $TO)"
+  done
 
   # Proof Pack HTML must render
   PACK_HTML=$(curl -s "$BASE_URL/api/v1/proof-ledger/customer/$PID/pack.html")

@@ -3,6 +3,8 @@ Revenue Work Units (RWUs) — the atomic unit of value Dealix produces.
 
 Each unit is a small, verifiable thing Dealix did on behalf of a customer:
   - opportunity_created      — one new qualified prospect
+  - prospect_qualified       — one prospect passed qualification check
+  - diagnostic_delivered     — one diagnostic packet delivered to prospect
   - target_ranked            — one prospect scored + prioritized
   - draft_created            — one Arabic outbound draft prepared
   - approval_collected       — one human approval recorded
@@ -36,6 +38,8 @@ class RWUDef:
 
 RWU_CATALOG: tuple[RWUDef, ...] = (
     RWUDef("opportunity_created",   "فرصة جديدة",                 1.0,  500.0),
+    RWUDef("prospect_qualified",    "فرصة مؤهَّلة",               0.6,  100.0),
+    RWUDef("diagnostic_delivered",  "تشخيص مُسلَّم",              1.5,  250.0),
     RWUDef("target_ranked",         "هدف مُرتَّب بحسب الأولوية",  0.5,   50.0),
     RWUDef("draft_created",         "مسودة رسالة جاهزة",          0.7,  100.0),
     RWUDef("approval_collected",    "موافقة بشرية مُسجَّلة",       0.6,    0.0),

@@ -64,6 +64,39 @@ async def record(
     if risk_level not in ("low", "medium", "high"):
         raise ValueError(f"risk_level must be low/medium/high, got {risk_level!r}")
 
+    # PR-OS-FOUNDATION 1.9 — Forbidden Claims at draft generation.
+    # If meta contains a draft_text, scan it. If unsafe, REPLACE the
+    # incoming event with a `risk_blocked` event so the ledger captures
+    # the attempt + the block. Prevents the unsafe content from being
+    # persisted, while still recording the audit trail.
+    if meta and meta.get("draft_text") and unit_type in (
+        "draft_created", "meeting_drafted", "followup_created",
+        "payment_link_drafted", "outreach_completed",
+    ):
+        from auto_client_acquisition.compliance.forbidden_claims import (
+            ForbiddenClaimError, assert_safe,
+        )
+        try:
+            assert_safe(str(meta["draft_text"]))
+        except ForbiddenClaimError as exc:
+            log.warning(
+                "draft_blocked_forbidden_claim claim=%s actor=%s customer_id=%s",
+                exc.claim, actor, customer_id,
+            )
+            # Re-route as a risk_blocked event with high risk — the ledger
+            # records the attempt without persisting the unsafe content.
+            unit_type = "risk_blocked"
+            risk_level = "high"
+            label_ar = f"draft تم حظره — {exc.claim}"
+            meta = {
+                **{k: v for k, v in meta.items() if k != "draft_text"},
+                "blocked_claim": exc.claim,
+                "blocked_snippet": exc.snippet[:200],
+                "original_unit_type": "draft_created",  # for audit
+            }
+            approval_required = False
+            approved = True  # the block itself is approved by policy
+
     row = ProofEventRecord(
         id=_new_id(),
         customer_id=customer_id,

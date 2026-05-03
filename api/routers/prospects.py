@@ -33,18 +33,52 @@ router = APIRouter(prefix="/api/v1/prospects", tags=["prospects"])
 
 
 _STATUS_LADDER = (
-    "identified", "messaged", "replied", "meeting",
-    "pilot", "closed_won", "closed_lost",
+    # PR-OS-FOUNDATION 1.2 — 14 stages (was 7). Forward-only enforced below.
+    "new",
+    "qualified",
+    "messaged",
+    "replied",
+    "diagnostic_sent",
+    "meeting_booked",
+    "pilot_offered",
+    "invoice_sent",
+    "paid_or_committed",
+    "closed_won",
+    "proof_delivered",
+    "retainer_offered",
+    "retainer_won",
+    "closed_lost",
 )
-_TERMINAL = {"closed_won", "closed_lost"}
+_TERMINAL = {"closed_lost", "retainer_won"}
+# Backwards-compat aliases — old short names map to new ladder so existing
+# CLI/tests/data continue to work without migration churn.
+_STATUS_ALIAS = {
+    "identified": "new",
+    "meeting":    "meeting_booked",
+    "pilot":      "pilot_offered",
+}
 
 _STATUS_TO_RWU = {
-    "messaged":  "draft_created",        # outbound message went out
-    "replied":   "opportunity_created",  # they engaged → real opportunity
-    "meeting":   "meeting_drafted",      # call booked
-    "pilot":     "approval_collected",   # they said yes to Pilot
-    "closed_won": "meeting_closed",      # paid → emit closed RWU
+    "qualified":         "prospect_qualified",
+    "messaged":          "draft_created",
+    "replied":           "opportunity_created",
+    "diagnostic_sent":   "diagnostic_delivered",
+    "meeting_booked":    "meeting_drafted",
+    "pilot_offered":     "payment_link_drafted",
+    "invoice_sent":      "payment_link_drafted",
+    "paid_or_committed": "approval_collected",
+    "closed_won":        "meeting_closed",
+    "proof_delivered":   "proof_generated",
+    "retainer_offered":  "payment_link_drafted",
+    "retainer_won":      "meeting_closed",
 }
+
+
+def _resolve_status(s: str | None) -> str | None:
+    """Map legacy short status names to the v2 ladder."""
+    if s is None:
+        return None
+    return _STATUS_ALIAS.get(s, s)
 
 
 def _now() -> datetime:
@@ -88,6 +122,18 @@ def _serialize(p: ProspectRecord) -> dict[str, Any]:
         "expected_value_sar": p.expected_value_sar,
         "deal_id": p.deal_id,
         "customer_id": p.customer_id,
+        # PR-OS-FOUNDATION 1.1 — compliance fields
+        "source_type": getattr(p, "source_type", "manual"),
+        "consent_status": getattr(p, "consent_status", "none"),
+        "consent_source": getattr(p, "consent_source", None),
+        "last_customer_inbound_at": (
+            p.last_customer_inbound_at.isoformat()
+            if getattr(p, "last_customer_inbound_at", None) else None
+        ),
+        "allowed_channels": list(getattr(p, "allowed_channels", []) or []),
+        "blocked_channels": list(getattr(p, "blocked_channels", []) or []),
+        "risk_reason": getattr(p, "risk_reason", None),
+        "human_approval_required": bool(getattr(p, "human_approval_required", True)),
         "created_at": p.created_at.isoformat() if p.created_at else None,
         "updated_at": p.updated_at.isoformat() if p.updated_at else None,
     }
@@ -239,6 +285,10 @@ async def update(prospect_id: str, body: dict[str, Any] = Body(...)) -> dict[str
         "name", "company", "role_title", "linkedin_url", "contact_email",
         "contact_phone", "sector", "city", "relationship_type",
         "next_step_ar", "notes_ar", "expected_value_sar", "deal_id",
+        # PR-OS-FOUNDATION 1.1 — compliance fields
+        "source_type", "consent_status", "consent_source",
+        "allowed_channels", "blocked_channels", "risk_reason",
+        "human_approval_required",
     }
     async with get_session() as session:
         row = (await session.execute(
@@ -265,27 +315,59 @@ async def advance(prospect_id: str, body: dict[str, Any] = Body(default={})) -> 
         next_step_due_at: ISO datetime
     Emits a Proof Event when status implies one (see _STATUS_TO_RWU).
     """
-    target = (body or {}).get("target_status")
+    target = _resolve_status((body or {}).get("target_status"))
+    allow_skip = bool((body or {}).get("allow_skip", False))
     async with get_session() as session:
         row = (await session.execute(
             select(ProspectRecord).where(ProspectRecord.id == prospect_id)
         )).scalar_one_or_none()
         if row is None:
             raise HTTPException(status_code=404, detail="prospect_not_found")
-        if row.status in _TERMINAL:
-            raise HTTPException(status_code=400, detail=f"prospect_already_terminal:{row.status}")
+
+        # Resolve current status against alias map so legacy data still moves.
+        current = _resolve_status(row.status) or "new"
+        if current != row.status:
+            row.status = current  # heal stale legacy value
+
+        if current in _TERMINAL:
+            raise HTTPException(status_code=400, detail=f"prospect_already_terminal:{current}")
 
         if target:
             if target not in _STATUS_LADDER:
                 raise HTTPException(status_code=400, detail=f"unknown_target_status:{target}")
+            try:
+                cur_idx = _STATUS_LADDER.index(current)
+                tgt_idx = _STATUS_LADDER.index(target)
+            except ValueError as exc:
+                raise HTTPException(status_code=500, detail=f"ladder_lookup_failed:{exc}") from exc
+            # closed_lost is reachable from any non-terminal stage
+            if target != "closed_lost":
+                if tgt_idx <= cur_idx:
+                    raise HTTPException(
+                        status_code=400,
+                        detail=f"cannot_move_backward:{current}->{target}",
+                    )
+                # Allow up to 1-stage skip (delta of 2). Larger jumps need
+                # allow_skip=True. This makes new→messaged (skip qualified)
+                # and replied→meeting_booked (skip diagnostic_sent) valid by
+                # default — both are common in warm-intro flows.
+                if tgt_idx - cur_idx > 2 and not allow_skip:
+                    raise HTTPException(
+                        status_code=400,
+                        detail=(
+                            f"jump_too_large:{current}->{target} "
+                            f"(skips {tgt_idx - cur_idx - 1} stage(s); "
+                            "pass allow_skip=true to override)"
+                        ),
+                    )
             new_status = target
         else:
-            idx = _STATUS_LADDER.index(row.status)
+            idx = _STATUS_LADDER.index(current)
             if idx + 1 >= len(_STATUS_LADDER):
                 raise HTTPException(status_code=400, detail="already_at_end")
             new_status = _STATUS_LADDER[idx + 1]
 
-        old_status = row.status
+        old_status = current
         row.status = new_status
 
         # Side-effect timestamps
@@ -293,9 +375,11 @@ async def advance(prospect_id: str, body: dict[str, Any] = Body(default={})) -> 
             row.last_message_at = _now()
         if new_status == "replied":
             row.last_reply_at = _now()
+            row.last_customer_inbound_at = _now()  # PR-OS-FOUNDATION 1.1
 
         # On closed_won, auto-create CustomerRecord so Proof Pack and CS OS
         # see this prospect as a real customer. Idempotent: skip if already linked.
+        # Pre-populates Company Brain fields from prospect data.
         if new_status == "closed_won" and not row.customer_id:
             cust = CustomerRecord(
                 id=f"cus_{uuid.uuid4().hex[:14]}",
@@ -306,6 +390,15 @@ async def advance(prospect_id: str, body: dict[str, Any] = Body(default={})) -> 
                 pilot_end_at=_now() + timedelta(days=7),
                 success_metric=f"Pilot 499 for {row.company or row.name}",
                 churn_risk="low",
+                # Company Brain seed (PR-OS-FOUNDATION 1.7)
+                company_name=row.company or row.name or "—",
+                website=None,
+                sector=row.sector,
+                city=row.city,
+                average_deal_value_sar=float(row.expected_value_sar or 0),
+                approved_channels=list(row.allowed_channels or ["linkedin_manual", "email_draft"]),
+                blocked_channels=list(row.blocked_channels or ["cold_whatsapp", "linkedin_auto_dm"]),
+                current_service_id="growth_starter",
             )
             session.add(cust)
             row.customer_id = cust.id

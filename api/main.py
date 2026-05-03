@@ -14,6 +14,7 @@ from fastapi.responses import JSONResponse
 
 from api.middleware import RequestIDMiddleware, RoleActionGuardMiddleware
 from api.routers import (
+    actions,
     admin,
     agents,
     auth,
@@ -23,6 +24,7 @@ from api.routers import (
     calls as calls_router,
     cards,
     command_center,
+    companies,
     customer_success,
     daily_ops,
     data,
@@ -44,6 +46,7 @@ from api.routers import (
     partners,
     payments,
     personal_operator,
+    learning,
     pricing,
     proof_ledger,
     prospect,
@@ -190,6 +193,9 @@ def create_app() -> FastAPI:
     app.include_router(onboarding.router)
     app.include_router(payments.router)
     app.include_router(prospects.router)
+    app.include_router(companies.router)
+    app.include_router(actions.router)
+    app.include_router(learning.router)
     app.include_router(role_aliases.router)
 
     @app.get("/", tags=["root"])

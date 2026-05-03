@@ -21,6 +21,11 @@ Commands:
     dealix gates                    Print all 8 live-action gates + their status
     dealix activate-payments        Print exact env-var changes to flip Moyasar live charge
     dealix first-customer-flow      End-to-end demo: prospect→pilot→invoice→Proof Pack
+    dealix approvals                List + interactively approve/reject pending actions
+    dealix workspace <cus_id>       Print customer workspace
+    dealix brain <cus_id>           Print Company Brain (12 fields + proof_summary)
+    dealix learning weekly          Show this week's learning report
+    dealix verify                   Run full_acceptance.sh + 6-layer audit
     dealix help                     Show this text
 
 Configuration:
@@ -544,6 +549,128 @@ def cmd_first_customer_flow(_args) -> int:
     return 0
 
 
+def cmd_approvals(_args) -> int:
+    """List pending actions + interactively approve/reject."""
+    print(_hdr("APPROVAL QUEUE"))
+    out = _fetch("/api/v1/actions/pending")
+    if not out:
+        print(_c("✗ failed to fetch pending actions", "red"))
+        return 1
+    items = out.get("items") or []
+    if not items:
+        print(_c("  ✓ inbox zero — no pending approvals", "green"))
+        return 0
+    print(_kv("pending", len(items), color="yellow"))
+    for i, item in enumerate(items, start=1):
+        print(_c(f"\n[{i}/{len(items)}] {item.get('label_ar') or item.get('unit_type')}", "bold"))
+        print(f"  customer: {item.get('customer_id') or '—'}")
+        print(f"  age:      {item.get('age_hours', 0):.1f}h   risk: {item.get('risk_level')}")
+        if item.get("revenue_impact_sar"):
+            print(f"  revenue:  {item['revenue_impact_sar']:.0f} SAR")
+        if item.get("meta", {}).get("draft_text"):
+            preview = str(item["meta"]["draft_text"])[:120]
+            print(f"  draft:    {_c(preview, 'dim')}")
+        print("  [a]pprove  [r]eject  [s]kip  [q]uit")
+        try:
+            choice = sys.stdin.readline().strip().lower() or "s"
+        except (KeyboardInterrupt, EOFError):
+            print()
+            return 0
+        eid = item.get("event_id")
+        if choice == "a":
+            r = _fetch(f"/api/v1/actions/{eid}/approve", method="POST", json_body={"actor": "founder_cli"})
+            print(_c(f"  ✓ approved → {r.get('status') if r else '?'}", "green"))
+        elif choice == "r":
+            print("  reason: ", end="", flush=True)
+            reason = sys.stdin.readline().strip() or "rejected_via_cli"
+            r = _fetch(f"/api/v1/actions/{eid}/reject", method="POST", json_body={"actor": "founder_cli", "reason": reason})
+            print(_c(f"  ✗ rejected → {r.get('status') if r else '?'}", "yellow"))
+        elif choice == "q":
+            return 0
+        else:
+            print(_c("  ↩ skipped", "dim"))
+    return 0
+
+
+def cmd_workspace(args) -> int:
+    cid = getattr(args, "customer_id", None)
+    if not cid:
+        print(_c("✗ usage: dealix workspace <customer_id>", "red"))
+        return 2
+    out = _fetch(f"/api/v1/companies/{cid}/workspace")
+    if not out:
+        print(_c("✗ failed", "red")); return 1
+    print(_hdr(f"WORKSPACE — {out.get('company_name') or cid}"))
+    sprint = out.get("current_sprint")
+    if sprint:
+        print(_kv("sprint", f"{sprint.get('service_id')} (day {sprint.get('day')}/{sprint.get('sla_days', 7)})"))
+    print(_kv("opportunities", out.get("opportunities_count", 0)))
+    print(_kv("drafts", out.get("drafts_count", 0)))
+    print(_kv("open decisions", len(out.get("open_decisions") or []), color="yellow" if out.get("open_decisions") else "green"))
+    print(_kv("meetings", len(out.get("meetings") or [])))
+    print(_kv("invoices", len(out.get("invoices") or [])))
+    print(_kv("proof packs", len(out.get("proof_packs") or [])))
+    print(_kv("risks blocked", len(out.get("risks_blocked") or [])))
+    return 0
+
+
+def cmd_brain(args) -> int:
+    cid = getattr(args, "customer_id", None)
+    if not cid:
+        print(_c("✗ usage: dealix brain <customer_id>", "red"))
+        return 2
+    out = _fetch(f"/api/v1/companies/{cid}/brain")
+    if not out:
+        print(_c("✗ failed", "red")); return 1
+    print(_hdr(f"COMPANY BRAIN — {out.get('company_name') or cid}"))
+    for k in ("plan", "sector", "city", "offer_ar", "ideal_customer_ar",
+              "average_deal_value_sar", "tone_ar", "current_service_id", "churn_risk"):
+        if k in out and out[k] not in (None, "", []):
+            print(_kv(k, out[k]))
+    print(_kv("approved channels", ", ".join(out.get("approved_channels") or [])))
+    print(_kv("blocked channels", ", ".join(out.get("blocked_channels") or []), color="yellow"))
+    print(_kv("forbidden claims", ", ".join(out.get("forbidden_claims") or []), color="red"))
+    ps = out.get("proof_summary") or {}
+    print(_kv("proof events", ps.get("events_total", 0)))
+    print(_kv("approvals pending", ps.get("approvals_pending", 0),
+              color="yellow" if ps.get("approvals_pending") else "green"))
+    print(_kv("revenue impact (SAR)", f"{ps.get('estimated_revenue_impact_sar', 0):.0f}", color="green"))
+    return 0
+
+
+def cmd_learning(args) -> int:
+    sub = (getattr(args, "subcmd", None) or "weekly").lower()
+    if sub != "weekly":
+        print(_c(f"unknown learning subcommand: {sub} (only 'weekly' supported)", "red"))
+        return 2
+    out = _fetch("/api/v1/learning/weekly?days=7")
+    if not out:
+        print(_c("✗ failed", "red")); return 1
+    print(_hdr("WEEKLY LEARNING (last 7 days)"))
+    print(_kv("bottleneck", out.get("bottleneck_ar") or "—", color="yellow"))
+    print(_kv("next experiment", out.get("next_experiment_ar") or "—", color="green"))
+    print(_kv("high-risk blocked", out.get("high_risk_blocked", 0)))
+    print(_kv("pending approvals", out.get("pending_approvals", 0), color="yellow"))
+    by_unit = out.get("totals_by_unit") or {}
+    if by_unit:
+        print(_c("\nRWUs this week:", "bold"))
+        for k, v in sorted(by_unit.items(), key=lambda x: -x[1])[:8]:
+            print(f"  {k:30s}  {v}")
+    return 0
+
+
+def cmd_verify(_args) -> int:
+    """Run full_acceptance.sh + 6-layer audit. Wraps the existing script."""
+    import subprocess
+    print(_hdr("DEALIX VERIFY — 6-layer acceptance"))
+    script = REPO / "scripts" / "full_acceptance.sh"
+    if not script.exists():
+        print(_c("✗ scripts/full_acceptance.sh missing", "red"))
+        return 1
+    rc = subprocess.call(["bash", str(script)])
+    return rc
+
+
 def cmd_activate_payments(_args) -> int:
     """Print exact env changes to flip Moyasar live charge — no auto-flip for safety."""
     state = _fetch("/api/v1/payments/state")
@@ -581,6 +708,17 @@ def main(argv: list[str] | None = None) -> int:
     sub.add_parser("funnel",  help="Show prospects funnel")
     sub.add_parser("activate-payments", help="Print Moyasar live-charge activation steps")
     sub.add_parser("first-customer-flow", help="End-to-end demo: prospect→pilot→invoice→Proof Pack")
+    sub.add_parser("approvals", help="Interactive approval queue")
+    sub.add_parser("verify", help="Run full_acceptance.sh + 6-layer audit")
+
+    p_ws = sub.add_parser("workspace", help="Print customer workspace")
+    p_ws.add_argument("customer_id")
+
+    p_brain = sub.add_parser("brain", help="Print Company Brain")
+    p_brain.add_argument("customer_id")
+
+    p_learn = sub.add_parser("learning", help="Show learning report (weekly only for now)")
+    p_learn.add_argument("subcmd", nargs="?", default="weekly")
 
     p_proof = sub.add_parser("proof", help="Fetch a customer's Proof Pack")
     p_proof.add_argument("customer_id")
@@ -622,6 +760,11 @@ def main(argv: list[str] | None = None) -> int:
         "invoice":            cmd_invoice,
         "activate-payments":  cmd_activate_payments,
         "first-customer-flow": cmd_first_customer_flow,
+        "approvals":          cmd_approvals,
+        "workspace":          cmd_workspace,
+        "brain":              cmd_brain,
+        "learning":           cmd_learning,
+        "verify":             cmd_verify,
         "run-window":         cmd_run_window,
         "gates":              cmd_gates,
         "help":               lambda _a: (parser.print_help(), 0)[1],
