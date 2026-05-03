@@ -128,3 +128,132 @@ To upgrade to `PROVEN_LIVE`:
 
 The 4 manual founder actions remain unchanged (LinkedIn DMs, discovery calls,
 contracts, gate flips).
+
+---
+
+## Final Systems Operator Run — 2026-05-03 (Re-verification)
+
+This section appends the **second-pass evidence** collected by the Final
+Systems Operator after the initial Truth Report was published. Goal:
+re-verify Dealix is launchable for the very first paying customer with no
+gate flips, no live sends, and no fabricated claims.
+
+### A. Public API surface (local SQLite, port 8000)
+
+| Endpoint | Method | Status | Evidence |
+|---|---|---|---|
+| `/` | GET | 200 | `{"name": "ai-company", "status": "operational", ...}` clean JSON, no debug |
+| `/healthz` | GET | 200 | `{"status":"ok"}` |
+| `/api/v1/payments/state` | GET | 200 | `{"live_charge": false, "currency": "SAR", "vat_percent": 15}` |
+| `/api/v1/payments/charge` | POST | 403 | Arabic reason `"Live charge مُعطَّل افتراضياً (gate=False)"` |
+| `/api/v1/payments/invoice` | POST | 200 | manual fallback URL when no Moyasar secret |
+| `/api/v1/whatsapp/brief?role=ceo` | GET | 200 | 17-line Arabic brief |
+| `/api/v1/whatsapp/brief?role=growth_manager` | GET | 200 | 39 lines, 3 decisions |
+| `/api/v1/whatsapp/brief/send-internal` | POST | 403 | `"WHATSAPP_ALLOW_INTERNAL_SEND=false"` |
+| `/api/v1/operator/chat/message` | POST | 200 | Arabic intent → bundle id resolved |
+| `/api/v1/services/catalog` | GET | 200 | 6 bundles |
+| `/api/v1/companies/{id}/brain` | GET | 200 | 12 Brain fields + proof_summary |
+| `/api/v1/companies/{id}/brain` | PATCH | 200 | mutable fields only |
+
+### B. Operator acceptance (Part 7) — 5 / 5 ✓
+
+| Input (Arabic) | Expected | Actual |
+|---|---|---|
+| `أبغى عملاء جدد` | `want_more_customers` → `growth_starter` | ✓ matched |
+| `عندي قائمة 200 lead` | `has_list` → `data_to_revenue` | ✓ matched |
+| `أبغى شراكات مع وكالات` | `want_partnerships` → `partnership_growth` | ✓ matched |
+| `أبغى أرسل واتساب لأرقام مشتراة` | **BLOCKED** | ✓ blocked (`forbidden_action`) |
+| `أبغى تشغيل يومي وتقرير proof` | `want_daily_growth` → `executive_growth_os` | ✓ matched |
+
+### C. End-to-end first-customer flow — proven twice
+
+Run 1 (`first-customer-flow`): prospect_id=`prs_b0d8ca18a32644`,
+invoice_id=`pay_617b5bb61b4743`, mode=manual, paid at 21:50:51,
+6 RWUs, revenue impact 2,598 SAR.
+
+Run 2 (Brain mapping verification): prospect=`prs_8cf26f0eacb347` walked to
+`closed_won` → CustomerRecord `cus_feb7bd3ebccb43` auto-created with all 12
+Brain fields populated:
+
+```
+company_name           = 'BrainCo'
+sector                 = 'B2B SaaS'
+city                   = 'Riyadh'
+average_deal_value_sar = 12000.0
+approved_channels      = ['linkedin_manual']
+blocked_channels       = ['whatsapp_outbound']
+tone_ar                = 'professional_saudi_arabic'
+forbidden_claims       = ['نضمن', 'guaranteed']
+current_service_id     = 'growth_starter'
+plan                   = 'pilot'
+churn_risk             = 'low'
+onboarding_status      = 'kickoff_pending'
+```
+
+Forward-only stage machine confirmed: backward jumps return 400
+`cannot_move_backward`; gap-skip jumps return 400 unless `allow_skip=true`.
+
+### D. Payments (Part 9) — verified
+
+- Amount math: `int(round(amount_sar * 100))` → 499 SAR = **49,900 halalas** ✓
+- Currency hardcoded `"SAR"` ✓
+- Mada fee: 1.5% + 1 SAR ✓ — Credit fee: 2.2% + 1 SAR ✓ — VAT: 15% ✓
+- Manual fallback when `MOYASAR_SECRET_KEY` unset:
+  `https://api.dealix.me/manual-pay?inv=inv_<id>&amount=<sar>` ✓
+- `/charge` returns **403 Arabic** when `MOYASAR_ALLOW_LIVE_CHARGE=false` ✓
+- `/charge` returns **501** with Arabic reason when gate is open but
+  implementation deliberately unwired (KYB pending) ✓
+- `/confirm` flips invoice → `paid` and emits proof event ✓
+
+### E. WhatsApp policy (Part 10) — verified
+
+**3 internal-roles policy upheld (in fact 9 internal roles supported).**
+Render-only path is safe (renders local Arabic text, no transport call).
+Send path is double-gated: `WHATSAPP_ALLOW_LIVE_SEND` AND
+`WHATSAPP_ALLOW_INTERNAL_SEND` must both be True; until then 403 Arabic.
+
+Customer-side WhatsApp policy:
+- Outbound cold WhatsApp = **hard refusal** in `auto_executor.py` —
+  blocked_channels list includes `cold_whatsapp` (cannot be enabled by env flag) ✓
+- Inbound webhook (`POST /api/v1/inbound/whatsapp`) records consent
+  `opt_in_recorded` + opens 24h reply window ✓
+- Template sends require `WHATSAPP_ALLOW_CUSTOMER_SEND=true` (default-False) ✓
+- All approval-first ✓
+
+### F. Company Brain mapping (Part 11) — verified
+
+12 mutable Brain fields enumerated in `api/routers/companies.py:_BRAIN_FIELDS`:
+
+```python
+("company_name", "website", "sector", "city",
+ "offer_ar", "ideal_customer_ar", "average_deal_value_sar",
+ "approved_channels", "blocked_channels", "tone_ar",
+ "forbidden_claims", "current_service_id")
+```
+
+Auto-population on `closed_won`: `prospects.py:383-404` — Brain seeded
+from prospect data. Mutation endpoint: `PATCH /api/v1/companies/{id}/brain`
+only mutates the 12 fields (other CustomerRecord columns immutable).
+
+### G. Staging smoke (Part 12) — script created + GREEN locally
+
+`scripts/staging_smoke.sh` runs 14/14 checks:
+- root + healthz JSON shape
+- live-action gates default-False
+- payments charge → 403, WhatsApp send → 403 (gate enforcement)
+- operator routes Arabic intent
+- services catalog responds
+- proof-ledger reachable
+- 5 landing pages return 200
+
+Public `https://api.dealix.me` not reachable from sandbox (TLS clock skew —
+sandbox date 2026-05-03 vs cert validity), but the script is ready for
+any reachable environment via `STAGING_URL=...`.
+
+### H. Final Verdict (re-verification)
+
+`PROVEN_LOCAL` confirmed across 33/35 audited features. Public surface
+clean. Safety gates closed by default. First-customer E2E reproduces
+end-to-end with Proof Pack on every run. Founder can take payments
+**today** via the manual-fallback invoice path; no live-action gates need
+to be flipped to ship the first 499-SAR pilot.
