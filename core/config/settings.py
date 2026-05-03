@@ -105,6 +105,18 @@ class Settings(BaseSettings):
     # Env: WHATSAPP_ALLOW_LIVE_SEND (default false).
     whatsapp_allow_live_send: bool = False
 
+    # ── Live action gates (PR 1: declared, enforced in audit) ───
+    # Default False everywhere; flip only after explicit opt-in + legal review.
+    gmail_allow_live_send: bool = False
+    moyasar_allow_live_charge: bool = False
+    linkedin_allow_auto_dm: bool = False  # ALWAYS False — LinkedIn ToS forbids automation
+    resend_allow_live_send: bool = False  # PR-BE-Auth: gate magic-link emails
+    # PR-COMMERCIAL-CLOSE: 3 new gates for Sales/Growth WhatsApp + Calls.
+    whatsapp_allow_internal_send: bool = False  # internal manager briefs via WhatsApp
+    whatsapp_allow_customer_send: bool = False  # customer-facing WhatsApp messages
+    calls_allow_recommend: bool = True          # we DO recommend calls (read-only)
+    calls_allow_live_dial: bool = False         # we NEVER auto-dial
+
     # ── Email ───────────────────────────────────────────────────
     email_provider: Literal["resend", "sendgrid", "smtp"] = "resend"
     email_from: str = "noreply@ai-company.sa"

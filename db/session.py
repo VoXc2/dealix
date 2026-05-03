@@ -13,15 +13,21 @@ from core.config.settings import get_settings
 
 @lru_cache(maxsize=1)
 def _engine():
-    """Lazy-create async engine."""
+    """Lazy-create async engine.
+
+    SQLite paths (test/in-memory) skip pool_size/max_overflow which the
+    aiosqlite driver does not accept.
+    """
     settings = get_settings()
-    return create_async_engine(
-        settings.database_url,
-        echo=settings.is_development,
-        pool_pre_ping=True,
-        pool_size=5,
-        max_overflow=10,
-    )
+    url = settings.database_url
+    kwargs: dict = {
+        "echo": settings.is_development,
+        "pool_pre_ping": True,
+    }
+    if not url.startswith("sqlite"):
+        kwargs["pool_size"] = 5
+        kwargs["max_overflow"] = 10
+    return create_async_engine(url, **kwargs)
 
 
 @lru_cache(maxsize=1)

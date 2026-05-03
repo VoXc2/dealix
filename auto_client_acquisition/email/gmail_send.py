@@ -119,6 +119,12 @@ async def send_email(
     sender_name: str = "Sami | Dealix",
 ) -> GmailSendResult:
     """Send a single email via Gmail OAuth. Returns GmailSendResult."""
+    # Live-send gate — must be explicitly enabled.
+    from core.config.settings import get_settings
+    if not get_settings().gmail_allow_live_send:
+        log.info("gmail_send_blocked_by_flag to=%s", to_email)
+        return GmailSendResult(status="blocked", error="gmail_allow_live_send_false")
+
     if not is_configured():
         return GmailSendResult(status="no_keys", error="GMAIL_* env vars not set")
 

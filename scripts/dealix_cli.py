@@ -1,0 +1,359 @@
+#!/usr/bin/env python3
+"""
+Dealix Founder CLI — daily companion in one command.
+
+Replaces 6 separate API calls + spreadsheets with a single 30-second
+terminal view every morning.
+
+Commands:
+    dealix today                    Founder daily summary (CEO brief + KPIs + incidents)
+    dealix smoke                    Run staging_smoke against $DEALIX_BASE_URL
+    dealix seed                     Run seed_commercial_demo against current DB
+    dealix proof <customer_id>      Fetch and pretty-print a customer's Proof Pack
+    dealix outreach pick [N]        Pick next N (default 5) outreach messages
+    dealix run-window <window>      Trigger one daily-ops window (morning/midday/closing/scorecard)
+    dealix gates                    Print all 8 live-action gates + their status
+    dealix help                     Show this text
+
+Configuration:
+    DEALIX_BASE_URL                 Required for all commands except 'help'/'outreach pick'
+                                    (default: http://127.0.0.1:8000)
+
+Examples:
+    DEALIX_BASE_URL=https://app.dealix.me dealix today
+    DEALIX_BASE_URL=http://localhost:8000 dealix smoke
+    dealix outreach pick 5
+
+Install (optional):
+    chmod +x scripts/dealix_cli.py
+    sudo ln -s "$(pwd)/scripts/dealix_cli.py" /usr/local/bin/dealix
+"""
+
+from __future__ import annotations
+
+import argparse
+import os
+import re
+import sys
+from pathlib import Path
+from typing import Any
+
+REPO = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(REPO))
+
+
+# ── ANSI helpers ─────────────────────────────────────────────────
+
+
+def _is_tty() -> bool:
+    return sys.stdout.isatty()
+
+
+def _c(text: str, color: str) -> str:
+    if not _is_tty():
+        return text
+    codes = {"red": 31, "green": 32, "yellow": 33, "blue": 34, "magenta": 35, "cyan": 36, "bold": 1, "dim": 2, "reset": 0}
+    c = codes.get(color, 0)
+    return f"\033[{c}m{text}\033[0m"
+
+
+def _hdr(text: str) -> str:
+    bar = "═" * 60
+    return f"\n{_c(bar, 'cyan')}\n  {_c(text, 'bold')}\n{_c(bar, 'cyan')}"
+
+
+def _kv(k: str, v: Any, *, color: str = "reset") -> str:
+    return f"  {_c(k, 'dim'):24s}  {_c(str(v), color)}"
+
+
+# ── HTTP fetch ───────────────────────────────────────────────────
+
+
+def _base_url() -> str:
+    return os.environ.get("DEALIX_BASE_URL", "http://127.0.0.1:8000").rstrip("/")
+
+
+def _fetch(path: str, *, method: str = "GET", json_body: Any = None) -> dict[str, Any] | None:
+    """Lightweight stdlib HTTP — avoid extra deps for the CLI."""
+    import json
+    import urllib.error
+    import urllib.request
+
+    url = _base_url() + path
+    data = None
+    headers = {"Accept": "application/json"}
+    if json_body is not None:
+        data = json.dumps(json_body).encode("utf-8")
+        headers["Content-Type"] = "application/json"
+    req = urllib.request.Request(url, data=data, method=method, headers=headers)
+    try:
+        with urllib.request.urlopen(req, timeout=15) as resp:
+            body = resp.read().decode("utf-8")
+            return json.loads(body) if body else {}
+    except urllib.error.HTTPError as exc:
+        body = exc.read().decode("utf-8", errors="ignore")
+        try:
+            return {"_status": exc.code, "_body": (json.loads(body) if body else None)}
+        except Exception:
+            return {"_status": exc.code, "_body": body}
+    except Exception as exc:  # noqa: BLE001
+        return {"_error": str(exc)}
+
+
+# ── Commands ─────────────────────────────────────────────────────
+
+
+def cmd_today(_args) -> int:
+    data = _fetch("/api/v1/founder/today?days=7")
+    if not data or "_error" in data:
+        print(_c(f"✗ failed to reach {_base_url()}: {data}", "red"))
+        return 1
+
+    print(_hdr(f"DEALIX · TODAY · {data.get('as_of', '')[:16]}"))
+
+    # CEO brief summary
+    ceo = data.get("ceo_brief") or {}
+    decisions = ceo.get("top_decisions") or []
+    print(f"\n{_c('🟢 CEO BRIEF', 'green')}")
+    print(_kv("today's decisions", len(decisions)))
+    for i, d in enumerate(decisions[:3], 1):
+        title = d.get("title_ar") or d.get("title") or "(no title)"
+        print(f"    {_c(str(i) + '.', 'bold')}  {title}")
+
+    # KPIs
+    k = data.get("kpis") or {}
+    invariant_ok = k.get("no_unsafe_action_executed_invariant", True)
+    print(f"\n{_c('📊 KPIs (7-day window)', 'green')}")
+    print(_kv("active subscriptions", k.get("active_paying_subscriptions", 0)))
+    print(_kv("current MRR (SAR)", f"{k.get('current_mrr_sar', 0):,.2f}", color="green"))
+    print(_kv("annual run rate", f"{k.get('annual_run_rate_sar', 0):,.0f} SAR"))
+    print(_kv("proof events emitted", k.get("proof_events_emitted", 0)))
+    print(_kv("unsafe blocked", k.get("unsafe_actions_blocked", 0)))
+    print(_kv(
+        "unsafe-execution invariant",
+        "✓ holds" if invariant_ok else "✗ VIOLATED",
+        color="green" if invariant_ok else "red",
+    ))
+
+    # Quality
+    q = data.get("quality") or {}
+    print(f"\n{_c('✨ Quality', 'green')}")
+    print(_kv("draft acceptance rate", f"{q.get('draft_acceptance_rate', 0) * 100:.1f}%"))
+    print(_kv("override rate", f"{q.get('override_rate', 0) * 100:.1f}%"))
+    print(_kv("complaint rate", f"{q.get('complaint_rate', 0) * 100:.1f}%"))
+
+    # Cost
+    c = data.get("cost") or {}
+    print(f"\n{_c('💸 AI Cost (7-day)', 'green')}")
+    print(_kv("total (SAR)", f"{c.get('total_sar', 0):,.2f}"))
+    print(_kv("agent runs", c.get("run_count", 0)))
+    print(_kv("avg latency", f"{c.get('avg_latency_ms', 0):,.0f} ms"))
+    print(_kv("error rate", f"{c.get('error_rate', 0) * 100:.1f}%"))
+
+    # Incidents
+    incs = data.get("open_incidents") or []
+    if incs:
+        print(f"\n{_c('⚠ Open Incidents', 'red')}")
+        for inc in incs:
+            print(f"  {_c(inc['priority'], 'red')}  {inc['ticket_id']} · {inc['subject']} · {inc['age_hours']}h")
+    else:
+        print(f"\n{_c('✓ No open P0/P1 incidents', 'green')}")
+
+    # Recent ops
+    ops = data.get("recent_daily_ops") or []
+    if ops:
+        print(f"\n{_c('🕐 Recent Daily-Ops Runs', 'green')}")
+        for r in ops[:4]:
+            t = (r.get("started_at") or "")[11:16]
+            print(f"    {t}  {r.get('window', ''):12s}  decisions={r.get('decisions', 0)}  "
+                  f"refusals={r.get('risks_blocked', 0)}")
+
+    # Gates
+    pol = (data.get("policy") or {}).get("live_action_gates") or {}
+    flipped = [k for k, v in pol.items() if v]
+    print(f"\n{_c('🛡 Live-Action Gates', 'green')}")
+    print(_kv("8 gates", "all FALSE ✓" if not flipped else f"⚠ FLIPPED: {flipped}",
+              color="green" if not flipped else "red"))
+
+    # Next actions
+    actions = data.get("next_morning_actions_ar") or []
+    if actions:
+        print(f"\n{_c('🎯 Next Morning Actions', 'green')}")
+        for i, a in enumerate(actions, 1):
+            print(f"    {i}. {a}")
+
+    print(_c("\n" + "═" * 60, "cyan"))
+    return 0
+
+
+def cmd_smoke(_args) -> int:
+    base = _base_url()
+    print(_c(f"→ smoking {base}", "blue"))
+    try:
+        from scripts.staging_smoke import render, run_smoke
+    except ImportError as exc:
+        print(_c(f"✗ {exc}", "red"))
+        return 2
+    report = run_smoke(base)
+    print(render(report))
+    return 0 if report.passed else 1
+
+
+def cmd_seed(_args) -> int:
+    print(_c(f"→ seeding (DATABASE_URL={os.environ.get('DATABASE_URL', '<not set>')[:50]})", "blue"))
+    from scripts.seed_commercial_demo import main as seed_main
+    return seed_main()
+
+
+def cmd_proof(args) -> int:
+    cid = args.customer_id
+    if not cid:
+        print(_c("✗ customer_id required", "red"))
+        return 2
+    data = _fetch(f"/api/v1/proof-ledger/customer/{cid}/pack")
+    if not data or "_error" in data:
+        print(_c(f"✗ failed: {data}", "red"))
+        return 1
+    pack = data.get("pack") or {}
+    totals = pack.get("totals") or {}
+    print(_hdr(f"PROOF PACK · {cid}"))
+    print(_kv("event count", data.get("event_count", 0)))
+    print(_kv("created units", totals.get("created_units", 0)))
+    print(_kv("protected units", totals.get("protected_units", 0)))
+    print(_kv("approvals collected", totals.get("approvals_collected", 0)))
+    print(_kv("pending approvals", totals.get("pending_approvals", 0)))
+    print(_kv("revenue impact (SAR)",
+              f"{totals.get('estimated_revenue_impact_sar', 0):,.2f}",
+              color="green"))
+    print(f"\n{_c('Next recommended action:', 'cyan')}")
+    print(f"  {pack.get('next_recommended_action_ar', '—')}")
+    return 0
+
+
+def cmd_outreach(args) -> int:
+    n = int(getattr(args, "n", None) or 5)
+    msgs_path = REPO / "docs" / "READY_OUTREACH_MESSAGES.md"
+    if not msgs_path.exists():
+        print(_c(f"✗ {msgs_path} missing", "red"))
+        return 2
+    text = msgs_path.read_text(encoding="utf-8")
+    # Find all "### Msg NN — ..." headers
+    headers = re.findall(r"^### (Msg \d{2}.*)$", text, re.MULTILINE)
+    if not headers:
+        print(_c("✗ no Msg headers found", "red"))
+        return 2
+
+    # Stateful pick: rotate based on a tiny pointer file in /tmp
+    state = Path("/tmp/dealix_outreach.cursor")
+    cursor = 0
+    if state.exists():
+        try:
+            cursor = int(state.read_text().strip()) % len(headers)
+        except Exception:
+            cursor = 0
+    picked = []
+    for i in range(n):
+        picked.append(headers[(cursor + i) % len(headers)])
+    state.write_text(str((cursor + n) % len(headers)))
+
+    print(_hdr(f"OUTREACH · next {n} (cursor={cursor}/{len(headers)})"))
+    for i, h in enumerate(picked, 1):
+        print(f"  {i}. {_c(h, 'bold')}")
+    print(_c(f"\n📂 open docs/READY_OUTREACH_MESSAGES.md → copy each → edit [الاسم] → send manually.", "dim"))
+    return 0
+
+
+def cmd_run_window(args) -> int:
+    win = args.window
+    valid = {"morning", "midday", "closing", "scorecard"}
+    if win not in valid:
+        print(_c(f"✗ window must be one of {valid}", "red"))
+        return 2
+    data = _fetch("/api/v1/daily-ops/run", method="POST", json_body={"window": win})
+    if not data or "_error" in data:
+        print(_c(f"✗ failed: {data}", "red"))
+        return 1
+    print(_c(f"✓ {win}: run_id={data.get('run_id', '?')} · "
+             f"decisions={data.get('decisions_total', 0)} · "
+             f"refusals={data.get('risks_blocked_total', 0)}", "green"))
+    return 0
+
+
+def cmd_gates(_args) -> int:
+    data = _fetch("/api/v1/founder/today")
+    if not data or "_error" in data:
+        # Fallback: read from local settings
+        try:
+            from core.config.settings import Settings
+            s = Settings()
+            gates = {
+                g: bool(getattr(s, g, False))
+                for g in (
+                    "whatsapp_allow_live_send", "gmail_allow_live_send",
+                    "moyasar_allow_live_charge", "linkedin_allow_auto_dm",
+                    "resend_allow_live_send", "whatsapp_allow_internal_send",
+                    "whatsapp_allow_customer_send", "calls_allow_live_dial",
+                )
+            }
+        except Exception as exc:
+            print(_c(f"✗ {exc}", "red"))
+            return 1
+    else:
+        gates = (data.get("policy") or {}).get("live_action_gates") or {}
+    print(_hdr("LIVE-ACTION GATES (8)"))
+    for k, v in gates.items():
+        flag = _c("FALSE ✓", "green") if not v else _c("TRUE ⚠", "red")
+        print(f"  {k:36s}  {flag}")
+    if all(not v for v in gates.values()):
+        print(_c("\n✓ All 8 gates FALSE — invariant holds.", "green"))
+    else:
+        print(_c("\n⚠ Some gates flipped — verify intent + commit history.", "red"))
+    return 0
+
+
+# ── Main ─────────────────────────────────────────────────────────
+
+
+def main(argv: list[str] | None = None) -> int:
+    parser = argparse.ArgumentParser(prog="dealix", description="Dealix Founder CLI")
+    sub = parser.add_subparsers(dest="cmd", required=False)
+
+    sub.add_parser("today",  help="Founder daily summary")
+    sub.add_parser("smoke",  help="Smoke test the API")
+    sub.add_parser("seed",   help="Seed demo commercial data")
+
+    p_proof = sub.add_parser("proof", help="Fetch a customer's Proof Pack")
+    p_proof.add_argument("customer_id")
+
+    p_out = sub.add_parser("outreach", help="Pick next outreach messages")
+    p_out.add_argument("subcmd", nargs="?", default="pick")
+    p_out.add_argument("n", nargs="?", type=int, default=5)
+
+    p_run = sub.add_parser("run-window", help="Trigger a daily-ops window")
+    p_run.add_argument("window")
+
+    sub.add_parser("gates",  help="Print live-action gates")
+    sub.add_parser("help",   help="Show help")
+
+    args = parser.parse_args(argv)
+    cmd = args.cmd or "help"
+
+    handlers = {
+        "today":      cmd_today,
+        "smoke":      cmd_smoke,
+        "seed":       cmd_seed,
+        "proof":      cmd_proof,
+        "outreach":   cmd_outreach,
+        "run-window": cmd_run_window,
+        "gates":      cmd_gates,
+        "help":       lambda _a: (parser.print_help(), 0)[1],
+    }
+    handler = handlers.get(cmd)
+    if handler is None:
+        parser.print_help()
+        return 2
+    return handler(args)
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
