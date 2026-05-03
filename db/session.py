@@ -25,13 +25,22 @@ def _engine():
 
 
 @lru_cache(maxsize=1)
-def async_session_factory() -> async_sessionmaker[AsyncSession]:
+def _sessionmaker() -> async_sessionmaker[AsyncSession]:
     return async_sessionmaker(_engine(), expire_on_commit=False, class_=AsyncSession)
+
+
+def async_session_factory() -> AsyncSession:
+    """Return a fresh AsyncSession.
+
+    Routers use this as `async with async_session_factory() as session:` —
+    AsyncSession is itself an async context manager.
+    """
+    return _sessionmaker()()
 
 
 async def get_db() -> AsyncGenerator[AsyncSession, None]:
     """FastAPI dependency — async DB session."""
-    async with async_session_factory()() as session:
+    async with async_session_factory() as session:
         try:
             yield session
             await session.commit()
@@ -43,7 +52,7 @@ async def get_db() -> AsyncGenerator[AsyncSession, None]:
 @asynccontextmanager
 async def get_session() -> AsyncGenerator[AsyncSession, None]:
     """Async context manager for DB sessions (`async with get_session() as session:`)."""
-    async with async_session_factory()() as session:
+    async with async_session_factory() as session:
         try:
             yield session
             await session.commit()
