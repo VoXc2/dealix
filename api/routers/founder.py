@@ -101,63 +101,67 @@ async def today(days: int = Query(default=7, ge=1, le=30)) -> dict[str, Any]:
     cost_summary: dict = {"total_cost_sar": 0.0, "run_count": 0, "avg_latency_ms": 0.0, "error_rate": 0.0}
     unsafe_summary: dict = {"total_blocked": 0, "no_unsafe_action_executed": True}
 
+    # Each query in its OWN session — so a single failed query (e.g., schema
+    # drift on subscriptions table) doesn't abort the transaction and cascade
+    # to all subsequent queries (asyncpg InFailedSQLTransactionError).
+
+    async def _q(name: str, runner):
+        try:
+            async with get_session() as s:
+                return await runner(s)
+        except Exception as exc:  # noqa: BLE001
+            errors[name] = f"{type(exc).__name__}: {str(exc)[:200]}"
+            return None
+
+    proof_events = await _q("proof_events", lambda s: s.execute(
+        select(ProofEventRecord).where(ProofEventRecord.occurred_at >= since)
+    )) or []
+    if proof_events and not isinstance(proof_events, list):
+        proof_events = list(proof_events.scalars().all())
+
+    unsafe_events = await _q("unsafe_events", lambda s: s.execute(
+        select(UnsafeActionRecord).where(UnsafeActionRecord.occurred_at >= since)
+    )) or []
+    if unsafe_events and not isinstance(unsafe_events, list):
+        unsafe_events = list(unsafe_events.scalars().all())
+
+    tickets = await _q("tickets", lambda s: s.execute(
+        select(SupportTicketRecord).where(SupportTicketRecord.created_at >= since)
+    )) or []
+    if tickets and not isinstance(tickets, list):
+        tickets = list(tickets.scalars().all())
+
+    objections = await _q("objections", lambda s: s.execute(
+        select(ObjectionEventRecord).where(ObjectionEventRecord.occurred_at >= since)
+    )) or []
+    if objections and not isinstance(objections, list):
+        objections = list(objections.scalars().all())
+
+    active_subs = await _q("active_subs", lambda s: s.execute(
+        select(SubscriptionRecord).where(SubscriptionRecord.status == "active")
+    )) or []
+    if active_subs and not isinstance(active_subs, list):
+        active_subs = list(active_subs.scalars().all())
+
+    recent_ops = await _q("recent_ops", lambda s: s.execute(
+        select(DailyOpsRunRecord).order_by(DailyOpsRunRecord.started_at.desc()).limit(8)
+    )) or []
+    if recent_ops and not isinstance(recent_ops, list):
+        recent_ops = list(recent_ops.scalars().all())
+
+    # Cost + unsafe summaries — each in its own session so a failure
+    # in one doesn't poison the other.
     try:
         async with get_session() as s:
-            try:
-                proof_events = list((await s.execute(
-                    select(ProofEventRecord).where(ProofEventRecord.occurred_at >= since)
-                )).scalars().all())
-            except Exception as exc:  # noqa: BLE001
-                errors["proof_events"] = f"{type(exc).__name__}: {str(exc)[:200]}"
-
-            try:
-                unsafe_events = list((await s.execute(
-                    select(UnsafeActionRecord).where(UnsafeActionRecord.occurred_at >= since)
-                )).scalars().all())
-            except Exception as exc:  # noqa: BLE001
-                errors["unsafe_events"] = f"{type(exc).__name__}: {str(exc)[:200]}"
-
-            try:
-                tickets = list((await s.execute(
-                    select(SupportTicketRecord).where(SupportTicketRecord.created_at >= since)
-                )).scalars().all())
-            except Exception as exc:  # noqa: BLE001
-                errors["tickets"] = f"{type(exc).__name__}: {str(exc)[:200]}"
-
-            try:
-                objections = list((await s.execute(
-                    select(ObjectionEventRecord).where(ObjectionEventRecord.occurred_at >= since)
-                )).scalars().all())
-            except Exception as exc:  # noqa: BLE001
-                errors["objections"] = f"{type(exc).__name__}: {str(exc)[:200]}"
-
-            try:
-                active_subs = list((await s.execute(
-                    select(SubscriptionRecord).where(SubscriptionRecord.status == "active")
-                )).scalars().all())
-            except Exception as exc:  # noqa: BLE001
-                errors["active_subs"] = f"{type(exc).__name__}: {str(exc)[:200]}"
-
-            try:
-                recent_ops = list((await s.execute(
-                    select(DailyOpsRunRecord)
-                    .order_by(DailyOpsRunRecord.started_at.desc())
-                    .limit(8)
-                )).scalars().all())
-            except Exception as exc:  # noqa: BLE001
-                errors["recent_ops"] = f"{type(exc).__name__}: {str(exc)[:200]}"
-
-            try:
-                cost_summary = await summarize_costs(s, days=days)
-            except Exception as exc:  # noqa: BLE001
-                errors["cost_summary"] = f"{type(exc).__name__}: {str(exc)[:200]}"
-
-            try:
-                unsafe_summary = await summarize_unsafe(s, days=days)
-            except Exception as exc:  # noqa: BLE001
-                errors["unsafe_summary"] = f"{type(exc).__name__}: {str(exc)[:200]}"
+            cost_summary = await summarize_costs(s, days=days)
     except Exception as exc:  # noqa: BLE001
-        errors["session"] = f"{type(exc).__name__}: {str(exc)[:200]}"
+        errors["cost_summary"] = f"{type(exc).__name__}: {str(exc)[:200]}"
+
+    try:
+        async with get_session() as s:
+            unsafe_summary = await summarize_unsafe(s, days=days)
+    except Exception as exc:  # noqa: BLE001
+        errors["unsafe_summary"] = f"{type(exc).__name__}: {str(exc)[:200]}"
 
     # 3. Pure computes (no DB) ──────────────────────────────────
     try:

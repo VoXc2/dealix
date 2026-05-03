@@ -823,6 +823,60 @@ async def admin_init_db() -> dict[str, Any]:
         return {"status": "error", "error": str(e)[:500], "type": type(e).__name__}
 
 
+@router.post("/admin/recreate-tables")
+async def admin_recreate_tables(tables: dict[str, Any] | None = None) -> dict[str, Any]:
+    """Drop + recreate specified tables (for schema drift recovery).
+
+    Body: {"names": ["subscriptions", "payments", ...]}
+    DESTRUCTIVE — only use on staging when init-db can't fix schema drift
+    (e.g., a column was added but the existing table doesn't have it).
+
+    Idempotent in the sense that dropping a missing table is harmless.
+    """
+    body = tables or {}
+    names: list[str] = list(body.get("names") or [])
+    if not names:
+        return {"status": "error", "error": "names list required (e.g., {'names':['subscriptions']})"}
+
+    from db.session import _engine
+    from db.models import Base
+
+    dropped: list[str] = []
+    recreated: list[str] = []
+    errors: dict[str, str] = {}
+
+    # Map name → SQLAlchemy Table object
+    table_map = {t.name: t for t in Base.metadata.tables.values()}
+
+    async with _engine().begin() as conn:
+        for name in names:
+            if name not in table_map:
+                errors[name] = "unknown_table"
+                continue
+            try:
+                # raw SQL drop (CASCADE handles FKs)
+                await conn.exec_driver_sql(f'DROP TABLE IF EXISTS "{name}" CASCADE')
+                dropped.append(name)
+            except Exception as exc:  # noqa: BLE001
+                errors[name] = f"drop_failed: {type(exc).__name__}: {str(exc)[:200]}"
+                continue
+
+        # Recreate via metadata.create_all (only the requested tables)
+        try:
+            wanted = [table_map[n] for n in names if n in table_map]
+            await conn.run_sync(lambda c: Base.metadata.create_all(c, tables=wanted))
+            recreated = [t.name for t in wanted]
+        except Exception as exc:  # noqa: BLE001
+            errors["create_all"] = f"{type(exc).__name__}: {str(exc)[:200]}"
+
+    return {
+        "status": "ok" if not errors else "partial",
+        "dropped": dropped,
+        "recreated": recreated,
+        "errors": errors,
+    }
+
+
 @router.post("/admin/test-insert")
 async def admin_test_insert() -> dict[str, Any]:
     """Insert one test row and report exact error if it fails."""
