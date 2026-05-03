@@ -18,7 +18,7 @@ Dealix = Revenue Execution OS للشركات والوكالات السعودية
 
 **انسجام مع الـ loops:** كل عملية = Trigger → Input → Action → Output → Status → Metric → Decision → Next Loop. إذا كل loop يُنتج **evidence**، فعندك نظام تشغيل لا ارتجال. راجع [full_ops_pack/LEVEL_1_ACCEPTANCE_CHECKLIST_AR.md](../ops/full_ops_pack/LEVEL_1_ACCEPTANCE_CHECKLIST_AR.md).
 
-**مرافق — الفئة والمعمارية وخارطة 12 شهراً:** هذا الملف يغطي **الرادارات والحلقات والتشغيل اليومي**. للنسخة الشاملة (تصميم الفئة، 7 طبقات، GTM، منافسة Salesforce/HubSpot، لوحة CEO، خريطة ambition) راجع [CATEGORY_DESIGN_AND_MASTER_OPERATING_SYSTEM_AR.md](CATEGORY_DESIGN_AND_MASTER_OPERATING_SYSTEM_AR.md) والملخص الإنجليزي [DEALIX_CATEGORY_EXECUTIVE_SUMMARY_EN.md](DEALIX_CATEGORY_EXECUTIVE_SUMMARY_EN.md).
+**مرافق — الفئة والمعمارية وخارطة 12 شهراً:** هذا الملف يغطي **الرادارات والحلقات والتشغيل اليومي**. للنسخة الشاملة (تصميم الفئة، 7 طبقات، GTM، منافسة Salesforce/HubSpot، لوحة CEO، خريطة ambition) راجع [CATEGORY_DESIGN_AND_MASTER_OPERATING_SYSTEM_AR.md](CATEGORY_DESIGN_AND_MASTER_OPERATING_SYSTEM_AR.md) والملخص الإنجليزي [DEALIX_CATEGORY_EXECUTIVE_SUMMARY_EN.md](DEALIX_CATEGORY_EXECUTIVE_SUMMARY_EN.md). **النجم الشمالي:** [NORTH_STAR_AR.md](NORTH_STAR_AR.md).
 
 ---
 
@@ -360,6 +360,7 @@ Dashboard يقيس · Weekly loop يحسن
 | الموضوع | الملف |
 |---------|--------|
 | الفئة + 7 طبقات + 12 شهراً | [CATEGORY_DESIGN_AND_MASTER_OPERATING_SYSTEM_AR.md](CATEGORY_DESIGN_AND_MASTER_OPERATING_SYSTEM_AR.md) |
+| النجم الشمالي | [NORTH_STAR_AR.md](NORTH_STAR_AR.md) |
 | ملخص تنفيذي EN | [DEALIX_CATEGORY_EXECUTIVE_SUMMARY_EN.md](DEALIX_CATEGORY_EXECUTIVE_SUMMARY_EN.md) |
 | v3 طبقات المنتج | [DEALIX_V3_AUTONOMOUS_REVENUE_OS.md](../DEALIX_V3_AUTONOMOUS_REVENUE_OS.md) |
 | Level 1 تشغيل | [ops/full_ops_pack/DEALIX_FULL_OPS_SETUP.md](../ops/full_ops_pack/DEALIX_FULL_OPS_SETUP.md) |

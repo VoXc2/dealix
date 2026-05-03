@@ -2,6 +2,8 @@
 
 هذا الملف **يوحّد** مسار التدشين ويربط الوثائق الموجودة في الريبو. نفّذ المراحل بالترتيب؛ كل مرحلة لها **DoD** (معيار انتهاء) و**دليل** (screenshot، مخرجات terminal، رقم صف، إلخ).
 
+**النجم الشمالي (ماذا نفوز وكيف نقيسه):** [strategic/NORTH_STAR_AR.md](strategic/NORTH_STAR_AR.md)
+
 **قاعدة الإطلاق العام:** راجع [LAUNCH_GATES.md](LAUNCH_GATES.md) — لا تُعلن «إطلاقاً كاملاً» حتى تُستوفى القاعدة المذكورة هناك (≥24/30 بوابات + عناصر P0). قائمة عامة إضافية: [PUBLIC_LAUNCH_CHECKLIST.md](PUBLIC_LAUNCH_CHECKLIST.md).
 
 ---
@@ -18,7 +20,7 @@
 | بوابات الجاهزية | [`LAUNCH_GATES.md`](LAUNCH_GATES.md) |
 | قائمة الإطلاق العام | [`PUBLIC_LAUNCH_CHECKLIST.md`](PUBLIC_LAUNCH_CHECKLIST.md) |
 | Level 1 Full Ops | [`ops/full_ops_pack/DEALIX_FULL_OPS_SETUP.md`](ops/full_ops_pack/DEALIX_FULL_OPS_SETUP.md)، [`ops/TURN_ON_FULL_OPS_AR.md`](ops/TURN_ON_FULL_OPS_AR.md)، [`ops/EXECUTE_NOW_AR.md`](ops/EXECUTE_NOW_AR.md)، [`ops/full_ops_pack/LEVEL_1_ACCEPTANCE_CHECKLIST_AR.md`](ops/full_ops_pack/LEVEL_1_ACCEPTANCE_CHECKLIST_AR.md)، [`ops/full_ops_pack/dealix_google_apps_script.gs`](ops/full_ops_pack/dealix_google_apps_script.gs) |
-| استراتيجية الفئة | [`strategic/CATEGORY_DESIGN_AND_MASTER_OPERATING_SYSTEM_AR.md`](strategic/CATEGORY_DESIGN_AND_MASTER_OPERATING_SYSTEM_AR.md)، [`strategic/SAUDI_REVENUE_EXECUTION_OS_RADARS_AR.md`](strategic/SAUDI_REVENUE_EXECUTION_OS_RADARS_AR.md)، [`strategic/DEALIX_CATEGORY_EXECUTIVE_SUMMARY_EN.md`](strategic/DEALIX_CATEGORY_EXECUTIVE_SUMMARY_EN.md) |
+| استراتيجية الفئة | [`strategic/CATEGORY_DESIGN_AND_MASTER_OPERATING_SYSTEM_AR.md`](strategic/CATEGORY_DESIGN_AND_MASTER_OPERATING_SYSTEM_AR.md)، [`strategic/SAUDI_REVENUE_EXECUTION_OS_RADARS_AR.md`](strategic/SAUDI_REVENUE_EXECUTION_OS_RADARS_AR.md)، [`strategic/NORTH_STAR_AR.md`](strategic/NORTH_STAR_AR.md)، [`strategic/DEALIX_CATEGORY_EXECUTIVE_SUMMARY_EN.md`](strategic/DEALIX_CATEGORY_EXECUTIVE_SUMMARY_EN.md) |
 | v3 / Revenue Graph | [`DEALIX_V3_AUTONOMOUS_REVENUE_OS.md`](DEALIX_V3_AUTONOMOUS_REVENUE_OS.md)، [`../auto_client_acquisition/revenue_graph/`](../auto_client_acquisition/revenue_graph/)، [`../api/routers/command_center.py`](../api/routers/command_center.py) |
 | GTM | [`GTM_PLAYBOOK.md`](GTM_PLAYBOOK.md)، [`ops/LAUNCH_DAY_ONE_KIT.md`](ops/LAUNCH_DAY_ONE_KIT.md)، [`OFFER_LADDER.md`](OFFER_LADDER.md)، [`COMPETITIVE_POSITIONING.md`](COMPETITIVE_POSITIONING.md) |
 | فوترة يدوية | [`ops/MANUAL_PAYMENT_SOP.md`](ops/MANUAL_PAYMENT_SOP.md)، [`BILLING_MOYASAR_RUNBOOK.md`](BILLING_MOYASAR_RUNBOOK.md) |
@@ -106,5 +108,6 @@
 | من أين أبدأ اليوم؟ | [ops/EXECUTE_NOW_AR.md](ops/EXECUTE_NOW_AR.md) |
 | كيف أشغّل Sheet + Form؟ | [ops/TURN_ON_FULL_OPS_AR.md](ops/TURN_ON_FULL_OPS_AR.md) |
 | لماذا نفوز في الفئة؟ | [strategic/CATEGORY_DESIGN_AND_MASTER_OPERATING_SYSTEM_AR.md](strategic/CATEGORY_DESIGN_AND_MASTER_OPERATING_SYSTEM_AR.md) |
+| النجم الشمالي والقياس؟ | [strategic/NORTH_STAR_AR.md](strategic/NORTH_STAR_AR.md) |
 | هل نحن جاهزون تقنياً للإعلان؟ | [LAUNCH_GATES.md](LAUNCH_GATES.md) |
 | قائمة الإطلاق العام؟ | [PUBLIC_LAUNCH_CHECKLIST.md](PUBLIC_LAUNCH_CHECKLIST.md) |

@@ -2,6 +2,8 @@
 
 هذا المستند **مرافق** لـ [SAUDI_REVENUE_EXECUTION_OS_RADARS_AR.md](SAUDI_REVENUE_EXECUTION_OS_RADARS_AR.md): الرادارات تركز على **كيف نشغّل الشركة أسبوعياً مع أدلة**؛ هذا الملف يجيب: **لماذا نفوز في الفئة، أي معمارية نبني نحوها، وما خارطة 12 شهراً.**
 
+**النجم الشمالي (مخرج النجاح والمقاييس حسب المرحلة):** [NORTH_STAR_AR.md](NORTH_STAR_AR.md)
+
 **تنبيه للمراجعات الخارجية:** الروابط أدناه إلى مواقع جهات خارجية قد تتغير. راجع المصدر الرسمي قبل أي نشر أو عقد.
 
 ---
@@ -417,6 +419,7 @@ Checklist مستقبلي: SLA · Access control · Audit logs · Data retention 
 | الموضوع | الملف |
 |---------|--------|
 | الرادارات الـ25 + loops | [SAUDI_REVENUE_EXECUTION_OS_RADARS_AR.md](SAUDI_REVENUE_EXECUTION_OS_RADARS_AR.md) |
+| النجم الشمالي | [NORTH_STAR_AR.md](NORTH_STAR_AR.md) |
 | ملخص تنفيذي إنجليزي | [DEALIX_CATEGORY_EXECUTIVE_SUMMARY_EN.md](DEALIX_CATEGORY_EXECUTIVE_SUMMARY_EN.md) |
 | v3 طبقات المنتج | [DEALIX_V3_AUTONOMOUS_REVENUE_OS.md](../DEALIX_V3_AUTONOMOUS_REVENUE_OS.md) |
 | ما بعد الإطلاق | [POST_LAUNCH_BACKLOG.md](../ops/POST_LAUNCH_BACKLOG.md) |

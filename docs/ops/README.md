@@ -2,7 +2,7 @@
 
 Operational playbooks, queues, and checklists live in this folder.
 
-**خطة التدشين الشاملة (عربي — كل المراحل والروابط):** [LAUNCH_MASTER_PLAN_AR.md](../LAUNCH_MASTER_PLAN_AR.md)
+**خطة التدشين الشاملة (عربي — كل المراحل والروابط):** [LAUNCH_MASTER_PLAN_AR.md](../LAUNCH_MASTER_PLAN_AR.md) · **النجم الشمالي:** [NORTH_STAR_AR.md](../strategic/NORTH_STAR_AR.md)
 
 **Level 1 Full Ops (Google Sheet + Form + Apps Script + evidence):** start at [full_ops_pack/DEALIX_FULL_OPS_SETUP.md](full_ops_pack/DEALIX_FULL_OPS_SETUP.md).
 
