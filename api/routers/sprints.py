@@ -254,7 +254,63 @@ async def day_2(sprint_id: str) -> dict[str, Any]:
 
 @router.post("/{sprint_id}/messages/generate")
 async def day_3(sprint_id: str) -> dict[str, Any]:
-    return await _generate_day(sprint_id, 3, generate_message_pack, label_ar="Message Pack")
+    """Day 3 — Message Pack. Tries LLM-personalized drafts FIRST (using
+    Company Brain + saudi-tone system prompt + assert_safe), falls back
+    to deterministic templates per-message on any failure.
+
+    Each message in the output carries `llm_used` and `provider` so the
+    UI / audit log can show where the personalization came from."""
+    from auto_client_acquisition.intelligence.smart_drafter import get_drafter
+
+    async with get_session() as session:
+        sprint = await _load_or_404(session, sprint_id)
+        brain = await _load_customer_brain(session, sprint.customer_id)
+
+        # Start with the deterministic baseline (always safe)
+        baseline = generate_message_pack(brain)
+
+        drafter = get_drafter()
+        smart_messages: list[dict[str, Any]] = []
+        llm_count = 0
+        for i, template_text in enumerate(baseline["first_messages_ar"]):
+            r = await drafter.draft_outreach_message(
+                brain,
+                prospect_hint=f"Prospect #{i+1} for {brain.get('company_name','—')}",
+                fallback=template_text,
+            )
+            if r.used_llm:
+                llm_count += 1
+            smart_messages.append({
+                "n": i + 1,
+                "text": r.text,
+                "llm_used": r.used_llm,
+                "provider": r.provider,
+                "fallback_reason": r.fallback_reason,
+                "safety_passed": r.safety_passed,
+                "approval_required": True,
+            })
+
+        # Replace the simple list with annotated dicts; also keep a
+        # `text-only` array for backwards-compat consumers.
+        baseline["first_messages_ar"] = [m["text"] for m in smart_messages]
+        baseline["first_messages_annotated"] = smart_messages
+        baseline["llm_personalized_count"] = llm_count
+        baseline["fallback_count"] = len(smart_messages) - llm_count
+
+        outputs = dict(sprint.day_outputs_json or {})
+        outputs["day_3"] = baseline
+        sprint.day_outputs_json = outputs
+        sprint.current_day = max(sprint.current_day, 3)
+        sprint.status = "day_3"
+        proof_id = await _emit_day_proof(session, sprint, 3, "Message Pack (LLM-enhanced)")
+        await session.commit()
+        return {
+            "sprint_id": sprint_id,
+            "day": 3,
+            "output": baseline,
+            "proof_event_id": proof_id,
+            "status": sprint.status,
+        }
 
 
 @router.post("/{sprint_id}/meeting-prep")

@@ -36,6 +36,7 @@ from api.routers import (
     email_send,
     full_os,
     health,
+    intelligence,
     leads,
     meetings,
     negotiation,
@@ -198,6 +199,7 @@ def create_app() -> FastAPI:
     app.include_router(actions.router)
     app.include_router(learning.router)
     app.include_router(sprints.router)
+    app.include_router(intelligence.router)
     app.include_router(role_aliases.router)
 
     @app.get("/", tags=["root"])

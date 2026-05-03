@@ -180,7 +180,42 @@ async def chat_message(body: dict[str, Any] = Body(...)) -> dict[str, Any]:
         mapping["reason_ar"] if blocked
         else "كل outbound يمر بموافقتك. لا cold WhatsApp، لا scraping، لا live charge."
     )
-    return {
+
+    # Detect low-confidence intent. classify_intent() defaults to
+    # "want_more_customers" when nothing matches. If the user's text
+    # didn't actually mention any "want_more_customers" keywords, we
+    # treat it as ambiguous and ask a clarifying question via LLM.
+    low_confidence = False
+    clarify_text: str | None = None
+    if intent == "want_more_customers" and not blocked and text:
+        haystack = text.lower()
+        # Was the match an actual want_more_customers keyword, or the default?
+        wmc_keywords = next(
+            (kws for k, kws in _INTENT_KEYWORDS if k == "want_more_customers"),
+            [],
+        )
+        # ASCII keywords use word-boundary; accept any contains for non-ASCII
+        match = any(
+            (re.search(r"\b" + re.escape(w.lower()) + r"\b", haystack)
+             if all(c.isascii() for c in w) else (w.lower() in haystack))
+            for w in wmc_keywords
+        )
+        if not match:
+            # Ambiguous — try LLM clarifying question
+            low_confidence = True
+            try:
+                from auto_client_acquisition.intelligence.smart_drafter import get_drafter
+                drafter = get_drafter()
+                r = await drafter.clarify_intent(
+                    text,
+                    fallback="ساعدني أفهم أكثر: تريد عملاء جدد، أم تنظيف قائمة، أم شراكات، أم تشغيل يومي؟",
+                )
+                clarify_text = r.text
+            except Exception as exc:  # noqa: BLE001
+                log.info("operator_clarify_llm_unavailable err=%s", exc)
+                clarify_text = "ساعدني أفهم أكثر: تريد عملاء جدد، أم تنظيف قائمة، أم شراكات، أم تشغيل يومي؟"
+
+    response: dict[str, Any] = {
         "intent": intent,
         "blocked": blocked,
         "reason_ar": mapping["reason_ar"],
@@ -192,6 +227,10 @@ async def chat_message(body: dict[str, Any] = Body(...)) -> dict[str, Any]:
             "Dealix يجهّز ويُحضّر — لا يرسل قبل موافقتك." if not blocked else None
         ),
     }
+    if low_confidence:
+        response["low_confidence"] = True
+        response["clarifying_question_ar"] = clarify_text
+    return response
 
 
 @router.post("/service/start")
