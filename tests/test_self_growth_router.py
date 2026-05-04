@@ -80,3 +80,129 @@ async def test_health_endpoint_exposes_git_sha_field():
     payload = r.json()
     assert "git_sha" in payload, "HealthResponse must surface git_sha"
     assert isinstance(payload["git_sha"], str) and payload["git_sha"]
+
+
+@pytest.mark.asyncio
+async def test_service_activation_one_endpoint():
+    from api.main import app
+
+    transport = ASGITransport(app=app)
+    async with AsyncClient(transport=transport, base_url="http://test") as client:
+        r = await client.get("/api/v1/self-growth/service-activation/lead_intake_whatsapp")
+    assert r.status_code == 200
+    payload = r.json()
+    assert payload["service_id"] == "lead_intake_whatsapp"
+    assert payload["status"] == "partial"
+    assert payload["eight_gate_block_present"] is False
+    assert any(r.startswith("gate_missing:") for r in payload["blocking_reasons"])
+
+
+@pytest.mark.asyncio
+async def test_service_activation_one_404_for_unknown():
+    from api.main import app
+
+    transport = ASGITransport(app=app)
+    async with AsyncClient(transport=transport, base_url="http://test") as client:
+        r = await client.get("/api/v1/self-growth/service-activation/__no_such_id__")
+    assert r.status_code == 404
+
+
+@pytest.mark.asyncio
+async def test_service_activation_candidates_endpoint():
+    from api.main import app
+
+    transport = ASGITransport(app=app)
+    async with AsyncClient(transport=transport, base_url="http://test") as client:
+        r = await client.get("/api/v1/self-growth/service-activation-candidates")
+    assert r.status_code == 200
+    payload = r.json()
+    assert payload["count"] >= 1
+    statuses = {c["status"] for c in payload["candidates"]}
+    assert statuses.issubset({"partial", "pilot"})
+
+
+@pytest.mark.asyncio
+async def test_tooling_endpoint_lists_known_tools():
+    from api.main import app
+
+    transport = ASGITransport(app=app)
+    async with AsyncClient(transport=transport, base_url="http://test") as client:
+        r = await client.get("/api/v1/self-growth/tooling")
+    assert r.status_code == 200
+    payload = r.json()
+    names = {t["tool_name"] for t in payload["tools"]}
+    assert {"pyyaml", "fastapi", "redis"} <= names
+    assert payload["summary"]["total"] > 0
+    # In CI, all required-for-core tools are installed
+    assert payload["core_required_missing"] == []
+
+
+@pytest.mark.asyncio
+async def test_seo_audit_summary_endpoint():
+    from api.main import app
+
+    transport = ASGITransport(app=app)
+    async with AsyncClient(transport=transport, base_url="http://test") as client:
+        r = await client.get("/api/v1/self-growth/seo/audit/summary")
+    assert r.status_code == 200
+    payload = r.json()
+    assert payload["perimeter_clean"] is True
+    assert isinstance(payload["advisory_gap_breakdown"], dict)
+
+
+@pytest.mark.asyncio
+async def test_publishing_check_blocks_guaranteed():
+    from api.main import app
+
+    transport = ASGITransport(app=app)
+    async with AsyncClient(transport=transport, base_url="http://test") as client:
+        r = await client.post(
+            "/api/v1/self-growth/publishing/check",
+            json={"text": "We guarantee revenue growth", "language": "en"},
+        )
+    assert r.status_code == 200
+    payload = r.json()
+    assert payload["decision"] == "blocked"
+    assert "guaranteed" in payload["forbidden_tokens_found"]
+
+
+@pytest.mark.asyncio
+async def test_publishing_check_passes_clean_arabic():
+    from api.main import app
+
+    transport = ASGITransport(app=app)
+    async with AsyncClient(transport=transport, base_url="http://test") as client:
+        r = await client.post(
+            "/api/v1/self-growth/publishing/check",
+            json={"text": "صفحة هبوط آمنة جاهزة للمراجعة", "language": "ar"},
+        )
+    assert r.status_code == 200
+    payload = r.json()
+    assert payload["decision"] == "allowed_draft"
+    assert payload["approval_status"] == "approval_required"
+
+
+@pytest.mark.asyncio
+async def test_publishing_check_400_on_missing_text():
+    from api.main import app
+
+    transport = ASGITransport(app=app)
+    async with AsyncClient(transport=transport, base_url="http://test") as client:
+        r = await client.post(
+            "/api/v1/self-growth/publishing/check",
+            json={"language": "ar"},
+        )
+    assert r.status_code == 400
+
+
+@pytest.mark.asyncio
+async def test_publishing_check_400_on_invalid_language():
+    from api.main import app
+
+    transport = ASGITransport(app=app)
+    async with AsyncClient(transport=transport, base_url="http://test") as client:
+        r = await client.post(
+            "/api/v1/self-growth/publishing/check",
+            json={"text": "x", "language": "fr"},
+        )
+    assert r.status_code == 400
