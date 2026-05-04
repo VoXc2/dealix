@@ -33,47 +33,18 @@ from typing import Any
 REPO_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO_ROOT))
 
-import yaml  # noqa: E402
-
-
-YAML_PATH = REPO_ROOT / "docs" / "registry" / "SERVICE_READINESS_MATRIX.yaml"
-
-
-# Sector → recommended starting bundle. Keep this list short and
-# explicit; if the founder wants more sectors, add them via PR.
-_SECTOR_DEFAULTS: dict[str, str] = {
-    "b2b_services": "growth_starter",
-    "b2b_saas": "growth_starter",
-    "agency": "partnership_growth",
-    "training_consulting": "growth_starter",
-    "local_services": "growth_starter",
-    "ecommerce_b2c": "growth_starter",
-    "real_estate": "growth_starter",
-    "healthcare_clinic": "growth_starter",
-}
-
-
-def _load_matrix() -> dict[str, Any]:
-    with YAML_PATH.open("r", encoding="utf-8") as f:
-        return yaml.safe_load(f)
-
-
-def _bundle(matrix: dict[str, Any], bundle_id: str) -> dict[str, Any] | None:
-    for b in matrix.get("bundles") or []:
-        if b.get("id") == bundle_id:
-            return b
-    return None
-
-
-def _services_in_bundle(matrix: dict[str, Any], bundle_id: str) -> list[dict[str, Any]]:
-    return [
-        s for s in matrix.get("services") or []
-        if s.get("bundle") == bundle_id
-    ]
-
-
-def _recommended_bundle(sector: str) -> str:
-    return _SECTOR_DEFAULTS.get(sector, "growth_starter")
+from auto_client_acquisition.diagnostic_engine import (  # noqa: E402
+    DiagnosticRequest,
+    generate_diagnostic,
+    list_supported_sectors,
+)
+from auto_client_acquisition.diagnostic_engine.engine import (  # noqa: E402
+    SECTOR_BUNDLE_MAP as _SECTOR_DEFAULTS,
+    _bundle_dict as _bundle,
+    _load_matrix,
+    _recommended_bundle_for as _recommended_bundle,
+    _services_in_bundle,
+)
 
 
 # ─────────────────────── markdown rendering ────────────────────────
@@ -85,8 +56,34 @@ def render_markdown(
     sector: str,
     region: str,
     pipeline_state: str,
-    matrix: dict[str, Any],
+    matrix: dict[str, Any] | None = None,
 ) -> str:
+    """Compose the bilingual markdown brief.
+
+    Delegates to the diagnostic_engine — kept here so the existing CLI
+    test suite continues to assert the same surface. The ``matrix``
+    arg is accepted for backward compatibility but the engine reads
+    its own copy via lru_cache; passing one has no effect.
+    """
+    return generate_diagnostic(DiagnosticRequest(
+        company=company,
+        sector=sector,
+        region=region,
+        pipeline_state=pipeline_state,
+    )).markdown_ar_en
+
+
+# Legacy in-script renderer kept below for tests that exercised
+# specific phrases; flagged unreachable so deletion is a one-line
+# follow-up after we confirm test parity.
+def _legacy_render_markdown(
+    *,
+    company: str,
+    sector: str,
+    region: str,
+    pipeline_state: str,
+    matrix: dict[str, Any],
+) -> str:  # pragma: no cover
     bundle_id = _recommended_bundle(sector)
     bundle = _bundle(matrix, bundle_id) or {}
     services = _services_in_bundle(matrix, bundle_id)

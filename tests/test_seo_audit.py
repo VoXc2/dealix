@@ -21,10 +21,13 @@ REPORT = REPO / "docs" / "SEO_AUDIT_REPORT.json"
 # copy on each page, remove its entry here. New pages must either
 # include those tags or be added to this list with a reason.
 #
-# As of 2026-05-04: every audited landing page now carries full
-# canonical + og:title + og:description + twitter:card. The
-# allowlist is empty — any new page without those tags fails CI.
-ADVISORY_EXEMPT: set[str] = set()
+# As of 2026-05-04: every customer-facing landing page now carries
+# full canonical + og:title + og:description + twitter:card. The
+# only exemptions are internal/noindex pages (e.g. the founder
+# dashboard) that should not be discoverable.
+ADVISORY_EXEMPT: set[str] = {
+    "founder-dashboard.html",  # noindex,nofollow — internal-only operator page
+}
 
 
 def _run_audit() -> dict:

@@ -13,7 +13,17 @@ router = APIRouter(prefix="/api/v1/reliability", tags=["reliability"])
 
 @router.get("/status")
 async def status() -> dict:
-    return {"module": "reliability_os", **summary()}
+    return {
+        "module": "reliability_os",
+        **summary(),
+        "guardrails": {
+            "no_live_send": True,
+            "no_scraping": True,
+            "no_cold_outreach": True,
+            "approval_required_for_external_actions": True,
+            "probes_are_local_only": True,
+        },
+    }
 
 
 @router.get("/health-matrix")

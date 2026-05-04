@@ -1,0 +1,57 @@
+name: Daily Snapshot
+
+# Writes a silent daily audit-trail snapshot of system state to
+# docs/snapshots/<YYYY-MM-DD>.json and commits it back to main.
+# Runs at 5AM UTC (= 8AM KSA) — one hour after the founder digest
+# at 4AM UTC to avoid contention.
+
+on:
+  schedule:
+    - cron: "0 5 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: dealix-daily-snapshot
+  cancel-in-progress: false
+
+jobs:
+  snapshot:
+    name: Write daily snapshot
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Install minimal deps
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Build snapshot
+        run: python scripts/dealix_snapshot.py
+
+      - name: Commit snapshot if changed
+        run: |
+          set -e
+          DATE="$(date -u +%Y-%m-%d)"
+          FILE="docs/snapshots/${DATE}.json"
+          git config user.name "dealix-bot"
+          git config user.email "bot@dealix.me"
+          git add "$FILE"
+          if git diff --cached --quiet; then
+            echo "no snapshot diff — nothing to commit"
+            exit 0
+          fi
+          git commit -m "chore(snapshot): daily snapshot ${DATE}"
+          git push origin HEAD:main

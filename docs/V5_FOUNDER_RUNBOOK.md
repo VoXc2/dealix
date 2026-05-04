@@ -173,6 +173,7 @@ Fix the root cause. Do not bypass.
 ## 5. أوّل عميل يدفع — manual playbook / First paying customer
 
 > ١٠٠٪ يدويّ. لا automation. لا خصم آليّ. لا cold outreach.
+> **قائمة كاملة خطوة-بخطوة:** `docs/V5_PHASE_E_CHECKLIST.md`.
 
 ### الخطوات / Steps
 
