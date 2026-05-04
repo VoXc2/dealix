@@ -39,6 +39,7 @@ from api.routers import (
     customer_loop,
     delivery_factory,
     finance_os,
+    founder,
     gtm_os,
     proof_ledger,
     reliability_os,
@@ -170,6 +171,7 @@ def create_app() -> FastAPI:
     app.include_router(proof_ledger.router)
     app.include_router(gtm_os.router)
     app.include_router(security_privacy.router)
+    app.include_router(founder.router)
     app.include_router(public.router)
     app.include_router(admin.router)
 
