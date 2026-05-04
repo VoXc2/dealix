@@ -16,6 +16,8 @@ class HealthResponse(BaseModel):
     version: str
     env: str
     providers: list[str]
+    # Set at image-build time via Dockerfile ARG GIT_SHA. "unknown" outside containers.
+    git_sha: str | None = None
 
 
 class MessageResponse(BaseModel):

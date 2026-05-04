@@ -193,6 +193,69 @@ make run
 # → http://localhost:8000/docs
 ```
 
+## 🛡️ Architecture Guard (PR 1) + Frontend Product System (PR-FE-1)
+
+Four scripts enforce the safety contract — run them locally before any commit
+that touches product code or marketing pages.
+
+```bash
+# Static checks: routers, forbidden patterns, ≤3 WhatsApp buttons,
+# safety flags, secrets hygiene, PDPL gates, autonomy modes.
+python scripts/repo_architecture_audit.py
+# → DEALIX_ARCH_AUDIT … RESULT: PASS
+
+# Frontend marketing claims: forbidden phrases, required CTAs/links, OG tags.
+python scripts/forbidden_claims_audit.py
+# → DEALIX_FORBIDDEN_CLAIMS_AUDIT … RESULT: PASS
+
+# Full readiness: compileall + pytest + routes + smoke + audit + env + files.
+python scripts/launch_readiness_check.py
+# → DEALIX_LAUNCH_READINESS … RESULT: GO_PRIVATE_BETA
+
+# Live verification against a deployed environment (Railway/Render/Fly).
+python scripts/paid_beta_ready.py --base-url https://web-dealix.up.railway.app
+# → PAID_BETA_READY_CHECK … RESULT: PAID_BETA_READY
+
+# Final launch gate (technical + commercial readiness in one script).
+python scripts/launch_checklist.py
+# → DEALIX_LAUNCH_CHECKLIST … RESULT: LAUNCH_READY (5/5)
+
+# Smoke a deployed staging URL.
+python scripts/staging_smoke.py --base-url https://app.dealix.me
+# → DEALIX_STAGING_SMOKE … RESULT: STAGING_SMOKE_PASS
+```
+
+### Launch Day
+
+When you're ready to point real customers at Dealix, follow this order:
+
+1. **Pre-flight** — read [`docs/LAUNCH_DAY_CHECKLIST.md`](docs/LAUNCH_DAY_CHECKLIST.md) (D-7 → D+7).
+2. **Operations** — [`docs/RUNBOOK.md`](docs/RUNBOOK.md) covers the 4 daily windows + incident playbook + rollback.
+3. **Outreach** — [`docs/OUTREACH_PLAYBOOK.md`](docs/OUTREACH_PLAYBOOK.md) has 30 Saudi agency targets + 6 LinkedIn templates + objection responses.
+4. **First Pilot** — [`docs/FIRST_PILOT_INTAKE.md`](docs/FIRST_PILOT_INTAKE.md) is the intake form + Definition of Done + upgrade script for Pilot 499.
+5. **Daily Ops** — wire 4 cron jobs (`/api/v1/daily-ops/run`) at 08:30 / 12:30 / 16:30 / 18:00 KSA.
+6. **Observability** — `/api/v1/observability/{costs,unsafe,quality}/summary` + the live widgets at the top of `command-center.html`.
+
+### Frontend Product System
+
+The `landing/` directory contains 25+ static HTML pages (no build pipeline).
+PR-FE-1 added the modular component library + 9 new pages
+(companies, services, private-beta, growth-os, agency-partner, operator,
+targeting, proof-pack, support). See [`landing/README.md`](landing/README.md)
+for layout, design tokens, and how to add new pages.
+
+Live-action gates (default `false` everywhere — flip only with explicit opt-in
+and legal review):
+
+```
+WHATSAPP_ALLOW_LIVE_SEND=false
+GMAIL_ALLOW_LIVE_SEND=false
+MOYASAR_ALLOW_LIVE_CHARGE=false
+LINKEDIN_ALLOW_AUTO_DM=false   # always false — LinkedIn ToS forbids automation
+```
+
+CI runs the same audit on every PR via `.github/workflows/architecture_guard.yml`.
+
 Full stack (app + Postgres + Redis + Mongo):
 ```bash
 make docker-up

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<!--
+  Role landing page template.
+  All 8 role pages in this directory use the SAME shell — what differs:
+    1. <body data-role="..."> — sets the slug (one of: ceo, sales, growth,
+       revops, cs, finance, compliance, partner)
+    2. The <title> and meta description (per page, generated from this template)
+    3. Everything else is rendered at runtime by assets/js/role-page.js
+
+  To regenerate the 8 role pages from this template, see scripts that consume
+  ROLE_COPY in role-page.js for the source of truth.
+-->
+<html lang="ar" dir="rtl" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>الامتثال — Dealix</title>
+<meta name="description" content="PDPL + WhatsApp ToS مفروضة بـ default. ٨ live-action gates افتراضي False.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../styles.css">
+<link rel="stylesheet" href="../assets/css/base.css">
+<link rel="stylesheet" href="../assets/css/components.css">
+<link rel="stylesheet" href="../assets/css/cards.css">
+<link rel="stylesheet" href="../assets/css/responsive.css">
+</head>
+<body class="dx-page" data-role="compliance">
+<a href="#dx-main" class="dx-skip-link">تجاوز إلى المحتوى</a>
+<div data-include="../components/nav.html"></div>
+
+<main id="dx-main" class="dx-page__main">
+  <section class="dx-hero">
+    <div class="dx-container">
+      <div class="dx-hero__inner" id="dx-role-pitch"></div>
+    </div>
+  </section>
+
+  <section class="dx-section">
+    <div class="dx-container">
+      <h2 style="margin-bottom:.75rem;">٣ قرارات اليوم لدورك</h2>
+      <div class="dx-demo-banner" id="dx-demo-banner" role="status" style="display:none;">
+        نماذج توضيحية — اشترك لتحصل على قرارات حقيقية من بياناتك.
+      </div>
+      <div id="dx-role-decisions"></div>
+      <p style="margin-top:1.5rem; color:#6b7280; font-size:.9rem;">
+        كل قرار قابل للموافقة بضغطة. Dealix لا ينفّذ بدون موافقتك. لا outreach بارد، لا live charge.
+      </p>
+    </div>
+  </section>
+</main>
+
+<div data-include="../components/footer.html"></div>
+<script src="../assets/js/components-loader.js" defer></script>
+<script src="../assets/js/api.js" defer></script>
+<script src="../assets/js/role-page.js" defer></script>
+</body>
+</html>

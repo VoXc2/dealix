@@ -42,6 +42,11 @@ class Settings(BaseSettings):
     app_secret_key: SecretStr = Field(default=SecretStr("change-me"))
     cors_origins: str = "http://localhost:3000,http://localhost:8000"
 
+    # Build identity — set at image-build time (Dockerfile ARG GIT_SHA),
+    # surfaced on /health so a single curl confirms which commit Railway
+    # is actually serving. "unknown" when running outside a container.
+    git_sha: str = "unknown"
+
     # ── LLM: Anthropic ──────────────────────────────────────────
     anthropic_api_key: SecretStr | None = None
     anthropic_model: str = "claude-sonnet-4-5-20250929"
@@ -104,6 +109,20 @@ class Settings(BaseSettings):
     # Live WhatsApp Cloud API send — MUST remain False until webhook + opt-in + legal sign-off.
     # Env: WHATSAPP_ALLOW_LIVE_SEND (default false).
     whatsapp_allow_live_send: bool = False
+
+    # ── Live action gates (PR 1: declared, enforced in audit) ───
+    # Default False everywhere; flip only after explicit opt-in + legal review.
+    gmail_allow_live_send: bool = False
+    moyasar_allow_live_charge: bool = False
+    moyasar_secret_key: SecretStr | None = None  # sk_test_xxx or sk_live_xxx
+    moyasar_publishable_key: str | None = None   # pk_test_xxx or pk_live_xxx
+    linkedin_allow_auto_dm: bool = False  # ALWAYS False — LinkedIn ToS forbids automation
+    resend_allow_live_send: bool = False  # PR-BE-Auth: gate magic-link emails
+    # PR-COMMERCIAL-CLOSE: 3 new gates for Sales/Growth WhatsApp + Calls.
+    whatsapp_allow_internal_send: bool = False  # internal manager briefs via WhatsApp
+    whatsapp_allow_customer_send: bool = False  # customer-facing WhatsApp messages
+    calls_allow_recommend: bool = True          # we DO recommend calls (read-only)
+    calls_allow_live_dial: bool = False         # we NEVER auto-dial
 
     # ── Email ───────────────────────────────────────────────────
     email_provider: Literal["resend", "sendgrid", "smtp"] = "resend"

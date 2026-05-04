@@ -21,9 +21,28 @@ os.environ.setdefault("DEEPSEEK_API_KEY", "test-deepseek-key")
 os.environ.setdefault("GROQ_API_KEY", "test-groq-key")
 os.environ.setdefault("GLM_API_KEY", "test-glm-key")
 os.environ.setdefault("GOOGLE_API_KEY", "test-google-key")
+# Use shared in-memory SQLite for tests so DB-touching endpoints can run
+# without an external Postgres (PR-BE-Attribution).
+os.environ.setdefault(
+    "DATABASE_URL",
+    "sqlite+aiosqlite:///file:dealix_test?mode=memory&cache=shared&uri=true",
+)
 
 
 from core.llm.base import LLMResponse
+
+
+@pytest_asyncio.fixture(scope="session", autouse=True)
+async def _init_test_db() -> AsyncGenerator[None, None]:
+    """Create all tables in the in-memory SQLite at session start."""
+    from db.session import init_db
+    try:
+        await init_db()
+    except Exception:
+        # If something blocks the in-memory DB (e.g., non-sqlite URL), let
+        # individual tests skip gracefully via their own try/except.
+        pass
+    yield
 
 
 @pytest.fixture

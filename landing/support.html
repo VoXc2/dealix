@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>الدعم — Dealix Tier-1 Support (SLA + bot + ticket)</title>
+<meta name="description" content="مركز دعم Dealix: onboarding checklist، SLA واضحة (P0 ساعة، P3 48 ساعة)، embedded bot، نموذج تذكرة، escalation rules. Privacy-first.">
+<link rel="canonical" href="https://dealix.me/support.html">
+<meta property="og:title" content="الدعم — Dealix">
+<meta property="og:description" content="دعم بـ SLA واضحة وbot ذكي. P0 خلال ساعة.">
+<meta property="og:locale" content="ar_SA">
+<meta property="og:url" content="https://dealix.me/support.html">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="assets/css/base.css">
+<link rel="stylesheet" href="assets/css/components.css">
+<link rel="stylesheet" href="assets/css/cards.css">
+<link rel="stylesheet" href="assets/css/responsive.css">
+</head>
+<body class="dx-page">
+<a href="#dx-main" class="dx-skip-link">تجاوز إلى المحتوى</a>
+
+<div data-include="components/nav.html"></div>
+
+<main id="dx-main" class="dx-page__main">
+  <section class="dx-hero">
+    <div class="dx-container">
+      <div class="dx-hero__inner">
+        <span class="dx-hero__eyebrow">Tier-1 Support</span>
+        <h1 class="dx-hero__title">دعم واضح لكل خطوة: <strong style="color:var(--dx-emerald)">الربط، التشغيل، Proof، التصعيد</strong></h1>
+        <p class="dx-hero__sub">
+          P0 خلال ساعة. P3 خلال 48 ساعة. كل شيء بـ SLA مكتوبة. Bot يصنّف أولوية تذكرتك ويصعّد لإنسان عند الحاجة.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="dx-section">
+    <div class="dx-container">
+      <div class="dx-section__head">
+        <span class="dx-section__kicker">SLA</span>
+        <h2 class="dx-section__title">أوقات الاستجابة</h2>
+      </div>
+      <div class="dx-sla">
+        <div class="dx-sla__row">
+          <span class="dx-sla__priority dx-sla__priority--p0">P0</span>
+          <span class="dx-sla__desc">أمان / إرسال خاطئ / تعطل كامل</span>
+          <span class="dx-sla__time">≤ ساعة</span>
+        </div>
+        <div class="dx-sla__row">
+          <span class="dx-sla__priority dx-sla__priority--p1">P1</span>
+          <span class="dx-sla__desc">خدمة مهمة لا تعمل (Proof Pack أو Command Center)</span>
+          <span class="dx-sla__time">نفس اليوم</span>
+        </div>
+        <div class="dx-sla__row">
+          <span class="dx-sla__priority dx-sla__priority--p2">P2</span>
+          <span class="dx-sla__desc">connector / Proof Pack متأخر</span>
+          <span class="dx-sla__time">≤ 24 ساعة</span>
+        </div>
+        <div class="dx-sla__row">
+          <span class="dx-sla__priority dx-sla__priority--p3">P3</span>
+          <span class="dx-sla__desc">سؤال أو طلب تحسين</span>
+          <span class="dx-sla__time">≤ 48 ساعة</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="dx-section dx-section--muted">
+    <div class="dx-container">
+      <div class="dx-section__head">
+        <span class="dx-section__kicker">Support Bot</span>
+        <h2 class="dx-section__title">ابدأ هنا — Bot يصنّف أولوية مشكلتك</h2>
+      </div>
+
+      <div class="dx-chat" aria-label="بوت الدعم">
+        <header class="dx-chat__head">
+          <div class="dx-chat__avatar" aria-hidden="true">D</div>
+          <div>
+            <div class="dx-chat__name">Dealix Support Bot</div>
+            <div class="dx-chat__status">متاح 24/7</div>
+          </div>
+        </header>
+        <div class="dx-chat__body" id="dx-support-body">
+          <div class="dx-chat__msg dx-chat__msg--bot">
+            أهلاً، أنا مساعد Dealix للدعم.<br>
+            اختر نوع المشكلة وسأصنّف الأولوية وأفتح تذكرة:
+          </div>
+        </div>
+        <div class="dx-chat__quick">
+          <button data-priority="P0" data-cat="security"
+                  data-track="support_bot_classified" data-track-cat="security">إرسال خاطئ / أمان</button>
+          <button data-priority="P1" data-cat="service_down"
+                  data-track="support_bot_classified" data-track-cat="service_down">خدمة لا تعمل</button>
+          <button data-priority="P2" data-cat="connector"
+                  data-track="support_bot_classified" data-track-cat="connector">Connector / Proof متأخر</button>
+          <button data-priority="P2" data-cat="billing"
+                  data-track="support_bot_classified" data-track-cat="billing">Billing / Moyasar</button>
+          <button data-priority="P3" data-cat="question"
+                  data-track="support_bot_classified" data-track-cat="question">سؤال عام</button>
+          <button data-priority="P3" data-cat="upgrade"
+                  data-track="support_bot_classified" data-track-cat="upgrade">ترقية باقة</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="dx-section" id="ticket">
+    <div class="dx-container">
+      <div class="dx-section__head">
+        <span class="dx-section__kicker">تذكرة جديدة</span>
+        <h2 class="dx-section__title">افتح تذكرة دعم</h2>
+        <p class="dx-section__lede">سيُحوّلك Bot أعلاه أو املأ مباشرةً.</p>
+      </div>
+
+      <form id="dx-ticket-form" style="max-width:560px; margin:0 auto;" novalidate>
+        <div class="dx-field">
+          <label class="dx-field__label" for="t-name">الاسم</label>
+          <input class="dx-field__input" type="text" id="t-name" name="name" required>
+        </div>
+        <div class="dx-field">
+          <label class="dx-field__label" for="t-email">البريد</label>
+          <input class="dx-field__input" type="email" id="t-email" name="email" required>
+        </div>
+        <div class="dx-field">
+          <label class="dx-field__label" for="t-priority">الأولوية</label>
+          <select class="dx-field__select" id="t-priority" name="priority" required>
+            <option value="">اختر…</option>
+            <option value="P0">P0 — حرج</option>
+            <option value="P1">P1 — عالٍ</option>
+            <option value="P2">P2 — متوسط</option>
+            <option value="P3">P3 — منخفض</option>
+          </select>
+        </div>
+        <div class="dx-field">
+          <label class="dx-field__label" for="t-subject">العنوان</label>
+          <input class="dx-field__input" type="text" id="t-subject" name="subject" required>
+        </div>
+        <div class="dx-field">
+          <label class="dx-field__label" for="t-msg">التفاصيل</label>
+          <textarea class="dx-field__textarea" id="t-msg" name="message" rows="5" required></textarea>
+          <span class="dx-field__hint">رجاءً لا تضع كلمات سر أو أرقام بطاقات.</span>
+        </div>
+        <button type="submit" class="dx-btn dx-btn--primary dx-btn--block"
+                data-track="support_ticket_opened">فتح تذكرة</button>
+        <p id="dx-ticket-status" style="margin-top:0.75rem; font-size:0.875rem;"></p>
+      </form>
+    </div>
+  </section>
+
+  <section class="dx-section dx-section--muted">
+    <div class="dx-container">
+      <div class="dx-section__head">
+        <span class="dx-section__kicker">Escalation</span>
+        <h2 class="dx-section__title">متى يتدخل إنسان فوراً</h2>
+      </div>
+      <div class="dx-cards-grid">
+        <article class="dx-card" data-type="risk" data-risk="high">
+          <h3 class="dx-card__title">أمان / إرسال خاطئ</h3>
+          <p class="dx-card__why">P0 → human خلال ساعة، Bot لا يُغلق.</p>
+        </article>
+        <article class="dx-card" data-type="risk" data-risk="medium">
+          <h3 class="dx-card__title">Billing / Moyasar dispute</h3>
+          <p class="dx-card__why">يُحوّل لإنسان مباشرة. Bot لا يحل دفع.</p>
+        </article>
+        <article class="dx-card" data-type="risk" data-risk="medium">
+          <h3 class="dx-card__title">قانوني / Privacy</h3>
+          <p class="dx-card__why">PDPL أو contract — تصعيد للقسم القانوني.</p>
+        </article>
+        <article class="dx-card" data-type="opportunity">
+          <h3 class="dx-card__title">عميل غاضب</h3>
+          <p class="dx-card__why">Sentiment detector → human بأعلى أولوية.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+</main>
+
+<div data-include="components/footer.html"></div>
+
+<script src="assets/js/api.js"></script>
+<script src="assets/js/analytics.js"></script>
+<script src="assets/js/components-loader.js"></script>
+<script src="assets/js/support-bot.js"></script>
+<script>
+  // Bot UX: classify + show SLA. The actual ticket POST is handled by support-bot.js.
+  document.addEventListener('click', function (ev) {
+    const btn = ev.target.closest('[data-priority]');
+    if (!btn) return;
+    const body = document.getElementById('dx-support-body');
+    if (!body) return;
+    const userMsg = document.createElement('div');
+    userMsg.className = 'dx-chat__msg dx-chat__msg--user';
+    userMsg.textContent = btn.textContent.trim();
+    body.appendChild(userMsg);
+    setTimeout(function () {
+      const reply = document.createElement('div');
+      reply.className = 'dx-chat__msg dx-chat__msg--bot';
+      const priority = btn.getAttribute('data-priority');
+      const cat = btn.getAttribute('data-cat');
+      const slaMap = { P0: 'ساعة واحدة', P1: 'نفس اليوم', P2: '24 ساعة', P3: '48 ساعة' };
+      reply.innerHTML = 'تم تصنيف الأولوية: <strong>' + priority + '</strong>.<br>'
+        + 'وقت الاستجابة المتوقع: <strong>' + slaMap[priority] + '</strong>.<br>'
+        + 'املأ التذكرة بالأسفل وسنتواصل.<br>'
+        + '<a href="#ticket" style="color:#fff; text-decoration:underline; font-weight:600;">انتقل للتذكرة ←</a>';
+      body.appendChild(reply);
+      body.scrollTop = body.scrollHeight;
+    }, 350);
+  });
+
+  // Ticket form submit is wired by assets/js/support-bot.js.
+
+  if (window.DealixAnalytics) DealixAnalytics.pageView('support');
+</script>
+</body>
+</html>

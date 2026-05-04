@@ -1,0 +1,242 @@
+# Dealix — 90-Day Real-Money Launch Plan
+
+> **Single source of truth.** Generated 2026-05-03 from real Saudi B2B benchmarks +
+> live infrastructure state. References (does not replace) `OUTREACH_PLAYBOOK.md`,
+> `MOYASAR_LIVE_CUTOVER.md`, `LAUNCH_DAY_CHECKLIST.md`, `PRIVACY_PDPL_READINESS.md`.
+
+---
+
+## 1. Strategic Frame (the only thing you must believe)
+
+**Thesis.** Dealix is the only Arabic-first revenue OS for Saudi B2B that is
+**PDPL-safe by default**. Every other tool (Gong, HubSpot, Clay, Pulse) is
+either English-first or PDPL-naive. SDAIA issued **48 violation decisions in
+year-1 of PDPL** — most were unconsented marketing messages. The fear is real,
+the moat is regulatory, and the wedge is `Pilot 499 SAR / 7 days`.
+
+**Beachhead market.** Saudi B2B agencies (10–50 employees) doing outbound for
+their own clients. They face PDPL exposure on behalf of every client they
+serve. Dealix removes that exposure while accelerating their pipeline. **30
+agencies = our entire 90-day target market.**
+
+**Math from real benchmarks** (web-validated):
+
+| Channel | Reply rate | Source |
+|---|---|---|
+| LinkedIn DM (cold) | 10.3% global, **7.24% MENA** (lowest globally) | belkins.io 2025 study |
+| LinkedIn DM + 340% personalization | up to 30% | alsona benchmarks |
+| Cold email | 1–5% | sopro.io 2026 |
+| WhatsApp (warm/opt-in) | 30%+ in MENA | outreaches.ai MENA data |
+
+**Implication:** MENA does not respond to cold volume. We must be
+**relationship-first**. Path to first money is NOT 1,000 cold messages — it's
+**30 warm intros + 1 viral case study**.
+
+---
+
+## 2. Unit Economics (the only money math you need)
+
+| Item | Gross | Moyasar fee | VAT 15% | Net to Dealix |
+|---|---|---|---|---|
+| Pilot (Mada card) | 499 SAR | 1.5% + 1 = 8.50 | inc. | **425 SAR** (after VAT remit) |
+| Pilot (credit card) | 499 SAR | 2.2% + 1 = 12.00 | inc. | **422 SAR** |
+| Growth OS / month (Mada) | 2,999 SAR | 46 | inc. | **2,562 SAR** |
+| Growth OS / year prepay (-17%) | 29,888 SAR | 449 | inc. | **25,565 SAR** |
+| Partnership Growth (one-shot floor) | 5,000 SAR | 76 | inc. | **4,272 SAR** |
+
+> Moyasar source: 2.2%+1 SAR credit, 1.5%+1 SAR Mada (verified 2026).
+> VAT: 15% B2B on SaaS in KSA; show **inclusive** pricing on landing.
+
+**Realistic 90-day money targets (NOT hype):**
+
+| Day | Pilots delivered | MRR | Cumulative cash | What it took |
+|---|---|---|---|---|
+| 7 | 0 | 0 | 0 | 30 warm intros sent |
+| 14 | 1 | 0 | 425 SAR | First Pilot signed |
+| 30 | 3 | 0 | 1,275 | 3 Pilots active, first Proof Pack delivered |
+| 45 | 5 | 5,124 | 6,399 | 2 Pilots upgraded to Growth OS |
+| 60 | 7 | 7,686 | 14,085 | First case study published, inbound starts |
+| 90 | 10 | 12,810 | 30,795 | 5 on Growth OS + 1 Partnership |
+
+**Day 90 ARR = ~154K SAR.** That is honest, not viral.
+
+---
+
+## 3. The 90-Day Plan, Day by Day
+
+### Phase 1 — Days 1–7: Manual warm-intro burst
+
+**Goal:** 30 conversations started, 5 Diagnostic calls booked, 0–1 Pilot signed.
+
+**Day 1 (Mon):** Pick 30 prospects from your LinkedIn 1st-degree connections.
+Filter: Saudi B2B agency, 10–50 employees, founder/CEO/Sales VP, not crypto/casino.
+List in `dealix prospects add` (CLI).
+
+**Day 2:** Send 6 personalized DMs. Use template in
+`docs/WARM_INTRO_TEMPLATES.md` § "Warm-1 (1st-degree LinkedIn)".
+Track via `dealix prospects mark <id> messaged`.
+
+**Days 3–7:** Send 6 more per day = 30 total by EOW.
+Daily 8 AM: `dealix standup` for the day's queue.
+
+**Acceptance criteria for Phase 1:**
+- ≥ 30 messages sent (track: `dealix prospects list --status messaged`)
+- ≥ 5 replies (Saudi MENA reply rate 7.24% × personalization 1.5x = ~11%)
+- ≥ 3 Diagnostic calls booked
+- ≥ 1 Pilot 499 paid
+
+### Phase 2 — Days 8–21: First Pilot delivery + first Proof
+
+**Goal:** Deliver Pilot for paying customer #1. Build the case study machine.
+
+**Day 8 (Pilot day 1):** Run `/api/v1/services/growth_starter/intake-questions`
+with the customer. Save answers. Set `success_metric` on CustomerRecord.
+
+**Days 8–14:** Daily ops cron is now live. Customer's pipeline is being
+populated with: target_ranked, opportunity_created, draft_created (all
+approval-required, all gated). Send daily 1-line WhatsApp update to customer:
+"اليوم Dealix جهّز X drafts و حمى Y opt-in violation."
+
+**Day 14 (Pilot day 7):** Deliver Proof Pack PDF via
+`https://api.dealix.me/api/v1/proof-ledger/customer/{id}/pack.html`. Walk
+through it on a 30-min call. Ask: "هل تكمل على Executive Growth OS بـ 2,999/شهر؟"
+
+**Conversion target:** 30% of Pilots upgrade to Growth OS in first 24h after
+Proof Pack delivery (industry: 25–40% pilot→subscription).
+
+**Days 14–21:** Anonymize customer's Proof Pack into a public LinkedIn case
+study post. This is the single highest-leverage asset of the launch.
+
+### Phase 3 — Days 22–45: Compound the proof
+
+**Goal:** Run 2 Pilots in parallel, publish 12 LinkedIn posts, get 2 inbound.
+
+- 1 LinkedIn post / day (drafts auto-generated by Dealix in
+  `docs/LINKEDIN_CONTENT_CALENDAR.md`).
+- 5 LinkedIn DMs / day to **2nd-degree** connections (warmer than cold).
+- Activate Moyasar live charge (`MOYASAR_ALLOW_LIVE_CHARGE=true`) after
+  Pilot #3 is signed and ready to pay. Run `dealix activate-payments`.
+- First inbound expected by Day 35 (lag from first viral post).
+
+### Phase 4 — Days 46–90: Convert + scale
+
+**Goal:** 5 Pilots → 2 Growth OS → 1 Partnership. MRR ≥ 6K SAR.
+
+- Stop cold outbound. Run inbound + referrals only.
+- Weekly office-hours WhatsApp group (gate=true `WHATSAPP_ALLOW_INTERNAL_SEND`)
+  with all paying customers. Customer→customer referrals.
+- Day 60: First Partnership Growth contract (5,000–7,500 SAR, custom).
+- Day 75: Activate `WHATSAPP_ALLOW_CUSTOMER_SEND` for top 3 customers
+  (opt-in obtained, audited).
+- Day 90: First annual prepay. 29,888 SAR upfront → 12-month runway extension.
+
+---
+
+## 4. The Moats (why this isn't easily copied)
+
+1. **PDPL-safe by default.** 8 live-action gates default-False, audit log per
+   approval. Competitor (Pulse, HubSpot Saudi reseller) cannot match without
+   re-architecting. **This is the moat — sell it loudly on `trust-center.html`.**
+2. **Arabic-first OS.** Every brief, card, Proof Pack, error message is in
+   Arabic. Gong/Clay are English with Google-Translate UI.
+3. **Proof Ledger as deliverable.** Customers can forward the Proof Pack PDF
+   to their CFO/board with HMAC signature. No competitor has this.
+4. **Solo-founder operating leverage.** Daily-ops cron + 4 windows =
+   founder serves 10 customers without hiring. CAC payback < 3 months at
+   Pilot 499 unit economics.
+
+---
+
+## 5. Risk Matrix (and what kills each risk)
+
+| Risk | Likelihood | Mitigation |
+|---|---|---|
+| 30 warm intros yield zero meetings | Medium | Templates are A/B-able; switch to email + voice note in week 2 if 0 replies by Day 7 |
+| First Pilot customer dislikes Proof Pack | Low | Pre-built 7-day playbook; weekly check-in keeps expectations aligned |
+| Moyasar declines first live charge | Low | Test charge for 1 SAR before going live; documented in `MOYASAR_LIVE_CUTOVER.md` |
+| PDPL complaint filed against Dealix itself | Very low | All outbound is approval-required; consent capture documented in `PRIVACY_PDPL_READINESS.md`. Worst case = warning letter, no fine |
+| Founder burnout (single point of failure) | High | 4 cron windows automate the OS; founder only does 1h/day human work (5 DMs + 3 calls + 1 LinkedIn post) |
+| Competitor copies Arabic-first | Medium | 6-month head start + first-mover Proof Pack moat. Each delivered Pilot widens the gap |
+| Low LinkedIn reach (small audience) | High | Substitute warm intros via WhatsApp (1st-degree contacts) when LinkedIn fails |
+
+---
+
+## 6. What Dealix (the system) Does Autonomously
+
+Already in production at `api.dealix.me`:
+
+- ✅ 4 daily-ops windows (08:30 / 12:30 / 16:30 / 18:00 KSA) via Railway cron
+- ✅ Self-Growth loop (auto-records 1 weekly experiment)
+- ✅ Role briefs (CEO / Sales / Growth / RevOps / CS / Finance / Compliance / Meeting Intel)
+- ✅ Proof Pack PDF generation (browser-print)
+- ✅ Public onboarding wizard (`/onboarding.html`)
+- ✅ 8 per-role landing pages (`/role/<role>.html`)
+- ✅ WhatsApp brief preview (read-only, copy-to-paste)
+- ✅ Role action guard (PDPL-aware 403s)
+
+Added in this round (PR-VISION-CLOSE-2):
+
+- ✅ **Moyasar invoice endpoint** (gate=False, ready to flip)
+- ✅ **Prospect tracker** (`/api/v1/prospects/*` + `dealix prospects` CLI)
+- ✅ **30-day LinkedIn content calendar** (`docs/LINKEDIN_CONTENT_CALENDAR.md`)
+- ✅ **`dealix standup` CLI** (daily 8AM founder routine)
+- ✅ **VAT-clear pricing** on landing
+- ✅ **PDPL trust moat** on `trust-center.html`
+- ✅ **Warm-intro templates** (`docs/WARM_INTRO_TEMPLATES.md`)
+
+---
+
+## 7. What YOU (the founder) Do — the 60-Min Daily Routine
+
+```bash
+# 8:00 AM — Daily standup (60 seconds)
+dealix standup
+
+# 8:01 — Open the 5 LinkedIn DMs Dealix queued for you (drafts ready)
+# 8:30 — Polish + send each in your tone (5 messages × 5 min = 25 min)
+
+# 9:00 — Reply to inbound (LinkedIn + WhatsApp + email)
+# 9:30 — Hold up to 2 Diagnostic calls (template in WARM_INTRO_TEMPLATES.md)
+
+# Lunch — Dealix midday cron has run. Check `dealix today` for any blocked items.
+
+# 4:00 PM — Closing window:
+#   Dealix has prepared tomorrow's LinkedIn post draft + tomorrow's 5 DMs.
+#   Polish + schedule the LinkedIn post. Done.
+
+# 6:00 PM — Scorecard window auto-runs. Done with the day.
+```
+
+**Total founder time: ~60 min/day, 5 days/week.** Everything else is the OS.
+
+---
+
+## 8. Decision Triggers (the only "if X then Y" you need)
+
+| Trigger | Action |
+|---|---|
+| 0 replies after 30 DMs sent | Switch to WhatsApp 1st-degree contacts; halve the message length |
+| First Pilot signed | Activate Moyasar (`dealix activate-payments`) |
+| 3rd Pilot signed | Hire VA for inbound triage (~1,500 SAR/mo) |
+| 5 paying customers | Stop outbound, switch to inbound + referrals only |
+| First annual prepay (29,888 SAR) | Reinvest into one ICP-paid LinkedIn ads campaign (3K SAR cap) |
+| Competitor imitates Arabic-first | Publish 5 customer Proof Packs publicly within 30 days |
+| Founder energy drops below 5 DMs/day | Pause new outbound; serve existing customers; let inbound carry 2 weeks |
+
+---
+
+## 9. References (the docs you'll actually open)
+
+- **Warm-intro templates** → `docs/WARM_INTRO_TEMPLATES.md`
+- **30-day LinkedIn calendar** → `docs/LINKEDIN_CONTENT_CALENDAR.md`
+- **Moyasar live activation** → `docs/MOYASAR_LIVE_CUTOVER.md`
+- **PDPL legal posture** → `docs/PRIVACY_PDPL_READINESS.md` + `landing/trust-center.html`
+- **Daily standup CLI** → `dealix standup --help`
+- **Prospect tracker** → `dealix prospects --help`
+
+---
+
+**The only thing left between today and the first 425 SAR in your bank account
+is *you, sending 6 personalized LinkedIn DMs tomorrow morning at 9 AM.***
+
+Everything else, the OS does.

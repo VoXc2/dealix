@@ -48,6 +48,11 @@ class MoyasarClient:
         Create a hosted payment invoice. Returns invoice object with `url` field
         that the customer visits to pay.
         """
+        # Live-charge gate — must be explicitly enabled to hit Moyasar's API.
+        from core.config.settings import get_settings
+        if not get_settings().moyasar_allow_live_charge:
+            raise RuntimeError("moyasar_allow_live_charge_false")
+
         if not self.secret_key:
             raise RuntimeError("MOYASAR_SECRET_KEY not set")
         payload: dict[str, Any] = {

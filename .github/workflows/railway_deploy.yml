@@ -15,8 +15,13 @@ name: Deploy to Railway
 
 on:
   push:
+    # Auto-deploy on push to the deploy branch. main is included for
+    # historical compatibility but the active deploy branch is
+    # claude/launch-command-center-6P4N0 — that's where production
+    # code actually lives until a future merge to main.
     branches:
       - main
+      - claude/launch-command-center-6P4N0
     paths:
       - "api/**"
       - "core/**"
@@ -25,6 +30,8 @@ on:
       - "autonomous_growth/**"
       - "integrations/**"
       - "db/**"
+      - "scripts/staging_smoke.sh"
+      - "scripts/verify_inbound_flow.sh"
       - "cli.py"
       - "Dockerfile"
       - "railway.json"
@@ -32,6 +39,9 @@ on:
       - "Procfile"
       - "requirements.txt"
       - "pyproject.toml"
+      # Workflow file itself — so a fix to the workflow (e.g. new
+      # smoke step) auto-triggers a re-verify on the deploy branch.
+      - ".github/workflows/railway_deploy.yml"
   workflow_dispatch:
     inputs:
       service:
@@ -104,7 +114,7 @@ jobs:
         run: |
           # Railway auto-generates public domains; for now we rely on the known URL.
           # User can set RAILWAY_PUBLIC_URL as a repo variable to test the right URL.
-          URL="${{ vars.RAILWAY_PUBLIC_URL || 'https://dealix-production-up.railway.app' }}"
+          URL="${{ vars.RAILWAY_PUBLIC_URL || 'https://api.dealix.me' }}"
           echo "Smoke-testing: $URL/healthz"
 
           for i in {1..12}; do
@@ -112,10 +122,36 @@ jobs:
             echo "Attempt $i: $code"
             if [ "$code" = "200" ]; then
               echo "✅ /healthz = 200 — backend is live"
-              exit 0
+              break
             fi
             sleep 15
           done
 
-          echo "::warning::/healthz did not return 200 after 3 minutes. Deployment may still be in progress."
-          echo "Check Railway dashboard: https://railway.com/project/54bb60b4-d059-4dd1-af57-bc44c702b9f0"
+      - name: Full staging smoke (Arabic cold-WA + PR #132 wiring + safety gates)
+        if: steps.check_token.outputs.token_present == 'true'
+        env:
+          BASE_URL: https://api.dealix.me
+        run: |
+          # Allow Railway extra time to fully roll the new build before we
+          # assert PR #132 wiring fields. If Railway is still serving the
+          # previous image when the smoke runs, the smoke fails loudly.
+          sleep 30
+          bash scripts/staging_smoke.sh
+
+      - name: Inbound funnel verification (demo-request → LeadRecord → /founder/today)
+        if: steps.check_token.outputs.token_present == 'true'
+        env:
+          BASE_URL: https://api.dealix.me
+        run: |
+          bash scripts/verify_inbound_flow.sh
+
+      - name: Final summary
+        if: steps.check_token.outputs.token_present == 'true'
+        run: |
+          echo "════════════════════════════════════════════════════════════"
+          echo "Dealix — Railway deploy + verification"
+          echo "  commit:     ${{ github.sha }}"
+          echo "  smoke:      see 'Full staging smoke' step above"
+          echo "  inbound:    see 'Inbound funnel verification' step above"
+          echo "  prod URL:   https://api.dealix.me"
+          echo "════════════════════════════════════════════════════════════"

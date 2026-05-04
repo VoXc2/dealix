@@ -153,15 +153,37 @@ async def moyasar_webhook(req: Request) -> dict[str, Any]:
         data = body.get("data") or {}
         payment = data if data.get("object") in (None, "payment", "invoice") else {}
         status = payment.get("status") or body.get("type")
+
+        # PR-BE-Attribution: persist Subscription + Payment + FunnelEvent.
+        persist_summary: dict[str, Any] = {"wrote": []}
+        try:
+            from auto_client_acquisition.business.attribution_persistence import (
+                persist_moyasar_event,
+            )
+            from db.session import get_session
+
+            async with get_session() as session:
+                persist_summary = await persist_moyasar_event(session, body)
+        except Exception as persist_exc:
+            # Persistence failure must not block 200 OK to Moyasar.
+            log.warning("moyasar_attribution_persist_failed event_fp=%s err=%s",
+                        event_fp, str(persist_exc)[:200])
+
         log.info(
-            "moyasar_webhook_processed event_fp=%s type=%s status=%s amount=%s",
+            "moyasar_webhook_processed event_fp=%s type=%s status=%s amount=%s wrote=%s",
             event_fp,
             event_type,
             status,
             payment.get("amount"),
+            ",".join(persist_summary.get("wrote", [])) or "none",
         )
-        # TODO: sync to HubSpot via ConnectorFacade in D+2 E2E test
-        return {"status": "ok", "event_id": event_id, "event_type": event_type}
+        return {
+            "status": "ok",
+            "event_id": event_id,
+            "event_type": event_type,
+            "wrote": persist_summary.get("wrote", []),
+            "stage": persist_summary.get("stage"),
+        }
     except Exception as exc:
         log.exception("moyasar_webhook_processing_failed event_fp=%s", event_fp)
         DLQ(WEBHOOKS_DLQ).push(

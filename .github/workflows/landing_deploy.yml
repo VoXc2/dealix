@@ -1,0 +1,87 @@
+name: Deploy landing → gh-pages
+
+# Mirrors the entire landing/ directory to the gh-pages branch.
+# Eliminates the "site at dealix.me is half-online" problem caused by
+# a manually-curated gh-pages subset that drifts from landing/.
+#
+# Triggers:
+#   - push to claude/launch-command-center-6P4N0 affecting landing/, CNAME, or this workflow
+#   - manual workflow_dispatch for one-shot rebuilds
+#
+# Safety:
+#   - Read-only on production code paths (only writes the gh-pages branch).
+#   - Preserves the dealix.me CNAME via the action's `cname` arg.
+#   - Does NOT publish anything outside ./landing.
+#   - Never touches the API on Railway.
+
+on:
+  push:
+    branches:
+      - claude/launch-command-center-6P4N0
+    paths:
+      - 'landing/**'
+      - 'CNAME'
+      - '.github/workflows/landing_deploy.yml'
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+concurrency:
+  group: gh-pages-deploy
+  cancel-in-progress: true
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout deploy branch
+        uses: actions/checkout@v4
+
+      - name: Verify landing/ has expected pages
+        run: |
+          set -euo pipefail
+          for f in index.html services.html operator.html pricing.html \
+                   trust-center.html proof-pack.html private-beta.html \
+                   onboarding.html agency-partner.html command-center.html; do
+            test -f "landing/$f" || { echo "::error::missing landing/$f"; exit 1; }
+          done
+          echo "✅ all 10 critical landing pages present"
+
+      - name: Publish to gh-pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./landing
+          publish_branch: gh-pages
+          cname: dealix.me
+          force_orphan: true
+          commit_message: "deploy(landing): sync ${{ github.sha }} → gh-pages"
+          user_name: 'github-actions[bot]'
+          user_email: 'github-actions[bot]@users.noreply.github.com'
+
+      - name: Wait for GitHub Pages CDN propagation
+        run: sleep 30
+
+      - name: Verify dealix.me serves the canonical pages
+        run: |
+          set -euo pipefail
+          BASE=https://dealix.me
+          fail=0
+          for p in / /index.html /services.html /operator.html /pricing.html \
+                   /trust-center.html /proof-pack.html /private-beta.html \
+                   /onboarding.html /agency-partner.html /command-center.html; do
+            code=$(curl -s -o /dev/null -w "%{http_code}" --max-time 10 "$BASE$p" || echo "000")
+            if [ "$code" = "200" ]; then
+              echo "  ✓ $code  $p"
+            else
+              echo "::warning::  ✗ $code  $p"
+              fail=$((fail+1))
+            fi
+          done
+          # Allow up to 1 transient failure (CDN propagation jitter).
+          if [ "$fail" -gt 1 ]; then
+            echo "::error::More than 1 page non-200 after deploy — investigate gh-pages branch"
+            exit 1
+          fi
+          echo "✅ dealix.me canonical pages reachable"

@@ -13,25 +13,40 @@ from core.config.settings import get_settings
 
 @lru_cache(maxsize=1)
 def _engine():
-    """Lazy-create async engine."""
+    """Lazy-create async engine.
+
+    SQLite paths (test/in-memory) skip pool_size/max_overflow which the
+    aiosqlite driver does not accept.
+    """
     settings = get_settings()
-    return create_async_engine(
-        settings.database_url,
-        echo=settings.is_development,
-        pool_pre_ping=True,
-        pool_size=5,
-        max_overflow=10,
-    )
+    url = settings.database_url
+    kwargs: dict = {
+        "echo": settings.is_development,
+        "pool_pre_ping": True,
+    }
+    if not url.startswith("sqlite"):
+        kwargs["pool_size"] = 5
+        kwargs["max_overflow"] = 10
+    return create_async_engine(url, **kwargs)
 
 
 @lru_cache(maxsize=1)
-def async_session_factory() -> async_sessionmaker[AsyncSession]:
+def _sessionmaker() -> async_sessionmaker[AsyncSession]:
     return async_sessionmaker(_engine(), expire_on_commit=False, class_=AsyncSession)
+
+
+def async_session_factory() -> AsyncSession:
+    """Return a fresh AsyncSession.
+
+    Routers use this as `async with async_session_factory() as session:` —
+    AsyncSession is itself an async context manager.
+    """
+    return _sessionmaker()()
 
 
 async def get_db() -> AsyncGenerator[AsyncSession, None]:
     """FastAPI dependency — async DB session."""
-    async with async_session_factory()() as session:
+    async with async_session_factory() as session:
         try:
             yield session
             await session.commit()
@@ -43,7 +58,7 @@ async def get_db() -> AsyncGenerator[AsyncSession, None]:
 @asynccontextmanager
 async def get_session() -> AsyncGenerator[AsyncSession, None]:
     """Async context manager for DB sessions (`async with get_session() as session:`)."""
-    async with async_session_factory()() as session:
+    async with async_session_factory() as session:
         try:
             yield session
             await session.commit()

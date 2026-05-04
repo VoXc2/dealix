@@ -79,9 +79,13 @@ async def compute_customer_health(customer_id: str) -> dict[str, Any]:
         except Exception as exc:  # noqa: BLE001
             return {"status": "skipped_db_unreachable", "error": str(exc)}
 
+    # Naive-safe subtraction: strip tz from updated_at if present
+    _u = cust.updated_at
+    if _u is not None and _u.tzinfo is not None:
+        _u = _u.astimezone(timezone.utc).replace(tzinfo=None)
     days_since_login = (
-        (_utcnow() - cust.updated_at).days
-        if cust.updated_at else 0
+        (_utcnow() - _u).days
+        if _u else 0
     )
 
     score = compute_health(
@@ -116,8 +120,12 @@ async def list_at_risk_customers() -> dict[str, Any]:
 
     at_risk: list[dict[str, Any]] = []
     for c in customers:
+        # Naive-safe subtraction: strip tz from updated_at if present
+        _u = c.updated_at
+        if _u is not None and _u.tzinfo is not None:
+            _u = _u.astimezone(timezone.utc).replace(tzinfo=None)
         # Simplified: pull the full health score per customer
-        days_idle = (_utcnow() - c.updated_at).days if c.updated_at else 0
+        days_idle = (_utcnow() - _u).days if _u else 0
         score = compute_health(
             customer_id=c.id,
             logins_last_30d=max(0, 22 - days_idle),
@@ -194,8 +202,11 @@ async def generate_customer_qbr(customer_id: str, body: dict[str, Any] = Body(de
         except Exception as exc:  # noqa: BLE001
             return {"status": "skipped_db_unreachable", "error": str(exc)}
 
-    # Health score
-    days_idle = (_utcnow() - cust.updated_at).days if cust.updated_at else 0
+    # Health score (naive-safe subtraction)
+    _u = cust.updated_at
+    if _u is not None and _u.tzinfo is not None:
+        _u = _u.astimezone(timezone.utc).replace(tzinfo=None)
+    days_idle = (_utcnow() - _u).days if _u else 0
     health = compute_health(
         customer_id=customer_id,
         logins_last_30d=max(0, 22 - days_idle),

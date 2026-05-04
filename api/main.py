@@ -12,34 +12,63 @@ from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
-from api.middleware import RequestIDMiddleware
+from api.middleware import RequestIDMiddleware, RoleActionGuardMiddleware
 from api.routers import (
+    actions,
     admin,
     agents,
+    auth,
     automation,
     autonomous,
     business,
+    calls as calls_router,
+    cards,
     command_center,
+    companies,
     customer_success,
+    daily_ops,
     data,
+    delivery,
+    founder,
     dominance,
     drafts,
     ecosystem,
     email_send,
     full_os,
     health,
+    inbound,
+    intelligence,
     leads,
+    meetings,
+    negotiation,
+    observability,
+    onboarding,
+    operator,
     outreach,
+    partners,
+    payments,
     personal_operator,
+    learning,
+    self_ops,
     pricing,
+    proof_ledger,
     prospect,
+    prospects,
+    role_aliases,
+    sprints,
     public,
     revenue,
     revenue_os,
+    role_briefs,
     sales,
     sectors,
+    self_growth,
+    service_tower,
+    services,
+    support,
     v3,
     webhooks,
+    whatsapp_briefs,
 )
 from api.security import APIKeyMiddleware, setup_rate_limit
 from core.config.settings import get_settings
@@ -49,7 +78,16 @@ from core.logging import configure_logging, get_logger
 
 @asynccontextmanager
 async def lifespan(_app: FastAPI) -> AsyncIterator[None]:
-    """App startup/shutdown hook."""
+    """App startup/shutdown hook.
+
+    Railway healthcheck cannot succeed until uvicorn binds to $PORT,
+    which requires lifespan to reach the `yield`. Therefore EVERY piece
+    of startup work below MUST be time-boxed and exception-safe so that
+    a slow/unreachable database can never delay the app from serving
+    /health and /healthz.
+    """
+    import asyncio as _asyncio  # local import keeps the top-level imports unchanged
+
     configure_logging()
     log = get_logger(__name__)
     settings = get_settings()
@@ -59,13 +97,31 @@ async def lifespan(_app: FastAPI) -> AsyncIterator[None]:
         version=settings.app_version,
         env=settings.app_env,
     )
-    # Auto-create tables on boot (additive — safe with SQLAlchemy create_all)
+    # Auto-create tables on boot (additive — safe with SQLAlchemy create_all).
+    # Time-boxed: must not block /health from coming up on Railway.
     try:
         from db.session import init_db
-        await init_db()
+        await _asyncio.wait_for(init_db(), timeout=15.0)
         log.info("db_init_complete")
+    except _asyncio.TimeoutError:
+        log.warning("db_init_skipped", error="timeout_after_15s")
     except Exception as exc:
         log.warning("db_init_skipped", error=str(exc))
+    # Idempotent additive migration for deals.hubspot_deal_id. Safe to run
+    # on every boot: checks information_schema first, no-op if column
+    # already present, no destructive DDL. Strictly time-boxed and
+    # exception-safe so a migration hiccup NEVER blocks app startup —
+    # the standalone script remains the source of truth, this is just
+    # a convenience that runs when conditions are favorable.
+    try:
+        from scripts.migrate_add_hubspot_deal_id import run_migration_if_needed
+        rc = await _asyncio.wait_for(run_migration_if_needed(), timeout=8.0)
+        log.info("hubspot_deal_id_migration", rc=rc,
+                 status="ok" if rc == 0 else "skipped" if rc == 3 else "failed")
+    except _asyncio.TimeoutError:
+        log.warning("hubspot_deal_id_migration_skipped", error="timeout_after_8s")
+    except Exception as exc:
+        log.warning("hubspot_deal_id_migration_skipped", error=str(exc))
     yield
     log.info("app_shutdown")
 
@@ -101,6 +157,7 @@ def create_app() -> FastAPI:
         allow_headers=["*"],
     )
     app.add_middleware(RequestIDMiddleware)
+    app.add_middleware(RoleActionGuardMiddleware)
     app.add_middleware(APIKeyMiddleware)
     setup_rate_limit(app)
 
@@ -146,6 +203,35 @@ def create_app() -> FastAPI:
     app.include_router(personal_operator.router)
     app.include_router(public.router)
     app.include_router(admin.router)
+    app.include_router(partners.router)
+    app.include_router(services.router)
+    app.include_router(cards.router)
+    app.include_router(auth.router)
+    app.include_router(support.router)
+    app.include_router(operator.router)
+    app.include_router(service_tower.router)
+    app.include_router(proof_ledger.router)
+    app.include_router(delivery.router)
+    app.include_router(negotiation.router)
+    app.include_router(self_growth.router)
+    app.include_router(role_briefs.router)
+    app.include_router(whatsapp_briefs.router)
+    app.include_router(calls_router.router)
+    app.include_router(observability.router)
+    app.include_router(daily_ops.router)
+    app.include_router(founder.router)
+    app.include_router(meetings.router)
+    app.include_router(onboarding.router)
+    app.include_router(payments.router)
+    app.include_router(prospects.router)
+    app.include_router(companies.router)
+    app.include_router(actions.router)
+    app.include_router(learning.router)
+    app.include_router(sprints.router)
+    app.include_router(intelligence.router)
+    app.include_router(self_ops.router)
+    app.include_router(inbound.router)
+    app.include_router(role_aliases.router)
 
     @app.get("/", tags=["root"])
     async def root() -> dict[str, object]:

@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>تسجيل الدخول — Dealix Agency Portal</title>
+<meta name="description" content="ادخل إلى Dealix Agency Portal بدون كلمة مرور — رابط دخول آمن يصلك على بريدك. الجلسة 7 أيام، HttpOnly cookie، PDPL-aligned.">
+<link rel="canonical" href="https://dealix.me/login.html">
+<meta property="og:title" content="تسجيل الدخول — Dealix">
+<meta property="og:description" content="رابط دخول آمن بدون كلمة مرور للوكالات الشريكة.">
+<meta property="og:locale" content="ar_SA">
+<meta property="og:url" content="https://dealix.me/login.html">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="assets/css/base.css">
+<link rel="stylesheet" href="assets/css/components.css">
+<link rel="stylesheet" href="assets/css/cards.css">
+<link rel="stylesheet" href="assets/css/responsive.css">
+</head>
+<body class="dx-page">
+<a href="#dx-main" class="dx-skip-link">تجاوز إلى المحتوى</a>
+
+<div data-include="components/nav.html"></div>
+
+<main id="dx-main" class="dx-page__main">
+  <section class="dx-hero" style="padding-block: 3rem 2rem;">
+    <div class="dx-container" style="max-width:520px;">
+      <div class="dx-hero__inner">
+        <span class="dx-hero__eyebrow">Agency Portal</span>
+        <h1 class="dx-hero__title" style="font-size:1.75rem;">دخول بدون كلمة مرور</h1>
+        <p class="dx-hero__sub" style="font-size:1rem;">
+          أدخل بريد الوكالة المُسجَّل وسنُرسل لك رابط دخول آمن.
+          الرابط يعمل لمرة واحدة خلال 15 دقيقة، الجلسة 7 أيام.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="dx-section" style="padding-block:1rem 4rem;">
+    <div class="dx-container" style="max-width:480px;">
+      <article class="dx-card" data-type="approval">
+        <form id="dx-login-form" novalidate>
+          <div class="dx-field">
+            <label class="dx-field__label" for="email">البريد الإلكتروني للوكالة</label>
+            <input class="dx-field__input"
+                   type="email"
+                   id="email"
+                   name="email"
+                   placeholder="ceo@youragency.sa"
+                   autocomplete="email"
+                   required>
+            <span class="dx-field__hint">
+              الوكالة يجب أن تكون مُسجَّلة مسبقاً عبر
+              <a href="agency-partner.html">Agency Partner Pilot</a>.
+            </span>
+          </div>
+          <button type="submit"
+                  class="dx-btn dx-btn--primary dx-btn--block"
+                  data-track="cta_clicked"
+                  data-track-cta="magic_link"
+                  data-track-source="login">
+            أرسل رابط الدخول
+          </button>
+        </form>
+        <p id="dx-login-status" role="status" style="margin-top:0.75rem; font-size:0.875rem; min-height:1.25rem;"></p>
+      </article>
+
+      <p style="margin-top:1.5rem; font-size:0.8125rem; color:var(--text-muted, #475569); text-align:center;">
+        لا تتلقى رسائل غير مرغوبة. <strong>Pilot</strong> الوكالة يبدأ من
+        <a href="agency-partner.html">صفحة Agency Partner</a>.
+        راجع <a href="trust-center.html">Trust Center</a> لمعرفة سياسات Privacy + PDPL،
+        أو افتح تذكرة <a href="support.html">دعم</a> إذا واجهت مشكلة دخول.
+      </p>
+    </div>
+  </section>
+</main>
+
+<div data-include="components/footer.html"></div>
+
+<script src="assets/js/api.js"></script>
+<script src="assets/js/analytics.js"></script>
+<script src="assets/js/auth.js"></script>
+<script src="assets/js/components-loader.js"></script>
+<script>
+  (function () {
+    const form = document.getElementById('dx-login-form');
+    const status = document.getElementById('dx-login-status');
+    if (!form || !status) return;
+
+    function setStatus(text, kind) {
+      status.textContent = text;
+      status.style.color = kind === 'success'
+        ? 'var(--dx-emerald, #0A4D3F)'
+        : (kind === 'error' ? 'var(--dx-danger, #B91C1C)' : 'var(--text-muted, #475569)');
+    }
+
+    form.addEventListener('submit', async function (ev) {
+      ev.preventDefault();
+      const email = (form.email.value || '').trim().toLowerCase();
+      if (!email || email.indexOf('@') < 0) {
+        setStatus('رجاءً أدخل بريداً صالحاً.', 'error');
+        return;
+      }
+      setStatus('جاري الإرسال…', '');
+      const r = await window.DealixAuth.sendMagicLink(email);
+      if (!r.ok) {
+        setStatus('تعذّر الإرسال الآن — حاول لاحقاً أو افتح تذكرة دعم.', 'error');
+        return;
+      }
+      const data = r.data || {};
+      // Anti-enumeration: backend always returns sent=true.
+      let msg = 'إذا كان البريد مُسجَّلاً لدينا، سيصلك رابط الدخول خلال دقائق.';
+      if (data.dev_magic_url) {
+        // Dev / test only — backend leaks the URL so we can verify locally.
+        msg += ' [dev: استخدم الرابط أدناه]';
+        const a = document.createElement('a');
+        a.href = data.dev_magic_url;
+        a.textContent = 'افتح رابط الدخول (dev only)';
+        a.style.display = 'block';
+        a.style.marginTop = '0.5rem';
+        a.style.color = 'var(--dx-emerald, #0A4D3F)';
+        status.appendChild(a);
+      }
+      setStatus(msg, 'success');
+    });
+
+    if (window.DealixAnalytics) DealixAnalytics.pageView('login');
+  })();
+</script>
+</body>
+</html>
