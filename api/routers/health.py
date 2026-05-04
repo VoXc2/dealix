@@ -13,9 +13,17 @@ router = APIRouter(tags=["health"])
 
 @router.get("/health", response_model=HealthResponse)
 async def health() -> HealthResponse:
-    """Liveness + config summary."""
+    """Liveness + config summary.
+
+    MUST be cheap and safe — Railway uses this for healthchecks. Avoids
+    DB calls. The LLM provider list is fetched defensively so a misbehaving
+    provider adapter cannot fail the healthcheck and bring traffic down.
+    """
     settings = get_settings()
-    providers = [p.value for p in get_model_router().available_providers()]
+    try:
+        providers = [p.value for p in get_model_router().available_providers()]
+    except Exception:  # noqa: BLE001 — never let provider introspection fail /health
+        providers = []
     return HealthResponse(
         status="ok",
         version=settings.app_version,

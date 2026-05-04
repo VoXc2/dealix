@@ -78,7 +78,16 @@ from core.logging import configure_logging, get_logger
 
 @asynccontextmanager
 async def lifespan(_app: FastAPI) -> AsyncIterator[None]:
-    """App startup/shutdown hook."""
+    """App startup/shutdown hook.
+
+    Railway healthcheck cannot succeed until uvicorn binds to $PORT,
+    which requires lifespan to reach the `yield`. Therefore EVERY piece
+    of startup work below MUST be time-boxed and exception-safe so that
+    a slow/unreachable database can never delay the app from serving
+    /health and /healthz.
+    """
+    import asyncio as _asyncio  # local import keeps the top-level imports unchanged
+
     configure_logging()
     log = get_logger(__name__)
     settings = get_settings()
@@ -88,22 +97,29 @@ async def lifespan(_app: FastAPI) -> AsyncIterator[None]:
         version=settings.app_version,
         env=settings.app_env,
     )
-    # Auto-create tables on boot (additive — safe with SQLAlchemy create_all)
+    # Auto-create tables on boot (additive — safe with SQLAlchemy create_all).
+    # Time-boxed: must not block /health from coming up on Railway.
     try:
         from db.session import init_db
-        await init_db()
+        await _asyncio.wait_for(init_db(), timeout=15.0)
         log.info("db_init_complete")
+    except _asyncio.TimeoutError:
+        log.warning("db_init_skipped", error="timeout_after_15s")
     except Exception as exc:
         log.warning("db_init_skipped", error=str(exc))
     # Idempotent additive migration for deals.hubspot_deal_id. Safe to run
     # on every boot: checks information_schema first, no-op if column
-    # already present, no destructive DDL. Wrapped in try/except so a
-    # migration hiccup never blocks app startup.
+    # already present, no destructive DDL. Strictly time-boxed and
+    # exception-safe so a migration hiccup NEVER blocks app startup —
+    # the standalone script remains the source of truth, this is just
+    # a convenience that runs when conditions are favorable.
     try:
         from scripts.migrate_add_hubspot_deal_id import run_migration_if_needed
-        rc = await run_migration_if_needed()
+        rc = await _asyncio.wait_for(run_migration_if_needed(), timeout=8.0)
         log.info("hubspot_deal_id_migration", rc=rc,
                  status="ok" if rc == 0 else "skipped" if rc == 3 else "failed")
+    except _asyncio.TimeoutError:
+        log.warning("hubspot_deal_id_migration_skipped", error="timeout_after_8s")
     except Exception as exc:
         log.warning("hubspot_deal_id_migration_skipped", error=str(exc))
     yield
