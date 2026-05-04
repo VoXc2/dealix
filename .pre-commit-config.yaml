@@ -38,3 +38,24 @@ repos:
     rev: v8.18.4
     hooks:
       - id: gitleaks
+
+  # ──────────────────────────────────────────────────────────────
+  # Service Readiness Matrix — keep YAML and generated JSON in sync.
+  # The validator refuses fake Live status + forbidden marketing
+  # claims; the exporter regenerates landing/assets/data/service-readiness.json.
+  # If either fails or the JSON diff is non-empty, the commit is blocked.
+  # ──────────────────────────────────────────────────────────────
+  - repo: local
+    hooks:
+      - id: verify-service-readiness-matrix
+        name: Verify Service Readiness Matrix (no fake Live, no forbidden claims)
+        entry: python scripts/verify_service_readiness_matrix.py
+        language: system
+        pass_filenames: false
+        files: ^docs/registry/SERVICE_READINESS_MATRIX\.yaml$
+      - id: export-service-readiness-json
+        name: Regenerate landing/assets/data/service-readiness.json
+        entry: python scripts/export_service_readiness_json.py
+        language: system
+        pass_filenames: false
+        files: ^docs/registry/SERVICE_READINESS_MATRIX\.yaml$

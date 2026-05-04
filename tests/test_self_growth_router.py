@@ -64,3 +64,19 @@ async def test_seo_audit_endpoint_returns_report():
     assert "summary" in payload
     assert payload["summary"]["pages_with_required_gap"] == 0
     assert "pages" in payload and len(payload["pages"]) > 0
+
+
+@pytest.mark.asyncio
+async def test_health_endpoint_exposes_git_sha_field():
+    """Phase C1 — /health must expose a git_sha field. Defaults to
+    "unknown" locally; production sets it via Dockerfile ARG GIT_SHA
+    or Railway's RAILWAY_GIT_COMMIT_SHA env."""
+    from api.main import app
+
+    transport = ASGITransport(app=app)
+    async with AsyncClient(transport=transport, base_url="http://test") as client:
+        r = await client.get("/health")
+    assert r.status_code == 200
+    payload = r.json()
+    assert "git_sha" in payload, "HealthResponse must surface git_sha"
+    assert isinstance(payload["git_sha"], str) and payload["git_sha"]
