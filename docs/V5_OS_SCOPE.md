@@ -29,6 +29,100 @@ Three of the planes were **shipped real** in this session
 are **deferred with explicit ship-when triggers** so they're not
 forgotten — and are NOT silently stubbed.
 
+## Update — 2026-05-04 (after pt2 batch)
+
+**6 of 12 layers now shipped real**: customer_loop, role_command_os,
+service_quality (initial batch) + agent_governance, reliability_os,
+vertical_playbooks (pt2). 6 layers stay deferred with explicit
+ship-when triggers (see "What's deferred" below — note: that section
+was written before pt2 shipped, so what was previously listed under
+"Agent Governance Plane (deferred)", "Reliability OS (deferred)",
+and "Vertical Playbooks (deferred)" is now SHIPPED).
+
+Bundle now: 284 passed + 2 skipped + 3 xfailed (was 236 pre-pt2).
+
+### Newly shipped pt2
+
+#### ✅ Agent Governance v5
+
+`auto_client_acquisition/agent_governance/` +
+`api/routers/agent_governance.py`. NIST-style Govern/Map/Measure
+framing as a thin extension over `SafeAgentRuntime`. 6 autonomy
+levels (L0_read_only … L5_blocked_for_external) + 12 tool
+categories + per-agent registry of 12 named agents.
+
+`evaluate_action()` decision tree:
+1. FORBIDDEN_TOOLS (cold WA / LinkedIn auto / scrape / charge live
+   / email live) → FORBIDDEN regardless of autonomy.
+2. L5 → blocks any external-effect tool; allows read-only.
+3. Tool not on agent's allowed_tools → FORBIDDEN.
+4. APPROVAL_REQUIRED_TOOLS (drafts, invoice, proof pack) NEVER
+   auto-execute, even at L3+.
+5. Read-only at any non-L5 level → ALLOWED.
+6. Default L2: REQUIRES_APPROVAL.
+
+Tests: 11 cases covering parametric forbidden-tool blocks across
+all 6 autonomy levels.
+
+Endpoints:
+  GET  /api/v1/agent-governance/status
+  GET  /api/v1/agent-governance/agents
+  GET  /api/v1/agent-governance/agents/{agent_id}
+  POST /api/v1/agent-governance/evaluate
+
+#### ✅ Reliability OS v5
+
+`auto_client_acquisition/reliability_os/` +
+`api/routers/reliability_os.py`. Health matrix aggregator probing
+9 local subsystems:
+
+  - safe_action_gateway (SafeAgentRuntime restricted_actions)
+  - live_action_gates (whatsapp_allow_live_send=False)
+  - safe_publishing_gate (smoke: clean passes / "guaranteed" blocks)
+  - service_activation_matrix (counts)
+  - seo_perimeter (required_gap=0)
+  - email_provider (configured? primary?)
+  - payment_provider (test vs live key shape)
+  - proof_ledger_in_process (event buffer count)
+  - redis_client_available (importable)
+
+Each probe returns `SubsystemHealth(name, dimension, status,
+description, details)`. Overall status aggregates to OK only when
+all probes are OK. NEVER opens new network connections — pure
+in-process introspection.
+
+Tests: 6 cases.
+
+Endpoints:
+  GET /api/v1/reliability/status
+  GET /api/v1/reliability/health-matrix
+
+#### ✅ Vertical Playbooks v5
+
+`auto_client_acquisition/vertical_playbooks/` +
+`api/routers/vertical_playbooks.py`. 5 sector catalogs:
+
+  agency · b2b_services · saas · training_consulting · local_services
+
+Each playbook is a hand-curated `Playbook` dataclass with: ICP
+(Arabic + English), common pains, best first offer, 3 Diagnostic
+questions, safe channels, forbidden channels, message pattern,
+proof metric, blocked actions, upsell path. Every playbook
+explicitly forbids cold WhatsApp.
+
+`recommend_for(sector_hint)` does a hint-to-vertical lookup with
+b2b_services as the safe fallback.
+
+Tests: 14 cases (parametrized over all 5 verticals + endpoint coverage).
+
+Endpoints:
+  GET  /api/v1/vertical-playbooks/status
+  GET  /api/v1/vertical-playbooks/list
+  GET  /api/v1/vertical-playbooks/{vertical}
+  POST /api/v1/vertical-playbooks/recommend
+
+---
+
 ## What shipped real this session (3 of 12)
 
 ### ✅ Customer Loop  (≈ Revenue Control Plane lite)

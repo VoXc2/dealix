@@ -34,7 +34,9 @@ from api.routers import (
     pricing,
     prospect,
     public,
+    agent_governance,
     customer_loop,
+    reliability_os,
     revenue,
     revenue_os,
     role_command_os,
@@ -43,6 +45,7 @@ from api.routers import (
     self_growth,
     service_quality,
     v3,
+    vertical_playbooks,
     webhooks,
 )
 from api.security import APIKeyMiddleware, setup_rate_limit
@@ -152,6 +155,9 @@ def create_app() -> FastAPI:
     app.include_router(customer_loop.router)
     app.include_router(role_command_os.router)
     app.include_router(service_quality.router)
+    app.include_router(agent_governance.router)
+    app.include_router(reliability_os.router)
+    app.include_router(vertical_playbooks.router)
     app.include_router(public.router)
     app.include_router(admin.router)
 
