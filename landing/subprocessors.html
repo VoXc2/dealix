@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>المزوّدون الفرعيّون — Dealix</title>
+  <meta name="description" content="قائمة المزوّدين الفرعيّين الذين يعالج Dealix من خلالهم بيانات العميل. شفافيّة كاملة وفق المادّة 18 من PDPL السعودي." />
+  <link rel="canonical" href="https://dealix.me/subprocessors.html" />
+  <meta property="og:title" content="المزوّدون الفرعيّون — Dealix" />
+  <meta property="og:description" content="قائمة Dealix للمزوّدين الفرعيّين — شفافيّة PDPL Article 18." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://dealix.me/subprocessors.html" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="theme-color" content="#0f172a" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" />
+
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    :root{--brand:#0f172a;--accent:#22d3ee;--muted:#64748b;--border:#e2e8f0;--bg:#f8fafc;--ok:#10b981;--warn-bg:#fef3c7;--warn-border:#fde68a;--warn-ink:#78350f}
+    body{font-family:'IBM Plex Sans Arabic','Inter',sans-serif;background:var(--bg);color:var(--brand);line-height:1.85}
+    .wrap{max-width:1100px;margin:0 auto;padding:48px 24px}
+    .nav-back{color:var(--muted);text-decoration:none;font-size:14px}
+    h1{font-size:clamp(28px,4vw,40px);margin:16px 0 12px}
+    .lede{color:var(--muted);font-size:16px;margin-bottom:24px;max-width:760px}
+    .draft-banner{background:var(--warn-bg);border:1px solid var(--warn-border);color:var(--warn-ink);padding:14px 18px;border-radius:12px;font-size:14px;margin:20px 0 28px;max-width:860px}
+    .draft-banner strong{display:block;margin-bottom:4px}
+    section{background:#fff;border:1px solid var(--border);border-radius:14px;padding:24px;margin:14px 0}
+    section h2{font-size:20px;margin:0 0 12px}
+    section p{margin:0 0 10px;font-size:15px}
+    table{width:100%;border-collapse:collapse;margin-top:14px;font-size:14px}
+    th,td{padding:12px 10px;border-bottom:1px solid var(--border);text-align:right;vertical-align:top}
+    th{background:#f8fafc;font-weight:700}
+    td.muted{color:var(--muted);font-size:13px}
+    .pill{display:inline-block;padding:3px 10px;border-radius:999px;font-size:12px;font-weight:600}
+    .pill--ksa{background:#ecfdf5;color:#065f46}
+    .pill--non-ksa{background:#fef3c7;color:#78350f}
+    .pill--optional{background:#f3f4f6;color:#374151}
+    a{color:var(--accent);text-decoration:none}
+    a:hover{text-decoration:underline}
+    .small{color:var(--muted);font-size:13px;margin-top:24px}
+    .meta{display:flex;flex-wrap:wrap;gap:8px 16px;font-size:13px;color:var(--muted);margin:8px 0 16px}
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <a class="nav-back" href="/trust-center.html">← العودة لمركز الامتثال</a>
+    <h1>قائمة المزوّدين الفرعيّين</h1>
+    <p class="lede">المزوّدون الذين قد يعالج Dealix بيانات عميلكم من خلالهم لتقديم الخدمة. شفافيّة كاملة وفق المادّة 18 من نظام حماية البيانات الشخصيّة السعودي (PDPL).</p>
+
+    <div class="meta">
+      <span>الإصدار: v1 — مسودّة</span>
+      <span>آخر تحديث: 2026-05-04</span>
+      <span>أساس قانوني: <a href="/privacy.html">سياسة الخصوصيّة</a> §٥</span>
+    </div>
+
+    <div class="draft-banner">
+      <strong>ملاحظة — مسودّة v1 قيد المراجعة القانونيّة</strong>
+      هذه القائمة تعكس البنية التحتيّة الحاليّة كما هي موثّقة في
+      <a href="https://github.com/voxc2/dealix/blob/main/docs/registry/SERVICE_READINESS_MATRIX.yaml"><code>docs/registry/SERVICE_READINESS_MATRIX.yaml</code></a>
+      و <code>requirements.txt</code>. سنُعلم العملاء قبل 30 يوماً عند تغيير أيّ مزوّد جوهري.
+    </div>
+
+    <section>
+      <h2>المزوّدون الأساسيّون</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>المزوّد</th>
+            <th>الغرض</th>
+            <th>نوع البيانات</th>
+            <th>المنطقة</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Railway</strong><br><span class="muted">railway.com</span></td>
+            <td>استضافة API + قاعدة Postgres</td>
+            <td>بيانات الخدمة، سجلّات تشغيل</td>
+            <td><span class="pill pill--non-ksa">US/EU (region قابل للتحديد)</span></td>
+          </tr>
+          <tr>
+            <td><strong>Anthropic</strong><br><span class="muted">anthropic.com</span></td>
+            <td>توليد مسودّات نصّيّة (Claude)</td>
+            <td>محتوى المحادثة عند توليد مسودّة</td>
+            <td><span class="pill pill--non-ksa">US (لا يُستخدم للتدريب)</span></td>
+          </tr>
+          <tr>
+            <td><strong>Groq</strong><br><span class="muted">groq.com</span></td>
+            <td>توليد مسودّات سريعة (fallback)</td>
+            <td>محتوى المحادثة عند توليد مسودّة</td>
+            <td><span class="pill pill--non-ksa">US</span></td>
+          </tr>
+          <tr>
+            <td><strong>Moyasar</strong><br><span class="muted">moyasar.com</span></td>
+            <td>الفواتير ومعالجة الدفع</td>
+            <td>اسم الشركة، البريد، مبلغ الفاتورة</td>
+            <td><span class="pill pill--ksa">KSA</span></td>
+          </tr>
+          <tr>
+            <td><strong>Meta WhatsApp Cloud API</strong><br><span class="muted">developers.facebook.com</span></td>
+            <td>استقبال رسائل واتساب الواردة فقط</td>
+            <td>الرسائل التي يرسلها العميل لرقمكم</td>
+            <td><span class="pill pill--non-ksa">EU/US (Meta DPF)</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>المزوّدون الاختياريّون</h2>
+      <p>هؤلاء يُستخدمون فقط إذا فعّلتموهم في عقدكم:</p>
+      <table>
+        <thead>
+          <tr>
+            <th>المزوّد</th>
+            <th>الغرض</th>
+            <th>الحالة</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>OpenAI</strong></td><td>مزوّد LLM إضافي اختياري</td><td><span class="pill pill--optional">اختياري</span></td></tr>
+          <tr><td><strong>Google Gemini</strong></td><td>مزوّد LLM إضافي اختياري</td><td><span class="pill pill--optional">اختياري</span></td></tr>
+          <tr><td><strong>SendGrid (أو ما يعادله)</strong></td><td>استقبال بريد inbound فقط</td><td><span class="pill pill--optional">في خارطة الطريق</span></td></tr>
+          <tr><td><strong>Sentry</strong></td><td>تتبّع أخطاء التطبيق (لا PII)</td><td><span class="pill pill--optional">اختياري</span></td></tr>
+          <tr><td><strong>Langfuse</strong></td><td>قياس استخدام LLM (no PII)</td><td><span class="pill pill--optional">اختياري</span></td></tr>
+          <tr><td><strong>Upstash Redis</strong></td><td>طابور موافقات (ApprovalGate)</td><td><span class="pill pill--optional">اختياري بديل لـ Railway Redis</span></td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>ما لا يفعله أيّ مزوّد فرعي</h2>
+      <ul>
+        <li>لا أحد يُرسل رسائل تسويقيّة نيابةً عن العميل بدون موافقة العميل المُسجَّلة.</li>
+        <li>لا أحد يخزّن أسرار الدفع (Moyasar PCI-compliant).</li>
+        <li>لا مزوّد LLM يُستخدم محتوى محادثاتكم لتدريب نموذجه (وفق سياسات API الرسميّة).</li>
+        <li>لا scraping. لا شراء قوائم. لا cold outreach.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>إخطار التغييرات</h2>
+      <p>عند إضافة أيّ مزوّد جوهري أو تغيير منطقة معالجة، نُعلم العملاء قبل 30 يوماً عبر:</p>
+      <ul>
+        <li>تحديث هذه الصفحة (مع تاريخ التحديث).</li>
+        <li>بريد للعميل المسجَّل كـ admin contact.</li>
+        <li>اختيار العميل حقّ الاعتراض المعقول.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>التواصل</h2>
+      <p>أسئلة عن المزوّدين أو DPA: <a href="mailto:privacy@dealix.me">privacy@dealix.me</a></p>
+    </section>
+
+    <p class="small">© <span id="y">2026</span> Dealix. — قائمة قيد المراجعة. التفاصيل النهائيّة في DPA الملحَق بعقد العميل.</p>
+  </main>
+
+  <script>document.getElementById('y').textContent = String(new Date().getFullYear());</script>
+</body>
+</html>

@@ -31,19 +31,18 @@ ADVISORY_EXEMPT = {
     "dashboard.html",
     "founder.html",
     "market-radar.html",
-    "marketers.html",
     "partners.html",
     "pay-per-result.html",
     "personal-operator.html",
-    "pricing.html",
     "pulse.html",
     "roi.html",
     "simulator.html",
-    "trust-center.html",
     "trust.html",
     "verticals.html",
-    # status.html and launch-readiness.html are intentionally NOT here:
-    # status.html has canonical + OG + twitter:card (we authored it).
+    # NOT in this list — these pages now have full canonical + OG + twitter:
+    #   - index.html, status.html (authored on this branch)
+    #   - pricing.html, trust-center.html, marketers.html (upgraded)
+    #   - privacy.html, terms.html, subprocessors.html (newly authored)
     # launch-readiness.html is in the script's ADVISORY_ONLY_PAGES set
     # so its advisory checks are skipped entirely.
 }

@@ -71,19 +71,13 @@ def test_internal_linking_returns_summary_issues_graph():
     assert "summary" in g and "issues" in g and "graph" in g
 
 
-# Pre-existing site issues caught by the linter at the time this test
-# was authored. Each entry pins a *known* issue. New entries beyond
-# this set fail the test — we never let a regression slip in. As the
-# founder authors the missing pages or fixes the links, drop entries
-# from these sets.
-KNOWN_BROKEN_LINKS: set[tuple[str, str]] = {
-    ("index.html", "privacy.html"),       # privacy.html not yet authored
-    ("index.html", "terms.html"),         # terms.html not yet authored
-    ("trust.html", "subprocessors.html"), # subprocessors.html not yet authored
-}
-KNOWN_ORPHAN_CORE: set[str] = {
-    "marketers.html",  # links from elsewhere need wiring
-}
+# Pre-existing site issues caught by the linter. Empty now — the
+# 3 broken links (privacy/terms/subprocessors) were resolved by
+# authoring the pages, and marketers.html is no longer orphan after
+# the index.html nav + footer link wiring. Any NEW finding fails
+# the test.
+KNOWN_BROKEN_LINKS: set[tuple[str, str]] = set()
+KNOWN_ORPHAN_CORE: set[str] = set()
 
 
 def test_internal_linking_no_NEW_broken_relative_links():
