@@ -114,6 +114,45 @@ Pick exactly one:
 
 Justify the choice in 2-3 lines.
 
+## 8. Referral / Share (manual warm intro only)
+
+Optional. If this Proof Pack was useful, you can warm-intro **one**
+Saudi B2B founder who'd benefit. We'll deliver a free Mini Diagnostic
+for them too. No automation, no spam — just one warm intro from you,
+sent manually.
+
+How it works:
+
+1. Pick **one** person — a 1st-degree contact, founder/owner of a
+   Saudi/GCC B2B company.
+2. Send them a short Arabic note (template below).
+3. CC `sami@dealix.me` so we can introduce ourselves directly.
+
+Template you can copy-paste:
+
+```
+السلام عليكم [الاسم]،
+
+شغّلت Pilot صغير مع Dealix (Saudi Revenue Execution OS) وحصلت على
+Proof Pack يوضح وش انعمل ووش انمنع. أعتقد ممكن يفيدك إذا تواجه نفس
+مشكلة [tweak: قنوات outreach آمنة / ترتيب pipeline / تفعيل وكلاء بطريقة
+PDPL-safe].
+
+سامي مؤسس Dealix (CC). يوفر لك Mini Diagnostic مجاني خلال 24 ساعة بدون
+أي التزام. مجرد عرض، ما فيه ضغط.
+
+[your name]
+```
+
+Hard rules:
+
+- **Manual send only.** No CRM blast. No LinkedIn auto-DM.
+- **One referral max.** This is a quality channel, not a quota.
+- **First-degree only.** Don't introduce people you barely know.
+- **No quid-pro-quo language.** "We'll send you a free Diagnostic if
+  you refer 3 people" is forbidden — frames the relationship wrong.
+- **Customer's choice.** If they'd rather not refer, that's fine.
+
 ## Hard rules
 
 | Rule | Detail |

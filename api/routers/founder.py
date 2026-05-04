@@ -149,6 +149,25 @@ async def today(days: int = Query(default=7, ge=1, le=30)) -> dict[str, Any]:
     if recent_ops and not isinstance(recent_ops, list):
         recent_ops = list(recent_ops.scalars().all())
 
+    # Inbound leads from public demo-request — defensive read.
+    # Lazy-imports LeadRecord here so a missing column on prod can't 500
+    # the whole /today endpoint.
+    inbound_leads_window: list = []
+    try:
+        from db.models import LeadRecord  # noqa: WPS433 — lazy import is intentional
+
+        inbound_leads_window = await _q("inbound_leads", lambda s: s.execute(
+            select(LeadRecord)
+            .where(LeadRecord.source == "website")
+            .where(LeadRecord.created_at >= since)
+            .order_by(LeadRecord.created_at.desc())
+            .limit(50)
+        )) or []
+        if inbound_leads_window and not isinstance(inbound_leads_window, list):
+            inbound_leads_window = list(inbound_leads_window.scalars().all())
+    except Exception as exc:  # noqa: BLE001
+        errors["inbound_leads_import"] = f"{type(exc).__name__}: {str(exc)[:200]}"
+
     # Cost + unsafe summaries — each in its own session so a failure
     # in one doesn't poison the other.
     try:
@@ -228,6 +247,30 @@ async def today(days: int = Query(default=7, ge=1, le=30)) -> dict[str, Any]:
     except Exception as exc:  # noqa: BLE001
         errors["recent_ops_serializer"] = f"{type(exc).__name__}: {str(exc)[:200]}"
 
+    # Defensive inbound-leads serializer: count + last 5 sample rows.
+    # No PII (email/phone) — just company + sector + age, so the founder
+    # can scan the inbox in /founder/today without exposing contact info
+    # in any cached response or analytics surface.
+    inbound_count = 0
+    inbound_recent: list[dict[str, Any]] = []
+    try:
+        inbound_count = len(inbound_leads_window)
+        for r in inbound_leads_window[:5]:
+            try:
+                created = _to_naive(getattr(r, "created_at", None))
+                age_h = round((_now() - created).total_seconds() / 3600.0, 1) if created else 0.0
+                inbound_recent.append({
+                    "lead_id": getattr(r, "id", None),
+                    "company": (getattr(r, "company_name", "") or "")[:80],
+                    "sector": getattr(r, "sector", None),
+                    "status": getattr(r, "status", None),
+                    "age_hours": age_h,
+                })
+            except Exception:
+                pass
+    except Exception as exc:  # noqa: BLE001
+        errors["inbound_leads_serializer"] = f"{type(exc).__name__}: {str(exc)[:200]}"
+
     response = {
         "as_of": _now().isoformat(),
         "window_days": days,
@@ -244,6 +287,12 @@ async def today(days: int = Query(default=7, ge=1, le=30)) -> dict[str, Any]:
             "support_tickets_opened": len(tickets),
             "objections_handled": len(objections),
             "open_incidents_count": len(open_incidents),
+            "inbound_demo_requests": inbound_count,
+        },
+        "inbound_demo_requests": {
+            "count": inbound_count,
+            "window_days": days,
+            "recent": inbound_recent,
         },
         "quality": quality,
         "cost": {

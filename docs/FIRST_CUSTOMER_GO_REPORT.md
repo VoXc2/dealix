@@ -79,13 +79,21 @@ documented.
 ## Founder next actions (in order)
 
 ```
+LAUNCH-ONLINE (P0 — once):
+0. Run docs/LAUNCH_CHECKLIST_GO_LIVE.md — three steps, ~10 min total:
+     Step 1: gh-pages workflow auto-runs (or trigger manually)
+     Step 2: Railway "Deploy Latest Commit" (NOT "Redeploy")
+     Step 3: bash scripts/verify_inbound_flow.sh → INBOUND_FLOW: GREEN
+
 TODAY (P0):
 1. Open docs/FIRST_10_WARM_PROSPECTS.md and fill the 10-row table
    (real names, real LinkedIn URLs, no scraping).
 2. Send the Arabic warm message from docs/FIRST_CUSTOMER_OUTREACH_MESSAGES.md
    to each contact MANUALLY. Cap 10 today.
 3. Log every send in docs/FIRST_CUSTOMER_LIVE_BOARD.md.
-4. End-of-day scorecard per docs/DAILY_FIRST_CUSTOMER_LOOP.md.
+4. Watch /api/v1/founder/today for inbound demo requests from dealix.me
+   (the new `inbound_demo_requests.recent` array shows last 5 — no PII).
+5. End-of-day scorecard per docs/DAILY_FIRST_CUSTOMER_LOOP.md.
 
 NEXT 24-72 HOURS (P1):
 5. For every reply: deliver Mini Diagnostic (docs/MINI_DIAGNOSTIC_LIVE_TEMPLATE.md)

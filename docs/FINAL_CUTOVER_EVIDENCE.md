@@ -28,6 +28,13 @@ OUTREACH_GO=yes
 | Code | /health defensive against bad provider | yes | yes | `api/routers/health.py` wraps `get_model_router()` in try/except | PASS | no |
 | Code | startup-imports test | yes | yes | `tests/test_startup_imports.py` 2 cases — pins jinja2 | PASS | no |
 | Code | health-resilience test | yes | yes | `tests/test_health_railway_resilience.py` 3 cases | PASS | no |
+| Code | demo-request creates LeadRecord | yes | yes | `api/routers/public.py` `_record_inbound_lead` (idempotent on email) + `tests/test_public_demo_request.py` 8/8 | PASS | no |
+| Code | `/founder/today` surfaces inbound | yes | yes | new `inbound_demo_requests` block in `api/routers/founder.py` | PASS | no |
+| Code | gh-pages auto-deploy workflow | yes | yes | `.github/workflows/landing_deploy.yml` mirrors `landing/` to gh-pages on every push | PASS | no |
+| Code | inbound flow verifier | yes | yes | `scripts/verify_inbound_flow.sh` exits 0 when GREEN | PASS | no |
+| Local | website surface | 38 pages | 38 pages | `landing/` contains every page the workflow now publishes | PASS | no |
+| Pending Railway | API redeploy needed for demo-request LeadRecord write | yes | pending | `bash scripts/post_redeploy_verify.sh` will show the new SHA after Deploy Latest Commit | PENDING | yes — minor |
+| Pending GitHub | Pages workflow run needed for full landing site | yes | pending | first push to `claude/launch-command-center-6P4N0` with `landing/` changes will auto-trigger | PENDING | yes — minor |
 | Local | compileall | pass | pass | `python -m compileall api auto_client_acquisition db scripts` (no errors) | PASS | no |
 | Local | architecture audit | 9/9 | 9/9 | `python scripts/repo_architecture_audit.py` → `RESULT: PASS` | PASS | no |
 | Local | safety battery (8 files, 82 asserts) | pass | 82/82 | tests in 0.97s | PASS | no |
