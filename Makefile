@@ -7,7 +7,8 @@
         lint format type-check security clean run demo \
         docker-build docker-up docker-down docker-logs \
         pre-commit-install pre-commit-run db-init requirements \
-        v5-status v5-smoke v5-snapshot v5-diagnostic v5-verify v5-digest
+        v5-status v5-smoke v5-snapshot v5-diagnostic v5-verify v5-digest \
+        v5-proof-pack
 
 # Python binary (override with PYTHON=python3.12 make ...)
 PYTHON ?= python3
@@ -116,3 +117,6 @@ v5-verify: ## v5: 22-point production verifier (set BASE_URL=...)
 
 v5-digest: ## v5: print the daily founder digest markdown (no email)
 	$(PYTHON) scripts/dealix_morning_digest.py --print
+
+v5-proof-pack: ## v5: assemble bilingual Proof Pack from JSONL events (HANDLE=...)
+	$(PYTHON) scripts/dealix_proof_pack.py --customer-handle $(HANDLE)
