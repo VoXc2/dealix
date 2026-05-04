@@ -116,6 +116,11 @@ class Settings(BaseSettings):
     email_provider: Literal["resend", "sendgrid", "smtp"] = "resend"
     email_from: str = "noreply@ai-company.sa"
     email_from_name: str = "AI Company Saudi"
+    # Founder address that receives intake alerts + daily digest. Reads
+    # from DEALIX_FOUNDER_EMAIL env. Empty means notifications are skipped
+    # silently (intake/digest pipelines treat absence as "not configured"
+    # rather than failing).
+    dealix_founder_email: str = "sami.assiri11@gmail.com"
     resend_api_key: SecretStr | None = None
     sendgrid_api_key: SecretStr | None = None
     smtp_host: str | None = None

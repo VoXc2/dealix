@@ -246,6 +246,38 @@ async def proof_snippet_boundaries() -> dict:
     return proof_snippet_engine.boundaries()
 
 
+@router.post("/proof-pack/assemble")
+async def proof_pack_assemble(payload: dict = Body(...)) -> dict:
+    """Assemble many ProofEvents into a customer-shareable pack.
+
+    Body:
+      - events: list[ProofEventDict]  (required, non-empty)
+      - customer_handle: str          (optional; default 'Saudi B2B customer')
+      - period_label: str             (optional; e.g. '2026-05 Pilot')
+
+    Returns a typed ProofPackDocument with bilingual markdown.
+    Always ``approval_status=approval_required``. Pack is blocked
+    if any event is invalid OR the assembled markdown contains
+    forbidden vocabulary at the document level.
+    """
+    events = payload.get("events")
+    if not isinstance(events, list):
+        raise HTTPException(
+            status_code=400,
+            detail="payload.events must be a list of ProofEvent dicts",
+        )
+    if not events:
+        raise HTTPException(
+            status_code=400,
+            detail="payload.events must be non-empty",
+        )
+    handle = str(payload.get("customer_handle") or "Saudi B2B customer")
+    period = str(payload.get("period_label") or "")
+    return proof_snippet_engine.render_pack(
+        events, customer_handle=handle, period_label=period
+    )
+
+
 @router.get("/partner-radar")
 async def partner_radar_summary() -> dict:
     """Return the static partner-category catalog (8 categories).
