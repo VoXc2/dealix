@@ -35,13 +35,19 @@ from api.routers import (
     prospect,
     public,
     agent_governance,
+    customer_data_plane,
     customer_loop,
+    delivery_factory,
+    finance_os,
+    gtm_os,
+    proof_ledger,
     reliability_os,
     revenue,
     revenue_os,
     role_command_os,
     sales,
     sectors,
+    security_privacy,
     self_growth,
     service_quality,
     v3,
@@ -158,6 +164,12 @@ def create_app() -> FastAPI:
     app.include_router(agent_governance.router)
     app.include_router(reliability_os.router)
     app.include_router(vertical_playbooks.router)
+    app.include_router(customer_data_plane.router)
+    app.include_router(finance_os.router)
+    app.include_router(delivery_factory.router)
+    app.include_router(proof_ledger.router)
+    app.include_router(gtm_os.router)
+    app.include_router(security_privacy.router)
     app.include_router(public.router)
     app.include_router(admin.router)
 

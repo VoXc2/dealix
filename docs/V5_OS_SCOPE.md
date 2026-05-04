@@ -29,6 +29,109 @@ Three of the planes were **shipped real** in this session
 are **deferred with explicit ship-when triggers** so they're not
 forgotten — and are NOT silently stubbed.
 
+## Update — 2026-05-04 (after pt3 batch)
+
+**9 of 12 v5 layers now shipped real**. Added in pt3:
+customer_data_plane, finance_os, delivery_factory.
+
+Bundle now: 321 passed + 2 skipped + 3 xfailed.
+
+### Newly shipped pt3
+
+#### ✅ Customer Data & Consent Plane v5
+
+`auto_client_acquisition/customer_data_plane/` +
+`api/routers/customer_data_plane.py`. In-memory consent registry +
+contactability gate + PII redactor.
+
+`ConsentRegistry`: thread-safe append-only store of `ConsentRecord`
+with `grant`, `withdraw`, `status_for`. Public API matches the
+future Postgres-backed interface so the swap is mechanical.
+
+`contactability_check(contact_id, channel)`:
+- BLOCKED channel → BLOCKED
+- inbound channel (whatsapp/email_inbound) → SAFE
+- consent-required channel + GRANTED → SAFE
+- consent-required + WITHDRAWN → BLOCKED
+- consent-required + UNKNOWN → BLOCKED (default deny, PDPL-safe)
+- LinkedIn manual / partner intro → NEEDS_REVIEW (founder reviews)
+
+`pii_redactor`: redact_email / redact_phone / redact_saudi_id /
+redact_text / redact_dict (recursive) — pure functions, no I/O.
+Saudi/Gulf phone formats covered; email becomes `a***@domain`.
+
+Endpoints (5):
+  GET  /api/v1/customer-data/status
+  POST /api/v1/customer-data/consent/grant
+  POST /api/v1/customer-data/consent/withdraw
+  POST /api/v1/customer-data/contactability/check
+  POST /api/v1/customer-data/redact
+
+Tests: 14 unit + 3 endpoint cases.
+
+#### ✅ Finance OS v5
+
+`auto_client_acquisition/finance_os/` + `api/routers/finance_os.py`.
+Pricing catalog (5 tiers) + invoice-draft DTO + guardrails reader.
+
+`pricing_catalog()`: 5 tiers grounded in
+docs/STRATEGIC_MASTER_PLAN_2026.md Part IV.A:
+  - diagnostic — free
+  - growth_starter_pilot — 499 SAR (one_shot, locked until S1)
+  - data_to_revenue — 1,500 SAR (project)
+  - executive_growth_os — 2,999 SAR (recurring_monthly)
+  - partnership_growth — 3,000 SAR (project; range 3K-7.5K)
+
+`draft_invoice(tier_id, customer_email, ...)`: builds an
+`InvoiceDraft` Pydantic model with `approval_status=approval_required`.
+Refuses free tiers. `to_cli_args()` renders flags compatible with
+`scripts/dealix_invoice.py` so the founder pipes the result into
+the CLI.
+
+`is_live_charge_allowed()`: env-state introspection. Returns
+`{allowed: False}` no matter what — no env flag enables auto-charge
+anywhere in the codebase. Test enforces this even with sk_live_*
++ DEALIX_ALLOW_LIVE_CHARGE=1 set.
+
+Endpoints (4):
+  GET  /api/v1/finance/status
+  GET  /api/v1/finance/pricing
+  GET  /api/v1/finance/pricing/{tier_id}
+  POST /api/v1/finance/invoice/draft
+
+Tests: 9 unit + 3 endpoint cases.
+
+#### ✅ Delivery Factory v5
+
+`auto_client_acquisition/delivery_factory/` +
+`api/routers/delivery_factory.py`. Per-service delivery plan
+builder over the YAML matrix.
+
+`build_delivery_plan(service_id)` reads required_inputs +
+workflow_steps + deliverables + safe_action_policy +
+blocked_actions + sla from the YAML and produces a typed
+`DeliveryPlan` with:
+- intake_checklist (one item per required_input)
+- workflow_plan_ar + workflow_plan_en (bilingual numbered steps)
+- qa_checklist (proof_metrics + blocked_actions + SLA + approval check)
+- deliverables (verbatim from YAML)
+- proof_metrics (verbatim)
+- safety_policy + blocked_actions (verbatim)
+- next_activation_step_ar/en
+
+Workflow step IDs (e.g. `intent_classify`) translated into
+bilingual phrases via a curated table. Unknown steps fall through
+to the raw step ID — never invents text.
+
+Endpoints (3):
+  GET /api/v1/delivery-factory/status
+  GET /api/v1/delivery-factory/services
+  GET /api/v1/delivery-factory/plan/{service_id}
+
+Tests: 5 unit + 2 endpoint cases.
+
+---
+
 ## Update — 2026-05-04 (after pt2 batch)
 
 **6 of 12 layers now shipped real**: customer_loop, role_command_os,
