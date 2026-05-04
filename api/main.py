@@ -20,6 +20,7 @@ from api.routers import (
     autonomous,
     business,
     command_center,
+    company_brain,
     customer_success,
     data,
     dominance,
@@ -173,6 +174,7 @@ def create_app() -> FastAPI:
     app.include_router(gtm_os.router)
     app.include_router(security_privacy.router)
     app.include_router(diagnostic.router)
+    app.include_router(company_brain.router)
     app.include_router(founder.router)
     app.include_router(public.router)
     app.include_router(admin.router)
