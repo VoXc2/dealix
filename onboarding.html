@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ابدأ مع Dealix — معالج التأهيل</title>
+<meta name="description" content="أكمل ٤ خطوات بسيطة لتبدأ مع Dealix: معلومات الشركة، الـ intake، إرسال magic-link، وتأكيد. أول Proof Pack خلال ٧ أيام.">
+<link rel="canonical" href="https://dealix.me/onboarding.html">
+<meta property="og:title" content="ابدأ مع Dealix — ٤ خطوات للحصول على أول Proof Pack">
+<meta property="og:description" content="أكمل intake في دقائق — أول Proof Pack خلال ٧ أيام.">
+<meta property="og:locale" content="ar_SA">
+<meta name="robots" content="index,follow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="assets/css/base.css">
+<link rel="stylesheet" href="assets/css/components.css">
+<link rel="stylesheet" href="assets/css/cards.css">
+<link rel="stylesheet" href="assets/css/responsive.css">
+<style>
+  .dx-wizard { max-width: 720px; margin: 0 auto; }
+  .dx-wizard__steps { display:flex; gap:.5rem; justify-content:space-between; margin:1.5rem 0; }
+  .dx-wizard__step { flex:1; height:6px; background:var(--dx-border, #e5e7eb); border-radius:3px; }
+  .dx-wizard__step--active { background: var(--dx-emerald, #10b981); }
+  .dx-wizard__step--done { background: var(--dx-emerald, #10b981); opacity:.5; }
+  .dx-form-group { display:flex; flex-direction:column; gap:.4rem; margin-bottom:1rem; }
+  .dx-form-group label { font-weight:600; }
+  .dx-form-group input, .dx-form-group select, .dx-form-group textarea {
+    padding:.7rem .9rem; border:1px solid var(--dx-border, #d1d5db);
+    border-radius:8px; font-family:inherit; font-size:1rem;
+  }
+  .dx-form-group small { color: var(--dx-muted, #6b7280); font-size:.85rem; }
+  .dx-wizard__nav { display:flex; gap:.75rem; justify-content:space-between; margin-top:1.5rem; }
+  .dx-wizard__error { color:#b91c1c; background:#fee2e2; padding:.75rem 1rem; border-radius:8px; margin:1rem 0; display:none; }
+  .dx-wizard__error.is-shown { display:block; }
+  .dx-wizard__success { background:#d1fae5; padding:1.5rem; border-radius:12px; }
+  .dx-wizard__success h3 { margin:0 0 .5rem 0; color:#065f46; }
+  .dx-wizard__success .dx-eta { font-size:1.1rem; font-weight:600; color:#065f46; margin-top:.75rem; }
+  [data-step] { display:none; }
+  [data-step].is-active { display:block; }
+</style>
+</head>
+<body class="dx-page">
+<a href="#dx-main" class="dx-skip-link">تجاوز إلى المحتوى</a>
+<div data-include="components/nav.html"></div>
+
+<main id="dx-main" class="dx-page__main">
+  <section class="dx-hero" style="padding-bottom:1rem;">
+    <div class="dx-container">
+      <div class="dx-hero__inner">
+        <span class="dx-hero__eyebrow">Onboarding · 4 خطوات</span>
+        <h1 class="dx-hero__title">ابدأ مع <strong style="color:var(--dx-emerald)">Dealix</strong></h1>
+        <p class="dx-hero__sub">٤ خطوات بسيطة. لا cold outreach. لا live charge. أول Proof Pack خلال ٧ أيام.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="dx-section">
+    <div class="dx-container">
+      <div class="dx-wizard" id="dx-wizard" data-current-step="1">
+        <div class="dx-wizard__steps" aria-label="تقدم الخطوات">
+          <div class="dx-wizard__step dx-wizard__step--active" data-step-indicator="1"></div>
+          <div class="dx-wizard__step" data-step-indicator="2"></div>
+          <div class="dx-wizard__step" data-step-indicator="3"></div>
+          <div class="dx-wizard__step" data-step-indicator="4"></div>
+        </div>
+
+        <div class="dx-wizard__error" id="dx-wizard-error" role="alert"></div>
+
+        <article class="dx-card" data-step="1" class="is-active">
+          <header class="dx-card__head"><span class="dx-card__type">١. معلومات الشركة</span></header>
+          <div class="dx-form-group">
+            <label for="dx-company-name">اسم الشركة *</label>
+            <input id="dx-company-name" type="text" required autocomplete="organization">
+          </div>
+          <div class="dx-form-group">
+            <label for="dx-sector">القطاع</label>
+            <input id="dx-sector" type="text" placeholder="مثال: B2B SaaS، تجارة، عقار، استشارات" autocomplete="off">
+          </div>
+          <div class="dx-form-group">
+            <label for="dx-revenue-band">الإيراد الشهري التقريبي</label>
+            <select id="dx-revenue-band">
+              <option value="unknown">أُفضّل عدم الإفصاح</option>
+              <option value="lt_50k">أقل من 50 ألف SAR</option>
+              <option value="50k_200k">50–200 ألف SAR</option>
+              <option value="200k_1m">200 ألف – 1 مليون SAR</option>
+              <option value="1m_5m">1–5 مليون SAR</option>
+              <option value="5m_plus">أكثر من 5 مليون SAR</option>
+            </select>
+            <small>يُستخدم فقط لتخصيص الـ Proof Pack — لا يُشارك مع طرف ثالث.</small>
+          </div>
+        </article>
+
+        <article class="dx-card" data-step="2" hidden>
+          <header class="dx-card__head"><span class="dx-card__type">٢. Intake — أسئلة مختصرة</span></header>
+          <div id="dx-intake-questions">
+            <p style="color:var(--dx-muted)">جاري التحميل…</p>
+          </div>
+        </article>
+
+        <article class="dx-card" data-step="3" hidden>
+          <header class="dx-card__head"><span class="dx-card__type">٣. بريد للتواصل</span></header>
+          <div class="dx-form-group">
+            <label for="dx-contact-name">اسمك</label>
+            <input id="dx-contact-name" type="text" autocomplete="name">
+          </div>
+          <div class="dx-form-group">
+            <label for="dx-contact-email">البريد الإلكتروني *</label>
+            <input id="dx-contact-email" type="email" required autocomplete="email" placeholder="you@company.com">
+            <small>سنرسل magic-link إلى هذا البريد لاحقاً للوصول إلى لوحة التحكم.</small>
+          </div>
+          <p style="font-size:.9rem; color:var(--dx-muted); margin-top:.5rem;">
+            بإرسال هذا النموذج فأنت توافق على
+            <a href="trust-center.html">سياسة Dealix للبيانات</a>.
+            لا outreach بدون موافقتك. لا live charge بدون موافقتك.
+          </p>
+        </article>
+
+        <article class="dx-card" data-step="4" hidden>
+          <div class="dx-wizard__success">
+            <h3>تم — شكراً <span id="dx-confirmed-name">!</span></h3>
+            <p>نُسجِّل الـ intake الآن، سنبدأ في تجهيز Proof Pack.</p>
+            <p class="dx-eta" id="dx-eta-promise">Proof Pack أول خلال ٧ أيام.</p>
+            <ul style="margin-top:1rem; line-height:1.7;">
+              <li>أرسلنا magic-link إلى بريدك (إذا فعّلت الإرسال).</li>
+              <li>راجعنا 5 خطوات قبل أول outreach (كلها human-approved).</li>
+              <li>إذا أردت تسريع شيء، راسلنا على <a href="support.html">support</a>.</li>
+            </ul>
+            <p style="margin-top:1.25rem; font-size:.85rem; color:var(--dx-muted)" id="dx-lead-id-line"></p>
+          </div>
+        </article>
+
+        <div class="dx-wizard__nav">
+          <button type="button" class="dx-btn dx-btn--ghost" id="dx-btn-back" hidden>السابق</button>
+          <span style="flex:1"></span>
+          <button type="button" class="dx-btn dx-btn--primary" id="dx-btn-next">التالي</button>
+          <button type="button" class="dx-btn dx-btn--primary" id="dx-btn-submit" hidden>إرسال</button>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<div data-include="components/footer.html"></div>
+
+<script src="assets/js/components-loader.js" defer></script>
+<script src="assets/js/api.js" defer></script>
+<script src="assets/js/onboarding-wizard.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,236 @@
+/* =============================================================
+   Dealix Frontend — cards.css
+   10 card types: CEO Daily, Opportunity, Partner, Deal Follow-up,
+   Negotiation, Proof, Support, Risk, Approval, Customer Success.
+   Every card: ≤3 buttons, Arabic title, why_now, recommended action,
+   risk badge, proof impact.
+   ============================================================= */
+
+/* ---------- Card grid ---------- */
+.dx-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 1rem;
+}
+
+/* ---------- Base card ---------- */
+.dx-card {
+  background: var(--surface, #fff);
+  border: 1px solid var(--border, #e2e8f0);
+  border-radius: var(--dx-radius-card);
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.875rem;
+  box-shadow: var(--dx-shadow-card);
+  transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+}
+.dx-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--dx-shadow-card-hover);
+}
+
+/* ---------- Card head ---------- */
+.dx-card__head {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+.dx-card__icon {
+  font-size: 1.125rem;
+  line-height: 1;
+}
+.dx-card__type {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-muted, #475569);
+}
+
+/* ---------- Card title ---------- */
+.dx-card__title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--dx-charcoal);
+  margin: 0;
+  line-height: 1.4;
+}
+
+/* ---------- Card body sections ---------- */
+.dx-card__why,
+.dx-card__action,
+.dx-card__risk-note {
+  font-size: 0.8125rem;
+  line-height: 1.6;
+  color: var(--text-muted, #475569);
+}
+.dx-card__why strong,
+.dx-card__action strong {
+  color: var(--dx-charcoal);
+  font-weight: 600;
+  display: block;
+  margin-bottom: 0.125rem;
+}
+.dx-card__risk-note {
+  background: color-mix(in srgb, var(--dx-amber) 8%, transparent);
+  border: 1px solid color-mix(in srgb, var(--dx-amber) 20%, transparent);
+  border-radius: 6px;
+  padding: 0.5rem 0.75rem;
+  color: var(--dx-amber);
+  font-size: 0.75rem;
+}
+.dx-card__risk-note::before {
+  content: "⚠ ";
+}
+
+/* ---------- Proof impact strip ---------- */
+.dx-card__proof {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.375rem;
+  padding-top: 0.625rem;
+  border-top: 1px dashed var(--border, #e2e8f0);
+}
+
+/* ---------- Card buttons (max 3 enforced visually) ---------- */
+.dx-card__buttons {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+.dx-card__buttons button {
+  flex: 1;
+  min-width: 0;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  border-radius: 8px;
+  border: 1px solid var(--border, #e2e8f0);
+  background: var(--surface, #fff);
+  color: var(--dx-charcoal);
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s, color 0.2s;
+  font-family: inherit;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+.dx-card__buttons button:hover {
+  border-color: var(--dx-emerald);
+  color: var(--dx-emerald);
+}
+.dx-card__buttons button[data-action="prepare"],
+.dx-card__buttons button[data-action="approve"],
+.dx-card__buttons button[data-action="primary"] {
+  background: var(--dx-emerald);
+  color: #fff;
+  border-color: var(--dx-emerald);
+}
+.dx-card__buttons button[data-action="prepare"]:hover,
+.dx-card__buttons button[data-action="approve"]:hover,
+.dx-card__buttons button[data-action="primary"]:hover {
+  background: var(--dx-emerald-2);
+  color: #fff;
+}
+.dx-card__buttons button[data-action="skip"],
+.dx-card__buttons button[data-action="dismiss"] {
+  color: var(--text-muted, #475569);
+}
+
+/* ---------- Card type variants (left border accent) ---------- */
+.dx-card[data-type="ceo_daily"]        { border-inline-start: 3px solid var(--dx-gold); }
+.dx-card[data-type="opportunity"]      { border-inline-start: 3px solid var(--dx-emerald); }
+.dx-card[data-type="partner"]          { border-inline-start: 3px solid var(--dx-blue-trust); }
+.dx-card[data-type="deal_followup"]    { border-inline-start: 3px solid #6366F1; }
+.dx-card[data-type="negotiation"]      { border-inline-start: 3px solid #8B5CF6; }
+.dx-card[data-type="proof"]            { border-inline-start: 3px solid var(--dx-emerald-2); }
+.dx-card[data-type="support"]          { border-inline-start: 3px solid #06B6D4; }
+.dx-card[data-type="risk"]             { border-inline-start: 3px solid var(--dx-amber); }
+.dx-card[data-type="approval"]         { border-inline-start: 3px solid var(--dx-navy); }
+.dx-card[data-type="customer_success"] { border-inline-start: 3px solid #EC4899; }
+
+/* ---------- Card risk levels (subtle background tint) ---------- */
+.dx-card[data-risk="high"] {
+  background: color-mix(in srgb, var(--dx-risk-high) 3%, var(--surface, #fff));
+}
+.dx-card[data-risk="medium"] {
+  background: color-mix(in srgb, var(--dx-risk-medium) 3%, var(--surface, #fff));
+}
+
+/* ---------- Card meta (owner, expires, etc.) ---------- */
+.dx-card__meta {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.6875rem;
+  color: var(--text-muted, #475569);
+  flex-wrap: wrap;
+}
+.dx-card__meta-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+/* ---------- Empty card state ---------- */
+.dx-cards-empty {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: var(--text-muted, #475569);
+  background: var(--bg-muted, #f8fafc);
+  border: 1px dashed var(--border, #e2e8f0);
+  border-radius: var(--dx-radius-card);
+}
+.dx-cards-empty__icon {
+  font-size: 2.5rem;
+  margin-bottom: 0.75rem;
+}
+.dx-cards-empty__title {
+  font-weight: 700;
+  color: var(--dx-charcoal);
+  margin: 0 0 0.5rem;
+}
+
+/* ---------- Card loading skeleton ---------- */
+.dx-card-skeleton {
+  background: var(--surface, #fff);
+  border: 1px solid var(--border, #e2e8f0);
+  border-radius: var(--dx-radius-card);
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+.dx-card-skeleton::before,
+.dx-card-skeleton::after {
+  content: "";
+  height: 12px;
+  background: linear-gradient(90deg, var(--bg-muted, #f8fafc) 0%, var(--border, #e2e8f0) 50%, var(--bg-muted, #f8fafc) 100%);
+  background-size: 200% 100%;
+  animation: dxShimmer 1.5s infinite;
+  border-radius: 4px;
+}
+.dx-card-skeleton::before { width: 60%; }
+.dx-card-skeleton::after { width: 90%; }
+@keyframes dxShimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* ---------- Decision Card preview (used on landing index) ---------- */
+.dx-decision-preview {
+  position: relative;
+  perspective: 1000px;
+}
+.dx-decision-preview .dx-card {
+  transform: rotate(-1deg);
+  transition: transform 0.4s ease-out;
+}
+.dx-decision-preview .dx-card:nth-child(2) {
+  transform: rotate(0.5deg) translateY(-4px);
+}
+.dx-decision-preview .dx-card:hover {
+  transform: rotate(0deg) translateY(-2px);
+}

@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>مساحة العميل — Dealix</title>
+<meta name="description" content="مساحة العميل في Dealix: السبرنت الحالي، القرارات المفتوحة، الفواتير، Proof Packs، والخطة القادمة. واجهة شفافة لكل عميل.">
+<link rel="canonical" href="https://dealix.me/client.html">
+<meta name="robots" content="noindex,follow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="assets/css/base.css">
+<link rel="stylesheet" href="assets/css/components.css">
+<link rel="stylesheet" href="assets/css/cards.css">
+<link rel="stylesheet" href="assets/css/responsive.css">
+<style>
+  .dx-ws { max-width: 1100px; margin: 0 auto; padding: 1rem; }
+  .dx-ws__hero { background: linear-gradient(135deg,#064e3b,#047857); color:#fff; border-radius: 14px; padding: 1.5rem; margin-bottom: 1.5rem; }
+  .dx-ws__hero h1 { margin: 0 0 .25rem 0; font-size: 1.5rem; font-weight: 700; }
+  .dx-ws__hero .meta { opacity: .85; font-size: .9rem; }
+  .dx-ws__grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1rem; }
+  .dx-ws__panel { background:#fff; border:1px solid #e2e8f0; border-radius: 12px; padding: 1.25rem; }
+  .dx-ws__panel h2 { font-size: 1rem; margin: 0 0 .75rem 0; padding-right: .6rem; border-right: 3px solid #10b981; }
+  .dx-ws__panel ul { margin: 0; padding: 0; list-style: none; }
+  .dx-ws__panel li { padding: .5rem .25rem; border-bottom: 1px dashed #e5e7eb; display: flex; justify-content: space-between; gap: .5rem; align-items: center; }
+  .dx-ws__panel li:last-child { border-bottom: 0; }
+  .dx-ws__pill { background:#f1f5f9; padding: .15rem .55rem; border-radius:999px; font-size:.75rem; color:#475569; }
+  .dx-ws__pill.high { background:#fee2e2; color:#b91c1c; }
+  .dx-ws__pill.warn { background:#fef3c7; color:#92400e; }
+  .dx-ws__pill.ok { background:#dcfce7; color:#15803d; }
+  .dx-ws__empty { color:#94a3b8; font-size: .9rem; }
+  .dx-ws__loading { text-align:center; color:#64748b; padding: 2rem; }
+  .dx-ws__error { background:#fee2e2; color:#7f1d1d; padding: 1rem; border-radius: 10px; margin-bottom: 1rem; }
+  .dx-ws__metric { font-size: 2rem; font-weight: 700; color: #047857; }
+  .dx-ws__metric-label { font-size: .85rem; color:#64748b; }
+</style>
+</head>
+<body class="dx-page">
+<a href="#dx-main" class="dx-skip-link">تجاوز إلى المحتوى</a>
+<div data-include="components/nav.html"></div>
+
+<main id="dx-main" class="dx-page__main">
+  <section class="dx-section">
+    <div class="dx-ws" id="dx-workspace" data-customer-id="">
+      <div class="dx-ws__loading" id="dx-ws-loading">جاري التحميل…</div>
+      <div class="dx-ws__error" id="dx-ws-error" hidden></div>
+      <div id="dx-ws-content" hidden>
+        <div class="dx-ws__hero">
+          <h1 id="dx-ws-company">—</h1>
+          <div class="meta">
+            <span id="dx-ws-sprint">—</span> ·
+            <span id="dx-ws-asof">—</span>
+          </div>
+        </div>
+
+        <div class="dx-ws__grid" style="margin-bottom:1rem;">
+          <div class="dx-ws__panel" style="text-align:center;">
+            <div class="dx-ws__metric" id="dx-ws-opps">0</div>
+            <div class="dx-ws__metric-label">فرص أُنشئت</div>
+          </div>
+          <div class="dx-ws__panel" style="text-align:center;">
+            <div class="dx-ws__metric" id="dx-ws-drafts">0</div>
+            <div class="dx-ws__metric-label">drafts جاهزة</div>
+          </div>
+          <div class="dx-ws__panel" style="text-align:center;">
+            <div class="dx-ws__metric" id="dx-ws-decisions">0</div>
+            <div class="dx-ws__metric-label">قرارات تنتظر موافقتك</div>
+          </div>
+        </div>
+
+        <div class="dx-ws__grid">
+          <div class="dx-ws__panel">
+            <h2>قرارات تحتاج موافقتك</h2>
+            <ul id="dx-ws-decisions-list"><li class="dx-ws__empty">لا قرارات معلّقة.</li></ul>
+          </div>
+
+          <div class="dx-ws__panel">
+            <h2>الاجتماعات الأخيرة</h2>
+            <ul id="dx-ws-meetings"><li class="dx-ws__empty">لا اجتماعات بعد.</li></ul>
+          </div>
+
+          <div class="dx-ws__panel">
+            <h2>الفواتير</h2>
+            <ul id="dx-ws-invoices"><li class="dx-ws__empty">لا فواتير بعد.</li></ul>
+          </div>
+
+          <div class="dx-ws__panel">
+            <h2>Proof Packs</h2>
+            <ul id="dx-ws-proof"><li class="dx-ws__empty">لا تقارير بعد.</li></ul>
+          </div>
+
+          <div class="dx-ws__panel">
+            <h2>مخاطر تم منعها</h2>
+            <ul id="dx-ws-risks"><li class="dx-ws__empty">لا مخاطر مسجَّلة — حالة آمنة.</li></ul>
+          </div>
+
+          <div class="dx-ws__panel">
+            <h2>الخطة لـ ٧ أيام قادمة</h2>
+            <ul id="dx-ws-plan"><li class="dx-ws__empty">جاري الإعداد.</li></ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<div data-include="components/footer.html"></div>
+<script src="assets/js/components-loader.js" defer></script>
+<script src="assets/js/api.js" defer></script>
+<script src="assets/js/client-workspace.js" defer></script>
+</body>
+</html>

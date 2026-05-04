@@ -1,0 +1,130 @@
+/* =============================================================
+   Dealix Frontend — responsive.css
+   Breakpoints: 320px (mobile-min) / 640 (mobile) / 768 (tablet) /
+                1024 (desktop) / 1280 (wide)
+   ============================================================= */
+
+/* Mobile-first base ensures 320px works.
+   These overrides handle larger screens & specific edge cases. */
+
+/* Stack hero CTAs on tiny screens */
+@media (max-width: 380px) {
+  .dx-hero__ctas {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .dx-hero__ctas .dx-btn {
+    width: 100%;
+  }
+  .dx-hero__title {
+    font-size: 1.75rem;
+  }
+}
+
+/* Tablet: cards 2-column max */
+@media (min-width: 640px) and (max-width: 1023px) {
+  .dx-cards-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .dx-bundle-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Desktop wide: cap card grid at 3-4 columns */
+@media (min-width: 1280px) {
+  .dx-cards-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* Mobile nav */
+@media (max-width: 768px) {
+  .dx-section__title {
+    font-size: 1.5rem;
+  }
+  .dx-section__lede {
+    font-size: 0.9375rem;
+  }
+  .dx-bundle {
+    padding: 1.25rem;
+  }
+}
+
+/* Compact card on small screens */
+@media (max-width: 480px) {
+  .dx-card {
+    padding: 1rem;
+  }
+  .dx-card__buttons {
+    flex-direction: column;
+  }
+  .dx-card__buttons button {
+    width: 100%;
+  }
+  .dx-sla__row {
+    grid-template-columns: 1fr;
+    text-align: start;
+  }
+  .dx-sla__priority {
+    width: max-content;
+  }
+}
+
+/* Compare table — scroll horizontally on mobile */
+@media (max-width: 768px) {
+  .dx-compare-wrap {
+    overflow-x: auto;
+    margin-inline: -1rem;
+    padding-inline: 1rem;
+  }
+  .dx-compare {
+    min-width: 600px;
+  }
+}
+
+/* Footer — 1 column on mobile */
+@media (max-width: 640px) {
+  .dx-footer__cols {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  .dx-footer__bottom {
+    flex-direction: column;
+    text-align: center;
+    gap: 0.75rem;
+  }
+}
+
+/* Print */
+@media print {
+  .dx-nav, .dx-footer, .dx-hero__ctas, .dx-card__buttons {
+    display: none;
+  }
+  .dx-card {
+    page-break-inside: avoid;
+    box-shadow: none;
+    border: 1px solid #ccc;
+  }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+/* High contrast (a11y) */
+@media (prefers-contrast: more) {
+  .dx-card {
+    border-width: 2px;
+  }
+  .dx-btn--primary {
+    box-shadow: none;
+  }
+  .dx-pill, .dx-risk-badge, .dx-trust-badge {
+    border-width: 2px;
+  }
+}
