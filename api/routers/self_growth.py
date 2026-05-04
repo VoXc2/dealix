@@ -18,6 +18,7 @@ from fastapi import APIRouter, Body, HTTPException
 from auto_client_acquisition.self_growth_os import (
     geo_aio_radar,
     internal_linking_planner,
+    partner_distribution_radar,
     safe_publishing_gate,
     service_activation_matrix,
     seo_technical_auditor,
@@ -186,6 +187,37 @@ async def weekly_scorecard() -> dict:
     Wraps ``self_growth_os.weekly_growth_scorecard.build_scorecard``.
     """
     return weekly_growth_scorecard.build_scorecard()
+
+
+@router.get("/partner-radar")
+async def partner_radar_summary() -> dict:
+    """Return the static partner-category catalog (8 categories).
+
+    Wraps ``self_growth_os.partner_distribution_radar.summary``. Each
+    category is a CLASS of partners (B2B agency, sales consultant,
+    CRM implementer, …), not a specific company. Founder picks
+    individual partners from their own network. NEVER scrapes any
+    directory or social network.
+    """
+    return partner_distribution_radar.summary()
+
+
+@router.get("/partner-radar/{category_id}")
+async def partner_radar_one(category_id: str) -> dict:
+    """Return one partner category with its full draft pack."""
+    try:
+        return partner_distribution_radar.get_category(category_id)
+    except KeyError as exc:
+        raise HTTPException(status_code=404, detail=str(exc)) from exc
+
+
+@router.get("/partner-radar/drafts/safety-check")
+async def partner_radar_safety() -> dict:
+    """Run every catalog warm-intro draft through the safe-publishing
+    gate. The founder calls this before approving outreach to confirm
+    none of the drafts contain forbidden vocabulary.
+    """
+    return partner_distribution_radar.safe_drafts()
 
 
 @router.post("/publishing/check")
