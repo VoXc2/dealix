@@ -135,6 +135,70 @@ curl -fsS https://api.dealix.me/api/v1/self-growth/seo/audit \
 # Expected: pages_with_required_gap == 0
 ```
 
+## 4b. v5 endpoint smoke (one curl per layer)
+
+After redeploy, every layer below should return `200` with a
+`status` block whose `guardrails` map shows `no_live_send: true`.
+The `dealix_status` CLI (`python scripts/dealix_status.py`) wraps
+several of these into a single founder-readable view.
+
+```sh
+# v5 layer 1 — Customer Loop
+curl -fsS https://api.dealix.me/api/v1/customer-loop/status
+curl -fsS https://api.dealix.me/api/v1/customer-loop/states
+
+# v5 layer 2 — Role Command OS
+curl -fsS https://api.dealix.me/api/v1/role-command/status
+curl -fsS https://api.dealix.me/api/v1/role-command/ceo
+
+# v5 layer 3 — Service Quality
+curl -fsS https://api.dealix.me/api/v1/service-quality/status
+curl -fsS https://api.dealix.me/api/v1/service-quality/sla
+
+# v5 layer 4 — Agent Governance
+curl -fsS https://api.dealix.me/api/v1/agent-governance/status
+curl -fsS https://api.dealix.me/api/v1/agent-governance/agents
+
+# v5 layer 5 — Reliability OS
+curl -fsS https://api.dealix.me/api/v1/reliability/status
+curl -fsS https://api.dealix.me/api/v1/reliability/health-matrix
+
+# v5 layer 6 — Vertical Playbooks
+curl -fsS https://api.dealix.me/api/v1/vertical-playbooks/status
+curl -fsS https://api.dealix.me/api/v1/vertical-playbooks/list
+
+# v5 layer 7 — Customer Data Plane (PDPL consent + redaction)
+curl -fsS https://api.dealix.me/api/v1/customer-data/status
+
+# v5 layer 8 — Finance OS (pricing + invoice draft)
+curl -fsS https://api.dealix.me/api/v1/finance/status
+curl -fsS https://api.dealix.me/api/v1/finance/pricing
+
+# v5 layer 9 — Delivery Factory
+curl -fsS https://api.dealix.me/api/v1/delivery-factory/status
+curl -fsS https://api.dealix.me/api/v1/delivery-factory/services
+
+# v5 layer 10 — Proof Ledger
+curl -fsS https://api.dealix.me/api/v1/proof-ledger/status
+
+# v5 layer 11 — GTM OS (calendar + experiment drafts)
+curl -fsS https://api.dealix.me/api/v1/gtm/status
+curl -fsS https://api.dealix.me/api/v1/gtm/content-calendar
+
+# v5 layer 12 — Security & Privacy
+curl -fsS https://api.dealix.me/api/v1/security-privacy/status
+curl -fsS https://api.dealix.me/api/v1/security-privacy/data-minimization
+
+# Self-Growth OS (perimeter + scorecard)
+curl -fsS https://api.dealix.me/api/v1/self-growth/scorecard/weekly
+curl -fsS https://api.dealix.me/api/v1/self-growth/internal-linking
+curl -fsS https://api.dealix.me/api/v1/self-growth/geo/audit
+```
+
+The bundled verifier `scripts/post_redeploy_verify.sh` runs the
+22 most-important of these endpoints in sequence — use it once a
+day for free.
+
 ## 5. First customer flow (manual, no automation)
 
 This is intentionally manual until the first 3 paid pilots. See
@@ -200,3 +264,17 @@ decisions. Then ship the next layer per the strategic plan
 
 Each layer ships behind tests; none change pricing; none flip live
 gates without a separate audit ticket.
+
+## 9. Daily operating cadence
+
+Once the deployment is live, the founder runbook governs day-to-day
+operation: `docs/V5_FOUNDER_RUNBOOK.md`. The TL;DR:
+
+| Cadence | Tool | What to do |
+|---|---|---|
+| 7AM KSA daily | `python scripts/dealix_status.py` | Check live gates all `BLOCKED`; pick 1 top decision; respond to any `New lead intake` email within 4h |
+| Monday weekly | `/api/v1/self-growth/scorecard/weekly` + `docs/EXECUTIVE_DECISION_PACK.md` | Sign ≤2 of the 10 founder decisions; review proof events |
+| End of month | `POST /api/v1/self-growth/proof-pack/assemble` | Assemble bilingual proof pack; review GTM calendar; review reliability matrix for any subsystem `degraded` |
+
+The CLI (`scripts/dealix_status.py`) is **read-only diagnostics**.
+It never mutates state; safe to run as often as needed.
