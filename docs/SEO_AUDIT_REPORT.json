@@ -1,9 +1,9 @@
 {
   "schema_version": 1,
   "summary": {
-    "total_pages": 24,
+    "total_pages": 27,
     "pages_with_required_gap": 0,
-    "pages_with_advisory_gap": 21
+    "pages_with_advisory_gap": 0
   },
   "required_checks": [
     "title",
@@ -33,18 +33,13 @@
         "meta_viewport": true,
         "html_lang": true,
         "html_dir": true,
-        "canonical": false,
-        "og_title": false,
-        "og_description": false,
-        "twitter_card": false
+        "canonical": true,
+        "og_title": true,
+        "og_description": true,
+        "twitter_card": true
       },
       "missing_required": [],
-      "missing_advisory": [
-        "canonical",
-        "og_title",
-        "og_description",
-        "twitter_card"
-      ]
+      "missing_advisory": []
     },
     {
       "path": "autopilot.html",
@@ -54,18 +49,13 @@
         "meta_viewport": true,
         "html_lang": true,
         "html_dir": true,
-        "canonical": false,
-        "og_title": false,
-        "og_description": false,
-        "twitter_card": false
+        "canonical": true,
+        "og_title": true,
+        "og_description": true,
+        "twitter_card": true
       },
       "missing_required": [],
-      "missing_advisory": [
-        "canonical",
-        "og_title",
-        "og_description",
-        "twitter_card"
-      ]
+      "missing_advisory": []
     },
     {
       "path": "case-study.html",
@@ -75,18 +65,13 @@
         "meta_viewport": true,
         "html_lang": true,
         "html_dir": true,
-        "canonical": false,
-        "og_title": false,
-        "og_description": false,
-        "twitter_card": false
+        "canonical": true,
+        "og_title": true,
+        "og_description": true,
+        "twitter_card": true
       },
       "missing_required": [],
-      "missing_advisory": [
-        "canonical",
-        "og_title",
-        "og_description",
-        "twitter_card"
-      ]
+      "missing_advisory": []
     },
     {
       "path": "command-center.html",
@@ -96,18 +81,13 @@
         "meta_viewport": true,
         "html_lang": true,
         "html_dir": true,
-        "canonical": false,
-        "og_title": false,
-        "og_description": false,
-        "twitter_card": false
+        "canonical": true,
+        "og_title": true,
+        "og_description": true,
+        "twitter_card": true
       },
       "missing_required": [],
-      "missing_advisory": [
-        "canonical",
-        "og_title",
-        "og_description",
-        "twitter_card"
-      ]
+      "missing_advisory": []
     },
     {
       "path": "community.html",
@@ -117,18 +97,13 @@
         "meta_viewport": true,
         "html_lang": true,
         "html_dir": true,
-        "canonical": false,
-        "og_title": false,
-        "og_description": false,
-        "twitter_card": false
+        "canonical": true,
+        "og_title": true,
+        "og_description": true,
+        "twitter_card": true
       },
       "missing_required": [],
-      "missing_advisory": [
-        "canonical",
-        "og_title",
-        "og_description",
-        "twitter_card"
-      ]
+      "missing_advisory": []
     },
     {
       "path": "copilot.html",
@@ -138,18 +113,13 @@
         "meta_viewport": true,
         "html_lang": true,
         "html_dir": true,
-        "canonical": false,
-        "og_title": false,
-        "og_description": false,
-        "twitter_card": false
+        "canonical": true,
+        "og_title": true,
+        "og_description": true,
+        "twitter_card": true
       },
       "missing_required": [],
-      "missing_advisory": [
-        "canonical",
-        "og_title",
-        "og_description",
-        "twitter_card"
-      ]
+      "missing_advisory": []
     },
     {
       "path": "customer-portal.html",
@@ -159,18 +129,13 @@
         "meta_viewport": true,
         "html_lang": true,
         "html_dir": true,
-        "canonical": false,
-        "og_title": false,
-        "og_description": false,
-        "twitter_card": false
+        "canonical": true,
+        "og_title": true,
+        "og_description": true,
+        "twitter_card": true
       },
       "missing_required": [],
-      "missing_advisory": [
-        "canonical",
-        "og_title",
-        "og_description",
-        "twitter_card"
-      ]
+      "missing_advisory": []
     },
     {
       "path": "dashboard.html",
@@ -180,18 +145,13 @@
         "meta_viewport": true,
         "html_lang": true,
         "html_dir": true,
-        "canonical": false,
-        "og_title": false,
-        "og_description": false,
-        "twitter_card": false
+        "canonical": true,
+        "og_title": true,
+        "og_description": true,
+        "twitter_card": true
       },
       "missing_required": [],
-      "missing_advisory": [
-        "canonical",
-        "og_title",
-        "og_description",
-        "twitter_card"
-      ]
+      "missing_advisory": []
     },
     {
       "path": "founder.html",
@@ -201,18 +161,13 @@
         "meta_viewport": true,
         "html_lang": true,
         "html_dir": true,
-        "canonical": false,
-        "og_title": false,
-        "og_description": false,
-        "twitter_card": false
+        "canonical": true,
+        "og_title": true,
+        "og_description": true,
+        "twitter_card": true
       },
       "missing_required": [],
-      "missing_advisory": [
-        "canonical",
-        "og_title",
-        "og_description",
-        "twitter_card"
-      ]
+      "missing_advisory": []
     },
     {
       "path": "index.html",
@@ -254,18 +209,13 @@
         "meta_viewport": true,
         "html_lang": true,
         "html_dir": true,
-        "canonical": false,
-        "og_title": false,
-        "og_description": false,
-        "twitter_card": false
+        "canonical": true,
+        "og_title": true,
+        "og_description": true,
+        "twitter_card": true
       },
       "missing_required": [],
-      "missing_advisory": [
-        "canonical",
-        "og_title",
-        "og_description",
-        "twitter_card"
-      ]
+      "missing_advisory": []
     },
     {
       "path": "marketers.html",
@@ -275,18 +225,13 @@
         "meta_viewport": true,
         "html_lang": true,
         "html_dir": true,
-        "canonical": false,
-        "og_title": false,
-        "og_description": false,
-        "twitter_card": false
+        "canonical": true,
+        "og_title": true,
+        "og_description": true,
+        "twitter_card": true
       },
       "missing_required": [],
-      "missing_advisory": [
-        "canonical",
-        "og_title",
-        "og_description",
-        "twitter_card"
-      ]
+      "missing_advisory": []
     },
     {
       "path": "partners.html",
@@ -297,16 +242,12 @@
         "html_lang": true,
         "html_dir": true,
         "canonical": true,
-        "og_title": false,
-        "og_description": false,
-        "twitter_card": false
+        "og_title": true,
+        "og_description": true,
+        "twitter_card": true
       },
       "missing_required": [],
-      "missing_advisory": [
-        "og_title",
-        "og_description",
-        "twitter_card"
-      ]
+      "missing_advisory": []
     },
     {
       "path": "pay-per-result.html",
@@ -316,18 +257,13 @@
         "meta_viewport": true,
         "html_lang": true,
         "html_dir": true,
-        "canonical": false,
-        "og_title": false,
-        "og_description": false,
-        "twitter_card": false
+        "canonical": true,
+        "og_title": true,
+        "og_description": true,
+        "twitter_card": true
       },
       "missing_required": [],
-      "missing_advisory": [
-        "canonical",
-        "og_title",
-        "og_description",
-        "twitter_card"
-      ]
+      "missing_advisory": []
     },
     {
       "path": "personal-operator.html",
@@ -337,18 +273,13 @@
         "meta_viewport": true,
         "html_lang": true,
         "html_dir": true,
-        "canonical": false,
-        "og_title": false,
-        "og_description": false,
-        "twitter_card": false
+        "canonical": true,
+        "og_title": true,
+        "og_description": true,
+        "twitter_card": true
       },
       "missing_required": [],
-      "missing_advisory": [
-        "canonical",
-        "og_title",
-        "og_description",
-        "twitter_card"
-      ]
+      "missing_advisory": []
     },
     {
       "path": "pricing.html",
@@ -359,16 +290,28 @@
         "html_lang": true,
         "html_dir": true,
         "canonical": true,
-        "og_title": false,
-        "og_description": false,
-        "twitter_card": false
+        "og_title": true,
+        "og_description": true,
+        "twitter_card": true
       },
       "missing_required": [],
-      "missing_advisory": [
-        "og_title",
-        "og_description",
-        "twitter_card"
-      ]
+      "missing_advisory": []
+    },
+    {
+      "path": "privacy.html",
+      "present": {
+        "title": true,
+        "meta_description": true,
+        "meta_viewport": true,
+        "html_lang": true,
+        "html_dir": true,
+        "canonical": true,
+        "og_title": true,
+        "og_description": true,
+        "twitter_card": true
+      },
+      "missing_required": [],
+      "missing_advisory": []
     },
     {
       "path": "pulse.html",
@@ -378,18 +321,13 @@
         "meta_viewport": true,
         "html_lang": true,
         "html_dir": true,
-        "canonical": false,
-        "og_title": false,
-        "og_description": false,
-        "twitter_card": false
+        "canonical": true,
+        "og_title": true,
+        "og_description": true,
+        "twitter_card": true
       },
       "missing_required": [],
-      "missing_advisory": [
-        "canonical",
-        "og_title",
-        "og_description",
-        "twitter_card"
-      ]
+      "missing_advisory": []
     },
     {
       "path": "roi.html",
@@ -399,18 +337,13 @@
         "meta_viewport": true,
         "html_lang": true,
         "html_dir": true,
-        "canonical": false,
-        "og_title": false,
-        "og_description": false,
-        "twitter_card": false
+        "canonical": true,
+        "og_title": true,
+        "og_description": true,
+        "twitter_card": true
       },
       "missing_required": [],
-      "missing_advisory": [
-        "canonical",
-        "og_title",
-        "og_description",
-        "twitter_card"
-      ]
+      "missing_advisory": []
     },
     {
       "path": "simulator.html",
@@ -420,21 +353,48 @@
         "meta_viewport": true,
         "html_lang": true,
         "html_dir": true,
-        "canonical": false,
-        "og_title": false,
-        "og_description": false,
-        "twitter_card": false
+        "canonical": true,
+        "og_title": true,
+        "og_description": true,
+        "twitter_card": true
       },
       "missing_required": [],
-      "missing_advisory": [
-        "canonical",
-        "og_title",
-        "og_description",
-        "twitter_card"
-      ]
+      "missing_advisory": []
     },
     {
       "path": "status.html",
+      "present": {
+        "title": true,
+        "meta_description": true,
+        "meta_viewport": true,
+        "html_lang": true,
+        "html_dir": true,
+        "canonical": true,
+        "og_title": true,
+        "og_description": true,
+        "twitter_card": true
+      },
+      "missing_required": [],
+      "missing_advisory": []
+    },
+    {
+      "path": "subprocessors.html",
+      "present": {
+        "title": true,
+        "meta_description": true,
+        "meta_viewport": true,
+        "html_lang": true,
+        "html_dir": true,
+        "canonical": true,
+        "og_title": true,
+        "og_description": true,
+        "twitter_card": true
+      },
+      "missing_required": [],
+      "missing_advisory": []
+    },
+    {
+      "path": "terms.html",
       "present": {
         "title": true,
         "meta_description": true,
@@ -457,18 +417,13 @@
         "meta_viewport": true,
         "html_lang": true,
         "html_dir": true,
-        "canonical": false,
-        "og_title": false,
-        "og_description": false,
-        "twitter_card": false
+        "canonical": true,
+        "og_title": true,
+        "og_description": true,
+        "twitter_card": true
       },
       "missing_required": [],
-      "missing_advisory": [
-        "canonical",
-        "og_title",
-        "og_description",
-        "twitter_card"
-      ]
+      "missing_advisory": []
     },
     {
       "path": "trust.html",
@@ -478,18 +433,13 @@
         "meta_viewport": true,
         "html_lang": true,
         "html_dir": true,
-        "canonical": false,
-        "og_title": false,
-        "og_description": false,
-        "twitter_card": false
+        "canonical": true,
+        "og_title": true,
+        "og_description": true,
+        "twitter_card": true
       },
       "missing_required": [],
-      "missing_advisory": [
-        "canonical",
-        "og_title",
-        "og_description",
-        "twitter_card"
-      ]
+      "missing_advisory": []
     },
     {
       "path": "verticals.html",
@@ -499,18 +449,13 @@
         "meta_viewport": true,
         "html_lang": true,
         "html_dir": true,
-        "canonical": false,
-        "og_title": false,
-        "og_description": false,
-        "twitter_card": false
+        "canonical": true,
+        "og_title": true,
+        "og_description": true,
+        "twitter_card": true
       },
       "missing_required": [],
-      "missing_advisory": [
-        "canonical",
-        "og_title",
-        "og_description",
-        "twitter_card"
-      ]
+      "missing_advisory": []
     }
   ]
 }

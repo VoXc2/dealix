@@ -63,3 +63,21 @@ def test_data_json_is_committed():
         "landing/assets/data/service-readiness.json must be committed; "
         "regenerate via scripts/export_service_readiness_json.py"
     )
+
+
+def test_homepage_trust_bar_fetches_live_counts():
+    """P5 — landing/script.js must fetch the readiness JSON so the
+    homepage trust-bar (stat-live / stat-partial / stat-target) stays
+    auto-honest as the YAML evolves. Falls back to a static dict if
+    fetch fails."""
+    js_path = REPO / "landing" / "script.js"
+    assert js_path.exists()
+    js = js_path.read_text(encoding="utf-8")
+    # The script must reference the readiness JSON path
+    assert "/assets/data/service-readiness.json" in js
+    # And the three stat IDs the homepage uses
+    assert "stat-live" in js
+    assert "stat-partial" in js
+    assert "stat-target" in js
+    # Plus a fallback dict so the bar never shows blank
+    assert "FALLBACK_STATS" in js or "fallback" in js.lower()

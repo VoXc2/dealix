@@ -9,10 +9,14 @@ and **does not** invent a pass.
 
 Snapshot
 - Branch: `claude/service-activation-console-IA2JK`
-- LOCAL_HEAD: `5a09d42`
+- LOCAL_HEAD: `efe7283` (was `5a09d42` at first table author; now 4 commits later)
+- **PR #136 OPEN**: <https://github.com/VoXc2/dealix/pull/136>
+- **CI status: 4/4 checks GREEN** (CodeQL, Analyze Python, build, test) — verified via `mcp__github__pull_request_read` at 17:39 UTC.
 - Production probe: `https://api.dealix.me/health` → 200, `version=3.0.0`, `git_sha="unknown"`, `providers=["groq"]`, `env=production`
-- Production endpoints from this branch: **not deployed** — `/api/v1/self-growth/status` and `/api/v1/self-growth/service-activation` return 404.
-- Local tests passing on the new bundle: **31 / 31**
+- Production endpoints from this branch: **not deployed yet** (PR not merged) — `/api/v1/self-growth/*` returns 404; `dealix.me/status.html` is the OLD hardcoded version.
+- Local tests passing: **105 / 105** (was 31/31 at first author; +74 with Phase D + self_growth_os package)
+- Skipped: 2 (CompanyBrain — module not yet implemented; honest placeholder)
+- xfailed: 3 (free-form Arabic + English safety classifier — explicit bug tickets)
 
 ## Closure table
 
@@ -98,12 +102,43 @@ DEALIX_MASTER_VERDICT=FIRST_CUSTOMER_READY_DIAGNOSTIC_ONLY
 Rationale: Diagnostic delivery can proceed today on a manual track,
 under the safety defaults already shipped to production (cold-WhatsApp
 blocked, `whatsapp_allow_live_send=False`, restricted-actions registry).
-The new console + sweep + read-only API improve transparency and locks
-the perimeter, but they require a deploy to be customer-visible. They
-do not unblock first-customer Diagnostic delivery, which is already
-manual.
+The new console + sweep + read-only API + self_growth_os package +
+Phase D safety tests improve transparency and lock the perimeter,
+but they require a deploy to be customer-visible. They do not
+unblock first-customer Diagnostic delivery, which is already manual.
 
 `PAID_BETA_READY` is **NOT** declared — no real payment or signed
 commitment recorded.
 
 `REVENUE_LIVE` is **NOT** declared — no real money recorded.
+
+## Post-merge expected state (projected)
+
+The following cells will flip the moment PR #136 is merged and
+Railway redeploys. The verification script
+`scripts/post_redeploy_verify.sh` will confirm each one
+automatically.
+
+| Cell | Pre-merge | Post-merge expected |
+|---|---|---|
+| `PROD_GIT_SHA` | `unknown` | real SHA matching merge commit |
+| `OUTREACH_GO` | `no` | `manual_warm_only` |
+| `FIRST_CUSTOMER_SCOPE` | `diagnostic_only` | `diagnostic_or_first_pilot` |
+| `/api/v1/self-growth/status` | 404 | 200, guardrails block present |
+| `/api/v1/self-growth/service-activation` | 404 | 200, counts {32/0/1/7/24/0} |
+| `/api/v1/self-growth/seo/audit` | 404 | 200, required_gap=0 |
+| `/api/v1/self-growth/seo/audit/summary` | 404 | 200, perimeter_clean=true |
+| `/api/v1/self-growth/tooling` | 404 | 200, missing_required=0 |
+| `/api/v1/self-growth/service-activation/{id}` | 404 | 200, typed check |
+| `/api/v1/self-growth/service-activation-candidates` | 404 | 200, ranked list |
+| `POST /api/v1/self-growth/publishing/check` | 404 | 200, blocks "guaranteed", allows clean Arabic |
+| `dealix.me/status.html` | OLD 16500 bytes | NEW data-driven (~10000 bytes) with `services-mount` + `service-console.js` refs |
+| `dealix.me/assets/data/service-readiness.json` | 404 | 200, JSON with 32 services |
+
+After running `bash scripts/post_redeploy_verify.sh` and getting
+`DEALIX_POST_REDEPLOY_VERDICT=green`, the verdict can be re-computed:
+
+- If the founder also signs `docs/EXECUTIVE_DECISION_PACK.md` and
+  authorizes Phase E (first paid pilot via manual Moyasar invoice),
+  `OUTREACH_GO` flips to `yes_warm_only` and
+  `FIRST_CUSTOMER_SCOPE` flips to `full_manual_payment_fallback`.

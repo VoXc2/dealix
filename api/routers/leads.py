@@ -13,6 +13,7 @@ from sqlalchemy import select
 from api.dependencies import get_acquisition_pipeline
 from api.schemas import LeadCreateRequest, LeadResponse, PipelineResponse
 from auto_client_acquisition.agents.intake import LeadSource
+from auto_client_acquisition.notifications import notify_founder_on_intake
 from auto_client_acquisition.connectors.google_maps import (
     INDUSTRY_QUERIES as _LOCAL_INDUSTRY_QUERIES,
     SAUDI_CITIES as _LOCAL_SAUDI_CITIES,
@@ -69,6 +70,13 @@ async def create_lead(
         auto_book=auto_book,
         auto_proposal=auto_proposal,
     )
+
+    # Fire-and-log founder alert. Failures here NEVER fail the intake.
+    try:
+        await notify_founder_on_intake(result.lead)
+    except Exception as exc:  # noqa: BLE001 — alerting must never break intake
+        log.warning("founder_alert_dispatch_failed: %s", exc)
+
     return PipelineResponse(
         lead=LeadResponse(
             id=result.lead.id,

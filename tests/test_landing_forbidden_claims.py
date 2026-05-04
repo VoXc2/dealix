@@ -74,6 +74,19 @@ ALLOWLIST: dict[str, dict[str, str]] = {
     "status.html": {
         "cold": "NEGATION",
     },
+    # Newly authored legal pages — each describes the boundary of what
+    # Dealix never does (no cold outreach, no scraping, no guaranteed
+    # revenue/ranking). All NEGATION context only.
+    "privacy.html": {
+        "scraping": "NEGATION",
+    },
+    "subprocessors.html": {
+        "cold": "NEGATION",
+        "scraping": "NEGATION",
+    },
+    "terms.html": {
+        "مضمون": "NEGATION",
+    },
 }
 
 

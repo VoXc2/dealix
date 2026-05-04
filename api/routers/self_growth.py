@@ -16,10 +16,16 @@ from pathlib import Path
 from fastapi import APIRouter, Body, HTTPException
 
 from auto_client_acquisition.self_growth_os import (
+    daily_growth_loop,
+    geo_aio_radar,
+    internal_linking_planner,
+    partner_distribution_radar,
+    proof_snippet_engine,
     safe_publishing_gate,
     service_activation_matrix,
     seo_technical_auditor,
     tool_registry,
+    weekly_growth_scorecard,
 )
 
 router = APIRouter(prefix="/api/v1/self-growth", tags=["self-growth"])
@@ -153,6 +159,154 @@ async def seo_audit_summary() -> dict:
         }
     except FileNotFoundError as exc:
         raise HTTPException(status_code=503, detail=str(exc)) from exc
+
+
+@router.get("/geo/audit")
+async def geo_audit() -> dict:
+    """AI-search readiness audit over our own landing pages.
+
+    Wraps ``self_growth_os.geo_aio_radar.audit_all``. Never calls
+    any AI engine; never scrapes any third-party site. Pure
+    structural measurement.
+    """
+    return geo_aio_radar.audit_all()
+
+
+@router.get("/internal-linking")
+async def internal_linking_report() -> dict:
+    """Link graph + orphan/CTA/broken-link audit over landing pages.
+
+    Wraps ``self_growth_os.internal_linking_planner.build_graph``.
+    """
+    return internal_linking_planner.build_graph()
+
+
+@router.get("/scorecard/weekly")
+async def weekly_scorecard() -> dict:
+    """Aggregated weekly scorecard. Counts only what's anchored to
+    real artifacts in the repo — no fake metrics.
+
+    Wraps ``self_growth_os.weekly_growth_scorecard.build_scorecard``.
+    """
+    return weekly_growth_scorecard.build_scorecard()
+
+
+@router.get("/daily-loop")
+async def daily_loop() -> dict:
+    """Compose the daily growth loop — one screen of what to do today.
+
+    Wraps ``self_growth_os.daily_growth_loop.build_today``. Composes:
+    top 3 founder decisions (from personal-operator), service nearest
+    to Live (from matrix), today's partner focus (rotating from the
+    catalog), top 3 SEO gap pages (from geo_aio_radar), perimeter
+    status, and open loops needing founder attention.
+
+    Pure read-only composition. No external send. No DB writes.
+    """
+    return daily_growth_loop.build_today()
+
+
+@router.post("/proof-snippet/render")
+async def proof_snippet_render(event: dict = Body(...)) -> dict:
+    """Render one ProofEvent dict into a typed snippet result.
+
+    Body shape (required fields):
+      - event_type: str
+      - service_id: str
+      - outcome_metric: str
+      - outcome_value: any
+      - consent_for_publication: bool
+
+    Optional:
+      - customer_anonymized, customer_display_name (only used if consent)
+      - sla_period_days, service_bundle
+
+    Returns the snippet pair (Arabic + English) plus the decision,
+    approval_status, and audience flag. NEVER persists. NEVER sends.
+    """
+    result = proof_snippet_engine.render(event)
+    return result.to_dict()
+
+
+@router.post("/proof-snippet/render-batch")
+async def proof_snippet_render_batch(payload: dict = Body(...)) -> dict:
+    """Render many ProofEvents at once. Body: ``{"events": [{...}, ...]}``"""
+    events = payload.get("events")
+    if not isinstance(events, list):
+        raise HTTPException(
+            status_code=400,
+            detail="payload.events must be a list of ProofEvent dicts",
+        )
+    return proof_snippet_engine.render_batch(events)
+
+
+@router.get("/proof-snippet/boundaries")
+async def proof_snippet_boundaries() -> dict:
+    """Document the proof-snippet engine's safety rules."""
+    return proof_snippet_engine.boundaries()
+
+
+@router.post("/proof-pack/assemble")
+async def proof_pack_assemble(payload: dict = Body(...)) -> dict:
+    """Assemble many ProofEvents into a customer-shareable pack.
+
+    Body:
+      - events: list[ProofEventDict]  (required, non-empty)
+      - customer_handle: str          (optional; default 'Saudi B2B customer')
+      - period_label: str             (optional; e.g. '2026-05 Pilot')
+
+    Returns a typed ProofPackDocument with bilingual markdown.
+    Always ``approval_status=approval_required``. Pack is blocked
+    if any event is invalid OR the assembled markdown contains
+    forbidden vocabulary at the document level.
+    """
+    events = payload.get("events")
+    if not isinstance(events, list):
+        raise HTTPException(
+            status_code=400,
+            detail="payload.events must be a list of ProofEvent dicts",
+        )
+    if not events:
+        raise HTTPException(
+            status_code=400,
+            detail="payload.events must be non-empty",
+        )
+    handle = str(payload.get("customer_handle") or "Saudi B2B customer")
+    period = str(payload.get("period_label") or "")
+    return proof_snippet_engine.render_pack(
+        events, customer_handle=handle, period_label=period
+    )
+
+
+@router.get("/partner-radar")
+async def partner_radar_summary() -> dict:
+    """Return the static partner-category catalog (8 categories).
+
+    Wraps ``self_growth_os.partner_distribution_radar.summary``. Each
+    category is a CLASS of partners (B2B agency, sales consultant,
+    CRM implementer, …), not a specific company. Founder picks
+    individual partners from their own network. NEVER scrapes any
+    directory or social network.
+    """
+    return partner_distribution_radar.summary()
+
+
+@router.get("/partner-radar/{category_id}")
+async def partner_radar_one(category_id: str) -> dict:
+    """Return one partner category with its full draft pack."""
+    try:
+        return partner_distribution_radar.get_category(category_id)
+    except KeyError as exc:
+        raise HTTPException(status_code=404, detail=str(exc)) from exc
+
+
+@router.get("/partner-radar/drafts/safety-check")
+async def partner_radar_safety() -> dict:
+    """Run every catalog warm-intro draft through the safe-publishing
+    gate. The founder calls this before approving outreach to confirm
+    none of the drafts contain forbidden vocabulary.
+    """
+    return partner_distribution_radar.safe_drafts()
 
 
 @router.post("/publishing/check")
