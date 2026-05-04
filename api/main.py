@@ -49,6 +49,7 @@ from api.routers import (
     revenue_os,
     role_command_os,
     sales,
+    search_radar,
     sectors,
     security_privacy,
     self_growth,
@@ -172,6 +173,7 @@ def create_app() -> FastAPI:
     app.include_router(delivery_factory.router)
     app.include_router(proof_ledger.router)
     app.include_router(gtm_os.router)
+    app.include_router(search_radar.router)
     app.include_router(security_privacy.router)
     app.include_router(diagnostic.router)
     app.include_router(company_brain.router)
