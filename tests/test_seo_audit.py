@@ -20,32 +20,11 @@ REPORT = REPO / "docs" / "SEO_AUDIT_REPORT.json"
 # Per-page advisory exemptions. As the founder approves OG/canonical
 # copy on each page, remove its entry here. New pages must either
 # include those tags or be added to this list with a reason.
-ADVISORY_EXEMPT = {
-    "academy.html",
-    "autopilot.html",
-    "case-study.html",
-    "command-center.html",
-    "community.html",
-    "copilot.html",
-    "customer-portal.html",
-    "dashboard.html",
-    "founder.html",
-    "market-radar.html",
-    "partners.html",
-    "pay-per-result.html",
-    "personal-operator.html",
-    "pulse.html",
-    "roi.html",
-    "simulator.html",
-    "trust.html",
-    "verticals.html",
-    # NOT in this list — these pages now have full canonical + OG + twitter:
-    #   - index.html, status.html (authored on this branch)
-    #   - pricing.html, trust-center.html, marketers.html (upgraded)
-    #   - privacy.html, terms.html, subprocessors.html (newly authored)
-    # launch-readiness.html is in the script's ADVISORY_ONLY_PAGES set
-    # so its advisory checks are skipped entirely.
-}
+#
+# As of 2026-05-04: every audited landing page now carries full
+# canonical + og:title + og:description + twitter:card. The
+# allowlist is empty — any new page without those tags fails CI.
+ADVISORY_EXEMPT: set[str] = set()
 
 
 def _run_audit() -> dict:
