@@ -30,6 +30,8 @@ on:
       - "autonomous_growth/**"
       - "integrations/**"
       - "db/**"
+      - "scripts/staging_smoke.sh"
+      - "scripts/verify_inbound_flow.sh"
       - "cli.py"
       - "Dockerfile"
       - "railway.json"
@@ -37,6 +39,9 @@ on:
       - "Procfile"
       - "requirements.txt"
       - "pyproject.toml"
+      # Workflow file itself — so a fix to the workflow (e.g. new
+      # smoke step) auto-triggers a re-verify on the deploy branch.
+      - ".github/workflows/railway_deploy.yml"
   workflow_dispatch:
     inputs:
       service:
