@@ -3,19 +3,21 @@
 This package is intentionally small. Each module wraps EXISTING
 infrastructure rather than inventing new logic:
 
-  - ``schemas``               — typed records used across the package
+  - ``schemas``                   — typed records used across the package
   - ``service_activation_matrix`` — wraps docs/registry/SERVICE_READINESS_MATRIX.yaml
-  - ``seo_technical_auditor`` — wraps scripts/seo_audit.py
-  - ``safe_publishing_gate``  — wraps the forbidden-claims regex
-  - ``tool_registry``         — introspects which optional packages are available
-  - ``evidence_collector``    — small structured-event recorder
+  - ``seo_technical_auditor``     — wraps scripts/seo_audit.py
+  - ``safe_publishing_gate``      — wraps the forbidden-claims regex
+  - ``tool_registry``             — introspects which optional packages are available
+  - ``evidence_collector``        — small structured-event recorder
+  - ``geo_aio_radar``             — measures AI-search readiness over our own pages
+  - ``internal_linking_planner``  — link graph + orphan/CTA/broken-link audit
+  - ``weekly_growth_scorecard``   — aggregates every measurement above
 
 Modules referenced in earlier prompts but **not implemented yet**
-(search_radar, content_brief_generator, content_draft_engine,
-distribution_planner, partner_distribution_radar, daily_growth_loop,
-weekly_growth_scorecard, self_improvement_loop, geo_aio_radar,
-landing_page_opportunity_engine, internal_linking_planner,
-community_signal_radar, social_draft_engine, proof_snippet_engine)
+(search_radar, keyword_intent_radar, content_brief_generator,
+content_draft_engine, distribution_planner, partner_distribution_radar,
+daily_growth_loop, self_improvement_loop, community_signal_radar,
+social_draft_engine, proof_snippet_engine, landing_page_opportunity_engine)
 are deferred per ``docs/SELF_GROWTH_OS_PACKAGE.md`` until they have
 real callers, real input data, and real tests. No stubs.
 

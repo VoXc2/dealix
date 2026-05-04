@@ -16,10 +16,13 @@ from pathlib import Path
 from fastapi import APIRouter, Body, HTTPException
 
 from auto_client_acquisition.self_growth_os import (
+    geo_aio_radar,
+    internal_linking_planner,
     safe_publishing_gate,
     service_activation_matrix,
     seo_technical_auditor,
     tool_registry,
+    weekly_growth_scorecard,
 )
 
 router = APIRouter(prefix="/api/v1/self-growth", tags=["self-growth"])
@@ -153,6 +156,36 @@ async def seo_audit_summary() -> dict:
         }
     except FileNotFoundError as exc:
         raise HTTPException(status_code=503, detail=str(exc)) from exc
+
+
+@router.get("/geo/audit")
+async def geo_audit() -> dict:
+    """AI-search readiness audit over our own landing pages.
+
+    Wraps ``self_growth_os.geo_aio_radar.audit_all``. Never calls
+    any AI engine; never scrapes any third-party site. Pure
+    structural measurement.
+    """
+    return geo_aio_radar.audit_all()
+
+
+@router.get("/internal-linking")
+async def internal_linking_report() -> dict:
+    """Link graph + orphan/CTA/broken-link audit over landing pages.
+
+    Wraps ``self_growth_os.internal_linking_planner.build_graph``.
+    """
+    return internal_linking_planner.build_graph()
+
+
+@router.get("/scorecard/weekly")
+async def weekly_scorecard() -> dict:
+    """Aggregated weekly scorecard. Counts only what's anchored to
+    real artifacts in the repo — no fake metrics.
+
+    Wraps ``self_growth_os.weekly_growth_scorecard.build_scorecard``.
+    """
+    return weekly_growth_scorecard.build_scorecard()
 
 
 @router.post("/publishing/check")
