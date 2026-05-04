@@ -16,9 +16,11 @@ from pathlib import Path
 from fastapi import APIRouter, Body, HTTPException
 
 from auto_client_acquisition.self_growth_os import (
+    daily_growth_loop,
     geo_aio_radar,
     internal_linking_planner,
     partner_distribution_radar,
+    proof_snippet_engine,
     safe_publishing_gate,
     service_activation_matrix,
     seo_technical_auditor,
@@ -187,6 +189,61 @@ async def weekly_scorecard() -> dict:
     Wraps ``self_growth_os.weekly_growth_scorecard.build_scorecard``.
     """
     return weekly_growth_scorecard.build_scorecard()
+
+
+@router.get("/daily-loop")
+async def daily_loop() -> dict:
+    """Compose the daily growth loop — one screen of what to do today.
+
+    Wraps ``self_growth_os.daily_growth_loop.build_today``. Composes:
+    top 3 founder decisions (from personal-operator), service nearest
+    to Live (from matrix), today's partner focus (rotating from the
+    catalog), top 3 SEO gap pages (from geo_aio_radar), perimeter
+    status, and open loops needing founder attention.
+
+    Pure read-only composition. No external send. No DB writes.
+    """
+    return daily_growth_loop.build_today()
+
+
+@router.post("/proof-snippet/render")
+async def proof_snippet_render(event: dict = Body(...)) -> dict:
+    """Render one ProofEvent dict into a typed snippet result.
+
+    Body shape (required fields):
+      - event_type: str
+      - service_id: str
+      - outcome_metric: str
+      - outcome_value: any
+      - consent_for_publication: bool
+
+    Optional:
+      - customer_anonymized, customer_display_name (only used if consent)
+      - sla_period_days, service_bundle
+
+    Returns the snippet pair (Arabic + English) plus the decision,
+    approval_status, and audience flag. NEVER persists. NEVER sends.
+    """
+    result = proof_snippet_engine.render(event)
+    return result.to_dict()
+
+
+@router.post("/proof-snippet/render-batch")
+async def proof_snippet_render_batch(payload: dict = Body(...)) -> dict:
+    """Render many ProofEvents at once. Body: ``{"events": [{...}, ...]}``"""
+    events = payload.get("events")
+    if not isinstance(events, list):
+        raise HTTPException(
+            status_code=400,
+            detail="payload.events must be a list of ProofEvent dicts",
+        )
+    return proof_snippet_engine.render_batch(events)
+
+
+@router.get("/proof-snippet/boundaries")
+async def proof_snippet_boundaries() -> dict:
+    """Document the proof-snippet engine's safety rules."""
+    return proof_snippet_engine.boundaries()
 
 
 @router.get("/partner-radar")
