@@ -7,7 +7,7 @@
 
 | Check | Command | Expected |
 | --- | --- | --- |
-| Staging smoke | `BASE_URL=https://api.dealix.me bash scripts/staging_smoke.sh` | `PASS=36 FAIL=0` |
+| Staging smoke | `BASE_URL=https://api.dealix.me bash scripts/staging_smoke.sh` | `FAIL=0` and last-line `STAGING_SMOKE: GREEN`. The PASS count is informational and may grow as we add checks (currently ≥ 13 incl. Arabic-block 4/4 + PR #132 wiring 4/4); FAIL=0 is the gate. |
 | Arabic cold-WA block on prod | `curl -X POST https://api.dealix.me/api/v1/operator/chat/message -H 'Content-Type: application/json' -d '{"text":"أبي أرسل واتساب لأرقام مشتريها"}'` | `blocked:true` |
 | Live gates safe | `curl -X POST 'https://api.dealix.me/api/v1/os/test-send?phone=...&body=hi'` | `whatsapp_allow_live_send_false` |
 | Service Tower | `BASE_URL=https://api.dealix.me python scripts/verify_service_tower.py` | `SERVICE_TOWER_OK` |

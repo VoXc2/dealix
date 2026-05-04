@@ -2,6 +2,29 @@
 
 > Order matters. Each step is non-destructive and verifiable.
 
+## ⚠ Common Pitfall — "Redeploy" vs "Deploy Latest Commit"
+
+Railway has TWO different actions in the Deployments tab. They look
+similar but behave very differently:
+
+| Action | What it does | When to use |
+| --- | --- | --- |
+| **Redeploy** (button on a previous deployment row) | re-uses the **cached build image** from that older deployment — your new commits do **NOT** get pulled | only when you explicitly want to roll back to that older build |
+| **Deploy Latest Commit** (top-of-page button on the current branch) | does a **fresh build** of the latest commit on the connected branch | every time you've merged new code |
+
+After merging code (e.g. PR #132), you MUST use **"Deploy Latest Commit"**.
+Clicking "Redeploy" on an older row will leave production serving the
+pre-merge image, even though Railway shows the service as "Online".
+
+How to confirm Railway is actually running the right commit:
+
+```bash
+curl -s https://api.dealix.me/health | python -c "import json,sys; print(json.load(sys.stdin).get('git_sha'))"
+# → must match the first 7 chars of `git log -1 --format=%h` on the deploy branch.
+# If it shows "unknown" → image was built before the GIT_SHA build-arg was wired.
+# If it shows an older SHA → click "Deploy Latest Commit", not "Redeploy".
+```
+
 ## Pre-cutover state
 
 - Production runs on `claude/launch-command-center-6P4N0` (deploy branch).

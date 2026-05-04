@@ -1,15 +1,40 @@
 # Dealix Final Cutover Evidence
 
-> Re-verified 2026-05-04 (post-Railway-redeploy) against deploy branch
-> `claude/launch-command-center-6P4N0` @ `66061f5`
-> (PR #132 merge `29d8e8f` + smoke-script `bf8f6a0` + this evidence pass).
-> Every claim is backed by a command + output. No motivational claims.
+> Re-verified 2026-05-04 (post-cutover-hardening commit) against deploy
+> branch `claude/launch-command-center-6P4N0`. Every claim is backed by
+> a command + output. No motivational claims.
 
 ## Verdict
 
 ```
 DEALIX_FINAL_VERDICT=PROVEN_STAGING_READ_ONLY
 ```
+
+The deploy-branch source is correct AND now hardened against future
+stale-image confusion (see "Cutover hardening" below). Production runtime
+on `https://api.dealix.me` still pre-dates PR #132 because Railway's
+"Redeploy" reuses the cached build. ONE remaining founder action:
+Railway → service "dealix" → Deployments → **"Deploy Latest Commit"**
+(NOT "Redeploy" on an old row). After that, both:
+
+- the operator wiring patch (PR #132)
+- the new `git_sha` field on `/health` (this commit)
+- the auto-migration on boot (this commit)
+- the upgraded staging smoke (this commit)
+
+all come live in one shot.
+
+### Cutover hardening committed in this revision
+
+| Change | Purpose |
+| --- | --- |
+| `/health` returns `git_sha` (Dockerfile ARG + railway.json buildArg) | one curl reveals which commit is actually running on prod |
+| Boot-time idempotent auto-migration of `deals.hubspot_deal_id` | eliminates the founder secret-paste step |
+| `staging_smoke.sh` asserts PR #132 wiring fields, not just `blocked` | future stale images fail loudly with the right error message |
+| `scripts/post_redeploy_verify.sh` | one-line founder verification after every deploy |
+| `RAILWAY_CUTOVER_RUNBOOK.md` "Common Pitfall" section | Redeploy-vs-Deploy-Latest pitfall is now explicit |
+
+### Direct evidence — pre-deploy state
 
 Founder confirmed Railway "back online" — but the running build does NOT
 contain PR #132's wiring patch. Direct evidence from

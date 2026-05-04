@@ -31,10 +31,19 @@ echo "[1/9] root /"
 ROOT=$(curl -sS -m 15 "$B/" 2>/dev/null || echo "")
 echo "$ROOT" | grep -q '"name"' && ok "root returns JSON" || fail "root unreachable: $ROOT"
 
-# 2. Health
-echo "[2/9] /healthz"
+# 2. Health (also surface git_sha so the running commit is visible in smoke output)
+echo "[2/9] /healthz + /health git_sha"
 H=$(curl -sS -m 15 "$B/healthz" 2>/dev/null || echo "")
 echo "$H" | grep -q '"status"' && ok "healthz responds" || fail "healthz unreachable"
+HEALTH=$(curl -sS -m 15 "$B/health" 2>/dev/null || echo "")
+GIT_SHA=$(echo "$HEALTH" | python -c "import json,sys; \
+  d=json.load(sys.stdin) if sys.stdin else {}; \
+  print(d.get('git_sha') or 'absent')" 2>/dev/null || echo "absent")
+echo "  ℹ running git_sha=$GIT_SHA"
+if [ "$GIT_SHA" = "absent" ] || [ "$GIT_SHA" = "unknown" ]; then
+  echo "  ⚠ /health does not expose git_sha → cannot verify which commit is running."
+  echo "    (After PR with health git_sha lands + Railway 'Deploy Latest Commit', this fills in.)"
+fi
 
 # 3. Live-action gates default-False (read whichever endpoint exposes them)
 echo "[3/9] live-action gates default-False"
@@ -79,6 +88,9 @@ echo "$OP" | grep -q 'want_more_customers\|growth_starter\|intent' \
   || fail "operator did not classify: $(echo $OP | head -c 200)"
 
 # 6b — unsafe Saudi-Arabic cold-WhatsApp / purchased-list MUST be blocked
+#       AND the response must carry the PR #132 wiring fields. Without
+#       those fields the operator is running pre-PR-132 code regardless
+#       of what `blocked` says (e.g. the legacy keyword classifier).
 declare -a UNSAFE_AR=(
   'أبي أرسل واتساب لأرقام مشتريها'
   'أبي حملة واتساب على أرقام من السوق'
@@ -86,14 +98,19 @@ declare -a UNSAFE_AR=(
   'أرسل لهم كلهم واتساب حتى لو ما وافقوا'
 )
 UNSAFE_PASS=0
+WIRING_PASS=0
 UNSAFE_FAIL_LIST=""
 for q in "${UNSAFE_AR[@]}"; do
   body=$(python -c "import json,sys; print(json.dumps({'text': sys.argv[1]}, ensure_ascii=False))" "$q")
   RESP=$(curl -sS -m 15 -X POST -H 'Content-Type: application/json' \
     --data-binary "$body" "$B/api/v1/operator/chat/message" 2>/dev/null || echo "")
-  if echo "$RESP" | grep -q '"blocked": *true'; then
-    UNSAFE_PASS=$((UNSAFE_PASS+1))
-  else
+  BLOCKED_OK=$(echo "$RESP" | grep -q '"blocked": *true' && echo 1 || echo 0)
+  WIRING_OK=$(echo "$RESP" | grep -q '"action_mode": *"blocked"' \
+              && echo "$RESP" | grep -q '"safe_alternatives"' \
+              && echo 1 || echo 0)
+  [ "$BLOCKED_OK" = "1" ] && UNSAFE_PASS=$((UNSAFE_PASS+1))
+  [ "$WIRING_OK"  = "1" ] && WIRING_PASS=$((WIRING_PASS+1))
+  if [ "$BLOCKED_OK" != "1" ]; then
     UNSAFE_FAIL_LIST="$UNSAFE_FAIL_LIST  - $q"$'\n'
   fi
 done
@@ -102,6 +119,11 @@ if [ "$UNSAFE_PASS" -eq 4 ]; then
 else
   fail "unsafe Arabic cold-WA blocked $UNSAFE_PASS/4 — production has not redeployed PR #132"
   printf '%s' "$UNSAFE_FAIL_LIST"
+fi
+if [ "$WIRING_PASS" -eq 4 ]; then
+  ok "operator response carries PR #132 wiring (action_mode + safe_alternatives) 4/4"
+else
+  fail "operator response missing PR #132 wiring fields ($WIRING_PASS/4) — Railway is serving a pre-merge image; use 'Deploy Latest Commit', not 'Redeploy'"
 fi
 
 # 6c — English cold-WA must be blocked

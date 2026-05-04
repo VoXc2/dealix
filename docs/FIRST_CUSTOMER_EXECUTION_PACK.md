@@ -93,26 +93,32 @@ diagnostic. NEVER include "نضمن لك" or "guaranteed".
 When the customer says "موافق":
 
 ```bash
-# 1. Record the lead
-curl -X POST https://api.dealix.me/api/v1/leads \
+# 1. Record the lead — capture `id` from the response JSON as <lead_id>
+LEAD=$(curl -sX POST https://api.dealix.me/api/v1/leads \
   -H "Content-Type: application/json" \
-  -d '{"name":"<contact>","email":"<email>","company":"<co>","phone":"<+966...>","source":"linkedin","sector":"<sector>"}'
+  -d '{"name":"<contact>","email":"<email>","company":"<co>","phone":"<+966...>","source":"linkedin","sector":"<sector>"}')
+LEAD_ID=$(python -c "import json,sys; d=json.loads(sys.argv[1]); print(d.get('lead',{}).get('id') or d.get('id',''))" "$LEAD")
+echo "lead_id=$LEAD_ID"
 
-# 2. Create deal at pilot_offered
-curl -X POST https://api.dealix.me/api/v1/deals \
+# 2. Create deal at pilot_offered — capture `id` as <deal_id>
+DEAL=$(curl -sX POST https://api.dealix.me/api/v1/deals \
   -H "Content-Type: application/json" \
-  -d '{"lead_id":"<lead_id>","value_sar":499,"stage":"pilot_offered"}'
+  -d "{\"lead_id\":\"$LEAD_ID\",\"value_sar\":499,\"stage\":\"pilot_offered\"}")
+DEAL_ID=$(python -c "import json,sys; d=json.loads(sys.argv[1]); print(d.get('deal',{}).get('id') or d.get('id',''))" "$DEAL")
+echo "deal_id=$DEAL_ID"
 
-# 3. Manual invoice — bank transfer instructions returned
-curl -X POST https://api.dealix.me/api/v1/payments/manual-request \
+# 3. Manual invoice — bank-transfer instructions returned
+curl -sX POST https://api.dealix.me/api/v1/payments/manual-request \
   -H "Content-Type: application/json" \
-  -d '{"deal_id":"<deal_id>","amount_sar":499}'
+  -d "{\"deal_id\":\"$DEAL_ID\",\"amount_sar\":499}"
 
-# 4. Send the customer the bank IBAN / STC Pay number via WhatsApp/email manually
-# 5. When the transfer arrives:
-curl -X POST https://api.dealix.me/api/v1/payments/mark-paid \
+# 4. Send the customer the bank IBAN / STC Pay number via WhatsApp/email manually.
+# 5. When the transfer arrives — capture `customer_id` from the mark-paid response:
+PAID=$(curl -sX POST https://api.dealix.me/api/v1/payments/mark-paid \
   -H "Content-Type: application/json" \
-  -d '{"deal_id":"<deal_id>","reference":"<bank-ref>"}'
+  -d "{\"deal_id\":\"$DEAL_ID\",\"reference\":\"<bank-ref>\"}")
+CUSTOMER_ID=$(python -c "import json,sys; print(json.loads(sys.argv[1]).get('customer_id',''))" "$PAID")
+echo "customer_id=$CUSTOMER_ID"
 ```
 
 If `MOYASAR_SECRET_KEY` is configured (sandbox or live), the same

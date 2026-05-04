@@ -2,6 +2,16 @@
 
 > Adds a single nullable column. No data drop. No table recreate. Idempotent.
 
+## TL;DR — auto-runs on app startup
+
+As of the cutover-hardening commit, `api/main.py` lifespan calls
+`scripts.migrate_add_hubspot_deal_id.run_migration_if_needed()` right
+after `init_db()`. This means **manual invocation is no longer required**
+once the app boots with the new image — the column is added automatically
+on the next Railway deploy. Keep this doc as a reference for local
+testing or for situations where you want to verify the migration
+out-of-band.
+
 ## What this fixes
 
 Production Postgres is missing `deals.hubspot_deal_id`. The deploy-branch

@@ -106,21 +106,44 @@ async def _async_main(url: str) -> int:
         await engine.dispose()
 
 
-def main() -> int:
-    url = os.getenv("DATABASE_URL", "").strip()
-    if not url:
-        print("MIGRATION_FAIL  DATABASE_URL not set", file=sys.stderr)
-        return 2
-
-    # Coerce sync drivers to async if obvious
+def _coerce_async_url(url: str) -> str:
+    """Coerce common sync URL forms to their async-driver equivalents."""
     if url.startswith("postgres://"):
         url = url.replace("postgres://", "postgresql+asyncpg://", 1)
     elif url.startswith("postgresql://") and "+asyncpg" not in url:
         url = url.replace("postgresql://", "postgresql+asyncpg://", 1)
     elif url.startswith("sqlite://") and "aiosqlite" not in url:
         url = url.replace("sqlite://", "sqlite+aiosqlite://", 1)
+    return url
 
-    return asyncio.run(_async_main(url))
+
+async def run_migration_if_needed(url: str | None = None) -> int:
+    """Importable wrapper for the FastAPI startup hook.
+
+    Returns the same exit codes as the CLI:
+        0 = MIGRATION_OK (column already present, or just added)
+        2 = MIGRATION_FAIL (config/connection error)
+        3 = MIGRATION_SKIPPED (deals table missing)
+
+    Never raises. Caller (api.main lifespan) must log + ignore non-zero
+    so a migration hiccup never blocks app startup.
+    """
+    src = (url or os.getenv("DATABASE_URL", "")).strip()
+    if not src:
+        return 2
+    try:
+        return await _async_main(_coerce_async_url(src))
+    except Exception as exc:  # noqa: BLE001 — startup hook must NEVER raise
+        print(f"MIGRATION_FAIL  unexpected: {exc}", file=sys.stderr)
+        return 2
+
+
+def main() -> int:
+    url = os.getenv("DATABASE_URL", "").strip()
+    if not url:
+        print("MIGRATION_FAIL  DATABASE_URL not set", file=sys.stderr)
+        return 2
+    return asyncio.run(_async_main(_coerce_async_url(url)))
 
 
 if __name__ == "__main__":

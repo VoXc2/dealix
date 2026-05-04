@@ -95,6 +95,17 @@ async def lifespan(_app: FastAPI) -> AsyncIterator[None]:
         log.info("db_init_complete")
     except Exception as exc:
         log.warning("db_init_skipped", error=str(exc))
+    # Idempotent additive migration for deals.hubspot_deal_id. Safe to run
+    # on every boot: checks information_schema first, no-op if column
+    # already present, no destructive DDL. Wrapped in try/except so a
+    # migration hiccup never blocks app startup.
+    try:
+        from scripts.migrate_add_hubspot_deal_id import run_migration_if_needed
+        rc = await run_migration_if_needed()
+        log.info("hubspot_deal_id_migration", rc=rc,
+                 status="ok" if rc == 0 else "skipped" if rc == 3 else "failed")
+    except Exception as exc:
+        log.warning("hubspot_deal_id_migration_skipped", error=str(exc))
     yield
     log.info("app_shutdown")
 

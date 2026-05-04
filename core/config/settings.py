@@ -42,6 +42,11 @@ class Settings(BaseSettings):
     app_secret_key: SecretStr = Field(default=SecretStr("change-me"))
     cors_origins: str = "http://localhost:3000,http://localhost:8000"
 
+    # Build identity — set at image-build time (Dockerfile ARG GIT_SHA),
+    # surfaced on /health so a single curl confirms which commit Railway
+    # is actually serving. "unknown" when running outside a container.
+    git_sha: str = "unknown"
+
     # ── LLM: Anthropic ──────────────────────────────────────────
     anthropic_api_key: SecretStr | None = None
     anthropic_model: str = "claude-sonnet-4-5-20250929"

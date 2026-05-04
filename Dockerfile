@@ -41,6 +41,13 @@ RUN pip install --upgrade pip setuptools wheel \
 # ──────────────────────────────────────────────────────────────
 FROM python:3.12-slim-bookworm AS runtime
 
+# GIT_SHA is set at build time by Railway (RAILWAY_COMMIT_SHA build arg).
+# Surfaced on /health so a single curl confirms which commit is live.
+# Doubles as a cache-busting LABEL: any new commit invalidates the image layer.
+ARG GIT_SHA="unknown"
+ENV GIT_SHA=${GIT_SHA}
+LABEL org.opencontainers.image.revision="${GIT_SHA}"
+
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
     PATH="/opt/venv/bin:$PATH" \
