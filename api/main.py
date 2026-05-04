@@ -34,11 +34,14 @@ from api.routers import (
     pricing,
     prospect,
     public,
+    customer_loop,
     revenue,
     revenue_os,
+    role_command_os,
     sales,
     sectors,
     self_growth,
+    service_quality,
     v3,
     webhooks,
 )
@@ -146,6 +149,9 @@ def create_app() -> FastAPI:
     app.include_router(business.router)
     app.include_router(personal_operator.router)
     app.include_router(self_growth.router)
+    app.include_router(customer_loop.router)
+    app.include_router(role_command_os.router)
+    app.include_router(service_quality.router)
     app.include_router(public.router)
     app.include_router(admin.router)
 
