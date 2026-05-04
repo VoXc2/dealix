@@ -89,6 +89,9 @@ ipython_config.py
 *.db-journal
 data/
 dumps/
+# Service Activation Console data (generated, but committed for static hosting)
+!landing/assets/data/
+!landing/assets/data/service-readiness.json
 
 # ─────────────────────────────────────────────────────────────
 # 📝 Logs

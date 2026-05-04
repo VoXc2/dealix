@@ -1,0 +1,1570 @@
+# Dealix Service Readiness Matrix
+# ═════════════════════════════════════════════════════════════════════════════
+# Single source of truth for every service Dealix is preparing to run.
+# - Status enum: live | pilot | partial | target | blocked | backlog
+# - A service may be marked `live` ONLY if all 8 quality gates pass
+#   (see docs/SERVICE_ACTIVATION_CONSOLE.md for the gate definitions).
+# - Forbidden phrases (نضمن, guaranteed, blast, scrape, cold outreach, …)
+#   are rejected by scripts/verify_service_readiness_matrix.py.
+# - Edit this file → CI runs the validator → exporter regenerates
+#   landing/assets/data/service-readiness.json → status.html re-renders.
+#
+# Owner: Sami Assiri
+# Version: 1
+# ═════════════════════════════════════════════════════════════════════════════
+
+version: 1
+owner: sami_assiri
+last_updated: "2026-05-04"
+
+bundles:
+  - id: growth_starter
+    name_ar: باقة بداية النمو
+    name_en: Growth Starter
+    customer_facing: true
+    summary_ar: استقبال آمن للعملاء، تأهيل أوّلي، وردّ مسودّة بإشراف المؤسس.
+    summary_en: Safe inbound capture, first-pass qualification, and founder-approved draft replies.
+
+  - id: data_to_revenue
+    name_ar: من البيانات إلى الإيراد
+    name_en: Data to Revenue
+    customer_facing: true
+    summary_ar: تحويل العروض المعتمدة إلى صفقات مغلقة مع دفع وتسليم.
+    summary_en: Turn approved proposals into closed deals with payment and handoff.
+
+  - id: executive_growth_os
+    name_ar: نظام تشغيل القيادة التنفيذية
+    name_en: Executive Growth OS
+    customer_facing: true
+    summary_ar: "حزمة أسبوعية للمديرين التنفيذيين: قرارات معلّقة، عوائق، مخاطر."
+    summary_en: Weekly exec pack — pending decisions, blockers, risks.
+
+  - id: partnership_growth
+    name_ar: نمو الشراكات
+    name_en: Partnership Growth
+    customer_facing: true
+    summary_ar: اكتشاف الشركاء، تقييم الملاءمة، تفعيل، وبطاقة أداء حيّة.
+    summary_en: Partner scout, fit score, activation, and live scorecard.
+
+  - id: full_control_tower
+    name_ar: برج التحكم الكامل
+    name_en: Full Growth Control Tower
+    customer_facing: true
+    summary_ar: نظرة موحّدة على الأرقام مع مصدر كل رقم وتعمّق في الأدلّة.
+    summary_en: Unified actuals vs forecast view with full evidence drilldown.
+
+  - id: internal
+    name_ar: بنية تحتية داخلية
+    name_en: Internal Foundations
+    customer_facing: false
+    summary_ar: المنصّة، الامتثال، والمراقبة التي تجعل كل ما سبق آمناً.
+    summary_en: Platform, compliance, and observability that make the rest safe.
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Services — 32 entries
+#
+# Status distribution (matches landing/status.html as of 2026-05-04):
+#   live=0  pilot=1  partial=7  target=24  blocked=0
+# ─────────────────────────────────────────────────────────────────────────────
+services:
+
+  # ─── Growth Starter (7) ────────────────────────────────────────────────────
+  - service_id: lead_intake_whatsapp
+    name_ar: استقبال العملاء من واتساب
+    name_en: Lead Intake — WhatsApp
+    bundle: growth_starter
+    capability_group: lead_intake
+    status: partial
+    customer_value_ar: |
+      يلتقط رسائل العملاء الواردة على واتساب، يصنّف النيّة، ويجهّز
+      الردّ أو كرت القرار للمؤسس — دون إرسال رسائل بدون موافقة.
+    customer_value_en: |
+      Captures inbound WhatsApp messages, classifies intent, and prepares
+      a draft reply or founder decision card. Never initiates outreach.
+    target_customer_ar: شركات B2B سعودية تستقبل استفسارات على واتساب.
+    target_customer_en: Saudi B2B companies receiving inbound WhatsApp inquiries.
+    what_it_does_ar: |
+      ١) يستقبل الرسالة عبر Meta webhook رسمي. ٢) يتحقّق من التوقيع.
+      ٣) يصنّف النيّة. ٤) يجهّز ردّاً للمراجعة أو كرت قرار. ٥) يحفظ سجلّ تدقيق.
+    what_it_does_en: |
+      1) Receives via official Meta webhook. 2) Verifies signature.
+      3) Classifies intent. 4) Prepares draft or decision card. 5) Records audit trail.
+    required_inputs:
+      - WhatsApp Business Cloud webhook configured at Meta
+      - WHATSAPP_VERIFY_TOKEN
+      - WHATSAPP_APP_SECRET
+    workflow_steps: [inbound_receive, signature_verify, intent_classify, draft_or_card, persist]
+    channels: [whatsapp_inbound]
+    safe_action_policy:
+      - inbound_only
+      - reply_drafts_require_approval
+      - never_initiate_outside_24h_window
+    approval_required: true
+    blocked_actions:
+      - cold_outreach_whatsapp
+      - bulk_messaging
+      - auto_send_outside_24h_window
+    deliverables: [decision_card_in_founder_today, draft_arabic_reply, audit_trail_record]
+    proof_metrics: [inbound_messages_handled, drafts_prepared, founder_approvals_collected]
+    api_endpoints: ["POST /api/v1/webhooks/whatsapp"]
+    frontend_surfaces: [founder daily card]
+    data_dependencies: [lead_record_table, structlog_request_id]
+    integration_dependencies: [meta_whatsapp_cloud_api]
+    owner: sami_assiri
+    next_activation_step_ar: |
+      إضافة OpenTelemetry traces على كل دخول webhook + اختبار حدّ الإساءة
+      لرقم opt-out. بعدها يصبح جاهزاً للترقية إلى Live.
+    next_activation_step_en: |
+      Add OpenTelemetry traces to every webhook entry and an abuse-boundary
+      test for an opt-out flagged number. Then promote to Live.
+    definition_of_live:
+      - all 8 gates pass
+      - inbound test recorded end-to-end
+      - audit trail proven against a sample lead
+    tests_required: [tests/test_whatsapp_signature.py]
+    risks: [meta_policy_change, 24h_window_drift]
+    sla: response_draft_within_5min_during_business_hours
+    last_verified_at: "2026-05-04"
+    evidence: [tests/test_whatsapp_signature.py, docs/WHATSAPP_OPERATOR_FLOW.md]
+
+  - service_id: lead_intake_email
+    name_ar: استقبال العملاء من البريد
+    name_en: Lead Intake — Email
+    bundle: growth_starter
+    capability_group: lead_intake
+    status: target
+    customer_value_ar: |
+      تحويل ردود البريد الواردة إلى عملاء محتملين منظّمين مع تتبع
+      السلسلة (threading) — كقناة موازية لواتساب.
+    customer_value_en: |
+      Turns inbound email replies into structured leads with conversation
+      threading — a parallel channel to WhatsApp.
+    target_customer_ar: شركات يصلها استفسار العميل عبر البريد الرسمي.
+    target_customer_en: Companies whose customers reach them via business email.
+    what_it_does_ar: |
+      ١) يستقبل البريد عبر inbound webhook. ٢) يستخرج التوقيع والسياق.
+      ٣) يربط الرسالة بالسلسلة. ٤) يفتح أو يحدّث سجل العميل.
+    what_it_does_en: |
+      1) Receives email via inbound webhook. 2) Extracts signature/context.
+      3) Threads to conversation. 4) Opens or updates the lead record.
+    required_inputs:
+      - SendGrid (or equivalent) inbound parse webhook
+      - dedicated reply-to mailbox
+    workflow_steps: [inbound_receive, parse_headers, thread_match, persist]
+    channels: [email_inbound]
+    safe_action_policy: [inbound_only, reply_drafts_require_approval]
+    approval_required: true
+    blocked_actions:
+      - bulk_email_send
+      - reply_without_review
+    deliverables: [email_lead_record, thread_state_view]
+    proof_metrics: [inbound_emails_handled, threads_linked]
+    api_endpoints: ["POST /api/v1/webhooks/email-inbound"]
+    frontend_surfaces: [founder daily card]
+    data_dependencies: [lead_record_table]
+    integration_dependencies: [sendgrid_inbound_parse]
+    owner: sami_assiri
+    next_activation_step_ar: |
+      تكوين SendGrid inbound parse + إضافة محلّل MIME وتجارب threading.
+    next_activation_step_en: |
+      Configure SendGrid inbound parse, add a MIME parser, and threading tests.
+    definition_of_live:
+      - inbound mailbox active
+      - threading test passes
+      - audit trail proven
+    tests_required: [tests/test_email_inbound_threading.py]
+    risks: [inbound_spam_amplification]
+    sla: lead_record_created_within_1min
+    last_verified_at: "2026-05-04"
+    evidence: [docs/WHATSAPP_OPERATOR_FLOW.md]
+
+  - service_id: lead_intake_linkedin
+    name_ar: استقبال العملاء من لينكدإن
+    name_en: Lead Intake — LinkedIn
+    bundle: growth_starter
+    capability_group: lead_intake
+    status: target
+    customer_value_ar: |
+      عند ردّ شخص على رسالتك على لينكدإن، نلتقط الردّ ونحوّله إلى
+      عميل محتمل — بدون أتمتة الإرسال.
+    customer_value_en: |
+      When someone replies to you on LinkedIn, the reply becomes a
+      structured lead — without automating outbound sends.
+    target_customer_ar: مؤسسون يستخدمون لينكدإن للحوار مع المشترين.
+    target_customer_en: Founders who use LinkedIn to engage with buyers.
+    what_it_does_ar: |
+      ١) يستقبل ردود لينكدإن عبر مزوّد رسمي (Unipile). ٢) يربطها بالعميل
+      المحتمل. ٣) يحفظ السياق ويعرض كرت قرار.
+    what_it_does_en: |
+      1) Receives LinkedIn replies via an official provider (Unipile).
+      2) Links them to a lead record. 3) Persists context and shows a card.
+    required_inputs:
+      - Unipile (or equivalent) subscription
+      - LinkedIn account in compliance with provider terms
+    workflow_steps: [inbound_receive, dedupe, persist]
+    channels: [linkedin_inbound]
+    safe_action_policy: [inbound_only, no_unsolicited_messaging]
+    approval_required: true
+    blocked_actions:
+      - automated_invitations
+      - automated_follows
+      - public_profile_data_collection_without_terms
+    deliverables: [linkedin_lead_record, decision_card]
+    proof_metrics: [inbound_replies_handled]
+    api_endpoints: ["POST /api/v1/webhooks/linkedin-inbound"]
+    frontend_surfaces: [founder daily card]
+    data_dependencies: [lead_record_table]
+    integration_dependencies: [unipile]
+    owner: sami_assiri
+    next_activation_step_ar: |
+      التعاقد مع Unipile وإضافة webhook + اختبار dedupe للردود المتكرّرة.
+    next_activation_step_en: |
+      Sign up for Unipile, wire its webhook, and add a dedupe test for
+      duplicate replies.
+    definition_of_live:
+      - provider integration tested
+      - dedupe verified
+      - audit trail proven
+    tests_required: [tests/test_linkedin_inbound_dedupe.py]
+    risks: [provider_terms_change]
+    sla: lead_record_created_within_5min
+    last_verified_at: "2026-05-04"
+    evidence: [docs/WHATSAPP_OPERATOR_FLOW.md]
+
+  - service_id: enrichment
+    name_ar: إثراء بيانات العميل المحتمل
+    name_en: Enrichment
+    bundle: growth_starter
+    capability_group: enrichment
+    status: partial
+    customer_value_ar: |
+      يضيف سياقاً مفيداً (الموقع، القطاع، الحجم) للعميل المحتمل من
+      مصادر مرخّصة فقط — لا تجريف ولا مصادر خفية.
+    customer_value_en: |
+      Adds useful context (region, sector, size) to a lead from licensed
+      sources only. No web harvesting and no hidden sources.
+    target_customer_ar: فِرق المبيعات التي تحتاج تأهيلاً سريعاً قبل الردّ.
+    target_customer_en: Sales teams that need fast qualification before reply.
+    what_it_does_ar: |
+      ١) يستعلم عن الشركة من مصادر متاحة قانونياً. ٢) يدمج النتائج
+      ويعرض درجة ثقة. ٣) يكتب الإثراء في سجل العميل.
+    what_it_does_en: |
+      1) Queries legally available sources. 2) Merges results with a
+      confidence score. 3) Writes enrichment to the lead record.
+    required_inputs:
+      - data_provider_api_key (per provider)
+      - lead_record_id
+    workflow_steps: [lookup, merge, score_confidence, persist]
+    channels: []
+    safe_action_policy:
+      - licensed_sources_only
+      - no_web_harvesting
+    approval_required: false
+    blocked_actions:
+      - public_site_data_collection_without_terms
+      - personal_data_purchase_from_unverified_brokers
+    deliverables: [enriched_lead_record, confidence_score]
+    proof_metrics: [leads_enriched, source_coverage_pct]
+    api_endpoints: ["POST /api/v1/leads/{id}/enrich"]
+    frontend_surfaces: [founder daily card]
+    data_dependencies: [lead_record_table]
+    integration_dependencies: [clearbit_or_equivalent]
+    owner: sami_assiri
+    next_activation_step_ar: |
+      تفعيل مفاتيح المزوّدين الحقيقية وإضافة اختبار درجة الثقة الموحّدة.
+    next_activation_step_en: |
+      Wire real provider API keys and add a unified confidence-score test.
+    definition_of_live:
+      - 2+ providers active
+      - confidence score validated
+      - audit trail proven
+    tests_required: [tests/test_enrichment_confidence.py]
+    risks: [provider_pricing_change]
+    sla: enrichment_within_2min
+    last_verified_at: "2026-05-04"
+    evidence: [docs/DATA_MAP.md]
+
+  - service_id: qualification
+    name_ar: تأهيل العميل المحتمل (BANT/MEDDPICC)
+    name_en: Qualification (BANT / MEDDPICC)
+    bundle: growth_starter
+    capability_group: qualification
+    status: pilot
+    customer_value_ar: |
+      يستخرج من المحادثة إشارات الميزانية والاحتياج وصاحب القرار
+      ويبني درجة تأهيل قابلة للتفسير.
+    customer_value_en: |
+      Extracts budget, need, and decision-maker signals from the
+      conversation and builds an explainable qualification score.
+    target_customer_ar: شركات B2B تتعامل مع طلبات متفاوتة الجدّية.
+    target_customer_en: B2B companies dealing with mixed-quality requests.
+    what_it_does_ar: |
+      ١) يحلّل المحادثة. ٢) يستخرج الحقول. ٣) يحسب درجة قابلة للتفسير
+      مع رابط للأدلّة في المحادثة.
+    what_it_does_en: |
+      1) Analyzes the conversation. 2) Extracts fields. 3) Computes an
+      explainable score with links back to evidence in the chat.
+    required_inputs:
+      - conversation history
+      - qualification framework choice (BANT/MEDDPICC)
+    workflow_steps: [extract, score, explain, persist]
+    channels: []
+    safe_action_policy:
+      - no_inferences_published_without_review
+    approval_required: true
+    blocked_actions:
+      - share_qualification_externally_without_consent
+    deliverables: [qualification_score, explanation_with_evidence]
+    proof_metrics: [leads_qualified, score_consistency_pct]
+    api_endpoints: ["POST /api/v1/leads/{id}/qualify"]
+    frontend_surfaces: [founder daily card]
+    data_dependencies: [lead_record_table, conversation_table]
+    integration_dependencies: [llm_router]
+    owner: sami_assiri
+    next_activation_step_ar: |
+      توسيع التغطية لتشمل مسارات الفشل + إضافة اختبار ثبات الدرجة.
+    next_activation_step_en: |
+      Expand coverage to failure paths and add a score-stability test.
+    definition_of_live:
+      - failure paths covered
+      - stability test passes
+      - audit trail proven
+    tests_required: [tests/test_qualification_stability.py]
+    risks: [drift_in_llm_outputs]
+    sla: score_within_1min
+    last_verified_at: "2026-05-04"
+    evidence: [tests/test_personal_operator.py]
+
+  - service_id: routing
+    name_ar: توجيه القناة المناسبة
+    name_en: Routing
+    bundle: growth_starter
+    capability_group: orchestration
+    status: partial
+    customer_value_ar: |
+      يختار القناة الصحيحة (واتساب، بريد، اجتماع) حسب نوع العميل
+      وحدود الامتثال — كي لا نفرض قناة غير مناسبة.
+    customer_value_en: |
+      Picks the right channel (WhatsApp, email, meeting) based on lead
+      type and compliance limits — never forces a wrong channel.
+    target_customer_ar: شركات B2B بمسارات متعدّدة.
+    target_customer_en: B2B companies with multiple lead paths.
+    what_it_does_ar: |
+      ١) يقرأ playbook القطاع. ٢) يطبّق سياسة opt-in/quiet-hours.
+      ٣) يختار القناة وينقل المهمّة للوكيل المسؤول.
+    what_it_does_en: |
+      1) Reads the sector playbook. 2) Applies opt-in/quiet-hours
+      policy. 3) Picks the channel and routes to the responsible agent.
+    required_inputs:
+      - playbook config
+      - opt_in_state
+      - quiet_hours_config
+    workflow_steps: [read_playbook, check_consent, select_channel, dispatch]
+    channels: []
+    safe_action_policy:
+      - respect_quiet_hours
+      - respect_opt_out
+    approval_required: false
+    blocked_actions:
+      - bypass_quiet_hours
+      - bypass_opt_out
+    deliverables: [routing_decision_record]
+    proof_metrics: [routing_decisions_made, quiet_hours_compliance_pct]
+    api_endpoints: ["POST /api/v1/leads/{id}/route"]
+    frontend_surfaces: [founder daily card]
+    data_dependencies: [lead_record_table, consent_table]
+    integration_dependencies: []
+    owner: sami_assiri
+    next_activation_step_ar: |
+      ربط جدول consent + إضافة اختبار يفرض quiet-hours على KSA TZ.
+    next_activation_step_en: |
+      Wire the consent table and add a quiet-hours test on KSA timezone.
+    definition_of_live:
+      - consent table live
+      - KSA quiet-hours test passes
+      - audit trail proven
+    tests_required: [tests/test_routing_quiet_hours.py]
+    risks: [timezone_drift]
+    sla: routing_decision_within_5sec
+    last_verified_at: "2026-05-04"
+    evidence: [landing/styles.css]
+
+  - service_id: outreach_drafts
+    name_ar: مسودّات التواصل (بإذن)
+    name_en: Outreach Drafts (Consented)
+    bundle: growth_starter
+    capability_group: outreach
+    status: partial
+    customer_value_ar: |
+      يجهّز مسودّات ردود/متابعات للعملاء الذين أعطوا إذناً مسبقاً
+      أو ضمن نافذة المحادثة — لا اتّصال غير مرغوب ولا قوائم جماعية.
+    customer_value_en: |
+      Prepares reply/follow-up drafts for leads with prior consent or
+      inside an active conversation window. No unsolicited outreach.
+    target_customer_ar: شركات تبني علاقة طويلة مع عملاء عرفوها مسبقاً.
+    target_customer_en: Companies that build long relationships with leads
+      who have already engaged with them.
+    what_it_does_ar: |
+      ١) يستحضر السياق. ٢) يولّد مسودّة عربية واضحة. ٣) يحفظها للمراجعة
+      البشرية قبل أيّ إرسال.
+    what_it_does_en: |
+      1) Pulls the context. 2) Generates a clear Arabic draft.
+      3) Saves it for human review before any send.
+    required_inputs:
+      - lead_record
+      - consent_state
+      - conversation_history
+    workflow_steps: [context_pull, draft_generate, human_review]
+    channels: []
+    safe_action_policy:
+      - no_unsolicited_messaging
+      - drafts_only_until_approved
+    approval_required: true
+    blocked_actions:
+      - bulk_messaging
+      - send_outside_consent
+      - send_outside_24h_window
+    deliverables: [draft_arabic_reply, draft_english_reply]
+    proof_metrics: [drafts_prepared, drafts_approved_by_founder]
+    api_endpoints: ["POST /api/v1/leads/{id}/outreach/draft"]
+    frontend_surfaces: [founder daily card]
+    data_dependencies: [lead_record_table, consent_table]
+    integration_dependencies: [llm_router]
+    owner: sami_assiri
+    next_activation_step_ar: |
+      إضافة فحص ساعات الهدوء + اختبار رفض الإرسال خارج نافذة المحادثة.
+    next_activation_step_en: |
+      Add quiet-hours enforcement and a test that rejects sends outside
+      the active conversation window.
+    definition_of_live:
+      - quiet-hours enforced
+      - send-window test passes
+      - approval flow audited
+    tests_required: [tests/test_outreach_window_enforcement.py]
+    risks: [regulatory_change]
+    sla: draft_within_5min
+    last_verified_at: "2026-05-04"
+    evidence: [tests/test_personal_operator.py]
+
+  # ─── Data to Revenue (4) ───────────────────────────────────────────────────
+  - service_id: proposal
+    name_ar: توليد العرض
+    name_en: Proposal
+    bundle: data_to_revenue
+    capability_group: revenue
+    status: target
+    customer_value_ar: |
+      يولّد عرض تسعير PDF بناءً على القالب وسياسة التسعير، جاهزاً للمراجعة.
+    customer_value_en: |
+      Generates a PDF quotation from the template and pricing policy,
+      ready for review.
+    target_customer_ar: فِرق المبيعات التي تحتاج عرضاً سريعاً ومنضبطاً.
+    target_customer_en: Sales teams that need a fast, disciplined proposal.
+    what_it_does_ar: |
+      ١) يستحضر السياق. ٢) يطبّق سياسة التسعير. ٣) يولّد PDF للمراجعة.
+    what_it_does_en: |
+      1) Pulls the context. 2) Applies pricing policy. 3) Generates a
+      reviewable PDF.
+    required_inputs:
+      - quotation_template
+      - pricing_policy
+    workflow_steps: [pull_context, apply_pricing, render_pdf, review]
+    channels: []
+    safe_action_policy:
+      - pricing_within_policy_only
+    approval_required: true
+    blocked_actions:
+      - send_without_review
+      - override_pricing_without_approval
+    deliverables: [proposal_pdf]
+    proof_metrics: [proposals_drafted]
+    api_endpoints: ["POST /api/v1/proposals/draft"]
+    frontend_surfaces: [founder daily card]
+    data_dependencies: [deal_record]
+    integration_dependencies: []
+    owner: sami_assiri
+    next_activation_step_ar: |
+      إعداد قالب PDF + ربط سياسة التسعير + اختبار التوليد على عيّنة.
+    next_activation_step_en: |
+      Set up the PDF template, wire the pricing policy, and add a
+      generation test on a sample.
+    definition_of_live:
+      - template v1 active
+      - generation test passes
+      - audit trail proven
+    tests_required: [tests/test_proposal_generation.py]
+    risks: [pricing_drift]
+    sla: proposal_drafted_within_30min
+    last_verified_at: "2026-05-04"
+    evidence: [docs/pricing.md]
+
+  - service_id: approval
+    name_ar: موافقات متعدّدة المستويات
+    name_en: Approval (Multi-Step)
+    bundle: data_to_revenue
+    capability_group: revenue
+    status: target
+    customer_value_ar: |
+      مسار موافقة متعدّد الخطوات مع مهلة وتصعيد عند الفوات.
+    customer_value_en: |
+      Multi-step approval flow with timeout and escalation on miss.
+    target_customer_ar: شركات تحتاج تحكّماً واضحاً قبل أي إجراء حسّاس.
+    target_customer_en: Companies needing clear control before any sensitive action.
+    what_it_does_ar: |
+      ١) يفتح طلباً. ٢) يطلب الموافقة. ٣) يصعّد عند الفوات. ٤) يسجّل القرار.
+    what_it_does_en: |
+      1) Opens a request. 2) Requests approval. 3) Escalates on timeout.
+      4) Records the decision.
+    required_inputs:
+      - approval_policy
+      - approver_directory
+    workflow_steps: [open, request, escalate, record]
+    channels: []
+    safe_action_policy: [explicit_approval_only]
+    approval_required: true
+    blocked_actions: [implicit_approval, silent_timeout_pass]
+    deliverables: [approval_decision_record]
+    proof_metrics: [approvals_granted, approvals_rejected]
+    api_endpoints: ["POST /api/v1/approvals/request"]
+    frontend_surfaces: [founder daily card]
+    data_dependencies: [approval_log]
+    integration_dependencies: []
+    owner: sami_assiri
+    next_activation_step_ar: |
+      اختيار محرّك workflow + اختبار escalation عند انتهاء المهلة.
+    next_activation_step_en: |
+      Choose a workflow engine and add an escalation-on-timeout test.
+    definition_of_live:
+      - engine selected
+      - escalation test passes
+      - audit trail proven
+    tests_required: [tests/test_approval_escalation.py]
+    risks: [timeout_drift]
+    sla: approval_decision_within_24h
+    last_verified_at: "2026-05-04"
+    evidence: [docs/SECURITY_GUIDE.md]
+
+  - service_id: close
+    name_ar: إغلاق الصفقة (توقيع + دفع)
+    name_en: Close (E-signature + Payment)
+    bundle: data_to_revenue
+    capability_group: revenue
+    status: target
+    customer_value_ar: |
+      توقيع إلكتروني ورابط دفع عبر Moyasar مع سجلّ تدقيق.
+    customer_value_en: |
+      E-signature plus a Moyasar payment link with a full audit trail.
+    target_customer_ar: شركات تتعامل مع KSA buyers وتحتاج إغلاقاً نظيفاً.
+    target_customer_en: Companies dealing with KSA buyers needing a clean close.
+    what_it_does_ar: |
+      ١) يجهّز عقداً. ٢) يفتح رابط توقيع. ٣) يصدر رابط دفع Moyasar. ٤) يسجّل.
+    what_it_does_en: |
+      1) Prepares a contract. 2) Opens an e-sign link. 3) Issues a
+      Moyasar payment link. 4) Records.
+    required_inputs:
+      - moyasar_account
+      - esignature_provider
+    workflow_steps: [prepare_contract, esign, issue_payment_link, record]
+    channels: []
+    safe_action_policy: [no_charge_without_signature]
+    approval_required: true
+    blocked_actions: [auto_charge_without_consent]
+    deliverables: [signed_contract, payment_link]
+    proof_metrics: [closes_signed, payments_received]
+    api_endpoints: ["POST /api/v1/deals/{id}/close"]
+    frontend_surfaces: [founder daily card]
+    data_dependencies: [deal_record]
+    integration_dependencies: [moyasar, esignature_provider]
+    owner: sami_assiri
+    next_activation_step_ar: |
+      تسجيل Moyasar + اختيار e-sign + اختبار end-to-end على صفقة تجريبية.
+    next_activation_step_en: |
+      Register Moyasar, pick an e-sign provider, and add an end-to-end
+      test against a sample deal.
+    definition_of_live:
+      - Moyasar registered
+      - e-sign integrated
+      - e2e test passes
+    tests_required: [tests/test_close_e2e.py]
+    risks: [provider_outage]
+    sla: payment_link_within_5min
+    last_verified_at: "2026-05-04"
+    evidence: [docs/MOYASAR_E2E_GUIDE.md]
+
+  - service_id: onboarding_handoff
+    name_ar: تسليم العميل لخدمة العملاء
+    name_en: Onboarding Handoff
+    bundle: data_to_revenue
+    capability_group: revenue
+    status: target
+    customer_value_ar: |
+      عند الإغلاق، تسليم منظّم لفريق خدمة العملاء مع كل السياق.
+    customer_value_en: |
+      On close, a structured handoff to customer success with full context.
+    target_customer_ar: شركات تبني نموّاً عبر استبقاء العميل.
+    target_customer_en: Companies building growth through retention.
+    what_it_does_ar: |
+      ١) يستحضر العقد. ٢) يحوّل ملف العميل لـ CS. ٣) يفتح خطة استبقاء.
+    what_it_does_en: |
+      1) Pulls the contract. 2) Transfers the customer file to CS.
+      3) Opens a retention plan.
+    required_inputs:
+      - cs_agent_specs
+      - customer_file
+    workflow_steps: [pull_contract, transfer_file, open_plan]
+    channels: []
+    safe_action_policy: [data_minimization_to_cs]
+    approval_required: false
+    blocked_actions: [share_pii_outside_cs_scope]
+    deliverables: [cs_handoff_packet]
+    proof_metrics: [handoffs_completed]
+    api_endpoints: ["POST /api/v1/deals/{id}/handoff"]
+    frontend_surfaces: [founder daily card]
+    data_dependencies: [deal_record, customer_record]
+    integration_dependencies: []
+    owner: sami_assiri
+    next_activation_step_ar: |
+      تعريف cs_agent_specs + اختبار تسليم على عيّنة.
+    next_activation_step_en: |
+      Define cs_agent_specs and add a handoff test on a sample.
+    definition_of_live:
+      - cs_agent_specs v1 active
+      - handoff test passes
+      - audit trail proven
+    tests_required: [tests/test_onboarding_handoff.py]
+    risks: [context_loss]
+    sla: handoff_within_24h_of_close
+    last_verified_at: "2026-05-04"
+    evidence: [docs/ONBOARDING_FLOW.md]
+
+  # ─── Executive Growth OS (4) ───────────────────────────────────────────────
+  - service_id: weekly_executive_pack
+    name_ar: الحزمة التنفيذية الأسبوعية
+    name_en: Weekly Executive Pack
+    bundle: executive_growth_os
+    capability_group: executive_view
+    status: target
+    customer_value_ar: |
+      حزمة أسبوعية موحّدة للقيادة مع رابط لمصدر كل عنصر.
+    customer_value_en: |
+      Unified weekly leadership pack with a link to every source.
+    target_customer_ar: المؤسس / المدير التنفيذي.
+    target_customer_en: Founder / CEO.
+    what_it_does_ar: |
+      ١) يجمع الإشارات. ٢) يحوّلها إلى عناصر تنفيذية. ٣) يصدر تقريراً قابلاً للتدقيق.
+    what_it_does_en: |
+      1) Collects signals. 2) Turns them into executive items.
+      3) Emits an auditable report.
+    required_inputs:
+      - signal_aggregation
+      - reporting_template
+    workflow_steps: [collect, synthesize, publish]
+    channels: []
+    safe_action_policy: [executive_view_only]
+    approval_required: false
+    blocked_actions: [external_distribution_without_review]
+    deliverables: [weekly_executive_pack_pdf]
+    proof_metrics: [packs_delivered_on_schedule_pct]
+    api_endpoints: ["GET /api/v1/executive/weekly"]
+    frontend_surfaces: [executive growth os]
+    data_dependencies: [pipeline_table, decision_log]
+    integration_dependencies: []
+    owner: sami_assiri
+    next_activation_step_ar: |
+      تعريف القالب الأوّلي + اختبار توليد الحزمة من بيانات تجريبية.
+    next_activation_step_en: |
+      Define the initial template and add a test that builds the pack
+      from sample data.
+    definition_of_live:
+      - template v1 active
+      - generation test passes
+      - audit trail proven
+    tests_required: [tests/test_weekly_executive_pack.py]
+    risks: [data_freshness]
+    sla: delivered_each_monday_8am_ksa
+    last_verified_at: "2026-05-04"
+    evidence: [docs/DATA_MAP.md]
+
+  - service_id: pending_decisions
+    name_ar: القرارات المعلّقة
+    name_en: Pending Decisions
+    bundle: executive_growth_os
+    capability_group: executive_view
+    status: target
+    customer_value_ar: |
+      يعرض القرارات المعلّقة على المؤسس مع المهلة، الأثر، والبدائل.
+    customer_value_en: |
+      Surfaces pending decisions for the founder with deadline, impact,
+      and alternatives.
+    target_customer_ar: المؤسس.
+    target_customer_en: Founder.
+    what_it_does_ar: |
+      ١) يستخرج القرارات. ٢) يربطها بالأدلّة. ٣) يعرضها مع المهلة.
+    what_it_does_en: |
+      1) Extracts decisions. 2) Links to evidence. 3) Presents with deadline.
+    required_inputs:
+      - decision_log
+      - context_links
+    workflow_steps: [extract, link, present]
+    channels: []
+    safe_action_policy: [read_only]
+    approval_required: false
+    blocked_actions: []
+    deliverables: [pending_decisions_view]
+    proof_metrics: [decisions_resolved_within_sla_pct]
+    api_endpoints: ["GET /api/v1/executive/pending-decisions"]
+    frontend_surfaces: [executive growth os]
+    data_dependencies: [decision_log]
+    integration_dependencies: []
+    owner: sami_assiri
+    next_activation_step_ar: |
+      تعريف schema القرار + إضافة اختبار رابط الأدلّة لكل قرار.
+    next_activation_step_en: |
+      Define the decision schema and add an evidence-link test per item.
+    definition_of_live:
+      - schema v1 active
+      - evidence-link test passes
+      - audit trail proven
+    tests_required: [tests/test_pending_decisions.py]
+    risks: [missing_context]
+    sla: refresh_every_business_hour
+    last_verified_at: "2026-05-04"
+    evidence: [docs/DATA_MAP.md]
+
+  - service_id: blockers_view
+    name_ar: لوحة العوائق
+    name_en: Blockers View
+    bundle: executive_growth_os
+    capability_group: executive_view
+    status: target
+    customer_value_ar: |
+      يعرض العوائق الحاليّة بترتيب الأثر مع الجهة المسؤولة.
+    customer_value_en: |
+      Shows current blockers ordered by impact, with the responsible owner.
+    target_customer_ar: المؤسس وقادة الفِرق.
+    target_customer_en: Founder and team leads.
+    what_it_does_ar: |
+      ١) يجمع العوائق. ٢) يحسب الأثر. ٣) يعرض المالك.
+    what_it_does_en: |
+      1) Collects blockers. 2) Computes impact. 3) Shows the owner.
+    required_inputs: [blocker_log]
+    workflow_steps: [collect, score, present]
+    channels: []
+    safe_action_policy: [read_only]
+    approval_required: false
+    blocked_actions: []
+    deliverables: [blockers_view]
+    proof_metrics: [blockers_resolved_within_sla_pct]
+    api_endpoints: ["GET /api/v1/executive/blockers"]
+    frontend_surfaces: [executive growth os]
+    data_dependencies: [blocker_log]
+    integration_dependencies: []
+    owner: sami_assiri
+    next_activation_step_ar: |
+      تعريف schema العائق + اختبار ترتيب الأثر.
+    next_activation_step_en: |
+      Define the blocker schema and add an impact-ordering test.
+    definition_of_live:
+      - schema v1 active
+      - ordering test passes
+      - audit trail proven
+    tests_required: [tests/test_blockers_view.py]
+    risks: [missing_owner]
+    sla: refresh_every_business_hour
+    last_verified_at: "2026-05-04"
+    evidence: [docs/DATA_MAP.md]
+
+  - service_id: risks_view
+    name_ar: لوحة المخاطر
+    name_en: Risks View
+    bundle: executive_growth_os
+    capability_group: executive_view
+    status: target
+    customer_value_ar: |
+      يعرض المخاطر الحالية، احتمال الوقوع، الأثر، وخطّة التخفيف.
+    customer_value_en: |
+      Shows current risks, likelihood, impact, and mitigation plan.
+    target_customer_ar: القيادة.
+    target_customer_en: Leadership.
+    what_it_does_ar: |
+      ١) يجمع المخاطر. ٢) يحسب الترتيب. ٣) يربط بخطة التخفيف.
+    what_it_does_en: |
+      1) Collects risks. 2) Computes ranking. 3) Links a mitigation plan.
+    required_inputs: [risk_register]
+    workflow_steps: [collect, rank, link]
+    channels: []
+    safe_action_policy: [read_only]
+    approval_required: false
+    blocked_actions: []
+    deliverables: [risks_view]
+    proof_metrics: [risks_with_mitigation_pct]
+    api_endpoints: ["GET /api/v1/executive/risks"]
+    frontend_surfaces: [executive growth os]
+    data_dependencies: [risk_register]
+    integration_dependencies: []
+    owner: sami_assiri
+    next_activation_step_ar: |
+      تعريف schema الخطر + اختبار ربط خطة التخفيف.
+    next_activation_step_en: |
+      Define the risk schema and add a mitigation-link test.
+    definition_of_live:
+      - schema v1 active
+      - mitigation-link test passes
+      - audit trail proven
+    tests_required: [tests/test_risks_view.py]
+    risks: [missing_mitigation]
+    sla: refresh_every_business_hour
+    last_verified_at: "2026-05-04"
+    evidence: [docs/DATA_MAP.md]
+
+  # ─── Full Control Tower (2) ────────────────────────────────────────────────
+  - service_id: actual_vs_forecast
+    name_ar: الفعلي مقابل التوقّع
+    name_en: Actual vs Forecast
+    bundle: full_control_tower
+    capability_group: control_tower
+    status: target
+    customer_value_ar: |
+      مقارنة شفّافة بين الأرقام الفعلية والتوقّع مع تفسير الفجوة.
+    customer_value_en: |
+      Transparent comparison between actual numbers and forecast with a
+      gap explanation.
+    target_customer_ar: القيادة المالية.
+    target_customer_en: Finance leadership.
+    what_it_does_ar: |
+      ١) يجمع الأرقام. ٢) يقارن. ٣) يفسّر الفجوة.
+    what_it_does_en: |
+      1) Aggregates the numbers. 2) Compares. 3) Explains the gap.
+    required_inputs: [actuals, forecast]
+    workflow_steps: [aggregate, compare, explain]
+    channels: []
+    safe_action_policy: [read_only]
+    approval_required: false
+    blocked_actions: []
+    deliverables: [actual_vs_forecast_view]
+    proof_metrics: [explained_gaps_pct]
+    api_endpoints: ["GET /api/v1/executive/actual-vs-forecast"]
+    frontend_surfaces: [full control tower]
+    data_dependencies: [actuals_table, forecast_table]
+    integration_dependencies: []
+    owner: sami_assiri
+    next_activation_step_ar: |
+      تعريف نموذج التوقّع الأوّلي + اختبار تفسير الفجوة.
+    next_activation_step_en: |
+      Define an initial forecast model and add a gap-explanation test.
+    definition_of_live:
+      - model v1 active
+      - gap-explanation test passes
+      - audit trail proven
+    tests_required: [tests/test_actual_vs_forecast.py]
+    risks: [data_quality]
+    sla: refresh_each_monday_8am_ksa
+    last_verified_at: "2026-05-04"
+    evidence: [docs/DATA_MAP.md]
+
+  - service_id: evidence_drilldown
+    name_ar: التعمّق في الأدلّة
+    name_en: Evidence Drilldown
+    bundle: full_control_tower
+    capability_group: control_tower
+    status: target
+    customer_value_ar: |
+      اضغط على أيّ رقم لترى مصدره الأصلي خطوة بخطوة.
+    customer_value_en: |
+      Click any number to see its original source, step by step.
+    target_customer_ar: القيادة وفِرق التدقيق الداخلي.
+    target_customer_en: Leadership and internal audit teams.
+    what_it_does_ar: |
+      ١) يحفظ مصدر كل رقم. ٢) يعرضه عند الطلب.
+    what_it_does_en: |
+      1) Stores the source of every number. 2) Surfaces it on demand.
+    required_inputs: [lineage_graph]
+    workflow_steps: [record_lineage, present]
+    channels: []
+    safe_action_policy: [read_only]
+    approval_required: false
+    blocked_actions: []
+    deliverables: [drilldown_panel]
+    proof_metrics: [numbers_with_lineage_pct]
+    api_endpoints: ["GET /api/v1/evidence/{id}"]
+    frontend_surfaces: [full control tower]
+    data_dependencies: [lineage_graph]
+    integration_dependencies: []
+    owner: sami_assiri
+    next_activation_step_ar: |
+      اختيار schema lineage + اختبار تتبّع نهاية إلى نهاية.
+    next_activation_step_en: |
+      Choose a lineage schema and add an end-to-end trace test.
+    definition_of_live:
+      - schema v1 active
+      - trace test passes
+      - audit trail proven
+    tests_required: [tests/test_evidence_drilldown.py]
+    risks: [missing_lineage]
+    sla: lookup_within_2sec
+    last_verified_at: "2026-05-04"
+    evidence: [docs/DATA_MAP.md]
+
+  # ─── Partnership Growth (5) ────────────────────────────────────────────────
+  - service_id: partner_scout
+    name_ar: اكتشاف الشركاء
+    name_en: Partner Scout
+    bundle: partnership_growth
+    capability_group: partnership
+    status: target
+    customer_value_ar: |
+      يكتشف شركاء محتملين من مصادر مرخّصة ويرتّبهم بحسب الملاءمة.
+    customer_value_en: |
+      Discovers potential partners from licensed sources and ranks them by fit.
+    target_customer_ar: قادة الشراكات.
+    target_customer_en: Partnership leaders.
+    what_it_does_ar: |
+      ١) يستعلم. ٢) يصفّي. ٣) يرتّب. ٤) يحفظ القائمة.
+    what_it_does_en: |
+      1) Queries. 2) Filters. 3) Ranks. 4) Persists the list.
+    required_inputs:
+      - partner_directory_api
+      - fit_criteria
+    workflow_steps: [query, filter, rank, persist]
+    channels: []
+    safe_action_policy: [licensed_sources_only]
+    approval_required: false
+    blocked_actions: [public_site_data_collection_without_terms]
+    deliverables: [ranked_partner_list]
+    proof_metrics: [candidates_surfaced]
+    api_endpoints: ["POST /api/v1/partners/scout"]
+    frontend_surfaces: [partnership growth]
+    data_dependencies: [partner_directory]
+    integration_dependencies: [directory_provider]
+    owner: sami_assiri
+    next_activation_step_ar: |
+      اختيار مزوّد دليل + اختبار جودة الترتيب.
+    next_activation_step_en: |
+      Pick a directory provider and add a ranking-quality test.
+    definition_of_live:
+      - provider active
+      - ranking-quality test passes
+      - audit trail proven
+    tests_required: [tests/test_partner_scout.py]
+    risks: [directory_freshness]
+    sla: ranked_list_within_2min
+    last_verified_at: "2026-05-04"
+    evidence: [docs/DATA_MAP.md]
+
+  - service_id: partner_fit_score
+    name_ar: درجة ملاءمة الشريك
+    name_en: Partner Fit Score
+    bundle: partnership_growth
+    capability_group: partnership
+    status: target
+    customer_value_ar: |
+      درجة قابلة للتفسير لملاءمة الشريك (تقني + تجاري + استراتيجي).
+    customer_value_en: |
+      Explainable score for partner fit (technical + commercial + strategic).
+    target_customer_ar: قادة الشراكات.
+    target_customer_en: Partnership leaders.
+    what_it_does_ar: |
+      ١) يقيّم الأبعاد الثلاثة. ٢) يجمع الدرجة. ٣) يفسّرها.
+    what_it_does_en: |
+      1) Assesses the three dimensions. 2) Aggregates. 3) Explains.
+    required_inputs: [fit_dimensions_config, partner_record]
+    workflow_steps: [score, explain]
+    channels: []
+    safe_action_policy: [read_only]
+    approval_required: false
+    blocked_actions: []
+    deliverables: [fit_score, explanation]
+    proof_metrics: [partners_scored]
+    api_endpoints: ["POST /api/v1/partners/{id}/fit-score"]
+    frontend_surfaces: [partnership growth]
+    data_dependencies: [partner_record]
+    integration_dependencies: []
+    owner: sami_assiri
+    next_activation_step_ar: |
+      تعريف الأبعاد + اختبار ثبات الدرجة على عيّنة معروفة.
+    next_activation_step_en: |
+      Define the dimensions and add a score-stability test on a known sample.
+    definition_of_live:
+      - dimensions v1 active
+      - stability test passes
+      - audit trail proven
+    tests_required: [tests/test_partner_fit_score.py]
+    risks: [dimension_drift]
+    sla: score_within_1min
+    last_verified_at: "2026-05-04"
+    evidence: [docs/DATA_MAP.md]
+
+  - service_id: partner_economics
+    name_ar: اقتصاديّات الشراكة
+    name_en: Partner Economics
+    bundle: partnership_growth
+    capability_group: partnership
+    status: target
+    customer_value_ar: |
+      نمذجة Revenue-share وReferral وWhite-label لأخذ قرار سليم.
+    customer_value_en: |
+      Models revenue-share, referral, and white-label arrangements to
+      support a sound decision.
+    target_customer_ar: قادة الشراكات والمالية.
+    target_customer_en: Partnership and finance leaders.
+    what_it_does_ar: |
+      ١) يبني السيناريوهات. ٢) يحسب الأثر. ٣) يقدّم توصية.
+    what_it_does_en: |
+      1) Builds scenarios. 2) Computes impact. 3) Issues a recommendation.
+    required_inputs: [economics_inputs]
+    workflow_steps: [model, compute, recommend]
+    channels: []
+    safe_action_policy: [read_only]
+    approval_required: false
+    blocked_actions: []
+    deliverables: [economics_report]
+    proof_metrics: [reports_delivered]
+    api_endpoints: ["POST /api/v1/partners/{id}/economics"]
+    frontend_surfaces: [partnership growth]
+    data_dependencies: [partner_record]
+    integration_dependencies: []
+    owner: sami_assiri
+    next_activation_step_ar: |
+      اختيار نماذج الاقتصاديّات الأوّلية + اختبار صحّة الحساب.
+    next_activation_step_en: |
+      Choose initial economics models and add a calculation-correctness test.
+    definition_of_live:
+      - models v1 active
+      - correctness test passes
+      - audit trail proven
+    tests_required: [tests/test_partner_economics.py]
+    risks: [assumption_error]
+    sla: report_within_24h
+    last_verified_at: "2026-05-04"
+    evidence: [docs/DATA_MAP.md]
+
+  - service_id: partner_activation
+    name_ar: تفعيل الشريك
+    name_en: Partner Activation
+    bundle: partnership_growth
+    capability_group: partnership
+    status: target
+    customer_value_ar: |
+      مسار تفعيل واضح للشريك المعتمد مع وثائق وقياس النتائج.
+    customer_value_en: |
+      Clear activation path for the approved partner with documents and
+      outcome tracking.
+    target_customer_ar: مدير الشراكات.
+    target_customer_en: Partnership manager.
+    what_it_does_ar: |
+      ١) يفتح خطة. ٢) ينفّذ الخطوات. ٣) يقيس النتائج.
+    what_it_does_en: |
+      1) Opens a plan. 2) Executes steps. 3) Measures outcomes.
+    required_inputs: [approved_partner, activation_template]
+    workflow_steps: [open_plan, execute_steps, measure]
+    channels: []
+    safe_action_policy: [approval_required_per_step]
+    approval_required: true
+    blocked_actions: [external_action_without_approval]
+    deliverables: [activation_plan, outcome_log]
+    proof_metrics: [partners_activated]
+    api_endpoints: ["POST /api/v1/partners/{id}/activate"]
+    frontend_surfaces: [partnership growth]
+    data_dependencies: [partner_record]
+    integration_dependencies: []
+    owner: sami_assiri
+    next_activation_step_ar: |
+      تعريف القالب الأوّلي + اختبار end-to-end لخطّة تفعيل.
+    next_activation_step_en: |
+      Define the initial template and add an end-to-end activation-plan test.
+    definition_of_live:
+      - template v1 active
+      - e2e test passes
+      - audit trail proven
+    tests_required: [tests/test_partner_activation.py]
+    risks: [misaligned_expectations]
+    sla: plan_opened_within_24h
+    last_verified_at: "2026-05-04"
+    evidence: [docs/DATA_MAP.md]
+
+  - service_id: partner_scorecard
+    name_ar: بطاقة أداء الشريك
+    name_en: Partner Scorecard
+    bundle: partnership_growth
+    capability_group: partnership
+    status: target
+    customer_value_ar: |
+      بطاقة حيّة لأداء الشريك — الفرص، الإغلاق، صحّة العلاقة.
+    customer_value_en: |
+      Live partner performance scorecard — opportunities, closes,
+      relationship health.
+    target_customer_ar: مدير الشراكات.
+    target_customer_en: Partnership manager.
+    what_it_does_ar: |
+      ١) يتابع الأنشطة. ٢) يحسب الأداء. ٣) يعرض البطاقة.
+    what_it_does_en: |
+      1) Tracks activity. 2) Computes performance. 3) Renders the scorecard.
+    required_inputs: [partner_activity_log]
+    workflow_steps: [track, compute, render]
+    channels: []
+    safe_action_policy: [read_only]
+    approval_required: false
+    blocked_actions: []
+    deliverables: [scorecard_view]
+    proof_metrics: [active_partner_scorecards]
+    api_endpoints: ["GET /api/v1/partners/{id}/scorecard"]
+    frontend_surfaces: [partnership growth]
+    data_dependencies: [partner_activity_log]
+    integration_dependencies: []
+    owner: sami_assiri
+    next_activation_step_ar: |
+      تعريف المؤشّرات + اختبار حساب الأداء.
+    next_activation_step_en: |
+      Define indicators and add a performance-calculation test.
+    definition_of_live:
+      - indicators v1 active
+      - calculation test passes
+      - audit trail proven
+    tests_required: [tests/test_partner_scorecard.py]
+    risks: [indicator_drift]
+    sla: refresh_each_monday_8am_ksa
+    last_verified_at: "2026-05-04"
+    evidence: [docs/DATA_MAP.md]
+
+  # ─── Internal Foundations (10) ─────────────────────────────────────────────
+  - service_id: consent_required_send
+    name_ar: الإرسال بإذن مسبق
+    name_en: Consent-Required Send
+    bundle: internal
+    capability_group: compliance
+    status: partial
+    customer_value_ar: |
+      يفرض opt-in على كل إرسال خارجي قبل التنفيذ.
+    customer_value_en: |
+      Enforces opt-in on every outbound send before execution.
+    target_customer_ar: فريق الامتثال.
+    target_customer_en: Compliance team.
+    what_it_does_ar: |
+      ١) يفحص حالة opt-in. ٢) يرفض الإرسال إذا غاب الإذن. ٣) يسجّل القرار.
+    what_it_does_en: |
+      1) Checks opt-in state. 2) Refuses send if consent missing.
+      3) Records the decision.
+    required_inputs: [consent_table]
+    workflow_steps: [check_consent, allow_or_block, record]
+    channels: []
+    safe_action_policy: [block_send_without_consent]
+    approval_required: false
+    blocked_actions: [send_without_explicit_consent]
+    deliverables: [consent_decision_log]
+    proof_metrics: [sends_blocked_due_to_missing_consent]
+    api_endpoints: ["POST /api/v1/compliance/consent/check"]
+    frontend_surfaces: [founder daily card]
+    data_dependencies: [consent_table]
+    integration_dependencies: []
+    owner: sami_assiri
+    next_activation_step_ar: |
+      ترقية schema جدول consent + اختبار الرفض الافتراضي بدون إذن.
+    next_activation_step_en: |
+      Upgrade the consent table schema and add a default-deny test
+      when consent is absent.
+    definition_of_live:
+      - schema v1 active
+      - default-deny test passes
+      - audit trail proven
+    tests_required: [tests/test_consent_required_send.py]
+    risks: [schema_drift]
+    sla: decision_within_500ms
+    last_verified_at: "2026-05-04"
+    evidence: [docs/PRIVACY_PDPL_READINESS.md]
+
+  - service_id: revoke_consent
+    name_ar: إلغاء الإذن
+    name_en: Revoke Consent
+    bundle: internal
+    capability_group: compliance
+    status: target
+    customer_value_ar: |
+      نقطة وحيدة لإلغاء الإذن وانتشار القرار عبر كل القنوات.
+    customer_value_en: |
+      Single endpoint to revoke consent with propagation across channels.
+    target_customer_ar: فِرق الامتثال والعميل النهائي.
+    target_customer_en: Compliance teams and the end customer.
+    what_it_does_ar: |
+      ١) يستقبل طلب الإلغاء. ٢) يحدّث الحالة. ٣) ينشر التغيير لكل القنوات.
+    what_it_does_en: |
+      1) Receives the revocation request. 2) Updates state.
+      3) Propagates the change to all channels.
+    required_inputs: [subject_identifier]
+    workflow_steps: [receive, update, propagate]
+    channels: []
+    safe_action_policy: [immediate_propagation]
+    approval_required: false
+    blocked_actions: []
+    deliverables: [revocation_record]
+    proof_metrics: [revocations_processed_within_sla_pct]
+    api_endpoints: ["POST /api/v1/compliance/consent/revoke"]
+    frontend_surfaces: [founder daily card]
+    data_dependencies: [consent_table]
+    integration_dependencies: []
+    owner: sami_assiri
+    next_activation_step_ar: |
+      تعريف نشر التغيير عبر القنوات + اختبار من نهاية إلى نهاية.
+    next_activation_step_en: |
+      Define cross-channel propagation and add an end-to-end test.
+    definition_of_live:
+      - propagation defined
+      - e2e test passes
+      - audit trail proven
+    tests_required: [tests/test_revoke_consent.py]
+    risks: [delayed_propagation]
+    sla: propagation_within_1min
+    last_verified_at: "2026-05-04"
+    evidence: [docs/PRIVACY_PDPL_READINESS.md]
+
+  - service_id: right_to_export
+    name_ar: حق التصدير
+    name_en: Right to Export
+    bundle: internal
+    capability_group: compliance
+    status: target
+    customer_value_ar: |
+      تصدير البيانات الشخصية للموضوع بناءً على طلبه ضمن مهلة محدّدة.
+    customer_value_en: |
+      Export personal data on subject request within a defined window.
+    target_customer_ar: فريق الامتثال.
+    target_customer_en: Compliance team.
+    what_it_does_ar: |
+      ١) يستقبل الطلب. ٢) يجمع البيانات. ٣) يصدّرها بشكل آمن.
+    what_it_does_en: |
+      1) Receives the request. 2) Collects the data. 3) Exports it securely.
+    required_inputs: [subject_identifier]
+    workflow_steps: [request, collect, export]
+    channels: []
+    safe_action_policy: [subject_verified_only]
+    approval_required: true
+    blocked_actions: [export_without_subject_verification]
+    deliverables: [export_bundle]
+    proof_metrics: [exports_delivered_within_sla_pct]
+    api_endpoints: ["POST /api/v1/compliance/export"]
+    frontend_surfaces: [founder daily card]
+    data_dependencies: [all_personal_data_tables]
+    integration_dependencies: []
+    owner: sami_assiri
+    next_activation_step_ar: |
+      تعريف schema الحزمة + اختبار اكتمال التصدير على عيّنة.
+    next_activation_step_en: |
+      Define the bundle schema and add a completeness test on a sample subject.
+    definition_of_live:
+      - schema v1 active
+      - completeness test passes
+      - audit trail proven
+    tests_required: [tests/test_right_to_export.py]
+    risks: [missed_data_source]
+    sla: delivery_within_72h
+    last_verified_at: "2026-05-04"
+    evidence: [docs/PRIVACY_PDPL_READINESS.md]
+
+  - service_id: right_to_delete
+    name_ar: حق الحذف
+    name_en: Right to Delete
+    bundle: internal
+    capability_group: compliance
+    status: target
+    customer_value_ar: |
+      حذف البيانات الشخصية للموضوع مع الإبقاء على المؤشّر القانوني للسجل.
+    customer_value_en: |
+      Deletes personal data while retaining the legally required record indicator.
+    target_customer_ar: فريق الامتثال.
+    target_customer_en: Compliance team.
+    what_it_does_ar: |
+      ١) يستقبل الطلب. ٢) يحذف. ٣) يحفظ مؤشّر السجلّ.
+    what_it_does_en: |
+      1) Receives the request. 2) Deletes. 3) Retains the record indicator.
+    required_inputs: [subject_identifier]
+    workflow_steps: [request, delete, record_indicator]
+    channels: []
+    safe_action_policy:
+      - subject_verified_only
+      - retain_legal_indicator
+    approval_required: true
+    blocked_actions: [irreversible_deletion_without_verification]
+    deliverables: [deletion_record]
+    proof_metrics: [deletions_completed_within_sla_pct]
+    api_endpoints: ["POST /api/v1/compliance/delete"]
+    frontend_surfaces: [founder daily card]
+    data_dependencies: [all_personal_data_tables]
+    integration_dependencies: []
+    owner: sami_assiri
+    next_activation_step_ar: |
+      اختبار حذف فعلي مع الإبقاء على مؤشّر السجلّ.
+    next_activation_step_en: |
+      Add an actual-deletion test that retains the record indicator.
+    definition_of_live:
+      - indicator schema v1 active
+      - deletion test passes
+      - audit trail proven
+    tests_required: [tests/test_right_to_delete.py]
+    risks: [residual_data]
+    sla: completion_within_72h
+    last_verified_at: "2026-05-04"
+    evidence: [docs/PRIVACY_PDPL_READINESS.md]
+
+  - service_id: audit_trail
+    name_ar: سجلّ التدقيق
+    name_en: Audit Trail
+    bundle: internal
+    capability_group: observability
+    status: partial
+    customer_value_ar: |
+      سجل تدقيق على كل إجراء حسّاس مع correlation_id موحّد.
+    customer_value_en: |
+      Audit record on every sensitive action with a unified correlation_id.
+    target_customer_ar: فِرق الامتثال والهندسة.
+    target_customer_en: Compliance and engineering teams.
+    what_it_does_ar: |
+      ١) يلتقط الحدث. ٢) يضيف correlation_id. ٣) يخزّنه.
+    what_it_does_en: |
+      1) Captures the event. 2) Tags correlation_id. 3) Persists.
+    required_inputs: [structured_logger]
+    workflow_steps: [capture, tag, persist]
+    channels: []
+    safe_action_policy: [immutable_record]
+    approval_required: false
+    blocked_actions: [log_redaction_without_versioning]
+    deliverables: [audit_record]
+    proof_metrics: [sensitive_actions_with_audit_pct]
+    api_endpoints: ["GET /api/v1/audit/{id}"]
+    frontend_surfaces: [founder daily card]
+    data_dependencies: [audit_log_table]
+    integration_dependencies: [structlog]
+    owner: sami_assiri
+    next_activation_step_ar: |
+      توحيد correlation_id عبر كل المسارات + اختبار التغطية الشاملة.
+    next_activation_step_en: |
+      Unify correlation_id across all paths and add a full-coverage test.
+    definition_of_live:
+      - correlation_id unified
+      - coverage test passes
+      - audit trail proven
+    tests_required: [tests/test_audit_trail.py]
+    risks: [log_volume_growth]
+    sla: lookup_within_2sec
+    last_verified_at: "2026-05-04"
+    evidence: [docs/SECURITY_GUIDE.md]
+
+  - service_id: cross_border_restriction
+    name_ar: تقييد البيانات بين الحدود
+    name_en: Cross-Border Restriction
+    bundle: internal
+    capability_group: compliance
+    status: target
+    customer_value_ar: |
+      بيانات عملاء KSA لا تغادر KSA دون ترخيص — تنفيذ على مستوى البنية.
+    customer_value_en: |
+      KSA customer data does not leave KSA without authorization —
+      enforced at the infrastructure layer.
+    target_customer_ar: فِرق الامتثال والبنية التحتية.
+    target_customer_en: Compliance and infrastructure teams.
+    what_it_does_ar: |
+      ١) يصنّف البيانات. ٢) يفرض الإقامة على مستوى التخزين. ٣) يدقّق.
+    what_it_does_en: |
+      1) Classifies the data. 2) Enforces residency at the storage layer.
+      3) Audits.
+    required_inputs: [data_classification, storage_policy]
+    workflow_steps: [classify, enforce, audit]
+    channels: []
+    safe_action_policy: [data_residency_enforced]
+    approval_required: false
+    blocked_actions: [cross_border_export_without_authorization]
+    deliverables: [residency_audit_report]
+    proof_metrics: [residency_violations_zero_pct]
+    api_endpoints: ["GET /api/v1/compliance/residency/audit"]
+    frontend_surfaces: [founder daily card]
+    data_dependencies: [data_classification_index]
+    integration_dependencies: [ksa_resident_storage]
+    owner: sami_assiri
+    next_activation_step_ar: |
+      تجهيز تخزين مقيم في KSA + اختبار رفض النقل غير المرخّص.
+    next_activation_step_en: |
+      Provision KSA-resident storage and add a test that refuses
+      unauthorized cross-border transfer.
+    definition_of_live:
+      - KSA storage active
+      - refusal test passes
+      - audit trail proven
+    tests_required: [tests/test_cross_border_restriction.py]
+    risks: [infra_gap]
+    sla: zero_residency_violations
+    last_verified_at: "2026-05-04"
+    evidence: [docs/PRIVACY_PDPL_READINESS.md]
+
+  - service_id: multi_tenant_rls
+    name_ar: عزل المستأجرين (RLS)
+    name_en: Multi-Tenant RLS
+    bundle: internal
+    capability_group: foundations
+    status: target
+    customer_value_ar: |
+      عزل بيانات المستأجرين على مستوى Postgres RLS — لا تسرّب ممكن.
+    customer_value_en: |
+      Tenant isolation enforced at Postgres RLS — leakage not possible.
+    target_customer_ar: فِرق المنصّة والامتثال.
+    target_customer_en: Platform and compliance teams.
+    what_it_does_ar: |
+      ١) يكتب سياسات RLS. ٢) يفرضها. ٣) يدقّق على الجداول.
+    what_it_does_en: |
+      1) Writes RLS policies. 2) Enforces them. 3) Audits tables.
+    required_inputs: [postgres_with_rls]
+    workflow_steps: [write_policies, enforce, audit]
+    channels: []
+    safe_action_policy: [default_deny]
+    approval_required: false
+    blocked_actions: [cross_tenant_query_without_policy]
+    deliverables: [rls_policy_set]
+    proof_metrics: [tables_with_rls_pct]
+    api_endpoints: []
+    frontend_surfaces: [founder daily card]
+    data_dependencies: [postgres]
+    integration_dependencies: [postgres]
+    owner: sami_assiri
+    next_activation_step_ar: |
+      ترحيل من SQLite + اختبار رفض cross-tenant query.
+    next_activation_step_en: |
+      Migrate off SQLite and add a cross-tenant-query refusal test.
+    definition_of_live:
+      - postgres active
+      - cross-tenant test passes
+      - audit trail proven
+    tests_required: [tests/test_multi_tenant_rls.py]
+    risks: [migration_drift]
+    sla: zero_cross_tenant_reads
+    last_verified_at: "2026-05-04"
+    evidence: [docs/SECURITY_GUIDE.md]
+
+  - service_id: durable_execution
+    name_ar: تنفيذ workflow متين
+    name_en: Durable Execution
+    bundle: internal
+    capability_group: foundations
+    status: target
+    customer_value_ar: |
+      محرّك workflow بنقاط حفظ وidempotency لتنفيذ آمن وموثوق.
+    customer_value_en: |
+      Workflow engine with checkpoints and idempotency for safe,
+      reliable execution.
+    target_customer_ar: فريق المنصّة.
+    target_customer_en: Platform team.
+    what_it_does_ar: |
+      ١) يعرّف الـworkflow. ٢) ينفّذ بنقاط حفظ. ٣) يستأنف عند الفشل.
+    what_it_does_en: |
+      1) Defines the workflow. 2) Executes with checkpoints.
+      3) Resumes on failure.
+    required_inputs: [workflow_engine]
+    workflow_steps: [define, execute, resume]
+    channels: []
+    safe_action_policy: [idempotent_execution]
+    approval_required: false
+    blocked_actions: [non_idempotent_external_call_without_guard]
+    deliverables: [workflow_engine_runtime]
+    proof_metrics: [failed_workflows_resumed_pct]
+    api_endpoints: []
+    frontend_surfaces: [founder daily card]
+    data_dependencies: [workflow_state_store]
+    integration_dependencies: [temporal_or_langgraph]
+    owner: sami_assiri
+    next_activation_step_ar: |
+      اختيار محرّك (Temporal/LangGraph) + اختبار استئناف بعد فشل.
+    next_activation_step_en: |
+      Choose an engine (Temporal/LangGraph) and add a resume-after-failure test.
+    definition_of_live:
+      - engine selected
+      - resume test passes
+      - audit trail proven
+    tests_required: [tests/test_durable_execution.py]
+    risks: [vendor_lock_in]
+    sla: resume_within_1min
+    last_verified_at: "2026-05-04"
+    evidence: [docs/SECURITY_GUIDE.md]
+
+  - service_id: observability
+    name_ar: مراقبة التشغيل (Observability)
+    name_en: Observability
+    bundle: internal
+    capability_group: observability
+    status: target
+    customer_value_ar: |
+      Traces وlogs منظّمة على كل مسار لاستكشاف أي مشكلة بسرعة.
+    customer_value_en: |
+      Traces and structured logs across every path to diagnose any
+      issue quickly.
+    target_customer_ar: فريق المنصّة.
+    target_customer_en: Platform team.
+    what_it_does_ar: |
+      ١) يصدر traces. ٢) يجمع logs. ٣) يصدّرها لمنصّة.
+    what_it_does_en: |
+      1) Emits traces. 2) Collects logs. 3) Exports to a backend.
+    required_inputs: [opentelemetry, log_pipeline]
+    workflow_steps: [emit, collect, export]
+    channels: []
+    safe_action_policy: [sampling_respects_pii]
+    approval_required: false
+    blocked_actions: [logging_pii_in_plaintext]
+    deliverables: [traces_dashboard, logs_dashboard]
+    proof_metrics: [paths_with_traces_pct]
+    api_endpoints: []
+    frontend_surfaces: [founder daily card]
+    data_dependencies: [traces_store, logs_store]
+    integration_dependencies: [tempo_or_jaeger]
+    owner: sami_assiri
+    next_activation_step_ar: |
+      تجهيز Tempo/Jaeger + اختبار وصول الـtrace إلى لوحة المراقبة.
+    next_activation_step_en: |
+      Provision Tempo/Jaeger and add a test that traces reach the dashboard.
+    definition_of_live:
+      - backend active
+      - trace-arrival test passes
+      - audit trail proven
+    tests_required: [tests/test_observability_traces.py]
+    risks: [storage_cost]
+    sla: trace_visible_within_1min
+    last_verified_at: "2026-05-04"
+    evidence: [docs/OBSERVABILITY_ENV.md]
+
+  - service_id: release_gate
+    name_ar: بوّابة الإصدار
+    name_en: Release Gate
+    bundle: internal
+    capability_group: foundations
+    status: partial
+    customer_value_ar: |
+      كل إصدار يمرّ ببوابة جودة قبل النشر — اختبارات + توقيع + مدقّق جاهزية.
+    customer_value_en: |
+      Every release passes a quality gate before publish — tests + signing
+      + readiness validator.
+    target_customer_ar: فريق المنصّة.
+    target_customer_en: Platform team.
+    what_it_does_ar: |
+      ١) يشغّل الاختبارات. ٢) يوقّع البناء. ٣) يدقّق الجاهزية.
+    what_it_does_en: |
+      1) Runs tests. 2) Signs the build. 3) Validates readiness.
+    required_inputs: [ci_runner, oidc_signing_provider]
+    workflow_steps: [test, sign, validate]
+    channels: []
+    safe_action_policy: [block_on_failure]
+    approval_required: false
+    blocked_actions: [publish_unsigned_build]
+    deliverables: [release_decision_record]
+    proof_metrics: [releases_passing_gate_pct]
+    api_endpoints: []
+    frontend_surfaces: [founder daily card]
+    data_dependencies: [ci_artifacts]
+    integration_dependencies: [github_oidc]
+    owner: sami_assiri
+    next_activation_step_ar: |
+      ربط OIDC + attestations + تشغيل مدقّق جاهزية الخدمات في CI.
+    next_activation_step_en: |
+      Wire OIDC + attestations and run the service readiness validator in CI.
+    definition_of_live:
+      - OIDC configured
+      - validator runs in CI
+      - audit trail proven
+    tests_required: [tests/test_service_readiness_matrix.py]
+    risks: [signing_key_rotation]
+    sla: gate_decision_within_5min
+    last_verified_at: "2026-05-04"
+    evidence: [.github/workflows/ci.yml]
