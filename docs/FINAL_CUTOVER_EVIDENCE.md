@@ -1,8 +1,8 @@
 # Dealix Final Cutover Evidence
 
-> Re-verified 2026-05-03 against deploy branch
-> `claude/launch-command-center-6P4N0` @ `bf8f6a0`
-> (PR #132 merge `29d8e8f` + smoke-script + evidence updates).
+> Re-verified 2026-05-04 (post-Railway-redeploy) against deploy branch
+> `claude/launch-command-center-6P4N0` @ `66061f5`
+> (PR #132 merge `29d8e8f` + smoke-script `bf8f6a0` + this evidence pass).
 > Every claim is backed by a command + output. No motivational claims.
 
 ## Verdict
@@ -11,10 +11,27 @@
 DEALIX_FINAL_VERDICT=PROVEN_STAGING_READ_ONLY
 ```
 
-To upgrade to `FIRST_CUSTOMER_READY_REALISTIC` requires:
-- Railway redeploy of `claude/launch-command-center-6P4N0` HEAD `bf8f6a0`
-- Prod migration `python scripts/migrate_add_hubspot_deal_id.py`
-- Re-run staging smoke → expect `PASS=12 FAIL=0`
+Founder confirmed Railway "back online" — but the running build does NOT
+contain PR #132's wiring patch. Direct evidence from
+`POST /api/v1/operator/chat/message`:
+
+- **response keys on prod** (today): `anti_claim_ar, approval_first, blocked, intent, next_path, reason_ar, recommended_bundle`
+- **response keys expected after PR #132**: `action_mode, blocked_reasons, safe_alternatives, reason_en, safety_note_ar` (all missing)
+
+Conclusion: Railway redeployed onto an older commit (or used a cached
+build image). The deploy branch on GitHub is correct (`29d8e8f` + `66061f5`)
+— Railway is just not running it.
+
+To upgrade to `FIRST_CUSTOMER_READY_REALISTIC`:
+
+1. **Confirm Railway is building the right commit.** In Railway →
+   service "dealix" → Deployments, the latest deployment must show
+   commit SHA starting with `66061f5` (or `bf8f6a0` / `29d8e8f`).
+   If it shows an older SHA (e.g. `5d7c61c` or earlier), the redeploy
+   missed PR #132. Trigger a fresh deployment from the merged commit.
+2. Run the prod migration ONCE:
+   `DATABASE_URL='<railway-pg>' python scripts/migrate_add_hubspot_deal_id.py`
+3. Re-run staging smoke → expect `PASS=12 FAIL=0`.
 
 ## Evidence Table
 
@@ -36,7 +53,8 @@ To upgrade to `FIRST_CUSTOMER_READY_REALISTIC` requires:
 | Prod | `/openapi.json` | 200 | 200 | OpenAPI returned, 306 paths | PASS | no |
 | Prod | service catalog | 200 | 200 | `/api/v1/services/catalog` returns 6 bundles | PASS | no |
 | Prod | English cold-WA blocked | pass | pass | smoke 6c: `unsafe English cold-WA blocked` | PASS | no |
-| **Prod** | **Saudi Arabic cold-WA blocked** | **pass** | **fail 0/4** | direct operator probe: every Arabic phrasing returns `blocked=False intent=want_more_customers bundle=growth_starter` | **FAIL** | **YES** |
+| **Prod** | **Saudi Arabic cold-WA blocked** | **pass** | **fail 0/4** | direct operator probe re-run after redeploy: every Arabic phrasing returns `blocked=False intent=want_more_customers bundle=growth_starter`. Response keys `[anti_claim_ar, approval_first, blocked, intent, next_path, reason_ar, recommended_bundle]` are the **pre-PR-132 shape** — Railway is running an older commit. | **FAIL** | **YES** |
+| **Prod** | **PR #132 actually live** | **yes** | **no** | Operator response on prod is missing the new safety-classifier fields (`action_mode`, `blocked_reasons`, `safe_alternatives`, `reason_en`, `safety_note_ar`). The wiring was added in PR #132. Their absence proves the deployed image predates the merge. | **FAIL** | **YES** |
 | Prod | WhatsApp live outbound | blocked | blocked | `POST /api/v1/os/test-send` → `{"status":"blocked","error":"whatsapp_allow_live_send_false"}` | PASS | no |
 | Prod | Gmail live send | blocked | blocked | `gmail_allow_live_send: bool = False` (settings.py:110) + no live route exposed | PASS | no |
 | Prod | Moyasar live charge | blocked | blocked | no `/payments/charge` route on prod (404), only `/payments/manual-request` | PASS | no |
@@ -89,12 +107,16 @@ Guaranteed claims:        none in landing/ or classifier output (sweep clean, 12
 
 ```
 OUTREACH_GO=no
-Reason: Production /api/v1/operator/chat/message does not yet block Saudi Arabic
-        cold-WhatsApp phrasings. The fix is merged (29d8e8f) and additional
-        evidence is on bf8f6a0, but Railway has not redeployed yet.
+Reason: Production runtime image is older than PR #132. Railway service is
+        "Online" but the running build pre-dates the merge — the operator
+        chat response shape lacks the new safety fields, and the 4 Saudi
+        Arabic cold-WhatsApp phrasings still pass through unblocked.
 
 Required before outreach:
-  1. Railway redeploy on claude/launch-command-center-6P4N0 @ bf8f6a0 (or later).
+  1. In Railway → service "dealix" → Deployments, verify the LATEST
+     deployment commit SHA starts with 66061f5 (or bf8f6a0 / 29d8e8f).
+     If it shows an older SHA (e.g. 5d7c61c), the redeploy missed PR #132 —
+     trigger a fresh deployment from the merged commit.
   2. Prod migration: DATABASE_URL='<railway pg>' python scripts/migrate_add_hubspot_deal_id.py
   3. Re-run staging smoke → expect PASS=12 FAIL=0.
   4. Re-probe operator with the 4 Arabic phrasings → expect blocked=true on all.
