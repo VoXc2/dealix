@@ -1,8 +1,20 @@
-"""Customer Data & Consent Plane v5 — read/write API over the registry."""
+"""Customer Data & Consent Plane v5 — read/write API over the registry.
+
+V12 extension: ``POST /action-check`` evaluates the action × channel
+× consent matrix using ``compliance_os_v12.action_policy``.
+"""
 from __future__ import annotations
 
-from fastapi import APIRouter, Body, HTTPException
+from typing import Any
 
+from fastapi import APIRouter, Body, HTTPException
+from pydantic import BaseModel, ConfigDict
+
+from auto_client_acquisition.compliance_os_v12 import (
+    Channel,
+    ConsentState,
+    evaluate_action,
+)
 from auto_client_acquisition.customer_data_plane import (
     ChannelKind,
     contactability_check,
@@ -14,6 +26,45 @@ from auto_client_acquisition.customer_data_plane.consent_registry import (
 )
 
 router = APIRouter(prefix="/api/v1/customer-data", tags=["customer-data-plane"])
+
+
+class _ActionCheckRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    action_type: str
+    channel: Channel = "internal"
+    consent_state: ConsentState = "unknown"
+    customer_id: str | None = None
+
+
+@router.post("/action-check")
+async def action_check(req: _ActionCheckRequest) -> dict[str, Any]:
+    """Evaluate the V12 action × channel × consent policy matrix.
+
+    Read-only. No DB write. No external call. Returns a deterministic
+    verdict ``allowed | blocked | needs_review`` with bilingual reasons.
+    """
+    decision = evaluate_action(
+        action_type=req.action_type,
+        channel=req.channel,
+        consent_state=req.consent_state,
+        customer_id=req.customer_id,
+    )
+    return {
+        "verdict": decision.verdict,
+        "action_mode": decision.action_mode,
+        "escalate_to_human": decision.escalate_to_human,
+        "reason_ar": decision.reason_ar,
+        "reason_en": decision.reason_en,
+        "request": req.model_dump(mode="json"),
+        "hard_gates": {
+            "no_live_send": True,
+            "no_live_charge": True,
+            "no_scraping": True,
+            "no_cold_outreach": True,
+            "no_linkedin_automation": True,
+            "no_fake_proof": True,
+        },
+    }
 
 
 @router.get("/status")

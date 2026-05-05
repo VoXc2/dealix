@@ -68,9 +68,18 @@ from api.routers import (
     search_radar,
     sectors,
     security_privacy,
+    customer_success_os,
+    delivery_os,
+    executive_os,
+    full_ops,
+    growth_os,
+    partnership_os,
+    sales_os,
     self_growth,
+    self_improvement_os,
     service_mapping_v7,
     service_quality,
+    support_os,
     v10_status,
     v11_status,
     v3,
@@ -218,6 +227,15 @@ def create_app() -> FastAPI:
     app.include_router(founder.router)
     app.include_router(v10_status.router)
     app.include_router(v11_status.router)
+    app.include_router(full_ops.router)
+    app.include_router(support_os.router)
+    app.include_router(growth_os.router)
+    app.include_router(sales_os.router)
+    app.include_router(customer_success_os.router)
+    app.include_router(delivery_os.router)
+    app.include_router(executive_os.router)
+    app.include_router(self_improvement_os.router)
+    app.include_router(partnership_os.router)
     app.include_router(public.router)
     app.include_router(admin.router)
 
