@@ -34,6 +34,7 @@ flowchart TD
 |------|------|
 | [GOOGLE_SHEET_MODEL_AR.md](GOOGLE_SHEET_MODEL_AR.md) | Tab names, column headers, enums, form fields |
 | [dealix_google_apps_script.gs](dealix_google_apps_script.gs) | Copy-paste into Apps Script editor |
+| [OPERATING_BOARD_FORMULAS_ONLY_AR.md](OPERATING_BOARD_FORMULAS_ONLY_AR.md) | **No-code path:** Sheet formulas + Form email notifications |
 | [LEVEL_1_ACCEPTANCE_CHECKLIST_AR.md](LEVEL_1_ACCEPTANCE_CHECKLIST_AR.md) | Tests + evidence table |
 | [TURN_ON_FULL_OPS_AR.md](../TURN_ON_FULL_OPS_AR.md) | Arabic step-by-step |
 | [scripts/smoke_staging.py](../../../scripts/smoke_staging.py) | HTTP smoke against staging |
@@ -54,6 +55,12 @@ Nine tabs as defined in [GOOGLE_SHEET_MODEL_AR.md](GOOGLE_SHEET_MODEL_AR.md): `0
 - Link form responses to the spreadsheet ([Google Help — form destination](https://support.google.com/docs/answer/2917686)).
 - Include a **required consent** field.
 - Align question titles with the script’s `buildOperatingPayload_` keys (Arabic titles in the sample `testInsertRow`), or edit the script to match your titles.
+
+---
+
+## No Apps Script (formulas only)
+
+If installable triggers or authorization are blocked, use **Form email notifications** + **`ARRAYFORMULA` on `02_Operating_Board`** as documented in [OPERATING_BOARD_FORMULAS_ONLY_AR.md](OPERATING_BOARD_FORMULAS_ONLY_AR.md). Row 1 headers must still match [GOOGLE_SHEET_MODEL_AR.md](GOOGLE_SHEET_MODEL_AR.md).
 
 ---
 

@@ -25,6 +25,15 @@
 
 ---
 
+## بدون Apps Script — صيغ فقط + إيميل الفورم
+
+إذا تعذّر **Run** أو **Triggers** في Apps Script:
+
+1. في Google Form: **Responses** → ⋮ → **Get email notifications for new responses** ([مساعدة Google](https://support.google.com/docs/answer/2917686)).
+2. في `02_Operating_Board` استخدم صيغ `ARRAYFORMULA` المنسوخة من [OPERATING_BOARD_FORMULAS_ONLY_AR.md](full_ops_pack/OPERATING_BOARD_FORMULAS_ONLY_AR.md) (مع تعديل أحرف أعمدة `Form Responses 1` إذا ترتيب أسئلتك يختلف).
+
+---
+
 ## تركيب Apps Script
 
 - Extensions → Apps Script → الصق محتوى [dealix_google_apps_script.gs](full_ops_pack/dealix_google_apps_script.gs).
