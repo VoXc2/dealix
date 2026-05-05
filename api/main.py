@@ -34,6 +34,8 @@ from api.routers import (
     full_os,
     health,
     leads,
+    llm_gateway_v10,
+    observability_v10,
     outreach,
     personal_operator,
     pricing,
@@ -188,6 +190,8 @@ def create_app() -> FastAPI:
     app.include_router(diagnostic_workflow.router)
     app.include_router(designops.router)
     app.include_router(observability_v6.router)
+    app.include_router(observability_v10.router)
+    app.include_router(llm_gateway_v10.router)
     app.include_router(company_brain.router)
     app.include_router(company_brain_v6.router)
     app.include_router(approval_center.router)
