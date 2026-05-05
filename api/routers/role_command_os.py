@@ -12,11 +12,24 @@ from auto_client_acquisition.role_command_os import (
 router = APIRouter(prefix="/api/v1/role-command", tags=["role-command-os"])
 
 
-@router.get("/status")
-async def role_command_status() -> dict:
+def _role_command_status_payload() -> dict:
     return {
+        "service": "role_command_os",
         "module": "role_command_os",
+        "status": "operational",
+        "version": "v5",
+        "degraded": False,
+        "checks": {"roles_loaded": bool(list_roles())},
         "roles": list_roles(),
+        "hard_gates": {
+            "no_live_send": True,
+            "no_scraping": True,
+            "no_cold_outreach": True,
+            "approval_required_for_external_actions": True,
+        },
+        "next_action_ar": "اختر الدور لرؤية ملخّصه اليومي",
+        "next_action_en": "Pick a role to view its daily brief.",
+        # Legacy shape preserved for back-compat with v5 callers:
         "guardrails": {
             "no_live_send": True,
             "no_scraping": True,
@@ -24,6 +37,22 @@ async def role_command_status() -> dict:
             "approval_required_for_external_actions": True,
         },
     }
+
+
+@router.get("/status")
+async def role_command_status() -> dict:
+    return _role_command_status_payload()
+
+
+@router.get("/_status")
+async def role_command_status_alias() -> dict:
+    """Path-collision-safe alias — guaranteed to never be matched as a role.
+
+    The legacy ``/{role}`` catchall is registered AFTER ``/status``, so
+    that path works too; this underscore alias is provided for callers
+    that want a name unmistakably outside the role enum.
+    """
+    return _role_command_status_payload()
 
 
 @router.get("/{role}")

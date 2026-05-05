@@ -71,6 +71,8 @@ from api.routers import (
     self_growth,
     service_mapping_v7,
     service_quality,
+    v10_status,
+    v11_status,
     v3,
     vertical_playbooks,
     workflow_os_v10,
@@ -214,6 +216,8 @@ def create_app() -> FastAPI:
     app.include_router(ai_workforce.router)
     app.include_router(executive_reporting.router)
     app.include_router(founder.router)
+    app.include_router(v10_status.router)
+    app.include_router(v11_status.router)
     app.include_router(public.router)
     app.include_router(admin.router)
 

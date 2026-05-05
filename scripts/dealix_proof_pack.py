@@ -80,6 +80,58 @@ def _load_events(
     return out
 
 
+def _render_empty_pack(customer_handle: str, lang: str) -> str:
+    """Bilingual EMPTY Draft pack — used when no events exist.
+
+    NEVER fabricates events or metrics. Explicitly marks the pack as
+    ``approval_status: approval_required`` and ``audience: internal_only``.
+    """
+    parts: list[str] = []
+    parts.append(f"<!-- Dealix Proof Pack — {customer_handle} (EMPTY DRAFT) -->")
+    parts.append("<!-- approval_status: approval_required -->")
+    parts.append("<!-- audience: internal_only -->")
+    parts.append("<!-- decision: review_required -->")
+    parts.append("")
+    if lang in ("ar", "both"):
+        parts.append(f"# Proof Pack — {customer_handle}")
+        parts.append("")
+        parts.append("## الملخّص")
+        parts.append("")
+        parts.append(
+            "لم يتم تسجيل أحداث قابلة للتوثيق خلال هذه الفترة. "
+            "هذا قالب فارغ مُقصود — لا تُختلق أحداث."
+        )
+        parts.append("")
+        parts.append("## الأحداث")
+        parts.append("")
+        parts.append("(فارغ)")
+        parts.append("")
+    if lang == "both":
+        parts.append("---")
+        parts.append("")
+    if lang in ("en", "both"):
+        parts.append(f"# Proof Pack — {customer_handle}")
+        parts.append("")
+        parts.append("## Summary")
+        parts.append("")
+        parts.append(
+            "No verifiable events were recorded during this period. "
+            "This is an intentional EMPTY template — events are NEVER "
+            "fabricated."
+        )
+        parts.append("")
+        parts.append("## Events")
+        parts.append("")
+        parts.append("(empty)")
+        parts.append("")
+    parts.append("---")
+    parts.append("")
+    parts.append("> ⚠️ **Founder approval required before sharing externally.**")
+    parts.append("> approval_status: approval_required · audience: internal_only")
+    parts.append("> decision: review_required")
+    return "\n".join(parts)
+
+
 def main(argv: list[str] | None = None) -> int:
     p = argparse.ArgumentParser(description="Assemble a Proof Pack from JSONL events.")
     p.add_argument("--customer-handle", required=True,
@@ -94,6 +146,14 @@ def main(argv: list[str] | None = None) -> int:
                    help="write markdown to this path instead of stdout")
     p.add_argument("--lang", choices=["ar", "en", "both"], default="both",
                    help="which language(s) to emit (default: both)")
+    p.add_argument(
+        "--allow-empty", action="store_true",
+        help=(
+            "if no events found, emit an EMPTY Draft / Internal pack "
+            "instead of failing. This is the V11 honest-empty template; "
+            "NEVER fabricate events."
+        ),
+    )
     args = p.parse_args(argv)
 
     events = _load_events(
@@ -102,12 +162,26 @@ def main(argv: list[str] | None = None) -> int:
         events_dir=args.events_dir,
     )
     if not events:
-        print(
-            f"[proof-pack] no events found for {args.customer_handle!r} "
-            f"in {args.events_dir} or {args.events}",
-            file=sys.stderr,
-        )
-        return 1
+        if not args.allow_empty:
+            print(
+                f"[proof-pack] no events found for {args.customer_handle!r} "
+                f"in {args.events_dir} or {args.events}. Pass --allow-empty "
+                f"to emit an EMPTY Draft template (NEVER fabricate events).",
+                file=sys.stderr,
+            )
+            return 1
+        # V11 honest-empty pack — no fabrication, clearly marked Draft/Internal.
+        empty_text = _render_empty_pack(args.customer_handle, args.lang)
+        if args.out:
+            args.out.parent.mkdir(parents=True, exist_ok=True)
+            args.out.write_text(empty_text, encoding="utf-8")
+            print(
+                f"[proof-pack] wrote EMPTY Draft pack → {args.out}",
+                file=sys.stderr,
+            )
+        else:
+            print(empty_text)
+        return 0
 
     pack = render_pack(
         events=events,
