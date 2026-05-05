@@ -196,11 +196,49 @@ def enforce_run_budget(
     }
 
 
+# ── Simple per-agent budget helpers (used by orchestrator) ──────────
+
+DEFAULT_BUDGET_USD: float = 5.0
+
+
+def estimate_cost(agent_id: str) -> float:
+    """Return the agent's static cost budget in USD.
+
+    Unknown agent_ids return 0.0 — defensive, so the orchestrator
+    can pass any id without raising.
+    """
+    try:
+        from auto_client_acquisition.ai_workforce.agent_registry import (
+            AGENT_REGISTRY,
+        )
+    except Exception:  # noqa: BLE001
+        return 0.0
+    spec = AGENT_REGISTRY.get(agent_id)
+    if spec is None:
+        return 0.0
+    return float(getattr(spec, "cost_budget_usd", 0.0))
+
+
+def enforce_budget(
+    run_costs: list[float], limit_usd: float = DEFAULT_BUDGET_USD,
+) -> bool:
+    """Return ``True`` if the summed run cost is within budget.
+
+    A run exactly matching ``limit_usd`` is allowed; only strictly
+    exceeding it returns ``False``.
+    """
+    total = sum(float(c or 0.0) for c in (run_costs or []))
+    return total <= float(limit_usd)
+
+
 __all__ = [
     "CostBudget",
     "CostEstimate",
+    "DEFAULT_BUDGET_USD",
     "ModelTier",
-    "estimate_for_task",
+    "enforce_budget",
     "enforce_run_budget",
+    "estimate_cost",
+    "estimate_for_task",
     "pick_model_tier",
 ]

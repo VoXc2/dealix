@@ -16,6 +16,7 @@ from api.middleware import RequestIDMiddleware
 from api.routers import (
     admin,
     agents,
+    ai_workforce,
     approval_center,
     automation,
     autonomous,
@@ -42,6 +43,7 @@ from api.routers import (
     customer_data_plane,
     customer_loop,
     delivery_factory,
+    designops,
     diagnostic,
     diagnostic_workflow,
     finance_os,
@@ -184,10 +186,12 @@ def create_app() -> FastAPI:
     app.include_router(security_privacy.router)
     app.include_router(diagnostic.router)
     app.include_router(diagnostic_workflow.router)
+    app.include_router(designops.router)
     app.include_router(observability_v6.router)
     app.include_router(company_brain.router)
     app.include_router(company_brain_v6.router)
     app.include_router(approval_center.router)
+    app.include_router(ai_workforce.router)
     app.include_router(executive_reporting.router)
     app.include_router(founder.router)
     app.include_router(public.router)
