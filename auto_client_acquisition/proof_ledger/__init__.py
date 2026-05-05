@@ -18,6 +18,11 @@ from auto_client_acquisition.proof_ledger.schemas import (
 )
 from auto_client_acquisition.proof_ledger.file_backend import (
     FileProofLedger,
+)
+from auto_client_acquisition.proof_ledger.postgres_backend import (
+    PostgresProofLedger,
+)
+from auto_client_acquisition.proof_ledger.factory import (
     get_default_ledger,
 )
 from auto_client_acquisition.proof_ledger.evidence_export import (
@@ -31,6 +36,7 @@ __all__ = [
     "RevenueWorkUnit",
     "RevenueWorkUnitType",
     "FileProofLedger",
+    "PostgresProofLedger",
     "get_default_ledger",
     "export_redacted",
     "export_for_audit",

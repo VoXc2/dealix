@@ -85,6 +85,14 @@ class Settings(BaseSettings):
     redis_url: str = "redis://localhost:6379/0"
     mongodb_uri: str = "mongodb://localhost:27017/ai_company"
 
+    # ── Proof Ledger backend ────────────────────────────────────
+    # File-backed JSONL is the default until the founder explicitly
+    # flips the flag. Valid values: "file" | "postgres".
+    proof_ledger_backend: str = Field(
+        default="file",
+        validation_alias=AliasChoices("PROOF_LEDGER_BACKEND", "proof_ledger_backend"),
+    )
+
     @field_validator("database_url", mode="before")
     @classmethod
     def _ensure_asyncpg_driver(cls, v: str | None) -> str:
