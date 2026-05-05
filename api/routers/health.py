@@ -21,6 +21,7 @@ async def health() -> HealthResponse:
         version=settings.app_version,
         env=settings.app_env,
         providers=providers,
+        git_sha=settings.git_sha,
     )
 
 

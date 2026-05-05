@@ -16,29 +16,64 @@ from api.middleware import RequestIDMiddleware
 from api.routers import (
     admin,
     agents,
+    ai_workforce,
+    ai_workforce_v10,
+    approval_center,
     automation,
     autonomous,
     business,
     command_center,
+    company_brain,
+    company_brain_v6,
     customer_success,
     data,
     dominance,
     drafts,
     ecosystem,
     email_send,
+    executive_reporting,
     full_os,
     health,
     leads,
+    llm_gateway_v10,
+    observability_v10,
     outreach,
     personal_operator,
     pricing,
     prospect,
     public,
+    agent_governance,
+    customer_data_plane,
+    crm_v10,
+    customer_inbox_v10,
+    customer_loop,
+    delivery_factory,
+    designops,
+    diagnostic,
+    diagnostic_workflow,
+    finance_os,
+    founder,
+    founder_v10,
+    growth_v10,
+    gtm_os,
+    knowledge_v10,
+    observability_v6,
+    proof_ledger,
+    reliability_os,
     revenue,
     revenue_os,
+    role_command_os,
+    safety_v10,
     sales,
+    search_radar,
     sectors,
+    security_privacy,
+    self_growth,
+    service_mapping_v7,
+    service_quality,
     v3,
+    vertical_playbooks,
+    workflow_os_v10,
     webhooks,
 )
 from api.security import APIKeyMiddleware, setup_rate_limit
@@ -144,6 +179,41 @@ def create_app() -> FastAPI:
     app.include_router(v3.router)
     app.include_router(business.router)
     app.include_router(personal_operator.router)
+    app.include_router(self_growth.router)
+    app.include_router(service_mapping_v7.router)
+    app.include_router(customer_loop.router)
+    app.include_router(role_command_os.router)
+    app.include_router(service_quality.router)
+    app.include_router(agent_governance.router)
+    app.include_router(reliability_os.router)
+    app.include_router(vertical_playbooks.router)
+    app.include_router(customer_data_plane.router)
+    app.include_router(finance_os.router)
+    app.include_router(delivery_factory.router)
+    app.include_router(proof_ledger.router)
+    app.include_router(gtm_os.router)
+    app.include_router(search_radar.router)
+    app.include_router(security_privacy.router)
+    app.include_router(diagnostic.router)
+    app.include_router(diagnostic_workflow.router)
+    app.include_router(designops.router)
+    app.include_router(observability_v6.router)
+    app.include_router(observability_v10.router)
+    app.include_router(llm_gateway_v10.router)
+    app.include_router(safety_v10.router)
+    app.include_router(workflow_os_v10.router)
+    app.include_router(crm_v10.router)
+    app.include_router(customer_inbox_v10.router)
+    app.include_router(growth_v10.router)
+    app.include_router(knowledge_v10.router)
+    app.include_router(ai_workforce_v10.router)
+    app.include_router(founder_v10.router)
+    app.include_router(company_brain.router)
+    app.include_router(company_brain_v6.router)
+    app.include_router(approval_center.router)
+    app.include_router(ai_workforce.router)
+    app.include_router(executive_reporting.router)
+    app.include_router(founder.router)
     app.include_router(public.router)
     app.include_router(admin.router)
 

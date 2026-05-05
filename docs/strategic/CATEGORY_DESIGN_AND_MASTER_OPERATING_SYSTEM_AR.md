@@ -420,6 +420,7 @@ Checklist مستقبلي: SLA · Access control · Audit logs · Data retention 
 |---------|--------|
 | الرادارات الـ25 + loops | [SAUDI_REVENUE_EXECUTION_OS_RADARS_AR.md](SAUDI_REVENUE_EXECUTION_OS_RADARS_AR.md) |
 | النجم الشمالي | [NORTH_STAR_AR.md](NORTH_STAR_AR.md) |
+| إكمال شامل (دمج → عميل) | [COMPREHENSIVE_COMPLETION_PLAN_AR.md](../COMPREHENSIVE_COMPLETION_PLAN_AR.md) |
 | ملخص تنفيذي إنجليزي | [DEALIX_CATEGORY_EXECUTIVE_SUMMARY_EN.md](DEALIX_CATEGORY_EXECUTIVE_SUMMARY_EN.md) |
 | v3 طبقات المنتج | [DEALIX_V3_AUTONOMOUS_REVENUE_OS.md](../DEALIX_V3_AUTONOMOUS_REVENUE_OS.md) |
 | ما بعد الإطلاق | [POST_LAUNCH_BACKLOG.md](../ops/POST_LAUNCH_BACKLOG.md) |

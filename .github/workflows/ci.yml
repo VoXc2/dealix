@@ -27,6 +27,21 @@ jobs:
       - name: Compile check
         run: python -m compileall api auto_client_acquisition
 
+      - name: Verify Service Readiness Matrix
+        run: python scripts/verify_service_readiness_matrix.py
+
+      - name: Export Service Readiness JSON
+        run: |
+          python scripts/export_service_readiness_json.py
+          # Fail CI if the committed JSON is stale relative to the YAML.
+          git diff --exit-code -- landing/assets/data/service-readiness.json
+
+      - name: SEO audit (required-gap must be 0; advisory perimeter locked)
+        run: |
+          python scripts/seo_audit.py
+          # Fail CI if the committed SEO report is stale.
+          git diff --exit-code -- docs/SEO_AUDIT_REPORT.json
+
       - name: Tests
         env:
           APP_ENV: test

@@ -1,0 +1,52 @@
+name: Founder Daily Digest
+
+# Sends Sami the daily growth-loop digest each morning at 7AM KSA
+# (= 4AM UTC). The digest is composed from:
+#   - personal-operator daily-brief
+#   - service-activation candidates
+#   - partner-radar (rotating)
+#   - geo_aio_radar top priority pages
+#   - perimeter status
+# All purely additive read-only signals — no external send to anyone
+# except the founder.
+
+on:
+  schedule:
+    - cron: "0 4 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  digest:
+    name: Send founder digest
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Install minimal deps
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Send digest
+        env:
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          DEALIX_FOUNDER_EMAIL: ${{ secrets.DEALIX_FOUNDER_EMAIL || 'sami.assiri11@gmail.com' }}
+          EMAIL_PROVIDER: "resend"
+          EMAIL_FROM: "noreply@dealix.me"
+          EMAIL_FROM_NAME: "Dealix Daily"
+          APP_ENV: production
+          # The script needs the LLM keys only if personal-operator
+          # daily-brief inside it makes LLM calls. Falls back gracefully.
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+        run: python scripts/dealix_morning_digest.py

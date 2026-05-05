@@ -1,0 +1,130 @@
+# Dealix Seed Keywords — Manually-Curated Search Radar Inputs
+# ═════════════════════════════════════════════════════════════════════════════
+# Hand-curated KSA B2B search themes used by
+# auto_client_acquisition/self_growth_os/search_radar.py to compose
+# priority-ranked targets WITHOUT calling any external search API.
+#
+# What this file is NOT:
+#   - search-volume data (no Google Search Console / Ahrefs / SEMrush)
+#   - scraped from any third-party
+#   - LLM-generated (every entry was reviewed by the founder)
+#   - an auto-publish queue (radar is opt-in; founder decides)
+#
+# Hard rules enforced by tests/test_search_radar.py:
+#   - exactly two language values: 'ar' or 'en'
+#   - each entry has: keyword, language, sector_hint, suggested_bundle_id
+#   - NO forbidden tokens (نضمن, guaranteed, blast, scrape, cold-channel)
+#   - suggested_bundle_id must be a valid bundle from
+#     docs/registry/SERVICE_READINESS_MATRIX.yaml
+#
+# Owner: Sami Assiri
+# Version: 1
+# ═════════════════════════════════════════════════════════════════════════════
+
+version: 1
+owner: sami_assiri
+last_updated: "2026-05-04"
+data_source: "manually-curated, no external search API"
+
+keywords:
+  # ─── Arabic (10) ───────────────────────────────────────────────────────────
+  - keyword: "إدارة العملاء المحتملين السعودية"
+    language: ar
+    sector_hint: b2b_saas_ksa
+    suggested_bundle_id: growth_starter
+
+  - keyword: "استقبال العملاء عبر واتساب للأعمال"
+    language: ar
+    sector_hint: smb_services_ksa
+    suggested_bundle_id: growth_starter
+
+  - keyword: "نظام تأهيل العملاء B2B"
+    language: ar
+    sector_hint: b2b_services_ksa
+    suggested_bundle_id: growth_starter
+
+  - keyword: "أتمتة المبيعات للشركات السعودية"
+    language: ar
+    sector_hint: b2b_saas_ksa
+    suggested_bundle_id: data_to_revenue
+
+  - keyword: "تحويل العروض إلى صفقات مغلقة"
+    language: ar
+    sector_hint: b2b_services_ksa
+    suggested_bundle_id: data_to_revenue
+
+  - keyword: "تقرير تنفيذي أسبوعي للإيراد"
+    language: ar
+    sector_hint: executive_ksa
+    suggested_bundle_id: executive_growth_os
+
+  - keyword: "شراكات نمو B2B في الخليج"
+    language: ar
+    sector_hint: partnerships_ksa
+    suggested_bundle_id: partnership_growth
+
+  - keyword: "لوحة تحكم نمو الإيراد"
+    language: ar
+    sector_hint: executive_ksa
+    suggested_bundle_id: full_control_tower
+
+  - keyword: "متابعة العملاء بالعربي"
+    language: ar
+    sector_hint: smb_services_ksa
+    suggested_bundle_id: growth_starter
+
+  - keyword: "أداة CRM عربية للشركات"
+    language: ar
+    sector_hint: b2b_saas_ksa
+    suggested_bundle_id: data_to_revenue
+
+  # ─── English (10) ──────────────────────────────────────────────────────────
+  - keyword: "B2B lead intake KSA"
+    language: en
+    sector_hint: b2b_saas_ksa
+    suggested_bundle_id: growth_starter
+
+  - keyword: "WhatsApp customer intake Saudi Arabia"
+    language: en
+    sector_hint: smb_services_ksa
+    suggested_bundle_id: growth_starter
+
+  - keyword: "Arabic sales execution platform"
+    language: en
+    sector_hint: b2b_saas_ksa
+    suggested_bundle_id: data_to_revenue
+
+  - keyword: "Saudi B2B revenue operations"
+    language: en
+    sector_hint: b2b_services_ksa
+    suggested_bundle_id: data_to_revenue
+
+  - keyword: "executive weekly revenue pack"
+    language: en
+    sector_hint: executive_ksa
+    suggested_bundle_id: executive_growth_os
+
+  - keyword: "Gulf B2B partnership program"
+    language: en
+    sector_hint: partnerships_ksa
+    suggested_bundle_id: partnership_growth
+
+  - keyword: "revenue control tower KSA"
+    language: en
+    sector_hint: executive_ksa
+    suggested_bundle_id: full_control_tower
+
+  - keyword: "Arabic CRM for SMEs"
+    language: en
+    sector_hint: smb_services_ksa
+    suggested_bundle_id: data_to_revenue
+
+  - keyword: "lead qualification Saudi Arabia"
+    language: en
+    sector_hint: b2b_services_ksa
+    suggested_bundle_id: growth_starter
+
+  - keyword: "founder revenue dashboard KSA"
+    language: en
+    sector_hint: executive_ksa
+    suggested_bundle_id: executive_growth_os

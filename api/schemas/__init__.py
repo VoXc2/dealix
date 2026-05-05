@@ -16,6 +16,7 @@ class HealthResponse(BaseModel):
     version: str
     env: str
     providers: list[str]
+    git_sha: str = "unknown"
 
 
 class MessageResponse(BaseModel):

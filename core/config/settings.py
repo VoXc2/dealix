@@ -10,7 +10,7 @@ from __future__ import annotations
 from functools import lru_cache
 from typing import Literal
 
-from pydantic import Field, SecretStr, field_validator
+from pydantic import AliasChoices, Field, SecretStr, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 Environment = Literal["development", "staging", "production", "test"]
@@ -35,6 +35,13 @@ class Settings(BaseSettings):
     app_debug: bool = False
     app_host: str = "0.0.0.0"  # noqa: S104 — intentional for containerized deploy
     app_port: int = 8000
+    # Surfaced on /health so closure/smoke checks can record the deployed
+    # commit. Reads (in order): GIT_SHA (Dockerfile ARG → ENV) or
+    # RAILWAY_GIT_COMMIT_SHA (Railway-provided). Defaults to "unknown".
+    git_sha: str = Field(
+        default="unknown",
+        validation_alias=AliasChoices("GIT_SHA", "RAILWAY_GIT_COMMIT_SHA"),
+    )
     app_timezone: str = "Asia/Riyadh"
     app_default_locale: Locale = "ar"
     app_default_currency: str = "SAR"
@@ -78,6 +85,14 @@ class Settings(BaseSettings):
     redis_url: str = "redis://localhost:6379/0"
     mongodb_uri: str = "mongodb://localhost:27017/ai_company"
 
+    # ── Proof Ledger backend ────────────────────────────────────
+    # File-backed JSONL is the default until the founder explicitly
+    # flips the flag. Valid values: "file" | "postgres".
+    proof_ledger_backend: str = Field(
+        default="file",
+        validation_alias=AliasChoices("PROOF_LEDGER_BACKEND", "proof_ledger_backend"),
+    )
+
     @field_validator("database_url", mode="before")
     @classmethod
     def _ensure_asyncpg_driver(cls, v: str | None) -> str:
@@ -109,6 +124,11 @@ class Settings(BaseSettings):
     email_provider: Literal["resend", "sendgrid", "smtp"] = "resend"
     email_from: str = "noreply@ai-company.sa"
     email_from_name: str = "AI Company Saudi"
+    # Founder address that receives intake alerts + daily digest. Reads
+    # from DEALIX_FOUNDER_EMAIL env. Empty means notifications are skipped
+    # silently (intake/digest pipelines treat absence as "not configured"
+    # rather than failing).
+    dealix_founder_email: str = "sami.assiri11@gmail.com"
     resend_api_key: SecretStr | None = None
     sendgrid_api_key: SecretStr | None = None
     smtp_host: str | None = None

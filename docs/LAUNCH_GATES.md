@@ -1,5 +1,7 @@
 # Dealix Launch Gates — v3.0.0 Primitive Launch
 
+**خطة إكمال شاملة (دمج → نشر → عميل):** [COMPREHENSIVE_COMPLETION_PLAN_AR.md](COMPREHENSIVE_COMPLETION_PLAN_AR.md)
+
 **Human orchestration (Arabic — phased launch + repo inventory):** [LAUNCH_MASTER_PLAN_AR.md](LAUNCH_MASTER_PLAN_AR.md)
 
 **North Star (outcome + metrics by phase):** [strategic/NORTH_STAR_AR.md](strategic/NORTH_STAR_AR.md)

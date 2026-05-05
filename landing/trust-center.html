@@ -6,6 +6,12 @@
   <title>Compliance & Trust Center — Dealix</title>
   <meta name="description" content="مركز الامتثال والثقة في Dealix — PDPL، consent ledger، opt-out، RoPA، 11 compliance gates، audit logs، PDPL risk scoring لكل حملة." />
   <meta name="theme-color" content="#0f172a" />
+  <link rel="canonical" href="https://dealix.me/trust-center.html" />
+  <meta property="og:title" content="Compliance & Trust Center — Dealix" />
+  <meta property="og:description" content="مركز الامتثال والثقة في Dealix — PDPL، 11 compliance gates، 8 service activation gates، audit logs، sub-processors." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://dealix.me/trust-center.html" />
+  <meta name="twitter:card" content="summary_large_image" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" />
@@ -103,6 +109,25 @@
         <div class="gate-card"><div class="num">10</div><div class="h">Frequency cap</div><div class="d">حد أقصى 2 رسالة/أسبوع لنفس المستلم</div></div>
         <div class="gate-card"><div class="num">11</div><div class="h">Audit logging</div><div class="d">كل قرار مسجل + متاح للـ DPO</div></div>
       </div>
+    </div>
+
+    <div class="pillar">
+      <div class="pillar-header">
+        <div class="pillar-icon">🛡️</div>
+        <h2>8 Service Activation Gates — قبل أن تظهر خدمة كـ Live</h2>
+      </div>
+      <p class="sub">الـ 11 gates أعلاه تحرس <em>كل رسالة</em>. هذه الـ 8 gates تحرس <em>كل خدمة</em>: لا تُرفع خدمة إلى Live في <a href="/status.html">صفحة الحالة</a> إلا بعد اجتيازها كاملة.</p>
+      <div class="gates-grid">
+        <div class="gate-card"><div class="num">1</div><div class="h">Inputs</div><div class="d">المدخلات المطلوبة موثّقة ومتاحة فعلياً.</div></div>
+        <div class="gate-card"><div class="num">2</div><div class="h">Workflow</div><div class="d">كل خطوة من الاستقبال حتى الحفظ موصولة.</div></div>
+        <div class="gate-card"><div class="num">3</div><div class="h">Agent Role</div><div class="d">دور الوكيل/الأتمتة محدّد ومحدود.</div>‎</div>
+        <div class="gate-card"><div class="num">4</div><div class="h">Human Approval</div><div class="d">حدّ موافقة بشري حيثما يلزم — لا تنفيذ صامت.</div></div>
+        <div class="gate-card"><div class="num">5</div><div class="h">Safe Tool Gateway</div><div class="d">كل استدعاء خارجي يمر بسياسة قبل التنفيذ.</div></div>
+        <div class="gate-card"><div class="num">6</div><div class="h">Deliverable</div><div class="d">مخرَج حقيقي يراه العميل، وليس وعداً.</div></div>
+        <div class="gate-card"><div class="num">7</div><div class="h">Proof Metric</div><div class="d">مقياس يسجّل أن الخدمة فعلاً اشتغلت.</div></div>
+        <div class="gate-card"><div class="num">8</div><div class="h">Test / Evidence</div><div class="d">اختبار، سموك، أو دليل محفوظ على القرص.</div></div>
+      </div>
+      <p class="sub" style="margin-top:14px;">المصدر: <code>docs/registry/SERVICE_READINESS_MATRIX.yaml</code> — مدقَّق في كل push، ولا يُسمح بحالة Live بدون كل الـ 8 gates.</p>
     </div>
 
     <div class="pillar">
