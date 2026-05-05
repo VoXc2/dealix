@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dealix Live Demo — استكشف القدرات الحية</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'SF Pro', -apple-system, system-ui, 'Segoe UI', Tahoma, Arial, sans-serif;
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    color: #e2e8f0;
+    min-height: 100vh;
+    padding: 20px;
+  }
+  header {
+    text-align: center;
+    margin-bottom: 30px;
+    padding: 30px 20px;
+    background: rgba(15, 23, 42, 0.6);
+    border-radius: 16px;
+    border: 1px solid rgba(148, 163, 184, 0.1);
+  }
+  h1 {
+    font-size: 2.5em;
+    background: linear-gradient(135deg, #60a5fa 0%, #a78bfa 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 10px;
+  }
+  .subtitle { color: #94a3b8; font-size: 1.1em; }
+  .api-base {
+    display: inline-block;
+    background: #064e3b;
+    color: #6ee7b7;
+    padding: 4px 12px;
+    border-radius: 6px;
+    font-family: monospace;
+    margin-top: 10px;
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+    gap: 20px;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+  .card {
+    background: rgba(30, 41, 59, 0.7);
+    border: 1px solid rgba(148, 163, 184, 0.15);
+    border-radius: 14px;
+    padding: 24px;
+    transition: all 0.3s;
+  }
+  .card:hover {
+    border-color: rgba(96, 165, 250, 0.5);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+  }
+  .card h2 {
+    font-size: 1.2em;
+    color: #f1f5f9;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .card .desc {
+    color: #94a3b8;
+    font-size: 0.9em;
+    margin-bottom: 14px;
+    line-height: 1.5;
+  }
+  .endpoint {
+    display: inline-block;
+    font-family: 'SF Mono', monospace;
+    font-size: 0.78em;
+    color: #67e8f9;
+    background: rgba(8, 145, 178, 0.15);
+    padding: 2px 8px;
+    border-radius: 4px;
+    margin-bottom: 12px;
+    word-break: break-all;
+  }
+  button {
+    background: linear-gradient(135deg, #3b82f6 0%, #6366f1 100%);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 0.95em;
+    cursor: pointer;
+    width: 100%;
+    transition: all 0.2s;
+    font-weight: 500;
+  }
+  button:hover { transform: scale(1.02); }
+  button:active { transform: scale(0.98); }
+  button:disabled { opacity: 0.5; cursor: wait; }
+  pre {
+    background: #0f172a;
+    border: 1px solid rgba(96, 165, 250, 0.2);
+    padding: 14px;
+    border-radius: 8px;
+    overflow-x: auto;
+    margin-top: 12px;
+    color: #cbd5e1;
+    font-size: 0.78em;
+    max-height: 400px;
+    overflow-y: auto;
+    direction: ltr;
+    text-align: left;
+    font-family: 'SF Mono', Monaco, monospace;
+    line-height: 1.5;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+  pre.error { border-color: #dc2626; background: #450a0a; color: #fecaca; }
+  pre.success { border-color: #10b981; }
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 12px;
+    max-width: 1200px;
+    margin: 0 auto 30px;
+  }
+  .stat {
+    background: rgba(30, 41, 59, 0.5);
+    padding: 16px;
+    border-radius: 10px;
+    text-align: center;
+    border: 1px solid rgba(148, 163, 184, 0.1);
+  }
+  .stat-value {
+    font-size: 2em;
+    font-weight: 700;
+    color: #6ee7b7;
+  }
+  .stat-label {
+    font-size: 0.85em;
+    color: #94a3b8;
+    margin-top: 4px;
+  }
+  .status-good { color: #6ee7b7; }
+  .status-warn { color: #fbbf24; }
+  .status-bad { color: #fca5a5; }
+  .footer {
+    text-align: center;
+    margin-top: 40px;
+    color: #64748b;
+    font-size: 0.85em;
+  }
+  .footer a { color: #60a5fa; text-decoration: none; }
+  .filter-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+    max-width: 1200px;
+    margin: 0 auto 20px;
+  }
+  .filter-tabs button {
+    width: auto;
+    padding: 6px 14px;
+    background: rgba(30, 41, 59, 0.6);
+    color: #94a3b8;
+    border: 1px solid rgba(148, 163, 184, 0.2);
+    font-size: 0.85em;
+  }
+  .filter-tabs button.active {
+    background: rgba(59, 130, 246, 0.3);
+    color: #93c5fd;
+    border-color: #3b82f6;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🚀 Dealix Live Demo</h1>
+  <p class="subtitle">استكشف ٣٣ خدمة حية — كلها بيانات حقيقية من API الحي</p>
+  <div class="api-base">https://api.dealix.me</div>
+</header>
+
+<div class="stats">
+  <div class="stat"><div class="stat-value">244</div><div class="stat-label">Total Endpoints</div></div>
+  <div class="stat"><div class="stat-value status-good">33 ✅</div><div class="stat-label">Production-ready</div></div>
+  <div class="stat"><div class="stat-value">8</div><div class="stat-label">Saudi Sectors</div></div>
+  <div class="stat"><div class="stat-value">13</div><div class="stat-label">Objections Bank</div></div>
+  <div class="stat"><div class="stat-value">16</div><div class="stat-label">Signal Types</div></div>
+  <div class="stat"><div class="stat-value">v3.0.0</div><div class="stat-label">Current Version</div></div>
+</div>
+
+<div class="filter-tabs">
+  <button class="active" onclick="filterCards('all')">الكل</button>
+  <button onclick="filterCards('strategic')">⭐ Strategic Cards</button>
+  <button onclick="filterCards('sector')">📚 Sectors</button>
+  <button onclick="filterCards('objection')">🚨 Objections</button>
+  <button onclick="filterCards('roi')">📊 ROI</button>
+  <button onclick="filterCards('business')">💼 Business</button>
+  <button onclick="filterCards('v3')">⚡ V3 Advanced</button>
+</div>
+
+<div class="grid" id="cards">
+
+  <!-- 1 Daily Brief -->
+  <div class="card" data-tags="strategic">
+    <h2>🌅 Daily Strategic Brief</h2>
+    <p class="desc">بطاقة قرار يومية بالعربي — 3 قرارات + 7 فرص + رسائل جاهزة + إجراءات بضغطة زر.</p>
+    <span class="endpoint">GET /api/v1/personal-operator/daily-brief</span>
+    <button onclick="callApi('/api/v1/personal-operator/daily-brief','GET',null,this)">شاهد الموجز اليومي</button>
+    <pre id="r1"></pre>
+  </div>
+
+  <!-- 2 Opportunities -->
+  <div class="card" data-tags="strategic">
+    <h2>🎯 7 فرص استراتيجية</h2>
+    <p class="desc">قائمة 7 فرص مرتّبة بـ score مع why_now و evidence.</p>
+    <span class="endpoint">GET /api/v1/personal-operator/opportunities</span>
+    <button onclick="callApi('/api/v1/personal-operator/opportunities','GET',null,this)">اعرض الفرص</button>
+    <pre id="r2"></pre>
+  </div>
+
+  <!-- 3 Launch Readiness -->
+  <div class="card" data-tags="strategic">
+    <h2>🚦 Launch Readiness</h2>
+    <p class="desc">تقييم الجاهزية على 12 محور (الآن: 48.8% = foundation_ready).</p>
+    <span class="endpoint">GET /api/v1/personal-operator/launch-readiness</span>
+    <button onclick="callApi('/api/v1/personal-operator/launch-readiness','GET',null,this)">قيّم الجاهزية</button>
+    <pre id="r3"></pre>
+  </div>
+
+  <!-- 4 Playbooks -->
+  <div class="card" data-tags="sector">
+    <h2>📚 8 Sector Playbooks</h2>
+    <p class="desc">دلائل قطاعية سعودية: متوسط الصفقة، دورة المبيعات، معدل الرد، القناة المثلى.</p>
+    <span class="endpoint">GET /api/v1/command-center/playbooks</span>
+    <button onclick="callApi('/api/v1/command-center/playbooks','GET',null,this)">اعرض الـ playbooks</button>
+    <pre id="r4"></pre>
+  </div>
+
+  <!-- 5 Clinics Playbook -->
+  <div class="card" data-tags="sector">
+    <h2>🏥 Clinics Playbook</h2>
+    <p class="desc">قطاع العيادات — متوسط 2,500 ريال، دورة 28 يوم، رد 13.8%، واتساب أساسي.</p>
+    <span class="endpoint">GET /api/v1/command-center/playbooks/clinics</span>
+    <button onclick="callApi('/api/v1/command-center/playbooks/clinics','GET',null,this)">شاهد التفاصيل</button>
+    <pre id="r5"></pre>
+  </div>
+
+  <!-- 6 Real Estate -->
+  <div class="card" data-tags="sector">
+    <h2>🏢 Real Estate Playbook</h2>
+    <p class="desc">قطاع العقار — متوسط 750,000 ريال، دورة 45 يوم، لجنة 4 أشخاص.</p>
+    <span class="endpoint">GET /api/v1/command-center/playbooks/real_estate</span>
+    <button onclick="callApi('/api/v1/command-center/playbooks/real_estate','GET',null,this)">شاهد التفاصيل</button>
+    <pre id="r6"></pre>
+  </div>
+
+  <!-- 7 Sector Benchmarks -->
+  <div class="card" data-tags="sector">
+    <h2>📐 Sector Benchmarks</h2>
+    <p class="desc">معايير سعودية لكل القطاعات (KPIs مرجعية).</p>
+    <span class="endpoint">GET /api/v1/command-center/simulator/sector-benchmarks</span>
+    <button onclick="callApi('/api/v1/command-center/simulator/sector-benchmarks','GET',null,this)">اعرض المعايير</button>
+    <pre id="r7"></pre>
+  </div>
+
+  <!-- 8 Objection Bank -->
+  <div class="card" data-tags="objection">
+    <h2>🚨 13 Saudi Objections</h2>
+    <p class="desc">بنك اعتراضات سعودي مع السياق الثقافي + ردود واتساب جاهزة.</p>
+    <span class="endpoint">GET /api/v1/objections/bank</span>
+    <button onclick="callApi('/api/v1/objections/bank','GET',null,this)">شاهد الاعتراضات</button>
+    <pre id="r8"></pre>
+  </div>
+
+  <!-- 9 Detailed Objections -->
+  <div class="card" data-tags="objection">
+    <h2>📖 Objection Bank — Detailed</h2>
+    <p class="desc">اعتراضات بالتفصيل: 9 فئات، سياق سعودي، ردود واتساب وإيميل.</p>
+    <span class="endpoint">GET /api/v1/command-center/objections</span>
+    <button onclick="callApi('/api/v1/command-center/objections','GET',null,this)">شاهد التفاصيل</button>
+    <pre id="r9"></pre>
+  </div>
+
+  <!-- 10 Sector Simulator -->
+  <div class="card" data-tags="roi">
+    <h2>📊 Sector ROI Simulator ⭐</h2>
+    <p class="desc">احسب ROI متوقع لقطاعك — clinics في الرياض، هدف 50K ريال = ROI 16.68×.</p>
+    <span class="endpoint">POST /api/v1/command-center/simulator</span>
+    <button onclick="callApi('/api/v1/command-center/simulator','POST',{sector:'clinics',city:'الرياض',avg_deal_value_sar:2500,target_revenue_sar:50000},this)">احسب ROI الآن</button>
+    <pre id="r10"></pre>
+  </div>
+
+  <!-- 11 Proof Pack -->
+  <div class="card" data-tags="roi">
+    <h2>📋 Proof Pack Generator</h2>
+    <p class="desc">يولّد تقرير Pilot كامل بالعربي + markdown export — 12 قسم.</p>
+    <span class="endpoint">POST /api/v1/command-center/proof-pack</span>
+    <button onclick="callApi('/api/v1/command-center/proof-pack','POST',{client:'عيادة سامي',sector:'clinics',period_days:7},this)">ولّد Proof Pack</button>
+    <pre id="r11"></pre>
+  </div>
+
+  <!-- 12 Market Radar -->
+  <div class="card" data-tags="v3">
+    <h2>🛰️ Saudi Market Radar</h2>
+    <p class="desc">إشارات شراء حية من السوق السعودي — توظيف، فروع جديدة، تحديثات مواقع.</p>
+    <span class="endpoint">GET /api/v1/v3/market-radar</span>
+    <button onclick="callApi('/api/v1/v3/market-radar','GET',null,this)">شاهد الفرص الحية</button>
+    <pre id="r12"></pre>
+  </div>
+
+  <!-- 13 Signal Catalog -->
+  <div class="card" data-tags="v3">
+    <h2>📡 16 Signal Types Catalog</h2>
+    <p class="desc">كل أنواع الإشارات الـ 16 مع التفسير + القطاعات المناسبة.</p>
+    <span class="endpoint">GET /api/v1/v3/market-radar/signal-catalog</span>
+    <button onclick="callApi('/api/v1/v3/market-radar/signal-catalog','GET',null,this)">شاهد الكتالوج</button>
+    <pre id="r13"></pre>
+  </div>
+
+  <!-- 14 Revenue Science -->
+  <div class="card" data-tags="v3 roi">
+    <h2>📈 Revenue Science Forecast</h2>
+    <p class="desc">تنبؤات إحصائية بـ confidence bands — 23.66× ROI demo.</p>
+    <span class="endpoint">GET /api/v1/v3/revenue-science/demo</span>
+    <button onclick="callApi('/api/v1/v3/revenue-science/demo','GET',null,this)">شاهد Forecast</button>
+    <pre id="r14"></pre>
+  </div>
+
+  <!-- 15 ICP Match -->
+  <div class="card" data-tags="business">
+    <h2>🎯 ICP Match Engine</h2>
+    <p class="desc">تأهيل lead فوري — fit score، tier (A/B/C/D)، توصيات.</p>
+    <span class="endpoint">POST /api/v1/agents/icp-match</span>
+    <button onclick="callApi('/api/v1/agents/icp-match','POST',{sector:'clinics',city:'الرياض',employee_range:'5-50',monthly_revenue_sar:100000},this)">قيّم العميل</button>
+    <pre id="r15"></pre>
+  </div>
+
+  <!-- 16 Lead Intake -->
+  <div class="card" data-tags="business">
+    <h2>📥 Lead Intake (Auto Dedup)</h2>
+    <p class="desc">تسجيل lead جديد + dedup hash + وصف كامل.</p>
+    <span class="endpoint">POST /api/v1/agents/intake</span>
+    <button onclick="callApi('/api/v1/agents/intake','POST',{company:'وكالة نمو',sector:'agency',goal:'عملاء جدد',ideal_customer:'شركات SaaS'},this)">سجّل lead جديد</button>
+    <pre id="r16"></pre>
+  </div>
+
+  <!-- 17 Pricing -->
+  <div class="card" data-tags="business">
+    <h2>💰 Pricing Plans</h2>
+    <p class="desc">3 باقات: Starter 999 / Growth 2,999 / Scale 7,999 SAR/شهر.</p>
+    <span class="endpoint">GET /api/v1/pricing/plans</span>
+    <button onclick="callApi('/api/v1/pricing/plans','GET',null,this)">شاهد الأسعار</button>
+    <pre id="r17"></pre>
+  </div>
+
+  <!-- 18 Positioning -->
+  <div class="card" data-tags="business">
+    <h2>🎪 Positioning Statement</h2>
+    <p class="desc">عبارة التموضع لقطاع المؤسسين السعوديين.</p>
+    <span class="endpoint">GET /api/v1/business/positioning/clinics</span>
+    <button onclick="callApi('/api/v1/business/positioning/clinics','GET',null,this)">شاهد التموضع</button>
+    <pre id="r18"></pre>
+  </div>
+
+  <!-- 19 Competitors -->
+  <div class="card" data-tags="business">
+    <h2>⚔️ Competitors Map</h2>
+    <p class="desc">خريطة المنافسين + التميّز ضدهم.</p>
+    <span class="endpoint">GET /api/v1/business/competitors</span>
+    <button onclick="callApi('/api/v1/business/competitors','GET',null,this)">شاهد المنافسين</button>
+    <pre id="r19"></pre>
+  </div>
+
+  <!-- 20 Differentiators -->
+  <div class="card" data-tags="business">
+    <h2>✨ Differentiators</h2>
+    <p class="desc">ما الذي يجعل Dealix فريداً عن البقية.</p>
+    <span class="endpoint">GET /api/v1/business/differentiators</span>
+    <button onclick="callApi('/api/v1/business/differentiators','GET',null,this)">شاهد التميّز</button>
+    <pre id="r20"></pre>
+  </div>
+
+  <!-- 21 GTM First 10 -->
+  <div class="card" data-tags="business">
+    <h2>🚀 GTM First 10 Customers</h2>
+    <p class="desc">خطة محددة للوصول لأول 10 عملاء.</p>
+    <span class="endpoint">GET /api/v1/business/gtm/first-10</span>
+    <button onclick="callApi('/api/v1/business/gtm/first-10','GET',null,this)">شاهد الخطة</button>
+    <pre id="r21"></pre>
+  </div>
+
+  <!-- 22 v3 Stack -->
+  <div class="card" data-tags="v3">
+    <h2>🧱 Tech Stack (v3)</h2>
+    <p class="desc">طبقات Dealix v3: Memory + Safe Agents + Market Radar + PDPL + Revenue Science.</p>
+    <span class="endpoint">GET /api/v1/v3/stack</span>
+    <button onclick="callApi('/api/v1/v3/stack','GET',null,this)">شاهد الـ stack</button>
+    <pre id="r22"></pre>
+  </div>
+
+  <!-- 23 PDPL RoPA -->
+  <div class="card" data-tags="v3">
+    <h2>🛡️ PDPL Compliance (RoPA)</h2>
+    <p class="desc">سجل المعالجة لقانون حماية البيانات السعودي.</p>
+    <span class="endpoint">GET /api/v1/v3/compliance/ropa</span>
+    <button onclick="callApi('/api/v1/v3/compliance/ropa','GET',null,this)">شاهد RoPA</button>
+    <pre id="r23"></pre>
+  </div>
+
+  <!-- 24 Agents Catalog -->
+  <div class="card" data-tags="v3">
+    <h2>🤖 11 AI Agents</h2>
+    <p class="desc">prospecting + signal + enrichment + personalization + compliance + outreach + reply + meeting + deal_coach + customer_success + executive_analyst.</p>
+    <span class="endpoint">GET /api/v1/v3/agents</span>
+    <button onclick="callApi('/api/v1/v3/agents','GET',null,this)">شاهد الـ agents</button>
+    <pre id="r24"></pre>
+  </div>
+
+  <!-- 25 Saudi Industries -->
+  <div class="card" data-tags="business">
+    <h2>🇸🇦 Saudi Local Industries</h2>
+    <p class="desc">قاعدة الصناعات المحلية السعودية المغطّاة.</p>
+    <span class="endpoint">GET /api/v1/leads/discover/local-industries</span>
+    <button onclick="callApi('/api/v1/leads/discover/local-industries','GET',null,this)">شاهد الصناعات</button>
+    <pre id="r25"></pre>
+  </div>
+
+  <!-- 26 Demo Request -->
+  <div class="card" data-tags="business">
+    <h2>📨 Public Demo Request</h2>
+    <p class="desc">نموذج طلب الديمو من العملاء (consent مطلوب).</p>
+    <span class="endpoint">POST /api/v1/public/demo-request</span>
+    <button onclick="callApi('/api/v1/public/demo-request','POST',{name:'Sami Test',company:'Test Co',email:'test@example.com',phone:'+966500000000',sector:'agency',consent:true},this)">جرّب طلب الديمو</button>
+    <pre id="r26"></pre>
+  </div>
+
+</div>
+
+<div class="footer">
+  <p>📚 Documentation: <a href="https://api.dealix.me/docs" target="_blank">Swagger UI</a> · <a href="https://api.dealix.me/openapi.json" target="_blank">OpenAPI Spec</a></p>
+  <p>Dealix 3.0.0 — Saudi Revenue Execution OS · Built for Saudi B2B</p>
+  <p style="margin-top:12px;color:#475569">📱 WhatsApp: <a href="https://wa.me/966597788539?text=Diagnostic">+966 597 788 539</a></p>
+</div>
+
+<script>
+const API_BASE = 'https://api.dealix.me';
+let cardCounter = 0;
+
+async function callApi(path, method, body, button) {
+  const cardId = button.parentElement.querySelector('pre').id;
+  const target = document.getElementById(cardId);
+  button.disabled = true;
+  button.textContent = '⏳ جاري التحميل...';
+  target.className = '';
+  target.textContent = '';
+
+  const start = performance.now();
+  try {
+    const opts = { method, headers: {} };
+    if (body) {
+      opts.headers['Content-Type'] = 'application/json';
+      opts.body = JSON.stringify(body);
+    }
+    const r = await fetch(API_BASE + path, opts);
+    const ms = Math.round(performance.now() - start);
+    const text = await r.text();
+    let pretty = text;
+    try { pretty = JSON.stringify(JSON.parse(text), null, 2); } catch(e){}
+
+    if (r.ok) {
+      target.className = 'success';
+      target.textContent = `HTTP ${r.status} · ${ms}ms · ${text.length}B\n\n${pretty}`;
+      button.textContent = '🔄 شغّل مرة أخرى';
+    } else {
+      target.className = 'error';
+      target.textContent = `HTTP ${r.status} · ${ms}ms\n\n${pretty}`;
+      button.textContent = `❌ ${r.status} — أعد المحاولة`;
+    }
+  } catch (e) {
+    target.className = 'error';
+    target.textContent = `Network error: ${e.message}`;
+    button.textContent = '❌ خطأ شبكة';
+  } finally {
+    button.disabled = false;
+  }
+}
+
+function filterCards(tag) {
+  document.querySelectorAll('.filter-tabs button').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+  document.querySelectorAll('.card').forEach(c => {
+    if (tag === 'all') {
+      c.style.display = '';
+    } else {
+      const tags = c.getAttribute('data-tags') || '';
+      c.style.display = tags.includes(tag) ? '' : 'none';
+    }
+  });
+}
+</script>
+
+</body>
+</html>
