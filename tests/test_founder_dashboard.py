@@ -108,3 +108,72 @@ def test_founder_dashboard_guardrails_re_asserted(client: TestClient) -> None:
     assert g["no_scraping"] is True
     assert g["no_cold_outreach"] is True
     assert g["approval_required_for_external_actions"] is True
+
+
+# ─── v6 additions ───────────────────────────────────────────────────
+
+
+def test_founder_dashboard_first_3_customers_present(client: TestClient) -> None:
+    resp = client.get("/api/v1/founder/dashboard")
+    body = resp.json()
+    assert "first_3_customers" in body
+    section = body["first_3_customers"]
+    if "_error" in section:
+        pytest.fail(f"first_3_customers errored: {section}")
+    # Three slots are surfaced from the placeholder board.
+    assert isinstance(section.get("slots"), list)
+    assert len(section["slots"]) == 3
+    # Status counts are present and shaped per the loop board.
+    assert "status_counts" in section
+    # Real customer names must NOT leak — the doc only uses placeholders.
+    for slot in section["slots"]:
+        assert slot["slot"] in {"A", "B", "C"}
+        # placeholder column always reads "Slot-A" / "Slot-B" / "Slot-C"
+        assert slot["placeholder"].startswith("Slot-")
+
+
+def test_founder_dashboard_pending_approvals_present(client: TestClient) -> None:
+    resp = client.get("/api/v1/founder/dashboard")
+    body = resp.json()
+    assert "pending_approvals" in body
+    section = body["pending_approvals"]
+    if "_error" in section:
+        pytest.fail(f"pending_approvals errored: {section}")
+    assert "count" in section
+    assert isinstance(section["count"], int)
+    assert "first_3" in section
+    assert isinstance(section["first_3"], list)
+    # At most 3 cards regardless of queue depth.
+    assert len(section["first_3"]) <= 3
+
+
+def test_founder_dashboard_unsafe_blocks_present_with_min_5(
+    client: TestClient,
+) -> None:
+    resp = client.get("/api/v1/founder/dashboard")
+    body = resp.json()
+    assert "unsafe_blocks" in body
+    section = body["unsafe_blocks"]
+    if "_error" in section:
+        pytest.fail(f"unsafe_blocks errored: {section}")
+    assert section["count"] >= 5
+    # Each known v6 forbidden tool appears in the surfaced names.
+    expected = {
+        "send_whatsapp_live",
+        "linkedin_automation",
+        "scrape_web",
+        "charge_payment_live",
+        "send_email_live",
+    }
+    assert expected.issubset(set(section["names"]))
+
+
+def test_founder_dashboard_next_founder_action_present(client: TestClient) -> None:
+    resp = client.get("/api/v1/founder/dashboard")
+    body = resp.json()
+    assert "next_founder_action" in body
+    action = body["next_founder_action"]
+    # _safe could wrap into a dict on error — but the contract is:
+    # either a non-empty string, or the literal "no_action_today".
+    assert isinstance(action, str)
+    assert action == "no_action_today" or action.strip() != ""

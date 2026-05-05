@@ -43,9 +43,11 @@ from api.routers import (
     customer_loop,
     delivery_factory,
     diagnostic,
+    diagnostic_workflow,
     finance_os,
     founder,
     gtm_os,
+    observability_v6,
     proof_ledger,
     reliability_os,
     revenue,
@@ -179,6 +181,8 @@ def create_app() -> FastAPI:
     app.include_router(search_radar.router)
     app.include_router(security_privacy.router)
     app.include_router(diagnostic.router)
+    app.include_router(diagnostic_workflow.router)
+    app.include_router(observability_v6.router)
     app.include_router(company_brain.router)
     app.include_router(company_brain_v6.router)
     app.include_router(approval_center.router)

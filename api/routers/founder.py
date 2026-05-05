@@ -7,10 +7,16 @@ state; never sends a message; never charges anything.
 
 Designed to be safe to call from a phone. Bilingual fields where
 human-facing.
+
+v6 additions: ``first_3_customers`` slot board summary,
+``pending_approvals`` count + first 3 cards, ``unsafe_blocks`` sanity
+check on FORBIDDEN_TOOLS, and ``next_founder_action`` (extracted from
+the daily growth loop top decision).
 """
 from __future__ import annotations
 
 from datetime import UTC, datetime
+from pathlib import Path
 from typing import Any
 
 from fastapi import APIRouter
@@ -134,6 +140,119 @@ def _ceo_brief_top() -> dict[str, Any]:
     }
 
 
+def _first_3_customers() -> dict[str, Any]:
+    """Surface the 3-slot loop board from the local markdown file.
+
+    Reads ``docs/FIRST_3_CUSTOMER_LOOP_BOARD.md`` and reports per-slot
+    state markers. Real customer names are NEVER pulled — the doc itself
+    only contains placeholders (Slot-A / Slot-B / Slot-C) per PDPL.
+    """
+    repo_root = Path(__file__).resolve().parents[2]
+    board = repo_root / "docs" / "FIRST_3_CUSTOMER_LOOP_BOARD.md"
+    if not board.exists():
+        return {"slots": [], "status_counts": {}, "source_missing": True}
+
+    text = board.read_text(encoding="utf-8")
+
+    # Each slot row in the board markdown is `| **A** | Slot-A | ...`.
+    # Walk the table rows in order and extract the columns we expose.
+    slots: list[dict[str, Any]] = []
+    diagnostic_counts: dict[str, int] = {}
+    pilot_counts: dict[str, int] = {}
+    proof_counts: dict[str, int] = {}
+    for slot_letter in ("A", "B", "C"):
+        marker = f"| **{slot_letter}** |"
+        idx = text.find(marker)
+        if idx == -1:
+            continue
+        line_end = text.find("\n", idx)
+        row = text[idx:line_end if line_end != -1 else None]
+        cells = [c.strip() for c in row.split("|")]
+        # cells[1]=slot, cells[2]=company placeholder, ... col mapping:
+        # 1 slot, 2 company, 3 source, 4 consent, 5 segment, 6 problem,
+        # 7 diagnostic_status, 8 pilot_status, 9 proof_status, 10 next, 11 owner
+        def _col(i: int) -> str:
+            return cells[i] if i < len(cells) else ""
+
+        diag = _col(7)
+        pilot = _col(8)
+        proof = _col(9)
+        slots.append({
+            "slot": slot_letter,
+            "placeholder": _col(2),
+            "segment": _col(5),
+            "diagnostic_status": diag,
+            "pilot_status": pilot,
+            "proof_status": proof,
+        })
+        diagnostic_counts[diag] = diagnostic_counts.get(diag, 0) + 1
+        pilot_counts[pilot] = pilot_counts.get(pilot, 0) + 1
+        proof_counts[proof] = proof_counts.get(proof, 0) + 1
+
+    return {
+        "slots": slots,
+        "status_counts": {
+            "diagnostic": diagnostic_counts,
+            "pilot": pilot_counts,
+            "proof": proof_counts,
+        },
+        "source": "docs/FIRST_3_CUSTOMER_LOOP_BOARD.md",
+    }
+
+
+def _pending_approvals() -> dict[str, Any]:
+    """Count pending approvals and surface the first 3 as bilingual cards."""
+    from auto_client_acquisition.approval_center import (
+        list_pending,
+        render_approval_card,
+    )
+    pending = list_pending()
+    cards = [render_approval_card(p) for p in pending[:3]]
+    return {
+        "count": len(pending),
+        "first_3": cards,
+    }
+
+
+def _unsafe_blocks() -> dict[str, Any]:
+    """Sanity check: FORBIDDEN_TOOLS must contain at least the 5 v6
+    perimeter tools. Surfacing the names lets the founder catch a
+    deploy-time flip from `forbidden` to `allowed`.
+    """
+    from auto_client_acquisition.agent_governance import FORBIDDEN_TOOLS
+    names = sorted(t.value for t in FORBIDDEN_TOOLS)
+    return {
+        "count": len(names),
+        "names": names,
+    }
+
+
+def _next_founder_action() -> str:
+    """Extract just the title of the top decision from build_today().
+
+    Returns ``"no_action_today"`` when the daily loop has no decisions.
+    """
+    from auto_client_acquisition.self_growth_os import daily_growth_loop
+    loop = daily_growth_loop.build_today()
+    decisions = loop.get("decisions") or []
+    if not decisions:
+        return "no_action_today"
+    top = decisions[0]
+    if isinstance(top, dict):
+        title = (
+            top.get("title_ar")
+            or top.get("title_en")
+            or top.get("title")
+            or top.get("name_ar")
+            or top.get("name_en")
+        )
+        if title:
+            return str(title)
+    elif isinstance(top, str):
+        return top
+    return "no_action_today"
+
+
 @router.get("/status")
 async def status() -> dict:
     return {
@@ -173,6 +292,10 @@ async def dashboard() -> dict:
         "daily_loop": _safe(_daily_loop_summary, default={}),
         "weekly_scorecard": _safe(_weekly_summary, default={}),
         "ceo_brief": _safe(_ceo_brief_top, default={}),
+        "first_3_customers": _safe(_first_3_customers, default={}),
+        "pending_approvals": _safe(_pending_approvals, default={"count": 0, "first_3": []}),
+        "unsafe_blocks": _safe(_unsafe_blocks, default={"count": 0, "names": []}),
+        "next_founder_action": _safe(_next_founder_action, default="no_action_today"),
         "guardrails": {
             "no_live_send": True,
             "no_scraping": True,
