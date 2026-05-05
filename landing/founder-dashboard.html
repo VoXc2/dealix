@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex,nofollow" />
+  <title>لوحة المؤسس — Dealix Founder Dashboard</title>
+  <meta name="description" content="لوحة تشغيلية للمؤسس — حالة الخدمات، الموثوقية، البوابات الحيّة، الحلقة اليومية، البطاقة الأسبوعية، وموجز الرئيس التنفيذي." />
+  <meta name="theme-color" content="#0f172a" />
+  <style>
+    :root{--brand:#0f172a;--accent:#22d3ee;--success:#10b981;--danger:#dc2626;--muted:#64748b;--border:#e2e8f0;--bg:#f8fafc;--card:#ffffff}
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0}
+    body{font-family:'IBM Plex Sans Arabic','Segoe UI',Tahoma,Arial,sans-serif;background:var(--bg);color:#0f172a;line-height:1.6}
+    .wrap{max-width:720px;margin:0 auto;padding:20px 16px 64px}
+    .hdr{margin-bottom:20px}
+    .hdr h1{font-size:22px;margin:0 0 4px;color:var(--brand)}
+    .hdr .en{font-size:13px;color:var(--muted);direction:ltr;text-align:left}
+    .meta{font-size:12px;color:var(--muted);margin-top:6px}
+    .status{display:inline-block;font-size:12px;padding:3px 8px;border-radius:999px;background:#e2e8f0;color:#475569}
+    .status.loading{background:#fef3c7;color:#92400e}
+    .status.ok{background:#d1fae5;color:#065f46}
+    .status.err{background:#fee2e2;color:#991b1b}
+    .grid{display:grid;grid-template-columns:1fr;gap:14px}
+    @media(min-width:560px){.grid{grid-template-columns:1fr 1fr}}
+    .card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px}
+    .card h2{font-size:15px;margin:0 0 10px;color:var(--brand)}
+    .card h2 .en{display:block;font-size:11px;color:var(--muted);font-weight:500;direction:ltr;text-align:left;margin-top:2px}
+    .kv{display:flex;justify-content:space-between;gap:12px;padding:6px 0;border-bottom:1px dashed var(--border);font-size:14px}
+    .kv:last-child{border-bottom:0}
+    .kv .k{color:var(--muted);direction:ltr;text-align:left;font-family:'Inter',monospace;font-size:12px}
+    .kv .v{font-weight:600;color:#0f172a;text-align:left;direction:ltr}
+    .kv .v.alert{color:var(--danger)}
+    .kv .v.good{color:var(--success)}
+    .empty{color:var(--muted);font-size:13px;font-style:italic}
+    .footer{margin-top:24px;text-align:center;color:var(--muted);font-size:12px}
+    .footer a{color:var(--brand);text-decoration:none}
+    .err-box{background:#fee2e2;color:#991b1b;border:1px solid #fecaca;padding:12px;border-radius:10px;font-size:13px;direction:ltr;text-align:left;font-family:monospace;white-space:pre-wrap;word-break:break-word}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="hdr">
+      <h1>لوحة المؤسس</h1>
+      <div class="en">Founder Dashboard</div>
+      <div class="meta"><span id="status" class="status loading">يحمّل… / loading</span> <span id="updated"></span></div>
+    </div>
+
+    <div id="root" data-api-base="https://api.dealix.me" data-endpoint="/api/v1/founder/dashboard">
+      <div class="grid">
+        <div class="card"><h2>الخدمات <span class="en">Services</span></h2><div class="empty">…</div></div>
+        <div class="card"><h2>الموثوقية <span class="en">Reliability</span></h2><div class="empty">…</div></div>
+        <div class="card"><h2>البوابات الحيّة <span class="en">Live Gates</span></h2><div class="empty">…</div></div>
+        <div class="card"><h2>الحلقة اليومية <span class="en">Daily Loop</span></h2><div class="empty">…</div></div>
+        <div class="card"><h2>البطاقة الأسبوعية <span class="en">Weekly Scorecard</span></h2><div class="empty">…</div></div>
+        <div class="card"><h2>موجز الرئيس التنفيذي <span class="en">CEO Brief</span></h2><div class="empty">…</div></div>
+      </div>
+    </div>
+
+    <div class="footer">
+      <p>صفحة قراءة فقط — لا إجراءات حية. <span class="en" style="direction:ltr">Read-only.</span></p>
+      <p><a href="/">← الرئيسية / Home</a></p>
+    </div>
+  </div>
+
+  <script src="assets/js/founder-dashboard.js" defer></script>
+</body>
+</html>

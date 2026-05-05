@@ -1,9 +1,9 @@
 {
   "schema_version": 1,
   "summary": {
-    "total_pages": 27,
+    "total_pages": 28,
     "pages_with_required_gap": 0,
-    "pages_with_advisory_gap": 0
+    "pages_with_advisory_gap": 1
   },
   "required_checks": [
     "title",
@@ -152,6 +152,27 @@
       },
       "missing_required": [],
       "missing_advisory": []
+    },
+    {
+      "path": "founder-dashboard.html",
+      "present": {
+        "title": true,
+        "meta_description": true,
+        "meta_viewport": true,
+        "html_lang": true,
+        "html_dir": true,
+        "canonical": false,
+        "og_title": false,
+        "og_description": false,
+        "twitter_card": false
+      },
+      "missing_required": [],
+      "missing_advisory": [
+        "canonical",
+        "og_title",
+        "og_description",
+        "twitter_card"
+      ]
     },
     {
       "path": "founder.html",

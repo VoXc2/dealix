@@ -173,12 +173,22 @@ Fix the root cause. Do not bypass.
 ## 5. أوّل عميل يدفع — manual playbook / First paying customer
 
 > ١٠٠٪ يدويّ. لا automation. لا خصم آليّ. لا cold outreach.
+> **قائمة كاملة خطوة-بخطوة:** `docs/V5_PHASE_E_CHECKLIST.md`.
 
 ### الخطوات / Steps
 
 1. **3 warm intros** من شبكتك الموجودة (لا قوائم مشتراة، لا LinkedIn auto).
-2. **Free Diagnostic** عبر `/api/v1/customer-loop/journey/advance`
-   من `lead_intake` → `diagnostic_requested` → `diagnostic_sent`.
+2. **Free Diagnostic** — ولّد المسوّدة الثنائيّة اللغة فوراً:
+   ```bash
+   python scripts/dealix_diagnostic.py \
+     --company "اسم الشركة" \
+     --sector b2b_services \
+     --region riyadh \
+     --pipeline-state "وصف مختصر للوضع الحاليّ"
+   ```
+   راجع المسوّدة، عدّل، ثمّ أرسلها يدويّاً. تقدّم الـ journey:
+   `/api/v1/customer-loop/journey/advance` من
+   `lead_intake` → `diagnostic_requested` → `diagnostic_sent`.
 3. **Pilot Offer** بسعر 499 ريال (راجع
    `docs/registry/SERVICE_READINESS_MATRIX.yaml::bundles.growth_starter`).
 4. **فاتورة Moyasar test mode** عبر CLI:

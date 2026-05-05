@@ -150,3 +150,18 @@ traces/
 
 # Local Dealix index output
 .dealix/
+
+# ─────────────────────────────────────────────────────────────
+# 🤖 Claude Code agent worktrees + runtime ledger artifacts
+# ─────────────────────────────────────────────────────────────
+.claude/
+
+# Proof ledger runtime artifacts (template + schema + readme stay tracked)
+docs/proof-events/*.jsonl
+docs/proof-events/*-units.jsonl
+
+# ─────────────────────────────────────────────────────────────
+# 🎨 DesignOps OS — local-only artifact exports
+# (exporter writes here; never commit founder/customer artifacts)
+# ─────────────────────────────────────────────────────────────
+docs/designops/exports/**

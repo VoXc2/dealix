@@ -1,0 +1,1741 @@
+# Dealix v10 Reference Library — 70 OSS projects mapped to 12 capability layers.
+#
+# Hard rule: every entry defaults to `inspiration_only` or `native_pattern`.
+# `optional_adapter` requires Decision Pack §S6; `real_dependency` requires §S7.
+#
+# Schema (per entry):
+#   id                          (snake_case, unique)
+#   name                        (display)
+#   repo                        (org/project)
+#   category                    (one of the 12 layers)
+#   dealix_value                (one-line why)
+#   patterns_to_adapt           (list of patterns we borrow)
+#   modules_impacted            (list of Dealix module paths)
+#   tier                        (inspiration_only | native_pattern | optional_adapter | real_dependency)
+#   priority                    (P0 | P1 | P2 | P3)
+#   status                      (reviewed | selected | shipped | deferred | rejected)
+#   risks                       (list)
+#   safety_concerns             (list — defaults to [] unless tool can violate hard rules)
+#   cost_concerns               (list — supply-chain / token / hosting / license)
+#   license_to_verify           (string — common: MIT, Apache-2, BSD, AGPL)
+#   integration_complexity      (low | medium | high)
+#   founder_decision_required   (bool)
+#   notes                       (string — concrete next-step guidance)
+
+schema_version: 1
+generated_at: "2026-05-05"
+total_count: 70
+
+projects:
+
+  # ==========================================================
+  # 1. AI Workforce / Agents (10)
+  # ==========================================================
+
+  - id: open_design
+    name: "Open Design"
+    repo: "nexu-io/open-design"
+    category: designops_artifacts
+    dealix_value: "DESIGN.md + SKILL.md + visual directions + sandboxed preview + exports"
+    patterns_to_adapt:
+      - "design system as a single locked DESIGN.md"
+      - "skill bundle protocol per output type"
+      - "visual direction enum to prevent AI-slop"
+    modules_impacted:
+      - "auto_client_acquisition/designops/"
+      - "design-systems/dealix/"
+      - "design-skills/"
+    tier: native_pattern
+    priority: P0
+    status: shipped
+    risks:
+      - "vendoring large JS bundles"
+      - "MCP daemon LAN exposure"
+    safety_concerns: []
+    cost_concerns: []
+    license_to_verify: "MIT (verify on integration)"
+    integration_complexity: "low"
+    founder_decision_required: false
+    notes: "Already shipped at commit bf9516e. Native pattern only."
+
+  - id: langgraph
+    name: "LangGraph"
+    repo: "langchain-ai/langgraph"
+    category: ai_workforce
+    dealix_value: "Agent state machines with human-in-the-loop, memory, branching"
+    patterns_to_adapt:
+      - "state-machine workflow with checkpoints"
+      - "human approval as a graph node"
+      - "branching + retry semantics"
+    modules_impacted:
+      - "auto_client_acquisition/ai_workforce_v10/"
+      - "auto_client_acquisition/workflow_os_v10/"
+    tier: native_pattern
+    priority: P0
+    status: selected
+    risks: ["LangChain dependency tree"]
+    safety_concerns: []
+    cost_concerns: ["bundle size if adopted as real dep"]
+    license_to_verify: "MIT"
+    integration_complexity: "medium"
+    founder_decision_required: false
+    notes: "Phase B — extends customer_loop/ with retry+idempotency."
+
+  - id: crewai
+    name: "CrewAI"
+    repo: "crewAIInc/crewAI"
+    category: ai_workforce
+    dealix_value: "Multi-agent crews with role-based handoffs"
+    patterns_to_adapt:
+      - "crew = team of specialized agents under coordinator"
+      - "task delegation with explicit handoff"
+    modules_impacted: ["auto_client_acquisition/ai_workforce_v10/"]
+    tier: inspiration_only
+    priority: P1
+    status: reviewed
+    risks: []
+    safety_concerns: []
+    cost_concerns: []
+    license_to_verify: "MIT"
+    integration_complexity: "medium"
+    founder_decision_required: false
+    notes: "Inform AI Workforce v10 handoff_policy. No install."
+
+  - id: autogen
+    name: "Microsoft AutoGen / AG2"
+    repo: "microsoft/autogen"
+    category: ai_workforce
+    dealix_value: "Multi-agent conversation patterns with reviewer/planner/executor"
+    patterns_to_adapt:
+      - "reviewer agent fires AFTER each main agent"
+      - "planner agent decomposes goal before execution"
+    modules_impacted: ["auto_client_acquisition/ai_workforce_v10/"]
+    tier: inspiration_only
+    priority: P0
+    status: selected
+    risks: []
+    safety_concerns: []
+    cost_concerns: []
+    license_to_verify: "MIT"
+    integration_complexity: "medium"
+    founder_decision_required: false
+    notes: "Adds ReviewerAgent + PlannerAgent to AGENT_REGISTRY in Phase B."
+
+  - id: openai_swarm
+    name: "OpenAI Swarm patterns"
+    repo: "openai/swarm"
+    category: ai_workforce
+    dealix_value: "Lightweight orchestration without framework overhead"
+    patterns_to_adapt: ["minimal handoff", "stateless function-calling"]
+    modules_impacted: ["auto_client_acquisition/ai_workforce/"]
+    tier: inspiration_only
+    priority: P2
+    status: reviewed
+    risks: []
+    safety_concerns: []
+    cost_concerns: []
+    license_to_verify: "MIT"
+    integration_complexity: "low"
+    founder_decision_required: false
+    notes: "Reference for keeping Orchestrator small."
+
+  - id: semantic_kernel
+    name: "Semantic Kernel"
+    repo: "microsoft/semantic-kernel"
+    category: ai_workforce
+    dealix_value: "Skill/plugin architecture with kernel/memory/planner"
+    patterns_to_adapt: ["skill manifest", "kernel as router"]
+    modules_impacted: ["auto_client_acquisition/ai_workforce_v10/"]
+    tier: inspiration_only
+    priority: P3
+    status: reviewed
+    risks: ["heavy framework if installed"]
+    safety_concerns: []
+    cost_concerns: []
+    license_to_verify: "MIT"
+    integration_complexity: "high"
+    founder_decision_required: true
+    notes: "Defer; SKILL.md already covers our needs."
+
+  - id: haystack_agents
+    name: "Haystack Agents"
+    repo: "deepset-ai/haystack"
+    category: ai_workforce
+    dealix_value: "RAG-aware agents with retrieval tools"
+    patterns_to_adapt: ["retriever-as-tool", "answer + source contract"]
+    modules_impacted:
+      - "auto_client_acquisition/knowledge_v10/"
+      - "auto_client_acquisition/ai_workforce_v10/"
+    tier: inspiration_only
+    priority: P1
+    status: reviewed
+    risks: []
+    safety_concerns: []
+    cost_concerns: []
+    license_to_verify: "Apache-2"
+    integration_complexity: "medium"
+    founder_decision_required: false
+    notes: "Inform knowledge_v10 retrieval contract."
+
+  - id: llamaindex_agents
+    name: "LlamaIndex Agents"
+    repo: "run-llama/llama_index"
+    category: ai_workforce
+    dealix_value: "Document-aware agents with sub-question decomposition"
+    patterns_to_adapt: ["document store interface", "sub-question planner"]
+    modules_impacted: ["auto_client_acquisition/knowledge_v10/"]
+    tier: inspiration_only
+    priority: P1
+    status: reviewed
+    risks: []
+    safety_concerns: []
+    cost_concerns: []
+    license_to_verify: "MIT"
+    integration_complexity: "medium"
+    founder_decision_required: false
+    notes: "Inform knowledge_v10 document_manifest."
+
+  - id: browser_use
+    name: "Browser-use"
+    repo: "browser-use/browser-use"
+    category: ai_workforce
+    dealix_value: "Browser automation for QA/research"
+    patterns_to_adapt: ["sandboxed browser sessions", "evidence capture"]
+    modules_impacted: []
+    tier: inspiration_only
+    priority: P3
+    status: deferred
+    risks:
+      - "live browser actions on customer's behalf"
+      - "high TOS-violation risk on third-party sites"
+    safety_concerns:
+      - "default-blocked: must never run against customer accounts"
+    cost_concerns: ["headless browser CPU"]
+    license_to_verify: "MIT"
+    integration_complexity: "high"
+    founder_decision_required: true
+    notes: "BLOCKED for live use. Sandbox-only research if needed."
+
+  - id: openhands
+    name: "OpenHands"
+    repo: "All-Hands-AI/OpenHands"
+    category: ai_workforce
+    dealix_value: "DevOps assistant for automating internal tasks"
+    patterns_to_adapt: ["agent-runs-in-sandbox pattern"]
+    modules_impacted: []
+    tier: inspiration_only
+    priority: P3
+    status: deferred
+    risks: ["high autonomy default"]
+    safety_concerns: []
+    cost_concerns: []
+    license_to_verify: "MIT"
+    integration_complexity: "high"
+    founder_decision_required: true
+    notes: "Internal use only. Defer until founder needs it."
+
+  # ==========================================================
+  # 2. Workflow / Automation / Durable Execution (10)
+  # ==========================================================
+
+  - id: temporal
+    name: "Temporal"
+    repo: "temporalio/temporal"
+    category: workflow_durability
+    dealix_value: "Durable workflows survive crashes; idempotent retries"
+    patterns_to_adapt:
+      - "workflow with checkpointed state"
+      - "activity retry policy"
+      - "idempotency token per step"
+    modules_impacted: ["auto_client_acquisition/workflow_os_v10/"]
+    tier: native_pattern
+    priority: P0
+    status: selected
+    risks: ["heavy infra if installed"]
+    safety_concerns: []
+    cost_concerns: ["self-hosted cluster cost"]
+    license_to_verify: "MIT"
+    integration_complexity: "high"
+    founder_decision_required: false
+    notes: "Native state-machine pattern in Phase B; real Temporal P3."
+
+  - id: dbos
+    name: "DBOS Transact"
+    repo: "dbos-inc/dbos-transact-py"
+    category: workflow_durability
+    dealix_value: "Durable workflows on top of Postgres (no separate cluster)"
+    patterns_to_adapt: ["workflow as transaction"]
+    modules_impacted: ["auto_client_acquisition/workflow_os_v10/"]
+    tier: inspiration_only
+    priority: P1
+    status: reviewed
+    risks: []
+    safety_concerns: []
+    cost_concerns: []
+    license_to_verify: "MIT"
+    integration_complexity: "medium"
+    founder_decision_required: false
+    notes: "Lighter alternative to Temporal; defer."
+
+  - id: prefect
+    name: "Prefect"
+    repo: "PrefectHQ/prefect"
+    category: workflow_durability
+    dealix_value: "Workflow orchestration for daily/data jobs"
+    patterns_to_adapt: ["flow + task decorator", "schedule + trigger"]
+    modules_impacted: []
+    tier: inspiration_only
+    priority: P2
+    status: reviewed
+    risks: []
+    safety_concerns: []
+    cost_concerns: []
+    license_to_verify: "Apache-2"
+    integration_complexity: "medium"
+    founder_decision_required: false
+    notes: "Reference only; daily workflows handled by GitHub Actions today."
+
+  - id: dagster
+    name: "Dagster"
+    repo: "dagster-io/dagster"
+    category: workflow_durability
+    dealix_value: "Data pipelines with assets + materializations"
+    patterns_to_adapt: ["software-defined assets"]
+    modules_impacted: []
+    tier: inspiration_only
+    priority: P3
+    status: deferred
+    risks: ["heavyweight"]
+    safety_concerns: []
+    cost_concerns: []
+    license_to_verify: "Apache-2"
+    integration_complexity: "high"
+    founder_decision_required: true
+    notes: "Only when we have real data pipelines. Defer."
+
+  - id: n8n
+    name: "n8n"
+    repo: "n8n-io/n8n"
+    category: workflow_durability
+    dealix_value: "Visual workflow automation with 400+ integrations"
+    patterns_to_adapt: ["nodes + workflow JSON model"]
+    modules_impacted: []
+    tier: inspiration_only
+    priority: P2
+    status: reviewed
+    risks:
+      - "if exposed, becomes a privilege-escalation surface"
+      - "TOS risk if used to scrape or auto-DM"
+    safety_concerns:
+      - "must stay internal-only behind admin auth"
+      - "must not enable LinkedIn / WhatsApp automation paths"
+    cost_concerns: []
+    license_to_verify: "Sustainable Use License (verify)"
+    integration_complexity: "high"
+    founder_decision_required: true
+    notes: "Reference. Real install only if internal-only, gated, and audited."
+
+  - id: windmill
+    name: "Windmill"
+    repo: "windmill-labs/windmill"
+    category: workflow_durability
+    dealix_value: "Internal tool builder + workflow runner"
+    patterns_to_adapt: ["scripts as workflows"]
+    modules_impacted: []
+    tier: inspiration_only
+    priority: P2
+    status: reviewed
+    risks: []
+    safety_concerns: []
+    cost_concerns: []
+    license_to_verify: "AGPL-3 / Commercial"
+    integration_complexity: "medium"
+    founder_decision_required: true
+    notes: "AGPL — careful before any install. Inspiration only."
+
+  - id: trigger_dev
+    name: "Trigger.dev"
+    repo: "triggerdotdev/trigger.dev"
+    category: workflow_durability
+    dealix_value: "Background jobs as code, retries, observability"
+    patterns_to_adapt: ["job decorator + retry semantics"]
+    modules_impacted: ["auto_client_acquisition/workflow_os_v10/"]
+    tier: inspiration_only
+    priority: P2
+    status: reviewed
+    risks: []
+    safety_concerns: []
+    cost_concerns: []
+    license_to_verify: "Apache-2"
+    integration_complexity: "medium"
+    founder_decision_required: false
+    notes: "Inform retry semantics."
+
+  - id: celery
+    name: "Celery"
+    repo: "celery/celery"
+    category: workflow_durability
+    dealix_value: "Distributed task queue (Python-native)"
+    patterns_to_adapt: ["task queue with retry"]
+    modules_impacted: []
+    tier: inspiration_only
+    priority: P2
+    status: reviewed
+    risks: ["broker cost (Redis/RabbitMQ)"]
+    safety_concerns: []
+    cost_concerns: []
+    license_to_verify: "BSD-3"
+    integration_complexity: "medium"
+    founder_decision_required: false
+    notes: "If queue needed, this is the safe Python pick."
+
+  - id: dramatiq
+    name: "Dramatiq"
+    repo: "Bogdanp/dramatiq"
+    category: workflow_durability
+    dealix_value: "Lighter Python task queue alternative"
+    patterns_to_adapt: ["actor-based queue"]
+    modules_impacted: []
+    tier: inspiration_only
+    priority: P3
+    status: deferred
+    risks: []
+    safety_concerns: []
+    cost_concerns: []
+    license_to_verify: "LGPL-3"
+    integration_complexity: "medium"
+    founder_decision_required: true
+    notes: "Lighter than Celery; defer until queues prove needed."
+
+  # ==========================================================
+  # 3. CRM / Sales / RevOps (10)
+  # ==========================================================
+
+  - id: twenty_crm
+    name: "Twenty CRM"
+    repo: "twentyhq/twenty"
+    category: crm_revops
+    dealix_value: "Modern open-source CRM with custom objects, views, workflows"
+    patterns_to_adapt:
+      - "custom-objects data model"
+      - "view-as-config (kanban/table/calendar)"
+      - "workflow-on-record-event"
+    modules_impacted: ["auto_client_acquisition/crm_v10/"]
+    tier: native_pattern
+    priority: P0
+    status: selected
+    risks: []
+    safety_concerns: []
+    cost_concerns: []
+    license_to_verify: "AGPL-3 (verify before any real install)"
+    integration_complexity: "medium"
+    founder_decision_required: false
+    notes: "Native CRM object model in Phase B. Real Twenty deferred."
+
+  - id: suitecrm
+    name: "SuiteCRM"
+    repo: "salesagility/SuiteCRM"
+    category: crm_revops
+    dealix_value: "Enterprise CRM reference (leads/accounts/cases/pipeline)"
+    patterns_to_adapt: ["module-per-entity architecture"]
+    modules_impacted: ["auto_client_acquisition/crm_v10/"]
+    tier: inspiration_only
+    priority: P2
+    status: reviewed
+    risks: ["PHP stack"]
+    safety_concerns: []
+    cost_concerns: []
+    license_to_verify: "AGPL-3"
+    integration_complexity: "high"
+    founder_decision_required: true
+    notes: "Reference only. PHP stack mismatch."
+
+  - id: erpnext
+    name: "ERPNext"
+    repo: "frappe/erpnext"
+    category: crm_revops
+    dealix_value: "Full business OS reference (CRM + projects + accounting)"
+    patterns_to_adapt: ["doctype as schema", "linked records"]
+    modules_impacted: []
+    tier: inspiration_only
+    priority: P3
+    status: deferred
+    risks: ["Frappe stack mismatch"]
+    safety_concerns: []
+    cost_concerns: []
+    license_to_verify: "GPL-3"
+    integration_complexity: "high"
+    founder_decision_required: true
+    notes: "Inspiration for breadth, not install."
+
+  - id: odoo
+    name: "Odoo Community"
+    repo: "odoo/odoo"
+    category: crm_revops
+    dealix_value: "Modular CRM + ERP with deep extensibility"
+    patterns_to_adapt: ["module-per-feature"]
+    modules_impacted: []
+    tier: inspiration_only
+    priority: P3
+    status: deferred
+    risks: []
+    safety_concerns: []
+    cost_concerns: []
+    license_to_verify: "LGPL-3"
+    integration_complexity: "high"
+    founder_decision_required: true
+    notes: "Inspiration only."
+
+  - id: espocrm
+    name: "EspoCRM"
+    repo: "espocrm/espocrm"
+    category: crm_revops
+    dealix_value: "Lightweight CRM with custom entities and dashboards"
+    patterns_to_adapt: ["entity-builder pattern"]
+    modules_impacted: ["auto_client_acquisition/crm_v10/"]
+    tier: inspiration_only
+    priority: P2
+    status: reviewed
+    risks: []
+    safety_concerns: []
+    cost_concerns: []
+    license_to_verify: "GPL-3"
+    integration_complexity: "medium"
+    founder_decision_required: true
+    notes: "Inspiration for entity flexibility."
+
+  - id: yetiforce
+    name: "YetiForce CRM"
+    repo: "YetiForceCompany/YetiForceCRM"
+    category: crm_revops
+    dealix_value: "CRM with deep widget customization"
+    patterns_to_adapt: ["widget-per-view"]
+    modules_impacted: []
+    tier: inspiration_only
+    priority: P3
+    status: deferred
+    risks: []
+    safety_concerns: []
+    cost_concerns: []
+    license_to_verify: "YetiForce Public License"
+    integration_complexity: "high"
+    founder_decision_required: true
+    notes: "Custom license — careful. Defer."
+
+  - id: monica_crm
+    name: "Monica CRM"
+    repo: "monicahq/monica"
+    category: crm_revops
+    dealix_value: "Personal/relationship CRM with timeline patterns"
+    patterns_to_adapt: ["contact timeline", "interaction history"]
+    modules_impacted: ["auto_client_acquisition/crm_v10/account_timeline.py"]
+    tier: inspiration_only
+    priority: P2
+    status: reviewed
+    risks: []
+    safety_concerns: []
+    cost_concerns: []
+    license_to_verify: "AGPL-3"
+    integration_complexity: "medium"
+    founder_decision_required: false
+    notes: "Inform timeline UX in account view."
+
+  - id: plane
+    name: "Plane"
+    repo: "makeplane/plane"
+    category: crm_revops
+    dealix_value: "Project/issue tracker for delivery tasks"
+    patterns_to_adapt: ["cycle + module + state"]
+    modules_impacted: ["auto_client_acquisition/delivery_factory/"]
+    tier: inspiration_only
+    priority: P2
+    status: reviewed
+    risks: []
+    safety_concerns: []
+    cost_concerns: []
+    license_to_verify: "AGPL-3"
+    integration_complexity: "medium"
+    founder_decision_required: true
+    notes: "Inspiration for delivery_autopilot session model."
+
+  - id: linear_pattern
+    name: "Linear-style issue model"
+    repo: "(closed-source pattern)"
+    category: crm_revops
+    dealix_value: "Issue/state machine + cycles + priorities — proven UX"
+    patterns_to_adapt: ["state machine + priority"]
+    modules_impacted: ["auto_client_acquisition/crm_v10/"]
+    tier: inspiration_only
+    priority: P1
+    status: reviewed
+    risks: []
+    safety_concerns: []
+    cost_concerns: []
+    license_to_verify: "n/a (pattern)"
+    integration_complexity: "low"
+    founder_decision_required: false
+    notes: "Inform Deal/Opportunity stage machine."
+
+  - id: hubspot_api_patterns
+    name: "HubSpot API patterns"
+    repo: "(public docs)"
+    category: crm_revops
+    dealix_value: "Industry-standard CRM API surface for sync"
+    patterns_to_adapt: ["contact/deal/property naming"]
+    modules_impacted: ["auto_client_acquisition/crm_v10/"]
+    tier: optional_adapter
+    priority: P2
+    status: deferred
+    risks: ["API rate limits", "vendor lock-in"]
+    safety_concerns: []
+    cost_concerns: ["paid tiers"]
+    license_to_verify: "n/a (SaaS API)"
+    integration_complexity: "medium"
+    founder_decision_required: true
+    notes: "Adapter only when a customer asks to sync HubSpot."
+
+  # ==========================================================
+  # 4. Customer Inbox / Support / Customer Success (10)
+  # ==========================================================
+
+  - id: chatwoot
+    name: "Chatwoot"
+    repo: "chatwoot/chatwoot"
+    category: customer_inbox
+    dealix_value: "Omnichannel inbox (chat/email/WhatsApp/social) + AI assistant"
+    patterns_to_adapt:
+      - "conversation + message + assignee model"
+      - "consent_status + 24h-window awareness for WhatsApp"
+      - "AI suggested reply (drafts only)"
+    modules_impacted: ["auto_client_acquisition/customer_inbox_v10/"]
+    tier: native_pattern
+    priority: P0
+    status: selected
+    risks: ["WhatsApp Business API live-send risk if mis-wired"]
+    safety_concerns:
+      - "outbound channels stay draft_only/approval_required by default"
+    cost_concerns: ["self-host infra cost if real"]
+    license_to_verify: "MIT"
+    integration_complexity: "high"
+    founder_decision_required: false
+    notes: "Phase B: native model only. Real Chatwoot is P2."
+
+  - id: zammad
+    name: "Zammad"
+    repo: "zammad/zammad"
+    category: customer_inbox
+    dealix_value: "Helpdesk + ticket SLA + escalation"
+    patterns_to_adapt: ["ticket priority", "SLA timer"]
+    modules_impacted: ["auto_client_acquisition/customer_inbox_v10/sla_policy.py"]
+    tier: inspiration_only
+    priority: P1
+    status: reviewed
+    risks: []
+    safety_concerns: []
+    cost_concerns: []
+    license_to_verify: "AGPL-3"
+    integration_complexity: "high"
+    founder_decision_required: true
+    notes: "Inform SLA model."
+
+  - id: freescout
+    name: "FreeScout"
+    repo: "freescout-help-desk/free-scout"
+    category: customer_inbox
+    dealix_value: "Self-hosted shared inbox (email)"
+    patterns_to_adapt: ["shared mailbox", "thread folding"]
+    modules_impacted: []
+    tier: inspiration_only
+    priority: P2
+    status: reviewed
+    risks: []
+    safety_concerns: []
+    cost_concerns: []
+    license_to_verify: "AGPL-3"
+    integration_complexity: "medium"
+    founder_decision_required: true
+    notes: "Inspiration only."
+
+  - id: papercups
+    name: "Papercups"
+    repo: "papercups-io/papercups"
+    category: customer_inbox
+    dealix_value: "Lightweight live chat widget"
+    patterns_to_adapt: ["chat widget embed pattern"]
+    modules_impacted: []
+    tier: inspiration_only
+    priority: P3
+    status: deferred
+    risks: []
+    safety_concerns: []
+    cost_concerns: []
+    license_to_verify: "MIT"
+    integration_complexity: "low"
+    founder_decision_required: true
+    notes: "Defer until founder needs widget on landing."
+
+  - id: typebot
+    name: "Typebot"
+    repo: "baptisteArno/typebot.io"
+    category: customer_inbox
+    dealix_value: "Guided chat flows for intake/onboarding"
+    patterns_to_adapt: ["flow-as-graph"]
+    modules_impacted: []
+    tier: inspiration_only
+    priority: P3
+    status: deferred
+    risks: []
+    safety_concerns: []
+    cost_concerns: []
+    license_to_verify: "AGPL-3"
+    integration_complexity: "medium"
+    founder_decision_required: true
+    notes: "Inspiration only."
+
+  - id: botpress
+    name: "Botpress"
+    repo: "botpress/botpress"
+    category: customer_inbox
+    dealix_value: "Bot builder with NLU + flows"
+    patterns_to_adapt: ["intent + entity model"]
+    modules_impacted: []
+    tier: inspiration_only
+    priority: P3
+    status: deferred
+    risks: ["NLU drift"]
+    safety_concerns: []
+    cost_concerns: []
+    license_to_verify: "AGPL-3"
+    integration_complexity: "high"
+    founder_decision_required: true
+    notes: "Defer; founder uses manual replies."
+
+  - id: rasa
+    name: "Rasa"
+    repo: "RasaHQ/rasa"
+    category: customer_inbox
+    dealix_value: "Open-source NLU + dialogue management"
+    patterns_to_adapt: ["intent classifier", "dialogue policy"]
+    modules_impacted: []
+    tier: inspiration_only
+    priority: P3
+    status: deferred
+    risks: []
+    safety_concerns: []
+    cost_concerns: ["heavy ML deps"]
+    license_to_verify: "Apache-2"
+    integration_complexity: "high"
+    founder_decision_required: true
+    notes: "Reference for Arabic intent classification later."
+
+  - id: fider
+    name: "Fider"
+    repo: "getfider/fider"
+    category: customer_inbox
+    dealix_value: "Customer feedback + feature requests board"
+    patterns_to_adapt: ["public roadmap board"]
+    modules_impacted: []
+    tier: inspiration_only
+    priority: P2
+    status: reviewed
+    risks: []
+    safety_concerns: []
+    cost_concerns: []
+    license_to_verify: "AGPL-3"
+    integration_complexity: "low"
+    founder_decision_required: true
+    notes: "Optional after first 5 customers."
+
+  - id: formbricks
+    name: "Formbricks"
+    repo: "formbricks/formbricks"
+    category: customer_inbox
+    dealix_value: "Surveys / NPS / in-app feedback"
+    patterns_to_adapt: ["survey trigger + segment"]
+    modules_impacted: []
+    tier: inspiration_only
+    priority: P2
+    status: reviewed
+    risks: []
+    safety_concerns: []
+    cost_concerns: []
+    license_to_verify: "AGPL-3"
+    integration_complexity: "medium"
+    founder_decision_required: true
+    notes: "Optional after first paid Pilot."
+
+  - id: cal_com
+    name: "Cal.com"
+    repo: "calcom/cal.com"
+    category: customer_inbox
+    dealix_value: "Open-source scheduling for diagnostic / demo bookings"
+    patterns_to_adapt: ["availability rules", "booking confirmation"]
+    modules_impacted: []
+    tier: optional_adapter
+    priority: P1
+    status: reviewed
+    risks: []
+    safety_concerns: []
+    cost_concerns: []
+    license_to_verify: "AGPL-3"
+    integration_complexity: "medium"
+    founder_decision_required: true
+    notes: "Founder may wire Cal.com link in landing for Diagnostic booking. Adapter only."
+
+  # ==========================================================
+  # 5. Marketing / Growth / Analytics (10)
+  # ==========================================================
+
+  - id: posthog
+    name: "PostHog"
+    repo: "PostHog/posthog"
+    category: growth_analytics
+    dealix_value: "Product analytics + session replay + flags + experiments"
+    patterns_to_adapt:
+      - "event taxonomy"
+      - "funnel definition"
+      - "feature flag schema"
+    modules_impacted:
+      - "auto_client_acquisition/growth_v10/event_taxonomy.py"
+      - "auto_client_acquisition/growth_v10/funnel_model.py"
+    tier: native_pattern
+    priority: P0
+    status: selected
+    risks: []
+    safety_concerns:
+      - "no PII in event payloads (redactor required)"
+    cost_concerns: []
+    license_to_verify: "MIT"
+    integration_complexity: "medium"
+    founder_decision_required: false
+    notes: "Native event taxonomy in Phase B. Real PostHog is P2 adapter."
+
+  - id: mautic
+    name: "Mautic"
+    repo: "mautic/mautic"
+    category: growth_analytics
+    dealix_value: "Marketing automation: campaigns / segmentation / scoring"
+    patterns_to_adapt:
+      - "lead scoring rules"
+      - "segment-as-query"
+      - "campaign-as-flow"
+    modules_impacted: ["auto_client_acquisition/growth_v10/campaign_lifecycle.py"]
+    tier: inspiration_only
+    priority: P1
+    status: reviewed
+    risks: []
+    safety_concerns:
+      - "must NOT enable cold email blasts"
+    cost_concerns: []
+    license_to_verify: "GPL-3"
+    integration_complexity: "high"
+    founder_decision_required: true
+    notes: "Inspiration only. Marketing automation gated on Decision §S6."
+
+  - id: growthbook
+    name: "GrowthBook"
+    repo: "growthbook/growthbook"
+    category: growth_analytics
+    dealix_value: "Feature flags + A/B experiments"
+    patterns_to_adapt: ["experiment-as-config", "guard rails per flag"]
+    modules_impacted: ["auto_client_acquisition/growth_v10/experiment_model.py"]
+    tier: native_pattern
+    priority: P1
+    status: reviewed
+    risks: []
+    safety_concerns: []
+    cost_concerns: []
+    license_to_verify: "MIT"
+    integration_complexity: "medium"
+    founder_decision_required: false
+    notes: "Inform pricing/landing experiments."
+
+  - id: umami
+    name: "Umami"
+    repo: "umami-software/umami"
+    category: growth_analytics
+    dealix_value: "Privacy-friendly web analytics (no cookies, no PII)"
+    patterns_to_adapt: ["pageview event schema"]
+    modules_impacted: []
+    tier: optional_adapter
+    priority: P1
+    status: reviewed
+    risks: []
+    safety_concerns: []
+    cost_concerns: []
+    license_to_verify: "MIT"
+    integration_complexity: "low"
+    founder_decision_required: true
+    notes: "Founder may add Umami snippet to landing.html."
+
+  - id: matomo
+    name: "Matomo"
+    repo: "matomo-org/matomo"
+    category: growth_analytics
+    dealix_value: "Privacy-respecting analytics with deeper segmentation"
+    patterns_to_adapt: []
+    modules_impacted: []
+    tier: inspiration_only
+    priority: P3
+    status: deferred
+    risks: []
+    safety_concerns: []
+    cost_concerns: []
+    license_to_verify: "GPL-3"
+    integration_complexity: "high"
+    founder_decision_required: true
+    notes: "Heavier than Umami; defer."
+
+  - id: plausible
+    name: "Plausible"
+    repo: "plausible/analytics"
+    category: growth_analytics
+    dealix_value: "Lightweight privacy analytics"
+    patterns_to_adapt: []
+    modules_impacted: []
+    tier: inspiration_only
+    priority: P3
+    status: deferred
+    risks: []
+    safety_concerns: []
+    cost_concerns: []
+    license_to_verify: "AGPL-3"
+    integration_complexity: "low"
+    founder_decision_required: true
+    notes: "Alternative to Umami."
+
+  - id: rudderstack
+    name: "RudderStack"
+    repo: "rudderlabs/rudder-server"
+    category: growth_analytics
+    dealix_value: "Customer data pipeline (event routing)"
+    patterns_to_adapt: ["event router with destinations"]
+    modules_impacted: []
+    tier: inspiration_only
+    priority: P3
+    status: deferred
+    risks: []
+    safety_concerns: []
+    cost_concerns: []
+    license_to_verify: "Elastic License + AGPL"
+    integration_complexity: "high"
+    founder_decision_required: true
+    notes: "Defer until 5+ customers."
+
+  - id: postiz
+    name: "Postiz"
+    repo: "gitroomhq/postiz-app"
+    category: growth_analytics
+    dealix_value: "Social media scheduling reference"
+    patterns_to_adapt: ["content calendar schema"]
+    modules_impacted: ["auto_client_acquisition/growth_v10/content_calendar.py"]
+    tier: inspiration_only
+    priority: P2
+    status: reviewed
+    risks: ["auto-spam if misused"]
+    safety_concerns:
+      - "must NOT enable scheduled cold posts"
+    cost_concerns: []
+    license_to_verify: "AGPL-3"
+    integration_complexity: "medium"
+    founder_decision_required: true
+    notes: "Inspiration for content calendar; no auto-publish."
+
+  - id: listmonk
+    name: "Listmonk"
+    repo: "knadh/listmonk"
+    category: growth_analytics
+    dealix_value: "Self-hosted newsletter manager (consent-based)"
+    patterns_to_adapt: ["double opt-in", "subscriber + list model"]
+    modules_impacted: []
+    tier: optional_adapter
+    priority: P2
+    status: reviewed
+    risks: []
+    safety_concerns:
+      - "consent registry must be wired before any send"
+    cost_concerns: []
+    license_to_verify: "AGPL-3"
+    integration_complexity: "medium"
+    founder_decision_required: true
+    notes: "Adapter only after consent registry covers email."
+
+  - id: keila
+    name: "Keila"
+    repo: "pentacent/keila"
+    category: growth_analytics
+    dealix_value: "Privacy-friendly email campaign tool"
+    patterns_to_adapt: []
+    modules_impacted: []
+    tier: inspiration_only
+    priority: P3
+    status: deferred
+    risks: []
+    safety_concerns: []
+    cost_concerns: []
+    license_to_verify: "AGPL-3"
+    integration_complexity: "medium"
+    founder_decision_required: true
+    notes: "Alternative to Listmonk."
+
+  # ==========================================================
+  # 6. Research / RAG / Knowledge / Search (15)
+  # ==========================================================
+
+  - id: qdrant
+    name: "Qdrant"
+    repo: "qdrant/qdrant"
+    category: knowledge_rag
+    dealix_value: "Production-grade vector DB with hybrid search + filters"
+    patterns_to_adapt:
+      - "collection + payload + filter schema"
+      - "hybrid search (vector + sparse)"
+    modules_impacted: ["auto_client_acquisition/knowledge_v10/retrieval_contract.py"]
+    tier: native_pattern
+    priority: P0
+    status: selected
+    risks: []
+    safety_concerns: []
+    cost_concerns: ["hosting cost when real"]
+    license_to_verify: "Apache-2"
+    integration_complexity: "medium"
+    founder_decision_required: false
+    notes: "Interface-only in Phase B. Real Qdrant is §S6."
+
+  - id: weaviate
+    name: "Weaviate"
+    repo: "weaviate/weaviate"
+    category: knowledge_rag
+    dealix_value: "Vector DB with built-in modules (rerankers, generators)"
+    patterns_to_adapt: ["module pattern"]
+    modules_impacted: []
+    tier: inspiration_only
+    priority: P2
+    status: reviewed
+    risks: []
+    safety_concerns: []
+    cost_concerns: []
+    license_to_verify: "BSD-3"
+    integration_complexity: "medium"
+    founder_decision_required: true
+    notes: "Alternative to Qdrant."
+
+  - id: milvus
+    name: "Milvus"
+    repo: "milvus-io/milvus"
+    category: knowledge_rag
+    dealix_value: "Large-scale vector search"
+    patterns_to_adapt: []
+    modules_impacted: []
+    tier: inspiration_only
+    priority: P3
+    status: deferred
+    risks: ["heavy infra"]
+    safety_concerns: []
+    cost_concerns: []
+    license_to_verify: "Apache-2"
+    integration_complexity: "high"
+    founder_decision_required: true
+    notes: "Defer until billions of vectors."
+
+  - id: lancedb
+    name: "LanceDB"
+    repo: "lancedb/lancedb"
+    category: knowledge_rag
+    dealix_value: "Local + serverless vector search"
+    patterns_to_adapt: ["embedded vector store"]
+    modules_impacted: []
+    tier: inspiration_only
+    priority: P2
+    status: reviewed
+    risks: []
+    safety_concerns: []
+    cost_concerns: []
+    license_to_verify: "Apache-2"
+    integration_complexity: "low"
+    founder_decision_required: false
+    notes: "Lightweight option for local dev."
+
+  - id: chroma
+    name: "Chroma"
+    repo: "chroma-core/chroma"
+    category: knowledge_rag
+    dealix_value: "Dev-friendly vector store for prototypes"
+    patterns_to_adapt: []
+    modules_impacted: []
+    tier: inspiration_only
+    priority: P3
+    status: deferred
+    risks: []
+    safety_concerns: []
+    cost_concerns: []
+    license_to_verify: "Apache-2"
+    integration_complexity: "low"
+    founder_decision_required: false
+    notes: "Prototype-grade only."
+
+  - id: typesense
+    name: "Typesense"
+    repo: "typesense/typesense"
+    category: knowledge_rag
+    dealix_value: "Fast typo-tolerant search for site/docs"
+    patterns_to_adapt: ["instant search UX"]
+    modules_impacted: []
+    tier: inspiration_only
+    priority: P2
+    status: reviewed
+    risks: []
+    safety_concerns: []
+    cost_concerns: []
+    license_to_verify: "GPL-3"
+    integration_complexity: "low"
+    founder_decision_required: true
+    notes: "Optional for landing site search."
+
+  - id: meilisearch
+    name: "Meilisearch"
+    repo: "meilisearch/meilisearch"
+    category: knowledge_rag
+    dealix_value: "Lightweight search-as-you-type"
+    patterns_to_adapt: []
+    modules_impacted: []
+    tier: inspiration_only
+    priority: P2
+    status: reviewed
+    risks: []
+    safety_concerns: []
+    cost_concerns: []
+    license_to_verify: "MIT"
+    integration_complexity: "low"
+    founder_decision_required: true
+    notes: "Alternative to Typesense."
+
+  - id: opensearch
+    name: "OpenSearch"
+    repo: "opensearch-project/OpenSearch"
+    category: knowledge_rag
+    dealix_value: "Search + log analytics + observability"
+    patterns_to_adapt: []
+    modules_impacted: []
+    tier: inspiration_only
+    priority: P3
+    status: deferred
+    risks: ["heavy infra"]
+    safety_concerns: []
+    cost_concerns: []
+    license_to_verify: "Apache-2"
+    integration_complexity: "high"
+    founder_decision_required: true
+    notes: "Defer; we have Postgres + structured logs."
+
+  - id: haystack
+    name: "Haystack"
+    repo: "deepset-ai/haystack"
+    category: knowledge_rag
+    dealix_value: "Modular RAG pipelines (retriever + reader + generator)"
+    patterns_to_adapt:
+      - "pipeline as DAG"
+      - "retriever + reader contract"
+    modules_impacted: ["auto_client_acquisition/knowledge_v10/"]
+    tier: native_pattern
+    priority: P0
+    status: selected
+    risks: []
+    safety_concerns: []
+    cost_concerns: []
+    license_to_verify: "Apache-2"
+    integration_complexity: "medium"
+    founder_decision_required: false
+    notes: "Native retrieval contract in Phase B."
+
+  - id: llama_index
+    name: "LlamaIndex"
+    repo: "run-llama/llama_index"
+    category: knowledge_rag
+    dealix_value: "Document indexing + retrieval + sub-question planner"
+    patterns_to_adapt: ["data connector pattern", "node + index"]
+    modules_impacted: ["auto_client_acquisition/knowledge_v10/document_manifest.py"]
+    tier: inspiration_only
+    priority: P1
+    status: reviewed
+    risks: []
+    safety_concerns: []
+    cost_concerns: []
+    license_to_verify: "MIT"
+    integration_complexity: "medium"
+    founder_decision_required: false
+    notes: "Inform document manifest schema."
+
+  - id: crawl4ai
+    name: "Crawl4AI"
+    repo: "unclecode/crawl4ai"
+    category: knowledge_rag
+    dealix_value: "Convert allowed pages to LLM-ready markdown"
+    patterns_to_adapt: ["markdown-from-html clean extraction"]
+    modules_impacted: []
+    tier: optional_adapter
+    priority: P3
+    status: deferred
+    risks:
+      - "scraping if used outside allowed-source policy"
+    safety_concerns:
+      - "must enforce allowed-source list"
+    cost_concerns: []
+    license_to_verify: "Apache-2"
+    integration_complexity: "medium"
+    founder_decision_required: true
+    notes: "Adapter behind explicit allowed-source policy. Default-blocked."
+
+  - id: firecrawl
+    name: "Firecrawl"
+    repo: "firecrawl/firecrawl"
+    category: knowledge_rag
+    dealix_value: "Web data API (markdown / structured data)"
+    patterns_to_adapt: []
+    modules_impacted: []
+    tier: optional_adapter
+    priority: P3
+    status: deferred
+    risks: ["scraping risk"]
+    safety_concerns:
+      - "default-blocked"
+    cost_concerns: ["API cost"]
+    license_to_verify: "MIT"
+    integration_complexity: "low"
+    founder_decision_required: true
+    notes: "Defer. Same policy as Crawl4AI."
+
+  - id: unstructured
+    name: "Unstructured"
+    repo: "Unstructured-IO/unstructured"
+    category: knowledge_rag
+    dealix_value: "Document parsing (PDF/DOC/HTML → text)"
+    patterns_to_adapt: ["partition + chunk"]
+    modules_impacted: ["auto_client_acquisition/knowledge_v10/document_manifest.py"]
+    tier: inspiration_only
+    priority: P1
+    status: reviewed
+    risks: []
+    safety_concerns: []
+    cost_concerns: []
+    license_to_verify: "Apache-2"
+    integration_complexity: "low"
+    founder_decision_required: false
+    notes: "Native partition contract in Phase B."
+
+  - id: docling
+    name: "Docling"
+    repo: "docling-project/docling"
+    category: knowledge_rag
+    dealix_value: "Document understanding for business docs"
+    patterns_to_adapt: ["layout-aware parse"]
+    modules_impacted: []
+    tier: inspiration_only
+    priority: P2
+    status: reviewed
+    risks: []
+    safety_concerns: []
+    cost_concerns: []
+    license_to_verify: "MIT"
+    integration_complexity: "medium"
+    founder_decision_required: false
+    notes: "Alternative to Unstructured."
+
+  - id: open_rag_eval
+    name: "Open RAG Eval"
+    repo: "vectara/open-rag-eval"
+    category: knowledge_rag
+    dealix_value: "Eval harness for RAG quality (faithfulness, relevance)"
+    patterns_to_adapt:
+      - "answer faithfulness metric"
+      - "context relevance metric"
+    modules_impacted: ["auto_client_acquisition/knowledge_v10/eval_contract.py"]
+    tier: native_pattern
+    priority: P1
+    status: selected
+    risks: []
+    safety_concerns: []
+    cost_concerns: ["eval LLM cost"]
+    license_to_verify: "Apache-2"
+    integration_complexity: "medium"
+    founder_decision_required: false
+    notes: "Native eval contract; runs against fixture cases."
+
+  # ==========================================================
+  # 7. LLM Gateway / Cost / Observability / Evals / Safety (15)
+  # ==========================================================
+
+  - id: litellm
+    name: "LiteLLM"
+    repo: "BerriAI/litellm"
+    category: llm_gateway
+    dealix_value: "Unified gateway for 100+ LLM providers + cost/spend/budget"
+    patterns_to_adapt:
+      - "model routing per task purpose"
+      - "per-customer budget cap"
+      - "fallback chain"
+      - "spend tracking + virtual keys"
+    modules_impacted: ["auto_client_acquisition/llm_gateway_v10/"]
+    tier: native_pattern
+    priority: P0
+    status: selected
+    risks: []
+    safety_concerns: []
+    cost_concerns: []
+    license_to_verify: "MIT"
+    integration_complexity: "medium"
+    founder_decision_required: false
+    notes: "Native cost router in Phase B. Real LiteLLM is §S6."
+
+  - id: helicone
+    name: "Helicone"
+    repo: "Helicone/helicone"
+    category: observability
+    dealix_value: "LLM observability (cost / latency / prompt management)"
+    patterns_to_adapt: ["request log schema", "prompt version pin"]
+    modules_impacted: ["auto_client_acquisition/observability_v10/"]
+    tier: inspiration_only
+    priority: P2
+    status: reviewed
+    risks: []
+    safety_concerns: []
+    cost_concerns: []
+    license_to_verify: "Apache-2"
+    integration_complexity: "medium"
+    founder_decision_required: true
+    notes: "Alternative to Langfuse for cost tracking."
+
+  - id: langfuse
+    name: "Langfuse"
+    repo: "langfuse/langfuse"
+    category: observability
+    dealix_value: "Open-source LLM observability + traces + evals + datasets"
+    patterns_to_adapt:
+      - "trace + span + observation schema"
+      - "score = eval result"
+      - "prompt management"
+    modules_impacted: ["auto_client_acquisition/observability_v10/"]
+    tier: native_pattern
+    priority: P0
+    status: selected
+    risks: []
+    safety_concerns:
+      - "PII redaction before any export"
+    cost_concerns: []
+    license_to_verify: "MIT (core) / EE for advanced"
+    integration_complexity: "medium"
+    founder_decision_required: false
+    notes: "Native trace schema (extends observability_v6). Real Langfuse §S6."
+
+  - id: openlit
+    name: "OpenLIT"
+    repo: "openlit/openlit"
+    category: observability
+    dealix_value: "OpenTelemetry-native LLM observability + cost + evals"
+    patterns_to_adapt: ["OTel-compliant trace fields", "cost attribution"]
+    modules_impacted: ["auto_client_acquisition/observability_v10/"]
+    tier: inspiration_only
+    priority: P1
+    status: reviewed
+    risks: []
+    safety_concerns: []
+    cost_concerns: []
+    license_to_verify: "Apache-2"
+    integration_complexity: "low"
+    founder_decision_required: false
+    notes: "OTel alignment for trace fields."
+
+  - id: agentops
+    name: "AgentOps"
+    repo: "AgentOps-AI/agentops"
+    category: observability
+    dealix_value: "Agent run monitoring (replay / cost / debug)"
+    patterns_to_adapt: ["agent run = trace tree"]
+    modules_impacted: []
+    tier: inspiration_only
+    priority: P2
+    status: reviewed
+    risks: []
+    safety_concerns: []
+    cost_concerns: []
+    license_to_verify: "MIT"
+    integration_complexity: "low"
+    founder_decision_required: false
+    notes: "Inform AI Workforce trace breakdown."
+
+  - id: promptfoo
+    name: "Promptfoo"
+    repo: "promptfoo/promptfoo"
+    category: safety_evals
+    dealix_value: "LLM eval framework + red-teaming + CI integration"
+    patterns_to_adapt:
+      - "test-case-as-yaml"
+      - "red-team category set"
+      - "CI gate on failure"
+    modules_impacted: ["auto_client_acquisition/safety_v10/"]
+    tier: native_pattern
+    priority: P0
+    status: selected
+    risks: []
+    safety_concerns: []
+    cost_concerns: ["eval LLM cost"]
+    license_to_verify: "MIT"
+    integration_complexity: "medium"
+    founder_decision_required: false
+    notes: "Native eval pack in Phase B (Arabic + English red-team cases)."
+
+  - id: guardrails_ai
+    name: "Guardrails AI"
+    repo: "guardrails-ai/guardrails"
+    category: safety_evals
+    dealix_value: "Output validation + schema + policy checks"
+    patterns_to_adapt: ["validator decorator", "structured output schema"]
+    modules_impacted: ["auto_client_acquisition/safety_v10/output_validator.py"]
+    tier: inspiration_only
+    priority: P1
+    status: reviewed
+    risks: []
+    safety_concerns: []
+    cost_concerns: []
+    license_to_verify: "Apache-2"
+    integration_complexity: "low"
+    founder_decision_required: false
+    notes: "Inspiration; we use Pydantic v2 directly today."
+
+  - id: deepeval
+    name: "DeepEval"
+    repo: "confident-ai/deepeval"
+    category: safety_evals
+    dealix_value: "LLM eval metrics (faithfulness / relevance / bias)"
+    patterns_to_adapt: ["metric-as-class"]
+    modules_impacted: []
+    tier: inspiration_only
+    priority: P2
+    status: reviewed
+    risks: []
+    safety_concerns: []
+    cost_concerns: []
+    license_to_verify: "Apache-2"
+    integration_complexity: "low"
+    founder_decision_required: false
+    notes: "Reference for eval metric library."
+
+  - id: ragas
+    name: "Ragas"
+    repo: "explodinggradients/ragas"
+    category: safety_evals
+    dealix_value: "RAG-specific eval (answer/context faithfulness)"
+    patterns_to_adapt: ["answer faithfulness", "context recall"]
+    modules_impacted: ["auto_client_acquisition/knowledge_v10/eval_contract.py"]
+    tier: inspiration_only
+    priority: P1
+    status: reviewed
+    risks: []
+    safety_concerns: []
+    cost_concerns: ["eval LLM cost"]
+    license_to_verify: "Apache-2"
+    integration_complexity: "low"
+    founder_decision_required: false
+    notes: "Inform RAG eval contract."
+
+  - id: trulens
+    name: "TruLens"
+    repo: "truera/trulens"
+    category: safety_evals
+    dealix_value: "RAG/LLM observability + feedback loops"
+    patterns_to_adapt: ["feedback function"]
+    modules_impacted: []
+    tier: inspiration_only
+    priority: P2
+    status: reviewed
+    risks: []
+    safety_concerns: []
+    cost_concerns: []
+    license_to_verify: "MIT"
+    integration_complexity: "medium"
+    founder_decision_required: false
+    notes: "Reference."
+
+  - id: opentelemetry
+    name: "OpenTelemetry"
+    repo: "open-telemetry/opentelemetry-python"
+    category: observability
+    dealix_value: "Vendor-neutral standard for traces / metrics / logs"
+    patterns_to_adapt:
+      - "trace + span + attribute"
+      - "context propagation"
+    modules_impacted: ["auto_client_acquisition/observability_v10/"]
+    tier: native_pattern
+    priority: P0
+    status: selected
+    risks: []
+    safety_concerns: []
+    cost_concerns: []
+    license_to_verify: "Apache-2"
+    integration_complexity: "low"
+    founder_decision_required: false
+    notes: "Trace schema follows OTel conventions in Phase B."
+
+  - id: sentry
+    name: "Sentry"
+    repo: "getsentry/sentry"
+    category: observability
+    dealix_value: "Error monitoring + breadcrumbs + release tracking"
+    patterns_to_adapt: ["error capture + context", "release health"]
+    modules_impacted: []
+    tier: optional_adapter
+    priority: P1
+    status: reviewed
+    risks: []
+    safety_concerns:
+      - "PII scrubbing before send"
+    cost_concerns: ["paid tier above free quota"]
+    license_to_verify: "BSL / FSL"
+    integration_complexity: "low"
+    founder_decision_required: true
+    notes: "Adapter behind DEALIX_SENTRY_DSN env. Skip if PII scrubbing not signed off."
+
+  - id: open_policy_agent
+    name: "Open Policy Agent"
+    repo: "open-policy-agent/opa"
+    category: safety_evals
+    dealix_value: "General-purpose policy engine for live-action rules"
+    patterns_to_adapt: ["policy as code (Rego)"]
+    modules_impacted: ["auto_client_acquisition/safety_v10/policy_engine.py"]
+    tier: inspiration_only
+    priority: P2
+    status: reviewed
+    risks: []
+    safety_concerns: []
+    cost_concerns: []
+    license_to_verify: "Apache-2"
+    integration_complexity: "high"
+    founder_decision_required: true
+    notes: "Inspiration only. Native policy engine in Python is enough."
+
+  - id: pydantic_ai
+    name: "Pydantic AI"
+    repo: "pydantic/pydantic-ai"
+    category: ai_workforce
+    dealix_value: "Typed agent outputs + tools using Pydantic"
+    patterns_to_adapt: ["agent output validated against Pydantic schema"]
+    modules_impacted: ["auto_client_acquisition/ai_workforce_v10/"]
+    tier: inspiration_only
+    priority: P1
+    status: reviewed
+    risks: []
+    safety_concerns: []
+    cost_concerns: []
+    license_to_verify: "MIT"
+    integration_complexity: "low"
+    founder_decision_required: false
+    notes: "Inspiration; we already use Pydantic v2 throughout."
+
+  - id: instructor
+    name: "Instructor"
+    repo: "instructor-ai/instructor"
+    category: ai_workforce
+    dealix_value: "Structured LLM outputs (JSON schema enforcement)"
+    patterns_to_adapt: ["response_model = Pydantic class"]
+    modules_impacted: ["auto_client_acquisition/ai_workforce_v10/"]
+    tier: inspiration_only
+    priority: P1
+    status: reviewed
+    risks: []
+    safety_concerns: []
+    cost_concerns: []
+    license_to_verify: "MIT"
+    integration_complexity: "low"
+    founder_decision_required: false
+    notes: "Inspiration for forced-JSON outputs."
+
+  # ==========================================================
+  # 8. Backend / Auth / Storage (5)
+  # ==========================================================
+
+  - id: supabase
+    name: "Supabase"
+    repo: "supabase/supabase"
+    category: platform_auth
+    dealix_value: "Postgres + Auth + Storage + Realtime building blocks"
+    patterns_to_adapt:
+      - "row-level security policies"
+      - "edge functions"
+    modules_impacted: []
+    tier: inspiration_only
+    priority: P2
+    status: reviewed
+    risks: ["replacement risk for current FastAPI stack"]
+    safety_concerns: []
+    cost_concerns: ["paid tier"]
+    license_to_verify: "Apache-2 (core)"
+    integration_complexity: "high"
+    founder_decision_required: true
+    notes: "Reference. Current stack stays primary."
+
+  - id: appwrite
+    name: "Appwrite"
+    repo: "appwrite/appwrite"
+    category: platform_auth
+    dealix_value: "Backend-as-a-service alternative"
+    patterns_to_adapt: []
+    modules_impacted: []
+    tier: inspiration_only
+    priority: P3
+    status: deferred
+    risks: []
+    safety_concerns: []
+    cost_concerns: []
+    license_to_verify: "BSD-3"
+    integration_complexity: "high"
+    founder_decision_required: true
+    notes: "Defer; not aligned with FastAPI stack."
+
+  - id: keycloak
+    name: "Keycloak"
+    repo: "keycloak/keycloak"
+    category: platform_auth
+    dealix_value: "Enterprise IAM (SSO / RBAC / federations)"
+    patterns_to_adapt: ["realm + role + scope"]
+    modules_impacted: []
+    tier: inspiration_only
+    priority: P3
+    status: deferred
+    risks: ["heavyweight"]
+    safety_concerns: []
+    cost_concerns: []
+    license_to_verify: "Apache-2"
+    integration_complexity: "high"
+    founder_decision_required: true
+    notes: "Defer until multi-tenant + SSO required."
+
+  - id: zitadel
+    name: "Zitadel"
+    repo: "zitadel/zitadel"
+    category: platform_auth
+    dealix_value: "Modern identity platform with orgs / projects / actions"
+    patterns_to_adapt: []
+    modules_impacted: []
+    tier: inspiration_only
+    priority: P3
+    status: deferred
+    risks: []
+    safety_concerns: []
+    cost_concerns: []
+    license_to_verify: "Apache-2"
+    integration_complexity: "high"
+    founder_decision_required: true
+    notes: "Lighter Keycloak alternative; defer."
+
+  - id: minio
+    name: "MinIO"
+    repo: "minio/minio"
+    category: platform_auth
+    dealix_value: "S3-compatible object storage (proof packs / files)"
+    patterns_to_adapt: ["object versioning + lifecycle"]
+    modules_impacted: []
+    tier: optional_adapter
+    priority: P2
+    status: reviewed
+    risks: []
+    safety_concerns:
+      - "PII redaction before upload"
+    cost_concerns: ["self-host disk"]
+    license_to_verify: "AGPL-3"
+    integration_complexity: "medium"
+    founder_decision_required: true
+    notes: "Adapter when proof packs need binary attachments."
+
+  # ==========================================================
+  # 9. DesignOps / Docs / Artifacts (5)
+  # ==========================================================
+
+  - id: storybook
+    name: "Storybook"
+    repo: "storybookjs/storybook"
+    category: designops_artifacts
+    dealix_value: "Component library preview"
+    patterns_to_adapt: ["component-as-story"]
+    modules_impacted: []
+    tier: inspiration_only
+    priority: P3
+    status: deferred
+    risks: []
+    safety_concerns: []
+    cost_concerns: []
+    license_to_verify: "MIT"
+    integration_complexity: "medium"
+    founder_decision_required: true
+    notes: "Defer; Dealix landing is plain HTML for now."
+
+  - id: docusaurus
+    name: "Docusaurus"
+    repo: "facebook/docusaurus"
+    category: designops_artifacts
+    dealix_value: "Static docs site"
+    patterns_to_adapt: ["docs-as-config"]
+    modules_impacted: []
+    tier: inspiration_only
+    priority: P3
+    status: deferred
+    risks: []
+    safety_concerns: []
+    cost_concerns: []
+    license_to_verify: "MIT"
+    integration_complexity: "low"
+    founder_decision_required: true
+    notes: "Defer; markdown in repo is enough."
+
+  - id: slidev
+    name: "Slidev"
+    repo: "slidevjs/slidev"
+    category: designops_artifacts
+    dealix_value: "Markdown-driven decks (Vue under the hood)"
+    patterns_to_adapt: ["markdown-as-deck"]
+    modules_impacted: []
+    tier: inspiration_only
+    priority: P2
+    status: reviewed
+    risks: []
+    safety_concerns: []
+    cost_concerns: []
+    license_to_verify: "MIT"
+    integration_complexity: "low"
+    founder_decision_required: false
+    notes: "Inspiration for proof-pack deck export."
+
+  - id: marp
+    name: "Marp"
+    repo: "marp-team/marp-cli"
+    category: designops_artifacts
+    dealix_value: "Markdown to PDF/PPTX/HTML decks"
+    patterns_to_adapt: ["frontmatter-themed slides"]
+    modules_impacted: ["auto_client_acquisition/designops/exporter.py"]
+    tier: optional_adapter
+    priority: P2
+    status: reviewed
+    risks: []
+    safety_concerns: []
+    cost_concerns: []
+    license_to_verify: "MIT"
+    integration_complexity: "low"
+    founder_decision_required: true
+    notes: "Optional CLI for PDF/PPTX export when first paying customer requests."
+
+  - id: mermaid
+    name: "Mermaid"
+    repo: "mermaid-js/mermaid"
+    category: designops_artifacts
+    dealix_value: "Markdown diagrams (sequences / state / flow)"
+    patterns_to_adapt: ["text-based diagrams in docs"]
+    modules_impacted: []
+    tier: native_pattern
+    priority: P1
+    status: reviewed
+    risks: []
+    safety_concerns: []
+    cost_concerns: []
+    license_to_verify: "MIT"
+    integration_complexity: "low"
+    founder_decision_required: false
+    notes: "Already used implicitly in markdown docs. Native pattern."

@@ -489,3 +489,88 @@ GET  /api/v1/service-quality/sla/{service_id}
 
 Until those triggers fire, the deferred modules stay deferred —
 and that's the right answer.
+
+---
+
+## Final closure — 2026-05-04 (after pt4 batch + Phase H polish)
+
+**12 of 12 v5 layers shipped real.** All previously deferred layers
+ship in this same branch; nothing is stubbed; every layer has its
+own unit tests **plus** an end-to-end smoke test that walks the
+full customer journey across all 12 modules.
+
+### Newly shipped pt4 (final 3 layers)
+
+| Layer | Module | Endpoint prefix |
+|---|---|---|
+| 10 | Proof Ledger | `auto_client_acquisition/proof_ledger/` (file-backed JSONL) | `/api/v1/proof-ledger` |
+| 11 | GTM OS | `auto_client_acquisition/gtm_os/` (content_calendar + experiment) | `/api/v1/gtm` |
+| 12 | Security & Privacy | `auto_client_acquisition/security_privacy/` (secret_scan + redaction + minimization) | `/api/v1/security-privacy` |
+
+### Phase H — Operational polish (post-12/12)
+
+| Item | Where |
+|---|---|
+| End-to-end journey smoke test | `tests/test_v5_end_to_end_journey.py` (3 tests) |
+| Founder one-command CLI | `scripts/dealix_status.py` + `tests/test_dealix_status_cli.py` (8 tests) |
+| Bilingual operating runbook | `docs/V5_FOUNDER_RUNBOOK.md` |
+| Refreshed deploy doc | `docs/QUICK_DEPLOY_API_KEYS_ONLY.md` (31 endpoints listed) |
+
+### 12-layer status table
+
+| # | Layer | Status | Module | Tests |
+|---|---|---|---|---|
+| 1 | Customer Loop | ✅ Live | `customer_loop/` | unit + e2e |
+| 2 | Role Command OS | ✅ Live | `role_command_os/` | unit + e2e |
+| 3 | Service Quality | ✅ Live | `service_quality/` | unit |
+| 4 | Agent Governance | ✅ Live | `agent_governance/` | unit + e2e |
+| 5 | Reliability OS | ✅ Live | `reliability_os/` | unit + status CLI |
+| 6 | Vertical Playbooks | ✅ Live | `vertical_playbooks/` | unit |
+| 7 | Customer Data Plane | ✅ Live | `customer_data_plane/` | unit |
+| 8 | Finance OS | ✅ Live | `finance_os/` | unit + e2e |
+| 9 | Delivery Factory | ✅ Live | `delivery_factory/` | unit + e2e |
+| 10 | Proof Ledger | ✅ Live | `proof_ledger/` (file-backed) | unit + e2e |
+| 11 | GTM OS | ✅ Live | `gtm_os/` | unit |
+| 12 | Security & Privacy | ✅ Live | `security_privacy/` | unit |
+
+### Final test bundle
+
+```
+878 passed, 8 skipped, 3 xfailed
+```
+
+(was 351 at pt2, 321 at pt3, 875 at pt4, 878 after Phase H.)
+
+### What's NOT promoted
+
+- ❌ `PROOF_LEDGER_POSTGRES` — file-backed JSONL is the working
+  implementation; Postgres deferred until first 5 ProofEvents land
+  (the swap is mechanical because the public API matches).
+- ❌ `LIVE_GATES_FLIPPED` — every live-action gate stays `BLOCKED`
+  by design. Flipping any of them requires explicit founder sign-off
+  in `docs/EXECUTIVE_DECISION_PACK.md`.
+- ❌ `ROLE_BRIEF_LLM_ENRICHMENT` — current briefs compose existing
+  signals; LLM enrichment ships only after Phase E real customer
+  data is available to ground the prompts.
+- ❌ `FORBIDDEN_TOOL_OVERRIDE` — no autonomy level can unlock any
+  forbidden tool. Tested in `test_v5_end_to_end_journey.py::test_journey_does_not_unlock_forbidden_agent_tools`.
+
+### Hard rules still on (re-asserted)
+
+- Default-deny on customer contact (`assess_contactability`).
+- No live charge regardless of env (`finance_os.is_live_charge_allowed`).
+- No live WhatsApp / email / LinkedIn automation / scraping.
+- 4 REVIEW_PENDING marketing strings still need founder decision.
+- Pilot price 499 SAR locked until S1.
+
+### Founder's next action
+
+After Railway redeploy completes:
+
+```bash
+bash scripts/post_redeploy_verify.sh   # 22-point production check
+python scripts/dealix_status.py        # bilingual local snapshot
+```
+
+Then begin Phase E (warm intros + Diagnostic + first paid pilot)
+per `docs/V5_FOUNDER_RUNBOOK.md` §5.
