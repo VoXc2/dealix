@@ -13,7 +13,6 @@ from pydantic import BaseModel, ConfigDict, Field
 from auto_client_acquisition.knowledge_v10 import (
     Answer,
     AnswerRequest,
-    DocumentManifest,
     RAGEvalResult,
     RetrievalRequest,
     RetrievalResult,

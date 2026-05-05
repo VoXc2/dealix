@@ -4,7 +4,6 @@ Pure unit + ASGI tests — no network, no LLM, no DB. Each <2s.
 """
 from __future__ import annotations
 
-import os
 from pathlib import Path
 
 import pytest

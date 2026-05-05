@@ -6,8 +6,6 @@ single layer probe failure can never break the whole brief.
 """
 from __future__ import annotations
 
-from typing import Any
-
 from auto_client_acquisition.founder_v10.schemas import Blocker
 
 
