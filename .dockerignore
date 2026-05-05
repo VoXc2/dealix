@@ -54,8 +54,17 @@ htmlcov/
 .env.local
 .env.*.local
 
-# Docs and deliverables (not needed at runtime — huge)
-docs/
+# Docs and deliverables (most not needed at runtime — huge)
+# Exception: keep runtime files (YAML matrices, JSON snapshots, design system).
+docs/*
+!docs/registry/
+!docs/registry/**
+!docs/SEO_AUDIT_REPORT.json
+!docs/proof-events/
+!docs/proof-events/.gitkeep
+!docs/proof-events/SCHEMA.example.json
+!docs/snapshots/
+!docs/snapshots/.gitkeep
 deliverables/
 tool_calls/
 *.md
