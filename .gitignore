@@ -150,3 +150,12 @@ traces/
 
 # Local Dealix index output
 .dealix/
+
+# ─────────────────────────────────────────────────────────────
+# 🤖 Claude Code agent worktrees + runtime ledger artifacts
+# ─────────────────────────────────────────────────────────────
+.claude/
+
+# Proof ledger runtime artifacts (template + schema + readme stay tracked)
+docs/proof-events/*.jsonl
+docs/proof-events/*-units.jsonl
