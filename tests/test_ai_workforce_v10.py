@@ -1,7 +1,6 @@
 """Tests for ai_workforce_v10."""
 from __future__ import annotations
 
-import time
 from datetime import UTC, datetime, timedelta
 from typing import get_args
 
@@ -11,7 +10,6 @@ from fastapi.testclient import TestClient
 from api.main import create_app
 from auto_client_acquisition.ai_workforce_v10 import (
     PlannerOutput,
-    ReviewerOutput,
     ReviewerVerdict,
     WorkforceMemoryEntry,
     list_memory,
