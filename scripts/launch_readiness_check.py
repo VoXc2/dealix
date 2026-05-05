@@ -52,6 +52,7 @@ def main() -> int:
     try:
         sys.stdout.reconfigure(encoding="utf-8")
     except (AttributeError, OSError):
+        # UTF-8 reconfigure is optional (e.g. some environments); default stream is fine.
         pass
 
     parser = argparse.ArgumentParser(description="Health + smoke + optional launch-readiness for staging")
