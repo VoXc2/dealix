@@ -1,0 +1,67 @@
+name: Deploy landing to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'landing/**'
+      - 'docs/registry/**'
+      - '.github/workflows/deploy-pages.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Build site
+        run: |
+          mkdir -p _site
+          cp -r landing/* _site/
+
+          if [ -d "landing/assets" ]; then
+            mkdir -p _site/assets
+            cp -r landing/assets/* _site/assets/ 2>/dev/null || true
+          fi
+
+          # Export YAML → JSON
+          if [ -f scripts/export_service_readiness_json.py ]; then
+            mkdir -p _site/assets/data
+            python scripts/export_service_readiness_json.py _site/assets/data/service-readiness.json || echo "JSON export failed (non-blocking)"
+          fi
+
+          # Custom domain
+          echo "dealix.me" > _site/CNAME
+
+          echo "── Site built ──"
+          find _site -type f | head -30
+
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: '_site'
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
