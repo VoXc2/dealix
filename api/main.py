@@ -58,6 +58,7 @@ from api.routers import (
     sectors,
     security_privacy,
     self_growth,
+    service_mapping_v7,
     service_quality,
     v3,
     vertical_playbooks,
@@ -167,6 +168,7 @@ def create_app() -> FastAPI:
     app.include_router(business.router)
     app.include_router(personal_operator.router)
     app.include_router(self_growth.router)
+    app.include_router(service_mapping_v7.router)
     app.include_router(customer_loop.router)
     app.include_router(role_command_os.router)
     app.include_router(service_quality.router)
