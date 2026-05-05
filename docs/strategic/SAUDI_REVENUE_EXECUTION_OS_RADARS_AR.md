@@ -365,3 +365,4 @@ Dashboard يقيس · Weekly loop يحسن
 | Level 1 تشغيل | [ops/full_ops_pack/DEALIX_FULL_OPS_SETUP.md](../ops/full_ops_pack/DEALIX_FULL_OPS_SETUP.md) |
 | إغلاق أسبوع تشغيل | [prompts/PROMPT_5_LAUNCH_CLOSURE_OPERATOR.md](../prompts/PROMPT_5_LAUNCH_CLOSURE_OPERATOR.md) |
 | ما بعد الإطلاق | [ops/POST_LAUNCH_BACKLOG.md](../ops/POST_LAUNCH_BACKLOG.md) |
+| إكمال شامل (دمج + نشر + عميل) | [COMPREHENSIVE_COMPLETION_PLAN_AR.md](../COMPREHENSIVE_COMPLETION_PLAN_AR.md) |

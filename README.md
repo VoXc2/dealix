@@ -14,7 +14,7 @@
 
 **[العربية](README.ar.md)** · **English**
 
-### [🚀 Deploy Now](docs/ops/DEPLOY_NOW.md) · [📦 .env Template](.env.example) · [🎯 Landing](landing/) · [🗺️ API Map](docs/architecture/API_MAP.md) · [🏢 Day 1 Plan](docs/business/FIRST_100_TARGETS_PLAN.md)
+### [🚀 Deploy Now](docs/ops/DEPLOY_NOW.md) · [📋 Full completion plan (AR)](docs/COMPREHENSIVE_COMPLETION_PLAN_AR.md) · [📦 .env Template](.env.example) · [🎯 Landing](landing/) · [🗺️ API Map](docs/architecture/API_MAP.md) · [🏢 Day 1 Plan](docs/business/FIRST_100_TARGETS_PLAN.md)
 
 ---
 

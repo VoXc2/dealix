@@ -130,6 +130,10 @@ curl -X POST http://localhost:8000/api/v1/leads \
 
 MIT — راجع [LICENSE](LICENSE).
 
+## خطة الإكمال الشاملة
+
+من الدمج إلى `main` حتى أول عميل وProof: **[COMPREHENSIVE_COMPLETION_PLAN_AR.md](docs/COMPREHENSIVE_COMPLETION_PLAN_AR.md)**
+
 ---
 
 <div align="center" dir="rtl">
