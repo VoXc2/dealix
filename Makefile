@@ -8,7 +8,7 @@
         docker-build docker-up docker-down docker-logs \
         pre-commit-install pre-commit-run db-init requirements \
         v5-status v5-smoke v5-snapshot v5-diagnostic v5-verify v5-digest \
-        v5-proof-pack
+        v5-proof-pack v10-verify v10-reference
 
 # Python binary (override with PYTHON=python3.12 make ...)
 PYTHON ?= python3
@@ -120,3 +120,13 @@ v5-digest: ## v5: print the daily founder digest markdown (no email)
 
 v5-proof-pack: ## v5: assemble bilingual Proof Pack from JSONL events (HANDLE=...)
 	$(PYTHON) scripts/dealix_proof_pack.py --customer-handle $(HANDLE)
+
+# ── v10 founder + reference library ────────────────────────────
+# v10 = AI Business Operating System reference architecture.
+# Each target is read-only diagnostics — never live actions.
+
+v10-verify: ## v10: full master verification (reference + modules + safety + tests)
+	bash scripts/v10_master_verify.sh
+
+v10-reference: ## v10: show 70-tool reference library summary
+	$(PYTHON) scripts/verify_reference_library_70.py
