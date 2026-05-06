@@ -105,6 +105,10 @@ _PREFIX_ALLOWLIST: dict[str, str] = {
         "launch verify shell script greps repo for these prefixes",
     "scripts/v10_master_verify.sh":
         "v10 master verifier shell script greps repo for these prefixes",
+    "scripts/v11_customer_closure_verify.sh":
+        "v11 master verifier shell script greps repo for these prefixes",
+    "scripts/v12_full_ops_verify.sh":
+        "v12 master verifier shell script greps repo for these prefixes",
     # ── deployment / placeholder docs ──
     "DEPLOYMENT.md":
         "deployment doc placeholder values use the prefix names",
@@ -133,6 +137,10 @@ _PREFIX_ALLOWLIST: dict[str, str] = {
         "v5 OS scope doc names the prefix in policy copy",
     "docs/V5_PHASE_E_CHECKLIST.md":
         "v5 phase E checklist names the prefix in test rows",
+    "docs/phase-e/06_MANUAL_PAYMENT_FALLBACK.md":
+        "v11 phase E payment fallback doc names sk_live_ in policy copy",
+    "docs/knowledge-base/payment_policy_ar_en.md":
+        "v12 KB payment policy doc names sk_live_ in policy copy",
     "docs/V5_RELEASE_NOTES.md":
         "v5 release notes name the prefix in safety summary",
     "docs/V5_SYSTEM_OVERVIEW.md":

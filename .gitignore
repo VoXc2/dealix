@@ -165,3 +165,10 @@ docs/proof-events/*-units.jsonl
 # (exporter writes here; never commit founder/customer artifacts)
 # ─────────────────────────────────────────────────────────────
 docs/designops/exports/**
+
+# ─────────────────────────────────────────────────────────────
+# V11 Phase E — live customer board / diagnostics (NEVER commit
+# real customer data; the founder's working state lives here)
+# ─────────────────────────────────────────────────────────────
+docs/phase-e/live/**
+docs/diagnostics/**

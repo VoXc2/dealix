@@ -1,11 +1,18 @@
 name: Deploy landing to GitHub Pages
 
+# V13 — auto-deploys the static landing/* folder to GitHub Pages on
+# every push to main that touches landing/, the service-readiness
+# YAML registry, or this workflow itself. The exporter regenerates
+# landing/assets/data/service-readiness.json from the source-of-truth
+# YAML so the homepage trust-bar stays in sync.
+
 on:
   push:
     branches: [main]
     paths:
       - 'landing/**'
       - 'docs/registry/**'
+      - 'scripts/export_service_readiness_json.py'
       - '.github/workflows/deploy-pages.yml'
   workflow_dispatch:
 
@@ -20,6 +27,7 @@ concurrency:
 
 jobs:
   build:
+    name: Build static site
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -29,32 +37,34 @@ jobs:
         with:
           python-version: '3.12'
 
-      - name: Build site
+      - name: Build _site/
         run: |
+          set -euo pipefail
           mkdir -p _site
           cp -r landing/* _site/
 
-          if [ -d "landing/assets" ]; then
-            mkdir -p _site/assets
-            cp -r landing/assets/* _site/assets/ 2>/dev/null || true
-          fi
-
+          # Regenerate service-readiness.json from the YAML matrix so
+          # the homepage trust-bar reflects the current registry state.
           if [ -f scripts/export_service_readiness_json.py ]; then
-            mkdir -p _site/assets/data
-            python scripts/export_service_readiness_json.py _site/assets/data/service-readiness.json || echo "JSON export failed (non-blocking)"
+            python scripts/export_service_readiness_json.py \
+              _site/assets/data/service-readiness.json \
+              || echo "JSON export failed (non-blocking — keeping committed JSON)"
           fi
 
+          # Pages CNAME
           echo "dealix.me" > _site/CNAME
 
           echo "── Site built ──"
-          find _site -type f | head -40
+          find _site -maxdepth 2 -type f | sort | head -40
 
       - uses: actions/configure-pages@v5
+
       - uses: actions/upload-pages-artifact@v3
         with:
           path: '_site'
 
   deploy:
+    name: Deploy to GitHub Pages
     needs: build
     runs-on: ubuntu-latest
     environment:

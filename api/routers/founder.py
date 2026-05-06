@@ -269,37 +269,16 @@ async def status() -> dict:
 
 @router.get("/dashboard")
 async def dashboard() -> dict:
-    """Single bilingual snapshot of the entire v5 stack.
+    """Single bilingual snapshot of the entire v5 stack (cached 60s).
 
     Read-only. Never sends, never charges, never writes. Safe to
-    call from a phone. Composes:
-
-      - service_activation_matrix.counts()
-      - reliability_os.build_health_matrix() (trimmed)
-      - finance_os.is_live_charge_allowed() + 3 other live gates
-      - daily_growth_loop.build_today() (top 3 only)
-      - weekly_growth_scorecard
-      - role_command_os CEO brief (top 3 decisions only)
+    call from a phone. Composes 6+ heavy aggregations behind a
+    minute-bucket cache so the second call within 60s returns in
+    <50ms. Degraded sections produce an explicit ``degraded=true``
+    marker rather than a 5xx.
     """
-    return {
-        "schema_version": 1,
-        "generated_at": datetime.now(UTC).isoformat(),
-        "title_ar": "لوحة المؤسس — Dealix",
-        "title_en": "Founder Dashboard — Dealix",
-        "services": _safe(_service_counts, default={}),
-        "reliability": _safe(_reliability, default={}),
-        "live_gates": _live_gates(),  # never errors — internally wrapped
-        "daily_loop": _safe(_daily_loop_summary, default={}),
-        "weekly_scorecard": _safe(_weekly_summary, default={}),
-        "ceo_brief": _safe(_ceo_brief_top, default={}),
-        "first_3_customers": _safe(_first_3_customers, default={}),
-        "pending_approvals": _safe(_pending_approvals, default={"count": 0, "first_3": []}),
-        "unsafe_blocks": _safe(_unsafe_blocks, default={"count": 0, "names": []}),
-        "next_founder_action": _safe(_next_founder_action, default="no_action_today"),
-        "guardrails": {
-            "no_live_send": True,
-            "no_scraping": True,
-            "no_cold_outreach": True,
-            "approval_required_for_external_actions": True,
-        },
-    }
+    from auto_client_acquisition.founder_v10 import (
+        build_dashboard_payload,
+        cached_dashboard_payload,
+    )
+    return cached_dashboard_payload(build_dashboard_payload)
