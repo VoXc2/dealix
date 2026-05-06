@@ -41,3 +41,13 @@ Confirm GitHub Actions workflow [`.github/workflows/ci.yml`](../.github/workflow
 
 - Merge PR #125 on GitHub when checks pass.
 - Deploy staging and run [`scripts/smoke_staging.py`](../scripts/smoke_staging.py) with `STAGING_BASE_URL` set.
+
+## Company Growth Beast (optional slice)
+
+After `scripts/revenue_execution_verify.sh` (includes Growth Beast pytest files), run:
+
+```bash
+bash scripts/company_growth_beast_verify.sh
+```
+
+API entry: `GET /api/v1/company-growth-beast/status` — see [`docs/COMPANY_GROWTH_BEAST_SERVICE.md`](COMPANY_GROWTH_BEAST_SERVICE.md).
