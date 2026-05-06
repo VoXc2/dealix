@@ -139,9 +139,20 @@ def test_next_actions_for_state_returns_bilingual_checklist():
 # ════════════════════ role_command_os ════════════════════
 
 
-def test_list_roles_returns_seven():
+def test_list_roles_returns_expected_roles():
     roles = list_roles()
-    assert set(roles) == {"ceo", "sales", "growth", "partnership", "cs", "finance", "compliance"}
+    assert set(roles) == {
+        "ceo",
+        "sales",
+        "growth",
+        "partnership",
+        "cs",
+        "finance",
+        "compliance",
+        "delivery",
+        "support",
+        "operations",
+    }
 
 
 @pytest.mark.parametrize("role_name", list(RoleName))

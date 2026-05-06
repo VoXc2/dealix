@@ -23,6 +23,8 @@ from api.routers import (
     autonomous,
     business,
     command_center,
+    company_service,
+    company_growth_beast,
     company_brain,
     company_brain_v6,
     customer_success,
@@ -36,11 +38,13 @@ from api.routers import (
     health,
     leads,
     llm_gateway_v10,
+    observability_beast,
     observability_v10,
     outreach,
     personal_operator,
     pricing,
     prospect,
+    proof_to_market,
     public,
     agent_governance,
     customer_data_plane,
@@ -61,6 +65,7 @@ from api.routers import (
     proof_ledger,
     reliability_os,
     revenue,
+    revops,
     revenue_os,
     role_command_os,
     safety_v10,
@@ -72,6 +77,7 @@ from api.routers import (
     delivery_os,
     executive_os,
     full_ops,
+    growth_beast_loop,
     growth_os,
     partnership_os,
     revenue_pipeline,
@@ -173,6 +179,10 @@ def create_app() -> FastAPI:
     app.include_router(sectors.router)
     app.include_router(agents.router)
     app.include_router(webhooks.router)
+    app.include_router(revops.router)
+    app.include_router(growth_beast_loop.router)
+    app.include_router(proof_to_market.router)
+    app.include_router(observability_beast.router)
     app.include_router(pricing.router)
     app.include_router(prospect.router)
     app.include_router(autonomous.router)
@@ -187,6 +197,8 @@ def create_app() -> FastAPI:
     app.include_router(customer_success.router)
     app.include_router(ecosystem.router)
     app.include_router(command_center.router)
+    app.include_router(company_service.router)
+    app.include_router(company_growth_beast.router)
     app.include_router(revenue_os.router)
     app.include_router(v3.router)
     app.include_router(business.router)
@@ -251,6 +263,13 @@ def create_app() -> FastAPI:
             "docs": "/docs",
             "health": "/health",
             "v3_command_center": "/api/v1/v3/command-center/snapshot",
+            "company_service_command_center": "/api/v1/company-service/command-center",
+            "company_growth_beast": "/api/v1/company-growth-beast/status",
+            "growth_beast_daily_loop": "/api/v1/growth-beast/daily-loop",
+            "revops_finance_brief": "/api/v1/revops/finance-brief",
+            "proof_to_market_plan": "/api/v1/proof-to-market/plan",
+            "observability_beast": "/api/v1/observability-beast/status",
+            "full_ops_daily_command_center": "/api/v1/full-ops/daily-command-center",
             "personal_operator_daily_brief": "/api/v1/personal-operator/daily-brief",
             "personal_operator_launch_report": "/api/v1/personal-operator/launch-report",
             "business_pricing": "/api/v1/business/pricing",
