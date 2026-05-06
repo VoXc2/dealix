@@ -125,6 +125,13 @@ ALLOWLIST: dict[str, dict[str, str]] = {
     "founder-leads.html": {
         "cold": "NEGATION",
     },
+    # Pilot Day 0 customer kickoff — describes "صفر cold outreach، صفر
+    # cold blast، صفر scraping" as part of the safety contract. Pure NEGATION.
+    "pilot-day-0.html": {
+        "blast": "NEGATION",
+        "cold": "NEGATION",
+        "scraping": "NEGATION",
+    },
 }
 
 
