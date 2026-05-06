@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Dealix Styleguide — مكتبة التصميم الموحّدة</title>
+  <meta name="description" content="مكتبة تصميم Dealix الموحّدة — رموز الألوان، حالات الخدمات، أنماط البطاقات، شارات الإجراءات، والمكوّنات المعاد استخدامها عبر كل صفحات Dealix. Bilingual Saudi-RTL design system, single source of truth." />
+  <meta name="theme-color" content="#0f172a" />
+  <meta name="robots" content="index,follow" />
+  <link rel="canonical" href="https://dealix.me/styleguide.html" />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Dealix Styleguide — مكتبة التصميم" />
+  <meta property="og:description" content="مكتبة تصميم Dealix الموحّدة، عربي أولاً، PDPL-aware." />
+  <meta property="og:locale" content="ar_SA" />
+  <meta property="og:url" content="https://dealix.me/styleguide.html" />
+
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Dealix Styleguide — مكتبة التصميم" />
+  <meta name="twitter:description" content="رموز · بطاقات · شارات · مكوّنات معاد استخدامها." />
+
+  <link rel="icon" type="image/svg+xml" href='data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><rect width="32" height="32" rx="7" fill="%230f172a"/><path d="M10 10h7a6 6 0 0 1 0 12h-7z" fill="none" stroke="%2322d3ee" stroke-width="2.5" stroke-linejoin="round"/><circle cx="23" cy="22" r="2" fill="%2322d3ee"/></svg>' />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" />
+
+  <link rel="stylesheet" href="/styles.css" />
+  <link rel="stylesheet" href="/assets/css/design-system.css" />
+
+  <style>
+    body {
+      background: linear-gradient(180deg, #050816 0%, #0f172a 60%, #1e1b4b 100%);
+      color: #e2e8f0;
+      font-family: var(--font-ar);
+      min-height: 100vh;
+      margin: 0;
+      padding: 0;
+    }
+    .sg-shell { max-width: 1200px; margin: 0 auto; padding: 32px 24px 80px; display: grid; gap: 36px; }
+    .sg-back  { font-size: 13px; color: #94a3b8; text-decoration: none; }
+    .sg-back:hover { color: #22d3ee; }
+    .sg-token-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; }
+    .sg-token {
+      display: flex; flex-direction: column; gap: 6px;
+      padding: 14px;
+      border-radius: 10px;
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid rgba(148, 163, 184, 0.14);
+    }
+    .sg-token__swatch { height: 44px; border-radius: 8px; border: 1px solid rgba(148, 163, 184, 0.14); }
+    .sg-token__name   { font-family: ui-monospace, Menlo, monospace; font-size: 11px; color: #22d3ee; direction: ltr; }
+    .sg-token__hex    { font-family: ui-monospace, Menlo, monospace; font-size: 11px; color: #94a3b8; direction: ltr; }
+
+    .sg-row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+    .sg-demo { padding: 18px; border-radius: 12px; background: rgba(15, 23, 42, 0.55); border: 1px solid rgba(148, 163, 184, 0.14); }
+    .sg-snippet {
+      margin-top: 12px;
+      font-family: ui-monospace, Menlo, monospace;
+      font-size: 12px;
+      color: #cbd5e1;
+      background: rgba(2, 6, 23, 0.6);
+      padding: 10px 12px;
+      border-radius: 8px;
+      direction: ltr;
+      overflow-x: auto;
+    }
+    h2.sg-h2 { font-size: 20px; margin: 0 0 4px 0; color: #f8fafc; font-family: var(--font-ar); }
+    .sg-h2-en { font-size: 12px; color: #94a3b8; font-family: var(--font-lt); letter-spacing: 0.04em; text-transform: uppercase; }
+    .sg-desc { color: #94a3b8; font-size: 13px; margin: 0 0 12px 0; line-height: 1.7; }
+  </style>
+</head>
+<body>
+  <main class="sg-shell">
+
+    <header>
+      <a class="sg-back" href="/">← الرجوع إلى الرئيسية</a>
+      <div class="ds-banner" style="margin-top: 12px;">
+        <h1 class="ds-banner__title">مكتبة تصميم Dealix</h1>
+        <p class="ds-banner__subtitle">Single source of truth. Tokens · Components · Action modes. Built on landing/styles.css + landing/assets/css/design-system.css.</p>
+      </div>
+    </header>
+
+    <!-- ─── Color tokens ─── -->
+    <section>
+      <span class="sg-h2-en">01 · Color Tokens</span>
+      <h2 class="sg-h2">رموز الألوان</h2>
+      <p class="sg-desc">رموز معرّفة في <code>styles.css</code> (foundation) و <code>design-system.css</code> (component layer). كل صفحة تستخدمها مباشرة عبر <code>var(--token-name)</code>.</p>
+
+      <div class="sg-token-grid">
+        <div class="sg-token"><div class="sg-token__swatch" style="background: var(--accent);"></div><span class="sg-token__name">--accent</span><span class="sg-token__hex">#0ea5e9</span></div>
+        <div class="sg-token"><div class="sg-token__swatch" style="background: var(--accent-2);"></div><span class="sg-token__name">--accent-2</span><span class="sg-token__hex">#22d3ee</span></div>
+        <div class="sg-token"><div class="sg-token__swatch" style="background: #a855f7;"></div><span class="sg-token__name">violet</span><span class="sg-token__hex">#a855f7</span></div>
+        <div class="sg-token"><div class="sg-token__swatch" style="background: var(--ink-900);"></div><span class="sg-token__name">--ink-900</span><span class="sg-token__hex">#0b1220</span></div>
+        <div class="sg-token"><div class="sg-token__swatch" style="background: var(--ink-700);"></div><span class="sg-token__name">--ink-700</span><span class="sg-token__hex">#1e293b</span></div>
+        <div class="sg-token"><div class="sg-token__swatch" style="background: var(--ink-300);"></div><span class="sg-token__name">--ink-300</span><span class="sg-token__hex">#94a3b8</span></div>
+        <div class="sg-token"><div class="sg-token__swatch" style="background: var(--success, #22c55e);"></div><span class="sg-token__name">--success</span><span class="sg-token__hex">#22c55e</span></div>
+        <div class="sg-token"><div class="sg-token__swatch" style="background: var(--warn, #fbbf24);"></div><span class="sg-token__name">--warn</span><span class="sg-token__hex">#fbbf24</span></div>
+        <div class="sg-token"><div class="sg-token__swatch" style="background: var(--danger, #dc2626);"></div><span class="sg-token__name">--danger</span><span class="sg-token__hex">#dc2626</span></div>
+      </div>
+    </section>
+
+    <!-- ─── ds-banner ─── -->
+    <section>
+      <span class="sg-h2-en">02 · ds-banner</span>
+      <h2 class="sg-h2">شريط الترحيب · Hero banner</h2>
+      <p class="sg-desc">يُستخدم في رأس صفحات العرض الكبيرة. عربي أولاً (العنوان)، الإنجليزية ثانياً (subtitle).</p>
+      <div class="sg-demo">
+        <div class="ds-banner">
+          <h3 class="ds-banner__title">Dealix Beast — قوّة النظام الحيّة</h3>
+          <p class="ds-banner__subtitle">9 layers · 9 roles · 8 hard gates · 13 Golden Loop stages — all live, all auditable.</p>
+        </div>
+        <pre class="sg-snippet">&lt;div class="ds-banner"&gt;
+  &lt;h1 class="ds-banner__title"&gt;عنوان&lt;/h1&gt;
+  &lt;p class="ds-banner__subtitle"&gt;subtitle&lt;/p&gt;
+&lt;/div&gt;</pre>
+      </div>
+    </section>
+
+    <!-- ─── ds-status ─── -->
+    <section>
+      <span class="sg-h2-en">03 · ds-status</span>
+      <h2 class="sg-h2">شارات الحالة · Status pills</h2>
+      <p class="sg-desc">حالات نقاط النهاية الحيّة. تُحدَّث ديناميكياً عبر JS بناءً على رمز HTTP.</p>
+      <div class="sg-demo">
+        <div class="sg-row">
+          <span class="ds-status ds-status--ok">OK</span>
+          <span class="ds-status ds-status--degraded">DEGRADED</span>
+          <span class="ds-status ds-status--error">ERROR</span>
+          <span class="ds-status ds-status--loading">LOADING</span>
+        </div>
+        <pre class="sg-snippet">&lt;span class="ds-status ds-status--ok"&gt;OK&lt;/span&gt;
+&lt;span class="ds-status ds-status--degraded"&gt;DEGRADED&lt;/span&gt;
+&lt;span class="ds-status ds-status--error"&gt;ERROR&lt;/span&gt;
+&lt;span class="ds-status ds-status--loading"&gt;LOADING&lt;/span&gt;</pre>
+      </div>
+    </section>
+
+    <!-- ─── ds-mode ─── -->
+    <section>
+      <span class="sg-h2-en">04 · ds-mode (Action modes — Constitution Article 5)</span>
+      <h2 class="sg-h2">أنماط الإجراء · Action mode pills</h2>
+      <p class="sg-desc">5 أنماط ثابتة من دستور Dealix. لا يوجد نمط سادس — أيّ إجراء خارجي يجب أن يُصنّف إلى أحدها.</p>
+      <div class="sg-demo">
+        <div class="sg-row">
+          <span class="ds-mode ds-mode--suggest">suggest_only</span>
+          <span class="ds-mode ds-mode--draft">draft_only</span>
+          <span class="ds-mode ds-mode--approval">approval_required</span>
+          <span class="ds-mode ds-mode--approved">approved_manual</span>
+          <span class="ds-mode ds-mode--blocked">blocked</span>
+        </div>
+        <pre class="sg-snippet">&lt;span class="ds-mode ds-mode--suggest"&gt;suggest_only&lt;/span&gt;
+&lt;span class="ds-mode ds-mode--draft"&gt;draft_only&lt;/span&gt;
+&lt;span class="ds-mode ds-mode--approval"&gt;approval_required&lt;/span&gt;
+&lt;span class="ds-mode ds-mode--approved"&gt;approved_manual&lt;/span&gt;
+&lt;span class="ds-mode ds-mode--blocked"&gt;blocked&lt;/span&gt;</pre>
+      </div>
+    </section>
+
+    <!-- ─── ds-pulse ─── -->
+    <section>
+      <span class="sg-h2-en">05 · ds-pulse</span>
+      <h2 class="sg-h2">نقطة النبض الحيّة · Live pulse</h2>
+      <p class="sg-desc">مؤشّر دائم للتحديث الذاتي / المراقبة المستمرّة.</p>
+      <div class="sg-demo">
+        <div class="sg-row" style="font-size: 14px; color: #cbd5e1;">
+          <span class="ds-pulse"></span>
+          <span>تحديث تلقائي كل ٦٠ ثانية · auto-refresh every 60s</span>
+        </div>
+        <pre class="sg-snippet">&lt;span class="ds-pulse"&gt;&lt;/span&gt;</pre>
+      </div>
+    </section>
+
+    <!-- ─── ds-card + ds-grid ─── -->
+    <section>
+      <span class="sg-h2-en">06 · ds-card + ds-grid</span>
+      <h2 class="sg-h2">بطاقات + شبكة تكيّفية</h2>
+      <p class="sg-desc">بطاقة عامّة قابلة لإعادة الاستخدام (طبقات Beast، أدوار، رتب الخدمة، مؤشّرات أداء). شبكة تتكيّف تلقائياً (auto-fit).</p>
+      <div class="sg-demo">
+        <div class="ds-grid">
+          <div class="ds-card">
+            <h4 class="ds-card__title">🌱 Growth Beast <span class="ds-status ds-status--ok">OK</span></h4>
+            <p class="ds-card__sub">محرّك النمو الذاتي · self-growing engine</p>
+          </div>
+          <div class="ds-card">
+            <h4 class="ds-card__title">💰 RevOps <span class="ds-status ds-status--ok">OK</span></h4>
+            <p class="ds-card__sub">الحقيقة الماليّة · revenue truth</p>
+          </div>
+          <div class="ds-card ds-card--clickable" tabindex="0">
+            <h4 class="ds-card__title">👥 Role Command <span class="ds-status ds-status--loading">LOADING</span></h4>
+            <p class="ds-card__sub">٩ أدوار يوميّة · 9 daily roles</p>
+          </div>
+        </div>
+        <pre class="sg-snippet">&lt;div class="ds-grid"&gt;
+  &lt;div class="ds-card"&gt;
+    &lt;h4 class="ds-card__title"&gt;العنوان &lt;span class="ds-status ds-status--ok"&gt;OK&lt;/span&gt;&lt;/h4&gt;
+    &lt;p class="ds-card__sub"&gt;subtitle&lt;/p&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</pre>
+      </div>
+    </section>
+
+    <!-- ─── ds-kpi ─── -->
+    <section>
+      <span class="sg-h2-en">07 · ds-kpi</span>
+      <h2 class="sg-h2">مؤشّرات الأداء · KPI tiles</h2>
+      <p class="sg-desc">رقم كبير + تسمية صغيرة. يستخدم العنوان gradient متناسق مع شريط الترحيب.</p>
+      <div class="sg-demo">
+        <div class="ds-grid ds-grid--narrow">
+          <div class="ds-kpi"><span class="ds-kpi__num">7</span><span class="ds-kpi__label">طبقات تشغيل</span></div>
+          <div class="ds-kpi"><span class="ds-kpi__num">9</span><span class="ds-kpi__label">أدوار يوميّة</span></div>
+          <div class="ds-kpi"><span class="ds-kpi__num">8</span><span class="ds-kpi__label">بوّابات صلبة</span></div>
+          <div class="ds-kpi"><span class="ds-kpi__num">499<small style="font-size: 13px;"> SAR</small></span><span class="ds-kpi__label">7-Day Sprint</span></div>
+        </div>
+        <pre class="sg-snippet">&lt;div class="ds-kpi"&gt;
+  &lt;span class="ds-kpi__num"&gt;7&lt;/span&gt;
+  &lt;span class="ds-kpi__label"&gt;طبقات تشغيل&lt;/span&gt;
+&lt;/div&gt;</pre>
+      </div>
+    </section>
+
+    <!-- ─── ds-endpoint + ds-chip + ds-gate ─── -->
+    <section>
+      <span class="sg-h2-en">08 · ds-endpoint, ds-chip, ds-gate</span>
+      <h2 class="sg-h2">شارات صغيرة · Tags &amp; chips</h2>
+      <p class="sg-desc">عناصر مدمجة لإظهار مسارات API، إشارات الدستور، والبوّابات الصلبة.</p>
+      <div class="sg-demo">
+        <div class="sg-row">
+          <span class="ds-endpoint">GET /api/v1/founder/beast-command-center</span>
+          <span class="ds-endpoint">POST /api/v1/growth-beast/offer/match</span>
+        </div>
+        <div class="sg-row" style="margin-top: 12px;">
+          <span class="ds-chip">Article 2 — Golden Loop</span>
+          <span class="ds-chip ds-chip--accent">Article 5 — 5 Action Modes</span>
+          <span class="ds-chip ds-chip--warn">Article 8 — Revenue Truth</span>
+        </div>
+        <div class="sg-row" style="margin-top: 12px;">
+          <span class="ds-gate">NO_LIVE_SEND</span>
+          <span class="ds-gate">NO_FAKE_REVENUE</span>
+          <span class="ds-gate">NO_COLD_WHATSAPP</span>
+        </div>
+        <pre class="sg-snippet">&lt;span class="ds-endpoint"&gt;GET /api/v1/...&lt;/span&gt;
+&lt;span class="ds-chip"&gt;Article 2&lt;/span&gt;
+&lt;span class="ds-gate"&gt;NO_LIVE_SEND&lt;/span&gt;</pre>
+      </div>
+    </section>
+
+    <!-- ─── ds-section + ds-list-clean ─── -->
+    <section>
+      <span class="sg-h2-en">09 · ds-section + ds-list-clean</span>
+      <h2 class="sg-h2">قسم منسّق · Titled section + list</h2>
+      <p class="sg-desc">رأس قسم بعنوان + بيانات وصفيّة، مع قائمة نظيفة بدون نقاط رصاصيّة.</p>
+      <div class="sg-demo">
+        <div class="ds-section">
+          <div class="ds-section__head">
+            <h3 class="ds-section__title">السلّم الخدمي · 5-Rung Service Ladder</h3>
+            <span class="ds-section__meta">Article 9 · 5 rungs</span>
+          </div>
+          <ul class="ds-list-clean">
+            <li>Mini Diagnostic — مجاني</li>
+            <li>7-Day Growth Proof Sprint — 499 SAR</li>
+            <li>30-Day Growth Beast OS — recommended</li>
+            <li>Monthly Retainer</li>
+            <li>Strategic Partner</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── ds-code ─── -->
+    <section>
+      <span class="sg-h2-en">10 · ds-code</span>
+      <h2 class="sg-h2">كتلة كود · Pre-formatted block</h2>
+      <p class="sg-desc">يستخدم لإظهار مسارات الـ Golden Loop والمخرجات API.</p>
+      <div class="sg-demo">
+        <pre class="ds-code">1.  Market Signal           → /growth-beast/signals/evaluate
+2.  ICP Score (90/100)      → /growth-beast/targets/rank
+3.  Offer Match (499 SAR)   → /growth-beast/offer/match
+4.  Warm Route (draft_only) → /growth-beast/warm-route/draft
+6.  Diagnostic (7-day plan) → /company-growth-beast/diagnostic
+13. Weekly Experiment       → /growth-beast/experiment/next</pre>
+      </div>
+    </section>
+
+    <!-- ─── How to use ─── -->
+    <section>
+      <span class="sg-h2-en">11 · How to use</span>
+      <h2 class="sg-h2">طريقة الاستخدام</h2>
+      <p class="sg-desc">أيّ صفحة جديدة في <code>landing/</code> تريد قوّة Beast: اربطي ملفّين، استخدمي الفئات.</p>
+      <div class="sg-demo">
+        <pre class="ds-code">&lt;link rel="stylesheet" href="/styles.css"&gt;
+&lt;link rel="stylesheet" href="/assets/css/design-system.css"&gt;
+&lt;html lang="ar" dir="rtl" data-theme="dark"&gt;
+&lt;body&gt;
+  &lt;div class="ds-banner"&gt;…&lt;/div&gt;
+  &lt;div class="ds-grid"&gt;
+    &lt;div class="ds-card"&gt;…&lt;/div&gt;
+  &lt;/div&gt;
+  &lt;span class="ds-mode ds-mode--draft"&gt;draft_only&lt;/span&gt;
+&lt;/body&gt;</pre>
+      </div>
+    </section>
+
+    <hr class="ds-divider" />
+
+    <footer style="text-align: center; font-size: 13px; color: #94a3b8; line-height: 2;">
+      <p>مكتبة تصميم Dealix · مصدر واحد للحقيقة · Saudi-RTL · Bilingual</p>
+      <p>
+        <a href="/" style="color: #22d3ee; text-decoration: none;">الرئيسية</a> ·
+        <a href="/dealix-beast-power.html" style="color: #22d3ee; text-decoration: none;">Beast Power</a> ·
+        <a href="https://api.dealix.me/docs" target="_blank" rel="noopener" style="color: #22d3ee; text-decoration: none;">/docs</a>
+      </p>
+    </footer>
+  </main>
+</body>
+</html>

@@ -1,0 +1,350 @@
+/* Dealix Design System — component layer.
+ *
+ * Built on top of landing/styles.css design tokens (--ink-50..900,
+ * --accent, --accent-2, --surface, --bg, --shadow-md, --radius,
+ * --radius-lg, --font-ar, --font-lt). Honors [data-theme="dark"] so
+ * pages get a coherent palette without bypassing the foundation.
+ *
+ * Usage: pages link both files:
+ *   <link rel="stylesheet" href="/styles.css">
+ *   <link rel="stylesheet" href="/assets/css/design-system.css">
+ *
+ * All component classes are prefixed `ds-` so they cannot collide
+ * with existing landing styles. See /styleguide.html for live demos
+ * of every component.
+ *
+ * Extends, never overrides, existing tokens.
+ */
+
+/* ─── Aliased tokens (additive, do not redefine existing) ─────────── */
+:root {
+  --ds-status-ok-bg:        rgba(34, 197, 94, 0.18);
+  --ds-status-ok-fg:        #4ade80;
+  --ds-status-degraded-bg:  rgba(217, 158, 43, 0.18);
+  --ds-status-degraded-fg:  #fbbf24;
+  --ds-status-error-bg:     rgba(220, 38, 38, 0.20);
+  --ds-status-error-fg:     #fca5a5;
+  --ds-status-loading-bg:   rgba(148, 163, 184, 0.18);
+  --ds-status-loading-fg:   #cbd5e1;
+
+  --ds-mode-suggest-bg:     rgba(34, 211, 238, 0.16);   /* suggest_only */
+  --ds-mode-suggest-fg:     #22d3ee;
+  --ds-mode-draft-bg:       rgba(168, 85, 247, 0.18);   /* draft_only */
+  --ds-mode-draft-fg:       #c084fc;
+  --ds-mode-approval-bg:    rgba(251, 191, 36, 0.18);   /* approval_required */
+  --ds-mode-approval-fg:    #fbbf24;
+  --ds-mode-approved-bg:    rgba(34, 197, 94, 0.18);    /* approved_manual */
+  --ds-mode-approved-fg:    #4ade80;
+  --ds-mode-blocked-bg:     rgba(220, 38, 38, 0.20);    /* blocked */
+  --ds-mode-blocked-fg:     #fca5a5;
+
+  --ds-card-glow:           0 0 0 1px var(--border, rgba(148, 163, 184, 0.18));
+  --ds-card-elev:           0 12px 30px rgba(2, 6, 23, 0.5);
+  --ds-grid-gap:            18px;
+}
+
+/* Dark-theme refinements. Keeps the design system aligned with the
+ * Beast page palette without redefining the global tokens. */
+[data-theme="dark"] {
+  --ds-card-glow:           0 0 0 1px rgba(148, 163, 184, 0.18);
+  --ds-card-elev:           0 18px 40px rgba(0, 0, 0, 0.5);
+}
+
+/* ─── ds-banner ─────────────────────────────────────────────────────
+ * Hero/section banner with gradient stripe. Used at the top of large
+ * showcase pages. Bilingual: title (Arabic primary), subtitle
+ * (English secondary). */
+.ds-banner {
+  display: grid;
+  gap: 12px;
+  padding: 28px 32px;
+  border-radius: var(--radius-lg, 20px);
+  background: linear-gradient(135deg, rgba(14, 165, 233, 0.20), rgba(168, 85, 247, 0.18));
+  border: 1px solid rgba(148, 163, 184, 0.20);
+  font-family: var(--font-ar);
+}
+.ds-banner__title {
+  font-size: clamp(28px, 4vw, 42px);
+  font-weight: 700;
+  line-height: 1.2;
+  margin: 0;
+  background: linear-gradient(90deg, var(--accent-2, #22d3ee), #a855f7);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.ds-banner__subtitle {
+  margin: 0;
+  font-size: clamp(15px, 1.6vw, 18px);
+  color: var(--text-muted, #94a3b8);
+  font-family: var(--font-lt);
+  font-weight: 500;
+  letter-spacing: 0.02em;
+}
+
+/* ─── ds-status (pill) ──────────────────────────────────────────────
+ * Compact status pill. Add one variant: ok | degraded | error | loading. */
+.ds-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  font-family: var(--font-lt);
+  background: var(--ds-status-loading-bg);
+  color: var(--ds-status-loading-fg);
+}
+.ds-status--ok        { background: var(--ds-status-ok-bg);        color: var(--ds-status-ok-fg); }
+.ds-status--degraded  { background: var(--ds-status-degraded-bg);  color: var(--ds-status-degraded-fg); }
+.ds-status--error     { background: var(--ds-status-error-bg);     color: var(--ds-status-error-fg); }
+.ds-status--loading   { background: var(--ds-status-loading-bg);   color: var(--ds-status-loading-fg); }
+
+/* ─── ds-mode (action mode pill) ────────────────────────────────────
+ * One of the 5 canonical action modes (Constitution Article 5).
+ * Variants: suggest | draft | approval | approved | blocked. */
+.ds-mode {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 9px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  font-family: var(--font-lt);
+}
+.ds-mode--suggest   { background: var(--ds-mode-suggest-bg);   color: var(--ds-mode-suggest-fg); }
+.ds-mode--draft     { background: var(--ds-mode-draft-bg);     color: var(--ds-mode-draft-fg); }
+.ds-mode--approval  { background: var(--ds-mode-approval-bg);  color: var(--ds-mode-approval-fg); }
+.ds-mode--approved  { background: var(--ds-mode-approved-bg);  color: var(--ds-mode-approved-fg); }
+.ds-mode--blocked   { background: var(--ds-mode-blocked-bg);   color: var(--ds-mode-blocked-fg); }
+
+/* ─── ds-pulse (live indicator) ────────────────────────────────────
+ * Small pulsing dot for "live", "auto-refresh", "monitoring" cues. */
+.ds-pulse {
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #22c55e;
+  box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.6);
+  animation: ds-pulse-anim 2s infinite;
+}
+@keyframes ds-pulse-anim {
+  0%   { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.6); }
+  70%  { box-shadow: 0 0 0 12px rgba(34, 197, 94, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
+}
+
+/* ─── ds-card (feature/beast-layer card) ───────────────────────────
+ * Generic content card with hover lift. Used for Beast layers, role
+ * cards, ladder rungs, KPI tiles. */
+.ds-card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 18px 20px;
+  background: var(--surface, #ffffff);
+  border-radius: var(--radius, 14px);
+  box-shadow: var(--ds-card-glow), var(--ds-card-elev);
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+[data-theme="dark"] .ds-card {
+  background: rgba(15, 23, 42, 0.7);
+  backdrop-filter: blur(8px);
+}
+.ds-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 0 1px rgba(34, 211, 238, 0.4), 0 22px 50px rgba(2, 6, 23, 0.6);
+}
+.ds-card__title {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text, #0f172a);
+  font-family: var(--font-ar);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.ds-card__sub {
+  margin: 0;
+  font-size: 13px;
+  color: var(--text-muted, #64748b);
+  font-family: var(--font-lt);
+  letter-spacing: 0.02em;
+}
+
+/* ─── ds-card--clickable (interactive variant) ─────────────────── */
+.ds-card--clickable {
+  cursor: pointer;
+}
+.ds-card--clickable:focus-visible {
+  outline: 2px solid var(--accent, #0ea5e9);
+  outline-offset: 3px;
+}
+
+/* ─── ds-grid (responsive auto-fit grid) ────────────────────────── */
+.ds-grid {
+  display: grid;
+  gap: var(--ds-grid-gap);
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+.ds-grid--narrow { grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); }
+.ds-grid--wide   { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+
+/* ─── ds-kpi (number + label tile) ────────────────────────────────
+ * Hero stat tile. Number is large and gradient; label is small. */
+.ds-kpi {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 16px 18px;
+  background: var(--surface, #ffffff);
+  border-radius: var(--radius, 14px);
+  box-shadow: var(--ds-card-glow);
+}
+[data-theme="dark"] .ds-kpi { background: rgba(15, 23, 42, 0.55); }
+.ds-kpi__num {
+  font-size: clamp(22px, 3vw, 32px);
+  font-weight: 800;
+  font-family: var(--font-lt);
+  background: linear-gradient(90deg, var(--accent-2, #22d3ee), #a855f7);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  letter-spacing: -0.02em;
+}
+.ds-kpi__label {
+  font-size: 12px;
+  color: var(--text-muted, #64748b);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  font-family: var(--font-lt);
+}
+
+/* ─── ds-endpoint (inline API path tag) ───────────────────────── */
+.ds-endpoint {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 6px;
+  background: rgba(34, 211, 238, 0.12);
+  color: var(--accent-2, #22d3ee);
+  font-family: ui-monospace, "SFMono-Regular", "Cascadia Code", Menlo, monospace;
+  font-size: 11px;
+  letter-spacing: 0.02em;
+  direction: ltr;
+  unicode-bidi: isolate;
+}
+
+/* ─── ds-chip (constitution article ref / category tag) ─────────── */
+.ds-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  border-radius: 6px;
+  background: rgba(168, 85, 247, 0.14);
+  color: #c084fc;
+  font-size: 11px;
+  font-weight: 600;
+  font-family: var(--font-lt);
+  letter-spacing: 0.03em;
+}
+.ds-chip--accent { background: rgba(34, 211, 238, 0.14); color: var(--accent-2, #22d3ee); }
+.ds-chip--warn   { background: rgba(251, 191, 36, 0.14); color: #fbbf24; }
+
+/* ─── ds-gate (immutable hard-gate row) ──────────────────────────
+ * Used to render NO_LIVE_SEND, NO_FAKE_REVENUE, etc. Pre-styled
+ * with a lock glyph slot and red-tinted background. */
+.ds-gate {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: rgba(220, 38, 38, 0.10);
+  border: 1px solid rgba(220, 38, 38, 0.22);
+  font-family: ui-monospace, "SFMono-Regular", Menlo, monospace;
+  font-size: 12px;
+  color: #fca5a5;
+  letter-spacing: 0.04em;
+  direction: ltr;
+  unicode-bidi: isolate;
+}
+.ds-gate::before {
+  content: "🔒";
+  font-size: 11px;
+}
+
+/* ─── ds-code (preformatted block) ──────────────────────────────── */
+.ds-code {
+  margin: 0;
+  padding: 14px 16px;
+  background: rgba(2, 6, 23, 0.5);
+  border-radius: var(--radius-sm, 8px);
+  border: 1px solid rgba(148, 163, 184, 0.14);
+  font-family: ui-monospace, "SFMono-Regular", Menlo, monospace;
+  font-size: 12px;
+  line-height: 1.7;
+  color: var(--text, #cbd5e1);
+  overflow-x: auto;
+  direction: ltr;
+  unicode-bidi: isolate;
+}
+
+/* ─── ds-section (section wrapper with title bar) ───────────────── */
+.ds-section {
+  display: grid;
+  gap: 14px;
+}
+.ds-section__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.ds-section__title {
+  margin: 0;
+  font-size: clamp(18px, 2vw, 22px);
+  font-weight: 700;
+  font-family: var(--font-ar);
+}
+.ds-section__meta {
+  font-size: 12px;
+  color: var(--text-muted, #64748b);
+  font-family: var(--font-lt);
+}
+
+/* ─── ds-list-clean (reset bullets, keep spacing) ─────────────── */
+.ds-list-clean {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 6px;
+  font-size: 13px;
+  line-height: 1.7;
+}
+.ds-list-clean li::before {
+  content: "·";
+  margin-inline-end: 6px;
+  color: var(--accent-2, #22d3ee);
+  font-weight: 800;
+}
+
+/* ─── ds-divider (subtle horizontal rule) ──────────────────────── */
+.ds-divider {
+  height: 1px;
+  width: 100%;
+  background: rgba(148, 163, 184, 0.14);
+  margin: 24px 0;
+  border: 0;
+}
