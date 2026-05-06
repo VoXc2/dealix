@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "summary": {
-    "total_pages": 31,
+    "total_pages": 34,
     "pages_with_required_gap": 0,
     "pages_with_advisory_gap": 1
   },
@@ -27,6 +27,22 @@
   "pages": [
     {
       "path": "academy.html",
+      "present": {
+        "title": true,
+        "meta_description": true,
+        "meta_viewport": true,
+        "html_lang": true,
+        "html_dir": true,
+        "canonical": true,
+        "og_title": true,
+        "og_description": true,
+        "twitter_card": true
+      },
+      "missing_required": [],
+      "missing_advisory": []
+    },
+    {
+      "path": "ai-team.html",
       "present": {
         "title": true,
         "meta_description": true,
@@ -171,6 +187,22 @@
     },
     {
       "path": "dealix-live-demo.html",
+      "present": {
+        "title": true,
+        "meta_description": true,
+        "meta_viewport": true,
+        "html_lang": true,
+        "html_dir": true,
+        "canonical": true,
+        "og_title": true,
+        "og_description": true,
+        "twitter_card": true
+      },
+      "missing_required": [],
+      "missing_advisory": []
+    },
+    {
+      "path": "diagnostic.html",
       "present": {
         "title": true,
         "meta_description": true,
@@ -400,6 +432,22 @@
     },
     {
       "path": "simulator.html",
+      "present": {
+        "title": true,
+        "meta_description": true,
+        "meta_viewport": true,
+        "html_lang": true,
+        "html_dir": true,
+        "canonical": true,
+        "og_title": true,
+        "og_description": true,
+        "twitter_card": true
+      },
+      "missing_required": [],
+      "missing_advisory": []
+    },
+    {
+      "path": "start.html",
       "present": {
         "title": true,
         "meta_description": true,

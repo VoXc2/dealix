@@ -94,6 +94,32 @@ ALLOWLIST: dict[str, dict[str, str]] = {
         "blast": "NEGATION",
         "scraping": "NEGATION",
     },
+    # Homepage hero updated to AI Operating Team framing — promises
+    # "صفر cold outreach، صفر scraping، صفر إرسال حيّ بدون موافقة".
+    # Pure NEGATION (what we don't do).
+    "index.html": {
+        "cold": "NEGATION",
+        "scraping": "NEGATION",
+    },
+    # AI Operating Team positioning page — anti-claim banner explicitly
+    # rejects "guaranteed-revenue" and lists every immutable hard gate
+    # ("لا cold WhatsApp"، "لا scraping"). Pure NEGATION throughout.
+    "ai-team.html": {
+        "cold": "NEGATION",
+        "guaranteed": "NEGATION",
+        "scraping": "NEGATION",
+        "مضمون": "NEGATION",
+    },
+    # Pilot signup page — "what we will NOT do" section enumerates
+    # forbidden actions we explicitly reject. Pure NEGATION.
+    "start.html": {
+        "cold": "NEGATION",
+        "scraping": "NEGATION",
+    },
+    # Diagnostic intake — "صفر cold outreach" promise. Pure NEGATION.
+    "diagnostic.html": {
+        "cold": "NEGATION",
+    },
 }
 
 
