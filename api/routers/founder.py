@@ -282,3 +282,56 @@ async def dashboard() -> dict:
         cached_dashboard_payload,
     )
     return cached_dashboard_payload(build_dashboard_payload)
+
+
+@router.get("/leads")
+async def leads(
+    limit: int = 200,
+    status: str | None = None,
+) -> dict[str, Any]:
+    """Lead-inbox feed for the founder. Lists every demo / pilot
+    inquiry persisted by the public form, newest first.
+
+    Read-only. Backed by `auto_client_acquisition.lead_inbox` — a
+    JSON-Lines file at $DEALIX_LEAD_INBOX_PATH (default
+    `var/lead-inbox.jsonl`, gitignored).
+
+    Server-side this endpoint is unauthenticated, but the matching
+    landing page (/founder-leads.html) is gated by the access-tier
+    JS overlay so the public never reaches it casually. Real auth
+    comes when first paying customer ships per Article 13.
+    """
+    from auto_client_acquisition import lead_inbox
+    return {
+        "schema_version": 1,
+        "leads": lead_inbox.list_leads(limit=limit, status=status),
+        "stats": lead_inbox.stats(),
+        "hard_gates": {
+            "no_live_send_to_leads": True,
+            "no_cold_outreach": True,
+            "manual_follow_up_only": True,
+        },
+        "next_action_ar": "افتح /founder-leads.html وابدأ بالـ leads الجديدة",
+        "next_action_en": "Open /founder-leads.html and start with the 'new' leads.",
+    }
+
+
+@router.post("/leads/{lead_id}/status")
+async def update_lead_status(
+    lead_id: str,
+    body: dict[str, Any],
+) -> dict[str, Any]:
+    """Update the status of a single lead (new / contacted /
+    qualified / converted / lost). Append-only — original record
+    stays intact, status changes are appended to the audit log."""
+    from auto_client_acquisition import lead_inbox
+    new_status = str(body.get("status") or "").strip()
+    try:
+        rec = lead_inbox.update_status(lead_id, new_status)
+    except ValueError as exc:
+        from fastapi import HTTPException
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
+    if rec is None:
+        from fastapi import HTTPException
+        raise HTTPException(status_code=404, detail="lead_inbox_empty")
+    return {"ok": True, "change": rec}

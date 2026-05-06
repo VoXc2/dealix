@@ -120,6 +120,11 @@ ALLOWLIST: dict[str, dict[str, str]] = {
     "diagnostic.html": {
         "cold": "NEGATION",
     },
+    # Founder leads inbox — footer states "لا cold outreach من النظام"
+    # as a privacy promise. Pure NEGATION.
+    "founder-leads.html": {
+        "cold": "NEGATION",
+    },
 }
 
 

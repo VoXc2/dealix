@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-theme="dark">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Lead Inbox — للمؤسس فقط · Dealix Founder</title>
+<meta name="description" content="صندوق الـ leads الخاصّ — كلّ طلب تجربة من landing/diagnostic/start. للمؤسس فقط." />
+<meta name="robots" content="noindex,nofollow" />
+<link rel="canonical" href="https://dealix.me/founder-leads.html" />
+<meta property="og:title" content="Founder Lead Inbox · Private" />
+<meta property="og:description" content="Private founder-only lead inbox." />
+<meta property="og:locale" content="ar_SA" />
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:title" content="Founder Lead Inbox" />
+<meta name="twitter:description" content="Private founder-only lead inbox." />
+<meta name="theme-color" content="#0f172a" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" />
+
+<link rel="stylesheet" href="/styles.css" />
+<link rel="stylesheet" href="/assets/css/design-system.css" />
+
+<!-- Founder-tier access gate: page is hidden until correct token entered. -->
+<script src="/assets/js/access-gate.js" data-tier="founder"></script>
+
+<style>
+  body {
+    background:
+      radial-gradient(900px 500px at 80% -10%, rgba(168, 85, 247, 0.16), transparent 60%),
+      radial-gradient(900px 500px at 0% 10%, rgba(14, 165, 233, 0.16), transparent 60%),
+      linear-gradient(180deg, #050816 0%, #0b1124 60%, #1e1b4b 100%);
+    color: var(--text);
+    min-height: 100vh;
+    margin: 0;
+    font-family: var(--font-ar);
+  }
+  main { padding: var(--space-7) var(--space-5) var(--space-9); }
+  .lead-row {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-4);
+    padding: var(--space-5);
+    background: var(--ds-surface-1);
+    border: 1px solid var(--ds-border);
+    border-radius: var(--radius, 14px);
+  }
+  .lead-row__head { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); flex-wrap: wrap; }
+  .lead-row__head h3 { margin: 0; font-size: var(--fs-md); font-weight: 700; }
+  .lead-row__meta {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 4px var(--space-3);
+    font-size: var(--fs-sm);
+    color: var(--text-muted);
+  }
+  .lead-row__meta strong { color: var(--accent-2); font-weight: 600; }
+  .lead-row__msg {
+    padding: var(--space-3) var(--space-4);
+    background: rgba(2, 6, 23, 0.4);
+    border-radius: var(--radius-sm, 8px);
+    font-size: var(--fs-sm);
+    line-height: var(--lh-base);
+    color: var(--text-muted);
+    border-inline-start: 3px solid var(--accent-2);
+  }
+  .lead-row__actions { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+  .lead-row__id { font-family: ui-monospace, "SFMono-Regular", Menlo, monospace; font-size: var(--fs-xs); color: var(--text-muted); direction: ltr; }
+</style>
+</head>
+<body>
+<a class="ds-skip-link" href="#main">تخطّ إلى المحتوى الرئيسي</a>
+
+<main id="main" class="ds-container--full ds-stack ds-stack--xl">
+
+  <!-- Breadcrumb -->
+  <nav class="ds-breadcrumb" aria-label="مسار التنقّل">
+    <a href="/">الرئيسيّة</a>
+    <span class="ds-breadcrumb__sep" aria-hidden="true"></span>
+    <a href="/founder.html">للمؤسس</a>
+    <span class="ds-breadcrumb__sep" aria-hidden="true"></span>
+    <span aria-current="page">Lead Inbox</span>
+  </nav>
+
+  <!-- Hero -->
+  <section class="ds-banner ds-stack ds-stack--sm">
+    <span class="ds-eyebrow">Founder · private</span>
+    <h1 class="ds-banner__title">📥 Lead Inbox</h1>
+    <p class="ds-banner__subtitle">كلّ طلب تجربة / تشخيص / بايلوت يصل من dealix.me. مرتَّب من الأحدث للأقدم. تحديث تلقائي كلّ ٦٠ ثانية.</p>
+  </section>
+
+  <!-- Stats KPIs -->
+  <section class="ds-grid ds-grid--narrow" aria-label="ملخّصات">
+    <div class="ds-kpi"><span class="ds-kpi__num" id="stat-total">…</span><span class="ds-kpi__label">إجمالي الـ leads</span></div>
+    <div class="ds-kpi"><span class="ds-kpi__num" id="stat-new">…</span><span class="ds-kpi__label">new</span></div>
+    <div class="ds-kpi"><span class="ds-kpi__num" id="stat-contacted">…</span><span class="ds-kpi__label">contacted</span></div>
+    <div class="ds-kpi"><span class="ds-kpi__num" id="stat-qualified">…</span><span class="ds-kpi__label">qualified</span></div>
+    <div class="ds-kpi"><span class="ds-kpi__num" id="stat-converted">…</span><span class="ds-kpi__label">converted</span></div>
+  </section>
+
+  <!-- Filter tabs -->
+  <section>
+    <div class="ds-tabs" role="tablist" aria-label="فلتر بالحالة">
+      <button class="ds-tabs__tab" role="tab" aria-selected="true"  data-status="">الكلّ</button>
+      <button class="ds-tabs__tab" role="tab" aria-selected="false" data-status="new">new</button>
+      <button class="ds-tabs__tab" role="tab" aria-selected="false" data-status="contacted">contacted</button>
+      <button class="ds-tabs__tab" role="tab" aria-selected="false" data-status="qualified">qualified</button>
+      <button class="ds-tabs__tab" role="tab" aria-selected="false" data-status="converted">converted</button>
+      <button class="ds-tabs__tab" role="tab" aria-selected="false" data-status="lost">lost</button>
+    </div>
+  </section>
+
+  <!-- Leads list -->
+  <section aria-labelledby="leads-title" class="ds-stack ds-stack--md">
+    <div class="ds-row" style="justify-content: space-between;">
+      <h2 id="leads-title" class="ds-headline" style="font-size: var(--fs-2xl);">قائمة الـ leads</h2>
+      <button class="ds-btn ds-btn--ghost ds-btn--sm" id="btn-refresh">إعادة تحميل</button>
+    </div>
+    <div id="leads-list" class="ds-stack ds-stack--md" aria-live="polite">
+      <p class="ds-lede">جاري التحميل…</p>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="ds-footer">
+    <div class="ds-container ds-stack ds-stack--md" style="text-align: center;">
+      <p class="ds-lede" style="max-width: 640px; margin: 0 auto; font-size: var(--fs-sm);">
+        مساحة خاصّة. كلّ متابعة تتمّ يدوياً عبر WhatsApp / إيميل — لا cold outreach من النظام.
+      </p>
+      <div class="ds-row" style="justify-content: center; gap: var(--space-5); flex-wrap: wrap;">
+        <a class="ds-link" href="/">الرئيسيّة</a>
+        <a class="ds-link" href="/founder.html">للمؤسس</a>
+        <a class="ds-link" href="/decisions.html">القرارات اليوميّة</a>
+        <a class="ds-link" href="/dealix-beast-power.html">Beast Power</a>
+        <a class="ds-link" href="#" onclick="window.dealixAccessLogout(); return false;">خروج · log out</a>
+      </div>
+    </div>
+  </footer>
+
+</main>
+
+<script>
+  const API_BASE = window.DEALIX_API_BASE || 'https://api.dealix.me';
+  let currentFilter = '';
+
+  function escapeHtml(s) {
+    return String(s || '')
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  }
+
+  function statusPill(status) {
+    const map = {
+      new:        ['suggest', 'new'],
+      contacted:  ['draft', 'contacted'],
+      qualified:  ['approval', 'qualified'],
+      converted:  ['approved', 'converted'],
+      lost:       ['blocked', 'lost'],
+    };
+    const [variant, label] = map[status] || ['suggest', status || 'new'];
+    return `<span class="ds-mode ds-mode--${variant}">${label}</span>`;
+  }
+
+  function renderRow(lead) {
+    const recvISO = lead.received_at || '';
+    const recvHuman = recvISO ? new Date(recvISO).toLocaleString('ar-SA', { dateStyle: 'medium', timeStyle: 'short' }) : '—';
+    const status = lead.status || 'new';
+    const statuses = ['new', 'contacted', 'qualified', 'converted', 'lost'];
+    return `
+      <article class="lead-row">
+        <div class="lead-row__head">
+          <h3>${escapeHtml(lead.company || '(no company)')}</h3>
+          <div class="ds-row" style="gap: var(--space-2);">
+            ${statusPill(status)}
+            <span class="lead-row__id">${escapeHtml(lead.id || '')}</span>
+          </div>
+        </div>
+        <div class="lead-row__meta">
+          <strong>الاسم</strong> <span>${escapeHtml(lead.name || '—')}</span>
+          <strong>إيميل</strong> <span dir="ltr">${escapeHtml(lead.email || '—')}</span>
+          <strong>جوّال</strong> <span dir="ltr">${escapeHtml(lead.phone || '—')}</span>
+          <strong>القطاع</strong> <span>${escapeHtml(lead.sector || '—')}</span>
+          <strong>الحجم</strong> <span>${escapeHtml(lead.size || '—')}</span>
+          <strong>المصدر</strong> <span dir="ltr">${escapeHtml(lead.source || '—')}</span>
+          <strong>الوقت</strong> <span>${escapeHtml(recvHuman)}</span>
+        </div>
+        ${lead.message ? `<p class="lead-row__msg">${escapeHtml(lead.message)}</p>` : ''}
+        <div class="lead-row__actions">
+          ${statuses.filter(s => s !== status).map(s => `
+            <button class="ds-btn ds-btn--ghost ds-btn--sm" data-lead-id="${escapeHtml(lead.id || '')}" data-new-status="${s}">→ ${s}</button>
+          `).join('')}
+          ${lead.email ? `<a class="ds-btn ds-btn--subtle ds-btn--sm" href="mailto:${escapeHtml(lead.email)}?subject=${encodeURIComponent('Dealix · ' + (lead.company || ''))}" target="_blank" rel="noopener">📧 إيميل</a>` : ''}
+          ${lead.phone ? `<a class="ds-btn ds-btn--subtle ds-btn--sm" href="https://wa.me/${escapeHtml(lead.phone.replace(/[^\d]/g, ''))}" target="_blank" rel="noopener">💬 واتس</a>` : ''}
+        </div>
+      </article>`;
+  }
+
+  function renderList(leads) {
+    const list = document.getElementById('leads-list');
+    if (!leads.length) {
+      list.innerHTML = '<p class="ds-lede">ما فيه leads بعد. أرسل دعوات للـ /diagnostic.html أو /start.html — وكلّ طلب جديد يظهر هنا.</p>';
+      return;
+    }
+    list.innerHTML = leads.map(renderRow).join('');
+    // Wire status-change buttons
+    list.querySelectorAll('button[data-lead-id]').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const leadId = btn.getAttribute('data-lead-id');
+        const newStatus = btn.getAttribute('data-new-status');
+        btn.disabled = true; btn.textContent = '…';
+        try {
+          const r = await fetch(`${API_BASE}/api/v1/founder/leads/${leadId}/status`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ status: newStatus }),
+          });
+          if (!r.ok) throw new Error('HTTP ' + r.status);
+          await refresh();
+        } catch (e) {
+          btn.disabled = false; btn.textContent = '→ ' + newStatus;
+          alert('فشل التحديث: ' + e.message);
+        }
+      });
+    });
+  }
+
+  function renderStats(stats) {
+    document.getElementById('stat-total').textContent = stats.total_leads ?? 0;
+    const bs = stats.by_status || {};
+    document.getElementById('stat-new').textContent       = bs.new       ?? 0;
+    document.getElementById('stat-contacted').textContent = bs.contacted ?? 0;
+    document.getElementById('stat-qualified').textContent = bs.qualified ?? 0;
+    document.getElementById('stat-converted').textContent = bs.converted ?? 0;
+  }
+
+  async function refresh() {
+    const list = document.getElementById('leads-list');
+    list.innerHTML = '<p class="ds-lede">جاري التحميل…</p>';
+    try {
+      const url = `${API_BASE}/api/v1/founder/leads?limit=200${currentFilter ? `&status=${currentFilter}` : ''}`;
+      const r = await fetch(url, { cache: 'no-store' });
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      const data = await r.json();
+      renderStats(data.stats || {});
+      renderList(data.leads || []);
+    } catch (e) {
+      list.innerHTML = `<p class="ds-lede" style="color:#fca5a5">خطأ: ${e.message}. تأكّد إن الـ API ناشر آخر تحديث.</p>`;
+    }
+  }
+
+  // Wire tabs
+  document.querySelectorAll('.ds-tabs__tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.ds-tabs__tab').forEach(t => t.setAttribute('aria-selected', 'false'));
+      tab.setAttribute('aria-selected', 'true');
+      currentFilter = tab.getAttribute('data-status') || '';
+      refresh();
+    });
+  });
+
+  document.getElementById('btn-refresh').addEventListener('click', refresh);
+
+  refresh();
+  setInterval(refresh, 60000);
+</script>
+
+</body>
+</html>
