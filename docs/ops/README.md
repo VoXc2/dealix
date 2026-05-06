@@ -4,7 +4,7 @@ Operational playbooks, queues, and checklists live in this folder.
 
 **خطة الإكمال الشاملة (دمج + CI + نشر + عميل):** [COMPREHENSIVE_COMPLETION_PLAN_AR.md](../COMPREHENSIVE_COMPLETION_PLAN_AR.md)
 
-**Level 1 Full Ops (Google Sheet + Form + Apps Script + evidence):** start at [full_ops_pack/DEALIX_FULL_OPS_SETUP.md](full_ops_pack/DEALIX_FULL_OPS_SETUP.md).
+**Level 1 Full Ops (Google Sheet + Form + Apps Script + evidence):** start at [full_ops_pack/DEALIX_FULL_OPS_SETUP.md](full_ops_pack/DEALIX_FULL_OPS_SETUP.md). **بدون سكربت:** [full_ops_pack/OPERATING_BOARD_FORMULAS_ONLY_AR.md](full_ops_pack/OPERATING_BOARD_FORMULAS_ONLY_AR.md).
 
 **Day-one execution:** [LAUNCH_DAY_ONE_KIT.md](LAUNCH_DAY_ONE_KIT.md) · [DAILY_OPERATING_LOOP.md](DAILY_OPERATING_LOOP.md) · [daily_scorecard.md](daily_scorecard.md)
 
