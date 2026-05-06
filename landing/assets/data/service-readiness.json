@@ -4,9 +4,9 @@
   "last_updated": "2026-05-04",
   "source_file": "docs/registry/SERVICE_READINESS_MATRIX.yaml",
   "counts": {
-    "live": 0,
-    "pilot": 1,
-    "partial": 7,
+    "live": 3,
+    "pilot": 0,
+    "partial": 5,
     "target": 24,
     "blocked": 0,
     "backlog": 0,
@@ -69,7 +69,7 @@
       "name_en": "Lead Intake — WhatsApp",
       "bundle": "growth_starter",
       "capability_group": "lead_intake",
-      "status": "partial",
+      "status": "live",
       "customer_value_ar": "يلتقط رسائل العملاء الواردة على واتساب، يصنّف النيّة، ويجهّز\nالردّ أو كرت القرار للمؤسس — دون إرسال رسائل بدون موافقة.\n",
       "customer_value_en": "Captures inbound WhatsApp messages, classifies intent, and prepares\na draft reply or founder decision card. Never initiates outreach.\n",
       "target_customer_ar": "شركات B2B سعودية تستقبل استفسارات على واتساب.",
@@ -134,16 +134,28 @@
         "audit trail proven against a sample lead"
       ],
       "tests_required": [
-        "tests/test_whatsapp_signature.py"
+        "tests/test_whatsapp_signature.py",
+        "tests/test_whatsapp_safe_send_v14.py"
       ],
+      "gates": {
+        "inputs": true,
+        "workflow": true,
+        "agent_role": true,
+        "human_approval": true,
+        "safe_tool_gateway": true,
+        "deliverable": true,
+        "proof_metric": true,
+        "test_or_evidence": true
+      },
       "risks": [
         "meta_policy_change",
         "24h_window_drift"
       ],
       "sla": "response_draft_within_5min_during_business_hours",
-      "last_verified_at": "2026-05-04",
+      "last_verified_at": "2026-05-06",
       "evidence": [
         "tests/test_whatsapp_signature.py",
+        "tests/test_whatsapp_safe_send_v14.py",
         "docs/WHATSAPP_OPERATOR_FLOW.md"
       ]
     },
@@ -375,7 +387,7 @@
       "name_en": "Qualification (BANT / MEDDPICC)",
       "bundle": "growth_starter",
       "capability_group": "qualification",
-      "status": "pilot",
+      "status": "live",
       "customer_value_ar": "يستخرج من المحادثة إشارات الميزانية والاحتياج وصاحب القرار\nويبني درجة تأهيل قابلة للتفسير.\n",
       "customer_value_en": "Extracts budget, need, and decision-maker signals from the\nconversation and builds an explainable qualification score.\n",
       "target_customer_ar": "شركات B2B تتعامل مع طلبات متفاوتة الجدّية.",
@@ -430,13 +442,23 @@
         "audit trail proven"
       ],
       "tests_required": [
-        "tests/test_qualification_stability.py"
+        "tests/test_qualification_failure_paths_v14.py"
       ],
+      "gates": {
+        "inputs": true,
+        "workflow": true,
+        "agent_role": true,
+        "human_approval": true,
+        "safe_tool_gateway": true,
+        "deliverable": true,
+        "proof_metric": true,
+        "test_or_evidence": true
+      },
       "risks": [
         "drift_in_llm_outputs"
       ],
       "sla": "score_within_1min",
-      "last_verified_at": "2026-05-04",
+      "last_verified_at": "2026-05-06",
       "evidence": [
         "tests/test_personal_operator.py"
       ]
@@ -1839,7 +1861,7 @@
       "name_en": "Audit Trail",
       "bundle": "internal",
       "capability_group": "observability",
-      "status": "partial",
+      "status": "live",
       "customer_value_ar": "سجل تدقيق على كل إجراء حسّاس مع correlation_id موحّد.\n",
       "customer_value_en": "Audit record on every sensitive action with a unified correlation_id.\n",
       "target_customer_ar": "فِرق الامتثال والهندسة.",
@@ -1889,15 +1911,27 @@
         "audit trail proven"
       ],
       "tests_required": [
-        "tests/test_audit_trail.py"
+        "tests/test_audit_correlation_id_v14.py"
       ],
+      "gates": {
+        "inputs": true,
+        "workflow": true,
+        "agent_role": true,
+        "human_approval": true,
+        "safe_tool_gateway": true,
+        "deliverable": true,
+        "proof_metric": true,
+        "test_or_evidence": true
+      },
       "risks": [
         "log_volume_growth"
       ],
       "sla": "lookup_within_2sec",
-      "last_verified_at": "2026-05-04",
+      "last_verified_at": "2026-05-06",
       "evidence": [
-        "docs/SECURITY_GUIDE.md"
+        "docs/SECURITY_GUIDE.md",
+        "tests/test_audit_correlation_id_v14.py",
+        "api/middleware.py"
       ]
     },
     {
