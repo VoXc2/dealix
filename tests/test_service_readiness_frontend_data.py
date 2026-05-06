@@ -37,9 +37,9 @@ def test_json_counts_match_yaml():
     with JSON_OUT.open("r", encoding="utf-8") as f:
         j = json.load(f)
     assert j["counts"]["total"] == len(m["services"]) == 32
-    assert j["counts"]["live"] == 6
+    assert j["counts"]["live"] == 8
     assert j["counts"]["pilot"] == 0
-    assert j["counts"]["partial"] == 2
+    assert j["counts"]["partial"] == 0
     assert j["counts"]["target"] == 24
     assert j["counts"]["blocked"] == 0
 

@@ -236,17 +236,16 @@ def test_list_available_services_returns_32():
     assert len(services) == 32
 
 
-def test_build_delivery_plan_for_partial_service():
-    """Verify build_delivery_plan against a service that is still
-    in development. After PR #166 (Phase K1), `lead_intake_whatsapp`
-    flipped to `live`, so this test now uses `enrichment` — which
-    remains `partial` until PR #168 lands the provider abstraction
-    + confidence-score test.
+def test_build_delivery_plan_for_live_service():
+    """After Phase K (PRs #166+#167+#168), all 8 in-development
+    services flipped to LIVE. This test verifies build_delivery_plan
+    works correctly for a now-LIVE service: still produces a valid
+    plan with intake checklist + bilingual workflow rows.
     """
     plan = build_delivery_plan("enrichment").to_dict()
     assert plan["service_id"] == "enrichment"
-    assert plan["status"] == "partial"
-    # YAML lists required_inputs for this service → intake checklist items.
+    assert plan["status"] == "live"
+    # YAML lists required_inputs → intake checklist items even for live services.
     assert len(plan["intake_checklist"]) >= 1
     # workflow_steps lists steps → bilingual rows.
     assert len(plan["workflow_plan_ar"]) >= 1

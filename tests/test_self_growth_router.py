@@ -51,9 +51,9 @@ async def test_service_activation_endpoint_returns_matrix():
     #   K6: routing partial → live
     # Total: 6 LIVE. Remaining 2 PARTIAL (enrichment + release_gate)
     # close in PR #168.
-    assert payload["counts"]["live"] == 6
+    assert payload["counts"]["live"] == 8
     assert payload["counts"]["pilot"] == 0
-    assert payload["counts"]["partial"] == 2
+    assert payload["counts"]["partial"] == 0
     assert payload["counts"]["target"] == 24
     assert payload["counts"]["blocked"] == 0
     assert len(payload["services"]) == 32
@@ -93,11 +93,14 @@ async def test_health_endpoint_exposes_git_sha_field():
 
 @pytest.mark.asyncio
 async def test_service_activation_one_endpoint():
-    """Verify the activation-candidate tracker on a service that is
-    still in development. After PR #166 (Phase K1), `lead_intake_whatsapp`
-    flipped to `live`, so this test now uses `enrichment` — which
-    remains `partial` until PR #168 lands the provider abstraction +
-    confidence-score test.
+    """Verify the activation-candidate tracker on a LIVE service.
+    After Phase K (PR #167 + PR #168), all 8 in-development services
+    flipped to live, so this test verifies the LIVE side of the
+    contract: a live service reports eight_gate_block_present=True
+    and zero blocking_reasons. (The previous partial-state test
+    intent is preserved by the registry validator itself, which
+    still rejects any service that tries to flip live without all
+    8 gates set true.)
     """
     from api.main import app
 
@@ -107,9 +110,9 @@ async def test_service_activation_one_endpoint():
     assert r.status_code == 200
     payload = r.json()
     assert payload["service_id"] == "enrichment"
-    assert payload["status"] == "partial"
-    assert payload["eight_gate_block_present"] is False
-    assert any(r.startswith("gate_missing:") for r in payload["blocking_reasons"])
+    assert payload["status"] == "live"
+    assert payload["eight_gate_block_present"] is True
+    assert payload["blocking_reasons"] == []
 
 
 @pytest.mark.asyncio
@@ -124,6 +127,10 @@ async def test_service_activation_one_404_for_unknown():
 
 @pytest.mark.asyncio
 async def test_service_activation_candidates_endpoint():
+    """After Phase K, all 8 in-development services flipped to live,
+    so the candidates endpoint correctly reports an EMPTY candidates
+    list — every service is either live or by-design TARGET (not yet
+    in development). This is the registry's valid quiescent state."""
     from api.main import app
 
     transport = ASGITransport(app=app)
@@ -131,8 +138,10 @@ async def test_service_activation_candidates_endpoint():
         r = await client.get("/api/v1/self-growth/service-activation-candidates")
     assert r.status_code == 200
     payload = r.json()
-    assert payload["count"] >= 1
+    # No candidates currently — registry is in clean state.
     statuses = {c["status"] for c in payload["candidates"]}
+    # If any candidates exist, they must be partial or pilot — never
+    # live (which means done) or target (which means by-design later).
     assert statuses.issubset({"partial", "pilot"})
 
 

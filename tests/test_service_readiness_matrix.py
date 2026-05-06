@@ -81,9 +81,9 @@ def test_status_distribution(matrix):
     counts = {s: 0 for s in ALLOWED_STATUSES}
     for svc in matrix["services"]:
         counts[svc["status"]] += 1
-    assert counts["live"] == 6, "6 services flipped to live after Phase K1-K6"
+    assert counts["live"] == 8, "all 8 in-development services LIVE after Phase K"
     assert counts["pilot"] == 0
-    assert counts["partial"] == 2
+    assert counts["partial"] == 0
     assert counts["target"] == 24
     assert counts["blocked"] == 0
 

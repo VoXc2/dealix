@@ -167,7 +167,7 @@ def test_scorecard_service_activation_matches_yaml():
     sc = weekly_growth_scorecard.build_scorecard()
     counts = sc["service_activation"]["counts"]
     assert counts["total"] == 32
-    assert counts["live"] == 6
+    assert counts["live"] == 8
 
 
 def test_scorecard_recommendations_have_priority_and_anchor():

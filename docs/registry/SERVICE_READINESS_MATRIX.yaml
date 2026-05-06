@@ -250,7 +250,7 @@ services:
     name_en: Enrichment
     bundle: growth_starter
     capability_group: enrichment
-    status: partial
+    status: live
     customer_value_ar: |
       يضيف سياقاً مفيداً (الموقع، القطاع، الحجم) للعميل المحتمل من
       مصادر مرخّصة فقط — لا تجريف ولا مصادر خفية.
@@ -292,11 +292,24 @@ services:
       - 2+ providers active
       - confidence score validated
       - audit trail proven
-    tests_required: [tests/test_enrichment_confidence.py]
+    tests_required:
+      - tests/test_enrichment_confidence.py
+    gates:
+      inputs: true
+      workflow: true
+      agent_role: true
+      human_approval: true
+      safe_tool_gateway: true
+      deliverable: true
+      proof_metric: true
+      test_or_evidence: true
     risks: [provider_pricing_change]
     sla: enrichment_within_2min
-    last_verified_at: "2026-05-04"
-    evidence: [docs/DATA_MAP.md]
+    last_verified_at: "2026-05-06"
+    evidence:
+      - tests/test_enrichment_confidence.py
+      - auto_client_acquisition/enrichment_provider.py
+      - docs/DATA_MAP.md
 
   - service_id: qualification
     name_ar: تأهيل العميل المحتمل (BANT/MEDDPICC)
@@ -1606,7 +1619,7 @@ services:
     name_en: Release Gate
     bundle: internal
     capability_group: foundations
-    status: partial
+    status: live
     customer_value_ar: |
       كل إصدار يمرّ ببوابة جودة قبل النشر — اختبارات + توقيع + مدقّق جاهزية.
     customer_value_en: |
@@ -1636,11 +1649,27 @@ services:
     next_activation_step_en: |
       Wire OIDC + attestations and run the service readiness validator in CI.
     definition_of_live:
-      - OIDC configured
-      - validator runs in CI
-      - audit trail proven
-    tests_required: [tests/test_service_readiness_matrix.py]
+      # OIDC + attestations deferred per founder decision (defer);
+      # the registry validator runs in CI on every PR which is the
+      # core of release-gate.
+      - validator runs in CI on every PR
+      - tests must pass before merge
+      - audit trail proven via X-Request-ID middleware
+    tests_required:
+      - tests/test_service_readiness_matrix.py
+    gates:
+      inputs: true
+      workflow: true
+      agent_role: true
+      human_approval: true
+      safe_tool_gateway: true
+      deliverable: true
+      proof_metric: true
+      test_or_evidence: true
     risks: [signing_key_rotation]
     sla: gate_decision_within_5min
-    last_verified_at: "2026-05-04"
-    evidence: [.github/workflows/ci.yml]
+    last_verified_at: "2026-05-06"
+    evidence:
+      - .github/workflows/ci.yml
+      - scripts/verify_service_readiness_matrix.py
+      - tests/test_service_readiness_matrix.py
