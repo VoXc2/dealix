@@ -39,7 +39,7 @@ echo "[rx] 3/8 RX targeted tests…"
 RX_TESTS=(
   tests/test_revenue_pipeline_truth.py
 )
-if python -m pytest -q --no-cov "${RX_TESTS[@]}" \
+if python3 -m pytest -q --no-cov "${RX_TESTS[@]}" \
     >/tmp/rx_tests.log 2>&1; then
   mark RX_TESTS pass
 else
@@ -103,7 +103,7 @@ fi
 
 # 7 — Revenue truth snapshot — verify endpoint surfaces revenue_truth + next_step
 echo "[rx] 7/8 daily-command-center revenue fields…"
-if python -c "
+if python3 -c "
 import asyncio
 from httpx import ASGITransport, AsyncClient
 from api.main import app
@@ -136,10 +136,10 @@ fi
 PROD_SMOKE_RESULT="not_run"
 if [[ -n "${BASE_URL:-}" ]]; then
   echo "[rx] 8/8 production smoke against $BASE_URL…"
-  if python scripts/dealix_smoke_test.py --base-url "$BASE_URL" --json \
+  if python3 scripts/dealix_smoke_test.py --base-url "$BASE_URL" --json \
       >/tmp/rx_prod_smoke.json 2>/dev/null; then
-    PASSED=$(python -c "import json; print(json.load(open('/tmp/rx_prod_smoke.json'))['passed'])")
-    TOTAL=$(python -c "import json; print(json.load(open('/tmp/rx_prod_smoke.json'))['total'])")
+    PASSED=$(python3 -c "import json; print(json.load(open('/tmp/rx_prod_smoke.json'))['passed'])")
+    TOTAL=$(python3 -c "import json; print(json.load(open('/tmp/rx_prod_smoke.json'))['total'])")
     PROD_SMOKE_RESULT="$PASSED/$TOTAL"
     if [[ "$PASSED" == "$TOTAL" ]]; then
       mark PROD_SMOKE pass
@@ -198,7 +198,7 @@ echo "FIRST_REVENUE_READY=yes_manual_payment_only"
 echo "V13_ALLOWED=no"
 echo "V12_1_ALLOWED=no_until_real_customer_evidence"
 if [[ $OVERALL_OK -eq 1 ]]; then
-  echo "NEXT_FOUNDER_ACTION=Open V11+V12+V13+RX PR -> merge -> Railway redeploy -> python scripts/dealix_first10_warm_intros.py -> begin 14-day playbook"
+  echo "NEXT_FOUNDER_ACTION=Open V11+V12+V13+RX PR -> merge -> Railway redeploy -> python3 scripts/dealix_first10_warm_intros.py -> begin 14-day playbook"
 else
   echo "NEXT_FOUNDER_ACTION=Inspect failed checks above; logs in /tmp/rx_*.log"
 fi

@@ -10,12 +10,12 @@ mark() { R["$1"]="$2"; }
 OK=1
 
 echo "[beast] 1/7 compileall…"
-if python -m compileall -q api auto_client_acquisition db scripts \
+if python3 -m compileall -q api auto_client_acquisition db scripts \
     >/tmp/beast_compileall.log 2>&1; then mark COMPILEALL pass
 else mark COMPILEALL fail; OK=0; fi
 
 echo "[beast] 2/7 Beast targeted tests…"
-if python -m pytest -q --no-cov tests/test_revops_beast.py \
+if python3 -m pytest -q --no-cov tests/test_revops_beast.py \
     tests/test_beast_level.py >/tmp/beast_tests.log 2>&1; then
   mark BEAST_TESTS pass
 else mark BEAST_TESTS fail; OK=0; fi
@@ -36,7 +36,7 @@ if bash scripts/revenue_execution_verify.sh \
 else mark RX_VERIFIER fail; OK=0; fi
 
 echo "[beast] 6/7 In-process Beast endpoints…"
-if python -c "
+if python3 -c "
 import asyncio
 from httpx import ASGITransport, AsyncClient
 from api.main import app
