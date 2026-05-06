@@ -87,12 +87,6 @@ ALLOWLIST: dict[str, dict[str, str]] = {
     "terms.html": {
         "مضمون": "NEGATION",
     },
-    # V13 — live-demo footer explicitly DENIES these actions
-    # ("لا scraping، لا cold WhatsApp"). Pure negation context.
-    "dealix-live-demo.html": {
-        "cold": "NEGATION",
-        "scraping": "NEGATION",
-    },
 }
 
 
