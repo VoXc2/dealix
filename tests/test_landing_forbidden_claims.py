@@ -87,11 +87,11 @@ ALLOWLIST: dict[str, dict[str, str]] = {
     "terms.html": {
         "مضمون": "NEGATION",
     },
-    # Beast Power live showcase — hard-gates footer enumerates the
-    # immutable NO_* gates ("لا scraping · لا cold WhatsApp"). Pure
-    # negation; the page has zero promotional claims.
-    "dealix-beast-power.html": {
-        "cold": "NEGATION",
+    # Styleguide demo — feature card example reads
+    # "تجارب أسبوعيّة محكومة، لا scraping، لا cold blast". Pure
+    # NEGATION context, same pattern as founder.html.
+    "styleguide.html": {
+        "blast": "NEGATION",
         "scraping": "NEGATION",
     },
 }

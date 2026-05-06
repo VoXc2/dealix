@@ -282,21 +282,304 @@
       </div>
     </section>
 
+    <!-- ═══════════════════════════════════════════════════════════
+         v2 components — Tier-1 polish
+         ═══════════════════════════════════════════════════════════ -->
+
+    <!-- ─── Spacing scale ─── -->
+    <section>
+      <span class="sg-h2-en">11 · Spacing scale</span>
+      <h2 class="sg-h2">سُلَّم المسافات · 8px grid</h2>
+      <p class="sg-desc">رموز الفراغات معرّفة بمضاعفات ٤ بكسل (٤، ٨، ١٢، ١٦…)، ما يضمن إيقاعاً بصرياً متّسقاً عبر كلّ الصفحات.</p>
+      <div class="sg-demo">
+        <div class="ds-stack ds-stack--xs" style="font-family: var(--font-lt); font-size: var(--fs-xs); color: #94a3b8;">
+          <div style="display:flex;align-items:center;gap:12px"><span style="display:inline-block;height:8px;width:var(--space-1);background:var(--accent-2);border-radius:2px"></span><code>--space-1 · 4px</code></div>
+          <div style="display:flex;align-items:center;gap:12px"><span style="display:inline-block;height:8px;width:var(--space-2);background:var(--accent-2);border-radius:2px"></span><code>--space-2 · 8px</code></div>
+          <div style="display:flex;align-items:center;gap:12px"><span style="display:inline-block;height:8px;width:var(--space-3);background:var(--accent-2);border-radius:2px"></span><code>--space-3 · 12px</code></div>
+          <div style="display:flex;align-items:center;gap:12px"><span style="display:inline-block;height:8px;width:var(--space-4);background:var(--accent-2);border-radius:2px"></span><code>--space-4 · 16px</code></div>
+          <div style="display:flex;align-items:center;gap:12px"><span style="display:inline-block;height:8px;width:var(--space-5);background:var(--accent-2);border-radius:2px"></span><code>--space-5 · 20px</code></div>
+          <div style="display:flex;align-items:center;gap:12px"><span style="display:inline-block;height:8px;width:var(--space-6);background:var(--accent-2);border-radius:2px"></span><code>--space-6 · 24px</code></div>
+          <div style="display:flex;align-items:center;gap:12px"><span style="display:inline-block;height:8px;width:var(--space-7);background:var(--accent-2);border-radius:2px"></span><code>--space-7 · 32px</code></div>
+          <div style="display:flex;align-items:center;gap:12px"><span style="display:inline-block;height:8px;width:var(--space-8);background:var(--accent-2);border-radius:2px"></span><code>--space-8 · 40px</code></div>
+          <div style="display:flex;align-items:center;gap:12px"><span style="display:inline-block;height:8px;width:var(--space-9);background:var(--accent-2);border-radius:2px"></span><code>--space-9 · 56px</code></div>
+          <div style="display:flex;align-items:center;gap:12px"><span style="display:inline-block;height:8px;width:var(--space-10);background:var(--accent-2);border-radius:2px"></span><code>--space-10 · 72px</code></div>
+          <div style="display:flex;align-items:center;gap:12px"><span style="display:inline-block;height:8px;width:var(--space-11);background:var(--accent-2);border-radius:2px"></span><code>--space-11 · 96px</code></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── Typography scale ─── -->
+    <section>
+      <span class="sg-h2-en">12 · Typography scale</span>
+      <h2 class="sg-h2">سُلَّم الطباعة</h2>
+      <p class="sg-desc">سلم Modular يربط أحجام النص بمواقع التراتب البصري. الأحجام الكبرى تستخدم <code>clamp()</code> لتتكيّف مع شاشة كل جهاز.</p>
+      <div class="sg-demo">
+        <div class="ds-stack ds-stack--sm">
+          <div style="font-size: var(--fs-5xl); line-height: var(--lh-tight); font-family: var(--font-ar); font-weight: 800;">العنوان البطل · Hero <span style="font-family: var(--font-lt); font-size: var(--fs-xs); color: #94a3b8;">--fs-5xl</span></div>
+          <div style="font-size: var(--fs-4xl); line-height: var(--lh-tight); font-family: var(--font-ar); font-weight: 700;">عنوان رئيسي · Headline <span style="font-family: var(--font-lt); font-size: var(--fs-xs); color: #94a3b8;">--fs-4xl</span></div>
+          <div style="font-size: var(--fs-3xl); line-height: var(--lh-snug); font-family: var(--font-ar); font-weight: 700;">عنوان فرعي · Section title <span style="font-family: var(--font-lt); font-size: var(--fs-xs); color: #94a3b8;">--fs-3xl</span></div>
+          <div style="font-size: var(--fs-xl); line-height: var(--lh-snug); font-family: var(--font-ar); font-weight: 600;">عنوان كرت · Card title <span style="font-family: var(--font-lt); font-size: var(--fs-xs); color: #94a3b8;">--fs-xl</span></div>
+          <div style="font-size: var(--fs-lg); line-height: var(--lh-base); font-family: var(--font-ar);">فقرة قياديّة · Lede paragraph <span style="font-family: var(--font-lt); font-size: var(--fs-xs); color: #94a3b8;">--fs-lg</span></div>
+          <div style="font-size: var(--fs-md); line-height: var(--lh-base); font-family: var(--font-ar); color: #cbd5e1;">نصّ عام مستخدم في الفقرات والأوصاف. <span style="font-family: var(--font-lt); font-size: var(--fs-xs); color: #94a3b8;">--fs-md</span></div>
+          <div style="font-size: var(--fs-sm); line-height: var(--lh-base); font-family: var(--font-ar); color: #94a3b8;">نص مساند · meta / hint <span style="font-family: var(--font-lt); font-size: var(--fs-xs);">--fs-sm</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── Buttons ─── -->
+    <section>
+      <span class="sg-h2-en">13 · ds-btn</span>
+      <h2 class="sg-h2">أزرار · Buttons</h2>
+      <p class="sg-desc">أربعة أنماط (primary · ghost · subtle · danger) بثلاثة أحجام، مع حالات focus + hover + disabled كاملة.</p>
+      <div class="sg-demo">
+        <div class="sg-row">
+          <button class="ds-btn">احجز تجربة</button>
+          <button class="ds-btn ds-btn--ghost">المزيد</button>
+          <button class="ds-btn ds-btn--subtle">حفظ</button>
+          <button class="ds-btn ds-btn--danger">إلغاء</button>
+        </div>
+        <div class="sg-row" style="margin-top:12px;">
+          <button class="ds-btn ds-btn--sm">صغير</button>
+          <button class="ds-btn">عادي</button>
+          <button class="ds-btn ds-btn--lg">كبير</button>
+          <button class="ds-btn" disabled>معطّل</button>
+        </div>
+        <pre class="sg-snippet">&lt;button class="ds-btn"&gt;احجز تجربة&lt;/button&gt;
+&lt;button class="ds-btn ds-btn--ghost"&gt;المزيد&lt;/button&gt;
+&lt;button class="ds-btn ds-btn--lg"&gt;كبير&lt;/button&gt;</pre>
+      </div>
+    </section>
+
+    <!-- ─── Animated link ─── -->
+    <section>
+      <span class="sg-h2-en">14 · ds-link</span>
+      <h2 class="sg-h2">روابط مع تسطير متحرّك</h2>
+      <p class="sg-desc">رابط نصي مع شريط تسطير ينمو من اليمين إلى اليسار (RTL) أو العكس (LTR) عند المرور.</p>
+      <div class="sg-demo">
+        <div class="sg-row" style="font-size: var(--fs-md);">
+          <a class="ds-link" href="#">رابط رئيسي</a>
+          <a class="ds-link ds-link--quiet" href="#">رابط هادئ</a>
+        </div>
+        <pre class="sg-snippet">&lt;a class="ds-link" href="#"&gt;رابط رئيسي&lt;/a&gt;
+&lt;a class="ds-link ds-link--quiet" href="#"&gt;رابط هادئ&lt;/a&gt;</pre>
+      </div>
+    </section>
+
+    <!-- ─── Inputs ─── -->
+    <section>
+      <span class="sg-h2-en">15 · ds-input</span>
+      <h2 class="sg-h2">حقول الإدخال</h2>
+      <div class="sg-demo">
+        <div class="ds-stack ds-stack--md" style="max-width: 380px;">
+          <label class="ds-input">
+            <span class="ds-input__label">الاسم الكامل</span>
+            <input class="ds-input__field" type="text" placeholder="مثال: سامي العسيري" />
+            <span class="ds-input__hint">سيظهر على الفاتورة.</span>
+          </label>
+          <label class="ds-input ds-input--error">
+            <span class="ds-input__label">البريد الإلكتروني</span>
+            <input class="ds-input__field" type="email" value="not-an-email" />
+            <span class="ds-input__hint">تنسيق غير صحيح — استخدم name@domain.com</span>
+          </label>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── Skeleton + Spinner ─── -->
+    <section>
+      <span class="sg-h2-en">16 · ds-skeleton + ds-spinner</span>
+      <h2 class="sg-h2">حالات التحميل</h2>
+      <p class="sg-desc">عناصر مدمجة لإظهار التحميل دون قفز التخطيط (CLS = 0).</p>
+      <div class="sg-demo">
+        <div class="ds-stack ds-stack--sm">
+          <span class="ds-skeleton ds-skeleton--text" style="width: 220px;"></span>
+          <span class="ds-skeleton ds-skeleton--text" style="width: 320px;"></span>
+          <span class="ds-skeleton ds-skeleton--block"></span>
+          <div class="sg-row" style="margin-top:12px;">
+            <span class="ds-skeleton ds-skeleton--circle"></span>
+            <span class="ds-spinner ds-spinner--sm"></span>
+            <span class="ds-spinner"></span>
+            <span class="ds-spinner ds-spinner--lg"></span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── Feature card ─── -->
+    <section>
+      <span class="sg-h2-en">17 · ds-feature</span>
+      <h2 class="sg-h2">بطاقة قدرة · Feature card</h2>
+      <div class="sg-demo">
+        <div class="ds-grid">
+          <div class="ds-feature">
+            <span class="ds-feature__icon">🌱</span>
+            <h4 class="ds-feature__title">نموّ ذاتي مُثبت</h4>
+            <p class="ds-feature__desc">تجارب أسبوعيّة محكومة، لا scraping، لا cold blast — كل خطوة بموافقة المؤسس.</p>
+          </div>
+          <div class="ds-feature">
+            <span class="ds-feature__icon">🛡️</span>
+            <h4 class="ds-feature__title">امتثال PDPL</h4>
+            <p class="ds-feature__desc">٨ بوّابات صلبة مقفلة، action policy في كل router، صفر إرسال حيّ بدون موافقة.</p>
+          </div>
+          <div class="ds-feature">
+            <span class="ds-feature__icon">💰</span>
+            <h4 class="ds-feature__title">حقيقة الإيراد</h4>
+            <p class="ds-feature__desc">مسوّدة فاتورة ≠ إيراد. لا ادعاءات بدون دليل دفع موثَّق.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── Stat tiles ─── -->
+    <section>
+      <span class="sg-h2-en">18 · ds-stat</span>
+      <h2 class="sg-h2">مؤشّرات أداء مع دلتا</h2>
+      <div class="sg-demo">
+        <div class="ds-grid ds-grid--narrow">
+          <div class="ds-stat ds-stat--up">
+            <span class="ds-stat__num">٧</span>
+            <span class="ds-stat__label">طبقات تشغيل</span>
+            <span class="ds-stat__delta">↗ +1 طبقة (V12.5)</span>
+          </div>
+          <div class="ds-stat ds-stat--neutral">
+            <span class="ds-stat__num">٨/٨</span>
+            <span class="ds-stat__label">بوّابات مقفلة</span>
+            <span class="ds-stat__delta">— ثابت (Article 4)</span>
+          </div>
+          <div class="ds-stat ds-stat--up">
+            <span class="ds-stat__num">٤٩٩ <small>SAR</small></span>
+            <span class="ds-stat__label">سعر البايلوت</span>
+            <span class="ds-stat__delta">↗ first paid offer live</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── Quote ─── -->
+    <section>
+      <span class="sg-h2-en">19 · ds-quote</span>
+      <h2 class="sg-h2">اقتباس / شهادة</h2>
+      <div class="sg-demo">
+        <div class="ds-quote ds-quote--centered">
+          <p class="ds-quote__text">لا نَعِد بشيء لا نقدر نُثبته. كل خطوة فيها evidence. هذا الفرق بين Tier-1 و الباقي.</p>
+          <div class="ds-quote__cite"><strong>سامي العسيري</strong> · مؤسّس Dealix</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── FAQ ─── -->
+    <section>
+      <span class="sg-h2-en">20 · ds-faq</span>
+      <h2 class="sg-h2">أسئلة شائعة · accordion</h2>
+      <p class="sg-desc">يستخدم <code>&lt;details&gt;</code> الأصلي — متوفّر دون JS، يدعم لوحة المفاتيح والتقنيّات المساعدة.</p>
+      <div class="sg-demo">
+        <div class="ds-faq">
+          <details class="ds-faq__item" open>
+            <summary>هل Dealix يرسل رسائل تلقائياً؟</summary>
+            <div class="ds-faq__body">لا. كل إرسال خارجي يحتاج موافقة المؤسس (NO_LIVE_SEND). نولّد مسوّدات جاهزة أنتَ تُرسلها يدوياً.</div>
+          </details>
+          <details class="ds-faq__item">
+            <summary>كيف تتعاملون مع PDPL؟</summary>
+            <div class="ds-faq__body">طبقة Compliance v12 تتحقق من كل action قبل أن يصير suggest_only/draft_only — مع redaction للـ PII قبل التخزين.</div>
+          </details>
+          <details class="ds-faq__item">
+            <summary>متى يفتح الـ 30-Day Sprint؟</summary>
+            <div class="ds-faq__body">يفتح آلياً بعد أوّل بايلوت ٤٩٩ ريال ناجح ومُثبَت. لا ترقية بدون evidence (Article 8).</div>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── Tabs ─── -->
+    <section>
+      <span class="sg-h2-en">21 · ds-tabs</span>
+      <h2 class="sg-h2">تبويبات · Tabs</h2>
+      <div class="sg-demo">
+        <div class="ds-tabs" role="tablist">
+          <button class="ds-tabs__tab" role="tab" aria-selected="true">الكلّ</button>
+          <button class="ds-tabs__tab" role="tab" aria-selected="false">القطاع ١</button>
+          <button class="ds-tabs__tab" role="tab" aria-selected="false">القطاع ٢</button>
+          <button class="ds-tabs__tab" role="tab" aria-selected="false">القطاع ٣</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── Breadcrumb ─── -->
+    <section>
+      <span class="sg-h2-en">22 · ds-breadcrumb</span>
+      <h2 class="sg-h2">مسار التنقّل · Breadcrumb</h2>
+      <div class="sg-demo">
+        <nav class="ds-breadcrumb" aria-label="مسار التنقّل">
+          <a href="/">الرئيسيّة</a>
+          <span class="ds-breadcrumb__sep" aria-hidden="true"></span>
+          <a href="/styleguide.html">مكتبة التصميم</a>
+          <span class="ds-breadcrumb__sep" aria-hidden="true"></span>
+          <span aria-current="page">المكوّنات</span>
+        </nav>
+      </div>
+    </section>
+
+    <!-- ─── Eyebrow + Headline + Lede ─── -->
+    <section>
+      <span class="sg-h2-en">23 · Typography utilities</span>
+      <h2 class="sg-h2">عناوين الصفحات الجاهزة</h2>
+      <div class="sg-demo">
+        <span class="ds-eyebrow">Constitution Article 9</span>
+        <h3 class="ds-headline ds-headline--hero" style="margin-top: var(--space-3);">سلّم الخدمات — ٥ درجات</h3>
+        <p class="ds-lede" style="margin-top: var(--space-4); max-width: 580px;">من Mini Diagnostic مجّاني إلى Strategic Partnership — كلّ درجة تفتح فقط بعد إثبات ناجح للدرجة قبلها.</p>
+      </div>
+    </section>
+
+    <!-- ─── Glass + hover-lift ─── -->
+    <section>
+      <span class="sg-h2-en">24 · ds-glass + ds-hover-lift</span>
+      <h2 class="sg-h2">سطح زجاجي + رفع عند المرور</h2>
+      <div class="sg-demo">
+        <div class="ds-grid ds-grid--narrow">
+          <div class="ds-glass ds-hover-lift" style="padding: var(--space-6); text-align: center;">
+            <p style="margin: 0; font-family: var(--font-ar);">سطح زجاجي · backdrop-blur</p>
+          </div>
+          <div class="ds-glass ds-hover-lift" style="padding: var(--space-6); text-align: center;">
+            <p style="margin: 0; font-family: var(--font-ar);">حرّك الفأرة فوقي ↑</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── Accessibility primer ─── -->
+    <section>
+      <span class="sg-h2-en">25 · Accessibility primitives</span>
+      <h2 class="sg-h2">إمكانيّة الوصول · A11y</h2>
+      <p class="sg-desc">كلّ صفحة Tier-1 يجب أن: تدعم لوحة المفاتيح، تحترم <code>prefers-reduced-motion</code>، توفّر skip-link، تستخدم HTML دلالي، وتحقّق تباين WCAG AA.</p>
+      <div class="sg-demo">
+        <ul class="ds-list-clean">
+          <li><code>&lt;a class="ds-skip-link" href="#main"&gt;تخطّ&lt;/a&gt;</code> — أوّل عنصر تركيز يقفز للمحتوى</li>
+          <li><code>&lt;main id="main"&gt;</code> — landmark دلالي يحدّد المنطقة الرئيسيّة</li>
+          <li><code>aria-live="polite"</code> — يُعلم قارئ الشاشة بالتحديثات الحيّة</li>
+          <li><code>:focus-visible</code> — حلقة تركيز ذات تباين ٢ بكسل + halo (تطبَّق آلياً عبر <code>.ds-focus-ring</code>)</li>
+          <li><code>@media (prefers-reduced-motion: reduce)</code> — يوقف <code>ds-pulse</code> + <code>ds-spinner</code> + الانتقالات</li>
+        </ul>
+      </div>
+    </section>
+
     <!-- ─── How to use ─── -->
     <section>
-      <span class="sg-h2-en">11 · How to use</span>
+      <span class="sg-h2-en">26 · How to use</span>
       <h2 class="sg-h2">طريقة الاستخدام</h2>
-      <p class="sg-desc">أيّ صفحة جديدة في <code>landing/</code> تريد قوّة Beast: اربطي ملفّين، استخدمي الفئات.</p>
+      <p class="sg-desc">أيّ صفحة جديدة في <code>landing/</code>: اربطي ملفّين، استخدمي الفئات.</p>
       <div class="sg-demo">
         <pre class="ds-code">&lt;link rel="stylesheet" href="/styles.css"&gt;
 &lt;link rel="stylesheet" href="/assets/css/design-system.css"&gt;
 &lt;html lang="ar" dir="rtl" data-theme="dark"&gt;
 &lt;body&gt;
-  &lt;div class="ds-banner"&gt;…&lt;/div&gt;
-  &lt;div class="ds-grid"&gt;
-    &lt;div class="ds-card"&gt;…&lt;/div&gt;
-  &lt;/div&gt;
-  &lt;span class="ds-mode ds-mode--draft"&gt;draft_only&lt;/span&gt;
+  &lt;a class="ds-skip-link" href="#main"&gt;تخطّ&lt;/a&gt;
+  &lt;main id="main" class="ds-container"&gt;
+    &lt;div class="ds-banner"&gt;…&lt;/div&gt;
+    &lt;div class="ds-grid"&gt;
+      &lt;div class="ds-card"&gt;…&lt;/div&gt;
+    &lt;/div&gt;
+    &lt;span class="ds-mode ds-mode--draft"&gt;draft_only&lt;/span&gt;
+  &lt;/main&gt;
 &lt;/body&gt;</pre>
       </div>
     </section>
