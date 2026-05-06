@@ -23,6 +23,7 @@ from api.routers import (
     autonomous,
     business,
     command_center,
+    company_service,
     company_growth_beast,
     company_brain,
     company_brain_v6,
@@ -188,6 +189,7 @@ def create_app() -> FastAPI:
     app.include_router(customer_success.router)
     app.include_router(ecosystem.router)
     app.include_router(command_center.router)
+    app.include_router(company_service.router)
     app.include_router(company_growth_beast.router)
     app.include_router(revenue_os.router)
     app.include_router(v3.router)
@@ -253,6 +255,7 @@ def create_app() -> FastAPI:
             "docs": "/docs",
             "health": "/health",
             "v3_command_center": "/api/v1/v3/command-center/snapshot",
+            "company_service_command_center": "/api/v1/company-service/command-center",
             "company_growth_beast": "/api/v1/company-growth-beast/status",
             "full_ops_daily_command_center": "/api/v1/full-ops/daily-command-center",
             "personal_operator_daily_brief": "/api/v1/personal-operator/daily-brief",

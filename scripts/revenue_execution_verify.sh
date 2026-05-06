@@ -38,6 +38,7 @@ fi
 echo "[rx] 3/8 RX targeted tests…"
 RX_TESTS=(
   tests/test_revenue_pipeline_truth.py
+  tests/test_company_service_command_center.py
   tests/test_company_growth_beast_profile.py
   tests/test_company_growth_beast_diagnostic.py
   tests/test_company_growth_beast_targets.py

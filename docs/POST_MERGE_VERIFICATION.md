@@ -42,9 +42,22 @@ Confirm GitHub Actions workflow [`.github/workflows/ci.yml`](../.github/workflow
 - Merge PR #125 on GitHub when checks pass.
 - Deploy staging and run [`scripts/smoke_staging.py`](../scripts/smoke_staging.py) with `STAGING_BASE_URL` set.
 
+## Company OS unified verify (optional)
+
+Runs RX (V11 + V12 + targeted pytest) and Company Growth Beast:
+
+```bash
+bash scripts/dealix_company_os_verify.sh
+```
+
+## Company service portal (customer-safe)
+
+- `GET /api/v1/company-service/command-center` — Arabic-first hints, no internal jargon
+- `GET /api/v1/company-service/status`
+
 ## Company Growth Beast (optional slice)
 
-After `scripts/revenue_execution_verify.sh` (includes Growth Beast pytest files), run:
+After `scripts/revenue_execution_verify.sh` (includes Growth Beast + company-service pytest files), run:
 
 ```bash
 bash scripts/company_growth_beast_verify.sh
