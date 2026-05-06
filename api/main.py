@@ -26,6 +26,7 @@ from api.routers import (
     company_brain,
     company_brain_v6,
     company_growth_beast,
+    customer_company_portal,
     customer_success,
     data,
     dominance,
@@ -54,6 +55,7 @@ from api.routers import (
     diagnostic_workflow,
     finance_os,
     founder,
+    founder_beast_command_center,
     founder_v10,
     growth_v10,
     gtm_os,
@@ -231,6 +233,8 @@ def create_app() -> FastAPI:
     app.include_router(ai_workforce.router)
     app.include_router(executive_reporting.router)
     app.include_router(founder.router)
+    app.include_router(founder_beast_command_center.router)
+    app.include_router(customer_company_portal.router)
     app.include_router(v10_status.router)
     app.include_router(v11_status.router)
     app.include_router(full_ops.router)
