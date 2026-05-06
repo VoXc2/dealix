@@ -19,6 +19,7 @@ from auto_client_acquisition.role_command_os.schemas import (
     RoleDecision,
     RoleName,
 )
+from auto_client_acquisition.revops.finance_brief import build_finance_brief
 from auto_client_acquisition.self_growth_os import (
     geo_aio_radar,
     partner_distribution_radar,
@@ -56,6 +57,9 @@ def _candidate_decisions(limit: int = 2) -> list[RoleDecision]:
 
 
 def _ceo_brief() -> RoleBrief:
+    fin = build_finance_brief()
+    revenue_sar = fin.get("cash_collected_month", 0)
+    commitments_open = fin.get("commitments_open", 0)
     decisions = _candidate_decisions(limit=2)
     decisions.insert(0, RoleDecision(
         title_ar="مراجعة Decision Pack — هل وقّعتم البنود الـ10؟",
@@ -69,12 +73,13 @@ def _ceo_brief() -> RoleBrief:
 
     summary_ar = (
         "ملخّص اليوم للمؤسس: مصفوفة الخدمات تشتغل، الإشعار على intake فعّال، "
-        "Daily digest يصلكم 7AM KSA. القرارات الـ3 أعلاه تستحقّ ساعة هذا الأسبوع."
+        f"Daily digest يصلكم 7AM KSA. إيراد مسجّل (pipeline): {revenue_sar} ريال؛ "
+        f"التزامات مفتوحة: {commitments_open}. القرارات الـ3 أعلاه تستحقّ ساعة هذا الأسبوع."
     )
     summary_en = (
         "Founder daily summary: service matrix is healthy, intake alert is "
-        "wired, daily digest arrives at 7AM KSA. The 3 decisions above warrant "
-        "an hour this week."
+        f"wired, daily digest arrives at 7AM KSA. Pipeline revenue SAR: {revenue_sar}; "
+        f"open commitments: {commitments_open}. The 3 decisions above warrant an hour this week."
     )
     return RoleBrief(
         role=RoleName.CEO,
@@ -93,6 +98,7 @@ def _ceo_brief() -> RoleBrief:
             "docs/MASTER_CLOSURE_EVIDENCE_TABLE.md",
             "docs/STRATEGIC_MASTER_PLAN_2026.md",
             "docs/EXECUTIVE_DECISION_PACK.md",
+            "/api/v1/revops/finance-brief",
         ],
         next_action_ar="وقّع Decision Pack أو ارفض أحد البنود بشكل واضح.",
         next_action_en="Sign the Decision Pack or explicitly reject one item.",
@@ -302,17 +308,21 @@ def _cs_brief() -> RoleBrief:
 
 
 def _finance_brief() -> RoleBrief:
+    fin = build_finance_brief()
+    gm = (fin.get("gross_margin_estimate") or {}).get("gross_margin_sar")
     return RoleBrief(
         role=RoleName.FINANCE,
         summary_ar=(
             "المالية: لا live charge. الفواتير عبر Moyasar test_mode "
             "أو رابط مدفوع يدوي. سياسة 499 ريال Pilot سارية حتى أوّل "
-            "5 عملاء (S1 في Decision Pack)."
+            f"5 عملاء (S1 في Decision Pack). إيراد pipeline: {fin.get('cash_collected_month', 0)} ريال؛ "
+            f"هامش إجمالي تقديري: {gm if gm is not None else '—'}."
         ),
         summary_en=(
             "Finance: no live charge. Invoices via Moyasar test mode "
             "or manual paid link. The 499 SAR Pilot policy holds until "
-            "customer #5 (S1 in Decision Pack)."
+            f"customer #5 (S1 in Decision Pack). Pipeline revenue SAR: {fin.get('cash_collected_month', 0)}; "
+            f"estimated gross margin SAR: {gm if gm is not None else 'n/a'}."
         ),
         top_decisions=[
             RoleDecision(
@@ -344,6 +354,7 @@ def _finance_brief() -> RoleBrief:
             "scripts/dealix_invoice.py",
             "dealix/payments/moyasar.py",
             "docs/MOYASAR_E2E_GUIDE.md",
+            "/api/v1/revops/finance-brief",
         ],
         next_action_ar="إذا فيه فاتورة pending — افتح Moyasar dashboard وحدّث الحالة.",
         next_action_en="If there's a pending invoice, open Moyasar dashboard and update status.",
@@ -352,6 +363,102 @@ def _finance_brief() -> RoleBrief:
             "live_charge_without_tests",
             "share_card_data_externally",
         ],
+        guardrails=dict(_GUARDRAILS_TRUE),
+    )
+
+
+def _delivery_brief() -> RoleBrief:
+    return RoleBrief(
+        role=RoleName.DELIVERY,
+        summary_ar=(
+            "مدير التسليم: كل عميل يحتاج ServiceSession وchecklist؛ "
+            "سجّل أحداث الإثبات بعد كل تسليم معتمد."
+        ),
+        summary_en=(
+            "Delivery lead: every customer needs a ServiceSession + checklist; "
+            "log proof events after each approved delivery."
+        ),
+        top_decisions=[
+            RoleDecision(
+                title_ar="راجع قوائم التسليم المفتوحة هذا الأسبوع",
+                title_en="Review open delivery checklists for this week",
+                rationale_ar="/api/v1/delivery-factory والـ OS modes",
+                rationale_en="/api/v1/delivery-factory and delivery OS modes",
+                risk_level="low",
+                approval_required=True,
+            ),
+        ],
+        risks=["تسليم بدون مدخلات كاملّة يؤخر proof pack"],
+        approvals_needed=["تأكيد المدخلات قبل started_delivery"],
+        evidence_pointers=["/api/v1/delivery-factory/", "docs/registry/SERVICE_READINESS_MATRIX.yaml"],
+        next_action_ar="أغلق أول جلسة تسليم عالقة في حالة missing_inputs.",
+        next_action_en="Close the first delivery session stuck on missing inputs.",
+        blocked_actions=["mark_delivered_without_checklist"],
+        guardrails=dict(_GUARDRAILS_TRUE),
+    )
+
+
+def _support_brief() -> RoleBrief:
+    return RoleBrief(
+        role=RoleName.SUPPORT,
+        summary_ar=(
+            "الدعم: صنّف التذاكر، استخدم مسودات فقط، وحوّل التكرار إلى "
+            "فجوات معرفة ومحتوى (support-to-growth)."
+        ),
+        summary_en=(
+            "Support: classify tickets, draft-only replies, turn repeats into "
+            "KB gaps and growth angles (support-to-growth)."
+        ),
+        top_decisions=[
+            RoleDecision(
+                title_ar="افتح تصنيف الدعم الآمن",
+                title_en="Open safe support classification",
+                rationale_ar="/api/v1/support-os-mode/classify",
+                rationale_en="/api/v1/support-os-mode/classify",
+                risk_level="low",
+                approval_required=False,
+            ),
+        ],
+        risks=["ردود تلقائية خارج نافذة الموافقة"],
+        approvals_needed=["اعتماد أي قالب جديد قبل الإرسال"],
+        evidence_pointers=[
+            "/api/v1/support-os-mode/",
+            "/api/v1/company-growth-beast/support-to-growth",
+        ],
+        next_action_ar="سجّل أعلى 3 مواضيع متكررة كـ KB gap.",
+        next_action_en="Log the top 3 recurring themes as KB gaps.",
+        blocked_actions=["auto_close_sensitive_ticket"],
+        guardrails=dict(_GUARDRAILS_TRUE),
+    )
+
+
+def _operations_brief() -> RoleBrief:
+    return RoleBrief(
+        role=RoleName.OPERATIONS,
+        summary_ar=(
+            "العمليات: ربط مراقبة الجودة، التقويم الداخلي، وتسليم الحزم "
+            "بدون كسر بوابات الأمان."
+        ),
+        summary_en=(
+            "Operations: connect quality gates, internal cadence, and handoffs "
+            "without breaking safety gates."
+        ),
+        top_decisions=[
+            RoleDecision(
+                title_ar="شغّل مركز الأوامر اليومي ومراجعة التدهور",
+                title_en="Run daily command center + degraded sections review",
+                rationale_ar="/api/v1/full-ops/daily-command-center",
+                rationale_en="/api/v1/full-ops/daily-command-center",
+                risk_level="low",
+                approval_required=True,
+            ),
+        ],
+        risks=["تزاحم قنوات يدوية بدون أولويات"],
+        approvals_needed=["جدولة أسبوعية لمراجعات الأمان"],
+        evidence_pointers=["/api/v1/full-ops/daily-command-center", "/api/v1/observability-v12/"],
+        next_action_ar="إذا degraded=true — عالج القسم المتعطل أولاً.",
+        next_action_en="If degraded=true — fix the failing section first.",
+        blocked_actions=["disable_audit_trail"],
         guardrails=dict(_GUARDRAILS_TRUE),
     )
 
@@ -420,6 +527,9 @@ _BUILDERS: dict[RoleName, Callable[[], RoleBrief]] = {
     RoleName.CUSTOMER_SUCCESS: _cs_brief,
     RoleName.FINANCE: _finance_brief,
     RoleName.COMPLIANCE: _compliance_brief,
+    RoleName.DELIVERY: _delivery_brief,
+    RoleName.SUPPORT: _support_brief,
+    RoleName.OPERATIONS: _operations_brief,
 }
 
 

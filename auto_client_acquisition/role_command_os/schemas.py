@@ -16,6 +16,9 @@ class RoleName(StrEnum):
     CUSTOMER_SUCCESS = "cs"
     FINANCE = "finance"
     COMPLIANCE = "compliance"
+    DELIVERY = "delivery"
+    SUPPORT = "support"
+    OPERATIONS = "operations"
 
 
 class RoleDecision(BaseModel):
