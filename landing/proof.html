@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-theme="dark">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Proof — كل ادعاء بدليل · Dealix</title>
+<meta name="description" content="Proof Packs المنشورة من بايلوتات Dealix السعوديّة. كل ادعاء له evidence مرفق — لا spin، لا fake testimonials، لا revenue غير مُثبت." />
+<link rel="canonical" href="https://dealix.me/proof.html" />
+<meta property="og:type" content="website" />
+<meta property="og:title" content="Dealix Proof — كل ادعاء بدليل" />
+<meta property="og:description" content="Proof Packs from real Saudi B2B pilots. Evidence-backed, customer-approved, never fake." />
+<meta property="og:url" content="https://dealix.me/proof.html" />
+<meta property="og:locale" content="ar_SA" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="theme-color" content="#0f172a" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" />
+
+<link rel="stylesheet" href="/styles.css" />
+<link rel="stylesheet" href="/assets/css/design-system.css" />
+
+<!-- Lucide icons (lightweight SVG icons, ~25KB compressed) -->
+<script src="https://unpkg.com/lucide@0.469.0/dist/umd/lucide.min.js" defer></script>
+
+<style>
+  body {
+    background:
+      radial-gradient(900px 500px at 80% -10%, rgba(34, 197, 94, 0.16), transparent 60%),
+      radial-gradient(900px 500px at 0% 10%, rgba(34, 211, 238, 0.16), transparent 60%),
+      linear-gradient(180deg, #050816 0%, #0b1124 60%, #1e1b4b 100%);
+    color: var(--text);
+    min-height: 100vh;
+    margin: 0;
+    font-family: var(--font-ar);
+  }
+  main { padding: var(--space-7) var(--space-5) var(--space-9); }
+
+  .proof-card {
+    display: grid;
+    gap: var(--space-3);
+    padding: var(--space-5);
+    background: var(--ds-surface-1);
+    border: 1px solid var(--ds-border);
+    border-radius: var(--radius-lg, 20px);
+    transition: border-color var(--dur-base);
+  }
+  .proof-card:hover { border-color: rgba(34, 197, 94, 0.45); }
+  .proof-head { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); flex-wrap: wrap; }
+  .proof-head h3 { margin: 0; font-size: var(--fs-lg); font-weight: 700; }
+
+  .proof-claim {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-3);
+    padding: var(--space-4);
+    background: rgba(2, 6, 23, 0.4);
+    border-radius: var(--radius-sm, 8px);
+    border: 1px solid var(--ds-border);
+    font-size: var(--fs-sm);
+  }
+  @media (max-width: 600px) { .proof-claim { grid-template-columns: 1fr; } }
+  .proof-claim h4 { margin: 0 0 var(--space-2) 0; font-size: var(--fs-xs); color: var(--accent-2); text-transform: uppercase; letter-spacing: 0.06em; }
+
+  .proof-empty {
+    padding: var(--space-9);
+    text-align: center;
+    color: var(--text-muted);
+    border: 1px dashed var(--ds-border);
+    border-radius: var(--radius-lg, 20px);
+  }
+  .proof-empty p { margin: 0 0 var(--space-3) 0; }
+</style>
+</head>
+<body>
+<a class="ds-skip-link" href="#main">تخطّ إلى المحتوى الرئيسي</a>
+
+<main id="main" class="ds-container--full ds-stack ds-stack--xl">
+
+  <nav class="ds-breadcrumb" aria-label="مسار التنقّل">
+    <a href="/">الرئيسيّة</a>
+    <span class="ds-breadcrumb__sep" aria-hidden="true"></span>
+    <span aria-current="page">Proof</span>
+  </nav>
+
+  <section class="ds-banner ds-stack ds-stack--sm">
+    <span class="ds-eyebrow">Customer-approved · Evidence-backed · No fake testimonials</span>
+    <h1 class="ds-banner__title">📜 Proof — كلّ ادّعاء بدليل</h1>
+    <p class="ds-banner__subtitle">Proof Packs المنشورة من البايلوتات الحقيقيّة. كلّ ادّعاء له evidence مرفق + إذن مكتوب من العميل. لا spin، لا fake testimonials، لا revenue غير مُثبت.</p>
+  </section>
+
+  <!-- KPIs -->
+  <section class="ds-grid ds-grid--narrow" aria-label="ملخّص">
+    <div class="ds-kpi"><span class="ds-kpi__num" id="kpi-packs">…</span><span class="ds-kpi__label">Proof Packs منشورة</span></div>
+    <div class="ds-kpi"><span class="ds-kpi__num" id="kpi-claims">…</span><span class="ds-kpi__label">إدعاء × evidence</span></div>
+    <div class="ds-kpi"><span class="ds-kpi__num" id="kpi-revenue">…</span><span class="ds-kpi__label">SAR مُثبت</span></div>
+    <div class="ds-kpi"><span class="ds-kpi__num">8</span><span class="ds-kpi__label">بوّابات صلبة</span></div>
+  </section>
+
+  <!-- The 8 hard gates banner -->
+  <section class="ds-stack ds-stack--sm" aria-labelledby="gates-title">
+    <h2 id="gates-title" class="ds-headline" style="font-size: var(--fs-2xl);">حدود الأمان الدائمة</h2>
+    <div class="ds-row" style="gap: var(--space-2); flex-wrap: wrap;">
+      <span class="ds-gate">NO_LIVE_SEND</span>
+      <span class="ds-gate">NO_LIVE_CHARGE</span>
+      <span class="ds-gate">NO_COLD_WHATSAPP</span>
+      <span class="ds-gate">NO_LINKEDIN_AUTOMATION</span>
+      <span class="ds-gate">NO_SCRAPING</span>
+      <span class="ds-gate">NO_FAKE_PROOF</span>
+      <span class="ds-gate">NO_FAKE_REVENUE</span>
+      <span class="ds-gate">NO_UNAPPROVED_TESTIMONIAL</span>
+    </div>
+  </section>
+
+  <!-- Proof packs list -->
+  <section aria-labelledby="packs-title" class="ds-stack ds-stack--md">
+    <div class="ds-row" style="justify-content: space-between;">
+      <h2 id="packs-title" class="ds-headline" style="font-size: var(--fs-2xl);">Proof Packs المنشورة</h2>
+      <button class="ds-btn ds-btn--ghost ds-btn--sm" id="btn-refresh">تحديث</button>
+    </div>
+    <div id="packs-list" class="ds-stack ds-stack--md" aria-live="polite">
+      <p class="proof-empty">جاري التحميل…</p>
+    </div>
+  </section>
+
+  <!-- How proof gets here -->
+  <section aria-labelledby="how-title" class="ds-stack ds-stack--md">
+    <div>
+      <span class="ds-eyebrow">العمليّة</span>
+      <h2 id="how-title" class="ds-headline" style="font-size: var(--fs-2xl); margin-top: var(--space-3);">كيف يصل أيّ Proof Pack هنا</h2>
+    </div>
+    <div class="ds-grid ds-grid--wide">
+      <div class="ds-card ds-stack ds-stack--xs">
+        <h3 class="ds-card__title">1. عميل ينهي الـ 7-Day Pilot</h3>
+        <p class="ds-card__sub">دفع 499 SAR + ٧ أيّام تسليم + Proof Pack جاهز يوم ٧.</p>
+      </div>
+      <div class="ds-card ds-stack ds-stack--xs">
+        <h3 class="ds-card__title">2. العميل يوافق على النشر</h3>
+        <p class="ds-card__sub">signed_publish_permission=true. صفر نشر بدون إذن مكتوب — هذا ما يفرضه NO_UNAPPROVED_TESTIMONIAL gate.</p>
+      </div>
+      <div class="ds-card ds-stack ds-stack--xs">
+        <h3 class="ds-card__title">3. كل claim له evidence</h3>
+        <p class="ds-card__sub">رابط، screenshot، أو سجلّ proof_event. لا نُنشر ادّعاء بدون مصدر قابل للتحقّق.</p>
+      </div>
+      <div class="ds-card ds-stack ds-stack--xs">
+        <h3 class="ds-card__title">4. ينشر هنا — للجميع</h3>
+        <p class="ds-card__sub">صفحة Proof عامّة على dealix.me/proof.html. تتحدّث تلقائياً من /api/v1/proof-to-market endpoint.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="ds-stack ds-stack--sm" style="text-align: center; padding: var(--space-9) 0;">
+    <h2 class="ds-headline" style="font-size: var(--fs-3xl);">شركتك التالية على هذه الصفحة؟</h2>
+    <p class="ds-lede" style="max-width: 640px; margin: 0 auto;">
+      ابدأ الـ 7-Day Pilot بـ 499 SAR. خلال أسبوع: Proof Pack جاهز، إذا اخترت تنشره — يصل هنا.
+    </p>
+    <div class="ds-row" style="justify-content: center; gap: var(--space-4); margin-top: var(--space-4);">
+      <a class="ds-btn ds-btn--lg" href="/diagnostic.html">ابدأ التشخيص المجّاني</a>
+      <a class="ds-btn ds-btn--ghost ds-btn--lg" href="/start.html">احجز Pilot — 499 SAR</a>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="ds-footer">
+    <div class="ds-container ds-stack ds-stack--md" style="text-align: center;">
+      <p class="ds-lede" style="max-width: 640px; margin: 0 auto; font-size: var(--fs-sm);">
+        كلّ Proof Pack هنا = عميل حقيقي + دفع موثّق + إذن نشر مكتوب.
+        لا fake testimonials، لا revenue غير مُثبت، لا spin.
+      </p>
+      <div class="ds-row" style="justify-content: center; gap: var(--space-5); flex-wrap: wrap;">
+        <a class="ds-link" href="/">الرئيسيّة</a>
+        <a class="ds-link" href="/ai-team.html">AI Operating Team</a>
+        <a class="ds-link" href="/diagnostic.html">التشخيص المجّاني</a>
+        <a class="ds-link" href="/start.html">7-Day Pilot</a>
+        <a class="ds-link" href="/dealix-beast-power.html">Beast Power</a>
+        <a class="ds-link" href="/styleguide.html">Styleguide</a>
+      </div>
+    </div>
+  </footer>
+
+</main>
+
+<script>
+  const API_BASE = window.DEALIX_API_BASE || 'https://api.dealix.me';
+
+  function escapeHtml(s) {
+    return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  }
+
+  function renderEmpty() {
+    return `
+      <div class="proof-empty">
+        <p>لا Proof Packs منشورة بعد — البايلوت الأوّل قيد التشغيل.</p>
+        <p style="font-size: var(--fs-sm);">عند نهاية الأسبوع الأوّل، إذا وافق العميل على النشر — أوّل Proof Pack يظهر هنا.</p>
+        <a class="ds-link" href="/start.html">احجز بايلوتك أنت — 499 SAR</a>
+      </div>
+    `;
+  }
+
+  function renderPack(pack) {
+    const customerName = pack.customer_handle || pack.customer || 'Anonymous customer';
+    const sector = pack.sector || '—';
+    const date = pack.published_at ? new Date(pack.published_at).toLocaleDateString('ar-SA', { dateStyle: 'medium' }) : '—';
+    const claims = pack.claims || pack.evidence_pairs || [];
+    const claimsHtml = claims.map(c => `
+      <div class="proof-claim">
+        <div>
+          <h4>الادّعاء · Claim</h4>
+          <p>${escapeHtml(c.claim_ar || c.claim || c.text_ar || c.text || '—')}</p>
+        </div>
+        <div>
+          <h4>الدليل · Evidence</h4>
+          <p>${escapeHtml(c.evidence_ar || c.evidence || c.source || '—')}</p>
+        </div>
+      </div>
+    `).join('');
+    return `
+      <article class="proof-card">
+        <div class="proof-head">
+          <h3>${escapeHtml(customerName)}</h3>
+          <div class="ds-row" style="gap: var(--space-2);">
+            <span class="ds-chip">${escapeHtml(sector)}</span>
+            <span class="ds-chip ds-chip--accent">${escapeHtml(date)}</span>
+          </div>
+        </div>
+        <p class="ds-card__sub">${escapeHtml(pack.summary_ar || pack.summary || pack.description || 'Proof Pack from a 7-Day Pilot.')}</p>
+        ${claimsHtml || '<p class="ds-card__sub">No claims attached.</p>'}
+        ${pack.testimonial_ar ? `<blockquote style="margin: var(--space-3) 0; padding: var(--space-3) var(--space-4); background: rgba(34,211,238,0.06); border-inline-start: 3px solid var(--accent-2); border-radius: var(--radius-sm, 8px); font-style: italic;">${escapeHtml(pack.testimonial_ar)}</blockquote>` : ''}
+      </article>
+    `;
+  }
+
+  function renderKPIs(packs) {
+    document.getElementById('kpi-packs').textContent = packs.length;
+    const claims = packs.reduce((acc, p) => acc + ((p.claims || p.evidence_pairs || []).length), 0);
+    document.getElementById('kpi-claims').textContent = claims;
+    const revenue = packs.reduce((acc, p) => acc + (p.revenue_proven_sar || 0), 0);
+    document.getElementById('kpi-revenue').textContent = revenue.toLocaleString('en-US');
+  }
+
+  async function refresh() {
+    const list = document.getElementById('packs-list');
+    list.innerHTML = '<p class="proof-empty">جاري التحميل…</p>';
+    try {
+      // Best-effort fetch from the proof-to-market endpoint. The endpoint
+      // returns published proof events; if none exist, we render the empty state.
+      const r = await fetch(`${API_BASE}/api/v1/proof-to-market/published`, { cache: 'no-store' });
+      let packs = [];
+      if (r.ok) {
+        const data = await r.json();
+        packs = (data && (data.packs || data.events || data.items)) || [];
+      }
+      renderKPIs(packs);
+      if (!packs.length) {
+        list.innerHTML = renderEmpty();
+      } else {
+        list.innerHTML = packs.map(renderPack).join('');
+      }
+    } catch (e) {
+      list.innerHTML = renderEmpty();
+      renderKPIs([]);
+    }
+  }
+
+  document.getElementById('btn-refresh').addEventListener('click', refresh);
+  refresh();
+  setInterval(refresh, 60000);
+
+  // Initialize Lucide icons after DOM loads
+  document.addEventListener('DOMContentLoaded', function () {
+    if (window.lucide && window.lucide.createIcons) {
+      window.lucide.createIcons();
+    }
+  });
+</script>
+
+</body>
+</html>

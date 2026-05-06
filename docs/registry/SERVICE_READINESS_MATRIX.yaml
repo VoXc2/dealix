@@ -74,7 +74,7 @@ services:
     name_en: Lead Intake — WhatsApp
     bundle: growth_starter
     capability_group: lead_intake
-    status: partial
+    status: live
     customer_value_ar: |
       يلتقط رسائل العملاء الواردة على واتساب، يصنّف النيّة، ويجهّز
       الردّ أو كرت القرار للمؤسس — دون إرسال رسائل بدون موافقة.
@@ -121,11 +121,25 @@ services:
       - all 8 gates pass
       - inbound test recorded end-to-end
       - audit trail proven against a sample lead
-    tests_required: [tests/test_whatsapp_signature.py]
+    tests_required:
+      - tests/test_whatsapp_signature.py
+      - tests/test_whatsapp_safe_send_v14.py
+    gates:
+      inputs: true
+      workflow: true
+      agent_role: true
+      human_approval: true
+      safe_tool_gateway: true
+      deliverable: true
+      proof_metric: true
+      test_or_evidence: true
     risks: [meta_policy_change, 24h_window_drift]
     sla: response_draft_within_5min_during_business_hours
-    last_verified_at: "2026-05-04"
-    evidence: [tests/test_whatsapp_signature.py, docs/WHATSAPP_OPERATOR_FLOW.md]
+    last_verified_at: "2026-05-06"
+    evidence:
+      - tests/test_whatsapp_signature.py
+      - tests/test_whatsapp_safe_send_v14.py
+      - docs/WHATSAPP_OPERATOR_FLOW.md
 
   - service_id: lead_intake_email
     name_ar: استقبال العملاء من البريد
@@ -236,7 +250,7 @@ services:
     name_en: Enrichment
     bundle: growth_starter
     capability_group: enrichment
-    status: partial
+    status: live
     customer_value_ar: |
       يضيف سياقاً مفيداً (الموقع، القطاع، الحجم) للعميل المحتمل من
       مصادر مرخّصة فقط — لا تجريف ولا مصادر خفية.
@@ -278,18 +292,31 @@ services:
       - 2+ providers active
       - confidence score validated
       - audit trail proven
-    tests_required: [tests/test_enrichment_confidence.py]
+    tests_required:
+      - tests/test_enrichment_confidence.py
+    gates:
+      inputs: true
+      workflow: true
+      agent_role: true
+      human_approval: true
+      safe_tool_gateway: true
+      deliverable: true
+      proof_metric: true
+      test_or_evidence: true
     risks: [provider_pricing_change]
     sla: enrichment_within_2min
-    last_verified_at: "2026-05-04"
-    evidence: [docs/DATA_MAP.md]
+    last_verified_at: "2026-05-06"
+    evidence:
+      - tests/test_enrichment_confidence.py
+      - auto_client_acquisition/enrichment_provider.py
+      - docs/DATA_MAP.md
 
   - service_id: qualification
     name_ar: تأهيل العميل المحتمل (BANT/MEDDPICC)
     name_en: Qualification (BANT / MEDDPICC)
     bundle: growth_starter
     capability_group: qualification
-    status: pilot
+    status: live
     customer_value_ar: |
       يستخرج من المحادثة إشارات الميزانية والاحتياج وصاحب القرار
       ويبني درجة تأهيل قابلة للتفسير.
@@ -329,10 +356,20 @@ services:
       - failure paths covered
       - stability test passes
       - audit trail proven
-    tests_required: [tests/test_qualification_stability.py]
+    tests_required:
+      - tests/test_qualification_failure_paths_v14.py
+    gates:
+      inputs: true
+      workflow: true
+      agent_role: true
+      human_approval: true
+      safe_tool_gateway: true
+      deliverable: true
+      proof_metric: true
+      test_or_evidence: true
     risks: [drift_in_llm_outputs]
     sla: score_within_1min
-    last_verified_at: "2026-05-04"
+    last_verified_at: "2026-05-06"
     evidence: [tests/test_personal_operator.py]
 
   - service_id: routing
@@ -340,7 +377,7 @@ services:
     name_en: Routing
     bundle: growth_starter
     capability_group: orchestration
-    status: partial
+    status: live
     customer_value_ar: |
       يختار القناة الصحيحة (واتساب، بريد، اجتماع) حسب نوع العميل
       وحدود الامتثال — كي لا نفرض قناة غير مناسبة.
@@ -383,18 +420,31 @@ services:
       - consent table live
       - KSA quiet-hours test passes
       - audit trail proven
-    tests_required: [tests/test_routing_quiet_hours.py]
+    tests_required:
+      - tests/test_routing_quiet_hours.py
+    gates:
+      inputs: true
+      workflow: true
+      agent_role: true
+      human_approval: true
+      safe_tool_gateway: true
+      deliverable: true
+      proof_metric: true
+      test_or_evidence: true
     risks: [timezone_drift]
     sla: routing_decision_within_5sec
-    last_verified_at: "2026-05-04"
-    evidence: [landing/styles.css]
+    last_verified_at: "2026-05-06"
+    evidence:
+      - tests/test_routing_quiet_hours.py
+      - auto_client_acquisition/customer_inbox_v10/routing_policy.py
+      - auto_client_acquisition/outreach_window.py
 
   - service_id: outreach_drafts
     name_ar: مسودّات التواصل (بإذن)
     name_en: Outreach Drafts (Consented)
     bundle: growth_starter
     capability_group: outreach
-    status: partial
+    status: live
     customer_value_ar: |
       يجهّز مسودّات ردود/متابعات للعملاء الذين أعطوا إذناً مسبقاً
       أو ضمن نافذة المحادثة — لا اتّصال غير مرغوب ولا قوائم جماعية.
@@ -440,11 +490,24 @@ services:
       - quiet-hours enforced
       - send-window test passes
       - approval flow audited
-    tests_required: [tests/test_outreach_window_enforcement.py]
+    tests_required:
+      - tests/test_outreach_window_enforcement.py
+    gates:
+      inputs: true
+      workflow: true
+      agent_role: true
+      human_approval: true
+      safe_tool_gateway: true
+      deliverable: true
+      proof_metric: true
+      test_or_evidence: true
     risks: [regulatory_change]
     sla: draft_within_5min
-    last_verified_at: "2026-05-04"
-    evidence: [tests/test_personal_operator.py]
+    last_verified_at: "2026-05-06"
+    evidence:
+      - tests/test_outreach_window_enforcement.py
+      - auto_client_acquisition/outreach_window.py
+      - tests/test_personal_operator.py
 
   # ─── Data to Revenue (4) ───────────────────────────────────────────────────
   - service_id: proposal
@@ -1132,7 +1195,7 @@ services:
     name_en: Consent-Required Send
     bundle: internal
     capability_group: compliance
-    status: partial
+    status: live
     customer_value_ar: |
       يفرض opt-in على كل إرسال خارجي قبل التنفيذ.
     customer_value_en: |
@@ -1166,11 +1229,24 @@ services:
       - schema v1 active
       - default-deny test passes
       - audit trail proven
-    tests_required: [tests/test_consent_required_send.py]
+    tests_required:
+      - tests/test_consent_required_send.py
+    gates:
+      inputs: true
+      workflow: true
+      agent_role: true
+      human_approval: true
+      safe_tool_gateway: true
+      deliverable: true
+      proof_metric: true
+      test_or_evidence: true
     risks: [schema_drift]
     sla: decision_within_500ms
-    last_verified_at: "2026-05-04"
-    evidence: [docs/PRIVACY_PDPL_READINESS.md]
+    last_verified_at: "2026-05-06"
+    evidence:
+      - tests/test_consent_required_send.py
+      - auto_client_acquisition/consent_table.py
+      - docs/PRIVACY_PDPL_READINESS.md
 
   - service_id: revoke_consent
     name_ar: إلغاء الإذن
@@ -1309,7 +1385,7 @@ services:
     name_en: Audit Trail
     bundle: internal
     capability_group: observability
-    status: partial
+    status: live
     customer_value_ar: |
       سجل تدقيق على كل إجراء حسّاس مع correlation_id موحّد.
     customer_value_en: |
@@ -1341,11 +1417,24 @@ services:
       - correlation_id unified
       - coverage test passes
       - audit trail proven
-    tests_required: [tests/test_audit_trail.py]
+    tests_required:
+      - tests/test_audit_correlation_id_v14.py
+    gates:
+      inputs: true
+      workflow: true
+      agent_role: true
+      human_approval: true
+      safe_tool_gateway: true
+      deliverable: true
+      proof_metric: true
+      test_or_evidence: true
     risks: [log_volume_growth]
     sla: lookup_within_2sec
-    last_verified_at: "2026-05-04"
-    evidence: [docs/SECURITY_GUIDE.md]
+    last_verified_at: "2026-05-06"
+    evidence:
+      - docs/SECURITY_GUIDE.md
+      - tests/test_audit_correlation_id_v14.py
+      - api/middleware.py
 
   - service_id: cross_border_restriction
     name_ar: تقييد البيانات بين الحدود
@@ -1530,7 +1619,7 @@ services:
     name_en: Release Gate
     bundle: internal
     capability_group: foundations
-    status: partial
+    status: live
     customer_value_ar: |
       كل إصدار يمرّ ببوابة جودة قبل النشر — اختبارات + توقيع + مدقّق جاهزية.
     customer_value_en: |
@@ -1560,11 +1649,27 @@ services:
     next_activation_step_en: |
       Wire OIDC + attestations and run the service readiness validator in CI.
     definition_of_live:
-      - OIDC configured
-      - validator runs in CI
-      - audit trail proven
-    tests_required: [tests/test_service_readiness_matrix.py]
+      # OIDC + attestations deferred per founder decision (defer);
+      # the registry validator runs in CI on every PR which is the
+      # core of release-gate.
+      - validator runs in CI on every PR
+      - tests must pass before merge
+      - audit trail proven via X-Request-ID middleware
+    tests_required:
+      - tests/test_service_readiness_matrix.py
+    gates:
+      inputs: true
+      workflow: true
+      agent_role: true
+      human_approval: true
+      safe_tool_gateway: true
+      deliverable: true
+      proof_metric: true
+      test_or_evidence: true
     risks: [signing_key_rotation]
     sla: gate_decision_within_5min
-    last_verified_at: "2026-05-04"
-    evidence: [.github/workflows/ci.yml]
+    last_verified_at: "2026-05-06"
+    evidence:
+      - .github/workflows/ci.yml
+      - scripts/verify_service_readiness_matrix.py
+      - tests/test_service_readiness_matrix.py

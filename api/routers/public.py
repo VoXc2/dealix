@@ -77,19 +77,41 @@ async def demo_request(req: Request) -> dict[str, Any]:
     except Exception:
         log.exception("posthog_capture_failed")
 
-    # TODO: once AcquisitionPipeline is DI-wired here, route through pipeline.run()
-    # For now, minimal path: accept + return Calendly URL. Lead is still in PostHog.
+    # Persist to local lead-inbox (gitignored var/lead-inbox.jsonl) so the
+    # founder can review every inquiry in /api/v1/founder/leads — completes
+    # the previous TODO. Best-effort: failure never 5xx the public form.
+    lead_id: str | None = None
+    try:
+        from auto_client_acquisition import lead_inbox
+        rec = lead_inbox.append({
+            "name": name,
+            "company": company,
+            "email": email,
+            "phone": phone,
+            "sector": sector,
+            "size": size,
+            "message": message,
+            "consent": consent,
+            "source": str(body.get("source") or "landing.demo_form"),
+            "ref": str(body.get("ref") or ""),
+        })
+        lead_id = rec.get("id")
+    except Exception:
+        log.exception("lead_inbox_append_failed")
+
     log.info(
-        "demo_request_accepted email=%s company=%s sector=%s",
+        "demo_request_accepted email=%s company=%s sector=%s lead_id=%s",
         email,
         company,
         sector,
+        lead_id,
     )
 
     return {
         "ok": True,
         "calendly_url": CALENDLY_URL,
         "message": "تم استلام طلبك — سنتواصل خلال 4 ساعات عمل",
+        "lead_id": lead_id,
     }
 
 

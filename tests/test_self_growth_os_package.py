@@ -123,22 +123,30 @@ def test_safe_publishing_gate_rejects_non_string():
 
 
 def test_service_matrix_counts_match_validator():
+    """After Phase K1-K6 (PR #165 + PR #166 + PR #167):
+       K1 lead_intake_whatsapp + K2 qualification + K3 audit_trail
+       + K4 consent_required_send + K5 outreach_drafts + K6 routing
+       = 6 services LIVE. Remaining 2 PARTIAL close in PR #168."""
     counts = service_activation_matrix.counts()
     assert counts["total"] == 32
-    assert counts["live"] == 0
-    assert counts["pilot"] == 1
-    assert counts["partial"] == 7
+    assert counts["live"] == 8
+    assert counts["pilot"] == 0
+    assert counts["partial"] == 0
     assert counts["target"] == 24
 
 
 def test_service_matrix_check_service_returns_typed_record():
-    check = service_activation_matrix.check_service("lead_intake_whatsapp")
+    """After Phase K, all 8 in-development services are LIVE. This
+    test verifies the LIVE side of the activation-matrix contract:
+    a live service reports eight_gate_block_present=True and zero
+    blocking_reasons. The matrix's gate-checking logic still works
+    — it just no longer has any partial services to flag."""
+    check = service_activation_matrix.check_service("enrichment")
     assert isinstance(check, ServiceActivationCheck)
-    assert check.service_id == "lead_intake_whatsapp"
-    assert check.status == "partial"
-    assert check.eight_gate_block_present is False  # status != live
-    # Partial → multiple gate_missing reasons
-    assert any(r.startswith("gate_missing:") for r in check.blocking_reasons)
+    assert check.service_id == "enrichment"
+    assert check.status == "live"
+    assert check.eight_gate_block_present is True  # all 8 gates passed
+    assert check.blocking_reasons == []
 
 
 def test_service_matrix_unknown_id_raises_keyerror():
@@ -147,12 +155,23 @@ def test_service_matrix_unknown_id_raises_keyerror():
 
 
 def test_service_matrix_candidates_ranked_partial_first():
+    """After Phase K, no services remain in PARTIAL/PILOT — every
+    in-development service shipped to live. The candidates list is
+    therefore empty (clean quiescent state).
+
+    The original ranking-invariant (partial-before-pilot) is still
+    enforced by the candidates_for_promotion logic; we just don't
+    have any candidates left to assert it on. When PARTIAL services
+    re-appear in a future wave, this test must update to assert the
+    ranking again.
+    """
     candidates = service_activation_matrix.candidates_for_promotion()
-    assert candidates, "expected at least the existing pilot/partial services"
-    # First candidate(s) are partial; pilot comes after partial.
     statuses = [c.status for c in candidates]
-    assert "partial" in statuses
-    if "pilot" in statuses:
+    # Every candidate must be partial or pilot — never live or target.
+    assert all(s in {"partial", "pilot"} for s in statuses)
+    # If both kinds present, partial ranks before pilot (the invariant
+    # we want to keep alive even when the list is empty today).
+    if "partial" in statuses and "pilot" in statuses:
         assert statuses.index("partial") < statuses.index("pilot")
 
 

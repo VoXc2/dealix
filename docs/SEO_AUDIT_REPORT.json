@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "summary": {
-    "total_pages": 31,
+    "total_pages": 40,
     "pages_with_required_gap": 0,
     "pages_with_advisory_gap": 1
   },
@@ -27,6 +27,22 @@
   "pages": [
     {
       "path": "academy.html",
+      "present": {
+        "title": true,
+        "meta_description": true,
+        "meta_viewport": true,
+        "html_lang": true,
+        "html_dir": true,
+        "canonical": true,
+        "og_title": true,
+        "og_description": true,
+        "twitter_card": true
+      },
+      "missing_required": [],
+      "missing_advisory": []
+    },
+    {
+      "path": "ai-team.html",
       "present": {
         "title": true,
         "meta_description": true,
@@ -186,6 +202,38 @@
       "missing_advisory": []
     },
     {
+      "path": "decisions.html",
+      "present": {
+        "title": true,
+        "meta_description": true,
+        "meta_viewport": true,
+        "html_lang": true,
+        "html_dir": true,
+        "canonical": true,
+        "og_title": true,
+        "og_description": true,
+        "twitter_card": true
+      },
+      "missing_required": [],
+      "missing_advisory": []
+    },
+    {
+      "path": "diagnostic.html",
+      "present": {
+        "title": true,
+        "meta_description": true,
+        "meta_viewport": true,
+        "html_lang": true,
+        "html_dir": true,
+        "canonical": true,
+        "og_title": true,
+        "og_description": true,
+        "twitter_card": true
+      },
+      "missing_required": [],
+      "missing_advisory": []
+    },
+    {
       "path": "founder-dashboard.html",
       "present": {
         "title": true,
@@ -205,6 +253,22 @@
         "og_description",
         "twitter_card"
       ]
+    },
+    {
+      "path": "founder-leads.html",
+      "present": {
+        "title": true,
+        "meta_description": true,
+        "meta_viewport": true,
+        "html_lang": true,
+        "html_dir": true,
+        "canonical": true,
+        "og_title": true,
+        "og_description": true,
+        "twitter_card": true
+      },
+      "missing_required": [],
+      "missing_advisory": []
     },
     {
       "path": "founder.html",
@@ -335,6 +399,38 @@
       "missing_advisory": []
     },
     {
+      "path": "pilot-day-0.html",
+      "present": {
+        "title": true,
+        "meta_description": true,
+        "meta_viewport": true,
+        "html_lang": true,
+        "html_dir": true,
+        "canonical": true,
+        "og_title": true,
+        "og_description": true,
+        "twitter_card": true
+      },
+      "missing_required": [],
+      "missing_advisory": []
+    },
+    {
+      "path": "pilot-tracker.html",
+      "present": {
+        "title": true,
+        "meta_description": true,
+        "meta_viewport": true,
+        "html_lang": true,
+        "html_dir": true,
+        "canonical": true,
+        "og_title": true,
+        "og_description": true,
+        "twitter_card": true
+      },
+      "missing_required": [],
+      "missing_advisory": []
+    },
+    {
       "path": "pricing.html",
       "present": {
         "title": true,
@@ -352,6 +448,22 @@
     },
     {
       "path": "privacy.html",
+      "present": {
+        "title": true,
+        "meta_description": true,
+        "meta_viewport": true,
+        "html_lang": true,
+        "html_dir": true,
+        "canonical": true,
+        "og_title": true,
+        "og_description": true,
+        "twitter_card": true
+      },
+      "missing_required": [],
+      "missing_advisory": []
+    },
+    {
+      "path": "proof.html",
       "present": {
         "title": true,
         "meta_description": true,
@@ -400,6 +512,22 @@
     },
     {
       "path": "simulator.html",
+      "present": {
+        "title": true,
+        "meta_description": true,
+        "meta_viewport": true,
+        "html_lang": true,
+        "html_dir": true,
+        "canonical": true,
+        "og_title": true,
+        "og_description": true,
+        "twitter_card": true
+      },
+      "missing_required": [],
+      "missing_advisory": []
+    },
+    {
+      "path": "start.html",
       "present": {
         "title": true,
         "meta_description": true,
@@ -512,6 +640,22 @@
     },
     {
       "path": "verticals.html",
+      "present": {
+        "title": true,
+        "meta_description": true,
+        "meta_viewport": true,
+        "html_lang": true,
+        "html_dir": true,
+        "canonical": true,
+        "og_title": true,
+        "og_description": true,
+        "twitter_card": true
+      },
+      "missing_required": [],
+      "missing_advisory": []
+    },
+    {
+      "path": "workflow.html",
       "present": {
         "title": true,
         "meta_description": true,

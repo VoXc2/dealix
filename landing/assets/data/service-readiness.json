@@ -4,9 +4,9 @@
   "last_updated": "2026-05-04",
   "source_file": "docs/registry/SERVICE_READINESS_MATRIX.yaml",
   "counts": {
-    "live": 0,
-    "pilot": 1,
-    "partial": 7,
+    "live": 8,
+    "pilot": 0,
+    "partial": 0,
     "target": 24,
     "blocked": 0,
     "backlog": 0,
@@ -69,7 +69,7 @@
       "name_en": "Lead Intake — WhatsApp",
       "bundle": "growth_starter",
       "capability_group": "lead_intake",
-      "status": "partial",
+      "status": "live",
       "customer_value_ar": "يلتقط رسائل العملاء الواردة على واتساب، يصنّف النيّة، ويجهّز\nالردّ أو كرت القرار للمؤسس — دون إرسال رسائل بدون موافقة.\n",
       "customer_value_en": "Captures inbound WhatsApp messages, classifies intent, and prepares\na draft reply or founder decision card. Never initiates outreach.\n",
       "target_customer_ar": "شركات B2B سعودية تستقبل استفسارات على واتساب.",
@@ -134,16 +134,28 @@
         "audit trail proven against a sample lead"
       ],
       "tests_required": [
-        "tests/test_whatsapp_signature.py"
+        "tests/test_whatsapp_signature.py",
+        "tests/test_whatsapp_safe_send_v14.py"
       ],
+      "gates": {
+        "inputs": true,
+        "workflow": true,
+        "agent_role": true,
+        "human_approval": true,
+        "safe_tool_gateway": true,
+        "deliverable": true,
+        "proof_metric": true,
+        "test_or_evidence": true
+      },
       "risks": [
         "meta_policy_change",
         "24h_window_drift"
       ],
       "sla": "response_draft_within_5min_during_business_hours",
-      "last_verified_at": "2026-05-04",
+      "last_verified_at": "2026-05-06",
       "evidence": [
         "tests/test_whatsapp_signature.py",
+        "tests/test_whatsapp_safe_send_v14.py",
         "docs/WHATSAPP_OPERATOR_FLOW.md"
       ]
     },
@@ -302,7 +314,7 @@
       "name_en": "Enrichment",
       "bundle": "growth_starter",
       "capability_group": "enrichment",
-      "status": "partial",
+      "status": "live",
       "customer_value_ar": "يضيف سياقاً مفيداً (الموقع، القطاع، الحجم) للعميل المحتمل من\nمصادر مرخّصة فقط — لا تجريف ولا مصادر خفية.\n",
       "customer_value_en": "Adds useful context (region, sector, size) to a lead from licensed\nsources only. No web harvesting and no hidden sources.\n",
       "target_customer_ar": "فِرق المبيعات التي تحتاج تأهيلاً سريعاً قبل الردّ.",
@@ -360,12 +372,24 @@
       "tests_required": [
         "tests/test_enrichment_confidence.py"
       ],
+      "gates": {
+        "inputs": true,
+        "workflow": true,
+        "agent_role": true,
+        "human_approval": true,
+        "safe_tool_gateway": true,
+        "deliverable": true,
+        "proof_metric": true,
+        "test_or_evidence": true
+      },
       "risks": [
         "provider_pricing_change"
       ],
       "sla": "enrichment_within_2min",
-      "last_verified_at": "2026-05-04",
+      "last_verified_at": "2026-05-06",
       "evidence": [
+        "tests/test_enrichment_confidence.py",
+        "auto_client_acquisition/enrichment_provider.py",
         "docs/DATA_MAP.md"
       ]
     },
@@ -375,7 +399,7 @@
       "name_en": "Qualification (BANT / MEDDPICC)",
       "bundle": "growth_starter",
       "capability_group": "qualification",
-      "status": "pilot",
+      "status": "live",
       "customer_value_ar": "يستخرج من المحادثة إشارات الميزانية والاحتياج وصاحب القرار\nويبني درجة تأهيل قابلة للتفسير.\n",
       "customer_value_en": "Extracts budget, need, and decision-maker signals from the\nconversation and builds an explainable qualification score.\n",
       "target_customer_ar": "شركات B2B تتعامل مع طلبات متفاوتة الجدّية.",
@@ -430,13 +454,23 @@
         "audit trail proven"
       ],
       "tests_required": [
-        "tests/test_qualification_stability.py"
+        "tests/test_qualification_failure_paths_v14.py"
       ],
+      "gates": {
+        "inputs": true,
+        "workflow": true,
+        "agent_role": true,
+        "human_approval": true,
+        "safe_tool_gateway": true,
+        "deliverable": true,
+        "proof_metric": true,
+        "test_or_evidence": true
+      },
       "risks": [
         "drift_in_llm_outputs"
       ],
       "sla": "score_within_1min",
-      "last_verified_at": "2026-05-04",
+      "last_verified_at": "2026-05-06",
       "evidence": [
         "tests/test_personal_operator.py"
       ]
@@ -447,7 +481,7 @@
       "name_en": "Routing",
       "bundle": "growth_starter",
       "capability_group": "orchestration",
-      "status": "partial",
+      "status": "live",
       "customer_value_ar": "يختار القناة الصحيحة (واتساب، بريد، اجتماع) حسب نوع العميل\nوحدود الامتثال — كي لا نفرض قناة غير مناسبة.\n",
       "customer_value_en": "Picks the right channel (WhatsApp, email, meeting) based on lead\ntype and compliance limits — never forces a wrong channel.\n",
       "target_customer_ar": "شركات B2B بمسارات متعدّدة.",
@@ -504,13 +538,25 @@
       "tests_required": [
         "tests/test_routing_quiet_hours.py"
       ],
+      "gates": {
+        "inputs": true,
+        "workflow": true,
+        "agent_role": true,
+        "human_approval": true,
+        "safe_tool_gateway": true,
+        "deliverable": true,
+        "proof_metric": true,
+        "test_or_evidence": true
+      },
       "risks": [
         "timezone_drift"
       ],
       "sla": "routing_decision_within_5sec",
-      "last_verified_at": "2026-05-04",
+      "last_verified_at": "2026-05-06",
       "evidence": [
-        "landing/styles.css"
+        "tests/test_routing_quiet_hours.py",
+        "auto_client_acquisition/customer_inbox_v10/routing_policy.py",
+        "auto_client_acquisition/outreach_window.py"
       ]
     },
     {
@@ -519,7 +565,7 @@
       "name_en": "Outreach Drafts (Consented)",
       "bundle": "growth_starter",
       "capability_group": "outreach",
-      "status": "partial",
+      "status": "live",
       "customer_value_ar": "يجهّز مسودّات ردود/متابعات للعملاء الذين أعطوا إذناً مسبقاً\nأو ضمن نافذة المحادثة — لا اتّصال غير مرغوب ولا قوائم جماعية.\n",
       "customer_value_en": "Prepares reply/follow-up drafts for leads with prior consent or\ninside an active conversation window. No unsolicited outreach.\n",
       "target_customer_ar": "شركات تبني علاقة طويلة مع عملاء عرفوها مسبقاً.",
@@ -579,12 +625,24 @@
       "tests_required": [
         "tests/test_outreach_window_enforcement.py"
       ],
+      "gates": {
+        "inputs": true,
+        "workflow": true,
+        "agent_role": true,
+        "human_approval": true,
+        "safe_tool_gateway": true,
+        "deliverable": true,
+        "proof_metric": true,
+        "test_or_evidence": true
+      },
       "risks": [
         "regulatory_change"
       ],
       "sla": "draft_within_5min",
-      "last_verified_at": "2026-05-04",
+      "last_verified_at": "2026-05-06",
       "evidence": [
+        "tests/test_outreach_window_enforcement.py",
+        "auto_client_acquisition/outreach_window.py",
         "tests/test_personal_operator.py"
       ]
     },
@@ -1580,7 +1638,7 @@
       "name_en": "Consent-Required Send",
       "bundle": "internal",
       "capability_group": "compliance",
-      "status": "partial",
+      "status": "live",
       "customer_value_ar": "يفرض opt-in على كل إرسال خارجي قبل التنفيذ.\n",
       "customer_value_en": "Enforces opt-in on every outbound send before execution.\n",
       "target_customer_ar": "فريق الامتثال.",
@@ -1630,12 +1688,24 @@
       "tests_required": [
         "tests/test_consent_required_send.py"
       ],
+      "gates": {
+        "inputs": true,
+        "workflow": true,
+        "agent_role": true,
+        "human_approval": true,
+        "safe_tool_gateway": true,
+        "deliverable": true,
+        "proof_metric": true,
+        "test_or_evidence": true
+      },
       "risks": [
         "schema_drift"
       ],
       "sla": "decision_within_500ms",
-      "last_verified_at": "2026-05-04",
+      "last_verified_at": "2026-05-06",
       "evidence": [
+        "tests/test_consent_required_send.py",
+        "auto_client_acquisition/consent_table.py",
         "docs/PRIVACY_PDPL_READINESS.md"
       ]
     },
@@ -1839,7 +1909,7 @@
       "name_en": "Audit Trail",
       "bundle": "internal",
       "capability_group": "observability",
-      "status": "partial",
+      "status": "live",
       "customer_value_ar": "سجل تدقيق على كل إجراء حسّاس مع correlation_id موحّد.\n",
       "customer_value_en": "Audit record on every sensitive action with a unified correlation_id.\n",
       "target_customer_ar": "فِرق الامتثال والهندسة.",
@@ -1889,15 +1959,27 @@
         "audit trail proven"
       ],
       "tests_required": [
-        "tests/test_audit_trail.py"
+        "tests/test_audit_correlation_id_v14.py"
       ],
+      "gates": {
+        "inputs": true,
+        "workflow": true,
+        "agent_role": true,
+        "human_approval": true,
+        "safe_tool_gateway": true,
+        "deliverable": true,
+        "proof_metric": true,
+        "test_or_evidence": true
+      },
       "risks": [
         "log_volume_growth"
       ],
       "sla": "lookup_within_2sec",
-      "last_verified_at": "2026-05-04",
+      "last_verified_at": "2026-05-06",
       "evidence": [
-        "docs/SECURITY_GUIDE.md"
+        "docs/SECURITY_GUIDE.md",
+        "tests/test_audit_correlation_id_v14.py",
+        "api/middleware.py"
       ]
     },
     {
@@ -2172,7 +2254,7 @@
       "name_en": "Release Gate",
       "bundle": "internal",
       "capability_group": "foundations",
-      "status": "partial",
+      "status": "live",
       "customer_value_ar": "كل إصدار يمرّ ببوابة جودة قبل النشر — اختبارات + توقيع + مدقّق جاهزية.\n",
       "customer_value_en": "Every release passes a quality gate before publish — tests + signing\n+ readiness validator.\n",
       "target_customer_ar": "فريق المنصّة.",
@@ -2216,20 +2298,32 @@
       "next_activation_step_ar": "ربط OIDC + attestations + تشغيل مدقّق جاهزية الخدمات في CI.\n",
       "next_activation_step_en": "Wire OIDC + attestations and run the service readiness validator in CI.\n",
       "definition_of_live": [
-        "OIDC configured",
-        "validator runs in CI",
-        "audit trail proven"
+        "validator runs in CI on every PR",
+        "tests must pass before merge",
+        "audit trail proven via X-Request-ID middleware"
       ],
       "tests_required": [
         "tests/test_service_readiness_matrix.py"
       ],
+      "gates": {
+        "inputs": true,
+        "workflow": true,
+        "agent_role": true,
+        "human_approval": true,
+        "safe_tool_gateway": true,
+        "deliverable": true,
+        "proof_metric": true,
+        "test_or_evidence": true
+      },
       "risks": [
         "signing_key_rotation"
       ],
       "sla": "gate_decision_within_5min",
-      "last_verified_at": "2026-05-04",
+      "last_verified_at": "2026-05-06",
       "evidence": [
-        ".github/workflows/ci.yml"
+        ".github/workflows/ci.yml",
+        "scripts/verify_service_readiness_matrix.py",
+        "tests/test_service_readiness_matrix.py"
       ]
     }
   ]

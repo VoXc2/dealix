@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-theme="dark">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>أوّل AI Operating Team لشركتك — Dealix</title>
+<meta name="description" content="قبل ما توظف أوّل فريق مبيعات ونمو ودعم، Dealix يبني لك فريق AI صغير: Sales + Growth + Support + Ops + Executive — كل قرار خارجي بموافقتك. PDPL-aware، عربي/إنجليزي، Saudi-first." />
+<link rel="canonical" href="https://dealix.me/ai-team.html" />
+<meta property="og:type" content="website" />
+<meta property="og:title" content="Dealix — أوّل AI Operating Team للشركة" />
+<meta property="og:description" content="Sales Agent + Growth Agent + Support Agent + Ops Agent + Executive Agent — approval-first، proof-backed، Saudi-PDPL." />
+<meta property="og:url" content="https://dealix.me/ai-team.html" />
+<meta property="og:locale" content="ar_SA" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Dealix — AI Operating Team" />
+<meta name="twitter:description" content="فريق AI صغير لشركتك قبل ما توظّف فريق كامل. كل قرار خارجي بموافقتك." />
+<meta name="theme-color" content="#0f172a" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" />
+
+<link rel="stylesheet" href="/styles.css" />
+<link rel="stylesheet" href="/assets/css/design-system.css" />
+
+<!-- Lucide icons (lightweight SVG icons, ~25KB compressed) -->
+<script src="https://unpkg.com/lucide@0.469.0/dist/umd/lucide.min.js" defer></script>
+
+<style>
+  body {
+    background:
+      radial-gradient(1100px 600px at 80% -10%, rgba(168, 85, 247, 0.18), transparent 60%),
+      radial-gradient(900px 500px at 0% 10%, rgba(14, 165, 233, 0.18), transparent 60%),
+      linear-gradient(180deg, #050816 0%, #0b1124 60%, #1e1b4b 100%);
+    color: var(--text);
+    min-height: 100vh;
+    margin: 0;
+    font-family: var(--font-ar);
+  }
+  main { padding: var(--space-7) var(--space-5) var(--space-9); }
+
+  /* Anti-claim banner */
+  .ai-anti-banner {
+    padding: var(--space-5) var(--space-6);
+    border-radius: var(--radius-lg, 20px);
+    background: rgba(220, 38, 38, 0.08);
+    border: 1px solid rgba(220, 38, 38, 0.25);
+    color: #fca5a5;
+    font-size: var(--fs-sm);
+    line-height: var(--lh-base);
+  }
+  .ai-anti-banner__title { color: var(--text); font-weight: 700; font-size: var(--fs-md); margin: 0 0 var(--space-2) 0; }
+
+  /* Agent card */
+  .ai-agent {
+    display: grid;
+    grid-template-columns: 56px 1fr;
+    gap: var(--space-4);
+    padding: var(--space-5);
+    border-radius: var(--radius-lg, 20px);
+    background: var(--ds-surface-1);
+    border: 1px solid var(--ds-border);
+    transition: transform var(--dur-base) var(--ease-out-quart), border-color var(--dur-base);
+  }
+  .ai-agent:hover { transform: translateY(-2px); border-color: var(--ds-border-strong); }
+  .ai-agent__icon {
+    width: 56px; height: 56px;
+    border-radius: 14px;
+    display: grid; place-items: center;
+    background: linear-gradient(135deg, rgba(34,211,238,0.15), rgba(168,85,247,0.15));
+    font-size: 28px;
+  }
+  .ai-agent__title { margin: 0 0 var(--space-2) 0; font-size: var(--fs-xl); font-weight: 700; color: var(--text); display: flex; align-items: center; gap: var(--space-2); flex-wrap: wrap; }
+  .ai-agent__role { font-size: var(--fs-sm); color: var(--accent-2); font-weight: 600; }
+  .ai-agent__desc { font-size: var(--fs-md); color: var(--text-muted); line-height: var(--lh-base); margin: 0 0 var(--space-3) 0; }
+  .ai-agent__verbs {
+    display: flex; flex-wrap: wrap; gap: var(--space-2);
+    font-size: var(--fs-xs); color: var(--text-muted);
+    margin-bottom: var(--space-3);
+  }
+  .ai-agent__verbs span {
+    padding: 2px 8px;
+    border-radius: 6px;
+    background: rgba(34, 211, 238, 0.10);
+    color: var(--accent-2);
+    font-weight: 600;
+  }
+  .ai-agent__lives {
+    display: block;
+    font-size: var(--fs-xs);
+    color: var(--text-muted);
+    margin-top: var(--space-2);
+  }
+  .ai-agent__endpoints { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+
+  .ai-package {
+    padding: var(--space-6);
+    border-radius: var(--radius-lg, 20px);
+    background: var(--ds-surface-1);
+    border: 1px solid var(--ds-border);
+    display: flex; flex-direction: column; gap: var(--space-3);
+  }
+  .ai-package--featured {
+    border-color: rgba(34, 197, 94, 0.45);
+    background: linear-gradient(135deg, rgba(34,197,94,0.08), rgba(14,165,233,0.06));
+  }
+  .ai-package__price { font-family: var(--font-lt); font-size: var(--fs-3xl); font-weight: 800; letter-spacing: var(--tracking-tight); }
+  .ai-package__price small { font-size: var(--fs-md); color: var(--text-muted); font-weight: 500; }
+</style>
+</head>
+<body>
+<a class="ds-skip-link" href="#main">تخطّ إلى المحتوى الرئيسي</a>
+
+<main id="main" class="ds-container--full ds-stack ds-stack--xl">
+
+  <!-- Breadcrumb -->
+  <nav class="ds-breadcrumb" aria-label="مسار التنقّل">
+    <a href="/">الرئيسيّة</a>
+    <span class="ds-breadcrumb__sep" aria-hidden="true"></span>
+    <span aria-current="page">AI Operating Team</span>
+  </nav>
+
+  <!-- Hero -->
+  <section class="ds-banner ds-stack ds-stack--sm" aria-labelledby="hero-title">
+    <span class="ds-eyebrow">Saudi-first · PDPL · Approval-first · Proof-backed · v3.0.0</span>
+    <h1 id="hero-title" class="ds-banner__title">أوّل AI Operating Team للشركات السعوديّة</h1>
+    <p class="ds-banner__subtitle">٥ وكلاء AI يجهّزون كلّ القرارات اليوميّة لمدراء شركتك. كلّ مدير يردّ بـ ✓ أو ✗ من جوّاله — والنظام يصنّف، يجهّز، يصعّد، ويوثّق بالأدلّة. <strong>قبل ما توظّف فريق كامل</strong>.</p>
+    <p class="ds-banner__subtitle" style="font-family: var(--font-lt); font-size: var(--fs-md);">The first AI Operating Team built for Saudi B2B. Five AI agents that prepare every daily decision; managers approve via WhatsApp or mobile in one tap; the system classifies, drafts, escalates, and audits with evidence. <strong>Before you hire a full team.</strong></p>
+    <div class="ds-row" style="margin-top: var(--space-4);">
+      <a class="ds-btn ds-btn--lg" href="/diagnostic.html">ابدأ تشخيصاً مجانياً</a>
+      <a class="ds-btn ds-btn--ghost ds-btn--lg" href="/decisions.html">جرّب القرارات اليوميّة</a>
+    </div>
+  </section>
+
+  <!-- Anti-claim banner — IMPORTANT for hard-rules compliance -->
+  <section class="ai-anti-banner">
+    <p class="ai-anti-banner__title">❗️ مهم — Dealix لا يستبدل فريقك بالكامل</p>
+    <p>Dealix ليس بديلاً عن الموظّفين. هو طبقة تشغيل AI تساعدك تبدأ <em>قبل</em> التوظيف، أو تخلّي فريقك الحالي أسرع وأقلّ اعتماداً على التخمين. كلّ إجراء خارجي يحتاج موافقتك. لا nزعم بإيرادات مضمونة أو نتائج مبهرة — كلّ ادّعاء يحتاج evidence.</p>
+    <p style="font-family: var(--font-lt); margin-top: var(--space-2);"><em>Dealix does not replace your full team. It is an AI operating layer to use before hiring — or to make your current team faster and less guesswork-driven. Every external action requires your approval. No guaranteed-revenue claims; every claim needs evidence.</em></p>
+  </section>
+
+  <!-- KPIs of the team -->
+  <section aria-label="مؤشّرات الفريق" class="ds-grid ds-grid--narrow">
+    <div class="ds-kpi"><span class="ds-kpi__num">5</span><span class="ds-kpi__label">وكلاء AI أساسيّون</span></div>
+    <div class="ds-kpi"><span class="ds-kpi__num">8</span><span class="ds-kpi__label">بوّابات صلبة</span></div>
+    <div class="ds-kpi"><span class="ds-kpi__num">5</span><span class="ds-kpi__label">أنماط إجراء فقط</span></div>
+    <div class="ds-kpi"><span class="ds-kpi__num">499<small style="font-size:13px;"> SAR</small></span><span class="ds-kpi__label">7-Day Pilot</span></div>
+  </section>
+
+  <!-- The 5 Agents -->
+  <section aria-labelledby="agents-title" class="ds-stack ds-stack--md">
+    <div>
+      <span class="ds-eyebrow">الـ ٥ وكلاء</span>
+      <h2 id="agents-title" class="ds-headline" style="font-size: var(--fs-3xl); margin-top: var(--space-3);">فريقك من الـ AI</h2>
+      <p class="ds-lede" style="margin-top: var(--space-3);">كلّ وكيل أدناه = endpoint حيّ على <span class="ds-endpoint">api.dealix.me</span>. لا vapor، لا "قريباً" — كلّ ما تشاهده شغّال الآن.</p>
+    </div>
+
+    <!-- Sales Agent -->
+    <div class="ai-agent">
+      <div class="ai-agent__icon">🟦</div>
+      <div>
+        <h3 class="ai-agent__title">Sales Agent <span class="ds-mode ds-mode--draft">draft_only</span></h3>
+        <p class="ai-agent__role">يحلّ محلّ أوّل موظّف مبيعات جزئيّاً</p>
+        <p class="ai-agent__desc">يفهم العميل المحتمل، يصنّفه، يحدّد إذا يناسب الخدمة، يجهّز ردود وfollow-ups وobjection-handling، يُجهّز meeting brief، ويقترح Pilot offer. <strong>يطلب موافقة قبل أي إرسال خارجي.</strong></p>
+        <div class="ai-agent__verbs">
+          <span>يؤهّل</span><span>يصنّف</span><span>يكتب مسوّدات</span><span>يجهّز meeting brief</span><span>يصعّد عند ضمان مطلوب</span>
+        </div>
+        <span class="ai-agent__lives">يعيش هنا:</span>
+        <div class="ai-agent__endpoints">
+          <span class="ds-endpoint">/api/v1/sales-os/qualify</span>
+          <span class="ds-endpoint">/api/v1/sales-os/objection-response</span>
+          <span class="ds-endpoint">/api/v1/role-command-v125/today/sales</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Growth Agent -->
+    <div class="ai-agent">
+      <div class="ai-agent__icon">🟩</div>
+      <div>
+        <h3 class="ai-agent__title">Growth Agent <span class="ds-mode ds-mode--suggest">suggest_only</span></h3>
+        <p class="ai-agent__role">يحلّ محلّ موظّف نمو/تسويق أوّلي</p>
+        <p class="ai-agent__desc">يختار الشريحة الأفضل، يجهّز رسائل LinkedIn يدويّة، يقترح محتوى وSEO topics، يحلّل القنوات، يطلع daily growth plan، ويحسّن الرسائل أسبوعيّاً. <strong>صفر scraping، صفر LinkedIn automation، صفر cold WhatsApp.</strong></p>
+        <div class="ai-agent__verbs">
+          <span>يختار segment</span><span>يقترح content</span><span>يحلّل قنوات</span><span>يجهّز experiments</span><span>weekly learning</span>
+        </div>
+        <span class="ai-agent__lives">يعيش هنا:</span>
+        <div class="ai-agent__endpoints">
+          <span class="ds-endpoint">/api/v1/growth-beast/today</span>
+          <span class="ds-endpoint">/api/v1/growth-beast/experiment/next</span>
+          <span class="ds-endpoint">/api/v1/role-command-v125/today/growth</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Support Agent -->
+    <div class="ai-agent">
+      <div class="ai-agent__icon">🟪</div>
+      <div>
+        <h3 class="ai-agent__title">Support Agent <span class="ds-mode ds-mode--approval">approval_required</span></h3>
+        <p class="ai-agent__role">يحلّ محلّ أوّل موظّف دعم جزئيّاً</p>
+        <p class="ai-agent__desc">يردّ من knowledge base، يصنّف التذاكر إلى ١٢ فئة، يحدّد P0/P1/P2/P3، يجهّز ردّ بالعربي السعودي أو الإنجليزي، ويصعّد للبشر فوراً للقضايا الحسّاسة (دفع، خصوصيّة، عميل غاضب، طلب ضمان نتائج).</p>
+        <div class="ai-agent__verbs">
+          <span>يصنّف ١٢ فئة</span><span>يستشهد بالـ KB</span><span>SLA tracking</span><span>يصعّد فوراً للحسّاس</span>
+        </div>
+        <span class="ai-agent__lives">يعيش هنا:</span>
+        <div class="ai-agent__endpoints">
+          <span class="ds-endpoint">/api/v1/support-os/classify</span>
+          <span class="ds-endpoint">/api/v1/support-os/draft-response</span>
+          <span class="ds-endpoint">/api/v1/role-command-v125/today/support</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Ops Agent -->
+    <div class="ai-agent">
+      <div class="ai-agent__icon">🟧</div>
+      <div>
+        <h3 class="ai-agent__title">Ops Agent <span class="ds-mode ds-mode--suggest">suggest_only</span></h3>
+        <p class="ai-agent__role">يحلّ محلّ موظّف عمليّات أوّلي</p>
+        <p class="ai-agent__desc">يتابع حالة كلّ خدمة، يطلع المتأخّر، يعرف وش ناقص من العميل، يجهّز checklist، يتابع التسليم، يفتح work items، ويُجهّز daily ops report.</p>
+        <div class="ai-agent__verbs">
+          <span>service state</span><span>stalled work</span><span>checklists</span><span>daily ops report</span>
+        </div>
+        <span class="ai-agent__lives">يعيش هنا:</span>
+        <div class="ai-agent__endpoints">
+          <span class="ds-endpoint">/api/v1/full-ops/daily-command-center</span>
+          <span class="ds-endpoint">/api/v1/role-command-v125/today/ops</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Executive Agent -->
+    <div class="ai-agent">
+      <div class="ai-agent__icon">🟨</div>
+      <div>
+        <h3 class="ai-agent__title">Executive Agent <span class="ds-mode ds-mode--suggest">suggest_only</span></h3>
+        <p class="ai-agent__role">للمؤسس / CEO</p>
+        <p class="ai-agent__desc">أهمّ ٣ قرارات اليوم، أين الإيراد؟ أين المخاطر؟ أين العملاء المتأخّرون؟ أين الدعم المتراكم؟ Revenue Truth (مسوّدة فاتورة ≠ إيراد). تقرير تنفيذي أسبوعي.</p>
+        <div class="ai-agent__verbs">
+          <span>top-3 decisions</span><span>revenue truth</span><span>finance brief</span><span>weekly executive</span>
+        </div>
+        <span class="ai-agent__lives">يعيش هنا:</span>
+        <div class="ai-agent__endpoints">
+          <span class="ds-endpoint">/api/v1/founder/beast-command-center</span>
+          <span class="ds-endpoint">/api/v1/revops/finance-brief</span>
+          <span class="ds-endpoint">/api/v1/role-command-v125/today/ceo</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- What we will NOT do -->
+  <section aria-labelledby="not-title" class="ds-stack ds-stack--md">
+    <div>
+      <span class="ds-eyebrow">الحدود الصلبة</span>
+      <h2 id="not-title" class="ds-headline" style="font-size: var(--fs-3xl); margin-top: var(--space-3);">ما لن يفعله أيّ وكيل أبداً</h2>
+      <p class="ds-lede" style="margin-top: var(--space-3);">٨ بوّابات صلبة (immutable) معرّفة في الكود ومُختبرة في كلّ router. لا يمكن تجاوزها.</p>
+    </div>
+    <div class="ds-row" style="gap: var(--space-3);">
+      <span class="ds-gate">NO_LIVE_SEND</span>
+      <span class="ds-gate">NO_LIVE_CHARGE</span>
+      <span class="ds-gate">NO_COLD_WHATSAPP</span>
+      <span class="ds-gate">NO_LINKEDIN_AUTOMATION</span>
+      <span class="ds-gate">NO_SCRAPING</span>
+      <span class="ds-gate">NO_FAKE_PROOF</span>
+      <span class="ds-gate">NO_FAKE_REVENUE</span>
+      <span class="ds-gate">NO_UNAPPROVED_TESTIMONIAL</span>
+    </div>
+  </section>
+
+  <!-- Packages -->
+  <section aria-labelledby="pkg-title" class="ds-stack ds-stack--md">
+    <div>
+      <span class="ds-eyebrow">الباقات</span>
+      <h2 id="pkg-title" class="ds-headline" style="font-size: var(--fs-3xl); margin-top: var(--space-3);">٣ طرق للبدء</h2>
+    </div>
+    <div class="ds-grid ds-grid--wide">
+      <article class="ai-package">
+        <span class="ds-eyebrow">١. Free</span>
+        <h3 style="margin: 0; font-size: var(--fs-xl);">AI Team Diagnostic</h3>
+        <div class="ai-package__price">٠ <small>SAR</small></div>
+        <p class="ds-card__sub">٦ أسئلة فقط. تشخيص صفحة واحدة + خطّة ٧ أيّام + توصية الخدمة. ٢٤–٤٨ ساعة.</p>
+        <ul class="ds-list-clean">
+          <li>أكبر فرصة لشركتك</li>
+          <li>أكبر خطر</li>
+          <li>أيّ AI Agents تحتاج فعلاً</li>
+          <li>safest channel للنمو</li>
+        </ul>
+        <a class="ds-btn ds-btn--ghost" href="/diagnostic.html">ابدأ التشخيص المجّاني</a>
+      </article>
+
+      <article class="ai-package ai-package--featured">
+        <span class="ds-eyebrow">٢. الأكثر اختياراً</span>
+        <h3 style="margin: 0; font-size: var(--fs-xl);">7-Day AI Revenue Team Pilot</h3>
+        <div class="ai-package__price">٤٩٩ <small>SAR · مرّة واحدة</small></div>
+        <p class="ds-card__sub">فريق AI صغير يشتغل معك أسبوع كامل. دفع يدوي، استرجاع كامل خلال ٧ أيّام.</p>
+        <ul class="ds-list-clean">
+          <li>Sales Agent يؤهّل ٣ فرص</li>
+          <li>Growth Agent يجهّز ٣ مسوّدات</li>
+          <li>Support Agent يبني FAQ + escalation</li>
+          <li>Ops Agent يجهّز checklist + daily report</li>
+          <li>Executive Agent يطلع تقرير + قرارات</li>
+          <li>Proof Pack نهائي</li>
+        </ul>
+        <a class="ds-btn ds-btn--lg" href="/start.html">ابدأ الـ Pilot — 499 SAR</a>
+      </article>
+
+      <article class="ai-package">
+        <span class="ds-eyebrow">٣. بعد إثبات الـ Pilot</span>
+        <h3 style="margin: 0; font-size: var(--fs-xl);">Managed AI Ops</h3>
+        <div class="ai-package__price">١٬٥٠٠–٢٬٥٠٠ <small>SAR / شهر</small></div>
+        <p class="ds-card__sub">للشركات اللي خلصت البايلوت بنجاح. ٤ أسابيع تشغيل أسبوعي.</p>
+        <ul class="ds-list-clean">
+          <li>weekly growth plan</li>
+          <li>sales follow-up drafts</li>
+          <li>support ticket classification</li>
+          <li>monthly Proof Pack</li>
+          <li>executive brief</li>
+        </ul>
+        <p class="ds-card__sub" style="font-size: var(--fs-xs);">لا تتوفّر إلّا بعد البايلوت — Article 13.</p>
+      </article>
+    </div>
+  </section>
+
+  <!-- Anti-vapor footer note -->
+  <section class="ds-stack ds-stack--sm" style="text-align: center; padding: var(--space-7) 0;">
+    <p class="ds-lede" style="max-width: 720px; margin: 0 auto;">
+      كلّ وكيل أعلاه = endpoint حيّ شغّال الآن. لا "قريباً"، لا feature flags مخفيّة، لا vapor.
+    </p>
+    <p class="ds-row" style="justify-content: center; gap: var(--space-3); flex-wrap: wrap;">
+      <a class="ds-link" href="https://api.dealix.me/docs" target="_blank" rel="noopener">api.dealix.me/docs</a>
+      ·
+      <a class="ds-link" href="/proof.html">Proof Pages</a>
+      ·
+      <a class="ds-link" href="/dealix-beast-power.html">صفحة Beast Power الحيّة</a>
+      ·
+      <a class="ds-link" href="/styleguide.html">مكتبة التصميم</a>
+    </p>
+  </section>
+
+  <!-- Footer -->
+  <footer class="ds-footer">
+    <div class="ds-container ds-stack ds-stack--md" style="text-align: center;">
+      <p class="ds-lede" style="max-width: 640px; margin: 0 auto;">
+        Saudi-PDPL · Arabic primary · Approval-first · Proof-backed.
+      </p>
+      <div class="ds-row" style="justify-content: center; gap: var(--space-5); flex-wrap: wrap;">
+        <a class="ds-link" href="/">الرئيسيّة</a>
+        <a class="ds-link" href="/diagnostic.html">التشخيص المجّاني</a>
+        <a class="ds-link" href="/start.html">7-Day Pilot</a>
+        <a class="ds-link" href="/dealix-beast-power.html">Beast Power</a>
+        <a class="ds-link" href="/styleguide.html">Styleguide</a>
+        <a class="ds-link" href="/privacy.html">الخصوصيّة</a>
+        <a class="ds-link" href="/terms.html">الشروط</a>
+      </div>
+    </div>
+  </footer>
+
+</main>
+
+<script>
+  // Initialize Lucide icons after DOM loads
+  document.addEventListener('DOMContentLoaded', function () {
+    if (window.lucide && window.lucide.createIcons) {
+      window.lucide.createIcons();
+    }
+  });
+</script>
+
+</body>
+</html>

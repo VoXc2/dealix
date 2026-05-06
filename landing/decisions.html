@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-theme="dark">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>القرارات اليوميّة — للمدراء فقط · Dealix</title>
+<meta name="description" content="مركز القرارات اليوميّة. كلّ إجراء خارجي بحاجة موافقتك — صفحة واحدة، موافقة بضغطة، WhatsApp-friendly." />
+<meta name="robots" content="noindex,nofollow" />
+<link rel="canonical" href="https://dealix.me/decisions.html" />
+<meta property="og:title" content="Daily Decisions · Private" />
+<meta property="og:description" content="Founder/executive daily-decisions inbox." />
+<meta property="og:locale" content="ar_SA" />
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:title" content="Dealix Daily Decisions" />
+<meta name="twitter:description" content="Founder/executive daily-decisions inbox." />
+<meta name="theme-color" content="#0f172a" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" />
+
+<link rel="stylesheet" href="/styles.css" />
+<link rel="stylesheet" href="/assets/css/design-system.css" />
+
+<!-- Subscriber-tier gate (founder unlocks too via tier hierarchy) -->
+<script src="/assets/js/access-gate.js" data-tier="subscriber"></script>
+
+<style>
+  body {
+    background:
+      radial-gradient(900px 500px at 80% -10%, rgba(34, 197, 94, 0.14), transparent 60%),
+      radial-gradient(900px 500px at 0% 10%, rgba(168, 85, 247, 0.16), transparent 60%),
+      linear-gradient(180deg, #050816 0%, #0b1124 60%, #1e1b4b 100%);
+    color: var(--text);
+    min-height: 100vh;
+    margin: 0;
+    font-family: var(--font-ar);
+  }
+  main { padding: var(--space-6) var(--space-4) var(--space-9); }
+  /* Decision card — designed mobile-first so the founder/exec can
+   * approve from WhatsApp's in-app browser. */
+  .dec-card {
+    display: grid;
+    gap: var(--space-3);
+    padding: var(--space-5);
+    background: var(--ds-surface-1);
+    border: 1px solid var(--ds-border);
+    border-radius: var(--radius, 14px);
+    transition: border-color var(--dur-base);
+  }
+  .dec-card[data-risk="high"]   { border-color: rgba(220, 38, 38, 0.40); }
+  .dec-card[data-risk="medium"] { border-color: rgba(251, 191, 36, 0.40); }
+  .dec-card[data-state="resolved"] { opacity: 0.55; }
+  .dec-card__head {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: var(--space-3); flex-wrap: wrap;
+  }
+  .dec-card__head h3 { margin: 0; font-size: var(--fs-md); font-weight: 700; }
+  .dec-card__id { font-family: ui-monospace, "SFMono-Regular", Menlo, monospace; font-size: var(--fs-xs); color: var(--text-muted); direction: ltr; }
+  .dec-card__sum { font-size: var(--fs-md); line-height: var(--lh-base); color: var(--text); margin: 0; }
+  .dec-card__meta { display: grid; grid-template-columns: auto 1fr; gap: 4px var(--space-3); font-size: var(--fs-sm); color: var(--text-muted); }
+  .dec-card__meta strong { color: var(--accent-2); font-weight: 600; }
+  .dec-card__actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-2);
+    margin-top: var(--space-2);
+  }
+  @media (max-width: 380px) { .dec-card__actions { grid-template-columns: 1fr; } }
+  .dec-card__actions .ds-btn { padding: var(--space-3) var(--space-4); font-size: var(--fs-sm); }
+
+  .dec-create {
+    padding: var(--space-5);
+    background: rgba(2, 6, 23, 0.4);
+    border: 1px solid var(--ds-border);
+    border-radius: var(--radius-lg, 20px);
+    display: grid;
+    gap: var(--space-3);
+  }
+
+  .filter-row { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+</style>
+</head>
+<body>
+<a class="ds-skip-link" href="#main">تخطّ إلى المحتوى الرئيسي</a>
+
+<main id="main" class="ds-container--base ds-stack ds-stack--xl">
+
+  <!-- Breadcrumb -->
+  <nav class="ds-breadcrumb" aria-label="مسار التنقّل">
+    <a href="/">الرئيسيّة</a>
+    <span class="ds-breadcrumb__sep" aria-hidden="true"></span>
+    <span aria-current="page">القرارات اليوميّة</span>
+  </nav>
+
+  <!-- Hero -->
+  <section class="ds-banner ds-stack ds-stack--sm">
+    <span class="ds-eyebrow">Approval Center · Article 5</span>
+    <h1 class="ds-banner__title">القرارات اليوميّة</h1>
+    <p class="ds-banner__subtitle">كلّ إجراء خارجي يطلب موافقتك. اضغط ✓ أو ✗ — والنظام ينفّذ. مصمَّم للجوّال + WhatsApp browser.</p>
+    <p class="ds-banner__subtitle" style="font-family: var(--font-lt); font-size: var(--fs-md);">Every external action awaits your approval. One tap to approve / reject — system acts on your decision. Mobile-first, WhatsApp-friendly.</p>
+  </section>
+
+  <!-- KPIs -->
+  <section class="ds-grid ds-grid--narrow" aria-label="ملخّص الموافقات">
+    <div class="ds-kpi"><span class="ds-kpi__num" id="kpi-pending">…</span><span class="ds-kpi__label">في الانتظار</span></div>
+    <div class="ds-kpi"><span class="ds-kpi__num" id="kpi-high">…</span><span class="ds-kpi__label">خطورة عالية</span></div>
+    <div class="ds-kpi"><span class="ds-kpi__num" id="kpi-history">…</span><span class="ds-kpi__label">قرارات اليوم</span></div>
+    <div class="ds-kpi"><span class="ds-kpi__num">٥</span><span class="ds-kpi__label">أنماط إجراء</span></div>
+  </section>
+
+  <!-- Filters -->
+  <section>
+    <div class="ds-tabs" role="tablist" aria-label="فلتر بالخطورة">
+      <button class="ds-tabs__tab" role="tab" aria-selected="true"  data-risk="">الكلّ</button>
+      <button class="ds-tabs__tab" role="tab" aria-selected="false" data-risk="high">عالية</button>
+      <button class="ds-tabs__tab" role="tab" aria-selected="false" data-risk="medium">متوسّطة</button>
+      <button class="ds-tabs__tab" role="tab" aria-selected="false" data-risk="low">منخفضة</button>
+    </div>
+  </section>
+
+  <!-- Pending list -->
+  <section aria-labelledby="pending-title" class="ds-stack ds-stack--md">
+    <div class="ds-row" style="justify-content: space-between;">
+      <h2 id="pending-title" class="ds-headline" style="font-size: var(--fs-2xl);">القرارات المعلّقة</h2>
+      <button class="ds-btn ds-btn--ghost ds-btn--sm" id="btn-refresh">تحديث</button>
+    </div>
+    <p id="status-banner" class="ds-input__hint" role="status" aria-live="polite"></p>
+    <div id="pending-list" class="ds-stack ds-stack--md" aria-live="polite">
+      <p class="ds-lede">جاري التحميل…</p>
+    </div>
+  </section>
+
+  <!-- Quick-create approval (manual) — useful for testing + manual action flagging -->
+  <section aria-labelledby="create-title" class="ds-stack ds-stack--md">
+    <h2 id="create-title" class="ds-headline" style="font-size: var(--fs-xl);">إنشاء طلب موافقة يدوي</h2>
+    <p class="ds-lede" style="font-size: var(--fs-sm);">للحالات اللي تتطلّب توثيق قرار خارج النظام. كلّ شيء يُسجَّل في audit trail.</p>
+    <form id="createForm" class="dec-create">
+      <label class="ds-input">
+        <span class="ds-input__label">نوع الإجراء *</span>
+        <select class="ds-input__field" name="action_type" required>
+          <option value="manual_outreach_log">manual_outreach_log</option>
+          <option value="proof_event_publish">proof_event_publish</option>
+          <option value="contract_send">contract_send</option>
+          <option value="refund_issue">refund_issue</option>
+          <option value="customer_data_export">customer_data_export</option>
+        </select>
+      </label>
+      <label class="ds-input">
+        <span class="ds-input__label">ملخّص (عربي)</span>
+        <input class="ds-input__field" type="text" name="summary_ar" placeholder="مثال: إرسال عقد البايلوت لشركة X" />
+      </label>
+      <label class="ds-input">
+        <span class="ds-input__label">Summary (English)</span>
+        <input class="ds-input__field" type="text" name="summary_en" placeholder="e.g. Send pilot contract to Company X" />
+      </label>
+      <label class="ds-input">
+        <span class="ds-input__label">مستوى الخطورة</span>
+        <select class="ds-input__field" name="risk_level">
+          <option value="low">low</option>
+          <option value="medium">medium</option>
+          <option value="high">high</option>
+        </select>
+      </label>
+      <button class="ds-btn" type="submit">إنشاء طلب موافقة</button>
+    </form>
+  </section>
+
+  <!-- Footer -->
+  <footer class="ds-footer">
+    <div class="ds-container ds-stack ds-stack--md" style="text-align: center;">
+      <p class="ds-lede" style="max-width: 640px; margin: 0 auto; font-size: var(--fs-sm);">
+        كلّ موافقة هنا = إذن صريح للنظام بالتنفيذ. كلّ رفض = إيقاف فوري.
+      </p>
+      <div class="ds-row" style="justify-content: center; gap: var(--space-5); flex-wrap: wrap;">
+        <a class="ds-link" href="/">الرئيسيّة</a>
+        <a class="ds-link" href="/ai-team.html">AI Operating Team</a>
+        <a class="ds-link" href="/founder-leads.html">Lead Inbox</a>
+        <a class="ds-link" href="/pilot-tracker.html">Pilot Tracker</a>
+        <a class="ds-link" href="/dealix-beast-power.html">Beast Power</a>
+        <a class="ds-link" href="#" onclick="window.dealixAccessLogout(); return false;">خروج · log out</a>
+      </div>
+    </div>
+  </footer>
+
+</main>
+
+<script>
+  const API_BASE = window.DEALIX_API_BASE || 'https://api.dealix.me';
+  let currentRisk = '';
+
+  function escapeHtml(s) {
+    return String(s || '')
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  }
+
+  function modePill(mode) {
+    const m = String(mode || '').toLowerCase();
+    if (m.includes('block')) return '<span class="ds-mode ds-mode--blocked">blocked</span>';
+    if (m.includes('approved')) return '<span class="ds-mode ds-mode--approved">approved</span>';
+    if (m.includes('approval')) return '<span class="ds-mode ds-mode--approval">approval_required</span>';
+    if (m.includes('draft')) return '<span class="ds-mode ds-mode--draft">draft_only</span>';
+    return '<span class="ds-mode ds-mode--suggest">suggest_only</span>';
+  }
+
+  function riskLabel(level) {
+    const m = String(level || '').toLowerCase();
+    if (m === 'high')   return '<span class="ds-status ds-status--error">عالية</span>';
+    if (m === 'medium') return '<span class="ds-status ds-status--degraded">متوسّطة</span>';
+    return '<span class="ds-status ds-status--ok">منخفضة</span>';
+  }
+
+  function renderCard(req) {
+    const risk = String(req.risk_level || 'low').toLowerCase();
+    const blocked = String(req.action_mode || '').toLowerCase() === 'blocked';
+    const summary = req.summary_ar || req.summary_en || '(no summary)';
+    const created = req.created_at ? new Date(req.created_at).toLocaleString('ar-SA', { dateStyle: 'short', timeStyle: 'short' }) : '—';
+    return `
+      <article class="dec-card" data-risk="${risk}" data-id="${escapeHtml(req.approval_id || '')}">
+        <div class="dec-card__head">
+          <h3>${escapeHtml(req.action_type || 'pending')}</h3>
+          <div class="ds-row" style="gap: var(--space-2);">
+            ${riskLabel(risk)}
+            ${modePill(req.action_mode)}
+            <span class="dec-card__id">${escapeHtml(req.approval_id || '')}</span>
+          </div>
+        </div>
+        <p class="dec-card__sum">${escapeHtml(summary)}</p>
+        <div class="dec-card__meta">
+          <strong>object</strong>  <span dir="ltr">${escapeHtml(req.object_type || '—')}/${escapeHtml(req.object_id || '—')}</span>
+          <strong>channel</strong> <span dir="ltr">${escapeHtml(req.channel || '—')}</span>
+          <strong>created</strong> <span>${escapeHtml(created)}</span>
+        </div>
+        <div class="dec-card__actions">
+          ${blocked
+            ? '<button class="ds-btn ds-btn--danger" disabled>blocked — لا يمكن الموافقة</button>'
+            : `
+              <button class="ds-btn" data-action="approve">✓ موافقة</button>
+              <button class="ds-btn ds-btn--danger" data-action="reject">✗ رفض</button>
+            `}
+        </div>
+      </article>`;
+  }
+
+  function setStatus(text, kind) {
+    const el = document.getElementById('status-banner');
+    el.textContent = text;
+    el.style.color = kind === 'error' ? '#fca5a5' : (kind === 'success' ? '#4ade80' : 'var(--text-muted)');
+  }
+
+  async function decide(approvalId, action) {
+    const reason = action === 'reject'
+      ? (prompt('سبب الرفض (اختياري):') || 'rejected_by_founder')
+      : 'approved_by_founder';
+    setStatus(`${action === 'approve' ? '✓ جاري الموافقة' : '✗ جاري الرفض'} على ${approvalId}…`, 'info');
+    try {
+      const r = await fetch(`${API_BASE}/api/v1/approvals/${approvalId}/${action}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          actor: 'founder@dealix.me',
+          reason: reason,
+        }),
+      });
+      if (!r.ok) {
+        const text = await r.text();
+        throw new Error(`HTTP ${r.status} ${text}`);
+      }
+      setStatus(`✓ تمّ — ${approvalId} ${action === 'approve' ? 'موافَق' : 'مرفوض'}.`, 'success');
+      await refresh();
+    } catch (e) {
+      setStatus(`خطأ: ${e.message}`, 'error');
+    }
+  }
+
+  function renderList(items) {
+    const list = document.getElementById('pending-list');
+    if (!items.length) {
+      list.innerHTML = '<p class="ds-lede">لا قرارات معلّقة 👌. النظام شغّال — كلّ ما يحتاج موافقتك يظهر هنا تلقائياً.</p>';
+      return;
+    }
+    list.innerHTML = items.map(renderCard).join('');
+    list.querySelectorAll('button[data-action]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const card = btn.closest('.dec-card');
+        const id = card.getAttribute('data-id');
+        const action = btn.getAttribute('data-action');
+        decide(id, action);
+      });
+    });
+  }
+
+  async function refresh() {
+    setStatus('جاري التحميل…', 'info');
+    try {
+      const r = await fetch(`${API_BASE}/api/v1/approvals/pending`, { cache: 'no-store' });
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      const data = await r.json();
+      let items = (data && data.items) || data || [];
+      // Filter
+      if (currentRisk) {
+        items = items.filter(i => String(i.risk_level || '').toLowerCase() === currentRisk);
+      }
+      // KPIs
+      document.getElementById('kpi-pending').textContent = items.length;
+      document.getElementById('kpi-high').textContent =
+        items.filter(i => String(i.risk_level || '').toLowerCase() === 'high').length;
+
+      renderList(items);
+      // Best-effort: history count
+      try {
+        const h = await fetch(`${API_BASE}/api/v1/approvals/history?limit=1000`, { cache: 'no-store' });
+        if (h.ok) {
+          const hd = await h.json();
+          const events = (hd && hd.events) || hd || [];
+          const today = new Date().toISOString().slice(0, 10);
+          const todayCount = events.filter(e => (e.ts || e.timestamp || '').startsWith(today)).length;
+          document.getElementById('kpi-history').textContent = todayCount;
+        }
+      } catch (_) {}
+      setStatus('', '');
+    } catch (e) {
+      setStatus(`خطأ: ${e.message}. تأكّد إن الـ API ناشر آخر تحديث.`, 'error');
+      document.getElementById('pending-list').innerHTML = '';
+    }
+  }
+
+  // Filter tabs
+  document.querySelectorAll('.ds-tabs__tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.ds-tabs__tab').forEach(t => t.setAttribute('aria-selected', 'false'));
+      tab.setAttribute('aria-selected', 'true');
+      currentRisk = tab.getAttribute('data-risk') || '';
+      refresh();
+    });
+  });
+
+  document.getElementById('btn-refresh').addEventListener('click', refresh);
+
+  // Manual create form
+  document.getElementById('createForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const f = e.target;
+    const body = {
+      object_type: 'manual_log',
+      object_id: 'manual_' + Date.now(),
+      action_type: f.action_type.value,
+      action_mode: 'approval_required',
+      summary_ar: f.summary_ar.value.trim(),
+      summary_en: f.summary_en.value.trim(),
+      risk_level: f.risk_level.value,
+    };
+    setStatus('جاري إنشاء طلب الموافقة…', 'info');
+    try {
+      const r = await fetch(`${API_BASE}/api/v1/approvals/create`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      });
+      if (!r.ok) {
+        const text = await r.text();
+        throw new Error(`HTTP ${r.status} ${text}`);
+      }
+      setStatus('✓ تمّ إنشاء الطلب.', 'success');
+      f.reset();
+      await refresh();
+    } catch (err) {
+      setStatus(`خطأ: ${err.message}`, 'error');
+    }
+  });
+
+  refresh();
+  setInterval(refresh, 60000);
+</script>
+
+</body>
+</html>

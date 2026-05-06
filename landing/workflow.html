@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-theme="dark">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Dealix Workflow — كل ما يحدث، خطوة بخطوة</title>
+<meta name="description" content="جولة شاملة في رحلة Dealix الكاملة — من زيارة الموقع إلى Proof Pack منشور. كل خطوة، كل صفحة، كل endpoint، كل بوّابة أمان — موثّقة بالضبط." />
+<link rel="canonical" href="https://dealix.me/workflow.html" />
+<meta property="og:type" content="website" />
+<meta property="og:title" content="Dealix Workflow — End-to-End Customer Journey" />
+<meta property="og:description" content="Comprehensive walkthrough: visitor → diagnostic → 7-Day Sprint → Proof Pack. Every page, every endpoint, every safety gate." />
+<meta property="og:url" content="https://dealix.me/workflow.html" />
+<meta property="og:locale" content="ar_SA" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="theme-color" content="#0f172a" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" />
+
+<link rel="stylesheet" href="/styles.css" />
+<link rel="stylesheet" href="/assets/css/design-system.css" />
+
+<!-- Lucide icons (lightweight SVG icons, ~25KB compressed) -->
+<script src="https://unpkg.com/lucide@0.469.0/dist/umd/lucide.min.js" defer></script>
+
+<style>
+  body {
+    background:
+      radial-gradient(900px 500px at 80% -10%, rgba(34, 211, 238, 0.16), transparent 60%),
+      radial-gradient(900px 500px at 0% 10%, rgba(168, 85, 247, 0.16), transparent 60%),
+      linear-gradient(180deg, #050816 0%, #0b1124 60%, #1e1b4b 100%);
+    color: var(--text);
+    min-height: 100vh;
+    margin: 0;
+    font-family: var(--font-ar);
+  }
+  main { padding: var(--space-7) var(--space-5) var(--space-9); }
+
+  /* Stage card — one per workflow stage */
+  .wf-stage {
+    display: grid;
+    grid-template-columns: 80px 1fr;
+    gap: var(--space-5);
+    padding: var(--space-6);
+    border-radius: var(--radius-lg, 20px);
+    background: var(--ds-surface-1);
+    border: 1px solid var(--ds-border);
+    transition: border-color var(--dur-base), transform var(--dur-base) var(--ease-out-quart);
+  }
+  .wf-stage:hover { border-color: var(--ds-border-strong); transform: translateY(-2px); }
+
+  .wf-stage__num {
+    width: 80px; height: 80px;
+    display: grid; place-items: center;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgba(34,211,238,0.20), rgba(168,85,247,0.20));
+    color: var(--accent-2);
+    font-family: var(--font-lt);
+    font-weight: 800;
+    font-size: var(--fs-2xl);
+  }
+  .wf-stage__icon {
+    width: 32px; height: 32px;
+    color: var(--accent-2);
+  }
+
+  .wf-stage__title {
+    margin: 0 0 var(--space-2) 0;
+    font-size: var(--fs-2xl);
+    font-weight: 700;
+    line-height: var(--lh-snug);
+    display: flex; align-items: center; gap: var(--space-3); flex-wrap: wrap;
+  }
+  .wf-stage__sub  { font-size: var(--fs-md); color: var(--text-muted); margin: 0 0 var(--space-3) 0; line-height: var(--lh-base); }
+
+  /* Surface table: where this stage lives */
+  .wf-table {
+    display: grid;
+    gap: var(--space-2) var(--space-4);
+    grid-template-columns: 100px 1fr;
+    font-size: var(--fs-sm);
+    margin-top: var(--space-4);
+  }
+  .wf-table dt { color: var(--accent-2); font-weight: 600; font-family: var(--font-lt); letter-spacing: 0.04em; text-transform: uppercase; font-size: var(--fs-xs); }
+  .wf-table dd { margin: 0; color: var(--text); }
+  .wf-table dd code, .wf-table dd .ds-endpoint { font-family: ui-monospace, "SFMono-Regular", Menlo, monospace; font-size: var(--fs-xs); }
+
+  /* Connector line between stages */
+  .wf-connector {
+    width: 2px; height: 40px;
+    margin: 0 auto;
+    background: linear-gradient(to bottom, transparent, var(--accent-2), transparent);
+    opacity: 0.4;
+  }
+
+  .wf-arrow {
+    display: flex; justify-content: center; align-items: center;
+    height: 40px; color: var(--accent-2); opacity: 0.5;
+  }
+
+  @media (max-width: 600px) {
+    .wf-stage { grid-template-columns: 1fr; }
+    .wf-stage__num { width: 64px; height: 64px; font-size: var(--fs-xl); }
+    .wf-table { grid-template-columns: 1fr; gap: var(--space-1); }
+    .wf-table dt { margin-top: var(--space-2); }
+  }
+</style>
+</head>
+<body>
+<a class="ds-skip-link" href="#main">تخطّ إلى المحتوى الرئيسي</a>
+
+<main id="main" class="ds-container--base ds-stack ds-stack--xl">
+
+  <!-- Breadcrumb -->
+  <nav class="ds-breadcrumb" aria-label="مسار التنقّل">
+    <a href="/">الرئيسيّة</a>
+    <span class="ds-breadcrumb__sep" aria-hidden="true"></span>
+    <span aria-current="page">Workflow</span>
+  </nav>
+
+  <!-- Hero -->
+  <section class="ds-banner ds-stack ds-stack--sm">
+    <span class="ds-eyebrow">End-to-end · Saudi-PDPL · Approval-first · Proof-backed</span>
+    <h1 class="ds-banner__title">🗺️ رحلة Dealix الكاملة</h1>
+    <p class="ds-banner__subtitle">من أوّل زيارة للموقع إلى Proof Pack منشور. ١٠ مراحل، كلّ مرحلة لها صفحة + endpoint + بوّابات أمان. صفر vapor، كلّ شيء حيّ ومُختبَر.</p>
+  </section>
+
+  <!-- KPIs -->
+  <section class="ds-grid ds-grid--narrow" aria-label="ملخّص">
+    <div class="ds-kpi"><span class="ds-kpi__num">10</span><span class="ds-kpi__label">مراحل</span></div>
+    <div class="ds-kpi"><span class="ds-kpi__num">8</span><span class="ds-kpi__label">صفحات للعميل</span></div>
+    <div class="ds-kpi"><span class="ds-kpi__num">8</span><span class="ds-kpi__label">بوّابات صلبة</span></div>
+    <div class="ds-kpi"><span class="ds-kpi__num">~14</span><span class="ds-kpi__label">endpoint حيّ</span></div>
+  </section>
+
+  <!-- The 10 stages -->
+  <section aria-labelledby="stages-title" class="ds-stack ds-stack--md">
+    <div>
+      <span class="ds-eyebrow">الخريطة</span>
+      <h2 id="stages-title" class="ds-headline" style="font-size: var(--fs-3xl); margin-top: var(--space-3);">١٠ مراحل · مسار العميل</h2>
+      <p class="ds-lede" style="margin-top: var(--space-3);">المراحل تنفّذ بالترتيب. كلّ مرحلة لها مالك (العميل / المؤسس / النظام)، صفحة عامّة أو خاصّة، وendpoint محدّد. لا فجوات، لا مراحل وهميّة.</p>
+    </div>
+
+    <!-- STAGE 1 — Public homepage -->
+    <article class="wf-stage">
+      <div class="wf-stage__num">01</div>
+      <div>
+        <h3 class="wf-stage__title">
+          <i data-lucide="home" class="wf-stage__icon"></i>
+          الزيارة الأولى — الصفحة الرئيسيّة
+          <span class="ds-mode ds-mode--suggest">public</span>
+        </h3>
+        <p class="wf-stage__sub">العميل يصل من إحالة دافئة (warm intro) من المؤسس. يقرأ مَن نحن خلال ٣٠ ثانية. الـ hero يقول "أوّل AI Operating Team لشركتك — قبل ما توظّف فريق".</p>
+        <dl class="wf-table">
+          <dt>الصفحة</dt><dd><a class="ds-link" href="/">dealix.me/</a></dd>
+          <dt>المالك</dt><dd>العميل · مالك خدمة (broker, agency, founder)</dd>
+          <dt>CTA رئيسي</dt><dd><code>/diagnostic.html</code> (التشخيص المجّاني)</dd>
+          <dt>Endpoint</dt><dd>—</dd>
+          <dt>الزمن</dt><dd>~٣٠ ثانية قراءة</dd>
+        </dl>
+      </div>
+    </article>
+
+    <div class="wf-arrow"><i data-lucide="arrow-down"></i></div>
+
+    <!-- STAGE 2 — AI Team positioning -->
+    <article class="wf-stage">
+      <div class="wf-stage__num">02</div>
+      <div>
+        <h3 class="wf-stage__title">
+          <i data-lucide="users" class="wf-stage__icon"></i>
+          فهم العرض — صفحة الـ AI Team
+          <span class="ds-mode ds-mode--suggest">public</span>
+        </h3>
+        <p class="wf-stage__sub">يفهم العميل: ٥ وكلاء AI = Sales + Growth + Support + Ops + Executive. كلّ وكيل = endpoint حيّ. anti-claim banner: "لا nستبدل فريقك بالكامل — هذه طبقة AI تساعدك تبدأ قبل التوظيف".</p>
+        <dl class="wf-table">
+          <dt>الصفحة</dt><dd><a class="ds-link" href="/ai-team.html">dealix.me/ai-team.html</a></dd>
+          <dt>المالك</dt><dd>العميل (تأكيد الفهم)</dd>
+          <dt>CTAs</dt><dd>التشخيص المجّاني · ٧-Day Pilot · القرارات اليوميّة</dd>
+          <dt>Endpoints</dt><dd>كلّ وكيل = real endpoint (status pages live)</dd>
+          <dt>الزمن</dt><dd>~٢ دقائق قراءة</dd>
+        </dl>
+      </div>
+    </article>
+
+    <div class="wf-arrow"><i data-lucide="arrow-down"></i></div>
+
+    <!-- STAGE 3 — Free diagnostic -->
+    <article class="wf-stage">
+      <div class="wf-stage__num">03</div>
+      <div>
+        <h3 class="wf-stage__title">
+          <i data-lucide="clipboard-check" class="wf-stage__icon"></i>
+          التشخيص المجّاني — ٦ أسئلة
+          <span class="ds-mode ds-mode--draft">draft_only</span>
+        </h3>
+        <p class="wf-stage__sub">العميل يملأ ٦ أسئلة + موافقة PDPL. النظام يُجهّز خطّة ٧ أيّام مخصّصة + توصية الخدمة المناسبة. لا ادّعاءات بدون evidence. الـ Lead يُحفظ في Lead Inbox للمؤسس.</p>
+        <dl class="wf-table">
+          <dt>الصفحة</dt><dd><a class="ds-link" href="/diagnostic.html">dealix.me/diagnostic.html</a></dd>
+          <dt>المالك</dt><dd>العميل (إدخال البيانات) + المؤسس (المراجعة)</dd>
+          <dt>Endpoint</dt><dd><span class="ds-endpoint">POST /api/v1/company-growth-beast/diagnostic</span> + <span class="ds-endpoint">POST /api/v1/public/demo-request</span></dd>
+          <dt>بوّابات</dt><dd>PDPL consent إجباري · NO_FAKE_PROOF</dd>
+          <dt>الزمن</dt><dd>~٢ دقائق ملء + ٢٤–٤٨ ساعة مراجعة المؤسس</dd>
+        </dl>
+      </div>
+    </article>
+
+    <div class="wf-arrow"><i data-lucide="arrow-down"></i></div>
+
+    <!-- STAGE 4 — Discovery call -->
+    <article class="wf-stage">
+      <div class="wf-stage__num">04</div>
+      <div>
+        <h3 class="wf-stage__title">
+          <i data-lucide="phone" class="wf-stage__icon"></i>
+          مكالمة التعرّف — ٣٠ دقيقة مع المؤسس
+          <span class="ds-mode ds-mode--approval">approval_required</span>
+        </h3>
+        <p class="wf-stage__sub">المؤسس يتّصل خلال ٣٠ دقيقة من تلقّي الـ Lead. يتفقد التشخيص معاً، يطرح أسئلة عميقة، يقترح الباقة المناسبة. لا scripts جاهزة — حوار حقيقي.</p>
+        <dl class="wf-table">
+          <dt>الصفحة</dt><dd>WhatsApp/Calendly (لا صفحة منفصلة)</dd>
+          <dt>المالك</dt><dd>المؤسس (Sami)</dd>
+          <dt>Endpoint</dt><dd>—</dd>
+          <dt>المخرج</dt><dd>قرار العميل: يدفع البايلوت أو لا</dd>
+          <dt>الزمن</dt><dd>٣٠ دقيقة</dd>
+        </dl>
+      </div>
+    </article>
+
+    <div class="wf-arrow"><i data-lucide="arrow-down"></i></div>
+
+    <!-- STAGE 5 — Pilot signup + payment -->
+    <article class="wf-stage">
+      <div class="wf-stage__num">05</div>
+      <div>
+        <h3 class="wf-stage__title">
+          <i data-lucide="credit-card" class="wf-stage__icon"></i>
+          التسجيل + الدفع
+          <span class="ds-mode ds-mode--approved">approved_manual</span>
+        </h3>
+        <p class="wf-stage__sub">العميل يفتح <code>/start.html</code> (مع بياناته معبّأة من التشخيص). يوافق على PDPL + Service Agreement (إجباري الاثنان). يدفع: Moyasar OR تحويل بنكي مباشر مع مرجع <code>DLX-XXXX</code>.</p>
+        <dl class="wf-table">
+          <dt>الصفحة</dt><dd><a class="ds-link" href="/start.html">dealix.me/start.html</a></dd>
+          <dt>المالك</dt><dd>العميل (التسجيل) + المؤسس (تأكيد الدفع)</dd>
+          <dt>Endpoint</dt><dd><span class="ds-endpoint">POST /api/v1/revops/invoice-state</span> (draft invoice — NOT revenue per Article 8)</dd>
+          <dt>بوّابات</dt><dd>NO_LIVE_CHARGE · موافقة المؤسس على الـ payment evidence (≥٥ chars)</dd>
+          <dt>الزمن</dt><dd>~٥ دقائق ملء + ٢٤ ساعة لتأكيد الدفع</dd>
+        </dl>
+      </div>
+    </article>
+
+    <div class="wf-arrow"><i data-lucide="arrow-down"></i></div>
+
+    <!-- STAGE 6 — Day-0 kickoff -->
+    <article class="wf-stage">
+      <div class="wf-stage__num">06</div>
+      <div>
+        <h3 class="wf-stage__title">
+          <i data-lucide="rocket" class="wf-stage__icon"></i>
+          يوم البدء — Pilot Day 0
+          <span class="ds-mode ds-mode--suggest">subscriber</span>
+        </h3>
+        <p class="wf-stage__sub">العميل يستلم رابط <code>/pilot-day-0.html</code> (subscriber-tier gated) فيه: خطّة ٧ أيّام، أيّ وكيل ينتج ماذا، الموافقات المطلوبة، طرق التواصل (WhatsApp / Email / Day-7 voice call). + رسالة WhatsApp صوتيّة شخصيّة من المؤسس.</p>
+        <dl class="wf-table">
+          <dt>الصفحة</dt><dd><a class="ds-link" href="/pilot-day-0.html">dealix.me/pilot-day-0.html</a></dd>
+          <dt>المالك</dt><dd>العميل (يقرأ) + المؤسس (يتابع)</dd>
+          <dt>Access</dt><dd>subscriber-tier gate (founder unlocks)</dd>
+          <dt>الزمن</dt><dd>~١٠ دقائق قراءة + رسالة المؤسس</dd>
+        </dl>
+      </div>
+    </article>
+
+    <div class="wf-arrow"><i data-lucide="arrow-down"></i></div>
+
+    <!-- STAGE 7 — 7-day delivery -->
+    <article class="wf-stage">
+      <div class="wf-stage__num">07</div>
+      <div>
+        <h3 class="wf-stage__title">
+          <i data-lucide="calendar-clock" class="wf-stage__icon"></i>
+          التسليم اليومي — Day 1 إلى Day 6
+          <span class="ds-mode ds-mode--approval">approval_required</span>
+        </h3>
+        <p class="wf-stage__sub">كل يوم وكيل مختلف ينتج تسليماً للعميل. العميل يفتح <code>/decisions.html</code> صباحاً، يضغط ✓ أو ✗ على كلّ قرار. النظام يُسجّل، يُصعّد عند الحساسيّة، يُولّد الـ Proof Pack تدريجياً.</p>
+        <dl class="wf-table">
+          <dt>صفحة العميل</dt><dd><a class="ds-link" href="/decisions.html">dealix.me/decisions.html</a> (subscriber)</dd>
+          <dt>صفحة المؤسس</dt><dd><a class="ds-link" href="/pilot-tracker.html">dealix.me/pilot-tracker.html</a> (founder)</dd>
+          <dt>Endpoints</dt><dd><span class="ds-endpoint">/api/v1/sales-os/qualify</span> · <span class="ds-endpoint">/api/v1/growth-beast/warm-route/draft</span> · <span class="ds-endpoint">/api/v1/support-os/classify</span> · <span class="ds-endpoint">/api/v1/full-ops/today</span> · <span class="ds-endpoint">/api/v1/role-command-v125/today/ceo</span></dd>
+          <dt>بوّابات</dt><dd>NO_LIVE_SEND · NO_COLD_WHATSAPP · KSA quiet-hours · 72h active-window · per-channel × per-purpose consent</dd>
+          <dt>الزمن</dt><dd>٦ أيّام × ١٠ دقائق/يوم للعميل + معالجة المؤسس</dd>
+        </dl>
+      </div>
+    </article>
+
+    <div class="wf-arrow"><i data-lucide="arrow-down"></i></div>
+
+    <!-- STAGE 8 — Proof pack -->
+    <article class="wf-stage">
+      <div class="wf-stage__num">08</div>
+      <div>
+        <h3 class="wf-stage__title">
+          <i data-lucide="award" class="wf-stage__icon"></i>
+          Proof Pack — يوم ٦ + ٧
+          <span class="ds-mode ds-mode--approval">approval_required</span>
+        </h3>
+        <p class="wf-stage__sub">يوم ٦: مسوّدة Proof Pack. يوم ٧: مكالمة مراجعة ٣٠ دقيقة. إذا العميل يوافق على النشر (signed_publish_permission=true)، الـ Proof Pack ينشر علني على <code>/proof.html</code>.</p>
+        <dl class="wf-table">
+          <dt>صفحة العميل</dt><dd>Customer Portal (مخصّص لكل عميل)</dd>
+          <dt>صفحة عامّة</dt><dd><a class="ds-link" href="/proof.html">dealix.me/proof.html</a> (Public — Social-proof flywheel)</dd>
+          <dt>Endpoint</dt><dd><span class="ds-endpoint">POST /api/v1/proof-to-market/snippet</span></dd>
+          <dt>بوّابات</dt><dd>NO_FAKE_PROOF · NO_UNAPPROVED_TESTIMONIAL · default-blocked publish</dd>
+          <dt>الزمن</dt><dd>٢ ساعات إعداد + ٣٠ دقيقة مكالمة + موافقة العميل</dd>
+        </dl>
+      </div>
+    </article>
+
+    <div class="wf-arrow"><i data-lucide="arrow-down"></i></div>
+
+    <!-- STAGE 9 — Founder leads inbox + tracker -->
+    <article class="wf-stage">
+      <div class="wf-stage__num">09</div>
+      <div>
+        <h3 class="wf-stage__title">
+          <i data-lucide="layout-dashboard" class="wf-stage__icon"></i>
+          مركز قيادة المؤسس
+          <span class="ds-mode ds-mode--blocked">founder-only</span>
+        </h3>
+        <p class="wf-stage__sub">المؤسس يتابع كلّ شيء من ٣ صفحات: Lead Inbox (الواردات الجديدة)، Pilot Tracker (البايلوتات النشطة)، Decisions (الموافقات المعلّقة). الـ access-gate يضمن خصوصيّة كاملة.</p>
+        <dl class="wf-table">
+          <dt>الصفحات</dt><dd>
+            <a class="ds-link" href="/founder-leads.html">/founder-leads.html</a> ·
+            <a class="ds-link" href="/pilot-tracker.html">/pilot-tracker.html</a> ·
+            <a class="ds-link" href="/decisions.html">/decisions.html</a> ·
+            <a class="ds-link" href="/dealix-beast-power.html">/dealix-beast-power.html</a>
+          </dd>
+          <dt>المالك</dt><dd>المؤسس (Sami) فقط</dd>
+          <dt>Endpoints</dt><dd><span class="ds-endpoint">/api/v1/founder/leads</span> · <span class="ds-endpoint">/api/v1/approvals/pending</span> · <span class="ds-endpoint">/api/v1/founder/beast-command-center</span></dd>
+          <dt>Access</dt><dd>founder-tier access-gate (token: <code>dealix-founder-2026</code>)</dd>
+        </dl>
+      </div>
+    </article>
+
+    <div class="wf-arrow"><i data-lucide="arrow-down"></i></div>
+
+    <!-- STAGE 10 — Upsell / refund / case study -->
+    <article class="wf-stage">
+      <div class="wf-stage__num">10</div>
+      <div>
+        <h3 class="wf-stage__title">
+          <i data-lucide="trending-up" class="wf-stage__icon"></i>
+          ما بعد البايلوت — Upsell · Refund · Case Study
+          <span class="ds-mode ds-mode--approval">manual</span>
+        </h3>
+        <p class="wf-stage__sub">يوم ٧، ثلاث مسارات ممكنة: (١) العميل يوافق → ينتقل إلى Managed AI Ops (1,500–2,500 SAR/شهر) أو Tier أعلى. (٢) العميل غير راضٍ → استرجاع كامل خلال ٣–٥ أيّام عمل. (٣) إذا وافق على نشر القصّة → case study على <code>/case-study.html</code>.</p>
+        <dl class="wf-table">
+          <dt>المخرج المحتمل ١</dt><dd>Managed AI Ops شهري (1,500–2,500 SAR/شهر)</dd>
+          <dt>المخرج المحتمل ٢</dt><dd>استرجاع كامل (٣–٥ أيّام عمل بنكي / ٢ أيّام Moyasar)</dd>
+          <dt>المخرج المحتمل ٣</dt><dd>Case study + testimonial على dealix.me</dd>
+          <dt>المالك</dt><dd>المؤسس + العميل</dd>
+          <dt>الزمن</dt><dd>٣٠ دقيقة قرار + التنفيذ</dd>
+        </dl>
+      </div>
+    </article>
+  </section>
+
+  <!-- The 8 hard gates - permanent -->
+  <section aria-labelledby="gates-title" class="ds-stack ds-stack--md" style="margin-top: var(--space-9);">
+    <div>
+      <span class="ds-eyebrow">حدود الأمان · Immutable</span>
+      <h2 id="gates-title" class="ds-headline" style="font-size: var(--fs-2xl); margin-top: var(--space-3);">٨ بوّابات صلبة — تعمل في كلّ مرحلة</h2>
+      <p class="ds-lede" style="margin-top: var(--space-3); font-size: var(--fs-md);">هذه ليست checkboxes — هي مُفروضة في الكود نفسه. لا يمكن تجاوزها بطلب أو إعداد.</p>
+    </div>
+    <div class="ds-row" style="gap: var(--space-2); flex-wrap: wrap;">
+      <span class="ds-gate">NO_LIVE_SEND</span>
+      <span class="ds-gate">NO_LIVE_CHARGE</span>
+      <span class="ds-gate">NO_COLD_WHATSAPP</span>
+      <span class="ds-gate">NO_LINKEDIN_AUTOMATION</span>
+      <span class="ds-gate">NO_SCRAPING</span>
+      <span class="ds-gate">NO_FAKE_PROOF</span>
+      <span class="ds-gate">NO_FAKE_REVENUE</span>
+      <span class="ds-gate">NO_UNAPPROVED_TESTIMONIAL</span>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="ds-stack ds-stack--sm" style="text-align: center; padding: var(--space-9) 0;">
+    <h2 class="ds-headline" style="font-size: var(--fs-3xl);">جاهز تعيش الرحلة؟</h2>
+    <p class="ds-lede" style="max-width: 640px; margin: 0 auto;">
+      ٦ أسئلة مجّانيّة. ٢ دقيقة. تشخيص + خطّة ٧ أيّام مخصّصة لشركتك.
+    </p>
+    <div class="ds-row" style="justify-content: center; gap: var(--space-4); margin-top: var(--space-4);">
+      <a class="ds-btn ds-btn--lg" href="/diagnostic.html">
+        <i data-lucide="sparkles" style="width:18px;height:18px;"></i>
+        ابدأ التشخيص المجّاني
+      </a>
+      <a class="ds-btn ds-btn--ghost ds-btn--lg" href="/proof.html">
+        <i data-lucide="award" style="width:18px;height:18px;"></i>
+        شاهد Proof Packs منشورة
+      </a>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="ds-footer">
+    <div class="ds-container ds-stack ds-stack--md" style="text-align: center;">
+      <p class="ds-lede" style="max-width: 720px; margin: 0 auto; font-size: var(--fs-sm);">
+        كلّ مرحلة فوقها = صفحة حيّة + endpoint مُختبَر + بوّابات مقفلة. لا vapor، لا "قريباً"، لا ادّعاءات بدون evidence.
+      </p>
+      <div class="ds-row" style="justify-content: center; gap: var(--space-5); flex-wrap: wrap;">
+        <a class="ds-link" href="/">الرئيسيّة</a>
+        <a class="ds-link" href="/ai-team.html">AI Operating Team</a>
+        <a class="ds-link" href="/diagnostic.html">التشخيص المجّاني</a>
+        <a class="ds-link" href="/start.html">7-Day Pilot</a>
+        <a class="ds-link" href="/proof.html">Proof</a>
+        <a class="ds-link" href="/dealix-beast-power.html">Beast Power</a>
+        <a class="ds-link" href="/styleguide.html">Styleguide</a>
+      </div>
+    </div>
+  </footer>
+
+</main>
+
+<script>
+  // Initialize Lucide icons after DOM loads
+  document.addEventListener('DOMContentLoaded', function () {
+    if (window.lucide && window.lucide.createIcons) {
+      window.lucide.createIcons();
+    }
+  });
+</script>
+
+</body>
+</html>

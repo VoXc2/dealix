@@ -98,7 +98,18 @@ def _live_server(app, host: str = "127.0.0.1", port: int = 0):
 
 def test_smoke_against_local_app_passes_all_required():
     """Run the smoke test against the in-process FastAPI app — all
-    required checks should pass with verdict 0."""
+    required checks should pass with verdict 0.
+
+    Resets the founder-v10 60s minute-bucket cache before running so
+    no stale (pre-correlation_id, pre-live_gates) payload from an
+    earlier test in this suite is reused. Without this, the test is
+    flaky depending on test execution order.
+    """
+    try:
+        from auto_client_acquisition.founder_v10 import reset_cache
+        reset_cache()
+    except Exception:  # noqa: BLE001 — best-effort, never fail setup
+        pass
     from api.main import create_app
     mod = _import_module()
     app = create_app()
