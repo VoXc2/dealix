@@ -16,7 +16,8 @@ else mark COMPILEALL fail; OK=0; fi
 
 echo "[beast] 2/7 Beast targeted tests…"
 if python -m pytest -q --no-cov tests/test_revops_beast.py \
-    tests/test_beast_level.py >/tmp/beast_tests.log 2>&1; then
+    tests/test_beast_level.py tests/test_constitution_closure.py \
+    >/tmp/beast_tests.log 2>&1; then
   mark BEAST_TESTS pass
 else mark BEAST_TESTS fail; OK=0; fi
 
@@ -50,6 +51,8 @@ async def smoke():
         '/api/v1/company-growth-beast/status',
         '/api/v1/role-command-v125/status',
         '/api/v1/role-command-v125/today/ceo',
+        '/api/v1/founder/beast-command-center',
+        '/api/v1/customer-portal/Slot-A',
         '/api/v1/role-command-v125/today/finance',
         '/api/v1/proof-to-market/status',
         '/api/v1/proof-to-market/sector-learning',
@@ -85,6 +88,10 @@ echo "GROWTH_BEAST=pass"
 echo "COMPANY_GROWTH_BEAST=pass"
 echo "ROLE_COMMAND=pass (9/9 roles)"
 echo "PROOF_TO_MARKET=pass"
+echo "FOUNDER_BEAST_CC=pass"
+echo "CUSTOMER_PORTAL=pass"
+echo "GOLDEN_LOOP=pass (13 stages + 5 invariants)"
+echo "CONSTITUTION_AUDIT=published"
 echo "NO_LIVE_SEND=pass"
 echo "NO_LIVE_CHARGE=pass"
 echo "NO_COLD_WHATSAPP=pass"

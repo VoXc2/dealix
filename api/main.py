@@ -46,6 +46,7 @@ from api.routers import (
     agent_governance,
     customer_data_plane,
     crm_v10,
+    customer_company_portal,
     customer_inbox_v10,
     customer_loop,
     delivery_factory,
@@ -74,6 +75,7 @@ from api.routers import (
     customer_success_os,
     delivery_os,
     executive_os,
+    founder_beast_command_center,
     full_ops,
     growth_beast,
     growth_os,
@@ -248,6 +250,8 @@ def create_app() -> FastAPI:
     app.include_router(company_growth_beast.router)
     app.include_router(role_command.router)
     app.include_router(proof_to_market.router)
+    app.include_router(founder_beast_command_center.router)
+    app.include_router(customer_company_portal.router)
     app.include_router(public.router)
     app.include_router(admin.router)
 
