@@ -8,7 +8,7 @@
 
 set -euo pipefail
 
-API_BASE="${DEALIX_API_BASE:-https://web-dealix.up.railway.app}"
+API_BASE="${DEALIX_API_BASE:-https://api.dealix.me}"
 DOMAINS_FILE="${1:-${DEALIX_DOMAINS_FILE:-docs/ops/lead_machine/TODAY_20_TARGETS.csv}}"
 OUT_DIR="docs/ops/lead_machine/tech_watch"
 mkdir -p "$OUT_DIR"

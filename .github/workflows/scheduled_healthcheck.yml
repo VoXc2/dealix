@@ -20,7 +20,7 @@ jobs:
         id: healthz
         run: |
           set +e
-          URL="https://web-dealix.up.railway.app"
+          URL="https://api.dealix.me"
           code=$(curl -sS -o /tmp/body -w "%{http_code}" --max-time 15 "$URL/healthz")
           echo "status=$code" >> $GITHUB_OUTPUT
           echo "body=$(cat /tmp/body | tr '\n' ' ')" >> $GITHUB_OUTPUT
@@ -38,7 +38,7 @@ jobs:
         if: success() || failure()
         run: |
           set +e
-          URL="https://web-dealix.up.railway.app"
+          URL="https://api.dealix.me"
           code=$(curl -sS -o /tmp/body -w "%{http_code}" --max-time 15 "$URL/api/v1/pricing/plans")
           echo "status=$code" >> $GITHUB_OUTPUT
           if [ "$code" = "200" ]; then
@@ -53,7 +53,7 @@ jobs:
         if: success() || failure()
         run: |
           set +e
-          URL="https://web-dealix.up.railway.app"
+          URL="https://api.dealix.me"
           code=$(curl -sS -o /tmp/body -w "%{http_code}" -X POST --max-time 15 \
             -H "Content-Type: application/json" \
             -d '{"name":"Healthcheck","company":"Dealix","email":"healthcheck@dealix.sa","phone":"+966500000000","consent":true}' \
