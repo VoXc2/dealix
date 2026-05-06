@@ -426,8 +426,8 @@
   const countOutEl = document.getElementById('prospector-count-out');
   const notesEl = document.getElementById('prospector-notes');
 
-  const API_BASE_PRIMARY = (window.DEALIX_API_BASE || 'https://web-dealix.up.railway.app').replace(/\/$/, '');
-  const API_BASE_FALLBACK = 'https://web-dealix.up.railway.app';
+  const API_BASE_PRIMARY = (window.DEALIX_API_BASE || 'https://api.dealix.me').replace(/\/$/, '');
+  const API_BASE_FALLBACK = 'https://api.dealix.me';
 
   function setStatus(msg, kind) {
     if (!msg) {
