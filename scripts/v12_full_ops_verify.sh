@@ -17,7 +17,7 @@ OVERALL_OK=1
 
 # 1 — compileall
 echo "[v12] 1/11 compileall…"
-if python -m compileall -q api auto_client_acquisition db scripts \
+if python3 -m compileall -q api auto_client_acquisition db scripts \
     >/tmp/v12_compileall.log 2>&1; then
   mark COMPILEALL pass
 else
@@ -40,7 +40,7 @@ V12_TESTS=(
   tests/test_self_improvement_os_v12.py
   tests/test_partnership_os_v12.py
 )
-if python -m pytest -q --no-cov "${V12_TESTS[@]}" \
+if python3 -m pytest -q --no-cov "${V12_TESTS[@]}" \
     >/tmp/v12_tests.log 2>&1; then
   mark V12_TESTS pass
 else
@@ -83,7 +83,7 @@ fi
 
 # 6 — Forbidden claims
 echo "[v12] 6/11 Forbidden claims test…"
-if python -m pytest -q --no-cov tests/test_landing_forbidden_claims.py \
+if python3 -m pytest -q --no-cov tests/test_landing_forbidden_claims.py \
     >/tmp/v12_forbidden.log 2>&1; then
   mark FORBIDDEN_CLAIMS pass
 else
@@ -158,7 +158,7 @@ fi
 
 # 10 — Optional in-process status smoke (no production needed)
 echo "[v12] 10/11 in-process smoke (status endpoints)…"
-if python -c "
+if python3 -c "
 import asyncio
 from httpx import ASGITransport, AsyncClient
 from api.main import app
@@ -193,10 +193,10 @@ fi
 PROD_SMOKE_RESULT="not_run"
 if [[ -n "${BASE_URL:-}" ]]; then
   echo "[v12] 11/11 production smoke against $BASE_URL…"
-  if python scripts/dealix_smoke_test.py --base-url "$BASE_URL" --json \
+  if python3 scripts/dealix_smoke_test.py --base-url "$BASE_URL" --json \
       >/tmp/v12_prod_smoke.json 2>/dev/null; then
-    PASSED=$(python -c "import json; print(json.load(open('/tmp/v12_prod_smoke.json'))['passed'])")
-    TOTAL=$(python -c "import json; print(json.load(open('/tmp/v12_prod_smoke.json'))['total'])")
+    PASSED=$(python3 -c "import json; print(json.load(open('/tmp/v12_prod_smoke.json'))['passed'])")
+    TOTAL=$(python3 -c "import json; print(json.load(open('/tmp/v12_prod_smoke.json'))['total'])")
     PROD_SMOKE_RESULT="$PASSED/$TOTAL"
     if [[ "$PASSED" == "$TOTAL" ]]; then
       mark PROD_SMOKE pass
