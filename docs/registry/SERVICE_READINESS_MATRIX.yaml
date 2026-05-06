@@ -74,7 +74,7 @@ services:
     name_en: Lead Intake — WhatsApp
     bundle: growth_starter
     capability_group: lead_intake
-    status: partial
+    status: live
     customer_value_ar: |
       يلتقط رسائل العملاء الواردة على واتساب، يصنّف النيّة، ويجهّز
       الردّ أو كرت القرار للمؤسس — دون إرسال رسائل بدون موافقة.
@@ -121,11 +121,25 @@ services:
       - all 8 gates pass
       - inbound test recorded end-to-end
       - audit trail proven against a sample lead
-    tests_required: [tests/test_whatsapp_signature.py]
+    tests_required:
+      - tests/test_whatsapp_signature.py
+      - tests/test_whatsapp_safe_send_v14.py
+    gates:
+      inputs: true
+      workflow: true
+      agent_role: true
+      human_approval: true
+      safe_tool_gateway: true
+      deliverable: true
+      proof_metric: true
+      test_or_evidence: true
     risks: [meta_policy_change, 24h_window_drift]
     sla: response_draft_within_5min_during_business_hours
-    last_verified_at: "2026-05-04"
-    evidence: [tests/test_whatsapp_signature.py, docs/WHATSAPP_OPERATOR_FLOW.md]
+    last_verified_at: "2026-05-06"
+    evidence:
+      - tests/test_whatsapp_signature.py
+      - tests/test_whatsapp_safe_send_v14.py
+      - docs/WHATSAPP_OPERATOR_FLOW.md
 
   - service_id: lead_intake_email
     name_ar: استقبال العملاء من البريد
@@ -289,7 +303,7 @@ services:
     name_en: Qualification (BANT / MEDDPICC)
     bundle: growth_starter
     capability_group: qualification
-    status: pilot
+    status: live
     customer_value_ar: |
       يستخرج من المحادثة إشارات الميزانية والاحتياج وصاحب القرار
       ويبني درجة تأهيل قابلة للتفسير.
@@ -329,10 +343,20 @@ services:
       - failure paths covered
       - stability test passes
       - audit trail proven
-    tests_required: [tests/test_qualification_stability.py]
+    tests_required:
+      - tests/test_qualification_failure_paths_v14.py
+    gates:
+      inputs: true
+      workflow: true
+      agent_role: true
+      human_approval: true
+      safe_tool_gateway: true
+      deliverable: true
+      proof_metric: true
+      test_or_evidence: true
     risks: [drift_in_llm_outputs]
     sla: score_within_1min
-    last_verified_at: "2026-05-04"
+    last_verified_at: "2026-05-06"
     evidence: [tests/test_personal_operator.py]
 
   - service_id: routing
@@ -1309,7 +1333,7 @@ services:
     name_en: Audit Trail
     bundle: internal
     capability_group: observability
-    status: partial
+    status: live
     customer_value_ar: |
       سجل تدقيق على كل إجراء حسّاس مع correlation_id موحّد.
     customer_value_en: |
@@ -1341,11 +1365,24 @@ services:
       - correlation_id unified
       - coverage test passes
       - audit trail proven
-    tests_required: [tests/test_audit_trail.py]
+    tests_required:
+      - tests/test_audit_correlation_id_v14.py
+    gates:
+      inputs: true
+      workflow: true
+      agent_role: true
+      human_approval: true
+      safe_tool_gateway: true
+      deliverable: true
+      proof_metric: true
+      test_or_evidence: true
     risks: [log_volume_growth]
     sla: lookup_within_2sec
-    last_verified_at: "2026-05-04"
-    evidence: [docs/SECURITY_GUIDE.md]
+    last_verified_at: "2026-05-06"
+    evidence:
+      - docs/SECURITY_GUIDE.md
+      - tests/test_audit_correlation_id_v14.py
+      - api/middleware.py
 
   - service_id: cross_border_restriction
     name_ar: تقييد البيانات بين الحدود
