@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-theme="dark">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Dealix Turnkey Package — اشتر اليوم. نبدأ بكره. صفقة واحدة مغلقة.</title>
+<meta name="description" content="باكج Dealix الاستراتيجي الجاهز. ٥ وكلاء AI · 8 بوّابات أمان · ٥٬٠٠٠ ريال للـ Sprint أو ١٢٬٠٠٠ شهري للـ Partner. PDPL-compliant، Saudi-first، WhatsApp-aware. اشتر اليوم — نبدأ بكره. لا negotiation، لا تفاصيل دقيقة، صفقة واحدة كاملة." />
+<link rel="canonical" href="https://dealix.me/launchpad.html" />
+<meta property="og:type" content="website" />
+<meta property="og:title" content="Dealix Turnkey Package — Buy Today, Start Tomorrow" />
+<meta property="og:description" content="The closed strategic package. 5 AI Agents · 8 Hard Gates · 5,000 SAR Sprint OR 12,000 SAR/mo Partner. PDPL · Saudi-Arabic · WhatsApp." />
+<meta property="og:url" content="https://dealix.me/launchpad.html" />
+<meta property="og:locale" content="ar_SA" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="theme-color" content="#0f172a" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" />
+
+<link rel="stylesheet" href="/styles.css" />
+<link rel="stylesheet" href="/assets/css/design-system.css" />
+<script src="https://unpkg.com/lucide@0.469.0/dist/umd/lucide.min.js" defer></script>
+
+<style>
+  body {
+    background:
+      radial-gradient(900px 500px at 80% -10%, rgba(34, 197, 94, 0.16), transparent 60%),
+      radial-gradient(900px 500px at 0% 10%, rgba(168, 85, 247, 0.16), transparent 60%),
+      linear-gradient(180deg, #050816 0%, #0b1124 60%, #1e1b4b 100%);
+    color: var(--text);
+    min-height: 100vh;
+    margin: 0;
+    font-family: var(--font-ar);
+  }
+  main { padding: var(--space-7) var(--space-5) var(--space-9); }
+
+  /* Pricing tier cards (the closed package) */
+  .pkg-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-5); }
+  @media (max-width: 760px) { .pkg-grid { grid-template-columns: 1fr; } }
+
+  .pkg {
+    display: grid;
+    gap: var(--space-3);
+    padding: var(--space-7);
+    border-radius: var(--radius-lg, 20px);
+    background: var(--ds-surface-1);
+    border: 1px solid var(--ds-border);
+    transition: transform var(--dur-base) var(--ease-out-quart), border-color var(--dur-base);
+    position: relative;
+    overflow: hidden;
+  }
+  .pkg:hover { transform: translateY(-3px); border-color: var(--ds-border-strong); }
+
+  .pkg--featured {
+    border-color: rgba(34, 197, 94, 0.45);
+    background: linear-gradient(135deg, rgba(34,197,94,0.08), rgba(14,165,233,0.06));
+  }
+  .pkg--featured::before {
+    content: "RECOMMENDED";
+    position: absolute;
+    top: 14px; inset-inline-end: -38px;
+    padding: 4px 48px;
+    background: var(--accent-2);
+    color: #0b1124;
+    font-family: var(--font-lt);
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    transform: rotate(45deg);
+  }
+
+  .pkg__name { font-size: var(--fs-xl); font-weight: 700; margin: 0; }
+  .pkg__price {
+    font-family: var(--font-lt);
+    font-size: clamp(40px, 5vw, 56px);
+    font-weight: 800;
+    line-height: 1;
+    background: linear-gradient(90deg, var(--accent-2), #a855f7);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    margin-top: var(--space-2);
+  }
+  .pkg__price small { font-size: 14px; color: var(--text-muted); font-weight: 500; -webkit-text-fill-color: var(--text-muted); }
+  .pkg__commit { font-size: var(--fs-sm); color: var(--text-muted); margin: 0; }
+  .pkg__list { list-style: none; padding: 0; margin: var(--space-3) 0 0 0; display: grid; gap: var(--space-2); font-size: var(--fs-sm); line-height: var(--lh-base); }
+  .pkg__list li { display: flex; gap: var(--space-2); align-items: flex-start; }
+  .pkg__list li::before { content: "✓"; color: #4ade80; font-weight: 700; flex-shrink: 0; }
+
+  .pkg__cta { margin-top: var(--space-5); }
+  .pkg__guarantee {
+    margin-top: var(--space-4);
+    padding: var(--space-3);
+    background: rgba(34, 211, 238, 0.06);
+    border: 1px solid rgba(34, 211, 238, 0.20);
+    border-radius: var(--radius-sm, 8px);
+    font-size: var(--fs-xs);
+    color: var(--text-muted);
+    text-align: center;
+  }
+
+  /* What's locked in box */
+  .locked {
+    padding: var(--space-6);
+    background: rgba(2, 6, 23, 0.5);
+    border: 1px solid var(--ds-border);
+    border-radius: var(--radius-lg, 20px);
+  }
+  .locked__head { display: flex; align-items: center; gap: var(--space-3); margin-bottom: var(--space-3); }
+  .locked__head i { color: var(--accent-2); width: 24px; height: 24px; }
+  .locked__head h3 { margin: 0; font-size: var(--fs-lg); font-weight: 700; }
+
+  /* Day-by-day timeline */
+  .timeline { display: grid; gap: var(--space-3); }
+  .timeline__day {
+    display: grid;
+    grid-template-columns: 60px 1fr;
+    gap: var(--space-4);
+    padding: var(--space-3) var(--space-4);
+    background: var(--ds-surface-1);
+    border-inline-start: 3px solid var(--accent-2);
+    border-radius: var(--radius-sm, 8px);
+  }
+  .timeline__num {
+    font-family: var(--font-lt);
+    font-weight: 800;
+    color: var(--accent-2);
+    font-size: var(--fs-md);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .timeline__body h4 { margin: 0 0 var(--space-1) 0; font-size: var(--fs-md); font-weight: 600; }
+  .timeline__body p { margin: 0; font-size: var(--fs-sm); color: var(--text-muted); line-height: var(--lh-base); }
+
+  /* Big claim block */
+  .claim {
+    padding: var(--space-7) var(--space-6);
+    text-align: center;
+    background: linear-gradient(135deg, rgba(34, 211, 238, 0.10), rgba(168, 85, 247, 0.08));
+    border: 1px solid rgba(34, 211, 238, 0.30);
+    border-radius: var(--radius-lg, 20px);
+  }
+  .claim h2 { margin: 0; font-size: clamp(28px, 4vw, 42px); font-weight: 800; line-height: var(--lh-tight); }
+  .claim p { margin: var(--space-3) auto 0; max-width: 720px; font-size: var(--fs-lg); color: var(--text); }
+</style>
+</head>
+<body>
+<a class="ds-skip-link" href="#main">تخطّ إلى المحتوى الرئيسي</a>
+
+<main id="main" class="ds-container--full ds-stack ds-stack--xl">
+
+  <!-- Breadcrumb -->
+  <nav class="ds-breadcrumb" aria-label="مسار التنقّل">
+    <a href="/">الرئيسيّة</a>
+    <span class="ds-breadcrumb__sep" aria-hidden="true"></span>
+    <span aria-current="page">Launchpad — الباكج المغلق</span>
+  </nav>
+
+  <!-- Hero -->
+  <section class="ds-banner ds-stack ds-stack--sm" aria-labelledby="hero-title">
+    <span class="ds-eyebrow">Turnkey · Closed scope · Buy today, start tomorrow · PDPL-safe</span>
+    <h1 id="hero-title" class="ds-banner__title">🚀 Launchpad — الباكج الواحد المغلق</h1>
+    <p class="ds-banner__subtitle">صفقة واحدة. سعر واحد. تسليم محدّد. لا مفاوضات، لا تفاصيل، لا "إن شاء الله". اختر Sprint أو Partner — والباقي عليّ.</p>
+  </section>
+
+  <!-- The big claim -->
+  <section class="claim" aria-labelledby="claim-title">
+    <h2 id="claim-title">٥ وكلاء AI + ٨ بوّابات أمان + Saudi-Arabic UX = خدمة لا يمكن إيقافها</h2>
+    <p>كل قدراتنا الـ ٨ LIVE في الـ registry — مُجمَّعة في باكج واحد، مغلق، مُسلَّم خلال ١٤ يوم. لا تجريب، لا "نشوف"، لا "بنحاول". إمّا تسلّم أو نرجّع كامل المبلغ.</p>
+  </section>
+
+  <!-- The two SKUs -->
+  <section aria-labelledby="pkg-title" class="ds-stack ds-stack--md">
+    <div>
+      <span class="ds-eyebrow">قرار واحد</span>
+      <h2 id="pkg-title" class="ds-headline" style="font-size: var(--fs-3xl); margin-top: var(--space-3);">باكجان فقط — اختر واحد</h2>
+    </div>
+
+    <div class="pkg-grid">
+      <!-- SKU 1: Sprint -->
+      <article class="pkg">
+        <h3 class="pkg__name">⚡ Sector Sprint</h3>
+        <p class="pkg__commit">دفعة واحدة · ١٤ يوم · استرجاع كامل ١٠٠٪</p>
+        <div class="pkg__price">5,000<small> SAR</small></div>
+        <ul class="pkg__list">
+          <li>Pipeline Audit شامل (~١٥ صفحة PDF) لكل صفقة نشطة</li>
+          <li>Lead Quality Report (~١٠ صفحات) — تصنيف ٩٠ يوم من الـ leads</li>
+          <li>Broker / Team Performance Brief (~٨ صفحات)</li>
+          <li>KSA Sector Benchmark — مكانك مقارنة بأقرانك في الرياض</li>
+          <li>30-Day Action Plan جاهز للتنفيذ</li>
+          <li>كلّ المخرجات بالـ ٥ وكلاء AI + موافقة المؤسس على كلّ قرار</li>
+          <li>تواصل WhatsApp يومي مع المؤسس Sami شخصيّاً</li>
+          <li>Proof Pack نهائي — جاهز لمجلس إدارتك</li>
+        </ul>
+        <div class="pkg__cta">
+          <a class="ds-btn ds-btn--lg ds-btn--block" href="/start.html?tier=sprint">
+            <i data-lucide="rocket" style="width:18px;height:18px;"></i>
+            احجز Sprint الآن — ٥٬٠٠٠ ريال
+          </a>
+        </div>
+        <div class="pkg__guarantee">
+          🛡️ <strong>ضمان كامل:</strong> إذا الـ Proof Pack ما عجبك يوم ١٤ → استرجاع كامل خلال ٣–٥ أيّام عمل.
+        </div>
+      </article>
+
+      <!-- SKU 2: Partner (featured) -->
+      <article class="pkg pkg--featured">
+        <h3 class="pkg__name">🎯 Managed AI Partner</h3>
+        <p class="pkg__commit">شهري · ٤ شهور حدّ أدنى · KPI commitment ٢٠٪</p>
+        <div class="pkg__price">12,000<small> SAR/شهر</small></div>
+        <ul class="pkg__list">
+          <li><strong>كلّ ما في Sprint</strong> — كنقطة انطلاق الشهر الأوّل</li>
+          <li>Daily Decisions inbox — ٥ قرارات يوميّة على /decisions.html</li>
+          <li>Weekly Pipeline Audit refresh — كل أسبوع</li>
+          <li>Monthly Executive Brief — تقرير مجلس إدارة شهري</li>
+          <li>1× مكالمة ٣٠ دقيقة مع المؤسس أسبوعيّاً</li>
+          <li>WhatsApp غير محدود خلال ساعات العمل</li>
+          <li>Proof Pack ربع سنوي — أداء مقارن بـ baseline</li>
+          <li>وصول لـ Sector Benchmark Data — حصري للـ partners فقط</li>
+        </ul>
+        <div class="pkg__cta">
+          <a class="ds-btn ds-btn--lg ds-btn--block" href="/start.html?tier=partner">
+            <i data-lucide="trending-up" style="width:18px;height:18px;"></i>
+            ابدأ Partner — ١٢٬٠٠٠/شهر
+          </a>
+        </div>
+        <div class="pkg__guarantee">
+          🛡️ <strong>KPI Commitment:</strong> KPI المتّفق عليه ينمو ٢٠٪+ خلال ٤ شهور — أو نمدّد مجّاناً حتى يتحقّق.
+        </div>
+      </article>
+    </div>
+
+    <p class="ds-lede" style="text-align: center; font-size: var(--fs-sm); margin-top: var(--space-4);">
+      <strong>Sector Domination</strong> (custom · referral only) متوفّر بعد ٥ paid customers في نفس القطاع.
+    </p>
+  </section>
+
+  <!-- What's locked in (the closed package contents) -->
+  <section aria-labelledby="locked-title" class="ds-stack ds-stack--md">
+    <div>
+      <span class="ds-eyebrow">مغلق · لا تفاوض</span>
+      <h2 id="locked-title" class="ds-headline" style="font-size: var(--fs-2xl); margin-top: var(--space-3);">ما هو مغلق في الباكج</h2>
+      <p class="ds-lede" style="margin-top: var(--space-3);">هذه الـ ٧ التزامات ثابتة لكل عميل. لا "اللهم نشوف" ولا "ربّما"، لا تخفيض ولا upgrade. الباكج كاتالوج مغلق، يخدم استراتيجيّتك من اليوم الأوّل.</p>
+    </div>
+
+    <div class="ds-grid ds-grid--wide">
+      <div class="locked">
+        <div class="locked__head"><i data-lucide="users"></i><h3>١. ٥ وكلاء AI جاهزين</h3></div>
+        <p class="ds-card__sub">Sales · Growth · Support · Ops · Executive — كلّهم endpoints حيّة في الـ registry. لا "قريباً"، لا feature flags. كلّ output يمرّ بموافقتك.</p>
+      </div>
+      <div class="locked">
+        <div class="locked__head"><i data-lucide="shield"></i><h3>٢. ٨ بوّابات أمان مقفلة</h3></div>
+        <p class="ds-card__sub">NO_LIVE_SEND · NO_LIVE_CHARGE · NO_COLD_WHATSAPP · NO_LINKEDIN_AUTOMATION · NO_SCRAPING · NO_FAKE_PROOF · NO_FAKE_REVENUE · NO_UNAPPROVED_TESTIMONIAL — مفروضة في الكود + اختبارات. لا يمكن تجاوزها.</p>
+      </div>
+      <div class="locked">
+        <div class="locked__head"><i data-lucide="globe"></i><h3>٣. Saudi-Arabic UX</h3></div>
+        <p class="ds-card__sub">Saudi-dialect (مو MSA مترجم) · prayer-time scheduling · KSA quiet-hours (٢١:٠٠–٠٨:٠٠) · "إن شاء الله" tone-reading · 72h active conversation window.</p>
+      </div>
+      <div class="locked">
+        <div class="locked__head"><i data-lucide="lock"></i><h3>٤. PDPL-safe by-design</h3></div>
+        <p class="ds-card__sub">SDAIA-aligned · per-channel × per-purpose consent table · default-deny · audit trail بـ correlation_id. غرامة PDPL تصل ٥M SAR — Dealix يحميك من اليوم ٠.</p>
+      </div>
+      <div class="locked">
+        <div class="locked__head"><i data-lucide="phone"></i><h3>٥. Founder access</h3></div>
+        <p class="ds-card__sub">رقم WhatsApp المؤسس Sami شخصيّاً. لا support tier ١→٢→٣. ردّ ٣٠ دقيقة في ساعات العمل، ٤ ساعات بعد. هذا الفرق بيننا وبين شركة بـ ١٠٬٠٠٠ موظّف.</p>
+      </div>
+      <div class="locked">
+        <div class="locked__head"><i data-lucide="award"></i><h3>٦. Compounding Proof Pack</h3></div>
+        <p class="ds-card__sub">كلّ أسبوع تضاف Claim × Evidence pair. بعد ٣ شهور: ٤٠+ صفحة من أداء حقيقي مقارن بـ baseline. مستند ترسله لمجلس الإدارة كلّ ربع.</p>
+      </div>
+      <div class="locked">
+        <div class="locked__head"><i data-lucide="bar-chart-3"></i><h3>٧. Sector Benchmark Data</h3></div>
+        <p class="ds-card__sub">حصري لـ Partners. مكان مكتبك مقارنة بأقرانك في الرياض/جدّة/الدمّام. أيّ Western SaaS يحتاج ٢-٣ سنوات ليبني هذه البيانات في KSA.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Day-by-day timeline (Sprint) -->
+  <section aria-labelledby="timeline-title" class="ds-stack ds-stack--md">
+    <div>
+      <span class="ds-eyebrow">Sprint timeline · ١٤ يوم محدّد</span>
+      <h2 id="timeline-title" class="ds-headline" style="font-size: var(--fs-2xl); margin-top: var(--space-3);">يوم بيوم — الـ ١٤ يوم الأولى</h2>
+    </div>
+
+    <div class="timeline">
+      <div class="timeline__day">
+        <div class="timeline__num">D0</div>
+        <div class="timeline__body">
+          <h4>Kickoff (يوم الدفع)</h4>
+          <p>WhatsApp voice note شخصي من Sami خلال ٣٠ دقيقة من الدفع. رابط /pilot-day-0.html. تحديد KPI الأوّل المتّفق عليه.</p>
+        </div>
+      </div>
+      <div class="timeline__day">
+        <div class="timeline__num">D1-2</div>
+        <div class="timeline__body">
+          <h4>Discovery & Sales Agent (٣ فرص)</h4>
+          <p>30-min call. Sales Agent يؤهّل ٣ فرص من قاعدتك. كلّ فرصة: BANT score + reason + recommended next-step. أنت توافق على /decisions.html.</p>
+        </div>
+      </div>
+      <div class="timeline__day">
+        <div class="timeline__num">D3-5</div>
+        <div class="timeline__body">
+          <h4>Growth + Support Agents</h4>
+          <p>Growth Agent يجهّز ٣ مسوّدات رسائل دافئة + segment selection. Support Agent يبني FAQ + escalation policy + ١٢-category classifier للتذاكر.</p>
+        </div>
+      </div>
+      <div class="timeline__day">
+        <div class="timeline__num">D6-8</div>
+        <div class="timeline__body">
+          <h4>Ops + Executive Agents</h4>
+          <p>Ops Agent يجهّز delivery checklist + daily ops report template. Executive Agent يطلع أوّل تقرير تنفيذي + revenue truth check + finance brief.</p>
+        </div>
+      </div>
+      <div class="timeline__day">
+        <div class="timeline__num">D9-11</div>
+        <div class="timeline__body">
+          <h4>Pipeline Audit + Sector Benchmark</h4>
+          <p>Pipeline Audit PDF (~١٥ صفحة) لكل صفقة نشطة في مكتبك. KSA Sector Benchmark — مكانك مقارنة بأقرانك. ٣٠-Day Action Plan جاهز.</p>
+        </div>
+      </div>
+      <div class="timeline__day">
+        <div class="timeline__num">D12-13</div>
+        <div class="timeline__body">
+          <h4>Proof Pack drafted</h4>
+          <p>Proof Pack: كلّ ادّعاء × evidence pair. مراجعة معك. إذا وافقت على نشره (signed_publish_permission=true) → ينشر على /proof.html.</p>
+        </div>
+      </div>
+      <div class="timeline__day">
+        <div class="timeline__num">D14</div>
+        <div class="timeline__body">
+          <h4>Final review (٣٠ دقيقة)</h4>
+          <p>مراجعة كاملة معك. ثلاث مسارات: (١) ترقية إلى Partner ١٢٬٠٠٠/شهر · (٢) استرجاع كامل · (٣) موافقة على نشر Proof Pack + case study.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- The four moats (why Dealix specifically) -->
+  <section aria-labelledby="moats-title" class="ds-stack ds-stack--md">
+    <div>
+      <span class="ds-eyebrow">٤ أشياء غير قابلة للنسخ</span>
+      <h2 id="moats-title" class="ds-headline" style="font-size: var(--fs-2xl); margin-top: var(--space-3);">لماذا لا يمكن إيقافنا</h2>
+    </div>
+
+    <div class="ds-grid ds-grid--wide">
+      <div class="ds-card ds-stack ds-stack--sm">
+        <h3 class="ds-card__title">١. Saudi-Arabic-first execution</h3>
+        <p class="ds-card__sub">Saudi-dialect mastery + prayer-time + family-decision dynamics + "إن شاء الله" tone-reading. Western SaaS literally لا يمكنها نسخ هذا. ميزة عمرها ٢٠ سنة من الخبرة المحلّيّة.</p>
+      </div>
+      <div class="ds-card ds-stack ds-stack--sm">
+        <h3 class="ds-card__title">٢. ٨ هارد قيتس مفروضة في الكود</h3>
+        <p class="ds-card__sub">PDPL-safe by-design. مفروضة في ١٧٦١+ unit tests. Salesforce/HubSpot user-toggleable settings — Dealix gates لا يمكن إطفاؤها.</p>
+      </div>
+      <div class="ds-card ds-stack ds-stack--sm">
+        <h3 class="ds-card__title">٣. Compounding Proof Pack</h3>
+        <p class="ds-card__sub">كل عميل يجمع Proof Pack بـ ٦٠+ صفحة من evidence-backed performance خلال ٦ شهور. الانتقال = خسارة كل هذا. Switching cost حقيقي.</p>
+      </div>
+      <div class="ds-card ds-stack ds-stack--sm">
+        <h3 class="ds-card__title">٤. Founder-led trust</h3>
+        <p class="ds-card__sub">رقم WhatsApp Sami شخصيّاً. غير قابل للنسخ من شركة بـ ١٠٬٠٠٠ موظّف. للـ first ٢٥ عميل، هذه هي الميزة الأقوى.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section aria-labelledby="faq-title" class="ds-stack ds-stack--md">
+    <div>
+      <span class="ds-eyebrow">أسئلة قبل الشراء</span>
+      <h2 id="faq-title" class="ds-headline" style="font-size: var(--fs-2xl); margin-top: var(--space-3);">FAQ</h2>
+    </div>
+    <div class="ds-faq">
+      <details class="ds-faq__item">
+        <summary>كيف أدفع؟</summary>
+        <div class="ds-faq__body">طريقتان: <strong>(١) Moyasar</strong> — رابط آمن بكروت Mada / Visa / Mastercard. تستلم رابط الدفع في إيميل تأكيد التسجيل خلال ٢٤ ساعة. <strong>(٢) تحويل بنكي مباشر</strong> — IBAN + reference code DLX-XXXX. أيّ طريقة، الدفع لا يُؤكَّد إلّا بعد التحقّق اليدوي (NO_LIVE_CHARGE gate).</div>
+      </details>
+      <details class="ds-faq__item">
+        <summary>متى تبدأ الـ ١٤ يوم تحديداً؟</summary>
+        <div class="ds-faq__body">من اللحظة اللي يصل فيها payment evidence (إيصال البنك أو رابط Moyasar مدفوع). نرسل لك WhatsApp voice note + Day 0 link خلال ٣٠ دقيقة من تأكيد الدفع. اليوم ١ هو اليوم اللي بعده.</div>
+      </details>
+      <details class="ds-faq__item">
+        <summary>هل أحتاج فريق تقني؟</summary>
+        <div class="ds-faq__body">لا. الباكج مصمّم لمالك المكتب / المؤسس / مدير المبيعات. لا setup تقني، لا integration معقّد. ندخل على بياناتك عبر Excel / WhatsApp groups / لقطات شاشة. كل شيء يُجهّز من جهتنا.</div>
+      </details>
+      <details class="ds-faq__item">
+        <summary>ماذا لو ما عجبني؟</summary>
+        <div class="ds-faq__body">Sprint: استرجاع كامل ١٠٠٪ خلال ٣–٥ أيّام عمل (تحويل بنكي) أو يومين (Moyasar). لا أسئلة، لا "لكن"، لا negotiation. Partner: pro-rata refund + KPI commitment يمتدّ مجّاناً حتى الهدف يتحقّق.</div>
+      </details>
+      <details class="ds-faq__item">
+        <summary>هل يمكنني الترقية من Sprint إلى Partner؟</summary>
+        <div class="ds-faq__body">نعم — ٨٠٪ من عملاء الـ Sprint يرقون. الـ Sprint يُحتسب credit كامل ضد الشهر الأوّل من Partner (١٢٬٠٠٠ - ٥٬٠٠٠ = ٧٬٠٠٠ ريال للشهر الأوّل، ثم ١٢٬٠٠٠ شهريّاً).</div>
+      </details>
+      <details class="ds-faq__item">
+        <summary>هل بياناتي آمنة (PDPL)؟</summary>
+        <div class="ds-faq__body">نعم. SDAIA-aligned. Per-channel × per-purpose consent. Default-deny على أيّ إرسال خارجي. Audit trail بـ correlation_id. ولا cross-border data transfer. كل شيء KSA-resident عبر Railway. تفاصيل كاملة على /privacy.html.</div>
+      </details>
+      <details class="ds-faq__item">
+        <summary>هل يدعم WhatsApp؟</summary>
+        <div class="ds-faq__body">نعم — inbound webhook حيّ + signature verification. outbound في "draft_only" mode (الـ NO_LIVE_SEND gate). أنت ترسل يدوياً بعد المراجعة. الـ "Send via WhatsApp" feature يعمل كاملاً بعد ربط Meta WBA credentials (الـ founder action، يحتاج ٢٤–٤٨ ساعة لاعتماد Meta).</div>
+      </details>
+      <details class="ds-faq__item">
+        <summary>هل أنا الأوّل؟ كم عميل عندكم؟</summary>
+        <div class="ds-faq__body">نعم، نحن في Wave 2 — أوّل ٣ paid pilots نختار شركاء التأسيس بعناية. الميزة: founder access قوي جداً، attention مركّزة، تخصيص عالي للـ playbook. السعر: ٥٬٠٠٠ ريال (Sprint) سيرتفع بعد الـ ٣ pilots إلى ٧٬٥٠٠ ريال + Partner من ١٢٬٠٠٠ إلى ١٥٬٠٠٠ شهري. <strong>الـ founding partners يحتفظون بالسعر الأصلي مدى الحياة.</strong></div>
+      </details>
+    </div>
+  </section>
+
+  <!-- Final CTA -->
+  <section class="ds-stack ds-stack--sm" style="text-align: center; padding: var(--space-9) 0;">
+    <h2 class="ds-headline" style="font-size: clamp(28px, 4vw, 42px);">القرار الآن</h2>
+    <p class="ds-lede" style="max-width: 640px; margin: 0 auto;">
+      لا "ندرسها" · لا "نرجع لك" · إمّا تشتري الباكج المغلق اليوم وتبدأ بكره — أو تجرّب التشخيص المجّاني.
+    </p>
+    <div class="ds-row" style="justify-content: center; gap: var(--space-4); margin-top: var(--space-5); flex-wrap: wrap;">
+      <a class="ds-btn ds-btn--lg" href="/start.html?tier=sprint" style="font-size: var(--fs-lg); padding: var(--space-4) var(--space-7);">
+        <i data-lucide="rocket" style="width:20px;height:20px;"></i>
+        احجز Sprint — ٥٬٠٠٠ ريال
+      </a>
+      <a class="ds-btn ds-btn--ghost ds-btn--lg" href="/diagnostic-real-estate.html" style="font-size: var(--fs-lg); padding: var(--space-4) var(--space-7);">
+        <i data-lucide="clipboard-check" style="width:20px;height:20px;"></i>
+        تشخيص مجّاني أوّلاً
+      </a>
+    </div>
+    <p class="ds-card__sub" style="margin-top: var(--space-4); font-size: var(--fs-xs); color: var(--text-muted);">
+      ٢٤ ساعة لاستلام رابط الدفع · ١٤ يوم لتسليم Sprint · ضمان كامل ١٠٠٪
+    </p>
+  </section>
+
+  <!-- Footer -->
+  <footer class="ds-footer">
+    <div class="ds-container ds-stack ds-stack--md" style="text-align: center;">
+      <p class="ds-lede" style="max-width: 720px; margin: 0 auto; font-size: var(--fs-sm);">
+        Dealix — الباكج الواحد المغلق. صفقة استراتيجيّة بسيطة. لا feature creep، لا "إن شاء الله" تأخير، لا ادّعاءات بدون evidence.
+      </p>
+      <div class="ds-row" style="justify-content: center; gap: var(--space-5); flex-wrap: wrap;">
+        <a class="ds-link" href="/">الرئيسيّة</a>
+        <a class="ds-link" href="/ai-team.html">AI Operating Team</a>
+        <a class="ds-link" href="/compare.html">مقارنة</a>
+        <a class="ds-link" href="/diagnostic-real-estate.html">تشخيص عقاريّ</a>
+        <a class="ds-link" href="/start.html">7-Day Pilot</a>
+        <a class="ds-link" href="/proof.html">Proof Packs</a>
+        <a class="ds-link" href="/workflow.html">Workflow</a>
+        <a class="ds-link" href="/free-tools/lead-score-calculator.html">Lead Score</a>
+        <a class="ds-link" href="/privacy.html">PDPL</a>
+        <a class="ds-link" href="/terms.html">Terms</a>
+      </div>
+    </div>
+  </footer>
+
+</main>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    if (window.lucide && window.lucide.createIcons) window.lucide.createIcons();
+  });
+</script>
+
+</body>
+</html>
