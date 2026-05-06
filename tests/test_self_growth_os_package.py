@@ -123,13 +123,15 @@ def test_safe_publishing_gate_rejects_non_string():
 
 
 def test_service_matrix_counts_match_validator():
-    """After Phase K1+K2+K3 (PR #165 + PR #166), 3 services flipped to
-    live: qualification, audit_trail, lead_intake_whatsapp."""
+    """After Phase K1-K6 (PR #165 + PR #166 + PR #167):
+       K1 lead_intake_whatsapp + K2 qualification + K3 audit_trail
+       + K4 consent_required_send + K5 outreach_drafts + K6 routing
+       = 6 services LIVE. Remaining 2 PARTIAL close in PR #168."""
     counts = service_activation_matrix.counts()
     assert counts["total"] == 32
-    assert counts["live"] == 3
+    assert counts["live"] == 6
     assert counts["pilot"] == 0
-    assert counts["partial"] == 5
+    assert counts["partial"] == 2
     assert counts["target"] == 24
 
 

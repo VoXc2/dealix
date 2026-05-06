@@ -72,17 +72,18 @@ def test_total_services_is_32(matrix):
 
 
 def test_status_distribution(matrix):
-    """After Phase K1+K2+K3 (PR #165 + PR #166), 3 services flipped to
-    live: qualification, audit_trail, lead_intake_whatsapp. Each has
-    its full 8 quality gates set true and a tests_required: file that
-    exists on disk — verify_service_readiness_matrix.py enforces this.
+    """After Phase K1-K6 (PR #165 + PR #166 + PR #167), 6 services
+    flipped to live: qualification, audit_trail, lead_intake_whatsapp,
+    consent_required_send, outreach_drafts, routing. Each has its full
+    8 quality gates set true and a tests_required: file that exists
+    on disk — verify_service_readiness_matrix.py enforces this.
     """
     counts = {s: 0 for s in ALLOWED_STATUSES}
     for svc in matrix["services"]:
         counts[svc["status"]] += 1
-    assert counts["live"] == 3, "3 services flipped to live after Phase K1+K2+K3"
+    assert counts["live"] == 6, "6 services flipped to live after Phase K1-K6"
     assert counts["pilot"] == 0
-    assert counts["partial"] == 5
+    assert counts["partial"] == 2
     assert counts["target"] == 24
     assert counts["blocked"] == 0
 

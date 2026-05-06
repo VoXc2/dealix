@@ -42,12 +42,18 @@ async def test_service_activation_endpoint_returns_matrix():
     assert r.status_code == 200
     payload = r.json()
     assert payload["counts"]["total"] == 32
-    # After Phase K1+K2+K3 (PR #165 + PR #166): 3 services flipped to live —
-    # qualification (was pilot), audit_trail (was partial), and
-    # lead_intake_whatsapp (was partial).
-    assert payload["counts"]["live"] == 3
+    # After Phase K1-K6 (PR #165 + PR #166 + PR #167):
+    #   K1: lead_intake_whatsapp partial → live
+    #   K2: qualification pilot → live
+    #   K3: audit_trail partial → live
+    #   K4: consent_required_send partial → live
+    #   K5: outreach_drafts partial → live
+    #   K6: routing partial → live
+    # Total: 6 LIVE. Remaining 2 PARTIAL (enrichment + release_gate)
+    # close in PR #168.
+    assert payload["counts"]["live"] == 6
     assert payload["counts"]["pilot"] == 0
-    assert payload["counts"]["partial"] == 5
+    assert payload["counts"]["partial"] == 2
     assert payload["counts"]["target"] == 24
     assert payload["counts"]["blocked"] == 0
     assert len(payload["services"]) == 32

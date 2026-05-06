@@ -364,7 +364,7 @@ services:
     name_en: Routing
     bundle: growth_starter
     capability_group: orchestration
-    status: partial
+    status: live
     customer_value_ar: |
       يختار القناة الصحيحة (واتساب، بريد، اجتماع) حسب نوع العميل
       وحدود الامتثال — كي لا نفرض قناة غير مناسبة.
@@ -407,18 +407,31 @@ services:
       - consent table live
       - KSA quiet-hours test passes
       - audit trail proven
-    tests_required: [tests/test_routing_quiet_hours.py]
+    tests_required:
+      - tests/test_routing_quiet_hours.py
+    gates:
+      inputs: true
+      workflow: true
+      agent_role: true
+      human_approval: true
+      safe_tool_gateway: true
+      deliverable: true
+      proof_metric: true
+      test_or_evidence: true
     risks: [timezone_drift]
     sla: routing_decision_within_5sec
-    last_verified_at: "2026-05-04"
-    evidence: [landing/styles.css]
+    last_verified_at: "2026-05-06"
+    evidence:
+      - tests/test_routing_quiet_hours.py
+      - auto_client_acquisition/customer_inbox_v10/routing_policy.py
+      - auto_client_acquisition/outreach_window.py
 
   - service_id: outreach_drafts
     name_ar: مسودّات التواصل (بإذن)
     name_en: Outreach Drafts (Consented)
     bundle: growth_starter
     capability_group: outreach
-    status: partial
+    status: live
     customer_value_ar: |
       يجهّز مسودّات ردود/متابعات للعملاء الذين أعطوا إذناً مسبقاً
       أو ضمن نافذة المحادثة — لا اتّصال غير مرغوب ولا قوائم جماعية.
@@ -464,11 +477,24 @@ services:
       - quiet-hours enforced
       - send-window test passes
       - approval flow audited
-    tests_required: [tests/test_outreach_window_enforcement.py]
+    tests_required:
+      - tests/test_outreach_window_enforcement.py
+    gates:
+      inputs: true
+      workflow: true
+      agent_role: true
+      human_approval: true
+      safe_tool_gateway: true
+      deliverable: true
+      proof_metric: true
+      test_or_evidence: true
     risks: [regulatory_change]
     sla: draft_within_5min
-    last_verified_at: "2026-05-04"
-    evidence: [tests/test_personal_operator.py]
+    last_verified_at: "2026-05-06"
+    evidence:
+      - tests/test_outreach_window_enforcement.py
+      - auto_client_acquisition/outreach_window.py
+      - tests/test_personal_operator.py
 
   # ─── Data to Revenue (4) ───────────────────────────────────────────────────
   - service_id: proposal
@@ -1156,7 +1182,7 @@ services:
     name_en: Consent-Required Send
     bundle: internal
     capability_group: compliance
-    status: partial
+    status: live
     customer_value_ar: |
       يفرض opt-in على كل إرسال خارجي قبل التنفيذ.
     customer_value_en: |
@@ -1190,11 +1216,24 @@ services:
       - schema v1 active
       - default-deny test passes
       - audit trail proven
-    tests_required: [tests/test_consent_required_send.py]
+    tests_required:
+      - tests/test_consent_required_send.py
+    gates:
+      inputs: true
+      workflow: true
+      agent_role: true
+      human_approval: true
+      safe_tool_gateway: true
+      deliverable: true
+      proof_metric: true
+      test_or_evidence: true
     risks: [schema_drift]
     sla: decision_within_500ms
-    last_verified_at: "2026-05-04"
-    evidence: [docs/PRIVACY_PDPL_READINESS.md]
+    last_verified_at: "2026-05-06"
+    evidence:
+      - tests/test_consent_required_send.py
+      - auto_client_acquisition/consent_table.py
+      - docs/PRIVACY_PDPL_READINESS.md
 
   - service_id: revoke_consent
     name_ar: إلغاء الإذن
