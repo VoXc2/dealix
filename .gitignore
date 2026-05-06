@@ -165,3 +165,7 @@ docs/proof-events/*-units.jsonl
 # (exporter writes here; never commit founder/customer artifacts)
 # ─────────────────────────────────────────────────────────────
 docs/designops/exports/**
+
+# Revenue execution — founder-only live boards (PII); never commit
+docs/revenue/live/
+docs/phase-e/live/
