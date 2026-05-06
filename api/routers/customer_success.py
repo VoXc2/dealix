@@ -135,6 +135,23 @@ async def list_at_risk_customers() -> dict[str, Any]:
     }
 
 
+@router.get("/customer-success-os/status")
+async def customer_success_os_status() -> dict[str, Any]:
+    """Thin status surface for revenue execution facade (read-only)."""
+    return {
+        "module": "customer_success_os",
+        "delegate": "customer_success",
+        "endpoints": [
+            "POST /api/v1/customer-success/health/{customer_id}",
+            "GET /api/v1/customer-success/at-risk",
+        ],
+        "guardrails": {
+            "no_fake_health_without_db": True,
+            "db_optional_degraded": True,
+        },
+    }
+
+
 # ── QBR generator ─────────────────────────────────────────────────
 @router.post("/qbr/{customer_id}")
 async def generate_customer_qbr(customer_id: str, body: dict[str, Any] = Body(default={})) -> dict[str, Any]:

@@ -23,6 +23,8 @@ from api.routers import (
     autonomous,
     business,
     command_center,
+    company_service,
+    compliance_action,
     company_brain,
     company_brain_v6,
     customer_success,
@@ -31,15 +33,18 @@ from api.routers import (
     drafts,
     ecosystem,
     email_send,
+    executive_os_mode,
     executive_reporting,
     full_os,
     health,
     leads,
     llm_gateway_v10,
     observability_v10,
+    observability_v12_mode,
     outreach,
     personal_operator,
     pricing,
+    partnership_os_mode,
     prospect,
     public,
     agent_governance,
@@ -48,29 +53,36 @@ from api.routers import (
     customer_inbox_v10,
     customer_loop,
     delivery_factory,
+    delivery_os,
     designops,
     diagnostic,
     diagnostic_workflow,
     finance_os,
     founder,
     founder_v10,
+    growth_os_mode,
     growth_v10,
     gtm_os,
     knowledge_v10,
     observability_v6,
     proof_ledger,
     reliability_os,
+    revenue_execution,
     revenue,
     revenue_os,
+    revenue_pipeline,
     role_command_os,
     safety_v10,
     sales,
+    sales_os_mode,
     search_radar,
     sectors,
     security_privacy,
     self_growth,
+    self_improvement_os_mode,
     service_mapping_v7,
     service_quality,
+    support_os_mode,
     v3,
     vertical_playbooks,
     workflow_os_v10,
@@ -158,6 +170,7 @@ def create_app() -> FastAPI:
     app.include_router(health.router)
     app.include_router(leads.router)
     app.include_router(sales.router)
+    app.include_router(sales_os_mode.router)
     app.include_router(sectors.router)
     app.include_router(agents.router)
     app.include_router(webhooks.router)
@@ -175,11 +188,15 @@ def create_app() -> FastAPI:
     app.include_router(customer_success.router)
     app.include_router(ecosystem.router)
     app.include_router(command_center.router)
+    app.include_router(company_service.router)
+    app.include_router(compliance_action.router)
+    app.include_router(revenue_execution.router)
     app.include_router(revenue_os.router)
     app.include_router(v3.router)
     app.include_router(business.router)
     app.include_router(personal_operator.router)
     app.include_router(self_growth.router)
+    app.include_router(self_improvement_os_mode.router)
     app.include_router(service_mapping_v7.router)
     app.include_router(customer_loop.router)
     app.include_router(role_command_os.router)
@@ -190,8 +207,10 @@ def create_app() -> FastAPI:
     app.include_router(customer_data_plane.router)
     app.include_router(finance_os.router)
     app.include_router(delivery_factory.router)
+    app.include_router(delivery_os.router)
     app.include_router(proof_ledger.router)
     app.include_router(gtm_os.router)
+    app.include_router(partnership_os_mode.router)
     app.include_router(search_radar.router)
     app.include_router(security_privacy.router)
     app.include_router(diagnostic.router)
@@ -199,12 +218,16 @@ def create_app() -> FastAPI:
     app.include_router(designops.router)
     app.include_router(observability_v6.router)
     app.include_router(observability_v10.router)
+    app.include_router(observability_v12_mode.router)
     app.include_router(llm_gateway_v10.router)
     app.include_router(safety_v10.router)
     app.include_router(workflow_os_v10.router)
     app.include_router(crm_v10.router)
     app.include_router(customer_inbox_v10.router)
+    app.include_router(support_os_mode.router)
     app.include_router(growth_v10.router)
+    app.include_router(growth_os_mode.router)
+    app.include_router(revenue_pipeline.router)
     app.include_router(knowledge_v10.router)
     app.include_router(ai_workforce_v10.router)
     app.include_router(founder_v10.router)
@@ -213,6 +236,7 @@ def create_app() -> FastAPI:
     app.include_router(approval_center.router)
     app.include_router(ai_workforce.router)
     app.include_router(executive_reporting.router)
+    app.include_router(executive_os_mode.router)
     app.include_router(founder.router)
     app.include_router(public.router)
     app.include_router(admin.router)
@@ -227,6 +251,8 @@ def create_app() -> FastAPI:
             "docs": "/docs",
             "health": "/health",
             "v3_command_center": "/api/v1/v3/command-center/snapshot",
+            "company_service_command_center": "/api/v1/company-service/command-center",
+            "full_ops_daily_command_center": "/api/v1/full-ops/daily-command-center",
             "personal_operator_daily_brief": "/api/v1/personal-operator/daily-brief",
             "personal_operator_launch_report": "/api/v1/personal-operator/launch-report",
             "business_pricing": "/api/v1/business/pricing",
