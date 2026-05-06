@@ -25,6 +25,7 @@ from api.routers import (
     command_center,
     company_brain,
     company_brain_v6,
+    company_growth_beast,
     customer_success,
     data,
     dominance,
@@ -62,6 +63,8 @@ from api.routers import (
     reliability_os,
     revenue,
     revenue_os,
+    proof_to_market,
+    role_command,
     role_command_os,
     safety_v10,
     sales,
@@ -72,9 +75,11 @@ from api.routers import (
     delivery_os,
     executive_os,
     full_ops,
+    growth_beast,
     growth_os,
     partnership_os,
     revenue_pipeline,
+    revops,
     sales_os,
     self_growth,
     self_improvement_os,
@@ -238,6 +243,11 @@ def create_app() -> FastAPI:
     app.include_router(self_improvement_os.router)
     app.include_router(partnership_os.router)
     app.include_router(revenue_pipeline.router)
+    app.include_router(revops.router)
+    app.include_router(growth_beast.router)
+    app.include_router(company_growth_beast.router)
+    app.include_router(role_command.router)
+    app.include_router(proof_to_market.router)
     app.include_router(public.router)
     app.include_router(admin.router)
 
