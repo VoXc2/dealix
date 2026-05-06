@@ -132,6 +132,18 @@ ALLOWLIST: dict[str, dict[str, str]] = {
         "cold": "NEGATION",
         "scraping": "NEGATION",
     },
+    # Compare page — describes competitor behavior ("Encourages cold
+    # sequences", "Sales Engagement = cold") + Dealix's anti-cold/anti-
+    # scraping stance. Pure NEGATION context.
+    "compare.html": {
+        "cold": "NEGATION",
+        "scraping": "NEGATION",
+    },
+    # Real-estate diagnostic — "صفر cold WhatsApp · لا scraping" promise
+    # to the broker. Pure NEGATION.
+    "diagnostic-real-estate.html": {
+        "cold": "NEGATION",
+    },
 }
 
 

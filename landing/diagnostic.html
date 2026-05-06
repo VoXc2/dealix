@@ -254,6 +254,25 @@
       <span class="ds-eyebrow">تشخيصك جاهز</span>
       <h2 class="ds-headline" style="font-size: var(--fs-3xl); margin-top: var(--space-3);">نتيجة التشخيص</h2>
     </div>
+
+    <!-- Fit Score card — real-time scoring based on form answers -->
+    <div class="ds-card ds-stack ds-stack--sm" id="dx-fit-card" style="background: linear-gradient(135deg, rgba(34,211,238,0.08), rgba(168,85,247,0.08)); border: 1px solid rgba(34,211,238,0.25);">
+      <div class="ds-row" style="justify-content: space-between; flex-wrap: wrap;">
+        <h3 class="ds-card__title" style="margin: 0;">🎯 Fit Score · مدى ملاءمة Dealix لشركتك</h3>
+        <span id="dx-fit-grade" class="ds-mode" style="font-size: var(--fs-md); padding: 4px 12px;">—</span>
+      </div>
+      <div style="display: grid; grid-template-columns: 80px 1fr; gap: var(--space-4); align-items: center;">
+        <div style="text-align: center;">
+          <div id="dx-fit-num" style="font-family: var(--font-lt); font-size: clamp(36px, 5vw, 56px); font-weight: 800; background: linear-gradient(90deg, var(--accent-2), #a855f7); -webkit-background-clip: text; background-clip: text; color: transparent; line-height: 1;">0</div>
+          <div style="font-size: var(--fs-xs); color: var(--text-muted); letter-spacing: 0.04em; text-transform: uppercase; margin-top: 4px;">/ 100</div>
+        </div>
+        <div>
+          <p class="ds-card__sub" id="dx-fit-desc" style="margin: 0;">جاري الحساب…</p>
+          <p class="ds-card__sub" id="dx-fit-next" style="font-size: var(--fs-xs); color: var(--text-muted); margin-top: var(--space-2);"></p>
+        </div>
+      </div>
+    </div>
+
     <div class="ds-grid ds-grid--wide">
       <div class="ds-card ds-stack ds-stack--sm">
         <h3 class="ds-card__title">📍 الوضع الحالي</h3>
@@ -330,7 +349,60 @@
     submitLabel.textContent = busy ? 'جاري التشخيص…' : 'احصل على تشخيصي المجّاني';
   }
 
+  function computeFitScore(payload) {
+    // 0-100 fit score based on 6 form answers. Pure heuristic, deterministic.
+    let score = 0;
+    let reasons = [];
+
+    // Sector tier (max 30 points)
+    const tier1 = ['agency', 'b2b_services', 'consulting'];
+    const tier2 = ['saas', 'ecommerce', 'real_estate'];
+    if (tier1.includes(payload.sector)) { score += 30; reasons.push('قطاع Tier-1 (الأنسب لـ Dealix)'); }
+    else if (tier2.includes(payload.sector)) { score += 20; reasons.push('قطاع Tier-2 (مناسب)'); }
+    else { score += 10; reasons.push('قطاع Tier-3 (يحتاج إثبات أوّلاً)'); }
+
+    // Biggest problem clarity (max 25 points)
+    const probLen = (payload.biggest_problem || '').length;
+    if (probLen >= 30) { score += 25; reasons.push('مشكلة محدّدة بوضوح'); }
+    else if (probLen >= 15) { score += 15; reasons.push('مشكلة معروفة جزئياً'); }
+    else { score += 5; reasons.push('المشكلة تحتاج توضيح أكثر'); }
+
+    // Has ideal_customer hint (composed from target_metric, fastest_lever, customer_base, tech_level) — max 25 points
+    const idealLen = (payload.ideal_customer || '').length;
+    if (idealLen >= 20) { score += 25; reasons.push('فهم واضح لقاعدة العملاء + الرافعة الأسرع'); }
+    else if (idealLen >= 10) { score += 15; reasons.push('فهم أوّلي'); }
+    else { score += 5; }
+
+    // Has current_channels feedback (max 20 points)
+    const chLen = (payload.current_channels || '').length;
+    if (chLen >= 15) { score += 20; reasons.push('وعي بالحلول السابقة + ما لم ينجح'); }
+    else if (chLen >= 5) { score += 10; }
+    else { score += 0; }
+
+    return { score: Math.min(100, score), reasons };
+  }
+
+  function gradeFromScore(score) {
+    if (score >= 80) return { grade: 'ممتاز', cls: 'ds-mode--approved', desc: 'شركتك مرشّحة قويّة لنتائج ملموسة. الـ 7-Day Pilot سيحقّق فرقاً واضحاً.' };
+    if (score >= 60) return { grade: 'جيّد جداً', cls: 'ds-mode--suggest', desc: 'مناسبة جيّدة. مع توضيح بعض التفاصيل، النتائج ممتازة.' };
+    if (score >= 40) return { grade: 'متوسّط', cls: 'ds-mode--draft', desc: 'تحتاج إلى محادثة قصيرة لتحديد المسار الأمثل.' };
+    return { grade: 'يحتاج إثبات', cls: 'ds-mode--blocked', desc: 'ابدأ بـ Mini Diagnostic مجّاني وقياس الـ baseline أوّلاً.' };
+  }
+
   function renderResult(diag, payload) {
+    // Compute and render Fit Score
+    const fit = computeFitScore(payload);
+    const grade = gradeFromScore(fit.score);
+    document.getElementById('dx-fit-num').textContent = fit.score;
+    const gradeEl = document.getElementById('dx-fit-grade');
+    gradeEl.textContent = grade.grade;
+    gradeEl.className = `ds-mode ${grade.cls}`;
+    gradeEl.style.fontSize = 'var(--fs-md)';
+    gradeEl.style.padding = '4px 12px';
+    document.getElementById('dx-fit-desc').textContent = grade.desc;
+    document.getElementById('dx-fit-next').textContent =
+      'العوامل: ' + fit.reasons.slice(0, 3).join(' · ');
+
     document.getElementById('dx-current-situation').textContent = diag.current_situation_ar || '—';
     document.getElementById('dx-opportunity').textContent = diag.biggest_opportunity || '—';
     document.getElementById('dx-risk').textContent = diag.biggest_risk || '—';

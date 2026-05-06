@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-theme="dark">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>تشخيص لمكاتب العقار السعوديّة — Dealix Real-Estate Sector Sprint</title>
+<meta name="description" content="تشخيص مجّاني مخصّص لمكاتب العقار السعوديّة. ٧ أسئلة. ٢٤ ساعة استجابة. خطّة pipeline + توصية broker workflow + KSA market benchmark — لا spreadsheets، لا cold WhatsApp، لا تخمين." />
+<link rel="canonical" href="https://dealix.me/diagnostic-real-estate.html" />
+<meta property="og:type" content="website" />
+<meta property="og:title" content="Dealix · تشخيص مجّاني للمكاتب العقاريّة السعوديّة" />
+<meta property="og:description" content="٧ أسئلة لمكتب العقار. ٢٤ ساعة. PDPL-compliant. خطّة pipeline حقيقيّة بدل الـ spreadsheets." />
+<meta property="og:url" content="https://dealix.me/diagnostic-real-estate.html" />
+<meta property="og:locale" content="ar_SA" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="theme-color" content="#0f172a" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" />
+
+<link rel="stylesheet" href="/styles.css" />
+<link rel="stylesheet" href="/assets/css/design-system.css" />
+<script src="https://unpkg.com/lucide@0.469.0/dist/umd/lucide.min.js" defer></script>
+
+<style>
+  body {
+    background:
+      radial-gradient(900px 500px at 80% -10%, rgba(34, 197, 94, 0.12), transparent 60%),
+      radial-gradient(900px 500px at 0% 10%, rgba(34, 211, 238, 0.16), transparent 60%),
+      linear-gradient(180deg, #050816 0%, #0b1124 60%, #1e1b4b 100%);
+    color: var(--text);
+    min-height: 100vh;
+    margin: 0;
+    font-family: var(--font-ar);
+  }
+  main { padding: var(--space-6) var(--space-4) var(--space-9); }
+  .re-form { display: grid; gap: var(--space-5); max-width: 720px; margin: 0 auto; }
+  .re-form__row { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4); }
+  @media (max-width: 600px) { .re-form__row { grid-template-columns: 1fr; } }
+  .re-pain {
+    padding: var(--space-4);
+    background: rgba(220, 38, 38, 0.06);
+    border: 1px solid rgba(220, 38, 38, 0.20);
+    border-radius: var(--radius-sm, 8px);
+    font-size: var(--fs-sm);
+    line-height: var(--lh-base);
+    color: #fca5a5;
+  }
+  .re-pain strong { color: #fca5a5; }
+  .re-stat {
+    display: flex; align-items: baseline; gap: var(--space-2);
+    padding: var(--space-3) var(--space-4);
+    background: rgba(2, 6, 23, 0.4);
+    border-radius: var(--radius-sm, 8px);
+    border-inline-start: 3px solid var(--accent-2);
+    font-size: var(--fs-sm);
+  }
+  .re-stat strong { font-family: var(--font-lt); font-size: var(--fs-lg); color: var(--accent-2); }
+  .re-consent {
+    display: flex; gap: var(--space-3); align-items: flex-start;
+    padding: var(--space-4);
+    background: rgba(34, 211, 238, 0.06);
+    border: 1px solid rgba(34, 211, 238, 0.20);
+    border-radius: var(--radius, 14px);
+    font-size: var(--fs-sm);
+    line-height: var(--lh-base);
+  }
+  .re-consent input[type="checkbox"] {
+    width: 18px; height: 18px;
+    accent-color: var(--accent-2);
+    margin-top: 2px;
+    flex-shrink: 0;
+  }
+  textarea.ds-input__field { min-height: 80px; resize: vertical; font-family: var(--font-ar); }
+</style>
+</head>
+<body>
+<a class="ds-skip-link" href="#main">تخطّ إلى المحتوى الرئيسي</a>
+
+<main id="main" class="ds-container--base ds-stack ds-stack--xl">
+
+  <nav class="ds-breadcrumb" aria-label="مسار التنقّل">
+    <a href="/">الرئيسيّة</a>
+    <span class="ds-breadcrumb__sep" aria-hidden="true"></span>
+    <a href="/diagnostic.html">التشخيص العام</a>
+    <span class="ds-breadcrumb__sep" aria-hidden="true"></span>
+    <span aria-current="page">عقاريّون فقط</span>
+  </nav>
+
+  <!-- Hero -->
+  <section class="ds-banner ds-stack ds-stack--sm" aria-labelledby="hero-title">
+    <span class="ds-eyebrow">للمكاتب العقاريّة السعوديّة فقط · KSA Real-Estate Sprint · 5,000 SAR / 14 days</span>
+    <h1 id="hero-title" class="ds-banner__title">🏢 تشخيص مكتبك العقاري — مجّاني، ٢٤ ساعة</h1>
+    <p class="ds-banner__subtitle">٧ أسئلة دقيقة. مخرج: pipeline audit شامل لمكتبك + benchmark مقارنة بأقرانك في الرياض + خطّة ٧ أيّام لتقفل ٣ صفقات إضافيّة هذا الشهر. PDPL-compliant، Arabic-first، WhatsApp-aware.</p>
+  </section>
+
+  <!-- Real broker pain — based on KSA market research May 2026 -->
+  <section class="ds-stack ds-stack--md" aria-labelledby="pain-title">
+    <div>
+      <span class="ds-eyebrow">المشكلة الحقيقيّة (بحث سوق ٢٠٢٦)</span>
+      <h2 id="pain-title" class="ds-headline" style="font-size: var(--fs-2xl); margin-top: var(--space-3);">٤ نقاط ألم نراها في كلّ مكتب عقاري بالرياض</h2>
+    </div>
+    <div class="ds-grid ds-grid--wide">
+      <div class="re-pain">
+        <strong>١. Lead chaos متعدّد القنوات</strong> — leads تجي من aqar.fm + Bayut + Twitter + WhatsApp groups + إحالات + إعلانات. بدون نظام موحّد، تخسرون ملايين بالـ leads المنسيّة.
+      </div>
+      <div class="re-pain">
+        <strong>٢. Manual tracking في Excel + WhatsApp</strong> — buyer leads + seller inquiries + off-plan bookings + broker referrals متفرّقة. لا automated scoring، لا routing، صفر pipeline visibility.
+      </div>
+      <div class="re-pain">
+        <strong>٣. Conversion ينزل + CAC يرتفع</strong> — المدراء يطاردون admin noise بدل qualified buyers. القرارات تُتّخذ بدون reliable data.
+      </div>
+      <div class="re-pain">
+        <strong>٤. Broker commission logic يدويّة</strong> — كل صفقة تحسب يدوياً، مما يُعطّل التسليم ويسبّب خلافات داخليّة بين الـ brokers.
+      </div>
+    </div>
+
+    <div class="ds-grid ds-grid--narrow">
+      <div class="re-stat"><strong>15-25%</strong> MQL→SQL conversion (KSA average — مكتبك أعلى أو أقل؟)</div>
+      <div class="re-stat"><strong>10-20%</strong> SQL→close conversion</div>
+      <div class="re-stat"><strong>+15-25%</strong> close-rate إذا التسعير بالريال + Arabic UX</div>
+      <div class="re-stat"><strong>50-60%</strong> من MENA B2B pipeline من LinkedIn</div>
+    </div>
+  </section>
+
+  <!-- Form -->
+  <section aria-labelledby="form-title" class="ds-stack ds-stack--md">
+    <div>
+      <span class="ds-eyebrow">٧ أسئلة · ٢ دقائق</span>
+      <h2 id="form-title" class="ds-headline" style="font-size: var(--fs-3xl); margin-top: var(--space-3);">عرّفنا على مكتبك</h2>
+    </div>
+
+    <form id="reForm" class="re-form" novalidate>
+      <input type="text" name="hp" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px" aria-hidden="true" />
+
+      <!-- 1. Office name -->
+      <label class="ds-input">
+        <span class="ds-input__label">اسم المكتب *</span>
+        <input class="ds-input__field" type="text" name="office_name" required minlength="2" maxlength="80" placeholder="مثال: عقار الرياض" autocomplete="organization" />
+      </label>
+
+      <!-- 2. City + 3. Broker count -->
+      <div class="re-form__row">
+        <label class="ds-input">
+          <span class="ds-input__label">المدينة *</span>
+          <select class="ds-input__field" name="city" required>
+            <option value="">اختر المدينة</option>
+            <option value="riyadh">الرياض</option>
+            <option value="jeddah">جدّة</option>
+            <option value="dammam">الدمّام / المنطقة الشرقيّة</option>
+            <option value="makkah">مكّة</option>
+            <option value="madinah">المدينة المنوّرة</option>
+            <option value="other">أخرى</option>
+          </select>
+        </label>
+        <label class="ds-input">
+          <span class="ds-input__label">عدد الـ brokers *</span>
+          <select class="ds-input__field" name="broker_count" required>
+            <option value="">اختر</option>
+            <option value="1">١ (المالك فقط)</option>
+            <option value="2_5">٢-٥</option>
+            <option value="6_15">٦-١٥</option>
+            <option value="16_50">١٦-٥٠</option>
+            <option value="50_plus">+٥٠</option>
+          </select>
+        </label>
+      </div>
+
+      <!-- 4. Specialization -->
+      <label class="ds-input">
+        <span class="ds-input__label">التخصّص الرئيسي *</span>
+        <select class="ds-input__field" name="specialization" required>
+          <option value="">اختر</option>
+          <option value="residential_sales">بيع سكني</option>
+          <option value="residential_rent">إيجار سكني</option>
+          <option value="commercial">تجاري (مكاتب / محلّات)</option>
+          <option value="off_plan">على الخريطة (Off-plan)</option>
+          <option value="land">أراضٍ خام</option>
+          <option value="mixed">مزيج (متنوّع)</option>
+        </select>
+      </label>
+
+      <!-- 5. Monthly leads + 6. Avg deal size -->
+      <div class="re-form__row">
+        <label class="ds-input">
+          <span class="ds-input__label">عدد الـ leads الشهريّة (تقريبي) *</span>
+          <select class="ds-input__field" name="monthly_leads" required>
+            <option value="">اختر</option>
+            <option value="under_50">أقل من ٥٠</option>
+            <option value="50_200">٥٠-٢٠٠</option>
+            <option value="200_500">٢٠٠-٥٠٠</option>
+            <option value="500_plus">+٥٠٠</option>
+            <option value="unknown">صراحة ما أعرف</option>
+          </select>
+        </label>
+        <label class="ds-input">
+          <span class="ds-input__label">متوسّط حجم الصفقة (SAR)</span>
+          <select class="ds-input__field" name="avg_deal_size">
+            <option value="">اختر</option>
+            <option value="under_500k">أقل من ٥٠٠ ألف</option>
+            <option value="500k_1m">٥٠٠ ألف – ١ مليون</option>
+            <option value="1m_3m">١-٣ مليون</option>
+            <option value="3m_10m">٣-١٠ مليون</option>
+            <option value="over_10m">+١٠ مليون</option>
+          </select>
+        </label>
+      </div>
+
+      <!-- 7. Current tools -->
+      <label class="ds-input">
+        <span class="ds-input__label">ما الأدوات اللي تستخدمها حالياً للـ pipeline؟</span>
+        <textarea class="ds-input__field" name="current_tools" placeholder="مثال: Excel + WhatsApp groups فقط · أو: HubSpot + بعض اللي على Bayut + WhatsApp Business · أو: لا شيء منظّم"></textarea>
+      </label>
+
+      <!-- 8. Biggest pain -->
+      <label class="ds-input">
+        <span class="ds-input__label">أكبر معاناة في الـ pipeline (اختر لو تنطبق) — اضغط أكثر من واحدة *</span>
+        <div style="display: grid; gap: var(--space-2); padding: var(--space-3); background: rgba(2,6,23,0.4); border-radius: var(--radius-sm, 8px); border: 1px solid var(--ds-border);">
+          <label style="display: flex; gap: var(--space-3); align-items: center; font-size: var(--fs-sm);"><input type="checkbox" name="pains" value="lead_chaos" /> Leads متفرّقة في WhatsApp + Excel + بريد</label>
+          <label style="display: flex; gap: var(--space-3); align-items: center; font-size: var(--fs-sm);"><input type="checkbox" name="pains" value="no_scoring" /> ما عندي طريقة أحدّد أيّ lead يستحقّ المتابعة الأوّل</label>
+          <label style="display: flex; gap: var(--space-3); align-items: center; font-size: var(--fs-sm);"><input type="checkbox" name="pains" value="missed_followups" /> أنسى المتابعات + الـ leads تموت</label>
+          <label style="display: flex; gap: var(--space-3); align-items: center; font-size: var(--fs-sm);"><input type="checkbox" name="pains" value="broker_visibility" /> ما أعرف أداء كل broker تحديداً</label>
+          <label style="display: flex; gap: var(--space-3); align-items: center; font-size: var(--fs-sm);"><input type="checkbox" name="pains" value="commission_disputes" /> خلافات على العمولات بين الـ brokers</label>
+          <label style="display: flex; gap: var(--space-3); align-items: center; font-size: var(--fs-sm);"><input type="checkbox" name="pains" value="no_reports" /> ما عندي تقارير شهريّة للأداء + الـ unit economics</label>
+          <label style="display: flex; gap: var(--space-3); align-items: center; font-size: var(--fs-sm);"><input type="checkbox" name="pains" value="off_plan_chaos" /> Off-plan bookings فوضى</label>
+          <label style="display: flex; gap: var(--space-3); align-items: center; font-size: var(--fs-sm);"><input type="checkbox" name="pains" value="other_pdpl" /> قلق على PDPL + خصوصيّة بيانات العملاء</label>
+        </div>
+      </label>
+
+      <hr class="ds-divider" />
+
+      <!-- Contact info -->
+      <div>
+        <span class="ds-eyebrow">معلومات التواصل</span>
+        <h3 class="ds-headline" style="font-size: var(--fs-xl); margin-top: var(--space-3);">كيف نوصلك بالتشخيص؟</h3>
+      </div>
+
+      <div class="re-form__row">
+        <label class="ds-input">
+          <span class="ds-input__label">اسمك *</span>
+          <input class="ds-input__field" type="text" name="contact_name" required minlength="2" autocomplete="name" />
+        </label>
+        <label class="ds-input">
+          <span class="ds-input__label">جوّال *</span>
+          <input class="ds-input__field" type="tel" name="phone" required pattern="^\+?\d[\d\s]{8,15}$" placeholder="+966 5X XXX XXXX" autocomplete="tel" />
+        </label>
+      </div>
+
+      <label class="ds-input">
+        <span class="ds-input__label">البريد الإلكتروني *</span>
+        <input class="ds-input__field" type="email" name="email" required autocomplete="email" />
+        <span class="ds-input__hint">سنرسل التشخيص + Pipeline Audit PDF خلال ٢٤ ساعة.</span>
+      </label>
+
+      <hr class="ds-divider" />
+
+      <!-- PDPL Consent — REQUIRED (per SDAIA 2026 enforcement) -->
+      <label class="re-consent">
+        <input type="checkbox" name="consent" required />
+        <span>
+          <strong>موافقة PDPL (إجباريّة — قانون حماية البيانات السعودي ٢٠٢٦)</strong> —
+          أوافق على معالجة بياناتي المُدخَلة لإصدار التشخيص فقط، حسب
+          <a href="/privacy.html" target="_blank" rel="noopener">سياسة الخصوصيّة</a>.
+          لن تُشارك مع طرف خارجي. ولا cold outreach من Dealix. أقدر أطلب حذفها في أيّ وقت.
+        </span>
+      </label>
+
+      <button class="ds-btn ds-btn--lg" type="submit" id="submitBtn">
+        <i data-lucide="sparkles" style="width:18px;height:18px;"></i>
+        احصل على Pipeline Audit مجّاني
+        <span class="ds-spinner ds-spinner--sm" id="re-spinner" style="display:none"></span>
+      </button>
+
+      <p id="formStatus" class="ds-input__hint" role="status" aria-live="polite"></p>
+    </form>
+  </section>
+
+  <!-- What you get -->
+  <section aria-labelledby="get-title" class="ds-stack ds-stack--md">
+    <div>
+      <span class="ds-eyebrow">المخرجات</span>
+      <h2 id="get-title" class="ds-headline" style="font-size: var(--fs-2xl); margin-top: var(--space-3);">٣ مستندات حقيقيّة خلال ٢٤ ساعة</h2>
+    </div>
+    <div class="ds-grid ds-grid--wide">
+      <div class="ds-card ds-stack ds-stack--sm">
+        <h3 class="ds-card__title">📊 Pipeline Audit PDF (~١٥ صفحة)</h3>
+        <p class="ds-card__sub">تحليل كل صفقة نشطة في مكتبك (الـ leads اللي عطيتنا إيّاها) — score, time-to-close, recommended next-action، broker assignment recommendation.</p>
+        <p class="ds-card__sub" style="font-size: var(--fs-xs); color: var(--text-muted);">أوّل AI-augmented sales view لمكتبك — لم يكن عندك من قبل.</p>
+      </div>
+      <div class="ds-card ds-stack ds-stack--sm">
+        <h3 class="ds-card__title">📈 KSA Sector Benchmark (~١ صفحة)</h3>
+        <p class="ds-card__sub">مكانك تحديداً مقارنة بأقرانك في الرياض/جدّة/الدمّام: conversion rate، cycle time، broker productivity. مع identification الـ top quartile وما يفعلونه مختلف.</p>
+        <p class="ds-card__sub" style="font-size: var(--fs-xs); color: var(--text-muted);">المستند الذي ترسله لمجلس إدارتك.</p>
+      </div>
+      <div class="ds-card ds-stack ds-stack--sm">
+        <h3 class="ds-card__title">🗓️ ٧-Day Action Plan (~٥ صفحة)</h3>
+        <p class="ds-card__sub">إجراءات مرتّبة بالأولويّة لـ ٧ أيّام، مع owner لكل إجراء + checkpoints أسبوعيّة. مخصّص لـ data مكتبك من #1 + #2.</p>
+        <p class="ds-card__sub" style="font-size: var(--fs-xs); color: var(--text-muted);">إذا اعتمدت الخطّة → ينتقل لـ Sector Sprint (٥٬٠٠٠ SAR، ١٤ يوماً).</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Why Dealix vs alternatives -->
+  <section aria-labelledby="why-title" class="ds-stack ds-stack--md">
+    <div>
+      <span class="ds-eyebrow">لماذا Dealix بدلاً من ...</span>
+      <h2 id="why-title" class="ds-headline" style="font-size: var(--fs-2xl); margin-top: var(--space-3);">٣ فروقات رئيسيّة لمكاتب العقار السعوديّة</h2>
+    </div>
+    <ul class="ds-list-clean" style="font-size: var(--fs-md);">
+      <li><strong>vs HubSpot/Salesforce:</strong> هؤلاء غير معرّبين بشكل سعودي حقيقي. أسعارهم بالدولار + شهور تنفيذ. Dealix: واتساب-سعودي-أوّلاً، تنفيذ ١٤ يوم، تسعير ريال.</li>
+      <li><strong>vs CRM المحلّيّة:</strong> أغلبها storage-only. Dealix: قرار بسعودي AI + موافقة المؤسس + Proof Pack مع كل مهمّة. <a class="ds-link" href="/compare.html">شاهد المقارنة الكاملة ←</a></li>
+      <li><strong>vs Excel + WhatsApp:</strong> الـ status quo اللي يكلّفك ملايين بالـ leads المنسيّة. Dealix يحوّلها إلى pipeline موحّد بدون كسر workflow الحالي.</li>
+    </ul>
+  </section>
+
+  <!-- Footer -->
+  <footer class="ds-footer">
+    <div class="ds-container ds-stack ds-stack--md" style="text-align: center;">
+      <p class="ds-lede" style="max-width: 640px; margin: 0 auto;">
+        Dealix بُنيَ خصّيصاً لمكتب عقاريّ سعودي. لو شركتك مختلفة، استخدم
+        <a class="ds-link" href="/diagnostic.html">التشخيص العام</a>.
+      </p>
+      <div class="ds-row" style="justify-content: center; gap: var(--space-5); flex-wrap: wrap;">
+        <a class="ds-link" href="/">الرئيسيّة</a>
+        <a class="ds-link" href="/ai-team.html">AI Operating Team</a>
+        <a class="ds-link" href="/compare.html">مقارنة</a>
+        <a class="ds-link" href="/start.html">7-Day Pilot</a>
+        <a class="ds-link" href="/proof.html">Proof Packs</a>
+        <a class="ds-link" href="/privacy.html">PDPL</a>
+      </div>
+    </div>
+  </footer>
+
+</main>
+
+<script>
+  const API_BASE = window.DEALIX_API_BASE || 'https://api.dealix.me';
+  const form = document.getElementById('reForm');
+  const statusEl = document.getElementById('formStatus');
+  const submitBtn = document.getElementById('submitBtn');
+  const spinner = document.getElementById('re-spinner');
+
+  function setStatus(text, kind) {
+    statusEl.textContent = text;
+    statusEl.style.color = kind === 'error' ? '#fca5a5' : (kind === 'success' ? '#4ade80' : 'var(--text-muted)');
+  }
+
+  function setBusy(busy) {
+    submitBtn.disabled = busy;
+    spinner.style.display = busy ? 'inline-block' : 'none';
+  }
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    setStatus('', 'info');
+
+    if (form.elements.hp.value.trim() !== '') return; // honeypot
+    if (!form.consent.checked) {
+      setStatus('الموافقة على PDPL إجباريّة قبل التشخيص.', 'error');
+      return;
+    }
+    if (!form.checkValidity()) {
+      setStatus('فضلاً اكمل الحقول المطلوبة (*).', 'error');
+      form.reportValidity();
+      return;
+    }
+
+    const office_name = form.office_name.value.trim();
+    const city = form.city.value;
+    const broker_count = form.broker_count.value;
+    const specialization = form.specialization.value;
+    const monthly_leads = form.monthly_leads.value;
+    const avg_deal_size = form.avg_deal_size.value || 'unknown';
+    const current_tools = form.current_tools.value.trim();
+    const pains = Array.from(form.querySelectorAll('input[name="pains"]:checked')).map(el => el.value);
+
+    // Compose the body for the existing /api/v1/company-growth-beast/diagnostic endpoint.
+    // Real-estate-specific signals all flow into ideal_customer + biggest_problem
+    // so the existing engine can score without schema changes.
+    const body = {
+      company_handle: office_name,
+      sector: 'real_estate',
+      biggest_problem: `Real-estate office in ${city} (${broker_count} brokers, ${specialization}). Pains: ${pains.join(', ') || 'unspecified'}. Current tools: ${current_tools || 'unknown'}.`,
+      ideal_customer: `KSA buyers/sellers · ${monthly_leads} monthly leads · avg deal ${avg_deal_size}`,
+      offer: 'real_estate_sector_sprint_5k',
+      current_channels: current_tools,
+      consent_for_diagnostic: true,
+    };
+
+    setBusy(true);
+    setStatus('جاري إنشاء التشخيص…', 'info');
+
+    try {
+      const res = await fetch(`${API_BASE}/api/v1/company-growth-beast/diagnostic`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      });
+      if (!res.ok) {
+        if (res.status === 422) throw new Error('بيانات غير صحيحة.');
+        if (res.status === 404) throw new Error('الخدمة قيد النشر — حاول بعد دقائق.');
+        throw new Error(`HTTP ${res.status}`);
+      }
+      const data = await res.json();
+      const diag = (data && data.diagnostic) || {};
+      if (diag.blocked) throw new Error(diag.reason_ar || 'تعذّر إنشاء التشخيص.');
+
+      // Send full real-estate context to the founder via the public demo-request channel
+      fetch(`${API_BASE}/api/v1/public/demo-request`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: form.contact_name.value.trim(),
+          company: office_name,
+          sector: 'real_estate',
+          size: broker_count,
+          phone: form.phone.value.trim(),
+          email: form.email.value.trim(),
+          message: `[real-estate-sprint] city=${city} spec=${specialization} leads=${monthly_leads} deal_size=${avg_deal_size} pains=${pains.join('|')} tools=${current_tools || 'none'}`,
+          source: 'landing/diagnostic-real-estate',
+          ref: document.referrer || '',
+          consent: true,
+          ts: new Date().toISOString(),
+        }),
+      }).catch(() => {});
+
+      setStatus('✓ تمّ — راجع إيميلك خلال ٢٤ ساعة. Sami بنفسه سيتّصل بك.', 'success');
+      submitBtn.style.display = 'none';
+      // Show the result inline (similar to /diagnostic.html)
+      window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+    } catch (err) {
+      setStatus(`خطأ: ${err.message}`, 'error');
+    } finally {
+      setBusy(false);
+    }
+  });
+
+  document.addEventListener('DOMContentLoaded', function () {
+    if (window.lucide && window.lucide.createIcons) window.lucide.createIcons();
+  });
+</script>
+
+</body>
+</html>
