@@ -2,7 +2,7 @@
 
 **Status:** LAUNCHED (backend + landing live). Blocked on Moyasar account activation for REVENUE VERIFIED.
 **Last verified:** 2026-04-24
-**Base URL:** https://web-dealix.up.railway.app
+**Base URL:** https://api.dealix.me
 **Landing:** https://voxc2.github.io/dealix/
 
 ---
@@ -46,7 +46,7 @@
 ### Landing
 - ✅ GitHub Pages serves from `gh-pages` branch
 - ✅ All 4 pages (home/marketers/pricing/partners) return 200
-- ✅ `window.DEALIX_API_BASE = 'https://web-dealix.up.railway.app'` baked in
+- ✅ `window.DEALIX_API_BASE = 'https://api.dealix.me'` baked in
 - ✅ Demo form → backend → Calendly URL (verified round-trip)
 - ✅ Partner form → backend (verified round-trip)
 
@@ -67,7 +67,7 @@
 3. Submit for review — typically activated within 1-3 business days
 4. Once active, rotate `MOYASAR_SECRET_KEY` in Moyasar → paste new key into Railway (I can do this via API if you send the new key only)
 5. Configure webhook:
-   - URL: `https://web-dealix.up.railway.app/api/v1/webhooks/moyasar`
+   - URL: `https://api.dealix.me/api/v1/webhooks/moyasar`
    - Events: `payment_paid`, `payment_failed`, `payment_refunded`
    - Secret: use existing `MOYASAR_WEBHOOK_SECRET` from Railway or regenerate
 
@@ -81,7 +81,7 @@ Sami should:
 
 ### 3. UptimeRobot (not configured)
 Sami opens https://uptimerobot.com → Add HTTPS monitor:
-- URL: `https://web-dealix.up.railway.app/healthz`
+- URL: `https://api.dealix.me/health`
 - Interval: 5 min
 - Alert to phone/email
 - Save
@@ -97,7 +97,7 @@ Ready in `docs/ops/launch_content_queue.md`. Sami opens LinkedIn → pastes → 
 |------|--------|
 | GitHub main + CI | ✅ VERIFIED READY (SHA ahead of 44cc3513e3) |
 | Landing pages live | ✅ VERIFIED READY |
-| Backend production | ✅ VERIFIED READY (web-dealix.up.railway.app) |
+| Backend production | ✅ VERIFIED READY (api.dealix.me) |
 | Demo form → backend | ✅ VERIFIED READY |
 | Partner form → backend | ✅ VERIFIED READY |
 | Moyasar live payments | 🔴 BLOCKED (account activation) |
@@ -170,7 +170,7 @@ Required touches for 3 paid/day:
 
 ## 📞 Contact Points
 
-- **Backend:** https://web-dealix.up.railway.app
+- **Backend:** https://api.dealix.me
 - **Landing:** https://voxc2.github.io/dealix/
 - **Demo booking:** https://calendly.com/sami-assiri11/dealix-demo
 - **GitHub:** https://github.com/VoXc2/dealix

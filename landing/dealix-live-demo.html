@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dealix — العرض الحي / Live Demo</title>
+  <meta name="description" content="عرض حي لـ Dealix Full-Ops من 9 أنظمة تشغيل — قراءة مباشرة من api.dealix.me" />
+  <link rel="canonical" href="https://dealix.me/dealix-live-demo.html" />
+  <style>
+    :root {
+      --bg: #0b0d12;
+      --card: #141821;
+      --card-edge: #1f2533;
+      --ink: #e8edf5;
+      --ink-dim: #99a3b4;
+      --green: #1bb673;
+      --amber: #d99e2b;
+      --red: #d35d52;
+      --accent: #6aa3ff;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; padding: 24px;
+      font-family: -apple-system, "Segoe UI", "Helvetica Neue", "Noto Sans Arabic", sans-serif;
+      background: var(--bg); color: var(--ink); line-height: 1.6;
+    }
+    h1 { margin: 0 0 8px 0; font-size: 28px; }
+    .sub { color: var(--ink-dim); margin-bottom: 24px; }
+    .meta { font-size: 13px; color: var(--ink-dim); margin-bottom: 24px; }
+    .grid {
+      display: grid; gap: 16px;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    }
+    .card {
+      background: var(--card); border: 1px solid var(--card-edge);
+      border-radius: 12px; padding: 18px;
+    }
+    .card h3 { margin: 0 0 8px 0; font-size: 16px; display: flex; gap: 8px; align-items: center; }
+    .card .endpoint { font-family: ui-monospace, monospace; font-size: 12px; color: var(--ink-dim); margin-bottom: 12px; word-break: break-all; }
+    .badge {
+      display: inline-block; padding: 2px 8px; border-radius: 999px;
+      font-size: 11px; font-weight: 600;
+    }
+    .badge.ok { background: rgba(27, 182, 115, .15); color: var(--green); }
+    .badge.degraded { background: rgba(217, 158, 43, .15); color: var(--amber); }
+    .badge.down { background: rgba(211, 93, 82, .15); color: var(--red); }
+    .badge.loading { background: #2a313f; color: var(--ink-dim); }
+    .gates {
+      display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px;
+    }
+    .gate {
+      font-size: 10px; padding: 2px 6px; border-radius: 4px;
+      background: rgba(27, 182, 115, .12); color: var(--green);
+    }
+    .next-action {
+      margin-top: 12px; padding: 8px 10px; border-radius: 6px;
+      background: #1a2030; font-size: 13px; color: var(--ink-dim);
+    }
+    .header-actions { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+    .header-actions a { color: var(--accent); text-decoration: none; font-size: 14px; }
+    .header-actions a:hover { text-decoration: underline; }
+    footer { margin-top: 40px; color: var(--ink-dim); font-size: 13px; text-align: center; }
+  </style>
+</head>
+<body>
+
+  <h1>Dealix — العرض الحي / Live Demo</h1>
+  <p class="sub">قراءة مباشرة من <code>api.dealix.me</code> — كل القرائن أدناه قراءة فعلية الآن.</p>
+  <div class="header-actions">
+    <a href="https://api.dealix.me/health" target="_blank" rel="noopener">/health</a> ·
+    <a href="https://api.dealix.me/docs" target="_blank" rel="noopener">/docs (Swagger)</a> ·
+    <a href="/">← الصفحة الرئيسية</a>
+  </div>
+  <div class="meta">آخر تحديث: <span id="updated-at">جاري التحميل…</span></div>
+
+  <div class="grid" id="cards"></div>
+
+  <footer>
+    Dealix Full-Ops — 9 أنظمة تشغيل (Growth · Sales · Support · Customer Success · Delivery · Partnership · Compliance · Executive · Self-Improvement)
+    <br>
+    لا إرسال حيّ، لا خصم حيّ، لا scraping، لا cold WhatsApp — كل خطوة خارجيّة بموافقة المؤسس.
+  </footer>
+
+  <script>
+    // V13 live demo — consumes the 9 V12 OS status endpoints + the
+    // V11 status aliases + the V10 umbrella + /health.
+    const API_BASE = window.DEALIX_API_BASE || 'https://api.dealix.me';
+
+    const ENDPOINTS = [
+      { id: 'health',         label: 'Health',                          path: '/health',                                   kind: 'health' },
+      { id: 'full_ops',       label: 'Full-Ops Daily Command Center',   path: '/api/v1/full-ops/status',                   kind: 'os' },
+      { id: 'support_os',     label: 'Support OS',                      path: '/api/v1/support-os/status',                 kind: 'os' },
+      { id: 'growth_os',      label: 'Growth OS',                       path: '/api/v1/growth-os/status',                  kind: 'os' },
+      { id: 'sales_os',       label: 'Sales OS',                        path: '/api/v1/sales-os/status',                   kind: 'os' },
+      { id: 'cs_os',          label: 'Customer Success OS',             path: '/api/v1/customer-success-os/status',        kind: 'os' },
+      { id: 'delivery_os',    label: 'Delivery OS',                     path: '/api/v1/delivery-os/status',                kind: 'os' },
+      { id: 'partnership_os', label: 'Partnership OS',                  path: '/api/v1/partnership-os/status',             kind: 'os' },
+      { id: 'executive_os',   label: 'Executive OS',                    path: '/api/v1/executive-os/status',               kind: 'os' },
+      { id: 'self_imp_os',    label: 'Self-Improvement OS',             path: '/api/v1/self-improvement-os/status',        kind: 'os' },
+      { id: 'v11',            label: 'V11 readiness',                   path: '/api/v1/v11/status',                        kind: 'umbrella' },
+      { id: 'v10',            label: 'V10 umbrella (10 modules)',       path: '/api/v1/v10/status',                        kind: 'umbrella' },
+      { id: 'founder',        label: 'Founder dashboard (legacy)',      path: '/api/v1/founder/status',                    kind: 'umbrella' },
+    ];
+
+    function badge(text, kind) {
+      return `<span class="badge ${kind}">${text}</span>`;
+    }
+
+    function gateChip(name) {
+      const label = name.replace(/_/g, ' ');
+      return `<span class="gate">${label}</span>`;
+    }
+
+    function renderCard(ep, body, status) {
+      const card = document.createElement('div');
+      card.className = 'card';
+      let badgeEl = badge('LOADING', 'loading');
+      let gatesHTML = '';
+      let next = '';
+      let degraded = '';
+      if (status >= 200 && status < 300) {
+        const isDegraded = body && body.degraded === true;
+        badgeEl = isDegraded ? badge('DEGRADED', 'degraded') : badge('OPERATIONAL', 'ok');
+        if (body && body.hard_gates) {
+          const gates = Object.entries(body.hard_gates)
+            .filter(([_, v]) => v === true)
+            .slice(0, 6)
+            .map(([k, _]) => gateChip(k));
+          if (gates.length) gatesHTML = `<div class="gates">${gates.join('')}</div>`;
+        }
+        if (body && (body.next_action_ar || body.next_action_en)) {
+          next = `<div class="next-action">${body.next_action_ar || body.next_action_en}</div>`;
+        }
+        if (body && Array.isArray(body.degraded_sections) && body.degraded_sections.length) {
+          degraded = `<div class="next-action">degraded_sections: ${body.degraded_sections.join(', ')}</div>`;
+        }
+      } else if (status === 0) {
+        badgeEl = badge('NETWORK', 'down');
+      } else {
+        badgeEl = badge(`HTTP ${status}`, 'down');
+      }
+      card.innerHTML = `
+        <h3>${ep.label} ${badgeEl}</h3>
+        <div class="endpoint">${ep.path}</div>
+        ${gatesHTML}
+        ${degraded}
+        ${next}
+      `;
+      return card;
+    }
+
+    async function fetchStatus(ep) {
+      try {
+        const r = await fetch(`${API_BASE}${ep.path}`, { cache: 'no-store' });
+        let body = null;
+        try { body = await r.json(); } catch (_) { /* not json */ }
+        return { status: r.status, body };
+      } catch (_) {
+        return { status: 0, body: null };
+      }
+    }
+
+    async function refresh() {
+      const cards = document.getElementById('cards');
+      cards.innerHTML = '';
+      const placeholders = ENDPOINTS.map(ep => {
+        const c = renderCard(ep, null, -1);
+        cards.appendChild(c);
+        return c;
+      });
+      await Promise.all(ENDPOINTS.map(async (ep, i) => {
+        const { status, body } = await fetchStatus(ep);
+        const newCard = renderCard(ep, body, status);
+        cards.replaceChild(newCard, placeholders[i]);
+      }));
+      document.getElementById('updated-at').textContent = new Date().toISOString();
+    }
+
+    refresh();
+    // Auto-refresh every 60s so the demo stays live during a customer call.
+    setInterval(refresh, 60000);
+  </script>
+</body>
+</html>

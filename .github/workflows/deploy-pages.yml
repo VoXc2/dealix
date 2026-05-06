@@ -1,0 +1,75 @@
+name: Deploy landing to GitHub Pages
+
+# V13 — auto-deploys the static landing/* folder to GitHub Pages on
+# every push to main that touches landing/, the service-readiness
+# YAML registry, or this workflow itself. The exporter regenerates
+# landing/assets/data/service-readiness.json from the source-of-truth
+# YAML so the homepage trust-bar stays in sync.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'landing/**'
+      - 'docs/registry/**'
+      - 'scripts/export_service_readiness_json.py'
+      - '.github/workflows/deploy-pages.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Build static site
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Build _site/
+        run: |
+          set -euo pipefail
+          mkdir -p _site
+          cp -r landing/* _site/
+
+          # Regenerate service-readiness.json from the YAML matrix so
+          # the homepage trust-bar reflects the current registry state.
+          if [ -f scripts/export_service_readiness_json.py ]; then
+            python scripts/export_service_readiness_json.py \
+              _site/assets/data/service-readiness.json \
+              || echo "JSON export failed (non-blocking — keeping committed JSON)"
+          fi
+
+          # Pages CNAME
+          echo "dealix.me" > _site/CNAME
+
+          echo "── Site built ──"
+          find _site -maxdepth 2 -type f | sort | head -40
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: '_site'
+
+  deploy:
+    name: Deploy to GitHub Pages
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

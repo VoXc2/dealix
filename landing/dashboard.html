@@ -186,8 +186,8 @@
         <div class="dash-section">
           <h2>روابط سريعة</h2>
           <ul>
-            <li><a href="https://web-dealix.up.railway.app/healthz" target="_blank" rel="noopener">healthz مباشر</a></li>
-            <li><a href="https://web-dealix.up.railway.app/docs" target="_blank" rel="noopener">API docs (Swagger)</a></li>
+            <li><a href="https://api.dealix.me/health" target="_blank" rel="noopener">health مباشر</a></li>
+            <li><a href="https://api.dealix.me/docs" target="_blank" rel="noopener">API docs (Swagger)</a></li>
             <li><a href="https://github.com/VoXc2/dealix" target="_blank" rel="noopener">المستودع على GitHub</a></li>
             <li><a href="/">صفحة Dealix الرئيسية</a></li>
           </ul>
@@ -197,8 +197,7 @@
           <div>آخر تحديث: <span id="dash-updated">—</span></div>
           <div>الروابط:
             <a href="https://dealix.me" target="_blank" rel="noopener">dealix.me</a> ·
-            <a href="https://api.dealix.me" target="_blank" rel="noopener">api.dealix.me</a> ·
-            <a href="https://web-dealix.up.railway.app" target="_blank" rel="noopener">Railway fallback</a>
+            <a href="https://api.dealix.me" target="_blank" rel="noopener">api.dealix.me</a>
           </div>
         </div>
       </div>
@@ -214,12 +213,11 @@
 
   <script>
     const API_BASES = [
-      'https://api.dealix.me',
-      'https://web-dealix.up.railway.app'
+      'https://api.dealix.me'
     ];
 
     const ENDPOINTS = [
-      { key: 'backend',    label: 'Backend /healthz',                  url: '/healthz',                                  base: 'api' },
+      { key: 'backend',    label: 'Backend /health',                   url: '/health',                                   base: 'api' },
       { key: 'pricing',    label: 'Pricing /api/v1/pricing/plans',     url: '/api/v1/pricing/plans',                     base: 'api' },
       { key: 'prospector', label: 'Prospector demo',                   url: '/api/v1/prospect/demo',                     base: 'api', method: 'POST' },
       { key: 'deep',       label: 'Deep health /health/deep',          url: '/health/deep',                              base: 'api' },
