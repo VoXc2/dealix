@@ -1,5 +1,7 @@
 # سلم العروض — Dealix (نتائج أولاً)
 
+**إطار الفئة وسلم التقدم (GTM + Pilot + مراحل تقنية):** راجع القسم 5 في [CATEGORY_DESIGN_AND_MASTER_OPERATING_SYSTEM_AR.md](strategic/CATEGORY_DESIGN_AND_MASTER_OPERATING_SYSTEM_AR.md) مع الحفاظ على هذا الملف كمصدر تفصيلي للعروض داخل الريبو.
+
 ## 1) أدوات مجانية (Free)
 
 - **فاحص جاهزية الإطلاق** — عبر `/api/v1/personal-operator/launch-readiness` أو التقرير الكامل.

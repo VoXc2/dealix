@@ -1,5 +1,7 @@
 # الخطة الرئيسية للتدشين التجاري — Dealix
 
+**خطة إكمال شاملة (عربي — دمج + CI + نشر + Level 1 + أول إيراد):** [COMPREHENSIVE_COMPLETION_PLAN_AR.md](COMPREHENSIVE_COMPLETION_PLAN_AR.md)
+
 ## المراحل
 
 1. **Post-merge verification** — [`POST_MERGE_VERIFICATION.md`](POST_MERGE_VERIFICATION.md)
