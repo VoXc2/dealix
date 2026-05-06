@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-theme="dark">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Dealix · Investor Brief — للمستثمرين فقط</title>
+<meta name="description" content="Dealix investor brief — service taxonomy, traction, hard gates, commercial readiness, founder ask. Private — for invited investors only." />
+<meta name="robots" content="noindex,nofollow" />
+<link rel="canonical" href="https://dealix.me/investor.html" />
+<meta property="og:title" content="Dealix · Investor Brief" />
+<meta property="og:description" content="Private founder-led brief for invited investors." />
+<meta property="og:locale" content="ar_SA" />
+<meta name="twitter:card" content="summary" />
+<meta name="theme-color" content="#0f172a" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" />
+
+<link rel="stylesheet" href="/styles.css" />
+<link rel="stylesheet" href="/assets/css/design-system.css" />
+
+<!-- Founder-tier access gate — investor brief requires founder token -->
+<script src="/assets/js/access-gate.js" data-tier="founder"></script>
+
+<!-- Lucide icons -->
+<script src="https://unpkg.com/lucide@0.469.0/dist/umd/lucide.min.js" defer></script>
+
+<style>
+  body {
+    background:
+      radial-gradient(900px 500px at 80% -10%, rgba(34, 211, 238, 0.18), transparent 60%),
+      radial-gradient(900px 500px at 0% 10%, rgba(168, 85, 247, 0.16), transparent 60%),
+      linear-gradient(180deg, #050816 0%, #0b1124 60%, #1e1b4b 100%);
+    color: var(--text);
+    min-height: 100vh;
+    margin: 0;
+    font-family: var(--font-ar);
+  }
+  main { padding: var(--space-7) var(--space-5) var(--space-9); }
+
+  .inv-section {
+    padding: var(--space-6);
+    background: var(--ds-surface-1);
+    border: 1px solid var(--ds-border);
+    border-radius: var(--radius-lg, 20px);
+  }
+
+  .inv-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: var(--font-ar);
+    font-size: var(--fs-sm);
+  }
+  .inv-table th, .inv-table td {
+    padding: var(--space-3) var(--space-4);
+    text-align: start;
+    border-bottom: 1px solid var(--ds-border);
+  }
+  .inv-table th {
+    color: var(--accent-2);
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: var(--fs-xs);
+    letter-spacing: 0.06em;
+  }
+  .inv-table tr:last-child td { border-bottom: 0; }
+  .inv-table td code { font-family: ui-monospace, "SFMono-Regular", Menlo, monospace; font-size: var(--fs-xs); color: var(--accent-2); }
+
+  .inv-pill { display: inline-flex; padding: 2px 8px; border-radius: 999px; font-size: var(--fs-xs); font-weight: 600; }
+  .inv-pill--live { background: rgba(34, 197, 94, 0.18); color: #4ade80; }
+  .inv-pill--partial { background: rgba(251, 191, 36, 0.18); color: #fbbf24; }
+  .inv-pill--target { background: rgba(168, 85, 247, 0.16); color: #c084fc; }
+</style>
+</head>
+<body>
+<a class="ds-skip-link" href="#main">تخطّ إلى المحتوى الرئيسي</a>
+
+<main id="main" class="ds-container--full ds-stack ds-stack--xl">
+
+  <nav class="ds-breadcrumb" aria-label="مسار التنقّل">
+    <a href="/">الرئيسيّة</a>
+    <span class="ds-breadcrumb__sep" aria-hidden="true"></span>
+    <span aria-current="page">Investor Brief</span>
+  </nav>
+
+  <section class="ds-banner ds-stack ds-stack--sm">
+    <span class="ds-eyebrow">Private · For invited investors only · Confidential</span>
+    <h1 class="ds-banner__title">📊 Dealix Investor Brief</h1>
+    <p class="ds-banner__subtitle">Saudi-first AI Operating Team for SMBs. 32 services tracked, 8 LIVE, all 8 hard-gates immutable, evidence-backed proof flywheel. Founder-led, customer-funded, no outside capital yet.</p>
+  </section>
+
+  <!-- Top KPIs -->
+  <section class="ds-grid ds-grid--narrow" aria-label="ملخّصات">
+    <div class="ds-stat ds-stat--up">
+      <span class="ds-stat__num">8</span>
+      <span class="ds-stat__label">LIVE services</span>
+      <span class="ds-stat__delta">↗ from 0 (Phase K complete)</span>
+    </div>
+    <div class="ds-stat ds-stat--neutral">
+      <span class="ds-stat__num">32</span>
+      <span class="ds-stat__label">Total services tracked</span>
+      <span class="ds-stat__delta">— 8 live · 24 by-design roadmap</span>
+    </div>
+    <div class="ds-stat ds-stat--up">
+      <span class="ds-stat__num">8/8</span>
+      <span class="ds-stat__label">Hard gates locked</span>
+      <span class="ds-stat__delta">— immutable in code</span>
+    </div>
+    <div class="ds-stat ds-stat--up">
+      <span class="ds-stat__num">~1761</span>
+      <span class="ds-stat__label">Tests passing</span>
+      <span class="ds-stat__delta">↗ 329+ added this quarter</span>
+    </div>
+    <div class="ds-stat ds-stat--neutral">
+      <span class="ds-stat__num">5</span>
+      <span class="ds-stat__label">AI Agents productized</span>
+      <span class="ds-stat__delta">— Sales · Growth · Support · Ops · Executive</span>
+    </div>
+    <div class="ds-stat ds-stat--down">
+      <span class="ds-stat__num">0</span>
+      <span class="ds-stat__label">Paid customers (yet)</span>
+      <span class="ds-stat__delta">↗ Wave 2 = 3 paid pilots target</span>
+    </div>
+  </section>
+
+  <!-- Strategic positioning -->
+  <section aria-labelledby="position-title" class="inv-section ds-stack ds-stack--md">
+    <span class="ds-eyebrow">Strategic positioning</span>
+    <h2 id="position-title" class="ds-headline" style="font-size: var(--fs-2xl);">The Saudi B2B Revenue OS</h2>
+    <p class="ds-lede">Dealix replaces the first 3 hires (Sales / Growth / Support) for Saudi SMBs with an AI Operating Team — every external action gated by founder approval, Arabic-primary UX, PDPL-compliant. Built to dominate one sector at a time (real-estate first), then expand.</p>
+
+    <div class="ds-grid ds-grid--wide">
+      <div class="ds-card ds-stack ds-stack--xs">
+        <h3 class="ds-card__title">🎯 Wedge sector</h3>
+        <p class="ds-card__sub">Saudi real-estate offices (50–100 serious operators in Riyadh). Founder network warm. Clear KPIs (viewings, deals). WhatsApp-native customer base. Tier-1 priority.</p>
+      </div>
+      <div class="ds-card ds-stack ds-stack--xs">
+        <h3 class="ds-card__title">🛡️ Moat (compounding)</h3>
+        <p class="ds-card__sub">Sector data flywheel · founder-led trust · accumulated Proof Packs · daily-decisions habit · Saudi-Arabic-first UX. Switching cost grows monthly per customer.</p>
+      </div>
+      <div class="ds-card ds-stack ds-stack--xs">
+        <h3 class="ds-card__title">💰 Pricing model</h3>
+        <p class="ds-card__sub">Tier 1: Free 30-min Diagnostic · Tier 2: 5,000 SAR Sprint (14 days, refundable) · Tier 3: 12,000 SAR/month Managed Partner (4-month minimum). Outcome-priced, not volume-priced.</p>
+      </div>
+      <div class="ds-card ds-stack ds-stack--xs">
+        <h3 class="ds-card__title">📈 Path to traction</h3>
+        <p class="ds-card__sub">90-day plan: 3 paid pilots (Wave 2) → Article 13 trigger → choose deepen/expand path → 6 monthly partners by Day 90 = ~72,000 SAR/month MRR.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Service taxonomy (the granular detail) -->
+  <section aria-labelledby="services-title" class="inv-section ds-stack ds-stack--md">
+    <span class="ds-eyebrow">Service taxonomy · Internal</span>
+    <h2 id="services-title" class="ds-headline" style="font-size: var(--fs-2xl);">32 services · 8 LIVE · 24 by-design</h2>
+    <p class="ds-lede">Every service tracked in <code>docs/registry/SERVICE_READINESS_MATRIX.yaml</code>. A service flips to LIVE only after passing all 8 quality gates with a tests_required file that exists on disk.</p>
+
+    <table class="inv-table">
+      <thead>
+        <tr><th>Service</th><th>Bundle</th><th>Status</th><th>Note</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>lead_intake_whatsapp</td><td>growth_starter</td><td><span class="inv-pill inv-pill--live">LIVE</span></td><td>WhatsApp signature verification + 4-gate safe-send orchestration</td></tr>
+        <tr><td>qualification</td><td>growth_starter</td><td><span class="inv-pill inv-pill--live">LIVE</span></td><td>BANT/MEDDPICC scoring + failure-path coverage + score stability</td></tr>
+        <tr><td>enrichment</td><td>growth_starter</td><td><span class="inv-pill inv-pill--live">LIVE</span></td><td>Provider abstraction (Hunter ready, mock fallback default)</td></tr>
+        <tr><td>routing</td><td>growth_starter</td><td><span class="inv-pill inv-pill--live">LIVE</span></td><td>KSA timezone routing + consent gate + quiet-hours enforcement</td></tr>
+        <tr><td>outreach_drafts</td><td>growth_starter</td><td><span class="inv-pill inv-pill--live">LIVE</span></td><td>72h active-window enforcement + KSA quiet-hours + draft_only</td></tr>
+        <tr><td>consent_required_send</td><td>internal</td><td><span class="inv-pill inv-pill--live">LIVE</span></td><td>Per-channel × per-purpose consent table, default-deny, PDPL Article 5</td></tr>
+        <tr><td>audit_trail</td><td>internal</td><td><span class="inv-pill inv-pill--live">LIVE</span></td><td>Unified correlation_id middleware + structlog context</td></tr>
+        <tr><td>release_gate</td><td>internal</td><td><span class="inv-pill inv-pill--live">LIVE</span></td><td>Registry validator + tests in CI on every PR</td></tr>
+        <tr><td colspan="4" style="text-align: center; color: var(--text-muted); font-style: italic;">— 24 TARGET services follow (built only when a named customer asks; per Article 11)</td></tr>
+        <tr><td>lead_intake_email</td><td>growth_starter</td><td><span class="inv-pill inv-pill--target">TARGET</span></td><td>SendGrid inbound parse + MIME parser pending customer demand</td></tr>
+        <tr><td>lead_intake_linkedin</td><td>growth_starter</td><td><span class="inv-pill inv-pill--target">TARGET</span></td><td>Unipile webhook pending customer demand (manual workflow live)</td></tr>
+        <tr><td>proposal</td><td>data_to_revenue</td><td><span class="inv-pill inv-pill--target">TARGET</span></td><td>PDF template + pricing policy pending first paid pilot</td></tr>
+        <tr><td>approval (multi-step)</td><td>data_to_revenue</td><td><span class="inv-pill inv-pill--target">TARGET</span></td><td>Workflow engine pending escalation requirement</td></tr>
+        <tr><td>close (e-sig + payment)</td><td>data_to_revenue</td><td><span class="inv-pill inv-pill--target">TARGET</span></td><td>Moyasar + DocuSign pending first paid pilot signing</td></tr>
+        <tr><td>onboarding_handoff</td><td>data_to_revenue</td><td><span class="inv-pill inv-pill--target">TARGET</span></td><td>cs_agent_specs pending first deal close</td></tr>
+        <tr><td>weekly_executive_pack</td><td>executive_growth_os</td><td><span class="inv-pill inv-pill--target">TARGET</span></td><td>Executive template pending repeat customer</td></tr>
+        <tr><td>pending_decisions</td><td>executive_growth_os</td><td><span class="inv-pill inv-pill--target">TARGET</span></td><td>Decision schema pending board user</td></tr>
+        <tr><td>blockers_view</td><td>executive_growth_os</td><td><span class="inv-pill inv-pill--target">TARGET</span></td><td>Blocker schema pending VP-of-Sales user</td></tr>
+        <tr><td>risks_view</td><td>executive_growth_os</td><td><span class="inv-pill inv-pill--target">TARGET</span></td><td>Risk schema pending compliance customer</td></tr>
+        <tr><td>actual_vs_forecast</td><td>executive_growth_os</td><td><span class="inv-pill inv-pill--target">TARGET</span></td><td>Forecast model pending finance customer</td></tr>
+        <tr><td>evidence_drilldown</td><td>executive_growth_os</td><td><span class="inv-pill inv-pill--target">TARGET</span></td><td>Lineage schema pending audit-track customer</td></tr>
+        <tr><td>partner_scout / fit_score / economics / activation / scorecard</td><td>partnership_growth</td><td><span class="inv-pill inv-pill--target">TARGET</span></td><td>5 partner-specific services pending agency-channel customer</td></tr>
+        <tr><td>revoke_consent / right_to_export / right_to_delete / cross_border_restriction</td><td>compliance</td><td><span class="inv-pill inv-pill--target">TARGET</span></td><td>4 PDPL data-rights services pending data-subject request</td></tr>
+        <tr><td>multi_tenant_rls</td><td>internal</td><td><span class="inv-pill inv-pill--target">TARGET</span></td><td>Postgres migration pending customer #2 (currently SQLite)</td></tr>
+        <tr><td>durable_execution</td><td>internal</td><td><span class="inv-pill inv-pill--target">TARGET</span></td><td>Temporal/LangGraph pending workflow-resume requirement</td></tr>
+        <tr><td>observability (full)</td><td>internal</td><td><span class="inv-pill inv-pill--target">TARGET</span></td><td>Tempo/Jaeger pending SLA-paying customer</td></tr>
+      </tbody>
+    </table>
+    <p class="ds-card__sub" style="font-size: var(--fs-xs); margin-top: var(--space-3);">
+      <strong>Why so many TARGETs?</strong> Constitution Article 11: "no features beyond what's required." Each TARGET has a documented trigger condition (named customer, specific request). Building speculatively = imagination tax. We build only when a customer pays for it.
+    </p>
+  </section>
+
+  <!-- Hard gates -->
+  <section aria-labelledby="gates-title" class="inv-section ds-stack ds-stack--md">
+    <span class="ds-eyebrow">Compliance & risk · Saudi-PDPL</span>
+    <h2 id="gates-title" class="ds-headline" style="font-size: var(--fs-2xl);">8 hard gates · immutable in code</h2>
+    <p class="ds-lede">These are not policy statements — they are unit-tested invariants. Any pull request that violates one fails CI. The 8 gates are the legal + ethical floor.</p>
+    <div class="ds-row" style="gap: var(--space-2); flex-wrap: wrap;">
+      <span class="ds-gate">NO_LIVE_SEND</span>
+      <span class="ds-gate">NO_LIVE_CHARGE</span>
+      <span class="ds-gate">NO_COLD_WHATSAPP</span>
+      <span class="ds-gate">NO_LINKEDIN_AUTOMATION</span>
+      <span class="ds-gate">NO_SCRAPING</span>
+      <span class="ds-gate">NO_FAKE_PROOF</span>
+      <span class="ds-gate">NO_FAKE_REVENUE</span>
+      <span class="ds-gate">NO_UNAPPROVED_TESTIMONIAL</span>
+    </div>
+  </section>
+
+  <!-- Commercial model -->
+  <section aria-labelledby="commercial-title" class="inv-section ds-stack ds-stack--md">
+    <span class="ds-eyebrow">Commercial model</span>
+    <h2 id="commercial-title" class="ds-headline" style="font-size: var(--fs-2xl);">3-tier offering · outcome-priced</h2>
+    <table class="inv-table">
+      <thead>
+        <tr><th>Tier</th><th>Price</th><th>Commitment</th><th>Outcome</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Free Diagnostic</td><td>0 SAR</td><td>30 min founder call</td><td>Sector-fit analysis (1-page PDF)</td></tr>
+        <tr><td>Sector Sprint</td><td>5,000 SAR</td><td>14 days, 100% refundable</td><td>5 deliverables (Pipeline Audit, Lead Quality Report, Broker Brief, Sector Benchmark, 30-Day Plan)</td></tr>
+        <tr><td>Managed Partner</td><td>12,000 SAR/month</td><td>4-month minimum (48,000 SAR)</td><td>Daily Decisions + weekly Pipeline Audit + monthly Exec Brief + 1 founder call/week + WhatsApp access · 20% KPI lift commitment (extend free if not met)</td></tr>
+        <tr><td>Sector Domination</td><td>Custom</td><td>By referral only</td><td>Sector benchmark data + first-mover position in vertical · negotiated revenue share</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- Founder ask -->
+  <section aria-labelledby="ask-title" class="inv-section ds-stack ds-stack--md">
+    <span class="ds-eyebrow">Founder ask</span>
+    <h2 id="ask-title" class="ds-headline" style="font-size: var(--fs-2xl);">What we want from this conversation</h2>
+    <p class="ds-lede">No fundraising round open today. We're customer-funded by design — Article 13 says no scale capital before 3 paid pilots. After 3 paid pilots, we'll re-evaluate. The right conversation now is:</p>
+    <ul class="ds-list-clean">
+      <li>Warm intros to Saudi real-estate office owners (Tier 1 wedge)</li>
+      <li>Strategic advice on sector sequencing (real-estate → agencies → consulting)</li>
+      <li>Saudi-PDPL legal review (privacy.html + terms.html)</li>
+      <li>Connection to potential design partners willing to be customer #2 + #3 at the Sector Sprint price</li>
+      <li>Future: when MRR hits 50,000 SAR, we'll open a friendly round to angel investors who want to compound the sector-domination playbook</li>
+    </ul>
+  </section>
+
+  <!-- Footer -->
+  <footer class="ds-footer">
+    <div class="ds-container ds-stack ds-stack--md" style="text-align: center;">
+      <p class="ds-lede" style="max-width: 720px; margin: 0 auto; font-size: var(--fs-sm);">
+        Confidential. For invited investors only. Do not redistribute.
+      </p>
+      <p class="ds-row" style="justify-content: center; gap: var(--space-3); font-size: var(--fs-xs); color: var(--text-muted);">
+        Sami Assiri · founder@dealix.me · Riyadh, KSA
+      </p>
+      <div class="ds-row" style="justify-content: center; gap: var(--space-5); flex-wrap: wrap;">
+        <a class="ds-link" href="/">الرئيسيّة</a>
+        <a class="ds-link" href="/founder.html">للمؤسس</a>
+        <a class="ds-link" href="/founder-leads.html">Lead Inbox</a>
+        <a class="ds-link" href="/decisions.html">Decisions</a>
+        <a class="ds-link" href="/pilot-tracker.html">Pilot Tracker</a>
+        <a class="ds-link" href="/dealix-beast-power.html">Beast Power</a>
+        <a class="ds-link" href="/proof.html">Proof</a>
+        <a class="ds-link" href="/workflow.html">Workflow</a>
+        <a class="ds-link" href="#" onclick="window.dealixAccessLogout(); return false;">خروج · log out</a>
+      </div>
+    </div>
+  </footer>
+
+</main>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    if (window.lucide && window.lucide.createIcons) window.lucide.createIcons();
+  });
+</script>
+
+</body>
+</html>
