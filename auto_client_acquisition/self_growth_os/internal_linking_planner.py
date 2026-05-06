@@ -99,17 +99,26 @@ def _is_service_like(page_name: str) -> bool:
 
 
 def build_graph() -> dict:
-    """Walk landing/*.html, build a link graph, and return a typed report."""
+    """Walk landing/**/*.html (recursive), build a link graph, and return a
+    typed report.
+
+    Pages in subdirectories (e.g. ``landing/free-tools/lead-score-calculator.html``)
+    are keyed by their POSIX path relative to ``landing/`` (e.g.
+    ``free-tools/lead-score-calculator.html``) so absolute-path hrefs like
+    ``/free-tools/lead-score-calculator.html`` resolve correctly against
+    the page set.
+    """
     pages: dict[str, dict] = {}
-    for path in sorted(LANDING.glob("*.html")):
+    for path in sorted(LANDING.glob("**/*.html")):
         if path.name in SKIP_PAGES:
             continue
         try:
             html = path.read_text(encoding="utf-8")
         except (UnicodeDecodeError, OSError):
             continue
+        rel_key = path.relative_to(LANDING).as_posix()
         targets, has_cta = _scan_page(html)
-        pages[path.name] = {
+        pages[rel_key] = {
             "outbound": targets,
             "outbound_unique": sorted(set(targets)),
             "outbound_count": len(targets),
