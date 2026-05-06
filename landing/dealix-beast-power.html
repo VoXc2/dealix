@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Dealix Beast-Level — نظام تشغيل سعودي ذاتي النمو للشركات. 7 طبقات تشغيلية + 9 رولات + Golden Loop + 8 hard gates مقفلة." />
+<link rel="canonical" href="https://dealix.me/dealix-beast-power.html" />
+<meta property="og:type" content="website" />
+<meta property="og:title" content="Dealix Beast-Level — نظام التشغيل الحي للشركات" />
+<meta property="og:description" content="عرض حي مباشر لقوة Dealix من api.dealix.me — 7 طبقات + 9 رولات + Golden Loop verified end-to-end." />
+<meta property="og:url" content="https://dealix.me/dealix-beast-power.html" />
+<meta property="og:locale" content="ar_SA" />
+<meta name="twitter:card" content="summary_large_image" />
+<title>Dealix Beast — قوّة النظام الحيّة</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'SF Pro', -apple-system, 'Segoe UI', system-ui, 'Noto Naskh Arabic', sans-serif;
+    background: linear-gradient(135deg, #050816 0%, #0f172a 50%, #1e1b4b 100%);
+    color: #e2e8f0;
+    min-height: 100vh;
+    padding: 24px;
+    line-height: 1.55;
+  }
+  header {
+    text-align: center;
+    margin-bottom: 28px;
+    padding: 36px 24px;
+    background: rgba(15, 23, 42, 0.5);
+    border-radius: 20px;
+    border: 1px solid rgba(96, 165, 250, 0.15);
+    backdrop-filter: blur(8px);
+  }
+  h1 {
+    font-size: 2.6em;
+    background: linear-gradient(135deg, #60a5fa 0%, #a78bfa 50%, #f472b6 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 8px;
+    font-weight: 800;
+  }
+  h1 .subtitle { display: block; font-size: 0.5em; color: #94a3b8; margin-top: 6px; -webkit-text-fill-color: #94a3b8; }
+  .api-base {
+    display: inline-block;
+    background: linear-gradient(135deg, #064e3b, #047857);
+    color: #6ee7b7;
+    padding: 6px 14px;
+    border-radius: 999px;
+    font-family: 'SF Mono', monospace;
+    font-size: 0.85em;
+    margin-top: 12px;
+    border: 1px solid rgba(110, 231, 183, 0.3);
+  }
+  .live-pulse {
+    display: inline-block;
+    width: 8px; height: 8px;
+    background: #22c55e;
+    border-radius: 50%;
+    margin-left: 6px;
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7); }
+    50% { opacity: 0.6; box-shadow: 0 0 0 8px rgba(34, 197, 94, 0); }
+  }
+
+  .top-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 14px;
+    max-width: 1400px;
+    margin: 0 auto 28px;
+  }
+  .stat {
+    background: rgba(30, 41, 59, 0.6);
+    padding: 18px 14px;
+    border-radius: 14px;
+    text-align: center;
+    border: 1px solid rgba(148, 163, 184, 0.12);
+    transition: transform 0.2s;
+  }
+  .stat:hover { transform: translateY(-2px); border-color: rgba(96, 165, 250, 0.4); }
+  .stat-value { font-size: 1.9em; font-weight: 700; color: #6ee7b7; }
+  .stat-label { font-size: 0.82em; color: #94a3b8; margin-top: 4px; }
+
+  .section-title {
+    font-size: 1.4em;
+    color: #f1f5f9;
+    margin: 32px auto 14px;
+    max-width: 1400px;
+    padding: 0 8px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-right: 4px solid #6366f1;
+    padding-right: 12px;
+  }
+  .section-title .badge {
+    font-size: 0.55em;
+    background: rgba(99, 102, 241, 0.2);
+    color: #c7d2fe;
+    padding: 3px 10px;
+    border-radius: 999px;
+  }
+
+  .grid {
+    display: grid;
+    gap: 16px;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+  .grid-3 { grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); }
+  .grid-2 { grid-template-columns: repeat(auto-fit, minmax(420px, 1fr)); }
+
+  .card {
+    background: rgba(30, 41, 59, 0.65);
+    border: 1px solid rgba(148, 163, 184, 0.15);
+    border-radius: 14px;
+    padding: 20px;
+    transition: all 0.25s;
+    position: relative;
+    overflow: hidden;
+  }
+  .card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, transparent 0%, rgba(99, 102, 241, 0.05) 100%);
+    pointer-events: none;
+  }
+  .card:hover {
+    border-color: rgba(96, 165, 250, 0.5);
+    transform: translateY(-3px);
+    box-shadow: 0 12px 32px rgba(0,0,0,0.4);
+  }
+  .card h3 {
+    font-size: 1.1em;
+    color: #f1f5f9;
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+  }
+  .card .desc {
+    color: #94a3b8;
+    font-size: 0.88em;
+    margin-bottom: 12px;
+  }
+  .card .endpoint {
+    display: inline-block;
+    font-family: 'SF Mono', monospace;
+    font-size: 0.72em;
+    color: #67e8f9;
+    background: rgba(8, 145, 178, 0.15);
+    padding: 3px 8px;
+    border-radius: 4px;
+    margin-bottom: 10px;
+    word-break: break-all;
+  }
+  .badge-status {
+    font-size: 0.72em;
+    padding: 3px 9px;
+    border-radius: 999px;
+    font-weight: 600;
+  }
+  .badge-status.ok { background: rgba(34, 197, 94, 0.18); color: #6ee7b7; }
+  .badge-status.degraded { background: rgba(217, 158, 43, 0.18); color: #fbbf24; }
+  .badge-status.loading { background: rgba(148, 163, 184, 0.18); color: #cbd5e1; }
+  .badge-status.error { background: rgba(220, 38, 38, 0.2); color: #fca5a5; }
+
+  .gates-row { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+  .gate-chip {
+    font-size: 0.7em;
+    padding: 3px 8px;
+    border-radius: 6px;
+    background: rgba(34, 197, 94, 0.12);
+    color: #6ee7b7;
+    border: 1px solid rgba(34, 197, 94, 0.3);
+    font-family: 'SF Mono', monospace;
+  }
+  .next-action {
+    margin-top: 10px;
+    padding: 8px 12px;
+    border-radius: 8px;
+    background: rgba(8, 47, 73, 0.6);
+    font-size: 0.85em;
+    color: #93c5fd;
+    border-right: 3px solid #3b82f6;
+  }
+
+  pre {
+    background: #050816;
+    border: 1px solid rgba(96, 165, 250, 0.2);
+    padding: 12px;
+    border-radius: 8px;
+    overflow-x: auto;
+    margin-top: 10px;
+    color: #cbd5e1;
+    font-size: 0.74em;
+    max-height: 260px;
+    overflow-y: auto;
+    direction: ltr;
+    text-align: left;
+    font-family: 'SF Mono', Monaco, monospace;
+    line-height: 1.5;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+
+  .seven-layers-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 12px;
+    max-width: 1400px;
+    margin: 0 auto 24px;
+  }
+  .layer {
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.12), rgba(168, 85, 247, 0.08));
+    border: 1px solid rgba(168, 85, 247, 0.25);
+    border-radius: 12px;
+    padding: 14px;
+    text-align: center;
+    transition: all 0.2s;
+  }
+  .layer:hover { transform: scale(1.03); border-color: rgba(168, 85, 247, 0.6); }
+  .layer-num {
+    font-size: 0.78em;
+    color: #c4b5fd;
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+  .layer-name-ar { font-size: 0.95em; color: #f1f5f9; font-weight: 600; margin-bottom: 4px; }
+  .layer-name-en { font-size: 0.75em; color: #94a3b8; }
+
+  .roles-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 10px;
+    max-width: 1400px;
+    margin: 0 auto 24px;
+  }
+  .role-card {
+    background: rgba(30, 41, 59, 0.5);
+    border: 1px solid rgba(148, 163, 184, 0.15);
+    border-radius: 10px;
+    padding: 12px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .role-card:hover { border-color: rgba(96, 165, 250, 0.5); background: rgba(30, 41, 59, 0.8); }
+  .role-name { font-size: 0.9em; color: #f1f5f9; font-weight: 600; }
+  .role-decisions { font-size: 0.7em; color: #6ee7b7; margin-top: 4px; }
+
+  .footer {
+    max-width: 1400px;
+    margin: 40px auto 0;
+    padding: 24px;
+    border-top: 1px solid rgba(148, 163, 184, 0.15);
+    color: #64748b;
+    font-size: 0.85em;
+    text-align: center;
+  }
+  .footer .promise {
+    color: #cbd5e1;
+    margin-bottom: 12px;
+    font-size: 0.95em;
+  }
+  .footer a { color: #60a5fa; text-decoration: none; }
+  .footer .links { margin-top: 12px; }
+  .footer .links a { margin: 0 8px; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>
+    🦁 Dealix Beast-Level
+    <span class="subtitle">نظام تشغيل سعودي ذاتي النمو للشركات — Self-Growing Saudi Company OS</span>
+  </h1>
+  <div class="api-base">https://api.dealix.me <span class="live-pulse"></span></div>
+</header>
+
+<!-- Top stats — quick numerical proof of scale -->
+<div class="top-stats">
+  <div class="stat"><div class="stat-value">7</div><div class="stat-label">طبقات تشغيليّة</div></div>
+  <div class="stat"><div class="stat-value">9</div><div class="stat-label">أنظمة OS</div></div>
+  <div class="stat"><div class="stat-value">9</div><div class="stat-label">رولات يوميّة</div></div>
+  <div class="stat"><div class="stat-value status-good">8</div><div class="stat-label">Hard Gates مقفلة</div></div>
+  <div class="stat"><div class="stat-value">13</div><div class="stat-label">Golden Loop stages</div></div>
+  <div class="stat"><div class="stat-value status-good">~1730</div><div class="stat-label">اختبار ناجح</div></div>
+  <div class="stat"><div class="stat-value">499</div><div class="stat-label">SAR Pilot 7-أيّام</div></div>
+  <div class="stat"><div class="stat-value">v3.0.0</div><div class="stat-label">Production</div></div>
+</div>
+
+<!-- Section 1: 7 Operational Layers -->
+<div class="section-title">
+  المعمارية — 7 طبقات تشغيليّة <span class="badge">Constitution Article 7</span>
+</div>
+<div class="seven-layers-grid">
+  <div class="layer">
+    <div class="layer-num">L1</div>
+    <div class="layer-name-ar">السوق والنمو الذاتي</div>
+    <div class="layer-name-en">Market & Self-Growth</div>
+  </div>
+  <div class="layer">
+    <div class="layer-num">L2</div>
+    <div class="layer-name-ar">خدمة الشركات</div>
+    <div class="layer-name-en">Company Service</div>
+  </div>
+  <div class="layer">
+    <div class="layer-num">L3</div>
+    <div class="layer-name-ar">الإيراد والمبيعات</div>
+    <div class="layer-name-en">Revenue & Sales</div>
+  </div>
+  <div class="layer">
+    <div class="layer-num">L4</div>
+    <div class="layer-name-ar">التسليم والدعم</div>
+    <div class="layer-name-en">Delivery & Support</div>
+  </div>
+  <div class="layer">
+    <div class="layer-num">L5</div>
+    <div class="layer-name-ar">الإثبات والتعلّم</div>
+    <div class="layer-name-en">Proof & Learning</div>
+  </div>
+  <div class="layer">
+    <div class="layer-num">L6</div>
+    <div class="layer-name-ar">الامتثال والحوكمة</div>
+    <div class="layer-name-en">Compliance & Governance</div>
+  </div>
+  <div class="layer">
+    <div class="layer-num">L7</div>
+    <div class="layer-name-ar">القيادة وأوامر الرولات</div>
+    <div class="layer-name-en">Executive & Role Command</div>
+  </div>
+</div>
+
+<!-- Section 2: Live Beast Layer Status -->
+<div class="section-title">
+  الحالة الحيّة — Beast Layers Live Status <span class="badge">api.dealix.me</span>
+</div>
+<div class="grid grid-3" id="beast-cards">
+  <!-- Cards inserted by JS -->
+</div>
+
+<!-- Section 3: 9 Roles Daily Command -->
+<div class="section-title">
+  الـ 9 رولات اليوميّة <span class="badge">Constitution Article 14</span>
+</div>
+<div class="roles-grid" id="roles-grid">
+  <!-- Roles inserted by JS -->
+</div>
+
+<!-- Section 4: Golden Loop -->
+<div class="section-title">
+  الحلقة الذهبيّة — 13 مرحلة من إشارة السوق إلى التعلّم الأسبوعي
+</div>
+<div class="grid grid-2">
+  <div class="card">
+    <h3>📡 The Golden Loop <span class="badge-status ok">VERIFIED END-TO-END</span></h3>
+    <div class="desc">كل مرحلة لها endpoint حيّ. الـ 13 مرحلة مختبرة في tests/test_constitution_closure.py.</div>
+    <pre>1.  Market Signal           → /growth-beast/signals/evaluate
+2.  ICP Score (90/100)      → /growth-beast/targets/rank
+3.  Offer Match (499 SAR)   → /growth-beast/offer/match
+4.  Warm Route (draft_only) → /growth-beast/warm-route/draft
+5.  Cold Channel BLOCKED    → cold_whatsapp = blocked ✓
+6.  Diagnostic (7-day plan) → /company-growth-beast/diagnostic
+7.  Invoice Draft (NOT rev) → /revops/invoice-state
+8.  Payment without proof   → REJECTED 422 ✓
+9.  Pipeline without proof  → REJECTED 400 ✓
+10. CEO Brief (3 decisions) → /role-command-v125/today/ceo
+11. Finance Truth (honest)  → /revops/finance-brief
+12. V12.1 Trigger Check     → /revenue-pipeline/summary
+13. Weekly Experiment       → /growth-beast/experiment/next</pre>
+    <div class="next-action">5 invariants verified: 8 hard gates locked · zero 5xx · canonical action_modes · proof gate enforced · revenue truth honest</div>
+  </div>
+
+  <div class="card">
+    <h3>🛡️ Hard Gates <span class="badge-status ok">8/8 LOCKED</span></h3>
+    <div class="desc">الـ 8 hard gates immutable per Constitution Article 4. كل واحد مقفل في كل router.</div>
+    <div class="gates-row">
+      <span class="gate-chip">NO_LIVE_SEND</span>
+      <span class="gate-chip">NO_LIVE_CHARGE</span>
+      <span class="gate-chip">NO_COLD_WHATSAPP</span>
+      <span class="gate-chip">NO_LINKEDIN_AUTOMATION</span>
+      <span class="gate-chip">NO_SCRAPING</span>
+      <span class="gate-chip">NO_FAKE_PROOF</span>
+      <span class="gate-chip">NO_FAKE_REVENUE</span>
+      <span class="gate-chip">NO_UNAPPROVED_TESTIMONIAL</span>
+    </div>
+    <div class="next-action">
+      الفرق الحقيقي في السوق: HubSpot/Zendesk يفعّلون live agents. Dealix يضيف <b>طبقة موافقة المؤسس</b> فوقهم — نمو قوي بدون مخاطرة قانونيّة (PDPL-aware).
+    </div>
+  </div>
+</div>
+
+<!-- Section 5: Service Ladder -->
+<div class="section-title">
+  سلّم الخدمات — 5 درجات <span class="badge">Constitution Article 9</span>
+</div>
+<div class="grid grid-3">
+  <div class="card">
+    <h3>1️⃣ Mini Diagnostic <span class="badge-status ok">مجّاني</span></h3>
+    <div class="desc">6 أسئلة فقط، تشخيص صفحة واحدة خلال 24-48 ساعة.</div>
+    <span class="endpoint">POST /api/v1/company-growth-beast/diagnostic</span>
+    <div class="next-action">المخرج: أكبر فرصة + أكبر خطر + خطّة 7 أيّام + توصية الخدمة</div>
+  </div>
+
+  <div class="card">
+    <h3>2️⃣ 7-Day Growth Proof Sprint <span class="badge-status ok">499 SAR</span></h3>
+    <div class="desc">المنتج الأوّل المدفوع — 49,900 هللة، دفع يدوي، استرجاع 7 أيّام.</div>
+    <span class="endpoint">POST /api/v1/revops/invoice-state</span>
+    <div class="next-action">10 فرص + مسوّدات + خطّة متابعة + Proof Pack مبدئي</div>
+  </div>
+
+  <div class="card">
+    <h3>3️⃣ 30-Day Growth Beast OS <span class="badge-status loading">recommended_draft</span></h3>
+    <div class="desc">يفتح بعد أوّل pilot ناجح. 4 أسابيع تشغيل أسبوعي.</div>
+    <span class="endpoint">POST /api/v1/company-growth-beast/weekly-report</span>
+    <div class="next-action">Market signals + targeting + offer experiments + content pack + weekly executive</div>
+  </div>
+</div>
+
+<!-- Section 6: Founder Command Center Live Preview -->
+<div class="section-title">
+  مركز قيادة المؤسس — Founder Beast Command Center
+</div>
+<div class="grid grid-2">
+  <div class="card" id="card-beast-cc">
+    <h3>👨‍💼 Beast Command Center <span class="badge-status loading">جاري التحميل…</span></h3>
+    <div class="desc">صفحة واحدة، 8 طبقات، قراءة مباشرة. يحلّ محلّ 9 داشبوردات.</div>
+    <span class="endpoint">GET /api/v1/founder/beast-command-center</span>
+    <pre id="beast-cc-output">…</pre>
+  </div>
+
+  <div class="card" id="card-revenue-truth">
+    <h3>💰 Revenue Truth <span class="badge-status loading">جاري التحميل…</span></h3>
+    <div class="desc">الحقيقة الماليّة: draft invoice ≠ إيراد، verbal ≠ commitment.</div>
+    <span class="endpoint">GET /api/v1/revops/finance-brief</span>
+    <pre id="revenue-truth-output">…</pre>
+  </div>
+</div>
+
+<!-- Section 7: Customer Portal Preview -->
+<div class="section-title">
+  بوّابة العميل — Customer Company Portal <span class="badge">8 sections</span>
+</div>
+<div class="grid grid-2">
+  <div class="card" id="card-customer-portal">
+    <h3>🏢 Customer Portal (Preview) <span class="badge-status loading">جاري التحميل…</span></h3>
+    <div class="desc">ما يراه العميل: 8 أقسام فقط، صفر مصطلحات داخليّة (مختبرة).</div>
+    <span class="endpoint">GET /api/v1/customer-portal/Slot-A</span>
+    <pre id="customer-portal-output">…</pre>
+  </div>
+
+  <div class="card" id="card-growth-today">
+    <h3>🚀 Growth Beast Today <span class="badge-status loading">جاري التحميل…</span></h3>
+    <div class="desc">قرارات النمو اليوميّة: top 3 targets + best offer + best content + next experiment.</div>
+    <span class="endpoint">GET /api/v1/growth-beast/today</span>
+    <pre id="growth-today-output">…</pre>
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="promise">
+    Dealix يجمع: Growth + Sales + Support + Delivery + Proof + Compliance + Executive
+    في نظام واحد، آمن، ومثبت بالأدلة.
+  </div>
+  <div>
+    لا إرسال حيّ · لا خصم حيّ · لا scraping · لا cold WhatsApp · لا fake proof · كل خطوة بموافقة المؤسس
+  </div>
+  <div class="links">
+    <a href="/">الصفحة الرئيسيّة</a> ·
+    <a href="https://api.dealix.me/health" target="_blank" rel="noopener">/health</a> ·
+    <a href="https://api.dealix.me/docs" target="_blank" rel="noopener">/docs (Swagger)</a> ·
+    <a href="https://api.dealix.me/api/v1/founder/beast-command-center" target="_blank" rel="noopener">Beast Command Center</a> ·
+    <a href="https://api.dealix.me/api/v1/customer-portal/Slot-A" target="_blank" rel="noopener">Customer Portal</a>
+  </div>
+</footer>
+
+<script>
+  const API_BASE = window.DEALIX_API_BASE || 'https://api.dealix.me';
+
+  // ────── Beast Layers Live Status (Section 2) ──────
+  const BEAST_LAYERS = [
+    { id: 'growth-beast', label: '🌱 Growth Beast', desc: 'محرك النمو الذاتي', endpoint: '/api/v1/growth-beast/status' },
+    { id: 'company-growth-beast', label: '🏢 Company Growth Beast', desc: 'النمو-للشركات-كخدمة', endpoint: '/api/v1/company-growth-beast/status' },
+    { id: 'revops', label: '💰 RevOps', desc: 'الحقيقة الماليّة', endpoint: '/api/v1/revops/status' },
+    { id: 'role-command-v125', label: '👥 Role Command', desc: '9 رولات يوميّة', endpoint: '/api/v1/role-command-v125/status' },
+    { id: 'proof-to-market', label: '🎯 Proof-to-Market', desc: 'الإثبات إلى تسويق', endpoint: '/api/v1/proof-to-market/status' },
+    { id: 'support-os', label: '🎧 Support OS', desc: '12 فئة تذاكر', endpoint: '/api/v1/support-os/status' },
+    { id: 'compliance', label: '🛡️ Compliance v12', desc: 'PDPL action policy', endpoint: '/api/v1/customer-data/status' },
+    { id: 'full-ops', label: '📊 Full-Ops Daily', desc: 'مركز القيادة الموحّد', endpoint: '/api/v1/full-ops/status' },
+    { id: 'revenue-pipeline', label: '📈 Revenue Pipeline', desc: 'تتبّع الحقيقة', endpoint: '/api/v1/revenue-pipeline/status' },
+  ];
+
+  // ────── 9 Role Cards (Section 3) ──────
+  const ROLES = [
+    { id: 'ceo',         ar: 'المؤسس / CEO',       en: 'Founder / CEO' },
+    { id: 'growth',      ar: 'مدير النمو',         en: 'Head of Growth' },
+    { id: 'sales',       ar: 'مدير المبيعات',      en: 'Sales Manager' },
+    { id: 'support',     ar: 'قائد الدعم',         en: 'Support Lead' },
+    { id: 'cs',          ar: 'نجاح العملاء',       en: 'Customer Success' },
+    { id: 'delivery',    ar: 'مدير التسليم',       en: 'Delivery Manager' },
+    { id: 'finance',     ar: 'المالية والإدارة',    en: 'Finance / Admin' },
+    { id: 'compliance',  ar: 'الامتثال',           en: 'Compliance' },
+    { id: 'ops',         ar: 'العمليّات',          en: 'Operations' },
+  ];
+
+  function renderLayerCard(layer, status, body) {
+    let badge = '<span class="badge-status loading">جاري…</span>';
+    let gates = '';
+    let nextAction = '';
+
+    if (status >= 200 && status < 300) {
+      const isDegraded = body && body.degraded === true;
+      badge = isDegraded
+        ? '<span class="badge-status degraded">DEGRADED</span>'
+        : '<span class="badge-status ok">OPERATIONAL</span>';
+
+      if (body && body.hard_gates) {
+        const gateChips = Object.entries(body.hard_gates)
+          .filter(([_, v]) => v === true)
+          .slice(0, 4)
+          .map(([k, _]) => `<span class="gate-chip">${k}</span>`)
+          .join('');
+        if (gateChips) gates = `<div class="gates-row">${gateChips}</div>`;
+      }
+      if (body && (body.next_action_ar || body.next_action_en)) {
+        nextAction = `<div class="next-action">${body.next_action_ar || body.next_action_en}</div>`;
+      }
+    } else if (status === 0) {
+      badge = '<span class="badge-status error">NETWORK</span>';
+    } else if (status === 404) {
+      badge = '<span class="badge-status loading">DEPLOYING…</span>';
+    } else {
+      badge = `<span class="badge-status error">HTTP ${status}</span>`;
+    }
+
+    return `
+      <div class="card">
+        <h3>${layer.label} ${badge}</h3>
+        <div class="desc">${layer.desc}</div>
+        <span class="endpoint">GET ${layer.endpoint}</span>
+        ${gates}
+        ${nextAction}
+      </div>
+    `;
+  }
+
+  async function fetchEndpoint(path) {
+    try {
+      const r = await fetch(`${API_BASE}${path}`, { cache: 'no-store' });
+      let body = null;
+      try { body = await r.json(); } catch (_) {}
+      return { status: r.status, body };
+    } catch (_) {
+      return { status: 0, body: null };
+    }
+  }
+
+  async function refreshBeastCards() {
+    const grid = document.getElementById('beast-cards');
+    grid.innerHTML = BEAST_LAYERS.map(l => renderLayerCard(l, -1, null)).join('');
+    const results = await Promise.all(BEAST_LAYERS.map(l => fetchEndpoint(l.endpoint)));
+    grid.innerHTML = BEAST_LAYERS
+      .map((l, i) => renderLayerCard(l, results[i].status, results[i].body))
+      .join('');
+  }
+
+  function renderRoles() {
+    const grid = document.getElementById('roles-grid');
+    grid.innerHTML = ROLES.map(role => `
+      <div class="role-card" onclick="loadRole('${role.id}')">
+        <div class="role-name">${role.ar}</div>
+        <div class="role-decisions">${role.en}</div>
+      </div>
+    `).join('');
+  }
+
+  async function loadRole(roleId) {
+    const { status, body } = await fetchEndpoint(`/api/v1/role-command-v125/today/${roleId}`);
+    if (status >= 200 && status < 300 && body && body.top_3_decisions_ar) {
+      const decisions = body.top_3_decisions_ar.map((d, i) => `${i + 1}. ${d}`).join('\n');
+      alert(`قرارات اليوم لـ ${roleId.toUpperCase()}:\n\n${decisions}`);
+    } else if (status === 404) {
+      alert(`الـ endpoint قيد النشر — انتظر دقائق.\nstatus: ${status}`);
+    } else {
+      alert(`status ${status} — حاول مرّة أخرى.`);
+    }
+  }
+
+  async function refreshFounderCC() {
+    const { status, body } = await fetchEndpoint('/api/v1/founder/beast-command-center');
+    const out = document.getElementById('beast-cc-output');
+    const card = document.getElementById('card-beast-cc');
+    const badgeEl = card.querySelector('.badge-status');
+    if (status >= 200 && status < 300 && body) {
+      badgeEl.className = 'badge-status ok';
+      badgeEl.textContent = body.degraded ? 'DEGRADED' : 'OPERATIONAL';
+      const summary = {
+        title_ar: body.title_ar,
+        next_best_action: body.next_best_action,
+        revenue_truth: body.revenue_truth && {
+          revenue_live: body.revenue_truth.revenue_live,
+          v12_1_unlocked: body.revenue_truth.v12_1_unlocked,
+          blockers: body.revenue_truth.blockers,
+        },
+        hard_gates_count: body.hard_gates ? Object.keys(body.hard_gates).length : 0,
+        degraded_sections: body.degraded_sections,
+      };
+      out.textContent = JSON.stringify(summary, null, 2);
+    } else if (status === 404) {
+      badgeEl.className = 'badge-status loading';
+      badgeEl.textContent = 'DEPLOYING';
+      out.textContent = 'Endpoint قيد النشر على Railway. أعد التحميل خلال 3-5 دقائق.';
+    } else {
+      badgeEl.className = 'badge-status error';
+      badgeEl.textContent = `HTTP ${status}`;
+      out.textContent = JSON.stringify(body, null, 2) || '(no body)';
+    }
+  }
+
+  async function refreshRevenueTruth() {
+    const { status, body } = await fetchEndpoint('/api/v1/revops/finance-brief');
+    const out = document.getElementById('revenue-truth-output');
+    const card = document.getElementById('card-revenue-truth');
+    const badgeEl = card.querySelector('.badge-status');
+    if (status >= 200 && status < 300 && body) {
+      badgeEl.className = 'badge-status ok';
+      badgeEl.textContent = body.data_status === 'live' ? 'LIVE DATA' : 'INSUFFICIENT_DATA';
+      out.textContent = JSON.stringify({
+        cash_collected_sar: body.cash_collected_sar,
+        commitments_open_sar: body.commitments_open_sar,
+        paid_pilots_count: body.paid_pilots_count,
+        data_status: body.data_status,
+        blockers: body.blockers,
+        next_action_ar: body.next_action_ar,
+        next_action_en: body.next_action_en,
+      }, null, 2);
+    } else if (status === 404) {
+      badgeEl.className = 'badge-status loading';
+      badgeEl.textContent = 'DEPLOYING';
+      out.textContent = 'Endpoint قيد النشر — أعد التحميل لاحقاً.';
+    } else {
+      badgeEl.className = 'badge-status error';
+      badgeEl.textContent = `HTTP ${status}`;
+    }
+  }
+
+  async function refreshCustomerPortal() {
+    const { status, body } = await fetchEndpoint('/api/v1/customer-portal/Slot-A');
+    const out = document.getElementById('customer-portal-output');
+    const card = document.getElementById('card-customer-portal');
+    const badgeEl = card.querySelector('.badge-status');
+    if (status >= 200 && status < 300 && body) {
+      badgeEl.className = 'badge-status ok';
+      badgeEl.textContent = `${Object.keys(body.sections || {}).length} SECTIONS`;
+      const sections = Object.entries(body.sections || {}).map(([k, v]) =>
+        `${k.split('_').slice(1).join('_')}: ${v.title_ar || v.title_en}`
+      ).join('\n');
+      out.textContent = sections + '\n\nالوعد:\n' + (body.promise_ar || '');
+    } else if (status === 404) {
+      badgeEl.className = 'badge-status loading';
+      badgeEl.textContent = 'DEPLOYING';
+      out.textContent = 'بوّابة العميل قيد النشر.';
+    } else {
+      badgeEl.className = 'badge-status error';
+      badgeEl.textContent = `HTTP ${status}`;
+    }
+  }
+
+  async function refreshGrowthToday() {
+    const { status, body } = await fetchEndpoint('/api/v1/growth-beast/today');
+    const out = document.getElementById('growth-today-output');
+    const card = document.getElementById('card-growth-today');
+    const badgeEl = card.querySelector('.badge-status');
+    if (status >= 200 && status < 300 && body) {
+      badgeEl.className = 'badge-status ok';
+      badgeEl.textContent = 'OPERATIONAL';
+      out.textContent = JSON.stringify({
+        top_3_targets: body.top_3_targets,
+        best_segment: body.best_segment_today,
+        best_offer_price_sar: body.best_offer && body.best_offer.price_sar,
+        best_content_type: body.best_content && body.best_content.content_type,
+        next_experiment_safe_action: body.next_experiment && body.next_experiment.safe_action,
+        blocked_actions: body.blocked_actions,
+      }, null, 2);
+    } else if (status === 404) {
+      badgeEl.className = 'badge-status loading';
+      badgeEl.textContent = 'DEPLOYING';
+      out.textContent = 'قيد النشر.';
+    } else {
+      badgeEl.className = 'badge-status error';
+      badgeEl.textContent = `HTTP ${status}`;
+    }
+  }
+
+  async function refreshAll() {
+    renderRoles();
+    await Promise.all([
+      refreshBeastCards(),
+      refreshFounderCC(),
+      refreshRevenueTruth(),
+      refreshCustomerPortal(),
+      refreshGrowthToday(),
+    ]);
+  }
+
+  refreshAll();
+  setInterval(refreshAll, 60000); // auto-refresh every 60s
+</script>
+
+</body>
+</html>
