@@ -21,6 +21,9 @@
 <link rel="stylesheet" href="/styles.css" />
 <link rel="stylesheet" href="/assets/css/design-system.css" />
 
+<!-- Lucide icons (lightweight SVG icons, ~25KB compressed) -->
+<script src="https://unpkg.com/lucide@0.469.0/dist/umd/lucide.min.js" defer></script>
+
 <style>
   body {
     background:
@@ -264,6 +267,13 @@
   document.getElementById('btn-refresh').addEventListener('click', refresh);
   refresh();
   setInterval(refresh, 60000);
+
+  // Initialize Lucide icons after DOM loads
+  document.addEventListener('DOMContentLoaded', function () {
+    if (window.lucide && window.lucide.createIcons) {
+      window.lucide.createIcons();
+    }
+  });
 </script>
 
 </body>
