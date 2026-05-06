@@ -42,9 +42,12 @@ async def test_service_activation_endpoint_returns_matrix():
     assert r.status_code == 200
     payload = r.json()
     assert payload["counts"]["total"] == 32
-    assert payload["counts"]["live"] == 0
-    assert payload["counts"]["pilot"] == 1
-    assert payload["counts"]["partial"] == 7
+    # After Phase K1+K2+K3 (PR #165 + PR #166): 3 services flipped to live —
+    # qualification (was pilot), audit_trail (was partial), and
+    # lead_intake_whatsapp (was partial).
+    assert payload["counts"]["live"] == 3
+    assert payload["counts"]["pilot"] == 0
+    assert payload["counts"]["partial"] == 5
     assert payload["counts"]["target"] == 24
     assert payload["counts"]["blocked"] == 0
     assert len(payload["services"]) == 32
@@ -84,14 +87,20 @@ async def test_health_endpoint_exposes_git_sha_field():
 
 @pytest.mark.asyncio
 async def test_service_activation_one_endpoint():
+    """Verify the activation-candidate tracker on a service that is
+    still in development. After PR #166 (Phase K1), `lead_intake_whatsapp`
+    flipped to `live`, so this test now uses `enrichment` — which
+    remains `partial` until PR #168 lands the provider abstraction +
+    confidence-score test.
+    """
     from api.main import app
 
     transport = ASGITransport(app=app)
     async with AsyncClient(transport=transport, base_url="http://test") as client:
-        r = await client.get("/api/v1/self-growth/service-activation/lead_intake_whatsapp")
+        r = await client.get("/api/v1/self-growth/service-activation/enrichment")
     assert r.status_code == 200
     payload = r.json()
-    assert payload["service_id"] == "lead_intake_whatsapp"
+    assert payload["service_id"] == "enrichment"
     assert payload["status"] == "partial"
     assert payload["eight_gate_block_present"] is False
     assert any(r.startswith("gate_missing:") for r in payload["blocking_reasons"])

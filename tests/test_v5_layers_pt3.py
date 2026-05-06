@@ -236,16 +236,31 @@ def test_list_available_services_returns_32():
     assert len(services) == 32
 
 
-def test_build_delivery_plan_for_lead_intake_whatsapp():
-    plan = build_delivery_plan("lead_intake_whatsapp").to_dict()
-    assert plan["service_id"] == "lead_intake_whatsapp"
+def test_build_delivery_plan_for_partial_service():
+    """Verify build_delivery_plan against a service that is still
+    in development. After PR #166 (Phase K1), `lead_intake_whatsapp`
+    flipped to `live`, so this test now uses `enrichment` — which
+    remains `partial` until PR #168 lands the provider abstraction
+    + confidence-score test.
+    """
+    plan = build_delivery_plan("enrichment").to_dict()
+    assert plan["service_id"] == "enrichment"
     assert plan["status"] == "partial"
-    # YAML lists 3 required_inputs for this service → 3 intake checklist items.
+    # YAML lists required_inputs for this service → intake checklist items.
     assert len(plan["intake_checklist"]) >= 1
-    # workflow_steps lists 5 steps → bilingual rows.
+    # workflow_steps lists steps → bilingual rows.
     assert len(plan["workflow_plan_ar"]) >= 1
     assert len(plan["workflow_plan_en"]) >= 1
-    # blocked_actions bubble through to the plan.
+
+
+def test_build_delivery_plan_for_lead_intake_whatsapp_now_live():
+    """Verify the LIVE-flipped lead_intake_whatsapp still produces a
+    valid delivery plan with status=live and that blocked_actions
+    propagate (cold_outreach_whatsapp must remain blocked even when
+    the service is live)."""
+    plan = build_delivery_plan("lead_intake_whatsapp").to_dict()
+    assert plan["service_id"] == "lead_intake_whatsapp"
+    assert plan["status"] == "live"
     assert "cold_outreach_whatsapp" in plan["blocked_actions"]
 
 

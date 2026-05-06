@@ -30,14 +30,17 @@ def test_exporter_produces_json():
 
 
 def test_json_counts_match_yaml():
+    """After Phase K1+K2+K3 (PR #165 + PR #166), 3 services flipped
+    to live in the YAML: qualification, audit_trail, lead_intake_whatsapp.
+    The exporter must produce the same counts."""
     with MATRIX.open("r", encoding="utf-8") as f:
         m = yaml.safe_load(f)
     with JSON_OUT.open("r", encoding="utf-8") as f:
         j = json.load(f)
     assert j["counts"]["total"] == len(m["services"]) == 32
-    assert j["counts"]["live"] == 0
-    assert j["counts"]["pilot"] == 1
-    assert j["counts"]["partial"] == 7
+    assert j["counts"]["live"] == 3
+    assert j["counts"]["pilot"] == 0
+    assert j["counts"]["partial"] == 5
     assert j["counts"]["target"] == 24
     assert j["counts"]["blocked"] == 0
 

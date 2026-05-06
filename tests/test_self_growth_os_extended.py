@@ -163,10 +163,11 @@ def test_scorecard_returns_typed_blocks():
 
 
 def test_scorecard_service_activation_matches_yaml():
+    """After Phase K1+K2+K3, 3 services live (was 0)."""
     sc = weekly_growth_scorecard.build_scorecard()
     counts = sc["service_activation"]["counts"]
     assert counts["total"] == 32
-    assert counts["live"] == 0
+    assert counts["live"] == 3
 
 
 def test_scorecard_recommendations_have_priority_and_anchor():

@@ -123,18 +123,24 @@ def test_safe_publishing_gate_rejects_non_string():
 
 
 def test_service_matrix_counts_match_validator():
+    """After Phase K1+K2+K3 (PR #165 + PR #166), 3 services flipped to
+    live: qualification, audit_trail, lead_intake_whatsapp."""
     counts = service_activation_matrix.counts()
     assert counts["total"] == 32
-    assert counts["live"] == 0
-    assert counts["pilot"] == 1
-    assert counts["partial"] == 7
+    assert counts["live"] == 3
+    assert counts["pilot"] == 0
+    assert counts["partial"] == 5
     assert counts["target"] == 24
 
 
 def test_service_matrix_check_service_returns_typed_record():
-    check = service_activation_matrix.check_service("lead_intake_whatsapp")
+    """Verify the activation-matrix tracker against a service that is
+    still partial. After Phase K1, `lead_intake_whatsapp` flipped to
+    live, so this test now uses `enrichment` — which remains partial
+    until PR #168."""
+    check = service_activation_matrix.check_service("enrichment")
     assert isinstance(check, ServiceActivationCheck)
-    assert check.service_id == "lead_intake_whatsapp"
+    assert check.service_id == "enrichment"
     assert check.status == "partial"
     assert check.eight_gate_block_present is False  # status != live
     # Partial → multiple gate_missing reasons
