@@ -125,6 +125,49 @@ def _today_top_3() -> list[dict[str, Any]]:
     return [it.model_dump(mode="json") for it in prioritize(queue.list_all())[:3]]
 
 
+def _revenue_truth_summary() -> dict[str, Any]:
+    """RX — single revenue-truth snapshot for the founder.
+
+    Imported lazily so the daily-command-center stays operational
+    even if revenue_pipeline ships with a bug.
+    """
+    from auto_client_acquisition.revenue_pipeline import snapshot_revenue_truth
+    from auto_client_acquisition.revenue_pipeline.pipeline import get_default_pipeline
+    from auto_client_acquisition.revenue_pipeline.revenue_truth import to_dict
+    from auto_client_acquisition.runtime_paths import resolve_proof_events_dir
+
+    pipeline = get_default_pipeline()
+    p_summary = pipeline.summary()
+
+    proof_dir = resolve_proof_events_dir()
+    if proof_dir.exists():
+        count = sum(
+            1 for f in proof_dir.iterdir()
+            if f.is_file()
+            and f.suffix.lower() in (".json", ".jsonl", ".md")
+            and not any(s in f.name.lower() for s in (
+                ".gitkeep", "readme", "schema.example", ".example.", "template",
+            ))
+        )
+    else:
+        count = 0
+
+    truth = snapshot_revenue_truth(
+        pipeline_summary=p_summary,
+        proof_event_files_count=count,
+    )
+    return to_dict(truth)
+
+
+def _revenue_execution_next_step() -> dict[str, str]:
+    """RX — single string telling the founder the next revenue action."""
+    truth = _revenue_truth_summary()
+    return {
+        "ar": truth["next_action_ar"],
+        "en": truth["next_action_en"],
+    }
+
+
 @router.get("/status")
 async def full_ops_status() -> dict[str, Any]:
     return {
@@ -169,6 +212,18 @@ async def daily_command_center() -> dict[str, Any]:
         "blocked_actions", _blocked_actions, {"count": 0, "first_3": []}, degraded
     )
     top_3 = _safe("today_top_3", _today_top_3, [], degraded)
+    revenue_truth = _safe(
+        "revenue_truth",
+        _revenue_truth_summary,
+        {"revenue_live": False, "v12_1_unlocked": False, "blockers": ["unavailable"]},
+        degraded,
+    )
+    revenue_next_step = _safe(
+        "revenue_execution_next_step",
+        _revenue_execution_next_step,
+        {"ar": "نفّذ 14_DAY_FIRST_REVENUE_PLAYBOOK", "en": "Run 14_DAY_FIRST_REVENUE_PLAYBOOK"},
+        degraded,
+    )
 
     return {
         "schema_version": 1,
@@ -188,6 +243,8 @@ async def daily_command_center() -> dict[str, Any]:
             "note_ar": "أدلة العميل توثَّق في docs/proof-events/ عند توفّرها",
             "note_en": "Customer proof events are recorded under docs/proof-events/ when available.",
         },
+        "revenue_truth": revenue_truth,
+        "revenue_execution_next_step": revenue_next_step,
         "next_best_actions": {
             "ar": "ابدأ بأعلى p0/p1 في كل قائمة، وتجاهل المحظور",
             "en": "Start with the highest p0/p1 in each queue; skip blocked items.",

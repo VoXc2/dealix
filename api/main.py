@@ -74,6 +74,7 @@ from api.routers import (
     full_ops,
     growth_os,
     partnership_os,
+    revenue_pipeline,
     sales_os,
     self_growth,
     self_improvement_os,
@@ -236,6 +237,7 @@ def create_app() -> FastAPI:
     app.include_router(executive_os.router)
     app.include_router(self_improvement_os.router)
     app.include_router(partnership_os.router)
+    app.include_router(revenue_pipeline.router)
     app.include_router(public.router)
     app.include_router(admin.router)
 
