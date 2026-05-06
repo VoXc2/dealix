@@ -23,9 +23,11 @@ from api.routers import (
     autonomous,
     business,
     command_center,
+    company_service,
     company_brain,
     company_brain_v6,
     company_growth_beast,
+    company_service,
     customer_success,
     data,
     dominance,
@@ -248,6 +250,8 @@ def create_app() -> FastAPI:
     app.include_router(revops.router)
     app.include_router(growth_beast.router)
     app.include_router(company_growth_beast.router)
+    app.include_router(company_service.router)
+    app.include_router(company_service.router)
     app.include_router(role_command.router)
     app.include_router(proof_to_market.router)
     app.include_router(founder_beast_command_center.router)
