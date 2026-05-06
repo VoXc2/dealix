@@ -142,6 +142,37 @@
   }
   .claim h2 { margin: 0; font-size: clamp(28px, 4vw, 42px); font-weight: 800; line-height: var(--lh-tight); }
   .claim p { margin: var(--space-3) auto 0; max-width: 720px; font-size: var(--fs-lg); color: var(--text); }
+
+  /* KSA market data strip */
+  .kpi-strip { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: var(--space-3); }
+  .kpi { padding: var(--space-4) var(--space-3); background: var(--ds-surface-1); border: 1px solid var(--ds-border); border-radius: var(--radius-sm, 8px); text-align: center; }
+  .kpi__num { font-family: var(--font-lt); font-size: clamp(22px, 3vw, 32px); font-weight: 800; background: linear-gradient(90deg, var(--accent-2), #a855f7); -webkit-background-clip: text; background-clip: text; color: transparent; line-height: 1; margin-bottom: var(--space-2); }
+  .kpi__label { font-size: var(--fs-sm); color: var(--text); margin-bottom: var(--space-1); line-height: var(--lh-tight); }
+  .kpi__src { font-size: 11px; color: var(--text-muted); font-family: var(--font-lt); letter-spacing: 0.03em; }
+
+  /* 5-agents matrix */
+  .agents-matrix { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: var(--space-4); }
+  .agent { padding: var(--space-5); background: var(--ds-surface-1); border: 1px solid var(--ds-border); border-radius: var(--radius-lg, 20px); display: flex; flex-direction: column; gap: var(--space-3); }
+  .agent__head { display: flex; align-items: center; gap: var(--space-2); }
+  .agent__head i { color: var(--accent-2); width: 22px; height: 22px; }
+  .agent__head h3 { margin: 0; font-size: var(--fs-lg); font-weight: 700; }
+  .agent__what { font-size: var(--fs-sm); color: var(--text); margin: 0; line-height: var(--lh-base); }
+  .agent__caps { list-style: none; padding: 0; margin: 0; display: grid; gap: var(--space-1); font-size: var(--fs-xs); color: var(--text-muted); }
+  .agent__caps li::before { content: "→ "; color: var(--accent-2); }
+  .agent__ep { display: block; padding: var(--space-2) var(--space-3); background: rgba(2,6,23,0.6); border: 1px solid var(--ds-border); border-radius: var(--radius-sm, 8px); font-family: var(--font-lt); font-size: 11px; color: #4ade80; word-break: break-all; direction: ltr; text-align: left; }
+
+  /* 8 hard gates */
+  .gates-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: var(--space-3); }
+  .gate { padding: var(--space-4); background: rgba(239, 68, 68, 0.04); border: 1px solid rgba(239, 68, 68, 0.22); border-radius: var(--radius-sm, 8px); display: grid; gap: var(--space-2); }
+  .gate code { font-family: var(--font-lt); font-size: 11px; color: #fca5a5; padding: 3px 8px; background: rgba(239, 68, 68, 0.10); border-radius: 4px; width: fit-content; letter-spacing: 0.05em; }
+  .gate h4 { margin: 0; font-size: var(--fs-md); font-weight: 700; }
+  .gate p { margin: 0; font-size: var(--fs-sm); color: var(--text-muted); line-height: var(--lh-base); }
+
+  /* Anti-vapor proof bar */
+  .proof-bar { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: var(--space-3); padding: var(--space-5); background: linear-gradient(135deg, rgba(34,197,94,0.06), rgba(14,165,233,0.04)); border: 1px solid rgba(34,197,94,0.30); border-radius: var(--radius-lg, 20px); }
+  .proof { text-align: center; }
+  .proof__num { font-family: var(--font-lt); font-size: clamp(24px, 3vw, 36px); font-weight: 800; color: #4ade80; line-height: 1; margin-bottom: var(--space-1); }
+  .proof__label { font-size: var(--fs-xs); color: var(--text-muted); line-height: var(--lh-tight); }
 </style>
 </head>
 <body>
@@ -167,6 +198,28 @@
   <section class="claim" aria-labelledby="claim-title">
     <h2 id="claim-title">٥ وكلاء AI + ٨ بوّابات أمان + Saudi-Arabic UX = خدمة لا يمكن إيقافها</h2>
     <p>كل قدراتنا الـ ٨ LIVE في الـ registry — مُجمَّعة في باكج واحد، مغلق، مُسلَّم خلال ١٤ يوم. لا تجريب، لا "نشوف"، لا "بنحاول". إمّا تسلّم أو نرجّع كامل المبلغ.</p>
+  </section>
+
+  <!-- KSA market data strip -->
+  <section aria-labelledby="ksa-data-title" class="ds-stack ds-stack--md">
+    <div>
+      <span class="ds-eyebrow">السوق يتحرّك الآن · الأرقام موثّقة</span>
+      <h2 id="ksa-data-title" class="ds-headline" style="font-size: var(--fs-2xl); margin-top: var(--space-3);">لماذا الآن — حقائق السوق السعودي ٢٠٢٦</h2>
+      <p class="ds-lede" style="margin-top: var(--space-3); max-width: 760px;">هذه الأرقام مو رأينا — مصادرها مذكورة تحت كل رقم. الموجة هذه ما تنتظرك. كل شهر تأخّر = حصّة سوق تُؤخذ من غيرك.</p>
+    </div>
+    <div class="kpi-strip">
+      <div class="kpi"><div class="kpi__num">+13.45%</div><div class="kpi__label">B2B SaaS CAGR · KSA</div><div class="kpi__src">Mordor Intelligence</div></div>
+      <div class="kpi"><div class="kpi__num">+15-25%</div><div class="kpi__label">close-rate boost · SAR + Arabic UX</div><div class="kpi__src">upGrowth MENA</div></div>
+      <div class="kpi"><div class="kpi__num">50-60%</div><div class="kpi__label">حصّة LinkedIn من pipeline B2B · MENA</div><div class="kpi__src">Heimdall Partner</div></div>
+      <div class="kpi"><div class="kpi__num">-28%</div><div class="kpi__label">LinkedIn CPL مقابل Google · B2B</div><div class="kpi__src">Heimdall Partner</div></div>
+      <div class="kpi"><div class="kpi__num">5M ﷼</div><div class="kpi__label">سقف غرامة PDPL لكل مخالفة</div><div class="kpi__src">SDAIA · IAPP</div></div>
+      <div class="kpi"><div class="kpi__num">48</div><div class="kpi__label">قرار إنفاذ PDPL ٢٠٢٥-٢٠٢٦</div><div class="kpi__src">SDAIA enforcement</div></div>
+      <div class="kpi"><div class="kpi__num">99%</div><div class="kpi__label">انتشار الإنترنت في السعوديّة</div><div class="kpi__src">Yahoo Finance</div></div>
+      <div class="kpi"><div class="kpi__num">78%</div><div class="kpi__label">تغطية شبكة 5G</div><div class="kpi__src">Yahoo Finance</div></div>
+    </div>
+    <p style="text-align: center; font-size: var(--fs-xs); color: var(--text-muted); margin-top: var(--space-3);">
+      مصادر إضافيّة: Statista (KSA SaaS forecast) · 5P Sales (KSA pipeline benchmarks) · Vision 2030 SME digitization · Monsha'at registry. تفاصيل السوق + TAM/SAM/SOM في <a href="/investor.html" class="ds-link">/investor.html</a>.
+    </p>
   </section>
 
   <!-- The two SKUs -->
@@ -235,6 +288,70 @@
     </p>
   </section>
 
+  <!-- 5 AI Agents — live capability matrix -->
+  <section aria-labelledby="agents-title" class="ds-stack ds-stack--md">
+    <div>
+      <span class="ds-eyebrow">Capability matrix · ٥ endpoints حيّة الآن</span>
+      <h2 id="agents-title" class="ds-headline" style="font-size: var(--fs-2xl); margin-top: var(--space-3);">٥ وكلاء حقيقيّون — كل واحد له endpoint حيّ تجرّبه الآن</h2>
+      <p class="ds-lede" style="margin-top: var(--space-3); max-width: 760px;">لا "قريباً". لا feature flag مخفي. لا "نشتغل عليها". كل وكيل = endpoint LIVE في الـ registry، عليه unit tests، عليه evidence ledger. تحقّق بنفسك على api.dealix.me/docs.</p>
+    </div>
+    <div class="agents-matrix">
+      <article class="agent">
+        <div class="agent__head"><i data-lucide="target"></i><h3>Sales Agent</h3></div>
+        <p class="agent__what">يؤهّل الـ leads بـ BANT × MEDDPICC، يعطيك Score + سبب + recommended next step.</p>
+        <ul class="agent__caps">
+          <li>Lead qualification (BANT × MEDDPICC)</li>
+          <li>WhatsApp inbound classification</li>
+          <li>Pipeline triage + escalation rules</li>
+        </ul>
+        <code class="agent__ep">POST /api/v1/sales-os/qualify</code>
+      </article>
+      <article class="agent">
+        <div class="agent__head"><i data-lucide="trending-up"></i><h3>Growth Agent</h3></div>
+        <p class="agent__what">يجهّز رسائل warm-route + segment briefs بالعربي السعودي. كل رسالة تمرّ بموافقتك (NO_LIVE_SEND).</p>
+        <ul class="agent__caps">
+          <li>Warm-route message drafts (Arabic-Saudi)</li>
+          <li>Segment selection + reasoning</li>
+          <li>72h active-conversation window enforcement</li>
+        </ul>
+        <code class="agent__ep">POST /api/v1/growth-beast/warm-route/draft</code>
+      </article>
+      <article class="agent">
+        <div class="agent__head"><i data-lucide="message-square"></i><h3>Support Agent</h3></div>
+        <p class="agent__what">يصنّف التذاكر بـ ١٢ category، يبني FAQ، ويعطيك escalation policy جاهزة.</p>
+        <ul class="agent__caps">
+          <li>Ticket classification (12 categories)</li>
+          <li>FAQ + macro responses</li>
+          <li>Escalation policy generator</li>
+        </ul>
+        <code class="agent__ep">POST /api/v1/support-os/draft-response</code>
+      </article>
+      <article class="agent">
+        <div class="agent__head"><i data-lucide="clipboard-list"></i><h3>Ops Agent</h3></div>
+        <p class="agent__what">يطلع Today briefing شامل + delivery checklist + KB queries بدون LLM (deterministic).</p>
+        <ul class="agent__caps">
+          <li>Daily ops briefing</li>
+          <li>Delivery checklist generator (7-step)</li>
+          <li>Knowledge base queries</li>
+        </ul>
+        <code class="agent__ep">GET /api/v1/full-ops/today</code>
+      </article>
+      <article class="agent">
+        <div class="agent__head"><i data-lucide="briefcase"></i><h3>Executive Agent</h3></div>
+        <p class="agent__what">تقرير CEO أسبوعي + revenue truth check + finance brief. كل رقم له trace في الـ ledger.</p>
+        <ul class="agent__caps">
+          <li>Weekly CEO brief (PDF)</li>
+          <li>Revenue truth check (Article 8)</li>
+          <li>Pending decisions queue</li>
+        </ul>
+        <code class="agent__ep">GET /api/v1/role-command-v125/today/ceo</code>
+      </article>
+    </div>
+    <p style="text-align: center; font-size: var(--fs-sm); color: var(--text-muted); margin-top: var(--space-4);">
+      كل endpoint مذكور أعلاه له <a href="https://api.dealix.me/docs" class="ds-link" target="_blank" rel="noopener">OpenAPI schema حيّ على api.dealix.me/docs</a> · للـ taxonomy الكاملة (٣٢ خدمة): <a href="/investor.html" class="ds-link">/investor.html</a> (founder-tier) · للمقارنة مع HubSpot/Salesforce/Zoho: <a href="/compare.html" class="ds-link">/compare.html</a>.
+    </p>
+  </section>
+
   <!-- What's locked in (the closed package contents) -->
   <section aria-labelledby="locked-title" class="ds-stack ds-stack--md">
     <div>
@@ -273,6 +390,60 @@
         <p class="ds-card__sub">حصري لـ Partners. مكان مكتبك مقارنة بأقرانك في الرياض/جدّة/الدمّام. أيّ Western SaaS يحتاج ٢-٣ سنوات ليبني هذه البيانات في KSA.</p>
       </div>
     </div>
+  </section>
+
+  <!-- 8 Hard Gates — sales-weapon framing -->
+  <section aria-labelledby="gates-title" class="ds-stack ds-stack--md">
+    <div>
+      <span class="ds-eyebrow">٨ بوّابات أمان · Constitution Article 4 · مفروضة في الكود</span>
+      <h2 id="gates-title" class="ds-headline" style="font-size: var(--fs-2xl); margin-top: var(--space-3);">هذا ما لن نفعله أبداً — حتى لو طلبته</h2>
+      <p class="ds-lede" style="margin-top: var(--space-3); max-width: 760px;">٨ بوّابات مفروضة في الكود + اختبارات (~٢٬٠٩٠ unit tests). لا يمكن إطفاؤها من إعدادات. كل بوّابة = حماية لك من غرامة PDPL، من تشويه السمعة، من spam reputation. Salesforce/HubSpot يخلّيك أنت تفكّر — Dealix قرّر لك.</p>
+    </div>
+    <div class="gates-grid">
+      <div class="gate">
+        <code>NO_LIVE_SEND</code>
+        <h4>أيّ إرسال خارجي يحتاج موافقتك</h4>
+        <p>WhatsApp · email · SMS — كلّها draft فقط حتى تضغط approve على /decisions.html. منع كامل لأيّ "ربّما ضغطت غلط".</p>
+      </div>
+      <div class="gate">
+        <code>NO_LIVE_CHARGE</code>
+        <h4>الدفع لا يُؤخذ بدون تحقّق يدوي</h4>
+        <p>حتى لو ضغطت "ادفع" — لا تُؤخذ الفلوس قبل التحقّق. حماية لك من double-charge ومن أيّ payment dispute.</p>
+      </div>
+      <div class="gate">
+        <code>NO_COLD_WHATSAPP</code>
+        <h4>صفر رسائل بدون موافقة</h4>
+        <p>لا نرسل WhatsApp لأيّ شخص ما طلب أو ما وقّع consent مكتوب. حماية لـ business reputation + WhatsApp Business account.</p>
+      </div>
+      <div class="gate">
+        <code>NO_LINKEDIN_AUTOMATION</code>
+        <h4>لا أتمتة على LinkedIn</h4>
+        <p>لا InMail جماعي، لا connection request bots، لا أيّ تلقائيّ. نتجنّب LinkedIn restrictions للأبد.</p>
+      </div>
+      <div class="gate">
+        <code>NO_SCRAPING</code>
+        <h4>لا استخراج بيانات بدون إذن</h4>
+        <p>لا استخراج بيانات من Bayut/aqar.fm/LinkedIn. كل بياناتك تجي من مصدر شرعي أو من اعتماد API official.</p>
+      </div>
+      <div class="gate">
+        <code>NO_FAKE_PROOF</code>
+        <h4>كل دليل له trace</h4>
+        <p>أيّ رقم في الـ Proof Pack يجي من evidence ledger. ولا "نقول" بدون "نثبت". Article 8 — claims need claim_id + evidence_id.</p>
+      </div>
+      <div class="gate">
+        <code>NO_FAKE_REVENUE</code>
+        <h4>لا التزام بإيرادات بكلام إعلاني</h4>
+        <p>إيرادات حقيقيّة فقط في الإحصاءات. لا "بنعطيك ٢٠٪ زيادة" — بل KPI commitment: إن لم نحقّق، نشتغل مجّاناً حتى نحقّق.</p>
+      </div>
+      <div class="gate">
+        <code>NO_UNAPPROVED_TESTIMONIAL</code>
+        <h4>لا شهادة بدون توقيع</h4>
+        <p>كل testimonial على /proof.html له signed_publish_permission من العميل نفسه. أبداً لا "anonymous Saudi office".</p>
+      </div>
+    </div>
+    <p style="text-align: center; font-size: var(--fs-sm); color: var(--text-muted); margin-top: var(--space-4);">
+      هذه البوّابات الـ ٨ هي السبب الحقيقي لاختيار Saudi B2B owner لـ Dealix بدل HubSpot. Western SaaS يعطيك الإعدادات — أنت تتحمّل غرامة PDPL إن غفلت. Dealix يحمل المسؤوليّة معك.
+    </p>
   </section>
 
   <!-- Day-by-day timeline (Sprint) -->
@@ -402,6 +573,37 @@
         <div class="ds-faq__body">نعم، نحن في Wave 2 — أوّل ٣ paid pilots نختار شركاء التأسيس بعناية. الميزة: founder access قوي جداً، attention مركّزة، تخصيص عالي للـ playbook. السعر: ٥٬٠٠٠ ريال (Sprint) سيرتفع بعد الـ ٣ pilots إلى ٧٬٥٠٠ ريال + Partner من ١٢٬٠٠٠ إلى ١٥٬٠٠٠ شهري. <strong>الـ founding partners يحتفظون بالسعر الأصلي مدى الحياة.</strong></div>
       </details>
     </div>
+  </section>
+
+  <!-- Anti-vapor proof bar -->
+  <section aria-labelledby="proof-title" class="ds-stack ds-stack--md">
+    <div>
+      <span class="ds-eyebrow">حالة النظام الآن · لا ادّعاء، أرقام</span>
+      <h2 id="proof-title" class="ds-headline" style="font-size: var(--fs-2xl); margin-top: var(--space-3);">حالة Dealix الآن — تحقّق منها بنفسك</h2>
+      <p class="ds-lede" style="margin-top: var(--space-3); max-width: 760px;">كل رقم هنا قابل للتحقّق على api.dealix.me أو عبر CI logs على GitHub. هذا ليس slide deck — هذا state حقيقي تجرّبه.</p>
+    </div>
+    <div class="proof-bar">
+      <div class="proof"><div class="proof__num">8/8</div><div class="proof__label">LIVE services in registry</div></div>
+      <div class="proof"><div class="proof__num">0</div><div class="proof__label">PARTIAL · 0 PILOT · 0 BLOCKED</div></div>
+      <div class="proof"><div class="proof__num">~2,090</div><div class="proof__label">unit tests passing</div></div>
+      <div class="proof"><div class="proof__num">28/28</div><div class="proof__label">smoke checks · api.dealix.me</div></div>
+      <div class="proof"><div class="proof__num">45+</div><div class="proof__label">صفحات حيّة · dealix.me</div></div>
+      <div class="proof"><div class="proof__num">0</div><div class="proof__label">customers paid (Wave 2)</div></div>
+    </div>
+    <p style="text-align: center; font-size: var(--fs-sm); color: var(--text-muted); margin-top: var(--space-3); max-width: 720px; margin-inline: auto;">
+      آخر صفر مهمّة جداً — نحن في Wave 2. أوّل ٣ paid pilots = founding partners، يحفظون السعر مدى الحياة (٥٬٠٠٠ Sprint · ١٢٬٠٠٠ Partner). بعد إغلاق الموجة، السعر يرتفع إلى ٧٬٥٠٠ / ١٥٬٠٠٠.
+    </p>
+    <p class="ds-row" style="justify-content: center; gap: var(--space-3); flex-wrap: wrap; margin-top: var(--space-3);">
+      <a class="ds-link" href="https://api.dealix.me/docs" target="_blank" rel="noopener">api.dealix.me/docs</a>
+      ·
+      <a class="ds-link" href="/proof.html">Proof Pages</a>
+      ·
+      <a class="ds-link" href="/dealix-beast-power.html">Beast Power live</a>
+      ·
+      <a class="ds-link" href="/investor.html">Investor brief (founder-tier)</a>
+      ·
+      <a class="ds-link" href="/compare.html">vs HubSpot/Salesforce/Zoho</a>
+    </p>
   </section>
 
   <!-- Final CTA -->
