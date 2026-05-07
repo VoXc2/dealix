@@ -75,7 +75,7 @@ def _open_decisions(customer_handle: str) -> list[dict[str, Any]]:
     """Pull pending approvals related to this customer."""
     try:
         from auto_client_acquisition.approval_center import approval_store
-        pending = approval_store.list_pending()
+        pending = approval_store.get_default_approval_store().list_pending()
         out: list[dict[str, Any]] = []
         for ap in pending:
             # ApprovalRequest doesn't have customer_handle directly — match

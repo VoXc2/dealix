@@ -84,6 +84,10 @@ from api.routers import (
     channel_policy_gateway as channel_policy_gateway_router,
     radar_events as radar_events_router,
     agent_observability as agent_observability_router,
+    leadops_reliability as leadops_reliability_router,
+    revenue_profitability as revenue_profitability_router,
+    support_journey as support_journey_router,
+    tool_guardrail_gateway as tool_guardrail_gateway_router,
     sectors,
     security_privacy,
     customer_success_os,
@@ -280,6 +284,10 @@ def create_app() -> FastAPI:
     app.include_router(channel_policy_gateway_router.router)
     app.include_router(radar_events_router.router)
     app.include_router(agent_observability_router.router)
+    app.include_router(leadops_reliability_router.router)
+    app.include_router(revenue_profitability_router.router)
+    app.include_router(support_journey_router.router)
+    app.include_router(tool_guardrail_gateway_router.router)
     app.include_router(public.router)
     app.include_router(admin.router)
 

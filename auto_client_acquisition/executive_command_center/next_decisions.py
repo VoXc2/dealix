@@ -12,7 +12,7 @@ from auto_client_acquisition.integration_upgrade import safe_call
 def top_3_decisions(*, customer_handle: str | None = None) -> list[dict[str, Any]]:
     def fn():
         from auto_client_acquisition.approval_center import approval_store
-        pending = approval_store.list_pending()
+        pending = approval_store.get_default_approval_store().list_pending()
         if customer_handle:
             pending = [
                 ap for ap in pending

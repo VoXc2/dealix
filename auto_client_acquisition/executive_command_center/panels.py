@@ -37,21 +37,39 @@ def _full_ops_score_panel() -> dict[str, Any]:
 
 
 def _today_3_decisions_panel(customer_handle: str) -> list[dict[str, Any]]:
+    """Phase 2 — emits 8-field decision cards (signal/why_now/recommended_action/
+    risk/impact/owner/action_mode/proof_link)."""
+    from auto_client_acquisition.executive_command_center.card_schema import (
+        to_card_dict,
+    )
+
     def fn():
         from auto_client_acquisition.approval_center import approval_store
-        pending = approval_store.list_pending()
+        pending = approval_store.get_default_approval_store().list_pending()
         scoped = [
             ap for ap in pending
             if customer_handle in (ap.proof_impact or "")
             or customer_handle in (ap.summary_ar or "")
         ][:3]
-        return [{
-            "approval_id": ap.approval_id,
-            "action_type": ap.action_type,
-            "channel": ap.channel,
-            "risk_level": ap.risk_level,
-            "summary_ar": (ap.summary_ar or "")[:120],
-        } for ap in scoped]
+        out: list[dict[str, Any]] = []
+        for ap in scoped:
+            risk_text = {
+                "high": "احتمال عالي للأثر إذا تأخّر القرار.",
+                "medium": "أثر متوسّط إذا تأخّر.",
+                "low": "أثر محدود.",
+            }.get(ap.risk_level or "medium", "—")
+            owner = "founder" if (ap.risk_level == "high" or ap.channel == "whatsapp") else "csm_or_founder"
+            out.append(to_card_dict(
+                signal=f"{ap.action_type or 'pending_action'} على قناة {ap.channel or '—'}",
+                why_now=(ap.summary_ar or "")[:120] or "قرار معلّق",
+                recommended_action="راجع المسوّدة واعتمد أو ارفض",
+                risk=risk_text,
+                impact="ينقل المسار إلى الخطوة التالية فور الاعتماد.",
+                owner=owner,
+                action_mode="approval_required",
+                proof_link=ap.proof_impact,
+            ))
+        return out
     result = safe_call(name="today_3_decisions", fn=fn, fallback=[])
     if isinstance(result, dict) and result.get("degraded"):
         return []
@@ -208,7 +226,7 @@ def _risks_compliance_panel() -> dict[str, Any]:
 def _approval_center_panel() -> dict[str, Any]:
     def fn():
         from auto_client_acquisition.approval_center import approval_store
-        pending = approval_store.list_pending()
+        pending = approval_store.get_default_approval_store().list_pending()
         return {
             "pending_count": len(pending),
             "source": "approval_center",

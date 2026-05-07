@@ -94,13 +94,10 @@ ALLOWLIST: dict[str, dict[str, str]] = {
         "blast": "NEGATION",
         "scraping": "NEGATION",
     },
-    # Homepage hero updated to AI Operating Team framing — promises
-    # "صفر cold outreach، صفر scraping، صفر إرسال حيّ بدون موافقة".
-    # Pure NEGATION (what we don't do).
-    "index.html": {
-        "cold": "NEGATION",
-        "scraping": "NEGATION",
-    },
+    # Homepage hero — Wave 5 rephrased anti-claims to pure Saudi Arabic
+    # ("صفر تواصل بارد · صفر سحب بيانات · صفر إرسال حيّ بدون موافقتك").
+    # Allowlist entries removed because the literal English forbidden
+    # tokens are no longer present.
     # AI Operating Team positioning page — anti-claim banner explicitly
     # rejects "guaranteed-revenue" and lists every immutable hard gate
     # ("لا cold WhatsApp"، "لا scraping"). Pure NEGATION throughout.

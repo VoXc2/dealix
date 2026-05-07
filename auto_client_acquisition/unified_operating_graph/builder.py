@@ -92,7 +92,7 @@ def _approval_nodes(customer_handle: str) -> list[GraphNode]:
     nodes: list[GraphNode] = []
     try:
         from auto_client_acquisition.approval_center import approval_store
-        for ap in approval_store.list_pending():
+        for ap in approval_store.get_default_approval_store().list_pending():
             if customer_handle in (ap.proof_impact or "") or customer_handle in (ap.summary_ar or ""):
                 nodes.append(GraphNode(
                     node_id=f"approval:{ap.approval_id}",

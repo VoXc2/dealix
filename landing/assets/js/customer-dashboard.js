@@ -161,8 +161,35 @@
           renderRadar(enriched.radar_today.opportunities);
         }
         if (data.company_name) setCompanyName(data.company_name);
+        // Phase 3 Wave 5: degraded banner — show when active customer
+        // mode but key sections fall back to insufficient_data
+        maybeShowDegradedBanner(enriched);
       })
       .catch(function () { /* silent — DEMO content stays visible */ });
+  }
+
+  function maybeShowDegradedBanner(enriched) {
+    var degradedSections = [];
+    if (enriched.full_ops_score && enriched.full_ops_score.source === 'insufficient_data') {
+      degradedSections.push('Full-Ops Score');
+    }
+    if (enriched.proof_summary && enriched.proof_summary.source === 'insufficient_data') {
+      degradedSections.push('Proof Summary');
+    }
+    if (enriched.payment_state && enriched.payment_state.source === 'insufficient_data') {
+      degradedSections.push('Payment State');
+    }
+    if (enriched.support_summary && enriched.support_summary.source === 'insufficient_data') {
+      degradedSections.push('Support Summary');
+    }
+    if (degradedSections.length === 0) return;
+    var banner = document.getElementById('cp-degraded-banner');
+    var list = document.getElementById('cp-degraded-list');
+    if (!banner) return;
+    banner.classList.add('show');
+    if (list) {
+      list.textContent = degradedSections.length + ' قسم/أقسام تظهر بيانات تجريبيّة: ' + degradedSections.join(' · ');
+    }
   }
 
   function init() {

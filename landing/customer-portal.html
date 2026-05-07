@@ -181,6 +181,28 @@
     background: rgba(168, 85, 247, 0.12); color: #c4b5fd;
   }
   .src-pill--live { background: rgba(34, 197, 94, 0.12); color: #86efac; }
+
+  /* Phase 3 Wave 5: empty-state copy when section has no data */
+  .cp-empty-state {
+    padding: var(--space-5); background: var(--ds-surface-1);
+    border: 1px dashed var(--ds-border); border-radius: var(--radius-sm, 8px);
+    color: var(--text-muted); font-size: var(--fs-sm); text-align: center;
+    line-height: var(--lh-base);
+  }
+  .cp-empty-state strong { color: var(--text); font-weight: 700; display: block; margin-bottom: var(--space-2); }
+  .cp-empty-state__hint { font-size: var(--fs-xs); color: var(--text-muted); margin-top: var(--space-2); font-family: var(--font-lt); }
+
+  /* Phase 3 Wave 5: degraded-state banner */
+  .cp-degraded-banner {
+    display: none;
+    padding: var(--space-4) var(--space-5); background: rgba(251, 191, 36, 0.08);
+    border: 1px solid rgba(251, 191, 36, 0.30); border-radius: var(--radius-sm, 8px);
+    margin-bottom: var(--space-4); align-items: flex-start; gap: var(--space-3);
+  }
+  .cp-degraded-banner.show { display: flex; }
+  .cp-degraded-banner i { color: #fbbf24; flex-shrink: 0; width: 20px; height: 20px; }
+  .cp-degraded-banner strong { color: var(--text); font-weight: 700; }
+  .cp-degraded-banner__sub { font-size: var(--fs-xs); color: var(--text-muted); margin-top: 4px; display: block; font-family: var(--font-lt); }
 </style>
 </head>
 <body>
@@ -211,6 +233,17 @@
       <div class="header-strip__kpi-label">KPI lift vs baseline · target ≥ 20%</div>
     </div>
   </section>
+
+  <!-- Phase 3 Wave 5: degraded-state banner (hidden by default; JS shows when applicable) -->
+  <div class="cp-degraded-banner" id="cp-degraded-banner" role="alert">
+    <i data-lucide="alert-triangle" aria-hidden="true"></i>
+    <div>
+      <strong>عرض جزئي · بعض الأقسام لم تُحمَّل بعد</strong>
+      <span class="cp-degraded-banner__sub" id="cp-degraded-list">
+        نعرض بيانات DEMO حيث لم تتوفر بياناتك الحقيقية بعد.
+      </span>
+    </div>
+  </div>
 
   <section aria-labelledby="ops-title" class="ds-stack ds-stack--md">
     <div class="sec-head">

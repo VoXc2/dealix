@@ -62,7 +62,7 @@ def _next_3_actions(customer_handle: str) -> list[dict[str, Any]]:
     """Top 3 pending approvals scoped to this customer (by proof_impact prefix)."""
     try:
         from auto_client_acquisition.approval_center import approval_store
-        pending = approval_store.list_pending()
+        pending = approval_store.get_default_approval_store().list_pending()
         # Filter to those that look like they belong to this customer
         scoped = [
             ap for ap in pending

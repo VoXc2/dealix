@@ -87,3 +87,39 @@ async def recent(limit: int = 50) -> dict[str, Any]:
         "quality": quality_summary(traces),
         "hard_gates": _HARD_GATES,
     }
+
+
+@router.get("/cost-summary")
+async def cost_summary(limit: int = 500) -> dict[str, Any]:
+    """Phase 9 Wave 5 — aggregated cost across recent traces.
+
+    Per-agent + per-workflow breakdown. Total cost in estimated USD.
+    """
+    traces = list_recent_traces(limit=limit)
+
+    total_cost = 0.0
+    by_agent: dict[str, dict[str, Any]] = {}
+    by_workflow: dict[str, dict[str, Any]] = {}
+
+    for t in traces:
+        cost = t.cost_estimate or 0.0
+        total_cost += cost
+
+        agent_bucket = by_agent.setdefault(t.agent_name, {"count": 0, "total_cost_usd": 0.0})
+        agent_bucket["count"] += 1
+        agent_bucket["total_cost_usd"] = round(agent_bucket["total_cost_usd"] + cost, 6)
+
+        workflow_key = t.workflow or "(unspecified)"
+        wf_bucket = by_workflow.setdefault(workflow_key, {"count": 0, "total_cost_usd": 0.0})
+        wf_bucket["count"] += 1
+        wf_bucket["total_cost_usd"] = round(wf_bucket["total_cost_usd"] + cost, 6)
+
+    return {
+        "trace_count": len(traces),
+        "total_cost_usd_estimate": round(total_cost, 6),
+        "by_agent": by_agent,
+        "by_workflow": by_workflow,
+        "is_estimate": True,
+        "source": "agent_observability + cost_estimate per trace",
+        "hard_gates": _HARD_GATES,
+    }

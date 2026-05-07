@@ -354,7 +354,7 @@ def _approval_summary_section(customer_handle: str) -> dict[str, Any]:
     """Wave 4 additive — approval center summary."""
     try:
         from auto_client_acquisition.approval_center import approval_store
-        pending = approval_store.list_pending()
+        pending = approval_store.get_default_approval_store().list_pending()
         scoped = [
             ap for ap in pending
             if customer_handle in (ap.proof_impact or "")

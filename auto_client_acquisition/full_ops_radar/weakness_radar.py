@@ -177,7 +177,7 @@ def _no_customer_brain_snapshot(customer_handle: str | None) -> list[dict[str, A
 def _approvals_pending_too_long() -> list[dict[str, Any]]:
     try:
         from auto_client_acquisition.approval_center import approval_store
-        pending = approval_store.list_pending()
+        pending = approval_store.get_default_approval_store().list_pending()
         threshold = datetime.now(timezone.utc) - timedelta(hours=24)
         old = [a for a in pending if a.created_at < threshold]
         if old:

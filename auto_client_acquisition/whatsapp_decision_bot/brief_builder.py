@@ -64,7 +64,7 @@ def _daily_pack(customer_handle: str | None) -> dict[str, Any]:
 
 def _pending_count(customer_handle: str | None) -> int:
     from auto_client_acquisition.approval_center import approval_store
-    pending = approval_store.list_pending()
+    pending = approval_store.get_default_approval_store().list_pending()
     if customer_handle:
         pending = [
             ap for ap in pending
