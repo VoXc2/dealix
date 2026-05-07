@@ -2,6 +2,10 @@
 
 **خطة إكمال شاملة (دمج → نشر → عميل):** [COMPREHENSIVE_COMPLETION_PLAN_AR.md](COMPREHENSIVE_COMPLETION_PLAN_AR.md)
 
+**Human orchestration (Arabic — phased launch + repo inventory):** [LAUNCH_MASTER_PLAN_AR.md](LAUNCH_MASTER_PLAN_AR.md)
+
+**North Star (outcome + metrics by phase):** [strategic/NORTH_STAR_AR.md](strategic/NORTH_STAR_AR.md)
+
 **Snapshot date:** 2026-04-23 (post PR #54 + #55 + #58 merge)
 **Current status:** 18/30 gates closed. **Launch is NOT complete.**
 **Rule:** no "launched" claim until **≥24/30** gates closed, including all P0 items.

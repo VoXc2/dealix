@@ -130,9 +130,11 @@ curl -X POST http://localhost:8000/api/v1/leads \
 
 MIT — راجع [LICENSE](LICENSE).
 
-## خطة الإكمال الشاملة
+## خطة التدشين والإكمال
 
-من الدمج إلى `main` حتى أول عميل وProof: **[COMPREHENSIVE_COMPLETION_PLAN_AR.md](docs/COMPREHENSIVE_COMPLETION_PLAN_AR.md)**
+**من الدمج إلى أول عميل وProof:** **[COMPREHENSIVE_COMPLETION_PLAN_AR.md](docs/COMPREHENSIVE_COMPLETION_PLAN_AR.md)**
+
+**خطة تدشين مرحلية + بوابات:** **[LAUNCH_MASTER_PLAN_AR.md](docs/LAUNCH_MASTER_PLAN_AR.md)** · **النجم الشمالي:** **[NORTH_STAR_AR.md](docs/strategic/NORTH_STAR_AR.md)** · **رحلة العميل:** **[CUSTOMER_FULL_OPS_JOURNEY_AR.md](docs/CUSTOMER_FULL_OPS_JOURNEY_AR.md)**
 
 ---
 

@@ -1,7 +1,8 @@
 # Dealix — Category and execution thesis (executive summary)
 
 **Full Arabic playbook:** [CATEGORY_DESIGN_AND_MASTER_OPERATING_SYSTEM_AR.md](CATEGORY_DESIGN_AND_MASTER_OPERATING_SYSTEM_AR.md)  
-**Operating radars + loops + evidence:** [SAUDI_REVENUE_EXECUTION_OS_RADARS_AR.md](SAUDI_REVENUE_EXECUTION_OS_RADARS_AR.md)
+**Operating radars + loops + evidence:** [SAUDI_REVENUE_EXECUTION_OS_RADARS_AR.md](SAUDI_REVENUE_EXECUTION_OS_RADARS_AR.md)  
+**North Star (outcome + leading metrics):** [NORTH_STAR_AR.md](NORTH_STAR_AR.md)
 
 ---
 
