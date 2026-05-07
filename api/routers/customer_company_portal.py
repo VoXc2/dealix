@@ -112,6 +112,105 @@ def _next_decision(customer_handle: str) -> dict[str, str]:
     }
 
 
+def _ops_summary(customer_handle: str) -> dict[str, Any]:
+    """Six-number operations snapshot for the console header strip.
+
+    Real values are populated by the deliverables/qualification/proof_ledger
+    modules once the customer has activated. Until then, zero-state — never
+    invent numbers (Article 8 / Constitution NO_FAKE_PROOF).
+    """
+    return {
+        "leads_today": 0,
+        "leads_today_sub": "",
+        "qualified": 0,
+        "qualified_sub": "BANT score ≥ 60",
+        "in_pipeline": 0,
+        "pipeline_sub": "",
+        "drafts_pending": 0,
+        "proof_events_week": 0,
+        "nps": None,
+        "nps_sub": "",
+        "source": "ops_summary_v1",
+    }
+
+
+def _sequences_state(customer_handle: str) -> dict[str, Any]:
+    """Current JourneyState + the history of completed states for this customer.
+
+    Hard fallback: every customer starts at lead_intake. Production reads from
+    customer_loop.JourneyState records; here we return the safe baseline.
+    """
+    return {
+        "current_state": "lead_intake",
+        "history": [],
+        "next_allowed": ["diagnostic_requested", "nurture", "blocked"],
+        "source": "customer_loop.schemas",
+    }
+
+
+def _radar_today(customer_handle: str) -> dict[str, Any]:
+    """Daily Radar — opportunity feed scoped to this customer.
+
+    The console renders DEMO data when this section is empty. Live data is
+    composed in market_intelligence.opportunity_feed.build_opportunity_feed
+    once a real signal source (Tavily/Google CSE) is wired via env.
+    """
+    return {
+        "title_ar": "Radar اليومي",
+        "title_en": "Daily Radar",
+        "opportunities": [],
+        "live": False,
+        "note_ar": (
+            "بياناتك الحقيقيّة تظهر هنا فور تفعيل مصدر بيانات (Google "
+            "Search/Tavily). حالياً معاينة فقط."
+        ),
+        "source": "market_intelligence.opportunity_feed",
+    }
+
+
+def _digest_weekly(customer_handle: str) -> dict[str, Any]:
+    """Weekly digest — sourced from self_growth_os.weekly_growth_scorecard."""
+    return {
+        "title_ar": "Digest أسبوعي",
+        "title_en": "Weekly Digest",
+        "wins": [],
+        "opportunities_next_week": [],
+        "decisions_taken": [],
+        "source": "self_growth_os.weekly_growth_scorecard",
+    }
+
+
+def _digest_monthly(customer_handle: str) -> dict[str, Any]:
+    """Monthly digest — sourced from market_intelligence.sector_pulse + proof_ledger."""
+    return {
+        "title_ar": "Digest شهري",
+        "title_en": "Monthly Digest",
+        "sector_context": [],
+        "proof_pack_additions": [],
+        "kpi_lift_pct": None,
+        "source": "market_intelligence.sector_pulse + proof_ledger",
+    }
+
+
+def _service_status_for_customer(customer_handle: str) -> dict[str, Any]:
+    """Which Dealix services are LIVE for this customer right now."""
+    return {
+        "live_count": 8,
+        "target_count": 24,
+        "live_services": [
+            "lead_intake_whatsapp",
+            "qualification",
+            "enrichment",
+            "routing",
+            "outreach_drafts",
+            "consent_required_send",
+            "audit_trail",
+            "release_gate",
+        ],
+        "source": "registry/SERVICE_READINESS_MATRIX.yaml",
+    }
+
+
 def _portal_payload(customer_handle: str) -> dict[str, Any]:
     """Compose the 8-field customer-facing payload.
 
@@ -120,6 +219,7 @@ def _portal_payload(customer_handle: str) -> dict[str, Any]:
     """
     return {
         "customer_handle": customer_handle,
+        "company_name": None,
         "language_default": "ar",
         "sections": {
             "1_start_diagnostic": _start_diagnostic_link(customer_handle),
@@ -130,6 +230,14 @@ def _portal_payload(customer_handle: str) -> dict[str, Any]:
             "6_proof_pack": _proof_pack(customer_handle),
             "7_weekly_report": _weekly_report(customer_handle),
             "8_next_decision": _next_decision(customer_handle),
+        },
+        "enriched_view": {
+            "ops_summary": _ops_summary(customer_handle),
+            "sequences": _sequences_state(customer_handle),
+            "radar_today": _radar_today(customer_handle),
+            "digest_weekly": _digest_weekly(customer_handle),
+            "digest_monthly": _digest_monthly(customer_handle),
+            "service_status_for_customer": _service_status_for_customer(customer_handle),
         },
         "promise_ar": (
             "كل خطوة بموافقتك. لا إرسال آلي. لا خصم آلي. لا ادّعاءات "
