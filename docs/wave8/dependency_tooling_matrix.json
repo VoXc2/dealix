@@ -1,0 +1,23 @@
+{
+  "wave": "8",
+  "generated_at": "2026-05-07",
+  "policy": "no_heavy_deps_without_founder_approval",
+  "matrix": [
+    {"tool_or_library": "fastapi", "category": "framework", "present": true, "version_or_source": ">=0.115.0", "where_used": "api/", "needed_for_first_customer": true, "optional_future": false, "risk_level": "LOW", "install_now": false, "reason": "pinned in requirements.txt", "notes": ""},
+    {"tool_or_library": "uvicorn", "category": "server", "present": true, "version_or_source": ">=0.32.0", "where_used": "api/main.py", "needed_for_first_customer": true, "optional_future": false, "risk_level": "LOW", "install_now": false, "reason": "pinned in requirements.txt", "notes": ""},
+    {"tool_or_library": "pydantic", "category": "validation", "present": true, "version_or_source": ">=2.9.0", "where_used": "api/schemas/", "needed_for_first_customer": true, "optional_future": false, "risk_level": "LOW", "install_now": false, "reason": "pinned in requirements.txt", "notes": ""},
+    {"tool_or_library": "langfuse", "category": "observability", "present": true, "version_or_source": ">=2.50.0", "where_used": "auto_client_acquisition/observability_adapters/", "needed_for_first_customer": true, "optional_future": false, "risk_level": "MEDIUM", "install_now": false, "reason": "already in requirements.txt; API key needed", "notes": "falls back gracefully if LANGFUSE_SECRET_KEY missing"},
+    {"tool_or_library": "opentelemetry-api", "category": "observability", "present": true, "version_or_source": ">=1.41.0", "where_used": "auto_client_acquisition/observability_adapters/", "needed_for_first_customer": true, "optional_future": false, "risk_level": "LOW", "install_now": false, "reason": "already in requirements.txt", "notes": ""},
+    {"tool_or_library": "sentry-sdk", "category": "error_tracking", "present": true, "version_or_source": ">=2.58.0", "where_used": "api/main.py", "needed_for_first_customer": false, "optional_future": true, "risk_level": "LOW", "install_now": false, "reason": "SENTRY_DSN optional", "notes": ""},
+    {"tool_or_library": "hubspot-api-client", "category": "crm", "present": true, "version_or_source": ">=11.0.0", "where_used": "integrations/", "needed_for_first_customer": false, "optional_future": true, "risk_level": "MEDIUM", "install_now": false, "reason": "needs customer HubSpot API key", "notes": ""},
+    {"tool_or_library": "pyyaml", "category": "yaml", "present": true, "version_or_source": ">=6.0", "where_used": "scripts/", "needed_for_first_customer": true, "optional_future": false, "risk_level": "LOW", "install_now": false, "reason": "used by integration_registry.yaml loader", "notes": ""}
+  ],
+  "new_heavy_deps_wave8": [],
+  "summary": {
+    "total_tracked": 8,
+    "all_in_requirements_txt": true,
+    "new_heavy_deps": 0,
+    "install_now_count": 0,
+    "high_risk_count": 0
+  }
+}

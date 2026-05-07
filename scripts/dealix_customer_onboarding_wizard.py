@@ -421,17 +421,50 @@ def write_outputs(collected: dict, output_dir: Path) -> dict[str, Path]:
     }
 
 
+VALID_SECTORS = [
+    "real_estate", "agencies", "services", "consulting",
+    "training", "construction", "hospitality", "logistics",
+]
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="Dealix Customer Onboarding Wizard")
-    parser.add_argument("--customer-handle", required=True, help="lowercase-hyphenated handle")
+    parser.add_argument("--customer-handle", required=True, help="lowercase-hyphenated handle (e.g. acme-co)")
     parser.add_argument("--company", default="", help="customer company name (defaults to handle)")
-    parser.add_argument("--sector", required=True, choices=[
-        "real_estate", "agencies", "services", "consulting",
-        "training", "construction", "hospitality", "logistics",
-    ])
+    parser.add_argument(
+        "--sector", required=True,
+        choices=VALID_SECTORS,
+        help=f"business sector: {', '.join(VALID_SECTORS)}",
+    )
     parser.add_argument("--inputs-json", default=None, help="non-interactive mode: JSON file of pre-filled inputs")
     parser.add_argument("--output-base-dir", default=str(LIVE_DIR_BASE), help="output directory base (default: data/customers/)")
+    # Wave 8 §7 hardening flags
+    parser.add_argument(
+        "--output-dir", default=None,
+        help="explicit output directory (overrides --output-base-dir + handle)",
+    )
+    parser.add_argument(
+        "--dry-run", action="store_true", default=False,
+        help="simulate wizard run — print what would be written without creating files or tokens",
+    )
+    parser.add_argument(
+        "--no-token-print", action="store_true", default=False,
+        help="suppress customer portal token from console output (token still written to file)",
+    )
+    parser.add_argument(
+        "--redact", action="store_true", default=False,
+        help="redact all sensitive values (phone, token, keys) in console output",
+    )
+    parser.add_argument(
+        "--language", default="ar", choices=["ar", "en"],
+        help="primary language for prompts: ar (Arabic, default) or en (English)",
+    )
     args = parser.parse_args()
+
+    # Sector validation (belt-and-suspenders beyond argparse choices)
+    if args.sector not in VALID_SECTORS:
+        print(f"ERROR: --sector must be one of: {', '.join(VALID_SECTORS)}", file=sys.stderr)
+        return 2
 
     company = args.company or args.customer_handle.replace("-", " ").title()
 
@@ -444,6 +477,21 @@ def main() -> int:
             return 2
         inputs = json.loads(inputs_path.read_text(encoding="utf-8"))
         interactive = False
+
+    if args.dry_run:
+        print()
+        print("=== DRY-RUN MODE — no files will be created ===")
+        print(f"  customer-handle: {args.customer_handle}")
+        print(f"  company:         {company}")
+        print(f"  sector:          {args.sector}")
+        print(f"  language:        {args.language}")
+        print(f"  output-dir:      {args.output_dir or str(Path(args.output_base_dir) / args.customer_handle)}")
+        print(f"  no-token-print:  {args.no_token_print}")
+        print(f"  redact:          {args.redact}")
+        print()
+        print("Would create: integration_plan.md, env_vars_railway.txt, customer_portal_token.txt, feature_requests.jsonl")
+        print("DRY-RUN: done — no changes made.")
+        return 0
 
     try:
         collected = run_wizard(
@@ -459,20 +507,33 @@ def main() -> int:
         print(f"REFUSING — {exc}", file=sys.stderr)
         return 2
 
-    output_dir = Path(args.output_base_dir) / args.customer_handle
+    if args.output_dir:
+        output_dir = Path(args.output_dir)
+    else:
+        output_dir = Path(args.output_base_dir) / args.customer_handle
+
     files = write_outputs(collected, output_dir)
 
     print()
-    print(PROMPTS_AR["complete"].format(output_dir=str(output_dir)))
-    print(PROMPTS_EN["complete"].format(output_dir=str(output_dir)))
+    if args.language == "en":
+        print(PROMPTS_EN["complete"].format(output_dir=str(output_dir)))
+    else:
+        print(PROMPTS_AR["complete"].format(output_dir=str(output_dir)))
+        print(PROMPTS_EN["complete"].format(output_dir=str(output_dir)))
     print()
     for label, path in files.items():
-        print(f"  {label}: {path.relative_to(REPO_ROOT) if path.is_relative_to(REPO_ROOT) else path}")
+        display = str(path.relative_to(REPO_ROOT)) if path.is_relative_to(REPO_ROOT) else str(path)
+        if args.no_token_print and label == "portal_token":
+            print(f"  {label}: [HIDDEN — see {display}]")
+        elif args.redact and label in {"portal_token", "env_vars"}:
+            print(f"  {label}: [REDACTED — see {display}]")
+        else:
+            print(f"  {label}: {display}")
     print()
     print("Next steps:")
-    print(f"  1. Email integration_plan.md to customer (from your Gmail, manually)")
-    print(f"  2. Add env_vars_railway.txt entries to Railway dashboard (founder action)")
-    print(f"  3. Schedule Day 1 of Sprint")
+    print("  1. Email integration_plan.md to customer (from your Gmail, manually)")
+    print("  2. Add env_vars_railway.txt entries to Railway dashboard (founder action)")
+    print("  3. Schedule Day 1 of Sprint")
     return 0
 
 
