@@ -22,7 +22,7 @@ OVERALL_OK=1
 
 # --- 1. compileall -----------------------------------------------------------
 echo "[v11] 1/9 compileall…"
-if python -m compileall -q api auto_client_acquisition db scripts \
+if python3 -m compileall -q api auto_client_acquisition db scripts \
     >/tmp/v11_compileall.log 2>&1; then
   mark COMPILEALL pass
 else
@@ -44,7 +44,7 @@ V11_TESTS=(
   tests/test_phase_e_today_v11.py
   tests/test_truth_labels_v11.py
 )
-if python -m pytest -q --no-cov "${V11_TESTS[@]}" \
+if python3 -m pytest -q --no-cov "${V11_TESTS[@]}" \
     >/tmp/v11_targeted_tests.log 2>&1; then
   mark V11_TARGETED_TESTS pass
 else
@@ -78,7 +78,7 @@ fi
 
 # --- 4. Diagnostic CLI smoke -------------------------------------------------
 echo "[v11] 4/9 Diagnostic CLI smoke…"
-if python scripts/dealix_diagnostic.py --company "Customer-Slot-A" \
+if python3 scripts/dealix_diagnostic.py --company "Customer-Slot-A" \
     --sector b2b_services --region riyadh \
     --pipeline-state "smoke test" >/tmp/v11_diag.log 2>&1; then
   mark DIAGNOSTIC_CLI pass
@@ -89,7 +89,7 @@ fi
 
 # --- 5. First-3 board generator ----------------------------------------------
 echo "[v11] 5/9 First-3 board generator…"
-if python scripts/dealix_first3_board.py --dry-run \
+if python3 scripts/dealix_first3_board.py --dry-run \
     >/tmp/v11_first3.log 2>&1; then
   mark FIRST3_BOARD pass
 else
@@ -100,7 +100,7 @@ fi
 # --- 6. Proof pack empty template --------------------------------------------
 echo "[v11] 6/9 Proof pack empty template…"
 TMPDIR_PP="$(mktemp -d)"
-if python scripts/dealix_proof_pack.py --customer-handle Customer-Slot-A \
+if python3 scripts/dealix_proof_pack.py --customer-handle Customer-Slot-A \
     --events-dir "$TMPDIR_PP" --allow-empty \
     >/tmp/v11_pp.log 2>&1; then
   mark PROOF_PACK_TEMPLATE pass
@@ -112,7 +112,7 @@ rm -rf "$TMPDIR_PP"
 
 # --- 7. Payment fallback dry-run ---------------------------------------------
 echo "[v11] 7/9 Payment fallback dry-run…"
-if python scripts/dealix_invoice.py --email test@example.sa \
+if python3 scripts/dealix_invoice.py --email test@example.sa \
     --amount-sar 499 --description "v11 verify" --dry-run \
     >/tmp/v11_pay.log 2>&1; then
   mark PAYMENT_FALLBACK pass
@@ -123,7 +123,7 @@ fi
 
 # --- 8. Phase E today script -------------------------------------------------
 echo "[v11] 8/9 Phase E today script…"
-if python scripts/dealix_phase_e_today.py --json \
+if python3 scripts/dealix_phase_e_today.py --json \
     >/tmp/v11_today.log 2>&1; then
   mark PHASE_E_TODAY pass
 else
@@ -133,7 +133,7 @@ fi
 
 # --- 9. Forbidden-claims + secret scan --------------------------------------
 echo "[v11] 9/9 Forbidden-claims + secret scan…"
-if python -m pytest -q --no-cov tests/test_landing_forbidden_claims.py \
+if python3 -m pytest -q --no-cov tests/test_landing_forbidden_claims.py \
     >/tmp/v11_forbidden.log 2>&1; then
   mark FORBIDDEN_CLAIMS pass
 else
@@ -161,10 +161,10 @@ fi
 PROD_SMOKE_RESULT="not_run"
 if [[ -n "${BASE_URL:-}" ]]; then
   echo "[v11] (optional) production smoke against $BASE_URL…"
-  if python scripts/dealix_smoke_test.py --base-url "$BASE_URL" --json \
+  if python3 scripts/dealix_smoke_test.py --base-url "$BASE_URL" --json \
       >/tmp/v11_prod_smoke.json 2>/dev/null; then
-    PASSED=$(python -c "import json; print(json.load(open('/tmp/v11_prod_smoke.json'))['passed'])")
-    TOTAL=$(python -c "import json; print(json.load(open('/tmp/v11_prod_smoke.json'))['total'])")
+    PASSED=$(python3 -c "import json; print(json.load(open('/tmp/v11_prod_smoke.json'))['passed'])")
+    TOTAL=$(python3 -c "import json; print(json.load(open('/tmp/v11_prod_smoke.json'))['total'])")
     PROD_SMOKE_RESULT="$PASSED/$TOTAL"
     if [[ "$PASSED" == "$TOTAL" ]]; then
       mark PROD_SMOKE pass
