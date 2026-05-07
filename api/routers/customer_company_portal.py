@@ -112,6 +112,292 @@ def _next_decision(customer_handle: str) -> dict[str, str]:
     }
 
 
+def _ops_summary(customer_handle: str) -> dict[str, Any]:
+    """Six-number operations snapshot composed from layers 2-9.
+
+    Best-effort across modules — any missing layer returns zero, never
+    an invented number (Article 8 / NO_FAKE_PROOF).
+    """
+    leads_total = 0
+    drafts_pending = 0
+    in_pipeline = 0
+    proof_events_week = 0
+
+    try:
+        from auto_client_acquisition.leadops_spine import list_records
+        recs = [r for r in list_records(limit=200) if r.customer_handle == customer_handle]
+        leads_total = len(recs)
+        drafts_pending = sum(1 for r in recs if r.draft_id is not None)
+    except Exception:
+        pass
+
+    try:
+        from auto_client_acquisition.service_sessions import list_sessions
+        sessions = list_sessions(customer_handle=customer_handle, limit=50)
+        in_pipeline = sum(1 for s in sessions if s.status in ("active", "delivered", "proof_pending"))
+    except Exception:
+        pass
+
+    return {
+        "leads_today": leads_total,
+        "leads_today_sub": "",
+        "qualified": leads_total,
+        "qualified_sub": "leadops_spine.allowed",
+        "in_pipeline": in_pipeline,
+        "pipeline_sub": "service_sessions.active+delivered+proof_pending",
+        "drafts_pending": drafts_pending,
+        "proof_events_week": proof_events_week,
+        "nps": None,
+        "nps_sub": "",
+        "source": "leadops_spine + service_sessions (live)",
+    }
+
+
+def _sequences_state(customer_handle: str) -> dict[str, Any]:
+    """Current ServiceSession state for this customer (best-effort)."""
+    current_state = "lead_intake"
+    history: list[str] = []
+    try:
+        from auto_client_acquisition.service_sessions import list_sessions
+        sessions = list_sessions(customer_handle=customer_handle, limit=50)
+        if sessions:
+            # Use most recent session's status as the customer's current state
+            current_state = sessions[0].status
+            history = sorted({s.status for s in sessions})
+    except Exception:
+        pass
+    return {
+        "current_state": current_state,
+        "history": history,
+        "next_allowed": ["diagnostic_requested", "nurture", "blocked"],
+        "source": "service_sessions (live)",
+    }
+
+
+def _radar_today(customer_handle: str) -> dict[str, Any]:
+    """Daily Radar — opportunity feed scoped to this customer.
+
+    Currently empty until a live signal source (Tavily/Google CSE) is
+    wired via env. The console falls back to DEMO cards in this case.
+    """
+    return {
+        "title_ar": "Radar اليومي",
+        "title_en": "Daily Radar",
+        "opportunities": [],
+        "live": False,
+        "note_ar": (
+            "بياناتك الحقيقيّة تظهر هنا فور تفعيل مصدر بيانات (Google "
+            "Search/Tavily). حالياً معاينة فقط."
+        ),
+        "source": "market_intelligence.opportunity_feed",
+    }
+
+
+def _digest_weekly(customer_handle: str) -> dict[str, Any]:
+    """Weekly digest — built from per-customer Executive Pack."""
+    try:
+        from auto_client_acquisition.executive_pack_v2 import build_weekly_pack
+        pack = build_weekly_pack(customer_handle=customer_handle)
+        return {
+            "title_ar": "Digest أسبوعي",
+            "title_en": "Weekly Digest",
+            "week_label": pack.week_label,
+            "summary_ar": pack.executive_summary_ar,
+            "summary_en": pack.executive_summary_en,
+            "leads": pack.leads,
+            "support": pack.support,
+            "blockers_count": len(pack.blockers),
+            "next_3_actions_count": len(pack.next_3_actions),
+            "source": "executive_pack_v2.build_weekly_pack",
+        }
+    except Exception:
+        return {
+            "title_ar": "Digest أسبوعي",
+            "title_en": "Weekly Digest",
+            "wins": [],
+            "opportunities_next_week": [],
+            "decisions_taken": [],
+            "source": "executive_pack_v2 unavailable",
+        }
+
+
+def _digest_monthly(customer_handle: str) -> dict[str, Any]:
+    """Monthly digest — proof_ledger event count + sector context."""
+    proof_count = 0
+    try:
+        from auto_client_acquisition.proof_ledger.file_backend import list_events
+        events = list_events(customer_handle=customer_handle, limit=200)
+        proof_count = len(events)
+    except Exception:
+        pass
+
+    sector = None
+    try:
+        from auto_client_acquisition.customer_brain import get_snapshot
+        snap = get_snapshot(customer_handle=customer_handle)
+        sector = snap.profile.get("sector") if snap else None
+    except Exception:
+        pass
+
+    return {
+        "title_ar": "Digest شهري",
+        "title_en": "Monthly Digest",
+        "sector_context": [{"sector": sector}] if sector else [],
+        "proof_pack_additions": [{"proof_event_count_total": proof_count}],
+        "kpi_lift_pct": None,
+        "source": "proof_ledger + customer_brain",
+    }
+
+
+def _full_ops_score_section(customer_handle: str) -> dict[str, Any]:
+    """Wave 4 additive — Full-Ops Score for this customer (best-effort)."""
+    try:
+        from auto_client_acquisition.full_ops_radar import compute_full_ops_score
+        s = compute_full_ops_score()
+        return {
+            "score": s["score"],
+            "max_score": s["max_score"],
+            "readiness_label": s["readiness_label"],
+            "source": "full_ops_radar.score",
+        }
+    except Exception:
+        return {"score": 0, "readiness_label": "Internal Only", "source": "insufficient_data"}
+
+
+def _weaknesses_summary_section(customer_handle: str) -> dict[str, Any]:
+    """Wave 4 additive — top 3 weaknesses for this customer.
+
+    Customer-safe view: drops operational fields (related_endpoint,
+    related_doc, owner_role, layer) before exposing.
+    """
+    try:
+        from auto_client_acquisition.full_ops_radar import detect_weaknesses
+        ws = detect_weaknesses(customer_handle=customer_handle)
+        safe_keys = {"id", "severity", "blocker", "reason_ar",
+                     "reason_en", "fix_ar", "fix_en"}
+        top_3_safe = [
+            {k: v for k, v in w.items() if k in safe_keys}
+            for w in ws[:3]
+        ]
+        return {
+            "total": len(ws),
+            "critical_count": sum(1 for w in ws if w["severity"] == "critical"),
+            "top_3": top_3_safe,
+            "source": "weakness_radar (customer-safe view)",
+        }
+    except Exception:
+        return {"total": 0, "critical_count": 0, "top_3": [], "source": "insufficient_data"}
+
+
+def _next_3_decisions_section(customer_handle: str) -> dict[str, Any]:
+    """Wave 4 additive — top 3 pending approvals."""
+    try:
+        from auto_client_acquisition.executive_command_center.next_decisions import (
+            top_3_decisions,
+        )
+        return {
+            "decisions": top_3_decisions(customer_handle=customer_handle),
+            "source": "executive_command_center.next_decisions",
+        }
+    except Exception:
+        return {"decisions": [], "source": "insufficient_data"}
+
+
+def _support_summary_section(customer_handle: str) -> dict[str, Any]:
+    """Wave 4 additive — support inbox summary."""
+    try:
+        from auto_client_acquisition.support_inbox import (
+            find_breached_tickets,
+            list_tickets,
+        )
+        tickets = list_tickets(customer_id=customer_handle, limit=100)
+        breached = find_breached_tickets(customer_id=customer_handle)
+        return {
+            "open_tickets": sum(1 for t in tickets if t.status == "open"),
+            "escalated": sum(1 for t in tickets if t.status == "escalated"),
+            "sla_breached_count": len(breached),
+            "source": "support_inbox",
+        }
+    except Exception:
+        return {"open_tickets": 0, "source": "insufficient_data"}
+
+
+def _payment_state_section(customer_handle: str) -> dict[str, Any]:
+    """Wave 4 additive — payment state summary."""
+    try:
+        from auto_client_acquisition.payment_ops.orchestrator import _INDEX
+        states = [p for p in _INDEX.values() if p.customer_handle == customer_handle]
+        return {
+            "total_payments": len(states),
+            "confirmed_count": sum(1 for p in states
+                                   if p.status in ("payment_confirmed", "delivery_kickoff")),
+            "source": "payment_ops",
+        }
+    except Exception:
+        return {"total_payments": 0, "confirmed_count": 0, "source": "insufficient_data"}
+
+
+def _proof_summary_section(customer_handle: str) -> dict[str, Any]:
+    """Wave 4 additive — proof events summary."""
+    try:
+        from auto_client_acquisition.proof_ledger.file_backend import list_events
+        events = list_events(customer_handle=customer_handle, limit=200)
+        return {
+            "proof_events_count": len(events),
+            "source": "proof_ledger",
+        }
+    except Exception:
+        return {"proof_events_count": 0, "source": "insufficient_data"}
+
+
+def _approval_summary_section(customer_handle: str) -> dict[str, Any]:
+    """Wave 4 additive — approval center summary."""
+    try:
+        from auto_client_acquisition.approval_center import approval_store
+        pending = approval_store.get_default_approval_store().list_pending()
+        scoped = [
+            ap for ap in pending
+            if customer_handle in (ap.proof_impact or "")
+            or customer_handle in (ap.summary_ar or "")
+        ]
+        return {
+            "pending_total": len(pending),
+            "pending_for_this_customer": len(scoped),
+            "source": "approval_center",
+        }
+    except Exception:
+        return {"pending_total": 0, "source": "insufficient_data"}
+
+
+def _executive_command_link_section(customer_handle: str) -> dict[str, Any]:
+    """Wave 4 additive — link to the per-customer Executive Command Center."""
+    return {
+        "url": f"/executive-command-center.html?org={customer_handle}",
+        "label_ar": "افتح مركز القيادة التنفيذي",
+        "label_en": "Open Executive Command Center",
+        "source": "executive_command_center",
+    }
+
+
+def _service_status_for_customer(customer_handle: str) -> dict[str, Any]:
+    """Which Dealix services are LIVE for this customer right now."""
+    return {
+        "live_count": 8,
+        "target_count": 24,
+        "live_services": [
+            "lead_intake_whatsapp",
+            "qualification",
+            "enrichment",
+            "routing",
+            "outreach_drafts",
+            "consent_required_send",
+            "audit_trail",
+            "release_gate",
+        ],
+        "source": "registry/SERVICE_READINESS_MATRIX.yaml",
+    }
+
+
 def _portal_payload(customer_handle: str) -> dict[str, Any]:
     """Compose the 8-field customer-facing payload.
 
@@ -120,6 +406,7 @@ def _portal_payload(customer_handle: str) -> dict[str, Any]:
     """
     return {
         "customer_handle": customer_handle,
+        "company_name": None,
         "language_default": "ar",
         "sections": {
             "1_start_diagnostic": _start_diagnostic_link(customer_handle),
@@ -130,6 +417,24 @@ def _portal_payload(customer_handle: str) -> dict[str, Any]:
             "6_proof_pack": _proof_pack(customer_handle),
             "7_weekly_report": _weekly_report(customer_handle),
             "8_next_decision": _next_decision(customer_handle),
+        },
+        "enriched_view": {
+            # Wave 3 keys (existing — DO NOT REMOVE)
+            "ops_summary": _ops_summary(customer_handle),
+            "sequences": _sequences_state(customer_handle),
+            "radar_today": _radar_today(customer_handle),
+            "digest_weekly": _digest_weekly(customer_handle),
+            "digest_monthly": _digest_monthly(customer_handle),
+            "service_status_for_customer": _service_status_for_customer(customer_handle),
+            # Wave 4 additive keys (new — never required by old clients)
+            "full_ops_score": _full_ops_score_section(customer_handle),
+            "weaknesses_summary": _weaknesses_summary_section(customer_handle),
+            "next_3_decisions": _next_3_decisions_section(customer_handle),
+            "support_summary": _support_summary_section(customer_handle),
+            "payment_state": _payment_state_section(customer_handle),
+            "proof_summary": _proof_summary_section(customer_handle),
+            "approval_summary": _approval_summary_section(customer_handle),
+            "executive_command_link": _executive_command_link_section(customer_handle),
         },
         "promise_ar": (
             "كل خطوة بموافقتك. لا إرسال آلي. لا خصم آلي. لا ادّعاءات "

@@ -58,7 +58,14 @@ from api.routers import (
     founder_v10,
     growth_v10,
     gtm_os,
+    case_study_engine,
+    customer_brain as customer_brain_router,
+    executive_pack_per_customer,
     knowledge_v10,
+    leadops_spine,
+    payment_ops as payment_ops_router,
+    service_sessions as service_sessions_router,
+    support_webhook,
     observability_v6,
     proof_ledger,
     reliability_os,
@@ -70,6 +77,17 @@ from api.routers import (
     safety_v10,
     sales,
     search_radar,
+    unified_operating_graph as unified_operating_graph_router,
+    full_ops_radar as full_ops_radar_router,
+    executive_command_center as executive_command_center_router,
+    whatsapp_decision_bot as whatsapp_decision_bot_router,
+    channel_policy_gateway as channel_policy_gateway_router,
+    radar_events as radar_events_router,
+    agent_observability as agent_observability_router,
+    leadops_reliability as leadops_reliability_router,
+    revenue_profitability as revenue_profitability_router,
+    support_journey as support_journey_router,
+    tool_guardrail_gateway as tool_guardrail_gateway_router,
     sectors,
     security_privacy,
     customer_success_os,
@@ -252,6 +270,24 @@ def create_app() -> FastAPI:
     app.include_router(proof_to_market.router)
     app.include_router(founder_beast_command_center.router)
     app.include_router(customer_company_portal.router)
+    app.include_router(leadops_spine.router)
+    app.include_router(customer_brain_router.router)
+    app.include_router(service_sessions_router.router)
+    app.include_router(support_webhook.router)
+    app.include_router(executive_pack_per_customer.router)
+    app.include_router(payment_ops_router.router)
+    app.include_router(case_study_engine.router)
+    app.include_router(unified_operating_graph_router.router)
+    app.include_router(full_ops_radar_router.router)
+    app.include_router(executive_command_center_router.router)
+    app.include_router(whatsapp_decision_bot_router.router)
+    app.include_router(channel_policy_gateway_router.router)
+    app.include_router(radar_events_router.router)
+    app.include_router(agent_observability_router.router)
+    app.include_router(leadops_reliability_router.router)
+    app.include_router(revenue_profitability_router.router)
+    app.include_router(support_journey_router.router)
+    app.include_router(tool_guardrail_gateway_router.router)
     app.include_router(public.router)
     app.include_router(admin.router)
 

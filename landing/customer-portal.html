@@ -1,267 +1,603 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl" data-theme="light">
+<html lang="ar" dir="rtl" data-theme="dark">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Dealix — Customer Portal Preview</title>
-  <meta name="description" content="معاينة لوحة العميل: ما الذي يراه المشترك في Dealix يومياً." />
-  <link rel="canonical" href="https://dealix.me/customer-portal.html" />
-  <meta property="og:title" content="Dealix — Customer Portal Preview" />
-  <meta property="og:description" content="معاينة لوحة العميل: ما الذي يراه المشترك في Dealix يومياً." />
-  <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://dealix.me/customer-portal.html" />
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="theme-color" content="#0f172a" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" />
-  <link rel="stylesheet" href="styles.css" />
-  <link rel="stylesheet" href="/assets/css/design-system.css" />
-  <style>
-    :root{--brand:#0f172a;--brand-2:#1e293b;--accent:#22d3ee;--success:#10b981;--warning:#f59e0b;--danger:#ef4444;--muted:#64748b;--border:#e2e8f0;--surface:#fff;--bg:#f8fafc}
-    body{font-family:'IBM Plex Sans Arabic','Inter',sans-serif;background:var(--bg);margin:0}
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Dealix Operations Console — لوحة عميل Dealix الكاملة</title>
+<meta name="description" content="لوحة العميل في Dealix: العمليّات اليوميّة، Radar اليومي/الأسبوعي/الشهري، التسلسلات الجارية، القرارات المعلّقة، Proof Pack — كل ما يحدث لشركتك في مكان واحد." />
+<link rel="canonical" href="https://dealix.me/customer-portal.html" />
+<meta property="og:type" content="website" />
+<meta property="og:title" content="Dealix Operations Console — Customer Dashboard" />
+<meta property="og:description" content="Per-customer operations console: daily/weekly/monthly radar, sequences in flight, decisions queue, Proof Pack — every workflow that runs for your company in one view." />
+<meta property="og:url" content="https://dealix.me/customer-portal.html" />
+<meta property="og:locale" content="ar_SA" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="theme-color" content="#0f172a" />
 
-    .portal-shell{display:grid;grid-template-columns:240px 1fr;min-height:100vh}
-    @media(max-width:840px){.portal-shell{grid-template-columns:1fr}.sidebar{display:none}}
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" />
 
-    .sidebar{background:var(--brand);color:#fff;padding:24px 16px;position:sticky;top:0;height:100vh;overflow-y:auto}
-    .sidebar .brand{font-weight:700;font-size:20px;margin-bottom:32px;display:flex;align-items:center;gap:8px}
-    .sidebar .brand .dot{width:10px;height:10px;border-radius:50%;background:var(--accent)}
-    .sidebar nav a{display:flex;align-items:center;gap:10px;color:#cbd5e1;padding:10px 12px;text-decoration:none;border-radius:8px;font-size:14px;margin-bottom:4px}
-    .sidebar nav a.active,.sidebar nav a:hover{background:var(--brand-2);color:#fff}
-    .sidebar .badge-pilot{background:var(--accent);color:var(--brand);padding:2px 8px;border-radius:999px;font-size:11px;font-weight:700;margin-right:auto}
+<link rel="stylesheet" href="/styles.css" />
+<link rel="stylesheet" href="/assets/css/design-system.css" />
+<script src="https://unpkg.com/lucide@0.469.0/dist/umd/lucide.min.js" defer></script>
 
-    .main{padding:32px 32px}
-    .topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;flex-wrap:wrap;gap:12px}
-    .topbar h1{margin:0;font-size:24px;color:var(--brand)}
-    .topbar .meta{display:flex;gap:14px;font-size:13px;color:var(--muted);align-items:center;flex-wrap:wrap}
-    .pill{background:#fff;border:1px solid var(--border);padding:6px 12px;border-radius:999px;display:inline-flex;align-items:center;gap:6px}
-    .pill.live{border-color:#86efac;background:#ecfdf5;color:#15803d}
-    .pill .dot{width:8px;height:8px;border-radius:50%;background:var(--success);animation:pulse 2s ease-in-out infinite}
-    @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
+<style>
+  body {
+    background:
+      radial-gradient(900px 500px at 80% -10%, rgba(34, 197, 94, 0.16), transparent 60%),
+      radial-gradient(900px 500px at 0% 10%, rgba(168, 85, 247, 0.16), transparent 60%),
+      linear-gradient(180deg, #050816 0%, #0b1124 60%, #1e1b4b 100%);
+    color: var(--text);
+    min-height: 100vh;
+    margin: 0;
+    font-family: var(--font-ar);
+  }
+  main { padding: var(--space-7) var(--space-5) var(--space-9); }
 
-    .preview-banner{background:linear-gradient(135deg,#fef3c7,#fde68a);border:1px solid #fbbf24;border-radius:12px;padding:14px 18px;font-size:14px;color:#713f12;margin-bottom:24px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px}
-    .preview-banner strong{font-weight:700}
-    .preview-banner a{color:var(--brand);font-weight:600;text-decoration:none}
+  .state-pill {
+    display: inline-flex; align-items: center; gap: var(--space-2);
+    padding: 4px 12px; border-radius: 999px; font-family: var(--font-lt);
+    font-size: 11px; font-weight: 800; letter-spacing: 0.08em;
+  }
+  .state-pill--demo  { background: rgba(168, 85, 247, 0.14); color: #c4b5fd; border: 1px solid rgba(168, 85, 247, 0.35); }
+  .state-pill--org   { background: rgba(14, 165, 233, 0.14); color: #7dd3fc; border: 1px solid rgba(14, 165, 233, 0.35); }
+  .state-pill--live  { background: rgba(34, 197, 94, 0.14); color: #86efac; border: 1px solid rgba(34, 197, 94, 0.35); }
+  .state-pill .dot { width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
 
-    .kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin-bottom:32px}
-    .kpi{background:#fff;border:1px solid var(--border);border-radius:12px;padding:18px}
-    .kpi .label{color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:0.5px;font-weight:600}
-    .kpi .value{font-size:28px;font-weight:700;color:var(--brand);margin-top:4px}
-    .kpi .delta{font-size:13px;margin-top:6px}
-    .kpi .delta.up{color:var(--success)}
-    .kpi .delta.down{color:var(--danger)}
+  .ops-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: var(--space-3); }
+  .ops-card {
+    padding: var(--space-4); background: var(--ds-surface-1);
+    border: 1px solid var(--ds-border); border-radius: var(--radius-sm, 8px);
+  }
+  .ops-card__num {
+    font-family: var(--font-lt); font-size: clamp(26px, 3vw, 36px);
+    font-weight: 800; line-height: 1;
+    background: linear-gradient(90deg, var(--accent-2), #a855f7);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+    margin-bottom: var(--space-2);
+  }
+  .ops-card__label { font-size: var(--fs-sm); color: var(--text); }
+  .ops-card__sub { font-size: 11px; color: var(--text-muted); margin-top: var(--space-1); }
 
-    .panel{background:#fff;border:1px solid var(--border);border-radius:14px;padding:24px;margin-bottom:24px}
-    .panel h2{margin:0 0 16px;font-size:18px;color:var(--brand)}
-    .panel .subtitle{font-size:13px;color:var(--muted);margin:-8px 0 16px}
+  .seq-timeline {
+    display: grid; grid-template-columns: repeat(12, 1fr); gap: 6px;
+    padding: var(--space-4); background: var(--ds-surface-1);
+    border: 1px solid var(--ds-border); border-radius: var(--radius-sm, 8px);
+  }
+  @media (max-width: 760px) { .seq-timeline { grid-template-columns: repeat(6, 1fr); } }
+  .seq-step {
+    display: flex; flex-direction: column; align-items: center; gap: 6px;
+    padding: var(--space-2) 4px; border-radius: 6px;
+    background: rgba(2, 6, 23, 0.4); border: 1px solid var(--ds-border);
+    text-align: center; min-height: 84px; justify-content: center;
+  }
+  .seq-step__icon {
+    width: 24px; height: 24px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-lt); font-size: 11px; font-weight: 800;
+    background: rgba(148, 163, 184, 0.18); color: var(--text-muted);
+  }
+  .seq-step--done .seq-step__icon { background: rgba(34, 197, 94, 0.20); color: #4ade80; }
+  .seq-step--active .seq-step__icon { background: rgba(34, 211, 238, 0.20); color: var(--accent-2); animation: pulse-active 2s ease-in-out infinite; }
+  .seq-step--blocked .seq-step__icon { background: rgba(239, 68, 68, 0.18); color: #fca5a5; }
+  .seq-step--done { border-color: rgba(34, 197, 94, 0.30); }
+  .seq-step--active { border-color: rgba(34, 211, 238, 0.40); }
+  .seq-step--blocked { border-color: rgba(239, 68, 68, 0.30); }
+  .seq-step__label { font-size: 10px; color: var(--text-muted); line-height: var(--lh-tight); }
+  @keyframes pulse-active { 0%, 100% { box-shadow: 0 0 0 0 rgba(34, 211, 238, 0.4); } 50% { box-shadow: 0 0 0 6px rgba(34, 211, 238, 0); } }
 
-    .lead-row{display:grid;grid-template-columns:1.5fr 1fr 1fr 100px 110px;gap:12px;padding:14px 0;border-bottom:1px dashed var(--border);align-items:center;font-size:14px}
-    .lead-row:last-child{border-bottom:0}
-    .lead-row .name{font-weight:600;color:var(--brand)}
-    .lead-row .meta{color:var(--muted);font-size:12px;margin-top:2px}
-    .lead-row .channel{font-size:13px;color:var(--muted)}
-    .lead-row .stage{display:inline-block;padding:3px 8px;border-radius:6px;font-size:11px;font-weight:700;text-align:center}
-    .stage-qualified{background:#dbeafe;color:#1e40af}
-    .stage-meeting_booked{background:#dcfce7;color:#166534}
-    .stage-negotiating{background:#fef3c7;color:#92400e}
-    .stage-pilot_active{background:#ddd6fe;color:#5b21b6}
-    .stage-new_lead{background:#f1f5f9;color:#475569}
-    .priority{font-weight:700}
-    .priority-P0{color:#dc2626}
-    .priority-P1{color:#ea580c}
-    .priority-P2{color:#0891b2}
-    @media(max-width:840px){.lead-row{grid-template-columns:1fr;border-bottom:1px solid var(--border);padding:14px 0}}
+  .dec-card {
+    padding: var(--space-4); background: var(--ds-surface-1);
+    border: 1px solid var(--ds-border); border-radius: var(--radius-sm, 8px);
+    border-inline-start-width: 3px; display: grid; gap: var(--space-2);
+  }
+  .dec-card--high { border-inline-start-color: #fca5a5; }
+  .dec-card--medium { border-inline-start-color: #fbbf24; }
+  .dec-card--low { border-inline-start-color: #4ade80; }
+  .dec-card__head { display: flex; justify-content: space-between; gap: var(--space-3); flex-wrap: wrap; align-items: center; }
+  .dec-card__type { font-family: var(--font-lt); font-size: 11px; color: var(--accent-2); letter-spacing: 0.05em; }
+  .dec-card__risk { padding: 2px 8px; border-radius: 4px; font-size: 11px; font-family: var(--font-lt); font-weight: 700; }
+  .dec-card__risk--high { background: rgba(239, 68, 68, 0.15); color: #fca5a5; }
+  .dec-card__risk--medium { background: rgba(251, 191, 36, 0.15); color: #fbbf24; }
+  .dec-card__risk--low { background: rgba(34, 197, 94, 0.15); color: #4ade80; }
+  .dec-card__summary { margin: 0; font-size: var(--fs-sm); line-height: var(--lh-base); }
+  .dec-card__actions { display: flex; gap: var(--space-2); margin-top: var(--space-2); }
 
-    .activity-item{padding:12px 0;border-bottom:1px dashed var(--border);font-size:14px}
-    .activity-item .time{color:var(--muted);font-size:12px}
-    .activity-item .desc{margin-top:2px}
+  .radar-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: var(--space-4); }
+  .radar-card {
+    padding: var(--space-5); background: var(--ds-surface-1);
+    border: 1px solid var(--ds-border); border-radius: var(--radius-lg, 20px);
+    display: grid; gap: var(--space-3); position: relative; overflow: hidden;
+  }
+  .radar-card::before {
+    content: ""; position: absolute; top: 0; inset-inline-start: 0;
+    width: 4px; height: 100%; background: linear-gradient(180deg, var(--accent-2), #a855f7);
+  }
+  .radar-card__head { display: flex; justify-content: space-between; align-items: flex-start; gap: var(--space-3); }
+  .radar-card__signal {
+    font-family: var(--font-lt); font-size: 10px; letter-spacing: 0.1em;
+    padding: 3px 8px; border-radius: 4px; background: rgba(34, 211, 238, 0.10);
+    color: var(--accent-2); width: fit-content;
+  }
+  .radar-card__score {
+    font-family: var(--font-lt); font-size: 22px; font-weight: 800;
+    color: #4ade80; line-height: 1;
+  }
+  .radar-card__score small { font-size: 11px; color: var(--text-muted); font-weight: 500; display: block; }
+  .radar-card__title { margin: 0; font-size: var(--fs-md); font-weight: 700; line-height: var(--lh-tight); }
+  .radar-card__why { margin: 0; padding: var(--space-3); background: rgba(34, 211, 238, 0.06); border-inline-start: 2px solid var(--accent-2); border-radius: 4px; font-size: var(--fs-sm); line-height: var(--lh-base); color: var(--text); }
+  .radar-card__why::before { content: "Why-Now: "; font-family: var(--font-lt); font-weight: 700; color: var(--accent-2); font-size: 11px; letter-spacing: 0.06em; }
+  .radar-card__action { margin: 0; padding: var(--space-3); background: rgba(34, 197, 94, 0.06); border-inline-start: 2px solid #4ade80; border-radius: 4px; font-size: var(--fs-sm); line-height: var(--lh-base); color: var(--text); }
+  .radar-card__action::before { content: "Action: "; font-family: var(--font-lt); font-weight: 700; color: #4ade80; font-size: 11px; letter-spacing: 0.06em; }
+  .radar-card__meta { display: flex; gap: var(--space-3); font-size: 11px; color: var(--text-muted); flex-wrap: wrap; }
+  .radar-card__meta-item { display: inline-flex; gap: 4px; align-items: center; }
 
-    .compliance-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
-    .compliance-card{background:#ecfdf5;border:1px solid #86efac;border-radius:10px;padding:14px;font-size:13px}
-    .compliance-card .check{color:var(--success);font-weight:700;font-size:18px;margin-left:6px}
-    .compliance-card .label{font-weight:600;color:var(--brand)}
-    .compliance-card .desc{color:var(--muted);font-size:12px;margin-top:4px}
+  .digest-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4); }
+  @media (max-width: 760px) { .digest-grid { grid-template-columns: 1fr; } }
+  .digest {
+    padding: var(--space-5); background: var(--ds-surface-1);
+    border: 1px solid var(--ds-border); border-radius: var(--radius-lg, 20px);
+  }
+  .digest__title { margin: 0 0 var(--space-3); font-size: var(--fs-lg); font-weight: 700; display: flex; align-items: center; gap: var(--space-2); }
+  .digest__title i { color: var(--accent-2); width: 20px; height: 20px; }
+  .digest__list { list-style: none; padding: 0; margin: 0; display: grid; gap: var(--space-2); }
+  .digest__list li { display: flex; gap: var(--space-2); align-items: flex-start; font-size: var(--fs-sm); line-height: var(--lh-base); }
+  .digest__list li::before { content: "▸"; color: var(--accent-2); flex-shrink: 0; }
 
-    .upgrade-cta{background:linear-gradient(135deg,var(--brand),var(--brand-2));color:#fff;border-radius:14px;padding:24px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px}
-    .upgrade-cta h3{margin:0 0 4px;font-size:18px}
-    .upgrade-cta p{margin:0;color:#cbd5e1;font-size:14px}
-    .upgrade-cta .btn{background:var(--accent);color:var(--brand);padding:11px 20px;border-radius:10px;text-decoration:none;font-weight:700;font-size:14px;white-space:nowrap}
+  .seq-map { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: var(--space-3); }
+  .seq-map__cell {
+    padding: var(--space-4); background: var(--ds-surface-1);
+    border: 1px solid var(--ds-border); border-radius: var(--radius-sm, 8px);
+    display: grid; gap: var(--space-2);
+  }
+  .seq-map__cell--active { border-color: rgba(34, 197, 94, 0.45); background: linear-gradient(135deg, rgba(34, 197, 94, 0.06), rgba(14, 165, 233, 0.04)); }
+  .seq-map__cell-title { display: flex; align-items: center; gap: var(--space-2); font-weight: 700; }
+  .seq-map__cell-title i { color: var(--accent-2); width: 18px; height: 18px; }
+  .seq-map__cell-stat { font-family: var(--font-lt); font-size: 11px; color: var(--text-muted); letter-spacing: 0.04em; }
+  .seq-map__cell-desc { font-size: var(--fs-xs); color: var(--text-muted); line-height: var(--lh-base); margin: 0; }
 
-    .nav-back{display:inline-block;color:var(--muted);text-decoration:none;font-size:14px;margin-bottom:12px}
-    .nav-back:hover{color:var(--brand)}
-  </style>
+  .header-strip {
+    padding: var(--space-5) var(--space-6); background: linear-gradient(135deg, rgba(34, 211, 238, 0.08), rgba(168, 85, 247, 0.06));
+    border: 1px solid rgba(34, 211, 238, 0.25); border-radius: var(--radius-lg, 20px);
+    display: flex; justify-content: space-between; gap: var(--space-4); flex-wrap: wrap; align-items: center;
+  }
+  .header-strip__left { display: grid; gap: var(--space-2); }
+  .header-strip__co { font-size: clamp(22px, 3vw, 32px); font-weight: 800; margin: 0; }
+  .header-strip__meta { display: flex; gap: var(--space-3); flex-wrap: wrap; font-size: var(--fs-sm); color: var(--text-muted); }
+  .header-strip__chip { display: inline-flex; gap: 4px; align-items: center; padding: 4px 10px; background: rgba(2, 6, 23, 0.5); border: 1px solid var(--ds-border); border-radius: 999px; font-size: 12px; }
+  .header-strip__kpi { text-align: end; }
+  .header-strip__kpi-num { font-family: var(--font-lt); font-size: clamp(26px, 4vw, 42px); font-weight: 800; color: #4ade80; line-height: 1; }
+  .header-strip__kpi-label { font-size: 11px; color: var(--text-muted); }
+
+  .sec-head { margin-bottom: var(--space-4); }
+  .sec-head h2 { margin: 0; font-size: var(--fs-2xl); font-weight: 700; }
+  .sec-head__sub { margin-top: var(--space-2); font-size: var(--fs-sm); color: var(--text-muted); max-width: 760px; }
+
+  .src-pill {
+    display: inline-flex; gap: 4px; align-items: center;
+    font-family: var(--font-lt); font-size: 10px; letter-spacing: 0.06em;
+    padding: 2px 8px; border-radius: 4px;
+    background: rgba(168, 85, 247, 0.12); color: #c4b5fd;
+  }
+  .src-pill--live { background: rgba(34, 197, 94, 0.12); color: #86efac; }
+
+  /* Phase 3 Wave 5: empty-state copy when section has no data */
+  .cp-empty-state {
+    padding: var(--space-5); background: var(--ds-surface-1);
+    border: 1px dashed var(--ds-border); border-radius: var(--radius-sm, 8px);
+    color: var(--text-muted); font-size: var(--fs-sm); text-align: center;
+    line-height: var(--lh-base);
+  }
+  .cp-empty-state strong { color: var(--text); font-weight: 700; display: block; margin-bottom: var(--space-2); }
+  .cp-empty-state__hint { font-size: var(--fs-xs); color: var(--text-muted); margin-top: var(--space-2); font-family: var(--font-lt); }
+
+  /* Phase 3 Wave 5: degraded-state banner */
+  .cp-degraded-banner {
+    display: none;
+    padding: var(--space-4) var(--space-5); background: rgba(251, 191, 36, 0.08);
+    border: 1px solid rgba(251, 191, 36, 0.30); border-radius: var(--radius-sm, 8px);
+    margin-bottom: var(--space-4); align-items: flex-start; gap: var(--space-3);
+  }
+  .cp-degraded-banner.show { display: flex; }
+  .cp-degraded-banner i { color: #fbbf24; flex-shrink: 0; width: 20px; height: 20px; }
+  .cp-degraded-banner strong { color: var(--text); font-weight: 700; }
+  .cp-degraded-banner__sub { font-size: var(--fs-xs); color: var(--text-muted); margin-top: 4px; display: block; font-family: var(--font-lt); }
+</style>
 </head>
 <body>
 <a class="ds-skip-link" href="#main">تخطّ إلى المحتوى الرئيسي</a>
 
-<div class="portal-shell">
+<main id="main" class="ds-container--full ds-stack ds-stack--xl">
 
-  <aside class="sidebar">
-    <div class="brand"><span class="dot"></span> Dealix</div>
-    <nav>
-      <a href="#" class="active">📊 لوحة اليوم</a>
-      <a href="#">📨 Inbox & Drafts</a>
-      <a href="#">📞 Calls Pipeline</a>
-      <a href="#">🤝 Partners</a>
-      <a href="#">💳 Subscription <span class="badge-pilot">Growth</span></a>
-      <a href="#">🔌 Integrations</a>
-      <a href="#">🛡️ Compliance</a>
-      <a href="#">⚙️ Settings</a>
-      <a href="#">📚 Knowledge Base</a>
-    </nav>
-  </aside>
+  <nav class="ds-breadcrumb" aria-label="مسار التنقّل">
+    <a href="/">الرئيسيّة</a>
+    <span class="ds-breadcrumb__sep" aria-hidden="true"></span>
+    <a href="/launchpad.html">الباقة المغلقة</a>
+    <span class="ds-breadcrumb__sep" aria-hidden="true"></span>
+    <span aria-current="page">Operations Console</span>
+  </nav>
 
-  <main class="main">
-    <a href="/" class="nav-back">← العودة لـ Dealix</a>
-
-    <div class="topbar">
-      <h1>السلام عليكم، شركة الراجحي العقارية 👋</h1>
-      <div class="meta">
-        <span class="pill live"><span class="dot"></span> Dealix يعمل الآن</span>
-        <span class="pill">📅 الإثنين 28 إبريل 2026</span>
-        <span class="pill">🇸🇦 الرياض</span>
+  <section class="header-strip" aria-label="ملخّص الشركة">
+    <div class="header-strip__left">
+      <span class="state-pill state-pill--demo" id="state-pill"><span class="dot" aria-hidden="true"></span><span id="state-pill-text">DEMO MODE</span></span>
+      <h1 class="header-strip__co" id="company-name">مكتب الرياض العقاري</h1>
+      <div class="header-strip__meta">
+        <span class="header-strip__chip"><i data-lucide="building" style="width:14px;height:14px"></i> <span id="company-sector">عقارات · الرياض</span></span>
+        <span class="header-strip__chip"><i data-lucide="rocket" style="width:14px;height:14px"></i> <span id="company-tier">Sector Sprint · Day 7/14</span></span>
+        <span class="header-strip__chip"><i data-lucide="calendar" style="width:14px;height:14px"></i> <span id="company-since">بدأ منذ ٧ أيّام</span></span>
       </div>
     </div>
-
-    <div class="preview-banner">
-      <span>👁️ <strong>هذه معاينة فقط</strong> — هذا ما يراه المشترك يومياً. الأرقام تجريبية.</span>
-      <a href="/pricing.html">اشترك ابدأ الآن →</a>
+    <div class="header-strip__kpi">
+      <div class="header-strip__kpi-num" id="kpi-lift">+22%</div>
+      <div class="header-strip__kpi-label">KPI lift vs baseline · target ≥ 20%</div>
     </div>
+  </section>
 
-    <!-- KPIs Today -->
-    <div class="kpi-grid">
-      <div class="kpi">
-        <div class="label">leads استُلمت اليوم</div>
-        <div class="value">23</div>
-        <div class="delta up">↑ +35% من الأمس</div>
+  <!-- Phase 3 Wave 5: degraded-state banner (hidden by default; JS shows when applicable) -->
+  <div class="cp-degraded-banner" id="cp-degraded-banner" role="alert">
+    <i data-lucide="alert-triangle" aria-hidden="true"></i>
+    <div>
+      <strong>عرض جزئي · بعض الأقسام لم تُحمَّل بعد</strong>
+      <span class="cp-degraded-banner__sub" id="cp-degraded-list">
+        نعرض بيانات DEMO حيث لم تتوفر بياناتك الحقيقية بعد.
+      </span>
+    </div>
+  </div>
+
+  <section aria-labelledby="ops-title" class="ds-stack ds-stack--md">
+    <div class="sec-head">
+      <h2 id="ops-title">Operations اليوم</h2>
+      <p class="sec-head__sub">٦ أرقام تختصر حالة شركتك في Dealix الآن. كل رقم يربط بالسجلّ الحقيقي عند تفعيل الباقة. <span class="src-pill" id="ops-src">DEMO</span></p>
+    </div>
+    <div class="ops-grid" id="ops-grid">
+      <div class="ops-card"><div class="ops-card__num">42</div><div class="ops-card__label">leads اليوم</div><div class="ops-card__sub">٣٢ من WhatsApp · ١٠ من النموذج</div></div>
+      <div class="ops-card"><div class="ops-card__num">18</div><div class="ops-card__label">مؤهّلة (Qualified)</div><div class="ops-card__sub">BANT score ≥ 60</div></div>
+      <div class="ops-card"><div class="ops-card__num">7</div><div class="ops-card__label">في Pipeline نشط</div><div class="ops-card__sub">٤ Discovery · ٣ Demo</div></div>
+      <div class="ops-card"><div class="ops-card__num">3</div><div class="ops-card__label">drafts بانتظار موافقتك</div><div class="ops-card__sub">على /decisions.html</div></div>
+      <div class="ops-card"><div class="ops-card__num">12</div><div class="ops-card__label">proof events هذا الأسبوع</div><div class="ops-card__sub">claim×evidence pairs</div></div>
+      <div class="ops-card"><div class="ops-card__num">8.4</div><div class="ops-card__label">NPS · آخر استبيان</div><div class="ops-card__sub">من ٥ مستجيبين</div></div>
+    </div>
+  </section>
+
+  <section aria-labelledby="seq-title" class="ds-stack ds-stack--md">
+    <div class="sec-head">
+      <h2 id="seq-title">تسلسل الرحلة (Journey)</h2>
+      <p class="sec-head__sub">١٢ مرحلة مُعرَّفة في الـ state machine. أنت في مرحلة <strong style="color:var(--accent-2)" id="current-state">in_delivery</strong>. <span class="src-pill" id="seq-src">DEMO</span></p>
+    </div>
+    <div class="seq-timeline" id="seq-timeline">
+      <div class="seq-step seq-step--done"><div class="seq-step__icon">✓</div><div class="seq-step__label">lead_intake</div></div>
+      <div class="seq-step seq-step--done"><div class="seq-step__icon">✓</div><div class="seq-step__label">diagnostic_requested</div></div>
+      <div class="seq-step seq-step--done"><div class="seq-step__icon">✓</div><div class="seq-step__label">diagnostic_sent</div></div>
+      <div class="seq-step seq-step--done"><div class="seq-step__icon">✓</div><div class="seq-step__label">pilot_offered</div></div>
+      <div class="seq-step seq-step--done"><div class="seq-step__icon">✓</div><div class="seq-step__label">payment_pending</div></div>
+      <div class="seq-step seq-step--done"><div class="seq-step__icon">✓</div><div class="seq-step__label">paid_or_committed</div></div>
+      <div class="seq-step seq-step--active"><div class="seq-step__icon">●</div><div class="seq-step__label">in_delivery</div></div>
+      <div class="seq-step"><div class="seq-step__icon">7</div><div class="seq-step__label">proof_pack_ready</div></div>
+      <div class="seq-step"><div class="seq-step__icon">8</div><div class="seq-step__label">proof_pack_sent</div></div>
+      <div class="seq-step"><div class="seq-step__icon">9</div><div class="seq-step__label">upsell_recommended</div></div>
+      <div class="seq-step"><div class="seq-step__icon">10</div><div class="seq-step__label">nurture</div></div>
+      <div class="seq-step"><div class="seq-step__icon">—</div><div class="seq-step__label">blocked</div></div>
+    </div>
+  </section>
+
+  <section aria-labelledby="radar-title" class="ds-stack ds-stack--md">
+    <div class="sec-head">
+      <h2 id="radar-title">Radar اليومي · فرص لشركتك الآن</h2>
+      <p class="sec-head__sub">يجمع ١٦ نوع إشارة (تعيين موظّفين · تمويل · مناقصات · فرع جديد · WhatsApp Business · …) من مصادر شرعيّة فقط، ويرتّبها بحسب توافقها مع شركتك. لكل فرصة: لماذا الآن + كيف تتصرّف. <span class="src-pill" id="radar-src">DEMO</span></p>
+    </div>
+    <div class="radar-grid" id="radar-grid">
+
+      <article class="radar-card">
+        <div class="radar-card__head">
+          <span class="radar-card__signal">HIRING_SALES_REP</span>
+          <div class="radar-card__score">92<small>/100</small></div>
+        </div>
+        <h3 class="radar-card__title">شركة "النخلة للتطوير العقاري" أعلنت توظيف ٣ Sales Reps في الرياض</h3>
+        <p class="radar-card__why">هذه الشركة تتوسّع — توظيف ٣ مندوبين خلال أسبوع واحد إشارة قويّة على Pipeline ينمو أسرع من قدرتهم على التأهيل اليدوي. شركتك تبيع "خدمات تأهيل leads بـ ٣٠ ثانية" — هذا التوقيت مثالي.</p>
+        <p class="radar-card__action">رسالة WhatsApp لمدير المبيعات (نسخة معتمدة جاهزة على /decisions.html): "لاحظنا توسّعكم — Dealix يؤهّل ٤٠ lead/يوم تلقائياً قبل وصولها للمندوبين. ٣٠ دقيقة عرض؟"</p>
+        <div class="radar-card__meta">
+          <span class="radar-card__meta-item"><i data-lucide="map-pin" style="width:12px;height:12px"></i> الرياض</span>
+          <span class="radar-card__meta-item"><i data-lucide="link" style="width:12px;height:12px"></i> LinkedIn</span>
+          <span class="radar-card__meta-item"><i data-lucide="clock" style="width:12px;height:12px"></i> منذ ٤ ساعات</span>
+        </div>
+      </article>
+
+      <article class="radar-card">
+        <div class="radar-card__head">
+          <span class="radar-card__signal">TENDER_PUBLISHED</span>
+          <div class="radar-card__score">87<small>/100</small></div>
+        </div>
+        <h3 class="radar-card__title">منصّة Etimad نشرت مناقصة "إدارة عقارات حكوميّة في الرياض" بقيمة ١٢ مليون ﷼</h3>
+        <p class="radar-card__why">٤ شركات في شبكة عملائك السابقين قدّمت لمناقصات مماثلة ٢٠٢٤. هذه المناقصة Vision-2030-aligned + خبرتك القطاعيّة في Tier-1 real-estate تجعلك مؤهّل دون شك. مهلة التقديم: ٢١ يوم.</p>
+        <p class="radar-card__action">طلب مكالمة استشاريّة مع المؤسس (٣٠ دقيقة) — يساعدك في build proposal + تجهيز ROI calculator + إحصائيّات قطاعيّة من Sector Benchmark Data.</p>
+        <div class="radar-card__meta">
+          <span class="radar-card__meta-item"><i data-lucide="map-pin" style="width:12px;height:12px"></i> الرياض</span>
+          <span class="radar-card__meta-item"><i data-lucide="link" style="width:12px;height:12px"></i> Etimad.sa</span>
+          <span class="radar-card__meta-item"><i data-lucide="clock" style="width:12px;height:12px"></i> منذ يوم</span>
+        </div>
+      </article>
+
+      <article class="radar-card">
+        <div class="radar-card__head">
+          <span class="radar-card__signal">WHATSAPP_BUSINESS_ADDED</span>
+          <div class="radar-card__score">78<small>/100</small></div>
+        </div>
+        <h3 class="radar-card__title">"عقاريّ جدّة الذكي" فعّل WhatsApp Business + Catalog</h3>
+        <p class="radar-card__why">إشارة قويّة: المنافس يتجهّز للـ inbound automation. توقيت مثالي لأن Dealix يجهّز نفس البنية بأسبوعين بدلاً من ٣ شهور. ميزتك = founder access مباشر + 8 hard gates مفروضة في الكود.</p>
+        <p class="radar-card__action">منشور LinkedIn (مسوّدة معتمدة): "٣ أسباب لمكتب عقاري أن يفعّل AI Operating Team بدل Chatbot عادي" — يخلق نقاش مع شريحة الـ ١٥ عميل المحتملين.</p>
+        <div class="radar-card__meta">
+          <span class="radar-card__meta-item"><i data-lucide="map-pin" style="width:12px;height:12px"></i> جدّة</span>
+          <span class="radar-card__meta-item"><i data-lucide="link" style="width:12px;height:12px"></i> WhatsApp Catalog</span>
+          <span class="radar-card__meta-item"><i data-lucide="clock" style="width:12px;height:12px"></i> منذ يومين</span>
+        </div>
+      </article>
+
+      <article class="radar-card">
+        <div class="radar-card__head">
+          <span class="radar-card__signal">FUNDING_ROUND</span>
+          <div class="radar-card__score">71<small>/100</small></div>
+        </div>
+        <h3 class="radar-card__title">PIF أعلن استثمار ٢٠٠ مليون ﷼ في startup عقاري (Riyadh-based)</h3>
+        <p class="radar-card__why">هذا الـ startup يبني pipeline سريع — احتمال يحتاجون أدوات تأهيل + Saudi-Arabic UX. شركتك بيع لشركات Tier-1 في القطاع — توقيت ذهبي للـ partnership conversation قبل ما يلتزمون مع Western SaaS.</p>
+        <p class="radar-card__action">مكالمة استكشاف مع مدير المنتج (١٥ دقيقة) — اعرض على Dealix كـ "AI sidekick" يحفظ لهم ٢-٣ شهور time-to-market.</p>
+        <div class="radar-card__meta">
+          <span class="radar-card__meta-item"><i data-lucide="map-pin" style="width:12px;height:12px"></i> الرياض</span>
+          <span class="radar-card__meta-item"><i data-lucide="link" style="width:12px;height:12px"></i> Argaam</span>
+          <span class="radar-card__meta-item"><i data-lucide="clock" style="width:12px;height:12px"></i> منذ ٣ أيّام</span>
+        </div>
+      </article>
+
+      <article class="radar-card">
+        <div class="radar-card__head">
+          <span class="radar-card__signal">SECTOR_PULSE_RISING</span>
+          <div class="radar-card__score">68<small>/100</small></div>
+        </div>
+        <h3 class="radar-card__title">قطاع العقارات السعودي · معدّل الردّ على leads ارتفع +١٢٪ هذا الشهر</h3>
+        <p class="radar-card__why">المنافسون يحسّنون response time. لو تأخّرت شركتك، أنت تخسر ٢٥-٣٠٪ من الـ leads لمنافس يردّ خلال دقائق. Dealix يعطيك ردّ سعودي اللهجة جاهز خلال ٤٥ ثانية (founder-approved).</p>
+        <p class="radar-card__action">مراجعة weekly Pipeline Audit — موعدها بعد غد. ركّز على ٣ leads أبطأ من ساعتين response time.</p>
+        <div class="radar-card__meta">
+          <span class="radar-card__meta-item"><i data-lucide="trending-up" style="width:12px;height:12px"></i> Sector pulse</span>
+          <span class="radar-card__meta-item"><i data-lucide="link" style="width:12px;height:12px"></i> Dealix Sector Benchmark</span>
+          <span class="radar-card__meta-item"><i data-lucide="clock" style="width:12px;height:12px"></i> أسبوعي</span>
+        </div>
+      </article>
+
+      <article class="radar-card">
+        <div class="radar-card__head">
+          <span class="radar-card__signal">VISION2030_ALIGNMENT</span>
+          <div class="radar-card__score">64<small>/100</small></div>
+        </div>
+        <h3 class="radar-card__title">SDAIA أصدر دليل تطبيق PDPL للعقارات (نسخة v2.1)</h3>
+        <p class="radar-card__why">المعايير الجديدة تشمل consent table per-channel × per-purpose — نفس البنية المُفعَّلة في Dealix منذ Phase K. هذا proof point ممتاز في أي contract negotiation: "Dealix يطبّق المعايير قبل ما تصدر".</p>
+        <p class="radar-card__action">حدّث صفحة /privacy.html باستشهاد بدليل SDAIA v2.1 — يرفع credibility مع enterprise prospects بنسبة ٤٠٪ تقريباً.</p>
+        <div class="radar-card__meta">
+          <span class="radar-card__meta-item"><i data-lucide="shield" style="width:12px;height:12px"></i> SDAIA</span>
+          <span class="radar-card__meta-item"><i data-lucide="link" style="width:12px;height:12px"></i> sdaia.gov.sa</span>
+          <span class="radar-card__meta-item"><i data-lucide="clock" style="width:12px;height:12px"></i> منذ أسبوع</span>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <section aria-labelledby="dec-title" class="ds-stack ds-stack--md">
+    <div class="sec-head">
+      <h2 id="dec-title">القرارات المعلّقة (Daily Decisions)</h2>
+      <p class="sec-head__sub">كل إجراء خارجي يحتاج موافقتك (NO_LIVE_SEND gate). الكروت أدناه نسخة معاينة من /decisions.html. <span class="src-pill" id="dec-src">DEMO</span></p>
+    </div>
+    <div class="ds-grid ds-grid--wide" id="dec-grid">
+      <article class="dec-card dec-card--high">
+        <div class="dec-card__head">
+          <span class="dec-card__type">OUTBOUND_WHATSAPP</span>
+          <span class="dec-card__risk dec-card__risk--high">HIGH</span>
+        </div>
+        <p class="dec-card__summary"><strong>إرسال رسالة WhatsApp لـ "النخلة للتطوير"</strong> — استجابة على إشارة hiring_sales (radar score 92). نسخة معتمدة بالعربي السعودي، ٤٢ كلمة، ضمن 72h active window.</p>
+        <div class="dec-card__actions">
+          <a href="/decisions.html?id=dec_001" class="ds-link">معاينة + موافقة →</a>
+        </div>
+      </article>
+      <article class="dec-card dec-card--medium">
+        <div class="dec-card__head">
+          <span class="dec-card__type">PROPOSAL_DRAFT</span>
+          <span class="dec-card__risk dec-card__risk--medium">MEDIUM</span>
+        </div>
+        <p class="dec-card__summary"><strong>مسوّدة proposal لمناقصة Etimad</strong> — ٣ صفحات، تتضمّن ROI calculator + Sector Benchmark Data. تحتاج رأيك على pricing tier قبل الإرسال.</p>
+        <div class="dec-card__actions">
+          <a href="/decisions.html?id=dec_002" class="ds-link">معاينة + موافقة →</a>
+        </div>
+      </article>
+      <article class="dec-card dec-card--low">
+        <div class="dec-card__head">
+          <span class="dec-card__type">FAQ_UPDATE</span>
+          <span class="dec-card__risk dec-card__risk--low">LOW</span>
+        </div>
+        <p class="dec-card__summary"><strong>إضافة ٣ أسئلة جديدة لـ FAQ</strong> من تذاكر دعم آخر أسبوع. تتعلّق بـ refund policy + Moyasar timing.</p>
+        <div class="dec-card__actions">
+          <a href="/decisions.html?id=dec_003" class="ds-link">مراجعة سريعة →</a>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section aria-labelledby="digest-title" class="ds-stack ds-stack--md">
+    <div class="sec-head">
+      <h2 id="digest-title">Digest أسبوعي + شهري</h2>
+      <p class="sec-head__sub">ملخّصات تلقائيّة يوم الأحد (أسبوعي) وأوّل خميس من الشهر (شهري). كلّها مدعومة بـ evidence_id من proof_ledger. <span class="src-pill" id="digest-src">DEMO</span></p>
+    </div>
+    <div class="digest-grid">
+      <div class="digest" id="digest-weekly">
+        <h3 class="digest__title"><i data-lucide="calendar-days"></i> Digest أسبوعي · Week 27 (٢٠-٢٦ أبريل)</h3>
+        <div style="font-size: var(--fs-sm); color: var(--text-muted); margin-bottom: var(--space-3); font-weight: 700;">Top 5 wins</div>
+        <ul class="digest__list">
+          <li>قفل صفقة "مجمّع الياسمين" (٤٢٠٬٠٠٠ ﷼ سنوي)</li>
+          <li>+١٤٪ qualified leads vs الأسبوع السابق</li>
+          <li>أوّل ٣ broker performance briefs منشورة</li>
+          <li>response time: متوسط ٣٢ دقيقة (هدف ≤ ٣٠ دقيقة)</li>
+          <li>NPS retention call: ٩/١٠ من عميل Sprint سابق</li>
+        </ul>
+        <div style="font-size: var(--fs-sm); color: var(--text-muted); margin-top: var(--space-4); margin-bottom: var(--space-2); font-weight: 700;">Top 3 opportunities للأسبوع القادم</div>
+        <ul class="digest__list">
+          <li>متابعة "النخلة" hiring signal (92/100)</li>
+          <li>تقديم مناقصة Etimad قبل ٢١ يوم</li>
+          <li>مكالمة استكشاف مع PIF startup العقاري</li>
+        </ul>
       </div>
-      <div class="kpi">
-        <div class="label">رد بالعربي خلال 60 ثانية</div>
-        <div class="value">22 / 23</div>
-        <div class="delta up">96% — متفوق</div>
-      </div>
-      <div class="kpi">
-        <div class="label">demos محجوزة</div>
-        <div class="value">4</div>
-        <div class="delta up">↑ 2 أمس</div>
-      </div>
-      <div class="kpi">
-        <div class="label">pipeline value</div>
-        <div class="value">187K ريال</div>
-        <div class="delta">هذا الأسبوع</div>
+      <div class="digest" id="digest-monthly">
+        <h3 class="digest__title"><i data-lucide="calendar"></i> Digest شهري · Sector Pulse · أبريل ٢٠٢٦</h3>
+        <div style="font-size: var(--fs-sm); color: var(--text-muted); margin-bottom: var(--space-3); font-weight: 700;">سياق القطاع</div>
+        <ul class="digest__list">
+          <li>قطاع العقارات السعودي · response rate +٨.٢٪ MoM</li>
+          <li>الرياض حرارة ٨٧ (blazing) · جدّة ٧١ (hot) · الدمّام ٥٤</li>
+          <li>أعلى Why-Now signals: hiring_sales (٣٢) · tender (١٨) · funding (٧)</li>
+          <li>SDAIA: ٤ قرارات إنفاذ PDPL جديدة (إجمالي ٤٨)</li>
+        </ul>
+        <div style="font-size: var(--fs-sm); color: var(--text-muted); margin-top: var(--space-4); margin-bottom: var(--space-2); font-weight: 700;">Proof Pack additions</div>
+        <ul class="digest__list">
+          <li>+١٢ claim×evidence pairs (الإجمالي: ٤٧)</li>
+          <li>أوّل case study جاهز للنشر — موقّع</li>
+          <li>KPI commitment: +٢٢٪ lift (هدف ≥ ٢٠٪) ✅</li>
+        </ul>
       </div>
     </div>
+  </section>
 
-    <!-- Today's Hot Leads -->
-    <div class="panel">
-      <h2>🔥 leads اليوم — يحتاجون متابعتك</h2>
-      <p class="subtitle">Dealix رد على الجميع. أنت اعتمد الخطوة التالية لكل حالة.</p>
+  <section aria-labelledby="important-title" class="ds-stack ds-stack--md">
+    <div class="sec-head">
+      <h2 id="important-title">قرارات مهمّة هذا الأسبوع</h2>
+      <p class="sec-head__sub">قرارات تستحقّ ٥ دقائق من تركيزك. مرتّبة بحسب الـ impact على المسار الاستراتيجي. <span class="src-pill">DEMO</span></p>
+    </div>
+    <div class="ds-grid ds-grid--wide">
+      <article class="ds-card ds-stack ds-stack--sm">
+        <h3 class="ds-card__title">١. هل ترفع سعر Sector Sprint بعد اليوم ١٤؟</h3>
+        <p class="ds-card__sub">انتهاء founding-partner price-lock للأوّل ٣ عملاء. السعر سيرتفع ٥٬٠٠٠ → ٧٬٥٠٠ ﷼. قرارك يؤثّر على ٤ leads مفتوحة الآن.</p>
+        <p style="font-size: 11px; color: #fbbf24; font-family: var(--font-lt); margin: 0;">Impact: عالي · Deadline: ٣ أيّام</p>
+      </article>
+      <article class="ds-card ds-stack ds-stack--sm">
+        <h3 class="ds-card__title">٢. تفعيل Hunter API للـ enrichment الآن أو تأجيل؟</h3>
+        <p class="ds-card__sub">تكلفة: $49/شهر. المنفعة: enrichment data + email verification يرفع response rate ٣٠٪. شركتك حاليّاً enrichment_provider="static".</p>
+        <p style="font-size: 11px; color: #4ade80; font-family: var(--font-lt); margin: 0;">Impact: متوسّط · Deadline: نهاية الأسبوع</p>
+      </article>
+      <article class="ds-card ds-stack ds-stack--sm">
+        <h3 class="ds-card__title">٣. ترقية Sprint → Partner؟</h3>
+        <p class="ds-card__sub">يوم ٧ من ١٤. Sprint credit يُحتسب كاملاً (٥٬٠٠٠ ﷼ خصم) من الشهر الأوّل لـ Partner (١٢٬٠٠٠ ﷼ → ٧٬٠٠٠ للشهر الأوّل).</p>
+        <p style="font-size: 11px; color: var(--accent-2); font-family: var(--font-lt); margin: 0;">Impact: استراتيجي · Deadline: يوم ١٤</p>
+      </article>
+    </div>
+  </section>
 
-      <div class="lead-row">
-        <div>
-          <div class="name">عبدالله الزهراني</div>
-          <div class="meta">+966 50 *** 4421 · شقة 3 غرف · حي الياسمين · ميزانية 1.2M</div>
-        </div>
-        <div class="channel">📱 WhatsApp · رد بـ Dealix قبل 12 دقيقة</div>
-        <div><span class="stage stage-meeting_booked">معاينة محجوزة</span></div>
-        <div class="priority priority-P0">P0</div>
-        <div><a href="#" style="color:var(--brand);font-weight:600;text-decoration:none;font-size:13px">اعتمد →</a></div>
+  <section aria-labelledby="map-title" class="ds-stack ds-stack--md">
+    <div class="sec-head">
+      <h2 id="map-title">خريطة كل التسلسلات داخل Dealix</h2>
+      <p class="sec-head__sub">كل سير عمل (workflow) يعمل في المنصّة — ١٠ مراحل رئيسيّة + ٧ layers معماريّة. الأخضر = نشط لشركتك الآن.</p>
+    </div>
+    <div class="seq-map">
+      <div class="seq-map__cell seq-map__cell--active">
+        <div class="seq-map__cell-title"><i data-lucide="users"></i> Lead Intake (WhatsApp)</div>
+        <div class="seq-map__cell-stat">LIVE · POST /api/v1/webhooks/whatsapp</div>
+        <p class="seq-map__cell-desc">استقبال الـ leads من WhatsApp + نموذج /diagnostic — مع 4-gate safe-send.</p>
       </div>
-
-      <div class="lead-row">
-        <div>
-          <div class="name">شركة الإعمار للمشاريع</div>
-          <div class="meta">RFQ مجمع سكني 80 وحدة · إيميل + WhatsApp</div>
-        </div>
-        <div class="channel">📧 Email · رد بـ Dealix قبل 28 دقيقة</div>
-        <div><span class="stage stage-qualified">مؤهّل</span></div>
-        <div class="priority priority-P0">P0</div>
-        <div><a href="#" style="color:var(--brand);font-weight:600;text-decoration:none;font-size:13px">اعتمد →</a></div>
+      <div class="seq-map__cell seq-map__cell--active">
+        <div class="seq-map__cell-title"><i data-lucide="target"></i> Qualification (BANT × MEDDPICC)</div>
+        <div class="seq-map__cell-stat">LIVE · POST /api/v1/sales-os/qualify</div>
+        <p class="seq-map__cell-desc">تأهيل تلقائي — score + reason + recommended next-step.</p>
       </div>
-
-      <div class="lead-row">
-        <div>
-          <div class="name">منى السبيعي</div>
-          <div class="meta">فيلا حي العقيق · ميزانية مفتوحة · جاهزة معاينة هذا الأسبوع</div>
-        </div>
-        <div class="channel">🌐 Website Form · رد قبل 4 دقائق</div>
-        <div><span class="stage stage-pilot_active">في المتابعة</span></div>
-        <div class="priority priority-P1">P1</div>
-        <div><a href="#" style="color:var(--brand);font-weight:600;text-decoration:none;font-size:13px">اعتمد →</a></div>
+      <div class="seq-map__cell seq-map__cell--active">
+        <div class="seq-map__cell-title"><i data-lucide="search"></i> Enrichment</div>
+        <div class="seq-map__cell-stat">LIVE · POST /api/v1/prospect/enrich-tech</div>
+        <p class="seq-map__cell-desc">provider abstraction — Hunter جاهز · static fallback.</p>
       </div>
-
-      <div class="lead-row">
-        <div>
-          <div class="name">خالد العتيبي</div>
-          <div class="meta">يطلب عرض سعر · 3 وحدات · شركة استثمار</div>
-        </div>
-        <div class="channel">📱 WhatsApp · يفاوض بنشاط</div>
-        <div><span class="stage stage-negotiating">تفاوض</span></div>
-        <div class="priority priority-P0">P0</div>
-        <div><a href="#" style="color:var(--brand);font-weight:600;text-decoration:none;font-size:13px">اعتمد →</a></div>
+      <div class="seq-map__cell seq-map__cell--active">
+        <div class="seq-map__cell-title"><i data-lucide="route"></i> Routing (KSA quiet-hours)</div>
+        <div class="seq-map__cell-stat">LIVE · POST /api/v1/leads/&#123;id&#125;/route</div>
+        <p class="seq-map__cell-desc">احترام صلاة + ٢١:٠٠-٠٨:٠٠ + per-channel consent.</p>
+      </div>
+      <div class="seq-map__cell seq-map__cell--active">
+        <div class="seq-map__cell-title"><i data-lucide="message-square"></i> Outreach Drafts (72h window)</div>
+        <div class="seq-map__cell-stat">LIVE · POST /api/v1/leads/&#123;id&#125;/outreach/draft</div>
+        <p class="seq-map__cell-desc">draft فقط — يحتاج موافقة (NO_LIVE_SEND).</p>
+      </div>
+      <div class="seq-map__cell seq-map__cell--active">
+        <div class="seq-map__cell-title"><i data-lucide="check-circle"></i> Consent Required Send</div>
+        <div class="seq-map__cell-stat">LIVE · POST /api/v1/compliance/consent/check</div>
+        <p class="seq-map__cell-desc">per-channel × per-purpose · default-deny.</p>
+      </div>
+      <div class="seq-map__cell seq-map__cell--active">
+        <div class="seq-map__cell-title"><i data-lucide="file-text"></i> Audit Trail</div>
+        <div class="seq-map__cell-stat">LIVE · cross-cutting middleware</div>
+        <p class="seq-map__cell-desc">correlation_id موحّد عبر كل الطلبات.</p>
+      </div>
+      <div class="seq-map__cell seq-map__cell--active">
+        <div class="seq-map__cell-title"><i data-lucide="git-branch"></i> Release Gate</div>
+        <div class="seq-map__cell-stat">LIVE · CI-level</div>
+        <p class="seq-map__cell-desc">registry validator يمنع أي deploy خارج المعايير.</p>
+      </div>
+      <div class="seq-map__cell">
+        <div class="seq-map__cell-title"><i data-lucide="mail"></i> Lead Intake (Email)</div>
+        <div class="seq-map__cell-stat">TARGET · trigger: customer asks</div>
+        <p class="seq-map__cell-desc">لن يُبنى قبل أن يطلبه عميل (Article 11).</p>
+      </div>
+      <div class="seq-map__cell">
+        <div class="seq-map__cell-title"><i data-lucide="file-signature"></i> Proposal (PDF)</div>
+        <div class="seq-map__cell-stat">TARGET · trigger: first Sprint signed</div>
+        <p class="seq-map__cell-desc">PDF generator + signed approval flow.</p>
+      </div>
+      <div class="seq-map__cell">
+        <div class="seq-map__cell-title"><i data-lucide="credit-card"></i> Close (e-sig + Moyasar)</div>
+        <div class="seq-map__cell-stat">TARGET · trigger: first paid pilot</div>
+        <p class="seq-map__cell-desc">دفع حيّ مع تحقّق يدوي (NO_LIVE_CHARGE).</p>
+      </div>
+      <div class="seq-map__cell">
+        <div class="seq-map__cell-title"><i data-lucide="layers"></i> Multi-Tenant RLS</div>
+        <div class="seq-map__cell-stat">TARGET · trigger: customer #2</div>
+        <p class="seq-map__cell-desc">عزل كامل بين بيانات العملاء.</p>
       </div>
     </div>
+    <p style="text-align: center; font-size: var(--fs-sm); color: var(--text-muted); margin-top: var(--space-4);">
+      ٨ خدمات LIVE · ٢٤ خدمة TARGET (لن تُبنى قبل أن يطلبها عميل) · المجموع ٣٢ — التفاصيل الكاملة على <a href="/investor.html" class="ds-link">/investor.html</a> (founder-tier).
+    </p>
+  </section>
 
-    <!-- Activity Stream -->
-    <div class="panel">
-      <h2>⚡ نشاط Dealix اليوم</h2>
-      <div class="activity-item">
-        <div class="time">قبل 4 دقائق</div>
-        <div class="desc">📱 رد بالعربي على lead عبر WhatsApp · قطاع: real_estate · تم تأهيله بنجاح</div>
-      </div>
-      <div class="activity-item">
-        <div class="time">قبل 12 دقيقة</div>
-        <div class="desc">📅 حجز معاينة في تقويم Calendly مع <strong>عبدالله الزهراني</strong> · الجمعة 10 ص</div>
-      </div>
-      <div class="activity-item">
-        <div class="time">قبل 28 دقيقة</div>
-        <div class="desc">📧 صنّف رد إيميل من <strong>شركة الإعمار</strong> = ask_demo · أقترح Calendly link</div>
-      </div>
-      <div class="activity-item">
-        <div class="time">قبل 47 دقيقة</div>
-        <div class="desc">🛡️ Dealix منع رد على رقم في suppression list (طلب إيقاف سابق) · تلقائياً</div>
-      </div>
-      <div class="activity-item">
-        <div class="time">قبل ساعتين</div>
-        <div class="desc">📊 تقرير يومي تم إنشاؤه + تصدير CSV · جاهز للإيميل</div>
-      </div>
+  <section class="ds-stack ds-stack--sm" style="text-align: center; padding: var(--space-7) 0;">
+    <h2 style="font-size: clamp(24px, 3vw, 36px); margin: 0;">جاهز تربط بياناتك؟</h2>
+    <p class="ds-lede" style="max-width: 640px; margin: var(--space-3) auto 0;">
+      هذه اللوحة تظهر بياناتك الحقيقيّة بعد تفعيل الباقة. للوصول الكامل: تشخيص مجّاني (٢ دقيقة) أو احجز Sprint مباشرة.
+    </p>
+    <div class="ds-row" style="justify-content: center; gap: var(--space-4); margin-top: var(--space-5); flex-wrap: wrap;">
+      <a class="ds-btn ds-btn--lg" href="/launchpad.html" style="font-size: var(--fs-lg); padding: var(--space-4) var(--space-7);" data-analytics="cta_console_launchpad">
+        <i data-lucide="rocket" style="width:20px;height:20px;"></i>
+        شوف الباقة المغلقة
+      </a>
+      <a class="ds-btn ds-btn--ghost ds-btn--lg" href="/diagnostic-real-estate.html" style="font-size: var(--fs-lg); padding: var(--space-4) var(--space-7);" data-analytics="cta_console_diagnostic">
+        <i data-lucide="clipboard-check" style="width:20px;height:20px;"></i>
+        تشخيص مجّاني (٢ دقيقة)
+      </a>
     </div>
+    <p style="margin-top: var(--space-4); font-size: var(--fs-xs); color: var(--text-muted);">
+      DEMO data shown above. Live data flows in after package activation. <a href="https://api.dealix.me/docs" target="_blank" rel="noopener" class="ds-link">api.dealix.me/docs</a> · <a href="/compare.html" class="ds-link">vs HubSpot/Salesforce/Zoho</a>
+    </p>
+  </section>
 
-    <!-- Compliance Status -->
-    <div class="panel">
-      <h2>🛡️ حالة Compliance — جاهز لـ PDPL + ZATCA</h2>
-      <div class="compliance-grid">
-        <div class="compliance-card">
-          <span class="check">✓</span><span class="label">PDPL aligned</span>
-          <div class="desc">opt_out + suppression محفوظة</div>
-        </div>
-        <div class="compliance-card">
-          <span class="check">✓</span><span class="label">RFC 8058 List-Unsubscribe</span>
-          <div class="desc">على كل إيميل خارج</div>
-        </div>
-        <div class="compliance-card">
-          <span class="check">✓</span><span class="label">Saudi data residency</span>
-          <div class="desc">PostgreSQL في الرياض</div>
-        </div>
-        <div class="compliance-card">
-          <span class="check">✓</span><span class="label">Audit log</span>
-          <div class="desc">كل send/draft/reply مسجّل</div>
-        </div>
-      </div>
+</main>
+
+<footer class="ds-footer">
+  <div class="ds-container ds-stack ds-stack--md" style="text-align: center;">
+    <p class="ds-lede" style="max-width: 640px; margin: 0 auto;">
+      Saudi-PDPL · Arabic primary · Approval-first · Proof-backed.
+    </p>
+    <div class="ds-row" style="justify-content: center; gap: var(--space-5); flex-wrap: wrap;">
+      <a class="ds-link" href="/">الرئيسيّة</a>
+      <a class="ds-link" href="/launchpad.html">الباقة المغلقة</a>
+      <a class="ds-link" href="/ai-team.html">٥ وكلاء AI</a>
+      <a class="ds-link" href="/diagnostic.html">التشخيص</a>
+      <a class="ds-link" href="/proof.html">Proof</a>
+      <a class="ds-link" href="/privacy.html">الخصوصيّة</a>
+      <a class="ds-link" href="/terms.html">الشروط</a>
     </div>
+  </div>
+</footer>
 
-    <!-- Subscription Upsell -->
-    <div class="upgrade-cta">
-      <div>
-        <h3>أنتم في خطة Growth — استخدمتم 1,247 من 2,500 lead هذا الشهر</h3>
-        <p>متبقي 12 يوم على نهاية الدورة. الترقية لـ Scale تفتح API + SLA + Account manager.</p>
-      </div>
-      <a class="btn" href="/pricing.html">قارن Scale 7,999/شهر →</a>
-    </div>
-
-  </main>
-</div>
-
+<script src="/assets/js/customer-dashboard.js"></script>
+<script>if (window.lucide) { lucide.createIcons(); }</script>
 </body>
 </html>

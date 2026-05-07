@@ -172,3 +172,11 @@ docs/designops/exports/**
 # ─────────────────────────────────────────────────────────────
 docs/phase-e/live/**
 docs/diagnostics/**
+
+# ─────────────────────────────────────────────────────────────
+# Wave 6 Revenue Activation — live prospect intake / pilot brief /
+# payment state / delivery session / proof pack / demo outcomes.
+# NEVER commit real prospect or customer data. Founder's working
+# state during demo→pilot→delivery lives here.
+# ─────────────────────────────────────────────────────────────
+docs/wave6/live/**

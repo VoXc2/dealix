@@ -17,7 +17,41 @@ def evaluate_safety(req: ApprovalRequest) -> ApprovalRequest:
     if policy demands it. Idempotent."""
     if req.action_mode == "blocked" or req.risk_level == "blocked":
         req.status = ApprovalStatus.BLOCKED
+    # Per-channel hard rules
+    if (req.channel or "").lower() == "linkedin":
+        # NO_LINKEDIN_AUTO — every LinkedIn action must be founder-approved
+        # at minimum; never auto-approved.
+        if req.action_mode == "approved_execute":
+            req.action_mode = "approval_required"
     return req
+
+
+# ── Per-channel policy table ──────────────────────────────────
+# Channel → (default_required_approver, max_auto_approve_risk)
+# An approval can be auto-approved (still recorded) only if its
+# risk_level <= max_auto_approve_risk for the channel. None means
+# nothing is auto-approvable on that channel.
+CHANNEL_POLICY: dict[str, dict[str, str | None]] = {
+    "whatsapp":  {"required_approver": "founder", "max_auto_approve_risk": None},
+    "email":     {"required_approver": "csm_or_founder", "max_auto_approve_risk": "low"},
+    "linkedin":  {"required_approver": "founder", "max_auto_approve_risk": None},
+    "phone":     {"required_approver": "founder", "max_auto_approve_risk": None},
+    "dashboard": {"required_approver": "csm_or_founder", "max_auto_approve_risk": "medium"},
+}
+
+_RISK_ORDER = {"low": 1, "medium": 2, "high": 3, "blocked": 4}
+
+
+def can_auto_approve(req: ApprovalRequest) -> bool:
+    """Per-channel rule: returns True only if the channel allows
+    auto-approval for this risk level. NEVER True for whatsapp/linkedin/phone.
+    """
+    policy = CHANNEL_POLICY.get((req.channel or "").lower())
+    if not policy or not policy.get("max_auto_approve_risk"):
+        return False
+    max_allowed = _RISK_ORDER.get(policy["max_auto_approve_risk"] or "", 0)
+    actual = _RISK_ORDER.get(req.risk_level or "low", 1)
+    return actual <= max_allowed
 
 
 def assert_can_approve(req: ApprovalRequest) -> None:

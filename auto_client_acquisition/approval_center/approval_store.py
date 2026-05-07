@@ -123,6 +123,76 @@ class ApprovalStore:
         rows.sort(key=lambda r: r.updated_at, reverse=True)
         return rows[:limit]
 
+    def expire_overdue(self) -> int:
+        """Sweep pending requests whose expires_at has passed.
+
+        Flips status pending → expired. Returns count of expired items.
+        Designed to be called by a background job (cron / sleeper).
+        """
+        now = datetime.now(UTC)
+        expired_count = 0
+        with self._lock:
+            for req in self._items.values():
+                if (
+                    ApprovalStatus(req.status) == ApprovalStatus.PENDING
+                    and req.expires_at is not None
+                    and req.expires_at < now
+                ):
+                    req.status = ApprovalStatus.EXPIRED
+                    req.updated_at = now
+                    req.edit_history.append(
+                        self._audit_entry("system", "expire", {})
+                    )
+                    expired_count += 1
+        return expired_count
+
+    def bulk_approve(
+        self,
+        *,
+        who: str,
+        proof_impact_prefix: str | None = None,
+        approval_ids: list[str] | None = None,
+    ) -> dict[str, Any]:
+        """Bulk-approve all pending requests matching either criterion.
+
+        Either provide approval_ids OR proof_impact_prefix (e.g.
+        "leadops:" to approve every draft from one leadops record).
+
+        Returns {'approved': [...ids], 'failed': [{'id', 'reason'}], 'total'}.
+        """
+        approved: list[str] = []
+        failed: list[dict[str, Any]] = []
+        with self._lock:
+            candidates: list[ApprovalRequest]
+            if approval_ids:
+                candidates = [r for r in self._items.values() if r.approval_id in approval_ids]
+            elif proof_impact_prefix:
+                candidates = [
+                    r for r in self._items.values()
+                    if (r.proof_impact or "").startswith(proof_impact_prefix)
+                    and ApprovalStatus(r.status) == ApprovalStatus.PENDING
+                ]
+            else:
+                return {"approved": [], "failed": [], "total": 0,
+                        "reason": "either approval_ids or proof_impact_prefix required"}
+
+            for req in candidates:
+                try:
+                    assert_can_approve(req)
+                    req.status = ApprovalStatus.APPROVED
+                    req.edit_history.append(
+                        self._audit_entry(who, "bulk_approve", {})
+                    )
+                    req.updated_at = datetime.now(UTC)
+                    approved.append(req.approval_id)
+                except Exception as e:
+                    failed.append({"id": req.approval_id, "reason": str(e)})
+        return {
+            "approved": approved,
+            "failed": failed,
+            "total": len(approved) + len(failed),
+        }
+
     # ─── Test helpers ────────────────────────────────────────────
 
     def clear(self) -> None:

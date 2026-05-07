@@ -1,0 +1,237 @@
+# Dealix Integration Contract Map (Phase 1) — machine-readable companion
+# to docs/INTEGRATION_CONTRACT_MAP.md
+#
+# Wave 4 plan reads this to know what's safe to call vs avoid.
+metadata:
+  date: "2026-05-07"
+  branch: "claude/service-activation-console-IA2JK"
+  pre_wave4_head: "9bf7575"
+  total_layers: 15
+
+layers:
+  - id: 1
+    name: "Customer Portal frontend"
+    files: ["landing/customer-portal.html", "landing/assets/js/customer-dashboard.js"]
+    endpoints: ["/customer-portal.html"]
+    customer_visible: true
+    safe_to_call: true
+    degraded_behavior: "DEMO data fallback"
+    adapter_needed: "additive enriched_view renderer (Phase 10)"
+    do_not_break: ["3-state UX", "no internal terms"]
+    tests_protecting: ["test_landing_forbidden_claims"]
+
+  - id: 2
+    name: "Customer Company Portal API"
+    files: ["api/routers/customer_company_portal.py"]
+    endpoints: ["GET /api/v1/customer-portal/{handle}", "GET /api/v1/customer-portal/"]
+    customer_visible: true
+    safe_to_call: true
+    degraded_behavior: "zero-state stubs"
+    adapter_needed: "Phase 10 additive enriched_view keys"
+    do_not_break:
+      - "len(sections) == 8 invariant"
+      - "no internal terms"
+      - "bilingual title_ar + title_en per section"
+      - "existing enriched_view 6 keys: ops_summary, sequences, radar_today, digest_weekly, digest_monthly, service_status_for_customer"
+    tests_protecting:
+      - "test_constitution_closure (16)"
+      - "test_customer_portal_live_full_ops (7)"
+
+  - id: 3
+    name: "LeadOps Spine"
+    files: ["auto_client_acquisition/leadops_spine/"]
+    endpoints: ["/api/v1/leadops/{status,run,brief,draft,debug}"]
+    customer_visible: false
+    customer_visible_indirect: "lead count surfaced in portal enriched_view.ops_summary"
+    safe_to_call: true
+    degraded_behavior: "empty list"
+    adapter_needed: "no — already complete (Wave 3)"
+    do_not_break: ["_HARD_GATES", "draft never auto_execute"]
+    tests_protecting: ["test_leadops_spine_golden_path (8)"]
+
+  - id: 4
+    name: "Customer Brain"
+    files: ["auto_client_acquisition/customer_brain/"]
+    endpoints: ["/api/v1/customers/{handle}/brain*"]
+    customer_visible: false
+    safe_to_call: true
+    degraded_behavior: "empty snapshot"
+    adapter_needed: "no — Phase 3 graph reuses snapshot"
+    do_not_break: ["no PII in snapshot"]
+    tests_protecting: ["test_customer_brain_full_ops (6)"]
+
+  - id: 5
+    name: "Service Sessions"
+    files: ["auto_client_acquisition/service_sessions/"]
+    endpoints: ["/api/v1/service-sessions/{start,...,advance,attach-deliverable,complete}"]
+    customer_visible: false
+    customer_visible_indirect: "session count in portal enriched_view.sequences"
+    safe_to_call: true
+    degraded_behavior: "404 on unknown session"
+    adapter_needed: "no — Phase 3 + Phase 5 read"
+    do_not_break: ["state-machine validity", "approval_required for active state"]
+    tests_protecting: ["test_service_sessions_full_ops (8)"]
+
+  - id: 6
+    name: "Approval Center"
+    files: ["auto_client_acquisition/approval_center/"]
+    endpoints: ["/api/v1/approvals/* (9 endpoints)"]
+    customer_visible: false
+    safe_to_call: true
+    degraded_behavior: "empty pending list"
+    adapter_needed: "no — Phase 5 + 7 read"
+    do_not_break: ["LinkedIn never auto-execute", "expiry sweep"]
+    tests_protecting: ["test_approval_center (14)", "test_approval_center_extensions (12)"]
+
+  - id: 7
+    name: "Payment Ops"
+    files: ["auto_client_acquisition/payment_ops/"]
+    endpoints: ["/api/v1/payment-ops/*"]
+    customer_visible: false
+    customer_visible_indirect: "billing state in portal"
+    safe_to_call: true
+    degraded_behavior: "409 on invalid transition"
+    adapter_needed: "no — Phase 3 reads state"
+    do_not_break:
+      - "invoice_intent != revenue"
+      - "moyasar_live blocked unless DEALIX_MOYASAR_MODE=live"
+    tests_protecting: ["test_payment_ops_full_ops (8)"]
+
+  - id: 8
+    name: "Proof Ledger"
+    files: ["auto_client_acquisition/proof_ledger/"]
+    endpoints: ["/api/v1/proof-ledger/*"]
+    customer_visible: false
+    customer_visible_indirect: "proof_pack section in portal"
+    safe_to_call: true
+    degraded_behavior: "unconditional PII redact on export"
+    adapter_needed: "no — Phase 3 reads events"
+    do_not_break: ["no publish without signed consent"]
+    tests_protecting: ["test_proof_ledger_extensions (15)", "test_proof_ledger_redacts_on_export (4)"]
+
+  - id: 9
+    name: "Support Inbox / Support OS"
+    files: ["auto_client_acquisition/support_inbox/", "auto_client_acquisition/support_os/"]
+    endpoints: ["/api/v1/support-inbox/*", "/api/v1/support-os/*"]
+    customer_visible: false
+    safe_to_call: true
+    degraded_behavior: "empty list"
+    adapter_needed: "no — Phase 5 reads"
+    do_not_break: ["NO_LIVE_SEND", "mandatory-escalate categories"]
+    tests_protecting: ["test_support_inbox_full_ops (8)", "test_support_os_v12 (25)"]
+
+  - id: 10
+    name: "Case Study Engine"
+    files: ["auto_client_acquisition/case_study_engine/"]
+    endpoints: ["/api/v1/case-study/*"]
+    customer_visible: false
+    safe_to_call: true
+    degraded_behavior: "empty library"
+    adapter_needed: "no"
+    do_not_break: ["NO_PUBLISH_WITHOUT_CONSENT", "FORBIDDEN_TOKENS_SCRUB"]
+    tests_protecting: ["test_case_study_engine_full_ops (8)"]
+
+  - id: 11
+    name: "Growth/Sales/Partnership radar"
+    files:
+      - "api/routers/growth_os.py"
+      - "api/routers/sales_os.py"
+      - "api/routers/partnership_os.py"
+      - "api/routers/growth_beast.py"
+      - "api/routers/company_growth_beast.py"
+    endpoints: ["/api/v1/*-os/*"]
+    customer_visible: false
+    safe_to_call: true
+    degraded_behavior: "insufficient_data"
+    adapter_needed: "yes — Phase 5 reads role-command briefs"
+    do_not_break: ["_HARD_GATES per router"]
+
+  - id: 12
+    name: "Executive Pack"
+    files:
+      - "api/routers/executive_os.py"
+      - "auto_client_acquisition/executive_reporting/"
+      - "auto_client_acquisition/executive_pack_v2/"
+    endpoints:
+      - "/api/v1/executive-os/*"
+      - "/api/v1/customers/{handle}/executive-pack/*"
+    customer_visible: false
+    customer_visible_indirect: "digest in portal"
+    safe_to_call: true
+    degraded_behavior: "data_status: insufficient_data | live"
+    adapter_needed: "no — Phase 5 reads"
+    do_not_break: ["NO_FAKE_REVENUE", "NO_FAKE_FORECAST"]
+    tests_protecting:
+      - "test_executive_os_v12 (4)"
+      - "test_executive_pack_full_ops (6)"
+      - "test_executive_reporting (8+)"
+
+  - id: 13
+    name: "AI Workforce"
+    files:
+      - "api/routers/ai_workforce.py"
+      - "api/routers/ai_workforce_v10.py"
+      - "auto_client_acquisition/ai_workforce/"
+      - "auto_client_acquisition/ai_workforce_v10/"
+    endpoints: ["/api/v1/ai-workforce*"]
+    customer_visible: false
+    safe_to_call: true
+    degraded_behavior: "empty registry"
+    adapter_needed: "no — Phase 5 may surface count"
+    do_not_break: ["NO_LIVE_SEND on any agent"]
+
+  - id: 14
+    name: "Full-Ops verifiers"
+    files: ["scripts/full_ops_10_layer_verify.sh", "scripts/v*_verify.sh"]
+    endpoints: []
+    customer_visible: false
+    safe_to_call: true
+    degraded_behavior: "exit non-zero on FAIL"
+    adapter_needed: "yes — Phase 15 chains them in integration_upgrade_verify.sh"
+    do_not_break: ["must keep PASS after Wave 4"]
+    tests_protecting: ["test_dealix_smoke_test_cli"]
+
+  - id: 15
+    name: "Channel policies / hard gates"
+    files:
+      - "auto_client_acquisition/whatsapp_safe_send.py"
+      - "auto_client_acquisition/orchestrator/policies.py"
+      - "auto_client_acquisition/designops/safety_gate.py"
+      - "auto_client_acquisition/consent_table.py"
+    endpoints: []
+    customer_visible: false
+    safe_to_call: true
+    degraded_behavior: "gate refuses unsafe action"
+    adapter_needed: "yes — Phase 8 unified /api/v1/channel-policy/check"
+    do_not_break:
+      - "NO_COLD_WHATSAPP"
+      - "NO_LINKEDIN_AUTO"
+      - "NO_SCRAPING"
+      - "NO_FAKE_PROOF"
+    tests_protecting: ["test_whatsapp_safe_send_v14"]
+
+wave_4_phases:
+  - phase: 2
+    adapter: "integration_upgrade.safe_call"
+    wraps: "every cross-module call, with degrade fallback"
+  - phase: 3
+    adapter: "unified_operating_graph.builder"
+    wraps: "revenue_graph + customer_brain + Wave 3 modules"
+  - phase: 4
+    adapter: "full_ops_radar.score"
+    wraps: "revenue_graph.maturity_score + 2 new dimensions"
+  - phase: 5
+    adapter: "executive_command_center.builder"
+    wraps: "founder_beast_command_center 9 sections + 6 new"
+  - phase: 7
+    adapter: "whatsapp_decision_bot.policy"
+    wraps: "whatsapp_safe_send 6 gates (decision-only)"
+  - phase: 8
+    adapter: "channel_policy_gateway.policy"
+    wraps: "designops/safety_gate + per-channel rule sets"
+  - phase: 9
+    adapter: "radar_events.event_store"
+    wraps: "observability_v10/buffer (event_type taxonomy)"
+  - phase: 11
+    adapter: "agent_observability"
+    wraps: "observability_v10 (re-export shim)"

@@ -1,0 +1,19 @@
+{
+  "company_name": "<COMPANY-NAME-PLACEHOLDER>",
+  "sector": "<SECTOR-PLACEHOLDER>",
+  "region": "<REGION-PLACEHOLDER>",
+  "website": null,
+  "current_growth_problem": "<1-sentence-placeholder>",
+  "current_sales_problem": "<1-sentence-placeholder>",
+  "current_support_problem": "<1-sentence-placeholder>",
+  "current_channels": [],
+  "team_size": 0,
+  "decision_maker": "<ROLE-PLACEHOLDER>",
+  "known_relationship": "warm_intro",
+  "consent_status": "pending",
+  "preferred_language": "ar",
+  "notes": "<placeholder>",
+  "intake_version": "wave6_v1",
+  "is_real_data": false,
+  "is_template": true
+}
