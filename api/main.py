@@ -58,7 +58,14 @@ from api.routers import (
     founder_v10,
     growth_v10,
     gtm_os,
+    case_study_engine,
+    customer_brain as customer_brain_router,
+    executive_pack_per_customer,
     knowledge_v10,
+    leadops_spine,
+    payment_ops as payment_ops_router,
+    service_sessions as service_sessions_router,
+    support_webhook,
     observability_v6,
     proof_ledger,
     reliability_os,
@@ -252,6 +259,13 @@ def create_app() -> FastAPI:
     app.include_router(proof_to_market.router)
     app.include_router(founder_beast_command_center.router)
     app.include_router(customer_company_portal.router)
+    app.include_router(leadops_spine.router)
+    app.include_router(customer_brain_router.router)
+    app.include_router(service_sessions_router.router)
+    app.include_router(support_webhook.router)
+    app.include_router(executive_pack_per_customer.router)
+    app.include_router(payment_ops_router.router)
+    app.include_router(case_study_engine.router)
     app.include_router(public.router)
     app.include_router(admin.router)
 

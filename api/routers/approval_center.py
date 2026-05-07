@@ -140,3 +140,47 @@ async def history(limit: int = Query(default=50, ge=1, le=500)) -> dict[str, Any
         "count": len(rows),
         "approvals": [r.model_dump(mode="json") for r in rows],
     }
+
+
+@router.post("/expire-sweep")
+async def expire_sweep() -> dict[str, Any]:
+    """Sweep pending approvals whose expires_at has passed.
+
+    Designed for a background job; safe to call ad-hoc. Returns count.
+    """
+    expired = get_default_approval_store().expire_overdue()
+    return {
+        "expired_count": expired,
+        "guardrails": {
+            "no_live_send": True,
+            "expiry_is_terminal": True,
+        },
+    }
+
+
+@router.post("/bulk-approve")
+async def bulk_approve(payload: dict[str, Any] = Body(default_factory=dict)) -> dict[str, Any]:
+    """Bulk-approve pending approvals.
+
+    Body: {
+      'who': 'founder',
+      'proof_impact_prefix': 'leadops:lops_xxxx'  (OR)
+      'approval_ids': ['apv_a', 'apv_b']
+    }
+    """
+    who = str(payload.get("who", "")).strip()
+    if not who:
+        raise HTTPException(status_code=422, detail="'who' is required")
+    proof_impact_prefix = payload.get("proof_impact_prefix")
+    approval_ids = payload.get("approval_ids")
+    if not proof_impact_prefix and not approval_ids:
+        raise HTTPException(
+            status_code=422,
+            detail="either 'proof_impact_prefix' or 'approval_ids' required",
+        )
+    result = get_default_approval_store().bulk_approve(
+        who=who,
+        proof_impact_prefix=proof_impact_prefix,
+        approval_ids=approval_ids,
+    )
+    return result

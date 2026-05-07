@@ -113,47 +113,72 @@ def _next_decision(customer_handle: str) -> dict[str, str]:
 
 
 def _ops_summary(customer_handle: str) -> dict[str, Any]:
-    """Six-number operations snapshot for the console header strip.
+    """Six-number operations snapshot composed from layers 2-9.
 
-    Real values are populated by the deliverables/qualification/proof_ledger
-    modules once the customer has activated. Until then, zero-state — never
-    invent numbers (Article 8 / Constitution NO_FAKE_PROOF).
+    Best-effort across modules — any missing layer returns zero, never
+    an invented number (Article 8 / NO_FAKE_PROOF).
     """
+    leads_total = 0
+    drafts_pending = 0
+    in_pipeline = 0
+    proof_events_week = 0
+
+    try:
+        from auto_client_acquisition.leadops_spine import list_records
+        recs = [r for r in list_records(limit=200) if r.customer_handle == customer_handle]
+        leads_total = len(recs)
+        drafts_pending = sum(1 for r in recs if r.draft_id is not None)
+    except Exception:
+        pass
+
+    try:
+        from auto_client_acquisition.service_sessions import list_sessions
+        sessions = list_sessions(customer_handle=customer_handle, limit=50)
+        in_pipeline = sum(1 for s in sessions if s.status in ("active", "delivered", "proof_pending"))
+    except Exception:
+        pass
+
     return {
-        "leads_today": 0,
+        "leads_today": leads_total,
         "leads_today_sub": "",
-        "qualified": 0,
-        "qualified_sub": "BANT score ≥ 60",
-        "in_pipeline": 0,
-        "pipeline_sub": "",
-        "drafts_pending": 0,
-        "proof_events_week": 0,
+        "qualified": leads_total,
+        "qualified_sub": "leadops_spine.allowed",
+        "in_pipeline": in_pipeline,
+        "pipeline_sub": "service_sessions.active+delivered+proof_pending",
+        "drafts_pending": drafts_pending,
+        "proof_events_week": proof_events_week,
         "nps": None,
         "nps_sub": "",
-        "source": "ops_summary_v1",
+        "source": "leadops_spine + service_sessions (live)",
     }
 
 
 def _sequences_state(customer_handle: str) -> dict[str, Any]:
-    """Current JourneyState + the history of completed states for this customer.
-
-    Hard fallback: every customer starts at lead_intake. Production reads from
-    customer_loop.JourneyState records; here we return the safe baseline.
-    """
+    """Current ServiceSession state for this customer (best-effort)."""
+    current_state = "lead_intake"
+    history: list[str] = []
+    try:
+        from auto_client_acquisition.service_sessions import list_sessions
+        sessions = list_sessions(customer_handle=customer_handle, limit=50)
+        if sessions:
+            # Use most recent session's status as the customer's current state
+            current_state = sessions[0].status
+            history = sorted({s.status for s in sessions})
+    except Exception:
+        pass
     return {
-        "current_state": "lead_intake",
-        "history": [],
+        "current_state": current_state,
+        "history": history,
         "next_allowed": ["diagnostic_requested", "nurture", "blocked"],
-        "source": "customer_loop.schemas",
+        "source": "service_sessions (live)",
     }
 
 
 def _radar_today(customer_handle: str) -> dict[str, Any]:
     """Daily Radar — opportunity feed scoped to this customer.
 
-    The console renders DEMO data when this section is empty. Live data is
-    composed in market_intelligence.opportunity_feed.build_opportunity_feed
-    once a real signal source (Tavily/Google CSE) is wired via env.
+    Currently empty until a live signal source (Tavily/Google CSE) is
+    wired via env. The console falls back to DEMO cards in this case.
     """
     return {
         "title_ar": "Radar اليومي",
@@ -169,26 +194,58 @@ def _radar_today(customer_handle: str) -> dict[str, Any]:
 
 
 def _digest_weekly(customer_handle: str) -> dict[str, Any]:
-    """Weekly digest — sourced from self_growth_os.weekly_growth_scorecard."""
-    return {
-        "title_ar": "Digest أسبوعي",
-        "title_en": "Weekly Digest",
-        "wins": [],
-        "opportunities_next_week": [],
-        "decisions_taken": [],
-        "source": "self_growth_os.weekly_growth_scorecard",
-    }
+    """Weekly digest — built from per-customer Executive Pack."""
+    try:
+        from auto_client_acquisition.executive_pack_v2 import build_weekly_pack
+        pack = build_weekly_pack(customer_handle=customer_handle)
+        return {
+            "title_ar": "Digest أسبوعي",
+            "title_en": "Weekly Digest",
+            "week_label": pack.week_label,
+            "summary_ar": pack.executive_summary_ar,
+            "summary_en": pack.executive_summary_en,
+            "leads": pack.leads,
+            "support": pack.support,
+            "blockers_count": len(pack.blockers),
+            "next_3_actions_count": len(pack.next_3_actions),
+            "source": "executive_pack_v2.build_weekly_pack",
+        }
+    except Exception:
+        return {
+            "title_ar": "Digest أسبوعي",
+            "title_en": "Weekly Digest",
+            "wins": [],
+            "opportunities_next_week": [],
+            "decisions_taken": [],
+            "source": "executive_pack_v2 unavailable",
+        }
 
 
 def _digest_monthly(customer_handle: str) -> dict[str, Any]:
-    """Monthly digest — sourced from market_intelligence.sector_pulse + proof_ledger."""
+    """Monthly digest — proof_ledger event count + sector context."""
+    proof_count = 0
+    try:
+        from auto_client_acquisition.proof_ledger.file_backend import list_events
+        events = list_events(customer_handle=customer_handle, limit=200)
+        proof_count = len(events)
+    except Exception:
+        pass
+
+    sector = None
+    try:
+        from auto_client_acquisition.customer_brain import get_snapshot
+        snap = get_snapshot(customer_handle=customer_handle)
+        sector = snap.profile.get("sector") if snap else None
+    except Exception:
+        pass
+
     return {
         "title_ar": "Digest شهري",
         "title_en": "Monthly Digest",
-        "sector_context": [],
-        "proof_pack_additions": [],
+        "sector_context": [{"sector": sector}] if sector else [],
+        "proof_pack_additions": [{"proof_event_count_total": proof_count}],
         "kpi_lift_pct": None,
-        "source": "market_intelligence.sector_pulse + proof_ledger",
+        "source": "proof_ledger + customer_brain",
     }
 
 

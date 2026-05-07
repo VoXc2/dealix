@@ -94,3 +94,111 @@ async def export_redacted_endpoint(payload: dict = Body(default_factory=dict)) -
 async def export_audit_endpoint() -> dict:
     """SDAIA / DPO-shareable export. PII redacted unconditionally."""
     return export_for_audit()
+
+
+# ── Phase 6 extensions ────────────────────────────────────────
+
+@router.post("/attachments")
+async def attachments_endpoint(payload: dict = Body(default_factory=dict)) -> dict:
+    """Store an evidence attachment for one proof event.
+
+    Body: {
+      'customer_handle': 'acme',
+      'event_id': 'pe_abc',
+      'filename': 'report.pdf',
+      'mime_type': 'application/pdf',
+      'data_base64': '...'
+    }
+    """
+    import base64
+    from auto_client_acquisition.proof_ledger.file_storage import store_attachment
+
+    required = ["customer_handle", "event_id", "filename", "mime_type", "data_base64"]
+    missing = [k for k in required if not payload.get(k)]
+    if missing:
+        raise HTTPException(status_code=422, detail=f"missing: {missing}")
+    try:
+        data = base64.b64decode(payload["data_base64"])
+    except Exception as e:
+        raise HTTPException(status_code=422, detail=f"invalid base64: {e}")
+    try:
+        result = store_attachment(
+            customer_handle=payload["customer_handle"],
+            event_id=payload["event_id"],
+            filename=payload["filename"],
+            mime_type=payload["mime_type"],
+            data=data,
+        )
+    except ValueError as e:
+        raise HTTPException(status_code=422, detail=str(e))
+    return {
+        "stored": True,
+        "attachment": result,
+        "guardrails": {
+            "max_bytes": 10 * 1024 * 1024,
+            "mime_allowlist_enforced": True,
+            "filename_sanitized": True,
+        },
+    }
+
+
+@router.post("/consent/request")
+async def consent_request_endpoint(payload: dict = Body(default_factory=dict)) -> dict:
+    """Request consent for publishing a narrative."""
+    from auto_client_acquisition.proof_ledger.consent_signature import request_consent
+
+    customer_handle = payload.get("customer_handle")
+    scope = payload.get("scope", "single_pack")
+    narrative = payload.get("narrative", "")
+    target_event_ids = payload.get("target_event_ids", [])
+    target_pack_id = payload.get("target_pack_id")
+    if not customer_handle or not narrative:
+        raise HTTPException(
+            status_code=422, detail="customer_handle + narrative required",
+        )
+    if scope not in ("single_event", "single_pack", "all_future"):
+        raise HTTPException(status_code=422, detail=f"invalid scope: {scope}")
+    sig = request_consent(
+        customer_handle=customer_handle,
+        scope=scope,
+        narrative=narrative,
+        target_event_ids=target_event_ids,
+        target_pack_id=target_pack_id,
+    )
+    return {
+        "signature": sig.model_dump(mode="json"),
+        "guardrails": {
+            "no_publish_without_signed_status": True,
+            "document_hash_binds_consent": True,
+        },
+    }
+
+
+@router.post("/pack/build")
+async def pack_build_endpoint(payload: dict = Body(default_factory=dict)) -> dict:
+    """Assemble a Proof Pack from N events.
+
+    Body: {
+      'customer_handle': 'acme',
+      'events': [...event dicts...],
+      'audience': 'internal_only' | 'external_publishable'
+    }
+    """
+    from auto_client_acquisition.proof_ledger.pack_assembly import assemble_proof_pack
+
+    customer_handle = payload.get("customer_handle")
+    events = payload.get("events", [])
+    audience = payload.get("audience", "internal_only")
+    if not customer_handle or not isinstance(events, list):
+        raise HTTPException(
+            status_code=422, detail="customer_handle + events list required",
+        )
+    try:
+        pack = assemble_proof_pack(
+            customer_handle=customer_handle,
+            events=events,
+            audience=audience,
+        )
+    except ValueError as e:
+        raise HTTPException(status_code=422, detail=str(e))
+    return pack
