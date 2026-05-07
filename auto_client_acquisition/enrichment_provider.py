@@ -54,6 +54,29 @@ class EnrichmentResult:
     provider_id: str = "none"
     metadata: dict[str, Any] = field(default_factory=dict)
 
+    @property
+    def is_demo_mode(self) -> bool:
+        # Wave 7.5 §24.2 — surfaces honestly when score is mock/deterministic
+        # so customer-facing UI can render a DEMO MODE pill instead of
+        # silently presenting hash-derived numbers as real intelligence.
+        return self.reason_code in ("no_provider", "live_disabled")
+
+    def to_public_dict(self) -> dict[str, Any]:
+        # Used by customer_company_portal + executive_command_center to
+        # surface enrichment data with explicit demo-mode flag.
+        return {
+            "domain": self.domain,
+            "confidence_score": self.confidence_score,
+            "company_name_guess": self.company_name_guess,
+            "industry_guess": self.industry_guess,
+            "employee_count_band": self.employee_count_band,
+            "is_demo_mode": self.is_demo_mode,
+            "data_source": "live_provider" if not self.is_demo_mode else "deterministic_demo_fallback",
+            "demo_reason": "HUNTER_API_KEY not configured — set the env var on Railway and DEALIX_ENRICHMENT_LIVE_CALLS=true to activate live calls."
+            if self.is_demo_mode and self.reason_code == "live_disabled"
+            else None,
+        }
+
 
 def _clamp_score(s: float) -> float:
     if s < 0.0:
