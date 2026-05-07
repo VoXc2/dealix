@@ -1,11 +1,11 @@
 # Legal Engagement Tracker — Dealix
 
-**Status:** DRAFT — to be filled by founder before customer #1
+**Status:** PARALLEL-TRACK — founder-self-execution active (v2 templates) · lawyer engagement parallel-tracked within 90 days
 **Owner:** Sami (founder)
 **Last updated:** 2026-05-07
-**Companion docs:** `docs/PRIVACY_PDPL_READINESS.md` · `docs/DPA_PILOT_TEMPLATE.md` · `docs/PDPL_DATA_SUBJECT_REQUEST_SOP.md` · Plan §23.5.5
+**Companion docs:** `docs/LEGAL_FOUNDER_SELF_EXECUTION.md` (cover) · `docs/DPA_DEALIX_FULL.md` · `docs/PRIVACY_POLICY_v2.md` · `docs/TERMS_OF_SERVICE_v2.md` · `docs/PDPL_BREACH_RESPONSE_PLAN.md` · `docs/CROSS_BORDER_TRANSFER_ADDENDUM.md` · `docs/PDPL_DATA_SUBJECT_REQUEST_SOP.md` · Plan §23.5.5 + §24
 
-> **Why this doc exists:** Wave 7 §23.5.5 — PDPL violation = up to 5,000,000 SAR fine + criminal exposure (up to 2 years for sensitive data). 48 enforcement decisions issued by SDAIA in 2025-2026. **No paid customer onboarded until DPA is lawyer-signed.**
+> **Wave 7.6 update:** Founder elected founder-self-execution per `LEGAL_FOUNDER_SELF_EXECUTION.md`. v2 templates are in force. Lawyer engagement is now PARALLEL-TRACK (not blocking) — target completion within 90 days of customer #1 onboarding. Customer #1 can be signed using v2 templates per the explicit founder acknowledgement. PDPL fines up to 5M SAR remain real; v2 templates align with PDPL principles + GDPR-derived best practice.
 
 ---
 
@@ -39,31 +39,32 @@
 
 ## 3. Deliverables required from lawyer
 
-Listed in order of P0 → P2.
+Wave 7.6 status update: **founder-self-execution v2 templates active**. Lawyer's role is now to REVIEW + AMEND existing v2 templates within 90 days. The deliverables below are LAWYER REVIEW tasks, not "build from scratch."
 
-### P0 — block paying customer #1
+### P0 — review v2 templates (within 90 days of customer #1)
 
-| # | Deliverable | Source doc to review | Due | Status |
+| # | Deliverable | v2 doc to review | Target | Status |
 |---|---|---|---|---|
-| L1 | DPA template lawyer-signed | `docs/DPA_PILOT_TEMPLATE.md` | day 7 | NOT_STARTED |
-| L2 | Privacy Policy v2 attestation | `landing/privacy.html` (currently "v1 under review") | day 7 | NOT_STARTED |
-| L3 | Terms of Service v2 attestation | `landing/terms.html` (currently "v1 under review") | day 7 | NOT_STARTED |
-| L4 | Subprocessor disclosure check | `landing/subprocessors.html` | day 10 | NOT_STARTED |
+| L1 | DPA — full executable | `docs/DPA_DEALIX_FULL.md` | 90 days | v2_ACTIVE_PENDING_REVIEW |
+| L2 | Privacy Policy v2 attestation | `docs/PRIVACY_POLICY_v2.md` (mirrored to `landing/privacy.html`) | 90 days | v2_ACTIVE_PENDING_REVIEW |
+| L3 | Terms of Service v2 attestation | `docs/TERMS_OF_SERVICE_v2.md` (mirrored to `landing/terms.html`) | 90 days | v2_ACTIVE_PENDING_REVIEW |
+| L4 | Subprocessor disclosure check | `landing/subprocessors.html` + `docs/CROSS_BORDER_TRANSFER_ADDENDUM.md` | 90 days | v2_ACTIVE_PENDING_REVIEW |
 
-### P1 — block customer #4 (scale gate)
+### P1 — review before customer #4 (scale gate)
 
-| # | Deliverable | Source doc to review | Due | Status |
+| # | Deliverable | v2 doc to review | Target | Status |
 |---|---|---|---|---|
-| L5 | DSAR (data subject request) procedure | `docs/PDPL_DATA_SUBJECT_REQUEST_SOP.md` | day 14 | NOT_STARTED |
-| L6 | Breach response plan | _TBD_ doc | day 21 | NOT_STARTED |
-| L7 | Cross-border data transfer clause review | inside DPA | day 21 | NOT_STARTED |
+| L5 | DSAR (data subject request) procedure | `docs/PDPL_DATA_SUBJECT_REQUEST_SOP.md` | before customer #4 | v2_ACTIVE_PENDING_REVIEW |
+| L6 | Breach response plan | `docs/PDPL_BREACH_RESPONSE_PLAN.md` | before customer #4 | v2_ACTIVE_PENDING_REVIEW |
+| L7 | Cross-border data transfer addendum | `docs/CROSS_BORDER_TRANSFER_ADDENDUM.md` | before customer #4 | v2_ACTIVE_PENDING_REVIEW |
 
-### P2 — block first agency partner
+### P2 — review before first agency partner
 
-| # | Deliverable | Source doc to review | Due | Status |
+| # | Deliverable | v2 doc to review | Target | Status |
 |---|---|---|---|---|
-| L8 | Partner referral agreement template | `docs/PARTNER_LEGAL_AGREEMENT.md` | day 30 | NOT_STARTED |
-| L9 | Co-marketing agreement template | _TBD_ doc | day 60 | NOT_STARTED |
+| L8 | Partner referral agreement | `docs/PARTNER_LEGAL_AGREEMENT.md` | before partner #1 | v2_ACTIVE_PENDING_REVIEW |
+| L9 | Co-marketing agreement template | _TBD when first co-marketing opportunity_ | TBD | NOT_STARTED |
+| L10 | Saudi labor law check on `HIRING_CSM_FIRST.md §5` offer letter | `docs/HIRING_CSM_FIRST.md` | before first hire | v2_ACTIVE_PENDING_REVIEW |
 
 ---
 
@@ -93,13 +94,28 @@ Listed in order of P0 → P2.
 
 ---
 
-## 6. Fallback if lawyer not engaged by day 7
+## 6. Wave 7.6 self-execution mode (active)
 
-**Option A — delay customer #1.** Push close to day 14+, do NOT take payment without DPA. Communicate honestly to prospect: _"نحتاج 7 أيّام إضافيّة لإكمال المراجعة القانونيّة لاتفاقيّة المعالجة."_
+The original blocker-mode (§6 fallback options) has been REPLACED by founder-self-execution per `docs/LEGAL_FOUNDER_SELF_EXECUTION.md`.
 
-**Option B — engage emergency lawyer.** Use Stripe Atlas / Clerky model: pre-vetted Saudi corporate lawyer for fixed 3,500 SAR same-week turnaround. (Verify availability before relying on this.)
+**Current operating mode:**
 
-**Option C — abort.** If 14 days pass without legal coverage, pause the entire Wave 7 plan and re-evaluate. Reputation > revenue.
+- Customer #1-3 onboarded using v2 templates (founder takes liability)
+- Lawyer engaged in parallel (target: within 90 days of customer #1)
+- Lawyer reviews, marks each clause: APPROVED · NEEDS_REVISION · REJECTED
+- v2 → v3 (lawyer-attested) once review complete
+
+**If lawyer review surfaces material issues:**
+
+- Notify affected customers within 7 days of receipt
+- Offer amended addendum (free of charge)
+- If customer rejects amendment → mutual termination + pro-rata refund
+
+**Fallback if specific situations arise:**
+
+- Customer dispute escalates to lawyer letter → engage lawyer immediately, pause new signings
+- SDAIA inquiry (5-day window) → call lawyer within 1 hour
+- Suspected breach → 72h notification window per `PDPL_BREACH_RESPONSE_PLAN.md`
 
 ---
 
@@ -113,12 +129,16 @@ Once all P0 items signed → unblock customer #1 onboarding.
 
 ---
 
-## 8. Hard rules
+## 8. Hard rules (Wave 7.6 self-execution mode)
 
-- ❌ Never sign a customer DPA before lawyer-attested L1
-- ❌ Never publish privacy.html / terms.html v2 before lawyer L2/L3 attestation
-- ❌ Never share customer PII with external party without DPA chain (Controller → Processor → sub-processor) signed
+- ❌ Never claim "lawyer-attested" status until lawyer signs off
+- ❌ Never use v2 templates for contracts >50,000 SAR without lawyer review first
+- ❌ Never delay 72h breach notification because of "lawyer not yet engaged"
+- ❌ Never delay SDAIA 5-day response for the same reason
+- ❌ Never share customer PII with external party without signed DPA chain (Controller → Processor → sub-processor)
 - ✅ Always log lawyer interactions in this file (date · question · answer)
-- ✅ Always cc lawyer on PDPL data subject requests (DSAR) until L5 procedure is signed off
+- ✅ Always disclose v2 status honestly to customers per `LEGAL_FOUNDER_SELF_EXECUTION.md` §10
+- ✅ Always escalate to lawyer immediately on dispute / SDAIA inquiry / breach
+- ✅ Always update this file when lawyer engagement starts + monthly thereafter
 
-> **Disclaimer:** This document is an internal tracker. It is NOT a substitute for legal counsel. All clauses, templates, and procedures referenced herein require lawyer review before reliance.
+> **Disclaimer:** This document is an internal tracker. v2 templates are NOT a substitute for licensed legal counsel for disputes / regulatory inquiries. Founder takes responsibility for v2 use during 90-day window per `LEGAL_FOUNDER_SELF_EXECUTION.md`.
