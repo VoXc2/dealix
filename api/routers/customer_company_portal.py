@@ -249,6 +249,136 @@ def _digest_monthly(customer_handle: str) -> dict[str, Any]:
     }
 
 
+def _full_ops_score_section(customer_handle: str) -> dict[str, Any]:
+    """Wave 4 additive — Full-Ops Score for this customer (best-effort)."""
+    try:
+        from auto_client_acquisition.full_ops_radar import compute_full_ops_score
+        s = compute_full_ops_score()
+        return {
+            "score": s["score"],
+            "max_score": s["max_score"],
+            "readiness_label": s["readiness_label"],
+            "source": "full_ops_radar.score",
+        }
+    except Exception:
+        return {"score": 0, "readiness_label": "Internal Only", "source": "insufficient_data"}
+
+
+def _weaknesses_summary_section(customer_handle: str) -> dict[str, Any]:
+    """Wave 4 additive — top 3 weaknesses for this customer.
+
+    Customer-safe view: drops operational fields (related_endpoint,
+    related_doc, owner_role, layer) before exposing.
+    """
+    try:
+        from auto_client_acquisition.full_ops_radar import detect_weaknesses
+        ws = detect_weaknesses(customer_handle=customer_handle)
+        safe_keys = {"id", "severity", "blocker", "reason_ar",
+                     "reason_en", "fix_ar", "fix_en"}
+        top_3_safe = [
+            {k: v for k, v in w.items() if k in safe_keys}
+            for w in ws[:3]
+        ]
+        return {
+            "total": len(ws),
+            "critical_count": sum(1 for w in ws if w["severity"] == "critical"),
+            "top_3": top_3_safe,
+            "source": "weakness_radar (customer-safe view)",
+        }
+    except Exception:
+        return {"total": 0, "critical_count": 0, "top_3": [], "source": "insufficient_data"}
+
+
+def _next_3_decisions_section(customer_handle: str) -> dict[str, Any]:
+    """Wave 4 additive — top 3 pending approvals."""
+    try:
+        from auto_client_acquisition.executive_command_center.next_decisions import (
+            top_3_decisions,
+        )
+        return {
+            "decisions": top_3_decisions(customer_handle=customer_handle),
+            "source": "executive_command_center.next_decisions",
+        }
+    except Exception:
+        return {"decisions": [], "source": "insufficient_data"}
+
+
+def _support_summary_section(customer_handle: str) -> dict[str, Any]:
+    """Wave 4 additive — support inbox summary."""
+    try:
+        from auto_client_acquisition.support_inbox import (
+            find_breached_tickets,
+            list_tickets,
+        )
+        tickets = list_tickets(customer_id=customer_handle, limit=100)
+        breached = find_breached_tickets(customer_id=customer_handle)
+        return {
+            "open_tickets": sum(1 for t in tickets if t.status == "open"),
+            "escalated": sum(1 for t in tickets if t.status == "escalated"),
+            "sla_breached_count": len(breached),
+            "source": "support_inbox",
+        }
+    except Exception:
+        return {"open_tickets": 0, "source": "insufficient_data"}
+
+
+def _payment_state_section(customer_handle: str) -> dict[str, Any]:
+    """Wave 4 additive — payment state summary."""
+    try:
+        from auto_client_acquisition.payment_ops.orchestrator import _INDEX
+        states = [p for p in _INDEX.values() if p.customer_handle == customer_handle]
+        return {
+            "total_payments": len(states),
+            "confirmed_count": sum(1 for p in states
+                                   if p.status in ("payment_confirmed", "delivery_kickoff")),
+            "source": "payment_ops",
+        }
+    except Exception:
+        return {"total_payments": 0, "confirmed_count": 0, "source": "insufficient_data"}
+
+
+def _proof_summary_section(customer_handle: str) -> dict[str, Any]:
+    """Wave 4 additive — proof events summary."""
+    try:
+        from auto_client_acquisition.proof_ledger.file_backend import list_events
+        events = list_events(customer_handle=customer_handle, limit=200)
+        return {
+            "proof_events_count": len(events),
+            "source": "proof_ledger",
+        }
+    except Exception:
+        return {"proof_events_count": 0, "source": "insufficient_data"}
+
+
+def _approval_summary_section(customer_handle: str) -> dict[str, Any]:
+    """Wave 4 additive — approval center summary."""
+    try:
+        from auto_client_acquisition.approval_center import approval_store
+        pending = approval_store.list_pending()
+        scoped = [
+            ap for ap in pending
+            if customer_handle in (ap.proof_impact or "")
+            or customer_handle in (ap.summary_ar or "")
+        ]
+        return {
+            "pending_total": len(pending),
+            "pending_for_this_customer": len(scoped),
+            "source": "approval_center",
+        }
+    except Exception:
+        return {"pending_total": 0, "source": "insufficient_data"}
+
+
+def _executive_command_link_section(customer_handle: str) -> dict[str, Any]:
+    """Wave 4 additive — link to the per-customer Executive Command Center."""
+    return {
+        "url": f"/executive-command-center.html?org={customer_handle}",
+        "label_ar": "افتح مركز القيادة التنفيذي",
+        "label_en": "Open Executive Command Center",
+        "source": "executive_command_center",
+    }
+
+
 def _service_status_for_customer(customer_handle: str) -> dict[str, Any]:
     """Which Dealix services are LIVE for this customer right now."""
     return {
@@ -289,12 +419,22 @@ def _portal_payload(customer_handle: str) -> dict[str, Any]:
             "8_next_decision": _next_decision(customer_handle),
         },
         "enriched_view": {
+            # Wave 3 keys (existing — DO NOT REMOVE)
             "ops_summary": _ops_summary(customer_handle),
             "sequences": _sequences_state(customer_handle),
             "radar_today": _radar_today(customer_handle),
             "digest_weekly": _digest_weekly(customer_handle),
             "digest_monthly": _digest_monthly(customer_handle),
             "service_status_for_customer": _service_status_for_customer(customer_handle),
+            # Wave 4 additive keys (new — never required by old clients)
+            "full_ops_score": _full_ops_score_section(customer_handle),
+            "weaknesses_summary": _weaknesses_summary_section(customer_handle),
+            "next_3_decisions": _next_3_decisions_section(customer_handle),
+            "support_summary": _support_summary_section(customer_handle),
+            "payment_state": _payment_state_section(customer_handle),
+            "proof_summary": _proof_summary_section(customer_handle),
+            "approval_summary": _approval_summary_section(customer_handle),
+            "executive_command_link": _executive_command_link_section(customer_handle),
         },
         "promise_ar": (
             "كل خطوة بموافقتك. لا إرسال آلي. لا خصم آلي. لا ادّعاءات "

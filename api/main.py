@@ -77,6 +77,13 @@ from api.routers import (
     safety_v10,
     sales,
     search_radar,
+    unified_operating_graph as unified_operating_graph_router,
+    full_ops_radar as full_ops_radar_router,
+    executive_command_center as executive_command_center_router,
+    whatsapp_decision_bot as whatsapp_decision_bot_router,
+    channel_policy_gateway as channel_policy_gateway_router,
+    radar_events as radar_events_router,
+    agent_observability as agent_observability_router,
     sectors,
     security_privacy,
     customer_success_os,
@@ -266,6 +273,13 @@ def create_app() -> FastAPI:
     app.include_router(executive_pack_per_customer.router)
     app.include_router(payment_ops_router.router)
     app.include_router(case_study_engine.router)
+    app.include_router(unified_operating_graph_router.router)
+    app.include_router(full_ops_radar_router.router)
+    app.include_router(executive_command_center_router.router)
+    app.include_router(whatsapp_decision_bot_router.router)
+    app.include_router(channel_policy_gateway_router.router)
+    app.include_router(radar_events_router.router)
+    app.include_router(agent_observability_router.router)
     app.include_router(public.router)
     app.include_router(admin.router)
 
