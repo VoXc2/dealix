@@ -48,7 +48,10 @@ PROSPECTING_AGENT = AgentSpec(
         "icp_match_scoring",
         "dedup_against_existing",
     ),
-    tools_used=("google_maps_api", "serpapi", "linkedin_scraper", "icp_matcher"),
+    # tools_used names follow NO_LINKEDIN_AUTO + NO_SCRAPING — public
+    # company search via the official LinkedIn UI (manual, founder-approved
+    # per call) is acceptable. NEVER add a "scraper" or "automation" tool.
+    tools_used=("google_maps_api", "serpapi", "linkedin_company_search", "icp_matcher"),
     runs_on="cron_daily_06_00_riyadh",
     autonomy_level="safe_auto",
     emits_events=("lead.created",),
@@ -94,7 +97,10 @@ ENRICHMENT_AGENT = AgentSpec(
         "tech_stack_detection",
         "social_handle_resolution",
     ),
-    tools_used=("apollo", "zoominfo", "clearbit", "linkedin_scraper", "wikidata"),
+    # NO_LINKEDIN_AUTO: enrichment uses Apollo/Zoominfo/Clearbit licensed
+    # APIs (data they own), plus public LinkedIn company-page search done
+    # manually under founder approval. NEVER a scraper.
+    tools_used=("apollo", "zoominfo", "clearbit", "linkedin_company_search", "wikidata"),
     runs_on="webhook_lead_created",
     autonomy_level="safe_auto",
     emits_events=("lead.enriched",),
