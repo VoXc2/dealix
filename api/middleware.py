@@ -133,8 +133,9 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
         # Legacy XSS protection
         response.headers.setdefault("X-XSS-Protection", "1; mode=block")
         # Remove server fingerprinting
-        response.headers.pop("server", None)
-        response.headers.pop("Server", None)
+        for key in ("server", "Server"):
+            if key in response.headers:
+                del response.headers[key]
 
         return response
 
