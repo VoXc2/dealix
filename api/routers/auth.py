@@ -395,7 +395,7 @@ async def refresh_tokens(
     return await _issue_tokens(user, db, request)
 
 
-@router.post("/logout", status_code=status.HTTP_204_NO_CONTENT)
+@router.post("/logout", status_code=status.HTTP_204_NO_CONTENT, response_model=None)
 async def logout(
     body: RefreshRequest,
     user: UserRecord = Depends(get_current_user),
@@ -413,7 +413,7 @@ async def logout(
     )
 
 
-@router.post("/logout/all", status_code=status.HTTP_204_NO_CONTENT)
+@router.post("/logout/all", status_code=status.HTTP_204_NO_CONTENT, response_model=None)
 async def logout_all(
     user: CurrentUser,
     db: AsyncSession = Depends(get_db),
