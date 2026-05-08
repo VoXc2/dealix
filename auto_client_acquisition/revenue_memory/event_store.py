@@ -117,9 +117,23 @@ class InMemoryEventStore:
 _DEFAULT_STORE: InMemoryEventStore | None = None
 
 
-def get_default_store() -> InMemoryEventStore:
-    """Lazy singleton — used by helpers when no store is injected."""
+def get_postgres_store():
+    """Create a PostgresEventStore backed by the application's async session factory."""
+    from auto_client_acquisition.revenue_memory.pg_event_store import PostgresEventStore
+    from db.session import async_session_factory
+
+    return PostgresEventStore(async_session_factory())
+
+
+def get_default_store(backend: str = "memory") -> EventStore:
+    """Lazy singleton — used by helpers when no store is injected.
+
+    Args:
+        backend: "memory" (default, for tests) or "postgres" (production).
+    """
     global _DEFAULT_STORE
+    if backend == "postgres":
+        return get_postgres_store()
     if _DEFAULT_STORE is None:
         _DEFAULT_STORE = InMemoryEventStore()
     return _DEFAULT_STORE
