@@ -7,14 +7,24 @@ Production-safe additive endpoints. Does NOT modify existing /leads or /prospect
 from __future__ import annotations
 
 import logging
+import os
 import uuid
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta, timezone
 from typing import Any
 
 from fastapi import APIRouter, Body, HTTPException
-from sqlalchemy import select, func
+from sqlalchemy import func, select
 
-from db.models import ConversationRecord, DealRecord, LeadRecord, TaskRecord
+from db.models import (
+    CompanyRecord,
+    ConversationRecord,
+    CustomerRecord,
+    DealRecord,
+    LeadRecord,
+    OutreachQueueRecord,
+    PartnerRecord,
+    TaskRecord,
+)
 from db.session import async_session_factory
 
 router = APIRouter(prefix="/api/v1", tags=["autonomous"])
@@ -26,7 +36,13 @@ def _new_id(prefix: str = "rec") -> str:
 
 
 def _utcnow() -> datetime:
-    return datetime.now(timezone.utc)
+    return datetime.now(UTC)
+
+
+def _default_ingestion_tenant_id() -> str | None:
+    """Optional env tie-in for webhook-ingested leads (must reference real TenantRecord.id)."""
+    tid = os.getenv("DEFAULT_INGESTION_TENANT_ID", "").strip()
+    return tid or None
 
 
 async def _safe_commit(session, obj_to_add=None) -> bool:
@@ -302,7 +318,7 @@ async def dashboard_metrics() -> dict[str, Any]:
             log.warning("dashboard_query_skip: %s", str(e)[:120])
             return 0.0
 
-    today_start = datetime.now(timezone.utc).replace(hour=0, minute=0, second=0, microsecond=0)
+    today_start = datetime.now(UTC).replace(hour=0, minute=0, second=0, microsecond=0)
 
     async with async_session_factory()() as session:
         leads_total = await _count(session, select(func.count()).select_from(LeadRecord))
@@ -342,9 +358,6 @@ async def dashboard_metrics() -> dict[str, Any]:
             "overdue": int(tasks_overdue),
         },
     }
-
-
-from db.models import CompanyRecord, CustomerRecord, OutreachQueueRecord, PartnerRecord
 
 
 # ── Companies (subscriber intake) ───────────────────────────────
@@ -718,6 +731,7 @@ async def import_google_lead(body: dict[str, Any] = Body(...)) -> dict[str, Any]
     async with async_session_factory()() as session:
         lead = LeadRecord(
             id=rec_id,
+            tenant_id=_default_ingestion_tenant_id(),
             source="google_ads",
             company_name=company,
             contact_name=name,
@@ -785,6 +799,7 @@ async def import_meta_lead(body: dict[str, Any] = Body(...)) -> dict[str, Any]:
     async with async_session_factory()() as session:
         lead = LeadRecord(
             id=rec_id,
+            tenant_id=_default_ingestion_tenant_id(),
             source="meta_lead_ads",
             company_name=company,
             contact_name=name,

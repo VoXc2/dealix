@@ -8,11 +8,13 @@ from api.security.api_key import (
 )
 from api.security.auth_deps import (
     CurrentUser,
+    EffectiveTenantStr,
     OptionalUser,
     TenantID,
     get_current_user,
     get_optional_user,
     get_tenant_id,
+    require_effective_tenant,
     require_sales_manager,
     require_sales_rep,
     require_super_admin,
@@ -46,11 +48,18 @@ from api.security.webhook_signatures import (
 )
 
 __all__ = [
+    # RBAC
+    "DEFAULT_TENANT_ROLES",
+    "ROLE_PERMISSIONS",
     # API key
     "APIKeyMiddleware",
-    "require_admin_key",
-    "verify_admin_key",
-    "verify_api_key",
+    # Auth deps
+    "CurrentUser",
+    "EffectiveTenantStr",
+    "OptionalUser",
+    "Role",
+    "SystemRole",
+    "TenantID",
     # JWT
     "create_access_token",
     "create_invite_token",
@@ -58,33 +67,28 @@ __all__ = [
     "decode_access_token",
     "decode_invite_token",
     "decode_refresh_token",
-    "hash_token",
-    "verify_token_hash",
-    # Auth deps
-    "CurrentUser",
-    "OptionalUser",
-    "TenantID",
     "get_current_user",
     "get_optional_user",
     "get_tenant_id",
-    "require_viewer",
-    "require_sales_rep",
-    "require_sales_manager",
-    "require_tenant_admin",
-    "require_super_admin",
-    # RBAC
-    "DEFAULT_TENANT_ROLES",
-    "ROLE_PERMISSIONS",
-    "Role",
-    "SystemRole",
     "has_permission",
+    "hash_token",
     "is_at_least",
     "is_super_admin",
     # Rate limiting
     "limiter",
+    "require_admin_key",
+    "require_effective_tenant",
+    "require_sales_manager",
+    "require_sales_rep",
+    "require_super_admin",
+    "require_tenant_admin",
+    "require_viewer",
     "setup_rate_limit",
+    "verify_admin_key",
+    "verify_api_key",
     # Webhook signatures
     "verify_calendly_signature",
     "verify_hubspot_signature",
     "verify_n8n_signature",
+    "verify_token_hash",
 ]

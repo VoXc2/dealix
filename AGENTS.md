@@ -31,8 +31,8 @@ APP_ENV=development uvicorn api.main:app --host 0.0.0.0 --port 8000 --reload
 
 ### Operational caveats (still important)
 
-- **Alembic — two heads**: `alembic heads` reports `0001` and `003`. Until a merge revision exists, `alembic upgrade head` may not apply both branches; use explicit revision targets or rely on dev `init_db` (which imports `db.models_revenue_events` so `revenue_events` is included in `create_all`).
-- **`PostgresEventStore` vs sync callers**: `PostgresEventStore` methods are **async**. `Orchestrator`, module `append_event()`, and `api/routers/revenue_os.py` still call **`store.append()` synchronously**. Default remains in-memory; `get_default_store(backend="postgres")` is unsafe until those paths are async-ready or a sync adapter exists.
+- **Alembic**: merge revision `004_merge_heads` joins `0001` + `003`; head continues as `005_revenue_events_tenant` (`tenant_id` on `revenue_events`). Run `alembic upgrade head` after pull.
+- **`PostgresEventStore` vs sync callers**: methods are **async** and rows now carry optional **`tenant_id`** (filter via `read_for_customer(..., tenant_id=...)`). Sync callers (`Orchestrator`, `append_event()`, `api/routers/revenue_os.py`) still need an async bridge before `get_default_store(backend="postgres")` is safe in those paths.
 - **Lint (ruff/black)**: Large pre-existing drift; not API correctness gates.
 
 ### Environment — frontend API URL
@@ -74,6 +74,9 @@ Copy `.env.example` to `.env`. Key settings for local dev:
 - `POST /api/v1/revenue-os/signals/normalize` — يحوّل `MarketSignal` (مدخلات من المؤسس، بدون scraping) إلى Why Now / Offer / Proof target
 - `POST /api/v1/revenue-os/anti-waste/check` — قواعد: لا إجراء خارجي بدون جواز قرار، لا upsell بدون proof، لا تسويق عام تحت L4
 - `GET /api/v1/revenue-os/learning/weekly-template` — هيكل تقرير التعلّم الأسبوعي (فارغ حتى ربط التحليلات)
+- `GET /api/v1/revenue-os/tenant-context/ping` — يتطلب JWT؛ للـ `super_admin` يجب تمرير `X-Tenant-ID`
+
+Webhook leads (`/api/v1/leads/import/google-ads` و Meta): عيّن `DEFAULT_INGESTION_TENANT_ID` في البيئة إلى `TenantRecord.id` حقيقي إن أردت ربط الليدز بمستأجر.
 
 تحقق سريع للوكلاء: `bash scripts/revenue_os_master_verify.sh` (يطبع `DEALIX_REVENUE_OS_VERDICT`).
 

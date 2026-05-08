@@ -31,7 +31,7 @@ else
 fi
 
 echo "== pytest revenue_os + decision passport =="
-if pytest tests/test_revenue_os_catalog.py tests/test_decision_passport.py -q --no-cov; then
+if pytest tests/test_revenue_os_catalog.py tests/test_decision_passport.py tests/test_auth_require_effective_tenant.py -q --no-cov; then
   :
 else
   FAIL=1

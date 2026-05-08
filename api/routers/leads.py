@@ -12,6 +12,7 @@ from sqlalchemy import select
 
 from api.dependencies import get_acquisition_pipeline
 from api.schemas import LeadCreateRequest, LeadResponse, PipelineResponse
+from api.security.auth_deps import get_optional_user
 from auto_client_acquisition.agents.intake import LeadSource
 from auto_client_acquisition.connectors.google_maps import (
     INDUSTRY_QUERIES as _LOCAL_INDUSTRY_QUERIES,
@@ -42,6 +43,7 @@ from db.models import (
     LeadScoreRecord,
     OutreachQueueRecord,
     SuppressionRecord,
+    UserRecord,
 )
 from db.session import async_session_factory
 
@@ -65,6 +67,7 @@ async def create_lead(
     pipeline: AcquisitionPipeline = Depends(get_acquisition_pipeline),
     auto_book: bool = True,
     auto_proposal: bool = False,
+    auth_user: UserRecord | None = Depends(get_optional_user),
 ) -> PipelineResponse:
     """Submit a new lead — runs through the full acquisition pipeline."""
     try:
@@ -87,6 +90,10 @@ async def create_lead(
 
     passport = build_from_pipeline_result(result)
     passport_d = passport.model_dump()
+    meta = dict(passport_d.get("meta") or {})
+    if auth_user is not None and getattr(auth_user, "tenant_id", None):
+        meta["authenticated_tenant_id"] = auth_user.tenant_id
+    passport_d["meta"] = meta
     readiness = from_passport_meta(passport_d)
 
     return PipelineResponse(

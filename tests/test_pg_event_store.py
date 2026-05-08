@@ -43,6 +43,7 @@ def test_revenue_event_record_columns():
         "occurred_at",
         "subject_type",
         "subject_id",
+        "tenant_id",
         "payload",
         "causation_id",
         "correlation_id",
@@ -58,6 +59,7 @@ def test_revenue_event_record_indexes():
 
     index_names = {idx.name for idx in RevenueEventRecord.__table__.indexes}
     assert "ix_revevt_customer_occurred" in index_names
+    assert "ix_revevt_tenant_occurred" in index_names
     assert "ix_revevt_subject" in index_names
     assert "ix_revevt_event_type" in index_names
     assert "ix_revevt_correlation" in index_names
@@ -78,9 +80,11 @@ def test_event_to_row_roundtrip():
         subject_id="acc_001",
         payload={"source": "website"},
         actor="user_42",
+        tenant_id="ten_demo",
     )
     row = _event_to_row(evt)
     assert row["event_id"] == evt.event_id
+    assert row["tenant_id"] == "ten_demo"
     assert row["customer_id"] == "cust_001"
     assert row["payload"] == {"source": "website"}
     assert row["actor"] == "user_42"
@@ -106,6 +110,7 @@ def sample_events() -> list[RevenueEvent]:
             subject_id="acc_1",
             payload={"k": "v1"},
             actor="system",
+            tenant_id="ten_a",
             schema_version=1,
         ),
         RevenueEvent(
@@ -117,6 +122,7 @@ def sample_events() -> list[RevenueEvent]:
             subject_id="deal_1",
             payload={"k": "v2"},
             actor="user_1",
+            tenant_id="ten_a",
             schema_version=1,
         ),
         RevenueEvent(
@@ -128,6 +134,7 @@ def sample_events() -> list[RevenueEvent]:
             subject_id="acc_2",
             payload={},
             actor="system",
+            tenant_id="ten_b",
             schema_version=1,
         ),
     ]
@@ -159,6 +166,7 @@ async def pg_store():
         Column("occurred_at", DateTime(), nullable=False),
         Column("subject_type", String(64), nullable=False),
         Column("subject_id", String(64), nullable=False),
+        Column("tenant_id", String(64), nullable=True),
         Column("payload", JSON, nullable=False),
         Column("causation_id", String(64), nullable=True),
         Column("correlation_id", String(64), nullable=True),
@@ -204,7 +212,9 @@ async def pg_store():
                 await session.execute(insert(sqlite_table), rows)
                 await session.commit()
 
-        async def read_for_customer(self, customer_id, *, since=None, until=None, event_types=None):
+        async def read_for_customer(
+            self, customer_id, *, since=None, until=None, event_types=None, tenant_id=None
+        ):
             from sqlalchemy import select
 
             stmt = (
@@ -218,12 +228,16 @@ async def pg_store():
                 stmt = stmt.where(sqlite_table.c.occurred_at <= until)
             if event_types is not None:
                 stmt = stmt.where(sqlite_table.c.event_type.in_(event_types))
+            if tenant_id is not None:
+                stmt = stmt.where(sqlite_table.c.tenant_id == tenant_id)
             async with self._session_factory() as session:
                 result = await session.execute(stmt)
                 for row in result:
                     yield _row_to_event_from_row(row)
 
-        async def read_for_subject(self, subject_type, subject_id, *, customer_id=None):
+        async def read_for_subject(
+            self, subject_type, subject_id, *, customer_id=None, tenant_id=None
+        ):
             from sqlalchemy import select
 
             stmt = (
@@ -234,17 +248,21 @@ async def pg_store():
             )
             if customer_id is not None:
                 stmt = stmt.where(sqlite_table.c.customer_id == customer_id)
+            if tenant_id is not None:
+                stmt = stmt.where(sqlite_table.c.tenant_id == tenant_id)
             async with self._session_factory() as session:
                 result = await session.execute(stmt)
                 for row in result:
                     yield _row_to_event_from_row(row)
 
-        async def count(self, customer_id=None):
+        async def count(self, customer_id=None, tenant_id=None):
             from sqlalchemy import func, select
 
             stmt = select(func.count()).select_from(sqlite_table)
             if customer_id is not None:
                 stmt = stmt.where(sqlite_table.c.customer_id == customer_id)
+            if tenant_id is not None:
+                stmt = stmt.where(sqlite_table.c.tenant_id == tenant_id)
             async with self._session_factory() as session:
                 result = await session.execute(stmt)
                 return result.scalar_one()
@@ -264,6 +282,7 @@ async def pg_store():
             causation_id=row.causation_id,
             correlation_id=row.correlation_id,
             actor=row.actor,
+            tenant_id=getattr(row, "tenant_id", None),
             schema_version=row.schema_version,
         )
 
@@ -311,6 +330,16 @@ async def test_read_for_customer_with_filters(pg_store, sample_events):
     ]
     assert len(events) == 1
     assert events[0].event_type == "lead.created"
+
+
+async def test_read_for_customer_tenant_filter(pg_store, sample_events):
+    await pg_store.append_many(sample_events)
+    rows_a = [e async for e in pg_store.read_for_customer("cust_1", tenant_id="ten_a")]
+    assert len(rows_a) == 2
+    rows_wrong = [
+        e async for e in pg_store.read_for_customer("cust_1", tenant_id="ten_b")
+    ]
+    assert len(rows_wrong) == 0
 
 
 async def test_read_for_subject(pg_store, sample_events):
@@ -393,3 +422,15 @@ def test_migration_revision():
     )
     assert mod.revision == "003"
     assert mod.down_revision == "002"
+
+
+def test_merge_and_tenant_migration_chain():
+    import importlib
+
+    m4 = importlib.import_module("db.migrations.versions.20260508_004_merge_heads")
+    assert m4.revision == "004_merge_heads"
+    assert set(m4.down_revision) == {"0001", "003"}
+
+    m5 = importlib.import_module("db.migrations.versions.20260508_005_revenue_events_tenant")
+    assert m5.revision == "005_revenue_events_tenant"
+    assert m5.down_revision == "004_merge_heads"

@@ -15,7 +15,7 @@ minimal stub event) — preserving the audit trail without keeping raw payload.
 
 from __future__ import annotations
 
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta, timezone
 from typing import Any
 
 from auto_client_acquisition.revenue_memory.events import RevenueEvent
@@ -75,6 +75,8 @@ def tombstone_event(event: RevenueEvent) -> RevenueEvent:
         causation_id=event.causation_id,
         correlation_id=event.correlation_id,
         actor=event.actor,
+        tenant_id=event.tenant_id,
+        schema_version=event.schema_version,
     )
 
 
@@ -88,7 +90,7 @@ def apply_retention(
     - business_record events past 3y: removed
     - operational events past 90d: tombstoned (envelope kept, payload stripped)
     """
-    n = now or datetime.now(timezone.utc).replace(tzinfo=None)
+    n = now or datetime.now(UTC).replace(tzinfo=None)
     kept: list[RevenueEvent] = []
     removed: list[str] = []
     for e in events:

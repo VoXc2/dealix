@@ -29,6 +29,7 @@ def _event_to_row(event: RevenueEvent) -> dict[str, Any]:
         "occurred_at": event.occurred_at,
         "subject_type": event.subject_type,
         "subject_id": event.subject_id,
+        "tenant_id": event.tenant_id,
         "payload": event.payload,
         "causation_id": event.causation_id,
         "correlation_id": event.correlation_id,
@@ -50,6 +51,7 @@ def _row_to_event(row: RevenueEventRecord) -> RevenueEvent:
         causation_id=row.causation_id,
         correlation_id=row.correlation_id,
         actor=row.actor,
+        tenant_id=getattr(row, "tenant_id", None),
         schema_version=row.schema_version,
     )
 
@@ -88,6 +90,7 @@ class PostgresEventStore:
         since: datetime | None = None,
         until: datetime | None = None,
         event_types: tuple[str, ...] | None = None,
+        tenant_id: str | None = None,
     ) -> AsyncIterator[RevenueEvent]:
         """Yield events for a customer, ordered by (occurred_at, event_id)."""
         stmt = (
@@ -95,6 +98,8 @@ class PostgresEventStore:
             .where(RevenueEventRecord.customer_id == customer_id)
             .order_by(RevenueEventRecord.occurred_at, RevenueEventRecord.event_id)
         )
+        if tenant_id is not None:
+            stmt = stmt.where(RevenueEventRecord.tenant_id == tenant_id)
         if since is not None:
             stmt = stmt.where(RevenueEventRecord.occurred_at >= since)
         if until is not None:
@@ -113,6 +118,7 @@ class PostgresEventStore:
         subject_id: str,
         *,
         customer_id: str | None = None,
+        tenant_id: str | None = None,
     ) -> AsyncIterator[RevenueEvent]:
         """Yield events for a subject entity, ordered by (occurred_at, event_id)."""
         stmt = (
@@ -125,17 +131,26 @@ class PostgresEventStore:
         )
         if customer_id is not None:
             stmt = stmt.where(RevenueEventRecord.customer_id == customer_id)
+        if tenant_id is not None:
+            stmt = stmt.where(RevenueEventRecord.tenant_id == tenant_id)
 
         async with self._session_factory() as session:
             result = await session.execute(stmt)
             for row in result.scalars():
                 yield _row_to_event(row)
 
-    async def count(self, customer_id: str | None = None) -> int:
+    async def count(
+        self,
+        customer_id: str | None = None,
+        *,
+        tenant_id: str | None = None,
+    ) -> int:
         """Return total event count, optionally filtered by customer_id."""
         stmt = select(func.count()).select_from(RevenueEventRecord)
         if customer_id is not None:
             stmt = stmt.where(RevenueEventRecord.customer_id == customer_id)
+        if tenant_id is not None:
+            stmt = stmt.where(RevenueEventRecord.tenant_id == tenant_id)
 
         async with self._session_factory() as session:
             result = await session.execute(stmt)

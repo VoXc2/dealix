@@ -113,6 +113,35 @@ async def get_tenant_id(
 TenantID = Annotated[str | None, Depends(get_tenant_id)]
 
 
+async def require_effective_tenant(
+    request: Request,
+    user: UserRecord = Depends(get_current_user),
+) -> str:
+    """
+    Resolver for mutations that must belong to exactly one tenant.
+
+    - Normal users: ``user.tenant_id`` (403 if missing).
+    - super_admin: must send ``X-Tenant-ID`` (400 if missing).
+    """
+    if is_super_admin(user.system_role):
+        header_tid = (request.headers.get("X-Tenant-ID") or "").strip()
+        if not header_tid:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="X-Tenant-ID header required for super_admin scoped operations",
+            )
+        return header_tid
+    if not user.tenant_id:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="User is not assigned to a tenant",
+        )
+    return user.tenant_id
+
+
+EffectiveTenantStr = Annotated[str, Depends(require_effective_tenant)]
+
+
 # ── Role-based guards ────────────────────────────────────────────────
 
 def require_role(minimum: Role):

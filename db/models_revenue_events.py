@@ -34,6 +34,7 @@ class RevenueEventRecord(Base):
     occurred_at: Mapped[datetime] = mapped_column(nullable=False)
     subject_type: Mapped[str] = mapped_column(String(64), nullable=False)
     subject_id: Mapped[str] = mapped_column(String(64), nullable=False)
+    tenant_id: Mapped[str | None] = mapped_column(String(64), nullable=True)
     payload: Mapped[dict] = mapped_column(JSONB, nullable=False, default=dict)
     causation_id: Mapped[str | None] = mapped_column(String(64), nullable=True)
     correlation_id: Mapped[str | None] = mapped_column(String(64), nullable=True)
@@ -43,6 +44,7 @@ class RevenueEventRecord(Base):
 
     __table_args__ = (
         Index("ix_revevt_customer_occurred", "customer_id", "occurred_at"),
+        Index("ix_revevt_tenant_occurred", "tenant_id", "occurred_at"),
         Index("ix_revevt_subject", "subject_type", "subject_id"),
         Index("ix_revevt_event_type", "event_type"),
         Index("ix_revevt_correlation", "correlation_id"),

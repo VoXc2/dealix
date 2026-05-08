@@ -7,6 +7,12 @@ from starlette.testclient import TestClient
 from api.main import app
 
 
+def test_tenant_context_ping_requires_auth():
+    client = TestClient(app)
+    r = client.get("/api/v1/revenue-os/tenant-context/ping")
+    assert r.status_code == 401
+
+
 def test_revenue_os_catalog_endpoint():
     client = TestClient(app)
     r = client.get("/api/v1/revenue-os/catalog")

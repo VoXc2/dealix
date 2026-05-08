@@ -39,6 +39,7 @@ class EventStore(Protocol):
         since: datetime | None = None,
         until: datetime | None = None,
         event_types: tuple[str, ...] | None = None,
+        tenant_id: str | None = None,
     ) -> Iterator[RevenueEvent]: ...
 
     def read_for_subject(
@@ -47,9 +48,15 @@ class EventStore(Protocol):
         subject_id: str,
         *,
         customer_id: str | None = None,
+        tenant_id: str | None = None,
     ) -> Iterator[RevenueEvent]: ...
 
-    def count(self, customer_id: str | None = None) -> int: ...
+    def count(
+        self,
+        customer_id: str | None = None,
+        *,
+        tenant_id: str | None = None,
+    ) -> int: ...
 
 
 class InMemoryEventStore:
@@ -71,9 +78,12 @@ class InMemoryEventStore:
         since: datetime | None = None,
         until: datetime | None = None,
         event_types: tuple[str, ...] | None = None,
+        tenant_id: str | None = None,
     ) -> Iterator[RevenueEvent]:
         for e in self._sorted_events():
             if e.customer_id != customer_id:
+                continue
+            if tenant_id is not None and e.tenant_id != tenant_id:
                 continue
             if since is not None and e.occurred_at < since:
                 continue
@@ -89,18 +99,29 @@ class InMemoryEventStore:
         subject_id: str,
         *,
         customer_id: str | None = None,
+        tenant_id: str | None = None,
     ) -> Iterator[RevenueEvent]:
         for e in self._sorted_events():
             if e.subject_type != subject_type or e.subject_id != subject_id:
                 continue
             if customer_id is not None and e.customer_id != customer_id:
                 continue
+            if tenant_id is not None and e.tenant_id != tenant_id:
+                continue
             yield e
 
-    def count(self, customer_id: str | None = None) -> int:
-        if customer_id is None:
-            return len(self._events)
-        return sum(1 for e in self._events if e.customer_id == customer_id)
+    def count(
+        self,
+        customer_id: str | None = None,
+        *,
+        tenant_id: str | None = None,
+    ) -> int:
+        def _match(e: RevenueEvent) -> bool:
+            return (customer_id is None or e.customer_id == customer_id) and (
+                tenant_id is None or e.tenant_id == tenant_id
+            )
+
+        return sum(1 for e in self._events if _match(e))
 
     def _sorted_events(self) -> list[RevenueEvent]:
         return sorted(self._events, key=lambda e: (e.occurred_at, e.event_id))

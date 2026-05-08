@@ -12,6 +12,7 @@ from typing import Any
 from fastapi import APIRouter
 from pydantic import BaseModel, Field
 
+from api.security import EffectiveTenantStr
 from auto_client_acquisition.customer_readiness.scores import compute_pricing_power_score
 from auto_client_acquisition.growth_beast.market_radar import MarketSignal
 from auto_client_acquisition.revenue_os import (
@@ -61,6 +62,12 @@ class AntiWasteRequest(BaseModel):
 
 def _violations_to_json(v: list[AntiWasteViolation]) -> list[dict[str, str]]:
     return [{"code": x.code, "detail_ar": x.detail_ar, "detail_en": x.detail_en} for x in v]
+
+
+@router.get("/tenant-context/ping")
+async def tenant_context_ping(tenant_id: EffectiveTenantStr) -> dict[str, str]:
+    """JWT-only — confirms resolved tenant (super_admin needs ``X-Tenant-ID``)."""
+    return {"tenant_id": tenant_id, "status": "ok"}
 
 
 @router.get("/catalog")

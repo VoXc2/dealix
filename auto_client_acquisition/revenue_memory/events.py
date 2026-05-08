@@ -10,7 +10,7 @@ from __future__ import annotations
 
 import uuid
 from dataclasses import dataclass, field
-from datetime import datetime, timezone
+from datetime import UTC, datetime, timezone
 from typing import Any
 
 # ── The canonical event taxonomy — versioned ─────────────────────
@@ -100,6 +100,7 @@ class RevenueEvent:
     causation_id: str | None = None  # event_id that caused this event
     correlation_id: str | None = None  # groups related events (e.g. one workflow run)
     actor: str = "system"       # who fired it: system / user_id / agent_id
+    tenant_id: str | None = None  # Dealix tenant — isolates Revenue Memory rows
     schema_version: int = 1
 
 
@@ -114,6 +115,7 @@ def make_event(
     correlation_id: str | None = None,
     actor: str = "system",
     occurred_at: datetime | None = None,
+    tenant_id: str | None = None,
 ) -> RevenueEvent:
     """Build a new event with a UUID + UTC timestamp."""
     if event_type not in EVENT_TYPES:
@@ -122,13 +124,14 @@ def make_event(
         event_id=f"evt_{uuid.uuid4().hex[:24]}",
         event_type=event_type,
         customer_id=customer_id,
-        occurred_at=occurred_at or datetime.now(timezone.utc).replace(tzinfo=None),
+        occurred_at=occurred_at or datetime.now(UTC).replace(tzinfo=None),
         subject_type=subject_type,
         subject_id=subject_id,
         payload=payload or {},
         causation_id=causation_id,
         correlation_id=correlation_id,
         actor=actor,
+        tenant_id=tenant_id,
     )
 
 
@@ -145,6 +148,7 @@ def event_to_dict(e: RevenueEvent) -> dict[str, Any]:
         "causation_id": e.causation_id,
         "correlation_id": e.correlation_id,
         "actor": e.actor,
+        "tenant_id": e.tenant_id,
         "schema_version": e.schema_version,
     }
 
@@ -162,5 +166,6 @@ def event_from_dict(d: dict[str, Any]) -> RevenueEvent:
         causation_id=d.get("causation_id"),
         correlation_id=d.get("correlation_id"),
         actor=d.get("actor", "system"),
+        tenant_id=d.get("tenant_id"),
         schema_version=d.get("schema_version", 1),
     )
