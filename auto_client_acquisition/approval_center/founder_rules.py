@@ -37,7 +37,8 @@ import hmac
 import json
 import os
 import re
-from dataclasses import dataclass, field, asdict
+import secrets
+from dataclasses import dataclass, asdict
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
 from typing import Any
@@ -123,10 +124,16 @@ class FounderRuleEngine:
         return os.environ.get(self.founder_secret_env, "")
 
     def _sign(self, rule: FounderRule) -> str:
-        """Compute HMAC-SHA256 of rule's content (proves founder consent)."""
+        """Compute HMAC-SHA256 of rule's full mutable+immutable surface
+        (proves founder consent and freezes kill-switch state).
+
+        Including ``enabled`` in the signed payload means any tamper
+        re-enabling a disabled rule via JSONL edit invalidates the
+        signature. Per-disable re-signing happens inside ``disable_rule``.
+        """
         if not self._secret:
             return ""
-        # Sign immutable fields only (signature itself excluded)
+        # Sign immutable fields + enable flag (kill-switch tamper-proof)
         payload = json.dumps({
             "rule_id": rule.rule_id,
             "name": rule.name,
@@ -138,6 +145,7 @@ class FounderRuleEngine:
             "content_pattern_regex": rule.content_pattern_regex,
             "created_at": rule.created_at,
             "expires_at": rule.expires_at,
+            "enabled": rule.enabled,
         }, sort_keys=True, ensure_ascii=False).encode("utf-8")
         return hmac.new(
             self._secret.encode("utf-8"), payload, hashlib.sha256
@@ -181,6 +189,12 @@ class FounderRuleEngine:
             raise ValueError(
                 f"min_confidence must be 0.0-1.0; got {min_confidence}"
             )
+        # Bound TTL: 1 day floor + DEFAULT_RULE_TTL_DAYS ceiling
+        # so non-CLI callers can't extend the 30-day re-consent window.
+        if not isinstance(ttl_days, int) or ttl_days < 1 or ttl_days > DEFAULT_RULE_TTL_DAYS:
+            raise ValueError(
+                f"ttl_days must be 1..{DEFAULT_RULE_TTL_DAYS}; got {ttl_days}"
+            )
         # Validate regex if provided
         if content_pattern_regex:
             try:
@@ -190,7 +204,8 @@ class FounderRuleEngine:
 
         now = datetime.now(UTC)
         exp = now + timedelta(days=ttl_days)
-        rule_id = f"rule_{now.strftime('%Y%m%d_%H%M%S')}_{abs(hash(name)) % 10000:04d}"
+        # Collision-resistant ID: token_hex(8) = 16 hex chars = 64 bits entropy
+        rule_id = f"rule_{now.strftime('%Y%m%d_%H%M%S')}_{secrets.token_hex(8)}"
 
         partial = FounderRule(
             rule_id=rule_id,
@@ -241,12 +256,22 @@ class FounderRuleEngine:
             f.write(json.dumps(asdict(rule), ensure_ascii=False) + "\n")
 
     def disable_rule(self, rule_id: str) -> bool:
-        """Disable a rule by id (rewrites the file). Returns True if found."""
+        """Disable a rule by id (rewrites file, re-signs disabled row).
+
+        Re-signing is required because ``enabled`` is part of the HMAC
+        payload (tamper-proof kill-switch). If the founder secret is
+        absent at disable-time, the new signature will be empty and
+        the rule will fail verification (still enforces fail-closed).
+        """
         rules = self.list_rules()
         found = False
         for i, r in enumerate(rules):
             if r.rule_id == rule_id:
-                rules[i] = FounderRule(**{**asdict(r), "enabled": False})
+                disabled = FounderRule(**{**asdict(r), "enabled": False, "founder_signature": ""})
+                resigned = FounderRule(
+                    **{**asdict(disabled), "founder_signature": self._sign(disabled)}
+                )
+                rules[i] = resigned
                 found = True
         if found:
             self.rules_path.parent.mkdir(parents=True, exist_ok=True)
@@ -277,13 +302,22 @@ class FounderRuleEngine:
         channel = (req.channel or "").lower()
         if channel in _BLOCKED_AUTO_CHANNELS:
             return None
-        # Risk gate (cannot auto-approve high/blocked)
+        # Risk gate — fail-closed on unknown risk labels (e.g. "critical").
+        # Don't default unknowns to "low"; refuse instead.
         risk = (req.risk_level or "low").lower()
-        if _RISK_ORDER.get(risk, 1) > _RISK_ORDER["medium"]:
+        if risk not in _RISK_ORDER:
+            return None
+        if _RISK_ORDER[risk] > _RISK_ORDER["medium"]:
             return None
         # Channel must allow auto-approve at all (per CHANNEL_POLICY)
         chan_pol = CHANNEL_POLICY.get(channel, {})
-        if not chan_pol.get("max_auto_approve_risk"):
+        chan_max_risk = chan_pol.get("max_auto_approve_risk")
+        if not chan_max_risk:
+            return None
+        # Channel-cap enforcement: even if a rule allows medium risk,
+        # the channel's CHANNEL_POLICY cap (e.g. email = "low") wins.
+        chan_max_order = _RISK_ORDER.get(chan_max_risk, 0)
+        if _RISK_ORDER[risk] > chan_max_order:
             return None
         # Iterate active rules
         for rule in self.list_active_rules(now):
@@ -293,7 +327,7 @@ class FounderRuleEngine:
                 continue
             if rule.action_type != "*" and rule.action_type != req.action_type:
                 continue
-            if _RISK_ORDER.get(risk, 1) > _RISK_ORDER.get(rule.max_risk_level, 1):
+            if _RISK_ORDER[risk] > _RISK_ORDER.get(rule.max_risk_level, 1):
                 continue
             if confidence < rule.min_confidence:
                 continue
@@ -312,9 +346,8 @@ class FounderRuleEngine:
         oid = req.object_id or ""
         if ":" in oid:
             tail = oid.split(":", 1)[1]
-            # Take the first segment if it looks like a handle
-            seg = tail.split("-", 1)[0] if "-" in tail else tail
-            # Reconstruct full handle (acme-real-estate)
+            # Strip a trailing numeric suffix to get the full handle
+            # (e.g. "acme-real-estate-001" → "acme-real-estate").
             parts = tail.rsplit("-", 1)
             if len(parts) == 2 and parts[1].isdigit():
                 return parts[0]

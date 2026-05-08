@@ -202,3 +202,42 @@ def test_high_risk_email_never_auto_approved(engine: FounderRuleEngine) -> None:
     req.risk_level = "high"
     out = try_auto_approve_via_founder_rule(req, engine=engine)
     assert ApprovalStatus(out.status) == ApprovalStatus.PENDING
+
+
+def test_blocked_action_mode_never_auto_approved(engine: FounderRuleEngine) -> None:
+    """Wave 7.7 fix: ``blocked`` action_mode short-circuits the helper."""
+    rule = engine.create_rule(
+        name="r", channel="email", customer_handle="acme",
+        action_type="faq_reply", min_confidence=0.0,
+    )
+    engine.append_rule(rule)
+
+    req = _email_req()
+    req.action_mode = "blocked"  # safety policy already hard-stopped this
+    out = try_auto_approve_via_founder_rule(req, engine=engine)
+    # No transition. Status stays PENDING; action_mode stays BLOCKED.
+    assert ApprovalStatus(out.status) == ApprovalStatus.PENDING
+    assert out.action_mode == "blocked"
+    # No audit entry from the rule
+    assert all(e.get("action") != "auto_approve" for e in out.edit_history)
+
+
+def test_draft_only_request_not_escalated_to_execute(engine: FounderRuleEngine) -> None:
+    """Wave 7.7 fix: ``draft_only`` requests are NOT escalated by founder rules.
+
+    A draft_only request is meant to never send live; auto-approve must
+    not silently flip it to ``approved_execute``.
+    """
+    rule = engine.create_rule(
+        name="r", channel="email", customer_handle="acme",
+        action_type="faq_reply", min_confidence=0.0,
+    )
+    engine.append_rule(rule)
+
+    req = _email_req()
+    req.action_mode = "draft_only"
+    out = try_auto_approve_via_founder_rule(req, engine=engine)
+    # Status + action_mode preserved
+    assert ApprovalStatus(out.status) == ApprovalStatus.PENDING
+    assert out.action_mode == "draft_only"
+    assert all(e.get("action") != "auto_approve" for e in out.edit_history)
