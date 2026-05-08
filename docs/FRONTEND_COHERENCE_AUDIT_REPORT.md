@@ -60,14 +60,20 @@ Every sampled CTA points to a path that resolves on production:
 
 ## 4. Frontend ↔ backend integration check
 
-`landing/assets/js/customer-dashboard.js` calls these endpoints when a customer-portal token is present:
-- `GET /api/v1/customer-portal/{handle}` (Wave 3 LIVE)
-- `GET /api/v1/full-ops-radar/score` (Wave 4 LIVE)
-- `GET /api/v1/executive-command-center/status` (Wave 4 LIVE)
+> **Wave 10.7 §28.1 correction** — this section was rewritten after Codex review (PR #187) flagged that the previous text inaccurately attributed three endpoint calls to `customer-dashboard.js`. The integration matrix below is now verified by grep.
 
-All three currently return 200 in production. Frontend → backend wiring is consistent.
+The customer-facing JS bundle is split across files. Each file calls the endpoint it needs, not a unified bundle:
 
-`landing/decisions.html` fetches `/api/v1/approvals/pending` (Wave 4 LIVE). Approve/Reject `POST /api/v1/approvals/{id}/{action}` work because the verifier audited this in Wave 7.5 §A4.
+| JS file | Endpoint actually called (verified by `grep -nE 'fetch\\('`) | Wave |
+|---|---|---|
+| `landing/assets/js/customer-dashboard.js:152` | `GET /api/v1/customer-portal/{handle}` | Wave 3 LIVE |
+| `landing/assets/js/executive-command-center.js:147` | `GET /api/v1/executive-command-center/{handle}` | Wave 4 LIVE |
+| `landing/assets/js/service-console.js:332` | `fetch(DATA_URL)` (page-local data, no API call) | n/a |
+| `landing/decisions.html` (inline JS) | `GET /api/v1/approvals/pending` + `POST /api/v1/approvals/{id}/{action}` | Wave 4 LIVE |
+
+All endpoints currently return 200 in production. Frontend → backend wiring is consistent across files; the integration is just split per-page rather than centralized.
+
+The `/api/v1/full-ops-radar/score` endpoint mentioned in the previous version of this doc is consumed by the **server** when assembling the executive-command-center response — it's not directly fetched by frontend JS, but its data flows into the Customer Portal via the ECC composition. The Wave 4 §22 Master Verifier confirms the chain works end-to-end.
 
 ## 5. Forbidden-token scan
 
