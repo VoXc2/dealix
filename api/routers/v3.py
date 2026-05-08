@@ -13,11 +13,27 @@ from typing import Any
 
 from fastapi import APIRouter, Body, Response
 
+from auto_client_acquisition.compliance_os.ropa import build_ropa
 from auto_client_acquisition.v3.agents import AgentName, AgentTask, SafeAgentRuntime, agent_catalog
-from auto_client_acquisition.v3.compliance_os import ContactPolicyInput, assess_contactability, campaign_risk_report, ropa_stub
-from auto_client_acquisition.v3.market_radar import demo_signals, rank_opportunities, sector_heatmap, signal_catalog
+from auto_client_acquisition.v3.compliance_os import (
+    ContactPolicyInput,
+    assess_contactability,
+    campaign_risk_report,
+)
+from auto_client_acquisition.v3.market_radar import (
+    demo_signals,
+    rank_opportunities,
+    sector_heatmap,
+    signal_catalog,
+)
 from auto_client_acquisition.v3.memory import EventType, RevenueEvent, demo_memory
-from auto_client_acquisition.v3.revenue_science import FunnelInputs, churn_risk_score, demo_forecast, forecast_revenue, impact_simulation
+from auto_client_acquisition.v3.revenue_science import (
+    FunnelInputs,
+    churn_risk_score,
+    demo_forecast,
+    forecast_revenue,
+    impact_simulation,
+)
 
 _DEPRECATION_HEADER = "X-Dealix-Deprecated"
 _DEPRECATION_VALUE = "true"
@@ -59,7 +75,11 @@ async def stack(response: Response) -> dict[str, Any]:
 @router.get("/agents")
 async def agents(response: Response) -> dict[str, Any]:
     response.headers[_DEPRECATION_HEADER] = _DEPRECATION_VALUE
-    return {"_warning": _DEPRECATION_NOTICE, "count": len(agent_catalog()), "items": agent_catalog()}
+    return {
+        "_warning": _DEPRECATION_NOTICE,
+        "count": len(agent_catalog()),
+        "items": agent_catalog(),
+    }
 
 
 @router.post("/agents/tasks")
@@ -108,7 +128,11 @@ async def market_radar(response: Response) -> dict[str, Any]:
 @router.get("/market-radar/signal-catalog")
 async def market_radar_signal_catalog(response: Response) -> dict[str, Any]:
     response.headers[_DEPRECATION_HEADER] = _DEPRECATION_VALUE
-    return {"_warning": _DEPRECATION_NOTICE, "count": len(signal_catalog()), "items": signal_catalog()}
+    return {
+        "_warning": _DEPRECATION_NOTICE,
+        "count": len(signal_catalog()),
+        "items": signal_catalog(),
+    }
 
 
 @router.post("/compliance/contactability")
@@ -129,9 +153,15 @@ async def campaign_risk(response: Response, body: dict[str, Any] = Body(...)) ->
 
 
 @router.get("/compliance/ropa")
-async def ropa(response: Response, process_name: str = "Outbound Revenue Operations", purpose: str = "B2B sales follow-up") -> dict[str, Any]:
+async def ropa(
+    response: Response,
+    customer_id: str = "demo",
+    customer_name: str = "Demo Customer",
+    dpo_email: str | None = None,
+) -> dict[str, Any]:
     response.headers[_DEPRECATION_HEADER] = _DEPRECATION_VALUE
-    result = ropa_stub(process_name, purpose)
+    r = build_ropa(customer_id=customer_id, customer_name=customer_name, dpo_email=dpo_email)
+    result = r.to_json()
     result["_warning"] = _DEPRECATION_NOTICE
     return result
 
@@ -139,7 +169,11 @@ async def ropa(response: Response, process_name: str = "Outbound Revenue Operati
 @router.get("/memory/{aggregate_id}")
 async def memory_projection(aggregate_id: str, response: Response) -> dict[str, Any]:
     response.headers[_DEPRECATION_HEADER] = _DEPRECATION_VALUE
-    return {"_warning": _DEPRECATION_NOTICE, "projection": _memory.projection(aggregate_id), "timeline": _memory.timeline(aggregate_id)}
+    return {
+        "_warning": _DEPRECATION_NOTICE,
+        "projection": _memory.projection(aggregate_id),
+        "timeline": _memory.timeline(aggregate_id),
+    }
 
 
 @router.post("/memory/events")
@@ -208,6 +242,8 @@ async def command_center_snapshot(response: Response) -> dict[str, Any]:
         "agents": agent_catalog(),
         "market_radar": rank_opportunities(signals, limit=3),
         "forecast": demo_forecast(),
-        "compliance": assess_contactability(ContactPolicyInput(channel="email", has_prior_relationship=True)),
+        "compliance": assess_contactability(
+            ContactPolicyInput(channel="email", has_prior_relationship=True)
+        ),
         "memory": _memory.projection("clinic_riyadh_01"),
     }
