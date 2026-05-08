@@ -23,12 +23,21 @@ Then start the backend:
 APP_ENV=development uvicorn api.main:app --host 0.0.0.0 --port 8000 --reload
 ```
 
-### Known issues
+### Resolved in repo (do not re-diagnose as bugs)
 
-- **auth.py 204 endpoints**: The `/logout` and `/logout/all` routes in `api/routers/auth.py` need `response_model=None` in the decorator to work with FastAPI 0.115.x. Without this, `is_body_allowed_for_status_code` assertion fails at import time, blocking the entire app and any test that imports `api.main`.
-- **middleware.py `MutableHeaders.pop`**: Starlette's `MutableHeaders` doesn't have a `.pop()` method. The `SecurityHeadersMiddleware` in `api/middleware.py` uses `pop("server", None)` which fails at runtime. Use `del response.headers[key]` with an `if key in` guard instead.
-- **Lint (ruff/black)**: The codebase has ~1100 pre-existing ruff warnings and ~800 black formatting mismatches. These are pre-existing and not blockers.
-- **Frontend `lib/` gitignore**: The root `.gitignore` has `lib/` (for Python build output) which also matches `frontend/src/lib/`. Use `git add -f` when adding files under that path.
+- **auth.py 204 + logout**: `/logout` and `/logout/all` use `response_model=None` for FastAPI 0.115.x.
+- **middleware.py**: Server fingerprint removal uses `del response.headers[key]` (no `.pop()` on `MutableHeaders`).
+- **Frontend `frontend/src/lib/`**: `utils.ts`, `hooks/useAuth.tsx`, and `api.ts` exist; use `git add -f` if `.gitignore` blocks `lib/` (Python artifact pattern).
+
+### Operational caveats (still important)
+
+- **Alembic — two heads**: `alembic heads` reports `0001` and `003`. Until a merge revision exists, `alembic upgrade head` may not apply both branches; use explicit revision targets or rely on dev `init_db` (which imports `db.models_revenue_events` so `revenue_events` is included in `create_all`).
+- **`PostgresEventStore` vs sync callers**: `PostgresEventStore` methods are **async**. `Orchestrator`, module `append_event()`, and `api/routers/revenue_os.py` still call **`store.append()` synchronously**. Default remains in-memory; `get_default_store(backend="postgres")` is unsafe until those paths are async-ready or a sync adapter exists.
+- **Lint (ruff/black)**: Large pre-existing drift; not API correctness gates.
+
+### Environment — frontend API URL
+
+- Set `NEXT_PUBLIC_API_URL` when the backend is not on `http://localhost:8000` (`frontend/src/lib/api.ts`).
 
 ### Running tests
 
@@ -36,10 +45,10 @@ APP_ENV=development uvicorn api.main:app --host 0.0.0.0 --port 8000 --reload
 APP_ENV=test pytest -v
 ```
 
-The full test suite has 500+ test files. Many tests are fast static/contract checks. Some tests that import `api.main` at module level will fail if the auth.py fix is not applied. A targeted subset for quick verification:
+The full test suite has 500+ test files; full runs take ~15–20 minutes. Quick regression bundle:
 
 ```bash
-pytest tests/test_model_router.py tests/test_integrations.py tests/test_v5_layers.py tests/test_live_gates_default_false.py -v
+pytest tests/test_pg_event_store.py tests/test_model_router.py tests/test_integrations.py tests/test_v5_layers.py tests/unit/test_compliance_os.py -q --no-cov
 ```
 
 ### Running lint
