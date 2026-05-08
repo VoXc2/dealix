@@ -200,6 +200,8 @@ def create_app() -> FastAPI:
             "personal_operator_daily_brief": "/api/v1/personal-operator/daily-brief",
             "personal_operator_launch_report": "/api/v1/personal-operator/launch-report",
             "business_pricing": "/api/v1/business/pricing",
+            "decision_passport_golden_chain": "/api/v1/decision-passport/golden-chain",
+            "decision_passport_evidence_levels": "/api/v1/decision-passport/evidence-levels",
         }
 
     return app

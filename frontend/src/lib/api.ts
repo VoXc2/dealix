@@ -142,6 +142,12 @@ export const api = {
 
   getPipeline: () =>
     apiClient.get("/api/v1/revenue-pipeline/summary"),
+
+  getDecisionPassportGoldenChain: () =>
+    apiClient.get("/api/v1/decision-passport/golden-chain"),
+
+  getEvidenceLevels: () =>
+    apiClient.get("/api/v1/decision-passport/evidence-levels"),
 };
 
 export default api;

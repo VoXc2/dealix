@@ -65,6 +65,14 @@ Copy `.env.example` to `.env`. Key settings for local dev:
 - `DATABASE_URL=postgresql+asyncpg://ai_user:ai_password@localhost:5432/ai_company`
 - All LLM keys and external service keys are optional; the app degrades gracefully.
 
+### Decision Passport (Revenue OS)
+
+- `GET /api/v1/decision-passport/golden-chain` — السلسلة الذهبية (مرجع منتج)
+- `GET /api/v1/decision-passport/evidence-levels` — مستويات أدلة L0–L5
+- `POST /api/v1/leads` — يعيد `decision_passport` + `customer_readiness` مع كل تشغيل للـ pipeline
+
+استراتيجية التشغيل الكاملة: `docs/strategic/DEALIX_MASTER_OPERATING_MODEL_AR.md`
+
 ### Hello world test
 
 Submit a lead to the governed pipeline:
