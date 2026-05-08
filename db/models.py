@@ -1,13 +1,34 @@
 """
 SQLAlchemy 2.0 async ORM models.
 نماذج قاعدة البيانات.
+
+Changes (enterprise upgrade):
+  - TenantRecord: multi-tenant isolation
+  - UserRecord: user auth with hashed password + role
+  - RoleRecord: RBAC role definitions
+  - AuditLogRecord: data access audit trail (PDPL Art. 18)
+  - BackgroundJobRecord: async task queue tracking
+  - ContactEmbeddingRecord: pgvector Revenue Memory
+  - ZATCAInvoiceRecord: e-invoice compliance
+  - Soft-delete (deleted_at) added to key models
+  - tenant_id FK added to LeadRecord, DealRecord, AccountRecord, ContactRecord
 """
 
 from __future__ import annotations
 
 from datetime import datetime
 
-from sqlalchemy import JSON, Boolean, Float, ForeignKey, Integer, String, Text
+from sqlalchemy import (
+    JSON,
+    Boolean,
+    Float,
+    ForeignKey,
+    Index,
+    Integer,
+    String,
+    Text,
+    UniqueConstraint,
+)
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
 from core.utils import utcnow
@@ -17,10 +38,148 @@ class Base(DeclarativeBase):
     """Base class for all models."""
 
 
+class SoftDeleteMixin:
+    """
+    Mixin that adds soft-delete support.
+    خلط يضيف دعم الحذف الناعم.
+
+    Usage: class MyModel(SoftDeleteMixin, Base): ...
+    Filter active rows: session.query(MyModel).filter(MyModel.deleted_at.is_(None))
+    """
+
+    deleted_at: Mapped[datetime | None] = mapped_column(nullable=True, index=True)
+
+
+# ── Multi-Tenancy ─────────────────────────────────────────────────
+
+class TenantRecord(Base):
+    """
+    Tenant = one subscribing enterprise client.
+    المستأجر = عميل مؤسسي مشترك واحد.
+
+    Every data row in the system carries tenant_id for strict isolation.
+    Row-level security policies enforce this at DB level in production.
+    """
+
+    __tablename__ = "tenants"
+
+    id: Mapped[str] = mapped_column(String(64), primary_key=True)
+    name: Mapped[str] = mapped_column(String(255), index=True)
+    slug: Mapped[str] = mapped_column(String(64), unique=True, index=True)
+    plan: Mapped[str] = mapped_column(String(32), default="pilot")  # pilot/starter/growth/scale
+    status: Mapped[str] = mapped_column(String(32), default="active", index=True)  # active/suspended/churned
+    timezone: Mapped[str] = mapped_column(String(64), default="Asia/Riyadh")
+    locale: Mapped[str] = mapped_column(String(4), default="ar")
+    currency: Mapped[str] = mapped_column(String(8), default="SAR")
+    max_users: Mapped[int] = mapped_column(Integer, default=5)
+    max_leads_per_month: Mapped[int] = mapped_column(Integer, default=1000)
+    features: Mapped[dict] = mapped_column(JSON, default=dict)  # feature flag overrides
+    meta_json: Mapped[dict] = mapped_column("metadata", JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(default=utcnow, onupdate=utcnow)
+    deleted_at: Mapped[datetime | None] = mapped_column(nullable=True)
+
+    users: Mapped[list["UserRecord"]] = relationship(back_populates="tenant")
+
+
+class RoleRecord(Base):
+    """
+    RBAC role definitions.
+    تعريفات دور التحكم في الوصول.
+
+    Default roles: owner, admin, sales_rep, viewer, agent_operator
+    """
+
+    __tablename__ = "roles"
+
+    id: Mapped[str] = mapped_column(String(64), primary_key=True)
+    tenant_id: Mapped[str] = mapped_column(ForeignKey("tenants.id"), index=True)
+    name: Mapped[str] = mapped_column(String(64), index=True)  # owner/admin/sales_rep/viewer
+    permissions: Mapped[list] = mapped_column(JSON, default=list)
+    # e.g. ["leads:read", "leads:write", "deals:read", "agents:run", "admin:*"]
+    description: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    is_system: Mapped[bool] = mapped_column(Boolean, default=False)  # system roles cannot be deleted
+    created_at: Mapped[datetime] = mapped_column(default=utcnow)
+
+    __table_args__ = (UniqueConstraint("tenant_id", "name", name="uq_role_tenant_name"),)
+
+
+class UserRecord(Base):
+    """
+    User account with hashed password + role assignment.
+    حساب مستخدم مع كلمة مرور مشفرة وتعيين دور.
+
+    Authentication: JWT tokens issued at /api/v1/auth/token
+    Password: bcrypt-hashed, never stored in plaintext
+    MFA: TOTP support via totp_secret
+    """
+
+    __tablename__ = "users"
+
+    id: Mapped[str] = mapped_column(String(64), primary_key=True)
+    tenant_id: Mapped[str | None] = mapped_column(ForeignKey("tenants.id"), nullable=True, index=True)
+    role_id: Mapped[str | None] = mapped_column(ForeignKey("roles.id"), nullable=True, index=True)
+    email: Mapped[str] = mapped_column(String(255), index=True)
+    name: Mapped[str] = mapped_column(String(255), default="")
+    hashed_password: Mapped[str] = mapped_column(String(255), default="")
+    is_active: Mapped[bool] = mapped_column(Boolean, default=True, index=True)
+    is_verified: Mapped[bool] = mapped_column(Boolean, default=False)
+    # System-level role — spans all tenants (super_admin only). Null for regular users.
+    system_role: Mapped[str | None] = mapped_column(String(32), nullable=True, index=True)
+    # MFA
+    totp_secret: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    mfa_enabled: Mapped[bool] = mapped_column(Boolean, default=False)
+    # Password reset
+    reset_token: Mapped[str | None] = mapped_column(String(128), nullable=True)
+    reset_token_expires_at: Mapped[datetime | None] = mapped_column(nullable=True)
+    # Timestamps
+    last_login_at: Mapped[datetime | None] = mapped_column(nullable=True)
+    created_at: Mapped[datetime] = mapped_column(default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(default=utcnow, onupdate=utcnow)
+    deleted_at: Mapped[datetime | None] = mapped_column(nullable=True)
+
+    tenant: Mapped["TenantRecord | None"] = relationship(back_populates="users")
+
+    __table_args__ = (UniqueConstraint("tenant_id", "email", name="uq_user_tenant_email"),)
+
+
+# ── Audit Log (PDPL Article 18) ──────────────────────────────────
+
+class AuditLogRecord(Base):
+    """
+    Data access + mutation audit trail — required by PDPL Article 18.
+    سجل تدقيق الوصول والتعديل على البيانات — مطلوب بموجب المادة 18 من نظام PDPL.
+
+    Every sensitive read (contact PII, deal financials) and every write
+    (create/update/delete) must produce one row here.
+    """
+
+    __tablename__ = "audit_logs"
+
+    id: Mapped[str] = mapped_column(String(64), primary_key=True)
+    tenant_id: Mapped[str] = mapped_column(String(64), index=True)
+    user_id: Mapped[str | None] = mapped_column(String(64), nullable=True, index=True)
+    action: Mapped[str] = mapped_column(String(64), index=True)  # e.g. "contact.read", "lead.create", "contact.delete"
+    entity_type: Mapped[str] = mapped_column(String(64), index=True)  # contact/lead/deal/user/tenant
+    entity_id: Mapped[str | None] = mapped_column(String(64), nullable=True, index=True)
+    ip_address: Mapped[str | None] = mapped_column(String(45), nullable=True)
+    user_agent: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    request_id: Mapped[str | None] = mapped_column(String(32), nullable=True)
+    diff: Mapped[dict | None] = mapped_column(JSON, nullable=True)  # before/after for writes
+    status: Mapped[str] = mapped_column(String(16), default="ok")  # ok/denied/error
+    created_at: Mapped[datetime] = mapped_column(default=utcnow, index=True)
+
+    __table_args__ = (
+        Index("ix_audit_tenant_created", "tenant_id", "created_at"),
+        Index("ix_audit_entity", "entity_type", "entity_id"),
+    )
+
+
 class LeadRecord(Base):
     __tablename__ = "leads"
 
     id: Mapped[str] = mapped_column(String(64), primary_key=True)
+    tenant_id: Mapped[str | None] = mapped_column(ForeignKey("tenants.id"), nullable=True, index=True)
     source: Mapped[str] = mapped_column(String(32), index=True)
     company_name: Mapped[str] = mapped_column(String(255), default="")
     contact_name: Mapped[str] = mapped_column(String(255), default="")
@@ -40,14 +199,18 @@ class LeadRecord(Base):
     dedup_hash: Mapped[str] = mapped_column(String(32), default="", index=True)
     created_at: Mapped[datetime] = mapped_column(default=utcnow)
     updated_at: Mapped[datetime] = mapped_column(default=utcnow, onupdate=utcnow)
+    deleted_at: Mapped[datetime | None] = mapped_column(nullable=True)
 
-    deals: Mapped[list[DealRecord]] = relationship(back_populates="lead")
+    deals: Mapped[list["DealRecord"]] = relationship(back_populates="lead")
+
+    __table_args__ = (Index("ix_leads_tenant_status", "tenant_id", "status"),)
 
 
 class DealRecord(Base):
     __tablename__ = "deals"
 
     id: Mapped[str] = mapped_column(String(64), primary_key=True)
+    tenant_id: Mapped[str | None] = mapped_column(ForeignKey("tenants.id"), nullable=True, index=True)
     lead_id: Mapped[str] = mapped_column(ForeignKey("leads.id"), index=True)
     hubspot_deal_id: Mapped[str | None] = mapped_column(String(64), nullable=True)
     hubspot_contact_id: Mapped[str | None] = mapped_column(String(64), nullable=True)
@@ -56,8 +219,11 @@ class DealRecord(Base):
     stage: Mapped[str] = mapped_column(String(64), default="new")
     created_at: Mapped[datetime] = mapped_column(default=utcnow)
     updated_at: Mapped[datetime] = mapped_column(default=utcnow, onupdate=utcnow)
+    deleted_at: Mapped[datetime | None] = mapped_column(nullable=True)
 
-    lead: Mapped[LeadRecord] = relationship(back_populates="deals")
+    lead: Mapped["LeadRecord"] = relationship(back_populates="deals")
+
+    __table_args__ = (Index("ix_deals_tenant_stage", "tenant_id", "stage"),)
 
 
 class AgentRunRecord(Base):
@@ -74,6 +240,9 @@ class AgentRunRecord(Base):
     output_summary: Mapped[str | None] = mapped_column(Text, nullable=True)
     error: Mapped[str | None] = mapped_column(Text, nullable=True)
     created_at: Mapped[datetime] = mapped_column(default=utcnow, index=True)
+    deleted_at: Mapped[datetime | None] = mapped_column(nullable=True)
+
+    __table_args__ = (Index("ix_agent_runs_name_status", "agent_name", "status"),)
 
 
 class ConversationRecord(Base):
@@ -93,6 +262,9 @@ class ConversationRecord(Base):
     escalation_required: Mapped[bool] = mapped_column(default=False)
     auto_sent: Mapped[bool] = mapped_column(default=False)
     created_at: Mapped[datetime] = mapped_column(default=utcnow, index=True)
+    deleted_at: Mapped[datetime | None] = mapped_column(nullable=True)
+
+    __table_args__ = (Index("ix_conversations_channel_created", "channel", "created_at"),)
 
 
 class TaskRecord(Base):
@@ -110,6 +282,9 @@ class TaskRecord(Base):
     notes: Mapped[str | None] = mapped_column(Text, nullable=True)
     created_at: Mapped[datetime] = mapped_column(default=utcnow)
     completed_at: Mapped[datetime | None] = mapped_column(nullable=True)
+    deleted_at: Mapped[datetime | None] = mapped_column(nullable=True)
+
+    __table_args__ = (Index("ix_tasks_status_due", "status", "due_at"),)
 
 
 class CompanyRecord(Base):
@@ -145,6 +320,7 @@ class CompanyRecord(Base):
     status: Mapped[str] = mapped_column(String(32), default="active", index=True)
     created_at: Mapped[datetime] = mapped_column(default=utcnow)
     updated_at: Mapped[datetime] = mapped_column(default=utcnow, onupdate=utcnow)
+    deleted_at: Mapped[datetime | None] = mapped_column(nullable=True)
 
 
 class PartnerRecord(Base):
@@ -167,6 +343,7 @@ class PartnerRecord(Base):
     notes: Mapped[str | None] = mapped_column(Text, nullable=True)
     created_at: Mapped[datetime] = mapped_column(default=utcnow)
     updated_at: Mapped[datetime] = mapped_column(default=utcnow, onupdate=utcnow)
+    deleted_at: Mapped[datetime | None] = mapped_column(nullable=True)
 
 
 class CustomerRecord(Base):
@@ -187,6 +364,7 @@ class CustomerRecord(Base):
     churn_risk: Mapped[str] = mapped_column(String(16), default="low")  # low/medium/high
     created_at: Mapped[datetime] = mapped_column(default=utcnow)
     updated_at: Mapped[datetime] = mapped_column(default=utcnow, onupdate=utcnow)
+    deleted_at: Mapped[datetime | None] = mapped_column(nullable=True)
 
 
 class OutreachQueueRecord(Base):
@@ -268,6 +446,12 @@ class AccountRecord(Base):
     extra: Mapped[dict] = mapped_column("extra_json", JSON, default=dict)
     created_at: Mapped[datetime] = mapped_column(default=utcnow)
     updated_at: Mapped[datetime] = mapped_column(default=utcnow, onupdate=utcnow)
+    deleted_at: Mapped[datetime | None] = mapped_column(nullable=True)
+
+    __table_args__ = (
+        Index("ix_accounts_sector_status", "sector", "status"),
+        Index("ix_accounts_city_sector", "city", "sector"),
+    )
 
 
 class ContactRecord(Base):
@@ -276,7 +460,8 @@ class ContactRecord(Base):
     __tablename__ = "contacts"
 
     id: Mapped[str] = mapped_column(String(64), primary_key=True)
-    account_id: Mapped[str] = mapped_column(String(64), index=True)
+    tenant_id: Mapped[str | None] = mapped_column(ForeignKey("tenants.id"), nullable=True, index=True)
+    account_id: Mapped[str] = mapped_column(ForeignKey("accounts.id"), index=True)
     name: Mapped[str | None] = mapped_column(String(255), nullable=True)
     role: Mapped[str | None] = mapped_column(String(128), nullable=True)
     email: Mapped[str | None] = mapped_column(String(255), nullable=True, index=True)
@@ -286,8 +471,13 @@ class ContactRecord(Base):
     consent_status: Mapped[str] = mapped_column(String(32), default="unknown", index=True)
     opt_out: Mapped[bool] = mapped_column(Boolean, default=False, index=True)
     risk_level: Mapped[str] = mapped_column(String(16), default="medium")
+    pdpl_erasure_requested_at: Mapped[datetime | None] = mapped_column(nullable=True)
+    pdpl_erased_at: Mapped[datetime | None] = mapped_column(nullable=True)
     created_at: Mapped[datetime] = mapped_column(default=utcnow)
     updated_at: Mapped[datetime] = mapped_column(default=utcnow, onupdate=utcnow)
+    deleted_at: Mapped[datetime | None] = mapped_column(nullable=True)
+
+    __table_args__ = (Index("ix_contacts_tenant_account", "tenant_id", "account_id"),)
 
 
 class SignalRecord(Base):
@@ -471,3 +661,208 @@ class WebhookDeliveryRecord(Base):
     request_signature: Mapped[str] = mapped_column(String(255), default="")
     payload: Mapped[dict] = mapped_column("payload_json", JSON, default=dict)
     created_at: Mapped[datetime] = mapped_column(default=utcnow, index=True)
+
+
+# ── Async Task Queue ──────────────────────────────────────────────
+
+class BackgroundJobRecord(Base):
+    """
+    Persistent record for every background/async job (agent run, LLM call, outreach batch).
+    سجل مستمر لكل مهمة خلفية.
+
+    Status lifecycle: pending → running → succeeded | failed | retrying
+    Worker polls this table via ARQ or Celery result backend.
+    """
+
+    __tablename__ = "background_jobs"
+
+    id: Mapped[str] = mapped_column(String(64), primary_key=True)
+    tenant_id: Mapped[str | None] = mapped_column(ForeignKey("tenants.id"), nullable=True, index=True)
+    job_type: Mapped[str] = mapped_column(String(64), index=True)
+    # e.g. "lead_score", "proposal_draft", "outreach_batch", "email_campaign"
+    status: Mapped[str] = mapped_column(String(16), default="pending", index=True)
+    # pending / running / succeeded / failed / retrying
+    input_payload: Mapped[dict] = mapped_column(JSON, default=dict)
+    output_payload: Mapped[dict | None] = mapped_column(JSON, nullable=True)
+    error: Mapped[str | None] = mapped_column(Text, nullable=True)
+    retry_count: Mapped[int] = mapped_column(Integer, default=0)
+    max_retries: Mapped[int] = mapped_column(Integer, default=3)
+    started_at: Mapped[datetime | None] = mapped_column(nullable=True)
+    completed_at: Mapped[datetime | None] = mapped_column(nullable=True)
+    created_at: Mapped[datetime] = mapped_column(default=utcnow, index=True)
+    updated_at: Mapped[datetime] = mapped_column(default=utcnow, onupdate=utcnow)
+
+    __table_args__ = (Index("ix_jobs_tenant_status", "tenant_id", "status"),)
+
+
+# ── Revenue Memory (pgvector) ─────────────────────────────────────
+
+class AccountEmbeddingRecord(Base):
+    """
+    Vector embedding of account profile for semantic search — Revenue Memory.
+    تضمين متجهي لملف الحساب للبحث الدلالي — ذاكرة الإيرادات.
+
+    Stored as JSON array (compatible with all PostgreSQL setups).
+    For production with pgvector extension: migrate to VECTOR(1536) column type.
+    Usage: semantic similarity search to find accounts matching a query profile.
+
+    Example:
+        embedding = await EmbeddingService().embed("logistics startup Riyadh 50 employees")
+        similar_accounts = await semantic_search(embedding, top_k=10)
+    """
+
+    __tablename__ = "account_embeddings"
+
+    id: Mapped[str] = mapped_column(String(64), primary_key=True)
+    tenant_id: Mapped[str | None] = mapped_column(ForeignKey("tenants.id"), nullable=True, index=True)
+    account_id: Mapped[str] = mapped_column(ForeignKey("accounts.id"), unique=True, index=True)
+    embedding_json: Mapped[list] = mapped_column(JSON, default=list)
+    # Serialised float array — use pgvector VECTOR column in production migration
+    model_name: Mapped[str] = mapped_column(String(128), default="text-embedding-3-small")
+    text_used: Mapped[str | None] = mapped_column(Text, nullable=True)
+    # The text that was embedded (for cache invalidation / re-embedding)
+    created_at: Mapped[datetime] = mapped_column(default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(default=utcnow, onupdate=utcnow)
+
+
+class ConversationEmbeddingRecord(Base):
+    """
+    Vector embedding of conversation turns for agent memory / retrieval.
+    تضمين متجهي لمحادثة — ذاكرة الوكيل.
+    """
+
+    __tablename__ = "conversation_embeddings"
+
+    id: Mapped[str] = mapped_column(String(64), primary_key=True)
+    tenant_id: Mapped[str | None] = mapped_column(ForeignKey("tenants.id"), nullable=True, index=True)
+    conversation_id: Mapped[str] = mapped_column(ForeignKey("conversations.id"), index=True)
+    embedding_json: Mapped[list] = mapped_column(JSON, default=list)
+    model_name: Mapped[str] = mapped_column(String(128), default="text-embedding-3-small")
+    created_at: Mapped[datetime] = mapped_column(default=utcnow)
+
+
+# ── ZATCA E-Invoice (Phase 2 — Saudi legal requirement) ──────────
+
+class ZATCAInvoiceRecord(Base):
+    """
+    ZATCA Phase 2 e-invoice record — Fatoorah API compliant.
+    سجل الفاتورة الإلكترونية وفق المرحلة الثانية لنظام فاتورة ZATCA.
+
+    Required for any Saudi B2B VAT invoice.
+    Phase 2 mandate: all invoices must be cleared/reported to ZATCA in real-time.
+    """
+
+    __tablename__ = "zatca_invoices"
+
+    id: Mapped[str] = mapped_column(String(64), primary_key=True)
+    tenant_id: Mapped[str] = mapped_column(ForeignKey("tenants.id"), index=True)
+    deal_id: Mapped[str | None] = mapped_column(ForeignKey("deals.id"), nullable=True, index=True)
+    customer_id: Mapped[str | None] = mapped_column(ForeignKey("customers.id"), nullable=True, index=True)
+    invoice_number: Mapped[str] = mapped_column(String(64), unique=True, index=True)
+    # Format: SELLER_TAX_NUMBER-YEAR-SEQUENCE e.g. 311111111100003-1-1
+    invoice_type: Mapped[str] = mapped_column(String(32), default="simplified")
+    # simplified (B2C) | standard (B2B)
+    issue_date: Mapped[str] = mapped_column(String(10))  # YYYY-MM-DD
+    issue_time: Mapped[str] = mapped_column(String(8))   # HH:MM:SS
+    seller_vat_number: Mapped[str] = mapped_column(String(15))
+    buyer_vat_number: Mapped[str | None] = mapped_column(String(15), nullable=True)
+    buyer_name: Mapped[str] = mapped_column(String(255))
+    subtotal_sar: Mapped[float] = mapped_column(Float)
+    vat_amount_sar: Mapped[float] = mapped_column(Float)
+    total_sar: Mapped[float] = mapped_column(Float)
+    vat_rate: Mapped[float] = mapped_column(Float, default=0.15)  # 15% standard KSA VAT
+    line_items: Mapped[list] = mapped_column(JSON, default=list)
+    # zatca_xml: Base64-encoded UBL XML
+    zatca_xml_b64: Mapped[str | None] = mapped_column(Text, nullable=True)
+    # QR code (TLV encoded, Base64)
+    qr_code_b64: Mapped[str | None] = mapped_column(String(2048), nullable=True)
+    # Clearance/Reporting
+    zatca_status: Mapped[str] = mapped_column(String(32), default="draft", index=True)
+    # draft | pending_clearance | cleared | reported | rejected | error
+    zatca_response: Mapped[dict | None] = mapped_column(JSON, nullable=True)
+    zatca_cleared_at: Mapped[datetime | None] = mapped_column(nullable=True)
+    created_at: Mapped[datetime] = mapped_column(default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(default=utcnow, onupdate=utcnow)
+
+    __table_args__ = (Index("ix_zatca_tenant_status", "tenant_id", "zatca_status"),)
+
+
+# ── Session Management ─────────────────────────────────────────────
+
+class RefreshTokenRecord(Base):
+    """
+    JWT refresh token — one row per active session.
+    Each user can have multiple sessions (different devices/browsers).
+    Token value is hashed (SHA-256) for DB storage — never persisted in plaintext.
+    رمز تحديث JWT — صف واحد لكل جلسة نشطة.
+    """
+
+    __tablename__ = "refresh_tokens"
+
+    id: Mapped[str] = mapped_column(String(64), primary_key=True)
+    user_id: Mapped[str] = mapped_column(ForeignKey("users.id"), index=True)
+    tenant_id: Mapped[str | None] = mapped_column(String(64), nullable=True, index=True)
+    token_hash: Mapped[str] = mapped_column(String(128), unique=True, index=True)
+    device_info: Mapped[str | None] = mapped_column(String(512), nullable=True)
+    ip_address: Mapped[str | None] = mapped_column(String(45), nullable=True)
+    expires_at: Mapped[datetime] = mapped_column(index=True)
+    revoked_at: Mapped[datetime | None] = mapped_column(nullable=True)
+    created_at: Mapped[datetime] = mapped_column(default=utcnow)
+
+    __table_args__ = (Index("ix_refresh_user_expires", "user_id", "expires_at"),)
+
+
+class UserInviteRecord(Base):
+    """
+    Pending user invitations — token-based invite flow.
+    An invite is single-use and has a TTL (default 72 h).
+    دعوات المستخدمين المعلقة — تدفق الدعوة المستند إلى الرمز.
+    """
+
+    __tablename__ = "user_invites"
+
+    id: Mapped[str] = mapped_column(String(64), primary_key=True)
+    tenant_id: Mapped[str] = mapped_column(ForeignKey("tenants.id"), index=True)
+    email: Mapped[str] = mapped_column(String(255), index=True)
+    role_id: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    invited_by: Mapped[str] = mapped_column(String(64), index=True)  # user_id of sender
+    token_hash: Mapped[str] = mapped_column(String(128), unique=True, index=True)
+    expires_at: Mapped[datetime] = mapped_column(index=True)
+    accepted_at: Mapped[datetime | None] = mapped_column(nullable=True)
+    created_at: Mapped[datetime] = mapped_column(default=utcnow)
+
+    __table_args__ = (
+        UniqueConstraint("tenant_id", "email", name="uq_invite_tenant_email"),
+    )
+
+
+# ── PDPL Consent Request (Art. 5) ─────────────────────────────────
+
+class ConsentRequestRecord(Base):
+    """
+    Tracks PDPL consent request dispatches (email + WhatsApp).
+    سجل إرسال طلبات الموافقة وفق المادة الخامسة من نظام PDPL.
+
+    One record per (contact_id × channel × purpose) dispatch.
+    Enables audit of when consent was requested and via which channel.
+    """
+
+    __tablename__ = "consent_requests"
+
+    id: Mapped[str] = mapped_column(String(64), primary_key=True)
+    contact_id: Mapped[str] = mapped_column(String(64), index=True)
+    tenant_id: Mapped[str] = mapped_column(String(64), index=True)
+    channel: Mapped[str] = mapped_column(String(32), index=True)   # email | whatsapp | sms
+    purpose: Mapped[str] = mapped_column(String(64), index=True)   # PDPL_PURPOSES constant
+    status: Mapped[str] = mapped_column(String(32), default="sent", index=True)
+    # sent | delivered | responded_grant | responded_revoke | expired
+    consent_url: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    locale: Mapped[str] = mapped_column(String(8), default="ar")
+    responded_at: Mapped[datetime | None] = mapped_column(nullable=True)
+    response_kind: Mapped[str | None] = mapped_column(String(16), nullable=True)  # grant | revoke
+    created_at: Mapped[datetime] = mapped_column(default=utcnow, index=True)
+    updated_at: Mapped[datetime] = mapped_column(default=utcnow, onupdate=utcnow)
+
+    __table_args__ = (
+        Index("ix_consent_requests_contact_channel", "contact_id", "channel", "purpose"),
+    )

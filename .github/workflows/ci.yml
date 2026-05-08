@@ -42,7 +42,7 @@ jobs:
           # Fail CI if the committed SEO report is stale.
           git diff --exit-code -- docs/SEO_AUDIT_REPORT.json
 
-      - name: Tests
+      - name: Tests with coverage gate
         env:
           APP_ENV: test
           APP_DEBUG: "false"
@@ -51,7 +51,19 @@ jobs:
           GROQ_API_KEY: test-groq-key
           GLM_API_KEY: test-glm-key
           GOOGLE_API_KEY: test-google-key
-        run: pytest -q --no-cov
+        run: |
+          pytest -q \
+            --cov=api --cov=core --cov=db --cov=integrations \
+            --cov-report=xml:coverage.xml \
+            --cov-report=term-missing \
+            --cov-fail-under=70
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v4
+        if: always()
+        with:
+          files: ./coverage.xml
+          fail_ci_if_error: false
 
       - name: In-process API smoke
         env:

@@ -1,10 +1,11 @@
 #!/usr/bin/env bash
 # =============================================================================
 # Dealix Business Readiness Verifier
-# PHASE 14 | Owner: Founder | Date: 2026-05-07
+# PHASE 14 | Owner: Founder | Updated: 2026-05-07 v1.1
 # =============================================================================
 # Usage: bash scripts/business_readiness_verify.sh
 # Purpose: Verify all business architecture docs exist and pass hard gates.
+# v1.1: Added PDPL article check, KPI action-trigger check, SOP acceptance criteria check
 # =============================================================================
 
 set -euo pipefail
@@ -240,6 +241,76 @@ if grep -q "consent\|موافقة" docs/PROOF_AND_CASE_STUDY_SYSTEM.md 2>/dev/nu
   pass "PROOF: Consent requirements documented"
 else
   fail "PROOF: Consent requirements missing"
+fi
+
+echo ""
+
+# =============================================================================
+# SECTION 11: PDPL ARTICLE REFERENCES IN TRUST PACK
+# =============================================================================
+echo "--- SECTION 11: PDPL Article References ---"
+
+if grep -q "المادة 6\|Article 6\|المادة 9\|Article 9" docs/TRUST_AND_COMPLIANCE_BUSINESS_PACK.md 2>/dev/null; then
+  pass "PDPL: Article references found in Trust Pack"
+else
+  fail "PDPL: No article references in Trust Pack (need Art. 4/6/9/12/19)"
+fi
+
+if grep -q "المادة 19\|Article 19\|breach.*notif\|BREACH_RESPONSE" docs/TRUST_AND_COMPLIANCE_BUSINESS_PACK.md 2>/dev/null; then
+  pass "PDPL: Breach notification article referenced"
+else
+  warn "PDPL: Breach notification article not explicitly referenced"
+fi
+
+echo ""
+
+# =============================================================================
+# SECTION 12: KPI ACTION TRIGGERS
+# =============================================================================
+echo "--- SECTION 12: KPI Action Triggers ---"
+
+if grep -q "Action Trigger\|action_trigger\|محفزات الإجراء\|العتبة الحمراء" docs/BUSINESS_KPI_DASHBOARD_SPEC.md 2>/dev/null; then
+  pass "KPI: Action triggers documented (metric → action)"
+else
+  fail "KPI: No action triggers — every metric must tie to an action"
+fi
+
+echo ""
+
+# =============================================================================
+# SECTION 13: PILOT SOP ACCEPTANCE CRITERIA
+# =============================================================================
+echo "--- SECTION 13: SOP Acceptance Criteria ---"
+
+if grep -q "Acceptance Criteria\|acceptance_criteria\|معايير القبول\|Minimum Completion" docs/PILOT_DELIVERY_SOP.md 2>/dev/null; then
+  pass "SOP: Acceptance criteria documented"
+else
+  fail "SOP: Acceptance criteria missing (required by business operating standard)"
+fi
+
+if grep -q "Sprint Completion Certificate\|Sprint.*Certificate" docs/PILOT_DELIVERY_SOP.md 2>/dev/null; then
+  pass "SOP: Sprint Completion Certificate referenced"
+else
+  warn "SOP: Sprint Completion Certificate not found"
+fi
+
+echo ""
+
+# =============================================================================
+# SECTION 14: UNIT ECONOMICS ESTIMATE LABELS
+# =============================================================================
+echo "--- SECTION 14: Unit Economics Estimate Labels ---"
+
+if grep -q "تقدير\|estimate\|insufficient_data" docs/UNIT_ECONOMICS_AND_MARGIN.md 2>/dev/null; then
+  pass "ECONOMICS: Figures labeled as estimates (not guarantees)"
+else
+  fail "ECONOMICS: Missing estimate labels on financial figures"
+fi
+
+if grep -q "تحذير\|Warning\|لا تُستخدم للاستثمار" docs/UNIT_ECONOMICS_AND_MARGIN.md 2>/dev/null; then
+  pass "ECONOMICS: Financial warning present"
+else
+  warn "ECONOMICS: No explicit financial warning in Unit Economics"
 fi
 
 echo ""

@@ -12,111 +12,60 @@ from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
-from api.middleware import RequestIDMiddleware
-from api.routers import (
-    admin,
-    agents,
-    ai_workforce,
-    ai_workforce_v10,
-    approval_center,
-    automation,
-    autonomous,
-    business,
-    command_center,
-    company_brain,
-    company_brain_v6,
-    company_growth_beast,
-    customer_success,
-    data,
-    dominance,
-    drafts,
-    ecosystem,
-    email_send,
-    executive_reporting,
-    full_os,
-    health,
-    leads,
-    llm_gateway_v10,
-    observability_v10,
-    outreach,
-    personal_operator,
-    pricing,
-    prospect,
-    public,
-    agent_governance,
-    customer_data_plane,
-    crm_v10,
-    customer_company_portal,
-    customer_inbox_v10,
-    customer_loop,
-    delivery_factory,
-    designops,
-    diagnostic,
-    diagnostic_workflow,
-    finance_os,
-    founder,
-    founder_v10,
-    growth_v10,
-    gtm_os,
-    case_study_engine,
-    customer_brain as customer_brain_router,
-    executive_pack_per_customer,
-    knowledge_v10,
-    leadops_spine,
-    payment_ops as payment_ops_router,
-    service_sessions as service_sessions_router,
-    support_webhook,
-    observability_v6,
-    proof_ledger,
-    reliability_os,
-    revenue,
-    revenue_os,
-    proof_to_market,
-    role_command,
-    role_command_os,
-    safety_v10,
-    sales,
-    search_radar,
-    unified_operating_graph as unified_operating_graph_router,
-    full_ops_radar as full_ops_radar_router,
-    executive_command_center as executive_command_center_router,
-    whatsapp_decision_bot as whatsapp_decision_bot_router,
-    channel_policy_gateway as channel_policy_gateway_router,
-    radar_events as radar_events_router,
-    agent_observability as agent_observability_router,
-    leadops_reliability as leadops_reliability_router,
-    revenue_profitability as revenue_profitability_router,
-    support_journey as support_journey_router,
-    tool_guardrail_gateway as tool_guardrail_gateway_router,
-    sectors,
-    security_privacy,
-    customer_success_os,
-    delivery_os,
-    executive_os,
-    founder_beast_command_center,
-    full_ops,
-    growth_beast,
-    growth_os,
-    partnership_os,
-    revenue_pipeline,
-    revops,
-    sales_os,
-    self_growth,
-    self_improvement_os,
-    service_mapping_v7,
-    service_quality,
-    support_os,
-    v10_status,
-    v11_status,
-    v3,
-    vertical_playbooks,
-    workflow_os_v10,
-    webhooks,
+from api.middleware import (
+    AuditLogMiddleware,
+    ETagMiddleware,
+    RateLimitHeadersMiddleware,
+    RequestIDMiddleware,
+    SecurityHeadersMiddleware,
 )
+
+# ── Domain router aggregators (replaces 80+ flat imports) ─────────
+from api.routers.domains import admin as admin_domain
+from api.routers.domains import agents as agents_domain
+from api.routers.domains import analytics as analytics_domain
+from api.routers.domains import compliance as compliance_domain
+from api.routers.domains import customers as customers_domain
+from api.routers.domains import deprecated as deprecated_domain
+from api.routers.domains import sales as sales_domain
+from api.routers.domains import webhooks as webhooks_domain
+from api.routers import auth, jobs, pdpl, zatca
 from api.security import APIKeyMiddleware, setup_rate_limit
 from core.config.settings import get_settings
 from core.errors import AICompanyError
 from core.logging import configure_logging, get_logger
+
+
+def _validate_production_secrets(settings: "Settings") -> None:  # type: ignore[name-defined]
+    """
+    Fail fast if production is started with insecure defaults.
+    يرفض تشغيل الإنتاج بإعدادات غير آمنة.
+    """
+    if not settings.is_production:
+        return
+    secret_val = settings.app_secret_key.get_secret_value()
+    if secret_val in ("change-me", "CHANGE_ME_to_64_byte_hex", "", "changeme"):
+        raise RuntimeError(
+            "SECURITY: APP_SECRET_KEY is set to the default placeholder. "
+            "Generate a real key: python -c \"import secrets; print(secrets.token_hex(32))\""
+        )
+    jwt_val = settings.jwt_secret_key.get_secret_value()
+    if "change-me" in jwt_val or len(jwt_val) < 32:
+        raise RuntimeError(
+            "SECURITY: JWT_SECRET_KEY is insecure in production. "
+            "Generate a real key: python -c \"import secrets; print(secrets.token_hex(32))\""
+        )
+    import os
+    if not os.getenv("API_KEYS", "").strip():
+        raise RuntimeError(
+            "SECURITY: API_KEYS is empty in production. "
+            "Set a comma-separated list of secret API keys."
+        )
+    if not os.getenv("ADMIN_API_KEYS", "").strip():
+        raise RuntimeError(
+            "SECURITY: ADMIN_API_KEYS is empty in production. "
+            "Set a comma-separated list of admin API keys for /api/v1/admin/* endpoints."
+        )
 
 
 @asynccontextmanager
@@ -125,19 +74,27 @@ async def lifespan(_app: FastAPI) -> AsyncIterator[None]:
     configure_logging()
     log = get_logger(__name__)
     settings = get_settings()
+
+    # ── Security: fail fast on insecure production config ───────
+    _validate_production_secrets(settings)
+
     log.info(
         "app_startup",
         app=settings.app_name,
         version=settings.app_version,
         env=settings.app_env,
     )
-    # Auto-create tables on boot (additive — safe with SQLAlchemy create_all)
-    try:
-        from db.session import init_db
-        await init_db()
-        log.info("db_init_complete")
-    except Exception as exc:
-        log.warning("db_init_skipped", error=str(exc))
+    # Auto-create tables ONLY in development/test — in staging/production
+    # run `alembic upgrade head` instead (init_db create_all is excluded).
+    if settings.app_env in ("development", "test"):
+        try:
+            from db.session import init_db
+            await init_db()
+            log.info("db_init_complete")
+        except Exception as exc:
+            log.warning("db_init_skipped", error=str(exc))
+    else:
+        log.info("db_init_skipped", reason="use_alembic_migrations")
     yield
     log.info("app_shutdown")
 
@@ -145,6 +102,18 @@ async def lifespan(_app: FastAPI) -> AsyncIterator[None]:
 def create_app() -> FastAPI:
     """FastAPI factory."""
     settings = get_settings()
+
+    _OPENAPI_TAGS = [
+        {"name": "Sales", "description": "Lead intake, pipeline, outreach, pricing, revenue."},
+        {"name": "Customers", "description": "Customer success, CRM, portals, inbox, support."},
+        {"name": "Agents", "description": "LLM gateway, AI workforce, observability, safety, delivery."},
+        {"name": "Admin", "description": "Health, config, founder ops, roles, diagnostics."},
+        {"name": "Compliance", "description": "PDPL, security, privacy, data quality, reliability."},
+        {"name": "Analytics", "description": "Growth, company brain, GTM, market intelligence, radar."},
+        {"name": "Webhooks", "description": "Inbound/outbound webhooks — WhatsApp, HubSpot, n8n."},
+        {"name": "Deprecated", "description": "Legacy versioned endpoints (v3/v6/v7/v10/v11) — to be removed in v2.0."},
+        {"name": "root", "description": "Root discovery endpoint."},
+    ]
 
     app = FastAPI(
         title=settings.app_name,
@@ -163,15 +132,20 @@ def create_app() -> FastAPI:
         redoc_url="/redoc",
         openapi_url="/openapi.json",
         lifespan=lifespan,
+        openapi_tags=_OPENAPI_TAGS,
     )
 
     app.add_middleware(
         CORSMiddleware,
         allow_origins=settings.cors_origin_list,
         allow_credentials=True,
-        allow_methods=["*"],
-        allow_headers=["*"],
+        allow_methods=["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+        allow_headers=["Authorization", "X-API-Key", "X-Request-ID", "Content-Type", "Accept"],
     )
+    app.add_middleware(SecurityHeadersMiddleware)
+    app.add_middleware(RateLimitHeadersMiddleware)
+    app.add_middleware(ETagMiddleware)
+    app.add_middleware(AuditLogMiddleware)
     app.add_middleware(RequestIDMiddleware)
     app.add_middleware(APIKeyMiddleware)
     setup_rate_limit(app)
@@ -192,104 +166,26 @@ def create_app() -> FastAPI:
             content={"error": exc.__class__.__name__, "detail": str(exc)},
         )
 
-    app.include_router(health.router)
-    app.include_router(leads.router)
-    app.include_router(sales.router)
-    app.include_router(sectors.router)
-    app.include_router(agents.router)
-    app.include_router(webhooks.router)
-    app.include_router(pricing.router)
-    app.include_router(prospect.router)
-    app.include_router(autonomous.router)
-    app.include_router(data.router)
-    app.include_router(outreach.router)
-    app.include_router(revenue.router)
-    app.include_router(automation.router)
-    app.include_router(email_send.router)
-    app.include_router(drafts.router)
-    app.include_router(dominance.router)
-    app.include_router(full_os.router)
-    app.include_router(customer_success.router)
-    app.include_router(ecosystem.router)
-    app.include_router(command_center.router)
-    app.include_router(revenue_os.router)
-    app.include_router(v3.router)
-    app.include_router(business.router)
-    app.include_router(personal_operator.router)
-    app.include_router(self_growth.router)
-    app.include_router(service_mapping_v7.router)
-    app.include_router(customer_loop.router)
-    app.include_router(role_command_os.router)
-    app.include_router(service_quality.router)
-    app.include_router(agent_governance.router)
-    app.include_router(reliability_os.router)
-    app.include_router(vertical_playbooks.router)
-    app.include_router(customer_data_plane.router)
-    app.include_router(finance_os.router)
-    app.include_router(delivery_factory.router)
-    app.include_router(proof_ledger.router)
-    app.include_router(gtm_os.router)
-    app.include_router(search_radar.router)
-    app.include_router(security_privacy.router)
-    app.include_router(diagnostic.router)
-    app.include_router(diagnostic_workflow.router)
-    app.include_router(designops.router)
-    app.include_router(observability_v6.router)
-    app.include_router(observability_v10.router)
-    app.include_router(llm_gateway_v10.router)
-    app.include_router(safety_v10.router)
-    app.include_router(workflow_os_v10.router)
-    app.include_router(crm_v10.router)
-    app.include_router(customer_inbox_v10.router)
-    app.include_router(growth_v10.router)
-    app.include_router(knowledge_v10.router)
-    app.include_router(ai_workforce_v10.router)
-    app.include_router(founder_v10.router)
-    app.include_router(company_brain.router)
-    app.include_router(company_brain_v6.router)
-    app.include_router(approval_center.router)
-    app.include_router(ai_workforce.router)
-    app.include_router(executive_reporting.router)
-    app.include_router(founder.router)
-    app.include_router(v10_status.router)
-    app.include_router(v11_status.router)
-    app.include_router(full_ops.router)
-    app.include_router(support_os.router)
-    app.include_router(growth_os.router)
-    app.include_router(sales_os.router)
-    app.include_router(customer_success_os.router)
-    app.include_router(delivery_os.router)
-    app.include_router(executive_os.router)
-    app.include_router(self_improvement_os.router)
-    app.include_router(partnership_os.router)
-    app.include_router(revenue_pipeline.router)
-    app.include_router(revops.router)
-    app.include_router(growth_beast.router)
-    app.include_router(company_growth_beast.router)
-    app.include_router(role_command.router)
-    app.include_router(proof_to_market.router)
-    app.include_router(founder_beast_command_center.router)
-    app.include_router(customer_company_portal.router)
-    app.include_router(leadops_spine.router)
-    app.include_router(customer_brain_router.router)
-    app.include_router(service_sessions_router.router)
-    app.include_router(support_webhook.router)
-    app.include_router(executive_pack_per_customer.router)
-    app.include_router(payment_ops_router.router)
-    app.include_router(case_study_engine.router)
-    app.include_router(unified_operating_graph_router.router)
-    app.include_router(full_ops_radar_router.router)
-    app.include_router(executive_command_center_router.router)
-    app.include_router(whatsapp_decision_bot_router.router)
-    app.include_router(channel_policy_gateway_router.router)
-    app.include_router(radar_events_router.router)
-    app.include_router(agent_observability_router.router)
-    app.include_router(leadops_reliability_router.router)
-    app.include_router(revenue_profitability_router.router)
-    app.include_router(support_journey_router.router)
-    app.include_router(tool_guardrail_gateway_router.router)
-    app.include_router(public.router)
-    app.include_router(admin.router)
+    # ── Routers registered by domain (replaces 90 flat app.include_router calls) ─
+    _DOMAIN_GROUPS = [
+        admin_domain,
+        sales_domain,
+        customers_domain,
+        agents_domain,
+        compliance_domain,
+        analytics_domain,
+        webhooks_domain,
+        deprecated_domain,
+    ]
+    for domain in _DOMAIN_GROUPS:
+        for router in domain.get_routers():
+            app.include_router(router)
+
+    # ── Enterprise additions ───────────────────────────────────────
+    app.include_router(auth.router, prefix="/api/v1")
+    app.include_router(jobs.router, prefix="/api/v1")
+    app.include_router(zatca.router)
+    app.include_router(pdpl.router)
 
     @app.get("/", tags=["root"])
     async def root() -> dict[str, object]:

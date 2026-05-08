@@ -13,14 +13,18 @@ from core.config.settings import get_settings
 
 @lru_cache(maxsize=1)
 def _engine():
-    """Lazy-create async engine."""
+    """Lazy-create async engine with production-grade pool settings."""
     settings = get_settings()
     return create_async_engine(
         settings.database_url,
         echo=settings.is_development,
         pool_pre_ping=True,
-        pool_size=5,
-        max_overflow=10,
+        # Pool sizing: 20 workers × ~1 connection + 30 burst capacity.
+        # For PgBouncer deployments these can be lowered to 2/5.
+        pool_size=20,
+        max_overflow=30,
+        pool_timeout=30,      # seconds to wait for a connection from pool
+        pool_recycle=1800,    # recycle connections every 30 min to avoid stale TCP
     )
 
 

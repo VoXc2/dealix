@@ -1,0 +1,139 @@
+{
+  "nav": {
+    "dashboard": "Dashboard",
+    "pipeline": "Lead Pipeline",
+    "agents": "Agent Activity",
+    "approvals": "Approval Center",
+    "clients": "Client Management",
+    "analytics": "Analytics & Reports",
+    "settings": "Settings",
+    "logout": "Sign Out"
+  },
+  "dashboard": {
+    "title": "Executive Dashboard",
+    "subtitle": "Comprehensive revenue performance overview",
+    "kpi": {
+      "totalRevenue": "Total Revenue",
+      "activeDeals": "Active Deals",
+      "conversionRate": "Conversion Rate",
+      "aiActions": "AI Actions",
+      "thisMonth": "This Month",
+      "vsLastMonth": "vs Last Month"
+    },
+    "revenueChart": "Revenue Chart",
+    "dealPipeline": "Deal Pipeline",
+    "recentActivity": "Recent Activity"
+  },
+  "pipeline": {
+    "title": "Lead Pipeline",
+    "subtitle": "Manage and track your deals",
+    "stages": {
+      "lead": "Lead",
+      "qualified": "Qualified",
+      "proposal": "Proposal",
+      "negotiation": "Negotiation",
+      "closed": "Closed"
+    },
+    "addDeal": "Add Deal",
+    "value": "Value",
+    "probability": "Probability",
+    "closeDate": "Close Date"
+  },
+  "agents": {
+    "title": "Agent Activity Feed",
+    "subtitle": "Real-time AI agent actions monitor",
+    "status": {
+      "running": "Running",
+      "completed": "Completed",
+      "pending": "Pending",
+      "failed": "Failed"
+    },
+    "agentTypes": {
+      "outreach": "Outreach Agent",
+      "scoring": "Scoring Agent",
+      "compliance": "Compliance Agent",
+      "intelligence": "Intelligence Agent"
+    }
+  },
+  "approvals": {
+    "title": "Approval Center",
+    "subtitle": "Review and approve AI agent decisions",
+    "approve": "Approve",
+    "reject": "Reject",
+    "pending": "Pending",
+    "approved": "Approved",
+    "rejected": "Rejected",
+    "highRisk": "High Risk",
+    "mediumRisk": "Medium Risk",
+    "lowRisk": "Low Risk",
+    "requestedBy": "Requested by",
+    "reviewDecision": "Review Decision"
+  },
+  "clients": {
+    "title": "Client Management",
+    "subtitle": "Track and manage your clients",
+    "addClient": "Add Client",
+    "company": "Company",
+    "contact": "Contact",
+    "status": "Status",
+    "lastActivity": "Last Activity",
+    "totalDeals": "Total Deals"
+  },
+  "analytics": {
+    "title": "Analytics & Reports",
+    "subtitle": "Deep insights into business performance",
+    "exportReport": "Export Report",
+    "revenueByMonth": "Monthly Revenue",
+    "conversionFunnel": "Conversion Funnel",
+    "agentPerformance": "Agent Performance",
+    "topClients": "Top Clients"
+  },
+  "settings": {
+    "title": "Settings",
+    "profile": "Profile",
+    "security": "Security",
+    "notifications": "Notifications",
+    "integrations": "Integrations",
+    "billing": "Billing",
+    "team": "Team",
+    "language": "Language",
+    "theme": "Theme"
+  },
+  "auth": {
+    "login": "Sign In",
+    "register": "Create Account",
+    "email": "Email Address",
+    "password": "Password",
+    "confirmPassword": "Confirm Password",
+    "fullName": "Full Name",
+    "company": "Company Name",
+    "forgotPassword": "Forgot password?",
+    "noAccount": "Don't have an account?",
+    "hasAccount": "Already have an account?",
+    "loginBtn": "Sign In",
+    "registerBtn": "Create Account",
+    "loginTitle": "Welcome back",
+    "loginSubtitle": "Sign in to your Dealix AI platform",
+    "registerTitle": "Join Dealix",
+    "registerSubtitle": "Start your AI revenue journey"
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "An error occurred",
+    "retry": "Retry",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "view": "View",
+    "search": "Search...",
+    "filter": "Filter",
+    "export": "Export",
+    "noData": "No data available",
+    "sar": "SAR",
+    "viewAll": "View All",
+    "today": "Today",
+    "yesterday": "Yesterday",
+    "thisWeek": "This Week"
+  }
+}

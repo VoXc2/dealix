@@ -1,0 +1,139 @@
+{
+  "nav": {
+    "dashboard": "لوحة التحكم",
+    "pipeline": "خط الصفقات",
+    "agents": "نشاط الوكلاء",
+    "approvals": "مركز الموافقات",
+    "clients": "إدارة العملاء",
+    "analytics": "التحليلات والتقارير",
+    "settings": "الإعدادات",
+    "logout": "تسجيل الخروج"
+  },
+  "dashboard": {
+    "title": "لوحة التحكم التنفيذية",
+    "subtitle": "نظرة شاملة على أداء الإيرادات",
+    "kpi": {
+      "totalRevenue": "إجمالي الإيرادات",
+      "activeDeals": "الصفقات النشطة",
+      "conversionRate": "معدل التحويل",
+      "aiActions": "إجراءات الذكاء الاصطناعي",
+      "thisMonth": "هذا الشهر",
+      "vsLastMonth": "مقارنة بالشهر الماضي"
+    },
+    "revenueChart": "مخطط الإيرادات",
+    "dealPipeline": "خط سير الصفقات",
+    "recentActivity": "النشاط الأخير"
+  },
+  "pipeline": {
+    "title": "خط الصفقات",
+    "subtitle": "إدارة وتتبع صفقاتك",
+    "stages": {
+      "lead": "عميل محتمل",
+      "qualified": "مؤهل",
+      "proposal": "عرض",
+      "negotiation": "تفاوض",
+      "closed": "مغلق"
+    },
+    "addDeal": "إضافة صفقة",
+    "value": "القيمة",
+    "probability": "الاحتمالية",
+    "closeDate": "تاريخ الإغلاق"
+  },
+  "agents": {
+    "title": "نشاط الوكلاء",
+    "subtitle": "متابعة إجراءات الذكاء الاصطناعي في الوقت الفعلي",
+    "status": {
+      "running": "يعمل",
+      "completed": "مكتمل",
+      "pending": "قيد الانتظار",
+      "failed": "فشل"
+    },
+    "agentTypes": {
+      "outreach": "وكيل التواصل",
+      "scoring": "وكيل التقييم",
+      "compliance": "وكيل الامتثال",
+      "intelligence": "وكيل الاستخبارات"
+    }
+  },
+  "approvals": {
+    "title": "مركز الموافقات",
+    "subtitle": "مراجعة والموافقة على قرارات الذكاء الاصطناعي",
+    "approve": "موافقة",
+    "reject": "رفض",
+    "pending": "قيد الانتظار",
+    "approved": "موافق عليه",
+    "rejected": "مرفوض",
+    "highRisk": "مخاطرة عالية",
+    "mediumRisk": "مخاطرة متوسطة",
+    "lowRisk": "مخاطرة منخفضة",
+    "requestedBy": "طُلب بواسطة",
+    "reviewDecision": "مراجعة القرار"
+  },
+  "clients": {
+    "title": "إدارة العملاء",
+    "subtitle": "سجل وإدارة عملائك",
+    "addClient": "إضافة عميل",
+    "company": "الشركة",
+    "contact": "جهة الاتصال",
+    "status": "الحالة",
+    "lastActivity": "آخر نشاط",
+    "totalDeals": "إجمالي الصفقات"
+  },
+  "analytics": {
+    "title": "التحليلات والتقارير",
+    "subtitle": "رؤى معمّقة حول أداء الأعمال",
+    "exportReport": "تصدير التقرير",
+    "revenueByMonth": "الإيرادات الشهرية",
+    "conversionFunnel": "قمع التحويل",
+    "agentPerformance": "أداء الوكلاء",
+    "topClients": "أفضل العملاء"
+  },
+  "settings": {
+    "title": "الإعدادات",
+    "profile": "الملف الشخصي",
+    "security": "الأمان",
+    "notifications": "الإشعارات",
+    "integrations": "التكاملات",
+    "billing": "الفواتير",
+    "team": "الفريق",
+    "language": "اللغة",
+    "theme": "المظهر"
+  },
+  "auth": {
+    "login": "تسجيل الدخول",
+    "register": "إنشاء حساب",
+    "email": "البريد الإلكتروني",
+    "password": "كلمة المرور",
+    "confirmPassword": "تأكيد كلمة المرور",
+    "fullName": "الاسم الكامل",
+    "company": "اسم الشركة",
+    "forgotPassword": "نسيت كلمة المرور؟",
+    "noAccount": "ليس لديك حساب؟",
+    "hasAccount": "لديك حساب بالفعل؟",
+    "loginBtn": "دخول",
+    "registerBtn": "تسجيل",
+    "loginTitle": "مرحباً بعودتك",
+    "loginSubtitle": "سجل الدخول إلى منصة Dealix للذكاء الاصطناعي",
+    "registerTitle": "انضم إلى Dealix",
+    "registerSubtitle": "ابدأ رحلتك مع الذكاء الاصطناعي للإيرادات"
+  },
+  "common": {
+    "loading": "جارٍ التحميل...",
+    "error": "حدث خطأ",
+    "retry": "إعادة المحاولة",
+    "save": "حفظ",
+    "cancel": "إلغاء",
+    "delete": "حذف",
+    "edit": "تعديل",
+    "view": "عرض",
+    "search": "بحث...",
+    "filter": "تصفية",
+    "export": "تصدير",
+    "noData": "لا توجد بيانات",
+    "sar": "ر.س",
+    "viewAll": "عرض الكل",
+    "today": "اليوم",
+    "yesterday": "أمس",
+    "thisWeek": "هذا الأسبوع"
+  }
+}

@@ -48,6 +48,15 @@ class Settings(BaseSettings):
     app_log_level: LogLevel = "INFO"
     app_secret_key: SecretStr = Field(default=SecretStr("change-me"))
     cors_origins: str = "http://localhost:3000,http://localhost:8000"
+    # Separate high-privilege key for /api/v1/admin/* endpoints.
+    # Set ADMIN_API_KEYS=key1,key2 in production. Checked at startup.
+    # مفتاح API مخصص لمسارات الإدارة — يجب ضبطه في بيئة الإنتاج.
+    admin_api_keys: str = ""
+
+    @property
+    def admin_api_key_list(self) -> list[str]:
+        """Parsed admin API keys as list."""
+        return [k.strip() for k in self.admin_api_keys.split(",") if k.strip()]
 
     # ── LLM: Anthropic ──────────────────────────────────────────
     anthropic_api_key: SecretStr | None = None
@@ -84,6 +93,14 @@ class Settings(BaseSettings):
     database_url: str = "postgresql+asyncpg://ai_user:ai_password@localhost:5432/ai_company"
     redis_url: str = "redis://localhost:6379/0"
     mongodb_uri: str = "mongodb://localhost:27017/ai_company"
+
+    # ── JWT / Auth ───────────────────────────────────────────────
+    # Generate with: python -c "import secrets; print(secrets.token_hex(32))"
+    jwt_secret_key: SecretStr = Field(default=SecretStr("change-me-jwt-32-byte-hex-here!!"))
+    jwt_algorithm: str = "HS256"
+    jwt_access_token_expire_minutes: int = 30
+    jwt_refresh_token_expire_days: int = 30
+    jwt_invite_token_expire_hours: int = 72
 
     # ── Proof Ledger backend ────────────────────────────────────
     # File-backed JSONL is the default until the founder explicitly
@@ -156,6 +173,24 @@ class Settings(BaseSettings):
     langfuse_secret_key: SecretStr | None = None
     langfuse_host: str = "https://cloud.langfuse.com"
     sentry_dsn: str | None = None
+
+    # ── ZATCA E-Invoice Phase 2 ─────────────────────────────────
+    # CSID (Cryptographic Stamp Identifier) from ZATCA onboarding portal.
+    # Env: ZATCA_CSID — required for live clearance/reporting.
+    zatca_csid: SecretStr | None = None
+    # ZATCA API secret (paired with CSID).
+    # Env: ZATCA_SECRET
+    zatca_secret: SecretStr | None = None
+    # True = sandbox (developer-portal), False = production.
+    # Env: ZATCA_SANDBOX (default true — must explicitly opt-in to production).
+    zatca_sandbox: bool = True
+    # Seller defaults (can be overridden per-invoice via API payload).
+    zatca_seller_name: str = ""
+    zatca_seller_vat: str = ""
+    zatca_seller_crn: str = ""
+    zatca_seller_city: str = "Riyadh"
+    zatca_seller_street: str = ""
+    zatca_seller_postal: str = ""
 
     # ── Other ───────────────────────────────────────────────────
     clickbank_api_key: SecretStr | None = None

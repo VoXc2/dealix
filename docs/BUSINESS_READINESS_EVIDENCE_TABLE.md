@@ -1,6 +1,7 @@
 # Dealix — Business Readiness Evidence Table
-<!-- PHASE 15 | Owner: Founder | Date: 2026-05-07 -->
+<!-- PHASE 15 | Owner: Founder | Updated: 2026-05-07 v1.1 -->
 <!-- Final verdict document for all 15 phases -->
+<!-- v1.1 improvements: PDPL articles added, KPI action triggers added, SOP acceptance criteria added, verifier v1.1 -->
 
 ---
 

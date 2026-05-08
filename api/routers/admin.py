@@ -1,14 +1,16 @@
-"""Admin endpoints — cost dashboard, cache stats."""
+"""Admin endpoints — cost dashboard, cache stats, DLQ management, approvals."""
 
 from __future__ import annotations
 
+import re
 from datetime import UTC, datetime, timedelta
-from typing import Any
+from typing import Annotated, Any
 
-from fastapi import APIRouter, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException, Path, Query
 from pydantic import BaseModel, Field
 
 from api.deps import get_approval_gate
+from api.security.api_key import require_admin_key
 from dealix.caching.cache_stats import get_global_stats
 from dealix.governance import ApprovalDecision
 from dealix.observability.cost_tracker import CostTracker
@@ -20,15 +22,38 @@ from dealix.reliability.dlq import (
     WEBHOOKS_DLQ,
 )
 
-router = APIRouter(prefix="/api/v1/admin", tags=["admin"])
+# All admin routes require both the global API key (from APIKeyMiddleware) AND
+# a separate X-Admin-API-Key header (from the require_admin_key dependency).
+# مسارات الإدارة تتطلب مفتاحين: المفتاح العام + مفتاح الإدارة المنفصل.
+router = APIRouter(
+    prefix="/api/v1/admin",
+    tags=["admin"],
+    dependencies=[Depends(require_admin_key)],
+)
 
 _tracker = CostTracker()
+
+# Allowed DLQ names — validated to prevent path traversal / injection
+_VALID_DLQ_NAMES: frozenset[str] = frozenset(
+    {WEBHOOKS_DLQ, OUTBOUND_DLQ, ENRICHMENT_DLQ, CRM_SYNC_DLQ}
+)
+
+
+def _validate_queue(queue: str) -> str:
+    """Ensure the queue name is one of the known DLQ identifiers."""
+    if queue not in _VALID_DLQ_NAMES:
+        valid = ", ".join(sorted(_VALID_DLQ_NAMES))
+        raise HTTPException(
+            status_code=422,
+            detail=f"Unknown queue '{queue}'. Valid queues: {valid}",
+        )
+    return queue
 
 
 @router.get("/costs")
 async def costs(
     window_hours: int = Query(24, ge=1, le=720),
-    group_by: str = Query("model", regex="^(model|provider|task)$"),
+    group_by: str = Query("model", pattern="^(model|provider|task)$"),
 ) -> dict[str, Any]:
     """Aggregate LLM spend over the last N hours."""
     since = datetime.now(UTC) - timedelta(hours=window_hours)
@@ -76,8 +101,12 @@ async def dlq_stats() -> dict[str, Any]:
 
 
 @router.get("/dlq/{queue}/peek")
-async def dlq_peek(queue: str, n: int = Query(10, ge=1, le=100)) -> dict[str, Any]:
+async def dlq_peek(
+    queue: Annotated[str, Path(max_length=64)],
+    n: int = Query(10, ge=1, le=100),
+) -> dict[str, Any]:
     """Inspect the first N items in a DLQ without removing them."""
+    _validate_queue(queue)
     dlq = DLQ(queue)
     items = dlq.peek(n=n)
     return {
@@ -100,10 +129,14 @@ async def dlq_peek(queue: str, n: int = Query(10, ge=1, le=100)) -> dict[str, An
 
 
 @router.post("/dlq/{queue}/drain")
-async def dlq_drain(queue: str, limit: int = Query(10, ge=1, le=100)) -> dict[str, Any]:
+async def dlq_drain(
+    queue: Annotated[str, Path(max_length=64)],
+    limit: int = Query(10, ge=1, le=100),
+) -> dict[str, Any]:
     """Remove up to `limit` items from a DLQ. Caller is responsible for replay.
     Returns drained items for operator inspection / manual retry.
     """
+    _validate_queue(queue)
     dlq = DLQ(queue)
     items = dlq.drain(limit=limit)
     return {
@@ -175,7 +208,9 @@ async def approvals_request(body: ApprovalRequestIn) -> dict[str, Any]:
 
 
 @router.get("/approvals/{request_id}")
-async def approvals_get(request_id: str) -> dict[str, Any]:
+async def approvals_get(
+    request_id: Annotated[str, Path(max_length=64)],
+) -> dict[str, Any]:
     gate = await get_approval_gate()
     req = await gate.get(request_id)
     if not req:
@@ -184,7 +219,10 @@ async def approvals_get(request_id: str) -> dict[str, Any]:
 
 
 @router.post("/approvals/{request_id}/decide")
-async def approvals_decide(request_id: str, body: ApprovalDecisionIn) -> dict[str, Any]:
+async def approvals_decide(
+    request_id: Annotated[str, Path(max_length=64)],
+    body: ApprovalDecisionIn,
+) -> dict[str, Any]:
     gate = await get_approval_gate()
     decision = ApprovalDecision(
         request_id=request_id,

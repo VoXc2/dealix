@@ -1,5 +1,5 @@
 """
-API key authentication middleware.
+API key authentication middleware and dependency.
 وسيط مصادقة مفتاح API.
 
 Policy:
@@ -7,6 +7,9 @@ Policy:
   * Webhook endpoints use webhook signatures (see webhook_signatures.py).
   * All other /api/* endpoints require a valid X-API-Key header
     that matches one of the secrets in settings.api_keys (comma separated).
+  * Admin endpoints (/api/v1/admin/*) additionally require a valid
+    X-Admin-API-Key header from the ADMIN_API_KEYS env var.
+    مسارات الإدارة تتطلب مفتاح X-Admin-API-Key منفصل.
 """
 
 from __future__ import annotations
@@ -15,7 +18,8 @@ import hmac
 import os
 from collections.abc import Awaitable, Callable, Iterable
 
-from fastapi import Request, status
+from fastapi import Depends, HTTPException, Request, status
+from fastapi.security import APIKeyHeader
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.responses import JSONResponse, Response
 
@@ -42,12 +46,22 @@ PUBLIC_PREFIXES: tuple[str, ...] = (
     "/redoc",
     "/static",
     "/api/v1/webhooks/",  # webhooks use signatures instead
-    "/api/v1/public/",  # public landing endpoints (demo-request, health)
+    "/api/v1/public/",   # public landing endpoints (demo-request, health)
+    "/api/v1/auth/",     # auth endpoints use JWT — no API key required
 )
+
+# FastAPI security scheme header (for OpenAPI schema generation)
+_admin_key_header = APIKeyHeader(name="X-Admin-API-Key", auto_error=False)
 
 
 def _configured_keys() -> list[str]:
     raw = os.getenv("API_KEYS", "")
+    return [k.strip() for k in raw.split(",") if k.strip()]
+
+
+def _configured_admin_keys() -> list[str]:
+    """Return the list of valid admin API keys from ADMIN_API_KEYS env var."""
+    raw = os.getenv("ADMIN_API_KEYS", "")
     return [k.strip() for k in raw.split(",") if k.strip()]
 
 
@@ -59,6 +73,41 @@ def verify_api_key(key: str | None, allowed: Iterable[str] | None = None) -> boo
         # No keys configured → allow (dev mode). Production MUST set API_KEYS.
         return True
     return any(hmac.compare_digest(k, key) for k in allowed_keys)
+
+
+def verify_admin_key(key: str | None) -> bool:
+    """Constant-time comparison against ADMIN_API_KEYS.
+    Returns True in dev mode (no admin keys configured).
+    تحقق ثابت الوقت من مفتاح الإدارة.
+    """
+    if not key:
+        return False
+    admin_keys = _configured_admin_keys()
+    if not admin_keys:
+        # No admin keys configured → allow (dev mode).
+        return True
+    return any(hmac.compare_digest(k, key) for k in admin_keys)
+
+
+async def require_admin_key(
+    request: Request,
+    admin_key: str | None = Depends(_admin_key_header),
+) -> None:
+    """
+    FastAPI dependency — enforce X-Admin-API-Key on admin routes.
+    Raises HTTP 403 if the key is invalid or missing in production.
+    تبعية FastAPI: تفرض مفتاح X-Admin-API-Key على مسارات الإدارة.
+    """
+    if not verify_admin_key(admin_key):
+        logger.warning(
+            "admin_key_invalid",
+            path=request.url.path,
+            has_key=bool(admin_key),
+        )
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Invalid or missing X-Admin-API-Key",
+        )
 
 
 class APIKeyMiddleware(BaseHTTPMiddleware):

@@ -1,12 +1,17 @@
 """
 Model Router — intelligently routes tasks to LLM providers with fallback.
 مُوجّه النماذج — يرسل كل مهمة لأفضل مزود مع احتياط عند الفشل.
+
+v2: asyncio.Lock added to usage counters to prevent data races in
+concurrent async tasks (multiple coroutines hitting the same router
+simultaneously could produce corrupted token/call counts).
 """
 
 from __future__ import annotations
 
+import asyncio
 import logging
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Any
 
 from core.config.models import (
@@ -40,12 +45,17 @@ class ModelRouter:
     """
     Routes a Task to the appropriate LLM client with fallback chain.
     يوجّه المهمة إلى عميل النموذج المناسب مع سلسلة احتياط.
+
+    Thread safety: all mutations to usage counters are protected by an
+    asyncio.Lock so concurrent coroutines don't race on shared state.
     """
 
     def __init__(self, settings: Settings | None = None) -> None:
         self.settings = settings or get_settings()
         self._clients: dict[Provider, LLMClient | None] = {}
         self.usage: dict[Provider, UsageRecord] = {p: UsageRecord() for p in Provider}
+        # asyncio.Lock — protects usage counter mutations under concurrency
+        self._usage_lock: asyncio.Lock = asyncio.Lock()
         self._build_clients()
 
     # ── Client construction ─────────────────────────────────────
@@ -118,6 +128,9 @@ class ModelRouter:
         """
         Execute a task through the routing + fallback chain.
         نفّذ المهمة عبر سلسلة التوجيه والاحتياط.
+
+        Usage counters are mutated under asyncio.Lock to prevent races
+        when multiple coroutines share the same router instance.
         """
         # Normalize input
         if isinstance(messages, str):
@@ -133,11 +146,14 @@ class ModelRouter:
                 logger.debug("Skipping unconfigured provider: %s", provider)
                 continue
 
-            usage = self.usage[provider]
             try:
-                usage.calls += 1
+                # ── Increment call counter (thread-safe) ──────────
+                async with self._usage_lock:
+                    self.usage[provider].calls += 1
+                    if idx > 0:
+                        self.usage[primary].fallbacks_triggered += 1
+
                 if idx > 0:
-                    self.usage[primary].fallbacks_triggered += 1
                     logger.warning(
                         "Task=%s fallback to provider=%s (primary=%s)",
                         task.value,
@@ -151,12 +167,17 @@ class ModelRouter:
                     max_tokens=max_tokens,
                     temperature=temperature,
                 )
-                usage.input_tokens += response.input_tokens
-                usage.output_tokens += response.output_tokens
+
+                # ── Accumulate token counts (thread-safe) ─────────
+                async with self._usage_lock:
+                    self.usage[provider].input_tokens += response.input_tokens
+                    self.usage[provider].output_tokens += response.output_tokens
+
                 return response
 
             except Exception as e:
-                usage.errors += 1
+                async with self._usage_lock:
+                    self.usage[provider].errors += 1
                 last_error = e
                 logger.exception(
                     "Provider=%s failed for task=%s: %s", provider.value, task.value, e
