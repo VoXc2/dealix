@@ -39,6 +39,36 @@ class ApprovalStore:
             self._items[req.approval_id] = req
         return req
 
+    def create_with_founder_rules(
+        self,
+        req: ApprovalRequest,
+        *,
+        confidence: float = 1.0,
+        content: str = "",
+        engine: Any = None,
+    ) -> ApprovalRequest:
+        """Persist a new request, then attempt founder-rule auto-approval.
+
+        Channel gates (whatsapp/linkedin/phone) and risk gates remain
+        immutable — see founder_rules.py. If no rule matches, the
+        request stays pending and behaves identically to ``create()``.
+        """
+        # Defer import to avoid a hard dependency cycle at module load.
+        from auto_client_acquisition.approval_center.founder_rules_integration import (
+            try_auto_approve_via_founder_rule,
+        )
+
+        self.create(req)
+        try_auto_approve_via_founder_rule(
+            req,
+            confidence=confidence,
+            content=content,
+            engine=engine,
+        )
+        with self._lock:
+            self._items[req.approval_id] = req
+        return req
+
     def approve(self, approval_id: str, who: str) -> ApprovalRequest:
         """Mark a request approved. Raises ValueError on illegal transitions."""
         with self._lock:
