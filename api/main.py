@@ -203,6 +203,7 @@ def create_app() -> FastAPI:
             "decision_passport_golden_chain": "/api/v1/decision-passport/golden-chain",
             "decision_passport_evidence_levels": "/api/v1/decision-passport/evidence-levels",
             "revenue_os_catalog": "/api/v1/revenue-os/catalog",
+            "revenue_os_tenant_ping": "/api/v1/revenue-os/tenant-context/ping",
         }
 
     return app
