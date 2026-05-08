@@ -20,6 +20,8 @@ Endpoints:
 
 from __future__ import annotations
 
+from typing import Any
+
 import hashlib
 import secrets
 import uuid
@@ -496,13 +498,19 @@ async def send_invite(
     )
     db.add(invite_record)
 
-    return {
-        "invite_token": invite_token,
+    # TODO(production): deliver invite_token via transactional email (e.g. SendGrid/SES)
+    # instead of returning it in the API response.
+    response: dict[str, Any] = {
         "email": body.email,
         "role": body.role.value,
         "expires_hours": settings.jwt_invite_token_expire_hours,
-        "note": "Share this token via email — POST /api/v1/auth/invite/accept to redeem",
     }
+    if settings.app_env in ("development", "test"):
+        response["invite_token"] = invite_token
+        response["note"] = "Share this token via email — POST /api/v1/auth/invite/accept to redeem"
+    else:
+        response["message"] = "Invite sent. The recipient will receive an email with instructions."
+    return response
 
 
 @router.post("/invite/accept", status_code=status.HTTP_201_CREATED, response_model=TokenResponse)
@@ -682,11 +690,15 @@ async def password_reset_request(
         await db.flush()
         token_plaintext = reset_token
 
-    return {
+    from core.config.settings import get_settings
+    _settings = get_settings()
+
+    response: dict[str, Any] = {
         "message": "If an account exists for that email, a reset link has been sent.",
-        # In dev/staging return the token for convenience; remove in production!
-        "_dev_reset_token": token_plaintext,
     }
+    if _settings.app_env in ("development", "test"):
+        response["_dev_reset_token"] = token_plaintext
+    return response
 
 
 @router.post("/password/reset", status_code=status.HTTP_200_OK)
