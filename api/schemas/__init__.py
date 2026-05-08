@@ -73,6 +73,9 @@ class PipelineResponse(BaseModel):
     booking: dict[str, Any] | None
     proposal: dict[str, Any] | None
     warnings: list[str]
+    # Revenue OS — Decision Passport + readiness (every intake run)
+    decision_passport: dict[str, Any] | None = None
+    customer_readiness: dict[str, Any] | None = None
 
 
 # ══════════════════════════════════════════════════════════════

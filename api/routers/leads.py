@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import logging
 import uuid
-from datetime import datetime, timezone
+from datetime import UTC, datetime, timezone
 from typing import Any
 
 from fastapi import APIRouter, Body, Depends, HTTPException
@@ -13,19 +13,27 @@ from sqlalchemy import select
 from api.dependencies import get_acquisition_pipeline
 from api.schemas import LeadCreateRequest, LeadResponse, PipelineResponse
 from auto_client_acquisition.agents.intake import LeadSource
-from auto_client_acquisition.notifications import notify_founder_on_intake
 from auto_client_acquisition.connectors.google_maps import (
     INDUSTRY_QUERIES as _LOCAL_INDUSTRY_QUERIES,
+)
+from auto_client_acquisition.connectors.google_maps import (
     SAUDI_CITIES as _LOCAL_SAUDI_CITIES,
 )
+from auto_client_acquisition.customer_readiness.scores import from_passport_meta
+from auto_client_acquisition.decision_passport import build_from_pipeline_result
+from auto_client_acquisition.notifications import notify_founder_on_intake
 from auto_client_acquisition.pipeline import AcquisitionPipeline
 from auto_client_acquisition.pipelines.enrichment import enrich_account
 from auto_client_acquisition.providers.maps import (
     discover_with_chain as _discover_with_chain,
+)
+from auto_client_acquisition.providers.maps import (
     get_maps_chain as _get_maps_chain,
 )
 from auto_client_acquisition.providers.search import (
     get_search_chain as _get_search_chain,
+)
+from auto_client_acquisition.providers.search import (
     search_with_chain as _search_with_chain,
 )
 from db.models import (
@@ -47,7 +55,7 @@ def _new_id(prefix: str = "") -> str:
 
 
 def _utcnow() -> datetime:
-    return datetime.now(timezone.utc).replace(tzinfo=None)
+    return datetime.now(UTC).replace(tzinfo=None)
 
 
 # ── Original lead-create endpoint (unchanged) ────────────────────
@@ -74,8 +82,12 @@ async def create_lead(
     # Fire-and-log founder alert. Failures here NEVER fail the intake.
     try:
         await notify_founder_on_intake(result.lead)
-    except Exception as exc:  # noqa: BLE001 — alerting must never break intake
+    except Exception as exc:
         log.warning("founder_alert_dispatch_failed: %s", exc)
+
+    passport = build_from_pipeline_result(result)
+    passport_d = passport.model_dump()
+    readiness = from_passport_meta(passport_d)
 
     return PipelineResponse(
         lead=LeadResponse(
@@ -101,6 +113,8 @@ async def create_lead(
         booking=result.booking.to_dict() if result.booking else None,
         proposal=result.proposal.to_dict() if result.proposal else None,
         warnings=result.warnings,
+        decision_passport=passport_d,
+        customer_readiness=readiness,
     )
 
 
@@ -229,7 +243,7 @@ async def enrich_batch_endpoint(body: dict[str, Any] = Body(...)) -> dict[str, A
             accs = (await session.execute(
                 select(AccountRecord).where(AccountRecord.id.in_(ids))
             )).scalars().all()
-        except Exception as exc:  # noqa: BLE001
+        except Exception as exc:
             return {"status": "skipped_db_unreachable", "error": str(exc), "items": []}
 
         results: list[dict[str, Any]] = []
@@ -244,7 +258,7 @@ async def enrich_batch_endpoint(body: dict[str, Any] = Body(...)) -> dict[str, A
             }
             try:
                 result = await enrich_account(account_dict, enrichment_level=level)
-            except Exception as exc:  # noqa: BLE001
+            except Exception as exc:
                 results.append({"id": acc.id, "status": "error", "error": str(exc)})
                 continue
             score = result.get("score", {})
@@ -270,7 +284,7 @@ async def enrich_batch_endpoint(body: dict[str, Any] = Body(...)) -> dict[str, A
 
         try:
             await session.commit()
-        except Exception as exc:  # noqa: BLE001
+        except Exception as exc:
             await session.rollback()
             return {"status": "commit_failed", "error": str(exc), "items": results}
 
