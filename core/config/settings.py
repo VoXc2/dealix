@@ -110,6 +110,21 @@ class Settings(BaseSettings):
         validation_alias=AliasChoices("PROOF_LEDGER_BACKEND", "proof_ledger_backend"),
     )
 
+    # Revenue Memory (event store) — ``memory`` default; ``postgres`` enables durable append
+    # via async facade (dual-writes to memory for sync replay compatibility).
+    revenue_memory_backend: Literal["memory", "postgres"] = Field(
+        default="memory",
+        validation_alias=AliasChoices("REVENUE_MEMORY_BACKEND", "revenue_memory_backend"),
+    )
+    # Optional default tenant for unauthenticated POST /revenue-os/events (demo only).
+    revenue_memory_default_tenant_id: str | None = Field(
+        default=None,
+        validation_alias=AliasChoices(
+            "REVENUE_MEMORY_DEFAULT_TENANT_ID",
+            "revenue_memory_default_tenant_id",
+        ),
+    )
+
     @field_validator("database_url", mode="before")
     @classmethod
     def _ensure_asyncpg_driver(cls, v: str | None) -> str:

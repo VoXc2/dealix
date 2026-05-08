@@ -32,8 +32,9 @@ APP_ENV=development uvicorn api.main:app --host 0.0.0.0 --port 8000 --reload
 ### Operational caveats (still important)
 
 - **Alembic**: merge revision `004_merge_heads` joins `0001` + `003`; head continues as `005_revenue_events_tenant` (`tenant_id` on `revenue_events`). Run `alembic upgrade head` after pull.
-- **`PostgresEventStore` vs sync callers**: methods are **async** and rows now carry optional **`tenant_id`** (filter via `read_for_customer(..., tenant_id=...)`). Sync callers (`Orchestrator`, `append_event()`, `api/routers/revenue_os.py`) still need an async bridge before `get_default_store(backend="postgres")` is safe in those paths.
-- **Lint (ruff/black)**: Large pre-existing drift; not API correctness gates.
+- **Revenue Memory async append**: `POST /api/v1/revenue-os/events` uses `append_revenue_event` in `auto_client_acquisition/revenue_memory/async_facade.py`. Env `REVENUE_MEMORY_BACKEND=postgres` dual-writes to the memory singleton (for sync replay) + Postgres. Orchestrator/workflow paths use **`get_default_store("memory")` only** — sync `Orchestrator._emit_event` unchanged.
+- **Lint (ruff/black)**: Large pre-existing drift; not API correctness gates. Curated gate: `bash scripts/ruff_baseline.sh`.
+- **Frontend URL smoke**: With Next.js listening, `cd frontend && npm run smoke:url` (override via `SMOKE_URL`).
 
 ### Environment — frontend API URL
 
@@ -48,7 +49,7 @@ APP_ENV=test pytest -v
 The full test suite has 500+ test files; full runs take ~15–20 minutes. Quick regression bundle:
 
 ```bash
-pytest tests/test_pg_event_store.py tests/test_model_router.py tests/test_integrations.py tests/test_v5_layers.py tests/unit/test_compliance_os.py -q --no-cov
+pytest tests/test_pg_event_store.py tests/test_revenue_memory_async_facade.py tests/test_revenue_os_events_tenant.py tests/test_proof_ledger_tenant_context.py tests/test_model_router.py tests/test_integrations.py tests/test_v5_layers.py tests/unit/test_compliance_os.py tests/test_ai_workforce_v10.py -q --no-cov
 ```
 
 ### Running lint

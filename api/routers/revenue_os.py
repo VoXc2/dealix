@@ -16,10 +16,12 @@ Endpoints under /api/v1/revenue-os/:
 from __future__ import annotations
 
 import logging
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta, timezone
 from typing import Any
 
-from fastapi import APIRouter, Body, HTTPException, Query
+from fastapi import APIRouter, Body, Depends, HTTPException, Query
+
+from api.security.auth_deps import get_optional_user
 
 # Compliance OS
 from auto_client_acquisition.compliance_os.consent_ledger import (
@@ -71,6 +73,13 @@ from auto_client_acquisition.orchestrator.queue import TaskQueue, TaskStatus
 from auto_client_acquisition.orchestrator.runtime import DAILY_GROWTH_RUN, Orchestrator
 from auto_client_acquisition.orchestrator.tools import default_executors
 
+# Why-Now (used by opportunity_feed)
+from auto_client_acquisition.revenue_graph.why_now import (
+    WhyNowSignal,
+    explain_why_now,
+)
+from auto_client_acquisition.revenue_memory.async_facade import append_revenue_event
+
 # Revenue Memory
 from auto_client_acquisition.revenue_memory.event_store import (
     InMemoryEventStore,
@@ -105,19 +114,15 @@ from auto_client_acquisition.vertical_os import (
     get_vertical,
     list_vertical_summaries,
 )
-
-# Why-Now (used by opportunity_feed)
-from auto_client_acquisition.revenue_graph.why_now import (
-    WhyNowSignal,
-    explain_why_now,
-)
+from core.config.settings import get_settings
+from db.models import UserRecord
 
 router = APIRouter(prefix="/api/v1/revenue-os", tags=["revenue-os"])
 log = logging.getLogger(__name__)
 
 
 def _now() -> datetime:
-    return datetime.now(timezone.utc).replace(tzinfo=None)
+    return datetime.now(UTC).replace(tzinfo=None)
 
 
 # ── Module-level singletons (in-memory adapters; production replaces) ─
@@ -126,8 +131,11 @@ _ORCHESTRATOR_FACTORY = None
 
 
 def _get_orchestrator(customer_id: str) -> Orchestrator:
-    """Build an orchestrator with the default in-memory store + policy."""
-    store = get_default_store()
+    """Build an orchestrator with the in-memory store only (sync path).
+
+    Postgres durability for workflows is deferred — HTTP append uses async facade.
+    """
+    store = get_default_store("memory")
 
     def policy_resolver(c):
         return default_policy(c)
@@ -157,8 +165,16 @@ async def append_event(
     subject_id: str = Body(..., embed=True),
     payload: dict[str, Any] = Body(default_factory=dict, embed=True),
     actor: str = Body(default="system", embed=True),
+    auth_user: UserRecord | None = Depends(get_optional_user),
 ) -> dict[str, Any]:
     """Append a new event to the customer's stream."""
+    settings = get_settings()
+    tid: str | None = None
+    if auth_user is not None and getattr(auth_user, "tenant_id", None):
+        tid = auth_user.tenant_id
+    elif settings.revenue_memory_default_tenant_id:
+        tid = settings.revenue_memory_default_tenant_id.strip() or None
+
     try:
         e = make_event(
             event_type=event_type,
@@ -167,10 +183,11 @@ async def append_event(
             subject_id=subject_id,
             payload=payload,
             actor=actor,
+            tenant_id=tid,
         )
     except ValueError as exc:
         raise HTTPException(status_code=400, detail=str(exc)) from exc
-    get_default_store().append(e)
+    await append_revenue_event(e)
     return {"event_id": e.event_id, "event_type": e.event_type}
 
 
@@ -204,7 +221,7 @@ async def replay_customer_roi(
 @router.get("/retention-summary")
 async def get_retention_summary(customer_id: str = Query(...)) -> dict[str, Any]:
     """How many events per retention tier — for Trust Center display."""
-    events = list(get_default_store().read_for_customer(customer_id))
+    events = list(get_default_store("memory").read_for_customer(customer_id))
     return retention_summary(events)
 
 
@@ -221,7 +238,7 @@ async def run_workflow(
     if workflow_id != "daily_growth_run":
         raise HTTPException(status_code=404, detail=f"unknown workflow: {workflow_id}")
 
-    store = get_default_store()
+    store = get_default_store("memory")
 
     def resolver(c):
         p = default_policy(c)
@@ -308,7 +325,7 @@ async def detect_hiring(
         if isinstance(posted, str):
             try:
                 jp["posted_at"] = datetime.fromisoformat(posted.replace("Z", "+00:00")).replace(tzinfo=None)
-            except Exception:
+            except Exception:  # noqa: S112 — skip malformed dates in caller-supplied job payloads
                 continue
         parsed.append(jp)
     sigs = detect_hiring_signal(company_id=company_id, job_postings=parsed)

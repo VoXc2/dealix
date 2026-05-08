@@ -1,8 +1,9 @@
 """Proof Ledger v5 — file-backed JSONL endpoints."""
 from __future__ import annotations
 
-from fastapi import APIRouter, Body, HTTPException
+from fastapi import APIRouter, Body, Depends, HTTPException
 
+from api.security.auth_deps import get_optional_user
 from auto_client_acquisition.proof_ledger import (
     ProofEvent,
     ProofEventType,
@@ -12,6 +13,7 @@ from auto_client_acquisition.proof_ledger import (
     export_redacted,
     get_default_ledger,
 )
+from db.models import UserRecord
 
 router = APIRouter(prefix="/api/v1/proof-ledger", tags=["proof-ledger"])
 
@@ -30,11 +32,19 @@ async def status() -> dict:
 
 
 @router.post("/events")
-async def record_event(payload: dict = Body(...)) -> dict:
+async def record_event(
+    payload: dict = Body(...),
+    auth_user: UserRecord | None = Depends(get_optional_user),
+) -> dict:
     """Persist one ProofEvent. Returns the stored (redacted) record."""
+    body = dict(payload)
+    inner = dict(body.get("payload") or {})
+    if auth_user is not None and getattr(auth_user, "tenant_id", None):
+        inner["dealix_tenant_id"] = auth_user.tenant_id
+    body["payload"] = inner
     try:
-        event = ProofEvent.model_validate(payload)
-    except Exception as exc:  # noqa: BLE001
+        event = ProofEvent.model_validate(body)
+    except Exception as exc:
         raise HTTPException(status_code=400, detail=f"invalid event: {exc}") from exc
     stored = get_default_ledger().record(event)
     return stored.model_dump(mode="json")
@@ -58,7 +68,7 @@ async def list_events(
 async def record_unit(payload: dict = Body(...)) -> dict:
     try:
         unit = RevenueWorkUnit.model_validate(payload)
-    except Exception as exc:  # noqa: BLE001
+    except Exception as exc:
         raise HTTPException(status_code=400, detail=f"invalid unit: {exc}") from exc
     stored = get_default_ledger().record_unit(unit)
     return stored.model_dump(mode="json")
@@ -111,6 +121,7 @@ async def attachments_endpoint(payload: dict = Body(default_factory=dict)) -> di
     }
     """
     import base64
+
     from auto_client_acquisition.proof_ledger.file_storage import store_attachment
 
     required = ["customer_handle", "event_id", "filename", "mime_type", "data_base64"]
