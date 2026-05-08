@@ -83,3 +83,40 @@ def from_passport_meta(passport_dict: dict[str, Any]) -> dict[str, Any]:
         payment_ok=False,
         delivery_sessions_active=0,
     )
+
+
+def compute_pricing_power_score(
+    *,
+    max_proof_level: int = 0,
+    demand_signal_count: int = 0,
+    gross_margin_hint: float = 0.35,
+    delivery_repeatability: float = 0.5,
+    case_study_public_count: int = 0,
+    customer_urgency: float = 0.5,
+) -> dict[str, Any]:
+    """
+    Heuristic 0–100 «pricing power» — raises upside ceiling when proof + repeatability exist.
+
+    gross_margin_hint, delivery_repeatability, customer_urgency are 0..1.
+    """
+    score = 20.0
+    score += min(25.0, max_proof_level * 5.0)
+    score += min(15.0, demand_signal_count * 3.0)
+    score += max(0.0, min(15.0, gross_margin_hint * 40.0))
+    score += max(0.0, min(15.0, delivery_repeatability * 25.0))
+    score += min(15.0, case_study_public_count * 7.5)
+    score += max(0.0, min(10.0, customer_urgency * 15.0))
+    score = max(0.0, min(100.0, score))
+    return {
+        "pricing_power_score": round(score, 1),
+        "inputs": {
+            "max_proof_level": max_proof_level,
+            "demand_signal_count": demand_signal_count,
+            "gross_margin_hint": gross_margin_hint,
+            "delivery_repeatability": delivery_repeatability,
+            "case_study_public_count": case_study_public_count,
+            "customer_urgency": customer_urgency,
+        },
+        "notes_ar": "لا تستخدم وحدة لرفع السعر بدون Proof وبيانات هامش فعلية.",
+        "notes_en": "Do not use standalone — combine with proof events + real margin data.",
+    }

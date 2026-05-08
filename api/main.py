@@ -202,6 +202,7 @@ def create_app() -> FastAPI:
             "business_pricing": "/api/v1/business/pricing",
             "decision_passport_golden_chain": "/api/v1/decision-passport/golden-chain",
             "decision_passport_evidence_levels": "/api/v1/decision-passport/evidence-levels",
+            "revenue_os_catalog": "/api/v1/revenue-os/catalog",
         }
 
     return app

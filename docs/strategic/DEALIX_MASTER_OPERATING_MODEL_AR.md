@@ -15,24 +15,48 @@ Dealix = ذكاء الإيرادات + تنفيذ تشغيلي + محرك إثب
 
 **قاعدة المنتج:** بدون Decision Passport لا يُنفَّذ إجراء خارجي (الحوكمة في Trust Plane + Approval Center).
 
-واجهات API ثابتة:
+واجهات API ثابتة (السلسلة الذهبية):
 
 - `GET /api/v1/decision-passport/golden-chain`
 - `GET /api/v1/decision-passport/evidence-levels`
-- كل استجابة `POST /api/v1/leads` تتضمن الآن `decision_passport` و `customer_readiness` (تقدير أولي إلى حين ربط البوابة ودفتر الـ Proof).
+- `GET /api/v1/revenue-os/catalog` — سجل المصادر + waterfall + كتالوج الإجراءات + مراجع الوحدات
+- `POST /api/v1/revenue-os/signals/normalize` — تحويل `MarketSignal` القادمة من المؤسس/عملية بحث إلى هيكل Why Now / Offer / Proof
+- `POST /api/v1/revenue-os/dedupe/hint`, `POST …/expansion/next-offer`, `POST …/anti-waste/check`
+- `GET /api/v1/revenue-os/learning/weekly-template` — هيكل تقرير التعلّم الأسبوعي
+- `GET /api/v1/revenue-os/scores/pricing-power-demo` — مثال تسويق داخلي للدرجة فقط
+- كل استجابة `POST /api/v1/leads` تتضمن `decision_passport` و `customer_readiness`.
 
-## المستويات الثمانية (خرائط تقريبية للكود الحالي)
+التحقق السريع: `bash scripts/revenue_os_master_verify.sh` — يطبع `DEALIX_REVENUE_OS_VERDICT` وملخص فروع المعمارية.
+
+## الثمانية المحركات ↔ الكود (خريطة تنفيذ)
 
 | المحرك | مسارات / وحدات في الريبو |
 |--------|---------------------------|
-| Market Radar | `search_radar`, `radar_events`, أجزاء `revenue_os`, `full_ops_radar` |
-| Lead Intelligence | `leads`, `prospect`, `data`, Lead Machine |
-| Decision Engine | **Decision Passport** (`auto_client_acquisition/decision_passport/`) + سياسات ICP/BANT |
-| Action & Approval | `approval_center`, `tool_guardrail_gateway`, `channel_policy_gateway` |
-| Delivery OS | `delivery_os`, `delivery_factory`, `service_sessions` |
-| Customer Portal | `customer_company_portal`, `customer_loop`, واجهة Next.js |
-| Proof & Expansion | `proof_ledger`, `proof_to_market`, `case_study_engine`, `customer_success*` |
-| Learning Flywheel | `self_improvement_os`, تقارير المؤسس، (توسيع لاحق بأحداث فعلية) |
+| **1 — Market Radar** | إشارات آمنة: `growth_beast/market_radar.py` (بدون HTTP داخل الوحدة). التطبيع إلى Why Now / Offer / Proof: `revenue_os/signal_normalizer.py`. كاشف الشراء من المحتوى: `intelligence/signals.py`. |
+| **2 — Lead Intelligence** | مسارات الليدز + مس prospect؛ السجلُّ المصدر والسياسات: `revenue_os/source_registry.py`. Waterfall الإثراء: `revenue_os/enrichment_waterfall.py`. Dedupe: `revenue_os/dedupe.py`. |
+| **3 — Decision Engine** | **Decision Passport** `decision_passport/` + ICP/BANT في الوكلاء. لوحة درجات في جواز القرار (`scores`). |
+| **4 — Action & Approval** | كتالوج أنماط الإجراء: `revenue_os/action_catalog.py` (افتراضي draft_only / approval_required). تنفيذ فعلي: `approval_center`, `tool_guardrail_gateway`, `channel_policy_gateway`. |
+| **5 — Delivery OS** | `delivery_os`, `delivery_factory`, **`service_sessions`** — كل خدمة = جلسة بمهام وdeadlines (استمر بالتماسك مع الـ Portal). |
+| **6 — Customer Portal** | `customer_company_portal`, `customer_loop`, Next.js؛ فارغات مقروءة بالعربية (لم يبدأ بعد / سيظهر Proof بعد الإجراء المعتمد). |
+| **7 — Proof & Expansion** | سجل الأحداث: `proof_ledger/ProofEvent`. شكل منتج غني للأحداث داخل `payload`: **`revenue_os/proof_canonical.py`**. مستويات L0–L5: `proof_engine/evidence.py`. التوسعة: `revenue_os/expansion_engine.py` (** gated بدون proof **). |
+| **8 — Learning Flywheel** | هيكل تقرير أسبوعي: `revenue_os/learning_weekly.py` + تقارير أخرى (`growth_beast/weekly_learning.py`, `self_improvement_os`). |
+
+### لماذا Workflow وليس «ذكاء عام»؟
+
+الاتجاه الاستراتيجي (McKinsey/BCG — ملخص عملي): عائد قوي من AI يأتي من **تركيز على workflows قليلة عالية الأثر + حوكمة + بيانات موثوقة + إثبات نتائج**، وليس من نشر نماذج عامة في كل الإدارات. Dealix يطبّق ذلك عبر السلسلة الذهبية وقياس Proof.
+
+### Tier-1 Lead Machine — ما الذي صار في الكود؟
+
+- **Source Registry**: كل مصدر مع `allowed_use`, `risk_level`, موافقة، تخزين، اتصال، احتفاظ (`Tier1LeadSource` + `SourcePolicy`).
+- **محظورات ثابتة**: مصادر في قائمة `forbidden_sources()` — لا معالجة إنتاجية لـ cold WhatsApp / scraping / قوائم مشتراة / أتمتة LinkedIn.
+- **Enrichment waterfall**: ترتيب مراحل موحّد + كائن `FactFieldProvenance` لكل حقيقة (مصدر، ثقة، `allowed_use`).
+- **Dedupe**: بصمة اقتراحية + تطبيع اسم/نطاق/هاتف — القرار النهائي عند التخزين.
+- **Anti-Waste**: `validate_pipeline_step` — لا إجراء خارجي بدون جواز قرار؛ لا upsell بدون Proof؛ لا تسويق عام تحت L4.
+
+### Proof Event «شكل المنتج» مقابل السجل الحالي
+
+- السجل الحالي `ProofEvent` في `proof_ledger/schemas.py` يلبي التخزين والمراجعة.
+- الحقول التفصيلية التي يصفها الـ Portal (metric قبل/بعد، `evidence_level`, موافقة نشر…) تُنقل ضمن **`ProofEvent.payload`** عبر **`ProofEventCanonical`** لتجنّب كسر التوافق.
 
 ## مستويات أدلة الـ Proof (L0–L5)
 
@@ -47,7 +71,7 @@ Dealix = ذكاء الإيرادات + تنفيذ تشغيلي + محرك إثب
 
 ## Customer Comfort & Expansion Readiness
 
-`auto_client_acquisition/customer_readiness/scores.py` — درجات 0–100 مشتقة من إشارات تشغيلية (قابلة للربط لاحقًا بجداول Portal و Proof).
+`customer_readiness/scores.py` — **Comfort** و **Expansion Readiness** (0–100)، مع **`compute_pricing_power_score`** كسيّارة بديهية للقوة التسعيرية بعد Proof (لا تُستخدم منفردة بدون هامش وProof حقيقي).
 
 ## مبدأ بناء المنتج
 
@@ -59,6 +83,17 @@ Dealix = ذكاء الإيرادات + تنفيذ تشغيلي + محرك إثب
 - `AGENTS.md` — تشغيل الوكلاء السحابيين
 - `dealix/registers/no_overclaim.yaml` — سجل عدم المبالغة
 
+### Trust Layer (PDPL / ZATCA) — تذكير عدم المبالغة
+
+- PDPL: موافقة واضحة، غرض المعالجة، تقليل البيانات، سجل موافقات نشر Proof — لا ادِّعاء امتثال كامل بدون مراجعة قانونية.
+- ZATCA Phase 2: جاهزية workflow وحالة الفاتورة وحقول ضريبة — **لا** عبارة «معتمد ZATCA» إلا بعد تحقق رسمي (`dealix/registers/no_overclaim.yaml`).
+
+### ما الذي لا يزال خارج النطاق (يتطلب أذونات / وقت منتج)
+
+- Temporal أو بدائل workflows طويلة للـ 7-Day Sprint بالكامل.
+- تكاملات OAuth حقيقية (Sheets/CRM) كطبقة افتراضية فقط إلى أن توجد أسرار.
+- tenant isolation كامل على كل الموارد + مجموعات اختبارات OWASP API المذكورة في خطتك (تابعة مهمة مستقلّة).
+
 ---
 
-*آخر تحديث: يتزامن مع إصدار Decision Passport في مسار الـ leads.*
+*آخر تحديث: يتزامن مع طبقة `revenue_os/` + كتالوج API `/api/v1/revenue-os/*`.*

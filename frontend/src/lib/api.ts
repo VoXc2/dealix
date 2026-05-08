@@ -148,6 +148,12 @@ export const api = {
 
   getEvidenceLevels: () =>
     apiClient.get("/api/v1/decision-passport/evidence-levels"),
+
+  getRevenueOsCatalog: () =>
+    apiClient.get("/api/v1/revenue-os/catalog"),
+
+  getRevenueOsLearningWeeklyTemplate: () =>
+    apiClient.get("/api/v1/revenue-os/learning/weekly-template"),
 };
 
 export default api;

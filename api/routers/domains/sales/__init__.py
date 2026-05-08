@@ -10,6 +10,7 @@ from fastapi import APIRouter
 from api.routers import (
     case_study_engine,
     decision_passport as decision_passport_router,
+    revenue_os_catalog as revenue_os_catalog_router,
     dominance,
     email_send,
     leadops_reliability,
@@ -30,6 +31,7 @@ from api.routers import (
 
 _ROUTERS = [
     decision_passport_router.router,
+    revenue_os_catalog_router.router,
     leads.router,
     sales.router,
     sales_os.router,
