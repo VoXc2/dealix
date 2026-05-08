@@ -27,8 +27,8 @@ APP_ENV=development uvicorn api.main:app --host 0.0.0.0 --port 8000 --reload
 
 - **auth.py 204 endpoints**: The `/logout` and `/logout/all` routes in `api/routers/auth.py` need `response_model=None` in the decorator to work with FastAPI 0.115.x. Without this, `is_body_allowed_for_status_code` assertion fails at import time, blocking the entire app and any test that imports `api.main`.
 - **middleware.py `MutableHeaders.pop`**: Starlette's `MutableHeaders` doesn't have a `.pop()` method. The `SecurityHeadersMiddleware` in `api/middleware.py` uses `pop("server", None)` which fails at runtime. Use `del response.headers[key]` with an `if key in` guard instead.
-- **Frontend missing module**: `frontend/src/lib/hooks/useAuth` is imported in the root layout but the file does not exist in the repo. The Next.js frontend dev server starts but cannot compile pages. The backend works independently.
 - **Lint (ruff/black)**: The codebase has ~1100 pre-existing ruff warnings and ~800 black formatting mismatches. These are pre-existing and not blockers.
+- **Frontend `lib/` gitignore**: The root `.gitignore` has `lib/` (for Python build output) which also matches `frontend/src/lib/`. Use `git add -f` when adding files under that path.
 
 ### Running tests
 
