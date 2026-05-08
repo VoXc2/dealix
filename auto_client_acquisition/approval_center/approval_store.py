@@ -47,7 +47,9 @@ class ApprovalStore:
         content: str = "",
         engine: Any = None,
     ) -> ApprovalRequest:
-        """Persist a new request, then attempt founder-rule auto-approval.
+        """Persist a new request and attempt founder-rule auto-approval
+        atomically (the entire safety + match + transition happens under
+        the store lock so concurrent readers never observe partial state).
 
         Channel gates (whatsapp/linkedin/phone) and risk gates remain
         immutable — see founder_rules.py. If no rule matches, the
@@ -58,14 +60,17 @@ class ApprovalStore:
             try_auto_approve_via_founder_rule,
         )
 
-        self.create(req)
-        try_auto_approve_via_founder_rule(
-            req,
-            confidence=confidence,
-            content=content,
-            engine=engine,
-        )
+        evaluate_safety(req)
         with self._lock:
+            # Mutate under the lock so external readers see only the
+            # final pending-or-approved state, never the intermediate
+            # "pending stored, approved next" race window.
+            try_auto_approve_via_founder_rule(
+                req,
+                confidence=confidence,
+                content=content,
+                engine=engine,
+            )
             self._items[req.approval_id] = req
         return req
 

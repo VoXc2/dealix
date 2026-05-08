@@ -61,6 +61,16 @@ def try_auto_approve_via_founder_rule(
         return req
     if ApprovalStatus(req.status) != ApprovalStatus.PENDING:
         return req
+    # Reject if the request was already hard-blocked by safety policy
+    # (e.g. ``evaluate_safety()`` set action_mode="blocked"). Founder
+    # rules never override a blocked action.
+    if (req.action_mode or "").lower() == "blocked":
+        return req
+    # Only auto-approve requests that are awaiting human approval.
+    # A ``draft_only`` request must NOT be escalated into an executable
+    # send — that would silently turn a non-send draft into a send.
+    if (req.action_mode or "").lower() != "approval_required":
+        return req
 
     eng = engine or get_default_engine()
     try:
@@ -71,6 +81,8 @@ def try_auto_approve_via_founder_rule(
         return req
 
     # Match found — transition + audit breadcrumb in edit_history.
+    # Only ``approval_required`` requests reach this point (gate above),
+    # so escalating to ``approved_execute`` is correct here.
     req.status = ApprovalStatus.APPROVED
     req.action_mode = "approved_execute"
     entry: dict[str, Any] = {

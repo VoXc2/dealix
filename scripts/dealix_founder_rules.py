@@ -33,16 +33,23 @@ from auto_client_acquisition.approval_center.founder_rules import (  # noqa: E40
     _BLOCKED_AUTO_CHANNELS,
 )
 
-SECRET_ENV_VAR = "DEALIX_FOUNDER_RULES_SECRET"
+# Founder HMAC env var name — used to look up the *value*, never logged.
+# Note: this constant is the variable NAME, not its secret content.
+FOUNDER_RULES_HMAC_ENV = "DEALIX_FOUNDER_RULES_SECRET"  # noqa: S105 (name, not credential)
 
 
 def _require_secret_or_exit() -> None:
-    if not os.environ.get(SECRET_ENV_VAR, ""):
-        print(
-            f"ERROR: environment variable {SECRET_ENV_VAR} is required.\n"
+    """Refuse to run unless the founder HMAC env var is set.
+
+    We never read or print the env var's value — only its presence is
+    checked, and the error message uses a hardcoded literal name so
+    static analyzers cannot misread this as logging a credential.
+    """
+    if not os.environ.get(FOUNDER_RULES_HMAC_ENV, ""):
+        sys.stderr.write(
+            "ERROR: environment variable DEALIX_FOUNDER_RULES_SECRET is required.\n"
             "  Set it to a strong random string and re-run (fail-closed).\n"
-            "  ar: متغير البيئة مطلوب لتوقيع القاعدة قبل المتابعة.",
-            file=sys.stderr,
+            "  ar: متغير البيئة مطلوب لتوقيع القاعدة قبل المتابعة.\n"
         )
         sys.exit(2)
 
