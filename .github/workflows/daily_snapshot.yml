@@ -50,17 +50,21 @@ jobs:
           python scripts/dealix_snapshot.py
           DATE="$(date -u +%Y-%m-%d)"
           FILE="docs/snapshots/${DATE}.json"
-          if [ -f "$FILE" ]; then
-            echo "snapshot_path=$FILE" >> "$GITHUB_OUTPUT"
-            echo "snapshot_date=$DATE" >> "$GITHUB_OUTPUT"
-            echo "✅ snapshot written: $FILE ($(wc -c < "$FILE") bytes)"
-          else
-            echo "snapshot_path=" >> "$GITHUB_OUTPUT"
-            echo "no snapshot produced — script exited cleanly with no output"
+          # Wave 10.8.1 fix (Codex P2 review on PR #190):
+          # the build step MUST fail when the snapshot file is missing,
+          # so a silent dropout in scripts/dealix_snapshot.py doesn't
+          # produce a green workflow with no audit-trail artifact.
+          if [ ! -f "$FILE" ]; then
+            echo "❌ snapshot file missing: $FILE"
+            echo "    scripts/dealix_snapshot.py exited cleanly but produced no output."
+            echo "    This is a regression in snapshot generation — investigate immediately."
+            exit 1
           fi
+          echo "snapshot_path=$FILE" >> "$GITHUB_OUTPUT"
+          echo "snapshot_date=$DATE" >> "$GITHUB_OUTPUT"
+          echo "✅ snapshot written: $FILE ($(wc -c < "$FILE") bytes)"
 
       - name: Upload snapshot as workflow artifact
-        if: steps.build.outputs.snapshot_path != ''
         uses: actions/upload-artifact@v4
         with:
           # Wave 10.8 §29.3: 90-day retention is enough audit-trail signal
