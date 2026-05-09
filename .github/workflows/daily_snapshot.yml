@@ -1,7 +1,10 @@
 name: Daily Snapshot
 
-# Writes a silent daily audit-trail snapshot of system state to
-# docs/snapshots/<YYYY-MM-DD>.json and commits it back to main.
+# Writes a silent daily audit-trail snapshot of system state.
+# Wave 10.8 §29.3: snapshot is uploaded as a workflow artifact
+# (90-day retention) instead of committed to main, because
+# branch protection (correctly) refuses bot pushes to main.
+# Founders can fetch any past snapshot via `gh run download <run-id>`.
 # Runs at 5AM UTC (= 8AM KSA) — one hour after the founder digest
 # at 4AM UTC to avoid contention.
 
@@ -10,8 +13,9 @@ on:
     - cron: "0 5 * * *"
   workflow_dispatch:
 
+# Read-only — the workflow only produces an artifact, never pushes.
 permissions:
-  contents: write
+  contents: read
 
 concurrency:
   group: dealix-daily-snapshot
@@ -39,19 +43,29 @@ jobs:
           pip install -r requirements.txt
 
       - name: Build snapshot
-        run: python scripts/dealix_snapshot.py
-
-      - name: Commit snapshot if changed
+        id: build
         run: |
           set -e
+          mkdir -p docs/snapshots
+          python scripts/dealix_snapshot.py
           DATE="$(date -u +%Y-%m-%d)"
           FILE="docs/snapshots/${DATE}.json"
-          git config user.name "dealix-bot"
-          git config user.email "bot@dealix.me"
-          git add "$FILE"
-          if git diff --cached --quiet; then
-            echo "no snapshot diff — nothing to commit"
-            exit 0
+          if [ -f "$FILE" ]; then
+            echo "snapshot_path=$FILE" >> "$GITHUB_OUTPUT"
+            echo "snapshot_date=$DATE" >> "$GITHUB_OUTPUT"
+            echo "✅ snapshot written: $FILE ($(wc -c < "$FILE") bytes)"
+          else
+            echo "snapshot_path=" >> "$GITHUB_OUTPUT"
+            echo "no snapshot produced — script exited cleanly with no output"
           fi
-          git commit -m "chore(snapshot): daily snapshot ${DATE}"
-          git push origin HEAD:main
+
+      - name: Upload snapshot as workflow artifact
+        if: steps.build.outputs.snapshot_path != ''
+        uses: actions/upload-artifact@v4
+        with:
+          # Wave 10.8 §29.3: 90-day retention is enough audit-trail signal
+          # for forensics; queryable via `gh run download <run-id>`.
+          name: dealix-daily-snapshot-${{ steps.build.outputs.snapshot_date }}
+          path: ${{ steps.build.outputs.snapshot_path }}
+          retention-days: 90
+          if-no-files-found: error
