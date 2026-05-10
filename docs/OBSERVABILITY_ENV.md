@@ -15,7 +15,7 @@
 
 ## Request ID والارتباط مع traces
 
-- كل طلب يمر عبر [`api/middleware.py`](../api/middleware.py): يُولَّد `request_id` أو يُؤخذ من رأس **`X-Request-ID`**.
+- كل طلب يمر عبر [`api/middleware/http_stack.py`](../api/middleware/http_stack.py): يُولَّد `request_id` أو يُؤخذ من رأس **`X-Request-ID`**.
 - اربط السجلات مع Langfuse عبر نفس المعرّف داخل metadata/trace يدوياً حيث تُستدعى نماذج — انظر [`AI_OBSERVABILITY_AND_EVALS.md`](AI_OBSERVABILITY_AND_EVALS.md).
 
 ## الكود

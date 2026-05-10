@@ -40,7 +40,7 @@
 | numpy | vectors | YES | >=1.26.0 | auto_client_acquisition/ | NO | YES | LOW | NO | |
 | ummalqura | hijri calendar | YES | >=1.0.4 | integrations/saudi_market.py | NO | YES | LOW | NO | |
 | tenacity | retry | YES | >=9.0.0 | integrations/ | YES | — | LOW | NO | |
-| slowapi | rate limit | YES | >=0.1.9 | api/middleware.py | YES | — | LOW | NO | |
+| slowapi | rate limit | YES | >=0.1.9 | api/middleware/http_stack.py | YES | — | LOW | NO | |
 | pyotp | mfa | YES | >=2.9.0 | api/security/ | NO | YES | LOW | NO | |
 | phonenumbers | phone validation | YES | >=8.13.0 | scripts/dealix_customer_onboarding_wizard.py | YES | — | LOW | NO | |
 | tzdata | timezones | YES | >=2025.1 | Windows only | YES | — | LOW | NO | Windows requirement |
