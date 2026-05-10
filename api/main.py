@@ -37,6 +37,7 @@ from api.routers import intelligence_layer as intelligence_layer_router
 from api.routers import bottleneck_radar as bottleneck_radar_router
 from api.routers import customer_success_scores as customer_success_scores_router
 from api.routers import deliverables as deliverables_router
+from api.routers import integration_capability as integration_capability_router
 from api.routers import service_catalog as service_catalog_router
 from api.security import APIKeyMiddleware, setup_rate_limit
 from core.config.settings import get_settings
@@ -209,6 +210,8 @@ def create_app() -> FastAPI:
     app.include_router(customer_success_scores_router.router)
     # Self-prefix /api/v1/bottleneck-radar. Read-only.
     app.include_router(bottleneck_radar_router.router)
+    # Self-prefix /api/v1/integrations. Truth registry; no live actions.
+    app.include_router(integration_capability_router.router)
 
     @app.get("/", tags=["root"])
     async def root() -> dict[str, object]:
