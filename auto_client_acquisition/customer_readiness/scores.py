@@ -2,6 +2,8 @@
 Compute Customer Comfort Score and Expansion Readiness (0–100).
 
 Inputs are intentionally plain dicts so routers can pass DB/portal aggregates later.
+
+CS playbook mapping (triggers → parameters): docs/strategic/CUSTOMER_SUCCESS_PLAYBOOK_HOOKS_AR.md
 """
 
 from __future__ import annotations

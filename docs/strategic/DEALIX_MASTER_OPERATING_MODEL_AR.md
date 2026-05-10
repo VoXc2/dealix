@@ -82,6 +82,11 @@ Dealix = ذكاء الإيرادات + تنفيذ تشغيلي + محرك إثب
 - `docs/v10/DEALIX_CAPABILITY_GAP_MAP.md` — فجوات قدرات
 - `AGENTS.md` — تشغيل الوكلاء السحابيين
 - `dealix/registers/no_overclaim.yaml` — سجل عدم المبالغة
+- `docs/strategic/ENTERPRISE_OFFER_POSITIONING_AR.md` — طبقات العرض A/B/C للشركات
+- `docs/strategic/ENTERPRISE_PILOT_TEMPLATE_AR.md` — قالب Pilot enterprise
+- `docs/strategic/ENTERPRISE_P0_GAP_BACKLOG_AR.md` — أولويات P0 وربط checklist الإصدار
+- `docs/strategic/ENTERPRISE_TRUST_COMPLIANCE_PACK_AR.md` — حزمة ثقة وامتثال للبيع
+- `docs/strategic/CUSTOMER_SUCCESS_PLAYBOOK_HOOKS_AR.md` — ربط محفزات CS بـ customer_readiness
 
 ### Trust Layer (PDPL / ZATCA) — تذكير عدم المبالغة
 
