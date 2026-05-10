@@ -193,6 +193,16 @@ claims:
       - api/routers/service_catalog.py
       - tests/test_service_catalog.py
 
+  - id: platform_reference_contracts
+    claim: "Reference platform contracts for tenant, RLS, storage, and auth (no stack replacement)"
+    status: Production
+    evidence:
+      - auto_client_acquisition/platform_v10/tenant_contract.py
+      - auto_client_acquisition/platform_v10/rls_contract.py
+      - auto_client_acquisition/platform_v10/storage_contract.py
+      - auto_client_acquisition/platform_v10/auth_contract.py
+      - tests/test_platform_v10.py
+
   - id: observability_otel
     claim: "OpenTelemetry tracing links decision to execution"
     status: Planned

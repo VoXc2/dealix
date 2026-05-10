@@ -90,6 +90,12 @@ Dealix = ذكاء الإيرادات + تنفيذ تشغيلي + محرك إثب
 - `docs/strategic/DEALIX_ROLE_SERVICE_LADDER_AR.md` — سلّم الأدوار ↔ كتالوج الخدمات السبع
 - `docs/strategic/DEALIX_MARKET_DIFFERENTIATION_AR.md` — تمييز مقابل أنماط السوق
 - `docs/strategic/WAVE13_LANDING_PORTAL_ALIGNMENT_AR.md` — محاذاة البوابة مع Wave 13
+- `docs/strategic/CEO_OPERATING_METRICS_AR.md` — مؤشرات تشغيل تنفيذي داخلية
+- `docs/strategic/GTM_PLAYBOOK_SERVICE_LADDER_AR.md` — كتاب تشغيل GTM على سلّم الخدمات
+- `docs/ops/PHASE0_CEO_RELEASE_GATE_AR.md` — بوابة دمج وتحقق قبل التوسع
+- `docs/ops/PDPL_CLOSURE_CHECKLIST_AR.md` — قائمة إغلاق فجوات PDPL
+- `docs/ops/ALEMBIC_MIGRATION_POLICY.md` — سياسة ترحيل قاعدة البيانات
+- `docs/strategic/CEO_ROADMAP_IMPLEMENTATION_INDEX_AR.md` — فهرس ربط خطة CEO بالكود والاختبارات
 
 ### Trust Layer (PDPL / ZATCA) — تذكير عدم المبالغة
 

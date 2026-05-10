@@ -26,7 +26,7 @@ APP_ENV=development uvicorn api.main:app --host 0.0.0.0 --port 8000 --reload
 ### Resolved in repo (do not re-diagnose as bugs)
 
 - **auth.py 204 + logout**: `/logout` and `/logout/all` use `response_model=None` for FastAPI 0.115.x.
-- **middleware.py**: Server fingerprint removal uses `del response.headers[key]` (no `.pop()` on `MutableHeaders`).
+- **api/middleware/http_stack.py**: Server fingerprint removal uses `del response.headers[key]` (no `.pop()` on `MutableHeaders`).
 - **Frontend `frontend/src/lib/`**: `utils.ts`, `hooks/useAuth.tsx`, and `api.ts` exist; use `git add -f` if `.gitignore` blocks `lib/` (Python artifact pattern).
 
 ### Operational caveats (still important)

@@ -18,6 +18,7 @@
 
 - **عزل المستأجر على مستوى الطلب:** [api/middleware/tenant_isolation.py](../../api/middleware/tenant_isolation.py) (حقن `tenant_id` — يجب أن تلتزم به المستودعات).
 - **تدقيق مسارات بيانات شخصية:** [api/middleware/http_stack.py](../../api/middleware/http_stack.py) (`AuditLogMiddleware` / PDPL Article 18 في التعليقات).
+- **عقود منصة مرجعية (بدون استبدال المكدس):** [auto_client_acquisition/platform_v10/](../../auto_client_acquisition/platform_v10/) — `tenant` / `rls` / `storage` / `auth` كعقود Pydantic + Protocol؛ راجع `tests/test_platform_v10.py`.
 
 ## بوابات إثبات (Evidence gates) — مأخوذة من الخريطة
 
