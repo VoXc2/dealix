@@ -37,7 +37,21 @@
 - Temporal أو بدائل workflows طويلة الأمد بالكامل (Phase E في الخريطة).
 - OAuth وتكاملات خارجية «حقيقية» حسب قرار المؤسس §S6/S7.
 
+## تجربة «الأفضل في السوق» مقابل الدين التقني
+
+التمييز التجاري (سلّم خدمات، Proof، ثقة سعودية) يعمل بشكل أقوى عندما لا ينهار التشغيل تحت الضغط:
+
+| طموح السوق | دين تقني يُغلق عبر P0 أعلاه |
+|-------------|------------------------------|
+| Pilot ومبيعات دون فقدان حالة | **P0-1** Workflow OS — checkpoints + idempotency |
+| وكلاء أذكى دون تسرب بيانات | **P0-2** AI Workforce v10 — reviewer + حدود ذاكرة عميل |
+| عدة شركات على منصة واحدة | **P0-3** عقود tenant + مسار RLS |
+| لجان شراء وحسابات معقّدة | **P0-4** CRM v10 — بعد استقرار الـ workflow |
+
+**الخلاصة:** الوثائق الاستراتيجية ([DEALIX_ROLE_SERVICE_LADDER_AR.md](DEALIX_ROLE_SERVICE_LADDER_AR.md)، [DEALIX_MARKET_DIFFERENTIATION_AR.md](DEALIX_MARKET_DIFFERENTIATION_AR.md)) تشرح *ماذا تبيع*؛ هذا القسم يربط *لماذا P0 ضروري لتحمّل ذلك البيع*.
+
 ## مراجع
 
 - [ENTERPRISE_OFFER_POSITIONING_AR.md](ENTERPRISE_OFFER_POSITIONING_AR.md)
 - [DEALIX_MASTER_OPERATING_MODEL_AR.md](DEALIX_MASTER_OPERATING_MODEL_AR.md)
+- [DEALIX_ROLE_SERVICE_LADDER_AR.md](DEALIX_ROLE_SERVICE_LADDER_AR.md)

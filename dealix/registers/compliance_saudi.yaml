@@ -138,7 +138,7 @@ nca_ecc_2024:
     - control: "2-6 Identity & access management (partial — .env secrets)"
       evidence: "core/config/settings.py (SecretStr)"
     - control: "2-10 Logging & monitoring"
-      evidence: "core/logging.py (structlog) + api/middleware.py (RequestIDMiddleware)"
+      evidence: "core/logging.py (structlog) + api/middleware/http_stack.py (RequestIDMiddleware)"
     - control: "2-12 Secure configuration"
       evidence: "Dockerfile (non-root, multi-stage)"
   planned:
