@@ -16,6 +16,11 @@ CommandIntent = Literal[
     "approve_reply",
     "escalate_ticket",
     "risks_overview",
+    # Wave 12 §32.3.5 — 4 new founder-vision commands
+    "show_proof_this_week",      # اعرض Proof هذا الأسبوع
+    "what_is_overdue",            # وش المتأخر؟ (Saudi-dialect alt to overdue_deals)
+    "prepare_exec_report",        # جهز تقرير الإدارة
+    "show_top_decision_today",    # اعرض القرار الأهم اليوم
     "blocked_unsafe",
     "unknown",
 ]
