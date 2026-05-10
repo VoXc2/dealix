@@ -38,19 +38,31 @@ jobs:
       - name: Checkout (for artifacts only)
         uses: actions/checkout@v4
 
-      - name: Verify required secrets
+      - name: Check required secrets (skip gracefully if missing)
+        id: secrets_gate
         env:
           API_BASE: ${{ secrets.DEALIX_API_BASE }}
           API_KEY: ${{ secrets.DEALIX_API_KEY }}
         run: |
-          if [ -z "${API_BASE}" ]; then
-            echo "::error::DEALIX_API_BASE secret missing"; exit 1; fi
-          if [ -z "${API_KEY}" ]; then
-            echo "::error::DEALIX_API_KEY secret missing"; exit 1; fi
+          # Wave 10.9 §30.3 — fail-fast on missing secrets caused noisy
+          # daily failure emails for the founder while the production
+          # secrets were still being configured. Skip-gracefully instead:
+          # exit 0 with a clear message, gate downstream steps via
+          # `if: steps.secrets_gate.outputs.secrets_present == 'true'`.
+          if [ -z "${API_BASE}" ] || [ -z "${API_KEY}" ]; then
+            echo "ℹ️  secrets-not-yet-configured — skipping run"
+            echo "    DEALIX_API_BASE present: $([ -n "${API_BASE}" ] && echo yes || echo no)"
+            echo "    DEALIX_API_KEY present:  $([ -n "${API_KEY}" ] && echo yes || echo no)"
+            echo "    Set repo secrets via Settings → Secrets and variables → Actions"
+            echo "secrets_present=false" >> "${GITHUB_OUTPUT}"
+            exit 0
+          fi
           echo "✅ secrets present"
+          echo "secrets_present=true" >> "${GITHUB_OUTPUT}"
 
       - name: 1. Generate today's drafts (with retry)
         id: revenue_run
+        if: steps.secrets_gate.outputs.secrets_present == 'true'
         env:
           API_BASE: ${{ secrets.DEALIX_API_BASE }}
           API_KEY: ${{ secrets.DEALIX_API_KEY }}
@@ -76,6 +88,7 @@ jobs:
           jq '.produced // .' revenue_run.json
 
       - name: 2. Schedule follow-ups
+        if: steps.secrets_gate.outputs.secrets_present == 'true'
         env:
           API_BASE: ${{ secrets.DEALIX_API_BASE }}
           API_KEY: ${{ secrets.DEALIX_API_KEY }}
@@ -86,6 +99,7 @@ jobs:
           jq . followups.json
 
       - name: 3. Generate daily report
+        if: steps.secrets_gate.outputs.secrets_present == 'true'
         env:
           API_BASE: ${{ secrets.DEALIX_API_BASE }}
           API_KEY: ${{ secrets.DEALIX_API_KEY }}
@@ -95,6 +109,7 @@ jobs:
           jq '.report_path, .metrics' daily_report.json
 
       - name: 4. Export drafts to CSV
+        if: steps.secrets_gate.outputs.secrets_present == 'true'
         env:
           API_BASE: ${{ secrets.DEALIX_API_BASE }}
           API_KEY: ${{ secrets.DEALIX_API_KEY }}
@@ -104,7 +119,7 @@ jobs:
           jq . export.json
 
       - name: 5. Upload run artifacts
-        if: always()
+        if: always() && steps.secrets_gate.outputs.secrets_present == 'true'
         uses: actions/upload-artifact@v7
         with:
           name: dealix-daily-${{ github.run_id }}
@@ -116,7 +131,7 @@ jobs:
           retention-days: 14
 
       - name: 6. Open issue on failure
-        if: failure()
+        if: failure() && steps.secrets_gate.outputs.secrets_present == 'true'
         uses: actions/github-script@v9
         with:
           script: |
