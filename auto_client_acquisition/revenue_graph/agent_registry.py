@@ -56,7 +56,14 @@ PROSPECTING_AGENT = AgentSpec(
     autonomy_level="safe_auto",
     emits_events=("lead.created",),
     requires_pii_access=False,
-    pdpl_compliance_gates=("public_data_only", "no_personal_phone_collection"),
+    pdpl_compliance_gates=(
+        "public_data_only",
+        "no_personal_phone_collection",
+        # Wave 10.7 §28.1 Issue B — explicit per-tool human-approval flag.
+        # The agent overall runs safe_auto, but THIS specific tool inside
+        # the agent's tools_used tuple needs founder approval per call.
+        "linkedin_company_search_requires_founder_approval",
+    ),
     avg_runtime_seconds=120,
     inputs_required=("icp_definition", "target_sectors", "target_cities"),
     outputs=("ranked_lead_list", "discovery_provenance"),
@@ -105,7 +112,15 @@ ENRICHMENT_AGENT = AgentSpec(
     autonomy_level="safe_auto",
     emits_events=("lead.enriched",),
     requires_pii_access=True,
-    pdpl_compliance_gates=("business_contact_only", "purpose_limitation_check"),
+    pdpl_compliance_gates=(
+        "business_contact_only",
+        "purpose_limitation_check",
+        # Wave 10.7 §28.1 Issue B — same reason as PROSPECTING_AGENT:
+        # this tool runs through human approval per call, even though
+        # the agent overall is safe_auto. The Apollo / Zoominfo / Clearbit
+        # APIs are licensed (auto-OK); LinkedIn search is manual.
+        "linkedin_company_search_requires_founder_approval",
+    ),
     avg_runtime_seconds=15,
     inputs_required=("company_domain_or_name",),
     outputs=("enriched_profile", "confidence_per_field"),
