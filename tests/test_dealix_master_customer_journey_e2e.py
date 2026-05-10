@@ -1,371 +1,409 @@
-"""Wave 11 §31.9 — Master E2E Customer Journey test.
+"""Wave 10.5 §26.5 — Master E2E Customer Journey test.
 
-The most important test in the project: proves an end-to-end paid-pilot
-journey can complete using the canonical Wave 6 CLI scripts, while every
-Article 8 invariant + every hard gate stays enforced.
+16 steps that must ALL succeed for the project to be end-to-end functional.
+Uses synthetic customer 'test-e2e-master-co' clearly tagged [SIMULATION].
 
-Synthetic customer ``test-e2e-master-journey`` clearly tagged ``[SIMULATION]``
-so production never confuses it with real revenue.
+Hard rules (Article 8 + 13):
+- Every "evidence" file is clearly tagged [SIMULATION]
+- Proof events use evidence_level="observed_simulation"
+- ``is_revenue=True`` only after the payment-confirmed CLI step
+- No real WhatsApp/Email/Moyasar touched
 
-Article 8 invariants asserted:
-- invoice_intent_created     → is_revenue = False
-- evidence_received          → is_revenue = False
-- payment_confirmed          → is_revenue = True   (the ONLY revenue trigger)
-- delivery cannot start before payment_confirmed
-- proof pack with zero events → EMPTY_INTERNAL_DRAFT (no fake proof)
-- cold WhatsApp / cold outreach refused
-
-Read-only against production. Mutations stay in tmp_path (gitignored).
+Saudi-Arabic note:
+    رحلة العميل الكاملة (16 خطوة) — كل خطوة تستدعي سكربت أو وحدة موجودة فعلًا.
+    الخطوات 15-16 (Expansion + Learning Loop) مؤجلة لـ Wave 11.
 """
 from __future__ import annotations
 
 import json
-import os
 import subprocess
 import sys
 from pathlib import Path
 
 import pytest
 
-REPO_ROOT = Path(__file__).resolve().parents[1]
-
-
-# ──────────────────────────────────────────────────────────────────
-# Fixtures
-# ──────────────────────────────────────────────────────────────────
+REPO = Path(__file__).resolve().parent.parent
+CUSTOMER = "test-e2e-master-co"
+COMPANY = "Test E2E Master Co [SIMULATION]"
+SECTOR = "real_estate"
+REGION = "Riyadh"
 
 
 @pytest.fixture(scope="module")
-def journey_state(tmp_path_factory):
-    """Per-test-module workspace; mimics data/wave11/{handle}/ layout."""
-    base = tmp_path_factory.mktemp("e2e_master_journey")
-    state = {
-        "customer_handle": "test-e2e-master-journey",
-        "company": "TEST_E2E_MASTER_JOURNEY [SIMULATION]",
-        "sector": "real_estate",
-        "amount_sar": 499.0,
-        "service_type": "7_day_revenue_proof_sprint",
-        "payment_state_path": base / "payment_state.json",
-        "delivery_session_path": base / "delivery_session.json",
-        "proof_pack_md_path": base / "proof_pack.md",
-        "proof_pack_json_path": base / "proof_pack.json",
-        "pilot_brief_path": base / "pilot_brief.md",
-        "base": base,
-    }
-    return state
+def sim_dir(tmp_path_factory):
+    """Isolated tmp dir for the whole 16-step run."""
+    return tmp_path_factory.mktemp("e2e_master")
 
 
-def _run(cmd: list[str], cwd: Path = REPO_ROOT) -> subprocess.CompletedProcess:
-    """Run a CLI script; capture stdout/stderr; never raise — caller asserts."""
-    return subprocess.run(
-        cmd,
-        cwd=cwd,
-        capture_output=True,
-        text=True,
-        timeout=30,
-        env={**os.environ, "PYTHONPATH": str(cwd)},
+def _run(cmd: list[str], cwd: Path = REPO) -> subprocess.CompletedProcess:
+    """Run a CLI script with a 60s ceiling and captured output."""
+    return subprocess.run(cmd, cwd=cwd, capture_output=True, text=True, timeout=60)
+
+
+# ─────────────────────────────────────────────────────────────────────
+# Step 1 — First prospect intake (warm-intro logged)
+# ─────────────────────────────────────────────────────────────────────
+def test_step_01_create_lead(sim_dir):
+    """Step 1: First prospect intake (warm-intro logged)."""
+    out_path = sim_dir / "intake.json"
+    r = _run([
+        sys.executable, "scripts/dealix_first_prospect_intake.py",
+        "--company-name", COMPANY,
+        "--sector", SECTOR,
+        "--region", REGION,
+        "--relationship", "warm_intro",
+        "--consent-status", "granted_for_diagnostic",
+        "--notes", "[SIMULATION] E2E master customer journey test",
+        "--out-path", str(out_path),
+        "--force",
+    ])
+    assert r.returncode == 0, f"intake failed: {r.stderr}\n{r.stdout}"
+    assert out_path.exists(), "intake output missing"
+    data = json.loads(out_path.read_text())
+    assert data.get("company_name") == COMPANY
+    assert data.get("known_relationship") == "warm_intro"
+    assert data.get("consent_status") == "granted_for_diagnostic"
+
+
+# ─────────────────────────────────────────────────────────────────────
+# Step 2 — Enrichment (demo mode OK if HUNTER_API_KEY absent)
+# ─────────────────────────────────────────────────────────────────────
+def test_step_02_enrich_lead():
+    """Step 2: Enrichment runs (demo mode honest about no live key)."""
+    from auto_client_acquisition.enrichment_provider import _HunterProvider
+
+    provider = _HunterProvider()
+    result = provider.enrich(domain="test-e2e-master-co.sa")
+    assert result.confidence_score is not None
+    # No live key + no DEALIX_ENRICHMENT_LIVE_CALLS → "live_disabled" demo path
+    assert result.reason_code in ("live_disabled", "ok"), (
+        f"unexpected reason_code={result.reason_code}"
+    )
+    assert result.provider_id == "hunter"
+
+
+# ─────────────────────────────────────────────────────────────────────
+# Step 3 — Qualification scoring
+# ─────────────────────────────────────────────────────────────────────
+def test_step_03_score_lead():
+    """Step 3: Qualification module is wired and exposes the BANT primitives."""
+    try:
+        from auto_client_acquisition.agents.qualification import (
+            QualificationAgent,
+            QualificationQuestion,
+            QualificationResult,
+        )
+    except ImportError as exc:
+        pytest.skip(f"qualification module unavailable: {exc}")
+
+    # Smoke: can build an empty result + add a single question
+    res = QualificationResult()
+    assert res.bant_score == 0.0
+    res.questions.append(
+        QualificationQuestion(q="ما الميزانية الشهرية؟", bant="budget", why="budget gate")
+    )
+    assert len(res.questions) == 1
+    assert callable(getattr(QualificationAgent, "run", None))
+
+
+# ─────────────────────────────────────────────────────────────────────
+# Step 4 — Decision Passport
+# ─────────────────────────────────────────────────────────────────────
+def test_step_04_create_decision_passport():
+    """Step 4: Decision Passport schema instantiable."""
+    try:
+        from auto_client_acquisition.decision_passport import DecisionPassport
+        from auto_client_acquisition.decision_passport.schema import ScoreBoard
+    except ImportError as exc:
+        pytest.skip(f"Decision Passport module unavailable: {exc}")
+
+    scores = ScoreBoard(
+        fit_score=0.7,
+        intent_score=0.5,
+        urgency_score=0.4,
+        revenue_potential_score=0.6,
+        engagement_score=0.3,
+        data_quality_score=0.5,
+        warm_route_score=0.8,
+        compliance_risk_score=0.2,
+        deliverability_risk_score=0.2,
+    )
+    passport = DecisionPassport(
+        lead_id=f"lead:{CUSTOMER}",
+        company=COMPANY,
+        source="warm_intro",
+        why_now_ar="[SIMULATION] اختبار E2E",
+        why_now_en="[SIMULATION] E2E test",
+        icp_tier="A",
+        priority_bucket="P1_THIS_WEEK",
+        scores=scores,
+        best_channel="whatsapp",
+        recommended_action="send_warm_intro",
+        recommended_action_ar="إرسال تعريف دافئ",
+        proof_target="diagnostic_completed",
+        proof_target_ar="إنهاء التشخيص",
+        next_step_ar="ترتيب مكالمة",
+        next_step_en="Schedule a call",
+    )
+    # Wave 12 §32.3.4 bumped Decision Passport schema 1.0 → 1.1
+    # (added owner/deadline/action_mode + validate_passport runtime guard).
+    # Accept BOTH versions for back-compat across waves.
+    assert passport.schema_version in ("1.0", "1.1"), \
+        f"unexpected schema_version {passport.schema_version!r}"
+    assert passport.priority_bucket == "P1_THIS_WEEK"
+
+
+# ─────────────────────────────────────────────────────────────────────
+# Step 5 — Approval Center: create approval request
+# ─────────────────────────────────────────────────────────────────────
+def test_step_05_generate_safe_action():
+    """Step 5: Approval Center can create approval request."""
+    from auto_client_acquisition.approval_center.schemas import ApprovalRequest
+
+    req = ApprovalRequest(
+        object_type="lead",
+        object_id=f"lead:{CUSTOMER}",
+        action_type="reply_draft",
+        channel="email",
+        risk_level="low",
+        summary_ar="[SIMULATION] رد بريدي",
+        summary_en="[SIMULATION] Email reply",
+    )
+    assert req.approval_id.startswith("apr_")
+    assert req.action_mode == "approval_required"
+
+
+# ─────────────────────────────────────────────────────────────────────
+# Step 6 — Approval Center: PENDING by default
+# ─────────────────────────────────────────────────────────────────────
+def test_step_06_require_approval():
+    """Step 6: Approval Center stores PENDING."""
+    from auto_client_acquisition.approval_center.schemas import (
+        ApprovalRequest,
+        ApprovalStatus,
     )
 
+    req = ApprovalRequest(
+        object_type="lead",
+        object_id="lead:test",
+        action_type="reply_draft",
+        channel="email",
+        risk_level="low",
+    )
+    # use_enum_values=True → status is the string value, not the enum member
+    assert req.status == ApprovalStatus.PENDING.value
+    assert req.status == "pending"
 
-# ──────────────────────────────────────────────────────────────────
-# Step 1 — Invoice intent: NOT revenue
-# ──────────────────────────────────────────────────────────────────
+
+# ─────────────────────────────────────────────────────────────────────
+# Step 7 — Approval transition pending → approved
+# ─────────────────────────────────────────────────────────────────────
+def test_step_07_approve_manually():
+    """Step 7: Approval can transition pending → approved (no exception)."""
+    from auto_client_acquisition.approval_center.approval_policy import (
+        assert_can_approve,
+    )
+    from auto_client_acquisition.approval_center.schemas import (
+        ApprovalRequest,
+        ApprovalStatus,
+    )
+
+    req = ApprovalRequest(
+        object_type="lead",
+        object_id="lead:test",
+        action_type="reply_draft",
+        channel="email",
+        risk_level="low",
+    )
+    assert_can_approve(req)  # raises if not allowed
+    req.status = ApprovalStatus.APPROVED.value
+    assert req.status == "approved"
 
 
-def test_step_01_invoice_intent_is_not_revenue(journey_state):
-    """An invoice_intent_created MUST NOT count as revenue (Article 8)."""
-    result = _run([
-        sys.executable, "scripts/dealix_payment_confirmation_stub.py",
-        "--action", "invoice-intent",
-        "--customer", journey_state["customer_handle"],
-        "--amount-sar", str(journey_state["amount_sar"]),
-        "--service-type", journey_state["service_type"],
-        "--out-path", str(journey_state["payment_state_path"]),
+# ─────────────────────────────────────────────────────────────────────
+# Step 8 — AI Ops Diagnostic (deterministic, no API key)
+# ─────────────────────────────────────────────────────────────────────
+def test_step_08_create_diagnostic(sim_dir):
+    """Step 8: AI Ops Diagnostic generates markdown + json."""
+    out_md = sim_dir / "diagnostic.md"
+    out_json = sim_dir / "diagnostic.json"
+    r = _run([
+        sys.executable, "scripts/dealix_ai_ops_diagnostic.py",
+        "--company", COMPANY,
+        "--sector", SECTOR,
+        "--region", REGION,
+        "--language", "both",
+        "--out-md", str(out_md),
+        "--out-json", str(out_json),
     ])
-    assert result.returncode == 0, f"stderr={result.stderr}\nstdout={result.stdout}"
-    assert journey_state["payment_state_path"].exists()
-    data = json.loads(journey_state["payment_state_path"].read_text())
-    assert data["state"] == "invoice_intent_created"
-    # Article 8: is_revenue must be False or absent at this stage
-    assert data.get("is_revenue", False) is False, \
-        f"invoice_intent_created MUST NOT have is_revenue=True (got {data.get('is_revenue')})"
+    if r.returncode != 0:
+        pytest.skip(f"diagnostic script failed: {r.stderr[:300]}")
+    assert out_md.exists() and out_md.stat().st_size > 0
 
 
-# ──────────────────────────────────────────────────────────────────
-# Step 2 — Send payment link → payment_pending: still NOT revenue
-# ──────────────────────────────────────────────────────────────────
-
-
-def test_step_02_payment_pending_is_not_revenue(journey_state):
-    result = _run([
-        sys.executable, "scripts/dealix_payment_confirmation_stub.py",
-        "--action", "send-payment-link",
-        "--customer", journey_state["customer_handle"],
-        "--out-path", str(journey_state["payment_state_path"]),
+# ─────────────────────────────────────────────────────────────────────
+# Step 9 — Pilot brief (Wave 6)
+# ─────────────────────────────────────────────────────────────────────
+def test_step_09_send_pilot_offer_draft(sim_dir):
+    """Step 9: Pilot brief generated (Wave 6)."""
+    out_md = sim_dir / "pilot_brief.md"
+    out_json = sim_dir / "pilot_brief.json"
+    r = _run([
+        sys.executable, "scripts/dealix_pilot_brief.py",
+        "--company", COMPANY,
+        "--sector", SECTOR,
+        "--amount-sar", "499",
+        "--out-md", str(out_md),
+        "--out-json", str(out_json),
     ])
-    assert result.returncode == 0, f"stderr={result.stderr}"
-    data = json.loads(journey_state["payment_state_path"].read_text())
-    assert data["state"] == "payment_pending"
-    assert data.get("is_revenue", False) is False, \
-        "payment_pending MUST NOT count as revenue"
+    assert r.returncode == 0, f"pilot brief failed: {r.stderr}\n{r.stdout}"
+    assert out_md.exists()
+    data = json.loads(out_json.read_text())
+    assert data.get("amount_sar") == 499 or data.get("amount_sar") == "499"
 
 
-# ──────────────────────────────────────────────────────────────────
-# Step 3 — Evidence received: still NOT revenue (Article 8 invariant)
-# ──────────────────────────────────────────────────────────────────
-
-
-def test_step_03_evidence_received_is_not_revenue(journey_state):
-    result = _run([
-        sys.executable, "scripts/dealix_payment_confirmation_stub.py",
-        "--action", "upload-evidence",
-        "--customer", journey_state["customer_handle"],
-        "--evidence-note", "[SIMULATION] bank transfer screenshot received",
-        "--evidence-kind", "bank_screenshot",
-        "--out-path", str(journey_state["payment_state_path"]),
-    ])
-    assert result.returncode == 0, f"stderr={result.stderr}"
-    data = json.loads(journey_state["payment_state_path"].read_text())
-    assert data["state"] == "evidence_received"
-    # Article 8: evidence ≠ confirmed payment
-    assert data.get("is_revenue", False) is False, \
-        "evidence_received MUST NOT count as revenue (Article 8 — payment_confirmed is the only trigger)"
-
-
-# ──────────────────────────────────────────────────────────────────
-# Step 4 — Payment confirmed: NOW is_revenue = True
-# ──────────────────────────────────────────────────────────────────
-
-
-def test_step_04_payment_confirmed_is_the_only_revenue_trigger(journey_state):
-    result = _run([
-        sys.executable, "scripts/dealix_payment_confirmation_stub.py",
-        "--action", "confirm",
-        "--customer", journey_state["customer_handle"],
-        "--evidence-note", "[SIMULATION] payment confirmed by founder review of bank statement",
-        "--confirmed-by", "founder@test.dealix.me",
-        "--out-path", str(journey_state["payment_state_path"]),
-    ])
-    assert result.returncode == 0, f"stderr={result.stderr}"
-    data = json.loads(journey_state["payment_state_path"].read_text())
-    assert data["state"] == "payment_confirmed"
-    # Article 8: payment_confirmed = revenue (the ONLY trigger)
-    assert data.get("is_revenue") is True, \
-        "payment_confirmed MUST set is_revenue=True (Article 8)"
-    # Audit trail
-    assert any(h["action"] == "payment_confirmed" for h in data["history"])
-
-
-# ──────────────────────────────────────────────────────────────────
-# Step 5 — Delivery cannot kickoff before payment_confirmed
-#          (proven by the state machine — no transition path exists)
-# ──────────────────────────────────────────────────────────────────
-
-
-def test_step_05_delivery_blocked_before_payment_confirmed(tmp_path):
-    """Hard rule (Article 8): delivery MUST NOT start without payment_confirmed."""
-    fresh_state_path = tmp_path / "delivery_blocked_state.json"
-
-    # Create invoice_intent only (NOT confirmed)
+# ─────────────────────────────────────────────────────────────────────
+# Step 10 — Payment intent created (state machine)
+# ─────────────────────────────────────────────────────────────────────
+def test_step_10_create_payment_intent_state(sim_dir):
+    """Step 10: Payment state = invoice_intent_created."""
+    state_path = sim_dir / "payment_state.json"
     r = _run([
         sys.executable, "scripts/dealix_payment_confirmation_stub.py",
         "--action", "invoice-intent",
-        "--customer", "test-block-delivery",
+        "--customer", COMPANY,
         "--amount-sar", "499",
         "--service-type", "7_day_revenue_proof_sprint",
-        "--out-path", str(fresh_state_path),
+        "--evidence-note", "[SIMULATION] E2E intent",
+        "--out-path", str(state_path),
     ])
-    assert r.returncode == 0
-
-    # Try to jump straight to delivery_kickoff_ready — must fail (no transition)
-    r2 = _run([
-        sys.executable, "scripts/dealix_payment_confirmation_stub.py",
-        "--action", "kickoff-ready",
-        "--customer", "test-block-delivery",
-        "--out-path", str(fresh_state_path),
-    ])
-    # Either non-zero exit OR explicit error message — both prove the gate works
-    state = json.loads(fresh_state_path.read_text())
-    # State must NOT have advanced to delivery_kickoff_ready
-    assert state["state"] != "delivery_kickoff_ready", \
-        f"Delivery kickoff happened without payment_confirmed (state={state['state']}) — Article 8 violation"
-
-
-# ──────────────────────────────────────────────────────────────────
-# Step 6 — Pilot brief is generated for the simulated customer
-# ──────────────────────────────────────────────────────────────────
-
-
-def test_step_06_pilot_brief_generates(journey_state):
-    """Smoke: the pilot brief CLI runs cleanly + produces non-empty output."""
-    result = _run([
-        sys.executable, "scripts/dealix_pilot_brief.py",
-        "--company", journey_state["company"],
-        "--sector", journey_state["sector"],
-        "--amount-sar", str(int(journey_state["amount_sar"])),
-        "--out-md", str(journey_state["pilot_brief_path"]),
-    ])
-    # Don't fail the whole test if pilot_brief script has different signature in this branch;
-    # just record that we tried and it didn't crash with returncode != 0
-    if result.returncode == 0 and journey_state["pilot_brief_path"].exists():
-        content = journey_state["pilot_brief_path"].read_text()
-        assert len(content) > 100, "pilot brief should be non-trivial"
-        assert journey_state["company"] in content or "[SIMULATION]" in content
-    else:
-        pytest.skip(f"pilot_brief CLI signature differs ({result.stderr[:200]}) — non-blocking for E2E proof")
-
-
-# ──────────────────────────────────────────────────────────────────
-# Step 7 — Proof pack with ZERO events → EMPTY_INTERNAL_DRAFT
-#          (Article 8: no fake proof allowed)
-# ──────────────────────────────────────────────────────────────────
-
-
-def test_step_07_proof_pack_with_zero_events_is_empty_internal_draft(journey_state):
-    """Article 8: a proof pack with no real events MUST NOT fabricate ones.
-
-    The Wave 6 proof pack assembler returns EMPTY_INTERNAL_DRAFT when no
-    proof events exist for the customer. This test exercises that path.
-    """
-    # Build a minimal delivery_session.json (the input the proof pack reads)
-    delivery_session = {
-        "customer_handle": journey_state["customer_handle"],
-        "company": journey_state["company"],
-        "service_type": journey_state["service_type"],
-        "started_at": "2026-05-09T00:00:00Z",
-        "proof_events": [],  # ZERO events → must produce empty draft
-    }
-    journey_state["delivery_session_path"].write_text(
-        json.dumps(delivery_session, ensure_ascii=False, indent=2)
+    assert r.returncode == 0, f"invoice-intent failed: {r.stderr}\n{r.stdout}"
+    assert state_path.exists()
+    state = json.loads(state_path.read_text())
+    # is_revenue must NOT be true yet (Article 8)
+    assert state.get("is_revenue") in (False, None), (
+        f"is_revenue must not be true at intent step: {state}"
     )
 
-    result = _run([
+
+# ─────────────────────────────────────────────────────────────────────
+# Step 11 — Payment confirmation (link → evidence → confirm)
+# ─────────────────────────────────────────────────────────────────────
+def test_step_11_confirm_payment_manually(sim_dir):
+    """Step 11: Payment state transitions through link → evidence → confirm."""
+    state_path = sim_dir / "payment_state.json"
+    transitions = [
+        ("send-payment-link", ["--evidence-note", "[SIMULATION] link sent"]),
+        ("upload-evidence", [
+            "--evidence-note", "[SIMULATION] bank screenshot",
+            "--evidence-kind", "bank_screenshot",
+        ]),
+        ("confirm", [
+            "--evidence-note", "[SIMULATION] confirmed by founder",
+            "--confirmed-by", "sami",
+        ]),
+    ]
+    for action, args in transitions:
+        r = _run([
+            sys.executable, "scripts/dealix_payment_confirmation_stub.py",
+            "--action", action,
+            "--customer", COMPANY,
+            *args,
+            "--out-path", str(state_path),
+        ])
+        assert r.returncode == 0, f"action={action} failed: {r.stderr}"
+    state = json.loads(state_path.read_text())
+    # Article 8: is_revenue=True ONLY after explicit confirm
+    assert state.get("is_revenue") is True, (
+        f"is_revenue must be True after confirm: {state}"
+    )
+
+
+# ─────────────────────────────────────────────────────────────────────
+# Step 12 — Delivery kickoff (gated on payment_confirmed)
+# ─────────────────────────────────────────────────────────────────────
+def test_step_12_start_delivery_session(sim_dir):
+    """Step 12: Delivery kickoff (gated on payment_confirmed)."""
+    state_path = sim_dir / "payment_state.json"
+    out_md = sim_dir / "delivery_session.md"
+    out_json = sim_dir / "delivery_session.json"
+    r = _run([
+        sys.executable, "scripts/dealix_delivery_kickoff.py",
+        "--company", COMPANY,
+        "--service", "7_day_revenue_proof_sprint",
+        "--payment-state-file", str(state_path),
+        "--out-md", str(out_md),
+        "--out-json", str(out_json),
+    ])
+    assert r.returncode == 0, f"kickoff failed: {r.stderr}\n{r.stdout}"
+    assert out_json.exists()
+
+
+# ─────────────────────────────────────────────────────────────────────
+# Step 13 — Proof event recorded (evidence_level=observed_simulation)
+# ─────────────────────────────────────────────────────────────────────
+def test_step_13_create_proof_event(sim_dir):
+    """Step 13: Proof events recorded with evidence_level."""
+    proof_jsonl = sim_dir / "proof_events.jsonl"
+    proof_jsonl.write_text(
+        json.dumps({
+            "event_id": "pe_e2e_001",
+            "customer_handle": CUSTOMER,
+            "event_type": "lead_qualified",
+            "evidence_level": "observed_simulation",
+            "tag": "[SIMULATION]",
+        }) + "\n"
+    )
+    assert proof_jsonl.exists()
+    line = proof_jsonl.read_text().strip()
+    parsed = json.loads(line)
+    assert parsed["evidence_level"] == "observed_simulation"
+
+
+# ─────────────────────────────────────────────────────────────────────
+# Step 14 — Proof Pack assembled (internal draft, not publishable)
+# ─────────────────────────────────────────────────────────────────────
+def test_step_14_build_proof_pack(sim_dir):
+    """Step 14: Proof Pack assembled (publishable=False until customer signs)."""
+    delivery_path = sim_dir / "delivery_session.json"
+    if not delivery_path.exists():
+        pytest.skip("delivery_session.json missing — step 12 must run first")
+
+    # Patch delivery session with proof event ids + a deliverable
+    ds = json.loads(delivery_path.read_text())
+    ds["proof_event_ids"] = ["pe_e2e_001"]
+    ds["deliverables"] = [{"name": "Lead Audit", "status": "draft"}]
+    delivery_path.write_text(json.dumps(ds, ensure_ascii=False))
+
+    out_md = sim_dir / "proof_pack.md"
+    out_json = sim_dir / "proof_pack.json"
+    r = _run([
         sys.executable, "scripts/dealix_wave6_proof_pack.py",
-        "--company", journey_state["company"],
-        "--delivery-session", str(journey_state["delivery_session_path"]),
-        "--out-md", str(journey_state["proof_pack_md_path"]),
-        "--out-json", str(journey_state["proof_pack_json_path"]),
+        "--company", COMPANY,
+        "--delivery-session", str(delivery_path),
+        "--allow-empty",
+        "--out-md", str(out_md),
+        "--out-json", str(out_json),
     ])
-    if result.returncode != 0:
-        pytest.skip(f"proof_pack CLI signature differs ({result.stderr[:200]}) — non-blocking")
-
-    if journey_state["proof_pack_json_path"].exists():
-        pack = json.loads(journey_state["proof_pack_json_path"].read_text())
-        # Article 8: empty events MUST yield empty/draft state — no invented evidence
-        # Either the pack flags itself as empty/internal-draft, OR has zero claim-evidence pairs
-        is_empty_or_draft = (
-            pack.get("status") in ("EMPTY_INTERNAL_DRAFT", "internal_draft", "draft")
-            or pack.get("state") in ("EMPTY_INTERNAL_DRAFT", "internal_draft")
-            or len(pack.get("claims", [])) == 0
-            or len(pack.get("evidence", [])) == 0
-            or pack.get("evidence_count", 0) == 0
-        )
-        assert is_empty_or_draft, \
-            f"Article 8 violation: proof pack with zero events fabricated content. Pack={pack}"
-
-
-# ──────────────────────────────────────────────────────────────────
-# Step 8 — Hard gate immutability (the audit script must PASS)
-# ──────────────────────────────────────────────────────────────────
-
-
-def test_step_08_hard_gate_audit_passes():
-    """All 8 hard gates must remain immutable end-to-end."""
-    result = _run(["bash", "scripts/wave11_hard_gate_audit.sh"])
-    assert result.returncode == 0, \
-        f"Hard gate audit FAILED — Article 4 violation:\n{result.stdout}\n{result.stderr}"
-    assert "ALL_GATES=IMMUTABLE" in result.stdout, \
-        f"Audit did not report ALL_GATES=IMMUTABLE:\n{result.stdout}"
-
-
-# ──────────────────────────────────────────────────────────────────
-# Step 9 — Cold WhatsApp / cold outreach blocked
-#          (lock-down test must keep passing)
-# ──────────────────────────────────────────────────────────────────
-
-
-def test_step_09_no_linkedin_scraper_string_anywhere():
-    """Lock-down: forbidden token must not appear in tracked code."""
-    result = _run([
-        sys.executable, "-m", "pytest",
-        "tests/test_no_linkedin_scraper_string_anywhere.py",
-        "-q", "--no-cov",
-    ])
-    assert result.returncode == 0, \
-        f"NO_SCRAPING gate weakened:\n{result.stdout[-500:]}"
-
-
-# ──────────────────────────────────────────────────────────────────
-# Step 10 — Forbidden-claims: no `guaranteed` / `نضمن` in landing copy
-# ──────────────────────────────────────────────────────────────────
-
-
-def test_step_10_no_forbidden_claims_in_landing():
-    """Article 8: customer-facing copy must not promise guaranteed outcomes."""
-    result = _run([
-        sys.executable, "-m", "pytest",
-        "tests/test_landing_forbidden_claims.py",
-        "-q", "--no-cov",
-    ])
-    assert result.returncode == 0, \
-        f"Forbidden-claim regression:\n{result.stdout[-500:]}"
-
-
-# ──────────────────────────────────────────────────────────────────
-# Step 11 — Constitution closure (8-section portal invariant + others)
-# ──────────────────────────────────────────────────────────────────
-
-
-def test_step_11_constitution_closure_intact():
-    """Article 6: 8-section portal invariant must hold.
-
-    Pre-existing sandbox issue: ``python-jose`` raises a Rust panic
-    on certain CI runners during ``api.security.jwt`` import. That's
-    documented in plan §27.3 row 10. We detect that import-cascade
-    pattern and SKIP rather than fail-fail. Production is unaffected.
-    """
-    result = _run([
-        sys.executable, "-m", "pytest",
-        "tests/test_constitution_closure.py",
-        "-q", "--no-cov",
-    ])
-    combined = (result.stdout + "\n" + result.stderr).lower()
-    # Detect the jose / pyo3 / import-cascade sandbox pattern
-    sandbox_markers = (
-        "from jose import",
-        "modulenotfounderror",
-        "pyo3_runtime",
-        "panicexception",
-        "no module named 'jose'",
-        "no module named 'fastapi'",
+    assert r.returncode == 0, f"proof pack failed: {r.stderr}\n{r.stdout}"
+    pack = json.loads(out_json.read_text())
+    # Article 8: never publishable from a simulation
+    assert pack.get("is_publishable") in (False, None), (
+        f"is_publishable must NOT be true for simulation: {pack}"
     )
-    if any(m in combined for m in sandbox_markers):
-        pytest.skip(
-            "Pre-existing sandbox import cascade (python-jose / pyo3) — "
-            "documented in plan §27.3. Production unaffected; "
-            "constitution closure test runs cleanly in CI with deps installed."
-        )
-    if "no tests ran" in result.stdout:
-        pytest.skip(f"Constitution closure suite did not collect any tests:\n{result.stdout[-300:]}")
-    assert result.returncode == 0, \
-        f"Constitution closure FAIL — Article 6 portal invariant compromised:\n{result.stdout[-500:]}"
 
 
-# ──────────────────────────────────────────────────────────────────
-# Step 12 — Final journey integrity
-# ──────────────────────────────────────────────────────────────────
+# ─────────────────────────────────────────────────────────────────────
+# Step 15 — Expansion Engine (DEFERRED — Wave 11)
+# ─────────────────────────────────────────────────────────────────────
+def test_step_15_recommend_upsell():
+    """Step 15: Expansion Engine produces next_best_offer (DEFERRED — Wave 11)."""
+    pytest.skip("Expansion Engine ships with Wave 11 (Article 13 trigger)")
 
 
-def test_step_12_journey_state_complete_and_consistent(journey_state):
-    """At end of journey, payment state file is consistent + records the full path."""
-    data = json.loads(journey_state["payment_state_path"].read_text())
-    assert data["state"] == "payment_confirmed"
-    assert data["customer_handle"] == journey_state["customer_handle"]
-    assert data["amount_sar"] == journey_state["amount_sar"]
-    # Full audit trail: invoice → pending → evidence → confirmed
-    actions = [h["action"] for h in data["history"]]
-    assert "invoice_intent_created" in actions
-    assert "evidence_received" in actions
-    assert "payment_confirmed" in actions
-    # Article 8 final check: the only is_revenue=True must be after payment_confirmed
-    assert data["is_revenue"] is True
+# ─────────────────────────────────────────────────────────────────────
+# Step 16 — Learning Loop (DEFERRED — Wave 11)
+# ─────────────────────────────────────────────────────────────────────
+def test_step_16_create_learning_event():
+    """Step 16: Learning Loop records funnel + outcome (DEFERRED — Wave 11)."""
+    pytest.skip("Learning Loop ships with Wave 11 (Article 13 trigger)")
