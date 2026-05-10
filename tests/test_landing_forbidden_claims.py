@@ -141,6 +141,26 @@ ALLOWLIST: dict[str, dict[str, str]] = {
     "diagnostic-real-estate.html": {
         "cold": "NEGATION",
     },
+    # Trust Center (Tier-1 redesign) — frames the 8 hard gates as features.
+    # Copy explicitly states what Dealix DOES NOT do: "لا scraping",
+    # "لا يبيع لك «نضمن نتائج»". Pure NEGATION throughout.
+    "trust-center.html": {
+        "scraping": "NEGATION",
+        "نضمن": "NEGATION",
+    },
+    # Agency Partner page (Tier-1 redesign) — agency-facing positioning
+    # repeats the safety promise: "بدون cold WhatsApp" so partners can
+    # reassure their clients. Pure NEGATION.
+    "agency-partner.html": {
+        "cold": "NEGATION",
+    },
+    # Homepage (Tier-1 redesign) — hero subheadline and #for-who NOT-FOR
+    # list explicitly state "بدون cold WhatsApp ولا scraping" as part of
+    # the safety promise. Pure NEGATION throughout.
+    "index.html": {
+        "cold": "NEGATION",
+        "scraping": "NEGATION",
+    },
 }
 
 
