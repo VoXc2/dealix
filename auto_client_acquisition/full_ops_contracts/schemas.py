@@ -132,7 +132,16 @@ SessionStatus = Literal[
 
 
 class ServiceSessionRecord(BaseModel):
-    """Envelope for one delivered service to one customer."""
+    """Envelope for one delivered service to one customer.
+
+    Wave 13 Phase 3 additions (all optional, backward-compatible):
+      - service_offering_id  → links to service_catalog.registry
+      - daily_artifacts       → {day_number, artifact_id, status,
+                                  created_at, customer_visible}
+      - next_customer_action  → bilingual single-sentence next step (customer-facing)
+      - next_founder_action   → bilingual single-sentence next step (founder-facing)
+      - day_number            → current day in service (1-indexed)
+    """
 
     model_config = ConfigDict(extra="forbid")
 
@@ -150,6 +159,12 @@ class ServiceSessionRecord(BaseModel):
     started_at: datetime = Field(default_factory=_now_utc)
     completed_at: datetime | None = None
     safety_summary: str = "no_live_send_no_live_charge"
+    # Wave 13 Phase 3 — Service Session Runtime
+    service_offering_id: str | None = None
+    daily_artifacts: list[dict[str, Any]] = Field(default_factory=list)
+    next_customer_action: dict[str, Any] | None = None  # {ar, en}
+    next_founder_action: dict[str, Any] | None = None   # {ar, en}
+    day_number: int = 0  # 0=not started, 1+=running
 
 
 # Allowed transitions for ServiceSessionRecord.status
