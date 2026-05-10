@@ -10,9 +10,13 @@ const config: Config = {
   theme: {
     extend: {
       fontFamily: {
-        arabic: ["'Noto Sans Arabic'", "'IBM Plex Arabic'", "sans-serif"],
-        display: ["'Syne'", "'Noto Sans Arabic'", "sans-serif"],
-        mono: ["'JetBrains Mono'", "monospace"],
+        arabic: [
+          "var(--font-noto-arabic)",
+          "var(--font-ibm-plex-arabic)",
+          "sans-serif",
+        ],
+        display: ["var(--font-syne)", "var(--font-noto-arabic)", "sans-serif"],
+        mono: ["var(--font-jetbrains-mono)", "monospace"],
       },
       colors: {
         // Saudi-inspired palette

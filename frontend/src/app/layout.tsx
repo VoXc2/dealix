@@ -1,11 +1,37 @@
 import type { Metadata } from "next";
-import { Noto_Sans_Arabic } from "next/font/google";
+import {
+  IBM_Plex_Sans_Arabic,
+  JetBrains_Mono,
+  Noto_Sans_Arabic,
+  Syne,
+} from "next/font/google";
 import "./globals.css";
 
 const notoArabic = Noto_Sans_Arabic({
   subsets: ["arabic"],
-  variable: "--font-arabic",
+  variable: "--font-noto-arabic",
   weight: ["300", "400", "500", "600", "700", "800"],
+  display: "swap",
+});
+
+const ibmPlexArabic = IBM_Plex_Sans_Arabic({
+  subsets: ["arabic"],
+  variable: "--font-ibm-plex-arabic",
+  weight: ["300", "400", "500", "600", "700"],
+  display: "swap",
+});
+
+const syne = Syne({
+  subsets: ["latin"],
+  variable: "--font-syne",
+  weight: ["400", "500", "600", "700", "800"],
+  display: "swap",
+});
+
+const jetbrainsMono = JetBrains_Mono({
+  subsets: ["latin"],
+  variable: "--font-jetbrains-mono",
+  weight: ["400", "500"],
   display: "swap",
 });
 
@@ -26,15 +52,16 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const fontVars = [
+    notoArabic.variable,
+    ibmPlexArabic.variable,
+    syne.variable,
+    jetbrainsMono.variable,
+  ].join(" ");
+
   return (
-    <html suppressHydrationWarning>
-      <head>
-        <link
-          href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@300;400;500;600;700;800&family=IBM+Plex+Arabic:wght@300;400;500;600;700&display=swap"
-          rel="stylesheet"
-        />
-      </head>
-      <body className={`${notoArabic.variable} antialiased`}>{children}</body>
+    <html lang="ar" dir="rtl" suppressHydrationWarning>
+      <body className={`${fontVars} antialiased`}>{children}</body>
     </html>
   );
 }

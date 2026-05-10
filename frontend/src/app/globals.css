@@ -1,4 +1,25 @@
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@300;400;500;600;700;800&family=IBM+Plex+Arabic:wght@300;400;500;600;700&family=Syne:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
+/* Fonts: loaded via next/font in app/layout.tsx (single source; avoids duplicate network requests). */
+
+/*
+ * ─── Dealix token map: landing ↔ Next dashboard ─────────────────────────
+ * Landing foundation: landing/styles.css (:root + [data-theme="dark"]).
+ * Landing components:  landing/assets/css/design-system.css (--ds-*, --space-*).
+ * Next app:            Tailwind semantic colors → hsl(var(--*)) in tailwind.config.ts
+ *                      + HSL tokens below (:root / .dark).
+ *
+ * | Concept              | Landing (styles.css)     | Next (globals + tailwind)      |
+ * |----------------------|--------------------------|--------------------------------|
+ * | Primary brand warmth | — (accent is cyan)       | primary / gold-* (HSL ~37°)    |
+ * | Secondary / growth   | --success (#10b981)      | secondary / emerald-*          |
+ * | Page background      | --bg                     | background                     |
+ * | Body text            | --text                   | foreground                     |
+ * | Surfaces / cards     | --surface, ds-surface-*  | card, popover                  |
+ * | Radius base          | --radius (14px)          | --radius (0.75rem ≈ 12px)      |
+ * | Arabic UI font       | --font-ar (IBM Plex…)    | --font-noto-arabic + IBM Plex  |
+ * | Display / headlines  | —                        | font-display (Syne)            |
+ *
+ * When editing either surface, update this table so marketing + app stay aligned.
+ */
 
 @tailwind base;
 @tailwind components;
@@ -85,7 +106,8 @@
   }
   body {
     @apply bg-background text-foreground;
-    font-family: 'Noto Sans Arabic', 'IBM Plex Arabic', system-ui, sans-serif;
+    font-family: var(--font-noto-arabic), var(--font-ibm-plex-arabic), system-ui,
+      sans-serif;
   }
 
   /* RTL direction for Arabic */

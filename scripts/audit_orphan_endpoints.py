@@ -4,8 +4,9 @@
 Per Track B6 of the 30-day plan, this script:
 
 1. Walks `api/routers/` to enumerate every public endpoint (METHOD, path).
-2. Walks `landing/**/*.html` and `landing/assets/js/*.js` to find every
-   `/api/v1/...` reference (calls + documentation strings).
+2. Walks `landing/**/*.html`, `landing/assets/js/*.js`, and
+   `frontend/src/**/*.{ts,tsx,js,jsx}` to find every `/api/v1/...` reference
+   (calls + documentation strings).
 3. Reports:
    - Orphan endpoints — declared in code, never referenced from frontend
    - Phantom references — frontend mentions an endpoint that doesn't exist
@@ -30,6 +31,7 @@ from typing import Iterable
 REPO = Path(__file__).resolve().parents[1]
 ROUTERS_DIR = REPO / "api" / "routers"
 LANDING_DIR = REPO / "landing"
+FRONTEND_SRC_DIR = REPO / "frontend" / "src"
 
 # These patterns extract endpoint declarations from FastAPI routers.
 ROUTER_DECORATOR = re.compile(
@@ -59,7 +61,6 @@ ORPHAN_ALLOWLIST: set[str] = {
     "/api/v1/jobs/status",
     "/api/v1/jobs/run",
     # Auth refresh / impersonation — not yet wired to a frontend page
-    "/api/v1/auth/refresh",
     "/api/v1/auth/revoke",
     # Background-job triggers (cron-only)
     "/api/v1/automation/run",
@@ -88,12 +89,25 @@ def walk_routers() -> dict[str, set[str]]:
             if not sub_path.startswith("/"):
                 sub_path = "/" + sub_path
             full = prefix.rstrip("/") + sub_path
+            # Routers mounted in api/main.py with an extra ``/api/v1`` prefix
+            # (e.g. auth.router, jobs.router) declare ``/auth/...`` locally.
+            if path.name in {"auth.py", "jobs.py"} and not full.startswith("/api/"):
+                full = "/api/v1" + full
             if not full.startswith("/api/"):
                 # Routes that don't live under /api are not in our wiring
                 # contract (e.g. /healthz, /metrics).
                 continue
             endpoints.setdefault(full, set()).add(verb)
     return endpoints
+
+
+def _merge_ref_dicts(
+    a: dict[str, set[str]], b: dict[str, set[str]]
+) -> dict[str, set[str]]:
+    out = {k: set(v) for k, v in a.items()}
+    for k, files in b.items():
+        out.setdefault(k, set()).update(files)
+    return out
 
 
 def walk_landing() -> dict[str, set[str]]:
@@ -120,6 +134,29 @@ def walk_landing() -> dict[str, set[str]]:
     return refs
 
 
+def walk_frontend_src() -> dict[str, set[str]]:
+    """Collect /api/v1/... string references from the Next.js app."""
+    refs: dict[str, set[str]] = {}
+    if not FRONTEND_SRC_DIR.exists():
+        return refs
+    for path in FRONTEND_SRC_DIR.rglob("*"):
+        if not path.is_file():
+            continue
+        if path.suffix not in {".ts", ".tsx", ".js", ".jsx"}:
+            continue
+        try:
+            text = path.read_text(encoding="utf-8", errors="ignore")
+        except OSError:
+            continue
+        for match in FRONTEND_API_REF.finditer(text):
+            ref = match.group(1)
+            normalized = re.sub(r"\{[^}]+\}", "{x}", ref)
+            refs.setdefault(normalized, set()).add(
+                path.relative_to(REPO).as_posix()
+            )
+    return refs
+
+
 def normalize_path(p: str) -> str:
     """Replace {handle}, {id}, {service_id} etc. with a generic {x} so that
     a frontend ref to /customer-portal/Slot-A matches a router decl of
@@ -127,9 +164,25 @@ def normalize_path(p: str) -> str:
     return re.sub(r"\{[^}]+\}", "{x}", p)
 
 
+def _path_matches_dynamic(ref: str, pattern: str) -> bool:
+    """True if ref matches pattern where pattern may include ``{param}`` segments."""
+    r_parts = [p for p in ref.strip("/").split("/") if p]
+    p_parts = [p for p in pattern.strip("/").split("/") if p]
+    if len(r_parts) != len(p_parts):
+        return False
+    for rp, pp in zip(r_parts, p_parts):
+        if pp.startswith("{") and pp.endswith("}"):
+            continue
+        if rp != pp:
+            return False
+    return True
+
+
 def matches_any(ref: str, declared: Iterable[str]) -> bool:
     norm_ref = normalize_path(ref)
     for endpoint in declared:
+        if _path_matches_dynamic(ref, endpoint):
+            return True
         norm_endpoint = normalize_path(endpoint)
         if norm_endpoint == norm_ref:
             return True
@@ -152,7 +205,7 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
 
     endpoints = walk_routers()
-    refs = walk_landing()
+    refs = _merge_ref_dicts(walk_landing(), walk_frontend_src())
 
     # Classify
     healthy: list[tuple[str, set[str]]] = []

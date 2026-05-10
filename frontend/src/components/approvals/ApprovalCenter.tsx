@@ -1,76 +1,22 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo } from "react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTranslations, useLocale } from "next-intl";
 import { motion, AnimatePresence } from "framer-motion";
 import { Check, X, AlertTriangle, Clock, Shield } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { cn, getRiskColor, formatRelativeTime } from "@/lib/utils";
 import { toast } from "sonner";
+import { api } from "@/lib/api";
+import {
+  backendApprovalToUi,
+  extractApprovalRows,
+} from "@/lib/api-normalize";
+import { useAuth } from "@/lib/hooks/useAuth";
 import type { ApprovalRequest, RiskLevel } from "@/types";
-
-const mockApprovals: ApprovalRequest[] = [
-  {
-    id: "ap1",
-    agentType: "outreach",
-    action: "إرسال 50 رسالة تسويقية للشركات الناشئة في رياض",
-    description: "يريد وكيل التواصل إرسال حملة بريد إلكتروني مستهدفة لـ 50 شركة ناشئة محددة في منطقة الرياض، استناداً إلى إشارات التمويل الأخيرة.",
-    riskLevel: "high",
-    status: "pending",
-    requestedAt: new Date(Date.now() - 10 * 60000).toISOString(),
-    target: "50 شركة ناشئة - الرياض",
-    estimatedImpact: "متوسط معدل الرد المتوقع: 18%",
-  },
-  {
-    id: "ap2",
-    agentType: "compliance",
-    action: "تعديل شروط العقد لتضمين بند PDPL الجديد",
-    description: "وكيل الامتثال يقترح إضافة بند حماية البيانات وفق لوائح PDPL السعودية الجديدة لعام 2024 في جميع عقود العملاء.",
-    riskLevel: "medium",
-    status: "pending",
-    requestedAt: new Date(Date.now() - 25 * 60000).toISOString(),
-    target: "قوالب العقود - الإصدار 3.2",
-    estimatedImpact: "تحسين الامتثال القانوني",
-  },
-  {
-    id: "ap3",
-    agentType: "scoring",
-    action: "رفع أولوية 12 عميلاً إلى مستوى VIP",
-    description: "بناءً على تحليل سلوك الشراء وإشارات التوسع الأخيرة، يقترح وكيل التقييم ترقية 12 حساباً إلى مستوى VIP.",
-    riskLevel: "low",
-    status: "pending",
-    requestedAt: new Date(Date.now() - 40 * 60000).toISOString(),
-    target: "12 حساب - درجة AI > 85",
-    estimatedImpact: "إيرادات متوقعة إضافية: 2.4M ريال",
-  },
-  {
-    id: "ap4",
-    agentType: "outreach",
-    action: "جدولة مكالمات متابعة مع عملاء المرحلة C",
-    description: "تلقائي: تحديد 8 مواعيد اجتماعات مع عملاء لم يستجيبوا خلال 14 يوماً.",
-    riskLevel: "low",
-    status: "approved",
-    requestedAt: new Date(Date.now() - 3 * 3600000).toISOString(),
-    reviewedAt: new Date(Date.now() - 2 * 3600000).toISOString(),
-    reviewedBy: "أحمد الحربي",
-    target: "8 عملاء - المرحلة C",
-  },
-  {
-    id: "ap5",
-    agentType: "intelligence",
-    action: "الوصول إلى بيانات LinkedIn للتحقق من التغييرات الوظيفية",
-    description: "طلب صلاحية للوصول إلى بيانات LinkedIn للتحقق من تغييرات الوظيفة لدى جهات الاتصال الرئيسية.",
-    riskLevel: "high",
-    status: "rejected",
-    requestedAt: new Date(Date.now() - 5 * 3600000).toISOString(),
-    reviewedAt: new Date(Date.now() - 4 * 3600000).toISOString(),
-    reviewedBy: "سارة القحطاني",
-    target: "150 جهة اتصال",
-  },
-];
 
 const riskIcons: Record<RiskLevel, React.ReactNode> = {
   high: <AlertTriangle className="w-3.5 h-3.5" />,
@@ -78,10 +24,11 @@ const riskIcons: Record<RiskLevel, React.ReactNode> = {
   low: <Clock className="w-3.5 h-3.5" />,
 };
 
-function ApprovalCard({ request, onApprove, onReject }: {
+function ApprovalCard({ request, onApprove, onReject, actionsDisabled }: {
   request: ApprovalRequest;
   onApprove: (id: string) => void;
   onReject: (id: string) => void;
+  actionsDisabled?: boolean;
 }) {
   const t = useTranslations("approvals");
   const locale = useLocale();
@@ -116,7 +63,7 @@ function ApprovalCard({ request, onApprove, onReject }: {
         <div className="flex items-start justify-between gap-3 mb-4">
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 rounded-xl bg-muted flex items-center justify-center text-base">
-              {agentIconMap[request.agentType]}
+              {agentIconMap[request.agentType] ?? "⚙️"}
             </div>
             <div>
               <p className="text-xs text-muted-foreground capitalize">{request.agentType}</p>
@@ -166,6 +113,7 @@ function ApprovalCard({ request, onApprove, onReject }: {
               variant="emerald"
               size="sm"
               className="flex-1"
+              disabled={actionsDisabled}
               onClick={() => onApprove(request.id)}
             >
               <Check className="w-3.5 h-3.5 me-1.5" />
@@ -175,6 +123,7 @@ function ApprovalCard({ request, onApprove, onReject }: {
               variant="outline"
               size="sm"
               className="flex-1 text-destructive border-destructive/30 hover:bg-destructive/10"
+              disabled={actionsDisabled}
               onClick={() => onReject(request.id)}
             >
               <X className="w-3.5 h-3.5 me-1.5" />
@@ -190,7 +139,9 @@ function ApprovalCard({ request, onApprove, onReject }: {
           )}>
             {request.status === "approved" ? <Check className="w-3.5 h-3.5" /> : <X className="w-3.5 h-3.5" />}
             <span className="font-medium">
-              {request.status === "approved" ? t("approved") : t("rejected")} {isAr ? "بواسطة" : "by"} {request.reviewedBy}
+              {request.status === "approved" ? t("approved") : t("rejected")}{" "}
+              {isAr ? "بواسطة" : "by"}{" "}
+              {request.reviewedBy ?? (isAr ? "غير معروف" : "Unknown")}
             </span>
             <span className="text-muted-foreground">
               {request.reviewedAt && formatRelativeTime(request.reviewedAt, locale)}
@@ -206,33 +157,105 @@ export function ApprovalCenter() {
   const t = useTranslations("approvals");
   const locale = useLocale();
   const isAr = locale === "ar";
-  const [approvals, setApprovals] = useState(mockApprovals);
+  const { user } = useAuth();
+  const queryClient = useQueryClient();
+  const who = user?.email?.trim() || (isAr ? "لوحة_التحكم" : "dashboard_user");
 
-  const handleApprove = (id: string) => {
-    setApprovals((prev) =>
-      prev.map((a) => a.id === id ? { ...a, status: "approved" as const, reviewedAt: new Date().toISOString(), reviewedBy: isAr ? "أنت" : "You" } : a)
-    );
-    toast.success(isAr ? "تمت الموافقة بنجاح" : "Approved successfully");
-  };
+  const pendingQuery = useQuery({
+    queryKey: ["approvals", "pending"],
+    queryFn: async () => (await api.getApprovals()).data,
+  });
 
-  const handleReject = (id: string) => {
-    setApprovals((prev) =>
-      prev.map((a) => a.id === id ? { ...a, status: "rejected" as const, reviewedAt: new Date().toISOString(), reviewedBy: isAr ? "أنت" : "You" } : a)
-    );
-    toast.error(isAr ? "تم الرفض" : "Rejected");
-  };
+  const historyQuery = useQuery({
+    queryKey: ["approvals", "history"],
+    queryFn: async () => (await api.getApprovalsHistory(100)).data,
+  });
 
-  const pending = approvals.filter((a) => a.status === "pending");
-  const reviewed = approvals.filter((a) => a.status !== "pending");
+  const pending = useMemo(() => {
+    return extractApprovalRows(pendingQuery.data)
+      .map(backendApprovalToUi)
+      .filter((a) => a.status === "pending");
+  }, [pendingQuery.data]);
+
+  const reviewed = useMemo(() => {
+    return extractApprovalRows(historyQuery.data)
+      .map(backendApprovalToUi)
+      .filter((a) => a.status !== "pending");
+  }, [historyQuery.data]);
+
+  const approveMut = useMutation({
+    mutationFn: (id: string) => api.approveApproval(id, who),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["approvals"] });
+      toast.success(isAr ? "تمت الموافقة بنجاح" : "Approved successfully");
+    },
+    onError: () => {
+      toast.error(isAr ? "فشلت الموافقة" : "Approval failed");
+    },
+  });
+
+  const rejectMut = useMutation({
+    mutationFn: (id: string) =>
+      api.rejectApproval(id, who, isAr ? "مرفوض من لوحة التحكم" : "Rejected from dashboard"),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["approvals"] });
+      toast.success(isAr ? "تم الرفض" : "Rejected");
+    },
+    onError: () => {
+      toast.error(isAr ? "فشل الرفض" : "Reject failed");
+    },
+  });
+
+  const handleApprove = (id: string) => approveMut.mutate(id);
+  const handleReject = (id: string) => rejectMut.mutate(id);
+
+  const loading = pendingQuery.isLoading || historyQuery.isLoading;
+  const hasError = pendingQuery.isError || historyQuery.isError;
 
   return (
     <div>
+      {hasError && (
+        <div
+          role="alert"
+          className="mb-4 rounded-xl border border-destructive/40 bg-destructive/10 px-4 py-3 text-sm"
+        >
+          <p>
+            {isAr
+              ? "تعذر تحميل طلبات الموافقة. تحقق من الـ API."
+              : "Could not load approvals. Check the API."}
+          </p>
+          <div className="mt-2 flex gap-2">
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => {
+                pendingQuery.refetch();
+                historyQuery.refetch();
+              }}
+            >
+              {isAr ? "إعادة المحاولة" : "Retry"}
+            </Button>
+          </div>
+        </div>
+      )}
+
       {/* Summary */}
       <div className="grid grid-cols-3 gap-4 mb-6">
         {[
           { label: isAr ? "قيد الانتظار" : "Pending", value: pending.length, color: "text-gold-400", bg: "bg-gold-400/10" },
-          { label: isAr ? "موافق عليه" : "Approved", value: approvals.filter((a) => a.status === "approved").length, color: "text-emerald-400", bg: "bg-emerald-400/10" },
-          { label: isAr ? "مرفوض" : "Rejected", value: approvals.filter((a) => a.status === "rejected").length, color: "text-red-400", bg: "bg-red-400/10" },
+          {
+            label: isAr ? "موافق عليه" : "Approved",
+            value: reviewed.filter((a) => a.status === "approved").length,
+            color: "text-emerald-400",
+            bg: "bg-emerald-400/10",
+          },
+          {
+            label: isAr ? "مرفوض / منتهي" : "Rejected / closed",
+            value: reviewed.filter((a) => a.status !== "approved").length,
+            color: "text-red-400",
+            bg: "bg-red-400/10",
+          },
         ].map((s, i) => (
           <motion.div
             key={s.label}
@@ -259,7 +282,16 @@ export function ApprovalCenter() {
 
         <TabsContent value="pending">
           <AnimatePresence>
-            {pending.length === 0 ? (
+            {loading ? (
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                {Array.from({ length: 4 }).map((_, i) => (
+                  <div
+                    key={i}
+                    className="h-48 rounded-2xl bg-muted/50 animate-pulse border border-border"
+                  />
+                ))}
+              </div>
+            ) : pending.length === 0 ? (
               <div className="text-center py-16 text-muted-foreground">
                 <p className="text-4xl mb-3">✅</p>
                 <p className="font-medium">{isAr ? "لا توجد موافقات معلقة" : "No pending approvals"}</p>
@@ -272,6 +304,7 @@ export function ApprovalCenter() {
                     request={approval}
                     onApprove={handleApprove}
                     onReject={handleReject}
+                    actionsDisabled={approveMut.isPending || rejectMut.isPending}
                   />
                 ))}
               </div>
@@ -280,16 +313,34 @@ export function ApprovalCenter() {
         </TabsContent>
 
         <TabsContent value="reviewed">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-            {reviewed.map((approval) => (
-              <ApprovalCard
-                key={approval.id}
-                request={approval}
-                onApprove={handleApprove}
-                onReject={handleReject}
-              />
-            ))}
-          </div>
+          {loading ? (
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+              {Array.from({ length: 4 }).map((_, i) => (
+                <div
+                  key={i}
+                  className="h-48 rounded-2xl bg-muted/50 animate-pulse border border-border"
+                />
+              ))}
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+              {reviewed.length === 0 ? (
+                <p className="text-sm text-muted-foreground col-span-full text-center py-12">
+                  {isAr ? "لا يوجد سجل مراجعة بعد." : "No review history yet."}
+                </p>
+              ) : (
+                reviewed.map((approval) => (
+                  <ApprovalCard
+                    key={approval.id}
+                    request={approval}
+                    onApprove={handleApprove}
+                    onReject={handleReject}
+                    actionsDisabled={approveMut.isPending || rejectMut.isPending}
+                  />
+                ))
+              )}
+            </div>
+          )}
         </TabsContent>
       </Tabs>
     </div>

@@ -1,42 +1,13 @@
 import axios, { type AxiosInstance, type InternalAxiosRequestConfig } from "axios";
+import {
+  clearAuthStorage,
+  getStoredAccessToken,
+  getStoredRefreshToken,
+  persistAuthResponse,
+  type LoginResponse,
+} from "@/lib/auth-storage";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
-
-const TOKEN_KEY = "dealix_access_token";
-const REFRESH_KEY = "dealix_refresh_token";
-
-function getToken(): string | null {
-  if (typeof window === "undefined") return null;
-  try {
-    const raw = localStorage.getItem(TOKEN_KEY);
-    return raw ? JSON.parse(raw) : null;
-  } catch {
-    return null;
-  }
-}
-
-function getRefreshToken(): string | null {
-  if (typeof window === "undefined") return null;
-  try {
-    const raw = localStorage.getItem(REFRESH_KEY);
-    return raw ? JSON.parse(raw) : null;
-  } catch {
-    return null;
-  }
-}
-
-function setToken(token: string) {
-  if (typeof window === "undefined") return;
-  localStorage.setItem(TOKEN_KEY, JSON.stringify(token));
-}
-
-function clearTokens() {
-  if (typeof window === "undefined") return;
-  localStorage.removeItem(TOKEN_KEY);
-  localStorage.removeItem(REFRESH_KEY);
-  localStorage.removeItem("dealix_expires_at");
-  localStorage.removeItem("dealix_user");
-}
 
 export const apiClient: AxiosInstance = axios.create({
   baseURL: API_BASE,
@@ -45,7 +16,7 @@ export const apiClient: AxiosInstance = axios.create({
 });
 
 apiClient.interceptors.request.use((config: InternalAxiosRequestConfig) => {
-  const token = getToken();
+  const token = getStoredAccessToken();
   if (token && config.headers) {
     config.headers.Authorization = `Bearer ${token}`;
   }
@@ -73,6 +44,14 @@ apiClient.interceptors.response.use(
     if (error.response?.status !== 401 || original._retry) {
       return Promise.reject(error);
     }
+    const reqUrl = String(original.url ?? "");
+    if (
+      reqUrl.includes("/auth/refresh") ||
+      reqUrl.includes("/auth/login") ||
+      reqUrl.includes("/auth/register")
+    ) {
+      return Promise.reject(error);
+    }
     original._retry = true;
 
     if (isRefreshing) {
@@ -88,25 +67,27 @@ apiClient.interceptors.response.use(
     }
 
     isRefreshing = true;
-    const refreshTokenValue = getRefreshToken();
+    const refreshTokenValue = getStoredRefreshToken();
 
     if (!refreshTokenValue) {
-      clearTokens();
+      clearAuthStorage();
       isRefreshing = false;
       return Promise.reject(error);
     }
 
     try {
-      const res = await axios.post(`${API_BASE}/api/v1/auth/refresh`, {
-        refresh_token: refreshTokenValue,
-      });
-      const newToken: string = res.data.tokens.accessToken;
-      setToken(newToken);
+      const res = await axios.post<LoginResponse>(
+        `${API_BASE}/api/v1/auth/refresh`,
+        { refresh_token: refreshTokenValue },
+        { headers: { "Content-Type": "application/json" }, timeout: 30_000 },
+      );
+      persistAuthResponse(res.data);
+      const newToken = res.data.tokens.accessToken;
       processPending(newToken);
       original.headers.Authorization = `Bearer ${newToken}`;
       return apiClient(original);
     } catch (refreshError) {
-      clearTokens();
+      clearAuthStorage();
       processPending(null, refreshError);
       return Promise.reject(refreshError);
     } finally {
@@ -116,32 +97,36 @@ apiClient.interceptors.response.use(
 );
 
 export const api = {
-  health: () =>
-    apiClient.get<{ status: string }>("/health"),
+  health: () => apiClient.get<{ status: string }>("/health"),
 
-  getDashboardMetrics: () =>
-    apiClient.get("/api/v1/dashboard/metrics"),
+  getDashboardMetrics: () => apiClient.get("/api/v1/dashboard/metrics"),
 
-  getLeads: () =>
-    apiClient.get("/api/v1/founder/leads"),
+  getLeads: () => apiClient.get("/api/v1/founder/leads"),
 
   submitLead: (data: Record<string, unknown>) =>
     apiClient.post("/api/v1/leads", data),
 
-  getPricing: () =>
-    apiClient.get("/api/v1/pricing/plans"),
+  getPricing: () => apiClient.get("/api/v1/pricing/plans"),
 
-  getCommandCenter: () =>
-    apiClient.get("/api/v1/v3/command-center/snapshot"),
+  getCommandCenter: () => apiClient.get("/api/v1/v3/command-center/snapshot"),
 
-  getAIWorkforce: () =>
-    apiClient.get("/api/v1/ai-workforce/agents"),
+  getAIWorkforce: () => apiClient.get("/api/v1/ai-workforce/agents"),
 
-  getApprovals: () =>
-    apiClient.get("/api/v1/approvals/pending"),
+  getApprovals: () => apiClient.get("/api/v1/approvals/pending"),
 
-  getPipeline: () =>
-    apiClient.get("/api/v1/revenue-pipeline/summary"),
+  getApprovalsHistory: (limit = 50) =>
+    apiClient.get("/api/v1/approvals/history", { params: { limit } }),
+
+  approveApproval: (approvalId: string, who: string) =>
+    apiClient.post(`/api/v1/approvals/${approvalId}/approve`, { who }),
+
+  rejectApproval: (approvalId: string, who: string, reason: string) =>
+    apiClient.post(`/api/v1/approvals/${approvalId}/reject`, {
+      who,
+      reason,
+    }),
+
+  getPipeline: () => apiClient.get("/api/v1/revenue-pipeline/summary"),
 
   getDecisionPassportGoldenChain: () =>
     apiClient.get("/api/v1/decision-passport/golden-chain"),
@@ -149,8 +134,7 @@ export const api = {
   getEvidenceLevels: () =>
     apiClient.get("/api/v1/decision-passport/evidence-levels"),
 
-  getRevenueOsCatalog: () =>
-    apiClient.get("/api/v1/revenue-os/catalog"),
+  getRevenueOsCatalog: () => apiClient.get("/api/v1/revenue-os/catalog"),
 
   getRevenueOsLearningWeeklyTemplate: () =>
     apiClient.get("/api/v1/revenue-os/learning/weekly-template"),
