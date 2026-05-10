@@ -1,0 +1,6 @@
+name,sector,city,country,domain,contact_name,contact_title,source,locale,annual_turnover_sar,notes
+Acme Real Estate Riyadh,real_estate,Riyadh,SA,acme-realestate.com.sa,Sami Al-Ahmed,Founder,warm_intro,ar-SA,1500000,"Met at Biban 2026; interested in lead-prep automation"
+Khaleej Marketing Agency,agency,Jeddah,SA,khaleej-marketing.sa,Maha Al-Saud,Managing Partner,partner_referral,ar-SA,800000,"Referred by John from Tier-1 Partner Program"
+Tahaluf B2B Services,b2b_services,Riyadh,SA,tahaluf.com.sa,Khalid Bin Hamad,VP Sales,inbound_form,ar-SA,2500000,"Submitted /diagnostic-real-estate.html form"
+Mosaiq Consulting,consulting,Dammam,SA,mosaiq-consulting.sa,Layla Al-Otaibi,Director,manual_linkedin_research,ar-SA,500000,"Found via LinkedIn — no warm route yet"
+SaudiRetail Hub,retail,Riyadh,SA,saudiretail.com,Ahmed Mansour,CEO,inbound_whatsapp,ar-SA,3000000,"Inbound WhatsApp inquiry about Sprint pricing"

@@ -26,6 +26,7 @@ from scripts.dealix_daily_lead_prep import (
     LeadCandidate,
     _composite_score,
     load_candidates_from_csv,
+    load_candidates_from_lead_inbox,
     run_daily_prep,
     write_board,
 )
@@ -257,5 +258,88 @@ def test_load_csv_with_full_headers(tmp_path: Path) -> None:
 
 
 # ─────────────────────────────────────────────────────────────────────
-# Total: 16 tests (3 empty + 5 ranking + 3 action_mode + 3 output + 2 csv)
+# Lead inbox auto-source (Wave 12.9) — 4 tests
+# ─────────────────────────────────────────────────────────────────────
+
+
+def test_auto_source_returns_empty_when_no_inbox(monkeypatch, tmp_path) -> None:
+    """When lead_inbox.jsonl doesn't exist, auto-source returns []."""
+    # Point lead_inbox at a non-existent file
+    monkeypatch.setenv("DEALIX_LEAD_INBOX_PATH", str(tmp_path / "missing.jsonl"))
+    candidates = load_candidates_from_lead_inbox()
+    assert candidates == []
+
+
+def test_auto_source_pulls_new_status_only(monkeypatch, tmp_path) -> None:
+    """Only records with status='new' are pulled (Article 4 — don't
+    re-target customers we've already contacted)."""
+    inbox_path = tmp_path / "inbox.jsonl"
+    monkeypatch.setenv("DEALIX_LEAD_INBOX_PATH", str(inbox_path))
+    # Write 3 records: 1 new, 1 contacted, 1 converted
+    import json as _json
+    with inbox_path.open("w", encoding="utf-8") as f:
+        f.write(_json.dumps({
+            "id": "lead_1", "received_at": "2026-05-15T00:00:00Z",
+            "status": "new", "company_name": "New Acme",
+            "contact_name": "Sami", "sector": "real_estate",
+        }) + "\n")
+        f.write(_json.dumps({
+            "id": "lead_2", "received_at": "2026-05-14T00:00:00Z",
+            "status": "contacted", "company_name": "Contacted Khaleej",
+        }) + "\n")
+        f.write(_json.dumps({
+            "id": "lead_3", "received_at": "2026-05-13T00:00:00Z",
+            "status": "converted", "company_name": "Converted Tahaluf",
+        }) + "\n")
+    candidates = load_candidates_from_lead_inbox()
+    # Only the new one
+    assert len(candidates) == 1
+    assert candidates[0].name == "New Acme"
+    assert candidates[0].source == "inbound_form"  # auto-tagged
+
+
+def test_auto_source_skips_records_without_name(monkeypatch, tmp_path) -> None:
+    """Records without company_name/company/name → skipped."""
+    inbox_path = tmp_path / "inbox.jsonl"
+    monkeypatch.setenv("DEALIX_LEAD_INBOX_PATH", str(inbox_path))
+    import json as _json
+    with inbox_path.open("w", encoding="utf-8") as f:
+        f.write(_json.dumps({
+            "id": "lead_1", "status": "new",
+            # No company_name / company / name / contact_name
+            "phone": "+966555",
+        }) + "\n")
+    candidates = load_candidates_from_lead_inbox()
+    assert candidates == []
+
+
+def test_auto_source_marks_source_inbound_form() -> None:
+    """Article 4 — every auto-sourced lead is tagged source=inbound_form
+    (a SAFE source — landing form = consent given)."""
+    # Use a fake record dict directly
+    import json as _json
+    import os
+    from pathlib import Path
+    tmp = Path("/tmp/test_inbox_safe.jsonl")
+    try:
+        with tmp.open("w", encoding="utf-8") as f:
+            f.write(_json.dumps({
+                "id": "lead_1", "status": "new",
+                "company_name": "Inbound Test Co",
+            }) + "\n")
+        os.environ["DEALIX_LEAD_INBOX_PATH"] = str(tmp)
+        candidates = load_candidates_from_lead_inbox()
+        assert candidates[0].source == "inbound_form"  # SAFE source
+        # And NOT a blocked source
+        assert candidates[0].source not in (
+            "cold_outreach", "scraping", "purchased_list", "linkedin_automation"
+        )
+    finally:
+        os.environ.pop("DEALIX_LEAD_INBOX_PATH", None)
+        tmp.unlink(missing_ok=True)
+
+
+# ─────────────────────────────────────────────────────────────────────
+# Total: 20 tests (3 empty + 5 ranking + 3 action_mode + 3 output +
+#                  2 csv + 4 auto-source)
 # ─────────────────────────────────────────────────────────────────────

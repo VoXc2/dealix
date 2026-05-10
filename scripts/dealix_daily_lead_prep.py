@@ -261,6 +261,58 @@ def load_candidates_from_csv(path: Path) -> list[LeadCandidate]:
     return candidates
 
 
+def load_candidates_from_lead_inbox(*, limit: int = 100) -> list[LeadCandidate]:
+    """Auto-source candidates from the existing lead_inbox.jsonl.
+
+    Wave 12.9 — when no --candidates CSV is supplied, auto-pull from
+    the existing landing-form inbox so the daily prep works out-of-the-box
+    on a server that's already collecting inbound leads.
+
+    Lead inbox records are inbound (Article 4 — inbound_form is a safe
+    source). Status filter: only "new" leads (not yet contacted).
+
+    Returns empty list when:
+    - lead_inbox file doesn't exist (fresh install)
+    - import fails (e.g. running from a stripped checkout)
+    - no records have status="new"
+    """
+    try:
+        from auto_client_acquisition.lead_inbox import list_leads
+    except Exception:
+        return []
+    try:
+        records = list_leads(limit=limit, status="new")
+    except Exception:
+        return []
+    candidates: list[LeadCandidate] = []
+    for rec in records:
+        # Lead inbox records are flat dicts with founder-supplied fields.
+        # Map common landing-form keys → LeadCandidate.
+        name = (
+            rec.get("company_name")
+            or rec.get("company")
+            or rec.get("name")
+            or rec.get("contact_name")  # fallback: contact name as company label
+            or ""
+        ).strip()
+        if not name:
+            continue  # skip records without a name
+        candidates.append(LeadCandidate(
+            name=name,
+            sector=str(rec.get("sector", "")).strip(),
+            city=str(rec.get("city", "")).strip(),
+            country=str(rec.get("country", "SA")).strip() or "SA",
+            domain=str(rec.get("domain") or rec.get("website", "")).strip(),
+            contact_name=str(rec.get("contact_name", "")).strip(),
+            contact_title=str(rec.get("contact_title") or rec.get("title", "")).strip(),
+            source="inbound_form",  # lead_inbox = inbound landing form
+            locale=str(rec.get("locale", "ar")).strip() or "ar",
+            annual_turnover_sar=None,
+            notes=str(rec.get("message") or rec.get("notes", ""))[:200],
+        ))
+    return candidates
+
+
 def _candidate_to_account_dict(c: LeadCandidate) -> dict[str, Any]:
     """Convert LeadCandidate → account dict shape for compute_saudi_score_board."""
     return {
@@ -560,6 +612,15 @@ def main() -> int:
         "--out-dir", type=Path, default=DEFAULT_OUT_DIR,
         help=f"Output directory (default: {DEFAULT_OUT_DIR})",
     )
+    # Wave 12.9 — auto-source from lead_inbox when no CSV
+    parser.add_argument(
+        "--no-auto-source", action="store_true",
+        help="Disable auto-sourcing from lead_inbox.jsonl (default: enabled)",
+    )
+    parser.add_argument(
+        "--auto-source-limit", type=int, default=100,
+        help="Max records to pull from lead_inbox auto-source (default: 100)",
+    )
     args = parser.parse_args()
 
     # Parse date
@@ -572,7 +633,10 @@ def main() -> int:
                   file=sys.stderr)
             return 2
 
-    # Load candidates
+    # Load candidates — Wave 12.9 source priority:
+    #   1. --candidates CSV (explicit)
+    #   2. lead_inbox.jsonl auto-source (existing inbound landing leads)
+    #   3. empty board with season context only
     candidates: list[LeadCandidate] = []
     if args.candidates:
         if not args.candidates.exists():
@@ -580,8 +644,17 @@ def main() -> int:
             return 2
         candidates = load_candidates_from_csv(args.candidates)
         print(f"Loaded {len(candidates)} candidates from {args.candidates}")
+    elif not args.no_auto_source:
+        # Wave 12.9 — auto-source from existing lead_inbox
+        candidates = load_candidates_from_lead_inbox(limit=args.auto_source_limit)
+        if candidates:
+            print(f"Auto-sourced {len(candidates)} candidates from lead_inbox.jsonl "
+                  f"(inbound landing leads with status='new')")
+        else:
+            print("No --candidates and no inbound leads in lead_inbox; "
+                  "producing empty board with season context only")
     else:
-        print("No --candidates supplied; producing empty board with season context only")
+        print("--no-auto-source set; producing empty board with season context only")
 
     # Compose
     board = run_daily_prep(candidates=candidates, on_date=on_date, top_n=args.top_n)
