@@ -154,7 +154,6 @@ function ApprovalCard({ request, onApprove, onReject, actionsDisabled }: {
 }
 
 export function ApprovalCenter() {
-  const t = useTranslations("approvals");
   const locale = useLocale();
   const isAr = locale === "ar";
   const { user } = useAuth();

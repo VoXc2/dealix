@@ -2,14 +2,13 @@
 
 import { useLocale } from "next-intl";
 import { motion } from "framer-motion";
-import { User, Shield, Bell, Plug, CreditCard, Users, Globe, Palette } from "lucide-react";
+import { User, Shield, Bell, Plug, CreditCard, Users } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { useTheme } from "next-themes";
 import { cn } from "@/lib/utils";
 
 const settingsNav = [
@@ -24,7 +23,6 @@ const settingsNav = [
 export function SettingsContent() {
   const locale = useLocale();
   const isAr = locale === "ar";
-  const { theme, setTheme } = useTheme();
 
   return (
     <div className="max-w-4xl">
