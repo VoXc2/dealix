@@ -14,8 +14,10 @@ from auto_client_acquisition.approval_center.approval_store import (
     get_default_approval_store,
 )
 from auto_client_acquisition.approval_center.schemas import (
+    ActionType,
     ApprovalRequest,
     ApprovalStatus,
+    is_canonical_action_type,
 )
 
 
@@ -50,6 +52,7 @@ def list_history(limit: int = 50) -> list[ApprovalRequest]:
 
 
 __all__ = [
+    "ActionType",
     "ApprovalRequest",
     "ApprovalStatus",
     "ApprovalStore",
@@ -61,4 +64,5 @@ __all__ = [
     "list_pending",
     "list_history",
     "render_approval_card",
+    "is_canonical_action_type",
 ]
