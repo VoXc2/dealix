@@ -92,11 +92,14 @@ ipython_config.py
 *.sqlite
 *.sqlite3
 *.db-journal
-data/
+# data/ ignored except for canonical product data (workflows/) — see below
+data/*
 dumps/
 # Service Activation Console data (generated, but committed for static hosting)
 !landing/assets/data/
 !landing/assets/data/service-readiness.json
+# Wave 12.5 §33.2.3 — canonical workflow YAMLs (product data, not customer data)
+!data/workflows/
 
 # ─────────────────────────────────────────────────────────────
 # 📝 Logs

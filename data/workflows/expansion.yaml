@@ -1,0 +1,48 @@
+# Wave 12.5 §33.2.3 — Expansion workflow (next-best-offer recommendation)
+name: expansion
+duration_days: 1
+description_ar: "حساب Expansion Readiness Score + اقتراح أفضل عرض تالي بناءً على proof + pain"
+description_en: "Compute Expansion Readiness Score + recommend next-best-offer based on proof + pain"
+proof_target: "expansion_recommendation_drafted"
+final_deliverable: "Bilingual upsell recommendation with confidence + action_mode + rationale"
+
+steps:
+  - step_id: exp_compute_readiness
+    day: 1
+    title_ar: "حساب Expansion Readiness Score"
+    title_en: "Compute Expansion Readiness Score"
+    owner: system_auto
+    daily_artifact_required: true
+    artifact_kind: "readiness_score_record"
+    risk_level: low
+    next_action_kind: identify_primary_pain
+    blockers_ar:
+      - "no_proof_events_recorded"
+      - "no_paid_history"
+      - "no_customer_approved_proof"
+    blockers_en:
+      - "no proof events"
+      - "no paid history"
+      - "no customer-approved proof"
+
+  - step_id: exp_pain_identification
+    day: 1
+    title_ar: "تحديد ألم العميل الأساسي"
+    title_en: "Identify customer's primary pain"
+    owner: founder
+    daily_artifact_required: true
+    artifact_kind: "pain_classification"
+    risk_level: medium
+    next_action_kind: recommend_offer
+
+  - step_id: exp_recommend
+    day: 1
+    title_ar: "اقتراح next-best-offer + action_mode"
+    title_en: "Recommend next-best-offer + action_mode"
+    owner: founder
+    daily_artifact_required: true
+    artifact_kind: "expansion_offer_draft"
+    risk_level: medium
+    next_action_kind: founder_approve_then_present
+    approval_points:
+      - founder_offer_approval
