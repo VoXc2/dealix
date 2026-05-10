@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>دفع الباقة — Dealix</title>
+  <meta name="description" content="دفع باقات Dealix عبر Moyasar — Saudi VAT 15% included، ZATCA-readiness، NO_LIVE_CHARGE حتى تفعيل صريح." />
+  <meta name="theme-color" content="#0f172a" />
+  <link rel="canonical" href="https://dealix.me/checkout.html" />
+  <meta name="robots" content="noindex,follow" />
+  <meta property="og:title" content="دفع الباقة — Dealix" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://dealix.me/checkout.html" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="/assets/css/design-system.css" />
+  <style>
+    .checkout-wrap{max-width:780px;margin:0 auto;padding:64px 24px}
+    .checkout-head{text-align:center;margin-bottom:40px}
+    .checkout-head h1{font-size:clamp(28px,4vw,42px);margin:0 0 12px;line-height:1.2}
+    .checkout-head p{color:#64748b;font-size:16px;margin:0}
+    .tier-summary{background:linear-gradient(135deg,rgba(34,211,238,0.06),rgba(168,85,247,0.06));border:1px solid rgba(34,211,238,0.22);border-radius:16px;padding:24px;margin-bottom:24px}
+    .tier-summary h2{margin:0 0 8px;font-size:20px}
+    .tier-summary .tier-price{font-family:Inter,sans-serif;font-size:32px;font-weight:800;letter-spacing:-0.02em;background:linear-gradient(90deg,#22d3ee,#a855f7);-webkit-background-clip:text;background-clip:text;color:transparent}
+    .tier-summary .tier-vat{font-size:13px;color:#64748b;margin-top:4px}
+    .tier-summary ul{margin:12px 0 0;padding:0;list-style:none}
+    .tier-summary li{padding:4px 0;font-size:14px;color:#334155}
+    .tier-summary li::before{content:"✓ ";color:#22d3ee;font-weight:700}
+    [data-theme="dark"] .tier-summary li{color:#cbd5e1}
+    form.checkout-form{background:#fff;border:1px solid #e2e8f0;border-radius:16px;padding:32px}
+    [data-theme="dark"] form.checkout-form{background:rgba(15,23,42,.65);border-color:rgba(148,163,184,.18)}
+    form.checkout-form label{display:block;margin:14px 0 6px;font-weight:600;font-size:14px}
+    form.checkout-form input,form.checkout-form select{width:100%;padding:12px;border:1px solid #cbd5e1;border-radius:10px;font-family:inherit;font-size:14px;box-sizing:border-box;min-height:44px}
+    form.checkout-form input:focus,form.checkout-form select:focus{outline:none;border-color:#22d3ee;box-shadow:0 0 0 3px rgba(34,211,238,.15)}
+    .method-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px}
+    .method-card{position:relative;padding:14px;border:1px solid #cbd5e1;border-radius:10px;cursor:pointer;text-align:center;font-size:14px;font-weight:600}
+    .method-card input[type=radio]{position:absolute;opacity:0;pointer-events:none}
+    .method-card.selected{border-color:#22d3ee;background:rgba(34,211,238,.06)}
+    .submit-btn{margin-top:22px;width:100%;padding:16px;background:#0f172a;color:#fff;border:0;border-radius:12px;font-size:16px;font-weight:700;cursor:pointer;min-height:48px}
+    .submit-btn:hover{background:#1e293b}
+    .submit-btn:disabled{opacity:.55;cursor:not-allowed}
+    .gate-strip{margin-top:18px;padding:14px;background:rgba(220,38,38,0.06);border:1px solid rgba(220,38,38,0.22);border-radius:10px;font-family:ui-monospace,Menlo,monospace;font-size:11px;color:#fca5a5;direction:ltr;unicode-bidi:isolate}
+    .gate-strip strong{color:#0f172a;font-family:'IBM Plex Sans Arabic',sans-serif;font-size:13px;display:block;margin-bottom:6px;direction:rtl}
+    [data-theme="dark"] .gate-strip strong{color:#e2e8f0}
+    .response-panel{display:none;margin-top:18px;padding:18px;background:#dcfce7;border:1px solid #86efac;border-radius:12px;color:#065f46}
+    .response-panel.error{background:#fee2e2;border-color:#fca5a5;color:#7f1d1d}
+    .response-panel.show{display:block}
+    .nav-back{display:inline-block;margin-bottom:18px;color:#64748b;text-decoration:none;font-size:14px}
+    .footer-bar{margin-top:48px;padding:24px;border-top:1px solid #e2e8f0;text-align:center;color:#64748b;font-size:14px}
+    .footer-bar a{color:inherit;margin:0 8px}
+    .test-mode-banner{background:rgba(251,191,36,0.12);border:1px solid rgba(251,191,36,0.32);color:#92400e;padding:12px 16px;border-radius:10px;margin-bottom:24px;text-align:center;font-size:14px;font-weight:600}
+    [data-theme="dark"] .test-mode-banner{color:#fbbf24}
+  </style>
+  <script>
+    window.DEALIX_API_BASE = window.DEALIX_API_BASE || 'https://api.dealix.me';
+  </script>
+</head>
+<body>
+  <a class="ds-skip-link" href="#main">تخطّ إلى المحتوى الرئيسي</a>
+
+  <main id="main" class="checkout-wrap">
+    <a href="/pricing.html" class="nav-back">← رجوع إلى الباقات</a>
+
+    <header class="checkout-head">
+      <h1>إكمال الاشتراك</h1>
+      <p>راجع تفاصيل الباقة أدناه. الدفع عبر Moyasar مع Saudi VAT 15% مُحتسب.</p>
+    </header>
+
+    <div class="test-mode-banner" id="test-mode-banner">
+      🧪 وضع TEST — لا خصم فعلي. NO_LIVE_CHARGE مُفعَّل حتى أمر صريح من المؤسس.
+    </div>
+
+    <section class="tier-summary" id="tier-summary" aria-live="polite">
+      <h2 id="tier-name">جاري التحميل…</h2>
+      <div class="tier-price" id="tier-price">—</div>
+      <div class="tier-vat">Saudi VAT 15% مُحتسب · ZATCA-readiness</div>
+      <ul id="tier-features"></ul>
+    </section>
+
+    <form class="checkout-form" id="checkoutForm" novalidate>
+      <label for="company">اسم الشركة *</label>
+      <input type="text" id="company" name="customer_handle" required minlength="2" maxlength="80" placeholder="مثال: Acme Co" autocomplete="organization">
+
+      <label for="email">الإيميل *</label>
+      <input type="email" id="email" name="email" required placeholder="founder@yourco.sa" autocomplete="email">
+
+      <label for="phone">جوّال *</label>
+      <input type="tel" id="phone" name="phone" required pattern="^\+?\d[\d\s]{8,15}$" placeholder="+966 5X XXX XXXX" autocomplete="tel">
+
+      <label>طريقة الدفع</label>
+      <div class="method-row" role="radiogroup" aria-label="طريقة الدفع">
+        <label class="method-card selected">
+          <input type="radio" name="method" value="moyasar_test" checked>
+          🧪 Moyasar (TEST)
+        </label>
+        <label class="method-card">
+          <input type="radio" name="method" value="bank_transfer">
+          🏦 تحويل بنكي
+        </label>
+      </div>
+
+      <button type="submit" class="submit-btn" id="submitBtn">إنشاء الفاتورة</button>
+
+      <div class="gate-strip">
+        <strong>التزامات الأمان</strong>
+        🔒 NO_LIVE_CHARGE — لا خصم فعلي بدون أمر صريح من المؤسس<br>
+        🔒 NO_FAKE_REVENUE — كل ريال مدعوم بفاتورة Moyasar + شهادة العميل<br>
+        🔒 invoice_intent ≠ revenue — الإيراد فقط بعد payment_confirmed
+      </div>
+
+      <div class="response-panel" id="responsePanel" aria-live="polite"></div>
+    </form>
+
+    <div class="footer-bar">
+      <strong>Saudi-PDPL · Approval-first · Proof-backed</strong>
+      <div style="margin-top:8px">
+        <a href="/privacy.html">الخصوصيّة</a>
+        <a href="/terms.html">الشروط</a>
+        <a href="/subprocessors.html">المعالجون الفرعيّون</a>
+        <a href="/proof.html">Proof</a>
+        <a href="/trust-center.html">Trust Center</a>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    // Track B2 — Pricing → Checkout. Wraps existing /api/v1/payment-ops/invoice-intent.
+    // Tier catalog must match landing/pricing.html. Source of truth:
+    // docs/PRICING_STRATEGY.md + Constitution Article 9.
+    var TIERS = {
+      sprint: {
+        name_ar: "Revenue Proof Sprint",
+        amount_sar: 499,
+        recurring: false,
+        service_session_id: "sprint_499",
+        features: [
+          "تشغيل سريع لـ Revenue Command Center",
+          "Lead/Market Radar مفعّل",
+          "Decision Passports أوّليّة",
+          "WhatsApp approval flow",
+          "Proof Pack جاهز يوم 7",
+          "Next Best Offer تلقائي"
+        ]
+      },
+      growth: {
+        name_ar: "Growth OS — Growth Ops Monthly",
+        amount_sar: 2999,
+        recurring: true,
+        service_session_id: "growth_os_monthly",
+        features: [
+          "حتّى 2,500 lead/شهر",
+          "WhatsApp Decision Layer كامل",
+          "Customer Portal + Approvals",
+          "Proof Pack شهري + Audit trail",
+          "Moyasar invoicing مدمج",
+          "دعم خلال 4 ساعات"
+        ]
+      },
+      scale: {
+        name_ar: "Scale OS",
+        amount_sar: 7999,
+        recurring: true,
+        service_session_id: "scale_os_monthly",
+        features: [
+          "Lead غير محدود",
+          "كلّ ميزات Growth OS",
+          "Multi-user + أدوار متقدّمة",
+          "API access كامل",
+          "SLA 99.9% + alerts مخصّصة",
+          "Custom integrations"
+        ]
+      },
+      partner: {
+        name_ar: "Executive Command Center",
+        amount_sar: 12000,
+        recurring: true,
+        service_session_id: "ecc_monthly",
+        features: [
+          "كلّ ميزات Scale OS",
+          "غرفة قيادة تنفيذيّة + KPI lift weekly",
+          "Daily Decisions queue + Approval-first",
+          "Proof Pack أسبوعي + Executive Pack",
+          "Account manager + sprint check-ins",
+          "التزام 4 أشهر · price-lock"
+        ]
+      },
+      enterprise: {
+        name_ar: "Enterprise — Custom",
+        amount_sar: null,
+        recurring: true,
+        service_session_id: "enterprise_custom",
+        features: [
+          "كلّ ميزات Executive Command Center",
+          "SSO + RBAC متقدّم",
+          "PDPL advanced + private deployment",
+          "Multi-tenant RLS",
+          "SDAIA / SAMA-aligned audits"
+        ]
+      }
+    };
+
+    function getTier() {
+      var params = new URLSearchParams(window.location.search);
+      var key = (params.get("tier") || "sprint").toLowerCase();
+      return TIERS[key] ? { key: key, data: TIERS[key] } : { key: "sprint", data: TIERS.sprint };
+    }
+
+    function renderTier(tier) {
+      var data = tier.data;
+      document.getElementById("tier-name").textContent = data.name_ar;
+      var price = data.amount_sar === null
+        ? "تواصل"
+        : data.amount_sar.toLocaleString("ar-SA") + " ر.س" + (data.recurring ? " / شهر" : " / مرّة واحدة");
+      document.getElementById("tier-price").textContent = price;
+      var ul = document.getElementById("tier-features");
+      ul.innerHTML = "";
+      data.features.forEach(function (f) {
+        var li = document.createElement("li");
+        li.textContent = f;
+        ul.appendChild(li);
+      });
+
+      // Enterprise → redirect to mailto, hide form actions
+      if (data.amount_sar === null) {
+        document.getElementById("submitBtn").textContent = "تواصل مع المبيعات";
+        document.getElementById("submitBtn").addEventListener("click", function (e) {
+          e.preventDefault();
+          window.location.href = "mailto:sales@dealix.sa?subject=Enterprise%20Inquiry";
+        });
+      }
+    }
+
+    // Method card selection visual
+    document.querySelectorAll(".method-card").forEach(function (card) {
+      var radio = card.querySelector("input[type=radio]");
+      card.addEventListener("click", function () {
+        document.querySelectorAll(".method-card").forEach(function (c) { c.classList.remove("selected"); });
+        card.classList.add("selected");
+        radio.checked = true;
+      });
+    });
+
+    // Submit handler
+    document.getElementById("checkoutForm").addEventListener("submit", async function (e) {
+      e.preventDefault();
+      var tier = getTier();
+      if (tier.data.amount_sar === null) return;
+
+      var form = e.target;
+      var btn = document.getElementById("submitBtn");
+      var panel = document.getElementById("responsePanel");
+      panel.className = "response-panel";
+
+      var data = new FormData(form);
+      var payload = {
+        customer_handle: data.get("customer_handle"),
+        amount_sar: tier.data.amount_sar,
+        method: data.get("method"),
+        service_session_id: tier.data.service_session_id
+      };
+
+      btn.disabled = true;
+      btn.textContent = "جاري إنشاء الفاتورة…";
+
+      var apiBase = (window.DEALIX_API_BASE || "").replace(/\/$/, "");
+      try {
+        var res = await fetch(apiBase + "/api/v1/payment-ops/invoice-intent", {
+          method: "POST",
+          headers: { "Content-Type": "application/json", "Accept": "application/json" },
+          body: JSON.stringify(payload)
+        });
+        var body = await res.json();
+        if (res.ok && body.payment) {
+          var paymentId = body.payment.id || body.payment.payment_id;
+          panel.classList.add("show");
+          panel.innerHTML = "✓ تم إنشاء الفاتورة (TEST mode). الـ payment_id: <code>" + (paymentId || "—") + "</code>";
+          // Redirect to success page
+          setTimeout(function () {
+            window.location.href = "/checkout-success.html?invoice_id=" + encodeURIComponent(paymentId || "") +
+                                   "&tier=" + tier.key + "&amount=" + tier.data.amount_sar;
+          }, 1200);
+        } else {
+          panel.classList.add("show", "error");
+          panel.textContent = "تعذّر إنشاء الفاتورة: " + (body.detail || body.error || ("HTTP " + res.status)) +
+                              " — سنرسل لك بريداً يدوياً.";
+          // Fallback mailto
+          var mailtoBody = encodeURIComponent(JSON.stringify(payload, null, 2));
+          window.location.href = "mailto:sales@dealix.sa?subject=Checkout%20Fallback%20-%20" +
+                                 encodeURIComponent(payload.customer_handle || "") + "&body=" + mailtoBody;
+        }
+      } catch (err) {
+        panel.classList.add("show", "error");
+        panel.textContent = "خطأ في الاتصال — سنفتح بريدك الآن لإكمال الطلب يدوياً.";
+        var mailtoBody2 = encodeURIComponent(JSON.stringify(payload, null, 2));
+        window.location.href = "mailto:sales@dealix.sa?subject=Checkout%20Manual&body=" + mailtoBody2;
+      } finally {
+        btn.disabled = false;
+        btn.textContent = "إنشاء الفاتورة";
+      }
+    });
+
+    // Init
+    var t = getTier();
+    renderTier(t);
+
+    // PostHog tracking
+    !function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.async=!0,p.src=s.api_host+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="init capture identify".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
+    if (window.POSTHOG_KEY) { posthog.init(window.POSTHOG_KEY, { api_host: 'https://app.posthog.com' }); posthog.capture('checkout_viewed', { tier: t.key }); }
+  </script>
+</body>
+</html>

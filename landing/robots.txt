@@ -1,5 +1,58 @@
+# Dealix robots.txt — May 2026
+# Allows AI search crawlers (Perplexity, ChatGPT, Claude, Gemini) to
+# cite our public content per Master Plan VIII (GEO/AIO strategy).
+# Disallows /api/ and authenticated/founder routes.
+
 User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /checkout.html
+Disallow: /checkout-success.html
+Disallow: /founder.html
+Disallow: /founder-leads.html
+Disallow: /founder-dashboard.html
+Disallow: /founder-proof-create.html
+Disallow: /founder-command-bus.html
+Disallow: /founder-weekly-suggestions.html
+Disallow: /investor.html
+Disallow: /pilot-tracker.html
+Disallow: /pilot-day-0.html
+Disallow: /decisions.html
+Disallow: /command-center.html
+Disallow: /dashboard.html
+
+# AI search engines — explicit allow per Master Plan VIII (GEO/AIO).
+User-agent: PerplexityBot
+Allow: /
+Disallow: /api/
+
+User-agent: ChatGPT-User
+Allow: /
+Disallow: /api/
+
+User-agent: GPTBot
+Allow: /
+Disallow: /api/
+
+User-agent: ClaudeBot
+Allow: /
+Disallow: /api/
+
+User-agent: anthropic-ai
+Allow: /
+Disallow: /api/
+
+User-agent: Google-Extended
+Allow: /
+Disallow: /api/
+
+User-agent: CCBot
+Allow: /
+Disallow: /api/
+
+User-agent: Applebot-Extended
 Allow: /
 Disallow: /api/
 
 Sitemap: https://dealix.sa/sitemap.xml
+Sitemap: https://dealix.sa/sitemap_dealix.xml
