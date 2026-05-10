@@ -1,0 +1,14 @@
+{
+  "name": "dealix-playwright-smoke",
+  "version": "0.1.0",
+  "description": "Track D5 — Tier-1 smoke tests via Playwright. Confined to tests/playwright/ to avoid Node.js sprawl across the Python repo.",
+  "private": true,
+  "scripts": {
+    "test": "playwright test --config playwright.config.js",
+    "test:headed": "playwright test --config playwright.config.js --headed",
+    "report": "playwright show-report playwright-report"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.46.0"
+  }
+}

@@ -1,0 +1,78 @@
+# Track D5 — Playwright Tier-1 smoke.
+#
+# Runs on PRs touching landing/ or tests/playwright/, asserts:
+#   - Hero H1 + single primary CTA
+#   - WADL section + DEMO label
+#   - No horizontal scroll (320 / 768 / 1280)
+#   - Pricing → /checkout flow
+#   - Customer Portal Today's Decision above ops grid
+#   - Customer Decisions DEMO fallback
+#   - Proof L1-L5 ladder
+#   - Trust Center 8 gates
+#   - Login magic-link UX
+#
+# Plan: /root/.claude/plans/vivid-baking-quokka.md Track D5.
+
+name: Playwright Tier-1 smoke
+
+on:
+  pull_request:
+    paths:
+      - "landing/**"
+      - "tests/playwright/**"
+      - ".github/workflows/playwright_smoke.yml"
+  push:
+    branches: [main]
+    paths:
+      - "landing/**"
+      - "tests/playwright/**"
+
+permissions:
+  contents: read
+
+jobs:
+  playwright:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    defaults:
+      run:
+        working-directory: tests/playwright
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install Playwright + Chromium
+        run: |
+          npm install
+          npx playwright install --with-deps chromium
+
+      - name: Serve landing/ statically
+        working-directory: ${{ github.workspace }}/landing
+        run: |
+          python3 -m http.server 8765 &
+          echo "PID=$!" >> $GITHUB_ENV
+          sleep 2
+
+      - name: Run Playwright tests
+        env:
+          PLAYWRIGHT_BASE_URL: http://localhost:8765
+          CI: "true"
+        run: |
+          npx playwright test --config playwright.config.js --project chromium-iphone-se-320 || true
+          npx playwright test --config playwright.config.js
+
+      - name: Stop server
+        if: always()
+        run: kill ${PID:-0} || true
+
+      - name: Upload Playwright report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: tests/playwright/playwright-report/
+          retention-days: 14
