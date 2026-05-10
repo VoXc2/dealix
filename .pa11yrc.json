@@ -1,0 +1,13 @@
+{
+  "standard": "WCAG2AA",
+  "timeout": 30000,
+  "wait": 1500,
+  "ignore": [
+    "WCAG2AA.Principle1.Guideline1_3.1_3_1.H49.AlignAttr"
+  ],
+  "viewport": {
+    "width": 1280,
+    "height": 800
+  },
+  "_comment": "Track D4 — Pa11y a11y config. WCAG 2.1 AA. Soft-fail during 30-day plan ramp-up. /root/.claude/plans/vivid-baking-quokka.md"
+}

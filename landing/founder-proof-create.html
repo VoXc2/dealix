@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>إنشاء Proof Event — Dealix Founder</title>
+  <meta name="description" content="نموذج المؤسس لإنشاء Proof Event سريع. كل ادّعاء يحمل evidence_id + level (L1→L5) + consent flag." />
+  <meta name="theme-color" content="#0f172a" />
+  <link rel="canonical" href="https://dealix.me/founder-proof-create.html" />
+  <meta name="robots" content="noindex,nofollow" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="/assets/css/design-system.css" />
+  <style>
+    .pf-wrap{max-width:780px;margin:0 auto;padding:48px 24px}
+    .pf-head{margin-bottom:24px}
+    .pf-head h1{margin:0 0 6px;font-size:clamp(22px,3.5vw,32px)}
+    .pf-head p{margin:0;color:var(--text-muted,#94a3b8);font-size:15px;line-height:1.6}
+    .level-bar{display:flex;gap:8px;margin:16px 0;flex-wrap:wrap}
+    .level-btn{flex:1 1 auto;min-height:52px;padding:8px 12px;border-radius:10px;border:2px solid var(--ds-border-strong);background:var(--ds-surface-1);color:var(--text);cursor:pointer;font-family:inherit;text-align:center;display:grid;gap:2px}
+    .level-btn small{font-size:11px;color:var(--text-muted);font-weight:400}
+    .level-btn[aria-pressed="true"]{border-color:var(--accent-2,#22d3ee);background:rgba(34,211,238,.08)}
+    .level-btn .num{font-family:Inter,sans-serif;font-size:14px;font-weight:800}
+    form.pf-form{background:var(--surface,#fff);border:1px solid var(--ds-border);border-radius:16px;padding:24px}
+    [data-theme="dark"] form.pf-form{background:rgba(15,23,42,.65);border-color:rgba(148,163,184,.18)}
+    form.pf-form label{display:block;margin:14px 0 6px;font-weight:600;font-size:14px}
+    form.pf-form input,form.pf-form select,form.pf-form textarea{width:100%;padding:10px 12px;border:1px solid var(--ds-border-strong);border-radius:8px;font-family:inherit;font-size:14px;background:var(--ds-surface-1);color:var(--text);box-sizing:border-box}
+    form.pf-form textarea{min-height:90px;resize:vertical}
+    .checkbox-row{display:flex;align-items:center;gap:8px;margin:14px 0}
+    .checkbox-row input{width:auto}
+    .checkbox-row label{margin:0;font-weight:500;font-size:14px}
+    .submit-btn{margin-top:18px;width:100%;padding:14px;background:var(--accent,#0ea5e9);color:#fff;border:0;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;min-height:48px}
+    .submit-btn:disabled{opacity:.55;cursor:not-allowed}
+    .response{display:none;margin-top:16px;padding:14px;background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.32);border-radius:10px;color:#4ade80;font-size:14px;font-family:ui-monospace,Menlo,monospace;direction:ltr;unicode-bidi:isolate}
+    .response.show{display:block}
+    .response.error{background:rgba(220,38,38,.12);border-color:rgba(220,38,38,.32);color:#fca5a5}
+    .gate-strip{margin-top:24px;padding:14px;background:rgba(220,38,38,.06);border:1px solid rgba(220,38,38,.22);border-radius:10px;font-family:ui-monospace,Menlo,monospace;font-size:11px;color:#fca5a5;direction:ltr;unicode-bidi:isolate}
+    .gate-strip strong{color:var(--text);font-family:'IBM Plex Sans Arabic',sans-serif;font-size:13px;display:block;margin-bottom:6px;direction:rtl}
+    .nav-back{display:inline-block;margin-bottom:18px;color:var(--text-muted);text-decoration:none;font-size:14px}
+    .footer-bar{margin-top:48px;padding:24px;border-top:1px solid var(--ds-border);text-align:center;color:var(--text-muted);font-size:13px}
+    .footer-bar a{color:inherit;margin:0 8px}
+  </style>
+  <script>
+    window.DEALIX_API_BASE = window.DEALIX_API_BASE || 'https://api.dealix.me';
+  </script>
+  <script src="/assets/js/access-gate.js" defer></script>
+</head>
+<body>
+  <main class="pf-wrap">
+    <a href="/proof.html" class="nav-back">← رجوع إلى Proof</a>
+
+    <header class="pf-head">
+      <h1>📜 إنشاء Proof Event</h1>
+      <p>نموذج المؤسس لإنشاء proof event سريع. كل ادّعاء يحمل <code>evidence_id</code> + level (L1→L5) + consent flag. لا claim بدون evidence (Article 3 Law 2).</p>
+    </header>
+
+    <form class="pf-form" id="proofForm" novalidate>
+      <label for="customer_handle">عميل (handle) *</label>
+      <input type="text" id="customer_handle" name="customer_handle" required minlength="2" maxlength="80" placeholder="مثال: Slot-A" autocomplete="off">
+
+      <label for="event_type">نوع الحدث *</label>
+      <select id="event_type" name="event_type" required>
+        <option value="">اختر…</option>
+        <option value="payment_confirmed">payment_confirmed (L5)</option>
+        <option value="meeting_booked">meeting_booked (L4)</option>
+        <option value="customer_approved">customer_approved (L3)</option>
+        <option value="customer_reviewed">customer_reviewed (L2)</option>
+        <option value="internal_draft">internal_draft (L1)</option>
+        <option value="proof_pack_published">proof_pack_published</option>
+      </select>
+
+      <label>مستوى الدليل (Evidence Level) *</label>
+      <div class="level-bar" role="radiogroup" aria-label="Evidence Level">
+        <label class="level-btn" aria-pressed="false" data-level="L1">
+          <span class="num">L1</span><small>Internal Draft</small>
+          <input type="radio" name="level" value="L1" hidden>
+        </label>
+        <label class="level-btn" aria-pressed="false" data-level="L2">
+          <span class="num">L2</span><small>Reviewed</small>
+          <input type="radio" name="level" value="L2" hidden>
+        </label>
+        <label class="level-btn" aria-pressed="true" data-level="L3">
+          <span class="num">L3</span><small>Approved</small>
+          <input type="radio" name="level" value="L3" hidden checked>
+        </label>
+        <label class="level-btn" aria-pressed="false" data-level="L4">
+          <span class="num">L4</span><small>Outcome</small>
+          <input type="radio" name="level" value="L4" hidden>
+        </label>
+        <label class="level-btn" aria-pressed="false" data-level="L5">
+          <span class="num">L5</span><small>Revenue</small>
+          <input type="radio" name="level" value="L5" hidden>
+        </label>
+      </div>
+
+      <label for="claim">الادّعاء (claim) *</label>
+      <textarea id="claim" name="claim" required minlength="10" maxlength="500" placeholder="مثال: Acme Co. اعتمدت رسالة Outbound v3 يوم 12 مايو، evidence_id: PRF-7a3c-f2"></textarea>
+
+      <label for="evidence_url">رابط الـ Evidence (URL أو reference)</label>
+      <input type="url" id="evidence_url" name="evidence_url" placeholder="https://moyasar.com/dashboard/inv_xxx أو s3://...">
+
+      <label for="payload">Payload (JSON اختياري)</label>
+      <textarea id="payload" name="payload" placeholder='{"channel": "WhatsApp", "amount_sar": 499}'></textarea>
+
+      <div class="checkbox-row">
+        <input type="checkbox" id="customer_visible" name="customer_visible">
+        <label for="customer_visible">يظهر في لوحة العميل (customer_visible)</label>
+      </div>
+
+      <div class="checkbox-row">
+        <input type="checkbox" id="publish_consent" name="publish_consent">
+        <label for="publish_consent">العميل وقّع على نشر هذا (publish_consent — مطلوب لـ proof.html)</label>
+      </div>
+
+      <button type="submit" class="submit-btn">إنشاء Proof Event</button>
+
+      <div class="response" id="response" aria-live="polite"></div>
+    </form>
+
+    <div class="gate-strip">
+      <strong>التزامات Proof Ledger</strong>
+      🔒 NO_FAKE_PROOF — كل event يُسجَّل بـ evidence_id ثابت<br>
+      🔒 NO_UNAPPROVED_TESTIMONIAL — publish_consent إلزامي قبل proof.html<br>
+      🔒 NO_FAKE_REVENUE — L5 يحتاج فاتورة Moyasar أو شهادة بنك مرفقة
+    </div>
+
+    <div class="footer-bar">
+      <strong>Saudi-PDPL · Approval-first · Proof-backed · Founder-only</strong>
+      <div style="margin-top:6px">
+        <a href="/proof.html">Proof public</a>
+        <a href="/decisions.html">Decisions queue</a>
+        <a href="/customer-portal.html">Customer Portal</a>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    // Level radio group
+    document.querySelectorAll(".level-btn").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        document.querySelectorAll(".level-btn").forEach(function (b) {
+          b.setAttribute("aria-pressed", "false");
+          b.querySelector("input").checked = false;
+        });
+        btn.setAttribute("aria-pressed", "true");
+        btn.querySelector("input").checked = true;
+      });
+    });
+
+    // Submit
+    document.getElementById("proofForm").addEventListener("submit", async function (e) {
+      e.preventDefault();
+      var form = e.target;
+      var btn = form.querySelector(".submit-btn");
+      var response = document.getElementById("response");
+      response.className = "response";
+
+      var data = new FormData(form);
+      var levelInput = form.querySelector("input[name=level]:checked");
+      var payload = {
+        customer_handle: data.get("customer_handle"),
+        event_type: data.get("event_type"),
+        level: levelInput ? levelInput.value : "L3",
+        claim: data.get("claim"),
+        evidence_url: data.get("evidence_url") || null,
+        customer_visible: data.has("customer_visible"),
+        publish_consent: data.has("publish_consent")
+      };
+      try {
+        var rawPayload = data.get("payload");
+        if (rawPayload) payload.payload = JSON.parse(rawPayload);
+      } catch (err) {
+        response.classList.add("show", "error");
+        response.textContent = "Payload JSON غير صالح: " + err.message;
+        return;
+      }
+
+      btn.disabled = true;
+      btn.textContent = "جاري الإنشاء…";
+
+      var apiBase = (window.DEALIX_API_BASE || "").replace(/\/$/, "");
+      try {
+        var res = await fetch(apiBase + "/api/v1/proof-to-market/snippet", {
+          method: "POST",
+          headers: { "Content-Type": "application/json", "Accept": "application/json" },
+          body: JSON.stringify(payload)
+        });
+        var body = await res.json();
+        if (res.ok) {
+          response.classList.add("show");
+          response.textContent = JSON.stringify(body, null, 2);
+          form.reset();
+          document.querySelectorAll(".level-btn").forEach(function (b, i) {
+            b.setAttribute("aria-pressed", i === 2 ? "true" : "false");
+            b.querySelector("input").checked = (i === 2);
+          });
+        } else {
+          response.classList.add("show", "error");
+          response.textContent = "Error " + res.status + ": " + (body.detail || JSON.stringify(body));
+        }
+      } catch (err) {
+        response.classList.add("show", "error");
+        response.textContent = "Network error: " + err.message;
+      } finally {
+        btn.disabled = false;
+        btn.textContent = "إنشاء Proof Event";
+      }
+    });
+  </script>
+</body>
+</html>

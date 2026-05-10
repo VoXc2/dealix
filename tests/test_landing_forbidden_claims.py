@@ -161,6 +161,16 @@ ALLOWLIST: dict[str, dict[str, str]] = {
         "cold": "NEGATION",
         "scraping": "NEGATION",
     },
+    # Comparison pages (Track D3) — describe competitor mechanics
+    # ("blast model", "cold sequences") explicitly as anti-patterns
+    # Dealix rejects. Pure NEGATION context throughout.
+    "compare-hubspot.html": {
+        "blast": "NEGATION",
+    },
+    "compare-salesloft.html": {
+        "blast": "NEGATION",
+        "cold": "NEGATION",
+    },
 }
 
 

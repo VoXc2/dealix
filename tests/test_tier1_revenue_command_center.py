@@ -308,3 +308,54 @@ def test_diagnostic_promises_24h_outputs():
     # Western (3) or Arabic-Indic (٣); accept either form.
     for token in ("فرص", "رسالة عربيّة", "أفضل قناة", "مخاطرة", "قرار التالي"):
         assert token in html, f"diagnostic.html output promise missing {token!r}"
+
+
+# ─── Deep pages footer trust badges (Track D1) ─────────────────────────
+
+
+@pytest.mark.parametrize(
+    "page",
+    [
+        "ai-team.html",
+        "launchpad.html",
+        "compare.html",
+        "roi.html",
+    ],
+)
+def test_deep_pages_have_footer_trust_badges(page):
+    """Track D1 polish: 4 highest-impact deep pages must carry the
+    Saudi-PDPL · Approval-first · Proof-backed footer."""
+    html = _read(page)
+    for badge in ("Saudi-PDPL", "Approval-first", "Proof-backed"):
+        assert badge in html, f"{page} missing footer badge {badge!r}"
+
+
+@pytest.mark.parametrize(
+    "page",
+    [
+        "launchpad.html",
+        "compare.html",
+        "roi.html",
+    ],
+)
+def test_deep_pages_link_to_trust_center(page):
+    """Deep pages should funnel high-intent buyers toward /trust-center.html
+    where the 8 hard gates are explained as features."""
+    html = _read(page)
+    assert "/trust-center.html" in html, f"{page} should link to /trust-center.html"
+
+
+@pytest.mark.parametrize(
+    "page",
+    [
+        "launchpad.html",
+        "compare.html",
+    ],
+)
+def test_deep_pages_link_to_checkout(page):
+    """Sprint-eligible deep pages route to the new /checkout.html?tier= flow
+    (replacing the static /launchpad.html funnel)."""
+    html = _read(page)
+    assert "/checkout.html?tier=" in html, (
+        f"{page} should funnel to /checkout.html?tier=X"
+    )

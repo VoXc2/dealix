@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>تسجيل الدخول — Dealix</title>
+  <meta name="description" content="تسجيل دخول عبر رابط مغناطيسي. لا كلمات سرّ — رابط آمن لمرة واحدة على إيميلك خلال 60 ثانية." />
+  <meta name="theme-color" content="#0f172a" />
+  <link rel="canonical" href="https://dealix.me/login.html" />
+  <meta name="robots" content="noindex,follow" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="/assets/css/design-system.css" />
+  <style>
+    body{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px}
+    .login-wrap{max-width:440px;width:100%;text-align:center}
+    .logo-block{display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:24px}
+    .logo-block svg{width:36px;height:36px}
+    .logo-block span{font-size:22px;font-weight:800;letter-spacing:-0.02em}
+    .login-card{background:#fff;border:1px solid #e2e8f0;border-radius:16px;padding:32px;text-align:start}
+    [data-theme="dark"] .login-card{background:rgba(15,23,42,.65);border-color:rgba(148,163,184,.18)}
+    .login-card h1{margin:0 0 8px;font-size:22px;text-align:center}
+    .login-card .lede{margin:0 0 20px;color:#64748b;font-size:14px;line-height:1.6;text-align:center}
+    label{display:block;margin:14px 0 6px;font-weight:600;font-size:14px}
+    input[type=email]{width:100%;padding:12px;border:1px solid #cbd5e1;border-radius:10px;font-family:inherit;font-size:15px;box-sizing:border-box;min-height:44px}
+    input[type=email]:focus{outline:none;border-color:#22d3ee;box-shadow:0 0 0 3px rgba(34,211,238,.15)}
+    .submit-btn{margin-top:18px;width:100%;padding:14px;background:#0f172a;color:#fff;border:0;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;min-height:48px}
+    .submit-btn:hover{background:#1e293b}
+    .submit-btn:disabled{opacity:.55;cursor:not-allowed}
+    .alt-actions{margin-top:18px;text-align:center;font-size:13px;color:#64748b}
+    .alt-actions a{color:#0ea5e9;text-decoration:none;font-weight:600}
+    .response{display:none;margin-top:16px;padding:14px;border-radius:10px;font-size:14px}
+    .response.success{display:block;background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.32);color:#15803d}
+    .response.error{display:block;background:rgba(220,38,38,.12);border:1px solid rgba(220,38,38,.32);color:#dc2626}
+    .features{margin-top:18px;display:grid;gap:8px;font-size:13px;color:#64748b}
+    .features li{padding-inline-start:18px;position:relative}
+    .features li::before{content:"✓";color:#10b981;font-weight:700;position:absolute;inset-inline-start:0}
+    .footer-bar{margin-top:32px;padding:18px;border-top:1px solid #e2e8f0;text-align:center;color:#64748b;font-size:13px;width:100%;max-width:440px}
+    [data-theme="dark"] .footer-bar{border-color:rgba(148,163,184,.18)}
+    .footer-bar a{color:inherit;margin:0 6px}
+  </style>
+  <script>
+    window.DEALIX_API_BASE = window.DEALIX_API_BASE || 'https://api.dealix.me';
+  </script>
+</head>
+<body>
+  <div class="login-wrap">
+    <div class="logo-block">
+      <svg viewBox="0 0 40 40" fill="none">
+        <rect x="2" y="2" width="36" height="36" rx="9" fill="#22d3ee" opacity="0.18"/>
+        <path d="M12 12h10a8 8 0 0 1 0 16H12z" stroke="#0f172a" stroke-width="2.5" stroke-linejoin="round"/>
+        <circle cx="28" cy="28" r="2.5" fill="#0f172a"/>
+      </svg>
+      <span>Dealix</span>
+    </div>
+
+    <main class="login-card">
+      <h1>تسجيل الدخول</h1>
+      <p class="lede">رابط مغناطيسي على إيميلك — لا كلمات سرّ، لا تطبيقات MFA إضافيّة. الرابط صالح 15 دقيقة + لمرّة واحدة فقط.</p>
+
+      <form id="loginForm" novalidate>
+        <label for="email">الإيميل المسجَّل عند Dealix</label>
+        <input type="email" id="email" name="email" required placeholder="founder@yourco.sa" autocomplete="email">
+        <button type="submit" class="submit-btn" id="submitBtn">أرسل الرابط المغناطيسي</button>
+
+        <div class="response" id="response" aria-live="polite"></div>
+
+        <ul class="features" style="list-style:none;padding:0;margin:18px 0 0">
+          <li>لا كلمة سرّ تُحفظ في DB Dealix</li>
+          <li>الرابط صالح 15 دقيقة فقط</li>
+          <li>كل تسجيل دخول مسجَّل في audit log + customer-visible</li>
+          <li>لا اشتراك تلقائي — Dealix لا يخصم بدون أمر صريح</li>
+        </ul>
+      </form>
+
+      <div class="alt-actions">
+        ليس لديك حساب بعد؟
+        <a href="/diagnostic.html">ابدأ Mini Diagnostic مجّاني</a>
+      </div>
+    </main>
+
+    <div class="footer-bar">
+      <strong>Saudi-PDPL · Approval-first · Proof-backed</strong>
+      <div style="margin-top:6px">
+        <a href="/privacy.html">الخصوصيّة</a>
+        <a href="/terms.html">الشروط</a>
+        <a href="/subprocessors.html">المعالجون الفرعيّون</a>
+        <a href="/trust-center.html">Trust Center</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById("loginForm").addEventListener("submit", async function (e) {
+      e.preventDefault();
+      var form = e.target;
+      var btn = document.getElementById("submitBtn");
+      var response = document.getElementById("response");
+      var email = document.getElementById("email").value.trim();
+
+      response.className = "response";
+      response.textContent = "";
+
+      if (!email || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
+        response.classList.add("error");
+        response.textContent = "إيميل غير صالح";
+        return;
+      }
+
+      btn.disabled = true;
+      btn.textContent = "جاري الإرسال…";
+
+      var apiBase = (window.DEALIX_API_BASE || "").replace(/\/$/, "");
+      try {
+        var res = await fetch(apiBase + "/api/v1/auth/magic-link", {
+          method: "POST",
+          headers: { "Content-Type": "application/json", "Accept": "application/json" },
+          body: JSON.stringify({ email: email })
+        });
+        if (res.ok) {
+          response.classList.add("success");
+          response.textContent = "✓ أرسلنا الرابط على بريدك. تحقّق خلال 60 ثانية + المجلّد المُهمل لو ما وصل.";
+          form.querySelector("input").value = "";
+        } else if (res.status === 404) {
+          response.classList.add("error");
+          response.textContent = "هذا الإيميل غير مسجَّل. ابدأ بـ Mini Diagnostic مجّاني.";
+        } else {
+          response.classList.add("error");
+          response.textContent = "تعذّر الإرسال (" + res.status + "). تواصل مع الدعم: founder@dealix.sa";
+        }
+      } catch (err) {
+        response.classList.add("error");
+        response.textContent = "خطأ في الاتصال — حاول مجدّداً أو راسلنا على founder@dealix.sa";
+      } finally {
+        btn.disabled = false;
+        btn.textContent = "أرسل الرابط المغناطيسي";
+      }
+    });
+  </script>
+</body>
+</html>
