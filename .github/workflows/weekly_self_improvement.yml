@@ -1,0 +1,47 @@
+# Track C6 — Weekly self-improvement Sunday cron.
+#
+# Runs every Sunday 22:00 Riyadh (19:00 UTC). Generates 3 improvement
+# suggestions and queues them to the founder's approval inbox.
+#
+# Plan: /root/.claude/plans/vivid-baking-quokka.md Track C6.
+
+name: Weekly self-improvement
+
+on:
+  schedule:
+    # Sunday 19:00 UTC = Sunday 22:00 Riyadh (UTC+3)
+    - cron: "0 19 * * 0"
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+jobs:
+  improve:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install minimal deps
+        run: |
+          pip install pytest httpx fastapi pydantic pydantic-settings python-jose passlib python-multipart email-validator pyyaml tenacity loguru orjson
+
+      - name: Run weekly self-improvement
+        env:
+          DEALIX_FOUNDER_ID: sami_assiri
+        run: |
+          python -m core.queue.weekly_self_improvement | tee weekly-scorecard.json
+
+      - name: Upload scorecard
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: weekly-scorecard-${{ github.run_id }}
+          path: weekly-scorecard.json
+          retention-days: 90

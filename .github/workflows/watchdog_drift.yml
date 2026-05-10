@@ -1,0 +1,51 @@
+# Track C3 — Watchdog drift cron.
+#
+# Runs every hour. Probes the 8 hard gates, service-readiness sync,
+# forbidden tokens, Article 13 compliance, /health endpoint, pre-commit
+# config. Pages founder via Slack on drift.
+#
+# Plan: /root/.claude/plans/vivid-baking-quokka.md Track C3.
+
+name: Watchdog drift
+
+on:
+  schedule:
+    # Every hour at :05 (offset to avoid GitHub rate-limits at top of hour)
+    - cron: "5 * * * *"
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+jobs:
+  drift-check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install minimal deps
+        run: |
+          pip install pytest httpx fastapi pydantic pydantic-settings python-jose passlib python-multipart email-validator pyyaml tenacity loguru orjson
+
+      - name: Run watchdog
+        env:
+          WATCHDOG_BASE_URL: https://api.dealix.me
+          WATCHDOG_SLACK_URL: ${{ secrets.WATCHDOG_SLACK_URL }}
+        run: |
+          python scripts/watchdog_drift_check.py --json | tee watchdog-report.json
+          # Re-run for non-JSON console output to make Action logs readable
+          python scripts/watchdog_drift_check.py || echo "Drift detected — see Slack."
+
+      - name: Upload watchdog report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: watchdog-report-${{ github.run_id }}
+          path: watchdog-report.json
+          retention-days: 7

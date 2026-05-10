@@ -42,6 +42,53 @@ async def daily_brief() -> dict[str, Any]:
     return build_daily_brief(default_sami_profile()).to_dict()
 
 
+@router.get("/daily-brief/llm")
+async def daily_brief_llm() -> dict[str, Any]:
+    """LLM-narrated daily brief — Track C2 of 30-day plan.
+
+    Layers an LLM-summarized founder-tone narrative on top of the
+    deterministic daily brief. Falls back gracefully when LLM is
+    unavailable (returns data_status="fallback" + canned text).
+
+    Hard gates: no inventing leads/customers/revenue. Reads only from
+    existing proof_ledger + approval_center + support_inbox.
+    """
+    from auto_client_acquisition.personal_operator.llm_brief import (
+        fetch_inbound_count,
+        fetch_pending_approvals,
+        fetch_recent_proof_events,
+        generate_llm_brief,
+    )
+
+    proof_events = await fetch_recent_proof_events(window_hours=24)
+    pending_approvals = await fetch_pending_approvals()
+    inbound_count = await fetch_inbound_count()
+
+    deterministic = build_daily_brief(default_sami_profile()).to_dict()
+    llm = await generate_llm_brief(
+        proof_events=proof_events,
+        pending_approvals=pending_approvals,
+        inbound_count=inbound_count,
+    )
+
+    return {
+        "deterministic": deterministic,
+        "llm": llm.to_dict(),
+        "inputs": {
+            "proof_events_count": len(proof_events),
+            "pending_approvals_count": len(pending_approvals),
+            "inbound_count": inbound_count,
+        },
+        "hard_gates": {
+            "no_fake_revenue": True,
+            "no_fake_proof": True,
+            "no_invented_leads": True,
+            "max_input_tokens": 600,
+            "max_output_tokens": 300,
+        },
+    }
+
+
 @router.get("/opportunities")
 async def opportunities() -> dict[str, Any]:
     items = suggest_opportunities(default_sami_profile())
