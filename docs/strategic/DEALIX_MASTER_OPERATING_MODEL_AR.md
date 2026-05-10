@@ -87,6 +87,9 @@ Dealix = ذكاء الإيرادات + تنفيذ تشغيلي + محرك إثب
 - `docs/strategic/ENTERPRISE_P0_GAP_BACKLOG_AR.md` — أولويات P0 وربط checklist الإصدار
 - `docs/strategic/ENTERPRISE_TRUST_COMPLIANCE_PACK_AR.md` — حزمة ثقة وامتثال للبيع
 - `docs/strategic/CUSTOMER_SUCCESS_PLAYBOOK_HOOKS_AR.md` — ربط محفزات CS بـ customer_readiness
+- `docs/strategic/DEALIX_ROLE_SERVICE_LADDER_AR.md` — سلّم الأدوار ↔ كتالوج الخدمات السبع
+- `docs/strategic/DEALIX_MARKET_DIFFERENTIATION_AR.md` — تمييز مقابل أنماط السوق
+- `docs/strategic/WAVE13_LANDING_PORTAL_ALIGNMENT_AR.md` — محاذاة البوابة مع Wave 13
 
 ### Trust Layer (PDPL / ZATCA) — تذكير عدم المبالغة
 

@@ -2,7 +2,7 @@
 
 Closes the registry gap: `audit_trail` status `partial` → `live`.
 
-Existing infrastructure (api/middleware.py:RequestIDMiddleware):
+Existing infrastructure (api/middleware/http_stack.py:RequestIDMiddleware):
 - Every incoming request gets a unique request_id (X-Request-ID header
   or auto-generated 12-char hex)
 - Bound to structlog contextvars → every log emitted during the
