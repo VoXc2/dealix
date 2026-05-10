@@ -275,7 +275,8 @@
         if (res.ok && body.payment) {
           var paymentId = body.payment.id || body.payment.payment_id;
           panel.classList.add("show");
-          panel.innerHTML = "✓ تم إنشاء الفاتورة (TEST mode). الـ payment_id: <code>" + (paymentId || "—") + "</code>";
+          // textContent (not innerHTML) — paymentId is API-controlled, must be escaped
+          panel.textContent = "✓ تم إنشاء الفاتورة (TEST mode). payment_id: " + (paymentId || "—");
           // Redirect to success page
           setTimeout(function () {
             window.location.href = "/checkout-success.html?invoice_id=" + encodeURIComponent(paymentId || "") +
