@@ -212,6 +212,7 @@ class AuditLogMiddleware(BaseHTTPMiddleware):
 
 # ── ETag / Last-Modified caching ──────────────────────────────────
 
+
 class ETagMiddleware(BaseHTTPMiddleware):
     """
     Add ETag + Last-Modified headers to GET responses and honour

@@ -98,7 +98,7 @@
 | Field | Value |
 |---|---|
 | Endpoint | `GET /api/v1/audit/{id}` + middleware on every route |
-| Implementation | `api/middleware.py` + structlog with unified `correlation_id` |
+| Implementation | `api/middleware/http_stack.py` + structlog with unified `correlation_id` |
 | Real input | structured logger context + correlation_id from request header |
 | Real output | Immutable audit record per action with cross-reference to lead/customer/decision |
 | Test coverage | tests in test_audit_correlation_id_v14.py |
