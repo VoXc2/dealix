@@ -30,6 +30,9 @@ from api.routers.domains import deprecated as deprecated_domain
 from api.routers.domains import sales as sales_domain
 from api.routers.domains import webhooks as webhooks_domain
 from api.routers import auth, jobs, pdpl, zatca
+# Wave 12.7 — Intelligence Layer + Expansion Engine routers
+from api.routers import expansion_engine as expansion_engine_router
+from api.routers import intelligence_layer as intelligence_layer_router
 from api.security import APIKeyMiddleware, setup_rate_limit
 from core.config.settings import get_settings
 from core.errors import AICompanyError
@@ -186,6 +189,11 @@ def create_app() -> FastAPI:
     app.include_router(jobs.router, prefix="/api/v1")
     app.include_router(zatca.router)
     app.include_router(pdpl.router)
+
+    # ── Wave 12.7 — Intelligence Layer + Expansion Engine ─────────
+    # Both routers self-prefix /api/v1/intelligence and /api/v1/expansion-engine.
+    app.include_router(intelligence_layer_router.router)
+    app.include_router(expansion_engine_router.router)
 
     @app.get("/", tags=["root"])
     async def root() -> dict[str, object]:
