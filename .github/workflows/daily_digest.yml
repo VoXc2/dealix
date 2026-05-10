@@ -37,7 +37,25 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
+      - name: Check required secrets (skip gracefully if missing)
+        id: secrets_gate
+        env:
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+        run: |
+          # Wave 10.9 §30.4 — until RESEND_API_KEY is configured in repo
+          # secrets, exit 0 with a clear message instead of crashing the
+          # underlying script. The Send-digest step gates on this output.
+          if [ -z "${RESEND_API_KEY}" ]; then
+            echo "ℹ️  RESEND_API_KEY not yet configured — skipping daily digest"
+            echo "    Set via Settings → Secrets and variables → Actions"
+            echo "secrets_present=false" >> "${GITHUB_OUTPUT}"
+            exit 0
+          fi
+          echo "✅ RESEND_API_KEY present"
+          echo "secrets_present=true" >> "${GITHUB_OUTPUT}"
+
       - name: Send digest
+        if: steps.secrets_gate.outputs.secrets_present == 'true'
         env:
           RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
           DEALIX_FOUNDER_EMAIL: ${{ secrets.DEALIX_FOUNDER_EMAIL || 'sami.assiri11@gmail.com' }}
