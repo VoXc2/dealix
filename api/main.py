@@ -34,6 +34,7 @@ from api.routers import auth, jobs, pdpl, zatca
 from api.routers import expansion_engine as expansion_engine_router
 from api.routers import intelligence_layer as intelligence_layer_router
 # Wave 13 — Full Ops Productization routers
+from api.routers import customer_success_scores as customer_success_scores_router
 from api.routers import deliverables as deliverables_router
 from api.routers import service_catalog as service_catalog_router
 from api.security import APIKeyMiddleware, setup_rate_limit
@@ -203,6 +204,8 @@ def create_app() -> FastAPI:
     app.include_router(service_catalog_router.router)
     # Self-prefix /api/v1/deliverables. State-machine-gated.
     app.include_router(deliverables_router.router)
+    # Self-prefix /api/v1/customer-success. 5-score read-only.
+    app.include_router(customer_success_scores_router.router)
 
     @app.get("/", tags=["root"])
     async def root() -> dict[str, object]:
