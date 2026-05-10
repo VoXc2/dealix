@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>الفاتورة جاهزة — Dealix</title>
+  <meta name="description" content="فاتورة الباقة جاهزة. NO_LIVE_CHARGE: لم يتمّ الخصم بعد. تأكيد المؤسس مطلوب." />
+  <meta name="theme-color" content="#0f172a" />
+  <link rel="canonical" href="https://dealix.me/checkout-success.html" />
+  <meta name="robots" content="noindex,follow" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="/assets/css/design-system.css" />
+  <style>
+    .success-wrap{max-width:680px;margin:0 auto;padding:80px 24px}
+    .check-icon{display:flex;align-items:center;justify-content:center;width:96px;height:96px;border-radius:50%;background:linear-gradient(135deg,#22d3ee,#4ade80);color:#fff;font-size:48px;font-weight:800;margin:0 auto 24px;box-shadow:0 18px 40px rgba(34,211,238,0.3)}
+    .success-head{text-align:center;margin-bottom:32px}
+    .success-head h1{font-size:clamp(28px,4vw,40px);margin:0 0 12px;line-height:1.2}
+    .success-head p{color:#64748b;font-size:16px;margin:0;line-height:1.6}
+    .invoice-card{background:#fff;border:1px solid #e2e8f0;border-radius:16px;padding:28px;margin:24px 0}
+    [data-theme="dark"] .invoice-card{background:rgba(15,23,42,.65);border-color:rgba(148,163,184,.18)}
+    .invoice-card h2{margin:0 0 14px;font-size:18px;color:#0f172a}
+    [data-theme="dark"] .invoice-card h2{color:#e2e8f0}
+    .invoice-row{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px dashed #e2e8f0;font-size:14px}
+    .invoice-row:last-child{border-bottom:0}
+    .invoice-row .k{color:#64748b}
+    .invoice-row .v{font-weight:600;font-family:ui-monospace,Menlo,monospace;direction:ltr;unicode-bidi:isolate}
+    .next-steps{background:linear-gradient(135deg,rgba(34,211,238,0.06),rgba(168,85,247,0.06));border:1px solid rgba(34,211,238,0.22);border-radius:16px;padding:24px;margin:24px 0}
+    .next-steps h2{margin:0 0 14px;font-size:18px}
+    .next-steps ol{margin:0;padding-inline-start:20px;font-size:14px;line-height:1.8}
+    .test-banner{background:rgba(251,191,36,0.12);border:1px solid rgba(251,191,36,0.32);color:#92400e;padding:12px 16px;border-radius:10px;margin:24px 0;font-size:14px;font-weight:600;text-align:center}
+    [data-theme="dark"] .test-banner{color:#fbbf24}
+    .ctas{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin-top:32px}
+    .ctas .ds-btn{min-height:44px}
+    .gate-strip{margin-top:24px;padding:14px;background:rgba(220,38,38,0.06);border:1px solid rgba(220,38,38,0.22);border-radius:10px;font-family:ui-monospace,Menlo,monospace;font-size:11px;color:#fca5a5;direction:ltr;unicode-bidi:isolate}
+    .gate-strip strong{color:#0f172a;font-family:'IBM Plex Sans Arabic',sans-serif;font-size:13px;display:block;margin-bottom:6px;direction:rtl}
+    [data-theme="dark"] .gate-strip strong{color:#e2e8f0}
+    .footer-bar{margin-top:48px;padding:24px;border-top:1px solid #e2e8f0;text-align:center;color:#64748b;font-size:14px}
+    .footer-bar a{color:inherit;margin:0 8px}
+  </style>
+  <script>
+    window.DEALIX_API_BASE = window.DEALIX_API_BASE || 'https://api.dealix.me';
+  </script>
+</head>
+<body>
+  <main class="success-wrap">
+    <div class="check-icon" aria-hidden="true">✓</div>
+
+    <header class="success-head">
+      <h1>الفاتورة جاهزة</h1>
+      <p>تمّ إنشاء الفاتورة في وضع TEST. <strong>NO_LIVE_CHARGE</strong> مُفعَّل — لم يتمّ خصم أي مبلغ. سيتواصل معك المؤسس خلال 24 ساعة لاعتماد الدفع الفعلي وتفعيل الباقة.</p>
+    </header>
+
+    <div class="test-banner">
+      🧪 وضع TEST — لا خصم فعلي. التأكيد الفعلي يأتي بعد موافقة المؤسس.
+    </div>
+
+    <section class="invoice-card">
+      <h2>📄 تفاصيل الفاتورة</h2>
+      <div class="invoice-row"><span class="k">رقم الفاتورة</span><span class="v" id="invoice-id">—</span></div>
+      <div class="invoice-row"><span class="k">الباقة</span><span class="v" id="tier-label">—</span></div>
+      <div class="invoice-row"><span class="k">المبلغ (قبل VAT)</span><span class="v" id="amount-before">—</span></div>
+      <div class="invoice-row"><span class="k">VAT 15%</span><span class="v" id="amount-vat">—</span></div>
+      <div class="invoice-row"><span class="k">الإجمالي</span><span class="v" id="amount-total">—</span></div>
+      <div class="invoice-row"><span class="k">الحالة</span><span class="v" id="invoice-state">invoice_intent_pending</span></div>
+      <div class="invoice-row"><span class="k">ZATCA</span><span class="v">ready</span></div>
+    </section>
+
+    <section class="next-steps">
+      <h2>🚀 الخطوات التالية</h2>
+      <ol>
+        <li>المؤسس يراجع الفاتورة + يتواصل عبر واتساب خلال 24 ساعة</li>
+        <li>بعد موافقة المؤسس + إثبات الدفع → payment_confirmed → revenue موثّق</li>
+        <li>بدء التسليم: للـ Sprint = 7 أيّام، للـ Growth OS = 30 يوم onboarding</li>
+        <li>Proof Pack جاهز يوم 7 (للـ Sprint) أو شهرياً (للـ recurring)</li>
+        <li>Customer Portal يفتح على /customer-portal.html بعد إنشاء حسابك</li>
+      </ol>
+    </section>
+
+    <div class="gate-strip">
+      <strong>التزامات Dealix</strong>
+      🔒 NO_LIVE_CHARGE — لا خصم بدون أمر صريح من المؤسس<br>
+      🔒 invoice_intent ≠ revenue — الإيراد فقط بعد payment_confirmed<br>
+      🔒 NO_FAKE_REVENUE — كل ريال مدعوم بفاتورة Moyasar أو شهادة بنك
+    </div>
+
+    <div class="ctas">
+      <a href="/" class="ds-btn">العودة للرئيسيّة</a>
+      <a href="/customer-portal.html" class="ds-btn ds-btn--ghost">شاهد لوحة العميل (DEMO)</a>
+    </div>
+
+    <div class="footer-bar">
+      <strong>Saudi-PDPL · Approval-first · Proof-backed</strong>
+      <div style="margin-top:8px">
+        <a href="/privacy.html">الخصوصيّة</a>
+        <a href="/terms.html">الشروط</a>
+        <a href="/subprocessors.html">المعالجون الفرعيّون</a>
+        <a href="/proof.html">Proof</a>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    var TIER_LABELS = {
+      sprint: "Revenue Proof Sprint (499 ر.س / مرّة واحدة)",
+      growth: "Growth OS — Growth Ops Monthly (2,999 ر.س / شهر)",
+      scale: "Scale OS (7,999 ر.س / شهر)",
+      partner: "Executive Command Center (12,000 ر.س / شهر)",
+      enterprise: "Enterprise — Custom"
+    };
+
+    function fmtSAR(amount) {
+      return amount.toLocaleString("ar-SA") + " ر.س";
+    }
+
+    function renderInvoice() {
+      var p = new URLSearchParams(window.location.search);
+      var invoiceId = p.get("invoice_id") || "—";
+      var tier = p.get("tier") || "sprint";
+      var amount = parseFloat(p.get("amount") || "0");
+
+      document.getElementById("invoice-id").textContent = invoiceId;
+      document.getElementById("tier-label").textContent = TIER_LABELS[tier] || tier;
+
+      if (amount > 0) {
+        var vat = +(amount * 0.15).toFixed(2);
+        var total = +(amount * 1.15).toFixed(2);
+        document.getElementById("amount-before").textContent = fmtSAR(amount);
+        document.getElementById("amount-vat").textContent = fmtSAR(vat);
+        document.getElementById("amount-total").textContent = fmtSAR(total);
+      }
+
+      // Try to fetch live state
+      if (invoiceId && invoiceId !== "—") {
+        var apiBase = (window.DEALIX_API_BASE || "").replace(/\/$/, "");
+        fetch(apiBase + "/api/v1/payment-ops/" + encodeURIComponent(invoiceId) + "/state", {
+          headers: { "Accept": "application/json" }
+        })
+          .then(function (r) { return r.ok ? r.json() : null; })
+          .then(function (state) {
+            if (state && state.payment && state.payment.state) {
+              document.getElementById("invoice-state").textContent = state.payment.state;
+            }
+          })
+          .catch(function () { /* leave default */ });
+      }
+
+      // PostHog
+      if (window.POSTHOG_KEY && window.posthog) {
+        posthog.capture('checkout_success_viewed', { tier: tier, invoice_id: invoiceId });
+      }
+    }
+
+    !function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.async=!0,p.src=s.api_host+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="init capture identify".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
+    if (window.POSTHOG_KEY) posthog.init(window.POSTHOG_KEY, { api_host: 'https://app.posthog.com' });
+
+    renderInvoice();
+  </script>
+</body>
+</html>
