@@ -1,0 +1,42 @@
+# Wave 12.5 §33.2.3 — Outreach Draft workflow (bilingual draft pack)
+name: outreach_draft
+duration_days: 1
+description_ar: "تجهيز حزمة رسائل ثنائية اللغة لإجراء يدوي معتمد — لا إرسال تلقائي"
+description_en: "Bilingual draft pack for manual approved use — no auto-send (Article 4)"
+proof_target: "draft_pack_approved"
+final_deliverable: "Approved draft pack: email + LinkedIn manual + WhatsApp template + call script"
+
+steps:
+  - step_id: draft_intake
+    day: 1
+    title_ar: "تحديد lead/passport + قناة آمنة"
+    title_en: "Identify lead/passport + safe channel"
+    owner: founder
+    daily_artifact_required: true
+    artifact_kind: "draft_request_record"
+    risk_level: low
+    next_action_kind: compose_drafts
+
+  - step_id: draft_compose
+    day: 1
+    title_ar: "صياغة 4 مسودات (إيميل + لينكدإن يدوي + قالب واتساب + مكالمة)"
+    title_en: "Compose 4 drafts (email + manual LinkedIn + WhatsApp template + call)"
+    owner: founder
+    daily_artifact_required: true
+    artifact_kind: "outreach_draft_pack"
+    risk_level: medium
+    next_action_kind: safety_gate_check
+
+  - step_id: draft_safety_gate
+    day: 1
+    title_ar: "فحص safety gate + forbidden tokens"
+    title_en: "Safety gate check + forbidden token scan"
+    owner: system_auto
+    daily_artifact_required: true
+    artifact_kind: "safety_check_record"
+    risk_level: low
+    next_action_kind: founder_review_then_manual_send
+    approval_points:
+      - founder_final_approval
+    blockers_ar: ["الرسالة فيها لغة محظورة"]
+    blockers_en: ["Forbidden token detected in draft"]

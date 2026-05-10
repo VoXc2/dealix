@@ -1,0 +1,44 @@
+# Wave 12.5 §33.2.3 — Onboarding workflow (Day 0 customer setup)
+name: onboarding
+duration_days: 1
+description_ar: "إعداد العميل في اليوم الأول — Customer Brain + قنوات + قيود + موافقات أساسية"
+description_en: "Day-0 customer setup — Customer Brain + channels + constraints + base approvals"
+proof_target: "customer_brain_built"
+final_deliverable: "CompanyBrainV6 snapshot + signed DPA"
+
+steps:
+  - step_id: onb_intake
+    day: 1
+    title_ar: "استلام بيانات الإنتيك من العميل"
+    title_en: "Receive customer intake data"
+    owner: customer
+    daily_artifact_required: true
+    artifact_kind: "intake_form_submission"
+    risk_level: low
+    next_action_kind: build_company_brain
+    approval_points:
+      - dpa_signature
+    blockers_ar: ["DPA لم يوقَّع"]
+    blockers_en: ["DPA not signed"]
+
+  - step_id: onb_build_brain
+    day: 1
+    title_ar: "بناء عقل الشركة v6"
+    title_en: "Build Company Brain v6"
+    owner: founder
+    daily_artifact_required: true
+    artifact_kind: "company_brain_v6_snapshot"
+    risk_level: low
+    next_action_kind: validate_with_customer
+
+  - step_id: onb_set_channels
+    day: 1
+    title_ar: "تأكيد القنوات المسموحة والممنوعة"
+    title_en: "Confirm allowed/blocked channels"
+    owner: founder
+    daily_artifact_required: true
+    artifact_kind: "channel_policy_record"
+    risk_level: medium
+    next_action_kind: handoff_to_diagnostic
+    approval_points:
+      - customer_channel_consent

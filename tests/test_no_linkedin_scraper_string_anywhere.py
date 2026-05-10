@@ -39,6 +39,18 @@ _ALLOWLIST_PATHS = frozenset({
     "docs/WAVE10_6_COHERENCE_SPRINT_REPORT.md",
     "docs/WAVE10_7_PR187_CLEANUP_REPORT.md",
     "docs/FRONTEND_COHERENCE_AUDIT_REPORT.md",
+    # Wave 10.8 PR triage doc references the historic finding
+    "docs/PR_MERGE_TRIAGE_2026_05_09.md",
+    # Wave 11 evidence table — records the lockdown audit row by name
+    "docs/WAVE11_FIRST3_PAID_PILOTS_EVIDENCE_TABLE.md",
+    # Wave 11 E2E pytest — invokes the lockdown test by file path string
+    "tests/test_dealix_master_customer_journey_e2e.py",
+    # Wave 11 verifier scripts — they invoke the lockdown test by file path
+    "scripts/wave11_hard_gate_audit.sh",
+    "scripts/wave11_first3_paid_pilots_verify.sh",
+    # Wave 12 master verifier + founder report — invoke the lockdown by name
+    "scripts/wave12_saudi_revenue_command_center_verify.sh",
+    "docs/WAVE12_SAUDI_REVENUE_COMMAND_CENTER_REPORT.md",
     # The plan file lives outside the repo (in /root/.claude/plans/) so
     # never appears in git ls-files; no allowlist needed.
 })

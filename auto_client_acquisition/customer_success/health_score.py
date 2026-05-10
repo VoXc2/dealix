@@ -165,14 +165,25 @@ def compute_health(
         + adoption * 0.20 + sentiment * 0.20, 1,
     )
 
-    if overall >= 75:
+    # Wave 12 §32.3.8 — extended from 4 → 6 buckets:
+    # - expansion_ready (≥90 + outcomes ≥80 + adoption ≥70) — NEW
+    # - healthy        (≥75)
+    # - stable         (≥60)
+    # - at_risk        (≥40)
+    # - critical       (<40 but ≥20)
+    # - blocked        (<20)                                 — NEW
+    if overall >= 90 and outcomes >= 80 and adoption >= 70:
+        bucket = "expansion_ready"; churn_risk = max(1.0, 100 - overall - 5)
+    elif overall >= 75:
         bucket = "healthy"; churn_risk = max(2.0, 100 - overall)
     elif overall >= 60:
         bucket = "stable"; churn_risk = 100 - overall
     elif overall >= 40:
         bucket = "at_risk"; churn_risk = 100 - overall + 10
-    else:
+    elif overall >= 20:
         bucket = "critical"; churn_risk = min(95, 100 - overall + 25)
+    else:
+        bucket = "blocked"; churn_risk = 99.0
 
     # Top 3 drivers — what's hurting/helping most
     dim_scores = [

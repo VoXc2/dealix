@@ -1,4 +1,16 @@
-"""V12 Support OS — Ticket schema."""
+"""V12 Support OS — Ticket schema.
+
+Wave 12 §32.3.8 (Engine 8 hardening) extends Ticket with 7 fields that
+make support a growth signal, not just an inbox:
+
+- ``sentiment``                — bilingual regex-classified
+- ``root_cause``               — short string
+- ``suggested_reply``          — pre-drafted bilingual reply (draft_only)
+- ``proof_opportunity``        — bool: does this ticket point to an upsell?
+- ``customer_health_impact``   — float in [-1.0, 1.0] (negative = drops health)
+- ``escalation_needed``        — bool
+- ``next_action``              — short structured string
+"""
 from __future__ import annotations
 
 import hashlib
@@ -17,6 +29,9 @@ TicketStatus = Literal[
     "resolved",
     "closed",
 ]
+
+# Wave 12 §32.3.8 — bilingual sentiment classification (regex-based, no LLM).
+Sentiment = Literal["positive", "neutral", "frustrated", "angry"]
 
 
 # SLA in minutes by priority (matches V12 plan).
@@ -54,6 +69,88 @@ class Ticket(BaseModel):
     notes_ar: str = ""
     notes_en: str = ""
     created_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
+
+    # ─── Wave 12 §32.3.8 hardening fields (all optional for back-compat) ───
+    sentiment: Sentiment | None = None
+    """Bilingual regex-classified sentiment (positive/neutral/frustrated/angry)."""
+
+    root_cause: str = ""
+    """Short root-cause string (e.g. "follow_up_gap", "billing_confusion")."""
+
+    suggested_reply: str = ""
+    """Pre-drafted bilingual reply (draft_only — never auto-sent)."""
+
+    proof_opportunity: bool = False
+    """True when ticket resolution points to a proof event / upsell."""
+
+    customer_health_impact: float = 0.0
+    """Health-score delta in [-1.0, 1.0] (negative = drops health)."""
+
+    escalation_needed: bool = False
+    """True when ticket category triggers founder escalation."""
+
+    next_action: str = ""
+    """Short structured next action (e.g. "draft_reply", "escalate_to_founder")."""
+
+
+def classify_sentiment_bilingual(text: str) -> Sentiment:
+    """Wave 12 §32.3.8 — bilingual regex sentiment classifier.
+
+    Saudi-dialect markers + English markers. NO LLM in v1 (deterministic).
+    Returns one of the 4 canonical Sentiment values.
+    """
+    text_lower = text.lower().strip()
+    if not text_lower:
+        return "neutral"
+
+    # Angry markers (highest priority — pre-empts other classifications)
+    angry_markers = (
+        # Arabic
+        "غاضب", "زعلان", "خربان", "ما عاد", "كذب", "نصب",
+        "احتيال", "احتجاج", "أرفع شكوى", "سأشتكي", "محامي",
+        # English
+        "outraged", "lawsuit", "fraud", "scam", "lying", "absolutely unacceptable",
+    )
+    for marker in angry_markers:
+        if marker in text_lower:
+            return "angry"
+
+    # Frustrated markers
+    frustrated_markers = (
+        # Arabic
+        "محبط", "تعبت", "زهقت", "ما اشتغل", "مشكلة", "للمرة",
+        "ما يشتغل", "مالها داعي", "ما رد", "تأخير", "متى راح",
+        # English
+        "frustrated", "again", "still not", "this is the third",
+        "doesn't work", "broken", "annoying", "wasting",
+    )
+    for marker in frustrated_markers:
+        if marker in text_lower:
+            return "frustrated"
+
+    # Positive markers
+    positive_markers = (
+        # Arabic
+        "ممتاز", "رائع", "جيد", "شكرا", "شكراً", "أحسنتم", "بارك الله",
+        # English
+        "great", "thank you", "thanks", "excellent", "love it", "appreciate",
+    )
+    for marker in positive_markers:
+        if marker in text_lower:
+            return "positive"
+
+    return "neutral"
+
+
+def is_proof_opportunity_category(category: str) -> bool:
+    """Wave 12 §32.3.8 — auto-tag categories where ticket resolution
+    typically points to a proof event or upsell opportunity."""
+    return category in {
+        "technical_issue",     # resolved → "we fixed your X" proof
+        "billing_question",    # resolved → "we clarified billing" proof
+        "upgrade_question",    # active → upsell signal
+        "connector_setup",     # resolved → integration proof
+    }
 
 
 def create_ticket(

@@ -94,6 +94,12 @@ fi
 echo "── safe_send_gateway module ───────────────────────────"
 [ -f auto_client_acquisition/safe_send_gateway/middleware.py ] && results+=("SAFE_SEND_GATEWAY_MODULE=PASS") || { results+=("SAFE_SEND_GATEWAY_MODULE=FAIL"); overall_pass=false; }
 
+echo "── Wave 7.7 founder rules ─────────────────────────────"
+run_check "FOUNDER_RULES_MODULE" "[ -f auto_client_acquisition/approval_center/founder_rules.py ]"
+run_check "FOUNDER_RULES_CLI" "[ -x scripts/dealix_founder_rules.py ]"
+run_check "FOUNDER_RULES_DOC" "[ -f docs/PRE_APPROVED_RULES_GUIDE.md ]"
+run_check "FOUNDER_RULES_TESTS" "python3 -m pytest tests/test_founder_rules.py tests/test_approval_store_founder_rules_integration.py -q --no-cov"
+
 echo "── Wave 6 + Wave 5 regression chain ──────────────────"
 run_check "WAVE6_REVENUE_ACTIVATION" "bash scripts/wave6_revenue_activation_verify.sh"
 run_check "FORBIDDEN_CLAIMS" "python3 -m pytest tests/test_landing_forbidden_claims.py -q --no-cov"
