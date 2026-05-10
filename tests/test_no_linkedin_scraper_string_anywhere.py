@@ -39,6 +39,8 @@ _ALLOWLIST_PATHS = frozenset({
     "docs/WAVE10_6_COHERENCE_SPRINT_REPORT.md",
     "docs/WAVE10_7_PR187_CLEANUP_REPORT.md",
     "docs/FRONTEND_COHERENCE_AUDIT_REPORT.md",
+    # Wave 10.8 PR triage doc references the historic finding
+    "docs/PR_MERGE_TRIAGE_2026_05_09.md",
     # The plan file lives outside the repo (in /root/.claude/plans/) so
     # never appears in git ls-files; no allowlist needed.
 })

@@ -201,3 +201,9 @@ feature_requests.jsonl
 .langfuse-local/
 # Wave 8 signal synthesis output
 signals_output.json
+
+# ─────────────────────────────────────────────────────────────
+# Wave 11 — First 3 Paid Pilots Closure — runtime state (NEVER commit)
+# ─────────────────────────────────────────────────────────────
+data/wave11/**
+docs/wave11/live/**
