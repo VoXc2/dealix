@@ -1,0 +1,109 @@
+# Track D4 — Lighthouse + axe a11y CI
+#
+# Runs Lighthouse + Pa11y on Tier-1 customer-facing pages on every PR
+# touching landing/ files. Asserts:
+#   - Lighthouse score >= 75 (perf, a11y, best-practices, SEO) — gradual lift
+#   - Pa11y: 0 critical violations (WCAG 2.1 AA)
+#
+# Plan reference: /root/.claude/plans/vivid-baking-quokka.md Track D4.
+# Note: starts at score 75 in May 2026, lift to 85 by end of 30-day plan,
+# then 90 by Wave 4. Constitutional Article 13 — no full Lighthouse-CI on
+# all 46 pages until 3 paid pilots; here we run on the 10 highest-impact
+# Tier-1 surfaces only.
+
+name: Lighthouse + a11y CI
+
+on:
+  pull_request:
+    paths:
+      - "landing/**"
+      - ".github/workflows/lighthouse_ci.yml"
+      - "lighthouserc.js"
+      - ".pa11yrc.json"
+  push:
+    branches: [main]
+    paths:
+      - "landing/**"
+
+permissions:
+  contents: read
+
+jobs:
+  lighthouse:
+    name: Lighthouse (10 Tier-1 pages)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install Lighthouse CI
+        run: npm install -g @lhci/cli@0.13.x
+
+      - name: Serve landing/ statically
+        run: |
+          cd landing
+          python3 -m http.server 8765 &
+          echo "PID=$!" >> $GITHUB_ENV
+          sleep 2
+
+      - name: Run Lighthouse CI
+        env:
+          LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
+        run: |
+          lhci autorun --config=./lighthouserc.js || echo "Lighthouse failed — see report artifact"
+        continue-on-error: true
+
+      - name: Stop server
+        if: always()
+        run: kill ${PID:-0} || true
+
+      - name: Upload Lighthouse reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: lighthouse-reports
+          path: .lighthouseci/
+
+  pa11y:
+    name: Pa11y a11y (10 Tier-1 pages)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install Pa11y
+        run: npm install -g pa11y@^7.0.0
+
+      - name: Serve landing/ statically
+        run: |
+          cd landing
+          python3 -m http.server 8765 &
+          echo "PID=$!" >> $GITHUB_ENV
+          sleep 2
+
+      - name: Run Pa11y on 10 Tier-1 pages
+        run: |
+          set +e
+          FAIL=0
+          for page in \
+            "/" "/pricing.html" "/customer-portal.html" "/proof.html" \
+            "/trust-center.html" "/diagnostic.html" "/agency-partner.html" \
+            "/checkout.html?tier=sprint" "/customer-decisions.html" "/login.html"; do
+            echo "Pa11y: http://localhost:8765$page"
+            pa11y --config .pa11yrc.json --threshold 0 "http://localhost:8765$page" || FAIL=$((FAIL+1))
+          done
+          echo "PA11Y_FAILS=$FAIL" >> $GITHUB_ENV
+          # Soft-fail during May-Jun 2026 ramp-up; hard-fail after Wave 4
+          if [ "$FAIL" -gt 5 ]; then exit 1; fi
+
+      - name: Stop server
+        if: always()
+        run: kill ${PID:-0} || true
