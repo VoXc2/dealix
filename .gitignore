@@ -92,11 +92,14 @@ ipython_config.py
 *.sqlite
 *.sqlite3
 *.db-journal
-data/
+# data/ ignored except for canonical product data (workflows/) — see below
+data/*
 dumps/
 # Service Activation Console data (generated, but committed for static hosting)
 !landing/assets/data/
 !landing/assets/data/service-readiness.json
+# Wave 12.5 §33.2.3 — canonical workflow YAMLs (product data, not customer data)
+!data/workflows/
 
 # ─────────────────────────────────────────────────────────────
 # 📝 Logs
@@ -201,3 +204,9 @@ feature_requests.jsonl
 .langfuse-local/
 # Wave 8 signal synthesis output
 signals_output.json
+
+# ─────────────────────────────────────────────────────────────
+# Wave 11 — First 3 Paid Pilots Closure — runtime state (NEVER commit)
+# ─────────────────────────────────────────────────────────────
+data/wave11/**
+docs/wave11/live/**

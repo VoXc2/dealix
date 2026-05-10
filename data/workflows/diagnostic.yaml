@@ -1,0 +1,60 @@
+# Wave 12.5 §33.2.3 — Diagnostic workflow (24h sector-fit analysis)
+name: diagnostic
+duration_days: 1
+description_ar: "تشخيص قطاع وفرص خلال 24 ساعة — مخرَج بياني عربي بسيط"
+description_en: "24-hour sector-fit + opportunity diagnostic — simple bilingual output"
+proof_target: "diagnostic_delivered"
+final_deliverable: "Diagnostic report PDF/MD with 3 opportunities + 1 message + risk note"
+
+steps:
+  - step_id: diag_intake_review
+    day: 1
+    title_ar: "مراجعة بيانات الإنتيك"
+    title_en: "Review intake data"
+    owner: founder
+    daily_artifact_required: true
+    artifact_kind: "intake_review_notes"
+    risk_level: low
+    next_action_kind: scan_market_signals
+
+  - step_id: diag_market_scan
+    day: 1
+    title_ar: "فحص إشارات السوق للقطاع"
+    title_en: "Scan sector market signals"
+    owner: founder
+    daily_artifact_required: true
+    artifact_kind: "sector_signal_summary"
+    risk_level: low
+    next_action_kind: rank_opportunities
+
+  - step_id: diag_opportunity_ranking
+    day: 1
+    title_ar: "ترتيب 3 فرص حسب الأولوية"
+    title_en: "Rank 3 opportunities by priority"
+    owner: founder
+    daily_artifact_required: true
+    artifact_kind: "opportunity_ranking_v1"
+    risk_level: medium
+    next_action_kind: draft_message
+
+  - step_id: diag_arabic_message
+    day: 1
+    title_ar: "صياغة رسالة عربية واحدة"
+    title_en: "Draft 1 Arabic message"
+    owner: founder
+    daily_artifact_required: true
+    artifact_kind: "arabic_message_draft"
+    risk_level: medium
+    next_action_kind: deliver_diagnostic
+    approval_points:
+      - founder_message_approval
+
+  - step_id: diag_deliver
+    day: 1
+    title_ar: "تسليم التشخيص للعميل"
+    title_en: "Deliver diagnostic to customer"
+    owner: founder
+    daily_artifact_required: true
+    artifact_kind: "diagnostic_pdf_or_md"
+    risk_level: medium
+    next_action_kind: present_499_offer

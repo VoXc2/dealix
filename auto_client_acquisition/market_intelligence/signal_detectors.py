@@ -16,7 +16,8 @@ from dataclasses import dataclass, field
 from datetime import datetime, timedelta, timezone
 from typing import Any
 
-# ── Signal taxonomy — 16 signal types Dealix tracks ──────────────
+# ── Signal taxonomy — 23 signal types Dealix tracks (Wave 12.5 §33.2.1) ──
+# Original 16 (Wave 8) + 7 new founder-vision signals (Engine 1 v2).
 SIGNAL_TYPES: tuple[str, ...] = (
     "hiring_sales_rep",
     "hiring_marketing",
@@ -34,7 +35,217 @@ SIGNAL_TYPES: tuple[str, ...] = (
     "leadership_change",
     "funding_round",
     "vision2030_alignment",
+    # Wave 12.5 §33.2.1 — 7 new founder-vision signals
+    "weak_website",                    # Lighthouse score ≤50 OR slow load
+    "whatsapp_no_followup_system",     # WhatsApp Business present but no CRM
+    "review_surge",                    # Sudden Google review volume spike
+    "agency_no_proof",                 # Agency claims clients but shows no case studies
+    "high_ticket_b2b_no_sales_process", # >50K SAR offer but no formal sales motion
+    "unused_leads_dormant",             # Leads in CRM not contacted in 60+ days
+    "zatca_phase_2_eligible",           # SAR turnover in Wave 24 bracket (>375K)
 )
+
+
+# ── Per-signal output schema (Wave 12.5 §33.2.1) ─────────────────────
+# Maps each signal_type to the 6 founder-vision output fields:
+# business_pain · best_offer · risk · safe_channel · recommended_action · proof_target
+# Used by opportunity_feed.py to enrich SignalDetection with actionable context.
+SIGNAL_OUTPUT_SCHEMA: dict[str, dict[str, str]] = {
+    "hiring_sales_rep": {
+        "business_pain": "expanding sales team — pipeline pressure rising",
+        "best_offer": "Revenue Proof Sprint",
+        "risk": "no consent for outbound; reach via warm intro only",
+        "safe_channel": "manual_linkedin_or_warm_intro",
+        "recommended_action": "prepare_diagnostic_for_sales_leader",
+        "proof_target": "demo_booked",
+    },
+    "hiring_marketing": {
+        "business_pain": "growth motion forming — needs attribution + funnels",
+        "best_offer": "Growth Ops Monthly",
+        "risk": "no consent for outbound; reach via warm intro only",
+        "safe_channel": "manual_linkedin_or_warm_intro",
+        "recommended_action": "prepare_diagnostic_for_growth_leader",
+        "proof_target": "demo_booked",
+    },
+    "hiring_engineering": {
+        "business_pain": "scaling team — technical debt likely",
+        "best_offer": "Data-to-Revenue Pack",
+        "risk": "may be technical buyer (longer cycle)",
+        "safe_channel": "manual_linkedin_or_warm_intro",
+        "recommended_action": "low_priority_nurture",
+        "proof_target": "diagnostic_delivered",
+    },
+    "new_branch_opened": {
+        "business_pain": "geographic expansion — need lead routing",
+        "best_offer": "Revenue Proof Sprint",
+        "risk": "validate physical presence first",
+        "safe_channel": "manual_warm_intro_via_partner",
+        "recommended_action": "prepare_market_audit",
+        "proof_target": "demo_booked",
+    },
+    "new_service_launched": {
+        "business_pain": "needs go-to-market velocity for new offering",
+        "best_offer": "Revenue Proof Sprint",
+        "risk": "messaging may not be finalized",
+        "safe_channel": "manual_linkedin_or_warm_intro",
+        "recommended_action": "prepare_offer_audit",
+        "proof_target": "demo_booked",
+    },
+    "booking_page_added": {
+        "business_pain": "ready for inbound — may need conversion optimization",
+        "best_offer": "Mini Diagnostic",
+        "risk": "low — indicates buying motion",
+        "safe_channel": "warm_inbound",
+        "recommended_action": "send_diagnostic_offer",
+        "proof_target": "diagnostic_delivered",
+    },
+    "whatsapp_business_added": {
+        "business_pain": "manual WhatsApp ops — no follow-up system",
+        "best_offer": "Growth Ops Monthly",
+        "risk": "verify consent posture before any outreach",
+        "safe_channel": "manual_inbound_only",
+        "recommended_action": "wait_for_inbound_then_diagnostic",
+        "proof_target": "inbound_reply_received",
+    },
+    "ads_volume_increased": {
+        "business_pain": "active acquisition — needs attribution",
+        "best_offer": "Growth Ops Monthly",
+        "risk": "validate ad spend > 5K SAR/mo first",
+        "safe_channel": "manual_linkedin_or_warm_intro",
+        "recommended_action": "prepare_attribution_audit",
+        "proof_target": "demo_booked",
+    },
+    "website_redesigned": {
+        "business_pain": "rebrand or repositioning — likely budget cycle",
+        "best_offer": "Mini Diagnostic",
+        "risk": "may be in build mode; defer",
+        "safe_channel": "manual_warm_intro",
+        "recommended_action": "low_priority_nurture",
+        "proof_target": "diagnostic_delivered",
+    },
+    "exhibition_participation": {
+        "business_pain": "in-market timing — need follow-up automation",
+        "best_offer": "Data-to-Revenue Pack",
+        "risk": "high — many vendors compete post-event",
+        "safe_channel": "manual_warm_intro_via_event_organizer",
+        "recommended_action": "prepare_event_followup_offer",
+        "proof_target": "demo_booked",
+    },
+    "negative_review_spike": {
+        "business_pain": "customer experience crisis — needs Support OS",
+        "best_offer": "Support OS",
+        "risk": "high — they may be defensive",
+        "safe_channel": "manual_warm_intro",
+        "recommended_action": "prepare_support_audit",
+        "proof_target": "diagnostic_delivered",
+    },
+    "sector_pulse_rising": {
+        "business_pain": "sector tailwind — competitors moving fast",
+        "best_offer": "Revenue Proof Sprint",
+        "risk": "low — broad timing",
+        "safe_channel": "manual_linkedin_or_warm_intro",
+        "recommended_action": "prepare_sector_audit",
+        "proof_target": "demo_booked",
+    },
+    "tender_published": {
+        "business_pain": "active procurement — need bid support",
+        "best_offer": "Custom (out of standard catalog)",
+        "risk": "tender process is formal — may not fit Dealix scope",
+        "safe_channel": "official_tender_response_only",
+        "recommended_action": "evaluate_fit_then_decline_or_refer",
+        "proof_target": "evaluation_completed",
+    },
+    "leadership_change": {
+        "business_pain": "new leadership = new strategy = budget review",
+        "best_offer": "Mini Diagnostic",
+        "risk": "high — new leader may have own vendors",
+        "safe_channel": "manual_warm_intro_via_mutual_contact",
+        "recommended_action": "prepare_intro_diagnostic",
+        "proof_target": "intro_meeting_booked",
+    },
+    "funding_round": {
+        "business_pain": "growth pressure post-funding",
+        "best_offer": "Executive Command Center",
+        "risk": "competing for attention — many vendors will reach out",
+        "safe_channel": "manual_warm_intro_via_investor",
+        "recommended_action": "prepare_growth_audit",
+        "proof_target": "demo_booked",
+    },
+    "vision2030_alignment": {
+        "business_pain": "needs Saudi-aligned positioning",
+        "best_offer": "Mini Diagnostic",
+        "risk": "low — broad signal",
+        "safe_channel": "manual_linkedin_or_warm_intro",
+        "recommended_action": "prepare_vision2030_audit",
+        "proof_target": "diagnostic_delivered",
+    },
+    # Wave 12.5 §33.2.1 — 7 new founder-vision signals
+    "weak_website": {
+        "business_pain": "website dragging conversion — high bounce rate likely",
+        "best_offer": "Mini Diagnostic",
+        "risk": "low — non-controversial entry",
+        "safe_channel": "manual_warm_intro",
+        "recommended_action": "prepare_website_audit",
+        "proof_target": "diagnostic_delivered",
+    },
+    "whatsapp_no_followup_system": {
+        "business_pain": "WhatsApp messages drop — no CRM follow-up",
+        "best_offer": "Data-to-Revenue Pack",
+        "risk": "verify they want a CRM (not all do)",
+        "safe_channel": "manual_warm_intro",
+        "recommended_action": "prepare_followup_audit",
+        "proof_target": "demo_booked",
+    },
+    "review_surge": {
+        "business_pain": "high engagement — customer voice scaling",
+        "best_offer": "Support OS",
+        "risk": "validate review sentiment first",
+        "safe_channel": "manual_warm_intro",
+        "recommended_action": "prepare_support_audit",
+        "proof_target": "diagnostic_delivered",
+    },
+    "agency_no_proof": {
+        "business_pain": "agency renewal pressure — needs case studies",
+        "best_offer": "Agency Partner OS",
+        "risk": "low — agencies actively seek proof tools",
+        "safe_channel": "manual_warm_intro",
+        "recommended_action": "prepare_agency_proof_audit",
+        "proof_target": "agency_partnership_call_booked",
+    },
+    "high_ticket_b2b_no_sales_process": {
+        "business_pain": "high-value deals lost to messy sales process",
+        "best_offer": "Revenue Proof Sprint",
+        "risk": "validate deal-size signal first (don't assume)",
+        "safe_channel": "manual_warm_intro",
+        "recommended_action": "prepare_sales_process_audit",
+        "proof_target": "demo_booked",
+    },
+    "unused_leads_dormant": {
+        "business_pain": "money-on-the-table — leads in CRM going stale",
+        "best_offer": "Data-to-Revenue Pack",
+        "risk": "leads may be old/unconsented — verify before re-engagement",
+        "safe_channel": "manual_inbound_only_no_recontact",
+        "recommended_action": "prepare_dormant_lead_audit",
+        "proof_target": "data_to_revenue_engagement",
+    },
+    "zatca_phase_2_eligible": {
+        "business_pain": "ZATCA Phase 2 deadline pressure (June 2026 Wave 24)",
+        "best_offer": "Compliance + Growth Ops Monthly",
+        "risk": "may already have ZATCA solution — verify gap",
+        "safe_channel": "manual_warm_intro_via_compliance_angle",
+        "recommended_action": "prepare_zatca_readiness_audit",
+        "proof_target": "compliance_diagnostic_delivered",
+    },
+}
+
+
+def get_signal_output(signal_type: str) -> dict[str, str]:
+    """Return the 6-field founder-vision output for a signal type.
+
+    Returns an empty dict for unknown signal types (Article 8 — no
+    fabrication of fields the registry doesn't explicitly define).
+    """
+    return SIGNAL_OUTPUT_SCHEMA.get(signal_type, {})
 
 
 @dataclass

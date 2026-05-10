@@ -7,8 +7,27 @@ Rule: No Decision Passport = No Action (enforced by product process; API returns
 from __future__ import annotations
 
 from auto_client_acquisition.decision_passport.builder import build_from_pipeline_result
-from auto_client_acquisition.decision_passport.schema import DecisionPassport
+from auto_client_acquisition.decision_passport.schema import (
+    ActionMode,
+    DecisionPassport,
+    Owner,
+    PriorityBucket,
+    ScoreBoard,
+    ValidationFailure,
+    validate_passport,
+)
 
-__all__ = ["SCHEMA_VERSION", "DecisionPassport", "build_from_pipeline_result"]
+__all__ = [
+    "SCHEMA_VERSION",
+    "DecisionPassport",
+    "build_from_pipeline_result",
+    "validate_passport",
+    "ValidationFailure",
+    "ActionMode",
+    "Owner",
+    "PriorityBucket",
+    "ScoreBoard",
+]
 
-SCHEMA_VERSION = "1.0"
+# Wave 12 §32.3.4 — bumped from 1.0 → 1.1 (added owner / deadline / action_mode).
+SCHEMA_VERSION = "1.1"

@@ -145,7 +145,11 @@ def test_step_04_create_decision_passport():
         next_step_ar="ترتيب مكالمة",
         next_step_en="Schedule a call",
     )
-    assert passport.schema_version == "1.0"
+    # Wave 12 §32.3.4 bumped Decision Passport schema 1.0 → 1.1
+    # (added owner/deadline/action_mode + validate_passport runtime guard).
+    # Accept BOTH versions for back-compat across waves.
+    assert passport.schema_version in ("1.0", "1.1"), \
+        f"unexpected schema_version {passport.schema_version!r}"
     assert passport.priority_bucket == "P1_THIS_WEEK"
 
 

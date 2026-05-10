@@ -1,9 +1,9 @@
 {
   "schema_version": 1,
   "summary": {
-    "total_pages": 45,
+    "total_pages": 48,
     "pages_with_required_gap": 0,
-    "pages_with_advisory_gap": 1
+    "pages_with_advisory_gap": 4
   },
   "required_checks": [
     "title",
@@ -27,6 +27,22 @@
   "pages": [
     {
       "path": "academy.html",
+      "present": {
+        "title": true,
+        "meta_description": true,
+        "meta_viewport": true,
+        "html_lang": true,
+        "html_dir": true,
+        "canonical": true,
+        "og_title": true,
+        "og_description": true,
+        "twitter_card": true
+      },
+      "missing_required": [],
+      "missing_advisory": []
+    },
+    {
+      "path": "agency-partner.html",
       "present": {
         "title": true,
         "meta_description": true,
@@ -88,6 +104,45 @@
       },
       "missing_required": [],
       "missing_advisory": []
+    },
+    {
+      "path": "checkout-success.html",
+      "present": {
+        "title": true,
+        "meta_description": true,
+        "meta_viewport": true,
+        "html_lang": true,
+        "html_dir": true,
+        "canonical": true,
+        "og_title": false,
+        "og_description": false,
+        "twitter_card": false
+      },
+      "missing_required": [],
+      "missing_advisory": [
+        "og_title",
+        "og_description",
+        "twitter_card"
+      ]
+    },
+    {
+      "path": "checkout.html",
+      "present": {
+        "title": true,
+        "meta_description": true,
+        "meta_viewport": true,
+        "html_lang": true,
+        "html_dir": true,
+        "canonical": true,
+        "og_title": true,
+        "og_description": false,
+        "twitter_card": false
+      },
+      "missing_required": [],
+      "missing_advisory": [
+        "og_description",
+        "twitter_card"
+      ]
     },
     {
       "path": "command-center.html",
@@ -439,12 +494,16 @@
         "html_lang": true,
         "html_dir": true,
         "canonical": true,
-        "og_title": true,
-        "og_description": true,
-        "twitter_card": true
+        "og_title": false,
+        "og_description": false,
+        "twitter_card": false
       },
       "missing_required": [],
-      "missing_advisory": []
+      "missing_advisory": [
+        "og_title",
+        "og_description",
+        "twitter_card"
+      ]
     },
     {
       "path": "pay-per-result.html",
