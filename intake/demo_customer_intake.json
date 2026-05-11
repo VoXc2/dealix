@@ -1,0 +1,16 @@
+{
+  "company_name": "Riyadh Healthcare Group",
+  "sector": "healthcare",
+  "company_size": 320,
+  "current_systems": ["CRM", "Helpdesk", "ERP"],
+  "data_sources": ["support_tickets", "crm_contacts", "call_logs"],
+  "decision_owner": "COO",
+  "budget_range_sar": "500000-1200000",
+  "target_deadline": "2026-08-31",
+  "security_constraints": ["PDPL", "internal security policy"],
+  "success_metric": "ticket_deflection_rate",
+  "final_acceptance_signer": "Chief Operating Officer",
+  "monthly_tickets": 50000,
+  "avg_agent_cost_sar": 18,
+  "automation_rate": 0.42
+}

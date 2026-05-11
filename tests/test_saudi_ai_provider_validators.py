@@ -46,3 +46,9 @@ def test_validate_runtime_script_passes() -> None:
     result = run_script("scripts/validate_runtime.py")
     assert result.returncode == 0, result.stdout + result.stderr
     assert "RUNTIME_VALIDATION=PASS" in result.stdout
+
+
+def test_validate_commercialization_script_passes() -> None:
+    result = run_script("scripts/validate_commercialization.py")
+    assert result.returncode == 0, result.stdout + result.stderr
+    assert "COMMERCIALIZATION_VALIDATION=PASS" in result.stdout

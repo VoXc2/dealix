@@ -50,3 +50,6 @@ jobs:
 
       - name: Runtime validation
         run: python3 scripts/validate_runtime.py
+
+      - name: Commercialization validation
+        run: python3 scripts/validate_commercialization.py

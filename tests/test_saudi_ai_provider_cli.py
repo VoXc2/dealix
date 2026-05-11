@@ -77,3 +77,40 @@ def test_roi_and_generate_offer_commands() -> None:
     )
     assert generated.returncode == 0, generated.stdout + generated.stderr
     assert "offer:" in generated.stdout
+
+
+def test_proposal_dashboard_and_recurring_commands() -> None:
+    proposal = run_cmd(
+        "proposal",
+        "--service",
+        "CUSTOMER_PORTAL_GOLD",
+        "--intake-file",
+        "intake/demo_customer_intake.json",
+        "--lang",
+        "ar",
+    )
+    assert proposal.returncode == 0, proposal.stdout + proposal.stderr
+    assert "proposal:" in proposal.stdout
+    assert "pricing_sheet:" in proposal.stdout
+
+    dashboard = run_cmd(
+        "dashboard-export",
+        "--metrics-json",
+        "dashboard/sample_metrics.json",
+    )
+    assert dashboard.returncode == 0, dashboard.stdout + dashboard.stderr
+    assert "executive_dashboard:" in dashboard.stdout
+
+    recurring = run_cmd(
+        "recurring-model",
+        "--setup-fee",
+        "45000",
+        "--monthly",
+        "18000",
+        "--months",
+        "12",
+        "--expansion-rate",
+        "0.08",
+    )
+    assert recurring.returncode == 0, recurring.stdout + recurring.stderr
+    assert "Projected Total Revenue" in recurring.stdout

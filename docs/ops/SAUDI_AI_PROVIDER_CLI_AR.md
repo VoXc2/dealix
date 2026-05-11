@@ -11,6 +11,9 @@
 - `python3 -m saudi_ai_provider offer --service CUSTOMER_PORTAL_GOLD --segment smb --lang ar`
 - `python3 -m saudi_ai_provider generate-offer --service SECURITY_GOLD --segment enterprise --industry banking --lang ar`
 - `python3 -m saudi_ai_provider roi --service CUSTOMER_PORTAL_GOLD --tickets 50000 --agent-cost 18 --automation-rate 0.42`
+- `python3 -m saudi_ai_provider proposal --service CUSTOMER_PORTAL_GOLD --intake-file intake/demo_customer_intake.json --lang ar`
+- `python3 -m saudi_ai_provider dashboard-export --metrics-json dashboard/sample_metrics.json`
+- `python3 -m saudi_ai_provider recurring-model --setup-fee 45000 --monthly 18000 --months 12 --expansion-rate 0.08`
 
 سكربتات التحقق:
 
@@ -19,4 +22,5 @@
 - `python3 scripts/validate_playbooks.py`
 - `python3 scripts/validate_governance.py`
 - `python3 scripts/validate_runtime.py`
+- `python3 scripts/validate_commercialization.py`
 - `bash scripts/saudi_ai_provider_verify.sh`

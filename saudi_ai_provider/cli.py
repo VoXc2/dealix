@@ -3,8 +3,12 @@
 from __future__ import annotations
 
 import argparse
+import json
+from pathlib import Path
 from typing import Sequence
 
+from .commercial import compute_recurring_model, generate_customer_proposal_bundle, load_intake
+from .dashboards import export_dashboard_bundle
 from .kpis import kpis_for_service
 from .offers import build_pitch, generate_offer
 from .pricing import compute_roi, package_for_segment, quote_service
@@ -126,6 +130,48 @@ def _cmd_roi(args: argparse.Namespace) -> int:
     return 0
 
 
+def _cmd_proposal(args: argparse.Namespace) -> int:
+    intake = load_intake(Path(args.intake_file))
+    outputs = generate_customer_proposal_bundle(
+        service_id=args.service,
+        intake=intake,
+        lang=args.lang,
+        segment=args.segment,
+    )
+    for key, path in outputs.items():
+        print(f"{key}: {path}")
+    return 0
+
+
+def _cmd_dashboard_export(args: argparse.Namespace) -> int:
+    metrics: dict = {}
+    if args.metrics_json:
+        metrics = json.loads(Path(args.metrics_json).read_text(encoding="utf-8"))
+    outputs = export_dashboard_bundle(
+        output_dir=Path(args.output_dir) if args.output_dir else None,
+        metrics=metrics,
+    )
+    for key, path in outputs.items():
+        print(f"{key}: {path}")
+    return 0
+
+
+def _cmd_recurring_model(args: argparse.Namespace) -> int:
+    result = compute_recurring_model(
+        setup_fee_sar=args.setup_fee,
+        monthly_retainer_sar=args.monthly,
+        months=args.months,
+        expansion_rate=args.expansion_rate,
+    )
+    print(f"Setup Fee: {result.setup_fee_sar} SAR")
+    print(f"Monthly Retainer: {result.monthly_retainer_sar} SAR")
+    print(f"Months: {result.months}")
+    print(f"Expansion Rate: {result.expansion_rate:.2%}")
+    print(f"Projected Total Revenue: {result.total_revenue_sar} SAR")
+    print(f"Projected ARR Run Rate: {result.arr_run_rate_sar} SAR")
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="python -m saudi_ai_provider",
@@ -192,6 +238,31 @@ def build_parser() -> argparse.ArgumentParser:
     roi.add_argument("--monthly-pipeline-sar", type=float, default=0.0)
     roi.add_argument("--conversion-lift-rate", type=float, default=0.0)
     roi.set_defaults(func=_cmd_roi)
+
+    proposal = sub.add_parser("proposal", help="Generate customer-specific proposal bundle")
+    proposal.add_argument("--service", required=True)
+    proposal.add_argument("--intake-file", required=True)
+    proposal.add_argument("--segment", choices=["smb", "mid_market", "enterprise"])
+    proposal.add_argument("--lang", choices=["ar", "en"], default="ar")
+    proposal.set_defaults(func=_cmd_proposal)
+
+    dashboard = sub.add_parser(
+        "dashboard-export",
+        help="Export executive/sales/delivery/risk dashboard JSON files",
+    )
+    dashboard.add_argument("--metrics-json")
+    dashboard.add_argument("--output-dir")
+    dashboard.set_defaults(func=_cmd_dashboard_export)
+
+    recurring = sub.add_parser(
+        "recurring-model",
+        help="Project recurring managed-operations revenue model",
+    )
+    recurring.add_argument("--setup-fee", type=float, required=True)
+    recurring.add_argument("--monthly", type=float, required=True)
+    recurring.add_argument("--months", type=int, default=12)
+    recurring.add_argument("--expansion-rate", type=float, default=0.05)
+    recurring.set_defaults(func=_cmd_recurring_model)
 
     return parser
 

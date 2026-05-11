@@ -1,0 +1,18 @@
+{
+  "arr_sar": 4200000,
+  "pipeline_sar": 9800000,
+  "gross_margin": 0.66,
+  "sla_compliance": 0.94,
+  "warm_intros": 42,
+  "demo_booked": 16,
+  "proposal_sent": 11,
+  "close_rate": 0.36,
+  "deployment_velocity": 7,
+  "on_time_delivery_rate": 0.91,
+  "blocker_count": 3,
+  "incident_count": 2,
+  "critical_incidents": 0,
+  "policy_violations": 0,
+  "pii_leakage_incidents": 0,
+  "compliance_score": 0.93
+}
