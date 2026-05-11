@@ -1,0 +1,1050 @@
+{
+  "schema_version": "2.0",
+  "catalog_id": "dealix_saudi_ai_service_provider_v2",
+  "positioning": {
+    "headline_ar": "Dealix = Saudi AI Revenue Command Center",
+    "value_proposition_ar": "طبقة تشغيل نمو وإيراد للشركات السعودية: رادار سوق + عقل شركة + قرارات معتمدة + تنفيذ + إثبات + توسع.",
+    "target_customer_ar": "شركات سعودية B2B وB2C تحتاج نتائج تشغيلية قابلة للقياس مع حوكمة.",
+    "core_chain": [
+      "market_signal",
+      "lead",
+      "company_brain_context",
+      "decision_passport",
+      "approval",
+      "safe_action",
+      "delivery",
+      "proof_event",
+      "expansion",
+      "learning"
+    ]
+  },
+  "strategy_principles": [
+    "workflow_first_not_chatbot",
+    "outcome_first_not_feature_first",
+    "evidence_before_expansion",
+    "approval_before_external_action",
+    "arabic_first_customer_experience",
+    "compliance_by_design_pdpl_and_trust"
+  ],
+  "hard_rules": [
+    "no_cold_whatsapp",
+    "no_linkedin_automation",
+    "no_scraping",
+    "no_live_send_without_approval",
+    "no_live_charge_without_approval",
+    "no_fake_proof",
+    "no_fake_revenue"
+  ],
+  "research_context": [
+    {
+      "source": "BCG 2025 - How Agentic AI Is Transforming Enterprise Platforms",
+      "url": "https://www.bcg.com/publications/2025/how-agentic-ai-is-transforming-enterprise-platforms",
+      "insight": "AI-powered workflows can accelerate business processes by 30% to 50% when deployed with governance.",
+      "strategic_implication_ar": "نصمم الخدمات كـ workflows مع حوكمة تشغيلية بدلا من مساعد محادثة عام."
+    },
+    {
+      "source": "McKinsey State of AI 2025",
+      "url": "https://www.mckinsey.com/~/media/mckinsey/business%20functions/quantumblack/our%20insights/the%20state%20of%20ai/2025/the-state-of-ai-how-organizations-are-rewiring-to-capture-value_final.pdf",
+      "insight": "Workflow redesign and CEO-level governance are strongly correlated with bottom-line impact.",
+      "strategic_implication_ar": "نربط كل خدمة بمؤشرات ربحية واضحة وإشراف تنفيذي داخل العميل."
+    },
+    {
+      "source": "Gartner Press Release 2025-03-05",
+      "url": "https://www.gartner.com/en/newsroom/press-releases/2025-03-05-gartner-predicts-agentic-ai-will-autonomously-resolve-80-percent-of-common-customer-service-issues-without-human-intervention-by-20290",
+      "insight": "Agentic AI can automate a large share of common service interactions with cost reduction potential.",
+      "strategic_implication_ar": "نبني Support OS على أتمتة الحالات المتكررة مع تصعيد بشري للحالات الحساسة."
+    },
+    {
+      "source": "Monshaat SME target reference",
+      "url": "https://www.monshaat.gov.sa/ar/node/2402",
+      "insight": "Saudi SME contribution target toward 35% by 2030 creates demand for measurable growth systems.",
+      "strategic_implication_ar": "نركز على شركات تتوسع وتحتاج طبقة تشغيل نمو منضبطة في السوق السعودي."
+    }
+  ],
+  "service_lines": [
+    {
+      "line_id": "market_radar",
+      "engine_name_ar": "Saudi Market Radar",
+      "line_outcome_ar": "التقاط إشارات السوق السعودية وتحويلها لفرص Why-Now.",
+      "services": [
+        {
+          "id": "market_radar_foundation",
+          "tier": "foundation",
+          "name_ar": "تهيئة رادار السوق",
+          "problem_ar": "العميل لا يرى إشارات السوق مبكرا.",
+          "decision_ar": "ما أهم قطاع أو موسم يجب التحرك فيه هذا الأسبوع؟",
+          "execution_ar": [
+            "تفعيل مصادر الإشارات المسموحة",
+            "تصنيف الإشارات حسب القطاع والموسمية",
+            "إصدار قائمة فرص يومية مرتبة"
+          ],
+          "proof_ar": [
+            "عدد الإشارات المؤهلة أسبوعيا",
+            "زمن التحول من إشارة إلى قرار"
+          ],
+          "expansion_next_ar": [
+            "ربط الرادار بمسار Lead Intelligence"
+          ],
+          "action_mode": "suggest_only",
+          "delivery_window_days": 7,
+          "kpis": [
+            "qualified_signals_count",
+            "signal_to_decision_hours"
+          ]
+        },
+        {
+          "id": "market_radar_managed",
+          "tier": "managed",
+          "name_ar": "إدارة رادار السوق",
+          "problem_ar": "الإشارات موجودة لكن لا تتحول لخطة مبيعات.",
+          "decision_ar": "ما أفضل عرض لكل إشارة ولماذا الآن؟",
+          "execution_ar": [
+            "ربط الإشارة بـ pain + offer",
+            "اقتراح قناة تواصل آمنة",
+            "تسليم Brief أسبوعي للفريق التجاري"
+          ],
+          "proof_ar": [
+            "نسبة إشارات تحولت إلى Leads",
+            "نسبة Leads ذات أولوية P0/P1"
+          ],
+          "expansion_next_ar": [
+            "تفعيل Decision Passport لكل فرصة"
+          ],
+          "action_mode": "draft_only",
+          "delivery_window_days": 30,
+          "kpis": [
+            "signal_to_lead_rate",
+            "high_priority_lead_ratio"
+          ]
+        },
+        {
+          "id": "market_radar_command",
+          "tier": "command",
+          "name_ar": "غرفة قيادة رادار السوق",
+          "problem_ar": "الإدارة تحتاج قرارات سوقية سريعة عبر قناة موحدة.",
+          "decision_ar": "ما أهم 5 فرص سوقية تتطلب اعتماد الإدارة اليوم؟",
+          "execution_ar": [
+            "إرسال موجز تنفيذي يومي",
+            "بناء سيناريوهات قرار مع المخاطر",
+            "إدراج الاعتمادات في Queue موحد"
+          ],
+          "proof_ar": [
+            "سرعة اعتماد الفرص",
+            "معدل تنفيذ قرارات الرادار"
+          ],
+          "expansion_next_ar": [
+            "دمج الرادار مع Executive Command Center"
+          ],
+          "action_mode": "approval_required",
+          "delivery_window_days": 60,
+          "kpis": [
+            "decision_cycle_time",
+            "approved_opportunity_execution_rate"
+          ]
+        }
+      ]
+    },
+    {
+      "line_id": "lead_intelligence",
+      "engine_name_ar": "Lead Intelligence",
+      "line_outcome_ar": "تحويل البيانات الخام إلى Leads عالية الجاهزية.",
+      "services": [
+        {
+          "id": "lead_intelligence_foundation",
+          "tier": "foundation",
+          "name_ar": "تنظيف وتحقيق مصدر البيانات",
+          "problem_ar": "قاعدة البيانات مليئة بالتكرار وضعف الجودة.",
+          "decision_ar": "من هي الجهات التي يجب العمل عليها الآن؟",
+          "execution_ar": [
+            "تنظيف البيانات وإزالة التكرار",
+            "توثيق المصدر والتتبع لكل lead",
+            "تصنيف الأولوية P0-P3"
+          ],
+          "proof_ar": [
+            "تحسن جودة البيانات",
+            "عدد leads القابلة للتنفيذ"
+          ],
+          "expansion_next_ar": [
+            "إضافة scoring متعدد الأبعاد"
+          ],
+          "action_mode": "suggest_only",
+          "delivery_window_days": 10,
+          "kpis": [
+            "data_quality_score",
+            "dedupe_rate"
+          ]
+        },
+        {
+          "id": "lead_intelligence_managed",
+          "tier": "managed",
+          "name_ar": "Lead Intelligence مُدار",
+          "problem_ar": "الأولوية غير واضحة للفريق التجاري.",
+          "decision_ar": "أي leads تذهب للمبيعات هذا اليوم؟",
+          "execution_ar": [
+            "احتساب درجات fit/intent/urgency",
+            "تحديد warm route المناسب",
+            "تحديث board يومي للمبيعات"
+          ],
+          "proof_ar": [
+            "ارتفاع معدل الردود",
+            "تحسن نسبة حجز الاجتماعات"
+          ],
+          "expansion_next_ar": [
+            "ربط كل lead بجواز قرار"
+          ],
+          "action_mode": "draft_only",
+          "delivery_window_days": 30,
+          "kpis": [
+            "reply_rate_lift",
+            "demo_booked_rate"
+          ]
+        },
+        {
+          "id": "lead_intelligence_command",
+          "tier": "command",
+          "name_ar": "قيادة استخبارات الإيراد",
+          "problem_ar": "الإدارة تريد رؤية موحدة للـ pipeline والمخاطر.",
+          "decision_ar": "ما القرارات اليومية التي تفتح إيراد أسرع؟",
+          "execution_ar": [
+            "تجميع pipeline حسب الأثر الربحي",
+            "وضع مخاطر القناة والامتثال",
+            "موجز اعتمادات يومي للإدارة"
+          ],
+          "proof_ar": [
+            "تحسن velocity في pipeline",
+            "انخفاض فرص ضائعة بسبب بطء القرار"
+          ],
+          "expansion_next_ar": [
+            "الانتقال إلى Delivery OS الكامل"
+          ],
+          "action_mode": "approval_required",
+          "delivery_window_days": 60,
+          "kpis": [
+            "pipeline_velocity",
+            "lost_opportunity_reduction"
+          ]
+        }
+      ]
+    },
+    {
+      "line_id": "company_brain",
+      "engine_name_ar": "Company Brain",
+      "line_outcome_ar": "ذاكرة تشغيلية لكل عميل تقلل الفوضى وتزيد الدقة.",
+      "services": [
+        {
+          "id": "company_brain_foundation",
+          "tier": "foundation",
+          "name_ar": "تأسيس Company Brain",
+          "problem_ar": "الفريق يعيد شرح هوية الشركة وعروضها في كل مرة.",
+          "decision_ar": "ما السياق الصحيح قبل أي رسالة أو قرار؟",
+          "execution_ar": [
+            "جمع نبرة الشركة والعروض والقيود",
+            "توثيق قنوات مسموحة وممنوعة",
+            "إنشاء baseline للذاكرة التشغيلية"
+          ],
+          "proof_ar": [
+            "انخفاض أخطاء الرسائل",
+            "اتساق أعلى في المخرجات"
+          ],
+          "expansion_next_ar": [
+            "ربط الذاكرة بجوازات القرار"
+          ],
+          "action_mode": "draft_only",
+          "delivery_window_days": 7,
+          "kpis": [
+            "message_consistency_score",
+            "context_reuse_rate"
+          ]
+        },
+        {
+          "id": "company_brain_managed",
+          "tier": "managed",
+          "name_ar": "تحديث ذاكرة الشركة المستمر",
+          "problem_ar": "المعرفة لا تتحدث مع تغير السوق والعملاء.",
+          "decision_ar": "ما الذي تغير ويجب عكسه فوراً في التنفيذ؟",
+          "execution_ar": [
+            "تحديث أسبوعي للعروض والاعتراضات",
+            "تسجيل ما نجح وما فشل",
+            "ربط أحداث الدعم والـ proof بالذاكرة"
+          ],
+          "proof_ar": [
+            "تقليل إعادة العمل",
+            "تحسن جودة التوصيات"
+          ],
+          "expansion_next_ar": [
+            "تفعيل نمط توصية توسع تلقائي"
+          ],
+          "action_mode": "approval_required",
+          "delivery_window_days": 30,
+          "kpis": [
+            "rework_reduction",
+            "recommendation_acceptance_rate"
+          ]
+        },
+        {
+          "id": "company_brain_command",
+          "tier": "command",
+          "name_ar": "غرفة قيادة Company Brain",
+          "problem_ar": "الإدارة تحتاج طبقة معرفة موحدة عبر كل الأقسام.",
+          "decision_ar": "كيف تؤثر تحديثات المعرفة على الإيراد والتنفيذ؟",
+          "execution_ar": [
+            "تقرير Executive أسبوعي للتغيرات",
+            "تنبيهات فورية للقيود الحرجة",
+            "ربط معرفي مع radar وsupport وproof"
+          ],
+          "proof_ar": [
+            "انخفاض قرارات متضاربة",
+            "ارتفاع سرعة الإطلاق التشغيلي"
+          ],
+          "expansion_next_ar": [
+            "ربط كامل مع Learning Flywheel"
+          ],
+          "action_mode": "approval_required",
+          "delivery_window_days": 60,
+          "kpis": [
+            "decision_conflict_reduction",
+            "cross_team_alignment_score"
+          ]
+        }
+      ]
+    },
+    {
+      "line_id": "decision_passport",
+      "engine_name_ar": "Decision Passport",
+      "line_outcome_ar": "تحويل كل فرصة أو مخاطرة إلى قرار قابل للتنفيذ.",
+      "services": [
+        {
+          "id": "decision_passport_foundation",
+          "tier": "foundation",
+          "name_ar": "تهيئة جواز القرار",
+          "problem_ar": "القرارات تتخذ بلا سبب واضح أو مالك أو موعد.",
+          "decision_ar": "هل هذا الإجراء جاهز للتنفيذ أم يحتاج إغلاق فجوات؟",
+          "execution_ar": [
+            "إلزام حقول why_now/owner/deadline/proof_target",
+            "بناء قوالب lead/support/upsell/risk",
+            "منع أي إجراء بدون جواز صالح"
+          ],
+          "proof_ar": [
+            "اكتمال الجوازات قبل التنفيذ",
+            "انخفاض الإجراءات غير الموثقة"
+          ],
+          "expansion_next_ar": [
+            "تفعيل anti-waste على كل جواز"
+          ],
+          "action_mode": "approval_required",
+          "delivery_window_days": 7,
+          "kpis": [
+            "passport_completeness_rate",
+            "non_compliant_action_rate"
+          ]
+        },
+        {
+          "id": "decision_passport_managed",
+          "tier": "managed",
+          "name_ar": "تشغيل جواز القرار",
+          "problem_ar": "الفريق يملك جوازات لكن لا يستخدمها في الأولويات اليومية.",
+          "decision_ar": "ما الجوازات التي يجب اعتمادها هذا الأسبوع؟",
+          "execution_ar": [
+            "ترتيب جوازات القرار حسب الأثر",
+            "تغذية Queue الاعتماد يوميا",
+            "ربط كل جواز بـ action mode"
+          ],
+          "proof_ar": [
+            "تحسن سرعة الانتقال من قرار لفعل",
+            "تقليل bottlenecks الإدارية"
+          ],
+          "expansion_next_ar": [
+            "ربط الجواز بمؤشرات الربحية"
+          ],
+          "action_mode": "approval_required",
+          "delivery_window_days": 30,
+          "kpis": [
+            "passport_to_action_cycle",
+            "approval_bottleneck_count"
+          ]
+        },
+        {
+          "id": "decision_passport_command",
+          "tier": "command",
+          "name_ar": "قيادة جواز القرار التنفيذي",
+          "problem_ar": "الإدارة تحتاج رؤية مبررات القرارات عالية الحساسية.",
+          "decision_ar": "ما القرارات الحرجة التي تتطلب موافقة فورية؟",
+          "execution_ar": [
+            "لوحة قرارات حساسة يومية",
+            "سياسات تصعيد متعددة المستويات",
+            "سجل تدقيق كامل لكل قرار"
+          ],
+          "proof_ar": [
+            "زمن اعتماد القرارات الحرجة",
+            "تتبع كامل للقرارات والتصعيد"
+          ],
+          "expansion_next_ar": [
+            "دمج مع Governance Board"
+          ],
+          "action_mode": "approval_required",
+          "delivery_window_days": 60,
+          "kpis": [
+            "critical_approval_sla",
+            "audit_trace_completeness"
+          ]
+        }
+      ]
+    },
+    {
+      "line_id": "whatsapp_decision_layer",
+      "engine_name_ar": "WhatsApp Decision Layer",
+      "line_outcome_ar": "واجهة قرارات سريعة وآمنة للإدارة والفِرق.",
+      "services": [
+        {
+          "id": "whatsapp_decision_layer_foundation",
+          "tier": "foundation",
+          "name_ar": "تهيئة طبقة قرار واتساب",
+          "problem_ar": "القرار اليومي بطيء ومشتت بين أدوات كثيرة.",
+          "decision_ar": "ما الذي يحتاج اعتماد اليوم من الهاتف مباشرة؟",
+          "execution_ar": [
+            "Daily Brief عربي مختصر",
+            "أوامر اعتماد/رفض منظمة",
+            "ربط الأوامر بـ suggest/draft/approval"
+          ],
+          "proof_ar": [
+            "انخفاض زمن الرد على الاعتماد",
+            "ارتفاع نسبة القرارات المغلقة يوميا"
+          ],
+          "expansion_next_ar": [
+            "ربط بالـ Support Summary"
+          ],
+          "action_mode": "approval_required",
+          "delivery_window_days": 7,
+          "kpis": [
+            "approval_response_time",
+            "daily_decision_closure_rate"
+          ]
+        },
+        {
+          "id": "whatsapp_decision_layer_managed",
+          "tier": "managed",
+          "name_ar": "إدارة قرارات واتساب",
+          "problem_ar": "المدير يتلقى تنبيهات كثيرة بلا ترتيب أولوية.",
+          "decision_ar": "ما أهم قرار الآن بناءً على أثر الإيراد؟",
+          "execution_ar": [
+            "ترتيب التنبيهات حسب impact",
+            "موجز فرص ومخاطر يومي",
+            "تجميع المعلقات والتصعيد"
+          ],
+          "proof_ar": [
+            "تحسن تركيز الإدارة على القرارات الأعلى أثر",
+            "انخفاض القرارات المتأخرة"
+          ],
+          "expansion_next_ar": [
+            "دمج كامل مع Executive Command Center"
+          ],
+          "action_mode": "approval_required",
+          "delivery_window_days": 30,
+          "kpis": [
+            "high_impact_decision_share",
+            "overdue_decision_reduction"
+          ]
+        },
+        {
+          "id": "whatsapp_decision_layer_command",
+          "tier": "command",
+          "name_ar": "قيادة قرارات واتساب متعددة الأدوار",
+          "problem_ar": "الإدارة والمبيعات والدعم تحتاج أوامر دورية منفصلة.",
+          "decision_ar": "كيف نفعّل دور-مبني لاتخاذ القرار دون فوضى؟",
+          "execution_ar": [
+            "قواميس أوامر حسب الدور",
+            "صلاحيات مخصصة لكل دور",
+            "تقارير امتثال للأوامر المنفذة"
+          ],
+          "proof_ar": [
+            "وضوح أعلى للصلاحيات",
+            "انخفاض الأوامر غير الصالحة"
+          ],
+          "expansion_next_ar": [
+            "توسيع الاستخدام إلى وحدات إضافية"
+          ],
+          "action_mode": "approval_required",
+          "delivery_window_days": 60,
+          "kpis": [
+            "role_command_accuracy",
+            "invalid_command_rate"
+          ]
+        }
+      ]
+    },
+    {
+      "line_id": "action_approval_engine",
+      "engine_name_ar": "Action & Approval Engine",
+      "line_outcome_ar": "تنفيذ آمن قابل للتدقيق لكل إجراء.",
+      "services": [
+        {
+          "id": "action_approval_engine_foundation",
+          "tier": "foundation",
+          "name_ar": "تشغيل محرك الإجراءات المعتمدة",
+          "problem_ar": "الإجراءات تُنفذ بلا سياسات أو سجل تدقيق.",
+          "decision_ar": "هل الإجراء آمن ومصرح قبل التنفيذ؟",
+          "execution_ar": [
+            "تطبيق policy gate + consent check",
+            "تعريف action modes المسموحة",
+            "تسجيل تدقيق لكل محاولة تنفيذ"
+          ],
+          "proof_ar": [
+            "انخفاض مخالفات السياسة",
+            "اكتمال سجلات التدقيق"
+          ],
+          "expansion_next_ar": [
+            "إضافة تصنيفات مخاطر ديناميكية"
+          ],
+          "action_mode": "approval_required",
+          "delivery_window_days": 10,
+          "kpis": [
+            "policy_violation_rate",
+            "audit_log_coverage"
+          ]
+        },
+        {
+          "id": "action_approval_engine_managed",
+          "tier": "managed",
+          "name_ar": "إدارة Queue الاعتمادات",
+          "problem_ar": "تكدس طلبات الاعتماد يبطئ التنفيذ.",
+          "decision_ar": "ما الطلبات التي تُعتمد تلقائيا وما يحتاج تدخل بشري؟",
+          "execution_ar": [
+            "SLA لاعتمادات الإجراءات",
+            "تصعيد تلقائي للطلبات المتأخرة",
+            "لوحة مراقبة لحالة الاعتماد"
+          ],
+          "proof_ar": [
+            "تقليل زمن دورة الاعتماد",
+            "تحسن الالتزام بـ SLA"
+          ],
+          "expansion_next_ar": [
+            "دمج queue مع WhatsApp Decision Layer"
+          ],
+          "action_mode": "approval_required",
+          "delivery_window_days": 30,
+          "kpis": [
+            "approval_queue_sla",
+            "approval_cycle_time"
+          ]
+        },
+        {
+          "id": "action_approval_engine_command",
+          "tier": "command",
+          "name_ar": "مركز قيادة المخاطر والإجراءات",
+          "problem_ar": "الإدارة تحتاج رؤية شاملة لحركة التنفيذ والمخاطر.",
+          "decision_ar": "كيف نوازن السرعة مع الأمان على مستوى الشركة؟",
+          "execution_ar": [
+            "تصنيف المخاطر حسب الأثر",
+            "توزيع سقوف صلاحيات ديناميكية",
+            "تقارير board-ready للتدقيق"
+          ],
+          "proof_ar": [
+            "تحسن جودة القرارات عالية الحساسية",
+            "انخفاض الحوادث التشغيلية"
+          ],
+          "expansion_next_ar": [
+            "ربط المحرك بمنصة حوكمة مؤسسية"
+          ],
+          "action_mode": "approval_required",
+          "delivery_window_days": 60,
+          "kpis": [
+            "high_risk_incident_rate",
+            "control_effectiveness_score"
+          ]
+        }
+      ]
+    },
+    {
+      "line_id": "delivery_os",
+      "engine_name_ar": "Delivery OS",
+      "line_outcome_ar": "تحويل الخطط إلى تسليم يومي منضبط وقابل للقياس.",
+      "services": [
+        {
+          "id": "delivery_os_foundation",
+          "tier": "foundation",
+          "name_ar": "تهيئة Workflows التسليم",
+          "problem_ar": "التنفيذ غير منظم ولا يوجد مالك واضح لكل خطوة.",
+          "decision_ar": "ما أول workflow يجب تفعيله للعميل؟",
+          "execution_ar": [
+            "تفعيل Onboarding + Diagnostic workflow",
+            "تحديد owner/deadline لكل مهمة",
+            "توحيد المخرجات المطلوبة يوميا"
+          ],
+          "proof_ar": [
+            "نسبة المهام المغلقة في وقتها",
+            "وضوح المخرجات لكل يوم"
+          ],
+          "expansion_next_ar": [
+            "تفعيل 7-Day Revenue Proof Sprint"
+          ],
+          "action_mode": "draft_only",
+          "delivery_window_days": 7,
+          "kpis": [
+            "on_time_task_rate",
+            "workflow_completion_rate"
+          ]
+        },
+        {
+          "id": "delivery_os_managed",
+          "tier": "managed",
+          "name_ar": "إدارة Delivery OS",
+          "problem_ar": "الخطط تتأخر بسبب غياب متابعة تنفيذ يومية.",
+          "decision_ar": "ما المهام الحرجة التي يجب تصعيدها اليوم؟",
+          "execution_ar": [
+            "متابعة يومية للـ workflow",
+            "تنبيهات تعثر execution",
+            "تقرير أسبوعي للحالة والتأخير"
+          ],
+          "proof_ar": [
+            "انخفاض التأخير التراكمي",
+            "تحسن قابلية التنبؤ بالتسليم"
+          ],
+          "expansion_next_ar": [
+            "ربط التسليم بمؤشرات الربح"
+          ],
+          "action_mode": "approval_required",
+          "delivery_window_days": 30,
+          "kpis": [
+            "delay_reduction_rate",
+            "delivery_predictability_score"
+          ]
+        },
+        {
+          "id": "delivery_os_command",
+          "tier": "command",
+          "name_ar": "قيادة التسليم التنفيذي",
+          "problem_ar": "الإدارة تحتاج رؤية مباشرة للتقدم والمخاطر التشغيلية.",
+          "decision_ar": "ما قرارات التدخل التي تضمن تحقيق النتائج؟",
+          "execution_ar": [
+            "لوحة تنفيذ تنفيذية يومية",
+            "نظام تصعيد متعدد المستويات",
+            "ربط حالة التسليم مع proof ledger"
+          ],
+          "proof_ar": [
+            "ارتفاع الالتزام بالمواعيد الحرجة",
+            "انخفاض فشل التسليم"
+          ],
+          "expansion_next_ar": [
+            "تفعيل نموذج Delivery-as-a-Service"
+          ],
+          "action_mode": "approval_required",
+          "delivery_window_days": 60,
+          "kpis": [
+            "critical_milestone_hit_rate",
+            "delivery_failure_rate"
+          ]
+        }
+      ]
+    },
+    {
+      "line_id": "support_cs_os",
+      "engine_name_ar": "Support & Customer Success OS",
+      "line_outcome_ar": "رفع جودة الدعم وربطه بالاحتفاظ والتوسع.",
+      "services": [
+        {
+          "id": "support_cs_os_foundation",
+          "tier": "foundation",
+          "name_ar": "تصنيف وتحكم دعم العملاء",
+          "problem_ar": "تذاكر الدعم غير مصنفة وتسبب فقد رضا العملاء.",
+          "decision_ar": "ما الحالات التي تحتاج رد فوري وما يحتاج تصعيد؟",
+          "execution_ar": [
+            "تصنيف التذاكر حسب الأولوية",
+            "اقتراح ردود draft-only",
+            "تفعيل خرائط root cause"
+          ],
+          "proof_ar": [
+            "زمن الرد الأول",
+            "نسبة الالتزام بـ SLA"
+          ],
+          "expansion_next_ar": [
+            "إضافة customer health scoring"
+          ],
+          "action_mode": "draft_only",
+          "delivery_window_days": 10,
+          "kpis": [
+            "first_response_time",
+            "sla_compliance_rate"
+          ]
+        },
+        {
+          "id": "support_cs_os_managed",
+          "tier": "managed",
+          "name_ar": "إدارة نجاح العملاء",
+          "problem_ar": "الدعم لا يتحول لفرص احتفاظ وتوسع.",
+          "decision_ar": "أي حسابات معرضة للخطر وأيها جاهزة للتوسع؟",
+          "execution_ar": [
+            "مراقبة customer health أسبوعيا",
+            "تفعيل playbooks للاحتفاظ",
+            "ربط مشاكل الدعم بخطة توسع"
+          ],
+          "proof_ar": [
+            "تحسن معدل الاحتفاظ",
+            "انخفاض churn المبكر"
+          ],
+          "expansion_next_ar": [
+            "إطلاق Expansion Engine"
+          ],
+          "action_mode": "approval_required",
+          "delivery_window_days": 30,
+          "kpis": [
+            "retention_rate",
+            "churn_reduction"
+          ]
+        },
+        {
+          "id": "support_cs_os_command",
+          "tier": "command",
+          "name_ar": "قيادة الدعم التنفيذي",
+          "problem_ar": "الإدارة لا ترى أثر الدعم على الإيراد بصورة مباشرة.",
+          "decision_ar": "ما تدخلات الإدارة المطلوبة لمنع فقدان العملاء؟",
+          "execution_ar": [
+            "Executive support dashboard",
+            "إنذارات مبكرة للحسابات الحرجة",
+            "خطة تدخل شهرية للحسابات الكبرى"
+          ],
+          "proof_ar": [
+            "انخفاض حسابات الخطر العالي",
+            "تحسن NPS أو مؤشرات الرضا الداخلية"
+          ],
+          "expansion_next_ar": [
+            "دمج الدعم مع proof والتجديدات"
+          ],
+          "action_mode": "approval_required",
+          "delivery_window_days": 60,
+          "kpis": [
+            "high_risk_account_reduction",
+            "customer_health_lift"
+          ]
+        }
+      ]
+    },
+    {
+      "line_id": "payment_revenue_truth",
+      "engine_name_ar": "Payment & Revenue Truth",
+      "line_outcome_ar": "وضع مالي واضح يدعم قرارات التوسع.",
+      "services": [
+        {
+          "id": "payment_revenue_truth_foundation",
+          "tier": "foundation",
+          "name_ar": "تهيئة Revenue Truth",
+          "problem_ar": "حالة الفوترة والتحصيل غير واضحة للفريق.",
+          "decision_ar": "ما الحسابات المتأخرة وما الإجراء المناسب؟",
+          "execution_ar": [
+            "توحيد حالات الدفع والفوترة",
+            "مؤشر تحصيل أسبوعي",
+            "تذكيرات داخلية آمنة"
+          ],
+          "proof_ar": [
+            "وضوح أكبر في cash collection",
+            "انخفاض فواتير معلقة"
+          ],
+          "expansion_next_ar": [
+            "ربط التحصيل مع صحة العميل"
+          ],
+          "action_mode": "approval_required",
+          "delivery_window_days": 14,
+          "kpis": [
+            "collection_cycle_days",
+            "overdue_invoice_ratio"
+          ]
+        },
+        {
+          "id": "payment_revenue_truth_managed",
+          "tier": "managed",
+          "name_ar": "إدارة حقيقة الإيراد",
+          "problem_ar": "تأخر التحصيل يؤثر على التخطيط والنمو.",
+          "decision_ar": "ما قرارات التحصيل والتفاوض المطلوبة هذا الأسبوع؟",
+          "execution_ar": [
+            "لوحة متابعة تحصيل أسبوعية",
+            "تحليل مخاطر التخلف عن الدفع",
+            "مسارات متابعة حسب شريحة العميل"
+          ],
+          "proof_ar": [
+            "تحسن cash conversion",
+            "خفض نسبة التأخر المزمن"
+          ],
+          "expansion_next_ar": [
+            "تفعيل عروض توسع مرتبطة بسجل الدفع"
+          ],
+          "action_mode": "approval_required",
+          "delivery_window_days": 30,
+          "kpis": [
+            "cash_conversion_improvement",
+            "late_payment_reduction"
+          ]
+        },
+        {
+          "id": "payment_revenue_truth_command",
+          "tier": "command",
+          "name_ar": "قيادة الإيراد التنفيذي",
+          "problem_ar": "الإدارة تحتاج ربط دقيق بين التشغيل والتدفق النقدي.",
+          "decision_ar": "ما القرارات التنفيذية التي تحمي الإيراد القادم؟",
+          "execution_ar": [
+            "توقع إيراد 30/60/90 يوم",
+            "سيناريوهات مخاطر تحصيل",
+            "ربط الإيراد بـ expansion readiness"
+          ],
+          "proof_ar": [
+            "دقة أعلى في توقع الإيراد",
+            "تقليل مفاجآت التدفق النقدي"
+          ],
+          "expansion_next_ar": [
+            "دمج كامل مع Executive Command Center"
+          ],
+          "action_mode": "approval_required",
+          "delivery_window_days": 60,
+          "kpis": [
+            "forecast_accuracy",
+            "cash_risk_exposure"
+          ]
+        }
+      ]
+    },
+    {
+      "line_id": "proof_expansion_engine",
+      "engine_name_ar": "Proof & Expansion Engine",
+      "line_outcome_ar": "تحويل التنفيذ إلى Proof ثم إلى نمو وتوسع.",
+      "services": [
+        {
+          "id": "proof_expansion_engine_foundation",
+          "tier": "foundation",
+          "name_ar": "تفعيل Proof Ledger",
+          "problem_ar": "النتائج لا توثق، فيصعب إثبات القيمة للعميل.",
+          "decision_ar": "ما الأحداث التي تعتبر Proof معتمد؟",
+          "execution_ar": [
+            "تعريف Evidence Levels L0-L5",
+            "تسجيل proof events بالدلائل",
+            "تفعيل موافقة نشر proof"
+          ],
+          "proof_ar": [
+            "زيادة عدد أحداث الإثبات الموثقة",
+            "تحسن جودة الأدلة لكل عميل"
+          ],
+          "expansion_next_ar": [
+            "إصدار Proof Pack دوري"
+          ],
+          "action_mode": "approval_required",
+          "delivery_window_days": 10,
+          "kpis": [
+            "proof_event_count",
+            "evidence_quality_index"
+          ]
+        },
+        {
+          "id": "proof_expansion_engine_managed",
+          "tier": "managed",
+          "name_ar": "إدارة Proof Pack والتوسع",
+          "problem_ar": "العميل لا يرى مسار ترقية واضح مبني على نتائج.",
+          "decision_ar": "ما عرض التوسع التالي بناءً على proof الحالي؟",
+          "execution_ar": [
+            "إصدار Proof Pack شهري",
+            "احتساب Expansion Readiness Score",
+            "اقتراح Next Best Offer"
+          ],
+          "proof_ar": [
+            "تحسن معدل قبول عروض التوسع",
+            "تحسن تجديد العقود"
+          ],
+          "expansion_next_ar": [
+            "تفعيل playbook توسع قطاعي"
+          ],
+          "action_mode": "approval_required",
+          "delivery_window_days": 30,
+          "kpis": [
+            "expansion_offer_acceptance",
+            "renewal_rate"
+          ]
+        },
+        {
+          "id": "proof_expansion_engine_command",
+          "tier": "command",
+          "name_ar": "قيادة الإثبات والتوسع التنفيذي",
+          "problem_ar": "الإدارة تريد ربط proof مباشرة بالربحية.",
+          "decision_ar": "ما استثمارات التوسع ذات أعلى عائد مثبت؟",
+          "execution_ar": [
+            "لوحة عائدات التوسع المعتمد",
+            "تصنيف العروض حسب هامش الربح",
+            "خطة توسع ربع سنوية قائمة على الأدلة"
+          ],
+          "proof_ar": [
+            "تحسن متوسط قيمة العميل",
+            "زيادة إيراد التوسع المعتمد"
+          ],
+          "expansion_next_ar": [
+            "إطلاق خطوط خدمات قطاعية جديدة"
+          ],
+          "action_mode": "approval_required",
+          "delivery_window_days": 60,
+          "kpis": [
+            "arpu_expansion",
+            "proof_backed_revenue_ratio"
+          ]
+        }
+      ]
+    },
+    {
+      "line_id": "learning_flywheel",
+      "engine_name_ar": "Learning Flywheel",
+      "line_outcome_ar": "تحويل كل عميل إلى معرفة تشغيلية متراكمة.",
+      "services": [
+        {
+          "id": "learning_flywheel_foundation",
+          "tier": "foundation",
+          "name_ar": "تقرير التعلم الأسبوعي",
+          "problem_ar": "الفريق لا يتعلم بشكل منهجي من التنفيذ.",
+          "decision_ar": "ما الذي نوقفه وما الذي نضاعفه؟",
+          "execution_ar": [
+            "تقرير أسبوعي موحد للتعلم",
+            "توثيق أفضل قناة/رسالة/عرض",
+            "رصد أسباب الفشل المتكررة"
+          ],
+          "proof_ar": [
+            "وجود قرارات تحسين أسبوعية",
+            "انخفاض تكرار نفس الأخطاء"
+          ],
+          "expansion_next_ar": [
+            "ربط التعلم بتسعير الخدمات"
+          ],
+          "action_mode": "suggest_only",
+          "delivery_window_days": 7,
+          "kpis": [
+            "weekly_learning_actions",
+            "repeat_issue_reduction"
+          ]
+        },
+        {
+          "id": "learning_flywheel_managed",
+          "tier": "managed",
+          "name_ar": "إدارة التحسين المستمر",
+          "problem_ar": "المعرفة متاحة لكن لا تدخل خطة التشغيل بسرعة.",
+          "decision_ar": "أي workflows تحتاج إعادة تصميم الآن؟",
+          "execution_ar": [
+            "تحويل مخرجات التعلم إلى backlog",
+            "تقييم أثر التحسينات شهريا",
+            "تحديث playbooks بناء على النتائج"
+          ],
+          "proof_ar": [
+            "تحسن متدرج في مؤشرات الأداء",
+            "دورات تحسين أسرع"
+          ],
+          "expansion_next_ar": [
+            "تفعيل vertical playbooks"
+          ],
+          "action_mode": "approval_required",
+          "delivery_window_days": 30,
+          "kpis": [
+            "backlog_to_release_cycle",
+            "kpi_uplift_rate"
+          ]
+        },
+        {
+          "id": "learning_flywheel_command",
+          "tier": "command",
+          "name_ar": "قيادة التعلم التنفيذي",
+          "problem_ar": "الإدارة لا تمتلك رؤية تراكمية لميزة الشركة المعرفية.",
+          "decision_ar": "ما الرهانات القادمة الأكثر ثقة وربحية؟",
+          "execution_ar": [
+            "لوحة تعلم تنفيذية شهرية",
+            "ربط التعلم بقرارات الاستثمار",
+            "مراجعة ربع سنوية لأداء القطاعات"
+          ],
+          "proof_ar": [
+            "تحسن دقة القرارات الاستراتيجية",
+            "رفع كفاءة تخصيص الموارد"
+          ],
+          "expansion_next_ar": [
+            "إطلاق محفظة عروض جديدة مبنية على التعلم"
+          ],
+          "action_mode": "approval_required",
+          "delivery_window_days": 60,
+          "kpis": [
+            "strategy_decision_accuracy",
+            "resource_roi_lift"
+          ]
+        }
+      ]
+    },
+    {
+      "line_id": "trust_security_compliance",
+      "engine_name_ar": "Trust, Security & Compliance Layer",
+      "line_outcome_ar": "تشغيل آمن ومتوافق يرفع ثقة السوق السعودي.",
+      "services": [
+        {
+          "id": "trust_security_compliance_foundation",
+          "tier": "foundation",
+          "name_ar": "تهيئة الثقة والامتثال",
+          "problem_ar": "غياب ضوابط واضحة يرفع مخاطر قانونية وتشغيلية.",
+          "decision_ar": "ما الضوابط الإلزامية قبل أي توسع؟",
+          "execution_ar": [
+            "تفعيل consent ledger",
+            "إقرار سياسات PDPL تشغيلية",
+            "تطبيق no-live-send/no-live-charge by default"
+          ],
+          "proof_ar": [
+            "سجلات موافقات مكتملة",
+            "انخفاض مخالفات الامتثال"
+          ],
+          "expansion_next_ar": [
+            "توسيع الضوابط إلى field-level controls"
+          ],
+          "action_mode": "blocked",
+          "delivery_window_days": 14,
+          "kpis": [
+            "consent_coverage",
+            "compliance_incident_rate"
+          ]
+        },
+        {
+          "id": "trust_security_compliance_managed",
+          "tier": "managed",
+          "name_ar": "إدارة الثقة المؤسسية",
+          "problem_ar": "المخاطر تتغير مع نمو حجم العمليات.",
+          "decision_ar": "ما تحديثات الأمن والامتثال ذات الأولوية؟",
+          "execution_ar": [
+            "مراجعات دورية RBAC وعزل البيانات",
+            "سياسات redaction للحقول الحساسة",
+            "تقارير مخاطر أمنية تشغيلية"
+          ],
+          "proof_ar": [
+            "تحسن نتائج التدقيق الأمني",
+            "تقليل مخاطر الوصول غير المصرح"
+          ],
+          "expansion_next_ar": [
+            "جاهزية مبيعات Enterprise"
+          ],
+          "action_mode": "approval_required",
+          "delivery_window_days": 30,
+          "kpis": [
+            "access_violation_rate",
+            "security_control_coverage"
+          ]
+        },
+        {
+          "id": "trust_security_compliance_command",
+          "tier": "command",
+          "name_ar": "قيادة الثقة والأمن التنفيذي",
+          "problem_ar": "الشركات الكبرى تحتاج دليل ثقة جاهز للتدقيق قبل الشراء.",
+          "decision_ar": "هل جاهزون لعقود Enterprise عالية المتطلبات؟",
+          "execution_ar": [
+            "Trust Center تشغيلي",
+            "حزمة تدقيق جاهزة للبيع المؤسسي",
+            "خطة استجابة للحوادث واختبارات دورية"
+          ],
+          "proof_ar": [
+            "تقليل زمن إغلاق استبيانات الأمان",
+            "رفع معدل قبول الصفقات المؤسسية"
+          ],
+          "expansion_next_ar": [
+            "إطلاق عروض قطاعية عالية التنظيم"
+          ],
+          "action_mode": "approval_required",
+          "delivery_window_days": 60,
+          "kpis": [
+            "enterprise_security_review_cycle",
+            "enterprise_win_rate_lift"
+          ]
+        }
+      ]
+    }
+  ]
+}
