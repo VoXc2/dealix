@@ -63,6 +63,17 @@ _ALLOWLIST_PATHS = frozenset({
     "scripts/dealix_wave15_customer_ops_verify.sh",
     # Wave 15 evidence table — references this lockdown test by name
     "docs/WAVE15_EVIDENCE_TABLE.md",
+    # Wave 16 docs may exist when PR #222 merges (forward-reference)
+    "docs/WAVE16_EVIDENCE_TABLE.md",
+    "scripts/dealix_wave16_auto_source_verify.sh",
+    # Wave 17 master verifier — invokes the lockdown test by file path
+    "scripts/dealix_market_launch_ready_verify.sh",
+    # Wave 17 evidence + report + docs — reference this lockdown test by name
+    "docs/WAVE17_EVIDENCE_TABLE.md",
+    "docs/WAVE17_FOUNDER_REPORT.md",
+    "docs/WAVE17_FOUNDER_DAY1_LAUNCH_KIT.md",
+    "docs/WAVE17_BRANCH_CLEANUP_LOG.md",
+    "docs/WAVE17_VULNERABILITY_TRIAGE.md",
     # The plan file lives outside the repo (in /root/.claude/plans/) so
     # never appears in git ls-files; no allowlist needed.
 })
@@ -174,6 +185,9 @@ _FORWARD_REFERENCE_PATHS = frozenset({
     "docs/WAVE10_7_PR187_CLEANUP_REPORT.md",
     "docs/DEALIX_MASTER_EXECUTION_MATRIX.md",
     "docs/DEALIX_MASTER_EXECUTION_EVIDENCE_TABLE.md",
+    # Wave 16 PR #222 — files exist on wave16 branch; merge brings them to main
+    "docs/WAVE16_EVIDENCE_TABLE.md",
+    "scripts/dealix_wave16_auto_source_verify.sh",
 })
 
 
