@@ -11,6 +11,7 @@ from .agent_stack import render_agent_application_plan, render_segment_rollout_p
 from .commercial import compute_recurring_model, generate_customer_proposal_bundle, load_intake
 from .dashboards import export_dashboard_bundle
 from .enterprise_playbook import generate_enterprise_playbook_bundle
+from .go_live_sales import render_go_live_sales_plan, render_signature_readiness
 from .kpis import kpis_for_service
 from .launch_ops import build_launch_pack, render_offer_stack
 from .offers import build_pitch, generate_offer
@@ -316,6 +317,25 @@ def _cmd_enterprise_playbook(args: argparse.Namespace) -> int:
     return 0
 
 
+def _cmd_go_live_sales(args: argparse.Namespace) -> int:
+    print(render_go_live_sales_plan(segment=args.segment, lang=args.lang, max_plays=args.max_plays))
+    return 0
+
+
+def _cmd_signature_readiness(args: argparse.Namespace) -> int:
+    accepted = str(args.governance_contract_accepted).strip().lower() in {"1", "true", "yes", "y"}
+    print(
+        render_signature_readiness(
+            stage=args.stage,
+            buyer_commitment=args.buyer_commitment,
+            proof_level=args.proof_level,
+            risk_status=args.risk_status,
+            governance_contract_accepted=accepted,
+        )
+    )
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="python -m saudi_ai_provider",
@@ -487,6 +507,26 @@ def build_parser() -> argparse.ArgumentParser:
     enterprise_playbook.add_argument("--lang", choices=["ar", "en"], default="ar")
     enterprise_playbook.add_argument("--output-dir")
     enterprise_playbook.set_defaults(func=_cmd_enterprise_playbook)
+
+    go_live_sales = sub.add_parser(
+        "go-live-sales",
+        help="Render daily go-live sales runbook for a segment",
+    )
+    go_live_sales.add_argument("--segment", required=True, choices=["smb", "mid_market", "enterprise"])
+    go_live_sales.add_argument("--lang", choices=["ar", "en"], default="ar")
+    go_live_sales.add_argument("--max-plays", type=int, default=5)
+    go_live_sales.set_defaults(func=_cmd_go_live_sales)
+
+    signature_readiness = sub.add_parser(
+        "signature-readiness",
+        help="Evaluate if the deal is ready for signature ask",
+    )
+    signature_readiness.add_argument("--stage", required=True)
+    signature_readiness.add_argument("--buyer-commitment", required=True, choices=["low", "medium", "high"])
+    signature_readiness.add_argument("--proof-level", required=True, choices=["L0", "L1", "L2", "L3", "L4", "L5"])
+    signature_readiness.add_argument("--risk-status", required=True, choices=["low", "medium", "high"])
+    signature_readiness.add_argument("--governance-contract-accepted", required=True)
+    signature_readiness.set_defaults(func=_cmd_signature_readiness)
 
     return parser
 

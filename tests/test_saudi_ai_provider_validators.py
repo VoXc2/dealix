@@ -70,3 +70,9 @@ def test_validate_enterprise_playbook_script_passes() -> None:
     result = run_script("scripts/validate_enterprise_playbook.py")
     assert result.returncode == 0, result.stdout + result.stderr
     assert "ENTERPRISE_PLAYBOOK_VALIDATION=PASS" in result.stdout
+
+
+def test_validate_go_live_sales_script_passes() -> None:
+    result = run_script("scripts/validate_go_live_sales.py")
+    assert result.returncode == 0, result.stdout + result.stderr
+    assert "GO_LIVE_SALES_VALIDATION=PASS" in result.stdout

@@ -33,6 +33,7 @@ RISK_REGISTER_PATH = ROOT / "risk/risk_register.json"
 PLAYBOOK_CATALOG_PATH = ROOT / "playbooks/playbook_catalog.json"
 FINAL_SERVICE_STACK_PATH = ROOT / "commercial/final_enterprise_service_stack.json"
 AGENT_PROFILES_PATH = ROOT / "runtime/agent_profiles/hermes_openclaw_profiles.json"
+GO_LIVE_SALES_RUNBOOK_PATH = ROOT / "gtm/go_live_sales_runbook.json"
 
 TEMPLATES_DIR = ROOT / "templates"
 OFFERS_OUT_DIR = ROOT / "out/offers"
@@ -136,3 +137,7 @@ def load_final_service_stack() -> dict[str, Any]:
 
 def load_agent_profiles() -> dict[str, Any]:
     return load_json(AGENT_PROFILES_PATH)
+
+
+def load_go_live_sales_runbook() -> dict[str, Any]:
+    return load_json(GO_LIVE_SALES_RUNBOOK_PATH)

@@ -218,3 +218,34 @@ def test_enterprise_playbook_command() -> None:
     assert "sow:" in generated.stdout
     assert "kpi_contract:" in generated.stdout
     assert "governance_contract:" in generated.stdout
+
+
+def test_go_live_sales_and_signature_readiness_commands() -> None:
+    runbook = run_cmd(
+        "go-live-sales",
+        "--segment",
+        "enterprise",
+        "--lang",
+        "ar",
+        "--max-plays",
+        "3",
+    )
+    assert runbook.returncode == 0, runbook.stdout + runbook.stderr
+    assert "Go-Live Sales Runbook" in runbook.stdout
+    assert "AI_GOVERNANCE_OS" in runbook.stdout
+
+    signature = run_cmd(
+        "signature-readiness",
+        "--stage",
+        "contract_ready",
+        "--buyer-commitment",
+        "high",
+        "--proof-level",
+        "L4",
+        "--risk-status",
+        "low",
+        "--governance-contract-accepted",
+        "yes",
+    )
+    assert signature.returncode == 0, signature.stdout + signature.stderr
+    assert "ready_to_ask_signature: yes" in signature.stdout
