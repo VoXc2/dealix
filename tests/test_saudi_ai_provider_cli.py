@@ -175,3 +175,27 @@ def test_offer_stack_and_launch_pack_commands() -> None:
     )
     assert launch_pack.returncode == 0, launch_pack.stdout + launch_pack.stderr
     assert "launch_pack:" in launch_pack.stdout
+
+
+def test_agent_apps_and_agent_rollout_commands() -> None:
+    apps = run_cmd(
+        "agent-apps",
+        "--service",
+        "AI_GOVERNANCE_OS",
+        "--lang",
+        "ar",
+    )
+    assert apps.returncode == 0, apps.stdout + apps.stderr
+    assert "خطة تطبيق Hermes/OpenClaw" in apps.stdout
+    assert "AI_GOVERNANCE_OS" in apps.stdout
+
+    rollout = run_cmd(
+        "agent-rollout",
+        "--segment",
+        "enterprise",
+        "--lang",
+        "ar",
+    )
+    assert rollout.returncode == 0, rollout.stdout + rollout.stderr
+    assert "خطة دمج Hermes/OpenClaw" in rollout.stdout
+    assert "AI_GOVERNANCE_OS" in rollout.stdout

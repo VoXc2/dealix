@@ -20,6 +20,8 @@
 - `python3 -m saudi_ai_provider p2-monetization --service CUSTOMER_PORTAL_GOLD --intake-file intake/demo_customer_intake.json --customer-state-file revenue/demo_customer_state.json`
 - `python3 -m saudi_ai_provider offer-stack --segment enterprise --lang ar`
 - `python3 -m saudi_ai_provider launch-pack --segment enterprise --lang ar --output out/launch/final_launch_pack.md`
+- `python3 -m saudi_ai_provider agent-apps --service AI_GOVERNANCE_OS --lang ar`
+- `python3 -m saudi_ai_provider agent-rollout --segment enterprise --lang ar`
 
 سكربتات التحقق:
 
@@ -30,5 +32,6 @@
 - `python3 scripts/validate_runtime.py`
 - `python3 scripts/validate_commercialization.py`
 - `python3 scripts/validate_monetization.py`
+- `python3 scripts/validate_agent_profiles.py`
 - `python3 scripts/final_launch_verify.py`
 - `bash scripts/saudi_ai_provider_verify.sh`

@@ -7,6 +7,7 @@ import json
 from pathlib import Path
 from typing import Sequence
 
+from .agent_stack import render_agent_application_plan, render_segment_rollout_plan
 from .commercial import compute_recurring_model, generate_customer_proposal_bundle, load_intake
 from .dashboards import export_dashboard_bundle
 from .kpis import kpis_for_service
@@ -274,6 +275,28 @@ def _cmd_launch_pack(args: argparse.Namespace) -> int:
     return 0 if verification.sellable_now else 1
 
 
+def _cmd_agent_apps(args: argparse.Namespace) -> int:
+    print(
+        render_agent_application_plan(
+            service_id=args.service,
+            profile=args.profile,
+            lang=args.lang,
+        )
+    )
+    return 0
+
+
+def _cmd_agent_rollout(args: argparse.Namespace) -> int:
+    print(
+        render_segment_rollout_plan(
+            segment=args.segment,
+            profile=args.profile,
+            lang=args.lang,
+        )
+    )
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="python -m saudi_ai_provider",
@@ -415,6 +438,24 @@ def build_parser() -> argparse.ArgumentParser:
     launch_pack.add_argument("--lang", choices=["ar", "en"], default="ar")
     launch_pack.add_argument("--output")
     launch_pack.set_defaults(func=_cmd_launch_pack)
+
+    agent_apps = sub.add_parser(
+        "agent-apps",
+        help="Show best Hermes/OpenClaw applications for a service",
+    )
+    agent_apps.add_argument("--service", required=True)
+    agent_apps.add_argument("--profile", choices=["hermes_agents", "openclaw_runtime", "hybrid_governed_execution"])
+    agent_apps.add_argument("--lang", choices=["ar", "en"], default="ar")
+    agent_apps.set_defaults(func=_cmd_agent_apps)
+
+    agent_rollout = sub.add_parser(
+        "agent-rollout",
+        help="Show Hermes/OpenClaw rollout profile map for a segment",
+    )
+    agent_rollout.add_argument("--segment", required=True, choices=["smb", "mid_market", "enterprise"])
+    agent_rollout.add_argument("--profile", choices=["hermes_agents", "openclaw_runtime", "hybrid_governed_execution"])
+    agent_rollout.add_argument("--lang", choices=["ar", "en"], default="ar")
+    agent_rollout.set_defaults(func=_cmd_agent_rollout)
 
     return parser
 

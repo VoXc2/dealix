@@ -58,3 +58,9 @@ def test_validate_monetization_script_passes() -> None:
     result = run_script("scripts/validate_monetization.py")
     assert result.returncode == 0, result.stdout + result.stderr
     assert "MONETIZATION_VALIDATION=PASS" in result.stdout
+
+
+def test_validate_agent_profiles_script_passes() -> None:
+    result = run_script("scripts/validate_agent_profiles.py")
+    assert result.returncode == 0, result.stdout + result.stderr
+    assert "AGENT_PROFILE_VALIDATION=PASS" in result.stdout

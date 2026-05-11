@@ -1,0 +1,164 @@
+{
+  "schema_version": "1.0",
+  "positioning": "Governed AI execution profiles for Saudi enterprise services",
+  "profiles": {
+    "hermes_agents": {
+      "summary": "Memory-first multi-agent execution for growth, delivery, and customer outcomes.",
+      "core_strengths": [
+        "persistent_context_memory",
+        "skill_reuse_and_playbooks",
+        "subagent_parallelization",
+        "operator_assist_for_daily_execution"
+      ],
+      "best_for_layers": ["Revenue", "Operations", "Automation", "Evidence"],
+      "default_action_mode": "draft_only",
+      "approval_required": true,
+      "kpi_focus": [
+        "pipeline_velocity",
+        "delivery_cycle_time",
+        "proof_event_count",
+        "customer_expansion_readiness"
+      ]
+    },
+    "openclaw_runtime": {
+      "summary": "Policy-first execution gateway for strict control, auditability, and compliance.",
+      "core_strengths": [
+        "policy_as_code_enforcement",
+        "tool_allowlist_and_denylist",
+        "sandbox_and_execution_boundary_control",
+        "approval_chain_with_audit_traces"
+      ],
+      "best_for_layers": ["Governance", "Compliance", "Security", "Runtime"],
+      "default_action_mode": "approval_required",
+      "approval_required": true,
+      "kpi_focus": [
+        "policy_violation_rate",
+        "approval_trace_coverage",
+        "compliance_audit_readiness",
+        "critical_security_gap_count"
+      ]
+    },
+    "hybrid_governed_execution": {
+      "summary": "Hermes delivery speed with OpenClaw runtime controls and policy enforcement.",
+      "core_strengths": [
+        "high_velocity_execution_under_governance",
+        "deterministic_action_approval_pipeline",
+        "evidence_linked_operational_runtime",
+        "executive_observability_for_decision_quality"
+      ],
+      "best_for_layers": ["Executive Intelligence", "Observability", "Platform", "Runtime"],
+      "default_action_mode": "approval_required",
+      "approval_required": true,
+      "kpi_focus": [
+        "decision_cycle_time",
+        "incident_mttr",
+        "runtime_uptime",
+        "executive_reporting_quality_score"
+      ]
+    }
+  },
+  "service_profile_recommendations": {
+    "AI_GOVERNANCE_OS": "openclaw_runtime",
+    "AI_REVENUE_COMMAND_CENTER": "hybrid_governed_execution",
+    "AI_CUSTOMER_OPERATIONS_PLATFORM": "hermes_agents",
+    "AI_WORKFLOW_AUTOMATION_FACTORY": "hermes_agents",
+    "AI_OBSERVABILITY_PLATFORM": "hybrid_governed_execution",
+    "AI_RUNTIME_MANAGEMENT": "openclaw_runtime",
+    "AI_EVIDENCE_AUDIT_INFRA": "openclaw_runtime",
+    "PDPL_AI_COMPLIANCE_PLATFORM": "openclaw_runtime",
+    "EXECUTIVE_AI_INTELLIGENCE_SYSTEM": "hybrid_governed_execution",
+    "SOVEREIGN_AI_INFRASTRUCTURE": "hybrid_governed_execution"
+  },
+  "service_applications": {
+    "AI_GOVERNANCE_OS": {
+      "business_goal": "Control AI decisions and approvals with policy and audit clarity.",
+      "best_profile": "openclaw_runtime",
+      "applications": [
+        "approval_chain_enforcement",
+        "policy_violation_prevention",
+        "board_audit_trace_export"
+      ]
+    },
+    "AI_REVENUE_COMMAND_CENTER": {
+      "business_goal": "Accelerate revenue decisions with governed execution and proof-linked outcomes.",
+      "best_profile": "hybrid_governed_execution",
+      "applications": [
+        "executive_revenue_decision_briefs",
+        "opportunity_prioritization_with_policy_gate",
+        "expansion_trigger_orchestration"
+      ]
+    },
+    "AI_CUSTOMER_OPERATIONS_PLATFORM": {
+      "business_goal": "Reduce support cost and improve SLA with agent-assisted operations.",
+      "best_profile": "hermes_agents",
+      "applications": [
+        "support_routing_and_reply_drafts",
+        "sla_risk_early_warning",
+        "customer_success_next_best_action"
+      ]
+    },
+    "AI_WORKFLOW_AUTOMATION_FACTORY": {
+      "business_goal": "Industrialize internal workflow automation with reusable execution skills.",
+      "best_profile": "hermes_agents",
+      "applications": [
+        "cross_team_workflow_templates",
+        "task_orchestration_with_owner_handovers",
+        "delivery_quality_gate_autopilot"
+      ]
+    },
+    "AI_OBSERVABILITY_PLATFORM": {
+      "business_goal": "Track model and workflow health with actionable executive visibility.",
+      "best_profile": "hybrid_governed_execution",
+      "applications": [
+        "incident_triage_and_root_cause_clustering",
+        "token_cost_and_latency_control_loops",
+        "hallucination_and_guardrail_alerting"
+      ]
+    },
+    "AI_RUNTIME_MANAGEMENT": {
+      "business_goal": "Operate AI runtime under policy boundaries and incident control.",
+      "best_profile": "openclaw_runtime",
+      "applications": [
+        "runtime_tool_boundary_enforcement",
+        "sandboxed_execution_governance",
+        "incident_response_policy_automation"
+      ]
+    },
+    "AI_EVIDENCE_AUDIT_INFRA": {
+      "business_goal": "Generate immutable execution evidence for audits and board reporting.",
+      "best_profile": "openclaw_runtime",
+      "applications": [
+        "policy_trace_generation",
+        "approval_evidence_bundles",
+        "compliance_export_pack"
+      ]
+    },
+    "PDPL_AI_COMPLIANCE_PLATFORM": {
+      "business_goal": "Operationalize PDPL controls across AI workflows and data handling.",
+      "best_profile": "openclaw_runtime",
+      "applications": [
+        "consent_policy_enforcement",
+        "data_retention_and_deletion_workflows",
+        "compliance_breach_prevention_controls"
+      ]
+    },
+    "EXECUTIVE_AI_INTELLIGENCE_SYSTEM": {
+      "business_goal": "Deliver executive-grade intelligence with verifiable governance context.",
+      "best_profile": "hybrid_governed_execution",
+      "applications": [
+        "board_ready_briefs_with_evidence_links",
+        "scenario_analysis_with_risk_controls",
+        "strategic_decision_radar"
+      ]
+    },
+    "SOVEREIGN_AI_INFRASTRUCTURE": {
+      "business_goal": "Deploy sovereign AI infrastructure with local control and safe operations.",
+      "best_profile": "hybrid_governed_execution",
+      "applications": [
+        "sovereign_runtime_orchestration",
+        "residency_aware_policy_enforcement",
+        "secure_private_inference_operations"
+      ]
+    }
+  }
+}

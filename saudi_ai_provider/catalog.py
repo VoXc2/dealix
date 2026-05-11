@@ -32,6 +32,7 @@ BENCHMARK_TARGETS_PATH = ROOT / "kpis/benchmark_targets.json"
 RISK_REGISTER_PATH = ROOT / "risk/risk_register.json"
 PLAYBOOK_CATALOG_PATH = ROOT / "playbooks/playbook_catalog.json"
 FINAL_SERVICE_STACK_PATH = ROOT / "commercial/final_enterprise_service_stack.json"
+AGENT_PROFILES_PATH = ROOT / "runtime/agent_profiles/hermes_openclaw_profiles.json"
 
 TEMPLATES_DIR = ROOT / "templates"
 OFFERS_OUT_DIR = ROOT / "out/offers"
@@ -131,3 +132,7 @@ def load_playbook_catalog() -> dict[str, Any]:
 
 def load_final_service_stack() -> dict[str, Any]:
     return load_json(FINAL_SERVICE_STACK_PATH)
+
+
+def load_agent_profiles() -> dict[str, Any]:
+    return load_json(AGENT_PROFILES_PATH)

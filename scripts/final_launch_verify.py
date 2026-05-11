@@ -12,6 +12,7 @@ if str(ROOT) not in sys.path:
 
 from saudi_ai_provider.catalog import load_final_service_stack
 from saudi_ai_provider.verifier import verify_sellable
+from saudi_ai_provider.agent_stack import recommended_profile_for_service
 
 
 def main() -> int:
@@ -52,6 +53,10 @@ def main() -> int:
             errors.append(f"{service['service_id']}: monthly max below min")
         if len(service.get("kpi_targets", [])) < 3:
             warnings.append(f"{service['service_id']}: fewer than 3 KPI targets")
+        try:
+            recommended_profile_for_service(service["service_id"])
+        except ValueError as exc:
+            errors.append(str(exc))
 
     verification = verify_sellable()
     launch_ready = (
