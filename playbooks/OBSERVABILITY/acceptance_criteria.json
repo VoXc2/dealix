@@ -1,0 +1,10 @@
+{
+  "service_family": "OBSERVABILITY",
+  "criteria": [
+    "trace_coverage_reaches_target",
+    "critical_alert_precision_above_threshold",
+    "incident_mtta_and_mttr_measured",
+    "silent_failures_detected_by_monitors",
+    "executive_reporting_ready"
+  ]
+}

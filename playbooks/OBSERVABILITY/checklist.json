@@ -1,0 +1,10 @@
+{
+  "service_family": "OBSERVABILITY",
+  "required_checks": [
+    "metric_owner_assigned",
+    "trace_coverage_baseline_defined",
+    "alert_runbooks_approved",
+    "incident_simulation_completed",
+    "dashboard_signoff_received"
+  ]
+}

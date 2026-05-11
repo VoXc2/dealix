@@ -1,0 +1,10 @@
+{
+  "service_family": "SECURITY",
+  "required_checks": [
+    "security_owner_assigned",
+    "authorization_tests_passed",
+    "incident_response_runbook_approved",
+    "audit_logging_enabled",
+    "rollback_rehearsal_completed"
+  ]
+}

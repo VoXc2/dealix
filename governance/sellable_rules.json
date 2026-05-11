@@ -1,0 +1,24 @@
+{
+  "schema_version": "1.0",
+  "required_fields": [
+    "problem",
+    "buyer",
+    "decision",
+    "implementation_steps",
+    "evidence",
+    "pricing",
+    "delivery_playbook",
+    "kpis",
+    "risks",
+    "acceptance_criteria",
+    "security_review"
+  ],
+  "blocking_conditions": [
+    "missing_price",
+    "missing_acceptance_criteria",
+    "missing_owner",
+    "missing_data_policy",
+    "no_test_coverage",
+    "no_rollout_plan"
+  ]
+}

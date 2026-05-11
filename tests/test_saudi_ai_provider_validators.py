@@ -1,0 +1,30 @@
+from __future__ import annotations
+
+import subprocess
+
+
+def run_script(path: str) -> subprocess.CompletedProcess[str]:
+    return subprocess.run(
+        ["python3", path],
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+
+
+def test_validate_pricing_script_passes() -> None:
+    result = run_script("scripts/validate_pricing.py")
+    assert result.returncode == 0, result.stdout + result.stderr
+    assert "PRICING_VALIDATION=PASS" in result.stdout
+
+
+def test_validate_kpis_script_passes() -> None:
+    result = run_script("scripts/validate_kpis.py")
+    assert result.returncode == 0, result.stdout + result.stderr
+    assert "KPI_VALIDATION=PASS" in result.stdout
+
+
+def test_validate_playbooks_script_passes() -> None:
+    result = run_script("scripts/validate_playbooks.py")
+    assert result.returncode == 0, result.stdout + result.stderr
+    assert "PLAYBOOK_VALIDATION=PASS" in result.stdout

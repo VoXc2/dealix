@@ -1,0 +1,51 @@
+{
+  "MARKET_RADAR": [
+    {"risk": "signal noise produces low-value opportunities", "severity": "medium", "mitigation": "enforce provenance scoring and confidence threshold", "blocker": false}
+  ],
+  "LEAD_INTELLIGENCE": [
+    {"risk": "low quality lead sources inflate pipeline", "severity": "high", "mitigation": "allow-list sources and enforce source registry policies", "blocker": true}
+  ],
+  "COMPANY_BRAIN": [
+    {"risk": "stale context causes wrong recommendations", "severity": "high", "mitigation": "weekly context refresh SLA with owner sign-off", "blocker": false}
+  ],
+  "DECISION_PASSPORT": [
+    {"risk": "actions executed without complete decision context", "severity": "high", "mitigation": "block external actions unless passport is complete", "blocker": true}
+  ],
+  "WHATSAPP_DECISION_LAYER": [
+    {"risk": "decision commands bypass approval policy", "severity": "high", "mitigation": "role-based command policy + audit trail + manual confirmation", "blocker": true}
+  ],
+  "ACTION_APPROVAL_ENGINE": [
+    {"risk": "high-risk actions approved without dual control", "severity": "high", "mitigation": "risk-tiered approval with mandatory dual control for high risk", "blocker": true}
+  ],
+  "DELIVERY_OS": [
+    {"risk": "scope drift leads to delivery failures", "severity": "medium", "mitigation": "enforce acceptance criteria and change control gate", "blocker": false}
+  ],
+  "CUSTOMER_PORTAL": [
+    {"risk": "poor portal adoption reduces value realization", "severity": "medium", "mitigation": "onboarding playbook + weekly adoption check", "blocker": false}
+  ],
+  "SUPPORT_OS": [
+    {"risk": "unsafe response drafts sent to customers", "severity": "high", "mitigation": "draft-only default with approval mode for external send", "blocker": true}
+  ],
+  "PAYMENT_TRUTH": [
+    {"risk": "billing state mismatch causes trust erosion", "severity": "high", "mitigation": "reconciliation checks and finance owner approval", "blocker": true}
+  ],
+  "PROOF_ENGINE": [
+    {"risk": "proof claims without evidence damage credibility", "severity": "high", "mitigation": "proof event must include evidence level and source", "blocker": true}
+  ],
+  "EXPANSION_ENGINE": [
+    {"risk": "upsell attempts before proof creates churn", "severity": "high", "mitigation": "expansion blocked unless proof threshold is met", "blocker": true}
+  ],
+  "LEARNING_FLYWHEEL": [
+    {"risk": "learning insights are not operationalized", "severity": "medium", "mitigation": "weekly learning actions tied to backlog owner", "blocker": false}
+  ],
+  "TRUST_LAYER": [
+    {"risk": "overclaiming compliance coverage", "severity": "high", "mitigation": "scope compliance claims to evidence and controls implemented", "blocker": true}
+  ],
+  "SECURITY": [
+    {"risk": "overpromising compliance coverage", "severity": "high", "mitigation": "scope claims to implemented controls, evidence, and approved audits only", "blocker": true},
+    {"risk": "authorization gaps expose customer data", "severity": "high", "mitigation": "object/field/function authorization tests in release gate", "blocker": true}
+  ],
+  "OBSERVABILITY": [
+    {"risk": "missing traces hide critical failures", "severity": "high", "mitigation": "trace and audit logging coverage gate in CI", "blocker": true}
+  ]
+}

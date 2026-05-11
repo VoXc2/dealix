@@ -1,0 +1,43 @@
+name: Saudi AI Provider Verify Gate
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main, "cursor/**"]
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pytest
+
+      - name: Service catalog verifier
+        run: python3 scripts/verify_saudi_ai_service_catalog.py
+
+      - name: Saudi provider strict verifier
+        run: bash scripts/saudi_ai_provider_verify.sh
+
+      - name: Repo tests
+        run: pytest tests/ -q --no-cov
+
+      - name: Pricing validation
+        run: python3 scripts/validate_pricing.py
+
+      - name: KPI validation
+        run: python3 scripts/validate_kpis.py
+
+      - name: Playbook validation
+        run: python3 scripts/validate_playbooks.py

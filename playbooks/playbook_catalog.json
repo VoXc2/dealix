@@ -1,0 +1,690 @@
+{
+  "MARKET_RADAR": {
+    "tiers": {
+      "bronze": {
+        "owner": "growth_ops_lead",
+        "decision_gate": "Approve priority sectors and signal threshold.",
+        "delivery_window_days": 14,
+        "implementation_steps": ["Day 0 prerequisites", "Day 1-3 discovery", "Day 4-10 implementation", "Day 11-13 testing", "Day 14 handover"],
+        "out_of_scope": ["External automated outreach", "Paid media execution"],
+        "acceptance_criteria": ["Daily signal brief active", "Top opportunities ranked"],
+        "rollout_plan": "Pilot with one business unit, then expand.",
+        "rollback_plan": "Revert to manual radar sheet and disable automated ranking.",
+        "stopping_conditions": ["No approved decision owner", "No validated signal source"],
+        "next_step": "Start Lead Intelligence on top-ranked opportunities.",
+        "security_review": "Data provenance and source policy validated."
+      },
+      "silver": {
+        "owner": "growth_program_manager",
+        "decision_gate": "Approve weekly market opportunity queue and channel policy.",
+        "delivery_window_days": 30,
+        "implementation_steps": ["Day 0 prerequisites", "Day 1-5 deep discovery", "Day 6-20 implementation", "Day 21-27 testing", "Day 28-30 handover"],
+        "out_of_scope": ["Unconsented contact lists", "Cold WhatsApp automation"],
+        "acceptance_criteria": ["Weekly why-now brief", "Signal to lead routing active"],
+        "rollout_plan": "Launch per segment with weekly checkpoint.",
+        "rollback_plan": "Disable routing rules and keep signals in draft mode.",
+        "stopping_conditions": ["No CRM mapping", "No compliance approval"],
+        "next_step": "Activate Decision Passport for routed leads.",
+        "security_review": "Source access and audit trail reviewed."
+      },
+      "gold": {
+        "owner": "revenue_command_director",
+        "decision_gate": "Executive approval for daily opportunity command center.",
+        "delivery_window_days": 60,
+        "implementation_steps": ["Day 0 prerequisites", "Day 1-7 executive discovery", "Day 8-40 implementation", "Day 41-55 testing", "Day 56-60 handover"],
+        "out_of_scope": ["Guaranteed revenue claims", "External autonomous transactions"],
+        "acceptance_criteria": ["Executive daily radar operational", "Opportunity execution SLA met"],
+        "rollout_plan": "Shadow mode 2 weeks then production.",
+        "rollback_plan": "Fallback to silver routing and manual executive reports.",
+        "stopping_conditions": ["No executive sponsor", "No governance owner"],
+        "next_step": "Connect radar to Executive Command Center board.",
+        "security_review": "Executive access controls validated."
+      }
+    }
+  },
+  "LEAD_INTELLIGENCE": {
+    "tiers": {
+      "bronze": {
+        "owner": "sales_ops_lead",
+        "decision_gate": "Approve lead scoring dimensions and source registry.",
+        "delivery_window_days": 14,
+        "implementation_steps": ["Day 0 prerequisites", "Day 1-3 discovery", "Day 4-10 implementation", "Day 11-13 testing", "Day 14 handover"],
+        "out_of_scope": ["Purchased lead lists", "LinkedIn automation"],
+        "acceptance_criteria": ["Deduplicated lead board", "Priority tags P0-P3"],
+        "rollout_plan": "Start with one pipeline lane.",
+        "rollback_plan": "Revert scoring to baseline and keep manual review.",
+        "stopping_conditions": ["No lead source ownership", "No CRM access"],
+        "next_step": "Run package quote for managed tier.",
+        "security_review": "Lead data minimization and access policy validated."
+      },
+      "silver": {
+        "owner": "revenue_ops_manager",
+        "decision_gate": "Approve scoring model, warm-route policy, and handoff SLA.",
+        "delivery_window_days": 30,
+        "implementation_steps": ["Day 0 prerequisites", "Day 1-5 discovery", "Day 6-20 implementation", "Day 21-27 testing", "Day 28-30 handover"],
+        "out_of_scope": ["Automated outbound without approval", "Unsanctioned enrichment sources"],
+        "acceptance_criteria": ["Daily priority list for sales", "Reply-rate uplift baseline established"],
+        "rollout_plan": "Roll out by segment with weekly tuning.",
+        "rollback_plan": "Disable managed routing and return to bronze board.",
+        "stopping_conditions": ["No sales owner", "No decision-maker coverage"],
+        "next_step": "Attach passports to top 20 leads.",
+        "security_review": "PII handling controls tested."
+      },
+      "gold": {
+        "owner": "chief_revenue_officer",
+        "decision_gate": "Executive sign-off for command-layer lead intelligence.",
+        "delivery_window_days": 60,
+        "implementation_steps": ["Day 0 prerequisites", "Day 1-7 discovery", "Day 8-40 implementation", "Day 41-55 testing", "Day 56-60 handover"],
+        "out_of_scope": ["Unapproved mass communication", "Opaque scoring logic"],
+        "acceptance_criteria": ["Command dashboard live", "Pipeline velocity metrics audited"],
+        "rollout_plan": "Shadow then phased production by business line.",
+        "rollback_plan": "Revert command actions to approval-required draft mode.",
+        "stopping_conditions": ["No governance board", "No KPI baseline"],
+        "next_step": "Launch proof engine for conversion evidence.",
+        "security_review": "Role-based data access and logging validated."
+      }
+    }
+  },
+  "COMPANY_BRAIN": {
+    "tiers": {
+      "bronze": {
+        "owner": "customer_success_lead",
+        "decision_gate": "Approve context schema and source-of-truth artifacts.",
+        "delivery_window_days": 14,
+        "implementation_steps": ["Day 0 prerequisites", "Day 1-3 discovery", "Day 4-10 implementation", "Day 11-13 testing", "Day 14 handover"],
+        "out_of_scope": ["Model fine-tuning", "Unstructured document dumping"],
+        "acceptance_criteria": ["Context timeline initialized", "Brand and channel policy loaded"],
+        "rollout_plan": "Start with one account then scale.",
+        "rollback_plan": "Use static customer profile templates.",
+        "stopping_conditions": ["No documentation owner", "No approved channel policy"],
+        "next_step": "Enable decision passports with context links.",
+        "security_review": "Knowledge access roles verified."
+      },
+      "silver": {
+        "owner": "program_manager_company_brain",
+        "decision_gate": "Approve weekly update cadence and rejection workflow.",
+        "delivery_window_days": 30,
+        "implementation_steps": ["Day 0 prerequisites", "Day 1-5 discovery", "Day 6-20 implementation", "Day 21-27 testing", "Day 28-30 handover"],
+        "out_of_scope": ["External unmanaged knowledge sync", "Unapproved customer data ingestion"],
+        "acceptance_criteria": ["Weekly context updates tracked", "What-worked ledger active"],
+        "rollout_plan": "Deploy by customer segment.",
+        "rollback_plan": "Pause updates and keep validated baseline snapshots.",
+        "stopping_conditions": ["No customer owner", "No evidence reviewer"],
+        "next_step": "Feed learning flywheel from context outcomes.",
+        "security_review": "Sensitive fields redaction reviewed."
+      },
+      "gold": {
+        "owner": "command_center_owner",
+        "decision_gate": "Executive approval for cross-unit company brain orchestration.",
+        "delivery_window_days": 60,
+        "implementation_steps": ["Day 0 prerequisites", "Day 1-7 discovery", "Day 8-40 implementation", "Day 41-55 testing", "Day 56-60 handover"],
+        "out_of_scope": ["Unbounded data retention", "Black-box context edits"],
+        "acceptance_criteria": ["Cross-unit context synchronization live", "Decision conflict rate reduced"],
+        "rollout_plan": "Stage rollout by business unit with guardrails.",
+        "rollback_plan": "Revert to silver and isolate problematic sources.",
+        "stopping_conditions": ["No executive sponsor", "No trust controls"],
+        "next_step": "Connect command context to expansion strategy.",
+        "security_review": "Data retention and consent policies validated."
+      }
+    }
+  },
+  "DECISION_PASSPORT": {
+    "tiers": {
+      "bronze": {
+        "owner": "operations_manager",
+        "decision_gate": "Approve required fields and ownership policy.",
+        "delivery_window_days": 14,
+        "implementation_steps": ["Day 0 prerequisites", "Day 1-3 discovery", "Day 4-10 implementation", "Day 11-13 testing", "Day 14 handover"],
+        "out_of_scope": ["Actions without owner", "Actions without deadline"],
+        "acceptance_criteria": ["Mandatory passport fields enforced", "No action without passport"],
+        "rollout_plan": "Start with lead opportunities.",
+        "rollback_plan": "Keep manual gate checklist.",
+        "stopping_conditions": ["No decision owner", "No approval matrix"],
+        "next_step": "Integrate with Action Approval Engine.",
+        "security_review": "Audit trail enabled."
+      },
+      "silver": {
+        "owner": "revenue_program_manager",
+        "decision_gate": "Approve prioritization and escalation policy.",
+        "delivery_window_days": 30,
+        "implementation_steps": ["Day 0 prerequisites", "Day 1-5 discovery", "Day 6-20 implementation", "Day 21-27 testing", "Day 28-30 handover"],
+        "out_of_scope": ["Priority changes without evidence", "High-risk actions without approval"],
+        "acceptance_criteria": ["Passport queue prioritized daily", "Escalation flow active"],
+        "rollout_plan": "Rollout by opportunity type.",
+        "rollback_plan": "Pause auto-priority and keep manual queue.",
+        "stopping_conditions": ["No escalation owner", "No KPI baseline"],
+        "next_step": "Enable WhatsApp decision brief integration.",
+        "security_review": "Role approval controls tested."
+      },
+      "gold": {
+        "owner": "executive_governance_lead",
+        "decision_gate": "Executive sign-off for critical decision board.",
+        "delivery_window_days": 60,
+        "implementation_steps": ["Day 0 prerequisites", "Day 1-7 discovery", "Day 8-40 implementation", "Day 41-55 testing", "Day 56-60 handover"],
+        "out_of_scope": ["Unlogged executive approvals", "Risk acceptance without rationale"],
+        "acceptance_criteria": ["Critical decision SLA met", "Decision audit coverage 100%"],
+        "rollout_plan": "Shadow board then go-live.",
+        "rollback_plan": "Revert to silver decision queue.",
+        "stopping_conditions": ["No executive governance", "No compliance sign-off"],
+        "next_step": "Feed command center with approved decisions.",
+        "security_review": "Sensitive decision logs protected."
+      }
+    }
+  },
+  "WHATSAPP_DECISION_LAYER": {
+    "tiers": {
+      "bronze": {
+        "owner": "founder_ops_owner",
+        "decision_gate": "Approve command set and role permissions.",
+        "delivery_window_days": 14,
+        "implementation_steps": ["Day 0 prerequisites", "Day 1-3 discovery", "Day 4-10 implementation", "Day 11-13 testing", "Day 14 handover"],
+        "out_of_scope": ["Auto-send outbound messages", "Cold outreach automation"],
+        "acceptance_criteria": ["Daily brief works", "Approval commands audited"],
+        "rollout_plan": "Pilot with founder and one manager.",
+        "rollback_plan": "Disable commands and keep brief-only mode.",
+        "stopping_conditions": ["No command policy", "No incident response path"],
+        "next_step": "Connect queue to action approval engine.",
+        "security_review": "Channel policy gate validated."
+      },
+      "silver": {
+        "owner": "decision_layer_manager",
+        "decision_gate": "Approve role-based command matrix for leadership and sales.",
+        "delivery_window_days": 30,
+        "implementation_steps": ["Day 0 prerequisites", "Day 1-5 discovery", "Day 6-20 implementation", "Day 21-27 testing", "Day 28-30 handover"],
+        "out_of_scope": ["Unapproved external sends", "Bypassing command permissions"],
+        "acceptance_criteria": ["Role command sets active", "Overdue approvals reduced"],
+        "rollout_plan": "Rollout per role group.",
+        "rollback_plan": "Fallback to founder-only command scope.",
+        "stopping_conditions": ["No role owner", "No security policy"],
+        "next_step": "Enable command analytics in observability.",
+        "security_review": "Command authorization tests passed."
+      },
+      "gold": {
+        "owner": "chief_of_staff",
+        "decision_gate": "Executive approval for enterprise-wide command layer.",
+        "delivery_window_days": 60,
+        "implementation_steps": ["Day 0 prerequisites", "Day 1-7 discovery", "Day 8-40 implementation", "Day 41-55 testing", "Day 56-60 handover"],
+        "out_of_scope": ["Untraceable decisions", "Unapproved high-risk actions"],
+        "acceptance_criteria": ["Cross-role decision SLA met", "Invalid command rate minimized"],
+        "rollout_plan": "Department rollout with playbook training.",
+        "rollback_plan": "Keep silver scope and restrict command actions.",
+        "stopping_conditions": ["No executive sponsor", "No governance sign-off"],
+        "next_step": "Link to command center and expansion board.",
+        "security_review": "Role and audit controls verified."
+      }
+    }
+  },
+  "ACTION_APPROVAL_ENGINE": {
+    "tiers": {
+      "bronze": {
+        "owner": "risk_ops_lead",
+        "decision_gate": "Approve risk tiers and required approvals.",
+        "delivery_window_days": 14,
+        "implementation_steps": ["Day 0 prerequisites", "Day 1-3 discovery", "Day 4-10 implementation", "Day 11-13 testing", "Day 14 handover"],
+        "out_of_scope": ["Policy-less action execution", "Unlogged approvals"],
+        "acceptance_criteria": ["Risk-tiered approvals active", "Audit logs complete"],
+        "rollout_plan": "Enable for top workflows first.",
+        "rollback_plan": "Switch to manual approvals with same checklist.",
+        "stopping_conditions": ["No policy owner", "No compliance agreement"],
+        "next_step": "Integrate with delivery OS workflows.",
+        "security_review": "Approval logs tamper checks enabled."
+      },
+      "silver": {
+        "owner": "governance_program_manager",
+        "decision_gate": "Approve dual control rules for high-risk actions.",
+        "delivery_window_days": 30,
+        "implementation_steps": ["Day 0 prerequisites", "Day 1-5 discovery", "Day 6-20 implementation", "Day 21-27 testing", "Day 28-30 handover"],
+        "out_of_scope": ["Single approver for high-risk actions", "Unbounded action retries"],
+        "acceptance_criteria": ["Queue SLA tracked", "Escalation paths verified"],
+        "rollout_plan": "Rollout by action category.",
+        "rollback_plan": "Disable auto-escalations and keep manual control.",
+        "stopping_conditions": ["No risk committee owner", "No queue owner"],
+        "next_step": "Attach approval health to command center.",
+        "security_review": "Least-privilege review completed."
+      },
+      "gold": {
+        "owner": "chief_risk_officer_delegate",
+        "decision_gate": "Executive sign-off on enterprise action governance.",
+        "delivery_window_days": 60,
+        "implementation_steps": ["Day 0 prerequisites", "Day 1-7 discovery", "Day 8-40 implementation", "Day 41-55 testing", "Day 56-60 handover"],
+        "out_of_scope": ["Unapproved overrides", "Missing post-action audits"],
+        "acceptance_criteria": ["High-risk incidents reduced", "Control effectiveness score reported"],
+        "rollout_plan": "Phased rollout with compliance checkpoints.",
+        "rollback_plan": "Return to silver with strict manual approvals.",
+        "stopping_conditions": ["No executive risk owner", "No incident response readiness"],
+        "next_step": "Scale to enterprise services portfolio.",
+        "security_review": "Control tower monitoring validated."
+      }
+    }
+  },
+  "DELIVERY_OS": {
+    "tiers": {
+      "bronze": {
+        "owner": "delivery_manager",
+        "decision_gate": "Approve workflow ownership and acceptance criteria.",
+        "delivery_window_days": 14,
+        "implementation_steps": ["Day 0 prerequisites", "Day 1-3 discovery", "Day 4-10 implementation", "Day 11-13 testing", "Day 14 handover"],
+        "out_of_scope": ["Unowned deliverables", "Undefined done criteria"],
+        "acceptance_criteria": ["Task ownership matrix complete", "Day-by-day execution board active"],
+        "rollout_plan": "Start with onboarding and diagnostic workflows.",
+        "rollback_plan": "Return to weekly manual PM board.",
+        "stopping_conditions": ["No delivery owner", "No acceptance signer"],
+        "next_step": "Enable support and proof workflows.",
+        "security_review": "Delivery artifacts access policy reviewed."
+      },
+      "silver": {
+        "owner": "program_delivery_lead",
+        "decision_gate": "Approve SLA and blocker escalation policy.",
+        "delivery_window_days": 30,
+        "implementation_steps": ["Day 0 prerequisites", "Day 1-5 discovery", "Day 6-20 implementation", "Day 21-27 testing", "Day 28-30 handover"],
+        "out_of_scope": ["Untracked blockers", "Scope expansion without review"],
+        "acceptance_criteria": ["On-time delivery baseline measured", "Escalation SLA active"],
+        "rollout_plan": "Scale to all customer workflows.",
+        "rollback_plan": "Disable automation and run managed manual tracking.",
+        "stopping_conditions": ["No PMO owner", "No tooling access"],
+        "next_step": "Hook delivery outcomes into proof engine.",
+        "security_review": "Project access controls verified."
+      },
+      "gold": {
+        "owner": "head_of_delivery",
+        "decision_gate": "Executive sign-off on critical milestone governance.",
+        "delivery_window_days": 60,
+        "implementation_steps": ["Day 0 prerequisites", "Day 1-7 discovery", "Day 8-40 implementation", "Day 41-55 testing", "Day 56-60 handover"],
+        "out_of_scope": ["High-risk releases without rollback", "Missing incident preparedness"],
+        "acceptance_criteria": ["Critical milestone hit rate tracked", "Delivery failure rate below threshold"],
+        "rollout_plan": "Stage with canary cohort then all accounts.",
+        "rollback_plan": "Revert to silver workflow + freeze risky automations.",
+        "stopping_conditions": ["No executive delivery sponsor", "No rollback readiness"],
+        "next_step": "Run enterprise command reporting.",
+        "security_review": "Change controls and audit trails validated."
+      }
+    }
+  },
+  "CUSTOMER_PORTAL": {
+    "tiers": {
+      "bronze": {
+        "owner": "portal_product_owner",
+        "decision_gate": "Approve customer portal scope and KPI targets.",
+        "delivery_window_days": 15,
+        "implementation_steps": ["Day 0 prerequisites", "Day 1-3 discovery", "Day 4-10 implementation", "Day 11-14 testing", "Day 15 handover"],
+        "out_of_scope": ["Custom mobile app", "Unapproved external integrations"],
+        "acceptance_criteria": ["Status/approvals/deliverables visible", "Arabic-first UX enabled"],
+        "rollout_plan": "Pilot with one customer cohort.",
+        "rollback_plan": "Fallback to static weekly report portal.",
+        "stopping_conditions": ["No portal owner", "No customer acceptance signer"],
+        "next_step": "Activate support and proof views.",
+        "security_review": "Object-level authorization reviewed."
+      },
+      "silver": {
+        "owner": "customer_experience_manager",
+        "decision_gate": "Approve support + payment + proof module activation.",
+        "delivery_window_days": 30,
+        "implementation_steps": ["Day 0 prerequisites", "Day 1-5 discovery", "Day 6-20 implementation", "Day 21-27 testing", "Day 28-30 handover"],
+        "out_of_scope": ["Open internet publishing of customer data", "Unaudited access shortcuts"],
+        "acceptance_criteria": ["Approval queue and weekly plan active", "CSAT tracking baseline available"],
+        "rollout_plan": "Rollout per segment with adoption coaching.",
+        "rollback_plan": "Disable advanced modules and keep core dashboard.",
+        "stopping_conditions": ["No data processing approval", "No support owner"],
+        "next_step": "Enable executive summaries and command layer.",
+        "security_review": "Field-level redaction and session controls verified."
+      },
+      "gold": {
+        "owner": "director_customer_success",
+        "decision_gate": "Executive approval for command-grade customer portal.",
+        "delivery_window_days": 45,
+        "implementation_steps": ["Day 0 prerequisites", "Day 1-7 discovery", "Day 8-30 implementation", "Day 31-40 testing", "Day 41-45 handover"],
+        "out_of_scope": ["Guaranteed KPI outcomes", "Policy bypass for VIP accounts"],
+        "acceptance_criteria": ["Executive view + proof ledger + risks live", "Ticket deflection and guardrail KPIs monitored"],
+        "rollout_plan": "Shadow mode 1 week then controlled launch.",
+        "rollback_plan": "Revert to silver profile and disable command widgets.",
+        "stopping_conditions": ["No executive sponsor", "No security approval"],
+        "next_step": "Run expansion offers from portal proof events.",
+        "security_review": "End-to-end authz, session, and audit review complete."
+      }
+    }
+  },
+  "SUPPORT_OS": {
+    "tiers": {
+      "bronze": {
+        "owner": "support_lead",
+        "decision_gate": "Approve support taxonomy and SLA tiers.",
+        "delivery_window_days": 14,
+        "implementation_steps": ["Day 0 prerequisites", "Day 1-3 discovery", "Day 4-10 implementation", "Day 11-13 testing", "Day 14 handover"],
+        "out_of_scope": ["Autonomous high-risk customer actions", "Unapproved outbound responses"],
+        "acceptance_criteria": ["Ticket classification active", "Draft response workflow active"],
+        "rollout_plan": "Pilot with one queue.",
+        "rollback_plan": "Disable draft suggestions and use manual templates.",
+        "stopping_conditions": ["No support owner", "No SLA policy"],
+        "next_step": "Attach support outputs to customer health scoring.",
+        "security_review": "Support data access role checks passed."
+      },
+      "silver": {
+        "owner": "customer_success_manager",
+        "decision_gate": "Approve escalation and health-score model.",
+        "delivery_window_days": 30,
+        "implementation_steps": ["Day 0 prerequisites", "Day 1-5 discovery", "Day 6-20 implementation", "Day 21-27 testing", "Day 28-30 handover"],
+        "out_of_scope": ["Public disclosure of ticket content", "Unapproved escalation closures"],
+        "acceptance_criteria": ["Escalation maps tracked", "Retention risk alerts active"],
+        "rollout_plan": "Scale to all support queues.",
+        "rollback_plan": "Return to bronze and manual health review.",
+        "stopping_conditions": ["No escalation owner", "No customer health policy"],
+        "next_step": "Use support proof in expansion decisions.",
+        "security_review": "PII redaction checks completed."
+      },
+      "gold": {
+        "owner": "vp_customer_operations",
+        "decision_gate": "Executive approval for command-grade support ops.",
+        "delivery_window_days": 60,
+        "implementation_steps": ["Day 0 prerequisites", "Day 1-7 discovery", "Day 8-40 implementation", "Day 41-55 testing", "Day 56-60 handover"],
+        "out_of_scope": ["Blind automation of critical tickets", "Missing incident escalation"],
+        "acceptance_criteria": ["High-risk account monitoring live", "Support health linked to retention board"],
+        "rollout_plan": "Controlled enterprise rollout by business unit.",
+        "rollback_plan": "Fallback to silver with strict manual escalations.",
+        "stopping_conditions": ["No executive customer ops owner", "No incident protocol"],
+        "next_step": "Feed command center with support risk insights.",
+        "security_review": "Support command permissions audited."
+      }
+    }
+  },
+  "PAYMENT_TRUTH": {
+    "tiers": {
+      "bronze": {
+        "owner": "finance_ops_lead",
+        "decision_gate": "Approve invoice state model and reminder workflow.",
+        "delivery_window_days": 14,
+        "implementation_steps": ["Day 0 prerequisites", "Day 1-3 discovery", "Day 4-10 implementation", "Day 11-13 testing", "Day 14 handover"],
+        "out_of_scope": ["Live auto-charge", "Unapproved payment reminders"],
+        "acceptance_criteria": ["Invoice states normalized", "Follow-up queue active"],
+        "rollout_plan": "Pilot on one billing cohort.",
+        "rollback_plan": "Revert to manual billing state sheet.",
+        "stopping_conditions": ["No finance owner", "No billing access"],
+        "next_step": "Connect payment truth to expansion scoring.",
+        "security_review": "Finance access and audit logs verified."
+      },
+      "silver": {
+        "owner": "finance_manager",
+        "decision_gate": "Approve collection SLA and risk segmentation.",
+        "delivery_window_days": 30,
+        "implementation_steps": ["Day 0 prerequisites", "Day 1-5 discovery", "Day 6-20 implementation", "Day 21-27 testing", "Day 28-30 handover"],
+        "out_of_scope": ["External payment action without approval", "Untracked billing edits"],
+        "acceptance_criteria": ["Collection dashboard live", "Overdue reduction baseline set"],
+        "rollout_plan": "Expand to full account portfolio.",
+        "rollback_plan": "Pause automated reminders and keep manual process.",
+        "stopping_conditions": ["No finance sign-off", "No data reconciliation owner"],
+        "next_step": "Trigger risk alerts in command center.",
+        "security_review": "Payment data policy validated."
+      },
+      "gold": {
+        "owner": "head_of_finance_transformation",
+        "decision_gate": "Executive approval on predictive revenue truth board.",
+        "delivery_window_days": 60,
+        "implementation_steps": ["Day 0 prerequisites", "Day 1-7 discovery", "Day 8-40 implementation", "Day 41-55 testing", "Day 56-60 handover"],
+        "out_of_scope": ["Guaranteed collection outcomes", "Unaudited forecast overrides"],
+        "acceptance_criteria": ["Forecast board live", "Cash risk model operational"],
+        "rollout_plan": "Phase by revenue stream.",
+        "rollback_plan": "Fallback to silver with manual forecasting.",
+        "stopping_conditions": ["No executive finance sponsor", "No control framework"],
+        "next_step": "Use truth metrics in board planning.",
+        "security_review": "Financial controls and approvals reviewed."
+      }
+    }
+  },
+  "PROOF_ENGINE": {
+    "tiers": {
+      "bronze": {
+        "owner": "proof_program_owner",
+        "decision_gate": "Approve proof taxonomy and evidence levels.",
+        "delivery_window_days": 14,
+        "implementation_steps": ["Day 0 prerequisites", "Day 1-3 discovery", "Day 4-10 implementation", "Day 11-13 testing", "Day 14 handover"],
+        "out_of_scope": ["Public proof without consent", "Unverified claims"],
+        "acceptance_criteria": ["Proof events logged", "Evidence levels enforced"],
+        "rollout_plan": "Pilot with one account cohort.",
+        "rollback_plan": "Disable publication and keep internal proof drafts.",
+        "stopping_conditions": ["No consent ledger", "No metric baseline"],
+        "next_step": "Generate first proof pack.",
+        "security_review": "Consent and publication controls validated."
+      },
+      "silver": {
+        "owner": "value_realization_manager",
+        "decision_gate": "Approve monthly proof pack cadence and expansion trigger.",
+        "delivery_window_days": 30,
+        "implementation_steps": ["Day 0 prerequisites", "Day 1-5 discovery", "Day 6-20 implementation", "Day 21-27 testing", "Day 28-30 handover"],
+        "out_of_scope": ["Proof generated without source data", "Revenue claims without commitment"],
+        "acceptance_criteria": ["Monthly proof pack delivered", "Readiness score active"],
+        "rollout_plan": "Scale to all managed accounts.",
+        "rollback_plan": "Pause expansion recommendations and keep internal proof only.",
+        "stopping_conditions": ["No evidence reviewer", "No customer consent governance"],
+        "next_step": "Launch expansion offers with evidence links.",
+        "security_review": "Evidence source controls audited."
+      },
+      "gold": {
+        "owner": "chief_value_officer_delegate",
+        "decision_gate": "Executive approval for proof-led expansion board.",
+        "delivery_window_days": 60,
+        "implementation_steps": ["Day 0 prerequisites", "Day 1-7 discovery", "Day 8-40 implementation", "Day 41-55 testing", "Day 56-60 handover"],
+        "out_of_scope": ["Case-study publishing without legal review", "Fabricated outcomes"],
+        "acceptance_criteria": ["Proof-backed revenue tracked", "Expansion board live"],
+        "rollout_plan": "Governed rollout with legal checkpoints.",
+        "rollback_plan": "Revert to silver and freeze public proof publication.",
+        "stopping_conditions": ["No executive proof owner", "No legal approval path"],
+        "next_step": "Scale premium expansion packages.",
+        "security_review": "Legal + compliance publication review passed."
+      }
+    }
+  },
+  "EXPANSION_ENGINE": {
+    "tiers": {
+      "bronze": {
+        "owner": "account_growth_owner",
+        "decision_gate": "Approve expansion readiness criteria.",
+        "delivery_window_days": 14,
+        "implementation_steps": ["Day 0 prerequisites", "Day 1-3 discovery", "Day 4-10 implementation", "Day 11-13 testing", "Day 14 handover"],
+        "out_of_scope": ["Upsell without proof", "Pricing overrides without approval"],
+        "acceptance_criteria": ["Readiness score available", "Next best offer generated"],
+        "rollout_plan": "Pilot on accounts with proof history.",
+        "rollback_plan": "Disable offers and keep advisory notes only.",
+        "stopping_conditions": ["No proof history", "No account owner"],
+        "next_step": "Issue first expansion proposal.",
+        "security_review": "Pricing and offer permissions validated."
+      },
+      "silver": {
+        "owner": "growth_manager",
+        "decision_gate": "Approve expansion sequencing and objection handling.",
+        "delivery_window_days": 30,
+        "implementation_steps": ["Day 0 prerequisites", "Day 1-5 discovery", "Day 6-20 implementation", "Day 21-27 testing", "Day 28-30 handover"],
+        "out_of_scope": ["Aggressive upsell without customer health check", "Untracked offer experiments"],
+        "acceptance_criteria": ["Offer acceptance dashboard live", "Readiness thresholds enforced"],
+        "rollout_plan": "Launch by account tier.",
+        "rollback_plan": "Pause offer automation and use manual review.",
+        "stopping_conditions": ["No customer health owner", "No pricing policy"],
+        "next_step": "Integrate offer outcomes with learning flywheel.",
+        "security_review": "Offer approval and audit controls verified."
+      },
+      "gold": {
+        "owner": "vp_growth",
+        "decision_gate": "Executive sign-off for enterprise expansion governance.",
+        "delivery_window_days": 60,
+        "implementation_steps": ["Day 0 prerequisites", "Day 1-7 discovery", "Day 8-40 implementation", "Day 41-55 testing", "Day 56-60 handover"],
+        "out_of_scope": ["Unbounded discounts", "Expansion claims without proof quality checks"],
+        "acceptance_criteria": ["ARPU lift tracked", "Renewal-expansion ratio improved"],
+        "rollout_plan": "Phase by strategic account clusters.",
+        "rollback_plan": "Return to silver cadence with strict manual approvals.",
+        "stopping_conditions": ["No executive growth sponsor", "No margin guardrails"],
+        "next_step": "Feed board-level expansion planning.",
+        "security_review": "Commercial governance controls validated."
+      }
+    }
+  },
+  "LEARNING_FLYWHEEL": {
+    "tiers": {
+      "bronze": {
+        "owner": "learning_ops_owner",
+        "decision_gate": "Approve weekly learning report template.",
+        "delivery_window_days": 14,
+        "implementation_steps": ["Day 0 prerequisites", "Day 1-3 discovery", "Day 4-10 implementation", "Day 11-13 testing", "Day 14 handover"],
+        "out_of_scope": ["Feature work without learning evidence", "Untracked changes"],
+        "acceptance_criteria": ["Weekly learning report generated", "Action items assigned"],
+        "rollout_plan": "Start with one function.",
+        "rollback_plan": "Revert to manual retrospective notes.",
+        "stopping_conditions": ["No owner for actions", "No KPI baselines"],
+        "next_step": "Add learning insights to roadmap prioritization.",
+        "security_review": "Learning data anonymization reviewed."
+      },
+      "silver": {
+        "owner": "continuous_improvement_manager",
+        "decision_gate": "Approve learning-to-backlog decision flow.",
+        "delivery_window_days": 30,
+        "implementation_steps": ["Day 0 prerequisites", "Day 1-5 discovery", "Day 6-20 implementation", "Day 21-27 testing", "Day 28-30 handover"],
+        "out_of_scope": ["Backlog updates without evidence", "Unreviewed experiments"],
+        "acceptance_criteria": ["Backlog linkage active", "Improvement cycle measurable"],
+        "rollout_plan": "Extend across all service lines.",
+        "rollback_plan": "Pause automated prioritization and keep manual triage.",
+        "stopping_conditions": ["No product owner", "No operations reviewer"],
+        "next_step": "Feed pricing and packaging updates from learnings.",
+        "security_review": "Data lineage for learning metrics checked."
+      },
+      "gold": {
+        "owner": "strategy_execution_lead",
+        "decision_gate": "Executive approval for portfolio-level learning board.",
+        "delivery_window_days": 60,
+        "implementation_steps": ["Day 0 prerequisites", "Day 1-7 discovery", "Day 8-40 implementation", "Day 41-55 testing", "Day 56-60 handover"],
+        "out_of_scope": ["Strategy shifts without learning evidence", "Unapproved model updates"],
+        "acceptance_criteria": ["Portfolio learning board live", "Resource allocation linked to outcomes"],
+        "rollout_plan": "Quarterly strategic cycle integration.",
+        "rollback_plan": "Fallback to silver with manual strategic reviews.",
+        "stopping_conditions": ["No strategy owner", "No board sponsorship"],
+        "next_step": "Use learnings to design next vertical offerings.",
+        "security_review": "Governance controls for strategic data validated."
+      }
+    }
+  },
+  "TRUST_LAYER": {
+    "tiers": {
+      "bronze": {
+        "owner": "trust_compliance_owner",
+        "decision_gate": "Approve consent ledger and policy baseline.",
+        "delivery_window_days": 15,
+        "implementation_steps": ["Day 0 prerequisites", "Day 1-3 discovery", "Day 4-11 implementation", "Day 12-14 testing", "Day 15 handover"],
+        "out_of_scope": ["Legal certification guarantees", "Policy exceptions without review"],
+        "acceptance_criteria": ["Consent process active", "Trust controls documented"],
+        "rollout_plan": "Rollout by service line risk level.",
+        "rollback_plan": "Block external actions until policies restored.",
+        "stopping_conditions": ["No legal contact", "No policy owner"],
+        "next_step": "Pair with security service for enterprise readiness.",
+        "security_review": "Consent and retention controls tested."
+      },
+      "silver": {
+        "owner": "compliance_program_manager",
+        "decision_gate": "Approve trust controls coverage and audit cadence.",
+        "delivery_window_days": 30,
+        "implementation_steps": ["Day 0 prerequisites", "Day 1-5 discovery", "Day 6-20 implementation", "Day 21-27 testing", "Day 28-30 handover"],
+        "out_of_scope": ["Public compliance claims without legal sign-off", "Unreviewed policy changes"],
+        "acceptance_criteria": ["Control coverage measured", "Audit readiness report available"],
+        "rollout_plan": "Expand to all customer-facing workflows.",
+        "rollback_plan": "Restrict to bronze controls while remediating.",
+        "stopping_conditions": ["No compliance sponsor", "No audit process"],
+        "next_step": "Open enterprise security review track.",
+        "security_review": "Control maturity checks complete."
+      },
+      "gold": {
+        "owner": "head_of_trust",
+        "decision_gate": "Executive approval for enterprise trust center release.",
+        "delivery_window_days": 60,
+        "implementation_steps": ["Day 0 prerequisites", "Day 1-7 discovery", "Day 8-40 implementation", "Day 41-55 testing", "Day 56-60 handover"],
+        "out_of_scope": ["Unbounded legal claims", "Untracked third-party processing"],
+        "acceptance_criteria": ["Trust center live", "Enterprise questionnaire cycle reduced"],
+        "rollout_plan": "Staged launch with enterprise customer pilots.",
+        "rollback_plan": "Fallback to silver trust pack and pause external claims.",
+        "stopping_conditions": ["No executive trust sponsor", "No legal and security sign-off"],
+        "next_step": "Scale enterprise sales motions.",
+        "security_review": "Trust center artifacts validated and versioned."
+      }
+    }
+  },
+  "SECURITY": {
+    "tiers": {
+      "bronze": {
+        "owner": "security_engineer_owner",
+        "decision_gate": "Approve baseline authorization and logging controls.",
+        "delivery_window_days": 15,
+        "implementation_steps": ["Day 0 prerequisites", "Day 1-3 discovery", "Day 4-11 implementation", "Day 12-14 testing", "Day 15 handover"],
+        "out_of_scope": ["Production pentest certification", "Guaranteed compliance statements"],
+        "acceptance_criteria": ["RBAC baseline configured", "Security risk register updated"],
+        "rollout_plan": "Deploy to core workflows first.",
+        "rollback_plan": "Disable non-essential automation and enforce manual controls.",
+        "stopping_conditions": ["No security owner", "No access log visibility"],
+        "next_step": "Upgrade to silver with object-level auth coverage.",
+        "security_review": "Threat model and control mapping reviewed."
+      },
+      "silver": {
+        "owner": "security_program_manager",
+        "decision_gate": "Approve object and function authorization coverage targets.",
+        "delivery_window_days": 30,
+        "implementation_steps": ["Day 0 prerequisites", "Day 1-5 discovery", "Day 6-20 implementation", "Day 21-27 testing", "Day 28-30 handover"],
+        "out_of_scope": ["Broad regulatory claims", "Uncontrolled privileged access"],
+        "acceptance_criteria": ["Authorization tests passing", "Incident response runbook validated"],
+        "rollout_plan": "Rollout per API domain.",
+        "rollback_plan": "Revert to bronze controls and lock high-risk paths.",
+        "stopping_conditions": ["No security approval", "No incident commander"],
+        "next_step": "Enable gold security for enterprise buyers.",
+        "security_review": "Control evidence pack reviewed by security lead."
+      },
+      "gold": {
+        "owner": "head_of_security",
+        "decision_gate": "Executive and security board sign-off.",
+        "delivery_window_days": 60,
+        "implementation_steps": ["Day 0 prerequisites", "Day 1-7 discovery", "Day 8-40 implementation", "Day 41-55 testing", "Day 56-60 handover"],
+        "out_of_scope": ["Guaranteed zero-risk promises", "Unreviewed scope expansion"],
+        "acceptance_criteria": ["Critical gaps closed", "Enterprise security review cycle reduced"],
+        "rollout_plan": "Canary rollout then full deployment.",
+        "rollback_plan": "Immediate fallback to silver plus emergency controls.",
+        "stopping_conditions": ["No executive security sponsor", "No validated rollback plan"],
+        "next_step": "Package security with trust and observability offers.",
+        "security_review": "Comprehensive security gate completed."
+      }
+    }
+  },
+  "OBSERVABILITY": {
+    "tiers": {
+      "bronze": {
+        "owner": "observability_owner",
+        "decision_gate": "Approve baseline logs, traces, and KPI dashboards.",
+        "delivery_window_days": 14,
+        "implementation_steps": ["Day 0 prerequisites", "Day 1-3 discovery", "Day 4-10 implementation", "Day 11-13 testing", "Day 14 handover"],
+        "out_of_scope": ["Tool migration projects", "Unapproved data exports"],
+        "acceptance_criteria": ["Core traces available", "Alert policy baseline active"],
+        "rollout_plan": "Start with priority workflows.",
+        "rollback_plan": "Fallback to existing monitoring with manual checks.",
+        "stopping_conditions": ["No metric owner", "No logging access"],
+        "next_step": "Integrate observability into command center reporting.",
+        "security_review": "Telemetry access and retention controls validated."
+      },
+      "silver": {
+        "owner": "sre_manager",
+        "decision_gate": "Approve incident thresholds and response playbook.",
+        "delivery_window_days": 30,
+        "implementation_steps": ["Day 0 prerequisites", "Day 1-5 discovery", "Day 6-20 implementation", "Day 21-27 testing", "Day 28-30 handover"],
+        "out_of_scope": ["Blind alerting without runbooks", "Unapproved third-party telemetry sharing"],
+        "acceptance_criteria": ["MTTA/MTTR metrics tracked", "Trace coverage >= baseline target"],
+        "rollout_plan": "Rollout by service domain with incident drills.",
+        "rollback_plan": "Reduce to bronze alerts and disable noisy rules.",
+        "stopping_conditions": ["No incident owner", "No runbook approval"],
+        "next_step": "Enable gold board-level observability.",
+        "security_review": "Telemetry security review passed."
+      },
+      "gold": {
+        "owner": "head_of_sre",
+        "decision_gate": "Executive approval for board-grade observability controls.",
+        "delivery_window_days": 60,
+        "implementation_steps": ["Day 0 prerequisites", "Day 1-7 discovery", "Day 8-40 implementation", "Day 41-55 testing", "Day 56-60 handover"],
+        "out_of_scope": ["Guaranteed zero downtime claims", "Unvalidated anomaly automation"],
+        "acceptance_criteria": ["Decision-to-outcome trace coverage >= target", "Incident economics visible"],
+        "rollout_plan": "Controlled launch with executive weekly review.",
+        "rollback_plan": "Fallback to silver dashboard profile.",
+        "stopping_conditions": ["No executive sponsor", "No incident governance"],
+        "next_step": "Bundle with security and trust for enterprise sales.",
+        "security_review": "Audit logging and monitoring controls verified."
+      }
+    }
+  }
+}

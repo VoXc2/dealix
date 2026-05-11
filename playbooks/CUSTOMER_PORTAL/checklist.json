@@ -1,0 +1,10 @@
+{
+  "service_family": "CUSTOMER_PORTAL",
+  "required_checks": [
+    "role_access_matrix_approved",
+    "data_processing_approval_signed",
+    "acceptance_signer_assigned",
+    "kpi_baseline_recorded",
+    "rollback_plan_tested"
+  ]
+}

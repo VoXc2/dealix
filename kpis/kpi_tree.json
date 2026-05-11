@@ -1,0 +1,114 @@
+{
+  "MARKET_RADAR": {
+    "north_star": "qualified_signal_to_pipeline_rate",
+    "business_kpis": ["new_pipeline_value_sar", "signal_to_demo_rate", "opportunity_cycle_days"],
+    "operational_kpis": ["signal_normalization_latency_minutes", "false_positive_signal_rate", "daily_brief_completeness"],
+    "guardrail_kpis": ["policy_violation_count", "unapproved_external_action_attempts", "data_provenance_gaps"],
+    "target_benchmarks": ["+20% qualified pipeline in 60 days", "signal-to-demo >= 15%"]
+  },
+  "LEAD_INTELLIGENCE": {
+    "north_star": "priority_lead_conversion_rate",
+    "business_kpis": ["demo_booked_rate", "reply_rate", "sales_cycle_reduction_days"],
+    "operational_kpis": ["lead_scoring_accuracy", "dedupe_rate", "data_quality_score"],
+    "guardrail_kpis": ["consent_mismatch_incidents", "source_policy_violations", "blocked_channel_attempts"],
+    "target_benchmarks": ["+25% reply rate in 60 days", "dedupe rate >= 95%"]
+  },
+  "COMPANY_BRAIN": {
+    "north_star": "context_reuse_success_rate",
+    "business_kpis": ["proposal_win_rate_lift", "message_consistency_score", "rework_cost_reduction_sar"],
+    "operational_kpis": ["knowledge_update_sla", "context_resolution_latency", "retrieval_precision"],
+    "guardrail_kpis": ["outdated_context_incidents", "brand_tone_violations", "sensitive_data_exposure_events"],
+    "target_benchmarks": ["rework reduction >= 30%", "message consistency >= 90%"]
+  },
+  "DECISION_PASSPORT": {
+    "north_star": "passport_to_action_completion_rate",
+    "business_kpis": ["decision_cycle_time_hours", "approved_action_impact_sar", "stalled_decision_reduction"],
+    "operational_kpis": ["passport_completeness_rate", "owner_assignment_rate", "deadline_adherence_rate"],
+    "guardrail_kpis": ["no_passport_action_attempts", "risk_field_missing_count", "proof_target_missing_count"],
+    "target_benchmarks": ["passport completeness >= 95%", "decision cycle time -30%"]
+  },
+  "WHATSAPP_DECISION_LAYER": {
+    "north_star": "approval_turnaround_minutes",
+    "business_kpis": ["approved_decisions_per_week", "execution_blocker_reduction", "executive_response_rate"],
+    "operational_kpis": ["command_parse_accuracy", "brief_delivery_success_rate", "daily_summary_open_rate"],
+    "guardrail_kpis": ["unapproved_send_attempts", "role_permission_violations", "sensitive_command_failures"],
+    "target_benchmarks": ["approval turnaround < 60 min", "daily response rate >= 80%"]
+  },
+  "ACTION_APPROVAL_ENGINE": {
+    "north_star": "approval_queue_sla_compliance",
+    "business_kpis": ["approved_action_execution_rate", "cycle_time_reduction", "revenue_impact_per_action"],
+    "operational_kpis": ["queue_backlog_size", "escalation_rate", "audit_log_completeness"],
+    "guardrail_kpis": ["policy_bypass_attempts", "consent_check_failures", "high_risk_action_without_dual_approval"],
+    "target_benchmarks": ["SLA compliance >= 95%", "audit completeness = 100%"]
+  },
+  "DELIVERY_OS": {
+    "north_star": "on_time_delivery_rate",
+    "business_kpis": ["milestone_hit_rate", "delivery_cost_variance", "time_to_value_days"],
+    "operational_kpis": ["task_closure_rate", "blocker_resolution_sla", "handover_readiness_score"],
+    "guardrail_kpis": ["rollback_incidents", "critical_defect_count", "scope_drift_events"],
+    "target_benchmarks": ["on-time delivery >= 90%", "time-to-value <= 30 days"]
+  },
+  "CUSTOMER_PORTAL": {
+    "north_star": "ticket_deflection_rate",
+    "business_kpis": ["support_cost_reduction_sar", "customer_response_time_minutes", "csat_delta"],
+    "operational_kpis": ["automation_success_rate", "handoff_rate", "median_resolution_time"],
+    "guardrail_kpis": ["hallucination_rate", "pii_leakage_incidents", "fallback_failure_rate"],
+    "target_benchmarks": ["ticket deflection +25% in 60 days", "hallucination rate < 1%"]
+  },
+  "SUPPORT_OS": {
+    "north_star": "first_response_sla_compliance",
+    "business_kpis": ["retention_rate", "churn_risk_reduction", "escalation_cost_reduction_sar"],
+    "operational_kpis": ["median_first_response_minutes", "escalation_resolution_time", "root_cause_closure_rate"],
+    "guardrail_kpis": ["unsafe_reply_suggestions", "sensitive_ticket_misrouting", "unapproved_send_attempts"],
+    "target_benchmarks": ["first response <= 30 min", "retention +10%"]
+  },
+  "PAYMENT_TRUTH": {
+    "north_star": "collection_cycle_days",
+    "business_kpis": ["cash_conversion_improvement", "overdue_invoice_ratio", "recovered_revenue_sar"],
+    "operational_kpis": ["invoice_state_accuracy", "payment_reconciliation_latency", "followup_task_completion_rate"],
+    "guardrail_kpis": ["incorrect_charge_attempts", "live_charge_without_approval", "billing_data_mismatch_incidents"],
+    "target_benchmarks": ["overdue invoice ratio -20%", "state accuracy >= 98%"]
+  },
+  "PROOF_ENGINE": {
+    "north_star": "proof_backed_revenue_ratio",
+    "business_kpis": ["proof_events_per_customer", "renewal_rate_lift", "expansion_revenue_sar"],
+    "operational_kpis": ["evidence_level_progression_rate", "proof_pack_delivery_sla", "consent_attached_rate"],
+    "guardrail_kpis": ["fake_proof_incidents", "public_proof_without_consent", "evidence_gap_count"],
+    "target_benchmarks": ["proof-backed revenue >= 70%", "consent attached = 100%"]
+  },
+  "EXPANSION_ENGINE": {
+    "north_star": "expansion_offer_acceptance_rate",
+    "business_kpis": ["arpu_lift", "upsell_revenue_sar", "renewal_expansion_ratio"],
+    "operational_kpis": ["expansion_readiness_score", "offer_generation_sla", "account_plan_coverage"],
+    "guardrail_kpis": ["upsell_without_proof_attempts", "offer_policy_violations", "customer_health_mismatch"],
+    "target_benchmarks": ["acceptance >= 25%", "upsell without proof = 0"]
+  },
+  "LEARNING_FLYWHEEL": {
+    "north_star": "weekly_learning_actions_completed",
+    "business_kpis": ["kpi_uplift_from_learnings", "margin_improvement", "win_rate_improvement"],
+    "operational_kpis": ["insight_to_backlog_cycle_days", "experiment_completion_rate", "playbook_update_frequency"],
+    "guardrail_kpis": ["unvalidated_change_ratio", "regression_after_change", "insight_quality_failures"],
+    "target_benchmarks": ["weekly actions >= 3", "insight-to-backlog <= 7 days"]
+  },
+  "TRUST_LAYER": {
+    "north_star": "compliance_control_coverage",
+    "business_kpis": ["enterprise_deal_security_pass_rate", "legal_review_cycle_time", "customer_trust_score"],
+    "operational_kpis": ["consent_ledger_completeness", "data_retention_policy_coverage", "audit_readiness_score"],
+    "guardrail_kpis": ["pdpl_incidents", "consent_mismatch_incidents", "untracked_data_flow_count"],
+    "target_benchmarks": ["control coverage >= 95%", "PDPL incidents = 0"]
+  },
+  "SECURITY": {
+    "north_star": "critical_security_gap_closure_rate",
+    "business_kpis": ["security_review_win_rate", "incident_cost_avoidance_sar", "enterprise_conversion_lift"],
+    "operational_kpis": ["rbac_coverage", "object_level_authorization_coverage", "security_fix_sla"],
+    "guardrail_kpis": ["critical_vulnerability_count", "privilege_escalation_events", "unauthorized_access_incidents"],
+    "target_benchmarks": ["critical gaps closed >= 90%", "critical vulnerabilities = 0"]
+  },
+  "OBSERVABILITY": {
+    "north_star": "decision_to_outcome_trace_coverage",
+    "business_kpis": ["downtime_cost_reduction_sar", "incident_mtta_minutes", "incident_mttr_minutes"],
+    "operational_kpis": ["alert_precision", "trace_completeness", "cost_per_workflow_run"],
+    "guardrail_kpis": ["missing_audit_entries", "silent_failure_count", "monitoring_blind_spots"],
+    "target_benchmarks": ["trace coverage >= 95%", "MTTR reduction >= 30%"]
+  }
+}
