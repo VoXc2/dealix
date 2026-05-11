@@ -43,9 +43,19 @@ SKIP_PAGES = {
 }
 
 # Pages that legitimately don't need an `og:title` / `og:description`
-# (they're internal redirects or single-purpose readiness placeholders).
+# (they're internal redirects, founder-only authenticated UIs, or
+# single-purpose readiness placeholders that carry noindex).
 ADVISORY_ONLY_PAGES = {
     "launch-readiness.html",
+    # Authenticated / noindex UIs (Track B + C of 30-day plan):
+    "checkout.html",
+    "checkout-success.html",
+    "customer-decisions.html",
+    "founder-command-bus.html",
+    "founder-dashboard.html",
+    "founder-proof-create.html",
+    "login.html",
+    "partners.html",  # thin meta-refresh redirect → /agency-partner.html
 }
 
 REQUIRED_CHECKS = [

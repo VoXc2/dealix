@@ -20,18 +20,26 @@ module.exports = defineConfig({
     trace: "on-first-retry",
     screenshot: "only-on-failure",
   },
+  // Confined to Chromium only — workflow installs `--with-deps chromium`.
+  // Viewport-based emulation covers all 3 breakpoints without requiring
+  // WebKit / Firefox binaries.
   projects: [
     {
       name: "iphone-se-320",
-      use: { ...devices["iPhone SE"], viewport: { width: 320, height: 568 } },
+      use: {
+        ...devices["Desktop Chrome"],
+        viewport: { width: 320, height: 568 },
+        userAgent:
+          "Mozilla/5.0 (iPhone; CPU iPhone OS 16_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.0 Mobile/15E148 Safari/604.1",
+      },
     },
     {
       name: "tablet-768",
-      use: { viewport: { width: 768, height: 1024 } },
+      use: { ...devices["Desktop Chrome"], viewport: { width: 768, height: 1024 } },
     },
     {
       name: "desktop-1280",
-      use: { viewport: { width: 1280, height: 800 } },
+      use: { ...devices["Desktop Chrome"], viewport: { width: 1280, height: 800 } },
     },
   ],
 });
