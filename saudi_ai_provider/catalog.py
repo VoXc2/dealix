@@ -31,6 +31,7 @@ GUARDRAIL_METRICS_PATH = ROOT / "kpis/guardrails.json"
 BENCHMARK_TARGETS_PATH = ROOT / "kpis/benchmark_targets.json"
 RISK_REGISTER_PATH = ROOT / "risk/risk_register.json"
 PLAYBOOK_CATALOG_PATH = ROOT / "playbooks/playbook_catalog.json"
+FINAL_SERVICE_STACK_PATH = ROOT / "commercial/final_enterprise_service_stack.json"
 
 TEMPLATES_DIR = ROOT / "templates"
 OFFERS_OUT_DIR = ROOT / "out/offers"
@@ -126,3 +127,7 @@ def load_risk_register() -> dict[str, Any]:
 
 def load_playbook_catalog() -> dict[str, Any]:
     return load_json(PLAYBOOK_CATALOG_PATH)
+
+
+def load_final_service_stack() -> dict[str, Any]:
+    return load_json(FINAL_SERVICE_STACK_PATH)

@@ -10,6 +10,7 @@ from typing import Sequence
 from .commercial import compute_recurring_model, generate_customer_proposal_bundle, load_intake
 from .dashboards import export_dashboard_bundle
 from .kpis import kpis_for_service
+from .launch_ops import build_launch_pack, render_offer_stack
 from .offers import build_pitch, generate_offer
 from .pricing import compute_roi, package_for_segment, quote_service
 from .roadmap import roadmap_for_days
@@ -253,6 +254,26 @@ def _cmd_p2_monetization(args: argparse.Namespace) -> int:
     return 0
 
 
+def _cmd_offer_stack(args: argparse.Namespace) -> int:
+    print(render_offer_stack(segment=args.segment, lang=args.lang))
+    return 0
+
+
+def _cmd_launch_pack(args: argparse.Namespace) -> int:
+    verification = verify_sellable()
+    result = build_launch_pack(
+        segment=args.segment,
+        lang=args.lang,
+        verification=verification,
+        output_path=Path(args.output) if args.output else None,
+    )
+    print(f"launch_pack: {result.output_path}")
+    print(f"included_services: {len(result.included_services)}")
+    for service_id in result.included_services:
+        print(f"- {service_id}")
+    return 0 if verification.sellable_now else 1
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="python -m saudi_ai_provider",
@@ -377,6 +398,23 @@ def build_parser() -> argparse.ArgumentParser:
     p2.add_argument("--customer-state-file", required=True)
     p2.add_argument("--max-services", type=int, default=5)
     p2.set_defaults(func=_cmd_p2_monetization)
+
+    offer_stack = sub.add_parser(
+        "offer-stack",
+        help="Render high-value enterprise service stack by segment",
+    )
+    offer_stack.add_argument("--segment", required=True, choices=["smb", "mid_market", "enterprise"])
+    offer_stack.add_argument("--lang", choices=["ar", "en"], default="ar")
+    offer_stack.set_defaults(func=_cmd_offer_stack)
+
+    launch_pack = sub.add_parser(
+        "launch-pack",
+        help="Generate final launch pack markdown including readiness verdict",
+    )
+    launch_pack.add_argument("--segment", required=True, choices=["smb", "mid_market", "enterprise"])
+    launch_pack.add_argument("--lang", choices=["ar", "en"], default="ar")
+    launch_pack.add_argument("--output")
+    launch_pack.set_defaults(func=_cmd_launch_pack)
 
     return parser
 

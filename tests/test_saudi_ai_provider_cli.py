@@ -156,3 +156,22 @@ def test_p2_monetization_commands() -> None:
     )
     assert p2.returncode == 0, p2.stdout + p2.stderr
     assert "P2_MONETIZATION_SUMMARY" in p2.stdout
+
+
+def test_offer_stack_and_launch_pack_commands() -> None:
+    offer_stack = run_cmd("offer-stack", "--segment", "enterprise", "--lang", "ar")
+    assert offer_stack.returncode == 0, offer_stack.stdout + offer_stack.stderr
+    assert "حزمة الخدمات التنفيذية" in offer_stack.stdout
+    assert "AI_GOVERNANCE_OS" in offer_stack.stdout
+
+    launch_pack = run_cmd(
+        "launch-pack",
+        "--segment",
+        "enterprise",
+        "--lang",
+        "ar",
+        "--output",
+        "out/launch/test_final_launch_pack.md",
+    )
+    assert launch_pack.returncode == 0, launch_pack.stdout + launch_pack.stderr
+    assert "launch_pack:" in launch_pack.stdout

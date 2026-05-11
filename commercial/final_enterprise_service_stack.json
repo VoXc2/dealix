@@ -1,0 +1,207 @@
+{
+  "schema_version": "1.0",
+  "positioning": "AI Operations & Governance Infrastructure Company",
+  "pricing_model": "setup_plus_managed_retainer_plus_expansion",
+  "services": [
+    {
+      "service_id": "AI_GOVERNANCE_OS",
+      "layer": "Governance",
+      "target_segments": ["mid_market", "enterprise"],
+      "buyers": ["CISO", "Compliance Director", "Risk Committee", "CIO"],
+      "core_outcome": "Control AI decisions, approvals, policy enforcement, and auditability.",
+      "setup_fee_sar_range": [250000, 1500000],
+      "monthly_retainer_sar_range": [45000, 220000],
+      "kpi_targets": [
+        "policy_violation_rate <= 0.5%",
+        "approval_trace_coverage = 100%",
+        "critical_audit_gap_count = 0"
+      ],
+      "differentiators": [
+        "PDPL-first policy mapping",
+        "Approval and escalation runtime",
+        "Evidence exports for board and audit teams"
+      ],
+      "deployment_window_days": 30
+    },
+    {
+      "service_id": "AI_REVENUE_COMMAND_CENTER",
+      "layer": "Revenue",
+      "target_segments": ["mid_market", "enterprise"],
+      "buyers": ["CEO", "CRO", "COO"],
+      "core_outcome": "Increase conversion, pipeline velocity, expansion, and forecast confidence.",
+      "setup_fee_sar_range": [180000, 1200000],
+      "monthly_retainer_sar_range": [50000, 260000],
+      "kpi_targets": [
+        "pipeline_velocity +20%",
+        "forecast_accuracy >= 90%",
+        "expansion_revenue_growth >= 15%"
+      ],
+      "differentiators": [
+        "Decision-to-revenue chain tracking",
+        "Proof-backed expansion triggers",
+        "Executive KPI operating layer"
+      ],
+      "deployment_window_days": 45
+    },
+    {
+      "service_id": "AI_CUSTOMER_OPERATIONS_PLATFORM",
+      "layer": "Operations",
+      "target_segments": ["smb", "mid_market", "enterprise"],
+      "buyers": ["COO", "Head of Support", "CX Director"],
+      "core_outcome": "Lower support cost and improve response and customer experience.",
+      "setup_fee_sar_range": [75000, 600000],
+      "monthly_retainer_sar_range": [20000, 150000],
+      "kpi_targets": [
+        "ticket_deflection_rate >= 25%",
+        "first_response_time <= 30 minutes",
+        "csat_delta >= +0.5"
+      ],
+      "differentiators": [
+        "Governed draft-first operations",
+        "Escalation and SLA orchestration",
+        "Arabic-first support intelligence"
+      ],
+      "deployment_window_days": 21
+    },
+    {
+      "service_id": "AI_WORKFLOW_AUTOMATION_FACTORY",
+      "layer": "Automation",
+      "target_segments": ["mid_market", "enterprise"],
+      "buyers": ["COO", "Operations Excellence Lead", "Transformation Office"],
+      "core_outcome": "Automate high-friction workflows with controlled execution.",
+      "setup_fee_sar_range": [120000, 900000],
+      "monthly_retainer_sar_range": [35000, 200000],
+      "kpi_targets": [
+        "workflow_cycle_time -30%",
+        "manual_task_volume -40%",
+        "on_time_delivery_rate >= 90%"
+      ],
+      "differentiators": [
+        "Factory playbooks and quality gates",
+        "Rollback-safe workflow rollout",
+        "Cross-function governance controls"
+      ],
+      "deployment_window_days": 30
+    },
+    {
+      "service_id": "AI_OBSERVABILITY_PLATFORM",
+      "layer": "Observability",
+      "target_segments": ["mid_market", "enterprise"],
+      "buyers": ["CIO", "Head of Platform", "CISO"],
+      "core_outcome": "Monitor AI quality, incidents, cost, and runtime health.",
+      "setup_fee_sar_range": [100000, 700000],
+      "monthly_retainer_sar_range": [30000, 180000],
+      "kpi_targets": [
+        "trace_coverage >= 95%",
+        "incident_mttr -30%",
+        "hallucination_rate < 1%"
+      ],
+      "differentiators": [
+        "Decision-to-outcome traces",
+        "Incident economics and executive visibility",
+        "Quality and guardrail monitoring"
+      ],
+      "deployment_window_days": 30
+    },
+    {
+      "service_id": "AI_RUNTIME_MANAGEMENT",
+      "layer": "Runtime",
+      "target_segments": ["enterprise"],
+      "buyers": ["CIO", "Platform Director", "AI Program Lead"],
+      "core_outcome": "Operate models, prompts, workflows, and incidents under one managed runtime.",
+      "setup_fee_sar_range": [220000, 1800000],
+      "monthly_retainer_sar_range": [60000, 300000],
+      "kpi_targets": [
+        "runtime_uptime >= 99.9%",
+        "incident_response_sla >= 95%",
+        "cost_per_workflow_run within budget target"
+      ],
+      "differentiators": [
+        "Governed orchestration baseline",
+        "Policy snapshots per execution",
+        "Managed operations runbook"
+      ],
+      "deployment_window_days": 60
+    },
+    {
+      "service_id": "AI_EVIDENCE_AUDIT_INFRA",
+      "layer": "Evidence",
+      "target_segments": ["mid_market", "enterprise"],
+      "buyers": ["Compliance", "Internal Audit", "Board Office"],
+      "core_outcome": "Generate provable evidence for every AI action and decision.",
+      "setup_fee_sar_range": [90000, 550000],
+      "monthly_retainer_sar_range": [25000, 130000],
+      "kpi_targets": [
+        "evidence_export_coverage = 100%",
+        "audit_preparation_time -50%",
+        "missing_trace_incidents = 0"
+      ],
+      "differentiators": [
+        "Policy trace templates",
+        "Audit-ready export bundles",
+        "Board reporting packs"
+      ],
+      "deployment_window_days": 21
+    },
+    {
+      "service_id": "PDPL_AI_COMPLIANCE_PLATFORM",
+      "layer": "Compliance",
+      "target_segments": ["mid_market", "enterprise"],
+      "buyers": ["Legal", "Compliance", "Security"],
+      "core_outcome": "Operationalize PDPL controls for AI data use and consent.",
+      "setup_fee_sar_range": [150000, 950000],
+      "monthly_retainer_sar_range": [35000, 190000],
+      "kpi_targets": [
+        "consent_ledger_completeness = 100%",
+        "pdpl_incidents = 0",
+        "compliance_review_cycle_time -35%"
+      ],
+      "differentiators": [
+        "Saudi compliance control maps",
+        "Data retention and opt-out automation",
+        "Compliance-first execution gates"
+      ],
+      "deployment_window_days": 30
+    },
+    {
+      "service_id": "EXECUTIVE_AI_INTELLIGENCE_SYSTEM",
+      "layer": "Executive Intelligence",
+      "target_segments": ["enterprise"],
+      "buyers": ["CEO", "Board", "Strategy Office", "CFO"],
+      "core_outcome": "Provide executive-grade AI intelligence for decisions and scenarios.",
+      "setup_fee_sar_range": [180000, 1300000],
+      "monthly_retainer_sar_range": [50000, 240000],
+      "kpi_targets": [
+        "executive_decision_cycle_time -25%",
+        "board_reporting_quality_score >= 90%",
+        "strategic_risk_alert_latency < 24h"
+      ],
+      "differentiators": [
+        "Role-specific executive views",
+        "Scenario and risk intelligence",
+        "Direct link to runtime evidence"
+      ],
+      "deployment_window_days": 45
+    },
+    {
+      "service_id": "SOVEREIGN_AI_INFRASTRUCTURE",
+      "layer": "Platform",
+      "target_segments": ["enterprise", "government"],
+      "buyers": ["CIO", "Government Digital Unit", "Enterprise Architecture"],
+      "core_outcome": "Deploy secure sovereign AI capabilities with local control and residency.",
+      "setup_fee_sar_range": [300000, 2500000],
+      "monthly_retainer_sar_range": [70000, 350000],
+      "kpi_targets": [
+        "data_residency_compliance = 100%",
+        "private_inference_availability >= 99.9%",
+        "critical_security_gap_count = 0"
+      ],
+      "differentiators": [
+        "Sovereign deployment patterns",
+        "Arabic-first model ops",
+        "Enterprise-grade governance integration"
+      ],
+      "deployment_window_days": 75
+    }
+  ]
+}
