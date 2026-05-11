@@ -784,7 +784,19 @@ button { font: inherit; cursor: pointer; border: 0; background: transparent; col
 .field input[aria-invalid="true"], .field select[aria-invalid="true"] {
   border-color: var(--danger);
 }
-.hp { position: absolute; left: -9999px; top: -9999px; }
+.hp {
+  /* Keep honeypot out of flow without creating giant scroll width. */
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
 
 .consent {
   display: flex; gap: 10px; align-items: flex-start;

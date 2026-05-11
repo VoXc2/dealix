@@ -12,6 +12,7 @@ Exit code 0 only if /health is 200 and all smoke paths return 200.
 
 Terminal markers (grep-friendly):
   STAGING_HEALTH_OK
+  DEPLOY_PARITY_OK
   SMOKE_STAGING_OK
   LAUNCH_READINESS_JSON_OK
   STAGING_LEVEL_1_TECH_OK
@@ -66,6 +67,14 @@ def main() -> int:
         action="store_true",
         help="Do not GET /api/v1/personal-operator/launch-readiness",
     )
+    parser.add_argument(
+        "--expect-git-sha",
+        default=os.environ.get("EXPECT_GIT_SHA", "").strip(),
+        help=(
+            "Optional: assert /health git_sha matches this commit "
+            "(full SHA or short prefix)."
+        ),
+    )
     args = parser.parse_args()
     base = args.base_url
     if not base:
@@ -86,6 +95,24 @@ def main() -> int:
             print(f"STAGING_HEALTH_FAIL status={hr.status_code}", file=sys.stderr)
             return 1
         print("STAGING_HEALTH_OK")
+        expected_sha = args.expect_git_sha.strip()
+        if expected_sha:
+            try:
+                health_payload = hr.json()
+            except Exception:
+                print("DEPLOY_PARITY_FAIL health_not_json", file=sys.stderr)
+                return 1
+            remote_sha = str(health_payload.get("git_sha", "")).strip()
+            if not remote_sha:
+                print("DEPLOY_PARITY_FAIL missing_git_sha", file=sys.stderr)
+                return 1
+            if not remote_sha.startswith(expected_sha):
+                print(
+                    f"DEPLOY_PARITY_FAIL expected={expected_sha} actual={remote_sha}",
+                    file=sys.stderr,
+                )
+                return 1
+            print(f"DEPLOY_PARITY_OK git_sha={remote_sha}")
 
         for path in SMOKE_PATHS:
             url = f"{base}{path}"

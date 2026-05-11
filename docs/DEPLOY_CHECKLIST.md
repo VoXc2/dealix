@@ -36,6 +36,12 @@ sleep 5
 curl -s http://127.0.0.1:8001/health/deep | jq .
 # Expect: postgres green, redis green, llm_providers=[groq,openai]
 
+# 6.1 Verify deploy parity (service SHA == intended commit)
+EXPECTED_SHA=$(git rev-parse --short HEAD)
+python3 /opt/dealix/scripts/launch_readiness_check.py \
+  --base-url http://127.0.0.1:8001 \
+  --expect-git-sha "$EXPECTED_SHA"
+
 # 7. Smoke test new endpoints
 export API_KEY="$(grep '^API_KEYS=' /opt/dealix/.env | cut -d= -f2- | tr -d '"' | cut -d, -f1)"
 
@@ -91,6 +97,12 @@ curl -s -o /dev/null -w "pricing public: %{http_code}\n" http://127.0.0.1:8001/a
 
 curl -s -o /dev/null -w "checkout no-key: %{http_code}\n" http://127.0.0.1:8001/api/v1/checkout -X POST -H "Content-Type: application/json" -d '{}'
 # Expected: 401 (NOT 500)
+
+# Verify parity marker after restart (must print DEPLOY_PARITY_OK)
+EXPECTED_SHA=$(git rev-parse --short HEAD)
+python3 /opt/dealix/scripts/launch_readiness_check.py \
+  --base-url http://127.0.0.1:8001 \
+  --expect-git-sha "$EXPECTED_SHA"
 
 # Make scripts executable
 chmod +x /opt/dealix/scripts/ops/*.sh
