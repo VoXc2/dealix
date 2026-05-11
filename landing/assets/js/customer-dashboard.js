@@ -164,8 +164,75 @@
         // Phase 3 Wave 5: degraded banner — show when active customer
         // mode but key sections fall back to insufficient_data
         maybeShowDegradedBanner(enriched);
+        // Wave 13 Phase 6 — populate 4-card above-fold pattern
+        renderW13FourCards(enriched, data);
+        maybeShowW13DegradedBanner(enriched);
       })
       .catch(function () { /* silent — DEMO content stays visible */ });
+  }
+
+  // ── Wave 13 Phase 6 ──────────────────────────────────────────────
+  function renderW13FourCards(enriched, data) {
+    function bind(slot, value, hint) {
+      var nodes = document.querySelectorAll('[data-w13-bind="' + slot + '"]');
+      nodes.forEach(function (n) {
+        if (typeof value !== 'undefined' && value !== null && value !== '') {
+          n.textContent = value;
+        }
+        if (typeof hint === 'string' && hint) {
+          // Only override hint nodes (those without value semantics)
+          if (n.classList && n.classList.contains('w13-card__hint')) {
+            n.textContent = hint;
+          }
+        }
+      });
+    }
+    var ops = enriched.ops_summary || {};
+    var seqs = enriched.sequences || {};
+    var radar = enriched.radar_today || {};
+
+    // Card 1 — Current Status (day N of M)
+    var dayNumber = (seqs.current_state && seqs.current_state.day_number) || ops.day_number;
+    var totalDays = (seqs.current_state && seqs.current_state.total_days) || ops.total_days;
+    if (dayNumber) {
+      var label = totalDays ? ('اليوم ' + dayNumber + ' / ' + totalDays) : ('اليوم ' + dayNumber);
+      bind('current-status-day', label);
+      bind('current-status-detail', '', 'الجلسة نشطة — راجع المخرَجات اليوم');
+    }
+
+    // Card 2 — Today's decision count
+    var todayDecCount = (ops.todays_decisions_count != null) ? ops.todays_decisions_count : null;
+    if (todayDecCount !== null) {
+      bind('today-decision-count', todayDecCount);
+      bind('today-decision-hint', '',
+        todayDecCount > 0 ? 'افتح القسم أدناه للمراجعة' : 'لا قرارات معلّقة الآن');
+    }
+
+    // Card 3 — Pending approvals
+    var pending = (ops.pending_approvals_count != null) ? ops.pending_approvals_count : null;
+    if (pending !== null) {
+      bind('pending-approvals-count', pending);
+      bind('pending-approvals-hint', '',
+        pending > 0 ? 'تحتاج موافقة قبل التنفيذ' : 'لا موافقات معلّقة');
+    }
+
+    // Card 4 — Proof progress
+    var proofCount = (ops.proof_events_count != null) ? ops.proof_events_count : null;
+    if (proofCount !== null) {
+      bind('proof-progress-count', proofCount);
+      bind('proof-progress-hint', '',
+        proofCount > 0 ? proofCount + ' حدث إثبات هذا الأسبوع' : 'لا تزال نجمع الأدلة');
+    }
+  }
+
+  function maybeShowW13DegradedBanner(enriched) {
+    var banner = document.getElementById('w13-degraded-banner');
+    if (!banner) return;
+    var degraded = (
+      (enriched.full_ops_score && enriched.full_ops_score.source === 'insufficient_data') ||
+      (enriched.proof_summary && enriched.proof_summary.source === 'insufficient_data')
+    );
+    banner.setAttribute('data-visible', degraded ? 'true' : 'false');
   }
 
   function maybeShowDegradedBanner(enriched) {
