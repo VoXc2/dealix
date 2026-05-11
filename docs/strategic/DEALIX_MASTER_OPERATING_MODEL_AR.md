@@ -82,6 +82,20 @@ Dealix = ذكاء الإيرادات + تنفيذ تشغيلي + محرك إثب
 - `docs/v10/DEALIX_CAPABILITY_GAP_MAP.md` — فجوات قدرات
 - `AGENTS.md` — تشغيل الوكلاء السحابيين
 - `dealix/registers/no_overclaim.yaml` — سجل عدم المبالغة
+- `docs/strategic/ENTERPRISE_OFFER_POSITIONING_AR.md` — طبقات العرض A/B/C للشركات
+- `docs/strategic/ENTERPRISE_PILOT_TEMPLATE_AR.md` — قالب Pilot enterprise
+- `docs/strategic/ENTERPRISE_P0_GAP_BACKLOG_AR.md` — أولويات P0 وربط checklist الإصدار
+- `docs/strategic/ENTERPRISE_TRUST_COMPLIANCE_PACK_AR.md` — حزمة ثقة وامتثال للبيع
+- `docs/strategic/CUSTOMER_SUCCESS_PLAYBOOK_HOOKS_AR.md` — ربط محفزات CS بـ customer_readiness
+- `docs/strategic/DEALIX_ROLE_SERVICE_LADDER_AR.md` — سلّم الأدوار ↔ كتالوج الخدمات السبع
+- `docs/strategic/DEALIX_MARKET_DIFFERENTIATION_AR.md` — تمييز مقابل أنماط السوق
+- `docs/strategic/WAVE13_LANDING_PORTAL_ALIGNMENT_AR.md` — محاذاة البوابة مع Wave 13
+- `docs/strategic/CEO_OPERATING_METRICS_AR.md` — مؤشرات تشغيل تنفيذي داخلية
+- `docs/strategic/GTM_PLAYBOOK_SERVICE_LADDER_AR.md` — كتاب تشغيل GTM على سلّم الخدمات
+- `docs/ops/PHASE0_CEO_RELEASE_GATE_AR.md` — بوابة دمج وتحقق قبل التوسع
+- `docs/ops/PDPL_CLOSURE_CHECKLIST_AR.md` — قائمة إغلاق فجوات PDPL
+- `docs/ops/ALEMBIC_MIGRATION_POLICY.md` — سياسة ترحيل قاعدة البيانات
+- `docs/strategic/CEO_ROADMAP_IMPLEMENTATION_INDEX_AR.md` — فهرس ربط خطة CEO بالكود والاختبارات
 
 ### Trust Layer (PDPL / ZATCA) — تذكير عدم المبالغة
 

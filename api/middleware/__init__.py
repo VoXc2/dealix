@@ -1,7 +1,10 @@
-"""API middleware modules — Wave 12.6 §33.2.6 hardening + legacy re-exports.
+"""API middleware modules — Wave 12.6 §33.2.6 hardening + http_stack.
 
 This package contains FastAPI middleware + dependencies that enforce
 cross-cutting safety invariants:
+
+- ``http_stack``: request ID, security headers, PDPL audit logging, ETag,
+  rate-limit headers (shared HTTP layer used by ``api.main``).
 
 - ``tenant_isolation``: resolves tenant_id from JWT/header → injects
   into request.state → all repository calls MUST assert match
@@ -13,17 +16,16 @@ cross-cutting safety invariants:
   (defense against OWASP API3:2023 BOPLA — Broken Object Property-Level
   Authorization).
 
-- ``legacy_middleware``: pre-Wave-12.6 middleware (RequestID, Security
-  Headers, ETag, Rate-Limit, Audit). Re-exported here so `api/main.py`
-  imports stay stable: ``from api.middleware import (
-      AuditLogMiddleware, ETagMiddleware, ...
-  )``.
+Re-exports the 5 http_stack classes so `api/main.py` imports stay
+stable: ``from api.middleware import (
+    AuditLogMiddleware, ETagMiddleware, ...
+)``.
 
 Article 11: composes existing api/security/ (RBAC + JWT + api_key) —
 doesn't duplicate.
 """
 
-from api.middleware.legacy_middleware import (
+from api.middleware.http_stack import (
     AuditLogMiddleware,
     ETagMiddleware,
     RateLimitHeadersMiddleware,

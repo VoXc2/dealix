@@ -22,7 +22,7 @@ Single command: `bash scripts/dealix_wave14_saudi_engines_verify.sh`.
 
 | # | Layer | Required | Actual | Test path / Verifier line | Hard gate | Status |
 |---|---|---|---|---|---|---|
-| 1 | api/middleware shadow bug | `from api.middleware import AuditLogMiddleware` works | `api/middleware/legacy_middleware.py` + re-exports in `__init__.py` | `MIDDLEWARE_LEGACY_REEXPORT=PASS` + `MIDDLEWARE_WAVE126_MODULES_INTACT=PASS` | n/a (bug fix) | PASS |
+| 1 | api/middleware shadow bug | `from api.middleware import AuditLogMiddleware` works | `api/middleware/http_stack.py` + re-exports in `__init__.py` | `MIDDLEWARE_LEGACY_REEXPORT=PASS` + `MIDDLEWARE_WAVE126_MODULES_INTACT=PASS` | n/a (bug fix) | PASS |
 | 2 | Saudi Market Radar 23 signals | 16 original + 7 new founder-vision signals + per-signal output schema | `auto_client_acquisition/market_intelligence/signal_detectors.py` (502 LOC) + `saudi_seasons.py` (228 LOC, 11 seasons) | `tests/test_market_radar_v2.py` (12 tests) · `SAUDI_MARKET_RADAR_23_SIGNALS=PASS` | NO_SCRAPING preserved | PASS |
 | 3 | Lead Intelligence 13-dim Saudi scoring | 6 Saudi-specific dimensions + 7 base = 13 | `auto_client_acquisition/pipelines/saudi_dimensions.py` with `compute_saudi_score_board` | `tests/test_saudi_dimensions_v1.py` · `LEAD_INTELLIGENCE_13DIM_SAUDI=PASS` | n/a | PASS |
 | 4 | Decision Passport v2 runtime guards | `validate_passport()` raises on missing owner/deadline/proof_target | `auto_client_acquisition/decision_passport/schema.py:116` | `tests/test_decision_passport_v2.py` · `DECISION_PASSPORT_V2=PASS` | n/a | PASS |
@@ -97,7 +97,7 @@ Single command: `bash scripts/dealix_wave14_saudi_engines_verify.sh`.
 
 **Modified:**
 - `api/middleware/__init__.py` — added 5-class re-export
-- `api/middleware.py` → `api/middleware/legacy_middleware.py` (git mv)
+- `api/middleware.py` → `api/middleware/http_stack.py` (git mv)
 - `tests/test_no_linkedin_scraper_string_anywhere.py` — extended allowlist for Wave 13/14 docs
 
 ## Commits on `claude/wave14-saudi-engines-completion`

@@ -45,7 +45,7 @@ run_check_sandbox_aware() {
 
 # ── Phase A — Compile sanity ─────────────────────────────────────────
 run_check "COMPILEALL_MIDDLEWARE" \
-  "python3 -m compileall -q api/middleware/__init__.py api/middleware/legacy_middleware.py api/middleware/tenant_isolation.py api/middleware/bopla_redaction.py"
+  "python3 -m compileall -q api/middleware/__init__.py api/middleware/http_stack.py api/middleware/tenant_isolation.py api/middleware/bopla_redaction.py"
 run_check "COMPILEALL_EMAIL_SSRF" \
   "python3 -m compileall -q auto_client_acquisition/email/deliverability_check.py api/security/ssrf_guard.py"
 run_check "COMPILEALL_SAUDI_ENGINES" \
