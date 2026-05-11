@@ -11,6 +11,13 @@
 ## 🟢 Deploy routine (after PR merge)
 
 ```bash
+# Optional: one-command execution for Phase 2 + 3 gates
+bash scripts/ops/phase2_phase3_execute.sh \
+  --base-url http://127.0.0.1:8001 \
+  --expected-sha "$(git rev-parse --short HEAD)" \
+  --skip-playwright \
+  --skip-readiness-json
+
 # 1. SSH
 ssh -i ~/.ssh/dealix_deploy root@188.245.55.180
 
