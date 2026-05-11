@@ -138,7 +138,7 @@
       }
     },
     "OBSERVABILITY": {
-      "requires": ["EVENT_LOGS", "METRIC_OWNER"],
+      "requires": ["EVENT_LOGS", "METRIC_OWNER", "DATA_POLICY_APPROVAL"],
       "not_sellable_if": ["NO_ALERTING_OWNER", "NO_BASELINE_METRICS"],
       "tiers": {
         "bronze": {"setup_fee_sar": 17000, "monthly_retainer_sar": 10200, "gross_margin_target": 0.64, "delivery_hours_estimate": 54, "minimum_contract_months": 3, "discount_floor": 0.1},
