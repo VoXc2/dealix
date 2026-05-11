@@ -18,6 +18,7 @@
 
 - **عزل المستأجر على مستوى الطلب:** [api/middleware/tenant_isolation.py](../../api/middleware/tenant_isolation.py) (حقن `tenant_id` — يجب أن تلتزم به المستودعات).
 - **تدقيق مسارات بيانات شخصية:** [api/middleware/http_stack.py](../../api/middleware/http_stack.py) (`AuditLogMiddleware` / PDPL Article 18 في التعليقات).
+- **عقود منصة مرجعية (بدون استبدال المكدس):** [auto_client_acquisition/platform_v10/](../../auto_client_acquisition/platform_v10/) — `tenant` / `rls` / `storage` / `auth` كعقود Pydantic + Protocol؛ راجع `tests/test_platform_v10.py`.
 
 ## بوابات إثبات (Evidence gates) — مأخوذة من الخريطة
 
@@ -37,7 +38,21 @@
 - Temporal أو بدائل workflows طويلة الأمد بالكامل (Phase E في الخريطة).
 - OAuth وتكاملات خارجية «حقيقية» حسب قرار المؤسس §S6/S7.
 
+## تجربة «الأفضل في السوق» مقابل الدين التقني
+
+التمييز التجاري (سلّم خدمات، Proof، ثقة سعودية) يعمل بشكل أقوى عندما لا ينهار التشغيل تحت الضغط:
+
+| طموح السوق | دين تقني يُغلق عبر P0 أعلاه |
+|-------------|------------------------------|
+| Pilot ومبيعات دون فقدان حالة | **P0-1** Workflow OS — checkpoints + idempotency |
+| وكلاء أذكى دون تسرب بيانات | **P0-2** AI Workforce v10 — reviewer + حدود ذاكرة عميل |
+| عدة شركات على منصة واحدة | **P0-3** عقود tenant + مسار RLS |
+| لجان شراء وحسابات معقّدة | **P0-4** CRM v10 — بعد استقرار الـ workflow |
+
+**الخلاصة:** الوثائق الاستراتيجية ([DEALIX_ROLE_SERVICE_LADDER_AR.md](DEALIX_ROLE_SERVICE_LADDER_AR.md)، [DEALIX_MARKET_DIFFERENTIATION_AR.md](DEALIX_MARKET_DIFFERENTIATION_AR.md)) تشرح *ماذا تبيع*؛ هذا القسم يربط *لماذا P0 ضروري لتحمّل ذلك البيع*.
+
 ## مراجع
 
 - [ENTERPRISE_OFFER_POSITIONING_AR.md](ENTERPRISE_OFFER_POSITIONING_AR.md)
 - [DEALIX_MASTER_OPERATING_MODEL_AR.md](DEALIX_MASTER_OPERATING_MODEL_AR.md)
+- [DEALIX_ROLE_SERVICE_LADDER_AR.md](DEALIX_ROLE_SERVICE_LADDER_AR.md)

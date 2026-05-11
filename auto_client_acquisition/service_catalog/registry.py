@@ -12,6 +12,8 @@ Pricing ladder (must be ascending for paid services):
   Free Diagnostic (0) → Sprint (499) → Data-to-Revenue (1500)
   → Growth Ops (2999/mo) → Support Add-on (1500/mo) → ECC (7500/mo)
   → Agency Partner OS (custom)
+
+Strategic mapping (roles → offerings): docs/strategic/DEALIX_ROLE_SERVICE_LADDER_AR.md
 """
 
 from __future__ import annotations

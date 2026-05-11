@@ -182,7 +182,26 @@ claims:
     status: Production
     evidence:
       - core/logging.py
-      - api/middleware.py::RequestIDMiddleware
+      - api/middleware/http_stack.py::RequestIDMiddleware
+
+  - id: canonical_service_catalog
+    claim: "Seven canonical commercial offerings with KPI commitments, hard gates, and action modes in one code registry"
+    status: Production
+    evidence:
+      - auto_client_acquisition/service_catalog/registry.py
+      - auto_client_acquisition/service_catalog/schemas.py
+      - api/routers/service_catalog.py
+      - tests/test_service_catalog.py
+
+  - id: platform_reference_contracts
+    claim: "Reference platform contracts for tenant, RLS, storage, and auth (no stack replacement)"
+    status: Production
+    evidence:
+      - auto_client_acquisition/platform_v10/tenant_contract.py
+      - auto_client_acquisition/platform_v10/rls_contract.py
+      - auto_client_acquisition/platform_v10/storage_contract.py
+      - auto_client_acquisition/platform_v10/auth_contract.py
+      - tests/test_platform_v10.py
 
   - id: observability_otel
     claim: "OpenTelemetry tracing links decision to execution"
