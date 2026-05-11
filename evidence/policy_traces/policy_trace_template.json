@@ -1,0 +1,9 @@
+{
+  "execution_id": "uuid",
+  "service": "SERVICE_ID",
+  "policy_results": [
+    {"policy": "NO_EXTERNAL_PII_TRANSFER", "result": "pass"},
+    {"policy": "NO_UNAPPROVED_EXTERNAL_SEND", "result": "pass"}
+  ],
+  "timestamp": "iso8601"
+}

@@ -1,0 +1,10 @@
+{
+  "execution_id": "00000000-0000-0000-0000-000000000001",
+  "workflow": "CUSTOMER_PORTAL_AUTOMATION",
+  "decision": "approved",
+  "policy_snapshot": "sha256:policy-hash",
+  "initiator": "founder_user",
+  "timestamp": "2026-05-11T10:30:00Z",
+  "risk_score": 0.21,
+  "evidence_artifact": "sha256:evidence-hash"
+}

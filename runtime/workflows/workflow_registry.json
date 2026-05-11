@@ -1,0 +1,7 @@
+{
+  "workflows": [
+    {"id": "CUSTOMER_PORTAL_AUTOMATION", "mode": "approval_required"},
+    {"id": "SECURITY_INCIDENT_TRIAGE", "mode": "approval_required"},
+    {"id": "OBSERVABILITY_ALERT_ROUTING", "mode": "draft_only"}
+  ]
+}

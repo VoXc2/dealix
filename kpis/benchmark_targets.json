@@ -1,0 +1,18 @@
+{
+  "MARKET_RADAR": ["+20% qualified pipeline in 60 days", "signal-to-demo >= 15%"],
+  "LEAD_INTELLIGENCE": ["+25% reply rate in 60 days", "dedupe rate >= 95%"],
+  "COMPANY_BRAIN": ["rework reduction >= 30%", "message consistency >= 90%"],
+  "DECISION_PASSPORT": ["passport completeness >= 95%", "decision cycle time -30%"],
+  "WHATSAPP_DECISION_LAYER": ["approval turnaround < 60 min", "daily response rate >= 80%"],
+  "ACTION_APPROVAL_ENGINE": ["SLA compliance >= 95%", "audit completeness = 100%"],
+  "DELIVERY_OS": ["on-time delivery >= 90%", "time-to-value <= 30 days"],
+  "CUSTOMER_PORTAL": ["ticket deflection +25% in 60 days", "hallucination rate < 1%"],
+  "SUPPORT_OS": ["first response <= 30 min", "retention +10%"],
+  "PAYMENT_TRUTH": ["overdue invoice ratio -20%", "state accuracy >= 98%"],
+  "PROOF_ENGINE": ["proof-backed revenue >= 70%", "consent attached = 100%"],
+  "EXPANSION_ENGINE": ["acceptance >= 25%", "upsell without proof = 0"],
+  "LEARNING_FLYWHEEL": ["weekly actions >= 3", "insight-to-backlog <= 7 days"],
+  "TRUST_LAYER": ["control coverage >= 95%", "PDPL incidents = 0"],
+  "SECURITY": ["critical gaps closed >= 90%", "critical vulnerabilities = 0"],
+  "OBSERVABILITY": ["trace coverage >= 95%", "MTTR reduction >= 30%"]
+}

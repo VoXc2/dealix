@@ -1,0 +1,24 @@
+{
+  "schema_version": "1.0",
+  "required_artifacts": [
+    "pricing",
+    "packaging",
+    "roi_formula",
+    "delivery_playbook",
+    "acceptance_criteria",
+    "rollback_plan",
+    "sla_definition",
+    "risk_register"
+  ],
+  "blocking_conditions": [
+    "missing_playbook",
+    "missing_rollback_plan",
+    "missing_acceptance_criteria",
+    "missing_sla"
+  ],
+  "deployment_quality_gates": {
+    "shadow_mode_required_for_gold": true,
+    "incident_drill_required_for_operability": true,
+    "approval_trace_required": true
+  }
+}

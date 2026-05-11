@@ -1,0 +1,18 @@
+{
+  "MARKET_RADAR": "qualified_signal_to_pipeline_rate",
+  "LEAD_INTELLIGENCE": "priority_lead_conversion_rate",
+  "COMPANY_BRAIN": "context_reuse_success_rate",
+  "DECISION_PASSPORT": "passport_to_action_completion_rate",
+  "WHATSAPP_DECISION_LAYER": "approval_turnaround_minutes",
+  "ACTION_APPROVAL_ENGINE": "approval_queue_sla_compliance",
+  "DELIVERY_OS": "on_time_delivery_rate",
+  "CUSTOMER_PORTAL": "ticket_deflection_rate",
+  "SUPPORT_OS": "first_response_sla_compliance",
+  "PAYMENT_TRUTH": "collection_cycle_days",
+  "PROOF_ENGINE": "proof_backed_revenue_ratio",
+  "EXPANSION_ENGINE": "expansion_offer_acceptance_rate",
+  "LEARNING_FLYWHEEL": "weekly_learning_actions_completed",
+  "TRUST_LAYER": "compliance_control_coverage",
+  "SECURITY": "critical_security_gap_closure_rate",
+  "OBSERVABILITY": "decision_to_outcome_trace_coverage"
+}

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from saudi_ai_provider.pricing import get_service_pricing, quote_service
+from saudi_ai_provider.pricing import compute_roi, get_service_pricing, quote_service
 
 
 def test_pricing_lookup_customer_portal_gold_mid_market() -> None:
@@ -15,3 +15,16 @@ def test_quote_is_sellable_with_default_discount() -> None:
     assert quote.sellable is True
     assert quote.segment == "mid_market"
     assert quote.annual_contract_value_sar > 0
+
+
+def test_compute_roi_for_customer_portal() -> None:
+    roi = compute_roi(
+        "CUSTOMER_PORTAL_GOLD",
+        {
+            "monthly_tickets": 50000,
+            "avg_agent_cost_sar": 18,
+            "automation_rate": 0.42,
+        },
+    )
+    assert roi.monthly_savings_sar == 378000.0
+    assert roi.annual_roi_sar == 4536000.0

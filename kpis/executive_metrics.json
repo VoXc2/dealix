@@ -1,0 +1,18 @@
+{
+  "MARKET_RADAR": ["new_pipeline_value_sar", "signal_to_demo_rate", "opportunity_cycle_days"],
+  "LEAD_INTELLIGENCE": ["demo_booked_rate", "reply_rate", "sales_cycle_reduction_days"],
+  "COMPANY_BRAIN": ["proposal_win_rate_lift", "message_consistency_score", "rework_cost_reduction_sar"],
+  "DECISION_PASSPORT": ["decision_cycle_time_hours", "approved_action_impact_sar", "stalled_decision_reduction"],
+  "WHATSAPP_DECISION_LAYER": ["approved_decisions_per_week", "execution_blocker_reduction", "executive_response_rate"],
+  "ACTION_APPROVAL_ENGINE": ["approved_action_execution_rate", "cycle_time_reduction", "revenue_impact_per_action"],
+  "DELIVERY_OS": ["milestone_hit_rate", "delivery_cost_variance", "time_to_value_days"],
+  "CUSTOMER_PORTAL": ["support_cost_reduction_sar", "customer_response_time_minutes", "csat_delta"],
+  "SUPPORT_OS": ["retention_rate", "churn_risk_reduction", "escalation_cost_reduction_sar"],
+  "PAYMENT_TRUTH": ["cash_conversion_improvement", "overdue_invoice_ratio", "recovered_revenue_sar"],
+  "PROOF_ENGINE": ["proof_events_per_customer", "renewal_rate_lift", "expansion_revenue_sar"],
+  "EXPANSION_ENGINE": ["arpu_lift", "upsell_revenue_sar", "renewal_expansion_ratio"],
+  "LEARNING_FLYWHEEL": ["kpi_uplift_from_learnings", "margin_improvement", "win_rate_improvement"],
+  "TRUST_LAYER": ["enterprise_deal_security_pass_rate", "legal_review_cycle_time", "customer_trust_score"],
+  "SECURITY": ["security_review_win_rate", "incident_cost_avoidance_sar", "enterprise_conversion_lift"],
+  "OBSERVABILITY": ["downtime_cost_reduction_sar", "incident_mtta_minutes", "incident_mttr_minutes"]
+}

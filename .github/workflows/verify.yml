@@ -30,6 +30,9 @@ jobs:
       - name: Saudi provider strict verifier
         run: bash scripts/saudi_ai_provider_verify.sh
 
+      - name: Catalog validation
+        run: python3 scripts/validate_catalog.py
+
       - name: Repo tests
         run: pytest tests/ -q --no-cov
 
@@ -41,3 +44,9 @@ jobs:
 
       - name: Playbook validation
         run: python3 scripts/validate_playbooks.py
+
+      - name: Governance validation
+        run: python3 scripts/validate_governance.py
+
+      - name: Runtime validation
+        run: python3 scripts/validate_runtime.py

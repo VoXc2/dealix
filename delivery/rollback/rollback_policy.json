@@ -1,0 +1,16 @@
+{
+  "policy_version": "1.0",
+  "rollback_triggers": [
+    "critical_incident_sev1",
+    "pii_leakage_detected",
+    "hallucination_rate_above_guardrail",
+    "approval_policy_bypass_detected"
+  ],
+  "steps": [
+    "Switch service mode to draft_only or approval_required",
+    "Disable affected workflow or feature flag",
+    "Restore last validated policy snapshot",
+    "Generate incident evidence export",
+    "Run controlled relaunch checklist"
+  ]
+}

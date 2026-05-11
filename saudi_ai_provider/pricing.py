@@ -8,8 +8,11 @@ from typing import Any
 from .catalog import (
     load_discount_policy,
     load_margin_guardrails,
+    load_packaging_matrix,
     load_pricing_model,
+    load_roi_formulas,
     load_segment_rules,
+    load_sla_matrix,
 )
 
 
@@ -25,6 +28,14 @@ class Quote:
     gross_margin_target: float
     sellable: bool
     reasons: list[str]
+
+
+@dataclass(frozen=True)
+class ROIProjection:
+    service_family: str
+    monthly_savings_sar: float
+    annual_roi_sar: float
+    inputs: dict[str, float]
 
 
 def parse_service_id(service_id: str) -> tuple[str, str]:
@@ -124,12 +135,70 @@ def quote_service(
 
 
 def package_for_segment(segment: str) -> list[dict[str, Any]]:
-    rules = load_segment_rules()
-    services = rules["package_recommendations"].get(segment, [])
-    if not services:
-        raise ValueError(f"No package recommendations for segment: {segment}")
-
+    matrix = load_packaging_matrix()
     packaged: list[dict[str, Any]] = []
-    for service_id in services:
-        packaged.append(get_service_pricing(service_id, segment))
+
+    for service_family, tiers in matrix["services"].items():
+        for tier_name, cfg in tiers.items():
+            if cfg["segment"] != segment:
+                continue
+            sku = f"{service_family}_{tier_name.upper()}"
+            resolved = get_service_pricing(sku, segment)
+            sla = get_sla_for_service(sku)
+            packaged.append(
+                {
+                    **resolved,
+                    "deployment_days": cfg["deployment_days"],
+                    "packaging_setup_fee_sar": cfg["setup_fee_sar"],
+                    "packaging_monthly_sar": cfg["monthly_sar"],
+                    "support_sla": cfg["support_sla"],
+                    "sla": sla,
+                }
+            )
+
+    if not packaged:
+        raise ValueError(f"No package recommendations for segment: {segment}")
     return packaged
+
+
+def get_sla_for_service(service_id: str) -> dict[str, Any]:
+    _engine, tier = parse_service_id(service_id)
+    matrix = load_sla_matrix()
+    tier_key = tier.lower()
+    base = dict(matrix["tiers"][tier_key])
+    override = matrix.get("service_overrides", {}).get(service_id.upper(), {})
+    base.update(override)
+    return base
+
+
+def _eval_formula(expr: str, variables: dict[str, float]) -> float:
+    allowed = set("0123456789+-*/()._ ")
+    if any(char not in allowed and not char.isalpha() for char in expr):
+        raise ValueError("Unsafe character in formula")
+    return float(eval(expr, {"__builtins__": {}}, variables))
+
+
+def compute_roi(service_id: str, inputs: dict[str, float]) -> ROIProjection:
+    engine, _tier = parse_service_id(service_id)
+    formulas = load_roi_formulas()["formulas"]
+    if engine not in formulas:
+        raise ValueError(f"No ROI formula configured for {engine}")
+
+    cfg = formulas[engine]
+    required_inputs = cfg["inputs"]
+    missing = [key for key in required_inputs if key not in inputs]
+    if missing:
+        raise ValueError(f"Missing ROI inputs: {', '.join(missing)}")
+
+    scoped = {key: float(inputs[key]) for key in required_inputs}
+    monthly = _eval_formula(cfg["monthly_savings_formula"], scoped)
+    scoped_with_monthly = dict(scoped)
+    scoped_with_monthly["monthly_savings"] = monthly
+    annual = _eval_formula(cfg["annual_roi_formula"], scoped_with_monthly)
+
+    return ROIProjection(
+        service_family=engine,
+        monthly_savings_sar=round(monthly, 2),
+        annual_roi_sar=round(annual, 2),
+        inputs=scoped,
+    )

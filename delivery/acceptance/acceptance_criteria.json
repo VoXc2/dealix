@@ -1,0 +1,24 @@
+{
+  "CUSTOMER_PORTAL_GOLD": {
+    "acceptance_criteria": [
+      "ticket_deflection_rate >= 25%",
+      "hallucination_rate < 1%",
+      "response_latency < 5s",
+      "pii_leakage = 0"
+    ]
+  },
+  "SECURITY_GOLD": {
+    "acceptance_criteria": [
+      "critical_security_gap_closure_rate >= 90%",
+      "critical_vulnerability_count = 0",
+      "security_fix_sla <= agreed threshold"
+    ]
+  },
+  "OBSERVABILITY_GOLD": {
+    "acceptance_criteria": [
+      "decision_to_outcome_trace_coverage >= 95%",
+      "alert_precision >= 90%",
+      "incident_mttr_minutes reduced >= 30%"
+    ]
+  }
+}

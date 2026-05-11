@@ -22,6 +22,7 @@ def main() -> int:
         required=True,
         choices=["smb", "mid_market", "enterprise"],
     )
+    parser.add_argument("--industry", default="general")
     parser.add_argument("--lang", choices=["ar", "en"], default="ar")
     args = parser.parse_args()
 

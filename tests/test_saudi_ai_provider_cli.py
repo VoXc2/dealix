@@ -47,3 +47,33 @@ def test_kpis_and_pitch_commands() -> None:
     pitch = run_cmd("pitch", "--service", "OBSERVABILITY_BRONZE", "--lang", "ar")
     assert pitch.returncode == 0, pitch.stdout + pitch.stderr
     assert "OBSERVABILITY_BRONZE" in pitch.stdout
+
+
+def test_roi_and_generate_offer_commands() -> None:
+    roi = run_cmd(
+        "roi",
+        "--service",
+        "CUSTOMER_PORTAL_GOLD",
+        "--tickets",
+        "50000",
+        "--agent-cost",
+        "18",
+        "--automation-rate",
+        "0.42",
+    )
+    assert roi.returncode == 0, roi.stdout + roi.stderr
+    assert "Projected Monthly Savings" in roi.stdout
+
+    generated = run_cmd(
+        "generate-offer",
+        "--service",
+        "SECURITY_GOLD",
+        "--segment",
+        "enterprise",
+        "--industry",
+        "banking",
+        "--lang",
+        "ar",
+    )
+    assert generated.returncode == 0, generated.stdout + generated.stderr
+    assert "offer:" in generated.stdout

@@ -16,6 +16,9 @@ from saudi_ai_provider.catalog import load_playbook_catalog, load_pricing_model
 def main() -> int:
     playbooks = load_playbook_catalog()
     pricing = load_pricing_model()
+    acceptance_path = Path("delivery/acceptance/acceptance_criteria.json")
+    rollback_path = Path("delivery/rollback/rollback_policy.json")
+    escalation_path = Path("delivery/escalation/escalation_policy.json")
     errors: list[str] = []
 
     required_fields = {
@@ -46,6 +49,13 @@ def main() -> int:
             missing = sorted(required_fields - set(tier_cfg.keys()))
             if missing:
                 errors.append(f"{engine}_{tier}: missing fields {', '.join(missing)}")
+
+    if not acceptance_path.exists():
+        errors.append("missing delivery acceptance criteria file")
+    if not rollback_path.exists():
+        errors.append("missing delivery rollback policy file")
+    if not escalation_path.exists():
+        errors.append("missing delivery escalation policy file")
 
     if errors:
         print("PLAYBOOK_VALIDATION=FAIL")
