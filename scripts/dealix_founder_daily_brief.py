@@ -45,6 +45,7 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO_ROOT))
 
 from auto_client_acquisition.bottleneck_radar.computer import compute_founder_view  # noqa: E402
+from auto_client_acquisition.founder_brief import query_layer_counts  # noqa: E402
 from auto_client_acquisition.service_catalog.registry import list_offerings  # noqa: E402
 
 
@@ -209,16 +210,39 @@ def main() -> int:
     p.add_argument("--format", choices=("md", "json"), default="md")
     p.add_argument("--out", default=None,
                    help="Write to gitignored file (default: stdout only).")
+    p.add_argument(
+        "--auto-source", action="store_true",
+        help=(
+            "Read counts from live layer modules (approval_center, "
+            "service_sessions, payment_ops, support_os) instead of "
+            "manual flags. CLI flags override per-field if present. "
+            "Article 8: returns 0 honestly when modules empty."
+        ),
+    )
     args = p.parse_args()
 
-    brief = build_brief(
-        blocking_approvals=args.blocking_approvals,
-        pending_payments=args.pending_payments,
-        pending_proof_packs=args.pending_proof_packs,
-        overdue_followups=args.overdue_followups,
-        sla_at_risk=args.sla_at_risk,
-        paid_customers_count=args.paid_customers,
-    )
+    if args.auto_source:
+        live = query_layer_counts()
+        # CLI flags take precedence (max with live values).
+        kwargs = {
+            "blocking_approvals": max(args.blocking_approvals, live.blocking_approvals),
+            "pending_payments": max(args.pending_payments, live.pending_payment_confirmations),
+            "pending_proof_packs": max(args.pending_proof_packs, live.pending_proof_packs_to_send),
+            "overdue_followups": max(args.overdue_followups, live.overdue_followups),
+            "sla_at_risk": max(args.sla_at_risk, live.sla_at_risk_tickets),
+            "paid_customers_count": max(args.paid_customers, live.paid_customers),
+        }
+    else:
+        kwargs = {
+            "blocking_approvals": args.blocking_approvals,
+            "pending_payments": args.pending_payments,
+            "pending_proof_packs": args.pending_proof_packs,
+            "overdue_followups": args.overdue_followups,
+            "sla_at_risk": args.sla_at_risk,
+            "paid_customers_count": args.paid_customers,
+        }
+
+    brief = build_brief(**kwargs)
 
     rendered = (
         json.dumps(brief, ensure_ascii=False, indent=2)

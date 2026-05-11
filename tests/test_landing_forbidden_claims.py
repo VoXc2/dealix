@@ -129,6 +129,15 @@ ALLOWLIST: dict[str, dict[str, str]] = {
         "cold": "NEGATION",
         "scraping": "NEGATION",
     },
+    # Wave 16 §C4 — Sector Benchmark page describes hard rules in pure
+    # NEGATION context: "this data is NOT used for cold outreach
+    # (NO_COLD_WHATSAPP), scraping (NO_SCRAPING), or blast (NO_BLAST)".
+    # All 3 tokens appear ONLY in the safety-contract section.
+    "sector-benchmark.html": {
+        "blast": "NEGATION",
+        "cold": "NEGATION",
+        "scraping": "NEGATION",
+    },
     # Compare page — describes competitor behavior ("Encourages cold
     # sequences", "Sales Engagement = cold") + Dealix's anti-cold/anti-
     # scraping stance. Pure NEGATION context.

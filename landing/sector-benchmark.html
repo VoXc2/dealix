@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-theme="dark">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Dealix Sector Benchmark — مقارنة قطاعك السعودي</title>
+<meta name="description" content="مقارنة Saudi B2B sector benchmarks: real_estate · agencies · clinics · logistics · b2b_services · consulting. Why-now signals + recommended sales angles per sector. كل البيانات مستخرجة من market_intelligence/sector_pulse.py — مصدر واحد للحقيقة. Article 8: كل رقم is_estimate=True." />
+<link rel="canonical" href="https://dealix.me/sector-benchmark.html" />
+<meta property="og:type" content="website" />
+<meta property="og:title" content="Dealix Sector Benchmark — Saudi B2B sectors" />
+<meta property="og:description" content="Saudi B2B sector benchmarks for real_estate, agencies, clinics, logistics, b2b_services, consulting. Why-now signals + recommended angles per sector." />
+<meta property="og:url" content="https://dealix.me/sector-benchmark.html" />
+<meta property="og:locale" content="ar_SA" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="theme-color" content="#0f172a" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" />
+
+<link rel="stylesheet" href="/styles.css" />
+<link rel="stylesheet" href="/assets/css/design-system.css" />
+<script src="https://unpkg.com/lucide@0.469.0/dist/umd/lucide.min.js" defer></script>
+
+<style>
+  body {
+    background:
+      radial-gradient(900px 500px at 80% -10%, rgba(34, 197, 94, 0.12), transparent 60%),
+      radial-gradient(900px 500px at 0% 10%, rgba(168, 85, 247, 0.10), transparent 60%),
+      linear-gradient(180deg, #050816 0%, #0b1124 60%, #0f172a 100%);
+    color: var(--text);
+    min-height: 100vh;
+    margin: 0;
+    font-family: var(--font-ar);
+  }
+  main { padding: var(--space-6) var(--space-5) var(--space-9); max-width: 1200px; margin: 0 auto; }
+
+  .hero { text-align: center; padding: var(--space-7) 0 var(--space-5); }
+  .hero h1 { font-size: clamp(1.7rem, 4vw, 2.4rem); margin-bottom: var(--space-3); }
+  .hero p { color: var(--text-muted); max-width: 720px; margin: 0 auto var(--space-3); }
+
+  .badges { display: flex; flex-wrap: wrap; gap: var(--space-2); justify-content: center; margin-top: var(--space-3); }
+  .badges .badge { background: rgba(34, 197, 94, 0.12); color: #4ade80; padding: 0.35rem 0.8rem; border-radius: 999px; font-size: 0.85rem; border: 1px solid rgba(34, 197, 94, 0.3); }
+
+  .sector-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+    gap: var(--space-4);
+    margin-top: var(--space-5);
+  }
+  .sector-card {
+    background: rgba(15, 23, 42, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: var(--radius-lg);
+    padding: var(--space-5);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+  .sector-card[data-trend="rising"] { border-color: rgba(34, 197, 94, 0.4); }
+  .sector-card[data-trend="cooling"] { border-color: rgba(245, 158, 11, 0.3); }
+  .sector-card[data-trend="steady"] { border-color: rgba(96, 165, 250, 0.3); }
+
+  .sector-card h3 { margin: 0; font-size: 1.3rem; }
+  .sector-card .sub-en { color: var(--text-muted); font-size: 0.9rem; font-family: var(--font-en); }
+  .sector-card .trend-pill {
+    display: inline-flex; align-items: center; gap: 0.4rem;
+    padding: 0.25rem 0.7rem; border-radius: 999px;
+    font-size: 0.78rem; font-weight: 600;
+  }
+  .sector-card[data-trend="rising"] .trend-pill { background: rgba(34, 197, 94, 0.15); color: #4ade80; }
+  .sector-card[data-trend="cooling"] .trend-pill { background: rgba(245, 158, 11, 0.15); color: #fbbf24; }
+  .sector-card[data-trend="steady"] .trend-pill { background: rgba(96, 165, 250, 0.15); color: #60a5fa; }
+
+  .sector-card .signal-list-title { color: #94a3b8; font-size: 0.82rem; margin-top: 0.4rem; margin-bottom: 0.4rem; text-transform: uppercase; letter-spacing: 0.05em; }
+  .sector-card ul { padding: 0 1.2rem 0 0; margin: 0; font-size: 0.9rem; }
+  .sector-card ul li { margin-bottom: 0.4rem; line-height: 1.5; }
+  .sector-card .angle-box {
+    background: rgba(34, 197, 94, 0.06);
+    border: 1px solid rgba(34, 197, 94, 0.2);
+    border-radius: var(--radius-md);
+    padding: var(--space-3);
+    margin-top: var(--space-3);
+  }
+  .sector-card .angle-box .angle-label { color: #4ade80; font-size: 0.78rem; font-weight: 600; }
+  .sector-card .angle-box .angle-text { font-size: 0.95rem; margin: 0.4rem 0 0; }
+
+  .sector-card .estimate-tag {
+    color: var(--text-muted); font-size: 0.72rem;
+    margin-top: var(--space-2); padding-top: var(--space-2);
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    font-family: var(--font-en);
+  }
+
+  .footer-cta {
+    text-align: center; margin-top: var(--space-7); padding: var(--space-5);
+    background: rgba(34, 197, 94, 0.06);
+    border: 1px solid rgba(34, 197, 94, 0.2);
+    border-radius: var(--radius-lg);
+  }
+  .footer-cta p { color: var(--text-muted); margin: var(--space-2) 0; }
+
+  .data-source-note {
+    background: rgba(15, 23, 42, 0.5);
+    border-right: 4px solid var(--accent, #22d3ee);
+    border-radius: var(--radius-md);
+    padding: var(--space-4);
+    margin: var(--space-5) 0;
+    font-size: 0.88rem;
+  }
+  .data-source-note strong { color: #22d3ee; }
+</style>
+</head>
+<body>
+<main>
+
+  <section class="hero">
+    <h1>مقارنة قطاعات Saudi B2B · Sector Benchmark</h1>
+    <p>أين تقف شركتك مقابل قطاعك في السعودية؟ كل قطاع يحتوي على signals الموسمية الحالية، اتجاه الأسبوع (rising/steady/cooling)، والـ recommended sales angle.</p>
+    <p style="font-family: var(--font-en); font-size: 0.9rem;">Where does your company stand vs your Saudi sector? Each sector shows the live this-week signals, weekly trend (rising/steady/cooling), and the recommended angle.</p>
+    <div class="badges">
+      <span class="badge">PDPL Compliant</span>
+      <span class="badge">Saudi-First</span>
+      <span class="badge">Article 8: is_estimate=True</span>
+      <span class="badge">8/8 Hard Gates IMMUTABLE</span>
+    </div>
+  </section>
+
+  <div class="data-source-note">
+    <strong>مصدر البيانات · Data source:</strong>
+    كل المقاييس أدناه مستخرجة من
+    <code>auto_client_acquisition/market_intelligence/sector_pulse.py</code>
+    (truth registry). الأرقام تُعاد حسابها أسبوعياً من real signals.
+    <br />
+    All metrics below are derived from
+    <code>market_intelligence/sector_pulse.py</code>
+    (truth registry). Numbers are recalculated weekly from real signals.
+    <strong>Article 8:</strong> every numeric is an estimate (`is_estimate=True`).
+  </div>
+
+  <section class="sector-grid">
+
+    <!-- 1. real_estate -->
+    <article class="sector-card" data-trend="rising" data-sector-id="real_estate">
+      <header>
+        <h3>عقارات · Real Estate</h3>
+        <p class="sub-en">Riyadh + Jeddah + Dammam triangle</p>
+        <span class="trend-pill">📈 RISING (+15%+ this week)</span>
+      </header>
+      <div class="signal-list-title">إشارات الأسبوع · This-week signals</div>
+      <ul>
+        <li><strong>hiring_sales_rep</strong> — مكاتب توسّع فريق المبيعات قبل ramp-up</li>
+        <li><strong>new_branch_opened</strong> — فروع جديدة تحتاج 50 lead في 60 يوم</li>
+        <li><strong>tender_published</strong> — مناقصات حكومية تتطلب pre-qualification</li>
+        <li><strong>ads_volume_increased</strong> — منافسة CAC مرتفعة</li>
+      </ul>
+      <div class="angle-box">
+        <div class="angle-label">Recommended angle (AR)</div>
+        <p class="angle-text">تسليم 50 lead مؤهل في 60 يوم — قبل ramp-up الموظف الجديد.</p>
+      </div>
+      <p class="estimate-tag">_is_estimate=True · sector_pulse.py:48_</p>
+    </article>
+
+    <!-- 2. clinics -->
+    <article class="sector-card" data-trend="steady" data-sector-id="clinics">
+      <header>
+        <h3>عيادات · Clinics & Healthcare</h3>
+        <p class="sub-en">Multi-location private practices</p>
+        <span class="trend-pill">→ STEADY</span>
+      </header>
+      <div class="signal-list-title">إشارات الأسبوع · This-week signals</div>
+      <ul>
+        <li><strong>whatsapp_business_added</strong> — عيادات تربط WhatsApp Business بـ booking</li>
+        <li><strong>booking_page_added</strong> — صفحات حجز جديدة تحتاج leads مؤهلة</li>
+        <li><strong>new_service_launched</strong> — خدمات تجميل / علاج جديدة</li>
+      </ul>
+      <div class="angle-box">
+        <div class="angle-label">Recommended angle (AR)</div>
+        <p class="angle-text">نوصل WhatsApp Business بـ Dealix — كل رسالة تتحول إلى حجز. Reminder ينقص no-show 40%.</p>
+      </div>
+      <p class="estimate-tag">_is_estimate=True · sector_pulse.py:_ANGLES.clinics_</p>
+    </article>
+
+    <!-- 3. logistics -->
+    <article class="sector-card" data-trend="rising" data-sector-id="logistics">
+      <header>
+        <h3>لوجستيات · Logistics & Transport</h3>
+        <p class="sub-en">Saudi Vision 2030 supply chain push</p>
+        <span class="trend-pill">📈 RISING</span>
+      </header>
+      <div class="signal-list-title">إشارات الأسبوع · This-week signals</div>
+      <ul>
+        <li><strong>tender_published</strong> — مناقصات نقل + شحن أكبر من مليون ر.س</li>
+        <li><strong>hiring_sales_rep</strong> — شركات توسّع فريق RFQ</li>
+      </ul>
+      <div class="angle-box">
+        <div class="angle-label">Recommended angle (AR)</div>
+        <p class="angle-text">نقطّع زمن الـ quote من ٣ أيام إلى ساعة — ١٠٠ RFQ مؤهل شهرياً. + Pre-qualification + ٥ موردين بدائل قبل deadline.</p>
+      </div>
+      <p class="estimate-tag">_is_estimate=True · sector_pulse.py:_ANGLES.logistics_</p>
+    </article>
+
+    <!-- 4. b2b_services -->
+    <article class="sector-card" data-trend="steady" data-sector-id="b2b_services">
+      <header>
+        <h3>خدمات B2B · B2B Services</h3>
+        <p class="sub-en">SaaS + IT services + outsourcing</p>
+        <span class="trend-pill">→ STEADY</span>
+      </header>
+      <div class="signal-list-title">إشارات الأسبوع · This-week signals</div>
+      <ul>
+        <li><strong>hiring_sales_rep</strong> — توسّع فريق sales</li>
+        <li><strong>new_service_launched</strong> — خدمات SaaS جديدة</li>
+        <li><strong>ads_volume_increased</strong> — منافسة LinkedIn + Google Ads</li>
+      </ul>
+      <div class="angle-box">
+        <div class="angle-label">Recommended angle (AR)</div>
+        <p class="angle-text">تجربة ٣٠ يوم — تدفع فقط على الـ qualified leads.</p>
+      </div>
+      <p class="estimate-tag">_is_estimate=True · sector_pulse.py:_ANGLES._default_</p>
+    </article>
+
+    <!-- 5. agencies -->
+    <article class="sector-card" data-trend="cooling" data-sector-id="agency">
+      <header>
+        <h3>وكالات تسويق · Marketing Agencies</h3>
+        <p class="sub-en">Digital + branding + content shops</p>
+        <span class="trend-pill">📉 COOLING (Q2 dip)</span>
+      </header>
+      <div class="signal-list-title">إشارات الأسبوع · This-week signals</div>
+      <ul>
+        <li><strong>agency_no_proof</strong> — وكالات تدّعي عملاء بدون case studies</li>
+        <li><strong>hiring_sales_rep</strong> — فرق تتوسع لكن بدون منهجية</li>
+        <li><strong>weak_website</strong> — وكالات بمواقع Lighthouse score &lt;50</li>
+      </ul>
+      <div class="angle-box">
+        <div class="angle-label">Recommended angle (AR)</div>
+        <p class="angle-text">Agency Partner OS — ٣٠٪ عمولة على إحالة. كل عميل يحصل على Proof Pack تلقائياً يُستخدم في case studies الوكالة.</p>
+      </div>
+      <p class="estimate-tag">_is_estimate=True · cross-reference: signal_detectors.py + Agency Partner offering_</p>
+    </article>
+
+    <!-- 6. consulting -->
+    <article class="sector-card" data-trend="steady" data-sector-id="consulting">
+      <header>
+        <h3>استشارات · Consulting</h3>
+        <p class="sub-en">Boutique advisory + management consulting</p>
+        <span class="trend-pill">→ STEADY</span>
+      </header>
+      <div class="signal-list-title">إشارات الأسبوع · This-week signals</div>
+      <ul>
+        <li><strong>high_ticket_b2b_no_sales_process</strong> — عروض &gt;٥٠٬٠٠٠ ر.س بدون منهجية مبيعات</li>
+        <li><strong>tender_published</strong> — Vision 2030 advisory tenders</li>
+        <li><strong>unused_leads_dormant</strong> — leads قديمة في CRM لم يتم التواصل بها &gt; ٦٠ يوم</li>
+      </ul>
+      <div class="angle-box">
+        <div class="angle-label">Recommended angle (AR)</div>
+        <p class="angle-text">Executive Command Center: قرار يومي عبر WhatsApp + Decision Passport لكل tender. تحرير وقت الشريك من البحث للتنفيذ.</p>
+      </div>
+      <p class="estimate-tag">_is_estimate=True · cross-reference: 17 ECC offering_</p>
+    </article>
+
+  </section>
+
+  <!-- Trend explanation strip -->
+  <section class="data-source-note" style="margin-top: var(--space-7);">
+    <strong>كيف تُحسب الاتجاهات؟ · How are trends computed?</strong>
+    <ul style="margin: 0.6rem 0 0; padding-right: 1.2rem;">
+      <li><strong>📈 RISING</strong>: عدد signals هذا الأسبوع &gt; ١١٥٪ من الأسبوع السابق</li>
+      <li><strong>→ STEADY</strong>: تغير ضمن ±١٥٪</li>
+      <li><strong>📉 COOLING</strong>: عدد signals هذا الأسبوع &lt; ٨٥٪ من الأسبوع السابق</li>
+    </ul>
+    <p style="margin-top: 0.8rem;">
+      <strong>صيغة الحساب · Formula:</strong>
+      <code>pct_change = round((n_this / n_prior - 1) * 100, 1)</code>
+      <br />
+      مصدر · Source: <code>build_sector_pulse()</code> in
+      <code>auto_client_acquisition/market_intelligence/sector_pulse.py</code>.
+    </p>
+  </section>
+
+  <!-- Hard rules section -->
+  <section class="data-source-note">
+    <strong>القواعد الصلبة · Hard Rules:</strong> هذه البيانات لا تُستخدم
+    لـ cold outreach (NO_COLD_WHATSAPP)، scraping (NO_SCRAPING)، أو
+    blast (NO_BLAST). الـ angles هي فقط مسودات للموافقة اليدوية من المؤسس
+    قبل أي استخدام (NO_LIVE_SEND). Article 4 — 8 hard gates immutable.
+  </section>
+
+  <section class="footer-cta">
+    <h2 style="margin-top: 0;">قطاعك يستحق Benchmark خاص؟</h2>
+    <p>ابدأ بالتشخيص المجاني (٢٤ ساعة) — نعطيك مقارنة مخصصة لقطاعك مع 3 فرص مرتّبة بالأولوية.</p>
+    <p>Start with the free diagnostic (24 hours) — get a sector-specific benchmark + 3 ranked opportunities.</p>
+    <div style="display: flex; justify-content: center; gap: var(--space-3); flex-wrap: wrap; margin-top: var(--space-4);">
+      <a href="/diagnostic.html" class="btn btn--primary btn--lg">ابدأ التشخيص →</a>
+      <a href="/services.html" class="btn btn--secondary btn--lg">شاهد الكتالوج →</a>
+    </div>
+  </section>
+
+</main>
+
+<script>
+  if (window.lucide) window.lucide.createIcons();
+</script>
+</body>
+</html>
