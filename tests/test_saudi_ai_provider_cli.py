@@ -199,3 +199,22 @@ def test_agent_apps_and_agent_rollout_commands() -> None:
     assert rollout.returncode == 0, rollout.stdout + rollout.stderr
     assert "خطة دمج Hermes/OpenClaw" in rollout.stdout
     assert "AI_GOVERNANCE_OS" in rollout.stdout
+
+
+def test_enterprise_playbook_command() -> None:
+    generated = run_cmd(
+        "enterprise-playbook",
+        "--service",
+        "CUSTOMER_PORTAL_GOLD",
+        "--intake-file",
+        "intake/demo_customer_intake.json",
+        "--profile",
+        "hybrid_governed_execution",
+        "--lang",
+        "ar",
+    )
+    assert generated.returncode == 0, generated.stdout + generated.stderr
+    assert "proposal:" in generated.stdout
+    assert "sow:" in generated.stdout
+    assert "kpi_contract:" in generated.stdout
+    assert "governance_contract:" in generated.stdout

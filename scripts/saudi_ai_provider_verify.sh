@@ -12,4 +12,5 @@ python3 scripts/validate_runtime.py
 python3 scripts/validate_commercialization.py
 python3 scripts/validate_monetization.py
 python3 scripts/validate_agent_profiles.py
+python3 scripts/validate_enterprise_playbook.py
 python3 scripts/final_launch_verify.py

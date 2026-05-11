@@ -7,8 +7,27 @@ from typing import Any
 
 from .catalog import load_agent_profiles
 from .launch_ops import services_for_segment
+from .pricing import parse_service_id
 
 VALID_PROFILES = {"hermes_agents", "openclaw_runtime", "hybrid_governed_execution"}
+ENGINE_TO_ENTERPRISE_SERVICE = {
+    "MARKET_RADAR": "AI_REVENUE_COMMAND_CENTER",
+    "LEAD_INTELLIGENCE": "AI_REVENUE_COMMAND_CENTER",
+    "COMPANY_BRAIN": "EXECUTIVE_AI_INTELLIGENCE_SYSTEM",
+    "DECISION_PASSPORT": "AI_GOVERNANCE_OS",
+    "WHATSAPP_DECISION_LAYER": "AI_WORKFLOW_AUTOMATION_FACTORY",
+    "ACTION_APPROVAL_ENGINE": "AI_GOVERNANCE_OS",
+    "DELIVERY_OS": "AI_WORKFLOW_AUTOMATION_FACTORY",
+    "CUSTOMER_PORTAL": "AI_CUSTOMER_OPERATIONS_PLATFORM",
+    "SUPPORT_OS": "AI_CUSTOMER_OPERATIONS_PLATFORM",
+    "PAYMENT_TRUTH": "AI_REVENUE_COMMAND_CENTER",
+    "PROOF_ENGINE": "AI_EVIDENCE_AUDIT_INFRA",
+    "EXPANSION_ENGINE": "AI_REVENUE_COMMAND_CENTER",
+    "LEARNING_FLYWHEEL": "EXECUTIVE_AI_INTELLIGENCE_SYSTEM",
+    "TRUST_LAYER": "PDPL_AI_COMPLIANCE_PLATFORM",
+    "SECURITY": "AI_GOVERNANCE_OS",
+    "OBSERVABILITY": "AI_OBSERVABILITY_PLATFORM",
+}
 
 
 @dataclass(frozen=True)
@@ -27,10 +46,26 @@ def _load_data() -> dict[str, Any]:
     return load_agent_profiles()
 
 
+def _normalize_service_id(service_id: str, service_apps: dict[str, Any]) -> str:
+    normalized = service_id.strip().upper()
+    if normalized in service_apps:
+        return normalized
+    try:
+        engine, _tier = parse_service_id(normalized)
+    except ValueError as exc:
+        raise ValueError(f"Service '{service_id}' is not mapped in service_applications") from exc
+    canonical = ENGINE_TO_ENTERPRISE_SERVICE.get(engine)
+    if not canonical or canonical not in service_apps:
+        raise ValueError(f"Service '{service_id}' is not mapped in service_applications")
+    return canonical
+
+
 def recommended_profile_for_service(service_id: str) -> str:
     data = _load_data()
+    service_apps = data.get("service_applications", {})
+    canonical_service_id = _normalize_service_id(service_id, service_apps)
     recs = data.get("service_profile_recommendations", {})
-    profile = recs.get(service_id)
+    profile = recs.get(canonical_service_id)
     if profile not in VALID_PROFILES:
         raise ValueError(f"No Hermes/OpenClaw profile recommendation for service '{service_id}'")
     return profile
@@ -50,15 +85,14 @@ def build_agent_application_plan(service_id: str, profile: str | None = None) ->
     data = _load_data()
     service_apps = data.get("service_applications", {})
     profiles = data.get("profiles", {})
-    if service_id not in service_apps:
-        raise ValueError(f"Service '{service_id}' is not mapped in service_applications")
+    canonical_service_id = _normalize_service_id(service_id, service_apps)
 
-    chosen_profile = _resolve_profile(service_id, profile)
+    chosen_profile = _resolve_profile(canonical_service_id, profile)
     profile_data = profiles.get(chosen_profile)
     if not profile_data:
         raise ValueError(f"Profile '{chosen_profile}' not found in profiles config")
 
-    service_data = service_apps[service_id]
+    service_data = service_apps[canonical_service_id]
     guardrails = [
         "no_cold_whatsapp",
         "no_linkedin_automation",
@@ -75,7 +109,7 @@ def build_agent_application_plan(service_id: str, profile: str | None = None) ->
         "Promote to controlled production with weekly executive review.",
     ]
     return AgentApplicationPlan(
-        service_id=service_id,
+        service_id=service_id.strip().upper(),
         profile=chosen_profile,
         business_goal=service_data["business_goal"],
         applications=list(service_data["applications"]),

@@ -64,3 +64,9 @@ def test_validate_agent_profiles_script_passes() -> None:
     result = run_script("scripts/validate_agent_profiles.py")
     assert result.returncode == 0, result.stdout + result.stderr
     assert "AGENT_PROFILE_VALIDATION=PASS" in result.stdout
+
+
+def test_validate_enterprise_playbook_script_passes() -> None:
+    result = run_script("scripts/validate_enterprise_playbook.py")
+    assert result.returncode == 0, result.stdout + result.stderr
+    assert "ENTERPRISE_PLAYBOOK_VALIDATION=PASS" in result.stdout

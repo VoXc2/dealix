@@ -13,6 +13,11 @@ def test_recommended_profile_for_governance_service() -> None:
     assert profile == "openclaw_runtime"
 
 
+def test_recommended_profile_for_sku_service_alias() -> None:
+    profile = recommended_profile_for_service("CUSTOMER_PORTAL_GOLD")
+    assert profile in {"hermes_agents", "hybrid_governed_execution", "openclaw_runtime"}
+
+
 def test_build_agent_application_plan_has_guardrails() -> None:
     plan = build_agent_application_plan("AI_REVENUE_COMMAND_CENTER")
     assert plan.profile in {"hermes_agents", "openclaw_runtime", "hybrid_governed_execution"}

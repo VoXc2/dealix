@@ -10,6 +10,7 @@ from typing import Sequence
 from .agent_stack import render_agent_application_plan, render_segment_rollout_plan
 from .commercial import compute_recurring_model, generate_customer_proposal_bundle, load_intake
 from .dashboards import export_dashboard_bundle
+from .enterprise_playbook import generate_enterprise_playbook_bundle
 from .kpis import kpis_for_service
 from .launch_ops import build_launch_pack, render_offer_stack
 from .offers import build_pitch, generate_offer
@@ -297,6 +298,24 @@ def _cmd_agent_rollout(args: argparse.Namespace) -> int:
     return 0
 
 
+def _cmd_enterprise_playbook(args: argparse.Namespace) -> int:
+    intake = load_intake(Path(args.intake_file))
+    bundle = generate_enterprise_playbook_bundle(
+        service_id=args.service,
+        intake=intake,
+        profile=args.profile,
+        segment=args.segment,
+        lang=args.lang,
+        output_dir=Path(args.output_dir) if args.output_dir else None,
+    )
+    print(f"profile: {bundle.profile}")
+    print(f"proposal: {bundle.proposal}")
+    print(f"sow: {bundle.sow}")
+    print(f"kpi_contract: {bundle.kpi_contract}")
+    print(f"governance_contract: {bundle.governance_contract}")
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="python -m saudi_ai_provider",
@@ -456,6 +475,18 @@ def build_parser() -> argparse.ArgumentParser:
     agent_rollout.add_argument("--profile", choices=["hermes_agents", "openclaw_runtime", "hybrid_governed_execution"])
     agent_rollout.add_argument("--lang", choices=["ar", "en"], default="ar")
     agent_rollout.set_defaults(func=_cmd_agent_rollout)
+
+    enterprise_playbook = sub.add_parser(
+        "enterprise-playbook",
+        help="Generate profile-aware proposal, SOW, KPI contract, and governance contract",
+    )
+    enterprise_playbook.add_argument("--service", required=True)
+    enterprise_playbook.add_argument("--intake-file", required=True)
+    enterprise_playbook.add_argument("--profile", choices=["hermes_agents", "openclaw_runtime", "hybrid_governed_execution"])
+    enterprise_playbook.add_argument("--segment", choices=["smb", "mid_market", "enterprise"])
+    enterprise_playbook.add_argument("--lang", choices=["ar", "en"], default="ar")
+    enterprise_playbook.add_argument("--output-dir")
+    enterprise_playbook.set_defaults(func=_cmd_enterprise_playbook)
 
     return parser
 
