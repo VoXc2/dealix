@@ -1,0 +1,20 @@
+{
+  "schema_version": "1.0",
+  "required_fields": [
+    "customer_id",
+    "service_id",
+    "health_score",
+    "sla_compliance",
+    "payment_delay_days",
+    "proof_events_count",
+    "expansion_readiness",
+    "usage_growth_rate"
+  ],
+  "optional_fields": [
+    "renewal_window_days",
+    "contract_end_date",
+    "arr_sar",
+    "nrr",
+    "executive_owner"
+  ]
+}

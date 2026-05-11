@@ -53,3 +53,6 @@ jobs:
 
       - name: Commercialization validation
         run: python3 scripts/validate_commercialization.py
+
+      - name: Monetization validation
+        run: python3 scripts/validate_monetization.py

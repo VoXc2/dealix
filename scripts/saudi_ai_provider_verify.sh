@@ -10,3 +10,4 @@ python3 scripts/validate_playbooks.py
 python3 scripts/validate_governance.py
 python3 scripts/validate_runtime.py
 python3 scripts/validate_commercialization.py
+python3 scripts/validate_monetization.py

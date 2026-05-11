@@ -52,3 +52,9 @@ def test_validate_commercialization_script_passes() -> None:
     result = run_script("scripts/validate_commercialization.py")
     assert result.returncode == 0, result.stdout + result.stderr
     assert "COMMERCIALIZATION_VALIDATION=PASS" in result.stdout
+
+
+def test_validate_monetization_script_passes() -> None:
+    result = run_script("scripts/validate_monetization.py")
+    assert result.returncode == 0, result.stdout + result.stderr
+    assert "MONETIZATION_VALIDATION=PASS" in result.stdout

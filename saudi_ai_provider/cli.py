@@ -13,6 +13,11 @@ from .kpis import kpis_for_service
 from .offers import build_pitch, generate_offer
 from .pricing import compute_roi, package_for_segment, quote_service
 from .roadmap import roadmap_for_days
+from .monetization import (
+    compute_proposal_scorecard,
+    orchestrate_renewal_expansion,
+    recommend_auto_package,
+)
 from .verifier import print_verification_report, verify_sellable
 
 
@@ -172,6 +177,82 @@ def _cmd_recurring_model(args: argparse.Namespace) -> int:
     return 0
 
 
+def _cmd_proposal_scorecard(args: argparse.Namespace) -> int:
+    intake = load_intake(Path(args.intake_file))
+    scorecard = compute_proposal_scorecard(args.service, intake)
+    print(f"Service: {args.service}")
+    print(f"Proposal Score: {scorecard.total_score}")
+    print(f"Recommendation: {scorecard.recommendation}")
+    print("Dimension Scores:")
+    for key, value in scorecard.dimension_scores.items():
+        print(f"- {key}: {value}")
+    if scorecard.blockers:
+        print("Blockers:")
+        for blocker in scorecard.blockers:
+            print(f"- {blocker}")
+    else:
+        print("Blockers: none")
+    return 0 if scorecard.recommendation != "HOLD" else 1
+
+
+def _cmd_auto_package(args: argparse.Namespace) -> int:
+    intake = load_intake(Path(args.intake_file))
+    result = recommend_auto_package(intake, max_services=args.max_services)
+    print(f"Segment: {result.segment}")
+    print(f"Rationale: {result.rationale}")
+    print("Recommended Services:")
+    for item in result.ranked_services:
+        print(
+            f"- {item['service_id']} | fit_score={item['fit_score']} | "
+            f"setup={item['setup_fee_sar']} SAR | monthly={item['monthly_retainer_sar']} SAR"
+        )
+    return 0
+
+
+def _cmd_renewal_orchestrator(args: argparse.Namespace) -> int:
+    customer_state = load_intake(Path(args.customer_state_file))
+    result = orchestrate_renewal_expansion(customer_state)
+    print(f"Renewal Risk: {result.renewal_risk}")
+    print("Renewal Actions:")
+    for action in result.renewal_actions:
+        print(f"- {action}")
+    print("Expansion Candidates:")
+    if result.expansion_candidates:
+        for service in result.expansion_candidates:
+            print(f"- {service}")
+    else:
+        print("- none")
+    print(f"Next Review Date: {result.next_review_date}")
+    print("Rationale:")
+    for item in result.rationale:
+        print(f"- {item}")
+    return 0
+
+
+def _cmd_p2_monetization(args: argparse.Namespace) -> int:
+    intake = load_intake(Path(args.intake_file))
+    customer_state = load_intake(Path(args.customer_state_file))
+    scorecard = compute_proposal_scorecard(args.service, intake)
+    package = recommend_auto_package(intake, max_services=args.max_services)
+    renewal = orchestrate_renewal_expansion(customer_state)
+
+    print("P2_MONETIZATION_SUMMARY")
+    print(f"Service: {args.service}")
+    print(f"ProposalScore: {scorecard.total_score} ({scorecard.recommendation})")
+    print(f"Segment: {package.segment}")
+    print("TopPackageRecommendations:")
+    for item in package.ranked_services:
+        print(f"- {item['service_id']} ({item['fit_score']})")
+    print(f"RenewalRisk: {renewal.renewal_risk}")
+    print("ExpansionCandidates:")
+    if renewal.expansion_candidates:
+        for service in renewal.expansion_candidates:
+            print(f"- {service}")
+    else:
+        print("- none")
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="python -m saudi_ai_provider",
@@ -263,6 +344,39 @@ def build_parser() -> argparse.ArgumentParser:
     recurring.add_argument("--months", type=int, default=12)
     recurring.add_argument("--expansion-rate", type=float, default=0.05)
     recurring.set_defaults(func=_cmd_recurring_model)
+
+    proposal_score = sub.add_parser(
+        "proposal-scorecard",
+        help="Compute proposal scorecard for a customer intake",
+    )
+    proposal_score.add_argument("--service", required=True)
+    proposal_score.add_argument("--intake-file", required=True)
+    proposal_score.set_defaults(func=_cmd_proposal_scorecard)
+
+    auto_package = sub.add_parser(
+        "auto-package",
+        help="Recommend best package mix for customer intake",
+    )
+    auto_package.add_argument("--intake-file", required=True)
+    auto_package.add_argument("--max-services", type=int, default=5)
+    auto_package.set_defaults(func=_cmd_auto_package)
+
+    renewal = sub.add_parser(
+        "renewal-orchestrator",
+        help="Generate renewal and expansion orchestration plan",
+    )
+    renewal.add_argument("--customer-state-file", required=True)
+    renewal.set_defaults(func=_cmd_renewal_orchestrator)
+
+    p2 = sub.add_parser(
+        "p2-monetization",
+        help="Run proposal scorecard + package recommendation + renewal orchestration",
+    )
+    p2.add_argument("--service", required=True)
+    p2.add_argument("--intake-file", required=True)
+    p2.add_argument("--customer-state-file", required=True)
+    p2.add_argument("--max-services", type=int, default=5)
+    p2.set_defaults(func=_cmd_p2_monetization)
 
     return parser
 

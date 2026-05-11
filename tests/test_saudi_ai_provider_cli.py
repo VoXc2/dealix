@@ -114,3 +114,45 @@ def test_proposal_dashboard_and_recurring_commands() -> None:
     )
     assert recurring.returncode == 0, recurring.stdout + recurring.stderr
     assert "Projected Total Revenue" in recurring.stdout
+
+
+def test_p2_monetization_commands() -> None:
+    scorecard = run_cmd(
+        "proposal-scorecard",
+        "--service",
+        "CUSTOMER_PORTAL_GOLD",
+        "--intake-file",
+        "intake/demo_customer_intake.json",
+    )
+    assert scorecard.returncode in (0, 1)
+    assert "Proposal Score:" in scorecard.stdout
+
+    auto_package = run_cmd(
+        "auto-package",
+        "--intake-file",
+        "intake/demo_customer_intake.json",
+        "--max-services",
+        "4",
+    )
+    assert auto_package.returncode == 0, auto_package.stdout + auto_package.stderr
+    assert "Recommended Services:" in auto_package.stdout
+
+    renewal = run_cmd(
+        "renewal-orchestrator",
+        "--customer-state-file",
+        "revenue/demo_customer_state.json",
+    )
+    assert renewal.returncode == 0, renewal.stdout + renewal.stderr
+    assert "Renewal Risk:" in renewal.stdout
+
+    p2 = run_cmd(
+        "p2-monetization",
+        "--service",
+        "CUSTOMER_PORTAL_GOLD",
+        "--intake-file",
+        "intake/demo_customer_intake.json",
+        "--customer-state-file",
+        "revenue/demo_customer_state.json",
+    )
+    assert p2.returncode == 0, p2.stdout + p2.stderr
+    assert "P2_MONETIZATION_SUMMARY" in p2.stdout

@@ -14,6 +14,10 @@
 - `python3 -m saudi_ai_provider proposal --service CUSTOMER_PORTAL_GOLD --intake-file intake/demo_customer_intake.json --lang ar`
 - `python3 -m saudi_ai_provider dashboard-export --metrics-json dashboard/sample_metrics.json`
 - `python3 -m saudi_ai_provider recurring-model --setup-fee 45000 --monthly 18000 --months 12 --expansion-rate 0.08`
+- `python3 -m saudi_ai_provider proposal-scorecard --service CUSTOMER_PORTAL_GOLD --intake-file intake/demo_customer_intake.json`
+- `python3 -m saudi_ai_provider auto-package --intake-file intake/demo_customer_intake.json --max-services 4`
+- `python3 -m saudi_ai_provider renewal-orchestrator --customer-state-file revenue/demo_customer_state.json`
+- `python3 -m saudi_ai_provider p2-monetization --service CUSTOMER_PORTAL_GOLD --intake-file intake/demo_customer_intake.json --customer-state-file revenue/demo_customer_state.json`
 
 سكربتات التحقق:
 
@@ -23,4 +27,5 @@
 - `python3 scripts/validate_governance.py`
 - `python3 scripts/validate_runtime.py`
 - `python3 scripts/validate_commercialization.py`
+- `python3 scripts/validate_monetization.py`
 - `bash scripts/saudi_ai_provider_verify.sh`

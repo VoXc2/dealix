@@ -17,6 +17,7 @@ MARGIN_GUARDRAILS_PATH = ROOT / "pricing/margin_guardrails.json"
 PACKAGING_MATRIX_PATH = ROOT / "pricing/packaging_matrix.json"
 ROI_FORMULAS_PATH = ROOT / "pricing/roi_formulas.json"
 SLA_MATRIX_PATH = ROOT / "pricing/sla_matrix.json"
+MONETIZATION_STRATEGY_PATH = ROOT / "pricing/monetization_strategy.json"
 SELLABLE_RULES_PATH = ROOT / "governance/sellable_rules.json"
 DEPLOYMENT_RULES_PATH = ROOT / "governance/deployment_rules.json"
 COMPLIANCE_RULES_PATH = ROOT / "governance/compliance_rules.json"
@@ -69,6 +70,10 @@ def load_roi_formulas() -> dict[str, Any]:
 
 def load_sla_matrix() -> dict[str, Any]:
     return load_json(SLA_MATRIX_PATH)
+
+
+def load_monetization_strategy() -> dict[str, Any]:
+    return load_json(MONETIZATION_STRATEGY_PATH)
 
 
 def load_sellable_rules() -> dict[str, Any]:

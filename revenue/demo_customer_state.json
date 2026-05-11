@@ -1,0 +1,15 @@
+{
+  "customer_id": "riyadh_healthcare_group",
+  "service_id": "CUSTOMER_PORTAL_GOLD",
+  "health_score": 84,
+  "sla_compliance": 0.94,
+  "payment_delay_days": 5,
+  "proof_events_count": 6,
+  "expansion_readiness": 81,
+  "usage_growth_rate": 0.31,
+  "renewal_window_days": 90,
+  "contract_end_date": "2027-02-28",
+  "arr_sar": 1200000,
+  "nrr": 1.18,
+  "executive_owner": "COO"
+}
