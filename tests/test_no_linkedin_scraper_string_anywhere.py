@@ -59,6 +59,10 @@ _ALLOWLIST_PATHS = frozenset({
     "scripts/dealix_wave14_saudi_engines_verify.sh",
     # Wave 14 evidence table — references this lockdown test by name
     "docs/WAVE14_EVIDENCE_TABLE.md",
+    # Wave 15 master verifier — invokes the lockdown test by file path
+    "scripts/dealix_wave15_customer_ops_verify.sh",
+    # Wave 15 evidence table — references this lockdown test by name
+    "docs/WAVE15_EVIDENCE_TABLE.md",
     # The plan file lives outside the repo (in /root/.claude/plans/) so
     # never appears in git ls-files; no allowlist needed.
 })
