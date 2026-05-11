@@ -62,7 +62,6 @@ jobs:
           PLAYWRIGHT_BASE_URL: http://localhost:8765
           CI: "true"
         run: |
-          npx playwright test --config playwright.config.js --project chromium-iphone-se-320 || true
           npx playwright test --config playwright.config.js
 
       - name: Stop server

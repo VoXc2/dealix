@@ -43,7 +43,40 @@
   .state-pill--demo  { background: rgba(168, 85, 247, 0.14); color: #c4b5fd; border: 1px solid rgba(168, 85, 247, 0.35); }
   .state-pill--org   { background: rgba(14, 165, 233, 0.14); color: #7dd3fc; border: 1px solid rgba(14, 165, 233, 0.35); }
   .state-pill--live  { background: rgba(34, 197, 94, 0.14); color: #86efac; border: 1px solid rgba(34, 197, 94, 0.35); }
+  .state-pill--degraded { background: rgba(234, 179, 8, 0.18); color: #fde047; border: 1px solid rgba(234, 179, 8, 0.45); }
   .state-pill .dot { width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
+
+  /* Wave 13 Phase 6 — Above-the-fold 4-card pattern */
+  .w13-fourcards {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-4);
+    margin-bottom: var(--space-6);
+  }
+  @media (min-width: 900px) { .w13-fourcards { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+  .w13-card {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 12px;
+    padding: var(--space-4);
+    display: flex; flex-direction: column; gap: var(--space-2);
+    min-height: 140px;
+  }
+  .w13-card__label { font-family: var(--font-lt); font-size: 11px; font-weight: 800;
+    letter-spacing: 0.08em; color: var(--color-text-muted); text-transform: uppercase; }
+  .w13-card__value { font-size: 22px; font-weight: 700; color: var(--color-text); }
+  .w13-card__hint  { font-size: 13px; color: var(--color-text-muted); line-height: 1.4; }
+  .w13-degraded-banner {
+    display: none;
+    padding: var(--space-3) var(--space-4);
+    background: rgba(234, 179, 8, 0.08);
+    border: 1px solid rgba(234, 179, 8, 0.25);
+    border-radius: 8px;
+    color: #fef08a;
+    font-size: 13px;
+    margin-bottom: var(--space-4);
+  }
+  .w13-degraded-banner[data-visible="true"] { display: block; }
 
   .ops-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: var(--space-3); }
   .ops-card {
@@ -245,6 +278,34 @@
     </div>
   </div>
 
+  <!-- Wave 13 Phase 6 — Above-the-fold 4-card pattern + degraded banner -->
+  <div id="w13-degraded-banner" class="w13-degraded-banner" data-visible="false" role="status" aria-live="polite">
+    ⚠️ بعض الأقسام تعمل في وضع مخفّض — لم تصلنا بياناتك الحيّة بعد. جميع الأرقام تقديرية.
+    <span style="opacity:0.7">/ Some sections in degraded mode — live data not yet received.</span>
+  </div>
+  <section class="w13-fourcards" aria-label="نظرة سريعة على اليوم">
+    <article class="w13-card" data-test="w13-card-current-status">
+      <span class="w13-card__label">الحالة اليوم / Current Status</span>
+      <span class="w13-card__value" data-w13-bind="current-status-day">—</span>
+      <span class="w13-card__hint" data-w13-bind="current-status-detail">في انتظار بيانات الجلسة</span>
+    </article>
+    <article class="w13-card" data-test="w13-card-today-decision">
+      <span class="w13-card__label">قرار اليوم / Today's Decision</span>
+      <span class="w13-card__value" data-w13-bind="today-decision-count">—</span>
+      <span class="w13-card__hint" data-w13-bind="today-decision-hint">لا قرارات معلّقة الآن</span>
+    </article>
+    <article class="w13-card" data-test="w13-card-pending-approvals">
+      <span class="w13-card__label">موافقات معلّقة / Pending Approvals</span>
+      <span class="w13-card__value" data-w13-bind="pending-approvals-count">—</span>
+      <span class="w13-card__hint" data-w13-bind="pending-approvals-hint">راجع الطلبات المعلّقة</span>
+    </article>
+    <article class="w13-card" data-test="w13-card-proof-progress">
+      <span class="w13-card__label">تقدّم الإثبات / Proof Progress</span>
+      <span class="w13-card__value" data-w13-bind="proof-progress-count">—</span>
+      <span class="w13-card__hint" data-w13-bind="proof-progress-hint">يجمع Proof Pack</span>
+    </article>
+  </section>
+
   <!-- Today's Decision hero (Tier-1 redesign — above-the-fold drill-down) -->
   <section id="today-decision" aria-labelledby="td-title" class="ds-stack ds-stack--md">
     <div class="sec-head">
@@ -366,7 +427,7 @@
         </div>
         <h3 class="radar-card__title">شركة "النخلة للتطوير العقاري" أعلنت توظيف ٣ Sales Reps في الرياض</h3>
         <p class="radar-card__why">هذه الشركة تتوسّع — توظيف ٣ مندوبين خلال أسبوع واحد إشارة قويّة على Pipeline ينمو أسرع من قدرتهم على التأهيل اليدوي. شركتك تبيع "خدمات تأهيل leads بـ ٣٠ ثانية" — هذا التوقيت مثالي.</p>
-        <p class="radar-card__action">رسالة WhatsApp لمدير المبيعات (نسخة معتمدة جاهزة على /decisions.html): "لاحظنا توسّعكم — Dealix يؤهّل ٤٠ lead/يوم تلقائياً قبل وصولها للمندوبين. ٣٠ دقيقة عرض؟"</p>
+        <p class="radar-card__action">رسالة WhatsApp (مسودة للموافقة على /decisions.html): «لاحظنا توسّعكم — نؤهّل الليفات داخل النظام بلا إرسال بارد؛ تصل للمندوبين جاهزة للمتابعة. موعد ٣٠ دقيقة؟» (لا إرسال تلقائي من Dealix.)</p>
         <div class="radar-card__meta">
           <span class="radar-card__meta-item"><i data-lucide="map-pin" style="width:12px;height:12px"></i> الرياض</span>
           <span class="radar-card__meta-item"><i data-lucide="link" style="width:12px;height:12px"></i> LinkedIn</span>
@@ -571,7 +632,7 @@
       <div class="seq-map__cell seq-map__cell--active">
         <div class="seq-map__cell-title"><i data-lucide="target"></i> Qualification (BANT × MEDDPICC)</div>
         <div class="seq-map__cell-stat">LIVE · POST /api/v1/sales-os/qualify</div>
-        <p class="seq-map__cell-desc">تأهيل تلقائي — score + reason + recommended next-step.</p>
+        <p class="seq-map__cell-desc">تأهيل داخل النظام (score + reason + next-step) — لا إرسال خارجي بدون موافقة.</p>
       </div>
       <div class="seq-map__cell seq-map__cell--active">
         <div class="seq-map__cell-title"><i data-lucide="search"></i> Enrichment</div>

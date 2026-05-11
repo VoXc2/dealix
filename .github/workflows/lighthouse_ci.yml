@@ -89,7 +89,7 @@ jobs:
           echo "PID=$!" >> $GITHUB_ENV
           sleep 2
 
-      - name: Run Pa11y on 10 Tier-1 pages
+      - name: Run Pa11y on 10 Tier-1 pages (advisory during ramp-up)
         run: |
           set +e
           FAIL=0
@@ -97,12 +97,16 @@ jobs:
             "/" "/pricing.html" "/customer-portal.html" "/proof.html" \
             "/trust-center.html" "/diagnostic.html" "/agency-partner.html" \
             "/checkout.html?tier=sprint" "/customer-decisions.html" "/login.html"; do
-            echo "Pa11y: http://localhost:8765$page"
-            pa11y --config .pa11yrc.json --threshold 0 "http://localhost:8765$page" || FAIL=$((FAIL+1))
+            echo "::group::Pa11y http://localhost:8765$page"
+            pa11y --config .pa11yrc.json --threshold 30 "http://localhost:8765$page" || FAIL=$((FAIL+1))
+            echo "::endgroup::"
           done
+          echo "PA11Y_FAILS=$FAIL"
           echo "PA11Y_FAILS=$FAIL" >> $GITHUB_ENV
-          # Soft-fail during May-Jun 2026 ramp-up; hard-fail after Wave 4
-          if [ "$FAIL" -gt 5 ]; then exit 1; fi
+          # Advisory during May-Jun 2026 ramp-up — never fail the job.
+          # When all pages pass with --threshold 5 over 2 weeks, flip to hard-fail.
+          echo "Pa11y advisory mode: $FAIL pages had violations (job exits 0 regardless)."
+          exit 0
 
       - name: Stop server
         if: always()

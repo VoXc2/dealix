@@ -15,10 +15,8 @@ test_*_live.py files that run only when API keys are set.
 from __future__ import annotations
 
 import asyncio
-import json
 import re
 import sys
-import time
 from pathlib import Path
 from unittest.mock import patch
 

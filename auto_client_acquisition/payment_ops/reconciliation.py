@@ -152,23 +152,37 @@ class ReconciliationResult:
 def _confirm_payment(invoice_id: str, evidence_ref: str) -> tuple[str, str]:
     """Move payment_ops state from invoice_intent → payment_confirmed.
 
-    Returns (payment_id, state_after). Falls back to the invoice_id and
-    "test_mode" if payment_ops module isn't loadable.
+    The orchestrator requires the 2-step flow:
+      1. upload_manual_evidence(payment_id, evidence_reference)
+      2. confirm_payment(payment_id, confirmed_by)
+
+    Returns (payment_id, state_after). Falls back to "test_mode_no_payment_ops"
+    if the orchestrator isn't loadable in this environment.
     """
     try:
         from auto_client_acquisition.payment_ops import (  # type: ignore
             confirm_payment,
-            get_payment_state,
+            upload_manual_evidence,
         )
     except ImportError:
         return invoice_id, "test_mode_no_payment_ops"
     try:
-        state_obj = confirm_payment(
+        # Step 1: upload evidence
+        _, evidence_status = upload_manual_evidence(
             payment_id=invoice_id,
             evidence_reference=evidence_ref,
         )
-        state_str = getattr(state_obj, "state", "payment_confirmed")
-        return invoice_id, state_str
+        if evidence_status not in (
+            "evidence_uploaded",
+            "payment_evidence_uploaded",
+        ):
+            return invoice_id, f"evidence_step:{evidence_status}"
+        # Step 2: confirm
+        _, confirm_status = confirm_payment(
+            payment_id=invoice_id,
+            confirmed_by="moyasar_webhook",
+        )
+        return invoice_id, confirm_status
     except Exception as exc:  # noqa: BLE001
         logger.warning("confirm_payment_failed: %s", exc)
         return invoice_id, f"error: {exc}"

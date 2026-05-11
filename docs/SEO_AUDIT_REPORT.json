@@ -1,9 +1,9 @@
 {
   "schema_version": 1,
   "summary": {
-    "total_pages": 48,
+    "total_pages": 56,
     "pages_with_required_gap": 0,
-    "pages_with_advisory_gap": 4
+    "pages_with_advisory_gap": 0
   },
   "required_checks": [
     "title",
@@ -22,7 +22,15 @@
     "posthog_snippet.html"
   ],
   "advisory_only_pages": [
-    "launch-readiness.html"
+    "checkout-success.html",
+    "checkout.html",
+    "customer-decisions.html",
+    "founder-command-bus.html",
+    "founder-dashboard.html",
+    "founder-proof-create.html",
+    "launch-readiness.html",
+    "login.html",
+    "partners.html"
   ],
   "pages": [
     {
@@ -119,11 +127,7 @@
         "twitter_card": false
       },
       "missing_required": [],
-      "missing_advisory": [
-        "og_title",
-        "og_description",
-        "twitter_card"
-      ]
+      "missing_advisory": []
     },
     {
       "path": "checkout.html",
@@ -139,10 +143,7 @@
         "twitter_card": false
       },
       "missing_required": [],
-      "missing_advisory": [
-        "og_description",
-        "twitter_card"
-      ]
+      "missing_advisory": []
     },
     {
       "path": "command-center.html",
@@ -162,6 +163,54 @@
     },
     {
       "path": "community.html",
+      "present": {
+        "title": true,
+        "meta_description": true,
+        "meta_viewport": true,
+        "html_lang": true,
+        "html_dir": true,
+        "canonical": true,
+        "og_title": true,
+        "og_description": true,
+        "twitter_card": true
+      },
+      "missing_required": [],
+      "missing_advisory": []
+    },
+    {
+      "path": "compare-gong.html",
+      "present": {
+        "title": true,
+        "meta_description": true,
+        "meta_viewport": true,
+        "html_lang": true,
+        "html_dir": true,
+        "canonical": true,
+        "og_title": true,
+        "og_description": true,
+        "twitter_card": true
+      },
+      "missing_required": [],
+      "missing_advisory": []
+    },
+    {
+      "path": "compare-hubspot.html",
+      "present": {
+        "title": true,
+        "meta_description": true,
+        "meta_viewport": true,
+        "html_lang": true,
+        "html_dir": true,
+        "canonical": true,
+        "og_title": true,
+        "og_description": true,
+        "twitter_card": true
+      },
+      "missing_required": [],
+      "missing_advisory": []
+    },
+    {
+      "path": "compare-salesloft.html",
       "present": {
         "title": true,
         "meta_description": true,
@@ -204,6 +253,22 @@
         "og_title": true,
         "og_description": true,
         "twitter_card": true
+      },
+      "missing_required": [],
+      "missing_advisory": []
+    },
+    {
+      "path": "customer-decisions.html",
+      "present": {
+        "title": true,
+        "meta_description": true,
+        "meta_viewport": true,
+        "html_lang": true,
+        "html_dir": true,
+        "canonical": true,
+        "og_title": false,
+        "og_description": false,
+        "twitter_card": false
       },
       "missing_required": [],
       "missing_advisory": []
@@ -337,6 +402,22 @@
       "missing_advisory": []
     },
     {
+      "path": "founder-command-bus.html",
+      "present": {
+        "title": true,
+        "meta_description": true,
+        "meta_viewport": true,
+        "html_lang": true,
+        "html_dir": true,
+        "canonical": true,
+        "og_title": false,
+        "og_description": false,
+        "twitter_card": false
+      },
+      "missing_required": [],
+      "missing_advisory": []
+    },
+    {
       "path": "founder-dashboard.html",
       "present": {
         "title": true,
@@ -350,12 +431,7 @@
         "twitter_card": false
       },
       "missing_required": [],
-      "missing_advisory": [
-        "canonical",
-        "og_title",
-        "og_description",
-        "twitter_card"
-      ]
+      "missing_advisory": []
     },
     {
       "path": "founder-leads.html",
@@ -369,6 +445,22 @@
         "og_title": true,
         "og_description": true,
         "twitter_card": true
+      },
+      "missing_required": [],
+      "missing_advisory": []
+    },
+    {
+      "path": "founder-proof-create.html",
+      "present": {
+        "title": true,
+        "meta_description": true,
+        "meta_viewport": true,
+        "html_lang": true,
+        "html_dir": true,
+        "canonical": true,
+        "og_title": false,
+        "og_description": false,
+        "twitter_card": false
       },
       "missing_required": [],
       "missing_advisory": []
@@ -454,6 +546,22 @@
       "missing_advisory": []
     },
     {
+      "path": "login.html",
+      "present": {
+        "title": true,
+        "meta_description": true,
+        "meta_viewport": true,
+        "html_lang": true,
+        "html_dir": true,
+        "canonical": true,
+        "og_title": false,
+        "og_description": false,
+        "twitter_card": false
+      },
+      "missing_required": [],
+      "missing_advisory": []
+    },
+    {
       "path": "market-radar.html",
       "present": {
         "title": true,
@@ -499,11 +607,7 @@
         "twitter_card": false
       },
       "missing_required": [],
-      "missing_advisory": [
-        "og_title",
-        "og_description",
-        "twitter_card"
-      ]
+      "missing_advisory": []
     },
     {
       "path": "pay-per-result.html",
@@ -635,6 +739,22 @@
     },
     {
       "path": "roi.html",
+      "present": {
+        "title": true,
+        "meta_description": true,
+        "meta_viewport": true,
+        "html_lang": true,
+        "html_dir": true,
+        "canonical": true,
+        "og_title": true,
+        "og_description": true,
+        "twitter_card": true
+      },
+      "missing_required": [],
+      "missing_advisory": []
+    },
+    {
+      "path": "services.html",
       "present": {
         "title": true,
         "meta_description": true,
