@@ -10,12 +10,28 @@
 | **PostgreSQL 16** | 5432 | Primary DB (via `docker compose up -d postgres`) |
 | **Redis 7** | 6379 | Cache/queue (via `docker compose up -d redis`) |
 | **Next.js Frontend** | 3000 | Dashboard UI (`npm run dev` in `frontend/`) |
+| **MongoDB 7** | 27017 | Optional document store (full `docker compose` stack) |
+
+### Python command (`python` vs `python3`)
+
+- **GitHub Actions** workflows invoke **`python3`** for scripts so runners match Debian/minimal images where `python` may be absent.
+- **Locally**, use `python3` if `python` is not on your `PATH`; after `actions/setup-python`, both names exist on CI.
 
 ### Starting infrastructure
 
 ```bash
 docker compose up -d postgres redis
 ```
+
+For a **full data-plane check** (Postgres + PgBouncer + Redis + Mongo + gates + TCP `/health` + Next.js build/tests), run:
+
+```bash
+bash scripts/dealix_local_stack_verify.sh
+# Faster: skip Docker / skip frontend
+bash scripts/dealix_local_stack_verify.sh --skip-docker --skip-frontend
+```
+
+In GitHub: **Actions → Local stack verify → Run workflow** (same script with `--teardown`).
 
 Then start the backend:
 

@@ -46,7 +46,7 @@ jobs:
           # Regenerate service-readiness.json from the YAML matrix so
           # the homepage trust-bar reflects the current registry state.
           if [ -f scripts/export_service_readiness_json.py ]; then
-            python scripts/export_service_readiness_json.py \
+            python3 scripts/export_service_readiness_json.py \
               _site/assets/data/service-readiness.json \
               || echo "JSON export failed (non-blocking — keeping committed JSON)"
           fi

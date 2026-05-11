@@ -20,25 +20,25 @@ jobs:
 
       - name: Install dependencies
         run: |
-          python -m pip install --upgrade pip
+          python3 -m pip install --upgrade pip
           pip install -r requirements.txt
           pip install pytest pytest-asyncio pytest-cov httpx
 
       - name: Compile check
-        run: python -m compileall api auto_client_acquisition
+        run: python3 -m compileall api auto_client_acquisition
 
       - name: Verify Service Readiness Matrix
-        run: python scripts/verify_service_readiness_matrix.py
+        run: python3 scripts/verify_service_readiness_matrix.py
 
       - name: Export Service Readiness JSON
         run: |
-          python scripts/export_service_readiness_json.py
+          python3 scripts/export_service_readiness_json.py
           # Fail CI if the committed JSON is stale relative to the YAML.
           git diff --exit-code -- landing/assets/data/service-readiness.json
 
       - name: SEO audit (required-gap must be 0; advisory perimeter locked)
         run: |
-          python scripts/seo_audit.py
+          python3 scripts/seo_audit.py
           # Fail CI if the committed SEO report is stale.
           git diff --exit-code -- docs/SEO_AUDIT_REPORT.json
 
@@ -74,10 +74,10 @@ jobs:
           GROQ_API_KEY: test-groq-key
           GLM_API_KEY: test-glm-key
           GOOGLE_API_KEY: test-google-key
-        run: python scripts/smoke_inprocess.py
+        run: python3 scripts/smoke_inprocess.py
 
       - name: Embeddings pipeline placeholder
-        run: python scripts/embeddings_pipeline_placeholder.py
+        run: python3 scripts/embeddings_pipeline_placeholder.py
 
       - name: Deterministic eval smoke
         env:
@@ -88,10 +88,10 @@ jobs:
           GROQ_API_KEY: test-groq-key
           GLM_API_KEY: test-glm-key
           GOOGLE_API_KEY: test-google-key
-        run: python scripts/run_evals.py
+        run: python3 scripts/run_evals.py
 
       - name: Landing + Next.js ↔ API wiring audit
-        run: python scripts/audit_orphan_endpoints.py --quiet
+        run: python3 scripts/audit_orphan_endpoints.py --quiet
 
   frontend:
     runs-on: ubuntu-latest

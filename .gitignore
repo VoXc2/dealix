@@ -4,6 +4,8 @@
 frontend/test-results/
 frontend/playwright-report/
 frontend/blob-report/
+# TypeScript incremental — local only (avoid noisy git status / cross-OS drift)
+**/tsconfig.tsbuildinfo
 
 # ─────────────────────────────────────────────────────────────
 # 🔒 SECRETS — NEVER COMMIT
