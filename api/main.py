@@ -38,6 +38,7 @@ from api.routers import (
     onboarding,
     partners,
     pdpl,
+    sso,
     support,
     trial,
     zatca,
@@ -243,6 +244,8 @@ def create_app() -> FastAPI:
     app.include_router(audit_logs_router.router)
     # Customer support — Plain ticketing with Resend email fallback.
     app.include_router(support.router)
+    # Enterprise SSO (WorkOS). 503 sso_disabled without env keys.
+    app.include_router(sso.router)
 
     # ── Wave 12.7 — Intelligence Layer + Expansion Engine ─────────
     # Both routers self-prefix /api/v1/intelligence and /api/v1/expansion-engine.

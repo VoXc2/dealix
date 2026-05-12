@@ -1,0 +1,120 @@
+# Cerbos Policy — Dealix resource access control
+#
+# Run a Cerbos PDP locally:
+#   docker run --rm -p 3593:3593 -p 3592:3592 \
+#     -v $(pwd)/cerbos/policies:/policies ghcr.io/cerbos/cerbos:0.39.0
+#
+# Wire from Python (after `pip install cerbos`):
+#   from cerbos.sdk.client import CerbosClient
+#   from cerbos.sdk.model import Principal, Resource
+#   c = CerbosClient("http://localhost:3592")
+#   c.is_allowed(action="read", principal=Principal(...), resource=Resource(...))
+#
+# These policies mirror the role checks currently hard-coded in
+# api/security/rbac.py. The intent is to migrate calls behind a thin
+# `core/authz.py` adapter so policy iteration happens here, not in code.
+
+---
+apiVersion: api.cerbos.dev/v1
+resourcePolicy:
+  resource: lead
+  version: default
+  rules:
+    - actions: ["read", "list"]
+      effect: EFFECT_ALLOW
+      roles: ["owner", "admin", "sales_rep", "viewer"]
+    - actions: ["create", "update"]
+      effect: EFFECT_ALLOW
+      roles: ["owner", "admin", "sales_rep"]
+    - actions: ["delete"]
+      effect: EFFECT_ALLOW
+      roles: ["owner", "admin"]
+    # Tenant-isolation guard: regardless of role, deny if tenant_id
+    # doesn't match the principal's.
+    - actions: ["*"]
+      effect: EFFECT_DENY
+      roles: ["*"]
+      condition:
+        match:
+          expr: request.resource.attr.tenant_id != request.principal.attr.tenant_id
+
+---
+apiVersion: api.cerbos.dev/v1
+resourcePolicy:
+  resource: deal
+  version: default
+  rules:
+    - actions: ["read", "list", "create", "update"]
+      effect: EFFECT_ALLOW
+      roles: ["owner", "admin", "sales_rep"]
+    - actions: ["read", "list"]
+      effect: EFFECT_ALLOW
+      roles: ["viewer"]
+    - actions: ["delete", "approve_discount"]
+      effect: EFFECT_ALLOW
+      roles: ["owner", "admin"]
+    - actions: ["*"]
+      effect: EFFECT_DENY
+      roles: ["*"]
+      condition:
+        match:
+          expr: request.resource.attr.tenant_id != request.principal.attr.tenant_id
+
+---
+apiVersion: api.cerbos.dev/v1
+resourcePolicy:
+  resource: tenant_settings
+  version: default
+  rules:
+    - actions: ["read"]
+      effect: EFFECT_ALLOW
+      roles: ["owner", "admin", "sales_rep", "viewer"]
+    - actions: ["update", "manage_billing", "invite_user", "revoke_user"]
+      effect: EFFECT_ALLOW
+      roles: ["owner", "admin"]
+    - actions: ["*"]
+      effect: EFFECT_DENY
+      roles: ["*"]
+      condition:
+        match:
+          expr: request.resource.attr.tenant_id != request.principal.attr.tenant_id
+
+---
+apiVersion: api.cerbos.dev/v1
+resourcePolicy:
+  resource: audit_log
+  version: default
+  rules:
+    - actions: ["read", "export"]
+      effect: EFFECT_ALLOW
+      roles: ["owner", "admin"]
+    # Compliance/auditor role can read but not export.
+    - actions: ["read"]
+      effect: EFFECT_ALLOW
+      roles: ["auditor"]
+    - actions: ["*"]
+      effect: EFFECT_DENY
+      roles: ["*"]
+      condition:
+        match:
+          expr: request.resource.attr.tenant_id != request.principal.attr.tenant_id
+
+---
+apiVersion: api.cerbos.dev/v1
+resourcePolicy:
+  resource: agent_run
+  version: default
+  rules:
+    # Approval-required actions — the approval-center pattern.
+    - actions: ["execute", "approve"]
+      effect: EFFECT_ALLOW
+      roles: ["owner", "admin", "agent_operator"]
+    - actions: ["queue"]
+      effect: EFFECT_ALLOW
+      roles: ["owner", "admin", "sales_rep", "agent_operator"]
+    - actions: ["*"]
+      effect: EFFECT_DENY
+      roles: ["*"]
+      condition:
+        match:
+          expr: request.resource.attr.tenant_id != request.principal.attr.tenant_id
