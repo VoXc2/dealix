@@ -37,6 +37,9 @@ eggs/
 .eggs/
 lib/
 lib64/
+# Frontend src/lib/ is real source; the rule above is for Python eggs.
+!frontend/src/lib/
+!frontend/src/lib/**
 parts/
 sdist/
 var/

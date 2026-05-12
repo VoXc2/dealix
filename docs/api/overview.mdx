@@ -1,0 +1,74 @@
+---
+title: Overview
+description: Dealix REST API — the developer-facing surface of the Saudi-first Growth & Execution OS.
+---
+
+## What Dealix is
+
+Dealix is a multi-tenant, agentic Growth & Execution platform built
+Saudi-first. The API exposes the data plane and control plane an
+integrating system needs to:
+
+- Ingest leads from any channel (web form, WhatsApp, CSV, partner referral).
+- Run the qualification → ICP-match → proposal → booking flow.
+- Monitor customer health and operate the renewal motion.
+- Export ZATCA Phase 2 e-invoices.
+- Read tenant audit logs for compliance review.
+
+## Base URL
+
+```
+https://api.dealix.me/api/v1
+```
+
+Public endpoints (`/api/v1/public/*`) are CORS-open and unauthenticated.
+Everything else requires authentication.
+
+## Versioning
+
+Routes are mounted under `/api/v1/`. Breaking changes ship behind a new
+prefix (`/api/v2/`) with a deprecation window announced in
+[the changelog](./changelog) at least 90 days in advance.
+
+## Authentication
+
+Two equivalent auth schemes are accepted:
+
+1. **Bearer JWT** — `Authorization: Bearer <jwt>` (obtained via
+   `POST /auth/login` or the SSO callback). Carries `tenant_id` and
+   `user_id` claims.
+2. **API key** — `X-API-Key: <key>` (issued during onboarding).
+   The key prefix encodes the tenant scope.
+
+Admin endpoints (`/api/v1/admin/*`) additionally require
+`ADMIN_API_KEYS` membership.
+
+## Rate limits
+
+Per-bucket limits (overrideable per tenant):
+
+| Bucket | Limit |
+| --- | --- |
+| leads | 10 / min |
+| sales | 30 / min |
+| WhatsApp | 100 / min |
+| generic | 60 / min |
+| global ceiling | 1 000 / min |
+
+Limits surface via `X-RateLimit-Remaining` headers; `429` indicates a
+breach with a `Retry-After` hint.
+
+## Trust signals
+
+- **SLA**: 99.5% uptime, p95 ≤ 500 ms. See `/trust` for the live status pill.
+- **PDPL**: Tenant isolation, BOPLA redaction, consent ledger.
+- **ZATCA Phase 2**: UBL 2.1 invoices with QR + Fatoorah submission.
+
+## SDKs
+
+Auto-generated from this OpenAPI spec via Fern:
+
+- Python — `pip install dealix-sdk`
+- TypeScript — `npm i @dealix/sdk`
+
+See the [SDK tab](/sdk/python).

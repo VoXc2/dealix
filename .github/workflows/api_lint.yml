@@ -1,0 +1,50 @@
+name: API design lint
+
+on:
+  pull_request:
+    paths:
+      - "api/**"
+      - "fern/**"
+      - "mint.json"
+      - ".spectral.yaml"
+
+jobs:
+  spectral:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install runtime deps
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Snapshot OpenAPI
+        env:
+          APP_ENV: test
+          APP_SECRET_KEY: test_only_change_me_to_64_byte_hex_abcdefghijklmnop
+          JWT_SECRET_KEY: test_only_change_me_to_64_byte_hex_abcdefghijklmnop
+          DATABASE_URL: sqlite+aiosqlite:///./dealix_test.db
+          ANTHROPIC_API_KEY: test
+          OPENAI_API_KEY: test
+        run: |
+          python - <<'PY'
+          import json
+          from api.main import app
+          with open("openapi.snapshot.json", "w") as fh:
+              json.dump(app.openapi(), fh, indent=2)
+          PY
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: "20"
+
+      - name: Install Spectral
+        run: npm install -g @stoplight/spectral-cli
+
+      - name: Lint OpenAPI
+        run: spectral lint openapi.snapshot.json --ruleset .spectral.yaml

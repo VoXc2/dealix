@@ -1,0 +1,34 @@
+extends:
+  - spectral:oas
+
+# Custom rules for Dealix OpenAPI hygiene.
+rules:
+  # All operations need an operationId so SDK methods get stable names.
+  operation-operationId: error
+  # And a tag so the docs portal can group them.
+  operation-tag-defined: error
+  # No trailing slashes.
+  path-not-include-query: error
+  # Every operation must declare its successful response.
+  operation-success-response: error
+  # Description / summary are required so the docs portal renders well.
+  operation-description: warn
+  operation-summary: warn
+  # Forbid plain "string" without a format on date-time fields — common
+  # silent bug in our routers.
+  contract-uri-format:
+    description: Strict format on date-time fields.
+    given: $.paths.*.*.parameters[*].schema
+    then:
+      field: format
+      function: pattern
+      functionOptions:
+        match: "^(date|date-time|email|uri|uuid)$"
+    severity: warn
+  # JSON-only.
+  oas3-valid-media-example: warn
+overrides:
+  - files:
+      - "**/internal/**"
+    rules:
+      operation-summary: off

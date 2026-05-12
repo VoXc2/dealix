@@ -1,0 +1,51 @@
+---
+title: Authentication
+description: Bearer JWT, API keys, and enterprise SSO via WorkOS.
+---
+
+## JWT (most clients)
+
+```bash
+curl -X POST https://api.dealix.me/api/v1/auth/login \
+  -H "content-type: application/json" \
+  -d '{"email":"you@company.sa","password":"…"}'
+```
+
+Response:
+
+```json
+{
+  "user": {"id": "usr_...", "email": "...", "tenant_id": "ten_..."},
+  "tokens": {
+    "access_token": "eyJ…",
+    "refresh_token": "eyJ…",
+    "expires_in": 900
+  }
+}
+```
+
+Attach `Authorization: Bearer <access_token>` to subsequent calls.
+Refresh tokens are single-use and rotate on every refresh.
+
+## API keys
+
+Issued once at the end of the onboarding wizard (`POST /onboarding/finalize`).
+Format: `dlx_live_<random>`. Use via the `X-API-Key` header.
+
+## Enterprise SSO (WorkOS)
+
+1. The tenant's IT admin requests an Admin Portal link
+   (`POST /auth/sso/admin-portal`) and configures their IdP.
+2. End users hit `GET /auth/sso/start?org_id=...`; we redirect to WorkOS.
+3. After IdP auth, WorkOS calls `GET /auth/sso/callback?code=...`; we
+   resolve the tenant by `meta_json.workos_org_id`, upsert the user, and
+   mint a normal Dealix JWT pair.
+
+Supported flows: SAML 2.0, OIDC, Magic Link. SCIM Directory Sync is
+configured per-tenant in the same Admin Portal.
+
+## Multi-factor (TOTP)
+
+Users with `mfa_enabled=true` must pass TOTP at login. See
+`POST /auth/mfa/verify` and the QR-code enrollment flow at
+`POST /auth/mfa/enroll`.

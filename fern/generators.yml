@@ -1,0 +1,27 @@
+groups:
+  sdks:
+    generators:
+      - name: fernapi/fern-python-sdk
+        version: 4.5.0
+        output:
+          location: pypi
+          package-name: dealix-sdk
+          token: ${PYPI_TOKEN}
+        config:
+          client_class_name: Dealix
+          client_filename: client.py
+          pydantic_config:
+            version: v2
+      - name: fernapi/fern-typescript-node-sdk
+        version: 0.40.0
+        output:
+          location: npm
+          package-name: "@dealix/sdk"
+          token: ${NPM_TOKEN}
+        config:
+          namespaceExport: Dealix
+          packageJson:
+            description: TypeScript SDK for the Dealix API.
+            keywords: [dealix, saudi, crm, ai, agentic]
+            repository: https://github.com/VoXc2/dealix
+            license: MIT

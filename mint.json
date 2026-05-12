@@ -1,0 +1,113 @@
+{
+  "$schema": "https://mintlify.com/schema.json",
+  "name": "Dealix API",
+  "logo": {
+    "dark": "/logo/dark.svg",
+    "light": "/logo/light.svg"
+  },
+  "favicon": "/favicon.svg",
+  "colors": {
+    "primary": "#10b981",
+    "light": "#34d399",
+    "dark": "#059669",
+    "anchors": {
+      "from": "#10b981",
+      "to": "#34d399"
+    }
+  },
+  "topbarLinks": [
+    {
+      "name": "Support",
+      "url": "mailto:support@ai-company.sa"
+    },
+    {
+      "name": "Status",
+      "url": "https://dealix.sa/trust"
+    }
+  ],
+  "topbarCtaButton": {
+    "name": "Get started",
+    "url": "https://dealix.sa/onboarding"
+  },
+  "primaryTab": {
+    "name": "Documentation"
+  },
+  "tabs": [
+    {
+      "name": "API reference",
+      "url": "api-reference"
+    },
+    {
+      "name": "SDK",
+      "url": "sdk"
+    }
+  ],
+  "anchors": [
+    {
+      "name": "GitHub",
+      "icon": "github",
+      "url": "https://github.com/VoXc2/dealix"
+    },
+    {
+      "name": "Status",
+      "icon": "signal-stream",
+      "url": "https://dealix.sa/trust"
+    }
+  ],
+  "navigation": [
+    {
+      "group": "Get started",
+      "pages": [
+        "docs/api/overview",
+        "docs/api/auth",
+        "docs/api/errors",
+        "docs/api/rate-limits",
+        "docs/api/changelog"
+      ]
+    },
+    {
+      "group": "Core resources",
+      "pages": [
+        "docs/api/leads",
+        "docs/api/deals",
+        "docs/api/customers",
+        "docs/api/team",
+        "docs/api/billing",
+        "docs/api/audit-logs"
+      ]
+    },
+    {
+      "group": "Integrations",
+      "pages": [
+        "docs/api/webhooks",
+        "docs/api/sso",
+        "docs/api/zatca"
+      ]
+    },
+    {
+      "group": "Compliance",
+      "pages": [
+        "docs/api/pdpl",
+        "docs/api/security",
+        "docs/api/sla"
+      ]
+    }
+  ],
+  "footerSocials": {
+    "github": "https://github.com/VoXc2/dealix",
+    "linkedin": "https://www.linkedin.com/company/dealix-sa"
+  },
+  "openapi": "/openapi.json",
+  "feedback": {
+    "thumbsRating": true,
+    "suggestEdit": true,
+    "raiseIssue": true
+  },
+  "search": {
+    "prompt": "Ask the Dealix docs…"
+  },
+  "metadata": {
+    "og:image": "https://dealix.sa/og.png",
+    "og:title": "Dealix API Docs"
+  }
+}

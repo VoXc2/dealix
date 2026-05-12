@@ -1,0 +1,36 @@
+---
+title: Error handling
+description: HTTP status codes, error body shape, and common detail strings.
+---
+
+Every error response is JSON of the shape:
+
+```json
+{ "detail": "machine_readable_code" }
+```
+
+`detail` is intentionally a stable string token (snake_case). Use it as
+the dedup key in your retry / alerting logic; the prose may change, the
+token does not.
+
+## Common status codes
+
+| Status | When | Notable `detail` values |
+| --- | --- | --- |
+| 400 | Malformed request | `invalid_json`, `invalid_signature` |
+| 401 | Auth required / token expired | `unauthenticated`, `tenant_unresolved` |
+| 402 | Payment / plan constraint | `seat_limit_reached` |
+| 403 | Tenant scope or role denial | `cross_tenant_access_denied`, `dpa_not_accepted` |
+| 404 | Entity not found | `tenant_not_found`, `user_not_found` |
+| 409 | State conflict | `dpa_not_accepted`, `onboarding_not_found_or_already_finalized` |
+| 422 | Validation failure | full Pydantic errors |
+| 429 | Rate limit hit | `Retry-After` header set |
+| 500 | Server | `internal_error` |
+| 502 | Upstream provider | `stripe_upstream_error`, `workos_upstream_error` |
+| 503 | Feature gated off | `stripe_disabled`, `sso_disabled`, `booking_unavailable` |
+
+## 503 semantics
+
+`503` indicates a feature that the API ships but the operator has not
+configured (e.g. Stripe with no API key). Treat as "fall back to the
+documented alternate path", not as an outage.

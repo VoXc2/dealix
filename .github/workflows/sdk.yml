@@ -1,0 +1,68 @@
+name: SDK release
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version to publish (e.g. 0.1.0)"
+        required: true
+        type: string
+
+jobs:
+  generate:
+    runs-on: ubuntu-22.04
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install runtime deps
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Boot API + snapshot OpenAPI
+        env:
+          APP_ENV: test
+          APP_SECRET_KEY: test_only_change_me_to_64_byte_hex_abcdefghijklmnop
+          JWT_SECRET_KEY: test_only_change_me_to_64_byte_hex_abcdefghijklmnop
+          DATABASE_URL: sqlite+aiosqlite:///./dealix_test.db
+          ANTHROPIC_API_KEY: test
+          OPENAI_API_KEY: test
+        run: |
+          python - <<'PY'
+          import json, asyncio
+          from api.main import app
+          spec = app.openapi()
+          with open("fern/api/openapi.snapshot.json", "w") as fh:
+              json.dump(spec, fh, indent=2)
+          print("paths:", len(spec.get("paths", {})))
+          PY
+
+      - name: Set up Node
+        uses: actions/setup-node@v5
+        with:
+          node-version: "20"
+
+      - name: Install Fern CLI
+        run: npm install -g fern-api
+
+      - name: Validate Fern config
+        run: fern check
+
+      - name: Generate SDKs
+        env:
+          PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+        if: ${{ github.event_name == 'push' }}
+        run: |
+          ref=${GITHUB_REF#refs/tags/v}
+          fern generate --group sdks --version "$ref"
