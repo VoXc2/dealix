@@ -1,0 +1,39 @@
+name: Accessibility (axe-core)
+
+on:
+  pull_request:
+    paths:
+      - "landing/**"
+      - "frontend/**"
+      - ".github/workflows/a11y.yml"
+  workflow_dispatch:
+
+jobs:
+  axe:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: "20"
+
+      - name: Install axe-core CLI + http-server
+        run: |
+          npm install -g @axe-core/cli@4 http-server
+
+      - name: Serve landing
+        run: |
+          http-server landing -p 8080 -s &
+          for i in $(seq 1 12); do
+            if curl -fsS http://localhost:8080/ >/dev/null; then break; fi
+            sleep 1
+          done
+
+      - name: Run axe against Tier-1 landing pages
+        run: |
+          for path in / /trust/ /legal/privacy.html /legal/terms.html /legal/cookies.html /roadmap/; do
+            echo "→ axe http://localhost:8080$path"
+            axe "http://localhost:8080$path" --exit --tags=wcag2a,wcag2aa --stdout || \
+              echo "axe failure on $path (non-blocking until 2026-08-01 — see docs/QA_REVIEW.md P1.4)"
+          done

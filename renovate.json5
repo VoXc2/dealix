@@ -1,0 +1,60 @@
+{
+  // Renovate config — automated dependency PRs with per-package
+  // grouping. Replaces ad-hoc Dependabot bumps with batched, schedule-
+  // aware PRs that respect our release windows.
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:recommended",
+    ":dependencyDashboard",
+    ":semanticCommits",
+    "schedule:weekends",
+    ":maintainLockFilesWeekly",
+    "group:allNonMajor",
+    "helpers:pinGitHubActionDigests",
+  ],
+  "timezone": "Asia/Riyadh",
+  "labels": ["dependencies", "renovate"],
+  "prHourlyLimit": 2,
+  "prConcurrentLimit": 10,
+  "rangeStrategy": "bump",
+  "pythonVersioning": "pep440",
+  "packageRules": [
+    {
+      "matchManagers": ["pip_requirements", "pyproject"],
+      "groupName": "python (non-major)",
+      "matchUpdateTypes": ["minor", "patch"],
+      "schedule": ["before 9am on sunday"],
+    },
+    {
+      "matchManagers": ["npm"],
+      "groupName": "npm (non-major)",
+      "matchUpdateTypes": ["minor", "patch"],
+      "schedule": ["before 9am on sunday"],
+    },
+    {
+      "matchPackagePatterns": ["^langchain", "^langgraph", "^openai", "^anthropic"],
+      "groupName": "llm sdks",
+      "schedule": ["before 6am on monday"],
+    },
+    {
+      "matchPackagePatterns": ["^stripe", "^moyasar", "^lago", "^tap", "^tabby", "^tamara"],
+      "groupName": "payment sdks",
+      "reviewers": ["sami-assiri11"],
+    },
+    {
+      "matchUpdateTypes": ["major"],
+      "addLabels": ["major-upgrade"],
+      "automerge": false,
+      "schedule": ["before 9am on the first sunday of the month"],
+    },
+    {
+      "matchManagers": ["github-actions"],
+      "groupName": "github-actions",
+      "pinDigests": true,
+    },
+  ],
+  "vulnerabilityAlerts": {
+    "labels": ["security"],
+    "automerge": false,
+  },
+}

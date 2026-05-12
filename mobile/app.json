@@ -1,0 +1,24 @@
+{
+  "expo": {
+    "name": "Dealix",
+    "slug": "dealix",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "dark",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#0a0e1a"
+    },
+    "ios": { "supportsTablet": true },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#0a0e1a"
+      },
+      "package": "sa.dealix.app"
+    },
+    "web": { "favicon": "./assets/favicon.png" }
+  }
+}

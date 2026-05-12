@@ -1,0 +1,77 @@
+name: Snyk dependency + container scan
+
+on:
+  schedule:
+    - cron: "0 5 * * *" # 05:00 UTC daily
+  pull_request:
+    paths:
+      - "requirements.txt"
+      - "requirements-dev.txt"
+      - "pyproject.toml"
+      - "frontend/package.json"
+      - "Dockerfile"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  security-events: write
+
+jobs:
+  snyk-python:
+    runs-on: ubuntu-22.04
+    if: ${{ secrets.SNYK_TOKEN != '' }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install -r requirements.txt
+      - uses: snyk/actions/python@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          args: --severity-threshold=high --sarif-file-output=snyk-python.sarif
+      - uses: github/codeql-action/upload-sarif@v4
+        if: ${{ !cancelled() }}
+        with:
+          sarif_file: snyk-python.sarif
+          category: snyk-python
+
+  snyk-node:
+    runs-on: ubuntu-22.04
+    if: ${{ secrets.SNYK_TOKEN != '' }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: "20"
+      - run: cd frontend && npm install --no-audit
+      - uses: snyk/actions/node@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          args: --severity-threshold=high --file=frontend/package.json --sarif-file-output=snyk-node.sarif
+      - uses: github/codeql-action/upload-sarif@v4
+        if: ${{ !cancelled() }}
+        with:
+          sarif_file: snyk-node.sarif
+          category: snyk-node
+
+  snyk-container:
+    runs-on: ubuntu-22.04
+    if: ${{ secrets.SNYK_TOKEN != '' && github.event_name != 'pull_request' }}
+    steps:
+      - uses: actions/checkout@v5
+      - name: Build image
+        run: docker build -t dealix:scan .
+      - uses: snyk/actions/docker@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          image: dealix:scan
+          args: --severity-threshold=high --file=Dockerfile --sarif-file-output=snyk-container.sarif
+      - uses: github/codeql-action/upload-sarif@v4
+        if: ${{ !cancelled() }}
+        with:
+          sarif_file: snyk-container.sarif
+          category: snyk-container
