@@ -38,10 +38,10 @@
       <tbody>
         <tr><td>Global B2B contact database</td><td class="partial">Uses Apollo as upstream</td><td class="yes">Industry-leading (270M+)</td></tr>
         <tr><td>Saudi commercial registry (Wathq)</td><td class="yes">Native</td><td class="no">Not available</td></tr>
-        <tr><td>Etimad gov-tender feed</td><td class="yes">Native</td><td class="no">N/A</td></tr>
-        <tr><td>Maroof / Najiz / Tadawul / MISA</td><td class="yes">Native</td><td class="no">N/A</td></tr>
-        <tr><td>Arabic Khaliji proposal-writer agent</td><td class="yes">Yes</td><td class="no">No</td></tr>
-        <tr><td>WhatsApp Cloud cadence + approved templates</td><td class="yes">Built-in</td><td class="no">Email + LinkedIn only</td></tr>
+        <tr><td>Etimad gov-tender feed</td><td class="partial">Client shipped; requires Etimad partner credentials</td><td class="no">N/A</td></tr>
+        <tr><td>Maroof / Najiz / Tadawul / MISA</td><td class="partial">Clients shipped; require government-partner credentials</td><td class="no">N/A</td></tr>
+        <tr><td>Arabic Khaliji proposal-writer agent</td><td class="yes">Yes (proposal_writer skill, ZATCA-aware)</td><td class="no">No</td></tr>
+        <tr><td>WhatsApp Cloud cadence + approved templates</td><td class="partial">Cadence engine live; Meta template approval required to send</td><td class="no">Email + LinkedIn only</td></tr>
         <tr><td>Pipeline + deal management</td><td class="yes">Built-in</td><td class="partial">Light layer</td></tr>
         <tr><td>ZATCA Phase 2 invoicing + Moyasar</td><td class="yes">Native</td><td class="no">Stripe USD only</td></tr>
         <tr><td>PDPL contactability gate</td><td class="yes">Enforced</td><td class="no">Customer's burden</td></tr>
@@ -49,6 +49,10 @@
         <tr><td>Free / starter tier</td><td class="partial">Pilot plan 199 SAR</td><td class="yes">Free 3000 credits / mo</td></tr>
       </tbody>
     </table>
+    <p style="font-size:.8rem;color:var(--muted);margin-top:1rem">
+      Last validated against the live code on <strong>2026-05-12</strong>.
+      See <a href="/docs/QA_REVIEW">docs/QA_REVIEW.md</a>.
+    </p>
     <div class="verdict">
       <p><strong>When Dealix wins:</strong> Saudi or GCC outbound team that needs Apollo's
          contact data *plus* Saudi-sovereign enrichment, Arabic agents, WhatsApp cadence,

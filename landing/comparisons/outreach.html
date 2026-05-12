@@ -36,19 +36,25 @@
       <thead><tr><th>Capability</th><th>Dealix</th><th>Outreach</th></tr></thead>
       <tbody>
         <tr><td>Arabic + RTL templates, Khaliji glossary</td><td class="yes">Native</td><td class="no">Limited</td></tr>
-        <tr><td>WhatsApp Cloud cadence + approved templates</td><td class="yes">Built-in</td><td class="no">Not available</td></tr>
-        <tr><td>Hijri-aware send windows + Saudi-weekend middleware</td><td class="yes">Yes</td><td class="no">Gregorian only</td></tr>
+        <tr><td>WhatsApp Cloud cadence + approved templates</td><td class="partial">Cadence engine live; Meta template approval required to send</td><td class="no">Not available</td></tr>
+        <tr><td>Saudi-weekend middleware (Sun–Thu workdays)</td><td class="yes">Yes</td><td class="no">Gregorian only</td></tr>
+        <tr><td>Hijri dual-calendar surfacing</td><td class="partial">Roadmap Q3 2026 (helpers shipped)</td><td class="no">Gregorian only</td></tr>
         <tr><td>PDPL contactability + DNC gate before every send</td><td class="yes">Enforced</td><td class="partial">Manual configuration</td></tr>
         <tr><td>AI-drafted personalised opener (Arabic + EN)</td><td class="yes">Yes (proposal_writer skill)</td><td class="yes">Smart Email Assist</td></tr>
         <tr><td>Conversation intelligence on recorded calls</td><td class="partial">Via Vapi + meeting_summarizer</td><td class="yes">Outreach Voice + Kaia</td></tr>
         <tr><td>Deal-level commit forecasting</td><td class="partial">Renewal-forecaster skill</td><td class="yes">Outreach Commit</td></tr>
         <tr><td>Workflow automation (LangGraph + Inngest)</td><td class="yes">Built-in</td><td class="partial">Workflow Studio (newer)</td></tr>
-        <tr><td>Saudi-first integrations (Wathq, Etimad, Maroof, Najiz)</td><td class="yes">Native</td><td class="no">N/A</td></tr>
+        <tr><td>Wathq enrichment</td><td class="yes">Live</td><td class="no">N/A</td></tr>
+        <tr><td>Etimad / Maroof / Najiz / Tadawul / MISA</td><td class="partial">Clients shipped; require government-partner credentials</td><td class="no">N/A</td></tr>
         <tr><td>Salesforce-native sync</td><td class="partial">REST + HubSpot bidir</td><td class="yes">Industry-leading</td></tr>
         <tr><td>Per-seat list price (mid-tier)</td><td>499 SAR / mo</td><td>≈ 1,400 SAR / mo / rep</td></tr>
-        <tr><td>SAR billing + Moyasar / Tabby / Tamara</td><td class="yes">Native</td><td class="no">USD only</td></tr>
+        <tr><td>SAR billing + Moyasar</td><td class="yes">Moyasar live; Tabby/Tamara/TAP pending merchant onboarding</td><td class="no">USD only</td></tr>
       </tbody>
     </table>
+    <p style="font-size:.8rem;color:var(--muted);margin-top:1rem">
+      Last validated against the live code on <strong>2026-05-12</strong>.
+      See <a href="/docs/QA_REVIEW">docs/QA_REVIEW.md</a>.
+    </p>
     <div class="verdict">
       <p><strong>When Dealix wins:</strong> Saudi or GCC outbound team needing Arabic +
          WhatsApp cadences, Hijri-aware scheduling, PDPL-clean contactability, and SAR

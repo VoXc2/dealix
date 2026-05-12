@@ -29,11 +29,32 @@ async def test_gcc_health_reports_three_gateways(async_client, monkeypatch) -> N
     r = await async_client.get("/api/v1/billing/gcc/health")
     assert r.status_code == 200
     body = r.json()
-    assert body == {
-        "knet_configured": False,
-        "benefit_configured": False,
-        "magnati_configured": False,
-    }
+    # Honest health: report what's available + keep back-compat booleans.
+    assert body["available"] == []
+    assert body["configured_count"] == 0
+    assert body["knet_configured"] is False
+    assert body["benefit_configured"] is False
+    assert body["magnati_configured"] is False
+
+
+@pytest.mark.asyncio
+async def test_gcc_health_full_lists_all_gateways(async_client, monkeypatch) -> None:
+    for v in (
+        "KNET_TRANPORTAL_ID",
+        "KNET_RESOURCE_KEY",
+        "BENEFIT_API_KEY",
+        "BENEFIT_MERCHANT_ID",
+        "MAGNATI_API_KEY",
+        "MAGNATI_MERCHANT_ID",
+    ):
+        monkeypatch.delenv(v, raising=False)
+    _reset_clients()
+    r = await async_client.get("/api/v1/billing/gcc/health/full")
+    assert r.status_code == 200
+    body = r.json()
+    for gw in ("knet", "benefit", "magnati"):
+        assert body[gw]["configured"] is False
+        assert body[gw]["status"] == "pending_merchant_onboarding"
 
 
 @pytest.mark.asyncio

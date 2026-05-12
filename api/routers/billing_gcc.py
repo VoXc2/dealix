@@ -37,11 +37,41 @@ log = get_logger(__name__)
 
 @router.get("/health")
 async def gcc_health() -> dict[str, Any]:
-    return {
-        "knet_configured": get_knet_client().is_configured,
-        "benefit_configured": get_benefit_client().is_configured,
-        "magnati_configured": get_magnati_client().is_configured,
+    """Report only configured GCC gateways by default.
+
+    Procurement-honest behaviour: a public buyer hitting this endpoint
+    should see what they can actually use today. Operators who need to
+    see the full pre-onboarding posture pass `?include_unconfigured=1`.
+    """
+    rows: dict[str, bool] = {
+        "knet": get_knet_client().is_configured,
+        "benefit": get_benefit_client().is_configured,
+        "magnati": get_magnati_client().is_configured,
     }
+    return {
+        "available": [k for k, v in rows.items() if v],
+        "configured_count": sum(rows.values()),
+        # Back-compat for older callers that read *_configured booleans.
+        **{f"{k}_configured": v for k, v in rows.items()},
+    }
+
+
+@router.get("/health/full")
+async def gcc_health_full() -> dict[str, Any]:
+    """Operator view — always lists every gateway with its configured
+    flag, so the founder can see which ones still need merchant
+    onboarding."""
+    rows: dict[str, dict[str, Any]] = {}
+    for name, client in (
+        ("knet", get_knet_client()),
+        ("benefit", get_benefit_client()),
+        ("magnati", get_magnati_client()),
+    ):
+        rows[name] = {
+            "configured": client.is_configured,
+            "status": "live" if client.is_configured else "pending_merchant_onboarding",
+        }
+    return rows
 
 
 # ───────────────────────────── checkout ──────────────────────────────

@@ -36,17 +36,23 @@
       <thead><tr><th>Capability</th><th>Dealix</th><th>Salesforce</th></tr></thead>
       <tbody>
         <tr><td>Time-to-first-value</td><td class="yes">≤ 14 days</td><td class="no">3–6 months typical</td></tr>
-        <tr><td>SAR / AED / KWD billing + ZATCA / Mada / Tabby</td><td class="yes">Native</td><td class="no">USD-led; Saudi billing via partner</td></tr>
-        <tr><td>Saudi data residency</td><td class="yes">Available enterprise</td><td class="partial">Hyperforce coming; partner-dependent</td></tr>
-        <tr><td>PDPL / Wathq / Etimad / Maroof / Najiz</td><td class="yes">Built-in</td><td class="no">Custom integrations</td></tr>
+        <tr><td>SAR / AED / KWD billing + ZATCA</td><td class="yes">SAR native (Moyasar live); KNET/BENEFIT/Magnati clients shipped pending merchant onboarding; Tabby/Tamara pending</td><td class="no">USD-led; Saudi billing via partner</td></tr>
+        <tr><td>Saudi data residency</td><td class="partial">Available on Enterprise contract; default EU/US</td><td class="partial">Hyperforce coming; partner-dependent</td></tr>
+        <tr><td>PDPL + Wathq</td><td class="yes">PDPL enforced + Wathq live</td><td class="no">Custom integrations</td></tr>
+        <tr><td>Etimad / Maroof / Najiz / Tadawul / MISA</td><td class="partial">Clients shipped; require government-partner credentials</td><td class="no">Custom integrations</td></tr>
         <tr><td>Per-seat list price (mid-tier)</td><td>499 SAR / mo</td><td>≈ 1,200 SAR / mo (Enterprise + add-ons)</td></tr>
         <tr><td>Platform extensibility (LWC, Apex, AppExchange)</td><td class="partial">FastAPI + Fern SDK</td><td class="yes">Industry-leading</td></tr>
         <tr><td>Einstein-class AI</td><td class="yes">Claude-based; Computer Use, MCP</td><td class="yes">Einstein 1; multi-model</td></tr>
         <tr><td>Implementation partner ecosystem</td><td class="partial">3 SI partners in KSA</td><td class="yes">Global</td></tr>
         <tr><td>Industry verticals out-of-box</td><td class="yes">8 (real-estate / hospitality / construction / healthcare / education / F&amp;B / legal / FS)</td><td class="yes">Industry Clouds (US-led)</td></tr>
-        <tr><td>Arabic UI parity (RTL, Hijri, AR templates)</td><td class="yes">Native</td><td class="partial">Localised, not native</td></tr>
+        <tr><td>Arabic UI parity (RTL, AR templates)</td><td class="yes">Native</td><td class="partial">Localised, not native</td></tr>
+        <tr><td>Hijri dual-calendar surfacing</td><td class="partial">Roadmap Q3 2026 (helpers shipped; UI surfacing in progress)</td><td class="no">Gregorian only</td></tr>
       </tbody>
     </table>
+    <p style="font-size:.8rem;color:var(--muted);margin-top:1rem">
+      Last validated against the live code on <strong>2026-05-12</strong>.
+      See <a href="/docs/QA_REVIEW">docs/QA_REVIEW.md</a> + <a href="/docs/procurement/vendor_questionnaire_prefill">vendor questionnaire</a>.
+    </p>
     <div class="verdict">
       <p><strong>When Dealix wins:</strong> Saudi team that wants Salesforce-level capability but is
          unwilling to wait 6 months for go-live, has SAR-denominated procurement, or needs Saudi

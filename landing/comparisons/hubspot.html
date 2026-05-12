@@ -38,17 +38,22 @@
         <tr><td>Arabic Khaliji NLP (proposals, classification, scoring)</td><td class="yes">Native</td><td class="no">Machine-translated</td></tr>
         <tr><td>ZATCA Phase 2 e-invoicing</td><td class="yes">Built-in</td><td class="no">Requires 3rd-party</td></tr>
         <tr><td>PDPL contactability + consent ledger</td><td class="yes">Enforced</td><td class="partial">Manual config</td></tr>
-        <tr><td>SAR billing + Moyasar / Tap / Tabby / Tamara</td><td class="yes">Yes</td><td class="no">Stripe USD/EUR only</td></tr>
-        <tr><td>Hijri dual-calendar in pipeline + reporting</td><td class="yes">Yes</td><td class="no">Gregorian only</td></tr>
+        <tr><td>SAR billing + Moyasar</td><td class="yes">Yes (Moyasar live; Tabby/Tamara pending merchant onboarding)</td><td class="no">Stripe USD/EUR only</td></tr>
+        <tr><td>Hijri dual-calendar in pipeline + reporting</td><td class="partial">Roadmap Q3 2026 (Hijri date helpers shipped, UI surfacing in progress)</td><td class="no">Gregorian only</td></tr>
         <tr><td>Marketing automation depth (landing forms, ABM, attribution)</td><td class="partial">Solid; growing</td><td class="yes">Industry-leading</td></tr>
-        <tr><td>Wathq / Etimad / Maroof / Najiz enrichment</td><td class="yes">Native</td><td class="no">Not available</td></tr>
-        <tr><td>WhatsApp Cloud + Arabic templates</td><td class="yes">Built-in</td><td class="partial">Add-on</td></tr>
+        <tr><td>Wathq commercial-registry enrichment</td><td class="yes">Native</td><td class="no">Not available</td></tr>
+        <tr><td>Etimad / Maroof / Najiz / Tadawul enrichment</td><td class="partial">Clients shipped; require government partner credentials to go live</td><td class="no">Not available</td></tr>
+        <tr><td>WhatsApp + Arabic outbound</td><td class="partial">Email + WhatsApp Cloud (Meta template approval required); SMS via Unifonic</td><td class="partial">Add-on</td></tr>
         <tr><td>BYOA agent builder + workflow marketplace</td><td class="yes">Yes (T6d)</td><td class="no">No</td></tr>
         <tr><td>App marketplace breadth</td><td class="partial">Growing</td><td class="yes">1,500+ apps</td></tr>
-        <tr><td>SOC 2 / ISO 27001</td><td class="partial">SOC 2 in progress</td><td class="yes">Both certified</td></tr>
-        <tr><td>Saudi data-residency option (STC / AWS me-central-1)</td><td class="yes">On roadmap; available enterprise</td><td class="no">EU/US only</td></tr>
+        <tr><td>SOC 2 / ISO 27001</td><td class="partial">SOC 2 Type I in progress; ISO 27001 alignment doc</td><td class="yes">Both certified</td></tr>
+        <tr><td>Saudi data-residency option (STC / AWS me-central-1)</td><td class="partial">Available on Enterprise contract; default EU/US</td><td class="no">EU/US only</td></tr>
       </tbody>
     </table>
+    <p style="font-size:.8rem;color:var(--muted);margin-top:1rem">
+      Last validated against the live code on <strong>2026-05-12</strong>.
+      See <a href="/docs/QA_REVIEW">docs/QA_REVIEW.md</a> + <a href="/docs/procurement/vendor_questionnaire_prefill">vendor questionnaire</a> for the open-source posture.
+    </p>
     <div class="verdict">
       <p><strong>When Dealix wins:</strong> Saudi-based or GCC team selling B2B with Arabic proposals,
          PDPL exposure, ZATCA invoices, WhatsApp-first outreach, or a regulator who asks about Saudi
