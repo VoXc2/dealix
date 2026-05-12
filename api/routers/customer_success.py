@@ -373,3 +373,71 @@ async def get_saudi_b2b_pulse() -> dict[str, Any]:
                 sector_data[sector]["send_volume"] = [float(s) for s in send_volumes]
 
     return saudi_b2b_pulse(sector_data=sector_data)
+
+
+# ── Tenant-level health summary (lightweight, dashboard-friendly) ────
+@router.get("/tenant-health/{tenant_id}")
+async def tenant_health(tenant_id: str) -> dict[str, Any]:
+    """Aggregate health view for a tenant — fast, no LLM, no joins.
+
+    Powers the customer-success summary card on the dashboard and the
+    QBR cover sheet. Falls back to a documented "no_signal" state when
+    the tenant has no recorded activity yet, so the UI never breaks on
+    a brand-new trial.
+    """
+    if not tenant_id or len(tenant_id) > 64:
+        raise HTTPException(422, "invalid_tenant_id")
+
+    cutoff_7d = _utcnow() - timedelta(days=7)
+    metrics: dict[str, Any] = {
+        "tenant_id": tenant_id,
+        "api_calls_7d": 0,
+        "active_workflows": 0,
+        "last_active_at": None,
+        "risk_score": 0.0,
+        "risk_band": "no_signal",
+        "computed_at": _utcnow().isoformat(),
+    }
+
+    async with async_session_factory() as session:
+        try:
+            customer = (await session.execute(
+                select(CustomerRecord).where(CustomerRecord.id == tenant_id)
+            )).scalar_one_or_none()
+            if customer is not None:
+                metrics["last_active_at"] = (
+                    customer.updated_at.isoformat() if customer.updated_at else None
+                )
+            sent_7d = int((await session.execute(
+                select(func.count()).select_from(EmailSendLog).where(
+                    EmailSendLog.sent_at >= cutoff_7d,
+                )
+            )).scalar() or 0)
+            drafts_7d = int((await session.execute(
+                select(func.count()).select_from(GmailDraftRecord).where(
+                    GmailDraftRecord.created_at >= cutoff_7d,
+                )
+            )).scalar() or 0)
+            metrics["api_calls_7d"] = sent_7d + drafts_7d
+            metrics["active_workflows"] = (1 if sent_7d else 0) + (1 if drafts_7d else 0)
+        except Exception:  # pragma: no cover — best-effort summary
+            log.exception("tenant_health_db_failed", extra={"tenant_id": tenant_id})
+            metrics["risk_band"] = "unknown"
+            return metrics
+
+    # Simple, deterministic heuristic — avoid LLM round-trip here so the
+    # endpoint stays cheap enough for dashboards to poll.
+    if metrics["last_active_at"] is None and metrics["api_calls_7d"] == 0:
+        metrics["risk_band"] = "no_signal"
+        metrics["risk_score"] = 0.0
+    else:
+        score = min(1.0, metrics["api_calls_7d"] / 50.0)
+        metrics["risk_score"] = round(1.0 - score, 2)
+        if score >= 0.6:
+            metrics["risk_band"] = "healthy"
+        elif score >= 0.3:
+            metrics["risk_band"] = "watch"
+        else:
+            metrics["risk_band"] = "at_risk"
+
+    return metrics
