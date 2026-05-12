@@ -8,7 +8,16 @@ Specifically tests `_persist_payment_event` in api.routers.pricing — verifies:
 """
 from __future__ import annotations
 
+import os
+
 import pytest
+import pytest_asyncio
+
+# CI runners without a real DB skip the whole module: integration-style
+# tests are gated on DATABASE_URL being set to a real (non-placeholder) URL.
+if not os.environ.get("DATABASE_URL"):
+    pytest.skip("DATABASE_URL not set; persistence tests require a real DB",
+                allow_module_level=True)
 
 # Skip the whole module if PaymentRecord isn't available — the migration
 # may not have been applied in this test environment.
@@ -19,7 +28,7 @@ from api.routers.pricing import _persist_payment_event  # noqa: E402
 from sqlalchemy import select  # noqa: E402
 
 
-@pytest.fixture
+@pytest_asyncio.fixture
 async def clean_payments_row():
     """Best-effort cleanup of the test row before + after."""
     pid = "pay_test_persistence_001"
@@ -121,7 +130,7 @@ async def test_persist_no_id_is_noop():
 
 
 @pytest.mark.asyncio
-async def test_persist_gracefully_handles_missing_table(monkeypatch):
+async def test_persist_gracefully_handles_missing_table():
     """If the payments table isn't migrated yet, the call must be a no-op,
     not break the webhook handler. Smoke-checks the try/except wrapping
     by invoking the already-imported function with bogus data."""
