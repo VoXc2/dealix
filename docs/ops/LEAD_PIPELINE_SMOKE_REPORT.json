@@ -1,0 +1,332 @@
+{
+  "run_at": "2026-05-12T22:16:03Z",
+  "no_network": true,
+  "target_count": 10,
+  "adapter_status": {
+    "search": {
+      "ready": false,
+      "env_needed": "GOOGLE_SEARCH_API_KEY+GOOGLE_SEARCH_CX or TAVILY_API_KEY"
+    },
+    "maps": {
+      "ready": false,
+      "env_needed": "GOOGLE_MAPS_API_KEY"
+    },
+    "email_intel": {
+      "ready": false,
+      "env_needed": "HUNTER_API_KEY"
+    },
+    "crawler": {
+      "ready": true,
+      "env_needed": "FIRECRAWL_API_KEY (optional — bs4 fallback exists)"
+    },
+    "tech": {
+      "ready": false,
+      "env_needed": "WAPPALYZER_API_KEY"
+    }
+  },
+  "summary": {
+    "by_adapter": {
+      "search": {
+        "ok": 0,
+        "empty": 0,
+        "skipped": 10,
+        "errors": 0,
+        "pass_rate": 0.0
+      },
+      "maps": {
+        "ok": 0,
+        "empty": 0,
+        "skipped": 10,
+        "errors": 0,
+        "pass_rate": 0.0
+      },
+      "email_intel": {
+        "ok": 0,
+        "empty": 0,
+        "skipped": 10,
+        "errors": 0,
+        "pass_rate": 0.0
+      },
+      "crawler": {
+        "ok": 0,
+        "empty": 0,
+        "skipped": 10,
+        "errors": 0,
+        "pass_rate": 0.0
+      },
+      "tech": {
+        "ok": 0,
+        "empty": 0,
+        "skipped": 10,
+        "errors": 0,
+        "pass_rate": 0.0
+      }
+    },
+    "by_target": [
+      {
+        "name": "Foodics",
+        "ok": 0,
+        "total_attempted": 0
+      },
+      {
+        "name": "Salla",
+        "ok": 0,
+        "total_attempted": 0
+      },
+      {
+        "name": "Lucidya",
+        "ok": 0,
+        "total_attempted": 0
+      },
+      {
+        "name": "Zid",
+        "ok": 0,
+        "total_attempted": 0
+      },
+      {
+        "name": "Tamara",
+        "ok": 0,
+        "total_attempted": 0
+      },
+      {
+        "name": "Lean Technologies",
+        "ok": 0,
+        "total_attempted": 0
+      },
+      {
+        "name": "Sary",
+        "ok": 0,
+        "total_attempted": 0
+      },
+      {
+        "name": "Retailo",
+        "ok": 0,
+        "total_attempted": 0
+      },
+      {
+        "name": "Jahez",
+        "ok": 0,
+        "total_attempted": 0
+      },
+      {
+        "name": "Mnzil",
+        "ok": 0,
+        "total_attempted": 0
+      }
+    ]
+  },
+  "verdict": "import-only smoke passed",
+  "exit_code": 0,
+  "results": [
+    {
+      "target": {
+        "name": "Foodics",
+        "domain": "foodics.com",
+        "sector": "saas"
+      },
+      "adapters": {
+        "search": "skipped",
+        "maps": "skipped",
+        "email_intel": "skipped",
+        "crawler": "skipped",
+        "tech": "skipped"
+      },
+      "elapsed_ms": {
+        "search": 0,
+        "maps": 0,
+        "email_intel": 0,
+        "crawler": 0,
+        "tech": 0
+      }
+    },
+    {
+      "target": {
+        "name": "Salla",
+        "domain": "salla.com",
+        "sector": "saas"
+      },
+      "adapters": {
+        "search": "skipped",
+        "maps": "skipped",
+        "email_intel": "skipped",
+        "crawler": "skipped",
+        "tech": "skipped"
+      },
+      "elapsed_ms": {
+        "search": 0,
+        "maps": 0,
+        "email_intel": 0,
+        "crawler": 0,
+        "tech": 0
+      }
+    },
+    {
+      "target": {
+        "name": "Lucidya",
+        "domain": "lucidya.com",
+        "sector": "saas"
+      },
+      "adapters": {
+        "search": "skipped",
+        "maps": "skipped",
+        "email_intel": "skipped",
+        "crawler": "skipped",
+        "tech": "skipped"
+      },
+      "elapsed_ms": {
+        "search": 0,
+        "maps": 0,
+        "email_intel": 0,
+        "crawler": 0,
+        "tech": 0
+      }
+    },
+    {
+      "target": {
+        "name": "Zid",
+        "domain": "zid.sa",
+        "sector": "saas"
+      },
+      "adapters": {
+        "search": "skipped",
+        "maps": "skipped",
+        "email_intel": "skipped",
+        "crawler": "skipped",
+        "tech": "skipped"
+      },
+      "elapsed_ms": {
+        "search": 0,
+        "maps": 0,
+        "email_intel": 0,
+        "crawler": 0,
+        "tech": 0
+      }
+    },
+    {
+      "target": {
+        "name": "Tamara",
+        "domain": "tamara.co",
+        "sector": "fintech"
+      },
+      "adapters": {
+        "search": "skipped",
+        "maps": "skipped",
+        "email_intel": "skipped",
+        "crawler": "skipped",
+        "tech": "skipped"
+      },
+      "elapsed_ms": {
+        "search": 0,
+        "maps": 0,
+        "email_intel": 0,
+        "crawler": 0,
+        "tech": 0
+      }
+    },
+    {
+      "target": {
+        "name": "Lean Technologies",
+        "domain": "leantech.me",
+        "sector": "fintech"
+      },
+      "adapters": {
+        "search": "skipped",
+        "maps": "skipped",
+        "email_intel": "skipped",
+        "crawler": "skipped",
+        "tech": "skipped"
+      },
+      "elapsed_ms": {
+        "search": 0,
+        "maps": 0,
+        "email_intel": 0,
+        "crawler": 0,
+        "tech": 0
+      }
+    },
+    {
+      "target": {
+        "name": "Sary",
+        "domain": "sary.com",
+        "sector": "marketplace"
+      },
+      "adapters": {
+        "search": "skipped",
+        "maps": "skipped",
+        "email_intel": "skipped",
+        "crawler": "skipped",
+        "tech": "skipped"
+      },
+      "elapsed_ms": {
+        "search": 0,
+        "maps": 0,
+        "email_intel": 0,
+        "crawler": 0,
+        "tech": 0
+      }
+    },
+    {
+      "target": {
+        "name": "Retailo",
+        "domain": "retailo.co",
+        "sector": "marketplace"
+      },
+      "adapters": {
+        "search": "skipped",
+        "maps": "skipped",
+        "email_intel": "skipped",
+        "crawler": "skipped",
+        "tech": "skipped"
+      },
+      "elapsed_ms": {
+        "search": 0,
+        "maps": 0,
+        "email_intel": 0,
+        "crawler": 0,
+        "tech": 0
+      }
+    },
+    {
+      "target": {
+        "name": "Jahez",
+        "domain": "jahez.net",
+        "sector": "delivery"
+      },
+      "adapters": {
+        "search": "skipped",
+        "maps": "skipped",
+        "email_intel": "skipped",
+        "crawler": "skipped",
+        "tech": "skipped"
+      },
+      "elapsed_ms": {
+        "search": 0,
+        "maps": 0,
+        "email_intel": 0,
+        "crawler": 0,
+        "tech": 0
+      }
+    },
+    {
+      "target": {
+        "name": "Mnzil",
+        "domain": "mnzil.com",
+        "sector": "proptech"
+      },
+      "adapters": {
+        "search": "skipped",
+        "maps": "skipped",
+        "email_intel": "skipped",
+        "crawler": "skipped",
+        "tech": "skipped"
+      },
+      "elapsed_ms": {
+        "search": 0,
+        "maps": 0,
+        "email_intel": 0,
+        "crawler": 0,
+        "tech": 0
+      }
+    }
+  ]
+}
