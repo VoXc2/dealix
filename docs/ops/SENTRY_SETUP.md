@@ -74,11 +74,12 @@ Configure in Sentry → Alerts → Create Alert.
 ## Test Sentry is working (post-deploy smoke)
 
 ```bash
-# admin-only endpoint that intentionally throws
-curl -X POST https://api.dealix.me/api/v1/admin/test-sentry \
-  -H "X-API-Key: $ADMIN_API_KEY"
+# Intentionally-throwing endpoint (already wired in api/routers/health.py)
+curl https://api.dealix.me/_test_sentry
 
 # Expected: 500 from API + new event visible in Sentry within 30s
+# Endpoint is undocumented (include_in_schema=False); the path is intentional
+# so probing scanners don't find it without insider knowledge.
 ```
 
 If no event appears within 1 minute → check:

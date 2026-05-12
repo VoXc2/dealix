@@ -73,9 +73,12 @@ A data subject (Saudi resident) may request:
 - May extend by 30 days for complex requests (notify subject)
 
 ### Intake channels
-1. Email: `privacy@dealix.sa` (route to DPO)
-2. Form: `https://dealix.sa/privacy.html` → submits to `/api/v1/pdpl/dsar`
+1. Email (primary): `privacy@dealix.sa` (route to DPO)
+2. Form on `https://dealix.sa/privacy.html` → posts to the existing PDPL erasure / consent endpoints under `/api/v1/pdpl/*`; the form payload is forwarded to `privacy@dealix.sa` for manual identity verification before any data is released.
 3. Phone: published on `/privacy`
+
+(A public anonymous `POST /api/v1/pdpl/dsar` API endpoint is intentionally NOT
+exposed — identity verification must happen before fulfilling the request.)
 
 ### Procedure
 
@@ -83,10 +86,13 @@ A data subject (Saudi resident) may request:
 # 1. Verify identity (national ID + matching contact, or signed letter)
 #    NEVER process a DSAR without verifying identity.
 
-# 2. Gather data
+# 2. Gather data (scripts/export_subject_data.py is read-only)
+DATABASE_URL=postgresql://... \
+DSAR_EXPORT_PASSWORD=<one-time-password> \
 python scripts/export_subject_data.py \
-  --email <subject_email_or_phone> \
+  --email <subject_email> \
   --output dsar_<request_id>.zip
+# Produces AES-encrypted ZIP with manifest.json + per-table JSON exports.
 
 # 3. Encrypted hand-off
 #    - ZIP password-protected (AES-256), password shared via separate channel

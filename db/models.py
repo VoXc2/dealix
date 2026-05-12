@@ -866,3 +866,43 @@ class ConsentRequestRecord(Base):
     __table_args__ = (
         Index("ix_consent_requests_contact_channel", "contact_id", "channel", "purpose"),
     )
+
+
+class PaymentRecord(Base):
+    """
+    Payment events from Moyasar — source of truth for reconciliation + audit.
+    سجل المدفوعات — مرجع المطابقة والتدقيق.
+
+    Populated by api.routers.pricing.moyasar_webhook on signature-verified events.
+    Used by scripts/reconcile_moyasar.py to detect drift vs Moyasar's view.
+
+    Idempotent on (provider, provider_payment_id).
+    Append-mostly: status transitions update an existing row; no row is deleted.
+    """
+
+    __tablename__ = "payments"
+
+    id: Mapped[str] = mapped_column(String(64), primary_key=True)
+    tenant_id: Mapped[str | None] = mapped_column(
+        ForeignKey("tenants.id"), nullable=True, index=True
+    )
+    provider: Mapped[str] = mapped_column(String(32), default="moyasar", index=True)
+    provider_payment_id: Mapped[str] = mapped_column(String(128), index=True)
+    plan: Mapped[str | None] = mapped_column(String(64), nullable=True, index=True)
+    amount_halalas: Mapped[int] = mapped_column(Integer, default=0)
+    currency: Mapped[str] = mapped_column(String(8), default="SAR")
+    status: Mapped[str] = mapped_column(String(32), default="pending", index=True)
+    # pending | authorized | captured | paid | failed | refunded | voided
+    email: Mapped[str | None] = mapped_column(String(255), nullable=True, index=True)
+    customer_handle: Mapped[str | None] = mapped_column(String(128), nullable=True, index=True)
+    last_event_id: Mapped[str | None] = mapped_column(String(128), nullable=True)
+    last_event_type: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    raw_event: Mapped[dict] = mapped_column(JSON, default=dict)
+    error_reason: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    created_at: Mapped[datetime] = mapped_column(default=utcnow, index=True)
+    updated_at: Mapped[datetime] = mapped_column(default=utcnow, onupdate=utcnow)
+
+    __table_args__ = (
+        UniqueConstraint("provider", "provider_payment_id", name="uq_payments_provider_id"),
+        Index("ix_payments_status_created_at", "status", "created_at"),
+    )
