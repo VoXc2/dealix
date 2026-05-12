@@ -105,7 +105,35 @@ async def health_deep() -> dict[str, object]:
         "wathq": "ok" if os.getenv("WATHQ_API_KEY", "").strip() else "unconfigured",
         "infisical": "ok" if os.getenv("INFISICAL_TOKEN", "").strip() else "unconfigured",
         "pagerduty": "ok" if os.getenv("PAGERDUTY_INTEGRATION_KEY", "").strip() else "unconfigured",
+        # T6 — strongest B2B AI services company.
+        "lakera": "ok" if os.getenv("LAKERA_API_KEY", "").strip() else "unconfigured",
+        "letta": "ok" if os.getenv("LETTA_URL", "").strip() else "unconfigured",
+        "browserbase": "ok" if os.getenv("BROWSERBASE_API_KEY", "").strip() else "unconfigured",
+        "etimad": "ok" if os.getenv("ETIMAD_API_KEY", "").strip() else "unconfigured",
+        "maroof": "ok" if os.getenv("MAROOF_API_KEY", "").strip() else "unconfigured",
+        "najiz": "ok" if os.getenv("NAJIZ_API_KEY", "").strip() else "unconfigured",
+        "najm": "ok" if os.getenv("NAJM_API_KEY", "").strip() else "unconfigured",
+        "tadawul": "ok" if os.getenv("TADAWUL_API_KEY", "").strip() else "unconfigured",
+        "misa": "ok" if os.getenv("MISA_API_KEY", "").strip() else "unconfigured",
+        "knet": "ok" if os.getenv("KNET_RESOURCE_KEY", "").strip() else "unconfigured",
+        "benefit": "ok" if os.getenv("BENEFIT_API_KEY", "").strip() else "unconfigured",
+        "magnati": "ok" if os.getenv("MAGNATI_API_KEY", "").strip() else "unconfigured",
+        "byok": (os.getenv("KMS_PROVIDER", "").strip() or "unconfigured"),
+        "audit_forward_datadog": "ok" if os.getenv("AUDIT_FORWARD_DATADOG_API_KEY", "").strip() else "unconfigured",
+        "audit_forward_splunk": "ok" if os.getenv("AUDIT_FORWARD_SPLUNK_URL", "").strip() else "unconfigured",
+        "audit_forward_s3": "ok" if os.getenv("AUDIT_FORWARD_S3_BUCKET", "").strip() else "unconfigured",
     }
+
+    # T6 — catalogue sizes (always available; sanity-check loaders).
+    try:
+        from dealix.agents.skills import load as _load_skills
+        from dealix.verticals import list_all as _list_verticals
+
+        extras["skills_count"] = len(_load_skills())
+        extras["verticals_count"] = len(_list_verticals())
+    except Exception as _exc:  # pragma: no cover
+        extras["catalogue_load_error"] = str(_exc)[:160]
+
     checks["vendors"] = extras
 
     return {"status": overall, "checks": checks, "version": get_settings().app_version}

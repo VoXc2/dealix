@@ -36,12 +36,20 @@ webhooks_app = typer.Typer(no_args_is_help=True, help="Webhook utilities")
 onboarding_app = typer.Typer(no_args_is_help=True, help="Tenant onboarding")
 support_app = typer.Typer(no_args_is_help=True, help="Support tickets")
 audit_app = typer.Typer(no_args_is_help=True, help="Audit log export")
+skills_app = typer.Typer(no_args_is_help=True, help="Agent skills catalogue (T6a)")
+verticals_app = typer.Typer(no_args_is_help=True, help="Industry verticals (T6c)")
+saudi_app = typer.Typer(no_args_is_help=True, help="Saudi-gov data — Etimad/Maroof/Najiz/Tadawul/MISA (T6f)")
+admin_app = typer.Typer(no_args_is_help=True, help="Enterprise admin operations (T6e)")
 
 app.add_typer(leads_app, name="leads")
 app.add_typer(webhooks_app, name="webhooks")
 app.add_typer(onboarding_app, name="onboarding")
 app.add_typer(support_app, name="support")
 app.add_typer(audit_app, name="audit")
+app.add_typer(skills_app, name="skills")
+app.add_typer(verticals_app, name="verticals")
+app.add_typer(saudi_app, name="saudi")
+app.add_typer(admin_app, name="admin")
 
 
 def _base() -> str:
@@ -179,6 +187,152 @@ def audit_export(
             raise typer.Exit(code=1)
         for chunk in r.iter_text():
             sys.stdout.write(chunk)
+
+
+# ── skills (T6a) ──────────────────────────────────────────────────
+
+
+@skills_app.command("list")
+def skills_list() -> None:
+    """List every registered Skill in skills/MANIFEST.yaml."""
+    data = _request("GET", "/api/v1/skills")
+    for s in data.get("skills", []):
+        typer.echo(f"{s['id']:<28} {s['description']}")
+
+
+@skills_app.command("get")
+def skills_get(skill_id: str) -> None:
+    """Pretty-print one skill's full record."""
+    data = _request("GET", f"/api/v1/skills/{skill_id}")
+    typer.echo(json.dumps(data, indent=2, ensure_ascii=False))
+
+
+# ── verticals (T6c) ───────────────────────────────────────────────
+
+
+@verticals_app.command("list")
+def verticals_list() -> None:
+    data = _request("GET", "/api/v1/verticals")
+    for v in data.get("verticals", []):
+        typer.echo(f"{v['id']:<22} {v['label_en']}  ({v['pricing_default_plan']})")
+
+
+@verticals_app.command("apply")
+def verticals_apply(vertical_id: str) -> None:
+    """Set the caller's tenant default vertical."""
+    data = _request("POST", "/api/v1/verticals/apply", json={"vertical_id": vertical_id})
+    typer.echo(json.dumps(data, indent=2, ensure_ascii=False))
+
+
+# ── saudi-gov (T6f) ───────────────────────────────────────────────
+
+
+@saudi_app.command("tenders")
+def saudi_tenders(
+    sector: Annotated[str, typer.Option(help="filter by sector")] = "",
+    region: Annotated[str, typer.Option(help="filter by region")] = "",
+    keyword: Annotated[str, typer.Option(help="freeform query")] = "",
+    page_size: Annotated[int, typer.Option(min=1, max=100)] = 25,
+) -> None:
+    """Search active Etimad tenders."""
+    params: list[str] = [f"page_size={page_size}"]
+    if sector:
+        params.append(f"sector={sector}")
+    if region:
+        params.append(f"region={region}")
+    if keyword:
+        params.append(f"keyword={keyword}")
+    qs = "?" + "&".join(params)
+    data = _request("GET", f"/api/v1/saudi-gov/tenders{qs}")
+    for t in data.get("tenders", []):
+        typer.echo(
+            f"{t['id']:<18} {t['submission_deadline']:<12} {t['agency']:<32} {t['title_ar']}"
+        )
+
+
+@saudi_app.command("maroof")
+def saudi_maroof(cr_number: str) -> None:
+    data = _request("GET", f"/api/v1/saudi-gov/maroof/{cr_number}")
+    typer.echo(json.dumps(data, indent=2, ensure_ascii=False))
+
+
+@saudi_app.command("judicial")
+def saudi_judicial(cr_number: str) -> None:
+    data = _request("GET", f"/api/v1/saudi-gov/judicial/{cr_number}")
+    typer.echo(json.dumps(data, indent=2, ensure_ascii=False))
+
+
+@saudi_app.command("tadawul")
+def saudi_tadawul(symbol: str) -> None:
+    data = _request("GET", f"/api/v1/saudi-gov/tadawul/{symbol}")
+    typer.echo(json.dumps(data, indent=2, ensure_ascii=False))
+
+
+@saudi_app.command("misa")
+def saudi_misa(licence_number: str) -> None:
+    data = _request("GET", f"/api/v1/saudi-gov/misa/{licence_number}")
+    typer.echo(json.dumps(data, indent=2, ensure_ascii=False))
+
+
+# ── admin (T6e) ───────────────────────────────────────────────────
+
+
+@admin_app.command("byok-status")
+def admin_byok_status() -> None:
+    data = _request("GET", "/api/v1/admin/byok/status")
+    typer.echo(json.dumps(data, indent=2))
+
+
+@admin_app.command("audit-forward-status")
+def admin_audit_forward_status() -> None:
+    data = _request("GET", "/api/v1/admin/audit-forward/status")
+    typer.echo(json.dumps(data, indent=2))
+
+
+@admin_app.command("rotate-webhook")
+def admin_rotate_webhook(tenant_id: str) -> None:
+    """Rotate a tenant's webhook signing secret. The full secret is
+    printed only this once."""
+    data = _request(
+        "POST", f"/api/v1/admin/tenant/{tenant_id}/webhook-keys/rotate"
+    )
+    typer.echo(json.dumps(data, indent=2))
+
+
+@admin_app.command("sandbox-spin-up")
+def admin_sandbox_spin_up(
+    tenant_id: str,
+    label: Annotated[str, typer.Option(help="sandbox label")] = "sandbox",
+) -> None:
+    """Clone a tenant's config into a fresh sandbox shadow tenant."""
+    data = _request(
+        "POST",
+        "/api/v1/admin/sandbox/spin-up",
+        json={"tenant_id": tenant_id, "label": label},
+    )
+    typer.echo(json.dumps(data, indent=2))
+
+
+@admin_app.command("set-ip-allowlist")
+def admin_set_ip_allowlist(
+    tenant_id: str,
+    cidrs: Annotated[str, typer.Argument(help="comma-separated CIDRs")],
+) -> None:
+    """Set a per-tenant IP allowlist. Pass an empty string + `clear-ip-allowlist`
+    to remove."""
+    parsed = [c.strip() for c in cidrs.split(",") if c.strip()]
+    data = _request(
+        "POST",
+        f"/api/v1/admin/tenant/{tenant_id}/ip-allowlist",
+        json={"cidrs": parsed},
+    )
+    typer.echo(json.dumps(data, indent=2))
+
+
+@admin_app.command("clear-ip-allowlist")
+def admin_clear_ip_allowlist(tenant_id: str) -> None:
+    data = _request("DELETE", f"/api/v1/admin/tenant/{tenant_id}/ip-allowlist")
+    typer.echo(json.dumps(data, indent=2))
 
 
 def main() -> None:
