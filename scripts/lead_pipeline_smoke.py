@@ -60,7 +60,7 @@ def _adapter_status() -> dict[str, dict[str, Any]]:
     """Return readiness state of each adapter based on env vars."""
     return {
         "search": {
-            "ready": _env("GOOGLE_SEARCH_API_KEY") and _env("GOOGLE_SEARCH_CX")
+            "ready": (_env("GOOGLE_SEARCH_API_KEY") and _env("GOOGLE_SEARCH_CX"))
                   or _env("TAVILY_API_KEY"),
             "env_needed": "GOOGLE_SEARCH_API_KEY+GOOGLE_SEARCH_CX or TAVILY_API_KEY",
         },

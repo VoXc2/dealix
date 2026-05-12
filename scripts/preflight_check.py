@@ -39,8 +39,9 @@ import os
 import re
 import sys
 import time
+from collections.abc import Callable
 from dataclasses import dataclass, field
-from typing import Any, Callable
+from typing import Any
 
 
 @dataclass
@@ -59,7 +60,7 @@ def check(name: str, severity: str = "P"):
                 ok, detail, extra = fn(*args, **kwargs)
             except SkipCheck as exc:
                 return Result(name, "skip", severity, str(exc))
-            except Exception as exc:  # noqa: BLE001
+            except Exception as exc:
                 return Result(name, "fail", severity, f"unhandled: {exc}")
             return Result(name, "pass" if ok else "fail", severity, detail, extra or {})
         wrapper._check_name = name  # type: ignore

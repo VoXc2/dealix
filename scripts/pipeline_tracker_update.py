@@ -39,7 +39,7 @@ def _save(fields: list[str], rows: list[dict[str, str]]) -> None:
 
 
 def _now() -> str:
-    return dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds")
+    return dt.datetime.now(dt.UTC).isoformat(timespec="seconds")
 
 
 def _find(rows: list[dict[str, str]], lead_id: str) -> dict[str, str]:
@@ -89,7 +89,7 @@ def cmd_paid(args: argparse.Namespace) -> None:
 
 
 def cmd_list(_args: argparse.Namespace) -> None:
-    fields, rows = _load()
+    _fields, rows = _load()
     width = max(len(r["lead_name"]) for r in rows)
     print(f"{'id':<3}  {'name':<{width}}  {'company':<25}  {'status':<14}  {'sent':<20}")
     print("-" * (5 + width + 28 + 16 + 20))
