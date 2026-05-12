@@ -1,0 +1,36 @@
+{
+  "title": "Dealix — Postgres",
+  "uid": "dealix-postgres",
+  "tags": ["dealix", "postgres"],
+  "schemaVersion": 39,
+  "timezone": "Asia/Riyadh",
+  "panels": [
+    {
+      "title": "Active connections",
+      "type": "timeseries",
+      "datasource": "Prometheus",
+      "targets": [
+        { "expr": "pg_stat_activity_count{datname=\"dealix\"}" }
+      ],
+      "gridPos": { "x": 0, "y": 0, "w": 12, "h": 8 }
+    },
+    {
+      "title": "Pool saturation %",
+      "type": "stat",
+      "datasource": "Prometheus",
+      "targets": [
+        { "expr": "100 * pg_stat_activity_count{datname=\"dealix\"} / on() group_left() pg_settings_max_connections" }
+      ],
+      "gridPos": { "x": 12, "y": 0, "w": 12, "h": 4 }
+    },
+    {
+      "title": "Slow queries (>1s)",
+      "type": "logs",
+      "datasource": "Loki",
+      "targets": [
+        { "expr": "{app=\"dealix-api\"} |= \"slow_query\" | json" }
+      ],
+      "gridPos": { "x": 0, "y": 8, "w": 24, "h": 8 }
+    }
+  ]
+}

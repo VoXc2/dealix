@@ -1,0 +1,61 @@
+{
+  "title": "Dealix — API",
+  "uid": "dealix-api",
+  "tags": ["dealix", "api"],
+  "schemaVersion": 39,
+  "timezone": "Asia/Riyadh",
+  "panels": [
+    {
+      "title": "Requests / sec",
+      "type": "timeseries",
+      "datasource": "Prometheus",
+      "targets": [
+        {
+          "expr": "sum(rate(http_requests_total{job=\"dealix-api\"}[1m]))",
+          "legendFormat": "rps"
+        }
+      ],
+      "gridPos": { "x": 0, "y": 0, "w": 12, "h": 8 }
+    },
+    {
+      "title": "Error rate (5xx)",
+      "type": "timeseries",
+      "datasource": "Prometheus",
+      "targets": [
+        {
+          "expr": "sum(rate(http_requests_total{job=\"dealix-api\",status=~\"5..\"}[5m])) / sum(rate(http_requests_total{job=\"dealix-api\"}[5m]))",
+          "legendFormat": "error rate"
+        }
+      ],
+      "gridPos": { "x": 12, "y": 0, "w": 12, "h": 8 }
+    },
+    {
+      "title": "p95 latency (ms)",
+      "type": "timeseries",
+      "datasource": "Prometheus",
+      "targets": [
+        {
+          "expr": "histogram_quantile(0.95, sum by (le) (rate(http_request_duration_seconds_bucket{job=\"dealix-api\"}[5m]))) * 1000",
+          "legendFormat": "p95"
+        },
+        {
+          "expr": "histogram_quantile(0.99, sum by (le) (rate(http_request_duration_seconds_bucket{job=\"dealix-api\"}[5m]))) * 1000",
+          "legendFormat": "p99"
+        }
+      ],
+      "gridPos": { "x": 0, "y": 8, "w": 24, "h": 8 }
+    },
+    {
+      "title": "Audit-log rows / hour",
+      "type": "timeseries",
+      "datasource": "Postgres",
+      "targets": [
+        {
+          "rawSql": "SELECT date_trunc('hour', created_at) AS time, count(*) AS rows FROM audit_logs WHERE created_at > now() - interval '24 hours' GROUP BY 1 ORDER BY 1",
+          "refId": "A"
+        }
+      ],
+      "gridPos": { "x": 0, "y": 16, "w": 24, "h": 8 }
+    }
+  ]
+}

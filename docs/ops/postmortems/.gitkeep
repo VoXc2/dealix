@@ -1,0 +1,4 @@
+# Postmortem log
+
+Every SEV-1 / SEV-2 produces a markdown file in this directory.
+Filename: `<YYYY-MM-DD>-<kebab-title>.md`. Use `../postmortem_template.md`.

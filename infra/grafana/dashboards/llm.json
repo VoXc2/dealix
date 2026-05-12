@@ -1,0 +1,57 @@
+{
+  "title": "Dealix — LLM cost & latency",
+  "uid": "dealix-llm",
+  "tags": ["dealix", "llm"],
+  "schemaVersion": 39,
+  "timezone": "Asia/Riyadh",
+  "panels": [
+    {
+      "title": "Daily spend USD (last 30d)",
+      "type": "timeseries",
+      "datasource": "Postgres",
+      "targets": [
+        {
+          "rawSql": "SELECT date_trunc('day', created_at) AS time, sum(cost_usd) AS spend FROM llm_calls WHERE created_at > now() - interval '30 days' GROUP BY 1 ORDER BY 1",
+          "refId": "A"
+        }
+      ],
+      "gridPos": { "x": 0, "y": 0, "w": 12, "h": 8 }
+    },
+    {
+      "title": "Top 10 tenants by spend (7d)",
+      "type": "table",
+      "datasource": "Postgres",
+      "targets": [
+        {
+          "rawSql": "SELECT tenant_id, sum(cost_usd)::float AS spend_usd, count(*)::int AS calls FROM llm_calls WHERE created_at > now() - interval '7 days' GROUP BY tenant_id ORDER BY spend_usd DESC LIMIT 10",
+          "refId": "A"
+        }
+      ],
+      "gridPos": { "x": 12, "y": 0, "w": 12, "h": 8 }
+    },
+    {
+      "title": "Provider mix",
+      "type": "piechart",
+      "datasource": "Postgres",
+      "targets": [
+        {
+          "rawSql": "SELECT provider, count(*)::int AS calls FROM llm_calls WHERE created_at > now() - interval '24 hours' GROUP BY provider",
+          "refId": "A"
+        }
+      ],
+      "gridPos": { "x": 0, "y": 8, "w": 12, "h": 8 }
+    },
+    {
+      "title": "Cost-cap hits / hour",
+      "type": "timeseries",
+      "datasource": "Loki",
+      "targets": [
+        {
+          "expr": "sum by (reason) (rate({app=\"dealix-api\"} |= \"llm_cost_cap_hit\" [5m]))",
+          "refId": "A"
+        }
+      ],
+      "gridPos": { "x": 12, "y": 8, "w": 12, "h": 8 }
+    }
+  ]
+}

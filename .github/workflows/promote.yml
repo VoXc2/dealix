@@ -1,0 +1,76 @@
+name: Promote (staging → prod)
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: promote
+  cancel-in-progress: false
+
+jobs:
+  smoke-staging:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Wait for staging deploy
+        # Railway autodeploys on push; give it 90s before smoke-testing.
+        run: sleep 90
+
+      - name: Smoke /healthz
+        run: |
+          for i in $(seq 1 6); do
+            if curl -fsS https://api.staging.dealix.me/healthz; then
+              echo "staging healthy"; exit 0
+            fi
+            sleep 10
+          done
+          echo "staging health failed"; exit 1
+
+      - name: Status endpoint structural check
+        run: |
+          curl -fsS https://api.staging.dealix.me/api/v1/status | jq -e '.status, .checks, .version' >/dev/null
+
+      - name: Public endpoint smoke
+        run: |
+          curl -fsS https://api.staging.dealix.me/api/v1/public/health | jq -e '.ok' >/dev/null
+
+  approve:
+    needs: smoke-staging
+    runs-on: ubuntu-22.04
+    environment:
+      name: production
+      # GitHub environment-protection rule on `production` requires
+      # manual approval before the next job runs.
+    steps:
+      - name: Awaiting reviewer approval
+        run: echo "Reviewer must approve via GitHub Environments → production"
+
+  deploy-prod:
+    needs: approve
+    runs-on: ubuntu-22.04
+    env:
+      RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+      RAILWAY_PROJECT_ID: ${{ secrets.RAILWAY_PROJECT_ID }}
+      RAILWAY_PROD_SERVICE_ID: ${{ secrets.RAILWAY_PROD_SERVICE_ID }}
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Install Railway CLI
+        run: curl -fsSL https://railway.app/install.sh | sh
+
+      - name: Trigger prod redeploy
+        run: |
+          railway redeploy --service "$RAILWAY_PROD_SERVICE_ID" --yes
+
+      - name: Smoke prod post-deploy
+        run: |
+          for i in $(seq 1 12); do
+            if curl -fsS https://api.dealix.me/healthz; then
+              echo "prod healthy"; exit 0
+            fi
+            sleep 10
+          done
+          echo "prod health post-deploy failed"; exit 1

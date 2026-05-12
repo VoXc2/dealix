@@ -1,0 +1,48 @@
+groups:
+  - name: dealix-availability
+    interval: 1m
+    rules:
+      # Multi-window multi-burn-rate alert for the 99.5% uptime SLO.
+      # Page when fast-burn (5m window) exceeds 14.4× error budget AND
+      # slow-burn (1h window) confirms it.
+      - alert: DealixAvailabilityFastBurn
+        expr: |
+          (
+            sum(rate(http_requests_total{job="dealix-api",status=~"5.."}[5m]))
+            /
+            sum(rate(http_requests_total{job="dealix-api"}[5m]))
+          ) > (14.4 * 0.005)
+          AND
+          (
+            sum(rate(http_requests_total{job="dealix-api",status=~"5.."}[1h]))
+            /
+            sum(rate(http_requests_total{job="dealix-api"}[1h]))
+          ) > (14.4 * 0.005)
+        for: 2m
+        labels:
+          severity: sev-1
+          slo: availability-99.5
+        annotations:
+          summary: "Availability burn-rate fast — page on-call"
+          runbook: "docs/ops/incident_response.md#triage-tree"
+
+      - alert: DealixAvailabilitySlowBurn
+        expr: |
+          (
+            sum(rate(http_requests_total{job="dealix-api",status=~"5.."}[30m]))
+            /
+            sum(rate(http_requests_total{job="dealix-api"}[30m]))
+          ) > (6 * 0.005)
+          AND
+          (
+            sum(rate(http_requests_total{job="dealix-api",status=~"5.."}[6h]))
+            /
+            sum(rate(http_requests_total{job="dealix-api"}[6h]))
+          ) > (6 * 0.005)
+        for: 15m
+        labels:
+          severity: sev-2
+          slo: availability-99.5
+        annotations:
+          summary: "Availability burn-rate slow — investigate"
+          runbook: "docs/ops/incident_response.md#triage-tree"

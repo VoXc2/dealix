@@ -1,0 +1,30 @@
+groups:
+  - name: dealix-latency
+    interval: 1m
+    rules:
+      - alert: DealixP95LatencyHigh
+        expr: |
+          histogram_quantile(
+            0.95,
+            sum by (le) (rate(http_request_duration_seconds_bucket{job="dealix-api"}[5m]))
+          ) > 0.5
+        for: 5m
+        labels:
+          severity: sev-2
+          slo: latency-p95-500ms
+        annotations:
+          summary: "p95 latency over 500ms for 5 min"
+          runbook: "docs/ops/incident_response.md#common-runbooks"
+
+      - alert: DealixP95LatencyCritical
+        expr: |
+          histogram_quantile(
+            0.95,
+            sum by (le) (rate(http_request_duration_seconds_bucket{job="dealix-api"}[5m]))
+          ) > 1.5
+        for: 2m
+        labels:
+          severity: sev-1
+        annotations:
+          summary: "p95 latency > 1.5s — page on-call"
+          runbook: "docs/ops/incident_response.md"
