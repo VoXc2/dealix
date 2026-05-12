@@ -29,6 +29,7 @@ from api.routers.domains import customers as customers_domain
 from api.routers.domains import deprecated as deprecated_domain
 from api.routers.domains import sales as sales_domain
 from api.routers.domains import webhooks as webhooks_domain
+from api.routers import admin_nps as admin_nps_router
 from api.routers import audit_logs as audit_logs_router
 from api.routers import benchmarks as benchmarks_router
 from api.routers import llm_usage as llm_usage_router
@@ -282,6 +283,8 @@ def create_app() -> FastAPI:
     app.include_router(benchmarks_router.router)
     # PDPL Data Subject Rights (access / delete / portability).
     app.include_router(pdpl_dsr_router.router)
+    # Admin NPS dashboard data (founder-only).
+    app.include_router(admin_nps_router.router)
 
     # ── Wave 12.7 — Intelligence Layer + Expansion Engine ─────────
     # Both routers self-prefix /api/v1/intelligence and /api/v1/expansion-engine.

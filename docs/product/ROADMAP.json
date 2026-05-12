@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "updated_at": "2026-05-12",
+  "themes": [
+    {
+      "id": "saudi-sovereignty",
+      "label_ar": "السيادة السعودية",
+      "label_en": "Saudi sovereignty",
+      "items": [
+        { "id": "saudi-region", "label_en": "Saudi-region deploy", "status": "planned", "eta": "Q3-2026" },
+        { "id": "zatca-cert-auto", "label_en": "ZATCA cert rotation automation", "status": "shipped", "eta": "Q2-2026" },
+        { "id": "pdpl-dsr-api", "label_en": "PDPL data-subject-rights API", "status": "shipped", "eta": "Q2-2026" }
+      ]
+    },
+    {
+      "id": "ai-rigor",
+      "label_ar": "صرامة الذكاء الاصطناعي",
+      "label_en": "AI rigor",
+      "items": [
+        { "id": "promptfoo-evals", "label_en": "Promptfoo evals in CI", "status": "shipped", "eta": "Q2-2026" },
+        { "id": "cost-guardrails", "label_en": "Per-tenant cost guardrails", "status": "shipped", "eta": "Q2-2026" },
+        { "id": "model-registry", "label_en": "Versioned prompt + model registry", "status": "shipped", "eta": "Q2-2026" }
+      ]
+    },
+    {
+      "id": "commercial",
+      "label_ar": "التجاري",
+      "label_en": "Commercial",
+      "items": [
+        { "id": "stripe-international", "label_en": "Stripe checkout for USD/EUR/AED", "status": "in-progress", "eta": "Q2-2026" },
+        { "id": "lago-metering", "label_en": "Usage-based metering via Lago", "status": "planned", "eta": "Q3-2026" },
+        { "id": "partner-portal", "label_en": "Partner portal with deal registration", "status": "planned", "eta": "Q3-2026" }
+      ]
+    },
+    {
+      "id": "ux",
+      "label_ar": "تجربة العميل",
+      "label_en": "Customer experience",
+      "items": [
+        { "id": "product-tour", "label_en": "First-login product tour", "status": "shipped", "eta": "Q2-2026" },
+        { "id": "nps-survey", "label_en": "Day-14 NPS survey", "status": "shipped", "eta": "Q2-2026" },
+        { "id": "embedded-benchmarks", "label_en": "Embedded sector benchmarks", "status": "shipped", "eta": "Q2-2026" }
+      ]
+    }
+  ]
+}

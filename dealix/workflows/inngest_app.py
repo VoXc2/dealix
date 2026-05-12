@@ -161,7 +161,98 @@ def register_functions() -> list[Any]:
         )
         return result
 
-    return [proposal_draft]
+    @client.create_function(
+        fn_id="dealix-customer-health-watcher",
+        trigger=inngest.TriggerCron(cron="0 6 * * *"),  # 06:00 UTC = 09:00 Riyadh
+        retries=2,
+    )
+    async def customer_health_watcher(
+        ctx: inngest.Context, step: inngest.Step
+    ) -> dict[str, Any]:
+        """Daily: scan tenants, open a Plain ticket on at_risk drops."""
+        tenants = await step.run("list-active-tenants", _step_list_active_tenants)
+        opened = 0
+        for t in tenants:
+            assess = await step.run(
+                f"assess-{t['id']}", _step_assess_tenant, t["id"]
+            )
+            if assess.get("risk_band") == "at_risk":
+                await step.run(
+                    f"ticket-{t['id']}", _step_open_health_ticket, t, assess
+                )
+                opened += 1
+        return {"tenants_scanned": len(tenants), "tickets_opened": opened}
+
+    return [proposal_draft, customer_health_watcher]
+
+
+# ── Health-watcher steps ────────────────────────────────────────────
+
+
+async def _step_list_active_tenants() -> list[dict[str, Any]]:
+    from sqlalchemy import select
+
+    from db.models import TenantRecord
+    from db.session import async_session_factory
+
+    async with async_session_factory()() as session:
+        rows = (
+            await session.execute(
+                select(TenantRecord).where(TenantRecord.status == "active")
+            )
+        ).scalars().all()
+        return [
+            {"id": t.id, "name": t.name, "plan": t.plan}
+            for t in rows
+        ]
+
+
+async def _step_assess_tenant(tenant_id: str) -> dict[str, Any]:
+    """Reuse the tenant-health heuristic from api/routers/customer_success.py."""
+    import httpx
+    import os
+
+    base = os.getenv("APP_URL", "http://localhost:8000").rstrip("/")
+    try:
+        async with httpx.AsyncClient(timeout=10) as c:
+            r = await c.get(
+                f"{base}/api/v1/customer-success/tenant-health/{tenant_id}"
+            )
+            r.raise_for_status()
+            return r.json()
+    except Exception:
+        log.exception("health_assess_failed", tenant_id=tenant_id)
+        return {"tenant_id": tenant_id, "risk_band": "unknown"}
+
+
+async def _step_open_health_ticket(
+    tenant: dict[str, Any], assess: dict[str, Any]
+) -> dict[str, Any]:
+    """Open a Plain ticket (or fall back to email) when a tenant goes at_risk."""
+    try:
+        from dealix.integrations.plain_client import get_plain_client
+
+        plain = get_plain_client()
+        result = await plain.create_thread(
+            customer_email="cs@ai-company.sa",
+            customer_name=tenant.get("name", "unknown"),
+            title=f"Health alert: {tenant.get('name')} dropped to at_risk",
+            body_markdown=(
+                "Daily health watcher flagged this tenant.\n\n"
+                f"- tenant_id: `{tenant.get('id')}`\n"
+                f"- plan: {tenant.get('plan')}\n"
+                f"- risk_score: {assess.get('risk_score')}\n"
+                f"- last_active_at: {assess.get('last_active_at')}\n"
+                f"- api_calls_7d: {assess.get('api_calls_7d')}\n\n"
+                "Action: CS to reach out within one business day."
+            ),
+            tenant_id=tenant.get("id"),
+            labels=["health-alert"],
+        )
+        return {"transport": result.transport, "thread_id": result.thread_id}
+    except Exception:
+        log.exception("health_ticket_open_failed", tenant_id=tenant.get("id"))
+        return {"transport": "noop", "thread_id": None}
 
 
 # ── Dispatcher facade ───────────────────────────────────────────────

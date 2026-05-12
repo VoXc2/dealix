@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Roadmap — Dealix</title>
+  <meta name="description" content="What we're building, what's shipped, and when to expect what." />
+  <style>
+    :root { color-scheme: light dark; --bg:#0a0e1a; --fg:#e6e9f2; --muted:#8a93a8; --card:#131829; --border:rgba(255,255,255,0.08); --shipped:#4ade80; --inprogress:#fbbf24; --planned:#60a5fa; }
+    @media (prefers-color-scheme: light) { :root { --bg:#f7f8fb; --fg:#0a0e1a; --muted:#5a627a; --card:#fff; --border:rgba(0,0,0,0.08); } }
+    * { box-sizing: border-box; }
+    body { margin:0; font-family: system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif; background:var(--bg); color:var(--fg); }
+    main { max-width:960px; margin:0 auto; padding:3rem 1.25rem; }
+    h1 { margin: 0 0 .5rem; font-size: 2rem; }
+    .lead { color: var(--muted); margin-bottom: 2rem; }
+    h2 { margin: 2rem 0 1rem; font-size: 1.25rem; border-bottom: 1px solid var(--border); padding-bottom: .35rem; }
+    ul { list-style:none; padding: 0; display:grid; gap:.6rem; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+    li { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 1rem; }
+    .pill { display:inline-block; padding:.15rem .55rem; border-radius:999px; font-size:.72rem; font-weight:600; }
+    .pill.shipped { background: rgba(74,222,128,.15); color: var(--shipped); }
+    .pill.in-progress { background: rgba(251,191,36,.15); color: var(--inprogress); }
+    .pill.planned { background: rgba(96,165,250,.15); color: var(--planned); }
+    .eta { color: var(--muted); font-size: .82rem; }
+  </style>
+</head>
+<body>
+<main>
+  <h1>Roadmap</h1>
+  <p class="lead">Built in the open. Last updated by <code>docs/product/ROADMAP.json</code>.</p>
+  <div id="root"></div>
+</main>
+<script>
+fetch("/docs/product/ROADMAP.json")
+  .then((r) => r.json())
+  .then((data) => {
+    const root = document.getElementById("root");
+    data.themes.forEach((theme) => {
+      const h = document.createElement("h2");
+      h.textContent = theme.label_en;
+      root.appendChild(h);
+      const ul = document.createElement("ul");
+      theme.items.forEach((it) => {
+        const li = document.createElement("li");
+        const pill = `<span class="pill ${it.status}">${it.status}</span>`;
+        li.innerHTML = `<div><strong>${it.label_en}</strong></div>
+          <div class="eta">${pill} · ETA ${it.eta}</div>`;
+        ul.appendChild(li);
+      });
+      root.appendChild(ul);
+    });
+  })
+  .catch(() => {
+    document.getElementById("root").textContent = "Roadmap data unavailable.";
+  });
+</script>
+</body>
+</html>
