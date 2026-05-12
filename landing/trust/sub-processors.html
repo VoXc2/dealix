@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Sub-processors — Dealix</title>
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 960px; margin: 2rem auto; padding: 1rem; line-height: 1.55; color: #0a0e1a; }
+    h1 { color: #064e3b; }
+    a { color: #047857; }
+    @media (prefers-color-scheme: dark) { body { color: #e6e9f2; background: #0a0e1a; } h1 { color: #34d399; } }
+    table { width: 100%; border-collapse: collapse; font-size: .92rem; }
+    th, td { text-align: left; padding: .45rem .65rem; border-bottom: 1px solid rgba(0,0,0,0.08); }
+    th { color: #5a627a; font-weight: 600; }
+  </style>
+</head>
+<body>
+  <p><a href="/">← Home</a> · <a href="/trust">← Trust pack</a></p>
+  <h1>Sub-processors</h1>
+  <p>Canonical list, live from <code>docs/compliance/SUB_PROCESSORS.md</code>. Adding a row triggers a 30-day customer notification with right of objection.</p>
+  <table id="rows">
+    <thead><tr><th>Provider</th><th>Purpose</th><th>Country</th><th>Effective date</th></tr></thead>
+    <tbody></tbody>
+  </table>
+  <p style="margin-top: 2rem; font-size: .85rem; color: #5a627a;">
+    Last updated: <span id="updated">—</span>. Source:
+    <a href="https://github.com/VoXc2/dealix/blob/main/docs/compliance/SUB_PROCESSORS.md">docs/compliance/SUB_PROCESSORS.md</a>.
+  </p>
+<script>
+// Fetch the raw markdown so the page mirrors the source automatically.
+fetch("/docs/compliance/SUB_PROCESSORS.md")
+  .then((r) => r.ok ? r.text() : "")
+  .then((md) => {
+    const rows = [];
+    let inTable = false;
+    md.split(/\r?\n/).forEach((line) => {
+      if (line.startsWith("## Active sub-processors")) inTable = true;
+      else if (inTable && line.startsWith("## ")) inTable = false;
+      else if (inTable && line.startsWith("|") && !line.startsWith("| Sub-processor") && !line.startsWith("| ---")) {
+        const cols = line.split("|").map((c) => c.trim()).slice(1, -1);
+        if (cols.length >= 5) rows.push(cols);
+      }
+      const m = md.match(/Last updated:\s*([0-9-]+)/);
+      if (m) document.getElementById("updated").textContent = m[1];
+    });
+    const tbody = document.querySelector("#rows tbody");
+    rows.forEach((c) => {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `<td>${c[0]}</td><td>${c[1]}</td><td>${c[2]}</td><td>${c[3]}</td>`;
+      tbody.appendChild(tr);
+    });
+  });
+</script>
+</body>
+</html>
