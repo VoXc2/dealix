@@ -1,26 +1,38 @@
 <div align="center">
 
-# 🏢 Dealix — AI Company Saudi
+# 🏢 Dealix — Saudi B2B Revenue Engine
 
-### Sovereign, policy-governed Growth & Execution OS for Saudi enterprises
-### نظام نمو وتنفيذ سيادي محكوم بالسياسات، للشركات السعودية
+### AI revenue, growth, and compliance engine for Saudi B2B — PDPL-native, ZATCA-compliant, approval-first.
+### محرّك إيرادات ونمو وامتثال بـ AI للشركات السعودية — PDPL أصلاً، ZATCA متوافق، الموافقة-أولاً.
 
 [![CI](https://github.com/VoXc2/dealix/actions/workflows/ci.yml/badge.svg)](https://github.com/VoXc2/dealix/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Python 3.12](https://img.shields.io/badge/python-3.12-blue.svg)](https://www.python.org/downloads/)
+[![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.115-green)](https://fastapi.tiangolo.com/)
-[![Tests: 95 passing](https://img.shields.io/badge/tests-95%20passing-green)](tests/)
-[![Endpoints: 102](https://img.shields.io/badge/API%20endpoints-102-blue)](docs/architecture/API_MAP.md)
+[![Tests: 290+](https://img.shields.io/badge/tests-290+-green)](tests/)
+[![Routers: 117](https://img.shields.io/badge/API%20routers-117-blue)](api/routers/)
+[![PDPL: native](https://img.shields.io/badge/PDPL-native-success)](integrations/pdpl.py)
+[![ZATCA: Phase 2](https://img.shields.io/badge/ZATCA-Phase%202-success)](integrations/zatca.py)
 
 **[العربية](README.ar.md)** · **English**
 
-### [🚀 Deploy Now](docs/ops/DEPLOY_NOW.md) · [📋 Full completion plan (AR)](docs/COMPREHENSIVE_COMPLETION_PLAN_AR.md) · [📦 .env Template](.env.example) · [🎯 Landing](landing/) · [🗺️ API Map](docs/architecture/API_MAP.md) · [🏢 Day 1 Plan](docs/business/FIRST_100_TARGETS_PLAN.md)
+### [🚀 Deploy Runbook](docs/ops/DEPLOY_RUNBOOK.md) · [🛒 Service Catalog](landing/services.html) · [💰 Pricing](landing/pricing.html) · [🗺️ API Map](docs/architecture/API_MAP.md) · [📦 Env Template](docs/ops/PRODUCTION_ENV_TEMPLATE.md) · [👤 Customer Onboarding](docs/ops/CUSTOMER_ONBOARDING_DAY_BY_DAY.md)
 
 ---
 
+## 🎯 What Dealix Is
+
+A **Saudi B2B Revenue Engine** with three layers:
+
+1. **Lead Engine** — acquire Saudi B2B leads from Google/Maps/Chambers/SDAIA/MCI, enrich them, score against ICP, suppress dupes. PDPL-compliant by design.
+2. **Service Engine** — 7 productized AI services (Diagnostic, AI Sales Assistant, Decision Passport, Customer Health, Proof Curation, Growth Signals, Executive Command Center). See `/api/v1/...` endpoints.
+3. **Trust Engine** — PDPL Art. 5/13/14/18/21 wiring, ZATCA Phase 2 e-invoice, decision audit trail. The defensible moat against translated US tools.
+
+**7 revenue streams** monetize the 3 engines: Managed Pilot (499 SAR), SaaS Subscription (999/2,999/7,999 SAR/mo), Lead-as-a-Service (25 SAR/replied lead), Sector Reports (1.5K-10K SAR), Bespoke AI Setup (5K-25K SAR), Agency White-Label (1K setup + 25% rev share), Enterprise PMO (25K-100K SAR/mo).
+
 ## 🎯 What's in this repo
 
-**Backend** — FastAPI + SQLAlchemy 2.0 async + Postgres. 13 routers / 102 endpoints. See [API_MAP.md](docs/architecture/API_MAP.md).
+**Backend** — FastAPI + SQLAlchemy 2.0 async + Postgres. 117 routers across customer, sales, agents, compliance, analytics, webhooks domains. See [API_MAP.md](docs/architecture/API_MAP.md).
 
 **Lead Machine** — Provider adapter chains for Search / Maps / Crawler / Tech / EmailIntel that fall back gracefully when env keys are missing. See [PROVIDER_ADAPTERS.md](docs/architecture/PROVIDER_ADAPTERS.md).
 
