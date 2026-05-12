@@ -386,6 +386,22 @@ async def invite_team_member(
     base = get_settings().app_url.rstrip("/") if hasattr(get_settings(), "app_url") else ""
     invite_url = f"{base}/accept-invite?token={raw_token}&invite_id={invite_id}"
 
+    # Audit row — central writer keeps the schema consistent.
+    try:
+        from api.security.audit_writer import audit
+
+        await audit(
+            db,
+            action="user.invite",
+            entity_type="user_invite",
+            entity_id=invite_id,
+            tenant_id=tenant_id,
+            user_id=inviter,
+            diff={"email": payload.email, "role": payload.role},
+        )
+    except Exception:
+        log.exception("audit_invite_failed", invite_id=invite_id)
+
     log.info(
         "team_invite_created",
         invite_id=invite_id,
@@ -429,6 +445,21 @@ async def revoke_team_member(
         await db.rollback()
         log.exception("revoke_member_failed", extra={"user_id": user_id})
         raise HTTPException(500, "revoke_failed") from exc
+
+    try:
+        from api.security.audit_writer import audit
+
+        await audit(
+            db,
+            action="user.revoke",
+            entity_type="user",
+            entity_id=user_id,
+            tenant_id=tenant_id,
+            user_id=getattr(request.state, "user_id", None),
+            diff={"email": user.email},
+        )
+    except Exception:
+        log.exception("audit_revoke_failed", user_id=user_id)
 
     log.info(
         "team_member_revoked",

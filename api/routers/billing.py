@@ -44,9 +44,18 @@ class StripeCheckoutIn(BaseModel):
 @router.get("/health")
 async def billing_health() -> dict[str, Any]:
     """Surface which gateway is configured. No secret values leak."""
+    # Replace ad-hoc env reads with the PostHog-backed wrapper so per-
+    # tenant overrides are possible later. flag_or_env keeps the env
+    # fallback path so behaviour is identical today.
+    from core.feature_flags import flag_or_env
+
+    stripe_via_flag = (
+        flag_or_env("stripe", "STRIPE_ENABLED")
+        or get_stripe_client().is_configured
+    )
     return {
         "moyasar_configured": bool(os.getenv("MOYASAR_SECRET_KEY", "").strip()),
-        "stripe_configured": get_stripe_client().is_configured,
+        "stripe_configured": stripe_via_flag,
         "primary": "moyasar",
         "international_fallback": "stripe",
     }
@@ -121,6 +130,23 @@ async def stripe_webhook(
         evt = await req.json()
     except Exception:
         evt = {}
+    # Audit the event boundary (no PII; just type + id).
+    try:
+        from api.security.audit_writer import audit
+        from db.session import async_session_factory
+
+        async with async_session_factory()() as session:
+            await audit(
+                session,
+                action=f"stripe.webhook.{evt.get('type', 'unknown')}",
+                entity_type="webhook",
+                entity_id=str(evt.get("id") or ""),
+                tenant_id="system",
+                diff={"livemode": evt.get("livemode")},
+            )
+    except Exception:
+        log.exception("stripe_webhook_audit_failed")
+
     log.info(
         "stripe_webhook_received",
         event_type=evt.get("type"),

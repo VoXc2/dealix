@@ -318,6 +318,22 @@ async def finalize_onboarding(
         await db.rollback()
         raise HTTPException(500, "onboarding_persistence_failed") from exc
 
+    # Audit finalization — provable record of who turned the trial live.
+    try:
+        from api.security.audit_writer import audit
+
+        await audit(
+            db,
+            action="tenant.finalize",
+            entity_type="tenant",
+            entity_id=tenant.id,
+            tenant_id=tenant.id,
+            user_id=None,
+            diff={"plan": payload.plan, "key_prefix": raw_key[:12]},
+        )
+    except Exception:
+        log.exception("audit_finalize_failed", tenant_id=tenant.id)
+
     log.info(
         "onboarding_finalized",
         tenant_id=tenant.id,

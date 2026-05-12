@@ -58,6 +58,26 @@ async def create_support_ticket(
         tenant_id=tenant_id,
         labels=payload.labels,
     )
+    # Audit ticket creation; tenant_id may be None for anonymous landing
+    # submissions — store "anonymous" sentinel so the row still lands.
+    try:
+        from api.security.audit_writer import audit
+        from db.session import async_session_factory
+
+        async with async_session_factory()() as session:
+            await audit(
+                session,
+                action="support.ticket.create",
+                entity_type="support_ticket",
+                entity_id=result.thread_id,
+                tenant_id=tenant_id or "anonymous",
+                user_id=getattr(request.state, "user_id", None),
+                status="ok" if result.success else "error",
+                diff={"subject": payload.subject, "transport": result.transport},
+            )
+    except Exception:
+        log.exception("support_audit_failed")
+
     log.info(
         "support_ticket_created",
         tenant_id=tenant_id,
