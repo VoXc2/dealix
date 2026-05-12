@@ -1,0 +1,56 @@
+# NeMo-Guardrails-style declarative policies for Dealix agents.
+# Loaded by `dealix/agents/safety/guardrails_runtime.py` (T6b).
+#
+# Three rail kinds:
+#   - input rails: gate user input before the LLM sees it.
+#   - output rails: gate model output before the user sees it.
+#   - dialog rails: enforce conversational behaviour.
+
+version: 1
+
+input_rails:
+  - id: prompt_injection_check
+    description: Run Lakera/Rebuff before any agent prompt is built.
+    on_violation: block
+    action: dealix.agents.safety.prompt_injection.defend
+    threshold: 0.7
+
+  - id: pii_block_on_input
+    description: Block raw user input that already contains Saudi NID/IBAN/VAT.
+    on_violation: redact
+    action: core.llm.guardrails.redact_pii
+
+  - id: max_input_chars
+    description: Bound the working window so a runaway input can't drain cost.
+    on_violation: truncate
+    max_chars: 12000
+
+output_rails:
+  - id: pii_redact_on_output
+    description: PII redaction on every assistant message before delivery.
+    on_violation: redact
+    action: core.llm.guardrails.redact_pii
+
+  - id: jailbreak_followup
+    description: Detect if the model echoes "ignore previous instructions"-style content.
+    on_violation: block
+    patterns:
+      - "(?i)ignore (all|previous|prior) instructions"
+      - "(?i)you are now jailbroken"
+
+  - id: ar_tone_check
+    description: For Arabic outputs, enforce formal Khaliji tone.
+    on_violation: warn
+    forbid_substrings: ["!!!", "؟؟؟", "حصري", "مضمون 100%"]
+
+dialog_rails:
+  - id: no_political
+    description: Refuse Saudi political topics; redirect to the human handler.
+    on_violation: refuse
+    polite_refusal_ar: "آسف، هذا الموضوع خارج نطاق المحادثة. سأحوّلك لزميل بشري."
+    polite_refusal_en: "Sorry, that topic is outside this conversation's scope. I'll route you to a human."
+
+  - id: respect_pdpl_consent
+    description: Refuse to send outbound on a contact lacking consent.
+    on_violation: refuse
+    polite_refusal_ar: "لا يمكنني التواصل مع هذا الشخص — لم تُسجَّل موافقة وفق PDPL."
