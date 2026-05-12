@@ -90,3 +90,72 @@ curl -X POST http://localhost:8000/api/v1/leads \
 ```
 
 This exercises intake, ICP matching, pain extraction, BANT qualification, CRM sync (skipped without HubSpot), and booking.
+
+---
+
+## Conventions for AI / human contributors
+
+Every commit in this repo is written by either a human or an AI agent
+(Claude, Cursor, Codex, etc.). To keep the codebase predictable and the
+review loop fast, apply these rules **always**:
+
+### Code style
+
+- **Python**: 3.11+. Use `core.logging.get_logger(__name__)`; never
+  `print(`, `eval(`, or `requests` (use `httpx` + the SSRF guard).
+  Catch specific exceptions; bare `except Exception` requires a
+  `# noqa: BLE001` comment justifying the boundary handler.
+- **TypeScript**: React 19 + Next.js 15. Use the typed `apiClient` in
+  `frontend/src/lib/api.ts`; never call `fetch` directly from
+  components except for one-shot pages.
+- **YAML / JSON**: 2-space indent. JSON for machine-consumed config
+  (Grafana dashboards), YAML for human-edited config (Semgrep,
+  Promptfoo, Cerbos).
+
+### Type safety
+
+- The modules listed in `pyproject.toml [[tool.mypy.overrides]]` run
+  under `mypy --strict`. **Do not regress** them. New security-critical
+  code goes in this list before merge.
+- Run `make mypy-strict` before opening a PR.
+
+### Tests
+
+- Every new endpoint needs at least one integration test in `tests/`.
+- Every new prompt needs at least one Promptfoo eval case in
+  `evals/promptfoo/<name>.yaml`.
+- Every new policy needs a `tests/test_authz_*` case.
+- Mutation testing runs quarterly via `make mutmut` — survivors that
+  map to security-critical paths become P1 issues.
+
+### Commits
+
+- Conventional Commits: `feat(scope): summary`, `fix(scope): summary`,
+  `chore(scope): summary`, `docs(scope): summary`.
+- **One logical change per commit.** Don't pile reviews on yourself
+  by squashing unrelated work.
+- The commit body explains the WHY, not the WHAT — the diff is the
+  WHAT. Reference the docs/runbook the change supports (e.g. "closes
+  CC6.3 in docs/compliance/CONTROLS.md").
+- AI agents writing commits: include a one-line preamble noting that
+  the commit was AI-authored. Until reviewed, the PR stays in draft.
+
+### Architectural changes need ADRs
+
+- Any choice that affects how the system is operated, scaled, or
+  charged for goes into `docs/adr/`.
+- Use the template at `docs/adr/template.md`. One change per ADR.
+- Mark **Accepted** only after a human reviewer approves the PR.
+
+### Inert-by-default for new integrations
+
+- New external SDKs ship behind an env-var feature flag. When the key
+  is missing, the feature returns a documented 503 or no-ops.
+- Document the env vars in `.env.example` *and* in the route's
+  docstring.
+
+### The bar
+
+Read `docs/QA_REVIEW.md` §13 once. The bar is: an engineer joins the
+team, clones the repo, runs `make hooks dev`, and ships a feature in
+the same week. Anything that gets in the way of that is a regression.

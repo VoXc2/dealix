@@ -89,6 +89,7 @@ dev = [
 
 [project.scripts]
 ai-company = "cli:app"
+dealix = "cli.dealix_cli:main"
 
 [project.urls]
 Homepage = "https://ai-company.sa"

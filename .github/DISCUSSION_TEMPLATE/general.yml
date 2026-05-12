@@ -1,0 +1,44 @@
+title: ""
+labels: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## Discussions — Partners & community
+
+        Use this for product questions, integration help, and feature
+        requests that aren't bugs. Security issues → security@ai-company.sa.
+  - type: dropdown
+    id: category
+    attributes:
+      label: Category
+      options:
+        - Integration help
+        - Feature request
+        - Use-case sharing
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: Context
+      description: What are you trying to do, and what blocked you?
+      placeholder: |
+        We're a Saudi real-estate agency integrating Dealix into our
+        existing HubSpot. We're stuck on …
+    validations:
+      required: true
+  - type: textarea
+    id: tried
+    attributes:
+      label: What did you try?
+      description: Code snippets, error messages, links to relevant docs you read.
+    validations:
+      required: false
+  - type: input
+    id: env
+    attributes:
+      label: Dealix version
+      description: Output of `GET /api/v1/status` `.version`
+      placeholder: v3.x.y
