@@ -1,0 +1,38 @@
+---
+title: Audit logs
+description: PDPL-compliant audit trail, queryable by the customer.
+---
+
+```http
+GET /api/v1/audit-logs?since=2026-04-01&until=2026-05-01&action=user.invite&limit=200
+```
+
+```http
+GET /api/v1/audit-logs/export.csv?since=...
+```
+
+The CSV variant streams rows so multi-thousand-row exports don't
+allocate memory.
+
+Tenant scope is enforced via `request.state.tenant_id`. Super-admins may
+pass `?tenant_id=...` to inspect any tenant (used by support).
+
+## Row shape
+
+| Field | Note |
+| --- | --- |
+| `id` | `aud_<hex>` opaque id. |
+| `tenant_id` | Always present. |
+| `user_id` | Actor when known. |
+| `action` | snake-case verb, e.g. `user.invite`, `tenant.finalize`. |
+| `entity_type` | `user`, `tenant`, `invoice`, `webhook`, `support_ticket`, `dsr_request`, … |
+| `entity_id` | Target row id. |
+| `diff` | Optional JSON payload of pre/post fields. |
+| `status` | `ok` / `denied` / `error`. |
+| `ip_address`, `user_agent`, `request_id` | Set by the middleware. |
+| `created_at` | UTC. |
+
+## Retention
+
+We retain audit rows indefinitely by default; the founder can pre-aggregate
+or move cold partitions per data-retention policy in `docs/DATA_RETENTION_POLICY.md`.

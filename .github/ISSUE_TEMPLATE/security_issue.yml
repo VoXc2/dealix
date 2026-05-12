@@ -1,0 +1,26 @@
+name: Security issue (public — limited)
+description: Do NOT use this for vulnerabilities. Email security@ai-company.sa instead.
+title: "security: <short summary>"
+labels: ["security"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **Do not** file vulnerabilities in public issues. Use one of:
+        - `security@ai-company.sa`
+        - GitHub Security Advisories (private)
+
+        Use this template only for **public security improvements**
+        (e.g. tighter Semgrep rule, headers hardening) that don't expose
+        a current weakness.
+  - type: input
+    id: area
+    attributes:
+      label: Area
+      placeholder: e.g. api/security/ssrf_guard.py
+  - type: textarea
+    id: improvement
+    attributes:
+      label: Proposed improvement
+    validations:
+      required: true

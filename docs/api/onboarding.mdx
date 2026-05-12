@@ -1,0 +1,56 @@
+---
+title: Onboarding
+description: Four-step self-serve flow that turns a stranger into a paying tenant.
+---
+
+All steps are **idempotent within a 5-minute window** — calling `/start`
+again with the same email + company returns the in-progress tenant
+instead of double-creating.
+
+## 1. Start
+
+```http
+POST /api/v1/onboarding/start
+{
+  "company": "Acme Real Estate",
+  "name": "Owner",
+  "email": "owner@acme.sa",
+  "locale": "ar"
+}
+```
+
+Returns `{ onboarding_id, tenant_id, user_id, step: "start" }`.
+
+## 2. Integrations
+
+```http
+POST /api/v1/onboarding/integrations
+{ "onboarding_id": "ten_...", "integrations": ["hubspot","whatsapp"] }
+```
+
+## 3. DPA
+
+```http
+POST /api/v1/onboarding/dpa
+{ "onboarding_id": "ten_...", "accept": true, "signer_name": "..." }
+```
+
+Captures signer name + timestamp in `tenant.meta_json.onboarding.dpa`.
+
+## 4. Finalize
+
+```http
+POST /api/v1/onboarding/finalize
+{ "onboarding_id": "ten_...", "plan": "starter" }
+```
+
+Issues the first API key (`dlx_live_<hex>`). The full key is returned
+**exactly once**; only its SHA-256 hash is stored.
+
+## Resume
+
+```http
+GET /api/v1/onboarding/{onboarding_id}
+```
+
+Returns the current step so the FE wizard can resume after a reload.

@@ -1,0 +1,41 @@
+---
+title: Support tickets
+description: Plain.com first; Resend email fallback when Plain is not configured.
+---
+
+```http
+POST /api/v1/support/tickets
+{
+  "email": "user@acme.sa",
+  "name": "User Name",
+  "subject": "Cannot link HubSpot",
+  "body": "Step-by-step description…",
+  "tenant_id": "ten_abc",
+  "priority": "normal",
+  "labels": ["integration","hubspot"]
+}
+```
+
+Response:
+
+```json
+{
+  "ok": true,
+  "transport": "plain",
+  "thread_id": "th_xxx",
+  "next_step": "expect_reply_within_one_business_day"
+}
+```
+
+When `PLAIN_API_KEY` is unset (or the Plain API errors), the call
+falls back to an email through `integrations.email.EmailClient` (which
+in turn picks Resend → SendGrid → SMTP). The response `transport`
+field tells you which path served the ticket.
+
+## Health
+
+```http
+GET /api/v1/support/health
+```
+
+Reports `plain_configured: bool` and the fallback transport.

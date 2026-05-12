@@ -1,25 +1,31 @@
-# Pull Request
+# Summary
 
-## Summary | الملخص
-<!-- What does this PR change and why? -->
+> One-paragraph WHY. The diff is the WHAT.
 
-## Type of change | نوع التغيير
-- [ ] 🐛 Bug fix
-- [ ] ✨ New feature
-- [ ] 💥 Breaking change
-- [ ] 📝 Docs only
-- [ ] ♻️ Refactor
-- [ ] 🔒 Security
+## Touched areas
 
-## Checklist | قائمة التحقق
-- [ ] Tests added / updated
-- [ ] Docs updated (if needed)
-- [ ] No secrets committed (verified via `gitleaks`)
-- [ ] `make lint` passes
-- [ ] `make test` passes
-- [ ] Linked to an issue (if applicable)
+- [ ] api/
+- [ ] core/
+- [ ] dealix/
+- [ ] frontend/
+- [ ] infra/
+- [ ] docs/
+- [ ] tests/
 
-## How to test | كيف أختبر هذا
-<!-- Steps to verify -->
+## Checklist (AGENTS.md conventions)
 
-## Screenshots / Logs (optional)
+- [ ] Test added (unit / integration / Promptfoo eval) for new behavior.
+- [ ] `make mypy-strict` clean on touched modules.
+- [ ] `make semgrep` green (or justified `# noqa` with reason).
+- [ ] No new `except Exception` without an explicit reason comment.
+- [ ] New env vars documented in `.env.example`.
+- [ ] Endpoint changes paired with a `docs/api/*.mdx` update.
+- [ ] AuditLogRecord written for any new mutation.
+- [ ] Architectural change has an ADR under `docs/adr/`.
+- [ ] CHANGELOG entry if customer-visible.
+
+## Linked issues / decisions
+
+Closes #
+Implements ADR #
+Mitigates SOC 2 control:

@@ -1,0 +1,50 @@
+---
+title: Billing
+description: Gateway-agnostic checkout — Moyasar for SAR, Stripe for USD/EUR/AED.
+---
+
+## Health
+
+```http
+GET /api/v1/billing/health
+```
+
+Returns which gateways are configured. `stripe_configured` honors both
+the env path and the PostHog feature-flag override.
+
+## Stripe Checkout
+
+```http
+POST /api/v1/billing/checkout/stripe
+{
+  "tenant_id": "ten_abc",
+  "plan": "growth",
+  "amount_cents": 99900,
+  "currency": "usd",
+  "email": "buyer@example.com",
+  "success_url": "https://app.dealix.me/checkout/ok",
+  "cancel_url": "https://app.dealix.me/checkout/cancel",
+  "mode": "payment"
+}
+```
+
+`503 stripe_disabled` is returned when `STRIPE_API_KEY` is unset — the
+frontend is expected to fall back to Moyasar.
+
+## Stripe webhook
+
+```http
+POST /api/v1/billing/webhooks/stripe
+Stripe-Signature: t=...,v1=...
+```
+
+We verify the signature with HMAC-SHA256 + 5-minute timestamp tolerance
+per [stripe.com/webhooks/signatures](https://docs.stripe.com/webhooks/signatures).
+Verified events write an audit row tagged `stripe.webhook.<type>`.
+
+## Moyasar
+
+See `docs/api/zatca.mdx` for the SAR + ZATCA Phase-2 invoice path.
+
+The Moyasar invoice endpoint lives at `POST /api/v1/pricing/checkout`
+(legacy); webhook arrives at `/api/v1/webhooks/moyasar`.

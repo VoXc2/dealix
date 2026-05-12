@@ -9,8 +9,11 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Python 3.11](https://img.shields.io/badge/python-3.11-blue.svg)](https://www.python.org/downloads/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.115-green)](https://fastapi.tiangolo.com/)
-[![Tests](https://img.shields.io/badge/tests-283%20files-green)](tests/)
-[![API surface](https://img.shields.io/badge/routers-114-blue)](docs/architecture/API_MAP.md)
+[![Tests](https://img.shields.io/badge/tests-300%2B%20files-green)](tests/)
+[![API surface](https://img.shields.io/badge/routers-120%2B-blue)](docs/architecture/API_MAP.md)
+[![Docs](https://img.shields.io/badge/docs-Mintlify-10b981)](docs/api/overview.mdx)
+[![Compliance](https://img.shields.io/badge/SOC2-controls%20mapped-blue)](docs/compliance/CONTROLS.md)
+[![PDPL](https://img.shields.io/badge/PDPL-DSR%20API-green)](docs/api/pdpl.mdx)
 
 **[العربية](README.ar.md)** · **English**
 

@@ -1,0 +1,47 @@
+name: Bug report
+description: Something is broken or behaving unexpectedly.
+title: "bug: <short summary>"
+labels: ["bug", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report. Security issues should go to
+        security@ai-company.sa instead.
+  - type: input
+    id: env
+    attributes:
+      label: Environment
+      description: Output of `GET /api/v1/status` `.env` + `.version`
+      placeholder: prod / v3.1.0
+    validations:
+      required: true
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened?
+      description: Concrete, observed behavior — not the cause.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What did you expect?
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Open …
+        2. Click …
+        3. See …
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs / request IDs
+      description: Use `X-Request-ID` headers when possible.
+      render: shell

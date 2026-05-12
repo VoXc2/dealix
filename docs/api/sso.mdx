@@ -1,0 +1,42 @@
+---
+title: Enterprise SSO
+description: SAML/OIDC + Magic Link + SCIM via WorkOS.
+---
+
+WorkOS sits in front of the existing JWT auth path **only for enterprise
+tenants** that have configured an Admin Portal. Free / starter tenants
+continue to use email + password + MFA via `/api/v1/auth/*`.
+
+## Start
+
+```http
+GET /api/v1/auth/sso/start?org_id=org_workos_xxx&state=...
+```
+
+302 redirects to `https://api.workos.com/sso/authorize?...`. The IdP
+posts back to `/auth/sso/callback`.
+
+## Callback
+
+```http
+GET /api/v1/auth/sso/callback?code=...
+```
+
+We exchange the code, look up the tenant by
+`meta_json.workos_org_id`, upsert the user, and mint a normal Dealix
+JWT pair via the existing `issue_token_pair` helper.
+
+## Admin Portal link
+
+```http
+POST /api/v1/auth/sso/admin-portal
+{ "organization_id": "org_workos_xxx", "intent": "sso" }
+```
+
+Returns a one-time URL the customer's IT admin uses to configure their
+IdP. Also covers SCIM Directory Sync (`intent: "dsync"`).
+
+## Inert without keys
+
+When `WORKOS_API_KEY` + `WORKOS_CLIENT_ID` are unset, every endpoint
+returns `503 sso_disabled`. The frontend SSO button degrades to a toast.

@@ -1,0 +1,33 @@
+---
+title: Realtime stream (SSE)
+description: One Server-Sent-Events stream per tenant for live dashboards.
+---
+
+```http
+GET /api/v1/realtime/stream
+Accept: text/event-stream
+```
+
+Events:
+
+| event | when |
+| --- | --- |
+| `hello` | First message on connect. Includes `tenant_id`. |
+| `heartbeat` | Every 30 s to keep proxies from closing the connection. |
+| `update` | When something published to `dealix:rt:{tenant_id}` on Redis. The payload is the JSON message from the publisher. |
+
+## Authentication
+
+Browsers can't send custom headers via `EventSource`; pass the access
+token as `?access_token=...`. The middleware resolves `tenant_id`
+either way.
+
+## Why SSE over WebSocket
+
+- Plain HTTP/1.1 — works through Railway / Cloudflare without WS upgrade.
+- One-way fits our update model (server → client).
+- Browser auto-reconnects via `EventSource`.
+
+When Redis is unavailable, the endpoint still returns `text/event-stream`
+with hello + heartbeat events; we never 5xx a client purely because the
+pub/sub layer is down.

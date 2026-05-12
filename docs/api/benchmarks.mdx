@@ -1,0 +1,25 @@
+---
+title: Sector benchmarks
+description: How your numbers compare to peer Saudi B2B sectors.
+---
+
+```http
+GET /api/v1/benchmarks/sector
+```
+
+```json
+{
+  "source": "tinybird",
+  "rows": [
+    { "sector": "real-estate", "metric": "reply_rate", "customer_value": 12.4,
+      "p50": 9.0, "p75": 14.0, "p90": 21.0, "unit": "%" }
+  ]
+}
+```
+
+When Tinybird is unconfigured the endpoint falls back to
+`auto_client_acquisition.customer_success.benchmarks.saudi_b2b_pulse`,
+which produces the same shape from internal aggregates.
+
+Minimum cohort: 5 customers per sector before a row is exposed
+(re-identification guard).

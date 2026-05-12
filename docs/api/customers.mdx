@@ -1,0 +1,77 @@
+---
+title: Customers
+description: Tenant data plane — summary KPIs, subscription state, invoices, and team management.
+---
+
+All endpoints are `/api/v1/customers/{tenant_id}/...` and require an
+authenticated principal whose `tenant_id` matches the path, unless the
+caller is a system super-admin.
+
+## Summary
+
+```http
+GET /api/v1/customers/{tenant_id}/summary
+```
+
+Returns:
+
+```json
+{
+  "tenant_id": "ten_abc",
+  "users_active": 12,
+  "leads_total": 320,
+  "leads_7d": 41,
+  "deals_open": 8,
+  "deals_won_30d": 3,
+  "last_active_at": "2026-05-12T08:14:00Z"
+}
+```
+
+Falls back to zero values when the underlying tables are absent (test
+/ dev environments) so the dashboard never breaks.
+
+## Subscription
+
+```http
+GET /api/v1/customers/{tenant_id}/subscription
+```
+
+```json
+{
+  "tenant_id": "ten_abc",
+  "plan": "growth",
+  "status": "active",
+  "currency": "SAR",
+  "max_users": 25,
+  "max_leads_per_month": 5000,
+  "renewal_at": "2027-04-23T00:00:00Z",
+  "billing_provider": "moyasar"
+}
+```
+
+## Invoices
+
+```http
+GET /api/v1/customers/{tenant_id}/invoices
+```
+
+Reads `AuditLogRecord` rows where `entity_type='invoice'` (Moyasar +
+Stripe webhooks write these). A first-class `InvoiceRecord` table is on
+the T4 roadmap.
+
+## Team management
+
+| Method | Path | Action |
+| --- | --- | --- |
+| `GET` | `/team/members` | List active + pending invites. |
+| `POST` | `/team/invite` | Issue a single-use invite token. Seat cap enforced from `tenant.max_users`. |
+| `DELETE` | `/team/members/{user_id}` | Soft-delete the user (`is_active=False`, `deleted_at` set). |
+
+Invites use a SHA-256-hashed token; the raw URL is returned once in the
+response and never persisted.
+
+## Audit
+
+Every mutation in this router writes an `AuditLogRecord` with
+`entity_type` of `user_invite` or `user` (see
+`docs/api/audit-logs.mdx`).

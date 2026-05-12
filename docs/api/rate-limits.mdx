@@ -1,0 +1,27 @@
+---
+title: Rate limits
+description: Per-bucket caps enforced by slowapi.
+---
+
+| Bucket | Limit |
+| --- | --- |
+| Leads | 10 / min |
+| Sales | 30 / min |
+| WhatsApp | 100 / min |
+| Generic | 60 / min |
+| Global ceiling | 1 000 / min |
+
+## Response headers
+
+| Header | Meaning |
+| --- | --- |
+| `X-RateLimit-Limit` | Cap for this bucket. |
+| `X-RateLimit-Remaining` | Tokens left. |
+| `X-RateLimit-Reset` | Epoch seconds until the bucket refills. |
+| `Retry-After` | Seconds to wait when a 429 is returned. |
+
+## Lifting a limit
+
+Procurement-grade customers can request a per-tenant override; we set
+the bucket in PostHog feature-flag overrides keyed by `tenant_id`.
+Contact support@ai-company.sa with the contract reference.

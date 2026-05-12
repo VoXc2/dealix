@@ -1,0 +1,31 @@
+---
+title: PDPL Data Subject Rights
+description: Saudi PDPL Article 22/23 — access, correction, deletion, portability.
+---
+
+The DSR API is the Saudi equivalent of GDPR's data-subject endpoints.
+Every request produces an `AuditLogRecord(entity_type=dsr_request)` row
+and notifies the DPO via Knock.
+
+| Method | Path | Purpose |
+| --- | --- | --- |
+| `POST` | `/api/v1/pdpl/dsr/access` | Request a data-export bundle. |
+| `GET` | `/api/v1/pdpl/dsr/access/{id}` | Status + download link. |
+| `POST` | `/api/v1/pdpl/dsr/delete` | Request deletion (DPO-gated). |
+| `GET` | `/api/v1/pdpl/dsr/portability` | JSON dump of the caller's tenant. |
+| `GET` | `/api/v1/pdpl/dsr/requests` | List outstanding requests. |
+
+## Delete policy
+
+Hard deletes are gated on a 14-day grace period; the call returns
+`status: queued_for_dpo_review`. A `tenant.delete` action lands in the
+audit log immediately so the timing is provable.
+
+## Portability shape
+
+The JSON returned by `/portability` contains:
+- `tenant` — name, plan, currency, created_at.
+- `users` — id / email / name / created_at.
+- `leads` — id / company_name / sector / status / created_at (capped 5000).
+
+Future versions add deals, audit_logs, and CRM-side records when wired.
