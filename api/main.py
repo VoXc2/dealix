@@ -226,9 +226,19 @@ def create_app() -> FastAPI:
     try:
         from dealix.observability import instrument_fastapi, setup_sentry, setup_tracing
 
+        # T5e — point OTel at HyperDX when configured; otherwise the
+        # default OTLP destination wins. Logfire + Prometheus are
+        # additive.
+        from dealix.observability.hyperdx import configure_hyperdx
+        from dealix.observability.logfire import setup_logfire
+        from dealix.observability.prometheus import attach as attach_prometheus
+
+        configure_hyperdx()
         setup_sentry()
         setup_tracing(service_name=settings.app_name, version=settings.app_version)
         instrument_fastapi(app)
+        setup_logfire()
+        attach_prometheus(app)
     except Exception:  # pragma: no cover
         pass
 
