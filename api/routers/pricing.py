@@ -160,6 +160,10 @@ async def moyasar_webhook(req: Request) -> dict[str, Any]:
             status,
             payment.get("amount"),
         )
+        # T13b — on success, fire the post-payment receipt email with
+        # a signed link to the invoice download. Best-effort; never raises.
+        if status in {"paid", "succeeded"}:
+            await _send_receipt_email_best_effort(payment, body)
         # TODO: sync to HubSpot via ConnectorFacade in D+2 E2E test
         return {"status": "ok", "event_id": event_id, "event_type": event_type}
     except Exception as exc:
@@ -172,3 +176,75 @@ async def moyasar_webhook(req: Request) -> dict[str, Any]:
         )
         # Still 200 so Moyasar doesn't retry forever; we own replay via DLQ.
         return {"status": "dlq", "event_id": event_id}
+
+
+async def _send_receipt_email_best_effort(
+    payment: dict[str, Any], full_body: dict[str, Any]
+) -> None:
+    """Fire the post-payment receipt email. Never raises.
+
+    Pulls the customer handle from the Moyasar metadata (we stamp it in
+    `create_invoice` for every checkout). Builds a signed download URL
+    via `billing_invoices.sign_invoice_token` so the email links work
+    before the customer logs in.
+    """
+    try:
+        meta = payment.get("metadata") or {}
+        buyer_email = (
+            meta.get("email")
+            or meta.get("buyer_email")
+            or payment.get("source", {}).get("email")
+            or ""
+        ).strip()
+        if not buyer_email or "@" not in buyer_email:
+            log.info("receipt_email_skipped_no_buyer_email")
+            return
+        invoice_id = str(payment.get("id") or full_body.get("id") or "")
+        if not invoice_id:
+            return
+        from api.routers.billing_invoices import sign_invoice_token
+        from integrations.email import EmailClient
+
+        token = sign_invoice_token(invoice_id)
+        app_url = os.getenv("APP_URL", "https://dealix.me").rstrip("/")
+        invoice_url = f"{app_url}/api/v1/billing/invoices/{invoice_id}?t={token}"
+        plan = meta.get("plan") or meta.get("tier") or "Dealix subscription"
+        amount_sar = (payment.get("amount") or 0) / 100
+
+        subject_ar = f"إيصال Dealix — فاتورة {invoice_id}"
+        body_ar = (
+            f"شكراً لإتمام الدفع.\n\n"
+            f"تفاصيل العملية:\n"
+            f"- رقم الفاتورة: {invoice_id}\n"
+            f"- المبلغ: {amount_sar:.2f} ر.س\n"
+            f"- الخطة: {plan}\n\n"
+            f"تحميل الفاتورة (ZATCA Phase 2):\n{invoice_url}\n\n"
+            f"يصلك إيميل الترحيب وتعليمات تسجيل الدخول خلال دقائق.\n"
+            f"إن لم يصل، راجع spam أو راسلنا على support@ai-company.sa.\n\n"
+            f"— فريق Dealix"
+        )
+        body_html = (
+            f"<p>شكراً لإتمام الدفع.</p>"
+            f"<ul>"
+            f"<li><strong>رقم الفاتورة:</strong> {invoice_id}</li>"
+            f"<li><strong>المبلغ:</strong> {amount_sar:.2f} ر.س</li>"
+            f"<li><strong>الخطة:</strong> {plan}</li>"
+            f"</ul>"
+            f'<p><a href="{invoice_url}" '
+            f'style="background:#10b981;color:white;padding:10px 18px;'
+            f'border-radius:8px;text-decoration:none">'
+            f"تحميل الفاتورة (ZATCA Phase 2)</a></p>"
+            f"<p style='color:#64748b;font-size:.9rem'>"
+            f"يصلك إيميل الترحيب وتعليمات تسجيل الدخول خلال دقائق.</p>"
+        )
+
+        await EmailClient().send(
+            to=buyer_email,
+            subject=subject_ar,
+            body_text=body_ar,
+            body_html=body_html,
+            reply_to="support@ai-company.sa",
+        )
+        log.info("receipt_email_sent", invoice_id=invoice_id)
+    except Exception:
+        log.exception("receipt_email_failed")
