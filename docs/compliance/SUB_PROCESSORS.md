@@ -39,6 +39,28 @@ Last updated: 2026-05-12.
 | Langfuse | LLM observability | EU | 2026-04-23 | Active |
 | PagerDuty | On-call + incident comms | USA | 2026-05-12 | Active |
 | PostHog | Product analytics + flags + surveys | USA | 2026-04-23 | Active |
+| Voyage AI | Multilingual embeddings (RAG) | USA | 2026-05-22 | Active (optional) |
+| Cohere | Multilingual embeddings + rerank (RAG) | Canada | 2026-05-22 | Active (optional) |
+| Deepgram | Speech-to-text (voice) | USA | 2026-05-22 | Active (optional) |
+| AssemblyAI | Speech-to-text fallback | USA | 2026-05-22 | Active (optional) |
+| ElevenLabs | Text-to-speech (Arabic Khaliji) | USA | 2026-05-22 | Active (optional) |
+| Cartesia | Text-to-speech fallback | USA | 2026-05-22 | Active (optional) |
+| Vapi | Voice agent orchestration (SIP) | USA | 2026-05-22 | Active (optional) |
+| Unifonic | Saudi SIP + SMS carrier | KSA | 2026-05-22 | Active (optional) |
+| Nafath / Absher | Saudi national identity authentication | KSA | upon licence | Pending regulator |
+| Yakeen (Elm) | Saudi identity verification | KSA | upon licence | Pending regulator |
+| Tap Payments | Pan-GCC card payments | Kuwait | 2026-05-22 | Active (optional) |
+| Tabby | BNPL (Saudi/UAE/Kuwait) | UAE | 2026-05-22 | Active (optional) |
+| Tamara | BNPL (Saudi/UAE) | KSA | 2026-05-22 | Active (optional) |
+| Salla | Saudi e-commerce orders sync | KSA | 2026-05-22 | Active (optional) |
+| Zid | Saudi e-commerce orders sync | KSA | 2026-05-22 | Active (optional) |
+| SAMA Open Banking | Account-information services | KSA | upon licence | Pending regulator |
+| HyperDX | OTLP-native observability | USA | 2026-05-22 | Active (optional) |
+| Highlight.io | Session replay | USA | 2026-05-22 | Active (optional) |
+| Meilisearch | In-app full-text search | France | 2026-05-22 | Active (optional) |
+| Memgraph | Knowledge graph (relationship modelling) | UK | 2026-05-22 | Active (optional) |
+| Snyk | Daily vulnerability + container scan | Israel | 2026-05-22 | Active (optional) |
+| Cloudflare Turnstile | Bot protection on public forms | USA | 2026-05-22 | Active (optional) |
 
 ## Process for changes
 

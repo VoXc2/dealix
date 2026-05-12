@@ -133,6 +133,46 @@ mutmut>=2.5
 # fallback in core/llm/guardrails.py provides equivalent checks.
 guardrails-ai>=0.6 ; python_version >= "3.10"
 
+# ──────────────────────────────────────────────────────────────────
+# T5 — AI excellence + Saudi sovereignty deep + platform power
+# Every package below is OPTIONAL — modules import-guard and
+# degrade to no-op when the SDK isn't installed.
+# ──────────────────────────────────────────────────────────────────
+
+# AI agent framework (T5a)
+langchain>=0.3
+langgraph>=0.2
+crewai>=0.55
+dspy-ai>=2.5
+litellm>=1.55
+instructor>=1.5
+outlines>=0.1
+mcp>=1.0
+agentops>=0.3
+arize-phoenix>=4.0
+deepeval>=1.3
+
+# RAG (T5b)
+voyageai>=0.3
+cohere>=5.13
+llama-index>=0.12
+
+# Voice (T5c)
+# (no Python SDKs strictly required — REST via httpx; Whisper goes
+# through openai's existing SDK.)
+
+# Observability deep (T5e)
+logfire>=2.6
+prometheus-fastapi-instrumentator>=7.0
+
+# Search + graph (T5f)
+meilisearch>=0.32
+mgclient>=1.4
+duckdb>=1.1
+
+# Platform polish (T5g)
+strawberry-graphql[fastapi]>=0.235
+
 # Tinybird embedded analytics — we hit REST directly; no SDK needed.
 
 # Loops, Knock, BetterStack, Plain, Apollo, Clearbit, Wathq, Tinybird:

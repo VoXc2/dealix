@@ -1,5 +1,61 @@
 # Changelog
 
+## [3.3.0] — 2026-05-22
+
+T5 — AI excellence + Saudi sovereignty deep + platform power. 8 more
+commits beyond v3.2.0 turn Dealix into the AI-native operating system
+the founder pitched: agent framework, RAG knowledge layer, Arabic
+voice channel, Saudi national integrations, deeper observability,
+search + time-series + graph, polish + safety + mobile skeleton.
+
+### T5a — AI agent framework
+LangChain + LangGraph + DSPy + LiteLLM + Instructor/Outlines + MCP
+server exposing Dealix as a Claude Desktop tool + AgentOps/Phoenix
++ DeepEval. Reference graph: dealix-proposal-draft as a 5-node
+StateGraph with checkpointed state.
+
+### T5b — RAG knowledge layer
+pgvector + migration 006 + KnowledgeDocument/Chunk models. Voyage v3
+→ Cohere multilingual v3 → OpenAI 3-small embed chain. Cohere Rerank
+top-N. LlamaIndex sentence splitter when installed; naive fallback.
+`/api/v1/knowledge/{ingest,search,list,delete}` with PDPL DSR cascade.
+
+### T5c — Voice channel
+Deepgram → Whisper → AssemblyAI STT chain. ElevenLabs → Cartesia TTS.
+Vapi voice agent + Unifonic Saudi SIP/SMS upstream.
+`/api/v1/voice/{inbound,outbound,transcripts}`.
+
+### T5d — Saudi sovereignty deep
+Nafath + Yakeen identity clients. Tap + Tabby + Tamara payment
+clients. Salla + Zid e-commerce connectors. SAMA Open Banking AIS
+stub. `docs/strategic/VISION_2030_ALIGNMENT.md` traceability matrix.
+
+### T5e — Observability deep
+HyperDX OTLP exporter, Logfire structured logs, Highlight consent
+gate, Prometheus `/metrics` via prometheus-fastapi-instrumentator.
+
+### T5f — Search + data
+Meilisearch per-tenant indexes with Postgres ILIKE fallback.
+TimescaleDB hypertable migration 007 + ActivityEventRecord. Memgraph
+knowledge-graph stub. DuckDB read-only admin warehouse query.
+
+### T5g — Platform polish
+Renovate weekly PRs. Snyk daily scans (Python + Node + Docker).
+axe-core a11y workflow. Strawberry GraphQL opt-in gateway. In-app
+HelpCenter drawer. WorkspaceSwitcher for agency partners. Expo
+mobile skeleton. Postman collection builder.
+
+### Closing
+requirements.txt + .env.example + 22 sub-processors + QA_REVIEW T5
+addendum + CHANGELOG.
+
+### T5 — still founder-owned
+Regulator-issued credentials (Nafath / Yakeen / SAMA OB). Vendor
+sign-ups (Voyage / Cohere / Deepgram / ElevenLabs / Vapi / Tap /
+Tabby / Tamara / HyperDX / Highlight / Logfire / Snyk / Cloudflare
+Turnstile / Salla / Zid / Meilisearch / Memgraph). Expo EAS account.
+Mintlify hosting + Fern publish tokens.
+
 ## [3.2.0] — 2026-05-12
 
 T4 — end-to-end closure. 8 commits making everything cohere: tests,

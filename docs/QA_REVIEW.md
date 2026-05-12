@@ -398,3 +398,89 @@ CI coverage gate raised 70 → 75%. This addendum. CHANGELOG v3.2.0 entry.
 - Production Cerbos PDP + Inngest Cloud deploy.
 - ISO 27001 audit kick-off.
 - Real Mintlify hosting + tag-triggered Fern SDK publish.
+
+---
+
+## T5 addendum — AI excellence + Saudi sovereignty deep + platform power (8 commits)
+
+After T4, Dealix is a polished commercial SaaS. T5 turns it into an
+**AI-native operating system + Saudi-sovereign moat + extensible
+platform** — the three things competitors can't copy in six months.
+
+### T5a — AI agent framework (`feat(agents)`)
+
+LangGraph state graphs (`dealix/agents/graphs/proposal_draft.py` is
+the reference); DSPy optimiser scaffold (`dealix/agents/optimise/run.py`);
+LiteLLM universal SDK (`dealix/llm/litellm_gateway.py`);
+Instructor/Outlines typed output adapter (`dealix/llm/typed_output.py`);
+Anthropic Model-Context-Protocol server (`dealix/mcp/server.py`) so
+the customer's Claude Desktop can call Dealix tools natively.
+
+### T5b — RAG knowledge layer (`feat(rag)`)
+
+pgvector tables + migration 006 (single head). Voyage → Cohere →
+OpenAI embedding chain (`dealix/rag/embeddings.py`). Cohere Rerank
+top-N (`dealix/rag/rerank.py`). LlamaIndex sentence splitter with
+naive fallback (`dealix/rag/ingest.py`). `/api/v1/knowledge/*`
+router with PDPL DSR-aware cascade. `docs/llm/rag.md` architecture +
+Ragas eval procedure.
+
+### T5c — Voice channel (`feat(voice)`)
+
+Deepgram → Whisper → AssemblyAI STT chain (`dealix/voice/stt.py`).
+ElevenLabs → Cartesia TTS chain (`dealix/voice/tts.py`). Vapi voice
+agent orchestration + Unifonic Saudi SIP/SMS upstream
+(`dealix/voice/{vapi,unifonic}_client.py`).
+`/api/v1/voice/{inbound,outbound,transcripts}` router.
+
+### T5d — Saudi sovereignty deep (`feat(saudi-deep)`)
+
+Nafath + Yakeen identity clients (`dealix/identity/{nafath,yakeen}_client.py`).
+Tap + Tabby + Tamara payment clients
+(`dealix/payments/{tap,tabby,tamara}_client.py`). Salla + Zid
+e-commerce connectors (`dealix/connectors/{salla,zid}_client.py`).
+SAMA Open Banking AIS stub (`dealix/integrations/sama_open_banking.py`).
+`docs/strategic/VISION_2030_ALIGNMENT.md` traceability matrix.
+
+### T5e — Observability deep (`feat(observability+)`)
+
+HyperDX OTLP exporter, Logfire structured logs, Highlight consent
+gate, Prometheus `/metrics` via prometheus-fastapi-instrumentator
+(`dealix/observability/{hyperdx,logfire,highlight,prometheus}.py`).
+
+### T5f — Search + data (`feat(search+data)`)
+
+Meilisearch per-tenant indexes with Postgres ILIKE fallback
+(`dealix/search/meilisearch_client.py`, `api/routers/search.py`).
+TimescaleDB hypertable migration 007 + `ActivityEventRecord` model.
+Memgraph knowledge-graph stub (`dealix/graph/memgraph_client.py`).
+DuckDB read-only admin warehouse query (`api/routers/admin_duckdb.py`).
+
+### T5g — Platform polish (`feat(platform-polish)`)
+
+Renovate weekly grouped PRs (`renovate.json5`). Snyk daily scans
+(Python + Node + Docker) — `.github/workflows/snyk.yml`. axe-core
+a11y workflow — `.github/workflows/a11y.yml`. Strawberry GraphQL
+opt-in gateway (`api/routers/graphql.py`). HelpCenter drawer +
+WorkspaceSwitcher (frontend). Expo mobile skeleton (`mobile/`).
+Postman collection builder (`scripts/dev/build_postman_collection.py`).
+
+### Closing chore (`chore(t5)`)
+
+requirements.txt T5 pins. `.env.example` T5 block. Sub-processors
+extended with 22 new optional vendors. This addendum.
+CHANGELOG v3.3.0.
+
+### T5 — still founder-owned
+
+- Nafath / Yakeen production credentials (regulator-issued).
+- SAMA Open Banking participant licence.
+- Vendor accounts: Voyage / Cohere / Deepgram / AssemblyAI /
+  ElevenLabs / Cartesia / Vapi / Unifonic / Tap / Tabby / Tamara /
+  Salla / Zid / HyperDX / Logfire / Highlight / Meilisearch /
+  Memgraph / Snyk / Cloudflare Turnstile.
+- Expo EAS account for App Store / Play submission.
+- Production GraphQL toggle + LiteLLM proxy URL.
+
+Every T5 integration ships **inert by default**: paste keys in
+`.env` → restart → feature lights up. No further engineering needed.
