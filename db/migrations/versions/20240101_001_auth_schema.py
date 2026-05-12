@@ -1,7 +1,7 @@
 """auth schema - tenants, users, roles, refresh tokens, invites
 
 Revision ID: 001
-Revises: 
+Revises: 0001
 Create Date: 2024-01-01 00:00:00.000000
 
 Changes:
@@ -20,7 +20,9 @@ from alembic import op
 
 # revision identifiers, used by Alembic.
 revision: str = "001"
-down_revision: Union[str, None] = None
+# Chains onto 0001_uuid_softdelete_indexes so `alembic heads` returns a single
+# head and `alembic upgrade head` is unambiguous on a fresh database.
+down_revision: Union[str, None] = "0001"
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 

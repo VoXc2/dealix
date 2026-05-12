@@ -29,7 +29,7 @@ from api.routers.domains import customers as customers_domain
 from api.routers.domains import deprecated as deprecated_domain
 from api.routers.domains import sales as sales_domain
 from api.routers.domains import webhooks as webhooks_domain
-from api.routers import auth, jobs, pdpl, zatca
+from api.routers import auth, jobs, partners, pdpl, trial, zatca
 # Wave 12.7 — Intelligence Layer + Expansion Engine routers
 from api.routers import expansion_engine as expansion_engine_router
 from api.routers import intelligence_layer as intelligence_layer_router
@@ -76,6 +76,18 @@ def _validate_production_secrets(settings: "Settings") -> None:  # type: ignore[
             "SECURITY: ADMIN_API_KEYS is empty in production. "
             "Set a comma-separated list of admin API keys for /api/v1/admin/* endpoints."
         )
+    if not os.getenv("DATABASE_URL", "").strip() and not os.getenv("DATABASE_DSN", "").strip():
+        raise RuntimeError(
+            "INFRA: DATABASE_URL (or DATABASE_DSN) is empty in production. "
+            "Set a Postgres connection string."
+        )
+    if not (
+        os.getenv("ANTHROPIC_API_KEY", "").strip()
+        or os.getenv("OPENAI_API_KEY", "").strip()
+    ):
+        raise RuntimeError(
+            "LLM: at least one of ANTHROPIC_API_KEY or OPENAI_API_KEY must be set in production."
+        )
 
 
 @asynccontextmanager
@@ -94,6 +106,15 @@ async def lifespan(_app: FastAPI) -> AsyncIterator[None]:
         version=settings.app_version,
         env=settings.app_env,
     )
+    # Production observability pre-flight (warn but never fail).
+    if settings.is_production:
+        import os
+        if not os.getenv("SENTRY_DSN", "").strip():
+            log.warning(
+                "observability_misconfigured",
+                missing="SENTRY_DSN",
+                impact="production_errors_will_not_be_captured",
+            )
     # Auto-create tables ONLY in development/test — in staging/production
     # run `alembic upgrade head` instead (init_db create_all is excluded).
     if settings.app_env in ("development", "test"):
@@ -196,6 +217,10 @@ def create_app() -> FastAPI:
     app.include_router(jobs.router, prefix="/api/v1")
     app.include_router(zatca.router)
     app.include_router(pdpl.router)
+    # Trial + partner-deal capture (self-prefixed). Unblocks GTM motion
+    # while Moyasar KYC is pending — see docs/product/CORE_WORKFLOWS.md.
+    app.include_router(trial.router)
+    app.include_router(partners.router)
 
     # ── Wave 12.7 — Intelligence Layer + Expansion Engine ─────────
     # Both routers self-prefix /api/v1/intelligence and /api/v1/expansion-engine.

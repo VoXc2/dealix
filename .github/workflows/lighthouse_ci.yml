@@ -55,6 +55,8 @@ jobs:
           LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
         run: |
           lhci autorun --config=./lighthouserc.js || echo "Lighthouse failed — see report artifact"
+        # TODO(sunset:2026-06-30): remove continue-on-error once Tier-1 pages
+        # clear ≤5 a11y violations consistently. See docs/QA_REVIEW.md P1.4.
         continue-on-error: true
 
       - name: Stop server
