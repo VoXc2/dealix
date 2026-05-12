@@ -39,7 +39,18 @@ async def live() -> dict[str, str]:
 
 @router.get("/health/deep")
 async def health_deep() -> dict[str, object]:
-    """Deep health check — verifies DB, Redis, LLM providers."""
+    """Deep health check — verifies DB, Redis, LLM providers, DLQ depths, Sentry.
+
+    Returns:
+      - status: "ok" | "degraded" | "down"
+      - checks: per-dependency status with latency
+      - version: app version + git SHA
+
+    Used by:
+      - /healthz polling (UptimeRobot, Railway health-check) for surface check
+      - deploy runbook Phase 4 post-deploy smoke (W5.4)
+      - preflight_check.py R8 Sentry validator (W5.2)
+    """
     import os
     import time
 
@@ -63,21 +74,64 @@ async def health_deep() -> dict[str, object]:
         checks["postgres"] = {"status": "fail", "error": str(e)[:200]}
         overall = "degraded"
 
-    # Redis
+    # Redis (ping)
     t0 = time.perf_counter()
+    redis_client = None
     try:
         import redis  # type: ignore
 
         url = os.getenv("REDIS_URL")
         if url:
-            r = redis.from_url(url, socket_timeout=3)
-            r.ping()
+            redis_client = redis.from_url(url, socket_timeout=3, decode_responses=True)
+            redis_client.ping()
             checks["redis"] = {"status": "ok", "ms": round((time.perf_counter() - t0) * 1000, 1)}
         else:
             checks["redis"] = {"status": "skip", "reason": "no REDIS_URL"}
     except Exception as e:  # pragma: no cover
         checks["redis"] = {"status": "fail", "error": str(e)[:200]}
         overall = "degraded"
+
+    # DLQ depths (4 production queues — kept in sync with preflight_check.py P7)
+    if redis_client is not None:
+        try:
+            queues = ["webhooks", "outbound", "enrichment", "crm_sync"]
+            depths: dict[str, int] = {}
+            over_threshold: list[str] = []
+            for q in queues:
+                try:
+                    depths[q] = int(redis_client.llen(f"dlq:{q}") or 0)
+                except Exception:
+                    depths[q] = -1
+                if depths[q] > 5:
+                    over_threshold.append(q)
+            checks["dlq"] = {
+                "status": "ok" if not over_threshold else "degraded",
+                "depths": depths,
+                "over_threshold": over_threshold,
+            }
+            if over_threshold:
+                overall = "degraded"
+        except Exception as e:  # pragma: no cover
+            checks["dlq"] = {"status": "fail", "error": str(e)[:200]}
+
+    # Sentry status (DSN configured & sentry_sdk importable)
+    try:
+        import sentry_sdk  # type: ignore
+        dsn = os.getenv("SENTRY_DSN", "")
+        # Validate DSN structure to match preflight R8 logic
+        if dsn:
+            from urllib.parse import urlparse
+            host = (urlparse(dsn).hostname or "").lower()
+            sentry_ok = host == "ingest.sentry.io" or host.endswith(".ingest.sentry.io")
+            checks["sentry"] = {
+                "status": "ok" if sentry_ok else "misconfigured",
+                "host": host,
+                "client_active": sentry_sdk.Hub.current.client is not None,
+            }
+        else:
+            checks["sentry"] = {"status": "skip", "reason": "no SENTRY_DSN"}
+    except ImportError:
+        checks["sentry"] = {"status": "skip", "reason": "sentry_sdk not installed"}
 
     # LLM providers
     providers = [p.value for p in get_model_router().available_providers()]
@@ -89,8 +143,15 @@ async def health_deep() -> dict[str, object]:
 
 
 @router.get("/healthz", include_in_schema=False)
-async def healthz() -> dict[str, str]:
-    """Standard healthz alias for UptimeRobot/K8s probes."""
+async def healthz(deep: bool = False) -> dict[str, object]:
+    """Standard healthz alias for UptimeRobot/K8s probes.
+
+    By default returns a tiny payload for low-latency liveness probes.
+    Pass ?deep=1 to get the same payload as /health/deep — useful for
+    post-deploy smoke checks (deploy runbook Phase 4).
+    """
+    if deep:
+        return await health_deep()
     return {"status": "ok", "service": "dealix"}
 
 
