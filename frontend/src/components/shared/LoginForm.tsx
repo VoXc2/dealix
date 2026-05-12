@@ -142,6 +142,27 @@ export function LoginForm() {
               </Link>
             </p>
           </div>
+
+          {/* Enterprise SSO entry — visible always; the API replies 503
+              sso_disabled when WORKOS keys aren't set so the button
+              shows a graceful toast in that case. */}
+          <div className="mt-4 border-t border-white/10 pt-4">
+            <button
+              type="button"
+              onClick={async () => {
+                const apiBase =
+                  process.env.NEXT_PUBLIC_API_BASE ||
+                  (window as any).__DEALIX_API_BASE__ ||
+                  "";
+                const orgId = window.prompt(isAr ? "معرّف المؤسسة (WorkOS):" : "Organisation ID (WorkOS):");
+                if (!orgId) return;
+                window.location.href = `${apiBase}/api/v1/auth/sso/start?org_id=${encodeURIComponent(orgId)}`;
+              }}
+              className="w-full text-sm py-2 rounded-lg border border-white/10 hover:bg-white/5 transition"
+            >
+              {isAr ? "تسجيل دخول SSO (للمؤسسات)" : "Sign in with SSO (enterprise)"}
+            </button>
+          </div>
         </div>
 
         {/* Demo note */}

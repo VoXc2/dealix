@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { ThemeProvider } from "next-themes";
 import { routing } from "@/i18n/routing";
 import { AuthProvider } from "@/lib/hooks/useAuth";
+import { Providers } from "@/components/Providers";
 import { Toaster } from "sonner";
 
 interface LocaleLayoutProps {
@@ -39,15 +40,17 @@ export default async function LocaleLayout({
         >
           <NextIntlClientProvider messages={messages}>
             <AuthProvider>
-              {children}
-              <Toaster
-                position={isRTL ? "bottom-left" : "bottom-right"}
-                toastOptions={{
-                  style: {
-                    fontFamily: "'Noto Sans Arabic', sans-serif",
-                  },
-                }}
-              />
+              <Providers>
+                {children}
+                <Toaster
+                  position={isRTL ? "bottom-left" : "bottom-right"}
+                  toastOptions={{
+                    style: {
+                      fontFamily: "'Noto Sans Arabic', sans-serif",
+                    },
+                  }}
+                />
+              </Providers>
             </AuthProvider>
           </NextIntlClientProvider>
         </ThemeProvider>
