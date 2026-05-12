@@ -104,44 +104,146 @@ async def _persist_payment_event(
 
 
 # Prices in halalas (SAR x 100). Hidden from landing — only exposed when a lead qualifies.
+# Plan kinds:
+#   "subscription" — recurring monthly Moyasar invoice
+#   "one_off"      — single charge (e.g. pilot)
+#   "metered"      — billed per usage event (LaaS R3 model)
 PLANS: dict[str, dict[str, Any]] = {
     "starter": {
         "name": "Starter",
         "amount_halalas": 99900,
         "monthly": True,
+        "kind": "subscription",
     },  # 999 SAR/mo
     "growth": {
         "name": "Growth",
         "amount_halalas": 299900,
         "monthly": True,
+        "kind": "subscription",
     },  # 2,999 SAR/mo
     "scale": {
         "name": "Scale",
         "amount_halalas": 799900,
         "monthly": True,
+        "kind": "subscription",
     },  # 7,999 SAR/mo
+    "pilot_managed": {
+        "name": "Managed Pilot (7 days)",
+        "amount_halalas": 49900,
+        "monthly": False,
+        "kind": "one_off",
+    },  # 499 SAR one-off — founder-led pilot per v4 §3 R1
+    "laas_per_reply": {
+        "name": "Lead-as-a-Service · Per Reply",
+        "amount_halalas": 2500,
+        "monthly": False,
+        "kind": "metered",
+        "unit": "arabic_replied_lead",
+    },  # 25 SAR per Arabic-replied lead
+    "laas_per_demo": {
+        "name": "Lead-as-a-Service · Per Demo",
+        "amount_halalas": 15000,
+        "monthly": False,
+        "kind": "metered",
+        "unit": "booked_demo",
+    },  # 150 SAR per booked demo
     "pilot_1sar": {
         "name": "Pilot (1 SAR)",
         "amount_halalas": 100,
         "monthly": False,
+        "kind": "one_off",
     },  # E2E test transaction
 }
 
 
 @router.get("/api/v1/pricing/plans")
 async def list_plans() -> dict[str, Any]:
-    """List available plans. Not linked from landing — required for approval-gated quotes."""
+    """List available plans. Not linked from landing — required for approval-gated quotes.
+
+    Hides `pilot_1sar` (E2E test plan only). Surfaces all other plans including
+    one-off pilot, metered LaaS plans, and recurring subscriptions.
+    """
+    hidden = {"pilot_1sar"}
+    plans = {}
+    for k, v in PLANS.items():
+        if k in hidden:
+            continue
+        entry = {
+            "name": v["name"],
+            "amount_sar": v["amount_halalas"] / 100,
+            "monthly": v["monthly"],
+            "kind": v.get("kind", "subscription"),
+        }
+        if v.get("unit"):
+            entry["unit"] = v["unit"]
+        plans[k] = entry
+    return {"currency": "SAR", "plans": plans}
+
+
+@router.post("/api/v1/pricing/usage")
+async def record_usage(req: Request) -> dict[str, Any]:
+    """Record a metered-billing usage event for LaaS R3 plans.
+
+    Body:
+      {
+        "plan": "laas_per_reply" | "laas_per_demo",
+        "customer_handle": "<tenant handle>",
+        "event_id": "<idempotency key, e.g. lead_msg_id>",
+        "lead_id": "<optional>",
+        "metadata": {...}
+      }
+
+    This endpoint records the event for downstream invoicing. For the
+    first 5 customers, invoicing is processed manually from the recorded
+    events (see docs/ops/LAAS_DELIVERY_RUNBOOK.md). Automation moves the
+    accumulation step to a scheduled job once volume justifies it.
+
+    Idempotency: the same event_id never produces a duplicate charge.
+    """
+    body = await req.json()
+    plan = str(body.get("plan") or "").lower()
+    customer_handle = str(body.get("customer_handle") or "").strip()
+    event_id = str(body.get("event_id") or "").strip()
+
+    if plan not in PLANS or PLANS[plan].get("kind") != "metered":
+        raise HTTPException(status_code=400, detail="plan must be a metered LaaS plan")
+    if not customer_handle:
+        raise HTTPException(status_code=400, detail="customer_handle required")
+    if not event_id:
+        raise HTTPException(status_code=400, detail="event_id required (idempotency key)")
+
+    plan_info = PLANS[plan]
+    amount_halalas = int(plan_info["amount_halalas"])
+    unit = plan_info.get("unit", "event")
+    metadata = dict(body.get("metadata") or {})
+    metadata.update({"customer_handle": customer_handle, "plan": plan, "unit": unit})
+
+    # Idempotent record: keyed by event_id so retries don't double-charge.
+    # `claim` returns True on first-write only — second attempt returns False.
+    idem = IdempotencyStore(prefix="laas:")
+    record_key = f"{plan}:{customer_handle}:{event_id}"
+    if not idem.claim(record_key, ttl_seconds=30 * 86400):  # 30-day window
+        return {
+            "status": "duplicate",
+            "event_id": event_id,
+            "plan": plan,
+            "amount_halalas": amount_halalas,
+            "amount_sar": amount_halalas / 100,
+        }
+
+    log.info(
+        "laas_usage_recorded plan=%s handle=%s event=%s amount_halalas=%d",
+        plan, customer_handle, event_id, amount_halalas,
+    )
+
     return {
-        "currency": "SAR",
-        "plans": {
-            k: {
-                "name": v["name"],
-                "amount_sar": v["amount_halalas"] / 100,
-                "monthly": v["monthly"],
-            }
-            for k, v in PLANS.items()
-            if k != "pilot_1sar"  # hide pilot from public listing
-        },
+        "status": "recorded",
+        "event_id": event_id,
+        "plan": plan,
+        "amount_halalas": amount_halalas,
+        "amount_sar": amount_halalas / 100,
+        "unit": unit,
+        "customer_handle": customer_handle,
     }
 
 
