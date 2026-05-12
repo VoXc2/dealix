@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Dealix — نموذج Pilot 7 أيام (توضيحي)</title>
+  <meta name="description" content="مثال هيكلي لما يحدث خلال Pilot 7 أيام مع Dealix — نموذج توضيحي مبني على المنتج الفعلي، ليس عميلاً حقيقياً." />
+  <meta name="robots" content="index,follow" />
+  <link rel="canonical" href="https://dealix.me/case-study-pilot-example.html" />
+  <meta property="og:title" content="Dealix Pilot — نموذج توضيحي لـ 7 أيام" />
+  <meta property="og:description" content="ما يحدث فعلياً في الـ Managed Pilot — نموذج بنيناه من قدرات المنتج الموجودة." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://dealix.me/case-study-pilot-example.html" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="theme-color" content="#0f172a" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="/assets/css/design-system.css" />
+  <style>
+    .container{max-width:920px;margin:0 auto;padding:24px}
+    .banner{background:#fef3c7;border:2px solid #f59e0b;color:#713f12;padding:18px 22px;border-radius:12px;margin-bottom:32px;font-size:15px;line-height:1.7}
+    .banner strong{display:block;font-size:17px;margin-bottom:6px}
+    h1{font-size:clamp(28px,4.5vw,44px);margin:0 0 16px;color:var(--brand,#0f172a)}
+    h2{font-size:24px;margin-top:40px;color:var(--brand,#0f172a)}
+    .day{background:white;border:1px solid #e2e8f0;border-radius:12px;padding:20px;margin:16px 0;box-shadow:0 1px 3px rgba(0,0,0,0.04)}
+    .day-header{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+    .day-num{background:#0f172a;color:white;border-radius:8px;padding:6px 14px;font-weight:700;font-size:14px}
+    .metric{display:inline-block;background:#dbeafe;color:#1e40af;padding:6px 14px;border-radius:999px;font-size:13px;font-weight:600;margin:4px 4px 0 0}
+    .sample{background:#f8fafc;border-right:3px solid #10b981;padding:14px 18px;margin:12px 0;border-radius:6px;font-style:italic;color:#334155}
+    .cta-box{background:linear-gradient(135deg,#0f172a,#1e293b);color:white;padding:32px;border-radius:14px;margin:48px 0 24px;text-align:center}
+    .cta-box h3{margin:0 0 12px;color:white;font-size:24px}
+    .cta-box p{margin:0 0 20px;color:#cbd5e1}
+    .cta-btn{display:inline-block;background:#10b981;color:white;padding:14px 28px;border-radius:8px;text-decoration:none;font-weight:600;font-size:16px}
+    .endpoint{font-family:monospace;background:#1e293b;color:#94a3b8;padding:2px 8px;border-radius:4px;font-size:13px}
+    .real-vs-mock{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:24px 0}
+    .real-vs-mock div{padding:16px;border-radius:8px}
+    .real-vs-mock .real{background:#dcfce7;border:1px solid #16a34a;color:#14532d}
+    .real-vs-mock .mock{background:#fef9c3;border:1px solid #ca8a04;color:#713f12}
+  </style>
+</head>
+<body>
+
+<main class="container">
+
+  <div class="banner">
+    <strong>⚠️ نموذج توضيحي — ليس عميلاً حقيقياً</strong>
+    هذه الصفحة تصف ما يحدث فعلياً خلال Managed Pilot 7 أيام مع Dealix. كل خطوة مبنية على قدرات منتج موجودة في الكود اليوم
+    (endpoints + middleware + integrations). الأرقام والاسم في النموذج <em>توضيحية</em> — سنستبدل هذه الصفحة بدراسة حالة حقيقية فور إغلاق أول pilot. الـ 7 أيام والـ refund policy والـ
+    PDPL/ZATCA compliance — كلها <strong>حقيقية</strong>.
+  </div>
+
+  <h1>Pilot 7 أيام — كيف تبدو رحلتك مع Dealix</h1>
+  <p style="font-size:17px;color:#475569;line-height:1.7">
+    نموذج لـ "Saudi SaaS Co" — شركة SaaS B2B سعودية وهمية، 12 موظف، 30-50 inbound lead بالعربي شهرياً عبر WhatsApp.
+    خلال 7 أيام، تحوّلوا من <strong>"إنسان يجيب يدوياً بعد 4 ساعات"</strong> إلى <strong>"Dealix يجاوب خلال دقائق، فريقك يعتمد فقط"</strong>.
+  </p>
+
+  <div class="real-vs-mock">
+    <div class="real">
+      <strong>✓ حقيقي في المنتج:</strong>
+      <ul style="margin:6px 0 0;padding-right:18px">
+        <li>S1 Diagnostic — <span class="endpoint">/api/v1/diagnostic</span></li>
+        <li>Decision Passport audit log</li>
+        <li>PDPL Art. 18 middleware logging</li>
+        <li>ZATCA Phase 2 e-invoice</li>
+        <li>Approval-first workflow</li>
+        <li>Refund SOP بـ trigger محدد</li>
+      </ul>
+    </div>
+    <div class="mock">
+      <strong>⚠ توضيحي/افتراضي:</strong>
+      <ul style="margin:6px 0 0;padding-right:18px">
+        <li>اسم "Saudi SaaS Co"</li>
+        <li>الأرقام (23 رد، 4 ديمو)</li>
+        <li>الـ quote في Day 7</li>
+      </ul>
+    </div>
+  </div>
+
+  <h2>اليوم بيوم</h2>
+
+  <div class="day">
+    <div class="day-header"><span class="day-num">Day 1</span><strong>Discovery + Setup</strong></div>
+    <p>30-دقيقة discovery call. أنا (سامي) أمرّ معك على S1 Diagnostic live — 6 أسئلة، 5 دقائق، يولّد diagnostic brief بـ pain points + ICP fit.</p>
+    <p>بعد الـ call: 3.5 ساعات إعداد تقني. أصنع لك tenant، أربط WhatsApp Business، أهيّئ webhook routing، أعرّفك على PDPL consent flow.</p>
+    <span class="metric">Diagnostic brief in 5 min</span>
+    <span class="metric">WhatsApp routing live by EOD</span>
+  </div>
+
+  <div class="day">
+    <div class="day-header"><span class="day-num">Day 2-3</span><strong>أول ردود live + اعتماد فريقك</strong></div>
+    <p>كل inbound message عربي يدخل approval queue. AI يقترح رد بـ ≤ 45 ثانية. فريقك يعتمد بكبسة زر — أو يعدّل أولاً.</p>
+    <div class="sample">"مرحباً، نهتم بحلكم لكن سعرنا أعلى من المعتاد..." → AI يقترح: "شكراً لاهتمامك، أبشر نعمل demo 20 دقيقة نوضّح فيه الـ ROI" → فريقك يعتمد → يطلع تلقائياً</div>
+    <span class="metric">~ 23 inbound reply (نموذج)</span>
+    <span class="metric">85% approval rate</span>
+    <span class="metric">Avg latency: 3.2 min</span>
+  </div>
+
+  <div class="day">
+    <div class="day-header"><span class="day-num">Day 4-5</span><strong>Mixed-mode: AI auto-send + human gate للحرج</strong></div>
+    <p>الردود الواضحة (FAQ، شكر، تأكيد موعد) تطلع تلقائياً. القرارات الحرجة (تسعير، promises، escalations) تبقى لاعتمادك.</p>
+    <p>Dealix يبدأ يبني <strong>Customer Health Score</strong> — توقّع churn 90 يوم قبل ما يصير.</p>
+    <span class="metric">62% auto-sent</span>
+    <span class="metric">38% human-approved</span>
+    <span class="metric">0 misfire (caught at approval gate)</span>
+  </div>
+
+  <div class="day">
+    <div class="day-header"><span class="day-num">Day 6</span><strong>Decision Passport audit session</strong></div>
+    <p>30-دقيقة call — نمشي معاً على كل قرار خارجي طلع من حسابك خلال 5 أيام. كل واحد فيه:</p>
+    <ul>
+      <li>نص الرد + المصدر (AI agent ID + version)</li>
+      <li>من اعتمد + متى</li>
+      <li>Evidence level (high/medium/low confidence)</li>
+      <li>PDPL audit log entry (Art. 18) قابل للتصدير</li>
+    </ul>
+    <p>لو في رد ما عجبك، نشوف ليش وكيف نمنع مثله. هذا الجزء وحده يستحق الـ 499 SAR.</p>
+    <span class="metric">95+ audit entries (نموذج)</span>
+    <span class="metric">100% PDPL-compliant</span>
+  </div>
+
+  <div class="day">
+    <div class="day-header"><span class="day-num">Day 7</span><strong>قرار: Growth أو Exit</strong></div>
+    <p>نقعد سوياً 90 دقيقة. نشوف الأرقام النهائية:</p>
+    <ul>
+      <li>Total inbound handled: <strong>30</strong></li>
+      <li>Arabic-replied: <strong>87%</strong> (target ≥ 70%)</li>
+      <li>Avg response time: <strong>3.2 min</strong> (target ≤ 5)</li>
+      <li>Demos booked from inbound: <strong>4</strong></li>
+      <li>Customer-rated reply quality: <strong>4.3/5</strong></li>
+    </ul>
+    <p>الـ math واضح: لو شفت قيمة → <strong>Growth 2,999 SAR/شهر</strong> مع 7-day money-back guarantee. لو ما شفت → refund كامل + data export PDPL.</p>
+    <div class="sample">"الـ approval queue بدت مزعجة Day 1، لكن Day 5 كنت أعتمد 10 ردود في 3 دقائق وأنا في الـ gym. ميزة." — quote توضيحي لـ founder افتراضي</div>
+  </div>
+
+  <h2>الأعطال المُحتملة (Refund Triggers — حقيقية)</h2>
+  <p>إذا واحد من هذه صار خلال الـ 7 أيام، تأخذ refund كامل بدون أسئلة:</p>
+  <ul style="line-height:2">
+    <li>Dealix رد على أقل من <strong>50%</strong> من inbound العربي</li>
+    <li>Avg response time أعلى من <strong>5 دقائق</strong> لثلاثة أيام متتالية</li>
+    <li>Decision Passport audit log غير مكتمل لأي قرار خارجي</li>
+    <li>PDPL erasure request ما تنفّذ خلال 30 يوم</li>
+  </ul>
+
+  <div class="cta-box">
+    <h3>تبي تكون أول عميل حقيقي يستبدل هذه الصفحة بدراسة حالة عن شركتك؟</h3>
+    <p>السعر بالنسبة لك = 499 SAR لمدة 7 أيام، founder onboarding شخصي، refund لو ما اشتغل.</p>
+    <a href="https://wa.me/9665XXXXXXXX?text=أبي%20Pilot" class="cta-btn">احجز Pilot عبر WhatsApp</a>
+  </div>
+
+  <p style="text-align:center;color:#94a3b8;font-size:13px;margin-top:32px">
+    <a href="/" style="color:#64748b">الرئيسية</a> ·
+    <a href="/pricing.html" style="color:#64748b">التسعير</a> ·
+    <a href="/case-study.html" style="color:#64748b">دراسة حالة مفصّلة (نموذج عقاري)</a>
+  </p>
+
+</main>
+
+</body>
+</html>
