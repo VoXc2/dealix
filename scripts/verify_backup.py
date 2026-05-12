@@ -139,9 +139,12 @@ def _restore_check(findings: dict[str, object]) -> tuple[int, dict[str, object]]
 
     try:
         s3.download_file(bucket, key, tmp_path)
-        result = subprocess.run(
-            ["pg_restore", "--list", tmp_path],
-            capture_output=True, text=True, timeout=60,
+        # S603/S607 suppressed: pg_restore is a known PostgreSQL utility
+        # checked via shutil.which() above. tmp_path is operator-trusted.
+        # No shell interpolation; argv is a static list.
+        result = subprocess.run(  # noqa: S603
+            ["pg_restore", "--list", tmp_path],  # noqa: S607
+            capture_output=True, text=True, timeout=60, check=False,
         )
         if result.returncode != 0:
             return 3, {

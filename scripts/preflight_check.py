@@ -78,7 +78,9 @@ class SkipCheck(Exception):
 def check_healthz(base_url: str) -> tuple[bool, str, dict | None]:
     import urllib.request
     try:
-        with urllib.request.urlopen(f"{base_url}/healthz", timeout=10) as resp:
+        # base_url is operator-controlled via BASE_URL env (S310 is a false
+        # positive for this controlled URL construction).
+        with urllib.request.urlopen(f"{base_url}/healthz", timeout=10) as resp:  # noqa: S310
             return resp.status == 200, f"got {resp.status}", None
     except Exception as exc:
         return False, str(exc), None
@@ -89,7 +91,7 @@ def check_healthz(base_url: str) -> tuple[bool, str, dict | None]:
 @check("P2 /api/v1/pricing/plans returns >= 3 plans", "P")
 def check_pricing(base_url: str) -> tuple[bool, str, dict | None]:
     import urllib.request
-    with urllib.request.urlopen(f"{base_url}/api/v1/pricing/plans", timeout=10) as resp:
+    with urllib.request.urlopen(f"{base_url}/api/v1/pricing/plans", timeout=10) as resp:  # noqa: S310
         body = json.loads(resp.read())
     n = len(body.get("plans") or [])
     # The public pricing endpoint returns 3 plans (starter/growth/scale);
@@ -102,14 +104,15 @@ def check_pricing(base_url: str) -> tuple[bool, str, dict | None]:
 @check("P3 Moyasar webhook rejects bad signature (401/403)", "P")
 def check_webhook_signature(base_url: str) -> tuple[bool, str, dict | None]:
     import urllib.request
-    req = urllib.request.Request(
+    # S310 false-positive: base_url is operator-controlled BASE_URL env.
+    req = urllib.request.Request(  # noqa: S310
         f"{base_url}/api/v1/webhooks/moyasar",
         data=b'{"id":"preflight","secret_token":"definitely-not-the-real-one"}',
         method="POST",
         headers={"Content-Type": "application/json"},
     )
     try:
-        with urllib.request.urlopen(req, timeout=10) as resp:
+        with urllib.request.urlopen(req, timeout=10) as resp:  # noqa: S310
             code = resp.status
     except urllib.request.HTTPError as exc:
         code = exc.code
@@ -121,14 +124,15 @@ def check_webhook_signature(base_url: str) -> tuple[bool, str, dict | None]:
 @check("P4 CORS rejects unlisted origin", "P")
 def check_cors_strict(base_url: str) -> tuple[bool, str, dict | None]:
     import urllib.request
-    req = urllib.request.Request(
+    # S310 false-positive: base_url is operator-controlled BASE_URL env.
+    req = urllib.request.Request(  # noqa: S310
         f"{base_url}/api/v1/pricing/plans",
         method="OPTIONS",
         headers={"Origin": "https://evil.example.com",
                  "Access-Control-Request-Method": "GET"},
     )
     try:
-        with urllib.request.urlopen(req, timeout=10) as resp:
+        with urllib.request.urlopen(req, timeout=10) as resp:  # noqa: S310
             headers = {k.lower(): v for k, v in resp.headers.items()}
             code = resp.status
     except urllib.request.HTTPError as exc:
