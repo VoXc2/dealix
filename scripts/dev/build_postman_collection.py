@@ -16,24 +16,36 @@ import sys
 def _request_from_op(method: str, path: str, op: dict) -> dict:
     name = op.get("summary") or op.get("operationId") or f"{method.upper()} {path}"
     description = op.get("description", "")
+    # Postman path variables: convert {x} → :x for Postman's URL builder.
+    path_segments = [p.replace("{", ":").replace("}", "") for p in path.strip("/").split("/") if p]
     item = {
         "name": name,
         "request": {
             "method": method.upper(),
-            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "header": [
+                {"key": "Content-Type", "value": "application/json"},
+                {"key": "X-API-Key", "value": "{{api_key}}", "disabled": False},
+                {"key": "Authorization", "value": "Bearer {{bearer_token}}", "disabled": True},
+            ],
             "url": {
                 "raw": "{{base_url}}" + path,
                 "host": ["{{base_url}}"],
-                "path": [p for p in path.strip("/").split("/") if p],
+                "path": path_segments,
             },
             "description": description,
         },
     }
     body = op.get("requestBody")
     if body:
+        # Try to pull an example body from the OpenAPI schema.
+        content = (body.get("content") or {}).get("application/json") or {}
+        example = content.get("example")
+        if example is None:
+            schema = content.get("schema") or {}
+            example = schema.get("example") or {}
         item["request"]["body"] = {
             "mode": "raw",
-            "raw": "{}",
+            "raw": json.dumps(example, indent=2, ensure_ascii=False) if example else "{}",
             "options": {"raw": {"language": "json"}},
         }
     return item
@@ -66,11 +78,22 @@ def main() -> int:
     collection = {
         "info": {
             "name": "Dealix API",
-            "_postman_id": "dealix-api-v3.3.0",
+            "_postman_id": "dealix-api-v3.6.0",
             "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-            "description": "Generated from the live OpenAPI document.",
+            "description": (
+                "Auto-generated from the live OpenAPI document. "
+                "Covers every endpoint shipped through T8 (Skills runtime, "
+                "verticals, agents builder, Saudi-gov, admin-enterprise, "
+                "newsletter, GCC payment gateways). "
+                "Set the `api_key` collection variable to your tenant API key, "
+                "or enable the `Authorization: Bearer` header and set `bearer_token`."
+            ),
         },
-        "variable": [{"key": "base_url", "value": "https://api.dealix.me"}],
+        "variable": [
+            {"key": "base_url", "value": "https://api.dealix.me"},
+            {"key": "api_key", "value": ""},
+            {"key": "bearer_token", "value": ""},
+        ],
         "item": items,
     }
     print(json.dumps(collection, indent=2))

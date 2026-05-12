@@ -159,3 +159,111 @@ review loop fast, apply these rules **always**:
 Read `docs/QA_REVIEW.md` §13 once. The bar is: an engineer joins the
 team, clones the repo, runs `make hooks dev`, and ships a feature in
 the same week. Anything that gets in the way of that is a regression.
+
+---
+
+## T6 / T7 / T8 capability map (for AI contributors)
+
+If you're an AI contributor writing code in this repo, here is the
+T6–T8 surface you must respect. Don't re-invent these — extend them.
+
+### Skills (T6a + T8a)
+
+- **Catalogue:** `skills/MANIFEST.yaml` (one row per skill).
+- **Per-skill folder:** `skills/<slug>/SKILL.md` (Anthropic format) +
+  `skills/<slug>/prompt.yaml` (+ optional `eval.yaml` for Promptfoo).
+- **Loader:** `dealix/agents/skills/__init__.py` (`load()`, `by_id()`,
+  `reload()`).
+- **Runtime registry:** `dealix/agents/skills/handlers.py` —
+  `@register("skill_id")` decorator. Handlers are
+  `async def(inputs: dict) -> dict`. Side-effect-light by default;
+  external calls gated on env keys.
+- **HTTP surface:** `api/routers/skills.py` (`GET /api/v1/skills`,
+  `GET /api/v1/skills/handlers`, `GET /api/v1/skills/{id}`,
+  `POST /api/v1/skills/{id}/run`).
+- **MCP exposure:** `dealix/mcp/server.py` auto-registers every
+  skill as an MCP tool.
+- **Adding a skill:** SKILL.md + prompt.yaml + manifest row + (optional)
+  `@register(...)` handler. Restart picks it up; tests in
+  `tests/unit/test_skills_loader.py` enforce the manifest contract.
+
+### Industry verticals (T6c)
+
+- **Per-vertical folder:** `dealix/verticals/<slug>/config.yaml` +
+  `landing/index.html` (snippet).
+- **Loader:** `dealix/verticals/__init__.py` (`Vertical` dataclass,
+  `list_all()`, `by_id()`).
+- **HTTP surface:** `api/routers/verticals.py` (`GET /api/v1/verticals`,
+  `GET /api/v1/verticals/{id}`, `POST /api/v1/verticals/apply`).
+- **Adding a vertical:** new folder under `dealix/verticals/` with
+  `config.yaml` (label_ar/en, description_ar/en, agents, workflows,
+  pricing_default_plan, lead_form_fields). Tests in
+  `tests/unit/test_verticals_loader.py` enforce the contract.
+
+### BYOA agent builder (T6d)
+
+- **Manifest:** `agent.yaml` — id (lowercase, 3–64 chars,
+  `[a-z0-9_-]`), name, model, tools (every tool must exist in the
+  Skills catalogue), prompt_override, max_usd_per_request (in (0,10]),
+  locale.
+- **Validator:** `dealix/agents/builder/validate()` raises
+  `AgentValidationError` on every bad field.
+- **HTTP surface:** `api/routers/agents_builder.py` (`/api/v1/agents`
+  CRUD + `/api/v1/workflows/marketplace` + `/api/v1/workflows/install`).
+
+### Enterprise admin (T6e)
+
+- **IP allowlist middleware:** `api/middleware/ip_allowlist.py`
+  reads `TenantRecord.meta_json.ip_allowlist`. `/api/v1/public/*` and
+  `/healthz` always bypass.
+- **Audit forwarding:** `dealix/audit/forward.py` — best-effort
+  Datadog / Splunk HEC / S3 sinks. Failures log + return False.
+- **BYOK:** `dealix/audit/byok.py` — `BYOKProvider.from_env()` dispatches
+  on `KMS_PROVIDER` (aws|gcp|azure).
+- **HTTP surface:** `api/routers/admin_enterprise.py` — sandbox spin-up,
+  IP allowlist set/clear, webhook rotation, byok/audit-forward status.
+  Admin-gated via `ADMIN_API_KEYS` env or `super_admin` JWT claim.
+
+### Saudi-government APIs (T6f)
+
+- **Clients:** `dealix/integrations/{etimad,maroof,najiz,najm,tadawul,misa}_client.py`
+  — each exposes `is_configured()` + dataclass result types. 503
+  `<service>_not_configured` when env unset.
+- **HTTP surface:** `api/routers/saudi_gov.py` — six endpoints under
+  `/api/v1/saudi-gov/*`.
+
+### GCC payments (T8b)
+
+- **Clients:** `dealix/payments/{knet,benefit,magnati}_client.py`
+  mirror the Moyasar/Stripe contract: `create_checkout_session()` +
+  `verify_webhook()` + module-level `get_*_client()` singleton.
+- **HTTP surface:** `api/routers/billing_gcc.py` — health, checkout/{gw},
+  webhooks/{gw}.
+- **Currency helper:** `dealix/gcc/currency.py` — single source of truth
+  for SAR/AED/QAR/KWD/BHD/OMR minor units + formatting + weekend rules.
+
+### Newsletter (T6g)
+
+- `api/routers/newsletter.py` — PDPL consent gate; Loops when
+  configured; degraded path otherwise.
+
+### Production patterns to reuse
+
+- **Inert-by-default:** Every new vendor integration ships behind an
+  env-var feature flag. 503 + descriptive `<service>_not_configured`
+  rather than silent stubs.
+- **Bilingual UI:** `t(ar, en)` helper in frontend pages; the existing
+  `[locale]/admin/{skills,verticals,agents,enterprise}/page.tsx`
+  routes show the pattern.
+- **CLI parity:** every router gets a `cli/dealix_cli.py` group. The
+  CLI uses `_request()` which honours `DEALIX_API_BASE`,
+  `DEALIX_API_KEY`, `DEALIX_BEARER_TOKEN`.
+- **SDK example:** new endpoints get a `docs/api/examples/python/<name>.py`
+  + `typescript/<name>.ts` pair.
+- **Deep health:** `api/routers/health.py` `/health/deep` reports
+  `configured/unconfigured` for every new T6+ dependency.
+- **Test discipline:** every new router → an integration test;
+  every new pure function → a unit test. Pattern in
+  `tests/{integration,unit}/test_*_router.py`.
+- **Mintlify doc:** every new router gets a `docs/api/<name>.mdx`
+  page and a row in `mint.json` navigation.

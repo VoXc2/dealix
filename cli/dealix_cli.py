@@ -40,6 +40,9 @@ skills_app = typer.Typer(no_args_is_help=True, help="Agent skills catalogue (T6a
 verticals_app = typer.Typer(no_args_is_help=True, help="Industry verticals (T6c)")
 saudi_app = typer.Typer(no_args_is_help=True, help="Saudi-gov data — Etimad/Maroof/Najiz/Tadawul/MISA (T6f)")
 admin_app = typer.Typer(no_args_is_help=True, help="Enterprise admin operations (T6e)")
+agents_app = typer.Typer(no_args_is_help=True, help="Custom agents — BYOA (T6d)")
+workflows_app = typer.Typer(no_args_is_help=True, help="Workflow marketplace (T6d)")
+gcc_pay_app = typer.Typer(no_args_is_help=True, help="GCC payment gateways — KNET/BENEFIT/Magnati (T8b)")
 
 app.add_typer(leads_app, name="leads")
 app.add_typer(webhooks_app, name="webhooks")
@@ -50,6 +53,9 @@ app.add_typer(skills_app, name="skills")
 app.add_typer(verticals_app, name="verticals")
 app.add_typer(saudi_app, name="saudi")
 app.add_typer(admin_app, name="admin")
+app.add_typer(agents_app, name="agents")
+app.add_typer(workflows_app, name="workflows")
+app.add_typer(gcc_pay_app, name="gcc-pay")
 
 
 def _base() -> str:
@@ -333,6 +339,124 @@ def admin_set_ip_allowlist(
 def admin_clear_ip_allowlist(tenant_id: str) -> None:
     data = _request("DELETE", f"/api/v1/admin/tenant/{tenant_id}/ip-allowlist")
     typer.echo(json.dumps(data, indent=2))
+
+
+# ── skills run (T8a) ──────────────────────────────────────────────
+
+
+@skills_app.command("run")
+def skills_run(
+    skill_id: str,
+    inputs: Annotated[
+        str,
+        typer.Option(help="JSON inputs payload, e.g. '{\"text\":\"hi\"}'"),
+    ] = "{}",
+) -> None:
+    """Execute a registered skill handler. Returns elapsed_ms + result."""
+    try:
+        inputs_obj = json.loads(inputs)
+    except json.JSONDecodeError as exc:
+        typer.echo(f"invalid json: {exc}", err=True)
+        raise typer.Exit(code=2) from exc
+    data = _request(
+        "POST", f"/api/v1/skills/{skill_id}/run", json={"inputs": inputs_obj}
+    )
+    typer.echo(json.dumps(data, indent=2, ensure_ascii=False))
+
+
+@skills_app.command("handlers")
+def skills_handlers() -> None:
+    """List which skill ids have a Python handler registered today."""
+    data = _request("GET", "/api/v1/skills/handlers")
+    for h in data.get("handlers", []):
+        typer.echo(h)
+
+
+# ── agents (T6d / T8c) ────────────────────────────────────────────
+
+
+@agents_app.command("list")
+def agents_list() -> None:
+    data = _request("GET", "/api/v1/agents")
+    for a in data.get("agents", []):
+        typer.echo(f"{a.get('id', ''):<28} {a.get('name', '')}  ({a.get('model', '')})")
+
+
+@agents_app.command("register")
+def agents_register(
+    manifest_path: Annotated[Path, typer.Argument(help="path to agent.yaml or .json")],
+) -> None:
+    """Register a custom agent from a local manifest file."""
+    text = manifest_path.read_text(encoding="utf-8")
+    try:
+        import yaml  # type: ignore
+
+        manifest = yaml.safe_load(text)
+    except ImportError:
+        manifest = json.loads(text)
+    data = _request("POST", "/api/v1/agents", json=manifest)
+    typer.echo(json.dumps(data, indent=2, ensure_ascii=False))
+
+
+@agents_app.command("delete")
+def agents_delete(agent_id: str) -> None:
+    data = _request("DELETE", f"/api/v1/agents/{agent_id}")
+    typer.echo(json.dumps(data, indent=2, ensure_ascii=False))
+
+
+# ── workflows (T6d) ───────────────────────────────────────────────
+
+
+@workflows_app.command("list")
+def workflows_list() -> None:
+    """List the workflow marketplace catalogue."""
+    data = _request("GET", "/api/v1/workflows/marketplace")
+    for t in data.get("templates", []):
+        typer.echo(f"{t.get('id', ''):<32} {t.get('description', '')}")
+
+
+@workflows_app.command("install")
+def workflows_install(template_id: str) -> None:
+    data = _request(
+        "POST", "/api/v1/workflows/install", json={"template_id": template_id}
+    )
+    typer.echo(json.dumps(data, indent=2, ensure_ascii=False))
+
+
+# ── gcc-pay (T8b) ────────────────────────────────────────────────
+
+
+@gcc_pay_app.command("health")
+def gcc_pay_health() -> None:
+    """Show which GCC gateways are configured (knet/benefit/magnati)."""
+    data = _request("GET", "/api/v1/billing/gcc/health")
+    typer.echo(json.dumps(data, indent=2))
+
+
+@gcc_pay_app.command("checkout")
+def gcc_pay_checkout(
+    gateway: Annotated[str, typer.Argument(help="knet | benefit | magnati")],
+    tenant_id: Annotated[str, typer.Option()],
+    order_id: Annotated[str, typer.Option()],
+    amount_minor: Annotated[int, typer.Option()],
+    email: Annotated[str, typer.Option()],
+    success_url: Annotated[str, typer.Option()] = "https://app.dealix.me/checkout/ok",
+    cancel_url: Annotated[str, typer.Option()] = "https://app.dealix.me/checkout/cancel",
+    plan: Annotated[str, typer.Option()] = "growth",
+) -> None:
+    body = {
+        "tenant_id": tenant_id,
+        "plan": plan,
+        "amount_minor": amount_minor,
+        "order_id": order_id,
+        "email": email,
+        "success_url": success_url,
+        "cancel_url": cancel_url,
+    }
+    data = _request(
+        "POST", f"/api/v1/billing/gcc/checkout/{gateway}", json=body
+    )
+    typer.echo(json.dumps(data, indent=2, ensure_ascii=False))
 
 
 def main() -> None:
