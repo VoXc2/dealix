@@ -108,3 +108,24 @@ make setup
 - docstrings: الإنجليزية أساسية، مع عربي حيث يضيف قيمة.
 - النصوص التي يراها المستخدم: العربية والإنجليزية.
 - رسائل commit: الإنجليزية مفضّلة، العربية مقبولة.
+
+---
+
+## Dependencies (Python)
+
+The repository carries two dependency manifests:
+
+- **`pyproject.toml`** — **source of truth.** Declares runtime + dev
+  dependencies using semver-style ranges. Use `pip install -e ".[dev]"` for
+  local development.
+- **`requirements.txt`** — locked production install file. Pins narrower
+  version windows for reproducible Docker builds and Railway deploys. Treat
+  it as generated output: when you add or upgrade a dependency, edit
+  `pyproject.toml` first, then update `requirements.txt` to match.
+
+A future ticket will unify the two via `pip-tools` (`uv pip compile`); until
+then, follow the manual sync rule above. The CI Docker build installs from
+`requirements.txt`, so a mismatch surfaces fast.
+
+Pin the **interpreter** itself via `.python-version` (currently `3.11.10`).
+Docker, CI, and local `pyenv` all pick this up — keep them aligned.

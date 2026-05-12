@@ -7,10 +7,10 @@
 
 [![CI](https://github.com/VoXc2/dealix/actions/workflows/ci.yml/badge.svg)](https://github.com/VoXc2/dealix/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Python 3.12](https://img.shields.io/badge/python-3.12-blue.svg)](https://www.python.org/downloads/)
+[![Python 3.11](https://img.shields.io/badge/python-3.11-blue.svg)](https://www.python.org/downloads/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.115-green)](https://fastapi.tiangolo.com/)
-[![Tests: 95 passing](https://img.shields.io/badge/tests-95%20passing-green)](tests/)
-[![Endpoints: 102](https://img.shields.io/badge/API%20endpoints-102-blue)](docs/architecture/API_MAP.md)
+[![Tests](https://img.shields.io/badge/tests-283%20files-green)](tests/)
+[![API surface](https://img.shields.io/badge/routers-114-blue)](docs/architecture/API_MAP.md)
 
 **[العربية](README.ar.md)** · **English**
 
@@ -20,7 +20,7 @@
 
 ## 🎯 What's in this repo
 
-**Backend** — FastAPI + SQLAlchemy 2.0 async + Postgres. 13 routers / 102 endpoints. See [API_MAP.md](docs/architecture/API_MAP.md).
+**Backend** — FastAPI + SQLAlchemy 2.0 async + Postgres. 114 router files grouped by domain (sales, customers, agents, compliance, analytics, webhooks, admin, deprecated). See [API_MAP.md](docs/architecture/API_MAP.md) for the canonical endpoint list and [routers/INVENTORY.md](api/routers/INVENTORY.md) for active/beta/deprecated classification.
 
 **Lead Machine** — Provider adapter chains for Search / Maps / Crawler / Tech / EmailIntel that fall back gracefully when env keys are missing. See [PROVIDER_ADAPTERS.md](docs/architecture/PROVIDER_ADAPTERS.md).
 
@@ -47,6 +47,20 @@ curl localhost:8000/health
 ```
 
 **Public endpoints (no auth):** `/health`, `/api/v1/public/demo-request`, `/api/v1/pricing/plans`, `/api/v1/checkout`, `/api/v1/webhooks/moyasar`
+
+---
+
+## 🚪 Entry points
+
+The repository ships three Python entry points; use the right one:
+
+| File | Purpose | When to use |
+| --- | --- | --- |
+| `api/main.py` | **Production FastAPI app** — the canonical web service. Wired into `Procfile`, `Dockerfile`, Railway, and `uvicorn`. | All production and staging traffic. |
+| `cli.py` | Operational CLI built on `typer` — daily ops scripts, founder commands. | Local ops work, on-call scripts, scheduled jobs. |
+| `v3_app.py` | Standalone v3 demo entry — predates the unified `api/main.py` and imports many `auto_client_acquisition` modules directly. Kept for historical fidelity. | Local demos only. **Do not deploy.** |
+
+The status of the live service is exposed at `GET /api/v1/status` (DB / Redis / LLM providers / migration head / commit SHA). See [docs/sla.md](docs/sla.md) for SLA targets.
 
 ---
 
