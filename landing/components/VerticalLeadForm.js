@@ -9,7 +9,7 @@
 //   - Fetches GET /api/v1/verticals/{id} to learn the sector-specific
 //     lead_form_fields (declared in dealix/verticals/<slug>/config.yaml).
 //   - Renders a form with the universal fields (name, email, phone,
-//     company) PLUS each `lead_form_fields[].{name,type,label_*}`.
+//     company) PLUS each `lead_form_fields[].{id,type,label_*,required}`.
 //   - On submit, POSTs to /api/v1/public/lead-capture with vertical id
 //     attached. Honours dealix_consent (no submission unless functional
 //     cookies were accepted).
@@ -46,9 +46,13 @@
     out.push(label("company", isAr ? "اسم الشركة" : "Company", true));
     out.push(input("company", "text", true));
     fields.forEach((f) => {
-      const lbl = isAr ? f.label_ar || f.name : f.label_en || f.name;
-      out.push(label(f.name, lbl, !!f.required));
-      out.push(input(f.name, f.type || "text", !!f.required));
+      // The vertical config canonicalises on `id` (see
+      // dealix/verticals/*/config.yaml); we accept `name` too for back-compat.
+      const key = f.id || f.name;
+      if (!key) return;
+      const lbl = isAr ? f.label_ar || key : f.label_en || key;
+      out.push(label(key, lbl, !!f.required));
+      out.push(input(key, f.type || "text", !!f.required));
     });
     return out.join("");
   }

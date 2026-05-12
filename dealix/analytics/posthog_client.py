@@ -111,10 +111,20 @@ async def get_feature_flag(
     flag_key: str,
     distinct_id: str,
     *,
-    default: bool = False,
+    default: bool | None = None,
     timeout: float = 3.0,
-) -> bool | str:
-    """Evaluate a PostHog feature flag. Returns `default` on any failure."""
+) -> bool | str | None:
+    """Evaluate a PostHog feature flag.
+
+    Returns:
+        True / False / "<variant>" — when PostHog is configured AND
+            answers definitively.
+        `default` — when PostHog answers with no decision (typically
+            None) or the request fails.
+
+    Importantly, when no PostHog API key is configured we return
+    None (not False) so callers that want to chain on env / static
+    defaults can do so."""
     api_key = _api_key()
     if not api_key:
         return default

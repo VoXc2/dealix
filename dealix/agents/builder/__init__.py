@@ -39,11 +39,14 @@ class AgentValidationError(ValueError):
 
 
 def validate(manifest: dict[str, Any]) -> CustomAgentSpec:
-    aid = str(manifest.get("id", "")).strip().lower()
-    if not _ID_RE.match(aid):
+    aid_raw = str(manifest.get("id", "")).strip()
+    # Validate against the raw value — we don't silently lowercase
+    # mixed-case ids, because that hides typos in customer manifests.
+    if not _ID_RE.match(aid_raw):
         raise AgentValidationError(
             "id must be lowercase, 3-64 chars, [a-z0-9_-]"
         )
+    aid = aid_raw  # already validated as lowercase
     name = str(manifest.get("name", "")).strip()
     if not name or len(name) > 120:
         raise AgentValidationError("name required, ≤ 120 chars")

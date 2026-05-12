@@ -38,10 +38,11 @@ def test_every_vertical_has_labels_and_lead_form() -> None:
         assert isinstance(v.workflows, list)
         assert v.pricing_default_plan
         assert isinstance(v.lead_form_fields, list)
-        # Every form field must declare at least name + type.
+        # Every form field must declare an identifier (`id` is the canonical
+        # key; `name` is accepted as legacy) and a type.
         for field in v.lead_form_fields:
-            assert "name" in field
-            assert "type" in field
+            assert ("id" in field) or ("name" in field), field
+            assert "type" in field, field
 
 
 def test_by_id_returns_known_vertical() -> None:

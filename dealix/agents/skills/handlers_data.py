@@ -267,7 +267,8 @@ _PII_PATTERNS = [
     (r"\b\d{15}\b", "vat_number"),
     (r"\b[A-Z]{2}\d{20,30}\b", "iban"),
     (r"\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b", "email"),
-    (r"\b\+966\d{9}\b", "ksa_phone"),
+    # `\b` doesn't fire before `+` (both non-word), so we use lookarounds.
+    (r"(?<!\d)\+966\d{9}(?!\d)", "ksa_phone"),
 ]
 
 

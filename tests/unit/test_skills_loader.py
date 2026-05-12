@@ -2,7 +2,22 @@
 
 from __future__ import annotations
 
-from dealix.agents.skills import Skill, by_id, load, reload
+from pathlib import Path
+
+from dealix.agents.skills import _MANIFEST, Skill, by_id, load, reload
+
+
+def test_manifest_path_resolves_to_real_file() -> None:
+    """Regression: the manifest path was off by one parent (parents[2]
+    instead of parents[3]) which made the loader read an empty catalogue
+    at runtime even though tests passed by importing in-process."""
+    assert _MANIFEST.is_file(), (
+        f"Manifest expected at {_MANIFEST}; missing — the loader's "
+        "parents[] depth is off relative to skills/MANIFEST.yaml."
+    )
+    # Belt-and-suspenders: the resolved path must end with the canonical
+    # repo-root skills folder, not a nested dealix/skills/ path.
+    assert _MANIFEST == Path(_MANIFEST.parents[1]) / "skills" / "MANIFEST.yaml"
 
 
 def test_load_returns_non_empty_catalog() -> None:

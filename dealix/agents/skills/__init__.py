@@ -19,7 +19,7 @@ from core.logging import get_logger
 
 log = get_logger(__name__)
 
-_MANIFEST = Path(__file__).resolve().parents[2] / "skills" / "MANIFEST.yaml"
+_MANIFEST = Path(__file__).resolve().parents[3] / "skills" / "MANIFEST.yaml"
 
 
 @dataclass(frozen=True)
