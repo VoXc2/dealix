@@ -961,3 +961,32 @@ class KnowledgeChunkRecord(Base):
     __table_args__ = (
         Index("ix_kc_tenant_document", "tenant_id", "document_id"),
     )
+
+
+# ── Activity events (T5f) — TimescaleDB hypertable on Postgres ─────
+
+
+class ActivityEventRecord(Base):
+    """Per-tenant touch log — populated by every rep/system event.
+
+    Lives on a Postgres TimescaleDB hypertable (migration 007). On
+    SQLite the same table is a regular one; queries work identically.
+    Separate from AuditLogRecord (which is compliance-only).
+    """
+
+    __tablename__ = "activity_events"
+
+    id: Mapped[str] = mapped_column(String(64), primary_key=True)
+    tenant_id: Mapped[str] = mapped_column(String(64), index=True)
+    user_id: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    entity_type: Mapped[str] = mapped_column(String(64))
+    entity_id: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    verb: Mapped[str] = mapped_column(String(64))
+    source: Mapped[str] = mapped_column(String(64), default="api")
+    meta_json: Mapped[dict] = mapped_column("metadata", JSON, default=dict)
+    occurred_at: Mapped[datetime] = mapped_column(default=utcnow, index=True)
+
+    __table_args__ = (
+        Index("ix_ae_tenant_occurred", "tenant_id", "occurred_at"),
+        Index("ix_ae_entity", "entity_type", "entity_id"),
+    )

@@ -33,6 +33,8 @@ from api.routers import admin_nps as admin_nps_router
 from api.routers import audit_logs as audit_logs_router
 from api.routers import knowledge as knowledge_router
 from api.routers import voice as voice_router
+from api.routers import search as search_router
+from api.routers import admin_duckdb as admin_duckdb_router
 from api.routers import benchmarks as benchmarks_router
 from api.routers import llm_usage as llm_usage_router
 from api.routers import pdpl_dsr as pdpl_dsr_router
@@ -301,6 +303,10 @@ def create_app() -> FastAPI:
     app.include_router(knowledge_router.router)
     # Voice channel (Vapi inbound/outbound + Unifonic SMS fallback).
     app.include_router(voice_router.router)
+    # In-app full-text search (Meilisearch w/ Postgres ILIKE fallback).
+    app.include_router(search_router.router)
+    # Admin DuckDB query (read-only warehouse access).
+    app.include_router(admin_duckdb_router.router)
 
     # ── Wave 12.7 — Intelligence Layer + Expansion Engine ─────────
     # Both routers self-prefix /api/v1/intelligence and /api/v1/expansion-engine.
