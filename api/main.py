@@ -32,6 +32,7 @@ from api.routers.domains import webhooks as webhooks_domain
 from api.routers import (
     admin_tenants,
     auth,
+    customer_usage,
     jobs,
     pdpl,
     sector_intel,
@@ -232,6 +233,8 @@ def create_app() -> FastAPI:
     app.include_router(admin_tenants.router)
     # Wave 8 W8.1 — Bespoke AI Service Setup intake (R5 productization)
     app.include_router(service_setup.router)
+    # Wave 8 W8.3 — Customer-facing usage dashboard
+    app.include_router(customer_usage.router)
 
     @app.get("/", tags=["root"])
     async def root() -> dict[str, object]:
