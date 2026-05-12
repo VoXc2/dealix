@@ -77,3 +77,41 @@ numpy>=1.26.0
 
 # Saudi market — Hijri calendar (Um Al-Qura calendar system)
 ummalqura>=1.0.4
+
+# ──────────────────────────────────────────────────────────────────
+# Commercial integrations (T0/T1/T2 — every line below is env-gated;
+# import-safe when the corresponding key is unset, so dev/test runs
+# without these packages do not break).
+# ──────────────────────────────────────────────────────────────────
+
+# Stripe — international card payments (USD/EUR/AED fallback to Moyasar).
+# Used by dealix/payments/stripe_client.py + api/routers/billing.py.
+# Optional at runtime — our client uses httpx directly. Pinning here so
+# tests / CI installs the SDK once we adopt it.
+stripe>=11.0.0,<12
+
+# WorkOS — Enterprise SSO (SAML/OIDC + SCIM Directory Sync). We hit the
+# REST API via httpx today; this pin is for the day we adopt the SDK.
+workos>=5.0.0,<6
+
+# Cerbos — authorization policy decision point (PDP). We talk to the
+# sidecar over HTTP today; pinning the Python helper for future use.
+cerbos>=0.20.0
+
+# Inngest — durable workflow runtime (replaces in-process LangGraph for
+# >5-minute LLM jobs). Optional; dealix/workflows/inngest_app.py is
+# import-safe without it installed.
+inngest>=0.4
+
+# Portkey — LLM gateway with per-tenant cost attribution. Optional —
+# dealix/llm/portkey_gateway.py uses HTTP headers + the host SDK.
+portkey-ai>=1.10
+
+# Lago — usage-based billing engine. REST via httpx today.
+lago-python-client>=1.5
+
+# Knock — multi-channel notification orchestration.
+knock-api>=0.5
+
+# Infisical — production secrets manager. REST via httpx today.
+infisical-python>=2.0

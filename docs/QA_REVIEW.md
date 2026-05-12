@@ -135,3 +135,56 @@ Six small logical commits on `claude/comprehensive-qa-review-ZLsYG`:
 6. `feat(focus+revenue): inventory, core workflows, trial, health, partners, case study, README honesty` — S.1, S.3, S.4, S.7, S.8, S.9.
 
 No PR is opened — push only. The founder approves and merges when ready.
+
+---
+
+## Commercial Readiness v2 — addendum
+
+The plan v2 (see `/root/.claude/plans/cozy-strolling-hollerith.md`) adds 13
+more commits on top of the QA work above, organised into three phases
+T0 / T1 / T2. Each integration is **env-gated** — when the corresponding
+API key is unset, the feature 503s or no-ops, never breaks the boot path.
+
+### Vendors adopted (each one is real, available today, MIT/Apache where possible)
+
+| Capability | Vendor | Status in this branch |
+| --- | --- | --- |
+| International payments | **Stripe** | Client + router scaffold (`dealix/payments/stripe_client.py`, `api/routers/billing.py`). |
+| Customer portal data | (internal) | Real DB queries replace stub JSON (`api/routers/customer.py`). |
+| Self-serve onboarding | (internal) | 4-step API + Next.js wizard (`api/routers/onboarding.py`, `frontend/src/app/[locale]/onboarding/page.tsx`). |
+| Audit log export | (internal) | Tenant-scoped read + CSV stream (`api/routers/audit_logs.py`). |
+| Customer support | **Plain** | Ticket client w/ Resend fallback (`dealix/integrations/plain_client.py`, `api/routers/support.py`). |
+| Enterprise SSO | **WorkOS** | SAML/OIDC + Admin Portal (`dealix/identity/workos_client.py`, `api/routers/sso.py`). |
+| Authorization | **Cerbos** | Policy bundle + Python adapter w/ static fallback (`cerbos/policies/*.yaml`, `core/authz.py`). |
+| Feature flags | **PostHog flags** | `core/feature_flags.py` wrapping existing PostHog client. |
+| LLM gateway / cost attribution | **Portkey** | Lazy SDK helpers (`dealix/llm/portkey_gateway.py`). |
+| Multi-channel notifications | **Knock** | REST client w/ Resend fallback (`dealix/integrations/knock_client.py`). |
+| Secrets vault | **Infisical** | Env-merging client (`dealix/integrations/infisical_client.py`). |
+| Durable workflows | **Inngest** | Example function + dispatcher (`dealix/workflows/inngest_app.py`). |
+| Lead enrichment | **Apollo + Clearbit + Wathq** | Three clients + orchestrator (`dealix/enrichment/`). |
+| Usage metering | **Lago** | Event client (`dealix/billing/lago_client.py`). |
+| Marketing automation | **Loops** | identify + event API (`dealix/marketing/loops_client.py`). |
+| Status page | **BetterStack** | Heartbeat loop + status fetcher (`dealix/integrations/betterstack.py`); trust page reads BetterStack JSON when configured. |
+| WhatsApp templates | **Meta Cloud API** | Admin router (`api/routers/whatsapp_admin.py`); template send already in `integrations/whatsapp.py`. |
+| API docs portal | **Mintlify** | `mint.json` + `docs/api/*.mdx`. |
+| SDK codegen | **Fern** | `fern/` config + `.github/workflows/sdk.yml`. |
+| OpenAPI lint | **Spectral** | `.spectral.yaml` + `.github/workflows/api_lint.yml`. |
+| TanStack Query | (frontend) | `frontend/src/lib/query-client.ts` + typed wrappers. |
+
+### Operational principle
+
+Every integration above ships **inert**. The founder pastes a key in
+`.env`, restarts, and the feature lights up — no further code change. The
+codebase therefore is *already* configured for full commercial operation
+the day the vendor contracts are signed.
+
+### Follow-ups still owned by humans
+
+- KYC for Moyasar Live.
+- Sign each vendor (Stripe, WorkOS, Plain, BetterStack, Knock, Portkey,
+  Lago, Loops, Apollo, Clearbit, Wathq, Infisical) and paste keys.
+- SOC 2 auditor engagement.
+- Cerbos PDP deployment (sidecar in production cluster).
+- Inngest cloud or self-host deployment.
+- Mintlify project on docs.dealix.sa.
+- PyPI + npm publishing tokens for the Fern SDK release workflow.
