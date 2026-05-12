@@ -690,3 +690,21 @@ page, partner landing form, marketplace catalogue page.
 - Marketplace `marketplace@ai-company.sa` mailbox setup.
 - Helm `dealix-secrets` K8s Secret population per environment.
 - Founder-signed SOC 2 auditor + ISO 27001 certification engagement.
+
+## T13 addendum — commercial finalization & honest revenue
+
+T13 closes the five gaps the v3.7.0 commercial-readiness audit
+surfaced. Each gap → resolution:
+
+| Audit finding | Resolution |
+| --- | --- |
+| `/api/v1/payment-ops/invoice-intent` returned no Moyasar checkout URL, so the landing checkout dead-ended at a "TEST mode" panel even when MOYASAR_SECRET_KEY was set. | T13a — `_maybe_attach_moyasar_url()` best-effort enriches the response with a real Moyasar hosted-checkout URL. Constitution's no-live-charge / no-fake-revenue gates preserved. |
+| Stripe/Moyasar webhooks persisted InvoiceRecord rows but the customer never received a ZATCA-shaped PDF or a transactional welcome email. | T13b — `dealix/billing/invoice_pdf.py` renders a bilingual ZATCA-shaped invoice; webhook fires `_send_receipt_email_best_effort()` with the signed download link. |
+| Six comparison pages overclaimed Tabby/Tamara/TAP, Hijri dual-calendar, WhatsApp Cloud, Saudi data residency, and Saudi-gov enrichment "native". | T13c — every page re-shipped with conservative language + "last validated 2026-05-12" footer. GCC `/health` splits public-available from operator-full. |
+| No enforcement that every vertical's `agents:` list maps to a registered handler — drift waiting to happen. | T13d — `tests/unit/test_vertical_handler_coverage.py` + `scripts/dev/check_vertical_truth.py` make claimed-but-unimplemented agents impossible to ship. |
+| No printable sales brochure per vertical; no documented outbound sequence. | T13e — `dealix/marketing/brochure_pdf.py` + `/api/v1/marketing/brochure/{id}.{pdf,html}` + `docs/sales/{cold_outreach_ar,cold_outreach_en,objection_handling}.md`. |
+| Founder had no operational map of which keys to pay for first or what to do in week 1. | T13f — `docs/ops/vendor_cost_sheet.md` (week-1 < $100/month) + `docs/ops/go_live_checklist.md` (30 items, 3–7 days to first invoice). |
+
+After T13, every public claim traces to executable code, every paying
+customer reaches a real ZATCA-shaped receipt, and the founder has a
+30-item ordered list from clean clone to first invoice.

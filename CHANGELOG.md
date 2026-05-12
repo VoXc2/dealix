@@ -1,5 +1,79 @@
 # Changelog
 
+## [3.8.0] — 2026-05-12
+
+T13 — commercial finalization & honest revenue. Closes the revenue-
+funnel breaks the v3.7.0 audit surfaced. Every claim the public sees
+now traces to executable code; the founder has a documented 7-day path
+from clean clone to first invoice.
+
+### T13a — Checkout flow unblocked
+`api/routers/payment_ops.py:_maybe_attach_moyasar_url` enriches the
+existing `/api/v1/payment-ops/invoice-intent` response with a real
+Moyasar hosted-checkout URL when `MOYASAR_SECRET_KEY` is set and
+`method == "moyasar_test"`. Bank-transfer / cash / no-gateway paths
+keep the historic manual-evidence flow. The constitution's
+`no_live_charge` + `no_fake_revenue` gates are unchanged.
+`landing/checkout.html` redirects to the new `checkout_url` when
+present. Tests in `tests/integration/test_payment_ops_router.py`.
+
+### T13b — Invoice PDF + receipt email
+`dealix/billing/invoice_pdf.py` renders a bilingual ZATCA-shaped
+invoice (RTL-safe AR, LTR EN, 15% VAT line, TLV QR-code payload via
+`integrations/zatca.py` when present). `api/routers/billing_invoices.py`
+serves the invoice at `/api/v1/billing/invoices/{id}?t=<sig>` —
+signed-link auth so the email link works pre-login. The Moyasar
+webhook in `api/routers/pricing.py` now fires
+`_send_receipt_email_best_effort()` which emails a bilingual receipt
+with the signed invoice URL on every `paid`/`succeeded` event.
+7 unit + 4 integration tests.
+
+### T13c — Honest comparison pages
+Six comparison pages (`landing/comparisons/{hubspot,salesforce,gong,
+salesloft,outreach,apollo}.html`) re-shipped with conservative
+language for Tabby / Tamara / TAP ("pending merchant onboarding"),
+Hijri dual-calendar ("Roadmap Q3 2026"), WhatsApp Cloud ("Cadence
+engine live; Meta template approval required"), Saudi data residency
+("Available on Enterprise contract; default EU/US"). Each page now
+carries a "Last validated against the live code on 2026-05-12"
+footer.
+
+`api/routers/billing_gcc.py` splits `/health` (available gateways +
+configured_count + back-compat booleans) from `/health/full`
+(operator view that always lists every gateway with a status string).
+
+### T13d — Vertical→handler coverage enforced
+`tests/unit/test_vertical_handler_coverage.py` asserts every
+vertical's `agents:` entry maps to a registered handler. The
+canonical 12-skill contract is locked in.
+`scripts/dev/check_vertical_truth.py` runs as a pre-deploy CI gate
+with a human-readable report.
+
+### T13e — Sales kit
+`dealix/marketing/brochure_pdf.py` renders a single-page bilingual
+sales brochure per vertical (live agents vs roadmap split based on
+the handler registry, SAR pricing table, QR code linking back to
+vertical-tagged signup, A4 print-ready CSS).
+`api/routers/marketing.py` exposes
+`GET /api/v1/marketing/brochure/{vertical_id}.{pdf,html}?locale=ar|en`.
+`docs/sales/`:
+- `cold_outreach_en.md` + `cold_outreach_ar.md` — 3-touch outbound
+  sequence (email → WhatsApp → trial-link nudge) targeting 30% close
+  by day 21.
+- `objection_handling.md` — 12 questions every Saudi B2B buyer asks
+  with one-paragraph honest answers each linked to a code path.
+5 integration tests.
+
+### T13f — Vendor cost sheet + go-live checklist
+`docs/ops/vendor_cost_sheet.md` — 5 tables mapping every env var to
+vendor URL + pilot $/mo + scale $/mo + inert-without-it flag.
+Week-1 minimum: < $100/month. Closing rule: "Don't pay for a vendor
+before a paying customer needs it."
+`docs/ops/go_live_checklist.md` — 30-item checklist organised by day:
+Day 0 bootstrap → Day 0 deploy → Day 1 smoke commerce → Day 1 trust
+gates → Day 2 outbound → Week 2 first conversions. Total time: ~3–7
+days from clean clone to first invoice.
+
 ## [3.7.0] — 2026-05-12
 
 T12 — enterprise + self-service growth motion. Closes the v3.7.0
