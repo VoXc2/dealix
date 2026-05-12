@@ -1,5 +1,53 @@
 # Changelog
 
+## [3.2.0] — 2026-05-12
+
+T4 — end-to-end closure. 8 commits making everything cohere: tests,
+frontend completeness, audit + authz integration, docs per resource,
+integration polish, reliability, compliance.
+
+### T4a — Tests
+Integration coverage on every T0-T3 router. Unit coverage for
+cost_guard / guardrails / prompt registry / authz / business-hours /
+feature flags. Vitest spec for Hijri helpers.
+
+### T4b — Frontend
+New pages: support, trial, settings/team, settings/api-keys,
+settings/profile, admin/llm, admin/whatsapp/templates, status.
+Enterprise SSO button on login. TanStack Query Providers wired.
+PDPL cookie banner on landing.
+
+### T4c — Audit + authz
+`api/security/audit_writer.audit()` adopted by invite/revoke/
+onboarding-finalize/stripe-webhook/support. Billing health honors
+PostHog feature flags.
+
+### T4d — Docs
+11 Mintlify per-resource pages, DOCS_INDEX, issue + PR templates,
+branch-protection guide, README badge refresh.
+
+### T4e — Integration polish
+InvoiceRecord + migration 005, Stripe webhook fan-out (Lago + Loops
++ Knock + audit), Wathq verification at onboarding, Jinja renderer
+with Hijri + Gregorian, WhatsApp intent helper.
+
+### T4f — Reliability
+actionlint CI, monthly DR drill cron, Semgrep in pre-commit, S3
+backup verifier, PgBouncer tuning doc, vendor status in deep-health.
+
+### T4g — Compliance
+DPA template, GDPR↔PDPL article map, canonical sub-processor list
+(29 rows), RFC 9116 security.txt, public legal pages
+(privacy/terms/cookies/dpa), live sub-processors page.
+
+### Closing
+CI coverage gate raised 70 → 75%. QA_REVIEW T4 addendum.
+
+### Still founder-owned
+Legal review of DPA; GitHub branch-protection rules; S3 bucket + IAM;
+PagerDuty integration key; Cerbos PDP prod deploy; Inngest Cloud prod
+deploy; ISO 27001 audit; Mintlify hosting + Fern publish tokens.
+
 ## [3.1.0] — 2026-05-12
 
 T0 + T1 + T2 + T3 — full commercial-readiness + best-tech-company stack

@@ -315,3 +315,86 @@ External account signups (Tinybird, Grafana Cloud, PagerDuty, dbt
 Cloud); SOC 2 Type I auditor engagement; Saudi region cloud provider
 contract; PyPI / npm publishing tokens; Cerbos PDP production deploy;
 Inngest Cloud production deploy; pen-test vendor.
+
+---
+
+## T4 addendum — end-to-end closure (8 commits)
+
+T0-T3 shipped 29 commits. T4 is the final pass that makes everything
+cohere — tests, frontend completeness, audit + authz on every new
+mutation, docs per resource, integration polish, reliability,
+compliance.
+
+### T4a — Test coverage (`test(t4)`)
+
+15 new test files. Integration coverage on every T0-T3 router
+(customer, onboarding, billing, audit, support, sso, pdpl_dsr,
+realtime, benchmarks, llm_usage, admin_nps). Unit coverage on
+cost_guard, guardrails, prompt_registry, authz, business_hours,
+feature_flags. Vitest spec for the Hijri JS helpers.
+
+### T4b — Frontend completeness (`feat(ui)`)
+
+Eight new pages: `support`, `trial`, `settings/team`,
+`settings/api-keys`, `settings/profile`, `admin/llm`,
+`admin/whatsapp/templates`, `status`. SSO button on login.
+`<Providers>` (TanStack Query) wired into `[locale]/layout.tsx`.
+PDPL cookie-consent banner loaded from landing index.
+
+### T4c — Audit + authz integration (`feat(security)`)
+
+`api/security/audit_writer.audit()` — single async funnel for all
+audit rows. Adopted by `customer.invite/revoke`,
+`onboarding.finalize`, `billing.stripe_webhook`, `support.create_ticket`.
+Billing health reads enablement through
+`core.feature_flags.flag_or_env`.
+
+### T4d — Documentation completeness (`docs(t4)`)
+
+Eleven Mintlify pages (`docs/api/{customers,billing,audit-logs,
+onboarding,support,sso,pdpl,realtime,benchmarks,rate-limits,
+changelog}.mdx`). `docs/DOCS_INDEX.md` single map. Issue templates
+(bug / feature / security). PR template aligned to AGENTS.md.
+`docs/repo/branch_protection.md`. README badges refreshed.
+
+### T4e — Integration polish (`feat(integration)`)
+
+`InvoiceRecord` model + migration 005 (alembic head still 1).
+Stripe webhook fan-out: idempotent InvoiceRecord upsert + Lago meter
++ Loops trigger + Knock notify + audit. Wathq verification at
+onboarding step 2 promotes canonical trade name to `TenantRecord.name`.
+`dealix/templates/render.py` Jinja renderer with auto-injected
+Hijri + Gregorian dates. `dealix/integrations/whatsapp_send.py`
+intent helper (proposal_followup / meeting_confirmation /
+payment_reminder / trial_expiring).
+
+### T4f — Reliability (`feat(reliability)`)
+
+`.github/workflows/{actionlint,dr_drill}.yml`. Semgrep added to
+pre-commit. `scripts/infra/backup_s3_verify.sh` validates the newest
+S3 backup. `docs/ops/connection_pooling.md` PgBouncer tuning.
+Deep-health endpoint reports configuration status for every T0-T3
+vendor.
+
+### T4g — Compliance closure (`feat(compliance)`)
+
+`docs/legal/DPA.md` 17-section template.
+`docs/compliance/GDPR_PDPL_MAPPING.md` article-to-code map.
+`docs/compliance/SUB_PROCESSORS.md` canonical list (29 rows).
+`landing/.well-known/security.txt` per RFC 9116.
+`landing/legal/{privacy,terms,cookies,dpa}.html` public pages.
+`landing/trust/sub-processors.html` live mirror of the markdown.
+
+### Closing chore (`chore(t4)`)
+
+CI coverage gate raised 70 → 75%. This addendum. CHANGELOG v3.2.0 entry.
+
+### T4 — what's still founder-owned
+
+- Legal review of the DPA template before production execution.
+- GitHub branch-protection rules (we ship the doc; founder applies them).
+- Real S3 backup bucket + IAM for the verifier.
+- Real PagerDuty integration key.
+- Production Cerbos PDP + Inngest Cloud deploy.
+- ISO 27001 audit kick-off.
+- Real Mintlify hosting + tag-triggered Fern SDK publish.
