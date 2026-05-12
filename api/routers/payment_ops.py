@@ -11,9 +11,18 @@ Hard rules:
 - payment_confirmed = revenue (only after evidence_reference)
 - delivery starts ONLY after payment_confirmed
 - moyasar_live blocked unless DEALIX_MOYASAR_MODE=live env opt-in
+
+T13a — `invoice-intent` now offers a real Moyasar hosted-checkout URL
+when `method == "moyasar_test"` AND `MOYASAR_SECRET_KEY` is set, so
+the landing checkout flow stops dead-ending at a "TEST mode" panel.
+The constitutional "no_live_charge" gate is preserved — `moyasar_live`
+still requires the env opt-in, and we never auto-flip the payment to
+`payment_confirmed`; the founder still confirms manually after
+evidence upload.
 """
 from __future__ import annotations
 
+import os
 from typing import Any
 
 from fastapi import APIRouter, Body, HTTPException
@@ -25,8 +34,10 @@ from auto_client_acquisition.payment_ops import (
     kickoff_delivery,
     upload_manual_evidence,
 )
+from core.logging import get_logger
 
 router = APIRouter(prefix="/api/v1/payment-ops", tags=["payment-ops"])
+log = get_logger(__name__)
 
 _HARD_GATES: dict[str, bool] = {
     "no_live_charge": True,
@@ -39,6 +50,64 @@ _VALID_METHODS = {
     "moyasar_test", "moyasar_live", "bank_transfer",
     "cash_in_person", "manual_other",
 }
+
+
+async def _maybe_attach_moyasar_url(
+    rec_dump: dict[str, Any],
+    *,
+    amount_sar: float,
+    method: str,
+    service_session_id: str | None,
+    customer_handle: str,
+) -> dict[str, Any]:
+    """Best-effort: attach a real Moyasar hosted-checkout URL to the
+    payment record when the env keys allow it.
+
+    Returns the (possibly enriched) rec_dump. Never raises — a Moyasar
+    upstream failure here must not break the invoice-intent contract,
+    so the founder's manual bank-transfer path remains usable.
+    """
+    if method != "moyasar_test":
+        return rec_dump
+    if not os.getenv("MOYASAR_SECRET_KEY", "").strip():
+        rec_dump["checkout_url"] = None
+        rec_dump["checkout_mode"] = "test_no_gateway"
+        return rec_dump
+    try:
+        from dealix.payments.moyasar import MoyasarClient
+
+        client = MoyasarClient()
+        callback_base = os.getenv("APP_URL", "https://dealix.me")
+        invoice = await client.create_invoice(
+            amount_halalas=int(round(amount_sar * 100)),
+            currency="SAR",
+            description=f"Dealix — {service_session_id or 'service'}",
+            callback_url=f"{callback_base}/checkout/return",
+            metadata={
+                "tier": service_session_id or "",
+                "intent_id": rec_dump.get("invoice_intent_id", ""),
+                "payment_id": rec_dump.get("payment_id", ""),
+                "source": "payment-ops.invoice-intent",
+            },
+        )
+        rec_dump["checkout_url"] = invoice.get("url")
+        rec_dump["moyasar_invoice_id"] = invoice.get("id")
+        rec_dump["checkout_mode"] = "moyasar_test"
+        log.info(
+            "moyasar_intent_attached",
+            payment_id=rec_dump.get("payment_id"),
+            moyasar_invoice_id=invoice.get("id"),
+            tier=service_session_id,
+        )
+    except Exception:
+        log.exception(
+            "moyasar_intent_attach_failed",
+            payment_id=rec_dump.get("payment_id"),
+            tier=service_session_id,
+        )
+        rec_dump["checkout_url"] = None
+        rec_dump["checkout_mode"] = "test_upstream_error"
+    return rec_dump
 
 
 @router.post("/invoice-intent")
@@ -62,8 +131,16 @@ async def invoice_intent(payload: dict[str, Any] = Body(default_factory=dict)) -
         )
     except ValueError as e:
         raise HTTPException(status_code=403, detail=str(e))
+    rec_dump = rec.model_dump(mode="json")
+    rec_dump = await _maybe_attach_moyasar_url(
+        rec_dump,
+        amount_sar=float(amount_sar),
+        method=str(method),
+        service_session_id=payload.get("service_session_id"),
+        customer_handle=str(customer_handle),
+    )
     return {
-        "payment": rec.model_dump(mode="json"),
+        "payment": rec_dump,
         "warning_invoice_not_revenue": "invoice_intent != revenue",
         "hard_gates": _HARD_GATES,
     }

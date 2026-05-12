@@ -274,14 +274,25 @@
         var body = await res.json();
         if (res.ok && body.payment) {
           var paymentId = body.payment.id || body.payment.payment_id;
+          var checkoutUrl = body.payment.checkout_url;
           panel.classList.add("show");
-          // textContent (not innerHTML) — paymentId is API-controlled, must be escaped
-          panel.textContent = "✓ تم إنشاء الفاتورة (TEST mode). payment_id: " + (paymentId || "—");
-          // Redirect to success page
-          setTimeout(function () {
-            window.location.href = "/checkout-success.html?invoice_id=" + encodeURIComponent(paymentId || "") +
-                                   "&tier=" + tier.key + "&amount=" + tier.data.amount_sar;
-          }, 1200);
+          // textContent (not innerHTML) — values are API-controlled, must be escaped
+          if (checkoutUrl) {
+            panel.textContent = "✓ تم إنشاء الفاتورة. جاري التحويل لـ Moyasar…";
+            // Real Moyasar hosted checkout — redirect immediately so the customer
+            // pays before the page closes.
+            setTimeout(function () {
+              window.location.href = checkoutUrl;
+            }, 600);
+          } else {
+            // Bank-transfer / cash / no-gateway path — keep the historic flow
+            // so the founder still gets the manual lead.
+            panel.textContent = "✓ تم إنشاء الفاتورة. سيتواصل الفريق معك لإكمال الدفع — payment_id: " + (paymentId || "—");
+            setTimeout(function () {
+              window.location.href = "/checkout-success.html?invoice_id=" + encodeURIComponent(paymentId || "") +
+                                     "&tier=" + tier.key + "&amount=" + tier.data.amount_sar;
+            }, 1200);
+          }
         } else {
           panel.classList.add("show", "error");
           panel.textContent = "تعذّر إنشاء الفاتورة: " + (body.detail || body.error || ("HTTP " + res.status)) +
