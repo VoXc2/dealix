@@ -1,0 +1,15 @@
+{
+  "ran_at": "2026-05-12T23:54:24.449273+00:00",
+  "customers_run": 1,
+  "reports": [
+    {
+      "handle": "test",
+      "target_count": 50,
+      "started_at": "2026-05-12T23:54:24.448999+00:00",
+      "dry_run": true,
+      "status": "dry_run",
+      "note": "would query pipeline + apply ICP filter + write report",
+      "icp_filter_seen": {}
+    }
+  ]
+}
