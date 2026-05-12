@@ -115,3 +115,25 @@ knock-api>=0.5
 
 # Infisical — production secrets manager. REST via httpx today.
 infisical-python>=2.0
+
+# ──────────────────────────────────────────────────────────────────
+# T3 — Best-tech-company stack
+# ──────────────────────────────────────────────────────────────────
+
+# Semgrep — custom security ruleset (.semgrep/dealix.yaml).
+semgrep>=1.85
+
+# Mutmut — quarterly mutation testing drill (make mutmut).
+mutmut>=2.5
+
+# Promptfoo runs as an npm package; mentioned here for awareness only.
+# Install via: `npm install -g promptfoo@0.95.0`
+
+# Guardrails AI (optional). When installed we use it; otherwise the
+# fallback in core/llm/guardrails.py provides equivalent checks.
+guardrails-ai>=0.6 ; python_version >= "3.10"
+
+# Tinybird embedded analytics — we hit REST directly; no SDK needed.
+
+# Loops, Knock, BetterStack, Plain, Apollo, Clearbit, Wathq, Tinybird:
+# all REST-only — httpx covers them.

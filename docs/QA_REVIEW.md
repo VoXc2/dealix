@@ -188,3 +188,130 @@ the day the vendor contracts are signed.
 - Inngest cloud or self-host deployment.
 - Mintlify project on docs.dealix.sa.
 - PyPI + npm publishing tokens for the Fern SDK release workflow.
+
+---
+
+## T3 addendum — "Best tech company" (this branch, 8 commits)
+
+Seven sub-phases + a closing chore commit, all on
+`claude/comprehensive-qa-review-ZLsYG`.
+
+### T3a — Engineering rigor (commit `feat(rigor)`)
+
+- `pyproject.toml`: mypy strict-on-subset overrides for the
+  security-critical + new commercial modules.
+- `.semgrep/dealix.yaml`: custom rule set (no print/eval/os.system,
+  no raw requests, no bare except Exception, no SQL text injection,
+  no hardcoded secret literals, no assert in prod).
+- `.github/workflows/{security_lint,perf}.yml`: Semgrep + Bandit + k6
+  budgets on every PR.
+- `.devcontainer/`: VS Code + Codespaces ready-to-go.
+- `scripts/dev/install_dev.sh` + Makefile `make hooks`: 1-command
+  bootstrap.
+- `docs/adr/{template,index,0001,0002}.md`: ADR system seeded with
+  two decisions (Plain vs Intercom, Inngest vs Temporal).
+- `docs/architecture/{dataflow,auth,billing,enrichment,workflows}.md`:
+  mermaid diagrams; Mintlify renders inline.
+- `tests/perf/k6_smoke.js`: p95 < 500ms budget on staging.
+- `docs/ops/quality.md`: quarterly mutation-testing drill + CI
+  failure triage playbook.
+
+### T3b — AI/ML rigor (`feat(llm-safety)`)
+
+- `core/llm/cost_guard.py`: `CostGuard(tenant_id)` + decorator with
+  per-request + per-tenant-day USD caps; Redis-counter persistence;
+  degrade-model swap.
+- `core/llm/guardrails.py`: PII redaction (Saudi NID / IBAN / VAT /
+  alien emails) + proposal JSON-shape validation.
+- `dealix/prompts/{proposal,icp,qualification,reply}.yaml`: versioned
+  prompt registry; loader hashes bodies so drift is reviewable.
+- `evals/promptfoo/{proposal,icp,qualification,reply}.yaml` +
+  `.github/workflows/llm_evals.yml`: golden-set evals run on every PR
+  that touches prompts or agents.
+- `api/routers/llm_usage.py`: `GET /api/v1/customers/{id}/llm/usage`.
+- `docs/llm/models.md`: model registry — primary + fallback chain +
+  last-verified date per workflow.
+
+### T3c — Real-time + embedded analytics (`feat(realtime)`)
+
+- `api/routers/realtime.py`: SSE stream at `/api/v1/realtime/stream`
+  with Redis pubsub fan-in + heartbeat-only fallback.
+- `api/routers/benchmarks.py` + `dealix/integrations/tinybird_client.py`
+  + `frontend/.../benchmarks/page.tsx`: customer-facing sector
+  benchmarks via Tinybird, internal-aggregator fallback.
+- `analytics/dbt/{dbt_project.yml,profiles.yml,models/marts/*.sql}`:
+  dbt for DuckDB-local + BigQuery-prod.
+- `docker-compose.metabase.yml`: optional internal BI compose file.
+- `frontend/src/components/onboarding/Tour.tsx` (driver.js): first-
+  login product tour gated by `localStorage`.
+- `dealix/analytics/posthog_client.py`: new `survey()` + 
+  `list_survey_responses()` for the NPS path.
+- `frontend/src/lib/use-realtime.ts`: TanStack-Query-friendly SSE hook.
+
+### T3d — Operational maturity (`feat(ops)`)
+
+- `infra/terraform/{main,variables,railway,postgres,redis,cerbos}.tf`:
+  Terraform 1.7+, Railway + Cloudflare providers, staging + prod
+  environments.
+- `.github/workflows/promote.yml`: main→staging smoke + manual
+  approval gate → prod redeploy via Railway CLI + post-deploy smoke.
+- `docs/ops/incident_response.md`: full SEV-1/2/3 playbook.
+- `docs/ops/postmortem_template.md` + `postmortems/`: blameless
+  template + log dir.
+- `infra/grafana/dashboards/{api,llm,inngest,postgres}.json`: 4
+  starter dashboards.
+- `infra/grafana/alerts/{availability,latency}.yaml`: multi-window
+  multi-burn-rate SLO alerts.
+- `.github/CODEOWNERS` + `docs/ops/OPS_ROTATION.md` +
+  `dealix/integrations/pagerduty_client.py`.
+
+### T3e — Saudi sovereignty (`feat(saudi)`)
+
+- `scripts/infra/zatca_csr_rotate.sh`: EC P-256 keypair + CSR with
+  VAT/CR SAN, posts to Fatoorah, captures CSID.
+- `api/routers/pdpl_dsr.py`: PDPL Article 22/23 endpoints
+  (`/dsr/access`, `/dsr/delete`, `/dsr/portability`,
+  `/dsr/requests`).
+- `dealix/templates/{ar,en}/{invite,billing,trial_expiring}.html.j2`:
+  RTL-safe transactional emails with dual-calendar variables.
+- `frontend/src/lib/hijri.ts`: Intl-based Hijri helpers.
+- `docs/ops/saudi_region.md`: STC / Mobily / AWS me-central-1
+  migration runbook.
+- `api/middleware/business_hours.py`: opt-in Sun–Thu 09–18 Riyadh
+  guard via `BUSINESS_HOURS_ENFORCE=1`.
+
+### T3f — Customer experience (`feat(cx)`)
+
+- `dealix/workflows/inngest_app.py`: new `customer-health-watcher`
+  cron function — daily scan, opens a Plain ticket on `at_risk`.
+- `frontend/src/components/Changelog.tsx`: in-app "what's new" popover.
+- `docs/product/ROADMAP.json` + `landing/roadmap/index.html`: public,
+  JSON-driven roadmap with shipped / in-progress / planned pills.
+- `frontend/.../admin/nps/page.tsx` + `api/routers/admin_nps.py`:
+  founder-only NPS dashboard with promoters / passives / detractors
+  buckets and a calculated NPS score.
+- `docs/marketing/onboarding_emails.md`: 11 documented Loops trigger
+  events with variable contracts.
+
+### T3g — Open-source / partner motion (`feat(oss)`)
+
+- `cli/dealix_cli.py` + console-script `dealix = "cli.dealix_cli:main"`:
+  typer CLI wrapping leads / webhooks / onboarding / support / audit.
+- `docs/api/examples/{python,typescript}/`: six end-to-end examples.
+- `AGENTS.md`: extended with conventions for AI + human contributors.
+- `.github/DISCUSSION_TEMPLATE/general.yml`: structured Q&A template.
+
+### Closing — `chore(t3)`
+
+- `requirements.txt`: pin semgrep + mutmut + guardrails-ai.
+- `.env.example`: T3 env-var block covering cost caps, PostHog
+  surveys, Tinybird, PagerDuty, ZATCA, business-hours guard, dbt.
+- `docs/QA_REVIEW.md`: this addendum.
+- `CHANGELOG.md`: T3 release entry.
+
+### What still needs the founder (out of scope)
+
+External account signups (Tinybird, Grafana Cloud, PagerDuty, dbt
+Cloud); SOC 2 Type I auditor engagement; Saudi region cloud provider
+contract; PyPI / npm publishing tokens; Cerbos PDP production deploy;
+Inngest Cloud production deploy; pen-test vendor.
