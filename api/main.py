@@ -42,6 +42,7 @@ from api.routers import agents_builder as agents_builder_router
 from api.routers import admin_enterprise as admin_enterprise_router
 from api.routers import saudi_gov as saudi_gov_router
 from api.routers import newsletter as newsletter_router
+from api.routers import billing_gcc as billing_gcc_router
 from api.routers import benchmarks as benchmarks_router
 from api.routers import llm_usage as llm_usage_router
 from api.routers import pdpl_dsr as pdpl_dsr_router
@@ -328,6 +329,8 @@ def create_app() -> FastAPI:
     app.include_router(saudi_gov_router.router)
     # Public newsletter signup (Loops).
     app.include_router(newsletter_router.router)
+    # GCC payment gateways — KNET / BENEFIT / Magnati (T8b).
+    app.include_router(billing_gcc_router.router)
 
     # ── Wave 12.7 — Intelligence Layer + Expansion Engine ─────────
     # Both routers self-prefix /api/v1/intelligence and /api/v1/expansion-engine.
