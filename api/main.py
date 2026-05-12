@@ -38,6 +38,7 @@ from api.routers import (
     onboarding,
     partners,
     pdpl,
+    support,
     trial,
     zatca,
 )
@@ -240,6 +241,8 @@ def create_app() -> FastAPI:
     app.include_router(billing.router)
     # Customer-facing audit log + CSV export.
     app.include_router(audit_logs_router.router)
+    # Customer support — Plain ticketing with Resend email fallback.
+    app.include_router(support.router)
 
     # ── Wave 12.7 — Intelligence Layer + Expansion Engine ─────────
     # Both routers self-prefix /api/v1/intelligence and /api/v1/expansion-engine.
