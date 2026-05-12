@@ -60,6 +60,11 @@ class OnboardingIntegrationsIn(BaseModel):
     onboarding_id: str = Field(..., max_length=64)
     integrations: list[str] = Field(default_factory=list, max_length=20)
     # e.g. ["hubspot", "whatsapp", "calendly", "resend", "moyasar"]
+    # Optional Saudi commercial identifiers — when set, we verify them
+    # against the Wathq registry (no-op without WATHQ_API_KEY) so the
+    # tenant's profile carries authoritative VAT/CR before /finalize.
+    vat_number: str = Field(default="", max_length=20)
+    cr_number: str = Field(default="", max_length=20)
 
 
 class OnboardingDPAIn(BaseModel):
@@ -213,6 +218,50 @@ async def record_integrations(
     state["integrations"] = sorted(set(payload.integrations))
     state["step"] = "integrations"
     state["integrations_at"] = datetime.now(timezone.utc).replace(tzinfo=None).isoformat()
+
+    # T4e — Wathq verification (no-op without WATHQ_API_KEY).
+    wathq_payload: dict[str, Any] | None = None
+    if payload.vat_number or payload.cr_number:
+        try:
+            from dealix.enrichment.wathq_client import lookup_wathq
+
+            res = await lookup_wathq(
+                vat_number=payload.vat_number or None,
+                cr_number=payload.cr_number or None,
+            )
+            if res.matched:
+                wathq_payload = res.data
+                state["wathq"] = {
+                    "matched": True,
+                    "cr_number": wathq_payload.get("cr_number"),
+                    "vat_number": wathq_payload.get("vat_number"),
+                    "company_name_ar": wathq_payload.get("company_name_ar"),
+                    "company_name_en": wathq_payload.get("company_name_en"),
+                    "registration_status": wathq_payload.get("registration_status"),
+                }
+                # Promote the canonical trade name to the tenant record
+                # so the dashboard renders the legal name from now on.
+                canonical = (
+                    wathq_payload.get("company_name_en")
+                    or wathq_payload.get("company_name_ar")
+                )
+                if canonical and tenant.name and canonical != tenant.name:
+                    state["original_name"] = tenant.name
+                    tenant.name = canonical
+            else:
+                state["wathq"] = {
+                    "matched": False,
+                    "submitted_vat": payload.vat_number,
+                    "submitted_cr": payload.cr_number,
+                }
+        except Exception:
+            log.exception(
+                "wathq_verify_failed",
+                tenant_id=tenant.id,
+                has_vat=bool(payload.vat_number),
+                has_cr=bool(payload.cr_number),
+            )
+
     meta["onboarding"] = state
     tenant.meta_json = meta
     try:
@@ -225,6 +274,7 @@ async def record_integrations(
         "onboarding_id": tenant.id,
         "step": "integrations",
         "integrations": state["integrations"],
+        "wathq": state.get("wathq"),
         "next": "dpa",
     }
 

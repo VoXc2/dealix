@@ -866,3 +866,36 @@ class ConsentRequestRecord(Base):
     __table_args__ = (
         Index("ix_consent_requests_contact_channel", "contact_id", "channel", "purpose"),
     )
+
+
+# ── Invoices (T4e) — Stripe + Moyasar webhook landing zone ─────────
+
+
+class InvoiceRecord(Base):
+    """
+    Customer-facing invoice rows landed by Stripe + Moyasar webhooks.
+    سجل الفواتير المُنزَّل من webhooks لكل من Stripe و Moyasar.
+
+    Minimal columns — heavy invoice-level analytics live in dbt marts.
+    """
+
+    __tablename__ = "invoices"
+
+    id: Mapped[str] = mapped_column(String(64), primary_key=True)
+    tenant_id: Mapped[str] = mapped_column(String(64), index=True)
+    provider: Mapped[str] = mapped_column(String(32), index=True)  # moyasar | stripe | manual
+    external_id: Mapped[str] = mapped_column(String(128), index=True)
+    status: Mapped[str] = mapped_column(String(32), default="pending", index=True)
+    # paid | failed | refunded | pending
+    amount_minor: Mapped[int] = mapped_column(Integer, default=0)  # halalas / cents
+    currency: Mapped[str] = mapped_column(String(8), default="SAR")
+    issued_at: Mapped[datetime] = mapped_column(default=utcnow, index=True)
+    paid_at: Mapped[datetime | None] = mapped_column(nullable=True)
+    meta_json: Mapped[dict] = mapped_column("metadata", JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(default=utcnow, onupdate=utcnow)
+
+    __table_args__ = (
+        UniqueConstraint("provider", "external_id", name="uq_invoice_provider_external"),
+        Index("ix_invoice_tenant_provider", "tenant_id", "provider"),
+    )

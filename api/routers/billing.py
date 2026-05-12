@@ -130,7 +130,103 @@ async def stripe_webhook(
         evt = await req.json()
     except Exception:
         evt = {}
-    # Audit the event boundary (no PII; just type + id).
+    event_type = evt.get("type", "")
+    obj = ((evt.get("data") or {}).get("object") or {})
+    tenant_id = ((obj.get("metadata") or {}).get("tenant_id") or "system")
+
+    # Persist invoice + fan out — only when the event is terminal.
+    try:
+        import secrets as _secrets
+        from sqlalchemy import select
+
+        from db.models import InvoiceRecord
+        from db.session import async_session_factory
+
+        terminal = event_type in {
+            "payment_intent.succeeded",
+            "checkout.session.completed",
+            "payment_intent.payment_failed",
+            "charge.refunded",
+        }
+        if terminal:
+            status_map = {
+                "payment_intent.succeeded": "paid",
+                "checkout.session.completed": "paid",
+                "payment_intent.payment_failed": "failed",
+                "charge.refunded": "refunded",
+            }
+            external_id = str(obj.get("id") or evt.get("id") or "")
+            amount_minor = int(obj.get("amount_total") or obj.get("amount") or 0)
+            currency = (obj.get("currency") or "usd").upper()
+            async with async_session_factory()() as session:
+                existing = (
+                    await session.execute(
+                        select(InvoiceRecord).where(
+                            InvoiceRecord.provider == "stripe",
+                            InvoiceRecord.external_id == external_id,
+                        )
+                    )
+                ).scalar_one_or_none()
+                if existing is None and external_id:
+                    session.add(
+                        InvoiceRecord(
+                            id="inv_" + _secrets.token_hex(12),
+                            tenant_id=tenant_id,
+                            provider="stripe",
+                            external_id=external_id,
+                            status=status_map.get(event_type, "pending"),
+                            amount_minor=amount_minor,
+                            currency=currency,
+                            meta_json={"event_type": event_type},
+                        )
+                    )
+                    await session.commit()
+
+        if event_type in {"payment_intent.succeeded", "checkout.session.completed"}:
+            from dealix.billing.lago_client import get_lago_client
+
+            await get_lago_client().meter(
+                metric_code="invoice_paid",
+                external_customer_id=tenant_id,
+                value=1,
+                properties={
+                    "provider": "stripe",
+                    "amount_minor": int(obj.get("amount_total") or 0),
+                    "currency": obj.get("currency") or "usd",
+                },
+            )
+
+            from dealix.marketing.loops_client import get_loops_client
+
+            email = (
+                ((obj.get("customer_details") or {}).get("email"))
+                or (obj.get("receipt_email"))
+                or ""
+            )
+            if email:
+                await get_loops_client().event(
+                    event_name="payment_succeeded",
+                    email=email,
+                    properties={
+                        "tenant_id": tenant_id,
+                        "amount_minor": int(obj.get("amount_total") or 0),
+                        "currency": obj.get("currency") or "usd",
+                        "provider": "stripe",
+                    },
+                )
+
+            from dealix.integrations.knock_client import get_knock_client
+
+            await get_knock_client().notify(
+                workflow="payment_succeeded",
+                recipients=[{"id": tenant_id, "email": email or "ops@ai-company.sa"}],
+                data={"tenant_id": tenant_id, "external_id": (obj.get("id") or "")},
+                tenant_id=tenant_id,
+            )
+    except Exception:
+        log.exception("stripe_webhook_fanout_failed", event_type=event_type)
+
+    # Audit the event boundary regardless of fan-out success.
     try:
         from api.security.audit_writer import audit
         from db.session import async_session_factory
@@ -138,10 +234,10 @@ async def stripe_webhook(
         async with async_session_factory()() as session:
             await audit(
                 session,
-                action=f"stripe.webhook.{evt.get('type', 'unknown')}",
+                action=f"stripe.webhook.{event_type or 'unknown'}",
                 entity_type="webhook",
                 entity_id=str(evt.get("id") or ""),
-                tenant_id="system",
+                tenant_id=tenant_id,
                 diff={"livemode": evt.get("livemode")},
             )
     except Exception:
@@ -149,7 +245,8 @@ async def stripe_webhook(
 
     log.info(
         "stripe_webhook_received",
-        event_type=evt.get("type"),
+        event_type=event_type,
         event_id=evt.get("id"),
+        tenant_id=tenant_id,
     )
     return {"ok": True}
