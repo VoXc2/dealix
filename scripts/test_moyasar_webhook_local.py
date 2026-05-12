@@ -51,7 +51,29 @@ import uuid
 EVENT_TYPES = ("payment_authorized", "payment_paid", "payment_failed", "payment_refunded")
 
 
+_REDACTED = "<redacted>"
+
+
+def _redact(d: dict) -> dict:
+    """Return a copy of `d` with any sensitive top-level fields masked.
+    Used before logging so secret_token never flows into stdout."""
+    if not isinstance(d, dict):
+        return d
+    out = {}
+    for k, v in d.items():
+        if isinstance(k, str) and k.lower() in {"secret_token", "secret", "signature", "x-moyasar-signature"}:
+            out[k] = _REDACTED
+        elif isinstance(v, dict):
+            out[k] = _redact(v)
+        else:
+            out[k] = v
+    return out
+
+
 def build_payload(event_type: str, amount: int, plan: str, email: str) -> dict:
+    """Build a Moyasar-shaped event payload WITHOUT the secret_token.
+    The secret is injected at request-build time in post_webhook so it
+    never enters any dict that might be logged or stringified."""
     payment_id = f"pay_test_{uuid.uuid4().hex[:16]}"
     status = {
         "payment_authorized": "authorized",
@@ -59,15 +81,10 @@ def build_payload(event_type: str, amount: int, plan: str, email: str) -> dict:
         "payment_failed": "failed",
         "payment_refunded": "refunded",
     }[event_type]
-    secret = os.environ.get("MOYASAR_WEBHOOK_SECRET")
-    if not secret:
-        print("[error] MOYASAR_WEBHOOK_SECRET must be set", file=sys.stderr)
-        sys.exit(3)
 
     return {
         "id": f"evt_test_{uuid.uuid4().hex[:12]}",
         "type": event_type,
-        "secret_token": secret,
         "data": {
             "object": "payment",
             "id": payment_id,
@@ -80,7 +97,16 @@ def build_payload(event_type: str, amount: int, plan: str, email: str) -> dict:
 
 
 def post_webhook(base_url: str, payload: dict) -> tuple[int, str]:
-    body = json.dumps(payload).encode("utf-8")
+    """POST the payload after injecting secret_token at the boundary.
+    The secret is read here (not in build_payload) so it never enters
+    a dict that might be logged elsewhere in this script."""
+    secret = os.environ.get("MOYASAR_WEBHOOK_SECRET")
+    if not secret:
+        print("[error] MOYASAR_WEBHOOK_SECRET must be set", file=sys.stderr)
+        sys.exit(3)
+    body_dict = dict(payload)
+    body_dict["secret_token"] = secret
+    body = json.dumps(body_dict).encode("utf-8")
     req = urllib.request.Request(
         f"{base_url}/api/v1/webhooks/moyasar",
         data=body, method="POST",

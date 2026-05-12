@@ -46,6 +46,8 @@ async def clean_payments_row():
                 await session.delete(row)
             await session.commit()
     except Exception:
+        # Best-effort cleanup only. If the DB is gone, the next test run
+        # will fail loudly at setup; nothing useful to do here.
         pass
 
 
@@ -121,13 +123,9 @@ async def test_persist_no_id_is_noop():
 @pytest.mark.asyncio
 async def test_persist_gracefully_handles_missing_table(monkeypatch):
     """If the payments table isn't migrated yet, the call must be a no-op,
-    not break the webhook handler."""
-    # Force ImportError-like path by replacing module-level imports temporarily.
-    import api.routers.pricing as pricing_mod
-    original_persist = pricing_mod._persist_payment_event
-    # We simply assert the function as-written has its try/except wrapping —
-    # this is a smoke check that calling with completely bogus data doesn't raise.
-    await original_persist(
+    not break the webhook handler. Smoke-checks the try/except wrapping
+    by invoking the already-imported function with bogus data."""
+    await _persist_payment_event(
         event_id="evt_x", event_type="payment_paid",
         payment={"id": "pay_bogus", "amount": 1, "status": "paid"},
         raw_event={"id": "evt_x"},

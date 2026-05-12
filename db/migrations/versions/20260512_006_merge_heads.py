@@ -24,10 +24,16 @@ from __future__ import annotations
 
 from typing import Sequence, Union
 
-revision: str = "006"
-down_revision: Union[str, Sequence[str], None] = ("005", "0001")
-branch_labels: Union[str, Sequence[str], None] = None
-depends_on: Union[str, Sequence[str], None] = None
+# Alembic reads these module-level names via runtime introspection
+# (script.py.mako template + ScriptDirectory.walk_revisions). Static
+# analyzers cannot see that use, so they flag them as unused — they
+# are not. `__all__` makes the export explicit.
+__all__ = ["revision", "down_revision", "branch_labels", "depends_on"]
+
+revision: str = "006"  # noqa: F841 — read by Alembic via introspection
+down_revision: Union[str, Sequence[str], None] = ("005", "0001")  # noqa: F841
+branch_labels: Union[str, Sequence[str], None] = None  # noqa: F841
+depends_on: Union[str, Sequence[str], None] = None  # noqa: F841
 
 
 def upgrade() -> None:

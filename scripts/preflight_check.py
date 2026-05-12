@@ -85,13 +85,15 @@ def check_healthz(base_url: str) -> tuple[bool, str, dict | None]:
 
 # ── P2 ────────────────────────────────────────────────────────
 
-@check("P2 /api/v1/pricing/plans returns >= 4 plans", "P")
+@check("P2 /api/v1/pricing/plans returns >= 3 plans", "P")
 def check_pricing(base_url: str) -> tuple[bool, str, dict | None]:
     import urllib.request
     with urllib.request.urlopen(f"{base_url}/api/v1/pricing/plans", timeout=10) as resp:
         body = json.loads(resp.read())
     n = len(body.get("plans") or [])
-    return n >= 4, f"{n} plans returned", {"count": n}
+    # The public pricing endpoint returns 3 plans (starter/growth/scale);
+    # pilot_1sar is intentionally hidden. See api/routers/pricing.py.
+    return n >= 3, f"{n} plans returned", {"count": n}
 
 
 # ── P3 ────────────────────────────────────────────────────────
@@ -132,8 +134,14 @@ def check_cors_strict(base_url: str) -> tuple[bool, str, dict | None]:
         headers = {k.lower(): v for k, v in (exc.headers or {}).items()}
         code = exc.code
     allow = headers.get("access-control-allow-origin")
-    # Pass if no ACAO header OR ACAO does NOT echo the evil origin
-    ok = allow is None or "evil.example.com" not in allow
+    # Pass only if no ACAO header at all. Reject if the server echoed the
+    # evil origin OR returned a wildcard (which would allow any origin).
+    if allow is None:
+        ok = True
+    elif allow.strip() == "*":
+        ok = False
+    else:
+        ok = "evil.example.com" not in allow
     return ok, f"code={code} acao={allow}", {"code": code, "acao": allow}
 
 
@@ -141,11 +149,19 @@ def check_cors_strict(base_url: str) -> tuple[bool, str, dict | None]:
 
 @check("P5 critical env vars present (caller-side)", "P")
 def check_env() -> tuple[bool, str, dict | None]:
-    required = ["DATABASE_URL", "BASE_URL"]
+    # ADMIN_API_KEYS + MOYASAR_WEBHOOK_SECRET are launch-critical: the API
+    # refuses to boot in production without them, and the webhook signature
+    # check fails closed without the latter.
+    required = [
+        "DATABASE_URL",
+        "BASE_URL",
+        "ADMIN_API_KEYS",
+        "MOYASAR_WEBHOOK_SECRET",
+    ]
     missing = [k for k in required if not os.environ.get(k)]
     if missing:
         return False, f"missing: {', '.join(missing)}", {"missing": missing}
-    return True, "DATABASE_URL + BASE_URL set", None
+    return True, "all required env vars set", None
 
 
 # ── P6 — single Alembic head ─────────────────────────────────
@@ -204,8 +220,17 @@ def check_dlq() -> tuple[bool, str, dict | None]:
 @check("R8 Sentry DSN configured", "R")
 def check_sentry() -> tuple[bool, str, dict | None]:
     dsn = os.environ.get("SENTRY_DSN")
-    return bool(dsn and "ingest.sentry.io" in dsn), \
-           "configured" if dsn else "missing SENTRY_DSN env", None
+    if not dsn:
+        return False, "missing SENTRY_DSN env", None
+    # Use urlparse + hostname.endswith so attacker-controlled URLs like
+    # https://x@evil.com/ingest.sentry.io/1 don't pass a substring check.
+    try:
+        from urllib.parse import urlparse
+        host = (urlparse(dsn).hostname or "").lower()
+    except Exception:
+        return False, "DSN not parseable", None
+    ok = host == "ingest.sentry.io" or host.endswith(".ingest.sentry.io")
+    return ok, f"host={host}", {"host": host}
 
 
 # ── R9 — PostHog ─────────────────────────────────────────────
@@ -243,7 +268,8 @@ def check_backup_freshness() -> tuple[bool, str, dict | None]:
 
 def main() -> int:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--dev", action="store_true", help="skip prod-only checks")
+    parser.add_argument("--dev", action="store_true",
+                        help="skip prod-only checks (Sentry/PostHog/S3/Redis)")
     parser.add_argument("--json", action="store_true", help="JSON output only")
     args = parser.parse_args()
 
@@ -256,37 +282,50 @@ def main() -> int:
     checks.append(check_webhook_signature(base_url))
     checks.append(check_cors_strict(base_url))
     checks.append(check_alembic_head())
-    checks.append(check_dlq())
-    checks.append(check_sentry())
-    checks.append(check_posthog())
-    checks.append(check_backup_freshness())
+
+    # Prod-only checks: skip in dev mode where these integrations are
+    # expected to be absent (Sentry/PostHog/S3 not configured locally).
+    if not args.dev:
+        checks.append(check_dlq())
+        checks.append(check_sentry())
+        checks.append(check_posthog())
+        checks.append(check_backup_freshness())
 
     p_fail = [r for r in checks if r.severity == "P" and r.status == "fail"]
     r_fail = [r for r in checks if r.severity == "R" and r.status == "fail"]
+
+    # Determine the exit code FIRST so JSON mode honors the same contract.
+    if p_fail:
+        exit_code = 1
+    elif r_fail:
+        exit_code = 2
+    else:
+        exit_code = 0
 
     if args.json:
         print(json.dumps({
             "checks": [vars(c) for c in checks],
             "p_fail": [c.name for c in p_fail],
             "r_fail": [c.name for c in r_fail],
+            "exit_code": exit_code,
         }, indent=2, ensure_ascii=False, default=str))
+        return exit_code
+
+    ICON = {"pass": "✓", "fail": "✗", "skip": "–"}
+    for c in checks:
+        print(f"  [{ICON[c.status]}] {c.name:<50}  {c.detail}")
+    print()
+    if p_fail:
+        print(f"FAIL — {len(p_fail)} required check(s) failed:")
+        for c in p_fail:
+            print(f"  - {c.name}: {c.detail}")
+    elif r_fail:
+        print(f"WARN — {len(r_fail)} recommended check(s) failed (proceed at risk):")
+        for c in r_fail:
+            print(f"  - {c.name}: {c.detail}")
     else:
-        ICON = {"pass": "✓", "fail": "✗", "skip": "–"}
-        for c in checks:
-            print(f"  [{ICON[c.status]}] {c.name:<50}  {c.detail}")
-        print()
-        if p_fail:
-            print(f"FAIL — {len(p_fail)} required check(s) failed:")
-            for c in p_fail:
-                print(f"  - {c.name}: {c.detail}")
-            return 1
-        if r_fail:
-            print(f"WARN — {len(r_fail)} recommended check(s) failed (proceed at risk):")
-            for c in r_fail:
-                print(f"  - {c.name}: {c.detail}")
-            return 2
         print("✓ ALL CHECKS PASSED — safe to flip the GA switch")
-    return 0
+    return exit_code
 
 
 if __name__ == "__main__":
