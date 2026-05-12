@@ -100,11 +100,11 @@ jobs:
           railway status || true
 
       - name: Smoke test /healthz
+        id: healthz
         if: steps.check_token.outputs.token_present == 'true'
         run: |
-          # Railway auto-generates public domains; for now we rely on the known URL.
-          # User can set RAILWAY_PUBLIC_URL as a repo variable to test the right URL.
           URL="${{ vars.RAILWAY_PUBLIC_URL || 'https://dealix-production-up.railway.app' }}"
+          echo "url=$URL" >> "$GITHUB_OUTPUT"
           echo "Smoke-testing: $URL/healthz"
 
           for i in {1..12}; do
@@ -117,5 +117,33 @@ jobs:
             sleep 15
           done
 
-          echo "::warning::/healthz did not return 200 after 3 minutes. Deployment may still be in progress."
-          echo "Check Railway dashboard: https://railway.com/project/54bb60b4-d059-4dd1-af57-bc44c702b9f0"
+          echo "::error::/healthz did not return 200 after 3 minutes. Failing deploy."
+          exit 1
+
+      - name: Post-deploy smoke pack
+        if: steps.check_token.outputs.token_present == 'true'
+        env:
+          BASE_URL: ${{ steps.healthz.outputs.url }}
+        run: |
+          set -euo pipefail
+          echo "→ /api/v1/pricing/plans"
+          curl -fsS --max-time 10 "$BASE_URL/api/v1/pricing/plans" | head -c 400; echo
+
+          echo "→ /api/v1/prospect/search-diag"
+          # Tier readiness is informational; non-fatal if optional providers are absent
+          curl -fsS --max-time 10 "$BASE_URL/api/v1/prospect/search-diag" \
+            | python -c "import sys,json; d=json.load(sys.stdin); print('tier1=', d.get('tier1_ready'), 'tier2=', d.get('tier2_ready'))"
+
+          echo "→ webhook 401-on-bad-signature (security smoke)"
+          code=$(curl -sS -o /dev/null -w "%{http_code}" --max-time 10 \
+            -X POST "$BASE_URL/api/v1/webhooks/moyasar" \
+            -H "Content-Type: application/json" \
+            -H "X-Moyasar-Signature: bogus" \
+            -d '{"event":"payment_paid","data":{}}')
+          if [ "$code" != "401" ] && [ "$code" != "403" ]; then
+            echo "::error::Moyasar webhook accepted bad signature (got $code, expected 401/403)"
+            exit 1
+          fi
+          echo "✓ webhook rejected bad signature"
+
+          echo "✅ post-deploy smoke pack passed"
