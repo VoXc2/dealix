@@ -29,7 +29,7 @@ from api.routers.domains import customers as customers_domain
 from api.routers.domains import deprecated as deprecated_domain
 from api.routers.domains import sales as sales_domain
 from api.routers.domains import webhooks as webhooks_domain
-from api.routers import auth, jobs, pdpl, sector_intel, tenant_theming, zatca
+from api.routers import admin_tenants, auth, jobs, pdpl, sector_intel, tenant_theming, zatca
 # Wave 12.7 — Intelligence Layer + Expansion Engine routers
 from api.routers import expansion_engine as expansion_engine_router
 from api.routers import intelligence_layer as intelligence_layer_router
@@ -219,6 +219,8 @@ def create_app() -> FastAPI:
     app.include_router(tenant_theming.router)
     # Wave 7 W7.2 — Sector Intelligence (R4 productization)
     app.include_router(sector_intel.router)
+    # Wave 7 W7.3 — Admin tenants: CRUD for tenant management (R6 enabler)
+    app.include_router(admin_tenants.router)
 
     @app.get("/", tags=["root"])
     async def root() -> dict[str, object]:
