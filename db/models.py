@@ -82,6 +82,40 @@ class TenantRecord(Base):
     users: Mapped[list["UserRecord"]] = relationship(back_populates="tenant")
 
 
+class TenantThemeRecord(Base):
+    """
+    Tenant white-label theme overrides (W3.2 scaffold → W7.5 wiring).
+
+    Each subscribing agency partner / enterprise customer can override
+    the Dealix default brand palette + display name. Stored as discrete
+    columns (not JSON) so each field has its own validator + DB index
+    and migration history is clean.
+
+    Read via GET /api/v1/tenants/{handle}/theme.css (returns a <style>
+    block with :root CSS custom properties). Set via admin endpoint
+    POST /api/v1/admin/tenants/{handle}/theme.
+    """
+
+    __tablename__ = "tenant_themes"
+
+    tenant_id: Mapped[str] = mapped_column(
+        String(64), ForeignKey("tenants.id", ondelete="CASCADE"), primary_key=True
+    )
+    brand_primary: Mapped[str] = mapped_column(String(32), default="#0f172a")
+    brand_accent: Mapped[str] = mapped_column(String(32), default="#10b981")
+    brand_muted: Mapped[str] = mapped_column(String(32), default="#64748b")
+    brand_surface: Mapped[str] = mapped_column(String(32), default="#ffffff")
+    brand_bg: Mapped[str] = mapped_column(String(32), default="#f8fafc")
+    font_arabic: Mapped[str] = mapped_column(String(128), default="IBM Plex Sans Arabic")
+    font_english: Mapped[str] = mapped_column(String(128), default="Inter")
+    logo_url: Mapped[str | None] = mapped_column(String(512), nullable=True)
+    favicon_url: Mapped[str | None] = mapped_column(String(512), nullable=True)
+    display_name: Mapped[str] = mapped_column(String(128), default="Dealix")
+    custom_domain: Mapped[str | None] = mapped_column(String(255), nullable=True, index=True)
+    created_at: Mapped[datetime] = mapped_column(default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(default=utcnow, onupdate=utcnow)
+
+
 class RoleRecord(Base):
     """
     RBAC role definitions.
