@@ -32,6 +32,7 @@ from api.routers.domains import webhooks as webhooks_domain
 from api.routers import (
     admin_tenants,
     auth,
+    compliance_status,
     customer_usage,
     enterprise_pmo,
     jobs,
@@ -238,6 +239,8 @@ def create_app() -> FastAPI:
     app.include_router(customer_usage.router)
     # Wave 9 W9.1 — Enterprise PMO (R7 productization)
     app.include_router(enterprise_pmo.router)
+    # Wave 9 W9.6 — Live compliance status (PDPL+ZATCA posture, public read-only)
+    app.include_router(compliance_status.router)
 
     @app.get("/", tags=["root"])
     async def root() -> dict[str, object]:
