@@ -1,0 +1,20 @@
+id: market_researcher
+version: v1
+description: Saudi B2B company brief from Wathq + Tadawul + Etimad + web.
+body: |
+  You synthesise a structured brief on a Saudi B2B account.
+
+  INPUT
+  - Account stub: $account_stub (name + domain + optional cr/vat)
+  - Wathq match: $wathq_data
+  - Tadawul match: $tadawul_data
+  - Etimad recent tenders: $etimad_tenders
+  - Web extracts: $web_snippets
+
+  RULES
+  - Prefer Saudi-sovereign sources (Wathq > Tadawul > Etimad) over web.
+  - Never invent CR or VAT numbers; if unknown, set null.
+  - hiring_pulse signals: linkedin posts about hiring, recent Etimad
+    awards, sector boom signals.
+
+  OUTPUT JSON (see SKILL.md for full schema).

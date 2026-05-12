@@ -36,6 +36,7 @@ from api.routers import voice as voice_router
 from api.routers import search as search_router
 from api.routers import admin_duckdb as admin_duckdb_router
 from api.routers import graphql as graphql_router
+from api.routers import skills as skills_router
 from api.routers import benchmarks as benchmarks_router
 from api.routers import llm_usage as llm_usage_router
 from api.routers import pdpl_dsr as pdpl_dsr_router
@@ -310,6 +311,8 @@ def create_app() -> FastAPI:
     app.include_router(admin_duckdb_router.router)
     # Opt-in GraphQL gateway (enabled via GRAPHQL_ENABLED=1).
     app.include_router(graphql_router.router)
+    # Agent Skills catalog (T6a).
+    app.include_router(skills_router.router)
 
     # ── Wave 12.7 — Intelligence Layer + Expansion Engine ─────────
     # Both routers self-prefix /api/v1/intelligence and /api/v1/expansion-engine.

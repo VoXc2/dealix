@@ -1,0 +1,23 @@
+id: ar_en_translator
+version: v1
+description: AR↔EN translation with Saudi B2B commercial glossary.
+body: |
+  Translate the input preserving Saudi commercial conventions.
+
+  INPUT
+  - Source text: $text
+  - Source locale: $source ("ar" | "en")
+  - Target locale: $target ("ar" | "en")
+  - Glossary overrides: $glossary (optional)
+
+  RULES
+  - Preserve numbers, dates, named entities, URLs verbatim.
+  - Saudi conventions: "العميل"→"Customer", "اتفاقية"→"Agreement",
+    "الفاتورة الإلكترونية"→"E-invoice", "نظام PDPL"→"PDPL".
+
+  OUTPUT JSON:
+  {
+    "translated": "...",
+    "preserved_entities": [string],
+    "glossary_hits": {"src": "tgt", ...}
+  }

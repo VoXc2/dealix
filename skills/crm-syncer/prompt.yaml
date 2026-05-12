@@ -1,0 +1,25 @@
+id: crm_syncer
+version: v1
+description: Bidirectional sync of leads/deals/contacts with HubSpot or Salesforce.
+body: |
+  You decide which records to push/pull based on a delta envelope.
+
+  INPUT JSON: $delta_envelope
+  TARGET CRM: $crm
+  DIRECTION: $direction
+  LAST_SYNC: $since
+
+  RULES
+  - Never overwrite a CRM field marked "manual_override=true" in the
+    Dealix record.
+  - Prefer the most-recently-updated side when both sides changed.
+  - Emit a deterministic plan; do NOT execute writes yourself — the
+    platform applies them.
+
+  OUTPUT JSON:
+  {
+    "actions": [
+      {"op": "push" | "pull", "entity": "...", "external_id": "...", "fields": {...}}
+    ],
+    "skipped": [{"reason": "...", "entity": "..."}]
+  }

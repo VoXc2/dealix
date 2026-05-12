@@ -1,0 +1,92 @@
+# Dealix Agent Skills — manifest
+#
+# This file is the canonical catalog of every skill the platform exposes.
+# Loaded by:
+#   - `dealix/agents/skills/loader.py` (per-tenant skill registry)
+#   - `dealix/mcp/server.py` (exposes each skill as an MCP tool)
+#   - `api/routers/skills.py` (`GET /api/v1/skills` lists them publicly)
+#
+# Adding a skill:
+#   1. Create `skills/<id>/SKILL.md` + `skills/<id>/prompt.yaml`.
+#   2. (Optional) `skills/<id>/eval.yaml` for Promptfoo.
+#   3. Append a row below.
+#   4. CI's `make skills` rebuilds `landing/skills/index.html`.
+
+version: 1
+generated_at: 2026-05-23
+
+skills:
+  - id: sales_qualifier
+    path: skills/sales-qualifier
+    description: BANT + Saudi PDPL contactability scorer.
+    inputs: [lead_snapshot, compliance_signals, locale]
+    output_shape: qualification_decision_v1
+    permissions:
+      cerbos_action: agent_run.execute
+      cerbos_resource: lead
+
+  - id: proposal_writer
+    path: skills/proposal-writer
+    description: Khaliji-Arabic proposals with ZATCA-aware pricing.
+    inputs: [lead, customer_tenant, pricing_plan_id, locale, recipient_email]
+    output_shape: proposal_v1
+
+  - id: meeting_summarizer
+    path: skills/meeting-summarizer
+    description: Transcript → bilingual summary + action items.
+    inputs: [transcript, locale, crm]
+    output_shape: meeting_summary_v1
+
+  - id: crm_syncer
+    path: skills/crm-syncer
+    description: Bidirectional HubSpot/Salesforce sync planner.
+    inputs: [delta_envelope, crm, direction, since]
+    output_shape: crm_sync_plan_v1
+
+  - id: email_triage
+    path: skills/email-triage
+    description: Reply classifier (13 buckets) + 1-line draft.
+    inputs: [text, thread, locale]
+    output_shape: triage_v1
+
+  - id: compliance_reviewer
+    path: skills/compliance-reviewer
+    description: PDPL + GDPR + CITC review of outbound messages.
+    inputs: [message, channel, recipient_locale, consent_state]
+    output_shape: compliance_verdict_v1
+
+  - id: contract_analyst
+    path: skills/contract-analyst
+    description: AR+EN contract redliner for Saudi commercial agreements.
+    inputs: [contract_md, standard_terms, locale]
+    output_shape: contract_analysis_v1
+
+  - id: market_researcher
+    path: skills/market-researcher
+    description: Saudi B2B company brief — Wathq → Tadawul → Etimad → web.
+    inputs: [account_stub, wathq_data, tadawul_data, etimad_tenders, web_snippets]
+    output_shape: company_brief_v1
+
+  - id: lead_scorer
+    path: skills/lead-scorer
+    description: Per-tenant fit/urgency/intent scorer with sector weights.
+    inputs: [lead, weights, sector]
+    output_shape: lead_score_v1
+
+  - id: renewal_forecaster
+    path: skills/renewal-forecaster
+    description: Churn risk + renewal ARR forecast.
+    inputs: [health, usage, sentiment, arr, days]
+    output_shape: renewal_forecast_v1
+
+  - id: content_generator_ar
+    path: skills/content-generator-ar
+    description: Saudi-tone Arabic marketing/sales content.
+    inputs: [channel, topic, voice, v2030_angle, cap_chars]
+    output_shape: content_v1
+
+  - id: ar_en_translator
+    path: skills/ar-en-translator
+    description: AR↔EN translation with Saudi commercial glossary.
+    inputs: [text, source, target, glossary]
+    output_shape: translation_v1

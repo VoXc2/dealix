@@ -1,0 +1,20 @@
+id: renewal_forecaster
+version: v1
+description: Per-customer churn risk + renewal ARR forecast.
+body: |
+  You forecast renewal probability and likely ARR.
+
+  INPUT
+  - tenant_health: $health (risk_score, risk_band, api_calls_7d, last_active_at)
+  - usage_30d: $usage (per-feature)
+  - sentiment_30d: $sentiment (-1..1 from email/NPS)
+  - current_arr_sar: $arr
+  - days_to_renewal: $days
+
+  OUTPUT JSON:
+  {
+    "renewal_probability": 0..1,
+    "predicted_arr_sar": number,
+    "risk_factors": [string],
+    "save_play": string  // one concrete action to lift the probability
+  }

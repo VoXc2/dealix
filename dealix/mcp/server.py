@@ -130,6 +130,31 @@ def main() -> None:
     ) -> dict[str, Any]:
         return await _start_onboarding(company, email, name)
 
+    # T6a — auto-register every skill in skills/MANIFEST.yaml as an MCP
+    # tool. The actual invocation lives in dealix/agents/skills/runner.py
+    # (T6d ships the runner). For now the tool surfaces the schema so
+    # an external Claude/Cursor agent can discover what Dealix offers.
+    try:
+        from dealix.agents.skills import load as _load_skills
+
+        for skill in _load_skills():
+            def _maker(s):
+                async def _tool() -> dict[str, Any]:
+                    return {
+                        "id": s.id,
+                        "path": s.path,
+                        "description": s.description,
+                        "inputs": s.inputs,
+                        "output_shape": s.output_shape,
+                        "note": "Invoke via /api/v1/skills/run (T6d).",
+                    }
+                _tool.__name__ = f"skill_{s.id}"
+                return _tool
+
+            server.tool(description=skill.description)(_maker(skill))
+    except Exception:
+        log.exception("mcp_skills_registration_failed")
+
     sse_port = os.getenv("MCP_SSE_PORT", "").strip()
     if sse_port:
         asyncio.run(server.run_sse_async(int(sse_port)))
