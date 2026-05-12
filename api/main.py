@@ -29,7 +29,7 @@ from api.routers.domains import customers as customers_domain
 from api.routers.domains import deprecated as deprecated_domain
 from api.routers.domains import sales as sales_domain
 from api.routers.domains import webhooks as webhooks_domain
-from api.routers import auth, jobs, partners, pdpl, trial, zatca
+from api.routers import auth, customer, jobs, partners, pdpl, trial, zatca
 # Wave 12.7 — Intelligence Layer + Expansion Engine routers
 from api.routers import expansion_engine as expansion_engine_router
 from api.routers import intelligence_layer as intelligence_layer_router
@@ -221,6 +221,8 @@ def create_app() -> FastAPI:
     # while Moyasar KYC is pending — see docs/product/CORE_WORKFLOWS.md.
     app.include_router(trial.router)
     app.include_router(partners.router)
+    # Customer portal data plane (summary/subscription/invoices/team).
+    app.include_router(customer.router)
 
     # ── Wave 12.7 — Intelligence Layer + Expansion Engine ─────────
     # Both routers self-prefix /api/v1/intelligence and /api/v1/expansion-engine.
