@@ -656,3 +656,37 @@ contributors.
 - KNET / BENEFIT / Magnati merchant onboarding to flip the 503
   paths into live ones.
 - Postman workspace import for the published collection.
+
+## T9 — T12 addendum (v3.7.0 release)
+
+### T9 — Real skill handlers
+12 / 12 manifest skills now executable with deterministic-rule
+fallbacks. T9 ships `handlers_llm.py` (proposal_writer, email_triage,
+contract_analyst, meeting_summarizer) and `handlers_data.py`
+(crm_syncer, market_researcher, renewal_forecaster,
+compliance_reviewer). Every handler reports `_meta.engine` so the
+founder sees which path executed.
+
+### T10 — Production hardening
+- `infra/terraform/live/{staging,prod}/` — composed envs.
+- `deploy/docker-compose.prod.yml` — single-host pilot.
+- `deploy/helm/dealix/` — Helm chart for K8s.
+- `docs/ops/runbook_zero_to_prod.md` — single SRE doc.
+
+### T11 — LLM cost binding
+`dealix/observability/skill_tracer.py:traced_skill_run` wraps every
+`/api/v1/skills/{id}/run` with CostGuard pre/post, Langfuse trace,
+Lago `skill.run` meter, and tenant-id resolution.
+
+### T12 — Enterprise + growth
+Three procurement docs + procurement landing, trial-expired upgrade
+page, partner landing form, marketplace catalogue page.
+
+### Founder-owned for v3.7.0
+- Actual Anthropic / OpenAI keys to flip the `_meta.engine` paths from
+  rule-based to LLM-routed.
+- Stripe, Moyasar, Loops, Lago, Langfuse keys for the trial-expired
+  flow to fire real conversion events.
+- Marketplace `marketplace@ai-company.sa` mailbox setup.
+- Helm `dealix-secrets` K8s Secret population per environment.
+- Founder-signed SOC 2 auditor + ISO 27001 certification engagement.

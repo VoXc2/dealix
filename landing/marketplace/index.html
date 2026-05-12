@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dealix Skills & Workflows Marketplace</title>
+  <meta name="description" content="Install pre-built agent skills and workflows on Dealix in one click. Community catalogue + revenue split for publishers." />
+  <link rel="canonical" href="https://dealix.me/marketplace/" />
+  <meta name="theme-color" content="#0f172a" />
+  <style>
+    :root { --primary:#10b981; --dark:#0f172a; --muted:#64748b; --bg:#f8fafc; }
+    body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, Inter, "Helvetica Neue", Arial, sans-serif;
+           background: var(--bg); color: var(--dark); line-height: 1.6; }
+    header { padding: 4rem 6vw 1.5rem; background: linear-gradient(135deg, #ecfdf5 0%, #f0fdfa 100%); }
+    header h1 { font-size: 2.4rem; margin: 0 0 .5rem; }
+    main { max-width: 1100px; margin: 0 auto; padding: 1rem 6vw 5rem; }
+    h2 { margin-top: 2.5rem; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem; }
+    .card { background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 1.3rem 1.5rem; }
+    .card h3 { margin-top: 0; }
+    .card code { background: #f1f5f9; padding: .1rem .4rem; border-radius: 4px; }
+    p#out { font-size: .85rem; color: var(--muted); }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Marketplace</h1>
+    <p>Skills + workflows you install on your Dealix tenant in one POST. Community-published items
+       run through the same Promptfoo + Lakera + Cerbos guardrails as our first-party catalogue.</p>
+  </header>
+  <main>
+    <h2>Skills (T6a)</h2>
+    <p style="color: var(--muted)">Auto-rendered from <code>GET /api/v1/skills</code>.</p>
+    <div class="grid" id="skills-grid"></div>
+
+    <h2>Workflows</h2>
+    <p style="color: var(--muted)">Auto-rendered from <code>GET /api/v1/workflows/marketplace</code>.</p>
+    <div class="grid" id="workflows-grid"></div>
+
+    <h2>Publish to the marketplace</h2>
+    <p>If you're a partner with a high-value workflow or a domain-tuned Skill, email
+       <a href="mailto:marketplace@ai-company.sa">marketplace@ai-company.sa</a> and we'll send the
+       publishing kit (manifest format, evaluation set, revenue split: <strong>70 / 30</strong>
+       in favour of the publisher).</p>
+
+    <p id="out"></p>
+  </main>
+  <script>
+    const API = (window.DEALIX_API_BASE || "https://api.dealix.me").replace(/\/$/, "");
+
+    async function loadGrid(url, target, render) {
+      try {
+        const r = await fetch(url);
+        if (!r.ok) throw new Error("HTTP " + r.status);
+        const d = await r.json();
+        target.innerHTML = render(d);
+      } catch (e) {
+        target.innerHTML = `<p style="color:#b91c1c">Couldn't load — sandbox may be cold. ${e}</p>`;
+      }
+    }
+
+    loadGrid(`${API}/api/v1/skills`, document.getElementById("skills-grid"), (d) =>
+      (d.skills || []).map((s) => `<article class="card">
+          <h3><code>${s.id}</code></h3>
+          <p>${s.description}</p>
+          <p><strong>${s.executable ? "✅ Runnable" : "🔒 Stub — BYOA"}</strong></p>
+        </article>`).join("")
+    );
+
+    loadGrid(`${API}/api/v1/workflows/marketplace`, document.getElementById("workflows-grid"), (d) =>
+      (d.templates || []).map((w) => `<article class="card">
+          <h3><code>${w.id}</code></h3>
+          <p>${w.description || ""}</p>
+        </article>`).join("")
+    );
+  </script>
+  <script src="/components/CookieConsent.js" defer></script>
+</body>
+</html>

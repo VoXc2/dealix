@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dealix — Procurement & security pack</title>
+  <meta name="description" content="Everything a procurement team needs to evaluate Dealix: SOC 2 readiness, ISO 27001 mapping, DPA, sub-processors, SLA, and security questionnaire pre-fill." />
+  <link rel="canonical" href="https://dealix.me/procurement/" />
+  <meta name="theme-color" content="#0f172a" />
+  <style>
+    :root { --primary:#10b981; --dark:#0f172a; --muted:#64748b; --bg:#f8fafc; }
+    body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, Inter, "Helvetica Neue", Arial, sans-serif;
+           background: var(--bg); color: var(--dark); line-height: 1.6; }
+    header { padding: 4rem 6vw 1.5rem; background: linear-gradient(135deg, #ecfdf5 0%, #f0fdfa 100%); }
+    header h1 { font-size: 2.4rem; margin: 0 0 .5rem; }
+    header p { color: var(--muted); max-width: 70ch; }
+    main { max-width: 1080px; margin: 0 auto; padding: 1rem 6vw 5rem; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; }
+    .card { background: white; border: 1px solid #e2e8f0; border-radius: 12px;
+            padding: 1.4rem 1.6rem; }
+    .card h2 { margin-top: 0; font-size: 1.15rem; }
+    .card p  { color: var(--muted); font-size: .9rem; margin-bottom: .5rem; }
+    .card a  { color: #047857; text-decoration: none; font-weight: 600; }
+    .card a:hover { text-decoration: underline; }
+    .pill { display: inline-block; padding: .15rem .55rem; border-radius: 999px;
+            font-size: .72rem; font-weight: 600; }
+    .pill.green { background: #ecfdf5; color: #047857; }
+    .pill.amber { background: #fef3c7; color: #92400e; }
+    section.contact { margin-top: 2.5rem; padding: 1.5rem 1.8rem; background: white; border-radius: 12px; }
+    section.contact a { color: #047857; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Procurement & security pack</h1>
+    <p>Everything your procurement, legal, and IT-security teams need
+       to evaluate Dealix in one place — no NDA required.</p>
+  </header>
+  <main>
+    <div class="grid">
+      <article class="card">
+        <h2>SLA <span class="pill green">live</span></h2>
+        <p>99.5 % uptime target, p95 ≤ 500 ms, SEV-1/2/3 response matrix,
+           sub-processor change clock.</p>
+        <a href="/docs/sla">Read SLA →</a>
+      </article>
+      <article class="card">
+        <h2>Sub-processors <span class="pill green">live</span></h2>
+        <p>Canonical list of every third party that touches customer
+           data. 30-day right-of-objection clock.</p>
+        <a href="/trust/sub-processors.html">View list →</a>
+      </article>
+      <article class="card">
+        <h2>DPA — Data Processing Agreement <span class="pill green">template</span></h2>
+        <p>GDPR + PDPL aligned template. Signed copy on request.</p>
+        <a href="/legal/dpa.html">View DPA →</a>
+      </article>
+      <article class="card">
+        <h2>SOC 2 readiness <span class="pill amber">audit Q3 2026</span></h2>
+        <p>Trust-Services-Criteria mapping (Security, Availability,
+           Confidentiality) — each control mapped to code paths.</p>
+        <a href="/docs/procurement/soc2_readiness">View mapping →</a>
+      </article>
+      <article class="card">
+        <h2>ISO 27001:2022 <span class="pill amber">cert Q4 2026</span></h2>
+        <p>Annex A control alignment doc with the code path each
+           control runs through.</p>
+        <a href="/docs/procurement/iso27001_mapping">View mapping →</a>
+      </article>
+      <article class="card">
+        <h2>Security questionnaire pre-fill <span class="pill green">CAIQ + SIG Lite</span></h2>
+        <p>Pre-filled answers to the questions every vendor
+           questionnaire asks. Copy + paste into your template.</p>
+        <a href="/docs/procurement/vendor_questionnaire_prefill">Open document →</a>
+      </article>
+      <article class="card">
+        <h2>Status page <span class="pill green">live</span></h2>
+        <p>BetterStack-backed real-time uptime + per-region latency.</p>
+        <a href="https://status.dealix.me">status.dealix.me →</a>
+      </article>
+      <article class="card">
+        <h2>Security disclosure <span class="pill green">RFC 9116</span></h2>
+        <p>Report a vulnerability under our coordinated-disclosure
+           policy. Hall of Fame on request.</p>
+        <a href="/.well-known/security.txt">security.txt →</a>
+      </article>
+      <article class="card">
+        <h2>Penetration test <span class="pill amber">scheduled Q4 2026</span></h2>
+        <p>Annual third-party pen-test. Last summary report shared
+           under NDA — email security@ai-company.sa.</p>
+        <a href="mailto:security@ai-company.sa">Request report →</a>
+      </article>
+    </div>
+
+    <section class="contact">
+      <h2 style="margin-top:0">Direct line</h2>
+      <p>Procurement / legal escalation: <a href="mailto:legal@ai-company.sa">legal@ai-company.sa</a>.<br>
+         Security: <a href="mailto:security@ai-company.sa">security@ai-company.sa</a>.<br>
+         DPO: <a href="mailto:dpo@ai-company.sa">dpo@ai-company.sa</a>.</p>
+    </section>
+  </main>
+  <script src="/components/CookieConsent.js" defer></script>
+</body>
+</html>

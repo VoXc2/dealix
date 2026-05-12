@@ -1,5 +1,40 @@
 # Changelog
 
+## [3.7.0] — 2026-05-12
+
+T12 — enterprise + self-service growth motion. Closes the v3.7.0
+release that bundles T9 (real skill handlers), T10 (production
+deployment hardening), T11 (cost binding), and T12 (procurement +
+trial flow + partner portal + marketplace).
+
+### T12a — Procurement bundles
+- `docs/procurement/soc2_readiness.md` — SOC 2 Trust-Services-Criteria
+  control map referencing code paths + ops scripts.
+- `docs/procurement/iso27001_mapping.md` — Annex A:2022 alignment doc.
+- `docs/procurement/vendor_questionnaire_prefill.md` — pre-filled CAIQ
+  / SIG-Lite answers across 9 sections (org, security policy, access,
+  encryption, app-sec, ops, data protection, certs, pricing).
+- `landing/procurement/index.html` — single landing page tying every
+  procurement-relevant doc + SLA + DPA + sub-processors + security.txt
+  + status page together. PDPL cookie consent applied.
+
+### T12b — Self-service trial → paid
+- `frontend/src/app/[locale]/trial-expired/page.tsx` — bilingual
+  upgrade banner with two checkout paths (Moyasar SAR / Stripe USD)
+  and a "talk to sales" mailto. Fires `/api/v1/trial/upgrade-clicked`
+  on mount so Loops + Knock see the conversion attempt.
+
+### T12c — Partner channel
+- `landing/partners/index.html` — three-tier programme (referral 20%,
+  implementation 15%+impl, reseller 25%) with a public apply form
+  hitting `/api/v1/partners/apply`. PDPL consent gated.
+
+### T12d — Marketplace
+- `landing/marketplace/index.html` — community catalogue page that
+  auto-renders from `/api/v1/skills` and
+  `/api/v1/workflows/marketplace`. Publishing details (70/30 split,
+  `marketplace@ai-company.sa` contact) inline.
+
 ## [3.7.0-rc2] — 2026-05-12
 
 T11 — LLM cost binding. Every Skill execution now flows through the

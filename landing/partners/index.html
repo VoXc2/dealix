@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dealix Partners — Implementation + Reseller programme</title>
+  <meta name="description" content="Sell, implement, or co-build with Dealix. 20% recurring commission on referrals; certification path for Saudi B2B agencies." />
+  <link rel="canonical" href="https://dealix.me/partners/" />
+  <meta name="theme-color" content="#0f172a" />
+  <style>
+    :root { --primary:#10b981; --dark:#0f172a; --muted:#64748b; --bg:#f8fafc; }
+    body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, Inter, "Helvetica Neue", Arial, sans-serif;
+           background: var(--bg); color: var(--dark); line-height: 1.6; }
+    header { padding: 4rem 6vw 1.5rem; background: linear-gradient(135deg, #ecfdf5 0%, #f0fdfa 100%); }
+    header h1 { font-size: 2.4rem; margin: 0 0 .5rem; }
+    main { max-width: 1080px; margin: 0 auto; padding: 1rem 6vw 5rem; }
+    .tiers { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem; }
+    .tier { background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 1.5rem 1.6rem; }
+    .tier h2 { margin-top: 0; font-size: 1.2rem; }
+    .tier .commission { font-size: 1.6rem; font-weight: 700; color: #047857; }
+    .tier ul { padding-left: 1.1rem; }
+    form { margin-top: 2rem; background: white; padding: 1.5rem 1.8rem; border-radius: 12px;
+           border: 1px solid #e2e8f0; max-width: 540px; }
+    label { display: block; font-size: .85rem; color: var(--muted); margin: .65rem 0 .2rem; }
+    input, textarea, select { width: 100%; padding: .55rem .7rem; font-size: .95rem;
+            border: 1px solid #cbd5e1; border-radius: 8px; font-family: inherit; }
+    button { margin-top: 1rem; background: var(--primary); color: white; border: 0;
+             padding: .7rem 1.3rem; font-size: .95rem; border-radius: 8px; cursor: pointer; }
+    #out { margin-top: 1rem; font-size: .9rem; color: var(--muted); }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Partner with Dealix</h1>
+    <p>Sell, implement, or co-build the Saudi AI growth OS. Three tiers; transparent commercials.</p>
+  </header>
+  <main>
+    <div class="tiers">
+      <article class="tier">
+        <h2>Referral partner</h2>
+        <p class="commission">20 % MRR</p>
+        <p>Refer a customer, we close the deal. Recurring for 12 months.</p>
+        <ul>
+          <li>No certification required.</li>
+          <li>Co-branded one-pager.</li>
+          <li>Monthly payout via bank transfer.</li>
+        </ul>
+      </article>
+      <article class="tier">
+        <h2>Implementation partner</h2>
+        <p class="commission">15 % MRR + impl fee</p>
+        <p>Run a customer's 14-day pilot, you keep 100 % of the
+           services fee + recurring share of the platform.</p>
+        <ul>
+          <li>Quick onboarding cert (4 hrs).</li>
+          <li>Co-sell motion.</li>
+          <li>Saudi-region implementation playbook.</li>
+        </ul>
+      </article>
+      <article class="tier">
+        <h2>Reseller</h2>
+        <p class="commission">25 % MRR</p>
+        <p>White-labelled commercial bundle for agencies running their
+           own commercial layer.</p>
+        <ul>
+          <li>Tenancy isolation by design.</li>
+          <li>SLA passthrough.</li>
+          <li>Co-marketed case studies.</li>
+        </ul>
+      </article>
+    </div>
+
+    <form id="apply">
+      <h2 style="margin-top:0">Apply</h2>
+      <p style="color: var(--muted); margin-top: 0">Tell us about your agency or pipeline. We respond inside 2 business days.</p>
+      <label for="full_name">Full name *</label>
+      <input id="full_name" name="full_name" required />
+      <label for="company">Company *</label>
+      <input id="company" name="company" required />
+      <label for="email">Email *</label>
+      <input id="email" name="email" type="email" required />
+      <label for="tier">Tier</label>
+      <select id="tier" name="tier">
+        <option value="referral">Referral</option>
+        <option value="implementation">Implementation</option>
+        <option value="reseller">Reseller</option>
+      </select>
+      <label for="pitch">What do you bring?</label>
+      <textarea id="pitch" name="pitch" rows="4"></textarea>
+      <label><input type="checkbox" id="consent" required /> I agree to PDPL data processing.</label>
+      <button type="submit">Apply</button>
+      <p id="out"></p>
+    </form>
+  </main>
+  <script>
+    document.getElementById("apply").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const out = document.getElementById("out");
+      const data = Object.fromEntries(new FormData(e.target).entries());
+      data.consent = document.getElementById("consent").checked;
+      data.source = "partners-landing";
+      out.textContent = "Sending…";
+      try {
+        const r = await fetch((window.DEALIX_API_BASE || "https://api.dealix.me") + "/api/v1/partners/apply", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data),
+        });
+        if (!r.ok) throw new Error("HTTP " + r.status);
+        out.textContent = "Thanks — we'll be in touch within 2 business days.";
+        out.style.color = "#047857";
+      } catch (err) {
+        out.textContent = "Couldn't submit: " + err.message;
+        out.style.color = "#b91c1c";
+      }
+    });
+  </script>
+  <script src="/components/CookieConsent.js" defer></script>
+</body>
+</html>
