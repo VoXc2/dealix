@@ -13,7 +13,7 @@ from __future__ import annotations
 import time
 from typing import Any
 
-from fastapi import APIRouter, HTTPException, Path
+from fastapi import APIRouter, HTTPException, Path, Request
 from pydantic import BaseModel, Field
 
 from core.logging import get_logger
@@ -22,6 +22,7 @@ from dealix.agents.skills.handlers import (
     get_handler,
     registered_ids,
 )
+from dealix.observability.skill_tracer import SkillTraceContext, traced_skill_run
 
 # Importing these modules triggers the `@register(...)` side-effects
 # that put the T9 handlers in the registry.
@@ -76,15 +77,22 @@ async def get_skill(skill_id: str = Path(..., max_length=64)) -> dict[str, Any]:
 
 class SkillRunIn(BaseModel):
     inputs: dict[str, Any] = Field(default_factory=dict)
+    estimated_usd: float = Field(default=0.0, ge=0, le=10.0)
 
 
 @router.post("/{skill_id}/run")
 async def run_skill(
     payload: SkillRunIn,
+    request: Request,
     skill_id: str = Path(..., max_length=64),
 ) -> dict[str, Any]:
     """Execute a registered skill handler. Skills without a handler
-    return 501 not_implemented — at which point the BYOA path applies."""
+    return 501 not_implemented — at which point the BYOA path applies.
+
+    Wraps the call with `traced_skill_run` which adds cost-cap
+    enforcement (CostGuard), a Langfuse trace, and a Lago meter event
+    when the corresponding env vars are set.
+    """
     s = by_id(skill_id)
     if s is None:
         raise HTTPException(404, "skill_not_found")
@@ -92,16 +100,42 @@ async def run_skill(
     if handler is None:
         raise HTTPException(501, "skill_handler_not_implemented")
 
+    tenant_id = getattr(request.state, "tenant_id", None) or "anonymous"
+    ctx = SkillTraceContext(
+        skill_id=skill_id,
+        tenant_id=tenant_id,
+        locale=str(payload.inputs.get("locale") or "ar"),
+    )
+
     t0 = time.perf_counter()
     try:
-        result = await handler(payload.inputs)
+        result = await traced_skill_run(
+            ctx=ctx,
+            handler=handler,
+            inputs=payload.inputs,
+            estimated_usd=payload.estimated_usd,
+        )
     except Exception as exc:  # surface the failure rather than crash.
         log.exception("skill_run_failed", skill_id=skill_id)
         raise HTTPException(500, f"skill_execution_failed:{exc!s}") from exc
+
+    # Surface the cost-cap short-circuit as HTTP 402.
+    if isinstance(result, dict) and result.get("error") == "cost_cap_exceeded":
+        raise HTTPException(
+            status_code=402,
+            detail={"error": "cost_cap_exceeded", "reason": result.get("reason")},
+        )
+
     elapsed_ms = round((time.perf_counter() - t0) * 1000, 1)
-    log.info("skill_ran", skill_id=skill_id, ms=elapsed_ms)
+    log.info(
+        "skill_ran",
+        skill_id=skill_id,
+        ms=elapsed_ms,
+        tenant_id=tenant_id,
+    )
     return {
         "skill_id": skill_id,
+        "tenant_id": tenant_id,
         "elapsed_ms": elapsed_ms,
         "result": result,
     }

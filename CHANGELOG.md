@@ -1,5 +1,30 @@
 # Changelog
 
+## [3.7.0-rc2] — 2026-05-12
+
+T11 — LLM cost binding. Every Skill execution now flows through the
+cost-guard + Langfuse + Lago pipeline. Inert without env keys.
+
+`dealix/observability/skill_tracer.py:traced_skill_run()`:
+- CostGuard pre-flight check on `estimated_usd > 0`. 402 short-circuit
+  with `{error: cost_cap_exceeded, reason: per_request_cap_exceeded |
+  tenant_day_cap_exceeded}`.
+- Records actual spend post-call.
+- Emits a Langfuse trace when `LANGFUSE_PUBLIC_KEY` is set
+  (user_id=tenant_id, metadata=skill_id+elapsed_ms+estimated_usd).
+- Fires a `skill.run` Lago meter event when `LAGO_API_KEY` is set
+  (external_customer_id=tenant_id, properties=skill_id+elapsed_ms).
+
+`api/routers/skills.py`:
+- Adds `estimated_usd` to `SkillRunIn` (range 0–10).
+- Resolves `tenant_id` from `request.state` (set upstream by
+  TenantIsolationMiddleware) and echoes it in the response.
+- Wraps the handler call in `traced_skill_run`.
+
+Tests: `tests/integration/test_skill_cost_cap.py` — 3 asserts
+covering 402 short-circuit, tenant_id echo, and the
+`estimated_usd=0` bypass path.
+
 ## [3.7.0-rc1] — 2026-05-12
 
 T9 + T10 — real Skill handlers across the remaining 8 manifest skills,
