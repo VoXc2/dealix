@@ -85,6 +85,29 @@ async def health_deep() -> dict[str, object]:
     if not providers:
         overall = "degraded"
 
+    # T4f — extended dependency checks for the new T0-T3 vendors.
+    # Each is "ok" when the env key is set; we don't ping the vendor
+    # here to keep the deep-health latency bounded.
+    extras = {
+        "cerbos": "ok" if os.getenv("CERBOS_PDP_URL", "").strip() else "unconfigured",
+        "stripe": "ok" if os.getenv("STRIPE_API_KEY", "").strip() else "unconfigured",
+        "workos": "ok" if os.getenv("WORKOS_API_KEY", "").strip() else "unconfigured",
+        "plain": "ok" if os.getenv("PLAIN_API_KEY", "").strip() else "fallback_resend",
+        "knock": "ok" if os.getenv("KNOCK_API_KEY", "").strip() else "fallback_resend",
+        "portkey": "ok" if os.getenv("PORTKEY_API_KEY", "").strip() else "unconfigured",
+        "inngest": "ok" if (os.getenv("INNGEST_SIGNING_KEY", "").strip() or os.getenv("INNGEST_DEV", "").strip()) else "unconfigured",
+        "tinybird": "ok" if os.getenv("TINYBIRD_TOKEN", "").strip() else "fallback_internal",
+        "betterstack": "ok" if os.getenv("BETTERSTACK_HEARTBEAT_URL", "").strip() else "unconfigured",
+        "lago": "ok" if os.getenv("LAGO_API_KEY", "").strip() else "unconfigured",
+        "loops": "ok" if os.getenv("LOOPS_API_KEY", "").strip() else "unconfigured",
+        "apollo": "ok" if os.getenv("APOLLO_API_KEY", "").strip() else "unconfigured",
+        "clearbit": "ok" if os.getenv("CLEARBIT_API_KEY", "").strip() else "unconfigured",
+        "wathq": "ok" if os.getenv("WATHQ_API_KEY", "").strip() else "unconfigured",
+        "infisical": "ok" if os.getenv("INFISICAL_TOKEN", "").strip() else "unconfigured",
+        "pagerduty": "ok" if os.getenv("PAGERDUTY_INTEGRATION_KEY", "").strip() else "unconfigured",
+    }
+    checks["vendors"] = extras
+
     return {"status": overall, "checks": checks, "version": get_settings().app_version}
 
 

@@ -41,6 +41,16 @@ repos:
       - id: gitleaks
 
   # ──────────────────────────────────────────────────────────────
+  # T4f — Semgrep (.semgrep/dealix.yaml) on every commit.
+  # ──────────────────────────────────────────────────────────────
+  - repo: https://github.com/returntocorp/semgrep
+    rev: v1.85.0
+    hooks:
+      - id: semgrep
+        args: ["--config", ".semgrep/dealix.yaml", "--error"]
+        exclude: "^(tests/|scripts/|.*\\.pyc$)"
+
+  # ──────────────────────────────────────────────────────────────
   # Service Readiness Matrix — keep YAML and generated JSON in sync.
   # The validator refuses fake Live status + forbidden marketing
   # claims; the exporter regenerates landing/assets/data/service-readiness.json.

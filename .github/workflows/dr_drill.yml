@@ -1,0 +1,45 @@
+name: DR drill (monthly)
+
+on:
+  schedule:
+    - cron: "0 4 1 * *" # First day of every month, 04:00 UTC
+  workflow_dispatch:
+
+jobs:
+  drill:
+    runs-on: ubuntu-22.04
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: dr
+          POSTGRES_PASSWORD: dr_pw
+          POSTGRES_DB: dealix_dr_scratch
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U dr"
+          --health-interval 5s
+    env:
+      DR_TARGET_DSN: postgresql://dr:dr_pw@localhost:5432/dealix_dr_scratch
+      BACKUP_DIR: /tmp/dealix_backups
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Ensure backup dir exists (empty for dry-run)
+        run: mkdir -p "$BACKUP_DIR"
+
+      - name: Install psql
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends postgresql-client
+
+      - name: Run DR drill (dry-run; real backup requires AWS_S3_BUCKET secret)
+        run: bash scripts/infra/dr_restore_drill.sh --dry-run
+
+      - name: Upload log
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: dr-drill-${{ github.run_id }}
+          path: |
+            /tmp/dr_drill_*.log
