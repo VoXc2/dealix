@@ -1,0 +1,13 @@
+name: dealix
+version: 1.0.0
+config-version: 2
+
+profile: dealix
+
+model-paths: ["models"]
+target-path: "target"
+
+models:
+  dealix:
+    marts:
+      +materialized: table

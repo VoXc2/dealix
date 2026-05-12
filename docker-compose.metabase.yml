@@ -1,0 +1,40 @@
+# Spin up Metabase for internal BI. Separate compose file so it doesn't
+# pollute the default `docker compose up` for the API.
+#
+# Usage:
+#   docker compose -f docker-compose.metabase.yml up -d
+#   open http://localhost:3001
+#
+# First-run setup: point Metabase at the same Postgres the API uses
+# (DATABASE_URL host/port). Production should run Metabase against a
+# read replica to avoid heavy queries on the primary.
+
+services:
+  metabase:
+    image: metabase/metabase:v0.51.6
+    ports:
+      - "3001:3000"
+    environment:
+      MB_DB_TYPE: postgres
+      MB_DB_DBNAME: ${MB_DB_NAME:-metabase}
+      MB_DB_PORT: ${MB_DB_PORT:-5432}
+      MB_DB_USER: ${MB_DB_USER:-metabase}
+      MB_DB_PASS: ${MB_DB_PASS:-metabase}
+      MB_DB_HOST: ${MB_DB_HOST:-metabase-db}
+    depends_on:
+      - metabase-db
+    volumes:
+      - metabase-data:/metabase-data
+
+  metabase-db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: ${MB_DB_USER:-metabase}
+      POSTGRES_PASSWORD: ${MB_DB_PASS:-metabase}
+      POSTGRES_DB: ${MB_DB_NAME:-metabase}
+    volumes:
+      - metabase-pgdata:/var/lib/postgresql/data
+
+volumes:
+  metabase-data:
+  metabase-pgdata:

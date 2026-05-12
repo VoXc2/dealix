@@ -135,3 +135,90 @@ async def get_feature_flag(
     except Exception as e:  # pragma: no cover
         log.warning("posthog_flag_failed flag=%s err=%s", flag_key, e)
         return default
+
+
+# ── T3c — Surveys helpers ──────────────────────────────────────────
+
+
+async def survey(
+    *,
+    survey_id: str,
+    distinct_id: str,
+    answer: Any,
+    locale: str = "ar",
+    metadata: dict[str, Any] | None = None,
+    timeout: float = 3.0,
+) -> bool:
+    """Record a survey response back to PostHog (server-side path).
+
+    Used when surveys fire from email links / backend events; the FE
+    PostHog SDK handles the in-app path.
+    """
+    api_key = _api_key()
+    if not api_key or not _enabled():
+        return False
+    props: dict[str, Any] = {
+        "$survey_id": survey_id,
+        "$survey_response": answer,
+        "locale": locale,
+    }
+    if metadata:
+        props.update(metadata)
+    try:
+        async with httpx.AsyncClient(timeout=timeout) as c:
+            r = await c.post(
+                f"{_host()}/capture/",
+                json={
+                    "api_key": api_key,
+                    "event": "survey sent",
+                    "distinct_id": distinct_id,
+                    "properties": props,
+                },
+            )
+            r.raise_for_status()
+        return True
+    except Exception:
+        log.warning("posthog_survey_failed survey=%s", survey_id, exc_info=True)
+        return False
+
+
+async def list_survey_responses(
+    survey_id: str, *, since: str | None = None, timeout: float = 10.0
+) -> list[dict[str, Any]]:
+    """Pull recent responses via the PostHog query API (personal-key auth).
+
+    Returns [] when POSTHOG_PERSONAL_API_KEY / POSTHOG_PROJECT_ID are
+    unset, so the founder's NPS dashboard degrades gracefully.
+    """
+    pkey = os.getenv("POSTHOG_PERSONAL_API_KEY", "").strip()
+    project = os.getenv("POSTHOG_PROJECT_ID", "").strip()
+    if not (pkey and project):
+        return []
+    try:
+        where = [f"properties.$survey_id = '{survey_id}'"]
+        if since:
+            where.append(f"timestamp > '{since}'")
+        async with httpx.AsyncClient(timeout=timeout) as c:
+            r = await c.post(
+                f"{_host()}/api/projects/{project}/query/",
+                headers={"Authorization": f"Bearer {pkey}"},
+                json={
+                    "query": {
+                        "kind": "EventsQuery",
+                        "select": ["properties.$survey_response", "distinct_id", "timestamp"],
+                        "event": "survey sent",
+                        "where": where,
+                        "orderBy": ["timestamp DESC"],
+                        "limit": 500,
+                    }
+                },
+            )
+            r.raise_for_status()
+            data = r.json()
+        return [
+            {"response": row[0], "distinct_id": row[1], "timestamp": row[2]}
+            for row in (data.get("results") or [])
+        ]
+    except Exception:
+        log.warning("posthog_survey_query_failed survey=%s", survey_id, exc_info=True)
+        return []

@@ -1,0 +1,22 @@
+# Two profiles:
+# - dealix_local: DuckDB on the developer's machine (no infra needed).
+# - dealix_prod:  Postgres-as-source feeding BigQuery / Snowflake.
+#
+# Override via DBT_PROFILES_DIR or `dbt --profiles-dir analytics/dbt`.
+
+dealix:
+  target: local
+  outputs:
+    local:
+      type: duckdb
+      path: "{{ env_var('DBT_DUCKDB_PATH', './analytics/dbt/dealix.duckdb') }}"
+      threads: 4
+
+    prod_bq:
+      type: bigquery
+      method: service-account-json
+      keyfile_json: "{{ env_var('DBT_BIGQUERY_KEYFILE_JSON', '') | as_native }}"
+      project: "{{ env_var('DBT_BIGQUERY_PROJECT', '') }}"
+      dataset: dealix_warehouse
+      threads: 4
+      location: ME
