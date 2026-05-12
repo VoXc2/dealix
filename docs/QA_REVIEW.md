@@ -620,3 +620,39 @@ Every T6 router has a real UI now.
   publishing happens through the existing Fern pipeline.
 - Frontend pages need the standard `npm i` + `npm run build` from
   the founder; no new front-end deps were added in T7.
+
+## T8 addendum — Skills runtime + GCC payment routers + polish
+
+### T8a — Skill runtime
+`dealix/agents/skills/handlers.py` `@register("<id>")` registry +
+4 real handlers (`sales_qualifier`, `lead_scorer`,
+`content_generator_ar`, `ar_en_translator`). Router gains
+`POST /api/v1/skills/{id}/run` and `GET /api/v1/skills/handlers`;
+`GET /api/v1/skills` now returns an `executable` flag per row.
+8 manifest skills remain stubs (501) until T9 lands them.
+
+### T8b — GCC payment routers
+`api/routers/billing_gcc.py` exposes `/api/v1/billing/gcc/{health,
+checkout/{knet,benefit,magnati}, webhooks/{knet,benefit,magnati}}`.
+Inert without env keys (503 `<gw>_disabled`); HMAC-verified webhooks
+(401 invalid_signature on bad MAC).
+
+### T8c — Polish
+Postman builder rebuilt for v3.6.0 with X-API-Key + Bearer headers
+and OpenAPI example bodies. Two more competitor comparison pages
+(`outreach.html`, `apollo.html`). dealix-cli gains `agents`,
+`workflows`, `gcc-pay`, `skills run`/`handlers` subcommands.
+`AGENTS.md` extended with the T6/T7/T8 capability map for AI
+contributors.
+
+### T8d — Tests
+- `tests/integration/test_skills_run_router.py` (9 asserts).
+- `tests/integration/test_billing_gcc_router.py` (7 asserts).
+- `tests/unit/test_skill_handlers.py` (12 asserts).
+
+### T8 — founder-owned
+- Real Anthropic-backed implementations for the remaining 8 stub
+  skills (T9 lands these).
+- KNET / BENEFIT / Magnati merchant onboarding to flip the 503
+  paths into live ones.
+- Postman workspace import for the published collection.

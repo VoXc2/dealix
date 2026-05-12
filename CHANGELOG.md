@@ -1,5 +1,54 @@
 # Changelog
 
+## [3.6.0] — 2026-05-12
+
+T8 — Skills runtime, GCC payment routers, and the polish around them.
+
+### T8a — Skill execution
+`dealix/agents/skills/handlers.py` `@register("<id>")` registry.
+Router gains `POST /api/v1/skills/{id}/run` returning
+`{skill_id, elapsed_ms, result}` plus a `GET /api/v1/skills/handlers`
+endpoint. Four real handlers shipped:
+- `sales_qualifier` — BANT × PDPL gate with locale-aware reasoning.
+- `lead_scorer` — tunable fit / urgency / intent / sector weighting.
+- `content_generator_ar` — Saudi-tone marketing copy (length × tone).
+- `ar_en_translator` — glossary-aware bidirectional translation.
+
+The remaining 8 manifest skills return 501 (T9 lands them on real
+vendor calls).
+
+### T8b — GCC payment routers
+`api/routers/billing_gcc.py` exposes `/api/v1/billing/gcc/{health,
+checkout/{knet,benefit,magnati}, webhooks/{knet,benefit,magnati}}`.
+Mirrors the Stripe/Moyasar contract: 503 `<gw>_disabled` without
+env keys, 401 invalid_signature on bad webhook HMAC.
+
+### T8c — Polish
+- `scripts/dev/build_postman_collection.py` rebuilt — Postman :param
+  syntax, X-API-Key + Bearer headers, OpenAPI examples, `_postman_id`
+  bumped to v3.6.0, three collection vars (`base_url`, `api_key`,
+  `bearer_token`).
+- `cli/dealix_cli.py` gains `agents` (list/register/delete),
+  `workflows` (list/install), `gcc-pay` (health/checkout) subcommands;
+  `skills run`/`skills handlers` added.
+- `landing/comparisons/{outreach,apollo}.html` — two more honest-read
+  competitor pages, linked from the comparisons index.
+- `AGENTS.md` — 100-line T6/T7/T8 capability map for AI contributors:
+  skills, verticals, BYOA, enterprise admin, Saudi-gov, GCC pay,
+  newsletter — plus the production patterns every new code path
+  must follow (inert-by-default, bilingual UI, CLI parity, SDK
+  example, deep health, test discipline, Mintlify doc).
+
+### T8d — Tests + closing chore
+- `tests/integration/test_skills_run_router.py` — 9 asserts covering
+  handler-list, executable flag, the 4 happy paths, PDPL gate
+  caps, 404 unknown skill, 501 unhandled skill.
+- `tests/integration/test_billing_gcc_router.py` — 7 asserts covering
+  health shape, three 503 paths, three webhook-signature 401 paths.
+- `tests/unit/test_skill_handlers.py` — 12 pure-handler asserts
+  (no router) covering registry contents, BANT/PDPL gate semantics,
+  weight-sum invariants, glossary substitution.
+
 ## [3.5.0] — 2026-05-12
 
 T7 — production polish on top of T6. Four commits make the T6 surface
