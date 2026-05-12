@@ -1,0 +1,77 @@
+---
+title: Verticals
+description: Pre-configured industry bundles. Each vertical pre-sets the agents, workflows, prompts, lead-form fields, and pricing tier for a sector.
+---
+
+## List the verticals
+
+```http
+GET /api/v1/verticals
+```
+
+```json
+{
+  "count": 8,
+  "verticals": [
+    {
+      "id": "real-estate",
+      "label_ar": "العقارات",
+      "label_en": "Real estate",
+      "description_en": "AI growth OS for Saudi real-estate developers and brokerages.",
+      "agents": ["sales_qualifier", "proposal_writer", "market_researcher"],
+      "workflows": ["lead_to_booking", "proposal_to_contract"],
+      "pricing_default_plan": "growth"
+    }
+  ]
+}
+```
+
+## Read one vertical
+
+```http
+GET /api/v1/verticals/{id}
+```
+
+Returns the full bundle including `lead_form_fields` for sector-tuned
+demo-request UIs:
+
+```json
+{
+  "id": "real-estate",
+  "label_ar": "العقارات",
+  "label_en": "Real estate",
+  "agents": ["sales_qualifier", "proposal_writer", "market_researcher"],
+  "workflows": ["lead_to_booking", "proposal_to_contract"],
+  "pricing_default_plan": "growth",
+  "lead_form_fields": [
+    {"name": "project_name", "type": "text", "label_en": "Project name", "label_ar": "اسم المشروع"},
+    {"name": "units_sold_q", "type": "number", "label_en": "Units sold last quarter", "label_ar": "وحدات مباعة آخر ربع"}
+  ]
+}
+```
+
+## Apply a vertical
+
+```http
+POST /api/v1/verticals/apply
+{
+  "vertical_id": "hospitality"
+}
+```
+
+Sets the caller's tenant's default vertical in `TenantRecord.meta_json.vertical`.
+Subsequent agent invocations, workflow registrations, and lead forms
+inherit the vertical's overrides.
+
+## The eight sectors shipped today
+
+| Slug                  | English label      | Arabic label |
+| --------------------- | ------------------ | ------------ |
+| `real-estate`         | Real estate        | العقارات    |
+| `hospitality`         | Hospitality        | الضيافة     |
+| `construction`        | Construction       | الإنشاءات    |
+| `healthcare`          | Healthcare         | الرعاية الصحية |
+| `education`           | Education          | التعليم      |
+| `food-and-beverage`   | Food &amp; beverage | المطاعم والمشروبات |
+| `legal`               | Legal              | القانوني     |
+| `financial-services`  | Financial services | الخدمات المالية |

@@ -91,6 +91,32 @@
         "docs/api/security",
         "docs/api/sla"
       ]
+    },
+    {
+      "group": "Agents & verticals",
+      "pages": [
+        "docs/api/skills",
+        "docs/api/verticals",
+        "docs/api/agents"
+      ]
+    },
+    {
+      "group": "Saudi government",
+      "pages": [
+        "docs/api/saudi-gov"
+      ]
+    },
+    {
+      "group": "Admin",
+      "pages": [
+        "docs/api/admin-enterprise"
+      ]
+    },
+    {
+      "group": "Marketing",
+      "pages": [
+        "docs/api/newsletter"
+      ]
     }
   ],
   "footerSocials": {

@@ -1,0 +1,50 @@
+---
+title: Newsletter
+description: Public PDPL-aware newsletter signup. Forwards to Loops when configured; degrades gracefully when not.
+---
+
+```http
+POST /api/v1/newsletter/subscribe
+{
+  "email": "lead@example.sa",
+  "consent": true,
+  "locale": "ar",
+  "source": "landing-pricing-calc"
+}
+```
+
+## Required fields
+
+- **email** — must be a syntactically valid address (`pydantic.EmailStr`).
+- **consent** — must be `true`. Omitted or false → **400 consent_required**.
+  PDPL Article 5 requires explicit opt-in for marketing communications.
+- **locale** — `ar` or `en`. Defaults to `ar`.
+- **source** — free-form tag (≤ 64 chars). Used to attribute the signup
+  in Loops (e.g. which landing page, which campaign).
+
+## Response
+
+```json
+{
+  "ok": true,
+  "delivered": true,
+  "loops_configured": true,
+  "error": null
+}
+```
+
+When `LOOPS_API_KEY` is unset the server still returns **200** with
+`loops_configured: false` and `delivered: false` — the consent is
+captured even if the marketing sink is offline.
+
+## What happens downstream
+
+When delivered to Loops, the `newsletter_subscribed` event fires with:
+
+- `locale`
+- `source`
+- `ip` (caller IP — never persisted in Dealix; only forwarded for
+  Loops' own anti-abuse heuristics).
+
+The customer can then build a drip in Loops keyed off
+`newsletter_subscribed`.

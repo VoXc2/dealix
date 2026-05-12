@@ -1,0 +1,103 @@
+---
+title: Saudi government APIs
+description: Read-only enrichment from Etimad, Maroof, Najiz, Najm, Tadawul, MISA. Each endpoint 503s with service_not_configured until its credential is set — no silent stub data.
+---
+
+## Tenders (Etimad)
+
+```http
+GET /api/v1/saudi-gov/tenders?sector=construction&region=Riyadh&page=1&page_size=25
+```
+
+Search active Etimad government tenders. Filters: `sector`, `region`,
+`keyword`. Returns up to `page_size` rows (1–100).
+
+```json
+{
+  "count": 1,
+  "tenders": [
+    {
+      "id": "T-2026-1234",
+      "title_ar": "صيانة المباني الحكومية في الرياض",
+      "agency": "وزارة المالية",
+      "sector": "construction",
+      "region": "Riyadh",
+      "published_at": "2026-05-01",
+      "submission_deadline": "2026-05-30",
+      "estimated_value_sar": 12500000,
+      "url": "https://tenders.etimad.sa/Tender/Details/T-2026-1234"
+    }
+  ]
+}
+```
+
+```http
+GET /api/v1/saudi-gov/tenders/{id}
+```
+
+Single-tender detail with full attachment manifest and scope text.
+
+## Maroof — consumer reputation
+
+```http
+GET /api/v1/saudi-gov/maroof/{cr_number}
+```
+
+```json
+{
+  "cr_number": "1010101010",
+  "verified": true,
+  "rating": 4.3,
+  "review_count": 86,
+  "badge_color": "green"
+}
+```
+
+## Najiz — judicial risk
+
+```http
+GET /api/v1/saudi-gov/judicial/{cr_number}
+```
+
+```json
+{
+  "cr_number": "1010101010",
+  "open_disputes": 0,
+  "bankruptcy_filings": 0,
+  "execution_orders": 0,
+  "risk_score": 0.0
+}
+```
+
+## Najm — auto-insurance history
+
+```http
+GET /api/v1/saudi-gov/najm/{vin}
+```
+
+For the auto-vertical only. Returns claim count, at-fault count, and
+the Najm-issued `risk_class` (A–D).
+
+## Tadawul — listed-company snapshot
+
+```http
+GET /api/v1/saudi-gov/tadawul/{symbol}
+```
+
+Public-market data for Saudi-listed equities. Used by the
+market-researcher skill in company-brief generation.
+
+## MISA — investment licence
+
+```http
+GET /api/v1/saudi-gov/misa/{licence_number}
+```
+
+Foreign-investment licence status (active flag, issue/expiry dates,
+country of origin, declared activity).
+
+## Inert-by-default contract
+
+Every endpoint requires its corresponding `*_API_KEY` env var. With the
+env unset, the route responds **503 service_not_configured** —
+deliberately, so callers never receive misleading stub data.

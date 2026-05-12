@@ -1,0 +1,65 @@
+---
+title: Skills
+description: Reusable agent skills catalogue. Loaded from skills/MANIFEST.yaml and exposed both as REST endpoints and as MCP tools to Claude Desktop.
+---
+
+## List the catalogue
+
+```http
+GET /api/v1/skills
+```
+
+Returns every skill registered in `skills/MANIFEST.yaml`. Each entry
+declares its `id`, source `path`, human-readable `description`, the
+list of `inputs` it accepts, and its `output_shape`.
+
+```json
+{
+  "count": 12,
+  "skills": [
+    {
+      "id": "sales_qualifier",
+      "path": "skills/sales-qualifier/SKILL.md",
+      "description": "Score a lead against BANT + Saudi PDPL contactability gate.",
+      "inputs": ["full_name", "company", "phone", "email", "sector"],
+      "output_shape": "{score:0..1, gates:{bant,pdpl}, reasoning:string}"
+    }
+  ]
+}
+```
+
+## Read one skill
+
+```http
+GET /api/v1/skills/{id}
+```
+
+Returns 404 `skill_not_found` for unknown ids. The 12 canonical ids
+shipped today:
+
+- `sales_qualifier`
+- `proposal_writer`
+- `meeting_summarizer`
+- `crm_syncer`
+- `email_triage`
+- `compliance_reviewer`
+- `contract_analyst`
+- `market_researcher`
+- `lead_scorer`
+- `renewal_forecaster`
+- `content_generator_ar`
+- `ar_en_translator`
+
+## MCP exposure
+
+Every skill is auto-registered as a Model Context Protocol tool by
+`dealix/mcp/server.py`. A customer adding Dealix as an MCP server in
+Claude Desktop sees the catalogue as native tools — they call
+`proposal_writer(lead_id=...)` without importing the Dealix SDK.
+
+## Adding a skill
+
+1. Create `skills/<slug>/SKILL.md` in Anthropic Skills format.
+2. Create `skills/<slug>/prompt.yaml` with a Jinja-template prompt.
+3. Append an entry to `skills/MANIFEST.yaml`.
+4. Restart — both `/api/v1/skills` and the MCP server pick it up.

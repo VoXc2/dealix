@@ -1,0 +1,99 @@
+---
+title: Admin — enterprise depth
+description: Sandbox cloning, per-tenant IP allowlists, webhook-key rotation, BYOK + audit-forward status. Admin-only.
+---
+
+All endpoints below require either:
+- An `x-api-key` matching one of `ADMIN_API_KEYS`, **or**
+- A bearer JWT with the `super_admin` claim.
+
+Anything else returns **403 admin_only**.
+
+## Sandbox spin-up
+
+```http
+POST /api/v1/admin/sandbox/spin-up
+{
+  "tenant_id": "ten_abc",
+  "label": "qa-sandbox"
+}
+```
+
+Clones the tenant's plan, locale, currency, max-seat and max-leads
+limits + `meta_json` into a fresh `sandbox_<tenant_id>_<hex>` tenant.
+The new tenant carries `meta_json.sandbox_of` and `meta_json.label`
+for traceability. No data is copied — only configuration.
+
+## IP allowlist
+
+```http
+POST   /api/v1/admin/tenant/{tenant_id}/ip-allowlist
+DELETE /api/v1/admin/tenant/{tenant_id}/ip-allowlist
+```
+
+POST body:
+
+```json
+{ "cidrs": ["10.0.0.0/24", "203.0.113.5/32"] }
+```
+
+Each CIDR is parsed through Python's `ipaddress.ip_network`. Invalid
+entries → **422 invalid_cidr:&lt;value&gt;**. Saved to
+`TenantRecord.meta_json.ip_allowlist`; the
+`IPAllowlistMiddleware` reads it per-request.
+
+DELETE clears the list. Public endpoints (`/api/v1/public/*`,
+`/healthz`) always bypass the middleware.
+
+## Webhook-key rotation
+
+```http
+POST /api/v1/admin/tenant/{tenant_id}/webhook-keys/rotate
+```
+
+Generates a fresh `secrets.token_urlsafe(32)`, records its 8-char prefix
++ ISO timestamp in `meta_json.webhook_keys_rotated`, and returns the
+new secret **once**:
+
+```json
+{
+  "ok": true,
+  "tenant_id": "ten_abc",
+  "webhook_secret": "tk_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+  "prefix": "tk_xxxxx"
+}
+```
+
+The full secret is never persisted; only the prefix lands in the audit
+trail.
+
+## BYOK status
+
+```http
+GET /api/v1/admin/byok/status
+```
+
+```json
+{
+  "configured": true,
+  "provider": "aws",
+  "key_id_present": true
+}
+```
+
+`provider` is one of `aws`, `gcp`, `azure`, or `null`. Live encryption
+happens through `dealix/audit/byok.py:BYOKProvider`.
+
+## Audit-forward status
+
+```http
+GET /api/v1/admin/audit-forward/status
+```
+
+```json
+{ "datadog": true, "splunk": false, "s3": true }
+```
+
+Each sink is independent. `dealix/audit/forward.py` ships audit rows
+to every configured sink on best-effort semantics — failures log and
+return `false`, but never break the underlying request.

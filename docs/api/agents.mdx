@@ -1,0 +1,69 @@
+---
+title: Agents & workflows
+description: Bring-Your-Own-Agent builder and installable workflow marketplace. Customers register custom agents that compose Dealix Skills and install pre-built LangGraph + Inngest workflows in one POST.
+---
+
+## Custom agents (BYOA)
+
+```http
+GET    /api/v1/agents
+POST   /api/v1/agents
+DELETE /api/v1/agents/{id}
+```
+
+POST body — `agent.yaml` parsed as JSON:
+
+```json
+{
+  "id": "lead-qualifier-ksa",
+  "name": "KSA lead qualifier",
+  "description": "Saudi-tuned BANT + PDPL gate.",
+  "model": "claude-haiku-4-5",
+  "tools": ["sales_qualifier", "compliance_reviewer"],
+  "prompt_override": "You are an Arabic-Khaliji sales qualifier...",
+  "max_usd_per_request": 0.50,
+  "locale": "ar"
+}
+```
+
+Validation rules (`dealix/agents/builder/validate`):
+
+- `id` — lowercase, 3–64 chars, `[a-z0-9_-]`.
+- `name` — required, ≤ 120 chars.
+- `model` — required (any model id known to the LLM router).
+- `tools` — every tool must exist in the Skills catalogue.
+- `max_usd_per_request` — float in **(0, 10]**.
+
+On success the agent is persisted into `TenantRecord.meta_json.custom_agents`.
+
+## Workflow marketplace
+
+```http
+GET  /api/v1/workflows/marketplace
+POST /api/v1/workflows/install
+```
+
+The marketplace catalogue ships four starter templates today:
+
+| Template id              | What it does                                              |
+| ------------------------ | --------------------------------------------------------- |
+| `lead_to_booking`        | Capture → qualify → propose → book a calendar meeting.    |
+| `proposal_to_contract`   | Draft proposal → review → e-sign loop.                    |
+| `etimad_tender_to_bid`   | Etimad tender ingestion → bid-readiness check → submit.   |
+| `contract_redline_loop`  | Customer contract → redline → counterproposal → approval. |
+
+Install body:
+
+```json
+{ "template_id": "lead_to_booking" }
+```
+
+Templates live under `dealix/workflows/marketplace/` as YAML; installing
+one registers the included LangGraph + Inngest functions for the caller's
+tenant.
+
+## MCP exposure
+
+Every custom agent is also surfaced to MCP-enabled IDEs (Claude Desktop,
+Cursor) — the customer's IDE sees their own agents as native tools the
+moment registration completes.
