@@ -61,6 +61,18 @@ Last updated: 2026-05-12.
 | Memgraph | Knowledge graph (relationship modelling) | UK | 2026-05-22 | Active (optional) |
 | Snyk | Daily vulnerability + container scan | Israel | 2026-05-22 | Active (optional) |
 | Cloudflare Turnstile | Bot protection on public forms | USA | 2026-05-22 | Active (optional) |
+| Lakera Guard | Prompt-injection defence (T6b) | Switzerland | 2026-06-11 | Active (optional) |
+| Letta | Long-term agent memory store (T6b) | USA | 2026-06-11 | Active (optional) |
+| Browserbase | Hosted browser runtime for Browser-Use / Computer Use (T6b) | USA | 2026-06-11 | Active (optional) |
+| Etimad | Saudi government procurement portal (T6f) | KSA | 2026-06-11 | Active (optional) |
+| Maroof | Saudi consumer-reputation directory (T6f) | KSA | 2026-06-11 | Active (optional) |
+| Najiz | Saudi judicial commercial-risk snapshot (T6f) | KSA | 2026-06-11 | Active (optional) |
+| Najm | Saudi auto-insurance vehicle history (T6f) | KSA | 2026-06-11 | Active (optional) |
+| Tadawul | Saudi Stock Exchange listed-company data (T6f) | KSA | 2026-06-11 | Active (optional) |
+| MISA | Saudi Ministry of Investment foreign-licence checks (T6f) | KSA | 2026-06-11 | Active (optional) |
+| KNET | Kuwait national debit-card switch (T6f) | Kuwait | 2026-06-11 | Active (optional) |
+| BENEFIT | Bahrain payment + national e-KYC (T6f) | Bahrain | 2026-06-11 | Active (optional) |
+| Magnati | UAE merchant-acquiring AED (T6f) | UAE | 2026-06-11 | Active (optional) |
 
 ## Process for changes
 

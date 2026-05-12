@@ -484,3 +484,95 @@ CHANGELOG v3.3.0.
 
 Every T5 integration ships **inert by default**: paste keys in
 `.env` → restart → feature lights up. No further engineering needed.
+
+## T6 addendum — Strongest B2B AI services company
+
+T6 turns Dealix into the single most capable B2B AI services platform
+in MENA: 12 reusable agent Skills, 8 industry verticals, BYOA agent
+builder, workflow marketplace, frontier AI (Computer Use, Browser-Use,
+Crawl4AI, Lakera, NeMo Guardrails, Letta, TruLens, Ragas, Patronus),
+enterprise depth (sandbox tenants, IP allowlist, BYOK, customer audit
+forwarding, webhook rotation), Saudi-government APIs (Etimad / Maroof
+/ Najiz / Najm / Tadawul / MISA), GCC payment expansion (KNET / BENEFIT
+/ Magnati + pan-GCC currency helper), and a complete public-facing
+GTM surface (Scalar playground, Saudi B2B Pulse benchmarks, four
+honest competitor comparisons, SAR pricing calculator, AR + EN blog,
+Loops newsletter signup, Mintlify chat).
+
+### T6a — Agent Skills library (`feat(skills)`)
+
+12-skill catalogue under `skills/` + `skills/MANIFEST.yaml` + loader
+in `dealix/agents/skills/__init__.py` + `/api/v1/skills` router. MCP
+server (`dealix/mcp/server.py`) auto-registers each skill as a
+Claude-Desktop-callable tool.
+
+### T6b — Frontier AI capabilities (`feat(frontier)`)
+
+`dealix/agents/tools/{computer_use,browser_use,crawl4ai}.py`,
+`dealix/agents/safety/{prompt_injection,guardrails_runtime}.py` +
+`guardrails.yaml`, `dealix/agents/memory/{letta_store,mem0_store}.py`,
+`dealix/agents/eval/{trulens,ragas,patronus}_adapter.py`.
+
+### T6c — Industry verticals (`feat(verticals)`)
+
+8 bundles under `dealix/verticals/` (real-estate, hospitality,
+construction, healthcare, education, food-and-beverage, legal,
+financial-services) with config.yaml + landing snippet each,
+`/api/v1/verticals` router + apply endpoint.
+
+### T6d — Agent builder + workflow marketplace (`feat(builder)`)
+
+`dealix/agents/builder/__init__.py` (BYOA validation),
+`dealix/workflows/marketplace/` (4 starter templates),
+`api/routers/agents_builder.py` exposing /api/v1/agents +
+/api/v1/workflows/marketplace + /install.
+
+### T6e — Enterprise depth (`feat(enterprise+)`)
+
+`api/middleware/ip_allowlist.py` (per-tenant CIDR gating),
+`dealix/audit/forward.py` (Datadog / Splunk HEC / S3 best-effort
+forwarding), `dealix/audit/byok.py` (AWS KMS / GCP / Azure
+KMS-shaped interface), `api/routers/admin_enterprise.py`
+(sandbox spin-up, ip-allowlist set/clear, webhook rotation,
+byok/audit-forward status). All admin-gated.
+
+### T6f — Saudi government + GCC expansion deep (`feat(gcc-saudi-deep)`)
+
+`dealix/integrations/{etimad,maroof,najiz,najm,tadawul,misa}_client.py`
+read-only Saudi-government APIs + `dealix/payments/{knet,benefit,
+magnati}_client.py` GCC gateways + `dealix/gcc/currency.py` pan-GCC
+helper (SAR/AED/QAR/KWD/BHD/OMR — correct minor units, ar/en
+formatting, weekend rules) + `api/routers/saudi_gov.py` exposing
+six endpoints under `/api/v1/saudi-gov/*`.
+
+### T6g — Public demo + marketing surface (`feat(gtm)`)
+
+`landing/playground/` (Scalar API Reference embed), `landing/demo/`
+(live sandbox playground), `landing/benchmarks/` (Saudi B2B Pulse),
+`landing/comparisons/{hubspot,salesforce,gong,salesloft}.html`,
+`landing/pricing/calculator.html`, three new EN blog posts joining
+the existing AR PDPL post, Loops-backed
+`api/routers/newsletter.py`, Mintlify chat experiment enabled.
+
+### Closing chore (`chore(t6)`)
+
+requirements.txt T6 pins (browser-use, playwright, crawl4ai, lakera,
+letta, mem0ai, trulens-eval, ragas, patronus-evals, weave,
+nemoguardrails, guidance). `.env.example` T6 block. Sub-processors
+extended with 13 new optional vendors. This addendum. CHANGELOG
+v3.4.0.
+
+### T6 — still founder-owned
+
+- Etimad / Maroof / Najiz / Najm / Tadawul / MISA government-API
+  credentials (issued by Saudi Business Center + SDAIA + Ministry
+  of Justice + Najm + Saudi Tadawul Group + MISA).
+- KNET / BENEFIT / Magnati merchant onboarding + acquiring contracts.
+- AWS / GCP / Azure KMS keys for BYOK.
+- Lakera / Letta / Browserbase / Patronus / Weave vendor signups.
+- Publishing the Mintlify chat dataset.
+- Vertical domain registrations (`real-estate.dealix.me` etc.) if
+  pursued.
+- Founder-signed first 3 enterprise vertical pilots.
+
+Every T6 integration ships **inert by default**.

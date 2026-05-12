@@ -177,3 +177,35 @@ strawberry-graphql[fastapi]>=0.235
 
 # Loops, Knock, BetterStack, Plain, Apollo, Clearbit, Wathq, Tinybird:
 # all REST-only — httpx covers them.
+
+# ──────────────────────────────────────────────────────────────────
+# T6 — Strongest B2B AI services company
+# ──────────────────────────────────────────────────────────────────
+
+# Frontier AI (T6b): browser automation + AI-friendly extraction.
+browser-use>=0.1.40
+playwright>=1.49
+crawl4ai>=0.4
+
+# Frontier AI (T6b): agent safety + memory + evals.
+lakera>=0.5
+letta>=0.5
+mem0ai>=0.1
+trulens-eval>=1.2
+ragas>=0.2
+patronus-evals>=0.0.5
+weave>=0.51
+nemoguardrails>=0.10
+
+# Frontier AI (T6b): typed / constrained LLM outputs.
+guidance>=0.1.16
+
+# Saudi-government + GCC clients (T6f) are REST-only via httpx —
+# Etimad / Maroof / Najiz / Najm / Tadawul / MISA / KNET / BENEFIT / Magnati.
+# No new Python SDK required.
+
+# T6a + T6b lift the floor on anthropic + openai pins so Computer Use
+# + Files API + Vector Stores ship cleanly.
+# (anthropic>=0.40.0 and openai>=1.54.0 already pinned above; no bump
+# required — both are forward-compatible.)
+

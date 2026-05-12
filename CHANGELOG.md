@@ -1,5 +1,79 @@
 # Changelog
 
+## [3.4.0] — 2026-05-12
+
+T6 — strongest B2B AI services company. 8 commits beyond v3.3.0 ship
+the agent-skills library, frontier-AI tooling, industry verticals,
+BYOA agent builder + workflow marketplace, enterprise depth
+(sandbox / IP allowlist / BYOK / customer audit forwarding / webhook
+rotation), Saudi-government + GCC expansion, and a complete public
+GTM surface. Every new integration ships inert-by-default.
+
+### T6a — Agent Skills library
+12 reusable Skills under `skills/` in Anthropic SKILL.md format,
+`skills/MANIFEST.yaml`, `dealix/agents/skills/__init__.py` loader,
+`/api/v1/skills` router, MCP-server auto-registration of every
+skill as a Claude-Desktop tool.
+
+### T6b — Frontier AI
+Anthropic Computer Use wrapper (`dealix/agents/tools/computer_use.py`),
+Browser-Use Playwright driver (`dealix/agents/tools/browser_use.py`),
+Crawl4AI markdown-clean extraction with httpx fallback. Lakera + Rebuff
++ heuristic prompt-injection defence chain. NeMo Guardrails-style
+declarative `guardrails.yaml` runtime. Letta + mem0 long-term memory.
+TruLens + Ragas + Patronus eval adapters.
+
+### T6c — Industry verticals
+8 bundles (real-estate, hospitality, construction, healthcare,
+education, food-and-beverage, legal, financial-services) under
+`dealix/verticals/` with `config.yaml` + landing snippet each.
+`/api/v1/verticals` router + apply endpoint.
+
+### T6d — Agent builder + workflow marketplace
+`dealix/agents/builder/` BYOA validator (agent.yaml manifest format).
+`dealix/workflows/marketplace/` 4 starter templates
+(lead_to_booking, proposal_to_contract, etimad_tender_to_bid,
+contract_redline_loop). `api/routers/agents_builder.py` exposes
+`/api/v1/agents` + `/api/v1/workflows/marketplace` + `/install`.
+
+### T6e — Enterprise depth
+`api/middleware/ip_allowlist.py` reads `TenantRecord.meta_json.ip_allowlist`
+and 403s outside CIDRs. `dealix/audit/forward.py` best-effort
+forwarding to Datadog / Splunk HEC / S3. `dealix/audit/byok.py` KMS-
+shaped interface for AWS / GCP / Azure customer-managed keys.
+`api/routers/admin_enterprise.py` exposes `/api/v1/admin/sandbox/spin-up`,
+`/api/v1/admin/tenant/{id}/ip-allowlist` (POST + DELETE),
+`/api/v1/admin/tenant/{id}/webhook-keys/rotate`, and `byok/status` +
+`audit-forward/status`.
+
+### T6f — Saudi government + GCC expansion deep
+`dealix/integrations/{etimad,maroof,najiz,najm,tadawul,misa}_client.py`
+read-only Saudi-government APIs. `dealix/payments/{knet,benefit,magnati}_client.py`
+GCC gateways (KWD / BHD + e-KYC / AED) mirroring the Moyasar / Tap
+contract. `dealix/gcc/currency.py` single source of truth for
+SAR/AED/QAR/KWD/BHD/OMR minor units, ar/en formatting, weekend rules.
+`api/routers/saudi_gov.py` exposes `/api/v1/saudi-gov/{tenders,maroof,
+judicial,najm,tadawul,misa}`.
+
+### T6g — Public demo + marketing
+`landing/playground/` Scalar API Reference embed.
+`landing/demo/` live sandbox playground that hits `/api/v1/leads` +
+`/api/v1/customer-success/tenant-health/sandbox`. `landing/benchmarks/`
+Saudi B2B Pulse sector table. `landing/comparisons/` index +
+hubspot / salesforce / gong / salesloft honest-read pages.
+`landing/pricing/calculator.html` SAR/USD/AED + monthly/annual +
+Tabby split calculator. `landing/blog/` index + three new EN posts
+(Vision 2030, agentic sales, customer-story template) joining the
+existing AR PDPL post. `api/routers/newsletter.py` Loops-backed
+subscribe with PDPL consent gate. Mintlify chat experiment enabled
+in `mint.json` with AR + EN seed prompts.
+
+### Closing chore
+T6 pins in `requirements.txt`. T6 env block in `.env.example` with
+13 new optional vendor keys. `docs/compliance/SUB_PROCESSORS.md`
+extended with the same 13 vendors. `docs/QA_REVIEW.md` T6 addendum.
+This entry.
+
 ## [3.3.0] — 2026-05-22
 
 T5 — AI excellence + Saudi sovereignty deep + platform power. 8 more
