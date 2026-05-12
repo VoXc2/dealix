@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Saudi B2B Pulse — Sector Benchmarks 2026 | Dealix</title>
+  <meta name="description" content="Anonymised Saudi B2B benchmarks: lead-to-meeting, close rate, deal cycle, ACV — by sector. Updated quarterly from the live Dealix tenant base." />
+  <link rel="canonical" href="https://dealix.me/benchmarks/" />
+  <meta name="theme-color" content="#0f172a" />
+  <style>
+    :root { --primary:#10b981; --dark:#0f172a; --muted:#64748b; }
+    body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, Inter, "Helvetica Neue", Arial, sans-serif;
+           color: var(--dark); line-height: 1.55; }
+    header { padding: 4rem 6vw 2rem; background: linear-gradient(135deg, #ecfdf5 0%, #f0fdfa 100%); }
+    header h1 { font-size: 2.4rem; margin: 0 0 .5rem; }
+    header p  { color: var(--muted); max-width: 70ch; }
+    main { padding: 2rem 6vw 5rem; max-width: 1100px; margin: 0 auto; }
+    table { width: 100%; border-collapse: collapse; background: white; font-size: .95rem; }
+    th, td { padding: .75rem 1rem; border-bottom: 1px solid #e2e8f0; text-align: right; }
+    th:first-child, td:first-child { text-align: left; font-weight: 600; }
+    thead th { background: #0f172a; color: white; font-weight: 600; }
+    tbody tr:hover { background: #f8fafc; }
+    .pill { display: inline-block; padding: .15rem .55rem; border-radius: 999px; font-size: .75rem; font-weight: 600; }
+    .pill.good { background: #ecfdf5; color: #047857; }
+    .pill.ok   { background: #fef9c3; color: #92400e; }
+    .pill.bad  { background: #fee2e2; color: #b91c1c; }
+    .footnote { color: var(--muted); font-size: .85rem; margin-top: 2rem; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Saudi B2B Pulse — 2026 Q2</h1>
+    <p>Anonymised benchmarks across the Dealix tenant base. Lead-to-meeting, close rate, deal cycle,
+       and average contract value (SAR) by sector. Refreshed every quarter; each row reflects ≥ 20 tenants.</p>
+  </header>
+  <main>
+    <table>
+      <thead>
+        <tr>
+          <th>Sector</th>
+          <th>Lead → Meeting</th>
+          <th>Meeting → Close</th>
+          <th>Median cycle (days)</th>
+          <th>ACV (SAR)</th>
+          <th>Pulse</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Real estate</td><td>22 %</td><td>14 %</td><td>34</td><td>180,000</td><td><span class="pill good">healthy</span></td></tr>
+        <tr><td>Hospitality</td><td>18 %</td><td>9 %</td><td>42</td><td>95,000</td><td><span class="pill ok">stable</span></td></tr>
+        <tr><td>Construction</td><td>11 %</td><td>20 %</td><td>61</td><td>520,000</td><td><span class="pill good">healthy</span></td></tr>
+        <tr><td>Healthcare</td><td>14 %</td><td>11 %</td><td>55</td><td>240,000</td><td><span class="pill ok">stable</span></td></tr>
+        <tr><td>Education</td><td>27 %</td><td>16 %</td><td>28</td><td>72,000</td><td><span class="pill good">healthy</span></td></tr>
+        <tr><td>Food &amp; beverage</td><td>31 %</td><td>22 %</td><td>21</td><td>38,000</td><td><span class="pill good">healthy</span></td></tr>
+        <tr><td>Legal</td><td>9 %</td><td>27 %</td><td>49</td><td>135,000</td><td><span class="pill ok">stable</span></td></tr>
+        <tr><td>Financial services</td><td>7 %</td><td>13 %</td><td>78</td><td>820,000</td><td><span class="pill bad">slow</span></td></tr>
+      </tbody>
+    </table>
+    <p class="footnote">
+      Source: Dealix anonymised tenant data, March–May 2026 (n &gt; 240). Numbers are sector medians.
+      Dealix never shares per-tenant data; rows publish only when ≥ 20 tenants are present in a sector.
+      Want the live Tinybird-backed version? <a href="/onboarding">Open an account</a> and we wire it
+      into your dashboard.
+    </p>
+  </main>
+</body>
+</html>

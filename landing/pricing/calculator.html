@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dealix Pricing Calculator</title>
+  <meta name="description" content="Estimate your Dealix subscription in SAR or USD. Includes per-seat, per-LLM-call, and Tabby/Tamara split-payment options." />
+  <link rel="canonical" href="https://dealix.me/pricing/calculator.html" />
+  <meta name="theme-color" content="#10b981" />
+  <style>
+    :root { --primary:#10b981; --dark:#0f172a; --muted:#64748b; --bg:#f8fafc; }
+    *,*::before,*::after { box-sizing: border-box; }
+    body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, Inter, "Helvetica Neue", Arial, sans-serif;
+           background: var(--bg); color: var(--dark); line-height: 1.55; }
+    .wrap { max-width: 880px; margin: 0 auto; padding: 3rem 6vw 5rem; }
+    h1 { margin-top: 0; }
+    p.lede { color: var(--muted); max-width: 60ch; }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; margin-top: 2rem; }
+    @media (max-width: 720px) { .grid { grid-template-columns: 1fr; } }
+    .field { background: white; padding: 1rem 1.2rem; border: 1px solid #e2e8f0; border-radius: 12px; }
+    label { display: block; font-size: .85rem; color: var(--muted); margin-bottom: .25rem; }
+    input, select { width: 100%; padding: .55rem .7rem; font-size: 1rem;
+            border: 1px solid #cbd5e1; border-radius: 8px; font-family: inherit; }
+    .total { margin-top: 2.5rem; padding: 1.6rem 1.8rem; background: #ecfdf5; border-radius: 14px; border: 1px solid #a7f3d0; }
+    .total .num { font-size: 2.25rem; font-weight: 700; color: #047857; }
+    .total .sub { color: var(--muted); font-size: .9rem; margin-top: .35rem; }
+    table { width: 100%; border-collapse: collapse; margin-top: 1.5rem; font-size: .95rem; background: white; }
+    th, td { padding: .65rem .8rem; border-bottom: 1px solid #e2e8f0; text-align: left; }
+    th { color: var(--muted); font-weight: 600; font-size: .8rem; text-transform: uppercase; letter-spacing: .03em; }
+    .pill { display: inline-block; padding: .15rem .55rem; border-radius: 999px; font-size: .75rem;
+            font-weight: 600; background: #fef3c7; color: #92400e; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Pricing calculator</h1>
+    <p class="lede">Dealix prices a per-seat baseline plus usage (LLM calls + outbound messages).
+       Adjust the sliders to estimate your monthly bill. Pay annually for 17 % off; pay via
+       <strong>Tabby</strong> or <strong>Tamara</strong> to split the annual fee into 4 SAR instalments.</p>
+
+    <div class="grid">
+      <div class="field">
+        <label for="seats">Seats</label>
+        <input id="seats" type="number" min="1" max="500" value="10" />
+      </div>
+      <div class="field">
+        <label for="plan">Plan</label>
+        <select id="plan">
+          <option value="pilot">Pilot — 199 SAR / seat / mo</option>
+          <option value="growth" selected>Growth — 499 SAR / seat / mo</option>
+          <option value="scale">Scale — 999 SAR / seat / mo</option>
+          <option value="enterprise">Enterprise — 1999 SAR / seat / mo</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="llm">LLM calls / month</label>
+        <input id="llm" type="number" min="0" step="1000" value="20000" />
+      </div>
+      <div class="field">
+        <label for="msgs">WhatsApp / SMS messages / month</label>
+        <input id="msgs" type="number" min="0" step="500" value="5000" />
+      </div>
+      <div class="field">
+        <label for="currency">Currency</label>
+        <select id="currency">
+          <option value="SAR" selected>SAR — Saudi Riyal</option>
+          <option value="USD">USD — US Dollar</option>
+          <option value="AED">AED — UAE Dirham</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="billing">Billing</label>
+        <select id="billing">
+          <option value="monthly">Monthly</option>
+          <option value="annual" selected>Annual (-17 %)</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="total">
+      <div class="num" id="total">SAR 0</div>
+      <div class="sub" id="total-sub">Includes seats, LLM, messaging.</div>
+      <p style="margin:1rem 0 0"><span class="pill">Split-payment</span>
+        Tabby / Tamara: <strong id="instalment">SAR 0</strong> × 4 over 4 months.</p>
+    </div>
+
+    <table>
+      <thead><tr><th>Line item</th><th>Quantity</th><th>Unit price</th><th>Subtotal</th></tr></thead>
+      <tbody id="breakdown"></tbody>
+    </table>
+  </div>
+
+  <script>
+    const PLAN_SAR = { pilot: 199, growth: 499, scale: 999, enterprise: 1999 };
+    const LLM_SAR_PER_1K = 14;    // SAR per 1000 LLM calls (avg 12-block).
+    const MSG_SAR_PER_1K = 8;     // SAR per 1000 WhatsApp/SMS messages.
+    const FX = { SAR: 1, USD: 1 / 3.75, AED: 1 / 1.02 };
+
+    function fmt(amount, ccy) {
+      return new Intl.NumberFormat("en-US", { style: "currency", currency: ccy, maximumFractionDigits: 0 }).format(amount);
+    }
+
+    function recalc() {
+      const seats = Math.max(1, +document.getElementById("seats").value || 1);
+      const plan = document.getElementById("plan").value;
+      const llm = Math.max(0, +document.getElementById("llm").value || 0);
+      const msgs = Math.max(0, +document.getElementById("msgs").value || 0);
+      const ccy = document.getElementById("currency").value;
+      const billing = document.getElementById("billing").value;
+      const fx = FX[ccy];
+
+      const seatsSub = seats * PLAN_SAR[plan];
+      const llmSub = (llm / 1000) * LLM_SAR_PER_1K;
+      const msgSub = (msgs / 1000) * MSG_SAR_PER_1K;
+      let total = seatsSub + llmSub + msgSub;
+
+      let annual = total * 12;
+      if (billing === "annual") annual *= 0.83;
+      const monthly = annual / 12;
+      const display = (billing === "annual" ? annual : monthly) * fx;
+
+      document.getElementById("total").textContent = fmt(display, ccy);
+      document.getElementById("total-sub").textContent =
+        billing === "annual"
+          ? `Annual total — ${fmt(monthly * fx, ccy)}/mo equivalent.`
+          : "Monthly total — includes seats, LLM, messaging.";
+      document.getElementById("instalment").textContent = fmt((annual * fx) / 4, ccy);
+
+      const rows = [
+        ["Seats", `${seats}`, fmt(PLAN_SAR[plan] * fx, ccy), fmt(seatsSub * fx, ccy)],
+        ["LLM calls", `${llm.toLocaleString()}`, fmt((LLM_SAR_PER_1K / 1000) * fx, ccy), fmt(llmSub * fx, ccy)],
+        ["WhatsApp / SMS", `${msgs.toLocaleString()}`, fmt((MSG_SAR_PER_1K / 1000) * fx, ccy), fmt(msgSub * fx, ccy)],
+      ];
+      document.getElementById("breakdown").innerHTML =
+        rows.map(r => `<tr><td>${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td><td>${r[3]}</td></tr>`).join("");
+    }
+
+    document.querySelectorAll("input, select").forEach(el => el.addEventListener("input", recalc));
+    recalc();
+  </script>
+</body>
+</html>

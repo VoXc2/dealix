@@ -152,6 +152,7 @@ temp/
 *.orig
 scratch/
 playground/
+!landing/playground/
 
 # ─────────────────────────────────────────────────────────────
 # 📊 Analytics / Traces

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Agentic sales in 2026 — what's actually production-ready | Dealix</title>
+  <meta name="description" content="LangGraph, Computer Use, MCP, Promptfoo — the agent stack that runs reliably in production today, from someone shipping it daily." />
+  <link rel="canonical" href="https://dealix.me/blog/agentic-sales-saudi-2026.html" />
+  <meta name="theme-color" content="#0f172a" />
+  <meta property="og:title" content="Agentic sales in 2026 — what's actually production-ready" />
+  <meta property="og:type" content="article" />
+  <style>
+    :root { --primary:#10b981; --dark:#0f172a; --muted:#64748b; --bg:#f8fafc; }
+    body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, Inter, "Helvetica Neue", Arial, sans-serif;
+           background: var(--bg); color: var(--dark); line-height: 1.7; }
+    article { max-width: 720px; margin: 0 auto; padding: 4rem 6vw 5rem; }
+    h1 { font-size: 2.2rem; margin: 0 0 .5rem; }
+    .meta { color: var(--muted); margin-bottom: 2rem; }
+    h2 { margin-top: 2.5rem; font-size: 1.45rem; }
+    ul li { margin-bottom: .4rem; }
+    .back { color: var(--muted); text-decoration: none; }
+    code { background: #f1f5f9; padding: 0 .3rem; border-radius: 4px; font-size: .9em; }
+  </style>
+</head>
+<body>
+  <article>
+    <a class="back" href="./">&larr; All posts</a>
+    <h1>Agentic sales in 2026 — what's actually production-ready</h1>
+    <p class="meta">12 May 2026 · Sami Assiri</p>
+    <p>The agent stack moves faster than the conferences can keep up. Here's the short list of what
+       holds up in production at Dealix today, after running it across hundreds of Saudi tenant
+       workflows.</p>
+
+    <h2>1. LangGraph for state, not LangChain for chains</h2>
+    <p>Chains break the second a step requires retry, fan-out, or human-in-the-loop. A state graph
+       with checkpointed state in Postgres is the right primitive. Use the official
+       <code>langgraph.checkpoint.postgres</code> — don't roll your own.</p>
+
+    <h2>2. Computer Use for the long tail of RPA</h2>
+    <p>Filing a ZATCA invoice through the Fatoorah portal, looking up a tender on Etimad — the long
+       tail of "this thing has a web UI but no API" is what Computer Use cleans up. Constrain it with
+       a tight system prompt + cost guard + screenshot diff.</p>
+
+    <h2>3. MCP makes Dealix a tool inside the customer's editor</h2>
+    <p>The Model Context Protocol turns every Dealix API into a tool Claude / Cursor / ChatGPT can call
+       directly. <code>dealix/mcp/server.py</code> auto-registers every skill in the catalogue. Customers
+       don't have to import our SDK — they just point their MCP-enabled IDE at our endpoint.</p>
+
+    <h2>4. Promptfoo + Ragas for evaluation, not for "vibes"</h2>
+    <p>Every PR that touches an agent runs the eval against a golden set. Score deltas are posted to
+       the PR. This is the single hardest discipline to adopt and the single largest quality
+       improvement once you do.</p>
+
+    <h2>5. Lakera + NeMo Guardrails — prompt-injection defence isn't optional</h2>
+    <p>Once any agent has tool-call ability + customer input, you have a prompt-injection surface.
+       Lakera at the input boundary, NeMo Guardrails on the dialog, output validators on the response.</p>
+
+    <h2>6. Cost guards turn the LLM bill into a budget</h2>
+    <p>A per-request hard cap (default <code>$0.50</code>) and a per-tenant daily cap save you from
+       runaway prompts. Trips downgrade to the cheaper model and ping the founder via Knock.</p>
+
+    <p style="margin-top:3rem"><a class="back" href="./">&larr; All posts</a></p>
+  </article>
+</body>
+</html>

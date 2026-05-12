@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dealix API Playground</title>
+  <meta name="description" content="Interactive Dealix API playground — explore every endpoint, send live requests, and copy production-ready code." />
+  <link rel="canonical" href="https://dealix.me/playground/" />
+  <meta name="theme-color" content="#10b981" />
+  <style>
+    html, body { margin: 0; padding: 0; height: 100%; font-family: -apple-system, BlinkMacSystemFont, "Inter", "Helvetica Neue", Arial, sans-serif; }
+    #scalar { height: 100vh; }
+    .fallback { padding: 4rem 6vw; max-width: 720px; }
+    .fallback h1 { font-size: 2rem; color: #0f172a; }
+    .fallback p  { color: #475569; line-height: 1.6; }
+    .fallback a  { color: #059669; text-decoration: none; }
+  </style>
+</head>
+<body>
+  <noscript>
+    <div class="fallback">
+      <h1>Dealix API Playground</h1>
+      <p>Enable JavaScript to load the interactive Scalar reference, or open the
+        raw OpenAPI schema at <a href="/openapi.json">/openapi.json</a>.</p>
+    </div>
+  </noscript>
+  <script
+    id="api-reference"
+    data-url="/openapi.json"
+    data-configuration='{"theme":"saturn","layout":"modern","showSidebar":true,"hideClientButton":false,"defaultHttpClient":{"targetKey":"shell","clientKey":"curl"}}'>
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/@scalar/api-reference"></script>
+  <div id="scalar"></div>
+</body>
+</html>

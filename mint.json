@@ -106,6 +106,16 @@
   "search": {
     "prompt": "Ask the Dealix docs…"
   },
+  "experiments": {
+    "mintlify-chat": {
+      "enabled": true,
+      "promptExamples": [
+        "How do I integrate WhatsApp?",
+        "Show me the ZATCA Phase 2 invoice fields",
+        "كيف أضيف SSO?"
+      ]
+    }
+  },
   "metadata": {
     "og:image": "https://dealix.sa/og.png",
     "og:title": "Dealix API Docs"

@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dealix — Live Sandbox Demo</title>
+  <meta name="description" content="Try Dealix without signing up. Submit a sample lead, watch the AI score it, and see a real tenant-health board — all backed by a live sandbox API." />
+  <link rel="canonical" href="https://dealix.me/demo/" />
+  <meta name="theme-color" content="#10b981" />
+  <style>
+    :root { --primary:#10b981; --dark:#0f172a; --muted:#64748b; --bg:#f8fafc; }
+    *,*::before,*::after { box-sizing: border-box; }
+    body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, Inter, "Helvetica Neue", Arial, sans-serif;
+           background: var(--bg); color: var(--dark); line-height: 1.55; }
+    header { padding: 2.5rem 6vw 1.5rem; }
+    header h1 { font-size: 2.2rem; margin: 0 0 .5rem; }
+    header p  { color: var(--muted); margin: 0; max-width: 60ch; }
+    main { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; padding: 0 6vw 4rem; }
+    @media (max-width: 800px) { main { grid-template-columns: 1fr; } }
+    .card { background: white; border: 1px solid #e2e8f0; border-radius: 14px; padding: 1.5rem; box-shadow: 0 1px 2px rgba(15,23,42,.04); }
+    .card h2 { margin-top: 0; font-size: 1.15rem; }
+    label { display: block; font-size: .85rem; color: var(--muted); margin: .8rem 0 .25rem; }
+    input, textarea, select { width: 100%; padding: .55rem .7rem; font-size: .95rem;
+           border: 1px solid #cbd5e1; border-radius: 8px; font-family: inherit; }
+    button { margin-top: 1rem; background: var(--primary); color: white; border: 0;
+           padding: .7rem 1.1rem; font-size: .95rem; border-radius: 8px; cursor: pointer; }
+    button:hover { background: #059669; }
+    pre { background: #0f172a; color: #f1f5f9; padding: 1rem; border-radius: 10px;
+          overflow-x: auto; font-size: .82rem; max-height: 320px; }
+    .pill { display: inline-block; padding: .15rem .55rem; border-radius: 999px;
+            font-size: .75rem; font-weight: 600; background: #ecfdf5; color: #047857; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Live sandbox demo</h1>
+    <p>Every action below hits the real Dealix sandbox tenant. No signup, no data sent to your CRM — but
+       the API calls, scoring, and health-score endpoints are the same code that ships to production.</p>
+    <p style="margin-top:.5rem"><span class="pill">SANDBOX</span> Reset every hour. Data you submit is purged.</p>
+  </header>
+
+  <main>
+    <section class="card">
+      <h2>1. Submit a sample lead</h2>
+      <p style="color:var(--muted);font-size:.9rem;margin-top:0">Calls <code>POST /api/v1/leads</code> with the sandbox API key.</p>
+      <label for="full_name">Full name</label>
+      <input id="full_name" value="عبدالله السبيعي" />
+      <label for="company">Company</label>
+      <input id="company" value="Acme Real Estate" />
+      <label for="email">Email</label>
+      <input id="email" type="email" value="abdullah@acme-re.sa" />
+      <label for="phone">Phone</label>
+      <input id="phone" value="+966500000001" />
+      <label for="sector">Sector</label>
+      <select id="sector">
+        <option value="real-estate">Real estate</option>
+        <option value="hospitality">Hospitality</option>
+        <option value="construction">Construction</option>
+        <option value="healthcare">Healthcare</option>
+        <option value="education">Education</option>
+        <option value="food-and-beverage">Food &amp; beverage</option>
+      </select>
+      <button id="submit-lead">Submit lead</button>
+      <pre id="lead-out">// response will appear here</pre>
+    </section>
+
+    <section class="card">
+      <h2>2. Read a tenant-health board</h2>
+      <p style="color:var(--muted);font-size:.9rem;margin-top:0">Calls <code>GET /api/v1/customer-success/tenant-health/sandbox</code>.</p>
+      <button id="refresh-health">Refresh health</button>
+      <pre id="health-out">// response will appear here</pre>
+    </section>
+  </main>
+
+  <script>
+    const API = (window.DEALIX_API_BASE || "https://api.dealix.me").replace(/\/$/, "");
+    const SANDBOX_KEY = "sandbox_public_demo_key";
+
+    async function postLead() {
+      const body = {
+        full_name: document.getElementById("full_name").value,
+        company: document.getElementById("company").value,
+        email: document.getElementById("email").value,
+        phone: document.getElementById("phone").value,
+        sector: document.getElementById("sector").value,
+        source: "live-sandbox-demo"
+      };
+      const out = document.getElementById("lead-out");
+      out.textContent = "// sending…";
+      try {
+        const r = await fetch(API + "/api/v1/leads", {
+          method: "POST",
+          headers: { "Content-Type": "application/json", "x-api-key": SANDBOX_KEY },
+          body: JSON.stringify(body)
+        });
+        const data = await r.json().catch(() => ({ ok: r.ok, status: r.status }));
+        out.textContent = JSON.stringify(data, null, 2);
+      } catch (e) {
+        out.textContent = "// network error — sandbox may be cycling.\n" + e;
+      }
+    }
+
+    async function refreshHealth() {
+      const out = document.getElementById("health-out");
+      out.textContent = "// loading…";
+      try {
+        const r = await fetch(API + "/api/v1/customer-success/tenant-health/sandbox", {
+          headers: { "x-api-key": SANDBOX_KEY }
+        });
+        const data = await r.json().catch(() => ({ ok: r.ok, status: r.status }));
+        out.textContent = JSON.stringify(data, null, 2);
+      } catch (e) {
+        out.textContent = "// network error — sandbox may be cycling.\n" + e;
+      }
+    }
+
+    document.getElementById("submit-lead").addEventListener("click", postLead);
+    document.getElementById("refresh-health").addEventListener("click", refreshHealth);
+  </script>
+</body>
+</html>
