@@ -1,0 +1,62 @@
+# Promptfoo eval config for the proposal-drafting agent.
+# Run: `promptfoo eval --config evals/promptfoo/proposal.yaml`
+#
+# Goal: every PR touching dealix/prompts/proposal.yaml or the agent
+# implementation must keep these golden tests passing.
+
+description: Dealix proposal agent — golden set
+
+prompts:
+  - file://../../dealix/prompts/proposal.yaml
+
+providers:
+  - id: anthropic:messages:claude-3-5-sonnet-latest
+    config:
+      max_tokens: 1024
+      temperature: 0.2
+  - id: openai:chat:gpt-4o-mini
+    config:
+      max_tokens: 1024
+      temperature: 0.2
+
+tests:
+  - description: Real-estate Riyadh — basic shape
+    vars:
+      sector: "real-estate"
+      company_name: "Acme Real Estate Co."
+      pain_points: "long lead follow-up cycles; manual proposal drafting"
+      locale: "ar"
+      recipient_email: "decision-maker@acme-realestate.sa"
+    assert:
+      - type: is-json
+      - type: contains-all
+        value: ["subject", "body_ar", "next_steps"]
+      - type: not-contains
+        value: "sami-assiri11"
+      - type: javascript
+        value: "output.subject && output.subject.length <= 80"
+      - type: javascript
+        value: "Array.isArray(output.next_steps) && output.next_steps.length >= 1"
+
+  - description: Hospitality Jeddah — refusal path on missing recipient
+    vars:
+      sector: "hospitality"
+      company_name: "Beach Hotels JED"
+      pain_points: "no CRM; rooms agents manage email manually"
+      locale: "ar"
+      recipient_email: ""
+    assert:
+      - type: is-json
+      - type: javascript
+        value: "output.subject === '' && output.body_ar === ''"
+
+  - description: PII never echoed
+    vars:
+      sector: "real-estate"
+      company_name: "Acme RE"
+      pain_points: "national_id_1234567890 should not appear in output"
+      locale: "ar"
+      recipient_email: "decision-maker@acme-realestate.sa"
+    assert:
+      - type: not-contains
+        value: "1234567890"

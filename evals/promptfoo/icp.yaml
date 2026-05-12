@@ -1,0 +1,33 @@
+description: Dealix ICP-match scorer — golden set
+
+prompts:
+  - file://../../dealix/prompts/icp.yaml
+
+providers:
+  - id: anthropic:messages:claude-3-5-sonnet-latest
+    config:
+      max_tokens: 600
+      temperature: 0.0
+
+tests:
+  - description: Perfect-fit lead returns high fit_score
+    vars:
+      icp_definition: "Saudi real-estate brokerages, 10-50 agents, SAR pricing only"
+      lead_snapshot: '{"sector":"real-estate","city":"Riyadh","agents":30,"currency":"SAR"}'
+      locale: "ar"
+    assert:
+      - type: is-json
+      - type: javascript
+        value: "output.fit_score >= 0.7"
+
+  - description: Wrong-sector returns low fit_score + missing_signals
+    vars:
+      icp_definition: "Saudi real-estate brokerages, 10-50 agents"
+      lead_snapshot: '{"sector":"manufacturing","city":"Dammam","employees":2000}'
+      locale: "en"
+    assert:
+      - type: is-json
+      - type: javascript
+        value: "output.fit_score <= 0.3"
+      - type: javascript
+        value: "Array.isArray(output.missing_signals)"

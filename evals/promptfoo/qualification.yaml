@@ -1,0 +1,43 @@
+description: Dealix qualification gate — golden set
+
+prompts:
+  - file://../../dealix/prompts/qualification.yaml
+
+providers:
+  - id: anthropic:messages:claude-3-5-sonnet-latest
+    config:
+      max_tokens: 400
+      temperature: 0.0
+
+tests:
+  - description: Allowed_use unknown → rejected
+    vars:
+      lead_snapshot: '{"sector":"real-estate","email":"info@example.sa","phone":"+966500000000"}'
+      compliance_signals: '{"allowed_use":"unknown","risk_level":"low"}'
+      locale: "ar"
+    assert:
+      - type: is-json
+      - type: javascript
+        value: "output.decision === 'rejected'"
+      - type: contains-any
+        value: ["allowed_use", "use", "إذن"]
+
+  - description: High-risk lead → rejected
+    vars:
+      lead_snapshot: '{"sector":"finance","email":"info@example.sa","phone":"+966500000000"}'
+      compliance_signals: '{"allowed_use":"b2b","risk_level":"high"}'
+      locale: "en"
+    assert:
+      - type: is-json
+      - type: javascript
+        value: "output.decision === 'rejected'"
+
+  - description: Healthy lead → qualified
+    vars:
+      lead_snapshot: '{"sector":"hospitality","email":"manager@hotel.sa","phone":"+966500000000","agents":25}'
+      compliance_signals: '{"allowed_use":"b2b","risk_level":"low"}'
+      locale: "ar"
+    assert:
+      - type: is-json
+      - type: javascript
+        value: "output.decision === 'qualified'"

@@ -1,0 +1,43 @@
+description: Dealix reply-classifier — golden set
+
+prompts:
+  - file://../../dealix/prompts/reply.yaml
+
+providers:
+  - id: anthropic:messages:claude-3-5-sonnet-latest
+    config:
+      max_tokens: 400
+      temperature: 0.0
+
+tests:
+  - description: Arabic STOP classifies as unsubscribe
+    vars:
+      text: "إلغاء الاشتراك"
+      thread: ""
+      locale: "ar"
+    assert:
+      - type: is-json
+      - type: javascript
+        value: "output.category === 'unsubscribe'"
+
+  - description: English out-of-office
+    vars:
+      text: "I'm out of office until Sunday, will reply then."
+      thread: ""
+      locale: "en"
+    assert:
+      - type: is-json
+      - type: javascript
+        value: "output.category === 'out_of_office'"
+      - type: javascript
+        value: "output.draft_response === ''"
+
+  - description: Interested + scheduling
+    vars:
+      text: "نعم مهتم، نقدر نلتقي يوم الاثنين الساعة 10؟"
+      thread: ""
+      locale: "ar"
+    assert:
+      - type: is-json
+      - type: javascript
+        value: "['interested','scheduling'].includes(output.category)"

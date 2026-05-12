@@ -1,0 +1,58 @@
+name: LLM evals (Promptfoo)
+
+on:
+  pull_request:
+    paths:
+      - "dealix/prompts/**"
+      - "evals/promptfoo/**"
+      - "auto_client_acquisition/agents/**"
+  workflow_dispatch:
+
+jobs:
+  promptfoo:
+    runs-on: ubuntu-22.04
+    if: ${{ secrets.ANTHROPIC_API_KEY != '' || secrets.OPENAI_API_KEY != '' }}
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: "20"
+
+      - name: Install promptfoo
+        run: npm install -g promptfoo@0.95.0
+
+      - name: Run proposal evals
+        if: ${{ hashFiles('evals/promptfoo/proposal.yaml') != '' }}
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: |
+          promptfoo eval -c evals/promptfoo/proposal.yaml \
+            --output evals/results/proposal.json \
+            --no-cache --no-progress-bar
+
+      - name: Run ICP evals
+        if: ${{ hashFiles('evals/promptfoo/icp.yaml') != '' }}
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          promptfoo eval -c evals/promptfoo/icp.yaml \
+            --output evals/results/icp.json \
+            --no-cache --no-progress-bar
+
+      - name: Run reply evals
+        if: ${{ hashFiles('evals/promptfoo/reply.yaml') != '' }}
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          promptfoo eval -c evals/promptfoo/reply.yaml \
+            --output evals/results/reply.json \
+            --no-cache --no-progress-bar
+
+      - name: Upload eval artifacts
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: promptfoo-results
+          path: evals/results/
