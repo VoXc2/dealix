@@ -90,9 +90,35 @@
 </main>
 
 <script>
+// Optional BetterStack public status URL (a JSON endpoint hosted by
+// betterstack.com that describes incidents). When configured, the pill
+// shows the operator-curated state; otherwise fall back to the API self-
+// report at /api/v1/status.
+const BETTERSTACK_STATUS_URL = window.__DEALIX_BETTERSTACK_STATUS_URL__ || '';
+
+async function fetchBetterStack() {
+  if (!BETTERSTACK_STATUS_URL) return null;
+  try {
+    const r = await fetch(BETTERSTACK_STATUS_URL);
+    if (!r.ok) return null;
+    return await r.json();
+  } catch (_) {
+    return null;
+  }
+}
+
 (async function () {
   const pill = document.getElementById('status-pill');
   const meta = document.getElementById('status-meta');
+  const bs = await fetchBetterStack();
+  if (bs && typeof bs.status === 'string') {
+    const status = bs.status.toLowerCase();
+    pill.textContent = status;
+    pill.classList.remove('warn');
+    pill.classList.add(status === 'ok' || status === 'operational' ? 'ok' : status === 'degraded' ? 'warn' : 'fail');
+    meta.textContent = 'source=BetterStack · ' + (bs.summary || '');
+    return;
+  }
   try {
     const r = await fetch('/api/v1/status', { headers: { 'accept': 'application/json' } });
     if (!r.ok) throw new Error('status ' + r.status);

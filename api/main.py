@@ -30,6 +30,7 @@ from api.routers.domains import deprecated as deprecated_domain
 from api.routers.domains import sales as sales_domain
 from api.routers.domains import webhooks as webhooks_domain
 from api.routers import audit_logs as audit_logs_router
+from api.routers import whatsapp_admin as whatsapp_admin_router
 from api.routers import (
     auth,
     billing,
@@ -139,7 +140,24 @@ async def lifespan(_app: FastAPI) -> AsyncIterator[None]:
             log.warning("db_init_skipped", error=str(exc))
     else:
         log.info("db_init_skipped", reason="use_alembic_migrations")
+
+    # BetterStack heartbeat — runs only when BETTERSTACK_HEARTBEAT_URL is set.
+    import asyncio as _asyncio
+
+    from dealix.integrations.betterstack import heartbeat_loop
+
+    heartbeat_stop = _asyncio.Event()
+    heartbeat_task = _asyncio.create_task(
+        heartbeat_loop(heartbeat_stop), name="betterstack_heartbeat"
+    )
+
     yield
+
+    heartbeat_stop.set()
+    try:
+        await _asyncio.wait_for(heartbeat_task, timeout=5)
+    except _asyncio.TimeoutError:
+        heartbeat_task.cancel()
     log.info("app_shutdown")
 
 
@@ -246,6 +264,8 @@ def create_app() -> FastAPI:
     app.include_router(support.router)
     # Enterprise SSO (WorkOS). 503 sso_disabled without env keys.
     app.include_router(sso.router)
+    # WhatsApp template admin (Meta-approved templates).
+    app.include_router(whatsapp_admin_router.router)
 
     # ── Wave 12.7 — Intelligence Layer + Expansion Engine ─────────
     # Both routers self-prefix /api/v1/intelligence and /api/v1/expansion-engine.
