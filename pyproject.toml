@@ -163,6 +163,31 @@ disallow_untyped_defs = false
 ignore_missing_imports = true
 exclude = ["venv", "build", "dist", "migrations"]
 
+# T3a — strict-on-subset: enable strict checking for security-critical and
+# new commercial modules. Rest of the codebase keeps the lenient baseline
+# while we migrate file-by-file.
+[[tool.mypy.overrides]]
+module = [
+    "api.security.*",
+    "api.middleware.*",
+    "core.config.*",
+    "core.llm.*",
+    "core.authz",
+    "core.feature_flags",
+    "dealix.payments.*",
+    "dealix.identity.*",
+    "dealix.integrations.plain_client",
+    "dealix.integrations.knock_client",
+    "dealix.integrations.betterstack",
+    "dealix.workflows.*",
+]
+strict = true
+disallow_untyped_defs = true
+disallow_any_generics = true
+warn_return_any = true
+warn_unreachable = true
+no_implicit_optional = true
+
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
 testpaths = ["tests"]

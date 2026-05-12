@@ -8,7 +8,8 @@
         docker-build docker-up docker-down docker-logs \
         pre-commit-install pre-commit-run db-init requirements \
         v5-status v5-smoke v5-snapshot v5-diagnostic v5-verify v5-digest \
-        v5-proof-pack v10-verify v10-reference
+        v5-proof-pack v10-verify v10-reference \
+        hooks mutmut semgrep mypy-strict perf devcontainer-build
 
 # Python binary (override with PYTHON=python3.12 make ...)
 PYTHON ?= python3
@@ -130,3 +131,33 @@ v10-verify: ## v10: full master verification (reference + modules + safety + tes
 
 v10-reference: ## v10: show 70-tool reference library summary
 	$(PYTHON) scripts/verify_reference_library_70.py
+
+# ── T3a — Engineering rigor targets ───────────────────────────
+hooks: ## T3a: bootstrap dev environment (one-command setup)
+	bash scripts/dev/install_dev.sh
+
+mypy-strict: ## T3a: run mypy strict on the audited subset
+	$(PYTHON) -m mypy --strict \
+	  api/security api/middleware core/config core/llm core/authz.py core/feature_flags.py \
+	  dealix/payments dealix/identity dealix/integrations/plain_client.py \
+	  dealix/integrations/knock_client.py dealix/integrations/betterstack.py \
+	  dealix/workflows
+
+semgrep: ## T3a: run the Dealix custom Semgrep ruleset
+	$(PYTHON) -m semgrep scan --config .semgrep/dealix.yaml \
+	  --error api/ core/ dealix/ integrations/ auto_client_acquisition/
+
+mutmut: ## T3a: mutation-test the security-critical modules (slow; quarterly)
+	$(PYTHON) -m mutmut run --paths-to-mutate core/ api/security/
+
+perf: ## T3a: run k6 + Locust performance budgets locally
+	@if command -v k6 >/dev/null 2>&1; then \
+	  k6 run tests/perf/k6_smoke.js; \
+	else \
+	  echo "k6 not installed; skipping k6 smoke"; \
+	fi
+	locust -f locustfile.py --headless -u 50 -r 5 -t 1m --host http://localhost:8000
+
+devcontainer-build: ## T3a: verify the VS Code / Codespaces devcontainer builds
+	devcontainer build --workspace-folder . 2>/dev/null || \
+	  echo "devcontainer-cli not installed; run via VS Code Remote-Containers"

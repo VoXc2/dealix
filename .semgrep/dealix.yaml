@@ -1,0 +1,134 @@
+rules:
+  # ── 1. No print() in shippable code ────────────────────────────
+  - id: dealix-no-print
+    pattern: print(...)
+    message: |
+      Use core.logging.get_logger() instead of print(). print() is
+      invisible in production and bypasses structured logging.
+    languages: [python]
+    severity: ERROR
+    paths:
+      include:
+        - api/
+        - core/
+        - dealix/
+        - integrations/
+        - auto_client_acquisition/
+      exclude:
+        - tests/
+        - scripts/
+        - "**/conftest.py"
+
+  # ── 2. No eval / exec ──────────────────────────────────────────
+  - id: dealix-no-eval
+    pattern-either:
+      - pattern: eval(...)
+      - pattern: exec(...)
+    message: |
+      eval/exec is forbidden — code injection vector.
+    languages: [python]
+    severity: ERROR
+    paths:
+      exclude:
+        - tests/
+
+  # ── 3. No os.system / subprocess shell=True without explicit allow ─
+  - id: dealix-no-os-system
+    pattern: os.system(...)
+    message: |
+      Use the subprocess module with shell=False and an argv list,
+      not os.system (shell-injection risk).
+    languages: [python]
+    severity: ERROR
+
+  - id: dealix-shell-true
+    pattern: subprocess.$FUNC(..., shell=True, ...)
+    message: |
+      subprocess shell=True is a shell-injection vector unless every
+      input is constant. Pass an argv list with shell=False.
+    languages: [python]
+    severity: WARNING
+    paths:
+      exclude:
+        - tests/
+        - scripts/
+
+  # ── 4. No raw requests; use httpx + SSRF guard ─────────────────
+  - id: dealix-no-raw-requests
+    pattern-either:
+      - pattern: requests.get(...)
+      - pattern: requests.post(...)
+      - pattern: requests.put(...)
+      - pattern: requests.delete(...)
+      - pattern: requests.patch(...)
+    message: |
+      Use httpx and pass URL through api.security.ssrf_guard. The
+      `requests` library is not wired into our SSRF guard.
+    languages: [python]
+    severity: ERROR
+    paths:
+      include:
+        - api/
+        - core/
+        - dealix/
+        - integrations/
+
+  # ── 5. No bare except Exception ────────────────────────────────
+  - id: dealix-bare-except-exception
+    pattern-either:
+      - pattern: |
+          try:
+            ...
+          except Exception:
+            ...
+      - pattern: |
+          try:
+            ...
+          except Exception as $E:
+            ...
+    message: |
+      Catch specific exception types. Bare `except Exception` hides
+      real bugs and swallows control-flow signals. If you really need
+      a boundary handler, document why with a comment and add
+      `# noqa: BLE001` (Ruff) + a logger.exception call.
+    languages: [python]
+    severity: WARNING
+    paths:
+      exclude:
+        - tests/
+
+  # ── 6. JWT / secret literals look-alikes ───────────────────────
+  - id: dealix-no-hardcoded-secret-key
+    pattern-either:
+      - pattern: SECRET_KEY = "..."
+      - pattern: JWT_SECRET = "..."
+      - pattern: API_KEY = "..."
+    message: |
+      Do not hard-code secrets. Read from settings.* (SecretStr) or
+      Infisical.
+    languages: [python]
+    severity: ERROR
+
+  # ── 7. assert in non-test code ─────────────────────────────────
+  - id: dealix-no-assert-in-prod
+    pattern: assert ...
+    message: |
+      `assert` is removed under `python -O`. Use explicit `if not X:
+      raise ...` for production logic; assertions are for tests only.
+    languages: [python]
+    severity: WARNING
+    paths:
+      exclude:
+        - tests/
+        - scripts/
+
+  # ── 8. SQLAlchemy raw text without escape ──────────────────────
+  - id: dealix-sqlalchemy-text-injection
+    pattern-either:
+      - pattern: text(f"...")
+      - pattern: text("..." + $X)
+    message: |
+      Building SQL text via f-strings or concatenation is a SQL-injection
+      vector. Use bindparam or sqlalchemy.select() with column objects.
+    languages: [python]
+    severity: ERROR
