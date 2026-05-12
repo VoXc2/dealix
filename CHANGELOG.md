@@ -1,5 +1,49 @@
 # Changelog
 
+## [3.5.0] — 2026-05-12
+
+T7 — production polish on top of T6. Four commits make the T6 surface
+testable, documented, manageable from the UI, and operable from the
+CLI / SDK. No new runtime capability ships; what was inert-ready in
+T6 is now inert-ready *and* fully covered.
+
+### T7a — tests
+Eleven new test modules — seven unit (`tests/unit/test_{gcc_currency,
+byok_provider,audit_forward,agents_builder,skills_loader,
+verticals_loader,ip_allowlist_middleware}.py`) and four integration
+(`tests/integration/test_{admin_enterprise,saudi_gov,newsletter,
+skills_verticals}_router.py`). The GCC-currency suite alone runs 12
+assertions covering 2- vs 3-decimal currencies, AR/EN formatting, and
+KSA Fri+Sat vs UAE Sat+Sun weekend rules.
+
+### T7b — Mintlify docs
+Six new MDX pages under `docs/api/` (`skills`, `verticals`, `saudi-gov`,
+`admin-enterprise`, `agents`, `newsletter`) plus four new nav groups
+in `mint.json` (Agents & verticals, Saudi government, Admin, Marketing).
+
+### T7c — frontend admin pages
+Five bilingual (AR/EN) Next.js pages: `[locale]/admin/{skills,
+verticals,agents,enterprise}/page.tsx` and
+`[locale]/settings/ip-allowlist/page.tsx`. Skills catalogue is
+searchable. Verticals show agents + workflows + pricing chip with a
+one-click Apply. Agents builder accepts agent.yaml JSON with server-
+side validation and shows the workflow marketplace inline. Enterprise
+page surfaces BYOK + audit-forward status, webhook rotation (shows
+secret once), and sandbox spin-up. IP-allowlist editor takes comma /
+newline CIDRs.
+
+### T7d — polish
+- PDPL cookie consent injected into all 12 new T6g landing pages.
+- `landing/components/VerticalLeadForm.js` — drop-in sector-tuned
+  lead-capture widget that auto-reads `lead_form_fields` per vertical.
+- `dealix-cli` extended with `skills`, `verticals`, `saudi`, `admin`
+  command groups (15 new commands covering every T6 router).
+- SDK examples: `docs/api/examples/python/t6_skills_and_verticals.py`,
+  `python/t6_saudi_gov_enrichment.py`, `typescript/t6_skills_and_verticals.ts`.
+- `api/routers/health.py` deep check now reports configured/unconfigured
+  for 17 T6 dependencies and always returns `skills_count` +
+  `verticals_count` from the in-process loaders.
+
 ## [3.4.0] — 2026-05-12
 
 T6 — strongest B2B AI services company. 8 commits beyond v3.3.0 ship

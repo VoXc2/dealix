@@ -576,3 +576,47 @@ v3.4.0.
 - Founder-signed first 3 enterprise vertical pilots.
 
 Every T6 integration ships **inert by default**.
+
+## T7 addendum — production polish on top of T6
+
+T7 makes T6 testable, documented, manageable, and operable. No new
+runtime capability lands; the inert-ready T6 surface gains:
+
+### T7a — tests
+- `tests/unit/test_gcc_currency.py` (12 asserts)
+- `tests/unit/test_byok_provider.py`
+- `tests/unit/test_audit_forward.py`
+- `tests/unit/test_agents_builder.py`
+- `tests/unit/test_skills_loader.py`
+- `tests/unit/test_verticals_loader.py`
+- `tests/unit/test_ip_allowlist_middleware.py`
+- `tests/integration/test_admin_enterprise_router.py`
+- `tests/integration/test_saudi_gov_router.py`
+- `tests/integration/test_newsletter_router.py`
+- `tests/integration/test_skills_verticals_routers.py`
+
+### T7b — Mintlify docs
+Six MDX pages (`docs/api/{skills,verticals,saudi-gov,admin-enterprise,
+agents,newsletter}.mdx`) + four new mint.json nav groups.
+
+### T7c — frontend admin
+Five bilingual pages: `[locale]/admin/{skills,verticals,agents,
+enterprise}/page.tsx` and `[locale]/settings/ip-allowlist/page.tsx`.
+Every T6 router has a real UI now.
+
+### T7d — polish
+- PDPL cookie-consent on the 12 T6g landing pages.
+- `landing/components/VerticalLeadForm.js` drop-in widget.
+- `dealix-cli` extended with `skills`, `verticals`, `saudi`, `admin`
+  command groups (15 new commands).
+- Three SDK example scripts.
+- Deep health check reports 17 T6 dependencies + always-on
+  `skills_count` + `verticals_count` from the in-process loaders.
+
+### T7 — still founder-owned
+- The tests run in CI where prod deps (structlog, pytest-asyncio,
+  httpx) are installed.
+- The dealix-cli T6 commands ship inside the existing `cli/dealix_cli.py`;
+  publishing happens through the existing Fern pipeline.
+- Frontend pages need the standard `npm i` + `npm run build` from
+  the founder; no new front-end deps were added in T7.
