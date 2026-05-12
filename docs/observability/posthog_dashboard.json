@@ -1,0 +1,105 @@
+{
+  "_comment": "PostHog dashboard spec. Import via Project Settings → Import / Export. Source of truth for all GA-day insights.",
+  "version": 1,
+  "dashboard": {
+    "name": "Dealix Launch Pulse",
+    "description": "End-to-end view of acquisition, conversion, payments, reliability — refreshed every 15 min during GA week.",
+    "tiles": [
+      {
+        "type": "funnel",
+        "title": "Funnel A — Landing → Pilot ($1)",
+        "interval": "day",
+        "steps": [
+          {"event": "$pageview", "properties": [{"key": "$pathname", "value": "/", "operator": "exact"}]},
+          {"event": "pricing_viewed"},
+          {"event": "checkout_started", "properties": [{"key": "plan", "value": "pilot_1sar"}]},
+          {"event": "checkout_session_created"},
+          {"event": "checkout_success", "properties": [{"key": "plan", "value": "pilot_1sar"}]}
+        ],
+        "target_conversion_pct": 2.0
+      },
+      {
+        "type": "funnel",
+        "title": "Funnel B — Pilot → Paid",
+        "interval": "day",
+        "window_days": 14,
+        "steps": [
+          {"event": "checkout_success", "properties": [{"key": "plan", "value": "pilot_1sar"}]},
+          {"event": "dashboard_login"},
+          {"event": "checkout_success", "properties": [{"key": "plan", "value": "pilot_1sar", "operator": "isnot"}]}
+        ],
+        "target_conversion_pct": 25.0
+      },
+      {
+        "type": "funnel",
+        "title": "Funnel C — Demo → Booked → Pilot",
+        "interval": "day",
+        "steps": [
+          {"event": "demo_request_submitted"},
+          {"event": "calendly_booked"},
+          {"event": "checkout_success"}
+        ]
+      },
+      {
+        "type": "trend",
+        "title": "Daily checkout_success (SAR)",
+        "events": [{"event": "checkout_success", "math": "sum", "math_property": "amount_sar"}],
+        "interval": "day"
+      },
+      {
+        "type": "trend",
+        "title": "Webhook DLQ pushes by source",
+        "events": [{"event": "webhook_dlq_pushed", "math": "total"}],
+        "breakdown": "queue",
+        "interval": "hour"
+      },
+      {
+        "type": "trend",
+        "title": "Rate limit hits — abuse signal",
+        "events": [{"event": "rate_limit_hit", "math": "total"}],
+        "breakdown": "route",
+        "interval": "hour",
+        "threshold_alert_per_min": 50
+      },
+      {
+        "type": "trend",
+        "title": "Landing visits by source",
+        "events": [{"event": "$pageview", "properties": [{"key": "$pathname", "value": "/", "operator": "exact"}]}],
+        "breakdown": "utm_source",
+        "interval": "day"
+      },
+      {
+        "type": "stickiness",
+        "title": "Dashboard usage stickiness — 30d",
+        "events": [{"event": "dashboard_login"}],
+        "interval": "day"
+      }
+    ],
+    "alerts": [
+      {
+        "name": "Funnel A conversion drops below 1%",
+        "metric": "funnel_a_conversion_pct",
+        "operator": "<",
+        "value": 1.0,
+        "window_hours": 24,
+        "notify": ["sami.assiri11@gmail.com"]
+      },
+      {
+        "name": "checkout_failed rate > 5%",
+        "metric": "checkout_failed / checkout_started",
+        "operator": ">",
+        "value": 0.05,
+        "window_hours": 1,
+        "notify": ["oncall@dealix.sa"]
+      },
+      {
+        "name": "webhook_dlq_pushed > 5/hour",
+        "metric": "webhook_dlq_pushed",
+        "operator": ">",
+        "value": 5,
+        "window_hours": 1,
+        "notify": ["oncall@dealix.sa"]
+      }
+    ]
+  }
+}

@@ -34,6 +34,75 @@ def _fingerprint(value: str) -> str:
     return hashlib.sha256(value.encode("utf-8")).hexdigest()[:12]
 
 
+async def _persist_payment_event(
+    *,
+    event_id: str,
+    event_type: str,
+    payment: dict[str, Any],
+    raw_event: dict[str, Any],
+) -> None:
+    """
+    Upsert a row in `payments` keyed by (provider, provider_payment_id).
+    Safe to call before migration 005 runs — it logs and returns on any error.
+    """
+    try:
+        from sqlalchemy import select
+        from db.models import PaymentRecord
+        from db.session import async_session_factory
+    except Exception as exc:  # noqa: BLE001
+        log.debug("payments_persist_skipped reason=imports error=%s", exc)
+        return
+
+    provider_payment_id = str(payment.get("id") or event_id or "").strip()
+    if not provider_payment_id:
+        return
+    amount = int(payment.get("amount") or 0)
+    currency = str(payment.get("currency") or "SAR")[:8]
+    status = str(payment.get("status") or event_type or "pending")[:32]
+    email = (payment.get("metadata") or {}).get("email") or payment.get("source", {}).get("email")
+    plan = (payment.get("metadata") or {}).get("plan")
+    customer_handle = (payment.get("metadata") or {}).get("customer_handle")
+
+    try:
+        async with async_session_factory()() as session:
+            stmt = select(PaymentRecord).where(
+                PaymentRecord.provider == "moyasar",
+                PaymentRecord.provider_payment_id == provider_payment_id,
+            )
+            existing = (await session.execute(stmt)).scalar_one_or_none()
+            if existing is None:
+                row = PaymentRecord(
+                    id=f"pay_{_fingerprint(provider_payment_id)}_{provider_payment_id[:24]}",
+                    provider="moyasar",
+                    provider_payment_id=provider_payment_id,
+                    plan=plan,
+                    amount_halalas=amount,
+                    currency=currency,
+                    status=status,
+                    email=email,
+                    customer_handle=customer_handle,
+                    last_event_id=event_id or None,
+                    last_event_type=event_type or None,
+                    raw_event=raw_event,
+                )
+                session.add(row)
+            else:
+                existing.status = status
+                existing.amount_halalas = amount or existing.amount_halalas
+                existing.currency = currency
+                existing.last_event_id = event_id or existing.last_event_id
+                existing.last_event_type = event_type or existing.last_event_type
+                existing.raw_event = raw_event
+                if email and not existing.email:
+                    existing.email = email
+                if plan and not existing.plan:
+                    existing.plan = plan
+            await session.commit()
+    except Exception as exc:  # noqa: BLE001
+        log.warning("payments_persist_failed provider_payment_id=%s error=%s",
+                    provider_payment_id, exc)
+
+
 # Prices in halalas (SAR x 100). Hidden from landing — only exposed when a lead qualifies.
 PLANS: dict[str, dict[str, Any]] = {
     "starter": {
@@ -159,6 +228,14 @@ async def moyasar_webhook(req: Request) -> dict[str, Any]:
             event_type,
             status,
             payment.get("amount"),
+        )
+        # Persist for reconciliation; failure here is non-fatal so a missing
+        # migration in production doesn't break payment processing.
+        await _persist_payment_event(
+            event_id=event_id,
+            event_type=event_type,
+            payment=payment,
+            raw_event=body,
         )
         # TODO: sync to HubSpot via ConnectorFacade in D+2 E2E test
         return {"status": "ok", "event_id": event_id, "event_type": event_type}
