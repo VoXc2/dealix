@@ -62,4 +62,28 @@ Claude Desktop sees the catalogue as native tools — they call
 1. Create `skills/<slug>/SKILL.md` in Anthropic Skills format.
 2. Create `skills/<slug>/prompt.yaml` with a Jinja-template prompt.
 3. Append an entry to `skills/MANIFEST.yaml`.
-4. Restart — both `/api/v1/skills` and the MCP server pick it up.
+4. Optional: register a Python handler via `@register("<id>")` in
+   `dealix/agents/skills/handlers.py` (T8a) or a themed file like
+   `handlers_llm.py` / `handlers_data.py` (T9).
+5. Restart — both `/api/v1/skills` and the MCP server pick it up.
+
+## Handlers shipped today
+
+| Skill id | Engine | Source |
+| --- | --- | --- |
+| `sales_qualifier` | BANT × PDPL gate | `handlers.py` (T8a) |
+| `lead_scorer` | tunable weighted score | `handlers.py` (T8a) |
+| `content_generator_ar` | Saudi-tone copy | `handlers.py` (T8a) |
+| `ar_en_translator` | glossary-aware bidirectional | `handlers.py` (T8a) |
+| `proposal_writer` | SAR + ZATCA-aware proposal | `handlers_llm.py` (T9) |
+| `email_triage` | 13-bucket AR + EN classifier | `handlers_llm.py` (T9) |
+| `contract_analyst` | risk-flag + redline extractor | `handlers_llm.py` (T9) |
+| `meeting_summarizer` | transcript → summary + actions | `handlers_llm.py` (T9) |
+| `crm_syncer` | HubSpot bidir + Salesforce stub | `handlers_data.py` (T9) |
+| `market_researcher` | Wathq/Maroof/Najiz/Tadawul/MISA | `handlers_data.py` (T9) |
+| `renewal_forecaster` | health × usage × NPS → churn | `handlers_data.py` (T9) |
+| `compliance_reviewer` | PDPL + GDPR + CITC pass | `handlers_data.py` (T9) |
+
+Every handler degrades to a deterministic rule-based path when the
+relevant vendor key is unset — so unit-testing is cheap and pilot
+deployments work without external dependencies.

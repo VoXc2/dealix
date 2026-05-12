@@ -1,0 +1,46 @@
+# Promptfoo eval config for the contract_analyst skill handler.
+# Run: `promptfoo eval --config evals/promptfoo/contract_analyst.yaml`
+
+description: contract_analyst handler — risk-flag golden set
+
+providers:
+  - id: anthropic:messages:claude-3-5-sonnet-latest
+    config:
+      max_tokens: 1024
+      temperature: 0.0
+
+tests:
+  - description: Unlimited-liability clause → block
+    vars:
+      text: "Customer agrees to unlimited liability for damages of any kind."
+    assert:
+      - type: contains
+        value: "block_for_legal_review"
+
+  - description: Auto-renewal → flag
+    vars:
+      text: "This agreement auto-renews for successive 12-month terms."
+    assert:
+      - type: contains
+        value: "auto_renewal"
+
+  - description: Non-compete clause → block
+    vars:
+      text: "Vendor agrees to a 3-year non-compete in the GCC region."
+    assert:
+      - type: contains
+        value: "non_compete"
+
+  - description: Clean contract → ok
+    vars:
+      text: "This agreement is governed by Saudi law. SAR 100,000 annual fee."
+    assert:
+      - type: contains
+        value: "ok_for_signature"
+
+  - description: Arabic auto-renewal
+    vars:
+      text: "يتم تجديد هذا الاتفاق تلقائيًا لمدة سنة إضافية كل عام."
+    assert:
+      - type: contains
+        value: "auto_renewal"

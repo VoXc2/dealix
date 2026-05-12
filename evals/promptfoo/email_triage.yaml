@@ -1,0 +1,71 @@
+# Promptfoo eval config for the email_triage skill handler.
+# Run: `promptfoo eval --config evals/promptfoo/email_triage.yaml`
+#
+# Each test fires a sample inbound email at the handler and asserts the
+# returned `bucket` matches the gold label. The handler ships in
+# `dealix/agents/skills/handlers_llm.py` (T9).
+
+description: email_triage handler — 13-bucket classifier golden set
+
+providers:
+  - id: anthropic:messages:claude-3-5-haiku-latest
+    config:
+      max_tokens: 256
+      temperature: 0.1
+
+tests:
+  - description: Demo request (EN)
+    vars:
+      subject: "Quick demo this week?"
+      text: "Can we schedule a demo this week to see Dealix in action?"
+    assert:
+      - type: contains
+        value: "demo_request"
+
+  - description: Pricing inquiry (EN)
+    vars:
+      subject: "Pricing tiers"
+      text: "How much does the growth plan cost per seat?"
+    assert:
+      - type: contains
+        value: "pricing_inquiry"
+
+  - description: Billing issue (EN, ZATCA/VAT context)
+    vars:
+      subject: "Invoice missing VAT line"
+      text: "The invoice you sent doesn't have the VAT breakdown — please fix."
+    assert:
+      - type: contains
+        value: "billing_issue"
+
+  - description: Demo request (AR)
+    vars:
+      subject: "أرغب بعرض توضيحي"
+      text: "نود ترتيب عرض ديمو لفريقنا الأسبوع القادم."
+    assert:
+      - type: contains
+        value: "demo_request"
+
+  - description: Renewal question (AR)
+    vars:
+      subject: "تجديد الاشتراك"
+      text: "ما خطوات تجديد الاشتراك السنوي قبل الانتهاء؟"
+    assert:
+      - type: contains
+        value: "renewal_question"
+
+  - description: Spam (lots of dollar signs + exclamation)
+    vars:
+      subject: "💰💰💰 GREAT DEAL!!!"
+      text: "MAKE $$$ FAST!!! CLICK HERE NOW!!!"
+    assert:
+      - type: contains
+        value: "spam"
+
+  - description: Security disclosure
+    vars:
+      subject: "Possible CVE in your auth flow"
+      text: "I found a vulnerability in your JWT refresh-token handling."
+    assert:
+      - type: contains
+        value: "security_disclosure"

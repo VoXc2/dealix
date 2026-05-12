@@ -23,6 +23,11 @@ from dealix.agents.skills.handlers import (
     registered_ids,
 )
 
+# Importing these modules triggers the `@register(...)` side-effects
+# that put the T9 handlers in the registry.
+from dealix.agents.skills import handlers_llm as _t9_llm  # noqa: F401
+from dealix.agents.skills import handlers_data as _t9_data  # noqa: F401
+
 router = APIRouter(prefix="/api/v1/skills", tags=["skills"])
 log = get_logger(__name__)
 
