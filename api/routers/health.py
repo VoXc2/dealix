@@ -94,6 +94,100 @@ async def healthz() -> dict[str, str]:
     return {"status": "ok", "service": "dealix"}
 
 
+@router.get("/api/v1/status", tags=["health"])
+async def public_status() -> dict[str, object]:
+    """Public status snapshot for trust pack / status.dealix.me.
+
+    Returns a non-sensitive JSON envelope describing the live service state.
+    Safe to expose to anonymous callers — no secrets, no PII, no internal
+    hostnames. Targets the SLA published in `docs/sla.md`.
+    """
+    import os
+    import time
+
+    settings = get_settings()
+    checks: dict[str, dict[str, object]] = {}
+    overall = "ok"
+
+    # Postgres reachability (best-effort, 3s timeout)
+    t0 = time.perf_counter()
+    try:
+        import psycopg2  # type: ignore
+
+        dsn = os.getenv("DATABASE_URL") or os.getenv("DATABASE_DSN")
+        if dsn:
+            conn = psycopg2.connect(dsn, connect_timeout=3)
+            conn.cursor().execute("SELECT 1")
+            conn.close()
+            checks["postgres"] = {
+                "status": "ok",
+                "latency_ms": round((time.perf_counter() - t0) * 1000, 1),
+            }
+        else:
+            checks["postgres"] = {"status": "unconfigured"}
+            overall = "degraded"
+    except Exception:  # pragma: no cover — best-effort signal
+        checks["postgres"] = {"status": "fail"}
+        overall = "degraded"
+
+    # Redis reachability
+    t0 = time.perf_counter()
+    try:
+        import redis  # type: ignore
+
+        url = os.getenv("REDIS_URL")
+        if url:
+            r = redis.from_url(url, socket_timeout=3)
+            r.ping()
+            checks["redis"] = {
+                "status": "ok",
+                "latency_ms": round((time.perf_counter() - t0) * 1000, 1),
+            }
+        else:
+            checks["redis"] = {"status": "unconfigured"}
+    except Exception:  # pragma: no cover
+        checks["redis"] = {"status": "fail"}
+        overall = "degraded"
+
+    # LLM provider availability
+    providers = [p.value for p in get_model_router().available_providers()]
+    checks["llm_providers"] = {
+        "status": "ok" if providers else "fail",
+        "available": providers,
+    }
+    if not providers:
+        overall = "degraded"
+
+    # Migration head — surfaces P0.1 protection: if there is more than one
+    # head, the deploy is misconfigured and the report should make it obvious.
+    migration_head: str | None = None
+    try:
+        from alembic.config import Config  # type: ignore
+        from alembic.script import ScriptDirectory  # type: ignore
+
+        cfg = Config("alembic.ini")
+        script = ScriptDirectory.from_config(cfg)
+        heads = script.get_heads()
+        migration_head = ",".join(heads) if heads else None
+        if len(heads) > 1:
+            checks["migrations"] = {"status": "multiple_heads", "heads": list(heads)}
+            overall = "degraded"
+        else:
+            checks["migrations"] = {"status": "ok", "head": migration_head}
+    except Exception:  # pragma: no cover — alembic may not be importable in some envs
+        checks["migrations"] = {"status": "unknown"}
+
+    return {
+        "service": "dealix",
+        "status": overall,
+        "version": settings.app_version,
+        "env": settings.app_env,
+        "git_sha": settings.git_sha,
+        "checks": checks,
+        "sla": "/docs/sla.md",
+    }
+
+
 @router.get("/_test_sentry", include_in_schema=False)
 async def test_sentry() -> dict[str, str]:
     """Deliberate error to verify Sentry integration.

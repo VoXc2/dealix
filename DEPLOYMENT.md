@@ -246,6 +246,39 @@ curl -X POST $BASE_URL/api/v1/checkout \
 
 ---
 
+## 🛡️ Supabase Row-Level Security (RLS)
+
+The migration `supabase/migrations/202605010001_v3_project_memory.sql` **enables** RLS on:
+
+- `public.project_documents`
+- `public.project_chunks`
+- `public.strategic_memory`
+
+The migration intentionally does **not** create `CREATE POLICY` statements.
+Row-level policies are authored and maintained in the **Supabase dashboard**
+(SQL editor → Authentication → Policies) so that policy iteration is faster
+than redeploying migrations.
+
+**Operational expectation:**
+
+1. After running migrations against a new Supabase project, immediately apply
+   the policy set from the dashboard. The current expected policy template:
+   _"service_role can do everything; authenticated tenants can only read rows
+   where `tenant_id = auth.jwt()->>'tenant_id'`."_
+2. Audit policy state quarterly using `supabase db dump --schema public --data=false`
+   and commit the output snapshot to `docs/ops/supabase_policy_snapshot.sql`
+   so we have a code-side record of the live policies.
+3. If you discover an unprotected table, raise a P1 incident — service-role
+   credentials would otherwise bypass tenant isolation when used from
+   misconfigured edge functions.
+
+> **Why not in code?** RLS policies require frequent tweaking during early
+> customer onboarding; round-tripping every change through Alembic adds
+> latency that hurts iteration speed. The dashboard snapshot procedure above
+> gives us an audit trail without the friction.
+
+---
+
 ## 📞 الدعم
 
 - Issues: https://github.com/VoXc2/dealix/issues

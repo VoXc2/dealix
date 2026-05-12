@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Trust & Security — Dealix</title>
+  <meta name="description" content="Dealix trust pack: SLA, PDPL stance, security disclosure, sub-processor list, real-time status." />
+  <link rel="alternate" hreflang="ar" href="/trust/index.ar.html" />
+  <style>
+    :root { color-scheme: light dark; --bg: #0a0e1a; --fg: #e6e9f2; --muted: #8a93a8; --accent: #4ea1ff; --card: #131829; --ok: #4ade80; --warn: #fbbf24; --fail: #f87171; --border: rgba(255,255,255,0.08); }
+    @media (prefers-color-scheme: light) { :root { --bg: #f7f8fb; --fg: #0a0e1a; --muted: #5a627a; --accent: #1d4ed8; --card: #ffffff; --border: rgba(0,0,0,0.08); } }
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: system-ui, -apple-system, "Segoe UI", "Helvetica Neue", Arial, sans-serif; background: var(--bg); color: var(--fg); line-height: 1.55; }
+    main { max-width: 980px; margin: 0 auto; padding: 3rem 1.25rem 5rem; }
+    h1 { font-size: 2rem; margin: 0 0 0.25rem; }
+    h2 { font-size: 1.25rem; margin: 2.5rem 0 0.75rem; border-bottom: 1px solid var(--border); padding-bottom: 0.35rem; }
+    .lead { color: var(--muted); margin: 0 0 1.5rem; }
+    .grid { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+    .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 1.1rem 1.2rem; }
+    .card h3 { margin: 0 0 0.4rem; font-size: 1rem; }
+    .card p { margin: 0; color: var(--muted); font-size: 0.92rem; }
+    .pill { display: inline-block; padding: 0.15rem 0.55rem; border-radius: 999px; font-size: 0.75rem; font-weight: 600; }
+    .pill.ok { background: rgba(74,222,128,0.15); color: var(--ok); }
+    .pill.warn { background: rgba(251,191,36,0.15); color: var(--warn); }
+    .pill.fail { background: rgba(248,113,113,0.15); color: var(--fail); }
+    table { width: 100%; border-collapse: collapse; margin-top: 0.5rem; font-size: 0.95rem; }
+    th, td { text-align: left; padding: 0.55rem 0.7rem; border-bottom: 1px solid var(--border); }
+    th { color: var(--muted); font-weight: 600; font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.04em; }
+    a { color: var(--accent); }
+    code { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 0.85em; background: rgba(78,161,255,0.1); padding: 0.05rem 0.35rem; border-radius: 4px; }
+    .status-row { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin: 1rem 0; padding: 0.85rem 1rem; background: var(--card); border: 1px solid var(--border); border-radius: 10px; }
+    .status-row .meta { font-size: 0.85rem; color: var(--muted); }
+    .footer { margin-top: 4rem; font-size: 0.85rem; color: var(--muted); }
+  </style>
+</head>
+<body>
+<main>
+  <h1>Trust & Security</h1>
+  <p class="lead">Dealix is operated by AI Company Saudi Arabia. This page is the single source of truth for our security posture, service-level commitments, and sub-processor list. <a href="index.ar.html">العربية</a></p>
+
+  <div class="status-row" id="live-status" aria-live="polite">
+    <div>
+      <strong>Live status</strong>
+      <div class="meta" id="status-meta">Loading from <code>/api/v1/status</code>…</div>
+    </div>
+    <span class="pill warn" id="status-pill">loading</span>
+  </div>
+
+  <h2>Service-level targets</h2>
+  <div class="grid">
+    <div class="card"><h3>API uptime</h3><p><strong>99.5%</strong> rolling 30-day target on <code>api.dealix.me</code>.</p></div>
+    <div class="card"><h3>p95 latency</h3><p>≤ 500 ms on authenticated read endpoints, ≤ 800 ms on writes.</p></div>
+    <div class="card"><h3>SEV-1 response</h3><p>15-minute acknowledgement, 2-hour restore target — 24×7.</p></div>
+    <div class="card"><h3>RPO / RTO</h3><p>24 h max data loss, 4 h max restore for SEV-1. Quarterly DR drill.</p></div>
+  </div>
+  <p style="margin-top: 0.75rem;">Full agreement → <a href="../../docs/sla.md">docs/sla.md</a>.</p>
+
+  <h2>PDPL & data residency</h2>
+  <p>Dealix is built Saudi-first. Tenant data lives in PDPL-compliant Postgres with row-level security; cross-border transfers are governed by the addendum at <a href="../../docs/CROSS_BORDER_TRANSFER_ADDENDUM.md">docs/CROSS_BORDER_TRANSFER_ADDENDUM.md</a>. LinkedIn integrations are disabled by default for ToS compliance.</p>
+
+  <h2>Security disclosure</h2>
+  <p>Report vulnerabilities privately to <a href="mailto:security@ai-company.sa">security@ai-company.sa</a> or via GitHub Security Advisories. We acknowledge within 48 hours and provide a resolution timeline within 7 days. Full policy: <a href="../../SECURITY.md">SECURITY.md</a>.</p>
+
+  <h2>Sub-processors</h2>
+  <p>Dealix relies on the following infrastructure providers. Adding a new sub-processor triggers a 30-day customer notification.</p>
+  <table>
+    <thead><tr><th>Provider</th><th>Purpose</th><th>Residency</th></tr></thead>
+    <tbody>
+      <tr><td>Anthropic</td><td>Primary LLM inference</td><td>US</td></tr>
+      <tr><td>OpenAI</td><td>Fallback LLM inference</td><td>US</td></tr>
+      <tr><td>Supabase</td><td>Postgres + RLS document store</td><td>EU / US</td></tr>
+      <tr><td>Railway</td><td>Application hosting</td><td>US</td></tr>
+      <tr><td>Sentry</td><td>Error monitoring</td><td>US</td></tr>
+      <tr><td>Resend</td><td>Transactional email</td><td>US</td></tr>
+      <tr><td>HubSpot</td><td>CRM integration (optional, per-customer)</td><td>US</td></tr>
+      <tr><td>Calendly</td><td>Public booking link only</td><td>US</td></tr>
+    </tbody>
+  </table>
+
+  <h2>Compliance roadmap</h2>
+  <div class="grid">
+    <div class="card"><h3>PDPL alignment</h3><p>Live. Consent tracking, opt-out registry, allowed-use enforcement on every outreach row.</p></div>
+    <div class="card"><h3>SOC 2 Type I</h3><p>In planning. Target interim report Q3 2026.</p></div>
+    <div class="card"><h3>Penetration test</h3><p>Planned with a Saudi-licensed vendor in Q2 2026.</p></div>
+  </div>
+
+  <div class="footer">
+    Published 2026-05-12. Document version v1. Changes that reduce customer protection require 30-day advance notice.
+  </div>
+</main>
+
+<script>
+(async function () {
+  const pill = document.getElementById('status-pill');
+  const meta = document.getElementById('status-meta');
+  try {
+    const r = await fetch('/api/v1/status', { headers: { 'accept': 'application/json' } });
+    if (!r.ok) throw new Error('status ' + r.status);
+    const data = await r.json();
+    const status = (data.status || 'unknown').toLowerCase();
+    pill.textContent = status;
+    pill.classList.remove('warn');
+    pill.classList.add(status === 'ok' ? 'ok' : status === 'degraded' ? 'warn' : 'fail');
+    const checks = data.checks || {};
+    const summary = Object.entries(checks)
+      .map(([k, v]) => k + ': ' + (v && v.status ? v.status : 'unknown'))
+      .join(' · ');
+    meta.textContent = 'env=' + (data.env || 'unknown') + ' · version=' + (data.version || '?') + ' · ' + summary;
+  } catch (err) {
+    pill.textContent = 'unreachable';
+    pill.classList.remove('warn');
+    pill.classList.add('fail');
+    meta.textContent = '/api/v1/status is unreachable — public health probe failed';
+  }
+})();
+</script>
+</body>
+</html>
