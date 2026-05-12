@@ -1,0 +1,41 @@
+{{- if .Values.cerbos.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-cerbos
+  labels:
+    {{- include "dealix.labels" . | nindent 4 }}
+    app.kubernetes.io/component: cerbos
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: dealix
+      app.kubernetes.io/component: cerbos
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: dealix
+        app.kubernetes.io/component: cerbos
+    spec:
+      containers:
+        - name: cerbos
+          image: "{{ .Values.cerbos.image }}"
+          args: ["server", "--config", "/etc/cerbos/.cerbos.yaml"]
+          ports:
+            - name: grpc
+              containerPort: 3593
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-cerbos
+spec:
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/name: dealix
+    app.kubernetes.io/component: cerbos
+  ports:
+    - port: {{ .Values.cerbos.port }}
+      targetPort: grpc
+{{- end }}

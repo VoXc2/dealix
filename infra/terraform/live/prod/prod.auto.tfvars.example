@@ -1,0 +1,12 @@
+# Copy to prod.auto.tfvars and fill in. NEVER commit secrets.
+
+railway_token        = ""
+railway_project_id   = ""
+cloudflare_api_token = ""
+
+# Required for prod — Sentry should be ON in production.
+sentry_dsn        = ""
+
+# LLM provider keys. Required in prod because the agent layer is live.
+anthropic_api_key = ""
+openai_api_key    = ""

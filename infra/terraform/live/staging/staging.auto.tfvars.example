@@ -1,0 +1,10 @@
+# Copy to staging.auto.tfvars and fill in. NEVER commit secrets.
+# 1Password / Bitwarden / Infisical is the canonical store.
+
+railway_token        = ""
+railway_project_id   = ""
+cloudflare_api_token = ""
+
+# Optional — leave blank to keep the LLM router in offline / mocked mode.
+anthropic_api_key = ""
+openai_api_key    = ""

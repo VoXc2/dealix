@@ -1,0 +1,25 @@
+# Staging overrides — fewer replicas, smaller resources, external DBs off
+# (assume an in-cluster pilot deploy).
+
+replicas:
+  api: 1
+  web: 1
+
+resources:
+  api:
+    requests: { cpu: 100m, memory: 256Mi }
+    limits:   { cpu: 500m, memory: 512Mi }
+
+ingress:
+  apiHost: api.staging.dealix.me
+  webHost: app.staging.dealix.me
+
+postgres:
+  external: false
+  host: ""
+redis:
+  external: false
+  host: ""
+
+meilisearch:
+  enabled: true

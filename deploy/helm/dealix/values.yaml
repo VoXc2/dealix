@@ -1,0 +1,79 @@
+# Default values for the Dealix chart. Override per environment with
+# `values.staging.yaml` or `values.prod.yaml`.
+
+image:
+  api:
+    repository: ghcr.io/voxc2/dealix
+    tag: latest
+    pullPolicy: IfNotPresent
+  web:
+    repository: ghcr.io/voxc2/dealix-frontend
+    tag: latest
+    pullPolicy: IfNotPresent
+
+replicas:
+  api: 2
+  web: 2
+
+resources:
+  api:
+    requests:
+      cpu: 250m
+      memory: 512Mi
+    limits:
+      cpu: 1000m
+      memory: 1Gi
+  web:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+
+ingress:
+  enabled: true
+  className: nginx
+  apiHost: api.dealix.me
+  webHost: app.dealix.me
+  tls:
+    enabled: true
+    secretName: dealix-tls
+
+# External services — every value is consumed from a pre-existing
+# Kubernetes secret named `dealix-secrets`. The chart never embeds
+# secrets; the founder creates them out of band.
+externalSecrets:
+  enabled: true
+  secretName: dealix-secrets
+
+postgres:
+  # Set `external` true to use a managed Postgres (RDS / Cloud SQL).
+  # Otherwise the chart deploys a small Postgres pod for pilots.
+  external: true
+  host: ""
+  port: 5432
+
+redis:
+  external: true
+  host: ""
+  port: 6379
+
+cerbos:
+  enabled: true
+  image: ghcr.io/cerbos/cerbos:0.42.0
+  port: 3593
+
+meilisearch:
+  enabled: false
+  image: getmeili/meilisearch:v1.10
+
+probes:
+  liveness:
+    path: /healthz
+    initialDelaySeconds: 15
+    periodSeconds: 30
+  readiness:
+    path: /health
+    initialDelaySeconds: 5
+    periodSeconds: 10

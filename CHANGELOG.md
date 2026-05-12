@@ -1,5 +1,38 @@
 # Changelog
 
+## [3.7.0-rc1] — 2026-05-12
+
+T9 + T10 — real Skill handlers across the remaining 8 manifest skills,
+plus production deployment hardening (Terraform live modules, Helm
+chart, docker-compose.prod, zero-to-prod runbook).
+
+### T9 — real skill handlers
+`dealix/agents/skills/handlers_llm.py` ships proposal_writer,
+email_triage, contract_analyst, meeting_summarizer.
+`dealix/agents/skills/handlers_data.py` ships crm_syncer (HubSpot
+bidirectional + Salesforce stub), market_researcher (Wathq → Maroof
+→ Najiz → Tadawul → MISA chain), renewal_forecaster (health × usage
+× NPS), compliance_reviewer (PDPL + GDPR + CITC). Every handler
+ships a deterministic rule-based fallback so unit-tests are
+network-free; `_meta.engine` records when an LLM key would route
+the call differently.
+
+### T10 — production hardening
+- `infra/terraform/live/staging/` + `infra/terraform/live/prod/` —
+  per-environment composition that wires the base modules in
+  `infra/terraform/`. `*.auto.tfvars.example` checked in; real
+  tfvars never committed.
+- `deploy/docker-compose.prod.yml` — single-host pilot stack
+  (Postgres + pgvector + PgBouncer + Redis + Cerbos + Meilisearch +
+  API + web). Volumes persist under `/var/lib/dealix/`.
+- `deploy/helm/dealix/` — Helm chart for Kubernetes deploys.
+  Chart.yaml + values.yaml + values.staging.yaml + Deployment,
+  Service, Ingress, Cerbos templates. External DB / Redis via the
+  `dealix-secrets` Kubernetes Secret.
+- `docs/ops/runbook_zero_to_prod.md` — single-document runbook
+  covering bootstrap → Terraform → migrations → compose / Helm →
+  smoke tests → backups → observability → DNS cutover → rollback.
+
 ## [3.6.0] — 2026-05-12
 
 T8 — Skills runtime, GCC payment routers, and the polish around them.
