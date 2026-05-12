@@ -1,0 +1,49 @@
+name: DLQ Size Check
+
+# Watches staging + production DLQ depth. Fails CI / pages on-call if
+# any DLQ exceeds the configured threshold.
+#
+# Requires the following GitHub secrets (set per environment):
+#   STAGING_REDIS_URL       redis://:<pass>@host:6379/0
+#   PRODUCTION_REDIS_URL    redis://:<pass>@host:6379/0
+#
+# Threshold: 5 items per queue (matches docs/ops/WEBHOOK_RETRY_DLQ.md SLO).
+
+on:
+  schedule:
+    - cron: "*/30 * * * *"   # every 30 minutes
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  staging:
+    name: DLQ — staging
+    runs-on: ubuntu-latest
+    if: ${{ secrets.STAGING_REDIS_URL != '' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: pip install redis
+      - name: Check DLQ depth (staging)
+        env:
+          REDIS_URL: ${{ secrets.STAGING_REDIS_URL }}
+        run: |
+          python scripts/check_dlq_size.py --max 5 --json
+
+  production:
+    name: DLQ — production
+    runs-on: ubuntu-latest
+    if: ${{ secrets.PRODUCTION_REDIS_URL != '' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: pip install redis
+      - name: Check DLQ depth (production)
+        env:
+          REDIS_URL: ${{ secrets.PRODUCTION_REDIS_URL }}
+        run: |
+          python scripts/check_dlq_size.py --max 5 --json
