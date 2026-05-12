@@ -81,7 +81,7 @@ HEALTHCHECK --interval=30s --timeout=5s --start-period=20s --retries=3 \
 COPY --chown=app:app <<'EOF' /app/start.sh
 #!/bin/sh
 set -e
-exec uvicorn api.main:app --host 0.0.0.0 --port "${PORT:-8000}" --workers 1
+exec uvicorn api.main:app --host 0.0.0.0 --port "${PORT:-8000}" --workers "${UVICORN_WORKERS:-2}"
 EOF
 RUN chmod +x /app/start.sh
 

@@ -20,6 +20,7 @@ from typing import Any
 
 from fastapi import APIRouter, Body, HTTPException
 from sqlalchemy import func, select
+from sqlalchemy.exc import SQLAlchemyError
 
 from auto_client_acquisition.email.daily_targeting import (
     DailyTargetingResult,
@@ -80,7 +81,7 @@ async def compliance_check(body: dict[str, Any] = Body(...)) -> dict[str, Any]:
                 if r.email: sup_emails.add(r.email.lower())
                 if r.domain: sup_domains.add(r.domain.lower())
                 if r.phone: sup_phones.add(r.phone)
-        except Exception as exc:  # noqa: BLE001
+        except SQLAlchemyError as exc:
             log.warning("suppression_load_failed err=%s", exc)
 
     chk = check_outreach(
@@ -164,7 +165,7 @@ async def run_daily_targeting(body: dict[str, Any] = Body(default={})) -> dict[s
                 ).distinct()
             )).scalars().all() if ids else []
             recently_contacted = set(recent_logs)
-        except Exception as exc:  # noqa: BLE001
+        except SQLAlchemyError as exc:
             return {"status": "skipped_db_unreachable", "error": str(exc)}
 
     # 2. Filter
@@ -262,7 +263,7 @@ async def run_daily_targeting(body: dict[str, Any] = Body(default={})) -> dict[s
             queued_count += 1
         try:
             await session.commit()
-        except Exception as exc:  # noqa: BLE001
+        except SQLAlchemyError as exc:
             await session.rollback()
             log.warning("daily_targeting_commit_failed err=%s", exc)
 
@@ -306,7 +307,7 @@ async def run_followups(body: dict[str, Any] = Body(default={})) -> dict[str, An
                     EmailSendLog.sent_at >= now - timedelta(days=15),
                 )
             )).scalars().all()
-        except Exception as exc:  # noqa: BLE001
+        except SQLAlchemyError as exc:
             return {"status": "skipped_db_unreachable", "error": str(exc)}
 
         for log_row in sent_logs:
@@ -334,7 +335,7 @@ async def run_followups(body: dict[str, Any] = Body(default={})) -> dict[str, An
                     break
         try:
             await session.commit()
-        except Exception as exc:  # noqa: BLE001
+        except SQLAlchemyError as exc:
             await session.rollback()
             return {"status": "commit_failed", "error": str(exc)}
 
@@ -428,7 +429,7 @@ async def automation_status() -> dict[str, Any]:
                     select(func.count()).select_from(SuppressionRecord)
                 )).scalar() or 0
             )
-        except Exception as exc:  # noqa: BLE001
+        except SQLAlchemyError as exc:
             return {"status": "skipped_db_unreachable", "error": str(exc)}
 
     return {
