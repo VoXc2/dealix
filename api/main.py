@@ -32,6 +32,7 @@ from api.routers.domains import webhooks as webhooks_domain
 from api.routers import audit_logs as audit_logs_router
 from api.routers import benchmarks as benchmarks_router
 from api.routers import llm_usage as llm_usage_router
+from api.routers import pdpl_dsr as pdpl_dsr_router
 from api.routers import realtime as realtime_router
 from api.routers import whatsapp_admin as whatsapp_admin_router
 from api.routers import (
@@ -207,6 +208,10 @@ def create_app() -> FastAPI:
         allow_methods=["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
         allow_headers=["Authorization", "X-API-Key", "X-Request-ID", "Content-Type", "Accept"],
     )
+    # Opt-in Saudi business-hours guard for notification triggers
+    # (X-Dealix-Intent: notify). Inert unless BUSINESS_HOURS_ENFORCE=1.
+    from api.middleware.business_hours import BusinessHoursMiddleware
+    app.add_middleware(BusinessHoursMiddleware)
     app.add_middleware(SecurityHeadersMiddleware)
     app.add_middleware(RateLimitHeadersMiddleware)
     app.add_middleware(ETagMiddleware)
@@ -275,6 +280,8 @@ def create_app() -> FastAPI:
     app.include_router(realtime_router.router)
     # Sector benchmarks (Tinybird w/ internal-aggregator fallback).
     app.include_router(benchmarks_router.router)
+    # PDPL Data Subject Rights (access / delete / portability).
+    app.include_router(pdpl_dsr_router.router)
 
     # ── Wave 12.7 — Intelligence Layer + Expansion Engine ─────────
     # Both routers self-prefix /api/v1/intelligence and /api/v1/expansion-engine.
