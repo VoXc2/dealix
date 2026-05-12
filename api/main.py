@@ -29,7 +29,18 @@ from api.routers.domains import customers as customers_domain
 from api.routers.domains import deprecated as deprecated_domain
 from api.routers.domains import sales as sales_domain
 from api.routers.domains import webhooks as webhooks_domain
-from api.routers import auth, billing, customer, jobs, onboarding, partners, pdpl, trial, zatca
+from api.routers import audit_logs as audit_logs_router
+from api.routers import (
+    auth,
+    billing,
+    customer,
+    jobs,
+    onboarding,
+    partners,
+    pdpl,
+    trial,
+    zatca,
+)
 # Wave 12.7 — Intelligence Layer + Expansion Engine routers
 from api.routers import expansion_engine as expansion_engine_router
 from api.routers import intelligence_layer as intelligence_layer_router
@@ -227,6 +238,8 @@ def create_app() -> FastAPI:
     app.include_router(onboarding.router)
     # International billing (Stripe). Inert without STRIPE_API_KEY.
     app.include_router(billing.router)
+    # Customer-facing audit log + CSV export.
+    app.include_router(audit_logs_router.router)
 
     # ── Wave 12.7 — Intelligence Layer + Expansion Engine ─────────
     # Both routers self-prefix /api/v1/intelligence and /api/v1/expansion-engine.
