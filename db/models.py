@@ -899,3 +899,65 @@ class InvoiceRecord(Base):
         UniqueConstraint("provider", "external_id", name="uq_invoice_provider_external"),
         Index("ix_invoice_tenant_provider", "tenant_id", "provider"),
     )
+
+
+# ── Knowledge base (T5b) — per-tenant RAG ──────────────────────────
+
+
+class KnowledgeDocumentRecord(Base):
+    """A source document a tenant has ingested into their knowledge base.
+
+    The raw content lives in object storage (S3 / Supabase Storage);
+    we store the metadata + chunk count + ingestion status here so the
+    API can list / delete without round-tripping to storage.
+    """
+
+    __tablename__ = "knowledge_documents"
+
+    id: Mapped[str] = mapped_column(String(64), primary_key=True)
+    tenant_id: Mapped[str] = mapped_column(String(64), index=True)
+    title: Mapped[str] = mapped_column(String(255))
+    source_kind: Mapped[str] = mapped_column(String(32), default="upload")
+    # upload | url | crawl | api_pull
+    source_uri: Mapped[str | None] = mapped_column(String(2048), nullable=True)
+    locale: Mapped[str] = mapped_column(String(8), default="ar")
+    status: Mapped[str] = mapped_column(String(32), default="processing", index=True)
+    # processing | ready | failed
+    chunk_count: Mapped[int] = mapped_column(Integer, default=0)
+    meta_json: Mapped[dict] = mapped_column("metadata", JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(default=utcnow, onupdate=utcnow)
+    deleted_at: Mapped[datetime | None] = mapped_column(nullable=True)
+
+    __table_args__ = (
+        Index("ix_kd_tenant_status", "tenant_id", "status"),
+    )
+
+
+class KnowledgeChunkRecord(Base):
+    """A single chunk embedded in the vector store.
+
+    The vector itself lives in a pgvector column added by migration 006;
+    SQLAlchemy maps it via the JSON-encoded `embedding_json` accessor
+    on platforms without the pgvector extension installed, so the
+    model is import-safe everywhere.
+    """
+
+    __tablename__ = "knowledge_chunks"
+
+    id: Mapped[str] = mapped_column(String(64), primary_key=True)
+    tenant_id: Mapped[str] = mapped_column(String(64), index=True)
+    document_id: Mapped[str] = mapped_column(ForeignKey("knowledge_documents.id"), index=True)
+    order: Mapped[int] = mapped_column(Integer, default=0)
+    text: Mapped[str] = mapped_column(Text, default="")
+    embedding_model: Mapped[str] = mapped_column(String(64), default="")
+    # The embedding vector is stored via pgvector — added by migration
+    # 006 as a raw column. We don't model it here so SQLAlchemy stays
+    # cross-backend; queries use `sqlalchemy.text` with the `<=>`
+    # operator (see dealix/rag/search.py).
+    meta_json: Mapped[dict] = mapped_column("metadata", JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(default=utcnow)
+
+    __table_args__ = (
+        Index("ix_kc_tenant_document", "tenant_id", "document_id"),
+    )
