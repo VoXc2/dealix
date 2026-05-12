@@ -47,9 +47,10 @@ async def _persist_payment_event(
     """
     try:
         from sqlalchemy import select
+
         from db.models import PaymentRecord
         from db.session import async_session_factory
-    except Exception as exc:  # noqa: BLE001
+    except Exception as exc:
         log.debug("payments_persist_skipped reason=imports error=%s", exc)
         return
 
@@ -98,7 +99,7 @@ async def _persist_payment_event(
                 if plan and not existing.plan:
                     existing.plan = plan
             await session.commit()
-    except Exception as exc:  # noqa: BLE001
+    except Exception as exc:
         log.warning("payments_persist_failed provider_payment_id=%s error=%s",
                     provider_payment_id, exc)
 

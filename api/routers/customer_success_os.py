@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 import logging
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta, timezone
 from typing import Any
 
 from fastapi import APIRouter, HTTPException
@@ -117,6 +117,7 @@ async def _collect_signals_for_tenant(customer_handle: str) -> _HealthScoreReque
     # Payment status (from payments table — populated by Moyasar webhook)
     try:
         from sqlalchemy import desc, select
+
         from db.models import PaymentRecord
         from db.session import async_session_factory
 
@@ -142,10 +143,11 @@ async def _collect_signals_for_tenant(customer_handle: str) -> _HealthScoreReque
     # in last 30 days, if the table exists)
     try:
         from sqlalchemy import func, select
+
         from db.models import DecisionPassportRecord  # type: ignore
         from db.session import async_session_factory
 
-        thirty_days_ago = datetime.now(timezone.utc) - timedelta(days=30)
+        thirty_days_ago = datetime.now(UTC) - timedelta(days=30)
         async with async_session_factory()() as session:
             stmt = (
                 select(func.count())
@@ -164,6 +166,7 @@ async def _collect_signals_for_tenant(customer_handle: str) -> _HealthScoreReque
     # where the customer approved something. If no record in 30 days → high risk.
     try:
         from sqlalchemy import desc, select
+
         from db.models import DecisionPassportRecord  # type: ignore
         from db.session import async_session_factory
 
@@ -179,7 +182,7 @@ async def _collect_signals_for_tenant(customer_handle: str) -> _HealthScoreReque
             )
             row = (await session.execute(stmt)).scalar_one_or_none()
             if row is not None:
-                days = (datetime.now(timezone.utc) - row.created_at).days
+                days = (datetime.now(UTC) - row.created_at).days
                 signals.last_customer_response_days = max(0, days)
     except Exception as exc:
         log.debug("health_score_last_response_lookup_skipped reason=%s", exc)
