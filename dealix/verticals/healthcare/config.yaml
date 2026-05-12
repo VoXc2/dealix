@@ -1,0 +1,30 @@
+id: healthcare
+label_ar: الرعاية الصحية
+label_en: Healthcare
+description_ar: |
+  للعيادات والمستشفيات السعودية — حجز موعد، تذكير، رضا مريض. ملتزم
+  بـ PDPL Article 17 (بيانات صحية حساسة) — تشفير في الراحة + سجل تدقيق
+  مفصّل + موافقة صريحة.
+description_en: |
+  Saudi clinics + hospitals — appointment booking, reminders, patient
+  satisfaction. PDPL Article 17 compliant for sensitive health data
+  (encryption at rest + audit + explicit consent).
+pricing_default_plan: scale
+agents:
+  - sales_qualifier
+  - compliance_reviewer
+  - meeting_summarizer
+  - ar_en_translator
+workflows:
+  - appointment_booking
+  - appointment_reminder
+  - post_visit_nps
+  - referral_to_specialist
+lead_form_fields:
+  - { id: facility, label_ar: اسم المنشأة, label_en: Facility, type: text, required: true }
+  - { id: type, label_ar: النوع, label_en: Type, type: select, options: [عيادة, مستشفى, مركز تخصصي, مختبر] }
+  - { id: specialty, label_ar: التخصص, label_en: Specialty, type: text }
+proof_points:
+  - PDPL Article 17 sensitive-data controls (encryption + audit).
+  - Wathq licence verification.
+  - WhatsApp templates approved for appointment reminders.

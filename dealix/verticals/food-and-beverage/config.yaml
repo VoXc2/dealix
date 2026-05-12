@@ -1,0 +1,26 @@
+id: food-and-beverage
+label_ar: المطاعم
+label_en: Food & Beverage
+description_ar: |
+  للمطاعم والكافيهات — حجز طاولة، طلب عبر WhatsApp، Loyalty، استبيان
+  رضا، توصيات Mada/STC Pay.
+description_en: |
+  Saudi restaurants + cafes — table booking, WhatsApp ordering, loyalty,
+  satisfaction surveys, Mada/STC Pay recommendations.
+pricing_default_plan: starter
+agents:
+  - email_triage
+  - content_generator_ar
+  - meeting_summarizer
+workflows:
+  - whatsapp_ordering
+  - table_booking
+  - loyalty_points
+  - post_visit_review
+lead_form_fields:
+  - { id: brand, label_ar: اسم المطعم, label_en: Brand, type: text, required: true }
+  - { id: branches, label_ar: عدد الفروع, label_en: Branches, type: number }
+proof_points:
+  - WhatsApp order template approved by Meta.
+  - Mada + STC Pay + Tabby/Tamara at checkout.
+  - Hijri promotions (Ramadan + Eid).

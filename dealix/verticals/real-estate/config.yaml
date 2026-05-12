@@ -1,0 +1,34 @@
+id: real-estate
+label_ar: العقارات
+label_en: Real Estate
+description_ar: |
+  حزمة جاهزة لشركات العقارات السعودية — التقاط lead الزبون من المعارض
+  + WhatsApp، تأهيله بـ ICP + PDPL، صياغة عرض، حجز معاينة.
+description_en: |
+  Pre-configured for Saudi real-estate brokerages — capture leads
+  from exhibitions + WhatsApp, qualify against ICP + PDPL, draft a
+  proposal, book a viewing.
+pricing_default_plan: growth
+agents:
+  - sales_qualifier
+  - proposal_writer
+  - meeting_summarizer
+  - lead_scorer
+  - market_researcher
+  - content_generator_ar
+  - ar_en_translator
+workflows:
+  - lead_capture_to_booking
+  - viewing_followup
+  - listing_to_lead_match
+lead_form_fields:
+  - { id: company, label_ar: اسم المنشأة, label_en: Company, type: text, required: true }
+  - { id: city, label_ar: المدينة, label_en: City, type: select, options: [الرياض, جدة, الدمام, المدينة, أبها] }
+  - { id: portfolio_size, label_ar: حجم المحفظة, label_en: Portfolio size, type: select, options: ['<50', '50-200', '200-1000', '1000+'] }
+  - { id: specialisation, label_ar: التخصص, label_en: Specialisation, type: select, options: [سكني, تجاري, مختلط] }
+  - { id: email, label_ar: البريد, label_en: Email, type: email, required: true }
+  - { id: phone, label_ar: الجوال, label_en: Phone, type: tel, required: true }
+proof_points:
+  - 287 Saudi real-estate accounts pre-seeded for prospecting.
+  - HubSpot + WhatsApp + Calendly out-of-the-box.
+  - Sector benchmarks reply-rate p50 12.4% vs your tenant's value.

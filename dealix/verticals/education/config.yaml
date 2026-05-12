@@ -1,0 +1,28 @@
+id: education
+label_ar: التعليم
+label_en: Education
+description_ar: |
+  للمدارس والجامعات الأهلية ومراكز التدريب — قبول طلبة، استبيان رضا،
+  تواصل مع أولياء الأمور، مطابقة Vision 2030 KPIs لتطوير رأس المال
+  البشري.
+description_en: |
+  Private schools, universities, training centers — admissions,
+  satisfaction surveys, parent communication, Vision 2030 HC-development
+  KPI tracking.
+pricing_default_plan: growth
+agents:
+  - sales_qualifier
+  - meeting_summarizer
+  - content_generator_ar
+  - ar_en_translator
+workflows:
+  - admissions_inquiry_to_seat
+  - parent_communication
+  - student_satisfaction_survey
+lead_form_fields:
+  - { id: institution, label_ar: اسم المؤسسة, label_en: Institution, type: text, required: true }
+  - { id: level, label_ar: المرحلة, label_en: Level, type: select, options: [روضة, ابتدائي, متوسط, ثانوي, جامعي, تدريب] }
+proof_points:
+  - Bilingual parent communication (AR + EN).
+  - Vision 2030 HC-pillar KPI tracking.
+  - Approved WhatsApp Education templates.

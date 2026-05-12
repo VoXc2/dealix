@@ -1,0 +1,28 @@
+id: legal
+label_ar: المكاتب القانونية
+label_en: Legal
+description_ar: |
+  للمحامين والمكاتب القانونية السعودية — استلام موكل، مراجعة عقود
+  بالعربي، تتبع Najiz، صياغة مذكرات، تنبيهات تشريعية.
+description_en: |
+  Saudi law firms — client intake, Arabic contract review, Najiz
+  case tracking, brief drafting, regulatory alerts.
+pricing_default_plan: scale
+agents:
+  - contract_analyst
+  - compliance_reviewer
+  - ar_en_translator
+  - content_generator_ar
+workflows:
+  - client_intake
+  - contract_redline_loop
+  - najiz_case_watcher
+  - regulatory_alert
+lead_form_fields:
+  - { id: firm, label_ar: اسم المكتب, label_en: Firm, type: text, required: true }
+  - { id: lawyers, label_ar: عدد المحامين, label_en: Lawyers, type: number }
+  - { id: specialties, label_ar: التخصصات, label_en: Specialties, type: multi-select, options: [تجاري, جنائي, عمالي, عقاري, أسري, ضريبي] }
+proof_points:
+  - Saudi contract redliner with commercial-law citations.
+  - Najiz case watcher with Knock notifications.
+  - PDPL Article 22 client-data access logs.

@@ -1,0 +1,32 @@
+id: financial-services
+label_ar: الخدمات المالية
+label_en: Financial Services
+description_ar: |
+  للبنوك والوسطاء وشركات التأمين السعودية — KYC مع Yakeen + Nafath،
+  تأهيل عميل، استبيان رضا، مراقبة Najm، تكامل SAMA Open Banking
+  (بعد الترخيص).
+description_en: |
+  Saudi banks, brokers, insurance — KYC with Yakeen + Nafath, client
+  qualification, satisfaction, Najm watch, SAMA Open Banking after
+  licence.
+pricing_default_plan: scale
+agents:
+  - sales_qualifier
+  - compliance_reviewer
+  - contract_analyst
+  - renewal_forecaster
+  - market_researcher
+workflows:
+  - kyc_onboarding
+  - sama_compliance_check
+  - client_satisfaction
+  - najm_claim_followup
+lead_form_fields:
+  - { id: entity, label_ar: اسم المنشأة, label_en: Entity, type: text, required: true }
+  - { id: licence_type, label_ar: نوع الترخيص, label_en: Licence type, type: select, options: [بنك, تأمين, وسيط, شركة تمويل, مدير أصول] }
+  - { id: sama_licence_number, label_ar: رقم ترخيص ساما, label_en: "SAMA licence number", type: text }
+proof_points:
+  - PDPL Article 17 sensitive-data controls (financial PII).
+  - Yakeen + Nafath identity verification.
+  - SAMA Open Banking AIS/PIS stub (post-licence).
+  - Audit log export to customer's S3 / Datadog / Splunk.

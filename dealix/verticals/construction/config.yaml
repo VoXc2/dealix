@@ -1,0 +1,28 @@
+id: construction
+label_ar: المقاولات
+label_en: Construction
+description_ar: |
+  لشركات المقاولات السعودية — متابعة المناقصات (Etimad)، تقديم عروض
+  للمشاريع، إدارة موردي البناء، تحليل عقود مع redlining بالعربي.
+description_en: |
+  Saudi contractors — Etimad tender alerts, bid drafting, vendor
+  management, Arabic contract redlining.
+pricing_default_plan: scale
+agents:
+  - market_researcher
+  - contract_analyst
+  - proposal_writer
+  - compliance_reviewer
+  - lead_scorer
+workflows:
+  - etimad_tender_to_bid
+  - vendor_onboarding
+  - subcontractor_compliance_check
+lead_form_fields:
+  - { id: company, label_ar: اسم المقاول, label_en: Contractor, type: text, required: true }
+  - { id: classification, label_ar: التصنيف, label_en: MOMRA classification, type: select, options: [الأولى, الثانية, الثالثة, الرابعة, الخامسة] }
+  - { id: project_scope, label_ar: مجال المشاريع, label_en: Project scope, type: select, options: [مباني, طرق, مياه, كهرباء, ميكانيكا] }
+proof_points:
+  - Etimad daily tender feed.
+  - Wathq classification verification at onboarding.
+  - ZATCA Phase 2 invoicing for sub-contractor payouts.

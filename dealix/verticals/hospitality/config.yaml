@@ -1,0 +1,30 @@
+id: hospitality
+label_ar: الضيافة
+label_en: Hospitality
+description_ar: |
+  حزمة الفنادق والمنتجعات السعودية — حجز / إعادة حجز / استرجاع نزيل،
+  استبيان NPS بعد المغادرة، توصيات تسعير سعودي.
+description_en: |
+  Saudi hotels + resorts — booking / re-booking / win-back, post-stay
+  NPS, Saudi-pricing optimisation.
+pricing_default_plan: growth
+agents:
+  - sales_qualifier
+  - meeting_summarizer
+  - email_triage
+  - renewal_forecaster
+  - content_generator_ar
+  - ar_en_translator
+workflows:
+  - guest_inquiry_to_booking
+  - post_stay_nps
+  - winback_cold_guest
+lead_form_fields:
+  - { id: hotel_name, label_ar: اسم الفندق, label_en: Hotel name, type: text, required: true }
+  - { id: rooms, label_ar: عدد الغرف, label_en: Rooms, type: select, options: ['<50','50-200','200-500','500+'] }
+  - { id: location, label_ar: الموقع, label_en: Location, type: select, options: [مكة, المدينة, الرياض, جدة, الخبر, نيوم] }
+  - { id: email, label_ar: البريد, label_en: Email, type: email, required: true }
+proof_points:
+  - Saudi peak-season RevPAR-aware proposal writer.
+  - WhatsApp templates approved by Meta for hospitality.
+  - Hijri-calendar promotions baked in.
