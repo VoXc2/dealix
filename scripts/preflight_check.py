@@ -149,15 +149,16 @@ def check_cors_strict(base_url: str) -> tuple[bool, str, dict | None]:
 
 @check("P5 critical env vars present (caller-side)", "P")
 def check_env() -> tuple[bool, str, dict | None]:
-    # ADMIN_API_KEYS + MOYASAR_WEBHOOK_SECRET are launch-critical: the API
-    # refuses to boot in production without them, and the webhook signature
-    # check fails closed without the latter.
-    required = [
-        "DATABASE_URL",
-        "BASE_URL",
-        "ADMIN_API_KEYS",
-        "MOYASAR_WEBHOOK_SECRET",
-    ]
+    # DATABASE_URL + BASE_URL are always required (the API can't boot
+    # locally without them either).
+    # ADMIN_API_KEYS + MOYASAR_WEBHOOK_SECRET are launch-critical for prod
+    # only — the API refuses to boot in production without them, and the
+    # webhook signature check fails closed without the latter. In --dev
+    # mode (PREFLIGHT_DEV=1, set by main()), they're relaxed so local
+    # invocations don't require production secrets.
+    required = ["DATABASE_URL", "BASE_URL"]
+    if not os.environ.get("PREFLIGHT_DEV"):
+        required.extend(["ADMIN_API_KEYS", "MOYASAR_WEBHOOK_SECRET"])
     missing = [k for k in required if not os.environ.get(k)]
     if missing:
         return False, f"missing: {', '.join(missing)}", {"missing": missing}
@@ -209,7 +210,10 @@ def check_dlq() -> tuple[bool, str, dict | None]:
     except ImportError:
         raise SkipCheck("redis package not installed")
     r = redis.from_url(redis_url, socket_timeout=5, decode_responses=True)
-    queues = ["webhooks", "outbound", "enrichment"]
+    # Mirror dealix/queues.py — these are all production DLQs. crm_sync
+    # was previously missing and could be over-threshold while preflight
+    # reported green.
+    queues = ["webhooks", "outbound", "enrichment", "crm_sync"]
     depths = {q: int(r.llen(f"dlq:{q}") or 0) for q in queues}
     over = {q: d for q, d in depths.items() if d > 5}
     return not over, json.dumps(depths), depths
@@ -255,11 +259,17 @@ def check_backup_freshness() -> tuple[bool, str, dict | None]:
         raise SkipCheck("boto3 not installed")
     prefix = os.environ.get("BACKUP_S3_PREFIX", "dealix/hourly")
     s3 = boto3.client("s3", region_name=os.environ.get("AWS_DEFAULT_REGION", "me-south-1"))
-    resp = s3.list_objects_v2(Bucket=bucket, Prefix=prefix + "/", MaxKeys=5)
-    objs = resp.get("Contents") or []
-    if not objs:
+    # Paginate through the entire prefix so we don't miss a newer object
+    # buried deeper in the listing. MaxKeys=5 previously could report
+    # stale backups for any bucket with > 5 matching objects.
+    paginator = s3.get_paginator("list_objects_v2")
+    latest = None
+    for page in paginator.paginate(Bucket=bucket, Prefix=prefix + "/"):
+        for obj in page.get("Contents") or []:
+            if latest is None or obj["LastModified"] > latest["LastModified"]:
+                latest = obj
+    if latest is None:
         return False, "no objects under prefix", {"prefix": prefix}
-    latest = max(objs, key=lambda o: o["LastModified"])
     age_sec = time.time() - latest["LastModified"].timestamp()
     return age_sec < 2 * 3600, f"latest age={int(age_sec/60)}min", {"age_sec": int(age_sec)}
 
@@ -269,9 +279,16 @@ def check_backup_freshness() -> tuple[bool, str, dict | None]:
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--dev", action="store_true",
-                        help="skip prod-only checks (Sentry/PostHog/S3/Redis)")
+                        help="skip prod-only checks (Sentry/PostHog/S3/Redis) "
+                             "and relax env requirements (no ADMIN_API_KEYS / "
+                             "MOYASAR_WEBHOOK_SECRET needed locally)")
     parser.add_argument("--json", action="store_true", help="JSON output only")
     args = parser.parse_args()
+
+    # Surface --dev to checks via env so individual @check functions
+    # (which take no args by design) can branch on it.
+    if args.dev:
+        os.environ["PREFLIGHT_DEV"] = "1"
 
     base_url = os.environ.get("BASE_URL", "http://localhost:8000")
 
@@ -291,7 +308,10 @@ def main() -> int:
         checks.append(check_posthog())
         checks.append(check_backup_freshness())
 
-    p_fail = [r for r in checks if r.severity == "P" and r.status == "fail"]
+    # A skipped required (P) check is a failure — production runs must
+    # never silently bypass a mandatory gate. Recommended (R) checks may
+    # legitimately skip (e.g. Sentry not configured in --dev).
+    p_fail = [r for r in checks if r.severity == "P" and r.status in ("fail", "skip")]
     r_fail = [r for r in checks if r.severity == "R" and r.status == "fail"]
 
     # Determine the exit code FIRST so JSON mode honors the same contract.
