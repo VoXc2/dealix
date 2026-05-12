@@ -1,0 +1,17 @@
+id: etimad_tender_to_bid
+name: Etimad Tender → Bid Submission
+description: |
+  Polls Etimad for tenders matching the tenant's sector +
+  MOMRA-classification, drafts a bid using contract-analyst +
+  proposal-writer, requests founder approval before submission.
+agents:
+  - market_researcher
+  - contract_analyst
+  - proposal_writer
+  - compliance_reviewer
+locale: ar
+version: v1
+billable_events:
+  - tender_matched
+  - bid_drafted
+  - bid_submitted

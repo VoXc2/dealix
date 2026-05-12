@@ -1,0 +1,21 @@
+id: lead_to_booking
+name: Lead → Qualified Demo Booking
+description: |
+  Workflow 1 from docs/product/CORE_WORKFLOWS.md. Captures a lead,
+  scores against ICP, runs PDPL contactability gate, drafts outreach,
+  and books a discovery call via Calendly.
+agents:
+  - sales_qualifier
+  - lead_scorer
+  - compliance_reviewer
+  - proposal_writer
+locale: ar
+version: v1
+billable_events:
+  - lead_captured
+  - lead_qualified
+  - meeting_booked
+install_instructions: |
+  POST /api/v1/workflows/install with body
+  `{"workflow_id":"lead_to_booking","tenant_id":"..."}`. The platform
+  registers the LangGraph with the tenant's tools.

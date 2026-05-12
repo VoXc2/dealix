@@ -1,0 +1,16 @@
+id: contract_redline_loop
+name: Contract Redline Loop
+description: |
+  Customer uploads a contract; agent produces clause-by-clause summary
+  + risk flags + suggested redlines; customer approves/edits;
+  agent generates a final track-changes DOCX.
+agents:
+  - contract_analyst
+  - ar_en_translator
+  - compliance_reviewer
+locale: ar
+version: v1
+billable_events:
+  - contract_uploaded
+  - redline_generated
+  - contract_finalised

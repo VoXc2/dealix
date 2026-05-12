@@ -1,0 +1,16 @@
+id: proposal_to_contract
+name: Proposal → Signed Contract
+description: |
+  Workflow 2 from docs/product/CORE_WORKFLOWS.md. Drafts a proposal,
+  gates on approval-center, sends via Resend/WhatsApp, tracks
+  engagement, issues a ZATCA-compliant invoice on signature.
+agents:
+  - proposal_writer
+  - contract_analyst
+  - compliance_reviewer
+locale: ar
+version: v1
+billable_events:
+  - proposal_sent
+  - contract_signed
+  - invoice_issued
