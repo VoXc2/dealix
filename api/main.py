@@ -33,6 +33,7 @@ from api.routers import (
     admin_tenants,
     auth,
     customer_usage,
+    enterprise_pmo,
     jobs,
     pdpl,
     sector_intel,
@@ -235,6 +236,8 @@ def create_app() -> FastAPI:
     app.include_router(service_setup.router)
     # Wave 8 W8.3 — Customer-facing usage dashboard
     app.include_router(customer_usage.router)
+    # Wave 9 W9.1 — Enterprise PMO (R7 productization)
+    app.include_router(enterprise_pmo.router)
 
     @app.get("/", tags=["root"])
     async def root() -> dict[str, object]:
