@@ -230,3 +230,46 @@
 ---
 
 *Version 1.0 | All actions: suggest_only / draft_only until approved*
+
+---
+
+## Saudi Enterprise Motion (W2.T09)
+
+This appendix extends the playbook above (which targets the SAR 499 Sprint pilot motion) with the **Saudi enterprise motion** for deals > SAR 100K running through a committee, procurement, and a CFO defense. The full Arabic playbook lives at `docs/SALES_PLAYBOOK.ar.md`; this section is the English overlay. Use this motion whenever the buyer fits Tier 1 or large Tier 2 in `docs/go-to-market/icp_saudi.md`.
+
+### Saudi-specific discovery questions (delta from the global 9)
+
+Add these on top of the 9 discovery questions earlier in this document — they are the questions that unlock the Saudi committee:
+
+1. What triggered the evaluation now — an Etimad tender, a SAMA/CITC directive, a senior hire, or a board-set growth target? (Maps to T5 ICP triggers.)
+2. How many BDRs do you have, and what % of their time is on research vs. selling today? (Feeds the ROI model.)
+3. What is your committed annual spend on Apollo / ZoomInfo / outreach agencies? (Net-out for ROI.)
+4. Is in-Kingdom data residency a hard requirement? What PDPL data class applies to your customer records (A/B/C)?
+5. Are you required to procure via NUPCO, Etimad, or a registered local-content partner? (Maps to Procurement persona in T8.)
+
+### PDPL / procurement objection handling
+
+The two most common late-stage blockers in Saudi deals are **PDPL** and **procurement defensibility**. Address both with artifact, not argument:
+
+- **"PDPL Article 13/14 or cross-border transfer blocks us."** Send `docs/TRUST_AND_COMPLIANCE_BUSINESS_PACK.md` plus the per-source lawful-basis map in `docs/product/saudi_lead_engine.md`. Offer Sovereign tier for in-Kingdom residency. Schedule a separate 30-min DPO call before any commercial close.
+- **"Procurement cannot defend the cost."** Anchor on the conservative scenario in `docs/sales/roi_model_saudi.md` — never quote the mid or optimistic case to procurement first. The conservative ≥ 240% ROI with payback < 4 months is the procurement-grade number.
+- **"Local content / NUPCO registration."** We register as a Saudi entity, we are on the roadmap to NCLP (12-month horizon, tracked in `docs/product/revenue_weighted_roadmap.md`), and we can close via a registered partner under T6 partner program if the deal requires it immediately.
+
+### Bilingual demo flow
+
+Open with: "Shall we run in Arabic, English, or both per persona?" Slides must be bilingual at matching indices — never code-switch within one slide. SAR numbers use thousand-separators (1,023,000) and never abbreviated to "K"/"M" without first-occurrence spelling. Persona-tagged outputs (Decision Passport cards, lead summaries) are rendered in Arabic when the committee is majority Arabic-preferring.
+
+Demo time-box for committee meeting: 45 minutes — see Arabic playbook section 3.3 for the time-block split. The ROI block (slides from `docs/sales/roi_deck_outline.md` slide 6) is non-negotiable; cycle other blocks if the meeting compresses.
+
+### Anchor logos to cite
+
+Subject to written permission (refresh per `docs/BRAND_PRESS_KIT.md` standards). Default citation set:
+- BFSI: one SAMA-licensed bank (anonymized as "Top-5 SAMA bank") + one fintech with > SAR 100M funding.
+- Retail: one top-10 retail chain + one Salla/Zid platform-level customer.
+- Healthcare: one Cluster + one medtech distributor.
+
+If permission is not yet on file, cite the vertical-aggregate number (per `docs/ROI_PROOF_PACK.md`) and never invent specifics.
+
+### AR companion link
+
+The full Saudi enterprise motion in Arabic — discovery, MEDDPICC-adapted qualification, bilingual demo, five-objection handling, commercial + procurement closing, CS handoff — is at `docs/SALES_PLAYBOOK.ar.md`. Reps certified at L2 or above per `docs/sales/enablement_program.md` must read both English and Arabic versions before running any enterprise deal.
