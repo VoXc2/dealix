@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Dealix — System Status (Live)</title>
+  <meta name="description" content="حالة النظام المباشرة — DB، Redis، Sentry، 4 DLQs، PDPL+ZATCA posture. تُحدّث كل 30 ثانية." />
+  <meta name="robots" content="index,follow" />
+  <link rel="canonical" href="https://dealix.me/system-status.html" />
+  <meta property="og:title" content="Dealix System Status (Live)" />
+  <meta property="og:description" content="Real-time PDPL+ZATCA posture + dependency health." />
+  <meta property="og:type" content="website" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="theme-color" content="#0f172a" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="/assets/css/design-system.css" />
+  <style>
+    body { font-family: "IBM Plex Sans Arabic", system-ui, sans-serif; background: #f8fafc; color: #0f172a; margin: 0; line-height: 1.7; }
+    .container { max-width: 1000px; margin: 0 auto; padding: 32px 20px; }
+    h1 { font-size: clamp(28px, 5vw, 40px); margin: 16px 0; }
+    h2 { font-size: 22px; margin: 36px 0 12px; padding-bottom: 6px; border-bottom: 2px solid #e2e8f0; }
+    .overall-banner { padding: 24px; border-radius: 14px; text-align: center; margin: 16px 0; font-size: 20px; font-weight: 700; }
+    .overall-banner.ok { background: #dcfce7; color: #166534; border: 2px solid #16a34a; }
+    .overall-banner.degraded { background: #fef3c7; color: #713f12; border: 2px solid #f59e0b; }
+    .overall-banner.down { background: #fee2e2; color: #7f1d1d; border: 2px solid #dc2626; }
+    .last-checked { color: #64748b; font-size: 13px; margin-top: 8px; }
+    .grid { display: grid; gap: 16px; grid-template-columns: 1fr; margin: 16px 0; }
+    @media (min-width: 720px) { .grid { grid-template-columns: 1fr 1fr; } }
+    .card { background: white; padding: 20px; border-radius: 12px; border: 1px solid #e2e8f0; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
+    .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+    .card-header h3 { margin: 0; font-size: 18px; }
+    .status-badge { padding: 4px 12px; border-radius: 999px; font-size: 12px; font-weight: 700; }
+    .status-badge.ok { background: #dcfce7; color: #166534; }
+    .status-badge.fail { background: #fee2e2; color: #7f1d1d; }
+    .status-badge.skip, .status-badge.misconfigured { background: #fef3c7; color: #713f12; }
+    .status-badge.degraded { background: #fef3c7; color: #713f12; }
+    .ms { color: #64748b; font-size: 13px; font-family: "JetBrains Mono", monospace; }
+    .err-text { color: #7f1d1d; font-size: 12px; font-family: monospace; background: #fef2f2; padding: 6px 8px; border-radius: 6px; margin-top: 6px; word-break: break-all; }
+    .compliance-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px dashed #e2e8f0; font-size: 14px; }
+    .compliance-row:last-child { border-bottom: none; }
+    .compliance-row .article { color: #475569; }
+    .compliance-row .impl-yes { color: #166534; font-weight: 600; }
+    .compliance-row .impl-no { color: #7f1d1d; font-weight: 600; }
+    .dlq-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 12px; }
+    .dlq-stat { background: #f1f5f9; padding: 12px; border-radius: 8px; text-align: center; }
+    .dlq-stat .num { font-size: 24px; font-weight: 700; color: #0f172a; }
+    .dlq-stat.over { background: #fee2e2; }
+    .dlq-stat.over .num { color: #7f1d1d; }
+    .dlq-stat .label { font-size: 11px; color: #64748b; }
+    .endpoint-link { color: #64748b; font-size: 13px; font-family: "JetBrains Mono", monospace; }
+    .endpoint-link a { color: #1e40af; }
+    .footer { text-align: center; color: #64748b; font-size: 13px; padding: 24px 0; }
+    .footer a { color: #64748b; }
+    .loading { text-align: center; color: #64748b; padding: 48px; }
+  </style>
+</head>
+<body>
+
+<main class="container">
+
+  <h1>System Status</h1>
+  <p style="color:#475569">
+    حالة Dealix المباشرة. كل قسم يستهلك endpoint عام تستطيع التحقّق منه بنفسك.
+    يُحدّث كل ٣٠ ثانية أو عند ضغط refresh.
+  </p>
+
+  <div id="overall" class="loading">⏳ جارٍ التحقّق من الحالة...</div>
+
+  <h2>الـ Dependencies <span class="endpoint-link"><a href="/healthz?deep=1">GET /healthz?deep=1</a></span></h2>
+  <div id="dependencies" class="grid">
+    <div class="loading">جارٍ التحميل...</div>
+  </div>
+
+  <h2>DLQ Depths (4 production queues)</h2>
+  <div id="dlq" class="card">
+    <div class="loading">جارٍ التحميل...</div>
+  </div>
+
+  <h2>PDPL + ZATCA Posture <span class="endpoint-link"><a href="/api/v1/compliance/status">GET /api/v1/compliance/status</a></span></h2>
+  <div class="grid">
+    <div id="pdpl-card" class="card">
+      <h3>PDPL Articles</h3>
+      <div class="loading">جارٍ التحميل...</div>
+    </div>
+    <div id="zatca-card" class="card">
+      <h3>ZATCA Phase 2</h3>
+      <div class="loading">جارٍ التحميل...</div>
+    </div>
+  </div>
+
+  <h2>Data Residency</h2>
+  <div id="residency" class="card">
+    <div class="loading">جارٍ التحميل...</div>
+  </div>
+
+  <p style="text-align:center;color:#64748b;font-size:13px;margin:32px 0">
+    آخر تحديث: <span id="last-update">—</span> ·
+    <button onclick="loadAll()" style="background:#0f172a;color:white;border:none;padding:8px 16px;border-radius:6px;cursor:pointer;font-family:inherit">🔄 Refresh</button>
+  </p>
+
+  <footer class="footer">
+    <p>
+      <a href="/">الرئيسية</a> ·
+      <a href="/security.html">Security</a> ·
+      <a href="/roadmap.html">Roadmap</a> ·
+      <a href="/changelog.html">Changelog</a> ·
+      <a href="/architecture.html">Architecture</a>
+    </p>
+    <p>Dealix · ZATCA Phase 2 · me-south-1 · PDPL by design · live data, no static badges</p>
+  </footer>
+
+</main>
+
+<script>
+const API_BASE = window.location.origin.includes('localhost')
+  ? 'http://localhost:8000'
+  : 'https://api.dealix.me';
+
+const REFRESH_MS = 30_000;
+
+async function loadAll() {
+  const tStart = Date.now();
+  try {
+    const [healthRes, compRes] = await Promise.all([
+      fetch(`${API_BASE}/healthz?deep=1`).then(r => r.ok ? r.json() : null).catch(() => null),
+      fetch(`${API_BASE}/api/v1/compliance/status`).then(r => r.ok ? r.json() : null).catch(() => null),
+    ]);
+
+    renderOverall(healthRes);
+    renderDependencies(healthRes);
+    renderDLQ(healthRes);
+    renderPDPL(compRes);
+    renderZATCA(compRes);
+    renderResidency(compRes);
+
+    document.getElementById('last-update').textContent =
+      new Date().toLocaleString('ar-SA') + ` (${Date.now() - tStart}ms)`;
+  } catch (err) {
+    document.getElementById('overall').innerHTML =
+      `<div class="overall-banner down">❌ فشل في التواصل مع الـ API: ${err.message}</div>`;
+  }
+}
+
+function renderOverall(health) {
+  const el = document.getElementById('overall');
+  if (!health) {
+    el.innerHTML = `<div class="overall-banner down">❌ النظام غير متاح</div>`;
+    return;
+  }
+  const status = health.status || 'unknown';
+  const klass = status === 'ok' ? 'ok' : status === 'degraded' ? 'degraded' : 'down';
+  const emoji = status === 'ok' ? '✅' : status === 'degraded' ? '⚠️' : '❌';
+  const label = status === 'ok' ? 'كل الأنظمة تعمل' : status === 'degraded' ? 'بعض الخدمات في الوضع المُتدهور' : 'النظام معطل';
+  el.innerHTML = `<div class="overall-banner ${klass}">${emoji} ${label}</div>`;
+}
+
+function renderDependencies(health) {
+  const el = document.getElementById('dependencies');
+  if (!health || !health.checks) {
+    el.innerHTML = '<div class="card">لا توجد بيانات</div>';
+    return;
+  }
+  const order = ['postgres', 'redis', 'sentry', 'llm_providers'];
+  el.innerHTML = order.map(name => {
+    const c = health.checks[name];
+    if (!c) return '';
+    const status = c.status || 'unknown';
+    const ms = c.ms !== undefined ? ` <span class="ms">${c.ms}ms</span>` : '';
+    return `
+      <div class="card">
+        <div class="card-header">
+          <h3>${name}</h3>
+          <span class="status-badge ${status}">${status.toUpperCase()}</span>
+        </div>
+        ${ms}
+        ${c.error ? `<div class="err-text">${c.error}</div>` : ''}
+        ${c.reason ? `<div style="color:#64748b;font-size:13px">${c.reason}</div>` : ''}
+        ${c.providers ? `<div style="font-family:monospace;font-size:13px">${c.providers.join(', ') || '—'}</div>` : ''}
+      </div>
+    `;
+  }).join('');
+}
+
+function renderDLQ(health) {
+  const el = document.getElementById('dlq');
+  const dlq = health?.checks?.dlq;
+  if (!dlq) {
+    el.innerHTML = '<div style="color:#64748b">DLQ data unavailable (Redis not configured?)</div>';
+    return;
+  }
+  const depths = dlq.depths || {};
+  const over = new Set(dlq.over_threshold || []);
+  el.innerHTML = `<div class="dlq-grid">` +
+    Object.entries(depths).map(([q, d]) => `
+      <div class="dlq-stat ${over.has(q) ? 'over' : ''}">
+        <div class="num">${d}</div>
+        <div class="label">${q}</div>
+      </div>
+    `).join('') +
+    `</div>` +
+    (dlq.over_threshold?.length
+      ? `<div style="margin-top:12px;color:#7f1d1d;font-size:14px">⚠ Over threshold (5): ${dlq.over_threshold.join(', ')}</div>`
+      : ''
+    );
+}
+
+function renderPDPL(comp) {
+  const el = document.getElementById('pdpl-card');
+  if (!comp?.pdpl) { el.innerHTML += '<div>—</div>'; return; }
+  const articles = comp.pdpl;
+  el.innerHTML = `<h3>PDPL Articles</h3>` +
+    Object.entries(articles).map(([art, info]) => {
+      const impl = info.implemented;
+      return `
+        <div class="compliance-row">
+          <span class="article">${art}</span>
+          <span class="${impl ? 'impl-yes' : 'impl-no'}">${impl ? '✓ implemented' : '✗ not yet'}</span>
+        </div>
+      `;
+    }).join('');
+}
+
+function renderZATCA(comp) {
+  const el = document.getElementById('zatca-card');
+  if (!comp?.zatca) { el.innerHTML += '<div>—</div>'; return; }
+  const z = comp.zatca;
+  const items = [
+    ['Phase 2 e-Invoice', z.phase_2_e_invoice?.implemented],
+    ['Fatoorah API', z.fatoorah_api?.implemented],
+    ['Invoice Chaining', z.invoice_chaining?.implemented],
+    [`Retention (${z.retention_years}y)`, true],
+  ];
+  el.innerHTML = `<h3>ZATCA Phase 2</h3>` +
+    items.map(([label, impl]) => `
+      <div class="compliance-row">
+        <span class="article">${label}</span>
+        <span class="${impl ? 'impl-yes' : 'impl-no'}">${impl ? '✓' : '✗'}</span>
+      </div>
+    `).join('');
+}
+
+function renderResidency(comp) {
+  const el = document.getElementById('residency');
+  const r = comp?.data_residency;
+  if (!r) { el.innerHTML = '<div>—</div>'; return; }
+  el.innerHTML = `
+    <div class="compliance-row"><span class="article">Primary region</span><span class="impl-yes">${r.primary_region}</span></div>
+    <div class="compliance-row"><span class="article">No data leaves GCC</span><span class="impl-yes">${r.no_data_leaves_gcc ? '✓ confirmed' : '✗'}</span></div>
+    <div class="compliance-row"><span class="article">Anthropic (US)</span><span class="impl-yes">SCC ✓</span></div>
+    <div class="compliance-row"><span class="article">OpenAI (US)</span><span class="impl-yes">SCC ✓</span></div>
+    <div class="compliance-row"><span class="article">Backups region</span><span class="impl-yes">${r.backups_region}</span></div>
+    <div class="compliance-row"><span class="article">Log aggregation</span><span style="color:#64748b">${r.log_aggregation?.split(' — ')[0]}</span></div>
+  `;
+}
+
+// Initial + auto-refresh
+loadAll();
+setInterval(loadAll, REFRESH_MS);
+</script>
+
+</body>
+</html>
