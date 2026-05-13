@@ -1,8 +1,7 @@
 # Workflow Registry
 
-> The canonical list of every Dealix workflow — what it delivers, which
-> service it serves, the risk class, the human-in-loop posture, and the
-> ship status. Referenced by `WORKFLOW_RUNTIME_DESIGN.md` and
+> The canonical list of every Dealix workflow — service, risk, human-in-loop
+> posture, status. Referenced by `WORKFLOW_RUNTIME_DESIGN.md` and
 > `SERVICE_RUNTIME_TABLE.md`. Adding a row here is the entry ticket for any
 > new automation.
 
@@ -11,11 +10,11 @@
 | Status | Meaning |
 |--------|---------|
 | Designed | 8-step contract written; no code yet |
-| Manual | Delivered today by a human following the contract |
-| MVP | Automated, behind a human reviewer for every customer-facing output |
-| Production | Automated, eval at threshold, monitored in Control Tower |
-| Deprecated | Replaced or retired; do not invoke |
-| Blocked | Cannot ship — open governance / eval / data gap |
+| Manual | Delivered today by a human |
+| MVP | Automated; human reviews every customer-facing output |
+| Production | Automated; eval at threshold; Control Tower monitored |
+| Deprecated | Replaced or retired |
+| Blocked | Open governance / eval / data gap |
 
 ## Registry (Phase-1)
 
@@ -46,28 +45,22 @@
 ## Hard rules
 
 - Every row has a named owner. "Team" is not an owner.
-- A row in **Status = MVP** must have:
-  - An entry in `PROMPT_REGISTRY.md` per AI step.
-  - An eval in `EVALUATION_REGISTRY.md` at or above threshold.
-  - A clean runtime governance pass (no open Hard Fail in
-    `dealix/trust/policy.py`).
-- A row in **Status = Blocked** must reference the open issue in
-  `docs/governance/RISK_REGISTER.md` or a CTO-signed decision.
-- Workflows with `Risk = High` cannot be promoted past MVP without a Friday
-  review noted in `SALES_OPS_SOP.md` §10.
+- A row in **Status = MVP** must have a prompt in `PROMPT_REGISTRY.md`, an
+  eval in `EVALUATION_REGISTRY.md` at or above threshold, and a clean
+  runtime governance pass (no open Hard Fail in `dealix/trust/policy.py`).
+- A row in **Status = Blocked** must reference an open issue in
+  `RISK_REGISTER.md` or a CTO-signed decision.
+- `Risk = High` rows cannot promote past MVP without a Friday review in
+  `SALES_OPS_SOP.md` §10.
 
 ## Lifecycle
 
 ```
-Designed  →  Manual  →  MVP  →  Production  →  Deprecated
-                                 ↑                ↑
-                                 │                │
-                          (eval+monitor)    (replaced)
+Designed → Manual → MVP → Production → Deprecated
 ```
 
-A workflow may skip `Manual` only if the capability is brand new with no
-human predecessor — rare. Most workflows graduate from `Manual` so the
-8-step contract is proven by humans before code.
+Most workflows graduate from `Manual` so the 8-step contract is proven by
+humans before code.
 
 ## Cross-links
 

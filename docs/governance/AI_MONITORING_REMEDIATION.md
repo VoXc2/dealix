@@ -64,22 +64,16 @@ When in doubt, pause the agent. A paused agent:
 
 ## Sprawl controls (Gartner alignment)
 
-- **Inventory**: `AI_AGENT_INVENTORY.md` is the single source of truth.
-- **Lifecycle**: every agent moves through `AGENT_LIFECYCLE_MANAGEMENT.md`.
-- **Promotion gate**: no agent reaches production without eval + governance
-  pass.
-- **Retirement**: agents that drift, cost too much, or duplicate others are
-  retired on a quarterly review.
-- **Permission Mirroring**: `RUNTIME_GOVERNANCE.md` prevents shadow agents
-  from over-reading.
+Inventory in `AI_AGENT_INVENTORY.md`. Lifecycle in
+`AGENT_LIFECYCLE_MANAGEMENT.md`. Promotion gate requires eval +
+governance pass. Quarterly retirement review. Permission Mirroring
+prevents shadow agents from over-reading.
 
 ## Phase 2 wiring
 
-- Alerts route to Slack + on-call PagerDuty rotation (Phase 2).
-- Pause/resume is a one-click action in the Control Tower.
-- Remediation actions write structured events into the event store
-  (`auto_client_acquisition/revenue_memory/event_store.py`) so RCAs are
-  reproducible.
+Alerts route to Slack + on-call rotation. Pause/resume becomes a one-click
+action in the Control Tower. Remediation actions write structured events
+into the event store so RCAs are reproducible.
 
 ## Cross-links
 

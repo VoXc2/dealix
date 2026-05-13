@@ -63,29 +63,21 @@ public Dealix surfaces.
 ## How customers can verify
 
 - Request the Proof Pack for any deliverable.
-- Request an Information Governance review showing which sources fed which
-  agent (`SOURCE_REGISTRY.md` + audit log).
-- Request a Promotion Gate report showing which evals every shipped agent
-  passed (`AGENT_LIFECYCLE_MANAGEMENT.md`).
-- Submit a Data Subject Request per
-  `docs/PDPL_DATA_SUBJECT_REQUEST_SOP.md`.
+- Request an Information Governance review (`SOURCE_REGISTRY.md` + audit).
+- Request a Promotion Gate report per `AGENT_LIFECYCLE_MANAGEMENT.md`.
+- Submit a Data Subject Request per `PDPL_DATA_SUBJECT_REQUEST_SOP.md`.
 
 ## Incident commitment
 
-If a personal data breach occurs and we are aware of it, we will:
-
-- Notify the affected customer within 24 hours.
-- Notify SDAIA and affected individuals within the 72-hour PDPL window
-  (`docs/PDPL_BREACH_RESPONSE_PLAN.md`).
-- Publish a post-incident summary to the customer with root cause, scope,
-  remediation, and the new controls preventing recurrence.
+If a personal data breach occurs, we notify the customer within 24 hours,
+notify SDAIA and affected individuals within the 72-hour PDPL window
+(`PDPL_BREACH_RESPONSE_PLAN.md`), and publish a post-incident summary.
 
 ## Where to find this charter
 
-- This file (markdown source of truth).
-- Public website (`landing/`) once Phase-1 marketing surfaces refresh.
-- Bundled into every procurement response and DPA addendum
-  (`docs/DPA_DEALIX_FULL.md`).
+This file (source of truth); the public website (`landing/`) when Phase-1
+marketing surfaces refresh; bundled into procurement responses and the
+DPA (`DPA_DEALIX_FULL.md`).
 
 ## Cross-links
 

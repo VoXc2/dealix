@@ -61,35 +61,24 @@ than the requesting user could read directly. Every access logs
 ## Information lifecycle
 
 ```
-Proposed source → Registered → Indexed → In Use → Refreshed → Quarantined → Deleted
+Proposed → Registered → Indexed → In Use → Refreshed → Quarantined → Deleted
 ```
 
-- **Registered**: row added to `SOURCE_REGISTRY.md` by HoData (or HoLegal
-  for legal sources).
-- **Indexed**: embeddings + retrieval entry created where applicable
-  (`docs/EMBEDDINGS_PIPELINE.md`).
-- **In Use**: agents may retrieve under their declared allowed uses.
-- **Refreshed**: re-checked at the freshness cadence; stale rows quarantined.
-- **Quarantined**: read-blocked, retained for audit; not visible to agents.
-- **Deleted**: hard-deleted per data subject request or retention expiry.
+HoData (or HoLegal for legal sources) registers; embeddings get indexed
+(`EMBEDDINGS_PIPELINE.md`); agents retrieve under declared uses; stale
+rows quarantine; DSR or retention expiry triggers deletion.
 
 ## Auditing
 
-- Every read by an agent writes to `dealix/trust/audit.py`.
-- The Friday review (per `SALES_OPS_SOP.md` §10) samples reads against
-  registry scope; mismatches escalate to HoLegal.
-- A monthly information-governance audit (per
-  `AI_MONITORING_REMEDIATION.md`) reconciles `SOURCE_REGISTRY.md` against
-  actual reads in the audit log.
+Every agent read writes to `dealix/trust/audit.py`. The Friday review
+samples reads against registry scope; mismatches escalate to HoLegal. A
+monthly audit reconciles `SOURCE_REGISTRY.md` against the audit log.
 
 ## Phase 2 wiring
 
-- Source registry moves from markdown to a typed table in the event store
-  (`auto_client_acquisition/revenue_memory/event_store.py`).
-- Runtime calls resolve source rows by ID; an unregistered source ID
-  returns `BLOCK` at the policy layer.
-- The AI Control Tower (`AI_CONTROL_TOWER.md`) shows source-missing
-  incidents per agent.
+Source registry moves to a typed table in the event store. Runtime calls
+resolve by source ID; unregistered IDs `BLOCK` at the policy layer. The
+AI Control Tower shows source-missing incidents per agent.
 
 ## Cross-links
 

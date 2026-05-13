@@ -65,23 +65,17 @@ their delivery.
 
 ## Notification templates
 
-- Customer notification template: `docs/_templates/customer_incident_notice.md`
-- SDAIA / regulator notification template:
-  `docs/PDPL_BREACH_RESPONSE_PLAN.md` §6
-- Internal RCA template: `docs/_templates/rca_template.md`
-
-(Templates referenced exist as separate operating artefacts; this SOP is
-the runbook that points to them.)
+Customer notice: `docs/_templates/customer_incident_notice.md`. SDAIA /
+regulator notice: `PDPL_BREACH_RESPONSE_PLAN.md` §6. Internal RCA:
+`docs/_templates/rca_template.md`. This SOP is the runbook that points
+to them.
 
 ## Post-incident
 
-- Decision Ledger entry within 5 working days (root cause, blast radius,
-  fix, prevention).
-- Eval added in `EVALUATION_REGISTRY.md` that would have caught the
-  failure (regression).
-- Rule added or updated in `dealix/trust/forbidden_claims.py` or
-  `dealix/trust/pii_detector.py` if pattern-based.
-- Playbook update merged into this file if response surfaced a gap.
+- Decision Ledger entry within 5 working days.
+- Regression eval added in `EVALUATION_REGISTRY.md`.
+- Rule update in `forbidden_claims.py` or `pii_detector.py` if pattern-based.
+- Playbook update merged here if response surfaced a gap.
 
 ## Hard rules
 

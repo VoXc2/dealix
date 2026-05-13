@@ -18,17 +18,17 @@ review.
 
 ## What a "data product" includes
 
-| Component | Required | Notes |
-|-----------|:--------:|-------|
-| Name | Yes | `service.dataset.purpose`, e.g. `lead_intel.accounts.import` |
-| Schema | Yes | Pydantic model in `auto_client_acquisition/<service>/schemas.py` |
-| Owner | Yes | Named role (HoData / HoP / CRO / HoCS) |
-| Source row | Yes | Entry in `docs/ledgers/SOURCE_REGISTRY.md` |
-| Sensitivity | Yes | per `docs/governance/PDPL_DATA_RULES.md` (Public / Internal / Confidential / Restricted) |
-| Allowed AI uses | Yes | Subset of {classify, score, summarize, retrieve, draft, train} — training is forbidden by default |
-| Freshness contract | Yes | Max-age before flagged stale (e.g. 90 days) |
-| Retention | Yes | Per `docs/DATA_RETENTION_POLICY.md` |
-| Deletion path | Yes | Per `docs/PDPL_DATA_SUBJECT_REQUEST_SOP.md` |
+| Component | Notes |
+|-----------|-------|
+| Name | `service.dataset.purpose` (e.g. `lead_intel.accounts.import`) |
+| Schema | Pydantic in `auto_client_acquisition/<service>/schemas.py` |
+| Owner | Named role (HoData / HoP / CRO / HoCS) |
+| Source row | Entry in `SOURCE_REGISTRY.md` |
+| Sensitivity | Per `PDPL_DATA_RULES.md` |
+| Allowed AI uses | Subset of {classify, score, summarize, retrieve, draft}; training forbidden by default |
+| Freshness | Max age before stale |
+| Retention | Per `DATA_RETENTION_POLICY.md` |
+| Deletion path | Per `PDPL_DATA_SUBJECT_REQUEST_SOP.md` |
 
 ## Seed catalog
 
@@ -85,13 +85,10 @@ user's RBAC overlaps `allowed_users`.
 
 ## Phase-1 vs Phase-2
 
-- **Phase 1**: schemas live in `auto_client_acquisition/<service>/schemas.py`
-  next to the workflow code; CSV imports are validated by the Pydantic model
-  before any AI step.
-- **Phase 2**: an explicit Data Product Registry surfaces in the Control
-  Tower; the event store
-  (`auto_client_acquisition/revenue_memory/event_store.py`) is the spine
-  that links datasets to runs and proof events.
+**Phase 1**: schemas live in `auto_client_acquisition/<service>/schemas.py`;
+CSV imports are validated by the Pydantic model before any AI step.
+**Phase 2**: a Data Product Registry surfaces in the Control Tower; the
+event store links datasets to runs and proof events.
 
 ## Cross-links
 
