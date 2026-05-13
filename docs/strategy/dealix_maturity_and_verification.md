@@ -233,8 +233,53 @@ Scorecard.
 - **Review**: weekly Scorecard refresh; monthly Maturity-level review; quarterly
   gate-criteria revision.
 
-## 12. Change Log
+## 12. The 5-Layer Architecture (canonical company structure)
+
+Dealix as a real company stacks into exactly five layers. Every code module,
+every doc, every offering must belong to one of these layers.
+
+```
+┌────────────────────────────────────────────────┐
+│ 1. Service Catalog                             │  Offers, prices, scopes, outcomes
+│    (W6.T33 service_portfolio_catalog.md)       │
+├────────────────────────────────────────────────┤
+│ 2. Delivery OS                                 │  Intake, checklist, QA, report, proof,
+│    (W6.T34 §3.9 + W6.T36 + delivery_factory/)  │  handoff, renewal
+├────────────────────────────────────────────────┤
+│ 3. Product OS                                  │  Data / Revenue / Customer / Operations
+│    (revenue_os, customer_data_plane,           │  / Knowledge OS modules
+│     orchestrator, knowledge_v10, etc.)         │
+├────────────────────────────────────────────────┤
+│ 4. Trust OS                                    │  Governance, approvals, redaction,
+│    (dealix/trust/)                             │  audit, event store, decision passport
+├────────────────────────────────────────────────┤
+│ 5. AI Platform                                 │  LLM gateway, agents, evals, observability
+│    (dealix/llm_gateway/, ai_workforce/)        │
+└────────────────────────────────────────────────┘
+```
+
+This layered view subsumes the 11-module catalog (W6.T34) and the 5 customer
+pillars (W6.T32). Layers 3 and 4 power Layer 2; Layer 2 productizes Layer 1;
+Layer 5 is the AI substrate beneath everything.
+
+## 13. The Final Test Question
+
+The single binary test that determines whether a Dealix service has reached
+production-grade:
+
+> **"Can I hand this service to a new customer at the same quality, in the
+> same timebox, with the same report / proof / QA, without the founder being
+> the bottleneck?"**
+
+- Answer **yes** → the service is real.
+- Answer **no** → it is still a manual project; productize before scaling.
+
+This question is asked weekly in the operating cadence (W5.T30) for every
+service the company is currently selling.
+
+## 14. Change Log
 
 | Date | Author | Change |
 |------|--------|--------|
 | 2026-05-13 | CEO | Initial 5-level Maturity Model + 7 Tests + 4 Readiness Gates + Operating Scorecard + "Build only after repetition" rule + weekly CEO checklist |
+| 2026-05-13 | CEO | Added §12 (5-Layer Architecture: Service Catalog / Delivery OS / Product OS / Trust OS / AI Platform) and §13 (Final Test Question) |

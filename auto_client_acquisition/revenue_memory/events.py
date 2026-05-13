@@ -77,6 +77,13 @@ EVENT_TYPES: tuple[str, ...] = (
     "ai.regression_detected",
     # Pulse
     "pulse.published",
+    # Delivery OS (Phase 1 — 8-stage Delivery Standard)
+    "delivery.stage_entered",
+    "delivery.stage_exited",
+    "delivery.qa_evaluated",
+    "delivery.proof_pack_created",
+    "delivery.handoff_completed",
+    "delivery.renewal_proposed",
 )
 
 
