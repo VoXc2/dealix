@@ -687,3 +687,72 @@ def _signal_from_dict(d: dict[str, Any]) -> SignalDetection:
         evidence_url=d.get("evidence_url"),
         payload=d.get("payload", {}),
     )
+
+
+# ---------------------------------------------------------------------------
+# Saudi Lead Engine — Seed -> Ranked Leads pipeline (W6.T31 flagship endpoint)
+# ---------------------------------------------------------------------------
+from auto_client_acquisition.revenue_os.lead_scoring import (  # noqa: E402
+    LeadScore,
+    rank_top_k,
+)
+
+
+@router.post("/seed")
+async def submit_seed(seed: dict[str, Any] = Body(...)) -> dict[str, Any]:
+    """Accept a Saudi Lead Engine seed and return a job acknowledgement.
+
+    Seed shape (matches docs/go-to-market/icp_saudi.md §3.5):
+      vertical, region, tier, trigger, exclude, limit (optional)
+    Returns a `job_id` the caller polls via GET /leads?job_id=...
+    """
+    if not isinstance(seed, dict):
+        raise HTTPException(status_code=422, detail="seed must be an object")
+    required = ["vertical"]
+    missing = [k for k in required if k not in seed]
+    if missing:
+        raise HTTPException(status_code=422, detail={"missing": missing})
+    job_id = f"lead_job_{_now().strftime('%Y%m%d%H%M%S')}"
+    return {
+        "job_id": job_id,
+        "status": "accepted",
+        "accepted_at": _now().isoformat(),
+        "seed": seed,
+    }
+
+
+@router.get("/leads")
+async def list_leads(
+    job_id: str | None = Query(None),
+    min_band: str = Query("A", pattern="^[ABCD]$"),
+    limit: int = Query(50, ge=1, le=500),
+) -> dict[str, Any]:
+    """Return ranked leads (stub — caller passes records via POST /leads/rank in MVP)."""
+    return {
+        "job_id": job_id,
+        "min_band": min_band,
+        "limit": limit,
+        "leads": [],
+        "note": (
+            "MVP: use POST /leads/rank with a records[] body to get ranked leads. "
+            "Full async pipeline lands in Phase 2."
+        ),
+    }
+
+
+@router.post("/leads/rank")
+async def rank_leads(
+    records: list[dict[str, Any]] = Body(...),
+    limit: int = Query(50, ge=1, le=500),
+) -> dict[str, Any]:
+    """Rank a batch of account records using Revenue OS lead_scoring.
+
+    Synchronous endpoint suitable for MVP delivery of Revenue Intelligence Sprints.
+    """
+    ranked = rank_top_k(records, k=limit)
+    return {
+        "count": len(ranked),
+        "ranked": [
+            {"record": rec, "score": sc.to_dict()} for rec, sc in ranked
+        ],
+    }
