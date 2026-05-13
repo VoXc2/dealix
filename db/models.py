@@ -940,3 +940,31 @@ class PaymentRecord(Base):
         UniqueConstraint("provider", "provider_payment_id", name="uq_payments_provider_id"),
         Index("ix_payments_status_created_at", "status", "created_at"),
     )
+
+
+class SectorReportRecord(Base):
+    """
+    Generated Sector Intelligence Reports — R4 monetization (W8.2).
+
+    Each row captures one generation of a sector report. The full
+    payload is stored as JSON; lookups happen by report_id (the
+    deterministic sha256-based ID from sector_intel router).
+    """
+
+    __tablename__ = "sector_reports"
+
+    id: Mapped[str] = mapped_column(String(64), primary_key=True)  # sr_<hash>
+    sector: Mapped[str] = mapped_column(String(64), index=True)
+    customer_handle: Mapped[str | None] = mapped_column(String(64), nullable=True, index=True)
+    price_sar: Mapped[int] = mapped_column(Integer)
+    period_start: Mapped[str | None] = mapped_column(String(32), nullable=True)
+    period_end: Mapped[str | None] = mapped_column(String(32), nullable=True)
+    payload: Mapped[dict] = mapped_column(JSON)  # the full report dict
+    payment_status: Mapped[str] = mapped_column(String(32), default="pending", index=True)
+    delivered_at: Mapped[datetime | None] = mapped_column(nullable=True)
+    created_at: Mapped[datetime] = mapped_column(default=utcnow, index=True)
+    updated_at: Mapped[datetime] = mapped_column(default=utcnow, onupdate=utcnow)
+
+    __table_args__ = (
+        Index("ix_sector_reports_sector_created", "sector", "created_at"),
+    )
