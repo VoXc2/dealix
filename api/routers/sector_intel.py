@@ -249,13 +249,77 @@ async def generate_report(
         },
     }
 
-    # Lightweight in-memory persistence ((real persistence requires DB schema
-    # for reports — defer until customer #5 actually buys one)
+    # W8.2 — persist to DB if available (graceful fallback if DB unreachable
+    # or migration 008 not yet applied — caller still gets the report inline).
+    persisted = await _persist_report(
+        report_id=report_id,
+        sector=body.sector,
+        customer_handle=body.customer_handle,
+        period_start=body.period_start,
+        period_end=body.period_end,
+        payload=report,
+    )
+
     return {
         "status": "generated",
         "report": report,
+        "persisted": persisted,
         "presigned_url": f"/api/v1/sector-intel/reports/{report_id}",
     }
+
+
+async def _persist_report(
+    *,
+    report_id: str,
+    sector: str,
+    customer_handle: str | None,
+    period_start: str | None,
+    period_end: str | None,
+    payload: dict[str, Any],
+) -> bool:
+    """Upsert a sector report into the sector_reports table.
+
+    Returns True on successful write, False on graceful skip (DB layer
+    unavailable, migration 008 not applied, etc.).
+    """
+    try:
+        from sqlalchemy import select
+
+        from db.models import SectorReportRecord  # type: ignore
+        from db.session import async_session_factory
+    except Exception as exc:
+        log.debug("sector_report_persist_skipped reason=imports error=%s", exc)
+        return False
+
+    try:
+        async with async_session_factory()() as session:
+            existing = (
+                await session.execute(
+                    select(SectorReportRecord).where(SectorReportRecord.id == report_id)
+                )
+            ).scalar_one_or_none()
+            if existing is None:
+                row = SectorReportRecord(
+                    id=report_id,
+                    sector=sector,
+                    customer_handle=customer_handle,
+                    price_sar=REPORT_PRICE_SAR[sector],
+                    period_start=period_start,
+                    period_end=period_end,
+                    payload=payload,
+                    payment_status="pending",
+                )
+                session.add(row)
+            else:
+                existing.payload = payload
+                existing.period_start = period_start
+                existing.period_end = period_end
+            await session.commit()
+            return True
+    except Exception as exc:
+        log.warning("sector_report_persist_failed report_id=%s error=%s",
+                    report_id, exc)
+        return False
 
 
 @router.get("/reports/{report_id}")
@@ -264,18 +328,53 @@ async def fetch_report(
 ) -> dict[str, Any]:
     """Fetch a previously-generated report by ID.
 
-    Stub for now — returns a 404 with note. Real fetch requires a
-    sector_reports table. Activates after customer #5 (per v4 §7).
+    W8.2 — reads from sector_reports table. Returns 404 only when the
+    record genuinely doesn't exist; degrades gracefully if the DB
+    layer is unavailable.
     """
-    raise HTTPException(
-        status_code=404,
-        detail={
-            "error": "report_not_persisted",
-            "note": (
-                "Sector report persistence requires a sector_reports DB table. "
-                "Currently /generate returns the report inline. "
-                "Persistence ships after customer #5 (v4 §7)."
-            ),
-            "report_id": report_id,
-        },
-    )
+    try:
+        from sqlalchemy import select
+
+        from db.models import SectorReportRecord  # type: ignore
+        from db.session import async_session_factory
+    except Exception:
+        raise HTTPException(
+            status_code=503,
+            detail={
+                "error": "db_layer_unavailable",
+                "report_id": report_id,
+            },
+        )
+
+    async with async_session_factory()() as session:
+        row = (
+            await session.execute(
+                select(SectorReportRecord).where(SectorReportRecord.id == report_id)
+            )
+        ).scalar_one_or_none()
+
+    if row is None:
+        raise HTTPException(
+            status_code=404,
+            detail={
+                "error": "report_not_found",
+                "report_id": report_id,
+                "note": (
+                    "Generate a report first via POST /api/v1/sector-intel/generate, "
+                    "then re-fetch by report_id."
+                ),
+            },
+        )
+
+    return {
+        "report_id": row.id,
+        "sector": row.sector,
+        "customer_handle": row.customer_handle,
+        "price_sar": row.price_sar,
+        "period_start": row.period_start,
+        "period_end": row.period_end,
+        "payment_status": row.payment_status,
+        "delivered_at": row.delivered_at.isoformat() if row.delivered_at else None,
+        "created_at": row.created_at.isoformat() if row.created_at else None,
+        "payload": row.payload,
+    }
