@@ -58,26 +58,25 @@ person.
 
 ## Anti-patterns (auto-reject)
 
-- Building Stage 5 features before Stage 4 retainers exist.
-- Letting "the portal" become the value proposition (the value is the
-  capability, the portal is the surface).
-- Releasing self-serve modules without the approval matrix in place
-  (governance regression).
-- Hiding Dealix humans behind the portal to look more SaaS-like (the
-  buyer can tell).
+Building Stage 5 features before Stage 4 retainers exist. Letting
+"the portal" become the value proposition (the value is the
+capability; the portal is the surface). Releasing self-serve modules
+without the approval matrix in place (governance regression). Hiding
+Dealix humans behind the portal to look more SaaS-like (the buyer
+can tell).
 
 ## Why this matters commercially
 
 | Stage | Revenue mix expected |
 |------:|----------------------|
-| 1 | 100% service revenue |
+| 1 | 100% service |
 | 2 | 95% service / 5% productized |
 | 3 | 70% service / 30% productized |
 | 4 | 40% service / 60% productized |
 | 5 | 10% service / 90% SaaS |
 
-The Stage 4 mix is where Dealix's margin and category leadership
-both peak. Stage 5 is opportunistic, not aspirational.
+Stage 4 is where margin and category leadership both peak. Stage 5
+is opportunistic, not aspirational.
 
 ## Saudi context
 

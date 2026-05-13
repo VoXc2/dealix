@@ -54,17 +54,13 @@ System — we do not teach what we have not productized.
 ## Certification — Dealix Certified AI Ops Practitioner
 
 The terminal credential. Eligible after completion of any 3 of the 5
-courses **plus** supervised delivery of one Sprint that achieves QA
-score ≥ 85 + a Proof Pack.
-
-- **Renewal**: annual, contingent on a continuing-education exercise
-  (review the published Saudi AI Operations Benchmark + pass an
-  updated method exam).
-- **Revocation**: a certified practitioner who delivers under the
-  Dealix name with a QA score < 80 or a governance incident is
-  revoked.
-- **Public registry**: anonymized count of certified practitioners
-  published with the annual benchmark.
+courses **plus** supervised delivery of one Sprint with QA score ≥
+85 + a Proof Pack. Renewal is annual, contingent on a continuing-
+education exercise (review the published Benchmark + pass an updated
+method exam). A certified practitioner who delivers under the Dealix
+name with QA < 80 or a governance incident is revoked. Anonymized
+count of certified practitioners is published with the annual
+benchmark.
 
 ## Delivery model
 
