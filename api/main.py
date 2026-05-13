@@ -40,6 +40,7 @@ from api.routers import (
     jobs,
     pdpl,
     pdpl_dsar,
+    revenue_metrics,
     saudi_prospect_search,
     sector_intel,
     service_setup,
@@ -253,6 +254,8 @@ def create_app() -> FastAPI:
     app.include_router(cost_tracking.router)
     # Wave 12 W12.1 — Customer-side webhook subscriptions (Dealix→customer)
     app.include_router(customer_webhooks.router)
+    # Wave 13 W13.7 — Revenue metrics dashboard (MRR/ARR/NRR/churn/cohort)
+    app.include_router(revenue_metrics.router)
 
     @app.get("/", tags=["root"])
     async def root() -> dict[str, object]:
