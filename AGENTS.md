@@ -91,6 +91,13 @@ Copy `.env.example` to `.env`. Key settings for local dev:
 - `POST /api/v1/revenue-os/anti-waste/check` — قواعد: لا إجراء خارجي بدون جواز قرار، لا upsell بدون proof، لا تسويق عام تحت L4
 - `GET /api/v1/revenue-os/learning/weekly-template` — هيكل تقرير التعلّم الأسبوعي (فارغ حتى ربط التحليلات)
 
+### Board Decision OS (Strategic Intelligence)
+
+- `GET /api/v1/board-decision-os/overview` — فهرس الطبقة + المسارات
+- `POST /api/v1/board-decision-os/scorecards/{offer|client|productization}` — بطاقات CEO/Board (أوزان ثابتة)
+- `POST /api/v1/board-decision-os/ceo-top-decisions` — أعلى قرارات أسبوعية (حتمي من إشارات مضغوطة)
+- `docs/board_decision_system/STRATEGIC_INTELLIGENCE_BOARD_SYSTEM.md` — مرجع المنتج لهذه الطبقة
+
 تحقق سريع للوكلاء: `bash scripts/revenue_os_master_verify.sh` (يطبع `DEALIX_REVENUE_OS_VERDICT`).
 
 استراتيجية التشغيل الكاملة: `docs/strategic/DEALIX_MASTER_OPERATING_MODEL_AR.md`
