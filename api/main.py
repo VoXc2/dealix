@@ -37,6 +37,7 @@ from api.routers import (
     enterprise_pmo,
     jobs,
     pdpl,
+    saudi_prospect_search,
     sector_intel,
     service_setup,
     tenant_theming,
@@ -241,6 +242,8 @@ def create_app() -> FastAPI:
     app.include_router(enterprise_pmo.router)
     # Wave 9 W9.6 — Live compliance status (PDPL+ZATCA posture, public read-only)
     app.include_router(compliance_status.router)
+    # Wave 9 W9.8 — Saudi B2B prospect search (read-only public + PDPL-safe view)
+    app.include_router(saudi_prospect_search.router)
 
     @app.get("/", tags=["root"])
     async def root() -> dict[str, object]:
