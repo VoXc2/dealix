@@ -212,3 +212,26 @@ Master KPI: **31/31 documents drafted and cross-linked, AR companions for 9 logi
 |------|--------|--------|
 | 2026-05-13 | CEO | Initial master plan, RICE, schedule, KPIs |
 | 2026-05-13 | CEO | Elevated T31 Saudi Lead Engine to top priority alongside T5 ICP |
+| 2026-05-13 | CEO | Added Wave 6 (AI Operating Partner repositioning): T32 positioning, T33 portfolio catalog, T34 9-module OS architecture (added Delivery OS), T35 three starting offers, T36 Delivery Standard & Quality System. T31 demoted from "company" to "flagship inside Grow Revenue." |
+
+## 9. Wave 6 — AI Operating Partner Strategy (Added 2026-05-13)
+
+Dealix repositioned from "Revenue OS / Lead Engine company" to **AI Operating Partner for Saudi companies** with:
+
+- **5 customer-facing pillars**: Grow Revenue / Serve Customers / Automate Operations / Build Company Brain / Govern AI.
+- **9 internal OS modules** (Intake / Data Quality / Scoring / Workflow / Knowledge / Outreach / Reporting / Governance / Delivery).
+- **30+ productized service offerings** across 8 service domains.
+- **7 productized packages** spanning Quick Win (7.5K SAR) → Enterprise (85K+ SAR setup).
+- **3 starting offers** for first-90-day market entry: Revenue Intelligence Sprint (9.5K), AI Quick Win Sprint (12K), Company Brain Sprint (20K).
+- **8-stage Delivery Standard** (Discover → Diagnose → Design → Build → Validate → Deliver → Prove → Expand).
+- **5-gate Quality System** (Business / Data / AI / Compliance / Delivery QA).
+- **Project Quality Score 0–100** with 80 floor for handoff.
+- **5 operationalized competitive advantages**: Outcome-first, Saudi-localized, Proof-backed, Governed AI, Productized delivery.
+
+| Wave 6 doc | Path |
+|-----------|------|
+| Positioning (T32) | `docs/strategy/dealix_operating_partner_positioning.md` (+ AR) |
+| Portfolio catalog (T33) | `docs/strategy/service_portfolio_catalog.md` (+ AR) |
+| OS modules (T34) | `docs/product/internal_os_modules.md` |
+| Three starting offers (T35) | `docs/strategy/three_starting_offers.md` (+ AR) |
+| Delivery Standard & QA (T36) | `docs/strategy/dealix_delivery_standard_and_quality_system.md` (+ AR) |

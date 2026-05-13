@@ -24,7 +24,9 @@ rice:
 
 ## 1. Context
 
-The 30+ customer-facing offerings in the service portfolio (W6.T33) are built from **eight reusable internal modules**. Engineering capacity is allocated against modules, not against bespoke per-customer features. This document is the canonical module catalog: scope, code location, interfaces, dependencies, and module-level KPIs.
+The 30+ customer-facing offerings in the service portfolio (W6.T33) are built from **nine reusable internal modules**. Engineering capacity is allocated against modules, not against bespoke per-customer features. This document is the canonical module catalog: scope, code location, interfaces, dependencies, and module-level KPIs.
+
+A 9th module — **Delivery OS** — was added to capture the productized delivery process itself (intake → scope → checklist → QA → handoff → renewal). Without it, services tend to drift into bespoke consulting; with it, the same quality repeats across every customer.
 
 The rule: a new offering must reuse existing modules. A new module is justified only when an offering's needs cannot be expressed as a composition of existing modules — and requires CTO + HoP sign-off.
 
@@ -32,7 +34,7 @@ The rule: a new offering must reuse existing modules. A new module is justified 
 
 CTO, engineering managers, product. Used in roadmap planning (W1.T11) to size capacity per module.
 
-## 3. The eight modules
+## 3. The nine modules
 
 ### 3.1 Intake OS
 
@@ -100,6 +102,16 @@ CTO, engineering managers, product. Used in roadmap planning (W1.T11) to size ca
 - **Code location**: `dealix/trust/policy.py`, `api/routers/decision_passport.py`, `auto_client_acquisition/revenue_memory/event_store.py`.
 - **Outputs**: policy decisions, audit events, compliance reports.
 - **Powers**: every pillar (mandatory — no action runs without a passport-stamped policy check).
+
+### 3.9 Delivery OS
+
+- **Scope**: productized service delivery — intake forms, scope builders, milestone tracker, QA review, client handoff, renewal recommendation.
+- **Surfaces**: customer portal, internal CS console, `POST /api/v1/delivery/projects`, `GET /api/v1/delivery/projects/{id}/qa`.
+- **Code location**: planned `dealix/delivery/` (modules: `client_intake.py`, `scope_builder.py`, `delivery_checklist.py`, `milestone_tracker.py`, `report_generator.py`, `qa_review.py`, `client_handoff.py`, `renewal_recommendation.py`).
+- **Outputs**: scoped projects, QA reports, handoff packets, upsell proposals.
+- **Powers**: every offering — converts catalog services (W6.T33) into repeatable, margin-protected delivery.
+- **Why it exists**: turns Dealix from a freelance team into a productized company. Without Delivery OS, each offering becomes bespoke; with it, the same QA gates fire for every customer.
+- **Module SLA**: project intake → signed scope in < 3 business days; QA pass before any handoff; renewal proposal generated within 7 days of close.
 
 ## 4. Module dependency graph
 
