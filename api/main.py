@@ -221,6 +221,10 @@ def create_app() -> FastAPI:
     app.include_router(intelligence_layer_router.router)
     app.include_router(expansion_engine_router.router)
 
+    # ── Phase 1 Reporting OS (W6.T36) — executive reports, proof packs, weekly digest
+    from api.routers import reports as reports_router  # noqa: E402
+    app.include_router(reports_router.router)
+
     # ── Wave 13 — Full Ops Productization ─────────────────────────
     # Self-prefix /api/v1/services. Registry-only; no live actions.
     app.include_router(service_catalog_router.router)
