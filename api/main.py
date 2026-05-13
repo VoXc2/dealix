@@ -33,6 +33,7 @@ from api.routers import (
     admin_tenants,
     auth,
     compliance_status,
+    cost_tracking,
     customer_usage,
     enterprise_pmo,
     jobs,
@@ -247,6 +248,8 @@ def create_app() -> FastAPI:
     app.include_router(saudi_prospect_search.router)
     # Wave 9 W9.9 — PDPL DSAR (data subject access/rectify/port/erase)
     app.include_router(pdpl_dsar.router)
+    # Wave 11 W11.2 — Cost tracking (per-tier + admin summary)
+    app.include_router(cost_tracking.router)
 
     @app.get("/", tags=["root"])
     async def root() -> dict[str, object]:
