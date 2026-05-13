@@ -38,6 +38,7 @@ from api.routers import (
     customer_webhooks,
     enterprise_pmo,
     jobs,
+    nps,
     pdpl,
     pdpl_dsar,
     referral_program,
@@ -259,6 +260,8 @@ def create_app() -> FastAPI:
     app.include_router(revenue_metrics.router)
     # Wave 13 W13.13 — Customer referral program (5K SAR per closed deal)
     app.include_router(referral_program.router)
+    # Wave 13 W13.4 — NPS survey + detractor intervention
+    app.include_router(nps.router)
 
     @app.get("/", tags=["root"])
     async def root() -> dict[str, object]:
