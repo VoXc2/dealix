@@ -1,0 +1,21 @@
+company_name_ar,company_name_en,vertical,region,headcount,annual_revenue_sar,triggers,commercial_registration,vat_number,email,phone,domain,source,updated_at
+بنك الرياض الافتراضي,Riyadh Virtual Bank,bfsi,riyadh,250,350000000,"funding,hire",1010001111,300000000000003,biz@example-bank.sa,+966500001111,example-bank.sa,maroof,2026-04-01T00:00:00+00:00
+شركة الاتصالات الإقليمية,Regional Telco Co,telco,jeddah,180,180000000,tender,4030002222,,ops@example-telco.sa,+966500002222,example-telco.sa,etimad,2026-04-15T00:00:00+00:00
+مستشفى الرعاية المتقدّمة,Advanced Care Hospital,healthcare,riyadh,320,220000000,"tender,cr_amendment",1010003333,300000000000004,procurement@example-hospital.sa,+966500003333,example-hospital.sa,sfda,2026-05-01T00:00:00+00:00
+متجر التجزئة الذكي,Smart Retail Group,retail_ecomm,khobar,80,65000000,expansion,2050004444,,ceo@example-retail.sa,+966500004444,example-retail.sa,maroof,2026-04-22T00:00:00+00:00
+شركة الخدمات اللوجستية,Lead Logistics Co,logistics,dammam,60,45000000,,2050005555,,info@example-logistics.sa,+966500005555,example-logistics.sa,chamber,2025-12-01T00:00:00+00:00
+مجموعة التعليم الذكي,Smart Edu Group,education,jeddah,45,28000000,hire,4030006666,,admin@example-edu.sa,+966500006666,example-edu.sa,chamber,2026-03-10T00:00:00+00:00
+شركة العقارات الحديثة,Modern Real Estate,real_estate,riyadh,90,75000000,"funding,expansion",1010007777,300000000000007,sales@example-re.sa,+966500007777,example-re.sa,maroof,2026-04-05T00:00:00+00:00
+مطاعم النخبة,Elite Restaurants,hospitality,riyadh,120,40000000,expansion,1010008888,,ceo@example-restaurants.sa,+966500008888,example-restaurants.sa,maroof,2026-03-25T00:00:00+00:00
+مكتب الاستشارات المهنية,Professional Consulting Office,professional_services,riyadh,25,15000000,,1010009999,,partner@example-consulting.sa,+966500009999,example-consulting.sa,chamber,2026-02-14T00:00:00+00:00
+شركة النقل السريع,Express Transport Co,logistics,jeddah,140,90000000,tender,4030010001,300000000000010,bd@example-transport.sa,+966501010001,example-transport.sa,etimad,2026-05-02T00:00:00+00:00
+عيادة الأسرة الذكية,Smart Family Clinic,healthcare,khobar,30,12000000,,2050011002,,info@example-clinic.sa,+966501011002,example-clinic.sa,sfda,2026-01-20T00:00:00+00:00
+متجر المنزل الإلكتروني,Home eCommerce Store,retail_ecomm,riyadh,55,22000000,funding,1010012003,,ops@example-store.sa,+966501012003,example-store.sa,maroof,2026-04-29T00:00:00+00:00
+شركة الإنشاءات الرائدة,Lead Construction Co,other,jeddah,200,140000000,tender,4030013004,300000000000013,procurement@example-construction.sa,+966501013004,example-construction.sa,etimad,2026-04-18T00:00:00+00:00
+معهد التدريب المهني,Vocational Training Institute,education,khobar,35,16000000,hire,2050014005,,admin@example-training.sa,+966501014005,example-training.sa,chamber,2026-03-30T00:00:00+00:00
+مؤسسة التأمين الإقليمي,Regional Insurance Co,bfsi,riyadh,210,290000000,"funding,dpo_appointment",1010015006,300000000000015,enterprise@example-insurance.sa,+966501015006,example-insurance.sa,sama,2026-04-12T00:00:00+00:00
+شركة الفعاليات الذكية,Smart Events Co,hospitality,jeddah,40,18000000,,4030016007,,events@example-events.sa,+966501016007,example-events.sa,maroof,2026-01-05T00:00:00+00:00
+شبكة المختبرات الطبية,Medical Labs Network,healthcare,riyadh,160,110000000,"tender,vision2030",1010017008,300000000000017,b2b@example-labs.sa,+966501017008,example-labs.sa,sfda,2026-04-26T00:00:00+00:00
+شركة التقنية المالية الناشئة,Fintech Startup,bfsi,riyadh,28,35000000,funding,1010018009,,founders@example-fintech.sa,+966501018009,example-fintech.sa,wamda,2026-05-10T00:00:00+00:00
+متجر مواد البناء,Building Materials Store,retail_ecomm,dammam,75,52000000,expansion,2050019010,,sales@example-bm.sa,+966501019010,example-bm.sa,chamber,2026-03-15T00:00:00+00:00
+مكتب المحاسبة المتقدّم,Advanced Accounting Office,professional_services,jeddah,18,9000000,hire,4030020011,,partner@example-accounting.sa,+966501020011,example-accounting.sa,chamber,2026-02-28T00:00:00+00:00
