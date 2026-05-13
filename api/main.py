@@ -35,6 +35,7 @@ from api.routers import (
     compliance_status,
     cost_tracking,
     customer_usage,
+    customer_webhooks,
     enterprise_pmo,
     jobs,
     pdpl,
@@ -250,6 +251,8 @@ def create_app() -> FastAPI:
     app.include_router(pdpl_dsar.router)
     # Wave 11 W11.2 — Cost tracking (per-tier + admin summary)
     app.include_router(cost_tracking.router)
+    # Wave 12 W12.1 — Customer-side webhook subscriptions (Dealix→customer)
+    app.include_router(customer_webhooks.router)
 
     @app.get("/", tags=["root"])
     async def root() -> dict[str, object]:

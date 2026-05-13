@@ -968,3 +968,67 @@ class SectorReportRecord(Base):
     __table_args__ = (
         Index("ix_sector_reports_sector_created", "sector", "created_at"),
     )
+
+
+class CustomerWebhookSubscription(Base):
+    """
+    Customer-side webhook subscriptions — Dealix pings customers when events
+    happen in their tenant (W12.1).
+
+    Each row = one HTTPS endpoint a customer wants Dealix to call. Customer
+    can subscribe to a subset of event types via the `event_types` JSON list.
+
+    Examples of events Dealix will emit:
+      lead.created, lead.replied, lead.demo_booked,
+      payment.received, decision_passport.entry_added,
+      tenant.usage.over_cap, tenant.health.score_changed
+    """
+
+    __tablename__ = "customer_webhook_subscriptions"
+
+    id: Mapped[str] = mapped_column(String(64), primary_key=True)  # cwh_<hash>
+    tenant_id: Mapped[str] = mapped_column(
+        String(64), ForeignKey("tenants.id", ondelete="CASCADE"), index=True
+    )
+    url: Mapped[str] = mapped_column(String(2048))  # must be HTTPS
+    secret: Mapped[str] = mapped_column(String(128))  # HMAC signing key
+    event_types: Mapped[list] = mapped_column(JSON)  # list[str] of subscribed events
+    is_active: Mapped[bool] = mapped_column(default=True, index=True)
+    last_delivery_at: Mapped[datetime | None] = mapped_column(nullable=True)
+    last_delivery_status: Mapped[str | None] = mapped_column(String(32), nullable=True)
+    consecutive_failures: Mapped[int] = mapped_column(Integer, default=0)
+    created_at: Mapped[datetime] = mapped_column(default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(default=utcnow, onupdate=utcnow)
+
+    __table_args__ = (
+        Index("ix_cwh_tenant_active", "tenant_id", "is_active"),
+    )
+
+
+class CustomerWebhookDelivery(Base):
+    """
+    Webhook delivery attempts — audit trail of every event delivery.
+    Used for: at-least-once semantics, idempotency, debugging customer
+    integration failures.
+    """
+
+    __tablename__ = "customer_webhook_deliveries"
+
+    id: Mapped[str] = mapped_column(String(64), primary_key=True)  # del_<hash>
+    subscription_id: Mapped[str] = mapped_column(
+        String(64), ForeignKey("customer_webhook_subscriptions.id", ondelete="CASCADE"),
+        index=True,
+    )
+    event_id: Mapped[str] = mapped_column(String(128), index=True)  # idempotency key
+    event_type: Mapped[str] = mapped_column(String(64), index=True)
+    payload: Mapped[dict] = mapped_column(JSON)
+    delivered_at: Mapped[datetime] = mapped_column(default=utcnow, index=True)
+    response_status: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    response_body_preview: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    latency_ms: Mapped[int | None] = mapped_column(Integer, nullable=True)
+
+    __table_args__ = (
+        UniqueConstraint("subscription_id", "event_id",
+                         name="uq_webhook_subscription_event"),
+        Index("ix_cwd_event_type_created", "event_type", "delivered_at"),
+    )
