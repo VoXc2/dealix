@@ -53,20 +53,16 @@ AI produces drafts; humans review and approve every external action.
 
 ## L4 — Governed AI Workflow
 
-The capability operates inside the customer's business with governance
-embedded, not bolted on.
+The capability operates inside the customer's business with
+governance embedded, not bolted on.
 
 - [ ] All L3 criteria still satisfied.
-- [ ] **Approval matrix wired** for every external-action class
-      (`dealix/trust/approval_matrix.py` or equivalent in customer
-      stack).
-- [ ] **Audit log live** — every AI run produces an event in an
-      immutable store (append-only).
-- [ ] **Approval coverage ≥ 95%** of external actions in the trailing
-      30 days.
-- [ ] **Recurring report shipped** (weekly executive pack at minimum).
-- [ ] **At least 1 governance review** held with the customer
-      (decisions logged in `docs/ledgers/GOVERNANCE_LEDGER.md`).
+- [ ] **Approval matrix wired** for every external-action class.
+- [ ] **Audit log live** — append-only immutable store.
+- [ ] **Approval coverage ≥ 95%** of external actions (30d).
+- [ ] **Recurring report shipped** (weekly executive pack min).
+- [ ] **At least 1 governance review** with the customer (logged in
+      `docs/ledgers/GOVERNANCE_LEDGER.md`).
 - [ ] **Zero major governance incidents** during the pilot window.
 - [ ] **PDPL register snippet** updated for any personal-data flow.
 - [ ] Evidence filed in Governance + Delivery Ledger.
@@ -77,28 +73,25 @@ The capability recurs, measures itself, and improves on a documented
 cadence.
 
 - [ ] All L4 criteria still satisfied.
-- [ ] **Recurring cadence in place** — weekly or monthly, on a
-      calendar, with named attendees.
+- [ ] **Recurring cadence** — weekly or monthly, on a calendar, with
+      named attendees.
 - [ ] **KPI dashboard live** — visible to the customer, refreshed
       automatically.
-- [ ] **Improvement backlog maintained** — ≥ 1 improvement item
-      shipped per month over the last 3 months.
-- [ ] **Monthly Proof Pack** filed (`MONTHLY_OPERATING_REVIEW` per
-      retainer line).
+- [ ] **Improvement backlog maintained** — ≥ 1 item shipped / month
+      over the last 3 months.
+- [ ] **Monthly Proof Pack** filed per retainer line.
 - [ ] **Retainer model in force** — contracted, billed, renewing.
 - [ ] **NRR ≥ 100%** over the last 90 days for this capability.
 - [ ] **At least 1 anonymized case study** ready for publication.
 - [ ] Evidence filed across Delivery + Proof + Client + Learning
       Ledgers.
 
-## Anti-patterns (any one of these blocks the transition)
+## Anti-patterns (any one blocks the transition)
 
-- "We ran the workflow once" → not L3 without QA + Proof Pack.
-- "Audit log is on the roadmap" → not L4. Live or not, no half-credit.
-- "We meet sometimes" → not L5. Calendar entry + named attendees
-  required.
-- "Customer is happy" → not evidence. Numbers in the Proof / Value
-  Ledger are evidence.
+"We ran it once" → not L3 without QA + Proof Pack. "Audit log is on
+the roadmap" → not L4 — live or not. "We meet sometimes" → not L5;
+calendar entry + named attendees required. "Customer is happy" → not
+evidence; numbers in the Proof / Value Ledger are evidence.
 
 ## Saudi / PDPL note
 

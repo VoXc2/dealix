@@ -42,18 +42,18 @@ provider-terms confirmation (no training on submitted data).
 
 | Source | Owner | Sensitivity | Allowed Use | AI Access | Freshness | Retention |
 |--------|-------|-------------|-------------|-----------|-----------|-----------|
-| `dealix.marketing_pages` | HoP | Public | classify, summarize | All agents | 30 days | 24 months |
-| `dealix.sector_playbooks` | CRO | Internal | retrieve, summarize | RevenueAgent, StrategyAgent, KnowledgeAgent | 90 days | 24 months |
-| `customer.icp_definitions` | HoCS | Confidential | retrieve, score | RevenueAgent (per customer) | 90 days | 24 months |
-| `customer.account_lists` | HoData | Confidential | classify, score, retrieve | DataQualityAgent, RevenueAgent | 30 days | 24 months |
-| `customer.support_corpus` | HoCS | Restricted | retrieve, draft | SupportAgent, KnowledgeAgent | 30 days | 12 months |
-| `customer.documents` | HoData | Confidential / Restricted | retrieve | KnowledgeAgent | 90 days | 24 months |
-| `dealix.proof_packs` | HoP | Internal | retrieve, summarize | ReportingAgent | 180 days | 60 months |
-| `dealix.case_studies_public` | HoP | Public | retrieve, summarize | All agents | 180 days | 60 months |
-| `compliance.forbidden_claim_patterns` | HoLegal | Internal | classify | ComplianceGuardAgent | 180 days | 60 months |
-| `compliance.pii_patterns` | HoLegal | Internal | classify | ComplianceGuardAgent | 180 days | 60 months |
-| `vendor.subprocessor_disclosures` | HoLegal | Public | retrieve, summarize | KnowledgeAgent | 90 days | 60 months |
-| `regulatory.pdpl_articles` | HoLegal | Public | retrieve, summarize | KnowledgeAgent | 180 days | 60 months |
+| `dealix.marketing_pages` | HoP | Public | classify, summarize | All | 30d | 24m |
+| `dealix.sector_playbooks` | CRO | Internal | retrieve, summarize | Revenue, Strategy, Knowledge | 90d | 24m |
+| `customer.icp_definitions` | HoCS | Confidential | retrieve, score | Revenue (per customer) | 90d | 24m |
+| `customer.account_lists` | HoData | Confidential | classify, score, retrieve | DataQuality, Revenue | 30d | 24m |
+| `customer.support_corpus` | HoCS | Restricted | retrieve, draft | Support, Knowledge | 30d | 12m |
+| `customer.documents` | HoData | Confidential / Restricted | retrieve | Knowledge | 90d | 24m |
+| `dealix.proof_packs` | HoP | Internal | retrieve, summarize | Reporting | 180d | 60m |
+| `dealix.case_studies_public` | HoP | Public | retrieve, summarize | All | 180d | 60m |
+| `compliance.forbidden_claim_patterns` | HoLegal | Internal | classify | Guard | 180d | 60m |
+| `compliance.pii_patterns` | HoLegal | Internal | classify | Guard | 180d | 60m |
+| `vendor.subprocessor_disclosures` | HoLegal | Public | retrieve, summarize | Knowledge | 90d | 60m |
+| `regulatory.pdpl_articles` | HoLegal | Public | retrieve, summarize | Knowledge | 180d | 60m |
 
 ## Lifecycle
 

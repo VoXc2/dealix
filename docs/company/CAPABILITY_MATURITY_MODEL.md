@@ -30,13 +30,13 @@ audience: [internal, customer]
 
 | Capability | L1 (Manual) | L3 (AI-Assisted) | L5 (Optimized OS) |
 |------------|-------------|------------------|-------------------|
-| Revenue | Leads in Excel, no scoring | Top-50 ranked accounts + AI-drafted outreach (human approved) | Weekly auto-ranked accounts + KPI dashboard + monthly improvement backlog |
-| Customer | Mailbox / WhatsApp tickets handled ad hoc | AI-suggested replies, agent approves | Tagged categories + monthly retainer + suggested-reply eval ≥ 85% adoption |
-| Operations | Recurring tasks done by hand each week | One automated workflow with approval + audit | Workflow library + run history + SLA + monthly improvement |
-| Knowledge | "Where is that PDF?" | Cited-answer assistant on top of indexed docs | Freshness report + 3-tier access + monthly content audit |
-| Data | CRM has fields but no source / lawful basis | Data Readiness Score scored + PII redacted | Continuous DQ pipeline + PDPL register live |
-| Governance | Approvals over email | Approval matrix + audit-event store | Governance dashboard + zero open incidents 90 days |
-| Reporting | Founder asks "what happened?" on Monday | Weekly executive pack ships every Monday | Decision-log closed loop + report-to-action time < 24h |
+| Revenue | Leads in Excel, no scoring | Top-50 ranked + AI-drafted outreach (human approved) | Weekly auto-ranked + KPI dashboard + improvement backlog |
+| Customer | Mailbox / WhatsApp handled ad hoc | AI-suggested replies, agent approves | Tagged categories + retainer + suggested-reply eval ≥ 85% |
+| Operations | Recurring tasks done by hand | One workflow with approval + audit | Workflow library + run history + SLA |
+| Knowledge | "Where is that PDF?" | Cited-answer assistant on indexed docs | Freshness report + 3-tier access + content audit |
+| Data | CRM full but no source / lawful basis | Data Readiness scored + PII redacted | Continuous DQ pipeline + PDPL register live |
+| Governance | Approvals over email | Approval matrix + audit-event store | Governance dashboard + zero open incidents 90d |
+| Reporting | Founder asks "what happened?" on Monday | Weekly executive pack ships Monday | Decision-log closed loop + report-to-action < 24h |
 
 ## Movement rules (binding)
 
@@ -52,14 +52,6 @@ audience: [internal, customer]
 into L4 without passing through L2 and L3 first. Diagnostic (Tier 1,
 `IMPLEMENTATION_TIERS.md`) is the only way to score baseline level.
 
-## Why level skipping fails
-
-| Attempted skip | What breaks |
-|----------------|-------------|
-| L1 → L3 | No documented process means AI automates chaos. QA scores collapse. |
-| L2 → L4 | Governance bolted on after the fact. PDPL audit fails. |
-| L3 → L5 | No retainer cadence means no improvement loop. Capability decays in 60 days. |
-
 ## How this maps to the commercial path
 
 | Tier (`IMPLEMENTATION_TIERS.md`) | Level achieved | Proof produced |
@@ -70,24 +62,21 @@ into L4 without passing through L2 and L3 first. Diagnostic (Tier 1,
 | Tier 4 — Managed OS | L4 stable, moving toward L5 | Monthly Operating Review pack |
 | Tier 5 — Enterprise OS | L5 in 3+ capabilities | Enterprise governance + audit + dashboards |
 
-## Acceptance criteria for "built"
-
-See `docs/capabilities/CAPABILITY_ACCEPTANCE_CRITERIA.md` — concrete
-what-counts-as-done at L2 / L3 / L4 / L5.
+Acceptance criteria for "built" at each level live in
+`docs/capabilities/CAPABILITY_ACCEPTANCE_CRITERIA.md`.
 
 ## Saudi / PDPL context
 
-L4 (Governed AI Workflow) is the binding floor for any AI workload
-involving personal data of Saudi residents. PDPL Art. 5 (lawful basis)
-and Art. 13 (data-subject notice) cannot be satisfied at L3.
+L4 (Governed AI Workflow) is the binding floor for AI workloads
+involving personal data of Saudi residents. PDPL Art. 5 (lawful
+basis) and Art. 13 (data-subject notice) cannot be satisfied at L3.
 
 ## Cross-links
 
 - `docs/company/CAPABILITY_OPERATING_MODEL.md` — the 7 capabilities
 - `docs/company/AI_CAPABILITY_FACTORY.md` — the factory flow
-- `docs/company/CAPABILITY_FACTORY_MAP.md` — problem → capability summary
+- `docs/company/CAPABILITY_FACTORY_MAP.md` — problem → capability
 - `docs/company/IMPLEMENTATION_TIERS.md` — commercial tiers
-- `docs/capabilities/CAPABILITY_ACCEPTANCE_CRITERIA.md` — built / not-built definitions
-- `docs/company/CAPABILITY_VALUE_MAP.md` — capability → value statement
-- `docs/strategy/dealix_maturity_and_verification.md` — Dealix-side maturity
+- `docs/capabilities/CAPABILITY_ACCEPTANCE_CRITERIA.md` — built definitions
+- `docs/company/CAPABILITY_VALUE_MAP.md` — capability → value
 - `docs/company/MATURITY_BOARD.md` — board-level tracker

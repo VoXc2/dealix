@@ -18,29 +18,29 @@
 
 ## Registry (Phase-1)
 
-| Workflow | Capability | Service | Risk | Human review | Owner | Status |
-|----------|-----------|---------|------|--------------|-------|--------|
-| Lead Import Preview | Data / Revenue | Lead Intel | Medium | Yes (per batch) | HoData | MVP |
-| Account Scoring | Revenue | Lead Intel | Medium | Yes (top-50 sample) | CRO | MVP |
-| Outreach Drafting | Revenue | Lead Intel | High | Yes (per draft) | HoCS | MVP |
-| Outreach Send (customer-side) | Revenue | Lead Intel | High | Customer-side; Dealix delivers approved drafts only | HoCS | Manual |
-| Knowledge Answering | Knowledge | Company Brain | High | Yes (sources verified for first 30 days) | HoP | Beta |
-| Source Onboarding | Knowledge / Governance | Company Brain | Medium | Yes (owner + sensitivity) | HoData | Designed |
-| Freshness Sweep | Knowledge / Governance | Company Brain | Low | No (read-only flag) | HoData | Designed |
-| Quick Win Diagnostic | Strategy | AI Quick Win | Medium | Yes (final report) | CRO | Beta |
-| Quick Win Pilot Selection | Strategy | AI Quick Win | Medium | Yes | CRO | Beta |
-| Support Triage | Customer | Support Desk | Medium | No (classification only) | HoCS | Designed |
-| Support Reply Draft | Customer | Support Desk | High | Yes (per reply) | HoCS | Designed |
-| Support Escalation Decision | Customer | Support Desk | High | Yes | HoCS | Designed |
-| Executive Report | Reporting | All services | Medium | Yes (final QA) | HoP | MVP |
-| Proof Pack | Reporting | All services | Medium | Yes (inputs + outputs sample) | HoP | MVP |
-| Weekly Customer Summary | Reporting | All services | Low | Yes | HoP | MVP |
-| Governance Check (runtime) | Governance | All services | Required | Automated; Hard Fail escalates | HoLegal | MVP |
-| Approval Routing | Governance | All services | Required | n/a (humans approve) | HoLegal | MVP |
-| Source Registration | Governance | Governance Program | Medium | Yes | HoLegal | MVP |
-| Agent Promotion Gate | Governance | Governance Program | High | Yes (CTO + HoLegal) | HoLegal | MVP |
-| Monthly Audit | Governance | Governance Program | Medium | Yes | HoLegal | MVP |
-| Incident Response | Governance | Governance Program | Critical | Yes (per `INCIDENT_RESPONSE.md`) | HoLegal | MVP |
+| Workflow | Service | Risk | Human review | Owner | Status |
+|----------|---------|------|--------------|-------|--------|
+| Lead Import Preview | Lead Intel | Medium | Per batch | HoData | MVP |
+| Account Scoring | Lead Intel | Medium | Top-50 sample | CRO | MVP |
+| Outreach Drafting | Lead Intel | High | Per draft | HoCS | MVP |
+| Outreach Send (customer-side) | Lead Intel | High | Customer-side | HoCS | Manual |
+| Knowledge Answering | Company Brain | High | First-30-day source check | HoP | Beta |
+| Source Onboarding | Company Brain | Medium | Owner + sensitivity | HoData | Designed |
+| Freshness Sweep | Company Brain | Low | Read-only flag | HoData | Designed |
+| Quick Win Diagnostic | AI Quick Win | Medium | Final report | CRO | Beta |
+| Quick Win Pilot Selection | AI Quick Win | Medium | Yes | CRO | Beta |
+| Support Triage | Support Desk | Medium | No (classify only) | HoCS | Designed |
+| Support Reply Draft | Support Desk | High | Per reply | HoCS | Designed |
+| Support Escalation | Support Desk | High | Yes | HoCS | Designed |
+| Executive Report | All | Medium | Final QA | HoP | MVP |
+| Proof Pack | All | Medium | Inputs+outputs sample | HoP | MVP |
+| Weekly Customer Summary | All | Low | Yes | HoP | MVP |
+| Governance Check (runtime) | All | Required | Automated | HoLegal | MVP |
+| Approval Routing | All | Required | n/a | HoLegal | MVP |
+| Source Registration | Governance Program | Medium | Yes | HoLegal | MVP |
+| Agent Promotion Gate | Governance Program | High | CTO + HoLegal | HoLegal | MVP |
+| Monthly Audit | Governance Program | Medium | Yes | HoLegal | MVP |
+| Incident Response | Governance Program | Critical | Per SOP | HoLegal | MVP |
 
 ## Hard rules
 

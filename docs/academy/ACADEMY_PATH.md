@@ -68,29 +68,25 @@ score ≥ 85 + a Proof Pack.
 
 ## Delivery model
 
-- **Self-paced lessons** + **live cohort sessions** + **graded
-  assignments** + **supervised delivery**.
-- **AR + EN** by default.
-- **Pricing**: not finalized until launch gate closes. Reference
-  range under consideration: SAR 3,000 – SAR 18,000 per course;
-  SAR 25,000+ for the Certification path.
+Self-paced lessons + live cohort sessions + graded assignments +
+supervised delivery. AR + EN by default. Pricing is not finalized
+until the launch gate closes; reference range under consideration:
+SAR 3,000–18,000 per course; SAR 25,000+ for the Certification path.
 
 ## Why this matters strategically
 
-- **Moat**: the way Saudi practitioners think about AI Operations
-  becomes Dealix's frame.
-- **Distribution**: certified partners deliver Dealix-quality work
-  in markets Dealix doesn't enter directly
-  (`MENA_EXPANSION_LOGIC.md`).
-- **Hiring**: future hires can demonstrate competence via the
-  Certification, shortening ramp.
+The Academy is the moat (Saudi practitioners think in Dealix's
+frame), the distribution channel (certified partners deliver Dealix-
+quality work where Dealix does not directly operate, per
+`MENA_EXPANSION_LOGIC.md`), and the hiring funnel (Certification
+shortens ramp time).
 
 ## Anti-patterns (auto-reject)
 
-- Launching the Academy before the Saudi gate closes.
-- Selling a course on a capability still at Sprint stage.
-- Letting certification become a paper credential.
-- Cannibalizing Sprint sales by teaching the Sprint for cheaper.
+Launching before the Saudi gate closes; selling a course on a
+capability still at Sprint stage; letting certification become a
+paper credential; cannibalizing Sprint sales by teaching the Sprint
+cheaper.
 
 ## Saudi / PDPL context
 

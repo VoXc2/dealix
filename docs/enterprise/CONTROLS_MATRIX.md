@@ -29,20 +29,6 @@ audience: [internal, enterprise-buyer, procurement]
 | 8 | Eval reports | Per-customer evaluation reports for AI outputs (citation rate, hallucination check, schema validity) | `docs/product/EVALUATION_REGISTRY.md` | Sample eval report + threshold definition |
 | 9 | Incident response | Defined incident playbook with 24h SLO for customer notification | `docs/sre/` + `GOVERNANCE_LEDGER.md` | Incident response plan + tabletop record |
 
-## Enterprise gate (procurement-readable)
-
-| Question | Answer |
-|----------|--------|
-| Is RBAC live in your platform? | Yes — see Control 1 evidence |
-| Do you support SSO? | Yes — see Control 2 evidence |
-| Can we export the audit log? | Yes — see Control 3 evidence |
-| What is your data retention policy? | See Control 4 evidence |
-| Where are approvals enforced? | See Control 5 evidence |
-| How is PII handled under PDPL? | See Control 6 evidence + PDPL register |
-| Can we see your model run logs? | Yes — see Control 7 evidence |
-| Do you publish eval reports? | Yes — see Control 8 evidence |
-| What happens in an incident? | See Control 9 evidence + incident response plan |
-
 ## Hard rule
 
 If **any** of the 9 rows lacks live evidence (not "roadmap," not
@@ -51,20 +37,6 @@ substitute is the **Trojan Pilot** pattern in
 `ENTERPRISE_DECISION.md`: a 90-day paid pilot that closes the
 specific gap while delivering tangible value. After the pilot, the
 matrix is revisited.
-
-## Where each control lives in code
-
-| Control | Code reference |
-|--------:|----------------|
-| 1 RBAC | (planned) Auth module + role table |
-| 2 SSO | (planned) Auth module IdP integration |
-| 3 Audit exports | `auto_client_acquisition/revenue_memory/event_store.py` |
-| 4 Data retention | `docs/trust/data_governance.md` |
-| 5 Approval workflows | `dealix/trust/approval_matrix.py` |
-| 6 PII redaction | `dealix/trust/pii_detector.py` |
-| 7 Model run logs | `dealix/llm_gateway/` (per `MODEL_PORTFOLIO.md`) |
-| 8 Eval reports | `evals/` directory + `EVALUATION_REGISTRY.md` |
-| 9 Incident response | `docs/sre/` + escalation channel |
 
 ## Pre-signature audit (CTO + HoLegal joint review)
 

@@ -40,27 +40,20 @@ the operating model the buyer is actually paying for.
 
 ## What "service-assisted SaaS" means concretely
 
-| Element | Stage 4 expectation |
-|---------|---------------------|
-| The customer logs in | Yes |
-| The customer can run some workflows themselves | Yes, gated by approval matrix |
-| Dealix CSM still attends a monthly review | Yes |
-| Dealix still files the Proof Pack | Yes (now mostly auto-generated) |
-| Dealix still owns governance posture | Yes |
-| Dealix still produces the Saudi AI Operations Benchmark inputs | Yes |
-
-The customer never feels they are alone with software. The customer
-also never feels they are dependent on a single person. Both are
-required.
+At Stage 4 the customer logs in and can run gated workflows; Dealix
+CSM still attends the monthly review, files the Proof Pack (now
+mostly auto-generated), and owns governance posture. The customer
+never feels alone with software, never feels dependent on a single
+person.
 
 ## Architecture commitments per stage
 
 | Stage | Required architectural property |
 |------:|--------------------------------|
-| 1 | Append-only event store (`auto_client_acquisition/revenue_memory/event_store.py`) |
+| 1 | Append-only event store (`event_store.py`) |
 | 2 | Schema-bound agent outputs + 100-point QA in code |
 | 3 | Multi-tenant isolation (per `docs/adr/0003-multi-tenant-isolation.md`); RBAC designed |
-| 4 | Customer-managed approval matrix; in-Kingdom data residency option; LLM Gateway with per-tenant cost cap |
+| 4 | Customer-managed approval matrix; in-Kingdom residency; per-tenant cost cap |
 | 5 | SSO + BYOK + audit-log export + Enterprise Controls Matrix passing |
 
 ## Anti-patterns (auto-reject)

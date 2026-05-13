@@ -32,36 +32,27 @@ audience: [internal, board, market]
 
 ## How the metrics are produced
 
-1. The 8 ledgers (`OPERATING_LEDGER.md`) capture raw rows.
-2. The Control Plane (`CONTROL_PLANE.md`) aggregates per quarter.
-3. The CEO + CRO + CTO sign off the annual snapshot.
-4. The snapshot is anonymized (per `EVIDENCE_SYSTEM.md`) and
-   published as the **Saudi AI Operations Benchmark** report.
-5. Each metric ships with its definition, method, and sample
-   distribution — never a single number without context.
+The 8 ledgers (`OPERATING_LEDGER.md`) capture raw rows. The Control
+Plane aggregates per quarter. CEO + CRO + CTO sign off the annual
+snapshot. Anonymized per `EVIDENCE_SYSTEM.md`, then published as the
+**Saudi AI Operations Benchmark** report. Each metric ships with
+definition, method, and sample distribution — never a single number
+without context.
 
 ## Audit + reproducibility
 
-Each published metric must be:
-
-- **Reproducible** from named ledger rows (anonymized).
-- **Auditable** by HoLegal before publication (PDPL safe).
-- **Cited** with sample size + standard deviation when ≥ 10
-  customers.
-- **Comparable year over year** — definitions versioned in this
-  file's git history.
+Each published metric must be reproducible from named ledger rows
+(anonymized), auditable by HoLegal before publication (PDPL safe),
+cited with sample size + standard deviation when ≥ 10 customers, and
+comparable year over year — definitions versioned in git.
 
 ## Why these 9, not 15
 
-| Rejected metric | Reason |
-|-----------------|--------|
-| Cost per token | Engineering metric, not business outcome. |
-| Model accuracy | Customers buy capabilities, not models. |
-| NPS | Survey metric — too easily gamed. |
-| Logo count | Already in `12_MONTH_ROADMAP.md` — not a category metric. |
-
-The 9 above are the smallest set that fully describes the AI
-Operations category and uniquely positions Dealix.
+Cost per token is engineering, not outcome. Model accuracy is a model
+metric, not a capability metric. NPS is a survey, too easily gamed.
+Logo count is in `12_MONTH_ROADMAP.md`, not a category metric. The 9
+above are the smallest set that fully describes the AI Operations
+category and uniquely positions Dealix.
 
 ## Long-term — the Saudi AI Operations Benchmark
 

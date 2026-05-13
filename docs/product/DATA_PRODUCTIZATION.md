@@ -13,8 +13,7 @@ Every recurring dataset has a schema (Pydantic / SQLModel),
 an owner, a sensitivity class, and a registered source row.
 ```
 
-A service that operates on data without a schema is rejected at design
-review.
+A schema-less service is rejected at design review.
 
 ## What a "data product" includes
 
