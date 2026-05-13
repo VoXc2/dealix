@@ -37,6 +37,7 @@ from api.routers import (
     enterprise_pmo,
     jobs,
     pdpl,
+    pdpl_dsar,
     saudi_prospect_search,
     sector_intel,
     service_setup,
@@ -244,6 +245,8 @@ def create_app() -> FastAPI:
     app.include_router(compliance_status.router)
     # Wave 9 W9.8 — Saudi B2B prospect search (read-only public + PDPL-safe view)
     app.include_router(saudi_prospect_search.router)
+    # Wave 9 W9.9 — PDPL DSAR (data subject access/rectify/port/erase)
+    app.include_router(pdpl_dsar.router)
 
     @app.get("/", tags=["root"])
     async def root() -> dict[str, object]:
