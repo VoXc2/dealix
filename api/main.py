@@ -40,6 +40,7 @@ from api.routers import (
     jobs,
     pdpl,
     pdpl_dsar,
+    referral_program,
     revenue_metrics,
     saudi_prospect_search,
     sector_intel,
@@ -256,6 +257,8 @@ def create_app() -> FastAPI:
     app.include_router(customer_webhooks.router)
     # Wave 13 W13.7 — Revenue metrics dashboard (MRR/ARR/NRR/churn/cohort)
     app.include_router(revenue_metrics.router)
+    # Wave 13 W13.13 — Customer referral program (5K SAR per closed deal)
+    app.include_router(referral_program.router)
 
     @app.get("/", tags=["root"])
     async def root() -> dict[str, object]:
