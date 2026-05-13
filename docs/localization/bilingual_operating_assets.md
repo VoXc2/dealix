@@ -79,8 +79,8 @@ This index covers Waves 1–3 and 5 artefacts. It does not duplicate the general
 
 | Asset | EN path | AR path | Owner | Last reviewed | Freshness |
 |---|---|---|---|---|---|
-| Expansion playbook | `docs/playbooks/expansion_playbook.md` | `docs/playbooks/expansion_playbook.ar.md` | CRO | TBD | Missing (Wave 5) |
-| Launch checklist | `docs/launch/launch_checklist.md` | `docs/launch/launch_checklist.ar.md` | HoP | TBD | Missing (Wave 5) |
+| Expansion playbook | `docs/customer-success/expansion_playbook.md` | `docs/customer-success/expansion_playbook.ar.md` | HoCS | 2026-05-13 | Current |
+| Launch checklist | `docs/product/launch_checklist.md` | `docs/product/launch_checklist.ar.md` | HoP | 2026-05-13 | Current |
 
 ### 3.6 EN-Only Reference Assets (Not Bilingual)
 
