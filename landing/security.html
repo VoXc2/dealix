@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Dealix — الأمان (Security)</title>
+  <meta name="description" content="إفصاح Dealix الأمني الكامل — controls، DLQs، PII scrubbing، rate limits، sub-processors. شفافية مطلقة." />
+  <meta name="robots" content="index,follow" />
+  <link rel="canonical" href="https://dealix.me/security.html" />
+  <meta property="og:title" content="Dealix Security" />
+  <meta property="og:type" content="website" />
+  <meta name="theme-color" content="#0f172a" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="/assets/css/design-system.css" />
+  <style>
+    body { font-family: "IBM Plex Sans Arabic", system-ui, sans-serif; background: #f8fafc; color: #0f172a; margin: 0; line-height: 1.7; }
+    .container { max-width: 920px; margin: 0 auto; padding: 32px 20px; }
+    h1 { font-size: clamp(28px, 5vw, 40px); margin: 16px 0; }
+    h2 { font-size: 24px; margin: 36px 0 12px; padding-bottom: 6px; border-bottom: 2px solid #e2e8f0; }
+    h3 { font-size: 18px; margin: 20px 0 8px; color: #0f172a; }
+    .control { background: white; padding: 20px; border-radius: 12px; border: 1px solid #e2e8f0; margin: 16px 0; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
+    .control header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+    .control .badge { padding: 3px 10px; border-radius: 999px; font-size: 12px; font-weight: 600; }
+    .badge.live { background: #dcfce7; color: #166534; }
+    .badge.partial { background: #fef3c7; color: #713f12; }
+    .badge.planned { background: #dbeafe; color: #1e40af; }
+    .evidence { font-family: monospace; font-size: 13px; color: #475569; background: #f1f5f9; padding: 6px 10px; border-radius: 6px; display: inline-block; margin: 4px 0; }
+    .breach-promise { background: linear-gradient(135deg, #0f172a, #1e293b); color: white; padding: 24px; border-radius: 14px; margin: 24px 0; }
+    .breach-promise h3 { color: white; margin: 0 0 8px; }
+    .breach-promise p { color: #cbd5e1; margin: 4px 0; }
+    .sla-row { display: flex; gap: 12px; align-items: baseline; padding: 6px 0; border-bottom: 1px dashed #e2e8f0; }
+    .sla-row:last-child { border-bottom: none; }
+    .sla-label { font-weight: 600; min-width: 200px; color: #334155; }
+    .sla-value { color: #10b981; font-weight: 600; }
+    .footer { text-align: center; color: #64748b; font-size: 13px; padding: 24px 0; }
+    .footer a { color: #64748b; }
+  </style>
+</head>
+<body>
+
+<main class="container">
+
+  <h1>Security Disclosure</h1>
+  <p style="color:#475569">
+    إفصاح Dealix الأمني الكامل. كل control موثّق مع <strong>evidence</strong> قابل للتدقيق في الكود.
+    لا claims بدون citation.
+  </p>
+
+  <div class="breach-promise">
+    <h3>تعهّد الإبلاغ بالخرق</h3>
+    <p>PDPL Art. 21 يفرض الإبلاغ خلال 72 ساعة لـ SDAIA. <strong>Dealix يلتزم بـ 24 ساعة</strong> داخلياً.</p>
+    <p>سياسة الإبلاغ + runbook في <a href="https://github.com/VoXc2/dealix/blob/main/docs/ops/PDPL_BREACH_RUNBOOK.md" style="color:#10b981">PDPL_BREACH_RUNBOOK.md</a>.</p>
+  </div>
+
+  <h2>1. Application-Layer Controls</h2>
+
+  <div class="control">
+    <header>
+      <h3>Sentry PII Scrubber</h3>
+      <span class="badge live">LIVE</span>
+    </header>
+    <p>كل event يذهب لـ Sentry يمرّ بـ <code>_scrub_event</code>: يُصفّر authorization/cookie/api-key headers،
+    يستبدل query strings على <code>/admin/*</code> و <code>/auth/*</code>، يُلغي bodies على <code>/checkout</code> و <code>/webhooks/*</code>.</p>
+    <div class="evidence">dealix/observability/sentry.py + tests/test_sentry_pii_scrubber.py (12 tests)</div>
+  </div>
+
+  <div class="control">
+    <header>
+      <h3>Moyasar Webhook Signature Verification</h3>
+      <span class="badge live">LIVE</span>
+    </header>
+    <p>كل webhook callback يتم التحقّق منه بـ HMAC قبل أي معالجة. Production env يرفض أي signature غير صحيحة.</p>
+    <div class="evidence">dealix/payments.py:verify_webhook + tests/test_moyasar_webhook_persistence.py</div>
+  </div>
+
+  <div class="control">
+    <header>
+      <h3>WhatsApp Webhook x-hub-signature-256</h3>
+      <span class="badge live">LIVE</span>
+    </header>
+    <p>Production مع <code>WHATSAPP_APP_SECRET</code> ينفّذ strict signature check. اختبارات W7.4 تحمي من regression.</p>
+    <div class="evidence">api/routers/webhooks.py + tests/test_whatsapp_webhook_integration.py (7 tests)</div>
+  </div>
+
+  <div class="control">
+    <header>
+      <h3>Tenant Isolation Middleware</h3>
+      <span class="badge live">LIVE</span>
+    </header>
+    <p>كل request يحمل tenant_id؛ تحقّق على الـ ORM layer + (في الإنتاج) row-level security.</p>
+    <div class="evidence">api/middleware/tenant_isolation.py</div>
+  </div>
+
+  <div class="control">
+    <header>
+      <h3>Admin API Key Gate</h3>
+      <span class="badge live">LIVE</span>
+    </header>
+    <p>كل <code>/api/v1/admin/*</code> route تتطلّب <code>X-Admin-API-Key</code> header. مفاتيح مدوّرة كل 90 يوماً.</p>
+    <div class="evidence">api/security/api_key.py:require_admin_key</div>
+  </div>
+
+  <div class="control">
+    <header>
+      <h3>Rate Limiting (slowapi)</h3>
+      <span class="badge live">LIVE</span>
+    </header>
+    <p>per-IP + per-route limits configurable via env (P8 in PRODUCTION_ENV_TEMPLATE).
+    Defaults: global 1000/min, generic 60/min, leads 30/min, sales 60/min, WhatsApp webhook 300/min.</p>
+    <div class="evidence">RL_* environment vars · slowapi integration</div>
+  </div>
+
+  <h2>2. Data-Layer Controls</h2>
+
+  <div class="control">
+    <header>
+      <h3>PDPL Article 18 Audit Log Middleware</h3>
+      <span class="badge live">LIVE</span>
+    </header>
+    <p>15 personal-data path prefixes تُسجَّل في audit log (5-year retention) عند كل وصول.</p>
+    <div class="evidence">api/middleware/http_stack.py:_PERSONAL_DATA_PREFIXES</div>
+  </div>
+
+  <div class="control">
+    <header>
+      <h3>Decision Passport — "No Passport, No Action"</h3>
+      <span class="badge live">LIVE</span>
+    </header>
+    <p>Golden Chain validator يرفض أي external commitment بدون audit entry مكتمل.</p>
+    <div class="evidence">api/routers/decision_passport.py</div>
+  </div>
+
+  <div class="control">
+    <header>
+      <h3>Data Residency me-south-1</h3>
+      <span class="badge live">LIVE</span>
+    </header>
+    <p>كل البيانات في AWS me-south-1 (Bahrain GCC). صفر cross-border transfer للـ application data.
+    LLM providers (Anthropic/OpenAI) في US تحت SDAIA-approved SCC.</p>
+    <div class="evidence">AWS_DEFAULT_REGION=me-south-1 · landing/sub-processors.html</div>
+  </div>
+
+  <div class="control">
+    <header>
+      <h3>DSAR (Data Subject Access Request) Endpoints</h3>
+      <span class="badge live">LIVE</span>
+    </header>
+    <p>POST <code>/api/v1/pdpl/dsar/request</code> — access/rectify/port/erase. 5-day Dealix SLA vs 30-day PDPL mandate.</p>
+    <div class="evidence">api/routers/pdpl_dsar.py + tests/test_pdpl_dsar.py (10 tests)</div>
+  </div>
+
+  <h2>3. Operational Controls</h2>
+
+  <div class="control">
+    <header>
+      <h3>DLQ Monitoring (4 queues)</h3>
+      <span class="badge live">LIVE</span>
+    </header>
+    <p>webhooks، outbound، enrichment، crm_sync — depths مكشوفة على
+    <code>/health/deep</code>، alerted at >5 depth via preflight P7.</p>
+    <div class="evidence">api/routers/health.py · scripts/preflight_check.py</div>
+  </div>
+
+  <div class="control">
+    <header>
+      <h3>Backup Verification</h3>
+      <span class="badge live">LIVE</span>
+    </header>
+    <p>S3 backups في me-south-1، scripts/verify_backup.py يتحقّق freshness < 2h + integrity via pg_restore --list.</p>
+    <div class="evidence">scripts/verify_backup.py · BACKUP_S3_BUCKET env</div>
+  </div>
+
+  <div class="control">
+    <header>
+      <h3>Pinned CVE-clean Dependencies</h3>
+      <span class="badge live">LIVE</span>
+    </header>
+    <p>urllib3 ≥ 2.2.3، aiohttp ≥ 3.11، cryptography ≥ 44، python-jose ≥ 3.5، pyyaml ≥ 6.0.2.
+    All chosen to clear specific CVEs flagged by Dependabot.</p>
+    <div class="evidence">requirements.txt · W4.1 commit</div>
+  </div>
+
+  <h2>4. SLAs (External-Facing)</h2>
+
+  <div class="control">
+    <div class="sla-row"><span class="sla-label">Uptime:</span><span class="sla-value">99.5% monthly</span></div>
+    <div class="sla-row"><span class="sla-label">First-response support:</span><span class="sla-value">4 hours business-hours (Sun-Thu 09-17 AST)</span></div>
+    <div class="sla-row"><span class="sla-label">P0 incident first-response:</span><span class="sla-value">30 minutes, 24/7</span></div>
+    <div class="sla-row"><span class="sla-label">PDPL request fulfillment:</span><span class="sla-value">5 business days (Dealix) vs 30-day legal max</span></div>
+    <div class="sla-row"><span class="sla-label">Breach notification:</span><span class="sla-value">24 hours (Dealix) vs 72-hour PDPL mandate</span></div>
+    <div class="sla-row"><span class="sla-label">Backup freshness:</span><span class="sla-value">&lt; 2 hours, verified hourly</span></div>
+    <div class="sla-row"><span class="sla-label">Failed uptime month:</span><span class="sla-value">25% credit on next bill if &lt; 99.0%</span></div>
+  </div>
+
+  <h2>5. Compliance Roadmap</h2>
+
+  <div class="control">
+    <div class="sla-row">
+      <span class="sla-label">PDPL by design:</span>
+      <span class="sla-value">✓ Achieved (continuous)</span>
+    </div>
+    <div class="sla-row">
+      <span class="sla-label">ZATCA Phase 2:</span>
+      <span class="sla-value">✓ Achieved (continuous)</span>
+    </div>
+    <div class="sla-row">
+      <span class="sla-label">SDAIA Controller Registration:</span>
+      <span class="sla-value">⏳ Q3 2026 (post-first-enterprise-customer)</span>
+    </div>
+    <div class="sla-row">
+      <span class="sla-label">ISO 27001:</span>
+      <span class="sla-value">⏳ Q1 2027 (gap analysis Q4 2026)</span>
+    </div>
+    <div class="sla-row">
+      <span class="sla-label">SOC 2 Type II:</span>
+      <span class="sla-value">⏳ Q3 2027 (only if US enterprise demands)</span>
+    </div>
+  </div>
+
+  <h2>6. Reporting a Vulnerability</h2>
+
+  <div class="control">
+    <p>
+      Email: <a href="mailto:security@dealix.me">security@dealix.me</a><br>
+      PGP key: published at <code>/.well-known/security.txt</code><br>
+      Response SLA: 24 hours acknowledge، 7 days plan, 30 days fix or workaround
+    </p>
+    <p>
+      <strong>Coordinated disclosure:</strong> 90-day standard. Earlier disclosure with researcher consent
+      if it doesn't expose other vendors.
+    </p>
+    <p>
+      <strong>No bounty program yet</strong> (pre-customer-#5). Researchers credited in
+      <code>SECURITY_HALL_OF_FAME.md</code> on the repo.
+    </p>
+  </div>
+
+  <h2>7. Live Verification</h2>
+
+  <p>
+    Don't take this page's word — verify in real time:
+    <a href="/api/v1/compliance/status">GET /api/v1/compliance/status</a>
+    returns the actual code-state of every claim above. If a code path moves, the endpoint reports it
+    honestly within seconds.
+  </p>
+
+  <footer class="footer">
+    <p>
+      <a href="/">الرئيسية</a> ·
+      <a href="/privacy.html">السياسة</a> ·
+      <a href="/dpo.html">DPO</a> ·
+      <a href="/sub-processors.html">Sub-Processors</a> ·
+      <a href="/status.html">Status</a> ·
+      <a href="/roadmap.html">Roadmap</a>
+    </p>
+    <p>Dealix · ZATCA Phase 2 · me-south-1 · PDPL by design</p>
+  </footer>
+
+</main>
+
+</body>
+</html>

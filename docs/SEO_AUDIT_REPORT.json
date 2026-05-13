@@ -1,9 +1,9 @@
 {
   "schema_version": 1,
   "summary": {
-    "total_pages": 63,
+    "total_pages": 66,
     "pages_with_required_gap": 0,
-    "pages_with_advisory_gap": 0
+    "pages_with_advisory_gap": 3
   },
   "required_checks": [
     "title",
@@ -160,6 +160,25 @@
       },
       "missing_required": [],
       "missing_advisory": []
+    },
+    {
+      "path": "changelog.html",
+      "present": {
+        "title": true,
+        "meta_description": true,
+        "meta_viewport": true,
+        "html_lang": true,
+        "html_dir": true,
+        "canonical": true,
+        "og_title": true,
+        "og_description": false,
+        "twitter_card": false
+      },
+      "missing_required": [],
+      "missing_advisory": [
+        "og_description",
+        "twitter_card"
+      ]
     },
     {
       "path": "checkout-success.html",
@@ -802,6 +821,25 @@
       "missing_advisory": []
     },
     {
+      "path": "roadmap.html",
+      "present": {
+        "title": true,
+        "meta_description": true,
+        "meta_viewport": true,
+        "html_lang": true,
+        "html_dir": true,
+        "canonical": true,
+        "og_title": true,
+        "og_description": false,
+        "twitter_card": false
+      },
+      "missing_required": [],
+      "missing_advisory": [
+        "og_description",
+        "twitter_card"
+      ]
+    },
+    {
       "path": "roi.html",
       "present": {
         "title": true,
@@ -832,6 +870,25 @@
       },
       "missing_required": [],
       "missing_advisory": []
+    },
+    {
+      "path": "security.html",
+      "present": {
+        "title": true,
+        "meta_description": true,
+        "meta_viewport": true,
+        "html_lang": true,
+        "html_dir": true,
+        "canonical": true,
+        "og_title": true,
+        "og_description": false,
+        "twitter_card": false
+      },
+      "missing_required": [],
+      "missing_advisory": [
+        "og_description",
+        "twitter_card"
+      ]
     },
     {
       "path": "services.html",
