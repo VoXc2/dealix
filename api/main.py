@@ -31,6 +31,7 @@ from api.routers.domains import sales as sales_domain
 from api.routers.domains import webhooks as webhooks_domain
 from api.routers import (
     admin_tenants,
+    affiliate,
     auth,
     compliance_status,
     cost_tracking,
@@ -262,6 +263,8 @@ def create_app() -> FastAPI:
     app.include_router(referral_program.router)
     # Wave 13 W13.4 — NPS survey + detractor intervention
     app.include_router(nps.router)
+    # Wave 13 W13.3 — Affiliate program (external partners, tiered commission)
+    app.include_router(affiliate.router)
 
     @app.get("/", tags=["root"])
     async def root() -> dict[str, object]:
