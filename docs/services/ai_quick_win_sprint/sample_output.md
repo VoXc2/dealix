@@ -135,6 +135,28 @@
 | المُنفّذ / Executor | Dealix orchestration runtime |
 | التخزين / Storage | `event_store` (Postgres) + Object Storage (PDFs) |
 
+### 3.3 مخرجات التقرير الأسبوعي / What the weekly CEO report contains
+
+التقرير المُولَّد ينتج 6 أقسام بشكل ثابت (مقاسة بـ schema validator Pydantic، أي نقص يُوقف التشغيل قبل approval):
+
+| القسم / Section | المصدر | المنطق |
+|---|---|---|
+| 1. ملخص OTIF (On-Time-In-Full) | TMS API | متوسط 7 أيام + مقارنة Week-over-Week |
+| 2. dwell time لـ 6 مستودعات | WMS API | top-3 + bottom-3 + سبب أعلى | 
+| 3. حسابات جديدة + إلغاءات | CRM API | new MRR / churn risk indicators |
+| 4. حوادث تشغيل > Severity 2 | Ops email + WhatsApp | تصنيف آلي + تلخيص بشري عند الموافقة |
+| 5. مؤشرات Power BI الإستراتيجية | Power BI export | 8 KPIs ثابتة |
+| 6. توصيات الأسبوع | LLM، مُقيَّد بـ corpus السابق | ≤ 5 توصيات بأدلة |
+
+### 3.4 المخرَج النهائي / Final artifact
+
+| النسخة | التنسيق | الحجم النموذجي |
+|---|---|---|
+| للقارئ السريع | PDF بـ 2 صفحات | ≈ 180 KB |
+| للأرشيف | PDF كامل بـ 14 صفحة | ≈ 1.8 MB |
+| للنشر الداخلي | Teams card | ≈ 12 KB |
+| للوحة الذكاء | PPT (5 شرائح) | ≈ 740 KB |
+
 ---
 
 ## 4. تغطية التدقيق والموافقة / Audit & Approval Coverage
