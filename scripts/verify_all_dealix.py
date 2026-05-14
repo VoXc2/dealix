@@ -493,6 +493,20 @@ def system_first_invoice_motion() -> SystemReport:
     )]
     return r
 
+def system_market_feedback() -> SystemReport:
+    r = SystemReport("Market Feedback")
+    r.docs = [any_of_files_check(
+        ["docs/ops/MARKET_FEEDBACK.md", "docs/sales-kit/MARKET_FEEDBACK.md"],
+        "Market feedback doc",
+    )]
+    r.code = [
+        file_check("api/routers/market_feedback.py"),
+        file_check("scripts/market_feedback_summary.py"),
+    ]
+    r.tests = [file_check("tests/test_market_feedback_endpoint.py")]
+    return r
+
+
 def system_partner_kit() -> SystemReport:
     r = SystemReport("Partner Kit")
     r.docs = [
@@ -608,6 +622,7 @@ SYSTEMS: list[Callable[[], SystemReport]] = [
     system_customer_readiness_gate,
     system_doctrine_versioning,
     system_partner_kit,
+    system_market_feedback,
 ]
 
 # Systems that must be ≥ 4/5 for "CEO complete".

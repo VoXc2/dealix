@@ -27,6 +27,7 @@ from api.routers import (
     executive_reporting,
     finance_os,
     founder,
+    market_feedback,
     founder_beast_command_center,
     founder_command_summary as founder_command_summary_router,
     full_ops,
@@ -78,6 +79,8 @@ _ROUTERS = [
     trust_status.router,
     # Wave 21 PR6 — per-customer readiness gate (admin + public).
     customer_readiness_gate.router,
+    # Wave 21 PR9 — public market-feedback capture.
+    market_feedback.router,
 ]
 
 

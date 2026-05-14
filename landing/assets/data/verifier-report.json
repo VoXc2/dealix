@@ -166,6 +166,13 @@
       "name": "Partner Kit",
       "passed": true,
       "score": 4
+    },
+    {
+      "in_top_eight": false,
+      "missing": [],
+      "name": "Market Feedback",
+      "passed": true,
+      "score": 4
     }
   ]
 }
