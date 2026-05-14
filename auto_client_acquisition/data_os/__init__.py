@@ -26,10 +26,13 @@ from auto_client_acquisition.data_os.source_attribution import (
 )
 from auto_client_acquisition.data_os.source_passport import (
     SourcePassport,
+    ValidationResult,
     governance_decision_hints_for_passport_gate,
+    requires_approval,
     source_passport_allows_task,
     source_passport_from_v2,
     source_passport_valid_for_ai,
+    validate,
 )
 from auto_client_acquisition.data_os.validation_rules import validate_account_row, validate_rows
 
@@ -38,6 +41,7 @@ __all__ = [
     "account_row_completeness",
     "column_name_suggests_pii",
     "SourcePassport",
+    "ValidationResult",
     "duplicate_ratio_by_field",
     "governance_decision_hints_for_passport_gate",
     "import_preview_csv",
@@ -47,6 +51,7 @@ __all__ = [
     "normalize_domain",
     "normalize_phone_e164_hint",
     "pii_flags_for_row",
+    "requires_approval",
     "row_has_source",
     "source_coverage_ratio",
     "source_passport_allows_task",
@@ -55,6 +60,7 @@ __all__ = [
     "suggest_dedupe_fingerprint",
     "summarize_sources",
     "summarize_table_quality",
+    "validate",
     "validate_account_row",
     "validate_rows",
 ]
