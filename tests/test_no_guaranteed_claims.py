@@ -76,6 +76,13 @@ ALLOWLIST: dict[str, dict[str, str]] = {
     # Wave 14H WARM_LIST_WORKFLOW uses 'cold' and 'guaranteed' in negation/
     # refusal context only ("we don't do cold WhatsApp", "no guaranteed sales").
     "sales-kit/WARM_LIST_WORKFLOW.md": {"cold": "NEGATION", "guaranteed": "NEGATION"},
+    # 2026-Q2 pricing reframe — every occurrence is inside a negation or
+    # objection-handling block ("no guaranteed", "النتائج التقديرية ليست
+    # نتائج مضمونة"). Doctrine intact.
+    "sales-kit/PRICING_REFRAME_2026Q2.md": {
+        "guaranteed": "NEGATION",
+        "مضمون": "NEGATION",
+    },
 }
 
 

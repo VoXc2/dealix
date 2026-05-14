@@ -53,11 +53,11 @@
   <main id="main" class="pricing-wrap">
     <a href="index.html" class="nav-back">← العودة للرئيسية</a>
     <div class="pricing-head">
-      <h1>سلّم تسعير شفّاف. ابدأ مجّاناً. وسّع متى أثبتنا القيمة.</h1>
-      <p>٦ مستويات — من Mini Diagnostic مجّاني حتى Executive Command Center. كلّ ريال شفاف، ZATCA-ready، Saudi VAT 15% مُحتسب.</p>
+      <h1>ثلاث باقات. تشخيص مجاني، ريتينر شهري، سبرنت رئيسي.</h1>
+      <p>قطاع البيدج: خدمات B2B السعودية (٥٠–٥٠٠ موظف). الأرضية المدفوعة ٤٬٩٩٩ ر.س / شهر — كل ريال شفاف، ZATCA-ready، VAT 15% مُحتسب.</p>
       <div style="margin-top:18px;display:flex;justify-content:center;gap:12px;flex-wrap:wrap">
         <a href="/diagnostic.html" data-analytics="cta_pricing_diagnostic" class="ds-btn ds-btn--lg">ابدأ التشخيص المجّاني</a>
-        <a href="/customer-portal.html" class="ds-btn ds-btn--ghost ds-btn--lg">شاهد لوحة العميل</a>
+        <a href="/api/v1/commercial-map/markdown" data-analytics="cta_pricing_commercial_map" class="ds-btn ds-btn--ghost ds-btn--lg">خريطة الربط التجاري</a>
       </div>
     </div>
 
@@ -65,126 +65,72 @@
     <div style="text-align:center;margin-bottom:32px;padding:18px;background:linear-gradient(135deg,#ecfdf5,#dcfce7);border-radius:14px;border:1px solid #86efac">
       <div style="font-size:13px;font-weight:700;color:#15803d;margin-bottom:8px">✓ التزامات Dealix</div>
       <div style="display:flex;justify-content:center;gap:24px;flex-wrap:wrap;font-size:13px;color:#166534">
-        <span>💯 استرجاع كامل لو لم نردّ على lead عربي واحد</span>
-        <span>🛡️ PDPL-ready + Saudi data residency</span>
-        <span>📅 إلغاء بضغطة — لا التزام طويل</span>
+        <span>💯 لو لم تتحقق KPI الريتينر، نواصل بدون مقابل</span>
+        <span>🛡️ PDPL Article 5/13/14/18/21 mapped</span>
+        <span>📅 الحدّ الأدنى ٣ أشهر · pro-rata refund</span>
         <span>🇸🇦 صُنع في الرياض · ZATCA-ready</span>
       </div>
     </div>
 
-    <!-- 6-tier anchor pricing ladder. Partner (top) anchors highest, Mini Diagnostic (bottom) is the entry funnel. -->
+    <!-- 2026-Q2 3-offer ladder. Flagship (top) anchors highest, Diagnostic (bottom) is the entry funnel.
+         Source of truth: auto_client_acquisition/service_catalog/registry.py + /api/v1/commercial-map. -->
     <div class="plans">
-      <!-- Tier 1: Partner / Executive Command Center (highest anchor) -->
+      <!-- Tier 1: Revenue Intelligence Sprint (flagship anchor) -->
       <div class="plan featured">
-        <span class="badge">موصى به</span>
-        <h3>Executive Command Center</h3>
-        <div class="price">12,000 <small>ريال / شهر</small></div>
+        <span class="badge">المخرَج الرئيسي</span>
+        <h3>Revenue Intelligence Sprint <small style="font-size:13px;font-weight:500;color:#64748b">(سبرنت ذكاء الإيرادات)</small></h3>
+        <div class="price">25,000 <small>ريال · 30 يومًا ثابتة</small></div>
         <ul>
-          <li>كلّ ميزات Scale OS</li>
-          <li>غرفة قيادة تنفيذيّة + KPI lift weekly</li>
-          <li>Daily Decisions queue + Approval-first</li>
-          <li>Proof Pack أسبوعي + Executive Pack</li>
-          <li>Account manager + sprint check-ins</li>
-          <li>التزام 4 أشهر · أوّل 3 عملاء = price-lock مدى الحياة</li>
+          <li>دمج 3 مصادر حقيقة (CRM + المالية + العمليات)</li>
+          <li>نموذج تنبؤ 90-day rolling — هدف الدقة ≥85%</li>
+          <li>حزمة حوكمة قابلة للتدقيق (PDPL mapped)</li>
+          <li>Decision Passports لأعلى 20 فرصة</li>
+          <li>تسجيل Capital Asset قابل لإعادة الاستخدام</li>
+          <li>Proof Pack موقّع + Trust Pack PDF</li>
+          <li>50% على القبول، 50% على Proof Pack — استرداد 50% خلال 60 يوم إن لم تتحقق بوابة جاهزية الريتينر</li>
         </ul>
-        <a class="cta" href="/checkout.html?tier=partner" data-analytics="cta_pricing_partner">إكمال الاشتراك</a>
+        <a class="cta" href="/checkout.html?tier=sprint" data-analytics="cta_pricing_sprint">احجز السبرنت ←</a>
       </div>
 
-      <!-- Tier 2: Scale OS -->
-      <div class="plan">
-        <h3>Scale OS</h3>
-        <div class="price">7,999 <small>ريال / شهر</small></div>
-        <ul>
-          <li>Lead غير محدود</li>
-          <li>كلّ ميزات Growth OS</li>
-          <li>Multi-user + أدوار متقدّمة</li>
-          <li>API access كامل</li>
-          <li>SLA 99.9% + alerts مخصّصة</li>
-          <li>Custom integrations</li>
-        </ul>
-        <a class="cta" href="/checkout.html?tier=scale" data-analytics="cta_pricing_scale">إكمال الاشتراك</a>
-      </div>
-
-      <!-- Tier 3: Growth OS (mid-anchor — الأكثر رواجاً) -->
-      <div class="plan" id="growth" style="border:2px solid #4ade80;box-shadow:0 12px 36px -16px rgba(74,222,128,.4);scroll-margin-top:96px">
+      <!-- Tier 2: Governed Ops Retainer (paid floor — الأكثر رواجاً) -->
+      <div class="plan" id="retainer" style="border:2px solid #4ade80;box-shadow:0 12px 36px -16px rgba(74,222,128,.4);scroll-margin-top:96px">
         <span class="badge" style="background:linear-gradient(135deg,#4ade80,#22d3ee)">الأكثر رواجاً</span>
-        <h3>Growth OS <small style="font-size:13px;font-weight:500;color:#64748b">(Growth Ops Monthly)</small></h3>
-        <div class="price">2,999 <small>ريال / شهر</small></div>
+        <h3>Governed Ops Retainer <small style="font-size:13px;font-weight:500;color:#64748b">(ريتينر العمليات المحوكمة)</small></h3>
+        <div class="price">4,999 <small>ريال / شهر · حدّ أدنى 3 أشهر</small></div>
         <ul>
-          <li>حتّى 2,500 lead/شهر</li>
-          <li>WhatsApp Decision Layer كامل</li>
-          <li>Customer Portal + Approvals</li>
-          <li>Proof Pack شهري + Audit trail</li>
-          <li>Moyasar invoicing مدمج</li>
-          <li>دعم خلال 4 ساعات + Onboarding 90 دقيقة</li>
+          <li>تدقيق خط الأنابيب أسبوعياً + لوحة العملاء المحتملين</li>
+          <li>طابور موافقات يومي — أنت توافق على كل إرسال</li>
+          <li>تنسيق Source Passport لكل مصدر بيانات</li>
+          <li>تقرير قيمة شهري قابل للتدقيق + Proof Pack موقّع</li>
+          <li>Friction Log review + Adoption Score</li>
+          <li>التزام: رفع جودة بيانات الإيرادات ≥20% خلال 3 أشهر — وإلا نواصل بدون مقابل</li>
         </ul>
-        <a class="cta" href="/checkout.html?tier=growth" data-analytics="cta_pricing_growth">إكمال الاشتراك</a>
+        <a class="cta" href="/checkout.html?tier=retainer" data-analytics="cta_pricing_retainer">احجز الريتينر ←</a>
       </div>
 
-      <!-- Tier 4: Sprint -->
-      <div class="plan">
-        <h3>Revenue Proof Sprint</h3>
-        <div class="price">499 <small>ريال / مرّة واحدة · 7 أيّام</small></div>
-        <ul>
-          <li>تشغيل سريع لـ Revenue Command Center</li>
-          <li>Lead/Market Radar مفعّل</li>
-          <li>Decision Passports أوّليّة</li>
-          <li>WhatsApp approval flow</li>
-          <li>Proof Pack جاهز يوم 7</li>
-          <li>Next Best Offer تلقائي</li>
-        </ul>
-        <a class="cta" href="/checkout.html?tier=sprint" data-analytics="cta_pricing_sprint">احجز Sprint</a>
-      </div>
-
-      <!-- Tier 4b: Data Pack — حزمة من البيانات إلى الإيراد (one-time, between Sprint and Growth) -->
-      <div class="plan" style="border:2px solid #22d3ee">
-        <span class="badge" style="background:linear-gradient(135deg,#22d3ee,#a855f7);color:#0f172a">Data Pack</span>
-        <h3>Data Pack — حزمة من البيانات إلى الإيراد</h3>
-        <div class="price">1,500 <small>SAR · one-time · 14-day delivery</small></div>
-        <ul>
-          <li>تنظيف ≥400 صف + كشف مكرر</li>
-          <li>Source Validation + Risk Report</li>
-          <li>Top 20 فرصة مرتبة</li>
-          <li>10 مسودات عربية + Follow-up Plan</li>
-          <li>Decision Passports لأهم 5 فرص</li>
-        </ul>
-        <p style="font-size:12px;color:#64748b;margin:8px 0 12px;line-height:1.5">
-          <em>Estimated outcomes are not guaranteed outcomes / النتائج التقديرية ليست نتائج مضمونة.</em>
-        </p>
-        <a class="cta" href="/data-pack.html" data-analytics="cta_pricing_data_pack">احجز Data Pack →</a>
-        <a class="cta" href="/checkout.html?tier=data_pack" data-analytics="cta_pricing_data_pack_checkout" style="margin-top:8px;background:#22d3ee;color:#0f172a">إكمال الاشتراك · Checkout</a>
-      </div>
-
-      <!-- Tier 5: Mini Diagnostic (entry funnel — ابدأ هنا) -->
+      <!-- Tier 3: Strategic Diagnostic (entry funnel — ابدأ هنا) -->
       <div class="plan" style="border:2px solid #fbbf24">
         <span class="badge" style="background:linear-gradient(135deg,#fbbf24,#f97316)">ابدأ هنا</span>
-        <h3>Mini Diagnostic</h3>
-        <div class="price">مجّاني <small>· 24 ساعة</small></div>
+        <h3>Strategic Diagnostic <small style="font-size:13px;font-weight:500;color:#64748b">(التشخيص الاستراتيجي)</small></h3>
+        <div class="price">مجّاني <small>· يوم عمل واحد</small></div>
         <ul>
-          <li>3 فرص حقيقيّة من قطاعك</li>
-          <li>رسالة عربيّة جاهزة</li>
-          <li>أفضل قناة للتواصل</li>
-          <li>مخاطرة لتجنّبها</li>
-          <li>قرار التالي الواضح</li>
+          <li>تدقيق PDPL + NDMO حسب القطاع</li>
+          <li>تقرير فجوة ذكاء الإيرادات</li>
+          <li>جرد مصادر الحقيقة (أعلى 5 أنظمة)</li>
+          <li>1-صفحة خطة 90 يومًا</li>
+          <li>أعلى 3 فرص مرتّبة + Decision Passport واحد</li>
           <li>المؤسس يراجع شخصياً</li>
         </ul>
-        <a class="cta" href="/diagnostic.html" data-analytics="cta_pricing_diagnostic_card">ابدأ التشخيص</a>
+        <a class="cta" href="/diagnostic.html" data-analytics="cta_pricing_diagnostic_card">ابدأ التشخيص ←</a>
       </div>
+    </div>
 
-      <!-- Tier 6: Enterprise -->
-      <div class="plan">
-        <h3>Enterprise</h3>
-        <div class="price">تواصل <small>· مفصّل حسب الحاجة</small></div>
-        <ul>
-          <li>كلّ ميزات Executive Command Center</li>
-          <li>SSO + RBAC متقدّم</li>
-          <li>PDPL advanced + private deployment</li>
-          <li>Custom SLA + DPO support</li>
-          <li>Multi-tenant RLS</li>
-          <li>SDAIA / SAMA-aligned audits</li>
-        </ul>
-        <a class="cta" href="mailto:sales@dealix.sa?subject=Enterprise%20Inquiry">تواصل مع المبيعات</a>
-      </div>
+    <!-- Sectors closed temporarily — Saudi B2B services beachhead only for next 90 days -->
+    <div style="max-width:820px;margin:24px auto;text-align:center;padding:18px;background:rgba(15,23,42,0.04);border:1px solid #cbd5e1;border-radius:14px;font-size:14px;color:#475569;line-height:1.7">
+      <strong style="color:#0f172a">القطاعات المغلقة مؤقّتاً (٩٠ يوم):</strong>
+      البنوك، الطاقة، الصحّة، الحكومي، SaaS B2B تُخدم حالياً عبر Custom AI engagements فقط (≥ 50,000 ر.س)
+      بتواصل مباشر مع المؤسس. القطاع المختار للسلّم العام: <strong style="color:#0f172a">خدمات B2B السعودية (50–500 موظف)</strong>.
+      <br><a href="/api/v1/commercial-map/markdown" class="ds-link" style="display:inline-block;margin-top:8px">اقرأ خريطة الربط التجاري كاملةً ←</a>
     </div>
 
     <!-- Negation-safe التزامات block (replaces older ضمانات wording) -->
@@ -224,45 +170,42 @@
       </div>
     </div>
 
-    <!-- Comparison table -->
+    <!-- Comparison table — 3-offer ladder -->
     <div style="max-width:1100px;margin:48px auto;padding:32px 24px;background:#fff;border:1px solid #e2e8f0;border-radius:16px;overflow-x:auto">
       <h2 style="margin:0 0 18px;text-align:center;font-size:22px;color:#0f172a">مقارنة سريعة: ماذا تختار؟</h2>
       <table style="width:100%;border-collapse:collapse;font-size:14px;min-width:680px">
         <thead>
           <tr style="background:#f8fafc">
             <th style="padding:12px;text-align:right;border-bottom:2px solid #e2e8f0">الميزة</th>
-            <th style="padding:12px;text-align:center;border-bottom:2px solid #e2e8f0">Pilot 1 ريال</th>
-            <th style="padding:12px;text-align:center;border-bottom:2px solid #e2e8f0">Starter 999</th>
-            <th style="padding:12px;text-align:center;border-bottom:2px solid #e2e8f0;background:#fef9c3">Growth 2,999 ⭐</th>
-            <th style="padding:12px;text-align:center;border-bottom:2px solid #e2e8f0">Scale 7,999</th>
+            <th style="padding:12px;text-align:center;border-bottom:2px solid #e2e8f0">Diagnostic — مجّاني</th>
+            <th style="padding:12px;text-align:center;border-bottom:2px solid #e2e8f0;background:#fef9c3">Retainer — 4,999 ⭐</th>
+            <th style="padding:12px;text-align:center;border-bottom:2px solid #e2e8f0">Sprint — 25,000</th>
           </tr>
         </thead>
         <tbody>
-          <tr><td style="padding:10px;border-bottom:1px dashed #e2e8f0;font-weight:600">leads/شهر</td><td style="text-align:center">≤ 25</td><td style="text-align:center">500</td><td style="text-align:center;background:#fefce8">2,500</td><td style="text-align:center">∞</td></tr>
-          <tr><td style="padding:10px;border-bottom:1px dashed #e2e8f0;font-weight:600">رد عربي خليجي < 60 ثانية</td><td style="text-align:center">✓</td><td style="text-align:center">✓</td><td style="text-align:center;background:#fefce8">✓</td><td style="text-align:center">✓</td></tr>
-          <tr><td style="padding:10px;border-bottom:1px dashed #e2e8f0;font-weight:600">WhatsApp + Email + Form</td><td style="text-align:center">WhatsApp فقط</td><td style="text-align:center">✓</td><td style="text-align:center;background:#fefce8">✓</td><td style="text-align:center">✓</td></tr>
-          <tr><td style="padding:10px;border-bottom:1px dashed #e2e8f0;font-weight:600">CRM Integration (HubSpot/SF/Zoho)</td><td style="text-align:center">—</td><td style="text-align:center">واحد</td><td style="text-align:center;background:#fefce8">كلهم</td><td style="text-align:center">+ Custom</td></tr>
-          <tr><td style="padding:10px;border-bottom:1px dashed #e2e8f0;font-weight:600">تقارير يومية + Dashboard</td><td style="text-align:center">يومي</td><td style="text-align:center">أسبوعي</td><td style="text-align:center;background:#fefce8">live</td><td style="text-align:center">live + custom</td></tr>
-          <tr><td style="padding:10px;border-bottom:1px dashed #e2e8f0;font-weight:600">Approvals + Audit Log</td><td style="text-align:center">—</td><td style="text-align:center">—</td><td style="text-align:center;background:#fefce8">✓</td><td style="text-align:center">✓ + RBAC</td></tr>
-          <tr><td style="padding:10px;border-bottom:1px dashed #e2e8f0;font-weight:600">Moyasar Invoicing</td><td style="text-align:center">—</td><td style="text-align:center">—</td><td style="text-align:center;background:#fefce8">✓</td><td style="text-align:center">✓</td></tr>
-          <tr><td style="padding:10px;border-bottom:1px dashed #e2e8f0;font-weight:600">API Access</td><td style="text-align:center">—</td><td style="text-align:center">—</td><td style="text-align:center;background:#fefce8">—</td><td style="text-align:center">✓ كامل</td></tr>
-          <tr><td style="padding:10px;border-bottom:1px dashed #e2e8f0;font-weight:600">SLA</td><td style="text-align:center">best effort</td><td style="text-align:center">99%</td><td style="text-align:center;background:#fefce8">99.5%</td><td style="text-align:center">99.9%</td></tr>
-          <tr><td style="padding:10px;border-bottom:1px dashed #e2e8f0;font-weight:600">دعم</td><td style="text-align:center">WhatsApp</td><td style="text-align:center">24h</td><td style="text-align:center;background:#fefce8">4h</td><td style="text-align:center">Account Manager</td></tr>
-          <tr><td style="padding:10px;font-weight:600">Onboarding</td><td style="text-align:center">—</td><td style="text-align:center">ذاتي</td><td style="text-align:center;background:#fefce8">90 دقيقة</td><td style="text-align:center">جلسات + تدريب فريقكم</td></tr>
+          <tr><td style="padding:10px;border-bottom:1px dashed #e2e8f0;font-weight:600">المدّة</td><td style="text-align:center">1 يوم عمل</td><td style="text-align:center;background:#fefce8">مستمر (3 أشهر حدّ أدنى)</td><td style="text-align:center">30 يومًا ثابتة</td></tr>
+          <tr><td style="padding:10px;border-bottom:1px dashed #e2e8f0;font-weight:600">PDPL + NDMO posture audit</td><td style="text-align:center">✓</td><td style="text-align:center;background:#fefce8">✓ شهري</td><td style="text-align:center">✓ + Article mapping</td></tr>
+          <tr><td style="padding:10px;border-bottom:1px dashed #e2e8f0;font-weight:600">عدد مصادر البيانات المدمجة</td><td style="text-align:center">جرد فقط</td><td style="text-align:center;background:#fefce8">curated شهرياً</td><td style="text-align:center">3 مصادر full merge</td></tr>
+          <tr><td style="padding:10px;border-bottom:1px dashed #e2e8f0;font-weight:600">Revenue forecast model</td><td style="text-align:center">—</td><td style="text-align:center;background:#fefce8">tracking only</td><td style="text-align:center">90-day rolling · target ≥85% accuracy</td></tr>
+          <tr><td style="padding:10px;border-bottom:1px dashed #e2e8f0;font-weight:600">طابور موافقات يومي (draft_only)</td><td style="text-align:center">—</td><td style="text-align:center;background:#fefce8">✓</td><td style="text-align:center">✓ (15 مسودة)</td></tr>
+          <tr><td style="padding:10px;border-bottom:1px dashed #e2e8f0;font-weight:600">Proof Pack موقّع</td><td style="text-align:center">—</td><td style="text-align:center;background:#fefce8">شهري</td><td style="text-align:center">كامل (14 قسم)</td></tr>
+          <tr><td style="padding:10px;border-bottom:1px dashed #e2e8f0;font-weight:600">Capital Asset registered</td><td style="text-align:center">—</td><td style="text-align:center;background:#fefce8">tracked</td><td style="text-align:center">✓ (مُلتزم)</td></tr>
+          <tr><td style="padding:10px;border-bottom:1px dashed #e2e8f0;font-weight:600">Trust Pack PDF</td><td style="text-align:center">—</td><td style="text-align:center;background:#fefce8">—</td><td style="text-align:center">✓</td></tr>
+          <tr><td style="padding:10px;border-bottom:1px dashed #e2e8f0;font-weight:600">KPI commitment</td><td style="text-align:center">3 فرص قابلة</td><td style="text-align:center;background:#fefce8">≥20% lift في جودة البيانات</td><td style="text-align:center">بوابة جاهزية الريتينر</td></tr>
+          <tr><td style="padding:10px;font-weight:600">سياسة الاسترداد</td><td style="text-align:center">مجّاني</td><td style="text-align:center;background:#fefce8">pro-rata</td><td style="text-align:center">50% خلال 60 يوم</td></tr>
         </tbody>
       </table>
     </div>
 
     <div class="faq">
       <h2>أسئلة شائعة</h2>
-      <details><summary>هل أحتاج بطاقة ائتمان للبدء؟</summary><p>نعم لتجربة Pilot بريال. يمكنك الإلغاء متى شئت.</p></details>
-      <details><summary>كيف تُحتسب Leads؟</summary><p>كل contact فريد يدخل النظام خلال الشهر. lead مكرر = lead واحد.</p></details>
-      <details><summary>هل يدعم WhatsApp Business API؟</summary><p>نعم في Starter+. نستخدم رقمك الرسمي عبر مزوّد معتمد.</p></details>
-      <details><summary>ماذا عن البيانات والخصوصية؟</summary><p>PDPL-aligned. كل البيانات في KSA. تشفير at-rest + in-transit.</p></details>
-      <details><summary>هل أقدر أرقّي/أخفّض الخطة؟</summary><p>بأي وقت. الفرق يُحسب pro-rata.</p></details>
-      <details><summary>ما الفرق بين Growth و Scale؟</summary><p>Scale لمن يحتاج API + SLA + account manager مخصص، مناسب لوكالات أو شركات كبيرة.</p></details>
-      <details><summary>هل ZATCA e-invoice مشمول؟</summary><p>نوفّر مسار تكامل عند حاجتك (عادةً للمنشآت فوق حد معيّن). لا رسوم إضافية في Growth/Scale.</p></details>
-      <details><summary>كيف ألغي؟</summary><p>ضغطة واحدة من Dashboard، أو WhatsApp لفريق الدعم.</p></details>
+      <details><summary>هل أحتاج بطاقة ائتمان للبدء؟</summary><p>لا. التشخيص الاستراتيجي مجّاني — تعبّئ النموذج، نسلّم خلال يوم عمل.</p></details>
+      <details><summary>ليش الأرضية المدفوعة 4,999 وليس 499؟</summary><p>قرار استراتيجي. شركات خدمات B2B السعودية بهذا العمق التقني لا تشتري عند 499 ر.س — السعر يصبح إشارة على عدم قناعة بالمنتج. الحد الأدنى 4,999 ر.س / شهر يضع الخدمة في خانة OpEx المتكرر للمالي. <a href="/api/v1/commercial-map/markdown" class="ds-link">اقرأ خريطة الربط التجاري</a>.</p></details>
+      <details><summary>ماذا عن البيانات والخصوصية؟</summary><p>PDPL-aligned (مادة 5/13/14/18/21 موثّقة). كل البيانات في KSA. تشفير at-rest + in-transit.</p></details>
+      <details><summary>هل ZATCA e-invoice مشمول؟</summary><p>نوفّر مسار تكامل عند حاجتك (عادةً للمنشآت فوق حد معيّن). لا رسوم إضافية على باقاتنا الحاليّة.</p></details>
+      <details><summary>كيف ألغي الريتينر؟</summary><p>إشعار قبل نهاية الشهر — استرداد تناسبي للأشهر غير المستخدمة. الحد الأدنى للالتزام 3 أشهر.</p></details>
+      <details><summary>ماذا لو كنت في قطاع بنوك / طاقة / حكومي / صحّة؟</summary><p>تواصل مع المؤسس مباشرة عبر <a href="mailto:sales@dealix.sa?subject=Custom%20AI%20Inquiry" class="ds-link">sales@dealix.sa</a>. هذه القطاعات تُخدم حالياً عبر Custom AI engagements (≥ 50,000 ر.س)، ليس عبر السلّم العام.</p></details>
+      <details><summary>ماذا عن Mini Diagnostic القديم بـ 499 ر.س Sprint؟</summary><p>أُرشفت ضمن إعادة الهيكلة في 2026-Q2. تشخيصنا أصبح أعمق (PDPL + NDMO posture audit) ومجّاني. السبرنت أصبح "Revenue Intelligence Sprint" بـ 25,000 ر.س لـ 30 يومًا. التفاصيل في <a href="/api/v1/commercial-map/markdown" class="ds-link">خريطة الربط التجاري</a>.</p></details>
     </div>
   </main>
 

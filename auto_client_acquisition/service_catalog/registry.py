@@ -1,4 +1,4 @@
-"""The 7 canonical Dealix offerings — Wave 13 Phase 2.
+"""The 3 canonical Dealix offerings — 2026-Q2 commercial reframe.
 
 Truth registry. Backend + portal + WhatsApp + landing pages all read from here.
 
@@ -8,12 +8,33 @@ Constitution:
   not guarantee ("نضمن"). All `is_estimate=True`.
 - Article 11: pricing changes are 1-line edits to this file (no engine code).
 
-Pricing ladder (must be ascending for paid services):
-  Free Diagnostic (0) → Sprint (499) → Data-to-Revenue (1500)
-  → Growth Ops (2999/mo) → Support Add-on (1500/mo) → ECC (7500/mo)
-  → Agency Partner OS (custom)
+Pricing ladder (ascending floor):
+  Strategic Diagnostic (0) → Governed Ops Retainer (4,999/mo)
+  → Revenue Intelligence Sprint (25,000 one-time)
 
-Strategic mapping (roles → offerings): docs/strategic/DEALIX_ROLE_SERVICE_LADDER_AR.md
+Beachhead: Saudi B2B services. PDPL/NDMO/SAMA exposed mid-market
+(50–500 employees) is the wedge. Banking, energy, healthcare, gov
+are handled inside Custom AI engagements after the Sprint produces
+a Capital Asset.
+
+The 2026-Q2 reframe collapsed the 2025 7-offer ladder down to 3:
+- Free Mini Diagnostic → upgraded to Strategic Diagnostic (PDPL/NDMO posture audit anchor).
+- 499 SAR Sprint → archived (priced below founder conviction).
+- 1,500 SAR Data-to-Revenue Pack → archived (folded into Sprint).
+- 2,999 SAR/mo Growth Ops → promoted to 4,999 SAR/mo Governed Ops Retainer.
+- 1,500 SAR/mo Support OS Add-on → archived (folded into Retainer).
+- 7,500 SAR/mo Executive Command Center → reshaped as 25,000 SAR Sprint outcome.
+- Agency Partner OS → moved out of the customer-facing ladder; remains a
+  partner-channel contract via partnership_os only.
+
+The archived offerings are preserved at the bottom of this file
+(`_LEGACY_2025_OFFERINGS`) for audit trail (Article 11) — they are NOT
+exported in `OFFERINGS` and NOT served by the public commercial map.
+
+`_LEGACY_ID_ALIASES` lets older e2e tests and historical engagement
+records resolve via `get_offering()` to the closest 2026 successor.
+
+Strategic mapping (roles → offerings): docs/sales-kit/PRICING_REFRAME_2026Q2.md
 """
 
 from __future__ import annotations
@@ -21,23 +42,34 @@ from __future__ import annotations
 from auto_client_acquisition.service_catalog.schemas import ServiceOffering
 
 
-_FREE_DIAGNOSTIC = ServiceOffering(
-    id="free_mini_diagnostic",
-    name_ar="التشخيص المجاني المختصر",
-    name_en="Free Mini Diagnostic",
+# ─────────────────────────────────────────────────────────────────────
+# Active 2026-Q2 ladder — three offerings.
+# ─────────────────────────────────────────────────────────────────────
+
+_STRATEGIC_DIAGNOSTIC = ServiceOffering(
+    id="strategic_diagnostic",
+    name_ar="التشخيص الاستراتيجي المجاني",
+    name_en="Strategic Diagnostic",
     price_sar=0.0,
     price_unit="one_time",
     duration_days=1,
     deliverables=(
-        "1-page sector-fit analysis",
-        "3 ranked opportunities",
-        "1 Arabic message draft",
-        "1 best channel recommendation",
-        "1 risk to avoid",
-        "1 next-step decision passport",
+        "PDPL + NDMO posture audit (sector-specific)",
+        "Revenue intelligence gap report",
+        "Source-of-truth inventory (top 5 systems)",
+        "1-page 90-day action plan",
+        "Top 3 ranked opportunities with effort/value scoring",
+        "1 Arabic message draft for the highest-value opportunity",
+        "Decision passport for the founder's next step",
     ),
-    kpi_commitment_ar="نسلّم خلال 24 ساعة من تعبئة النموذج.",
-    kpi_commitment_en="Delivered within 24 hours of form submission.",
+    kpi_commitment_ar=(
+        "نسلّم خلال يوم عمل واحد من تعبئة النموذج. إذا لم نوصل ٣ فرص "
+        "قابلة للتنفيذ، نواصل العمل بدون مقابل حتى نوصل."
+    ),
+    kpi_commitment_en=(
+        "Delivered within 1 working day of form submission. If we don't "
+        "surface 3 actionable opportunities, we keep working until we do."
+    ),
     refund_policy_ar="مجاني — لا يوجد دفع.",
     refund_policy_en="Free — no payment.",
     action_modes_used=("suggest_only", "draft_only"),
@@ -52,125 +84,42 @@ _FREE_DIAGNOSTIC = ServiceOffering(
 )
 
 
-_REVENUE_PROOF_SPRINT = ServiceOffering(
-    id="revenue_proof_sprint_499",
-    name_ar="سبرنت إثبات الإيرادات (٤٩٩ ر.س)",
-    name_en="499 SAR Revenue Proof Sprint",
-    price_sar=499.0,
-    price_unit="one_time",
-    duration_days=7,
-    deliverables=(
-        "Company Brain v1",
-        "Top 10 Opportunities (ranked)",
-        "Decision Passports for top 3",
-        "Arabic Draft Pack (5 messages)",
-        "Follow-up Plan (7-day timeline)",
-        "Risk + Objection Map",
-        "Executive Pack",
-        "Proof Pack",
-        "Next Best Offer recommendation",
-    ),
-    kpi_commitment_ar=(
-        "نسلّم ٧ مخرجات في ٧ أيام. إذا لم يصل عدد الفرص ≥١٠، "
-        "نشتغل بدون مقابل حتى نوصل."
-    ),
-    kpi_commitment_en=(
-        "7 deliverables in 7 days. If we don't surface ≥10 opportunities, "
-        "we work for free until we do."
-    ),
-    refund_policy_ar="استرداد كامل ١٠٠٪ خلال ١٤ يومًا، بدون أسئلة.",
-    refund_policy_en="Full 100% refund within 14 days, no questions asked.",
-    action_modes_used=(
-        "suggest_only",
-        "draft_only",
-        "approval_required",
-        "approved_manual",
-    ),
-    hard_gates=(
-        "no_live_send",
-        "no_live_charge",
-        "no_cold_whatsapp",
-        "no_linkedin_auto",
-        "no_scraping",
-        "no_fake_proof",
-        "no_fake_revenue",
-    ),
-    customer_journey_stage="first_paid",
-)
-
-
-_DATA_TO_REVENUE_PACK = ServiceOffering(
-    id="data_to_revenue_pack_1500",
-    name_ar="حزمة من البيانات إلى الإيراد (١٥٠٠ ر.س)",
-    name_en="Data-to-Revenue Pack",
-    price_sar=1500.0,
-    price_unit="one_time",
-    duration_days=14,
-    deliverables=(
-        "Clean Lead Board (deduplicated)",
-        "Duplicate Report",
-        "Source Validation Report",
-        "Risk Report",
-        "Top 20 Opportunities (scored)",
-        "10 Arabic Drafts",
-        "Follow-up Plan",
-        "Decision Passports for top 5",
-    ),
-    kpi_commitment_ar=(
-        "تنظيف ٤٠٠+ سطر في ١٤ يومًا. إذا لم نصل لـ٢٠ فرصة معتمدة، "
-        "نواصل العمل حتى نوصل."
-    ),
-    kpi_commitment_en=(
-        "Clean 400+ rows in 14 days. If we don't surface 20 approved "
-        "opportunities, we work until we do."
-    ),
-    refund_policy_ar="استرداد ٧٥٪ إذا لم يتحقق التزام KPI خلال ٢١ يومًا.",
-    refund_policy_en="75% refund if KPI commitment unmet within 21 days.",
-    action_modes_used=(
-        "suggest_only",
-        "draft_only",
-        "approval_required",
-    ),
-    hard_gates=(
-        "no_live_send",
-        "no_live_charge",
-        "no_cold_whatsapp",
-        "no_scraping",
-        "no_fake_proof",
-        "no_fake_revenue",
-    ),
-    customer_journey_stage="expansion",
-)
-
-
-_GROWTH_OPS_MONTHLY = ServiceOffering(
-    id="growth_ops_monthly_2999",
-    name_ar="عمليات النمو الشهرية (٢٩٩٩ ر.س / شهر)",
-    name_en="Growth Ops Monthly",
-    price_sar=2999.0,
+_GOVERNED_OPS_RETAINER = ServiceOffering(
+    id="governed_ops_retainer_4999",
+    name_ar="ريتينر العمليات المحوكمة (٤٬٩٩٩ ر.س / شهر)",
+    name_en="Governed Ops Retainer",
+    price_sar=4999.0,
     price_unit="per_month",
-    duration_days=120,  # 4-month minimum commitment
+    duration_days=90,  # 3-month minimum commitment
     deliverables=(
-        "4 Weekly Pipeline Audits",
-        "Weekly Lead Board",
-        "Approval Queue (daily)",
-        "Draft Pack (≥20 messages/month)",
-        "Support Insights",
-        "Proof Events (ongoing)",
-        "Monthly Proof Pack",
-        "Monthly Executive Summary",
-        "Expansion Recommendation",
+        "Weekly Pipeline Audit + Lead Board",
+        "Source Passport curation (every data source documented)",
+        "Daily Approval Queue (draft_only — founder approves every send)",
+        "Monthly Value Report (revenue impact, governance posture, friction trends)",
+        "Monthly Proof Pack (signed, audit-ready)",
+        "Friction Log review + remediation plan",
+        "Decision Passports for every material decision",
+        "Adoption Score + retainer-readiness gate",
+        "Dedicated WhatsApp draft channel for founder approval",
     ),
     kpi_commitment_ar=(
-        "نلتزم بزيادة معدل الردود +٢٠٪ خلال ٤ أشهر. "
-        "إن لم يتحقق، نشتغل بدون مقابل حتى يتحقق."
+        "نلتزم بتوصيل تقرير قيمة شهري قابل للتدقيق + رفع جودة بيانات "
+        "خط الإيرادات بنسبة ≥٢٠٪ خلال ٣ أشهر. إن لم يتحقق، نواصل بدون "
+        "مقابل حتى يتحقق."
     ),
     kpi_commitment_en=(
-        "Commit to +20% reply-rate lift in 4 months. "
-        "If not reached, we work for free until reached."
+        "We commit to: an audit-ready monthly Value Report + a ≥20% lift "
+        "in revenue-pipeline data quality within 3 months. If not achieved, "
+        "we keep working at no cost until it is."
     ),
-    refund_policy_ar="استرداد تناسبي للأشهر غير المستخدمة عند عدم تحقيق KPI.",
-    refund_policy_en="Pro-rata refund of unused months if KPI commitment unmet.",
+    refund_policy_ar=(
+        "استرداد تناسبي للأشهر غير المستخدمة عند عدم تحقيق KPI. "
+        "الحد الأدنى للالتزام: ٣ أشهر."
+    ),
+    refund_policy_en=(
+        "Pro-rata refund of unused months if KPI commitment unmet. "
+        "Minimum commitment: 3 months."
+    ),
     action_modes_used=(
         "suggest_only",
         "draft_only",
@@ -191,80 +140,43 @@ _GROWTH_OPS_MONTHLY = ServiceOffering(
 )
 
 
-_SUPPORT_OS_ADDON = ServiceOffering(
-    id="support_os_addon_1500",
-    name_ar="دعم Support OS (١٥٠٠ ر.س / شهر)",
-    name_en="Support OS Add-on",
-    price_sar=1500.0,
-    price_unit="per_month",
+_REVENUE_INTELLIGENCE_SPRINT = ServiceOffering(
+    id="revenue_intelligence_sprint_25k",
+    name_ar="سبرنت ذكاء الإيرادات الرئيسي (٢٥٬٠٠٠ ر.س / ٣٠ يومًا)",
+    name_en="Revenue Intelligence Sprint",
+    price_sar=25000.0,
+    price_unit="one_time",
     duration_days=30,
     deliverables=(
-        "Ticket Classification (12 categories)",
-        "Suggested Replies (draft_only)",
-        "Escalation List (weekly)",
-        "Root Cause Map",
-        "Customer Health Score updates",
-        "Support Proof Events",
-        "SLA breach alerts",
+        "Three sources of truth merged (CRM + finance + ops)",
+        "Revenue forecast model (rolling 90-day, accuracy target ≥85%)",
+        "Audit-ready governance pack (PDPL Article 5/13/14/18/21 mapped)",
+        "Decision Passports for the top 20 opportunities",
+        "Arabic + English Draft Pack (15 messages, founder-approved)",
+        "Risk + Objection Map (sector-specific)",
+        "Executive board pack (monthly cadence template)",
+        "Capital Asset registered: proprietary forecast + clean data spine",
+        "Full Proof Pack (signed, exportable as PDF)",
+        "Retainer-readiness gate + Next Best Offer recommendation",
     ),
     kpi_commitment_ar=(
-        "نقلّل وقت الرد الأول إلى ≤٣٠ دقيقة في ساعات العمل. "
-        "إن لم يتحقق، اشتراكان مجانيان."
+        "نسلّم ١٠ مخرجات في ٣٠ يومًا، مع دمج ٣ مصادر بيانات + بناء نموذج "
+        "تنبؤ بدقة هدف ≥٨٥٪ + حزمة حوكمة قابلة للتدقيق. إن لم تتحقق "
+        "بوابة جاهزية الريتينر، نواصل بدون مقابل حتى تتحقق."
     ),
     kpi_commitment_en=(
-        "Reduce first-response time to ≤30 min business hours. "
-        "If unmet, 2 free months."
+        "10 deliverables in 30 days: 3 sources merged, target forecast "
+        "accuracy ≥85%, audit-ready governance pack. If the retainer-"
+        "readiness gate is not met, we keep working at no cost until it is."
     ),
-    refund_policy_ar="استرداد ١٠٠٪ في الشهر الأول إذا لم يلتزم KPI.",
-    refund_policy_en="100% refund in month 1 if KPI commitment unmet.",
-    action_modes_used=(
-        "suggest_only",
-        "draft_only",
-        "approval_required",
+    refund_policy_ar=(
+        "استرداد ٥٠٪ خلال ٦٠ يومًا إذا لم تتحقق بوابة جاهزية الريتينر. "
+        "٥٠٪ على القبول، ٥٠٪ على تسليم Proof Pack."
     ),
-    hard_gates=(
-        "no_live_send",
-        "no_live_charge",
-        "no_cold_whatsapp",
-        "no_scraping",
-        "no_fake_proof",
+    refund_policy_en=(
+        "50% refund within 60 days if the retainer-readiness gate is not "
+        "met. 50% on acceptance, 50% on Proof Pack delivery."
     ),
-    customer_journey_stage="support_addon",
-)
-
-
-_EXECUTIVE_COMMAND_CENTER = ServiceOffering(
-    id="executive_command_center_7500",
-    name_ar="غرفة قيادة الإدارة (٧٥٠٠ ر.س / شهر)",
-    name_en="Executive Command Center",
-    price_sar=7500.0,
-    price_unit="per_month",
-    duration_days=120,
-    deliverables=(
-        "Daily founder brief (WhatsApp)",
-        "Weekly Pipeline Audit",
-        "Monthly board pack",
-        "Revenue Radar (live)",
-        "Sales Pipeline view",
-        "Growth Signals dashboard",
-        "Support Health overview",
-        "Delivery Progress tracker",
-        "Payment State view",
-        "Proof Ledger access",
-        "Approval Queue (daily)",
-        "Risk register (weekly)",
-        "Next 7 days plan",
-    ),
-    kpi_commitment_ar=(
-        "نوفر للإدارة ٤٠٪+ من وقت اتخاذ القرار خلال ٤ أشهر. "
-        "إن لم يتحقق، شهر مجاني."
-    ),
-    kpi_commitment_en=(
-        "Save executive 40%+ of decision time in 4 months. "
-        "If unmet, 1 free month."
-    ),
-    refund_policy_ar="استرداد تناسبي للأشهر غير المستخدمة.",
-    refund_policy_en="Pro-rata refund of unused months.",
     action_modes_used=(
         "suggest_only",
         "draft_only",
@@ -281,77 +193,44 @@ _EXECUTIVE_COMMAND_CENTER = ServiceOffering(
         "no_fake_revenue",
         "no_blast",
     ),
-    customer_journey_stage="executive",
+    customer_journey_stage="flagship",
 )
 
 
-_AGENCY_PARTNER_OS = ServiceOffering(
-    id="agency_partner_os",
-    name_ar="نظام الشريك الوكالة",
-    name_en="Agency Partner OS",
-    price_sar=0.0,  # custom — actual price set per partnership
-    price_unit="custom",
-    duration_days=0,  # ongoing
-    deliverables=(
-        "Partner Intake doc",
-        "Co-branded Diagnostic",
-        "Client Proof Sprint (per client)",
-        "Proof Pack (per client)",
-        "Renewal / Upsell Pack",
-        "Partner Revenue Tracking",
-        "30% commission tracking",
-    ),
-    kpi_commitment_ar=(
-        "نلتزم بـ٣٠٪ عمولة لأول سنة من كل عميل محوّل. "
-        "ولا نشر proof بدون موافقة موقّعة."
-    ),
-    kpi_commitment_en=(
-        "30% commission for first paid year per referred customer. "
-        "Never publish proof without signed consent."
-    ),
-    refund_policy_ar="عقد رسمي بشروط الإلغاء — يتم بمراجعة قانونية.",
-    refund_policy_en="Formal contract with cancellation terms — lawyer-reviewed.",
-    action_modes_used=(
-        "suggest_only",
-        "draft_only",
-        "approval_required",
-    ),
-    hard_gates=(
-        "no_live_send",
-        "no_live_charge",
-        "no_cold_whatsapp",
-        "no_linkedin_auto",
-        "no_scraping",
-        "no_fake_proof",
-        "no_fake_revenue",
-        "no_blast",
-    ),
-    customer_journey_stage="channel",
-)
-
-
-# Canonical 7-offering registry (order = catalog display order)
+# Canonical 2026-Q2 registry (order = catalog display order)
 OFFERINGS: tuple[ServiceOffering, ...] = (
-    _FREE_DIAGNOSTIC,
-    _REVENUE_PROOF_SPRINT,
-    _DATA_TO_REVENUE_PACK,
-    _GROWTH_OPS_MONTHLY,
-    _SUPPORT_OS_ADDON,
-    _EXECUTIVE_COMMAND_CENTER,
-    _AGENCY_PARTNER_OS,
+    _STRATEGIC_DIAGNOSTIC,
+    _GOVERNED_OPS_RETAINER,
+    _REVENUE_INTELLIGENCE_SPRINT,
 )
 
 SERVICE_IDS: frozenset[str] = frozenset(o.id for o in OFFERINGS)
 
 
+# Legacy ID aliases — let pre-2026-Q2 e2e tests and historical
+# engagement records resolve to the closest current successor via
+# get_offering(). NEW code MUST use canonical 2026 IDs.
+_LEGACY_ID_ALIASES: dict[str, str] = {
+    "free_mini_diagnostic": "strategic_diagnostic",
+    "revenue_proof_sprint_499": "revenue_intelligence_sprint_25k",
+    "data_to_revenue_pack_1500": "revenue_intelligence_sprint_25k",
+    "growth_ops_monthly_2999": "governed_ops_retainer_4999",
+    "support_os_addon_1500": "governed_ops_retainer_4999",
+    "executive_command_center_7500": "governed_ops_retainer_4999",
+}
+
+
 def list_offerings() -> tuple[ServiceOffering, ...]:
-    """All 7 offerings in catalog display order."""
+    """All 3 active offerings in catalog display order."""
     return OFFERINGS
 
 
 def get_offering(service_id: str) -> ServiceOffering | None:
-    """Return one offering by id, or None if not found."""
+    """Return one active offering by id. Legacy IDs resolve to their
+    2026 successor; unknown ids return None.
+    """
+    canonical = _LEGACY_ID_ALIASES.get(service_id, service_id)
     for o in OFFERINGS:
-        if o.id == service_id:
+        if o.id == canonical:
             return o
     return None

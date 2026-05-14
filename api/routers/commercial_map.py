@@ -1,4 +1,4 @@
-"""Commercial Map — Wave 14J.
+"""Commercial Map — 2026-Q2 reframe.
 
 Single source of truth that maps every Dealix offer to:
   - landing page path
@@ -10,7 +10,7 @@ Single source of truth that maps every Dealix offer to:
   - non-negotiables (hard_gates) honored by code
 
 Reads from `auto_client_acquisition.service_catalog.registry.OFFERINGS`
-so the map can never drift from the canonical 7-offer registry.
+so the map can never drift from the canonical 3-offer registry.
 
 Endpoints:
   GET /api/v1/commercial-map           → JSON
@@ -33,7 +33,7 @@ router = APIRouter(prefix="/api/v1/commercial-map", tags=["commercial-map"])
 # Per-service wiring overlays (landing + endpoints).
 # Keys MUST match `auto_client_acquisition.service_catalog.registry` ids.
 _WIRING: dict[str, dict[str, Any]] = {
-    "free_mini_diagnostic": {
+    "strategic_diagnostic": {
         "landing_url": "/diagnostic.html",
         "intake_endpoint": "POST /api/v1/company-growth-beast/diagnostic",
         "lead_capture_endpoint": "POST /api/v1/public/demo-request",
@@ -43,9 +43,23 @@ _WIRING: dict[str, dict[str, Any]] = {
         "delivery_endpoint": "GET /api/v1/founder/leads",
         "proof_endpoint": "auto_client_acquisition/email/transactional.send_transactional(kind=diagnostic_intake_confirmation)",
         "founder_surface": "/founder-leads.html",
-        "next_offer": "revenue_proof_sprint_499",
+        "next_offer": "governed_ops_retainer_4999",
     },
-    "revenue_proof_sprint_499": {
+    "governed_ops_retainer_4999": {
+        "landing_url": "/pricing.html#retainer",
+        "intake_endpoint": "POST /api/v1/service-setup/qualify",
+        "proposal_endpoint": "POST /api/v1/service-setup/proposal/{customer_id}",
+        "checkout_url": "/checkout.html?tier=retainer",
+        "checkout_endpoint": "POST /api/v1/payment-ops/invoice-intent",
+        "delivery_module": "scripts/weekly_brief_runner.py + scripts/monthly_cadence_runner.py",
+        "delivery_endpoint": "GET /api/v1/customer-portal/{handle}/workspace",
+        "proof_endpoint": "GET /api/v1/value/{handle}/report/monthly",
+        "adoption_endpoint": "GET /api/v1/customer-success/{handle}/adoption-score",
+        "renewal_module": "auto_client_acquisition.payment_ops.renewal_scheduler",
+        "founder_surface": "/customer-portal.html?handle={customer}",
+        "next_offer": "revenue_intelligence_sprint_25k",
+    },
+    "revenue_intelligence_sprint_25k": {
         "landing_url": "/start.html",
         "preview_url": "/sprint-sample.html",
         "intake_endpoint": "POST /api/v1/service-setup/qualify",
@@ -57,101 +71,27 @@ _WIRING: dict[str, dict[str, Any]] = {
         "sample_endpoint": "GET /api/v1/sprint/sample",
         "proof_endpoint": "auto_client_acquisition.proof_os.proof_pack.assemble",
         "case_safe_endpoint": "GET /api/v1/proof-to-market/case-safe/{engagement_id}",
-        "founder_surface": "/founder-dashboard.html",
-        "next_offer": "growth_ops_monthly_2999",
-    },
-    "data_to_revenue_pack_1500": {
-        "landing_url": "/data-pack.html",
-        "intake_endpoint": "POST /api/v1/data-os/import-preview/upload",
-        "preview_endpoint": "POST /api/v1/data-os/import-preview",
-        "checkout_url": "/checkout.html?tier=data_pack",
-        "checkout_endpoint": "POST /api/v1/payment-ops/invoice-intent",
-        "delivery_module": "auto_client_acquisition.data_os + auto_client_acquisition.delivery_factory.delivery_sprint",
-        "delivery_endpoint": "POST /api/v1/sprint/run",
-        "proof_endpoint": "auto_client_acquisition.proof_os.proof_pack.assemble",
-        "founder_surface": "/founder-dashboard.html",
-        "next_offer": "growth_ops_monthly_2999",
-    },
-    "growth_ops_monthly_2999": {
-        "landing_url": "/pricing.html#growth",
-        "intake_endpoint": "POST /api/v1/service-setup/qualify",
-        "proposal_endpoint": "POST /api/v1/service-setup/proposal/{customer_id}",
-        "checkout_url": "/checkout.html?tier=growth",
-        "checkout_endpoint": "POST /api/v1/payment-ops/invoice-intent",
-        "delivery_module": "scripts/weekly_brief_runner.py + scripts/monthly_cadence_runner.py",
-        "delivery_endpoint": "GET /api/v1/customer-portal/{handle}/workspace",
-        "proof_endpoint": "GET /api/v1/value/{handle}/report/monthly",
-        "adoption_endpoint": "GET /api/v1/customer-success/{handle}/adoption-score",
-        "renewal_module": "auto_client_acquisition.payment_ops.renewal_scheduler",
-        "founder_surface": "/customer-portal.html?handle={customer}",
-        "next_offer": "executive_command_center_7500",
-    },
-    "support_os_addon_1500": {
-        "landing_url": "/services.html#support",
-        "intake_endpoint": "POST /api/v1/service-setup/qualify",
-        "checkout_url": "/checkout.html?tier=support_addon",
-        "checkout_endpoint": "POST /api/v1/payment-ops/invoice-intent",
-        "delivery_module": "auto_client_acquisition.support_os",
-        "delivery_endpoint": "GET /api/v1/support-os/*",
-        "proof_endpoint": "GET /api/v1/value/{handle}/report/monthly",
-        "founder_surface": "/founder-dashboard.html",
-        "next_offer": None,
-    },
-    "executive_command_center_7500": {
-        "landing_url": "/executive-command-center.html",
-        "intake_endpoint": "POST /api/v1/service-setup/requests",
-        "checkout_url": "founder-issued",
-        "checkout_endpoint": "POST /api/v1/payment-ops/invoice-intent",
-        "delivery_module": "auto_client_acquisition.executive_command_center",
-        "delivery_endpoint": "GET /api/v1/executive-command-center/*",
-        "proof_endpoint": "GET /api/v1/audit/{handle}/control-graph/markdown",
         "trust_pack_endpoint": "GET /api/v1/value/trust-pack/{handle}/pdf",
         "founder_surface": "/founder-dashboard.html",
-        "next_offer": None,
-    },
-    "agency_partner_os": {
-        "landing_url": "/agency-partner.html",
-        "intake_endpoint": "POST /api/v1/public/partner-application",
-        "checkout_url": "founder-issued",
-        "checkout_endpoint": None,
-        "delivery_module": "auto_client_acquisition.partnership_os.referral_store",
-        "delivery_endpoint": "POST /api/v1/referrals/create + /redeem + /{code}/convert",
-        "proof_endpoint": "GET /api/v1/founder/dashboard",
-        "covenant_doc": "docs/40_partners/PARTNER_COVENANT.md",
-        "founder_surface": "/founder-leads.html",
-        "next_offer": None,
+        "next_offer": "governed_ops_retainer_4999",
     },
 }
 
 
 _OFFER_NOTES = {
-    "free_mini_diagnostic": (
-        "Free 24h diagnostic — opens the funnel. Confirmation email auto-sent. "
-        "Founder reviews every intake within 24h."
+    "strategic_diagnostic": (
+        "Free 24h strategic diagnostic — opens the funnel. PDPL + NDMO posture audit "
+        "anchored on Saudi B2B services. Founder reviews every intake within 24h."
     ),
-    "revenue_proof_sprint_499": (
-        "First paid offer. 7 days. 10-step orchestrator. Proof Pack mandatory. "
-        "50% on acceptance, 50% on Proof Pack delivery. 14-day full refund."
-    ),
-    "data_to_revenue_pack_1500": (
-        "CSV upload → DQ score + cleaned + ranked. Live demo on /data-pack.html "
-        "via POST /api/v1/data-os/import-preview/upload. 14-day delivery."
-    ),
-    "growth_ops_monthly_2999": (
-        "Retainer engine. Weekly brief + monthly value report + adoption score + "
+    "governed_ops_retainer_4999": (
+        "Monthly retainer — entry point to the ladder. Min commitment 3 months. "
+        "Weekly brief + monthly Value Report + Proof Pack + adoption score + "
         "retainer readiness gate. Renewal auto-charge after 3 confirmed cycles."
     ),
-    "support_os_addon_1500": (
-        "Add-on to Growth. Ticket classification + suggested replies (draft_only). "
-        "SLA breach alerts. Sits inside the customer workspace."
-    ),
-    "executive_command_center_7500": (
-        "Founder/CEO surface. Daily founder brief (WhatsApp draft_only) + monthly "
-        "board pack. Includes Trust Pack PDF + Evidence Control Plane export."
-    ),
-    "agency_partner_os": (
-        "Channel offer. 5K SAR / closed deal + 30% commission first year. "
-        "Partner Covenant enforced: no unsafe automation, no guaranteed claims."
+    "revenue_intelligence_sprint_25k": (
+        "Flagship 30-day Sprint. 3 sources of truth merged, target forecast accuracy "
+        "≥85%, audit-ready governance, Capital Asset registered. 50% on acceptance, "
+        "50% on Proof Pack. 50% refund if retainer-readiness gate unmet within 60d."
     ),
 }
 
@@ -186,8 +126,8 @@ def _build_payload() -> dict[str, Any]:
         offers.append(_offer_to_dict(offering, wiring, notes))
 
     return {
-        "version": "1.0",
-        "wave": "14J",
+        "version": "2.0",
+        "wave": "2026Q2-reframe",
         "generated_at": datetime.now(timezone.utc).isoformat(),
         "source_of_truth": "auto_client_acquisition/service_catalog/registry.py",
         "registry_count": len(OFFERINGS),

@@ -1,11 +1,12 @@
-"""Wave 13 Phase 2 — Service Catalog tests.
+"""Service Catalog tests — 2026-Q2 commercial reframe.
 
-Asserts the 7-offering registry meets:
+Asserts the 3-offering registry meets:
 - Article 4: never includes 'live_send' or 'live_charge' in action_modes_used
 - Article 8: KPI commitment language uses commitment phrasing, never "guaranteed"/"نضمن"
 - Article 11: thin data registry (no business logic in tests)
-- Pricing ladder: ascending for paid services
+- Pricing ladder: ascending price floor across the 3 stages
 - Bilingual: every offering has both name_ar + name_en
+- Legacy ID aliases resolve to the correct 2026 successor
 
 Sandbox-safe — pure module imports, no api/security pyo3 cascade.
 """
@@ -52,10 +53,10 @@ list_offerings = _REGISTRY_NS["list_offerings"]
 
 
 # ── Test 1 ────────────────────────────────────────────────────────────
-def test_registry_has_exactly_7_offerings():
-    """Article 11: catalog is the canonical 7 offerings."""
-    assert len(OFFERINGS) == 7, f"expected 7, got {len(OFFERINGS)}"
-    assert len(SERVICE_IDS) == 7, "duplicate service_id in registry"
+def test_registry_has_three_active_offerings():
+    """Article 11: catalog is the canonical 2026-Q2 three offerings."""
+    assert len(OFFERINGS) == 3, f"expected 3, got {len(OFFERINGS)}"
+    assert len(SERVICE_IDS) == 3, "duplicate service_id in registry"
 
 
 # ── Test 2 ────────────────────────────────────────────────────────────
@@ -105,18 +106,28 @@ def test_no_guaranteed_language_anywhere():
 
 
 # ── Test 5 ────────────────────────────────────────────────────────────
-def test_price_ladder_ascending_for_paid_one_time_services():
-    """Free → 499 (Sprint) → 1500 (Data-to-Revenue) one-time pricing ladder."""
-    one_time_paid = [
-        o for o in OFFERINGS if o.price_unit == "one_time" and o.price_sar > 0
-    ]
-    prices = [o.price_sar for o in one_time_paid]
-    assert prices == sorted(prices), f"one-time prices not ascending: {prices}"
-    # Specifically: Sprint must be cheaper than Data-to-Revenue
-    sprint = get_offering("revenue_proof_sprint_499")
-    d2r = get_offering("data_to_revenue_pack_1500")
-    assert sprint is not None and d2r is not None
-    assert sprint.price_sar < d2r.price_sar
+def test_price_floor_holds_across_ladder():
+    """2026-Q2 ladder: Free (0) → Retainer (4,999/mo) → Sprint (25,000 one-time).
+    The retainer is the entry FLOOR; the flagship sprint sits above it.
+    """
+    diagnostic = get_offering("strategic_diagnostic")
+    retainer = get_offering("governed_ops_retainer_4999")
+    sprint = get_offering("revenue_intelligence_sprint_25k")
+    assert diagnostic is not None
+    assert retainer is not None
+    assert sprint is not None
+
+    # Free diagnostic is exactly free.
+    assert diagnostic.price_sar == 0.0
+
+    # Retainer is the paid entry floor. Below 4,999 we don't sell.
+    assert retainer.price_sar >= 4999.0
+    assert retainer.price_unit == "per_month"
+
+    # Flagship sprint is above the retainer floor and one-time.
+    assert sprint.price_sar >= 25000.0
+    assert sprint.price_unit == "one_time"
+    assert sprint.price_sar > retainer.price_sar
 
 
 # ── Test 6 ────────────────────────────────────────────────────────────
@@ -145,12 +156,24 @@ def test_every_offering_lists_relevant_hard_gates():
 
 # ── Test 8 ────────────────────────────────────────────────────────────
 def test_get_offering_lookup_works():
-    """Helper function returns correct offering by id, None for unknown."""
-    assert get_offering("revenue_proof_sprint_499") is not None
+    """Helper resolves canonical 2026 IDs + legacy aliases; None for unknown."""
+    # Canonical 2026 IDs
+    assert get_offering("strategic_diagnostic") is not None
+    assert get_offering("governed_ops_retainer_4999") is not None
+    assert get_offering("revenue_intelligence_sprint_25k") is not None
+
+    # Legacy aliases resolve to the 2026 successor
     assert get_offering("free_mini_diagnostic") is not None
-    assert get_offering("agency_partner_os") is not None
+    assert get_offering("revenue_proof_sprint_499") is not None
+    assert get_offering("growth_ops_monthly_2999") is not None
+
+    # Unknown still returns None
     assert get_offering("nonexistent_id") is None
     assert get_offering("") is None
-    # SERVICE_IDS frozenset must match
+
+    # SERVICE_IDS frozenset matches the 3 active offerings
     for o in OFFERINGS:
         assert o.id in SERVICE_IDS
+    # Legacy IDs are NOT in SERVICE_IDS (they only resolve via alias map)
+    assert "agency_partner_os" not in SERVICE_IDS
+    assert "revenue_proof_sprint_499" not in SERVICE_IDS

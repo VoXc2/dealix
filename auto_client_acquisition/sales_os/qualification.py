@@ -132,9 +132,11 @@ def qualify(
         decision = Decision.ACCEPT
         safe_alt = ""
         if score >= 90 and has_budget and data_available:
-            offer = "data_to_revenue_pack_1500_sar"  # straight to higher offer
+            # Top-tier fit: flagship 30-day Sprint (Capital Asset producer)
+            offer = "revenue_intelligence_sprint_25k_sar"
         else:
-            offer = "revenue_intelligence_sprint_499_sar"
+            # Strong fit but earlier on the curve: monthly retainer entry
+            offer = "governed_ops_retainer_4999_sar_per_month"
     elif score >= 50:
         # Partial fit — could become a customer after a diagnostic.
         if not data_available or not owner_present:

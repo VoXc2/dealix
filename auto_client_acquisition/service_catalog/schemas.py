@@ -7,13 +7,17 @@ from typing import Literal
 from pydantic import BaseModel, ConfigDict, Field
 
 CustomerJourneyStage = Literal[
-    "discovery",      # Free Mini Diagnostic
-    "first_paid",     # 499 Sprint
-    "expansion",      # Data-to-Revenue Pack
-    "monthly",        # Growth Ops Monthly
-    "executive",      # Executive Command Center
-    "support_addon",  # Support OS Add-on
-    "channel",        # Agency Partner OS
+    # 2026-Q2 active ladder
+    "discovery",       # Strategic Diagnostic (free)
+    "monthly",         # Governed Ops Retainer (4,999/mo)
+    "flagship",        # Revenue Intelligence Sprint (25,000)
+    # Legacy values — preserved so historical records load. NOT used
+    # by any 2026-Q2 active offering.
+    "first_paid",      # legacy: 499 Sprint
+    "expansion",       # legacy: Data-to-Revenue Pack
+    "executive",       # legacy: Executive Command Center
+    "support_addon",   # legacy: Support OS Add-on
+    "channel",         # legacy: Agency Partner OS
 ]
 
 ActionMode = Literal[

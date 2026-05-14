@@ -38,23 +38,29 @@ sys.path.insert(0, str(REPO_ROOT))
 # ─────────────────────────────────────────────────────────────────────
 
 
-def test_step_01_service_catalog_has_7_offerings_with_valid_ladder() -> None:
+def test_step_01_service_catalog_has_three_active_offerings_with_valid_ladder() -> None:
+    """2026-Q2 reframe: 3 active offerings + legacy ID aliases resolve."""
     from auto_client_acquisition.service_catalog.registry import (
         get_offering, list_offerings,
     )
 
     offerings = list_offerings()
-    assert len(offerings) == 7
+    assert len(offerings) == 3
 
-    # Free Diagnostic must be at price 0
-    free = get_offering("free_mini_diagnostic")
+    # Strategic Diagnostic is free; legacy alias still resolves.
+    free = get_offering("strategic_diagnostic")
     assert free is not None
     assert free.price_sar == 0.0
+    assert get_offering("free_mini_diagnostic") is not None  # legacy alias
 
-    # Revenue Proof Sprint = 499 (first paid tier)
-    sprint = get_offering("revenue_proof_sprint_499")
+    # Flagship sprint is one-time and priced at the 25K floor.
+    # Legacy 499 sprint id resolves to the 25K successor.
+    sprint = get_offering("revenue_intelligence_sprint_25k")
     assert sprint is not None
-    assert sprint.price_sar == 499.0
+    assert sprint.price_sar >= 25000.0
+    legacy_sprint = get_offering("revenue_proof_sprint_499")
+    assert legacy_sprint is not None  # alias resolution
+    assert legacy_sprint.id == "revenue_intelligence_sprint_25k"
 
     # Article 4: no live actions in any offering's action_modes_used
     for off in offerings:

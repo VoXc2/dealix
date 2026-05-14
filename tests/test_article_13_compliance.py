@@ -66,6 +66,10 @@ ALLOWLIST_PATHS: list[str] = [
     # demo→delivery pipelines, NOT the bare receiving endpoint.
     "api/routers/webhooks.py",
     "api/security/webhook_signatures.py",
+    # Wave 15 launch-readiness — only reads the CALENDLY_WEBHOOK_SECRET
+    # env var to report whether it's set. No webhook handling logic lives
+    # here. Same rationale as the webhook receivers above.
+    "api/routers/founder_launch_status.py",
 ]
 
 

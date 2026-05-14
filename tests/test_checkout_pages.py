@@ -110,8 +110,8 @@ def test_checkout_success_has_footer_trust_badges():
 
 def test_pricing_ctas_route_to_checkout():
     html = _read("pricing.html")
-    # Each priced tier card should link to /checkout.html?tier=X
-    for tier_key in ("sprint", "growth", "scale", "partner"):
+    # 2026-Q2 ladder: priced tier cards link to /checkout.html?tier={sprint|retainer}.
+    for tier_key in ("sprint", "retainer"):
         pattern = f"/checkout.html?tier={tier_key}"
         assert pattern in html, f"pricing.html missing CTA for tier={tier_key}"
 

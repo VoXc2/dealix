@@ -1,146 +1,139 @@
-# Dealix — Offer Ladder & Pricing
-<!-- PHASE 3 | Owner: Founder | Date: 2026-05-07 -->
+# Dealix — Offer Ladder & Pricing (2026-Q2)
+<!-- Owner: Founder | Reframed: 2026-05-14 -->
 <!-- Arabic primary — العربية أولاً -->
 
 > **قاعدة ذهبية:** كل درجة تُفتح فقط بعد إثبات حقيقي من الدرجة السابقة.
 > لا ترقية قبل نتيجة موثقة. لا ضمانات. لا ادعاءات مبالغ فيها.
+> رايْف 2026-Q2: ٧ درجات → ٣ درجات. الأرضية المدفوعة ٤٬٩٩٩ ر.س / شهر.
+> القطاع المختار: خدمات B2B السعودية فقط لمدة ٩٠ يومًا.
+
+For the rationale + objection handling, see
+[`docs/sales-kit/PRICING_REFRAME_2026Q2.md`](sales-kit/PRICING_REFRAME_2026Q2.md).
 
 ---
 
-## سلم الخدمات — نظرة عامة
+## سلم الخدمات — ٣ درجات
 
 ```
-[0] Free AI Ops Diagnostic          ← باب الدخول
-[1] 7-Day Revenue Proof Sprint      499 SAR ← Pilot Gate
-[2] Data-to-Revenue Pack            1,500 SAR ← Upsell بعد Sprint
-[3] Managed Revenue Ops             2,999–4,999 SAR/شهر ← بعد pilot
-[4] Executive Command Center        7,500–15,000 SAR/شهر ← بعد 3 pilots
-[5] Agency Partner OS               مخصص + rev-share ← بعد 3 proof packs
+[0] Strategic Diagnostic           0 SAR / يوم عمل    ← باب الدخول
+[1] Governed Ops Retainer          4,999 SAR / شهر    ← الأرضية المدفوعة
+[2] Revenue Intelligence Sprint   25,000 SAR / 30 يوم ← المخرَج الرئيسي
 ```
 
----
-
-## الخدمة 0: Free AI Ops Diagnostic
-**التشخيص المجاني للعمليات بالذكاء الاصطناعي**
-
-| العنصر | التفاصيل |
-|--------|----------|
-| **العميل المستهدف** | أي مؤسس B2B سعودي مهتم باستكشاف Dealix |
-| **المشكلة التي يحلها** | "لا أعرف أين تكمن الفجوات في عمليات نمو شركتي" |
-| **المخرجات** | تقرير تشخيصي 1 صفحة + 3 أولويات + توصية الخطوة التالية |
-| **مقاييس الإثبات** | هل أوصلنا لـ 499 SAR pilot؟ |
-| **المدخلات المطلوبة** | 6 أسئلة عبر `/diagnostic.html` (15 دقيقة) |
-| **الاستثناءات** | لا وعود ROI، لا تقارير متقدمة، لا وصول للمنصة |
-| **مسار الترقية** | → 499 SAR Sprint |
-| **الهامش** | 0 SAR تكلفة مباشرة (API تكلفة < 2 SAR) |
-| **وقت التسليم** | فوري (API + مراجعة يدوية 30 دقيقة) |
-| **وضع الإجراء** | `approved_manual` |
+The 2025 ladder ranged Free → 499 → 1,500 → 2,999–4,999 → 7,500–15,000 →
+Custom. As of 2026-05-14, the 499 SAR Sprint, 1,500 SAR Data Pack, 1,500
+SAR Support Add-on, 7,500 SAR Executive Command Center, and Agency Partner
+OS are **archived from the customer-facing ladder**. They remain
+addressable inside the registry as legacy IDs that resolve via
+`_LEGACY_ID_ALIASES` to the closest 2026 successor.
 
 ---
 
-## الخدمة 1: 7-Day Revenue Proof Sprint
-**سبريnt إثبات الإيرادات في 7 أيام**
+## Service 0 · Strategic Diagnostic
+**التشخيص الاستراتيجي المجاني**
 
-| العنصر | التفاصيل |
-|--------|----------|
-| **السعر** | **499 SAR** (دفع واحد مسبق) |
-| **العميل المستهدف** | مؤسس B2B أو مدير مبيعات يريد إثبات سريع |
-| **المشكلة التي يحلها** | "لا أعرف إذا AI ينفعني — أحتاج نتيجة حقيقية خلال أسبوع" |
-| **المخرجات** | تقرير تشخيصي مفصل، 5 مسودات رسائل جاهزة للموافقة، Proof Pack يوم 7، تقرير تنفيذي، خطة 30 يوم |
-| **مقاييس الإثبات** | رسائل موافق عليها ≥ 3، proof event موثق، رضا العميل ≥ 4/5 |
-| **المدخلات المطلوبة** | وصول للـ pipeline الحالي، قائمة العملاء/العملاء المحتملين، حالة 3 صفقات حالية |
-| **الاستثناءات** | لا إرسال مباشر (draft_only)، لا ضمان صفقات، لا وصول للأنظمة الداخلية |
-| **مسار الترقية** | → 1,500 SAR Pack أو 2,999/mo Ops |
-| **الهامش** | ~85% (تكلفة تسليم: 2–3 ساعات مؤسس + < 10 SAR LLM) |
-| **وقت التسليم** | 7 أيام تقويمية |
-| **وضع الإجراء** | `approved_manual` |
-
----
-
-## الخدمة 2: Data-to-Revenue Pack
-**حزمة البيانات إلى الإيرادات**
-
-| العنصر | التفاصيل |
-|--------|----------|
-| **السعر** | **1,500 SAR** (مشروع واحد) |
-| **العميل المستهدف** | شركة B2B لديها بيانات عملاء/مبيعات غير مستثمرة |
-| **المشكلة التي يحلها** | "لدينا بيانات لكن لا نستخرج منها قرارات أو فرص" |
-| **المخرجات** | تحليل pipeline كامل، خريطة فرص مرتبة، 10 مسودات استهداف مخصصة، تقرير ROI basis، playbook مبيعات مخصص |
-| **مقاييس الإثبات** | فرصة ≥1 مُعرّفة ومُوثقة، playbook موافق عليه من العميل |
-| **المدخلات المطلوبة** | CRM export أو Excel قائمة عملاء، 3 شهور بيانات مبيعات، وصف ICP الحالي |
-| **الاستثناءات** | لا استخراج بيانات (no scraping)، لا تكامل مباشر مع أنظمة CRM |
-| **مسار الترقية** | → 2,999/mo Managed Revenue Ops |
-| **الهامش** | ~75% (تكلفة: 5–8 ساعات + < 20 SAR LLM) |
-| **وقت التسليم** | 5–7 أيام عمل |
-| **وضع الإجراء** | `approval_required` |
+| Element · العنصر | Detail · التفاصيل |
+|---|---|
+| **Price · السعر** | 0 SAR — مجاني |
+| **Target · العميل المستهدف** | مؤسس/مدير عمليات في شركة خدمات B2B سعودية (٥٠–٥٠٠ موظف) عنده ألم في توقّع الإيرادات أو الحوكمة |
+| **Problem · المشكلة** | "لا أعرف فجوات الإيراد والحوكمة قبل ما ألتزم بـ ٥٬٠٠٠ ر.س / شهر" |
+| **Deliverables · المخرجات** | PDPL + NDMO posture audit · revenue intelligence gap report · جرد مصادر الحقيقة (أعلى ٥) · ١-صفحة خطة ٩٠ يوم · أعلى ٣ فرص مرتّبة · مسودة عربية واحدة لأعلى فرصة · Decision Passport للخطوة التالية |
+| **Proof metrics · مقاييس الإثبات** | هل ٣ فرص قابلة للتنفيذ سُلّمت؟ |
+| **Inputs required · المدخلات** | استبيان ٧ أسئلة في `/diagnostic.html` (١٥ دقيقة) |
+| **Exclusions · الاستثناءات** | لا وعود ROI · لا تقارير متقدمة · لا وصول للأنظمة الداخلية |
+| **Upgrade path · مسار الترقية** | → Governed Ops Retainer أو → Revenue Intelligence Sprint |
+| **Duration · المدّة** | يوم عمل واحد |
+| **Action mode · وضع الإجراء** | `suggest_only`, `draft_only` |
+| **Service ID** | `strategic_diagnostic` (alias: `free_mini_diagnostic`) |
 
 ---
 
-## الخدمة 3: Managed Revenue Ops
-**إدارة عمليات الإيرادات الشهرية**
+## Service 1 · Governed Ops Retainer
+**ريتينر العمليات المحوكمة**
 
-| العنصر | التفاصيل |
-|--------|----------|
-| **السعر** | **2,999–4,999 SAR/شهر** (اشتراك شهري) |
-| **العميل المستهدف** | شركة B2B أتمت pilot ناجح وتريد استمرارية |
-| **المشكلة التي يحلها** | "نريد AI يعمل بشكل مستمر على pipeline ودعمنا شهرياً" |
-| **المخرجات** | تقرير أسبوعي executive, مسودات تواصل شهرياً ≤20 رسالة موافق عليها, Proof Pack شهري, تقرير KPIs, جلسة استراتيجية شهرية 60 دقيقة |
-| **مقاييس الإثبات** | MRR مستمر، churn rate، رضا ≥ 4/5 شهرياً |
-| **المدخلات المطلوبة** | وصول Dealix Portal، pipeline updates أسبوعية، موافقة على كل رسالة |
-| **الاستثناءات** | ≤ 20 مسودة/شهر، لا إرسال تلقائي، لا استشارات قانونية |
-| **مسار الترقية** | → 7,500/mo Executive Command Center |
-| **الهامش** | ~70% (تكلفة: 10–15 ساعة/شهر + < 50 SAR LLM) |
-| **وقت التسليم** | تسليم مستمر شهري |
-| **وضع الإجراء** | `approval_required` لكل مسودة |
-
----
-
-## الخدمة 4: Executive Command Center
-**مركز القيادة التنفيذي**
-
-| العنصر | التفاصيل |
-|--------|----------|
-| **السعر** | **7,500–15,000 SAR/شهر** |
-| **العميل المستهدف** | مؤسس/C-Suite يريد رادار اتخاذ قرار يومي كامل |
-| **المشكلة التي يحلها** | "أحتاج تقرير يومي يعطيني قرارات واضحة، لا dashboards فارغة" |
-| **المخرجات** | تقرير يومي executive, رادار سوق أسبوعي, مسودات كاملة شهرياً, Proof Pack كامل, استراتيجية نمو ربعية, وصول أولوية للمؤسس |
-| **متطلبات الفتح** | ≥ 3 pilots مكتملة + ≥ 1 case study موثق |
-| **الاستثناءات** | لا CFO افتراضي، لا مشورة قانونية، لا تمثيل خارجي |
-| **مسار الترقية** | → Agency Partner OS أو Custom Enterprise |
-| **الهامش** | ~65% (تكلفة: 20–30 ساعة/شهر) |
-| **وقت التسليم** | تسليم يومي/أسبوعي/شهري |
-| **وضع الإجراء** | `approval_required` |
+| Element · العنصر | Detail · التفاصيل |
+|---|---|
+| **Price · السعر** | **4,999 SAR / شهر** — حدّ أدنى ٣ أشهر |
+| **Target · العميل المستهدف** | شركة خدمات B2B (٥٠–٥٠٠ موظف) تشغّل عمليات إيراد + تحتاج حوكمة شهرية موثّقة بدون توظيف فريق كامل |
+| **Problem · المشكلة** | "نريد AI يدير عمليات الإيراد شهرياً مع تقرير قيمة قابل للتدقيق + Proof Pack" |
+| **Deliverables · المخرجات** | تدقيق خط الأنابيب أسبوعياً · لوحة العملاء المحتملين · طابور موافقات يومي (draft_only) · تقرير قيمة شهري · Proof Pack شهري موقّع · Friction Log review · Decision Passports لكل قرار جوهري · Adoption Score + retainer-readiness gate · قناة واتساب مخصّصة للمسودات |
+| **KPI commitment · التزام** | رفع جودة بيانات خط الإيرادات بنسبة ≥٢٠٪ + تسليم تقرير قيمة شهري قابل للتدقيق. إن لم يتحقق، نواصل بدون مقابل. |
+| **Refund policy · الاسترداد** | استرداد تناسبي للأشهر غير المستخدمة عند عدم تحقيق KPI. الحد الأدنى ٣ أشهر. |
+| **Inputs required · المدخلات** | وصول Dealix Portal · تحديثات pipeline أسبوعية · موافقة المؤسس على كل رسالة |
+| **Exclusions · الاستثناءات** | ≤ ٢٠ مسودة / شهر · لا إرسال تلقائي · لا استشارات قانونية |
+| **Upgrade path · مسار الترقية** | → Revenue Intelligence Sprint (الرئيسي) |
+| **Action mode · وضع الإجراء** | `approval_required` لكل مسودة |
+| **Service ID** | `governed_ops_retainer_4999` (alias: `growth_ops_monthly_2999`, `support_os_addon_1500`, `executive_command_center_7500`) |
 
 ---
 
-## الخدمة 5: Agency Partner OS
-**نظام الشراكة مع الوكالات**
+## Service 2 · Revenue Intelligence Sprint (Flagship)
+**سبرنت ذكاء الإيرادات الرئيسي**
 
-| العنصر | التفاصيل |
-|--------|----------|
-| **السعر** | مخصص + **rev-share 15–30%** |
-| **العميل المستهدف** | وكالة تسويق/استشارات تريد تقديم Dealix لعملائها |
-| **المشكلة التي يحلها** | "نريد AI موثوق نقدمه لعملائنا ويميزنا تنافسياً" |
-| **المخرجات** | white-label محدود، تدريب الشريك، co-branded proof packs، dashboard شريك، دعم أولوية |
-| **متطلبات الفتح** | إتمام ≥ 3 proof packs + اتفاقية شراكة موقعة |
-| **الاستثناءات** | لا white-label كامل قبل 3 proof packs، لا مشاركة بيانات عملاء عبر شركاء |
-| **الهامش** | ~55–60% (بعد rev-share) |
-| **وقت التسليم** | إعداد الشريك: 2–4 أسابيع |
-| **وضع الإجراء** | `approval_required` — كل شريك يحتاج موافقة يدوية |
-
----
-
-## ملخص الأسعار السريع
-
-| الخدمة | السعر | الوضع |
-|--------|-------|-------|
-| AI Ops Diagnostic | مجاني | متاح الآن |
-| 7-Day Proof Sprint | 499 SAR | متاح الآن |
-| Data-to-Revenue Pack | 1,500 SAR | بعد تأهيل |
-| Managed Revenue Ops | 2,999–4,999 SAR/شهر | بعد pilot |
-| Executive Command Center | 7,500–15,000 SAR/شهر | بعد 3 pilots |
-| Agency Partner OS | مخصص + rev-share | بعد 3 proof packs |
+| Element · العنصر | Detail · التفاصيل |
+|---|---|
+| **Price · السعر** | **25,000 SAR** — دفعة واحدة (٥٠٪ على القبول، ٥٠٪ على Proof Pack) |
+| **Target · العميل المستهدف** | شركة خدمات B2B عندها بيانات إيرادات في ٣ أنظمة + تحتاج نموذج تنبؤ + حزمة حوكمة قابلة للتدقيق + أصل قابل لإعادة الاستخدام |
+| **Problem · المشكلة** | "بيانات الإيرادات مبعثرة في CRM + المالية + العمليات؛ نحتاج مخرَجاً واحداً مدقّقاً" |
+| **Deliverables · المخرجات** | دمج ٣ مصادر حقيقة · Revenue forecast model (٩٠-day rolling, target accuracy ≥٨٥٪) · حزمة حوكمة قابلة للتدقيق (PDPL Article 5/13/14/18/21 mapped) · Decision Passports لأعلى ٢٠ فرصة · Arabic + English Draft Pack (١٥ رسالة موافقة) · Risk + Objection Map · Executive board pack · Capital Asset registered · Proof Pack كامل (PDF) · retainer-readiness gate |
+| **KPI commitment · التزام** | ١٠ مخرجات في ٣٠ يوم · ٣ مصادر مدمجة · target forecast accuracy ≥٨٥٪ · حزمة حوكمة قابلة للتدقيق. إن لم تتحقق بوابة جاهزية الريتينر، نواصل بدون مقابل. |
+| **Refund policy · الاسترداد** | استرداد ٥٠٪ خلال ٦٠ يوم إذا لم تتحقق بوابة جاهزية الريتينر |
+| **Inputs required · المدخلات** | وصول لـ ٣ مصادر بيانات (CRM + finance + ops) · موافقة الإدارة · ٦ ساعات / أسبوع وقت COO |
+| **Exclusions · الاستثناءات** | لا إرسال مباشر · لا توقيعات على عقود قانونية · لا تكامل CRM تلقائي |
+| **Upgrade path · مسار الترقية** | → Governed Ops Retainer (إعادة التجديد كاشتراك شهري) |
+| **Duration · المدّة** | ٣٠ يومًا ثابتة |
+| **Action mode · وضع الإجراء** | `approval_required` لكل مخرَج جوهري |
+| **Service ID** | `revenue_intelligence_sprint_25k` (alias: `revenue_proof_sprint_499`, `data_to_revenue_pack_1500`) |
 
 ---
 
-*Version 1.0 | No guaranteed claims | Missing data = insufficient_data*
+## ملخص الأسعار السريع · 2026-Q2
+
+| Service | Price | Status |
+|---|---|---|
+| Strategic Diagnostic | 0 SAR | متاح الآن |
+| Governed Ops Retainer | 4,999 SAR / شهر · ٣ أشهر حدّ أدنى | متاح الآن |
+| Revenue Intelligence Sprint | 25,000 SAR / ٣٠ يوم | متاح بعد التشخيص |
+
+---
+
+## القطاعات المغلقة مؤقّتاً (٩٠ يوم)
+
+For the next 90 days the customer-facing ladder serves Saudi B2B services
+**only**. Banking, energy, healthcare, government, and SaaS are served
+exclusively as **Custom AI engagements** (≥ 50,000 SAR) negotiated
+founder-direct, not via the public ladder. This is a focus discipline,
+not a permanent exclusion.
+
+| Sector · القطاع | Status 2026-Q2 |
+|---|---|
+| Saudi B2B services (٥٠–٥٠٠ موظف) | ✅ Active beachhead — public ladder open |
+| Banking · بنوك | 🔒 Founder-direct Custom AI only |
+| Energy · طاقة | 🔒 Founder-direct Custom AI only |
+| Healthcare · صحّة | 🔒 Founder-direct Custom AI only |
+| Government · حكومي | 🔒 Founder-direct Custom AI only |
+| SaaS B2B (built-in not services) | 🔒 Founder-direct Custom AI only |
+
+The 90-day clock starts 2026-05-14. The next review gate is 2026-08-12 —
+based on (a) recurring SAR committed, (b) number of Capital Assets
+registered, (c) number of B2B-services case studies signed.
+
+---
+
+## Doctrine reminder · تذكير من الدستور
+
+Every offer honors the 11 non-negotiables. Specifically:
+- No live charge / no live send (intent_only payment, draft_only outbound)
+- No cold WhatsApp / no LinkedIn automation / no scraping
+- No fake / unsourced proof claims
+- Every paid engagement produces ≥ 1 Capital Asset registered in `capital_os`
+- Every paid engagement ships a Trust Pack + Audit Chain to the customer
+- All numeric promises are `is_estimate=True`
+- KPI commitments use commitment language ("نواصل بدون مقابل"), never
+  "guaranteed" / "نضمن"
+
+---
+
+*Version 2.0 (2026-Q2 reframe) · No guaranteed claims · Missing data = insufficient_data*
+
+_Estimated outcomes are not guaranteed outcomes / النتائج التقديرية ليست نتائج مضمونة._

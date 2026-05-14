@@ -86,20 +86,31 @@ def test_markdown_endpoint_is_bilingual():
         assert sid in body, f"markdown missing service_id={sid}"
 
 
-def test_referral_persistence_offer_links_to_partnership_module():
+def test_retainer_links_to_customer_workspace():
     body = client.get("/api/v1/commercial-map").json()
-    agency = next(o for o in body["offers"] if o["service_id"] == "agency_partner_os")
-    assert "partnership_os" in agency["wiring"]["delivery_module"]
+    retainer = next(
+        o for o in body["offers"]
+        if o["service_id"] == "governed_ops_retainer_4999"
+    )
+    assert "workspace" in retainer["wiring"]["delivery_endpoint"]
+    assert retainer["price_unit"] == "per_month"
 
 
-def test_growth_ops_links_to_workspace_endpoint():
+def test_flagship_sprint_links_to_sample_preview():
     body = client.get("/api/v1/commercial-map").json()
-    growth = next(o for o in body["offers"] if o["service_id"] == "growth_ops_monthly_2999")
-    assert "workspace" in growth["wiring"]["delivery_endpoint"]
-
-
-def test_sprint_offer_links_to_sample_preview():
-    body = client.get("/api/v1/commercial-map").json()
-    sprint = next(o for o in body["offers"] if o["service_id"] == "revenue_proof_sprint_499")
+    sprint = next(
+        o for o in body["offers"]
+        if o["service_id"] == "revenue_intelligence_sprint_25k"
+    )
     assert sprint["wiring"]["sample_endpoint"] == "GET /api/v1/sprint/sample"
     assert sprint["wiring"]["preview_url"] == "/sprint-sample.html"
+    assert sprint["price_unit"] == "one_time"
+    assert sprint["price_sar"] >= 25000.0
+
+
+def test_three_offer_ladder_price_floor():
+    """Retainer is the paid entry floor; nothing below 4,999 SAR is offered."""
+    body = client.get("/api/v1/commercial-map").json()
+    paid = [o for o in body["offers"] if o["price_sar"] > 0]
+    floor = min(o["price_sar"] for o in paid)
+    assert floor >= 4999.0, f"paid floor must be ≥ 4,999 SAR, got {floor}"

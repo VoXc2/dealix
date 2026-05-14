@@ -202,29 +202,30 @@ def test_proof_evidence_ladder_uses_correct_modifiers():
 # ─── Pricing page anchor structure ────────────────────────────────────
 
 
-def test_pricing_has_six_tiers():
+def test_pricing_has_three_offer_ladder():
+    """2026-Q2 reframe: pricing.html shows exactly the 3-offer ladder."""
     html = _read("pricing.html")
     plans = re.findall(r'<div class="plan(?:\s[^"]*)?"', html)
-    assert len(plans) >= 6, f"pricing.html should have >= 6 .plan cards; found {len(plans)}"
+    assert len(plans) == 3, f"pricing.html should have exactly 3 .plan cards; found {len(plans)}"
 
 
-def test_pricing_partner_first_anchor():
-    """Anchor pricing pattern: highest tier renders first."""
+def test_pricing_flagship_sprint_is_first_anchor():
+    """Anchor pricing pattern: the 25,000 SAR Sprint leads the grid."""
     html = _read("pricing.html")
-    plans_block = re.search(
-        r'<div class="plans">(.*?)</div>\s*<!-- Negation', html, flags=re.DOTALL
-    )
+    plans_block = re.search(r'<div class="plans">(.*)', html, flags=re.DOTALL)
     assert plans_block, "Could not isolate pricing .plans grid"
     first_plan = plans_block.group(1).split("</div>", 1)[0]
-    assert "12,000" in first_plan or "Executive Command Center" in first_plan or "Partner" in first_plan, (
-        "Top-tier anchor must lead the pricing grid (12,000 SAR / Partner / Executive Command Center)"
+    assert "25,000" in first_plan or "Revenue Intelligence Sprint" in first_plan, (
+        "Top-tier anchor must lead the pricing grid (25,000 SAR Revenue Intelligence Sprint)"
     )
 
 
-def test_pricing_includes_mini_diagnostic_and_sprint():
+def test_pricing_includes_strategic_diagnostic_and_retainer():
     html = _read("pricing.html")
-    assert "Mini Diagnostic" in html, "Mini Diagnostic tier missing from pricing"
-    assert "499" in html, "Sprint 499 SAR tier missing from pricing"
+    assert "Strategic Diagnostic" in html, "Strategic Diagnostic tier missing from pricing"
+    assert "Governed Ops Retainer" in html, "Governed Ops Retainer tier missing from pricing"
+    assert "4,999" in html, "4,999 SAR retainer floor missing from pricing"
+    assert "25,000" in html, "25,000 SAR flagship Sprint missing from pricing"
 
 
 def test_pricing_uses_iltizamat_not_damanat():
