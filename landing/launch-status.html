@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Launch Status — لوحة جاهزية الإطلاق · Dealix</title>
+<meta name="description" content="لوحة جاهزية الإطلاق Dealix — كل إشارة على بطاقة واحدة. للمؤسس فقط.">
+<meta name="robots" content="noindex,nofollow">
+<link rel="canonical" href="https://dealix.me/launch-status.html">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="/styles.css">
+<link rel="stylesheet" href="/assets/css/design-system.css">
+<style>
+  body { background: linear-gradient(180deg, #050816 0%, #0b1124 60%, #0f1d35 100%); color: var(--text, #f5f5f5); min-height: 100vh; margin: 0; font-family: var(--font-ar, 'IBM Plex Sans Arabic', system-ui); }
+  main { padding: 32px 20px 48px; max-width: 1080px; margin: 0 auto; }
+  h1 { margin: 0 0 8px; font-size: 1.8em; }
+  .ls-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin: 24px 0; }
+  .ls-card { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 10px; padding: 14px; }
+  .ls-card__title { font-size: 0.85em; opacity: 0.7; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.05em; }
+  .ls-dot { display: inline-block; width: 12px; height: 12px; border-radius: 50%; margin-inline-end: 8px; vertical-align: middle; }
+  .ls-dot.green { background: #22c55e; box-shadow: 0 0 8px #22c55e; }
+  .ls-dot.amber { background: #f59e0b; box-shadow: 0 0 8px #f59e0b; }
+  .ls-dot.red { background: #ef4444; box-shadow: 0 0 8px #ef4444; }
+  .ls-dot.gray { background: #6b7280; }
+  .ls-card__value { font-size: 1.05em; font-weight: 600; }
+  .ls-card__sub { font-size: 0.8em; opacity: 0.6; margin-top: 4px; }
+  .ls-actions { background: rgba(34, 197, 94, 0.06); border: 1px solid rgba(34, 197, 94, 0.22); border-radius: 12px; padding: 20px; margin: 24px 0; }
+  .ls-actions h2 { margin-top: 0; }
+  .ls-actions ol { margin: 8px 0 0; padding-inline-start: 24px; }
+  .ls-actions li { margin: 6px 0; }
+  .ls-disclaimer { font-size: 0.85em; opacity: 0.7; text-align: center; margin-top: 32px; }
+  pre { white-space: pre-wrap; background: rgba(0,0,0,0.3); padding: 12px; border-radius: 8px; max-height: 280px; overflow: auto; font-size: 0.82em; }
+  .ls-key { display: flex; gap: 8px; align-items: center; margin: 12px 0; }
+  .ls-key input { flex: 1; padding: 8px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.15); background: rgba(0,0,0,0.3); color: var(--text); font-family: ui-monospace, monospace; }
+  .ls-key button { padding: 8px 16px; border-radius: 6px; border: 0; background: #22c55e; color: #07260f; font-weight: 700; cursor: pointer; }
+</style>
+</head>
+<body>
+
+<main>
+  <h1>Launch Status · لوحة جاهزية الإطلاق</h1>
+  <p>كل إشارة جاهزية على بطاقة واحدة. للمؤسس فقط.<br>
+  <em>Every readiness signal in one card. Founder-only.</em></p>
+
+  <div class="ls-key">
+    <label for="adminKey" style="font-size: 0.9em; opacity: 0.8;">Admin key:</label>
+    <input id="adminKey" type="password" placeholder="X-Admin-API-Key" autocomplete="off">
+    <button id="refreshBtn">Refresh · تحديث</button>
+  </div>
+
+  <div id="ls-grid" class="ls-grid"></div>
+
+  <div id="ls-actions" class="ls-actions" style="display:none">
+    <h2>Top 3 actions · أهم 3 إجراءات</h2>
+    <ol id="ls-actions-list"></ol>
+  </div>
+
+  <details>
+    <summary style="cursor:pointer; opacity: 0.8;">Raw JSON · البيانات الخام</summary>
+    <pre id="ls-raw">… loading</pre>
+  </details>
+
+  <p class="ls-disclaimer">
+    <em>Estimated outcomes are not guaranteed outcomes / النتائج التقديرية ليست نتائج مضمونة.</em>
+  </p>
+</main>
+
+<script>
+(function() {
+  var apiBase = (window.DEALIX_API_BASE || '').replace(/\/$/, '');
+  var grid = document.getElementById('ls-grid');
+  var rawEl = document.getElementById('ls-raw');
+  var actionsBox = document.getElementById('ls-actions');
+  var actionsList = document.getElementById('ls-actions-list');
+  var keyInput = document.getElementById('adminKey');
+  var btn = document.getElementById('refreshBtn');
+
+  // Restore key from URL or localStorage (founder convenience)
+  var urlKey = new URLSearchParams(window.location.search).get('key') || '';
+  var savedKey = urlKey || localStorage.getItem('dealix.admin.key') || '';
+  if (savedKey) keyInput.value = savedKey;
+
+  function dotClass(ok, warn) {
+    if (warn) return 'amber';
+    if (ok === true) return 'green';
+    if (ok === false) return 'red';
+    return 'gray';
+  }
+
+  function escape(s) {
+    if (s == null) return '';
+    return String(s).replace(/[<>&]/g, function(c){ return {'<':'&lt;','>':'&gt;','&':'&amp;'}[c]; });
+  }
+
+  function render(body) {
+    if (!body) return;
+    rawEl.textContent = JSON.stringify(body, null, 2);
+
+    var moyasar = body.moyasar || {};
+    var gmail = body.gmail || {};
+    var zatca = body.zatca || {};
+    var posthog = body.posthog || {};
+    var calendly = body.calendly || {};
+    var db = body.database || {};
+    var friction = body.friction_last_14d || {};
+
+    var cards = [
+      ['Healthcheck', '/healthz', body.healthcheck && body.healthcheck.ok, false, body.git && body.git.git_sha ? body.git.git_sha.slice(0,7) : ''],
+      ['Database', db.scheme || '—', db.configured, !db.configured && 'unset', db.scheme],
+      ['Moyasar', moyasar.mode || '—', moyasar.mode === 'live', moyasar.mode === 'test', moyasar.key_prefix],
+      ['ZATCA', zatca.mode || '—', zatca.mode === 'live' || zatca.mode === 'sandbox', zatca.mode === 'sandbox', zatca.csid_configured ? 'CSID set' : 'CSID missing'],
+      ['Gmail OAuth', gmail.configured ? 'configured' : 'unconfigured', gmail.configured, false, gmail.sender || ''],
+      ['PostHog', posthog.configured ? 'configured' : '—', posthog.configured, false, posthog.host],
+      ['Calendly', calendly.url ? 'configured' : '—', !!calendly.url, false, calendly.url ? '' : 'no URL'],
+      ['Friction (14d)', friction.total || 0, (friction.high_severity_count || 0) === 0, (friction.high_severity_count || 0) > 0, 'high: ' + (friction.high_severity_count || 0)],
+      ['Leads (24h)', body.leads_last_24h || 0, (body.leads_last_24h || 0) > 0, false, ''],
+      ['Value events (24h)', body.value_events_last_24h || 0, true, false, ''],
+    ];
+
+    grid.innerHTML = cards.map(function(c) {
+      var dot = dotClass(c[2], c[3]);
+      return '<div class="ls-card">' +
+        '<div class="ls-card__title">' + escape(c[0]) + '</div>' +
+        '<div class="ls-card__value"><span class="ls-dot ' + dot + '"></span>' + escape(c[1]) + '</div>' +
+        (c[4] ? '<div class="ls-card__sub">' + escape(c[4]) + '</div>' : '') +
+        '</div>';
+    }).join('');
+
+    if (body.top_actions && body.top_actions.length) {
+      actionsBox.style.display = '';
+      actionsList.innerHTML = body.top_actions.map(function(a) {
+        return '<li>' + escape(a) + '</li>';
+      }).join('');
+    } else {
+      actionsBox.style.display = 'none';
+    }
+  }
+
+  function fetchStatus() {
+    var key = keyInput.value.trim();
+    if (key) localStorage.setItem('dealix.admin.key', key);
+    var headers = key ? { 'X-Admin-API-Key': key } : {};
+    fetch(apiBase + '/api/v1/founder/launch-status', { headers: headers, cache: 'no-store' })
+      .then(function(r) {
+        if (r.status === 401 || r.status === 403) {
+          // Fall back to the public minimal subset
+          return fetch(apiBase + '/api/v1/founder/launch-status/public', { cache: 'no-store' }).then(function(r2){ return r2.json(); });
+        }
+        return r.json();
+      })
+      .then(render)
+      .catch(function(err) {
+        rawEl.textContent = 'fetch failed: ' + err.message;
+      });
+  }
+
+  btn.addEventListener('click', fetchStatus);
+  keyInput.addEventListener('keydown', function(e) { if (e.key === 'Enter') fetchStatus(); });
+  fetchStatus();
+})();
+</script>
+
+</body>
+</html>
