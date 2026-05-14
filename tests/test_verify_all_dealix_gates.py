@@ -9,19 +9,27 @@ during review.
 from __future__ import annotations
 
 import json
-import sys
 from pathlib import Path
 
 
 def _load_verifier(monkeypatch, tmp_root: Path):
-    """Import ``scripts.verify_all_dealix`` with REPO_ROOT pointed at a
-    fresh temporary tree, so we can stage minimal fixtures per test."""
+    """Import ``scripts.verify_all_dealix`` and point its ``REPO_ROOT`` at a
+    fresh temporary tree for the duration of this test only.
+
+    The previous implementation mutated the cached module's ``REPO_ROOT``
+    by direct assignment. That leaked the temp path into other test files
+    (e.g. ``tests/test_wave19_recovery_verifier.py``) which reuse the
+    cached module via ``sys.modules`` — once the first test in this file
+    ran, every later test that touched ``verify_all_dealix`` started
+    reading fixtures from ``tmp_path``. ``monkeypatch.setattr`` reverts
+    the attribute on teardown, so the cached module's ``REPO_ROOT`` is
+    restored to the real repository root before the next test runs.
+    """
     scripts_dir = Path(__file__).resolve().parent.parent / "scripts"
     monkeypatch.syspath_prepend(str(scripts_dir))
-    sys.modules.pop("verify_all_dealix", None)
     import verify_all_dealix as mod  # type: ignore
 
-    mod.REPO_ROOT = tmp_root
+    monkeypatch.setattr(mod, "REPO_ROOT", tmp_root)
     return mod
 
 
