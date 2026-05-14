@@ -70,14 +70,17 @@ def _validate_tier(tier: str, source_ref: str, confirmation_ref: str) -> None:
         raise ValueDisciplineError(
             f"tier {tier!r} not in {sorted(ALLOWED_TIERS)}"
         )
-    if tier == "verified" and not source_ref:
+    # ``.strip()`` so whitespace-only refs cannot pretend to be present.
+    has_source = bool(str(source_ref or "").strip())
+    has_confirm = bool(str(confirmation_ref or "").strip())
+    if tier == "verified" and not has_source:
         raise ValueDisciplineError("verified tier requires non-empty source_ref")
     if tier == "client_confirmed":
-        if not source_ref:
+        if not has_source:
             raise ValueDisciplineError(
                 "client_confirmed tier requires non-empty source_ref"
             )
-        if not confirmation_ref:
+        if not has_confirm:
             raise ValueDisciplineError(
                 "client_confirmed tier requires non-empty confirmation_ref"
             )

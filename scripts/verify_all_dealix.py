@@ -84,10 +84,31 @@ def check_founder_command_center() -> Check:
         return Check("Founder Command Center", 1, False, "deploy marker missing")
     if not marker.get("deployment_marker"):
         return Check("Founder Command Center", 2, False, "marker present but deployment_marker=false")
-    page_ok = landing.exists() or (REPO_ROOT / marker.get("page_path", "")).exists()
+    page_ok = landing.exists() or _marker_page_inside_repo(marker.get("page_path", ""))
     if not page_ok:
         return Check("Founder Command Center", 3, True, "marker present, page path note only")
     return Check("Founder Command Center", 4, True, "page + marker present")
+
+
+def _marker_page_inside_repo(page_path: str) -> bool:
+    """Resolve ``page_path`` relative to the repo root and only count it as
+    present when it lands inside the repository. An absolute path like
+    ``/etc/hosts`` would otherwise escape ``REPO_ROOT`` and trick the
+    check into passing without a real founder-page artifact."""
+    if not page_path:
+        return False
+    raw = Path(page_path)
+    if raw.is_absolute():
+        return False
+    if ".." in raw.parts:
+        return False
+    try:
+        candidate = (REPO_ROOT / raw).resolve()
+        repo_root = REPO_ROOT.resolve()
+        candidate.relative_to(repo_root)
+    except (OSError, ValueError):
+        return False
+    return candidate.exists()
 
 
 def check_partner_motion() -> Check:
@@ -200,7 +221,9 @@ def check_open_doctrine() -> Check:
         "token",
     ]
     for p in required:
-        text = (REPO_ROOT / p).read_text(encoding="utf-8")
+        # Case-insensitive scan so ``Password`` / ``TOKEN`` / mixed-case
+        # variants aren't missed by the lowercase-token list.
+        text = (REPO_ROOT / p).read_text(encoding="utf-8").lower()
         for term in forbidden:
             if term in text:
                 return Check(

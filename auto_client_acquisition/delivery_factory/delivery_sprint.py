@@ -205,8 +205,24 @@ def step5_governance_review(
     The Source Passport is threaded through so ``decide()`` can satisfy
     its passport gate; without it, the ``generate_draft`` action would be
     hard-blocked and every draft would unjustly fail review.
+
+    Accepts either a ``SourcePassport`` instance or the raw dict from the
+    API boundary — ``decide() → validate()`` requires an object with
+    attribute access, so a dict input is converted here.
     """
+    from auto_client_acquisition.data_os.source_passport import SourcePassport
     from auto_client_acquisition.governance_os.runtime_decision import decide
+
+    passport_obj: SourcePassport | None
+    if source_passport is None:
+        passport_obj = None
+    elif isinstance(source_passport, dict):
+        try:
+            passport_obj = SourcePassport(**source_passport)
+        except TypeError:
+            passport_obj = None
+    else:
+        passport_obj = source_passport
 
     reviews = []
     for d in drafts:
@@ -217,7 +233,7 @@ def step5_governance_review(
                 "text": outline_text,
                 "channel": "email",
                 "is_cold": False,
-                "source_passport": source_passport,
+                "source_passport": passport_obj,
                 "intended_use": "draft_only",
             },
         )

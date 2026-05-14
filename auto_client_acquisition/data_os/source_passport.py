@@ -63,7 +63,8 @@ def validate(passport: SourcePassport | None) -> ValidationResult:
         )
     missing: list[str] = []
     reasons: list[str] = []
-    if not str(passport.source_id).strip():
+    source_id = passport.source_id
+    if source_id is None or not str(source_id).strip():
         missing.append("source_id")
     if passport.source_type not in ALLOWED_SOURCE_TYPES:
         reasons.append(_bad("source_type", passport.source_type, ALLOWED_SOURCE_TYPES))

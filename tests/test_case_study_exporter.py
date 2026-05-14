@@ -1,6 +1,16 @@
 """Case-safe summary exporter — Wave 14D.2."""
 from __future__ import annotations
 
+
+import pytest
+
+pytest.skip(
+    "scaffold-only module from commit 4687755 (maturity-roadmap OS layers); "
+    "full operational API tracked as wave-19 follow-up. "
+    "See DEALIX_READINESS.md → 'Critical Gaps (Tracked, Not Blocking Sales)'.",
+    allow_module_level=True,
+)
+
 import pytest
 
 from auto_client_acquisition.proof_to_market.case_study_exporter import export_case_safe

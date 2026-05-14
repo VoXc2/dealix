@@ -13,26 +13,15 @@ import pytest
 import pytest_asyncio
 from httpx import ASGITransport, AsyncClient
 
-
-# ── Collection ignores ────────────────────────────────────────────
-# These modules were scaffolded by commit 4687755 ("maturity roadmap
-# OS layers") with only a minimal canonical surface. Their full
-# operational API is on the wave-19 follow-up sprint backlog (see
-# DEALIX_READINESS.md → "Critical Gaps (Tracked, Not Blocking Sales)").
-# Until those modules are filled in, the tests fail at import.
-collect_ignore = [
-    "test_adoption_score.py",
-    "test_agent_os.py",
-    "test_audit_export.py",
-    "test_benchmark_os.py",
-    "test_case_study_exporter.py",
-    "test_evidence_control_plane.py",
-    "test_market_power_os.py",
-    "test_operating_empire_os.py",
-    "test_qualification.py",
-    "test_secure_agent_runtime.py",
-    "test_trust_pack.py",
-]
+# Note on the eleven test modules that target scaffold-only OS layers
+# (adoption_os, agent_os, auditability_os, benchmark_os, capital_os
+# case-study, evidence_control_plane_os, market_power_os,
+# operating_empire_os, sales_os.qualification, secure_agent_runtime_os,
+# trust_os.trust_pack): each file now calls ``pytest.skip(..., allow_module_level=True)``
+# at the top with the reason inline. The skip is visible in CI output, so
+# regression visibility is preserved at the SITE of each suite — when the
+# underlying module is filled in, removing the skip block re-enables that
+# suite in one keystroke. See DEALIX_READINESS.md → "Critical Gaps".
 
 
 # ── Force test-mode env before importing app ───────────────────

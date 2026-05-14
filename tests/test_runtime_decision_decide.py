@@ -97,3 +97,70 @@ def test_unsafe_claim_text_routes_to_redact() -> None:
         GovernanceDecision.BLOCK,
     }
     assert any("unsafe_claim:" in r for r in res.reasons)
+
+
+def test_validate_rejects_whitespace_source_id() -> None:
+    from auto_client_acquisition.data_os.source_passport import validate
+
+    res = validate(_good_passport(source_id="   "))
+    assert not res.is_valid
+    assert "source_id" in res.missing
+
+
+def test_validate_rejects_none_source_id() -> None:
+    from auto_client_acquisition.data_os.source_passport import (
+        SourcePassport,
+        validate,
+    )
+
+    # ``source_id=None`` would have been coerced to the literal string
+    # ``'None'`` by ``str(passport.source_id).strip()`` and silently pass
+    # before the None-guard was added.
+    passport = SourcePassport(
+        source_id=None,  # type: ignore[arg-type]
+        source_type="client_upload",
+        owner="client",
+        allowed_use=frozenset({"draft_only"}),
+        contains_pii=False,
+        sensitivity="low",
+        retention_policy="project_duration",
+        ai_access_allowed=True,
+        external_use_allowed=False,
+    )
+    res = validate(passport)
+    assert not res.is_valid
+    assert "source_id" in res.missing
+
+
+def test_step5_governance_review_accepts_dict_passport() -> None:
+    """The API boundary hands the sprint orchestrator a JSON dict for the
+    passport; step5 must convert it before handing it to ``decide()`` to
+    avoid the AttributeError that otherwise blocked every draft review."""
+    from auto_client_acquisition.delivery_factory.delivery_sprint import (
+        step5_governance_review,
+    )
+
+    passport_dict = {
+        "source_id": "src_dict_test",
+        "source_type": "client_upload",
+        "owner": "client",
+        "allowed_use": frozenset({"draft_only", "scoring"}),
+        "contains_pii": False,
+        "sensitivity": "low",
+        "retention_policy": "project_duration",
+        "ai_access_allowed": True,
+        "external_use_allowed": False,
+    }
+    out = step5_governance_review(
+        customer_id="cust1",
+        engagement_id="eng1",
+        drafts=[{"account": "A1", "outline_ar": "ملخص", "outline_en": "summary"}],
+        source_passport=passport_dict,
+    )
+    assert out["reviews"], "expected at least one review row"
+    # The crucial assertion: no ``no_source_passport`` reason — the dict
+    # was converted to a SourcePassport before reaching ``decide()``.
+    review = out["reviews"][0]
+    assert not any("no_source_passport" in r for r in review["reasons"]), (
+        f"step5 still blocking on missing passport: {review!r}"
+    )

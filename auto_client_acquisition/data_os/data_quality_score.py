@@ -117,7 +117,9 @@ def _format_consistency(preview: "ImportPreview") -> float:
 def _source_clarity(passport: "SourcePassport | None") -> float:
     if passport is None:
         return 0.0
-    if not passport.source_id:
+    # ``.strip()`` so whitespace-only IDs don't inflate the clarity score.
+    sid = passport.source_id
+    if sid is None or not str(sid).strip():
         return 25.0
     if not passport.allowed_use:
         return 50.0
