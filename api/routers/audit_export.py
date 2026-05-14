@@ -72,3 +72,54 @@ async def evidence_chain_markdown(
     from auto_client_acquisition.auditability_os.evidence_chain import build_chain
     chain = build_chain(customer_id=customer_id, engagement_id=engagement_id)
     return chain.to_markdown()
+
+
+# ── Wave 14D.4 + 14E: PDF + control-graph endpoints ──────────────────
+
+
+@router.get("/{customer_id}/pdf")
+async def evidence_chain_pdf(
+    customer_id: str,
+    engagement_id: str = Query(""),
+):
+    from fastapi.responses import PlainTextResponse, Response
+    from auto_client_acquisition.auditability_os.evidence_chain import build_chain
+    from auto_client_acquisition.proof_to_market.pdf_renderer import render_markdown_to_pdf
+    chain = build_chain(customer_id=customer_id, engagement_id=engagement_id)
+    md = chain.to_markdown()
+    pdf = render_markdown_to_pdf(md, title=f"Dealix Evidence Chain — {customer_id}")
+    if pdf is None:
+        return PlainTextResponse(
+            content=md,
+            headers={"X-PDF-Renderer": "unavailable; markdown returned as fallback"},
+        )
+    return Response(
+        content=pdf,
+        media_type="application/pdf",
+        headers={"Content-Disposition": f"inline; filename=\"evidence_chain_{customer_id}.pdf\""},
+    )
+
+
+@router.get("/{customer_id}/control-graph")
+async def evidence_control_graph_json(
+    customer_id: str,
+    project_id: str = Query(""),
+) -> dict[str, Any]:
+    """Wave 14E — Evidence Control Plane graph: nodes + edges + gaps +
+    compliance summary in one payload."""
+    from auto_client_acquisition.evidence_control_plane_os.evidence_graph import (
+        build_control_graph,
+    )
+    graph = build_control_graph(customer_id=customer_id, project_id=project_id)
+    return graph.to_dict()
+
+
+@router.get("/{customer_id}/control-graph/markdown", response_class=PlainTextResponse)
+async def evidence_control_graph_markdown(
+    customer_id: str,
+    project_id: str = Query(""),
+) -> str:
+    from auto_client_acquisition.evidence_control_plane_os.evidence_graph import (
+        build_control_graph,
+    )
+    return build_control_graph(customer_id=customer_id, project_id=project_id).to_markdown()

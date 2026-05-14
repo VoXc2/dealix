@@ -378,3 +378,41 @@ async def fetch_report(
         "created_at": row.created_at.isoformat() if row.created_at else None,
         "payload": row.payload,
     }
+
+
+# ── Wave 14D.3: public sample endpoint ──────────────────────────────
+
+
+@router.get("/sample/{sector}")
+async def sample_report(sector: str) -> dict[str, Any]:
+    """Wave 14D.3 — return a pre-generated case-safe Saudi sector sample.
+
+    Reads from docs/sector-reports/{sector}_sample.md if present; otherwise
+    falls back to the Wave 5 benchmark_os generator (synthetic + aggregated).
+    """
+    from pathlib import Path
+
+    repo_root = Path(__file__).resolve().parent.parent.parent
+    candidate = repo_root / "docs" / "sector-reports" / f"{sector.lower()}_sample.md"
+    if candidate.exists():
+        return {
+            "sector": sector,
+            "source": "static_sample",
+            "markdown": candidate.read_text(encoding="utf-8"),
+            "is_sample": True,
+            "governance_decision": "allow",
+        }
+
+    from auto_client_acquisition.benchmark_os.report_generator import generate_readiness_report
+    report = generate_readiness_report(
+        title=f"Saudi {sector.replace('_', ' ').title()} — Sample Sector Report",
+        report_id=f"sample-{sector.lower()}-v1",
+    )
+    return {
+        "sector": sector,
+        "source": "benchmark_os_generated",
+        "report": report.to_dict(),
+        "markdown": report.to_markdown(),
+        "is_sample": True,
+        "governance_decision": "allow_with_review",
+    }

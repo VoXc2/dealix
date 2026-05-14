@@ -73,6 +73,9 @@ ALLOWLIST: dict[str, dict[str, str]] = {
     "sales-kit/dealix_security_faq.md": {"guaranteed": "REVIEW_PENDING"},
     "sales-kit/dealix_demo_transcript_ar.md": {"نضمن": "REVIEW_PENDING"},
     "sales-kit/dealix_terms_of_service_ar.md": {"نضمن": "REVIEW_PENDING"},
+    # Wave 14H WARM_LIST_WORKFLOW uses 'cold' and 'guaranteed' in negation/
+    # refusal context only ("we don't do cold WhatsApp", "no guaranteed sales").
+    "sales-kit/WARM_LIST_WORKFLOW.md": {"cold": "NEGATION", "guaranteed": "NEGATION"},
 }
 
 
