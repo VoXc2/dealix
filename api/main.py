@@ -83,6 +83,8 @@ from api.routers import founder_launch_status as founder_launch_status_router
 from api.routers import post_deploy_check as post_deploy_check_router
 # Wave 17 — Public Dealix Promise manifesto (11 non-negotiables, no admin gate)
 from api.routers import dealix_promise as dealix_promise_router
+# Wave 18 — Founder Command Center (admin-gated aggregate + public reviewer view)
+from api.routers import founder_command_center as founder_command_center_router
 from api.security import APIKeyMiddleware, setup_rate_limit
 from core.config.settings import get_settings
 from core.errors import AICompanyError
@@ -304,6 +306,8 @@ def create_app() -> FastAPI:
     app.include_router(post_deploy_check_router.router)
     # Wave 17 — Public Dealix Promise manifesto (11 non-negotiables, no admin gate)
     app.include_router(dealix_promise_router.router)
+    # Wave 18 — Founder Command Center (single-pane-of-glass aggregate)
+    app.include_router(founder_command_center_router.router)
 
     @app.get("/", tags=["root"])
     async def root() -> dict[str, object]:

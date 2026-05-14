@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Founder Command Center — مركز قيادة المؤسس · Dealix</title>
+<meta name="description" content="مركز قيادة المؤسس — كل الإشارات في شاشة واحدة. صحة النشر، الالتزامات، السلّم التجاري، الروتين اليومي، خط الشركاء، تقدّم ARR، أهم 3 إجراءات.">
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#0b1124">
+<link rel="canonical" href="https://dealix.me/founder-command-center.html">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="/styles.css">
+<link rel="stylesheet" href="/assets/css/design-system.css">
+<style>
+  body { background: linear-gradient(180deg, #050816 0%, #0b1124 60%, #0f1d35 100%); color: var(--text, #f5f5f5); min-height: 100vh; margin: 0; font-family: var(--font-ar, 'IBM Plex Sans Arabic', system-ui); }
+  main { padding: 28px 18px 56px; max-width: 1080px; margin: 0 auto; }
+  h1 { margin: 0 0 6px; font-size: 1.8em; }
+  h2 { margin: 28px 0 10px; font-size: 1.2em; }
+  .cc-eyebrow { font-size: 0.85em; opacity: 0.7; }
+  .cc-key { display: flex; gap: 8px; align-items: center; margin: 16px 0 24px; flex-wrap: wrap; }
+  .cc-key label { font-size: 0.9em; opacity: 0.8; }
+  .cc-key input { flex: 1; min-height: 44px; padding: 10px 14px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.15); background: rgba(0,0,0,0.3); color: var(--text); font-family: ui-monospace, monospace; min-width: 220px; }
+  .cc-key button { min-height: 44px; padding: 10px 20px; border-radius: 8px; border: 0; background: #22c55e; color: #07260f; font-weight: 700; cursor: pointer; font-size: 1em; }
+  .cc-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; margin: 12px 0 4px; }
+  .cc-card { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 16px; }
+  .cc-card__title { font-size: 0.82em; opacity: 0.7; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.06em; }
+  .cc-card__value { font-size: 1.4em; font-weight: 700; }
+  .cc-card__sub { font-size: 0.82em; opacity: 0.65; margin-top: 6px; line-height: 1.5; }
+  .cc-dot { display: inline-block; width: 12px; height: 12px; border-radius: 50%; margin-inline-end: 8px; vertical-align: middle; }
+  .cc-dot.green { background: #22c55e; box-shadow: 0 0 8px #22c55e; }
+  .cc-dot.amber { background: #f59e0b; box-shadow: 0 0 8px #f59e0b; }
+  .cc-dot.red { background: #ef4444; box-shadow: 0 0 8px #ef4444; }
+  .cc-actions { background: rgba(34, 197, 94, 0.07); border: 1px solid rgba(34, 197, 94, 0.24); border-radius: 14px; padding: 22px; margin: 28px 0; }
+  .cc-actions h2 { margin-top: 0; }
+  .cc-actions ol { margin: 8px 0 0; padding-inline-start: 28px; }
+  .cc-actions li { margin: 10px 0; font-size: 1.02em; line-height: 1.5; }
+  .cc-links { display: flex; gap: 10px; flex-wrap: wrap; margin: 14px 0 0; }
+  .cc-link { display: inline-block; padding: 8px 14px; border-radius: 6px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); color: var(--text); text-decoration: none; font-size: 0.85em; }
+  .cc-link:hover { background: rgba(255,255,255,0.10); }
+  .cc-disclaimer { font-size: 0.85em; opacity: 0.7; text-align: center; margin-top: 36px; line-height: 1.7; }
+  pre { white-space: pre-wrap; background: rgba(0,0,0,0.3); padding: 12px; border-radius: 8px; max-height: 260px; overflow: auto; font-size: 0.78em; font-family: ui-monospace, monospace; }
+  .cc-error { background: rgba(239, 68, 68, 0.08); border: 1px solid rgba(239, 68, 68, 0.3); padding: 14px; border-radius: 10px; margin: 12px 0; }
+  @media (max-width: 480px) {
+    main { padding: 20px 14px 44px; }
+    h1 { font-size: 1.5em; }
+    .cc-card { padding: 14px; }
+  }
+</style>
+</head>
+<body>
+
+<main>
+  <h1>Founder Command Center · مركز قيادة المؤسس</h1>
+  <p class="cc-eyebrow">
+    شاشة واحدة. كل الإشارات. أنت في القيادة.<br>
+    <em>One screen. Every signal. You are in command.</em>
+  </p>
+
+  <div class="cc-key">
+    <label for="adminKey">Admin key:</label>
+    <input id="adminKey" type="password" placeholder="X-Admin-API-Key" autocomplete="off">
+    <button id="refreshBtn">Load · تحميل</button>
+  </div>
+
+  <div id="error" class="cc-error" style="display: none;"></div>
+
+  <!-- ── Deploy + Doctrine health ───────────────────────────────── -->
+  <h2>1. Health · الصحّة</h2>
+  <div class="cc-grid" id="healthGrid">
+    <div class="cc-card"><div class="cc-card__title">Deploy</div><div class="cc-card__value">—</div></div>
+    <div class="cc-card"><div class="cc-card__title">Doctrine (11)</div><div class="cc-card__value">—</div></div>
+    <div class="cc-card"><div class="cc-card__title">Offer ladder</div><div class="cc-card__value">—</div></div>
+    <div class="cc-card"><div class="cc-card__title">Daily routine</div><div class="cc-card__value">—</div></div>
+  </div>
+
+  <!-- ── Commercial pacing ──────────────────────────────────────── -->
+  <h2>2. Commercial pacing · إيقاع تجاري</h2>
+  <div class="cc-grid" id="commercialGrid">
+    <div class="cc-card"><div class="cc-card__title">Anchor partners</div><div class="cc-card__value">—</div></div>
+    <div class="cc-card"><div class="cc-card__title">ARR pacing (Day 90)</div><div class="cc-card__value">—</div></div>
+    <div class="cc-card"><div class="cc-card__title">Paid floor</div><div class="cc-card__value">—</div></div>
+    <div class="cc-card"><div class="cc-card__title">Capital assets (7d)</div><div class="cc-card__value">—</div></div>
+  </div>
+
+  <!-- ── Top 3 next actions ─────────────────────────────────────── -->
+  <div class="cc-actions">
+    <h2>Top 3 next actions · أهم 3 إجراءات</h2>
+    <ol id="actionsList">
+      <li>Load command center to see today's actions.</li>
+    </ol>
+  </div>
+
+  <!-- ── Cross-links to the moat surfaces ───────────────────────── -->
+  <h2>3. Surfaces · أسطح للمراجعة</h2>
+  <div class="cc-links">
+    <a class="cc-link" href="/api/v1/dealix-promise/markdown" target="_blank">Dealix Promise (manifesto)</a>
+    <a class="cc-link" href="/api/v1/commercial-map/markdown" target="_blank">Commercial Map</a>
+    <a class="cc-link" href="/api/v1/founder/post-deploy-check" target="_blank">Post-deploy Check (admin)</a>
+    <a class="cc-link" href="/api/v1/founder/launch-status/public" target="_blank">Launch Status (public)</a>
+    <a class="cc-link" href="/promise.html">Promise landing page</a>
+    <a class="cc-link" href="/pricing.html">Pricing landing page</a>
+  </div>
+
+  <!-- ── Raw JSON for audit ────────────────────────────────────── -->
+  <h2>4. Raw payload · بيانات خام</h2>
+  <pre id="rawPayload">Click "Load" with your admin key to fetch the full aggregate.</pre>
+
+  <p class="cc-disclaimer">
+    Estimated outcomes are not guaranteed outcomes / النتائج التقديرية ليست نتائج مضمونة.
+  </p>
+</main>
+
+<script>
+(function() {
+  'use strict';
+  var keyInput = document.getElementById('adminKey');
+  var btn = document.getElementById('refreshBtn');
+  var errEl = document.getElementById('error');
+  var rawEl = document.getElementById('rawPayload');
+  var healthGrid = document.getElementById('healthGrid');
+  var commercialGrid = document.getElementById('commercialGrid');
+  var actionsList = document.getElementById('actionsList');
+
+  try {
+    var saved = localStorage.getItem('dealix_admin_key');
+    if (saved) keyInput.value = saved;
+  } catch (e) { /* localStorage may be blocked; non-fatal */ }
+
+  function setError(msg) {
+    if (!msg) { errEl.style.display = 'none'; return; }
+    errEl.textContent = msg;
+    errEl.style.display = 'block';
+  }
+
+  function dot(status) {
+    var color = status === 'green' ? 'green' : (status === 'amber' ? 'amber' : 'red');
+    return '<span class="cc-dot ' + color + '" aria-hidden="true"></span>';
+  }
+
+  function renderCard(container, title, valueHtml, subHtml) {
+    var card = document.createElement('div');
+    card.className = 'cc-card';
+    card.innerHTML = '<div class="cc-card__title">' + title + '</div>' +
+                     '<div class="cc-card__value">' + valueHtml + '</div>' +
+                     (subHtml ? '<div class="cc-card__sub">' + subHtml + '</div>' : '');
+    container.appendChild(card);
+  }
+
+  function escapeText(s) {
+    return String(s).replace(/[<>&"]/g, function(c) {
+      return c === '<' ? '&lt;' : c === '>' ? '&gt;' : c === '&' ? '&amp;' : '&quot;';
+    });
+  }
+
+  function render(body) {
+    rawEl.textContent = JSON.stringify(body, null, 2);
+
+    healthGrid.innerHTML = '';
+    var dh = body.deploy_health || {};
+    renderCard(healthGrid, 'Deploy',
+      dot(dh.all_green ? 'green' : 'red') + (dh.all_green ? 'All green' : (dh.failed || []).length + ' failing'),
+      dh.checked + ' modules checked');
+    var doc = body.doctrine_health || {};
+    renderCard(healthGrid, 'Doctrine (11)',
+      dot(doc.all_enforcers_exist ? 'green' : 'red') + (doc.commitments_count || 0) + ' commitments',
+      doc.all_enforcers_exist ? 'all enforced by passing tests' : ((doc.missing_enforcers || []).length + ' missing enforcers'));
+    var off = body.offer_ladder || {};
+    renderCard(healthGrid, 'Offer ladder',
+      dot(off.offer_count === 3 ? 'green' : 'amber') + (off.offer_count || 0) + ' offers',
+      '2026-Q2 reframe');
+    var dr = body.daily_routine || {};
+    renderCard(healthGrid, 'Daily routine',
+      dot(dr.consolidated_brief_exists ? 'green' : 'amber') + (dr.consolidated_brief_exists ? 'today ready' : 'today missing'),
+      dr.today || '');
+
+    commercialGrid.innerHTML = '';
+    var ap = body.anchor_partners || {};
+    renderCard(commercialGrid, 'Anchor partners',
+      dot(ap.seeded ? 'green' : 'amber') + (ap.partner_count || 0) + ' seeded',
+      ap.seeded ? JSON.stringify(ap.by_status || {}) : 'run scripts/seed_anchor_partner_pipeline.py');
+    var arr = body.arr_pacing || {};
+    var arrColor = (arr.percent_of_target || 0) >= 100 ? 'green' : ((arr.percent_of_target || 0) >= 30 ? 'amber' : 'red');
+    renderCard(commercialGrid, 'ARR pacing (Day 90)',
+      dot(arrColor) + (arr.sar_committed_next_90d || 0).toLocaleString() + ' SAR',
+      (arr.percent_of_target || 0) + '% of ' + (arr.target_sar_day90 || 100000).toLocaleString() + ' SAR target');
+    renderCard(commercialGrid, 'Paid floor',
+      dot(off.paid_floor_sar_per_month >= 4999 ? 'green' : 'red') + (off.paid_floor_sar_per_month || 0).toLocaleString() + ' SAR/mo',
+      'Flagship: ' + (off.flagship_sar_one_time || 0).toLocaleString() + ' SAR');
+    var ca = body.capital_assets_this_week || 0;
+    renderCard(commercialGrid, 'Capital assets (7d)',
+      dot(ca >= 1 ? 'green' : 'red') + ca + ' registered',
+      ca >= 1 ? 'every engagement = at least one asset' : 'no asset this week — non-negotiable #11');
+
+    actionsList.innerHTML = '';
+    (body.top_three_next_actions || []).forEach(function(action) {
+      var li = document.createElement('li');
+      li.textContent = action;
+      actionsList.appendChild(li);
+    });
+  }
+
+  function load() {
+    var key = (keyInput.value || '').trim();
+    if (!key) {
+      setError('Admin key required — paste X-Admin-API-Key first.');
+      return;
+    }
+    setError('');
+    try { localStorage.setItem('dealix_admin_key', key); } catch (e) {}
+    btn.disabled = true;
+    btn.textContent = 'Loading…';
+    fetch('/api/v1/founder/command-center', {
+      headers: { 'X-Admin-API-Key': key },
+      cache: 'no-store',
+    })
+      .then(function(r) {
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        return r.json();
+      })
+      .then(render)
+      .catch(function(e) {
+        setError('Failed to load: ' + e.message + '. Check that your admin key is correct and the API is reachable.');
+        rawEl.textContent = 'Failed: ' + escapeText(e.message);
+      })
+      .finally(function() {
+        btn.disabled = false;
+        btn.textContent = 'Refresh · تحديث';
+      });
+  }
+
+  btn.addEventListener('click', load);
+  keyInput.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') load();
+  });
+
+  if (keyInput.value) {
+    setTimeout(load, 80);
+  }
+})();
+</script>
+
+</body>
+</html>
