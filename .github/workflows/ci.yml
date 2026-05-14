@@ -76,6 +76,11 @@ jobs:
           python scripts/render_public_sitemap.py
           git diff --exit-code -- landing/sitemap.xml
 
+      - name: Partner kit zip (rebuild + drift gate)
+        run: |
+          python scripts/build_partner_kit_zip.py
+          git diff --exit-code -- landing/assets/downloads/dealix-partner-kit-v1.zip
+
       - name: Tests with coverage gate
         env:
           APP_ENV: test

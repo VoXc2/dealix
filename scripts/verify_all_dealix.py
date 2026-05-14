@@ -493,6 +493,20 @@ def system_first_invoice_motion() -> SystemReport:
     )]
     return r
 
+def system_partner_kit() -> SystemReport:
+    r = SystemReport("Partner Kit")
+    r.docs = [
+        file_check("partner-kit/README.md"),
+        file_check("partner-kit/TRUST_PACK_TEMPLATE.md"),
+        file_check("partner-kit/PROOF_PACK_TEMPLATE.md"),
+        file_check("partner-kit/DOCTRINE_ADOPTION_CHECKLIST.md"),
+    ]
+    r.code = [file_check("scripts/build_partner_kit_zip.py")]
+    r.tests = [file_check("tests/test_partner_kit_contents.py")]
+    r.api = [file_check("landing/assets/downloads/dealix-partner-kit-v1.zip")]
+    return r
+
+
 def system_doctrine_versioning() -> SystemReport:
     r = SystemReport("Doctrine Versioning")
     r.docs = [
@@ -593,6 +607,7 @@ SYSTEMS: list[Callable[[], SystemReport]] = [
     system_public_trust_surface,
     system_customer_readiness_gate,
     system_doctrine_versioning,
+    system_partner_kit,
 ]
 
 # Systems that must be ≥ 4/5 for "CEO complete".

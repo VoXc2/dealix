@@ -159,6 +159,13 @@
       "name": "Doctrine Versioning",
       "passed": true,
       "score": 4
+    },
+    {
+      "in_top_eight": false,
+      "missing": [],
+      "name": "Partner Kit",
+      "passed": true,
+      "score": 4
     }
   ]
 }

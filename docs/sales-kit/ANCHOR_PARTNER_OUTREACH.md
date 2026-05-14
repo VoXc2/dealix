@@ -81,6 +81,16 @@ Sami
 تحياتي،
 سامي
 
+## Partner Distribution Kit
+
+Once a partner agrees in principle, send them the Partner Kit:
+
+- Download: `landing/assets/downloads/dealix-partner-kit-v1.zip`
+- Contents: README, TRUST_PACK_TEMPLATE, PROOF_PACK_TEMPLATE,
+  DOCTRINE_ADOPTION_CHECKLIST, branding rules, landing template.
+- The kit is byte-stable (CI drift-gated) and tied to the doctrine
+  version they will sign against (`v1.0.0` initially).
+
 ## Sending Discipline
 
 - Personalize the `[Name]` and the named-client hook before sending.
