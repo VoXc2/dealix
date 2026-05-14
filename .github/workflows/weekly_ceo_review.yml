@@ -1,0 +1,51 @@
+name: Weekly CEO Review
+
+# Runs every Sunday at 03:00 UTC = 06:00 KSA. Composes the master
+# verifier with week-over-week deltas + market-motion activity + top
+# three actions for next week. Opens a PR labeled `state-update`.
+#
+# Honest-marker discipline: this workflow NEVER edits the marker counts.
+
+on:
+  schedule:
+    - cron: "0 3 * * SUN"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Run weekly CEO review
+        run: |
+          python scripts/weekly_ceo_review.py
+
+      - name: Open PR with weekly review
+        uses: peter-evans/create-pull-request@v6
+        with:
+          branch: state/weekly-review-${{ github.run_id }}
+          base: ${{ github.ref_name }}
+          commit-message: "chore(state): weekly CEO review [skip ci]"
+          title: "chore(state): weekly CEO review $(date -u +%Y-W%V)"
+          body: |
+            Automated weekly CEO review.
+
+            - data/_state/weekly_review_*.md
+            - data/_state/weekly_review_*.json
+
+            Includes top-3 actions for next week, derived from failing
+            top-8 systems and the CEO-complete gate.
+          labels: state-update
+          add-paths: |
+            data/_state/**

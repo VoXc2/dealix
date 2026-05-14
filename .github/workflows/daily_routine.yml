@@ -1,0 +1,58 @@
+name: Daily Routine
+
+# Runs daily at 03:00 UTC = 06:00 KSA. Composes the master verifier with
+# the founder daily brief, computes day-over-day deltas, and commits the
+# resulting state/brief to a stamped branch + opens a PR labeled
+# `state-update` for the founder to review and merge.
+#
+# Honest-marker discipline: this workflow NEVER edits the partner /
+# invoice / capital marker counts. It only reads them.
+
+on:
+  schedule:
+    - cron: "0 3 * * *"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Run daily routine
+        run: |
+          python scripts/daily_routine.py
+          python scripts/render_verifier_report.py
+
+      - name: Open PR with state update
+        uses: peter-evans/create-pull-request@v6
+        with:
+          branch: state/daily-routine-${{ github.run_id }}
+          base: ${{ github.ref_name }}
+          commit-message: "chore(state): daily routine update [skip ci]"
+          title: "chore(state): daily routine $(date -u +%Y-%m-%d)"
+          body: |
+            Automated daily routine update.
+
+            - data/_state/daily_brief_*.md
+            - data/_state/daily_routine_*.json
+            - data/_state/verifier_history.jsonl (appended)
+            - landing/assets/data/verifier-report.json (refreshed)
+
+            Verifier and marker counts are read-only here. The only path
+            to bumping `outreach_sent_count` or `invoice_sent_count` is
+            the marker-honesty CLI tools (PR3).
+          labels: state-update
+          add-paths: |
+            data/_state/**
+            landing/assets/data/verifier-report.json

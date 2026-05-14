@@ -107,6 +107,9 @@ dumps/
 !data/partner_outreach_log.json
 !data/first_invoice_log.json
 !data/founder_command_center_status.json
+# Wave 20 — operating-loop state (no customer / PII data)
+!data/_state/
+!data/_state/**
 
 # ─────────────────────────────────────────────────────────────
 # 📝 Logs
