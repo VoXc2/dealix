@@ -1,0 +1,43 @@
+{
+  "pipeline_id": "ANCHOR-PARTNER-PIPELINE-001",
+  "updated_at": "2026-05-14",
+  "status": "active",
+  "partner_archetypes": [
+    {
+      "id": "PARTNER-001",
+      "archetype": "Big 4 / Assurance Partner",
+      "priority": 1,
+      "target_market": "Saudi Arabia",
+      "why": "Governance credibility, regulated buyer access, assurance language fit.",
+      "offer": "Co-sell Governed AI Diagnostic and Revenue Intelligence Sprint.",
+      "status": "target_ready",
+      "next_action": "Select one named partner and send outreach."
+    },
+    {
+      "id": "PARTNER-002",
+      "archetype": "SAMA / Regulated Technology Processor",
+      "priority": 2,
+      "target_market": "Saudi Arabia",
+      "why": "Strong fit for trust, data controls, evidence, and regulated buyer concerns.",
+      "offer": "Trust Pack + Evidence Pack + Governed Ops Retainer.",
+      "status": "target_ready",
+      "next_action": "Select one named partner after Big 4 outreach."
+    },
+    {
+      "id": "PARTNER-003",
+      "archetype": "Saudi or GCC VC Platform Team",
+      "priority": 3,
+      "target_market": "Saudi/GCC",
+      "why": "Portfolio access and funding narrative.",
+      "offer": "Portfolio AI readiness review and founder-facing AI ops clinic.",
+      "status": "target_ready",
+      "next_action": "Use after one commercial proof or warm intro."
+    }
+  ],
+  "rev_share_terms": {
+    "commission": "20%",
+    "duration_months": 12,
+    "cap_sar": 200000,
+    "notes": "Subject to Partner Covenant and no unsafe growth commitments."
+  }
+}
