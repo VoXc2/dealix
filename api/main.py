@@ -5,6 +5,12 @@ FastAPI application entry point.
 
 from __future__ import annotations
 
+# Wave 16: silence the 46 known-safe DeprecationWarnings (passlib/crypt
+# transitive) before anything else imports. Must happen pre-import to
+# beat the warnings emitted during transitive imports below.
+from core.warnings_filter import install as _install_warnings_filter
+_install_warnings_filter()
+
 from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
 
@@ -73,6 +79,8 @@ from api.routers import agent_os as agent_os_router
 from api.routers import commercial_map as commercial_map_router
 # Wave 15 — Founder launch-status (single-pane production readiness)
 from api.routers import founder_launch_status as founder_launch_status_router
+# Wave 16 — Post-deploy self-check (in-process smoke from the founder's phone)
+from api.routers import post_deploy_check as post_deploy_check_router
 from api.security import APIKeyMiddleware, setup_rate_limit
 from core.config.settings import get_settings
 from core.errors import AICompanyError
@@ -290,6 +298,8 @@ def create_app() -> FastAPI:
     app.include_router(commercial_map_router.router)
     # Wave 15 — Founder launch-status (admin /launch-status + public /launch-status/public)
     app.include_router(founder_launch_status_router.router)
+    # Wave 16 — Post-deploy self-check (admin-gated, in-process smoke)
+    app.include_router(post_deploy_check_router.router)
 
     @app.get("/", tags=["root"])
     async def root() -> dict[str, object]:

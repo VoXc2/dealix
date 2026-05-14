@@ -157,6 +157,11 @@ def main() -> int:
     }
     brief["top_recommendations"] = _top_recommendations(brief)
 
+    # Wave 16: always emit data/daily_brief/YYYY-MM-DD.md alongside other
+    # output forms. The founder reads this file on their phone every
+    # morning — 4 atomic sections, mobile-readable.
+    _emit_daily_brief_markdown(brief)
+
     if args.json:
         print(json.dumps(brief, ensure_ascii=False, indent=2))
         return 0
@@ -176,6 +181,118 @@ def main() -> int:
     for i, r in enumerate(brief["top_recommendations"], start=1):
         print(f"  {i}. {r}")
     return 0
+
+
+def _emit_daily_brief_markdown(brief: dict) -> None:
+    """Wave 16: write data/daily_brief/YYYY-MM-DD.md the founder reads on
+    their phone each morning. 4 atomic sections.
+    """
+    today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+    out_dir = REPO_ROOT / "data" / "daily_brief"
+    out_dir.mkdir(parents=True, exist_ok=True)
+    out_path = out_dir / f"{today}.md"
+
+    lines: list[str] = []
+    lines.append(f"# Dealix Daily Brief — {today}")
+    lines.append("")
+    lines.append(
+        f"_Generated {brief['generated_at']}._ "
+        f"Read on phone every morning. Follow the 4 sections in order."
+    )
+    lines.append("")
+
+    # Section 1 — Today's 5 messages to send (from warm_list_drafts if exists)
+    lines.append("## 1. Today's 5 messages · رسائل اليوم")
+    lines.append("")
+    drafts_path = REPO_ROOT / "data" / "outreach" / "warm_list_drafts.md"
+    if drafts_path.exists():
+        lines.append(
+            f"- See `data/outreach/warm_list_drafts.md` — pick the next 5 contacts "
+            f"flagged `accept` or `diagnostic_only`. Send via LinkedIn or WhatsApp. "
+            f"Mark `Sent: [x]` per row."
+        )
+    else:
+        lines.append(
+            "- ⚠ `data/warm_list.csv` not filled yet. Fill it then run "
+            "`python scripts/warm_list_outreach.py` to generate today's drafts."
+        )
+    lines.append("")
+
+    # Section 2 — Leads needing reply within 24h
+    leads_waiting = brief.get("leads_waiting_24h_plus", {})
+    lines.append(f"## 2. Leads to reply · ردود مطلوبة ({leads_waiting.get('count', 0)})")
+    lines.append("")
+    items = leads_waiting.get("items") or []
+    if items:
+        for item in items[:5]:
+            lines.append(
+                f"- **{item.get('company', '?')}** ({item.get('sector', '?')}) — "
+                f"{item.get('created_at', '?')[:10]} — reply via "
+                f"`/founder-leads.html?key=<admin>`"
+            )
+    else:
+        lines.append("- 0 leads waiting > 24h. Continue outbound cadence.")
+    lines.append("")
+
+    # Section 3 — Diagnostic to deliver
+    lines.append("## 3. Diagnostic to deliver · تشخيص للتسليم")
+    lines.append("")
+    if items:
+        first = items[0]
+        lines.append(
+            f"- Top priority: **{first.get('company', '?')}** — open "
+            f"`/founder-leads.html?key=<admin>` → triage → approve diagnostic → "
+            f"send via Gmail. Target: < 24h from intake."
+        )
+    else:
+        lines.append("- No diagnostics in queue. Use the time for content + warm-list send.")
+    lines.append("")
+
+    # Section 4 — Capital review
+    capital = brief.get("capital_assets_this_week", {})
+    lines.append(f"## 4. Capital review · مراجعة الأصول ({capital.get('count', 0)} this week)")
+    lines.append("")
+    if capital.get("items"):
+        for asset in capital["items"][:5]:
+            lines.append(
+                f"- `{asset.get('asset_type', '?')}` (owner: {asset.get('owner', '?')})"
+            )
+    else:
+        lines.append(
+            "- ⚠ 0 capital assets this week. EVERY engagement must produce ≥ 1 "
+            "reusable asset (`capital_os.add_asset`)."
+        )
+    lines.append("")
+
+    # Top recommendations footer
+    recs = brief.get("top_recommendations") or []
+    if recs:
+        lines.append("## Top 3 recommendations · أهم 3 إجراءات")
+        lines.append("")
+        for i, rec in enumerate(recs, start=1):
+            lines.append(f"{i}. {rec}")
+        lines.append("")
+
+    # Friction high-severity alert
+    friction = brief.get("friction_last_7d", {})
+    if friction.get("by_severity", {}).get("high", 0) > 0:
+        lines.append(
+            f"## ⚠ ALERT — {friction['by_severity']['high']} high-severity friction events (7d)"
+        )
+        lines.append("")
+        lines.append(
+            "- Review `friction-log/` and resolve before continuing outbound."
+        )
+        lines.append("")
+
+    lines.append("---")
+    lines.append("")
+    lines.append(
+        "_Estimated outcomes are not guaranteed outcomes / "
+        "النتائج التقديرية ليست نتائج مضمونة._"
+    )
+
+    out_path.write_text("\n".join(lines), encoding="utf-8")
 
 
 if __name__ == "__main__":
