@@ -125,7 +125,28 @@
       <li><a href="/api/v1/dealix-promise"><code>GET /api/v1/dealix-promise</code></a> — the 11 commitments with locking tests</li>
       <li><a href="/api/v1/doctrine"><code>GET /api/v1/doctrine</code></a> — doctrine snapshot pinned to commit SHA</li>
       <li><a href="/api/v1/capital-assets/public"><code>GET /api/v1/capital-assets/public</code></a> — safe public projection of the Capital Asset Library</li>
+      <li><a href="/api/v1/trust/status"><code>GET /api/v1/trust/status</code></a> — compact Shields.io-style trust payload (ETag-friendly)</li>
     </ul>
+  </section>
+
+  <section>
+    <h2 style="font-size:14px;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em;margin:24px 0 10px;">Embed Trust</h2>
+    <p style="color:var(--muted);font-size:13px;">Five SVG badges anyone can drop into their site. They auto-update on every CI run via the drift gate.</p>
+    <div style="display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 16px;">
+      <img src="assets/badges/doctrine-status.svg" alt="doctrine status">
+      <img src="assets/badges/verifier-score.svg" alt="verifier score">
+      <img src="assets/badges/ceo-complete.svg" alt="ceo complete">
+      <img src="assets/badges/partner-outreach.svg" alt="partner outreach">
+      <img src="assets/badges/invoice-sent.svg" alt="invoice sent">
+    </div>
+    <details>
+      <summary style="cursor:pointer;color:var(--accent);">HTML snippet (copy-paste)</summary>
+<pre style="background:var(--card);padding:12px;border-radius:6px;font-size:12px;overflow-x:auto;"><code>&lt;a href=&quot;https://dealix.example.com/founder-command-center.html&quot;&gt;
+  &lt;img src=&quot;https://dealix.example.com/assets/badges/doctrine-status.svg&quot; alt=&quot;Dealix doctrine status&quot;&gt;
+  &lt;img src=&quot;https://dealix.example.com/assets/badges/verifier-score.svg&quot; alt=&quot;Dealix verifier score&quot;&gt;
+&lt;/a&gt;</code></pre>
+    </details>
+    <p style="color:var(--muted);font-size:12px;">External services that mint badges live (e.g., Shields.io) can call <code>/api/v1/trust/status</code> as an endpoint badge source.</p>
   </section>
 </main>
 

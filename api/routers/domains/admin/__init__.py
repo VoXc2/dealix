@@ -38,6 +38,7 @@ from api.routers import (
     sectors,
     self_growth,
     self_improvement_os,
+    trust_status,
 )
 
 _ROUTERS = [
@@ -72,6 +73,8 @@ _ROUTERS = [
     dealix_promise.router,
     doctrine.router,
     capital_assets.router,
+    # Wave 21 — public trust surface.
+    trust_status.router,
 ]
 
 

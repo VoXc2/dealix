@@ -1,111 +1,51 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://dealix.sa/</loc>
-    <lastmod>2026-04-18</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>1.0</priority>
+    <loc>https://dealix.example.com/</loc>
   </url>
   <url>
-    <loc>https://dealix.sa/status.html</loc>
-    <lastmod>2026-04-18</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
+    <loc>https://dealix.example.com/founder-command-center.html</loc>
   </url>
   <url>
-    <loc>https://dealix.sa/agency-partner.html</loc>
-    <lastmod>2026-05-10</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
+    <loc>https://dealix.example.com/architecture.html</loc>
   </url>
   <url>
-    <loc>https://dealix.sa/diagnostic.html</loc>
-    <lastmod>2026-05-10</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
+    <loc>https://dealix.example.com/assets/data/verifier-report.json</loc>
   </url>
   <url>
-    <loc>https://dealix.sa/pricing.html</loc>
-    <lastmod>2026-05-10</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
+    <loc>https://dealix.example.com/assets/badges/doctrine-status.svg</loc>
   </url>
   <url>
-    <loc>https://dealix.sa/customer-portal.html</loc>
-    <lastmod>2026-05-10</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
+    <loc>https://dealix.example.com/assets/badges/verifier-score.svg</loc>
   </url>
   <url>
-    <loc>https://dealix.sa/proof.html</loc>
-    <lastmod>2026-05-10</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
+    <loc>https://dealix.example.com/assets/badges/ceo-complete.svg</loc>
   </url>
   <url>
-    <loc>https://dealix.sa/trust-center.html</loc>
-    <lastmod>2026-05-10</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
+    <loc>https://dealix.example.com/api/v1/dealix-promise</loc>
   </url>
   <url>
-    <loc>https://dealix.sa/ai-team.html</loc>
-    <lastmod>2026-05-10</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
+    <loc>https://dealix.example.com/api/v1/doctrine</loc>
   </url>
   <url>
-    <loc>https://dealix.sa/launchpad.html</loc>
-    <lastmod>2026-05-10</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
+    <loc>https://dealix.example.com/api/v1/capital-assets/public</loc>
   </url>
   <url>
-    <loc>https://dealix.sa/compare.html</loc>
-    <lastmod>2026-05-10</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
+    <loc>https://dealix.example.com/api/v1/compliance/status</loc>
   </url>
   <url>
-    <loc>https://dealix.sa/roi.html</loc>
-    <lastmod>2026-05-10</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
+    <loc>https://dealix.example.com/api/v1/founder/launch-status/public</loc>
   </url>
   <url>
-    <loc>https://dealix.sa/case-study.html</loc>
-    <lastmod>2026-05-10</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
+    <loc>https://dealix.example.com/api/v1/public/health</loc>
   </url>
   <url>
-    <loc>https://dealix.sa/verticals.html</loc>
-    <lastmod>2026-05-10</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
+    <loc>https://dealix.example.com/open-doctrine/11_NON_NEGOTIABLES.md</loc>
   </url>
   <url>
-    <loc>https://dealix.sa/privacy.html</loc>
-    <lastmod>2026-05-12</lastmod>
-    <changefreq>yearly</changefreq>
-    <priority>0.3</priority>
+    <loc>https://dealix.example.com/open-doctrine/CONTROL_MAPPING.md</loc>
   </url>
   <url>
-    <loc>https://dealix.sa/terms.html</loc>
-    <lastmod>2026-05-12</lastmod>
-    <changefreq>yearly</changefreq>
-    <priority>0.3</priority>
-  </url>
-  <url>
-    <loc>https://dealix.sa/sub-processors.html</loc>
-    <lastmod>2026-05-12</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.4</priority>
-  </url>
-  <url>
-    <loc>https://dealix.sa/launch-readiness.html</loc>
-    <lastmod>2026-05-12</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
+    <loc>https://dealix.example.com/open-doctrine/README.md</loc>
   </url>
 </urlset>

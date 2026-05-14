@@ -138,6 +138,13 @@
       "name": "Continuous Routine",
       "passed": true,
       "score": 4
+    },
+    {
+      "in_top_eight": false,
+      "missing": [],
+      "name": "Public Trust Surface",
+      "passed": true,
+      "score": 4
     }
   ]
 }

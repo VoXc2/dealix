@@ -493,6 +493,30 @@ def system_first_invoice_motion() -> SystemReport:
     )]
     return r
 
+def system_public_trust_surface() -> SystemReport:
+    r = SystemReport("Public Trust Surface")
+    r.docs = [any_of_files_check(
+        ["landing/founder-command-center.html"],
+        "Founder Command Center page",
+    )]
+    r.code = [
+        file_check("scripts/render_trust_badges.py"),
+        file_check("scripts/render_public_sitemap.py"),
+        file_check("api/routers/trust_status.py"),
+    ]
+    r.tests = [
+        file_check("tests/test_trust_status_endpoint.py"),
+        file_check("tests/test_trust_badges_are_stable.py"),
+        file_check("tests/test_trust_badges_have_no_pii.py"),
+    ]
+    r.api = [
+        file_check("landing/assets/badges/doctrine-status.svg"),
+        file_check("landing/assets/badges/verifier-score.svg"),
+        file_check("landing/sitemap.xml"),
+    ]
+    return r
+
+
 def system_continuous_routine() -> SystemReport:
     r = SystemReport("Continuous Routine")
     r.docs = [any_of_files_check(
@@ -535,6 +559,7 @@ SYSTEMS: list[Callable[[], SystemReport]] = [
     system_partner_motion,
     system_first_invoice_motion,
     system_continuous_routine,
+    system_public_trust_surface,
 ]
 
 # Systems that must be ≥ 4/5 for "CEO complete".

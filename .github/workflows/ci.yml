@@ -63,6 +63,19 @@ jobs:
           # Fail CI if the committed verifier report is stale.
           git diff --exit-code -- landing/assets/data/verifier-report.json
 
+      - name: Trust badges (refresh + drift gate)
+        run: |
+          python scripts/render_trust_badges.py
+          # Fail CI if the committed badges are stale.
+          git diff --exit-code -- landing/assets/badges/
+
+      - name: Public sitemap (refresh + drift gate)
+        env:
+          DEALIX_PUBLIC_ORIGIN: https://dealix.example.com
+        run: |
+          python scripts/render_public_sitemap.py
+          git diff --exit-code -- landing/sitemap.xml
+
       - name: Tests with coverage gate
         env:
           APP_ENV: test

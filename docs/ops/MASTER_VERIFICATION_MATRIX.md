@@ -49,6 +49,7 @@ documentation.
 | 17 | Partner Motion | `docs/sales-kit/ANCHOR_PARTNER_OUTREACH.md`, `docs/40_partners/PARTNER_COVENANT.md` | n/a | partner pipeline JSON schema test | `data/anchor_partner_pipeline.json`, `data/partner_outreach_log.json` (**content-aware: `outreach_sent_count` must be ≥ 1**) | Partner pipeline tile | Outreach sent | **PASS** |
 | 18 | First Invoice Motion | `docs/ops/FIRST_INVOICE_UNLOCK.md` | n/a | runbook presence | `data/first_invoice_log.json` (**content-aware: `invoice_sent_count` must be ≥ 1**) | Invoice #1 tile | Invoice-ready | **PASS** |
 | 19 | Continuous Routine | `docs/ops/CONTINUOUS_ROUTINE.md` or `DAILY_OPERATING_LOOP.md` | `scripts/daily_routine.py` (or `daily_operate.sh`), `scripts/weekly_ceo_review.py` (or `dealix_weekly_executive_pack.py`) | n/a | the scripts themselves | Routine tile | Operating cadence | **PASS** |
+| 20 | Public Trust Surface | `landing/founder-command-center.html` (Embed Trust section) | `scripts/render_trust_badges.py`, `scripts/render_public_sitemap.py`, `api/routers/trust_status.py` | `test_trust_status_endpoint.py`, `test_trust_badges_are_stable.py`, `test_trust_badges_have_no_pii.py` | `GET /api/v1/trust/status` + `landing/assets/badges/*.svg` + `landing/sitemap.xml` | Embed Trust card | Buyer / partner trust at-a-glance | **PASS** |
 
 > **Rule:** Any system whose `Status` column is not `PASS` is **not shipped**.
 > The verifier `scripts/verify_all_dealix.py` is the single judge.
