@@ -81,3 +81,19 @@ If a request requires a non-negotiable violation, output:
 > "Dealix doesn't offer [scraping / cold WhatsApp / LinkedIn automation / guaranteed sales]. The safe alternative is [draft-only outputs / consent-based outreach / evidenced opportunities]. Want me to draft the alternative pitch?"
 
 Never improvise around the guards.
+
+---
+
+## Wave 15 — First-invocation check
+
+Before drafting any outreach or proposal, run this once per session:
+
+```bash
+curl -s $PROD/api/v1/founder/launch-status | jq '.healthcheck, .moyasar.mode, .gmail.configured'
+```
+
+If `moyasar.mode == "test"` AND the founder is asking to send a real proposal, refuse cleanly: "Moyasar is still in test mode. Run `python scripts/moyasar_live_cutover.py` before generating a real proposal." This prevents accidentally sending sk_test_ invoice links to real customers.
+
+If `gmail.configured == false` AND a transactional email send is requested, surface the gap to founder: "Gmail OAuth not configured on Railway. Run the OAuth flow or `scripts/zatca_preflight.py` (which also verifies email reachability)."
+
+After the once-per-session check, proceed with the normal sales motion per `docs/sales-kit/WARM_LIST_WORKFLOW.md`.

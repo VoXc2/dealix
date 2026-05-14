@@ -1,0 +1,422 @@
+{
+  "engagement_id": "dealix_internal_v1",
+  "customer_id": "dealix_internal_demo",
+  "started_at": "2026-05-14T02:56:56.481778+00:00",
+  "steps": [
+    {
+      "name": "kickoff_source_passport",
+      "status": "ran",
+      "output": {
+        "passport_provided": true,
+        "validation": {
+          "is_valid": true,
+          "reasons": [],
+          "missing": []
+        }
+      },
+      "governance_decision": "",
+      "notes": ""
+    },
+    {
+      "name": "data_quality",
+      "status": "ran",
+      "output": {
+        "row_count": 20,
+        "columns": [
+          "company_name",
+          "sector",
+          "city",
+          "relationship_status",
+          "source",
+          "last_interaction",
+          "notes"
+        ],
+        "pii_columns": [],
+        "dq_overall": 94.57,
+        "dq_breakdown": {
+          "completeness": 99.29,
+          "duplicate_inverse": 100.0,
+          "format_consistency": 100.0,
+          "source_clarity": 0.0
+        }
+      },
+      "governance_decision": "",
+      "notes": ""
+    },
+    {
+      "name": "account_scoring",
+      "status": "ran",
+      "output": {
+        "top_10": [
+          {
+            "rank": 1,
+            "company_name": "Madar Logistics",
+            "score": 100,
+            "reasons": [
+              "warm_relationship",
+              "recent_interaction"
+            ]
+          },
+          {
+            "rank": 2,
+            "company_name": "NorthStar Clinics Group",
+            "score": 100,
+            "reasons": [
+              "warm_relationship",
+              "recent_interaction"
+            ]
+          },
+          {
+            "rank": 3,
+            "company_name": "Tafawuq Consulting",
+            "score": 100,
+            "reasons": [
+              "warm_relationship",
+              "recent_interaction"
+            ]
+          },
+          {
+            "rank": 4,
+            "company_name": "Al-Awal Training Academy",
+            "score": 100,
+            "reasons": [
+              "warm_relationship",
+              "recent_interaction"
+            ]
+          },
+          {
+            "rank": 5,
+            "company_name": "شركة الأفق المفتوح",
+            "score": 100,
+            "reasons": [
+              "warm_relationship",
+              "recent_interaction"
+            ]
+          },
+          {
+            "rank": 6,
+            "company_name": "شركة بوابة الأعمال",
+            "score": 100,
+            "reasons": [
+              "warm_relationship",
+              "recent_interaction"
+            ]
+          },
+          {
+            "rank": 7,
+            "company_name": "شركة بوابة الأعمال",
+            "score": 100,
+            "reasons": [
+              "warm_relationship",
+              "recent_interaction"
+            ]
+          },
+          {
+            "rank": 8,
+            "company_name": "شركة الإنماء الذكي",
+            "score": 100,
+            "reasons": [
+              "warm_relationship",
+              "recent_interaction"
+            ]
+          },
+          {
+            "rank": 9,
+            "company_name": "شركة الواحة للاستشارات",
+            "score": 85,
+            "reasons": [
+              "warm_relationship",
+              "recent_interaction"
+            ]
+          },
+          {
+            "rank": 10,
+            "company_name": "Sahil Marine Logistics",
+            "score": 85,
+            "reasons": [
+              "warm_relationship",
+              "recent_interaction"
+            ]
+          }
+        ],
+        "total_scored": 20
+      },
+      "governance_decision": "",
+      "notes": ""
+    },
+    {
+      "name": "draft_pack_outline",
+      "status": "ran",
+      "output": {
+        "ar_drafts_outlined": [
+          {
+            "account": "Madar Logistics",
+            "outline_ar": "رسالة افتتاحية لـMadar Logistics — تركز على القيمة وتترك القرار للعميل بدون أي ادعاءات مضمونة.",
+            "outline_en": "Opening note for Madar Logistics — value-led, decision left to the customer, no guaranteed claims.",
+            "governance_decision": "draft_only"
+          },
+          {
+            "account": "NorthStar Clinics Group",
+            "outline_ar": "رسالة افتتاحية لـNorthStar Clinics Group — تركز على القيمة وتترك القرار للعميل بدون أي ادعاءات مضمونة.",
+            "outline_en": "Opening note for NorthStar Clinics Group — value-led, decision left to the customer, no guaranteed claims.",
+            "governance_decision": "draft_only"
+          },
+          {
+            "account": "Tafawuq Consulting",
+            "outline_ar": "رسالة افتتاحية لـTafawuq Consulting — تركز على القيمة وتترك القرار للعميل بدون أي ادعاءات مضمونة.",
+            "outline_en": "Opening note for Tafawuq Consulting — value-led, decision left to the customer, no guaranteed claims.",
+            "governance_decision": "draft_only"
+          },
+          {
+            "account": "Al-Awal Training Academy",
+            "outline_ar": "رسالة افتتاحية لـAl-Awal Training Academy — تركز على القيمة وتترك القرار للعميل بدون أي ادعاءات مضمونة.",
+            "outline_en": "Opening note for Al-Awal Training Academy — value-led, decision left to the customer, no guaranteed claims.",
+            "governance_decision": "draft_only"
+          },
+          {
+            "account": "شركة الأفق المفتوح",
+            "outline_ar": "رسالة افتتاحية لـشركة الأفق المفتوح — تركز على القيمة وتترك القرار للعميل بدون أي ادعاءات مضمونة.",
+            "outline_en": "Opening note for شركة الأفق المفتوح — value-led, decision left to the customer, no guaranteed claims.",
+            "governance_decision": "draft_only"
+          },
+          {
+            "account": "شركة بوابة الأعمال",
+            "outline_ar": "رسالة افتتاحية لـشركة بوابة الأعمال — تركز على القيمة وتترك القرار للعميل بدون أي ادعاءات مضمونة.",
+            "outline_en": "Opening note for شركة بوابة الأعمال — value-led, decision left to the customer, no guaranteed claims.",
+            "governance_decision": "draft_only"
+          },
+          {
+            "account": "شركة بوابة الأعمال",
+            "outline_ar": "رسالة افتتاحية لـشركة بوابة الأعمال — تركز على القيمة وتترك القرار للعميل بدون أي ادعاءات مضمونة.",
+            "outline_en": "Opening note for شركة بوابة الأعمال — value-led, decision left to the customer, no guaranteed claims.",
+            "governance_decision": "draft_only"
+          },
+          {
+            "account": "شركة الإنماء الذكي",
+            "outline_ar": "رسالة افتتاحية لـشركة الإنماء الذكي — تركز على القيمة وتترك القرار للعميل بدون أي ادعاءات مضمونة.",
+            "outline_en": "Opening note for شركة الإنماء الذكي — value-led, decision left to the customer, no guaranteed claims.",
+            "governance_decision": "draft_only"
+          },
+          {
+            "account": "شركة الواحة للاستشارات",
+            "outline_ar": "رسالة افتتاحية لـشركة الواحة للاستشارات — تركز على القيمة وتترك القرار للعميل بدون أي ادعاءات مضمونة.",
+            "outline_en": "Opening note for شركة الواحة للاستشارات — value-led, decision left to the customer, no guaranteed claims.",
+            "governance_decision": "draft_only"
+          },
+          {
+            "account": "Sahil Marine Logistics",
+            "outline_ar": "رسالة افتتاحية لـSahil Marine Logistics — تركز على القيمة وتترك القرار للعميل بدون أي ادعاءات مضمونة.",
+            "outline_en": "Opening note for Sahil Marine Logistics — value-led, decision left to the customer, no guaranteed claims.",
+            "governance_decision": "draft_only"
+          }
+        ],
+        "total_outlines": 10
+      },
+      "governance_decision": "",
+      "notes": ""
+    },
+    {
+      "name": "governance_review",
+      "status": "ran",
+      "output": {
+        "reviews": [
+          {
+            "account": "Madar Logistics",
+            "decision": "block",
+            "reasons": [
+              "no_source_passport: AI use requires a SourcePassport"
+            ]
+          },
+          {
+            "account": "NorthStar Clinics Group",
+            "decision": "block",
+            "reasons": [
+              "no_source_passport: AI use requires a SourcePassport"
+            ]
+          },
+          {
+            "account": "Tafawuq Consulting",
+            "decision": "block",
+            "reasons": [
+              "no_source_passport: AI use requires a SourcePassport"
+            ]
+          },
+          {
+            "account": "Al-Awal Training Academy",
+            "decision": "block",
+            "reasons": [
+              "no_source_passport: AI use requires a SourcePassport"
+            ]
+          },
+          {
+            "account": "شركة الأفق المفتوح",
+            "decision": "block",
+            "reasons": [
+              "no_source_passport: AI use requires a SourcePassport"
+            ]
+          },
+          {
+            "account": "شركة بوابة الأعمال",
+            "decision": "block",
+            "reasons": [
+              "no_source_passport: AI use requires a SourcePassport"
+            ]
+          },
+          {
+            "account": "شركة بوابة الأعمال",
+            "decision": "block",
+            "reasons": [
+              "no_source_passport: AI use requires a SourcePassport"
+            ]
+          },
+          {
+            "account": "شركة الإنماء الذكي",
+            "decision": "block",
+            "reasons": [
+              "no_source_passport: AI use requires a SourcePassport"
+            ]
+          },
+          {
+            "account": "شركة الواحة للاستشارات",
+            "decision": "block",
+            "reasons": [
+              "no_source_passport: AI use requires a SourcePassport"
+            ]
+          },
+          {
+            "account": "Sahil Marine Logistics",
+            "decision": "block",
+            "reasons": [
+              "no_source_passport: AI use requires a SourcePassport"
+            ]
+          }
+        ],
+        "summary": {
+          "block": 10
+        }
+      },
+      "governance_decision": "",
+      "notes": ""
+    },
+    {
+      "name": "proof_pack",
+      "status": "ran",
+      "output": {
+        "engagement_id": "dealix_internal_v1",
+        "customer_id": "dealix_internal_demo",
+        "sections": {
+          "executive_summary": "Engagement dealix_internal_v1 for customer dealix_internal_demo: proof_score=63.05, tier=internal_learning.",
+          "problem": "Demonstrate Dealix methodology on a synthetic Saudi B2B pipeline. Rank accounts by relationship + sector + recency. Surface ≥1 reusable capital asset. Generate a 14-section Proof Pack. NO real customer data; methodology is the artifact.",
+          "inputs": "events_recorded=0; governance_events=1",
+          "source_passports": "source_id=DEALIX-ON-DEALIX-DEMO-V1; type=client_upload; owner=dealix; pii=False; sensitivity=low",
+          "data_quality_score": "DQ=94.6/100",
+          "work_completed": "Imported 20 rows; scored 20 accounts; reviewed 10 draft outlines.",
+          "outputs": "ranked top 10 + governance-reviewed drafts",
+          "governance_decisions": "block",
+          "blocked_risks": "(none)",
+          "observed_value": "verified=0.00; observed=0.00; client_confirmed=0.00; estimated=0.00",
+          "limitations": "no_capital_assets_yet",
+          "recommended_next_step": "founder review and handoff",
+          "retainer_recommendation": "(deferred until proof_score >= 80)",
+          "capital_assets_created": "(none)"
+        },
+        "score": 63.05,
+        "tier": "internal_learning",
+        "governance_decision": "block",
+        "status_badge": "blocked",
+        "proof_badge": "estimated",
+        "limitations": [
+          "no_capital_assets_yet"
+        ],
+        "capital_assets": [],
+        "generated_at": "2026-05-14T02:56:56.503741+00:00"
+      },
+      "governance_decision": "",
+      "notes": ""
+    },
+    {
+      "name": "capital_assets",
+      "status": "ran",
+      "output": {
+        "registered": [
+          "cap_feb73370b3a4"
+        ],
+        "count": 1
+      },
+      "governance_decision": "",
+      "notes": ""
+    },
+    {
+      "name": "retainer_check",
+      "status": "ran",
+      "output": {
+        "adoption_score": {
+          "customer_id": "dealix_internal_demo",
+          "score": 0.0,
+          "breadth": 0.0,
+          "activity": 0.0,
+          "tier": "latent",
+          "drivers": [
+            "no_channels_enabled",
+            "no_integrations_connected",
+            "low_logins:0"
+          ],
+          "trend": 0.0,
+          "recommended_action": "onboarding_session_within_7d",
+          "governance_decision": "allow",
+          "status_badge": "draft",
+          "computed_at": "2026-05-14T02:56:56.508049+00:00"
+        },
+        "retainer_readiness": {
+          "eligible": false,
+          "gaps": [
+            "adoption_below_70:0.0",
+            "proof_score_below_80:63.05"
+          ],
+          "recommended_offer": "second_revenue_intelligence_sprint"
+        },
+        "eligible": false,
+        "recommended_offer": "second_revenue_intelligence_sprint"
+      },
+      "governance_decision": "",
+      "notes": ""
+    }
+  ],
+  "proof_pack": {
+    "engagement_id": "dealix_internal_v1",
+    "customer_id": "dealix_internal_demo",
+    "sections": {
+      "executive_summary": "Engagement dealix_internal_v1 for customer dealix_internal_demo: proof_score=63.05, tier=internal_learning.",
+      "problem": "Demonstrate Dealix methodology on a synthetic Saudi B2B pipeline. Rank accounts by relationship + sector + recency. Surface ≥1 reusable capital asset. Generate a 14-section Proof Pack. NO real customer data; methodology is the artifact.",
+      "inputs": "events_recorded=0; governance_events=1",
+      "source_passports": "source_id=DEALIX-ON-DEALIX-DEMO-V1; type=client_upload; owner=dealix; pii=False; sensitivity=low",
+      "data_quality_score": "DQ=94.6/100",
+      "work_completed": "Imported 20 rows; scored 20 accounts; reviewed 10 draft outlines.",
+      "outputs": "ranked top 10 + governance-reviewed drafts",
+      "governance_decisions": "block",
+      "blocked_risks": "(none)",
+      "observed_value": "verified=0.00; observed=0.00; client_confirmed=0.00; estimated=0.00",
+      "limitations": "no_capital_assets_yet",
+      "recommended_next_step": "founder review and handoff",
+      "retainer_recommendation": "(deferred until proof_score >= 80)",
+      "capital_assets_created": "(none)"
+    },
+    "score": 63.05,
+    "tier": "internal_learning",
+    "governance_decision": "block",
+    "status_badge": "blocked",
+    "proof_badge": "estimated",
+    "limitations": [
+      "no_capital_assets_yet"
+    ],
+    "capital_assets": [],
+    "generated_at": "2026-05-14T02:56:56.503741+00:00"
+  },
+  "proof_score": 63.05,
+  "proof_tier": "internal_learning",
+  "capital_assets_registered": [
+    "cap_feb73370b3a4"
+  ],
+  "retainer_eligible": false,
+  "governance_decision": "allow_with_review"
+}

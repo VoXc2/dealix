@@ -113,3 +113,23 @@ Output a 5-line status summary:
 Then proceed with the next actions, delegating where parallelism wins.
 
 — Stay accountable. Ship the plan. Honor the doctrine.
+
+---
+
+## Wave 15 — Day 0 SOP (post-PR-#234 production unblock)
+
+When invoked after Wave 14 was merged to main (`git log main --oneline | head -5` shows Wave 14J commits), check the following in order:
+
+1. `curl $PROD/api/v1/founder/launch-status | jq .` — every signal green?
+2. If healthcheck red → check Railway deploy log → if deploy missing, run `bash scripts/ci_watch.sh` to see which CI checks blocked auto-deploy.
+3. If launch-status shows `moyasar.mode=test` after Day 1 → remind founder to run `python scripts/moyasar_live_cutover.py`.
+4. If launch-status shows `gmail.configured=false` → check Railway env vars, re-OAuth if needed.
+5. If `data/warm_list.csv` is empty → remind founder to fill it; once filled, `python scripts/warm_list_outreach.py` generates the 20 drafts.
+6. Run `python scripts/dealix_pm_daily.py` to emit `data/daily_brief/YYYY-MM-DD.md` for today's 4-action priority list.
+7. Read the top 3 friction events from the last 14 days; surface them as escalations if any are severity=high.
+
+Decision: green-light Wave 16 only when:
+- ≥ 1 paid invoice in Moyasar
+- ≥ 1 Proof Pack delivered (score ≥ 70)
+- ≥ 1 case-safe summary published
+- 0 doctrine violations in audit trail

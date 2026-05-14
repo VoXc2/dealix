@@ -1,0 +1,54 @@
+{
+  "generated_at": "2026-05-14T02:57:01.890676+00:00",
+  "count": 5,
+  "credit_sar_per_closed_deal": 5000,
+  "discount_pct_for_referred": 50,
+  "codes": [
+    {
+      "referrer_id": "dealix_seed_001",
+      "code": "REF-242B8799",
+      "credit_sar": 5000,
+      "discount_pct": 50,
+      "created_at": "2026-05-14T02:57:01.889297+00:00",
+      "status": "seeded_now"
+    },
+    {
+      "referrer_id": "dealix_seed_002",
+      "code": "REF-588AD579",
+      "credit_sar": 5000,
+      "discount_pct": 50,
+      "created_at": "2026-05-14T02:57:01.889728+00:00",
+      "status": "seeded_now"
+    },
+    {
+      "referrer_id": "dealix_seed_003",
+      "code": "REF-4BFA98AE",
+      "credit_sar": 5000,
+      "discount_pct": 50,
+      "created_at": "2026-05-14T02:57:01.889984+00:00",
+      "status": "seeded_now"
+    },
+    {
+      "referrer_id": "dealix_seed_004",
+      "code": "REF-4BB6EA62",
+      "credit_sar": 5000,
+      "discount_pct": 50,
+      "created_at": "2026-05-14T02:57:01.890270+00:00",
+      "status": "seeded_now"
+    },
+    {
+      "referrer_id": "dealix_seed_005",
+      "code": "REF-B559FC42",
+      "credit_sar": 5000,
+      "discount_pct": 50,
+      "created_at": "2026-05-14T02:57:01.890535+00:00",
+      "status": "seeded_now"
+    }
+  ],
+  "doctrine": [
+    "Hand these codes to the first 5 paying customers only.",
+    "Each code is single-use per referred customer.",
+    "Self-referrals + same-domain referrals will be auto-rejected.",
+    "No unsafe automation, no guaranteed claims (Partner Covenant)."
+  ]
+}
