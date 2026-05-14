@@ -159,3 +159,94 @@ def test_review_pending_items_count_is_pinned():
         f"resolves an item.\n"
         f"Currently pending:\n  " + "\n  ".join(pending)
     )
+
+
+# ─── Runtime-doctrine tests (governance / proof_pack) ────────────
+# These tests assert the live runtime layer (not docs) rejects
+# guaranteed-outcome language in English and Arabic at draft time.
+
+from auto_client_acquisition.data_os.source_passport import SourcePassport  # noqa: E402
+from auto_client_acquisition.governance_os.runtime_decision import (  # noqa: E402
+    GovernanceDecision,
+    decide,
+)
+from auto_client_acquisition.proof_os.proof_pack import assemble  # noqa: E402
+
+
+def _safe_passport_for_runtime() -> SourcePassport:
+    return SourcePassport(
+        source_id="src_001",
+        source_type="crm_export",
+        owner="acme",
+        allowed_use=("internal_analysis",),
+        contains_pii=False,
+        sensitivity="low",
+        ai_access_allowed=True,
+        external_use_allowed=False,
+        retention_policy="90d",
+    )
+
+
+def test_guaranteed_word_blocked_in_draft():
+    """assemble() must raise or refuse when guaranteed-claim language is present."""
+    bad_event = {
+        "kind": "draft_copy",
+        "text": "guaranteed 100% sales increase next month",
+        "tier": "estimated",
+        "amount": 0.0,
+    }
+    try:
+        pack = assemble(
+            engagement_id="eng_1",
+            customer_id="acme",
+            source_passport=_safe_passport_for_runtime(),
+            dq_score=0.9,
+            value_events=[bad_event],
+            governance_events=[],
+        )
+    except (ValueError, RuntimeError):
+        return  # raising is acceptable
+    assert pack.governance_decision != GovernanceDecision.ALLOW.value
+    assert pack.governance_decision in {
+        GovernanceDecision.BLOCK.value,
+        GovernanceDecision.REDACT.value,
+        GovernanceDecision.DRAFT_ONLY.value,
+        GovernanceDecision.REQUIRE_APPROVAL.value,
+    }
+
+
+def test_arabic_guarantee_word_blocked():
+    """Arabic guarantee forms ('نضمن') must trigger the same protection."""
+    bad_event = {
+        "kind": "draft_copy",
+        "text": "نضمن مبيعات 100٪ خلال شهر",
+        "tier": "estimated",
+        "amount": 0.0,
+    }
+    try:
+        pack = assemble(
+            engagement_id="eng_2",
+            customer_id="acme",
+            source_passport=_safe_passport_for_runtime(),
+            dq_score=0.9,
+            value_events=[bad_event],
+            governance_events=[],
+        )
+    except (ValueError, RuntimeError):
+        return
+    assert pack.governance_decision != GovernanceDecision.ALLOW.value
+
+
+def test_no_claim_safety_returns_redact():
+    """Direct governance call on guarantee-laden draft text → REDACT or BLOCK."""
+    result = decide(
+        action="publish_draft",
+        context={
+            "text": "we guarantee 100% revenue growth",
+            "declared_action": "email_draft",
+        },
+    )
+    assert result.decision in (
+        GovernanceDecision.REDACT,
+        GovernanceDecision.BLOCK,
+    )

@@ -1,0 +1,21 @@
+company_name,sector,city,relationship_status,source,last_interaction,notes
+شركة الواحة للاستشارات,b2b_services,الرياض,warm,client_upload,2026-04-12,met at LEAP 2026; interested in revenue intel sprint
+Madar Logistics,logistics,Jeddah,warm,client_upload,2026-04-22,previous diagnostic delivered Q1; awaiting retainer decision
+مؤسسة نخيل للتدريب,training,الدمام,cold,client_upload,2026-03-30,referred by partner; data quality untested
+NorthStar Clinics Group,healthcare,Riyadh,warm,client_upload,2026-04-05,multi-branch clinic ops; PII-heavy data — manual review only
+Rawabi Real Estate Services,real_estate,Riyadh,cold,client_upload,2026-02-18,large dataset offered; no Source Passport yet
+Tafawuq Consulting,b2b_services,Jeddah,warm,client_upload,2026-04-28,paid diagnostic Q4 2025; eligible for Sprint
+شركة الإجادة للهندسة,engineering,Khobar,cold,client_upload,2026-01-14,untested fit; legacy CRM export
+Sahil Marine Logistics,logistics,Jubail,warm,client_upload,2026-04-08,active proof pack in flight
+شركة المنارة للخدمات الإدارية,b2b_services,Riyadh,cold,client_upload,2026-03-20,small team; budget unclear
+Al-Awal Training Academy,training,Mecca,warm,client_upload,2026-04-15,sector-fit; corporate training arm
+شركة المراسي للنقل,logistics,Dammam,cold,client_upload,2025-12-10,stale interaction; reassess sector fit
+Riyadh B2B Hub,b2b_services,Riyadh,cold,client_upload,2026-03-01,partner-led intro; needs qualification
+شركة الأفق المفتوح,b2b_services,Riyadh,warm,client_upload,2026-04-30,senior sponsor identified; clean data
+,b2b_services,Riyadh,cold,client_upload,2026-04-20,missing company name — DQ flag
+Tameer Real Estate,real_estate,Jeddah,cold,client_upload,2026-02-27,large data; mixed sources
+شركة بوابة الأعمال,b2b_services,Riyadh,warm,client_upload,2026-04-26,duplicate row guard test target
+شركة بوابة الأعمال,b2b_services,Riyadh,warm,client_upload,2026-04-27,intentional dedupe pair — same company different timestamp
+Falak Aviation Services,aviation,Riyadh,cold,client_upload,2026-03-08,sector not in current ICP focus
+شركة الإنماء الذكي,b2b_services,Riyadh,warm,client_upload,2026-05-02,recent inbound; fit and budget look strong
+شركة الإجابة للحلول,b2b_services,Khobar,cold,client_upload,2026-02-02,low data completeness; many empty fields
