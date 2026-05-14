@@ -17,6 +17,8 @@ credentials/
 !scripts/dealix_customer_credentials_check.py
 !tests/test_wave8_customer_credentials_check.py
 !docs/WAVE8_CUSTOMER_CREDENTIAL_READINESS.md
+# Wave 19 exception — test asserts that public doctrine does NOT leak secrets
+!tests/test_public_doctrine_does_not_expose_commercial_secrets.py
 !docs/wave8/customer_credentials.example.env
 service-account*.json
 google-credentials*.json
