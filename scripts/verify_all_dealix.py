@@ -535,6 +535,26 @@ def system_group_treasury_and_capital_allocation() -> SystemReport:
     return r
 
 
+def system_brand_architecture() -> SystemReport:
+    r = SystemReport("Brand Architecture")
+    r.docs = [
+        file_check("docs/brand/BRAND_ARCHITECTURE.md"),
+        file_check("docs/brand/MASTER_BRAND.md"),
+        file_check("docs/brand/SUB_BRAND_RULES.md"),
+        file_check("partner-kit/branding/HOLDING_BRAND_NOTE.md"),
+    ]
+    r.code = [file_check("scripts/render_holding_portfolio.py")]
+    r.tests = [
+        file_check("tests/test_brand_architecture_lists_all_active_units.py"),
+        file_check("tests/test_brand_architecture_doctrine_endorsement.py"),
+    ]
+    r.api = [
+        file_check("landing/group.html"),
+        file_check("landing/assets/data/holding-portfolio.json"),
+    ]
+    return r
+
+
 def system_market_feedback() -> SystemReport:
     r = SystemReport("Market Feedback")
     r.docs = [any_of_files_check(
@@ -668,6 +688,7 @@ SYSTEMS: list[Callable[[], SystemReport]] = [
     system_business_unit_registry,
     system_group_apis,
     system_group_treasury_and_capital_allocation,
+    system_brand_architecture,
 ]
 
 # Systems that must be ≥ 4/5 for "CEO complete".

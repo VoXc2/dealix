@@ -1,0 +1,15 @@
+{
+  "count": 1,
+  "doctrine": "Public projection. Only BUs with status BUILD/PILOT/SCALE/SPINOUT. No owner, KPI, git provenance, or reason fields.",
+  "entries": [
+    {
+      "charter_path": "docs/holding/units/dealix-core-os.md",
+      "doctrine_version": "v1.0.0",
+      "name": "Dealix Core OS",
+      "sector": "b2b_services",
+      "slug": "core-os",
+      "status": "BUILD"
+    }
+  ],
+  "registry_id": "DEALIX-GROUP-PORTFOLIO-PUBLIC"
+}

@@ -86,6 +86,11 @@ jobs:
           python scripts/render_annual_report.py --year 2026
           git diff --exit-code -- landing/assets/downloads/dealix-group-annual-report-2026.md
 
+      - name: Holding portfolio JSON (re-render + drift gate)
+        run: |
+          python scripts/render_holding_portfolio.py
+          git diff --exit-code -- landing/assets/data/holding-portfolio.json
+
       - name: Tests with coverage gate
         env:
           APP_ENV: test

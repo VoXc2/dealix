@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Dealix Group — Governed AI Operations</title>
+<style>
+  :root {
+    --dx-fg: #e6e9ef;
+    --dx-bg: #0b0d12;
+    --dx-pass: #2dd4a4;
+    --dx-warn: #f5b86b;
+    --dx-fail: #ef4d5c;
+    --dx-accent: #6aa6ff;
+    --dx-card: #131722;
+    --dx-border: #1f2533;
+    --dx-muted: #8b94a7;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--dx-bg); color: var(--dx-fg);
+         font: 15px/1.55 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  header { padding: 32px; border-bottom: 1px solid var(--dx-border); }
+  header h1 { margin: 0; font-size: 24px; letter-spacing: 0.02em; }
+  header .tag { color: var(--dx-muted); font-size: 13px; margin-top: 4px; }
+  main { max-width: 1100px; margin: 0 auto; padding: 32px; }
+  section { margin-bottom: 40px; }
+  h2 { font-size: 14px; color: var(--dx-muted); text-transform: uppercase;
+       letter-spacing: 0.08em; margin: 0 0 12px; }
+  .principles { display: grid; gap: 12px; grid-template-columns: repeat(4, 1fr); }
+  @media (max-width: 720px) { .principles { grid-template-columns: repeat(2, 1fr); } }
+  .principle { background: var(--dx-card); border: 1px solid var(--dx-border);
+               border-radius: 8px; padding: 14px 16px; }
+  .principle b { color: var(--dx-pass); font-size: 13px; }
+  .principle p { margin: 6px 0 0; color: var(--dx-muted); font-size: 13px; }
+
+  .bus { display: grid; gap: 12px; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
+  .bu { background: var(--dx-card); border: 1px solid var(--dx-border);
+        border-radius: 8px; padding: 16px; }
+  .bu h3 { margin: 0; font-size: 16px; }
+  .bu .status { display: inline-block; padding: 2px 8px; border-radius: 999px;
+                font-size: 11px; font-weight: 600; margin-top: 6px; }
+  .status.BUILD { background: rgba(245,184,107,0.15); color: var(--dx-warn); }
+  .status.PILOT { background: rgba(106,166,255,0.15); color: var(--dx-accent); }
+  .status.SCALE { background: rgba(45,212,164,0.18); color: var(--dx-pass); }
+  .status.SPINOUT { background: rgba(106,166,255,0.18); color: var(--dx-accent); }
+  .bu p { color: var(--dx-muted); font-size: 13px; margin: 10px 0 4px; }
+  .bu .charter { font-size: 12px; }
+  .bu .charter a { color: var(--dx-accent); }
+
+  .badges { display: flex; gap: 8px; flex-wrap: wrap; }
+  .doctrine-anchor { background: var(--dx-card); border: 1px solid var(--dx-border);
+                     border-radius: 8px; padding: 16px; }
+  .doctrine-anchor a { color: var(--dx-accent); }
+  code { background: var(--dx-border); padding: 1px 5px; border-radius: 3px; font-size: 12px; }
+  footer { color: var(--dx-muted); font-size: 12px; padding: 24px 32px;
+           border-top: 1px solid var(--dx-border); margin-top: 32px; }
+  footer a { color: var(--dx-accent); }
+  .empty { color: var(--dx-muted); padding: 16px; text-align: center; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Dealix Group</h1>
+  <div class="tag">Governed AI Operations · Holding parent of the Dealix sub-brands</div>
+</header>
+
+<main>
+  <section>
+    <h2>Four Operating Principles</h2>
+    <div class="principles">
+      <div class="principle"><b>Cash now.</b><p>Every BU has a path to invoice within 90 days of registration.</p></div>
+      <div class="principle"><b>Proof always.</b><p>Every BU publishes a Proof Pack before any commercial claim.</p></div>
+      <div class="principle"><b>Governance by default.</b><p>Every BU adopts the same eleven non-negotiables.</p></div>
+      <div class="principle"><b>Productize repetition.</b><p>What the founder does three times becomes a playbook, then a product, then a BU.</p></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Sub-Brand Portfolio</h2>
+    <div class="bus" id="bu-grid"><div class="empty">loading data/business_units.json…</div></div>
+  </section>
+
+  <section class="doctrine-anchor">
+    <h2>Doctrine Anchor</h2>
+    <p>Operating under the open
+      <a href="/api/v1/doctrine?version=v1.0.0">Governed AI Operations Doctrine v1.0.0</a>.
+      Public verification:
+      <a href="/api/v1/holding/charter"><code>/api/v1/holding/charter</code></a>,
+      <a href="/api/v1/holding/portfolio"><code>/api/v1/holding/portfolio</code></a>,
+      <a href="/api/v1/dealix-promise"><code>/api/v1/dealix-promise</code></a>,
+      <a href="/api/v1/trust/status"><code>/api/v1/trust/status</code></a>.
+    </p>
+  </section>
+
+  <section>
+    <h2>Trust at a Glance</h2>
+    <div class="badges">
+      <img src="assets/badges/doctrine-status.svg" alt="Doctrine status">
+      <img src="assets/badges/verifier-score.svg" alt="Verifier score">
+      <img src="assets/badges/ceo-complete.svg" alt="CEO-complete">
+    </div>
+  </section>
+</main>
+
+<footer>
+  Doctrine: <a href="/api/v1/doctrine?version=v1.0.0">Governed AI Operations Doctrine v1.0.0</a>.
+  This page is intentionally static and reads
+  <code>assets/data/holding-portfolio.json</code> directly.
+</footer>
+
+<script>
+(function () {
+  function escapeHtml(s) {
+    return String(s || '').replace(/[&<>"']/g, function (c) {
+      return ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' })[c];
+    });
+  }
+
+  function render(data) {
+    var grid = document.getElementById('bu-grid');
+    var entries = (data && data.entries) || [];
+    // Only show BUILD / PILOT / SCALE / SPINOUT — never HOLD / KILL.
+    var visible = entries.filter(function (e) {
+      return ["BUILD", "PILOT", "SCALE", "SPINOUT"].indexOf(e.status) !== -1;
+    });
+    if (!visible.length) {
+      grid.innerHTML = '<div class="empty">No sub-brands published yet.</div>';
+      return;
+    }
+    grid.innerHTML = visible.map(function (e) {
+      var charterHtml = e.charter_path
+        ? '<div class="charter">Charter: <a href="' + escapeHtml(e.charter_path) + '">' + escapeHtml(e.charter_path) + '</a></div>'
+        : '';
+      return '<div class="bu">' +
+        '<h3>' + escapeHtml(e.name || e.slug) + '</h3>' +
+        '<span class="status ' + escapeHtml(e.status) + '">' + escapeHtml(e.status) + '</span>' +
+        '<p>Sector: ' + escapeHtml(e.sector || '—') +
+        ' · Doctrine: <code>' + escapeHtml(e.doctrine_version || '—') + '</code></p>' +
+        charterHtml +
+      '</div>';
+    }).join('');
+  }
+
+  // Try the static asset first; fall back to the API.
+  fetch('assets/data/holding-portfolio.json', { cache: 'no-cache' })
+    .then(function (r) { if (!r.ok) throw new Error('no-static'); return r.json(); })
+    .then(render)
+    .catch(function () {
+      return fetch('/api/v1/holding/portfolio', { cache: 'no-cache' })
+        .then(function (r) { return r.json(); })
+        .then(function (api) {
+          // Re-shape the API portfolio response into entries-like for render().
+          render({ entries: (api && api.recent_units) || [] });
+        });
+    })
+    .catch(function () {
+      document.getElementById('bu-grid').innerHTML =
+        '<div class="empty">No portfolio data available.</div>';
+    });
+})();
+</script>
+
+</body>
+</html>

@@ -194,6 +194,13 @@
       "name": "Group Treasury & Capital Allocation",
       "passed": true,
       "score": 4
+    },
+    {
+      "in_top_eight": false,
+      "missing": [],
+      "name": "Brand Architecture",
+      "passed": true,
+      "score": 4
     }
   ]
 }
