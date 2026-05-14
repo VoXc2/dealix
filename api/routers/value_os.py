@@ -81,3 +81,20 @@ async def get_monthly_report_markdown(
         current_adoption=current_adoption,
     )
     return report.to_markdown()
+
+
+# ── Trust Pack endpoint (enterprise procurement preview) ─────────────
+
+
+@router.get("/trust-pack/{customer_handle}/markdown", response_class=PlainTextResponse)
+async def trust_pack_markdown(customer_handle: str) -> str:
+    from auto_client_acquisition.trust_os.trust_pack import assemble_trust_pack
+    pack = assemble_trust_pack(customer_handle=customer_handle)
+    return pack.to_markdown()
+
+
+@router.get("/trust-pack/{customer_handle}")
+async def trust_pack_json(customer_handle: str) -> dict[str, Any]:
+    from auto_client_acquisition.trust_os.trust_pack import assemble_trust_pack
+    pack = assemble_trust_pack(customer_handle=customer_handle)
+    return pack.to_dict()

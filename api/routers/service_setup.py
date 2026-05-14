@@ -254,3 +254,84 @@ async def decide_request(
         "quoted_monthly_sar": (body.quoted_monthly_halalas or 0) // 100,
         "note": "DB persistence pending — see GET endpoint note. Email customer manually for now.",
     }
+
+
+# ── Phase-2 90-day activation: Proposal renderer ─────────────────────
+
+
+class _ProposalBody(BaseModel):
+    customer_name: str
+    customer_handle: str
+    sector: str = "b2b_services"
+    city: str = "Riyadh"
+    engagement_id: str
+    price_sar: int = 499
+    delivery_days: int = 7
+
+
+@router.post("/api/v1/service-setup/proposal/{customer_id}")
+async def render_proposal_endpoint(
+    customer_id: str, body: _ProposalBody
+) -> dict[str, Any]:
+    """Render a bilingual proposal for the Revenue Intelligence Sprint.
+
+    Returns the markdown body inline so the founder can email it (manual)
+    or pipe it into a future transactional_send call. Tenant-scoped via
+    customer_id in path (must match body.customer_handle).
+    """
+    if customer_id != body.customer_handle:
+        raise HTTPException(
+            status_code=400,
+            detail="customer_id in path must match body.customer_handle",
+        )
+    from auto_client_acquisition.sales_os.proposal_renderer import (
+        ProposalContext,
+        render_proposal,
+    )
+    ctx = ProposalContext(
+        customer_name=body.customer_name,
+        customer_handle=body.customer_handle,
+        sector=body.sector,
+        city=body.city,
+        engagement_id=body.engagement_id,
+        price_sar=body.price_sar,
+        delivery_days=body.delivery_days,
+    )
+    md = render_proposal(ctx)
+    return {
+        "customer_id": customer_id,
+        "engagement_id": body.engagement_id,
+        "price_sar": body.price_sar,
+        "proposal_markdown": md,
+        "governance_decision": "allow_with_review",
+        "next_step": "founder_review_then_send_via_email",
+    }
+
+
+# ── Sales qualification endpoint ─────────────────────────────────────
+
+
+class _QualifyBody(BaseModel):
+    pain_clear: bool
+    owner_present: bool
+    data_available: bool
+    accepts_governance: bool
+    has_budget: bool
+    wants_safe_methods: bool = True
+    proof_path_visible: bool = True
+    retainer_path_visible: bool = True
+    raw_request_text: str = ""
+    sector: str = ""
+    city: str = ""
+
+
+@router.post("/api/v1/service-setup/qualify")
+async def qualify_lead(body: _QualifyBody) -> dict[str, Any]:
+    """Sales qualification scorer. Deterministic decision tree."""
+    from auto_client_acquisition.sales_os.qualification import qualify
+    result = qualify(**body.model_dump())
+    return {
+        **result.to_dict(),
+        "is_estimate": True,
+        "governance_decision": "allow",
+    }

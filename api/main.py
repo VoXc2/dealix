@@ -62,6 +62,8 @@ from api.routers import service_catalog as service_catalog_router
 # Wave 14 — Canonical Trust MVP + Retainer Engine (Phase 2)
 from api.routers import friction_log as friction_log_router
 from api.routers import value_os as value_os_router
+# 90-day commercial activation — Wave 14B
+from api.routers import data_os as data_os_router
 from api.security import APIKeyMiddleware, setup_rate_limit
 from core.config.settings import get_settings
 from core.errors import AICompanyError
@@ -268,6 +270,8 @@ def create_app() -> FastAPI:
     # Wave 14 — Canonical Trust MVP + Retainer Engine (Phase 2)
     app.include_router(friction_log_router.router)
     app.include_router(value_os_router.router)
+    # Wave 14B — Commercial activation: CSV upload for the Data Pack offer
+    app.include_router(data_os_router.router)
 
     @app.get("/", tags=["root"])
     async def root() -> dict[str, object]:
