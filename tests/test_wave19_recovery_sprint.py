@@ -205,10 +205,25 @@ def test_master_verifier_runs_to_completion():
     )
     assert result.returncode == 0
     payload = json.loads(result.stdout)
-    assert payload["systems_count"] == 9
-    # 7 of 9 must be at score 5 (the build-complete systems).
+    # Wave 19+ Closure adds the 10th system "Operational Closure".
+    # 8 of 10 must be at score 5 (the build-complete systems).
     # The two market-motion systems (Partner Motion + First Invoice Motion) stay at 3/5
     # until the founder takes real action — this is intentional and honest.
-    assert payload["systems_at_5_perfect"] >= 7, (
-        f"expected >= 7 perfect systems (build-complete); got {payload['systems_at_5_perfect']}"
+    assert payload["systems_count"] == 10
+    assert payload["systems_at_5_perfect"] >= 8, (
+        f"expected >= 8 perfect systems (build-complete); got {payload['systems_at_5_perfect']}"
+    )
+
+
+def test_master_verifier_includes_operational_closure_check():
+    """Wave 19+ closure adds the 10th system. Confirm it's wired."""
+    result = subprocess.run(
+        [sys.executable, str(REPO / "scripts" / "verify_all_dealix.py"), "--json"],
+        capture_output=True, text=True, check=False, cwd=str(REPO), timeout=60,
+    )
+    payload = json.loads(result.stdout)
+    names = [s["name"] for s in payload["systems"]]
+    closure_systems = [n for n in names if "Operational Closure" in n]
+    assert len(closure_systems) == 1, (
+        f"expected exactly 1 Operational Closure system; got {closure_systems}"
     )

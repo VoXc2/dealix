@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Verify Dealix · تحقّق من Dealix — Live Doctrine + Capital + GCC + Promise</title>
+<meta name="description" content="صفحة تحقّق علنية لـ CISOs والمراجعين — تجلب 4 نقاط نهاية عامة مباشرةً: وعد Dealix، الدستور المفتوح، الأصول الرأسمالية، موقف الخليج. لا مفاتيح، لا تسجيل دخول، فقط تحقّق.">
+<meta name="theme-color" content="#0b1124">
+<link rel="canonical" href="https://dealix.me/verify.html">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="/styles.css">
+<link rel="stylesheet" href="/assets/css/design-system.css">
+<style>
+  body { background: linear-gradient(180deg, #050816 0%, #0b1124 60%, #0f1d35 100%); color: var(--text, #f5f5f5); min-height: 100vh; margin: 0; font-family: var(--font-ar, 'IBM Plex Sans Arabic', system-ui); }
+  main { padding: 28px 18px 56px; max-width: 1080px; margin: 0 auto; }
+  h1 { margin: 0 0 6px; font-size: 1.9em; }
+  h2 { margin: 28px 0 10px; font-size: 1.2em; }
+  .vp-eyebrow { font-size: 0.9em; opacity: 0.75; line-height: 1.7; }
+  .vp-card { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 18px; margin: 14px 0; }
+  .vp-card h3 { margin: 0 0 8px; font-size: 1.05em; }
+  .vp-card .vp-endpoint { font-family: ui-monospace, monospace; font-size: 0.82em; opacity: 0.7; }
+  .vp-status { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-inline-end: 8px; vertical-align: middle; }
+  .vp-status.live { background: #22c55e; box-shadow: 0 0 6px #22c55e; }
+  .vp-status.loading { background: #fbbf24; box-shadow: 0 0 6px #fbbf24; }
+  .vp-status.fail { background: #ef4444; box-shadow: 0 0 6px #ef4444; }
+  .vp-summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin: 12px 0; }
+  .vp-stat { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: 8px; padding: 12px; text-align: center; }
+  .vp-stat__value { font-size: 1.5em; font-weight: 700; }
+  .vp-stat__label { font-size: 0.8em; opacity: 0.7; margin-top: 4px; }
+  pre { white-space: pre-wrap; background: rgba(0,0,0,0.3); padding: 12px; border-radius: 8px; max-height: 240px; overflow: auto; font-size: 0.78em; font-family: ui-monospace, monospace; margin-top: 8px; }
+  .vp-links { display: flex; gap: 10px; flex-wrap: wrap; margin: 14px 0 0; }
+  .vp-link { display: inline-block; padding: 8px 14px; border-radius: 6px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); color: var(--text); text-decoration: none; font-size: 0.85em; }
+  .vp-link:hover { background: rgba(255,255,255,0.10); }
+  .vp-disclaimer { font-size: 0.85em; opacity: 0.7; text-align: center; margin-top: 36px; line-height: 1.7; }
+  .vp-foot-note { font-size: 0.85em; opacity: 0.7; margin-top: 18px; line-height: 1.7; padding: 14px; border: 1px solid rgba(255,255,255,0.08); border-radius: 10px; background: rgba(255,255,255,0.02); }
+  @media (max-width: 480px) {
+    main { padding: 20px 14px 44px; }
+    h1 { font-size: 1.55em; }
+  }
+</style>
+</head>
+<body>
+
+<main>
+  <h1>Verify Dealix · تحقّق من Dealix</h1>
+  <p class="vp-eyebrow">
+    صفحة تحقّق علنية. لا مفاتيح، لا تسجيل دخول. فقط تحقّق من أن Dealix يفي بما يعلنه.<br>
+    <em>Public verify page. No keys. No login. Just check that Dealix is what it claims to be.</em>
+  </p>
+
+  <div class="vp-summary" id="summaryGrid">
+    <div class="vp-stat"><div class="vp-stat__value" id="statCommitments">—</div><div class="vp-stat__label">Commitments<br>(الالتزامات)</div></div>
+    <div class="vp-stat"><div class="vp-stat__value" id="statControls">—</div><div class="vp-stat__label">Controls<br>(الضوابط)</div></div>
+    <div class="vp-stat"><div class="vp-stat__value" id="statAssets">—</div><div class="vp-stat__label">Public Capital Assets<br>(الأصول العامة)</div></div>
+    <div class="vp-stat"><div class="vp-stat__value" id="statMarkets">—</div><div class="vp-stat__label">GCC Markets<br>(أسواق الخليج)</div></div>
+  </div>
+
+  <!-- 1. Dealix Promise -->
+  <div class="vp-card" data-section="promise">
+    <h3><span class="vp-status loading"></span>1. The Dealix Promise · وعد Dealix</h3>
+    <div class="vp-endpoint">GET /api/v1/dealix-promise</div>
+    <p class="vp-eyebrow">
+      الالتزامات الإحدى عشرة التي يتعهّد بها Dealix لعملائه. كل التزام يقابله ملف اختبار في CI.<br>
+      <em>The 11 commitments Dealix makes to its customers. Every commitment is enforced by a passing test in CI.</em>
+    </p>
+    <pre id="promiseOutput">Loading…</pre>
+  </div>
+
+  <!-- 2. Open Doctrine -->
+  <div class="vp-card" data-section="doctrine">
+    <h3><span class="vp-status loading"></span>2. Open Governed AI Operations Doctrine · الدستور المفتوح</h3>
+    <div class="vp-endpoint">GET /api/v1/doctrine</div>
+    <p class="vp-eyebrow">
+      الإطار المفتوح الذي يصبح المعيار الخليجي. النص بترخيص CC BY 4.0، أمثلة الكود بترخيص MIT، علامة Dealix التجاريّة محفوظة.<br>
+      <em>The open framework other shops adopt. Doctrine text under CC BY 4.0, code examples under MIT, Dealix trademark reserved.</em>
+    </p>
+    <pre id="doctrineOutput">Loading…</pre>
+  </div>
+
+  <!-- 3. Public Capital Assets -->
+  <div class="vp-card" data-section="assets">
+    <h3><span class="vp-status loading"></span>3. Public Capital Assets · الأصول الرأسمالية العامة</h3>
+    <div class="vp-endpoint">GET /api/v1/capital-assets/public</div>
+    <p class="vp-eyebrow">
+      الأصول الاستراتيجية القابلة للعرض علنًا. الأصول الداخلية محجوبة هنا (لا تتسرّب).<br>
+      <em>Strategic assets safe to expose publicly. Internal assets are gated and never surface here.</em>
+    </p>
+    <pre id="assetsOutput">Loading…</pre>
+  </div>
+
+  <!-- 4. GCC Markets -->
+  <div class="vp-card" data-section="markets">
+    <h3><span class="vp-status loading"></span>4. GCC Market Posture · موقفنا الإقليمي</h3>
+    <div class="vp-endpoint">GET /api/v1/gcc-markets</div>
+    <p class="vp-eyebrow">
+      السعودية فعّالة، الإمارات جاهزة للتجريب، قطر والكويت أسواق مستقبليّة. لا ادّعاء بإطلاق إقليمي قبل أن تتحقّق علامات السوق.<br>
+      <em>Saudi active, UAE pilot-ready, Qatar + Kuwait future markets. No regional launch claim before market signals land.</em>
+    </p>
+    <pre id="marketsOutput">Loading…</pre>
+  </div>
+
+  <h2>Cross-links · روابط للتعمّق</h2>
+  <div class="vp-links">
+    <a class="vp-link" href="/api/v1/dealix-promise/markdown" target="_blank">Promise (markdown)</a>
+    <a class="vp-link" href="/api/v1/doctrine/markdown" target="_blank">Doctrine (markdown)</a>
+    <a class="vp-link" href="/api/v1/commercial-map/markdown" target="_blank">Commercial Map</a>
+    <a class="vp-link" href="/api/v1/gcc-markets/markdown" target="_blank">GCC Markets (markdown)</a>
+    <a class="vp-link" href="/api/v1/capital-assets/public/markdown" target="_blank">Capital Assets (markdown)</a>
+    <a class="vp-link" href="/promise.html">Promise landing</a>
+    <a class="vp-link" href="/dealix-os.html">Dealix OS framework</a>
+    <a class="vp-link" href="/pricing.html">Pricing</a>
+  </div>
+
+  <div class="vp-foot-note">
+    <strong>Why this page exists · لماذا هذه الصفحة:</strong><br>
+    Procurement reviewers and CISOs do not buy claims; they verify them. This page lets any reviewer confirm — in under 30 seconds, from any device, without an account — that the four public surfaces Dealix advertises actually return live data with the expected shape and counts.<br><br>
+    لا يشتري المراجعون و الـ CISOs ادّعاءات؛ بل يتحقّقون منها. هذه الصفحة تتيح لأي مراجع تأكيد — خلال ٣٠ ثانية، من أي جهاز، بدون حساب — أن الأسطح العامة الأربعة التي يعلنها Dealix تُعيد فعلًا بيانات حيّة بالشكل والعدد المتوقّعَين.
+  </div>
+
+  <p class="vp-disclaimer">
+    Estimated outcomes are not guaranteed outcomes / النتائج التقديرية ليست نتائج مضمونة.
+  </p>
+</main>
+
+<script>
+(function() {
+  'use strict';
+
+  function setStatus(section, kind) {
+    var dot = document.querySelector('[data-section="' + section + '"] .vp-status');
+    if (!dot) return;
+    dot.classList.remove('loading', 'live', 'fail');
+    dot.classList.add(kind);
+  }
+
+  function showJson(elId, data) {
+    var el = document.getElementById(elId);
+    if (!el) return;
+    try {
+      el.textContent = JSON.stringify(data, null, 2);
+    } catch (e) {
+      el.textContent = 'Error rendering JSON: ' + e.message;
+    }
+  }
+
+  function showError(elId, err) {
+    var el = document.getElementById(elId);
+    if (!el) return;
+    el.textContent = 'Failed to fetch: ' + err.message;
+  }
+
+  function setStat(elId, value) {
+    var el = document.getElementById(elId);
+    if (el) el.textContent = value;
+  }
+
+  function fetchJson(path) {
+    return fetch(path, { cache: 'no-store' }).then(function(r) {
+      if (!r.ok) throw new Error('HTTP ' + r.status + ' on ' + path);
+      return r.json();
+    });
+  }
+
+  // 1. Dealix Promise
+  fetchJson('/api/v1/dealix-promise')
+    .then(function(d) {
+      setStatus('promise', 'live');
+      setStat('statCommitments', d.commitments_count || 0);
+      showJson('promiseOutput', {
+        version: d.version,
+        commitments_count: d.commitments_count,
+        public_framework: d.public_framework,
+        commercial_reference_implementation: d.commercial_reference_implementation,
+        first_commitment: (d.commitments || [])[0] ? {
+          id: d.commitments[0].id,
+          title_en: d.commitments[0].title_en,
+          title_ar: d.commitments[0].title_ar,
+          enforced_by: d.commitments[0].enforced_by
+        } : null
+      });
+    })
+    .catch(function(e) { setStatus('promise', 'fail'); showError('promiseOutput', e); });
+
+  // 2. Open Doctrine
+  fetchJson('/api/v1/doctrine')
+    .then(function(d) {
+      setStatus('doctrine', 'live');
+      setStat('statControls', d.non_negotiables_count || 0);
+      showJson('doctrineOutput', {
+        name: d.name,
+        version: d.version,
+        maintainer: d.maintainer,
+        license_doctrine: d.license_doctrine,
+        license_code_examples: d.license_code_examples,
+        trademark_note: d.trademark_note,
+        non_negotiables_count: d.non_negotiables_count,
+        first_control: (d.controls || [])[0] ? {
+          id: d.controls[0].id,
+          name_en: d.controls[0].name_en,
+          name_ar: d.controls[0].name_ar,
+          evidence_artifact: d.controls[0].evidence_artifact
+        } : null
+      });
+    })
+    .catch(function(e) { setStatus('doctrine', 'fail'); showError('doctrineOutput', e); });
+
+  // 3. Capital Assets (public)
+  fetchJson('/api/v1/capital-assets/public')
+    .then(function(d) {
+      setStatus('assets', 'live');
+      setStat('statAssets', d.public_asset_count || 0);
+      showJson('assetsOutput', {
+        public_asset_count: d.public_asset_count,
+        assets_summary: (d.assets || []).map(function(a) {
+          return { asset_id: a.asset_id, name: a.name, type: a.type, maturity: a.maturity };
+        })
+      });
+    })
+    .catch(function(e) { setStatus('assets', 'fail'); showError('assetsOutput', e); });
+
+  // 4. GCC Markets
+  fetchJson('/api/v1/gcc-markets')
+    .then(function(d) {
+      setStatus('markets', 'live');
+      setStat('statMarkets', d.market_count || 0);
+      showJson('marketsOutput', {
+        market_count: d.market_count,
+        active_count: d.active_count,
+        pilot_ready_count: d.pilot_ready_count,
+        future_market_count: d.future_market_count,
+        markets_summary: (d.markets || []).map(function(m) {
+          return { country: m.country, dealix_status: m.dealix_status, framework: m.framework };
+        })
+      });
+    })
+    .catch(function(e) { setStatus('markets', 'fail'); showError('marketsOutput', e); });
+})();
+</script>
+
+</body>
+</html>

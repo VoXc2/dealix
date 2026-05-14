@@ -1,20 +1,75 @@
 <div align="center">
 
-# 🏢 Dealix — Saudi B2B Revenue Engine
+# 🏢 Dealix — Governed AI Operations for Saudi & GCC
 
-### AI revenue, growth, and compliance engine for Saudi B2B — PDPL-native, ZATCA-compliant, approval-first.
-### محرّك إيرادات ونمو وامتثال بـ AI للشركات السعودية — PDPL أصلاً، ZATCA متوافق، الموافقة-أولاً.
+### Governed AI operations company — starting with Saudi B2B services, expanding to GCC through a public doctrine + partner channel. PDPL-native, ZATCA-compliant, doctrine-first.
+### شركة عمليات AI محوكمة — تبدأ من خدمات B2B السعودية وتتوسّع خليجيًا عبر دستور علني وقناة شركاء. PDPL أصلاً، ZATCA متوافق، الدستور أوّلاً.
 
 [![CI](https://github.com/VoXc2/dealix/actions/workflows/ci.yml/badge.svg)](https://github.com/VoXc2/dealix/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.115-green)](https://fastapi.tiangolo.com/)
-[![Tests: 290+](https://img.shields.io/badge/tests-290+-green)](tests/)
-[![Routers: 117](https://img.shields.io/badge/API%20routers-117-blue)](api/routers/)
+[![Tests: 485+](https://img.shields.io/badge/tests-485+-green)](tests/)
+[![Routers: 120+](https://img.shields.io/badge/API%20routers-120+-blue)](api/routers/)
 [![PDPL: native](https://img.shields.io/badge/PDPL-native-success)](integrations/pdpl.py)
 [![ZATCA: Phase 2](https://img.shields.io/badge/ZATCA-Phase%202-success)](integrations/zatca.py)
+[![Doctrine: 11/11 enforced](https://img.shields.io/badge/Doctrine-11%2F11%20enforced-success)](docs/THE_DEALIX_PROMISE.md)
+[![Open framework: CC BY 4.0](https://img.shields.io/badge/Open%20Doctrine-CC%20BY%204.0-blue)](open-doctrine/LICENSE.md)
 
 **[العربية](README.ar.md)** · **English**
+
+### [✅ Verify Live](https://dealix.me/verify.html) · [📜 Promise](docs/THE_DEALIX_PROMISE.md) · [📖 Doctrine](open-doctrine/README.md) · [💰 Pricing](docs/sales-kit/PRICING_REFRAME_2026Q2.md) · [📊 Release Notes](docs/WAVE_16_TO_19_RELEASE_NOTES.md) · [🚀 Day-1 Kit](docs/ops/FOUNDER_DAY1_KIT.md)
+
+---
+
+## ✅ Verify yourself in 30 seconds · تحقّق بنفسك
+
+```bash
+curl https://api.dealix.me/api/v1/dealix-promise | jq '.commitments_count'    # → 11
+curl https://api.dealix.me/api/v1/doctrine | jq '.non_negotiables_count'      # → 11
+curl https://api.dealix.me/api/v1/commercial-map | jq '.registry_count'       # → 3
+curl https://api.dealix.me/api/v1/gcc-markets | jq '.active_count'            # → 1 (Saudi)
+curl https://api.dealix.me/api/v1/capital-assets/public | jq '.public_asset_count'
+```
+
+Or open `https://dealix.me/verify.html` on any device — no login, no admin key, live-fetches 4 public surfaces.
+
+## 🎯 The 3-offer ladder (2026-Q2 reframe) · السلّم الثلاثي
+
+| Offer | Price | Cadence | Duration |
+|---|---|---|---|
+| Strategic Diagnostic | 0 SAR | one-time | 1 working day |
+| **Governed Ops Retainer** | **4,999 SAR / month** | per-month | 3-month minimum |
+| Revenue Intelligence Sprint | 25,000 SAR | one-time | 30 days fixed |
+
+Source of truth: [`auto_client_acquisition/service_catalog/registry.py`](auto_client_acquisition/service_catalog/registry.py) · Full reframe rationale: [`docs/sales-kit/PRICING_REFRAME_2026Q2.md`](docs/sales-kit/PRICING_REFRAME_2026Q2.md).
+
+## 🌐 Public endpoints (8 surfaces no admin key required) · النقاط العامّة
+
+| Endpoint | Purpose |
+|---|---|
+| `GET /healthz` | Production heartbeat |
+| `GET /api/v1/dealix-promise` `+/markdown` | 11 commitments + tested-by file references |
+| `GET /api/v1/doctrine` `+/controls` `+/markdown` | Open Governed AI Ops Doctrine framework |
+| `GET /api/v1/commercial-map` `+/markdown` | The 3-offer ladder + wiring |
+| `GET /api/v1/gcc-markets` `+/markdown` | Saudi active, UAE pilot-ready, Qatar/Kuwait future |
+| `GET /api/v1/capital-assets/public` `+/markdown` | 7 strategic Capital Assets |
+| `GET /api/v1/founder/launch-status/public` | Production readiness snapshot |
+| `GET /api/v1/founder/command-center/public` | CISO-friendly aggregate (no commercial-sensitive fields) |
+
+## 🛠 Day-1 sequence (after PR merges) · يوم الإطلاق
+
+```bash
+bash scripts/pr235_merge_readiness.sh                            # pre-merge readiness
+python scripts/post_merge_smoke.py https://api.dealix.me         # 18-endpoint post-deploy smoke
+python scripts/verify_all_dealix.py                              # CEO completion (10 systems)
+python scripts/daily_routine.py                                  # morning ritual
+python scripts/weekly_ceo_review.py                              # Sunday strategic review
+```
+
+See [`docs/ops/FOUNDER_DAY1_KIT.md`](docs/ops/FOUNDER_DAY1_KIT.md) for the full 7-step founder Day-1 sequence.
+
+---
 
 ### [🚀 Deploy Runbook](docs/ops/DEPLOY_RUNBOOK.md) · [🛒 Service Catalog](landing/services.html) · [💰 Pricing](landing/pricing.html) · [🗺️ API Map](docs/architecture/API_MAP.md) · [📦 Env Template](docs/ops/PRODUCTION_ENV_TEMPLATE.md) · [👤 Customer Onboarding](docs/ops/CUSTOMER_ONBOARDING_DAY_BY_DAY.md)
 

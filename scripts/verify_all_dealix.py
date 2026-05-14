@@ -258,6 +258,27 @@ def _check_first_invoice_motion() -> dict[str, Any]:
     }
 
 
+def _check_operational_closure() -> dict[str, Any]:
+    """Wave 19+ Operational Closure Sprint — Day-1 kit + smoke + verify pages."""
+    expected = (
+        "landing/verify.html",
+        "landing/dealix-os.html",
+        "docs/ops/FOUNDER_DAY1_KIT.md",
+        "docs/ops/POST_MERGE_SMOKE.md",
+        "scripts/post_merge_smoke.py",
+        "docs/WAVE_16_TO_19_RELEASE_NOTES.md",
+    )
+    missing = [p for p in expected if not _exists(p)]
+    ok = not missing
+    return {
+        "name": "Operational Closure (Day-1 Kit)",
+        "score": 5 if ok else (3 if len(missing) <= 2 else 1),
+        "ok": ok,
+        "detail": f"{len(expected) - len(missing)}/{len(expected)} closure artifacts present",
+        "missing": missing,
+    }
+
+
 # ── Aggregator ───────────────────────────────────────────────────────
 
 
@@ -269,6 +290,7 @@ SYSTEMS = (
     _check_open_doctrine,
     _check_funding_pack,
     _check_founder_command_center,
+    _check_operational_closure,
     _check_partner_motion,
     _check_first_invoice_motion,
 )

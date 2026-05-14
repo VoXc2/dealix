@@ -1,7 +1,7 @@
 {
   "version": "1.0",
   "wave": "19",
-  "generated_at": "2026-05-14T05:56:04.500654+00:00",
+  "generated_at": "2026-05-14T13:44:03.977517+00:00",
   "source_of_truth": "auto_client_acquisition/capital_os/capital_asset_registry.py",
   "asset_count": 15,
   "public_count": 7,

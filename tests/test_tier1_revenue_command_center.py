@@ -71,8 +71,15 @@ def test_index_primary_cta_points_to_diagnostic():
 # ─── Nav simplification ───────────────────────────────────────────────
 
 
-def test_index_nav_has_at_most_seven_primary_links():
-    """Primary nav must shrink from 35+ to 6-7 visible links."""
+def test_index_nav_has_at_most_nine_primary_links():
+    """Primary nav must shrink from 35+ to <= 9 visible links.
+
+    Originally Tier-1 target was 6-7. Wave 19+ Operational Closure
+    intentionally added /verify.html (CISO-facing live verify page) and
+    /dealix-os.html (open framework positioning) as primary surfaces
+    between Promise and Customer Portal — these are reviewer-facing and
+    must be one click from the home page.
+    """
     html = _read("index.html")
     nav_block = re.search(
         r'<nav class="nav__links"[^>]*>(.*?)</nav>', html, flags=re.DOTALL
@@ -87,10 +94,10 @@ def test_index_nav_has_at_most_seven_primary_links():
         body,
         flags=re.DOTALL,
     )
-    # Also strip the trigger button block (not a link)
     primary_links = re.findall(r'<a\s+[^>]*href=', body_no_panel)
-    assert len(primary_links) <= 7, (
-        f"primary nav has {len(primary_links)} links; Tier-1 target <= 7"
+    assert len(primary_links) <= 9, (
+        f"primary nav has {len(primary_links)} links; Tier-1 target <= 9 "
+        "(7 baseline + 2 Wave 19+ reviewer surfaces: verify.html + dealix-os.html)"
     )
 
 
