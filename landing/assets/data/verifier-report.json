@@ -180,6 +180,13 @@
       "name": "Business Unit Registry",
       "passed": true,
       "score": 4
+    },
+    {
+      "in_top_eight": false,
+      "missing": [],
+      "name": "Group APIs",
+      "passed": true,
+      "score": 4
     }
   ]
 }

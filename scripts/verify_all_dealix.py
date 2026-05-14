@@ -508,6 +508,17 @@ def system_business_unit_registry() -> SystemReport:
     return r
 
 
+def system_group_apis() -> SystemReport:
+    r = SystemReport("Group APIs")
+    r.code = [
+        file_check("api/routers/holding.py"),
+        file_check("api/routers/business_units.py"),
+    ]
+    r.tests = [file_check("tests/test_holding_endpoints.py")]
+    r.api = [file_check("data/business_units.json")]
+    return r
+
+
 def system_market_feedback() -> SystemReport:
     r = SystemReport("Market Feedback")
     r.docs = [any_of_files_check(
@@ -639,6 +650,7 @@ SYSTEMS: list[Callable[[], SystemReport]] = [
     system_partner_kit,
     system_market_feedback,
     system_business_unit_registry,
+    system_group_apis,
 ]
 
 # Systems that must be ≥ 4/5 for "CEO complete".

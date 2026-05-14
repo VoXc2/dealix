@@ -55,6 +55,7 @@ documentation.
 | 23 | Partner Kit | `partner-kit/{README,TRUST_PACK_TEMPLATE,PROOF_PACK_TEMPLATE,DOCTRINE_ADOPTION_CHECKLIST}.md` + branding + landing-template | `scripts/build_partner_kit_zip.py` | `tests/test_partner_kit_contents.py` | `landing/assets/downloads/dealix-partner-kit-v1.zip` | Embed Trust card (companion) | Partner-led GCC expansion | **PASS** |
 | 24 | Market Feedback | `docs/ops/MARKET_FEEDBACK.md` | `api/routers/market_feedback.py`, `scripts/market_feedback_summary.py` | `tests/test_market_feedback_endpoint.py` | `POST /api/v1/public/market-feedback`, `GET .../summary` | Market Feedback tile | Real-world signal | **PASS** |
 | 25 | Business Unit Registry | `docs/holding/HOLDING_CHARTER.md`, `docs/holding/BUSINESS_UNIT_REGISTRY.md` | `scripts/register_business_unit.py`, `scripts/validate_business_units.py` | `tests/test_business_unit_registry.py` | `data/business_units.json` | Group portfolio tile | Multi-BU governance | **PASS** |
+| 26 | Group APIs | `api/routers/holding.py`, `api/routers/business_units.py` | n/a | `tests/test_holding_endpoints.py` | `GET /api/v1/holding/{charter,portfolio,board}`, `GET /api/v1/business-units/{slug}{,/public}` | Holding landing | Public group surface | **PASS** |
 
 > **Rule:** Any system whose `Status` column is not `PASS` is **not shipped**.
 > The verifier `scripts/verify_all_dealix.py` is the single judge.

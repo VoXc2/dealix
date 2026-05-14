@@ -41,6 +41,8 @@ from api.routers import (
     self_growth,
     self_improvement_os,
     trust_status,
+    holding as holding_router,
+    business_units as business_units_router,
 )
 
 _ROUTERS = [
@@ -81,6 +83,9 @@ _ROUTERS = [
     customer_readiness_gate.router,
     # Wave 21 PR9 — public market-feedback capture.
     market_feedback.router,
+    # Wave 22 PR11 — Dealix Group holding APIs (no auth, public read-only).
+    holding_router.router,
+    business_units_router.router,
 ]
 
 
