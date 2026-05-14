@@ -38,6 +38,7 @@ from api.routers import (
     customer_usage,
     customer_webhooks,
     enterprise_pmo,
+    founder_summary,
     jobs,
     nps,
     pdpl,
@@ -271,6 +272,9 @@ def create_app() -> FastAPI:
     # Doctrine Phase 1 — Revenue Intelligence Pipeline (the MVP wedge):
     # import preview → scoring → DRAFT_ONLY pack → finalize → Proof Pack hook.
     app.include_router(revenue_intelligence.router)
+    # Doctrine Phase 1 — Founder Command Summary (CEO daily/weekly brief)
+    # aggregates RI + Proof Pack state into the five-question CEO check.
+    app.include_router(founder_summary.router)
 
     @app.get("/", tags=["root"])
     async def root() -> dict[str, object]:
