@@ -57,6 +57,12 @@ jobs:
           # Fail CI if the committed SEO report is stale.
           git diff --exit-code -- docs/SEO_AUDIT_REPORT.json
 
+      - name: Master Verifier (refresh + drift gate)
+        run: |
+          python scripts/render_verifier_report.py
+          # Fail CI if the committed verifier report is stale.
+          git diff --exit-code -- landing/assets/data/verifier-report.json
+
       - name: Tests with coverage gate
         env:
           APP_ENV: test

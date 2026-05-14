@@ -11,11 +11,14 @@ from api.routers import (
     admin,
     approval_center,
     business,
+    capital_assets,
     command_center,
     data,
+    dealix_promise,
     designops,
     diagnostic,
     diagnostic_workflow,
+    doctrine,
     drafts,
     ecosystem,
     executive_command_center as executive_command_center_router,
@@ -65,6 +68,10 @@ _ROUTERS = [
     diagnostic.router,
     diagnostic_workflow.router,
     designops.router,
+    # Wave 20 — public verification spine (no auth, public read-only).
+    dealix_promise.router,
+    doctrine.router,
+    capital_assets.router,
 ]
 
 

@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Dealix Founder Command Center</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><text y='14' font-size='14'>D</text></svg>">
+<style>
+  :root {
+    --bg: #0b0d12;
+    --fg: #e6e9ef;
+    --muted: #8b94a7;
+    --pass: #2dd4a4;
+    --warn: #f5b86b;
+    --fail: #ef4d5c;
+    --card: #131722;
+    --border: #1f2533;
+    --accent: #6aa6ff;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; padding: 0;
+    font: 14px/1.55 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    background: var(--bg); color: var(--fg);
+  }
+  header {
+    padding: 24px 32px; border-bottom: 1px solid var(--border);
+    display: flex; align-items: baseline; gap: 16px; flex-wrap: wrap;
+  }
+  header h1 { margin: 0; font-size: 18px; letter-spacing: 0.02em; }
+  header .sub { color: var(--muted); font-size: 12px; }
+  header .right { margin-left: auto; color: var(--muted); font-size: 12px; }
+  main { max-width: 1200px; margin: 0 auto; padding: 24px 32px 64px; }
+  .summary {
+    display: grid; gap: 12px; grid-template-columns: repeat(4, 1fr);
+    margin-bottom: 24px;
+  }
+  @media (max-width: 720px) { .summary { grid-template-columns: repeat(2, 1fr); } }
+  .summary .tile {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 14px 16px;
+  }
+  .summary .label { color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; }
+  .summary .value { font-size: 22px; font-weight: 600; margin-top: 4px; }
+  .pill {
+    display: inline-block; padding: 2px 8px; border-radius: 999px;
+    font-size: 11px; font-weight: 600;
+  }
+  .pill.pass { background: rgba(45,212,164,0.12); color: var(--pass); }
+  .pill.fail { background: rgba(239,77,92,0.12); color: var(--fail); }
+  .pill.warn { background: rgba(245,184,107,0.12); color: var(--warn); }
+  .grid {
+    display: grid; gap: 10px;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  }
+  .row {
+    background: var(--card); border: 1px solid var(--border); border-radius: 6px;
+    padding: 10px 12px; display: flex; align-items: center; gap: 10px;
+  }
+  .row .name { flex: 1; }
+  .row .name .system { font-weight: 600; }
+  .row .name .top8 {
+    font-size: 10px; color: var(--accent); margin-left: 6px;
+  }
+  .row .missing {
+    font-size: 11px; color: var(--fail); margin-top: 4px;
+  }
+  .score {
+    font-variant-numeric: tabular-nums; font-weight: 600; font-size: 13px;
+    padding: 2px 8px; border-radius: 4px; min-width: 38px; text-align: center;
+  }
+  .score.s5 { background: rgba(45,212,164,0.2); color: var(--pass); }
+  .score.s4 { background: rgba(45,212,164,0.12); color: var(--pass); }
+  .score.s3 { background: rgba(245,184,107,0.15); color: var(--warn); }
+  .score.s2 { background: rgba(239,77,92,0.10); color: var(--fail); }
+  .score.s1 { background: rgba(239,77,92,0.15); color: var(--fail); }
+  .score.s0 { background: rgba(239,77,92,0.20); color: var(--fail); }
+  footer {
+    color: var(--muted); font-size: 11px; padding: 24px 32px;
+    border-top: 1px solid var(--border);
+  }
+  a { color: var(--accent); }
+  code { background: var(--border); padding: 1px 4px; border-radius: 3px; font-size: 12px; }
+  .empty { color: var(--muted); padding: 16px; text-align: center; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Dealix Founder Command Center</h1>
+  <span class="sub">single source of truth · produced by <code>scripts/verify_all_dealix.py</code></span>
+  <span class="right" id="generated"></span>
+</header>
+
+<main>
+  <section class="summary">
+    <div class="tile">
+      <div class="label">Overall</div>
+      <div class="value" id="overall">…</div>
+    </div>
+    <div class="tile">
+      <div class="label">CEO-complete (top 8 ≥ 4/5)</div>
+      <div class="value" id="ceo_complete">…</div>
+    </div>
+    <div class="tile">
+      <div class="label">Systems passed</div>
+      <div class="value" id="pass_count">…</div>
+    </div>
+    <div class="tile">
+      <div class="label">Avg score</div>
+      <div class="value" id="avg_score">…</div>
+    </div>
+  </section>
+
+  <section>
+    <h2 style="font-size:14px;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em;margin:24px 0 10px;">19 Systems</h2>
+    <div class="grid" id="grid">
+      <div class="empty">loading verifier-report.json …</div>
+    </div>
+  </section>
+
+  <section>
+    <h2 style="font-size:14px;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em;margin:24px 0 10px;">Public Verification Endpoints</h2>
+    <ul style="line-height:1.9">
+      <li><a href="/api/v1/dealix-promise"><code>GET /api/v1/dealix-promise</code></a> — the 11 commitments with locking tests</li>
+      <li><a href="/api/v1/doctrine"><code>GET /api/v1/doctrine</code></a> — doctrine snapshot pinned to commit SHA</li>
+      <li><a href="/api/v1/capital-assets/public"><code>GET /api/v1/capital-assets/public</code></a> — safe public projection of the Capital Asset Library</li>
+    </ul>
+  </section>
+</main>
+
+<footer>
+  Generated by <code>python scripts/render_verifier_report.py</code>.
+  This page is intentionally static — it reads
+  <code>landing/assets/data/verifier-report.json</code> directly. The
+  verifier is the judge; this page is only the lens.
+</footer>
+
+<script>
+(function () {
+  function pill(cls, text) {
+    return '<span class="pill ' + cls + '">' + text + '</span>';
+  }
+
+  function fmt(n) { return Number.isFinite(n) ? n.toFixed(2) : '—'; }
+
+  function render(data) {
+    document.getElementById('overall').innerHTML =
+      data.overall_pass ? pill('pass', 'PASS') : pill('fail', 'FAIL');
+    document.getElementById('ceo_complete').innerHTML =
+      data.ceo_complete ? pill('pass', 'YES') : pill('warn', 'NO');
+
+    var systems = Array.isArray(data.systems) ? data.systems : [];
+    var passed = systems.filter(function (s) { return s.passed; }).length;
+    document.getElementById('pass_count').textContent = passed + ' / ' + systems.length;
+    var avg = systems.length ?
+      (systems.reduce(function (a, s) { return a + (s.score || 0); }, 0) / systems.length) : 0;
+    document.getElementById('avg_score').textContent = fmt(avg);
+
+    var grid = document.getElementById('grid');
+    if (!systems.length) {
+      grid.innerHTML = '<div class="empty">No systems in report.</div>';
+      return;
+    }
+    grid.innerHTML = systems.map(function (s) {
+      var scoreCls = 's' + (s.score || 0);
+      var missing = '';
+      if (Array.isArray(s.missing) && s.missing.length) {
+        missing = '<div class="missing">missing: ' +
+          s.missing.map(function (m) { return escapeHtml(String(m)); }).join(', ') +
+          '</div>';
+      }
+      return '' +
+        '<div class="row">' +
+          '<div class="name">' +
+            '<div><span class="system">' + escapeHtml(s.name) + '</span>' +
+              (s.in_top_eight ? '<span class="top8">top-8</span>' : '') +
+            '</div>' +
+            missing +
+          '</div>' +
+          '<div class="score ' + scoreCls + '">' + (s.score || 0) + ' / 5</div>' +
+        '</div>';
+    }).join('');
+  }
+
+  function escapeHtml(s) {
+    return s.replace(/[&<>"']/g, function (c) {
+      return ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' })[c];
+    });
+  }
+
+  fetch('assets/data/verifier-report.json', { cache: 'no-cache' })
+    .then(function (r) {
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      return r.json();
+    })
+    .then(function (data) {
+      document.getElementById('generated').textContent =
+        'last verifier run loaded ' + new Date().toISOString();
+      render(data);
+    })
+    .catch(function (err) {
+      document.getElementById('grid').innerHTML =
+        '<div class="empty">Failed to load verifier-report.json — run <code>python scripts/render_verifier_report.py</code> first.<br>' +
+        escapeHtml(String(err)) + '</div>';
+    });
+})();
+</script>
+
+</body>
+</html>

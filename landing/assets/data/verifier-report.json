@@ -1,0 +1,143 @@
+{
+  "ceo_complete": true,
+  "overall_pass": false,
+  "systems": [
+    {
+      "in_top_eight": true,
+      "missing": [],
+      "name": "Doctrine",
+      "passed": true,
+      "score": 4
+    },
+    {
+      "in_top_eight": true,
+      "missing": [],
+      "name": "Offer Ladder",
+      "passed": true,
+      "score": 4
+    },
+    {
+      "in_top_eight": true,
+      "missing": [],
+      "name": "Revenue Engine",
+      "passed": true,
+      "score": 4
+    },
+    {
+      "in_top_eight": true,
+      "missing": [],
+      "name": "Data OS",
+      "passed": true,
+      "score": 4
+    },
+    {
+      "in_top_eight": true,
+      "missing": [],
+      "name": "Governance OS",
+      "passed": true,
+      "score": 4
+    },
+    {
+      "in_top_eight": true,
+      "missing": [],
+      "name": "Proof OS",
+      "passed": true,
+      "score": 4
+    },
+    {
+      "in_top_eight": false,
+      "missing": [],
+      "name": "Value OS",
+      "passed": true,
+      "score": 4
+    },
+    {
+      "in_top_eight": false,
+      "missing": [],
+      "name": "Capital OS",
+      "passed": true,
+      "score": 4
+    },
+    {
+      "in_top_eight": false,
+      "missing": [],
+      "name": "Retainer Engine",
+      "passed": true,
+      "score": 4
+    },
+    {
+      "in_top_eight": false,
+      "missing": [],
+      "name": "Trust Pack",
+      "passed": true,
+      "score": 4
+    },
+    {
+      "in_top_eight": false,
+      "missing": [],
+      "name": "Evidence Control Plane",
+      "passed": true,
+      "score": 4
+    },
+    {
+      "in_top_eight": false,
+      "missing": [],
+      "name": "Agent Safety",
+      "passed": true,
+      "score": 4
+    },
+    {
+      "in_top_eight": false,
+      "missing": [],
+      "name": "GCC Expansion",
+      "passed": true,
+      "score": 4
+    },
+    {
+      "in_top_eight": false,
+      "missing": [],
+      "name": "Funding Pack",
+      "passed": true,
+      "score": 4
+    },
+    {
+      "in_top_eight": false,
+      "missing": [],
+      "name": "Open Doctrine",
+      "passed": true,
+      "score": 4
+    },
+    {
+      "in_top_eight": true,
+      "missing": [],
+      "name": "Founder Command Center",
+      "passed": true,
+      "score": 4
+    },
+    {
+      "in_top_eight": true,
+      "missing": [
+        "partner outreach actually sent"
+      ],
+      "name": "Partner Motion",
+      "passed": false,
+      "score": 4
+    },
+    {
+      "in_top_eight": false,
+      "missing": [
+        "first invoice actually sent"
+      ],
+      "name": "First Invoice Motion",
+      "passed": false,
+      "score": 4
+    },
+    {
+      "in_top_eight": false,
+      "missing": [],
+      "name": "Continuous Routine",
+      "passed": true,
+      "score": 4
+    }
+  ]
+}
