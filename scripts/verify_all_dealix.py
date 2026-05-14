@@ -116,7 +116,9 @@ def _marker_page_inside_repo(page_path: str) -> bool:
         candidate.relative_to(repo_root)
     except (OSError, ValueError):
         return False
-    return candidate.exists()
+    # Must be a real file artifact; ``docs/`` etc. should not pass the
+    # gate just because the directory exists.
+    return candidate.is_file()
 
 
 def check_partner_motion() -> Check:
@@ -156,7 +158,11 @@ def check_partner_motion() -> Check:
         )
     # Score-5 contract (per data/partner_outreach_log.json::completion_rule):
     # "Score 5 requires at least one founder-confirmed outreach entry."
-    founder_confirmed = any(bool(e.get("founder_confirmed")) for e in entries_list)
+    # Require an actual boolean True so malformed logs (e.g.
+    # founder_confirmed="false" / "yes" / 1) cannot trick the gate.
+    founder_confirmed = any(
+        e.get("founder_confirmed") is True for e in entries_list
+    )
     if not founder_confirmed:
         return Check(
             "Partner Motion",
@@ -195,9 +201,14 @@ def check_first_invoice_motion() -> Check:
         return Check("First Invoice Motion", 4, True, f"{sent} invoice(s) sent, none paid")
     # Score-5 contract (per data/first_invoice_log.json::completion_rule):
     # "Score 5 requires at least one invoice entry with proof target."
-    has_proof_target = any(
-        bool(str(e.get("proof_target", "")).strip()) for e in entries_list
-    )
+    # Require ``proof_target`` to be a real non-empty string — ``None``
+    # or ``False`` placeholders coerced via ``str(...)`` would become
+    # ``'None'`` / ``'False'`` and falsely satisfy the gate.
+    def _has_proof_target(entry: dict) -> bool:
+        pt = entry.get("proof_target")
+        return isinstance(pt, str) and bool(pt.strip())
+
+    has_proof_target = any(_has_proof_target(e) for e in entries_list)
     if not has_proof_target:
         return Check(
             "First Invoice Motion",
@@ -304,14 +315,25 @@ CHECKS: list[Callable[[], Check]] = [
 def run() -> tuple[list[Check], bool, bool]:
     results = [fn() for fn in CHECKS]
     all_pass = all(r.pass_ for r in results)
-    market_action_systems = {"Partner Motion", "First Invoice Motion"}
-    # CEO completion threshold: score >= 4. The matrix defines CEO-complete
-    # around the "invoice sent" milestone (see docs/ops/FIRST_INVOICE_UNLOCK.md);
-    # ``check_first_invoice_motion()`` returns 4 for "sent, unpaid" and 5
-    # only after a paid invoice. Requiring 5 would block CEO-complete on a
-    # successful sent state, contradicting the documented gate semantics.
+    # CEO-complete thresholds reflect what each system means at each score.
+    # Per the matrix and the *_log.json::completion_rule fields:
+    #
+    # - Partner Motion: score 4 explicitly means "outreach sent but no
+    #   founder-confirmed entry yet"; score 5 means at least one
+    #   founder-confirmed entry. CEO-complete requires real founder
+    #   market action, so Partner Motion must reach 5.
+    # - First Invoice Motion: score 4 means "invoice(s) sent, none
+    #   paid yet"; score 5 means a paid invoice with a proof_target.
+    #   FIRST_INVOICE_UNLOCK.md defines the CEO-complete milestone as
+    #   "invoice sent", so 4 is enough here.
+    per_system_threshold = {
+        "Partner Motion": 5,
+        "First Invoice Motion": 4,
+    }
+    by_system = {r.system: r.score for r in results}
     ceo_complete = all_pass and all(
-        r.score >= 4 for r in results if r.system in market_action_systems
+        by_system.get(system, 0) >= threshold
+        for system, threshold in per_system_threshold.items()
     )
     return results, all_pass, ceo_complete
 
