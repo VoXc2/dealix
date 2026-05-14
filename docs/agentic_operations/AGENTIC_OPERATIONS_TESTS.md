@@ -1,0 +1,14 @@
+# Agentic Operations Tests
+
+```
+test_agent_requires_identity_card.py
+test_agent_requires_owner.py
+test_agent_autonomy_mvp_limit.py
+test_agent_forbidden_external_action.py
+test_agent_no_scraping_tool.py
+test_agent_no_cold_whatsapp.py
+test_agent_tool_permission_audited.py
+test_agent_output_requires_governance.py
+test_agent_handoff_required_for_pii.py
+test_agent_decommission_if_no_owner.py
+```

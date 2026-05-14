@@ -1,0 +1,3 @@
+# SECURE AGENT DEPLOYMENT MODEL
+
+Cross-reference: `SECURE_AGENT_DEPLOYMENT_RUNTIME_ASSURANCE.md` consolidated doctrine.
