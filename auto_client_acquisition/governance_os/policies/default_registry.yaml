@@ -1,0 +1,13 @@
+# Default Dealix policy registry (YAML) — versioned, human-editable.
+version: 1
+forbidden_customer_facing_actions:
+  - cold_whatsapp_auto_send
+  - linkedin_dm_automation
+  - gmail_external_send_without_approval
+  - calendar_external_create_without_approval
+  - production_web_scraping
+  - purchased_email_list_blast
+risk_categories:
+  - pii_exposure
+  - unapproved_outbound
+  - insufficient_evidence_public_claim

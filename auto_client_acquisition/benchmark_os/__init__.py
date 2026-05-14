@@ -1,21 +1,17 @@
-"""Canonical Benchmark OS — Wave 5 seed (14G).
+"""Benchmark OS — safe market reports."""
 
-Aggregation + anonymization + report generation for Saudi-AI-Operations-
-Readiness benchmarks. SYNTHETIC + AGGREGATED data only — no real client
-metrics. K-anonymity ≥ 5. Methodology disclosed.
-"""
-from auto_client_acquisition.benchmark_os.anonymization import (
-    aggregate_with_k_anonymity,
-    is_k_anonymous,
-)
-from auto_client_acquisition.benchmark_os.report_generator import (
-    BenchmarkReport,
-    generate_readiness_report,
+from __future__ import annotations
+
+from auto_client_acquisition.benchmark_os.benchmark_engine import (
+    METHODOLOGY_VERSION,
+    anonymize_label,
+    benchmark_report_skeleton,
+    methodology_footer,
 )
 
 __all__ = [
-    "BenchmarkReport",
-    "aggregate_with_k_anonymity",
-    "generate_readiness_report",
-    "is_k_anonymous",
+    "METHODOLOGY_VERSION",
+    "anonymize_label",
+    "benchmark_report_skeleton",
+    "methodology_footer",
 ]

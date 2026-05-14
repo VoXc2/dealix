@@ -1,15 +1,37 @@
-"""Canonical Trust OS — composes existing trust evidence into a single
-exportable Trust Pack for enterprise procurement.
+"""Trust OS — source passport, enterprise trust pack refs, control plane."""
 
-Pulls from: data_os (Source Passport coverage), governance_os (recent
-decisions sample), proof_os (Proof Pack samples), value_os (tier
-breakdown), capital_os (asset count), friction_log (resolved-rate),
-compliance_os* (PDPL/ZATCA evidence), and the existing docs/security
-trilogy.
-"""
+from __future__ import annotations
+
+from auto_client_acquisition.trust_os.ai_control_plane import (
+    CONTROL_PLANE_COMPONENTS,
+    example_ai_run_record,
+)
+from auto_client_acquisition.trust_os.source_passport import (
+    SourcePassport,
+    example_client_upload_passport,
+)
+from auto_client_acquisition.trust_os.compliance_report import (
+    COMPLIANCE_REPORT_SECTIONS,
+    compliance_report_sections_complete,
+)
+from auto_client_acquisition.trust_os.trust_artifacts import TRUST_ARTIFACT_TYPES, trust_artifact_coverage_score
+from auto_client_acquisition.trust_os.trust_dashboard import TRUST_DASHBOARD_SIGNALS, trust_dashboard_coverage_score
 from auto_client_acquisition.trust_os.trust_pack import (
-    TrustPack,
-    assemble_trust_pack,
+    ENTERPRISE_TRUST_SECTIONS,
+    TRUST_PACK_MARKDOWN_PATH,
 )
 
-__all__ = ["TrustPack", "assemble_trust_pack"]
+__all__ = [
+    "CONTROL_PLANE_COMPONENTS",
+    "COMPLIANCE_REPORT_SECTIONS",
+    "ENTERPRISE_TRUST_SECTIONS",
+    "TRUST_ARTIFACT_TYPES",
+    "TRUST_DASHBOARD_SIGNALS",
+    "TRUST_PACK_MARKDOWN_PATH",
+    "SourcePassport",
+    "compliance_report_sections_complete",
+    "example_ai_run_record",
+    "example_client_upload_passport",
+    "trust_artifact_coverage_score",
+    "trust_dashboard_coverage_score",
+]

@@ -48,11 +48,31 @@ def _seven_day_plan(customer_handle: str) -> dict[str, Any]:
 
 
 def _messages_and_followups(customer_handle: str) -> dict[str, Any]:
+    approved = 0
+    pending = 0
+    try:
+        from auto_client_acquisition.approval_center import get_default_approval_store
+
+        store = get_default_approval_store()
+        rows = store.list_pending()
+        pending = len(rows)
+        hist = store.list_history(limit=200)
+        approved = sum(
+            1
+            for r in hist
+            if str(getattr(r.status, "value", r.status)) == "approved"
+            and (
+                customer_handle in (r.proof_impact or "")
+                or customer_handle in (r.summary_ar or "")
+            )
+        )
+    except Exception:
+        pass
     return {
         "title_ar": "رسائل ومتابعات",
         "title_en": "Messages & Follow-ups",
-        "approved_drafts_count": 0,
-        "pending_approval_count": 0,
+        "approved_drafts_count": approved,
+        "pending_approval_count": pending,
         "note_ar": "كل رسالة تمر بموافقتك قبل الإرسال اليدوي.",
         "note_en": "Every message passes your approval before manual send.",
     }
@@ -82,10 +102,19 @@ def _deliverables(customer_handle: str) -> dict[str, Any]:
 
 
 def _proof_pack(customer_handle: str) -> dict[str, Any]:
+    events_count = 0
+    try:
+        from auto_client_acquisition.proof_ledger.factory import get_default_ledger
+
+        events_count = len(
+            get_default_ledger().list_events(customer_handle=customer_handle, limit=200)
+        )
+    except Exception:
+        pass
     return {
         "title_ar": "Proof Pack",
         "title_en": "Proof Pack",
-        "events_count": 0,
+        "events_count": events_count,
         "audience": "internal_only",
         "approval_status": "approval_required",
         "note_ar": "يُحرَّر بعد اكتمال أوّل تجربة. لا أرقام مخترعة.",
@@ -225,8 +254,9 @@ def _digest_monthly(customer_handle: str) -> dict[str, Any]:
     """Monthly digest — proof_ledger event count + sector context."""
     proof_count = 0
     try:
-        from auto_client_acquisition.proof_ledger.file_backend import list_events
-        events = list_events(customer_handle=customer_handle, limit=200)
+        from auto_client_acquisition.proof_ledger.factory import get_default_ledger
+
+        events = get_default_ledger().list_events(customer_handle=customer_handle, limit=200)
         proof_count = len(events)
     except Exception:
         pass
@@ -340,8 +370,9 @@ def _payment_state_section(customer_handle: str) -> dict[str, Any]:
 def _proof_summary_section(customer_handle: str) -> dict[str, Any]:
     """Wave 4 additive — proof events summary."""
     try:
-        from auto_client_acquisition.proof_ledger.file_backend import list_events
-        events = list_events(customer_handle=customer_handle, limit=200)
+        from auto_client_acquisition.proof_ledger.factory import get_default_ledger
+
+        events = get_default_ledger().list_events(customer_handle=customer_handle, limit=200)
         return {
             "proof_events_count": len(events),
             "source": "proof_ledger",
@@ -353,8 +384,9 @@ def _proof_summary_section(customer_handle: str) -> dict[str, Any]:
 def _approval_summary_section(customer_handle: str) -> dict[str, Any]:
     """Wave 4 additive — approval center summary."""
     try:
-        from auto_client_acquisition.approval_center import approval_store
-        pending = approval_store.get_default_approval_store().list_pending()
+        from auto_client_acquisition.approval_center import get_default_approval_store
+
+        pending = get_default_approval_store().list_pending()
         scoped = [
             ap for ap in pending
             if customer_handle in (ap.proof_impact or "")

@@ -8,15 +8,16 @@ from __future__ import annotations
 from fastapi import APIRouter
 
 from api.routers import (
+    governance_risk_dashboard,
     proof_ledger,
     reliability_os,
     security_privacy,
     service_quality,
-    service_sessions as service_sessions_router,
     vertical_playbooks,
 )
 
 _ROUTERS = [
+    governance_risk_dashboard.router,
     security_privacy.router,
     proof_ledger.router,
     reliability_os.router,

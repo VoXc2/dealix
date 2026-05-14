@@ -36,6 +36,9 @@ _VALID_SERVICE_TYPES = {
     "executive_pack",
     "proof_pack",
     "agency_partner_pack",
+    "lead_intelligence_sprint",
+    "support_desk_sprint",
+    "quick_win_ops",
 }
 
 

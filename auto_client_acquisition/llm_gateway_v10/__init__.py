@@ -16,9 +16,15 @@ Public API::
         route,
         estimate_cost,
         enforce_budget,
+        route_with_text_audit,
+        assert_agent_plan_includes_compliance_guard,
     )
 """
 from auto_client_acquisition.llm_gateway_v10.budget_policy import enforce_budget
+from auto_client_acquisition.llm_gateway_v10.governance_shim import (
+    assert_agent_plan_includes_compliance_guard,
+    route_with_text_audit,
+)
 from auto_client_acquisition.llm_gateway_v10.routing_policy import (
     estimate_cost,
     route,
@@ -37,7 +43,9 @@ __all__ = [
     "ModelTier",
     "RoutingDecision",
     "RoutingPolicy",
+    "assert_agent_plan_includes_compliance_guard",
     "enforce_budget",
     "estimate_cost",
     "route",
+    "route_with_text_audit",
 ]

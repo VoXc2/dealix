@@ -15,6 +15,8 @@ import {
   ChevronLeft,
   ChevronRight,
   Zap,
+  Shield,
+  Building2,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
@@ -30,6 +32,8 @@ const navItems: NavItem[] = [
   { key: "pipeline", href: "/pipeline", icon: GitBranch },
   { key: "agents", href: "/agents", icon: Bot },
   { key: "approvals", href: "/approvals", icon: CheckSquare },
+  { key: "trustCheck", href: "/trust-check", icon: Shield },
+  { key: "customerPortal", href: "/customer-portal", icon: Building2 },
   { key: "clients", href: "/clients", icon: Users },
   { key: "analytics", href: "/analytics", icon: BarChart3 },
   { key: "settings", href: "/settings", icon: Settings },
@@ -135,7 +139,18 @@ export function Sidebar({ collapsed = false, onToggle }: SidebarProps) {
                         isActive ? "text-gold-400" : ""
                       )}
                     >
-                      {t(item.key as keyof typeof t)}
+                      {t(
+                        item.key as
+                          | "dashboard"
+                          | "pipeline"
+                          | "agents"
+                          | "approvals"
+                          | "trustCheck"
+                          | "customerPortal"
+                          | "clients"
+                          | "analytics"
+                          | "settings",
+                      )}
                     </motion.span>
                   )}
                 </AnimatePresence>

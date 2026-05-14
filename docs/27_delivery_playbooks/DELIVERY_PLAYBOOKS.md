@@ -1,0 +1,14 @@
+# مكتبة Playbooks
+
+## الدور
+
+تحويل التسليم من اجتهاد إلى مسار قابل للتدريب.
+
+## نقاط تشغيلية
+
+- Intake → Proof → Handoff
+
+## روابط
+
+- [DEALIX_EXECUTION_WAVES_AR.md](../strategic/DEALIX_EXECUTION_WAVES_AR.md)
+- [DEALIX_FROM_ZERO_TO_HOLDING_BLUEPRINT.md](../from_zero/DEALIX_FROM_ZERO_TO_HOLDING_BLUEPRINT.md)

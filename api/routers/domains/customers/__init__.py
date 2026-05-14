@@ -8,6 +8,7 @@ from __future__ import annotations
 from fastapi import APIRouter
 
 from api.routers import (
+    company_brain_mvp as company_brain_mvp_router,
     crm_v10,
     customer_brain as customer_brain_router,
     customer_company_portal,
@@ -23,6 +24,7 @@ from api.routers import (
 )
 
 _ROUTERS = [
+    company_brain_mvp_router.router,
     customer_success.router,
     customer_success_os.router,
     customer_loop.router,

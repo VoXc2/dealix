@@ -1,40 +1,51 @@
-# العقار / التطوير العقاري — Dealix Playbook
+# Vertical Playbook: Real Estate
 
-## ICP
-مطور عقاري سعودي يستقبل leads من الإعلانات + الموقع + WhatsApp
+## Sector overview
 
-## Signals (ما الذي نبحث عنه)
-- WhatsApp
-- نموذج تواصل
-- صفحة مشاريع
-- فروع/معارض
+Developers, brokerages, and property managers balancing inventory, leads, and long transaction cycles.
 
-## Headline Pain
-كل lead عقاري متأخر دقيقة = احتمال خسارة العميل لمنافس
+## Common problems
 
-## Primary Offer
-Pilot 7 أيام × 499 ريال — تأهيل + حجز معاينة
+- Lead sources (portals, ads, walk-ins) not unified
+- Agent follow-up uneven
+- Inventory matching to buyer intent is manual
+- Compliance around advertising claims
 
-## Success KPI (نقيس ماذا)
-Arabic-replied leads / viewings booked / pipeline added
+## Best Dealix services
 
-## Common Objections (ردود جاهزة في `/api/v1/objections/bank`)
-- budget
-- trust_in_AI
-- concern_about_arabic
-- already_uses_chat
+1. Lead Intelligence Sprint (buyer / investor lists)
+2. Inventory ↔ lead matching workflow maps
+3. Governed nurture drafts (approval-first)
 
-## Channel Strategy
-phone_task_then_email
+## Data usually available
 
-## Pilot Success Metrics
-- Arabic replies sent / inbound lead: 100%
-- avg response time: < 60s
-- demos booked: ≥ 2 in 7 days
-- customer NPS: ≥ 8/10
+- Portal lead exports
+- CRM (if any) + call logs
+- Inventory sheets
+- Campaign performance spreadsheets
 
-## Case Study Template
-- Before Dealix: [response time / lost leads / conversion %]
-- After 7-day Pilot: [Arabic replies, demos booked, qualified leads]
-- Customer quote: [verified post-pilot]
-- Outcome: [upgraded to Starter / referred N companies / etc.]
+## Best KPIs
+
+- Qualified viewings / meetings booked
+- Conversion by source
+- Time-to-first-qualified-response
+- Inventory turnover speed (where applicable)
+
+## Common objections
+
+- "Inventory changes daily" → snapshot cadence + refresh rules
+- "Agents will ignore software" → deliver **lists + drafts**, not another login
+
+## Governance notes
+
+- No misleading availability claims; approvals on public-facing copy
+- Respect platform ToS; no unauthorized scraping
+
+## Proof examples
+
+- Source ROI view (anonymized)
+- Top leads ranked with human-readable reasons
+
+## Evolution log
+
+- 

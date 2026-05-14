@@ -14,6 +14,10 @@
 8. **Paid beta metrics** — [`PAID_BETA_SCORECARD.md`](PAID_BETA_SCORECARD.md)
 9. **Go / No-Go عام** — [`PUBLIC_LAUNCH_GO_NO_GO.md`](PUBLIC_LAUNCH_GO_NO_GO.md)
 
+## حزم RevOps + AI (تسعير ونطاق)
+
+مصدر الحقيقة للعروض التجارية (أسعار، ما يشمل، ربط بالمنتج): [`commercial/DEALIX_REVOPS_PACKAGES_AR.md`](commercial/DEALIX_REVOPS_PACKAGES_AR.md).
+
 ## قاعدة التسمية
 
 حتى تتحقق مدفوعات واستقرار وتشغيل: الإطلاق هو **Paid Private Beta** أو **Launch Candidate** وليس “Public Launch” كاملاً.

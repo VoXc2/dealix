@@ -92,10 +92,12 @@ def should_index(path: Path) -> bool:
     return path.name.endswith(".env.example")
 
 
-def scan_project(root: str | Path) -> list[ProjectDocument]:
+def scan_project(root: str | Path, *, max_documents: int = 400) -> list[ProjectDocument]:
     root_path = Path(root)
     docs: list[ProjectDocument] = []
     for path in root_path.rglob("*"):
+        if len(docs) >= max_documents:
+            break
         if not should_index(path):
             continue
         rel = str(path.relative_to(root_path)).replace("\\", "/")
@@ -169,10 +171,12 @@ def naive_search(documents: Iterable[ProjectDocument], query: str, limit: int = 
         if score:
             scored.append((score, doc))
     scored.sort(key=lambda item: item[0], reverse=True)
-    return [
-        {"score": score, **doc.to_dict()}
-        for score, doc in scored[:limit]
-    ]
+    out: list[dict[str, Any]] = []
+    for score, doc in scored[:limit]:
+        excerpt = doc.content[:220].replace("\n", " ").strip()
+        row = {"score": score, **doc.to_dict(), "excerpt": excerpt}
+        out.append(row)
+    return out
 
 
 def explain_project_intelligence_stack() -> dict[str, Any]:
@@ -207,8 +211,20 @@ def answer_operator_question(
     root: str | Path = ".",
     deep_scan: bool = False,
 ) -> dict[str, Any]:
-    """Grounded answers for Personal Operator; keyword search optional."""
+    """Grounded answers for Personal Operator; optional keyword scan with citations."""
     q = question.strip().lower()
+    max_q = 450
+    if len(question.strip()) > max_q:
+        return {
+            "question": question,
+            "answer_ar": "السؤال طويل جداً — اختصره (حد أقصى 450 حرفاً) ثم أعد المحاولة.",
+            "semantic_status_ar": "تجاوز حد الإدخال لحماية التكلفة.",
+            "related_files": ["auto_client_acquisition/v3/project_intelligence.py"],
+            "search_hits": [],
+            "citations": [],
+            "scan_meta": {"documents_scanned": 0, "chars_scanned": 0, "truncated": False},
+        }
+
     note_ar = (
         "البحث الدلالي غير متصل بعد؛ نستخدم مخطط المشروع المعروف والوحدات الأساسية. "
         "semantic search not connected yet; using project blueprint and known modules."
@@ -241,9 +257,38 @@ def answer_operator_question(
         answer_ar = "Personal Operator: daily brief + فرص + قرارات + مسودات برسالة عربية وموافقة صريحة قبل أي إرسال خارجي."
 
     search_hits: list[dict[str, Any]] = []
+    citations: list[dict[str, Any]] = []
+    scan_meta: dict[str, Any] = {"documents_scanned": 0, "chars_scanned": 0, "truncated": False}
     if deep_scan:
-        docs = scan_project(root)
-        search_hits = naive_search(docs, question, limit=5)
+        raw_docs = scan_project(root, max_documents=120)
+        trimmed: list[ProjectDocument] = []
+        total_chars = 0
+        max_chars = 180_000
+        for d in raw_docs:
+            if total_chars + len(d.content) > max_chars:
+                scan_meta["truncated"] = True
+                break
+            trimmed.append(d)
+            total_chars += len(d.content)
+        scan_meta["documents_scanned"] = len(trimmed)
+        scan_meta["chars_scanned"] = total_chars
+        search_hits = naive_search(trimmed, question, limit=10)
+        for h in search_hits[:6]:
+            citations.append(
+                {
+                    "path": h.get("path", ""),
+                    "content_hash": h.get("content_hash"),
+                    "score": h.get("score"),
+                    "excerpt": (h.get("excerpt") or "")[:180],
+                }
+            )
+        if search_hits:
+            paths = ", ".join(f"`{h.get('path', '')}`" for h in search_hits[:4])
+            answer_ar = f"{answer_ar}\n\nأقرب مطابقات في الكود: {paths}."
+            note_ar = (
+                f"تم فحص {scan_meta['documents_scanned']} ملفاً تقريباً (~{scan_meta['chars_scanned']} حرف). "
+                "للبحث الدلالي الكامل: ربط pgvector في Supabase."
+            )
 
     return {
         "question": question,
@@ -251,4 +296,6 @@ def answer_operator_question(
         "semantic_status_ar": note_ar,
         "related_files": related_files,
         "search_hits": search_hits,
+        "citations": citations,
+        "scan_meta": scan_meta,
     }

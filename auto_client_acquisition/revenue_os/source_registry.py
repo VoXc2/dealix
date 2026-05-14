@@ -113,3 +113,8 @@ def source_policies() -> dict[str, dict[str, object]]:
 
 def forbidden_sources() -> list[str]:
     return [s.value for s in Tier1LeadSource if _POLICIES[s].allowed_use == "blocked"]
+
+
+def get_source_policy(source: Tier1LeadSource) -> SourcePolicy:
+    """Return the frozen policy row for a Tier-1 source."""
+    return _POLICIES[source]

@@ -27,8 +27,23 @@ jobs:
       - name: Compile check
         run: python -m compileall api auto_client_acquisition
 
+      - name: Alembic single head
+        run: python scripts/check_alembic_single_head.py
+
       - name: Verify Service Readiness Matrix
         run: python scripts/verify_service_readiness_matrix.py
+
+      - name: Quick regression bundle (revenue memory + routing + integrations + v5 + compliance)
+        env:
+          APP_ENV: test
+          APP_DEBUG: "false"
+          ANTHROPIC_API_KEY: test-anthropic-key
+          DEEPSEEK_API_KEY: test-deepseek-key
+          GROQ_API_KEY: test-groq-key
+          GLM_API_KEY: test-glm-key
+          GOOGLE_API_KEY: test-google-key
+        run: |
+          pytest tests/test_pg_event_store.py tests/test_model_router.py tests/test_integrations.py tests/test_v5_layers.py tests/unit/test_compliance_os.py tests/test_isolated_pg_event_store.py -q --no-cov
 
       - name: Export Service Readiness JSON
         run: |

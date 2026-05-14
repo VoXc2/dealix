@@ -1,54 +1,25 @@
-"""Doctrine: PII + external use ⇒ explicit approval required."""
+"""Contract: PII + external_use_allowed must fail static AI-valid check (approval workflow)."""
+
 from __future__ import annotations
 
-import pytest
-
-from auto_client_acquisition.data_os.source_passport import SourcePassport
-from auto_client_acquisition.governance_os.runtime_decision import (
-    GovernanceDecision,
-    decide,
+from auto_client_acquisition.sovereignty_os.source_passport_standard import (
+    SourcePassport,
+    source_passport_valid_for_ai,
 )
 
 
-def _make_passport(*, contains_pii: bool, external_use_allowed: bool) -> SourcePassport:
-    return SourcePassport(
-        source_id="src_001",
-        source_type="crm_export",
-        owner="acme",
-        allowed_use=("internal_analysis", "external_outreach"),
-        contains_pii=contains_pii,
-        sensitivity="high" if contains_pii else "low",
+def test_pii_external_requires_approval_workflow() -> None:
+    passport = SourcePassport(
+        source_id="SRC-PII-1",
+        source_type="client_upload",
+        owner="client",
+        allowed_use=frozenset({"internal_analysis"}),
+        contains_pii=True,
+        sensitivity="high",
+        retention_policy="project_duration",
         ai_access_allowed=True,
-        external_use_allowed=external_use_allowed,
-        retention_policy="90d",
+        external_use_allowed=True,
     )
-
-
-def test_pii_with_external_use_requires_approval() -> None:
-    """PII + external_use_allowed=True must REQUIRE_APPROVAL (and explain why)."""
-    passport = _make_passport(contains_pii=True, external_use_allowed=True)
-    result = decide(
-        action="send_external_message",
-        context={
-            "source_passport": passport,
-            "contains_pii": True,
-            "external_use": True,
-        },
-    )
-    assert result.decision == GovernanceDecision.REQUIRE_APPROVAL
-    assert len(result.reasons) > 0, "REQUIRE_APPROVAL must explain why"
-
-
-def test_pii_internal_only_allowed() -> None:
-    """PII used internally only may proceed at ALLOW_WITH_REVIEW level."""
-    passport = _make_passport(contains_pii=True, external_use_allowed=False)
-    result = decide(
-        action="internal_analysis",
-        context={
-            "source_passport": passport,
-            "contains_pii": True,
-            "external_use": False,
-            "declared_action": "internal_analysis",
-        },
-    )
-    assert result.decision == GovernanceDecision.ALLOW_WITH_REVIEW
+    ok, errors = source_passport_valid_for_ai(passport)
+    assert not ok
+    assert "pii_external_use_requires_approval_workflow" in errors

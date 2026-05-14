@@ -16,6 +16,7 @@ ServiceType = Literal[
     "diagnostic", "leadops_sprint", "growth_proof_sprint",
     "support_ops_setup", "customer_portal_setup", "executive_pack",
     "proof_pack", "agency_partner_pack",
+    "lead_intelligence_sprint", "support_desk_sprint", "quick_win_ops",
 ]
 
 # Default cost estimates per service (in SAR equivalents).
@@ -71,6 +72,24 @@ _SERVICE_DEFAULTS: dict[ServiceType, dict[str, int | float]] = {
         "founder_time_minutes": 480,  # 8 hours
         "support_time_minutes": 120,
         "delivery_time_minutes": 480,
+    },
+    "lead_intelligence_sprint": {
+        "ai_calls_estimate": 15,
+        "founder_time_minutes": 180,
+        "support_time_minutes": 60,
+        "delivery_time_minutes": 240,
+    },
+    "support_desk_sprint": {
+        "ai_calls_estimate": 12,
+        "founder_time_minutes": 120,
+        "support_time_minutes": 90,
+        "delivery_time_minutes": 180,
+    },
+    "quick_win_ops": {
+        "ai_calls_estimate": 8,
+        "founder_time_minutes": 90,
+        "support_time_minutes": 30,
+        "delivery_time_minutes": 120,
     },
 }
 

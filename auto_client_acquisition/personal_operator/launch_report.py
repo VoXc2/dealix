@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 from datetime import UTC, datetime
 from enum import StrEnum
 from typing import Any
@@ -67,6 +67,17 @@ def _status_for_score(score: int) -> ReadinessStatus:
 
 def build_launch_report() -> LaunchReport:
     """Fifteen launch areas; scores are heuristic until wired to CI/metrics."""
+    sig: dict[str, int] = {"pending_approvals": 0, "proof_events_24h": 0}
+    try:
+        from auto_client_acquisition.personal_operator.operator import _signals_from_stores
+
+        raw = _signals_from_stores()
+        sig = {
+            "pending_approvals": int(raw.get("pending_approvals", 0)),
+            "proof_events_24h": int(raw.get("proof_events_24h", 0)),
+        }
+    except Exception:
+        pass
     blueprint: list[tuple[str, str, str, int, list[str], list[str], str, str]] = [
         (
             "backend_api",
@@ -234,6 +245,28 @@ def build_launch_report() -> LaunchReport:
                 priority=pri,
             )
         )
+    if sig["pending_approvals"] > 0:
+        for i, a in enumerate(areas):
+            if a.key == "personal_operator":
+                note_ar = f"بيانات حية: {sig['pending_approvals']} موافقة في الطابور"
+                areas[i] = replace(
+                    a,
+                    score=min(92, a.score + 5),
+                    status=_status_for_score(min(92, a.score + 5)),
+                    missing_items=[note_ar, *list(a.missing_items)],
+                )
+                break
+    if sig["proof_events_24h"] > 0:
+        for i, a in enumerate(areas):
+            if a.key == "documentation":
+                note_ar = f"إثبات مسجّل: {sig['proof_events_24h']} حدث في آخر 24 ساعة"
+                areas[i] = replace(
+                    a,
+                    score=min(90, a.score + 3),
+                    status=_status_for_score(min(90, a.score + 3)),
+                    next_actions=[*list(a.next_actions), "اربط الأحداث بملخص أسبوعي للعميل"],
+                )
+                break
     overall = int(round(sum(a.score for a in areas) / len(areas))) if areas else 0
     return LaunchReport(overall_score=overall, areas=areas)
 

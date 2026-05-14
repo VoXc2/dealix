@@ -11,7 +11,7 @@ ARQ injects `ctx` with the Redis connection and any worker-startup state.
 from __future__ import annotations
 
 import logging
-from datetime import datetime, UTC
+from datetime import UTC, datetime
 from typing import Any
 
 from arq import ArqRedis
@@ -83,7 +83,7 @@ async def run_agent_job(
         )
         return {"job_id": job_id, "status": "succeeded", "output": result}
 
-    except Exception as exc:  # noqa: BLE001
+    except Exception as exc:
         completed_at = utcnow()
         logger.exception("job_failed", job_id=job_id, job_type=job_type, error=str(exc))
 
@@ -114,13 +114,15 @@ async def _dispatch(job_type: str, payload: dict[str, Any], tenant_id: str | Non
         return await _run_outreach_batch(payload, tenant_id)
     if job_type == "embedding_index":
         return await _run_embedding_index(payload, tenant_id)
+    if job_type == "commercial_sprint_report":
+        return await _run_commercial_sprint_report(payload, tenant_id)
     # Generic LLM task
     return await _run_generic_llm(payload, tenant_id)
 
 
 async def _run_lead_score(payload: dict[str, Any], tenant_id: str | None) -> dict[str, Any]:
-    from core.llm import get_router
     from core.config.models import Task
+    from core.llm import get_router
     from core.llm.base import Message
 
     router = get_router()
@@ -136,8 +138,8 @@ async def _run_lead_score(payload: dict[str, Any], tenant_id: str | None) -> dic
 
 
 async def _run_proposal_draft(payload: dict[str, Any], tenant_id: str | None) -> dict[str, Any]:
-    from core.llm import get_router
     from core.config.models import Task
+    from core.llm import get_router
     from core.llm.base import Message
 
     router = get_router()
@@ -160,6 +162,26 @@ async def _run_outreach_batch(payload: dict[str, Any], tenant_id: str | None) ->
     return {"queued": len(results), "accounts": results}
 
 
+async def _run_commercial_sprint_report(
+    payload: dict[str, Any],
+    tenant_id: str | None,
+) -> dict[str, Any]:
+    """Deterministic sprint JSON off the request path (no outbound)."""
+    import asyncio
+
+    from auto_client_acquisition.commercial_engagements import run_lead_intelligence_sprint
+
+    loop = asyncio.get_running_loop()
+
+    def _inner() -> dict[str, Any]:
+        return run_lead_intelligence_sprint(payload).model_dump()
+
+    result = await loop.run_in_executor(None, _inner)
+    if tenant_id:
+        result["tenant_id"] = tenant_id
+    return result
+
+
 async def _run_embedding_index(payload: dict[str, Any], tenant_id: str | None) -> dict[str, Any]:
     from core.memory.revenue_memory import RevenueMemory
     memory = RevenueMemory()
@@ -174,8 +196,8 @@ async def _run_embedding_index(payload: dict[str, Any], tenant_id: str | None) -
 
 
 async def _run_generic_llm(payload: dict[str, Any], tenant_id: str | None) -> dict[str, Any]:
-    from core.llm import get_router
     from core.config.models import Task
+    from core.llm import get_router
     from core.llm.base import Message
 
     router = get_router()
@@ -205,9 +227,10 @@ async def _update_job_status(
 ) -> None:
     """Upsert BackgroundJobRecord status."""
     try:
-        from db.session import get_session
-        from db.models import BackgroundJobRecord
         from sqlalchemy import select
+
+        from db.models import BackgroundJobRecord
+        from db.session import get_session
 
         async with get_session() as session:
             result = await session.execute(
@@ -226,7 +249,7 @@ async def _update_job_status(
                     rec.completed_at = completed_at
                 if status == "retrying":
                     rec.retry_count = (rec.retry_count or 0) + 1
-    except Exception as exc:  # noqa: BLE001
+    except Exception as exc:
         logger.warning("job_status_update_failed", job_id=job_id, error=str(exc))
 
 
@@ -253,8 +276,8 @@ async def enqueue_agent_job(
 
     # ── Persist job record first ──────────────────────────────────
     try:
-        from db.session import get_session
         from db.models import BackgroundJobRecord
+        from db.session import get_session
 
         async with get_session() as session:
             rec = BackgroundJobRecord(
@@ -265,7 +288,7 @@ async def enqueue_agent_job(
                 input_payload=payload,
             )
             session.add(rec)
-    except Exception as exc:  # noqa: BLE001
+    except Exception as exc:
         logger.warning("job_record_create_failed", job_id=job_id, error=str(exc))
 
     # ── Enqueue in ARQ (Redis) ────────────────────────────────────

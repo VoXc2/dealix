@@ -154,6 +154,33 @@ export const api = {
 
   getRevenueOsLearningWeeklyTemplate: () =>
     apiClient.get("/api/v1/revenue-os/learning/weekly-template"),
+
+  postRevenueOsAntiWasteCheck: (body: Record<string, unknown>) =>
+    apiClient.post("/api/v1/revenue-os/anti-waste/check", body),
+
+  getApprovalsPending: () =>
+    apiClient.get("/api/v1/approvals/pending"),
+
+  getApprovalsHistory: (limit = 50) =>
+    apiClient.get("/api/v1/approvals/history", { params: { limit } }),
+
+  postApprovalApprove: (approvalId: string, who: string) =>
+    apiClient.post(`/api/v1/approvals/${approvalId}/approve`, { who }),
+
+  postApprovalReject: (approvalId: string, who: string, reason: string) =>
+    apiClient.post(`/api/v1/approvals/${approvalId}/reject`, { who, reason }),
+
+  getGmailDraftsToday: () =>
+    apiClient.get("/api/v1/gmail/drafts/today"),
+
+  getLinkedInDraftsToday: () =>
+    apiClient.get("/api/v1/linkedin/drafts/today"),
+
+  getChannelPolicyStatus: () =>
+    apiClient.get("/api/v1/channel-policy/status"),
+
+  getCustomerPortal: (handle = "Slot-A") =>
+    apiClient.get(`/api/v1/customer-portal/${encodeURIComponent(handle)}`),
 };
 
 export default api;

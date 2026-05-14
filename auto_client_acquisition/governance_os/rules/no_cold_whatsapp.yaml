@@ -1,0 +1,10 @@
+id: no_cold_whatsapp
+severity: critical
+if:
+  channel: whatsapp
+  relationship_status_not_in:
+    - consented
+    - existing_relationship
+then:
+  decision: block
+  reason: Cold WhatsApp outreach is not allowed.

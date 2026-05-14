@@ -1,0 +1,12 @@
+id: no_guaranteed_claims
+severity: critical
+if:
+  output_contains_any:
+    - guaranteed sales
+    - guaranteed results
+    - guaranteed roi
+    - نضمن لك
+    - نضمن النتائج
+then:
+  decision: block
+  reason: Guaranteed outcome language is not allowed.

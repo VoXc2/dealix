@@ -32,7 +32,7 @@ def _safe(fn, *, default: Any) -> Any:
     """
     try:
         return fn()
-    except BaseException as exc:  # noqa: BLE001 — never crash the dashboard
+    except BaseException as exc:
         return {
             "_error": True,
             "_type": type(exc).__name__,
@@ -78,7 +78,7 @@ def _live_gates() -> dict[str, Any]:
         out["live_charge"] = (
             "BLOCKED" if not live.get("allowed") else "ALLOWED"
         )
-    except BaseException as exc:  # noqa: BLE001
+    except BaseException as exc:
         out["live_charge"] = f"UNKNOWN ({type(exc).__name__})"
 
     # 2. WhatsApp live send — settings flag
@@ -86,7 +86,7 @@ def _live_gates() -> dict[str, Any]:
         from core.config.settings import get_settings
         flag = getattr(get_settings(), "whatsapp_allow_live_send", False)
         out["whatsapp_live_send"] = "BLOCKED" if not flag else "ALLOWED"
-    except BaseException as exc:  # noqa: BLE001
+    except BaseException as exc:
         out["whatsapp_live_send"] = f"UNKNOWN ({type(exc).__name__})"
 
     # 3. Email live send — no flag exists, so always BLOCKED
@@ -103,7 +103,7 @@ def _live_gates() -> dict[str, Any]:
             and ToolCategory.SCRAPE_WEB in FORBIDDEN_TOOLS
         )
         out["linkedin_and_scraping"] = "BLOCKED" if ok else "MISCONFIGURED"
-    except BaseException as exc:  # noqa: BLE001
+    except BaseException as exc:
         out["linkedin_and_scraping"] = f"UNKNOWN ({type(exc).__name__})"
 
     return out
@@ -168,11 +168,13 @@ def _first_3_customers() -> dict[str, Any]:
         line_end = text.find("\n", idx)
         row = text[idx:line_end if line_end != -1 else None]
         cells = [c.strip() for c in row.split("|")]
+        row_cells: list[str] = list(cells)
+
         # cells[1]=slot, cells[2]=company placeholder, ... col mapping:
         # 1 slot, 2 company, 3 source, 4 consent, 5 segment, 6 problem,
         # 7 diagnostic_status, 8 pilot_status, 9 proof_status, 10 next, 11 owner
-        def _col(i: int) -> str:
-            return cells[i] if i < len(cells) else ""
+        def _col(i: int, _row: list[str] = row_cells) -> str:
+            return _row[i] if i < len(_row) else ""
 
         diag = _col(7)
         pilot = _col(8)
@@ -253,6 +255,50 @@ def _next_founder_action() -> str:
     return "no_action_today"
 
 
+def _governance_risk_payload() -> dict[str, Any]:
+    from api.routers.governance_risk_dashboard import build_risk_dashboard_payload
+
+    return build_risk_dashboard_payload()
+
+
+def _service_sessions_summary() -> dict[str, Any]:
+    from collections import Counter
+
+    from auto_client_acquisition.service_sessions import list_sessions
+
+    recs = list_sessions(limit=200)
+    by_status = Counter(s.status for s in recs)
+    return {
+        "sampled": len(recs),
+        "status_counts": dict(by_status),
+    }
+
+
+@router.get("/operating-scorecard")
+async def operating_scorecard() -> dict[str, Any]:
+    """Weekly-style operating snapshot — read-only; composes governance + sessions."""
+    return {
+        "schema_version": 1,
+        "generated_at": datetime.now(UTC).isoformat(),
+        "governance_risk": _safe(_governance_risk_payload, default={}),
+        "service_sessions": _safe(_service_sessions_summary, default={}),
+        "readiness_endpoints": {
+            "service_readiness_get": "/api/v1/commercial/service-readiness/{service_id}",
+            "readiness_gates_post": "/api/v1/commercial/readiness-gates/check",
+        },
+        "revenue_placeholders": {
+            "mrr_sar": None,
+            "note_ar": "الإيراد المؤكد يحتاج ربط دفتر مدفوعات؛ لا أرقام وهمية.",
+            "note_en": "Confirmed revenue requires a payment ledger; no fake revenue.",
+        },
+        "docs": {
+            "north_star": "docs/commercial/NORTH_STAR_METRICS_AR.md",
+            "capability_verification": "docs/company/CAPABILITY_VERIFICATION_AR.md",
+        },
+        "read_only": True,
+    }
+
+
 @router.get("/status")
 async def status() -> dict:
     return {
@@ -263,7 +309,7 @@ async def status() -> dict:
             "no_cold_outreach": True,
             "approval_required_for_external_actions": True,
         },
-        "endpoints": ["/dashboard"],
+        "endpoints": ["/dashboard", "/operating-scorecard"],
     }
 
 

@@ -307,6 +307,11 @@ def create_app() -> FastAPI:
             "decision_passport_golden_chain": "/api/v1/decision-passport/golden-chain",
             "decision_passport_evidence_levels": "/api/v1/decision-passport/evidence-levels",
             "revenue_os_catalog": "/api/v1/revenue-os/catalog",
+            "founder_summary_daily": "/api/v1/founder-summary",
+            "founder_summary_weekly_agenda": "/api/v1/founder-summary/weekly/agenda",
+            "revenue_intelligence_import": "/api/v1/revenue-intelligence/{eid}/import",
+            "proof_pack_generate": "/api/v1/proof-pack/{eid}/generate",
+            "diagnostic_intent": "/api/v1/diagnostic/intent",
         }
 
     return app

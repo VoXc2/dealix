@@ -1,0 +1,15 @@
+eval_id: arabic_quality
+version: 1
+
+checks:
+  - id: diacritics_policy
+    question: Are diacritics used only when product policy requires?
+    pass: Consistent with STYLE_GUIDE / service QA
+  - id: register
+    question: Formal business Arabic appropriate to sector?
+    pass: Reviewer sign-off
+  - id: mixed_language
+    question: EN product terms handled consistently (transliteration vs English)?
+    pass: Glossary alignment
+
+notes: Pair with human reviewer until automated rubric is calibrated.

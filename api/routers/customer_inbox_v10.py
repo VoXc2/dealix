@@ -18,9 +18,24 @@ from auto_client_acquisition.customer_inbox_v10 import (
 
 router = APIRouter(prefix="/api/v1/customer-inbox-v10", tags=["customer-inbox-v10"])
 
-
 # In-memory ephemeral store keyed by conversation id.
 _CONV_STORE: dict[str, Conversation] = {}
+
+
+@router.get("/conversations")
+async def list_conversations() -> dict:
+    return {
+        "count": len(_CONV_STORE),
+        "conversation_ids": list(_CONV_STORE.keys()),
+    }
+
+
+@router.get("/conversation/{conv_id}")
+async def get_conversation(conv_id: str) -> dict:
+    conv = _CONV_STORE.get(conv_id)
+    if conv is None:
+        raise HTTPException(status_code=404, detail="conversation not found")
+    return conv.model_dump(mode="json")
 
 
 @router.get("/status")

@@ -223,15 +223,36 @@ def suggest_opportunities(profile: OperatorProfile | None = None) -> list[Strate
     ]
 
 
+def _signals_from_stores(*, hours: int = 24) -> dict[str, Any]:
+    """Best-effort counts from approval_center + proof_ledger (single source of truth)."""
+    pending_n = 0
+    proof_n = 0
+    try:
+        from auto_client_acquisition.approval_center import list_pending
+
+        pending_n = len(list_pending() or [])
+    except Exception:
+        pass
+    try:
+        from auto_client_acquisition.proof_ledger import recent_events
+
+        since = datetime.now(UTC) - timedelta(hours=hours)
+        proof_n = len(recent_events(since=since, limit=100))
+    except Exception:
+        pass
+    return {"pending_approvals": pending_n, "proof_events_24h": proof_n}
+
+
 def launch_readiness_score() -> dict[str, Any]:
+    sig = _signals_from_stores()
     checks = {
         "core_api": 80,
         "revenue_memory": 75,
-        "personal_operator": 45,
+        "personal_operator": 52 if sig["pending_approvals"] or sig["proof_events_24h"] else 45,
         "supabase_vector_memory": 55,
-        "whatsapp_approval_flow": 35,
+        "whatsapp_approval_flow": 40 if sig["pending_approvals"] else 35,
         "gmail_calendar_execution": 25,
-        "frontend_command_center": 45,
+        "frontend_command_center": 48 if sig["pending_approvals"] else 45,
         "tests_ci": 40,
         "observability": 45,
         "security_pdpl": 55,
@@ -240,29 +261,53 @@ def launch_readiness_score() -> dict[str, Any]:
     }
     score = round(sum(checks.values()) / len(checks), 1)
     stage = "private_beta_ready_after_fixes" if score >= 70 else "foundation_ready_not_launch_ready"
+    next_path = [
+        "Merge PR #125 after tests",
+        "Add Personal Operator persistence + WhatsApp buttons",
+        "Connect Supabase embeddings pipeline",
+        "Add Gmail draft + Calendar schedule with approval",
+        "Ship private beta to 10 founders",
+    ]
+    if sig["pending_approvals"]:
+        next_path = [
+            f"راجع {sig['pending_approvals']} موافقة معلّقة في مركز الموافقات",
+            *next_path,
+        ]
+    if sig["proof_events_24h"]:
+        next_path = [
+            f"اربط {sig['proof_events_24h']} حدث إثبات حديث بالتقرير الأسبوعي",
+            *next_path,
+        ]
     return {
         "score": score,
         "stage": stage,
         "checks": checks,
-        "next_critical_path": [
-            "Merge PR #125 after tests",
-            "Add Personal Operator persistence + WhatsApp buttons",
-            "Connect Supabase embeddings pipeline",
-            "Add Gmail draft + Calendar schedule with approval",
-            "Ship private beta to 10 founders",
-        ],
+        "signals": sig,
+        "next_critical_path": next_path,
     }
 
 
 def build_daily_brief(profile: OperatorProfile | None = None) -> DailyBrief:
     profile = profile or default_sami_profile()
+    sig = _signals_from_stores()
+    top_decisions = [
+        "ادمج PR v3 بعد إضافة اختبارات smoke أساسية.",
+        "ابدأ Personal Operator كواجهة التشغيل اليومية قبل أي توسع في الميزات.",
+        "لا تطلق عام قبل WhatsApp approval + Gmail draft + Calendar schedule.",
+    ]
+    if sig["pending_approvals"]:
+        top_decisions.insert(
+            0,
+            f"لديك {sig['pending_approvals']} موافقة معلّقة — راجعها في مركز الموافقات قبل أي إجراء خارجي.",
+        )
+    if sig["proof_events_24h"]:
+        top_decisions.insert(
+            0 if not sig["pending_approvals"] else 1,
+            f"سُجّلت {sig['proof_events_24h']} أحداث إثبات في آخر 24 ساعة — وثّقها في تقرير التعلّم الأسبوعي.",
+        )
     return DailyBrief(
         greeting=f"صباح الخير {profile.name}. هذا موجزك التنفيذي لليوم.",
-        top_decisions=[
-            "ادمج PR v3 بعد إضافة اختبارات smoke أساسية.",
-            "ابدأ Personal Operator كواجهة التشغيل اليومية قبل أي توسع في الميزات.",
-            "لا تطلق عام قبل WhatsApp approval + Gmail draft + Calendar schedule.",
-        ],
+        top_decisions=top_decisions[:5],
         opportunities=suggest_opportunities(profile),
         risks=[
             "الخطر الأكبر: كثرة الأدوات بدون workflow إنتاجي واضح.",

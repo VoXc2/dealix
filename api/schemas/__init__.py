@@ -78,6 +78,33 @@ class PipelineResponse(BaseModel):
     customer_readiness: dict[str, Any] | None = None
 
 
+class LeadsBatchRequest(BaseModel):
+    """Batch intake — one Tier1 source for all rows (Revenue OS registry)."""
+
+    tier1_source: str = Field(..., min_length=2, max_length=64)
+    items: list[LeadCreateRequest] = Field(..., min_length=1, max_length=50)
+    targeting_profile: dict[str, Any] | None = Field(
+        default=None,
+        description="Optional SaudiTargetingProfile dict; echoed into lead metadata on batch intake.",
+    )
+
+
+class LeadsBatchItemResult(BaseModel):
+    index: int
+    ok: bool
+    lead_id: str | None = None
+    pipeline: PipelineResponse | None = None
+    error: str | None = None
+
+
+class LeadsBatchResponse(BaseModel):
+    tier1_source: str
+    total: int
+    succeeded: int
+    failed: int
+    results: list[LeadsBatchItemResult]
+
+
 # ══════════════════════════════════════════════════════════════
 # Sales
 # ══════════════════════════════════════════════════════════════

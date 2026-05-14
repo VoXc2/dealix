@@ -60,6 +60,9 @@ def _compute() -> dict[str, Any]:
         "executive_pack": 7500.0,
         "proof_pack": 0.0,
         "agency_partner_pack": 0.0,  # custom
+        "lead_intelligence_sprint": 12000.0,
+        "support_desk_sprint": 15000.0,
+        "quick_win_ops": 10000.0,
     }
     unprofitable: list[dict[str, Any]] = []
     for service_type, indicative_price in package_prices.items():
