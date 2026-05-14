@@ -81,6 +81,8 @@ from api.routers import commercial_map as commercial_map_router
 from api.routers import founder_launch_status as founder_launch_status_router
 # Wave 16 — Post-deploy self-check (in-process smoke from the founder's phone)
 from api.routers import post_deploy_check as post_deploy_check_router
+# Wave 17 — Public Dealix Promise manifesto (11 non-negotiables, no admin gate)
+from api.routers import dealix_promise as dealix_promise_router
 from api.security import APIKeyMiddleware, setup_rate_limit
 from core.config.settings import get_settings
 from core.errors import AICompanyError
@@ -300,6 +302,8 @@ def create_app() -> FastAPI:
     app.include_router(founder_launch_status_router.router)
     # Wave 16 — Post-deploy self-check (admin-gated, in-process smoke)
     app.include_router(post_deploy_check_router.router)
+    # Wave 17 — Public Dealix Promise manifesto (11 non-negotiables, no admin gate)
+    app.include_router(dealix_promise_router.router)
 
     @app.get("/", tags=["root"])
     async def root() -> dict[str, object]:
