@@ -531,6 +531,71 @@
 
       setStatus('✓ تشخيصك جاهز أسفله — سنرسل نسخة للبريد خلال ٢٤–٤٨ ساعة.', 'success');
       renderResult(diag, body);
+
+      // Wave 14J — Gap G — chain qualification scorer (best-effort; never blocks UX).
+      // Body inference per spec — 8 yes/no inferences from intake answers.
+      try {
+        // formData inferred from the diagnostic form fields
+        const formData = {
+          has_data: !!(customer_base && customer_base !== '0_10') || !!(tech_level && tech_level !== 'manual'),
+          has_budget: ['10_50','50_200','200_plus'].includes(customer_base) || ['integrated','advanced'].includes(tech_level),
+          message: biggest_problem || '',
+          sector: sector || '',
+          city: ''
+        };
+        const qres = await fetch(`${API_BASE}/api/v1/service-setup/qualify`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            pain_clear: true,
+            owner_present: true,
+            data_available: !!formData.has_data,
+            accepts_governance: true,
+            has_budget: !!formData.has_budget,
+            wants_safe_methods: true,
+            proof_path_visible: true,
+            retainer_path_visible: true,
+            raw_request_text: (formData.message || '') + ' ' + (formData.sector || ''),
+            sector: formData.sector || '',
+            city: formData.city || ''
+          })
+        });
+        if (qres.ok) {
+          const q = await qres.json();
+          const wrap = document.createElement('div');
+          wrap.style.cssText = 'margin:16px 0;padding:14px;border-radius:10px;border:1px solid var(--border,#444);background:rgba(255,255,255,0.04);';
+          const colors = {
+            accept: ['#22c55e', 'نقبل — Accept · Proceed to /start.html for 499 SAR Sprint'],
+            diagnostic_only: ['#3b82f6', 'تشخيص أولاً — Diagnostic first · Free, then revisit in 2-4 weeks'],
+            reframe: ['#f59e0b', 'نحتاج مكالمة لتوضيح النطاق — Scope call needed · Book via Calendly'],
+            reject: ['#ef4444', 'للأسف لا نقدّم هذا — Out of scope · See safe_alternative'],
+            refer_out: ['#9ca3af', 'ليس مناسبًا الآن — Better fit elsewhere · Refer to partner']
+          };
+          const [color, label] = colors[q.decision] || ['#9ca3af', q.decision];
+          wrap.innerHTML =
+            '<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">' +
+            '<span style="background:' + color + ';color:#fff;padding:4px 10px;border-radius:999px;font-weight:600;font-size:0.9em">' +
+              q.decision +
+            '</span>' +
+            '<span>' + label + '</span>' +
+            '<span style="opacity:0.7">score=' + q.score + '/100</span>' +
+            '</div>';
+          if (q.doctrine_violations && q.doctrine_violations.length) {
+            wrap.innerHTML +=
+              '<div style="margin-top:8px;color:#ef4444">' +
+              q.doctrine_violations.map(function(v){
+                return '<span style="display:inline-block;margin:2px 4px 0 0;padding:2px 8px;border:1px solid #ef4444;border-radius:6px;font-size:0.85em">' + v + '</span>';
+              }).join('') +
+              '</div>';
+          }
+          if (q.safe_alternative) {
+            wrap.innerHTML += '<div style="margin-top:8px;opacity:0.85"><em>' + q.safe_alternative + '</em></div>';
+          }
+          wrap.innerHTML += '<div style="margin-top:10px;font-size:0.85em;opacity:0.7"><em>Estimated outcomes are not guaranteed outcomes / النتائج التقديرية ليست نتائج مضمونة.</em></div>';
+          const target = document.getElementById('result') || document.body;
+          target.appendChild(wrap);
+        }
+      } catch (_e) { /* swallow: qualification is non-blocking */ }
     } catch (err) {
       setStatus(`خطأ: ${err.message}`, 'error');
     } finally {

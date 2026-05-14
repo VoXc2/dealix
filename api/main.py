@@ -69,6 +69,8 @@ from api.routers import founder_dashboard as founder_dashboard_router
 from api.routers import audit_export as audit_export_router
 # Wave 14F — Agent OS
 from api.routers import agent_os as agent_os_router
+# Wave 14J — Commercial wiring map (source of truth for landing↔backend)
+from api.routers import commercial_map as commercial_map_router
 from api.security import APIKeyMiddleware, setup_rate_limit
 from core.config.settings import get_settings
 from core.errors import AICompanyError
@@ -282,6 +284,8 @@ def create_app() -> FastAPI:
     app.include_router(audit_export_router.router)
     # Wave 14F — Agent OS (admin-gated)
     app.include_router(agent_os_router.router)
+    # Wave 14J — Commercial wiring map (public)
+    app.include_router(commercial_map_router.router)
 
     @app.get("/", tags=["root"])
     async def root() -> dict[str, object]:

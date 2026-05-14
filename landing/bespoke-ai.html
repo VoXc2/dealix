@@ -161,6 +161,19 @@
       </label>
     </div>
 
+    <!-- Wave 14J — Gap D — live estimate widget (debounced, no commit, no email) -->
+    <div id="live-estimate" style="margin-top: 16px; padding: 14px 18px; border: 1px dashed var(--border, #cbd5e1); border-radius: 10px; background: rgba(34,211,238,0.05); font-size: 14px;">
+      <div style="font-weight:700;margin-bottom:6px;">تقدير حيّ غير ملزم · Live estimate (non-binding)</div>
+      <div id="live-estimate-body" style="color: var(--muted, #475569);">
+        املأ النموذج لرؤية التقدير الفوري · Fill the form to see an instant estimate.
+      </div>
+      <div style="margin-top:8px;font-size:12px;color:var(--muted,#64748b);">
+        <em>تقدير غير ملزم — Estimate, not a quote, until founder approval.</em>
+        <br>
+        <em>Estimated outcomes are not guaranteed outcomes / النتائج التقديرية ليست نتائج مضمونة.</em>
+      </div>
+    </div>
+
     <button type="submit" class="submit-btn" id="submit-btn">احسب التقدير + أرسل الطلب</button>
   </form>
 
@@ -234,6 +247,72 @@ document.getElementById('service-form').addEventListener('submit', async (e) => 
   btn.disabled = false;
   btn.textContent = 'احسب التقدير + أرسل الطلب';
 });
+
+// Wave 14J — Gap D — debounced live estimate widget.
+// On any form field change, POST a partial intake to /api/v1/service-setup/requests
+// and inline-render estimated_setup_sar + estimated_monthly_sar if returned.
+(function(){
+  var fields = ['company','contact_name','contact_email','use_case','category','complexity','integrations','data_volume','timeline','regulated'];
+  var bodyEl = document.getElementById('live-estimate-body');
+  var timer = null;
+
+  function readPayload() {
+    return {
+      company_name: (document.getElementById('company').value || 'preview').trim() || 'preview',
+      contact_name: (document.getElementById('contact_name').value || 'preview').trim() || 'preview',
+      contact_email: (document.getElementById('contact_email').value || 'preview@example.com').trim() || 'preview@example.com',
+      use_case_summary: (document.getElementById('use_case').value || 'preview use case for live estimate widget').trim(),
+      use_case_category: document.getElementById('category').value,
+      complexity: document.getElementById('complexity').value,
+      integrations_count: parseInt(document.getElementById('integrations').value, 10) || 1,
+      data_volume_band: document.getElementById('data_volume').value,
+      timeline_weeks: parseInt(document.getElementById('timeline').value, 10) || 1,
+      regulated_industry: document.getElementById('regulated').checked,
+      preview_only: true
+    };
+  }
+
+  function fmtSAR(n) {
+    if (n === null || n === undefined) return '—';
+    try { return Number(n).toLocaleString() + ' SAR'; } catch(_) { return n + ' SAR'; }
+  }
+
+  function fetchEstimate() {
+    var payload = readPayload();
+    if (!payload.use_case_summary || payload.use_case_summary.length < 20) {
+      bodyEl.innerHTML = 'املأ وصف use case (20 حرف على الأقل) لرؤية التقدير · Fill use case (≥20 chars) to see estimate.';
+      return;
+    }
+    bodyEl.textContent = '… جارٍ التقدير · estimating …';
+    fetch(API_BASE + '/api/v1/service-setup/requests', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(payload)
+    }).then(function(r){ return r.json(); }).then(function(data){
+      var setup = (data && data.estimate && (data.estimate.setup_sar !== undefined ? data.estimate.setup_sar : data.estimated_setup_sar)) || data.estimated_setup_sar;
+      var monthly = (data && data.estimate && (data.estimate.monthly_sar !== undefined ? data.estimate.monthly_sar : data.estimated_monthly_sar)) || data.estimated_monthly_sar;
+      if (setup === undefined && monthly === undefined && data && data.detail) {
+        bodyEl.innerHTML = '<span style="color:#dc2626">' + (typeof data.detail === 'string' ? data.detail : 'تحقّق من الحقول · check fields') + '</span>';
+        return;
+      }
+      bodyEl.innerHTML = '<strong>' + fmtSAR(setup) + '</strong> setup + <strong>' + fmtSAR(monthly) + '</strong>/شهر · /mo';
+    }).catch(function(err){
+      bodyEl.innerHTML = '<span style="color:#dc2626">فشل · failed: ' + err.message + '</span>';
+    });
+  }
+
+  function debounced() {
+    if (timer) clearTimeout(timer);
+    timer = setTimeout(fetchEstimate, 500);
+  }
+
+  fields.forEach(function(id){
+    var el = document.getElementById(id);
+    if (!el) return;
+    el.addEventListener('input', debounced);
+    el.addEventListener('change', debounced);
+  });
+})();
 </script>
 
 </body>

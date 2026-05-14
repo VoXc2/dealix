@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-theme="dark">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Sprint Sample — معاينة سبرنت Revenue Intelligence</title>
+<meta name="description" content="معاينة Sprint على بيانات سعودية مُصطنعة — يوضح المخرج بدون استخدام أي بيانات عميل حقيقية. Estimated outcomes are not guaranteed outcomes." />
+<link rel="canonical" href="https://dealix.me/sprint-sample.html" />
+<meta property="og:type" content="website" />
+<meta property="og:title" content="Sprint Sample — Dealix" />
+<meta property="og:description" content="Synthetic Saudi B2B demo run. Shows the output shape with NO real customer data." />
+<meta property="og:url" content="https://dealix.me/sprint-sample.html" />
+<meta property="og:locale" content="ar_SA" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="theme-color" content="#0f172a" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" />
+
+<link rel="stylesheet" href="/styles.css" />
+<link rel="stylesheet" href="/assets/css/design-system.css" />
+
+<style>
+  body {
+    background:
+      radial-gradient(900px 500px at 80% -10%, rgba(34, 197, 94, 0.14), transparent 60%),
+      radial-gradient(900px 500px at 0% 10%, rgba(14, 165, 233, 0.16), transparent 60%),
+      linear-gradient(180deg, #050816 0%, #0b1124 60%, #0f1d35 100%);
+    color: var(--text);
+    min-height: 100vh;
+    margin: 0;
+    font-family: var(--font-ar);
+  }
+  main { padding: var(--space-7) var(--space-5) var(--space-9); }
+  .ss-summary-grid { display: grid; gap: var(--space-3); grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+  .ss-summary-card {
+    padding: var(--space-4);
+    background: rgba(34,211,238,0.06);
+    border: 1px solid rgba(34,211,238,0.20);
+    border-radius: var(--radius, 14px);
+  }
+  .ss-summary-card .label { color: var(--text-muted); font-size: var(--fs-xs); text-transform: uppercase; letter-spacing: 0.05em; }
+  .ss-summary-card .value { color: #22d3ee; font-size: 1.6rem; font-weight: 700; margin-top: 4px; }
+  .ss-step {
+    display: grid;
+    grid-template-columns: 24px 1fr auto;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-3) var(--space-4);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 10px;
+    background: rgba(15,23,42,0.45);
+    margin-bottom: var(--space-2);
+  }
+  .ss-step__num { color: #4ade80; font-weight: 700; font-family: var(--font-en); }
+  .ss-step__name { font-weight: 600; }
+  .ss-step__status {
+    font-size: var(--fs-xs);
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-family: var(--font-en);
+  }
+  .ss-step__status--ok { background: rgba(34,197,94,0.18); color: #4ade80; }
+  .ss-step__status--err { background: rgba(220,38,38,0.18); color: #fca5a5; }
+  .ss-step__status--pending { background: rgba(148,163,184,0.18); color: #cbd5e1; }
+  .ss-disclaimer {
+    margin-top: var(--space-6);
+    padding: var(--space-4);
+    border-radius: var(--radius, 14px);
+    background: rgba(34, 211, 238, 0.04);
+    border: 1px solid rgba(34, 211, 238, 0.18);
+    font-size: var(--fs-sm);
+    color: var(--text-muted);
+    text-align: center;
+    line-height: 1.7;
+  }
+</style>
+</head>
+<body>
+<a class="ds-skip-link" href="#main">تخطّ إلى المحتوى الرئيسي</a>
+
+<main id="main" class="ds-container--base ds-stack ds-stack--xl">
+
+  <!-- Breadcrumb -->
+  <nav class="ds-breadcrumb" aria-label="مسار التنقّل">
+    <a href="/">الرئيسيّة</a>
+    <span class="ds-breadcrumb__sep" aria-hidden="true"></span>
+    <a href="/services.html">الخدمات</a>
+    <span class="ds-breadcrumb__sep" aria-hidden="true"></span>
+    <a href="/start.html">Sprint 499 SAR</a>
+    <span class="ds-breadcrumb__sep" aria-hidden="true"></span>
+    <span aria-current="page">Sample</span>
+  </nav>
+
+  <!-- Hero -->
+  <section class="ds-banner ds-stack ds-stack--sm" aria-labelledby="ss-hero-title">
+    <span class="ds-eyebrow">Sprint Sample · synthetic demo · no real data</span>
+    <h1 id="ss-hero-title" class="ds-banner__title">Sprint Sample — معاينة سبرنت Revenue Intelligence</h1>
+    <p class="ds-banner__subtitle">
+      هذا run تجريبي على بيانات سعودية مُصطنعة (Saudi B2B demo CSV). يوضح المخرج بدون استخدام أي بيانات عميل حقيقية.
+      <br>
+      <span style="font-family: var(--font-en); font-size: var(--fs-sm); color: var(--text-muted);">This is a synthetic run on the bundled Saudi B2B demo CSV. Shows the output shape with NO real customer data.</span>
+    </p>
+  </section>
+
+  <!-- Summary -->
+  <section aria-labelledby="ss-summary-title" class="ds-stack ds-stack--md">
+    <div>
+      <span class="ds-eyebrow">ملخّص · Summary</span>
+      <h2 id="ss-summary-title" class="ds-headline" style="font-size: var(--fs-3xl); margin-top: var(--space-3);">ماذا أنتج Sprint عن هذا العميل المُصطنع</h2>
+    </div>
+    <div id="ss-summary" class="ss-summary-grid">
+      <div class="ss-summary-card"><div class="label">engagement_id</div><div class="value" id="ss-engagement" style="font-size: 0.95rem; font-family: var(--font-en); word-break: break-all;">…</div></div>
+      <div class="ss-summary-card"><div class="label">customer_id</div><div class="value" id="ss-customer" style="font-size: 0.95rem; font-family: var(--font-en); word-break: break-all;">…</div></div>
+      <div class="ss-summary-card"><div class="label">Proof Pack score</div><div class="value" id="ss-proof-score">…</div></div>
+      <div class="ss-summary-card"><div class="label">Proof Pack tier</div><div class="value" id="ss-proof-tier" style="font-size: 1.15rem;">…</div></div>
+      <div class="ss-summary-card"><div class="label">capital assets</div><div class="value" id="ss-capital-count">…</div></div>
+      <div class="ss-summary-card"><div class="label">retainer eligible</div><div class="value" id="ss-retainer" style="font-size: 1.15rem;">…</div></div>
+      <div class="ss-summary-card"><div class="label">governance decision</div><div class="value" id="ss-governance" style="font-size: 1.15rem;">…</div></div>
+    </div>
+  </section>
+
+  <!-- 8 steps -->
+  <section aria-labelledby="ss-steps-title" class="ds-stack ds-stack--md">
+    <div>
+      <span class="ds-eyebrow">المسار · Pipeline</span>
+      <h2 id="ss-steps-title" class="ds-headline" style="font-size: var(--fs-3xl); margin-top: var(--space-3);">٨ خطوات Sprint · 8 Sprint steps</h2>
+    </div>
+    <div id="ss-steps">
+      <p style="color: var(--text-muted);">… جارٍ تحميل العيّنة · loading sample …</p>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="ds-card ds-stack ds-stack--md" style="text-align: center;">
+    <h2 style="margin: 0;">هل عجبك المخرج؟</h2>
+    <p class="ds-lede" style="max-width: 640px; margin: 0 auto;">
+      هذا synthetic — Sprint الحقيقي 499 SAR على بياناتك أنت، خلال 7 أيام عمل.
+      <br>
+      Run a real Sprint on your own data — 499 SAR, 7 business days, full 100% refund within 14 days.
+    </p>
+    <div class="ds-row" style="justify-content: center; gap: var(--space-3); flex-wrap: wrap;">
+      <a class="ds-btn ds-btn--lg" href="/start.html" data-analytics="cta_sprint_sample_book">احجز Sprint حقيقي 499 SAR · Book a real Sprint</a>
+      <a class="ds-btn ds-btn--ghost ds-btn--lg" href="/diagnostic.html" data-analytics="cta_sprint_sample_diagnostic">تشخيص مجّاني أولاً · Free diagnostic</a>
+    </div>
+  </section>
+
+  <!-- Bilingual disclaimer footer -->
+  <div class="ss-disclaimer">
+    <strong>Estimated outcomes are not guaranteed outcomes / النتائج التقديرية ليست نتائج مضمونة.</strong>
+    <br>
+    Synthetic data shown above — no real customer data was used. كلّ مخرج يحمل evidence_id قابل للتدقيق.
+  </div>
+
+  <!-- Footer -->
+  <footer class="ds-footer">
+    <div class="ds-container ds-stack ds-stack--md" style="text-align: center;">
+      <div class="ds-row" style="justify-content: center; gap: var(--space-5); flex-wrap: wrap;">
+        <a class="ds-link" href="/">الرئيسيّة</a>
+        <a class="ds-link" href="/services.html">الخدمات</a>
+        <a class="ds-link" href="/start.html">Sprint 499 SAR</a>
+        <a class="ds-link" href="/pricing.html">الأسعار</a>
+        <a class="ds-link" href="/trust-center.html">Trust Center</a>
+        <a class="ds-link" href="/privacy.html">الخصوصيّة</a>
+        <a class="ds-link" href="/terms.html">الشروط</a>
+      </div>
+    </div>
+  </footer>
+
+</main>
+
+<script>
+  window.DEALIX_API_BASE = window.DEALIX_API_BASE || 'https://api.dealix.me';
+</script>
+
+<script>
+(function(){
+  var apiBase = (window.DEALIX_API_BASE || '').replace(/\/$/, '');
+  var url = apiBase + '/api/v1/sprint/sample';
+
+  function esc(s) {
+    if (s === null || s === undefined) return '—';
+    return String(s).replace(/[<>&]/g, function(c){ return {'<':'&lt;','>':'&gt;','&':'&amp;'}[c]; });
+  }
+
+  function statusClass(status) {
+    var s = String(status || '').toLowerCase();
+    if (s === 'ok' || s === 'success' || s === 'pass' || s === 'completed' || s === 'done') return 'ss-step__status--ok';
+    if (s === 'fail' || s === 'error' || s === 'blocked') return 'ss-step__status--err';
+    return 'ss-step__status--pending';
+  }
+
+  fetch(url, { cache: 'no-store' })
+    .then(function(r){ return r.json(); })
+    .then(function(b){
+      // Summary fields with safe fallbacks
+      document.getElementById('ss-engagement').textContent = esc(b.engagement_id || (b.engagement && b.engagement.id));
+      document.getElementById('ss-customer').textContent = esc(b.customer_id || (b.engagement && b.engagement.customer_id));
+
+      var proof = b.proof_pack || b.proof || {};
+      document.getElementById('ss-proof-score').textContent = esc(proof.score !== undefined ? proof.score : b.proof_score);
+      document.getElementById('ss-proof-tier').textContent = esc(proof.tier || b.proof_tier);
+
+      var capital = b.capital_assets_registered;
+      if (Array.isArray(capital)) {
+        document.getElementById('ss-capital-count').textContent = capital.length;
+      } else {
+        document.getElementById('ss-capital-count').textContent = esc(capital);
+      }
+
+      var retainer = b.retainer_eligible;
+      document.getElementById('ss-retainer').textContent = retainer === true ? 'نعم · yes' : (retainer === false ? 'لا · no' : esc(retainer));
+
+      document.getElementById('ss-governance').textContent = esc(b.governance_decision);
+
+      // 8 steps
+      var stepsContainer = document.getElementById('ss-steps');
+      var steps = b.steps || (b.engagement && b.engagement.steps) || [];
+      if (!Array.isArray(steps) || steps.length === 0) {
+        stepsContainer.innerHTML = '<p style="color: var(--text-muted);"><em>(لا خطوات بعد · no steps yet)</em></p>';
+        return;
+      }
+      var html = steps.map(function(s, i){
+        var name = s.name || s.step || s.step_name || ('step_' + (i+1));
+        var status = s.status || s.state || 'pending';
+        return '<div class="ss-step">' +
+          '<span class="ss-step__num">' + (i+1) + '</span>' +
+          '<span class="ss-step__name">' + esc(name) + '</span>' +
+          '<span class="ss-step__status ' + statusClass(status) + '">' + esc(status) + '</span>' +
+          '</div>';
+      }).join('');
+      stepsContainer.innerHTML = html;
+    })
+    .catch(function(err){
+      document.getElementById('ss-steps').innerHTML = '<p style="color:#fca5a5">فشل تحميل العيّنة · sample failed to load: ' + esc(err.message) + '</p>';
+    });
+})();
+</script>
+
+</body>
+</html>
