@@ -94,6 +94,16 @@ ALLOWLIST: dict[str, dict[str, str]] = {
         "scraping": "NEGATION",
         "مضمون": "NEGATION",
     },
+    # Wave 18 investor one-pager — uses every forbidden token only inside
+    # "three things we never do" negation block (no cold blast / no
+    # guaranteed outcomes / no مضمون). Peer-to-peer evidence-first tone;
+    # the negation block is the moat statement. Doctrine intact.
+    "sales-kit/INVESTOR_ONE_PAGER.md": {
+        "cold": "NEGATION",
+        "blast": "NEGATION",
+        "guaranteed": "NEGATION",
+        "مضمون": "NEGATION",
+    },
 }
 
 
