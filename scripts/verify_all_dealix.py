@@ -493,6 +493,19 @@ def system_first_invoice_motion() -> SystemReport:
     )]
     return r
 
+def system_doctrine_versioning() -> SystemReport:
+    r = SystemReport("Doctrine Versioning")
+    r.docs = [
+        file_check("open-doctrine/VERSIONS.md"),
+    ]
+    r.code = [
+        file_check("open-doctrine/doctrine_versions.json"),
+        file_check("scripts/tag_doctrine_version.py"),
+    ]
+    r.tests = [file_check("tests/test_doctrine_versioning.py")]
+    return r
+
+
 def system_customer_readiness_gate() -> SystemReport:
     r = SystemReport("Customer Readiness Gate")
     r.docs = [any_of_files_check(
@@ -579,6 +592,7 @@ SYSTEMS: list[Callable[[], SystemReport]] = [
     system_continuous_routine,
     system_public_trust_surface,
     system_customer_readiness_gate,
+    system_doctrine_versioning,
 ]
 
 # Systems that must be ≥ 4/5 for "CEO complete".

@@ -152,6 +152,13 @@
       "name": "Customer Readiness Gate",
       "passed": true,
       "score": 4
+    },
+    {
+      "in_top_eight": false,
+      "missing": [],
+      "name": "Doctrine Versioning",
+      "passed": true,
+      "score": 4
     }
   ]
 }

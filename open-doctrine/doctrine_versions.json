@@ -1,0 +1,13 @@
+{
+  "doctrine_id": "GOVERNED-AI-OPERATIONS-DOCTRINE",
+  "owner": "Dealix",
+  "versions": [
+    {
+      "version": "v1.0.0",
+      "commit_sha": "cc0b4b6e2101d3f33f5a1a2c61d56bc52766434a",
+      "date": "2026-05-14",
+      "summary": "Initial open doctrine: 11 non-negotiables + control mapping + README.",
+      "signed_by": "Founder"
+    }
+  ]
+}
