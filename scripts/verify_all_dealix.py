@@ -227,8 +227,13 @@ def run() -> tuple[list[Check], bool, bool]:
     results = [fn() for fn in CHECKS]
     all_pass = all(r.pass_ for r in results)
     market_action_systems = {"Partner Motion", "First Invoice Motion"}
+    # CEO completion threshold: score >= 4. The matrix defines CEO-complete
+    # around the "invoice sent" milestone (see docs/ops/FIRST_INVOICE_UNLOCK.md);
+    # ``check_first_invoice_motion()`` returns 4 for "sent, unpaid" and 5
+    # only after a paid invoice. Requiring 5 would block CEO-complete on a
+    # successful sent state, contradicting the documented gate semantics.
     ceo_complete = all_pass and all(
-        r.score >= 5 for r in results if r.system in market_action_systems
+        r.score >= 4 for r in results if r.system in market_action_systems
     )
     return results, all_pass, ceo_complete
 

@@ -193,8 +193,19 @@ def step4_draft_pack(*, customer_id: str, engagement_id: str, top_accounts: list
     }
 
 
-def step5_governance_review(*, customer_id: str, engagement_id: str, drafts: list[dict]) -> dict:
-    """Day 4 cont'd: Run governance_os.decide on every draft."""
+def step5_governance_review(
+    *,
+    customer_id: str,
+    engagement_id: str,
+    drafts: list[dict],
+    source_passport=None,
+) -> dict:
+    """Day 4 cont'd: Run ``governance_os.decide`` on every draft.
+
+    The Source Passport is threaded through so ``decide()`` can satisfy
+    its passport gate; without it, the ``generate_draft`` action would be
+    hard-blocked and every draft would unjustly fail review.
+    """
     from auto_client_acquisition.governance_os.runtime_decision import decide
 
     reviews = []
@@ -206,6 +217,8 @@ def step5_governance_review(*, customer_id: str, engagement_id: str, drafts: lis
                 "text": outline_text,
                 "channel": "email",
                 "is_cold": False,
+                "source_passport": source_passport,
+                "intended_use": "draft_only",
             },
         )
         reviews.append({
@@ -368,9 +381,11 @@ def run_sprint(
     run.steps.append(s4)
     drafts = s4.output.get("ar_drafts_outlined", [])
 
-    # Step 5 — governance review
+    # Step 5 — governance review (passport threaded so decide() can clear
+    # its source-passport gate)
     s5 = _safe("governance_review", step5_governance_review,
-               customer_id=customer_id, engagement_id=engagement_id, drafts=drafts)
+               customer_id=customer_id, engagement_id=engagement_id,
+               drafts=drafts, source_passport=source_passport)
     run.steps.append(s5)
     gov_summary = s5.output.get("summary", {})
 

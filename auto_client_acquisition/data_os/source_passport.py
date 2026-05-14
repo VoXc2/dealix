@@ -55,14 +55,15 @@ def _bad(field_name: str, value: object, allowed: Iterable[str]) -> str:
 
 def validate(passport: SourcePassport | None) -> ValidationResult:
     """A passport is valid iff every required field is set + within the
-    canonical enum. ``None`` / missing source_id → invalid."""
+    canonical enum, AND ``ai_access_allowed`` is True. ``None`` / missing
+    source_id / whitespace-only source_id → invalid."""
     if passport is None:
         return ValidationResult(
             is_valid=False, missing=("passport",), reasons=("no_passport",)
         )
     missing: list[str] = []
     reasons: list[str] = []
-    if not passport.source_id:
+    if not str(passport.source_id).strip():
         missing.append("source_id")
     if passport.source_type not in ALLOWED_SOURCE_TYPES:
         reasons.append(_bad("source_type", passport.source_type, ALLOWED_SOURCE_TYPES))
@@ -81,6 +82,8 @@ def validate(passport: SourcePassport | None) -> ValidationResult:
         reasons.append(
             _bad("retention_policy", passport.retention_policy, ALLOWED_RETENTION)
         )
+    if not passport.ai_access_allowed:
+        reasons.append("ai_access_denied")
     return ValidationResult(
         is_valid=not missing and not reasons,
         missing=tuple(missing),

@@ -12,11 +12,14 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, Any
+from typing import Any
 
-if TYPE_CHECKING:  # pragma: no cover — typing-only imports
-    from auto_client_acquisition.data_os.import_preview import ImportPreview
-    from auto_client_acquisition.data_os.source_passport import SourcePassport
+# Note: ``ImportPreview`` and ``SourcePassport`` are referenced only as
+# forward-ref strings in this module. We deliberately avoid even a
+# ``TYPE_CHECKING`` import of them because their packages re-import
+# ``data_quality_score`` at module load (e.g. via
+# ``revenue_data_intake.csv_preview``). A real import here — even guarded —
+# is enough to make CodeQL flag the import graph as cyclic.
 
 
 def account_row_completeness(row: dict[str, Any], required_keys: tuple[str, ...]) -> float:

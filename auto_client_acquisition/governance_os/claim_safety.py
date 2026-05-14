@@ -33,4 +33,15 @@ def audit_claim_safety(text: str) -> ClaimSafetyResult:
     return ClaimSafetyResult((), GovernanceDecision.ALLOW)
 
 
-__all__ = ["ClaimSafetyResult", "audit_claim_safety"]
+def contains_unsafe_claim(text: str) -> tuple[bool, list[str]]:
+    """Boolean + reasons variant used by the runtime governance authority.
+
+    Returns ``(True, [reasons...])`` whenever ``audit_claim_safety`` raises
+    any flagged claim — both forbidden-claim hits and operational issues —
+    so the caller can decide to REDACT / DRAFT_ONLY / BLOCK accordingly.
+    """
+    result = audit_claim_safety(text)
+    return bool(result.issues), list(result.issues)
+
+
+__all__ = ["ClaimSafetyResult", "audit_claim_safety", "contains_unsafe_claim"]

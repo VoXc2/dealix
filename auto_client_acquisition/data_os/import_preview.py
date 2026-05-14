@@ -13,7 +13,6 @@ from __future__ import annotations
 import csv
 import io
 from dataclasses import dataclass, field
-from pathlib import Path
 from typing import Any, Iterable
 
 from auto_client_acquisition.customer_data_plane.pii_redactor import (
@@ -87,16 +86,17 @@ def _suggest_cleanup(missing: dict[str, float], pii_cols: list[str]) -> list[str
     return out
 
 
-def preview(source: Path | str | Iterable[dict[str, Any]] | bytes) -> ImportPreview:
-    """Read a CSV file, raw CSV bytes, or an iterable of dicts and return a
-    preview. PII columns flagged. Suggested cleanup ranked."""
+def preview(source: bytes | Iterable[dict[str, Any]]) -> ImportPreview:
+    """Build an ImportPreview from raw CSV bytes or an in-memory iterable of
+    dicts. PII columns flagged. Suggested cleanup ranked.
+
+    The path-from-string branch was intentionally removed: every caller in
+    the codebase passes bytes (router) or an iterable (tests). Callers that
+    want to read from disk should do ``Path(p).read_bytes()`` themselves so
+    the I/O policy stays at the boundary.
+    """
     rows: list[dict[str, Any]]
-    if isinstance(source, (str, Path)):
-        path = Path(source)
-        with path.open("r", encoding="utf-8", newline="") as f:
-            reader = csv.DictReader(f)
-            rows = list(reader)
-    elif isinstance(source, bytes):
+    if isinstance(source, bytes):
         reader = csv.DictReader(io.StringIO(source.decode("utf-8")))
         rows = list(reader)
     else:
