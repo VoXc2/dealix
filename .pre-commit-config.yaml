@@ -60,3 +60,29 @@ repos:
         language: system
         pass_filenames: false
         files: ^docs/registry/SERVICE_READINESS_MATRIX\.yaml$
+      # ──────────────────────────────────────────────────────────────
+      # Wave 20 PR4 — doctrine-as-code gates
+      # ──────────────────────────────────────────────────────────────
+      - id: doctrine-verifier-gate
+        name: Doctrine layer must PASS (verify_all_dealix.py --system Doctrine)
+        entry: python scripts/verify_all_dealix.py --system Doctrine
+        language: system
+        pass_filenames: false
+      - id: no-inflated-marker-counts
+        name: Marker counters must equal len(entries)
+        entry: python -m pytest -q tests/test_no_inflated_marker_counts.py --no-header -p no:cacheprovider --override-ini=addopts=
+        language: system
+        pass_filenames: false
+        files: ^data/(partner_outreach_log|first_invoice_log)\.json$
+      - id: marker-files-have-git-provenance
+        name: Marker entries must carry entry_id + git_author
+        entry: python -m pytest -q tests/test_marker_files_have_git_provenance.py --no-header -p no:cacheprovider --override-ini=addopts=
+        language: system
+        pass_filenames: false
+        files: ^data/(partner_outreach_log|first_invoice_log|capital_asset_index)\.json$
+      - id: refresh-verifier-report
+        name: Refresh landing/assets/data/verifier-report.json on marker change
+        entry: python scripts/render_verifier_report.py
+        language: system
+        pass_filenames: false
+        files: ^(data/.*\.json|scripts/verify_all_dealix\.py)$

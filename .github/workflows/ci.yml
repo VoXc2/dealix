@@ -110,3 +110,59 @@ jobs:
           GLM_API_KEY: test-glm-key
           GOOGLE_API_KEY: test-google-key
         run: python scripts/run_evals.py
+
+  # ───────────────────────────────────────────────────────────────
+  # Wave 20 PR4 — Doctrine-as-Code Gate (required for merge)
+  # The eleven non-negotiables become non-bypassable here. This job
+  # runs independently from the main test job so a failure surfaces
+  # immediately with a clear, founder-readable message.
+  # ───────────────────────────────────────────────────────────────
+  doctrine-gate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install minimum deps
+        run: |
+          python -m pip install --upgrade pip
+          pip install pytest pytest-asyncio
+
+      - name: Doctrine layer must PASS
+        run: python scripts/verify_all_dealix.py --system Doctrine
+
+      - name: Governance OS layer must PASS
+        run: python scripts/verify_all_dealix.py --system "Governance OS"
+
+      - name: Marker counts must equal len(entries)
+        run: |
+          python -m pytest -q \
+            tests/test_no_inflated_marker_counts.py \
+            --no-header -p no:cacheprovider --override-ini=addopts=
+
+      - name: Marker entries must carry git provenance
+        run: |
+          python -m pytest -q \
+            tests/test_marker_files_have_git_provenance.py \
+            --no-header -p no:cacheprovider --override-ini=addopts=
+
+      - name: Doctrine control mapping must be complete
+        run: |
+          python -m pytest -q \
+            tests/test_doctrine_control_mapping_complete.py \
+            tests/test_agent_requires_identity_card.py \
+            tests/test_capital_asset_index_valid.py \
+            --no-header -p no:cacheprovider --override-ini=addopts=
+
+      - name: No forbidden features in product code
+        run: |
+          python -m pytest -q \
+            tests/test_no_forbidden_features_in_diff.py \
+            --no-header -p no:cacheprovider --override-ini=addopts=
+
+      - name: Capital asset index validates
+        run: python scripts/validate_capital_assets.py
