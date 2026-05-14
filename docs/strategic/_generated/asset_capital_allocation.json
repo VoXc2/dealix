@@ -1,0 +1,65 @@
+{
+  "generated_at_utc": "2026-05-14T16:48:02Z",
+  "source": "docs/strategic/HOLDING_VALUE_REGISTRY_AR.md",
+  "method": "Quadrant: high_value=max(revenue,partner,investor,holding)>=4; high_evidence=L5+",
+  "invest": [],
+  "activate": [
+    {
+      "asset": "HOLDING_DOCS_HUB_AR.md",
+      "max_value_score": 5,
+      "evidence_level": "L2"
+    },
+    {
+      "asset": "DEALIX_EXECUTION_WAVES_AR.md",
+      "max_value_score": 5,
+      "evidence_level": "L2"
+    },
+    {
+      "asset": "DOCS_CANONICAL_REGISTRY_AR.md",
+      "max_value_score": 5,
+      "evidence_level": "L2"
+    },
+    {
+      "asset": "HOLDING_OFFER_MATRIX_AR.md",
+      "max_value_score": 5,
+      "evidence_level": "L4"
+    },
+    {
+      "asset": "PROOF_DEMO_PACK_5_CLIENTS_AR.md",
+      "max_value_score": 5,
+      "evidence_level": "L4"
+    },
+    {
+      "asset": "RETAINER_PILOT_MINI_AR.md",
+      "max_value_score": 5,
+      "evidence_level": "L2"
+    },
+    {
+      "asset": "BU4_TRUST_ACTIVATION_GATE_AR.md",
+      "max_value_score": 5,
+      "evidence_level": "L4"
+    },
+    {
+      "asset": "IP_LICENSE_OUTLINE_AR.md",
+      "max_value_score": 5,
+      "evidence_level": "L2"
+    },
+    {
+      "asset": "docs_top_level_snapshot.json",
+      "max_value_score": 5,
+      "evidence_level": "L2"
+    },
+    {
+      "asset": "DOCS_ARCHIVE_POLICY_AR.md",
+      "max_value_score": 5,
+      "evidence_level": "L2"
+    },
+    {
+      "asset": "DOCS_PUBLICATION_BOUNDARY_AR.md",
+      "max_value_score": 5,
+      "evidence_level": "L2"
+    }
+  ],
+  "maintain": [],
+  "archive_review": []
+}

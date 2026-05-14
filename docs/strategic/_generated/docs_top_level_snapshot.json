@@ -1,0 +1,1180 @@
+{
+  "generated_at_utc": "2026-05-14T16:48:10Z",
+  "repo_root": ".",
+  "docs_top_level_dir_count": 195,
+  "skipped_top_level": [
+    "assets"
+  ],
+  "entries": [
+    {
+      "name": "00_constitution",
+      "markdown_file_count": 8,
+      "readme_path": "docs/00_constitution/README.md",
+      "readme_title": "الدستور — Dealix كشركة تشغيل محكومة"
+    },
+    {
+      "name": "00_foundation",
+      "markdown_file_count": 8,
+      "readme_path": "docs/00_foundation/README.md",
+      "readme_title": "طبقة `00_foundation` — فهرس"
+    },
+    {
+      "name": "01_category",
+      "markdown_file_count": 8,
+      "readme_path": "docs/01_category/README.md",
+      "readme_title": "طبقة `01_category` — فهرس"
+    },
+    {
+      "name": "01_category_creation",
+      "markdown_file_count": 1,
+      "readme_path": "docs/01_category_creation/README.md",
+      "readme_title": "الطبقة 1 — صناعة الفئة (Category Creation)"
+    },
+    {
+      "name": "02_saudi_positioning",
+      "markdown_file_count": 7,
+      "readme_path": "docs/02_saudi_positioning/README.md",
+      "readme_title": "طبقة `02_saudi_positioning` — فهرس"
+    },
+    {
+      "name": "02_strategy",
+      "markdown_file_count": 1,
+      "readme_path": "docs/02_strategy/README.md",
+      "readme_title": "الطبقة 1 (هوية) — الاستراتيجية: من نحن؟"
+    },
+    {
+      "name": "03_commercial_mvp",
+      "markdown_file_count": 11,
+      "readme_path": "docs/03_commercial_mvp/README.md",
+      "readme_title": "طبقة `03_commercial_mvp` — فهرس"
+    },
+    {
+      "name": "03_saudi_positioning",
+      "markdown_file_count": 1,
+      "readme_path": "docs/03_saudi_positioning/README.md",
+      "readme_title": "التموضع السعودي"
+    },
+    {
+      "name": "04_data_os",
+      "markdown_file_count": 9,
+      "readme_path": "docs/04_data_os/README.md",
+      "readme_title": "طبقة `04_data_os` — فهرس"
+    },
+    {
+      "name": "04_product_strategy",
+      "markdown_file_count": 1,
+      "readme_path": "docs/04_product_strategy/README.md",
+      "readme_title": "استراتيجية المنتج التجاري"
+    },
+    {
+      "name": "05_client_os",
+      "markdown_file_count": 1,
+      "readme_path": "docs/05_client_os/README.md",
+      "readme_title": "نظام تشغيل العميل (Client OS)"
+    },
+    {
+      "name": "05_governance_os",
+      "markdown_file_count": 8,
+      "readme_path": "docs/05_governance_os/README.md",
+      "readme_title": "طبقة `05_governance_os` — فهرس"
+    },
+    {
+      "name": "06_data_os",
+      "markdown_file_count": 1,
+      "readme_path": "docs/06_data_os/README.md",
+      "readme_title": "طبقة البيانات (Data OS)"
+    },
+    {
+      "name": "06_llm_gateway",
+      "markdown_file_count": 8,
+      "readme_path": "docs/06_llm_gateway/README.md",
+      "readme_title": "طبقة `06_llm_gateway` — فهرس"
+    },
+    {
+      "name": "07_governance",
+      "markdown_file_count": 1,
+      "readme_path": "docs/07_governance/README.md",
+      "readme_title": "طبقة الحوكمة (Governance OS)"
+    },
+    {
+      "name": "07_proof_os",
+      "markdown_file_count": 7,
+      "readme_path": "docs/07_proof_os/README.md",
+      "readme_title": "طبقة `07_proof_os` — فهرس"
+    },
+    {
+      "name": "08_responsible_ai",
+      "markdown_file_count": 1,
+      "readme_path": "docs/08_responsible_ai/README.md",
+      "readme_title": "Responsible AI (D-RAIOS)"
+    },
+    {
+      "name": "08_value_os",
+      "markdown_file_count": 6,
+      "readme_path": "docs/08_value_os/README.md",
+      "readme_title": "طبقة `08_value_os` — فهرس"
+    },
+    {
+      "name": "09_capital_os",
+      "markdown_file_count": 6,
+      "readme_path": "docs/09_capital_os/README.md",
+      "readme_title": "طبقة `09_capital_os` — فهرس"
+    },
+    {
+      "name": "09_llm_gateway",
+      "markdown_file_count": 1,
+      "readme_path": "docs/09_llm_gateway/README.md",
+      "readme_title": "طبقة LLM Gateway"
+    },
+    {
+      "name": "10_agents",
+      "markdown_file_count": 1,
+      "readme_path": "docs/10_agents/README.md",
+      "readme_title": "الوكلاء (Agentic Operations)"
+    },
+    {
+      "name": "10_tests",
+      "markdown_file_count": 6,
+      "readme_path": "docs/10_tests/README.md",
+      "readme_title": "طبقة `10_tests` — فهرس"
+    },
+    {
+      "name": "11_client_os",
+      "markdown_file_count": 9,
+      "readme_path": "docs/11_client_os/README.md",
+      "readme_title": "طبقة `11_client_os` — فهرس"
+    },
+    {
+      "name": "11_secure_runtime",
+      "markdown_file_count": 1,
+      "readme_path": "docs/11_secure_runtime/README.md",
+      "readme_title": "Secure Agent Runtime + Kill Switch"
+    },
+    {
+      "name": "12_adoption_os",
+      "markdown_file_count": 7,
+      "readme_path": "docs/12_adoption_os/README.md",
+      "readme_title": "طبقة `12_adoption_os` — فهرس"
+    },
+    {
+      "name": "12_auditability",
+      "markdown_file_count": 1,
+      "readme_path": "docs/12_auditability/README.md",
+      "readme_title": "Auditability & Accountability"
+    },
+    {
+      "name": "13_evidence_control_plane",
+      "markdown_file_count": 1,
+      "readme_path": "docs/13_evidence_control_plane/README.md",
+      "readme_title": "Evidence Control Plane"
+    },
+    {
+      "name": "13_workflow_os",
+      "markdown_file_count": 9,
+      "readme_path": "docs/13_workflow_os/README.md",
+      "readme_title": "طبقة `13_workflow_os` — فهرس"
+    },
+    {
+      "name": "14_proof",
+      "markdown_file_count": 1,
+      "readme_path": "docs/14_proof/README.md",
+      "readme_title": "Proof OS"
+    },
+    {
+      "name": "14_trust_os",
+      "markdown_file_count": 6,
+      "readme_path": "docs/14_trust_os/README.md",
+      "readme_title": "طبقة `14_trust_os` — فهرس"
+    },
+    {
+      "name": "15_auditability",
+      "markdown_file_count": 7,
+      "readme_path": "docs/15_auditability/README.md",
+      "readme_title": "Auditability — سلسلة أدلة ومساءلة"
+    },
+    {
+      "name": "15_evidence_control_plane",
+      "markdown_file_count": 8,
+      "readme_path": "docs/15_evidence_control_plane/README.md",
+      "readme_title": "طبقة `15_evidence_control_plane` — فهرس"
+    },
+    {
+      "name": "15_value",
+      "markdown_file_count": 1,
+      "readme_path": "docs/15_value/README.md",
+      "readme_title": "Value OS"
+    },
+    {
+      "name": "16_agents",
+      "markdown_file_count": 7,
+      "readme_path": "docs/16_agents/README.md",
+      "readme_title": "طبقة `16_agents` — فهرس"
+    },
+    {
+      "name": "16_capital",
+      "markdown_file_count": 1,
+      "readme_path": "docs/16_capital/README.md",
+      "readme_title": "Capital OS"
+    },
+    {
+      "name": "16_evidence_control_plane",
+      "markdown_file_count": 2,
+      "readme_path": "docs/16_evidence_control_plane/README.md",
+      "readme_title": "Evidence Control Plane — جسر المستوى 4"
+    },
+    {
+      "name": "17_revenue_os",
+      "markdown_file_count": 1,
+      "readme_path": "docs/17_revenue_os/README.md",
+      "readme_title": "Revenue OS"
+    },
+    {
+      "name": "17_secure_agent_runtime",
+      "markdown_file_count": 8,
+      "readme_path": "docs/17_secure_agent_runtime/README.md",
+      "readme_title": "طبقة `17_secure_agent_runtime` — فهرس"
+    },
+    {
+      "name": "18_brain_os",
+      "markdown_file_count": 1,
+      "readme_path": "docs/18_brain_os/README.md",
+      "readme_title": "Brain OS (Company Brain)"
+    },
+    {
+      "name": "18_intelligence_os",
+      "markdown_file_count": 9,
+      "readme_path": "docs/18_intelligence_os/README.md",
+      "readme_title": "طبقة `18_intelligence_os` — فهرس"
+    },
+    {
+      "name": "19_command_os",
+      "markdown_file_count": 7,
+      "readme_path": "docs/19_command_os/README.md",
+      "readme_title": "طبقة `19_command_os` — فهرس"
+    },
+    {
+      "name": "19_workflow_os",
+      "markdown_file_count": 1,
+      "readme_path": "docs/19_workflow_os/README.md",
+      "readme_title": "Workflow OS"
+    },
+    {
+      "name": "20_adoption",
+      "markdown_file_count": 1,
+      "readme_path": "docs/20_adoption/README.md",
+      "readme_title": "Client Adoption"
+    },
+    {
+      "name": "20_sales_os",
+      "markdown_file_count": 7,
+      "readme_path": "docs/20_sales_os/README.md",
+      "readme_title": "طبقة `20_sales_os` — فهرس"
+    },
+    {
+      "name": "21_operating_finance",
+      "markdown_file_count": 7,
+      "readme_path": "docs/21_operating_finance/README.md",
+      "readme_title": "طبقة `21_operating_finance` — فهرس"
+    },
+    {
+      "name": "21_operating_rhythm",
+      "markdown_file_count": 1,
+      "readme_path": "docs/21_operating_rhythm/README.md",
+      "readme_title": "Operating Rhythm"
+    },
+    {
+      "name": "22_board_decision",
+      "markdown_file_count": 1,
+      "readme_path": "docs/22_board_decision/README.md",
+      "readme_title": "Board Decision System"
+    },
+    {
+      "name": "22_enterprise_rollout",
+      "markdown_file_count": 6,
+      "readme_path": "docs/22_enterprise_rollout/README.md",
+      "readme_title": "طبقة `22_enterprise_rollout` — فهرس"
+    },
+    {
+      "name": "23_intelligence",
+      "markdown_file_count": 1,
+      "readme_path": "docs/23_intelligence/README.md",
+      "readme_title": "Intelligence Compounding"
+    },
+    {
+      "name": "23_standards",
+      "markdown_file_count": 10,
+      "readme_path": "docs/23_standards/README.md",
+      "readme_title": "طبقة `23_standards` — فهرس"
+    },
+    {
+      "name": "24_ecosystem",
+      "markdown_file_count": 7,
+      "readme_path": "docs/24_ecosystem/README.md",
+      "readme_title": "طبقة `24_ecosystem` — فهرس"
+    },
+    {
+      "name": "24_risk_resilience",
+      "markdown_file_count": 1,
+      "readme_path": "docs/24_risk_resilience/README.md",
+      "readme_title": "Risk & Resilience"
+    },
+    {
+      "name": "25_compliance_trust",
+      "markdown_file_count": 1,
+      "readme_path": "docs/25_compliance_trust/README.md",
+      "readme_title": "Compliance & Trust Ops"
+    },
+    {
+      "name": "25_ventures",
+      "markdown_file_count": 6,
+      "readme_path": "docs/25_ventures/README.md",
+      "readme_title": "طبقة `25_ventures` — فهرس"
+    },
+    {
+      "name": "26_human_amplified",
+      "markdown_file_count": 1,
+      "readme_path": "docs/26_human_amplified/README.md",
+      "readme_title": "Human-Amplified Organization"
+    },
+    {
+      "name": "26_service_catalog",
+      "markdown_file_count": 10,
+      "readme_path": "docs/26_service_catalog/README.md",
+      "readme_title": "Service Catalog — عروض محددة قابلة للتكرار"
+    },
+    {
+      "name": "27_delivery_playbooks",
+      "markdown_file_count": 8,
+      "readme_path": "docs/27_delivery_playbooks/README.md",
+      "readme_title": "Delivery Playbooks — تسليم كخطوات"
+    },
+    {
+      "name": "27_value_capture",
+      "markdown_file_count": 1,
+      "readme_path": "docs/27_value_capture/README.md",
+      "readme_title": "Value Capture & Monetization"
+    },
+    {
+      "name": "28_change_requests",
+      "markdown_file_count": 6,
+      "readme_path": "docs/28_change_requests/README.md",
+      "readme_title": "Change Request System — منع scope creep"
+    },
+    {
+      "name": "28_operating_finance",
+      "markdown_file_count": 1,
+      "readme_path": "docs/28_operating_finance/README.md",
+      "readme_title": "Operating Finance"
+    },
+    {
+      "name": "29_enterprise_rollout",
+      "markdown_file_count": 1,
+      "readme_path": "docs/29_enterprise_rollout/README.md",
+      "readme_title": "Enterprise Rollout"
+    },
+    {
+      "name": "29_sales_os",
+      "markdown_file_count": 20,
+      "readme_path": "docs/29_sales_os/README.md",
+      "readme_title": "Sales OS — تأهيل وعروض واعتراضات"
+    },
+    {
+      "name": "30_pricing",
+      "markdown_file_count": 8,
+      "readme_path": "docs/30_pricing/README.md",
+      "readme_title": "Pricing Architecture — قيمة ومخاطر"
+    },
+    {
+      "name": "30_standards",
+      "markdown_file_count": 1,
+      "readme_path": "docs/30_standards/README.md",
+      "readme_title": "Standards (Dealix Governed AI Operations Standard)"
+    },
+    {
+      "name": "31_certification",
+      "markdown_file_count": 1,
+      "readme_path": "docs/31_certification/README.md",
+      "readme_title": "Certification"
+    },
+    {
+      "name": "31_operating_finance",
+      "markdown_file_count": 16,
+      "readme_path": "docs/31_operating_finance/README.md",
+      "readme_title": "Operating Finance — نموذج مالي ووحدة اقتصادية"
+    },
+    {
+      "name": "32_ecosystem",
+      "markdown_file_count": 1,
+      "readme_path": "docs/32_ecosystem/README.md",
+      "readme_title": "Ecosystem"
+    },
+    {
+      "name": "32_enterprise_readiness",
+      "markdown_file_count": 14,
+      "readme_path": "docs/32_enterprise_readiness/README.md",
+      "readme_title": "Enterprise Readiness — أسئلة أمن وثقة"
+    },
+    {
+      "name": "33_enterprise_rollout",
+      "markdown_file_count": 6,
+      "readme_path": "docs/33_enterprise_rollout/README.md",
+      "readme_title": "Enterprise Rollout — Land → Institutionalize"
+    },
+    {
+      "name": "33_ventures",
+      "markdown_file_count": 1,
+      "readme_path": "docs/33_ventures/README.md",
+      "readme_title": "Venture Factory"
+    },
+    {
+      "name": "34_ai_estate",
+      "markdown_file_count": 8,
+      "readme_path": "docs/34_ai_estate/README.md",
+      "readme_title": "AI Estate — جرد واستخدامات"
+    },
+    {
+      "name": "34_market_power",
+      "markdown_file_count": 1,
+      "readme_path": "docs/34_market_power/README.md",
+      "readme_title": "Market Power + Strategic Resilience"
+    },
+    {
+      "name": "35_agent_iam",
+      "markdown_file_count": 7,
+      "readme_path": "docs/35_agent_iam/README.md",
+      "readme_title": "Agent IAM — هوية وصلاحيات الوكيل"
+    },
+    {
+      "name": "35_tests",
+      "markdown_file_count": 1,
+      "readme_path": "docs/35_tests/README.md",
+      "readme_title": "Tests & Guardrails"
+    },
+    {
+      "name": "36_agent_runtime_security",
+      "markdown_file_count": 8,
+      "readme_path": "docs/36_agent_runtime_security/README.md",
+      "readme_title": "Agent Runtime Security — أربع حدود"
+    },
+    {
+      "name": "36_architecture",
+      "markdown_file_count": 1,
+      "readme_path": "docs/36_architecture/README.md",
+      "readme_title": "Architecture — الحزم وحدود API وأولوية MVP"
+    },
+    {
+      "name": "37_saudi_layer",
+      "markdown_file_count": 11,
+      "readme_path": "docs/37_saudi_layer/README.md",
+      "readme_title": "Saudi Layer — تميز محلي"
+    },
+    {
+      "name": "38_standards",
+      "markdown_file_count": 7,
+      "readme_path": "docs/38_standards/README.md",
+      "readme_title": "Dealix Standard — معيار التشغيل"
+    },
+    {
+      "name": "39_academy",
+      "markdown_file_count": 6,
+      "readme_path": "docs/39_academy/README.md",
+      "readme_title": "Academy — بعد تراكم Proof"
+    },
+    {
+      "name": "40_partners",
+      "markdown_file_count": 7,
+      "readme_path": "docs/40_partners/README.md",
+      "readme_title": "Partner Ecosystem"
+    },
+    {
+      "name": "41_benchmarks",
+      "markdown_file_count": 7,
+      "readme_path": "docs/41_benchmarks/README.md",
+      "readme_title": "Benchmark Engine"
+    },
+    {
+      "name": "42_market_power",
+      "markdown_file_count": 6,
+      "readme_path": "docs/42_market_power/README.md",
+      "readme_title": "Market Power OS"
+    },
+    {
+      "name": "43_business_units",
+      "markdown_file_count": 8,
+      "readme_path": "docs/43_business_units/README.md",
+      "readme_title": "Business Unit Architecture"
+    },
+    {
+      "name": "44_ventures",
+      "markdown_file_count": 5,
+      "readme_path": "docs/44_ventures/README.md",
+      "readme_title": "Venture Gate — مسار القابضة"
+    },
+    {
+      "name": "academy",
+      "markdown_file_count": 4,
+      "readme_path": "docs/academy/README.md",
+      "readme_title": null
+    },
+    {
+      "name": "adoption",
+      "markdown_file_count": 16,
+      "readme_path": "docs/adoption/README.md",
+      "readme_title": null
+    },
+    {
+      "name": "agentic_operations",
+      "markdown_file_count": 18,
+      "readme_path": "docs/agentic_operations/README.md",
+      "readme_title": null
+    },
+    {
+      "name": "ar",
+      "markdown_file_count": 2,
+      "readme_path": "docs/ar/README.md",
+      "readme_title": null
+    },
+    {
+      "name": "architecture",
+      "markdown_file_count": 8,
+      "readme_path": "docs/architecture/README.md",
+      "readme_title": null
+    },
+    {
+      "name": "archive",
+      "markdown_file_count": 5,
+      "readme_path": "docs/archive/README.md",
+      "readme_title": null
+    },
+    {
+      "name": "audit",
+      "markdown_file_count": 7,
+      "readme_path": "docs/audit/README.md",
+      "readme_title": "Dealix audit pack"
+    },
+    {
+      "name": "blueprint",
+      "markdown_file_count": 2,
+      "readme_path": "docs/blueprint/README.md",
+      "readme_title": null
+    },
+    {
+      "name": "board_decision_system",
+      "markdown_file_count": 12,
+      "readme_path": "docs/board_decision_system/README.md",
+      "readme_title": null
+    },
+    {
+      "name": "board_ready",
+      "markdown_file_count": 13,
+      "readme_path": "docs/board_ready/README.md",
+      "readme_title": null
+    },
+    {
+      "name": "business",
+      "markdown_file_count": 13,
+      "readme_path": "docs/business/README.md",
+      "readme_title": null
+    },
+    {
+      "name": "capabilities",
+      "markdown_file_count": 8,
+      "readme_path": "docs/capabilities/README.md",
+      "readme_title": null
+    },
+    {
+      "name": "case-studies",
+      "markdown_file_count": 3,
+      "readme_path": "docs/case-studies/README.md",
+      "readme_title": null
+    },
+    {
+      "name": "category",
+      "markdown_file_count": 5,
+      "readme_path": "docs/category/README.md",
+      "readme_title": null
+    },
+    {
+      "name": "certification",
+      "markdown_file_count": 9,
+      "readme_path": "docs/certification/README.md",
+      "readme_title": null
+    },
+    {
+      "name": "client",
+      "markdown_file_count": 2,
+      "readme_path": "docs/client/README.md",
+      "readme_title": "Client-facing journey docs"
+    },
+    {
+      "name": "client_maturity",
+      "markdown_file_count": 8,
+      "readme_path": "docs/client_maturity/README.md",
+      "readme_title": null
+    },
+    {
+      "name": "client_os",
+      "markdown_file_count": 13,
+      "readme_path": "docs/client_os/README.md",
+      "readme_title": null
+    },
+    {
+      "name": "client_trust",
+      "markdown_file_count": 6,
+      "readme_path": "docs/client_trust/README.md",
+      "readme_title": null
+    },
+    {
+      "name": "command",
+      "markdown_file_count": 18,
+      "readme_path": "docs/command/README.md",
+      "readme_title": null
+    },
+    {
+      "name": "commercial",
+      "markdown_file_count": 12,
+      "readme_path": "docs/commercial/README.md",
+      "readme_title": "Dealix — Commercial & Operating Docs"
+    },
+    {
+      "name": "company",
+      "markdown_file_count": 115,
+      "readme_path": "docs/company/README.md",
+      "readme_title": null
+    },
+    {
+      "name": "compliance_trust_ops",
+      "markdown_file_count": 14,
+      "readme_path": "docs/compliance_trust_ops/README.md",
+      "readme_title": null
+    },
+    {
+      "name": "content",
+      "markdown_file_count": 7,
+      "readme_path": "docs/content/README.md",
+      "readme_title": null
+    },
+    {
+      "name": "contracts",
+      "markdown_file_count": 2,
+      "readme_path": "docs/contracts/README.md",
+      "readme_title": "Dealix operating contracts"
+    },
+    {
+      "name": "control_tower",
+      "markdown_file_count": 5,
+      "readme_path": "docs/control_tower/README.md",
+      "readme_title": "Control Tower v2 — فهرس"
+    },
+    {
+      "name": "data",
+      "markdown_file_count": 2,
+      "readme_path": "docs/data/README.md",
+      "readme_title": null
+    },
+    {
+      "name": "delivery",
+      "markdown_file_count": 25,
+      "readme_path": "docs/delivery/README.md",
+      "readme_title": null
+    },
+    {
+      "name": "dominance",
+      "markdown_file_count": 14,
+      "readme_path": "docs/dominance/README.md",
+      "readme_title": null
+    },
+    {
+      "name": "ecosystem",
+      "markdown_file_count": 14,
+      "readme_path": "docs/ecosystem/README.md",
+      "readme_title": null
+    },
+    {
+      "name": "endgame",
+      "markdown_file_count": 16,
+      "readme_path": "docs/endgame/README.md",
+      "readme_title": null
+    },
+    {
+      "name": "engineering",
+      "markdown_file_count": 1,
+      "readme_path": "docs/engineering/README.md",
+      "readme_title": null
+    },
+    {
+      "name": "enterprise",
+      "markdown_file_count": 24,
+      "readme_path": "docs/enterprise/README.md",
+      "readme_title": null
+    },
+    {
+      "name": "enterprise_architecture",
+      "markdown_file_count": 24,
+      "readme_path": "docs/enterprise_architecture/README.md",
+      "readme_title": null
+    },
+    {
+      "name": "enterprise_rollout",
+      "markdown_file_count": 14,
+      "readme_path": "docs/enterprise_rollout/README.md",
+      "readme_title": null
+    },
+    {
+      "name": "enterprise_trust",
+      "markdown_file_count": 7,
+      "readme_path": "docs/enterprise_trust/README.md",
+      "readme_title": "Enterprise Trust Data Room"
+    },
+    {
+      "name": "evidence_control_plane",
+      "markdown_file_count": 15,
+      "readme_path": "docs/evidence_control_plane/README.md",
+      "readme_title": null
+    },
+    {
+      "name": "execution",
+      "markdown_file_count": 12,
+      "readme_path": "docs/execution/README.md",
+      "readme_title": null
+    },
+    {
+      "name": "from_zero",
+      "markdown_file_count": 2,
+      "readme_path": "docs/from_zero/README.md",
+      "readme_title": "Dealix — من الصفر إلى شركة قابضة"
+    },
+    {
+      "name": "global_grade",
+      "markdown_file_count": 18,
+      "readme_path": "docs/global_grade/README.md",
+      "readme_title": null
+    },
+    {
+      "name": "go-to-market",
+      "markdown_file_count": 2,
+      "readme_path": "docs/go-to-market/README.md",
+      "readme_title": null
+    },
+    {
+      "name": "governance",
+      "markdown_file_count": 28,
+      "readme_path": "docs/governance/README.md",
+      "readme_title": null
+    },
+    {
+      "name": "group",
+      "markdown_file_count": 9,
+      "readme_path": "docs/group/README.md",
+      "readme_title": "Dealix Group — فهرس التشغيل"
+    },
+    {
+      "name": "growth",
+      "markdown_file_count": 36,
+      "readme_path": "docs/growth/README.md",
+      "readme_title": null
+    },
+    {
+      "name": "holding",
+      "markdown_file_count": 4,
+      "readme_path": "docs/holding/README.md",
+      "readme_title": null
+    },
+    {
+      "name": "institutional",
+      "markdown_file_count": 24,
+      "readme_path": "docs/institutional/README.md",
+      "readme_title": "Dealix Institutional Design — فهرس الطبقة المؤسسية"
+    },
+    {
+      "name": "institutional_control",
+      "markdown_file_count": 11,
+      "readme_path": "docs/institutional_control/README.md",
+      "readme_title": null
+    },
+    {
+      "name": "institutional_scaling",
+      "markdown_file_count": 12,
+      "readme_path": "docs/institutional_scaling/README.md",
+      "readme_title": null
+    },
+    {
+      "name": "integrations",
+      "markdown_file_count": 8,
+      "readme_path": "docs/integrations/README.md",
+      "readme_title": null
+    },
+    {
+      "name": "intelligence",
+      "markdown_file_count": 22,
+      "readme_path": "docs/intelligence/README.md",
+      "readme_title": "Dealix Execution Intelligence System — فهرس الطبقة"
+    },
+    {
+      "name": "intelligence_compounding",
+      "markdown_file_count": 14,
+      "readme_path": "docs/intelligence_compounding/README.md",
+      "readme_title": null
+    },
+    {
+      "name": "investment",
+      "markdown_file_count": 10,
+      "readme_path": "docs/investment/README.md",
+      "readme_title": null
+    },
+    {
+      "name": "knowledge",
+      "markdown_file_count": 2,
+      "readme_path": "docs/knowledge/README.md",
+      "readme_title": "Knowledge layer"
+    },
+    {
+      "name": "knowledge-base",
+      "markdown_file_count": 7,
+      "readme_path": "docs/knowledge-base/README.md",
+      "readme_title": null
+    },
+    {
+      "name": "knowledge_base",
+      "markdown_file_count": 6,
+      "readme_path": "docs/knowledge_base/README.md",
+      "readme_title": "Dealix internal knowledge base"
+    },
+    {
+      "name": "launch",
+      "markdown_file_count": 3,
+      "readme_path": "docs/launch/README.md",
+      "readme_title": null
+    },
+    {
+      "name": "ledgers",
+      "markdown_file_count": 14,
+      "readme_path": "docs/ledgers/README.md",
+      "readme_title": "Ledgers (Operating truth)"
+    },
+    {
+      "name": "legal",
+      "markdown_file_count": 7,
+      "readme_path": "docs/legal/README.md",
+      "readme_title": null
+    },
+    {
+      "name": "localization",
+      "markdown_file_count": 2,
+      "readme_path": "docs/localization/README.md",
+      "readme_title": null
+    },
+    {
+      "name": "market",
+      "markdown_file_count": 2,
+      "readme_path": "docs/market/README.md",
+      "readme_title": "Market intelligence"
+    },
+    {
+      "name": "market_power",
+      "markdown_file_count": 12,
+      "readme_path": "docs/market_power/README.md",
+      "readme_title": null
+    },
+    {
+      "name": "meetings",
+      "markdown_file_count": 4,
+      "readme_path": "docs/meetings/README.md",
+      "readme_title": "Meetings"
+    },
+    {
+      "name": "memory",
+      "markdown_file_count": 8,
+      "readme_path": "docs/memory/README.md",
+      "readme_title": null
+    },
+    {
+      "name": "meta",
+      "markdown_file_count": 2,
+      "readme_path": "docs/meta/README.md",
+      "readme_title": null
+    },
+    {
+      "name": "moat",
+      "markdown_file_count": 14,
+      "readme_path": "docs/moat/README.md",
+      "readme_title": null
+    },
+    {
+      "name": "observability",
+      "markdown_file_count": 0,
+      "readme_path": "docs/observability/README.md",
+      "readme_title": null
+    },
+    {
+      "name": "operating_empire",
+      "markdown_file_count": 14,
+      "readme_path": "docs/operating_empire/README.md",
+      "readme_title": null
+    },
+    {
+      "name": "operating_finance",
+      "markdown_file_count": 15,
+      "readme_path": "docs/operating_finance/README.md",
+      "readme_title": null
+    },
+    {
+      "name": "operating_rhythm",
+      "markdown_file_count": 13,
+      "readme_path": "docs/operating_rhythm/README.md",
+      "readme_title": null
+    },
+    {
+      "name": "operations",
+      "markdown_file_count": 3,
+      "readme_path": "docs/operations/README.md",
+      "readme_title": "Operations docs"
+    },
+    {
+      "name": "ops",
+      "markdown_file_count": 78,
+      "readme_path": "docs/ops/README.md",
+      "readme_title": "Dealix operations docs"
+    },
+    {
+      "name": "partners",
+      "markdown_file_count": 5,
+      "readme_path": "docs/partners/README.md",
+      "readme_title": null
+    },
+    {
+      "name": "phase-e",
+      "markdown_file_count": 13,
+      "readme_path": "docs/phase-e/README.md",
+      "readme_title": "Phase E — First Customer Execution Kit"
+    },
+    {
+      "name": "playbooks",
+      "markdown_file_count": 16,
+      "readme_path": "docs/playbooks/README.md",
+      "readme_title": "Vertical playbooks"
+    },
+    {
+      "name": "pmf",
+      "markdown_file_count": 3,
+      "readme_path": "docs/pmf/README.md",
+      "readme_title": null
+    },
+    {
+      "name": "product",
+      "markdown_file_count": 58,
+      "readme_path": "docs/product/README.md",
+      "readme_title": null
+    },
+    {
+      "name": "prompts",
+      "markdown_file_count": 1,
+      "readme_path": "docs/prompts/README.md",
+      "readme_title": null
+    },
+    {
+      "name": "proof-events",
+      "markdown_file_count": 1,
+      "readme_path": "docs/proof-events/README.md",
+      "readme_title": null
+    },
+    {
+      "name": "proof_architecture",
+      "markdown_file_count": 15,
+      "readme_path": "docs/proof_architecture/README.md",
+      "readme_title": null
+    },
+    {
+      "name": "public",
+      "markdown_file_count": 1,
+      "readme_path": "docs/public/README.md",
+      "readme_title": null
+    },
+    {
+      "name": "quality",
+      "markdown_file_count": 14,
+      "readme_path": "docs/quality/README.md",
+      "readme_title": null
+    },
+    {
+      "name": "readiness",
+      "markdown_file_count": 12,
+      "readme_path": "docs/readiness/README.md",
+      "readme_title": "Readiness — شهادات إكمال البوابات (Gate Completion)"
+    },
+    {
+      "name": "registry",
+      "markdown_file_count": 0,
+      "readme_path": "docs/registry/README.md",
+      "readme_title": null
+    },
+    {
+      "name": "responsible_ai",
+      "markdown_file_count": 12,
+      "readme_path": "docs/responsible_ai/README.md",
+      "readme_title": null
+    },
+    {
+      "name": "revenue",
+      "markdown_file_count": 4,
+      "readme_path": "docs/revenue/README.md",
+      "readme_title": null
+    },
+    {
+      "name": "risk",
+      "markdown_file_count": 1,
+      "readme_path": "docs/risk/README.md",
+      "readme_title": null
+    },
+    {
+      "name": "risk_resilience",
+      "markdown_file_count": 19,
+      "readme_path": "docs/risk_resilience/README.md",
+      "readme_title": null
+    },
+    {
+      "name": "sales",
+      "markdown_file_count": 31,
+      "readme_path": "docs/sales/README.md",
+      "readme_title": null
+    },
+    {
+      "name": "sales-kit",
+      "markdown_file_count": 61,
+      "readme_path": "docs/sales-kit/README.md",
+      "readme_title": "Sales Kit — Dealix"
+    },
+    {
+      "name": "saudi",
+      "markdown_file_count": 4,
+      "readme_path": "docs/saudi/README.md",
+      "readme_title": null
+    },
+    {
+      "name": "scale",
+      "markdown_file_count": 10,
+      "readme_path": "docs/scale/README.md",
+      "readme_title": null
+    },
+    {
+      "name": "scorecards",
+      "markdown_file_count": 5,
+      "readme_path": "docs/scorecards/README.md",
+      "readme_title": null
+    },
+    {
+      "name": "sector-reports",
+      "markdown_file_count": 1,
+      "readme_path": "docs/sector-reports/README.md",
+      "readme_title": null
+    },
+    {
+      "name": "security",
+      "markdown_file_count": 4,
+      "readme_path": "docs/security/README.md",
+      "readme_title": null
+    },
+    {
+      "name": "services",
+      "markdown_file_count": 76,
+      "readme_path": "docs/services/README.md",
+      "readme_title": null
+    },
+    {
+      "name": "snapshots",
+      "markdown_file_count": 1,
+      "readme_path": "docs/snapshots/README.md",
+      "readme_title": null
+    },
+    {
+      "name": "sovereignty",
+      "markdown_file_count": 14,
+      "readme_path": "docs/sovereignty/README.md",
+      "readme_title": null
+    },
+    {
+      "name": "standards",
+      "markdown_file_count": 12,
+      "readme_path": "docs/standards/README.md",
+      "readme_title": null
+    },
+    {
+      "name": "strategic",
+      "markdown_file_count": 42,
+      "readme_path": "docs/strategic/README.md",
+      "readme_title": null
+    },
+    {
+      "name": "strategy",
+      "markdown_file_count": 20,
+      "readme_path": "docs/strategy/README.md",
+      "readme_title": null
+    },
+    {
+      "name": "team",
+      "markdown_file_count": 6,
+      "readme_path": "docs/team/README.md",
+      "readme_title": null
+    },
+    {
+      "name": "templates",
+      "markdown_file_count": 14,
+      "readme_path": "docs/templates/README.md",
+      "readme_title": "Templates (canonical path)"
+    },
+    {
+      "name": "testing",
+      "markdown_file_count": 1,
+      "readme_path": "docs/testing/README.md",
+      "readme_title": null
+    },
+    {
+      "name": "training",
+      "markdown_file_count": 7,
+      "readme_path": "docs/training/README.md",
+      "readme_title": "Dealix training index"
+    },
+    {
+      "name": "trust",
+      "markdown_file_count": 4,
+      "readme_path": "docs/trust/README.md",
+      "readme_title": null
+    },
+    {
+      "name": "ultimate_manual",
+      "markdown_file_count": 3,
+      "readme_path": "docs/ultimate_manual/README.md",
+      "readme_title": null
+    },
+    {
+      "name": "v10",
+      "markdown_file_count": 4,
+      "readme_path": "docs/v10/README.md",
+      "readme_title": null
+    },
+    {
+      "name": "value_capture",
+      "markdown_file_count": 18,
+      "readme_path": "docs/value_capture/README.md",
+      "readme_title": null
+    },
+    {
+      "name": "ventures",
+      "markdown_file_count": 2,
+      "readme_path": "docs/ventures/README.md",
+      "readme_title": null
+    },
+    {
+      "name": "wave6",
+      "markdown_file_count": 2,
+      "readme_path": "docs/wave6/README.md",
+      "readme_title": null
+    },
+    {
+      "name": "wave8",
+      "markdown_file_count": 5,
+      "readme_path": "docs/wave8/README.md",
+      "readme_title": null
+    }
+  ]
+}
