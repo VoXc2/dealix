@@ -86,7 +86,15 @@ def check_founder_command_center() -> Check:
         return Check("Founder Command Center", 2, False, "marker present but deployment_marker=false")
     page_ok = landing.exists() or _marker_page_inside_repo(marker.get("page_path", ""))
     if not page_ok:
-        return Check("Founder Command Center", 3, True, "marker present, page path note only")
+        # Page-missing must NOT pass. The matrix requires both marker and a
+        # real page artifact, so all_pass cannot quietly report success when
+        # the landing target is gone.
+        return Check(
+            "Founder Command Center",
+            2,
+            False,
+            "marker present but page artifact missing (landing/founder-command-bus.html or marker.page_path)",
+        )
     return Check("Founder Command Center", 4, True, "page + marker present")
 
 
@@ -119,14 +127,25 @@ def check_partner_motion() -> Check:
         return Check("Partner Motion", 0, False, "outreach doc/pipeline/log missing")
     if not pipeline.get("partner_archetypes"):
         return Check("Partner Motion", 1, False, "pipeline has no archetypes")
+    entries_list = log.get("entries", []) or []
     sent = log.get("outreach_sent_count", 0)
-    entries = len(log.get("entries", []))
+    entries = len(entries_list)
     if sent != entries:
         return Check(
             "Partner Motion",
             2,
             False,
             f"log dishonest: count={sent} entries={entries}",
+        )
+    # ``ceo_complete`` self-claim has to align with reality.
+    # If the log claims ceo_complete with zero sends, that's a dishonest
+    # log — refuse to pass.
+    if bool(log.get("ceo_complete")) and sent == 0:
+        return Check(
+            "Partner Motion",
+            2,
+            False,
+            "log dishonest: ceo_complete=true but outreach_sent_count=0",
         )
     if sent == 0:
         return Check(
@@ -135,7 +154,17 @@ def check_partner_motion() -> Check:
             True,
             "runbook + pipeline + honest log; outreach not yet sent",
         )
-    return Check("Partner Motion", 5, True, f"{sent} outreach entries logged")
+    # Score-5 contract (per data/partner_outreach_log.json::completion_rule):
+    # "Score 5 requires at least one founder-confirmed outreach entry."
+    founder_confirmed = any(bool(e.get("founder_confirmed")) for e in entries_list)
+    if not founder_confirmed:
+        return Check(
+            "Partner Motion",
+            4,
+            True,
+            f"{sent} outreach entries logged, none founder-confirmed yet",
+        )
+    return Check("Partner Motion", 5, True, f"{sent} outreach entries; at least one founder-confirmed")
 
 
 def check_first_invoice_motion() -> Check:
@@ -144,9 +173,10 @@ def check_first_invoice_motion() -> Check:
     log = _read_json("data/first_invoice_log.json")
     if log is None:
         return Check("First Invoice Motion", 1, False, "first_invoice_log.json missing")
+    entries_list = log.get("entries", []) or []
     sent = log.get("invoice_sent_count", 0)
     paid = log.get("invoice_paid_count", 0)
-    entries = len(log.get("entries", []))
+    entries = len(entries_list)
     if sent != entries or paid > sent:
         return Check(
             "First Invoice Motion",
@@ -163,7 +193,19 @@ def check_first_invoice_motion() -> Check:
         )
     if paid == 0:
         return Check("First Invoice Motion", 4, True, f"{sent} invoice(s) sent, none paid")
-    return Check("First Invoice Motion", 5, True, f"{paid} invoice(s) paid")
+    # Score-5 contract (per data/first_invoice_log.json::completion_rule):
+    # "Score 5 requires at least one invoice entry with proof target."
+    has_proof_target = any(
+        bool(str(e.get("proof_target", "")).strip()) for e in entries_list
+    )
+    if not has_proof_target:
+        return Check(
+            "First Invoice Motion",
+            4,
+            True,
+            f"{paid} invoice(s) paid, but no entry carries proof_target evidence",
+        )
+    return Check("First Invoice Motion", 5, True, f"{paid} invoice(s) paid with proof target")
 
 
 def check_funding_pack() -> Check:
@@ -220,19 +262,32 @@ def check_open_doctrine() -> Check:
         "password",
         "token",
     ]
-    for p in required:
+    # Scan every markdown file under open-doctrine/, not just the three
+    # required files — any new public doctrine page must be subject to the
+    # same secret-leak gate.
+    doctrine_root = REPO_ROOT / "open-doctrine"
+    md_files = sorted(doctrine_root.rglob("*.md")) if doctrine_root.exists() else []
+    if not md_files:
+        return Check("Open Doctrine", 0, False, "no markdown files under open-doctrine/")
+    for md in md_files:
         # Case-insensitive scan so ``Password`` / ``TOKEN`` / mixed-case
         # variants aren't missed by the lowercase-token list.
-        text = (REPO_ROOT / p).read_text(encoding="utf-8").lower()
+        text = md.read_text(encoding="utf-8").lower()
         for term in forbidden:
             if term in text:
+                rel = md.relative_to(REPO_ROOT)
                 return Check(
                     "Open Doctrine",
                     1,
                     False,
-                    f"forbidden term '{term}' leaked into {p}",
+                    f"forbidden term '{term}' leaked into {rel}",
                 )
-    return Check("Open Doctrine", 4, True, "public doctrine present + secret-clean")
+    return Check(
+        "Open Doctrine",
+        4,
+        True,
+        f"public doctrine present + secret-clean ({len(md_files)} files scanned)",
+    )
 
 
 CHECKS: list[Callable[[], Check]] = [
