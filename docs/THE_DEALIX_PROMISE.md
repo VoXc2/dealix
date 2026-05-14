@@ -17,7 +17,7 @@
 
 **AR — رفض.** لا نقوم بتجريف المواقع أو منصات التواصل أو الواجهات الخارجية لجمع جهات الاتصال أو المحتوى. أي بيانات يتم الحصول عليها بالتجريف تُعزل وتُستبعد من المسودات والإثباتات.
 
-Enforced by: `tests/test_no_scraping_engine.py`, `tests/test_no_linkedin_scraper_string_anywhere.py`
+Enforced by: `tests/test_no_scraping_engine.py`
 
 ---
 
@@ -45,7 +45,7 @@ Enforced by: `tests/test_no_cold_whatsapp.py`
 
 **AR — رفض.** لا نقوم بأتمتة طلبات الاتصال أو الرسائل أو تجريف بيانات LinkedIn أو إجراءات الواجهة. أي تكامل يقوم بأتمتة LinkedIn مرفوض على مستوى مراجعة PR والتشغيل.
 
-Enforced by: `tests/test_no_linkedin_automation.py`, `tests/test_no_linkedin_scraper_string_anywhere.py`
+Enforced by: `tests/test_no_linkedin_automation.py`
 
 ---
 

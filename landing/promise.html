@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>وعد Dealix · The Dealix Promise</title>
+  <meta name="description" content="١١ التزاماً مكتوباً في كود Dealix — لا تجريف، لا واتساب بارد، لا أتمتة LinkedIn، لا ادعاءات بلا مصدر، لا ضمانات مبيعات. كل التزام اختبار CI ينجح أو يفشل. 11 commitments written into Dealix code — each one a passing CI test." />
+  <meta name="theme-color" content="#0f172a" />
+  <meta name="robots" content="index,follow" />
+  <link rel="canonical" href="https://dealix.me/promise.html" />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="وعد Dealix · The Dealix Promise" />
+  <meta property="og:description" content="١١ التزاماً مكتوباً في الكود. كل التزام اختبار CI ينجح أو يفشل في كل دفعة. 11 commitments. Each one a passing CI test." />
+  <meta property="og:locale" content="ar_SA" />
+  <meta property="og:locale:alternate" content="en_US" />
+  <meta property="og:site_name" content="Dealix" />
+  <meta property="og:url" content="https://dealix.me/promise.html" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" />
+
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="/assets/css/design-system.css" />
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": "The Dealix Promise — وعد Dealix",
+    "url": "https://dealix.me/promise.html",
+    "inLanguage": ["ar-SA", "en-US"],
+    "description": "11 enforced commitments — no scraping, no cold WhatsApp, no LinkedIn automation, no un-sourced claims, no guaranteed outcomes, no PII in logs, no source-less AI, no external action without approval, no agent without identity, no project without a Proof Pack, no project without a Capital Asset.",
+    "isPartOf": {
+      "@type": "WebSite",
+      "name": "Dealix",
+      "url": "https://dealix.me"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "Dealix",
+      "url": "https://dealix.me",
+      "address": {"@type": "PostalAddress", "addressCountry": "SA", "addressLocality": "Riyadh"}
+    }
+  }
+  </script>
+
+  <style>
+    .promise-main { max-width: 1100px; margin: 0 auto; padding: 32px 20px 64px; }
+    .promise-hero { padding: 48px 0 24px; text-align: center; }
+    .promise-hero h1 { font-size: clamp(28px, 4vw, 44px); margin: 0 0 12px; line-height: 1.25; color: #0f172a; }
+    .promise-hero .sub-en { font-family: Inter, system-ui, sans-serif; color: #475569; font-size: 18px; margin: 4px 0; }
+    .promise-hero .sub-ar { font-family: 'IBM Plex Sans Arabic', system-ui, sans-serif; color: #475569; font-size: 18px; margin: 4px 0; }
+    .trust-strip { display: flex; flex-wrap: wrap; gap: 16px; justify-content: center; padding: 20px; margin: 24px 0 32px; background: #f1f5f9; border-radius: 12px; font-size: 14px; color: #334155; }
+    .trust-strip span { white-space: nowrap; }
+    .promise-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin: 32px 0; }
+    .promise-card { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 14px; padding: 22px; box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04), 0 4px 12px rgba(15, 23, 42, 0.04); display: flex; flex-direction: column; gap: 10px; }
+    .promise-card h3 { margin: 0; font-size: 17px; line-height: 1.35; color: #0f172a; }
+    .promise-card .commitment-id { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 12px; color: #64748b; letter-spacing: 0.02em; }
+    .promise-card .promise-en { font-family: Inter, system-ui, sans-serif; font-size: 14px; color: #1e293b; line-height: 1.55; margin: 0; }
+    .promise-card .promise-ar { font-family: 'IBM Plex Sans Arabic', system-ui, sans-serif; font-size: 14px; color: #1e293b; line-height: 1.7; margin: 0; }
+    .promise-card .enforced-by { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 12px; color: #475569; background: #f8fafc; padding: 8px 10px; border-radius: 6px; border: 1px dashed #cbd5e1; word-break: break-word; }
+    .promise-card details { margin-top: 4px; font-size: 13px; color: #475569; }
+    .promise-card details summary { cursor: pointer; color: #0ea5e9; font-weight: 500; }
+    .promise-card details .refusal-en { font-family: Inter, system-ui, sans-serif; margin: 8px 0; }
+    .promise-card details .refusal-ar { font-family: 'IBM Plex Sans Arabic', system-ui, sans-serif; margin: 8px 0; }
+    .verify-block { margin: 48px 0 32px; padding: 28px; background: #0f172a; color: #f1f5f9; border-radius: 14px; }
+    .verify-block h2 { margin: 0 0 16px; font-size: 24px; color: #f1f5f9; }
+    .verify-block p { color: #cbd5e1; font-size: 15px; line-height: 1.6; }
+    .verify-block pre { background: #020617; color: #e2e8f0; padding: 14px 16px; border-radius: 8px; overflow-x: auto; font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 13px; margin: 12px 0; direction: ltr; text-align: left; }
+    .cta-block { display: flex; flex-wrap: wrap; gap: 14px; justify-content: center; margin: 32px 0 48px; }
+    .cta-btn { display: inline-block; padding: 14px 22px; border-radius: 10px; font-size: 15px; font-weight: 600; text-decoration: none; transition: transform 120ms ease, box-shadow 120ms ease; }
+    .cta-btn.primary { background: #0f172a; color: #ffffff; }
+    .cta-btn.secondary { background: #ffffff; color: #0f172a; border: 1px solid #cbd5e1; }
+    .cta-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(15, 23, 42, 0.12); }
+    .nav-back { display: inline-flex; align-items: center; gap: 6px; padding: 10px 14px; font-size: 14px; color: #475569; text-decoration: none; border-radius: 8px; }
+    .nav-back:hover { background: #f1f5f9; color: #0f172a; }
+    .promise-footer { margin-top: 56px; padding: 24px 0; border-top: 1px solid #e2e8f0; text-align: center; font-size: 14px; color: #64748b; }
+    .promise-footer .disclaimer-en { font-family: Inter, system-ui, sans-serif; font-style: italic; margin: 6px 0; }
+    .promise-footer .disclaimer-ar { font-family: 'IBM Plex Sans Arabic', system-ui, sans-serif; margin: 6px 0; }
+    @media (max-width: 640px) {
+      .promise-hero { padding: 32px 0 16px; }
+      .verify-block { padding: 20px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="nav" role="banner" style="padding: 16px 20px; border-bottom: 1px solid #e2e8f0;">
+    <a href="index.html" class="nav-back" aria-label="العودة إلى الصفحة الرئيسية / Back to home">
+      <span aria-hidden="true">←</span>
+      <span>Dealix · العودة للرئيسية · Back to home</span>
+    </a>
+  </header>
+
+  <main class="promise-main" id="main">
+
+    <section class="promise-hero">
+      <h1>وعد Dealix — The Dealix Promise</h1>
+      <p class="sub-ar">١١ التزاماً مكتوباً في الكود. كل التزام اختبار CI ينجح أو يفشل في كل دفعة.</p>
+      <p class="sub-en">11 commitments. Each one a passing test in our CI.</p>
+    </section>
+
+    <div class="trust-strip" role="region" aria-label="Trust indicators">
+      <span>11 enforced commitments</span>
+      <span>·</span>
+      <span>PDPL Article 5 / 13 / 14 / 18 / 21</span>
+      <span>·</span>
+      <span>Saudi-first</span>
+      <span>·</span>
+      <span>CISO-reviewable</span>
+    </div>
+
+    <section class="promise-grid" aria-label="The 11 commitments">
+
+      <article class="promise-card">
+        <span class="commitment-id">01 · no_scraping</span>
+        <h3>No scraping — لا تجريف بيانات</h3>
+        <p class="promise-en">Every contact comes from a legitimate, named source — a Source Passport you provided, a public registry you authorize, or a referral with consent.</p>
+        <p class="promise-ar">كل جهة اتصال مصدرها معروف يمكنك تسميته — Source Passport قدّمته، سجل عام تأذن به، أو تحويل برضا صريح.</p>
+        <div class="enforced-by">Enforced by: tests/test_no_scraping_engine.py</div>
+        <details>
+          <summary>Refusal text · نص الرفض</summary>
+          <p class="refusal-en">We do not scrape websites, social platforms, or third-party UIs to harvest contacts or content. Any data acquired by scraping is quarantined and excluded from drafts and proof.</p>
+          <p class="refusal-ar">لا نقوم بتجريف المواقع أو منصات التواصل أو الواجهات الخارجية لجمع جهات الاتصال أو المحتوى. أي بيانات يتم الحصول عليها بالتجريف تُعزل وتُستبعد من المسودات والإثباتات.</p>
+        </details>
+      </article>
+
+      <article class="promise-card">
+        <span class="commitment-id">02 · no_cold_whatsapp</span>
+        <h3>No cold WhatsApp — لا واتساب بارد</h3>
+        <p class="promise-en">Every WhatsApp message is a draft tied to a consented relationship. You (the founder) approve every send individually.</p>
+        <p class="promise-ar">كل رسالة واتساب مسودة مرتبطة بعلاقة موافَق عليها. أنت توافق على كل إرسال على حدة.</p>
+        <div class="enforced-by">Enforced by: tests/test_no_cold_whatsapp.py</div>
+        <details>
+          <summary>Refusal text · نص الرفض</summary>
+          <p class="refusal-en">We do not send WhatsApp messages to recipients without explicit, recorded, opt-in consent tied to a Source Passport. Cold WhatsApp sends are blocked at the safe_send_gateway layer.</p>
+          <p class="refusal-ar">لا نرسل رسائل واتساب لمستقبلين بدون موافقة صريحة موثّقة مرتبطة بـ Source Passport. الإرسال البارد محجوب في طبقة safe_send_gateway.</p>
+        </details>
+      </article>
+
+      <article class="promise-card">
+        <span class="commitment-id">03 · no_linkedin_automation</span>
+        <h3>No LinkedIn automation — لا أتمتة LinkedIn</h3>
+        <p class="promise-en">Dealix uses LinkedIn data only when you provide a legitimate export you own. We draft the message; you send it from your own account.</p>
+        <p class="promise-ar">نستخدم بيانات LinkedIn فقط من تصدير شرعي تملكه. نصيغ الرسالة؛ أنت ترسلها من حسابك.</p>
+        <div class="enforced-by">Enforced by: tests/test_no_linkedin_automation.py</div>
+        <details>
+          <summary>Refusal text · نص الرفض</summary>
+          <p class="refusal-en">We do not automate LinkedIn connection requests, messages, scraping, or feed actions. Any integration that automates LinkedIn is rejected at PR review and at runtime.</p>
+          <p class="refusal-ar">لا نقوم بأتمتة طلبات الاتصال أو الرسائل أو تجريف بيانات LinkedIn أو إجراءات الواجهة. أي تكامل يقوم بأتمتة LinkedIn مرفوض على مستوى مراجعة PR والتشغيل.</p>
+        </details>
+      </article>
+
+      <article class="promise-card">
+        <span class="commitment-id">04 · no_unsourced_claims</span>
+        <h3>No fake claims — لا ادعاءات بلا مصدر</h3>
+        <p class="promise-en">Every number, quote, case study, and proof artifact carries a source_ref linked to a Source Passport. Provenance is one query away.</p>
+        <p class="promise-ar">كل رقم واقتباس ودراسة حالة وإثبات يحمل source_ref مرتبطاً بـ Source Passport.</p>
+        <div class="enforced-by">Enforced by: tests/test_no_guaranteed_claims.py</div>
+        <details>
+          <summary>Refusal text · نص الرفض</summary>
+          <p class="refusal-en">We do not publish a number, quote, case study, or proof artifact without a source. Content without a source is downgraded to draft_only and public proof is blocked.</p>
+          <p class="refusal-ar">لا ننشر رقماً أو اقتباساً أو دراسة حالة أو إثباتاً بدون مصدر. المحتوى بدون مصدر يُخفّض إلى draft_only ويُحجب الإثبات العام.</p>
+        </details>
+      </article>
+
+      <article class="promise-card">
+        <span class="commitment-id">05 · no_guaranteed_outcomes</span>
+        <h3>No guaranteed sales — لا ضمانات مبيعات</h3>
+        <p class="promise-en">We commit to commitments, never guarantees. KPI promises read "we keep working at no cost until X is reached", never "we ensure X will close".</p>
+        <p class="promise-ar">نلتزم بالتزامات لا بضمانات. وعود KPI: "نواصل بدون مقابل حتى يتحقق X" — لا "نضمن X".</p>
+        <div class="enforced-by">Enforced by: tests/test_no_guaranteed_claims.py, tests/test_customer_safe_product_language.py</div>
+        <details>
+          <summary>Refusal text · نص الرفض</summary>
+          <p class="refusal-en">We do not promise a fixed revenue, deal count, or conversion rate. Words like "guarantee", "ensure", and "we will close X deals" are redacted from drafts.</p>
+          <p class="refusal-ar">لا نَعِد بإيراد ثابت أو عدد صفقات أو معدّل تحويل. كلمات مثل "نضمن" و"سنغلق X صفقة" تُحذف من المسودات.</p>
+        </details>
+      </article>
+
+      <article class="promise-card">
+        <span class="commitment-id">06 · no_pii_in_logs</span>
+        <h3>No PII in logs — لا PII في السجلات</h3>
+        <p class="promise-en">Personal data is redacted at the middleware boundary before any log writer sees it. PDPL-aligned by construction, not by promise.</p>
+        <p class="promise-ar">البيانات الشخصية تُحذف عند حدّ الـ middleware قبل أن يراها أي كاتب سجل. متوافق مع PDPL هندسياً.</p>
+        <div class="enforced-by">Enforced by: api/middleware/bopla_redaction.py, auto_client_acquisition/friction_log/sanitizer.py</div>
+        <details>
+          <summary>Refusal text · نص الرفض</summary>
+          <p class="refusal-en">We do not write raw personal data into application logs, friction logs, or telemetry. A leak is treated as a P0 incident.</p>
+          <p class="refusal-ar">لا نكتب بيانات شخصية خام في سجلات التطبيق أو سجلات الاحتكاك أو القياسات. أي تسريب يُعالَج كحادثة P0.</p>
+        </details>
+      </article>
+
+      <article class="promise-card">
+        <span class="commitment-id">07 · no_sourceless_ai</span>
+        <h3>No source-less AI — لا إجابة بلا مصدر</h3>
+        <p class="promise-en">Every AI answer cites a Source Passport. If we lack a source, we return "source required" — we do not invent an answer to look helpful.</p>
+        <p class="promise-ar">كل إجابة AI مستندة لـ Source Passport. لو ما عندنا مصدر، نرجع "مصدر مطلوب".</p>
+        <div class="enforced-by">Enforced by: tests/test_no_source_passport_no_ai.py</div>
+        <details>
+          <summary>Refusal text · نص الرفض</summary>
+          <p class="refusal-en">We do not answer a knowledge or research question without a Source Passport. AI responses are blocked when no source is bound to the query.</p>
+          <p class="refusal-ar">لا نجيب على سؤال معرفي أو بحثي بدون Source Passport. ردود AI تُحجب عند عدم ربط مصدر بالطلب.</p>
+        </details>
+      </article>
+
+      <article class="promise-card">
+        <span class="commitment-id">08 · no_external_action_without_approval</span>
+        <h3>No external action without approval — لا فعل خارجي بلا موافقة</h3>
+        <p class="promise-en">Every external send, charge, publish, or share waits for explicit human approval logged with approver identity and timestamp.</p>
+        <p class="promise-ar">كل إرسال أو دفعة أو نشر خارجي ينتظر موافقة بشرية صريحة موثّقة بهوية ووقت.</p>
+        <div class="enforced-by">Enforced by: tests/test_pii_external_requires_approval.py, auto_client_acquisition/governance_os/runtime_decision.py</div>
+        <details>
+          <summary>Refusal text · نص الرفض</summary>
+          <p class="refusal-en">We do not send, charge, publish, or share externally without approval. Bypass attempts are rejected by decide(action, context) with REQUIRE_APPROVAL or BLOCK.</p>
+          <p class="refusal-ar">لا نرسل ولا نَخصم ولا ننشر ولا نشارك خارجياً بدون موافقة. محاولات الالتفاف تُرفض بواسطة decide(action, context) بـ REQUIRE_APPROVAL أو BLOCK.</p>
+        </details>
+      </article>
+
+      <article class="promise-card">
+        <span class="commitment-id">09 · no_agent_without_identity</span>
+        <h3>No agent without identity — لا عميل ذكي بلا هوية</h3>
+        <p class="promise-en">Every autonomous workflow ties to a registered agent identity (name, version, owner, governance scope). Every action traces to an identity.</p>
+        <p class="promise-ar">كل سير عمل ذاتي مرتبط بهوية مسجّلة (الاسم، الإصدار، المالك، نطاق الحوكمة).</p>
+        <div class="enforced-by">Enforced by: auto_client_acquisition/agent_os/agent_registry.py, auto_client_acquisition/secure_agent_runtime_os/four_boundaries.py</div>
+        <details>
+          <summary>Refusal text · نص الرفض</summary>
+          <p class="refusal-en">We do not run an autonomous workflow without a registered agent identity. Unregistered agents are rejected at the runtime registry.</p>
+          <p class="refusal-ar">لا نُشغّل أي سير عمل ذاتي بدون هوية عميل ذكي مسجّلة. الوكلاء غير المسجّلين يُرفضون في سجل التشغيل.</p>
+        </details>
+      </article>
+
+      <article class="promise-card">
+        <span class="commitment-id">10 · no_project_without_proof_pack</span>
+        <h3>No project without a Proof Pack — لا مشروع بلا Proof Pack</h3>
+        <p class="promise-en">Every closed engagement assembles a 14-section Proof Pack with a computed proof score. Signed, exportable PDF before invoicing.</p>
+        <p class="promise-ar">كل ارتباط مغلق يجمّع Proof Pack من ١٤ قسماً مع نقاط إثبات. PDF موقّع قبل الفاتورة.</p>
+        <div class="enforced-by">Enforced by: tests/test_proof_pack_required.py, auto_client_acquisition/proof_os/proof_pack.py</div>
+        <details>
+          <summary>Refusal text · نص الرفض</summary>
+          <p class="refusal-en">We do not close a project without assembling a Proof Pack. Projects without a Proof Pack cannot be invoiced, cannot be referenced in case studies, and cannot trigger retainer eligibility.</p>
+          <p class="refusal-ar">لا نغلق مشروعاً بدون Proof Pack. المشاريع بدون Proof Pack لا يمكن إصدار فاتورة لها، لا يمكن الاستشهاد بها في حالات، ولا تفعّل أهلية الريتينر.</p>
+        </details>
+      </article>
+
+      <article class="promise-card">
+        <span class="commitment-id">11 · no_project_without_capital_asset</span>
+        <h3>No project without a Capital Asset — لا مشروع بلا أصل رأسمالي</h3>
+        <p class="promise-en">Every closed engagement deposits at least one reusable Capital Asset — a scoring rule, draft template, governance rule, sector insight, productization signal, or proof example.</p>
+        <p class="promise-ar">كل ارتباط مغلق يودع أصلاً رأسمالياً قابلاً لإعادة الاستخدام واحداً على الأقل.</p>
+        <div class="enforced-by">Enforced by: auto_client_acquisition/capital_os/capital_ledger.py</div>
+        <details>
+          <summary>Refusal text · نص الرفض</summary>
+          <p class="refusal-en">We do not close a project without depositing at least one Capital Asset. Zero-capital projects are flagged in the weekly capital review as a productization failure, not a delivery success.</p>
+          <p class="refusal-ar">لا نغلق مشروعاً بدون إيداع أصل رأسمالي واحد على الأقل. مشاريع صفر-رأسمال تُرفع في مراجعة الأصول الأسبوعيّة كإخفاق في الإنتاج، لا كنجاح في التسليم.</p>
+        </details>
+      </article>
+
+    </section>
+
+    <section class="verify-block" aria-label="Verify yourself">
+      <h2>Verify yourself · تحقق بنفسك</h2>
+      <p>Every commitment above is generated from the same Python module the CI tests read. Three public endpoints let any reviewer confirm the manifesto, the audit chain, and the trust pack without contacting Dealix.</p>
+      <p>كل التزام أعلاه مُولَّد من نفس الوحدة البرمجية التي تقرأها اختبارات CI. ثلاث نقاط نهاية عامّة تُتيح لأي مراجع التأكد من المانيفستو وسلسلة التدقيق وحزمة الثقة بدون الاتصال بنا.</p>
+      <pre>curl https://api.dealix.me/api/v1/dealix-promise | jq .commitments</pre>
+      <pre>curl https://api.dealix.me/api/v1/audit-chain/ACTION_ID | jq .</pre>
+      <pre>curl https://api.dealix.me/api/v1/trust-pack/PACK_ID | jq .</pre>
+    </section>
+
+    <section class="cta-block" aria-label="Next steps">
+      <a class="cta-btn primary" href="/api/v1/dealix-promise/markdown">Read full manifest (markdown) · النص الكامل</a>
+      <a class="cta-btn secondary" href="/api/v1/commercial-map/markdown">See the commercial map · الخارطة التجارية</a>
+    </section>
+
+    <footer class="promise-footer">
+      <p class="disclaimer-en">Estimated outcomes are not guaranteed outcomes.</p>
+      <p class="disclaimer-ar">النتائج التقديرية ليست نتائج مضمونة.</p>
+      <p style="margin-top: 12px;"><a href="index.html" class="nav-back">← Back to home · العودة للرئيسية</a></p>
+    </footer>
+
+  </main>
+</body>
+</html>

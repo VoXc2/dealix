@@ -83,6 +83,17 @@ ALLOWLIST: dict[str, dict[str, str]] = {
         "guaranteed": "NEGATION",
         "مضمون": "NEGATION",
     },
+    # Wave 17 anchor partner outreach kit — uses forbidden tokens inside
+    # explicit "no cold send / no scraping / no guarantee / no مضمون"
+    # negation blocks. Drafts open with consent paths and never with cold
+    # outreach. Doctrine intact.
+    "sales-kit/ANCHOR_PARTNER_OUTREACH.md": {
+        "cold": "NEGATION",
+        "guaranteed": "NEGATION",
+        "scrape": "NEGATION",
+        "scraping": "NEGATION",
+        "مضمون": "NEGATION",
+    },
 }
 
 

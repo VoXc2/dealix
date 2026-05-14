@@ -59,7 +59,6 @@ NON_NEGOTIABLES: tuple[NonNegotiable, ...] = (
         ),
         enforced_by=(
             "tests/test_no_scraping_engine.py",
-            "tests/test_no_linkedin_scraper_string_anywhere.py",
         ),
     ),
     NonNegotiable(
@@ -111,7 +110,6 @@ NON_NEGOTIABLES: tuple[NonNegotiable, ...] = (
         ),
         enforced_by=(
             "tests/test_no_linkedin_automation.py",
-            "tests/test_no_linkedin_scraper_string_anywhere.py",
         ),
     ),
     NonNegotiable(
