@@ -205,4 +205,82 @@ def summarize_gates() -> dict[str, str]:
         "opt_out_gate": "Send permanently blocked if recipient opted out (PDPL)",
         "consent_record_gate": "WhatsApp requires documented consent_record_id (PDPL)",
         "quiet_hours_gate": "Send queued if KSA quiet hours (21:00-08:00) active",
+        "doctrine_non_negotiables_gate": "Action refused if it violates any item on "
+            "operating_manual_os.non_negotiables.DEALIX_NON_NEGOTIABLES",
     }
+
+
+def enforce_doctrine_non_negotiables(
+    *,
+    action: str,
+    uses_scraping: bool = False,
+    uses_cold_whatsapp: bool = False,
+    uses_linkedin_automation: bool = False,
+    claims_unverified_proof: bool = False,
+    claims_guaranteed_sales: bool = False,
+    writes_pii_to_logs: bool = False,
+    answers_without_sources: bool = False,
+    performs_external_action_without_approval: bool = False,
+    emits_ai_output_without_governance: bool = False,
+    closes_project_without_proof_pack: bool = False,
+    closes_project_without_capital_asset: bool = False,
+) -> SendDecision:
+    """Pre-flight gate that runs the Layer-6 non-negotiables on any action.
+
+    Callers chain this **before** ``enforce_consent_or_block`` for outbound
+    paths, or call it standalone for non-send actions (proof publication,
+    case-study release, project closure). Raises :class:`SendBlocked` on
+    violation; returns a :class:`SendDecision` on pass.
+
+    Doctrine source:
+      ``auto_client_acquisition.operating_manual_os.non_negotiables.
+      check_action_against_non_negotiables``.
+    """
+
+    # Local import so safe_send_gateway has no hard dependency on the
+    # doctrine package at import time — the gate is only loaded when used.
+    from auto_client_acquisition.operating_manual_os.non_negotiables import (
+        NonNegotiableCheck,
+        check_action_against_non_negotiables,
+    )
+
+    check = NonNegotiableCheck(
+        action=action,
+        uses_scraping=uses_scraping,
+        uses_cold_whatsapp=uses_cold_whatsapp,
+        uses_linkedin_automation=uses_linkedin_automation,
+        claims_unverified_proof=claims_unverified_proof,
+        claims_guaranteed_sales=claims_guaranteed_sales,
+        writes_pii_to_logs=writes_pii_to_logs,
+        answers_without_sources=answers_without_sources,
+        performs_external_action_without_approval=performs_external_action_without_approval,
+        emits_ai_output_without_governance=emits_ai_output_without_governance,
+        closes_project_without_proof_pack=closes_project_without_proof_pack,
+        closes_project_without_capital_asset=closes_project_without_capital_asset,
+    )
+    result = check_action_against_non_negotiables(check)
+    if not result.allowed:
+        violations = [v.value for v in result.violations]
+        raise SendBlocked(
+            reason_code="doctrine_non_negotiable_violation",
+            reasons_ar=(
+                "الإجراء يخالف بنود Dealix الثابتة: "
+                + ", ".join(violations)
+            ),
+            reasons_en=(
+                "Action violates Dealix non-negotiables: "
+                + ", ".join(violations)
+            ),
+            channel="doctrine",
+            destination=action,
+            gate="doctrine_non_negotiables_gate",
+        )
+    return SendDecision(
+        is_safe_to_send=True,
+        channel="doctrine",
+        destination=action,
+        audit_breadcrumb={
+            "doctrine_check_passed": True,
+            "action": action,
+        },
+    )

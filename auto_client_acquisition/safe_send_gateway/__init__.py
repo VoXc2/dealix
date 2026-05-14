@@ -26,6 +26,7 @@ from .middleware import (
     SendBlocked,
     SendDecision,
     enforce_consent_or_block,
+    enforce_doctrine_non_negotiables,
     summarize_gates,
 )
 
@@ -33,5 +34,6 @@ __all__ = [
     "SendBlocked",
     "SendDecision",
     "enforce_consent_or_block",
+    "enforce_doctrine_non_negotiables",
     "summarize_gates",
 ]

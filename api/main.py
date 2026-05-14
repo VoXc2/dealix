@@ -32,6 +32,7 @@ from api.routers.domains import webhooks as webhooks_domain
 from api.routers import (
     admin_tenants,
     auth,
+    capability_diagnostic,
     compliance_status,
     cost_tracking,
     customer_usage,
@@ -41,6 +42,7 @@ from api.routers import (
     nps,
     pdpl,
     pdpl_dsar,
+    proof_pack,
     referral_program,
     revenue_metrics,
     saudi_prospect_search,
@@ -262,6 +264,9 @@ def create_app() -> FastAPI:
     app.include_router(referral_program.router)
     # Wave 13 W13.4 — NPS survey + detractor intervention
     app.include_router(nps.router)
+    # Doctrine Phase 1 — Capability Diagnostic (paid entry) + Proof Pack v2
+    app.include_router(capability_diagnostic.router)
+    app.include_router(proof_pack.router)
 
     @app.get("/", tags=["root"])
     async def root() -> dict[str, object]:
