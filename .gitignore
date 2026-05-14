@@ -100,6 +100,11 @@ dumps/
 !landing/assets/data/service-readiness.json
 # Wave 12.5 §33.2.3 — canonical workflow YAMLs (product data, not customer data)
 !data/workflows/
+# Wave 19 Recovery — honest CEO completion marker files (never lie about market state)
+!data/founder_command_center_status.json
+!data/partner_outreach_log.json
+!data/first_invoice_log.json
+!data/anchor_partner_pipeline.json
 
 # ─────────────────────────────────────────────────────────────
 # 📝 Logs

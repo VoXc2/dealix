@@ -1,0 +1,91 @@
+{
+  "version": "1.0",
+  "wave": "17",
+  "generated_at": "2026-05-14T04:58:52.326081+00:00",
+  "doctrine_note": "Anchor partner outreach is DRAFT ONLY. Founder reviews + approves every send. NEVER autonomous. NEVER cold send. NEVER scraping. Cross-link: docs/40_partners/PARTNER_COVENANT.md.",
+  "partners": [
+    {
+      "id": "anchor_partner_big_four",
+      "archetype": "Big 4 advisory Saudi practice",
+      "archetype_ar": "ممارسة استشارات Big 4 السعودية",
+      "candidate_partners": [
+        "PwC Saudi",
+        "Deloitte Saudi",
+        "EY Saudi",
+        "KPMG Saudi"
+      ],
+      "owner_role_to_target": "PDPL/NDMO advisory partner OR governance practice lead",
+      "value_to_partner": "PDPL + NDMO compliance referral mechanism + Sprint delivery partner so the advisory keeps the consulting layer.",
+      "value_to_dealix": "Enterprise referrals with credibility moat.",
+      "outreach_draft_ref": "docs/sales-kit/ANCHOR_PARTNER_OUTREACH.md#archetype-1",
+      "rev_share_terms": "20% / first 12 months / capped at 200,000 SAR per closed referral. Partner Covenant binding.",
+      "status": "queued_for_founder_call",
+      "tag": "anchor_partner",
+      "created_at": "2026-05-14T04:58:52.326081+00:00",
+      "founder_action_required": "Pick the specific company name + the specific contact + book a 60-min call. Use the bilingual draft in outreach_draft_ref. DRAFT ONLY — founder approval required before send.",
+      "doctrine": {
+        "no_cold_send": true,
+        "no_scraping": true,
+        "no_linkedin_automation": true,
+        "approval_required_before_send": true
+      },
+      "is_estimate": false
+    },
+    {
+      "id": "anchor_partner_sama_processor",
+      "archetype": "SAMA-licensed payment processor",
+      "archetype_ar": "معالج مدفوعات مرخّص من ساما",
+      "candidate_partners": [
+        "Moyasar",
+        "HyperPay",
+        "PayTabs"
+      ],
+      "owner_role_to_target": "Risk / Fraud / AML lead OR partnerships head",
+      "value_to_partner": "Governance + Trust Pack layer for processor's mid-market merchants who need PDPL audit trail without building it in-house.",
+      "value_to_dealix": "Merchant referrals + SAMA-aligned audit story.",
+      "outreach_draft_ref": "docs/sales-kit/ANCHOR_PARTNER_OUTREACH.md#archetype-2",
+      "rev_share_terms": "20% / first 12 months / capped at 200,000 SAR per closed referral. Partner Covenant binding.",
+      "status": "queued_for_founder_call",
+      "tag": "anchor_partner",
+      "created_at": "2026-05-14T04:58:52.326081+00:00",
+      "founder_action_required": "Pick the specific company name + the specific contact + book a 60-min call. Use the bilingual draft in outreach_draft_ref. DRAFT ONLY — founder approval required before send.",
+      "doctrine": {
+        "no_cold_send": true,
+        "no_scraping": true,
+        "no_linkedin_automation": true,
+        "approval_required_before_send": true
+      },
+      "is_estimate": false
+    },
+    {
+      "id": "anchor_partner_saudi_vc",
+      "archetype": "Saudi VC fund",
+      "archetype_ar": "صندوق رأس مال جريء سعودي",
+      "candidate_partners": [
+        "Sanabil",
+        "STV",
+        "Wa'ed Ventures",
+        "Raed Ventures"
+      ],
+      "owner_role_to_target": "Portfolio operating partner OR platform lead",
+      "value_to_partner": "Portco revenue intelligence + governance gap unblocker before Series A diligence stalls on data quality.",
+      "value_to_dealix": "Pre-qualified portco referrals + brand halo.",
+      "outreach_draft_ref": "docs/sales-kit/ANCHOR_PARTNER_OUTREACH.md#archetype-3",
+      "rev_share_terms": "20% / first 12 months / capped at 200,000 SAR per closed referral. Partner Covenant binding.",
+      "status": "queued_for_founder_call",
+      "tag": "anchor_partner",
+      "created_at": "2026-05-14T04:58:52.326081+00:00",
+      "founder_action_required": "Pick the specific company name + the specific contact + book a 60-min call. Use the bilingual draft in outreach_draft_ref. DRAFT ONLY — founder approval required before send.",
+      "doctrine": {
+        "no_cold_send": true,
+        "no_scraping": true,
+        "no_linkedin_automation": true,
+        "approval_required_before_send": true
+      },
+      "is_estimate": false
+    }
+  ],
+  "next_action": "Open docs/sales-kit/ANCHOR_PARTNER_OUTREACH.md, pick one company name per archetype, book the call. Target: 3 first calls within 7 days, 1 LOI within 30 days.",
+  "is_estimate": false,
+  "governance_decision": "allow"
+}

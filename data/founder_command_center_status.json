@@ -1,0 +1,35 @@
+{
+  "status_id": "FCC-STATUS-001",
+  "system": "founder_command_center",
+  "status": "active",
+  "last_verified_at": "2026-05-14",
+  "deployment_marker": true,
+  "page_path": "landing/founder-command-center.html",
+  "api_endpoint": "GET /api/v1/founder/command-center",
+  "required_cards": [
+    "Doctrine Status",
+    "Offer Ladder",
+    "Revenue Engine",
+    "Governance OS",
+    "Proof OS",
+    "Capital Assets",
+    "Partner Motion",
+    "Invoice #1"
+  ],
+  "wave19_cards": [
+    "GCC Standard Readiness",
+    "Capital Asset Count",
+    "Open Doctrine Status",
+    "Funding Pack Status"
+  ],
+  "top_3_next_actions": [
+    "Close Wave 19 Recovery gaps (this sprint)",
+    "Send one anchor partner outreach from docs/sales-kit/ANCHOR_PARTNER_OUTREACH.md",
+    "Push toward Invoice #1"
+  ],
+  "ceo_completion_rule": "Dashboard marker is required; page existence alone is not enough.",
+  "owner": "Founder",
+  "verifier_script": "scripts/verify_all_dealix.py",
+  "doctrine_link": "docs/THE_DEALIX_PROMISE.md",
+  "is_estimate": false
+}

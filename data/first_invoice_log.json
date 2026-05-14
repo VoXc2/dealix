@@ -1,0 +1,31 @@
+{
+  "log_id": "FIRST-INVOICE-LOG-001",
+  "updated_at": "2026-05-14",
+  "invoice_sent_count": 0,
+  "invoice_paid_count": 0,
+  "ceo_complete": false,
+  "honesty_note": "invoice_sent_count and invoice_paid_count remain 0 until the founder actually sends and Moyasar confirms payment. Marker files NEVER lie about market state.",
+  "entries": [],
+  "next_required_action": "Once a qualified buyer accepts the proposal, follow docs/ops/FIRST_INVOICE_UNLOCK.md exactly. Capital Asset registration FIRST (non-negotiable #11).",
+  "completion_rule": "Score 5 on First Invoice Motion requires at least one invoice entry with sent_at + proof_target.",
+  "entry_schema": {
+    "customer_handle": "string (the customer's internal handle)",
+    "offer": "string (governed_ops_retainer_4999 | revenue_intelligence_sprint_25k)",
+    "amount_sar": "number",
+    "moyasar_invoice_id": "string",
+    "sent_at": "ISO 8601 timestamp",
+    "paid_at": "ISO 8601 timestamp or null",
+    "proof_target": "string (the specific Proof Pack KPI commitment)",
+    "capital_asset_registered_before_send": "boolean (MUST be true)",
+    "trust_pack_queued": "boolean",
+    "consent_log_id": "string"
+  },
+  "doctrine": {
+    "no_live_charge_without_approval": true,
+    "capital_asset_first": true,
+    "no_celebration_tweets": true,
+    "no_autonomous_upsell": true
+  },
+  "runbook_link": "docs/ops/FIRST_INVOICE_UNLOCK.md",
+  "doctrine_link": "docs/THE_DEALIX_PROMISE.md"
+}
