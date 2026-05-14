@@ -107,11 +107,36 @@ async def demo_request(req: Request) -> dict[str, Any]:
         lead_id,
     )
 
+    # Wave 14B activation: fire transactional confirmation email — best-effort,
+    # never blocks the 200 response. Whitelisted kind only; Gmail OAuth
+    # configured via env. If Gmail isn't set up, this no-ops gracefully.
+    transactional_status = "skipped_not_configured"
+    try:
+        from auto_client_acquisition.email.transactional import (
+            render_diagnostic_intake_confirmation,
+            send_transactional,
+        )
+        subject, body_plain = render_diagnostic_intake_confirmation(
+            customer_name=name, sector=sector or "b2b_services"
+        )
+        send_result = await send_transactional(
+            kind="diagnostic_intake_confirmation",
+            to_email=email,
+            subject=subject,
+            body_plain=body_plain,
+        )
+        transactional_status = send_result.reason_code
+    except Exception:
+        log.exception("transactional_confirmation_failed")
+        transactional_status = "exception_caught"
+
     return {
         "ok": True,
         "calendly_url": CALENDLY_URL,
         "message": "تم استلام طلبك — سنتواصل خلال 4 ساعات عمل",
         "lead_id": lead_id,
+        "transactional_confirmation": transactional_status,
+        "governance_decision": "allow",
     }
 
 
