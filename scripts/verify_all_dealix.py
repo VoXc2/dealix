@@ -184,6 +184,30 @@ def json_check(rel: str, required_keys: list[str], label: str) -> CheckResult:
     return CheckResult(name=label, ok=True, detail=f"{rel} ok")
 
 
+def positive_count_check(rel: str, count_key: str, label: str) -> CheckResult:
+    """
+    Honest market-motion check. Passes only if the JSON marker file exists,
+    is valid, and the named count is >= 1. This is how we refuse to award a
+    market-motion score for an artifact that says nothing has happened yet.
+    """
+    p = REPO_ROOT / rel
+    if not p.exists():
+        return CheckResult(name=label, ok=False, detail=f"MISSING {rel}")
+    try:
+        data = json.loads(p.read_text())
+    except Exception as e:
+        return CheckResult(name=label, ok=False, detail=f"INVALID JSON {rel}: {e}")
+    value = data.get(count_key)
+    if not isinstance(value, int):
+        return CheckResult(name=label, ok=False, detail=f"{rel}: {count_key} not an int")
+    if value < 1:
+        return CheckResult(
+            name=label, ok=False,
+            detail=f"{rel}: {count_key}={value} — no real activity logged yet",
+        )
+    return CheckResult(name=label, ok=True, detail=f"{rel}: {count_key}={value}")
+
+
 # ---------------------------------------------------------------------------
 # System definitions
 # ---------------------------------------------------------------------------
@@ -362,7 +386,8 @@ def system_agent_safety() -> SystemReport:
 def system_gcc_expansion() -> SystemReport:
     r = SystemReport("GCC Expansion")
     r.docs = [any_of_files_check(
-        ["docs/saudi/GCC_EXPANSION.md",
+        ["docs/gcc-expansion/GCC_EXPANSION_THESIS.md",
+         "docs/saudi/GCC_EXPANSION.md",
          "docs/37_saudi_layer/GCC_EXPANSION.md",
          "docs/SAUDI_GCC_EXPANSION.md"],
         "GCC Expansion doc",
@@ -384,8 +409,9 @@ def system_funding_pack() -> SystemReport:
             "USE_OF_FUNDS doc",
         ),
         any_of_files_check(
-            ["docs/hiring/SCORECARDS.md",
-             "docs/hiring/HIRING_SCORECARDS.md"],
+            ["docs/funding/HIRING_SCORECARDS.md",
+             "docs/hiring/HIRING_SCORECARDS.md",
+             "docs/hiring/SCORECARDS.md"],
             "Hiring scorecards doc",
         ),
     ]
@@ -398,7 +424,8 @@ def system_funding_pack() -> SystemReport:
 def system_open_doctrine() -> SystemReport:
     r = SystemReport("Open Doctrine")
     r.docs = [any_of_files_check(
-        ["docs/open-doctrine/README.md",
+        ["open-doctrine/README.md",
+         "docs/open-doctrine/README.md",
          "docs/open_doctrine/README.md",
          "docs/OPEN_DOCTRINE.md"],
         "Open Doctrine doc",
@@ -441,19 +468,28 @@ def system_partner_motion() -> SystemReport:
         ),
     ]
     r.api = [file_check("data/anchor_partner_pipeline.json")]
-    # Market motion: at least one outreach logged.
-    r.market = [file_check(
+    # Market motion: file must exist AND outreach_sent_count >= 1.
+    # File presence alone does not award the market-motion point.
+    r.market = [positive_count_check(
         "data/partner_outreach_log.json",
-        label="partner_outreach_log.json (market motion)",
+        "outreach_sent_count",
+        "partner outreach actually sent",
     )]
     return r
 
 def system_first_invoice_motion() -> SystemReport:
     r = SystemReport("First Invoice Motion")
     r.docs = [file_check("docs/ops/FIRST_INVOICE_UNLOCK.md")]
-    r.market = [file_check(
+    # Operational layer: log file must exist and be valid JSON.
+    r.api = [file_check(
         "data/first_invoice_log.json",
-        label="first_invoice_log.json (market motion)",
+        label="first_invoice_log.json (operational marker)",
+    )]
+    # Market motion: invoice_sent_count >= 1.
+    r.market = [positive_count_check(
+        "data/first_invoice_log.json",
+        "invoice_sent_count",
+        "first invoice actually sent",
     )]
     return r
 

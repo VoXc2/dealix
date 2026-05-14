@@ -42,16 +42,31 @@ documentation.
 | 10 | Trust Pack | `docs/14_trust_os/TRUST_PACK.md` | `auto_client_acquisition/trust_os/trust_pack.py` | `test_public_capital_assets_are_safe.py` | Trust Pack generator | Trust tile | Enterprise-ready | pending |
 | 11 | Evidence Plane | `docs/16_evidence_control_plane/` | `auto_client_acquisition/evidence_control_plane_os/evidence_graph.py`, `accountability_map.py` | `test_doctrine_control_mapping_complete.py` | Evidence graph check | Evidence tile | Regulated-buyer trust | pending |
 | 12 | Agent Safety | `docs/17_secure_agent_runtime/` | `auto_client_acquisition/agent_os/`, `secure_agent_runtime_os/` | `test_agent_requires_identity_card.py`, `test_agent_requires_owner.py`, `test_agent_no_external_action.py`, `test_agent_no_scraping_tool.py`, `test_kill_switch_revokes_tools.py`, `test_cross_client_context_blocked.py`, `test_untrusted_data_cannot_override_policy.py` | Agent permission tests | Agent safety tile | Future-safe | pending |
-| 13 | GCC Expansion | `docs/saudi/GCC_EXPANSION.md` (or equivalent) | n/a | `test_gcc_expansion_preserves_saudi_beachhead.py` | `scripts/verify_wave19.py` | GCC readiness tile | Partner narrative | pending |
-| 14 | Funding Pack | `docs/investment/FUNDING_READINESS.md`, `docs/funding/USE_OF_FUNDS.md`, `docs/hiring/SCORECARDS.md` | n/a | `test_funding_pack_has_use_of_funds.py`, `test_hiring_scorecards_have_no_hire_conditions.py` | Funding pack check | Funding pack tile | Investor-ready | pending |
-| 15 | Open Doctrine | `docs/open-doctrine/README.md` | doctrine API handler | `test_open_doctrine_exists.py`, `test_public_doctrine_does_not_expose_commercial_secrets.py` | `GET /api/v1/doctrine` | Open Doctrine tile | Standardization | pending |
-| 16 | Founder Command Center | `landing/founder-command-center.html` (or `landing/founder-command-bus.html`) | n/a | landing-page presence check | `scripts/verify_all_dealix.py` | Itself | Daily visibility | pending |
-| 17 | Partner Motion | `docs/sales-kit/ANCHOR_PARTNER_OUTREACH.md`, `docs/partners/PARTNER_COVENANT.md` | n/a | partner pipeline JSON schema test | `data/anchor_partner_pipeline.json`, `data/partner_outreach_log.json` | Partner pipeline tile | Outreach sent | pending |
-| 18 | First Invoice Motion | `docs/ops/FIRST_INVOICE_UNLOCK.md` | n/a | runbook presence | invoice unlock checklist | Invoice #1 tile | Invoice-ready | pending |
-| 19 | Continuous Routine | `docs/ops/CONTINUOUS_ROUTINE.md` | `scripts/daily_routine.py`, `scripts/weekly_ceo_review.py` | n/a | the scripts themselves | Routine tile | Operating cadence | pending |
+| 13 | GCC Expansion | `docs/gcc-expansion/GCC_EXPANSION_THESIS.md`, `GCC_COUNTRY_PRIORITY_MAP.md`, `GCC_GO_TO_MARKET_SEQUENCE.md` | n/a | `test_gcc_expansion_preserves_saudi_beachhead.py` | `scripts/verify_all_dealix.py` | GCC readiness tile | Partner narrative | pending |
+| 14 | Funding Pack | `docs/investment/FUNDING_READINESS.md`, `docs/funding/USE_OF_FUNDS.md`, `docs/funding/HIRING_SCORECARDS.md`, `docs/funding/FIRST_3_HIRES.md` | n/a | `test_funding_pack_has_use_of_funds.py`, `test_hiring_scorecards_have_no_hire_conditions.py` | Funding pack check | Funding pack tile | Investor-ready | pending |
+| 15 | Open Doctrine | `open-doctrine/README.md`, `11_NON_NEGOTIABLES.md`, `CONTROL_MAPPING.md` | doctrine API handler | `test_open_doctrine_exists.py`, `test_public_doctrine_does_not_expose_commercial_secrets.py` | `GET /api/v1/doctrine` | Open Doctrine tile | Standardization | pending |
+| 16 | Founder Command Center | `landing/founder-command-center.html` (or `landing/founder-command-bus.html`) | n/a | `tests/test_founder_command_center_status_marker_exists.py` | `data/founder_command_center_status.json` | Itself | Daily visibility | pending |
+| 17 | Partner Motion | `docs/sales-kit/ANCHOR_PARTNER_OUTREACH.md`, `docs/40_partners/PARTNER_COVENANT.md` | n/a | partner pipeline JSON schema test | `data/anchor_partner_pipeline.json`, `data/partner_outreach_log.json` (**content-aware: `outreach_sent_count` must be ≥ 1**) | Partner pipeline tile | Outreach sent | pending |
+| 18 | First Invoice Motion | `docs/ops/FIRST_INVOICE_UNLOCK.md` | n/a | runbook presence | `data/first_invoice_log.json` (**content-aware: `invoice_sent_count` must be ≥ 1**) | Invoice #1 tile | Invoice-ready | pending |
+| 19 | Continuous Routine | `docs/ops/CONTINUOUS_ROUTINE.md` or `DAILY_OPERATING_LOOP.md` | `scripts/daily_routine.py` (or `daily_operate.sh`), `scripts/weekly_ceo_review.py` (or `dealix_weekly_executive_pack.py`) | n/a | the scripts themselves | Routine tile | Operating cadence | pending |
 
 > **Rule:** Any system whose `Status` column is not `PASS` is **not shipped**.
 > The verifier `scripts/verify_all_dealix.py` is the single judge.
+
+### Honest-Marker Rule (Critical)
+
+Some systems have **content-aware** market-motion checks. The verifier
+does NOT award the market-motion point just because a JSON marker file
+exists — it reads the file and requires a positive count:
+
+| System                | Required content                              |
+|-----------------------|------------------------------------------------|
+| Partner Motion        | `data/partner_outreach_log.json` → `outreach_sent_count` ≥ 1 |
+| First Invoice Motion  | `data/first_invoice_log.json`  → `invoice_sent_count` ≥ 1   |
+
+**Do not inflate these counts.** They are the only thing standing
+between "build-complete" and "company-complete." A count of `1` means
+exactly one outreach / invoice has actually been sent.
 
 ---
 
