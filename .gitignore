@@ -100,6 +100,11 @@ dumps/
 !landing/assets/data/service-readiness.json
 # Wave 12.5 §33.2.3 — canonical workflow YAMLs (product data, not customer data)
 !data/workflows/
+# Master Verification System — operating markers (no customer / PII data)
+!data/anchor_partner_pipeline.json
+!data/partner_outreach_log.json
+!data/first_invoice_log.json
+!data/founder_command_center_status.json
 
 # ─────────────────────────────────────────────────────────────
 # 📝 Logs
