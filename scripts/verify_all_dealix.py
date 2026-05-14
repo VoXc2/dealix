@@ -519,6 +519,22 @@ def system_group_apis() -> SystemReport:
     return r
 
 
+def system_group_treasury_and_capital_allocation() -> SystemReport:
+    r = SystemReport("Group Treasury & Capital Allocation")
+    r.docs = [
+        file_check("docs/holding/CAPITAL_ALLOCATION_POLICY.md"),
+        file_check("docs/holding/GROUP_TREASURY.md"),
+        file_check("docs/holding/HOLDING_ANNUAL_REPORT_TEMPLATE.md"),
+    ]
+    r.code = [file_check("scripts/render_annual_report.py")]
+    r.tests = [
+        file_check("tests/test_capital_allocation_policy_matches_board_engine.py"),
+        file_check("tests/test_annual_report_is_byte_stable.py"),
+    ]
+    r.api = [file_check("landing/assets/downloads/dealix-group-annual-report-2026.md")]
+    return r
+
+
 def system_market_feedback() -> SystemReport:
     r = SystemReport("Market Feedback")
     r.docs = [any_of_files_check(
@@ -651,6 +667,7 @@ SYSTEMS: list[Callable[[], SystemReport]] = [
     system_market_feedback,
     system_business_unit_registry,
     system_group_apis,
+    system_group_treasury_and_capital_allocation,
 ]
 
 # Systems that must be ≥ 4/5 for "CEO complete".

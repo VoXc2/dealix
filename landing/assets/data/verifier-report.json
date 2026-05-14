@@ -187,6 +187,13 @@
       "name": "Group APIs",
       "passed": true,
       "score": 4
+    },
+    {
+      "in_top_eight": false,
+      "missing": [],
+      "name": "Group Treasury & Capital Allocation",
+      "passed": true,
+      "score": 4
     }
   ]
 }

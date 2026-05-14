@@ -56,6 +56,7 @@ documentation.
 | 24 | Market Feedback | `docs/ops/MARKET_FEEDBACK.md` | `api/routers/market_feedback.py`, `scripts/market_feedback_summary.py` | `tests/test_market_feedback_endpoint.py` | `POST /api/v1/public/market-feedback`, `GET .../summary` | Market Feedback tile | Real-world signal | **PASS** |
 | 25 | Business Unit Registry | `docs/holding/HOLDING_CHARTER.md`, `docs/holding/BUSINESS_UNIT_REGISTRY.md` | `scripts/register_business_unit.py`, `scripts/validate_business_units.py` | `tests/test_business_unit_registry.py` | `data/business_units.json` | Group portfolio tile | Multi-BU governance | **PASS** |
 | 26 | Group APIs | `api/routers/holding.py`, `api/routers/business_units.py` | n/a | `tests/test_holding_endpoints.py` | `GET /api/v1/holding/{charter,portfolio,board}`, `GET /api/v1/business-units/{slug}{,/public}` | Holding landing | Public group surface | **PASS** |
+| 27 | Group Treasury & Capital Allocation | `docs/holding/CAPITAL_ALLOCATION_POLICY.md`, `docs/holding/GROUP_TREASURY.md`, `docs/holding/HOLDING_ANNUAL_REPORT_TEMPLATE.md` | `scripts/render_annual_report.py` | `tests/test_capital_allocation_policy_matches_board_engine.py`, `tests/test_annual_report_is_byte_stable.py` | `landing/assets/downloads/dealix-group-annual-report-2026.md` | Annual-report tile | Investor / lender readiness | **PASS** |
 
 > **Rule:** Any system whose `Status` column is not `PASS` is **not shipped**.
 > The verifier `scripts/verify_all_dealix.py` is the single judge.

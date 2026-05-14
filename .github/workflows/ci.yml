@@ -81,6 +81,11 @@ jobs:
           python scripts/build_partner_kit_zip.py
           git diff --exit-code -- landing/assets/downloads/dealix-partner-kit-v1.zip
 
+      - name: Annual report (re-render + drift gate)
+        run: |
+          python scripts/render_annual_report.py --year 2026
+          git diff --exit-code -- landing/assets/downloads/dealix-group-annual-report-2026.md
+
       - name: Tests with coverage gate
         env:
           APP_ENV: test
