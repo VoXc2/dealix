@@ -85,6 +85,12 @@ from api.routers import post_deploy_check as post_deploy_check_router
 from api.routers import dealix_promise as dealix_promise_router
 # Wave 18 — Founder Command Center (admin-gated aggregate + public reviewer view)
 from api.routers import founder_command_center as founder_command_center_router
+# Wave 19 — Public GCC market intel (Saudi anchor + UAE/Qatar/Kuwait posture)
+from api.routers import gcc_market_intel as gcc_market_intel_router
+# Wave 19 — Open Governed AI Operations Doctrine (public framework)
+from api.routers import doctrine as doctrine_router
+# Wave 19 — Capital Assets registry (admin + public-safe views)
+from api.routers import capital_assets_public as capital_assets_router
 from api.security import APIKeyMiddleware, setup_rate_limit
 from core.config.settings import get_settings
 from core.errors import AICompanyError
@@ -308,6 +314,12 @@ def create_app() -> FastAPI:
     app.include_router(dealix_promise_router.router)
     # Wave 18 — Founder Command Center (single-pane-of-glass aggregate)
     app.include_router(founder_command_center_router.router)
+    # Wave 19 — Public GCC market posture (Saudi active + UAE pilot-ready)
+    app.include_router(gcc_market_intel_router.router)
+    # Wave 19 — Open Governed AI Operations Doctrine (public framework)
+    app.include_router(doctrine_router.router)
+    # Wave 19 — Capital Assets registry (admin full + public-safe views)
+    app.include_router(capital_assets_router.router)
 
     @app.get("/", tags=["root"])
     async def root() -> dict[str, object]:

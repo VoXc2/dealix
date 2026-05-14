@@ -84,6 +84,15 @@
     <div class="cc-card"><div class="cc-card__title">Capital assets (7d)</div><div class="cc-card__value">—</div></div>
   </div>
 
+  <!-- ── Wave 19: Regional + Capital + Standard + Funding ───────── -->
+  <h2>2b. Class-shift signals · إشارات نقلة الفئة</h2>
+  <div class="cc-grid" id="wave19Grid">
+    <div class="cc-card"><div class="cc-card__title">GCC standard readiness</div><div class="cc-card__value">—</div></div>
+    <div class="cc-card"><div class="cc-card__title">Capital asset registry</div><div class="cc-card__value">—</div></div>
+    <div class="cc-card"><div class="cc-card__title">Open doctrine</div><div class="cc-card__value">—</div></div>
+    <div class="cc-card"><div class="cc-card__title">Funding pack</div><div class="cc-card__value">—</div></div>
+  </div>
+
   <!-- ── Top 3 next actions ─────────────────────────────────────── -->
   <div class="cc-actions">
     <h2>Top 3 next actions · أهم 3 إجراءات</h2>
@@ -96,7 +105,10 @@
   <h2>3. Surfaces · أسطح للمراجعة</h2>
   <div class="cc-links">
     <a class="cc-link" href="/api/v1/dealix-promise/markdown" target="_blank">Dealix Promise (manifesto)</a>
+    <a class="cc-link" href="/api/v1/doctrine/markdown" target="_blank">Open Doctrine (framework)</a>
     <a class="cc-link" href="/api/v1/commercial-map/markdown" target="_blank">Commercial Map</a>
+    <a class="cc-link" href="/api/v1/gcc-markets/markdown" target="_blank">GCC Market Posture</a>
+    <a class="cc-link" href="/api/v1/capital-assets/public/markdown" target="_blank">Public Capital Assets</a>
     <a class="cc-link" href="/api/v1/founder/post-deploy-check" target="_blank">Post-deploy Check (admin)</a>
     <a class="cc-link" href="/api/v1/founder/launch-status/public" target="_blank">Launch Status (public)</a>
     <a class="cc-link" href="/promise.html">Promise landing page</a>
@@ -121,6 +133,7 @@
   var rawEl = document.getElementById('rawPayload');
   var healthGrid = document.getElementById('healthGrid');
   var commercialGrid = document.getElementById('commercialGrid');
+  var wave19Grid = document.getElementById('wave19Grid');
   var actionsList = document.getElementById('actionsList');
 
   try {
@@ -192,6 +205,28 @@
     renderCard(commercialGrid, 'Capital assets (7d)',
       dot(ca >= 1 ? 'green' : 'red') + ca + ' registered',
       ca >= 1 ? 'every engagement = at least one asset' : 'no asset this week — non-negotiable #11');
+
+    // Wave 19 row — class-shift signals
+    wave19Grid.innerHTML = '';
+    var gcc = body.gcc_standard_readiness || {};
+    renderCard(wave19Grid, 'GCC standard readiness',
+      dot(gcc.active >= 1 ? 'green' : 'amber') +
+        (gcc.active || 0) + ' / ' + (gcc.market_count || 0) + ' active',
+      (gcc.pilot_ready || 0) + ' pilot-ready · ' + (gcc.future || 0) + ' future');
+    var capreg = body.capital_asset_registry || {};
+    renderCard(wave19Grid, 'Capital asset registry',
+      dot(capreg.asset_count >= 10 ? 'green' : 'amber') + (capreg.asset_count || 0) + ' assets',
+      (capreg.public_count || 0) + ' public · ' + (capreg.live_count || 0) + ' live');
+    var od = body.open_doctrine_status || {};
+    var odReady = od.open_doctrine_dir_exists && od.license_present && od.readme_present;
+    renderCard(wave19Grid, 'Open doctrine',
+      dot(odReady ? 'green' : 'amber') + (odReady ? 'shipped' : 'in progress'),
+      'framework endpoint: /api/v1/doctrine');
+    var fp = body.funding_pack_status || {};
+    renderCard(wave19Grid, 'Funding pack',
+      dot(fp.ready ? 'green' : 'amber') +
+        (fp.present_count || 0) + ' / ' + (fp.required_count || 0) + ' docs',
+      fp.ready ? 'pack ready for investor conversations' : (fp.missing || []).join(', '));
 
     actionsList.innerHTML = '';
     (body.top_three_next_actions || []).forEach(function(action) {

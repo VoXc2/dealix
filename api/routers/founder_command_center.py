@@ -167,6 +167,84 @@ def _capital_assets_this_week() -> int:
         return 0
 
 
+# ── Wave 19: GCC + Capital Asset Library + Open Doctrine + Funding ────
+
+
+def _gcc_standard_readiness() -> dict[str, Any]:
+    """Wave 19: GCC market posture readiness."""
+    try:
+        from auto_client_acquisition.governance_os.gcc_markets import GCC_MARKETS
+        active = sum(1 for m in GCC_MARKETS if m.dealix_status == "active")
+        pilot = sum(1 for m in GCC_MARKETS if m.dealix_status == "pilot_ready")
+        return {
+            "market_count": len(GCC_MARKETS),
+            "active": active,
+            "pilot_ready": pilot,
+            "future": sum(1 for m in GCC_MARKETS if m.dealix_status == "future_market"),
+            "endpoint": "GET /api/v1/gcc-markets/markdown",
+        }
+    except Exception:  # noqa: BLE001
+        return {"market_count": 0, "active": 0, "pilot_ready": 0, "future": 0}
+
+
+def _capital_asset_registry_state() -> dict[str, Any]:
+    """Wave 19: strategic Capital Asset registry."""
+    try:
+        from auto_client_acquisition.capital_os.capital_asset_registry import (
+            CAPITAL_ASSETS,
+        )
+        public = sum(1 for a in CAPITAL_ASSETS if a.public)
+        live = sum(1 for a in CAPITAL_ASSETS if a.maturity == "live")
+        return {
+            "asset_count": len(CAPITAL_ASSETS),
+            "public_count": public,
+            "live_count": live,
+            "endpoint_admin": "GET /api/v1/capital-assets",
+            "endpoint_public": "GET /api/v1/capital-assets/public",
+        }
+    except Exception:  # noqa: BLE001
+        return {"asset_count": 0, "public_count": 0, "live_count": 0}
+
+
+def _open_doctrine_status() -> dict[str, Any]:
+    """Wave 19: Open Governed AI Operations Doctrine readiness."""
+    open_doctrine_dir = _REPO / "open-doctrine"
+    license_path = open_doctrine_dir / "LICENSE.md"
+    readme_path = open_doctrine_dir / "README.md"
+    return {
+        "open_doctrine_dir_exists": open_doctrine_dir.exists(),
+        "license_present": license_path.exists(),
+        "readme_present": readme_path.exists(),
+        "framework_endpoint": "GET /api/v1/doctrine",
+        "controls_endpoint": "GET /api/v1/doctrine/controls",
+    }
+
+
+def _funding_pack_status() -> dict[str, Any]:
+    """Wave 19: funding pack readiness (set of required docs on disk)."""
+    funding_dir = _REPO / "docs" / "funding"
+    required = (
+        "FUNDING_MEMO.md",
+        "USE_OF_FUNDS.md",
+        "WHY_NOW_GCC_AI_OPS.md",
+        "FIRST_3_HIRES.md",
+        "HIRING_SCORECARDS.md",
+    )
+    present = []
+    missing = []
+    for name in required:
+        if (funding_dir / name).exists():
+            present.append(name)
+        else:
+            missing.append(name)
+    return {
+        "required_count": len(required),
+        "present_count": len(present),
+        "missing": missing,
+        "ready": not missing,
+    }
+
+
 def _top_three_next_actions(state: dict[str, Any]) -> list[str]:
     actions: list[str] = []
     arr = state.get("arr_pacing", {})
@@ -210,8 +288,16 @@ async def command_center() -> dict[str, Any]:
         "anchor_partners": _anchor_partner_pipeline(),
         "arr_pacing": _arr_pacing_toward_day90(),
         "capital_assets_this_week": _capital_assets_this_week(),
+        # Wave 19 additions — GCC + Capital + Open Doctrine + Funding
+        "gcc_standard_readiness": _gcc_standard_readiness(),
+        "capital_asset_registry": _capital_asset_registry_state(),
+        "open_doctrine_status": _open_doctrine_status(),
+        "funding_pack_status": _funding_pack_status(),
         "manifesto_endpoint": "GET /api/v1/dealix-promise/markdown",
         "commercial_map_endpoint": "GET /api/v1/commercial-map/markdown",
+        "doctrine_endpoint": "GET /api/v1/doctrine/markdown",
+        "gcc_markets_endpoint": "GET /api/v1/gcc-markets/markdown",
+        "capital_assets_public_endpoint": "GET /api/v1/capital-assets/public",
         "post_deploy_check_endpoint": "GET /api/v1/founder/post-deploy-check",
         "governance_decision": "allow",
         "is_estimate": False,
