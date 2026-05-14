@@ -116,6 +116,7 @@ dumps/
 !data/business_units.json
 !data/group_risk_register.json
 !data/cap_table.json
+!data/board_of_directors.json
 
 # ─────────────────────────────────────────────────────────────
 # 📝 Logs

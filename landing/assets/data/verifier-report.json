@@ -208,6 +208,13 @@
       "name": "M&A & BU Lifecycle Discipline",
       "passed": true,
       "score": 4
+    },
+    {
+      "in_top_eight": false,
+      "missing": [],
+      "name": "Holding Investor Surface",
+      "passed": true,
+      "score": 4
     }
   ]
 }

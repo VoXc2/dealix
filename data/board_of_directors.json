@@ -1,0 +1,22 @@
+{
+  "board_id": "DEALIX-GROUP-BOARD-001",
+  "updated_at": "2026-05-14",
+  "doctrine_version": "v1.0.0",
+  "members": [
+    {
+      "name": "Founder",
+      "role": "Chair, Director",
+      "independent": false
+    },
+    {
+      "name": "Advisor seat (open)",
+      "role": "Advisor",
+      "independent": true
+    },
+    {
+      "name": "Advisor seat (open)",
+      "role": "Advisor",
+      "independent": true
+    }
+  ]
+}

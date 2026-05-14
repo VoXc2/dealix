@@ -1,0 +1,22 @@
+{
+  "table_id": "DEALIX-GROUP-CAP-TABLE-001",
+  "doctrine_version": "v1.0.0",
+  "updated_at": "2026-05-14",
+  "holders": [
+    {
+      "holder": "Founder",
+      "class": "Common",
+      "ratio_pct": 90.0,
+      "vesting": "Full vested",
+      "notes": "Sole founder at inception."
+    },
+    {
+      "holder": "Reserved Option Pool",
+      "class": "Pool",
+      "ratio_pct": 10.0,
+      "vesting": "Unallocated",
+      "notes": "Reserved for the first three hires."
+    }
+  ],
+  "changes": []
+}

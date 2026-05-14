@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Dealix Group — Holding</title>
+<style>
+  :root { --dx-fg:#e6e9ef; --dx-bg:#0b0d12; --dx-pass:#2dd4a4; --dx-warn:#f5b86b;
+          --dx-fail:#ef4d5c; --dx-accent:#6aa6ff; --dx-card:#131722;
+          --dx-border:#1f2533; --dx-muted:#8b94a7; }
+  body { margin:0; background:var(--dx-bg); color:var(--dx-fg);
+         font:15px/1.6 system-ui,-apple-system,sans-serif; }
+  header { padding:32px; border-bottom:1px solid var(--dx-border); }
+  header h1 { margin:0; font-size:24px; }
+  header .tag { color:var(--dx-muted); font-size:13px; margin-top:4px; }
+  main { max-width:1100px; margin:0 auto; padding:32px; }
+  section { margin-bottom:32px; }
+  h2 { font-size:14px; color:var(--dx-muted); text-transform:uppercase;
+       letter-spacing:0.08em; margin:0 0 12px; }
+  .grid-tiles { display:grid; gap:12px; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); }
+  .tile { background:var(--dx-card); border:1px solid var(--dx-border);
+          border-radius:8px; padding:14px 16px; }
+  .tile .label { color:var(--dx-muted); font-size:11px;
+                 text-transform:uppercase; letter-spacing:0.06em; }
+  .tile .value { font-size:22px; font-weight:600; margin-top:4px; }
+  .bus { display:grid; gap:12px;
+         grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); }
+  .bu { background:var(--dx-card); border:1px solid var(--dx-border);
+        border-radius:8px; padding:16px; }
+  .bu h3 { margin:0; font-size:16px; }
+  .status { display:inline-block; padding:2px 8px; border-radius:999px;
+            font-size:11px; font-weight:600; margin-top:6px; }
+  .status.BUILD { background:rgba(245,184,107,0.15); color:var(--dx-warn); }
+  .status.PILOT { background:rgba(106,166,255,0.15); color:var(--dx-accent); }
+  .status.SCALE { background:rgba(45,212,164,0.18); color:var(--dx-pass); }
+  .status.SPINOUT { background:rgba(106,166,255,0.18); color:var(--dx-accent); }
+  .doctrine-anchor { background:var(--dx-card); border:1px solid var(--dx-border);
+                     border-radius:8px; padding:16px; }
+  .doctrine-anchor a { color:var(--dx-accent); }
+  .board-list, .ratio-table { background:var(--dx-card);
+                              border:1px solid var(--dx-border);
+                              border-radius:8px; padding:16px; }
+  .board-row, .ratio-row { display:flex; justify-content:space-between;
+                           padding:6px 0; border-bottom:1px solid var(--dx-border); }
+  .board-row:last-child, .ratio-row:last-child { border-bottom:none; }
+  code { background:var(--dx-border); padding:1px 5px; border-radius:3px; font-size:12px; }
+  a { color: var(--dx-accent); }
+  .badges { display:flex; gap:8px; flex-wrap:wrap; }
+  footer { color:var(--dx-muted); font-size:12px; padding:24px 32px;
+           border-top:1px solid var(--dx-border); }
+  .empty { color:var(--dx-muted); padding:16px; text-align:center; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Dealix Group</h1>
+  <div class="tag">Holding parent of the Dealix sub-brands · Doctrine v1.0.0</div>
+</header>
+
+<main>
+
+  <section>
+    <h2>At A Glance</h2>
+    <div class="grid-tiles">
+      <div class="tile"><div class="label">Doctrine</div><div class="value" id="t-doctrine">…</div></div>
+      <div class="tile"><div class="label">Verifier</div><div class="value" id="t-verifier">…</div></div>
+      <div class="tile"><div class="label">CEO-complete</div><div class="value" id="t-ceo">…</div></div>
+      <div class="tile"><div class="label">Active BUs</div><div class="value" id="t-bus">…</div></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Sub-Brand Portfolio</h2>
+    <div class="bus" id="bu-grid"><div class="empty">loading portfolio…</div></div>
+  </section>
+
+  <section>
+    <h2>Board</h2>
+    <div class="board-list" id="board"><div class="empty">loading board…</div></div>
+  </section>
+
+  <section>
+    <h2>Cap Table (Ratios Only)</h2>
+    <div class="ratio-table" id="cap"><div class="empty">loading cap table…</div></div>
+  </section>
+
+  <section class="doctrine-anchor">
+    <h2>Doctrine Anchor</h2>
+    <p>Operating under the
+      <a href="/api/v1/doctrine?version=v1.0.0">Governed AI Operations Doctrine v1.0.0</a>.
+      Public verification:
+      <a href="/api/v1/holding/charter"><code>/api/v1/holding/charter</code></a>,
+      <a href="/api/v1/holding/portfolio"><code>/api/v1/holding/portfolio</code></a>,
+      <a href="/api/v1/holding/board"><code>/api/v1/holding/board</code></a>,
+      <a href="/api/v1/holding/cap-table/public"><code>/api/v1/holding/cap-table/public</code></a>,
+      <a href="/api/v1/dealix-promise"><code>/api/v1/dealix-promise</code></a>.
+    </p>
+    <p>Annual report: <a href="annual-report.html">view</a>.
+      Investment memo: <a href="../docs/holding/HOLDING_INVESTMENT_MEMO.md">docs/holding/HOLDING_INVESTMENT_MEMO.md</a>.
+      Group risk register: <a href="../docs/holding/GROUP_RISK_REGISTER.md">docs/holding/GROUP_RISK_REGISTER.md</a>.
+    </p>
+  </section>
+
+  <section>
+    <h2>Trust at a Glance</h2>
+    <div class="badges">
+      <img src="assets/badges/doctrine-status.svg" alt="Doctrine status">
+      <img src="assets/badges/verifier-score.svg" alt="Verifier score">
+      <img src="assets/badges/ceo-complete.svg" alt="CEO-complete">
+      <img src="assets/badges/partner-outreach.svg" alt="Partner outreach">
+      <img src="assets/badges/invoice-sent.svg" alt="Invoice sent">
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  Doctrine: <a href="/api/v1/doctrine?version=v1.0.0">Governed AI Operations Doctrine v1.0.0</a>.
+  This page reads <code>assets/data/verifier-report.json</code>,
+  <code>assets/data/holding-portfolio.json</code>,
+  <code>data/board_of_directors.json</code>, and
+  <code>data/cap_table.json</code> with API fallback.
+</footer>
+
+<script>
+(function () {
+  function esc(s){ return String(s||"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c])); }
+  function pill(cls,t){ return '<span class="status '+esc(cls)+'">'+esc(t)+'</span>'; }
+
+  // 1. At-a-Glance: from verifier-report.json
+  fetch('assets/data/verifier-report.json',{cache:'no-cache'})
+    .then(r=>r.json()).then(d=>{
+      var sys = (d&&d.systems)||[]; var passed = sys.filter(s=>s.passed).length;
+      document.getElementById('t-doctrine').textContent = d.overall_pass ? 'PASS' : 'FAIL';
+      document.getElementById('t-verifier').textContent = passed + ' / ' + sys.length;
+      document.getElementById('t-ceo').textContent = d.ceo_complete ? 'YES' : 'NO';
+    }).catch(()=>{});
+
+  // 2. BU portfolio: from holding-portfolio.json (static)
+  fetch('assets/data/holding-portfolio.json',{cache:'no-cache'})
+    .then(r=>r.json()).then(d=>{
+      var entries = (d&&d.entries)||[];
+      document.getElementById('t-bus').textContent = entries.length;
+      var grid = document.getElementById('bu-grid');
+      if (!entries.length) { grid.innerHTML = '<div class="empty">No published sub-brands yet.</div>'; return; }
+      grid.innerHTML = entries.map(e=>(
+        '<div class="bu"><h3>'+esc(e.name||e.slug)+'</h3>'+
+        pill(e.status,e.status)+
+        '<p style="color:var(--dx-muted);font-size:13px;">Sector: '+esc(e.sector||'—')+
+        ' · Doctrine: <code>'+esc(e.doctrine_version||'—')+'</code></p>'+
+        (e.charter_path?'<p style="font-size:12px;">Charter: <a href="../'+esc(e.charter_path)+'">'+esc(e.charter_path)+'</a></p>':'')+
+        '</div>'
+      )).join('');
+    }).catch(()=>{ document.getElementById('bu-grid').innerHTML = '<div class="empty">No portfolio data available.</div>'; });
+
+  // 3. Board: from data/board_of_directors.json
+  fetch('/data/board_of_directors.json',{cache:'no-cache'})
+    .then(r=>r.ok?r.json():Promise.reject())
+    .catch(()=>fetch('../data/board_of_directors.json',{cache:'no-cache'}).then(r=>r.json()))
+    .then(d=>{
+      var members = (d&&d.members)||[];
+      var el = document.getElementById('board');
+      if (!members.length) { el.innerHTML = '<div class="empty">No board members listed.</div>'; return; }
+      el.innerHTML = members.map(m=>(
+        '<div class="board-row"><div>'+esc(m.name)+' <span style="color:var(--dx-muted);">— '+esc(m.role)+'</span></div>'+
+        '<div>'+(m.independent?'<span style="color:var(--dx-pass);">independent</span>':'<span style="color:var(--dx-muted);">internal</span>')+'</div></div>'
+      )).join('');
+    }).catch(()=>{ document.getElementById('board').innerHTML = '<div class="empty">No board data available.</div>'; });
+
+  // 4. Cap table (ratios only): from data/cap_table.json
+  fetch('/data/cap_table.json',{cache:'no-cache'})
+    .then(r=>r.ok?r.json():Promise.reject())
+    .catch(()=>fetch('../data/cap_table.json',{cache:'no-cache'}).then(r=>r.json()))
+    .then(d=>{
+      var holders = (d&&d.holders)||[];
+      var el = document.getElementById('cap');
+      if (!holders.length) { el.innerHTML = '<div class="empty">No cap-table entries.</div>'; return; }
+      el.innerHTML = holders.map(h=>(
+        '<div class="ratio-row"><div>'+esc(h.holder||'')+' <span style="color:var(--dx-muted);">— '+esc(h['class']||'')+'</span></div>'+
+        '<div><strong>'+esc(h.ratio_pct||'')+'%</strong></div></div>'
+      )).join('');
+    }).catch(()=>{ document.getElementById('cap').innerHTML = '<div class="empty">No cap-table data available.</div>'; });
+})();
+</script>
+
+</body>
+</html>

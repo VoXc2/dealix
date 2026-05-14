@@ -43,6 +43,7 @@ from api.routers import (
     trust_status,
     holding as holding_router,
     business_units as business_units_router,
+    cap_table as cap_table_router,
 )
 
 _ROUTERS = [
@@ -86,6 +87,8 @@ _ROUTERS = [
     # Wave 22 PR11 — Dealix Group holding APIs (no auth, public read-only).
     holding_router.router,
     business_units_router.router,
+    # Wave 22 PR15 — investor-grade surface (cap table public-safe).
+    cap_table_router.router,
 ]
 
 

@@ -571,6 +571,34 @@ def system_ma_and_bu_lifecycle() -> SystemReport:
     return r
 
 
+def system_holding_investor_surface() -> SystemReport:
+    r = SystemReport("Holding Investor Surface")
+    r.docs = [
+        file_check("docs/holding/GROUP_RISK_REGISTER.md"),
+        file_check("docs/holding/HOLDING_COMPLIANCE.md"),
+        file_check("docs/holding/INTERNAL_AUDIT.md"),
+        file_check("docs/holding/CAP_TABLE.md"),
+        file_check("docs/holding/BOARD_OF_DIRECTORS.md"),
+        file_check("docs/holding/BOARD_CHARTER.md"),
+        file_check("docs/holding/HOLDING_INVESTMENT_MEMO.md"),
+    ]
+    r.code = [file_check("api/routers/cap_table.py")]
+    r.tests = [
+        file_check("tests/test_cap_table_public_is_amount_safe.py"),
+        file_check("tests/test_cap_table_ratios_sum_to_100.py"),
+        file_check("tests/test_group_risk_register_completeness.py"),
+        file_check("tests/test_holding_landing_renders.py"),
+    ]
+    r.api = [
+        file_check("data/cap_table.json"),
+        file_check("data/group_risk_register.json"),
+        file_check("data/board_of_directors.json"),
+        file_check("landing/holding.html"),
+        file_check("landing/annual-report.html"),
+    ]
+    return r
+
+
 def system_market_feedback() -> SystemReport:
     r = SystemReport("Market Feedback")
     r.docs = [any_of_files_check(
@@ -706,6 +734,7 @@ SYSTEMS: list[Callable[[], SystemReport]] = [
     system_group_treasury_and_capital_allocation,
     system_brand_architecture,
     system_ma_and_bu_lifecycle,
+    system_holding_investor_surface,
 ]
 
 # Systems that must be ≥ 4/5 for "CEO complete".

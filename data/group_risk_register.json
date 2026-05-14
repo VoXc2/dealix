@@ -1,0 +1,19 @@
+{
+  "register_id": "DEALIX-GROUP-RISK-REGISTER-001",
+  "reviewed_quarterly": true,
+  "last_reviewed": "2026-05-14",
+  "risks": [
+    {"id": 1,  "category": "commercial",  "risk": "Founder-bottleneck on sales (single-channel)", "likelihood": "high",     "impact": "high",      "mitigation": "docs/funding/FIRST_3_HIRES.md Hire #2 trigger; partner-kit", "status": "open",      "owner": "founder"},
+    {"id": 2,  "category": "commercial",  "risk": "Anchor partner doesn't sign LOI in 90 days",  "likelihood": "med",      "impact": "high",      "mitigation": "Multiple archetypes in data/anchor_partner_pipeline.json", "status": "open",      "owner": "founder"},
+    {"id": 3,  "category": "operational", "risk": "Founder bandwidth",                            "likelihood": "high",     "impact": "high",      "mitigation": "Daily routine; marker-honesty CLIs",                       "status": "mitigated", "owner": "founder"},
+    {"id": 4,  "category": "operational", "risk": "Runway dips below stage floor",                "likelihood": "med",      "impact": "high",      "mitigation": "operating_finance_os/budget_stage.py gate",               "status": "open",      "owner": "founder"},
+    {"id": 5,  "category": "regulatory",  "risk": "PDPL breach via uncontrolled AI run",          "likelihood": "low",      "impact": "critical",  "mitigation": "Source Passport + Governance OS",                          "status": "mitigated", "owner": "founder"},
+    {"id": 6,  "category": "regulatory",  "risk": "Cross-border data transfer in GCC expansion",  "likelihood": "med",      "impact": "high",      "mitigation": "Cross-border addendum + per-country trust framework",     "status": "open",      "owner": "founder"},
+    {"id": 7,  "category": "agentic_ai",  "risk": "Prompt-injection escalating agent privileges", "likelihood": "med",      "impact": "critical",  "mitigation": "Agent identity card + kill switch; tests locked",         "status": "mitigated", "owner": "founder"},
+    {"id": 8,  "category": "agentic_ai",  "risk": "Tool misuse by autonomous agent",              "likelihood": "low",      "impact": "high",      "mitigation": "No external action without approval (doctrine #2)",        "status": "mitigated", "owner": "founder"},
+    {"id": 9,  "category": "agentic_ai",  "risk": "Doctrine drift over time",                     "likelihood": "low",      "impact": "high",      "mitigation": "Doctrine versioning + CI gate",                            "status": "mitigated", "owner": "founder"},
+    {"id": 10, "category": "operational", "risk": "Single point of failure (founder unavailable)","likelihood": "low",      "impact": "critical",  "mitigation": "Repo IS the operating manual; CONTINUOUS_ROUTINE.md",     "status": "open",      "owner": "founder"},
+    {"id": 11, "category": "commercial",  "risk": "Customer demands forbidden feature",           "likelihood": "med",      "impact": "high",      "mitigation": "WHAT_DEALIX_REFUSES.md + sprint_kickoff scope discipline","status": "mitigated", "owner": "founder"},
+    {"id": 12, "category": "operational", "risk": "Verifier drift (file PASS without real signal)","likelihood": "low",     "impact": "high",      "mitigation": "Honest-marker tests + content-aware checks",               "status": "mitigated", "owner": "founder"}
+  ]
+}
