@@ -121,6 +121,57 @@ Re-run after every:
 
 ---
 
+## Marker Update CLI (Wave 20 PR3)
+
+The only honest way to bump the two market-motion counts is via the
+guard-railed CLI tools. They record `git_author` + `entry_id` on every
+entry; PR4 adds a CI test that fails the build if the counter ever
+drifts from `len(entries)`.
+
+```bash
+# 1. Register a capital asset (FIRST_INVOICE_UNLOCK step 1).
+python scripts/register_capital_asset.py \
+    --type PROOF_EXAMPLE \
+    --title "What it is" \
+    --description "How it was produced" \
+    --evidence "path/to/evidence"
+
+# 2. Log an anchor partner outreach (Partner Motion → 5/5).
+python scripts/log_partner_outreach.py \
+    --really-i-sent-this \
+    --partner "Named contact / firm" \
+    --archetype "Big 4 / Assurance Partner" \
+    --channel email
+
+# 3. Log Invoice #1 (First Invoice Motion → 5/5).
+#    Requires the entry_id of a registered capital asset above.
+python scripts/log_invoice_event.py \
+    --really-i-sent-this \
+    --capital-asset-id <entry_id> \
+    --buyer "Saudi B2B services client" \
+    --scope "Revenue Intelligence Sprint" \
+    --proof-target "1 Proof Pack + 1 Value Ledger entry"
+
+# 4. Re-render the verifier report.
+python scripts/render_verifier_report.py
+```
+
+Companion commands (read-only, never mutate markers):
+
+```bash
+python scripts/daily_routine.py                 # daily brief + JSON
+python scripts/weekly_ceo_review.py             # weekly review + top-3 actions
+python scripts/run_revenue_intelligence_demo.py # buyer-presentable sprint demo
+python scripts/sprint_kickoff.py ...            # signed scope before Invoice #1
+python scripts/validate_capital_assets.py       # CI-style validity check
+python scripts/capital_asset_summary.py         # by-type + recent summary
+```
+
+**Do not hand-edit** `data/partner_outreach_log.json` or
+`data/first_invoice_log.json`. PR4's CI gate will block the merge.
+
+---
+
 ## Honest-Marker Discipline
 
 The verifier reads two marker files and refuses to award the

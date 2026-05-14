@@ -110,6 +110,8 @@ dumps/
 # Wave 20 — operating-loop state (no customer / PII data)
 !data/_state/
 !data/_state/**
+# Wave 20 — capital asset index (public-safe via /api/v1/capital-assets/public)
+!data/capital_asset_index.json
 
 # ─────────────────────────────────────────────────────────────
 # 📝 Logs
