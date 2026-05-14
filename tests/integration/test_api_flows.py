@@ -28,15 +28,13 @@ VALID_API_KEY = "test-integration-key-xyz"
 
 # ── App fixture ────────────────────────────────────────────────────
 
-# Module-scoped env: ``patch.dict`` exits as soon as the ``app`` fixture
-# returns, which leaves ``API_KEYS`` unset for the actual requests and
-# silently disables the API-key middleware (which short-circuits to
-# ``allowed=[]`` → bypass). Setting ``os.environ`` directly keeps the
-# key configured for every test in this module so the auth-enforcement
-# class can actually see 401s rather than receiving 200 from a bypassed
-# middleware.
 import os as _os  # noqa: E402
 
+# Env values required by the FastAPI app at create-time AND by every
+# request in this module (e.g. ``API_KEYS`` for the API-key middleware).
+# Scoped to this module via the autouse fixture below — import-time
+# mutation would leak ``DATABASE_URL`` into other suites and defeat
+# module-level skip gates such as ``tests/test_moyasar_webhook_persistence.py``.
 _TEST_ENV = {
     "API_KEYS": VALID_API_KEY,
     "APP_ENV": "test",
@@ -48,12 +46,25 @@ _TEST_ENV = {
     "GLM_API_KEY": "sk-test",
     "GOOGLE_API_KEY": "sk-test",
 }
-for _k, _v in _TEST_ENV.items():
-    _os.environ[_k] = _v
+
+
+@pytest.fixture(scope="module", autouse=True)
+def _test_env():
+    # Saved values include ``None`` for unset keys so teardown can pop them.
+    saved = {k: _os.environ.get(k) for k in _TEST_ENV}
+    _os.environ.update(_TEST_ENV)
+    try:
+        yield
+    finally:
+        for k, original in saved.items():
+            if original is None:
+                _os.environ.pop(k, None)
+            else:
+                _os.environ[k] = original
 
 
 @pytest.fixture(scope="module")
-def app():
+def app(_test_env):
     """Create the app with all external calls mocked."""
     with patch("db.session.init_db", new=AsyncMock()):
         from api.main import create_app
