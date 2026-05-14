@@ -67,6 +67,8 @@ from api.routers import data_os as data_os_router
 from api.routers import sprint_runner as sprint_runner_router
 from api.routers import founder_dashboard as founder_dashboard_router
 from api.routers import audit_export as audit_export_router
+# Wave 14F — Agent OS
+from api.routers import agent_os as agent_os_router
 from api.security import APIKeyMiddleware, setup_rate_limit
 from core.config.settings import get_settings
 from core.errors import AICompanyError
@@ -278,6 +280,8 @@ def create_app() -> FastAPI:
     app.include_router(sprint_runner_router.router)
     app.include_router(founder_dashboard_router.router)
     app.include_router(audit_export_router.router)
+    # Wave 14F — Agent OS (admin-gated)
+    app.include_router(agent_os_router.router)
 
     @app.get("/", tags=["root"])
     async def root() -> dict[str, object]:

@@ -3,7 +3,8 @@ from __future__ import annotations
 
 from typing import Any
 
-from fastapi import APIRouter
+from fastapi import APIRouter, Query
+from fastapi.responses import PlainTextResponse, Response
 from pydantic import BaseModel, ConfigDict, Field
 
 from auto_client_acquisition.proof_to_market import (
@@ -12,6 +13,61 @@ from auto_client_acquisition.proof_to_market import (
 )
 
 router = APIRouter(prefix="/api/v1/proof-to-market", tags=["proof-to-market"])
+
+
+# ── Wave 14D.2 + 14D.4: case-safe export + PDF ───────────────────────
+
+
+@router.get("/case-safe/{engagement_id}")
+async def case_safe_export(
+    engagement_id: str,
+    customer_id: str = Query(...),
+    sector: str = Query("b2b_services"),
+) -> dict[str, Any]:
+    """Export a case-safe summary for the engagement (Wave 14D.2)."""
+    from auto_client_acquisition.proof_to_market.case_study_exporter import export_case_safe
+    export = export_case_safe(
+        engagement_id=engagement_id, customer_id=customer_id, sector=sector
+    )
+    return export.to_dict()
+
+
+@router.get("/case-safe/{engagement_id}/markdown", response_class=PlainTextResponse)
+async def case_safe_markdown(
+    engagement_id: str,
+    customer_id: str = Query(...),
+    sector: str = Query("b2b_services"),
+) -> str:
+    from auto_client_acquisition.proof_to_market.case_study_exporter import export_case_safe
+    export = export_case_safe(
+        engagement_id=engagement_id, customer_id=customer_id, sector=sector
+    )
+    return export.to_markdown()
+
+
+@router.get("/case-safe/{engagement_id}/pdf")
+async def case_safe_pdf(
+    engagement_id: str,
+    customer_id: str = Query(...),
+    sector: str = Query("b2b_services"),
+):
+    from auto_client_acquisition.proof_to_market.case_study_exporter import export_case_safe
+    from auto_client_acquisition.proof_to_market.pdf_renderer import render_markdown_to_pdf
+    export = export_case_safe(
+        engagement_id=engagement_id, customer_id=customer_id, sector=sector
+    )
+    md = export.to_markdown()
+    pdf = render_markdown_to_pdf(md, title=f"Case-safe summary — {engagement_id}")
+    if pdf is None:
+        return PlainTextResponse(
+            content=md,
+            headers={"X-PDF-Renderer": "unavailable; markdown returned as fallback"},
+        )
+    return Response(
+        content=pdf,
+        media_type="application/pdf",
+        headers={"Content-Disposition": f"inline; filename=\"case_safe_{engagement_id}.pdf\""},
+    )
 
 _HARD_GATES = {
     "no_fake_proof": True,

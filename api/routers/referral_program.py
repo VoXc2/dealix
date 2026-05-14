@@ -118,29 +118,41 @@ async def create_referral(
 ) -> dict[str, Any]:
     """Existing customer generates a referral code.
 
-    Admin-gated for now until tenant-scoped JWT lands. Founder/CS team
-    creates codes on behalf of customers during onboarding (Day 14+).
+    14D.1: now backed by referral_store JSONL persistence (auto-upgrades
+    to Postgres when db/migrations/010 runs against a configured DSN).
+    Admin-gated for now until tenant-scoped JWT lands.
     """
-    code = _generate_referral_code(body.referrer_handle)
+    from auto_client_acquisition.partnership_os.referral_store import (
+        create_referral_code,
+    )
+    try:
+        rc = create_referral_code(
+            referrer_id=body.referrer_handle,
+            referrer_email=body.referrer_email,
+        )
+    except ValueError as e:
+        raise HTTPException(status_code=422, detail=str(e))
+
     return {
         "status": "created",
-        "code": code,
-        "referrer_handle": body.referrer_handle,
-        "referrer_email_hash": _hash_email(body.referrer_email),
-        "created_at": datetime.now(timezone.utc).isoformat(),
+        "code": rc.code,
+        "referrer_handle": rc.referrer_id,
+        "referrer_email_hash": rc.referrer_email_hash,
+        "created_at": rc.created_at,
         "share_template": (
             f"السلام عليكم! استخدمت Dealix لإدارة inbound العربي وأنصح بهم. "
-            f"احصل على {REFERRED_DISCOUNT_PCT}% خصم أول شهر مع كود: {code}. "
-            f"https://dealix.me/refer?code={code}"
+            f"احصل على {REFERRED_DISCOUNT_PCT}% خصم أول شهر مع كود: {rc.code}. "
+            f"https://dealix.me/refer?code={rc.code}"
         ),
         "share_template_en": (
-            f"Using Dealix for our Saudi B2B AI ops. {REFERRED_DISCOUNT_PCT}%% off "
-            f"first month with code: {code}. https://dealix.me/refer?code={code}"
+            f"Using Dealix for our Saudi B2B AI ops. {REFERRED_DISCOUNT_PCT}% off "
+            f"first month with code: {rc.code}. https://dealix.me/refer?code={rc.code}"
         ),
-        "expires_at": (
-            datetime.now(timezone.utc).replace(month=12, day=31)
-        ).isoformat(),
-        "note": "DB persistence deferred to follow-up commit. Track manually for now.",
+        "expires_at": rc.valid_until or (
+            datetime.now(timezone.utc).replace(month=12, day=31).isoformat()
+        ),
+        "persistence": "jsonl_via_referral_store",
+        "governance_decision": "allow",
     }
 
 
@@ -148,72 +160,91 @@ async def create_referral(
 async def verify_code(
     code: str = Path(..., pattern=r"^REF-[A-Z0-9]{8}$"),
 ) -> dict[str, Any]:
-    """Public — verify a referral code is in valid format.
-
-    Real validity check against issued codes deferred to DB-backed version.
-    This endpoint validates format + returns program rules for the
-    redeemer to see before checkout.
-    """
+    """Public — verify a referral code against issued codes (14D.1)."""
+    from auto_client_acquisition.partnership_os.referral_store import lookup_code
+    rc = lookup_code(code)
+    if rc is None:
+        raise HTTPException(status_code=404, detail="code_not_found_or_revoked")
     return {
-        "code": code,
+        "code": rc.code,
         "format_valid": True,
-        "discount_pct": REFERRED_DISCOUNT_PCT,
+        "issued": True,
+        "discount_pct": rc.discount_pct,
+        "credit_sar": rc.credit_sar,
+        "plan_required": rc.plan_required,
         "applies_to": "first month subscription",
         "valid_for_plans": ["starter", "growth", "scale"],
         "next_step": (
             "Use this code at /pricing.html or /api/v1/checkout to claim "
-            f"{REFERRED_DISCOUNT_PCT}%% off your first month."
+            f"{rc.discount_pct}% off your first month."
         ),
-        "note": "DB-backed validity check pending; founder manually verifies during onboarding.",
+        "governance_decision": "allow",
     }
 
 
 @router.post("/redeem")
 async def redeem_referral(body: _RedeemRequest) -> dict[str, Any]:
-    """Public — redeem a referral code at checkout.
-
-    Returns the discount payload to apply to the next invoice. Real
-    application happens in Moyasar checkout integration (TBD when
-    customer #3 uses this flow).
-    """
+    """Public — redeem a referral code at checkout (14D.1 persistence)."""
+    from auto_client_acquisition.partnership_os.referral_store import redeem_referral as do_redeem
+    try:
+        referral = do_redeem(
+            code=body.code,
+            referred_id=body.referred_company,
+            referred_email=body.referred_email,
+        )
+    except ValueError as e:
+        raise HTTPException(status_code=422, detail=str(e))
     return {
         "status": "discount_pending_first_invoice",
-        "code": body.code,
-        "referred_email_hash": _hash_email(body.referred_email),
-        "referred_company": body.referred_company,
+        "code": referral.code,
+        "referral_id": referral.referral_id,
+        "referred_email_hash": referral.referred_email_hash,
+        "referred_company": referral.referred_id,
         "discount_pct": REFERRED_DISCOUNT_PCT,
         "discount_applies_to": "first_month_subscription",
         "max_discount_sar_starter": 999 * REFERRED_DISCOUNT_PCT // 100,
         "max_discount_sar_growth": 2999 * REFERRED_DISCOUNT_PCT // 100,
         "max_discount_sar_scale": 7999 * REFERRED_DISCOUNT_PCT // 100,
         "claim_window_days": 30,
-        "note": (
-            "Pass this code to /api/v1/checkout body when subscribing. "
-            "Founder reviews and credits referrer manually within "
-            "5 business days of referred's first payment."
-        ),
+        "redeemed_at": referral.redeemed_at,
+        "governance_decision": "allow",
     }
 
 
 @router.post("/{code}/convert", dependencies=[Depends(require_admin_key)])
 async def mark_converted(
     code: str = Path(..., pattern=r"^REF-[A-Z0-9]{8}$"),
+    invoice_id: str = "",
+    amount_sar: int = 0,
 ) -> dict[str, Any]:
-    """Admin — mark a referral as converted (referred paid first invoice).
-
-    Triggers credit to referrer + sends thank-you email (manual for now).
-    """
+    """Admin — mark referral converted + issue credit (14D.1 persistence)."""
+    from auto_client_acquisition.partnership_os.referral_store import (
+        issue_credit,
+        list_referrals,
+        lookup_code,
+        mark_invoice_paid,
+    )
+    rc = lookup_code(code)
+    if rc is None:
+        raise HTTPException(status_code=404, detail="code_not_found_or_revoked")
+    referrals = list_referrals(referrer_id=rc.referrer_id)
+    matching = [r for r in referrals if r.code == code and r.status in {"redeemed", "pending"}]
+    if not matching:
+        raise HTTPException(status_code=404, detail="no_pending_referral_for_code")
+    target = matching[0]
+    if invoice_id and amount_sar:
+        mark_invoice_paid(
+            referral_id=target.referral_id,
+            invoice_id=invoice_id,
+            amount_sar=amount_sar,
+        )
+    payout = issue_credit(referral_id=target.referral_id)
     return {
-        "status": "marked_converted_in_memory",
+        "status": "credit_issued" if payout else "pending",
         "code": code,
-        "referrer_credit_sar": REFERRER_CREDIT_SAR,
+        "referral_id": target.referral_id,
+        "referrer_credit_sar": payout.credit_sar if payout else 0,
         "credit_applied_to": "next monthly invoice",
-        "thank_you_email": (
-            "Manual send: thank referrer + confirm credit applied "
-            "+ ask for next referral (compounds growth)."
-        ),
-        "note": (
-            "DB persistence + automatic Moyasar credit application "
-            "deferred to follow-up. Track in spreadsheet for first 5 referrals."
-        ),
+        "payout_id": payout.payout_id if payout else "",
+        "governance_decision": "allow_with_review",
     }

@@ -98,3 +98,33 @@ async def trust_pack_json(customer_handle: str) -> dict[str, Any]:
     from auto_client_acquisition.trust_os.trust_pack import assemble_trust_pack
     pack = assemble_trust_pack(customer_handle=customer_handle)
     return pack.to_dict()
+
+
+# ── Wave 14D.4: PDF endpoint for the Trust Pack ─────────────────────
+
+
+@router.get("/trust-pack/{customer_handle}/pdf")
+async def trust_pack_pdf(customer_handle: str):
+    """Render the Trust Pack as PDF for enterprise procurement.
+
+    Falls back to text/markdown with a 'pdf_renderer_unavailable' header
+    when neither weasyprint nor pandoc is installed.
+    """
+    from fastapi.responses import PlainTextResponse, Response
+    from auto_client_acquisition.proof_os import classify_tier  # noqa: F401 — keep canonical imports warm
+    from auto_client_acquisition.proof_to_market.pdf_renderer import render_markdown_to_pdf
+    from auto_client_acquisition.trust_os.trust_pack import assemble_trust_pack
+
+    pack = assemble_trust_pack(customer_handle=customer_handle)
+    md = pack.to_markdown()
+    pdf = render_markdown_to_pdf(md, title=f"Dealix Trust Pack — {customer_handle}")
+    if pdf is None:
+        return PlainTextResponse(
+            content=md,
+            headers={"X-PDF-Renderer": "unavailable; markdown returned as fallback"},
+        )
+    return Response(
+        content=pdf,
+        media_type="application/pdf",
+        headers={"Content-Disposition": f"inline; filename=\"trust_pack_{customer_handle}.pdf\""},
+    )
