@@ -555,6 +555,22 @@ def system_brand_architecture() -> SystemReport:
     return r
 
 
+def system_ma_and_bu_lifecycle() -> SystemReport:
+    r = SystemReport("M&A & BU Lifecycle Discipline")
+    r.docs = [
+        file_check("docs/holding/ACQUISITION_THESIS.md"),
+        file_check("docs/holding/MA_PLAYBOOK.md"),
+        file_check("docs/holding/SUBSIDIARY_ONBOARDING.md"),
+        file_check("docs/holding/BU_KILL_RULES.md"),
+    ]
+    r.code = [file_check("scripts/draft_bu_decision_memo.py")]
+    r.tests = [
+        file_check("tests/test_bu_kill_rules_match_unit_governance.py"),
+        file_check("tests/test_ma_playbook_lists_required_artifacts.py"),
+    ]
+    return r
+
+
 def system_market_feedback() -> SystemReport:
     r = SystemReport("Market Feedback")
     r.docs = [any_of_files_check(
@@ -689,6 +705,7 @@ SYSTEMS: list[Callable[[], SystemReport]] = [
     system_group_apis,
     system_group_treasury_and_capital_allocation,
     system_brand_architecture,
+    system_ma_and_bu_lifecycle,
 ]
 
 # Systems that must be ≥ 4/5 for "CEO complete".
