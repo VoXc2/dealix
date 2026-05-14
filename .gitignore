@@ -112,6 +112,10 @@ dumps/
 !data/_state/**
 # Wave 20 — capital asset index (public-safe via /api/v1/capital-assets/public)
 !data/capital_asset_index.json
+# Wave 22 — Dealix Group registries (public-safe via /api/v1/holding/*)
+!data/business_units.json
+!data/group_risk_register.json
+!data/cap_table.json
 
 # ─────────────────────────────────────────────────────────────
 # 📝 Logs

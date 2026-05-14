@@ -493,6 +493,21 @@ def system_first_invoice_motion() -> SystemReport:
     )]
     return r
 
+def system_business_unit_registry() -> SystemReport:
+    r = SystemReport("Business Unit Registry")
+    r.docs = [
+        file_check("docs/holding/HOLDING_CHARTER.md"),
+        file_check("docs/holding/BUSINESS_UNIT_REGISTRY.md"),
+    ]
+    r.code = [
+        file_check("scripts/register_business_unit.py"),
+        file_check("scripts/validate_business_units.py"),
+    ]
+    r.tests = [file_check("tests/test_business_unit_registry.py")]
+    r.api = [file_check("data/business_units.json")]
+    return r
+
+
 def system_market_feedback() -> SystemReport:
     r = SystemReport("Market Feedback")
     r.docs = [any_of_files_check(
@@ -623,6 +638,7 @@ SYSTEMS: list[Callable[[], SystemReport]] = [
     system_doctrine_versioning,
     system_partner_kit,
     system_market_feedback,
+    system_business_unit_registry,
 ]
 
 # Systems that must be ≥ 4/5 for "CEO complete".

@@ -173,6 +173,13 @@
       "name": "Market Feedback",
       "passed": true,
       "score": 4
+    },
+    {
+      "in_top_eight": false,
+      "missing": [],
+      "name": "Business Unit Registry",
+      "passed": true,
+      "score": 4
     }
   ]
 }

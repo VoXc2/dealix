@@ -54,6 +54,7 @@ documentation.
 | 22 | Doctrine Versioning | `open-doctrine/VERSIONS.md` | `open-doctrine/doctrine_versions.json`, `scripts/tag_doctrine_version.py` (+ extended `api/routers/doctrine.py`) | `tests/test_doctrine_versioning.py` | `GET /api/v1/doctrine?version=v1.0.0`, `GET /api/v1/doctrine/versions` | Doctrine version pill (top-right) | Pinnable doctrine claims | **PASS** |
 | 23 | Partner Kit | `partner-kit/{README,TRUST_PACK_TEMPLATE,PROOF_PACK_TEMPLATE,DOCTRINE_ADOPTION_CHECKLIST}.md` + branding + landing-template | `scripts/build_partner_kit_zip.py` | `tests/test_partner_kit_contents.py` | `landing/assets/downloads/dealix-partner-kit-v1.zip` | Embed Trust card (companion) | Partner-led GCC expansion | **PASS** |
 | 24 | Market Feedback | `docs/ops/MARKET_FEEDBACK.md` | `api/routers/market_feedback.py`, `scripts/market_feedback_summary.py` | `tests/test_market_feedback_endpoint.py` | `POST /api/v1/public/market-feedback`, `GET .../summary` | Market Feedback tile | Real-world signal | **PASS** |
+| 25 | Business Unit Registry | `docs/holding/HOLDING_CHARTER.md`, `docs/holding/BUSINESS_UNIT_REGISTRY.md` | `scripts/register_business_unit.py`, `scripts/validate_business_units.py` | `tests/test_business_unit_registry.py` | `data/business_units.json` | Group portfolio tile | Multi-BU governance | **PASS** |
 
 > **Rule:** Any system whose `Status` column is not `PASS` is **not shipped**.
 > The verifier `scripts/verify_all_dealix.py` is the single judge.
