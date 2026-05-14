@@ -14,7 +14,8 @@
 | Governance runtime | `governance_os/runtime_decision.py`, `governance_os/claim_safety.py`, `docs/05_governance_os/` |
 | Scoring | `revenue_os/scoring.py`, `revenue_os/account_model.py` |
 | Draft pack | `revenue_os/draft_pack.py`, `docs/03_commercial_mvp/DRAFT_PACK.md` |
-| Proof | `proof_os/proof_pack.py`, `proof_os/proof_score.py`, `docs/07_proof_os/` |
+| Proof | `proof_os/proof_pack.py`, `proof_os/proof_score.py`, `proof_os/proof_pack_structure.py`, `docs/07_proof_os/` |
+| لقطات Founder (اختياري DB) | `founder_command_summary/snapshot_store.py`, ترحيل `011`, مفاتيح `FOUNDER_SNAPSHOT_*` في `.env.example` |
 | Value / Capital | `value_os/value_ledger.py`, `capital_os/capital_ledger.py` |
 | Safety tests | `tests/test_no_*`, `tests/test_proof_pack_required.py`, … |
 
@@ -26,7 +27,7 @@
 
 - `adoption_os/adoption_score.py`, `adoption_os/retainer_readiness.py` (`wave2_retainer_eligibility`)
 - `client_os/monthly_value_report.py`, `docs/13_workflow_os/MONTHLY_VALUE_REPORT.md`
-- لوحات العميل: `client_os/capability_dashboard.py`, `client_os/workspace.py`
+- لوحات العميل: `client_os/capability_dashboard.py`, `client_os/workspace.py`, ولوحة `GET /api/v1/customer-portal/{handle}/workspace` (تتضمن لقطة `founder_pipeline` عند تطابق `engagement_id` مع `customer_handle`).
 
 ## الموجة 3 — Enterprise Trust
 
@@ -65,3 +66,21 @@
 **الدستور وغرفة الثقة (رؤية القابضة):** `py -3 scripts/generate_holding_vision_docs.py` → `docs/00_constitution/`، `docs/15_auditability/`، `docs/enterprise_trust/`، `docs/16_evidence_control_plane/`.
 
 الجملة الاستراتيجية: **ابدأ بموجة 1 كمنتج موثوق، ثم اربط الموجات التالية بأدلة تشغيل لا بهندسة افتراضية.**
+
+## من الملفات إلى قيمة قابضة (تنفيذ الخطة)
+
+تربط الوثائق التالية **مراحل 6–14** ووحدات BU1–BU4 بعروض وسعر ومدة ومستبعد، وتذكر شهادة تشغيل قابلة للاستخدام في العروض:
+
+| المخرج | الملف |
+|--------|--------|
+| مصفوفة عروض `docs/26`–`docs/44` | [HOLDING_OFFER_MATRIX_AR.md](HOLDING_OFFER_MATRIX_AR.md) |
+| حزمة عرض 5 عملاء (RI + Founder + Proof + DQ) | [PROOF_DEMO_PACK_5_CLIENTS_AR.md](../commercial/PROOF_DEMO_PACK_5_CLIENTS_AR.md) |
+| Retainer مصغّر + بوابات Proof/Adoption | [RETAINER_PILOT_MINI_AR.md](../commercial/RETAINER_PILOT_MINI_AR.md) |
+| بوابة BU4 (لا بيع Trust قبل N عميل) | [BU4_TRUST_ACTIVATION_GATE_AR.md](../enterprise_trust/BU4_TRUST_ACTIVATION_GATE_AR.md) |
+| مسار ترخيص IP منفصل عن SaaS | [IP_LICENSE_OUTLINE_AR.md](../40_partners/IP_LICENSE_OUTLINE_AR.md) |
+
+**شهادة جودة بيع (حوكمة مدمجة):** حزم `tests/` + `scripts/revenue_os_master_verify.sh` + `scripts/dealix_capability_verify.sh` + CI في `.github/workflows/ci.yml` — يُذكر في العروض أن التسليم يمر عبر نفس بوابات الاختبار حيث ينطبق.
+
+**الفهرس الشامل لكل `docs/`:** [HOLDING_DOCS_HUB_AR.md](HOLDING_DOCS_HUB_AR.md)
+
+**طبقة حوكمة الذاكرة والأصول (Canonical + Value + Archive):** من نفس المحور — [DOCS_CANONICAL_REGISTRY_AR.md](DOCS_CANONICAL_REGISTRY_AR.md)، [HOLDING_VALUE_REGISTRY_AR.md](HOLDING_VALUE_REGISTRY_AR.md)، [DOCS_ARCHIVE_POLICY_AR.md](DOCS_ARCHIVE_POLICY_AR.md)؛ تحقق: `py -3 scripts/validate_docs_governance.py`. — طبقات 00–25، تكرار المرقمة 26–35، مجلدات موضوعية، ربط BU، ولقطة JSON تحت `_generated/`.

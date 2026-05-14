@@ -30,6 +30,12 @@ jobs:
       - name: Alembic single head
         run: python scripts/check_alembic_single_head.py
 
+      - name: Documentation governance gate
+        run: |
+          python scripts/generate_holding_value_summary.py
+          python scripts/validate_docs_governance.py
+          python -m pytest tests/test_holding_value_deliverables.py tests/test_docs_governance_system.py tests/test_external_packs_registry.py tests/test_motion_packs.py tests/test_external_pack_safety.py -q --no-cov
+
       - name: Verify Service Readiness Matrix
         run: python scripts/verify_service_readiness_matrix.py
 

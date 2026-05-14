@@ -1,0 +1,65 @@
+{
+  "generated_at_utc": "2026-05-14T16:48:02Z",
+  "source": "docs/strategic/HOLDING_VALUE_REGISTRY_AR.md",
+  "activation_priorities": [
+    {
+      "asset": "HOLDING_DOCS_HUB_AR.md",
+      "reason": "High value scores but low evidence (L0–L2); needs market activation",
+      "recommended_action": "Internal council + hub review"
+    },
+    {
+      "asset": "DEALIX_EXECUTION_WAVES_AR.md",
+      "reason": "High value scores but low evidence (L0–L2); needs market activation",
+      "recommended_action": "Use in investor motion"
+    },
+    {
+      "asset": "DOCS_CANONICAL_REGISTRY_AR.md",
+      "reason": "High value scores but low evidence (L0–L2); needs market activation",
+      "recommended_action": "Reference in partner tech call"
+    },
+    {
+      "asset": "RETAINER_PILOT_MINI_AR.md",
+      "reason": "High value scores but low evidence (L0–L2); needs market activation",
+      "recommended_action": "Attach after proof demo"
+    },
+    {
+      "asset": "IP_LICENSE_OUTLINE_AR.md",
+      "reason": "High value scores but low evidence (L0–L2); needs market activation",
+      "recommended_action": "Use in partner discussion"
+    },
+    {
+      "asset": "docs_top_level_snapshot.json",
+      "reason": "High value scores but low evidence (L0–L2); needs market activation",
+      "recommended_action": "CI + monthly snapshot"
+    },
+    {
+      "asset": "DOCS_ARCHIVE_POLICY_AR.md",
+      "reason": "High value scores but low evidence (L0–L2); needs market activation",
+      "recommended_action": "Council review"
+    },
+    {
+      "asset": "DOCS_PUBLICATION_BOUNDARY_AR.md",
+      "reason": "High value scores but low evidence (L0–L2); needs market activation",
+      "recommended_action": "Pre-flight external send"
+    }
+  ],
+  "governance_risks": [
+    {
+      "asset": "HOLDING_DOCS_HUB_AR.md",
+      "reason": "High partner/investor scores but Internal-only boundary; review before external motion"
+    },
+    {
+      "asset": "docs_top_level_snapshot.json",
+      "reason": "High partner/investor scores but Internal-only boundary; review before external motion"
+    },
+    {
+      "asset": "DOCS_ARCHIVE_POLICY_AR.md",
+      "reason": "High partner/investor scores but Internal-only boundary; review before external motion"
+    },
+    {
+      "asset": "DOCS_PUBLICATION_BOUNDARY_AR.md",
+      "reason": "High partner/investor scores but Internal-only boundary; review before external motion"
+    }
+  ],
+  "archive_candidates": []
+}

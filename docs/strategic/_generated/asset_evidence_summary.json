@@ -1,0 +1,81 @@
+{
+  "generated_at_utc": "2026-05-14T16:48:02Z",
+  "source": "docs/strategic/HOLDING_VALUE_REGISTRY_AR.md",
+  "counts_by_level": {
+    "L0": 0,
+    "L1": 0,
+    "L2": 8,
+    "L3": 0,
+    "L4": 3,
+    "L5": 0,
+    "L6": 0,
+    "L7": 0
+  },
+  "assets_by_level": {
+    "L0": [],
+    "L1": [],
+    "L2": [
+      {
+        "asset": "HOLDING_DOCS_HUB_AR.md",
+        "holding": 5,
+        "last_used": "TBD"
+      },
+      {
+        "asset": "DEALIX_EXECUTION_WAVES_AR.md",
+        "holding": 5,
+        "last_used": "TBD"
+      },
+      {
+        "asset": "DOCS_CANONICAL_REGISTRY_AR.md",
+        "holding": 5,
+        "last_used": "TBD"
+      },
+      {
+        "asset": "RETAINER_PILOT_MINI_AR.md",
+        "holding": 4,
+        "last_used": "TBD"
+      },
+      {
+        "asset": "IP_LICENSE_OUTLINE_AR.md",
+        "holding": 5,
+        "last_used": "TBD"
+      },
+      {
+        "asset": "docs_top_level_snapshot.json",
+        "holding": 5,
+        "last_used": "TBD"
+      },
+      {
+        "asset": "DOCS_ARCHIVE_POLICY_AR.md",
+        "holding": 5,
+        "last_used": "TBD"
+      },
+      {
+        "asset": "DOCS_PUBLICATION_BOUNDARY_AR.md",
+        "holding": 5,
+        "last_used": "TBD"
+      }
+    ],
+    "L3": [],
+    "L4": [
+      {
+        "asset": "HOLDING_OFFER_MATRIX_AR.md",
+        "holding": 5,
+        "last_used": "2026-05-14"
+      },
+      {
+        "asset": "PROOF_DEMO_PACK_5_CLIENTS_AR.md",
+        "holding": 4,
+        "last_used": "2026-05-14"
+      },
+      {
+        "asset": "BU4_TRUST_ACTIVATION_GATE_AR.md",
+        "holding": 5,
+        "last_used": "2026-05-14"
+      }
+    ],
+    "L5": [],
+    "L6": [],
+    "L7": []
+  }
+}
