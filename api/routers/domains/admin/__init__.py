@@ -13,6 +13,7 @@ from api.routers import (
     business,
     capital_assets,
     command_center,
+    customer_readiness_gate,
     data,
     dealix_promise,
     designops,
@@ -75,6 +76,8 @@ _ROUTERS = [
     capital_assets.router,
     # Wave 21 — public trust surface.
     trust_status.router,
+    # Wave 21 PR6 — per-customer readiness gate (admin + public).
+    customer_readiness_gate.router,
 ]
 
 

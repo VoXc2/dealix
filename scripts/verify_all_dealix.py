@@ -493,6 +493,24 @@ def system_first_invoice_motion() -> SystemReport:
     )]
     return r
 
+def system_customer_readiness_gate() -> SystemReport:
+    r = SystemReport("Customer Readiness Gate")
+    r.docs = [any_of_files_check(
+        ["docs/sales-kit/CUSTOMER_READINESS.md"],
+        "Customer Readiness sales-kit doc",
+    )]
+    r.code = [
+        file_check("auto_client_acquisition/customer_readiness/readiness_gate.py"),
+        file_check("api/routers/customer_readiness_gate.py"),
+    ]
+    r.tests = [
+        file_check("tests/test_customer_readiness_gate_compute.py"),
+        file_check("tests/test_customer_readiness_admin_endpoint.py"),
+        file_check("tests/test_customer_readiness_public_endpoint_is_safe.py"),
+    ]
+    return r
+
+
 def system_public_trust_surface() -> SystemReport:
     r = SystemReport("Public Trust Surface")
     r.docs = [any_of_files_check(
@@ -560,6 +578,7 @@ SYSTEMS: list[Callable[[], SystemReport]] = [
     system_first_invoice_motion,
     system_continuous_routine,
     system_public_trust_surface,
+    system_customer_readiness_gate,
 ]
 
 # Systems that must be ≥ 4/5 for "CEO complete".
