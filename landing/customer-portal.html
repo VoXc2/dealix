@@ -734,5 +734,38 @@
 
 <script src="/assets/js/customer-dashboard.js"></script>
 <script>if (window.lucide) { lucide.createIcons(); }</script>
+
+<!-- Wave 14J — Gap C — Live workspace fetch.
+     Reads ?handle=<customer_handle> from URL, calls GET /api/v1/customer-portal/{handle}/workspace,
+     renders 10 panels. Estimated outcomes are not guaranteed outcomes / النتائج التقديرية ليست نتائج مضمونة. -->
+<script>
+(function(){
+  var params = new URLSearchParams(window.location.search);
+  var handle = params.get('handle') || 'Slot-A';
+  var apiBase = (window.DEALIX_API_BASE || '').replace(/\/$/, '');
+  var url = apiBase + '/api/v1/customer-portal/' + encodeURIComponent(handle) + '/workspace';
+  fetch(url, { cache: 'no-store' })
+    .then(function(r){ return r.json(); })
+    .then(function(b){
+      var container = document.getElementById('workspace-panels') || document.body;
+      var panels = ['capability_score','data_readiness','governance_status','ranked_opportunities','draft_packs_pending_approval','proof_timeline','adoption_score','friction_summary','latest_monthly_value_report','next_action'];
+      var rows = panels.map(function(p){
+        var v = b[p];
+        var safe = v === null || v === undefined ? '<em>(لا بيانات بعد · no data yet)</em>' : '<pre style="white-space:pre-wrap;max-height:120px;overflow:auto">' + JSON.stringify(v, null, 2).replace(/[<>&]/g, function(c){return {'<':'&lt;','>':'&gt;','&':'&amp;'}[c];}) + '</pre>';
+        return '<div style="border:1px solid #ddd;padding:8px;margin:6px;border-radius:6px;background:rgba(255,255,255,0.04)"><strong>' + p + '</strong>' + safe + '</div>';
+      });
+      var wrap = document.createElement('section');
+      wrap.style.cssText = 'margin:24px 0;padding:16px;border:1px solid var(--border,#444);border-radius:12px;';
+      wrap.innerHTML = '<h2>Workspace · مساحة العميل</h2><p>customer_handle = <code>' + handle + '</code></p>' + rows.join('') + '<p><em>Estimated outcomes are not guaranteed outcomes / النتائج التقديرية ليست نتائج مضمونة.</em></p>';
+      container.appendChild(wrap);
+    })
+    .catch(function(err){
+      var wrap = document.createElement('section');
+      wrap.style.cssText='margin:24px 0;padding:16px;color:#f88';
+      wrap.textContent = 'فشل تحميل Workspace / Workspace failed to load: ' + err.message;
+      document.body.appendChild(wrap);
+    });
+})();
+</script>
 </body>
 </html>
