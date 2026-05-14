@@ -44,6 +44,7 @@ from api.routers import (
     pdpl_dsar,
     proof_pack,
     referral_program,
+    revenue_intelligence,
     revenue_metrics,
     saudi_prospect_search,
     sector_intel,
@@ -267,6 +268,9 @@ def create_app() -> FastAPI:
     # Doctrine Phase 1 — Capability Diagnostic (paid entry) + Proof Pack v2
     app.include_router(capability_diagnostic.router)
     app.include_router(proof_pack.router)
+    # Doctrine Phase 1 — Revenue Intelligence Pipeline (the MVP wedge):
+    # import preview → scoring → DRAFT_ONLY pack → finalize → Proof Pack hook.
+    app.include_router(revenue_intelligence.router)
 
     @app.get("/", tags=["root"])
     async def root() -> dict[str, object]:
