@@ -101,7 +101,7 @@ Issues = "https://github.com/VoXc2/dealix/issues"
 # ─────────────────────────────────────────────────────────────
 
 [tool.setuptools.packages.find]
-include = ["core*", "auto_client_acquisition*", "autonomous_growth*", "integrations*", "api*", "dashboard*", "db*"]
+include = ["core*", "auto_client_acquisition*", "autonomous_growth*", "integrations*", "api*", "dashboard*", "db*", "dealix_infrastructure*"]
 exclude = ["tests*", "docs*", "scripts*"]
 
 [tool.ruff]

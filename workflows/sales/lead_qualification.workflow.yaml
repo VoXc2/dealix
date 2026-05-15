@@ -1,0 +1,28 @@
+workflow_id: wf_lead_qualification
+name: lead_qualification
+trigger: lead.created
+description_ar: >
+  أصغر workflow محكوم لمرحلة التأهيل: من تسجيل العميل إلى مسودة إجراء
+  داخلية بدون أي إرسال خارجي تلقائي.
+description_en: >
+  Smallest governed workflow for lead qualification: from intake to internal
+  draft action with no automatic external send.
+steps:
+  - id: intake_score
+    tool: crm.create_lead
+    risk_level: medium
+    retries: 2
+    requires_approval: false
+    external_action: false
+  - id: approval_gate
+    tool: approval.capture
+    risk_level: high
+    retries: 1
+    requires_approval: true
+    external_action: false
+  - id: draft_message
+    tool: whatsapp.draft_message
+    risk_level: high
+    retries: 2
+    requires_approval: true
+    external_action: false
