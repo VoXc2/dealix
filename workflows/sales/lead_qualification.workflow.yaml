@@ -1,0 +1,102 @@
+workflow_id: lead_qualification
+name: "Lead Qualification (Governed)"
+version: "0.1.0"
+tenant_scoped: true
+owner: revenue_os
+agent: sales_agent
+
+trigger:
+  type: lead_created
+  source: api.v1.leads
+
+inputs:
+  required:
+    - tenant_id
+    - lead_id
+    - actor_id
+    - lead_payload
+
+steps:
+  - id: qualify_lead
+    type: agent_task
+    action: lead_qualification
+    retries:
+      max_attempts: 2
+      backoff_seconds: [2, 5]
+
+  - id: retrieve_context
+    type: agent_task
+    action: citation_aware_retrieval
+    constraints:
+      tenant_filter_required: true
+      permission_filter_required: true
+    retries:
+      max_attempts: 2
+      backoff_seconds: [2, 5]
+
+  - id: score_lead
+    type: agent_task
+    action: lead_scoring
+    retries:
+      max_attempts: 1
+
+  - id: draft_response
+    type: agent_task
+    action: suggested_response
+    output: draft_message
+
+  - id: governance_gate
+    type: governance_check
+    checks:
+      - risk_score
+      - policy_check
+      - approval_check
+    on_fail:
+      status: blocked
+      emit_audit: true
+
+  - id: update_crm
+    type: integration_task
+    action: crm_update
+    requires:
+      - governance_gate.approved
+    retries:
+      max_attempts: 2
+      backoff_seconds: [5, 15]
+
+  - id: follow_up_orchestration
+    type: workflow_task
+    action: schedule_followup_plan
+    mode: draft_only
+
+  - id: publish_metrics
+    type: observability_task
+    action: emit_metrics_and_trace
+
+  - id: publish_roi_delta
+    type: reporting_task
+    action: update_roi_rollup
+
+outputs:
+  - qualification_result
+  - lead_score
+  - draft_message
+  - governance_result
+  - crm_update_result
+  - trace_id
+  - audit_id
+  - roi_delta_ref
+
+slo:
+  target_duration_seconds: 120
+  success_rate_minimum: 0.95
+
+audit:
+  required: true
+  fields:
+    - tenant_id
+    - run_id
+    - trace_id
+    - actor_id
+    - risk_level
+    - approval_ref
