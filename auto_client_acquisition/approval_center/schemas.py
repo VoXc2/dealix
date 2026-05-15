@@ -115,6 +115,9 @@ class ApprovalRequest(BaseModel):
     customer_id: str | None = None
     """Customer/tenant scope (for RBAC + tenant isolation per Engine 12)."""
 
+    tenant_id: str = "default"
+    """Tenant scope for enterprise isolation. Defaults to ``default`` in MVP/dev."""
+
     due_date: datetime | None = None
     """When the action must complete (separate from ``expires_at``,
     which is when the approval window closes). Used by Engine 7 (Delivery

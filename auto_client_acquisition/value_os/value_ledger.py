@@ -32,6 +32,7 @@ class ValueDisciplineError(ValueError):
 @dataclass(frozen=True, slots=True)
 class ValueEvent:
     event_id: str
+    tenant_id: str
     customer_id: str
     kind: str
     amount: float
@@ -79,6 +80,7 @@ def _event_from_dict(data: dict[str, object]) -> ValueEvent | None:
     try:
         return ValueEvent(
             event_id=str(data.get("event_id", "")),
+            tenant_id=str(data.get("tenant_id", "default") or "default"),
             customer_id=str(data.get("customer_id", "")),
             kind=str(data.get("kind", "")),
             amount=float(data.get("amount", 0.0) or 0.0),
@@ -94,6 +96,7 @@ def _event_from_dict(data: dict[str, object]) -> ValueEvent | None:
 
 def add_event(
     *,
+    tenant_id: str = "default",
     customer_id: str,
     kind: str,
     amount: float = 0.0,
@@ -118,6 +121,7 @@ def add_event(
 
     event = ValueEvent(
         event_id=f"val_{uuid4().hex[:16]}",
+        tenant_id=tenant_id.strip() or "default",
         customer_id=cid,
         kind=k,
         amount=float(amount or 0.0),
@@ -191,6 +195,7 @@ def summarize(*, customer_id: str, period_days: int = 30) -> dict[str, object]:
 
     return {
         "customer_id": customer_id,
+        "tenant_id": events[0].tenant_id if events else "default",
         "period_days": int(period_days),
         "total_events": len(events),
         "estimated_amount": round(amounts["estimated"], 2),

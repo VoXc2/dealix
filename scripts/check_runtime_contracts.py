@@ -130,21 +130,24 @@ def _check_runtime_decision_contract() -> CheckResult:
     from auto_client_acquisition.governance_os.runtime_decision import decide
 
     blocked = decide(
-        action="send_whatsapp",
-        context={"is_cold": True},
+        action_type="whatsapp.send_message",
+        actor="runtime_contracts",
+        risk_score=0.9,
     )
     allowed = decide(
-        action="run_scoring",
+        action_type="run_scoring",
         context={
             "source_passport": object(),
             "contains_pii": False,
             "external_use": False,
         },
     )
-    if blocked.decision.value.lower() != "block":
-        raise RuntimeError("cold outreach should be blocked")
+    if blocked.decision.value.lower() not in {"escalate", "require_approval"}:
+        raise RuntimeError("high-risk action should escalate or require approval")
     if allowed.decision.value.lower() not in {"allow", "allow_with_review"}:
-        raise RuntimeError("scoring action should be allowed or review-allowed")
+        raise RuntimeError("run_scoring should be allowed for low-risk context")
+    if not hasattr(blocked, "approval_required"):
+        raise RuntimeError("runtime decision missing approval_required field")
     return CheckResult(
         name="runtime_decision_contract",
         ok=True,
@@ -155,12 +158,55 @@ def _check_runtime_decision_contract() -> CheckResult:
     )
 
 
+def _check_auditability_contract() -> CheckResult:
+    from auto_client_acquisition.auditability_os.audit_event import (
+        AuditEventKind,
+        clear_for_test,
+        list_events,
+        record_event,
+    )
+    from auto_client_acquisition.auditability_os.evidence_chain import build_chain
+
+    with tempfile.TemporaryDirectory() as tmp:
+        path = os.path.join(tmp, "audit.jsonl")
+        os.environ["DEALIX_AUDIT_LOG_PATH"] = path
+        clear_for_test()
+        try:
+            record_event(
+                customer_id="acme",
+                engagement_id="run_1",
+                kind=AuditEventKind.SOURCE_PASSPORT_VALIDATED,
+                source_refs=["SRC-1"],
+                summary="validated",
+            )
+            record_event(
+                customer_id="acme",
+                engagement_id="run_1",
+                kind=AuditEventKind.AI_RUN,
+                output_refs=["OUT-1"],
+                summary="ai run completed",
+            )
+            chain = build_chain(customer_id="acme", engagement_id="run_1")
+            if len(list_events(customer_id="acme")) < 2:
+                raise RuntimeError("audit list_events did not return expected rows")
+            if chain.node_count < 2:
+                raise RuntimeError("evidence chain missing expected nodes")
+            return CheckResult(
+                name="auditability_contract",
+                ok=True,
+                details={"node_count": chain.node_count},
+            )
+        finally:
+            os.environ.pop("DEALIX_AUDIT_LOG_PATH", None)
+
+
 def main() -> int:
     checks = [
         _check_api_main_import,
         _check_value_ledger_contract,
         _check_data_os_contract,
         _check_runtime_decision_contract,
+        _check_auditability_contract,
     ]
     results: list[CheckResult] = []
     failures: list[dict[str, Any]] = []
