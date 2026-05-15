@@ -21,7 +21,7 @@ from auto_client_acquisition.agent_os.agent_card import (
 
 _REGISTRY: dict[str, AgentCard] = {}
 _lock = threading.RLock()
-_loaded = False
+_STATE: dict[str, bool] = {"loaded": False}
 
 
 def _path() -> Path | None:
@@ -45,10 +45,9 @@ def _persist() -> None:
 
 
 def _load_if_needed() -> None:
-    global _loaded
-    if _loaded:
+    if _STATE["loaded"]:
         return
-    _loaded = True
+    _STATE["loaded"] = True
     path = _path()
     if path is None or not path.exists():
         return
@@ -120,10 +119,9 @@ def kill_agent(agent_id: str, *, reason: str) -> AgentCard | None:
 
 
 def clear_agent_registry_for_tests() -> None:
-    global _loaded
     with _lock:
         _REGISTRY.clear()
-        _loaded = False
+        _STATE["loaded"] = False
         path = _path()
         if path is not None and path.exists():
             path.write_text("", encoding="utf-8")
