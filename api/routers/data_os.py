@@ -135,7 +135,8 @@ async def import_preview_upload(
 
 
 def _next_step(dq_overall: float, decision: str) -> str:
-    if decision == GovernanceDecision.BLOCK.value:
+    normalized = decision.strip().lower()
+    if normalized in {GovernanceDecision.BLOCK.value.lower(), "deny", "block"}:
         return "block_until_source_passport_provided"
     if dq_overall < 50:
         return "data_cleanup_required_before_scoring"

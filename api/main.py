@@ -31,7 +31,10 @@ from api.routers.domains import sales as sales_domain
 from api.routers.domains import webhooks as webhooks_domain
 from api.routers import (
     admin_tenants,
+    agent_mesh_os,
+    assurance_contract_os,
     auth,
+    control_plane_os,
     compliance_status,
     cost_tracking,
     customer_usage,
@@ -43,10 +46,17 @@ from api.routers import (
     pdpl_dsar,
     referral_program,
     revenue_metrics,
+    runtime_safety_os,
     saudi_prospect_search,
+    sandbox_os,
+    self_evolving_os,
     sector_intel,
     service_setup,
+    simulation_os,
     tenant_theming,
+    human_ai_os,
+    org_graph_os,
+    value_engine_os,
     zatca,
 )
 # Wave 12.7 — Intelligence Layer + Expansion Engine routers
@@ -290,6 +300,17 @@ def create_app() -> FastAPI:
     app.include_router(commercial_map_router.router)
     # Wave 15 — Founder launch-status (admin /launch-status + public /launch-status/public)
     app.include_router(founder_launch_status_router.router)
+    # Systems 26–35 — Enterprise Control Plane hardening
+    app.include_router(control_plane_os.router)
+    app.include_router(agent_mesh_os.router)
+    app.include_router(assurance_contract_os.router)
+    app.include_router(sandbox_os.router)
+    app.include_router(org_graph_os.router)
+    app.include_router(runtime_safety_os.router)
+    app.include_router(simulation_os.router)
+    app.include_router(human_ai_os.router)
+    app.include_router(value_engine_os.router)
+    app.include_router(self_evolving_os.router)
 
     @app.get("/", tags=["root"])
     async def root() -> dict[str, object]:
