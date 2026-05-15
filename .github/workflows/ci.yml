@@ -33,6 +33,9 @@ jobs:
       - name: Verify Service Readiness Matrix
         run: python scripts/verify_service_readiness_matrix.py
 
+      - name: Verify Enterprise Execution Architecture
+        run: python scripts/verify_execution_architecture.py
+
       - name: Quick regression bundle (revenue memory + routing + integrations + v5 + compliance)
         env:
           APP_ENV: test
