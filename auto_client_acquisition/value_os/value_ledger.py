@@ -120,10 +120,11 @@ def list_events(
     *,
     customer_id: str | None = None,
     tier: str | None = None,
-    limit: int | None = 1000,
+    limit: int | None = None,
 ) -> list[ValueEvent]:
-    """List ledger events. ``limit=None`` returns every matching event —
-    callers that aggregate (e.g. ``summarize``) must not silently truncate."""
+    """List ledger events. The default is unbounded so aggregating callers
+    (``summarize``, monthly reports) never silently under-report; pass an
+    explicit ``limit`` only for paginated/UI reads."""
     path = _path()
     if not path.exists():
         return []

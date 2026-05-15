@@ -113,8 +113,11 @@ def list_assets(
     *,
     customer_id: str | None = None,
     engagement_id: str | None = None,
-    limit: int = 1000,
+    limit: int | None = None,
 ) -> list[CapitalAsset]:
+    """List capital assets. The default is unbounded so callers that
+    reconstruct proof context (e.g. ``export_case_safe``) never silently
+    undercount; pass an explicit ``limit`` only for paginated reads."""
     path = _path()
     if not path.exists():
         return []
@@ -134,7 +137,7 @@ def list_assets(
                 if engagement_id and asset.engagement_id != engagement_id:
                     continue
                 out.append(asset)
-                if len(out) >= limit:
+                if limit is not None and len(out) >= limit:
                     break
     return out
 
