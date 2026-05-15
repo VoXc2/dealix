@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
   "source": "auto_client_acquisition/service_catalog/registry.py",
-  "generated_at": "2026-05-11T05:46:01+00:00",
+  "generated_at": "2026-05-15T06:48:35+00:00",
   "constitution": {
     "article_4_hard_gates": [
       "no_live_send",
@@ -16,7 +16,7 @@
     "article_8_no_fake_claims": true,
     "article_11_single_source_of_truth": true
   },
-  "count": 7,
+  "count": 12,
   "offerings": [
     {
       "id": "free_mini_diagnostic",
@@ -49,7 +49,11 @@
         "no_fake_proof"
       ],
       "customer_journey_stage": "discovery",
-      "is_estimate": true
+      "is_estimate": true,
+      "price_sar_min": null,
+      "price_sar_max": null,
+      "monthly_fee_sar_min": null,
+      "monthly_fee_sar_max": null
     },
     {
       "id": "revenue_proof_sprint_499",
@@ -89,7 +93,11 @@
         "no_fake_revenue"
       ],
       "customer_journey_stage": "first_paid",
-      "is_estimate": true
+      "is_estimate": true,
+      "price_sar_min": null,
+      "price_sar_max": null,
+      "monthly_fee_sar_min": null,
+      "monthly_fee_sar_max": null
     },
     {
       "id": "data_to_revenue_pack_1500",
@@ -126,7 +134,11 @@
         "no_fake_revenue"
       ],
       "customer_journey_stage": "expansion",
-      "is_estimate": true
+      "is_estimate": true,
+      "price_sar_min": null,
+      "price_sar_max": null,
+      "monthly_fee_sar_min": null,
+      "monthly_fee_sar_max": null
     },
     {
       "id": "growth_ops_monthly_2999",
@@ -167,7 +179,11 @@
         "no_blast"
       ],
       "customer_journey_stage": "monthly",
-      "is_estimate": true
+      "is_estimate": true,
+      "price_sar_min": null,
+      "price_sar_max": null,
+      "monthly_fee_sar_min": null,
+      "monthly_fee_sar_max": null
     },
     {
       "id": "support_os_addon_1500",
@@ -202,7 +218,11 @@
         "no_fake_proof"
       ],
       "customer_journey_stage": "support_addon",
-      "is_estimate": true
+      "is_estimate": true,
+      "price_sar_min": null,
+      "price_sar_max": null,
+      "monthly_fee_sar_min": null,
+      "monthly_fee_sar_max": null
     },
     {
       "id": "executive_command_center_7500",
@@ -247,7 +267,11 @@
         "no_blast"
       ],
       "customer_journey_stage": "executive",
-      "is_estimate": true
+      "is_estimate": true,
+      "price_sar_min": null,
+      "price_sar_max": null,
+      "monthly_fee_sar_min": null,
+      "monthly_fee_sar_max": null
     },
     {
       "id": "agency_partner_os",
@@ -285,7 +309,221 @@
         "no_blast"
       ],
       "customer_journey_stage": "channel",
-      "is_estimate": true
+      "is_estimate": true,
+      "price_sar_min": null,
+      "price_sar_max": null,
+      "monthly_fee_sar_min": null,
+      "monthly_fee_sar_max": null
+    },
+    {
+      "id": "enterprise_ai_operating_system",
+      "name_ar": "نظام التشغيل المؤسسي بالذكاء الاصطناعي",
+      "name_en": "Enterprise AI Operating System",
+      "price_sar": 0.0,
+      "price_unit": "custom",
+      "duration_days": 90,
+      "deliverables": [
+        "AI Opportunity Map + 30/60/90 roadmap",
+        "Company Brain v1 (knowledge base + citations)",
+        "Sales / Support / Operations AI agents (draft-first)",
+        "Executive Command Center dashboard",
+        "Approval workflows + append-only audit trail",
+        "CRM / WhatsApp / Email / Drive integration contracts",
+        "ROI dashboard wired to the value ledger",
+        "Governance policy pack + risk register",
+        "Monthly Proof Pack + optimization cycle"
+      ],
+      "kpi_commitment_ar": "نلتزم بتسليم برنامج التحول في ٩٠ يومًا عبر ٥ مراحل ببوابات تحقق. إن لم تُجتَز بوابة مرحلة، نواصل العمل على تلك المرحلة بدون مقابل.",
+      "kpi_commitment_en": "We commit to a 90-day transformation across 5 gated phases. If a phase gate is not met, we keep working that phase at no charge.",
+      "refund_policy_ar": "عقد مرحلي؛ كل مرحلة تُدفع عند اجتياز بوابتها — مراجعة قانونية.",
+      "refund_policy_en": "Phased contract; each phase invoiced on gate pass — lawyer-reviewed.",
+      "action_modes_used": [
+        "suggest_only",
+        "draft_only",
+        "approval_required",
+        "approved_manual"
+      ],
+      "hard_gates": [
+        "no_live_send",
+        "no_live_charge",
+        "no_cold_whatsapp",
+        "no_linkedin_auto",
+        "no_scraping",
+        "no_fake_proof",
+        "no_fake_revenue",
+        "no_blast"
+      ],
+      "customer_journey_stage": "enterprise",
+      "is_estimate": true,
+      "price_sar_min": 75000.0,
+      "price_sar_max": 250000.0,
+      "monthly_fee_sar_min": 15000.0,
+      "monthly_fee_sar_max": 60000.0
+    },
+    {
+      "id": "ai_revenue_transformation",
+      "name_ar": "تحويل الإيرادات بالذكاء الاصطناعي",
+      "name_en": "AI Revenue Transformation",
+      "price_sar": 0.0,
+      "price_unit": "custom",
+      "duration_days": 60,
+      "deliverables": [
+        "ICP analysis + lead-machine design",
+        "Lead scoring + enrichment model",
+        "Outbound strategy + Arabic sales messaging",
+        "WhatsApp / Email follow-up workflows (draft-first)",
+        "CRM pipeline build + AI follow-up",
+        "Executive revenue dashboard",
+        "Proof Pack + monthly ROI report"
+      ],
+      "kpi_commitment_ar": "نلتزم ببناء نظام مبيعات يكشف ويؤهل ويتابع الفرص بمؤشرات قابلة للقياس. إن لم تتحسن مؤشرات الـ pipeline المتفق عليها، نواصل بدون مقابل.",
+      "kpi_commitment_en": "We commit to a revenue system that surfaces, qualifies and follows up leads with measurable KPIs. If the agreed pipeline KPIs do not improve, we keep working at no charge.",
+      "refund_policy_ar": "استرداد تناسبي للأشهر غير المستخدمة عند عدم تحقيق التزام KPI.",
+      "refund_policy_en": "Pro-rata refund of unused months if the KPI commitment is unmet.",
+      "action_modes_used": [
+        "suggest_only",
+        "draft_only",
+        "approval_required",
+        "approved_manual"
+      ],
+      "hard_gates": [
+        "no_live_send",
+        "no_live_charge",
+        "no_cold_whatsapp",
+        "no_linkedin_auto",
+        "no_scraping",
+        "no_fake_proof",
+        "no_fake_revenue",
+        "no_blast"
+      ],
+      "customer_journey_stage": "enterprise",
+      "is_estimate": true,
+      "price_sar_min": 35000.0,
+      "price_sar_max": 100000.0,
+      "monthly_fee_sar_min": 10000.0,
+      "monthly_fee_sar_max": 40000.0
+    },
+    {
+      "id": "company_brain_knowledge_os",
+      "name_ar": "عقل الشركة ونظام المعرفة",
+      "name_en": "Company Brain & Knowledge OS",
+      "price_sar": 0.0,
+      "price_unit": "custom",
+      "duration_days": 60,
+      "deliverables": [
+        "Document ingestion + knowledge base build",
+        "Retrieval with citations + confidence scores",
+        "Role-based access controls",
+        "Internal employee / sales / support assistants",
+        "Board + executive summaries with source tracking",
+        "No-source-no-answer enforcement",
+        "Eval report + usage dashboard"
+      ],
+      "kpi_commitment_ar": "نلتزم بأن كل إجابة تأتي بمصدر ودرجة ثقة وصلاحية وسجل تدقيق، ومنع الإجابة عند غياب الدليل. إن لم يتحقق معيار الجودة، نواصل بدون مقابل.",
+      "kpi_commitment_en": "We commit that every answer carries a source, confidence, permission and audit record, and is withheld when no evidence exists. If the quality bar is not met, we keep working at no charge.",
+      "refund_policy_ar": "استرداد ٧٥٪ إذا لم يتحقق التزام جودة الاسترجاع خلال ٣٠ يومًا.",
+      "refund_policy_en": "75% refund if the retrieval-quality commitment is unmet within 30 days.",
+      "action_modes_used": [
+        "suggest_only",
+        "draft_only",
+        "approval_required"
+      ],
+      "hard_gates": [
+        "no_live_send",
+        "no_live_charge",
+        "no_cold_whatsapp",
+        "no_scraping",
+        "no_fake_proof",
+        "no_sourceless_answer"
+      ],
+      "customer_journey_stage": "enterprise",
+      "is_estimate": true,
+      "price_sar_min": 40000.0,
+      "price_sar_max": 150000.0,
+      "monthly_fee_sar_min": 8000.0,
+      "monthly_fee_sar_max": 35000.0
+    },
+    {
+      "id": "ai_governance_trust_program",
+      "name_ar": "برنامج حوكمة وثقة الذكاء الاصطناعي",
+      "name_en": "AI Governance & Trust Program",
+      "price_sar": 0.0,
+      "price_unit": "custom",
+      "duration_days": 45,
+      "deliverables": [
+        "Company AI policy + AI risk matrix",
+        "Approval classes + data-handling rules",
+        "Employee AI usage rules",
+        "Audit logging + human-approval workflows",
+        "PDPL readiness assessment",
+        "Vendor / model risk review",
+        "Executive governance dashboard"
+      ],
+      "kpi_commitment_ar": "نلتزم بتسليم إطار حوكمة قابل للتدقيق ومتوافق مع نظام حماية البيانات. إن لم يجتز مراجعة الجاهزية المتفق عليها، نواصل بدون مقابل.",
+      "kpi_commitment_en": "We commit to an auditable, PDPL-aligned governance framework. If it does not pass the agreed readiness review, we keep working at no charge.",
+      "refund_policy_ar": "عقد مرحلي بمراجعة جاهزية؛ مراجعة قانونية لشروط الإلغاء.",
+      "refund_policy_en": "Phased contract with a readiness review; cancellation terms lawyer-reviewed.",
+      "action_modes_used": [
+        "suggest_only",
+        "draft_only",
+        "approval_required"
+      ],
+      "hard_gates": [
+        "no_live_send",
+        "no_live_charge",
+        "no_cold_whatsapp",
+        "no_scraping",
+        "no_fake_proof"
+      ],
+      "customer_journey_stage": "enterprise",
+      "is_estimate": true,
+      "price_sar_min": 50000.0,
+      "price_sar_max": 180000.0,
+      "monthly_fee_sar_min": null,
+      "monthly_fee_sar_max": null
+    },
+    {
+      "id": "executive_intelligence_center",
+      "name_ar": "مركز الذكاء والقيادة التنفيذي",
+      "name_en": "Executive Intelligence & Command Center",
+      "price_sar": 0.0,
+      "price_unit": "custom",
+      "duration_days": 0,
+      "deliverables": [
+        "Revenue + customer-health + operational-risk signals",
+        "Strategic / partnership / expansion opportunity radar",
+        "AI recommendations + decision memos",
+        "Approval queue",
+        "Weekly executive brief",
+        "Quarterly growth strategy",
+        "Proof Ledger access"
+      ],
+      "kpi_commitment_ar": "نلتزم بتوفير وقت اتخاذ القرار للإدارة عبر مؤشرات وقرارات مرتبطة بالنتائج. إن لم يتحقق التزام التوفير المتفق عليه، نواصل بدون مقابل.",
+      "kpi_commitment_en": "We commit to saving executive decision time via signals and outcome-linked decisions. If the agreed time-saving commitment is unmet, we keep working at no charge.",
+      "refund_policy_ar": "استرداد تناسبي للأشهر غير المستخدمة.",
+      "refund_policy_en": "Pro-rata refund of unused months.",
+      "action_modes_used": [
+        "suggest_only",
+        "draft_only",
+        "approval_required",
+        "approved_manual"
+      ],
+      "hard_gates": [
+        "no_live_send",
+        "no_live_charge",
+        "no_cold_whatsapp",
+        "no_linkedin_auto",
+        "no_scraping",
+        "no_fake_proof",
+        "no_fake_revenue",
+        "no_blast"
+      ],
+      "customer_journey_stage": "enterprise",
+      "is_estimate": true,
+      "price_sar_min": 80000.0,
+      "price_sar_max": 250000.0,
+      "monthly_fee_sar_min": 20000.0,
+      "monthly_fee_sar_max": 70000.0
     }
   ]
 }

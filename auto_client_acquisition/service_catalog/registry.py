@@ -1,4 +1,4 @@
-"""The 7 canonical Dealix offerings — Wave 13 Phase 2.
+"""The 12 canonical Dealix offerings — Wave 13 Phase 2 + Enterprise tier.
 
 Truth registry. Backend + portal + WhatsApp + landing pages all read from here.
 
@@ -13,13 +13,20 @@ Pricing ladder (must be ascending for paid services):
   → Growth Ops (2999/mo) → Support Add-on (1500/mo) → ECC (7500/mo)
   → Agency Partner OS (custom)
 
+Enterprise tier (custom-priced, customer_journey_stage="enterprise"). These
+unlock only after >=3 documented proof packs from the lower ladder; until the
+DEALIX_READINESS gates pass they are tracked as Planned in
+dealix/registers/no_overclaim.yaml and listed under "Do Not Sell Yet":
+  Enterprise AI Operating System · AI Revenue Transformation
+  · Company Brain & Knowledge OS · AI Governance & Trust Program
+  · Executive Intelligence & Command Center
+
 Strategic mapping (roles → offerings): docs/strategic/DEALIX_ROLE_SERVICE_LADDER_AR.md
 """
 
 from __future__ import annotations
 
 from auto_client_acquisition.service_catalog.schemas import ServiceOffering
-
 
 _FREE_DIAGNOSTIC = ServiceOffering(
     id="free_mini_diagnostic",
@@ -330,7 +337,260 @@ _AGENCY_PARTNER_OS = ServiceOffering(
 )
 
 
-# Canonical 7-offering registry (order = catalog display order)
+# ═══════════════════════════════════════════════════════════════════
+# Enterprise tier — custom-priced six-figure engagements.
+# Status: Planned (see dealix/registers/no_overclaim.yaml). Not sellable
+# until the DEALIX_READINESS gates pass; listed under "Do Not Sell Yet".
+# ═══════════════════════════════════════════════════════════════════
+
+_ENTERPRISE_AI_OPERATING_SYSTEM = ServiceOffering(
+    id="enterprise_ai_operating_system",
+    name_ar="نظام التشغيل المؤسسي بالذكاء الاصطناعي",
+    name_en="Enterprise AI Operating System",
+    price_sar=0.0,
+    price_unit="custom",
+    duration_days=90,
+    price_sar_min=75_000.0,
+    price_sar_max=250_000.0,
+    monthly_fee_sar_min=15_000.0,
+    monthly_fee_sar_max=60_000.0,
+    deliverables=(
+        "AI Opportunity Map + 30/60/90 roadmap",
+        "Company Brain v1 (knowledge base + citations)",
+        "Sales / Support / Operations AI agents (draft-first)",
+        "Executive Command Center dashboard",
+        "Approval workflows + append-only audit trail",
+        "CRM / WhatsApp / Email / Drive integration contracts",
+        "ROI dashboard wired to the value ledger",
+        "Governance policy pack + risk register",
+        "Monthly Proof Pack + optimization cycle",
+    ),
+    kpi_commitment_ar=(
+        "نلتزم بتسليم برنامج التحول في ٩٠ يومًا عبر ٥ مراحل ببوابات تحقق. "
+        "إن لم تُجتَز بوابة مرحلة، نواصل العمل على تلك المرحلة بدون مقابل."
+    ),
+    kpi_commitment_en=(
+        "We commit to a 90-day transformation across 5 gated phases. "
+        "If a phase gate is not met, we keep working that phase at no charge."
+    ),
+    refund_policy_ar="عقد مرحلي؛ كل مرحلة تُدفع عند اجتياز بوابتها — مراجعة قانونية.",
+    refund_policy_en="Phased contract; each phase invoiced on gate pass — lawyer-reviewed.",
+    action_modes_used=(
+        "suggest_only",
+        "draft_only",
+        "approval_required",
+        "approved_manual",
+    ),
+    hard_gates=(
+        "no_live_send",
+        "no_live_charge",
+        "no_cold_whatsapp",
+        "no_linkedin_auto",
+        "no_scraping",
+        "no_fake_proof",
+        "no_fake_revenue",
+        "no_blast",
+    ),
+    customer_journey_stage="enterprise",
+)
+
+
+_AI_REVENUE_TRANSFORMATION = ServiceOffering(
+    id="ai_revenue_transformation",
+    name_ar="تحويل الإيرادات بالذكاء الاصطناعي",
+    name_en="AI Revenue Transformation",
+    price_sar=0.0,
+    price_unit="custom",
+    duration_days=60,
+    price_sar_min=35_000.0,
+    price_sar_max=100_000.0,
+    monthly_fee_sar_min=10_000.0,
+    monthly_fee_sar_max=40_000.0,
+    deliverables=(
+        "ICP analysis + lead-machine design",
+        "Lead scoring + enrichment model",
+        "Outbound strategy + Arabic sales messaging",
+        "WhatsApp / Email follow-up workflows (draft-first)",
+        "CRM pipeline build + AI follow-up",
+        "Executive revenue dashboard",
+        "Proof Pack + monthly ROI report",
+    ),
+    kpi_commitment_ar=(
+        "نلتزم ببناء نظام مبيعات يكشف ويؤهل ويتابع الفرص بمؤشرات قابلة للقياس. "
+        "إن لم تتحسن مؤشرات الـ pipeline المتفق عليها، نواصل بدون مقابل."
+    ),
+    kpi_commitment_en=(
+        "We commit to a revenue system that surfaces, qualifies and follows up "
+        "leads with measurable KPIs. If the agreed pipeline KPIs do not improve, "
+        "we keep working at no charge."
+    ),
+    refund_policy_ar="استرداد تناسبي للأشهر غير المستخدمة عند عدم تحقيق التزام KPI.",
+    refund_policy_en="Pro-rata refund of unused months if the KPI commitment is unmet.",
+    action_modes_used=(
+        "suggest_only",
+        "draft_only",
+        "approval_required",
+        "approved_manual",
+    ),
+    hard_gates=(
+        "no_live_send",
+        "no_live_charge",
+        "no_cold_whatsapp",
+        "no_linkedin_auto",
+        "no_scraping",
+        "no_fake_proof",
+        "no_fake_revenue",
+        "no_blast",
+    ),
+    customer_journey_stage="enterprise",
+)
+
+
+_COMPANY_BRAIN_KNOWLEDGE_OS = ServiceOffering(
+    id="company_brain_knowledge_os",
+    name_ar="عقل الشركة ونظام المعرفة",
+    name_en="Company Brain & Knowledge OS",
+    price_sar=0.0,
+    price_unit="custom",
+    duration_days=60,
+    price_sar_min=40_000.0,
+    price_sar_max=150_000.0,
+    monthly_fee_sar_min=8_000.0,
+    monthly_fee_sar_max=35_000.0,
+    deliverables=(
+        "Document ingestion + knowledge base build",
+        "Retrieval with citations + confidence scores",
+        "Role-based access controls",
+        "Internal employee / sales / support assistants",
+        "Board + executive summaries with source tracking",
+        "No-source-no-answer enforcement",
+        "Eval report + usage dashboard",
+    ),
+    kpi_commitment_ar=(
+        "نلتزم بأن كل إجابة تأتي بمصدر ودرجة ثقة وصلاحية وسجل تدقيق، "
+        "ومنع الإجابة عند غياب الدليل. إن لم يتحقق معيار الجودة، نواصل بدون مقابل."
+    ),
+    kpi_commitment_en=(
+        "We commit that every answer carries a source, confidence, permission "
+        "and audit record, and is withheld when no evidence exists. If the "
+        "quality bar is not met, we keep working at no charge."
+    ),
+    refund_policy_ar="استرداد ٧٥٪ إذا لم يتحقق التزام جودة الاسترجاع خلال ٣٠ يومًا.",
+    refund_policy_en="75% refund if the retrieval-quality commitment is unmet within 30 days.",
+    action_modes_used=(
+        "suggest_only",
+        "draft_only",
+        "approval_required",
+    ),
+    hard_gates=(
+        "no_live_send",
+        "no_live_charge",
+        "no_cold_whatsapp",
+        "no_scraping",
+        "no_fake_proof",
+        "no_sourceless_answer",
+    ),
+    customer_journey_stage="enterprise",
+)
+
+
+_AI_GOVERNANCE_TRUST_PROGRAM = ServiceOffering(
+    id="ai_governance_trust_program",
+    name_ar="برنامج حوكمة وثقة الذكاء الاصطناعي",
+    name_en="AI Governance & Trust Program",
+    price_sar=0.0,
+    price_unit="custom",
+    duration_days=45,
+    price_sar_min=50_000.0,
+    price_sar_max=180_000.0,
+    deliverables=(
+        "Company AI policy + AI risk matrix",
+        "Approval classes + data-handling rules",
+        "Employee AI usage rules",
+        "Audit logging + human-approval workflows",
+        "PDPL readiness assessment",
+        "Vendor / model risk review",
+        "Executive governance dashboard",
+    ),
+    kpi_commitment_ar=(
+        "نلتزم بتسليم إطار حوكمة قابل للتدقيق ومتوافق مع نظام حماية البيانات. "
+        "إن لم يجتز مراجعة الجاهزية المتفق عليها، نواصل بدون مقابل."
+    ),
+    kpi_commitment_en=(
+        "We commit to an auditable, PDPL-aligned governance framework. "
+        "If it does not pass the agreed readiness review, we keep working "
+        "at no charge."
+    ),
+    refund_policy_ar="عقد مرحلي بمراجعة جاهزية؛ مراجعة قانونية لشروط الإلغاء.",
+    refund_policy_en="Phased contract with a readiness review; cancellation terms lawyer-reviewed.",
+    action_modes_used=(
+        "suggest_only",
+        "draft_only",
+        "approval_required",
+    ),
+    hard_gates=(
+        "no_live_send",
+        "no_live_charge",
+        "no_cold_whatsapp",
+        "no_scraping",
+        "no_fake_proof",
+    ),
+    customer_journey_stage="enterprise",
+)
+
+
+_EXECUTIVE_INTELLIGENCE_CENTER = ServiceOffering(
+    id="executive_intelligence_center",
+    name_ar="مركز الذكاء والقيادة التنفيذي",
+    name_en="Executive Intelligence & Command Center",
+    price_sar=0.0,
+    price_unit="custom",
+    duration_days=0,  # ongoing, retainer-led
+    price_sar_min=80_000.0,
+    price_sar_max=250_000.0,
+    monthly_fee_sar_min=20_000.0,
+    monthly_fee_sar_max=70_000.0,
+    deliverables=(
+        "Revenue + customer-health + operational-risk signals",
+        "Strategic / partnership / expansion opportunity radar",
+        "AI recommendations + decision memos",
+        "Approval queue",
+        "Weekly executive brief",
+        "Quarterly growth strategy",
+        "Proof Ledger access",
+    ),
+    kpi_commitment_ar=(
+        "نلتزم بتوفير وقت اتخاذ القرار للإدارة عبر مؤشرات وقرارات مرتبطة بالنتائج. "
+        "إن لم يتحقق التزام التوفير المتفق عليه، نواصل بدون مقابل."
+    ),
+    kpi_commitment_en=(
+        "We commit to saving executive decision time via signals and "
+        "outcome-linked decisions. If the agreed time-saving commitment is "
+        "unmet, we keep working at no charge."
+    ),
+    refund_policy_ar="استرداد تناسبي للأشهر غير المستخدمة.",
+    refund_policy_en="Pro-rata refund of unused months.",
+    action_modes_used=(
+        "suggest_only",
+        "draft_only",
+        "approval_required",
+        "approved_manual",
+    ),
+    hard_gates=(
+        "no_live_send",
+        "no_live_charge",
+        "no_cold_whatsapp",
+        "no_linkedin_auto",
+        "no_scraping",
+        "no_fake_proof",
+        "no_fake_revenue",
+        "no_blast",
+    ),
+    customer_journey_stage="enterprise",
+)
+
+
+# Canonical 12-offering registry (order = catalog display order)
 OFFERINGS: tuple[ServiceOffering, ...] = (
     _FREE_DIAGNOSTIC,
     _REVENUE_PROOF_SPRINT,
@@ -339,14 +599,29 @@ OFFERINGS: tuple[ServiceOffering, ...] = (
     _SUPPORT_OS_ADDON,
     _EXECUTIVE_COMMAND_CENTER,
     _AGENCY_PARTNER_OS,
+    _ENTERPRISE_AI_OPERATING_SYSTEM,
+    _AI_REVENUE_TRANSFORMATION,
+    _COMPANY_BRAIN_KNOWLEDGE_OS,
+    _AI_GOVERNANCE_TRUST_PROGRAM,
+    _EXECUTIVE_INTELLIGENCE_CENTER,
 )
 
 SERVICE_IDS: frozenset[str] = frozenset(o.id for o in OFFERINGS)
 
+# Enterprise-tier service ids (customer_journey_stage == "enterprise").
+ENTERPRISE_SERVICE_IDS: frozenset[str] = frozenset(
+    o.id for o in OFFERINGS if o.customer_journey_stage == "enterprise"
+)
+
 
 def list_offerings() -> tuple[ServiceOffering, ...]:
-    """All 7 offerings in catalog display order."""
+    """All 12 offerings in catalog display order."""
     return OFFERINGS
+
+
+def list_enterprise_offerings() -> tuple[ServiceOffering, ...]:
+    """The enterprise-tier offerings only, in catalog display order."""
+    return tuple(o for o in OFFERINGS if o.customer_journey_stage == "enterprise")
 
 
 def get_offering(service_id: str) -> ServiceOffering | None:

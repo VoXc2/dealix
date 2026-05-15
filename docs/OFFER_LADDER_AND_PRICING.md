@@ -143,4 +143,83 @@
 
 ---
 
-*Version 1.0 | No guaranteed claims | Missing data = insufficient_data*
+# الطبقة المؤسسية — Enterprise Tier
+
+> **بوابة الفتح:** لا تُباع الطبقة المؤسسية رسميًا قبل ≥٣ proof packs موثقة من
+> السلم الأدنى **و** اجتياز بوابات `DEALIX_READINESS.md`. حتى ذلك الحين تُسجَّل
+> كـ`Planned` في `dealix/registers/no_overclaim.yaml` وتحت "Do Not Sell Yet".
+> الأسعار نطاقات تقديرية — Estimated value is not Verified value.
+
+تفصيل كل خدمة في `docs/services/<id>/`. القيم التشغيلية في الكود:
+`auto_client_acquisition/service_catalog/registry.py`.
+
+## الخدمة 6: Enterprise AI Operating System
+**نظام التشغيل المؤسسي بالذكاء الاصطناعي**
+
+| العنصر | التفاصيل |
+|--------|----------|
+| **السعر** | إعداد 75,000–250,000 SAR + retainer 15,000–60,000 SAR/شهر |
+| **العميل المستهدف** | شركة متوسطة تريد طبقة AI فوق المبيعات والعمليات والمعرفة والحوكمة |
+| **المخرجات** | عبر برنامج التحول 90 يومًا: AI Opportunity Map، Company Brain، وكلاء مبيعات/دعم/عمليات، Executive Command Center، workflows موافقة، ROI dashboard، Proof Pack شهري |
+| **التسليم** | `docs/27_delivery_playbooks/ENTERPRISE_AI_TRANSFORMATION_DELIVERY_PLAYBOOK.md` |
+| **مسار الترقية** | retainer ممتد + خدمات مخصصة |
+| **وضع الإجراء** | `approval_required` — لا إرسال/تنفيذ تلقائي |
+
+## الخدمة 7: AI Revenue Transformation
+**تحويل الإيرادات بالذكاء الاصطناعي**
+
+| العنصر | التفاصيل |
+|--------|----------|
+| **السعر** | sprint 35,000–100,000 SAR + retainer 10,000–40,000 SAR/شهر |
+| **العميل المستهدف** | شركة B2B تريد نظام مبيعات ذكي يكتشف ويؤهل ويتابع الفرص |
+| **المخرجات** | تحليل ICP، lead machine، scoring + enrichment، رسائل عربية، workflows متابعة (مسودات)، CRM pipeline، executive revenue dashboard، ROI report |
+| **مسار الترقية** | → Managed Revenue Ops أو Enterprise AI OS |
+| **وضع الإجراء** | `approval_required` |
+
+## الخدمة 8: Company Brain & Knowledge OS
+**عقل الشركة ونظام المعرفة**
+
+| العنصر | التفاصيل |
+|--------|----------|
+| **السعر** | إعداد 40,000–150,000 SAR + retainer 8,000–35,000 SAR/شهر |
+| **العميل المستهدف** | شركة عندها مستندات ومعرفة موزعة وتحتاج مساعدًا داخليًا موثوقًا |
+| **المخرجات** | knowledge base، استرجاع بمصادر ودرجة ثقة، صلاحيات، مساعدون داخليون، ملخصات تنفيذية، منع الإجابة بلا دليل، eval report + usage dashboard |
+| **مسار الترقية** | → Enterprise AI OS |
+| **وضع الإجراء** | `approval_required` — `no_sourceless_answer` |
+
+## الخدمة 9: AI Governance & Trust Program
+**برنامج حوكمة وثقة الذكاء الاصطناعي**
+
+| العنصر | التفاصيل |
+|--------|----------|
+| **السعر** | 50,000–180,000 SAR (مشروع مرحلي) |
+| **العميل المستهدف** | شركة تريد استخدام AI بضوابط قابلة للتدقيق ومتوافقة مع PDPL |
+| **المخرجات** | سياسة AI، AI risk matrix، approval classes، قواعد بيانات، قواعد استخدام للموظفين، audit logging، PDPL readiness، vendor/model risk، governance dashboard |
+| **مسار الترقية** | → Enterprise AI OS أو Executive Intelligence Center |
+| **وضع الإجراء** | `approval_required` |
+
+## الخدمة 10: Executive Intelligence & Command Center
+**مركز الذكاء والقيادة التنفيذي**
+
+| العنصر | التفاصيل |
+|--------|----------|
+| **السعر** | إعداد 80,000–250,000 SAR + retainer 20,000–70,000 SAR/شهر |
+| **العميل المستهدف** | مؤسس/C-Suite يريد رادار قرار يربط الإشارات بالنتائج |
+| **المخرجات** | إشارات إيراد/صحة عملاء/مخاطر، رادار فرص استراتيجية وشراكات وتوسع، توصيات AI + decision memos، approval queue، weekly executive brief، استراتيجية ربعية |
+| **مسار الترقية** | → خدمات مخصصة |
+| **وضع الإجراء** | `approval_required` |
+
+## ملخص الطبقة المؤسسية
+
+| الخدمة | الإعداد (SAR) | Retainer (SAR/شهر) | الوضع |
+|--------|---------------|--------------------|-------|
+| Enterprise AI Operating System | 75k–250k | 15k–60k | Planned — Do Not Sell Yet |
+| AI Revenue Transformation | 35k–100k | 10k–40k | Planned — Do Not Sell Yet |
+| Company Brain & Knowledge OS | 40k–150k | 8k–35k | Planned — Do Not Sell Yet |
+| AI Governance & Trust Program | 50k–180k | — | Planned — Do Not Sell Yet |
+| Executive Intelligence & Command Center | 80k–250k | 20k–70k | Planned — Do Not Sell Yet |
+
+---
+
+*Version 1.1 | No guaranteed claims | Missing data = insufficient_data*
+*Estimated value is not Verified value / القيمة التقديرية ليست قيمة مُتحقَّقة*

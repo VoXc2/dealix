@@ -1,6 +1,6 @@
 """Wave 13 Phase 2 — Service Catalog tests.
 
-Asserts the 7-offering registry meets:
+Asserts the 12-offering registry (7-rung ladder + 5 enterprise) meets:
 - Article 4: never includes 'live_send' or 'live_charge' in action_modes_used
 - Article 8: KPI commitment language uses commitment phrasing, never "guaranteed"/"نضمن"
 - Article 11: thin data registry (no business logic in tests)
@@ -52,10 +52,10 @@ list_offerings = _REGISTRY_NS["list_offerings"]
 
 
 # ── Test 1 ────────────────────────────────────────────────────────────
-def test_registry_has_exactly_7_offerings():
-    """Article 11: catalog is the canonical 7 offerings."""
-    assert len(OFFERINGS) == 7, f"expected 7, got {len(OFFERINGS)}"
-    assert len(SERVICE_IDS) == 7, "duplicate service_id in registry"
+def test_registry_has_exactly_12_offerings():
+    """Article 11: catalog is the canonical 7-rung ladder + 5 enterprise."""
+    assert len(OFFERINGS) == 12, f"expected 12, got {len(OFFERINGS)}"
+    assert len(SERVICE_IDS) == 12, "duplicate service_id in registry"
 
 
 # ── Test 2 ────────────────────────────────────────────────────────────

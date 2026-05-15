@@ -54,9 +54,18 @@ python scripts/verify_dealix_ready.py --skip-tests
 
 ## Do Not Sell Yet
 
-1.
-2.
-3.
+### Enterprise Tier — `customer_journey_stage = enterprise`
+
+Status BLOCKED until the gates pass. Readiness scorecards are computed in
+`auto_client_acquisition/enterprise_os/enterprise_readiness.py`; all 5 currently
+fall in the `blocked` band (< 70). Sellable requires band ≥ `sellable` (≥ 85).
+Tracked as `Planned` in `dealix/registers/no_overclaim.yaml`.
+
+1. Enterprise AI Operating System — `docs/services/enterprise_ai_operating_system/`
+2. AI Revenue Transformation — `docs/services/ai_revenue_transformation/`
+3. Company Brain & Knowledge OS — `docs/services/company_brain_knowledge_os/`
+4. AI Governance & Trust Program — `docs/services/ai_governance_trust_program/`
+5. Executive Intelligence & Command Center — `docs/services/executive_intelligence_center/`
 
 ## Critical Gaps
 

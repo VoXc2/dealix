@@ -14,6 +14,7 @@ CustomerJourneyStage = Literal[
     "executive",      # Executive Command Center
     "support_addon",  # Support OS Add-on
     "channel",        # Agency Partner OS
+    "enterprise",     # Enterprise tier (six-figure transformation engagements)
 ]
 
 ActionMode = Literal[
@@ -48,3 +49,10 @@ class ServiceOffering(BaseModel):
     hard_gates: tuple[str, ...] = Field(..., min_length=1)
     customer_journey_stage: CustomerJourneyStage
     is_estimate: bool = True  # Article 8 — every numeric is an estimate
+
+    # Enterprise-tier pricing ranges. Used when price_unit == "custom" and a
+    # single fixed price is not meaningful; the lower ladder leaves them None.
+    price_sar_min: float | None = Field(default=None, ge=0)
+    price_sar_max: float | None = Field(default=None, ge=0)
+    monthly_fee_sar_min: float | None = Field(default=None, ge=0)
+    monthly_fee_sar_max: float | None = Field(default=None, ge=0)

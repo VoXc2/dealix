@@ -185,13 +185,14 @@ claims:
       - api/middleware/http_stack.py::RequestIDMiddleware
 
   - id: canonical_service_catalog
-    claim: "Seven canonical commercial offerings with KPI commitments, hard gates, and action modes in one code registry"
+    claim: "Twelve canonical commercial offerings (7-rung ladder + 5 enterprise) with KPI commitments, hard gates, and action modes in one code registry"
     status: Production
     evidence:
       - auto_client_acquisition/service_catalog/registry.py
       - auto_client_acquisition/service_catalog/schemas.py
       - api/routers/service_catalog.py
       - tests/test_service_catalog.py
+      - tests/test_enterprise_catalog.py
 
   - id: platform_reference_contracts
     claim: "Reference platform contracts for tenant, RLS, storage, and auth (no stack replacement)"
@@ -210,6 +211,67 @@ claims:
     gaps:
       - "OTel SDK not yet wired into agents/pipeline"
       - "gen_ai.* semantic conventions not yet emitted"
+
+  # ───────────── Enterprise tier ─────────────
+  # 5 six-figure offerings defined in the registry and exposed read-only via
+  # /api/v1/enterprise. The OFFERINGS + router + readiness scorecard code is
+  # built and tested; the SERVICES THEMSELVES are not delivered or sellable
+  # until the DEALIX_READINESS gates pass.
+  - id: enterprise_tier_catalog
+    claim: "Enterprise tier (5 offerings + 90-day program) is defined in the catalog and exposed read-only, marked not-sellable until readiness gates pass"
+    status: Pilot
+    evidence:
+      - auto_client_acquisition/service_catalog/registry.py
+      - auto_client_acquisition/enterprise_os/enterprise_program.py
+      - auto_client_acquisition/enterprise_os/enterprise_readiness.py
+      - api/routers/enterprise_programs.py
+      - tests/test_enterprise_catalog.py
+      - tests/test_enterprise_program.py
+      - tests/test_enterprise_readiness.py
+    gaps:
+      - "Definition + readiness scorecard only; no delivery engine for the services"
+      - "All 5 services in 'blocked' readiness band — not sellable"
+
+  - id: enterprise_ai_operating_system
+    claim: "Enterprise AI Operating System — full AI operating layer delivered via a 90-day transformation program"
+    status: Planned
+    evidence:
+      - docs/services/enterprise_ai_operating_system/
+      - docs/27_delivery_playbooks/ENTERPRISE_AI_TRANSFORMATION_DELIVERY_PLAYBOOK.md
+    gaps:
+      - "No delivered engagement; offer + playbook documentation only"
+
+  - id: ai_revenue_transformation
+    claim: "AI Revenue Transformation — lead machine, scoring, follow-up workflows, revenue dashboard"
+    status: Planned
+    evidence:
+      - docs/services/ai_revenue_transformation/
+    gaps:
+      - "No delivered engagement; offer documentation only"
+
+  - id: company_brain_knowledge_os
+    claim: "Company Brain & Knowledge OS — enterprise knowledge base with cited, permissioned retrieval"
+    status: Planned
+    evidence:
+      - docs/services/company_brain_knowledge_os/
+    gaps:
+      - "No delivered engagement; offer documentation only"
+
+  - id: ai_governance_trust_program
+    claim: "AI Governance & Trust Program — policy, risk matrix, approval classes, PDPL readiness"
+    status: Planned
+    evidence:
+      - docs/services/ai_governance_trust_program/
+    gaps:
+      - "No delivered engagement; offer documentation only"
+
+  - id: executive_intelligence_center
+    claim: "Executive Intelligence & Command Center — outcome-linked decision radar for executives"
+    status: Planned
+    evidence:
+      - docs/services/executive_intelligence_center/
+    gaps:
+      - "No delivered engagement; offer documentation only"
 
   # ───────────── Compliance ─────────────
   - id: pdpl_readiness

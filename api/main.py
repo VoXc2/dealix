@@ -59,6 +59,8 @@ from api.routers import customer_success_scores as customer_success_scores_route
 from api.routers import deliverables as deliverables_router
 from api.routers import integration_capability as integration_capability_router
 from api.routers import service_catalog as service_catalog_router
+# Enterprise tier — 5 six-figure offerings + 90-day transformation program
+from api.routers import enterprise_programs as enterprise_programs_router
 # Wave 14 — Canonical Trust MVP + Retainer Engine (Phase 2)
 from api.routers import friction_log as friction_log_router
 from api.routers import value_os as value_os_router
@@ -238,6 +240,8 @@ def create_app() -> FastAPI:
     # ── Wave 13 — Full Ops Productization ─────────────────────────
     # Self-prefix /api/v1/services. Registry-only; no live actions.
     app.include_router(service_catalog_router.router)
+    # Self-prefix /api/v1/enterprise. Enterprise tier; read-only, Planned status.
+    app.include_router(enterprise_programs_router.router)
     # Self-prefix /api/v1/deliverables. State-machine-gated.
     app.include_router(deliverables_router.router)
     # Self-prefix /api/v1/customer-success. 5-score read-only.
