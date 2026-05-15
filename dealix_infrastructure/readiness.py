@@ -186,6 +186,7 @@ class EnterpriseReadinessHarness:
         workflow = self._workflow()
         approval_key = f"{workflow.workflow_id}:approval_gate"
         self.approvals.approve(approval_key)
+        self.approvals.approve(f"{workflow.workflow_id}:draft_message")
 
         payload = {
             "why": "qualify and prepare draft safely",

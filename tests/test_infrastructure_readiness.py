@@ -3,9 +3,10 @@
 from __future__ import annotations
 
 import pytest
+from fastapi import FastAPI
 from starlette.testclient import TestClient
 
-from api.main import app
+from api.routers import infrastructure_readiness
 from dealix_infrastructure import EnterpriseReadinessHarness
 from dealix_infrastructure.runtime import (
     IdentityPrincipal,
@@ -68,6 +69,8 @@ def test_memory_retrieval_is_permission_and_tenant_scoped() -> None:
 
 
 def test_infrastructure_readiness_api_endpoint() -> None:
+    app = FastAPI()
+    app.include_router(infrastructure_readiness.router)
     client = TestClient(app)
     response = client.post("/api/v1/infrastructure/readiness-test")
     assert response.status_code == 200
