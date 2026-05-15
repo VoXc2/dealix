@@ -1,0 +1,3 @@
+{"id":"ar_bilingual_disclaimer_wellformed","kind":"arabic_text","desc":"Value-OS bilingual disclaimer is well-formed Arabic","source":"value_os_disclaimer","expect":{"min_arabic_ratio":0.25,"no_replacement_char":true}}
+{"id":"ar_monthly_report_arabic_safe","kind":"arabic_text","desc":"Monthly report markdown carries clean Arabic disclaimer","source":"monthly_report_markdown","expect":{"min_arabic_ratio":0.0,"no_replacement_char":true,"must_contain":"القيمة التقديرية ليست قيمة مُتحقَّقة"}}
+{"id":"ar_trust_pack_arabic_safe","kind":"arabic_text","desc":"Trust pack markdown renders without mojibake","source":"trust_pack_markdown","expect":{"min_arabic_ratio":0.0,"no_replacement_char":true}}

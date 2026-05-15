@@ -162,7 +162,10 @@ class EmbeddingService:
             )
             sess.add(record)
 
-        logger.info("account_indexed", account_id=account_id, dims=len(vector))
+        logger.info(
+            "account_indexed",
+            extra={"account_id": account_id, "dims": len(vector)},
+        )
         return {"status": "ok", "account_id": account_id, "dims": len(vector)}
 
     async def index_conversation(
@@ -220,7 +223,10 @@ class EmbeddingService:
             )
             sess.add(record)
 
-        logger.info("conversation_indexed", conversation_id=conversation_id, dims=len(vector))
+        logger.info(
+            "conversation_indexed",
+            extra={"conversation_id": conversation_id, "dims": len(vector)},
+        )
         return {"status": "ok", "conversation_id": conversation_id, "dims": len(vector)}
 
     async def search_accounts(
