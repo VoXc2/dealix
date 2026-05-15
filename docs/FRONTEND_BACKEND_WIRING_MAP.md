@@ -74,7 +74,7 @@ verticals.html, blog/* (D6), services/* (D2 — generated)
 
 ## 2. Orphan endpoints (backend without consumer)
 
-488 endpoints declared in `api/routers/*.py` are not referenced from
+597 endpoints declared in `api/routers/*.py` are not referenced from
 any HTML/JS file. The breakdown:
 
 ### Allowlisted (intentionally backend-only)
@@ -202,5 +202,5 @@ CI already executes this check in `.github/workflows/ci.yml`.
 
 ---
 
-**Last updated:** 2026-05-10 (Track B6 of 30-day plan).
+**Last updated:** 2026-05-15 (Track B6 hardening refresh).
 **Owner:** Sami Assiri (founder).
