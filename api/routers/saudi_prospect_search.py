@@ -108,19 +108,40 @@ async def search_prospects(
                 return col
         return None
 
+    # Track which filters were actually enforced vs. dropped because the
+    # current schema has no matching column — the response reports both so
+    # callers never assume an unsupported filter was applied.
+    applied: dict[str, Any] = {}
+    ignored: list[str] = []
+
     async with async_session_factory()() as session:
         stmt = select(CompanyRecord)
         count_stmt = select(func.count()).select_from(CompanyRecord)
 
-        if sector is not None and (col := _col("industry", "sector")) is not None:
-            stmt = stmt.where(col == sector)
-            count_stmt = count_stmt.where(col == sector)
-        if region is not None and (col := _col("region")) is not None:
-            stmt = stmt.where(col == region)
-            count_stmt = count_stmt.where(col == region)
-        if size_band is not None and (col := _col("size_band")) is not None:
-            stmt = stmt.where(col == size_band)
-            count_stmt = count_stmt.where(col == size_band)
+        if sector is not None:
+            col = _col("industry", "sector")
+            if col is not None:
+                stmt = stmt.where(col == sector)
+                count_stmt = count_stmt.where(col == sector)
+                applied["sector"] = sector
+            else:
+                ignored.append("sector")
+        if region is not None:
+            col = _col("region")
+            if col is not None:
+                stmt = stmt.where(col == region)
+                count_stmt = count_stmt.where(col == region)
+                applied["region"] = region
+            else:
+                ignored.append("region")
+        if size_band is not None:
+            col = _col("size_band")
+            if col is not None:
+                stmt = stmt.where(col == size_band)
+                count_stmt = count_stmt.where(col == size_band)
+                applied["size_band"] = size_band
+            else:
+                ignored.append("size_band")
         if q:
             pattern = f"%{q}%"
             text_cols = [
@@ -130,6 +151,9 @@ async def search_prospects(
                 clause = or_(*(c.ilike(pattern) for c in text_cols))
                 stmt = stmt.where(clause)
                 count_stmt = count_stmt.where(clause)
+                applied["q"] = q
+            else:
+                ignored.append("q")
 
         stmt = stmt.order_by(CompanyRecord.name).limit(limit).offset(offset)
         try:
@@ -147,9 +171,8 @@ async def search_prospects(
         "total": total,
         "limit": limit,
         "offset": offset,
-        "filters_applied": {
-            "sector": sector, "region": region, "size_band": size_band, "q": q,
-        },
+        "filters_applied": applied,
+        "filters_ignored": ignored,
         "pdpl_note": (
             "All fields above are public business registry attributes only. "
             "Contact PII (emails, phone numbers) is gated by PDPL Art. 5 consent."

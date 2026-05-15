@@ -355,15 +355,31 @@ async def fetch_report(
                 )
             ).scalar_one_or_none()
     except Exception:  # noqa: BLE001 — DB unreachable / sector_reports not migrated
+        # Distinguish "persistence not configured" (feature deferred, v4 §7)
+        # from "DB configured but the query failed" (a transient outage).
+        # The former is a permanent 404; the latter must surface as 503 so
+        # clients retry and operational alerting fires.
+        if not os.environ.get("DATABASE_URL", "").strip():
+            raise HTTPException(
+                status_code=404,
+                detail={
+                    "error": "report_not_persisted",
+                    "report_id": report_id,
+                    "note": (
+                        "Report persistence is deferred (v4 §7); no DATABASE_URL "
+                        "is configured. Re-fetch once the DB layer + migration "
+                        "008 are live."
+                    ),
+                },
+            )
         raise HTTPException(
-            status_code=404,
+            status_code=503,
             detail={
-                "error": "report_not_persisted",
+                "error": "report_store_unavailable",
                 "report_id": report_id,
                 "note": (
-                    "Report persistence is deferred (v4 §7); the sector_reports "
-                    "store is unavailable in this environment. Re-fetch once the "
-                    "DB layer + migration 008 are live."
+                    "The sector_reports store is configured but unreachable "
+                    "(connection/migration error). This is retriable."
                 ),
             },
         )

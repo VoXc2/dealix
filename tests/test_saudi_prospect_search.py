@@ -85,13 +85,16 @@ async def test_list_sectors_returns_known_set(async_client):
 
 @pytest.mark.asyncio
 async def test_filters_applied_returned_in_response(async_client):
-    """Caller can verify what filters were actually applied."""
+    """Caller can verify which filters were enforced vs ignored — an
+    unsupported filter must never be reported as applied."""
     res = await async_client.get(
         "/api/v1/prospects/search?sector=saas&region=riyadh&size_band=50_250"
     )
-    if res.status_code == 200:
+    if res.status_code == 200 and "filters_applied" in res.json():
         body = res.json()
-        if "filters_applied" in body:
-            assert body["filters_applied"]["sector"] == "saas"
-            assert body["filters_applied"]["region"] == "riyadh"
-            assert body["filters_applied"]["size_band"] == "50_250"
+        applied = body["filters_applied"]
+        ignored = body.get("filters_ignored", [])
+        # Each requested filter is either applied with its value, or
+        # explicitly listed as ignored — never silently echoed.
+        for name, value in (("sector", "saas"), ("region", "riyadh"), ("size_band", "50_250")):
+            assert applied.get(name) == value or name in ignored

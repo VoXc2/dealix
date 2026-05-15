@@ -52,6 +52,29 @@ _HARD_BLOCKED_ACTIONS = frozenset({
     "linkedin_automate",
 })
 
+# Per-action default ``intended_use`` so a caller that omits it is not
+# escalated against the wrong passport-use key (e.g. a scoring workload
+# checked against ``internal_analysis``). Values are from
+# ``source_passport.ALLOWED_USES``.
+_ACTION_DEFAULT_USE: dict[str, str] = {
+    "run_scoring": "scoring",
+    "score_accounts": "scoring",
+    "generate_draft": "draft_only",
+    "export_outreach": "draft_only",
+    "analyze_records": "internal_analysis",
+}
+
+
+def _default_intended_use(action: str) -> str:
+    """Best-fit intended_use for an action when the caller omits it."""
+    if action in _ACTION_DEFAULT_USE:
+        return _ACTION_DEFAULT_USE[action]
+    if action.startswith("score_"):
+        return "scoring"
+    if action.startswith(("draft_", "generate_")):
+        return "draft_only"
+    return "internal_analysis"
+
 
 def _hardest(a: GovernanceDecision, b: GovernanceDecision) -> GovernanceDecision:
     order = {
@@ -123,7 +146,7 @@ def decide(*, action: str, context: dict[str, Any] | None = None) -> DecisionRes
             )
 
     passport = ctx.get("source_passport")
-    intended_use = str(ctx.get("intended_use", "internal_analysis"))
+    intended_use = str(ctx.get("intended_use") or _default_intended_use(action))
     needs_passport_actions = {
         "run_scoring",
         "generate_draft",
