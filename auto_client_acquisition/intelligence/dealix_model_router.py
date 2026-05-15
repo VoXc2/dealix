@@ -17,12 +17,20 @@ caller knows it's a draft awaiting founder.
 """
 from __future__ import annotations
 
+import asyncio
+import concurrent.futures
 from dataclasses import dataclass, field
-from typing import Literal
+from typing import Any, Literal
 
 from auto_client_acquisition.intelligence.confidence import (
     ConfidenceScore,
     from_text_signals,
+)
+from auto_client_acquisition.intelligence.cost_rates import (
+    estimate_call_cost_usd,
+    estimate_cost_usd,
+    estimate_tokens,
+    max_output_tokens,
 )
 from auto_client_acquisition.intelligence.dealix_task_registry import (
     DealixTask,
@@ -33,9 +41,12 @@ from auto_client_acquisition.intelligence.dealix_task_registry import (
 from auto_client_acquisition.intelligence.local_model_client import (
     LocalModelResponse,
     LocalModelUnavailable,
-    generate as local_generate,
     is_local_configured,
 )
+from auto_client_acquisition.intelligence.local_model_client import (
+    generate as local_generate,
+)
+from auto_client_acquisition.llm_gateway_v10.schemas import ModelTier
 
 RouterStatus = Literal[
     "ok_local",                    # local model returned acceptable response
@@ -213,12 +224,11 @@ def route_task(
         fallback_reasons.append("cloud_fallback_disabled_by_caller")
         return _human_handoff(task, req, fallback_reasons)
 
-    # Cloud invocation: defer to existing core/llm/router.py via thin wrapper.
-    # The actual cloud call is intentionally NOT made here in this Wave 12
-    # commit — the router returns a "would call cloud" decision to keep
-    # this module testable without API keys. The follow-up commit wires
-    # core/llm/router.py.
-    cloud_decision = _attempt_cloud_call_stub(task=task, prompt=prompt, req=req)
+    # Step 7b: cloud invocation — wired to core/llm/router.
+    cloud_decision = _attempt_cloud_call(
+        task=task, prompt=prompt, req=req, json_mode=json_mode,
+        language=language, fallback_reasons=fallback_reasons,
+    )
     if cloud_decision is not None:
         return cloud_decision
 
@@ -226,27 +236,113 @@ def route_task(
     return _human_handoff(task, req, fallback_reasons)
 
 
-def _attempt_cloud_call_stub(
-    *, task: DealixTask, prompt: str, req: TaskRequirements,
-) -> RouterDecision | None:
-    """Cloud call stub — returns None when no cloud creds configured.
+# Tier → core routing Task. Heuristic, not a contract: core's TASK_ROUTING
+# then maps the Task to a concrete Provider. Arabic-quality tasks route to
+# Task.ARABIC_TASKS so the core router picks the Arabic-strong provider.
+def _map_tier_to_core_task(req: TaskRequirements, language: str) -> Any:
+    from core.config.models import Task
 
-    Wired to ``core/llm/router.route_llm()`` in a follow-up Wave 12 commit;
-    for now returns None so the router falls through to human_handoff
-    in test environments without API keys.
+    if req.requires_arabic_quality and language in ("ar", "bilingual"):
+        return Task.ARABIC_TASKS
+    if req.tier == ModelTier.cheap_for_classification:
+        return Task.CLASSIFICATION
+    if req.tier == ModelTier.balanced_for_drafts:
+        return Task.PROPOSAL
+    return Task.REASONING  # strong_for_strategy
+
+
+def _run_coro(coro: Any) -> Any:
+    """Run an async coroutine from sync code.
+
+    Safe whether or not an event loop is already running on this thread:
+    when one is (e.g. an async FastAPI handler), the coroutine is executed
+    in a dedicated worker thread with its own loop.
     """
-    import os
-    has_cloud_creds = any(
-        os.environ.get(key) for key in (
-            "ANTHROPIC_API_KEY", "OPENAI_API_KEY",
-            "GEMINI_API_KEY", "GROQ_API_KEY", "DEEPSEEK_API_KEY",
+    try:
+        asyncio.get_running_loop()
+    except RuntimeError:
+        return asyncio.run(coro)
+    with concurrent.futures.ThreadPoolExecutor(max_workers=1) as pool:
+        return pool.submit(asyncio.run, coro).result()
+
+
+def _attempt_cloud_call(
+    *,
+    task: DealixTask,
+    prompt: str,
+    req: TaskRequirements,
+    json_mode: bool,
+    language: str,
+    fallback_reasons: list[str],
+) -> RouterDecision | None:
+    """Invoke the cloud LLM via ``core/llm/router`` with cost + privacy gates.
+
+    Returns:
+      - ``RouterDecision`` with ``status="ok_cloud"`` on success.
+      - ``RouterDecision`` with ``status="blocked_by_cost"`` when the
+        pre-call estimate exceeds the task's cost cap.
+      - ``None`` when the call fails for any reason — the caller then
+        degrades to a human handoff. NEVER fakes a successful response
+        (Article 8).
+    """
+    # Belt-and-suspenders: privacy is already enforced upstream, but a
+    # founder_only task must NEVER reach a cloud provider.
+    assert _privacy_allows_cloud(req.privacy_level), "founder_only task reached cloud path"
+
+    # Cost gate — block before spending if the estimate exceeds the cap.
+    est_cost = estimate_call_cost_usd(req.tier, prompt)
+    if est_cost > req.max_cost_usd_per_call:
+        return RouterDecision(
+            task=task, status="blocked_by_cost",
+            text="",
+            confidence=ConfidenceScore(
+                score=None, level="unknown", reasons=("cost_cap_exceeded",),
+            ),
+            backend_used="none", model_used="none",
+            estimated_cost_usd=est_cost,
+            estimated_input_tokens=estimate_tokens(prompt),
+            estimated_output_tokens=max_output_tokens(req.tier),
+            fallback_reasons=tuple(
+                fallback_reasons
+                + [f"cost_cap: est={est_cost:.5f} cap={req.max_cost_usd_per_call:.5f}"]
+            ),
+            requirements=req,
         )
-    )
-    if not has_cloud_creds:
+
+    try:
+        from core.llm.router import ModelRouter
+
+        core_task = _map_tier_to_core_task(req, language)
+        # A fresh ModelRouter (not the get_router singleton) avoids
+        # asyncio.Lock cross-loop binding when bridged from sync code.
+        router = ModelRouter()
+        resp = _run_coro(
+            router.run(
+                core_task,
+                prompt,
+                max_tokens=max_output_tokens(req.tier),
+                temperature=0.3,
+            )
+        )
+    except Exception as exc:
+        # Store the exception TYPE only — never str(exc) — to avoid
+        # leaking provider error text / secrets / PII into logs.
+        fallback_reasons.append(f"cloud_call_failed: {type(exc).__name__}")
         return None
-    # When wired: invoke core/llm/router.route_llm() with task-appropriate
-    # tier (req.tier) + prompt + language. For now, marker-only.
-    return None
+
+    confidence = from_text_signals(resp.content, expected_json=json_mode)
+    return RouterDecision(
+        task=task, status="ok_cloud",
+        text=resp.content, confidence=confidence,
+        backend_used=f"cloud:{resp.provider}", model_used=resp.model,
+        estimated_cost_usd=estimate_cost_usd(
+            req.tier, resp.input_tokens, resp.output_tokens,
+        ),
+        estimated_input_tokens=resp.input_tokens,
+        estimated_output_tokens=resp.output_tokens,
+        fallback_reasons=tuple(fallback_reasons),
+        requirements=req,
+    )
 
 
 def _human_handoff(
@@ -276,6 +372,7 @@ def status_summary() -> dict[str, object]:
     - cloud creds present?
     """
     import os
+
     from auto_client_acquisition.intelligence.dealix_task_registry import all_tasks
     from auto_client_acquisition.intelligence.local_model_client import (
         _detect_provider,
