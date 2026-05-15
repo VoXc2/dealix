@@ -1,0 +1,143 @@
+# lead_qualification — the first end-to-end governed operational workflow.
+# Declarative declaration. The executable orchestrator lives at
+# auto_client_acquisition/sales_os/lead_qualification/orchestrator.py and
+# drives workflow_os_v10's state machine using the step_id order below.
+name: lead_qualification
+duration_days: 1
+description_ar: "تأهيل عميل محتمل — مسار محكوم من دخول العميل حتى لوحة المؤشرات التنفيذية"
+description_en: "Lead qualification — governed pipeline from lead intake to executive dashboard"
+proof_target: "lead_qualified"
+final_deliverable: "Qualified lead record + governed draft response + eval report + executive dashboard card"
+
+steps:
+  - step_id: lq_lead_intake
+    day: 1
+    title_ar: "استقبال العميل المحتمل"
+    title_en: "Lead enters"
+    owner: system_auto
+    daily_artifact_required: true
+    artifact_kind: "lead_intake_record"
+    risk_level: low
+    next_action_kind: detect_tenant
+
+  - step_id: lq_tenant_detection
+    day: 1
+    title_ar: "تحديد المستأجر"
+    title_en: "Tenant detection"
+    owner: system_auto
+    daily_artifact_required: true
+    artifact_kind: "tenant_context"
+    risk_level: low
+    next_action_kind: check_rbac
+
+  - step_id: lq_rbac_check
+    day: 1
+    title_ar: "فحص صلاحيات الوصول"
+    title_en: "RBAC check"
+    owner: system_auto
+    daily_artifact_required: true
+    artifact_kind: "rbac_decision"
+    risk_level: low
+    next_action_kind: retrieve_knowledge
+
+  - step_id: lq_knowledge_retrieval
+    day: 1
+    title_ar: "استرجاع المعرفة بالمصادر"
+    title_en: "Knowledge retrieval"
+    owner: sales_agent
+    daily_artifact_required: true
+    artifact_kind: "cited_context"
+    risk_level: low
+    next_action_kind: qualify_lead
+
+  - step_id: lq_qualification
+    day: 1
+    title_ar: "تأهيل العميل المحتمل"
+    title_en: "Lead qualification"
+    owner: sales_agent
+    daily_artifact_required: true
+    artifact_kind: "qualification_verdict"
+    risk_level: medium
+    next_action_kind: score_lead
+
+  - step_id: lq_lead_scoring
+    day: 1
+    title_ar: "تسجيل نقاط العميل المحتمل"
+    title_en: "Lead scoring"
+    owner: sales_agent
+    daily_artifact_required: true
+    artifact_kind: "lead_score"
+    risk_level: low
+    next_action_kind: draft_response
+
+  - step_id: lq_draft_response
+    day: 1
+    title_ar: "صياغة رد مسودة"
+    title_en: "Draft response"
+    owner: sales_agent
+    daily_artifact_required: true
+    artifact_kind: "response_draft"
+    risk_level: medium
+    next_action_kind: risk_check
+
+  - step_id: lq_risk_check
+    day: 1
+    title_ar: "فحص المخاطر والحوكمة"
+    title_en: "Risk check"
+    owner: system_auto
+    daily_artifact_required: true
+    artifact_kind: "governance_decision"
+    risk_level: medium
+    next_action_kind: request_approval
+
+  - step_id: lq_approval
+    day: 1
+    title_ar: "موافقة المؤسس"
+    title_en: "Approval"
+    owner: founder
+    daily_artifact_required: true
+    artifact_kind: "approval_request"
+    risk_level: medium
+    next_action_kind: update_crm
+    approval_points:
+      - founder_response_approval
+
+  - step_id: lq_crm_update
+    day: 1
+    title_ar: "تحديث سجل CRM"
+    title_en: "CRM update"
+    owner: system_auto
+    daily_artifact_required: true
+    artifact_kind: "crm_record_update"
+    risk_level: low
+    next_action_kind: emit_metrics
+
+  - step_id: lq_metrics_emission
+    day: 1
+    title_ar: "إصدار المؤشرات"
+    title_en: "Metrics emission"
+    owner: system_auto
+    daily_artifact_required: true
+    artifact_kind: "metrics_snapshot"
+    risk_level: low
+    next_action_kind: build_eval_report
+
+  - step_id: lq_eval_report
+    day: 1
+    title_ar: "تقرير التقييم"
+    title_en: "Eval report"
+    owner: system_auto
+    daily_artifact_required: true
+    artifact_kind: "eval_report"
+    risk_level: low
+    next_action_kind: render_dashboard
+
+  - step_id: lq_executive_dashboard
+    day: 1
+    title_ar: "لوحة المؤشرات التنفيذية"
+    title_en: "Executive dashboard"
+    owner: founder
+    daily_artifact_required: true
+    artifact_kind: "dashboard_card"
+    risk_level: low
+    next_action_kind: workflow_complete

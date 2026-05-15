@@ -1,0 +1,25 @@
+# Eval: Lead Qualification governed workflow
+# Evaluated programmatically by
+# auto_client_acquisition/sales_os/lead_qualification/eval_report.py
+# against a completed (or near-complete) WorkflowRun checkpoint.
+
+eval_id: lead_qualification
+version: 1
+reference_simulation: simulations/lead_qualification/
+
+checks:
+  - id: governance_present
+    question: Does every step output carry a governance_decision?
+    pass: No step result has an empty governance_decision field
+  - id: draft_labeled
+    question: Is the response draft explicitly labeled as a draft?
+    pass: The draft text begins with the draft label, never a sendable message
+  - id: no_forbidden_language
+    question: Is the draft free of forbidden channels, scraping, or guarantee claims?
+    pass: Risk check decision is not BLOCK and no policy issues were raised
+  - id: approval_gated
+    question: Did the response pass through the approval center before any CRM write?
+    pass: An approval request exists with an approval_id
+  - id: score_justified
+    question: Is the qualification verdict backed by documented reasons?
+    pass: The qualification verdict carries at least one grounded reason
