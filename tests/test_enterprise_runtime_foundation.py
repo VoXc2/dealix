@@ -2,8 +2,11 @@ from __future__ import annotations
 
 from pathlib import Path
 
+from fastapi import FastAPI
+from fastapi.testclient import TestClient
 import yaml
 
+from api.routers import enterprise_runtime
 from auto_client_acquisition.enterprise_infrastructure.runtime import run_governed_workflow
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
@@ -89,3 +92,21 @@ def test_unauthorized_tool_is_blocked_by_governance(tmp_path: Path) -> None:
     assert result["run"]["status"] == "failed"
     assert result["run"]["blocked_step_id"] == "dangerous_step"
     assert result["run"]["traces"][0]["decision"] == "block"
+
+
+def test_enterprise_runtime_router_smoke() -> None:
+    app = FastAPI()
+    app.include_router(enterprise_runtime.router)
+    client = TestClient(app)
+
+    response = client.post(
+        "/api/v1/enterprise/runtime/lead-qualification/run",
+        json={
+            "tenant_id": "tenant-epsilon",
+            "actor_role": "sales_manager",
+            "approvals": ["send_whatsapp_outreach"],
+        },
+    )
+    assert response.status_code == 200
+    body = response.json()
+    assert body["run"]["status"] == "completed"
