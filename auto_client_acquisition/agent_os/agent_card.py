@@ -13,10 +13,15 @@ class AgentCard:
     purpose: str
     autonomy_level: int
     status: str
+    tenant_id: str = "default"
+    """Tenant scope for isolation. ``"default"`` in dev/test; production
+    callers pass a real tenant id (no agent without a tenant)."""
 
 
 def agent_card_valid(card: AgentCard) -> bool:
     if not (card.agent_id.strip() and card.name.strip() and card.owner.strip() and card.purpose.strip()):
+        return False
+    if not card.tenant_id.strip():
         return False
     if card.autonomy_level < 0 or card.autonomy_level > 4:
         return False

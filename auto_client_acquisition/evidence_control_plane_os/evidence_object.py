@@ -34,6 +34,12 @@ class EvidenceObject:
     summary: str
     confidence: str
     timestamp_iso: str
+    tenant_id: str = "default"
+    """Tenant scope for isolation. ``"default"`` in dev/test; production
+    callers pass a real tenant id."""
+    run_id: str = ""
+    """Optional workflow-run correlation — ties this evidence into a
+    single run trace in the Control Plane."""
 
 
 def evidence_object_valid(obj: EvidenceObject) -> tuple[bool, tuple[str, ...]]:
@@ -44,6 +50,8 @@ def evidence_object_valid(obj: EvidenceObject) -> tuple[bool, tuple[str, ...]]:
         errors.append("evidence_type_required")
     if not obj.client_id.strip():
         errors.append("client_id_required")
+    if not obj.tenant_id.strip():
+        errors.append("tenant_id_required")
     if not obj.summary.strip():
         errors.append("summary_required")
     if not obj.timestamp_iso.strip():

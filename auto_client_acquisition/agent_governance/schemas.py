@@ -43,6 +43,7 @@ class AgentSpec(BaseModel):
     model_config = ConfigDict(use_enum_values=True, extra="forbid")
 
     agent_id: str
+    tenant_id: str = "default"
     purpose_ar: str
     purpose_en: str
     max_autonomy: AutonomyLevel = AutonomyLevel.L2_APPROVAL_REQUIRED

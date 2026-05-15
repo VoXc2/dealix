@@ -141,20 +141,33 @@ class ApprovalStore:
         with self._lock:
             return self._items.get(approval_id)
 
-    def list_pending(self) -> list[ApprovalRequest]:
+    def list_pending(self, tenant_id: str | None = None) -> list[ApprovalRequest]:
+        """Pending requests, oldest first. Optionally tenant-scoped."""
         with self._lock:
             rows = [
                 r for r in self._items.values()
                 if ApprovalStatus(r.status) == ApprovalStatus.PENDING
+                and (tenant_id is None or r.tenant_id == tenant_id)
             ]
         rows.sort(key=lambda r: r.created_at)
         return rows
 
-    def list_history(self, limit: int = 50) -> list[ApprovalRequest]:
-        """Return most-recent requests in any status, newest first."""
+    def list_history(
+        self,
+        limit: int = 50,
+        tenant_id: str | None = None,
+    ) -> list[ApprovalRequest]:
+        """Return most-recent requests in any status, newest first.
+
+        Optionally tenant-scoped — cross-tenant reads must pass the
+        caller's tenant_id so one tenant never sees another's queue.
+        """
         limit = max(1, min(int(limit), 500))
         with self._lock:
-            rows = list(self._items.values())
+            rows = [
+                r for r in self._items.values()
+                if tenant_id is None or r.tenant_id == tenant_id
+            ]
         rows.sort(key=lambda r: r.updated_at, reverse=True)
         return rows[:limit]
 

@@ -84,6 +84,10 @@ class ApprovalRequest(BaseModel):
     model_config = ConfigDict(use_enum_values=True, extra="forbid")
 
     approval_id: str = Field(default_factory=lambda: f"apr_{uuid4().hex[:12]}")
+    tenant_id: str = "default"
+    """Tenant scope for isolation + RBAC. ``"default"`` in dev/test;
+    production callers pass a real tenant id (Article 8 — no operational
+    control-plane object without a tenant)."""
     object_type: str
     object_id: str
     action_type: str
@@ -125,6 +129,10 @@ class ApprovalRequest(BaseModel):
     """Back-pointer to the radar_events / audit log entry that records
     this approval's lifecycle (matches Engine 12 audit log linkage).
     """
+
+    run_id: str | None = None
+    """Workflow-run correlation — links this approval into a single
+    Control Plane run trace (e.g. a rollback ticket for a run)."""
 
     proof_target: str | None = None
     """The proof event this action should produce on success.
