@@ -32,6 +32,9 @@ else
   echo "ruff not installed — skip"
 fi
 
+echo "== Test collection (must abort on zero collection errors) =="
+python -m pytest --co -q --no-cov >/dev/null
+
 echo "== Targeted tests =="
 python -m pytest -q --no-cov \
   tests/test_governance_runtime_decision.py \
@@ -39,7 +42,21 @@ python -m pytest -q --no-cov \
   tests/test_data_os_router.py \
   tests/test_data_os_quality.py \
   tests/test_data_os_helpers.py \
-  tests/test_data_os_source_passport_bridge.py
+  tests/test_data_os_source_passport_bridge.py \
+  tests/test_agent_os.py \
+  tests/test_secure_agent_runtime.py \
+  tests/test_audit_export.py \
+  tests/test_evidence_control_plane.py \
+  tests/test_benchmark_os.py \
+  tests/test_trust_pack.py \
+  tests/test_qualification.py \
+  tests/test_market_power_os.py \
+  tests/test_operating_empire_os.py \
+  tests/test_adoption_score.py \
+  tests/test_case_study_exporter.py \
+  tests/test_capital_ledger.py \
+  tests/test_delivery_sprint.py \
+  tests/test_proposal_renderer.py
 
 echo ""
 echo "ENTERPRISE CONTROL PLANE: PASS"
