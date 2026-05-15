@@ -66,6 +66,10 @@ ALLOWLIST_PATHS: list[str] = [
     # demo→delivery pipelines, NOT the bare receiving endpoint.
     "api/routers/webhooks.py",
     "api/security/webhook_signatures.py",
+    # Launch-readiness dashboard — read-only. Its _calendly_status() only
+    # reports whether CALENDLY_WEBHOOK_SECRET is set; it implements no
+    # webhook handler and no demo→delivery automation.
+    "api/routers/founder_launch_status.py",
 ]
 
 

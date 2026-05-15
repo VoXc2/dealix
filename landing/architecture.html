@@ -183,8 +183,8 @@
       <tr><th>Endpoint</th><th>Purpose</th><th>Auth</th></tr>
     </thead>
     <tbody>
-      <tr><td><code>GET /healthz</code></td><td>K8s/UptimeRobot liveness</td><td>none</td></tr>
-      <tr><td><code>GET /healthz?deep=1</code></td><td>4-dependency deep check</td><td>none</td></tr>
+      <tr><td><code>GET /health</code></td><td>K8s/UptimeRobot liveness</td><td>none</td></tr>
+      <tr><td><code>GET /health/deep</code></td><td>4-dependency deep check</td><td>none</td></tr>
       <tr><td><code>GET /api/v1/compliance/status</code></td><td>Live PDPL+ZATCA posture</td><td>none</td></tr>
       <tr><td><code>GET /api/v1/pricing/plans</code></td><td>5 customer-facing plans</td><td>none</td></tr>
       <tr><td><code>POST /api/v1/checkout</code></td><td>Moyasar checkout init</td><td>none</td></tr>
@@ -265,7 +265,7 @@
   <div class="card">
     <p><strong>Production:</strong> Railway (Postgres + Redis + Python service) في region me-south-1 (Bahrain GCC).</p>
     <p><strong>Deploy flow:</strong> merge to main → Railway auto-deploys → migrate via Alembic pre-deploy hook
-    → health check on /healthz → traffic shifted. Runbook في
+    → health check on /health → traffic shifted. Runbook في
     <a href="https://github.com/VoXc2/dealix/blob/main/docs/ops/DEPLOY_RUNBOOK.md"><code>DEPLOY_RUNBOOK.md</code></a>.</p>
 
     <p><strong>Rollback:</strong> Railway UI redeploy of last-green takes ~30s. If migration corrupted data:
@@ -318,7 +318,7 @@
 curl https://api.dealix.me/api/v1/compliance/status | jq
 
 # Deep health (DB, Redis, Sentry, LLM providers, 4 DLQs)
-curl https://api.dealix.me/healthz?deep=1 | jq
+curl https://api.dealix.me/health/deep | jq
 
 # Cost-to-serve transparency (margin per tier)
 curl https://api.dealix.me/api/v1/cost-tracking/per-tier | jq
