@@ -45,7 +45,7 @@ class InMemoryValueEngineRepository:
         )
         self._metrics.setdefault((tenant_id, run_id), []).append(metric)
         if control_repo is not None:
-            control_repo._emit(  # noqa: SLF001 - explicit trace side effect
+            control_repo._emit(
                 tenant_id=tenant_id,
                 event_type="value.metric_recorded",
                 actor="value_engine_os",

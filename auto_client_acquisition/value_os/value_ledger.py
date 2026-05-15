@@ -2,10 +2,10 @@
 
 from __future__ import annotations
 
-from dataclasses import asdict, dataclass, field
-from datetime import UTC, datetime, timedelta
 import json
 import os
+from dataclasses import asdict, dataclass, field
+from datetime import UTC, datetime, timedelta
 from pathlib import Path
 from threading import Lock
 from typing import Any
@@ -41,7 +41,7 @@ class ValueEvent:
         return asdict(self)
 
     @classmethod
-    def from_dict(cls, payload: dict[str, Any]) -> "ValueEvent":
+    def from_dict(cls, payload: dict[str, Any]) -> ValueEvent:
         return cls(
             event_id=str(payload.get("event_id", "")),
             customer_id=str(payload.get("customer_id", "")),
@@ -115,9 +115,8 @@ def add_event(
     )
     path = _path()
     _ensure_parent_exists(path)
-    with _LOCK:
-        with path.open("a", encoding="utf-8") as fh:
-            fh.write(json.dumps(event.to_dict(), ensure_ascii=False) + "\n")
+    with _LOCK, path.open("a", encoding="utf-8") as fh:
+        fh.write(json.dumps(event.to_dict(), ensure_ascii=False) + "\n")
     return event
 
 
@@ -134,7 +133,7 @@ def list_events(*, customer_id: str = "", limit: int = 2000) -> list[ValueEvent]
                 continue
             try:
                 event = ValueEvent.from_dict(json.loads(payload))
-            except Exception:  # noqa: BLE001
+            except (TypeError, ValueError, json.JSONDecodeError):
                 continue
             if customer_filter and event.customer_id != customer_filter:
                 continue
@@ -194,7 +193,7 @@ def clear_for_test(customer_id: str | None = None) -> None:
                 continue
             try:
                 event = ValueEvent.from_dict(json.loads(payload))
-            except Exception:  # noqa: BLE001
+            except (TypeError, ValueError, json.JSONDecodeError):
                 continue
             if event.customer_id != target_customer:
                 kept.append(json.dumps(event.to_dict(), ensure_ascii=False))

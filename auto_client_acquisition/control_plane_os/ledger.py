@@ -25,9 +25,8 @@ class JsonlControlLedger:
 
     def append(self, event: ControlEvent) -> ControlEvent:
         self._path.parent.mkdir(parents=True, exist_ok=True)
-        with _LOCK:
-            with self._path.open("a", encoding="utf-8") as fh:
-                fh.write(json.dumps(event.to_dict(), ensure_ascii=False) + "\n")
+        with _LOCK, self._path.open("a", encoding="utf-8") as fh:
+            fh.write(json.dumps(event.to_dict(), ensure_ascii=False) + "\n")
         return event
 
     def list_events(self, *, tenant_id: str, run_id: str = "", limit: int = 500) -> list[ControlEvent]:
@@ -42,7 +41,7 @@ class JsonlControlLedger:
                 try:
                     raw = json.loads(payload)
                     row = ControlEvent(**raw)
-                except Exception:  # noqa: BLE001
+                except (TypeError, ValueError, json.JSONDecodeError):
                     continue
                 if row.tenant_id != tenant_id:
                     continue

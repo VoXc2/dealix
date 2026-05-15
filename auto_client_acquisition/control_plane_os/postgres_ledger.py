@@ -11,7 +11,7 @@ from auto_client_acquisition.control_plane_os.schemas import ControlEvent
 
 try:  # pragma: no cover - import guard for lightweight environments
     from sqlalchemy import create_engine, text
-except Exception:  # noqa: BLE001
+except Exception:
     create_engine = None
     text = None
 
@@ -68,21 +68,30 @@ class PostgresControlLedger:
         if not self._enabled:
             return self._fallback.list_events(tenant_id=tenant_id, run_id=run_id, limit=limit)
         assert text is not None
-        clauses = ["tenant_id = :tenant_id"]
         params: dict[str, Any] = {"tenant_id": tenant_id, "limit": limit}
         if run_id:
-            clauses.append("run_id = :run_id")
             params["run_id"] = run_id
-        sql = text(
-            f"""
-            SELECT id, tenant_id, event_type, source_module, actor, subject_type, subject_id,
-                   run_id, correlation_id, decision, occurred_at, payload, redacted
-            FROM control_events
-            WHERE {" AND ".join(clauses)}
-            ORDER BY occurred_at ASC
-            LIMIT :limit
-            """
-        )
+            sql = text(
+                """
+                SELECT id, tenant_id, event_type, source_module, actor, subject_type, subject_id,
+                       run_id, correlation_id, decision, occurred_at, payload, redacted
+                FROM control_events
+                WHERE tenant_id = :tenant_id AND run_id = :run_id
+                ORDER BY occurred_at ASC
+                LIMIT :limit
+                """
+            )
+        else:
+            sql = text(
+                """
+                SELECT id, tenant_id, event_type, source_module, actor, subject_type, subject_id,
+                       run_id, correlation_id, decision, occurred_at, payload, redacted
+                FROM control_events
+                WHERE tenant_id = :tenant_id
+                ORDER BY occurred_at ASC
+                LIMIT :limit
+                """
+            )
         with self._engine.begin() as conn:
             rows = conn.execute(sql, params).mappings().all()
         out: list[ControlEvent] = []

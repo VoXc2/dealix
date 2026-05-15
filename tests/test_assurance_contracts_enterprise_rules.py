@@ -2,7 +2,9 @@
 
 from __future__ import annotations
 
-from auto_client_acquisition.assurance_contract_os.repositories import InMemoryAssuranceContractRepository
+from auto_client_acquisition.assurance_contract_os.repositories import (
+    InMemoryAssuranceContractRepository,
+)
 from auto_client_acquisition.assurance_contract_os.schemas import AssuranceContract
 
 

@@ -7,7 +7,11 @@ from datetime import UTC, datetime
 from uuid import uuid4
 
 from auto_client_acquisition.control_plane_os.ledger import JsonlControlLedger
-from auto_client_acquisition.control_plane_os.schemas import ApprovalTicket, ControlEvent, WorkflowRun
+from auto_client_acquisition.control_plane_os.schemas import (
+    ApprovalTicket,
+    ControlEvent,
+    WorkflowRun,
+)
 
 
 class InMemoryControlPlaneRepository:

@@ -4,7 +4,9 @@ from __future__ import annotations
 
 from auto_client_acquisition.agent_mesh_os.repositories import InMemoryAgentMeshRepository
 from auto_client_acquisition.agent_mesh_os.schemas import AgentDescriptor
-from auto_client_acquisition.assurance_contract_os.repositories import InMemoryAssuranceContractRepository
+from auto_client_acquisition.assurance_contract_os.repositories import (
+    InMemoryAssuranceContractRepository,
+)
 from auto_client_acquisition.assurance_contract_os.schemas import AssuranceContract
 from auto_client_acquisition.control_plane_os.repositories import InMemoryControlPlaneRepository
 from auto_client_acquisition.governance_os.runtime_decision import decide
