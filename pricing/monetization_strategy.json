@@ -1,0 +1,47 @@
+{
+  "schema_version": "1.0",
+  "scorecard": {
+    "weights": {
+      "budget_fit": 0.2,
+      "urgency": 0.15,
+      "data_readiness": 0.15,
+      "governance_readiness": 0.2,
+      "roi_strength": 0.2,
+      "strategic_fit": 0.1
+    },
+    "thresholds": {
+      "go": 75,
+      "go_with_conditions": 60
+    }
+  },
+  "priority_service_families": [
+    "TRUST_LAYER",
+    "CUSTOMER_PORTAL",
+    "ACTION_APPROVAL_ENGINE",
+    "MARKET_RADAR",
+    "LEAD_INTELLIGENCE",
+    "OBSERVABILITY",
+    "SECURITY",
+    "PROOF_ENGINE"
+  ],
+  "renewal": {
+    "window_days_default": 90,
+    "health_thresholds": {
+      "low_risk": 80,
+      "medium_risk": 60
+    },
+    "payment_delay_threshold_days": 30,
+    "sla_compliance_threshold": 0.9
+  },
+  "expansion": {
+    "minimum_proof_events": 3,
+    "minimum_expansion_readiness": 70,
+    "usage_growth_threshold": 0.2,
+    "adjacency_matrix": {
+      "CUSTOMER_PORTAL_GOLD": ["OBSERVABILITY_GOLD", "SECURITY_SILVER", "PROOF_ENGINE_GOLD"],
+      "SECURITY_GOLD": ["TRUST_LAYER_GOLD", "OBSERVABILITY_GOLD"],
+      "OBSERVABILITY_GOLD": ["SECURITY_GOLD", "ACTION_APPROVAL_ENGINE_GOLD"],
+      "ACTION_APPROVAL_ENGINE_GOLD": ["DELIVERY_OS_GOLD", "TRUST_LAYER_GOLD"]
+    }
+  }
+}

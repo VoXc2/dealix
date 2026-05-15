@@ -1,0 +1,166 @@
+{
+  "schema_version": "1.0",
+  "thesis": "Sell governed business outcomes, not generic AI features.",
+  "daily_execution_blocks": {
+    "morning": [
+      "Review top 20 accounts and classify urgency.",
+      "Run proposal-scorecard for top opportunities.",
+      "Select top 3 deals for executive follow-up."
+    ],
+    "midday": [
+      "Generate enterprise-playbook bundle for active proposals.",
+      "Send draft offers with KPI + governance contracts.",
+      "Collect decision-owner feedback and blockers."
+    ],
+    "evening": [
+      "Update expansion and renewal queue.",
+      "Log proof events and customer readiness deltas.",
+      "Prepare next-day founder decision brief."
+    ]
+  },
+  "segment_priorities": {
+    "smb": [
+      "AI_CUSTOMER_OPERATIONS_PLATFORM",
+      "AI_WORKFLOW_AUTOMATION_FACTORY",
+      "AI_REVENUE_COMMAND_CENTER"
+    ],
+    "mid_market": [
+      "AI_REVENUE_COMMAND_CENTER",
+      "AI_GOVERNANCE_OS",
+      "AI_OBSERVABILITY_PLATFORM",
+      "AI_CUSTOMER_OPERATIONS_PLATFORM"
+    ],
+    "enterprise": [
+      "AI_GOVERNANCE_OS",
+      "AI_RUNTIME_MANAGEMENT",
+      "AI_OBSERVABILITY_PLATFORM",
+      "EXECUTIVE_AI_INTELLIGENCE_SYSTEM",
+      "PDPL_AI_COMPLIANCE_PLATFORM"
+    ]
+  },
+  "target_plays": [
+    {
+      "play_id": "healthcare_ops_cost",
+      "segments": ["mid_market", "enterprise"],
+      "industry": "healthcare",
+      "buyer": "COO",
+      "pain": "high support workload and delayed response",
+      "primary_service": "AI_CUSTOMER_OPERATIONS_PLATFORM",
+      "supporting_services": ["AI_OBSERVABILITY_PLATFORM"],
+      "sku_offer": "CUSTOMER_PORTAL_GOLD",
+      "kpi_promise": [
+        "ticket_deflection_rate >= 25% in 60 days",
+        "first_response_time <= 30 minutes",
+        "csat_delta >= +0.5"
+      ],
+      "proof_target": "response_time_before_after_report",
+      "signature_trigger": "after L3 proof review and COO approval"
+    },
+    {
+      "play_id": "banking_governance_risk",
+      "segments": ["enterprise"],
+      "industry": "banking",
+      "buyer": "CISO",
+      "pain": "AI policy and audit exposure",
+      "primary_service": "AI_GOVERNANCE_OS",
+      "supporting_services": ["PDPL_AI_COMPLIANCE_PLATFORM", "AI_EVIDENCE_AUDIT_INFRA"],
+      "sku_offer": "SECURITY_GOLD",
+      "kpi_promise": [
+        "policy_violation_rate <= 0.5%",
+        "approval_trace_coverage = 100%",
+        "critical_audit_gap_count = 0"
+      ],
+      "proof_target": "policy_trace_audit_pack",
+      "signature_trigger": "after compliance board sign-off"
+    },
+    {
+      "play_id": "logistics_incident_visibility",
+      "segments": ["mid_market", "enterprise"],
+      "industry": "logistics",
+      "buyer": "CIO",
+      "pain": "downtime blind spots and incident cost",
+      "primary_service": "AI_OBSERVABILITY_PLATFORM",
+      "supporting_services": ["AI_RUNTIME_MANAGEMENT"],
+      "sku_offer": "OBSERVABILITY_GOLD",
+      "kpi_promise": [
+        "incident_mttr -30%",
+        "trace_coverage >= 95%",
+        "hallucination_rate < 1%"
+      ],
+      "proof_target": "incident_economics_dashboard",
+      "signature_trigger": "after 2-week shadow mode report"
+    },
+    {
+      "play_id": "retail_revenue_command",
+      "segments": ["smb", "mid_market"],
+      "industry": "retail",
+      "buyer": "CEO",
+      "pain": "pipeline instability and weak forecast confidence",
+      "primary_service": "AI_REVENUE_COMMAND_CENTER",
+      "supporting_services": ["AI_WORKFLOW_AUTOMATION_FACTORY"],
+      "sku_offer": "MARKET_RADAR_GOLD",
+      "kpi_promise": [
+        "pipeline_velocity +20%",
+        "forecast_accuracy >= 90%",
+        "expansion_revenue_growth >= 15%"
+      ],
+      "proof_target": "forecast_accuracy_and_pipeline_report",
+      "signature_trigger": "after executive workshop + ROI baseline"
+    },
+    {
+      "play_id": "government_sovereign_readiness",
+      "segments": ["enterprise"],
+      "industry": "government",
+      "buyer": "Enterprise Architecture Director",
+      "pain": "residency and controlled AI runtime requirements",
+      "primary_service": "SOVEREIGN_AI_INFRASTRUCTURE",
+      "supporting_services": ["AI_RUNTIME_MANAGEMENT", "AI_GOVERNANCE_OS"],
+      "sku_offer": "TRUST_LAYER_GOLD",
+      "kpi_promise": [
+        "data_residency_compliance = 100%",
+        "private_inference_availability >= 99.9%",
+        "critical_security_gap_count = 0"
+      ],
+      "proof_target": "sovereign_runtime_validation_pack",
+      "signature_trigger": "after security and legal dual approval"
+    }
+  ],
+  "signature_policy": {
+    "stages": [
+      "diagnostic_complete",
+      "proposal_sent",
+      "risk_review_passed",
+      "executive_alignment",
+      "contract_ready"
+    ],
+    "ask_signature_when": [
+      "stage in [executive_alignment, contract_ready]",
+      "buyer_commitment >= medium",
+      "proof_level >= L3",
+      "risk_status != high",
+      "governance_contract_accepted = true"
+    ],
+    "do_not_ask_if": [
+      "proof_level <= L1",
+      "decision_owner missing",
+      "unresolved critical compliance blocker"
+    ],
+    "if_not_signed_within_days": {
+      "3": "send executive recap with quantified KPI impact",
+      "7": "run objection-handling call with decision owner",
+      "14": "offer phased pilot scope with strict success criteria"
+    }
+  },
+  "weekly_exec_review": [
+    "Top 10 opportunities by scorecard and margin quality.",
+    "Signature pipeline with blocker owners.",
+    "Delivery risk map for active pilots.",
+    "Expansion opportunities from new proof events."
+  ],
+  "monthly_board_pack": [
+    "ARR and conversion trend.",
+    "Gross margin and delivery utilization.",
+    "Governance compliance score and incident trend.",
+    "Top 3 strategic expansion bets by evidence quality."
+  ]
+}

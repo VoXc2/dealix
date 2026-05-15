@@ -1,0 +1,10 @@
+{
+  "schema_version": "1.0",
+  "minimum_gross_margin_target": 0.6,
+  "warning_margin_target": 0.63,
+  "hard_block_margin_target": 0.55,
+  "notes": [
+    "Any quote below hard_block_margin_target is non-sellable.",
+    "Any quote between hard_block and warning requires founder review."
+  ]
+}

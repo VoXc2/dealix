@@ -1,0 +1,8 @@
+{
+  "policy_version": "1.0",
+  "severities": {
+    "sev1": {"response_minutes": 15, "owner": "executive_owner", "notify": ["security_owner", "delivery_owner"]},
+    "sev2": {"response_minutes": 30, "owner": "service_owner", "notify": ["delivery_owner"]},
+    "sev3": {"response_minutes": 120, "owner": "service_owner", "notify": ["operations_owner"]}
+  }
+}

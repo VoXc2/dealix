@@ -1,0 +1,13 @@
+{
+  "weights": {
+    "data_sensitivity": 0.35,
+    "external_action": 0.35,
+    "approval_missing": 0.2,
+    "policy_conflict": 0.1
+  },
+  "thresholds": {
+    "low": 0.3,
+    "medium": 0.6,
+    "high": 0.8
+  }
+}

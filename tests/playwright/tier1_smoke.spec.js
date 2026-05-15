@@ -12,6 +12,45 @@ function isMobile(testInfo) {
   return testInfo.project.name === "iphone-se-320";
 }
 
+async function getHorizontalOverflowReport(page) {
+  return page.evaluate(() => {
+    const viewportWidth = document.documentElement.clientWidth;
+    const scrollWidth = document.documentElement.scrollWidth;
+    const offenders = [];
+
+    for (const el of document.querySelectorAll("*")) {
+      const rect = el.getBoundingClientRect();
+      if (!rect.width && !rect.height) continue;
+
+      const overflowLeft = Math.max(0, -rect.left);
+      const overflowRight = Math.max(0, rect.right - viewportWidth);
+      const overflow = Math.max(overflowLeft, overflowRight);
+      if (overflow <= 20) continue;
+
+      offenders.push({
+        selector:
+          el.id
+            ? `#${el.id}`
+            : el.className
+              ? `.${String(el.className).trim().replace(/\s+/g, ".")}`
+              : el.tagName.toLowerCase(),
+        left: Math.round(rect.left),
+        right: Math.round(rect.right),
+        width: Math.round(rect.width),
+      });
+    }
+
+    offenders.sort((a, b) => (Math.max(b.right - viewportWidth, -b.left) - Math.max(a.right - viewportWidth, -a.left)));
+
+    return {
+      viewportWidth,
+      scrollWidth,
+      overflow: scrollWidth - viewportWidth,
+      topOffenders: offenders.slice(0, 5),
+    };
+  });
+}
+
 // ─── Homepage ────────────────────────────────────────────────────────
 
 test.describe("Homepage Tier-1 hero", () => {
@@ -42,11 +81,13 @@ test.describe("Homepage Tier-1 hero", () => {
   test("no horizontal scroll (desktop + tablet)", async ({ page }, testInfo) => {
     test.skip(isMobile(testInfo), "WADL mock currently 360px wide; sub-360 follow-up");
     await page.goto("/");
-    const scrollWidth = await page.evaluate(() => document.documentElement.scrollWidth);
-    const clientWidth = await page.evaluate(() => document.documentElement.clientWidth);
+    const report = await getHorizontalOverflowReport(page);
     // Allow up to 32px overage (e.g. wide tables, sectors tabs) during ramp-up.
     // Will tighten back to <= 4 once all sections are fully responsive.
-    expect(scrollWidth - clientWidth).toBeLessThanOrEqual(32);
+    expect(
+      report.overflow,
+      `overflow=${report.overflow}px offenders=${JSON.stringify(report.topOffenders)}`
+    ).toBeLessThanOrEqual(32);
   });
 
   test("nav has at most 7 primary links + mega-menu present (desktop)", async ({ page }, testInfo) => {

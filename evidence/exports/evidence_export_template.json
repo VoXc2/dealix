@@ -1,0 +1,10 @@
+{
+  "export_type": "board_report",
+  "includes": [
+    "approval_chain",
+    "policy_trace",
+    "kpi_baseline",
+    "rollback_snapshot",
+    "evidence_hash"
+  ]
+}

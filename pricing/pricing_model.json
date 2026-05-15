@@ -1,0 +1,150 @@
+{
+  "schema_version": "1.0",
+  "currency": "SAR",
+  "service_matrix": {
+    "MARKET_RADAR": {
+      "requires": ["SECTOR_INPUTS", "DECISION_OWNER"],
+      "not_sellable_if": ["NO_DATA_OWNER", "NO_EXECUTION_TEAM"],
+      "tiers": {
+        "bronze": {"setup_fee_sar": 12000, "monthly_retainer_sar": 7000, "gross_margin_target": 0.62, "delivery_hours_estimate": 45, "minimum_contract_months": 3, "discount_floor": 0.1},
+        "silver": {"setup_fee_sar": 20000, "monthly_retainer_sar": 12000, "gross_margin_target": 0.64, "delivery_hours_estimate": 72, "minimum_contract_months": 6, "discount_floor": 0.12},
+        "gold": {"setup_fee_sar": 32000, "monthly_retainer_sar": 18000, "gross_margin_target": 0.66, "delivery_hours_estimate": 110, "minimum_contract_months": 6, "discount_floor": 0.15}
+      }
+    },
+    "LEAD_INTELLIGENCE": {
+      "requires": ["LEAD_DATA_ACCESS", "CRM_ACCESS"],
+      "not_sellable_if": ["NO_DATA_OWNER", "NO_SECURITY_APPROVAL"],
+      "tiers": {
+        "bronze": {"setup_fee_sar": 15000, "monthly_retainer_sar": 9000, "gross_margin_target": 0.63, "delivery_hours_estimate": 55, "minimum_contract_months": 3, "discount_floor": 0.1},
+        "silver": {"setup_fee_sar": 24000, "monthly_retainer_sar": 15000, "gross_margin_target": 0.65, "delivery_hours_estimate": 84, "minimum_contract_months": 6, "discount_floor": 0.12},
+        "gold": {"setup_fee_sar": 38000, "monthly_retainer_sar": 22000, "gross_margin_target": 0.67, "delivery_hours_estimate": 130, "minimum_contract_months": 6, "discount_floor": 0.15}
+      }
+    },
+    "COMPANY_BRAIN": {
+      "requires": ["KNOWLEDGE_ARTIFACTS", "BRAND_GUIDELINES"],
+      "not_sellable_if": ["NO_DECISION_OWNER", "NO_GOVERNANCE_OWNER"],
+      "tiers": {
+        "bronze": {"setup_fee_sar": 13000, "monthly_retainer_sar": 8000, "gross_margin_target": 0.62, "delivery_hours_estimate": 50, "minimum_contract_months": 3, "discount_floor": 0.1},
+        "silver": {"setup_fee_sar": 22000, "monthly_retainer_sar": 14000, "gross_margin_target": 0.64, "delivery_hours_estimate": 78, "minimum_contract_months": 6, "discount_floor": 0.12},
+        "gold": {"setup_fee_sar": 36000, "monthly_retainer_sar": 21000, "gross_margin_target": 0.66, "delivery_hours_estimate": 122, "minimum_contract_months": 6, "discount_floor": 0.15}
+      }
+    },
+    "DECISION_PASSPORT": {
+      "requires": ["EXECUTIVE_SPONSOR", "APPROVAL_PROCESS"],
+      "not_sellable_if": ["NO_DECISION_OWNER", "NO_ACCEPTANCE_SIGNER"],
+      "tiers": {
+        "bronze": {"setup_fee_sar": 10000, "monthly_retainer_sar": 6500, "gross_margin_target": 0.63, "delivery_hours_estimate": 40, "minimum_contract_months": 3, "discount_floor": 0.1},
+        "silver": {"setup_fee_sar": 18000, "monthly_retainer_sar": 11000, "gross_margin_target": 0.65, "delivery_hours_estimate": 66, "minimum_contract_months": 6, "discount_floor": 0.12},
+        "gold": {"setup_fee_sar": 30000, "monthly_retainer_sar": 17000, "gross_margin_target": 0.67, "delivery_hours_estimate": 100, "minimum_contract_months": 6, "discount_floor": 0.15}
+      }
+    },
+    "WHATSAPP_DECISION_LAYER": {
+      "requires": ["WHATSAPP_BUSINESS_ACCESS", "APPROVAL_OWNER"],
+      "not_sellable_if": ["NO_WHATSAPP_POLICY", "NO_SECURITY_APPROVAL"],
+      "tiers": {
+        "bronze": {"setup_fee_sar": 14000, "monthly_retainer_sar": 8500, "gross_margin_target": 0.62, "delivery_hours_estimate": 52, "minimum_contract_months": 3, "discount_floor": 0.1},
+        "silver": {"setup_fee_sar": 24000, "monthly_retainer_sar": 14500, "gross_margin_target": 0.64, "delivery_hours_estimate": 80, "minimum_contract_months": 6, "discount_floor": 0.12},
+        "gold": {"setup_fee_sar": 39000, "monthly_retainer_sar": 23000, "gross_margin_target": 0.66, "delivery_hours_estimate": 128, "minimum_contract_months": 6, "discount_floor": 0.15}
+      }
+    },
+    "ACTION_APPROVAL_ENGINE": {
+      "requires": ["WORKFLOW_OWNER", "AUDIT_REQUIREMENTS"],
+      "not_sellable_if": ["NO_POLICY_OWNER", "NO_APPROVAL_WORKFLOW"],
+      "tiers": {
+        "bronze": {"setup_fee_sar": 17000, "monthly_retainer_sar": 10000, "gross_margin_target": 0.63, "delivery_hours_estimate": 58, "minimum_contract_months": 3, "discount_floor": 0.1},
+        "silver": {"setup_fee_sar": 28000, "monthly_retainer_sar": 16500, "gross_margin_target": 0.65, "delivery_hours_estimate": 92, "minimum_contract_months": 6, "discount_floor": 0.12},
+        "gold": {"setup_fee_sar": 45000, "monthly_retainer_sar": 25000, "gross_margin_target": 0.67, "delivery_hours_estimate": 142, "minimum_contract_months": 6, "discount_floor": 0.15}
+      }
+    },
+    "DELIVERY_OS": {
+      "requires": ["DELIVERY_OWNER", "PROJECT_TOOL_ACCESS"],
+      "not_sellable_if": ["NO_ACCEPTANCE_SIGNER", "NO_IMPLEMENTATION_TEAM"],
+      "tiers": {
+        "bronze": {"setup_fee_sar": 16000, "monthly_retainer_sar": 9800, "gross_margin_target": 0.62, "delivery_hours_estimate": 54, "minimum_contract_months": 3, "discount_floor": 0.1},
+        "silver": {"setup_fee_sar": 27000, "monthly_retainer_sar": 16000, "gross_margin_target": 0.64, "delivery_hours_estimate": 88, "minimum_contract_months": 6, "discount_floor": 0.12},
+        "gold": {"setup_fee_sar": 43000, "monthly_retainer_sar": 24500, "gross_margin_target": 0.66, "delivery_hours_estimate": 138, "minimum_contract_months": 6, "discount_floor": 0.15}
+      }
+    },
+    "CUSTOMER_PORTAL": {
+      "requires": ["CRM_ACCESS", "DATA_PROCESSING_APPROVAL"],
+      "not_sellable_if": ["NO_DATA_OWNER", "NO_SECURITY_APPROVAL"],
+      "tiers": {
+        "bronze": {"setup_fee_sar": 24000, "monthly_retainer_sar": 12000, "gross_margin_target": 0.63, "delivery_hours_estimate": 65, "minimum_contract_months": 4, "discount_floor": 0.1},
+        "silver": {"setup_fee_sar": 33000, "monthly_retainer_sar": 15000, "gross_margin_target": 0.65, "delivery_hours_estimate": 80, "minimum_contract_months": 6, "discount_floor": 0.12},
+        "gold": {"setup_fee_sar": 45000, "monthly_retainer_sar": 18000, "gross_margin_target": 0.65, "delivery_hours_estimate": 90, "minimum_contract_months": 6, "discount_floor": 0.15}
+      }
+    },
+    "SUPPORT_OS": {
+      "requires": ["SUPPORT_TICKET_ACCESS", "SLA_OWNER"],
+      "not_sellable_if": ["NO_SUPPORT_OWNER", "NO_DATA_POLICY"],
+      "tiers": {
+        "bronze": {"setup_fee_sar": 14000, "monthly_retainer_sar": 9000, "gross_margin_target": 0.62, "delivery_hours_estimate": 48, "minimum_contract_months": 3, "discount_floor": 0.1},
+        "silver": {"setup_fee_sar": 24000, "monthly_retainer_sar": 14500, "gross_margin_target": 0.64, "delivery_hours_estimate": 78, "minimum_contract_months": 6, "discount_floor": 0.12},
+        "gold": {"setup_fee_sar": 37000, "monthly_retainer_sar": 22000, "gross_margin_target": 0.66, "delivery_hours_estimate": 118, "minimum_contract_months": 6, "discount_floor": 0.15}
+      }
+    },
+    "PAYMENT_TRUTH": {
+      "requires": ["BILLING_DATA_ACCESS", "FINANCE_OWNER"],
+      "not_sellable_if": ["NO_FINANCE_OWNER", "NO_SECURITY_APPROVAL"],
+      "tiers": {
+        "bronze": {"setup_fee_sar": 16000, "monthly_retainer_sar": 9800, "gross_margin_target": 0.63, "delivery_hours_estimate": 52, "minimum_contract_months": 3, "discount_floor": 0.1},
+        "silver": {"setup_fee_sar": 26000, "monthly_retainer_sar": 15800, "gross_margin_target": 0.65, "delivery_hours_estimate": 84, "minimum_contract_months": 6, "discount_floor": 0.12},
+        "gold": {"setup_fee_sar": 41000, "monthly_retainer_sar": 24000, "gross_margin_target": 0.67, "delivery_hours_estimate": 130, "minimum_contract_months": 6, "discount_floor": 0.15}
+      }
+    },
+    "PROOF_ENGINE": {
+      "requires": ["EVIDENCE_SOURCE_ACCESS", "PROOF_OWNER"],
+      "not_sellable_if": ["NO_CONSENT_LEDGER", "NO_METRIC_BASELINE"],
+      "tiers": {
+        "bronze": {"setup_fee_sar": 15000, "monthly_retainer_sar": 9200, "gross_margin_target": 0.63, "delivery_hours_estimate": 50, "minimum_contract_months": 3, "discount_floor": 0.1},
+        "silver": {"setup_fee_sar": 25000, "monthly_retainer_sar": 15000, "gross_margin_target": 0.65, "delivery_hours_estimate": 82, "minimum_contract_months": 6, "discount_floor": 0.12},
+        "gold": {"setup_fee_sar": 39000, "monthly_retainer_sar": 22800, "gross_margin_target": 0.67, "delivery_hours_estimate": 126, "minimum_contract_months": 6, "discount_floor": 0.15}
+      }
+    },
+    "EXPANSION_ENGINE": {
+      "requires": ["PROOF_EVENTS", "ACCOUNT_STRATEGY_OWNER"],
+      "not_sellable_if": ["NO_PROOF_HISTORY", "NO_PAYMENT_HISTORY"],
+      "tiers": {
+        "bronze": {"setup_fee_sar": 13000, "monthly_retainer_sar": 8500, "gross_margin_target": 0.64, "delivery_hours_estimate": 46, "minimum_contract_months": 3, "discount_floor": 0.1},
+        "silver": {"setup_fee_sar": 22000, "monthly_retainer_sar": 13600, "gross_margin_target": 0.66, "delivery_hours_estimate": 74, "minimum_contract_months": 6, "discount_floor": 0.12},
+        "gold": {"setup_fee_sar": 35000, "monthly_retainer_sar": 20500, "gross_margin_target": 0.68, "delivery_hours_estimate": 114, "minimum_contract_months": 6, "discount_floor": 0.15}
+      }
+    },
+    "LEARNING_FLYWHEEL": {
+      "requires": ["WEEKLY_REPORTING_DISCIPLINE", "ANALYTICS_ACCESS"],
+      "not_sellable_if": ["NO_MEASUREMENT_OWNER", "NO_DATA_PIPELINE"],
+      "tiers": {
+        "bronze": {"setup_fee_sar": 12000, "monthly_retainer_sar": 7600, "gross_margin_target": 0.64, "delivery_hours_estimate": 44, "minimum_contract_months": 3, "discount_floor": 0.1},
+        "silver": {"setup_fee_sar": 20000, "monthly_retainer_sar": 12200, "gross_margin_target": 0.66, "delivery_hours_estimate": 70, "minimum_contract_months": 6, "discount_floor": 0.12},
+        "gold": {"setup_fee_sar": 32000, "monthly_retainer_sar": 19000, "gross_margin_target": 0.68, "delivery_hours_estimate": 108, "minimum_contract_months": 6, "discount_floor": 0.15}
+      }
+    },
+    "TRUST_LAYER": {
+      "requires": ["LEGAL_CONTACT", "DATA_POLICY_APPROVAL"],
+      "not_sellable_if": ["NO_CONSENT_POLICY", "NO_SECURITY_APPROVAL"],
+      "tiers": {
+        "bronze": {"setup_fee_sar": 18000, "monthly_retainer_sar": 11000, "gross_margin_target": 0.62, "delivery_hours_estimate": 62, "minimum_contract_months": 4, "discount_floor": 0.1},
+        "silver": {"setup_fee_sar": 30000, "monthly_retainer_sar": 17200, "gross_margin_target": 0.64, "delivery_hours_estimate": 96, "minimum_contract_months": 6, "discount_floor": 0.12},
+        "gold": {"setup_fee_sar": 47000, "monthly_retainer_sar": 26000, "gross_margin_target": 0.66, "delivery_hours_estimate": 148, "minimum_contract_months": 6, "discount_floor": 0.15}
+      }
+    },
+    "SECURITY": {
+      "requires": ["SECURITY_TEAM_CONTACT", "ACCESS_LOGS"],
+      "not_sellable_if": ["NO_SECURITY_APPROVAL", "NO_OBJECT_AUTHORIZATION_BASELINE"],
+      "tiers": {
+        "bronze": {"setup_fee_sar": 23000, "monthly_retainer_sar": 14000, "gross_margin_target": 0.63, "delivery_hours_estimate": 70, "minimum_contract_months": 4, "discount_floor": 0.1},
+        "silver": {"setup_fee_sar": 37000, "monthly_retainer_sar": 22000, "gross_margin_target": 0.65, "delivery_hours_estimate": 108, "minimum_contract_months": 6, "discount_floor": 0.12},
+        "gold": {"setup_fee_sar": 56000, "monthly_retainer_sar": 32000, "gross_margin_target": 0.67, "delivery_hours_estimate": 165, "minimum_contract_months": 6, "discount_floor": 0.15}
+      }
+    },
+    "OBSERVABILITY": {
+      "requires": ["EVENT_LOGS", "METRIC_OWNER", "DATA_POLICY_APPROVAL"],
+      "not_sellable_if": ["NO_ALERTING_OWNER", "NO_BASELINE_METRICS"],
+      "tiers": {
+        "bronze": {"setup_fee_sar": 17000, "monthly_retainer_sar": 10200, "gross_margin_target": 0.64, "delivery_hours_estimate": 54, "minimum_contract_months": 3, "discount_floor": 0.1},
+        "silver": {"setup_fee_sar": 28000, "monthly_retainer_sar": 16500, "gross_margin_target": 0.66, "delivery_hours_estimate": 86, "minimum_contract_months": 6, "discount_floor": 0.12},
+        "gold": {"setup_fee_sar": 43000, "monthly_retainer_sar": 24500, "gross_margin_target": 0.68, "delivery_hours_estimate": 132, "minimum_contract_months": 6, "discount_floor": 0.15}
+      }
+    }
+  }
+}

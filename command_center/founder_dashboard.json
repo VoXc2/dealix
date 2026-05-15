@@ -1,0 +1,5 @@
+{
+  "daily": ["pipeline_value_sar", "active_blockers", "incident_count", "deployments_today"],
+  "weekly": ["sales_velocity", "delivery_score", "margin_delta", "expansion_opportunities"],
+  "monthly": ["arr_growth", "nrr", "gross_margin", "sla_compliance", "churn_risk_accounts"]
+}

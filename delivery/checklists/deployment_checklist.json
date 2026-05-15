@@ -1,0 +1,10 @@
+{
+  "required_before_launch": [
+    "pricing_approved",
+    "kpi_baseline_recorded",
+    "security_review_completed",
+    "rollback_plan_tested",
+    "escalation_contacts_confirmed",
+    "acceptance_signer_assigned"
+  ]
+}

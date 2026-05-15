@@ -1,0 +1,33 @@
+{
+  "schema_version": "1.0",
+  "frameworks": [
+    "PDPL",
+    "NCA_ECC_2_2024",
+    "NCA_DCC_1_2022",
+    "NCA_CCC_2_2024",
+    "ISO_42001_READINESS"
+  ],
+  "controls_required_for_data_services": [
+    "consent_ledger",
+    "data_minimization",
+    "retention_policy",
+    "audit_log",
+    "opt_out_support"
+  ],
+  "blocking_conditions": [
+    "no_data_policy",
+    "no_consent_ledger",
+    "no_security_review"
+  ],
+  "compliance_profiles": {
+    "LEAD_INTELLIGENCE": ["PDPL", "consent_ledger", "data_minimization"],
+    "WHATSAPP_DECISION_LAYER": ["PDPL", "consent_ledger", "audit_log"],
+    "CUSTOMER_PORTAL": ["PDPL", "consent_ledger", "audit_log"],
+    "SUPPORT_OS": ["PDPL", "consent_ledger", "audit_log"],
+    "PAYMENT_TRUTH": ["PDPL", "audit_log", "retention_policy"],
+    "PROOF_ENGINE": ["PDPL", "consent_ledger", "audit_log"],
+    "SECURITY": ["NCA_ECC_2_2024", "audit_log", "retention_policy"],
+    "OBSERVABILITY": ["PDPL", "audit_log", "data_minimization"],
+    "TRUST_LAYER": ["PDPL", "NCA_ECC_2_2024", "ISO_42001_READINESS", "consent_ledger"]
+  }
+}

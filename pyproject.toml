@@ -89,6 +89,7 @@ dev = [
 
 [project.scripts]
 ai-company = "cli:app"
+saudi-ai-provider = "saudi_ai_provider.cli:main"
 
 [project.urls]
 Homepage = "https://ai-company.sa"
@@ -101,7 +102,7 @@ Issues = "https://github.com/VoXc2/dealix/issues"
 # ─────────────────────────────────────────────────────────────
 
 [tool.setuptools.packages.find]
-include = ["core*", "auto_client_acquisition*", "autonomous_growth*", "integrations*", "api*", "dashboard*", "db*"]
+include = ["core*", "auto_client_acquisition*", "autonomous_growth*", "integrations*", "api*", "dashboard*", "db*", "saudi_ai_provider*", "offers*"]
 exclude = ["tests*", "docs*", "scripts*"]
 
 [tool.ruff]

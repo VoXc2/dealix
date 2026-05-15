@@ -1,0 +1,44 @@
+{
+  "schema_version": "1.0",
+  "segments": {
+    "smb": {
+      "employees_min": 1,
+      "employees_max": 75,
+      "price_multiplier": 0.85
+    },
+    "mid_market": {
+      "employees_min": 76,
+      "employees_max": 500,
+      "price_multiplier": 1.0
+    },
+    "enterprise": {
+      "employees_min": 501,
+      "employees_max": 1000000,
+      "price_multiplier": 1.25
+    }
+  },
+  "package_recommendations": {
+    "smb": [
+      "CUSTOMER_PORTAL_BRONZE",
+      "LEAD_INTELLIGENCE_BRONZE",
+      "DECISION_PASSPORT_BRONZE",
+      "PROOF_ENGINE_BRONZE"
+    ],
+    "mid_market": [
+      "CUSTOMER_PORTAL_SILVER",
+      "ACTION_APPROVAL_ENGINE_SILVER",
+      "OBSERVABILITY_SILVER",
+      "SECURITY_SILVER",
+      "PROOF_ENGINE_SILVER"
+    ],
+    "enterprise": [
+      "CUSTOMER_PORTAL_GOLD",
+      "ACTION_APPROVAL_ENGINE_GOLD",
+      "OBSERVABILITY_GOLD",
+      "SECURITY_GOLD",
+      "TRUST_LAYER_GOLD",
+      "PAYMENT_TRUTH_GOLD",
+      "PROOF_ENGINE_GOLD"
+    ]
+  }
+}

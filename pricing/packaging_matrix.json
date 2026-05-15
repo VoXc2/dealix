@@ -1,0 +1,91 @@
+{
+  "schema_version": "1.0",
+  "currency": "SAR",
+  "default_tier_segment_map": {
+    "bronze": "smb",
+    "silver": "mid_market",
+    "gold": "enterprise"
+  },
+  "services": {
+    "CUSTOMER_PORTAL": {
+      "bronze": {"segment": "smb", "setup_fee_sar": 12000, "monthly_sar": 3500, "deployment_days": 7, "support_sla": "business_hours"},
+      "silver": {"segment": "mid_market", "setup_fee_sar": 45000, "monthly_sar": 12000, "deployment_days": 21, "support_sla": "24_7"},
+      "gold": {"segment": "enterprise", "setup_fee_sar": 180000, "monthly_sar": 55000, "deployment_days": 60, "support_sla": "dedicated"}
+    },
+    "SECURITY": {
+      "bronze": {"segment": "smb", "setup_fee_sar": 25000, "monthly_sar": 14000, "deployment_days": 15, "support_sla": "business_hours"},
+      "silver": {"segment": "mid_market", "setup_fee_sar": 75000, "monthly_sar": 28000, "deployment_days": 30, "support_sla": "24_7"},
+      "gold": {"segment": "enterprise", "setup_fee_sar": 240000, "monthly_sar": 85000, "deployment_days": 60, "support_sla": "dedicated"}
+    },
+    "OBSERVABILITY": {
+      "bronze": {"segment": "smb", "setup_fee_sar": 17000, "monthly_sar": 10200, "deployment_days": 14, "support_sla": "business_hours"},
+      "silver": {"segment": "mid_market", "setup_fee_sar": 28000, "monthly_sar": 16500, "deployment_days": 30, "support_sla": "24_7"},
+      "gold": {"segment": "enterprise", "setup_fee_sar": 43000, "monthly_sar": 24500, "deployment_days": 60, "support_sla": "dedicated"}
+    },
+    "ACTION_APPROVAL_ENGINE": {
+      "bronze": {"segment": "smb", "setup_fee_sar": 17000, "monthly_sar": 10000, "deployment_days": 14, "support_sla": "business_hours"},
+      "silver": {"segment": "mid_market", "setup_fee_sar": 28000, "monthly_sar": 16500, "deployment_days": 30, "support_sla": "24_7"},
+      "gold": {"segment": "enterprise", "setup_fee_sar": 45000, "monthly_sar": 25000, "deployment_days": 60, "support_sla": "dedicated"}
+    },
+    "MARKET_RADAR": {
+      "bronze": {"segment": "smb", "setup_fee_sar": 12000, "monthly_sar": 7000, "deployment_days": 14, "support_sla": "business_hours"},
+      "silver": {"segment": "mid_market", "setup_fee_sar": 20000, "monthly_sar": 12000, "deployment_days": 30, "support_sla": "24_7"},
+      "gold": {"segment": "enterprise", "setup_fee_sar": 32000, "monthly_sar": 18000, "deployment_days": 60, "support_sla": "dedicated"}
+    },
+    "LEAD_INTELLIGENCE": {
+      "bronze": {"segment": "smb", "setup_fee_sar": 15000, "monthly_sar": 9000, "deployment_days": 14, "support_sla": "business_hours"},
+      "silver": {"segment": "mid_market", "setup_fee_sar": 24000, "monthly_sar": 15000, "deployment_days": 30, "support_sla": "24_7"},
+      "gold": {"segment": "enterprise", "setup_fee_sar": 38000, "monthly_sar": 22000, "deployment_days": 60, "support_sla": "dedicated"}
+    },
+    "COMPANY_BRAIN": {
+      "bronze": {"segment": "smb", "setup_fee_sar": 13000, "monthly_sar": 8000, "deployment_days": 14, "support_sla": "business_hours"},
+      "silver": {"segment": "mid_market", "setup_fee_sar": 22000, "monthly_sar": 14000, "deployment_days": 30, "support_sla": "24_7"},
+      "gold": {"segment": "enterprise", "setup_fee_sar": 36000, "monthly_sar": 21000, "deployment_days": 60, "support_sla": "dedicated"}
+    },
+    "DECISION_PASSPORT": {
+      "bronze": {"segment": "smb", "setup_fee_sar": 10000, "monthly_sar": 6500, "deployment_days": 14, "support_sla": "business_hours"},
+      "silver": {"segment": "mid_market", "setup_fee_sar": 18000, "monthly_sar": 11000, "deployment_days": 30, "support_sla": "24_7"},
+      "gold": {"segment": "enterprise", "setup_fee_sar": 30000, "monthly_sar": 17000, "deployment_days": 60, "support_sla": "dedicated"}
+    },
+    "WHATSAPP_DECISION_LAYER": {
+      "bronze": {"segment": "smb", "setup_fee_sar": 14000, "monthly_sar": 8500, "deployment_days": 14, "support_sla": "business_hours"},
+      "silver": {"segment": "mid_market", "setup_fee_sar": 24000, "monthly_sar": 14500, "deployment_days": 30, "support_sla": "24_7"},
+      "gold": {"segment": "enterprise", "setup_fee_sar": 39000, "monthly_sar": 23000, "deployment_days": 60, "support_sla": "dedicated"}
+    },
+    "DELIVERY_OS": {
+      "bronze": {"segment": "smb", "setup_fee_sar": 16000, "monthly_sar": 9800, "deployment_days": 14, "support_sla": "business_hours"},
+      "silver": {"segment": "mid_market", "setup_fee_sar": 27000, "monthly_sar": 16000, "deployment_days": 30, "support_sla": "24_7"},
+      "gold": {"segment": "enterprise", "setup_fee_sar": 43000, "monthly_sar": 24500, "deployment_days": 60, "support_sla": "dedicated"}
+    },
+    "SUPPORT_OS": {
+      "bronze": {"segment": "smb", "setup_fee_sar": 14000, "monthly_sar": 9000, "deployment_days": 14, "support_sla": "business_hours"},
+      "silver": {"segment": "mid_market", "setup_fee_sar": 24000, "monthly_sar": 14500, "deployment_days": 30, "support_sla": "24_7"},
+      "gold": {"segment": "enterprise", "setup_fee_sar": 37000, "monthly_sar": 22000, "deployment_days": 60, "support_sla": "dedicated"}
+    },
+    "PAYMENT_TRUTH": {
+      "bronze": {"segment": "smb", "setup_fee_sar": 16000, "monthly_sar": 9800, "deployment_days": 14, "support_sla": "business_hours"},
+      "silver": {"segment": "mid_market", "setup_fee_sar": 26000, "monthly_sar": 15800, "deployment_days": 30, "support_sla": "24_7"},
+      "gold": {"segment": "enterprise", "setup_fee_sar": 41000, "monthly_sar": 24000, "deployment_days": 60, "support_sla": "dedicated"}
+    },
+    "PROOF_ENGINE": {
+      "bronze": {"segment": "smb", "setup_fee_sar": 15000, "monthly_sar": 9200, "deployment_days": 14, "support_sla": "business_hours"},
+      "silver": {"segment": "mid_market", "setup_fee_sar": 25000, "monthly_sar": 15000, "deployment_days": 30, "support_sla": "24_7"},
+      "gold": {"segment": "enterprise", "setup_fee_sar": 39000, "monthly_sar": 22800, "deployment_days": 60, "support_sla": "dedicated"}
+    },
+    "EXPANSION_ENGINE": {
+      "bronze": {"segment": "smb", "setup_fee_sar": 13000, "monthly_sar": 8500, "deployment_days": 14, "support_sla": "business_hours"},
+      "silver": {"segment": "mid_market", "setup_fee_sar": 22000, "monthly_sar": 13600, "deployment_days": 30, "support_sla": "24_7"},
+      "gold": {"segment": "enterprise", "setup_fee_sar": 35000, "monthly_sar": 20500, "deployment_days": 60, "support_sla": "dedicated"}
+    },
+    "LEARNING_FLYWHEEL": {
+      "bronze": {"segment": "smb", "setup_fee_sar": 12000, "monthly_sar": 7600, "deployment_days": 14, "support_sla": "business_hours"},
+      "silver": {"segment": "mid_market", "setup_fee_sar": 20000, "monthly_sar": 12200, "deployment_days": 30, "support_sla": "24_7"},
+      "gold": {"segment": "enterprise", "setup_fee_sar": 32000, "monthly_sar": 19000, "deployment_days": 60, "support_sla": "dedicated"}
+    },
+    "TRUST_LAYER": {
+      "bronze": {"segment": "smb", "setup_fee_sar": 18000, "monthly_sar": 11000, "deployment_days": 15, "support_sla": "business_hours"},
+      "silver": {"segment": "mid_market", "setup_fee_sar": 30000, "monthly_sar": 17200, "deployment_days": 30, "support_sla": "24_7"},
+      "gold": {"segment": "enterprise", "setup_fee_sar": 47000, "monthly_sar": 26000, "deployment_days": 60, "support_sla": "dedicated"}
+    }
+  }
+}

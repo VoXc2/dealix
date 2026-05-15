@@ -1,0 +1,1 @@
+"""Commercial offer generation helpers."""

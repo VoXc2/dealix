@@ -1,0 +1,18 @@
+{
+  "MARKET_RADAR": ["policy_violation_count", "unapproved_external_action_attempts", "data_provenance_gaps"],
+  "LEAD_INTELLIGENCE": ["consent_mismatch_incidents", "source_policy_violations", "blocked_channel_attempts"],
+  "COMPANY_BRAIN": ["outdated_context_incidents", "brand_tone_violations", "sensitive_data_exposure_events"],
+  "DECISION_PASSPORT": ["no_passport_action_attempts", "risk_field_missing_count", "proof_target_missing_count"],
+  "WHATSAPP_DECISION_LAYER": ["unapproved_send_attempts", "role_permission_violations", "sensitive_command_failures"],
+  "ACTION_APPROVAL_ENGINE": ["policy_bypass_attempts", "consent_check_failures", "high_risk_action_without_dual_approval"],
+  "DELIVERY_OS": ["rollback_incidents", "critical_defect_count", "scope_drift_events"],
+  "CUSTOMER_PORTAL": ["hallucination_rate", "pii_leakage_incidents", "fallback_failure_rate"],
+  "SUPPORT_OS": ["unsafe_reply_suggestions", "sensitive_ticket_misrouting", "unapproved_send_attempts"],
+  "PAYMENT_TRUTH": ["incorrect_charge_attempts", "live_charge_without_approval", "billing_data_mismatch_incidents"],
+  "PROOF_ENGINE": ["fake_proof_incidents", "public_proof_without_consent", "evidence_gap_count"],
+  "EXPANSION_ENGINE": ["upsell_without_proof_attempts", "offer_policy_violations", "customer_health_mismatch"],
+  "LEARNING_FLYWHEEL": ["unvalidated_change_ratio", "regression_after_change", "insight_quality_failures"],
+  "TRUST_LAYER": ["pdpl_incidents", "consent_mismatch_incidents", "untracked_data_flow_count"],
+  "SECURITY": ["critical_vulnerability_count", "privilege_escalation_events", "unauthorized_access_incidents"],
+  "OBSERVABILITY": ["missing_audit_entries", "silent_failure_count", "monitoring_blind_spots"]
+}

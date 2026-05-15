@@ -1,0 +1,20 @@
+{
+  "CUSTOMER_PORTAL": {
+    "industry": "healthcare",
+    "company_size": "200-1000",
+    "pain": "high support costs and low responsiveness",
+    "buyer": "COO"
+  },
+  "SECURITY": {
+    "industry": "banking",
+    "company_size": "500+",
+    "pain": "AI governance and security readiness gaps",
+    "buyer": "CISO"
+  },
+  "OBSERVABILITY": {
+    "industry": "logistics",
+    "company_size": "150-1000",
+    "pain": "incident blind spots and rising downtime cost",
+    "buyer": "CIO"
+  }
+}

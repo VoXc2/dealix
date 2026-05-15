@@ -1,0 +1,10 @@
+{
+  "service_family": "CUSTOMER_PORTAL",
+  "criteria": [
+    "portal_modules_visible_for_authorized_roles",
+    "approval_queue_updates_under_5_minutes",
+    "weekly_plan_and_proof_summary_generated",
+    "zero_pii_leakage_in_sampled_runs",
+    "customer_signoff_received"
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "service_family": "SECURITY",
+  "criteria": [
+    "critical_authorization_gaps_closed",
+    "audit_trail_for_high_risk_actions_available",
+    "incident_drill_sla_met",
+    "no_unapproved_privileged_paths",
+    "security_signoff_received"
+  ]
+}

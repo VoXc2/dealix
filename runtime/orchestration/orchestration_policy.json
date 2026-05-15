@@ -1,0 +1,9 @@
+{
+  "default_action_mode": "approval_required",
+  "hard_blocks": [
+    "no_cold_whatsapp",
+    "no_live_send_without_approval",
+    "no_live_charge_without_approval",
+    "no_fake_proof"
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "schema_version": "1.0",
+  "required_fields": [
+    "company_name",
+    "sector",
+    "company_size",
+    "current_systems",
+    "data_sources",
+    "decision_owner",
+    "budget_range_sar",
+    "target_deadline",
+    "security_constraints",
+    "success_metric",
+    "final_acceptance_signer"
+  ],
+  "optional_fields": [
+    "preferred_channels",
+    "existing_vendors",
+    "known_risks",
+    "legal_requirements"
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "policies": [
+    {
+      "policy": "NO_EXTERNAL_PII_TRANSFER",
+      "severity": "critical",
+      "action": "block",
+      "evidence_required": true
+    },
+    {
+      "policy": "NO_UNAPPROVED_EXTERNAL_SEND",
+      "severity": "critical",
+      "action": "block",
+      "evidence_required": true
+    },
+    {
+      "policy": "NO_UPSELL_WITHOUT_PROOF",
+      "severity": "high",
+      "action": "block",
+      "evidence_required": true
+    }
+  ]
+}

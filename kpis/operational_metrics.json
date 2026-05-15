@@ -1,0 +1,18 @@
+{
+  "MARKET_RADAR": ["signal_normalization_latency_minutes", "false_positive_signal_rate", "daily_brief_completeness"],
+  "LEAD_INTELLIGENCE": ["lead_scoring_accuracy", "dedupe_rate", "data_quality_score"],
+  "COMPANY_BRAIN": ["knowledge_update_sla", "context_resolution_latency", "retrieval_precision"],
+  "DECISION_PASSPORT": ["passport_completeness_rate", "owner_assignment_rate", "deadline_adherence_rate"],
+  "WHATSAPP_DECISION_LAYER": ["command_parse_accuracy", "brief_delivery_success_rate", "daily_summary_open_rate"],
+  "ACTION_APPROVAL_ENGINE": ["queue_backlog_size", "escalation_rate", "audit_log_completeness"],
+  "DELIVERY_OS": ["task_closure_rate", "blocker_resolution_sla", "handover_readiness_score"],
+  "CUSTOMER_PORTAL": ["automation_success_rate", "handoff_rate", "median_resolution_time"],
+  "SUPPORT_OS": ["median_first_response_minutes", "escalation_resolution_time", "root_cause_closure_rate"],
+  "PAYMENT_TRUTH": ["invoice_state_accuracy", "payment_reconciliation_latency", "followup_task_completion_rate"],
+  "PROOF_ENGINE": ["evidence_level_progression_rate", "proof_pack_delivery_sla", "consent_attached_rate"],
+  "EXPANSION_ENGINE": ["expansion_readiness_score", "offer_generation_sla", "account_plan_coverage"],
+  "LEARNING_FLYWHEEL": ["insight_to_backlog_cycle_days", "experiment_completion_rate", "playbook_update_frequency"],
+  "TRUST_LAYER": ["consent_ledger_completeness", "data_retention_policy_coverage", "audit_readiness_score"],
+  "SECURITY": ["rbac_coverage", "object_level_authorization_coverage", "security_fix_sla"],
+  "OBSERVABILITY": ["alert_precision", "trace_completeness", "cost_per_workflow_run"]
+}

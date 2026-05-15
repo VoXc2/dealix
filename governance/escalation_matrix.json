@@ -1,0 +1,28 @@
+{
+  "schema_version": "1.0",
+  "severity_levels": {
+    "sev1": {
+      "description": "Critical business-impacting incident",
+      "response_minutes": 15,
+      "notify_roles": ["executive_owner", "security_owner", "delivery_owner"],
+      "requires_postmortem": true
+    },
+    "sev2": {
+      "description": "High impact but contained incident",
+      "response_minutes": 30,
+      "notify_roles": ["delivery_owner", "service_owner"],
+      "requires_postmortem": true
+    },
+    "sev3": {
+      "description": "Medium impact incident",
+      "response_minutes": 120,
+      "notify_roles": ["service_owner"],
+      "requires_postmortem": false
+    }
+  },
+  "service_routes": {
+    "CUSTOMER_PORTAL": {"primary_owner": "director_customer_success", "backup_owner": "delivery_manager"},
+    "SECURITY": {"primary_owner": "head_of_security", "backup_owner": "security_program_manager"},
+    "OBSERVABILITY": {"primary_owner": "head_of_sre", "backup_owner": "observability_owner"}
+  }
+}

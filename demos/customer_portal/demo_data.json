@@ -1,0 +1,13 @@
+{
+  "company": "Example Manufacturing Co",
+  "baseline": {
+    "ticket_deflection_rate": 0.08,
+    "median_resolution_time_minutes": 420,
+    "csat": 3.6
+  },
+  "target": {
+    "ticket_deflection_rate": 0.25,
+    "median_resolution_time_minutes": 240,
+    "csat": 4.2
+  }
+}

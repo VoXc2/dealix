@@ -1,0 +1,13 @@
+{
+  "company": "Example Logistics Co",
+  "baseline": {
+    "incident_mtta_minutes": 45,
+    "incident_mttr_minutes": 320,
+    "trace_coverage": 0.53
+  },
+  "target": {
+    "incident_mtta_minutes": 20,
+    "incident_mttr_minutes": 180,
+    "trace_coverage": 0.9
+  }
+}

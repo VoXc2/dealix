@@ -1,0 +1,13 @@
+{
+  "fields": [
+    "incident_id",
+    "severity",
+    "service",
+    "started_at",
+    "owner",
+    "status",
+    "mitigation",
+    "evidence_ref"
+  ],
+  "severity_levels": ["sev1", "sev2", "sev3"]
+}

@@ -1,0 +1,13 @@
+{
+  "company": "Example Financial Services Co",
+  "baseline": {
+    "critical_vulnerabilities": 14,
+    "authorization_coverage": 0.62,
+    "security_review_cycle_days": 21
+  },
+  "target": {
+    "critical_vulnerabilities": 2,
+    "authorization_coverage": 0.9,
+    "security_review_cycle_days": 10
+  }
+}

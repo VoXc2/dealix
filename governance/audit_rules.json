@@ -1,0 +1,19 @@
+{
+  "schema_version": "1.0",
+  "required_audit_fields": [
+    "execution_id",
+    "workflow",
+    "decision",
+    "policy_snapshot",
+    "initiator",
+    "timestamp",
+    "risk_score",
+    "evidence_artifact"
+  ],
+  "retention_days": 365,
+  "evidence_export_required": true,
+  "blocking_conditions": [
+    "missing_audit_fields",
+    "missing_evidence_export"
+  ]
+}

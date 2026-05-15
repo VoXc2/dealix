@@ -1,0 +1,5 @@
+{
+  "sev1": {"route": ["executive_owner", "security_owner"], "response_minutes": 15},
+  "sev2": {"route": ["service_owner", "delivery_owner"], "response_minutes": 30},
+  "sev3": {"route": ["service_owner"], "response_minutes": 120}
+}

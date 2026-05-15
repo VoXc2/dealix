@@ -1,0 +1,30 @@
+{
+  "schema_version": "1.0",
+  "currency": "SAR",
+  "formulas": {
+    "CUSTOMER_PORTAL": {
+      "description": "Savings from support automation and faster handling.",
+      "inputs": ["monthly_tickets", "avg_agent_cost_sar", "automation_rate"],
+      "monthly_savings_formula": "(monthly_tickets * automation_rate) * avg_agent_cost_sar",
+      "annual_roi_formula": "monthly_savings * 12"
+    },
+    "SECURITY": {
+      "description": "Risk reduction from preventing critical incidents.",
+      "inputs": ["critical_incidents_annual", "avg_incident_cost_sar", "prevention_rate"],
+      "monthly_savings_formula": "((critical_incidents_annual * prevention_rate) * avg_incident_cost_sar) / 12",
+      "annual_roi_formula": "monthly_savings * 12"
+    },
+    "OBSERVABILITY": {
+      "description": "Downtime cost reduction through lower MTTR and better detection.",
+      "inputs": ["incident_hours_monthly", "cost_per_downtime_hour_sar", "reduction_rate"],
+      "monthly_savings_formula": "(incident_hours_monthly * reduction_rate) * cost_per_downtime_hour_sar",
+      "annual_roi_formula": "monthly_savings * 12"
+    },
+    "AI_REVENUE_COMMAND_CENTER": {
+      "description": "Revenue uplift through conversion and expansion optimization.",
+      "inputs": ["monthly_pipeline_sar", "conversion_lift_rate"],
+      "monthly_savings_formula": "monthly_pipeline_sar * conversion_lift_rate",
+      "annual_roi_formula": "monthly_savings * 12"
+    }
+  }
+}
