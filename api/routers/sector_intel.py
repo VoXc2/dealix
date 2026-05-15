@@ -347,12 +347,26 @@ async def fetch_report(
             },
         )
 
-    async with async_session_factory()() as session:
-        row = (
-            await session.execute(
-                select(SectorReportRecord).where(SectorReportRecord.id == report_id)
-            )
-        ).scalar_one_or_none()
+    try:
+        async with async_session_factory()() as session:
+            row = (
+                await session.execute(
+                    select(SectorReportRecord).where(SectorReportRecord.id == report_id)
+                )
+            ).scalar_one_or_none()
+    except Exception:  # noqa: BLE001 — DB unreachable / sector_reports not migrated
+        raise HTTPException(
+            status_code=404,
+            detail={
+                "error": "report_not_persisted",
+                "report_id": report_id,
+                "note": (
+                    "Report persistence is deferred (v4 §7); the sector_reports "
+                    "store is unavailable in this environment. Re-fetch once the "
+                    "DB layer + migration 008 are live."
+                ),
+            },
+        )
 
     if row is None:
         raise HTTPException(
