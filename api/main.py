@@ -199,8 +199,10 @@ def create_app() -> FastAPI:
         setup_sentry()
         setup_tracing(service_name=settings.app_name, version=settings.app_version)
         instrument_fastapi(app)
-    except Exception:  # pragma: no cover
-        pass
+    except Exception as exc:  # noqa: BLE001  # pragma: no cover
+        get_logger(__name__).warning(
+            "observability_setup_skipped", error=f"{type(exc).__name__}: {exc}"
+        )
 
     @app.exception_handler(AICompanyError)
     async def ai_company_error_handler(_: Request, exc: AICompanyError) -> JSONResponse:

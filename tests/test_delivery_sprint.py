@@ -88,8 +88,10 @@ def test_step5_governance_review_blocks_unsafe():
     ]
     out = step5_governance_review(customer_id="x", engagement_id="e1", drafts=drafts)
     decisions = {r["decision"] for r in out["reviews"]}
-    # At least the unsafe one is REDACT or BLOCK
-    assert any(d in {"redact", "block"} for d in decisions)
+    # The unsafe guaranteed-claim draft must be BLOCKed by the policy gate.
+    assert "BLOCK" in decisions
+    unsafe = next(r for r in out["reviews"] if r["account"] == "B")
+    assert unsafe["allowed"] is False
 
 
 def test_run_sprint_end_to_end_produces_proof_pack():
