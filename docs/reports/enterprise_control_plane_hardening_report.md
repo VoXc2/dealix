@@ -43,6 +43,16 @@
 - Tenant-aware fields now exist on key operational records with safe defaults for dev/test.
 - New E2E governance proof validates escalation, approval, value capture discipline, and audit trace generation in one flow.
 
+## Production readiness status
+| Area | Status | Evidence |
+|---|---|---|
+| API import | PASS | `python3 -c "from api.main import app; print('api import ok')"` |
+| Control plane | PARTIAL | rollback/policy-edit approval tests |
+| Tenant isolation | PARTIAL | tenant schema sweep tests |
+| Approval gate | PASS | approval-gated finalize tests |
+| Postgres persistence | TODO | migrations added, runtime wiring pending |
+| Frontend | TODO/PARTIAL | control surface scaffolding pending full wiring/screenshots |
+
 ## What requires Postgres persistence
 - Control/event ledger: move audit/control events from JSONL to Postgres JSONB tables with tenant/run indexes.
 - Approval tickets and state transitions: durable storage with queryable status history and actor attribution.
