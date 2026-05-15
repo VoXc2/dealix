@@ -21,3 +21,12 @@
 | 10 | [`gate_10_world_class_readiness.md`](gate_10_world_class_readiness.md) |
 
 التحقق الآلي: [`../../scripts/verify_dealix_ready.py`](../../scripts/verify_dealix_ready.py).
+
+## Enterprise Control Plane
+
+| الوثيقة | الملف |
+|------|--------|
+| خريطة الوحدات / Module map | [`enterprise_control_plane_module_map.md`](enterprise_control_plane_module_map.md) |
+| بطاقة الجاهزية / Scorecard | [`enterprise_control_plane_scorecard.md`](enterprise_control_plane_scorecard.md) |
+
+التحقق الآلي: [`../../scripts/verify_enterprise_control_plane.sh`](../../scripts/verify_enterprise_control_plane.sh).

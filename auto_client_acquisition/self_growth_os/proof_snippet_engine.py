@@ -30,7 +30,6 @@ from auto_client_acquisition.self_growth_os.schemas import (
     ServiceBundle,
 )
 
-
 REQUIRED_FIELDS = (
     "event_type",
     "service_id",
@@ -93,7 +92,6 @@ def _format_outcome(event: dict[str, Any]) -> tuple[str, str]:
 
 def _service_title_pair(event: dict[str, Any]) -> tuple[str, str]:
     sid = event.get("service_id") or "service"
-    bundle = event.get("service_bundle") or "service"
     # Lookup from matrix would be ideal; for an MVP, use the slug.
     title_ar = f"خدمة {sid}"
     title_en = f"{sid.replace('_', ' ').title()} service"
@@ -300,9 +298,9 @@ def render_pack(
         md_en_lines.append("")
 
     md_ar_lines.append("---")
-    md_ar_lines.append(f"_توقيع العميل مطلوب قبل أيّ نشر خارجي. هذه النسخة تتطلّب موافقة المؤسس._")
+    md_ar_lines.append("_توقيع العميل مطلوب قبل أيّ نشر خارجي. هذه النسخة تتطلّب موافقة المؤسس._")
     md_en_lines.append("---")
-    md_en_lines.append(f"_Customer sign-off required before external publication. This draft requires founder approval._")
+    md_en_lines.append("_Customer sign-off required before external publication. This draft requires founder approval._")
 
     markdown_ar = "\n".join(md_ar_lines)
     markdown_en = "\n".join(md_en_lines)

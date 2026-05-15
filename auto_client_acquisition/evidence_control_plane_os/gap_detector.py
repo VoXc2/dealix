@@ -10,7 +10,7 @@ Gaps detected:
 from __future__ import annotations
 
 from dataclasses import dataclass
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta, timezone
 from typing import Any
 
 
@@ -48,7 +48,7 @@ def find_gaps(*, customer_id: str, project_id: str = "") -> list[EvidenceGap]:
                     severity="high",
                     suggested_remedy="add source_ref + confirmation_ref",
                 ))
-    except Exception:  # noqa: BLE001
+    except Exception:
         pass
 
     # 2. Capital asset gap per engagement.
@@ -62,18 +62,18 @@ def find_gaps(*, customer_id: str, project_id: str = "") -> list[EvidenceGap]:
                     severity="med",
                     suggested_remedy="register >= 1 reusable asset via capital_os.add_asset",
                 ))
-    except Exception:  # noqa: BLE001
+    except Exception:
         pass
 
     # 3. Unresolved friction (older than 30 days).
     try:
         from auto_client_acquisition.friction_log.store import list_events as list_friction
         events = list_friction(customer_id=customer_id, since_days=180, limit=200)
-        cutoff_ts = datetime.now(timezone.utc).timestamp() - 30 * 86400
+        cutoff_ts = datetime.now(UTC).timestamp() - 30 * 86400
         for ev in events:
             try:
                 ts = datetime.fromisoformat(ev.occurred_at).timestamp()
-            except Exception:  # noqa: BLE001
+            except (ValueError, TypeError):
                 continue
             if ts < cutoff_ts and not ev.resolved_at:
                 gaps.append(EvidenceGap(
@@ -81,7 +81,7 @@ def find_gaps(*, customer_id: str, project_id: str = "") -> list[EvidenceGap]:
                     severity="med" if ev.severity == "med" else "low",
                     suggested_remedy="resolve, record resolution_at, or escalate",
                 ))
-    except Exception:  # noqa: BLE001
+    except Exception:
         pass
 
     # 4. Source passport for non-empty engagement.
@@ -101,7 +101,7 @@ def find_gaps(*, customer_id: str, project_id: str = "") -> list[EvidenceGap]:
                 severity="high",
                 suggested_remedy="capture source passport via data_os.SourcePassport and create_evidence",
             ))
-    except Exception:  # noqa: BLE001
+    except Exception:
         pass
 
     return gaps[:50]  # cap at 50 to keep the report scannable

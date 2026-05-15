@@ -43,9 +43,7 @@ def source_passport_v2_valid(p: SourcePassportV2) -> bool:
         return False
     if not p.sensitivity.strip() or not p.relationship_status.strip():
         return False
-    if not p.retention_policy.strip() or not p.deletion_required_after.strip():
-        return False
-    return True
+    return bool(p.retention_policy.strip() and p.deletion_required_after.strip())
 
 
 def ai_use_requires_passport(passport_present: bool) -> bool:

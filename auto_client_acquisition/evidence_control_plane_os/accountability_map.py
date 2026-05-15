@@ -27,7 +27,7 @@ def accountability_valid_for_execution(rec: AccountabilityRecord) -> tuple[bool,
 
 
 def external_action_accountable(rec: AccountabilityRecord) -> tuple[bool, tuple[str, ...]]:
-    exec_ok, exec_err = accountability_valid_for_execution(rec)
+    _exec_ok, exec_err = accountability_valid_for_execution(rec)
     extra: list[str] = []
     if not rec.approved_by.strip():
         extra.append("no_approval_owner_no_external_action")

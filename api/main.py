@@ -63,7 +63,11 @@ from api.routers import service_catalog as service_catalog_router
 from api.routers import friction_log as friction_log_router
 from api.routers import value_os as value_os_router
 # 90-day commercial activation — Wave 14B
-from api.routers import data_os as data_os_router
+# TODO(enterprise-control-plane): api/routers/data_os.py is half-landed — it
+# imports compute_dq / preview / decide which do not exist in the data_os or
+# governance_os modules, breaking the whole API import. Disabled until the
+# Data Pack scoring + runtime governance pieces are implemented with tests.
+# from api.routers import data_os as data_os_router
 from api.routers import sprint_runner as sprint_runner_router
 from api.routers import founder_dashboard as founder_dashboard_router
 from api.routers import audit_export as audit_export_router
@@ -280,7 +284,9 @@ def create_app() -> FastAPI:
     app.include_router(friction_log_router.router)
     app.include_router(value_os_router.router)
     # Wave 14B — Commercial activation: CSV upload for the Data Pack offer
-    app.include_router(data_os_router.router)
+    # TODO(enterprise-control-plane): re-enable once api/routers/data_os.py is
+    # completed (see disabled import above).
+    # app.include_router(data_os_router.router)
     app.include_router(sprint_runner_router.router)
     app.include_router(founder_dashboard_router.router)
     app.include_router(audit_export_router.router)

@@ -94,10 +94,10 @@ def language_breakdown() -> dict[str, int]:
 
 __all__ = [
     "DEFAULT_LOG_DIR",
+    "Language",  # re-export for convenience
     "all_events",
     "clear",
     "language_breakdown",
     "record",
     "write_jsonl",
-    "Language",  # re-export for convenience
 ]

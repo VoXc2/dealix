@@ -69,7 +69,7 @@ def load_matrix() -> dict:
 
 def counts() -> dict[str, int]:
     """Status histogram + total."""
-    out = {s: 0 for s in ALLOWED_STATUSES}
+    out = dict.fromkeys(ALLOWED_STATUSES, 0)
     out["total"] = 0
     for svc in _load().get("services", []) or []:
         s = svc.get("status")

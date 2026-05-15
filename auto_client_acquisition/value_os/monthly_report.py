@@ -8,14 +8,14 @@ adoption_score. Markdown always emits the bilingual disclaimer and a
 from __future__ import annotations
 
 from dataclasses import asdict, dataclass, field
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta, timezone
 from typing import Any
 
 from auto_client_acquisition.client_os.badges import ProofBadge
 from auto_client_acquisition.friction_log.aggregator import aggregate as aggregate_friction
 from auto_client_acquisition.governance_os.runtime_decision import GovernanceDecision
-from auto_client_acquisition.value_os.value_ledger import ValueEvent, list_events as list_value_events
-
+from auto_client_acquisition.value_os.value_ledger import ValueEvent
+from auto_client_acquisition.value_os.value_ledger import list_events as list_value_events
 
 BILINGUAL_DISCLAIMER = (
     "Estimated value is not Verified value / القيمة التقديرية ليست قيمة مُتحقَّقة"
@@ -23,10 +23,10 @@ BILINGUAL_DISCLAIMER = (
 
 
 def _month_bounds(month: str | None) -> tuple[str, str, str]:
-    now = datetime.now(timezone.utc)
+    now = datetime.now(UTC)
     if month:
         year, mo = month.split("-")
-        start = datetime(int(year), int(mo), 1, tzinfo=timezone.utc)
+        start = datetime(int(year), int(mo), 1, tzinfo=UTC)
     else:
         start = (now.replace(day=1) - timedelta(days=1)).replace(day=1)
     # End of month (exclusive).
@@ -54,7 +54,7 @@ class MonthlyValueReport:
     friction_summary: dict[str, Any] = field(default_factory=dict)
     limitations: list[str] = field(default_factory=list)
     governance_decision: str = GovernanceDecision.ALLOW_WITH_REVIEW.value
-    generated_at: str = field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
+    generated_at: str = field(default_factory=lambda: datetime.now(UTC).isoformat())
 
     def to_dict(self) -> dict[str, Any]:
         return asdict(self)
@@ -159,11 +159,11 @@ def generate(
     for ev in all_events:
         try:
             ts = datetime.fromisoformat(ev.occurred_at)
-        except Exception:  # noqa: BLE001
+        except (ValueError, TypeError):
             continue
         # Make naive-safe
         if ts.tzinfo is None:
-            ts = ts.replace(tzinfo=timezone.utc)
+            ts = ts.replace(tzinfo=UTC)
         if start <= ts.isoformat() <= end or start <= ts.isoformat()[:19] <= end:
             in_window.append(ev)
 

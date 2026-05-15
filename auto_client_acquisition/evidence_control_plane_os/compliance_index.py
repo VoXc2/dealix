@@ -6,7 +6,7 @@ Used by the Trust Pack PDF for enterprise procurement reviews.
 from __future__ import annotations
 
 from dataclasses import asdict, dataclass, field
-from datetime import datetime, timezone
+from datetime import UTC, datetime, timezone
 from typing import Any
 
 
@@ -206,7 +206,7 @@ _STATIC_ITEMS = (
 def build_compliance_index(*, customer_id: str = "(generic)") -> ComplianceIndex:
     return ComplianceIndex(
         customer_id=customer_id,
-        generated_at=datetime.now(timezone.utc).isoformat(),
+        generated_at=datetime.now(UTC).isoformat(),
         items=list(_STATIC_ITEMS),
     )
 

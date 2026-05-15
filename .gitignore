@@ -162,7 +162,10 @@ traces/
 # ─────────────────────────────────────────────────────────────
 # 🤖 Claude Code agent worktrees + runtime ledger artifacts
 # ─────────────────────────────────────────────────────────────
-.claude/
+.claude/*
+# Keep the shared SessionStart hook + settings tracked (web session setup).
+!.claude/settings.json
+!.claude/hooks/
 
 # Proof ledger runtime artifacts (template + schema + readme stay tracked)
 docs/proof-events/*.jsonl
