@@ -14,6 +14,7 @@
 **Organizational Capability Maturity**.
 
 المرجع التنفيذي في الكود: `auto_client_acquisition/enterprise_maturity_os/enterprise_maturity_model.py`.
+ولطبقة "الجهاز العصبي المؤسسي": `docs/architecture/ENTERPRISE_NERVOUS_SYSTEM.md`.
 
 ---
 
