@@ -12,7 +12,7 @@ import json
 import os
 import threading
 from dataclasses import asdict, dataclass, field
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
@@ -40,7 +40,7 @@ class ValueEvent:
     source_ref: str = ""
     confirmation_ref: str = ""
     notes: str = ""
-    occurred_at: str = field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
+    occurred_at: str = field(default_factory=lambda: datetime.now(UTC).isoformat())
 
     def to_dict(self) -> dict[str, Any]:
         return asdict(self)
@@ -102,7 +102,7 @@ def add_event(
         source_ref=source_ref,
         confirmation_ref=confirmation_ref,
     )
-    occurred_at = datetime.now(timezone.utc).isoformat()
+    occurred_at = datetime.now(UTC).isoformat()
     event = ValueEvent(
         event_id=_event_id(customer_id=customer_id, kind=kind, occurred_at=occurred_at),
         customer_id=customer_id.strip(),
@@ -116,9 +116,8 @@ def add_event(
     )
     path = _path()
     _ensure_dir(path)
-    with _LOCK:
-        with path.open("a", encoding="utf-8") as file:
-            file.write(json.dumps(event.to_dict(), ensure_ascii=False) + "\n")
+    with _LOCK, path.open("a", encoding="utf-8") as file:
+        file.write(json.dumps(event.to_dict(), ensure_ascii=False) + "\n")
     return event
 
 
@@ -134,30 +133,35 @@ def list_events(
 
     cutoff_ts: float | None = None
     if since_days is not None:
-        cutoff_ts = datetime.now(timezone.utc).timestamp() - int(since_days) * 86400
+        cutoff_ts = datetime.now(UTC).timestamp() - int(since_days) * 86400
 
     events: list[ValueEvent] = []
-    with _LOCK:
-        with path.open("r", encoding="utf-8") as file:
-            for line in file:
-                line = line.strip()
-                if not line:
-                    continue
+    with _LOCK, path.open("r", encoding="utf-8") as file:
+        for line in file:
+            line = line.strip()
+            if not line:
+                continue
+            event: ValueEvent | None = None
+            try:
+                row = json.loads(line)
+                event = ValueEvent(**row)
+            except Exception:
+                pass
+            if event is None:
+                continue
+            if customer_id and event.customer_id != customer_id:
+                continue
+            if cutoff_ts is not None:
+                ts: float | None = None
                 try:
-                    row = json.loads(line)
-                    event = ValueEvent(**row)
-                except Exception:  # noqa: BLE001
+                    ts = datetime.fromisoformat(event.occurred_at).timestamp()
+                except Exception:
+                    pass
+                if ts is None:
                     continue
-                if customer_id and event.customer_id != customer_id:
+                if ts < cutoff_ts:
                     continue
-                if cutoff_ts is not None:
-                    try:
-                        ts = datetime.fromisoformat(event.occurred_at).timestamp()
-                    except Exception:  # noqa: BLE001
-                        continue
-                    if ts < cutoff_ts:
-                        continue
-                events.append(event)
+            events.append(event)
 
     events.sort(key=lambda event: event.occurred_at, reverse=True)
     return events[: max(0, int(limit))]
@@ -200,9 +204,12 @@ def clear_for_test(customer_id: str | None = None) -> None:
                 line = line.strip()
                 if not line:
                     continue
+                row: dict[str, Any] | None = None
                 try:
                     row = json.loads(line)
-                except Exception:  # noqa: BLE001
+                except Exception:
+                    pass
+                if row is None:
                     continue
                 if row.get("customer_id") != customer_id:
                     kept_lines.append(json.dumps(row, ensure_ascii=False))
