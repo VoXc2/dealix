@@ -54,3 +54,25 @@ class InMemoryAuditSink(AuditSink):
                 continue
             result.append(e)
         return result
+
+
+class PostgresAuditSink(AuditSink):
+    """Durable, append-only Postgres-backed audit sink.
+
+    Planned for Phase 2 per `dealix/masters/trust_fabric_spec.md` (append-only
+    table + monthly partition). Registered here so callers can target the
+    durable sink by type; it fails loudly until implemented rather than
+    silently degrading to in-memory storage.
+    """
+
+    def __init__(self, *args: object, **kwargs: object) -> None:
+        raise NotImplementedError(
+            "PostgresAuditSink is Planned for Phase 2 (durable append-only audit). "
+            "Use InMemoryAuditSink until the Postgres-backed sink ships."
+        )
+
+    def append(self, entry: AuditEntry) -> None:  # pragma: no cover - Planned
+        raise NotImplementedError("PostgresAuditSink is Planned for Phase 2.")
+
+    def recent(self, limit: int = 100) -> list[AuditEntry]:  # pragma: no cover - Planned
+        raise NotImplementedError("PostgresAuditSink is Planned for Phase 2.")

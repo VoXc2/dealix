@@ -231,6 +231,117 @@ claims:
     gaps:
       - "Full control-by-control mapping not yet complete"
 
+  # ───────────── Agentic Enterprise Platform (12 engines) ─────────────
+  - id: agentic_enterprise_platform
+    claim: "12-engine Agentic Enterprise Platform — registered, governed foundation"
+    status: Partial
+    evidence:
+      - dealix/engines/registry.py
+      - docs/agentic_operations/AGENTIC_ENTERPRISE_PLATFORM.md
+      - tests/engines/test_engine_registry.py
+    gaps:
+      - "1 of 12 engines (Governance) is at Production depth; the rest are registered foundations"
+      - "Per-engine domain capabilities are Planned/Pilot/Partial — see each engine claim below"
+
+  - id: engine_governance
+    claim: "Governance Engine — policy, approval, audit, explainability, compliance, risk"
+    status: Production
+    evidence:
+      - dealix/engines/governance/engine.py
+      - dealix/engines/governance/capabilities.py
+      - dealix/engines/governance/explainability.py
+      - api/routers/governance_engine.py
+      - tests/engines/test_governance_engine.py
+      - tests/governance/test_governance_engine_api.py
+
+  - id: engine_agent_runtime
+    claim: "Agent Runtime Engine — registered governed foundation"
+    status: Partial
+    evidence:
+      - dealix/engines/agent_runtime/engine.py
+    gaps:
+      - "plan/reason/execute/memory/delegation capabilities Planned for phase 1"
+
+  - id: engine_workflow
+    claim: "Workflow Orchestration Engine — registered governed foundation"
+    status: Partial
+    evidence:
+      - dealix/engines/workflow/engine.py
+    gaps:
+      - "workflow selection + orchestration capabilities Planned for phase 1"
+
+  - id: engine_memory
+    claim: "Organizational Memory Engine — registered governed foundation"
+    status: Partial
+    evidence:
+      - dealix/engines/memory/engine.py
+    gaps:
+      - "memory read/write accessors Planned for phase 2"
+
+  - id: engine_executive
+    claim: "Executive Intelligence Engine — registered governed foundation"
+    status: Partial
+    evidence:
+      - dealix/engines/executive/engine.py
+    gaps:
+      - "brief/forecast generation Planned for phase 2"
+
+  - id: engine_graph
+    claim: "Organizational Graph Engine — in-memory relationship graph"
+    status: Pilot
+    evidence:
+      - dealix/engines/graph/engine.py
+    gaps:
+      - "no persistence; graph analytics (query) Planned for phase 3"
+
+  - id: engine_execution
+    claim: "Execution Engine — registered governed foundation"
+    status: Partial
+    evidence:
+      - dealix/engines/execution_engine/engine.py
+    gaps:
+      - "direct execution Planned for phase 1; live actions stay draft/approval-gated"
+
+  - id: engine_evaluation
+    claim: "Evaluation Engine — registered governed foundation"
+    status: Partial
+    evidence:
+      - dealix/engines/evaluation/engine.py
+    gaps:
+      - "hallucination/grounding/impact scoring Planned for phase 2"
+
+  - id: engine_observability
+    claim: "Observability Engine — registered governed foundation"
+    status: Partial
+    evidence:
+      - dealix/engines/observability_engine/engine.py
+    gaps:
+      - "trace/latency aggregation Planned for phase 2"
+
+  - id: engine_transformation
+    claim: "Transformation Engine — registered governed foundation"
+    status: Pilot
+    evidence:
+      - dealix/engines/transformation/engine.py
+    gaps:
+      - "maturity-model assessment Planned for phase 3"
+
+  - id: engine_digital_workforce
+    claim: "Digital Workforce Engine — registered governed foundation"
+    status: Partial
+    evidence:
+      - dealix/engines/digital_workforce/engine.py
+    gaps:
+      - "AI-employee/department management Planned for phase 2"
+
+  - id: engine_evolution
+    claim: "Continuous Evolution Engine — registered governed foundation"
+    status: Pilot
+    evidence:
+      - dealix/engines/evolution/engine.py
+    gaps:
+      - "feedback loops + workflow optimization Planned for phase 3"
+
   # ───────────── Things we do NOT claim ─────────────
   # (Listed here so the register is a positive declaration of limits)
   - id: not_cursor_not_chatbot
