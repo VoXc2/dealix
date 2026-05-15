@@ -95,6 +95,37 @@ async def get_transformation_timeline(program_run_id: str) -> dict[str, Any]:
         raise HTTPException(status_code=404, detail=str(e)) from e
 
 
+@router.get("/{program_run_id}/roi")
+async def get_transformation_roi(
+    program_run_id: str, retainer_months: int = Query(default=12, ge=0, le=60)
+) -> dict[str, Any]:
+    """Executive ROI summary — investment vs. ledger-recorded value.
+
+    Investment = the program tier's setup + committed retainer months.
+    Value is tiered: estimated value is reported but never folded into the
+    realized headline.
+    """
+    program = get_program(program_run_id)
+    if program is None:
+        raise HTTPException(
+            status_code=404, detail=f"unknown_program_run: {program_run_id}"
+        )
+    from auto_client_acquisition.value_os.roi_attribution import (
+        attribute_roi,
+        program_investment_sar,
+    )
+
+    investment = program_investment_sar(
+        program.offering_id, program.tier_id, months=retainer_months
+    )
+    summary = attribute_roi(
+        customer_id=program.customer_id,
+        program_run_id=program.program_run_id,
+        investment_sar=investment,
+    )
+    return summary.to_dict()
+
+
 @router.post("/{program_run_id}/advance")
 async def advance_transformation_workstream(
     program_run_id: str, body: AdvanceBody
