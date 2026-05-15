@@ -181,6 +181,25 @@ export const api = {
 
   getCustomerPortal: (handle = "Slot-A") =>
     apiClient.get(`/api/v1/customer-portal/${encodeURIComponent(handle)}`),
+
+  // ── Knowledge Center (Company Brain) ──────────────────────────────
+  ingestKnowledge: (body: {
+    workspace_id: string;
+    text: string;
+    source_id: string;
+    title?: string;
+    allowed_roles?: string[];
+  }) => apiClient.post("/api/v1/company-brain/ingest", body),
+
+  queryKnowledge: (body: {
+    workspace_id: string;
+    question: string;
+    viewer_role?: string;
+    top_k?: number;
+  }) => apiClient.post("/api/v1/company-brain/query", body),
+
+  getKnowledgeStats: (workspaceId: string) =>
+    apiClient.get(`/api/v1/company-brain/${encodeURIComponent(workspaceId)}/stats`),
 };
 
 export default api;
