@@ -1,0 +1,34 @@
+# ═══════════════════════════════════════════════════════════════════
+# Layer 12 — Continuous Evolution — Readiness Scorecard
+# ═══════════════════════════════════════════════════════════════════
+# Bands: 0-59 prototype | 60-74 internal beta | 75-84 client pilot
+#        85-94 enterprise-ready | 95+ mission-critical
+# ═══════════════════════════════════════════════════════════════════
+
+layer: "Layer 12 — Continuous Evolution"
+owner: "Continuous Evolution Lead — Platform Engineering"
+overall_score: 81
+band: "client pilot"
+
+sub_criteria:
+  - name: "Versioning of every deployable artifact"
+    score: 88
+    weight: 0.18
+  - name: "Changelog discipline — every change has an entry"
+    score: 90
+    weight: 0.14
+  - name: "Release gates — no deploy bypasses evals"
+    score: 85
+    weight: 0.16
+  - name: "Staged rollout with simulation"
+    score: 80
+    weight: 0.14
+  - name: "Rollback procedure tested and reversible"
+    score: 76
+    weight: 0.16
+  - name: "Feedback loop into improvement backlog"
+    score: 82
+    weight: 0.12
+  - name: "Readiness scoring per release"
+    score: 75
+    weight: 0.10

@@ -1,0 +1,38 @@
+layer: "Layer 11 - Transformation"
+owner: "Dealix Transformation Lead"
+overall_score: 70
+band: "internal beta"
+band_scale:
+  - "0-59 prototype"
+  - "60-74 internal beta"
+  - "75-84 client pilot"
+  - "85-94 enterprise-ready"
+  - "95+ mission-critical"
+sub_criteria:
+  - name: "Maturity model and scoring"
+    score: 78
+    weight: 0.15
+  - name: "AI operating model"
+    score: 74
+    weight: 0.15
+  - name: "Workflow redesign framework"
+    score: 72
+    weight: 0.15
+  - name: "Adoption and change management"
+    score: 66
+    weight: 0.15
+  - name: "Governance rollout"
+    score: 72
+    weight: 0.15
+  - name: "Value realization and business case"
+    score: 64
+    weight: 0.15
+  - name: "30-60-90 day roadmap and sales path mapping"
+    score: 70
+    weight: 0.10
+notes: >
+  All sub-criteria are evidence-backed hypotheses, not guaranteed outcomes.
+  Frameworks are documented and linked to real code paths under
+  auto_client_acquisition/. Moving to client pilot band requires running the
+  transformation map on a real client and producing the first
+  client-confirmed value report. Estimated value is not Verified value.

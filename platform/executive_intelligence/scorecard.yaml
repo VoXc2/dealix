@@ -1,0 +1,37 @@
+# Layer 9 — Executive Intelligence readiness scorecard
+# Bands: 0-59 prototype / 60-74 internal beta / 75-84 client pilot
+#        / 85-94 enterprise-ready / 95+ mission-critical
+
+layer: "Layer 9 — Executive Intelligence"
+owner: "Executive Intelligence Layer Lead"
+overall_score: 71
+band: "internal beta"
+
+sub_criteria:
+  - name: "Every service has a presentable ROI story (hours saved, qualified leads)"
+    score: 78
+    weight: 0.18
+  - name: "Weekly executive brief auto-generated on time"
+    score: 72
+    weight: 0.15
+  - name: "Reports show business impact, not raw usage"
+    score: 76
+    weight: 0.14
+  - name: "Recommendations tied to data and workflow evidence"
+    score: 74
+    weight: 0.12
+  - name: "Bottlenecks visible and ranked by impact"
+    score: 75
+    weight: 0.10
+  - name: "Adoption rate visible in the leadership dashboard"
+    score: 70
+    weight: 0.10
+  - name: "Customer-facing reports pass the customer-safe renderer"
+    score: 80
+    weight: 0.08
+  - name: "Forecasts shown as a range with a stated confidence band"
+    score: 64
+    weight: 0.07
+  - name: "Monthly board brief fully automated"
+    score: 55
+    weight: 0.06
