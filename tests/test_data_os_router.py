@@ -25,7 +25,7 @@ def test_import_preview_raw_csv_no_passport_blocks_or_returns_warning():
     assert body["customer_handle"] == "demo"
     assert body["preview"]["row_count"] == 3
     assert "company_name" in body["preview"]["columns"]
-    assert body["governance_decision"] in {"block", "require_approval", "allow_with_review", "allow"}
+    assert body["governance_decision"] in {"BLOCK", "REQUIRE_APPROVAL", "ALLOW_WITH_REVIEW", "ALLOW"}
     assert body["source_passport"]["provided"] is False
     assert body["is_estimate"] is True
 
@@ -52,7 +52,7 @@ def test_import_preview_with_passport_unblocks():
     assert resp.status_code == 200, resp.text
     body = resp.json()
     assert body["source_passport"]["valid"] is True
-    assert body["governance_decision"] in {"allow", "allow_with_review", "draft_only", "require_approval"}
+    assert body["governance_decision"] in {"ALLOW", "ALLOW_WITH_REVIEW", "DRAFT_ONLY", "REQUIRE_APPROVAL"}
 
 
 def test_import_preview_oversize_rejected():
