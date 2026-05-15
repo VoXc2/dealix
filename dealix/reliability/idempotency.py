@@ -14,9 +14,34 @@ from __future__ import annotations
 import hashlib
 import logging
 import os
+import threading
+import time
 from typing import Any
 
 log = logging.getLogger(__name__)
+
+# Process-local fallback used when no Redis is configured. Keeps idempotency
+# functional (within a single process) for tests and single-instance deploys.
+_MEMORY_STORE: dict[str, float] = {}
+_MEMORY_LOCK = threading.Lock()
+
+
+def _memory_claim(full_key: str, ttl_seconds: int) -> bool:
+    """In-memory equivalent of SET NX EX — True if newly claimed."""
+    now = time.time()
+    with _MEMORY_LOCK:
+        expiry = _MEMORY_STORE.get(full_key)
+        if expiry is not None and expiry > now:
+            return False
+        _MEMORY_STORE[full_key] = now + ttl_seconds
+        return True
+
+
+def _memory_seen(full_key: str) -> bool:
+    now = time.time()
+    with _MEMORY_LOCK:
+        expiry = _MEMORY_STORE.get(full_key)
+        return expiry is not None and expiry > now
 
 
 class IdempotencyStore:
@@ -55,7 +80,7 @@ class IdempotencyStore:
 
     def seen(self, key: str) -> bool:
         if not self._redis:
-            return False
+            return _memory_seen(self._key(key))
         try:
             return bool(self._redis.exists(self._key(key)))
         except Exception:  # pragma: no cover
@@ -64,7 +89,7 @@ class IdempotencyStore:
     def mark(self, key: str, ttl_seconds: int = 86400) -> bool:
         """Mark key as processed. Returns True if newly marked, False if already existed."""
         if not self._redis:
-            return True
+            return _memory_claim(self._key(key), ttl_seconds)
         try:
             # SET NX EX — atomic check-and-set
             result = self._redis.set(self._key(key), "1", nx=True, ex=ttl_seconds)

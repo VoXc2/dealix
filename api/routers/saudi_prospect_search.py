@@ -98,29 +98,38 @@ async def search_prospects(
             "note": "DB layer unavailable; returning empty result set.",
         }
 
+    def _col(*names: str) -> Any:
+        """First mapped column matching one of ``names``, else ``None``.
+        ``CompanyRecord`` does not model every prospect attribute, so a
+        filter on an absent column is skipped rather than crashing."""
+        for n in names:
+            col = getattr(CompanyRecord, n, None)
+            if col is not None:
+                return col
+        return None
+
     async with async_session_factory()() as session:
         stmt = select(CompanyRecord)
         count_stmt = select(func.count()).select_from(CompanyRecord)
 
-        if sector is not None:
-            stmt = stmt.where(CompanyRecord.industry == sector)
-            count_stmt = count_stmt.where(CompanyRecord.industry == sector)
-        if region is not None:
-            stmt = stmt.where(CompanyRecord.region == region)
-            count_stmt = count_stmt.where(CompanyRecord.region == region)
-        if size_band is not None:
-            stmt = stmt.where(CompanyRecord.size_band == size_band)
-            count_stmt = count_stmt.where(CompanyRecord.size_band == size_band)
+        if sector is not None and (col := _col("industry", "sector")) is not None:
+            stmt = stmt.where(col == sector)
+            count_stmt = count_stmt.where(col == sector)
+        if region is not None and (col := _col("region")) is not None:
+            stmt = stmt.where(col == region)
+            count_stmt = count_stmt.where(col == region)
+        if size_band is not None and (col := _col("size_band")) is not None:
+            stmt = stmt.where(col == size_band)
+            count_stmt = count_stmt.where(col == size_band)
         if q:
             pattern = f"%{q}%"
-            stmt = stmt.where(
-                or_(CompanyRecord.name.ilike(pattern),
-                    CompanyRecord.domain.ilike(pattern))
-            )
-            count_stmt = count_stmt.where(
-                or_(CompanyRecord.name.ilike(pattern),
-                    CompanyRecord.domain.ilike(pattern))
-            )
+            text_cols = [
+                c for c in (_col("name"), _col("domain", "website")) if c is not None
+            ]
+            if text_cols:
+                clause = or_(*(c.ilike(pattern) for c in text_cols))
+                stmt = stmt.where(clause)
+                count_stmt = count_stmt.where(clause)
 
         stmt = stmt.order_by(CompanyRecord.name).limit(limit).offset(offset)
         try:
