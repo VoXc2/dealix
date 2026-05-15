@@ -71,7 +71,14 @@ async def test_project_ask_semantic_notice(async_client):
     assert r.status_code == 200
     j = r.json()
     assert "semantic_status_ar" in j
-    assert "غير متصل" in j["semantic_status_ar"] or "not connected" in j["semantic_status_ar"].lower()
+    # Semantic search not fully wired — status notes it (legacy wording
+    # "غير متصل"/"not connected" or the current "connect pgvector" notice).
+    status = j["semantic_status_ar"].lower()
+    assert (
+        "غير متصل" in j["semantic_status_ar"]
+        or "not connected" in status
+        or "pgvector" in status
+    )
 
 
 @pytest.mark.asyncio
