@@ -42,10 +42,9 @@ def scan_text_for_secrets(text: str) -> list[SecretFinding]:
         for m in pat.finditer(text):
             # Redact the actual match — keep only first 4 + last 2 chars.
             raw = m.group(0)
-            if len(raw) <= 8:
-                redacted_excerpt = "[REDACTED]"
-            else:
-                redacted_excerpt = raw[:4] + "***" + raw[-2:]
+            redacted_excerpt = (
+                "[REDACTED]" if len(raw) <= 8 else raw[:4] + "***" + raw[-2:]
+            )
             out.append(SecretFinding(pattern_id=pid, excerpt_redacted=redacted_excerpt))
     return out
 

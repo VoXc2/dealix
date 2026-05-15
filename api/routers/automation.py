@@ -77,9 +77,12 @@ async def compliance_check(body: dict[str, Any] = Body(...)) -> dict[str, Any]:
         try:
             rows = (await session.execute(select(SuppressionRecord))).scalars().all()
             for r in rows:
-                if r.email: sup_emails.add(r.email.lower())
-                if r.domain: sup_domains.add(r.domain.lower())
-                if r.phone: sup_phones.add(r.phone)
+                if r.email:
+                    sup_emails.add(r.email.lower())
+                if r.domain:
+                    sup_domains.add(r.domain.lower())
+                if r.phone:
+                    sup_phones.add(r.phone)
         except Exception as exc:
             log.warning("suppression_load_failed err=%s", exc)
 

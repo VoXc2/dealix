@@ -177,7 +177,7 @@ def combine(*scores: ConfidenceScore) -> ConfidenceScore:
     all_reasons = tuple(r for s in scores for r in s.reasons)
     return ConfidenceScore(
         score=combined, level=_score_to_level(combined),
-        reasons=all_reasons + (f"combined_{len(scores)}_signals",),
+        reasons=(*all_reasons, f"combined_{len(scores)}_signals"),
     )
 
 

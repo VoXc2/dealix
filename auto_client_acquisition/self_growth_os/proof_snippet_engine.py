@@ -92,7 +92,6 @@ def _format_outcome(event: dict[str, Any]) -> tuple[str, str]:
 
 def _service_title_pair(event: dict[str, Any]) -> tuple[str, str]:
     sid = event.get("service_id") or "service"
-    bundle = event.get("service_bundle") or "service"
     # Lookup from matrix would be ideal; for an MVP, use the slug.
     title_ar = f"خدمة {sid}"
     title_en = f"{sid.replace('_', ' ').title()} service"

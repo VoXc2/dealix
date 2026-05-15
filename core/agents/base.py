@@ -18,7 +18,7 @@ import logging
 import re
 from abc import ABC, abstractmethod
 from datetime import datetime
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from core.config.models import Task
 from core.errors import AgentError
@@ -26,6 +26,9 @@ from core.llm import get_router
 from core.llm.base import Message
 from core.logging import get_logger
 from core.utils import generate_id, utcnow
+
+if TYPE_CHECKING:
+    from core.agents.tools import Tool
 
 logger = get_logger(__name__)
 

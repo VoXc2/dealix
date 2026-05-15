@@ -32,7 +32,7 @@ def _leads_waiting() -> dict[str, Any]:
                 created = datetime.fromisoformat(getattr(r, "created_at", "") or "")
                 if created.tzinfo is None:
                     created = created.replace(tzinfo=UTC)
-            except Exception:
+            except Exception:  # noqa: S112 - skip record with unparsable timestamp
                 continue
             if created < cutoff:
                 items.append({
@@ -113,7 +113,7 @@ def _capital_this_week() -> dict[str, Any]:
                 created = datetime.fromisoformat(a.created_at)
                 if created.tzinfo is None:
                     created = created.replace(tzinfo=UTC)
-            except Exception:
+            except Exception:  # noqa: S112 - skip asset with unparsable timestamp
                 continue
             if created >= cutoff:
                 recent.append({

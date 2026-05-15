@@ -345,11 +345,6 @@ async def score_tuner_run(body: dict[str, Any] = Body(default={})) -> dict[str, 
             )).scalars().all()
             replies = [s for s in sends if s.reply_received_at is not None]
             account_ids = list({s.account_id for s in sends if s.account_id})
-            scores = (await session.execute(
-                select(LeadScoreRecord).where(
-                    LeadScoreRecord.account_id.in_(account_ids)
-                )
-            )).scalars().all() if account_ids else []
             accounts = (await session.execute(
                 select(AccountRecord).where(
                     AccountRecord.id.in_(account_ids)

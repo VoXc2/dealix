@@ -34,7 +34,7 @@ import httpx
 
 log = logging.getLogger(__name__)
 
-OAUTH_TOKEN_URL = "https://oauth2.googleapis.com/token"
+OAUTH_TOKEN_URL = "https://oauth2.googleapis.com/token"  # noqa: S105 - public endpoint URL
 GMAIL_SEND_URL = "https://gmail.googleapis.com/gmail/v1/users/me/messages/send"
 GMAIL_DRAFTS_URL = "https://gmail.googleapis.com/gmail/v1/users/me/drafts"
 

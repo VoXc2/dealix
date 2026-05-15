@@ -219,10 +219,9 @@ async def detect_stack(
         )
 
     # Normalize — accept full url or bare domain
-    if "://" in domain:
-        base_url = domain.rstrip("/")
-    else:
-        base_url = f"https://{domain}".rstrip("/")
+    base_url = (
+        domain.rstrip("/") if "://" in domain else f"https://{domain}".rstrip("/")
+    )
 
     tools: list[DetectedTool] = []
     headers_concat = ""
@@ -289,16 +288,14 @@ if __name__ == "__main__":
 
 
 # ── Contact info extraction (emails, phones) from public pages ─
-import re as _re
-
-EMAIL_RE = _re.compile(r"[\w\.\-+]+@[\w\.\-]+\.[a-zA-Z]{2,}")
-PHONE_SA_RE = _re.compile(r"(?:\+?966|00966|0)(?:\s*[-.])?\s*5\d(?:\s*[-.]?\s*\d){8}")
-PHONE_INTL_RE = _re.compile(r"\+\d{1,3}[\s-]?\d{1,4}[\s-]?\d{3,4}[\s-]?\d{3,5}")
-WHATSAPP_RE = _re.compile(r"(?:wa\.me/|whatsapp\.com/send\?phone=|api\.whatsapp\.com/send\?phone=)(\+?\d{8,15})")
+EMAIL_RE = re.compile(r"[\w\.\-+]+@[\w\.\-]+\.[a-zA-Z]{2,}")
+PHONE_SA_RE = re.compile(r"(?:\+?966|00966|0)(?:\s*[-.])?\s*5\d(?:\s*[-.]?\s*\d){8}")
+PHONE_INTL_RE = re.compile(r"\+\d{1,3}[\s-]?\d{1,4}[\s-]?\d{3,4}[\s-]?\d{3,5}")
+WHATSAPP_RE = re.compile(r"(?:wa\.me/|whatsapp\.com/send\?phone=|api\.whatsapp\.com/send\?phone=)(\+?\d{8,15})")
 
 # Social handles
-LINKEDIN_COMPANY_RE = _re.compile(r"linkedin\.com/company/([\w\-]+)")
-TWITTER_RE = _re.compile(r"(?:twitter\.com|x\.com)/([\w]+)")
+LINKEDIN_COMPANY_RE = re.compile(r"linkedin\.com/company/([\w\-]+)")
+TWITTER_RE = re.compile(r"(?:twitter\.com|x\.com)/([\w]+)")
 
 
 async def extract_contact_info(
@@ -353,7 +350,7 @@ async def extract_contact_info(
                 for m in TWITTER_RE.findall(text):
                     if m.lower() not in ("home","share","intent","search"):
                         twitter.add(m)
-            except Exception:
+            except Exception:  # noqa: S112 - skip page that failed to parse
                 continue
 
     return {

@@ -198,7 +198,9 @@ class ArabicSentimentAnalyzer:
             max_tokens=128,
             temperature=0.0,
         )
-        raw = response.content.strip().strip("```json").strip("```").strip()
+        raw = response.content.strip()
+        raw = raw.removeprefix("```json").removeprefix("```")
+        raw = raw.removesuffix("```").strip()
         result = json.loads(raw)
         result["method"] = "llm"
         return result

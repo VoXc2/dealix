@@ -167,7 +167,7 @@ def _all_records() -> list[ConsentRecord]:
                 try:
                     d = json.loads(line)
                     out.append(ConsentRecord(**d))
-                except Exception:
+                except Exception:  # noqa: S112 - skip malformed ledger line
                     continue
     except Exception:
         return []

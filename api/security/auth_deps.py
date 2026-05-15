@@ -129,7 +129,6 @@ def require_role(minimum: Role):
         # For performance the role name is embedded in the JWT claim 'rol'.
         # We trust the JWT here; re-loading from DB adds latency without much benefit
         # for the typical path (revocation is handled at refresh level).
-        from fastapi import Request as _R  # local import avoids circular
         # The JWT payload has already been validated in get_current_user.
         # Retrieve role name stored on the user via the RoleRecord FK.
         # To avoid an extra query we store role name in a context var set by get_current_user.

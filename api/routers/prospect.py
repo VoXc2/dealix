@@ -112,7 +112,7 @@ async def search_diag() -> dict[str, Any]:
 
     # All env vars whose names start with target prefixes — helps detect typos
     related = sorted([
-        name for name in os.environ.keys()
+        name for name in os.environ
         if name.startswith((
             "GOOGLE_", "MOYASAR_", "ANTHROPIC_", "OPENAI_", "GROQ_", "POSTHOG_",
             "SENTRY_", "DATABASE_", "TAVILY_", "FIRECRAWL_", "HUNTER_", "ABSTRACT_",
@@ -503,7 +503,6 @@ async def inbound_handle(body: dict[str, Any] = Body(...)) -> dict[str, Any]:
       }
     """
     channel = str(body.get("channel") or "unknown").lower()
-    sender = str(body.get("from") or "").strip()
     company = str(body.get("company") or "").strip()
     message = str(body.get("message") or "").strip()
 
@@ -545,19 +544,19 @@ async def inbound_handle(body: dict[str, Any] = Body(...)) -> dict[str, Any]:
         opp_type = "INVESTOR_OR_ADVISOR"
 
     # Build response
-    CAL = "https://calendly.com/sami-assiri11/dealix-demo"
+    cal_url = "https://calendly.com/sami-assiri11/dealix-demo"
     responses = {
         "opt_out":              "تمام، تم إيقاف الرسائل. شكراً لوقتك.",
-        "interested":           f"هلا! شكراً على اهتمامك. خلني أحجز معك 20 دقيقة demo بدون أي التزام — تقدر تختار موعدك هنا: {CAL}",
-        "wants_demo":           f"ممتاز، نسوي demo. 20 دقيقة، اختار موعد: {CAL}",
-        "price":                f"Starter 999/شهر، Growth 2,999، Scale 7,999. في pilot بريال × 7 أيام بدون التزام. 20 دقيقة demo أفصّل الباقة المناسبة: {CAL}",
-        "send_details":         f"تفاصيل سريعة: Dealix = AI sales rep بالعربي الخليجي، يرد على leads خلال 45 ثانية، يؤهّل، ويحجز demos. الأفضل نشوفه معاً في 20 دقيقة على سيناريو شركتكم: {CAL}\nأو تصفح: https://dealix.me",
+        "interested":           f"هلا! شكراً على اهتمامك. خلني أحجز معك 20 دقيقة demo بدون أي التزام — تقدر تختار موعدك هنا: {cal_url}",
+        "wants_demo":           f"ممتاز، نسوي demo. 20 دقيقة، اختار موعد: {cal_url}",
+        "price":                f"Starter 999/شهر، Growth 2,999، Scale 7,999. في pilot بريال × 7 أيام بدون التزام. 20 دقيقة demo أفصّل الباقة المناسبة: {cal_url}",
+        "send_details":         f"تفاصيل سريعة: Dealix = AI sales rep بالعربي الخليجي، يرد على leads خلال 45 ثانية، يؤهّل، ويحجز demos. الأفضل نشوفه معاً في 20 دقيقة على سيناريو شركتكم: {cal_url}\nأو تصفح: https://dealix.me",
         "later":                "تمام. متى الوقت المناسب يحتمل يكون؟ سأرجع في نفس اليوم بالظبط.",
         "not_relevant":         "أحترم ذلك. سؤال أخير: هل تعرف شخص/شركة سعودية قد تستفيد من AI sales rep بالعربي؟ 10% من MRR لـ 12 شهر لكل referral. شكراً على وقتك.",
         "budget_objection":     "أفهم. عرضنا pilot بريال واحد × 7 أيام — قابل للاسترداد 100% — هدفه يثبت ROI قبل أي التزام. مناسب؟",
-        "already_has_crm":      "Dealix ما يستبدل CRM — يشتغل كطبقة أولى فوقه. يرد بالعربي، يؤهّل، ويسلّم الـ CRM قائمة leads جاهزة. تكامل مباشر HubSpot/Salesforce/Zoho/webhook. 20 دقيقة demo: " + CAL,
-        "arabic_concern":       f"نقطة مهمة. Dealix خليجي حقيقي، ما يكتب 'حضرتك' و'تعطفكم'. 20 دقيقة demo تختبره بنفسك على سيناريو شركتكم: {CAL}",
-        "privacy_concern":      f"مصمم PDPL-compliant: بياناتكم في سيرفرات السعودية، opt-out في كل email، audit log كامل. 20 دقيقة نناقش compliance + demo: {CAL}",
+        "already_has_crm":      "Dealix ما يستبدل CRM — يشتغل كطبقة أولى فوقه. يرد بالعربي، يؤهّل، ويسلّم الـ CRM قائمة leads جاهزة. تكامل مباشر HubSpot/Salesforce/Zoho/webhook. 20 دقيقة demo: " + cal_url,
+        "arabic_concern":       f"نقطة مهمة. Dealix خليجي حقيقي، ما يكتب 'حضرتك' و'تعطفكم'. 20 دقيقة demo تختبره بنفسك على سيناريو شركتكم: {cal_url}",
+        "privacy_concern":      f"مصمم PDPL-compliant: بياناتكم في سيرفرات السعودية، opt-out في كل email، audit log كامل. 20 دقيقة نناقش compliance + demo: {cal_url}",
         "partnership_interest": "ممتاز. 3 tiers:\n- Referral: 10% MRR × 12 شهر\n- Agency: setup 3-15K + 20-30% MRR\n- White-label (Scale)\n20 دقيقة partner call: https://dealix.me/partners.html",
         "referral_opportunity": "شكراً! 10% من MRR × 12 شهر لأي عميل يجي عبرك. ممكن تخبرني بمعلومات الشركة والشخص؟",
     }
@@ -659,10 +658,7 @@ async def inbound_email(body: dict[str, Any] = Body(...)) -> dict[str, Any]:
     sender = str(body.get("from") or body.get("sender") or "")
     msg = str(body.get("text") or body.get("body-plain") or body.get("message") or "")
     subject = str(body.get("subject") or "")
-    if subject and msg:
-        combined = f"[{subject}] {msg}"
-    else:
-        combined = msg or subject
+    combined = f"[{subject}] {msg}" if subject and msg else msg or subject
     if not combined:
         raise HTTPException(status_code=400, detail="no_message_body")
     result = await _run_inbound_handler("email", sender, str(body.get("company", "")), combined)

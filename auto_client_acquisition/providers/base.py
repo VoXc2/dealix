@@ -10,7 +10,7 @@ from typing import Any
 log = logging.getLogger(__name__)
 
 
-class ProviderUnavailable(RuntimeError):
+class ProviderUnavailable(RuntimeError):  # noqa: N818 - public API name
     """Raised by a provider when its env vars or network call are unusable."""
 
 

@@ -20,7 +20,7 @@ class EvalCategory(StrEnum):
     LIVE_SEND = "live_send"
     PROMPT_INJECTION = "prompt_injection"
     PII_LEAKAGE = "pii_leakage"
-    SECRET_LEAKAGE = "secret_leakage"
+    SECRET_LEAKAGE = "secret_leakage"  # noqa: S105 - threat category enum, not a secret
     EXCESSIVE_AGENCY = "excessive_agency"
     UNSAFE_TOOL_USE = "unsafe_tool_use"
 

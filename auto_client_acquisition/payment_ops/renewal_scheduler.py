@@ -117,7 +117,7 @@ def list_due(*, on_date: datetime | None = None) -> list[RenewalSchedule]:
             try:
                 data = json.loads(line)
                 s = RenewalSchedule(**data)
-            except Exception:
+            except Exception:  # noqa: S112 - skip malformed ledger line
                 continue
             if s.status in (
                 RenewalStatus.SCHEDULED.value,
@@ -140,7 +140,7 @@ def list_by_customer(customer_id: str) -> list[RenewalSchedule]:
             try:
                 data = json.loads(line)
                 s = RenewalSchedule(**data)
-            except Exception:
+            except Exception:  # noqa: S112 - skip malformed ledger line
                 continue
             if s.customer_id == customer_id:
                 out.append(s)

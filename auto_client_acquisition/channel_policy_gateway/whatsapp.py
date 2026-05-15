@@ -24,9 +24,12 @@ def whatsapp_policy(
 
     if is_cold or is_blast or is_purchased_list:
         reasons = []
-        if is_cold: reasons.append("cold_whatsapp")
-        if is_blast: reasons.append("broadcast_blast")
-        if is_purchased_list: reasons.append("purchased_list")
+        if is_cold:
+            reasons.append("cold_whatsapp")
+        if is_blast:
+            reasons.append("broadcast_blast")
+        if is_purchased_list:
+            reasons.append("purchased_list")
         return PolicyDecision(
             channel="whatsapp",
             action_kind=action_kind,
@@ -58,10 +61,14 @@ def whatsapp_policy(
         "human_approved",
     ]
     missing: list[str] = []
-    if not consent_record_exists: missing.append("consent_record_exists")
-    if not approved_template_or_24h_window: missing.append("approved_template_or_24h_window")
-    if not live_gate_true: missing.append("live_gate_true")
-    if not human_approved: missing.append("human_approved")
+    if not consent_record_exists:
+        missing.append("consent_record_exists")
+    if not approved_template_or_24h_window:
+        missing.append("approved_template_or_24h_window")
+    if not live_gate_true:
+        missing.append("live_gate_true")
+    if not human_approved:
+        missing.append("human_approved")
 
     if missing:
         return PolicyDecision(

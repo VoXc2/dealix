@@ -28,5 +28,5 @@ def benchmark_candidate_eligible(
         limitations_stated=limitations_stated,
     )
     if occurrences < 6:
-        return False, errs + ("pattern_confidence_below_high",)
+        return False, (*errs, "pattern_confidence_below_high")
     return ok, errs

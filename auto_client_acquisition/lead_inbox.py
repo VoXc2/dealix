@@ -81,7 +81,7 @@ def list_leads(limit: int = 200, status: str | None = None) -> list[dict[str, An
                     continue
                 try:
                     rec = json.loads(line)
-                except Exception:
+                except Exception:  # noqa: S112 - skip malformed ledger line
                     continue
                 if status and rec.get("status") != status:
                     continue

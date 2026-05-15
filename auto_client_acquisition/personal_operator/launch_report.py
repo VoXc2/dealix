@@ -267,7 +267,7 @@ def build_launch_report() -> LaunchReport:
                     next_actions=[*list(a.next_actions), "اربط الأحداث بملخص أسبوعي للعميل"],
                 )
                 break
-    overall = int(round(sum(a.score for a in areas) / len(areas))) if areas else 0
+    overall = round(sum(a.score for a in areas) / len(areas)) if areas else 0
     return LaunchReport(overall_score=overall, areas=areas)
 
 

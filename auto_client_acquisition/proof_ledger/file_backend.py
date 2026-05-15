@@ -51,11 +51,6 @@ class FileProofLedger:
         # redacted? NO. Only the redacted form ever hits disk.
         ar_redacted = redact_text(event.summary_ar) if event.summary_ar else ""
         en_redacted = redact_text(event.summary_en) if event.summary_en else ""
-        if not event.consent_for_publication:
-            # Strip the customer handle too unless explicitly anonymized.
-            handle = event.customer_handle
-        else:
-            handle = event.customer_handle
 
         # Build a written copy with redaction applied.
         stored = event.model_copy(update={
@@ -92,7 +87,7 @@ class FileProofLedger:
                         try:
                             data = json.loads(line)
                             ev = ProofEvent.model_validate(data)
-                        except Exception:
+                        except Exception:  # noqa: S112 - skip malformed ledger line
                             continue
                         if customer_handle and ev.customer_handle != customer_handle:
                             continue
@@ -134,7 +129,7 @@ class FileProofLedger:
                         try:
                             data = json.loads(line)
                             u = RevenueWorkUnit.model_validate(data)
-                        except Exception:
+                        except Exception:  # noqa: S112 - skip malformed ledger line
                             continue
                         if customer_handle and u.customer_handle != customer_handle:
                             continue

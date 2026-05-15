@@ -28,6 +28,4 @@ def agent_transparency_card_valid(card: AgentTransparencyCard) -> bool:
         return False
     if not 0 <= card.autonomy_level <= _AUTONOMY_MAX:
         return False
-    if card.external_action_allowed and not card.approval_required:
-        return False
-    return True
+    return not (card.external_action_allowed and not card.approval_required)

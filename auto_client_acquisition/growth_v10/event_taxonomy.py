@@ -22,10 +22,11 @@ def validate_event(record: dict[str, Any] | EventRecord) -> EventRecord:
     Returns a fresh EventRecord with redacted=True if redaction was
     applied to any string in the payload.
     """
-    if isinstance(record, EventRecord):
-        data = record.model_dump(mode="json")
-    else:
-        data = dict(record)
+    data = (
+        record.model_dump(mode="json")
+        if isinstance(record, EventRecord)
+        else dict(record)
+    )
 
     raw_handle = data.get("customer_handle", "")
     handle_redacted = redact_text(raw_handle) if isinstance(raw_handle, str) else raw_handle

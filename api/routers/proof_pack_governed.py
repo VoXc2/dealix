@@ -89,7 +89,7 @@ def proof_generate(engagement_id: str, body: ProofGenerateBody = Body(default_fa
         )
     filled_s = sum(1 for k in PROOF_SECTION_KEYS if body.sections.get(k) not in (None, "", [], {}))
     filled_c = sum(1 for k in COMPONENT_KEYS if body.components.get(k) not in (None, "", [], {}))
-    proof_score = int(round((filled_s / len(PROOF_SECTION_KEYS)) * 70 + (filled_c / len(COMPONENT_KEYS)) * 30))
+    proof_score = round((filled_s / len(PROOF_SECTION_KEYS)) * 70 + (filled_c / len(COMPONENT_KEYS)) * 30)
     tier = "case_candidate" if proof_score >= 85 else ("sales_support" if proof_score >= 70 else ("internal_learning" if proof_score >= 55 else "weak"))
     snap = merge_pipeline_stage(
         engagement_id,

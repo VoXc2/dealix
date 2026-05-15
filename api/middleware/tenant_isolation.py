@@ -23,7 +23,7 @@ from dataclasses import dataclass
 from typing import Any, Literal
 
 
-class CrossTenantAccessDenied(Exception):
+class CrossTenantAccessDenied(Exception):  # noqa: N818 - public API name
     """Raised when a request attempts to access data outside its tenant.
 
     Caller (FastAPI route handler / dependency) catches and converts to

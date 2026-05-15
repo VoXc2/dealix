@@ -52,7 +52,7 @@ def risk_summary(
                 if line and line not in seen:
                     seen.add(line)
                     out.append(line)
-            except Exception:
+            except Exception:  # noqa: S112 - skip event that failed to summarize
                 continue
 
     return out

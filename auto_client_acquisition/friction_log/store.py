@@ -90,7 +90,7 @@ def list_events(
             try:
                 data = json.loads(line)
                 ev = FrictionEvent(**data)
-            except Exception:
+            except Exception:  # noqa: S112 - skip malformed ledger line
                 continue
             if ev.customer_id != customer_id:
                 continue

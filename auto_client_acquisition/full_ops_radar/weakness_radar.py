@@ -207,7 +207,7 @@ def _support_breached_sla() -> list[dict[str, Any]]:
                 wid="support_sla_breached",
                 layer="support",
                 severity="critical" if any(b["priority"] == "p0" for b in breached) else "high",
-                blocker=True if any(b["priority"] == "p0" for b in breached) else False,
+                blocker=any(b["priority"] == "p0" for b in breached),
                 reason_ar=f"{len(breached)} تذكرة دعم تجاوزت SLA.",
                 reason_en=f"{len(breached)} support ticket(s) past SLA.",
                 fix_ar="افتح /api/v1/support-inbox/sla-breaches وعالج P0 أوّلاً.",

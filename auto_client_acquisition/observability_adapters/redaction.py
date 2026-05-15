@@ -78,7 +78,4 @@ class RedactionFilter:
     @staticmethod
     def is_safe_for_external_log(text: str) -> bool:
         """Quick check: return False if text contains any sensitive pattern."""
-        for pattern, _ in _PATTERNS:
-            if pattern.search(text):
-                return False
-        return True
+        return all(not pattern.search(text) for pattern, _ in _PATTERNS)

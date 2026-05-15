@@ -7,6 +7,7 @@ from __future__ import annotations
 
 from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
+from typing import TYPE_CHECKING
 
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
@@ -85,8 +86,11 @@ from core.config.settings import get_settings
 from core.errors import AICompanyError
 from core.logging import configure_logging, get_logger
 
+if TYPE_CHECKING:
+    from core.config.settings import Settings
 
-def _validate_production_secrets(settings: Settings) -> None:  # type: ignore[name-defined]
+
+def _validate_production_secrets(settings: Settings) -> None:
     """
     Fail fast if production is started with insecure defaults.
     يرفض تشغيل الإنتاج بإعدادات غير آمنة.
@@ -153,7 +157,7 @@ def create_app() -> FastAPI:
     """FastAPI factory."""
     settings = get_settings()
 
-    _OPENAPI_TAGS = [
+    openapi_tags_def = [
         {"name": "Sales", "description": "Lead intake, pipeline, outreach, pricing, revenue."},
         {"name": "Customers", "description": "Customer success, CRM, portals, inbox, support."},
         {"name": "Agents", "description": "LLM gateway, AI workforce, observability, safety, delivery."},
@@ -182,7 +186,7 @@ def create_app() -> FastAPI:
         redoc_url="/redoc",
         openapi_url="/openapi.json",
         lifespan=lifespan,
-        openapi_tags=_OPENAPI_TAGS,
+        openapi_tags=openapi_tags_def,
     )
 
     app.add_middleware(
@@ -217,7 +221,7 @@ def create_app() -> FastAPI:
         )
 
     # ── Routers registered by domain (replaces 90 flat app.include_router calls) ─
-    _DOMAIN_GROUPS = [
+    domain_groups_def = [
         admin_domain,
         sales_domain,
         customers_domain,
@@ -227,7 +231,7 @@ def create_app() -> FastAPI:
         webhooks_domain,
         deprecated_domain,
     ]
-    for domain in _DOMAIN_GROUPS:
+    for domain in domain_groups_def:
         for router in domain.get_routers():
             app.include_router(router)
 

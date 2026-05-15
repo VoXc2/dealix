@@ -12,7 +12,7 @@ def proof_pack_completeness_score(content_by_section: Mapping[str, str]) -> int:
     if not PROOF_PACK_V2_SECTIONS:
         return 0
     filled = sum(1 for k in PROOF_PACK_V2_SECTIONS if (content_by_section.get(k) or "").strip())
-    return int(round(100.0 * filled / len(PROOF_PACK_V2_SECTIONS)))
+    return round(100.0 * filled / len(PROOF_PACK_V2_SECTIONS))
 
 
 def proof_strength_band(score: int) -> str:

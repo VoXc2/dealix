@@ -130,7 +130,7 @@ def _worker_main() -> None:
 
 def get_isolated_sync_postgres_store() -> IsolatedSyncPostgresEventStore:
     """Singleton sync facade; safe for ``Orchestrator`` and sync HTTP handlers."""
-    global _worker_thread, _store_singleton
+    global _worker_thread, _store_singleton, _worker_loop, _worker_engine, _worker_inner
 
     with _state_lock:
         if (

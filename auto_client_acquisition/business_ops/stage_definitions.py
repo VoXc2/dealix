@@ -5,11 +5,10 @@ HARD RULES: no revenue before payment_confirmed, no public proof without permiss
             no delivery without payment, no cold WhatsApp.
 """
 from dataclasses import dataclass, field
-from enum import Enum
-from typing import List, Optional
+from enum import StrEnum
 
 
-class JourneyStage(str, Enum):
+class JourneyStage(StrEnum):
     TARGET_IDENTIFIED = "target_identified"
     ICP_QUALIFIED = "icp_qualified"
     WARM_INTRO_DRAFTED = "warm_intro_drafted"

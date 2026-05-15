@@ -524,7 +524,6 @@ async def consent_dashboard(
     Get consent management dashboard data for a tenant.
     يجلب بيانات لوحة إدارة الموافقات لمستأجر معين.
     """
-    all_records = consent_table.stats()
     # For now return aggregate stats; production would filter by tenant_id
     records_raw = [
         {

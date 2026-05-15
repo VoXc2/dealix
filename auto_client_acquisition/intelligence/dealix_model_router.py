@@ -206,7 +206,7 @@ def route_task(
             text="", confidence=ConfidenceScore(score=None, level="unknown", reasons=("privacy_blocked",)),
             backend_used="none", model_used="none",
             estimated_cost_usd=0.0, estimated_input_tokens=0, estimated_output_tokens=0,
-            fallback_reasons=tuple(fallback_reasons + ["privacy=founder_only_no_cloud"]),
+            fallback_reasons=(*fallback_reasons, "privacy=founder_only_no_cloud"),
             requirements=req,
         )
 

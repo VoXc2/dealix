@@ -136,7 +136,9 @@ def render_proposal(context: ProposalContext, template_path: Path | None = None)
         try:
             import jinja2
             env = jinja2.Environment(
-                autoescape=False, keep_trailing_newline=True, trim_blocks=True
+                autoescape=False,  # noqa: S701 - renders Markdown proposal, not HTML; escaping would corrupt output
+                keep_trailing_newline=True,
+                trim_blocks=True,
             )
             return env.from_string(raw).render(**mapping)
         except ImportError:

@@ -172,9 +172,7 @@ def should_retry(status_code: int | None, error: str | None) -> bool:
         return False  # success
     if status_code in (408, 429):
         return True
-    if 500 <= status_code < 600:
-        return True
-    return False
+    return 500 <= status_code < 600
 
 
 # ── Subscription filtering ─────────────────────────────────────────

@@ -43,10 +43,11 @@ def compute_customer_metrics(
       - sprint_to_partner_conversion = partner_conversions / sprint_count
     """
     # Sprint-to-partner conversion %
-    if sprint_count > 0:
-        conv_pct = min(100.0, (partner_conversions / sprint_count) * 100.0)
-    else:
-        conv_pct = 0.0
+    conv_pct = (
+        min(100.0, (partner_conversions / sprint_count) * 100.0)
+        if sprint_count > 0
+        else 0.0
+    )
 
     # Gross margin estimate (only meaningful if revenue exists)
     if payment_confirmed_total_sar > 0:

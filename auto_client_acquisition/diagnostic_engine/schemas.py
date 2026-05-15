@@ -6,7 +6,6 @@ Pydantic v2 schemas for the Diagnostic Engine.
 from __future__ import annotations
 
 from datetime import UTC, datetime, timezone
-from typing import List
 
 from pydantic import BaseModel, ConfigDict, Field
 

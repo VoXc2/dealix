@@ -98,7 +98,7 @@ class DecisionPassport(BaseModel):
     meta: dict[str, Any] = Field(default_factory=dict)
 
 
-class ValidationFailure(Exception):
+class ValidationFailure(Exception):  # noqa: N818 - public API name
     """Raised by ``validate_passport()`` when a hard rule is violated.
 
     Attributes:
@@ -155,10 +155,11 @@ def validate_passport(
     if p.deadline is not None:
         ref = now if now is not None else datetime.now(UTC)
         # Normalize naive deadlines to UTC (assumes UTC if no tz)
-        if p.deadline.tzinfo is None:
-            deadline_aware = p.deadline.replace(tzinfo=UTC)
-        else:
-            deadline_aware = p.deadline
+        deadline_aware = (
+            p.deadline.replace(tzinfo=UTC)
+            if p.deadline.tzinfo is None
+            else p.deadline
+        )
         if deadline_aware < ref:
             raise ValidationFailure(
                 "deadline_in_past",

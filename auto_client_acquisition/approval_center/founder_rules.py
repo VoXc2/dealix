@@ -111,7 +111,7 @@ class FounderRuleEngine:
         self,
         rules_path: Path | None = None,
         audit_path: Path | None = None,
-        founder_secret_env: str = "DEALIX_FOUNDER_RULES_SECRET",
+        founder_secret_env: str = "DEALIX_FOUNDER_RULES_SECRET",  # noqa: S107 - env var name, not a secret
     ) -> None:
         self.rules_path = rules_path or DEFAULT_RULES_FILE
         self.audit_path = audit_path or DEFAULT_AUDIT_FILE

@@ -23,7 +23,7 @@ async def customer_loop_status() -> dict:
     """Health probe + safety guardrails."""
     return {
         "module": "customer_loop",
-        "states_total": len([s for s in JourneyState]),
+        "states_total": len(list(JourneyState)),
         "guardrails": {
             "no_live_send": True,
             "no_scraping": True,

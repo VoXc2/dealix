@@ -235,6 +235,6 @@ def list_library(*, sector: str | None = None, limit: int = 50) -> list[dict[str
                     if sector and entry.get("sector") != sector:
                         continue
                     entries.append(entry)
-                except Exception:
+                except Exception:  # noqa: S112 - skip malformed ledger line
                     continue
     return entries[:limit]

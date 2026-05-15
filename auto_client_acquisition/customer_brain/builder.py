@@ -134,7 +134,7 @@ def build_snapshot(*, customer_handle: str) -> CustomerBrainSnapshot:
     sector = None
     channels: list[str] = []
     if service_hist:
-        for h in service_hist:
+        for _h in service_hist:
             # Score has no sector; we'd need to look up the full record.
             # Fall back to the first record's stored data.
             pass

@@ -172,10 +172,7 @@ def build_summary(
     headline_en = _safe_format(template["headline_en"], **kwargs)
 
     # Detail: prefer explicit caller-provided over template default
-    if detail_ar:
-        d_ar = detail_ar
-    else:
-        d_ar = _safe_format(template["detail_ar"], **kwargs)
+    d_ar = detail_ar or _safe_format(template["detail_ar"], **kwargs)
     if detail_en:
         d_en = detail_en
     else:

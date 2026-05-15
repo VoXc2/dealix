@@ -56,7 +56,7 @@ def aggregate(*, customer_id: str, window_days: int = 30) -> FrictionAggregate:
     for ev in events_2x:
         try:
             ts = datetime.fromisoformat(ev.occurred_at).timestamp()
-        except Exception:
+        except Exception:  # noqa: S112 - skip event with unparsable timestamp
             continue
         if older_start <= ts < older_end:
             previous.append(ev)

@@ -43,7 +43,7 @@ def compute_funnel(events: list[EventRecord]) -> FunnelReport:
     for handle in by_handle:
         stage_occupants[FunnelStage.VISITOR.value].add(handle)
 
-    for from_stage, to_stage, trigger in _STAGE_TRANSITIONS:
+    for _from_stage, to_stage, trigger in _STAGE_TRANSITIONS:
         trigger_value = trigger.value
         for handle, names in by_handle.items():
             if trigger_value in names:
@@ -53,10 +53,7 @@ def compute_funnel(events: list[EventRecord]) -> FunnelReport:
     for from_stage, to_stage, _ in _STAGE_TRANSITIONS:
         from_count = len(stage_occupants[from_stage.value])
         to_count = len(stage_occupants[to_stage.value])
-        if from_count == 0:
-            rate = 0.0
-        else:
-            rate = max(0.0, min(1.0, to_count / from_count))
+        rate = 0.0 if from_count == 0 else max(0.0, min(1.0, to_count / from_count))
         steps.append(FunnelStep(
             from_stage=from_stage,
             to_stage=to_stage,

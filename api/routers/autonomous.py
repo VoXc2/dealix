@@ -14,7 +14,16 @@ from typing import Any
 from fastapi import APIRouter, Body, HTTPException
 from sqlalchemy import func, select
 
-from db.models import ConversationRecord, DealRecord, LeadRecord, TaskRecord
+from db.models import (
+    CompanyRecord,
+    ConversationRecord,
+    CustomerRecord,
+    DealRecord,
+    LeadRecord,
+    OutreachQueueRecord,
+    PartnerRecord,
+    TaskRecord,
+)
 from db.session import async_session_factory
 
 router = APIRouter(prefix="/api/v1", tags=["autonomous"])
@@ -343,8 +352,6 @@ async def dashboard_metrics() -> dict[str, Any]:
         },
     }
 
-
-from db.models import CompanyRecord, CustomerRecord, OutreachQueueRecord, PartnerRecord
 
 # ── Companies (subscriber intake) ───────────────────────────────
 

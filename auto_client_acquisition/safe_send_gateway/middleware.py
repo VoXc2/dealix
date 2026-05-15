@@ -37,7 +37,7 @@ _VALID_CHANNELS = {"whatsapp", "email", "sms"}
 _VALID_APPROVAL_STATUSES = {"draft", "pending", "approved", "rejected", "expired"}
 
 
-class SendBlocked(Exception):
+class SendBlocked(Exception):  # noqa: N818 - public API name
     """Raised when any send-gate refuses an external send.
 
     Carries structured `reasons` so audit logs + customer-portal

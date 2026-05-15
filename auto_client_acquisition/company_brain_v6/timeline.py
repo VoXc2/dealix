@@ -77,7 +77,7 @@ class TimelineEvent:
     linked_action_id: str | None = None
 
 
-class TimelineHandleInvalid(ValueError):
+class TimelineHandleInvalid(ValueError):  # noqa: N818 - public API name
     """Raised when ``customer_handle`` doesn't match the safe pattern."""
 
 

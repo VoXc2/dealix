@@ -8,14 +8,14 @@ so call sites do not need to know which one they are talking to.
 from __future__ import annotations
 
 from datetime import UTC, datetime
-from typing import Any, Union
+from typing import Any
 
 from auto_client_acquisition.proof_ledger.file_backend import FileProofLedger
 from auto_client_acquisition.proof_ledger.postgres_backend import (
     PostgresProofLedger,
 )
 
-ProofLedger = Union[FileProofLedger, PostgresProofLedger]
+ProofLedger = FileProofLedger | PostgresProofLedger
 
 # Process-scoped singletons — created lazily.
 _FILE_DEFAULT: FileProofLedger | None = None

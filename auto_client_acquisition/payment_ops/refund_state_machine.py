@@ -123,7 +123,7 @@ def request_refund(
         payment_id=record.payment_id,
         amount_sar=record.amount_sar,
         state="refund_requested",
-        history=record.history + (event,),
+        history=(*record.history, event),
     )
 
 
@@ -167,7 +167,7 @@ def upload_refund_evidence(
         payment_id=record.payment_id,
         amount_sar=record.amount_sar,
         state="refund_evidence_uploaded",
-        history=record.history + (event,),
+        history=(*record.history, event),
     )
 
 
@@ -215,7 +215,7 @@ def complete_refund(
         payment_id=record.payment_id,
         amount_sar=record.amount_sar,
         state="refund_completed",
-        history=record.history + (event,),
+        history=(*record.history, event),
     )
 
 
@@ -248,7 +248,7 @@ def void_refund(
         payment_id=record.payment_id,
         amount_sar=record.amount_sar,
         state="refund_voided",
-        history=record.history + (event,),
+        history=(*record.history, event),
     )
 
 

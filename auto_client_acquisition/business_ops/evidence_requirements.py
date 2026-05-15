@@ -3,7 +3,6 @@ Wave 9 - Evidence Requirements per Journey Stage
 Defines what evidence is required to advance through each stage.
 """
 from dataclasses import dataclass, field
-from typing import Dict, List, Optional
 
 from .stage_definitions import JourneyStage
 

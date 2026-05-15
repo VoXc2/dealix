@@ -245,7 +245,7 @@ def check_daily_artifacts(
 
     # Days 1..days_elapsed must have artifacts (or be flagged)
     expected = list(range(1, days_elapsed + 1))
-    recorded_set = set(int(d) for d in recorded_artifact_days)
+    recorded_set = {int(d) for d in recorded_artifact_days}
     missing = tuple(d for d in expected if d not in recorded_set)
 
     # Block when consecutive missing exceeds grace_days

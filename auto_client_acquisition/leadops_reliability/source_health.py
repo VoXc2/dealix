@@ -42,9 +42,7 @@ def _is_source_ready(source: str) -> bool:
         return bool(os.environ.get("GOOGLE_PLACES_API_KEY"))
     if source == "api":
         return True  # `/api/v1/leadops/run` always callable
-    if source == "referral":
-        return True
-    return False
+    return source == "referral"
 
 
 def _source_blocker(source: str) -> str | None:

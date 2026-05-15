@@ -71,7 +71,6 @@ def render_for_customer(pack: ExecutivePackRecord) -> str:
     """
     leads = pack.leads or {}
     support = pack.support or {}
-    decisions = pack.decisions or []
     risks = pack.risks or []
     next_actions = pack.next_3_actions or []
 
@@ -151,7 +150,6 @@ def render_for_founder(pack: ExecutivePackRecord) -> str:
     """
     leads = pack.leads or {}
     support = pack.support or {}
-    decisions = pack.decisions or []
     blockers = pack.blockers or []
     risks = pack.risks or []
     next_actions = pack.next_3_actions or []

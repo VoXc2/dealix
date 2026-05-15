@@ -153,7 +153,7 @@ def _read_all(path: Path) -> list[dict[str, Any]]:
                 continue
             try:
                 out.append(json.loads(line))
-            except Exception:
+            except Exception:  # noqa: S112 - skip malformed ledger line
                 continue
     return out
 

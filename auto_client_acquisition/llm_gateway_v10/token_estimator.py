@@ -14,6 +14,6 @@ def estimate_tokens(text: str, multiplier: float = 1.3) -> int:
         m = float(multiplier) if multiplier and multiplier > 0 else 1.0
         chars = len(text)
         base = chars / 4.0
-        return max(0, int(round(base * m)))
+        return max(0, round(base * m))
     except Exception:
         return 0

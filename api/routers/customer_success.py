@@ -62,11 +62,6 @@ async def compute_customer_health(customer_id: str) -> dict[str, Any]:
             if not cust:
                 raise HTTPException(404, "customer_not_found")
 
-            drafts_created = int((await session.execute(
-                select(func.count()).select_from(GmailDraftRecord).where(
-                    GmailDraftRecord.created_at >= cutoff_30d,
-                )
-            )).scalar() or 0)
             drafts_sent = int((await session.execute(
                 select(func.count()).select_from(GmailDraftRecord).where(
                     GmailDraftRecord.created_at >= cutoff_30d,

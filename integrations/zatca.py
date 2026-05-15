@@ -222,7 +222,8 @@ class ZATCAXMLBuilder:
         # Invoice type — ZATCA specific
         # 388 = Standard tax invoice (B2B), 381 = Credit note, 383 = Debit note
         # For simplified: add |02 subtype indicator
-        invoice_type_code = "388" if payload.invoice_type == "standard" else "388"
+        # 388 covers both standard and simplified tax invoices.
+        invoice_type_code = "388"
         type_code_elem = SubElement(root, "cbc:InvoiceTypeCode")
         type_code_elem.set("name", "0200000" if payload.invoice_type == "simplified" else "0100000")
         type_code_elem.text = invoice_type_code
@@ -553,7 +554,7 @@ class InvoiceGenerator:
         Generate invoice and submit to ZATCA Fatoorah API.
         توليد الفاتورة وإرسالها إلى API ZATCA.
         """
-        xml_string, xml_b64, qr_code_b64 = self.generate(payload)
+        _xml_string, xml_b64, qr_code_b64 = self.generate(payload)
         # Extract UUID from generated XML
         invoice_uuid = str(uuid.uuid4())
 

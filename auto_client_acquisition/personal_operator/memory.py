@@ -53,10 +53,7 @@ class PersonalOperatorMemory:
 
 def looks_like_secret(text: str) -> bool:
     """Return True if text resembles API keys or private material."""
-    for pattern in _SECRET_PATTERNS:
-        if pattern.search(text):
-            return True
-    return False
+    return any(pattern.search(text) for pattern in _SECRET_PATTERNS)
 
 
 def add_memory(

@@ -159,7 +159,7 @@ def generate(
     for ev in all_events:
         try:
             ts = datetime.fromisoformat(ev.occurred_at)
-        except Exception:
+        except Exception:  # noqa: S112 - skip event with unparsable timestamp
             continue
         # Make naive-safe
         if ts.tzinfo is None:

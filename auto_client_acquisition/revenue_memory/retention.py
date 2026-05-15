@@ -55,10 +55,11 @@ def is_expired(event: RevenueEvent, *, now: datetime) -> bool:
     tier = classify_retention_tier(event.event_type)
     if tier == "legal_hold":
         return False  # never expires — preserves the audit trail forever
-    if tier == "operational":
-        days = RETENTION_DAYS_OPERATIONAL
-    else:
-        days = RETENTION_DAYS_BUSINESS
+    days = (
+        RETENTION_DAYS_OPERATIONAL
+        if tier == "operational"
+        else RETENTION_DAYS_BUSINESS
+    )
     return (now - event.occurred_at).days > days
 
 

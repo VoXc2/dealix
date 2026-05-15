@@ -22,7 +22,7 @@ DEAL_TRANSITIONS: dict[str, tuple[str, ...]] = {
 }
 
 
-class InvalidStageTransition(ValueError):
+class InvalidStageTransition(ValueError):  # noqa: N818 - public API name
     """Raised when a stage advance is not allowed by the state machine."""
 
 

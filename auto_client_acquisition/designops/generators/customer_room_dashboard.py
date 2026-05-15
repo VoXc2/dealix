@@ -47,9 +47,7 @@ _SECTIONS: list[tuple[str, str, str, str]] = [
 def _is_empty(value: Any) -> bool:
     if value is None:
         return True
-    if isinstance(value, (list, tuple, dict, str)) and len(value) == 0:
-        return True
-    return False
+    return isinstance(value, (list, tuple, dict, str)) and len(value) == 0
 
 
 def _render_card_ar(value: Any, kind: str) -> dict[str, Any]:

@@ -308,7 +308,7 @@ async def detect_hiring(
         if isinstance(posted, str):
             try:
                 jp["posted_at"] = datetime.fromisoformat(posted.replace("Z", "+00:00")).replace(tzinfo=None)
-            except Exception:
+            except Exception:  # noqa: S112 - skip posting with unparsable date
                 continue
         parsed.append(jp)
     sigs = detect_hiring_signal(company_id=company_id, job_postings=parsed)

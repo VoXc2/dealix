@@ -34,9 +34,12 @@ def calls_policy(
                 reason_en="Approved manual dial after customer + founder approval.",
             )
         missing = []
-        if not customer_permission: missing.append("customer_permission")
-        if not live_gate_true: missing.append("live_gate_true")
-        if not human_approved: missing.append("human_approved")
+        if not customer_permission:
+            missing.append("customer_permission")
+        if not live_gate_true:
+            missing.append("live_gate_true")
+        if not human_approved:
+            missing.append("human_approved")
         return PolicyDecision(
             channel="calls",
             action_kind=action_kind,

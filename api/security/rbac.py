@@ -12,10 +12,10 @@ Roles (in ascending privilege order):
 
 from __future__ import annotations
 
-from enum import Enum
+from enum import StrEnum
 
 
-class Role(str, Enum):
+class Role(StrEnum):
     """Tenant-scoped roles stored in RoleRecord.name."""
 
     VIEWER = "viewer"
@@ -24,7 +24,7 @@ class Role(str, Enum):
     TENANT_ADMIN = "tenant_admin"
 
 
-class SystemRole(str, Enum):
+class SystemRole(StrEnum):
     """System-level roles stored in UserRecord.system_role."""
 
     SUPER_ADMIN = "super_admin"

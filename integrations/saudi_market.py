@@ -206,25 +206,19 @@ def _gregorian_to_hijri_fallback(greg_date: date) -> HijriDate:
     # Convert JD to Hijri
     jd = jd - 0.5
     z = math.floor(jd + 0.5)
-    a = math.floor((z - 1867216.25) / 36524.25)
-    b = z + 1 + a - math.floor(a / 4)
-    c = b + 1524
-    dd = math.floor((c - 122.1) / 365.25)
-    e = math.floor(365.25 * dd)
-    f = math.floor((c - e) / 30.6001)
     # Hijri calculation via epoch
     # Muharram 1, 1 AH = July 16, 622 CE (Julian)
-    l = z - 1948440 + 10632
-    n = math.floor((l - 1) / 10631)
-    l = l - 10631 * n + 354
-    j = (math.floor((10985 - l) / 5316)) * (math.floor((50 * l) / 17719)) + (
-        math.floor(l / 5670)
-    ) * (math.floor((43 * l) / 15238))
-    l = l - (math.floor((30 - j) / 15)) * (math.floor((17719 * j) / 50)) - (
+    ll = z - 1948440 + 10632
+    n = math.floor((ll - 1) / 10631)
+    ll = ll - 10631 * n + 354
+    j = (math.floor((10985 - ll) / 5316)) * (math.floor((50 * ll) / 17719)) + (
+        math.floor(ll / 5670)
+    ) * (math.floor((43 * ll) / 15238))
+    ll = ll - (math.floor((30 - j) / 15)) * (math.floor((17719 * j) / 50)) - (
         math.floor(j / 16)
     ) * (math.floor((15238 * j) / 43)) + 29
-    month = math.floor((24 * l) / 709)
-    day = l - math.floor((709 * month) / 24)
+    month = math.floor((24 * ll) / 709)
+    day = ll - math.floor((709 * month) / 24)
     year = 30 * n + j - 30
     return HijriDate(year=int(year), month=int(month), day=int(day))
 
@@ -290,17 +284,13 @@ def calculate_prayer_times(
     # Solar coordinates
     g = 357.529 + 0.98560028 * d  # Mean anomaly (degrees)
     q = 280.459 + 0.98564736 * d  # Mean longitude (degrees)
-    l = q + 1.915 * math.sin(math.radians(g)) + 0.020 * math.sin(math.radians(2 * g))
+    ll = q + 1.915 * math.sin(math.radians(g)) + 0.020 * math.sin(math.radians(2 * g))
     e = 23.439 - 0.00000036 * d   # Obliquity
 
-    ra = math.degrees(math.atan2(math.cos(math.radians(e)) * math.sin(math.radians(l)), math.cos(math.radians(l)))) / 15
-    decl = math.degrees(math.asin(math.sin(math.radians(e)) * math.sin(math.radians(l))))
+    ra = math.degrees(math.atan2(math.cos(math.radians(e)) * math.sin(math.radians(ll)), math.cos(math.radians(ll)))) / 15
+    decl = math.degrees(math.asin(math.sin(math.radians(e)) * math.sin(math.radians(ll))))
     eq_t = q / 15 - ra  # Equation of time (hours)
 
-    # Transit (solar noon)
-    transit_hours = 12 + (longitude / 15) - eq_t
-    # Adjust for UTC+3
-    transit_local = transit_hours - longitude / 15 + 3 + (longitude / 15) - eq_t
     # Simplified: dhuhr = 12 + eq_t offset + timezone correction
     dhuhr_ut = 12 - longitude / 15 - eq_t
     dhuhr_local = dhuhr_ut + KSA_UTC_OFFSET_HOURS

@@ -2,12 +2,12 @@
 
 from __future__ import annotations
 
-from enum import Enum
+from enum import StrEnum
 
 from pydantic import BaseModel, Field
 
 
-class Permission(str, Enum):
+class Permission(StrEnum):
     READ_PIPELINE = "read_pipeline"
     WRITE_PIPELINE = "write_pipeline"
     APPROVE_EXTERNAL = "approve_external"

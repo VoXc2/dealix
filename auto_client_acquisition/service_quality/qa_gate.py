@@ -13,7 +13,7 @@ from auto_client_acquisition.self_growth_os.service_activation_matrix import (
 
 
 class QAVerdict(StrEnum):
-    PASS = "pass"
+    PASS = "pass"  # noqa: S105 - QA verdict enum value, not a secret
     NEEDS_REVIEW = "needs_review"
     BLOCKED = "blocked"
 

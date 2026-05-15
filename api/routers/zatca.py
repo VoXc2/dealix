@@ -134,7 +134,7 @@ async def generate_invoice(
     )
 
     try:
-        xml_string, xml_b64, qr_code_b64 = _generator.generate(invoice_payload)
+        _xml_string, xml_b64, qr_code_b64 = _generator.generate(invoice_payload)
     except Exception as exc:
         log.exception("zatca_generation_failed", error=str(exc))
         raise HTTPException(status_code=500, detail=f"Invoice generation failed: {exc}") from exc

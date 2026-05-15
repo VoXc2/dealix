@@ -288,7 +288,7 @@ def step7_capital_assets(
                 notes=s.get("notes", ""),
             )
             registered.append(a.asset_id)
-        except Exception:
+        except Exception:  # noqa: S112 - skip asset that failed to register
             continue
     return {"registered": registered, "count": len(registered)}
 

@@ -137,7 +137,7 @@ async def sector_learning() -> dict[str, Any]:
                     continue
                 try:
                     events.append(json.loads(f.read_text(encoding="utf-8")))
-                except Exception:
+                except Exception:  # noqa: S112 - skip malformed event file
                     continue
         return {"learning": sector_learning_summary(events),
                 "events_loaded": len(events),

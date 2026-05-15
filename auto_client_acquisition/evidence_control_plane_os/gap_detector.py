@@ -73,7 +73,7 @@ def find_gaps(*, customer_id: str, project_id: str = "") -> list[EvidenceGap]:
         for ev in events:
             try:
                 ts = datetime.fromisoformat(ev.occurred_at).timestamp()
-            except Exception:
+            except Exception:  # noqa: S112 - skip event with unparsable timestamp
                 continue
             if ts < cutoff_ts and not ev.resolved_at:
                 gaps.append(EvidenceGap(

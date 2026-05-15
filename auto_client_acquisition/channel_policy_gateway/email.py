@@ -33,8 +33,10 @@ def email_policy(
                 reason_en="Approved manual send permitted.",
             )
         missing = []
-        if not live_gate_true: missing.append("live_gate_true")
-        if not human_approved: missing.append("human_approved")
+        if not live_gate_true:
+            missing.append("live_gate_true")
+        if not human_approved:
+            missing.append("human_approved")
         return PolicyDecision(
             channel="email",
             action_kind=action_kind,

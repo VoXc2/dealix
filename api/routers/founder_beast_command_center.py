@@ -131,7 +131,7 @@ def _proof_summary() -> dict[str, Any]:
                 continue
             try:
                 events.append(json.loads(f.read_text(encoding="utf-8")))
-            except Exception:
+            except Exception:  # noqa: S112 - skip malformed event file
                 continue
     return {
         "real_events_count": len(events),

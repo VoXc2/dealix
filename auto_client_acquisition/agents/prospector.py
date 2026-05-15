@@ -175,7 +175,7 @@ class ProspectResult:
             "icp": self.icp,
             "count_requested": self.count_requested,
             "count_returned": self.count_returned,
-            "leads": [l.to_dict() for l in self.leads],
+            "leads": [lead.to_dict() for lead in self.leads],
             "search_notes": self.search_notes,
         }
 
@@ -227,7 +227,7 @@ class ProspectorAgent(BaseAgent):
                 leads.append(lead)
 
         # Sort by priority_score (already weighted), then confidence
-        leads.sort(key=lambda l: (l.priority_score, l.confidence), reverse=True)
+        leads.sort(key=lambda x: (x.priority_score, x.confidence), reverse=True)
 
         return ProspectResult(
             use_case=use_case,

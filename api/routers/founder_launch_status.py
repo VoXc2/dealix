@@ -102,7 +102,7 @@ def _git_status() -> dict[str, Any]:
     out["git_sha"] = git_sha
     try:
         proc = subprocess.run(
-            ["git", "log", "--oneline", "-5"],
+            ["git", "log", "--oneline", "-5"],  # noqa: S607 - trusted git binary, fixed args, no user input
             check=False, capture_output=True, text=True, timeout=5,
         )
         if proc.returncode == 0:
@@ -140,7 +140,7 @@ def _lead_count_today() -> int:
                 created = datetime.fromisoformat(getattr(r, "created_at", "") or "")
                 if created.tzinfo is None:
                     created = created.replace(tzinfo=UTC)
-            except Exception:
+            except Exception:  # noqa: S112 - skip record with unparsable timestamp
                 continue
             if created >= cutoff:
                 count += 1
