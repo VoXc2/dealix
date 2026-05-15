@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from dataclasses import dataclass
 from typing import Any
 
 
@@ -61,3 +62,68 @@ def summarize_table_quality(
         "mean_completeness": mean_completeness(rows, required_keys),
         "duplicate_ratio_company_name": duplicate_ratio_by_field(rows, "company_name"),
     }
+
+
+@dataclass(frozen=True, slots=True)
+class DataQualityScore:
+    """0–100 Data Quality Score with its four transparent sub-scores."""
+
+    overall: float
+    completeness: float
+    duplicate_inverse: float
+    format_consistency: float
+    source_clarity: float
+
+
+def _format_consistency(rows: list[dict[str, Any]], columns: list[str]) -> float:
+    """Share of rows that carry every detected column (structural uniformity)."""
+    if not rows or not columns:
+        return 0.0
+    consistent = sum(1 for r in rows if all(c in r for c in columns))
+    return round(consistent / len(rows) * 100, 1)
+
+
+def _source_coverage(rows: list[dict[str, Any]]) -> float:
+    """Share of rows carrying a non-empty ``source`` field."""
+    if not rows:
+        return 0.0
+    with_source = sum(1 for r in rows if str(r.get("source", "")).strip())
+    return round(with_source / len(rows) * 100, 1)
+
+
+def compute_dq(
+    rows: list[dict[str, Any]],
+    *,
+    columns: list[str],
+    has_valid_passport: bool,
+    required_keys: tuple[str, ...] = ("company_name", "sector", "city"),
+) -> DataQualityScore:
+    """Compute a 0–100 Data Quality Score from real, deterministic metrics.
+
+    The score is a transparent weighted blend — no opaque heuristics:
+      * completeness       — mean share of required fields present.
+      * duplicate_inverse  — 1 minus the company-name duplicate ratio.
+      * format_consistency — share of structurally uniform rows.
+      * source_clarity     — source-field coverage; a valid Source Passport
+        documents provenance and floors this at 100.
+    """
+    completeness = round(mean_completeness(rows, required_keys) * 100, 1)
+    duplicate_inverse = round(
+        (1.0 - duplicate_ratio_by_field(rows, "company_name")) * 100, 1,
+    )
+    format_consistency = _format_consistency(rows, columns)
+    source_clarity = 100.0 if has_valid_passport else _source_coverage(rows)
+    overall = round(
+        0.40 * completeness
+        + 0.30 * duplicate_inverse
+        + 0.15 * format_consistency
+        + 0.15 * source_clarity,
+        1,
+    )
+    return DataQualityScore(
+        overall=overall,
+        completeness=completeness,
+        duplicate_inverse=duplicate_inverse,
+        format_consistency=format_consistency,
+        source_clarity=source_clarity,
+    )
