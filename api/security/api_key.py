@@ -146,8 +146,9 @@ class APIKeyMiddleware(BaseHTTPMiddleware):
                 )
             return await call_next(request)
 
-        # Key may arrive as the X-API-Key header or an ?api_key= query param.
-        provided = request.headers.get("X-API-Key") or request.query_params.get("api_key")
+        # Header only — API keys are never accepted via query string, since
+        # URLs leak through access logs, browser history and Referer headers.
+        provided = request.headers.get("X-API-Key")
         if not verify_api_key(provided, allowed):
             logger.warning("api_key_invalid", path=path, has_key=bool(provided))
             # Return a proper JSONResponse instead of raising HTTPException —

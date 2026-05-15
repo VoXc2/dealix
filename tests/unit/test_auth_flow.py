@@ -88,11 +88,12 @@ class TestAPIKeyMiddleware:
         )
         assert response.status_code == 401
 
-    def test_key_in_query_param_passes(self, client):
-        """Key can also be supplied as ?api_key= query parameter."""
+    def test_key_in_query_param_rejected(self, client):
+        """API keys must NOT be accepted via query string — credentials in
+        URLs leak through access logs, browser history and Referer headers.
+        Only the X-API-Key header is honored."""
         response = client.get(f"/api/v1/leads?api_key={VALID_KEY}")
-        # Accept 200 or 404 (route may not exist); reject only 401/403
-        assert response.status_code not in (401, 403)
+        assert response.status_code == 401
 
     def test_openapi_docs_are_exempt(self, client):
         """OpenAPI endpoints must not require auth (public docs)."""
