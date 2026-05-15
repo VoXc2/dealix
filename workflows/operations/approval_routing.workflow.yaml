@@ -1,0 +1,53 @@
+# Layer 3 — Workflow Engine — Operations: Approval Routing
+# Central workflow that other workflows call to obtain a human decision.
+name: approval_routing
+version: 1.0.0
+owner: Operations Manager
+description_ar: "توجيه طلبات الموافقة — تصنيف الخطورة، اختيار الموافِق، انتظار القرار، تسجيل النتيجة وإعادتها للسير الأصلي."
+description_en: "Route approval requests — classify risk, select approver, await decision, log outcome, return to caller workflow."
+trigger: approval_requested
+sla:
+  approver_assigned_minutes: 10
+  decision_due_hours: 24
+steps:
+  - id: classify_request_risk
+    action: classify_intent
+    risk_level: low
+  - id: select_approver
+    action: route_to_owner
+    risk_level: medium
+  - id: notify_approver
+    action: notify_internal
+    channel: internal_only
+    risk_level: low
+    retry: { max_attempts: 3, backoff: exponential }
+    compensation: reassign_approver
+  - id: await_decision
+    action: wait_for_human_decision
+    risk_level: high
+    blocks_external_send: true
+  - id: record_decision
+    action: write_audit_entry
+    risk_level: medium
+    retry: { max_attempts: 3, backoff: exponential }
+  - id: return_outcome_to_caller
+    action: resume_caller_workflow
+    risk_level: medium
+  - id: escalate_if_decision_overdue
+    action: trigger_workflow
+    target_workflow: escalation
+    condition: decision_age > decision_due_hours
+    risk_level: medium
+external_message_steps: []  # none — approval routing never sends external messages
+metrics:
+  - completion_rate
+  - time_to_decision
+  - approval_sla_adherence
+observability:
+  - workflow_run_log
+  - step_status_events
+  - approval_decision_log
+governance:
+  - mandatory_gate: high-risk steps in any workflow must pass through this workflow
+  - no_self_approval: requester and approver must be distinct roles
+  - full_audit: every decision recorded as an immutable audit entry

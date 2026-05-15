@@ -1,0 +1,58 @@
+# Layer 3 — Workflow Engine — Sales: Lead Qualification
+# Bilingual descriptions are inline. Any step that produces an external-facing
+# message is draft-only and routed through request_human_approval first.
+name: lead_qualification
+version: 1.0.0
+owner: Sales Operations Lead
+description_ar: "تأهيل العملاء المحتملين الواردين — تصنيف، إثراء، تسجيل، مسودة رد، موافقة بشرية، تحديث CRM."
+description_en: "Qualify inbound leads — classify, enrich, score, draft response, human approval, CRM update."
+trigger: new_inbound_lead
+sla:
+  time_to_first_response_minutes: 60
+  workflow_completion_hours: 4
+steps:
+  - id: classify_intent
+    action: classify_intent
+    risk_level: low
+    retry: { max_attempts: 3, backoff: exponential }
+  - id: enrich_lead
+    action: enrich_lead
+    risk_level: low
+    retry: { max_attempts: 3, backoff: exponential }
+    fallback: continue_with_partial_data
+  - id: score_lead
+    action: score_lead
+    risk_level: low
+    retry: { max_attempts: 2, backoff: exponential }
+  - id: draft_response
+    action: draft_response
+    mode: draft_only
+    risk_level: medium
+  - id: request_human_approval_if_high_value
+    action: request_human_approval
+    condition: lead_score >= high_value_threshold
+    risk_level: high
+    blocks_external_send: true
+  - id: update_crm
+    action: update_crm
+    risk_level: medium
+    retry: { max_attempts: 3, backoff: exponential }
+    compensation: revert_crm_field_update
+  - id: notify_sales_owner
+    action: notify_internal
+    channel: internal_only
+    risk_level: low
+external_message_steps:
+  - draft_response  # draft_only; never sent without request_human_approval
+metrics:
+  - completion_rate
+  - lead_score_accuracy
+  - time_to_first_response
+observability:
+  - workflow_run_log
+  - step_status_events
+  - dlq: enrichment
+governance:
+  - no_scraping: lead data comes from submitted intake forms and consented sources only
+  - approval_first: external replies are drafted, never auto-sent
+  - pii_handling: lead identifiers stored as references, not free text

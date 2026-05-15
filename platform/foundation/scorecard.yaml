@@ -1,0 +1,33 @@
+layer: "Layer 1 - Foundation"
+owner: "Platform Lead"
+overall_score: 78
+band: "client pilot"
+band_scale:
+  - "0-59 prototype"
+  - "60-74 internal beta"
+  - "75-84 client pilot"
+  - "85-94 enterprise-ready"
+  - "95+ mission-critical"
+sub_criteria:
+  - name: "Tenant isolation (tenant_id binding)"
+    score: 85
+    weight: 0.25
+  - name: "Authentication and sessions"
+    score: 82
+    weight: 0.15
+  - name: "RBAC enforcement"
+    score: 80
+    weight: 0.10
+  - name: "Secrets and encryption"
+    score: 78
+    weight: 0.15
+  - name: "Deployment and CI/CD"
+    score: 80
+    weight: 0.10
+  - name: "Backup and restore"
+    score: 65
+    weight: 0.15
+  - name: "Audit logging coverage"
+    score: 80
+    weight: 0.10
+notes: "Restore drill and tenant-deletion drill not yet documented on a periodic cadence; this caps the layer below the enterprise-ready band."

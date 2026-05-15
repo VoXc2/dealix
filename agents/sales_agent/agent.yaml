@@ -1,0 +1,38 @@
+name: sales_agent
+version: 1.0.0
+owner: revenue_os_lead
+risk_level: medium
+description: >
+  Runs the Dealix sales motion under approval-first control. Qualifies leads,
+  drafts proposals and warm-list messages, recommends offers. Never sends
+  external messages directly.
+allowed_tools:
+  - read
+  - analyze
+  - crm.create_lead_draft
+  - crm.update_account_draft
+  - whatsapp.draft_message
+  - email.draft_message
+  - calendar.create_booking_request
+  - proposal.draft
+  - queue_for_approval
+requires_approval_for:
+  - whatsapp.send_message
+  - email.send_message
+  - discount_offer
+  - contract_commitment
+  - charge_payment_live
+forbidden_tools:
+  - scrape_web
+  - linkedin_automation
+  - cold_whatsapp_send
+  - export_pii_bulk
+memory_scope:
+  - customer_memory
+  - product_knowledge
+kpis:
+  - qualified_leads
+  - meeting_bookings
+  - proposal_acceptance_rate
+  - response_time
+escalation_owner: revenue_os_lead

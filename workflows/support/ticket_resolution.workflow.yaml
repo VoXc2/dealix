@@ -1,0 +1,58 @@
+# Layer 3 — Workflow Engine — Support: Ticket Resolution
+# Customer-facing replies are draft-only and pass human approval before send.
+name: ticket_resolution
+version: 1.0.0
+owner: Support Team Lead
+description_ar: "حل تذاكر الدعم — تصنيف، استرجاع المعرفة، مسودة حل، موافقة بشرية، تحديث التذكرة."
+description_en: "Resolve support tickets — classify, retrieve knowledge, draft resolution, human approval, ticket update."
+trigger: new_support_ticket
+sla:
+  first_response_minutes: 30
+  resolution_hours: 8
+steps:
+  - id: classify_ticket
+    action: classify_intent
+    risk_level: low
+    retry: { max_attempts: 3, backoff: exponential }
+  - id: retrieve_knowledge
+    action: knowledge_lookup
+    risk_level: low
+    retry: { max_attempts: 2, backoff: exponential }
+    fallback: continue_without_kb_match
+  - id: draft_resolution
+    action: draft_response
+    mode: draft_only
+    risk_level: medium
+  - id: request_human_approval
+    action: request_human_approval
+    risk_level: high
+    blocks_external_send: true
+  - id: send_reply_after_approval
+    action: send_customer_reply
+    condition: approval_status == approved
+    risk_level: high
+    compensation: post_correction_note
+  - id: update_ticket
+    action: update_ticket_status
+    risk_level: medium
+    retry: { max_attempts: 3, backoff: exponential }
+  - id: route_to_escalation_if_unresolved
+    action: trigger_workflow
+    target_workflow: escalation
+    condition: ticket_status != resolved
+    risk_level: medium
+external_message_steps:
+  - draft_resolution        # draft_only
+  - send_reply_after_approval  # gated by request_human_approval
+metrics:
+  - completion_rate
+  - first_response_time
+  - resolution_rate_without_escalation
+observability:
+  - workflow_run_log
+  - step_status_events
+  - approval_decision_log
+governance:
+  - approval_first: no customer reply is sent without explicit human approval
+  - no_guarantee: resolution drafts present options, not promised outcomes
+  - escalation_path: unresolved tickets route to the escalation workflow

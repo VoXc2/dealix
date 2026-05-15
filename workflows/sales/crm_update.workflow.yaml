@@ -1,0 +1,49 @@
+# Layer 3 — Workflow Engine — Sales: CRM Update
+# Internal data-sync workflow. No external messages. Idempotent writes only.
+name: crm_update
+version: 1.0.0
+owner: Revenue Operations Analyst
+description_ar: "مزامنة حالة الصفقة وحقولها مع نظام CRM — كتابة فكرية الطابع (idempotent) مع تعويض عند الفشل."
+description_en: "Sync deal stage and fields into the CRM — idempotent writes with compensation on failure."
+trigger: deal_state_changed
+sla:
+  sync_latency_minutes: 15
+  workflow_completion_minutes: 30
+steps:
+  - id: validate_payload
+    action: validate_schema
+    risk_level: low
+  - id: check_idempotency_key
+    action: idempotency_claim
+    risk_level: low
+  - id: map_fields_to_crm
+    action: map_fields
+    risk_level: low
+  - id: write_crm
+    action: update_crm
+    risk_level: medium
+    retry: { max_attempts: 4, backoff: exponential }
+    compensation: revert_crm_field_update
+    dlq: crm_sync
+  - id: verify_write
+    action: read_crm
+    risk_level: low
+    retry: { max_attempts: 2, backoff: exponential }
+  - id: emit_sync_event
+    action: notify_internal
+    channel: internal_only
+    risk_level: low
+external_message_steps: []  # none — internal sync workflow
+metrics:
+  - completion_rate
+  - crm_sync_success_rate
+  - sync_latency_minutes
+observability:
+  - workflow_run_log
+  - step_status_events
+  - dlq: crm_sync
+  - idempotency_hit_count
+governance:
+  - idempotent_writes: duplicate triggers are claimed once and skipped thereafter
+  - no_external_send: this workflow only writes to the CRM of record
+  - audit_trail: every field change recorded with before/after reference

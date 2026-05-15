@@ -1,0 +1,38 @@
+layer: "Layer 2 — Agent Runtime"
+owner: agent_runtime_platform_lead
+overall_score: 75
+band: client_pilot
+bands:
+  - "0-59 prototype"
+  - "60-74 internal beta"
+  - "75-84 client pilot"
+  - "85-94 enterprise-ready"
+  - "95+ mission-critical"
+sub_criteria:
+  - name: formal_agent_definitions
+    score: 90
+    weight: 0.18
+  - name: tool_registry_classification
+    score: 78
+    weight: 0.15
+  - name: approval_for_high_risk_actions
+    score: 82
+    weight: 0.18
+  - name: instant_stop_kill_switch
+    score: 80
+    weight: 0.13
+  - name: memory_scope_isolation
+    score: 68
+    weight: 0.12
+  - name: versioning_v1_v2_comparable
+    score: 62
+    weight: 0.12
+  - name: decision_trace_coverage
+    score: 74
+    weight: 0.12
+notes: >
+  Layer 2 is at client-pilot readiness. Strengths: every agent has a formal
+  bilingual definition, external-send tools are approval-gated, the kill switch
+  stops any agent instantly. Gaps to reach enterprise-ready: automated v1/v2
+  comparison, CI validation of agent.yaml against AgentSpec, and a documented
+  PDPL retention schedule for customer memory.

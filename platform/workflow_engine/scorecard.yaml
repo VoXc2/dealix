@@ -1,0 +1,30 @@
+# Layer 3 — Workflow Engine — readiness scorecard
+layer: workflow_engine
+owner: Workflow Engine Platform Lead
+overall_score: 79
+band: client_pilot  # 0-59 prototype / 60-74 internal_beta / 75-84 client_pilot / 85-94 enterprise_ready / 95+ mission_critical
+sub_criteria:
+  - name: trigger_to_output_execution
+    score: 85
+    weight: 0.15
+  - name: retry_and_fallback
+    score: 82
+    weight: 0.15
+  - name: compensation_and_consistency
+    score: 72
+    weight: 0.12
+  - name: human_approval_gating
+    score: 90
+    weight: 0.15
+  - name: workflow_logs_visibility
+    score: 80
+    weight: 0.12
+  - name: workflow_versioning
+    score: 78
+    weight: 0.10
+  - name: metrics_and_sla_coverage
+    score: 80
+    weight: 0.11
+  - name: dlq_replay_drill
+    score: 60
+    weight: 0.10

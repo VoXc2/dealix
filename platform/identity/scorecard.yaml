@@ -1,0 +1,27 @@
+layer: "Layer 1 - Foundation / Identity"
+owner: "Platform Lead"
+overall_score: 80
+band: "client pilot"
+band_scale:
+  - "0-59 prototype"
+  - "60-74 internal beta"
+  - "75-84 client pilot"
+  - "85-94 enterprise-ready"
+  - "95+ mission-critical"
+sub_criteria:
+  - name: "Authentication (JWT, login)"
+    score: 85
+    weight: 0.25
+  - name: "Session management and revocation"
+    score: 80
+    weight: 0.20
+  - name: "RBAC enforcement"
+    score: 82
+    weight: 0.25
+  - name: "User lifecycle management"
+    score: 80
+    weight: 0.15
+  - name: "Multi-factor verification"
+    score: 65
+    weight: 0.15
+notes: "Multi-factor verification is available but not yet mandatory for all admin accounts; a token-theft response drill is not yet documented."

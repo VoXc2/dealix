@@ -1,0 +1,53 @@
+# Retrieval eval thresholds (Dealix Layer 8)
+# Consumed by scripts/run_evals.py against evals/retrieval/dataset.jsonl.
+# A build fails if any metric falls below (or above, for latency) its threshold.
+
+eval_id: retrieval
+version: 1
+dataset: evals/retrieval/dataset.jsonl
+
+metrics:
+  recall_at_5:
+    description: Share of relevant documents present in top 5 results
+    pass_min: 0.90
+    warn_min: 0.95
+    direction: higher_is_better
+
+  precision_at_5:
+    description: Share of top 5 results that were actually relevant
+    pass_min: 0.60
+    warn_min: 0.75
+    direction: higher_is_better
+
+  mrr:
+    description: Mean reciprocal rank of the first correct result
+    pass_min: 0.80
+    warn_min: 0.90
+    direction: higher_is_better
+
+  groundedness:
+    description: Share of answer facts traceable to a retrieved document
+    pass_min: 0.95
+    warn_min: 0.98
+    direction: higher_is_better
+
+  correct_abstention_rate:
+    description: Share of no-source queries where the agent declined to answer
+    pass_min: 1.00
+    warn_min: 1.00
+    direction: higher_is_better
+
+  retrieval_latency_p95_ms:
+    description: 95th percentile document fetch latency in milliseconds
+    pass_max: 1500
+    warn_max: 900
+    direction: lower_is_better
+
+gating:
+  block_deploy_on_fail: true
+  regression_tolerance: 0.02
+  baseline_required: true
+  notes: >
+    Compare current run to the last green baseline. A drop greater than
+    regression_tolerance on any higher_is_better metric is treated as a
+    regression even if still above pass_min.

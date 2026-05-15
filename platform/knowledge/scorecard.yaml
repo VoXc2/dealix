@@ -1,0 +1,37 @@
+# Layer 4 — Knowledge & Memory readiness scorecard
+# Bands: 0-59 prototype / 60-74 internal beta / 75-84 client pilot
+#        / 85-94 enterprise-ready / 95+ mission-critical
+
+layer: "Layer 4 — Knowledge & Memory"
+owner: "Knowledge Lead"
+overall_score: 79
+band: "client pilot"
+
+sub_criteria:
+  - name: "Every important answer has a source (no source, no answer)"
+    score: 92
+    weight: 0.20
+  - name: "No cross-tenant retrieval"
+    score: 95
+    weight: 0.15
+  - name: "Permission-aware retrieval (per-user, not just tenant)"
+    score: 74
+    weight: 0.12
+  - name: "Source lineage — answer traceable to origin file"
+    score: 82
+    weight: 0.12
+  - name: "Citation accuracy (citation supports the claim)"
+    score: 80
+    weight: 0.12
+  - name: "RAG evals exist and run (knowledge_eval, governance_eval, arabic_quality_eval)"
+    score: 78
+    weight: 0.10
+  - name: "Retrieval precision/recall measured on a fixed eval set"
+    score: 62
+    weight: 0.08
+  - name: "Source freshness status tracked (fresh/aging/stale)"
+    score: 76
+    weight: 0.06
+  - name: "Update a source without breaking the system"
+    score: 80
+    weight: 0.05

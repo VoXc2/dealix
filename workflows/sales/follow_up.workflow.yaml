@@ -1,0 +1,50 @@
+# Layer 3 — Workflow Engine — Sales: Follow-up
+# Follow-up drafts are prepared for a human owner; nothing is sent automatically.
+name: follow_up
+version: 1.0.0
+owner: Sales Operations Lead
+description_ar: "متابعة العملاء المحتملين الذين لم يردّوا — تجهيز مسودة متابعة لمالك بشري للمراجعة والإرسال."
+description_en: "Follow up with non-responsive leads — prepare a follow-up draft for a human owner to review and send."
+trigger: lead_idle_for_sla
+sla:
+  follow_up_draft_ready_hours: 2
+  workflow_completion_hours: 6
+steps:
+  - id: check_lead_state
+    action: read_crm
+    risk_level: low
+    retry: { max_attempts: 3, backoff: exponential }
+  - id: select_follow_up_template
+    action: select_template
+    risk_level: low
+  - id: draft_follow_up
+    action: draft_response
+    mode: draft_only
+    risk_level: medium
+  - id: request_human_approval
+    action: request_human_approval
+    risk_level: high
+    blocks_external_send: true
+  - id: queue_for_owner_send
+    action: enqueue_internal_task
+    channel: internal_only
+    risk_level: low
+    compensation: cancel_queued_task
+  - id: log_follow_up_outcome
+    action: update_crm
+    risk_level: medium
+    retry: { max_attempts: 3, backoff: exponential }
+external_message_steps:
+  - draft_follow_up  # draft_only; release only after request_human_approval
+metrics:
+  - completion_rate
+  - follow_up_draft_acceptance_rate
+  - reply_rate_after_owner_send
+observability:
+  - workflow_run_log
+  - step_status_events
+  - approval_decision_log
+governance:
+  - no_cold_outreach: follow-up applies only to leads with prior inbound contact
+  - approval_first: every follow-up message requires explicit human approval
+  - frequency_cap: at most one follow-up draft per lead per defined interval

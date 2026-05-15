@@ -1,0 +1,53 @@
+# Layer 3 — Workflow Engine — Support: Escalation
+# Routes a stuck or high-severity ticket to a human owner with full context.
+name: escalation
+version: 1.0.0
+owner: Support Team Lead
+description_ar: "تصعيد التذاكر العالقة أو عالية الخطورة — تجميع السياق، تحديد المالك، إشعار داخلي، متابعة SLA."
+description_en: "Escalate stuck or high-severity tickets — assemble context, assign owner, internal notify, SLA tracking."
+trigger: ticket_escalation_requested
+sla:
+  owner_assigned_minutes: 15
+  escalation_acknowledged_minutes: 60
+steps:
+  - id: assemble_context
+    action: collect_ticket_history
+    risk_level: low
+    retry: { max_attempts: 2, backoff: exponential }
+  - id: classify_severity
+    action: classify_intent
+    risk_level: low
+  - id: select_escalation_owner
+    action: route_to_owner
+    risk_level: medium
+  - id: notify_escalation_owner
+    action: notify_internal
+    channel: internal_only
+    risk_level: low
+    retry: { max_attempts: 3, backoff: exponential }
+    compensation: reassign_escalation_owner
+  - id: draft_customer_status_update
+    action: draft_response
+    mode: draft_only
+    risk_level: medium
+  - id: request_human_approval
+    action: request_human_approval
+    risk_level: high
+    blocks_external_send: true
+  - id: track_sla_until_acknowledged
+    action: sla_watch
+    risk_level: low
+external_message_steps:
+  - draft_customer_status_update  # draft_only; sent only after approval by the owner
+metrics:
+  - completion_rate
+  - time_to_owner_assignment
+  - escalation_acknowledgement_rate
+observability:
+  - workflow_run_log
+  - step_status_events
+  - sla_breach_alerts
+governance:
+  - human_in_the_loop: escalations always land with a named human owner
+  - approval_first: any customer status update is drafted and approved before send
+  - no_silent_drop: unacknowledged escalations raise an SLA breach alert

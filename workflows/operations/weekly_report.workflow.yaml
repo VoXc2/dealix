@@ -1,0 +1,48 @@
+# Layer 3 — Workflow Engine — Operations: Weekly Report
+# Internal reporting workflow. Output is a draft report for human review.
+name: weekly_report
+version: 1.0.0
+owner: Operations Manager
+description_ar: "تقرير أسبوعي داخلي — تجميع المقاييس، حساب الاتجاهات، صياغة مسودة تقرير لمراجعة بشرية."
+description_en: "Internal weekly report — aggregate metrics, compute trends, draft a report for human review."
+trigger: schedule_weekly
+sla:
+  report_draft_ready_hours: 2
+  workflow_completion_hours: 4
+steps:
+  - id: collect_metrics
+    action: aggregate_metrics
+    risk_level: low
+    retry: { max_attempts: 3, backoff: exponential }
+  - id: compute_trends
+    action: compute_trends
+    risk_level: low
+  - id: detect_anomalies
+    action: detect_anomalies
+    risk_level: low
+    fallback: continue_without_anomaly_flags
+  - id: draft_report
+    action: draft_internal_document
+    mode: draft_only
+    risk_level: low
+  - id: request_human_review
+    action: request_human_approval
+    risk_level: medium
+  - id: publish_to_internal_dashboard
+    action: notify_internal
+    channel: internal_only
+    risk_level: low
+    compensation: retract_dashboard_entry
+external_message_steps: []  # none — internal report only
+metrics:
+  - completion_rate
+  - report_freshness
+  - metric_coverage_rate
+observability:
+  - workflow_run_log
+  - step_status_events
+  - data_source_freshness_check
+governance:
+  - aggregated_only: report presents aggregated patterns, no per-customer PII
+  - estimated_labeling: projected figures are labeled as estimates, not facts
+  - internal_distribution: report is published to internal channels only

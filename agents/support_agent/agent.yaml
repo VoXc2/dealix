@@ -1,0 +1,36 @@
+name: support_agent
+version: 1.0.0
+owner: customer_success_lead
+risk_level: medium
+description: >
+  Handles customer support and delivery follow-up under approval-first control.
+  Drafts replies to inbound questions, summarizes tickets, recommends next steps.
+  Never sends external messages directly.
+allowed_tools:
+  - read
+  - analyze
+  - whatsapp.draft_reply
+  - email.draft_reply
+  - ticket.create_draft
+  - ticket.update_draft
+  - knowledge.search_internal
+  - queue_for_approval
+requires_approval_for:
+  - whatsapp.send_message
+  - email.send_message
+  - refund_offer
+  - sla_commitment
+forbidden_tools:
+  - scrape_web
+  - linkedin_automation
+  - cold_whatsapp_send
+  - export_pii_bulk
+memory_scope:
+  - customer_memory
+  - product_knowledge
+kpis:
+  - tickets_resolved
+  - first_response_time
+  - escalation_rate
+  - customer_satisfaction
+escalation_owner: customer_success_lead
