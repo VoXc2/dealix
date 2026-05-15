@@ -10,7 +10,7 @@ import json
 import os
 import threading
 from dataclasses import asdict, dataclass, field
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 from uuid import uuid4
 
@@ -40,7 +40,7 @@ class ValueEvent:
     source_ref: str = ""
     confirmation_ref: str = ""
     notes: str = ""
-    occurred_at: str = field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
+    occurred_at: str = field(default_factory=lambda: datetime.now(UTC).isoformat())
 
     def to_dict(self) -> dict[str, object]:
         return asdict(self)
@@ -88,9 +88,9 @@ def _event_from_dict(data: dict[str, object]) -> ValueEvent | None:
             source_ref=str(data.get("source_ref", "")),
             confirmation_ref=str(data.get("confirmation_ref", "")),
             notes=str(data.get("notes", "")),
-            occurred_at=str(data.get("occurred_at", "")) or datetime.now(timezone.utc).isoformat(),
+            occurred_at=str(data.get("occurred_at", "")) or datetime.now(UTC).isoformat(),
         )
-    except Exception:  # noqa: BLE001
+    except (TypeError, ValueError):
         return None
 
 
@@ -132,9 +132,8 @@ def add_event(
     )
     path = _path()
     _ensure_dir(path)
-    with _lock:
-        with path.open("a", encoding="utf-8") as f:
-            f.write(json.dumps(event.to_dict(), ensure_ascii=False) + "\n")
+    with _lock, path.open("a", encoding="utf-8") as f:
+        f.write(json.dumps(event.to_dict(), ensure_ascii=False) + "\n")
     return event
 
 
@@ -150,31 +149,30 @@ def list_events(
         return []
 
     customer_filter = customer_id.strip()
-    cutoff_ts = datetime.now(timezone.utc).timestamp() - max(int(since_days), 0) * 86400
+    cutoff_ts = datetime.now(UTC).timestamp() - max(int(since_days), 0) * 86400
     out: list[ValueEvent] = []
 
-    with _lock:
-        with path.open("r", encoding="utf-8") as f:
-            for line in f:
-                line = line.strip()
-                if not line:
-                    continue
-                try:
-                    data = json.loads(line)
-                except Exception:  # noqa: BLE001
-                    continue
-                event = _event_from_dict(data if isinstance(data, dict) else {})
-                if event is None:
-                    continue
-                if customer_filter and event.customer_id != customer_filter:
-                    continue
-                try:
-                    ts = datetime.fromisoformat(event.occurred_at).timestamp()
-                except Exception:  # noqa: BLE001
-                    ts = 0.0
-                if ts < cutoff_ts:
-                    continue
-                out.append(event)
+    with _lock, path.open("r", encoding="utf-8") as f:
+        for line in f:
+            line = line.strip()
+            if not line:
+                continue
+            try:
+                data = json.loads(line)
+            except json.JSONDecodeError:
+                continue
+            event = _event_from_dict(data if isinstance(data, dict) else {})
+            if event is None:
+                continue
+            if customer_filter and event.customer_id != customer_filter:
+                continue
+            try:
+                ts = datetime.fromisoformat(event.occurred_at).timestamp()
+            except ValueError:
+                ts = 0.0
+            if ts < cutoff_ts:
+                continue
+            out.append(event)
 
     # Return newest-first for downstream reporting/read-model UX.
     out.sort(key=lambda e: e.occurred_at, reverse=True)
@@ -185,8 +183,8 @@ def summarize(*, customer_id: str, period_days: int = 30) -> dict[str, object]:
     """Summarize event counts and monetary totals by tier."""
     events = list_events(customer_id=customer_id, limit=10_000, since_days=period_days)
 
-    amounts = {tier: 0.0 for tier in _KNOWN_TIERS}
-    counts = {tier: 0 for tier in _KNOWN_TIERS}
+    amounts = dict.fromkeys(_KNOWN_TIERS, 0.0)
+    counts = dict.fromkeys(_KNOWN_TIERS, 0)
     for ev in events:
         if ev.tier not in amounts:
             continue
@@ -233,7 +231,7 @@ def clear_for_test(customer_id: str = "") -> None:
                     continue
                 try:
                     data = json.loads(raw)
-                except Exception:  # noqa: BLE001
+                except json.JSONDecodeError:
                     continue
                 if str(data.get("customer_id", "")) == cid:
                     continue

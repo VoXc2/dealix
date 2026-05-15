@@ -29,7 +29,7 @@ def import_preview_csv(csv_text: str, **kwargs: Any) -> dict[str, Any]:
 
 def _missing_pct(rows: list[dict[str, Any]], columns: list[str]) -> dict[str, float]:
     if not rows:
-        return {c: 100.0 for c in columns}
+        return dict.fromkeys(columns, 100.0)
     out: dict[str, float] = {}
     total = len(rows)
     for c in columns:

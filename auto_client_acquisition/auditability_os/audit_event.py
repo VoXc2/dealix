@@ -100,7 +100,7 @@ def _coerce_event(data: dict[str, object]) -> AuditLogEvent | None:
             tenant_id=str(data.get("tenant_id", "default") or "default"),
             occurred_at=str(data.get("occurred_at", "")) or datetime.now(UTC).isoformat(),
         )
-    except Exception:  # noqa: BLE001
+    except (TypeError, ValueError):
         return None
 
 
@@ -136,9 +136,8 @@ def record_event(
     )
     path = _path()
     _ensure_parent(path)
-    with _lock:
-        with path.open("a", encoding="utf-8") as f:
-            f.write(json.dumps(event.to_dict(), ensure_ascii=False) + "\n")
+    with _lock, path.open("a", encoding="utf-8") as f:
+        f.write(json.dumps(event.to_dict(), ensure_ascii=False) + "\n")
     return event
 
 
@@ -157,30 +156,29 @@ def list_events(
     engagement_filter = engagement_id.strip()
     cutoff = datetime.now(UTC) - timedelta(days=max(int(since_days), 0))
     rows: list[AuditLogEvent] = []
-    with _lock:
-        with path.open("r", encoding="utf-8") as f:
-            for line in f:
-                line = line.strip()
-                if not line:
-                    continue
-                try:
-                    payload = json.loads(line)
-                except Exception:  # noqa: BLE001
-                    continue
-                ev = _coerce_event(payload if isinstance(payload, dict) else {})
-                if ev is None:
-                    continue
-                if customer_filter and ev.customer_id != customer_filter:
-                    continue
-                if engagement_filter and ev.engagement_id != engagement_filter:
-                    continue
-                try:
-                    ts = datetime.fromisoformat(ev.occurred_at)
-                except Exception:  # noqa: BLE001
-                    ts = datetime.min.replace(tzinfo=UTC)
-                if ts < cutoff:
-                    continue
-                rows.append(ev)
+    with _lock, path.open("r", encoding="utf-8") as f:
+        for line in f:
+            line = line.strip()
+            if not line:
+                continue
+            try:
+                payload = json.loads(line)
+            except json.JSONDecodeError:
+                continue
+            ev = _coerce_event(payload if isinstance(payload, dict) else {})
+            if ev is None:
+                continue
+            if customer_filter and ev.customer_id != customer_filter:
+                continue
+            if engagement_filter and ev.engagement_id != engagement_filter:
+                continue
+            try:
+                ts = datetime.fromisoformat(ev.occurred_at)
+            except ValueError:
+                ts = datetime.min.replace(tzinfo=UTC)
+            if ts < cutoff:
+                continue
+            rows.append(ev)
     rows.sort(key=lambda e: e.occurred_at, reverse=True)
     return rows[: max(int(limit), 0)]
 

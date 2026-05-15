@@ -60,7 +60,7 @@ def _normalize_risk_score(raw: float | int | str | None) -> float:
         return 0.0
     try:
         score = float(raw)
-    except Exception:  # noqa: BLE001
+    except (TypeError, ValueError):
         return 0.0
     # Accept either 0..1 or 0..100 scale.
     if score > 1.0:

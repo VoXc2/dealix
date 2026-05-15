@@ -98,9 +98,9 @@ def _check_data_os_contract() -> CheckResult:
     from auto_client_acquisition.data_os.source_passport import SourcePassport, validate
 
     csv_bytes = (
-        "company_name,sector,city,contact_email\n"
-        "Acme,logistics,Riyadh,ops@acme.sa\n"
-    ).encode("utf-8")
+        b"company_name,sector,city,contact_email\n"
+        b"Acme,logistics,Riyadh,ops@acme.sa\n"
+    )
     p = preview(csv_bytes)
     passport = SourcePassport(
         source_id="SRC-1",
@@ -214,7 +214,7 @@ def main() -> int:
     for fn in checks:
         try:
             results.append(fn())
-        except Exception as exc:  # noqa: BLE001
+        except Exception as exc:
             failures.append({"check": fn.__name__, "error": str(exc)})
 
     report = {
