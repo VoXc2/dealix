@@ -9,6 +9,13 @@ from auto_client_acquisition.delivery_os.change_request import (
     ChangeRequestType,
     change_request_valid,
 )
+from auto_client_acquisition.delivery_os.control_tower import (
+    DeliveryRisk,
+    REQUIRED_STAGE_GATES,
+    compute_delivery_risk_score,
+    delivery_risk_band,
+    stage_gate_passes,
+)
 from auto_client_acquisition.delivery_os.framework import (
     DEFAULT_PHASE_CHECKLISTS,
     DeliveryPhase,
@@ -47,6 +54,8 @@ __all__ = [
     "DeliveryPhase",
     "ChangeRequest",
     "ChangeRequestType",
+    "DeliveryRisk",
+    "REQUIRED_STAGE_GATES",
     "RetainerBacklogItem",
     "check_readiness_gate",
     "checklist_for_phase",
@@ -57,6 +66,8 @@ __all__ = [
     "default_evidence_for",
     "default_handoff_template_path",
     "delivery_checklist_flat",
+    "compute_delivery_risk_score",
+    "delivery_risk_band",
     "enqueue_retainer_backlog_item",
     "forbidden_capability_requested",
     "merge_evidence",
@@ -66,4 +77,5 @@ __all__ = [
     "renewal_recommendation_snippet",
     "service_catalog_entries",
     "service_catalog_snapshot",
+    "stage_gate_passes",
 ]

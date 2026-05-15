@@ -1,0 +1,43 @@
+version: 1
+program: global_ai_transformation
+kpis:
+  north_star:
+    - key: measured_customer_value_sar
+      definition: Total source-backed measured customer value in SAR
+      owner_os: value
+      target_direction: up
+    - key: governance_integrity_rate
+      definition: Ratio of high-risk actions that respected approval policy
+      owner_os: trust
+      target_direction: up
+    - key: reliability_posture_score
+      definition: Composite service reliability and drill readiness score
+      owner_os: reliability
+      target_direction: up
+    - key: expansion_quality_ratio
+      definition: Expansion revenue sourced from proof-backed outcomes
+      owner_os: sales
+      target_direction: up
+  leading:
+    - key: time_to_proof_days
+      owner_os: delivery
+      target_direction: down
+    - key: approval_cycle_time_hours
+      owner_os: control_plane
+      target_direction: down
+    - key: conversion_discovery_to_pilot
+      owner_os: gtm
+      target_direction: up
+    - key: gross_margin_by_offer
+      owner_os: finance
+      target_direction: up
+  guardrails:
+    - key: unauthorized_external_action_count
+      threshold: 0
+      owner_os: trust
+    - key: measured_metric_without_source_ref_count
+      threshold: 0
+      owner_os: value
+    - key: tenant_isolation_violation_count
+      threshold: 0
+      owner_os: platform

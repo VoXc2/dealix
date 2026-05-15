@@ -11,11 +11,19 @@ from auto_client_acquisition.reliability_os.health_matrix import (
     build_health_matrix,
     summary,
 )
+from auto_client_acquisition.reliability_os.mission_critical_program import (
+    DrillResult,
+    MissionCriticalScore,
+    compute_mission_critical_score,
+)
 
 __all__ = [
     "HealthDimension",
     "HealthStatus",
+    "DrillResult",
+    "MissionCriticalScore",
     "SubsystemHealth",
     "build_health_matrix",
+    "compute_mission_critical_score",
     "summary",
 ]

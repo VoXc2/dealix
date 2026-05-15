@@ -1,0 +1,42 @@
+version: 1
+os_ownership:
+  strategy:
+    primary_owner: chief_strategy_officer
+    backup_owner: category_strategy_manager
+    escalation_owner: founder
+  product:
+    primary_owner: product_os_owner
+    backup_owner: platform_product_manager
+    escalation_owner: founder
+  trust:
+    primary_owner: governance_runtime_owner
+    backup_owner: approval_center_owner
+    escalation_owner: founder
+  platform:
+    primary_owner: enterprise_control_plane_owner
+    backup_owner: runtime_architecture_owner
+    escalation_owner: founder
+  observability:
+    primary_owner: observability_owner
+    backup_owner: sre_owner
+    escalation_owner: enterprise_control_plane_owner
+  reliability:
+    primary_owner: runtime_safety_owner
+    backup_owner: incident_response_owner
+    escalation_owner: enterprise_control_plane_owner
+  gtm:
+    primary_owner: founder_sales_owner
+    backup_owner: enterprise_sales_lead
+    escalation_owner: founder
+  finance:
+    primary_owner: operating_finance_owner
+    backup_owner: revenue_operations_owner
+    escalation_owner: founder
+  delivery:
+    primary_owner: delivery_factory_owner
+    backup_owner: service_sessions_owner
+    escalation_owner: founder
+  people_ops:
+    primary_owner: operating_system_chief
+    backup_owner: talent_ops_lead
+    escalation_owner: founder

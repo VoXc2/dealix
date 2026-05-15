@@ -19,6 +19,12 @@ from auto_client_acquisition.observability_v10.buffer import (
     list_v10_traces,
     record_v10_trace,
 )
+from auto_client_acquisition.observability_v10.contract_registry import (
+    ALLOWED_EVENT_TYPES,
+    REQUIRED_FIELDS,
+    ContractValidation,
+    validate_observability_event,
+)
 from auto_client_acquisition.observability_v10.report import summarize_traces
 from auto_client_acquisition.observability_v10.schemas import (
     SpanRecord,
@@ -29,9 +35,13 @@ from auto_client_acquisition.observability_v10.trace_schema import validate_trac
 __all__ = [
     "SpanRecord",
     "TraceRecordV10",
+    "ALLOWED_EVENT_TYPES",
+    "REQUIRED_FIELDS",
+    "ContractValidation",
     "_reset_v10_buffer",
     "list_v10_traces",
     "record_v10_trace",
     "summarize_traces",
     "validate_trace",
+    "validate_observability_event",
 ]

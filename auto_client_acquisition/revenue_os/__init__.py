@@ -23,6 +23,12 @@ from auto_client_acquisition.revenue_os.enrichment_waterfall import (
     FactFieldProvenance,
     WaterfallStage,
 )
+from auto_client_acquisition.revenue_os.data_flywheel import (
+    FlywheelInputs,
+    FlywheelScore,
+    compute_flywheel_score,
+    gating_failures,
+)
 from auto_client_acquisition.revenue_os.expansion_engine import next_best_offer
 from auto_client_acquisition.revenue_os.followup_plan import default_follow_up_plan_bullets
 from auto_client_acquisition.revenue_os.proof_canonical import ProofEventCanonical
@@ -57,6 +63,8 @@ __all__ = [
     "AntiWasteViolation",
     "DedupeHint",
     "FactFieldProvenance",
+    "FlywheelInputs",
+    "FlywheelScore",
     "ProofEventCanonical",
     "SaudiTargetingProfile",
     "SourcePolicy",
@@ -68,6 +76,7 @@ __all__ = [
     "build_revenue_draft_pack",
     "default_follow_up_plan_bullets",
     "forbidden_sources",
+    "gating_failures",
     "get_source_policy",
     "list_action_catalog",
     "map_tier1_to_intake_lead_source",
@@ -80,5 +89,6 @@ __all__ = [
     "source_policies",
     "summarize_scored_accounts",
     "suggest_dedupe_fingerprint",
+    "compute_flywheel_score",
     "validate_pipeline_step",
 ]
