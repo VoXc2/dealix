@@ -26,10 +26,19 @@ _MEMORY_STORE: dict[str, float] = {}
 _MEMORY_LOCK = threading.Lock()
 
 
+def _purge_expired(now: float) -> None:
+    """Drop expired keys so the fallback store cannot grow unboundedly.
+    Caller must hold ``_MEMORY_LOCK``."""
+    expired = [k for k, exp in _MEMORY_STORE.items() if exp <= now]
+    for k in expired:
+        del _MEMORY_STORE[k]
+
+
 def _memory_claim(full_key: str, ttl_seconds: int) -> bool:
     """In-memory equivalent of SET NX EX — True if newly claimed."""
     now = time.time()
     with _MEMORY_LOCK:
+        _purge_expired(now)
         expiry = _MEMORY_STORE.get(full_key)
         if expiry is not None and expiry > now:
             return False

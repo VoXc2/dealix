@@ -60,8 +60,16 @@ def _configured_keys() -> list[str]:
 
 
 def _is_production() -> bool:
-    """True when APP_ENV is production — auth then fails closed."""
-    return os.getenv("APP_ENV", "").strip().lower() == "production"
+    """True when the environment is production — auth then fails closed.
+
+    Honors both ``APP_ENV`` (the Settings field) and ``ENVIRONMENT`` (the
+    name used in .env.example) so a production deployment under either
+    contract cannot silently run unauthenticated.
+    """
+    for var in ("APP_ENV", "ENVIRONMENT"):
+        if os.getenv(var, "").strip().lower() == "production":
+            return True
+    return False
 
 
 def _configured_admin_keys() -> list[str]:
