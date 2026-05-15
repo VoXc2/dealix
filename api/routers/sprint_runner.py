@@ -22,6 +22,11 @@ class _SprintRunBody(BaseModel):
     accounts: list[dict[str, Any]] | None = None
     problem_summary: str = ""
     workflow_owner_present: bool = True
+    ai_advisory: bool = Field(
+        default=False,
+        description="Opt-in: attach the AI advisory layer (steps 3 & 4). "
+        "Advisory output is governance-checked and awaits founder approval.",
+    )
 
 
 @router.post("/run")
@@ -40,8 +45,9 @@ async def run_sprint_endpoint(body: _SprintRunBody) -> dict[str, Any]:
             accounts=body.accounts,
             problem_summary=body.problem_summary,
             workflow_owner_present=body.workflow_owner_present,
+            ai_advisory=body.ai_advisory,
         )
-    except Exception as e:  # noqa: BLE001
+    except Exception as e:
         raise HTTPException(status_code=500, detail=f"sprint_run_failed: {e}") from e
 
     return run.to_dict()
@@ -54,6 +60,7 @@ async def sample_sprint() -> dict[str, Any]:
     """
     import csv
     from pathlib import Path
+
     from auto_client_acquisition.delivery_factory.delivery_sprint import run_sprint
 
     demo_path = Path(__file__).resolve().parent.parent.parent / "data" / "demo" / "saudi_b2b_demo.csv"

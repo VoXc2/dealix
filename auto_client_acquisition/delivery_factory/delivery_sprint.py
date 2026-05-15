@@ -10,9 +10,14 @@ proceeding to the next step. NO external sends.
 """
 from __future__ import annotations
 
+import os
 from dataclasses import asdict, dataclass, field
-from datetime import datetime, timezone
+from datetime import UTC, datetime, timezone
 from typing import Any
+
+from core.logging import get_logger
+
+_log = get_logger(__name__)
 
 
 @dataclass
@@ -36,6 +41,7 @@ class SprintRun:
     capital_assets_registered: list[str] = field(default_factory=list)
     retainer_eligible: bool = False
     governance_decision: str = "allow_with_review"
+    ai_advisory: bool = False
 
     def to_dict(self) -> dict[str, Any]:
         return {
@@ -49,6 +55,7 @@ class SprintRun:
             "capital_assets_registered": list(self.capital_assets_registered),
             "retainer_eligible": self.retainer_eligible,
             "governance_decision": self.governance_decision,
+            "ai_advisory": self.ai_advisory,
         }
 
 
@@ -61,7 +68,12 @@ def _safe(step_name: str, fn, **kwargs) -> SprintStep:
             status="ran",
             output=out if isinstance(out, dict) else {"value": out},
         )
-    except Exception as exc:  # noqa: BLE001
+    except Exception as exc:
+        _log.warning(
+            "sprint_step_blocked",
+            step=step_name,
+            error=f"{type(exc).__name__}: {exc}",
+        )
         try:
             from auto_client_acquisition.friction_log.store import emit
             emit(
@@ -71,8 +83,12 @@ def _safe(step_name: str, fn, **kwargs) -> SprintStep:
                 workflow_id="delivery_sprint",
                 notes=f"step:{step_name}:exception:{type(exc).__name__}",
             )
-        except Exception:
-            pass
+        except Exception as emit_exc:
+            _log.warning(
+                "friction_log_emit_failed",
+                step=step_name,
+                error=f"{type(emit_exc).__name__}: {emit_exc}",
+            )
         return SprintStep(
             name=step_name,
             status="blocked",
@@ -126,9 +142,18 @@ def step2_data_quality(*, customer_id: str, engagement_id: str, raw_csv: str | b
     }
 
 
-def step3_account_scoring(*, customer_id: str, engagement_id: str, accounts: list[dict] | None = None) -> dict:
+def step3_account_scoring(
+    *,
+    customer_id: str,
+    engagement_id: str,
+    accounts: list[dict] | None = None,
+    ai_advisory: bool = False,
+) -> dict:
     """Day 3: Account scoring → top 10. Heuristic if revenue_os.account_scoring
     is not available in this environment.
+
+    When ``ai_advisory`` is on, an AI rationale is ATTACHED under ``advisory``;
+    the deterministic ranking is never altered.
     """
     accounts = accounts or []
     scored: list[dict] = []
@@ -155,7 +180,13 @@ def step3_account_scoring(*, customer_id: str, engagement_id: str, accounts: lis
     scored.sort(key=lambda x: x["score"], reverse=True)
     for i, s in enumerate(scored, start=1):
         s["rank"] = i
-    return {"top_10": scored[:10], "total_scored": len(scored)}
+    result: dict[str, Any] = {"top_10": scored[:10], "total_scored": len(scored)}
+    if ai_advisory:
+        from auto_client_acquisition.delivery_factory.sprint_advisory import (
+            advisory_ranking_rationale,
+        )
+        result["advisory"] = advisory_ranking_rationale(scored[:10])
+    return result
 
 
 def _score_reasons(acc: dict, score: int) -> list[str]:
@@ -169,11 +200,21 @@ def _score_reasons(acc: dict, score: int) -> list[str]:
     return reasons
 
 
-def step4_draft_pack(*, customer_id: str, engagement_id: str, top_accounts: list[dict]) -> dict:
-    """Day 4: Generate AR + EN draft outline. Real LLM call deferred to
-    the founder review step — this orchestrator only structures the brief.
+def step4_draft_pack(
+    *,
+    customer_id: str,
+    engagement_id: str,
+    top_accounts: list[dict],
+    ai_advisory: bool = False,
+) -> dict:
+    """Day 4: Generate AR + EN draft outline.
+
+    The deterministic outlines below are always the primary output. When
+    ``ai_advisory`` is on, REAL AI-drafted outreach is ATTACHED under
+    ``advisory`` — it does not replace the outlines and is governance-checked
+    by step 5 before it can surface.
     """
-    return {
+    out: dict[str, Any] = {
         "ar_drafts_outlined": [
             {
                 "account": acc["company_name"],
@@ -191,27 +232,33 @@ def step4_draft_pack(*, customer_id: str, engagement_id: str, top_accounts: list
         ],
         "total_outlines": min(10, len(top_accounts)),
     }
+    if ai_advisory:
+        from auto_client_acquisition.delivery_factory.sprint_advisory import (
+            advisory_outreach_drafts,
+        )
+        out["advisory"] = advisory_outreach_drafts(top_accounts)
+    return out
 
 
 def step5_governance_review(*, customer_id: str, engagement_id: str, drafts: list[dict]) -> dict:
-    """Day 4 cont'd: Run governance_os.decide on every draft."""
-    from auto_client_acquisition.governance_os.runtime_decision import decide
+    """Day 4 cont'd: Run the governance policy gate on every draft.
+
+    Each draft text is passed through ``policy_check_draft`` — the single
+    canonical automated pre-check in ``governance_os``. AI advisory drafts
+    (``source == "ai_advisory"``) go through the SAME gate; nothing bypasses it.
+    """
+    from auto_client_acquisition.governance_os.policy_check import policy_check_draft
 
     reviews = []
     for d in drafts:
         outline_text = " ".join([d.get("outline_ar", ""), d.get("outline_en", "")])
-        result = decide(
-            action="generate_draft",
-            context={
-                "text": outline_text,
-                "channel": "email",
-                "is_cold": False,
-            },
-        )
+        result = policy_check_draft(outline_text)
         reviews.append({
             "account": d.get("account", "?"),
-            "decision": result.decision.value,
-            "reasons": list(result.reasons),
+            "source": d.get("source", "deterministic"),
+            "decision": result.verdict.value,
+            "allowed": result.allowed,
+            "reasons": list(result.issues),
         })
     return {
         "reviews": reviews,
@@ -288,7 +335,12 @@ def step7_capital_assets(
                 notes=s.get("notes", ""),
             )
             registered.append(a.asset_id)
-        except Exception:  # noqa: BLE001
+        except Exception as exc:
+            _log.warning(
+                "capital_asset_register_failed",
+                asset_type=s.get("asset_type", "?"),
+                error=f"{type(exc).__name__}: {exc}",
+            )
             continue
     return {"registered": registered, "count": len(registered)}
 
@@ -321,6 +373,54 @@ def step8_retainer_check(
     }
 
 
+def _advisory_drafts_for_governance(s4_step: SprintStep) -> list[dict]:
+    """Extract AI advisory outreach drafts as step-5 governance draft dicts."""
+    advisory = s4_step.output.get("advisory", {})
+    return [
+        {
+            "account": d.get("account", "?"),
+            "outline_ar": d.get("draft_ar", ""),
+            "outline_en": d.get("draft_en", ""),
+            "source": "ai_advisory",
+        }
+        for d in advisory.get("drafts", [])
+    ]
+
+
+def _apply_governance_to_advisory(s4_step: SprintStep, s5_step: SprintStep) -> None:
+    """Write the step-5 governance verdict back onto each AI advisory draft.
+
+    Drafts that did not pass the policy gate are marked ``surfaced=False`` so
+    the founder dashboard never presents AI text that failed governance.
+    """
+    advisory = s4_step.output.get("advisory", {})
+    drafts = advisory.get("drafts", [])
+    if not drafts:
+        return
+    reviews = s5_step.output.get("reviews", []) if s5_step.status == "ran" else []
+    by_account = {
+        r["account"]: r for r in reviews if r.get("source") == "ai_advisory"
+    }
+    for d in drafts:
+        review = by_account.get(d.get("account", "?"))
+        if review is None:
+            # Governance step failed entirely — fail safe: do not surface.
+            d["governance"] = {
+                "decision": "UNREVIEWED",
+                "allowed": False,
+                "reasons": ["governance_step_unavailable"],
+            }
+            d["surfaced"] = False
+            continue
+        allowed = bool(review.get("allowed", False))
+        d["governance"] = {
+            "decision": review.get("decision", "?"),
+            "allowed": allowed,
+            "reasons": list(review.get("reasons", [])),
+        }
+        d["surfaced"] = allowed
+
+
 def run_sprint(
     *,
     engagement_id: str,
@@ -330,18 +430,26 @@ def run_sprint(
     accounts: list[dict] | None = None,
     problem_summary: str = "",
     workflow_owner_present: bool = True,
+    ai_advisory: bool = False,
 ) -> SprintRun:
     """End-to-end orchestrated run. Each step's output is captured.
 
     NOTE: this is a DRY orchestrator — it composes pure-function steps.
     The founder reviews intermediate outputs before proceeding in
     production. For tests, all steps run sequentially.
+
+    ``ai_advisory`` (opt-in, default OFF) attaches an OPTIONAL AI advisory
+    layer to steps 3 and 4. Deterministic outputs are unchanged; advisory
+    outreach drafts are governance-checked in step 5. The ``DEALIX_AI_ADVISORY=1``
+    env var can force it on; the explicit argument always wins when True.
     """
-    started = datetime.now(timezone.utc).isoformat()
+    ai_advisory = ai_advisory or os.environ.get("DEALIX_AI_ADVISORY") == "1"
+    started = datetime.now(UTC).isoformat()
     run = SprintRun(
         engagement_id=engagement_id,
         customer_id=customer_id,
         started_at=started,
+        ai_advisory=ai_advisory,
     )
 
     # Step 1
@@ -358,21 +466,28 @@ def run_sprint(
 
     # Step 3
     s3 = _safe("account_scoring", step3_account_scoring,
-               customer_id=customer_id, engagement_id=engagement_id, accounts=accounts)
+               customer_id=customer_id, engagement_id=engagement_id, accounts=accounts,
+               ai_advisory=ai_advisory)
     run.steps.append(s3)
     top10 = s3.output.get("top_10", [])
 
     # Step 4 — outline drafts
     s4 = _safe("draft_pack_outline", step4_draft_pack,
-               customer_id=customer_id, engagement_id=engagement_id, top_accounts=top10)
+               customer_id=customer_id, engagement_id=engagement_id, top_accounts=top10,
+               ai_advisory=ai_advisory)
     run.steps.append(s4)
     drafts = s4.output.get("ar_drafts_outlined", [])
 
-    # Step 5 — governance review
+    # Step 5 — governance review. AI advisory outreach drafts (when present)
+    # go through the SAME governance gate — nothing AI-generated bypasses it.
+    advisory_gov_drafts = _advisory_drafts_for_governance(s4) if ai_advisory else []
     s5 = _safe("governance_review", step5_governance_review,
-               customer_id=customer_id, engagement_id=engagement_id, drafts=drafts)
+               customer_id=customer_id, engagement_id=engagement_id,
+               drafts=drafts + advisory_gov_drafts)
     run.steps.append(s5)
     gov_summary = s5.output.get("summary", {})
+    if ai_advisory:
+        _apply_governance_to_advisory(s4, s5)
 
     # Step 6 — proof pack
     s6 = _safe("proof_pack", step6_proof_pack,
