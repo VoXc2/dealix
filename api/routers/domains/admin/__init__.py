@@ -9,6 +9,7 @@ from fastapi import APIRouter
 
 from api.routers import (
     admin,
+    agentic_enterprise as agentic_enterprise_router,
     approval_center,
     business,
     command_center,
@@ -65,6 +66,7 @@ _ROUTERS = [
     diagnostic.router,
     diagnostic_workflow.router,
     designops.router,
+    agentic_enterprise_router.router,
 ]
 
 
