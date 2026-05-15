@@ -63,8 +63,9 @@ def _governance_envelope(*, passport: SourcePassport | None) -> dict[str, Any]:
             "external_use": passport.external_use_allowed if passport else False,
         },
     )
+    decision_value = str(result.decision.value).lower()
     return {
-        "decision": result.decision.value,
+        "decision": decision_value,
         "reasons": list(result.reasons),
         "safe_alternative": result.safe_alternative,
     }
@@ -135,7 +136,7 @@ async def import_preview_upload(
 
 
 def _next_step(dq_overall: float, decision: str) -> str:
-    if decision == GovernanceDecision.BLOCK.value:
+    if str(decision).lower() == GovernanceDecision.BLOCK.value.lower():
         return "block_until_source_passport_provided"
     if dq_overall < 50:
         return "data_cleanup_required_before_scoring"
