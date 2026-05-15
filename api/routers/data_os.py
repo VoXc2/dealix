@@ -64,7 +64,7 @@ def _governance_envelope(*, passport: SourcePassport | None) -> dict[str, Any]:
         },
     )
     return {
-        "decision": result.decision.value,
+        "decision": result.decision.value.lower(),
         "reasons": list(result.reasons),
         "safe_alternative": result.safe_alternative,
     }

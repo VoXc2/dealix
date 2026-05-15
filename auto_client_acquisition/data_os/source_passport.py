@@ -2,12 +2,20 @@
 
 from __future__ import annotations
 
+from dataclasses import dataclass
+
 from auto_client_acquisition.compliance_trust_os.source_passport_v2 import SourcePassportV2
 from auto_client_acquisition.sovereignty_os.source_passport_standard import (
     SourcePassport,
     source_passport_allows_task,
     source_passport_valid_for_ai,
 )
+
+
+@dataclass(frozen=True, slots=True)
+class SourcePassportValidation:
+    is_valid: bool
+    reasons: tuple[str, ...]
 
 
 def source_passport_from_v2(p: SourcePassportV2) -> SourcePassport:
@@ -41,10 +49,23 @@ def governance_decision_hints_for_passport_gate(
     return False, "blocked"
 
 
+def validate(passport: SourcePassport | None) -> SourcePassportValidation:
+    """Validate passport presence + AI-usage constraints."""
+    if passport is None:
+        return SourcePassportValidation(
+            is_valid=False,
+            reasons=("source_passport_missing",),
+        )
+    ok, reasons = source_passport_valid_for_ai(passport)
+    return SourcePassportValidation(is_valid=ok, reasons=tuple(reasons))
+
+
 __all__ = [
     "SourcePassport",
+    "SourcePassportValidation",
     "governance_decision_hints_for_passport_gate",
     "source_passport_allows_task",
     "source_passport_from_v2",
     "source_passport_valid_for_ai",
+    "validate",
 ]
