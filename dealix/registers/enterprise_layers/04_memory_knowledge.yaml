@@ -1,0 +1,63 @@
+# ═══════════════════════════════════════════════════════════════════
+# Enterprise Layer 4 — Memory & Knowledge
+# ═══════════════════════════════════════════════════════════════════
+# Read by the Layer Validation engine. Edit the YAML, not the Python.
+# ═══════════════════════════════════════════════════════════════════
+
+schema_version: "1.0"
+last_reviewed: "2026-05-15"
+
+layer:
+  id: memory_knowledge
+  order: 4
+  title: "Memory & Knowledge"
+  definition: >-
+    Grounded, permission-aware, traceable and explainable retrieval —
+    customer memory, organizational memory, policy memory, embeddings and
+    the knowledge graph. The long-term competitive moat.
+  owner: "knowledge-team"
+  depends_on: [foundation, agent_runtime, workflow_engine]
+
+  responsibilities:
+    - "Ground every answer in a cited source"
+    - "Respect tenant isolation in all retrieval"
+    - "Measure and bound hallucination rate"
+    - "Make source lineage visible and explainable"
+
+  kpis:
+    - {id: answers_without_citation, target: "0"}
+    - {id: hallucination_rate, target: "<2%"}
+    - {id: retrieval_eval_pass_rate, target: ">90%"}
+
+  modules:
+    - {path: auto_client_acquisition/knowledge_os/}
+    - {path: auto_client_acquisition/revenue_memory/}
+    - {path: dealix/intelligence/}
+    - {path: dealix/caching/}
+
+  required_tests:
+    - tests/test_knowledge_os_policy.py
+    - tests/test_company_brain.py
+    - tests/test_no_source_no_answer.py
+    - tests/test_personal_operator_memory.py
+
+  checklist:
+    - {id: citations_working, evidence_test: tests/test_no_source_no_answer.py, done: true}
+    - {id: retrieval_evals_passing, evidence_test: tests/test_knowledge_os_policy.py, done: true}
+    - {id: permissions_respected, evidence_test: tests/test_personal_operator_memory.py, done: true}
+    - {id: source_lineage_visible, evidence_test: tests/test_company_brain.py, done: true}
+    - {id: hallucination_rate_measured, evidence_doc: evals/company_brain_eval.yaml, done: true}
+
+  rollback_procedure: "docs/runbooks/rollback.md#memory-knowledge"
+
+  observability_signals:
+    - "metric: retrieval_count"
+    - "metric: answers_without_citation"
+    - "metric: hallucination_rate"
+
+  risk_model:
+    severity: high
+    notes: >-
+      Ungrounded retrieval or a cross-tenant memory leak destroys trust.
+      Cross-layer rule: memory must respect Foundation tenant isolation
+      before this layer is READY.

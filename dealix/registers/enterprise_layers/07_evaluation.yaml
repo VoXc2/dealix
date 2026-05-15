@@ -1,0 +1,62 @@
+# ═══════════════════════════════════════════════════════════════════
+# Enterprise Layer 7 — Evaluation
+# ═══════════════════════════════════════════════════════════════════
+# Read by the Layer Validation engine. Edit the YAML, not the Python.
+# ═══════════════════════════════════════════════════════════════════
+
+schema_version: "1.0"
+last_reviewed: "2026-05-15"
+
+layer:
+  id: evaluation
+  order: 7
+  title: "Evaluation"
+  definition: >-
+    Automated, repeatable, versioned evaluation tied to business outcomes —
+    hallucination, retrieval, workflow execution, agent behaviour,
+    governance and business impact. Task success alone is not enough.
+  owner: "evaluation-team"
+  depends_on:
+    [foundation, agent_runtime, workflow_engine, memory_knowledge, governance, observability]
+
+  responsibilities:
+    - "Automate eval suites so they run repeatably"
+    - "Keep regression tests green"
+    - "Monitor hallucination over time"
+    - "Measure workflow success and tie it to business KPIs"
+
+  kpis:
+    - {id: eval_suite_automation_coverage, target: "100%"}
+    - {id: regression_test_pass_rate, target: "100%"}
+    - {id: kpis_tied_to_evals, target: "100%"}
+
+  modules:
+    - {path: evals/}
+    - {path: tests/}
+    - {path: auto_client_acquisition/benchmark_os/}
+
+  required_tests:
+    - tests/test_benchmark_os.py
+    - tests/test_output_quality_gate.py
+    - tests/governance/test_phase2_doctrine.py
+
+  checklist:
+    - {id: eval_suites_automated, evidence_module: evals/, done: true}
+    - {id: regression_tests_passing, evidence_test: tests/test_output_quality_gate.py, done: true}
+    - {id: hallucination_monitored, evidence_doc: evals/company_brain_eval.yaml, done: true}
+    - {id: workflow_success_measured, evidence_test: tests/test_benchmark_os.py, done: true}
+    - {id: business_kpis_tracked, evidence_doc: evals/governance_eval.yaml, done: true}
+
+  rollback_procedure: "docs/runbooks/rollback.md#evaluation"
+
+  observability_signals:
+    - "metric: eval_run_count"
+    - "metric: eval_pass_rate"
+    - "metric: regression_failure_count"
+
+  risk_model:
+    severity: high
+    notes: >-
+      Without evaluation tied to business outcomes, regressions ship
+      silently. Cross-layer rule: every layer's KPIs must be covered by an
+      eval pack or an evaluation-layer test.

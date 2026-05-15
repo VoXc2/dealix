@@ -1,0 +1,67 @@
+# ═══════════════════════════════════════════════════════════════════
+# Enterprise Layer 3 — Workflow Engine
+# ═══════════════════════════════════════════════════════════════════
+# Read by the Layer Validation engine. Edit the YAML, not the Python.
+# ═══════════════════════════════════════════════════════════════════
+
+schema_version: "1.0"
+last_reviewed: "2026-05-15"
+
+layer:
+  id: workflow_engine
+  order: 3
+  title: "Workflow Engine"
+  definition: >-
+    Deterministic, observable, retryable and auditable workflow execution —
+    orchestration, queues and the execution engine. The real future is AI
+    workflow execution, not AI chat.
+  owner: "orchestration-team"
+  depends_on: [foundation, agent_runtime]
+
+  responsibilities:
+    - "Run workflows deterministically"
+    - "Retry failed steps and recover from failure"
+    - "Keep queues stable under load"
+    - "Version every workflow definition"
+    - "Make every workflow run observable and auditable"
+
+  kpis:
+    - {id: workflow_failure_recovery_rate, target: ">99%"}
+    - {id: queue_backlog_depth, target: "<100"}
+    - {id: unversioned_workflows, target: "0"}
+
+  modules:
+    - {path: auto_client_acquisition/workflow_os/}
+    - {path: auto_client_acquisition/delivery_os/}
+    - {path: auto_client_acquisition/execution_os/}
+    - {path: dealix/execution/}
+    - {path: core/queue/}
+
+  required_tests:
+    - tests/test_workflow_os_v10.py
+    - tests/test_delivery_os_framework.py
+    - tests/test_execution_os.py
+    - tests/test_leadops_reliability.py
+
+  checklist:
+    - {id: retries_tested, evidence_test: tests/test_leadops_reliability.py, done: true}
+    - {id: queues_stable, evidence_module: core/queue/, done: true}
+    - {id: failure_recovery_tested, evidence_test: tests/test_execution_os.py, done: true}
+    - {id: orchestration_working, evidence_test: tests/test_workflow_os_v10.py, done: true}
+    - {id: workflows_observable, evidence_test: tests/test_delivery_os_framework.py, done: true}
+    - {id: workflows_versioned, evidence_module: auto_client_acquisition/workflow_os/, done: false}
+
+  rollback_procedure: "docs/runbooks/rollback.md#workflow-engine"
+
+  observability_signals:
+    - "metric: workflow_run_count"
+    - "metric: workflow_failure_count"
+    - "metric: queue_backlog_depth"
+    - "alert: queue_stall"
+
+  risk_model:
+    severity: high
+    notes: >-
+      A non-deterministic or non-recoverable workflow corrupts delivery
+      output. Cross-layer rule: workflows must respect Foundation RBAC /
+      permissions before this layer is READY.

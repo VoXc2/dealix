@@ -1,0 +1,64 @@
+# ═══════════════════════════════════════════════════════════════════
+# Enterprise Layer 6 — Observability
+# ═══════════════════════════════════════════════════════════════════
+# Read by the Layer Validation engine. Edit the YAML, not the Python.
+# ═══════════════════════════════════════════════════════════════════
+
+schema_version: "1.0"
+last_reviewed: "2026-05-15"
+
+layer:
+  id: observability
+  order: 6
+  title: "Observability"
+  definition: >-
+    Traces, failures, retries, latency, hallucinations, policy violations,
+    token spikes and bottlenecks. Reliability comes from the machinery
+    around the model, not the model itself.
+  owner: "reliability-team"
+  depends_on: [foundation, agent_runtime, workflow_engine, memory_knowledge, governance]
+
+  responsibilities:
+    - "Trace every material run end to end"
+    - "Configure alerts on failure and policy-violation signals"
+    - "Track incidents with a durable log"
+    - "Surface bottlenecks and token/cost spikes"
+
+  kpis:
+    - {id: tracing_coverage, target: "100%"}
+    - {id: untracked_incidents, target: "0"}
+    - {id: mean_time_to_detect_minutes, target: "<10"}
+
+  modules:
+    - {path: dealix/observability/}
+    - {path: auto_client_acquisition/auditability_os/}
+    - {path: auto_client_acquisition/evidence_control_plane_os/}
+
+  required_tests:
+    - tests/test_observability_v10.py
+    - tests/test_evidence_control_plane_os.py
+    - tests/test_cost_tracking.py
+    - tests/test_audit_correlation_id_v14.py
+
+  checklist:
+    - {id: tracing_complete, evidence_test: tests/test_audit_correlation_id_v14.py, done: true}
+    - {id: incidents_tracked, evidence_test: tests/test_evidence_control_plane_os.py, done: true}
+    - {id: bottlenecks_visible, evidence_test: tests/test_bottleneck_radar.py, done: true}
+    - {id: token_cost_tracked, evidence_test: tests/test_cost_tracking.py, done: true}
+    - {id: alerts_configured, evidence_doc: docs/runbooks/alerts.md, done: false}
+    - {id: dashboards_live, evidence_doc: docs/runbooks/dashboards.md, done: false}
+
+  rollback_procedure: "docs/runbooks/rollback.md#observability"
+
+  observability_signals:
+    - "metric: trace_count"
+    - "metric: incident_count"
+    - "metric: token_spend"
+    - "alert: latency_p99"
+
+  risk_model:
+    severity: high
+    notes: >-
+      Without observability a failure in any layer is invisible until it
+      becomes a disaster. Cross-layer rule: observability signals must
+      cover all 8 layers.

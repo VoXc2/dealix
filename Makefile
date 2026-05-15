@@ -3,7 +3,7 @@
 # الأوامر الشائعة
 # ═══════════════════════════════════════════════════════════════
 
-.PHONY: help install install-dev setup test test-unit test-integration \
+.PHONY: help install install-dev setup test test-unit test-integration layers \
         lint format type-check security clean run demo \
         docker-build docker-up docker-down docker-logs \
         pre-commit-install pre-commit-run db-init requirements \
@@ -58,6 +58,9 @@ test-unit: ## Unit tests only
 
 test-integration: ## Integration tests only
 	pytest -v tests/integration
+
+layers: ## Validate the 8 enterprise layers (strict dependency gate)
+	python scripts/verify_layers.py
 
 # ── Pre-commit ─────────────────────────────────────────────────
 pre-commit-install: ## Install pre-commit hooks

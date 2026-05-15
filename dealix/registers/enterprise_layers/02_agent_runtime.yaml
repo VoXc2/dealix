@@ -1,0 +1,69 @@
+# ═══════════════════════════════════════════════════════════════════
+# Enterprise Layer 2 — Agent Runtime
+# ═══════════════════════════════════════════════════════════════════
+# Read by the Layer Validation engine. Edit the YAML, not the Python.
+# ═══════════════════════════════════════════════════════════════════
+
+schema_version: "1.0"
+last_reviewed: "2026-05-15"
+
+layer:
+  id: agent_runtime
+  order: 2
+  title: "Agent Runtime"
+  definition: >-
+    The digital workforce runtime — agent lifecycle, permissions, memory,
+    tools, retries, escalation and governance. Agents must be bounded and
+    never act outside their predefined tool boundary.
+  owner: "agent-platform-team"
+  depends_on: [foundation]
+
+  responsibilities:
+    - "Manage agent lifecycle (create, run, retire)"
+    - "Sandbox every tool an agent can call"
+    - "Enforce per-agent permissions"
+    - "Retry transient failures and escalate hard failures to a human"
+    - "Isolate agent memory per tenant"
+
+  kpis:
+    - {id: unbounded_agent_actions, target: "0"}
+    - {id: agent_escalation_success_rate, target: ">95%"}
+    - {id: agent_run_observability_coverage, target: "100%"}
+
+  modules:
+    - {path: auto_client_acquisition/secure_agent_runtime_os/}
+    - {path: auto_client_acquisition/agent_os/}
+    - {path: auto_client_acquisition/agent_identity_access_os/}
+    - {path: auto_client_acquisition/agentic_operations_os/}
+    - {path: auto_client_acquisition/ai_workforce/}
+
+  required_tests:
+    - tests/test_secure_agent_runtime.py
+    - tests/test_agent_os.py
+    - tests/test_agentic_operations_os.py
+    - tests/test_ai_workforce_orchestrator.py
+    - tests/test_agent_autonomy_mvp_limit.py
+
+  checklist:
+    - {id: agent_lifecycle_working, evidence_test: tests/test_agent_os.py, done: true}
+    - {id: tools_sandboxed, evidence_test: tests/test_tool_guardrail_gateway.py, done: true}
+    - {id: permissions_enforced, evidence_test: tests/test_agent_autonomy_mvp_limit.py, done: true}
+    - {id: retries_working, evidence_test: tests/test_ai_workforce_orchestrator.py, done: true}
+    - {id: escalation_working, evidence_test: tests/test_secure_agent_runtime.py, done: true}
+    - {id: agent_memory_isolated, evidence_test: tests/test_agent_identity_access_os.py, done: false}
+    - {id: agent_logs_visible, evidence_test: tests/test_agent_observability_final.py, done: true}
+
+  rollback_procedure: "docs/runbooks/rollback.md#agent-runtime"
+
+  observability_signals:
+    - "metric: agent_run_count"
+    - "metric: agent_retry_count"
+    - "metric: agent_escalation_count"
+    - "alert: unbounded_agent_action"
+
+  risk_model:
+    severity: critical
+    notes: >-
+      An agent acting outside its tool boundary or without governance
+      approval can cause irreversible external actions. Cross-layer rule:
+      Governance (layer 5) must be READY before this layer is READY.

@@ -1,0 +1,71 @@
+# ═══════════════════════════════════════════════════════════════════
+# Enterprise Layer 8 — Executive Intelligence
+# ═══════════════════════════════════════════════════════════════════
+# Read by the Layer Validation engine. Edit the YAML, not the Python.
+# ═══════════════════════════════════════════════════════════════════
+
+schema_version: "1.0"
+last_reviewed: "2026-05-15"
+
+layer:
+  id: executive_intelligence
+  order: 8
+  title: "Executive Intelligence"
+  definition: >-
+    Executive briefs, strategic recommendations, operational bottleneck
+    surfacing, AI-impact reporting and organizational intelligence. Turns
+    the operating system into operational intelligence infrastructure.
+  owner: "executive-intelligence-team"
+  depends_on:
+    [
+      foundation,
+      agent_runtime,
+      workflow_engine,
+      memory_knowledge,
+      governance,
+      observability,
+      evaluation,
+    ]
+
+  responsibilities:
+    - "Generate executive briefs and board-ready reports"
+    - "Make ROI and AI impact measurable"
+    - "Produce and validate forecasts"
+    - "Raise strategic alerts on material change"
+
+  kpis:
+    - {id: executive_reports_per_week, target: ">=1"}
+    - {id: roi_measurable, target: "true"}
+    - {id: forecast_validation_pass_rate, target: ">80%"}
+
+  modules:
+    - {path: auto_client_acquisition/command_os/}
+    - {path: auto_client_acquisition/board_decision_os/}
+    - {path: auto_client_acquisition/role_command_os/}
+    - {path: auto_client_acquisition/intelligence_os/}
+    - {path: auto_client_acquisition/executive_command_center/}
+
+  required_tests:
+    - tests/test_command_os_scores.py
+    - tests/test_board_decision_os.py
+    - tests/test_intelligence_os_scores.py
+    - tests/test_executive_command_center_final.py
+
+  checklist:
+    - {id: executive_reports_generated, evidence_test: tests/test_executive_command_center_final.py, done: true}
+    - {id: roi_measurable, evidence_test: tests/test_board_decision_os.py, done: true}
+    - {id: strategic_alerts_working, evidence_test: tests/test_command_os_scores.py, done: true}
+    - {id: forecasts_validated, evidence_test: tests/test_intelligence_os_scores.py, done: false}
+
+  rollback_procedure: "docs/runbooks/rollback.md#executive-intelligence"
+
+  observability_signals:
+    - "metric: executive_reports_generated"
+    - "metric: strategic_alerts_raised"
+
+  risk_model:
+    severity: medium
+    notes: >-
+      Misleading executive intelligence drives bad strategic decisions.
+      This is the top layer; it is only READY when all 7 lower layers are
+      READY.

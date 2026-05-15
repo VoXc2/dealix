@@ -1,0 +1,67 @@
+# ═══════════════════════════════════════════════════════════════════
+# Enterprise Layer 5 — Governance
+# ═══════════════════════════════════════════════════════════════════
+# Read by the Layer Validation engine. Edit the YAML, not the Python.
+# ═══════════════════════════════════════════════════════════════════
+
+schema_version: "1.0"
+last_reviewed: "2026-05-15"
+
+layer:
+  id: governance
+  order: 5
+  title: "Governance"
+  definition: >-
+    Enforced, testable, observable and auditable governance — policies,
+    approval rules, risk models, compliance and audit. Governance is not
+    optional in an agentic system.
+  owner: "governance-team"
+  depends_on: [foundation, agent_runtime, workflow_engine, memory_knowledge]
+
+  responsibilities:
+    - "Enforce approval gates before sensitive actions"
+    - "Keep complete and immutable audit trails"
+    - "Version every policy"
+    - "Score risk on material decisions"
+    - "Run compliance checks (PDPL / ZATCA / NCA)"
+
+  kpis:
+    - {id: approval_gate_bypass_count, target: "0"}
+    - {id: policy_versioning_coverage, target: "100%"}
+    - {id: compliance_check_pass_rate, target: "100%"}
+
+  modules:
+    - {path: dealix/governance/}
+    - {path: dealix/classifications/}
+    - {path: dealix/registers/}
+    - {path: auto_client_acquisition/governance_os/}
+    - {path: auto_client_acquisition/compliance_os/}
+    - {path: auto_client_acquisition/compliance_trust_os/}
+
+  required_tests:
+    - tests/test_governance_runtime_decision.py
+    - tests/test_governance_approval_matrix.py
+    - tests/test_forbidden_actions.py
+    - tests/test_compliance_os_v12.py
+    - tests/test_doctrine_guardrails.py
+
+  checklist:
+    - {id: approvals_enforced, evidence_test: tests/test_governance_approval_matrix.py, done: true}
+    - {id: audit_trails_complete, evidence_test: tests/test_audit_export.py, done: true}
+    - {id: policies_versioned, evidence_module: dealix/registers/, done: true}
+    - {id: risk_scoring_working, evidence_test: tests/test_governance_runtime_decision.py, done: true}
+    - {id: compliance_checks_passing, evidence_test: tests/test_compliance_os_v12.py, done: true}
+
+  rollback_procedure: "docs/runbooks/rollback.md#governance"
+
+  observability_signals:
+    - "metric: approval_gate_decisions"
+    - "metric: policy_violations"
+    - "alert: approval_gate_bypass"
+
+  risk_model:
+    severity: critical
+    notes: >-
+      Governance enforces the 11 non-negotiables. A bypass here enables
+      unapproved external action. Cross-layer rule: every agent and
+      workflow action must pass through governance.

@@ -1,0 +1,73 @@
+# ═══════════════════════════════════════════════════════════════════
+# Enterprise Layer 1 — Foundation
+# ═══════════════════════════════════════════════════════════════════
+# Read by the Layer Validation engine (dealix/layer_validation/). This
+# manifest is governance state — edit the YAML, not the Python.
+# `checklist[].done` is a CLAIM; the engine independently verifies the
+# evidence target exists. Unverified claims are downgraded.
+# ═══════════════════════════════════════════════════════════════════
+
+schema_version: "1.0"
+last_reviewed: "2026-05-15"
+
+layer:
+  id: foundation
+  order: 1
+  title: "Foundation"
+  definition: >-
+    Identity, auth, RBAC, tenant isolation, infrastructure, logging,
+    deployment, secrets and backups. If this layer fails, everything above
+    it collapses.
+  owner: "platform-team"
+  depends_on: []
+
+  responsibilities:
+    - "Isolate every tenant's data 100%"
+    - "Enforce RBAC at the API perimeter"
+    - "Provide auditable logs for every sensitive action"
+    - "Allow safe rollback of any deployment"
+    - "Keep secrets isolated and never hardcoded"
+
+  kpis:
+    - {id: tenant_isolation_violations, target: "0"}
+    - {id: unaudited_sensitive_actions, target: "0"}
+    - {id: deployment_rollback_minutes, target: "<15"}
+
+  modules:
+    - {path: db/}
+    - {path: db/models.py}
+    - {path: api/middleware/}
+    - {path: api/security/}
+    - {path: api/routers/auth.py}
+    - {path: dealix/reliability/}
+    - {path: alembic/}
+    - {path: Dockerfile}
+
+  required_tests:
+    - tests/test_admin_tenants.py
+    - tests/test_tenant_isolation_v1.py
+    - tests/test_backend_reliability_hardening.py
+    - tests/test_no_pii_in_logs.py
+
+  checklist:
+    - {id: tenant_isolation_tested, evidence_test: tests/test_tenant_isolation_v1.py, done: true}
+    - {id: rbac_tested, evidence_test: tests/test_admin_tenants.py, done: true}
+    - {id: audit_logs_working, evidence_module: db/models.py, done: true}
+    - {id: secrets_isolated, evidence_module: api/security/, done: true}
+    - {id: infra_observable, evidence_test: tests/test_backend_reliability_hardening.py, done: true}
+    - {id: backups_tested, evidence_doc: docs/runbooks/backups.md, done: false}
+    - {id: rollback_tested, evidence_doc: docs/runbooks/rollback.md, done: false}
+
+  rollback_procedure: "docs/runbooks/rollback.md#foundation"
+
+  observability_signals:
+    - "metric: tenant_isolation_violations"
+    - "metric: auth_failure_rate"
+    - "alert: deployment_health"
+
+  risk_model:
+    severity: critical
+    notes: >-
+      A cross-tenant data leak is catastrophic and irreversible. This layer
+      gates every higher layer; no layer above can be READY while Foundation
+      is not READY.
