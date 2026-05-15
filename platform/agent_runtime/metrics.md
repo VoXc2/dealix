@@ -19,3 +19,10 @@
 
 - E-ART-050: release-period metric snapshot.
 - E-ART-051: threshold breach analysis where applicable.
+
+## Control Linkage (ART)
+
+- Gate ID: G-ART-900
+- Evidence ID: E-ART-900
+- Test ID: T-ART-900
+

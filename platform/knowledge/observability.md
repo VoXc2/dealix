@@ -19,3 +19,10 @@
 - E-KNW-030: metric dashboard export for release window.
 - E-KNW-031: sample correlated trace and log chain.
 - E-KNW-032: alert firing and acknowledgement timeline.
+
+## Control Linkage (KNW)
+
+- Gate ID: G-KNW-900
+- Evidence ID: E-KNW-900
+- Test ID: T-KNW-900
+

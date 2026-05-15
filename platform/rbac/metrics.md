@@ -19,3 +19,10 @@
 
 - E-RBA-050: release-period metric snapshot.
 - E-RBA-051: threshold breach analysis where applicable.
+
+## Control Linkage (RBA)
+
+- Gate ID: G-RBA-900
+- Evidence ID: E-RBA-900
+- Test ID: T-RBA-900
+

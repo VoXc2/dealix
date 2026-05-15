@@ -19,3 +19,10 @@
 
 - E-EXI-050: release-period metric snapshot.
 - E-EXI-051: threshold breach analysis where applicable.
+
+## Control Linkage (EXI)
+
+- Gate ID: G-EXI-900
+- Evidence ID: E-EXI-900
+- Test ID: T-EXI-900
+

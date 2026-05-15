@@ -19,3 +19,10 @@
 - E-RBA-030: metric dashboard export for release window.
 - E-RBA-031: sample correlated trace and log chain.
 - E-RBA-032: alert firing and acknowledgement timeline.
+
+## Control Linkage (RBA)
+
+- Gate ID: G-RBA-900
+- Evidence ID: E-RBA-900
+- Test ID: T-RBA-900
+

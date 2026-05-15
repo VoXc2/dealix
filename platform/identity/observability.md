@@ -19,3 +19,10 @@
 - E-IDN-030: metric dashboard export for release window.
 - E-IDN-031: sample correlated trace and log chain.
 - E-IDN-032: alert firing and acknowledgement timeline.
+
+## Control Linkage (IDN)
+
+- Gate ID: G-IDN-900
+- Evidence ID: E-IDN-900
+- Test ID: T-IDN-900
+

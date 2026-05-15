@@ -15,3 +15,10 @@
 - Run contract and determinism tests on each pull request touching this layer.
 - Run rollback drills at least once per release cycle.
 - Block promotion when any gate-linked test fails.
+
+## Control Linkage (KNW)
+
+- Gate ID: G-KNW-900
+- Evidence ID: E-KNW-900
+- Test ID: T-KNW-900
+

@@ -24,3 +24,10 @@ Switch connector routing to previous adapter release and replay validation tests
 |---|---|---|
 | T-EXE-040 | hot rollback in staging | layer recovers without policy regression |
 | T-EXE-041 | production-safe rollback rehearsal | critical workflows remain stable |
+
+## Control Linkage (EXE)
+
+- Gate ID: G-EXE-900
+- Evidence ID: E-EXE-900
+- Test ID: T-EXE-900
+

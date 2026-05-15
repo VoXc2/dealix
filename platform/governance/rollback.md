@@ -24,3 +24,10 @@ Reinstate previous policy bundle and reprocess queued high-risk actions.
 |---|---|---|
 | T-GOV-040 | hot rollback in staging | layer recovers without policy regression |
 | T-GOV-041 | production-safe rollback rehearsal | critical workflows remain stable |
+
+## Control Linkage (GOV)
+
+- Gate ID: G-GOV-900
+- Evidence ID: E-GOV-900
+- Test ID: T-GOV-900
+

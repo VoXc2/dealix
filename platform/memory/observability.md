@@ -19,3 +19,10 @@
 - E-MEM-030: metric dashboard export for release window.
 - E-MEM-031: sample correlated trace and log chain.
 - E-MEM-032: alert firing and acknowledgement timeline.
+
+## Control Linkage (MEM)
+
+- Gate ID: G-MEM-900
+- Evidence ID: E-MEM-900
+- Test ID: T-MEM-900
+

@@ -24,3 +24,10 @@ Pin previous permission map checksum and restart policy cache.
 |---|---|---|
 | T-RBA-040 | hot rollback in staging | layer recovers without policy regression |
 | T-RBA-041 | production-safe rollback rehearsal | critical workflows remain stable |
+
+## Control Linkage (RBA)
+
+- Gate ID: G-RBA-900
+- Evidence ID: E-RBA-900
+- Test ID: T-RBA-900
+

@@ -24,3 +24,10 @@ Pin prior agent manifest and disable newly added tool grants.
 |---|---|---|
 | T-ART-040 | hot rollback in staging | layer recovers without policy regression |
 | T-ART-041 | production-safe rollback rehearsal | critical workflows remain stable |
+
+## Control Linkage (ART)
+
+- Gate ID: G-ART-900
+- Evidence ID: E-ART-900
+- Test ID: T-ART-900
+

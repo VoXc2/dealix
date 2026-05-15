@@ -24,3 +24,10 @@ Revert ranker configuration and enforce strict confidence threshold fallback.
 |---|---|---|
 | T-KNW-040 | hot rollback in staging | layer recovers without policy regression |
 | T-KNW-041 | production-safe rollback rehearsal | critical workflows remain stable |
+
+## Control Linkage (KNW)
+
+- Gate ID: G-KNW-900
+- Evidence ID: E-KNW-900
+- Test ID: T-KNW-900
+

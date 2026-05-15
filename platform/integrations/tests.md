@@ -15,3 +15,10 @@
 - Run contract and determinism tests on each pull request touching this layer.
 - Run rollback drills at least once per release cycle.
 - Block promotion when any gate-linked test fails.
+
+## Control Linkage (INT)
+
+- Gate ID: G-INT-900
+- Evidence ID: E-INT-900
+- Test ID: T-INT-900
+

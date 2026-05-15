@@ -19,3 +19,10 @@
 
 - E-OBS-050: release-period metric snapshot.
 - E-OBS-051: threshold breach analysis where applicable.
+
+## Control Linkage (OBS)
+
+- Gate ID: G-OBS-900
+- Evidence ID: E-OBS-900
+- Test ID: T-OBS-900
+

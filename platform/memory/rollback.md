@@ -24,3 +24,10 @@ Revert to previous memory schema and rebuild affected indexes from event log.
 |---|---|---|
 | T-MEM-040 | hot rollback in staging | layer recovers without policy regression |
 | T-MEM-041 | production-safe rollback rehearsal | critical workflows remain stable |
+
+## Control Linkage (MEM)
+
+- Gate ID: G-MEM-900
+- Evidence ID: E-MEM-900
+- Test ID: T-MEM-900
+

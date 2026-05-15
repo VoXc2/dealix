@@ -19,3 +19,10 @@
 
 - E-INT-050: release-period metric snapshot.
 - E-INT-051: threshold breach analysis where applicable.
+
+## Control Linkage (INT)
+
+- Gate ID: G-INT-900
+- Evidence ID: E-INT-900
+- Test ID: T-INT-900
+

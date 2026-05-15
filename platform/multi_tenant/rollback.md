@@ -24,3 +24,10 @@ Disable latest query path changes and restore last verified tenant filter layer.
 |---|---|---|
 | T-MTN-040 | hot rollback in staging | layer recovers without policy regression |
 | T-MTN-041 | production-safe rollback rehearsal | critical workflows remain stable |
+
+## Control Linkage (MTN)
+
+- Gate ID: G-MTN-900
+- Evidence ID: E-MTN-900
+- Test ID: T-MTN-900
+

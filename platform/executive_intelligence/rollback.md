@@ -24,3 +24,10 @@ Revert briefing template version and reissue report from validated data snapshot
 |---|---|---|
 | T-EXI-040 | hot rollback in staging | layer recovers without policy regression |
 | T-EXI-041 | production-safe rollback rehearsal | critical workflows remain stable |
+
+## Control Linkage (EXI)
+
+- Gate ID: G-EXI-900
+- Evidence ID: E-EXI-900
+- Test ID: T-EXI-900
+

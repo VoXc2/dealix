@@ -19,3 +19,10 @@
 
 - E-KNW-050: release-period metric snapshot.
 - E-KNW-051: threshold breach analysis where applicable.
+
+## Control Linkage (KNW)
+
+- Gate ID: G-KNW-900
+- Evidence ID: E-KNW-900
+- Test ID: T-KNW-900
+

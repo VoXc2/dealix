@@ -19,3 +19,10 @@
 
 - E-GOV-050: release-period metric snapshot.
 - E-GOV-051: threshold breach analysis where applicable.
+
+## Control Linkage (GOV)
+
+- Gate ID: G-GOV-900
+- Evidence ID: E-GOV-900
+- Test ID: T-GOV-900
+

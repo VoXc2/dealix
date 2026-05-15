@@ -24,3 +24,10 @@ Revert to previous signed release and replay tenant boundary smoke tests.
 |---|---|---|
 | T-FND-040 | hot rollback in staging | layer recovers without policy regression |
 | T-FND-041 | production-safe rollback rehearsal | critical workflows remain stable |
+
+## Control Linkage (FND)
+
+- Gate ID: G-FND-900
+- Evidence ID: E-FND-900
+- Test ID: T-FND-900
+

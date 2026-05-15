@@ -24,3 +24,10 @@ Roll back connector mapping file and disable unstable adapter routes.
 |---|---|---|
 | T-INT-040 | hot rollback in staging | layer recovers without policy regression |
 | T-INT-041 | production-safe rollback rehearsal | critical workflows remain stable |
+
+## Control Linkage (INT)
+
+- Gate ID: G-INT-900
+- Evidence ID: E-INT-900
+- Test ID: T-INT-900
+

@@ -19,3 +19,10 @@
 - E-MTN-030: metric dashboard export for release window.
 - E-MTN-031: sample correlated trace and log chain.
 - E-MTN-032: alert firing and acknowledgement timeline.
+
+## Control Linkage (MTN)
+
+- Gate ID: G-MTN-900
+- Evidence ID: E-MTN-900
+- Test ID: T-MTN-900
+

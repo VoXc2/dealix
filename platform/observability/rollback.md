@@ -24,3 +24,10 @@ Revert collector configuration and restore prior alert thresholds.
 |---|---|---|
 | T-OBS-040 | hot rollback in staging | layer recovers without policy regression |
 | T-OBS-041 | production-safe rollback rehearsal | critical workflows remain stable |
+
+## Control Linkage (OBS)
+
+- Gate ID: G-OBS-900
+- Evidence ID: E-OBS-900
+- Test ID: T-OBS-900
+

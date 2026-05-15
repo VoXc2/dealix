@@ -19,3 +19,10 @@
 - E-GOV-030: metric dashboard export for release window.
 - E-GOV-031: sample correlated trace and log chain.
 - E-GOV-032: alert firing and acknowledgement timeline.
+
+## Control Linkage (GOV)
+
+- Gate ID: G-GOV-900
+- Evidence ID: E-GOV-900
+- Test ID: T-GOV-900
+

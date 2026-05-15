@@ -19,3 +19,10 @@
 
 - E-MTN-050: release-period metric snapshot.
 - E-MTN-051: threshold breach analysis where applicable.
+
+## Control Linkage (MTN)
+
+- Gate ID: G-MTN-900
+- Evidence ID: E-MTN-900
+- Test ID: T-MTN-900
+

@@ -24,3 +24,10 @@ Revert to prior identity resolver policy and force session refresh.
 |---|---|---|
 | T-IDN-040 | hot rollback in staging | layer recovers without policy regression |
 | T-IDN-041 | production-safe rollback rehearsal | critical workflows remain stable |
+
+## Control Linkage (IDN)
+
+- Gate ID: G-IDN-900
+- Evidence ID: E-IDN-900
+- Test ID: T-IDN-900
+

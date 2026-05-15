@@ -19,3 +19,10 @@
 - E-EXE-030: metric dashboard export for release window.
 - E-EXE-031: sample correlated trace and log chain.
 - E-EXE-032: alert firing and acknowledgement timeline.
+
+## Control Linkage (EXE)
+
+- Gate ID: G-EXE-900
+- Evidence ID: E-EXE-900
+- Test ID: T-EXE-900
+

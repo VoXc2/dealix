@@ -19,3 +19,10 @@
 
 - E-EXE-050: release-period metric snapshot.
 - E-EXE-051: threshold breach analysis where applicable.
+
+## Control Linkage (EXE)
+
+- Gate ID: G-EXE-900
+- Evidence ID: E-EXE-900
+- Test ID: T-EXE-900
+

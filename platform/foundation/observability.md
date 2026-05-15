@@ -19,3 +19,10 @@
 - E-FND-030: metric dashboard export for release window.
 - E-FND-031: sample correlated trace and log chain.
 - E-FND-032: alert firing and acknowledgement timeline.
+
+## Control Linkage (FND)
+
+- Gate ID: G-FND-900
+- Evidence ID: E-FND-900
+- Test ID: T-FND-900
+

@@ -19,3 +19,10 @@
 
 - E-MEM-050: release-period metric snapshot.
 - E-MEM-051: threshold breach analysis where applicable.
+
+## Control Linkage (MEM)
+
+- Gate ID: G-MEM-900
+- Evidence ID: E-MEM-900
+- Test ID: T-MEM-900
+

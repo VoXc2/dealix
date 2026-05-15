@@ -19,3 +19,10 @@
 
 - E-IDN-050: release-period metric snapshot.
 - E-IDN-051: threshold breach analysis where applicable.
+
+## Control Linkage (IDN)
+
+- Gate ID: G-IDN-900
+- Evidence ID: E-IDN-900
+- Test ID: T-IDN-900
+

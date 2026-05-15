@@ -19,3 +19,10 @@
 - E-EXI-030: metric dashboard export for release window.
 - E-EXI-031: sample correlated trace and log chain.
 - E-EXI-032: alert firing and acknowledgement timeline.
+
+## Control Linkage (EXI)
+
+- Gate ID: G-EXI-900
+- Evidence ID: E-EXI-900
+- Test ID: T-EXI-900
+

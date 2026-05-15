@@ -19,3 +19,10 @@
 
 - E-WFE-050: release-period metric snapshot.
 - E-WFE-051: threshold breach analysis where applicable.
+
+## Control Linkage (WFE)
+
+- Gate ID: G-WFE-900
+- Evidence ID: E-WFE-900
+- Test ID: T-WFE-900
+

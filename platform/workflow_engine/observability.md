@@ -19,3 +19,10 @@
 - E-WFE-030: metric dashboard export for release window.
 - E-WFE-031: sample correlated trace and log chain.
 - E-WFE-032: alert firing and acknowledgement timeline.
+
+## Control Linkage (WFE)
+
+- Gate ID: G-WFE-900
+- Evidence ID: E-WFE-900
+- Test ID: T-WFE-900
+

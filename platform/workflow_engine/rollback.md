@@ -24,3 +24,10 @@ Version-pin to last stable workflow definition and drain in-flight runs safely.
 |---|---|---|
 | T-WFE-040 | hot rollback in staging | layer recovers without policy regression |
 | T-WFE-041 | production-safe rollback rehearsal | critical workflows remain stable |
+
+## Control Linkage (WFE)
+
+- Gate ID: G-WFE-900
+- Evidence ID: E-WFE-900
+- Test ID: T-WFE-900
+
