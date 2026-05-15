@@ -18,6 +18,19 @@ class DealixLayer:
     primary_packages: tuple[str, ...]
 
 
+@dataclass(frozen=True)
+class OrganizationalIntelligenceLayer:
+    """One layer in the Organizational Intelligence Dominance map."""
+
+    layer_id: int
+    slug: str
+    title: str
+    objective: str
+    target_paths: tuple[str, ...]
+    mapped_paths: tuple[str, ...]
+    success_checks: tuple[str, ...]
+
+
 # Order matches docs/00 … docs/36 README sequence.
 MASTER_LAYERS: tuple[DealixLayer, ...] = (
     DealixLayer("00_constitution", "الأطروحة والدستور", ("revenue_memory", "institutional_control_os")),
@@ -65,6 +78,256 @@ IMPLEMENTATION_HINTS: dict[str, tuple[str, ...]] = {
     "revenue_memory": ("revenue_memory",),
 }
 
+# Coarser 10-layer dominance map over existing repository capabilities.
+OI_DOMINANCE_LAYERS: tuple[OrganizationalIntelligenceLayer, ...] = (
+    OrganizationalIntelligenceLayer(
+        layer_id=1,
+        slug="enterprise_operating_fabric",
+        title="Enterprise Operating Fabric",
+        objective="Unify operating context, events, workflow state, and governance context.",
+        target_paths=(
+            "/platform/operating_fabric",
+            "/platform/context_engine",
+            "/platform/event_mesh",
+            "/platform/state_management",
+            "/platform/organizational_context",
+        ),
+        mapped_paths=(
+            "auto_client_acquisition/platform_v10",
+            "auto_client_acquisition/orchestrator",
+            "auto_client_acquisition/unified_operating_graph",
+            "auto_client_acquisition/operating_rhythm_os",
+            "api/routers/domains",
+        ),
+        success_checks=(
+            "All workflows resolve organization context before execution.",
+            "Runtime can explain policy and approval ancestry for each transition.",
+        ),
+    ),
+    OrganizationalIntelligenceLayer(
+        layer_id=2,
+        slug="digital_workforce_infrastructure",
+        title="Digital Workforce Infrastructure",
+        objective="Operate agents as governed workforce units with identity and lifecycle.",
+        target_paths=(
+            "/platform/digital_workforce",
+            "/platform/agent_runtime",
+            "/platform/agent_registry",
+            "/platform/agent_supervision",
+            "/platform/agent_coordination",
+            "/agents",
+        ),
+        mapped_paths=(
+            "auto_client_acquisition/ai_workforce",
+            "auto_client_acquisition/ai_workforce_v10",
+            "auto_client_acquisition/agents",
+            "auto_client_acquisition/agent_governance",
+            "auto_client_acquisition/agent_identity_access_os",
+            "auto_client_acquisition/agent_observability",
+            "auto_client_acquisition/revenue_graph/agent_registry.py",
+        ),
+        success_checks=(
+            "Every production agent has owner, role, permissions, and KPI contract.",
+            "Agent onboarding and offboarding produce auditable lifecycle records.",
+        ),
+    ),
+    OrganizationalIntelligenceLayer(
+        layer_id=3,
+        slug="agentic_bpm_engine",
+        title="Agentic BPM Engine",
+        objective="Deliver adaptive process execution while preserving business boundaries.",
+        target_paths=(
+            "/platform/agentic_bpm",
+            "/platform/process_engine",
+            "/platform/workflow_reasoning",
+            "/platform/adaptive_orchestration",
+        ),
+        mapped_paths=(
+            "auto_client_acquisition/workflow_os_v10",
+            "auto_client_acquisition/workflow_os",
+            "auto_client_acquisition/delivery_factory",
+            "auto_client_acquisition/service_sessions",
+            "auto_client_acquisition/customer_loop",
+        ),
+        success_checks=(
+            "Workflow routing adapts to runtime signals without bypassing approvals.",
+            "Process transitions remain deterministic and replayable from events.",
+        ),
+    ),
+    OrganizationalIntelligenceLayer(
+        layer_id=4,
+        slug="organizational_memory_fabric",
+        title="Organizational Memory Fabric",
+        objective="Persist customer, workflow, governance, and incident memory with lineage.",
+        target_paths=(
+            "/memory",
+            "/platform/memory_fabric",
+            "/platform/lineage",
+            "/platform/citations",
+            "/platform/retrieval",
+            "/platform/reranking",
+        ),
+        mapped_paths=(
+            "auto_client_acquisition/revenue_memory",
+            "auto_client_acquisition/knowledge_os",
+            "auto_client_acquisition/company_brain",
+            "auto_client_acquisition/radar_events",
+            "dealix/caching/semantic_cache.py",
+        ),
+        success_checks=(
+            "Every executive decision can be traced to evidence and policy lineage.",
+            "Retrieval responses include citations and freshness provenance.",
+        ),
+    ),
+    OrganizationalIntelligenceLayer(
+        layer_id=5,
+        slug="governed_autonomy_engine",
+        title="Governed Autonomy Engine",
+        objective="Allow autonomous action only inside policy fences and approval checkpoints.",
+        target_paths=(
+            "/platform/runtime_governance",
+            "/platform/tool_fencing",
+            "/platform/escalation",
+            "/platform/reversibility",
+            "/platform/approval_engine",
+        ),
+        mapped_paths=(
+            "auto_client_acquisition/governance_os",
+            "auto_client_acquisition/approval_center",
+            "auto_client_acquisition/tool_guardrail_gateway",
+            "auto_client_acquisition/safe_send_gateway",
+            "auto_client_acquisition/secure_agent_runtime_os",
+            "dealix/trust",
+        ),
+        success_checks=(
+            "Every external action is draft-first or approval-gated.",
+            "Every mutation path supports rollback or compensating action.",
+        ),
+    ),
+    OrganizationalIntelligenceLayer(
+        layer_id=6,
+        slug="execution_dominance_engine",
+        title="Execution Dominance Engine",
+        objective="Guarantee reliable, recoverable, and observable workflow execution.",
+        target_paths=(
+            "/platform/execution_engine",
+            "/platform/orchestration",
+            "/platform/recovery_engine",
+            "/platform/queues",
+            "/platform/compensation_logic",
+        ),
+        mapped_paths=(
+            "dealix/execution",
+            "dealix/reliability",
+            "auto_client_acquisition/execution_os",
+            "auto_client_acquisition/revenue_pipeline",
+            "auto_client_acquisition/reliability_os",
+            "auto_client_acquisition/pipeline.py",
+        ),
+        success_checks=(
+            "Core workflows are idempotent, retry-safe, and dead-letter observable.",
+            "Recovery playbooks restore operation without data corruption.",
+        ),
+    ),
+    OrganizationalIntelligenceLayer(
+        layer_id=7,
+        slug="executive_intelligence_engine",
+        title="Executive Intelligence Engine",
+        objective="Convert operational telemetry into decision-ready strategic intelligence.",
+        target_paths=(
+            "/executive",
+            "/intelligence",
+            "/platform/forecasting",
+            "/platform/organizational_insights",
+            "/platform/risk_forecasting",
+        ),
+        mapped_paths=(
+            "auto_client_acquisition/executive_command_center",
+            "auto_client_acquisition/board_decision_os",
+            "auto_client_acquisition/executive_reporting",
+            "auto_client_acquisition/reporting_os",
+            "auto_client_acquisition/intelligence_os",
+            "auto_client_acquisition/revenue_science",
+        ),
+        success_checks=(
+            "Leadership dashboards expose ROI, bottlenecks, and forecast confidence.",
+            "Strategic briefs reference governed evidence and confidence intervals.",
+        ),
+    ),
+    OrganizationalIntelligenceLayer(
+        layer_id=8,
+        slug="trust_and_explainability_engine",
+        title="Trust and Explainability Engine",
+        objective="Make every high-impact decision auditable, explainable, and accountable.",
+        target_paths=(
+            "/platform/trust_engine",
+            "/platform/explainability",
+            "/platform/accountability",
+            "/platform/auditability",
+        ),
+        mapped_paths=(
+            "dealix/trust",
+            "auto_client_acquisition/auditability_os",
+            "auto_client_acquisition/responsible_ai_os",
+            "auto_client_acquisition/compliance_trust_os",
+            "auto_client_acquisition/revenue_graph/why_now.py",
+        ),
+        success_checks=(
+            "Decision outputs include machine-readable explanation payloads.",
+            "Audit trails support human oversight and incident reconstruction.",
+        ),
+    ),
+    OrganizationalIntelligenceLayer(
+        layer_id=9,
+        slug="evaluation_dominance",
+        title="Evaluation Dominance",
+        objective="Gate releases by workflow quality, governance quality, and business impact.",
+        target_paths=(
+            "/evals/hallucination",
+            "/evals/retrieval",
+            "/evals/workflow_execution",
+            "/evals/governance",
+            "/evals/operational_efficiency",
+            "/evals/business_impact",
+        ),
+        mapped_paths=(
+            "evals",
+            "docs/product/EVALUATION_REGISTRY.md",
+            "tests/test_output_quality_gate.py",
+            "tests/test_v5_layers.py",
+            "tests/test_safe_action_gateway.py",
+        ),
+        success_checks=(
+            "No release passes without governance and workflow eval gates.",
+            "Evaluation scores are linked to business and operational outcomes.",
+        ),
+    ),
+    OrganizationalIntelligenceLayer(
+        layer_id=10,
+        slug="self_evolving_enterprise_engine",
+        title="Self-Evolving Enterprise Engine",
+        objective="Continuously improve workflows, governance, and coordination safely.",
+        target_paths=(
+            "/platform/self_improvement",
+            "/platform/feedback_loops",
+            "/platform/optimization",
+            "/platform/adaptive_orchestration",
+            "/platform/learning_systems",
+        ),
+        mapped_paths=(
+            "auto_client_acquisition/self_growth_os",
+            "auto_client_acquisition/learning_flywheel",
+            "auto_client_acquisition/intelligence_compounding_os",
+            "auto_client_acquisition/bottleneck_radar",
+            "auto_client_acquisition/revenue_os/learning_weekly.py",
+        ),
+        success_checks=(
+            "Improvement loops promote only after governance and impact verification.",
+            "Optimization history preserves reversibility and reasoning lineage.",
+        ),
+    ),
+)
+
 
 def readme_path(repo_root: Path, folder: str) -> Path:
     return repo_root / "docs" / folder / "README.md"
@@ -73,5 +336,19 @@ def readme_path(repo_root: Path, folder: str) -> Path:
 def layer_by_folder(folder: str) -> DealixLayer | None:
     for layer in MASTER_LAYERS:
         if layer.folder == folder:
+            return layer
+    return None
+
+
+def dominance_layer_by_slug(slug: str) -> OrganizationalIntelligenceLayer | None:
+    for layer in OI_DOMINANCE_LAYERS:
+        if layer.slug == slug:
+            return layer
+    return None
+
+
+def dominance_layer_by_id(layer_id: int) -> OrganizationalIntelligenceLayer | None:
+    for layer in OI_DOMINANCE_LAYERS:
+        if layer.layer_id == layer_id:
             return layer
     return None

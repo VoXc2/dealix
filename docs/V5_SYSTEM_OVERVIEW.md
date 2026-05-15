@@ -45,6 +45,11 @@ If you change one of these, you've changed policy. Everything else is mechanical
 | Founder aggregate | (composes all of the above) | `/api/v1/founder` |
 | CompanyBrain | `auto_client_acquisition/company_brain/` | `/api/v1/company-brain` |
 
+### Executive overlay (10-layer dominance map)
+
+- `docs/architecture/ORGANIZATIONAL_INTELLIGENCE_DOMINANCE_AR.md`
+- Runtime registry: `auto_client_acquisition/dealix_master_layers/registry.py::OI_DOMINANCE_LAYERS`
+
 ---
 
 ## 3. CLIs — founder-facing
