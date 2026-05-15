@@ -147,6 +147,8 @@ flowchart LR
 | [LAUNCH_MASTER_PLAN_AR.md](LAUNCH_MASTER_PLAN_AR.md) | تدشين مرحلي |
 | [CUSTOMER_FULL_OPS_JOURNEY_AR.md](CUSTOMER_FULL_OPS_JOURNEY_AR.md) | رحلة العميل |
 | [NORTH_STAR_AR.md](strategic/NORTH_STAR_AR.md) | المخرج والقياس |
+| [ops/DAILY_COMMERCIAL_LOOP_AR.md](ops/DAILY_COMMERCIAL_LOOP_AR.md) | ربط يومي/أسبوعي: مراحل الإكمال + أول إيراد |
+| [ops/POST_LAUNCH_SCORECARD.md](ops/POST_LAUNCH_SCORECARD.md) | أرقام T+1 / T+7 / T+30 بعد الإطلاق |
 
 > إذا كانت عندك على فرع آخر وثائق إضافية (مثل Executive Decision Pack أو Strategic Master Plan 2026)، ادمجها إلى `main` ثم أضف رابطها هنا أو في `LAUNCH_MASTER_PLAN_AR.md`.
 

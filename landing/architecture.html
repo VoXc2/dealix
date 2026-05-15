@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Dealix — البنية المعمارية (Architecture)</title>
+  <meta name="description" content="البنية التقنية لـ Dealix — Python/FastAPI، Postgres + Redis، PDPL middleware، Decision Passport، 121 router، 8 alembic migrations." />
+  <meta name="robots" content="index,follow" />
+  <link rel="canonical" href="https://dealix.me/architecture.html" />
+  <meta property="og:title" content="Dealix Architecture" />
+  <meta property="og:description" content="البنية التقنية للـ Saudi B2B AI Operating System." />
+  <meta property="og:type" content="website" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="theme-color" content="#0f172a" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="/assets/css/design-system.css" />
+  <style>
+    body { font-family: "IBM Plex Sans Arabic", system-ui, sans-serif; background: #f8fafc; color: #0f172a; margin: 0; line-height: 1.7; }
+    .container { max-width: 1000px; margin: 0 auto; padding: 32px 20px; }
+    h1 { font-size: clamp(28px, 5vw, 40px); margin: 16px 0; }
+    h2 { font-size: 26px; margin: 40px 0 16px; padding-bottom: 8px; border-bottom: 2px solid #e2e8f0; }
+    h3 { font-size: 18px; margin: 24px 0 10px; }
+    code { background: #f1f5f9; padding: 2px 6px; border-radius: 4px; font-family: "JetBrains Mono", monospace; font-size: 90%; }
+    pre { background: #0f172a; color: #e2e8f0; padding: 16px; border-radius: 10px; overflow-x: auto; font-family: "JetBrains Mono", monospace; font-size: 14px; line-height: 1.5; }
+    pre code { background: transparent; color: inherit; padding: 0; }
+    .card { background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 20px; margin: 16px 0; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
+    .grid { display: grid; gap: 16px; grid-template-columns: 1fr; }
+    @media (min-width: 720px) { .grid { grid-template-columns: 1fr 1fr; } }
+    .stat-block { background: linear-gradient(135deg, #0f172a, #1e293b); color: white; padding: 24px; border-radius: 12px; text-align: center; }
+    .stat-block .num { font-size: 36px; font-weight: 700; color: #10b981; }
+    .stat-block .label { font-size: 14px; color: #cbd5e1; }
+    .diagram { background: white; padding: 24px; border-radius: 12px; border: 1px solid #e2e8f0; margin: 24px 0; overflow-x: auto; }
+    .diagram pre { background: white; color: #0f172a; padding: 0; font-size: 13px; }
+    table { width: 100%; border-collapse: collapse; margin: 16px 0; background: white; }
+    th, td { padding: 10px 12px; text-align: right; border-bottom: 1px solid #e2e8f0; }
+    th { background: #f1f5f9; font-weight: 700; }
+    .footer { text-align: center; color: #64748b; font-size: 13px; padding: 24px 0; }
+    .footer a { color: #64748b; }
+  </style>
+</head>
+<body>
+
+<main class="container">
+
+  <h1>البنية المعمارية</h1>
+  <p style="color:#475569;font-size:17px">
+    دليل CTO/المهندس الواصل من Dealix prospect call. <strong>كل ادعاء هنا قابل للتدقيق</strong>
+    في الـ repo، مع citations محددة. لا marketing fluff.
+  </p>
+
+  <h2>إحصائيات سريعة</h2>
+  <div class="grid">
+    <div class="stat-block"><div class="num">121</div><div class="label">FastAPI routers</div></div>
+    <div class="stat-block"><div class="num">340+</div><div class="label">automated tests</div></div>
+    <div class="stat-block"><div class="num">8</div><div class="label">Alembic migrations</div></div>
+    <div class="stat-block"><div class="num">66</div><div class="label">landing pages</div></div>
+    <div class="stat-block"><div class="num">22+</div><div class="label">domain models</div></div>
+    <div class="stat-block"><div class="num">7</div><div class="label">revenue streams wired</div></div>
+  </div>
+
+  <h2>الـ Stack</h2>
+
+  <div class="grid">
+    <div class="card">
+      <h3>Application Layer</h3>
+      <ul>
+        <li><strong>Python 3.11+</strong> with strict type hints</li>
+        <li><strong>FastAPI 0.115</strong> — async ASGI</li>
+        <li><strong>Pydantic 2.9</strong> — request/response validation</li>
+        <li><strong>SQLAlchemy 2.0</strong> async + asyncpg driver</li>
+        <li><strong>Alembic</strong> — schema migrations</li>
+        <li><strong>structlog</strong> — structured JSON logs</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3>Data Layer</h3>
+      <ul>
+        <li><strong>PostgreSQL 15+</strong> (Railway managed) — primary store</li>
+        <li><strong>Redis 5</strong> + hiredis — DLQ، idempotency، rate-limit</li>
+        <li><strong>S3 me-south-1</strong> — backups + assets</li>
+        <li><strong>Motor</strong> — fallback NoSQL if needed</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3>AI Layer</h3>
+      <ul>
+        <li><strong>Anthropic Claude</strong> — primary LLM (Saudi dialect quality)</li>
+        <li><strong>OpenAI</strong> — fallback + structured tasks</li>
+        <li><strong>Groq</strong> — fast inference tier</li>
+        <li><strong>Langfuse</strong> — LLM observability + cost tracking</li>
+        <li><strong>arq</strong> — async background queue for long-running LLM calls</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3>Saudi-Specific</h3>
+      <ul>
+        <li><strong>Moyasar</strong> — Saudi payments + webhook verification</li>
+        <li><strong>ZATCA Phase 2</strong> — e-invoice XML + QR + Fatoorah API</li>
+        <li><strong>ummalqura</strong> — Hijri calendar support</li>
+        <li><strong>Google Places</strong> — Saudi business discovery</li>
+        <li><strong>SDAIA / Chambers / MCI</strong> — public data integration</li>
+      </ul>
+    </div>
+  </div>
+
+  <h2>الـ Three Engines</h2>
+
+  <div class="diagram">
+<pre>
+                       ┌─────────────────────────────────────────┐
+                       │            Customer Landing             │
+                       │      (dealix.me + tenant portals)       │
+                       └───────────┬─────────────────┬───────────┘
+                                   │                 │
+                                   ▼                 ▼
+                       ┌─────────────────────────────────────────┐
+                       │       FastAPI App (121 routers)          │
+                       │   Tenant Isolation + PDPL Audit Middle  │
+                       └─┬───────────┬───────────┬───────────────┘
+                         │           │           │
+              ┌──────────▼──┐  ┌─────▼──────┐  ┌─▼──────────┐
+              │  E1 Lead    │  │ E2 Service │  │ E3 Trust   │
+              │   Engine    │  │   Engine   │  │   Engine   │
+              ├─────────────┤  ├────────────┤  ├────────────┤
+              │ search.py   │  │ S1 Diag    │  │ PDPL       │
+              │ maps.py     │  │ S2 Health  │  │ ZATCA      │
+              │ crawler.py  │  │ S3 Sales   │  │ Decision   │
+              │ tech.py     │  │ S4 DP      │  │ Passport   │
+              │ email_intel │  │ S5 Proof   │  │ Audit Log  │
+              │ + scorer    │  │ S6 Growth  │  │ Sentry PII │
+              │             │  │ S7 ECC     │  │  scrubber  │
+              └──────┬──────┘  └─────┬──────┘  └────────────┘
+                     │                │
+                     ▼                ▼
+         ┌────────────────────────────────────────┐
+         │   Postgres + Redis (me-south-1)         │
+         │   22+ models, 8 migrations              │
+         └────────────────────────────────────────┘
+                     │
+                     ▼
+         ┌────────────────────────────────────────┐
+         │   Anthropic / OpenAI / Groq (US-SCC)    │
+         │   PDPL-anonymized prompts where feasible│
+         └────────────────────────────────────────┘
+</pre>
+  </div>
+
+  <h2>الـ Multi-Tenancy</h2>
+
+  <div class="card">
+    <p>كل صف في كل جدول يحمل <code>tenant_id</code> (foreign key لـ <code>tenants</code> table).
+    Isolation enforced على ثلاث مستويات:</p>
+
+    <ol>
+      <li>
+        <strong>Middleware:</strong> <code>api/middleware/tenant_isolation.py</code>
+        يستخرج tenant من JWT claims أو admin context قبل أي query
+      </li>
+      <li>
+        <strong>ORM:</strong> الـ query patterns كلها تفرض
+        <code>where(Model.tenant_id == current_tenant_id)</code>
+      </li>
+      <li>
+        <strong>DB (production):</strong> Row-Level Security policies على Postgres
+      </li>
+    </ol>
+
+    <p>White-label theming (R6) عبر <code>tenant_themes</code> table (migration 007).
+    Custom CSS variables تُحقن server-side قبل theme.css. كل tenant يستطيع override:
+    palette، fonts، logo URL، display name، custom domain.</p>
+  </div>
+
+  <h2>الـ Critical Endpoints (selected from 121)</h2>
+
+  <table>
+    <thead>
+      <tr><th>Endpoint</th><th>Purpose</th><th>Auth</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>GET /healthz</code></td><td>K8s/UptimeRobot liveness</td><td>none</td></tr>
+      <tr><td><code>GET /healthz?deep=1</code></td><td>4-dependency deep check</td><td>none</td></tr>
+      <tr><td><code>GET /api/v1/compliance/status</code></td><td>Live PDPL+ZATCA posture</td><td>none</td></tr>
+      <tr><td><code>GET /api/v1/pricing/plans</code></td><td>5 customer-facing plans</td><td>none</td></tr>
+      <tr><td><code>POST /api/v1/checkout</code></td><td>Moyasar checkout init</td><td>none</td></tr>
+      <tr><td><code>POST /api/v1/webhooks/moyasar</code></td><td>Payment status callback</td><td>signature</td></tr>
+      <tr><td><code>POST /api/v1/webhooks/whatsapp</code></td><td>Meta inbound callback</td><td>x-hub-signature-256</td></tr>
+      <tr><td><code>GET /api/v1/customer-usage/{handle}</code></td><td>Tenant consumption dashboard</td><td>tenant scope</td></tr>
+      <tr><td><code>POST /api/v1/service-setup/requests</code></td><td>R5 bespoke intake</td><td>none</td></tr>
+      <tr><td><code>POST /api/v1/enterprise-pmo/requests</code></td><td>R7 enterprise intake</td><td>none</td></tr>
+      <tr><td><code>POST /api/v1/pdpl/dsar/request</code></td><td>Data subject rights</td><td>email verify</td></tr>
+      <tr><td><code>POST /api/v1/sector-intel/generate</code></td><td>R4 report generation</td><td>X-Admin-API-Key</td></tr>
+      <tr><td><code>POST /api/v1/admin/tenants</code></td><td>Tenant CRUD (R6)</td><td>X-Admin-API-Key</td></tr>
+      <tr><td><code>GET /api/v1/tenants/{h}/theme.css</code></td><td>Tenant CSS variables</td><td>none</td></tr>
+    </tbody>
+  </table>
+
+  <h2>الـ Data Flow — Customer Inbound Reply (golden path)</h2>
+
+  <div class="diagram">
+<pre>
+1. Meta WhatsApp → POST /api/v1/webhooks/whatsapp
+                   ├── verify x-hub-signature-256
+                   └── parse Meta payload (text/image/audio)
+
+2. Pipeline (auto_client_acquisition/pipeline.py)
+                   ├── IntakeAgent: normalize + dedupe
+                   ├── PainExtractorAgent: LLM extract intents
+                   ├── ICPMatcherAgent: score against tenant ICP
+                   ├── QualificationAgent: gate decision
+                   └── CRMAgent: persist + sync
+
+3. AI Workforce (/api/v1/ai-workforce)
+                   ├── Select agent from 12-agent registry
+                   ├── Generate Arabic reply candidate
+                   └── Compute confidence score
+
+4. Approval Engine
+                   ├── If confidence > threshold AND policy allows: queue auto-send
+                   ├── Otherwise: queue for human approval (Decision Passport entry)
+                   └── Customer sees in /api/v1/approval-center
+
+5. Decision Passport
+                   ├── Record agent_id + version + evidence_level
+                   ├── PDPL Art. 18 audit log entry
+                   └── ZATCA-compliant if it's an invoice action
+
+6. WhatsApp out (Meta Cloud API)
+                   ├── Compliance gates (consent, quiet hours, opt-out)
+                   ├── Send via integrations/whatsapp.py
+                   └── Update tenant metrics
+</pre>
+  </div>
+
+  <h2>الـ Compliance Surface</h2>
+
+  <div class="card">
+    <h3>PDPL Articles wired in code (with evidence)</h3>
+    <ul>
+      <li>Art. 5 Consent → <code>integrations/pdpl.py:build_consent_request_*</code></li>
+      <li>Art. 13 Erasure → cascade delete + audit, <code>build_erasure_audit_entry</code></li>
+      <li>Art. 14 Portability → <code>build_data_export</code> structured JSON</li>
+      <li>Art. 18 Audit Log → middleware on 15 personal-data path prefixes</li>
+      <li>Art. 21 Breach → 24h internal SLA vs 72h mandate, runbook + builder</li>
+      <li>Art. 32 DPO → <code>landing/dpo.html</code> + DPO_APPOINTMENT_TEMPLATE</li>
+    </ul>
+
+    <h3>ZATCA Phase 2 (e-invoice)</h3>
+    <ul>
+      <li><strong>25 functions</strong> in <code>integrations/zatca.py</code></li>
+      <li>UBL 2.1 compliant XML invoice builder</li>
+      <li>QR TLV encoder (seller name, VAT, timestamp, totals)</li>
+      <li>Fatoorah API client for real-time clearance (B2B) / 24h reporting (B2C)</li>
+      <li>Invoice chaining (Phase 2 mandate — prev_invoice_hash on every row)</li>
+    </ul>
+  </div>
+
+  <h2>الـ Deploy</h2>
+
+  <div class="card">
+    <p><strong>Production:</strong> Railway (Postgres + Redis + Python service) في region me-south-1 (Bahrain GCC).</p>
+    <p><strong>Deploy flow:</strong> merge to main → Railway auto-deploys → migrate via Alembic pre-deploy hook
+    → health check on /healthz → traffic shifted. Runbook في
+    <a href="https://github.com/VoXc2/dealix/blob/main/docs/ops/DEPLOY_RUNBOOK.md"><code>DEPLOY_RUNBOOK.md</code></a>.</p>
+
+    <p><strong>Rollback:</strong> Railway UI redeploy of last-green takes ~30s. If migration corrupted data:
+    <code>alembic downgrade -1</code> after backup verification.</p>
+
+    <p><strong>Observability:</strong> Sentry (with PII scrubber) + Langfuse (LLM costs) + OpenTelemetry
+    (OTel exporter to vendor of choice).</p>
+  </div>
+
+  <h2>الـ "What's Real vs Stub" (Honesty)</h2>
+
+  <div class="card">
+    <h3>🟢 Production-ready (with tests + production paths)</h3>
+    <ul>
+      <li>Moyasar webhook signature + persistence (PR #226)</li>
+      <li>PDPL audit log middleware</li>
+      <li>Sentry PII scrubber (12 unit tests)</li>
+      <li>ZATCA Phase 2 XML + QR + Fatoorah</li>
+      <li>5 lead adapters (search, maps, hunter, firecrawl, wappalyzer)</li>
+      <li>Tenant theming end-to-end (10 tests)</li>
+      <li>ICP fit scorer (11 tests)</li>
+    </ul>
+
+    <h3>🟡 Code-ready, awaits first paying customer to validate</h3>
+    <ul>
+      <li>Sector reports DB persistence (migration 008 + storage helpers)</li>
+      <li>Enterprise PMO engagement creation (in-memory until customer #15)</li>
+      <li>Customer health score from real DB signals</li>
+    </ul>
+
+    <h3>🟠 Scaffold, activates per customer milestone</h3>
+    <ul>
+      <li>Apollo.io integration (env var set, wiring deferred to customer #3)</li>
+      <li>Pay-per-result invoicing automation (manual SOP until customer #6)</li>
+      <li>White-label custom domain routing (deferred to first agency partner)</li>
+    </ul>
+
+    <h3>🔴 Not yet built (intentionally)</h3>
+    <ul>
+      <li>Voice agent (Saudi dialect) — premature investment, deferred to customer #30</li>
+      <li>SSO/SAML — deferred to first enterprise customer (~Y2)</li>
+      <li>HubSpot/Salesforce native sync — built on demand, customer #10+</li>
+    </ul>
+  </div>
+
+  <h2>How to Verify (in 60 seconds)</h2>
+
+  <div class="card">
+    <pre><code># Live compliance posture (no auth needed)
+curl https://api.dealix.me/api/v1/compliance/status | jq
+
+# Deep health (DB, Redis, Sentry, LLM providers, 4 DLQs)
+curl https://api.dealix.me/healthz?deep=1 | jq
+
+# Cost-to-serve transparency (margin per tier)
+curl https://api.dealix.me/api/v1/cost-tracking/per-tier | jq
+
+# Service catalog
+curl https://api.dealix.me/api/v1/sector-intel/sectors | jq
+
+# Saudi prospect search (PDPL-safe public registry view)
+curl 'https://api.dealix.me/api/v1/prospects/search?sector=saas&limit=3' | jq</code></pre>
+  </div>
+
+  <!-- Wave 14J — Gap E — Enterprise Procurement evidence links -->
+  <section style="margin: var(--space-6, 32px) 0; padding: var(--space-5, 24px); border: 1px solid var(--border,#ddd); border-radius: 12px;">
+    <h2 style="margin-top:0;">Enterprise Procurement — وثائق الثقة للجهات</h2>
+    <ul>
+      <li><a href="/api/v1/value/trust-pack/{your_handle}/pdf" target="_blank">Trust Pack (PDF) · حزمة الثقة</a> — 11 sections + 11 non-negotiables</li>
+      <li><a href="/api/v1/audit/{your_handle}/markdown" target="_blank">Evidence Chain (Markdown) · سلسلة الأدلة</a> — Source → AI → Policy → Approval → Output → Proof → Value</li>
+      <li><a href="/api/v1/audit/{your_handle}/control-graph/markdown" target="_blank">Evidence Control Plane (Markdown) · لوحة التحكم بالأدلة</a> — Nodes + Gaps + Compliance Index</li>
+      <li><a href="/api/v1/sector-intel/sample/b2b_services" target="_blank">Saudi Sector Sample Report · تقرير قطاعي سعودي</a> — Synthetic + Aggregated</li>
+    </ul>
+    <p style="font-size:0.9em;opacity:0.85;"><em>Replace <code>{your_handle}</code> with your customer handle. PDFs gracefully fall back to markdown when the renderer is unavailable. Estimated outcomes are not guaranteed outcomes / النتائج التقديرية ليست نتائج مضمونة.</em></p>
+  </section>
+
+  <footer class="footer">
+    <p>
+      <a href="/">الرئيسية</a> ·
+      <a href="/services.html">الخدمات</a> ·
+      <a href="/security.html">Security</a> ·
+      <a href="/roadmap.html">Roadmap</a> ·
+      <a href="/changelog.html">Changelog</a> ·
+      <a href="/api/v1/compliance/status">Compliance Live</a>
+    </p>
+    <p>Dealix · ZATCA Phase 2 · me-south-1 · PDPL by design · 2026-05-13</p>
+  </footer>
+
+</main>
+
+</body>
+</html>

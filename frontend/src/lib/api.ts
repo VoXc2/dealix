@@ -138,6 +138,21 @@ export const api = {
 
   getRevenueOsLearningWeeklyTemplate: () =>
     apiClient.get("/api/v1/revenue-os/learning/weekly-template"),
+
+  postRevenueOsAntiWasteCheck: (body: Record<string, unknown>) =>
+    apiClient.post("/api/v1/revenue-os/anti-waste/check", body),
+
+  getGmailDraftsToday: () =>
+    apiClient.get("/api/v1/gmail/drafts/today"),
+
+  getLinkedInDraftsToday: () =>
+    apiClient.get("/api/v1/linkedin/drafts/today"),
+
+  getChannelPolicyStatus: () =>
+    apiClient.get("/api/v1/channel-policy/status"),
+
+  getCustomerPortal: (handle = "Slot-A") =>
+    apiClient.get(`/api/v1/customer-portal/${encodeURIComponent(handle)}`),
 };
 
 export default api;

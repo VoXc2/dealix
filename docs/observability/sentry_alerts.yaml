@@ -1,0 +1,85 @@
+# Sentry alert rules for the dealix-backend project (config as code).
+#
+# Sentry doesn't have an official `apply` CLI for alert rules, so this file
+# is the source of truth — apply manually via Sentry UI, or via
+# https://github.com/getsentry/sentry-cli/ once issue-alert support lands.
+#
+# Last reviewed: 2026-05-12
+# Owner: CTO
+
+project: dealix-backend
+
+alerts:
+
+  - name: SEV-1 — Webhook 5xx
+    description: >
+      Any unhandled exception originating in /api/v1/webhooks/* pages on-call.
+      Webhook failures silently drop revenue + integration data.
+    when:
+      - "event.tags['url'] contains '/api/v1/webhooks/'"
+      - "event.level == 'error'"
+    actions:
+      - notify_email: oncall@dealix.sa
+      - notify_email: sami.assiri11@gmail.com
+      - notify_pagerduty: dealix-prod   # if PagerDuty connected
+    frequency_min: 5
+
+  - name: SEV-1 — Moyasar signature mismatch
+    description: >
+      Bad-signature webhook is either a config drift or an attack.
+      Either way, immediate human attention required.
+    when:
+      - "event.message contains 'moyasar_webhook_bad_signature'"
+    actions:
+      - notify_email: sami.assiri11@gmail.com
+      - notify_email: oncall@dealix.sa
+    frequency_min: 0   # never deduplicate
+
+  - name: SEV-2 — Error spike (rate)
+    description: 10+ new events in 5 minutes across all routes.
+    when:
+      - "new_events > 10 in 5_min"
+    actions:
+      - notify_email: oncall@dealix.sa
+    frequency_min: 15
+
+  - name: SEV-2 — Auth brute force
+    description: 100+ 401s from a single IP on /auth/* in 10 minutes.
+    when:
+      - "event.tags['url'] contains '/api/v1/auth/'"
+      - "event.tags['response_code'] == '401'"
+      - "events_from_same_ip > 100 in 10_min"
+    actions:
+      - notify_email: oncall@dealix.sa
+
+  - name: SEV-3 — Checkout P95 regression
+    description: Checkout endpoint P95 > 1500ms over 10 minutes (rolling).
+    when:
+      - "transaction == 'POST /api/v1/checkout'"
+      - "p95(duration) > 1500ms over 10_min"
+    actions:
+      - notify_email: oncall@dealix.sa
+    frequency_min: 30
+
+  - name: Release gate — Pre-existing issue re-occurs
+    description: A previously-resolved issue resurrects on a new release.
+    when:
+      - "issue.status_changed_to == 'unresolved'"
+      - "issue.was_resolved == true"
+    actions:
+      - notify_email: oncall@dealix.sa
+
+  - name: Quota — 80% of monthly events used
+    description: Burn rate warning before we hit the Sentry quota.
+    when:
+      - "monthly_event_count > 0.8 * monthly_quota"
+    actions:
+      - notify_email: sami.assiri11@gmail.com
+
+# Inbound filters (drop, never bill):
+filters:
+  - "browser_extensions"
+  - "filtered_transaction:GET /healthz"
+  - "filtered_transaction:GET /livez"
+  - "filtered_transaction:GET /readyz"
+  - "release.version is in ['unknown', 'dev']"

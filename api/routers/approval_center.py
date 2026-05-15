@@ -14,15 +14,16 @@ from __future__ import annotations
 from typing import Any
 
 from fastapi import APIRouter, Body, HTTPException, Query
-from pydantic import ValidationError
 
 from auto_client_acquisition.approval_center import (
     ApprovalRequest,
     get_default_approval_store,
     render_approval_card,
 )
+from core.logging import get_logger
 
 router = APIRouter(prefix="/api/v1/approvals", tags=["approval-center"])
+log = get_logger(__name__)
 
 
 @router.get("/status")
@@ -51,6 +52,7 @@ async def status() -> dict[str, Any]:
 @router.get("/pending")
 async def pending() -> dict[str, Any]:
     rows = get_default_approval_store().list_pending()
+    log.info("approval_center_pending", count=len(rows))
     return {
         "count": len(rows),
         "approvals": [r.model_dump(mode="json") for r in rows],
@@ -67,6 +69,7 @@ async def create(payload: dict[str, Any] = Body(...)) -> dict[str, Any]:
     except ValidationError as exc:
         raise HTTPException(status_code=422, detail=exc.errors()) from exc
     stored = get_default_approval_store().create(req)
+    log.info("approval_center_create", approval_id=stored.approval_id, action_type=stored.action_type)
     return {
         "approval": stored.model_dump(mode="json"),
         "card": render_approval_card(stored),
@@ -85,6 +88,7 @@ async def approve_endpoint(
         stored = get_default_approval_store().approve(approval_id, who)
     except ValueError as exc:
         raise HTTPException(status_code=400, detail=str(exc)) from exc
+    log.info("approval_center_approve", approval_id=approval_id, who=who)
     return {
         "approval": stored.model_dump(mode="json"),
         "card": render_approval_card(stored),
@@ -106,6 +110,7 @@ async def reject_endpoint(
         stored = get_default_approval_store().reject(approval_id, who, reason)
     except ValueError as exc:
         raise HTTPException(status_code=400, detail=str(exc)) from exc
+    log.info("approval_center_reject", approval_id=approval_id, who=who)
     return {
         "approval": stored.model_dump(mode="json"),
         "card": render_approval_card(stored),

@@ -1,0 +1,74 @@
+# Default evidence flags per commercial service (repo-backed baseline).
+# Keys must match WEIGHTS in delivery_os/service_readiness.py.
+version: 1
+services:
+  lead_intelligence_sprint:
+    has_offer_page: true
+    has_intake: true
+    has_scope_template: true
+    has_module_support: true
+    has_report_template: true
+    has_qa_checklist: true
+    has_demo: true
+    has_compliance_checks: true
+    has_upsell_path: true
+  support_desk_sprint:
+    has_offer_page: true
+    has_intake: true
+    has_scope_template: true
+    has_module_support: true
+    has_report_template: true
+    has_qa_checklist: true
+    has_demo: true
+    has_compliance_checks: true
+    has_upsell_path: false
+  quick_win_ops:
+    has_offer_page: true
+    has_intake: true
+    has_scope_template: true
+    has_module_support: true
+    has_report_template: true
+    has_qa_checklist: true
+    has_demo: true
+    has_compliance_checks: true
+    has_upsell_path: true
+  campaign_intelligence_sprint:
+    has_offer_page: true
+    has_intake: true
+    has_scope_template: true
+    has_module_support: true
+    has_report_template: true
+    has_qa_checklist: true
+    has_demo: true
+    has_compliance_checks: true
+    has_upsell_path: false
+  company_brain_sprint:
+    has_offer_page: true
+    has_intake: true
+    has_scope_template: true
+    has_module_support: true
+    has_report_template: true
+    has_qa_checklist: true
+    has_demo: true
+    has_compliance_checks: true
+    has_upsell_path: true
+  ai_governance_program:
+    has_offer_page: true
+    has_intake: true
+    has_scope_template: true
+    has_module_support: true
+    has_report_template: true
+    has_qa_checklist: true
+    has_demo: true
+    has_compliance_checks: true
+    has_upsell_path: true
+  client_ai_policy_pack:
+    has_offer_page: true
+    has_intake: true
+    has_scope_template: true
+    has_module_support: true
+    has_report_template: true
+    has_qa_checklist: true
+    has_demo: true
+    has_compliance_checks: true
+    has_upsell_path: true

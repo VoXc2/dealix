@@ -1,0 +1,48 @@
+# Pricing Decision
+
+Price reflects **value**, **complexity**, **risk**, and **repeatability** — not hours alone.
+
+## Factors
+
+- Business value / outcome clarity
+- Delivery complexity (data, workflows, stakeholders)
+- Risk surface (PII, claims, integrations)
+- Volume: records, documents, workflows, seats
+- Required QA and governance depth
+- Timeline / urgency
+- Strategic value (reference logo, sector playbook fill)
+
+**Tiers (conceptual)**
+
+```text
+Diagnostic   = low complexity, high clarity
+Sprint       = fixed scope, fixed output
+Pilot        = operational execution over timebox
+Retainer     = recurring improvement
+Enterprise   = customization + governance + integrations
+```
+
+Registry anchors: [`SERVICE_REGISTRY.md`](SERVICE_REGISTRY.md), [`PRICING.md`](PRICING.md).
+
+## When to raise price
+
+Raise if:
+
+1. Demand exceeds capacity
+2. Conversion remains strong at current price
+3. Clients accept **without** serious pushback (signal of under-pricing)
+4. QA/governance load increased (you’re selling more certainty)
+5. The offer **repeats successfully** with proof packs
+6. You have **strong anonymized proof** / case patterns
+
+## CEO heuristic
+
+If you close **3+** similar deals for the same service **without meaningful price resistance**, consider **+20–30%** on the next cohort and measure conversion.
+
+## Decision record
+
+- Service / package:
+- Basis (value / risk / volume):
+- New price or hold:
+- Owner:
+- Next action (experiment / communicate):

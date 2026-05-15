@@ -41,6 +41,7 @@ async def status() -> dict[str, Any]:
             "diagnostic", "leadops_sprint", "growth_proof_sprint",
             "support_ops_setup", "customer_portal_setup",
             "executive_pack", "proof_pack", "agency_partner_pack",
+            "lead_intelligence_sprint", "support_desk_sprint", "quick_win_ops",
         ],
         "revenue_rule": "only_payment_confirmed_counts",
         "hard_gates": _HARD_GATES,

@@ -71,6 +71,17 @@ async def daily_brief_llm() -> dict[str, Any]:
         inbound_count=inbound_count,
     )
 
+    from core.logging import get_logger
+
+    get_logger(__name__).info(
+        "personal_operator_llm_brief",
+        data_status=llm.data_status,
+        duration_ms=llm.duration_ms,
+        model_used=llm.model_used,
+        proof_events_count=len(proof_events),
+        pending_approvals_count=len(pending_approvals),
+    )
+
     return {
         "deterministic": deterministic,
         "llm": llm.to_dict(),
@@ -151,7 +162,7 @@ async def project_intelligence() -> dict[str, Any]:
 @router.post("/project/ask")
 async def ask_project(body: dict[str, Any] = Body(...)) -> dict[str, Any]:
     question = str(body.get("question", "وش ناقص المشروع؟"))
-    deep = bool(body.get("deep_scan", False))
+    deep = bool(body.get("deep_scan", True))
     root = str(body.get("root", "."))
     answered = answer_operator_question(question, root=root, deep_scan=deep)
     readiness = launch_readiness_score()
@@ -161,6 +172,8 @@ async def ask_project(body: dict[str, Any] = Body(...)) -> dict[str, Any]:
         "semantic_status_ar": answered["semantic_status_ar"],
         "related_files": answered["related_files"],
         "search_hits": answered.get("search_hits", []),
+        "citations": answered.get("citations", []),
+        "scan_meta": answered.get("scan_meta", {}),
         "launch_readiness": readiness,
     }
 

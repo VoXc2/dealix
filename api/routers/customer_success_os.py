@@ -1,10 +1,14 @@
 """V12 Customer Success OS — wraps customer_success.health_score."""
 from __future__ import annotations
 
+import logging
+from datetime import UTC, datetime, timedelta, timezone
 from typing import Any
 
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, ConfigDict, Field
+
+log = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/api/v1/customer-success-os", tags=["customer-success-os"])
 
@@ -99,6 +103,120 @@ async def cs_health_score(req: _HealthScoreRequest) -> dict[str, Any]:
         "label_en": label_en,
         "action_mode": "suggest_only",
         "hard_gates": _HARD_GATES,
+    }
+
+
+async def _collect_signals_for_tenant(customer_handle: str) -> _HealthScoreRequest:
+    """Read real signals from DB for a customer and return a populated
+    HealthScoreRequest. Falls back to neutral defaults if any data source
+    is unavailable — health score reflects 'unknown' honestly rather than
+    green-by-default (per the cs_health_score docstring).
+    """
+    signals = _HealthScoreRequest()
+
+    # Payment status (from payments table — populated by Moyasar webhook)
+    try:
+        from sqlalchemy import desc, select
+
+        from db.models import PaymentRecord
+        from db.session import async_session_factory
+
+        async with async_session_factory()() as session:
+            stmt = (
+                select(PaymentRecord)
+                .where(PaymentRecord.customer_handle == customer_handle)
+                .order_by(desc(PaymentRecord.created_at))
+                .limit(1)
+            )
+            row = (await session.execute(stmt)).scalar_one_or_none()
+            if row is not None:
+                if row.status == "paid":
+                    signals.payment_status = "paid"
+                elif row.status in ("failed", "refunded"):
+                    signals.payment_status = "overdue"
+                else:
+                    signals.payment_status = "unknown"
+    except Exception as exc:
+        log.debug("health_score_payment_lookup_skipped reason=%s", exc)
+
+    # Proof events count (count of decision_passport entries for this tenant
+    # in last 30 days, if the table exists)
+    try:
+        from sqlalchemy import func, select
+
+        from db.models import DecisionPassportRecord  # type: ignore
+        from db.session import async_session_factory
+
+        thirty_days_ago = datetime.now(UTC) - timedelta(days=30)
+        async with async_session_factory()() as session:
+            stmt = (
+                select(func.count())
+                .select_from(DecisionPassportRecord)
+                .where(
+                    DecisionPassportRecord.tenant_handle == customer_handle,
+                    DecisionPassportRecord.created_at >= thirty_days_ago,
+                )
+            )
+            count = (await session.execute(stmt)).scalar() or 0
+            signals.proof_events_count = int(count)
+    except Exception as exc:
+        log.debug("health_score_proof_events_lookup_skipped reason=%s", exc)
+
+    # Last customer response: heuristic — query last decision_passport entry
+    # where the customer approved something. If no record in 30 days → high risk.
+    try:
+        from sqlalchemy import desc, select
+
+        from db.models import DecisionPassportRecord  # type: ignore
+        from db.session import async_session_factory
+
+        async with async_session_factory()() as session:
+            stmt = (
+                select(DecisionPassportRecord)
+                .where(
+                    DecisionPassportRecord.tenant_handle == customer_handle,
+                    DecisionPassportRecord.event_type == "customer_approved",
+                )
+                .order_by(desc(DecisionPassportRecord.created_at))
+                .limit(1)
+            )
+            row = (await session.execute(stmt)).scalar_one_or_none()
+            if row is not None:
+                days = (datetime.now(UTC) - row.created_at).days
+                signals.last_customer_response_days = max(0, days)
+    except Exception as exc:
+        log.debug("health_score_last_response_lookup_skipped reason=%s", exc)
+
+    return signals
+
+
+@router.get("/{customer_handle}/health")
+async def cs_health_for_tenant(customer_handle: str) -> dict[str, Any]:
+    """Compute health score for a real tenant using live DB signals.
+
+    Reads signals from:
+      - payments table (payment_status from Moyasar webhook persistence)
+      - decision_passport entries (proof_events_count, last_customer_response_days)
+
+    Each signal that can't be read gracefully falls back to neutral —
+    the score will reflect 'unknown' rather than green-by-default.
+
+    This is the "real-data wiring" for v6 §17 B1 — it converts the existing
+    /health-score signal-based endpoint into something queryable by customer
+    handle, no payload required. Onboarding day 5 (CUSTOMER_ONBOARDING_DAY_BY_DAY.md)
+    uses this endpoint.
+    """
+    handle = (customer_handle or "").strip()
+    if not handle:
+        raise HTTPException(status_code=400, detail="customer_handle required")
+
+    signals = await _collect_signals_for_tenant(handle)
+    score_payload = await cs_health_score(signals)
+    return {
+        **score_payload,
+        "customer_handle": handle,
+        "signals_used": signals.model_dump(),
+        "data_source": "tenant_db_with_neutral_fallback",
     }
 
 

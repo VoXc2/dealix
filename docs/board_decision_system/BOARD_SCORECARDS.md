@@ -1,11 +1,9 @@
 # Board Scorecards
 
-Weights are implemented in `auto_client_acquisition/board_decision_os/board_scorecards.py` (single source of truth).
+## Offer Scorecard
 
-## Offer Scorecard (0–100 weighted)
-
-| Dimension | Weight |
-|-----------|-------:|
+| البُعد | الوزن |
+|--------|------:|
 | Win rate | 15 |
 | Gross margin | 15 |
 | Proof strength | 20 |
@@ -14,19 +12,12 @@ Weights are implemented in `auto_client_acquisition/board_decision_os/board_scor
 | Governance safety | 10 |
 | Productization signal | 5 |
 
-**Band → decision**
+**قرار:** 85–100 Scale · 70–84 Improve and sell · 55–69 Pilot only · <55 Hold/Kill
 
-| Total | Board read |
-|------:|------------|
-| 85–100 | Scale |
-| 70–84 | Improve and sell |
-| 55–69 | Pilot only |
-| <55 | Hold / Kill |
+## Client Scorecard
 
-## Client Scorecard (0–100 weighted)
-
-| Dimension | Weight |
-|-----------|-------:|
+| البُعد | الوزن |
+|--------|------:|
 | Clear pain | 15 |
 | Executive sponsor | 15 |
 | Data readiness | 15 |
@@ -35,19 +26,12 @@ Weights are implemented in `auto_client_acquisition/board_decision_os/board_scor
 | Proof score | 15 |
 | Expansion potential | 10 |
 
-**Band → decision**
+**قرار:** 85–100 strategic account · 70–84 retainer-ready · 55–69 enablement · <55 avoid/diagnostic
 
-| Total | Board read |
-|------:|------------|
-| 85–100 | Strategic account |
-| 70–84 | Retainer-ready |
-| 55–69 | Enablement needed |
-| <55 | Avoid / diagnostic only |
+## Productization Scorecard
 
-## Productization Scorecard (0–100 weighted)
-
-| Dimension | Weight |
-|-----------|-------:|
+| البُعد | الوزن |
+|--------|------:|
 | Repeated pain | 20 |
 | Delivery hours saved | 20 |
 | Revenue linkage | 20 |
@@ -55,15 +39,8 @@ Weights are implemented in `auto_client_acquisition/board_decision_os/board_scor
 | Client pull | 15 |
 | Build simplicity | 10 |
 
-**Band → decision**
+**قرار:** 85–100 build now · 70–84 MVP · 55–69 template/manual · <55 hold
 
-| Total | Board read |
-|------:|------------|
-| 85–100 | Build now |
-| 70–84 | MVP |
-| 55–69 | Template / manual |
-| <55 | Hold |
+**الكود:** `OfferScorecardDimensions` · `offer_scorecard_score` · `offer_scorecard_band` — `board_decision_os/board_scorecards.py`
 
-## API
-
-`POST /api/v1/board-decision-os/scorecards/offer` (and `/client`, `/productization`) with dimension scores **0–100** each.
+**صعود:** [`CEO_COMMAND_CENTER.md`](CEO_COMMAND_CENTER.md)

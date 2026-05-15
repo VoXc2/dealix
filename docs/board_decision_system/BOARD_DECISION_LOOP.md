@@ -1,6 +1,6 @@
 # Board Decision Loop
 
-## Canonical sequence
+## النموذج
 
 ```text
 Collect signals
@@ -13,23 +13,25 @@ Collect signals
 → Update system
 ```
 
-## Signal categories (inputs)
+## إشارات داخلة (taxonomy في الكود)
 
-- Sales signals (pipeline velocity, win/loss, discounting)
-- Client adoption signals (usage, workflow depth, sponsor engagement)
-- Proof signals (L0–L5 ladder, consent-backed assets)
-- Governance events (policy blocks, audit findings)
-- Data patterns (readiness, quality, lineage)
-- Workflow friction (manual hours, repeat tickets)
-- Productization candidates (repeat pain, margin)
-- Partner signals (referrals, co-sell health)
-- Market trends (sector demand, regulation)
-- Financial metrics (margin, CAC payback, retainer attach)
+`BOARD_DECISION_INPUT_SIGNALS` في `board_decision_os/board_signal_inputs.py`:
 
-## Decision categories (outputs)
+```text
+sales_signals
+client_adoption_signals
+proof_signals
+governance_events
+data_patterns
+workflow_friction
+productization_candidates
+partner_signals
+market_trends
+financial_metrics
+```
 
-Use the vocabulary in [DECISION_TYPES.md](./DECISION_TYPES.md): **Scale**, **Build**, **Pilot**, **Hold**, **Kill**, **Raise Price**, **Offer Retainer**, **Create Playbook**, **Create Benchmark**, **Create Business Unit**, **Venture Candidate**.
+## قرارات خارجة
 
-## Operating rule
+Scale، Build، Pilot، Hold، Kill، Raise Price، Offer Retainer، Create Playbook، Create Benchmark، Create Business Unit، Create Venture Candidate — راجع [`DECISION_TYPES.md`](DECISION_TYPES.md) و`intelligence_compounding_os` / `board_decision_os`.
 
-Every external-facing action stays **draft / approval-first** per Dealix safety constitution. Board decisions may *authorize* work; they do not auto-send cold outreach.
+**صعود:** [`STRATEGIC_INTELLIGENCE_BOARD_SYSTEM.md`](STRATEGIC_INTELLIGENCE_BOARD_SYSTEM.md)

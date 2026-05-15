@@ -7,7 +7,8 @@ so call sites do not need to know which one they are talking to.
 """
 from __future__ import annotations
 
-from typing import Union
+from datetime import UTC, datetime
+from typing import Any, Union
 
 from auto_client_acquisition.proof_ledger.file_backend import FileProofLedger
 from auto_client_acquisition.proof_ledger.postgres_backend import (
@@ -66,8 +67,38 @@ def reset_default_ledger() -> None:
     _POSTGRES_DEFAULT = None
 
 
+def recent_events(*, since: datetime, limit: int = 200) -> list[dict[str, Any]]:
+    """Events at or after ``since`` (UTC-aware), newest-first, as JSON dicts.
+
+    Used by Personal Operator / weekly jobs. ``since`` may be naive UTC;
+    normalized for comparison against ``ProofEvent.created_at``.
+    """
+    if since.tzinfo is None:
+        since = since.replace(tzinfo=UTC)
+    ledger = get_default_ledger()
+    raw = ledger.list_events(limit=min(max(limit * 4, limit), 800))
+    out: list[dict[str, Any]] = []
+    for ev in raw:
+        ca = getattr(ev, "created_at", None)
+        if ca is None:
+            continue
+        if ca.tzinfo is None:
+            ca = ca.replace(tzinfo=UTC)
+        if ca < since:
+            continue
+        dumped = ev.model_dump(mode="json")
+        pl = dumped.get("payload") or {}
+        level = pl.get("evidence_level") or pl.get("level")
+        if level:
+            dumped["level"] = str(level).upper()
+        out.append(dumped)
+    out.sort(key=lambda d: d.get("created_at") or "", reverse=True)
+    return out[:limit]
+
+
 __all__ = [
     "ProofLedger",
     "get_default_ledger",
+    "recent_events",
     "reset_default_ledger",
 ]

@@ -260,7 +260,7 @@
         <span class="gate">approval_required</span>
       </div>
       <div class="cta-row">
-        <a href="/start.html#pack" class="btn btn--secondary">اطلب الحزمة →</a>
+        <a href="/data-pack.html" class="btn btn--primary">اطلب Data Pack →</a>
       </div>
     </article>
 
@@ -293,7 +293,7 @@
         <span class="gate">approved_manual</span>
       </div>
       <div class="cta-row">
-        <a href="mailto:hello@dealix.me?subject=Growth%20Ops%20Monthly" class="btn btn--secondary">تواصل معنا →</a>
+        <a href="/pricing.html#growth" class="btn btn--primary">احجز Growth Ops →</a>
       </div>
     </article>
 
@@ -325,7 +325,39 @@
         <span class="gate">no_live_send</span>
       </div>
       <div class="cta-row">
-        <a href="mailto:hello@dealix.me?subject=Support%20OS%20Add-on" class="btn btn--secondary">أضف Support OS →</a>
+        <a href="/checkout.html?tier=support_addon" class="btn btn--primary">أضف Support OS →</a>
+      </div>
+    </article>
+
+    <!-- 5b. Bespoke AI — Custom AI Service Setup (Wave 14J Gap H: 5th card) -->
+    <article class="svc-card" data-service-id="bespoke_ai_custom">
+      <header>
+        <h3>Bespoke AI — تخصيص حسب الطلب</h3>
+        <p class="sub-en">Custom AI Service Setup</p>
+      </header>
+      <div class="price"><span class="amount">5,000–25,000 ر.س</span><span class="unit">setup + 1,000/mo</span></div>
+      <div class="duration">⏱ 1–12 أسبوع حسب التعقيد · 1–12 weeks by complexity</div>
+      <div class="deliv-title">المخرجات · Deliverables</div>
+      <ul>
+        <li>AI agent مخصّص لحالة استخدامك (Sales / Support / Ops / Compliance / Analytics)</li>
+        <li>Integrations مع أنظمتك (CRM، Email، WhatsApp، …)</li>
+        <li>Approval-first deployment — كلّ إجراء خارجي بموافقة المؤسس</li>
+        <li>Founder review + deterministic price estimate قبل البدء</li>
+        <li>Monthly retainer للصيانة والتحسين</li>
+      </ul>
+      <div class="kpi-box">
+        <div class="kpi-label">التزام KPI · Commitment</div>
+        <p class="kpi-ar">تقدير setup + monthly فوري عند تعبئة النموذج. القرار النهائي بموافقة المؤسس خلال 48 ساعة.</p>
+        <p class="kpi-en">Live setup + monthly estimate on form change. Final decision by founder within 48h.</p>
+      </div>
+      <p class="refund">سياسة الاسترداد · Refund: عقد مخصّص بشروط استرداد مكتوبة قبل التوقيع.</p>
+      <div class="gates">
+        <span class="gate">approval_required</span>
+        <span class="gate">draft_only</span>
+        <span class="gate">no_live_send</span>
+      </div>
+      <div class="cta-row">
+        <a href="/bespoke-ai.html" class="btn btn--primary">اطلب تقديراً مخصصاً →</a>
       </div>
     </article>
 
@@ -448,6 +480,70 @@
       <li><strong>NO_FAKE_REVENUE</strong> — الإيراد المعتمد فقط من <code>payment_confirmed</code>. invoice_intent ≠ revenue.</li>
       <li><strong>NO_BLAST</strong> — حدّ يومي ٥ رسائل warm-intro، استشارة المؤسس لكل تجاوز.</li>
     </ul>
+  </section>
+
+  <!-- Wave 14D.5 + 14I.1 — Data Pack CSV upload widget -->
+  <section style="margin: var(--space-6) 0; padding: var(--space-5); border: 1px solid var(--border, #ddd); border-radius: 12px; background: #fafafa;">
+    <h2 style="margin-top: 0;">جرب Data Pack مباشرة · Try the Data Pack live</h2>
+    <p>
+      حمّل ملف CSV (يحتوي على company_name, sector, city, relationship_status على الأقل) لتحصل
+      على Data Quality Score + قرار حوكمة فوري — بدون تخزين، بدون أي إرسال خارجي، بدون أي ادعاءات.
+      <br>
+      <em>Upload a CSV with at least these columns and get an instant DQ score +
+      governance decision. No retention, no external send, no claims.</em>
+    </p>
+
+    <form id="dq-upload-form" enctype="multipart/form-data" style="display:flex; flex-direction:column; gap: var(--space-3);">
+      <label for="dq-handle"><strong>اسم الشركة / Company handle</strong></label>
+      <input id="dq-handle" name="customer_handle" type="text" required
+             placeholder="acme_test"
+             style="padding: var(--space-2); border:1px solid #ccc; border-radius: 6px;">
+      <label for="dq-file"><strong>ملف CSV / CSV file (UTF-8, ≤5MB)</strong></label>
+      <input id="dq-file" name="file" type="file" accept=".csv,text/csv" required>
+      <button type="submit" class="btn btn--primary">احسب درجة الجودة الآن · Compute DQ Score</button>
+    </form>
+
+    <pre id="dq-result" style="margin-top: var(--space-3); padding: var(--space-3); background: #1e1e1e; color: #f5f5f5; border-radius: 8px; overflow-x: auto; min-height: 60px; white-space: pre-wrap;"></pre>
+
+    <p style="font-size: 0.875em; color: var(--text-muted, #666); margin-top: var(--space-2);">
+      <em>Estimated value is not Verified value / القيمة التقديرية ليست قيمة مُتحقَّقة.</em>
+    </p>
+
+    <script>
+      (function() {
+        const form = document.getElementById('dq-upload-form');
+        const out = document.getElementById('dq-result');
+        if (!form || !out) return;
+        form.addEventListener('submit', async function(e) {
+          e.preventDefault();
+          out.textContent = '… جارٍ الحساب …';
+          const fd = new FormData(form);
+          try {
+            const resp = await fetch('/api/v1/data-os/import-preview/upload', {
+              method: 'POST',
+              body: fd,
+            });
+            const text = await resp.text();
+            try {
+              const body = JSON.parse(text);
+              const summary = {
+                customer_handle: body.customer_handle,
+                row_count: body.preview && body.preview.row_count,
+                dq_overall: body.data_quality_score && body.data_quality_score.overall,
+                pii_columns: body.preview && body.preview.pii_columns,
+                governance_decision: body.governance_decision,
+                next_step_recommendation: body.next_step_recommendation,
+              };
+              out.textContent = JSON.stringify(summary, null, 2);
+            } catch (_e) {
+              out.textContent = text;
+            }
+          } catch (err) {
+            out.textContent = 'فشل / failed: ' + err.message;
+          }
+        });
+      })();
+    </script>
   </section>
 
   <section class="footer-cta">

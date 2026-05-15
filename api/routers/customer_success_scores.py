@@ -150,3 +150,53 @@ async def all_scores(
         "all_is_estimate": True,
         "hard_gates": _HARD_GATES,
     }
+
+
+# ── Wave 2: Adoption Score endpoint ──────────────────────────────────
+
+
+@router.get("/{handle}/adoption-score")
+async def adoption_score(
+    handle: str,
+    channels_enabled: int = Query(0, ge=0),
+    integrations_connected: int = Query(0, ge=0),
+    sectors_targeted: int = Query(0, ge=0),
+    total_drafts_lifetime: int = Query(0, ge=0),
+    logins_last_30d: int = Query(0, ge=0),
+    drafts_approved_last_30d: int = Query(0, ge=0),
+    replies_acted_on_last_30d: int = Query(0, ge=0),
+    previous_score: float | None = Query(None),
+    proof_score: float = Query(0.0, ge=0.0, le=100.0),
+    workflow_owner_present: bool = Query(False),
+    governance_risk_controlled: bool = Query(True),
+) -> dict[str, Any]:
+    """Wave 2 Adoption Score endpoint — wraps adoption_os.compute() and
+    pairs it with a RetainerReadiness gate. Estimate per Article 8."""
+    from auto_client_acquisition.adoption_os.adoption_score import compute as compute_adoption
+    from auto_client_acquisition.adoption_os.retainer_readiness import evaluate as evaluate_retainer
+
+    score = compute_adoption(
+        customer_id=handle,
+        channels_enabled=channels_enabled,
+        integrations_connected=integrations_connected,
+        sectors_targeted=sectors_targeted,
+        total_drafts_lifetime=total_drafts_lifetime,
+        logins_last_30d=logins_last_30d,
+        drafts_approved_last_30d=drafts_approved_last_30d,
+        replies_acted_on_last_30d=replies_acted_on_last_30d,
+        previous_score=previous_score,
+    )
+    retainer = evaluate_retainer(
+        customer_id=handle,
+        adoption_score=score.score,
+        proof_score=proof_score,
+        workflow_owner_present=workflow_owner_present,
+        governance_risk_controlled=governance_risk_controlled,
+    )
+    return {
+        "customer_handle": handle,
+        "adoption_score": score.to_dict(),
+        "retainer_readiness": retainer.to_dict(),
+        "is_estimate": True,
+        "governance_decision": score.governance_decision,
+    }

@@ -1,0 +1,11 @@
+company_name,contact_name,email,phone,lead_source,industry,employee_band,last_touch_days,notes
+Al-Faisal Trading Co.,Khalid Al-Otaibi,k.otaibi@alfaisal-trading.sa,+966501111111,sheet_import,logistics,51-200,45,Inbound form — pricing question
+Najd Digital Services,Layla Al-Harbi,l.harbi@najddigital.sa,+966502222222,referral,b2b_services,11-50,12,Partner intro — CRM cleanup
+Riyadh Clinic Group,Omar Al-Mutairi,o.mutairi@riyadhclinicgroup.sa,+966503333333,event,healthcare_ops,201-500,3,Met at HIMSS regional
+Red Sand Construction,Sara Al-Ghamdi,s.ghamdi@redsand.sa,+966504444444,cold_list,construction,201-500,90,Source unclear — flag
+GreenLine Transport,Fahad Al-Qahtani,f.qahtani@greenline.sa,+966505555555,linkedin_export,logistics,501-1000,7,Tender cycle starting
+Noor Education Labs,Noura Al-Subaie,n.subaie@nooredu.sa,+966506666666,website,education,51-200,60,Requested demo deck
+Desert Retail Co.,Majed Al-Dosari,m.dosari@desertretail.sa,+966507777777,sheet_import,retail,501-1000,2,Duplicate row in raw file row 88
+Pixelcraft Agency,Hind Al-Rashid,h.rashid@pixelcraft.sa,+966508888888,referral,b2b_services,11-50,20,Needs proposal template help
+Al-Watan Real Estate,VIP Listing Desk,listings@alwatan-re.sa,+966509999999,portal_export,real_estate,201-500,1,High intent — viewing booked
+Unknown Prospect,,,,missing,,unknown,999,Row with no source — must flag

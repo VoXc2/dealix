@@ -1,22 +1,24 @@
-# Agent Decision Governance
+# AI Agent Decision Governance
 
-## Gate
+أي قرار يخص **agents** يمر على بوابة أشد من المنتج العام.
 
-No new production agent without:
+## بوابة قبل إضافة وكيل
 
-- Clear **purpose**
-- Clear **owner**
-- **Allowed tools** enumerated
-- **Forbidden actions** enumerated (must include: no cold WhatsApp, no scraping, no unapproved external send)
-- **Autonomy level** ≤ 3 in MVP
-- **Audit** required on all tool calls affecting customer data
-- **Decommission rule** (when to retire the agent)
+- غرض واضح  
+- مالك واضح  
+- أدوات مسموحة محددة  
+- إجراءات ممنوعة واضحة  
+- مستوى استقلالية ≤ 3 في MVP  
+- تدقيق مطلوب  
+- قاعدة إيقاف/إزالة موجودة  
 
-## Research context
+**الكود:** `AgentDecisionGate` · `agent_decision_gate_passes` — `board_decision_os/agent_decision_gate.py`
 
-Multi-agent systems increase the need for identity, verification, and accountability standards for non-human actors (see [arXiv:2604.23280](https://arxiv.org/abs/2604.23280) — informational).
+## سياق الهوية والمساءلة
 
-## Example decision record
+أبحاث حديثة حول **AI Identity** والفجوات في التعريف والتحقق لكيانات غير بشرية وغير حتمية — [arXiv:2604.23280](https://arxiv.org/abs/2604.23280)
+
+## مثال قرار
 
 ```json
 {
@@ -29,6 +31,4 @@ Multi-agent systems increase the need for identity, verification, and accountabi
 }
 ```
 
-## API
-
-`POST /api/v1/board-decision-os/agent-gate/evaluate`
+**صعود:** [`BOARD_RISK_DECISIONS.md`](BOARD_RISK_DECISIONS.md)

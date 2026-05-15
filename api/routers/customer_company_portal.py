@@ -48,11 +48,31 @@ def _seven_day_plan(customer_handle: str) -> dict[str, Any]:
 
 
 def _messages_and_followups(customer_handle: str) -> dict[str, Any]:
+    approved = 0
+    pending = 0
+    try:
+        from auto_client_acquisition.approval_center import get_default_approval_store
+
+        store = get_default_approval_store()
+        rows = store.list_pending()
+        pending = len(rows)
+        hist = store.list_history(limit=200)
+        approved = sum(
+            1
+            for r in hist
+            if str(getattr(r.status, "value", r.status)) == "approved"
+            and (
+                customer_handle in (r.proof_impact or "")
+                or customer_handle in (r.summary_ar or "")
+            )
+        )
+    except Exception:
+        pass
     return {
         "title_ar": "رسائل ومتابعات",
         "title_en": "Messages & Follow-ups",
-        "approved_drafts_count": 0,
-        "pending_approval_count": 0,
+        "approved_drafts_count": approved,
+        "pending_approval_count": pending,
         "note_ar": "كل رسالة تمر بموافقتك قبل الإرسال اليدوي.",
         "note_en": "Every message passes your approval before manual send.",
     }
@@ -82,10 +102,19 @@ def _deliverables(customer_handle: str) -> dict[str, Any]:
 
 
 def _proof_pack(customer_handle: str) -> dict[str, Any]:
+    events_count = 0
+    try:
+        from auto_client_acquisition.proof_ledger.factory import get_default_ledger
+
+        events_count = len(
+            get_default_ledger().list_events(customer_handle=customer_handle, limit=200)
+        )
+    except Exception:
+        pass
     return {
         "title_ar": "Proof Pack",
         "title_en": "Proof Pack",
-        "events_count": 0,
+        "events_count": events_count,
         "audience": "internal_only",
         "approval_status": "approval_required",
         "note_ar": "يُحرَّر بعد اكتمال أوّل تجربة. لا أرقام مخترعة.",
@@ -225,8 +254,9 @@ def _digest_monthly(customer_handle: str) -> dict[str, Any]:
     """Monthly digest — proof_ledger event count + sector context."""
     proof_count = 0
     try:
-        from auto_client_acquisition.proof_ledger.file_backend import list_events
-        events = list_events(customer_handle=customer_handle, limit=200)
+        from auto_client_acquisition.proof_ledger.factory import get_default_ledger
+
+        events = get_default_ledger().list_events(customer_handle=customer_handle, limit=200)
         proof_count = len(events)
     except Exception:
         pass
@@ -340,8 +370,9 @@ def _payment_state_section(customer_handle: str) -> dict[str, Any]:
 def _proof_summary_section(customer_handle: str) -> dict[str, Any]:
     """Wave 4 additive — proof events summary."""
     try:
-        from auto_client_acquisition.proof_ledger.file_backend import list_events
-        events = list_events(customer_handle=customer_handle, limit=200)
+        from auto_client_acquisition.proof_ledger.factory import get_default_ledger
+
+        events = get_default_ledger().list_events(customer_handle=customer_handle, limit=200)
         return {
             "proof_events_count": len(events),
             "source": "proof_ledger",
@@ -353,8 +384,9 @@ def _proof_summary_section(customer_handle: str) -> dict[str, Any]:
 def _approval_summary_section(customer_handle: str) -> dict[str, Any]:
     """Wave 4 additive — approval center summary."""
     try:
-        from auto_client_acquisition.approval_center import approval_store
-        pending = approval_store.get_default_approval_store().list_pending()
+        from auto_client_acquisition.approval_center import get_default_approval_store
+
+        pending = get_default_approval_store().list_pending()
         scoped = [
             ap for ap in pending
             if customer_handle in (ap.proof_impact or "")
@@ -455,6 +487,227 @@ async def customer_portal(customer_handle: str) -> dict[str, Any]:
     Read-only. 200 always. The customer sees outcomes, not engineering.
     """
     return _portal_payload(customer_handle or "Slot-A")
+
+
+# ── Wave 2: Client Workspace MVP ─────────────────────────────────────
+# Operator-facing internal aggregator. Distinct from the public 8-field
+# portal above (Constitution Article 6 #2). Returns 10 panels + status
+# badges + deterministic next_action. Read-only. 200 always.
+
+def _workspace_capability(customer_handle: str) -> dict[str, Any] | None:
+    try:
+        from auto_client_acquisition.customer_readiness.scores import (
+            compute_comfort_and_expansion,
+        )
+        scores = compute_comfort_and_expansion(
+            has_status_timeline=True, has_next_action=True,
+            pending_approvals=0, open_support_tickets=0,
+            proof_events_count=0, max_proof_level=0,
+            payment_ok=False, delivery_sessions_active=0,
+            avg_response_hours=48.0,
+        )
+        return {"score": scores.get("expansion_readiness"), "comfort": scores.get("comfort_score")}
+    except Exception:  # noqa: BLE001
+        return None
+
+
+def _workspace_data_readiness(customer_handle: str) -> dict[str, Any] | None:
+    # Best-effort: count value events as a coarse readiness signal.
+    try:
+        from auto_client_acquisition.value_os.value_ledger import list_events as list_value
+        events = list_value(customer_id=customer_handle)
+        return {
+            "source_passport_present": False,  # populated once data_os.source_passport store lands
+            "dq_score": None,
+            "value_events_in_ledger": len(events),
+        }
+    except Exception:  # noqa: BLE001
+        return None
+
+
+def _workspace_governance(customer_handle: str) -> dict[str, Any]:
+    try:
+        from auto_client_acquisition.friction_log.store import list_events as list_friction
+        events = list_friction(
+            customer_id=customer_handle, since_days=30, limit=50, kind="governance_block"
+        )
+        return {
+            "last_decision": "allow_with_review",
+            "open_blocks": len(events),
+        }
+    except Exception:  # noqa: BLE001
+        return {"last_decision": "unknown", "open_blocks": 0}
+
+
+def _workspace_ranked_opportunities(customer_handle: str) -> list[dict[str, Any]] | None:
+    try:
+        from auto_client_acquisition.leadops_spine import list_records
+        recs = [r for r in list_records(limit=50) if r.customer_handle == customer_handle]
+        return [{"id": getattr(r, "id", ""), "company": getattr(r, "company_name", "")} for r in recs[:10]]
+    except Exception:  # noqa: BLE001
+        return None
+
+
+def _workspace_drafts_pending(customer_handle: str) -> list[dict[str, Any]] | None:
+    try:
+        from auto_client_acquisition.approval_center.approval_store import (
+            get_default_approval_store,
+        )
+        store = get_default_approval_store()
+        pending = store.list_pending() if hasattr(store, "list_pending") else []
+        scoped = [p for p in pending if getattr(p, "customer_handle", None) == customer_handle]
+        return [{"id": getattr(p, "id", ""), "kind": getattr(p, "kind", "")} for p in scoped]
+    except Exception:  # noqa: BLE001
+        return None
+
+
+def _workspace_proof_timeline(customer_handle: str) -> list[dict[str, Any]] | None:
+    try:
+        from auto_client_acquisition.proof_ledger.file_backend import get_default_ledger
+        ledger = get_default_ledger()
+        events = ledger.list_events(customer_handle=customer_handle, limit=12)
+        return [
+            {"id": e.id, "event_type": str(e.event_type), "created_at": e.created_at.isoformat()}
+            for e in events
+        ]
+    except Exception:  # noqa: BLE001
+        return None
+
+
+def _workspace_adoption(customer_handle: str) -> dict[str, Any] | None:
+    try:
+        from auto_client_acquisition.adoption_os.adoption_score import compute as compute_adoption
+        score = compute_adoption(customer_id=customer_handle)
+        return score.to_dict()
+    except Exception:  # noqa: BLE001
+        return None
+
+
+def _workspace_friction(customer_handle: str) -> dict[str, Any] | None:
+    try:
+        from auto_client_acquisition.friction_log.aggregator import aggregate
+        agg = aggregate(customer_id=customer_handle, window_days=30)
+        return agg.to_dict()
+    except Exception:  # noqa: BLE001
+        return None
+
+
+def _workspace_monthly_value(customer_handle: str) -> dict[str, Any] | None:
+    try:
+        from auto_client_acquisition.value_os.monthly_report import generate
+        report = generate(customer_id=customer_handle)
+        d = report.to_dict()
+        # Summary subset: omit large lists.
+        return {
+            "month": d["month"],
+            "proof_events_count": d["proof_events_count"],
+            "blocked_unsafe_actions_count": d["blocked_unsafe_actions_count"],
+            "limitations": d["limitations"][:5],
+            "governance_decision": d["governance_decision"],
+        }
+    except Exception:  # noqa: BLE001
+        return None
+
+
+def _workspace_next_action(panels: dict[str, Any]) -> dict[str, str]:
+    """Deterministic priority: governance_block > approval_pending > stale_draft
+    > adoption_push > capability_gap."""
+    gov = panels.get("governance_status") or {}
+    if int(gov.get("open_blocks", 0) or 0) > 0:
+        return {
+            "kind": "resolve_governance_block",
+            "message_en": "Resolve open governance block before continuing.",
+            "message_ar": "حلّ بلوك الحوكمة المفتوح قبل المتابعة.",
+        }
+    drafts = panels.get("draft_packs_pending_approval") or []
+    if drafts:
+        return {
+            "kind": "approval_pending",
+            "message_en": "Drafts awaiting approval — review and approve.",
+            "message_ar": "مسودّات تنتظر الاعتماد — راجع واعتمد.",
+        }
+    adoption = panels.get("adoption_score") or {}
+    if (adoption.get("tier") or "") in ("latent", "exploring"):
+        return {
+            "kind": "adoption_push",
+            "message_en": "Enable one more channel or integration to lift adoption.",
+            "message_ar": "فعّل قناة أو تكاملاً إضافياً لرفع اعتماد المنصة.",
+        }
+    capability = panels.get("capability_score") or {}
+    if capability is None or capability.get("score") is None:
+        return {
+            "kind": "capability_gap",
+            "message_en": "Capability score missing — request a diagnostic.",
+            "message_ar": "درجة القدرة غير متوفرة — اطلب التشخيص.",
+        }
+    return {
+        "kind": "maintain_cadence",
+        "message_en": "Continue monthly operating cadence.",
+        "message_ar": "استمر في الإيقاع الشهري للتشغيل.",
+    }
+
+
+@router.get("/{customer_handle}/workspace")
+async def client_workspace(customer_handle: str) -> dict[str, Any]:
+    """Wave 2 Client Workspace MVP — operator-facing 10-panel bundle.
+
+    Read-only. Tenant-scoped via customer_handle. Returns 200 always;
+    missing panels are null + a friction event is emitted (best-effort).
+    """
+    panels: dict[str, Any] = {
+        "capability_score": _workspace_capability(customer_handle),
+        "data_readiness": _workspace_data_readiness(customer_handle),
+        "governance_status": _workspace_governance(customer_handle),
+        "ranked_opportunities": _workspace_ranked_opportunities(customer_handle),
+        "draft_packs_pending_approval": _workspace_drafts_pending(customer_handle),
+        "proof_timeline": _workspace_proof_timeline(customer_handle),
+        "adoption_score": _workspace_adoption(customer_handle),
+        "latest_monthly_value_report": _workspace_monthly_value(customer_handle),
+    }
+
+    # Compute "missing" signals from panels (no source passport in
+    # data_readiness, no proof events in proof_timeline) BEFORE the
+    # friction aggregation so the missing-panel events are visible in
+    # the same response. Idempotent best-effort.
+    try:
+        from auto_client_acquisition.friction_log.store import emit as emit_friction
+        dr = panels.get("data_readiness") or {}
+        if dr is None or not dr.get("source_passport_present"):
+            emit_friction(
+                customer_id=customer_handle,
+                kind="missing_source_passport",
+                severity="low",
+                workflow_id="client_workspace_mvp",
+                notes="panel:data_readiness:no_source_passport",
+            )
+        pt = panels.get("proof_timeline")
+        if not pt:
+            emit_friction(
+                customer_id=customer_handle,
+                kind="missing_proof_pack",
+                severity="low",
+                workflow_id="client_workspace_mvp",
+                notes="panel:proof_timeline:empty",
+            )
+        for panel_name in ("capability_score", "ranked_opportunities", "draft_packs_pending_approval"):
+            if panels.get(panel_name) is None:
+                emit_friction(
+                    customer_id=customer_handle,
+                    kind="missing_source_passport",
+                    severity="low",
+                    workflow_id="client_workspace_mvp",
+                    notes=f"panel:{panel_name}:unavailable",
+                )
+    except Exception:  # noqa: BLE001
+        pass
+
+    # Aggregate friction LAST so missing-panel events emitted above are
+    # surfaced in the same response.
+    panels["friction_summary"] = _workspace_friction(customer_handle)
+    panels["next_action"] = _workspace_next_action(panels)
+    panels["governance_decision"] = "allow_with_review"
+    panels["customer_handle"] = customer_handle
+    return panels
 
 
 @router.get("/")

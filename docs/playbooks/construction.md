@@ -1,37 +1,51 @@
-# المقاولات / خدمات B2B — Dealix Playbook
+# Vertical Playbook: Construction & contracting
 
-## ICP
-شركة مقاولات تستقبل RFQ من شركات وأفراد
+## Sector overview
 
-## Signals (ما الذي نبحث عنه)
-- نماذج RFQ
-- صفحة مشاريع سابقة
-- أرقام جوال متعددة
+Main contractors, specialty subcontractors, and project-heavy B2B sales with long cycles and document-heavy tenders.
 
-## Headline Pain
-RFQ تتوزع بين قنوات متعددة بدون فرز موحد
+## Common problems
 
-## Primary Offer
-Pilot 7 أيام × 999 ريال — فرز RFQ + جمع المواصفات
+- Tender deadlines with fragmented document intake
+- BOQ / spec clarifications over email/WhatsApp
+- Subcontractor coordination and follow-through
+- Pipeline visibility by project type / region is weak
 
-## Success KPI (نقيس ماذا)
-RFQs qualified / pricing-engineer time saved
+## Best Dealix services
 
-## Common Objections (ردود جاهزة في `/api/v1/objections/bank`)
-- large_project_complexity
-- needs_engineer_review
+1. Lead Intelligence Sprint (client / consultant lists)
+2. Tender response checklist + draft outlines (human-reviewed)
+3. Monthly pipeline governance pack
 
-## Channel Strategy
-phone_task
+## Data usually available
 
-## Pilot Success Metrics
-- Arabic replies sent / inbound lead: 100%
-- avg response time: < 60s
-- demos booked: ≥ 2 in 7 days
-- customer NPS: ≥ 8/10
+- CRM of opportunities (often minimal)
+- Historical tender submissions (client-provided)
+- Project sheets / regions / sectors
+- Email archives (selective exports)
 
-## Case Study Template
-- Before Dealix: [response time / lost leads / conversion %]
-- After 7-day Pilot: [Arabic replies, demos booked, qualified leads]
-- Customer quote: [verified post-pilot]
-- Outcome: [upgraded to Starter / referred N companies / etc.]
+## Best KPIs
+
+- Win rate by sector
+- Bid cycle time
+- Pipeline coverage vs. capacity
+- Revision counts pre-submission (quality proxy)
+
+## Common objections
+
+- "Every tender is unique" → reusable **checklist + risk flags**, not generic prose
+- "We can't expose bids" → all proofs **redacted**
+
+## Governance notes
+
+- Confidential bid data — client-controlled storage
+- No representation of bonding capacity / certifications without verification
+
+## Proof examples
+
+- Missed-document checklist that prevented last-minute gaps (pattern)
+- Ranked pursuit list by fit + capacity
+
+## Evolution log
+
+- 

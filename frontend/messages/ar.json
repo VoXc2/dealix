@@ -4,6 +4,8 @@
     "pipeline": "خط الصفقات",
     "agents": "نشاط الوكلاء",
     "approvals": "مركز الموافقات",
+    "trustCheck": "فحص الأدلة ومنع الهدر",
+    "customerPortal": "بوابة العميل",
     "clients": "إدارة العملاء",
     "analytics": "التحليلات والتقارير",
     "settings": "الإعدادات",
@@ -135,5 +137,22 @@
     "today": "اليوم",
     "yesterday": "أمس",
     "thisWeek": "هذا الأسبوع"
+  },
+  "trustCheck": {
+    "title": "فحص الأدلة ومنع الهدر",
+    "subtitle": "قبل أي إرسال خارجي: مستويات الأدلة وفحص Anti-Waste",
+    "evidenceTitle": "مستويات الأدلة (L0–L5)",
+    "antiTitle": "فحص منع الهدر",
+    "runCheck": "تشغيل الفحص",
+    "pass": "مسموح",
+    "blocked": "غير مسموح أو يحتاج مراجعة",
+    "hint": "لا إرسال خارجي بدون Decision Passport وموافقة بشرية."
+  },
+  "customerPortal": {
+    "title": "بوابة العميل (قراءة فقط)",
+    "subtitle": "حالة التسليم والإثبات — عرض آمن",
+    "handleLabel": "معرّف العميل",
+    "load": "تحميل",
+    "promiseTitle": "التزام الخدمة"
   }
 }

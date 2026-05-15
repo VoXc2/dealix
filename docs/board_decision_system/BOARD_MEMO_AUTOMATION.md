@@ -1,30 +1,43 @@
 # Board Memo Automation
 
-## Cadence
+## أقسام Memo الشهرية
 
-Monthly (or pre-board meeting) memo generated from internal signals + scorecards. v1 is **template + deterministic sections**; later: pull from Revenue Memory / proof ledger.
+1. Executive Summary  
+2. Revenue Quality  
+3. Proof & Value  
+4. Retainer Opportunities  
+5. Governance & Risk  
+6. Productization Queue  
+7. Client Health  
+8. Market Intelligence  
+9. Business Unit Maturity  
+10. Stop / Kill List  
+11. Capital Allocation  
+12. Next Strategic Bets  
 
-## Required sections (Markdown)
+## هيكل Markdown مقترح
 
-1. Executive Summary
-2. Revenue Quality
-3. Proof & Value
-4. Retainer Opportunities
-5. Governance & Risk
-6. Productization Queue
-7. Client Health
-8. Market Intelligence
-9. Business Unit Maturity
-10. Stop / Kill List
-11. Capital Allocation
-12. Next Strategic Bets
+```markdown
+# Dealix Board Memo
 
-## Why it matters
+## 1. Executive Summary
+## 2. Revenue Quality
+## 3. Proof & Value
+## 4. Retainer Opportunities
+## 5. Governance & Risk
+## 6. Productization Queue
+## 7. Client Health
+## 8. Market Intelligence
+## 9. Business Unit Maturity
+## 10. Stop / Kill List
+## 11. Capital Allocation
+## 12. Next Strategic Bets
+```
 
-Even for a solo founder, the memo forces **CEO cognition** (bets, kill list, capital). Over time it becomes diligence-ready evidence that Dealix is operated as a system, not ad-hoc execution.
+## لماذا؟
 
-## API
+حتى المؤسس الواحد يُجبر على التفكير كـCEO؛ ومع الوقت يصبح الـmemo **أصلًا** عند شركاء أو عملاء كبار.
 
-`GET /api/v1/board-decision-os/board-memo-template` returns section headings + placeholder guidance.
+**الكود:** `BOARD_MEMO_SECTIONS` · `board_memo_sections_complete` — `board_decision_os/board_memo_generator.py`
 
-`POST /api/v1/board-decision-os/board-memo` accepts structured metrics JSON and returns filled Markdown (deterministic).
+**صعود:** [`STRATEGIC_BETS_FRAMEWORK.md`](STRATEGIC_BETS_FRAMEWORK.md)

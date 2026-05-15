@@ -1,46 +1,56 @@
-# Dealix Strategic Intelligence & Board Decision System
+# Strategic Intelligence & Board Decision System — Dealix
 
-## Purpose | الغرض
+> **Dealix لا تحتاج لوحة تعرض أرقامًا فقط. تحتاج نظام قرارات:** كل إشارة → قرار → تنفيذ → Proof جديد.
 
-Dealix لا تكتفي بجمع **إشارات** وتشغيل وProof. هذه الطبقة تحوّل التشغيل إلى **قرارات CEO/Board**: ماذا نبيع، ماذا نبني، ماذا نوقف، أين نرفع السعر، وأي وحدة نجهّزها لتصبح Venture.
+## لماذا Board Decision System؟
 
-## North-star loop | حلقة الشمال
+اعتماد AI بدون قرارات تشغيلية واضحة يتحول إلى فوضى. استثمار واسع لا يعني ROI — المسألة: **أين نستخدمه، كيف نقيسه، وكيف نوسعه؟** — مرجع: [IT Pro — AI adoption and ROI strategy](https://www.itpro.com/business/business-strategy/ai-adoption-projects-keep-failing-but-enterprise-fomo-means-investment-is-still-rising).
+
+## الحلقة
 
 ```text
 Signals → Decisions → Actions → Proof → Learning
 ```
 
-## Implementation | التنفيذ في الكود
+## خريطة الوثائق
 
-- Python package: `auto_client_acquisition/board_decision_os/`
-- Read API (deterministic, no LLM required): `GET/POST /api/v1/board-decision-os/*`
+| ملف | موضوع |
+|-----|--------|
+| [BOARD_DECISION_LOOP.md](BOARD_DECISION_LOOP.md) | جمع الإشارات حتى تحديث النظام |
+| [DECISION_TYPES.md](DECISION_TYPES.md) | Scale / Build / Hold / Kill … |
+| [BOARD_SCORECARDS.md](BOARD_SCORECARDS.md) | عروض، عملاء، productization |
+| [CEO_COMMAND_CENTER.md](CEO_COMMAND_CENTER.md) | قرارات الأسبوع الخمسة |
+| [BOARD_MEMO_AUTOMATION.md](BOARD_MEMO_AUTOMATION.md) | memo شهري |
+| [STRATEGIC_BETS_FRAMEWORK.md](STRATEGIC_BETS_FRAMEWORK.md) | 1–3 رهانات شهريًا |
+| [AGENT_DECISION_GOVERNANCE.md](AGENT_DECISION_GOVERNANCE.md) | بوابة وكلاء أشد صرامة |
+| [SAUDI_BOARD_VIEW.md](SAUDI_BOARD_VIEW.md) | مقاييس وموضع سعودي |
+| [MARKET_TIMING_BOARD_VIEW.md](MARKET_TIMING_BOARD_VIEW.md) | توقيت السوق والتمييز |
+| [BOARD_RISK_DECISIONS.md](BOARD_RISK_DECISIONS.md) | سجل مخاطر → قرار |
+| [CAPITAL_ALLOCATION_BOARD.md](CAPITAL_ALLOCATION_BOARD.md) | Must fund / Hold / Kill |
 
-## External context (informational) | سياق خارجي (معلوماتي)
+## الكود
 
-- Enterprise AI adoption vs strategy/ROI gap is widely reported in trade press (e.g. [IT Pro — AI adoption and strategy](https://www.itpro.com/business/business-strategy/ai-adoption-projects-keep-failing-but-enterprise-fomo-means-investment-is-still-rising)).
-- Operational AI + security posture themes appear in industry summaries (e.g. [TechRadar — KPMG AI operational reality](https://www.techradar.com/pro/ai-is-no-longer-a-future-concept-but-an-operational-reality-new-kpmg-report-claims-firms-are-racing-to-deploy-ai-but-need-to-ensure-they-have-the-right-security-protections)).
-- Agent identity / accountability research direction: [arXiv:2604.23280](https://arxiv.org/abs/2604.23280).
-- Saudi national GenAI survey themes: [arXiv:2601.18234](https://arxiv.org/abs/2601.18234).
-- Saudi AI infrastructure initiative (context): [Wikipedia — HUMAIN](https://en.wikipedia.org/wiki/Humain).
+`auto_client_acquisition/board_decision_os/` — بوابات رقمية: scorecards، memo، رهانات، بوابة وكيل، مخاطر، تخصيص رأس مال لوحي، **تصنيف إشارات الدخول** (`BOARD_DECISION_INPUT_SIGNALS`).
 
-Dealix product stance remains: **Saudi Governed AI Operations OS** — not a generic chatbot vendor.
+## من إشارة إلى قرار (ملخص تشغيلي)
 
-## Doc map | خريطة الوثائق
+```text
+Sales signal → Offer decision
+Proof signal → Retainer decision
+Friction signal → Product decision
+Risk signal → Governance decision
+Market signal → Positioning decision
+Financial signal → Capital allocation decision
+Agent signal → Control decision
+Saudi signal → Localization decision
+```
 
-| Document | Focus |
-|----------|--------|
-| [BOARD_DECISION_LOOP.md](./BOARD_DECISION_LOOP.md) | Collect → score → options → execute → proof |
-| [DECISION_TYPES.md](./DECISION_TYPES.md) | Scale / Build / Hold / Kill patterns |
-| [BOARD_SCORECARDS.md](./BOARD_SCORECARDS.md) | Offer / Client / Productization weights |
-| [CEO_COMMAND_CENTER.md](./CEO_COMMAND_CENTER.md) | Top-5 decisions view |
-| [BOARD_MEMO_AUTOMATION.md](./BOARD_MEMO_AUTOMATION.md) | Monthly board memo sections |
-| [STRATEGIC_BETS_FRAMEWORK.md](./STRATEGIC_BETS_FRAMEWORK.md) | 1–3 bets / month |
-| [AGENT_DECISION_GOVERNANCE.md](./AGENT_DECISION_GOVERNANCE.md) | Stricter gate for agents |
-| [SAUDI_BOARD_VIEW.md](./SAUDI_BOARD_VIEW.md) | PDPL, Arabic QA, WhatsApp boundaries |
-| [MARKET_TIMING_BOARD_VIEW.md](./MARKET_TIMING_BOARD_VIEW.md) | Positioning vs generic AI |
-| [BOARD_RISK_DECISIONS.md](./BOARD_RISK_DECISIONS.md) | Risk → decision mapping |
-| [CAPITAL_ALLOCATION_BOARD.md](./CAPITAL_ALLOCATION_BOARD.md) | Must fund / test / hold / kill |
+بدون هذه الحلقة، Dealix **منفّذ طلبات**؛ معها، **شركة قيادة** للسوق.
 
-## Closing sentence | الجملة الختامية
+## صعود
 
-> Dealix تفوز عندما لا يكون عندها فقط بيانات وتشغيل، بل **نظام قيادة**: يقرأ الإشارات، يختار الرهانات، يرفض الإيراد السيئ، يبني فقط ما يتكرر، ويحوّل كل Proof إلى قرار استراتيجي يقرّب الشركة من كونها **Saudi Governed AI Operations OS**.
+[`../intelligence/DECISION_ENGINE.md`](../intelligence/DECISION_ENGINE.md) · [`../operating_finance/OPERATING_FINANCE_SYSTEM.md`](../operating_finance/OPERATING_FINANCE_SYSTEM.md) · [`../intelligence_compounding/INTELLIGENCE_COMPOUNDING_SYSTEM.md`](../intelligence_compounding/INTELLIGENCE_COMPOUNDING_SYSTEM.md) · [`../board_ready/BOARD_LEVEL_THESIS.md`](../board_ready/BOARD_LEVEL_THESIS.md)
+
+## الخلاصة
+
+> **Dealix تفوز عندما لا يكون عندها فقط بيانات وتشغيل، بل نظام قيادة: يقرأ الإشارات، يختار الرهانات، يرفض الإيراد السيئ، يبني فقط ما يتكرر، ويحوّل كل Proof إلى قرار استراتيجي يقرّب الشركة من كونها Saudi Governed AI Operations OS.**

@@ -1,10 +1,8 @@
-# Decision Types
+# Decision Types — أمثلة JSON
 
-## 1. Scale Decision
+## Scale
 
-**When:** sold repeatedly, proof strong, delivery repeatable, retainer path exists, governance risk controlled, margin healthy.
-
-**JSON shape (example)**
+متى: بيع متكرر، proof عالٍ، تسليم قابل للتكرار، مسار retainer، حوكمة مضبوطة، هامش صحي.
 
 ```json
 {
@@ -25,22 +23,57 @@
 }
 ```
 
-## 2. Build Decision
+## Build
 
-**When:** manual step repeated 3+, takes 2+ h/project, linked to paid offer, reduces risk or improves margin, client pull exists.
+متى: خطوة يدوية ≥3، ≥ساعتين/مشروع، مرتبط بعرض مدفوع، يقلل مخاطر أو يحسن هامش، سحب عميل.
 
-## 3. Hold Decision
+```json
+{
+  "decision": "BUILD",
+  "target": "Approval Center MVP",
+  "evidence": [
+    "approval friction repeated across 4 clients",
+    "draft packs delayed",
+    "retainer adoption affected"
+  ],
+  "actions": [
+    "build approval matrix",
+    "create approval status UI",
+    "log approval events"
+  ]
+}
+```
 
-**When:** signal weak, demand unclear, proof insufficient, governance not ready, high maintenance risk.
+## Hold
 
-Include `next_condition` (measurable re-entry gate).
+متى: إشارة ضعيفة، طلب غير واضح، proof غير كافٍ، حوكمة غير جاهزة، صيانة عالية.
 
-## 4. Kill Decision
+```json
+{
+  "decision": "HOLD",
+  "target": "Academy Portal",
+  "evidence": [
+    "method not stable enough",
+    "proof assets below threshold",
+    "certification QA not defined"
+  ],
+  "next_condition": "10 projects + 3 strong proof-backed assets"
+}
+```
 
-**When:** low margin, scope creep, weak proof, no retainer path, high governance risk, no repeatability.
+## Kill
 
-Always name a **replacement** offer or motion when killing a SKU.
+متى: هامش منخفض، creep، proof ضعيف، لا retainer، مخاطر حوكمة، لا تكرار.
 
-## Composite decisions (CEO Command Center)
+```json
+{
+  "decision": "KILL",
+  "target": "Custom chatbot without source registry",
+  "reason": "Weak proof, high hallucination risk, no governance boundary",
+  "replacement": "Company Brain Sprint"
+}
+```
 
-See [CEO_COMMAND_CENTER.md](./CEO_COMMAND_CENTER.md) for `OFFER_RETAINER`, `BUILD_MVP`, `RAISE_PRICE`, `REJECT_BAD_REVENUE`, `CREATE_PLAYBOOK`, etc.
+**الكود:** `offer_scorecard_strategic_decision` · `board_scorecards` · `BOARD_DECISION_INPUT_SIGNALS` — `board_decision_os/`
+
+**صعود:** [`BOARD_SCORECARDS.md`](BOARD_SCORECARDS.md)

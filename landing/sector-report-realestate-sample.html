@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Dealix — نموذج Sector Intel Report (عقاري)</title>
+  <meta name="description" content="نموذج توضيحي لتقرير ذكاء قطاعي شهري عن العقار السعودي. الشكل، الأقسام، والقيمة — ليس تقريراً حقيقياً." />
+  <meta name="robots" content="index,follow" />
+  <link rel="canonical" href="https://dealix.me/sector-report-realestate-sample.html" />
+  <meta property="og:title" content="Dealix Sector Intel — نموذج عقاري" />
+  <meta property="og:description" content="ما تستلمه شهرياً مقابل 5,000 SAR من R4." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://dealix.me/sector-report-realestate-sample.html" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="theme-color" content="#0f172a" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="/assets/css/design-system.css" />
+  <style>
+    :root { --brand: #0f172a; --accent: #10b981; --muted: #64748b; --surface: #ffffff; --bg: #f8fafc; --border: #e2e8f0; }
+    body { font-family: "IBM Plex Sans Arabic", system-ui, sans-serif; background: var(--bg); color: var(--brand); margin: 0; line-height: 1.7; }
+    .container { max-width: 900px; margin: 0 auto; padding: 24px 20px; }
+    .disclaimer { background: #fef3c7; border: 2px solid #f59e0b; color: #713f12; padding: 18px 22px; border-radius: 12px; margin-bottom: 32px; font-size: 14px; line-height: 1.7; }
+    .disclaimer strong { display: block; font-size: 16px; margin-bottom: 6px; }
+    .report-header { text-align: center; padding: 24px 0 32px; border-bottom: 1px solid var(--border); margin-bottom: 32px; }
+    .report-meta { color: var(--muted); font-size: 14px; }
+    .report-meta span { margin: 0 8px; }
+    h1 { font-size: clamp(28px, 5vw, 40px); margin: 8px 0; line-height: 1.2; }
+    h2 { font-size: 24px; margin: 40px 0 16px; padding-bottom: 8px; border-bottom: 2px solid var(--border); }
+    h3 { font-size: 18px; margin: 24px 0 12px; color: var(--accent); }
+    .section { background: var(--surface); padding: 24px; border-radius: 12px; margin-bottom: 24px; border: 1px solid var(--border); }
+    .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin: 16px 0; }
+    .stat { background: #f1f5f9; padding: 16px; border-radius: 8px; text-align: center; }
+    .stat-value { font-size: 28px; font-weight: 700; color: var(--brand); }
+    .stat-label { font-size: 12px; color: var(--muted); margin-top: 4px; }
+    table { width: 100%; border-collapse: collapse; margin: 16px 0; }
+    th, td { padding: 10px 12px; text-align: right; border-bottom: 1px solid var(--border); }
+    th { background: #f1f5f9; font-weight: 700; }
+    .badge { display: inline-block; padding: 2px 10px; border-radius: 999px; font-size: 12px; font-weight: 600; }
+    .badge.real { background: #dcfce7; color: #166534; }
+    .badge.placeholder { background: #fef3c7; color: #713f12; }
+    .compliance-row td { background: #f0fdf4; }
+    .cta-box { background: linear-gradient(135deg, #0f172a, #1e293b); color: white; padding: 32px; border-radius: 14px; margin: 48px 0 24px; text-align: center; }
+    .cta-box h3 { color: white; margin: 0 0 12px; font-size: 22px; }
+    .cta-box p { color: #cbd5e1; max-width: 600px; margin: 0 auto 20px; }
+    .cta-btn { display: inline-block; background: var(--accent); color: white; padding: 14px 28px; border-radius: 8px; text-decoration: none; font-weight: 700; }
+    .footer { text-align: center; color: var(--muted); font-size: 13px; padding: 24px 0; }
+    .footer a { color: var(--muted); }
+  </style>
+</head>
+<body>
+
+<main class="container">
+
+  <div class="disclaimer">
+    <strong>⚠️ نموذج توضيحي — ليس تقريراً حقيقياً</strong>
+    هذه الصفحة تعرض الشكل والأقسام التي يحويها Sector Intel Report (R4 في v4 §3). الأرقام والشركات
+    <em>توضيحية</em>. التقارير الحقيقية تُولّد عبر <code>POST /api/v1/sector-intel/generate</code>
+    من بيانات الحسابات والإشارات الفعلية المخزّنة في النظام. سعر التقرير: <strong>5,000 SAR</strong> لقطاع
+    العقار.
+  </div>
+
+  <header class="report-header">
+    <p class="report-meta">
+      <span>📊 Sector Intelligence Report</span> ·
+      <span>القطاع: العقار السعودي</span> ·
+      <span>الفترة: مايو 2026</span>
+    </p>
+    <h1>التطوير العقاري السعودي — تقرير شهري</h1>
+    <p class="report-meta">معد بواسطة Dealix · بيانات من 287 حساب سعودي + 50 إشارة سوقية في آخر 30 يوم</p>
+  </header>
+
+  <!-- Section 1: Executive Summary -->
+  <section class="section">
+    <h2>1. الملخص التنفيذي <span class="badge placeholder">placeholder</span></h2>
+    <p>
+      <em>(في التقرير الحقيقي، هذا القسم يولّد ملخصاً بـ AI من بيانات الـ proof events للقطاع.
+      يحتاج 3+ عملاء عقار نشطين في Dealix لتغذية المحتوى. حالياً نُظهر القالب فقط.)</em>
+    </p>
+  </section>
+
+  <!-- Section 2: Account Landscape (Real Data Section) -->
+  <section class="section">
+    <h2>2. خريطة الحسابات <span class="badge real">real data</span></h2>
+    <p>إجمالي شركات التطوير العقاري النشطة في قاعدة Dealix:</p>
+    <div class="stat-grid">
+      <div class="stat"><div class="stat-value">42</div><div class="stat-label">حساب نشط</div></div>
+      <div class="stat"><div class="stat-value">28</div><div class="stat-label">في الرياض</div></div>
+      <div class="stat"><div class="stat-value">9</div><div class="stat-label">في جدة</div></div>
+      <div class="stat"><div class="stat-value">5</div><div class="stat-label">في الدمام/الخبر</div></div>
+    </div>
+
+    <h3>أكبر 10 حسابات بحجم المبيعات السنوي (نموذج)</h3>
+    <table>
+      <thead>
+        <tr><th>الشركة (نموذج)</th><th>المدينة</th><th>الحجم</th><th>تاريخ آخر إشارة</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Acme Developments</td><td>الرياض</td><td>+500 موظف</td><td>2026-04-28</td></tr>
+        <tr><td>Coastal Properties</td><td>جدة</td><td>200-500</td><td>2026-04-22</td></tr>
+        <tr><td>Eastern Towers</td><td>الدمام</td><td>50-200</td><td>2026-04-15</td></tr>
+        <tr><td colspan="4"><em>... 7 شركات أخرى في التقرير الكامل</em></td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- Section 3: Market Signals (Real Data) -->
+  <section class="section">
+    <h2>3. إشارات السوق - آخر 30 يوم <span class="badge real">real data</span></h2>
+    <p>الأحداث القابلة للقراءة من المصادر السعودية العامة (Chamber announcements، MCI registry updates، public news):</p>
+    <table>
+      <thead>
+        <tr><th>النوع</th><th>الشركة (نموذج)</th><th>الملخص</th><th>التاريخ</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>📈 توسّع</td><td>Acme Developments</td><td>أعلنت عن مشروع جديد بـ 2 مليار ريال شرق الرياض</td><td>2026-05-02</td></tr>
+        <tr><td>👤 توظيف</td><td>Coastal Properties</td><td>وظّفت VP Sales جديد بخلفية SaaS</td><td>2026-04-26</td></tr>
+        <tr><td>💼 شراكة</td><td>Eastern Towers</td><td>وقّعت اتفاقية مع مطوّر صيني للـ smart building tech</td><td>2026-04-18</td></tr>
+        <tr><td colspan="4"><em>... 47 إشارة أخرى في التقرير الكامل</em></td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- Section 4: Buying Intent Indicators -->
+  <section class="section">
+    <h2>4. مؤشرات نية الشراء <span class="badge placeholder">placeholder</span></h2>
+    <p>
+      <em>(في التقرير الحقيقي: أي حساب تفاعل مع landing/Dealix مؤخراً، انضم لـ webinar،
+      نزّل whitepaper. حالياً يتطلب 3+ عملاء عقار يولّدون proof events.)</em>
+    </p>
+  </section>
+
+  <!-- Section 5: Competitive Landscape -->
+  <section class="section">
+    <h2>5. المشهد التنافسي <span class="badge placeholder">placeholder</span></h2>
+    <p>
+      <em>(تحليل من Wappalyzer + Crunchbase + LinkedIn (manual) عن الأدوات والمنصّات
+      التي يستخدمها كل حساب. حالياً Apollo/Crunchbase غير مفعّلين — راجع v4 §4.)</em>
+    </p>
+  </section>
+
+  <!-- Section 6: Recommended ICP Filters -->
+  <section class="section">
+    <h2>6. فلاتر الـ ICP الموصى بها <span class="badge placeholder">placeholder</span></h2>
+    <p>
+      <em>(توصيات شهرية للـ ICP filter بناءً على آخر 30 يوم من الـ reply rate وdemo bookings
+      عبر الـ Lead Engine.)</em>
+    </p>
+  </section>
+
+  <!-- Section 7: Compliance Notes (ALWAYS real) -->
+  <section class="section">
+    <h2>7. ملاحظات الامتثال <span class="badge real">always real</span></h2>
+    <table>
+      <tr class="compliance-row">
+        <td><strong>PDPL</strong></td>
+        <td>كل البيانات في هذا التقرير من المصادر العامة السعودية فقط (MCI، Chamber directories،
+        SDAIA Open Data). صفر PII تم جمعه. صفر ملف شخصي تم تكوينه.</td>
+      </tr>
+      <tr class="compliance-row">
+        <td><strong>ZATCA</strong></td>
+        <td>الفاتورة لهذا التقرير تتبع ZATCA Phase 2 (UBL 2.1 XML + QR TLV). السعر: 5,000 SAR + 15% VAT.</td>
+      </tr>
+      <tr class="compliance-row">
+        <td><strong>Decision Passport</strong></td>
+        <td>كل قسم تم توليده عبر AI يحمل audit log entry قابل للتدقيق.</td>
+      </tr>
+      <tr class="compliance-row">
+        <td><strong>Data Residency</strong></td>
+        <td>كل البيانات معالَجة في me-south-1 (Bahrain GCC). صفر cross-border transfer.</td>
+      </tr>
+    </table>
+  </section>
+
+  <div class="cta-box">
+    <h3>تبي تقرير شهر مايو الحقيقي لقطاعك؟</h3>
+    <p>الـ R4 يبدأ من 1,500 SAR للقطاعات الصغيرة (SaaS، retail) وحتى 10,000 SAR للحكومي/الصحي.
+    التقارير الحقيقية تُولَّد من بيانات حسابات وإشارات فعلية، ليس placeholders كما هنا.</p>
+    <a href="https://wa.me/9665XXXXXXXX?text=أبي%20Sector%20Intel%20Report%20-%20عقار" class="cta-btn">اطلب تقرير عبر WhatsApp</a>
+  </div>
+
+  <footer class="footer">
+    <p>
+      <a href="/">الرئيسية</a> ·
+      <a href="/services.html">جميع الخدمات</a> ·
+      <a href="/pricing.html">التسعير</a> ·
+      <a href="/case-study-pilot-example.html">نموذج Pilot</a> ·
+      <a href="/privacy-policy.html">PDPL</a>
+    </p>
+    <p>Dealix · Riyadh · ZATCA Phase 2 · me-south-1 · PDPL by design</p>
+  </footer>
+
+</main>
+
+</body>
+</html>

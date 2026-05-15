@@ -4,6 +4,8 @@
     "pipeline": "Lead Pipeline",
     "agents": "Agent Activity",
     "approvals": "Approval Center",
+    "trustCheck": "Evidence & anti-waste",
+    "customerPortal": "Customer portal",
     "clients": "Client Management",
     "analytics": "Analytics & Reports",
     "settings": "Settings",
@@ -135,5 +137,22 @@
     "today": "Today",
     "yesterday": "Yesterday",
     "thisWeek": "This Week"
+  },
+  "trustCheck": {
+    "title": "Evidence levels & anti-waste",
+    "subtitle": "Before any external send: evidence ladder + Revenue OS anti-waste gate",
+    "evidenceTitle": "Evidence levels (L0–L5)",
+    "antiTitle": "Anti-waste check",
+    "runCheck": "Run check",
+    "pass": "Allowed",
+    "blocked": "Blocked or needs review",
+    "hint": "No external action without a Decision Passport and explicit human approval."
+  },
+  "customerPortal": {
+    "title": "Customer portal (read-only)",
+    "subtitle": "Delivery and proof status — customer-safe view",
+    "handleLabel": "Customer handle",
+    "load": "Load",
+    "promiseTitle": "Service promise"
   }
 }

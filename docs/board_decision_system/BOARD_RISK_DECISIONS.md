@@ -1,35 +1,19 @@
 # Board-Level Risk Decisions
 
-## Risk register (IDs)
+## سجل مخاطر (رموز في الكود)
 
-| ID | Risk |
-|----|------|
-| R1 | Agency trap |
-| R2 | Premature SaaS |
-| R3 | Governance incident |
-| R4 | Weak proof |
-| R5 | Founder bottleneck |
-| R6 | Partner brand damage |
-| R7 | Model provider dependency |
-| R8 | Agent over-permission |
-| R9 | Bad revenue |
-| R10 | Saudi trust gap |
+`R1_agency_trap` · `R2_premature_saas` · `R3_governance_incident` · `R4_weak_proof` · `R5_founder_bottleneck` · `R6_partner_brand_damage` · `R7_model_provider_dependency` · `R8_agent_over_permission` · `R9_bad_revenue` · `R10_saudi_trust_gap`
 
-## Risk → default decision motion
+## Risk → قرار تخفيف
 
-| Risk | Decision motion |
-|------|-----------------|
-| R1 | Enforce Productization Ledger |
-| R2 | Require platform pull signals before SaaS GA |
-| R3 | Freeze external actions until rule + test added |
-| R4 | Block case study + retainer push until proof threshold |
-| R5 | Create delivery playbook before hiring |
-| R6 | Partner escalation + comms freeze until root cause |
-| R7 | Multi-provider abstraction + cost guardrails |
-| R8 | Reduce tools + lower autonomy level |
-| R9 | Reject or convert to paid diagnostic |
-| R10 | Invest in Arabic QA + PDPL evidence pack |
+- Agency trap → enforce Productization Ledger  
+- Premature SaaS → require platform pull signals  
+- Governance incident → freeze external actions until rule/test  
+- Weak proof → block case study and retainer push  
+- Founder bottleneck → delivery playbook before hiring  
+- Agent over-permission → reduce tools and autonomy  
+- Bad revenue → reject or paid diagnostic  
 
-## API
+**الكود:** `RISK_REGISTER_CODES` · `risk_to_mitigation_decision` — `board_decision_os/risk_decisions.py`
 
-`GET /api/v1/board-decision-os/risk-register`
+**صعود:** [`STRATEGIC_INTELLIGENCE_BOARD_SYSTEM.md`](STRATEGIC_INTELLIGENCE_BOARD_SYSTEM.md)

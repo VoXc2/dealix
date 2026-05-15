@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Dealix — حاسبة LTV (قيمة العميل مدى الحياة)</title>
+  <meta name="description" content="احسب قيمة العميل مدى الحياة (LTV) لشركتك B2B. مقارنة قبل/بعد Dealix. أداة محايدة بدون marketing fluff." />
+  <meta name="robots" content="index,follow" />
+  <link rel="canonical" href="https://dealix.me/ltv-calculator.html" />
+  <meta property="og:title" content="Dealix LTV Calculator" />
+  <meta property="og:description" content="حاسبة قيمة العميل مدى الحياة لشركات B2B السعودية." />
+  <meta property="og:type" content="website" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="theme-color" content="#0f172a" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="/assets/css/design-system.css" />
+  <style>
+    body { font-family: "IBM Plex Sans Arabic", system-ui, sans-serif; background: #f8fafc; color: #0f172a; margin: 0; line-height: 1.7; }
+    .container { max-width: 920px; margin: 0 auto; padding: 32px 20px; }
+    h1 { font-size: clamp(28px, 5vw, 40px); margin: 16px 0; }
+    h2 { font-size: 22px; margin: 32px 0 12px; }
+    .lead { color: #475569; font-size: 17px; max-width: 720px; }
+    .calculator { background: white; padding: 28px; border-radius: 14px; border: 1px solid #e2e8f0; box-shadow: 0 2px 8px rgba(0,0,0,0.06); margin: 24px 0; }
+    .field { margin: 16px 0; }
+    .field label { display: block; font-weight: 600; margin-bottom: 6px; }
+    .field input[type=number] { width: 100%; padding: 12px 14px; border: 1px solid #cbd5e1; border-radius: 8px; font-family: inherit; font-size: 16px; box-sizing: border-box; }
+    .field .hint { color: #64748b; font-size: 13px; margin-top: 4px; }
+    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    @media (max-width: 600px) { .row { grid-template-columns: 1fr; } }
+    .results { background: linear-gradient(135deg, #0f172a, #1e293b); color: white; padding: 28px; border-radius: 14px; margin: 24px 0; }
+    .results h2 { color: white; margin-top: 0; }
+    .metric-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 16px; margin: 16px 0; }
+    .metric { background: rgba(255,255,255,0.05); padding: 16px; border-radius: 10px; text-align: center; }
+    .metric .num { font-size: 28px; font-weight: 700; color: #10b981; }
+    .metric .label { font-size: 12px; color: #cbd5e1; margin-top: 4px; }
+    .interpretation { background: white; color: #0f172a; padding: 20px; border-radius: 12px; margin: 16px 0; border-right: 4px solid #10b981; }
+    .interpretation h3 { margin: 0 0 8px; color: #0f172a; }
+    .badge { display: inline-block; padding: 3px 10px; border-radius: 999px; font-size: 12px; font-weight: 700; }
+    .badge.healthy { background: #dcfce7; color: #166534; }
+    .badge.warning { background: #fef3c7; color: #713f12; }
+    .badge.danger { background: #fee2e2; color: #7f1d1d; }
+    .footer { text-align: center; color: #64748b; font-size: 13px; padding: 24px 0; }
+    .footer a { color: #64748b; }
+    .cta { display: inline-block; background: #10b981; color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 700; margin: 8px 4px; }
+  </style>
+</head>
+<body>
+
+<main class="container">
+
+  <h1>حاسبة LTV — Customer Lifetime Value</h1>
+  <p class="lead">
+    احسب القيمة الإجمالية لعميلك B2B خلال علاقتكم. يقارن النتيجة مع benchmarks
+    صناعة الـ SaaS العالمية. <strong>أداة محايدة — لا تبيع شيئاً، تخبرك بالأرقام.</strong>
+  </p>
+
+  <div class="calculator">
+    <h2>المدخلات (أرقامك الحالية)</h2>
+
+    <div class="row">
+      <div class="field">
+        <label for="arpa">ARPA (متوسط الإيراد الشهري لكل عميل) — SAR</label>
+        <input type="number" id="arpa" value="2999" min="100" step="100" />
+        <div class="hint">Dealix Growth tier = 2,999 SAR/شهر</div>
+      </div>
+      <div class="field">
+        <label for="churn">معدل churn الشهري (%)</label>
+        <input type="number" id="churn" value="3" min="0.5" max="50" step="0.1" />
+        <div class="hint">SaaS healthy ≤ 3%، danger > 8%</div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="field">
+        <label for="gross-margin">Gross margin (%)</label>
+        <input type="number" id="gross-margin" value="87" min="40" max="95" />
+        <div class="hint">Dealix: 87% per v3 §1 financial model</div>
+      </div>
+      <div class="field">
+        <label for="cac">CAC (تكلفة اكتساب العميل) — SAR</label>
+        <input type="number" id="cac" value="1500" min="0" step="100" />
+        <div class="hint">Dealix bootstrap: 1,500-2,500 SAR (founder-led)</div>
+      </div>
+    </div>
+
+    <button onclick="recompute()" style="background:#0f172a;color:white;padding:12px 28px;border:none;border-radius:8px;font-weight:700;font-size:15px;cursor:pointer;width:100%;margin-top:12px;font-family:inherit">
+      🧮 حساب
+    </button>
+  </div>
+
+  <div class="results" id="results" style="display:none">
+    <h2>النتائج</h2>
+    <div class="metric-grid">
+      <div class="metric">
+        <div class="num" id="customer-lifetime">—</div>
+        <div class="label">شهر متوسط عمر العميل</div>
+      </div>
+      <div class="metric">
+        <div class="num" id="ltv-gross">—</div>
+        <div class="label">LTV (Gross) — SAR</div>
+      </div>
+      <div class="metric">
+        <div class="num" id="ltv-net">—</div>
+        <div class="label">LTV (Net Margin) — SAR</div>
+      </div>
+      <div class="metric">
+        <div class="num" id="ltv-cac">—</div>
+        <div class="label">LTV/CAC نسبة</div>
+      </div>
+      <div class="metric">
+        <div class="num" id="payback-months">—</div>
+        <div class="label">شهر لاسترداد CAC</div>
+      </div>
+      <div class="metric">
+        <div class="num" id="customer-value-yr1">—</div>
+        <div class="label">قيمة Y1 — SAR</div>
+      </div>
+    </div>
+
+    <div class="interpretation" id="interpretation">
+      <h3>التفسير</h3>
+      <div id="interp-text">—</div>
+    </div>
+  </div>
+
+  <h2>SaaS Benchmarks (للمقارنة)</h2>
+
+  <div class="calculator">
+    <ul style="margin:0;padding-inline-start:20px;line-height:2">
+      <li><strong>LTV/CAC ratio:</strong>
+        <span class="badge healthy">≥ 3</span> = صحي ·
+        <span class="badge warning">1.5-3</span> = حذر ·
+        <span class="badge danger">&lt; 1.5</span> = خسارة
+      </li>
+      <li><strong>CAC Payback:</strong>
+        <span class="badge healthy">&lt; 12 شهر</span> ·
+        <span class="badge warning">12-18 شهر</span> ·
+        <span class="badge danger">&gt; 18 شهر</span>
+      </li>
+      <li><strong>Monthly Churn:</strong>
+        <span class="badge healthy">&lt; 3%</span> ·
+        <span class="badge warning">3-8%</span> ·
+        <span class="badge danger">&gt; 8%</span>
+      </li>
+      <li><strong>Gross Margin:</strong>
+        <span class="badge healthy">&gt; 75%</span> ·
+        <span class="badge warning">50-75%</span> ·
+        <span class="badge danger">&lt; 50%</span>
+      </li>
+    </ul>
+  </div>
+
+  <h2>ماذا يعني هذا لقرار الشراء؟</h2>
+
+  <div class="calculator">
+    <p style="margin:0;font-size:15px">
+      <strong>إذا LTV/CAC ratio عندك &lt; 3:</strong> أي توسّع في الإعلانات/المبيعات يسرّع الخسارة.
+      الحل: تحسين retention أولاً (Dealix Customer Health Score يساعد) قبل أي investment في acquisition.
+    </p>
+    <p style="margin:12px 0 0;font-size:15px">
+      <strong>إذا LTV/CAC ≥ 3:</strong> اضغط على pedal acquisition. كل ريال CAC يولّد 3 ريال LTV.
+      Dealix Growth Signal Engine + LaaS = طبقة التوسيع الذكي.
+    </p>
+  </div>
+
+  <div style="text-align:center;margin:32px 0">
+    <a href="/services.html" class="cta">شوف الخدمات (الـ 7 خدمات)</a>
+    <a href="https://wa.me/9665XXXXXXXX?text=أسئلة%20عن%20LTV" class="cta" style="background:#0f172a">💬 WhatsApp Sami</a>
+  </div>
+
+  <footer class="footer">
+    <p>
+      <a href="/">الرئيسية</a> ·
+      <a href="/services.html">الخدمات</a> ·
+      <a href="/pricing.html">التسعير</a> ·
+      <a href="/why-saudi-ai.html">لماذا AI سعودي؟</a> ·
+      <a href="/api/v1/cost-tracking/per-tier">Cost Transparency</a>
+    </p>
+    <p>Dealix · حاسبة بدون cookies بدون tracking · ZATCA Phase 2</p>
+  </footer>
+
+</main>
+
+<script>
+function recompute() {
+  const arpa = parseFloat(document.getElementById('arpa').value) || 0;
+  const churnPct = parseFloat(document.getElementById('churn').value) || 0;
+  const grossMargin = parseFloat(document.getElementById('gross-margin').value) || 0;
+  const cac = parseFloat(document.getElementById('cac').value) || 0;
+
+  if (arpa <= 0 || churnPct <= 0 || grossMargin <= 0) {
+    alert('املأ كل الحقول بأرقام موجبة');
+    return;
+  }
+
+  // Customer lifetime (months) = 1 / churn rate
+  const lifetimeMonths = 100 / churnPct;
+
+  // LTV (Gross) = ARPA × lifetime
+  const ltvGross = arpa * lifetimeMonths;
+
+  // LTV (Net) = ARPA × lifetime × gross_margin
+  const ltvNet = ltvGross * (grossMargin / 100);
+
+  // LTV/CAC ratio
+  const ltvCacRatio = cac > 0 ? ltvNet / cac : 0;
+
+  // CAC Payback months = CAC / (ARPA × gross_margin)
+  const paybackMonths = cac > 0 ? cac / (arpa * grossMargin / 100) : 0;
+
+  // Year-1 customer value (assumes paying all 12 months — simplified)
+  const yr1Value = arpa * 12 * (grossMargin / 100);
+
+  document.getElementById('customer-lifetime').textContent = lifetimeMonths.toFixed(1);
+  document.getElementById('ltv-gross').textContent = ltvGross.toLocaleString('en', {maximumFractionDigits: 0});
+  document.getElementById('ltv-net').textContent = ltvNet.toLocaleString('en', {maximumFractionDigits: 0});
+  document.getElementById('ltv-cac').textContent = ltvCacRatio.toFixed(2) + 'x';
+  document.getElementById('payback-months').textContent = paybackMonths.toFixed(1);
+  document.getElementById('customer-value-yr1').textContent = yr1Value.toLocaleString('en', {maximumFractionDigits: 0});
+
+  // Interpretation
+  let interp = '';
+  let healthyCount = 0;
+  if (ltvCacRatio >= 3) healthyCount++;
+  if (paybackMonths < 12) healthyCount++;
+  if (churnPct < 3) healthyCount++;
+  if (grossMargin > 75) healthyCount++;
+
+  if (healthyCount >= 3) {
+    interp = `<span class="badge healthy">✓ صحي</span> الـ unit economics قوية. ${healthyCount} من 4 metrics في النطاق الصحي. توسّع في acquisition بثقة.`;
+  } else if (healthyCount >= 2) {
+    interp = `<span class="badge warning">⚠ حذر</span> ${healthyCount} من 4 metrics في النطاق الصحي. حسّن ما هو under-target قبل التوسع.`;
+  } else {
+    interp = `<span class="badge danger">✗ خطر</span> ${healthyCount} من 4 metrics فقط في النطاق الصحي. <strong>أوقف acquisition spend</strong> وركّز على retention.`;
+  }
+
+  if (ltvCacRatio < 1.5) {
+    interp += '<br><br>🔥 الأهم: LTV/CAC ratio &lt; 1.5 يعني كل عميل جديد خسارة. تحسين retention أولاً.';
+  } else if (churnPct > 8) {
+    interp += '<br><br>🔥 الأهم: monthly churn &gt; 8% — الـ ARR يتسرّب أسرع من النمو. ركّز على Customer Success.';
+  } else if (ltvCacRatio >= 5) {
+    interp += '<br><br>🚀 الأهم: LTV/CAC ratio ≥ 5 — investment in acquisition has 5× return. اضغط pedal.';
+  }
+
+  document.getElementById('interp-text').innerHTML = interp;
+  document.getElementById('results').style.display = 'block';
+  document.getElementById('results').scrollIntoView({behavior: 'smooth'});
+}
+
+// Compute on page load with defaults
+recompute();
+</script>
+
+</body>
+</html>

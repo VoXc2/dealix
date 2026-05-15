@@ -46,7 +46,11 @@ def test_should_block_embedding_detects_key():
     assert reason
 
 
-def test_answer_operator_question():
-    out = pi.answer_operator_question("وش أفضل طريقة لاستخدام Supabase؟")
-    assert "answer_ar" in out
-    assert "semantic_status_ar" in out
+def test_answer_operator_question_deep_scan_citations(tmp_path):
+    (tmp_path / "approval_service.py").write_text(
+        "def approval_center_gateway():\n    return 'draft_only'\n",
+        encoding="utf-8",
+    )
+    out = pi.answer_operator_question("approval_center gateway", root=tmp_path, deep_scan=True)
+    assert out.get("citations")
+    assert out["scan_meta"]["documents_scanned"] >= 1

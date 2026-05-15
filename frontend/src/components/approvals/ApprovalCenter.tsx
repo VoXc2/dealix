@@ -1,10 +1,11 @@
 "use client";
 
+import Link from "next/link";
 import { useMemo } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTranslations, useLocale } from "next-intl";
 import { motion, AnimatePresence } from "framer-motion";
-import { Check, X, AlertTriangle, Clock, Shield } from "lucide-react";
+import { Check, X, AlertTriangle, Clock, Shield, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
@@ -18,13 +19,21 @@ import {
 import { useAuth } from "@/lib/hooks/useAuth";
 import type { ApprovalRequest, RiskLevel } from "@/types";
 
+const APPROVAL_WHO_FALLBACK =
+  process.env.NEXT_PUBLIC_APPROVAL_ACTOR?.trim() || "sami";
+
 const riskIcons: Record<RiskLevel, React.ReactNode> = {
   high: <AlertTriangle className="w-3.5 h-3.5" />,
   medium: <Shield className="w-3.5 h-3.5" />,
   low: <Clock className="w-3.5 h-3.5" />,
 };
 
-function ApprovalCard({ request, onApprove, onReject, actionsDisabled }: {
+function ApprovalCard({
+  request,
+  onApprove,
+  onReject,
+  actionsDisabled,
+}: {
   request: ApprovalRequest;
   onApprove: (id: string) => void;
   onReject: (id: string) => void;
@@ -50,16 +59,18 @@ function ApprovalCard({ request, onApprove, onReject, actionsDisabled }: {
       exit={{ opacity: 0, scale: 0.95 }}
       className="rounded-2xl border border-border bg-card overflow-hidden hover:border-border/80 transition-all"
     >
-      {/* Risk stripe */}
-      <div className={cn(
-        "h-1",
-        request.riskLevel === "high" ? "bg-gradient-to-r from-red-500 to-red-400" :
-        request.riskLevel === "medium" ? "bg-gradient-to-r from-gold-500 to-gold-400" :
-        "bg-gradient-to-r from-emerald-500 to-emerald-400"
-      )} />
+      <div
+        className={cn(
+          "h-1",
+          request.riskLevel === "high"
+            ? "bg-gradient-to-r from-red-500 to-red-400"
+            : request.riskLevel === "medium"
+              ? "bg-gradient-to-r from-gold-500 to-gold-400"
+              : "bg-gradient-to-r from-emerald-500 to-emerald-400",
+        )}
+      />
 
       <div className="p-5">
-        {/* Header */}
         <div className="flex items-start justify-between gap-3 mb-4">
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 rounded-xl bg-muted flex items-center justify-center text-base">
@@ -81,12 +92,8 @@ function ApprovalCard({ request, onApprove, onReject, actionsDisabled }: {
           </Badge>
         </div>
 
-        {/* Description */}
-        <p className="text-sm text-muted-foreground mb-4 leading-relaxed">
-          {request.description}
-        </p>
+        <p className="text-sm text-muted-foreground mb-4 leading-relaxed">{request.description}</p>
 
-        {/* Target & Impact */}
         <div className="grid grid-cols-1 gap-2 mb-4 p-3 rounded-xl bg-muted/40">
           <div className="flex items-center justify-between text-xs">
             <span className="text-muted-foreground">{isAr ? "الهدف:" : "Target:"}</span>
@@ -94,7 +101,7 @@ function ApprovalCard({ request, onApprove, onReject, actionsDisabled }: {
           </div>
           {request.estimatedImpact && (
             <div className="flex items-center justify-between text-xs">
-              <span className="text-muted-foreground">{isAr ? "التأثير المتوقع:" : "Estimated Impact:"}</span>
+              <span className="text-muted-foreground">{isAr ? "الأثر / الوضع:" : "Impact / mode:"}</span>
               <span className="font-medium text-emerald-400">{request.estimatedImpact}</span>
             </div>
           )}
@@ -106,7 +113,6 @@ function ApprovalCard({ request, onApprove, onReject, actionsDisabled }: {
           </div>
         </div>
 
-        {/* Actions */}
         {request.status === "pending" && (
           <div className="flex gap-3">
             <Button
@@ -133,19 +139,22 @@ function ApprovalCard({ request, onApprove, onReject, actionsDisabled }: {
         )}
 
         {request.status !== "pending" && (
-          <div className={cn(
-            "flex items-center justify-between text-xs p-2 rounded-lg",
-            request.status === "approved" ? "bg-emerald-500/10 text-emerald-400" : "bg-red-500/10 text-red-400"
-          )}>
-            {request.status === "approved" ? <Check className="w-3.5 h-3.5" /> : <X className="w-3.5 h-3.5" />}
-            <span className="font-medium">
-              {request.status === "approved" ? t("approved") : t("rejected")}{" "}
-              {isAr ? "بواسطة" : "by"}{" "}
-              {request.reviewedBy ?? (isAr ? "غير معروف" : "Unknown")}
+          <div
+            className={cn(
+              "flex items-center justify-between text-xs p-2 rounded-lg gap-2",
+              request.status === "approved" ? "bg-emerald-500/10 text-emerald-400" : "bg-red-500/10 text-red-400",
+            )}
+          >
+            <span className="font-medium inline-flex items-center gap-1">
+              {request.status === "approved" ? <Check className="w-3.5 h-3.5" /> : <X className="w-3.5 h-3.5" />}
+              {request.status === "approved" ? t("approved") : t("rejected")}
+              {request.reviewedBy ? ` ${isAr ? "بواسطة" : "by"} ${request.reviewedBy}` : ""}
             </span>
-            <span className="text-muted-foreground">
-              {request.reviewedAt && formatRelativeTime(request.reviewedAt, locale)}
-            </span>
+            {request.reviewedAt && (
+              <span className="text-muted-foreground shrink-0">
+                {formatRelativeTime(request.reviewedAt, locale)}
+              </span>
+            )}
           </div>
         )}
       </div>
@@ -158,7 +167,8 @@ export function ApprovalCenter() {
   const isAr = locale === "ar";
   const { user } = useAuth();
   const queryClient = useQueryClient();
-  const who = user?.email?.trim() || (isAr ? "لوحة_التحكم" : "dashboard_user");
+  const who =
+    user?.email?.trim() || APPROVAL_WHO_FALLBACK || (isAr ? "لوحة_التحكم" : "dashboard_user");
 
   const pendingQuery = useQuery({
     queryKey: ["approvals", "pending"],
@@ -168,6 +178,21 @@ export function ApprovalCenter() {
   const historyQuery = useQuery({
     queryKey: ["approvals", "history"],
     queryFn: async () => (await api.getApprovalsHistory(100)).data,
+  });
+
+  const gmailQuery = useQuery({
+    queryKey: ["gmail", "drafts", "today"],
+    queryFn: async () => (await api.getGmailDraftsToday()).data,
+  });
+
+  const linkedinQuery = useQuery({
+    queryKey: ["linkedin", "drafts", "today"],
+    queryFn: async () => (await api.getLinkedInDraftsToday()).data,
+  });
+
+  const policyQuery = useQuery({
+    queryKey: ["channel-policy", "status"],
+    queryFn: async () => (await api.getChannelPolicyStatus()).data,
   });
 
   const pending = useMemo(() => {
@@ -181,6 +206,18 @@ export function ApprovalCenter() {
       .map(backendApprovalToUi)
       .filter((a) => a.status !== "pending");
   }, [historyQuery.data]);
+
+  const gmailItems = useMemo(() => {
+    const d = gmailQuery.data as { items?: Record<string, unknown>[] } | undefined;
+    return Array.isArray(d?.items) ? d.items : [];
+  }, [gmailQuery.data]);
+
+  const linkedinItems = useMemo(() => {
+    const d = linkedinQuery.data as { items?: Record<string, unknown>[] } | undefined;
+    return Array.isArray(d?.items) ? d.items : [];
+  }, [linkedinQuery.data]);
+
+  const policy = policyQuery.data as Record<string, unknown> | null | undefined;
 
   const approveMut = useMutation({
     mutationFn: (id: string) => api.approveApproval(id, who),
@@ -208,11 +245,42 @@ export function ApprovalCenter() {
   const handleApprove = (id: string) => approveMut.mutate(id);
   const handleReject = (id: string) => rejectMut.mutate(id);
 
-  const loading = pendingQuery.isLoading || historyQuery.isLoading;
-  const hasError = pendingQuery.isError || historyQuery.isError;
+  const loading =
+    pendingQuery.isLoading ||
+    historyQuery.isLoading ||
+    gmailQuery.isLoading ||
+    linkedinQuery.isLoading ||
+    policyQuery.isLoading;
+
+  const hasError =
+    pendingQuery.isError ||
+    historyQuery.isError ||
+    gmailQuery.isError ||
+    linkedinQuery.isError ||
+    policyQuery.isError;
+
+  const refetchAll = () => {
+    void pendingQuery.refetch();
+    void historyQuery.refetch();
+    void gmailQuery.refetch();
+    void linkedinQuery.refetch();
+    void policyQuery.refetch();
+  };
 
   return (
     <div>
+      <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
+        <div className="flex gap-2">
+          <Button type="button" variant="outline" size="sm" onClick={() => refetchAll()} disabled={loading}>
+            <RefreshCw className={cn("w-4 h-4 me-1", loading && "animate-spin")} />
+            {isAr ? "تحديث" : "Refresh"}
+          </Button>
+          <Button variant="ghost" size="sm" asChild>
+            <Link href={`/${locale}/trust-check`}>{isAr ? "فحص منع الهدر" : "Anti-waste check"}</Link>
+          </Button>
+        </div>
+      </div>
+
       {hasError && (
         <div
           role="alert"
@@ -220,26 +288,17 @@ export function ApprovalCenter() {
         >
           <p>
             {isAr
-              ? "تعذر تحميل طلبات الموافقة. تحقق من الـ API."
-              : "Could not load approvals. Check the API."}
+              ? "تعذر تحميل بعض البيانات من الخادم. يمكنك إعادة المحاولة."
+              : "Some data could not load from the server. You can retry."}
           </p>
           <div className="mt-2 flex gap-2">
-            <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              onClick={() => {
-                pendingQuery.refetch();
-                historyQuery.refetch();
-              }}
-            >
+            <Button type="button" variant="outline" size="sm" onClick={() => refetchAll()}>
               {isAr ? "إعادة المحاولة" : "Retry"}
             </Button>
           </div>
         </div>
       )}
 
-      {/* Summary */}
       <div className="grid grid-cols-3 gap-4 mb-6">
         {[
           { label: isAr ? "قيد الانتظار" : "Pending", value: pending.length, color: "text-gold-400", bg: "bg-gold-400/10" },
@@ -270,13 +329,15 @@ export function ApprovalCenter() {
       </div>
 
       <Tabs defaultValue="pending">
-        <TabsList className="mb-6">
+        <TabsList className="mb-6 flex flex-wrap h-auto gap-1">
           <TabsTrigger value="pending">
             {isAr ? "قيد الانتظار" : "Pending"} ({pending.length})
           </TabsTrigger>
           <TabsTrigger value="reviewed">
-            {isAr ? "تمت المراجعة" : "Reviewed"} ({reviewed.length})
+            {isAr ? "السجل" : "History"} ({reviewed.length})
           </TabsTrigger>
+          <TabsTrigger value="drafts">{isAr ? "مسودات اليوم" : "Today's drafts"}</TabsTrigger>
+          <TabsTrigger value="policy">{isAr ? "بوابة القنوات" : "Channel gates"}</TabsTrigger>
         </TabsList>
 
         <TabsContent value="pending">
@@ -330,7 +391,7 @@ export function ApprovalCenter() {
               ) : (
                 reviewed.map((approval) => (
                   <ApprovalCard
-                    key={approval.id}
+                    key={`${approval.id}-${approval.status}`}
                     request={approval}
                     onApprove={handleApprove}
                     onReject={handleReject}
@@ -339,6 +400,51 @@ export function ApprovalCenter() {
                 ))
               )}
             </div>
+          )}
+        </TabsContent>
+
+        <TabsContent value="drafts">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div>
+              <h3 className="text-sm font-semibold mb-2">Gmail</h3>
+              {gmailItems.length === 0 ? (
+                <p className="text-xs text-muted-foreground">{isAr ? "لا مسودات اليوم" : "No Gmail drafts today"}</p>
+              ) : (
+                <ul className="space-y-2 text-xs">
+                  {gmailItems.map((row) => (
+                    <li key={String(row.id)} className="rounded-lg border border-border p-3 bg-muted/30">
+                      <p className="font-medium">{String(row.subject || "—")}</p>
+                      <p className="text-muted-foreground truncate">{String(row.to_email || "")}</p>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+            <div>
+              <h3 className="text-sm font-semibold mb-2">LinkedIn</h3>
+              {linkedinItems.length === 0 ? (
+                <p className="text-xs text-muted-foreground">{isAr ? "لا مسودات اليوم" : "No LinkedIn drafts today"}</p>
+              ) : (
+                <ul className="space-y-2 text-xs">
+                  {linkedinItems.map((row) => (
+                    <li key={String(row.id)} className="rounded-lg border border-border p-3 bg-muted/30">
+                      <p className="font-medium">{String(row.company_name || "—")}</p>
+                      <p className="text-muted-foreground line-clamp-3">{String(row.message_ar || "")}</p>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          </div>
+        </TabsContent>
+
+        <TabsContent value="policy">
+          {policy && Object.keys(policy).length > 0 ? (
+            <pre className="text-xs bg-muted/40 rounded-xl p-4 overflow-auto max-h-[420px]">
+              {JSON.stringify(policy, null, 2)}
+            </pre>
+          ) : (
+            <p className="text-muted-foreground text-sm">{isAr ? "لا بيانات" : "No data"}</p>
           )}
         </TabsContent>
       </Tabs>

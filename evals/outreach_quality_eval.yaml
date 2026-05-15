@@ -1,0 +1,15 @@
+eval_id: outreach_quality
+version: 1
+
+checks:
+  - id: no_guarantee_language
+    patterns_fail:
+      - guarantee
+      - guaranteed
+      - 100% certain
+      - promised ROI
+    pass: Rewrite or block when matched in client-facing drafts
+  - id: tone_and_clarity
+    pass: B2B polite; single clear CTA; no spam cadence language
+  - id: personalization_honesty
+    pass: Personalization claims backed by data column actually present

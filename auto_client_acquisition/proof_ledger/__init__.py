@@ -24,6 +24,7 @@ from auto_client_acquisition.proof_ledger.postgres_backend import (
 )
 from auto_client_acquisition.proof_ledger.factory import (
     get_default_ledger,
+    recent_events,
 )
 from auto_client_acquisition.proof_ledger.evidence_export import (
     export_redacted,
@@ -38,6 +39,7 @@ __all__ = [
     "FileProofLedger",
     "PostgresProofLedger",
     "get_default_ledger",
+    "recent_events",
     "export_redacted",
     "export_for_audit",
 ]

@@ -1,0 +1,8 @@
+id: no_linkedin_automation
+severity: critical
+if:
+  channel: linkedin
+  action: automated_outreach
+then:
+  decision: block
+  reason: LinkedIn automation is not allowed.

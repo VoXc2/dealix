@@ -119,6 +119,10 @@ ServiceType = Literal[
     "executive_pack",
     "proof_pack",
     "agency_partner_pack",
+    # Commercial engagement sprints (catalog-linked delivery)
+    "lead_intelligence_sprint",
+    "support_desk_sprint",
+    "quick_win_ops",
 ]
 SessionStatus = Literal[
     "draft",

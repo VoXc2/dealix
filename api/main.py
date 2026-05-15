@@ -29,7 +29,26 @@ from api.routers.domains import customers as customers_domain
 from api.routers.domains import deprecated as deprecated_domain
 from api.routers.domains import sales as sales_domain
 from api.routers.domains import webhooks as webhooks_domain
-from api.routers import auth, jobs, pdpl, zatca
+from api.routers import (
+    admin_tenants,
+    auth,
+    compliance_status,
+    cost_tracking,
+    customer_usage,
+    customer_webhooks,
+    enterprise_pmo,
+    jobs,
+    nps,
+    pdpl,
+    pdpl_dsar,
+    referral_program,
+    revenue_metrics,
+    saudi_prospect_search,
+    sector_intel,
+    service_setup,
+    tenant_theming,
+    zatca,
+)
 # Wave 12.7 — Intelligence Layer + Expansion Engine routers
 from api.routers import expansion_engine as expansion_engine_router
 from api.routers import intelligence_layer as intelligence_layer_router
@@ -41,6 +60,43 @@ from api.routers import customer_success_scores as customer_success_scores_route
 from api.routers import deliverables as deliverables_router
 from api.routers import integration_capability as integration_capability_router
 from api.routers import service_catalog as service_catalog_router
+# Wave 14 — Canonical Trust MVP + Retainer Engine (Phase 2)
+from api.routers import friction_log as friction_log_router
+# 90-day commercial activation — Wave 14B
+from api.routers import sprint_runner as sprint_runner_router
+from api.routers import founder_dashboard as founder_dashboard_router
+from api.routers import audit_export as audit_export_router
+
+# value_os, data_os and agent_os routers are imported defensively: an
+# optional router with a broken module-level import must not abort app
+# boot for every other endpoint. A skipped router is logged at
+# registration time.
+_OPTIONAL_ROUTER_ERRORS: dict[str, str] = {}
+
+try:
+    from api.routers import value_os as value_os_router
+except Exception as _exc:  # noqa: BLE001
+    value_os_router = None
+    _OPTIONAL_ROUTER_ERRORS["value_os"] = repr(_exc)
+
+try:
+    from api.routers import data_os as data_os_router
+except Exception as _exc:  # noqa: BLE001
+    data_os_router = None
+    _OPTIONAL_ROUTER_ERRORS["data_os"] = repr(_exc)
+
+# Wave 14F — Agent OS
+try:
+    from api.routers import agent_os as agent_os_router
+except Exception as _exc:  # noqa: BLE001
+    agent_os_router = None
+    _OPTIONAL_ROUTER_ERRORS["agent_os"] = repr(_exc)
+# Wave 14J — Commercial wiring map (source of truth for landing↔backend)
+from api.routers import commercial_map as commercial_map_router
+# Wave 15 — Founder launch-status (single-pane production readiness)
+from api.routers import founder_launch_status as founder_launch_status_router
+# Enterprise Foundation Core — platform_core enterprise-loop proof endpoints
+from api.routers import platform_foundation as platform_foundation_router
 from api.security import APIKeyMiddleware, setup_rate_limit
 from core.config.settings import get_settings
 from core.errors import AICompanyError
@@ -216,6 +272,56 @@ def create_app() -> FastAPI:
     app.include_router(integration_capability_router.router)
     # Self-prefix /api/v1/metrics. Read-only; tenant-isolated for {handle}.
     app.include_router(business_metrics_board_router.router)
+    # Wave 7 W7.5 — Tenant theming: GET tenant theme.css + POST admin theme update
+    app.include_router(tenant_theming.router)
+    # Wave 7 W7.2 — Sector Intelligence (R4 productization)
+    app.include_router(sector_intel.router)
+    # Wave 7 W7.3 — Admin tenants: CRUD for tenant management (R6 enabler)
+    app.include_router(admin_tenants.router)
+    # Wave 8 W8.1 — Bespoke AI Service Setup intake (R5 productization)
+    app.include_router(service_setup.router)
+    # Wave 8 W8.3 — Customer-facing usage dashboard
+    app.include_router(customer_usage.router)
+    # Wave 9 W9.1 — Enterprise PMO (R7 productization)
+    app.include_router(enterprise_pmo.router)
+    # Wave 9 W9.6 — Live compliance status (PDPL+ZATCA posture, public read-only)
+    app.include_router(compliance_status.router)
+    # Wave 9 W9.8 — Saudi B2B prospect search (read-only public + PDPL-safe view)
+    app.include_router(saudi_prospect_search.router)
+    # Wave 9 W9.9 — PDPL DSAR (data subject access/rectify/port/erase)
+    app.include_router(pdpl_dsar.router)
+    # Wave 11 W11.2 — Cost tracking (per-tier + admin summary)
+    app.include_router(cost_tracking.router)
+    # Wave 12 W12.1 — Customer-side webhook subscriptions (Dealix→customer)
+    app.include_router(customer_webhooks.router)
+    # Wave 13 W13.7 — Revenue metrics dashboard (MRR/ARR/NRR/churn/cohort)
+    app.include_router(revenue_metrics.router)
+    # Wave 13 W13.13 — Customer referral program (5K SAR per closed deal)
+    app.include_router(referral_program.router)
+    # Wave 13 W13.4 — NPS survey + detractor intervention
+    app.include_router(nps.router)
+    # Wave 14 — Canonical Trust MVP + Retainer Engine (Phase 2)
+    app.include_router(friction_log_router.router)
+    if value_os_router is not None:
+        app.include_router(value_os_router.router)
+    # Wave 14B — Commercial activation: CSV upload for the Data Pack offer
+    if data_os_router is not None:
+        app.include_router(data_os_router.router)
+    app.include_router(sprint_runner_router.router)
+    app.include_router(founder_dashboard_router.router)
+    app.include_router(audit_export_router.router)
+    # Wave 14F — Agent OS (admin-gated)
+    if agent_os_router is not None:
+        app.include_router(agent_os_router.router)
+    for _name, _err in _OPTIONAL_ROUTER_ERRORS.items():
+        get_logger(__name__).warning("optional_router_skipped", router=_name, error=_err)
+    # Wave 14J — Commercial wiring map (public)
+    app.include_router(commercial_map_router.router)
+    # Wave 15 — Founder launch-status (admin /launch-status + public /launch-status/public)
+    app.include_router(founder_launch_status_router.router)
+    # Enterprise Foundation Core — /api/v1/platform/* loop proof endpoints
+    app.include_router(platform_foundation_router.router)
+    # Board Decision OS — read-only strategic intelligence (PR branch)
     app.include_router(board_decision_os_router.router)
 
     @app.get("/", tags=["root"])
@@ -235,6 +341,11 @@ def create_app() -> FastAPI:
             "decision_passport_evidence_levels": "/api/v1/decision-passport/evidence-levels",
             "revenue_os_catalog": "/api/v1/revenue-os/catalog",
             "board_decision_os_overview": "/api/v1/board-decision-os/overview",
+            "founder_summary_daily": "/api/v1/founder-summary",
+            "founder_summary_weekly_agenda": "/api/v1/founder-summary/weekly/agenda",
+            "revenue_intelligence_import": "/api/v1/revenue-intelligence/{eid}/import",
+            "proof_pack_generate": "/api/v1/proof-pack/{eid}/generate",
+            "diagnostic_intent": "/api/v1/diagnostic/intent",
         }
 
     return app

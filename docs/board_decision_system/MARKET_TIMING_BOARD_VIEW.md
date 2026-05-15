@@ -1,29 +1,27 @@
 # Market Timing Board View
 
-## Signals
+## إشارات سوق
 
-- AI investment rising
-- Pilots stalling without operating cadence
-- Security / privacy concerns elevated
-- Multi-agent complexity rising
-- Saudi AI infrastructure maturing
-- Demand for responsible training + governance
+ارتفاع استثمار AI · فشل pilots · مخاوف أمن/خصوصية · صعود multi-agent · نمو بنية سعودية · حاجة لتدريب مسؤول.
 
-## Board decision (positioning)
+## قرار التموضع
 
-**Do not** position as generic AI tool.
+```text
+Do not position as generic AI tool.
+Position as Saudi Governed AI Operations OS.
+```
 
-**Do** position as **Saudi Governed AI Operations OS**.
+## مساحة Dealix
 
-## Where Dealix wins
+حتى مع نماذج أقوى، الشركات تحتاج:
 
-Even as models improve, enterprises still need:
+```text
+data readiness
+workflow design
+human approval
+governance runtime
+proof of value
+operating cadence
+```
 
-- Data readiness
-- Workflow design
-- Human approval loops
-- Governance runtime
-- Proof of value
-- Operating cadence
-
-That is Dealix’s persistent wedge.
+**صعود:** [`CAPITAL_ALLOCATION_BOARD.md`](CAPITAL_ALLOCATION_BOARD.md)

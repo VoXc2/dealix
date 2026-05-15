@@ -1,45 +1,23 @@
 # Capital Allocation Board
 
-## Monthly buckets
+كل شهر: تصنيف الاستثمارات إلى **Must fund / Should test / Hold / Kill** (قائمة مرجعية في الكود للتوحيد الداخلي).
 
-- **Must fund** — protects moat, revenue engine, governance, board memo automation
-- **Should test** — bounded experiments with kill criteria
-- **Hold** — backlog with explicit re-entry signals
-- **Kill** — prohibited or negative-EV motions
+## أمثلة Must fund
 
-## Default catalog (v1)
+Proof Pack Generator · Source Passport · Governance Runtime · Revenue Intelligence Sprint · Board Memo Generator
 
-These are **policy defaults** in `capital_allocation_board.py`; replace with live metrics later.
+## Should test
 
-### Must fund (examples)
+Client Workspace MVP · Approval Center · Monthly Value Report · Partner Referral Program
 
-- Proof Pack Generator
-- Source Passport
-- Governance Runtime
-- Revenue Intelligence Sprint
-- Board Memo Generator
+## Hold
 
-### Should test (examples)
+Academy Portal · Marketplace · White-label · Complex RBAC
 
-- Client Workspace MVP
-- Approval Center
-- Monthly Value Report
-- Partner Referral Program
+## Kill
 
-### Hold (examples)
+Scraping engine · Cold WhatsApp automation · Guaranteed sales claims · Source-less chatbot
 
-- Academy Portal
-- Marketplace
-- White-label
-- Complex RBAC
+**الكود:** `capital_board_bucket` — `board_decision_os/capital_allocation_board.py` — يكمل [`../operating_finance/OPERATING_FINANCE_SYSTEM.md`](../operating_finance/OPERATING_FINANCE_SYSTEM.md)
 
-### Kill (examples)
-
-- Scraping engine
-- Cold WhatsApp automation
-- Guaranteed sales claims
-- Source-less chatbot
-
-## API
-
-`GET /api/v1/board-decision-os/capital-allocation`
+**صعود:** [`STRATEGIC_INTELLIGENCE_BOARD_SYSTEM.md`](STRATEGIC_INTELLIGENCE_BOARD_SYSTEM.md)

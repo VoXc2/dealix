@@ -22,6 +22,10 @@ Hard rules:
 """
 from __future__ import annotations
 
+from .doctrine import (
+    doctrine_violations_for_revenue_intelligence,
+    enforce_doctrine_non_negotiables,
+)
 from .middleware import (
     SendBlocked,
     SendDecision,
@@ -32,6 +36,8 @@ from .middleware import (
 __all__ = [
     "SendBlocked",
     "SendDecision",
+    "doctrine_violations_for_revenue_intelligence",
     "enforce_consent_or_block",
+    "enforce_doctrine_non_negotiables",
     "summarize_gates",
 ]

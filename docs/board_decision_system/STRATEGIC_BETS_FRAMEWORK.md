@@ -1,30 +1,21 @@
 # Strategic Bets Framework
 
-## Rule
+كل شهر: **1–3 رهانات فقط**.
 
-Each month: **1–3 bets only**. Everything else is backlog with explicit “not now”.
+## أنواع الرهانات
 
-## Bet types
+Revenue Bet · Product Bet · Trust Bet · Distribution Bet · Enterprise Bet · Venture Bet
 
-- Revenue Bet
-- Product Bet
-- Trust Bet
-- Distribution Bet
-- Enterprise Bet
-- Venture Bet
+**الكود:** `STRATEGIC_BET_TYPES` · `strategic_bet_type_valid` — `board_decision_os/strategic_bets.py`
 
-## Examples
+## أمثلة
 
-**Revenue Bet:** Double down on Revenue Intelligence Sprint for B2B services.
+- **Revenue Bet:** التركيز المضاعف على Revenue Intelligence Sprint لـ B2B services.  
+- **Product Bet:** بناء Proof Pack Generator لأنه يتكرر في كل sprint.  
+- **Trust Bet:** Agent Registry + AI Run Ledger قبل pilots enterprise.
 
-**Product Bet:** Build Proof Pack Generator because it repeats across every sprint.
+## سياق السوق
 
-**Trust Bet:** Ship Agent Registry + AI Run Ledger before enterprise pilots.
+شركات تتجه نحو أنظمة multi-agent مع استمرار مخاوف أمن البيانات والامتثال — [TechRadar — KPMG AI operational reality and security](https://www.techradar.com/pro/ai-is-no-longer-a-future-concept-but-an-operational-reality-new-kpmg-report-claims-firms-are-racing-to-deploy-ai-but-need-to-ensure-they-have-the-right-security-protections)
 
-## Validation
-
-`auto_client_acquisition/board_decision_os/strategic_bets.py` enforces max bets and non-empty rationale.
-
-## API
-
-`POST /api/v1/board-decision-os/strategic-bets/validate`
+**صعود:** [`AGENT_DECISION_GOVERNANCE.md`](AGENT_DECISION_GOVERNANCE.md)

@@ -1,46 +1,53 @@
-"""Map scorecard bands to canonical decision verbs (advisory)."""
+"""Board-level strategic decisions — maps scorecard bands to `CompoundingDecision`."""
 
 from __future__ import annotations
 
-from auto_client_acquisition.board_decision_os.schemas import DecisionBand, ScorecardResult
+from auto_client_acquisition.intelligence_compounding_os import (
+    CompoundingDecision,
+    suggest_compounding_decision,
+)
+
+__all__ = (
+    "CompoundingDecision",
+    "client_scorecard_strategic_decision",
+    "offer_scorecard_strategic_decision",
+    "productization_scorecard_strategic_decision",
+    "suggest_compounding_decision",
+)
 
 
-def offer_decision_verb(result: ScorecardResult) -> str:
-    if result.band == "top":
-        return "SCALE"
-    if result.band == "strong":
-        return "IMPROVE_AND_SELL"
-    if result.band == "mid":
-        return "PILOT_ONLY"
-    return "HOLD_OR_KILL"
+def offer_scorecard_strategic_decision(
+    score: int,
+    *,
+    governance_safe: bool,
+) -> CompoundingDecision:
+    """Offer scorecard total (0–100) → primary board hint."""
+    if not governance_safe:
+        return CompoundingDecision.HOLD
+    if score >= 85:
+        return CompoundingDecision.SCALE
+    if score >= 70:
+        return CompoundingDecision.RAISE_PRICE
+    if score >= 55:
+        return CompoundingDecision.PILOT
+    if score < 40:
+        return CompoundingDecision.KILL
+    return CompoundingDecision.HOLD
 
 
-def client_decision_verb(result: ScorecardResult) -> str:
-    if result.band == "top":
-        return "STRATEGIC_ACCOUNT"
-    if result.band == "strong":
-        return "OFFER_RETAINER"
-    if result.band == "mid":
-        return "ENABLEMENT_PROGRAM"
-    return "AVOID_OR_DIAGNOSTIC"
+def client_scorecard_strategic_decision(score: int) -> CompoundingDecision:
+    if score >= 85:
+        return CompoundingDecision.CREATE_BUSINESS_UNIT
+    if score >= 70:
+        return CompoundingDecision.OFFER_RETAINER
+    if score >= 55:
+        return CompoundingDecision.PILOT
+    return CompoundingDecision.HOLD
 
 
-def productization_decision_verb(result: ScorecardResult) -> str:
-    if result.band == "top":
-        return "BUILD_NOW"
-    if result.band == "strong":
-        return "BUILD_MVP"
-    if result.band == "mid":
-        return "TEMPLATE_OR_MANUAL"
-    return "HOLD"
-
-
-def band_from_total_generic(total: float) -> DecisionBand:
-    """Expose band thresholds for tests without full scorecard input."""
-    if total >= 85:
-        return "top"
-    if total >= 70:
-        return "strong"
-    if total >= 55:
-        return "mid"
-    return "low"
+def productization_scorecard_strategic_decision(score: int) -> CompoundingDecision:
+    if score >= 70:
+        return CompoundingDecision.BUILD
+    if score >= 55:
+        return CompoundingDecision.PILOT
+    return CompoundingDecision.HOLD

@@ -71,7 +71,7 @@ class EnqueueJobRequest(BaseModel):
         ...,
         description=(
             "Job type: lead_score | proposal_draft | outreach_batch | "
-            "embedding_index | generic_llm"
+            "embedding_index | commercial_sprint_report | generic_llm"
         ),
         examples=["lead_score"],
     )

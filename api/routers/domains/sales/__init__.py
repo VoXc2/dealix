@@ -9,7 +9,12 @@ from fastapi import APIRouter
 
 from api.routers import (
     case_study_engine,
+    commercial_engagements as commercial_engagements_router,
+    commercial_readiness as commercial_readiness_router,
     decision_passport as decision_passport_router,
+    proof_pack_governed as proof_pack_governed_router,
+    revenue_data_intake as revenue_data_intake_router,
+    revenue_intelligence as revenue_intelligence_router,
     revenue_os_catalog as revenue_os_catalog_router,
     dominance,
     email_send,
@@ -32,6 +37,11 @@ from api.routers import (
 _ROUTERS = [
     decision_passport_router.router,
     revenue_os_catalog_router.router,
+    commercial_readiness_router.router,
+    commercial_engagements_router.router,
+    revenue_data_intake_router.router,
+    revenue_intelligence_router.router,
+    proof_pack_governed_router.router,
     leads.router,
     sales.router,
     sales_os.router,

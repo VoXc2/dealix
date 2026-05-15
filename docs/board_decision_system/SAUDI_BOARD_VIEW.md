@@ -1,21 +1,23 @@
 # Saudi Strategic Board View
 
-## Why a Saudi-specific view
+## لماذا؟
 
-Saudi market requires **Arabic-first quality**, **PDPL-by-design**, and **channel boundaries** (e.g. WhatsApp governance). Generic “AI dashboard” positioning fails trust tests highlighted in national GenAI perception work ([arXiv:2601.18234](https://arxiv.org/abs/2601.18234) — informational).
+السعودية تبني بنية AI قوية — Dealix تتموضع كـ**طبقة تشغيل وحوكمة وProof** فوق البنية، لا كمزود بنية.
 
-## Metrics to track (examples)
+**HUMAIN** (مايو 2025، PIF) — بنية تحتية، سحابة، نماذج عربية متعددة الوسائط — [ويكيبيديا — Humain](https://en.wikipedia.org/wiki/Humain)
 
-- Arabic QA score (human-in-the-loop rubric)
-- Saudi sector playbooks coverage
-- PDPL-aware Source Passports coverage
-- Saudi benchmark candidates identified
-- Bilingual Proof Packs shipped
-- WhatsApp boundary compliance (draft-only / approval-first)
-- Saudi client adoption score
+## مقاييس لوحة سعودية (taxonomy)
 
-## Strategic bet (default stance)
+Arabic QA score · Saudi sector playbooks · PDPL-aware Source Passports · Saudi benchmark candidates · Bilingual Proof Packs · WhatsApp boundary compliance · Saudi client adoption score
 
-> Build the **Saudi AI Operations Standard** before generic global positioning.
+## رهان استراتيجي
 
-Infrastructure initiatives (e.g. HUMAIN as context — [Wikipedia](https://en.wikipedia.org/wiki/Humain)) strengthen the stack; Dealix wins on **governed operating cadence + proof + approvals**.
+```text
+Build the Saudi AI Operations Standard before generic global positioning.
+```
+
+## سياق وطني (ثقة وGenAI)
+
+دراسة وطنية: انتشار GenAI عالٍ مع ثقة حذرة وخصوصية ومعلومات مضللة — [arXiv:2601.18234](https://arxiv.org/abs/2601.18234)
+
+**صعود:** [`MARKET_TIMING_BOARD_VIEW.md`](MARKET_TIMING_BOARD_VIEW.md)

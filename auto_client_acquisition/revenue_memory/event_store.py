@@ -117,12 +117,18 @@ class InMemoryEventStore:
 _DEFAULT_STORE: InMemoryEventStore | None = None
 
 
-def get_postgres_store():
-    """Create a PostgresEventStore backed by the application's async session factory."""
-    from auto_client_acquisition.revenue_memory.pg_event_store import PostgresEventStore
-    from db.session import async_session_factory
+def get_postgres_store() -> EventStore:
+    """Return a sync ``EventStore`` backed by Postgres.
 
-    return PostgresEventStore(async_session_factory())
+    Uses a dedicated worker thread + async engine (see ``isolated_pg_event_store``)
+    so sync callers (Orchestrator, ``append_event``) never attach asyncpg to the
+    wrong asyncio loop.
+    """
+    from auto_client_acquisition.revenue_memory.isolated_pg_event_store import (
+        get_isolated_sync_postgres_store,
+    )
+
+    return get_isolated_sync_postgres_store()
 
 
 def get_default_store(backend: str = "memory") -> EventStore:
@@ -149,3 +155,11 @@ def reset_default_store() -> None:
     """Reset for tests."""
     global _DEFAULT_STORE
     _DEFAULT_STORE = InMemoryEventStore()
+    try:
+        from auto_client_acquisition.revenue_memory.isolated_pg_event_store import (
+            shutdown_isolated_postgres_revenue_worker,
+        )
+
+        shutdown_isolated_postgres_revenue_worker()
+    except Exception:
+        pass

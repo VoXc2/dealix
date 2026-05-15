@@ -27,14 +27,17 @@ Pricing in SAR. All packages assume PDPL compliance + opt-out + human approval f
 
 ## Tier 3: Monthly Subscription (after pilot)
 
-| | Starter | Growth | Pro | Enterprise |
+> **Code-truth alignment:** The prices below match `api/routers/pricing.py` PLANS dict. Any divergence is a bug.
+
+| | Starter | Growth | Scale | Enterprise |
 |---|---|---|---|---|
-| **Price/month** | 999 SAR | 2,499 SAR | 5,000 SAR | custom |
+| **Price/month** | 999 SAR | 2,999 SAR | 7,999 SAR | custom |
 | **Leads/month** | 200 | 1,000 | 5,000 | unlimited |
 | **Channels** | 2 | 4 | all | all + private LLM |
 | **Approval mode** | manual first 30 days, then mixed | mixed | mixed | mixed |
 | **SLA** | 1h | 30 min | 15 min | 5 min |
 | **Onboarding** | 1 hour | 2 hours | half-day | dedicated |
+| **AI services bundled** | S1+S3 | S1+S3+S6+S7 | All 7 (S1-S7) | All 7 + custom |
 
 ## Tier 4: Agency / Partner Revenue Share
 

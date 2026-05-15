@@ -182,9 +182,9 @@ def _fallback_brief(
             headline="لا بيانات حقيقيّة بعد",
             narrative=(
                 "لم تُسجَّل proof events أو موافقات أو inbound في آخر 24 ساعة. "
-                "هذا متوقّع قبل أوّل pilot. ابدأ بـ warm intros من docs/sales-kit/."
+                "هذا متوقّع قبل أوّل pilot. ركّز على warm intros يدوية مع موافقة صريحة."
             ),
-            next_action="ابعث 5 رسائل WhatsApp warm-intro من القائمة المعدّة",
+            next_action="افتح صفحة الموافقات في لوحة التحكم ثم جرّب POST /api/v1/leads لتوليد Decision Passport",
             data_status="insufficient_data",
             duration_ms=0,
             model_used=None,

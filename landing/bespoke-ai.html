@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Dealix — خدمة AI مخصصة لمؤسستك</title>
+  <meta name="description" content="هل احتياجك يطلع عن الـ 7 خدمات الجاهزة؟ نبني لك AI agent مخصص (R5). تقدير سعر فوري + مراجعة المؤسس خلال 48 ساعة. من 5K إلى 25K SAR setup." />
+  <meta name="robots" content="index,follow" />
+  <link rel="canonical" href="https://dealix.me/bespoke-ai.html" />
+  <meta property="og:title" content="Dealix Bespoke AI — خدمة AI مخصصة" />
+  <meta property="og:description" content="5K-25K SAR setup + شهر support. تقدير فوري عبر الفورم. لا اتصالات استكشافية مرهقة." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://dealix.me/bespoke-ai.html" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="theme-color" content="#0f172a" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="/assets/css/design-system.css" />
+  <link rel="stylesheet" href="/assets/css/theme.css" />
+  <style>
+    :root { --brand: #0f172a; --accent: #10b981; --muted: #64748b; --bg: #f8fafc; --surface: #ffffff; --border: #e2e8f0; --error: #dc2626; }
+    body { font-family: "IBM Plex Sans Arabic", system-ui, sans-serif; background: var(--bg); color: var(--brand); margin: 0; line-height: 1.7; }
+    .container { max-width: 880px; margin: 0 auto; padding: 32px 20px; }
+    .hero { text-align: center; padding: 32px 0; }
+    h1 { font-size: clamp(28px, 5vw, 44px); margin: 8px 0; line-height: 1.2; }
+    .lead { color: var(--muted); font-size: 17px; max-width: 700px; margin: 16px auto 24px; }
+    .price-band { background: linear-gradient(135deg, #0f172a, #1e293b); color: white; padding: 28px; border-radius: 14px; margin: 24px 0; text-align: center; }
+    .price-band .range { font-size: 40px; font-weight: 700; }
+    .price-band .label { color: #cbd5e1; margin-top: 4px; }
+
+    form { background: var(--surface); padding: 32px; border-radius: 14px; border: 1px solid var(--border); box-shadow: 0 1px 3px rgba(0,0,0,0.04); margin-top: 32px; }
+    .field { margin: 16px 0; }
+    .field label { display: block; font-weight: 600; margin-bottom: 6px; }
+    .field input, .field select, .field textarea { width: 100%; padding: 10px 12px; border: 1px solid var(--border); border-radius: 8px; font-family: inherit; font-size: 15px; background: var(--surface); box-sizing: border-box; }
+    .field textarea { min-height: 120px; resize: vertical; }
+    .field .hint { color: var(--muted); font-size: 12px; margin-top: 4px; }
+    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    @media (max-width: 600px) { .row { grid-template-columns: 1fr; } }
+
+    .checkbox-row { display: flex; align-items: flex-start; gap: 10px; margin: 16px 0; }
+    .checkbox-row input[type=checkbox] { margin-top: 4px; }
+
+    .submit-btn { background: var(--accent); color: white; padding: 14px 32px; border: none; border-radius: 8px; font-weight: 700; font-size: 16px; cursor: pointer; width: 100%; font-family: inherit; }
+    .submit-btn:hover { background: #059669; }
+    .submit-btn:disabled { opacity: 0.5; cursor: wait; }
+
+    .result { margin-top: 24px; padding: 24px; border-radius: 12px; display: none; }
+    .result.success { background: #dcfce7; border: 1px solid #16a34a; color: #14532d; display: block; }
+    .result.error { background: #fee2e2; border: 1px solid var(--error); color: #7f1d1d; display: block; }
+    .result h3 { margin: 0 0 12px; }
+    .result .estimate { font-size: 24px; font-weight: 700; color: var(--brand); }
+
+    .examples { background: #f1f5f9; padding: 20px; border-radius: 12px; margin: 24px 0; }
+    .examples h3 { margin: 0 0 12px; font-size: 16px; }
+    .examples ul { margin: 0; padding-inline-start: 20px; }
+    .examples li { margin: 6px 0; color: var(--brand); }
+
+    .footer { text-align: center; color: var(--muted); font-size: 13px; padding: 24px 0; }
+    .footer a { color: var(--muted); }
+  </style>
+</head>
+<body>
+
+<main class="container">
+
+  <section class="hero">
+    <h1>خدمة AI مخصصة لمؤسستك (R5)</h1>
+    <p class="lead">
+      هل احتياجك يطلع عن الـ <a href="/services.html">7 خدمات الجاهزة</a>؟
+      نبني لك AI agent مخصص: تقدير سعر فوري عبر الفورم، مراجعة من المؤسس Sami شخصياً خلال 48 ساعة،
+      عقد ZATCA-compliant، تطبيق خلال 1-12 أسبوع.
+    </p>
+    <div class="price-band">
+      <div class="range">5,000 – 25,000 SAR</div>
+      <div class="label">Setup · + 1,000-2,500 SAR/شهر support · ZATCA Phase 2 invoice</div>
+    </div>
+  </section>
+
+  <section class="examples">
+    <h3>أمثلة من use cases سابقة (افتراضية):</h3>
+    <ul>
+      <li>AI agent يصنّف RFP الحكومية الواردة ويوجّهها للقسم المختص</li>
+      <li>Compliance checker لـ ZATCA Phase 2 e-invoice قبل الإرسال</li>
+      <li>Customer health monitor مخصّص لأسطول لوجستي (vehicle telemetry → renewal signal)</li>
+      <li>Multi-language sales assistant (عربي + إنجليزي + أوردو) لشركات يخدمون عمالة أجنبية</li>
+    </ul>
+  </section>
+
+  <form id="service-form">
+    <div class="row">
+      <div class="field">
+        <label for="company">اسم الشركة</label>
+        <input type="text" id="company" required minlength="2" maxlength="255" />
+      </div>
+      <div class="field">
+        <label for="contact_name">اسم المسؤول</label>
+        <input type="text" id="contact_name" required minlength="2" maxlength="128" />
+      </div>
+    </div>
+
+    <div class="field">
+      <label for="contact_email">البريد</label>
+      <input type="email" id="contact_email" required />
+      <div class="hint">سنرسل عليه التقدير والقرار خلال 48 ساعة.</div>
+    </div>
+
+    <div class="field">
+      <label for="use_case">وصف use case (20-2000 حرف)</label>
+      <textarea id="use_case" required minlength="20" maxlength="2000"
+                placeholder="مثلاً: نريد AI agent يقرأ RFP الحكومية القادمة على بريدنا، يصنّفها حسب الوزارة + الموعد + الفئة، ويرسلها للفريق المختص."></textarea>
+    </div>
+
+    <div class="row">
+      <div class="field">
+        <label for="category">الفئة</label>
+        <select id="category" required>
+          <option value="sales">مبيعات (Sales)</option>
+          <option value="support">دعم (Support)</option>
+          <option value="ops" selected>عمليات (Ops)</option>
+          <option value="compliance">امتثال (Compliance)</option>
+          <option value="analytics">تحليلات (Analytics)</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="complexity">التعقيد</label>
+        <select id="complexity" required>
+          <option value="simple">بسيط (1-2 أسبوع)</option>
+          <option value="moderate" selected>متوسط (3-6 أسبوع)</option>
+          <option value="complex">معقد (7-12 أسبوع)</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="field">
+        <label for="integrations">عدد الـ integrations المطلوبة</label>
+        <input type="number" id="integrations" required min="1" max="10" value="2" />
+        <div class="hint">CRM، email، WhatsApp، أنظمة داخلية، إلخ.</div>
+      </div>
+      <div class="field">
+        <label for="data_volume">حجم البيانات</label>
+        <select id="data_volume" required>
+          <option value="low">منخفض (&lt; 1K event/يوم)</option>
+          <option value="medium" selected>متوسط (1K-10K event/يوم)</option>
+          <option value="high">عالٍ (&gt; 10K event/يوم)</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="field">
+      <label for="timeline">الجدول الزمني المرغوب (أسابيع)</label>
+      <input type="number" id="timeline" required min="1" max="24" value="6" />
+    </div>
+
+    <div class="checkbox-row">
+      <input type="checkbox" id="regulated" />
+      <label for="regulated">
+        قطاع منظّم (بنوك / تأمين / صحة / حكومي) — يضيف +30% premium لتكلفة الامتثال
+      </label>
+    </div>
+
+    <!-- Wave 14J — Gap D — live estimate widget (debounced, no commit, no email) -->
+    <div id="live-estimate" style="margin-top: 16px; padding: 14px 18px; border: 1px dashed var(--border, #cbd5e1); border-radius: 10px; background: rgba(34,211,238,0.05); font-size: 14px;">
+      <div style="font-weight:700;margin-bottom:6px;">تقدير حيّ غير ملزم · Live estimate (non-binding)</div>
+      <div id="live-estimate-body" style="color: var(--muted, #475569);">
+        املأ النموذج لرؤية التقدير الفوري · Fill the form to see an instant estimate.
+      </div>
+      <div style="margin-top:8px;font-size:12px;color:var(--muted,#64748b);">
+        <em>تقدير غير ملزم — Estimate, not a quote, until founder approval.</em>
+        <br>
+        <em>Estimated outcomes are not guaranteed outcomes / النتائج التقديرية ليست نتائج مضمونة.</em>
+      </div>
+    </div>
+
+    <button type="submit" class="submit-btn" id="submit-btn">احسب التقدير + أرسل الطلب</button>
+  </form>
+
+  <div id="result" class="result"></div>
+
+  <footer class="footer">
+    <p>
+      <a href="/">الرئيسية</a> ·
+      <a href="/services.html">جميع الخدمات</a> ·
+      <a href="/pricing.html">التسعير</a> ·
+      <a href="/case-study-pilot-example.html">نموذج Pilot</a>
+    </p>
+    <p>Dealix · Riyadh · ZATCA Phase 2 · me-south-1 · PDPL by design</p>
+  </footer>
+
+</main>
+
+<script>
+const API_BASE = window.location.origin.includes('localhost')
+  ? 'http://localhost:8000'
+  : 'https://api.dealix.me';
+
+document.getElementById('service-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const btn = document.getElementById('submit-btn');
+  const result = document.getElementById('result');
+  btn.disabled = true;
+  btn.textContent = 'جارٍ الحساب...';
+
+  const payload = {
+    company_name: document.getElementById('company').value,
+    contact_name: document.getElementById('contact_name').value,
+    contact_email: document.getElementById('contact_email').value,
+    use_case_summary: document.getElementById('use_case').value,
+    use_case_category: document.getElementById('category').value,
+    complexity: document.getElementById('complexity').value,
+    integrations_count: parseInt(document.getElementById('integrations').value, 10),
+    data_volume_band: document.getElementById('data_volume').value,
+    timeline_weeks: parseInt(document.getElementById('timeline').value, 10),
+    regulated_industry: document.getElementById('regulated').checked,
+  };
+
+  try {
+    const res = await fetch(`${API_BASE}/api/v1/service-setup/requests`, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(payload),
+    });
+    const data = await res.json();
+    if (res.ok) {
+      result.className = 'result success';
+      result.innerHTML = `
+        <h3>✅ تم استلام طلبك</h3>
+        <p><strong>Request ID:</strong> <code>${data.request_id}</code></p>
+        <p><strong>التقدير المبدئي:</strong></p>
+        <div class="estimate">
+          ${data.estimate.setup_sar.toLocaleString()} SAR setup
+          + ${data.estimate.monthly_sar.toLocaleString()} SAR/شهر
+        </div>
+        <p style="margin-top:16px"><em>${data.estimate_note}</em></p>
+        <p><strong>الخطوة التالية:</strong> ${data.next_step}</p>
+      `;
+    } else {
+      result.className = 'result error';
+      result.innerHTML = `<h3>❌ خطأ في الإدخال</h3><pre>${JSON.stringify(data, null, 2)}</pre>`;
+    }
+  } catch (err) {
+    result.className = 'result error';
+    result.innerHTML = `<h3>❌ خطأ في الاتصال</h3><p>${err.message}</p>`;
+  }
+  btn.disabled = false;
+  btn.textContent = 'احسب التقدير + أرسل الطلب';
+});
+
+// Wave 14J — Gap D — debounced live estimate widget.
+// On any form field change, POST a partial intake to /api/v1/service-setup/requests
+// and inline-render estimated_setup_sar + estimated_monthly_sar if returned.
+(function(){
+  var fields = ['company','contact_name','contact_email','use_case','category','complexity','integrations','data_volume','timeline','regulated'];
+  var bodyEl = document.getElementById('live-estimate-body');
+  var timer = null;
+
+  function readPayload() {
+    return {
+      company_name: (document.getElementById('company').value || 'preview').trim() || 'preview',
+      contact_name: (document.getElementById('contact_name').value || 'preview').trim() || 'preview',
+      contact_email: (document.getElementById('contact_email').value || 'preview@example.com').trim() || 'preview@example.com',
+      use_case_summary: (document.getElementById('use_case').value || 'preview use case for live estimate widget').trim(),
+      use_case_category: document.getElementById('category').value,
+      complexity: document.getElementById('complexity').value,
+      integrations_count: parseInt(document.getElementById('integrations').value, 10) || 1,
+      data_volume_band: document.getElementById('data_volume').value,
+      timeline_weeks: parseInt(document.getElementById('timeline').value, 10) || 1,
+      regulated_industry: document.getElementById('regulated').checked,
+      preview_only: true
+    };
+  }
+
+  function fmtSAR(n) {
+    if (n === null || n === undefined) return '—';
+    try { return Number(n).toLocaleString() + ' SAR'; } catch(_) { return n + ' SAR'; }
+  }
+
+  function fetchEstimate() {
+    var payload = readPayload();
+    if (!payload.use_case_summary || payload.use_case_summary.length < 20) {
+      bodyEl.innerHTML = 'املأ وصف use case (20 حرف على الأقل) لرؤية التقدير · Fill use case (≥20 chars) to see estimate.';
+      return;
+    }
+    bodyEl.textContent = '… جارٍ التقدير · estimating …';
+    fetch(API_BASE + '/api/v1/service-setup/requests', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(payload)
+    }).then(function(r){ return r.json(); }).then(function(data){
+      var setup = (data && data.estimate && (data.estimate.setup_sar !== undefined ? data.estimate.setup_sar : data.estimated_setup_sar)) || data.estimated_setup_sar;
+      var monthly = (data && data.estimate && (data.estimate.monthly_sar !== undefined ? data.estimate.monthly_sar : data.estimated_monthly_sar)) || data.estimated_monthly_sar;
+      if (setup === undefined && monthly === undefined && data && data.detail) {
+        bodyEl.innerHTML = '<span style="color:#dc2626">' + (typeof data.detail === 'string' ? data.detail : 'تحقّق من الحقول · check fields') + '</span>';
+        return;
+      }
+      bodyEl.innerHTML = '<strong>' + fmtSAR(setup) + '</strong> setup + <strong>' + fmtSAR(monthly) + '</strong>/شهر · /mo';
+    }).catch(function(err){
+      bodyEl.innerHTML = '<span style="color:#dc2626">فشل · failed: ' + err.message + '</span>';
+    });
+  }
+
+  function debounced() {
+    if (timer) clearTimeout(timer);
+    timer = setTimeout(fetchEstimate, 500);
+  }
+
+  fields.forEach(function(id){
+    var el = document.getElementById(id);
+    if (!el) return;
+    el.addEventListener('input', debounced);
+    el.addEventListener('change', debounced);
+  });
+})();
+</script>
+
+</body>
+</html>
