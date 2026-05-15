@@ -120,6 +120,9 @@ def decide(*, action: str, context: dict[str, Any] | None = None) -> DecisionRes
 
     channel = str(ctx.get("channel", "")).lower()
     mode = str(ctx.get("mode", "")).lower()
+    # Strict boolean — a loose-payload string ("false", "0") must never
+    # count as consent; consent is fail-closed.
+    explicit_consent = ctx.get("explicit_consent") is True
 
     # Cold WhatsApp: explicit consent turns it into a consented (warm)
     # contact. Resolve this BEFORE the generic forbidden-mode sweep so a
@@ -127,7 +130,7 @@ def decide(*, action: str, context: dict[str, Any] | None = None) -> DecisionRes
     # rule — otherwise the consent check below would be unreachable.
     whatsapp_cold_consented = False
     if channel == "whatsapp" and ctx.get("is_cold"):
-        if not ctx.get("explicit_consent"):
+        if not explicit_consent:
             return DecisionResult(
                 decision=GovernanceDecision.BLOCK,
                 reasons=("cold WhatsApp without explicit_consent is blocked",),
@@ -135,22 +138,26 @@ def decide(*, action: str, context: dict[str, Any] | None = None) -> DecisionRes
             )
         whatsapp_cold_consented = True
 
-    if channel:
-        if not mode:
-            if ctx.get("is_cold") and not whatsapp_cold_consented:
-                mode = "cold"
-            elif "automate" in action.lower():
-                mode = "automate"
-            elif "scrape" in action.lower():
-                mode = "scrape"
-        if mode:
-            forbidden, why = is_forbidden(channel=channel, mode=mode)
-            if forbidden:
-                return DecisionResult(
-                    decision=GovernanceDecision.BLOCK,
-                    reasons=(why,),
-                    safe_alternative="draft_only message for human review",
-                )
+    # Infer mode from is_cold / action when the caller did not set it.
+    if not mode:
+        if ctx.get("is_cold") and not whatsapp_cold_consented:
+            mode = "cold"
+        elif "automate" in action.lower():
+            mode = "automate"
+        elif "scrape" in action.lower():
+            mode = "scrape"
+
+    # Forbidden-mode sweep — runs whenever a mode is known, with or without
+    # a channel, so mode="scrape" still hits the non-negotiable scraping
+    # ban. A consented WhatsApp contact is exempt only from the cold rule.
+    if mode and not (whatsapp_cold_consented and mode == "cold"):
+        forbidden, why = is_forbidden(channel=channel, mode=mode)
+        if forbidden:
+            return DecisionResult(
+                decision=GovernanceDecision.BLOCK,
+                reasons=(why,),
+                safe_alternative="draft_only message for human review",
+            )
 
     passport = ctx.get("source_passport")
     intended_use = str(ctx.get("intended_use") or _default_intended_use(action))
