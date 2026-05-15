@@ -1,0 +1,14 @@
+name: sales_agent
+version: 1.0.0
+risk_level: medium
+allowed_tools:
+  - crm.create_lead
+  - crm.score_lead
+  - crm.update_stage
+  - whatsapp.draft_message
+requires_approval_for:
+  - whatsapp.send_message
+  - pricing.commitment
+memory_scope:
+  - customer_memory
+  - product_knowledge

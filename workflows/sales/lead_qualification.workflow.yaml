@@ -1,0 +1,35 @@
+workflow_id: wf::lead_qualification
+name: lead_qualification
+trigger: lead.created
+steps:
+  - id: enrich_lead
+    name: Enrich lead profile
+    action: crm.create_lead
+    risk_level: low
+    max_retries: 2
+    estimated_value_sar: 120
+  - id: score_lead
+    name: Score and prioritize
+    action: crm.score_lead
+    risk_level: medium
+    max_retries: 2
+    estimated_value_sar: 180
+  - id: draft_whatsapp_outreach
+    name: Draft WhatsApp outreach
+    action: whatsapp.draft_message
+    risk_level: medium
+    max_retries: 1
+    estimated_value_sar: 220
+  - id: send_whatsapp_outreach
+    name: Send WhatsApp outreach
+    action: whatsapp.send_message
+    risk_level: high
+    requires_approval: true
+    max_retries: 1
+    estimated_value_sar: 300
+  - id: update_crm_stage
+    name: Update CRM pipeline stage
+    action: crm.update_stage
+    risk_level: low
+    max_retries: 1
+    estimated_value_sar: 150
