@@ -55,6 +55,26 @@ _آخر تحقق آلي: 2026-05-15 — `python scripts/verify_dealix_ready.py` 
 2. AI Quick Win Sprint — `docs/services/ai_quick_win_sprint/`
 3. Company Brain Sprint — `docs/services/company_brain_sprint/`
 
+## Enterprise AI Transformation Programs (catalog-ready)
+
+المصدر الرسمي: `auto_client_acquisition/service_catalog/enterprise_registry.py`
+(6 برامج × 3 طبقات Basic/Growth/Enterprise — setup 25K–250K ريال + اشتراك).
+
+| # | البرنامج | نطاق التأسيس | الحالة |
+|---|----------|--------------|--------|
+| ★ | Enterprise AI Transformation Sprint (45 يومًا) | 25K–150K+ | catalog + proposal + 45-day orchestrator |
+| 1 | AI Operating System for Business | 50K–250K | catalog + proposal |
+| 2 | AI Revenue Transformation | 25K–100K | catalog + proposal |
+| 3 | AI Knowledge & Decision Platform | 30K–150K | catalog + proposal + Knowledge Center UI |
+| 4 | AI Operations Automation | 40K–200K | catalog + proposal |
+| 5 | AI Governance & Readiness Program | 35K–120K | catalog + proposal |
+
+البنية التحتية الجاهزة: نموذج عروض متدرّج، مولّد عروض أسعار مؤسسية، AI Opportunity
+Report، منسّق تحوّل 45 يوم متعدد المسارات، Company Brain (TF-IDF + استشهادات + RBAC)،
+موصّلات Drive/Sheets/Slack/Teams، قياس ROI للـengagement.
+
+**قرار `verify_dealix_ready.py`:** `SELL_READY_STACK` — راجع مخرجات السكربت.
+
 ## Do Not Sell Yet
 
 1. (none — كل الخدمات الرسمية عبرت ≥ 85)
