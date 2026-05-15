@@ -1,13 +1,37 @@
-"""Evidence object — canonical fields for auditable artifacts."""
+"""Evidence object — canonical fields for auditable artifacts.
+
+Two layers live here:
+
+  * :class:`EvidenceObject` / :func:`evidence_object_valid` — schema-stable
+    row contract for callers that persist their own evidence records.
+  * :func:`create_evidence`, :func:`list_evidence`, :func:`clear_for_test`
+    — an append-only JSONL ledger for evidence control-plane records. Path
+    comes from ``DEALIX_EVIDENCE_CONTROL_PATH`` (dev fallback below).
+
+PII in ``summary`` is redacted before persistence (PDPL — no PII in logs).
+"""
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+import json
+import os
+import threading
+import uuid
+from dataclasses import asdict, dataclass, field
+from datetime import UTC, datetime
 from enum import StrEnum
+from pathlib import Path
+from typing import Any
+
+from auto_client_acquisition.friction_log.sanitizer import sanitize_notes
+
+_DEFAULT_PATH = "var/evidence-control.jsonl"
+_lock = threading.Lock()
 
 
 class EvidenceType(StrEnum):
     SOURCE = "source"
+    SOURCE_PASSPORT = "source_passport"
     AI_RUN = "ai_run"
     POLICY_CHECK = "policy_check"
     GOVERNANCE_DECISION = "governance_decision"

@@ -2,7 +2,8 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import asdict, dataclass, field
+from typing import Any
 
 
 @dataclass(frozen=True, slots=True)
@@ -64,4 +65,63 @@ def wave2_retainer_eligibility(
     return not errs, tuple(errs)
 
 
-__all__ = ["AdoptionRetainerReadiness", "adoption_retainer_readiness_passes", "wave2_retainer_eligibility"]
+@dataclass(frozen=True, slots=True)
+class RetainerReadinessResult:
+    """Retainer eligibility decision with gaps and a recommended next offer."""
+
+    customer_id: str
+    eligible: bool
+    recommended_offer: str
+    gaps: list[str] = field(default_factory=list)
+
+    def to_dict(self) -> dict[str, Any]:
+        return asdict(self)
+
+
+def evaluate(
+    *,
+    customer_id: str,
+    adoption_score: float,
+    proof_score: float,
+    workflow_owner_present: bool,
+    governance_risk_controlled: bool,
+) -> RetainerReadinessResult:
+    """Decide retainer eligibility from adoption + proof signals.
+
+    Eligibility requires adoption >= 70, proof >= 80, a named workflow owner,
+    and controlled governance risk. Always returns a non-empty recommended
+    offer so the customer is guided even when eligibility fails.
+    """
+    gaps: list[str] = []
+    if adoption_score < 70:
+        gaps.append("adoption_score_below_70")
+    if proof_score < 80:
+        gaps.append("proof_score_below_80")
+    if not workflow_owner_present:
+        gaps.append("workflow_owner_missing")
+    if not governance_risk_controlled:
+        gaps.append("governance_risk_not_controlled")
+
+    eligible = not gaps
+    if eligible:
+        recommended_offer = "monthly_governed_ai_operations_retainer"
+    elif adoption_score >= 40 and proof_score >= 50:
+        recommended_offer = "proof_consolidation_sprint"
+    else:
+        recommended_offer = "capability_diagnostic"
+
+    return RetainerReadinessResult(
+        customer_id=customer_id,
+        eligible=eligible,
+        recommended_offer=recommended_offer,
+        gaps=gaps,
+    )
+
+
+__all__ = [
+    "AdoptionRetainerReadiness",
+    "RetainerReadinessResult",
+    "adoption_retainer_readiness_passes",
+    "evaluate",
+    "wave2_retainer_eligibility",
+]

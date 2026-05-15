@@ -48,7 +48,7 @@ else
 fi
 
 echo "== pytest revenue_os + decision passport =="
-if pytest tests/test_revenue_os_catalog.py tests/test_decision_passport.py \
+if python3 -m pytest tests/test_revenue_os_catalog.py tests/test_decision_passport.py \
     tests/test_saudi_targeting_profile.py tests/test_leads_batch_router.py \
     tests/test_strategy_os_scoring.py tests/test_strategy_os_ai_readiness.py tests/test_data_os_quality.py \
     tests/test_governance_os_draft_gate.py tests/test_delivery_os_framework.py \

@@ -30,4 +30,25 @@ def tool_allowed_mvp(tool: str) -> bool:
     return t in ALLOWED_TOOLS_MVP
 
 
-__all__ = ["ALLOWED_TOOLS_MVP", "FORBIDDEN_TOOLS_MVP", "tool_allowed_mvp"]
+def is_tool_allowed(
+    tool: str,
+    allowed_tools: list[str] | None = None,
+) -> tuple[bool, str]:
+    """Resolve whether a tool may run.
+
+    Forbidden tools are hard-blocked regardless of any per-agent allow-list.
+    When ``allowed_tools`` is provided, the tool must also be listed there.
+    """
+    t = tool.strip().lower()
+    if t in FORBIDDEN_TOOLS_MVP:
+        return False, f"tool '{t}' is hard-blocked by MVP doctrine"
+    if t not in ALLOWED_TOOLS_MVP:
+        return False, f"tool '{t}' is not in the MVP allow-list"
+    if allowed_tools is not None:
+        normalized = {a.strip().lower() for a in allowed_tools}
+        if t not in normalized:
+            return False, f"tool '{t}' is not in this agent's allowed_tools"
+    return True, "ok"
+
+
+__all__ = ["ALLOWED_TOOLS_MVP", "FORBIDDEN_TOOLS_MVP", "is_tool_allowed", "tool_allowed_mvp"]
