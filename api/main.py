@@ -73,6 +73,8 @@ from api.routers import agent_os as agent_os_router
 from api.routers import commercial_map as commercial_map_router
 # Wave 15 — Founder launch-status (single-pane production readiness)
 from api.routers import founder_launch_status as founder_launch_status_router
+# AI Company Operating System — read-only spine (7 systems + roadmap)
+from api.routers import company_os as company_os_router
 from api.security import APIKeyMiddleware, setup_rate_limit
 from core.config.settings import get_settings
 from core.errors import AICompanyError
@@ -290,6 +292,8 @@ def create_app() -> FastAPI:
     app.include_router(commercial_map_router.router)
     # Wave 15 — Founder launch-status (admin /launch-status + public /launch-status/public)
     app.include_router(founder_launch_status_router.router)
+    # AI Company Operating System — read-only spine (public)
+    app.include_router(company_os_router.router)
 
     @app.get("/", tags=["root"])
     async def root() -> dict[str, object]:

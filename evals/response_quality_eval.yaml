@@ -1,0 +1,16 @@
+eval_id: response_quality
+version: 1
+
+checks:
+  - id: groundedness
+    pass: Claims in the answer trace to a cited source (response_groundedness >= 0.95)
+  - id: hallucination_rate
+    pass: Share of unsupported claims stays below the hallucination threshold (0.05)
+  - id: no_guaranteed_claims
+    pass: Drafts never promise guaranteed outcomes; commitment language only
+  - id: source_quality
+    pass: Cited sources meet the response_source_quality threshold (0.70)
+
+reference_code:
+  - auto_client_acquisition/knowledge_os/answer_with_citations.py
+  - scripts/verify_ai_output_quality.py

@@ -1,0 +1,16 @@
+eval_id: workflow_quality
+version: 1
+
+checks:
+  - id: task_success
+    pass: Workflow runs reach a completed state (workflow_task_success >= 0.90)
+  - id: retry_budget
+    pass: Steps exhaust retries gracefully and never fail silently
+  - id: escalation_correctness
+    pass: Escalations fire only when an escalation rule trigger is met
+  - id: idempotency
+    pass: Replaying the same idempotency key is a no-op
+
+reference_code:
+  - auto_client_acquisition/workflow_os_v10/state_machine.py
+  - auto_client_acquisition/transformation_os/stage_machine.py

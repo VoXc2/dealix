@@ -1,0 +1,16 @@
+eval_id: business_quality
+version: 1
+
+checks:
+  - id: roi_evidence
+    pass: Every value claim is backed by a value-ledger event with evidence
+  - id: adoption_signal
+    pass: Adoption score bands are present for active engagements
+  - id: resolution_rate
+    pass: Support items resolved meet the business_resolution_rate threshold (0.80)
+  - id: no_fake_revenue
+    pass: Revenue figures trace to a confirmed source, never estimated as fact
+
+reference_code:
+  - auto_client_acquisition/value_os/value_ledger.py
+  - auto_client_acquisition/adoption_os/adoption_score.py

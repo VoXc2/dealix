@@ -1,0 +1,16 @@
+eval_id: retrieval_quality
+version: 1
+
+checks:
+  - id: citation_presence
+    pass: Every grounded answer with sources returns at least one citation
+  - id: rbac_filtering
+    pass: Sources above the caller role or cross-tenant are dropped before answering
+  - id: insufficient_evidence_honored
+    pass: No sources after filtering returns insufficient_evidence, not a guessed answer
+  - id: relevance_threshold
+    pass: Retrieved sources meet the retrieval_relevance threshold (0.80)
+
+reference_code:
+  - auto_client_acquisition/knowledge_os/grounded_retrieval.py
+  - auto_client_acquisition/eval_os/taxonomy.py
