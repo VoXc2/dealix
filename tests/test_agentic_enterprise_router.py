@@ -3,11 +3,25 @@
 from __future__ import annotations
 
 import pytest
+import pytest_asyncio
+from fastapi import FastAPI
+from httpx import ASGITransport, AsyncClient
+
+from api.routers.agentic_enterprise import router
+
+
+@pytest_asyncio.fixture
+async def client() -> AsyncClient:
+    app = FastAPI()
+    app.include_router(router)
+    transport = ASGITransport(app=app)
+    async with AsyncClient(transport=transport, base_url="http://test") as c:
+        yield c
 
 
 @pytest.mark.asyncio
-async def test_framework_lists_phase_one_core_systems(async_client) -> None:
-    res = await async_client.get("/api/v1/agentic-enterprise/framework")
+async def test_framework_lists_phase_one_core_systems(client: AsyncClient) -> None:
+    res = await client.get("/api/v1/agentic-enterprise/framework")
     assert res.status_code == 200
     body = res.json()
     assert body["systems_assessed"] == 12
@@ -17,7 +31,7 @@ async def test_framework_lists_phase_one_core_systems(async_client) -> None:
 
 
 @pytest.mark.asyncio
-async def test_maturity_assessment_returns_scored_payload(async_client) -> None:
+async def test_maturity_assessment_returns_scored_payload(client: AsyncClient) -> None:
     payload = {
         "system_scores": {
             "agent_operating_system": 72,
@@ -34,7 +48,7 @@ async def test_maturity_assessment_returns_scored_payload(async_client) -> None:
             "continuous_evolution_system": 60,
         }
     }
-    res = await async_client.post(
+    res = await client.post(
         "/api/v1/agentic-enterprise/maturity-assessment",
         json=payload,
     )
@@ -53,8 +67,8 @@ async def test_maturity_assessment_returns_scored_payload(async_client) -> None:
 
 
 @pytest.mark.asyncio
-async def test_maturity_assessment_rejects_unknown_system_ids(async_client) -> None:
-    res = await async_client.post(
+async def test_maturity_assessment_rejects_unknown_system_ids(client: AsyncClient) -> None:
+    res = await client.post(
         "/api/v1/agentic-enterprise/maturity-assessment",
         json={"system_scores": {"unknown_system": 50}},
     )
