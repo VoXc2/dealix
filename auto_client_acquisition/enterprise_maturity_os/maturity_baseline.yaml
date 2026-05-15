@@ -1,0 +1,100 @@
+# Dealix platform maturity baseline — honest current-state evidence.
+#
+# This is the platform's self-assessment, not aspiration. Flip a value to
+# `true` only when the capability is real, tested, and recorded. Verification
+# evidence is deliberately stricter than gate evidence: a gate can be built,
+# but the verification systems exist to prove it actually works.
+#
+# Edit alongside the code that delivers each capability — never to flatter the score.
+
+gate_evidence:
+  architecture:
+    multi_tenant_isolation: true
+    service_boundaries_defined: true
+    scalable_data_layer: true
+    documented_architecture: true
+    failure_modes_handled: true
+  security:
+    rbac_enforced: true
+    secrets_managed: true
+    audit_logging: true
+    vulnerability_scanning: true
+    data_classification: true
+  governance:
+    approvals_enforced: true
+    policy_registry: true
+    forbidden_actions_blocked: true
+    immutable_audit_trail: true
+    lawful_basis_tracked: true
+  workflow:
+    workflows_defined: true
+    workflow_execution_engine: true
+    retries_and_escalation: true
+    human_in_the_loop: true
+    edge_cases_tested: false
+  evaluation:
+    hallucination_checks: true
+    grounding_and_citations: true
+    workflow_quality_scored: true
+    agent_behavior_evaluated: false
+    business_impact_measured: false
+  operational:
+    observability_metrics: true
+    traces_and_logs: true
+    alerting: true
+    incident_runbooks: true
+    dead_letter_handling: true
+  delivery:
+    onboarding_kit: true
+    delivery_playbooks: true
+    qa_checklists: true
+    proof_pack_assembly: true
+    handoff_process: true
+  transformation:
+    maturity_model_published: true
+    operating_model_defined: true
+    adoption_framework: true
+    workflow_redesign_method: false
+    roi_framework: true
+  executive:
+    executive_dashboards: true
+    revenue_impact_proven: false
+    time_saved_proven: false
+    executive_briefs: true
+    strategic_intelligence: true
+  scale:
+    second_operator_can_deliver: false
+    templates_complete: true
+    semi_automated_reporting: true
+    stable_qa_at_volume: false
+    repeatable_proof_packs: true
+
+verification_evidence:
+  real_workflow_testing:
+    full_workflows_tested: true
+    approvals_tested: true
+    failures_and_retries_tested: true
+    escalations_tested: false
+    edge_cases_tested: false
+  governance_validation:
+    approvals_enforced: true
+    permissions_correct: true
+    audit_logs_complete: true
+    policies_respected: true
+    agents_stay_in_bounds: true
+  operational_evaluations:
+    ai_quality_measured: true
+    grounding_measured: true
+    workflow_completion_measured: true
+    escalation_correctness_measured: false
+    business_quality_measured: false
+  enterprise_readiness_gates:
+    every_service_has_gate_scores: true
+    gate_thresholds_enforced: true
+    gate_evidence_recorded: true
+  executive_proof:
+    revenue_increase_proven: false
+    time_reduction_proven: false
+    operations_improvement_proven: false
+    approval_speedup_proven: false
+    organizational_leverage_proven: false
