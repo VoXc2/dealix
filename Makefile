@@ -59,6 +59,9 @@ test-unit: ## Unit tests only
 test-integration: ## Integration tests only
 	pytest -v tests/integration
 
+eval: ## Run the RAG retrieval-quality gate (deterministic, no API keys)
+	python scripts/run_rag_eval.py
+
 # ── Pre-commit ─────────────────────────────────────────────────
 pre-commit-install: ## Install pre-commit hooks
 	pre-commit install
