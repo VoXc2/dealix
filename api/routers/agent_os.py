@@ -81,27 +81,47 @@ async def get_one(agent_id: str) -> dict[str, Any]:
 
 @router.post("/{agent_id}/kill", dependencies=[Depends(require_admin_key)])
 async def kill(agent_id: str, body: _KillBody) -> dict[str, Any]:
-    from auto_client_acquisition.secure_agent_runtime_os import activate_kill_switch
-    result = activate_kill_switch(agent_id=agent_id, reason=body.reason)
-    if not result.get("activated"):
-        raise HTTPException(status_code=404, detail=result)
-    return result
+    from auto_client_acquisition.agent_os import kill_agent
+    try:
+        card = kill_agent(agent_id, body.reason)
+    except ValueError as e:
+        raise HTTPException(status_code=404, detail=str(e)) from e
+    return {
+        "activated": True,
+        "agent": card.to_dict(),
+        "governance_decision": "allow",
+    }
 
 
 @router.get("/{agent_id}/audit", dependencies=[Depends(require_admin_key)])
 async def audit(agent_id: str) -> dict[str, Any]:
-    """Audit view: agent card + last 20 audit events that reference it."""
-    from auto_client_acquisition.agent_os import get_agent
-    from auto_client_acquisition.auditability_os.audit_event import list_events
+    """Audit view: agent card + performance summary + recent friction events."""
+    from auto_client_acquisition.agent_os import get_agent, summarize_agent
+    from auto_client_acquisition.friction_log import list_events
 
     card = get_agent(agent_id)
     if card is None:
         raise HTTPException(status_code=404, detail="agent_not_found")
-    events = list_events(customer_id="dealix_internal", limit=200)
-    relevant = [e.to_dict() for e in events if agent_id in (e.summary or "")][:20]
+    performance = summarize_agent(agent_id)
+    events = list_events(customer_id="dealix_internal", since_days=90, limit=200)
+    friction = [
+        e.to_dict() for e in events if getattr(e, "workflow_id", "") == agent_id
+    ][:20]
     return {
         "agent": card.to_dict(),
-        "recent_events": relevant,
-        "event_count": len(relevant),
+        "performance": performance.to_dict() if performance else None,
+        "friction_events": friction,
+        "event_count": len(friction),
         "governance_decision": "allow",
     }
+
+
+@router.get("/{agent_id}/performance", dependencies=[Depends(require_admin_key)])
+async def performance(agent_id: str) -> dict[str, Any]:
+    """Performance dashboard data — quality / latency / cost / compliance."""
+    from auto_client_acquisition.agent_os import summarize_agent
+
+    summary = summarize_agent(agent_id)
+    if summary is None:
+        raise HTTPException(status_code=404, detail="agent_not_found")
+    return {"performance": summary.to_dict(), "governance_decision": "allow"}
