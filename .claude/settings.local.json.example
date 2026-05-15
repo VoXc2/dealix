@@ -1,0 +1,12 @@
+{
+  "_comment": "Copy this file to .claude/settings.local.json for personal overrides. The local file is gitignored and never committed. Settings here merge over .claude/settings.json.",
+  "permissions": {
+    "allow": [
+      "Bash(make run)",
+      "Bash(make docker-up)"
+    ]
+  },
+  "env": {
+    "PYTHONPATH": "."
+  }
+}

@@ -160,9 +160,15 @@ traces/
 .dealix/
 
 # ─────────────────────────────────────────────────────────────
-# 🤖 Claude Code agent worktrees + runtime ledger artifacts
+# 🤖 Claude Code — ignore runtime artifacts/worktrees;
+# keep config (settings.json, hooks/, agents/) tracked.
 # ─────────────────────────────────────────────────────────────
-.claude/
+.claude/*
+!.claude/agents/
+!.claude/hooks/
+!.claude/settings.json
+!.claude/settings.local.json.example
+.claude/settings.local.json
 
 # Proof ledger runtime artifacts (template + schema + readme stay tracked)
 docs/proof-events/*.jsonl
