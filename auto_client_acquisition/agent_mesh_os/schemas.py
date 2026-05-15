@@ -3,9 +3,9 @@
 from __future__ import annotations
 
 from datetime import UTC, datetime
-from pydantic import BaseModel, ConfigDict, Field
 from typing import Literal
 
+from pydantic import BaseModel, ConfigDict, Field
 
 AgentStatus = Literal["active", "inactive", "isolated"]
 

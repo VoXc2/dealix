@@ -6,18 +6,20 @@ Revises: 010
 
 from __future__ import annotations
 
-from typing import Sequence, Union
+from collections.abc import Sequence
+from typing import Union
 
 import sqlalchemy as sa
-from alembic import op
 from sqlalchemy.dialects import postgresql
 
-__all__ = ["revision", "down_revision", "branch_labels", "depends_on"]
+from alembic import op
+
+__all__ = ["branch_labels", "depends_on", "down_revision", "revision"]
 
 revision: str = "011"
-down_revision: Union[str, Sequence[str], None] = "010"
-branch_labels: Union[str, Sequence[str], None] = None
-depends_on: Union[str, Sequence[str], None] = None
+down_revision: str | Sequence[str] | None = "010"
+branch_labels: str | Sequence[str] | None = None
+depends_on: str | Sequence[str] | None = None
 
 
 def upgrade() -> None:

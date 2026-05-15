@@ -3,9 +3,10 @@
 from __future__ import annotations
 
 from datetime import UTC, datetime
-from pydantic import BaseModel, ConfigDict, Field
 from threading import Lock
 from uuid import uuid4
+
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class ApprovalGateError(ValueError):
