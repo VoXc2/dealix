@@ -73,6 +73,11 @@ from api.routers import agent_os as agent_os_router
 from api.routers import commercial_map as commercial_map_router
 # Wave 15 — Founder launch-status (single-pane production readiness)
 from api.routers import founder_launch_status as founder_launch_status_router
+# Wave 16 — Enterprise AI OS spine: Knowledge OS, Agent Runtime, Evals, ROI
+from api.routers import agent_loop_os as agent_loop_os_router
+from api.routers import evals_os as evals_os_router
+from api.routers import knowledge_os as knowledge_os_router
+from api.routers import roi_os as roi_os_router
 from api.security import APIKeyMiddleware, setup_rate_limit
 from core.config.settings import get_settings
 from core.errors import AICompanyError
@@ -290,6 +295,15 @@ def create_app() -> FastAPI:
     app.include_router(commercial_map_router.router)
     # Wave 15 — Founder launch-status (admin /launch-status + public /launch-status/public)
     app.include_router(founder_launch_status_router.router)
+    # ── Wave 16 — Enterprise AI OS spine ───────────────────────────
+    # Knowledge OS: source-gated ingestion + grounded, cited retrieval.
+    app.include_router(knowledge_os_router.router)
+    # Agent Runtime: bounded, audited agentic loop.
+    app.include_router(agent_loop_os_router.router)
+    # Evals OS: RAG + agent + doctrine quality measurement.
+    app.include_router(evals_os_router.router)
+    # ROI OS: executive intelligence + ROI snapshots / briefs.
+    app.include_router(roi_os_router.router)
 
     @app.get("/", tags=["root"])
     async def root() -> dict[str, object]:

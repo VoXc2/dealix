@@ -61,7 +61,14 @@ def default_executors() -> dict[str, Any]:
 
     Each action_type maps to a stub. Replace any of them with real LLM /
     provider calls by overriding the dict before constructing the runtime.
+
+    ``agentic_resolve`` is wired to the real bounded agent runtime
+    (``agent_loop_os``) rather than a stub.
     """
+    from auto_client_acquisition.agent_loop_os.orchestrator_bridge import (
+        agentic_resolve_executor,
+    )
+
     return {
         "discover_leads": _stub_discover,
         "enrich_lead": _stub_enrich,
@@ -74,4 +81,5 @@ def default_executors() -> dict[str, Any]:
         "compute_health": lambda t: {"overall": 78, "bucket": "stable"},
         "generate_qbr": _stub_brief,
         "publish_pulse": lambda t: {"pulse_url": "/pulse.html"},
+        "agentic_resolve": agentic_resolve_executor,
     }

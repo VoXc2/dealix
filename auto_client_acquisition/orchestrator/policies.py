@@ -78,6 +78,7 @@ ACTION_TYPES: tuple[str, ...] = (
     "compute_health",
     "generate_qbr",
     "publish_pulse",
+    "agentic_resolve",  # bounded agent loop (agent_loop_os) — read-only tools
 )
 
 

@@ -17,6 +17,7 @@ class FrictionKind(StrEnum):
     SUPPORT_TICKET = "support_ticket"
     MISSING_SOURCE_PASSPORT = "missing_source_passport"
     MISSING_PROOF_PACK = "missing_proof_pack"
+    AI_REGRESSION = "ai_regression"
 
 
 class FrictionSeverity(StrEnum):

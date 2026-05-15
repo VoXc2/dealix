@@ -55,6 +55,8 @@ _ALLOWLIST_PATHS = frozenset({
     "docs/WAVE12_EVIDENCE_TABLE.md",
     # Wave 13 Full Ops audit doc — references this lockdown test by name
     "docs/WAVE13_FULL_OPS_AUDIT.md",
+    # Enterprise architecture test register — lists this lockdown test by name
+    "docs/enterprise_architecture/TESTS_REQUIRED.md",
     # Wave 14 master verifier — invokes the lockdown test by file path
     "scripts/dealix_wave14_saudi_engines_verify.sh",
     # Wave 14 evidence table — references this lockdown test by name
