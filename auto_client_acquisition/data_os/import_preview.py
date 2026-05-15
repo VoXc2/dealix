@@ -96,13 +96,16 @@ def preview(source: bytes | Iterable[dict[str, Any]]) -> ImportPreview:
     the I/O policy stays at the boundary.
     """
     rows: list[dict[str, Any]]
+    header: tuple[str, ...] = ()
     if isinstance(source, bytes):
         reader = csv.DictReader(io.StringIO(source.decode("utf-8")))
         rows = list(reader)
+        # Keep the declared schema even for a header-only file (no data rows).
+        header = tuple(reader.fieldnames or ())
     else:
         rows = list(source)
 
-    columns = tuple(rows[0].keys()) if rows else ()
+    columns = tuple(rows[0].keys()) if rows else header
     pii_cols = _detect_pii_columns(columns, rows)
     missing = _missing_pct(columns, rows)
     cleanup = _suggest_cleanup(missing, pii_cols)
