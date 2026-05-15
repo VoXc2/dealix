@@ -1,0 +1,24 @@
+name: ai_revenue_os_enterprise_loop_v1
+version: 1
+type: governed_enterprise_workflow
+trigger: lead_entered
+steps:
+  - lead_qualification
+  - knowledge_retrieval
+  - scoring
+  - suggested_response
+  - approval
+  - crm_update
+  - executive_metrics
+  - rollback_drill
+governance:
+  require_approval_for:
+    - crm_update
+  block_if_unapproved: true
+observability:
+  traces: true
+  logs: true
+  metrics: true
+agent_registry:
+  required_agents:
+    - sales_agent
