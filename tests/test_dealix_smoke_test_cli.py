@@ -114,7 +114,11 @@ def test_smoke_against_local_app_passes_all_required():
     mod = _import_module()
     app = create_app()
     with _live_server(app) as base_url:
-        report = mod.run(base_url, timeout=30)
+        # Generous per-request timeout: /api/v1/founder/dashboard is a
+        # documented heavy-but-cached aggregation (composes ~10 audit
+        # sections) and its first uncached build runs well past 30s once
+        # the landing site has grown. The check is correctness, not latency.
+        report = mod.run(base_url, timeout=120)
     assert report["failed_required"] == 0, (
         f"failures: "
         f"{[r for r in report['results'] if not r['ok']]}"
