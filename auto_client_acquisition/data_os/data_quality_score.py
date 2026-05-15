@@ -1,8 +1,22 @@
-"""Lightweight data quality metrics for account-style rows (dicts)."""
+"""Data quality metrics.
+
+Two complementary surfaces:
+  - lightweight per-row helpers for account-style dicts
+    (``account_row_completeness`` … ``summarize_table_quality``);
+  - the 0-100 composite ``compute_dq`` / ``DQScore`` over an ``ImportPreview``,
+    consumed by the data_os router and the delivery sprint.
+"""
 
 from __future__ import annotations
 
-from typing import Any
+from dataclasses import dataclass
+from typing import TYPE_CHECKING, Any
+
+if TYPE_CHECKING:
+    # Annotation-only — importing these at runtime would create a cycle
+    # (import_preview → revenue_data_intake → csv_preview → data_quality_score).
+    from auto_client_acquisition.data_os.import_preview import ImportPreview
+    from auto_client_acquisition.data_os.source_passport import SourcePassport
 
 
 def account_row_completeness(row: dict[str, Any], required_keys: tuple[str, ...]) -> float:
@@ -61,3 +75,100 @@ def summarize_table_quality(
         "mean_completeness": mean_completeness(rows, required_keys),
         "duplicate_ratio_company_name": duplicate_ratio_by_field(rows, "company_name"),
     }
+
+
+# ── Composite 0-100 score over an ImportPreview (Wave 1/2 API) ───────────
+
+
+@dataclass
+class DQScore:
+    overall: float
+    completeness: float
+    duplicate_inverse: float
+    format_consistency: float
+    source_clarity: float
+    breakdown: dict[str, Any]
+
+
+def _completeness(missing_pct: dict[str, float]) -> float:
+    if not missing_pct:
+        return 0.0
+    mean_missing = sum(missing_pct.values()) / len(missing_pct)
+    return round(max(0.0, 100.0 - mean_missing), 2)
+
+
+def _duplicate_inverse(duplicates_found: int, total_rows: int) -> float:
+    if total_rows <= 0:
+        return 100.0
+    dup_pct = 100.0 * duplicates_found / total_rows
+    return round(max(0.0, 100.0 - dup_pct), 2)
+
+
+def _format_consistency(preview: ImportPreview) -> float:
+    # Heuristic: every column with >0% missing AND mixed plausible formats
+    # costs 5 points; capped at -30.
+    penalty = 0.0
+    for col, pct in preview.missing_pct.items():
+        if 0 < pct < 100 and col.lower().endswith(("date", "_at", "amount", "price")):
+            penalty += 5.0
+    return round(max(0.0, 100.0 - min(30.0, penalty)), 2)
+
+
+def _source_clarity(passport: SourcePassport | None) -> float:
+    if passport is None:
+        return 0.0
+    if not passport.source_id:
+        return 25.0
+    if not passport.allowed_use:
+        return 50.0
+    return 100.0
+
+
+def compute_dq(
+    *,
+    preview: ImportPreview,
+    duplicates_found: int = 0,
+    source_passport: SourcePassport | None = None,
+) -> DQScore:
+    """Weighted: completeness 0.60, duplicate_inverse 0.30, format 0.05,
+    source_clarity 0.05 — matches Phase 1's 60/40 split with two small
+    consistency modifiers."""
+    completeness = _completeness(preview.missing_pct)
+    dup_inv = _duplicate_inverse(duplicates_found, preview.row_count)
+    fmt = _format_consistency(preview)
+    src = _source_clarity(source_passport)
+
+    overall = round(
+        completeness * 0.60
+        + dup_inv * 0.30
+        + fmt * 0.05
+        + src * 0.05,
+        2,
+    )
+    return DQScore(
+        overall=overall,
+        completeness=completeness,
+        duplicate_inverse=dup_inv,
+        format_consistency=fmt,
+        source_clarity=src,
+        breakdown={
+            "row_count": preview.row_count,
+            "duplicates_found": duplicates_found,
+            "pii_columns": list(preview.pii_columns),
+            "missing_pct_mean": round(
+                sum(preview.missing_pct.values()) / max(1, len(preview.missing_pct)),
+                2,
+            ),
+            "weights": {"completeness": 0.60, "duplicate_inverse": 0.30, "format": 0.05, "source": 0.05},
+        },
+    )
+
+
+__all__ = [
+    "DQScore",
+    "account_row_completeness",
+    "compute_dq",
+    "duplicate_ratio_by_field",
+    "mean_completeness",
+    "summarize_table_quality",
+]
