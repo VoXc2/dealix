@@ -120,8 +120,10 @@ def list_events(
     *,
     customer_id: str | None = None,
     tier: str | None = None,
-    limit: int = 1000,
+    limit: int | None = 1000,
 ) -> list[ValueEvent]:
+    """List ledger events. ``limit=None`` returns every matching event —
+    callers that aggregate (e.g. ``summarize``) must not silently truncate."""
     path = _path()
     if not path.exists():
         return []
@@ -142,14 +144,15 @@ def list_events(
                 if tier and ev.tier != tier:
                     continue
                 out.append(ev)
-                if len(out) >= limit:
+                if limit is not None and len(out) >= limit:
                     break
     return out
 
 
 def summarize(*, customer_id: str, period_days: int = 30) -> dict[str, Any]:
     cutoff = datetime.now(timezone.utc).timestamp() - period_days * 86400
-    events = list_events(customer_id=customer_id)
+    # No limit — a summary must see every event or the period totals lie.
+    events = list_events(customer_id=customer_id, limit=None)
     in_window: list[ValueEvent] = []
     for ev in events:
         try:
