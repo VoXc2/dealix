@@ -1032,3 +1032,33 @@ class CustomerWebhookDelivery(Base):
                          name="uq_webhook_subscription_event"),
         Index("ix_cwd_event_type_created", "event_type", "delivered_at"),
     )
+
+
+# ── Knowledge / RAG (Layer 4) ─────────────────────────────────────
+
+class KnowledgeChunkRecord(Base):
+    """
+    One retrievable document chunk + its embedding — Postgres backend for
+    the knowledge_v10 RAG layer (the production peer of JsonlKnowledgeStore).
+
+    The embedding is stored as a JSON float array so the table works on
+    plain PostgreSQL; cosine ranking is done in Python (same approach as
+    EmbeddingService). A pgvector `vector` column + ANN index is a later
+    optimisation applied by ALTER once the extension is provisioned.
+    """
+
+    __tablename__ = "knowledge_chunks"
+
+    chunk_id: Mapped[str] = mapped_column(String(64), primary_key=True)
+    document_id: Mapped[str] = mapped_column(String(64), index=True)
+    customer_handle: Mapped[str] = mapped_column(String(64), default="", index=True)
+    source_type: Mapped[str] = mapped_column(String(64), default="internal_doc", index=True)
+    text: Mapped[str] = mapped_column(Text, default="")
+    embedding_json: Mapped[list] = mapped_column(JSON, default=list)
+    language: Mapped[str] = mapped_column(String(8), default="ar")
+    meta_json: Mapped[dict] = mapped_column("metadata", JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(default=utcnow, index=True)
+
+    __table_args__ = (
+        Index("ix_knowledge_chunks_tenant_doc", "customer_handle", "document_id"),
+    )

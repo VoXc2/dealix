@@ -89,7 +89,7 @@ async def ingest_text(
         )
         for piece, vec in zip(pieces, vectors, strict=True)
     ]
-    written = target.add_chunks(chunks)
+    written = await target.add_chunks(chunks)
     return {"document_id": document_id, "chunks": written, "status": "ok"}
 
 

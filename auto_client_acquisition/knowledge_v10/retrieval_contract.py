@@ -55,7 +55,7 @@ async def retrieve(
         return []
 
     target = store or get_store()
-    chunks = target.iter_chunks(customer_handle=req.customer_handle or None)
+    chunks = await target.iter_chunks(customer_handle=req.customer_handle or None)
     if not chunks:
         return []
 
