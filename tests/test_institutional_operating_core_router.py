@@ -2,13 +2,20 @@
 
 from __future__ import annotations
 
+from fastapi import FastAPI
 from starlette.testclient import TestClient
 
-from api.main import app
+from api.routers.institutional_operating_core import router
+
+
+def _make_test_app() -> FastAPI:
+    app = FastAPI()
+    app.include_router(router)
+    return app
 
 
 def test_institutional_operating_core_status() -> None:
-    client = TestClient(app)
+    client = TestClient(_make_test_app())
     resp = client.get("/api/v1/institutional-operating-core/status")
     assert resp.status_code == 200
     data = resp.json()
@@ -17,7 +24,7 @@ def test_institutional_operating_core_status() -> None:
 
 
 def test_dependency_verdict_requires_readiness_and_dependency() -> None:
-    client = TestClient(app)
+    client = TestClient(_make_test_app())
     body = {
         "decision_dependency_pct": 90,
         "execution_dependency_pct": 90,
