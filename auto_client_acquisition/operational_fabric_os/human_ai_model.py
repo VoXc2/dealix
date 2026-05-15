@@ -36,12 +36,12 @@ class OversightDecision:
 
 def evaluate_human_ai_request(request: DelegationRequest) -> OversightDecision:
     requires_approval = (
-        request.requires_external_action
-        or request.risk_level == "high"
-        or request.confidence < 0.7
+        request.requires_external_action or request.risk_level == "high" or request.confidence < 0.7
     )
     mode = "human_supervised" if requires_approval else "delegated_autonomous"
-    trusted = request.explanation_available and request.confidence >= 0.8 and request.risk_level != "high"
+    trusted = (
+        request.explanation_available and request.confidence >= 0.8 and request.risk_level != "high"
+    )
     trust_state = "trusted" if trusted else "review_required"
     return OversightDecision(
         mode=mode,

@@ -18,7 +18,9 @@ class WorkflowControlState:
     current_checkpoint_index: int
 
 
-def create_workflow(*, workflow_id: str, route: str, policy_version: str, trace_id: str) -> WorkflowControlState:
+def create_workflow(
+    *, workflow_id: str, route: str, policy_version: str, trace_id: str
+) -> WorkflowControlState:
     if not workflow_id.strip():
         raise ValueError("workflow_id_required")
     if not route.strip():
@@ -42,13 +44,15 @@ def append_checkpoint(state: WorkflowControlState, checkpoint_id: str) -> Workfl
     checkpoint = checkpoint_id.strip()
     if not checkpoint:
         raise ValueError("checkpoint_id_required")
-    checkpoints = state.checkpoints + (checkpoint,)
+    checkpoints = (*state.checkpoints, checkpoint)
     return replace(state, checkpoints=checkpoints, current_checkpoint_index=len(checkpoints) - 1)
 
 
 def observe_workflow(state: WorkflowControlState) -> dict[str, object]:
     current_checkpoint = (
-        state.checkpoints[state.current_checkpoint_index] if state.current_checkpoint_index >= 0 else None
+        state.checkpoints[state.current_checkpoint_index]
+        if state.current_checkpoint_index >= 0
+        else None
     )
     return {
         "workflow_id": state.workflow_id,
@@ -88,7 +92,9 @@ def reroute_workflow(state: WorkflowControlState, new_route: str) -> WorkflowCon
     return replace(state, route=route)
 
 
-def update_workflow_policy(state: WorkflowControlState, policy_version: str) -> WorkflowControlState:
+def update_workflow_policy(
+    state: WorkflowControlState, policy_version: str
+) -> WorkflowControlState:
     policy = policy_version.strip()
     if not policy:
         raise ValueError("policy_version_required")

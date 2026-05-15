@@ -62,7 +62,9 @@ def evaluate_contract(
             reason=f"{clean_mode}_not_permitted",
         )
 
-    missing = tuple(sorted(check for check in contract.required_checks if check not in provided_checks))
+    missing = tuple(
+        sorted(check for check in contract.required_checks if check not in provided_checks)
+    )
     if missing:
         return AssuranceEvaluation(
             allowed=False,

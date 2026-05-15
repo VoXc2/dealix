@@ -26,6 +26,8 @@ class AgentDescriptor:
 
 
 class AgentMesh:
+    _MIN_ROUTABLE_HEALTH = 0.5
+
     """Small in-memory mesh controller for deterministic policy checks."""
 
     def __init__(self) -> None:
@@ -34,7 +36,9 @@ class AgentMesh:
     def register(self, descriptor: AgentDescriptor) -> None:
         self._agents[descriptor.agent_id] = descriptor
 
-    def discover(self, *, capability: str | None = None, include_isolated: bool = False) -> tuple[AgentDescriptor, ...]:
+    def discover(
+        self, *, capability: str | None = None, include_isolated: bool = False
+    ) -> tuple[AgentDescriptor, ...]:
         cap = (capability or "").strip().lower()
         out: list[AgentDescriptor] = []
         for descriptor in self._agents.values():
@@ -45,7 +49,9 @@ class AgentMesh:
             out.append(descriptor)
         return tuple(sorted(out, key=lambda item: item.agent_id))
 
-    def evaluate(self, agent_id: str, *, observability_score: float, policy_compliance: bool) -> float:
+    def evaluate(
+        self, agent_id: str, *, observability_score: float, policy_compliance: bool
+    ) -> float:
         descriptor = self._agents[agent_id]
         bounded_obs = max(0.0, min(1.0, observability_score))
         compliance_score = 1.0 if policy_compliance else 0.0
@@ -65,6 +71,7 @@ class AgentMesh:
             for descriptor in self._agents.values()
             if descriptor.governed
             and not descriptor.isolated
+            and descriptor.health_score >= self._MIN_ROUTABLE_HEALTH
             and capability.lower() in {c.lower() for c in descriptor.capabilities}
         ]
         if not matches:
