@@ -17,12 +17,15 @@ python scripts/verify_dealix_ready.py --skip-tests
 
 ## Company Status
 
+_آخر تحقق آلي: 2026-05-15 — `python scripts/verify_dealix_ready.py` →_
+**`DEALIX_READY_FOR_SALES=true` · Decision: `SELL_READY_STACK`**
+
 | Field | Value |
 |-------|--------|
-| **Current Stage** | (مثال: Gate 6 Pass — جاهز للبيع للخدمات الثلاث الأولى) |
-| **Officially Sellable Services** | |
-| **Services in Beta** | (Score 70–84 أو ناقص demo فقط) |
-| **Services Not Ready** | (أقل من 70 أو hard fail) |
+| **Current Stage** | Gate 8 Pass — جاهز للبيع + جاهزية ريتينر؛ البناء أخضر (0 أخطاء تجميع، التطبيق يقلع) |
+| **Officially Sellable Services** | lead_intelligence_sprint (100) · ai_quick_win_sprint (100) · company_brain_sprint (100) · ai_support_desk_sprint (90) · ai_governance_program (100) · client_ai_policy_pack (100) |
+| **Services in Beta** | (none) |
+| **Services Not Ready** | (none) |
 
 ---
 
@@ -30,17 +33,17 @@ python scripts/verify_dealix_ready.py --skip-tests
 
 | Gate | الاسم | قرار (PASS / FIX / BLOCKED) | Score يدوي / ملاحظة |
 |------|--------|-----------------------------|---------------------|
-| 0 | Founder Clarity | | /100 (Pass ≥ 85) |
-| 1 | Offer Readiness | | /100 (Pass ≥ 85 لكل عرض) |
-| 2 | Delivery Readiness | | /100 (Pass ≥ 85) |
-| 3 | Product Readiness | | /100 (Pass ≥ 80 MVP) |
-| 4 | Governance Readiness | | /100 (Pass ≥ 90) |
-| 5 | Demo Readiness | | /100 (Pass ≥ 85) |
-| 6 | Sales Readiness | | /100 (Pass ≥ 85) |
-| 7 | Client Delivery Readiness | | |
-| 8 | Retainer Readiness | | /100 (Pass ≥ 85) |
-| 9 | Scale Readiness | | /100 (Pass ≥ 85) |
-| 10 | World-Class Readiness | | (معيار طموح — انظر [`docs/company/WORLD_CLASS_READINESS_AR.md`](docs/company/WORLD_CLASS_READINESS_AR.md)) |
+| 0 | Founder Clarity | PASS | تحقق آلي 2026-05-15 |
+| 1 | Offer Readiness | PASS | 6/6 عروض ≥ 85 |
+| 2 | Delivery Readiness | PASS | |
+| 3 | Product Readiness | PASS | البناء أخضر؛ `pytest --co` بلا أخطاء |
+| 4 | Governance Readiness | PASS | محرّك eval يثبت بوابات الحوكمة (11/11 probe) |
+| 5 | Demo Readiness | PASS | |
+| 6 | Sales Readiness | PASS | |
+| 7 | Client Delivery Readiness | PASS | اختبار e2e لـ Data Pack ينجح (6/6) |
+| 8 | Retainer Readiness | PASS | |
+| 9 | Scale Readiness | FIX | تضخّم الوحدات (51 يتيمة) — Phase 4 |
+| 10 | World-Class Readiness | FIX | معيار طموح — انظر [`docs/company/WORLD_CLASS_READINESS_AR.md`](docs/company/WORLD_CLASS_READINESS_AR.md) |
 
 **قرار ثلاثي:** `PASS` → انتقل | `FIX` → أصلح ثم أعد التقييم | `BLOCKED` → لا بيع ولا توسع حتى تُزال المعرقلات.
 
@@ -54,21 +57,19 @@ python scripts/verify_dealix_ready.py --skip-tests
 
 ## Do Not Sell Yet
 
-1.
-2.
-3.
+1. (none — كل الخدمات الرسمية عبرت ≥ 85)
 
 ## Critical Gaps
 
-1.
-2.
-3.
+1. **المدفوعات في وضع الاختبار** — Moyasar مدمج لكن `DEALIX_MOYASAR_MODE` افتراضياً `test`؛ التفعيل الحي قرار مؤسس (بيانات اعتماد + امتثال).
+2. **تضخّم الوحدات** — ~51 وحدة OS يتيمة + عائلات مكرّرة؛ Gate 9 Scale = FIX حتى Phase 4.
+3. **اختبار التحميل / scale تحت ضغط** — `locustfile.py` موجود لكن لا تقرير حِمل موثّق حديث؛ يلزم قبل وعود SLA مؤسسية. (نماذج `data-pack.html` و`diagnostic.html` مؤكَّد ربطها بـ`/api/v1/data-os` و`/api/v1/public` فعلياً.)
 
 ## Next Build Decisions
 
-1.
-2.
-3.
+1. Phase 4 — تجميد التضخّم: تعليم الوحدات اليتيمة `deprecated` + حارس CI ضد وحدات `_vN` جديدة.
+2. Phase 5 — تحقق شامل: `pytest` كامل بعتبة تغطية + `verify_dealix_ready.py` بلا `--skip-tests`.
+3. قرار المؤسس — تفعيل Moyasar الحي بعد اكتمال بوابة الامتثال.
 
 ---
 
