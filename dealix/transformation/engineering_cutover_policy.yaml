@@ -1,0 +1,23 @@
+version: 1
+policy_name: on_demand_engineering_cutover
+reference_gap_closure: docs/transformation/02_gap_closure_matrix.md
+reference_jsonl_catalog: dealix/transformation/jsonl_migration_catalog.yaml
+
+rule_en: >-
+  Do not open JSONL→Postgres or critical-path persistence cutover PRs as vanity work.
+  Tie each cutover PR to at least one external commercial or procurement signal.
+
+minimum_signals_any_one:
+  - contract_signed
+  - pilot_scope_locked
+  - procurement_security_review_started
+  - invoice_sent
+  - asks_for_security
+
+pr_body_required_marker_examples:
+  - "external_signal:"
+  - "contract_or_pilot_ref:"
+
+allowed_exceptions:
+  - description: CI breakage or security patch mandated without commercial signal
+    requires_security_review_note_in_pr: true

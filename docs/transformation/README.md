@@ -41,6 +41,16 @@ This directory is the execution spine for the comprehensive transformation from 
 - `dealix/transformation/jsonl_migration_catalog.yaml`
 - `dealix/transformation/reliability_drills.yaml`
 - `dealix/transformation/category_expansion_gates.yaml`
+- `dealix/transformation/ceo_signal_os.yaml`
+- `dealix/transformation/engineering_cutover_policy.yaml`
+- `dealix/transformation/kpi_baselines.yaml`
+
+## CEO Signal OS (market proof loop)
+
+- Taxonomy and targets: `dealix/transformation/ceo_signal_os.yaml`
+- Weekly dated proof pack: `bash scripts/run_ceo_signal_weekly_loop.sh`
+- Pick verification gate: `bash scripts/verify_ceo_signal_readiness.sh transformation|control_plane|revenue_os|category_gates|all`
+- Before scaling sectors/regions: `bash scripts/verify_category_expansion_before_scale.sh`
 
 ## Verification
 

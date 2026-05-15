@@ -1,0 +1,41 @@
+version: 1
+program: global_ai_transformation
+notes_ar: >-
+  عبّئ القيم الفعلية أسبوعيًا من CRM/المالية/التسليم. اترك null حتى يتوفر المصدر.
+  كل قيمة يجب أن يمر مرجعها في Weekly Proof Pack.
+updated_period_iso: ""
+
+snapshots:
+  measured_customer_value_sar:
+    value_numeric: null
+    source_ref: ""
+  governance_integrity_rate:
+    value_numeric: null
+    source_ref: ""
+  reliability_posture_score:
+    value_numeric: null
+    source_ref: ""
+  expansion_quality_ratio:
+    value_numeric: null
+    source_ref: ""
+  time_to_proof_days:
+    value_numeric: null
+    source_ref: ""
+  approval_cycle_time_hours:
+    value_numeric: null
+    source_ref: ""
+  conversion_discovery_to_pilot:
+    value_numeric: null
+    source_ref: ""
+  gross_margin_by_offer:
+    value_numeric: null
+    source_ref: ""
+  unauthorized_external_action_count:
+    value_numeric: null
+    source_ref: ""
+  measured_metric_without_source_ref_count:
+    value_numeric: null
+    source_ref: ""
+  tenant_isolation_violation_count:
+    value_numeric: null
+    source_ref: ""

@@ -57,15 +57,19 @@ ENTERPRISE_PACKAGE_FILES = (
 CONTROL_ARTIFACTS = (
     "dealix/transformation/todo_registry.yaml",
     "dealix/transformation/kpi_registry.yaml",
+    "dealix/transformation/kpi_baselines.yaml",
     "dealix/transformation/ownership_matrix.yaml",
     "dealix/transformation/risk_register.yaml",
     "dealix/transformation/jsonl_migration_catalog.yaml",
     "dealix/transformation/reliability_drills.yaml",
     "dealix/transformation/category_expansion_gates.yaml",
+    "dealix/transformation/ceo_signal_os.yaml",
+    "dealix/transformation/engineering_cutover_policy.yaml",
 )
 
 ENTERPRISE_RUNBOOK_FILES = (
     "docs/transformation/enterprise_package/PILOT_EXECUTION_RUNBOOK_AR.md",
+    "docs/transformation/enterprise_package/PILOT_REPEAT_CHECKLIST_AR.md",
 )
 
 MODULE_IMPORTS = (
@@ -229,6 +233,51 @@ def _check_category_expansion_gates(repo: Path) -> list[str]:
     return failures
 
 
+def _collect_kpi_keys(repo: Path) -> tuple[str, ...]:
+    data = _load_yaml(repo, "dealix/transformation/kpi_registry.yaml")
+    keys: list[str] = []
+    buckets = data.get("kpis") or {}
+    for bucket_name in ("north_star", "leading", "guardrails"):
+        for row in buckets.get(bucket_name, []):
+            key = row.get("key")
+            if key:
+                keys.append(str(key))
+    return tuple(keys)
+
+
+def _check_kpi_baselines(repo: Path) -> list[str]:
+    base = _load_yaml(repo, "dealix/transformation/kpi_baselines.yaml")
+    if not base.get("version"):
+        return ["kpi_baselines_missing_version"]
+    snaps = base.get("snapshots") or {}
+    expected = set(_collect_kpi_keys(repo))
+    got = set(snaps.keys())
+    missing = sorted(expected - got)
+    extra = sorted(got - expected)
+    failures = [f"kpi_baselines_missing_key:{k}" for k in missing]
+    failures.extend([f"kpi_baselines_unknown_key:{k}" for k in extra])
+    return failures
+
+
+def _check_ceo_signal_os(repo: Path) -> list[str]:
+    data = _load_yaml(repo, "dealix/transformation/ceo_signal_os.yaml")
+    events = data.get("external_events") or []
+    if len(events) < 10:
+        return ["ceo_signal_os_external_events_insufficient"]
+    monthly = data.get("monthly_targets") or {}
+    if int(monthly.get("partner_attempts_minimum", 0) or 0) < 1:
+        return ["ceo_signal_os_monthly_partner_target_missing"]
+    return []
+
+
+def _check_engineering_cutover_policy(repo: Path) -> list[str]:
+    data = _load_yaml(repo, "dealix/transformation/engineering_cutover_policy.yaml")
+    sigs = data.get("minimum_signals_any_one") or []
+    if len(sigs) < 2:
+        return ["engineering_cutover_policy_signals_insufficient"]
+    return []
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--check", default="", help="Check one todo id only")
@@ -284,6 +333,9 @@ def main() -> int:
         failures.extend(_check_enterprise_package(repo))
         failures.extend(_check_observability_contracts(repo))
         failures.extend(_check_reliability(repo))
+        failures.extend(_check_ceo_signal_os(repo))
+        failures.extend(_check_engineering_cutover_policy(repo))
+        failures.extend(_check_kpi_baselines(repo))
 
     if failures:
         print("GLOBAL AI TRANSFORMATION: FAIL")

@@ -40,6 +40,16 @@ This report operationalizes the comprehensive transformation blueprint into audi
 - Cross-OS weekly snapshot composes finance, delivery risk, flywheel, and reliability posture in `dealix/execution/weekly_cross_os_snapshot.py`.
 - Data flywheel integrates Data OS `compute_dq` outputs through `flywheel_inputs_from_preview`.
 
+## CEO unified plan layer (market-first)
+
+- CEO Signal OS registry: `dealix/transformation/ceo_signal_os.yaml`.
+- KPI numeric baselines slot file: `dealix/transformation/kpi_baselines.yaml` (fill weekly from real sources).
+- On-demand engineering cutover policy: `dealix/transformation/engineering_cutover_policy.yaml`.
+- Weekly loop script: `scripts/run_ceo_signal_weekly_loop.sh`.
+- Gate router: `scripts/verify_ceo_signal_readiness.sh`.
+- Pre-scale gates-only: `scripts/verify_category_expansion_before_scale.sh`.
+- Pilot repeat checklist: `docs/transformation/enterprise_package/PILOT_REPEAT_CHECKLIST_AR.md`.
+
 ## Remaining operational work (execution, not design)
 
 - Populate owner names from real organizational assignments.

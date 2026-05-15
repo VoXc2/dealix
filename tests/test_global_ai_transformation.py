@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import shutil
 import sys
 from pathlib import Path
 from subprocess import run
@@ -160,3 +161,31 @@ def test_category_expansion_gate_checker_passes() -> None:
         check=False,
     )
     assert proc.returncode == 0, proc.stderr or proc.stdout
+
+
+def test_verify_category_expansion_shell_wrapper() -> None:
+    root = Path(__file__).resolve().parents[1]
+    bash = shutil.which("bash") or "/usr/bin/bash"
+    proc = run(  # noqa: S603
+        [bash, str(root / "scripts/verify_category_expansion_before_scale.sh")],
+        cwd=root,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    assert proc.returncode == 0, proc.stderr or proc.stdout
+    assert "CATEGORY_EXPANSION_GATES: PASS" in proc.stdout
+
+
+def test_verify_ceo_signal_readiness_routes_transformation() -> None:
+    root = Path(__file__).resolve().parents[1]
+    bash = shutil.which("bash") or "/usr/bin/bash"
+    proc = run(  # noqa: S603
+        [bash, str(root / "scripts/verify_ceo_signal_readiness.sh"), "transformation"],
+        cwd=root,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    assert proc.returncode == 0, proc.stderr or proc.stdout
+    assert "GLOBAL AI TRANSFORMATION: PASS" in proc.stdout
