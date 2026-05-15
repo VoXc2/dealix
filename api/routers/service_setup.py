@@ -308,6 +308,87 @@ async def render_proposal_endpoint(
     }
 
 
+# ── Enterprise transformation proposal (tiered, thousands-of-riyals) ──
+
+
+class _EnterpriseProposalBody(BaseModel):
+    customer_name: str = Field(..., min_length=1)
+    customer_handle: str = Field(..., min_length=1)
+    sector: str = "b2b_services"
+    city: str = "Riyadh"
+    engagement_id: str = Field(..., min_length=1)
+    offering_id: str = Field(..., min_length=1)
+    recommended_tier_id: str = ""
+
+
+@router.post("/api/v1/service-setup/enterprise-proposal/{customer_id}")
+async def render_enterprise_proposal_endpoint(
+    customer_id: str, body: _EnterpriseProposalBody
+) -> dict[str, Any]:
+    """Render a tiered enterprise AI transformation proposal.
+
+    Unlike the single-price sprint proposal, this renders all pricing tiers
+    (Basic / Growth / Enterprise) for one enterprise program — setup +
+    monthly retainer, scope, governance. Founder reviews before sending.
+    """
+    if customer_id != body.customer_handle:
+        raise HTTPException(
+            status_code=400,
+            detail="customer_id in path must match body.customer_handle",
+        )
+    from auto_client_acquisition.sales_os.proposal_renderer import (
+        EnterpriseProposalContext,
+        render_enterprise_proposal,
+    )
+    from auto_client_acquisition.service_catalog import (
+        get_enterprise_offering,
+        get_enterprise_tier,
+    )
+
+    offering = get_enterprise_offering(body.offering_id)
+    if offering is None:
+        raise HTTPException(
+            status_code=404,
+            detail=f"unknown_enterprise_offering: {body.offering_id}",
+        )
+    if body.recommended_tier_id and get_enterprise_tier(
+        body.offering_id, body.recommended_tier_id
+    ) is None:
+        raise HTTPException(
+            status_code=422,
+            detail=f"unknown_tier_for_offering: {body.recommended_tier_id}",
+        )
+    ctx = EnterpriseProposalContext(
+        customer_name=body.customer_name,
+        customer_handle=body.customer_handle,
+        sector=body.sector,
+        city=body.city,
+        engagement_id=body.engagement_id,
+        offering=offering,
+        recommended_tier_id=body.recommended_tier_id,
+    )
+    md = render_enterprise_proposal(ctx)
+    return {
+        "customer_id": customer_id,
+        "engagement_id": body.engagement_id,
+        "offering_id": body.offering_id,
+        "tiers": [
+            {
+                "id": t.id,
+                "name_en": t.name_en,
+                "setup_sar": t.setup_sar,
+                "monthly_sar": t.monthly_sar,
+            }
+            for t in offering.tiers
+        ],
+        "recommended_tier_id": body.recommended_tier_id,
+        "proposal_markdown": md,
+        "is_estimate": True,
+        "governance_decision": "allow_with_review",
+        "next_step": "founder_review_then_send_via_email",
+    }
+
+
 # ── Sales qualification endpoint ─────────────────────────────────────
 
 

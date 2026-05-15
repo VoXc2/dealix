@@ -1,0 +1,81 @@
+# {{ offering_name_en }} — Enterprise Proposal
+
+**Customer:** {{ customer_name }} ({{ customer_handle }})
+**Sector:** {{ sector }} | **City:** {{ city }}
+**Engagement:** {{ engagement_id }}
+**Date:** {{ proposal_date }}
+
+## What we are proposing
+
+{{ offering_summary_en }}
+
+Dealix does not sell a chatbot. We build a governed AI operating layer wired
+to your data, with measurable impact on revenue, time and cost.
+
+## Workstreams in scope
+
+{% for ws in workstreams %}- {{ ws }}
+{% endfor %}
+
+## Pricing tiers (estimates)
+
+{% for tier in tiers %}### {{ tier.name_en }}{% if tier.id == recommended_tier_id %} — recommended{% endif %}
+
+- **Setup:** {{ "{:,.0f}".format(tier.setup_sar) }} SAR (one-time)
+- **Retainer:** {{ "{:,.0f}".format(tier.monthly_sar) }} SAR / month
+- **Minimum engagement:** {{ tier.min_duration_days }} days
+- **Deliverables:**
+{% for d in tier.deliverables %}  - {{ d }}
+{% endfor %}- **Commitment:** {{ tier.kpi_commitment_en }}
+
+{% endfor %}
+## Governance — Dealix non-negotiables
+
+{% for ex in exclusions %}- {{ ex }}
+{% endfor %}
+Every output is draft-only and approval-gated. No live send, no live charge,
+no scraping, no guaranteed-sales claims.
+
+---
+
+# {{ offering_name_ar }} — عرض مؤسسي
+
+**العميل:** {{ customer_name }} ({{ customer_handle }})
+**القطاع:** {{ sector }} | **المدينة:** {{ city }}
+**رقم المشروع:** {{ engagement_id }}
+**التاريخ:** {{ proposal_date }}
+
+## ما الذي نقترحه
+
+{{ offering_summary_ar }}
+
+Dealix لا يبيع شات بوت. نبني طبقة تشغيل AI محوكمة مربوطة ببياناتكم، بأثر قابل
+للقياس على الإيراد والوقت والتكلفة.
+
+## المسارات ضمن النطاق
+
+{% for ws in workstreams %}- {{ ws }}
+{% endfor %}
+
+## طبقات الأسعار (تقديرية)
+
+{% for tier in tiers %}### {{ tier.name_ar }}{% if tier.id == recommended_tier_id %} — موصى به{% endif %}
+
+- **التأسيس:** {{ "{:,.0f}".format(tier.setup_sar) }} ريال (مرة واحدة)
+- **الاشتراك:** {{ "{:,.0f}".format(tier.monthly_sar) }} ريال / شهر
+- **أقل مدة ارتباط:** {{ tier.min_duration_days }} يومًا
+- **المخرجات:**
+{% for d in tier.deliverables %}  - {{ d }}
+{% endfor %}- **الالتزام:** {{ tier.kpi_commitment_ar }}
+
+{% endfor %}
+## الحوكمة — ما لا يقبل التفاوض في Dealix
+
+{% for ex in exclusions %}- {{ ex }}
+{% endfor %}
+كل مخرَج مسوّدة فقط وبموافقة مسبقة. لا إرسال حي، لا خصم حي، لا scraping،
+لا وعود بمبيعات مضمونة.
+
+---
+
+_Estimated outcomes are not guaranteed outcomes / النتائج التقديرية ليست نتائج مضمونة._

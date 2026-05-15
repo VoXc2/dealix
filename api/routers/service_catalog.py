@@ -19,8 +19,11 @@ from typing import Any
 from fastapi import APIRouter, HTTPException
 
 from auto_client_acquisition.service_catalog import (
+    EnterpriseOffering,
     ServiceOffering,
+    get_enterprise_offering,
     get_offering,
+    list_enterprise_offerings,
     list_offerings,
 )
 
@@ -60,6 +63,38 @@ async def service_catalog() -> dict[str, Any]:
     return {
         "offerings": [_serialize(o) for o in list_offerings()],
         "count": len(list_offerings()),
+        "hard_gates": _HARD_GATES,
+    }
+
+
+def _serialize_enterprise(offering: EnterpriseOffering) -> dict[str, Any]:
+    return offering.model_dump()
+
+
+@router.get("/enterprise/catalog")
+async def enterprise_catalog() -> dict[str, Any]:
+    """All enterprise AI transformation programs (flagship first)."""
+    offerings = list_enterprise_offerings()
+    return {
+        "offerings": [_serialize_enterprise(o) for o in offerings],
+        "count": len(offerings),
+        "positioning": (
+            "Dealix sells governed AI transformation programs, not chatbots."
+        ),
+        "hard_gates": _HARD_GATES,
+    }
+
+
+@router.get("/enterprise/{offering_id}")
+async def enterprise_offering_detail(offering_id: str) -> dict[str, Any]:
+    """One enterprise transformation program by id, with its pricing tiers."""
+    offering = get_enterprise_offering(offering_id)
+    if offering is None:
+        raise HTTPException(
+            status_code=404, detail=f"unknown_enterprise_offering: {offering_id}"
+        )
+    return {
+        "offering": _serialize_enterprise(offering),
         "hard_gates": _HARD_GATES,
     }
 

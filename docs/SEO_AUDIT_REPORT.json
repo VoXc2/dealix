@@ -1,9 +1,9 @@
 {
   "schema_version": 1,
   "summary": {
-    "total_pages": 71,
+    "total_pages": 77,
     "pages_with_required_gap": 0,
-    "pages_with_advisory_gap": 0
+    "pages_with_advisory_gap": 4
   },
   "required_checks": [
     "title",
@@ -402,6 +402,22 @@
       "missing_advisory": []
     },
     {
+      "path": "data-pack.html",
+      "present": {
+        "title": true,
+        "meta_description": true,
+        "meta_viewport": true,
+        "html_lang": true,
+        "html_dir": true,
+        "canonical": true,
+        "og_title": true,
+        "og_description": true,
+        "twitter_card": true
+      },
+      "missing_required": [],
+      "missing_advisory": []
+    },
+    {
       "path": "dealix-beast-power.html",
       "present": {
         "title": true,
@@ -496,6 +512,24 @@
       },
       "missing_required": [],
       "missing_advisory": []
+    },
+    {
+      "path": "enterprise-transformation.html",
+      "present": {
+        "title": true,
+        "meta_description": true,
+        "meta_viewport": true,
+        "html_lang": true,
+        "html_dir": true,
+        "canonical": true,
+        "og_title": true,
+        "og_description": true,
+        "twitter_card": false
+      },
+      "missing_required": [],
+      "missing_advisory": [
+        "twitter_card"
+      ]
     },
     {
       "path": "executive-command-center.html",
@@ -640,6 +674,26 @@
       },
       "missing_required": [],
       "missing_advisory": []
+    },
+    {
+      "path": "launch-status.html",
+      "present": {
+        "title": true,
+        "meta_description": true,
+        "meta_viewport": true,
+        "html_lang": true,
+        "html_dir": true,
+        "canonical": true,
+        "og_title": false,
+        "og_description": false,
+        "twitter_card": false
+      },
+      "missing_required": [],
+      "missing_advisory": [
+        "og_title",
+        "og_description",
+        "twitter_card"
+      ]
     },
     {
       "path": "launchpad.html",
@@ -898,6 +952,25 @@
       "missing_advisory": []
     },
     {
+      "path": "sector-report-b2b-services.html",
+      "present": {
+        "title": true,
+        "meta_description": true,
+        "meta_viewport": true,
+        "html_lang": true,
+        "html_dir": true,
+        "canonical": true,
+        "og_title": true,
+        "og_description": false,
+        "twitter_card": false
+      },
+      "missing_required": [],
+      "missing_advisory": [
+        "og_description",
+        "twitter_card"
+      ]
+    },
+    {
       "path": "sector-report-realestate-sample.html",
       "present": {
         "title": true,
@@ -947,6 +1020,22 @@
     },
     {
       "path": "simulator.html",
+      "present": {
+        "title": true,
+        "meta_description": true,
+        "meta_viewport": true,
+        "html_lang": true,
+        "html_dir": true,
+        "canonical": true,
+        "og_title": true,
+        "og_description": true,
+        "twitter_card": true
+      },
+      "missing_required": [],
+      "missing_advisory": []
+    },
+    {
+      "path": "sprint-sample.html",
       "present": {
         "title": true,
         "meta_description": true,
@@ -1136,6 +1225,25 @@
       },
       "missing_required": [],
       "missing_advisory": []
+    },
+    {
+      "path": "webinar.html",
+      "present": {
+        "title": true,
+        "meta_description": true,
+        "meta_viewport": true,
+        "html_lang": true,
+        "html_dir": true,
+        "canonical": true,
+        "og_title": true,
+        "og_description": false,
+        "twitter_card": false
+      },
+      "missing_required": [],
+      "missing_advisory": [
+        "og_description",
+        "twitter_card"
+      ]
     },
     {
       "path": "why-saudi-ai.html",
