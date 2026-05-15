@@ -1,0 +1,106 @@
+{
+  "model": "dealix_operational_dominance",
+  "systems": [
+    {
+      "system_id": 26,
+      "system_name": "organizational_control_plane",
+      "paths": [
+        "/platform/control_plane",
+        "/platform/operational_routing",
+        "/platform/state_coordination",
+        "/platform/global_orchestration"
+      ]
+    },
+    {
+      "system_id": 27,
+      "system_name": "agent_mesh_infrastructure",
+      "paths": [
+        "/platform/agent_mesh",
+        "/platform/agent_discovery",
+        "/platform/capability_registry",
+        "/platform/inter_agent_protocols",
+        "/platform/agent_routing"
+      ]
+    },
+    {
+      "system_id": 28,
+      "system_name": "assurance_contract_engine",
+      "paths": [
+        "/platform/assurance_contracts",
+        "/platform/execution_contracts",
+        "/platform/rollback_contracts",
+        "/platform/governance_contracts"
+      ]
+    },
+    {
+      "system_id": 29,
+      "system_name": "enterprise_sandbox_engine",
+      "paths": [
+        "/platform/sandbox",
+        "/platform/simulation",
+        "/platform/canary_rollouts",
+        "/platform/replay_engine"
+      ]
+    },
+    {
+      "system_id": 30,
+      "system_name": "operational_memory_graph",
+      "paths": [
+        "/platform/org_graph",
+        "/platform/dependency_graph",
+        "/platform/relationship_engine",
+        "/platform/context_graph"
+      ]
+    },
+    {
+      "system_id": 31,
+      "system_name": "enterprise_safety_engine",
+      "paths": [
+        "/platform/runtime_safety",
+        "/platform/circuit_breakers",
+        "/platform/kill_switches",
+        "/platform/execution_limits"
+      ]
+    },
+    {
+      "system_id": 32,
+      "system_name": "organizational_simulation_engine",
+      "paths": [
+        "/platform/org_simulation",
+        "/platform/workflow_simulation",
+        "/platform/failure_simulation",
+        "/platform/load_simulation"
+      ]
+    },
+    {
+      "system_id": 33,
+      "system_name": "human_ai_operating_model",
+      "paths": [
+        "/platform/human_ai_operating_model",
+        "/platform/escalation",
+        "/platform/delegation",
+        "/platform/approval_center"
+      ]
+    },
+    {
+      "system_id": 34,
+      "system_name": "business_value_engine",
+      "paths": [
+        "/platform/value_engine",
+        "/platform/roi_tracking",
+        "/platform/impact_analysis",
+        "/platform/efficiency_metrics"
+      ]
+    },
+    {
+      "system_id": 35,
+      "system_name": "self_evolving_enterprise_fabric",
+      "paths": [
+        "/platform/self_evolving_fabric",
+        "/platform/meta_learning",
+        "/platform/meta_orchestration",
+        "/platform/continuous_optimization"
+      ]
+    }
+  ]
+}

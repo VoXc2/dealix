@@ -30,6 +30,13 @@ from auto_client_acquisition.operational_fabric_os.human_ai_model import (
 from auto_client_acquisition.operational_fabric_os.operational_memory_graph import (
     OperationalMemoryGraph,
 )
+from auto_client_acquisition.operational_fabric_os.platform_contract_registry import (
+    PLATFORM_CONTRACTS,
+    contract_count,
+    contracts_by_system,
+    operational_dominance_status,
+    validate_contract_bindings,
+)
 from auto_client_acquisition.operational_fabric_os.org_simulation import (
     SimulationResult,
     SimulationSpec,
@@ -66,6 +73,7 @@ __all__ = [
     "OperationalMemoryGraph",
     "OptimizationProposal",
     "OversightDecision",
+    "PLATFORM_CONTRACTS",
     "RuntimeSafetyPolicy",
     "RuntimeSafetyState",
     "SandboxExecutionPlan",
@@ -77,12 +85,15 @@ __all__ = [
     "activate_kill_switch",
     "append_checkpoint",
     "compute_value_snapshot",
+    "contract_count",
+    "contracts_by_system",
     "continuous_optimization_ready",
     "create_workflow",
     "evaluate_contract",
     "evaluate_human_ai_request",
     "isolate_agent",
     "observe_workflow",
+    "operational_dominance_status",
     "promote_from_canary",
     "recommend_evolution",
     "register_execution",
@@ -94,5 +105,6 @@ __all__ = [
     "sandbox_gate",
     "stop_workflow",
     "update_workflow_policy",
+    "validate_contract_bindings",
     "workflow_has_measurable_kpis",
 ]
