@@ -13,16 +13,17 @@ button send its POST?"
 ## At-a-glance
 
 ```
-Total endpoints declared :  575
-Total frontend refs      :   58
-Healthy pairs            :   66 (some endpoints serve multiple pages)
-Orphan endpoints         :  488 (backend code without a frontend consumer)
-Phantom references       :    6 (frontend lies about what backend exposes)
+Total endpoints declared :  709
+Total frontend refs      :   72
+Healthy pairs            :   86 (some endpoints serve multiple pages)
+Orphan endpoints         :  597 (backend code without a frontend consumer)
+Phantom references       :    3 (allowlisted legacy debt, 0 unexpected)
 ```
 
 The audit script lives in `scripts/audit_orphan_endpoints.py` and runs
-in CI. **Phantom references fail CI** (frontend should never claim an
-endpoint that doesn't exist). Orphan endpoints are warnings, not errors —
+in CI. **Unexpected phantom references fail CI** (frontend should never claim an
+endpoint that doesn't exist). Known legacy phantoms are tracked in script
+allowlists until they are removed. Orphan endpoints are warnings, not errors —
 many are admin/cron/webhook endpoints that are intentionally backend-only.
 
 ---
@@ -85,7 +86,6 @@ any HTML/JS file. The breakdown:
 | **Jobs** | `/api/v1/jobs/{status,run}` | Cron / background workers only |
 | **Agent governance** | `/api/v1/agent-governance/*` | Internal policy enforcement |
 | **Auth refresh** | `/api/v1/auth/{refresh,revoke}` | Session lifecycle, not a UI surface |
-| **Embeddings** | `/api/v1/embeddings/{generate,search}` | Internal RAG, not customer UI |
 
 ### Real orphans (built but no frontend) — top 30
 
@@ -120,24 +120,21 @@ where the mismatch is unintentional.
 
 ---
 
-## 3. Phantom references (frontend lies)
+## 3. Phantom references (contract drift)
 
-These pages reference endpoints that don't exist in the backend. Each
-is a real bug — visitors clicking these features get silent failures.
+These pages reference endpoints that don't exist in the backend. The script
+now resolves parameterized paths (for example `/today/ceo` ↔ `/today/{role}`)
+to avoid false positives. Remaining phantoms are tracked as legacy debt until
+their pages are refactored.
 
 | Frontend file | Phantom endpoint | Likely fix |
 |---|---|---|
-| `landing/dealix-live-demo.html` | `/api/v1/business/positioning/clinics` | Endpoint never built; either build it or remove the demo |
-| `landing/dealix-live-demo.html` | `/api/v1/command-center/playbooks/clinics` | Same — sector-specific playbook endpoint absent |
-| `landing/dealix-live-demo.html` | `/api/v1/command-center/playbooks/real_estate` | Same |
-| `landing/assets/js/executive-command-center.js` | `/api/v1/executive-command-center/` (no handle) | Should be `{handle}` — fix in JS |
-| `landing/pilot-day-0.html` | `/api/v1/full-ops/today` | Endpoint not exposed; founder-only logging path |
-| `landing/pilot-day-0.html` | `/api/v1/role-command-v125/today/ceo` | Hard-coded role; should be parameterised |
+| `landing/login.html` | `/api/v1/auth/magic-link` | Placeholder login flow; backend endpoint not implemented yet |
+| `landing/customer-decisions.html` | `/api/v1/customer-approvals/` | Legacy page expects customer-approvals API that is not mounted |
+| `landing/pilot-day-0.html` | `/api/v1/full-ops/today` | Founder pilot view references retired endpoint |
 
-**Disposition:** these are pre-existing issues on founder-tier pages
-(dealix-live-demo, pilot-day-0) and an unparameterised JS call. They are
-NOT regressions from the Tier-1 redesign or 30-day plan work. Tracked
-for fix in a separate sprint after Article 13 trigger.
+**Disposition:** these are tracked as known legacy debt in the script
+allowlist, while CI blocks any *new* phantom references.
 
 ---
 
@@ -184,12 +181,11 @@ python scripts/audit_orphan_endpoints.py
 
 # CI
 python scripts/audit_orphan_endpoints.py --quiet
-# Exit 0 = clean
-# Exit 1 = phantom references (frontend lies)
+# Exit 0 = no unexpected phantom references
+# Exit 1 = unexpected phantom references (frontend/backend contract drift)
 ```
 
-Add to `.github/workflows/ci.yml` or `.pre-commit-config.yaml` once the
-6 known phantoms are resolved.
+CI already executes this check in `.github/workflows/ci.yml`.
 
 ---
 

@@ -8,6 +8,9 @@ Verifies the deep health endpoint surfaces:
 """
 from __future__ import annotations
 
+import sys
+import types
+
 import pytest
 
 
@@ -51,6 +54,40 @@ async def test_health_deep_sentry_check_with_no_dsn(async_client, monkeypatch):
     sentry = body["checks"]["sentry"]
     # skip when DSN unset, or skip when sentry_sdk not installed
     assert sentry["status"] in ("skip", "ok", "misconfigured")
+
+
+@pytest.mark.asyncio
+async def test_health_deep_normalizes_asyncpg_dsn_for_psycopg2(async_client, monkeypatch):
+    """DATABASE_URL with asyncpg driver should still work in deep health probe."""
+    captured: dict[str, object] = {}
+
+    class _FakeCursor:
+        def execute(self, _query: str) -> None:
+            return None
+
+    class _FakeConn:
+        def cursor(self) -> _FakeCursor:
+            return _FakeCursor()
+
+        def close(self) -> None:
+            return None
+
+    def _fake_connect(dsn: str, connect_timeout: int) -> _FakeConn:
+        captured["dsn"] = dsn
+        captured["connect_timeout"] = connect_timeout
+        return _FakeConn()
+
+    monkeypatch.setitem(sys.modules, "psycopg2", types.SimpleNamespace(connect=_fake_connect))
+    monkeypatch.setenv(
+        "DATABASE_URL",
+        "postgresql+asyncpg://user:password@localhost:5432/ai_company",
+    )
+
+    res = await async_client.get("/health/deep")
+    assert res.status_code == 200
+    assert captured["connect_timeout"] == 3
+    assert captured["dsn"] == "postgresql://user:password@localhost:5432/ai_company"
+    assert res.json()["checks"]["postgres"]["status"] == "ok"
 
 
 @pytest.mark.asyncio

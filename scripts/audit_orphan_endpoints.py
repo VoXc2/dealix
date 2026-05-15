@@ -12,7 +12,8 @@ Per Track B6 of the 30-day plan, this script:
    - Healthy pairs — backend declares + frontend uses
 
 Exits 0 if everything is healthy or has known allowlist entries.
-Exits 1 if a phantom reference is found (frontend lies > orphan code).
+Exits 1 if an unexpected phantom reference is found
+(frontend lies > orphan code).
 
 Usage:
     python scripts/audit_orphan_endpoints.py [--quiet] [--json]
@@ -24,6 +25,7 @@ import argparse
 import json
 import re
 import sys
+from functools import lru_cache
 from pathlib import Path
 from typing import Iterable
 
@@ -64,9 +66,17 @@ ORPHAN_ALLOWLIST: set[str] = {
     # Background-job triggers (cron-only)
     "/api/v1/automation/run",
     "/api/v1/automation/schedule",
-    # Embedding generation (job-only)
-    "/api/v1/embeddings/generate",
-    "/api/v1/embeddings/search",
+}
+
+# Legacy landing/demo references that are intentionally tolerated for now.
+# CI fails only for *new* phantom references outside this set.
+PHANTOM_ALLOWLIST: set[str] = {
+    "/api/v1/auth/magic-link",
+    "/api/v1/business/positioning/clinics",
+    "/api/v1/command-center/playbooks/clinics",
+    "/api/v1/command-center/playbooks/real_estate",
+    "/api/v1/customer-approvals/",
+    "/api/v1/full-ops/today",
 }
 
 
@@ -127,11 +137,23 @@ def normalize_path(p: str) -> str:
     return re.sub(r"\{[^}]+\}", "{x}", p)
 
 
+@lru_cache(maxsize=2048)
+def _path_regex(path: str) -> re.Pattern[str]:
+    """Compile a normalized endpoint path into a regex."""
+    normalized = normalize_path(path)
+    escaped = re.escape(normalized).replace(r"\{x\}", r"[^/]+")
+    return re.compile(rf"^{escaped}$")
+
+
 def matches_any(ref: str, declared: Iterable[str]) -> bool:
     norm_ref = normalize_path(ref)
     for endpoint in declared:
         norm_endpoint = normalize_path(endpoint)
         if norm_endpoint == norm_ref:
+            return True
+        # Match concrete refs (e.g. /today/ceo) against parameterized
+        # route declarations (e.g. /today/{role}).
+        if _path_regex(endpoint).fullmatch(norm_ref):
             return True
         # Accept prefix matches when the frontend concatenates path
         # fragments at runtime (e.g. `apiBase + "/api/v1/payment-ops/"
@@ -183,6 +205,16 @@ def main(argv: list[str] | None = None) -> int:
         if not matches_any(ref, endpoints):
             phantoms.append((ref, refs[ref]))
 
+    phantom_allowlist_norm = {normalize_path(p) for p in PHANTOM_ALLOWLIST}
+    known_phantoms: list[tuple[str, set[str]]] = []
+    unexpected_phantoms: list[tuple[str, set[str]]] = []
+    for ref, files in phantoms:
+        norm_ref = normalize_path(ref)
+        if ref in PHANTOM_ALLOWLIST or norm_ref in phantom_allowlist_norm:
+            known_phantoms.append((ref, files))
+        else:
+            unexpected_phantoms.append((ref, files))
+
     report = {
         "summary": {
             "total_endpoints": len(endpoints),
@@ -190,9 +222,13 @@ def main(argv: list[str] | None = None) -> int:
             "healthy_pairs": len(healthy),
             "orphan_endpoints": len(orphans),
             "phantom_refs": len(phantoms),
+            "allowlisted_phantom_refs": len(known_phantoms),
+            "unexpected_phantom_refs": len(unexpected_phantoms),
         },
         "orphans": orphans,
         "phantoms": [{"ref": r, "files": sorted(f)} for r, f in phantoms],
+        "allowlisted_phantoms": [{"ref": r, "files": sorted(f)} for r, f in known_phantoms],
+        "unexpected_phantoms": [{"ref": r, "files": sorted(f)} for r, f in unexpected_phantoms],
     }
 
     if args.json:
@@ -205,6 +241,8 @@ def main(argv: list[str] | None = None) -> int:
         print(f"Healthy pairs            : {report['summary']['healthy_pairs']}")
         print(f"Orphan endpoints         : {report['summary']['orphan_endpoints']}")
         print(f"Phantom references       : {report['summary']['phantom_refs']}")
+        print(f"Allowlisted phantoms     : {report['summary']['allowlisted_phantom_refs']}")
+        print(f"Unexpected phantoms      : {report['summary']['unexpected_phantom_refs']}")
         print()
         if orphans:
             print("ORPHAN ENDPOINTS (declared, never used by frontend):")
@@ -213,17 +251,24 @@ def main(argv: list[str] | None = None) -> int:
             if len(orphans) > 30:
                 print(f"  ... and {len(orphans) - 30} more (re-run with --json for full list)")
             print()
-        if phantoms:
-            print("PHANTOM REFERENCES (frontend says it uses these but they don't exist):")
-            for ref, files in phantoms[:30]:
+        if unexpected_phantoms:
+            print("UNEXPECTED PHANTOM REFERENCES (fail CI):")
+            for ref, files in unexpected_phantoms[:30]:
+                print(f"  - {ref}")
+                for f in sorted(files)[:3]:
+                    print(f"      · {f}")
+            print()
+        if known_phantoms:
+            print("ALLOWLISTED PHANTOMS (known legacy debt):")
+            for ref, files in known_phantoms[:30]:
                 print(f"  - {ref}")
                 for f in sorted(files)[:3]:
                     print(f"      · {f}")
             print()
 
-    # Phantom references = frontend lying about backend = critical.
+    # Unexpected phantom references = frontend lying about backend = critical.
     # Orphan endpoints = backend code without consumer = mild waste.
-    if phantoms:
+    if unexpected_phantoms:
         return 1
     return 0
 

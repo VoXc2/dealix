@@ -32,16 +32,16 @@ No 99.99% theater. If we can't measure it cheaply, it's not an SLO.
 
 | SLI | SLO | Measurement |
 |---|---|---|
-| DLQ depth (`webhooks` queue) | **<10 entries** at any time | `/admin/dlq/stats` poll every 5m |
+| DLQ depth (`webhooks` queue) | **<10 entries** at any time | `/api/v1/admin/dlq/stats` poll every 5m |
 | DLQ age (oldest entry) | **<24h** | queue inspection; alert if older |
-| Approvals pending | **<50 requests** | `/admin/approvals/stats` |
-| LLM provider fallback rate | **<5%** of requests | `/admin/costs` breakdown |
+| Approvals pending | **<50 requests** | `/api/v1/admin/approvals/stats` |
+| LLM provider fallback rate | **<5%** of requests | `/api/v1/admin/costs` breakdown |
 
 ## Tier 3 — Cost
 
 | SLI | SLO | Measurement |
 |---|---|---|
-| Daily LLM spend | **<$10 USD/day** with alert | `/admin/costs` aggregated daily |
+| Daily LLM spend | **<$10 USD/day** with alert | `/api/v1/admin/costs` aggregated daily |
 | Redis memory | **<500MB** | `redis-cli INFO memory used_memory_human` |
 | Postgres connections | **<80** | `pg_stat_activity` count |
 
