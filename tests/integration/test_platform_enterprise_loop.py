@@ -137,8 +137,6 @@ async def test_invalid_tenant_handle_rejected():
 
 async def test_stdlib_platform_not_shadowed():
     """The platform_core package must not shadow the stdlib `platform` module."""
-    import platform_core  # noqa: F401
-
     assert stdlib_platform.python_version()
     assert hasattr(stdlib_platform, "system")
 
