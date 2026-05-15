@@ -1,0 +1,42 @@
+name: lead_qualification
+version: 1.0.0
+
+trigger:
+  type: lead_created
+  source: api.v1.leads
+
+steps:
+  - step_id: intake_normalization
+    action: normalize_intake
+    tool: leads.normalize
+    risk_level: low
+    max_retries: 1
+    approval_required: false
+
+  - step_id: enrichment_pass
+    action: enrich_lead
+    tool: leads.enrich
+    risk_level: medium
+    max_retries: 2
+    approval_required: false
+
+  - step_id: qualification_scoring
+    action: score_lead
+    tool: lead.score
+    risk_level: medium
+    max_retries: 2
+    approval_required: false
+
+  - step_id: external_commit
+    action: external_commit_crm
+    tool: crm.create_lead
+    risk_level: high
+    max_retries: 1
+    approval_required: true
+
+  - step_id: executive_metrics
+    action: publish_operational_metrics
+    tool: metrics.publish
+    risk_level: low
+    max_retries: 0
+    approval_required: false
