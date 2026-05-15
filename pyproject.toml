@@ -178,6 +178,7 @@ addopts = [
     "--cov=autonomous_growth",
     "--cov=integrations",
     "--cov=api",
+    "--cov=db",
     "--cov-report=term-missing",
     "--cov-report=html",
 ]
@@ -190,7 +191,7 @@ markers = [
 
 [tool.coverage.run]
 branch = true
-source = ["core", "auto_client_acquisition", "autonomous_growth", "integrations", "api"]
+source = ["core", "auto_client_acquisition", "autonomous_growth", "integrations", "api", "db"]
 omit = ["*/tests/*", "*/migrations/*", "*/__init__.py"]
 
 [tool.coverage.report]
