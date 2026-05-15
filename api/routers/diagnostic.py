@@ -22,6 +22,8 @@ from auto_client_acquisition.compliance_trust_os.approval_engine import Governan
 from auto_client_acquisition.diagnostic_engine import (
     DiagnosticRequest,
     generate_diagnostic,
+    generate_opportunity_report,
+    list_opportunity_sectors,
     list_supported_sectors,
 )
 
@@ -67,7 +69,10 @@ async def diagnostic_status() -> dict[str, Any]:
 @router.get("/sectors")
 async def diagnostic_sectors() -> dict[str, Any]:
     """List the sector keys backed by the Service Readiness Matrix."""
-    return {"sectors": list_supported_sectors()}
+    return {
+        "sectors": list_supported_sectors(),
+        "opportunity_report_sectors": list_opportunity_sectors(),
+    }
 
 
 @router.post("/generate")
@@ -75,6 +80,71 @@ async def diagnostic_generate(payload: DiagnosticRequest) -> dict[str, Any]:
     """Render a bilingual diagnostic brief — never auto-sent."""
     result = generate_diagnostic(payload)
     return result.model_dump(mode="json")
+
+
+class OpportunityReportBody(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    company: str = Field(..., min_length=1, max_length=200)
+    sector: str = "b2b_services"
+    region: str = "ksa"
+    recommended_tier_id: str = Field(default="", max_length=64)
+
+
+@router.post("/opportunity-report")
+async def diagnostic_opportunity_report(body: OpportunityReportBody) -> dict[str, Any]:
+    """Generate an AI Opportunity Report for a target company.
+
+    The founder-led enterprise sales artifact: 5 AI opportunities with an
+    impact hypothesis, mapped to an enterprise transformation program.
+    Approval-gated — reviewed before any outreach.
+    """
+    report = generate_opportunity_report(
+        company=body.company,
+        sector=body.sector,
+        region=body.region,
+        recommended_tier_id=body.recommended_tier_id,
+    )
+    return report.to_dict()
+
+
+@router.post("/opportunity-report/pdf")
+async def diagnostic_opportunity_report_pdf(body: OpportunityReportBody) -> Any:
+    """Generate the AI Opportunity Report and return it as a PDF download.
+
+    Falls back to markdown (200, text/markdown) when no PDF engine is
+    installed in the environment.
+    """
+    from fastapi.responses import Response
+
+    from auto_client_acquisition.proof_to_market.pdf_renderer import (
+        render_markdown_to_pdf,
+    )
+
+    report = generate_opportunity_report(
+        company=body.company,
+        sector=body.sector,
+        region=body.region,
+        recommended_tier_id=body.recommended_tier_id,
+    )
+    pdf = render_markdown_to_pdf(
+        report.markdown_ar_en, title=f"AI Opportunity Report — {body.company}"
+    )
+    if pdf is None:
+        return Response(
+            content=report.markdown_ar_en,
+            media_type="text/markdown; charset=utf-8",
+            headers={"X-PDF-Engine": "unavailable"},
+        )
+    return Response(
+        content=pdf,
+        media_type="application/pdf",
+        headers={
+            "Content-Disposition": (
+                f'attachment; filename="opportunity-report-{body.company}.pdf"'
+            )
+        },
+    )
 
 
 @router.post("/intent")
