@@ -47,6 +47,13 @@ def _persist(rec: PaymentStateRecord) -> None:
     _INDEX[rec.payment_id] = rec
     with open(_JSONL_PATH, "a", encoding="utf-8") as f:
         f.write(rec.model_dump_json() + "\n")
+    from auto_client_acquisition.persistence.operational_stream_mirror import mirror_append
+
+    mirror_append(
+        stream_id="payment_states_jsonl",
+        payload=rec.model_dump(mode="json"),
+        event_id=rec.payment_id,
+    )
 
 
 def _check_transition(current: PaymentStatus, target: PaymentStatus) -> bool:

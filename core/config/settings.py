@@ -110,6 +110,28 @@ class Settings(BaseSettings):
         validation_alias=AliasChoices("PROOF_LEDGER_BACKEND", "proof_ledger_backend"),
     )
 
+    # Value ledger persistence (JSONL default; postgres/dual per cutover policy).
+    value_ledger_backend: str = Field(
+        default="jsonl",
+        validation_alias=AliasChoices("VALUE_LEDGER_BACKEND", "value_ledger_backend"),
+    )
+    # Tier-2 JSONL mirrors into operational_event_streams (off | postgres | dual).
+    operational_stream_backend: str = Field(
+        default="off",
+        validation_alias=AliasChoices(
+            "DEALIX_OPERATIONAL_STREAM_BACKEND",
+            "OPERATIONAL_STREAM_BACKEND",
+            "operational_stream_backend",
+        ),
+    )
+    # Optional OpenTelemetry span events alongside contract_trace_hook buffer.
+    otel_contract_trace_export: bool = Field(
+        default=False,
+        validation_alias=AliasChoices(
+            "OTEL_CONTRACT_TRACE_EXPORT", "otel_contract_trace_export"
+        ),
+    )
+
     @field_validator("database_url", mode="before")
     @classmethod
     def _ensure_asyncpg_driver(cls, v: str | None) -> str:

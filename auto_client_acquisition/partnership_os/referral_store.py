@@ -136,11 +136,21 @@ class ReferralPayout:
 # ── Persistence helpers ──────────────────────────────────────────────
 
 
-def _append(path: Path, payload: dict[str, Any]) -> None:
+def _append(path: Path, payload: dict[str, Any], *, stream_id: str) -> None:
     _ensure_dir(path)
     with _lock:
         with path.open("a", encoding="utf-8") as f:
             f.write(json.dumps(payload, ensure_ascii=False) + "\n")
+    from auto_client_acquisition.persistence.operational_stream_mirror import mirror_append
+
+    eid = str(
+        payload.get("code")
+        or payload.get("referral_id")
+        or payload.get("payout_id")
+        or payload.get("schedule_id")
+        or ""
+    )
+    mirror_append(stream_id=stream_id, payload=payload, event_id=eid or None)
 
 
 def _read_all(path: Path) -> list[dict[str, Any]]:
@@ -192,7 +202,7 @@ def create_referral_code(
         discount_pct=int(discount_pct),
         valid_until=valid_until,
     )
-    _append(_codes_path(), code.to_dict())
+    _append(_codes_path(), code.to_dict(), stream_id="referral_store_codes")
     return code
 
 
@@ -255,7 +265,7 @@ def redeem_referral(
         status=ReferralStatus.REDEEMED.value,
         redeemed_at=datetime.now(timezone.utc).isoformat(),
     )
-    _append(_referrals_path(), referral.to_dict())
+    _append(_referrals_path(), referral.to_dict(), stream_id="referral_store_referrals")
     return referral
 
 
@@ -329,7 +339,7 @@ def issue_credit(
         applied_to_invoice_id=applied_to_invoice_id,
         notes=notes,
     )
-    _append(_payouts_path(), payout.to_dict())
+    _append(_payouts_path(), payout.to_dict(), stream_id="referral_store_payouts")
 
     # Update referral status.
     rows = _read_all(_referrals_path())

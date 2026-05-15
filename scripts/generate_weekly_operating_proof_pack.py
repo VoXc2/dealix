@@ -23,8 +23,10 @@ def main() -> int:
 
     kpi_path = root / "dealix/transformation/kpi_registry.yaml"
     own_path = root / "dealix/transformation/ownership_matrix.yaml"
+    baselines_path = root / "dealix/transformation/kpi_baselines.yaml"
     kpis = _load(kpi_path)
     owners = _load(own_path)
+    baselines = _load(baselines_path)
 
     period = datetime.now(UTC).strftime("%Y-%m-%d")
     lines: list[str] = [
@@ -56,9 +58,31 @@ def main() -> int:
 
     lines.extend(
         [
+            "## KPI baselines (`kpi_baselines.yaml`)",
+            "",
+            f"- **updated_period_iso**: `{baselines.get('updated_period_iso', '') or 'UNSET'}`",
+            "- Fill each `snapshots.*.value_numeric` from CRM / finance / delivery when figures exist.",
+            "- Every non-null value must have a non-empty `source_ref` (invoice id, CRM link, or weekly proof path).",
+            "- After editing numbers, set `updated_period_iso` to the reporting week (UTC `YYYY-MM-DD`).",
+            "",
+        ]
+    )
+
+    snaps = baselines.get("snapshots") or {}
+    for key in sorted(snaps.keys()):
+        row = snaps.get(key) or {}
+        val = row.get("value_numeric")
+        ref = row.get("source_ref") or ""
+        status = "FILLED" if val is not None and str(ref).strip() else "PENDING_NULL"
+        lines.append(f"- **{key}**: value={val!r} source_ref=`{ref}` ({status})")
+    lines.append("")
+
+    lines.extend(
+        [
             "## Ownership assignees (human names)",
             "",
             "Complete `human_assignee_name` weekly in `dealix/transformation/ownership_matrix.yaml`.",
+            "When hiring a named owner, replace founder placeholders and update `human_assignee_notes_ar`.",
             "",
         ]
     )

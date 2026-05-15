@@ -81,6 +81,9 @@ MODULE_IMPORTS = (
     "auto_client_acquisition.operating_finance_os.lifecycle_unit_economics",
     "auto_client_acquisition.delivery_os.control_tower",
     "dealix.execution.weekly_cross_os_snapshot",
+    "auto_client_acquisition.persistence.db_sync_url",
+    "auto_client_acquisition.persistence.operational_stream_mirror",
+    "auto_client_acquisition.value_os.value_ledger_postgres",
 )
 
 

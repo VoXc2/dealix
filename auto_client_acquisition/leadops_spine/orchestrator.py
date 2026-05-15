@@ -38,6 +38,13 @@ def _persist(record: LeadOpsRecord) -> None:
     _RECORDS_INDEX[record.leadops_id] = record
     with open(_JSONL_PATH, "a", encoding="utf-8") as f:
         f.write(record.model_dump_json() + "\n")
+    from auto_client_acquisition.persistence.operational_stream_mirror import mirror_append
+
+    mirror_append(
+        stream_id="leadops_records_jsonl",
+        payload=record.model_dump(mode="json"),
+        event_id=record.leadops_id,
+    )
 
 
 def _normalize(payload: dict[str, Any]) -> dict[str, Any]:

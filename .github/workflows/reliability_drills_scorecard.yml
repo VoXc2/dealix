@@ -1,0 +1,19 @@
+name: Reliability drills scorecard
+
+on:
+  workflow_dispatch: {}
+  schedule:
+    - cron: "15 6 * * 1"
+
+jobs:
+  scorecard:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install PyYAML
+        run: pip install pyyaml
+      - name: Print scorecard
+        run: python3 scripts/reliability_drills_scorecard.py

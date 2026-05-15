@@ -9,34 +9,40 @@ entries:
     default_path: data/value_ledger.jsonl
     tier: 1
     target_cutoff_iso: "2026-08-01"
-    postgres_target: value_metrics / revenue_events (see migrations)
+    postgres_target: value_ledger_events (VALUE_LEDGER_BACKEND=postgres|dual; Alembic 012)
   - id: radar_events_jsonl
     module_hint: auto_client_acquisition.radar_events.event_store
     path: data/radar_events.jsonl
     tier: 2
     target_cutoff_iso: "2026-09-01"
+    postgres_target: operational_event_streams.stream_id=radar_events_jsonl
   - id: referral_store_jsonl
     module_hint: auto_client_acquisition.partnership_os.referral_store
     path: var/referral-*.jsonl
     tier: 2
     target_cutoff_iso: "2026-10-01"
+    postgres_target: operational_event_streams (referral_store_codes|referrals|payouts)
   - id: renewal_schedule_jsonl
     module_hint: auto_client_acquisition.payment_ops.renewal_scheduler
     path: var/renewal-schedule.jsonl
     tier: 2
     target_cutoff_iso: "2026-09-15"
+    postgres_target: operational_event_streams.stream_id=renewal_schedule_jsonl
   - id: payment_states_jsonl
     module_hint: auto_client_acquisition.payment_ops.orchestrator
     path: data/payment_states.jsonl
     tier: 2
     target_cutoff_iso: "2026-09-01"
+    postgres_target: operational_event_streams.stream_id=payment_states_jsonl
   - id: proof_ledger_daily_jsonl
     module_hint: auto_client_acquisition.proof_ledger.file_backend
     path: docs/proof-events/*.jsonl
     tier: 1
     target_cutoff_iso: "2026-08-15"
+    postgres_target: proof_events (PROOF_LEDGER_BACKEND=postgres|dual + Alembic 004)
   - id: leadops_records_jsonl
     module_hint: auto_client_acquisition.leadops_spine.orchestrator
     path: data/leadops_records.jsonl
     tier: 2
     target_cutoff_iso: "2026-09-01"
+    postgres_target: operational_event_streams.stream_id=leadops_records_jsonl (DEALIX_OPERATIONAL_STREAM_BACKEND)

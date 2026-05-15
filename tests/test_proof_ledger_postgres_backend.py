@@ -29,6 +29,7 @@ from auto_client_acquisition.proof_ledger import (
     get_default_ledger,
 )
 from auto_client_acquisition.proof_ledger import factory as ledger_factory
+from auto_client_acquisition.proof_ledger.factory import DualProofLedger
 
 
 @pytest.fixture
@@ -163,6 +164,7 @@ def test_factory_returns_postgres_ledger_when_settings_say_postgres(
         "_backend_name",
         lambda: _Stub.proof_ledger_backend,
     )
+    monkeypatch.setattr(ledger_factory, "_ledger_sync_url", lambda: "sqlite:///:memory:")
 
     led = get_default_ledger()
     assert isinstance(led, PostgresProofLedger)
@@ -171,6 +173,26 @@ def test_factory_returns_postgres_ledger_when_settings_say_postgres(
     again = get_default_ledger()
     assert again is led
 
+    ledger_factory.reset_default_ledger()
+
+
+def test_factory_returns_dual_ledger_when_settings_say_dual(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    ledger_factory.reset_default_ledger()
+
+    class _Stub:
+        proof_ledger_backend = "dual"
+
+    monkeypatch.setattr(
+        ledger_factory,
+        "_backend_name",
+        lambda: _Stub.proof_ledger_backend,
+    )
+    monkeypatch.setattr(ledger_factory, "_ledger_sync_url", lambda: "sqlite:///:memory:")
+
+    led = get_default_ledger()
+    assert isinstance(led, DualProofLedger)
     ledger_factory.reset_default_ledger()
 
 

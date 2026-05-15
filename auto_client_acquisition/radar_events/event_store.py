@@ -12,6 +12,7 @@ import uuid
 from datetime import datetime, timezone
 from typing import Any
 
+from auto_client_acquisition.persistence.operational_stream_mirror import mirror_append
 from auto_client_acquisition.radar_events.redaction import redact_payload
 from auto_client_acquisition.radar_events.taxonomy import is_known_event_type
 
@@ -50,6 +51,7 @@ def record_event(
         _BUFFER.append(event)
         with open(_JSONL_PATH, "a", encoding="utf-8") as f:
             f.write(json.dumps(event, ensure_ascii=False) + "\n")
+    mirror_append(stream_id="radar_events_jsonl", payload=event, event_id=str(event.get("event_id", "")))
     return event
 
 
