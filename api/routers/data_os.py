@@ -16,6 +16,8 @@ from auto_client_acquisition.data_os.data_quality_score import compute_dq
 from auto_client_acquisition.data_os.import_preview import preview as preview_csv
 from auto_client_acquisition.data_os.source_passport import (
     SourcePassport,
+)
+from auto_client_acquisition.data_os.source_passport import (
     validate as validate_passport,
 )
 from auto_client_acquisition.governance_os.runtime_decision import (
@@ -50,7 +52,7 @@ def _build_passport(raw: dict[str, Any] | None) -> SourcePassport | None:
             external_use_allowed=bool(raw.get("external_use_allowed", False)),
             retention_policy=str(raw.get("retention_policy", "project_duration")),
         )
-    except Exception:  # noqa: BLE001
+    except Exception:
         return None
 
 
@@ -64,7 +66,7 @@ def _governance_envelope(*, passport: SourcePassport | None) -> dict[str, Any]:
         },
     )
     return {
-        "decision": result.decision.value,
+        "decision": result.decision.value.lower(),
         "reasons": list(result.reasons),
         "safe_alternative": result.safe_alternative,
     }

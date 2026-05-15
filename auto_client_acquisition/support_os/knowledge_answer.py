@@ -11,7 +11,6 @@ from pathlib import Path
 from auto_client_acquisition.runtime_paths import resolve_repo_root
 from auto_client_acquisition.support_os.classifier import SupportCategory
 
-
 # Category → preferred KB file(s) under docs/knowledge-base/
 _CATEGORY_TO_FILES: dict[SupportCategory, tuple[str, ...]] = {
     "onboarding": ("support_faq_ar.md", "support_faq_en.md", "service_delivery_ar_en.md"),

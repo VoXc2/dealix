@@ -45,7 +45,7 @@ _SLA_MINUTES: dict[Priority, int] = {
 
 def _ticket_id(channel: str, customer_id: str, snippet: str) -> str:
     digest = hashlib.sha256(
-        f"{channel}|{customer_id}|{snippet[:80]}".encode("utf-8")
+        f"{channel}|{customer_id}|{snippet[:80]}".encode()
     ).hexdigest()
     return f"tkt_{digest[:16]}"
 
