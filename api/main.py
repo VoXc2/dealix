@@ -73,6 +73,17 @@ from api.routers import agent_os as agent_os_router
 from api.routers import commercial_map as commercial_map_router
 # Wave 15 — Founder launch-status (single-pane production readiness)
 from api.routers import founder_launch_status as founder_launch_status_router
+# Systems 26-35 — Enterprise Control Plane
+from api.routers import control_plane_os as control_plane_os_router
+from api.routers import agent_mesh_os as agent_mesh_os_router
+from api.routers import assurance_contract_os as assurance_contract_os_router
+from api.routers import sandbox_os as sandbox_os_router
+from api.routers import org_graph_os as org_graph_os_router
+from api.routers import runtime_safety_os as runtime_safety_os_router
+from api.routers import org_simulation_os as org_simulation_os_router
+from api.routers import human_ai_os as human_ai_os_router
+from api.routers import value_engine_os as value_engine_os_router
+from api.routers import self_evolving_os as self_evolving_os_router
 from api.security import APIKeyMiddleware, setup_rate_limit
 from core.config.settings import get_settings
 from core.errors import AICompanyError
@@ -290,6 +301,28 @@ def create_app() -> FastAPI:
     app.include_router(commercial_map_router.router)
     # Wave 15 — Founder launch-status (admin /launch-status + public /launch-status/public)
     app.include_router(founder_launch_status_router.router)
+
+    # ── Systems 26-35 — Enterprise Control Plane (all routers self-prefix) ─
+    # System 26 — Organizational Control Plane (run register/monitor/pause/trace)
+    app.include_router(control_plane_os_router.router)
+    # System 27 — Agent Mesh (discovery/routing/trust boundaries)
+    app.include_router(agent_mesh_os_router.router)
+    # System 28 — Assurance Contracts (pre-execution contract checks)
+    app.include_router(assurance_contract_os_router.router)
+    # System 29 — Enterprise Sandbox (simulate/canary/replay; stub executors only)
+    app.include_router(sandbox_os_router.router)
+    # System 30 — Operational Memory Graph (people/workflows/incidents)
+    app.include_router(org_graph_os_router.router)
+    # System 31 — Runtime Safety (circuit breakers/kill switches)
+    app.include_router(runtime_safety_os_router.router)
+    # System 32 — Organizational Simulation (failure/scale/incident sims)
+    app.include_router(org_simulation_os_router.router)
+    # System 33 — Human-AI Operating Model (delegation/escalation/oversight)
+    app.include_router(human_ai_os_router.router)
+    # System 34 — Business Value Engine (workflow ROI; tier-disciplined)
+    app.include_router(value_engine_os_router.router)
+    # System 35 — Self-Evolving Fabric (proposals only — never auto-applies)
+    app.include_router(self_evolving_os_router.router)
 
     @app.get("/", tags=["root"])
     async def root() -> dict[str, object]:
