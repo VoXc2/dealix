@@ -5,7 +5,6 @@ from __future__ import annotations
 import os
 from dataclasses import dataclass
 
-
 _PRODUCTION_ENVS = {"production", "prod"}
 
 

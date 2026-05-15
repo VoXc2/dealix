@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 from auto_client_acquisition.control_plane_os.postgres_ledger import (
     approval_ticket_insert_statement,
@@ -17,7 +17,7 @@ from auto_client_acquisition.control_plane_os.repositories import (
 
 
 def _now() -> datetime:
-    return datetime.now(timezone.utc)
+    return datetime.now(UTC)
 
 
 def test_workflow_run_statement_includes_tenant_fields() -> None:
