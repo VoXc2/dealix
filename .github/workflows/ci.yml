@@ -41,6 +41,9 @@ jobs:
       - name: Alembic single head
         run: python scripts/check_alembic_single_head.py
 
+      - name: Module sprawl guard (no new *_vN modules)
+        run: python scripts/check_no_new_vn_modules.py
+
       - name: Verify Service Readiness Matrix
         run: python scripts/verify_service_readiness_matrix.py
 
