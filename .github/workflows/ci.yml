@@ -2,9 +2,9 @@ name: CI
 
 on:
   push:
-    branches: [main, dealix-v3-autonomous-revenue-os]
+    branches: [main, dealix-v3-autonomous-revenue-os, "claude/**"]
   pull_request:
-    branches: [main, dealix-v3-autonomous-revenue-os]
+    branches: [main, dealix-v3-autonomous-revenue-os, "claude/**"]
 
 jobs:
   test:
@@ -24,8 +24,19 @@ jobs:
           pip install -r requirements.txt
           pip install pytest pytest-asyncio pytest-cov httpx
 
-      - name: Compile check
+      - name: Compile check (syntax)
         run: python -m compileall api auto_client_acquisition
+
+      - name: Import + collection guard (catches shipped-shell routers)
+        env:
+          APP_ENV: test
+          APP_DEBUG: "false"
+        run: |
+          # compileall only checks syntax; this proves the app actually boots
+          # and every test module imports cleanly (0 collection errors).
+          python -c "import api.main; print('api.main import OK')"
+          pytest --co -q --no-cov 2>&1 | tail -5
+          pytest --co -q --no-cov >/dev/null
 
       - name: Alembic single head
         run: python scripts/check_alembic_single_head.py
@@ -43,7 +54,7 @@ jobs:
           GLM_API_KEY: test-glm-key
           GOOGLE_API_KEY: test-google-key
         run: |
-          pytest tests/test_pg_event_store.py tests/test_model_router.py tests/test_integrations.py tests/test_v5_layers.py tests/unit/test_compliance_os.py tests/test_isolated_pg_event_store.py -q --no-cov
+          pytest tests/test_app_boot.py tests/test_pg_event_store.py tests/test_model_router.py tests/test_integrations.py tests/test_v5_layers.py tests/unit/test_compliance_os.py tests/test_isolated_pg_event_store.py -q --no-cov
 
       - name: Export Service Readiness JSON
         run: |
