@@ -12,8 +12,8 @@ from auto_client_acquisition.reporting_os.proof_pack import (
 )
 
 __all__ = [
-    "WeeklyReport",
     "MASTER_SECTION_KEYS",
+    "WeeklyReport",
     "build_master_proof_pack_dict",
     "build_proof_pack_dict",
     "empty_weekly_report",

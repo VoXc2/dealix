@@ -14,8 +14,8 @@ from auto_client_acquisition.strategy_os.use_case_scoring import (
 __all__ = [
     "RecommendedNextService",
     "UseCaseScores",
-    "compute_ai_readiness",
     "composite_score",
+    "compute_ai_readiness",
     "rank_use_cases",
     "roadmap_buckets",
 ]

@@ -50,8 +50,8 @@ from auto_client_acquisition.revenue_os.targeting import (
 
 __all__ = [
     "ACTION_DEFAULT_MODE",
-    "AccountRow",
     "WATERFALL_ORDER",
+    "AccountRow",
     "ActionKind",
     "ActionMode",
     "AntiWasteViolation",
@@ -78,7 +78,7 @@ __all__ = [
     "parse_tier1_lead_source",
     "score_account_row",
     "source_policies",
-    "summarize_scored_accounts",
     "suggest_dedupe_fingerprint",
+    "summarize_scored_accounts",
     "validate_pipeline_step",
 ]
