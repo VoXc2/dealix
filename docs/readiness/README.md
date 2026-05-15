@@ -21,3 +21,5 @@
 | 10 | [`gate_10_world_class_readiness.md`](gate_10_world_class_readiness.md) |
 
 التحقق الآلي: [`../../scripts/verify_dealix_ready.py`](../../scripts/verify_dealix_ready.py).
+
+مرجع الهيمنة المؤسسية (L11–L17): [`../../readiness/dealix_dominance_model.md`](../../readiness/dealix_dominance_model.md).

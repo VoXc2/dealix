@@ -6,6 +6,8 @@
 
 المرجع: [`docs/company/DEALIX_STAGE_GATES_AR.md`](docs/company/DEALIX_STAGE_GATES_AR.md).
 
+نموذج الجاهزية الاستراتيجي (L11–L17): [`readiness/dealix_dominance_model.md`](readiness/dealix_dominance_model.md).
+
 التحقق الآلي:
 
 ```bash
