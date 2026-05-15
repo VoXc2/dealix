@@ -37,7 +37,7 @@ def test_manifest_matches_python_registry() -> None:
 
 def test_unique_required_paths_count() -> None:
     # 10 systems with one intentional duplicate path (/platform/strategic_reasoning).
-    assert len(all_required_paths()) == 43
+    assert len(all_required_paths()) == 47
 
 
 def test_missing_capabilities_and_coverage() -> None:
@@ -50,7 +50,7 @@ def test_missing_capabilities_and_coverage() -> None:
     }
     missing = missing_capabilities(available)
     assert "/platform/revenue_optimization" in missing
-    assert dominance_coverage_percent(available) == pytest.approx(11.63, abs=0.01)
+    assert dominance_coverage_percent(available) == pytest.approx(10.64, abs=0.01)
 
 
 def test_system_completion_ratio_and_errors() -> None:
