@@ -49,6 +49,7 @@ from api.routers import (
     tenant_theming,
     zatca,
 )
+from api.routers import infrastructure_readiness as infrastructure_readiness_router
 # Wave 12.7 — Intelligence Layer + Expansion Engine routers
 from api.routers import expansion_engine as expansion_engine_router
 from api.routers import intelligence_layer as intelligence_layer_router
@@ -290,6 +291,8 @@ def create_app() -> FastAPI:
     app.include_router(commercial_map_router.router)
     # Wave 15 — Founder launch-status (admin /launch-status + public /launch-status/public)
     app.include_router(founder_launch_status_router.router)
+    # Operational Infrastructure — enterprise readiness drill
+    app.include_router(infrastructure_readiness_router.router)
 
     @app.get("/", tags=["root"])
     async def root() -> dict[str, object]:
