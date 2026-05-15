@@ -210,7 +210,7 @@ def step5_governance_review(*, customer_id: str, engagement_id: str, drafts: lis
         )
         reviews.append({
             "account": d.get("account", "?"),
-            "decision": result.decision.value,
+            "decision": result.decision.value.lower(),
             "reasons": list(result.reasons),
         })
     return {

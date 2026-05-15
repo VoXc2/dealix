@@ -18,12 +18,14 @@ class PassportValidation:
 
     is_valid: bool
     reasons: tuple[str, ...] = ()
+    missing: tuple[str, ...] = ()
 
 
 def validate(passport: SourcePassport) -> PassportValidation:
     """Validate a Source Passport for AI use; never raises."""
     ok, errors = source_passport_valid_for_ai(passport)
-    return PassportValidation(is_valid=ok, reasons=errors)
+    missing = tuple(e for e in errors if e.endswith("_required"))
+    return PassportValidation(is_valid=ok, reasons=errors, missing=missing)
 
 
 def source_passport_from_v2(p: SourcePassportV2) -> SourcePassport:

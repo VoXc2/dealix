@@ -9,6 +9,7 @@ from __future__ import annotations
 import json
 import os
 import threading
+import uuid
 from dataclasses import asdict, dataclass, field
 from datetime import UTC, datetime
 from pathlib import Path
@@ -48,8 +49,13 @@ class CapitalAsset:
     customer_id: str
     engagement_id: str
     asset_type: str
-    title: str
+    title: str = ""
     description: str = ""
+    owner: str = ""
+    reusable: bool = True
+    asset_ref: str = ""
+    notes: str = ""
+    asset_id: str = field(default_factory=lambda: uuid.uuid4().hex[:12])
     recorded_at: str = field(
         default_factory=lambda: datetime.now(UTC).isoformat()
     )
@@ -74,8 +80,12 @@ def add_asset(
     customer_id: str,
     engagement_id: str,
     asset_type: str,
-    title: str,
+    title: str = "",
     description: str = "",
+    owner: str = "",
+    reusable: bool = True,
+    asset_ref: str = "",
+    notes: str = "",
 ) -> CapitalAsset:
     if not customer_id:
         raise ValueError("customer_id is required")
@@ -89,6 +99,10 @@ def add_asset(
         asset_type=asset_type,
         title=title,
         description=description,
+        owner=owner,
+        reusable=reusable,
+        asset_ref=asset_ref,
+        notes=notes,
     )
     path = _path()
     _ensure_dir(path)

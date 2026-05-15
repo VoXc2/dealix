@@ -32,6 +32,8 @@ def audit_draft_text(text: str) -> list[str]:
         "guaranteed results",
         "guaranteed roi",
         "guarantee roi",
+        "we guarantee",
+        "نضمن",
         "نضمن لك",
         "نضمن لكم",
         "نضمن النتائج",

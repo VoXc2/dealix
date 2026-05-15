@@ -59,6 +59,14 @@ class QualificationResult:
     recommended_offer: str
     doctrine_violations: list[str] = field(default_factory=list)
 
+    def to_dict(self) -> dict[str, object]:
+        return {
+            "decision": self.decision.value,
+            "score": self.score,
+            "recommended_offer": self.recommended_offer,
+            "doctrine_violations": list(self.doctrine_violations),
+        }
+
 
 # Forbidden-term substrings (English + Arabic) checked beyond ``audit_draft_text``.
 _EXTRA_DOCTRINE_TERMS: tuple[tuple[str, str], ...] = (
@@ -106,8 +114,14 @@ def qualify(
     proof_path_visible: bool,
     retainer_path_visible: bool,
     raw_request_text: str = "",
+    sector: str = "",
+    city: str = "",
 ) -> QualificationResult:
-    """Map discovery answers to a commercial verdict (deterministic, no LLM)."""
+    """Map discovery answers to a commercial verdict (deterministic, no LLM).
+
+    ``sector`` and ``city`` are accepted for intake context (carried by the
+    service-setup router's request body) but do not change the verdict.
+    """
     signals = (
         pain_clear,
         owner_present,
