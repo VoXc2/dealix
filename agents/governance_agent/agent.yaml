@@ -1,0 +1,36 @@
+name: governance_agent
+version: 1.0.0
+owner: governance_lead
+risk_level: high
+description: >
+  Enforces policy and reviews other agents' actions. Evaluates requests against
+  the non-negotiables, routes escalations, and records decision traces. It is a
+  control agent: it can deny and escalate, never execute external actions.
+allowed_tools:
+  - read
+  - analyze
+  - policy.evaluate
+  - escalation.route
+  - audit.record_trace
+  - knowledge.search_internal
+  - queue_for_approval
+requires_approval_for:
+  - policy_rule_change
+  - approval_matrix_change
+  - agent_permission_change
+forbidden_tools:
+  - scrape_web
+  - linkedin_automation
+  - cold_whatsapp_send
+  - send_whatsapp
+  - send_email
+  - export_pii_bulk
+memory_scope:
+  - governance_memory
+  - product_knowledge
+kpis:
+  - policy_evaluation_coverage
+  - escalation_routing_accuracy
+  - audit_trace_completeness
+  - non_negotiable_violations_blocked
+escalation_owner: governance_lead
