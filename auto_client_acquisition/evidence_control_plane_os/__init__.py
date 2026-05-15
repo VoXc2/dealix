@@ -23,13 +23,18 @@ from auto_client_acquisition.evidence_control_plane_os.evidence_gap_detector imp
 )
 from auto_client_acquisition.evidence_control_plane_os.evidence_graph import (
     MINI_CHAIN_KEYS,
+    EvidenceControlGraph,
+    build_control_graph,
     mini_evidence_chain_complete,
 )
 from auto_client_acquisition.evidence_control_plane_os.evidence_object import (
-    EvidenceType,
+    EvidenceItem,
     EvidenceObject,
+    EvidenceType,
+    create_evidence,
     evidence_object_valid,
     is_critical_evidence_type,
+    list_evidence,
 )
 from auto_client_acquisition.evidence_control_plane_os.proof_linker import (
     PROOF_PACK_V3_SECTIONS,
@@ -41,11 +46,15 @@ __all__ = (
     "MINI_CHAIN_KEYS",
     "PROOF_PACK_V3_SECTIONS",
     "AccountabilityRecord",
+    "EvidenceControlGraph",
+    "EvidenceItem",
     "EvidenceObject",
     "EvidencePresence",
     "EvidenceType",
     "GapSeverity",
     "accountability_valid_for_execution",
+    "build_control_graph",
+    "create_evidence",
     "detect_evidence_gaps",
     "evidence_coverage_band",
     "evidence_coverage_percent",
@@ -54,6 +63,7 @@ __all__ = (
     "external_action_accountable",
     "gap_severity",
     "is_critical_evidence_type",
+    "list_evidence",
     "mini_evidence_chain_complete",
     "proof_pack_v3_sections_complete",
 )

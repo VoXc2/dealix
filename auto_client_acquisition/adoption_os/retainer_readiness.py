@@ -2,7 +2,8 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import asdict, dataclass, field
+from typing import Any
 
 
 @dataclass(frozen=True, slots=True)
@@ -64,4 +65,64 @@ def wave2_retainer_eligibility(
     return not errs, tuple(errs)
 
 
-__all__ = ["AdoptionRetainerReadiness", "adoption_retainer_readiness_passes", "wave2_retainer_eligibility"]
+@dataclass(frozen=True, slots=True)
+class RetainerReadiness:
+    """Retainer readiness verdict for a single customer."""
+
+    customer_id: str
+    eligible: bool
+    recommended_offer: str
+    gaps: list[str] = field(default_factory=list)
+
+    def to_dict(self) -> dict[str, Any]:
+        return asdict(self)
+
+
+def evaluate(
+    *,
+    customer_id: str,
+    adoption_score: float = 0.0,
+    proof_score: float = 0.0,
+    workflow_owner_present: bool = False,
+    governance_risk_controlled: bool = True,
+) -> RetainerReadiness:
+    """Evaluate retainer readiness from adoption + proof signals.
+
+    Eligibility mirrors the Milestone 2 gate: adoption >= 70, proof >= 80,
+    a workflow owner exists and governance risk is controlled. The
+    recommended offer is always populated so the customer has a next step.
+    """
+    gaps: list[str] = []
+    if adoption_score < 70:
+        gaps.append("adoption_score_below_70")
+    if proof_score < 80:
+        gaps.append("proof_score_below_80")
+    if not workflow_owner_present:
+        gaps.append("workflow_owner_missing")
+    if not governance_risk_controlled:
+        gaps.append("governance_risk_not_controlled")
+
+    eligible = not gaps
+
+    if eligible:
+        recommended_offer = "monthly_retainer"
+    elif adoption_score >= 40 and proof_score >= 40:
+        recommended_offer = "enablement_sprint"
+    else:
+        recommended_offer = "proof_pilot"
+
+    return RetainerReadiness(
+        customer_id=customer_id,
+        eligible=eligible,
+        recommended_offer=recommended_offer,
+        gaps=gaps,
+    )
+
+
+__all__ = [
+    "AdoptionRetainerReadiness",
+    "RetainerReadiness",
+    "adoption_retainer_readiness_passes",
+    "evaluate",
+    "wave2_retainer_eligibility",
+]
