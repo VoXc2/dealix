@@ -118,7 +118,7 @@ def _calculate_score(
     if not missing_test_paths:
         passed += 1
     passed += sum(1 for check in checks if check.passed)
-    return int(round((passed / max(1, 3 + len(checks))) * 100))
+    return round((passed / max(1, 3 + len(checks))) * 100)
 
 
 def _layer_status(score: int, threshold: int) -> str:
@@ -177,7 +177,7 @@ def _validate_cross_layer(
     if not checks:
         return 0, "FIX", ()
     passed = sum(1 for check in checks if check.passed)
-    score = int(round((passed / len(checks)) * 100))
+    score = round((passed / len(checks)) * 100)
     return score, _layer_status(score, threshold), tuple(checks)
 
 
