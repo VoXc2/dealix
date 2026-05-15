@@ -1,0 +1,38 @@
+# Layer 7 — Observability — latency alert rules
+# Owner: Platform Reliability Lead
+# Last reviewed: 2026-05-15
+# Source signals: dealix/observability/otel.py, dealix/observability/sentry.py,
+#                 api/routers/agent_observability.py
+# Alert text must contain no PII; reference request_id / trace_id only.
+
+alerts:
+
+  - name: Checkout P95 latency regression
+    condition: p95 latency of transaction 'POST /api/v1/checkout' over 10m window
+    threshold: 1500ms
+    severity: SEV-3
+    channel: oncall@dealix.sa
+
+  - name: API P95 latency regression
+    condition: p95 latency across all API routes over 15m window
+    threshold: 2000ms
+    severity: SEV-3
+    channel: oncall@dealix.sa
+
+  - name: Agent step latency breach
+    condition: p95 agent latency_ms from agent_observability /recent grouped by agent_name over 15m
+    threshold: 12000ms
+    severity: SEV-2
+    channel: oncall@dealix.sa
+
+  - name: LLM call latency breach
+    condition: p95 latency_ms of llm_calls grouped by model over 15m window
+    threshold: 8000ms
+    severity: SEV-2
+    channel: oncall@dealix.sa
+
+  - name: Workflow end-to-end latency breach
+    condition: p95 total trace duration grouped by workflow over 15m window
+    threshold: 30000ms
+    severity: SEV-2
+    channel: oncall@dealix.sa

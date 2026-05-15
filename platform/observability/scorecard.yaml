@@ -1,0 +1,31 @@
+# Layer 7 — Observability — readiness scorecard
+# Owner: Platform Reliability Lead
+# Last reviewed: 2026-05-15
+
+layer: "Layer 7 — Observability"
+owner: "Platform Reliability Lead"
+overall_score: 75
+band: "client pilot"   # 0-59 prototype / 60-74 internal beta / 75-84 client pilot / 85-94 enterprise-ready / 95+ mission-critical
+
+sub_criteria:
+  - name: "Structured logging with correlation IDs"
+    score: 79
+    weight: 0.15
+  - name: "Distributed tracing end-to-end"
+    score: 74
+    weight: 0.18
+  - name: "Metrics, token usage and cost tracking"
+    score: 77
+    weight: 0.15
+  - name: "Alerting on failure"
+    score: 75
+    weight: 0.15
+  - name: "Dashboards per service"
+    score: 73
+    weight: 0.12
+  - name: "Incident response process"
+    score: 72
+    weight: 0.13
+  - name: "PII and secret redaction"
+    score: 80
+    weight: 0.12

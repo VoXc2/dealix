@@ -1,0 +1,44 @@
+# Layer 7 — Observability — error-rate alert rules
+# Owner: Platform Reliability Lead
+# Last reviewed: 2026-05-15
+# Source signals: dealix/observability/sentry.py, docs/observability/sentry_alerts.yaml,
+#                 api/routers/agent_observability.py
+# Alert text must contain no PII; reference request_id / trace_id only.
+
+alerts:
+
+  - name: Webhook 5xx failure
+    condition: any unhandled exception originating in /api/v1/webhooks/* over 5m window
+    threshold: 1 event
+    severity: SEV-1
+    channel: oncall@dealix.sa
+
+  - name: API error spike
+    condition: new error events across all routes over 5m window
+    threshold: 10 events
+    severity: SEV-2
+    channel: oncall@dealix.sa
+
+  - name: Agent failure rate breach
+    condition: share of agent_observability traces with success=false grouped by agent_name over 15m
+    threshold: 10 percent
+    severity: SEV-2
+    channel: oncall@dealix.sa
+
+  - name: Workflow failure rate breach
+    condition: share of workflow runs with success=false grouped by workflow over 15m
+    threshold: 5 percent
+    severity: SEV-2
+    channel: oncall@dealix.sa
+
+  - name: API 5xx error rate breach
+    condition: share of API responses with status >= 500 over 10m window
+    threshold: 2 percent
+    severity: SEV-2
+    channel: oncall@dealix.sa
+
+  - name: Cost tracker persistence failures
+    condition: count of cost_tracker persistence-failed warnings over 15m window
+    threshold: 5 events
+    severity: SEV-3
+    channel: oncall@dealix.sa

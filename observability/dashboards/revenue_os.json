@@ -1,0 +1,57 @@
+{
+  "dashboard": "revenue_os",
+  "title": "Revenue OS Health — Layer 7",
+  "description": "Real-time health of revenue-critical paths: checkout latency, payment webhook errors, throughput, estimated cost against activity.",
+  "owner": "Platform Reliability Lead",
+  "data_sources": [
+    "dealix/observability/sentry.py",
+    "docs/observability/sentry_alerts.yaml",
+    "dealix/observability/cost_tracker.py"
+  ],
+  "refresh_interval_seconds": 60,
+  "notes": "No confidential customer metrics; aggregated patterns only. Cost values are estimated, not verified.",
+  "panels": [
+    {
+      "title": "Checkout P95 latency",
+      "metric": "checkout_latency_ms_p95",
+      "query": "p95(duration) for transaction 'POST /api/v1/checkout' over 10m",
+      "type": "timeseries",
+      "unit": "milliseconds"
+    },
+    {
+      "title": "Payment webhook 5xx errors",
+      "metric": "webhook_5xx_count",
+      "query": "count of error events where url contains '/api/v1/webhooks/' over 1h",
+      "type": "timeseries",
+      "unit": "count"
+    },
+    {
+      "title": "Webhook signature mismatch",
+      "metric": "webhook_signature_mismatch_count",
+      "query": "count of events where message contains 'moyasar_webhook_bad_signature' over 24h",
+      "type": "stat",
+      "unit": "count"
+    },
+    {
+      "title": "Request throughput",
+      "metric": "request_throughput",
+      "query": "count of completed API requests grouped by route over 1h",
+      "type": "timeseries",
+      "unit": "count"
+    },
+    {
+      "title": "Estimated LLM cost vs activity",
+      "metric": "revenue_cost_usd_estimate",
+      "query": "totals().total_usd from cost_tracker over 24h alongside request count",
+      "type": "bar",
+      "unit": "usd_estimate"
+    },
+    {
+      "title": "API error rate",
+      "metric": "api_error_rate",
+      "query": "share of API responses with status >= 500 over 1h",
+      "type": "gauge",
+      "unit": "percent"
+    }
+  ]
+}

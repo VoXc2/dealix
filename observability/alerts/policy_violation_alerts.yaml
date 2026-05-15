@@ -1,0 +1,45 @@
+# Layer 7 — Observability — policy-violation alert rules
+# Owner: Platform Reliability Lead
+# Last reviewed: 2026-05-15
+# Source signals: auto_client_acquisition/observability_adapters/redaction.py,
+#                 dealix/observability/sentry.py, api/routers/agent_observability.py
+# Policy-violation alerts are always SEV-1 and are never muted.
+# Alert text must contain no PII; reference request_id / trace_id only.
+
+alerts:
+
+  - name: PII detected in outbound log or span
+    condition: RedactionFilter.is_safe_for_external_log returns false for an emitted payload
+    threshold: 1 event
+    severity: SEV-1
+    channel: oncall@dealix.sa
+
+  - name: Secret or token detected in outbound payload
+    condition: a REDACTED_KEY / REDACTED_BEARER / REDACTED_JWT pattern reaches an external sink unredacted
+    threshold: 1 event
+    severity: SEV-1
+    channel: oncall@dealix.sa
+
+  - name: Full transcript emitted without approval
+    condition: an event carries a full conversation transcript while no_full_transcripts_by_default gate is active
+    threshold: 1 event
+    severity: SEV-1
+    channel: oncall@dealix.sa
+
+  - name: Agent action mode bypass
+    condition: an agent_observability trace records action_mode='approved_execute' without a recorded approval_status
+    threshold: 1 event
+    severity: SEV-1
+    channel: oncall@dealix.sa
+
+  - name: Hard gate disabled
+    condition: any key in agent_observability _HARD_GATES is false
+    threshold: 1 event
+    severity: SEV-1
+    channel: oncall@dealix.sa
+
+  - name: Webhook signature mismatch
+    condition: event message contains 'moyasar_webhook_bad_signature'
+    threshold: 1 event
+    severity: SEV-1
+    channel: oncall@dealix.sa

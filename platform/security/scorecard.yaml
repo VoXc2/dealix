@@ -1,0 +1,27 @@
+layer: "Layer 1 - Foundation / Security"
+owner: "Platform Lead"
+overall_score: 77
+band: "client pilot"
+band_scale:
+  - "0-59 prototype"
+  - "60-74 internal beta"
+  - "75-84 client pilot"
+  - "85-94 enterprise-ready"
+  - "95+ mission-critical"
+sub_criteria:
+  - name: "Secrets management"
+    score: 78
+    weight: 0.20
+  - name: "Encryption in transit and at rest"
+    score: 82
+    weight: 0.20
+  - name: "Access control and least privilege"
+    score: 80
+    weight: 0.20
+  - name: "Static scanning and SSRF/rate-limit guards"
+    score: 80
+    weight: 0.15
+  - name: "Incident response readiness"
+    score: 68
+    weight: 0.25
+notes: "Incident-response drills and an automated secret-rotation schedule are documented but not yet exercised on a periodic, verified cadence."

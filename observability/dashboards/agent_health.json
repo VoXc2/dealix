@@ -1,0 +1,57 @@
+{
+  "dashboard": "agent_health",
+  "title": "Agent Health — Layer 7",
+  "description": "Real-time health of every agent: success rate, latency, estimated cost, failure reasons.",
+  "owner": "Platform Reliability Lead",
+  "data_sources": [
+    "api/routers/agent_observability.py",
+    "dealix/observability/cost_tracker.py",
+    "dealix/observability/otel.py"
+  ],
+  "refresh_interval_seconds": 60,
+  "notes": "All cost values are estimated, not verified. No PII; customer_handle and tenant_id only.",
+  "panels": [
+    {
+      "title": "Agent success rate",
+      "metric": "agent_success_rate",
+      "query": "share of agent_observability traces with guardrail_result='ok' grouped by agent_name over 1h",
+      "type": "gauge",
+      "unit": "percent"
+    },
+    {
+      "title": "Agent P95 latency",
+      "metric": "agent_latency_ms_p95",
+      "query": "p95(latency_ms) from agent_observability /recent grouped by agent_name over 1h",
+      "type": "timeseries",
+      "unit": "milliseconds"
+    },
+    {
+      "title": "Estimated cost per agent",
+      "metric": "agent_cost_usd_estimate",
+      "query": "by_agent.total_cost_usd from agent_observability /cost-summary over 24h",
+      "type": "bar",
+      "unit": "usd_estimate"
+    },
+    {
+      "title": "Top agent failure reasons",
+      "metric": "agent_error_type_count",
+      "query": "count of traces grouped by error_type where success=false over 24h",
+      "type": "table",
+      "unit": "count"
+    },
+    {
+      "title": "Token usage per agent",
+      "metric": "agent_token_usage",
+      "query": "sum(prompt_tokens + completion_tokens) from llm_calls grouped by agent_name over 24h",
+      "type": "bar",
+      "unit": "tokens"
+    },
+    {
+      "title": "Agent run throughput",
+      "metric": "agent_run_count",
+      "query": "count of agent_observability traces grouped by agent_name over 1h",
+      "type": "timeseries",
+      "unit": "count"
+    }
+  ]
+}

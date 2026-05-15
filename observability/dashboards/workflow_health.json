@@ -1,0 +1,56 @@
+{
+  "dashboard": "workflow_health",
+  "title": "Workflow Health — Layer 7",
+  "description": "Real-time health of every workflow: run count, success rate, per-step latency, recent failures.",
+  "owner": "Platform Reliability Lead",
+  "data_sources": [
+    "api/routers/agent_observability.py",
+    "dealix/observability/otel.py"
+  ],
+  "refresh_interval_seconds": 60,
+  "notes": "Every workflow carries a trace_id. No PII; tenant_id and customer_handle only.",
+  "panels": [
+    {
+      "title": "Workflow run count",
+      "metric": "workflow_run_count",
+      "query": "count of traces grouped by workflow from agent_observability /recent over 1h",
+      "type": "timeseries",
+      "unit": "count"
+    },
+    {
+      "title": "Workflow success rate",
+      "metric": "workflow_success_rate",
+      "query": "share of traces with success=true grouped by workflow over 1h",
+      "type": "gauge",
+      "unit": "percent"
+    },
+    {
+      "title": "Latency per workflow step",
+      "metric": "workflow_step_latency_ms",
+      "query": "avg(latency_ms) of nested spans grouped by span name within workflow trace over 1h",
+      "type": "timeseries",
+      "unit": "milliseconds"
+    },
+    {
+      "title": "Recent failed workflows",
+      "metric": "workflow_recent_failures",
+      "query": "traces where success=false ordered by created_at desc limit 50, fields workflow, trace_id, error_type",
+      "type": "table",
+      "unit": "rows"
+    },
+    {
+      "title": "Estimated cost per workflow",
+      "metric": "workflow_cost_usd_estimate",
+      "query": "by_workflow.total_cost_usd from agent_observability /cost-summary over 24h",
+      "type": "bar",
+      "unit": "usd_estimate"
+    },
+    {
+      "title": "Workflows missing a trace_id",
+      "metric": "workflow_missing_trace_id",
+      "query": "count of workflow runs where trace_id is empty over 24h",
+      "type": "stat",
+      "unit": "count"
+    }
+  ]
+}
