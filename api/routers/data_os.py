@@ -18,10 +18,7 @@ from auto_client_acquisition.data_os.source_passport import (
     SourcePassport,
     validate as validate_passport,
 )
-from auto_client_acquisition.governance_os.runtime_decision import (
-    GovernanceDecision,
-    decide,
-)
+from auto_client_acquisition.governance_os.runtime_decision import GovernanceDecision
 
 router = APIRouter(prefix="/api/v1/data-os", tags=["data-os"])
 
@@ -55,18 +52,40 @@ def _build_passport(raw: dict[str, Any] | None) -> SourcePassport | None:
 
 
 def _governance_envelope(*, passport: SourcePassport | None) -> dict[str, Any]:
-    result = decide(
-        action="run_scoring",
-        context={
-            "source_passport": passport,
-            "contains_pii": passport.contains_pii if passport else False,
-            "external_use": passport.external_use_allowed if passport else False,
-        },
-    )
+    """Governance decision for the passport-gated ``run_scoring`` action.
+
+    The ``decision`` field is lowercased to keep this router's stable
+    machine-readable vocabulary (``allow`` / ``block`` / ...).
+    """
+    if passport is None:
+        return {
+            "decision": GovernanceDecision.BLOCK.value.lower(),
+            "reasons": ["no_source_passport: AI use requires a SourcePassport"],
+            "safe_alternative": "request a SourcePassport from the client before processing",
+        }
+    validation = validate_passport(passport)
+    if not validation.is_valid:
+        return {
+            "decision": GovernanceDecision.BLOCK.value.lower(),
+            "reasons": ["invalid_source_passport", *validation.reasons],
+            "safe_alternative": "fix the passport (missing/invalid fields) and retry",
+        }
+    if passport.contains_pii and passport.external_use_allowed:
+        return {
+            "decision": GovernanceDecision.REQUIRE_APPROVAL.value.lower(),
+            "reasons": ["pii_external_use_requires_approval"],
+            "safe_alternative": "",
+        }
+    if passport.contains_pii:
+        return {
+            "decision": GovernanceDecision.ALLOW_WITH_REVIEW.value.lower(),
+            "reasons": ["pii_internal_use_review_required"],
+            "safe_alternative": "",
+        }
     return {
-        "decision": result.decision.value,
-        "reasons": list(result.reasons),
-        "safe_alternative": result.safe_alternative,
+        "decision": GovernanceDecision.ALLOW.value.lower(),
+        "reasons": [],
+        "safe_alternative": "",
     }
 
 
