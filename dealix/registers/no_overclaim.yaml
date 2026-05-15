@@ -13,7 +13,7 @@
 # ═══════════════════════════════════════════════════════════════════
 
 schema_version: "1.0"
-last_reviewed: "2026-04-21"
+last_reviewed: "2026-05-15"
 
 claims:
   # ───────────── Core platform ─────────────
@@ -185,13 +185,16 @@ claims:
       - api/middleware/http_stack.py::RequestIDMiddleware
 
   - id: canonical_service_catalog
-    claim: "Seven canonical commercial offerings with KPI commitments, hard gates, and action modes in one code registry"
+    claim: "One canonical commercial catalog: a five-rung service ladder (Free Diagnostic, Sprint, Pilot, Retainer/Managed Ops, Enterprise/Custom AI) plus an Agency Partner channel, each with KPI commitments, hard gates, and action modes, in one code registry"
     status: Production
     evidence:
       - auto_client_acquisition/service_catalog/registry.py
       - auto_client_acquisition/service_catalog/schemas.py
       - api/routers/service_catalog.py
       - tests/test_service_catalog.py
+      - tests/test_landing_catalog_consistency.py
+      - docs/company/SERVICE_CATALOG.md
+      - docs/company/AI_SERVICES_FOR_SAUDI_COMPANIES.md
 
   - id: platform_reference_contracts
     claim: "Reference platform contracts for tenant, RLS, storage, and auth (no stack replacement)"

@@ -1,5 +1,7 @@
 # Offer Architecture
 
+> **Canonical pricing & catalog:** `auto_client_acquisition/service_catalog/registry.py` and [`SERVICE_CATALOG.md`](SERVICE_CATALOG.md) / [`OFFER_LADDER.md`](OFFER_LADDER.md). This document covers offer *structure thinking*, not the live prices.
+
 Keep the **surface** simple; organize SKUs in **layers**.
 
 ## Front-end offers (entry, low-risk)

@@ -10,7 +10,8 @@ Single source of truth that maps every Dealix offer to:
   - non-negotiables (hard_gates) honored by code
 
 Reads from `auto_client_acquisition.service_catalog.registry.OFFERINGS`
-so the map can never drift from the canonical 7-offer registry.
+so the map can never drift from the canonical registry (5 ladder rungs
++ 1 Agency Partner channel).
 
 Endpoints:
   GET /api/v1/commercial-map           → JSON
@@ -33,7 +34,7 @@ router = APIRouter(prefix="/api/v1/commercial-map", tags=["commercial-map"])
 # Per-service wiring overlays (landing + endpoints).
 # Keys MUST match `auto_client_acquisition.service_catalog.registry` ids.
 _WIRING: dict[str, dict[str, Any]] = {
-    "free_mini_diagnostic": {
+    "free_diagnostic": {
         "landing_url": "/diagnostic.html",
         "intake_endpoint": "POST /api/v1/company-growth-beast/diagnostic",
         "lead_capture_endpoint": "POST /api/v1/public/demo-request",
@@ -43,9 +44,9 @@ _WIRING: dict[str, dict[str, Any]] = {
         "delivery_endpoint": "GET /api/v1/founder/leads",
         "proof_endpoint": "auto_client_acquisition/email/transactional.send_transactional(kind=diagnostic_intake_confirmation)",
         "founder_surface": "/founder-leads.html",
-        "next_offer": "revenue_proof_sprint_499",
+        "next_offer": "sprint",
     },
-    "revenue_proof_sprint_499": {
+    "sprint": {
         "landing_url": "/start.html",
         "preview_url": "/sprint-sample.html",
         "intake_endpoint": "POST /api/v1/service-setup/qualify",
@@ -58,25 +59,25 @@ _WIRING: dict[str, dict[str, Any]] = {
         "proof_endpoint": "auto_client_acquisition.proof_os.proof_pack.assemble",
         "case_safe_endpoint": "GET /api/v1/proof-to-market/case-safe/{engagement_id}",
         "founder_surface": "/founder-dashboard.html",
-        "next_offer": "growth_ops_monthly_2999",
+        "next_offer": "pilot",
     },
-    "data_to_revenue_pack_1500": {
-        "landing_url": "/data-pack.html",
-        "intake_endpoint": "POST /api/v1/data-os/import-preview/upload",
-        "preview_endpoint": "POST /api/v1/data-os/import-preview",
-        "checkout_url": "/checkout.html?tier=data_pack",
+    "pilot": {
+        "landing_url": "/pricing.html#pilot",
+        "intake_endpoint": "POST /api/v1/service-setup/qualify",
+        "proposal_endpoint": "POST /api/v1/service-setup/proposal/{customer_id}",
+        "checkout_url": "/checkout.html?tier=pilot",
         "checkout_endpoint": "POST /api/v1/payment-ops/invoice-intent",
-        "delivery_module": "auto_client_acquisition.data_os + auto_client_acquisition.delivery_factory.delivery_sprint",
+        "delivery_module": "auto_client_acquisition.delivery_factory.delivery_sprint + scripts/weekly_brief_runner.py",
         "delivery_endpoint": "POST /api/v1/sprint/run",
         "proof_endpoint": "auto_client_acquisition.proof_os.proof_pack.assemble",
         "founder_surface": "/founder-dashboard.html",
-        "next_offer": "growth_ops_monthly_2999",
+        "next_offer": "retainer_managed_ops",
     },
-    "growth_ops_monthly_2999": {
-        "landing_url": "/pricing.html#growth",
+    "retainer_managed_ops": {
+        "landing_url": "/pricing.html#retainer",
         "intake_endpoint": "POST /api/v1/service-setup/qualify",
         "proposal_endpoint": "POST /api/v1/service-setup/proposal/{customer_id}",
-        "checkout_url": "/checkout.html?tier=growth",
+        "checkout_url": "/checkout.html?tier=retainer",
         "checkout_endpoint": "POST /api/v1/payment-ops/invoice-intent",
         "delivery_module": "scripts/weekly_brief_runner.py + scripts/monthly_cadence_runner.py",
         "delivery_endpoint": "GET /api/v1/customer-portal/{handle}/workspace",
@@ -84,25 +85,14 @@ _WIRING: dict[str, dict[str, Any]] = {
         "adoption_endpoint": "GET /api/v1/customer-success/{handle}/adoption-score",
         "renewal_module": "auto_client_acquisition.payment_ops.renewal_scheduler",
         "founder_surface": "/customer-portal.html?handle={customer}",
-        "next_offer": "executive_command_center_7500",
+        "next_offer": "enterprise_custom_ai",
     },
-    "support_os_addon_1500": {
-        "landing_url": "/services.html#support",
-        "intake_endpoint": "POST /api/v1/service-setup/qualify",
-        "checkout_url": "/checkout.html?tier=support_addon",
-        "checkout_endpoint": "POST /api/v1/payment-ops/invoice-intent",
-        "delivery_module": "auto_client_acquisition.support_os",
-        "delivery_endpoint": "GET /api/v1/support-os/*",
-        "proof_endpoint": "GET /api/v1/value/{handle}/report/monthly",
-        "founder_surface": "/founder-dashboard.html",
-        "next_offer": None,
-    },
-    "executive_command_center_7500": {
-        "landing_url": "/executive-command-center.html",
+    "enterprise_custom_ai": {
+        "landing_url": "/pricing.html#enterprise",
         "intake_endpoint": "POST /api/v1/service-setup/requests",
         "checkout_url": "founder-issued",
         "checkout_endpoint": "POST /api/v1/payment-ops/invoice-intent",
-        "delivery_module": "auto_client_acquisition.executive_command_center",
+        "delivery_module": "auto_client_acquisition.executive_command_center + custom SOW build",
         "delivery_endpoint": "GET /api/v1/executive-command-center/*",
         "proof_endpoint": "GET /api/v1/audit/{handle}/control-graph/markdown",
         "trust_pack_endpoint": "GET /api/v1/value/trust-pack/{handle}/pdf",
@@ -125,29 +115,26 @@ _WIRING: dict[str, dict[str, Any]] = {
 
 
 _OFFER_NOTES = {
-    "free_mini_diagnostic": (
-        "Free 24h diagnostic — opens the funnel. Confirmation email auto-sent. "
-        "Founder reviews every intake within 24h."
+    "free_diagnostic": (
+        "Rung 1. Free 48h bilingual diagnostic — opens the funnel. Confirmation "
+        "email auto-sent. Founder reviews every intake within 48h."
     ),
-    "revenue_proof_sprint_499": (
-        "First paid offer. 7 days. 10-step orchestrator. Proof Pack mandatory. "
-        "50% on acceptance, 50% on Proof Pack delivery. 14-day full refund."
+    "sprint": (
+        "Rung 2. First paid offer — 2,500 SAR. 10 working days. Proof Pack "
+        "mandatory. Absorbs the data-cleaning scope. 14-day full refund."
     ),
-    "data_to_revenue_pack_1500": (
-        "CSV upload → DQ score + cleaned + ranked. Live demo on /data-pack.html "
-        "via POST /api/v1/data-os/import-preview/upload. 14-day delivery."
+    "pilot": (
+        "Rung 3. 9,500 SAR. 30-day operating pilot — 4 weekly pipeline cycles "
+        "with executive reports and a closing Proof Pack."
     ),
-    "growth_ops_monthly_2999": (
-        "Retainer engine. Weekly brief + monthly value report + adoption score + "
-        "retainer readiness gate. Renewal auto-charge after 3 confirmed cycles."
+    "retainer_managed_ops": (
+        "Rung 4. 6,000–18,000 SAR / month retainer engine. Monthly operating "
+        "cadence with weekly audits, support insights, and a board pack at the "
+        "upper band. Renewal after confirmed cycles."
     ),
-    "support_os_addon_1500": (
-        "Add-on to Growth. Ticket classification + suggested replies (draft_only). "
-        "SLA breach alerts. Sits inside the customer workspace."
-    ),
-    "executive_command_center_7500": (
-        "Founder/CEO surface. Daily founder brief (WhatsApp draft_only) + monthly "
-        "board pack. Includes Trust Pack PDF + Evidence Control Plane export."
+    "enterprise_custom_ai": (
+        "Rung 5. 45,000–120,000 SAR. Custom AI build + governance program. "
+        "Scope, milestones, and refunds fixed in a signed SOW."
     ),
     "agency_partner_os": (
         "Channel offer. 5K SAR / closed deal + 30% commission first year. "
@@ -162,7 +149,12 @@ def _offer_to_dict(offering, wiring: dict[str, Any], notes: str) -> dict[str, An
         "name_ar": offering.name_ar,
         "name_en": offering.name_en,
         "price_sar": offering.price_sar,
+        "price_sar_min": offering.price_sar_min,
+        "price_sar_max": offering.price_sar_max,
+        "price_display_ar": offering.price_display_ar,
+        "price_display_en": offering.price_display_en,
         "price_unit": offering.price_unit,
+        "is_rung": bool(offering.is_rung),
         "duration_days": offering.duration_days,
         "customer_journey_stage": str(offering.customer_journey_stage),
         "kpi_commitment_ar": offering.kpi_commitment_ar,
@@ -203,7 +195,7 @@ def _build_payload() -> dict[str, Any]:
 
 @router.get("")
 async def commercial_map_json() -> dict[str, Any]:
-    """JSON — 7 offers + wiring + non-negotiables + cross-links."""
+    """JSON — 5 ladder rungs + 1 channel + wiring + non-negotiables + cross-links."""
     return _build_payload()
 
 
@@ -229,12 +221,9 @@ async def commercial_map_markdown() -> str:
     for offer in payload["offers"]:
         lines.append(f"## {offer['name_en']} — {offer['name_ar']}")
         lines.append("")
-        if offer["price_unit"] == "custom":
-            price = "Custom (per partnership)"
-        elif offer["price_unit"] == "per_month":
-            price = f"{int(offer['price_sar']):,} SAR / month"
-        else:
-            price = f"{int(offer['price_sar']):,} SAR one-time"
+        price = offer["price_display_en"]
+        if offer["price_unit"] == "one_time" and offer["price_sar"] > 0:
+            price = f"{price} one-time"
         lines.append(f"- **Service ID:** `{offer['service_id']}`")
         lines.append(f"- **Price:** {price}")
         lines.append(f"- **Duration:** {offer['duration_days']} days")

@@ -1,76 +1,48 @@
 # Dealix Offer Ladder
 
-## Level 1 — Diagnostic
+> **Canonical source of truth:** `auto_client_acquisition/service_catalog/registry.py`.
+> Full ladder reference: [`../COMPANY_SERVICE_LADDER.md`](../COMPANY_SERVICE_LADDER.md).
+
+## Rung 1 — Free Diagnostic
 
 ```text
-Price: SAR 3.5k–7.5k
+Price: Free (SAR 0)
 Purpose: clarity
 ```
 
-Examples:
+## Rung 2 — Sprint
 
 ```text
-Revenue Diagnostic
-AI Ops Diagnostic
-Data Readiness Assessment
+Price: SAR 2,500 (one-time)
+Purpose: first paid proof
 ```
 
-## Level 2 — Sprint
+## Rung 3 — Pilot
 
 ```text
-Price: SAR 7.5k–25k
-Purpose: first proof
-```
-
-Examples:
-
-```text
-Lead Intelligence Sprint
-AI Quick Win Sprint
-```
-
-## Level 3 — Pilot
-
-```text
-Price: SAR 22k–60k
+Price: SAR 9,500 (one-time)
 Purpose: operational validation
 ```
 
-Examples:
+## Rung 4 — Retainer / Managed Operations
 
 ```text
-Pilot Conversion Sprint
-Workflow Pilot
-Support Desk Pilot
-```
-
-## Level 4 — Retainer
-
-```text
-Price: SAR 8k–60k/month
+Price: SAR 6,000–18,000 / month
 Purpose: continuity
 ```
 
-Examples:
+## Rung 5 — Enterprise / Custom AI
 
 ```text
-Monthly RevOps OS
-Monthly AI Ops
-Monthly Company Brain
-```
-
-## Level 5 — Enterprise
-
-```text
-Price: SAR 85k–300k+ setup (indicative)
+Price: SAR 45,000–120,000 (per SOW)
 Purpose: scale
 ```
 
-Examples:
+## Channel — Agency Partner OS (not a ladder rung)
 
 ```text
-Enterprise AI OS
-Governed AI Operations Platform
+Price: custom
+Purpose: distribution — co-branded diagnostics + 30% commission
 ```
 
-See [`OFFER_ARCHITECTURE.md`](OFFER_ARCHITECTURE.md), [`IMPLEMENTATION_TIERS.md`](IMPLEMENTATION_TIERS.md).
+See [`OFFER_ARCHITECTURE.md`](OFFER_ARCHITECTURE.md), [`SERVICE_CATALOG.md`](SERVICE_CATALOG.md).

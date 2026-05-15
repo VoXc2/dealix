@@ -1,5 +1,7 @@
 # Dealix Service Catalog v1 (Commercial Doors)
 
+> **Canonical pricing & catalog:** `auto_client_acquisition/service_catalog/registry.py` and [`SERVICE_CATALOG.md`](SERVICE_CATALOG.md). This document describes the internal outcome-door taxonomy and is NOT the pricing source of truth.
+
 Internally you may track many SKUs. For **public** positioning start with **5 doors**; each proposal stays **one clear service**.
 
 ## 1. Grow Revenue

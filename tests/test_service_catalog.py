@@ -1,11 +1,12 @@
-"""Wave 13 Phase 2 — Service Catalog tests.
+"""Service Catalog tests.
 
-Asserts the 7-offering registry meets:
+Asserts the canonical registry (5 ladder rungs + 1 partner channel) meets:
 - Article 4: never includes 'live_send' or 'live_charge' in action_modes_used
 - Article 8: KPI commitment language uses commitment phrasing, never "guaranteed"/"نضمن"
 - Article 11: thin data registry (no business logic in tests)
 - Pricing ladder: ascending for paid services
 - Bilingual: every offering has both name_ar + name_en
+- Banded rungs carry a consistent price_sar_min/max
 
 Sandbox-safe — pure module imports, no api/security pyo3 cascade.
 """
@@ -46,26 +47,31 @@ def _load_registry():
 
 _REGISTRY_NS, _SCHEMAS = _load_registry()
 OFFERINGS = _REGISTRY_NS["OFFERINGS"]
+RUNGS = _REGISTRY_NS["RUNGS"]
 SERVICE_IDS = _REGISTRY_NS["SERVICE_IDS"]
 get_offering = _REGISTRY_NS["get_offering"]
 list_offerings = _REGISTRY_NS["list_offerings"]
 
 
 # ── Test 1 ────────────────────────────────────────────────────────────
-def test_registry_has_exactly_7_offerings():
-    """Article 11: catalog is the canonical 7 offerings."""
-    assert len(OFFERINGS) == 7, f"expected 7, got {len(OFFERINGS)}"
-    assert len(SERVICE_IDS) == 7, "duplicate service_id in registry"
+def test_registry_has_exactly_6_offerings():
+    """Article 11: catalog is 5 ladder rungs + 1 partner channel."""
+    assert len(OFFERINGS) == 6, f"expected 6, got {len(OFFERINGS)}"
+    assert len(SERVICE_IDS) == 6, "duplicate service_id in registry"
+    assert len(RUNGS) == 5, f"expected 5 ladder rungs, got {len(RUNGS)}"
+    assert all(o.is_rung for o in RUNGS), "RUNGS must contain only ladder rungs"
 
 
 # ── Test 2 ────────────────────────────────────────────────────────────
 def test_every_offering_has_complete_schema():
     """Every offering has all required fields populated (extra='forbid' ensures no rogue)."""
     required = {
-        "id", "name_ar", "name_en", "price_sar", "price_unit", "duration_days",
+        "id", "name_ar", "name_en", "price_sar", "price_sar_min",
+        "price_sar_max", "price_display_ar", "price_display_en",
+        "price_unit", "duration_days",
         "deliverables", "kpi_commitment_ar", "kpi_commitment_en",
         "refund_policy_ar", "refund_policy_en", "action_modes_used",
-        "hard_gates", "customer_journey_stage", "is_estimate",
+        "hard_gates", "customer_journey_stage", "is_rung", "is_estimate",
     }
     for o in OFFERINGS:
         d = o.model_dump()
@@ -106,17 +112,18 @@ def test_no_guaranteed_language_anywhere():
 
 # ── Test 5 ────────────────────────────────────────────────────────────
 def test_price_ladder_ascending_for_paid_one_time_services():
-    """Free → 499 (Sprint) → 1500 (Data-to-Revenue) one-time pricing ladder."""
+    """Sprint (2,500) → Pilot (9,500) → Enterprise (45,000) one-time ladder."""
     one_time_paid = [
         o for o in OFFERINGS if o.price_unit == "one_time" and o.price_sar > 0
     ]
     prices = [o.price_sar for o in one_time_paid]
     assert prices == sorted(prices), f"one-time prices not ascending: {prices}"
-    # Specifically: Sprint must be cheaper than Data-to-Revenue
-    sprint = get_offering("revenue_proof_sprint_499")
-    d2r = get_offering("data_to_revenue_pack_1500")
-    assert sprint is not None and d2r is not None
-    assert sprint.price_sar < d2r.price_sar
+    # Specifically: Sprint < Pilot < Enterprise
+    sprint = get_offering("sprint")
+    pilot = get_offering("pilot")
+    enterprise = get_offering("enterprise_custom_ai")
+    assert sprint is not None and pilot is not None and enterprise is not None
+    assert sprint.price_sar < pilot.price_sar < enterprise.price_sar
 
 
 # ── Test 6 ────────────────────────────────────────────────────────────
@@ -146,11 +153,26 @@ def test_every_offering_lists_relevant_hard_gates():
 # ── Test 8 ────────────────────────────────────────────────────────────
 def test_get_offering_lookup_works():
     """Helper function returns correct offering by id, None for unknown."""
-    assert get_offering("revenue_proof_sprint_499") is not None
-    assert get_offering("free_mini_diagnostic") is not None
+    assert get_offering("sprint") is not None
+    assert get_offering("free_diagnostic") is not None
     assert get_offering("agency_partner_os") is not None
     assert get_offering("nonexistent_id") is None
     assert get_offering("") is None
     # SERVICE_IDS frozenset must match
     for o in OFFERINGS:
         assert o.id in SERVICE_IDS
+
+
+# ── Test 9 ────────────────────────────────────────────────────────────
+def test_banded_rungs_have_consistent_price_fields():
+    """Retainer + Enterprise carry a consistent price band; fixed rungs do not."""
+    banded = [o for o in OFFERINGS if o.price_sar_max is not None]
+    assert len(banded) == 2, f"expected 2 banded rungs, got {len(banded)}"
+    for o in banded:
+        assert o.price_sar_min is not None
+        assert o.price_sar_min <= o.price_sar_max
+        assert o.price_sar == o.price_sar_min
+    # Fixed-price offerings keep both band fields None.
+    for o in OFFERINGS:
+        if o.id in {"free_diagnostic", "sprint", "pilot", "agency_partner_os"}:
+            assert o.price_sar_min is None and o.price_sar_max is None

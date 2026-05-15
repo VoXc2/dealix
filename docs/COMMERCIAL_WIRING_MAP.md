@@ -1,183 +1,329 @@
 # Dealix Commercial Wiring Map — خريطة الربط التجاري
 
-> Version 1 — Wave 14J — Generated to match `auto_client_acquisition/service_catalog/registry.py` and `GET /api/v1/commercial-map`.
+_Version 1.0 · Wave 14J_
+_Generated: 2026-05-15T06:16:23.252396+00:00_
+_Source of truth: `auto_client_acquisition/service_catalog/registry.py` (6 offerings)_
 
-This document is the **single source of truth** showing how every commercial offer maps to a landing page, a backend endpoint, and a delivery surface. Every new engineer, partner, or founder-led handoff should start here.
-
-هذه الوثيقة هي **المصدر الوحيد للحقيقة** التي تُظهر كيفية ربط كل عرض تجاري بصفحة هبوط، ونقطة نهاية خلفية، وسطح تسليم. يجب على كل مهندس أو شريك أو عملية تسليم يقودها المؤسس أن يبدأ من هنا.
-
----
-
-## 1. The 7-offer canonical registry — السجل الرسمي للعروض السبعة
-
-| `service_id` | Name (AR / EN) | Price (SAR) | Cadence | Customer Journey Stage |
-|---|---|---|---|---|
-| `free_mini_diagnostic` | التشخيص المجاني / Free Mini Diagnostic | 0 | one_time | discovery |
-| `revenue_proof_sprint_499` | سبرنت إثبات الإيرادات / Revenue Proof Sprint | 499 | one_time | first_paid |
-| `data_to_revenue_pack_1500` | حزمة من البيانات إلى الإيراد / Data-to-Revenue Pack | 1,500 | one_time | expansion |
-| `growth_ops_monthly_2999` | عمليات النمو الشهرية / Growth Ops Monthly | 2,999 | per_month | monthly |
-| `support_os_addon_1500` | إضافة دعم العمليات / Support OS Add-on | 1,500 | per_month | support_addon |
-| `executive_command_center_7500` | غرفة قيادة الإدارة / Executive Command Center | 7,500 | per_month | executive |
-| `agency_partner_os` | منصة شركاء الوكالات / Agency Partner OS | custom | — | channel |
-
-The registry is authoritative — any disagreement with this table means **the code, not the table, is wrong**. Run `python -c "from auto_client_acquisition.service_catalog.registry import OFFERINGS; print([o.id for o in OFFERINGS])"` to verify.
-
-السجل هو المرجع الرسمي — أي تعارض مع هذا الجدول يعني أن **الكود، وليس الجدول، هو الخطأ**.
+Single source of truth showing how every commercial offer maps to a landing page + a backend endpoint + a delivery surface.
 
 ---
 
-## 2. Per-offer wiring — الربط لكل عرض
+## Free AI Diagnostic — التشخيص المجاني للذكاء الاصطناعي
 
-### 2.1 `free_mini_diagnostic` — التشخيص المجاني
+- **Service ID:** `free_diagnostic`
+- **Price:** Free
+- **Duration:** 2 days
+- **Customer journey stage:** discovery
 
-- **Public landing:** `landing/diagnostic.html`
-- **Intake endpoint:** `POST /api/v1/company-growth-beast/diagnostic` + `POST /api/v1/public/demo-request`
-- **Checkout:** N/A (free / مجاني)
-- **Delivery:** founder reviews via `GET /api/v1/founder/leads`
-- **Proof / report:** bilingual brief emailed via `auto_client_acquisition/email/transactional.send_transactional(kind="diagnostic_intake_confirmation")`
-- **Founder dashboard surface:** `landing/founder-leads.html` + `GET /api/v1/founder/dashboard`
-- **Non-negotiables enforced:** `no_live_send`, `no_live_charge`, `no_cold_whatsapp`, `no_scraping`, `no_fake_proof`
+_Rung 1. Free 48h bilingual diagnostic — opens the funnel. Confirmation email auto-sent. Founder reviews every intake within 48h._
 
-### 2.2 `revenue_proof_sprint_499` — سبرنت إثبات الإيرادات
+**Wiring:**
+  - `landing_url`: /diagnostic.html
+  - `intake_endpoint`: POST /api/v1/company-growth-beast/diagnostic
+  - `lead_capture_endpoint`: POST /api/v1/public/demo-request
+  - `delivery_module`: founder reviews via /api/v1/founder/leads
+  - `delivery_endpoint`: GET /api/v1/founder/leads
+  - `proof_endpoint`: auto_client_acquisition/email/transactional.send_transactional(kind=diagnostic_intake_confirmation)
+  - `founder_surface`: /founder-leads.html
+  - `next_offer`: sprint
 
-- **Public landing:** `landing/start.html` (with `landing/sprint-sample.html` for live preview)
-- **Intake endpoint:** `POST /api/v1/service-setup/qualify` → `POST /api/v1/service-setup/proposal/{customer_id}`
-- **Checkout:** `landing/checkout.html?tier=sprint` → `POST /api/v1/payment-ops/invoice-intent`
-- **Delivery:** `auto_client_acquisition/delivery_factory/delivery_sprint.run_sprint` + `POST /api/v1/sprint/run` (10 steps)
-- **Proof / report:** `auto_client_acquisition/proof_os/proof_pack.assemble` → 14-section ProofPack
-- **Founder dashboard surface:** `landing/founder-dashboard.html` + `GET /api/v1/founder/dashboard`
-- **Non-negotiables enforced:** all 7 hard_gates from `registry.py`
+**Non-negotiables enforced (`hard_gates`):**
+  - `no_live_send`
+  - `no_live_charge`
+  - `no_cold_whatsapp`
+  - `no_linkedin_auto`
+  - `no_scraping`
+  - `no_fake_proof`
+  - `no_fake_revenue`
+  - `no_blast`
 
-### 2.3 `data_to_revenue_pack_1500` — حزمة من البيانات إلى الإيراد
+**KPI commitment (EN):** Diagnostic delivered within 48 hours of form submission.
 
-- **Public landing:** `landing/data-pack.html` (NEW) + `landing/services.html` card
-- **Intake endpoint:** CSV upload via `POST /api/v1/data-os/import-preview/upload` (live demo) → qualified via `POST /api/v1/service-setup/qualify`
-- **Checkout:** `landing/checkout.html?tier=data_pack` → `POST /api/v1/payment-ops/invoice-intent`
-- **Delivery:** `auto_client_acquisition/data_os/` (SourcePassport + preview + compute_dq) plus the sprint orchestrator with a tighter scope
-- **Proof / report:** Proof Pack + `POST /api/v1/data-os/import-preview` JSON output
-- **Founder dashboard surface:** founder reviews CSV uploads and approves cleaned output
-- **Non-negotiables enforced:** 6 hard_gates
+**التزام KPI (AR):** نسلّم التشخيص خلال ٤٨ ساعة من تعبئة النموذج.
 
-### 2.4 `growth_ops_monthly_2999` — عمليات النمو الشهرية
+**Deliverables:**
+  - 1-page bilingual sector-fit diagnostic
+  - 3 ranked revenue opportunities
+  - 1 Arabic message draft
+  - 1 best-channel recommendation
+  - 1 risk to avoid
+  - 1 next-step decision passport
 
-- **Public landing:** `landing/pricing.html` (Growth card)
-- **Intake endpoint:** `POST /api/v1/service-setup/qualify` → proposal
-- **Checkout:** `landing/checkout.html?tier=growth` → `POST /api/v1/payment-ops/invoice-intent`
-- **Delivery:** `scripts/weekly_brief_runner.py --all-active` + `scripts/monthly_cadence_runner.py --all-active --schedule-renewals`
-- **Proof / report:** `GET /api/v1/value/{handle}/report/monthly` + workspace
-- **Founder dashboard surface:** `landing/customer-portal.html?handle={customer}` (Wave 14J wired)
-- **Non-negotiables enforced:** 8 hard_gates
-
-### 2.5 `support_os_addon_1500` — Support OS Add-on
-
-- **Public landing:** `landing/services.html` (card 4)
-- **Intake endpoint:** same qualification flow as Growth Ops
-- **Checkout:** `landing/checkout.html?tier=support_addon`
-- **Delivery:** `auto_client_acquisition/support_os/` (existing module)
-- **Proof / report:** monthly value report
-- **Non-negotiables enforced:** 5 hard_gates
-
-### 2.6 `executive_command_center_7500` — غرفة قيادة الإدارة
-
-- **Public landing:** `landing/executive-command-center.html`
-- **Intake endpoint:** founder-led; `POST /api/v1/service-setup/requests`
-- **Checkout:** founder-issued invoice (manual Moyasar link)
-- **Delivery:** `auto_client_acquisition/executive_command_center/` (existing module)
-- **Proof / report:** daily founder brief (WhatsApp) + monthly board pack
-- **Non-negotiables enforced:** 8 hard_gates
-
-### 2.7 `agency_partner_os` — Agency Partner OS
-
-- **Public landing:** `landing/agency-partner.html`
-- **Intake endpoint:** `POST /api/v1/public/partner-application`
-- **Referral program:** `auto_client_acquisition/partnership_os/referral_store` (5,000 SAR per closed deal; persistence landed in Wave 14D.1)
-- **Founder dashboard surface:** `landing/founder-leads.html` + referral dashboard
-- **Non-negotiables enforced:** 8 hard_gates + the Partner Covenant (`docs/40_partners/PARTNER_COVENANT.md`)
+**Refund (EN):** Free — no payment.
+**Refund (AR):** مجاني — لا يوجد دفع.
 
 ---
 
-## 3. The 11 non-negotiables — enforced in code
+## Value Proof Sprint — سبرنت إثبات القيمة
 
-Refer to `docs/00_constitution/NON_NEGOTIABLES.md` for the canonical wording. Each rule is enforced by a passing test under `tests/test_no_*.py` or `tests/governance/`:
+- **Service ID:** `sprint`
+- **Price:** 2,500 SAR one-time
+- **Duration:** 10 days
+- **Customer journey stage:** first_paid
 
-1. `no_live_send` — `tests/test_no_live_send.py`
-2. `no_live_charge` — `tests/test_no_live_charge.py`
-3. `no_cold_whatsapp` — `tests/test_no_cold_whatsapp.py`
-4. `no_scraping` — `tests/test_no_scraping.py`
-5. `no_fake_proof` — `tests/test_no_fake_proof.py`
-6. `no_unconsented_data` — `tests/test_no_unconsented_data.py`
-7. `no_unverified_outcomes` — `tests/test_no_unverified_outcomes.py`
-8. `no_hidden_pricing` — `tests/test_no_hidden_pricing.py`
-9. `no_silent_failures` — `tests/test_no_silent_failures.py`
-10. `no_unbounded_agents` — `tests/governance/test_agent_boundaries.py`
-11. `no_unaudited_changes` — `tests/governance/test_audit_chain.py`
+_Rung 2. First paid offer — 2,500 SAR. 10 working days. Proof Pack mandatory. Absorbs the data-cleaning scope. 14-day full refund._
 
-If CI ever fails on one of these guards, **do not merge**. Investigate, fix the root cause, re-run CI.
+**Wiring:**
+  - `landing_url`: /start.html
+  - `preview_url`: /sprint-sample.html
+  - `intake_endpoint`: POST /api/v1/service-setup/qualify
+  - `proposal_endpoint`: POST /api/v1/service-setup/proposal/{customer_id}
+  - `checkout_url`: /checkout.html?tier=sprint
+  - `checkout_endpoint`: POST /api/v1/payment-ops/invoice-intent
+  - `delivery_module`: auto_client_acquisition.delivery_factory.delivery_sprint.run_sprint
+  - `delivery_endpoint`: POST /api/v1/sprint/run
+  - `sample_endpoint`: GET /api/v1/sprint/sample
+  - `proof_endpoint`: auto_client_acquisition.proof_os.proof_pack.assemble
+  - `case_safe_endpoint`: GET /api/v1/proof-to-market/case-safe/{engagement_id}
+  - `founder_surface`: /founder-dashboard.html
+  - `next_offer`: pilot
 
-إذا فشل أي من هذه الاختبارات في CI، **لا تدمج**. حقّق في السبب الجذري، أصلحه، ثم أعد التشغيل.
+**Non-negotiables enforced (`hard_gates`):**
+  - `no_live_send`
+  - `no_live_charge`
+  - `no_cold_whatsapp`
+  - `no_linkedin_auto`
+  - `no_scraping`
+  - `no_fake_proof`
+  - `no_fake_revenue`
+  - `no_blast`
 
----
+**KPI commitment (EN):** Deliverables shipped within 10 working days. If we do not surface 20 approved opportunities, we keep working at no extra cost until we do.
 
-## 4. Cross-cutting infrastructure — البنية التحتية المشتركة
+**التزام KPI (AR):** نسلّم المخرجات خلال ١٠ أيام عمل. إذا لم نُبرز ٢٠ فرصة معتمدة، نواصل العمل بدون مقابل إضافي حتى نصل.
 
-The following modules are reused across multiple offers:
+**Deliverables:**
+  - Company Brain v1
+  - Cleaned + deduplicated lead board
+  - Source + data-quality report
+  - Top 20 ranked opportunities
+  - Decision Passports for the top 5
+  - Arabic Draft Pack (10 messages)
+  - 7-day follow-up plan
+  - Risk + objection map
+  - Executive Pack
+  - Proof Pack
+  - Next-best-offer recommendation
 
-- `auto_client_acquisition/lead_inbox.py` — JSONL lead persistence
-- `auto_client_acquisition/email/transactional.py` — 9 whitelisted email kinds
-- `auto_client_acquisition/sales_os/qualification.py` — 8-question scorer
-- `auto_client_acquisition/sales_os/proposal_renderer.py` — bilingual proposal renderer
-- `auto_client_acquisition/payment_ops/renewal_scheduler.py` — JSONL retainer scheduler
-- `auto_client_acquisition/proof_os/proof_pack.py` — 14-section assembler
-- `auto_client_acquisition/trust_os/trust_pack.py` — 11-section enterprise pack
-- `auto_client_acquisition/auditability_os/` — audit event store + evidence chain
-- `auto_client_acquisition/evidence_control_plane_os/` — graph + gaps + compliance index
-- `auto_client_acquisition/agent_os/` + `secure_agent_runtime_os/` — agent registry + 4 boundaries + kill switch
-- `auto_client_acquisition/benchmark_os/` — k-anonymity report generator
-- `auto_client_acquisition/proof_to_market/pdf_renderer.py` — weasyprint/pandoc PDF
-- `auto_client_acquisition/partnership_os/referral_store.py` — referral program
-
-Each of these modules has its own bilingual README under `auto_client_acquisition/<module>/README.md`. Do **not** duplicate logic across offers — extend the shared module instead.
-
-لا تكرّر المنطق عبر العروض — وسّع الوحدة المشتركة بدلًا من ذلك.
-
----
-
-## 5. The commercial-map endpoint — نقطة نهاية خريطة الربط
-
-```
-GET /api/v1/commercial-map           → JSON list of 7 offers + URLs + endpoints
-GET /api/v1/commercial-map/markdown  → this document (always in sync with the registry)
-```
-
-The markdown variant is rendered directly from `service_catalog/registry.py`. If you change the registry, this document changes automatically — there is no second source of truth to drift.
-
-النسخة Markdown تُولَّد مباشرة من `service_catalog/registry.py`. عند تغيير السجل، تتغير هذه الوثيقة تلقائيًا.
+**Refund (EN):** Full 100% refund within 14 days, no questions asked.
+**Refund (AR):** استرداد كامل ١٠٠٪ خلال ١٤ يومًا، بدون أسئلة.
 
 ---
 
-## 6. Verification — التحقق
+## Operating Pilot — بايلوت التشغيل
 
-Run all three to be sure the wiring is consistent:
+- **Service ID:** `pilot`
+- **Price:** 9,500 SAR one-time
+- **Duration:** 30 days
+- **Customer journey stage:** pilot
 
-1. Pull the live JSON:
-   ```bash
-   curl https://<prod>/api/v1/commercial-map | jq .
-   ```
-2. Compare with the registry:
-   ```bash
-   python -c "from auto_client_acquisition.service_catalog.registry import OFFERINGS; print([o.id for o in OFFERINGS])"
-   ```
-3. Run the contract test:
-   ```bash
-   pytest tests/test_commercial_map.py
-   ```
+_Rung 3. 9,500 SAR. 30-day operating pilot — 4 weekly pipeline cycles with executive reports and a closing Proof Pack._
 
-If any of the three disagree, the deploy is broken. Roll back per `docs/RAILWAY_DEPLOY_CHECKLIST.md` section 6.
+**Wiring:**
+  - `landing_url`: /pricing.html#pilot
+  - `intake_endpoint`: POST /api/v1/service-setup/qualify
+  - `proposal_endpoint`: POST /api/v1/service-setup/proposal/{customer_id}
+  - `checkout_url`: /checkout.html?tier=pilot
+  - `checkout_endpoint`: POST /api/v1/payment-ops/invoice-intent
+  - `delivery_module`: auto_client_acquisition.delivery_factory.delivery_sprint + scripts/weekly_brief_runner.py
+  - `delivery_endpoint`: POST /api/v1/sprint/run
+  - `proof_endpoint`: auto_client_acquisition.proof_os.proof_pack.assemble
+  - `founder_surface`: /founder-dashboard.html
+  - `next_offer`: retainer_managed_ops
 
-إذا تعارض أيٌّ من الثلاثة، فإن النشر معطل. تراجع إلى الإصدار السابق وفقًا للقسم 6 من قائمة التحقق.
+**Non-negotiables enforced (`hard_gates`):**
+  - `no_live_send`
+  - `no_live_charge`
+  - `no_cold_whatsapp`
+  - `no_linkedin_auto`
+  - `no_scraping`
+  - `no_fake_proof`
+  - `no_fake_revenue`
+  - `no_blast`
+
+**KPI commitment (EN):** A weekly pipeline operating cycle across 30 days. If a weekly cycle slips, we extend the work at no extra cost until it completes.
+
+**التزام KPI (AR):** تشغيل أسبوعي للـ pipeline على مدى ٣٠ يومًا. إذا تأخّرت دورة أسبوعية، نمدّد العمل بدون مقابل إضافي حتى تكتمل.
+
+**Deliverables:**
+  - 4 weekly pipeline operating cycles
+  - Weekly lead board + scoring refresh
+  - Weekly Arabic Draft Pack
+  - Opportunity + meeting tracker
+  - Weekly executive report
+  - Support + operations insights
+  - Closing Proof Pack
+  - Next-best-offer recommendation
+
+**Refund (EN):** 75% refund if the KPI commitment is unmet within 45 days.
+**Refund (AR):** استرداد ٧٥٪ إذا لم يتحقق التزام KPI خلال ٤٥ يومًا.
 
 ---
 
-## Footer
+## Managed Operations Retainer — التشغيل المُدار الشهري
 
-> Estimated outcomes are not guaranteed outcomes / النتائج التقديرية ليست نتائج مضمونة.
+- **Service ID:** `retainer_managed_ops`
+- **Price:** 6,000–18,000 SAR / month
+- **Duration:** 120 days
+- **Customer journey stage:** retainer
+
+_Rung 4. 6,000–18,000 SAR / month retainer engine. Monthly operating cadence with weekly audits, support insights, and a board pack at the upper band. Renewal after confirmed cycles._
+
+**Wiring:**
+  - `landing_url`: /pricing.html#retainer
+  - `intake_endpoint`: POST /api/v1/service-setup/qualify
+  - `proposal_endpoint`: POST /api/v1/service-setup/proposal/{customer_id}
+  - `checkout_url`: /checkout.html?tier=retainer
+  - `checkout_endpoint`: POST /api/v1/payment-ops/invoice-intent
+  - `delivery_module`: scripts/weekly_brief_runner.py + scripts/monthly_cadence_runner.py
+  - `delivery_endpoint`: GET /api/v1/customer-portal/{handle}/workspace
+  - `proof_endpoint`: GET /api/v1/value/{handle}/report/monthly
+  - `adoption_endpoint`: GET /api/v1/customer-success/{handle}/adoption-score
+  - `renewal_module`: auto_client_acquisition.payment_ops.renewal_scheduler
+  - `founder_surface`: /customer-portal.html?handle={customer}
+  - `next_offer`: enterprise_custom_ai
+
+**Non-negotiables enforced (`hard_gates`):**
+  - `no_live_send`
+  - `no_live_charge`
+  - `no_cold_whatsapp`
+  - `no_linkedin_auto`
+  - `no_scraping`
+  - `no_fake_proof`
+  - `no_fake_revenue`
+  - `no_blast`
+
+**KPI commitment (EN):** We commit to a +20% reply-rate lift within 4 months. If it is not reached, we keep working at no extra cost until it is.
+
+**التزام KPI (AR):** نلتزم برفع معدل الردود +٢٠٪ خلال ٤ أشهر. إن لم يتحقق، نواصل العمل بدون مقابل إضافي حتى يتحقق.
+
+**Deliverables:**
+  - Monthly operating cadence (revenue + support + ops + delivery + proof)
+  - Weekly pipeline audits
+  - Daily approval queue
+  - Arabic Draft Pack (≥20 messages / month)
+  - Support insights (included)
+  - Monthly Proof Pack
+  - Monthly executive summary + board pack (upper band)
+  - Expansion recommendation
+
+**Refund (EN):** Pro-rata refund of unused months if the KPI commitment is unmet.
+**Refund (AR):** استرداد تناسبي للأشهر غير المستخدمة عند عدم تحقيق التزام KPI.
+
+---
+
+## Enterprise & Custom AI — المؤسسات والذكاء الاصطناعي المخصّص
+
+- **Service ID:** `enterprise_custom_ai`
+- **Price:** 45,000–120,000 SAR one-time
+- **Duration:** 120 days
+- **Customer journey stage:** enterprise
+
+_Rung 5. 45,000–120,000 SAR. Custom AI build + governance program. Scope, milestones, and refunds fixed in a signed SOW._
+
+**Wiring:**
+  - `landing_url`: /pricing.html#enterprise
+  - `intake_endpoint`: POST /api/v1/service-setup/requests
+  - `checkout_url`: founder-issued
+  - `checkout_endpoint`: POST /api/v1/payment-ops/invoice-intent
+  - `delivery_module`: auto_client_acquisition.executive_command_center + custom SOW build
+  - `delivery_endpoint`: GET /api/v1/executive-command-center/*
+  - `proof_endpoint`: GET /api/v1/audit/{handle}/control-graph/markdown
+  - `trust_pack_endpoint`: GET /api/v1/value/trust-pack/{handle}/pdf
+  - `founder_surface`: /founder-dashboard.html
+
+**Non-negotiables enforced (`hard_gates`):**
+  - `no_live_send`
+  - `no_live_charge`
+  - `no_cold_whatsapp`
+  - `no_linkedin_auto`
+  - `no_scraping`
+  - `no_fake_proof`
+  - `no_fake_revenue`
+  - `no_blast`
+
+**KPI commitment (EN):** Scope, milestones, and acceptance criteria are fixed in a written SOW before work begins, and we commit to the SOW milestones.
+
+**التزام KPI (AR):** نثبّت النطاق والمراحل ومعايير القبول في SOW مكتوب قبل بدء العمل، ونلتزم بمراحل الـ SOW.
+
+**Deliverables:**
+  - Discovery + AI readiness review
+  - Custom workflow + agent design
+  - Integrations scope + data governance
+  - PDPL-aware data review
+  - Build + iteration cycles
+  - Team training + handover
+  - AI governance program + audit pack
+  - SLA definition
+
+**Refund (EN):** Per a signed SOW with cancellation terms — lawyer-reviewed.
+**Refund (AR):** وفق عقد SOW موقّع بشروط إلغاء — يُراجَع قانونيًا.
+
+---
+
+## Agency Partner OS — نظام شريك الوكالة
+
+- **Service ID:** `agency_partner_os`
+- **Price:** Custom
+- **Duration:** 0 days
+- **Customer journey stage:** channel
+
+_Channel offer. 5K SAR / closed deal + 30% commission first year. Partner Covenant enforced: no unsafe automation, no guaranteed claims._
+
+**Wiring:**
+  - `landing_url`: /agency-partner.html
+  - `intake_endpoint`: POST /api/v1/public/partner-application
+  - `checkout_url`: founder-issued
+  - `delivery_module`: auto_client_acquisition.partnership_os.referral_store
+  - `delivery_endpoint`: POST /api/v1/referrals/create + /redeem + /{code}/convert
+  - `proof_endpoint`: GET /api/v1/founder/dashboard
+  - `founder_surface`: /founder-leads.html
+  - `covenant_doc`: docs/40_partners/PARTNER_COVENANT.md
+
+**Non-negotiables enforced (`hard_gates`):**
+  - `no_live_send`
+  - `no_live_charge`
+  - `no_cold_whatsapp`
+  - `no_linkedin_auto`
+  - `no_scraping`
+  - `no_fake_proof`
+  - `no_fake_revenue`
+  - `no_blast`
+
+**KPI commitment (EN):** 30% commission for the first paid year per referred customer. Never publish proof without signed consent.
+
+**التزام KPI (AR):** نلتزم بـ٣٠٪ عمولة لأول سنة من كل عميل محوّل، ولا نشر proof بدون موافقة موقّعة.
+
+**Deliverables:**
+  - Partner intake doc
+  - Co-branded diagnostic for the partner's clients
+  - Client Proof Sprint (per client)
+  - Proof Pack (per client)
+  - Renewal / upsell pack
+  - Partner revenue tracking
+  - 30% commission tracking
+
+**Refund (EN):** Formal contract with cancellation terms — lawyer-reviewed.
+**Refund (AR):** عقد رسمي بشروط الإلغاء — يُراجَع قانونيًا.
+
+---
+
+## Cross-cutting infrastructure
+
+- Lead inbox: `auto_client_acquisition/lead_inbox.py`
+- Transactional email (9 whitelisted kinds): `auto_client_acquisition/email/transactional.py`
+- Sales qualification: `auto_client_acquisition/sales_os/qualification.py`
+- Proposal renderer: `auto_client_acquisition/sales_os/proposal_renderer.py`
+- Sprint orchestrator: `auto_client_acquisition/delivery_factory/delivery_sprint.py`
+- Renewal scheduler: `auto_client_acquisition/payment_ops/renewal_scheduler.py`
+- Proof Pack assembler: `auto_client_acquisition/proof_os/proof_pack.py`
+- Trust Pack: `auto_client_acquisition/trust_os/trust_pack.py`
+- Audit + Evidence Control Plane: `auto_client_acquisition/auditability_os/`, `evidence_control_plane_os/`
+- Agent OS + Secure Runtime: `auto_client_acquisition/agent_os/`, `secure_agent_runtime_os/`
+- Benchmark engine: `auto_client_acquisition/benchmark_os/`
+- PDF renderer: `auto_client_acquisition/proof_to_market/pdf_renderer.py`
+- Referral persistence: `auto_client_acquisition/partnership_os/referral_store.py`
+
+---
+
+_Estimated outcomes are not guaranteed outcomes / النتائج التقديرية ليست نتائج مضمونة._

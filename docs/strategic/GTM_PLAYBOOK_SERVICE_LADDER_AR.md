@@ -1,7 +1,8 @@
-# كتاب تشغيل GTM — سلّم الخدمات السبع
+# كتاب تشغيل GTM — السلّم الخماسي للخدمات
 
 **الغرض:** مسار مبيعات وتشغيل موحّد لكل `service_id` في [service_catalog/registry.py](../../auto_client_acquisition/service_catalog/registry.py).  
 **مرجع الأدوار:** [DEALIX_ROLE_SERVICE_LADDER_AR.md](DEALIX_ROLE_SERVICE_LADDER_AR.md).
+**المرجع المعتمد للكتالوج:** [`../company/SERVICE_CATALOG.md`](../company/SERVICE_CATALOG.md).
 
 ## مبادئ
 
@@ -13,13 +14,12 @@
 
 | service_id | لمسة أولى | جلسة اكتشاف | التزام التسليم | مؤشر نجاح أسبوعي |
 |------------|-----------|-------------|----------------|------------------|
-| `free_mini_diagnostic` | نموذج 24 ساعة | — | صفحة + جواز قرار أولي | اكتمال النموذج |
-| `revenue_proof_sprint_499` | دفع + Kickoff | أهداف 7 أيام | 7 مخرجات سبرنت | ≥10 فرص |
-| `data_to_revenue_pack_1500` | تدقيق الملف | خريطة مصادر | تنظيف + تقرير مخاطر | ≥20 فرصة معتمدة |
-| `growth_ops_monthly_2999` | اجتماع أسبوعي ثابت | لوحة موافقات | مسودات + Proof | تحسين معدل رد (KPI في registry) |
-| `support_os_addon_1500` | ربط قناة دعم | تصنيف تذاكر | SLA + مسودات | زمن أول رد |
-| `executive_command_center_7500` | موجز يومي | لجنة قرار | board pack + مخاطر | توفير وقت قرار (KPI في registry) |
-| `agency_partner_os` | اتفاقية شريك | تدريب Co-brand | عمولة + Proof لكل عميل | إحالة مدفوعة |
+| `free_diagnostic` | نموذج 48 ساعة | — | صفحة + جواز قرار أولي | اكتمال النموذج |
+| `sprint` | دفع + Kickoff | أهداف 10 أيام | مخرجات السبرنت + Proof Pack | ≥20 فرصة معتمدة |
+| `pilot` | دفع + Kickoff | أهداف 30 يومًا | 4 دورات تشغيل أسبوعية + Proof Pack | اكتمال دورة أسبوعية |
+| `retainer_managed_ops` | اجتماع أسبوعي ثابت | لوحة موافقات | إيقاع شهري + مسودات + Proof | تحسين معدل رد (KPI في registry) |
+| `enterprise_custom_ai` | جلسة اكتشاف | نطاق SOW | بناء مخصّص + حوكمة + SLA | مرحلة SOW محقّقة |
+| `agency_partner_os` | اتفاقية شريك (قناة) | تدريب Co-brand | عمولة + Proof لكل عميل | إحالة مدفوعة |
 
 ## شركاء الوكالة
 

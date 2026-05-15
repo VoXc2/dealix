@@ -4,17 +4,20 @@
 
 **إطار المؤسسات:** طبقات A / B / C في [ENTERPRISE_OFFER_POSITIONING_AR.md](ENTERPRISE_OFFER_POSITIONING_AR.md).
 
-## معرّفات الخدمات السبع (IDs)
+> ⚠️ وُحِّد الكتالوج إلى **سلّم خماسي** بمعرّفات جديدة. أقسام «أدوار المشتري»
+> أدناه قد تستخدم معرّفات قديمة — المرجع المعتمد:
+> [`../company/SERVICE_CATALOG.md`](../company/SERVICE_CATALOG.md).
 
-| `service_id` | اسم عربي (مختصر) | مرحلة الرحلة |
-|----------------|-------------------|----------------|
-| `free_mini_diagnostic` | التشخيص المجاني المختصر | discovery |
-| `revenue_proof_sprint_499` | سبرنت إثبات الإيرادات (٤٩٩ ر.س) | first_paid |
-| `data_to_revenue_pack_1500` | حزمة من البيانات إلى الإيراد | expansion |
-| `growth_ops_monthly_2999` | عمليات النمو الشهرية | monthly |
-| `support_os_addon_1500` | دعم Support OS | support_addon |
-| `executive_command_center_7500` | غرفة قيادة الإدارة | executive |
-| `agency_partner_os` | نظام الشريك الوكالة | channel |
+## معرّفات السلّم الخماسي + القناة (IDs)
+
+| `service_id` | اسم عربي (مختصر) | السعر (ر.س) | مرحلة الرحلة |
+|----------------|-------------------|-------------|----------------|
+| `free_diagnostic` | التشخيص المجاني للذكاء الاصطناعي | مجاني | discovery |
+| `sprint` | سبرنت إثبات القيمة | 2,500 | first_paid |
+| `pilot` | بايلوت التشغيل | 9,500 | pilot |
+| `retainer_managed_ops` | التشغيل المُدار الشهري | 6,000–18,000/شهر | retainer |
+| `enterprise_custom_ai` | المؤسسات والذكاء الاصطناعي المخصّص | 45,000–120,000 | enterprise |
+| `agency_partner_os` | نظام شريك الوكالة (قناة) | بالاتفاق | channel |
 
 ## من يشتري ماذا؟ (أدوار المشتري)
 

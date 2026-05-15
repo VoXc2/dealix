@@ -1,5 +1,7 @@
 # Dealix Service Registry
 
+> **المرجع المعتمد للأسعار والكتالوج التجاري / Canonical commercial catalog:** `auto_client_acquisition/service_catalog/registry.py` و [`SERVICE_CATALOG.md`](SERVICE_CATALOG.md). هذه الوثيقة تصف تصنيف الخدمات الداخلي (مجلدات التسليم) وليست مصدر حقيقة الأسعار.
+
 النسخة القانونية للمجلدات: `docs/services/<folder>/` + `SERVICE_ID_MAP.yaml`.  
 الحالة **Sellable/Beta** آلياً: `python scripts/print_service_readiness_matrix.py`.
 

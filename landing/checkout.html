@@ -127,76 +127,64 @@
 
   <script>
     // Track B2 — Pricing → Checkout. Wraps existing /api/v1/payment-ops/invoice-intent.
-    // Tier catalog must match landing/pricing.html. Source of truth:
-    // docs/PRICING_STRATEGY.md + Constitution Article 9.
+    // Tier catalog must match the canonical 5-rung ladder. Source of truth:
+    // auto_client_acquisition/service_catalog/registry.py.
+    // Note: the Retainer band is 6,000–18,000 SAR/month; checkout charges the
+    // band minimum and the founder issues the exact scoped retainer invoice.
     var TIERS = {
       sprint: {
-        name_ar: "Revenue Proof Sprint",
-        amount_sar: 499,
+        name_ar: "المستوى ٢ · سبرنت إثبات القيمة",
+        amount_sar: 2500,
         recurring: false,
-        service_session_id: "sprint_499",
+        service_session_id: "sprint",
         features: [
-          "تشغيل سريع لـ Revenue Command Center",
-          "Lead/Market Radar مفعّل",
-          "Decision Passports أوّليّة",
-          "WhatsApp approval flow",
-          "Proof Pack جاهز يوم 7",
-          "Next Best Offer تلقائي"
+          "Company Brain v1 + لوحة عملاء محتملين منظّفة",
+          "Top 20 فرصة مرتّبة + Decision Passports لأهم ٥",
+          "Arabic Draft Pack — ١٠ رسائل",
+          "خطة متابعة + خريطة مخاطر واعتراضات",
+          "Executive Pack + Proof Pack",
+          "استرداد كامل ١٠٠٪ خلال ١٤ يومًا"
         ]
       },
-      growth: {
-        name_ar: "Growth OS — Growth Ops Monthly",
-        amount_sar: 2999,
-        recurring: true,
-        service_session_id: "growth_os_monthly",
+      pilot: {
+        name_ar: "المستوى ٣ · بايلوت التشغيل",
+        amount_sar: 9500,
+        recurring: false,
+        service_session_id: "pilot",
         features: [
-          "حتّى 2,500 lead/شهر",
-          "WhatsApp Decision Layer كامل",
-          "Customer Portal + Approvals",
-          "Proof Pack شهري + Audit trail",
-          "Moyasar invoicing مدمج",
-          "دعم خلال 4 ساعات"
+          "٤ دورات تشغيل أسبوعية للـ pipeline",
+          "تحديث scoring + Arabic Draft Pack أسبوعيًا",
+          "متابعة الفرص والاجتماعات",
+          "تقرير تنفيذي أسبوعي",
+          "رؤى الدعم والعمليات",
+          "Proof Pack ختامي + توصية العرض التالي"
         ]
       },
-      scale: {
-        name_ar: "Scale OS",
-        amount_sar: 7999,
+      retainer: {
+        name_ar: "المستوى ٤ · التشغيل المُدار الشهري",
+        amount_sar: 6000,
         recurring: true,
-        service_session_id: "scale_os_monthly",
+        service_session_id: "retainer_managed_ops",
         features: [
-          "Lead غير محدود",
-          "كلّ ميزات Growth OS",
-          "Multi-user + أدوار متقدّمة",
-          "API access كامل",
-          "SLA 99.9% + alerts مخصّصة",
-          "Custom integrations"
-        ]
-      },
-      partner: {
-        name_ar: "Executive Command Center",
-        amount_sar: 12000,
-        recurring: true,
-        service_session_id: "ecc_monthly",
-        features: [
-          "كلّ ميزات Scale OS",
-          "غرفة قيادة تنفيذيّة + KPI lift weekly",
-          "Daily Decisions queue + Approval-first",
-          "Proof Pack أسبوعي + Executive Pack",
-          "Account manager + sprint check-ins",
-          "التزام 4 أشهر · price-lock"
+          "إيقاع تشغيل شهري كامل (إيراد + دعم + عمليات)",
+          "تدقيق pipeline أسبوعي + قائمة موافقات يومية",
+          "Arabic Draft Pack (≥20 رسالة / شهر)",
+          "Proof Pack شهري + ملخّص تنفيذي",
+          "النطاق 6,000–18,000 ر.س/شهر — يُحدَّد حسب حجم العمليات",
+          "استرداد تناسبي للأشهر غير المستخدمة"
         ]
       },
       enterprise: {
-        name_ar: "Enterprise — Custom",
+        name_ar: "المستوى ٥ · المؤسسات والذكاء الاصطناعي المخصّص",
         amount_sar: null,
-        recurring: true,
-        service_session_id: "enterprise_custom",
+        recurring: false,
+        service_session_id: "enterprise_custom_ai",
         features: [
-          "كلّ ميزات Executive Command Center",
-          "SSO + RBAC متقدّم",
-          "PDPL advanced + private deployment",
-          "Multi-tenant RLS",
-          "SDAIA / SAMA-aligned audits"
+          "اكتشاف + مراجعة جاهزية الذكاء الاصطناعي",
+          "تصميم workflow ووكلاء مخصّصين",
+          "تكاملات + حوكمة بيانات + مراجعة PDPL",
+          "برنامج حوكمة AI + حزمة تدقيق + SLA",
+          "النطاق والمراحل مثبّتة في SOW موقّع"
         ]
       }
     };

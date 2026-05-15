@@ -25,10 +25,10 @@
 A **Saudi B2B Revenue Engine** with three layers:
 
 1. **Lead Engine** — acquire Saudi B2B leads from Google/Maps/Chambers/SDAIA/MCI, enrich them, score against ICP, suppress dupes. PDPL-compliant by design.
-2. **Service Engine** — 7 productized AI services (Diagnostic, AI Sales Assistant, Decision Passport, Customer Health, Proof Curation, Growth Signals, Executive Command Center). See `/api/v1/...` endpoints.
+2. **Service Engine** — one canonical five-rung service ladder (Free Diagnostic → Sprint → Pilot → Retainer/Managed Ops → Enterprise/Custom AI) plus an Agency Partner channel. Single source of truth: [`auto_client_acquisition/service_catalog/registry.py`](auto_client_acquisition/service_catalog/registry.py). See `/api/v1/services/catalog`.
 3. **Trust Engine** — PDPL Art. 5/13/14/18/21 wiring, ZATCA Phase 2 e-invoice, decision audit trail. The defensible moat against translated US tools.
 
-**7 revenue streams** monetize the 3 engines: Managed Pilot (499 SAR), SaaS Subscription (999/2,999/7,999 SAR/mo), Lead-as-a-Service (25 SAR/replied lead), Sector Reports (1.5K-10K SAR), Bespoke AI Setup (5K-25K SAR), Agency White-Label (1K setup + 25% rev share), Enterprise PMO (25K-100K SAR/mo).
+**One canonical 5-rung ladder** monetizes the 3 engines: Free Diagnostic (0 SAR) → Sprint (2,500 SAR, one-time) → Pilot (9,500 SAR, one-time) → Retainer / Managed Ops (6,000–18,000 SAR/mo) → Enterprise / Custom AI (45,000–120,000 SAR, per SOW). Plus an Agency Partner channel (custom; 30% commission). Prices are estimates and live in [`auto_client_acquisition/service_catalog/registry.py`](auto_client_acquisition/service_catalog/registry.py) — see [`docs/company/SERVICE_CATALOG.md`](docs/company/SERVICE_CATALOG.md).
 
 ## 🎯 What's in this repo
 

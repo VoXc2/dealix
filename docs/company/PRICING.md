@@ -1,23 +1,24 @@
 # Pricing
 
-## Entry
+> **Canonical source of truth:** `auto_client_acquisition/service_catalog/registry.py`
+> (mirrored to `landing/assets/data/services-catalog.json` and
+> `docs/company/SERVICE_CATALOG.md`). On any conflict, the registry wins.
 
-- Revenue Diagnostic: SAR 3,500–7,500
-- AI Quick Win Sprint: SAR 7,500–15,000
+One canonical five-rung ladder. Each rung unlocks after real evidence
+from the rung below.
 
-## Core
+| Rung | Offer | Price (SAR) | Cadence |
+|---|---|---|---|
+| 1 | Free Diagnostic | 0 (Free) | one-time |
+| 2 | Sprint — Value Proof Sprint | 2,500 | one-time |
+| 3 | Pilot — Operating Pilot | 9,500 | one-time |
+| 4 | Retainer — Managed Operations | 6,000–18,000 / month | per month |
+| 5 | Enterprise — Enterprise & Custom AI | 45,000–120,000 | per SOW |
 
-- Lead Intelligence Sprint: SAR 9,500–18,000
-- AI Support Desk Sprint: SAR 12,000–30,000
-- Workflow Automation Sprint: SAR 15,000–50,000
-- Company Brain Sprint: SAR 20,000–60,000
+Distribution channel (not a ladder rung):
 
-## Retainer
+- Agency Partner OS — custom; 30% commission on the first paid year per
+  referred customer.
 
-- Monthly RevOps OS: SAR 15,000–60,000/month
-- Monthly AI Ops: SAR 15,000–60,000/month
-
-## Enterprise
-
-- Enterprise AI OS: SAR 85,000–300,000+ setup
-- Enterprise Retainer: SAR 35,000–150,000/month
+All prices are estimates (`is_estimate=True`) and exclude VAT. Pricing
+changes are 1-line edits to the registry (Constitution Article 11).

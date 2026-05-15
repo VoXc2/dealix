@@ -28,8 +28,9 @@ def test_endpoint_carries_governance_envelope():
 def test_each_offer_has_required_fields():
     body = client.get("/api/v1/commercial-map").json()
     required = {
-        "service_id", "name_ar", "name_en", "price_sar", "price_unit",
-        "duration_days", "kpi_commitment_ar", "kpi_commitment_en",
+        "service_id", "name_ar", "name_en", "price_sar", "price_sar_min",
+        "price_sar_max", "price_display_ar", "price_display_en", "price_unit",
+        "is_rung", "duration_days", "kpi_commitment_ar", "kpi_commitment_en",
         "refund_policy_ar", "refund_policy_en", "deliverables",
         "action_modes_used", "non_negotiables_enforced", "wiring", "notes",
     }
@@ -92,14 +93,26 @@ def test_referral_persistence_offer_links_to_partnership_module():
     assert "partnership_os" in agency["wiring"]["delivery_module"]
 
 
-def test_growth_ops_links_to_workspace_endpoint():
+def test_retainer_links_to_workspace_endpoint():
     body = client.get("/api/v1/commercial-map").json()
-    growth = next(o for o in body["offers"] if o["service_id"] == "growth_ops_monthly_2999")
-    assert "workspace" in growth["wiring"]["delivery_endpoint"]
+    retainer = next(
+        o for o in body["offers"] if o["service_id"] == "retainer_managed_ops"
+    )
+    assert "workspace" in retainer["wiring"]["delivery_endpoint"]
 
 
 def test_sprint_offer_links_to_sample_preview():
     body = client.get("/api/v1/commercial-map").json()
-    sprint = next(o for o in body["offers"] if o["service_id"] == "revenue_proof_sprint_499")
+    sprint = next(o for o in body["offers"] if o["service_id"] == "sprint")
     assert sprint["wiring"]["sample_endpoint"] == "GET /api/v1/sprint/sample"
     assert sprint["wiring"]["preview_url"] == "/sprint-sample.html"
+
+
+def test_banded_rungs_expose_price_display():
+    body = client.get("/api/v1/commercial-map").json()
+    retainer = next(
+        o for o in body["offers"] if o["service_id"] == "retainer_managed_ops"
+    )
+    assert retainer["price_sar_min"] == 6000
+    assert retainer["price_sar_max"] == 18000
+    assert "6,000" in retainer["price_display_en"]

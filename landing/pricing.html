@@ -4,11 +4,11 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Dealix — الأسعار</title>
-  <meta name="description" content="خطط Dealix: تجريب بريال، Starter، Growth، Scale. أسعار شفافة بالريال السعودي. ZATCA e-invoice عند الحاجة." />
+  <meta name="description" content="سلّم تسعير Dealix: ٥ مستويات من التشخيص المجاني إلى المؤسسات والذكاء الاصطناعي المخصّص. أسعار شفافة بالريال السعودي. ZATCA e-invoice عند الحاجة." />
   <meta name="theme-color" content="#0f172a" />
   <link rel="canonical" href="https://dealix.me/pricing.html" />
   <meta property="og:title" content="Dealix — الأسعار" />
-  <meta property="og:description" content="خطط Dealix: تجريب بريال، Starter، Growth، Scale. أسعار شفافة بالريال السعودي." />
+  <meta property="og:description" content="سلّم من ٥ مستويات: تشخيص مجاني → Sprint → Pilot → تشغيل مُدار → مؤسسات. أسعار شفافة بالريال السعودي." />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://dealix.me/pricing.html" />
   <meta name="twitter:card" content="summary_large_image" />
@@ -54,7 +54,7 @@
     <a href="index.html" class="nav-back">← العودة للرئيسية</a>
     <div class="pricing-head">
       <h1>سلّم تسعير شفّاف. ابدأ مجّاناً. وسّع متى أثبتنا القيمة.</h1>
-      <p>٦ مستويات — من Mini Diagnostic مجّاني حتى Executive Command Center. كلّ ريال شفاف، ZATCA-ready، Saudi VAT 15% مُحتسب.</p>
+      <p>٥ مستويات — من التشخيص المجاني حتى المؤسسات والذكاء الاصطناعي المخصّص. كلّ مستوى يفتح بعد دليل من المستوى السابق. كلّ ريال شفاف، ZATCA-ready، Saudi VAT 15% مُحتسب.</p>
       <div style="margin-top:18px;display:flex;justify-content:center;gap:12px;flex-wrap:wrap">
         <a href="/diagnostic.html" data-analytics="cta_pricing_diagnostic" class="ds-btn ds-btn--lg">ابدأ التشخيص المجّاني</a>
         <a href="/customer-portal.html" class="ds-btn ds-btn--ghost ds-btn--lg">شاهد لوحة العميل</a>
@@ -72,120 +72,92 @@
       </div>
     </div>
 
-    <!-- 6-tier anchor pricing ladder. Partner (top) anchors highest, Mini Diagnostic (bottom) is the entry funnel. -->
+    <!-- The canonical 5-rung ladder. Source of truth:
+         auto_client_acquisition/service_catalog/registry.py -->
     <div class="plans">
-      <!-- Tier 1: Partner / Executive Command Center (highest anchor) -->
-      <div class="plan featured">
-        <span class="badge">موصى به</span>
-        <h3>Executive Command Center</h3>
-        <div class="price">12,000 <small>ريال / شهر</small></div>
-        <ul>
-          <li>كلّ ميزات Scale OS</li>
-          <li>غرفة قيادة تنفيذيّة + KPI lift weekly</li>
-          <li>Daily Decisions queue + Approval-first</li>
-          <li>Proof Pack أسبوعي + Executive Pack</li>
-          <li>Account manager + sprint check-ins</li>
-          <li>التزام 4 أشهر · أوّل 3 عملاء = price-lock مدى الحياة</li>
-        </ul>
-        <a class="cta" href="/checkout.html?tier=partner" data-analytics="cta_pricing_partner">إكمال الاشتراك</a>
-      </div>
-
-      <!-- Tier 2: Scale OS -->
-      <div class="plan">
-        <h3>Scale OS</h3>
-        <div class="price">7,999 <small>ريال / شهر</small></div>
-        <ul>
-          <li>Lead غير محدود</li>
-          <li>كلّ ميزات Growth OS</li>
-          <li>Multi-user + أدوار متقدّمة</li>
-          <li>API access كامل</li>
-          <li>SLA 99.9% + alerts مخصّصة</li>
-          <li>Custom integrations</li>
-        </ul>
-        <a class="cta" href="/checkout.html?tier=scale" data-analytics="cta_pricing_scale">إكمال الاشتراك</a>
-      </div>
-
-      <!-- Tier 3: Growth OS (mid-anchor — الأكثر رواجاً) -->
-      <div class="plan" id="growth" style="border:2px solid #4ade80;box-shadow:0 12px 36px -16px rgba(74,222,128,.4);scroll-margin-top:96px">
-        <span class="badge" style="background:linear-gradient(135deg,#4ade80,#22d3ee)">الأكثر رواجاً</span>
-        <h3>Growth OS <small style="font-size:13px;font-weight:500;color:#64748b">(Growth Ops Monthly)</small></h3>
-        <div class="price">2,999 <small>ريال / شهر</small></div>
-        <ul>
-          <li>حتّى 2,500 lead/شهر</li>
-          <li>WhatsApp Decision Layer كامل</li>
-          <li>Customer Portal + Approvals</li>
-          <li>Proof Pack شهري + Audit trail</li>
-          <li>Moyasar invoicing مدمج</li>
-          <li>دعم خلال 4 ساعات + Onboarding 90 دقيقة</li>
-        </ul>
-        <a class="cta" href="/checkout.html?tier=growth" data-analytics="cta_pricing_growth">إكمال الاشتراك</a>
-      </div>
-
-      <!-- Tier 4: Sprint -->
-      <div class="plan">
-        <h3>Revenue Proof Sprint</h3>
-        <div class="price">499 <small>ريال / مرّة واحدة · 7 أيّام</small></div>
-        <ul>
-          <li>تشغيل سريع لـ Revenue Command Center</li>
-          <li>Lead/Market Radar مفعّل</li>
-          <li>Decision Passports أوّليّة</li>
-          <li>WhatsApp approval flow</li>
-          <li>Proof Pack جاهز يوم 7</li>
-          <li>Next Best Offer تلقائي</li>
-        </ul>
-        <a class="cta" href="/checkout.html?tier=sprint" data-analytics="cta_pricing_sprint">احجز Sprint</a>
-      </div>
-
-      <!-- Tier 4b: Data Pack — حزمة من البيانات إلى الإيراد (one-time, between Sprint and Growth) -->
-      <div class="plan" style="border:2px solid #22d3ee">
-        <span class="badge" style="background:linear-gradient(135deg,#22d3ee,#a855f7);color:#0f172a">Data Pack</span>
-        <h3>Data Pack — حزمة من البيانات إلى الإيراد</h3>
-        <div class="price">1,500 <small>SAR · one-time · 14-day delivery</small></div>
-        <ul>
-          <li>تنظيف ≥400 صف + كشف مكرر</li>
-          <li>Source Validation + Risk Report</li>
-          <li>Top 20 فرصة مرتبة</li>
-          <li>10 مسودات عربية + Follow-up Plan</li>
-          <li>Decision Passports لأهم 5 فرص</li>
-        </ul>
-        <p style="font-size:12px;color:#64748b;margin:8px 0 12px;line-height:1.5">
-          <em>Estimated outcomes are not guaranteed outcomes / النتائج التقديرية ليست نتائج مضمونة.</em>
-        </p>
-        <a class="cta" href="/data-pack.html" data-analytics="cta_pricing_data_pack">احجز Data Pack →</a>
-        <a class="cta" href="/checkout.html?tier=data_pack" data-analytics="cta_pricing_data_pack_checkout" style="margin-top:8px;background:#22d3ee;color:#0f172a">إكمال الاشتراك · Checkout</a>
-      </div>
-
-      <!-- Tier 5: Mini Diagnostic (entry funnel — ابدأ هنا) -->
+      <!-- Rung 1: Free Diagnostic (entry) -->
       <div class="plan" style="border:2px solid #fbbf24">
         <span class="badge" style="background:linear-gradient(135deg,#fbbf24,#f97316)">ابدأ هنا</span>
-        <h3>Mini Diagnostic</h3>
-        <div class="price">مجّاني <small>· 24 ساعة</small></div>
+        <h3>المستوى ١ · التشخيص المجاني</h3>
+        <div class="price">مجّاني <small>· 48 ساعة</small></div>
         <ul>
-          <li>3 فرص حقيقيّة من قطاعك</li>
-          <li>رسالة عربيّة جاهزة</li>
-          <li>أفضل قناة للتواصل</li>
-          <li>مخاطرة لتجنّبها</li>
-          <li>قرار التالي الواضح</li>
+          <li>تشخيص ملاءمة قطاعك بصفحة واحدة</li>
+          <li>٣ فرص إيراد مرتّبة بالأولوية</li>
+          <li>مسودة رسالة عربية + أفضل قناة</li>
+          <li>خطر واحد لتجنّبه</li>
+          <li>Decision Passport للخطوة القادمة</li>
           <li>المؤسس يراجع شخصياً</li>
         </ul>
         <a class="cta" href="/diagnostic.html" data-analytics="cta_pricing_diagnostic_card">ابدأ التشخيص</a>
       </div>
 
-      <!-- Tier 6: Enterprise -->
+      <!-- Rung 2: Sprint -->
       <div class="plan">
-        <h3>Enterprise</h3>
-        <div class="price">تواصل <small>· مفصّل حسب الحاجة</small></div>
+        <h3>المستوى ٢ · سبرنت إثبات القيمة</h3>
+        <div class="price">2,500 <small>ريال / مرّة واحدة · 10 أيّام عمل</small></div>
         <ul>
-          <li>كلّ ميزات Executive Command Center</li>
-          <li>SSO + RBAC متقدّم</li>
-          <li>PDPL advanced + private deployment</li>
-          <li>Custom SLA + DPO support</li>
-          <li>Multi-tenant RLS</li>
-          <li>SDAIA / SAMA-aligned audits</li>
+          <li>Company Brain v1 + لوحة عملاء محتملين منظّفة</li>
+          <li>Top 20 فرصة مرتّبة + Decision Passports لأهم ٥</li>
+          <li>Arabic Draft Pack — ١٠ رسائل</li>
+          <li>خطة متابعة + خريطة مخاطر واعتراضات</li>
+          <li>Executive Pack + Proof Pack</li>
+          <li>استرداد كامل ١٠٠٪ خلال ١٤ يومًا</li>
         </ul>
-        <a class="cta" href="mailto:sales@dealix.sa?subject=Enterprise%20Inquiry">تواصل مع المبيعات</a>
+        <a class="cta" href="/checkout.html?tier=sprint" data-analytics="cta_pricing_sprint">احجز Sprint</a>
+      </div>
+
+      <!-- Rung 3: Pilot -->
+      <div class="plan" id="pilot" style="scroll-margin-top:96px">
+        <h3>المستوى ٣ · بايلوت التشغيل</h3>
+        <div class="price">9,500 <small>ريال / مرّة واحدة · 30 يوماً</small></div>
+        <ul>
+          <li>٤ دورات تشغيل أسبوعية للـ pipeline</li>
+          <li>تحديث scoring + Arabic Draft Pack أسبوعيًا</li>
+          <li>متابعة الفرص والاجتماعات</li>
+          <li>تقرير تنفيذي أسبوعي</li>
+          <li>رؤى الدعم والعمليات</li>
+          <li>Proof Pack ختامي + توصية العرض التالي</li>
+        </ul>
+        <a class="cta" href="/checkout.html?tier=pilot" data-analytics="cta_pricing_pilot">احجز Pilot</a>
+      </div>
+
+      <!-- Rung 4: Retainer / Managed Ops (الأكثر رواجاً) -->
+      <div class="plan featured" id="retainer" style="scroll-margin-top:96px">
+        <span class="badge">الأكثر رواجاً</span>
+        <h3>المستوى ٤ · التشغيل المُدار الشهري</h3>
+        <div class="price">6,000–18,000 <small>ريال / شهر · 4 أشهر التزام</small></div>
+        <ul>
+          <li>إيقاع تشغيل شهري كامل (إيراد + دعم + عمليات)</li>
+          <li>تدقيق pipeline أسبوعي + قائمة موافقات يومية</li>
+          <li>Arabic Draft Pack (≥20 رسالة / شهر)</li>
+          <li>رؤى الدعم مضمّنة</li>
+          <li>Proof Pack شهري + ملخّص تنفيذي</li>
+          <li>Board Pack في النطاق الأعلى</li>
+        </ul>
+        <a class="cta" href="/checkout.html?tier=retainer" data-analytics="cta_pricing_retainer">إكمال الاشتراك</a>
+      </div>
+
+      <!-- Rung 5: Enterprise / Custom AI -->
+      <div class="plan" id="enterprise" style="scroll-margin-top:96px">
+        <h3>المستوى ٥ · المؤسسات والذكاء الاصطناعي المخصّص</h3>
+        <div class="price">45,000–120,000 <small>ريال · حسب الـ SOW</small></div>
+        <ul>
+          <li>اكتشاف + مراجعة جاهزية الذكاء الاصطناعي</li>
+          <li>تصميم workflow ووكلاء مخصّصين</li>
+          <li>تكاملات + حوكمة بيانات + مراجعة PDPL</li>
+          <li>دورات بناء وتدريب وتسليم</li>
+          <li>برنامج حوكمة AI + حزمة تدقيق + SLA</li>
+          <li>النطاق والمراحل مثبّتة في SOW موقّع</li>
+        </ul>
+        <a class="cta" href="mailto:hello@dealix.me?subject=Enterprise%20%26%20Custom%20AI">تواصل مع المبيعات</a>
       </div>
     </div>
+
+    <p style="max-width:820px;margin:24px auto 0;text-align:center;font-size:13px;color:#64748b">
+      قناة الشركاء (نظام شريك الوكالة) ليست مستوى في السلّم — تواصل:
+      <a href="mailto:partners@dealix.me" class="ds-link">partners@dealix.me</a>.
+      <br><em>كل الأسعار تقديرية وتُثبَّت في عرض السعر قبل البدء · All prices are estimates, fixed in the quote before work begins.</em>
+    </p>
 
     <!-- Negation-safe التزامات block (replaces older ضمانات wording) -->
     <div class="ds-disclaimer" style="max-width:820px;margin:32px auto 0">
@@ -224,45 +196,41 @@
       </div>
     </div>
 
-    <!-- Comparison table -->
+    <!-- Comparison table — the 5 ladder rungs -->
     <div style="max-width:1100px;margin:48px auto;padding:32px 24px;background:#fff;border:1px solid #e2e8f0;border-radius:16px;overflow-x:auto">
-      <h2 style="margin:0 0 18px;text-align:center;font-size:22px;color:#0f172a">مقارنة سريعة: ماذا تختار؟</h2>
-      <table style="width:100%;border-collapse:collapse;font-size:14px;min-width:680px">
+      <h2 style="margin:0 0 18px;text-align:center;font-size:22px;color:#0f172a">مقارنة سريعة: أيّ مستوى تختار؟</h2>
+      <table style="width:100%;border-collapse:collapse;font-size:14px;min-width:760px">
         <thead>
           <tr style="background:#f8fafc">
-            <th style="padding:12px;text-align:right;border-bottom:2px solid #e2e8f0">الميزة</th>
-            <th style="padding:12px;text-align:center;border-bottom:2px solid #e2e8f0">Pilot 1 ريال</th>
-            <th style="padding:12px;text-align:center;border-bottom:2px solid #e2e8f0">Starter 999</th>
-            <th style="padding:12px;text-align:center;border-bottom:2px solid #e2e8f0;background:#fef9c3">Growth 2,999 ⭐</th>
-            <th style="padding:12px;text-align:center;border-bottom:2px solid #e2e8f0">Scale 7,999</th>
+            <th style="padding:12px;text-align:right;border-bottom:2px solid #e2e8f0"> </th>
+            <th style="padding:12px;text-align:center;border-bottom:2px solid #e2e8f0">١ · تشخيص</th>
+            <th style="padding:12px;text-align:center;border-bottom:2px solid #e2e8f0">٢ · Sprint</th>
+            <th style="padding:12px;text-align:center;border-bottom:2px solid #e2e8f0">٣ · Pilot</th>
+            <th style="padding:12px;text-align:center;border-bottom:2px solid #e2e8f0;background:#fef9c3">٤ · تشغيل مُدار ⭐</th>
+            <th style="padding:12px;text-align:center;border-bottom:2px solid #e2e8f0">٥ · مؤسسات</th>
           </tr>
         </thead>
         <tbody>
-          <tr><td style="padding:10px;border-bottom:1px dashed #e2e8f0;font-weight:600">leads/شهر</td><td style="text-align:center">≤ 25</td><td style="text-align:center">500</td><td style="text-align:center;background:#fefce8">2,500</td><td style="text-align:center">∞</td></tr>
-          <tr><td style="padding:10px;border-bottom:1px dashed #e2e8f0;font-weight:600">رد عربي خليجي < 60 ثانية</td><td style="text-align:center">✓</td><td style="text-align:center">✓</td><td style="text-align:center;background:#fefce8">✓</td><td style="text-align:center">✓</td></tr>
-          <tr><td style="padding:10px;border-bottom:1px dashed #e2e8f0;font-weight:600">WhatsApp + Email + Form</td><td style="text-align:center">WhatsApp فقط</td><td style="text-align:center">✓</td><td style="text-align:center;background:#fefce8">✓</td><td style="text-align:center">✓</td></tr>
-          <tr><td style="padding:10px;border-bottom:1px dashed #e2e8f0;font-weight:600">CRM Integration (HubSpot/SF/Zoho)</td><td style="text-align:center">—</td><td style="text-align:center">واحد</td><td style="text-align:center;background:#fefce8">كلهم</td><td style="text-align:center">+ Custom</td></tr>
-          <tr><td style="padding:10px;border-bottom:1px dashed #e2e8f0;font-weight:600">تقارير يومية + Dashboard</td><td style="text-align:center">يومي</td><td style="text-align:center">أسبوعي</td><td style="text-align:center;background:#fefce8">live</td><td style="text-align:center">live + custom</td></tr>
-          <tr><td style="padding:10px;border-bottom:1px dashed #e2e8f0;font-weight:600">Approvals + Audit Log</td><td style="text-align:center">—</td><td style="text-align:center">—</td><td style="text-align:center;background:#fefce8">✓</td><td style="text-align:center">✓ + RBAC</td></tr>
-          <tr><td style="padding:10px;border-bottom:1px dashed #e2e8f0;font-weight:600">Moyasar Invoicing</td><td style="text-align:center">—</td><td style="text-align:center">—</td><td style="text-align:center;background:#fefce8">✓</td><td style="text-align:center">✓</td></tr>
-          <tr><td style="padding:10px;border-bottom:1px dashed #e2e8f0;font-weight:600">API Access</td><td style="text-align:center">—</td><td style="text-align:center">—</td><td style="text-align:center;background:#fefce8">—</td><td style="text-align:center">✓ كامل</td></tr>
-          <tr><td style="padding:10px;border-bottom:1px dashed #e2e8f0;font-weight:600">SLA</td><td style="text-align:center">best effort</td><td style="text-align:center">99%</td><td style="text-align:center;background:#fefce8">99.5%</td><td style="text-align:center">99.9%</td></tr>
-          <tr><td style="padding:10px;border-bottom:1px dashed #e2e8f0;font-weight:600">دعم</td><td style="text-align:center">WhatsApp</td><td style="text-align:center">24h</td><td style="text-align:center;background:#fefce8">4h</td><td style="text-align:center">Account Manager</td></tr>
-          <tr><td style="padding:10px;font-weight:600">Onboarding</td><td style="text-align:center">—</td><td style="text-align:center">ذاتي</td><td style="text-align:center;background:#fefce8">90 دقيقة</td><td style="text-align:center">جلسات + تدريب فريقكم</td></tr>
+          <tr><td style="padding:10px;border-bottom:1px dashed #e2e8f0;font-weight:600">السعر (ر.س)</td><td style="text-align:center">مجّاني</td><td style="text-align:center">2,500</td><td style="text-align:center">9,500</td><td style="text-align:center;background:#fefce8">6,000–18,000/شهر</td><td style="text-align:center">45,000–120,000</td></tr>
+          <tr><td style="padding:10px;border-bottom:1px dashed #e2e8f0;font-weight:600">المدة</td><td style="text-align:center">48 ساعة</td><td style="text-align:center">10 أيّام</td><td style="text-align:center">30 يوماً</td><td style="text-align:center;background:#fefce8">شهري متجدّد</td><td style="text-align:center">حسب الـ SOW</td></tr>
+          <tr><td style="padding:10px;border-bottom:1px dashed #e2e8f0;font-weight:600">الغرض</td><td style="text-align:center">وضوح</td><td style="text-align:center">إثبات قيمة</td><td style="text-align:center">تحقّق تشغيلي</td><td style="text-align:center;background:#fefce8">استمرارية</td><td style="text-align:center">توسّع وبناء مخصّص</td></tr>
+          <tr><td style="padding:10px;border-bottom:1px dashed #e2e8f0;font-weight:600">Proof Pack</td><td style="text-align:center">—</td><td style="text-align:center">✓ ختامي</td><td style="text-align:center">✓ ختامي</td><td style="text-align:center;background:#fefce8">✓ شهري</td><td style="text-align:center">✓ + حوكمة</td></tr>
+          <tr><td style="padding:10px;border-bottom:1px dashed #e2e8f0;font-weight:600">إيقاع تشغيل</td><td style="text-align:center">—</td><td style="text-align:center">مرّة واحدة</td><td style="text-align:center">٤ أسابيع</td><td style="text-align:center;background:#fefce8">شهري مستمر</td><td style="text-align:center">مخصّص</td></tr>
+          <tr><td style="padding:10px;font-weight:600">الالتزام</td><td style="text-align:center">استرداد كامل خلال 14 يوماً</td><td style="text-align:center">استرداد 100% خلال 14 يوماً</td><td style="text-align:center">استرداد 75% (45 يوماً)</td><td style="text-align:center;background:#fefce8">استرداد تناسبي للأشهر غير المستخدمة</td><td style="text-align:center">وفق الـ SOW الموقّع</td></tr>
         </tbody>
       </table>
     </div>
 
     <div class="faq">
       <h2>أسئلة شائعة</h2>
-      <details><summary>هل أحتاج بطاقة ائتمان للبدء؟</summary><p>نعم لتجربة Pilot بريال. يمكنك الإلغاء متى شئت.</p></details>
-      <details><summary>كيف تُحتسب Leads؟</summary><p>كل contact فريد يدخل النظام خلال الشهر. lead مكرر = lead واحد.</p></details>
-      <details><summary>هل يدعم WhatsApp Business API؟</summary><p>نعم في Starter+. نستخدم رقمك الرسمي عبر مزوّد معتمد.</p></details>
-      <details><summary>ماذا عن البيانات والخصوصية؟</summary><p>PDPL-aligned. كل البيانات في KSA. تشفير at-rest + in-transit.</p></details>
-      <details><summary>هل أقدر أرقّي/أخفّض الخطة؟</summary><p>بأي وقت. الفرق يُحسب pro-rata.</p></details>
-      <details><summary>ما الفرق بين Growth و Scale؟</summary><p>Scale لمن يحتاج API + SLA + account manager مخصص، مناسب لوكالات أو شركات كبيرة.</p></details>
-      <details><summary>هل ZATCA e-invoice مشمول؟</summary><p>نوفّر مسار تكامل عند حاجتك (عادةً للمنشآت فوق حد معيّن). لا رسوم إضافية في Growth/Scale.</p></details>
-      <details><summary>كيف ألغي؟</summary><p>ضغطة واحدة من Dashboard، أو WhatsApp لفريق الدعم.</p></details>
+      <details><summary>من أين أبدأ؟</summary><p>من المستوى ١ — التشخيص المجاني. كل مستوى يفتح بعد دليل حقيقي من المستوى السابق؛ لا قفز فوق المستويات.</p></details>
+      <details><summary>هل أحتاج بطاقة ائتمان للبدء؟</summary><p>لا. التشخيص مجاني تمامًا. الدفع يبدأ من Sprint (المستوى ٢) فقط، وبعد إصدار فاتورة.</p></details>
+      <details><summary>لماذا التشغيل المُدار نطاق سعري وليس رقمًا واحدًا؟</summary><p>لأن النطاق الشهري (6,000–18,000 ر.س) يُحدَّد حسب حجم العمليات وعدد القنوات؛ يُثبَّت في عرض السعر قبل البدء.</p></details>
+      <details><summary>ماذا عن البيانات والخصوصية؟</summary><p>PDPL-aligned. البيانات داخل السعودية. تشفير at-rest + in-transit.</p></details>
+      <details><summary>ما الفرق بين Pilot والتشغيل المُدار؟</summary><p>Pilot تحقّق تشغيلي لمرة واحدة (30 يومًا)؛ التشغيل المُدار اشتراك شهري مستمر بإيقاع كامل.</p></details>
+      <details><summary>متى أحتاج المستوى ٥ (المؤسسات)؟</summary><p>عند الحاجة لبناء AI مخصّص أو تكاملات عميقة أو برنامج حوكمة — يُحدَّد بـ SOW موقّع.</p></details>
+      <details><summary>هل ZATCA e-invoice مشمول؟</summary><p>نوفّر مسار تكامل e-invoice (Phase 2) عند وصولك لحد الفوترة الإلزامي، بدون توقف الخدمة.</p></details>
+      <details><summary>كيف ألغي؟</summary><p>للاشتراك الشهري: إشعار بسيط، والاسترداد تناسبي للأشهر غير المستخدمة.</p></details>
     </div>
   </main>
 

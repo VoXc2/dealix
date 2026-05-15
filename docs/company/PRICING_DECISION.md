@@ -1,5 +1,9 @@
 # Pricing Decision
 
+> **Canonical prices:** `auto_client_acquisition/service_catalog/registry.py`
+> and [`PRICING.md`](PRICING.md). This document covers the *reasoning* for
+> price changes, not the live numbers.
+
 Price reflects **value**, **complexity**, **risk**, and **repeatability** — not hours alone.
 
 ## Factors
@@ -22,7 +26,7 @@ Retainer     = recurring improvement
 Enterprise   = customization + governance + integrations
 ```
 
-Registry anchors: [`SERVICE_REGISTRY.md`](SERVICE_REGISTRY.md), [`PRICING.md`](PRICING.md).
+Canonical anchors: [`PRICING.md`](PRICING.md), [`SERVICE_CATALOG.md`](SERVICE_CATALOG.md), and `auto_client_acquisition/service_catalog/registry.py`.
 
 ## When to raise price
 

@@ -14,7 +14,7 @@
 
 ## 3. معدل التحويل على سلّم الخدمات
 
-- **التعريف:** نسبة الانتقال `free_mini_diagnostic` → `revenue_proof_sprint_499` → `growth_ops_monthly_2999` → `executive_command_center_7500`.
+- **التعريف:** نسبة الانتقال على السلّم الخماسي `free_diagnostic` → `sprint` → `pilot` → `retainer_managed_ops` → `enterprise_custom_ai` (المصدر المعتمد: `auto_client_acquisition/service_catalog/registry.py`).
 - **المصدر المستهدف:** CRM/فواتير/تكامل دفع — عند توفرها.
 
 ## 4. Degraded portal rate

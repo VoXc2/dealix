@@ -1,7 +1,8 @@
-"""Wave 13 Phase 2 — Service Catalog HTTP surface.
+"""Service Catalog HTTP surface.
 
-Exposes the 7 canonical Dealix offerings via FastAPI:
-- GET /api/v1/services/catalog        — list all 7 offerings
+Exposes the canonical Dealix catalog (5 ladder rungs + 1 partner channel)
+via FastAPI:
+- GET /api/v1/services/catalog        — list all offerings
 - GET /api/v1/services/{service_id}    — one offering detail
 - GET /api/v1/services/status          — layer health + hard gates
 
@@ -56,7 +57,7 @@ async def service_catalog_status() -> dict[str, Any]:
 
 @router.get("/catalog")
 async def service_catalog() -> dict[str, Any]:
-    """All 7 offerings in display order."""
+    """All offerings in display order (5 ladder rungs + 1 partner channel)."""
     return {
         "offerings": [_serialize(o) for o in list_offerings()],
         "count": len(list_offerings()),
