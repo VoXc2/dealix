@@ -3,13 +3,21 @@
 from __future__ import annotations
 
 import pytest
+from fastapi import FastAPI
 from httpx import ASGITransport, AsyncClient
+
+from api.routers.enterprise_nervous_system import router
+
+
+def _build_test_app() -> FastAPI:
+    app = FastAPI()
+    app.include_router(router)
+    return app
 
 
 @pytest.mark.asyncio
 async def test_blueprint_endpoint_returns_20_systems() -> None:
-    from api.main import app
-
+    app = _build_test_app()
     transport = ASGITransport(app=app)
     async with AsyncClient(transport=transport, base_url="http://test") as client:
         response = await client.get("/api/v1/enterprise-nervous-system/blueprint")
@@ -21,8 +29,7 @@ async def test_blueprint_endpoint_returns_20_systems() -> None:
 
 @pytest.mark.asyncio
 async def test_roadmap_endpoint_returns_three_phases() -> None:
-    from api.main import app
-
+    app = _build_test_app()
     transport = ASGITransport(app=app)
     async with AsyncClient(transport=transport, base_url="http://test") as client:
         response = await client.get("/api/v1/enterprise-nervous-system/roadmap")
@@ -33,8 +40,7 @@ async def test_roadmap_endpoint_returns_three_phases() -> None:
 
 @pytest.mark.asyncio
 async def test_assess_endpoint_returns_readiness_flags() -> None:
-    from api.main import app
-
+    app = _build_test_app()
     transport = ASGITransport(app=app)
     payload = {
         "system_scores": [
@@ -66,8 +72,7 @@ async def test_assess_endpoint_returns_readiness_flags() -> None:
 
 @pytest.mark.asyncio
 async def test_assess_endpoint_rejects_invalid_score() -> None:
-    from api.main import app
-
+    app = _build_test_app()
     transport = ASGITransport(app=app)
     payload = {"system_scores": [{"system_id": "agent_operating_system", "score": 500}]}
     async with AsyncClient(transport=transport, base_url="http://test") as client:
