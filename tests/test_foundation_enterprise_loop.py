@@ -1,8 +1,10 @@
 from __future__ import annotations
 
 import pytest
+from fastapi import FastAPI
 from httpx import ASGITransport, AsyncClient
 
+from api.routers.foundation_loop import router as foundation_router
 from auto_client_acquisition.foundation_core import (
     EnterpriseLoopRequest,
     LeadInput,
@@ -49,8 +51,8 @@ def test_enterprise_loop_blocks_without_approval() -> None:
 
 @pytest.mark.asyncio
 async def test_foundation_router_executes_enterprise_loop() -> None:
-    from api.main import app
-
+    app = FastAPI()
+    app.include_router(foundation_router)
     payload = {
         "tenant_id": "tenant_beta",
         "user_id": "user_2",

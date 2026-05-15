@@ -162,7 +162,9 @@ class AgentRegistry:
     def __init__(self) -> None:
         self._agents: dict[str, Callable[[dict[str, Any]], dict[str, Any]]] = {}
 
-    def register(self, name: str, handler: Callable[[dict[str, Any]], dict[str, Any]) -> None:
+    def register(
+        self, name: str, handler: Callable[[dict[str, Any]], dict[str, Any]]
+    ) -> None:
         self._agents[name] = handler
 
     def run(self, name: str, payload: dict[str, Any]) -> dict[str, Any]:
