@@ -1,0 +1,17 @@
+name: lead_qualification_workflow_eval
+version: 1
+workflow: lead_qualification
+targets:
+  - tenant_isolation_enforced
+  - rbac_enforced
+  - high_risk_requires_approval
+  - rollback_available_after_crm_update
+  - metrics_emitted
+scorecard:
+  pass_threshold: 1.0
+  dimensions:
+    tenant_isolation_enforced: 0.2
+    rbac_enforced: 0.2
+    high_risk_requires_approval: 0.2
+    rollback_available_after_crm_update: 0.2
+    metrics_emitted: 0.2

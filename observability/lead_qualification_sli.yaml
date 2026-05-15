@@ -1,0 +1,25 @@
+name: lead_qualification_sli
+version: 1
+workflow: lead_qualification
+metrics:
+  - workflow_total_ms
+  - step_lead_enters_ms
+  - step_detect_tenant_ms
+  - step_check_rbac_ms
+  - step_retrieve_company_context_ms
+  - step_qualify_lead_ms
+  - step_score_lead_ms
+  - step_draft_response_ms
+  - step_risk_check_ms
+  - step_approval_ms
+  - step_crm_update_ms
+  - step_emit_metrics_ms
+  - lead_score
+  - risk_score
+  - status_completed
+  - status_pending_approval
+alerts:
+  - id: approval_backlog
+    condition: "status_pending_approval > 0.2"
+  - id: slow_workflow
+    condition: "workflow_total_ms > 2000"

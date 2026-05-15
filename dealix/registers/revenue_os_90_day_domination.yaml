@@ -1,0 +1,87 @@
+schema_version: "1.0"
+plan_name: "DEALIX 90-DAY DOMINATION PLAN"
+north_star: "Build the smallest governed workflow that creates measurable operational value."
+focus: "AI Revenue OS"
+
+phase_1_days_1_14:
+  theme: foundation_lockdown
+  priorities:
+    - repository_structure
+    - tenant_isolation
+    - rbac
+    - audit_logs
+    - rollback_support
+  success_criteria:
+    - "Tenant A cannot access Tenant B."
+
+phase_2_days_15_30:
+  theme: first_unavoidable_workflow
+  workflow: lead_qualification.workflow.yaml
+  steps:
+    - lead_enters
+    - detect_tenant
+    - check_rbac
+    - retrieve_company_context
+    - qualify_lead
+    - score_lead
+    - draft_response
+    - risk_check
+    - approval
+    - crm_update
+    - emit_metrics
+
+phase_3_days_31_45:
+  theme: organizational_memory
+  priorities:
+    - retrieval
+    - citations
+    - reranking
+    - lineage
+    - permission_aware_retrieval
+
+phase_4_days_46_60:
+  theme: governance_and_observability
+  control_path:
+    - risk_score
+    - policy_check
+    - approval_check
+    - execution
+    - audit_log
+  telemetry:
+    - traces
+    - logs
+    - metrics
+    - alerts
+
+phase_5_days_61_75:
+  theme: evals_and_exec_dashboard
+  eval_dimensions:
+    - hallucination
+    - workflow_success
+    - governance_compliance
+    - latency
+    - roi
+    - business_impact
+  dashboard_metrics:
+    - qualified_leads
+    - revenue_impact
+    - response_time
+    - conversion_lift
+    - workflow_health
+    - approval_bottlenecks
+
+phase_6_days_76_90:
+  theme: delivery_machine
+  required_playbooks:
+    - playbooks/discovery
+    - playbooks/onboarding
+    - playbooks/delivery
+    - playbooks/qa
+    - playbooks/monthly_review
+
+failure_prevention_top_5:
+  - governance
+  - observability
+  - workflow_reliability
+  - organizational_memory
+  - business_impact

@@ -1,0 +1,54 @@
+name: lead_qualification
+version: 1
+objective_en: "Own revenue operations through a governed, tenant-safe workflow."
+objective_ar: "امتلاك عمليات الإيراد عبر تدفّق محكوم وآمن على مستوى المستأجر."
+tenant_required: true
+rbac_required: true
+audit_required: true
+rollback_supported: true
+workflow_owner: revenue_os
+steps:
+  - step_id: lead_enters
+    title_en: Lead enters
+    title_ar: دخول العميل المحتمل
+    action_mode: suggest_only
+  - step_id: detect_tenant
+    title_en: Detect tenant
+    title_ar: اكتشاف المستأجر
+    action_mode: approval_required
+  - step_id: check_rbac
+    title_en: Check RBAC
+    title_ar: التحقق من الصلاحيات
+    action_mode: approval_required
+  - step_id: retrieve_company_context
+    title_en: Retrieve company context
+    title_ar: استرجاع سياق الشركة
+    action_mode: draft_only
+  - step_id: qualify_lead
+    title_en: Qualify lead
+    title_ar: تأهيل العميل المحتمل
+    action_mode: suggest_only
+  - step_id: score_lead
+    title_en: Score lead
+    title_ar: تقييم العميل المحتمل
+    action_mode: suggest_only
+  - step_id: draft_response
+    title_en: Draft response
+    title_ar: إعداد مسودة الرد
+    action_mode: draft_only
+  - step_id: risk_check
+    title_en: Risk check
+    title_ar: فحص المخاطر
+    action_mode: approval_required
+  - step_id: approval
+    title_en: Approval
+    title_ar: الموافقة
+    action_mode: approval_required
+  - step_id: crm_update
+    title_en: CRM update
+    title_ar: تحديث نظام إدارة العملاء
+    action_mode: approved_manual
+  - step_id: emit_metrics
+    title_en: Emit metrics
+    title_ar: إصدار المقاييس
+    action_mode: suggest_only
