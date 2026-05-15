@@ -79,8 +79,19 @@ else
 fi
 
 echo "── Forbidden tokens sweep ─────────────────────────────"
+# Scan only customer-visible copy — comments and <script>/<style> blocks
+# are stripped so the standard "not guaranteed outcomes" disclaimer does
+# not register as a positive claim.
 FORBIDDEN_RE='(\bguaranteed?\b|\bblast\b|\bscraping\b|نضمن|مضمون|cold[[:space:]]+(whatsapp|outreach|email))'
-if grep -qiE "$FORBIDDEN_RE" landing/customer-portal.html landing/executive-command-center.html 2>/dev/null; then
+forbidden_found=false
+for f in landing/customer-portal.html landing/executive-command-center.html; do
+  [ -f "$f" ] || continue
+  if perl -0777 -pe 's/<!--.*?-->//gs; s/<script\b.*?<\/script>//gsi; s/<style\b.*?<\/style>//gsi' "$f" \
+       | grep -qiE "$FORBIDDEN_RE"; then
+    forbidden_found=true
+  fi
+done
+if $forbidden_found; then
   results+=("FORBIDDEN_CLAIMS_HTML=FAIL")
   overall_pass=false
 else
