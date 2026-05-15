@@ -1,0 +1,49 @@
+name: Enterprise Control Plane
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install -r requirements-dev.txt
+
+      - name: Compile
+        run: python -m compileall api auto_client_acquisition
+
+      - name: API import
+        run: python -c "from api.main import app; print('api import ok')"
+
+      - name: Lint
+        run: ruff check api auto_client_acquisition tests
+
+      - name: Targeted tests
+        run: |
+          pytest tests/test_api_imports.py -q --no-cov
+          pytest tests/test_tenant_isolation_systems_26_35.py -q --no-cov
+          pytest tests/test_control_plane_rollback_flow.py -q --no-cov
+          pytest tests/test_control_plane_policy_edit_flow.py -q --no-cov
+          pytest tests/test_agent_mesh_tenant_and_routing.py -q --no-cov
+          pytest tests/test_assurance_contracts_enterprise_rules.py -q --no-cov
+          pytest tests/test_runtime_safety_propagation.py -q --no-cov
+          pytest tests/test_value_engine_source_discipline.py -q --no-cov
+          pytest tests/test_self_evolving_approval_gate.py -q --no-cov
+          pytest tests/test_postgres_control_ledger.py -q --no-cov
+          pytest tests/test_enterprise_control_plane_e2e.py -q --no-cov
+
+      - name: Revenue OS verification
+        run: bash scripts/revenue_os_master_verify.sh

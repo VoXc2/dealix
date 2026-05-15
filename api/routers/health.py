@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import re
+
 from fastapi import APIRouter
 
 from api.schemas import HealthResponse
@@ -9,6 +11,11 @@ from core.config.settings import get_settings
 from core.llm import get_router as get_model_router
 
 router = APIRouter(tags=["health"])
+
+
+def _normalize_postgres_dsn_for_psycopg2(dsn: str) -> str:
+    """Convert SQLAlchemy driver DSNs into libpq-compatible DSNs."""
+    return re.sub(r"^postgresql\+[a-zA-Z0-9_]+://", "postgresql://", dsn, count=1)
 
 
 @router.get("/health", response_model=HealthResponse)
@@ -64,7 +71,10 @@ async def health_deep() -> dict[str, object]:
 
         dsn = os.getenv("DATABASE_URL") or os.getenv("DATABASE_DSN")
         if dsn:
-            conn = psycopg2.connect(dsn, connect_timeout=3)
+            conn = psycopg2.connect(
+                _normalize_postgres_dsn_for_psycopg2(dsn),
+                connect_timeout=3,
+            )
             conn.cursor().execute("SELECT 1")
             conn.close()
             checks["postgres"] = {"status": "ok", "ms": round((time.perf_counter() - t0) * 1000, 1)}

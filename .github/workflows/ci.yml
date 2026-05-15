@@ -27,6 +27,12 @@ jobs:
       - name: Compile check
         run: python -m compileall api auto_client_acquisition
 
+      - name: Frontend-backend wiring audit (unexpected phantoms only)
+        run: python scripts/audit_orphan_endpoints.py --quiet
+
+      - name: Runtime contracts smoke (imports + critical symbols)
+        run: python scripts/check_runtime_contracts.py
+
       - name: Alembic single head
         run: python scripts/check_alembic_single_head.py
 

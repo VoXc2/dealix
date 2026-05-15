@@ -10,6 +10,8 @@ from __future__ import annotations
 
 import pytest
 
+from api.routers.health import _normalize_postgres_dsn_for_psycopg2
+
 
 @pytest.mark.asyncio
 async def test_health_deep_returns_status_and_checks(async_client):
@@ -51,6 +53,20 @@ async def test_health_deep_sentry_check_with_no_dsn(async_client, monkeypatch):
     sentry = body["checks"]["sentry"]
     # skip when DSN unset, or skip when sentry_sdk not installed
     assert sentry["status"] in ("skip", "ok", "misconfigured")
+
+
+def test_normalize_postgres_asyncpg_dsn_for_psycopg2():
+    """Convert SQLAlchemy-style driver DSN to psycopg2-compatible DSN."""
+    assert (
+        _normalize_postgres_dsn_for_psycopg2(
+            "postgresql+asyncpg://user:password@localhost:5432/ai_company"
+        )
+        == "postgresql://user:password@localhost:5432/ai_company"
+    )
+    assert (
+        _normalize_postgres_dsn_for_psycopg2("postgresql://user:password@localhost:5432/ai_company")
+        == "postgresql://user:password@localhost:5432/ai_company"
+    )
 
 
 @pytest.mark.asyncio

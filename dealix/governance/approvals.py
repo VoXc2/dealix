@@ -72,6 +72,7 @@ class ApprovalRequest:
     decided_by: str = ""
     decided_at: float | None = None
     expires_at: float = 0.0
+    tenant_id: str = "default"
 
     def to_json(self) -> str:
         d = asdict(self)
@@ -81,6 +82,7 @@ class ApprovalRequest:
     @classmethod
     def from_json(cls, raw: str) -> ApprovalRequest:
         d = json.loads(raw)
+        d.setdefault("tenant_id", "default")
         d["status"] = ApprovalStatus(d["status"])
         return cls(**d)
 
@@ -132,11 +134,13 @@ class ApprovalGate:
         payload: dict[str, Any],
         risk_score: float = 0.0,
         requested_by: str = "system",
+        tenant_id: str = "default",
     ) -> ApprovalRequest:
         needs_approval, reason = self._evaluate(action, payload, risk_score)
         now = time.time()
         req = ApprovalRequest(
             id=str(uuid.uuid4()),
+            tenant_id=tenant_id,
             action=action,
             payload=payload,
             risk_score=risk_score,

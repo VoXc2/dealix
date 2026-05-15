@@ -1,18 +1,18 @@
-import { getTranslations } from "next-intl/server";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { ActivityFeed } from "@/components/agents/ActivityFeed";
+import { AgentRegistryTable } from "@/components/agents/AgentRegistryTable";
+import { AgentScoreCard } from "@/components/agents/AgentScoreCard";
+import { AgentTrustBoundaryEditor } from "@/components/agents/AgentTrustBoundaryEditor";
 
-interface AgentsPageProps {
-  params: Promise<{ locale: string }>;
-}
-
-export default async function AgentsPage({ params }: AgentsPageProps) {
-  const { locale } = await params;
-  const t = await getTranslations({ locale, namespace: "agents" });
-
+export default function AgentsPage() {
   return (
-    <AppLayout title={t("title")} subtitle={t("subtitle")}>
-      <ActivityFeed />
+    <AppLayout title="Agents" subtitle="Registry, trust boundaries, and routing posture">
+      <div className="space-y-4">
+        <AgentScoreCard />
+        <AgentRegistryTable />
+        <AgentTrustBoundaryEditor />
+        <ActivityFeed />
+      </div>
     </AppLayout>
   );
 }

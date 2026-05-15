@@ -145,6 +145,7 @@ async def lifespan(_app: FastAPI) -> AsyncIterator[None]:
 def create_app() -> FastAPI:
     """FastAPI factory."""
     settings = get_settings()
+    log = get_logger(__name__)
 
     _OPENAPI_TAGS = [
         {"name": "Sales", "description": "Lead intake, pipeline, outreach, pricing, revenue."},
@@ -199,8 +200,8 @@ def create_app() -> FastAPI:
         setup_sentry()
         setup_tracing(service_name=settings.app_name, version=settings.app_version)
         instrument_fastapi(app)
-    except Exception:  # pragma: no cover
-        pass
+    except Exception as exc:  # pragma: no cover
+        log.exception("observability_bootstrap_failed", error=str(exc))
 
     @app.exception_handler(AICompanyError)
     async def ai_company_error_handler(_: Request, exc: AICompanyError) -> JSONResponse:

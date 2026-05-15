@@ -105,6 +105,7 @@ class WorkflowRun(BaseModel):
 
     run_id: str = Field(default_factory=lambda: f"run_{uuid4().hex[:12]}")
     workflow_id: str
+    tenant_id: str = "default"
     customer_handle: str = "Saudi B2B customer"
     state: WorkflowState = "pending"
     current_step: str = ""
