@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { useTranslations, useLocale } from "next-intl";
 import {
   BarChart,
@@ -12,6 +13,14 @@ import {
   Cell,
 } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { api } from "@/lib/api";
+
+interface PipelineStage {
+  stage: string;
+  count: number;
+  value: number;
+  key: string;
+}
 
 const stageColors: Record<string, string> = {
   lead: "#94a3b8",
@@ -41,7 +50,31 @@ const pipelineDataEn = [
 export function DealPipelineChart() {
   const t = useTranslations("dashboard");
   const locale = useLocale();
-  const data = locale === "ar" ? pipelineDataAr : pipelineDataEn;
+  const fallback = locale === "ar" ? pipelineDataAr : pipelineDataEn;
+
+  // Fetch the live pipeline summary; fall back to mock on error/empty so the
+  // chart never blanks. Same pattern as DashboardContent.
+  const [data, setData] = useState<PipelineStage[]>(fallback);
+
+  useEffect(() => {
+    let cancelled = false;
+    api
+      .getPipeline()
+      .then((res) => {
+        const payload = res.data?.data ?? res.data ?? {};
+        const stages = payload.stages ?? payload.pipeline;
+        if (!cancelled && Array.isArray(stages) && stages.length > 0) {
+          setData(stages as PipelineStage[]);
+        }
+      })
+      .catch(() => {
+        /* keep the mock fallback */
+      });
+    return () => {
+      cancelled = true;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <Card>

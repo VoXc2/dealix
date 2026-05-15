@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import {
   AreaChart,
   Area,
@@ -13,6 +14,7 @@ import {
 import { useTranslations, useLocale } from "next-intl";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { formatCurrency } from "@/lib/utils";
+import { api } from "@/lib/api";
 import type { RevenueDataPoint } from "@/types";
 
 const mockData: RevenueDataPoint[] = [
@@ -66,7 +68,31 @@ const CustomTooltip = ({ active, payload, label }: any) => {
 export function RevenueChart() {
   const t = useTranslations("dashboard");
   const locale = useLocale();
-  const data = locale === "ar" ? mockData : mockDataEn;
+  const fallback = locale === "ar" ? mockData : mockDataEn;
+
+  // Fetch the real revenue series; fall back to mock on error/empty so the
+  // chart never blanks. Same pattern as DashboardContent.
+  const [data, setData] = useState<RevenueDataPoint[]>(fallback);
+
+  useEffect(() => {
+    let cancelled = false;
+    api
+      .getCommandCenter()
+      .then((res) => {
+        const payload = res.data?.data ?? res.data ?? {};
+        const series = payload.revenue_series ?? payload.monthly_revenue;
+        if (!cancelled && Array.isArray(series) && series.length > 0) {
+          setData(series as RevenueDataPoint[]);
+        }
+      })
+      .catch(() => {
+        /* keep the mock fallback */
+      });
+    return () => {
+      cancelled = true;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <Card className="col-span-2">
