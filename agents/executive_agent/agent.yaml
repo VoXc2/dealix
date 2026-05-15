@@ -1,0 +1,34 @@
+name: executive_agent
+version: 1.0.0
+owner: founder
+risk_level: high
+description: >
+  Produces executive-grade analysis: board summaries, aggregated metric memos,
+  strategic option drafts. Read-and-recommend only. Never executes external
+  actions and never makes commitments.
+allowed_tools:
+  - read
+  - analyze
+  - report.draft_executive
+  - metrics.aggregate
+  - knowledge.search_internal
+  - queue_for_approval
+requires_approval_for:
+  - report.publish_external
+  - strategic_commitment
+  - email.send_message
+forbidden_tools:
+  - scrape_web
+  - linkedin_automation
+  - cold_whatsapp_send
+  - send_whatsapp
+  - export_pii_bulk
+memory_scope:
+  - executive_memory
+  - product_knowledge
+kpis:
+  - decision_memo_turnaround
+  - evidence_backed_recommendations
+  - forecast_calibration
+  - escalation_quality
+escalation_owner: founder

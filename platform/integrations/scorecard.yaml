@@ -1,0 +1,36 @@
+layer: "Layer 6 - Execution & Integrations"
+owner: "Integrations Platform Lead"
+overall_score: 79
+band: "client pilot"
+band_scale:
+  - "0-59 prototype"
+  - "60-74 internal beta"
+  - "75-84 client pilot"
+  - "85-94 enterprise-ready"
+  - "95+ mission-critical"
+sub_criteria:
+  - name: "Sandbox mode per integration"
+    score: 82
+    weight: 0.15
+  - name: "Idempotency of actions"
+    score: 85
+    weight: 0.15
+  - name: "Failure isolation (DLQ, no workflow break)"
+    score: 83
+    weight: 0.15
+  - name: "Token encryption and no exposed secrets"
+    score: 80
+    weight: 0.12
+  - name: "Webhook signing and verification"
+    score: 84
+    weight: 0.12
+  - name: "Rate limits and circuit breakers"
+    score: 82
+    weight: 0.10
+  - name: "Approval-first external sends"
+    score: 86
+    weight: 0.11
+  - name: "Action traceability and health dashboard"
+    score: 62
+    weight: 0.10
+notes: "Real-time integration health dashboard and an independent proof of 99% action traceability are not yet complete; a documented periodic key-rotation drill is also pending. These cap the layer in the client-pilot band."

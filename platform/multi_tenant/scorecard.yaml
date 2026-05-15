@@ -1,0 +1,30 @@
+layer: "Layer 1 - Foundation / Multi-Tenancy"
+owner: "Platform Lead"
+overall_score: 76
+band: "client pilot"
+band_scale:
+  - "0-59 prototype"
+  - "60-74 internal beta"
+  - "75-84 client pilot"
+  - "85-94 enterprise-ready"
+  - "95+ mission-critical"
+sub_criteria:
+  - name: "tenant_id binding across all data"
+    score: 85
+    weight: 0.30
+  - name: "Tenant creation speed"
+    score: 88
+    weight: 0.10
+  - name: "Query and file isolation enforcement"
+    score: 80
+    weight: 0.20
+  - name: "Tenant deletion with no side effects"
+    score: 65
+    weight: 0.20
+  - name: "Deleted tenant restore"
+    score: 65
+    weight: 0.10
+  - name: "Audit entry retention after deletion"
+    score: 78
+    weight: 0.10
+notes: "A periodically documented tenant-deletion drill and a live mismatched-tenant_id alert are not yet in place; both cap the layer below enterprise-ready."

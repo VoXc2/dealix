@@ -1,0 +1,30 @@
+layer: "Layer 5 - Governance"
+owner: "Governance Platform Lead"
+overall_score: 79
+band: "client pilot"
+band_scale:
+  - "0-59 prototype"
+  - "60-74 internal beta"
+  - "75-84 client pilot"
+  - "85-94 enterprise-ready"
+  - "95+ mission-critical"
+sub_criteria:
+  - name: "Policy engine (versioned rules, fail-closed)"
+    score: 84
+    weight: 0.20
+  - name: "Risk classification coverage (A/R/S)"
+    score: 82
+    weight: 0.15
+  - name: "Approval engine (high-risk gating)"
+    score: 81
+    weight: 0.20
+  - name: "Human-in-the-loop for external actions"
+    score: 83
+    weight: 0.10
+  - name: "Audit trail coverage and tamper-evidence"
+    score: 72
+    weight: 0.20
+  - name: "Compliance mapping (PDPL, ZATCA Phase 2)"
+    score: 74
+    weight: 0.15
+notes: "Audit trail is append-only at the interface level but the partitioned PostgreSQL append-only table and periodic chain-integrity verification are not yet implemented; this caps the layer below the enterprise-ready band. Policy versioning, risk classification, and approval gating are operational."

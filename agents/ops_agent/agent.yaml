@@ -1,0 +1,36 @@
+name: ops_agent
+version: 1.0.0
+owner: delivery_ops_lead
+risk_level: low
+description: >
+  Runs internal delivery operations: task tracking, internal status reports,
+  evidence pack assembly drafts. Internal-facing only. Never sends external
+  messages and never makes external commitments.
+allowed_tools:
+  - read
+  - analyze
+  - task.create_draft
+  - task.update_draft
+  - report.draft_internal
+  - evidence.assemble_draft
+  - knowledge.search_internal
+  - queue_for_approval
+requires_approval_for:
+  - email.send_message
+  - vendor_commitment
+  - resource_allocation_change
+forbidden_tools:
+  - scrape_web
+  - linkedin_automation
+  - cold_whatsapp_send
+  - send_whatsapp
+  - export_pii_bulk
+memory_scope:
+  - ops_memory
+  - product_knowledge
+kpis:
+  - tasks_completed_on_time
+  - delivery_cycle_time
+  - evidence_pack_completeness
+  - rework_rate
+escalation_owner: delivery_ops_lead
