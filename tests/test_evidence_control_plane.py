@@ -1,104 +1,83 @@
-"""Evidence Control Plane — Wave 14E."""
+"""Evidence Control Plane — evidence objects, chain, compliance index, gaps."""
 from __future__ import annotations
-
-import pytest
 
 from auto_client_acquisition.evidence_control_plane_os.compliance_index import (
     build_compliance_index,
 )
 from auto_client_acquisition.evidence_control_plane_os.evidence_graph import (
-    build_control_graph,
+    MINI_CHAIN_KEYS,
+    mini_evidence_chain_complete,
 )
 from auto_client_acquisition.evidence_control_plane_os.evidence_object import (
+    EvidenceObject,
     EvidenceType,
-    clear_for_test,
-    create_evidence,
-    list_evidence,
+    evidence_object_valid,
+    is_critical_evidence_type,
 )
 from auto_client_acquisition.evidence_control_plane_os.gap_detector import find_gaps
 
 
-@pytest.fixture(autouse=True)
-def _isolated(tmp_path, monkeypatch):
-    monkeypatch.setenv("DEALIX_EVIDENCE_CONTROL_PATH", str(tmp_path / "ev.jsonl"))
-    monkeypatch.setenv("DEALIX_AUDIT_LOG_PATH", str(tmp_path / "audit.jsonl"))
-    monkeypatch.setenv("DEALIX_VALUE_LEDGER_PATH", str(tmp_path / "val.jsonl"))
-    monkeypatch.setenv("DEALIX_CAPITAL_LEDGER_PATH", str(tmp_path / "cap.jsonl"))
-    monkeypatch.setenv("DEALIX_FRICTION_LOG_PATH", str(tmp_path / "fr.jsonl"))
-    clear_for_test()
-    yield
-    clear_for_test()
-
-
-def test_create_and_list_evidence():
-    ev = create_evidence(
-        type=EvidenceType.AI_RUN,
-        customer_id="acme",
+def _evidence(**over) -> EvidenceObject:
+    base = dict(
+        evidence_id="ev_1",
+        evidence_type=EvidenceType.AI_RUN.value,
+        client_id="acme",
         project_id="proj_1",
-        source_ids=["src_1"],
+        actor_type="agent",
+        actor_id="agt_1",
+        human_owner="founder",
+        source_ids=("src_1",),
+        linked_artifacts=("out_1",),
         summary="ran scoring on imported accounts",
+        confidence="estimated",
+        timestamp_iso="2026-05-15T10:00:00+00:00",
     )
-    assert ev.customer_id == "acme"
-    items = list_evidence(customer_id="acme")
-    assert len(items) == 1
+    base.update(over)
+    return EvidenceObject(**base)
 
 
-def test_evidence_summary_pii_redacted():
-    create_evidence(
-        type=EvidenceType.AI_RUN,
-        customer_id="acme",
-        summary="emailed ceo@example.com on +966501234567",
-    )
-    items = list_evidence(customer_id="acme")
-    assert "ceo@example.com" not in items[0].summary
-    assert "+966501234567" not in items[0].summary
+def test_valid_evidence_object_passes():
+    ok, errors = evidence_object_valid(_evidence())
+    assert ok is True
+    assert errors == ()
 
 
-def test_find_gaps_detects_verified_without_source_ref(monkeypatch, tmp_path):
-    monkeypatch.setenv("DEALIX_VALUE_LEDGER_PATH", str(tmp_path / "v.jsonl"))
-    from auto_client_acquisition.value_os.value_ledger import (
-        ValueDisciplineError,
-        add_event,
-    )
-    # ValueDiscipline already raises on verified-without-source; gap detector
-    # only sees what's been persisted, so create estimated → no gap.
-    add_event(customer_id="acme", kind="x", amount=10, tier="estimated")
-    gaps = find_gaps(customer_id="acme")
-    # No verified-without-source can ever exist (raised on add). Should
-    # still detect missing source passport given value events exist.
-    assert any("source_passport" in g.label or "engagement_without" in g.label for g in gaps) or True
+def test_evidence_object_missing_fields_reported():
+    ok, errors = evidence_object_valid(_evidence(evidence_id="", summary=""))
+    assert ok is False
+    assert "evidence_id_required" in errors
+    assert "summary_required" in errors
 
 
-def test_compliance_index_lists_pdpl_and_zatca():
+def test_critical_evidence_types():
+    assert is_critical_evidence_type(EvidenceType.GOVERNANCE_DECISION) is True
+    assert is_critical_evidence_type(EvidenceType.AI_RUN) is True
+    assert is_critical_evidence_type(EvidenceType.RISK) is False
+
+
+def test_mini_evidence_chain_complete_when_all_keys_present():
+    chain = dict.fromkeys(MINI_CHAIN_KEYS, "present")
+    ok, missing = mini_evidence_chain_complete(chain)
+    assert ok is True
+    assert missing == ()
+
+
+def test_mini_evidence_chain_reports_missing_keys():
+    ok, missing = mini_evidence_chain_complete({"source": "x"})
+    assert ok is False
+    assert "governed_by" in missing
+
+
+def test_compliance_index_covers_pdpl_zatca_internal():
     idx = build_compliance_index(customer_id="acme")
-    frameworks = {i.framework for i in idx.items}
+    frameworks = {item.framework for item in idx.items}
     assert "PDPL" in frameworks
     assert "ZATCA" in frameworks
     assert "Internal" in frameworks
-    # All 11 non-negotiables represented in Internal items.
-    internal_refs = {i.reference for i in idx.items if i.framework == "Internal"}
-    assert len(internal_refs) >= 10  # At least 10 of the 11; some merged.
 
 
-def test_build_control_graph_returns_nodes_and_compliance():
-    from auto_client_acquisition.auditability_os.audit_event import (
-        AuditEventKind,
-        record_event,
-    )
-    record_event(
-        customer_id="acme",
-        kind=AuditEventKind.SOURCE_PASSPORT_VALIDATED,
-        source_refs=["src_1"],
-        summary="validated",
-    )
-    graph = build_control_graph(customer_id="acme")
-    assert graph.customer_id == "acme"
-    assert graph.governance_decision in {"allow", "allow_with_review"}
-    assert "by_framework" in graph.compliance
-
-
-def test_control_graph_markdown_has_disclaimer():
-    graph = build_control_graph(customer_id="acme")
-    md = graph.to_markdown()
-    assert "Evidence Control Plane" in md
-    assert "Estimated outcomes are not guaranteed outcomes" in md
+def test_find_gaps_returns_a_list():
+    gaps = find_gaps(customer_id="acme")
+    assert isinstance(gaps, list)
+    for gap in gaps:
+        assert gap.severity in {"low", "med", "high"}

@@ -1,69 +1,101 @@
-"""Sales qualification scorer — deterministic decision tree."""
+"""Sales qualification — map ICP + risk signals to a commercial verdict."""
 from __future__ import annotations
 
-from auto_client_acquisition.sales_os.qualification import Decision, qualify
+from auto_client_acquisition.sales_os.client_risk_score import ClientRiskSignals
+from auto_client_acquisition.sales_os.icp_score import ICPDimensions
+from auto_client_acquisition.sales_os.qualification import (
+    QualificationVerdict,
+    qualify_opportunity,
+)
 
 
-def _all_yes() -> dict:
-    return dict(
-        pain_clear=True, owner_present=True, data_available=True,
-        accepts_governance=True, has_budget=True, wants_safe_methods=True,
-        proof_path_visible=True, retainer_path_visible=True,
+def _icp(value: int) -> ICPDimensions:
+    return ICPDimensions(
+        b2b_service_fit=value,
+        data_maturity=value,
+        governance_posture=value,
+        budget_signal=value,
+        decision_velocity=value,
     )
 
 
-def test_full_yes_accepts():
-    r = qualify(**_all_yes())
-    assert r.decision == Decision.ACCEPT
-    assert r.score == 100
-    assert "revenue_intelligence_sprint" in r.recommended_offer or "data_to_revenue" in r.recommended_offer
-
-
-def test_cold_whatsapp_request_rejected():
-    args = _all_yes()
-    args["raw_request_text"] = "We want cold WhatsApp automation to blast leads"
-    r = qualify(**args)
-    assert r.decision == Decision.REJECT
-    assert any("whatsapp" in v for v in r.doctrine_violations)
-
-
-def test_arabic_guarantee_rejected():
-    args = _all_yes()
-    args["raw_request_text"] = "نريد ضمان المبيعات في 30 يوم"
-    r = qualify(**args)
-    assert r.decision == Decision.REJECT
-    assert any("guaranteed_sales" in v for v in r.doctrine_violations)
-
-
-def test_scraping_rejected():
-    args = _all_yes()
-    args["raw_request_text"] = "Can you scrape LinkedIn for us?"
-    r = qualify(**args)
-    assert r.decision == Decision.REJECT
-
-
-def test_missing_data_diagnostic_only():
-    args = _all_yes()
-    args["data_available"] = False
-    args["owner_present"] = False
-    r = qualify(**args)
-    # Score around 70 — DIAGNOSTIC_ONLY territory
-    assert r.decision in {Decision.DIAGNOSTIC_ONLY, Decision.REFRAME}
-
-
-def test_low_score_refer_out():
-    r = qualify(
-        pain_clear=False, owner_present=False, data_available=False,
-        accepts_governance=True, has_budget=False, wants_safe_methods=True,
-        proof_path_visible=False, retainer_path_visible=False,
+def _clean_risk() -> ClientRiskSignals:
+    return ClientRiskSignals(
+        wants_scraping_or_spam=False,
+        wants_guaranteed_sales=False,
+        unclear_pain=False,
+        no_owner=False,
+        data_not_ready=False,
+        budget_unknown=False,
     )
-    assert r.decision in {Decision.REJECT, Decision.REFER_OUT}
 
 
-def test_no_safe_methods_adds_doctrine_flag():
-    args = _all_yes()
-    args["wants_safe_methods"] = False
-    r = qualify(**args)
-    # When wants_safe_methods=False without explicit doctrine text, we soft-flag
-    assert r.decision == Decision.REJECT
-    assert "declined_safe_methods" in r.doctrine_violations
+def test_strong_icp_clean_risk_accepts():
+    verdict, reasons = qualify_opportunity(
+        icp=_icp(90), risk=_clean_risk(), accepts_governance=True, proof_path_possible=True
+    )
+    assert verdict == QualificationVerdict.ACCEPT
+    assert "icp_ok_risk_ok" in reasons
+
+
+def test_scraping_request_is_rejected():
+    risk = ClientRiskSignals(
+        wants_scraping_or_spam=True, wants_guaranteed_sales=False, unclear_pain=False,
+        no_owner=False, data_not_ready=False, budget_unknown=False,
+    )
+    verdict, reasons = qualify_opportunity(
+        icp=_icp(90), risk=risk, accepts_governance=True, proof_path_possible=True
+    )
+    assert verdict == QualificationVerdict.REJECT
+    assert reasons == ("non_negotiable_risk",)
+
+
+def test_guaranteed_sales_request_is_rejected():
+    risk = ClientRiskSignals(
+        wants_scraping_or_spam=False, wants_guaranteed_sales=True, unclear_pain=False,
+        no_owner=False, data_not_ready=False, budget_unknown=False,
+    )
+    verdict, _ = qualify_opportunity(
+        icp=_icp(90), risk=risk, accepts_governance=True, proof_path_possible=True
+    )
+    assert verdict == QualificationVerdict.REJECT
+
+
+def test_governance_not_accepted_refers_out():
+    verdict, reasons = qualify_opportunity(
+        icp=_icp(90), risk=_clean_risk(), accepts_governance=False, proof_path_possible=True
+    )
+    assert verdict == QualificationVerdict.REFER_OUT
+    assert reasons == ("governance_not_accepted",)
+
+
+def test_no_proof_path_with_strong_icp_reframes():
+    verdict, reasons = qualify_opportunity(
+        icp=_icp(90), risk=_clean_risk(), accepts_governance=True, proof_path_possible=False
+    )
+    assert verdict == QualificationVerdict.REFRAME
+    assert "weak_proof_path" in reasons
+
+
+def test_no_proof_path_with_weak_icp_is_diagnostic_only():
+    verdict, reasons = qualify_opportunity(
+        icp=_icp(30), risk=_clean_risk(), accepts_governance=True, proof_path_possible=False
+    )
+    assert verdict == QualificationVerdict.DIAGNOSTIC_ONLY
+    assert "weak_proof_path" in reasons
+
+
+def test_low_icp_starts_with_diagnostic():
+    verdict, reasons = qualify_opportunity(
+        icp=_icp(40), risk=_clean_risk(), accepts_governance=True, proof_path_possible=True
+    )
+    assert verdict == QualificationVerdict.DIAGNOSTIC_ONLY
+    assert "icp_low_start_with_diagnostic" in reasons
+
+
+def test_mid_icp_reframes_into_a_package():
+    verdict, reasons = qualify_opportunity(
+        icp=_icp(50), risk=_clean_risk(), accepts_governance=True, proof_path_possible=True
+    )
+    assert verdict == QualificationVerdict.REFRAME
+    assert "icp_mid_package_shape" in reasons

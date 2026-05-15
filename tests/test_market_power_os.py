@@ -4,14 +4,20 @@ from __future__ import annotations
 
 import pytest
 
-from auto_client_acquisition.market_power_os import (
-    MarketPowerDimensions,
-    PartnerGateSignals,
-    compute_market_power_score,
-    compute_partner_gate_readiness,
-    education_funnel_coverage_percent,
-    get_benchmark,
+from auto_client_acquisition.market_power_os.benchmark_registry import get_benchmark
+from auto_client_acquisition.market_power_os.category_language_tracker import (
     market_language_health_score,
+)
+from auto_client_acquisition.market_power_os.content_signal import (
+    education_funnel_coverage_percent,
+)
+from auto_client_acquisition.market_power_os.market_power_score import (
+    MarketPowerDimensions,
+    compute_market_power_score,
+)
+from auto_client_acquisition.market_power_os.partner_signal import (
+    PartnerGateSignals,
+    compute_partner_gate_readiness,
 )
 
 

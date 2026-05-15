@@ -1,68 +1,24 @@
-"""Trust pack assembler + endpoint."""
+"""Enterprise trust pack section outline."""
 from __future__ import annotations
 
-from fastapi.testclient import TestClient
-
-from api.main import app
-from auto_client_acquisition.trust_os.trust_pack import assemble_trust_pack
-
-client = TestClient(app)
+from auto_client_acquisition.trust_os.trust_pack import (
+    ENTERPRISE_TRUST_SECTIONS,
+    TRUST_PACK_MARKDOWN_PATH,
+)
 
 
-def test_assemble_trust_pack_has_all_11_sections():
-    pack = assemble_trust_pack(customer_handle="enterprise_prospect")
-    required_sections = {
-        "what_dealix_does",
-        "what_dealix_refuses",
-        "data_handling",
-        "source_passport_policy",
-        "governance_runtime",
-        "ai_run_ledger",
-        "human_oversight",
-        "approval_workflow",
-        "proof_pack_standard",
-        "incident_response",
-        "client_responsibilities",
-    }
-    assert required_sections <= set(pack.sections.keys())
+def test_trust_sections_cover_the_core_outline():
+    assert "what_dealix_does" in ENTERPRISE_TRUST_SECTIONS
+    assert "what_dealix_does_not_do" in ENTERPRISE_TRUST_SECTIONS
+    assert "ai_governance" in ENTERPRISE_TRUST_SECTIONS
+    assert "human_oversight" in ENTERPRISE_TRUST_SECTIONS
 
 
-def test_trust_pack_markdown_has_disclaimer():
-    pack = assemble_trust_pack(customer_handle="prospect")
-    md = pack.to_markdown()
-    assert "Estimated outcomes are not guaranteed outcomes" in md
-    assert "النتائج التقديرية" in md
+def test_trust_sections_are_unique_and_nonempty():
+    assert len(ENTERPRISE_TRUST_SECTIONS) == len(set(ENTERPRISE_TRUST_SECTIONS))
+    assert all(s.strip() for s in ENTERPRISE_TRUST_SECTIONS)
 
 
-def test_trust_pack_lists_all_11_non_negotiables():
-    pack = assemble_trust_pack()
-    refuses = pack.sections["what_dealix_refuses"]
-    for rule in (
-        "No scraping",
-        "No cold WhatsApp",
-        "No LinkedIn automation",
-        "No fake / un-sourced claims",
-        "No guaranteed sales outcomes",
-        "No PII in logs",
-        "No source-less knowledge answers",
-        "No external action without approval",
-        "No agent without identity",
-        "No project without Proof Pack",
-        "No project without Capital Asset",
-    ):
-        assert rule in refuses, f"missing rule: {rule}"
-
-
-def test_trust_pack_endpoint_json():
-    resp = client.get("/api/v1/value/trust-pack/enterprise_prospect")
-    assert resp.status_code == 200
-    body = resp.json()
-    assert body["customer_handle"] == "enterprise_prospect"
-    assert "sections" in body
-
-
-def test_trust_pack_endpoint_markdown():
-    resp = client.get("/api/v1/value/trust-pack/enterprise_prospect/markdown")
-    assert resp.status_code == 200
-    assert "Trust Pack" in resp.text
-    assert "Governance Runtime" in resp.text
+def test_trust_pack_markdown_path_points_into_docs():
+    assert TRUST_PACK_MARKDOWN_PATH.startswith("docs/")
+    assert TRUST_PACK_MARKDOWN_PATH.endswith(".md")

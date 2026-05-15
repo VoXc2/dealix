@@ -1,123 +1,101 @@
-"""Agent OS — Wave 14F."""
+"""Agent OS — governed agent identity + tool-boundary contracts."""
 from __future__ import annotations
 
 import pytest
 
 from auto_client_acquisition.agent_os import (
-    AgentStatus,
+    ALLOWED_TOOLS_MVP,
+    FORBIDDEN_TOOLS_MVP,
+    AgentCard,
+    AgentLifecycleState,
     AutonomyLevel,
-    clear_for_test,
+    agent_card_valid,
+    clear_agent_registry_for_tests,
     get_agent,
-    is_tool_allowed,
-    kill_agent,
+    lifecycle_allows_production_tools,
     list_agents,
-    new_card,
     register_agent,
+    tool_allowed_mvp,
 )
 
 
 @pytest.fixture(autouse=True)
-def _isolated(tmp_path, monkeypatch):
-    monkeypatch.setenv("DEALIX_AGENT_REGISTRY_PATH", str(tmp_path / "agents.jsonl"))
-    monkeypatch.setenv("DEALIX_FRICTION_LOG_PATH", str(tmp_path / "fr.jsonl"))
-    monkeypatch.setenv("DEALIX_AUDIT_LOG_PATH", str(tmp_path / "audit.jsonl"))
-    clear_for_test()
+def _isolated():
+    clear_agent_registry_for_tests()
     yield
-    clear_for_test()
+    clear_agent_registry_for_tests()
 
 
-def test_new_card_requires_owner():
-    with pytest.raises(ValueError):
-        new_card(agent_id="a1", name="A", owner="", purpose="x")
-
-
-def test_new_card_requires_purpose():
-    with pytest.raises(ValueError):
-        new_card(agent_id="a1", name="A", owner="founder", purpose="")
-
-
-def test_l4_requires_kill_switch_owner():
-    with pytest.raises(ValueError):
-        new_card(
-            agent_id="a1", name="A", owner="founder", purpose="x",
-            autonomy_level=AutonomyLevel.L4_AUTO_WITH_AUDIT,
-            kill_switch_owner="",
-        )
-
-
-def test_l5_blocked_in_mvp():
-    with pytest.raises(ValueError):
-        new_card(
-            agent_id="a1", name="A", owner="founder", purpose="x",
-            autonomy_level=AutonomyLevel.L5_FULLY_AUTONOMOUS,
-            kill_switch_owner="founder",
-        )
-
-
-def test_allowed_tools_cannot_include_forbidden():
-    with pytest.raises(ValueError):
-        new_card(
-            agent_id="a1", name="A", owner="founder", purpose="x",
-            allowed_tools=["read", "send_email"],
-        )
-
-
-def test_register_and_get_roundtrip():
-    card = new_card(
-        agent_id="agt-001",
+def _card(agent_id: str = "agt-001", **over) -> AgentCard:
+    base = dict(
+        agent_id=agent_id,
         name="Revenue Intel",
         owner="founder",
         purpose="rank Saudi B2B accounts",
-        allowed_tools=["read", "analyze", "draft", "queue_for_approval"],
+        autonomy_level=int(AutonomyLevel.ANALYZE),
+        status="proposed",
     )
-    register_agent(card)
-    got = get_agent("agt-001")
+    base.update(over)
+    return AgentCard(**base)
+
+
+def test_autonomy_levels_are_a_0_to_4_ladder():
+    assert int(AutonomyLevel.READ_ONLY) == 0
+    assert int(AutonomyLevel.QUEUE_FOR_APPROVAL) == 4
+
+
+def test_valid_card_passes_validation():
+    assert agent_card_valid(_card()) is True
+
+
+def test_card_missing_owner_is_invalid():
+    assert agent_card_valid(_card(owner="")) is False
+
+
+def test_card_missing_purpose_is_invalid():
+    assert agent_card_valid(_card(purpose="")) is False
+
+
+def test_card_autonomy_out_of_range_is_invalid():
+    assert agent_card_valid(_card(autonomy_level=9)) is False
+
+
+def test_register_and_get_roundtrip():
+    register_agent(_card("agt-100"))
+    got = get_agent("agt-100")
     assert got is not None
     assert got.name == "Revenue Intel"
-    assert got.kill_switch_owner == "founder"
 
 
-def test_duplicate_agent_id_rejected():
-    card = new_card(agent_id="dup", name="A", owner="o", purpose="p")
-    register_agent(card)
+def test_register_invalid_card_raises():
     with pytest.raises(ValueError):
-        register_agent(card)
+        register_agent(_card("agt-x", owner=""))
 
 
-def test_kill_agent_sets_status_killed():
-    card = new_card(agent_id="k1", name="A", owner="o", purpose="p")
-    register_agent(card)
-    out = kill_agent("k1", reason="manual override")
-    assert out is not None
-    assert out.status == AgentStatus.KILLED.value
+def test_list_agents_returns_registered():
+    register_agent(_card("a1"))
+    register_agent(_card("a2"))
+    agents = list_agents()
+    assert set(agents) == {"a1", "a2"}
 
 
-def test_kill_requires_reason():
-    card = new_card(agent_id="k2", name="A", owner="o", purpose="p")
-    register_agent(card)
-    with pytest.raises(ValueError):
-        kill_agent("k2", reason="")
+def test_forbidden_tools_are_blocked():
+    assert tool_allowed_mvp("send_whatsapp") is False
+    assert tool_allowed_mvp("web_scrape") is False
+    assert "send_email" in FORBIDDEN_TOOLS_MVP
 
 
-def test_tool_permissions_block_forbidden():
-    ok, reason = is_tool_allowed("send_email")
-    assert ok is False
-    assert "hard-blocked" in reason
-
-    ok, _ = is_tool_allowed("read", allowed_tools=["read", "analyze"])
-    assert ok is True
+def test_allowed_tools_pass():
+    assert tool_allowed_mvp("read") is True
+    assert tool_allowed_mvp("queue_for_approval") is True
+    assert "draft" in ALLOWED_TOOLS_MVP
 
 
-def test_tool_permissions_block_unlisted():
-    ok, _ = is_tool_allowed("draft", allowed_tools=["read"])
-    assert ok is False
+def test_unknown_tool_is_not_allowed():
+    assert tool_allowed_mvp("teleport") is False
 
 
-def test_list_agents_by_status():
-    register_agent(new_card(agent_id="x1", name="A", owner="o", purpose="p"))
-    register_agent(new_card(agent_id="x2", name="B", owner="o", purpose="p"))
-    kill_agent("x2", reason="test")
-    proposed = list_agents(status="proposed")
-    killed = list_agents(status="killed")
-    assert any(a.agent_id == "x1" for a in proposed)
-    assert any(a.agent_id == "x2" for a in killed)
+def test_only_production_lifecycle_allows_production_tools():
+    assert lifecycle_allows_production_tools(AgentLifecycleState.PRODUCTION) is True
+    assert lifecycle_allows_production_tools(AgentLifecycleState.DRAFT) is False
+    assert lifecycle_allows_production_tools(AgentLifecycleState.SUSPENDED) is False

@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import pytest
 
-from auto_client_acquisition.market_power_os import PartnerGateSignals
+from auto_client_acquisition.market_power_os.partner_signal import PartnerGateSignals
 from auto_client_acquisition.operating_empire_os import (
     DealixBusinessUnit,
     TrustInfrastructureAttestation,

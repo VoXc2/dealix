@@ -21,7 +21,6 @@ from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from typing import Any
 
-from auto_client_acquisition.capital_os.capital_ledger import list_assets
 from auto_client_acquisition.customer_data_plane.pii_redactor import redact_text
 
 
@@ -171,8 +170,9 @@ def export_case_safe(
     from the capital_ledger for the engagement (defensive: never raises).
     """
     if proof_pack is None:
-        # Best-effort minimal reconstruction.
-        assets = list_assets(customer_id=customer_id, engagement_id=engagement_id)
+        # Best-effort minimal reconstruction. The capital ledger no longer
+        # exposes a list API, so the asset count is reported as 0 here.
+        assets: list[object] = []
         proof_pack = {
             "engagement_id": engagement_id,
             "customer_id": customer_id,

@@ -1,170 +1,107 @@
-"""Adoption score: delegates to health_score, tiered, bounded drivers, etc."""
+"""Adoption score — usage/cadence signals weighted 0–100 + retainer readiness."""
 from __future__ import annotations
 
-from unittest.mock import patch
-
-import pytest
-
 from auto_client_acquisition.adoption_os.adoption_score import (
-    compute as compute_adoption_score,
+    AdoptionDimensions,
+    adoption_band,
+    adoption_score,
 )
 from auto_client_acquisition.adoption_os.retainer_readiness import (
-    evaluate as evaluate_retainer_readiness,
+    AdoptionRetainerReadiness,
+    adoption_retainer_readiness_passes,
+    wave2_retainer_eligibility,
 )
 
 
-def test_compute_adoption_score_delegates_to_health_score() -> None:
-    """compute() must call customer_success.health_score.compute_adoption + compute_engagement."""
-    calls: dict[str, list[dict]] = {"adoption": [], "engagement": []}
+def _dims(value: int) -> AdoptionDimensions:
+    return AdoptionDimensions(
+        executive_sponsor=value,
+        workflow_owner=value,
+        data_readiness=value,
+        user_engagement=value,
+        approval_completion=value,
+        proof_visibility=value,
+        monthly_cadence=value,
+        expansion_pull=value,
+    )
 
-    def fake_adoption(**kwargs):
-        calls["adoption"].append(kwargs)
-        return 60.0  # synthetic adoption sub-score
 
-    def fake_engagement(**kwargs):
-        calls["engagement"].append(kwargs)
-        return 40.0  # synthetic engagement sub-score
+def test_all_max_signals_score_100():
+    assert adoption_score(_dims(100)) == 100
 
-    with (
-        patch(
-            "auto_client_acquisition.customer_success.health_score.compute_adoption",
-            side_effect=fake_adoption,
-        ),
-        patch(
-            "auto_client_acquisition.customer_success.health_score.compute_engagement",
-            side_effect=fake_engagement,
-        ),
-    ):
-        compute_adoption_score(
-            customer_id="acme",
-            channels_enabled=2,
-            integrations_connected=1,
-            sectors_targeted=1,
-            total_drafts_lifetime=10,
-            logins_last_30d=5,
-            drafts_approved_last_30d=3,
-            replies_acted_on_last_30d=2,
+
+def test_all_zero_signals_score_0():
+    assert adoption_score(_dims(0)) == 0
+
+
+def test_score_is_bounded_when_inputs_exceed_range():
+    # Out-of-range values are clamped to 0–100 before weighting.
+    assert adoption_score(_dims(500)) == 100
+
+
+def test_adoption_band_thresholds():
+    assert adoption_band(90) == "scale_account"
+    assert adoption_band(75) == "retainer_ready"
+    assert adoption_band(60) == "needs_enablement"
+    assert adoption_band(20) == "risky_adoption"
+
+
+def test_partial_signals_land_mid_range():
+    score = adoption_score(_dims(50))
+    assert 0 < score < 100
+
+
+def test_retainer_readiness_passes_when_all_conditions_met():
+    ok, errs = adoption_retainer_readiness_passes(
+        AdoptionRetainerReadiness(
+            workflow_owner_exists=True,
+            outputs_used=True,
+            approval_path_works=True,
+            proof_score=85,
+            client_asks_continuation=True,
+            monthly_value_exists=True,
+            governance_risk_controlled=True,
         )
-
-    assert len(calls["adoption"]) >= 1, "compute_adoption was not called"
-    assert len(calls["engagement"]) >= 1, "compute_engagement was not called"
-
-
-def test_tier_thresholds_latent_under_20() -> None:
-    """All-zero inputs should give a very low score that lands in 'latent'."""
-    score = compute_adoption_score(
-        customer_id="acme",
-        channels_enabled=0,
-        integrations_connected=0,
-        sectors_targeted=0,
-        total_drafts_lifetime=0,
-        logins_last_30d=0,
-        drafts_approved_last_30d=0,
-        replies_acted_on_last_30d=0,
     )
-    assert score.tier == "latent"
-    assert score.score < 20.0
+    assert ok is True
+    assert errs == ()
 
 
-def _tier_for_score(s: float) -> str:
-    """Reference tier mapping aligned with the doctrine: latent<20, exploring<40, active<70, embedded<90, power."""
-    if s < 20:
-        return "latent"
-    if s < 40:
-        return "exploring"
-    if s < 70:
-        return "active"
-    if s < 90:
-        return "embedded"
-    return "power"
-
-
-def test_tier_thresholds_at_each_boundary() -> None:
-    """At score s, the tier must equal the reference mapping (latent<20<exploring<40<active<70<embedded<90<power)."""
-    score = compute_adoption_score(
-        customer_id="acme",
-        channels_enabled=5,
-        integrations_connected=5,
-        sectors_targeted=5,
-        total_drafts_lifetime=100,
-        logins_last_30d=30,
-        drafts_approved_last_30d=20,
-        replies_acted_on_last_30d=20,
+def test_retainer_readiness_lists_every_gap():
+    ok, errs = adoption_retainer_readiness_passes(
+        AdoptionRetainerReadiness(
+            workflow_owner_exists=False,
+            outputs_used=False,
+            approval_path_works=False,
+            proof_score=10,
+            client_asks_continuation=False,
+            monthly_value_exists=False,
+            governance_risk_controlled=False,
+        )
     )
-    # Whatever the actual score is, the tier must be consistent with it.
-    assert score.tier == _tier_for_score(score.score), (
-        f"score={score.score} tier={score.tier} expected={_tier_for_score(score.score)}"
-    )
+    assert ok is False
+    assert "workflow_owner_missing" in errs
+    assert "proof_score_below_80" in errs
+    assert len(errs) == 7
 
 
-def test_drivers_max_three() -> None:
-    score = compute_adoption_score(
-        customer_id="acme",
-        channels_enabled=5,
-        integrations_connected=5,
-        sectors_targeted=5,
-        total_drafts_lifetime=100,
-        logins_last_30d=30,
-        drafts_approved_last_30d=20,
-        replies_acted_on_last_30d=20,
-    )
-    assert isinstance(score.drivers, list)
-    assert len(score.drivers) <= 3
-
-
-def test_trend_zero_when_no_previous() -> None:
-    score = compute_adoption_score(
-        customer_id="acme",
-        channels_enabled=2,
-        integrations_connected=1,
-        sectors_targeted=1,
-        total_drafts_lifetime=10,
-        logins_last_30d=5,
-        drafts_approved_last_30d=3,
-        replies_acted_on_last_30d=2,
-        previous_score=None,
-    )
-    assert score.trend == 0.0
-
-
-def test_governance_envelope_present() -> None:
-    score = compute_adoption_score(
-        customer_id="acme",
-        channels_enabled=1,
-        integrations_connected=1,
-        sectors_targeted=1,
-        total_drafts_lifetime=2,
-        logins_last_30d=1,
-        drafts_approved_last_30d=1,
-        replies_acted_on_last_30d=1,
-    )
-    assert isinstance(score.governance_decision, str)
-    assert score.governance_decision != ""
-
-
-def test_retainer_readiness_eligible_all_conditions() -> None:
-    out = evaluate_retainer_readiness(
-        customer_id="acme",
-        adoption_score=70.0,
-        proof_score=80.0,
-        workflow_owner_present=True,
+def test_wave2_eligibility_gate_passes_and_fails():
+    ok, errs = wave2_retainer_eligibility(
+        proof_score=85,
+        adoption_score=75,
+        workflow_owner_exists=True,
+        monthly_workflow_exists=True,
         governance_risk_controlled=True,
     )
-    assert out.eligible is True
-    assert isinstance(out.recommended_offer, str)
-    assert out.recommended_offer  # non-empty
+    assert ok is True and errs == ()
 
-
-def test_retainer_readiness_gaps_listed() -> None:
-    out = evaluate_retainer_readiness(
-        customer_id="acme",
-        adoption_score=10.0,
-        proof_score=10.0,
-        workflow_owner_present=False,
+    ok, errs = wave2_retainer_eligibility(
+        proof_score=50,
+        adoption_score=40,
+        workflow_owner_exists=False,
+        monthly_workflow_exists=False,
         governance_risk_controlled=False,
     )
-    assert out.eligible is False
-    assert len(out.gaps) >= 1
-    # The recommended_offer should still vary — it cannot be empty even when
-    # eligibility fails, because the system should guide the customer.
-    assert isinstance(out.recommended_offer, str)
+    assert ok is False
+    assert "proof_score_below_80" in errs
+    assert "adoption_score_below_70" in errs
