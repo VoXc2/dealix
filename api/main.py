@@ -61,18 +61,41 @@ from api.routers import integration_capability as integration_capability_router
 from api.routers import service_catalog as service_catalog_router
 # Wave 14 — Canonical Trust MVP + Retainer Engine (Phase 2)
 from api.routers import friction_log as friction_log_router
-from api.routers import value_os as value_os_router
 # 90-day commercial activation — Wave 14B
-from api.routers import data_os as data_os_router
 from api.routers import sprint_runner as sprint_runner_router
 from api.routers import founder_dashboard as founder_dashboard_router
 from api.routers import audit_export as audit_export_router
+
+# value_os, data_os and agent_os routers are imported defensively: an
+# optional router with a broken module-level import must not abort app
+# boot for every other endpoint. A skipped router is logged at
+# registration time.
+_OPTIONAL_ROUTER_ERRORS: dict[str, str] = {}
+
+try:
+    from api.routers import value_os as value_os_router
+except Exception as _exc:  # noqa: BLE001
+    value_os_router = None
+    _OPTIONAL_ROUTER_ERRORS["value_os"] = repr(_exc)
+
+try:
+    from api.routers import data_os as data_os_router
+except Exception as _exc:  # noqa: BLE001
+    data_os_router = None
+    _OPTIONAL_ROUTER_ERRORS["data_os"] = repr(_exc)
+
 # Wave 14F — Agent OS
-from api.routers import agent_os as agent_os_router
+try:
+    from api.routers import agent_os as agent_os_router
+except Exception as _exc:  # noqa: BLE001
+    agent_os_router = None
+    _OPTIONAL_ROUTER_ERRORS["agent_os"] = repr(_exc)
 # Wave 14J — Commercial wiring map (source of truth for landing↔backend)
 from api.routers import commercial_map as commercial_map_router
 # Wave 15 — Founder launch-status (single-pane production readiness)
 from api.routers import founder_launch_status as founder_launch_status_router
+# Enterprise Foundation Core — platform_core enterprise-loop proof endpoints
+from api.routers import platform_foundation as platform_foundation_router
 from api.security import APIKeyMiddleware, setup_rate_limit
 from core.config.settings import get_settings
 from core.errors import AICompanyError
@@ -278,18 +301,25 @@ def create_app() -> FastAPI:
     app.include_router(nps.router)
     # Wave 14 — Canonical Trust MVP + Retainer Engine (Phase 2)
     app.include_router(friction_log_router.router)
-    app.include_router(value_os_router.router)
+    if value_os_router is not None:
+        app.include_router(value_os_router.router)
     # Wave 14B — Commercial activation: CSV upload for the Data Pack offer
-    app.include_router(data_os_router.router)
+    if data_os_router is not None:
+        app.include_router(data_os_router.router)
     app.include_router(sprint_runner_router.router)
     app.include_router(founder_dashboard_router.router)
     app.include_router(audit_export_router.router)
     # Wave 14F — Agent OS (admin-gated)
-    app.include_router(agent_os_router.router)
+    if agent_os_router is not None:
+        app.include_router(agent_os_router.router)
+    for _name, _err in _OPTIONAL_ROUTER_ERRORS.items():
+        get_logger(__name__).warning("optional_router_skipped", router=_name, error=_err)
     # Wave 14J — Commercial wiring map (public)
     app.include_router(commercial_map_router.router)
     # Wave 15 — Founder launch-status (admin /launch-status + public /launch-status/public)
     app.include_router(founder_launch_status_router.router)
+    # Enterprise Foundation Core — /api/v1/platform/* loop proof endpoints
+    app.include_router(platform_foundation_router.router)
 
     @app.get("/", tags=["root"])
     async def root() -> dict[str, object]:
