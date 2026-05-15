@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from dataclasses import dataclass
+
 from auto_client_acquisition.compliance_trust_os.source_passport_v2 import SourcePassportV2
 from auto_client_acquisition.sovereignty_os.source_passport_standard import (
     SourcePassport,
@@ -41,10 +43,30 @@ def governance_decision_hints_for_passport_gate(
     return False, "blocked"
 
 
+@dataclass(frozen=True, slots=True)
+class PassportValidationResult:
+    is_valid: bool
+    reasons: tuple[str, ...]
+    missing: tuple[str, ...]
+
+
+def validate(passport: SourcePassport) -> PassportValidationResult:
+    """Compatibility validator used by Data OS/Delivery OS surfaces."""
+    ok, errors = source_passport_valid_for_ai(passport)
+    missing = tuple(e for e in errors if e.endswith("_required"))
+    return PassportValidationResult(
+        is_valid=ok,
+        reasons=errors,
+        missing=missing,
+    )
+
+
 __all__ = [
+    "PassportValidationResult",
     "SourcePassport",
     "governance_decision_hints_for_passport_gate",
     "source_passport_allows_task",
     "source_passport_from_v2",
     "source_passport_valid_for_ai",
+    "validate",
 ]
