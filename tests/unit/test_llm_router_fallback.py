@@ -13,10 +13,9 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
+from core.config.models import Provider, Task
 from core.llm.base import LLMResponse, Message
 from core.llm.router import ModelRouter, UsageRecord
-from core.config.models import Provider, Task
-
 
 # ── Fixtures ───────────────────────────────────────────────────────
 
@@ -49,16 +48,16 @@ async def test_router_uses_primary_provider(mock_settings):
     """Router calls the primary provider and returns its response."""
     router = ModelRouter(settings=mock_settings)
 
-    primary_provider = list(router._clients.keys())[0]
+    primary_provider = next(iter(router._clients))
     mock_client = AsyncMock()
-    mock_client.complete.return_value = _make_response(primary_provider, "primary response")
+    mock_client.chat.return_value = _make_response(primary_provider, "primary response")
     router._clients[primary_provider] = mock_client
 
     messages = [Message(role="user", content="hello")]
-    response = await router.route(task=Task.GENERAL, messages=messages)
+    response = await router.run(task=Task.REASONING, messages=messages)
 
     assert response.content == "primary response"
-    mock_client.complete.assert_called_once()
+    mock_client.chat.assert_called_once()
 
 
 @pytest.mark.asyncio
@@ -70,19 +69,19 @@ async def test_router_falls_back_on_provider_error(mock_settings):
     success_content = "fallback response"
     providers = list(router._clients.keys())
 
-    for i, provider in enumerate(providers[:-1]):
+    for provider in providers[:-1]:
         mock_fail = AsyncMock()
-        mock_fail.complete.side_effect = Exception(f"Provider {provider} unavailable")
+        mock_fail.chat.side_effect = Exception(f"Provider {provider} unavailable")
         router._clients[provider] = mock_fail
 
     # Last provider succeeds
     last_provider = providers[-1]
     mock_ok = AsyncMock()
-    mock_ok.complete.return_value = _make_response(last_provider, success_content)
+    mock_ok.chat.return_value = _make_response(last_provider, success_content)
     router._clients[last_provider] = mock_ok
 
     messages = [Message(role="user", content="test")]
-    response = await router.route(task=Task.GENERAL, messages=messages)
+    response = await router.run(task=Task.REASONING, messages=messages)
 
     assert response.content == success_content
 
@@ -94,12 +93,12 @@ async def test_router_raises_when_all_providers_fail(mock_settings):
 
     for provider in router._clients:
         mock_fail = AsyncMock()
-        mock_fail.complete.side_effect = Exception("unavailable")
+        mock_fail.chat.side_effect = Exception("unavailable")
         router._clients[provider] = mock_fail
 
     messages = [Message(role="user", content="test")]
     with pytest.raises((RuntimeError, Exception)):
-        await router.route(task=Task.GENERAL, messages=messages)
+        await router.run(task=Task.REASONING, messages=messages)
 
 
 @pytest.mark.asyncio
@@ -115,18 +114,18 @@ async def test_router_increments_fallback_counter(mock_settings):
     secondary = providers[1]
 
     mock_fail = AsyncMock()
-    mock_fail.complete.side_effect = Exception("timeout")
+    mock_fail.chat.side_effect = Exception("timeout")
     router._clients[primary] = mock_fail
 
     mock_ok = AsyncMock()
-    mock_ok.complete.return_value = _make_response(secondary)
+    mock_ok.chat.return_value = _make_response(secondary)
     router._clients[secondary] = mock_ok
 
     # Patch remaining providers to also fail cleanly
     for p in providers[2:]:
         router._clients[p] = mock_ok
 
-    await router.route(task=Task.GENERAL, messages=[Message(role="user", content="x")])
+    await router.run(task=Task.REASONING, messages=[Message(role="user", content="x")])
 
     assert router.usage[primary].fallbacks_triggered >= 1
 
@@ -139,11 +138,11 @@ async def test_router_usage_records_are_updated(mock_settings):
     primary = providers[0]
 
     mock_client = AsyncMock()
-    mock_client.complete.return_value = _make_response(primary, "ok")
+    mock_client.chat.return_value = _make_response(primary, "ok")
     router._clients[primary] = mock_client
 
     initial_calls = router.usage[primary].calls
-    await router.route(task=Task.GENERAL, messages=[Message(role="user", content="test")])
+    await router.run(task=Task.REASONING, messages=[Message(role="user", content="test")])
     assert router.usage[primary].calls == initial_calls + 1
 
 
@@ -156,18 +155,18 @@ async def test_router_concurrent_safety(mock_settings):
 
     call_count = 0
 
-    async def _increment_and_respond(**kwargs):  # noqa: ANN202
+    async def _increment_and_respond(**kwargs):
         nonlocal call_count
         call_count += 1
         await asyncio.sleep(0)  # yield — simulates I/O
         return _make_response(primary)
 
     mock_client = MagicMock()
-    mock_client.complete = _increment_and_respond
+    mock_client.chat = _increment_and_respond
     router._clients[primary] = mock_client
 
     messages = [Message(role="user", content="concurrent")]
-    tasks = [router.route(task=Task.GENERAL, messages=messages) for _ in range(10)]
+    tasks = [router.run(task=Task.REASONING, messages=messages) for _ in range(10)]
     responses = await asyncio.gather(*tasks)
 
     assert len(responses) == 10
