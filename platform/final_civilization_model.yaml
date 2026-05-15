@@ -1,0 +1,78 @@
+version: "1"
+name: "THE_FINAL_DEALIX_CIVILIZATION_MODEL"
+north_star: "organizational_dependency"
+systems:
+  - id: 46
+    key: enterprise_execution_fabric
+    paths:
+      - platform/execution_fabric
+      - platform/operational_coordination
+      - platform/execution_chains
+      - platform/execution_state
+  - id: 47
+    key: organizational_dependency_engine
+    paths:
+      - platform/org_dependency
+      - platform/embedded_workflows
+      - platform/execution_dependencies
+      - platform/operational_lockin
+  - id: 48
+    key: multi_org_intelligence_engine
+    paths:
+      - platform/industry_intelligence
+      - platform/benchmarking
+      - platform/cross_org_patterns
+      - platform/market_learning
+  - id: 49
+    key: organizational_autonomy_engine
+    paths:
+      - platform/adaptive_orchestration
+      - platform/self_healing
+      - platform/autonomous_coordination
+      - platform/goal_execution
+  - id: 50
+    key: agent_economy_engine
+    paths:
+      - platform/agent_economy
+      - platform/agent_marketplace
+      - platform/agent_protocols
+      - platform/inter_agent_governance
+  - id: 51
+    key: organizational_trust_fabric
+    paths:
+      - platform/trust_fabric
+      - platform/runtime_audits
+      - platform/accountability
+      - platform/reversibility
+      - platform/trust_scoring
+  - id: 52
+    key: organizational_memory_core
+    paths:
+      - platform/memory_core
+      - platform/lineage
+      - platform/context_memory
+      - platform/operational_memory
+  - id: 53
+    key: organizational_reasoning_core
+    paths:
+      - platform/org_reasoning
+      - platform/impact_analysis
+      - platform/causal_reasoning
+      - platform/decision_graph
+  - id: 54
+    key: self_evolving_operational_fabric
+    paths:
+      - platform/self_evolving_fabric
+      - platform/meta_learning
+      - platform/continuous_optimization
+      - platform/adaptive_governance
+  - id: 55
+    key: organizational_operating_core
+    paths:
+      - platform/organizational_operating_core
+dependency_gates:
+  odi_min: 75
+  no_bypass_rate_min: 98
+  rollback_coverage_min: 90
+  audit_coverage_min: 95
+  executive_dependency_min: 60
