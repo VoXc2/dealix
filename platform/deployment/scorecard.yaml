@@ -1,0 +1,27 @@
+layer: "Layer 1 - Foundation / Deployment"
+owner: "Platform Lead"
+overall_score: 79
+band: "client pilot"
+band_scale:
+  - "0-59 prototype"
+  - "60-74 internal beta"
+  - "75-84 client pilot"
+  - "85-94 enterprise-ready"
+  - "95+ mission-critical"
+sub_criteria:
+  - name: "Environment separation (dev/staging/prod)"
+    score: 85
+    weight: 0.20
+  - name: "CI/CD pipeline and gating"
+    score: 84
+    weight: 0.25
+  - name: "Automated deploy and rollback"
+    score: 80
+    weight: 0.20
+  - name: "Daily backups"
+    score: 80
+    weight: 0.15
+  - name: "Restore drill verification"
+    score: 65
+    weight: 0.20
+notes: "Daily snapshots and rollback automation exist; the quarterly restore drill and a periodic rollback drill are not yet documented on a verified cadence."
