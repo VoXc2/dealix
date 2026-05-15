@@ -10,6 +10,7 @@ The engine enforces:
   - Idempotency: replaying the same key is a no-op.
   - Retry budget: failures beyond ``max_retries`` set state=failed.
 """
+
 from __future__ import annotations
 
 from datetime import UTC, datetime
@@ -22,6 +23,7 @@ from auto_client_acquisition.workflow_os_v10.idempotency import (
 from auto_client_acquisition.workflow_os_v10.retry_policy import (
     compute_next_retry,
 )
+from auto_client_acquisition.workflow_os_v10.run_store import get_run_store
 from auto_client_acquisition.workflow_os_v10.schemas import (
     ALLOWED_TRANSITIONS,
     RetryPolicy,
@@ -31,15 +33,14 @@ from auto_client_acquisition.workflow_os_v10.schemas import (
     WorkflowStep,
 )
 
-
-# In-memory store keyed by run_id. Tests may reset via _reset_workflow_buffer.
-_RUN_BUFFER: dict[str, WorkflowRun] = {}
+# Workflow definitions stay process-local. Runs are persisted through the
+# active WorkflowRunStore (in-memory by default; swappable to Postgres).
 _DEFINITION_BUFFER: dict[str, WorkflowDefinition] = {}
 
 
 def _reset_workflow_buffer() -> None:
-    """Clear the in-memory run + definition buffers. For tests + CI."""
-    _RUN_BUFFER.clear()
+    """Clear the run store + definition buffer. For tests + CI."""
+    get_run_store().clear()
     _DEFINITION_BUFFER.clear()
 
 
@@ -61,9 +62,10 @@ def list_definitions() -> list[WorkflowDefinition]:
 
 
 def get_run(run_id: str) -> WorkflowRun:
-    if run_id not in _RUN_BUFFER:
+    run = get_run_store().get(run_id)
+    if run is None:
         raise KeyError(f"run_id {run_id!r} not found")
-    return _RUN_BUFFER[run_id]
+    return run
 
 
 def start_workflow(
@@ -85,7 +87,7 @@ def start_workflow(
         state="pending",
         current_step=definition.steps[0] if definition.steps else "",
     )
-    _RUN_BUFFER[run.run_id] = run
+    get_run_store().save(run)
     return run
 
 
@@ -176,16 +178,12 @@ def advance_workflow(
         )
         if step.attempt < active_policy.max_retries:
             step.state = "retrying"
-            step.retry_after_seconds = compute_next_retry(
-                step.attempt, active_policy
-            )
+            step.retry_after_seconds = compute_next_retry(step.attempt, active_policy)
             step.error = f"simulated failure on attempt {step.attempt}"
             _transition_state(run, "retrying")
         else:
             step.state = "failed"
-            step.error = (
-                f"exhausted {active_policy.max_retries} retries"
-            )
+            step.error = f"exhausted {active_policy.max_retries} retries"
             step.completed_at = datetime.now(UTC)
             _transition_state(run, "failed")
         run.updated_at = datetime.now(UTC)
@@ -204,14 +202,12 @@ def advance_workflow(
         definition = None
 
     if definition and definition.steps:
-        completed_step_names = [
-            s.name for s in run.step_history if s.state == "completed"
-        ]
+        completed_step_names = [s.name for s in run.step_history if s.state == "completed"]
         if all(name in completed_step_names for name in definition.steps):
             _transition_state(run, "completed")
 
-    # Persist back to buffer.
-    _RUN_BUFFER[run.run_id] = run
+    # Persist the advanced run.
+    get_run_store().save(run)
     return run
 
 
@@ -221,4 +217,5 @@ def block_workflow(run: WorkflowRun, reason: str = "manual_block") -> WorkflowRu
     run.updated_at = datetime.now(UTC)
     if run.step_history:
         run.step_history[-1].error = reason
+    get_run_store().save(run)
     return run

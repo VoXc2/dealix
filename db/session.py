@@ -23,8 +23,8 @@ def _engine():
         # For PgBouncer deployments these can be lowered to 2/5.
         pool_size=20,
         max_overflow=30,
-        pool_timeout=30,      # seconds to wait for a connection from pool
-        pool_recycle=1800,    # recycle connections every 30 min to avoid stale TCP
+        pool_timeout=30,  # seconds to wait for a connection from pool
+        pool_recycle=1800,  # recycle connections every 30 min to avoid stale TCP
     )
 
 
@@ -58,9 +58,10 @@ async def get_session() -> AsyncGenerator[AsyncSession, None]:
 
 async def init_db() -> None:
     """Create all tables (dev only — production uses Alembic)."""
-    # Side-effect import — registers RevenueEventRecord on Base.metadata
-    # (model lives in db/models_revenue_events.py to avoid bloating models.py).
+    # Side-effect imports — register out-of-line models on Base.metadata
+    # (kept in their own files to avoid bloating models.py).
     import db.models_revenue_events
+    import db.models_workflow_runs
     from db.models import Base
 
     async with _engine().begin() as conn:
