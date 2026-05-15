@@ -30,7 +30,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from api.security.jwt import decode_access_token
-from api.security.rbac import Role, is_at_least, is_super_admin
+from api.security.rbac import Role, has_permission, is_at_least, is_super_admin
 from db.models import UserRecord
 from db.session import get_db
 
@@ -115,51 +115,29 @@ TenantID = Annotated[str | None, Depends(get_tenant_id)]
 
 # ── Role-based guards ────────────────────────────────────────────────
 
+async def _resolve_role_name(user: UserRecord, db: AsyncSession) -> str | None:
+    """Resolve the tenant-scoped role name from UserRecord.role_id."""
+    if not user.role_id:
+        return None
+    from db.models import RoleRecord
+    result = await db.execute(
+        select(RoleRecord.name).where(RoleRecord.id == user.role_id)
+    )
+    return result.scalar_one_or_none()
+
+
 def require_role(minimum: Role):
     """
     Dependency factory — enforce a minimum role level.
     Usage: user: CurrentUser = Depends(require_role(Role.SALES_MANAGER))
     """
-    async def _guard(user: UserRecord = Depends(get_current_user)) -> UserRecord:
-        # Super-admin always passes
-        if is_super_admin(user.system_role):
-            return user
-        # Determine role from token cache or DB role_id (role name stored in token 'rol' claim)
-        # We read the role name from UserRecord.role_id FK — look it up via a separate query
-        # For performance the role name is embedded in the JWT claim 'rol'.
-        # We trust the JWT here; re-loading from DB adds latency without much benefit
-        # for the typical path (revocation is handled at refresh level).
-        from fastapi import Request as _R  # local import avoids circular
-        # The JWT payload has already been validated in get_current_user.
-        # Retrieve role name stored on the user via the RoleRecord FK.
-        # To avoid an extra query we store role name in a context var set by get_current_user.
-        # For simplicity we query here (can be optimised with select join later).
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail=f"Requires at least role: {minimum.value}",
-        )
-
-    return _guard
-
-
-def _make_role_guard(minimum: Role):
-    """Create a role-checking dependency by joining UserRecord + RoleRecord."""
     async def _guard(
         user: UserRecord = Depends(get_current_user),
         db: AsyncSession = Depends(get_db),
     ) -> UserRecord:
         if is_super_admin(user.system_role):
             return user
-
-        # Load role name from DB (role_id FK)
-        role_name: str | None = None
-        if user.role_id:
-            from db.models import RoleRecord
-            result = await db.execute(
-                select(RoleRecord.name).where(RoleRecord.id == user.role_id)
-            )
-            role_name = result.scalar_one_or_none()
-
+        role_name = await _resolve_role_name(user, db)
         if not is_at_least(role_name, minimum):
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
@@ -170,11 +148,34 @@ def _make_role_guard(minimum: Role):
     return _guard
 
 
+def require_permission(permission: str):
+    """
+    Dependency factory — enforce a single fine-grained permission
+    (e.g. "leads:write", "agents:run") via the RBAC permission sets.
+    Usage: user: CurrentUser = Depends(require_permission("leads:write"))
+    """
+    async def _guard(
+        user: UserRecord = Depends(get_current_user),
+        db: AsyncSession = Depends(get_db),
+    ) -> UserRecord:
+        if is_super_admin(user.system_role):
+            return user
+        role_name = await _resolve_role_name(user, db)
+        if not has_permission(role_name, permission):
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail=f"Requires permission: {permission}",
+            )
+        return user
+
+    return _guard
+
+
 # Pre-built dependency callables for common guards
-require_viewer = _make_role_guard(Role.VIEWER)
-require_sales_rep = _make_role_guard(Role.SALES_REP)
-require_sales_manager = _make_role_guard(Role.SALES_MANAGER)
-require_tenant_admin = _make_role_guard(Role.TENANT_ADMIN)
+require_viewer = require_role(Role.VIEWER)
+require_sales_rep = require_role(Role.SALES_REP)
+require_sales_manager = require_role(Role.SALES_MANAGER)
+require_tenant_admin = require_role(Role.TENANT_ADMIN)
 
 
 async def require_super_admin(user: UserRecord = Depends(get_current_user)) -> UserRecord:
