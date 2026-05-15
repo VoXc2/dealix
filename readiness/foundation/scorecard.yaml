@@ -1,0 +1,27 @@
+layer: "Layer 1 - Foundation"
+owner: "Platform Lead"
+overall_score: 78
+band: "client pilot"
+band_scale:
+  - "0-59 prototype"
+  - "60-74 internal beta"
+  - "75-84 client pilot"
+  - "85-94 enterprise-ready"
+  - "95+ mission-critical"
+sub_criteria:
+  - name: "Foundation (database, alembic migrations)"
+    score: 78
+    weight: 0.20
+  - name: "Identity (auth, sessions, RBAC)"
+    score: 80
+    weight: 0.20
+  - name: "Multi-tenant isolation and data boundaries"
+    score: 76
+    weight: 0.25
+  - name: "Security (secrets, encryption, access control)"
+    score: 77
+    weight: 0.20
+  - name: "Deployment (CI/CD, environments, backup/restore)"
+    score: 79
+    weight: 0.15
+notes: "Restore drill, tenant-deletion drill, and key-rotation drill are not yet documented on a verified periodic cadence; these gaps cap the layer in the client-pilot band."

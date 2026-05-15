@@ -1,0 +1,27 @@
+layer: "Layer 4 - Memory & Knowledge"
+owner: "Knowledge & Memory Lead"
+overall_score: 79
+band: "client pilot"
+band_scale:
+  - "0-59 prototype"
+  - "60-74 internal beta"
+  - "75-84 client pilot"
+  - "85-94 enterprise-ready"
+  - "95+ mission-critical"
+sub_criteria:
+  - name: "Tenant memory isolation"
+    score: 82
+    weight: 0.25
+  - name: "No-source-no-answer enforcement"
+    score: 82
+    weight: 0.20
+  - name: "Retrieval permission scoping"
+    score: 78
+    weight: 0.20
+  - name: "Source lineage and citations"
+    score: 80
+    weight: 0.15
+  - name: "Tenant-deletion drill for index (verified cadence)"
+    score: 70
+    weight: 0.20
+notes: "Index isolation and citation logic exist, but a verified tenant-deletion drill for the search index is missing; this caps the layer in the client-pilot band."

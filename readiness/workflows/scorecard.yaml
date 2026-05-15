@@ -1,0 +1,27 @@
+layer: "Layer 3 - Workflow Engine"
+owner: "Workflow Engine Lead"
+overall_score: 79
+band: "client pilot"
+band_scale:
+  - "0-59 prototype"
+  - "60-74 internal beta"
+  - "75-84 client pilot"
+  - "85-94 enterprise-ready"
+  - "95+ mission-critical"
+sub_criteria:
+  - name: "High-risk approval gates"
+    score: 82
+    weight: 0.25
+  - name: "Retry and compensation"
+    score: 80
+    weight: 0.20
+  - name: "Trigger idempotency"
+    score: 80
+    weight: 0.20
+  - name: "Workflow versioning"
+    score: 80
+    weight: 0.15
+  - name: "DLQ-replay drill (verified cadence)"
+    score: 68
+    weight: 0.20
+notes: "DLQ and retry logic exist in dealix/reliability, but a verified periodic DLQ-replay drill is missing; this caps the layer in the client-pilot band."

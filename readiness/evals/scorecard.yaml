@@ -1,0 +1,27 @@
+layer: "Layer 8 - Evaluation"
+owner: "Evaluation Lead"
+overall_score: 78
+band: "client pilot"
+band_scale:
+  - "0-59 prototype"
+  - "60-74 internal beta"
+  - "75-84 client pilot"
+  - "85-94 enterprise-ready"
+  - "95+ mission-critical"
+sub_criteria:
+  - name: "Eval suites running in CI"
+    score: 82
+    weight: 0.25
+  - name: "Governance eval coverage"
+    score: 82
+    weight: 0.20
+  - name: "Arabic quality eval"
+    score: 80
+    weight: 0.15
+  - name: "Regression-block threshold"
+    score: 78
+    weight: 0.20
+  - name: "Automated v1/v2 comparison (verified cadence)"
+    score: 66
+    weight: 0.20
+notes: "Eval suites exist and run, but an automated v1/v2 comparison on a verified cadence is missing; this caps the layer in the client-pilot band."

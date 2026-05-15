@@ -1,0 +1,27 @@
+layer: "Layer 13 - Readiness & Cross-Layer Validation"
+owner: "Enterprise Readiness Lead"
+overall_score: 74
+band: "internal beta"
+band_scale:
+  - "0-59 prototype"
+  - "60-74 internal beta"
+  - "75-84 client pilot"
+  - "85-94 enterprise-ready"
+  - "95+ mission-critical"
+sub_criteria:
+  - name: "8-part rule documented for all 13 layers"
+    score: 88
+    weight: 0.20
+  - name: "Per-layer readiness docs and scorecards present"
+    score: 85
+    weight: 0.20
+  - name: "Cross-layer test specifications complete"
+    score: 80
+    weight: 0.20
+  - name: "Cross-layer tests executed on a verified cadence"
+    score: 55
+    weight: 0.25
+  - name: "Mapping to real code paths (no duplication)"
+    score: 82
+    weight: 0.15
+notes: "The readiness meta-layer is newly created. Its six cross-layer tests are specified but not yet executed on a verified periodic cadence; this caps the layer in the internal-beta band. Layer 13 is excluded from the platform mean because it is the observer, not the observed."

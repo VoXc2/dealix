@@ -1,0 +1,27 @@
+layer: "Layer 5 - Governance"
+owner: "Governance Lead"
+overall_score: 79
+band: "client pilot"
+band_scale:
+  - "0-59 prototype"
+  - "60-74 internal beta"
+  - "75-84 client pilot"
+  - "85-94 enterprise-ready"
+  - "95+ mission-critical"
+sub_criteria:
+  - name: "External-action approval enforcement"
+    score: 84
+    weight: 0.25
+  - name: "Non-negotiable rule coverage"
+    score: 84
+    weight: 0.20
+  - name: "Risk matrix classification"
+    score: 78
+    weight: 0.20
+  - name: "Audit log completeness (no PII)"
+    score: 80
+    weight: 0.15
+  - name: "Policy rollback drill (verified cadence)"
+    score: 68
+    weight: 0.20
+notes: "Policy registry and rule enforcement exist, but a verified policy-rollback drill on a periodic cadence is missing; this caps the layer in the client-pilot band."

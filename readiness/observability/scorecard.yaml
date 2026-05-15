@@ -1,0 +1,27 @@
+layer: "Layer 7 - Observability"
+owner: "Observability Lead"
+overall_score: 75
+band: "client pilot"
+band_scale:
+  - "0-59 prototype"
+  - "60-74 internal beta"
+  - "75-84 client pilot"
+  - "85-94 enterprise-ready"
+  - "95+ mission-critical"
+sub_criteria:
+  - name: "Trace coverage across agents and workflows"
+    score: 80
+    weight: 0.25
+  - name: "PII redaction in traces and logs"
+    score: 80
+    weight: 0.20
+  - name: "Alerting on failure to named owners"
+    score: 74
+    weight: 0.20
+  - name: "Integration failure dashboard visibility"
+    score: 74
+    weight: 0.15
+  - name: "Incident-response drill (verified cadence)"
+    score: 64
+    weight: 0.20
+notes: "Tracing, redaction, and dashboards exist, but a verified incident-response drill on a periodic cadence is missing; this caps the layer in the client-pilot band."

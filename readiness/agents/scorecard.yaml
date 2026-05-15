@@ -1,0 +1,27 @@
+layer: "Layer 2 - Agent Runtime"
+owner: "Agent Runtime Lead"
+overall_score: 75
+band: "client pilot"
+band_scale:
+  - "0-59 prototype"
+  - "60-74 internal beta"
+  - "75-84 client pilot"
+  - "85-94 enterprise-ready"
+  - "95+ mission-critical"
+sub_criteria:
+  - name: "Tool permission boundaries"
+    score: 80
+    weight: 0.25
+  - name: "Context and data boundaries (four boundaries)"
+    score: 78
+    weight: 0.25
+  - name: "Kill switch and safe states"
+    score: 76
+    weight: 0.20
+  - name: "Agent lifecycle and versioning"
+    score: 72
+    weight: 0.15
+  - name: "Agent rollback drill (verified cadence)"
+    score: 62
+    weight: 0.15
+notes: "Kill switch and runtime states exist in code, but a verified agent-rollback drill on a periodic cadence is missing; this caps the layer in the client-pilot band."

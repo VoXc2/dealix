@@ -1,0 +1,27 @@
+layer: "Layer 11 - Transformation"
+owner: "Transformation Lead"
+overall_score: 70
+band: "internal beta"
+band_scale:
+  - "0-59 prototype"
+  - "60-74 internal beta"
+  - "75-84 client pilot"
+  - "85-94 enterprise-ready"
+  - "95+ mission-critical"
+sub_criteria:
+  - name: "Adoption gates"
+    score: 74
+    weight: 0.25
+  - name: "Enterprise risk assessment"
+    score: 72
+    weight: 0.20
+  - name: "Rollout stage transitions"
+    score: 72
+    weight: 0.20
+  - name: "Role maps and permissions"
+    score: 72
+    weight: 0.15
+  - name: "Rollout rollback drill (verified cadence)"
+    score: 58
+    weight: 0.20
+notes: "Adoption gates and rollout stages are specified, but they have not been tested on a verified cadence across a real rollout and the rollout-rollback drill is not documented; this keeps the layer in the internal-beta band."
