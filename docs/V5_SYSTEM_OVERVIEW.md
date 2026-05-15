@@ -62,6 +62,7 @@ If you change one of these, you've changed policy. Everything else is mechanical
 | `scripts/dealix_diagnostic.py` | Bilingual Diagnostic brief generator | When warm intro lands |
 | `scripts/dealix_invoice.py` | Manual Moyasar invoice (refuses sk_live_) | When customer says yes |
 | `scripts/dealix_morning_digest.py` | Daily founder digest email | Daily (cron) |
+| `scripts/dealix_dominance_status.py` | Organizational dominance gates + capability contracts status | Weekly architecture review |
 | `bash scripts/post_redeploy_verify.sh` | 22-point Production verifier | After Railway redeploy |
 
 ---

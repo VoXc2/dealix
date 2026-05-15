@@ -11,6 +11,15 @@ from auto_client_acquisition.dealix_master_layers.registry import (
     layer_by_folder,
     readme_path,
 )
+from auto_client_acquisition.dealix_master_layers.dominance_execution import (
+    CAPABILITY_CONTRACTS,
+    DOMINANCE_GATES,
+    CapabilityContract,
+    GateMilestone,
+    contracts_by_layer_slug,
+    dominance_readiness_snapshot,
+    missing_contract_layer_slugs,
+)
 
 __all__ = [
     "DealixLayer",
@@ -20,6 +29,13 @@ __all__ = [
     "OrganizationalIntelligenceLayer",
     "dominance_layer_by_id",
     "dominance_layer_by_slug",
+    "CAPABILITY_CONTRACTS",
+    "DOMINANCE_GATES",
+    "CapabilityContract",
+    "GateMilestone",
+    "contracts_by_layer_slug",
+    "dominance_readiness_snapshot",
+    "missing_contract_layer_slugs",
     "layer_by_folder",
     "readme_path",
 ]

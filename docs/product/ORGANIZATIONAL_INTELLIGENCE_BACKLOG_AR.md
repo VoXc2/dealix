@@ -64,3 +64,8 @@
 - اختبار واحد على الأقل يغطي السلوك
 - وثيقة تشغيلية محدثة
 - قابلية audit/explainability واضحة
+
+## Operational Tracking Command
+
+- CLI status: `python3 scripts/dealix_dominance_status.py`
+- JSON mode: `python3 scripts/dealix_dominance_status.py --json`
