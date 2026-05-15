@@ -32,6 +32,12 @@ from auto_client_acquisition.agent_factory.eval_harness import (
     run_eval_case,
     run_eval_suite,
 )
+from auto_client_acquisition.agent_factory.knowledge_engine import (
+    DocumentChunk,
+    Embedder,
+    HashingEmbedder,
+    SemanticChunkIndex,
+)
 from auto_client_acquisition.agent_factory.memory_binding import (
     AgentMemoryBinding,
     binding_valid,
@@ -58,9 +64,13 @@ __all__ = [
     "AgentStepRecord",
     "BuildOutcome",
     "BuildResult",
+    "DocumentChunk",
+    "Embedder",
     "EscalationRule",
     "EscalationTrigger",
     "EvaluationRule",
+    "HashingEmbedder",
+    "SemanticChunkIndex",
     "TraceStatus",
     "append_step",
     "binding_valid",

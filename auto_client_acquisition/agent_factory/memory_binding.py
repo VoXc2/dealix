@@ -12,6 +12,7 @@ from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, Field
 
+from auto_client_acquisition.agent_factory.knowledge_engine import SemanticChunkIndex
 from auto_client_acquisition.knowledge_v10.retrieval_contract import retrieve
 from auto_client_acquisition.knowledge_v10.schemas import (
     RetrievalRequest,
@@ -61,22 +62,36 @@ def build_retrieval_request(binding: AgentMemoryBinding, query: str) -> Retrieva
     )
 
 
-def retrieve_for_agent(binding: AgentMemoryBinding, query: str) -> list[RetrievalResult]:
-    """Reference retrieval path for an agent.
+def retrieve_for_agent(
+    binding: AgentMemoryBinding,
+    query: str,
+    *,
+    index: SemanticChunkIndex | None = None,
+) -> list[RetrievalResult]:
+    """Retrieval path for an agent's memory.
 
-    Validates the binding, builds a scoped request, and delegates to
-    ``knowledge_v10.retrieve`` — today a stub that returns ``[]``.
+    Validates the binding, builds a customer-scoped request, then:
 
-    # LATER WAVE: when ``retrieval_mode == "semantic_pending"`` wire
-    # ``knowledge_v10.retrieve`` to
-    # ``core.memory.embedding_service.EmbeddingService`` (async semantic
-    # search, 1536-dim OpenAI embeddings, DB-session backed). Out of
-    # scaffold scope — needs async + a DB session + an OpenAI key.
+      * ``retrieval_mode == "semantic_pending"`` + an ``index`` → semantic
+        search through the permission-aware ``SemanticChunkIndex``.
+      * otherwise → ``knowledge_v10.retrieve`` (the contract stub → ``[]``).
+
+    The agent cannot widen its own scope: ``customer_handle`` and
+    ``allowed_sources`` always come from the binding via
+    ``build_retrieval_request``.
     """
     ok, _errors = binding_valid(binding)
     if not binding.enabled or not ok:
         return []
-    return retrieve(build_retrieval_request(binding, query))
+    request = build_retrieval_request(binding, query)
+    if binding.retrieval_mode == "semantic_pending" and index is not None:
+        return index.search(
+            query,
+            customer_handle=request.customer_handle,
+            allowed_sources=request.allowed_sources,
+            top_k=request.top_k,
+        )
+    return retrieve(request)
 
 
 __all__ = [

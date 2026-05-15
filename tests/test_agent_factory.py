@@ -11,8 +11,11 @@ from auto_client_acquisition.agent_factory import (
     AgentMemoryBinding,
     AgentStepRecord,
     BuildOutcome,
+    DocumentChunk,
     EscalationRule,
     EscalationTrigger,
+    HashingEmbedder,
+    SemanticChunkIndex,
     append_step,
     binding_valid,
     blueprint_structurally_valid,
@@ -317,3 +320,113 @@ def test_summarize_trace():
     assert summary["step_count"] == 2
     assert summary["total_latency_ms"] == 40.0
     assert summary["escalation_rate"] == 0.5
+
+
+# ── Knowledge OS semantic retrieval engine ──────────────────────────
+
+def _chunk(
+    chunk_id: str,
+    text: str,
+    *,
+    customer: str = "ACME-SAUDI",
+    document_id: str = "doc1",
+    source: SourceType = SourceType.INTERNAL_DOC,
+) -> DocumentChunk:
+    return DocumentChunk(
+        chunk_id=chunk_id,
+        document_id=document_id,
+        customer_handle=customer,
+        source_type=source,
+        text=text,
+    )
+
+
+def test_hashing_embedder_deterministic():
+    embedder = HashingEmbedder()
+    assert embedder.embed("pilot pricing") == embedder.embed("pilot pricing")
+    assert embedder.embed("pilot pricing") != embedder.embed("onboarding agenda")
+
+
+def test_index_rejects_blocked_source():
+    index = SemanticChunkIndex()
+    with pytest.raises(ValueError, match="blocked_source_type"):
+        index.add_chunk(_chunk("c1", "anything", source=SourceType.BLOCKED_SCRAPING_SOURCE))
+    assert index.chunk_count() == 0
+
+
+def test_index_empty_returns_empty():
+    index = SemanticChunkIndex()
+    assert index.search("what is the pilot pricing") == []
+
+
+def test_index_search_ranks_by_overlap():
+    index = SemanticChunkIndex()
+    index.add_chunks([
+        _chunk("c1", "pilot pricing sprint costs 499 saudi riyal"),
+        _chunk("c2", "onboarding kickoff call agenda for next meeting"),
+    ])
+    results = index.search("what is the pilot pricing")
+    assert len(results) == 1
+    assert results[0].chunk_id == "c1"
+    assert results[0].score > 0.0
+
+
+def test_index_search_filters_by_customer():
+    index = SemanticChunkIndex()
+    index.add_chunk(_chunk("c1", "pilot pricing details", customer="ACME-SAUDI"))
+    assert index.search("pilot pricing", customer_handle="OTHER-CO") == []
+    assert len(index.search("pilot pricing", customer_handle="ACME-SAUDI")) == 1
+
+
+def test_index_search_filters_by_allowed_sources():
+    index = SemanticChunkIndex()
+    index.add_chunk(_chunk("c1", "pilot pricing details", source=SourceType.OFFICIAL_PUBLIC_SITE))
+    assert index.search("pilot pricing", allowed_sources=[SourceType.INTERNAL_DOC]) == []
+    assert index.search("pilot pricing", allowed_sources=[SourceType.OFFICIAL_PUBLIC_SITE])
+
+
+def test_index_search_respects_top_k():
+    index = SemanticChunkIndex()
+    index.add_chunks([
+        _chunk("c1", "pilot pricing one"),
+        _chunk("c2", "pilot pricing two"),
+        _chunk("c3", "pilot pricing three"),
+    ])
+    assert len(index.search("pilot pricing", top_k=2)) == 2
+
+
+def test_retrieve_for_agent_semantic_mode_uses_index():
+    index = SemanticChunkIndex()
+    index.add_chunk(_chunk("c1", "pilot pricing sprint 499 saudi riyal"))
+    binding = AgentMemoryBinding(
+        enabled=True,
+        customer_handle="ACME-SAUDI",
+        allowed_sources=[SourceType.INTERNAL_DOC],
+        retrieval_mode="semantic_pending",
+    )
+    results = retrieve_for_agent(binding, "what is the pilot pricing", index=index)
+    assert len(results) == 1
+    assert results[0].chunk_id == "c1"
+
+
+def test_retrieve_for_agent_stub_mode_ignores_index():
+    index = SemanticChunkIndex()
+    index.add_chunk(_chunk("c1", "pilot pricing sprint"))
+    binding = AgentMemoryBinding(
+        enabled=True,
+        customer_handle="ACME-SAUDI",
+        allowed_sources=[SourceType.INTERNAL_DOC],
+    )
+    assert retrieve_for_agent(binding, "what is the pilot pricing", index=index) == []
+
+
+def test_retrieve_for_agent_semantic_drops_out_of_scope_source():
+    index = SemanticChunkIndex()
+    index.add_chunk(_chunk("c1", "pilot pricing sprint", source=SourceType.OFFICIAL_PUBLIC_SITE))
+    binding = AgentMemoryBinding(
+        enabled=True,
+        customer_handle="ACME-SAUDI",
+        allowed_sources=[SourceType.INTERNAL_DOC],
+        retrieval_mode="semantic_pending",
+    )
+    assert retrieve_for_agent(binding, "what is the pilot pricing", index=index) == []
