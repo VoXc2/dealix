@@ -86,10 +86,16 @@ def test_step5_governance_review_blocks_unsafe():
         {"account": "A", "outline_ar": "نص آمن", "outline_en": "safe note"},
         {"account": "B", "outline_ar": "نضمن مبيعات 100%", "outline_en": "we guarantee 100% sales"},
     ]
-    out = step5_governance_review(customer_id="x", engagement_id="e1", drafts=drafts)
+    # Passport threaded through so decide() clears its passport gate and
+    # actually evaluates claim safety on each draft.
+    out = step5_governance_review(
+        customer_id="x", engagement_id="e1", drafts=drafts,
+        source_passport=_GOOD_PASSPORT,
+    )
     decisions = {r["decision"] for r in out["reviews"]}
-    # At least the unsafe one is REDACT or BLOCK
-    assert any(d in {"redact", "block"} for d in decisions)
+    # GovernanceDecision enum values are uppercase; the unsafe draft must
+    # land on at least REDACT.
+    assert any(d in {"REDACT", "BLOCK"} for d in decisions)
 
 
 def test_run_sprint_end_to_end_produces_proof_pack():

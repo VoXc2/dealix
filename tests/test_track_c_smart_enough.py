@@ -43,7 +43,10 @@ class TestC2DailyBriefLLM:
             proof_events=[], pending_approvals=[], inbound_count=0
         )
         assert brief.data_status == "insufficient_data"
-        assert "warm-intro" in brief.next_action.lower() or "diagnostic" in brief.next_action.lower()
+        # No-data brief steers toward safe early actions — the warm-intro
+        # guidance lives in the narrative, the concrete step in next_action.
+        guidance = f"{brief.next_action} {brief.narrative}".lower()
+        assert "warm intro" in guidance or "diagnostic" in guidance
         assert brief.headline  # non-empty
 
     def test_fallback_brief_with_data(self, llm_brief_module):

@@ -5,6 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Launch Status — لوحة جاهزية الإطلاق · Dealix</title>
 <meta name="description" content="لوحة جاهزية الإطلاق Dealix — كل إشارة على بطاقة واحدة. للمؤسس فقط.">
+<meta property="og:title" content="Launch Status — لوحة جاهزية الإطلاق · Dealix">
+<meta property="og:description" content="لوحة جاهزية الإطلاق Dealix — كل إشارة على بطاقة واحدة. للمؤسس فقط.">
+<meta name="twitter:card" content="summary">
 <meta name="robots" content="noindex,nofollow">
 <link rel="canonical" href="https://dealix.me/launch-status.html">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -107,7 +110,7 @@
     var friction = body.friction_last_14d || {};
 
     var cards = [
-      ['Healthcheck', '/healthz', body.healthcheck && body.healthcheck.ok, false, body.git && body.git.git_sha ? body.git.git_sha.slice(0,7) : ''],
+      ['Healthcheck', '/health', body.healthcheck && body.healthcheck.ok, false, body.git && body.git.git_sha ? body.git.git_sha.slice(0,7) : ''],
       ['Database', db.scheme || '—', db.configured, !db.configured && 'unset', db.scheme],
       ['Moyasar', moyasar.mode || '—', moyasar.mode === 'live', moyasar.mode === 'test', moyasar.key_prefix],
       ['ZATCA', zatca.mode || '—', zatca.mode === 'live' || zatca.mode === 'sandbox', zatca.mode === 'sandbox', zatca.csid_configured ? 'CSID set' : 'CSID missing'],

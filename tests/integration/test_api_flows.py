@@ -28,26 +28,45 @@ VALID_API_KEY = "test-integration-key-xyz"
 
 # ── App fixture ────────────────────────────────────────────────────
 
+import os as _os  # noqa: E402
+
+# Env values required by the FastAPI app at create-time AND by every
+# request in this module (e.g. ``API_KEYS`` for the API-key middleware).
+# Scoped to this module via the autouse fixture below — import-time
+# mutation would leak ``DATABASE_URL`` into other suites and defeat
+# module-level skip gates such as ``tests/test_moyasar_webhook_persistence.py``.
+_TEST_ENV = {
+    "API_KEYS": VALID_API_KEY,
+    "APP_ENV": "test",
+    "APP_DEBUG": "false",
+    "DATABASE_URL": "sqlite+aiosqlite:///:memory:",
+    "ANTHROPIC_API_KEY": "sk-test",
+    "DEEPSEEK_API_KEY": "sk-test",
+    "GROQ_API_KEY": "sk-test",
+    "GLM_API_KEY": "sk-test",
+    "GOOGLE_API_KEY": "sk-test",
+}
+
+
+@pytest.fixture(scope="module", autouse=True)
+def _test_env():
+    # Saved values include ``None`` for unset keys so teardown can pop them.
+    saved = {k: _os.environ.get(k) for k in _TEST_ENV}
+    _os.environ.update(_TEST_ENV)
+    try:
+        yield
+    finally:
+        for k, original in saved.items():
+            if original is None:
+                _os.environ.pop(k, None)
+            else:
+                _os.environ[k] = original
+
+
 @pytest.fixture(scope="module")
-def app():
+def app(_test_env):
     """Create the app with all external calls mocked."""
-    with (
-        patch.dict(
-            "os.environ",
-            {
-                "API_KEYS": VALID_API_KEY,
-                "APP_ENV": "test",
-                "APP_DEBUG": "false",
-                "DATABASE_URL": "sqlite+aiosqlite:///:memory:",
-                "ANTHROPIC_API_KEY": "sk-test",
-                "DEEPSEEK_API_KEY": "sk-test",
-                "GROQ_API_KEY": "sk-test",
-                "GLM_API_KEY": "sk-test",
-                "GOOGLE_API_KEY": "sk-test",
-            },
-        ),
-        patch("db.session.init_db", new=AsyncMock()),
-    ):
+    with patch("db.session.init_db", new=AsyncMock()):
         from api.main import create_app
         return create_app()
 
@@ -148,33 +167,49 @@ class TestETagCaching:
 
 # ── 6. Auth enforcement ────────────────────────────────────────────
 
+# Use an endpoint that is registered as GET and goes through the
+# API-key auth middleware. ``/api/v1/leads`` is POST-only, so a GET
+# returns 405 before auth runs and these tests would always fail —
+# ``/api/v1/founder/leads`` is the real GET path under the founder
+# router.
+_AUTH_PATH = "/api/v1/founder/leads"
+
+
 class TestAuthEnforcement:
     def test_missing_key_returns_401(self, client):
-        r = client.get("/api/v1/leads")
+        r = client.get(_AUTH_PATH)
         assert r.status_code == 401
 
     def test_invalid_key_returns_401(self, client):
-        r = client.get("/api/v1/leads", headers={"X-API-Key": "wrong-key"})
+        r = client.get(_AUTH_PATH, headers={"X-API-Key": "wrong-key"})
         assert r.status_code == 401
 
     def test_valid_key_passes(self, client, auth_headers):
-        r = client.get("/api/v1/leads", headers=auth_headers)
+        r = client.get(_AUTH_PATH, headers=auth_headers)
         assert r.status_code in (200, 422, 503)  # exclude 401/403
 
 
 # ── 7. Leads endpoint ─────────────────────────────────────────────
 
+# The GET-leads listing lives under the founder router, not under the
+# top-level ``/api/v1/leads`` (which is POST-only). Using the founder
+# path lets these checks exercise the real list path.
+
 class TestLeadsEndpoint:
     def test_list_leads_accepts_pagination_params(self, client, auth_headers):
-        r = client.get("/api/v1/leads?limit=5", headers=auth_headers)
+        r = client.get("/api/v1/founder/leads?limit=5", headers=auth_headers)
         assert r.status_code in (200, 422, 503)  # not 401
 
     def test_leads_response_envelope(self, client, auth_headers):
-        r = client.get("/api/v1/leads", headers=auth_headers)
+        r = client.get("/api/v1/founder/leads", headers=auth_headers)
         if r.status_code != 200:
             pytest.skip("Leads endpoint not returning 200 in this test env")
         body = r.json()
-        # Standard envelope must have data + meta + errors
-        assert "data" in body
-        assert "meta" in body
-        assert "errors" in body
+        # The founder leads endpoint declares its own structured envelope —
+        # ``schema_version`` for forward-compat, ``leads`` for the rows,
+        # ``stats`` for aggregates, and ``hard_gates`` for the
+        # governance non-negotiables surfaced on every list.
+        assert "schema_version" in body
+        assert "leads" in body
+        assert "stats" in body
+        assert "hard_gates" in body

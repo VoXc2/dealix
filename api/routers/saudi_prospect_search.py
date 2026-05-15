@@ -98,29 +98,62 @@ async def search_prospects(
             "note": "DB layer unavailable; returning empty result set.",
         }
 
+    def _col(*names: str) -> Any:
+        """First mapped column matching one of ``names``, else ``None``.
+        ``CompanyRecord`` does not model every prospect attribute, so a
+        filter on an absent column is skipped rather than crashing."""
+        for n in names:
+            col = getattr(CompanyRecord, n, None)
+            if col is not None:
+                return col
+        return None
+
+    # Track which filters were actually enforced vs. dropped because the
+    # current schema has no matching column — the response reports both so
+    # callers never assume an unsupported filter was applied.
+    applied: dict[str, Any] = {}
+    ignored: list[str] = []
+
     async with async_session_factory()() as session:
         stmt = select(CompanyRecord)
         count_stmt = select(func.count()).select_from(CompanyRecord)
 
         if sector is not None:
-            stmt = stmt.where(CompanyRecord.industry == sector)
-            count_stmt = count_stmt.where(CompanyRecord.industry == sector)
+            col = _col("industry", "sector")
+            if col is not None:
+                stmt = stmt.where(col == sector)
+                count_stmt = count_stmt.where(col == sector)
+                applied["sector"] = sector
+            else:
+                ignored.append("sector")
         if region is not None:
-            stmt = stmt.where(CompanyRecord.region == region)
-            count_stmt = count_stmt.where(CompanyRecord.region == region)
+            col = _col("region")
+            if col is not None:
+                stmt = stmt.where(col == region)
+                count_stmt = count_stmt.where(col == region)
+                applied["region"] = region
+            else:
+                ignored.append("region")
         if size_band is not None:
-            stmt = stmt.where(CompanyRecord.size_band == size_band)
-            count_stmt = count_stmt.where(CompanyRecord.size_band == size_band)
+            col = _col("size_band")
+            if col is not None:
+                stmt = stmt.where(col == size_band)
+                count_stmt = count_stmt.where(col == size_band)
+                applied["size_band"] = size_band
+            else:
+                ignored.append("size_band")
         if q:
             pattern = f"%{q}%"
-            stmt = stmt.where(
-                or_(CompanyRecord.name.ilike(pattern),
-                    CompanyRecord.domain.ilike(pattern))
-            )
-            count_stmt = count_stmt.where(
-                or_(CompanyRecord.name.ilike(pattern),
-                    CompanyRecord.domain.ilike(pattern))
-            )
+            text_cols = [
+                c for c in (_col("name"), _col("domain", "website")) if c is not None
+            ]
+            if text_cols:
+                clause = or_(*(c.ilike(pattern) for c in text_cols))
+                stmt = stmt.where(clause)
+                count_stmt = count_stmt.where(clause)
+                applied["q"] = q
+            else:
+                ignored.append("q")
 
         stmt = stmt.order_by(CompanyRecord.name).limit(limit).offset(offset)
         try:
@@ -138,9 +171,8 @@ async def search_prospects(
         "total": total,
         "limit": limit,
         "offset": offset,
-        "filters_applied": {
-            "sector": sector, "region": region, "size_band": size_band, "q": q,
-        },
+        "filters_applied": applied,
+        "filters_ignored": ignored,
         "pdpl_note": (
             "All fields above are public business registry attributes only. "
             "Contact PII (emails, phone numbers) is gated by PDPL Art. 5 consent."

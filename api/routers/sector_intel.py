@@ -241,8 +241,9 @@ async def generate_report(
             "compliance_notes": {
                 "section": "compliance_notes",
                 "status": "real",
-                "pdpl": "All data sourced from public Saudi business registries "
-                        "(MCI, Chamber directories, SDAIA Open Data) — no PII collected.",
+                "pdpl": "PDPL-compliant: all data sourced from public Saudi "
+                        "business registries (MCI, Chamber directories, SDAIA "
+                        "Open Data) — no personal data collected or processed.",
                 "zatca": f"Invoice for this report follows ZATCA Phase 2 spec; "
                          f"price {REPORT_PRICE_SAR[body.sector]} SAR ex-VAT.",
             },
@@ -346,12 +347,42 @@ async def fetch_report(
             },
         )
 
-    async with async_session_factory()() as session:
-        row = (
-            await session.execute(
-                select(SectorReportRecord).where(SectorReportRecord.id == report_id)
+    try:
+        async with async_session_factory()() as session:
+            row = (
+                await session.execute(
+                    select(SectorReportRecord).where(SectorReportRecord.id == report_id)
+                )
+            ).scalar_one_or_none()
+    except Exception:  # noqa: BLE001 — DB unreachable / sector_reports not migrated
+        # Distinguish "persistence not configured" (feature deferred, v4 §7)
+        # from "DB configured but the query failed" (a transient outage).
+        # The former is a permanent 404; the latter must surface as 503 so
+        # clients retry and operational alerting fires.
+        if not os.environ.get("DATABASE_URL", "").strip():
+            raise HTTPException(
+                status_code=404,
+                detail={
+                    "error": "report_not_persisted",
+                    "report_id": report_id,
+                    "note": (
+                        "Report persistence is deferred (v4 §7); no DATABASE_URL "
+                        "is configured. Re-fetch once the DB layer + migration "
+                        "008 are live."
+                    ),
+                },
             )
-        ).scalar_one_or_none()
+        raise HTTPException(
+            status_code=503,
+            detail={
+                "error": "report_store_unavailable",
+                "report_id": report_id,
+                "note": (
+                    "The sector_reports store is configured but unreachable "
+                    "(connection/migration error). This is retriable."
+                ),
+            },
+        )
 
     if row is None:
         raise HTTPException(

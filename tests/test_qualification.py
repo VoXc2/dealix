@@ -1,7 +1,10 @@
 """Sales qualification scorer — deterministic decision tree."""
 from __future__ import annotations
 
-from auto_client_acquisition.sales_os.qualification import Decision, qualify
+from auto_client_acquisition.sales_os.qualification import (
+    QualificationVerdict as Decision,
+    qualify,
+)
 
 
 def _all_yes() -> dict:

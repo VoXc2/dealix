@@ -1,0 +1,10 @@
+{
+  "log_id": "FIRST-INVOICE-LOG-001",
+  "updated_at": "2026-05-14",
+  "invoice_sent_count": 0,
+  "invoice_paid_count": 0,
+  "ceo_complete": false,
+  "entries": [],
+  "next_required_action": "Send invoice after qualified buyer accepts scope.",
+  "completion_rule": "Score 5 requires at least one invoice entry with proof target."
+}

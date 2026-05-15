@@ -1,0 +1,373 @@
+#!/usr/bin/env python3
+"""verify_all_dealix.py — Wave 19 Recovery readiness verifier.
+
+This verifier is intentionally separate from the technical CI test suite.
+It scores commercial / CEO-completion artifacts on a 0..5 scale per
+system, separates build-complete from company-complete, and is honest
+about market actions that have not happened yet.
+
+Usage:
+    python scripts/verify_all_dealix.py            # human report
+    python scripts/verify_all_dealix.py --json     # machine-readable
+
+Exit code:
+    0 — all systems pass at score >= 3
+    1 — any system fails (score < 3)
+"""
+from __future__ import annotations
+
+import argparse
+import json
+import sys
+from dataclasses import dataclass
+from pathlib import Path
+from typing import Callable
+
+REPO_ROOT = Path(__file__).resolve().parent.parent
+
+
+def _exists(*paths: str) -> bool:
+    return all((REPO_ROOT / p).exists() for p in paths)
+
+
+def _read_json(path: str) -> dict | None:
+    p = REPO_ROOT / path
+    if not p.exists():
+        return None
+    try:
+        return json.loads(p.read_text(encoding="utf-8"))
+    except json.JSONDecodeError:
+        return None
+
+
+def _contains(path: str, *needles: str) -> bool:
+    p = REPO_ROOT / path
+    if not p.exists():
+        return False
+    text = p.read_text(encoding="utf-8")
+    return all(n in text for n in needles)
+
+
+@dataclass
+class Check:
+    system: str
+    score: int  # 0..5
+    pass_: bool
+    details: str
+
+    def to_dict(self) -> dict:
+        return {
+            "system": self.system,
+            "score": self.score,
+            "pass": self.pass_,
+            "details": self.details,
+        }
+
+
+def check_offer_ladder() -> Check:
+    if not _exists("docs/sales-kit/INVESTOR_ONE_PAGER.md"):
+        return Check("Offer Ladder", 0, False, "INVESTOR_ONE_PAGER.md missing")
+    if not _contains(
+        "docs/sales-kit/INVESTOR_ONE_PAGER.md",
+        "4,999 SAR/month",
+        "25,000 SAR",
+        "No scraping",
+    ):
+        return Check("Offer Ladder", 2, False, "one-pager missing required content")
+    return Check("Offer Ladder", 4, True, "ladder + discipline language present")
+
+
+def check_founder_command_center() -> Check:
+    landing = REPO_ROOT / "landing/founder-command-bus.html"
+    marker = _read_json("data/founder_command_center_status.json")
+    if marker is None:
+        return Check("Founder Command Center", 1, False, "deploy marker missing")
+    if not marker.get("deployment_marker"):
+        return Check("Founder Command Center", 2, False, "marker present but deployment_marker=false")
+    page_ok = landing.exists() or _marker_page_inside_repo(marker.get("page_path", ""))
+    if not page_ok:
+        # Page-missing must NOT pass. The matrix requires both marker and a
+        # real page artifact, so all_pass cannot quietly report success when
+        # the landing target is gone.
+        return Check(
+            "Founder Command Center",
+            2,
+            False,
+            "marker present but page artifact missing (landing/founder-command-bus.html or marker.page_path)",
+        )
+    return Check("Founder Command Center", 4, True, "page + marker present")
+
+
+def _marker_page_inside_repo(page_path: str) -> bool:
+    """Resolve ``page_path`` relative to the repo root and only count it as
+    present when it lands inside the repository. An absolute path like
+    ``/etc/hosts`` would otherwise escape ``REPO_ROOT`` and trick the
+    check into passing without a real founder-page artifact."""
+    if not page_path:
+        return False
+    raw = Path(page_path)
+    if raw.is_absolute():
+        return False
+    if ".." in raw.parts:
+        return False
+    try:
+        candidate = (REPO_ROOT / raw).resolve()
+        repo_root = REPO_ROOT.resolve()
+        candidate.relative_to(repo_root)
+    except (OSError, ValueError):
+        return False
+    # Must be a real file artifact; ``docs/`` etc. should not pass the
+    # gate just because the directory exists.
+    return candidate.is_file()
+
+
+def check_partner_motion() -> Check:
+    docs_ok = _exists("docs/sales-kit/ANCHOR_PARTNER_OUTREACH.md")
+    pipeline = _read_json("data/anchor_partner_pipeline.json")
+    log = _read_json("data/partner_outreach_log.json")
+    if not (docs_ok and pipeline and log):
+        return Check("Partner Motion", 0, False, "outreach doc/pipeline/log missing")
+    if not pipeline.get("partner_archetypes"):
+        return Check("Partner Motion", 1, False, "pipeline has no archetypes")
+    entries_list = log.get("entries", []) or []
+    sent = log.get("outreach_sent_count", 0)
+    entries = len(entries_list)
+    if sent != entries:
+        return Check(
+            "Partner Motion",
+            2,
+            False,
+            f"log dishonest: count={sent} entries={entries}",
+        )
+    # ``ceo_complete`` self-claim has to align with reality.
+    # If the log claims ceo_complete with zero sends, that's a dishonest
+    # log — refuse to pass.
+    if bool(log.get("ceo_complete")) and sent == 0:
+        return Check(
+            "Partner Motion",
+            2,
+            False,
+            "log dishonest: ceo_complete=true but outreach_sent_count=0",
+        )
+    if sent == 0:
+        return Check(
+            "Partner Motion",
+            3,
+            True,
+            "runbook + pipeline + honest log; outreach not yet sent",
+        )
+    # Score-5 contract (per data/partner_outreach_log.json::completion_rule):
+    # "Score 5 requires at least one founder-confirmed outreach entry."
+    # Require an actual boolean True so malformed logs (e.g.
+    # founder_confirmed="false" / "yes" / 1) cannot trick the gate.
+    founder_confirmed = any(
+        e.get("founder_confirmed") is True for e in entries_list
+    )
+    if not founder_confirmed:
+        return Check(
+            "Partner Motion",
+            4,
+            True,
+            f"{sent} outreach entries logged, none founder-confirmed yet",
+        )
+    return Check("Partner Motion", 5, True, f"{sent} outreach entries; at least one founder-confirmed")
+
+
+def check_first_invoice_motion() -> Check:
+    if not _exists("docs/ops/FIRST_INVOICE_UNLOCK.md"):
+        return Check("First Invoice Motion", 0, False, "FIRST_INVOICE_UNLOCK.md missing")
+    log = _read_json("data/first_invoice_log.json")
+    if log is None:
+        return Check("First Invoice Motion", 1, False, "first_invoice_log.json missing")
+    entries_list = log.get("entries", []) or []
+    sent = log.get("invoice_sent_count", 0)
+    paid = log.get("invoice_paid_count", 0)
+    entries = len(entries_list)
+    if sent != entries or paid > sent:
+        return Check(
+            "First Invoice Motion",
+            2,
+            False,
+            f"log dishonest: sent={sent} paid={paid} entries={entries}",
+        )
+    if sent == 0:
+        return Check(
+            "First Invoice Motion",
+            3,
+            True,
+            "runbook + honest log; invoice not yet sent",
+        )
+    if paid == 0:
+        return Check("First Invoice Motion", 4, True, f"{sent} invoice(s) sent, none paid")
+    # Score-5 contract (per data/first_invoice_log.json::completion_rule):
+    # "Score 5 requires at least one invoice entry with proof target."
+    # Require ``proof_target`` to be a real non-empty string — ``None``
+    # or ``False`` placeholders coerced via ``str(...)`` would become
+    # ``'None'`` / ``'False'`` and falsely satisfy the gate.
+    def _has_proof_target(entry: dict) -> bool:
+        pt = entry.get("proof_target")
+        return isinstance(pt, str) and bool(pt.strip())
+
+    has_proof_target = any(_has_proof_target(e) for e in entries_list)
+    if not has_proof_target:
+        return Check(
+            "First Invoice Motion",
+            4,
+            True,
+            f"{paid} invoice(s) paid, but no entry carries proof_target evidence",
+        )
+    return Check("First Invoice Motion", 5, True, f"{paid} invoice(s) paid with proof target")
+
+
+def check_funding_pack() -> Check:
+    required = [
+        "docs/funding/FUNDING_MEMO.md",
+        "docs/funding/USE_OF_FUNDS.md",
+        "docs/funding/HIRING_SCORECARDS.md",
+        "docs/funding/FIRST_3_HIRES.md",
+        "docs/funding/INVESTOR_QA.md",
+    ]
+    missing = [p for p in required if not (REPO_ROOT / p).exists()]
+    if missing:
+        return Check("Funding Pack", 0, False, f"missing: {', '.join(missing)}")
+    if not _contains("docs/funding/USE_OF_FUNDS.md", "Capital must not fund"):
+        return Check("Funding Pack", 2, False, "USE_OF_FUNDS missing discipline language")
+    if not _contains("docs/funding/HIRING_SCORECARDS.md", "Do Not Hire If"):
+        return Check("Funding Pack", 2, False, "HIRING_SCORECARDS missing gate language")
+    return Check("Funding Pack", 4, True, "memo + use of funds + hiring gates + Q&A present")
+
+
+def check_gcc_expansion() -> Check:
+    required = [
+        "docs/gcc-expansion/GCC_EXPANSION_THESIS.md",
+        "docs/gcc-expansion/GCC_COUNTRY_PRIORITY_MAP.md",
+        "docs/gcc-expansion/GCC_GO_TO_MARKET_SEQUENCE.md",
+    ]
+    missing = [p for p in required if not (REPO_ROOT / p).exists()]
+    if missing:
+        return Check("GCC Expansion", 0, False, f"missing: {', '.join(missing)}")
+    if not _contains(
+        "docs/gcc-expansion/GCC_EXPANSION_THESIS.md",
+        "Saudi-first commercially",
+        "not launching broadly across the GCC before Invoice #1",
+    ):
+        return Check("GCC Expansion", 2, False, "thesis missing Saudi-beachhead lock")
+    return Check("GCC Expansion", 4, True, "thesis + country map + sequence present")
+
+
+def check_open_doctrine() -> Check:
+    required = [
+        "open-doctrine/README.md",
+        "open-doctrine/11_NON_NEGOTIABLES.md",
+        "open-doctrine/CONTROL_MAPPING.md",
+    ]
+    missing = [p for p in required if not (REPO_ROOT / p).exists()]
+    if missing:
+        return Check("Open Doctrine", 0, False, f"missing: {', '.join(missing)}")
+    forbidden = [
+        "anchor_partner_pipeline",
+        "admin_key",
+        "client_data",
+        "private_pricing",
+        "investor_confidential",
+        "password",
+        "token",
+    ]
+    # Scan every markdown file under open-doctrine/, not just the three
+    # required files — any new public doctrine page must be subject to the
+    # same secret-leak gate.
+    doctrine_root = REPO_ROOT / "open-doctrine"
+    md_files = sorted(doctrine_root.rglob("*.md")) if doctrine_root.exists() else []
+    if not md_files:
+        return Check("Open Doctrine", 0, False, "no markdown files under open-doctrine/")
+    for md in md_files:
+        # Case-insensitive scan so ``Password`` / ``TOKEN`` / mixed-case
+        # variants aren't missed by the lowercase-token list.
+        text = md.read_text(encoding="utf-8").lower()
+        for term in forbidden:
+            if term in text:
+                rel = md.relative_to(REPO_ROOT)
+                return Check(
+                    "Open Doctrine",
+                    1,
+                    False,
+                    f"forbidden term '{term}' leaked into {rel}",
+                )
+    return Check(
+        "Open Doctrine",
+        4,
+        True,
+        f"public doctrine present + secret-clean ({len(md_files)} files scanned)",
+    )
+
+
+CHECKS: list[Callable[[], Check]] = [
+    check_offer_ladder,
+    check_founder_command_center,
+    check_partner_motion,
+    check_first_invoice_motion,
+    check_funding_pack,
+    check_gcc_expansion,
+    check_open_doctrine,
+]
+
+
+def run() -> tuple[list[Check], bool, bool]:
+    results = [fn() for fn in CHECKS]
+    all_pass = all(r.pass_ for r in results)
+    # CEO-complete thresholds reflect what each system means at each score.
+    # Per the matrix and the *_log.json::completion_rule fields:
+    #
+    # - Partner Motion: score 4 explicitly means "outreach sent but no
+    #   founder-confirmed entry yet"; score 5 means at least one
+    #   founder-confirmed entry. CEO-complete requires real founder
+    #   market action, so Partner Motion must reach 5.
+    # - First Invoice Motion: score 4 means "invoice(s) sent, none
+    #   paid yet"; score 5 means a paid invoice with a proof_target.
+    #   FIRST_INVOICE_UNLOCK.md defines the CEO-complete milestone as
+    #   "invoice sent", so 4 is enough here.
+    per_system_threshold = {
+        "Partner Motion": 5,
+        "First Invoice Motion": 4,
+    }
+    by_system = {r.system: r.score for r in results}
+    ceo_complete = all_pass and all(
+        by_system.get(system, 0) >= threshold
+        for system, threshold in per_system_threshold.items()
+    )
+    return results, all_pass, ceo_complete
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--json", action="store_true")
+    args = parser.parse_args()
+
+    results, all_pass, ceo_complete = run()
+
+    if args.json:
+        print(
+            json.dumps(
+                {
+                    "results": [r.to_dict() for r in results],
+                    "all_pass": all_pass,
+                    "ceo_complete": ceo_complete,
+                },
+                indent=2,
+            )
+        )
+    else:
+        print("Dealix Wave 19 Recovery — Readiness Verifier")
+        print("=" * 60)
+        for r in results:
+            status = "PASS" if r.pass_ else "FAIL"
+            print(f"  [{status}]  {r.score}/5  {r.system}: {r.details}")
+        print("=" * 60)
+        print(f"All systems pass (>=3/5):  {all_pass}")
+        print(f"CEO-complete (market motion at 5/5): {ceo_complete}")
+
+    return 0 if all_pass else 1
+
+
+if __name__ == "__main__":
+    sys.exit(main())

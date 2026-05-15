@@ -28,11 +28,13 @@ async def test_per_tier_growth_has_positive_margin(async_client):
 
 
 @pytest.mark.asyncio
-async def test_per_tier_scale_has_higher_margin_than_starter(async_client):
-    """Larger tiers should compound margin (fixed infra cost amortized)."""
+async def test_per_tier_scale_compounds_absolute_profit(async_client):
+    """Variable costs scale with the tier, so margin % does not compound —
+    but absolute gross profit must, and the margin must stay strong."""
     res = await async_client.get("/api/v1/cost-tracking/per-tier")
     tiers = res.json()["tiers"]
-    assert tiers["scale"]["gross_margin_pct"] > tiers["starter"]["gross_margin_pct"]
+    assert tiers["scale"]["gross_profit_halalas"] > tiers["starter"]["gross_profit_halalas"]
+    assert tiers["scale"]["gross_margin_pct"] > 75
 
 
 @pytest.mark.asyncio

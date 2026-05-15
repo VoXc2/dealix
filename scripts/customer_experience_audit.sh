@@ -50,10 +50,15 @@ for page in landing/customer-portal.html landing/executive-command-center.html; 
   fi
 done
 
-# 3. No forbidden claims
+# 3. No forbidden claims — scan only customer-visible copy. Comments and
+#    <script>/<style> blocks are stripped first so the standard negation
+#    disclaimer ("Estimated outcomes are not guaranteed outcomes") does
+#    not register as a positive claim.
 FORBIDDEN_RE='(\bguaranteed?\b|\bblast\b|\bscraping\b|نضمن|مضمون|cold[[:space:]]+(whatsapp|outreach|email))'
 for page in landing/customer-portal.html landing/executive-command-center.html; do
-  if [ -f "$page" ] && grep -qiE "$FORBIDDEN_RE" "$page"; then
+  if [ -f "$page" ] && \
+     perl -0777 -pe 's/<!--.*?-->//gs; s/<script\b.*?<\/script>//gsi; s/<style\b.*?<\/style>//gsi' "$page" \
+       | grep -qiE "$FORBIDDEN_RE"; then
     fail "$page contains forbidden claims"
   else
     ok_msg "$page free of forbidden claims"

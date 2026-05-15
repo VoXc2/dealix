@@ -59,6 +59,19 @@ def _configured_keys() -> list[str]:
     return [k.strip() for k in raw.split(",") if k.strip()]
 
 
+def _is_production() -> bool:
+    """True when the environment is production — auth then fails closed.
+
+    Honors both ``APP_ENV`` (the Settings field) and ``ENVIRONMENT`` (the
+    name used in .env.example) so a production deployment under either
+    contract cannot silently run unauthenticated.
+    """
+    for var in ("APP_ENV", "ENVIRONMENT"):
+        if os.getenv(var, "").strip().lower() == "production":
+            return True
+    return False
+
+
 def _configured_admin_keys() -> list[str]:
     """Return the list of valid admin API keys from ADMIN_API_KEYS env var."""
     raw = os.getenv("ADMIN_API_KEYS", "")
@@ -120,11 +133,21 @@ class APIKeyMiddleware(BaseHTTPMiddleware):
         if path in PUBLIC_PATHS or path.startswith(PUBLIC_PREFIXES):
             return await call_next(request)
 
-        # Enforce key only when API_KEYS is configured
+        # Enforce key only when API_KEYS is configured. In production an
+        # empty API_KEYS is a misconfiguration — fail closed rather than
+        # silently serving every request. Dev/test stay frictionless.
         allowed = _configured_keys()
         if not allowed:
+            if _is_production():
+                logger.warning("api_keys_unset_in_production", path=path)
+                return JSONResponse(
+                    {"detail": "API access is not configured"},
+                    status_code=status.HTTP_401_UNAUTHORIZED,
+                )
             return await call_next(request)
 
+        # Header only — API keys are never accepted via query string, since
+        # URLs leak through access logs, browser history and Referer headers.
         provided = request.headers.get("X-API-Key")
         if not verify_api_key(provided, allowed):
             logger.warning("api_key_invalid", path=path, has_key=bool(provided))
