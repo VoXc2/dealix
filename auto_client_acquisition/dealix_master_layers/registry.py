@@ -57,6 +57,57 @@ MASTER_LAYERS: tuple[DealixLayer, ...] = (
     DealixLayer("34_market_power", "قوة السوق", ("market_power_os", "dominance_os")),
     DealixLayer("35_tests", "الاختبارات والحواجز", ("tests",)),
     DealixLayer("36_architecture", "المعمارية", ("api",)),
+    # ── Institutional Intelligence Layer (SYSTEM 56–65) ──
+    DealixLayer(
+        "37_institutional_control_plane",
+        "طبقة التحكم المؤسسية",
+        ("institutional_control_os", "orchestrator"),
+    ),
+    DealixLayer(
+        "38_agent_society",
+        "مجتمع الوكلاء",
+        ("agent_governance", "agentic_operations_os", "ai_workforce"),
+    ),
+    DealixLayer(
+        "39_assurance_contracts",
+        "عقود الضمان والأمان",
+        ("governance_os", "secure_agent_runtime_os", "tool_guardrail_gateway"),
+    ),
+    DealixLayer(
+        "40_memory_fabric",
+        "نسيج الذاكرة المؤسسية",
+        ("revenue_memory", "knowledge_os"),
+    ),
+    DealixLayer(
+        "41_organizational_reasoning",
+        "الاستدلال المؤسسي",
+        ("intelligence_os", "intelligence_compounding_os", "meta_os"),
+    ),
+    DealixLayer(
+        "42_resilience_chaos",
+        "المرونة واختبار الفوضى",
+        ("risk_resilience_os", "revenue_memory"),
+    ),
+    DealixLayer(
+        "43_meta_governance",
+        "الحوكمة الفوقية",
+        ("meta_os", "governance_os"),
+    ),
+    DealixLayer(
+        "44_institutional_value",
+        "محرك القيمة المؤسسية",
+        ("value_capture_os", "value_os", "proof_architecture_os"),
+    ),
+    DealixLayer(
+        "45_institutional_learning",
+        "محرك التعلم المؤسسي",
+        ("learning_flywheel",),
+    ),
+    DealixLayer(
+        "46_institutional_operating_core",
+        "النواة التشغيلية المؤسسية",
+        ("institutional_dependency_os",),
+    ),
 )
 
 # Optional hints for cross-cutting concerns not tied to a single layer folder.

@@ -13,9 +13,10 @@ from auto_client_acquisition.dealix_master_layers import (
 
 
 def test_master_layers_count_and_order() -> None:
-    assert len(MASTER_LAYERS) == 37
+    assert len(MASTER_LAYERS) == 47
     assert MASTER_LAYERS[0].folder == "00_constitution"
-    assert MASTER_LAYERS[-1].folder == "36_architecture"
+    assert MASTER_LAYERS[36].folder == "36_architecture"
+    assert MASTER_LAYERS[-1].folder == "46_institutional_operating_core"
 
 
 def test_layer_by_folder() -> None:

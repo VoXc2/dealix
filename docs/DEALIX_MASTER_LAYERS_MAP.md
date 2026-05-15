@@ -30,7 +30,7 @@ Dealix تفوز عندما تتحول من ريبو إلى **نظام تشغيل
 
 ---
 
-## فهرس المجلدات (00 → 36)
+## فهرس المجلدات (00 → 46)
 
 | # | المجلد | موضوع الطبقة |
 |---|--------|----------------|
@@ -71,6 +71,23 @@ Dealix تفوز عندما تتحول من ريبو إلى **نظام تشغيل
 | 34 | [34_market_power](34_market_power/README.md) | مؤشرات قوة السوق، مرونة استراتيجية |
 | 35 | [35_tests](35_tests/README.md) | اختبارات وحواجز إلزامية |
 | 36 | [36_architecture](36_architecture/README.md) | شجرة الحزم، حدود API، أولوية MVP |
+
+### طبقة الذكاء المؤسسي (Institutional Intelligence Layer — SYSTEM 56–65)
+
+الطبقات 37–46 ترفع Dealix من «بنية تحتية للمؤسسة» إلى **طبقة تشغيل للمؤسسة نفسها**. أغلب هذه الأنظمة موجودة فعلًا في الكود؛ راجع التعيين الكامل وتحليل الفجوات في [institutional_intelligence_layer/INSTITUTIONAL_INTELLIGENCE_LAYER.md](institutional_intelligence_layer/INSTITUTIONAL_INTELLIGENCE_LAYER.md).
+
+| # | المجلد | موضوع الطبقة |
+|---|--------|----------------|
+| 37 | [37_institutional_control_plane](37_institutional_control_plane/README.md) | طبقة التحكم المؤسسية: توجيه، إيقاف، rollback، تتبّع |
+| 38 | [38_agent_society](38_agent_society/README.md) | مجتمع الوكلاء: تعاون، تحكيم، هرمية ضمن الحوكمة |
+| 39 | [39_assurance_contracts](39_assurance_contracts/README.md) | عقود الضمان: ماذا يرى/يقترح/ينفّذ الوكيل وما checks |
+| 40 | [40_memory_fabric](40_memory_fabric/README.md) | نسيج الذاكرة: قرار، عملية، حوكمة، حادثة، lineage |
+| 41 | [41_organizational_reasoning](41_organizational_reasoning/README.md) | الاستدلال المؤسسي: اعتماديات، اختناقات، انتشار المخاطر |
+| 42 | [42_resilience_chaos](42_resilience_chaos/README.md) | المرونة والفوضى: replay، rollback، canary، استرداد |
+| 43 | [43_meta_governance](43_meta_governance/README.md) | الحوكمة الفوقية: حوكمة الحوكمة وتحسينها مع الوقت |
+| 44 | [44_institutional_value](44_institutional_value/README.md) | محرك القيمة المؤسسية: ROI، أثر تشغيلي، KPIs |
+| 45 | [45_institutional_learning](45_institutional_learning/README.md) | محرك التعلم المؤسسي: التعلم من التنفيذ والحوادث |
+| 46 | [46_institutional_operating_core](46_institutional_operating_core/README.md) | النواة التشغيلية: مؤشر الاعتماد المؤسسي «هل وصلنا؟» |
 
 **نضج العميل (سلم التحويل)** مذكور في الخريطة النظرية كطبقة 6؛ في الهيكل المرقّم أعلاه يُدمج مع **05_client_os** و**04_product_strategy** ويُفصّل في `docs/client_maturity/` و`auto_client_acquisition/client_maturity_os/`.
 
