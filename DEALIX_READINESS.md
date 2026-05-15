@@ -39,7 +39,7 @@ python scripts/verify_dealix_ready.py --skip-tests
 | 6 | Sales Readiness | | /100 (Pass ≥ 85) |
 | 7 | Client Delivery Readiness | | |
 | 8 | Retainer Readiness | | /100 (Pass ≥ 85) |
-| 9 | Scale Readiness | | /100 (Pass ≥ 85) |
+| 9 | Scale Readiness | راجع `DEALIX_SCALE_VERDICT` | /100 (Pass ≥ 85) — `python scripts/verify_dealix_scale.py` · [`docs/scale/SCALE_READINESS.md`](docs/scale/SCALE_READINESS.md) |
 | 10 | World-Class Readiness | | (معيار طموح — انظر [`docs/company/WORLD_CLASS_READINESS_AR.md`](docs/company/WORLD_CLASS_READINESS_AR.md)) |
 
 **قرار ثلاثي:** `PASS` → انتقل | `FIX` → أصلح ثم أعد التقييم | `BLOCKED` → لا بيع ولا توسع حتى تُزال المعرقلات.

@@ -87,6 +87,7 @@ Optional — isolated Postgres revenue memory integration test ([`tests/test_iso
 
 تحقق سريع للوكلاء: `bash scripts/revenue_os_master_verify.sh` (يطبع `DEALIX_REVENUE_OS_VERDICT`).  
 تحقق جاهزية الخدمات والبوابات: `bash scripts/dealix_capability_verify.sh`.  
+تحقق جاهزية التوسّع (10 أنظمة + اختبار نهائي): `bash scripts/dealix_scale_verify.sh` — انظر [docs/scale/SCALE_READINESS.md](docs/scale/SCALE_READINESS.md).  
 تحقق Company OS (وثائق + سكربتات): `py -3 scripts/verify_full_mvp_ready.py --skip-tests` أو بدون `--skip-tests` لتشغيل pytest المرتبط.
 
 - مكينة ليدز سعودية: `docs/ops/SAUDI_LEAD_MACHINE_AR.md`؛ بذرة YAML + `python scripts/import_seed_leads.py --dry-run`؛ دفعة API: `POST /api/v1/leads/batch`.
