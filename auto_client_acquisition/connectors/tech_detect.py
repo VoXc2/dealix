@@ -19,8 +19,8 @@ from __future__ import annotations
 import asyncio
 import logging
 import re
-from dataclasses import dataclass, asdict
-from datetime import datetime, timezone
+from dataclasses import asdict, dataclass
+from datetime import UTC, datetime, timezone
 from typing import Any
 
 import httpx
@@ -246,7 +246,7 @@ async def detect_stack(
                 if error is None:
                     error = f"timeout:{path}"
                 status_label = "timeout" if status_label == "ok" else status_label
-            except Exception as exc:  # noqa: BLE001
+            except Exception as exc:
                 if error is None:
                     error = f"fetch_error:{path}:{type(exc).__name__}"
                 status_label = "fetch_error" if status_label == "ok" else status_label
@@ -269,7 +269,7 @@ async def detect_stack(
 
 
 def _now_iso() -> str:
-    return datetime.now(timezone.utc).isoformat()
+    return datetime.now(UTC).isoformat()
 
 
 # ── CLI convenience ────────────────────────────────────────────

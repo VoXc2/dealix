@@ -11,7 +11,6 @@ from auto_client_acquisition.diagnostic_workflow.schemas import (
     PilotOffer,
 )
 
-
 _DESCRIPTION_AR = (
     "Pilot لمدّة 7 أيّام يشمل الباقة الموصى بها مع مراجعة المؤسس "
     "لكلّ خطوة. السعر التعريفي 499 ريال — لا يوجد خصم تلقائي."

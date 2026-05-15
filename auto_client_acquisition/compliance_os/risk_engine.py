@@ -15,7 +15,6 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Any
 
-
 # Risky phrases — detected in any draft → escalate
 RISKY_PHRASES_AR: tuple[str, ...] = (
     "ضمان 100",

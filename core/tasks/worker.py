@@ -139,8 +139,8 @@ async def run_zatca_clearance(
     Submit invoice to ZATCA for Phase 2 clearance/reporting.
     إرسال الفاتورة إلى هيئة الزكاة والضريبة والجمارك للمقاصة.
     """
-    from integrations.zatca import ZATCAClient
     from db.session import AsyncSessionLocal
+    from integrations.zatca import ZATCAClient
 
     logger.info("job_zatca_clearance_start", invoice_id=invoice_id)
     async with AsyncSessionLocal() as session:

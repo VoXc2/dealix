@@ -256,6 +256,6 @@ class PostgresProofLedger:
 __all__: list[str] = [
     "PostgresProofLedger",
     "ProofEventORM",
-    "RevenueWorkUnitORM",
     "ProofLedgerBase",
+    "RevenueWorkUnitORM",
 ]

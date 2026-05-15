@@ -20,7 +20,7 @@ The 7 workflows (per plan §32.3.7):
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from datetime import date, datetime, timedelta, timezone
+from datetime import UTC, date, datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any, Literal
 
@@ -240,7 +240,7 @@ def check_daily_artifacts(
     Returns:
         DailyArtifactReport — never raises.
     """
-    today = on_date or datetime.now(timezone.utc).date()
+    today = on_date or datetime.now(UTC).date()
     days_elapsed = max(0, (today - started_at).days + 1)
 
     # Days 1..days_elapsed must have artifacts (or be flagged)

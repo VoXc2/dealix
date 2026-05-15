@@ -24,7 +24,7 @@ from __future__ import annotations
 import logging
 import os
 import uuid
-from datetime import datetime, timezone
+from datetime import UTC, datetime, timezone
 from typing import Any
 
 from fastapi import APIRouter, Body, HTTPException
@@ -40,7 +40,7 @@ log = logging.getLogger(__name__)
 
 
 def _utcnow_iso() -> str:
-    return datetime.now(timezone.utc).isoformat()
+    return datetime.now(UTC).isoformat()
 
 
 def _new_id(prefix: str = "evt_") -> str:
@@ -258,7 +258,7 @@ async def os_bulk_process(body: dict[str, Any] = Body(...)) -> dict[str, Any]:
             r = await fn(ev)
         except HTTPException as he:
             r = {"error": he.detail, "input": ev}
-        except Exception as exc:  # noqa: BLE001
+        except Exception as exc:
             r = {"error": str(exc), "input": ev}
         results.append(r)
 

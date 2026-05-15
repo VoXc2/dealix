@@ -7,7 +7,7 @@ from auto_client_acquisition.sales_os.proposal_sections import PROPOSAL_SECTION_
 
 def build_proposal_skeleton(*, client_label: str, sprint_name: str) -> dict[str, str]:
     """Return empty-ish sections with two non-negotiable statements prefilled."""
-    out = {k: "" for k in PROPOSAL_SECTION_KEYS}
+    out = dict.fromkeys(PROPOSAL_SECTION_KEYS, "")
     out["recommended_sprint"] = sprint_name
     out["problem"] = f"Prepared for {client_label} — complete during discovery."
     out["no_sales_guarantee_statement"] = (

@@ -34,7 +34,7 @@ def summarize_traces(traces: list[TraceRecordV10]) -> dict:
             "by_action_mode": by_mode,
             "by_risk_level": by_risk,
         }
-    except Exception:  # noqa: BLE001 - defensive default
+    except Exception:
         return {
             "trace_count": 0,
             "total_cost_usd": 0.0,

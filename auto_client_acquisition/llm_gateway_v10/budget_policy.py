@@ -67,7 +67,7 @@ def enforce_budget(
             "action": "proceed",
             "breached": None,
         }
-    except Exception:  # noqa: BLE001 - safe default
+    except Exception:
         return {
             "within_budget": False,
             "total_usd": 0.0,

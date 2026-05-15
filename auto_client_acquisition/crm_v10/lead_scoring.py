@@ -8,7 +8,6 @@ from typing import Any
 
 from auto_client_acquisition.crm_v10.schemas import Account, Lead
 
-
 CANONICAL_SAUDI_B2B_SECTORS: frozenset[str] = frozenset({
     "b2b_services",
     "b2b_saas",

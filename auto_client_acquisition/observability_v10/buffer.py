@@ -13,7 +13,6 @@ from auto_client_acquisition.customer_data_plane.pii_redactor import redact_dict
 from auto_client_acquisition.observability_v10.schemas import TraceRecordV10
 from auto_client_acquisition.observability_v10.trace_schema import validate_trace
 
-
 _TRACE_BUFFER: list[TraceRecordV10] = []
 _TRACE_LOCK = threading.Lock()
 

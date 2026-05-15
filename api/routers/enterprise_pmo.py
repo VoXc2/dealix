@@ -31,7 +31,7 @@ from __future__ import annotations
 
 import hashlib
 import logging
-from datetime import datetime, timezone
+from datetime import UTC, datetime, timezone
 from typing import Any
 
 from fastapi import APIRouter, Depends, HTTPException, Path
@@ -146,7 +146,7 @@ async def submit_request(body: _EnterpriseRequest) -> dict[str, Any]:
     _validate_enum(body.use_case_category, USE_CASE_CATEGORIES, "use_case_category")
     _validate_enum(body.regulatory_scope, REGULATORY_SCOPES, "regulatory_scope")
 
-    submitted_at = datetime.now(timezone.utc)
+    submitted_at = datetime.now(UTC)
     request_id = _request_id(body.company_name, submitted_at)
     readiness = _readiness_score(body)
 
@@ -249,7 +249,7 @@ async def generate_briefing(
     executive_command_center router. Activates once first enterprise
     customer exists.
     """
-    briefing_at = datetime.now(timezone.utc)
+    briefing_at = datetime.now(UTC)
     return {
         "engagement_id": engagement_id,
         "briefing_for_week_of": briefing_at.isoformat(),

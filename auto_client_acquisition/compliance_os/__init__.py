@@ -23,8 +23,8 @@ from auto_client_acquisition.compliance_os.contactability import (
     check_contactability,
 )
 from auto_client_acquisition.compliance_os.data_subject_requests import (
-    DSRStatus,
     DataSubjectRequest,
+    DSRStatus,
     open_dsr,
     process_dsr,
 )
@@ -45,23 +45,23 @@ from auto_client_acquisition.compliance_os.vendor_registry import (
 )
 
 __all__ = [
+    "CampaignRiskAssessment",
     "ConsentRecord",
-    "LawfulBasis",
-    "record_consent",
-    "record_opt_out",
     "ContactabilityStatus",
-    "check_contactability",
     "DSRStatus",
     "DataSubjectRequest",
-    "open_dsr",
-    "process_dsr",
-    "CampaignRiskAssessment",
-    "score_campaign_risk",
+    "LawfulBasis",
     "ProcessingActivity",
     "RoPAExporter",
-    "build_ropa",
     "Vendor",
     "VendorStatus",
+    "build_ropa",
+    "check_contactability",
+    "open_dsr",
+    "process_dsr",
+    "record_consent",
+    "record_opt_out",
     "register_vendor",
+    "score_campaign_risk",
     "vendors_summary",
 ]

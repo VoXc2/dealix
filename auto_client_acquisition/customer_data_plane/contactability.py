@@ -17,7 +17,6 @@ from auto_client_acquisition.customer_data_plane.schemas import (
     ContactabilityVerdict,
 )
 
-
 _BASE_NOTES = [
     "no_cold_outreach",
     "no_scraping",

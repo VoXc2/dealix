@@ -2,8 +2,8 @@
 
 from auto_client_acquisition.business.gtm_plan import (
     channel_strategy,
-    first_100_customers_plan,
     first_10_customers_plan,
+    first_100_customers_plan,
     founder_led_sales_script,
     partner_strategy,
 )
@@ -44,8 +44,8 @@ __all__ = [
     "estimate_ltv",
     "estimate_mrr_path",
     "estimate_roi",
-    "first_100_customers_plan",
     "first_10_customers_plan",
+    "first_100_customers_plan",
     "founder_led_sales_script",
     "get_pricing_tiers",
     "north_star_metrics",

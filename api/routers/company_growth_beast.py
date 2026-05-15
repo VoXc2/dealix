@@ -7,8 +7,12 @@ from fastapi import APIRouter
 from pydantic import BaseModel, ConfigDict, Field
 
 from auto_client_acquisition.company_growth_beast import (
-    build_company_profile, build_growth_diagnostic, build_target_segments,
-    build_offer_recommendation, build_content_pack, build_weekly_report,
+    build_company_profile,
+    build_content_pack,
+    build_growth_diagnostic,
+    build_offer_recommendation,
+    build_target_segments,
+    build_weekly_report,
     support_to_growth_insight,
 )
 

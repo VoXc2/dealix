@@ -26,7 +26,7 @@ from __future__ import annotations
 
 import json
 import uuid
-from datetime import datetime, timezone
+from datetime import UTC, datetime, timezone
 from typing import Any
 
 from core.logging import get_logger
@@ -177,7 +177,7 @@ def build_erasure_audit_entry(
             "entities_erased": entities_erased,
             "erasure_method": "cascade_soft_delete_plus_pii_null",
             "pdpl_article": "Art. 13",
-            "timestamp": datetime.now(timezone.utc).isoformat(),
+            "timestamp": datetime.now(UTC).isoformat(),
         },
         "status": "ok",
     }
@@ -216,7 +216,7 @@ def build_data_export(
     return {
         "export_id": export_id,
         "export_format": "PDPL_DATA_EXPORT_V1",
-        "generated_at": datetime.now(timezone.utc).isoformat(),
+        "generated_at": datetime.now(UTC).isoformat(),
         "pdpl_article": "Art. 14 — Data Portability",
         "controller": "Dealix | ديلكس",
         "data_subject": {
@@ -277,7 +277,7 @@ def build_monthly_audit_report(
         "report_id": str(uuid.uuid4()),
         "report_type": "PDPL_MONTHLY_AUDIT",
         "report_month": report_month,
-        "generated_at": datetime.now(timezone.utc).isoformat(),
+        "generated_at": datetime.now(UTC).isoformat(),
         "tenant_id": tenant_id,
         "pdpl_article": "Art. 18 — Record-Keeping",
         "retention_years": 5,
@@ -363,7 +363,7 @@ def build_consent_dashboard(
 
     return {
         "tenant_id": tenant_id,
-        "generated_at": datetime.now(timezone.utc).isoformat(),
+        "generated_at": datetime.now(UTC).isoformat(),
         "overview": {
             "total_records": total,
             "granted": granted,
@@ -403,7 +403,7 @@ def build_breach_notification(
         "notification_type": "PDPL_DATA_BREACH_NOTIFICATION",
         "pdpl_article": "Art. 21 — Breach Notification (72h to SDAIA)",
         "tenant_id": tenant_id,
-        "generated_at": datetime.now(timezone.utc).isoformat(),
+        "generated_at": datetime.now(UTC).isoformat(),
         "breach": {
             "description": breach_description,
             "discovery_datetime": discovery_datetime,

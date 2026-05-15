@@ -7,8 +7,8 @@ so the swap is mechanical when the DB ships.
 from __future__ import annotations
 
 import threading
+from collections.abc import Iterable
 from datetime import UTC, datetime
-from typing import Iterable
 
 from auto_client_acquisition.customer_data_plane.schemas import (
     ChannelKind,

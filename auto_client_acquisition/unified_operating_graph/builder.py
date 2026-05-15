@@ -272,7 +272,7 @@ def build_graph_for_customer(*, customer_handle: str) -> UnifiedGraph:
 
 
 def _get_brain_snapshot(customer_handle: str) -> dict[str, Any] | None:
-    from auto_client_acquisition.customer_brain import get_snapshot, build_snapshot
+    from auto_client_acquisition.customer_brain import build_snapshot, get_snapshot
     snap = get_snapshot(customer_handle=customer_handle)
     if snap is None:
         snap = build_snapshot(customer_handle=customer_handle)

@@ -9,7 +9,6 @@ from auto_client_acquisition.customer_inbox_v10.schemas import (
     SLAStatus,
 )
 
-
 _TARGET_HOURS_BY_CHANNEL: dict[str, float] = {
     Channel.INBOUND_WHATSAPP.value: 5 / 60,  # 5 minutes
     Channel.WEBSITE_CHAT.value: 1.0,

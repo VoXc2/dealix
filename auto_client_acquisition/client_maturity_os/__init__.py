@@ -23,8 +23,8 @@ from auto_client_acquisition.client_maturity_os.offer_matrix import (
     BLOCKED_OFFERS_BY_LEVEL,
     PRIMARY_OFFER_BY_LEVEL,
     blocked_offers_for_level,
-    level7_entry_gates_met,
     level1_first_track,
+    level7_entry_gates_met,
     primary_offer_for_level,
     retainer_eligibility_met,
 )
@@ -36,14 +36,14 @@ from auto_client_acquisition.client_maturity_os.progression_playbooks import (
 
 __all__ = (
     "BLOCKED_OFFERS_BY_LEVEL",
+    "MATURITY_LADDER_STATES",
+    "PLATFORM_PULL_SIGNALS",
     "PRIMARY_OFFER_BY_LEVEL",
     "PROGRESSION_DELIVERABLES",
-    "MATURITY_LADDER_STATES",
     "ClientMaturityDimensions",
     "ClientMaturityInputs",
     "MaturityDashboardView",
     "MaturityEngineResult",
-    "PLATFORM_PULL_SIGNALS",
     "blocked_offers_for_level",
     "build_maturity_dashboard",
     "client_maturity_band",

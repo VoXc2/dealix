@@ -20,7 +20,6 @@ from __future__ import annotations
 
 from auto_client_acquisition.service_catalog.schemas import ServiceOffering
 
-
 _FREE_DIAGNOSTIC = ServiceOffering(
     id="free_mini_diagnostic",
     name_ar="التشخيص المجاني المختصر",

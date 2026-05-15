@@ -4,7 +4,7 @@ from __future__ import annotations
 import json
 import os
 import threading
-from datetime import datetime, timezone
+from datetime import UTC, datetime, timezone
 from pathlib import Path
 
 from auto_client_acquisition.friction_log.sanitizer import sanitize_notes
@@ -62,9 +62,8 @@ def emit(
     )
     path = _path()
     _ensure_dir(path)
-    with _lock:
-        with path.open("a", encoding="utf-8") as f:
-            f.write(json.dumps(event.to_dict(), ensure_ascii=False) + "\n")
+    with _lock, path.open("a", encoding="utf-8") as f:
+        f.write(json.dumps(event.to_dict(), ensure_ascii=False) + "\n")
     return event
 
 
@@ -80,33 +79,32 @@ def list_events(
     path = _path()
     if not path.exists():
         return []
-    cutoff = datetime.now(timezone.utc).timestamp() - since_days * 86400
+    cutoff = datetime.now(UTC).timestamp() - since_days * 86400
     kind_filter = _kind_value(kind) if kind is not None else None
     out: list[FrictionEvent] = []
-    with _lock:
-        with path.open("r", encoding="utf-8") as f:
-            for line in f:
-                line = line.strip()
-                if not line:
-                    continue
-                try:
-                    data = json.loads(line)
-                    ev = FrictionEvent(**data)
-                except Exception:  # noqa: BLE001
-                    continue
-                if ev.customer_id != customer_id:
-                    continue
-                if kind_filter and ev.kind != kind_filter:
-                    continue
-                try:
-                    ts = datetime.fromisoformat(ev.occurred_at).timestamp()
-                except Exception:  # noqa: BLE001
-                    ts = 0.0
-                if ts < cutoff:
-                    continue
-                out.append(ev)
-                if len(out) >= limit:
-                    break
+    with _lock, path.open("r", encoding="utf-8") as f:
+        for line in f:
+            line = line.strip()
+            if not line:
+                continue
+            try:
+                data = json.loads(line)
+                ev = FrictionEvent(**data)
+            except Exception:
+                continue
+            if ev.customer_id != customer_id:
+                continue
+            if kind_filter and ev.kind != kind_filter:
+                continue
+            try:
+                ts = datetime.fromisoformat(ev.occurred_at).timestamp()
+            except Exception:
+                ts = 0.0
+            if ts < cutoff:
+                continue
+            out.append(ev)
+            if len(out) >= limit:
+                break
     return out
 
 

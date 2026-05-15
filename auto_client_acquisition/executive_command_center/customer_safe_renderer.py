@@ -8,10 +8,10 @@ from __future__ import annotations
 import json
 from typing import Any
 
-from auto_client_acquisition.integration_upgrade import hide_internal_terms
 from auto_client_acquisition.executive_command_center.schemas import (
     CommandCenterView,
 )
+from auto_client_acquisition.integration_upgrade import hide_internal_terms
 
 
 def render_customer_safe(view: CommandCenterView) -> dict[str, Any]:

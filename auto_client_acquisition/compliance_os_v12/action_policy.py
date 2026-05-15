@@ -125,7 +125,7 @@ def evaluate_action(
     action_type: str,
     channel: Channel = "internal",
     consent_state: ConsentState = "unknown",
-    customer_id: str | None = None,  # noqa: ARG001 — kept for symmetry
+    customer_id: str | None = None,
 ) -> ActionDecision:
     """Return a deterministic decision for the (action, channel, consent) triple."""
 

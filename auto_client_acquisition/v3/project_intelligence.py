@@ -12,10 +12,11 @@ supabase/migrations/202605010001_v3_project_memory.sql.
 
 from __future__ import annotations
 
+from collections.abc import Iterable
 from dataclasses import dataclass
 from hashlib import sha256
 from pathlib import Path
-from typing import Any, Iterable
+from typing import Any
 
 TEXT_EXTENSIONS = {
     ".py", ".ts", ".tsx", ".js", ".jsx", ".md", ".txt", ".sql", ".json", ".yaml", ".yml", ".html", ".css", ".toml", ".ini", ".env.example",

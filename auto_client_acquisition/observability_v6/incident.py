@@ -21,7 +21,7 @@ def record_incident(incident: Incident) -> Incident:
 
 
 def list_incidents(
-    severity_filter: Optional[IncidentSeverity] = None,
+    severity_filter: IncidentSeverity | None = None,
 ) -> list[Incident]:
     """Return all incidents, optionally filtered to a severity tier."""
     with _INCIDENT_LOCK:

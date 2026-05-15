@@ -2,10 +2,11 @@
 from __future__ import annotations
 
 import importlib
+from collections.abc import Callable
 from dataclasses import asdict, dataclass
 from datetime import UTC, datetime
 from enum import StrEnum
-from typing import Any, Callable
+from typing import Any
 
 
 class HealthStatus(StrEnum):
@@ -56,7 +57,7 @@ def _probe_safe_action_gateway() -> SubsystemHealth:
             ),
             details={"restricted_actions": sorted(restricted)},
         )
-    except Exception as exc:  # noqa: BLE001
+    except Exception as exc:
         return SubsystemHealth(
             name="safe_action_gateway",
             dimension=HealthDimension.SAFETY,
@@ -82,7 +83,7 @@ def _probe_live_gates() -> SubsystemHealth:
             ),
             details={"whatsapp_allow_live_send": s.whatsapp_allow_live_send},
         )
-    except Exception as exc:  # noqa: BLE001
+    except Exception as exc:
         return SubsystemHealth(
             name="live_action_gates",
             dimension=HealthDimension.SAFETY,
@@ -109,7 +110,7 @@ def _probe_safe_publishing_gate() -> SubsystemHealth:
             description=f"{len(FORBIDDEN_PATTERNS)} forbidden patterns active",
             details={"clean_decision": clean.decision, "unsafe_decision": unsafe.decision},
         )
-    except Exception as exc:  # noqa: BLE001
+    except Exception as exc:
         return SubsystemHealth(
             name="safe_publishing_gate",
             dimension=HealthDimension.SAFETY,
@@ -132,7 +133,7 @@ def _probe_service_matrix() -> SubsystemHealth:
             description=f"{counts.get('total', 0)} services in matrix",
             details=counts,
         )
-    except Exception as exc:  # noqa: BLE001
+    except Exception as exc:
         return SubsystemHealth(
             name="service_activation_matrix",
             dimension=HealthDimension.DELIVERY,
@@ -156,7 +157,7 @@ def _probe_seo_audit() -> SubsystemHealth:
             ),
             details=s,
         )
-    except Exception as exc:  # noqa: BLE001
+    except Exception as exc:
         return SubsystemHealth(
             name="seo_perimeter",
             dimension=HealthDimension.OBSERVABILITY,
@@ -186,7 +187,7 @@ def _probe_email_provider() -> SubsystemHealth:
             ),
             details={"primary_provider": s.email_provider, "configured": configured},
         )
-    except Exception as exc:  # noqa: BLE001
+    except Exception as exc:
         return SubsystemHealth(
             name="email_provider",
             dimension=HealthDimension.DELIVERY,
@@ -227,7 +228,7 @@ def _probe_payment_provider() -> SubsystemHealth:
             description="Moyasar test mode configured (default safe)",
             details={"configured": True, "mode": "test"},
         )
-    except Exception as exc:  # noqa: BLE001
+    except Exception as exc:
         return SubsystemHealth(
             name="payment_provider",
             dimension=HealthDimension.DELIVERY,
@@ -249,7 +250,7 @@ def _probe_proof_ledger() -> SubsystemHealth:
             description=f"{len(events)} events in current process buffer",
             details={"events_count": len(events)},
         )
-    except Exception as exc:  # noqa: BLE001
+    except Exception as exc:
         return SubsystemHealth(
             name="proof_ledger_in_process",
             dimension=HealthDimension.DATA,
@@ -271,7 +272,7 @@ def _probe_redis_optional() -> SubsystemHealth:
             description="redis-py installed (live connection NOT probed)",
             details={"installed": True},
         )
-    except Exception:  # noqa: BLE001
+    except Exception:
         return SubsystemHealth(
             name="redis_client_available",
             dimension=HealthDimension.OBSERVABILITY,

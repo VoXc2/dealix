@@ -20,12 +20,11 @@ Endpoints:
 
 from __future__ import annotations
 
-from typing import Any
-
 import hashlib
 import secrets
 import uuid
-from datetime import datetime, timezone
+from datetime import UTC, datetime, timezone
+from typing import Any
 
 import pyotp
 from fastapi import APIRouter, Body, Depends, HTTPException, Request, status
@@ -71,7 +70,7 @@ def _new_id(prefix: str = "") -> str:
 
 
 def _utcnow() -> datetime:
-    return datetime.now(timezone.utc).replace(tzinfo=None)
+    return datetime.now(UTC).replace(tzinfo=None)
 
 
 def _hash_password(plain: str) -> str:
@@ -598,9 +597,10 @@ async def mfa_setup(
     # Attempt QR code generation (optional — requires qrcode + Pillow)
     qr_data_uri: str | None = None
     try:
-        import io
-        import qrcode
         import base64
+        import io
+
+        import qrcode
         img = qrcode.make(uri)
         buf = io.BytesIO()
         img.save(buf, format="PNG")
@@ -681,11 +681,11 @@ async def password_reset_request(
     if user:
         reset_token = secrets.token_urlsafe(48)
         user.reset_token = hashlib.sha256(reset_token.encode()).hexdigest()
-        user.reset_token_expires_at = datetime.now(timezone.utc).replace(tzinfo=None)
+        user.reset_token_expires_at = datetime.now(UTC).replace(tzinfo=None)
 
         from datetime import timedelta
         user.reset_token_expires_at = (
-            datetime.now(timezone.utc) + timedelta(hours=1)
+            datetime.now(UTC) + timedelta(hours=1)
         ).replace(tzinfo=None)
         await db.flush()
         token_plaintext = reset_token

@@ -97,7 +97,7 @@ class ArabicNLPPipeline:
                     include_llm=include_llm_ner,
                     llm_task=llm_task,
                 )
-            except Exception as exc:  # noqa: BLE001
+            except Exception as exc:
                 logger.warning("pipeline_ner_error", error=str(exc))
 
         # 5. Sentiment
@@ -109,7 +109,7 @@ class ArabicNLPPipeline:
                     force_llm=include_llm_sentiment,
                     task=llm_task,
                 )
-            except Exception as exc:  # noqa: BLE001
+            except Exception as exc:
                 logger.warning("pipeline_sentiment_error", error=str(exc))
                 sentiment = {"label": "neutral", "score": 0.5, "method": "fallback"}
 

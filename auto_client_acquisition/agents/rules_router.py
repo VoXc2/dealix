@@ -23,7 +23,7 @@ can layer on top of this — but the rules alone are production-usable today.
 from __future__ import annotations
 
 import re
-from dataclasses import dataclass, asdict
+from dataclasses import asdict, dataclass
 from typing import Any
 
 # ── Keyword taxonomies (lowercased substring match) ───────────
@@ -427,7 +427,7 @@ def generate_messages(
         elif "Salla" in sig_evid or "Zid" in sig_evid or "ecom_mena" in sig_name:
             hook = f"{company} على منصة {sig_evid} — Dealix يرد على استفسارات المتجر بالعربي، يؤكد الطلب، ويسلّم للـ agent فقط عند negotiation."
         else:
-            hook = f"Dealix = AI sales rep بالعربي يرد على leads خلال 45 ثانية، يؤهّل، ويحجز demo — فوق CRM الحالي."
+            hook = "Dealix = AI sales rep بالعربي يرد على leads خلال 45 ثانية، يؤهّل، ويحجز demo — فوق CRM الحالي."
         return (
             f"{name} مرحباً،\n\n{hook}\n\n"
             f"20 دقيقة demo نشوف مناسبته لـ {company}؟\n"
@@ -472,9 +472,9 @@ def generate_messages(
 
     def whatsapp_warm() -> str:
         return (
-            f"السلام عليكم،\n"
-            f"سامي من Dealix. AI sales rep بالعربي — يرد، يؤهّل، يحجز demo.\n"
-            f"مناسب نتكلم 10 دقائق؟"
+            "السلام عليكم،\n"
+            "سامي من Dealix. AI sales rep بالعربي — يرد، يؤهّل، يحجز demo.\n"
+            "مناسب نتكلم 10 دقائق؟"
         )
 
     picker = {

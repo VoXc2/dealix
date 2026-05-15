@@ -12,7 +12,7 @@ from auto_client_acquisition.founder_v10.schemas import Blocker
 def _safe(fn, default):
     try:
         return fn()
-    except Exception:  # noqa: BLE001
+    except Exception:
         return default
 
 
@@ -21,7 +21,7 @@ def _reliability_blockers() -> list[Blocker]:
     try:
         from auto_client_acquisition.reliability_os import build_health_matrix
         matrix = build_health_matrix()
-    except Exception:  # noqa: BLE001
+    except Exception:
         return out
 
     for sub in matrix.get("subsystems") or []:
@@ -44,7 +44,7 @@ def _approval_blockers() -> list[Blocker]:
     try:
         from auto_client_acquisition.approval_center import list_pending
         pending = list_pending()
-    except Exception:  # noqa: BLE001
+    except Exception:
         return out
 
     if not pending:
@@ -66,7 +66,7 @@ def _review_pending_blockers() -> list[Blocker]:
     try:
         from auto_client_acquisition.self_growth_os import daily_growth_loop
         loop = daily_growth_loop.build_today() or {}
-    except Exception:  # noqa: BLE001
+    except Exception:
         return out
 
     flat = repr(loop).upper()
@@ -100,7 +100,7 @@ def _unsafe_action_blockers() -> list[Blocker]:
                 severity="blocked",
                 blocking_layer="agent_governance",
             ))
-    except Exception:  # noqa: BLE001
+    except Exception:
         pass
     return out
 

@@ -5,14 +5,14 @@ Pydantic v2 schemas for the Diagnostic Engine.
 
 from __future__ import annotations
 
-from datetime import datetime, timezone
+from datetime import UTC, datetime, timezone
 from typing import List
 
 from pydantic import BaseModel, ConfigDict, Field
 
 
 def _utcnow_naive() -> datetime:
-    return datetime.now(timezone.utc).replace(tzinfo=None)
+    return datetime.now(UTC).replace(tzinfo=None)
 
 
 class DiagnosticRequest(BaseModel):
@@ -35,8 +35,8 @@ class DiagnosticResult(BaseModel):
     recommended_bundle: str
     bundle_name_ar: str
     bundle_name_en: str
-    services_in_bundle: List[str]
+    services_in_bundle: list[str]
     markdown_ar_en: str
     approval_status: str = "approval_required"
-    safety_notes: List[str] = Field(default_factory=list)
+    safety_notes: list[str] = Field(default_factory=list)
     generated_at: datetime = Field(default_factory=_utcnow_naive)

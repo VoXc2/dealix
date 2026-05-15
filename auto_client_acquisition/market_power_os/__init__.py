@@ -6,7 +6,10 @@ from auto_client_acquisition.market_power_os.benchmark_registry import get_bench
 from auto_client_acquisition.market_power_os.category_language_tracker import (
     market_language_health_score,
 )
-from auto_client_acquisition.market_power_os.category_metrics import CATEGORY_PHRASES, category_hit_count
+from auto_client_acquisition.market_power_os.category_metrics import (
+    CATEGORY_PHRASES,
+    category_hit_count,
+)
 from auto_client_acquisition.market_power_os.content_signal import education_funnel_coverage_percent
 from auto_client_acquisition.market_power_os.inbound_quality import inbound_quality_score
 from auto_client_acquisition.market_power_os.language_tracking import language_drift_score

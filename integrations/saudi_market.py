@@ -14,14 +14,16 @@ from __future__ import annotations
 
 import math
 from dataclasses import dataclass
-from datetime import date, datetime, time, timedelta, timezone
+from datetime import UTC, date, datetime, time, timedelta, timezone
 from typing import NamedTuple
 
 # ── Hijri calendar (ummalqura) ─────────────────────────────────────────────
 # The ummalqura library provides accurate Hijri date conversion for KSA.
 # Falls back to a simplified Gregorian-to-Hijri estimate if not installed.
 try:
-    from ummalqura.hijri_date import HijriDate as _UmmalquraHijriDate  # type: ignore[import-untyped]
+    from ummalqura.hijri_date import (
+        HijriDate as _UmmalquraHijriDate,  # type: ignore[import-untyped]
+    )
     _UMMALQURA_AVAILABLE = True
 except ImportError:
     _UMMALQURA_AVAILABLE = False
@@ -229,7 +231,7 @@ def _gregorian_to_hijri_fallback(greg_date: date) -> HijriDate:
 
 def ksa_today_hijri() -> HijriDate:
     """Return today's Hijri date in KSA (UTC+3)."""
-    ksa_now = datetime.now(timezone.utc) + timedelta(hours=KSA_UTC_OFFSET_HOURS)
+    ksa_now = datetime.now(UTC) + timedelta(hours=KSA_UTC_OFFSET_HOURS)
     return gregorian_to_hijri(ksa_now.date())
 
 
@@ -372,7 +374,7 @@ def is_prayer_time(check_datetime: datetime | None = None) -> tuple[bool, str]:
     Returns (is_blackout: bool, prayer_name: str)
     """
     if check_datetime is None:
-        ksa_now = datetime.now(timezone.utc) + timedelta(hours=KSA_UTC_OFFSET_HOURS)
+        ksa_now = datetime.now(UTC) + timedelta(hours=KSA_UTC_OFFSET_HOURS)
     else:
         ksa_now = check_datetime + timedelta(hours=KSA_UTC_OFFSET_HOURS)
 
@@ -396,7 +398,7 @@ def is_ramadan(check_date: date | None = None) -> bool:
     Uses Hijri calendar — month 9.
     """
     if check_date is None:
-        ksa_now = datetime.now(timezone.utc) + timedelta(hours=KSA_UTC_OFFSET_HOURS)
+        ksa_now = datetime.now(UTC) + timedelta(hours=KSA_UTC_OFFSET_HOURS)
         check_date = ksa_now.date()
     hijri = gregorian_to_hijri(check_date)
     return hijri.is_ramadan
@@ -418,7 +420,7 @@ def ramadan_adjusted_send_time(
     if not is_ramadan(check_date):
         return original_time
 
-    d = check_date or datetime.now(timezone.utc).date()
+    d = check_date or datetime.now(UTC).date()
     pt = calculate_prayer_times(d)
     iftar_dt = datetime.combine(d, pt.maghrib) + timedelta(minutes=30)
     iftar_time = iftar_dt.time()
@@ -460,7 +462,7 @@ def get_ramadan_config(check_date: date | None = None) -> RamadanConfig:
     يجلب إعدادات وضع رمضان لتاريخ معين.
     """
     if check_date is None:
-        ksa_now = datetime.now(timezone.utc) + timedelta(hours=KSA_UTC_OFFSET_HOURS)
+        ksa_now = datetime.now(UTC) + timedelta(hours=KSA_UTC_OFFSET_HOURS)
         check_date = ksa_now.date()
 
     active = is_ramadan(check_date)
@@ -486,7 +488,7 @@ def is_saudi_holiday(check_date: date | None = None) -> tuple[bool, str]:
     Returns (is_holiday: bool, holiday_name: str)
     """
     if check_date is None:
-        ksa_now = datetime.now(timezone.utc) + timedelta(hours=KSA_UTC_OFFSET_HOURS)
+        ksa_now = datetime.now(UTC) + timedelta(hours=KSA_UTC_OFFSET_HOURS)
         check_date = ksa_now.date()
 
     # Eid windows
@@ -508,7 +510,7 @@ def is_saudi_weekend(check_date: date | None = None) -> bool:
     يتحقق إذا كان التاريخ يوم إجازة نهاية الأسبوع السعودية (الجمعة أو السبت).
     """
     if check_date is None:
-        ksa_now = datetime.now(timezone.utc) + timedelta(hours=KSA_UTC_OFFSET_HOURS)
+        ksa_now = datetime.now(UTC) + timedelta(hours=KSA_UTC_OFFSET_HOURS)
         check_date = ksa_now.date()
     return check_date.weekday() in (4, 5)  # 4=Friday, 5=Saturday
 
@@ -521,7 +523,7 @@ def is_saudi_business_day(check_date: date | None = None) -> bool:
     Business days: Sunday–Thursday, excluding Saudi holidays.
     """
     if check_date is None:
-        ksa_now = datetime.now(timezone.utc) + timedelta(hours=KSA_UTC_OFFSET_HOURS)
+        ksa_now = datetime.now(UTC) + timedelta(hours=KSA_UTC_OFFSET_HOURS)
         check_date = ksa_now.date()
     if is_saudi_weekend(check_date):
         return False
@@ -535,7 +537,7 @@ def next_saudi_business_day(from_date: date | None = None) -> date:
     يُعيد يوم العمل السعودي التالي بعد التاريخ المحدد.
     """
     if from_date is None:
-        ksa_now = datetime.now(timezone.utc) + timedelta(hours=KSA_UTC_OFFSET_HOURS)
+        ksa_now = datetime.now(UTC) + timedelta(hours=KSA_UTC_OFFSET_HOURS)
         from_date = ksa_now.date()
     candidate = from_date + timedelta(days=1)
     while not is_saudi_business_day(candidate):
@@ -565,7 +567,7 @@ def get_best_outreach_time(check_date: date | None = None) -> dict:
     Returns a dict with recommended_time, is_valid, reason.
     """
     if check_date is None:
-        ksa_now = datetime.now(timezone.utc) + timedelta(hours=KSA_UTC_OFFSET_HOURS)
+        ksa_now = datetime.now(UTC) + timedelta(hours=KSA_UTC_OFFSET_HOURS)
         check_date = ksa_now.date()
 
     # Not a business day

@@ -7,7 +7,6 @@ from auto_client_acquisition.agent_governance.schemas import (
     ToolCategory,
 )
 
-
 # 12 named agents that mirror auto_client_acquisition/v3/agents.py
 # AgentName entries, each with an explicit governance spec. New
 # agents must be added here OR they fail evaluation.

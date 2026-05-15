@@ -1,8 +1,8 @@
 """Compute customer health from observable, PII-free signals."""
 from __future__ import annotations
 
+from collections.abc import Iterable
 from datetime import UTC, datetime
-from typing import Iterable
 
 from auto_client_acquisition.crm_v10.schemas import (
     Account,

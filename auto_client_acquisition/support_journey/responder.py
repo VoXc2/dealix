@@ -9,7 +9,6 @@ from typing import Any
 
 from auto_client_acquisition.integration_upgrade import hide_internal_terms
 
-
 _STAGE_PREAMBLE_AR: dict[str, str] = {
     "pre_sales": "شكراً لاهتمامك بـ Dealix.",
     "onboarding": "أهلاً بك في Dealix — نساعدك تبدأ بسرعة.",

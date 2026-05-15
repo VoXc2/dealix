@@ -5,7 +5,6 @@ import re
 from dataclasses import dataclass
 from typing import Any
 
-
 SECRET_PATTERNS: list[tuple[str, re.Pattern]] = [
     ("moyasar_live_secret", re.compile(r"sk_live_[A-Za-z0-9]{16,}")),
     ("github_pat", re.compile(r"ghp_[A-Za-z0-9]{36,}")),

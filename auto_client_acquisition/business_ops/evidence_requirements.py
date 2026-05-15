@@ -4,19 +4,20 @@ Defines what evidence is required to advance through each stage.
 """
 from dataclasses import dataclass, field
 from typing import Dict, List, Optional
+
 from .stage_definitions import JourneyStage
 
 
 @dataclass
 class EvidenceRequirement:
     stage: JourneyStage
-    required_fields: List[str]
-    optional_fields: List[str] = field(default_factory=list)
+    required_fields: list[str]
+    optional_fields: list[str] = field(default_factory=list)
     proof_level: int = 0   # L0-L5
     notes: str = ""
 
 
-EVIDENCE_REQUIREMENTS: Dict[JourneyStage, EvidenceRequirement] = {
+EVIDENCE_REQUIREMENTS: dict[JourneyStage, EvidenceRequirement] = {
     JourneyStage.TARGET_IDENTIFIED: EvidenceRequirement(
         stage=JourneyStage.TARGET_IDENTIFIED,
         required_fields=["company_name", "sector", "city"],
@@ -145,7 +146,7 @@ EVIDENCE_REQUIREMENTS: Dict[JourneyStage, EvidenceRequirement] = {
 }
 
 
-def get_evidence_requirements(stage: JourneyStage) -> Optional[EvidenceRequirement]:
+def get_evidence_requirements(stage: JourneyStage) -> EvidenceRequirement | None:
     return EVIDENCE_REQUIREMENTS.get(stage)
 
 

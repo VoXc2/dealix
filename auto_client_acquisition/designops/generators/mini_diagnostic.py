@@ -63,7 +63,7 @@ def generate_mini_diagnostic(
         )
         markdown_ar, markdown_en = _split_bilingual(result.markdown_ar_en)
         recommended = result.recommended_bundle
-    except Exception:  # noqa: BLE001 — defensive
+    except Exception:
         markdown_ar = (
             f"# تشخيص مصغّر — {company}\n\n"
             f"القطاع: {sector} / {region}\n\n"

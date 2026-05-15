@@ -11,7 +11,7 @@ from auto_client_acquisition.revenue_pipeline.stage_policy import PipelineStage
 
 
 def _lead_id(slot: str, sector: str) -> str:
-    digest = hashlib.sha256(f"{slot}|{sector}".encode("utf-8")).hexdigest()
+    digest = hashlib.sha256(f"{slot}|{sector}".encode()).hexdigest()
     return f"lead_{digest[:16]}"
 
 
@@ -47,6 +47,6 @@ class Lead(BaseModel):
         sector: str = "tbd",
         region: str = "tbd",
         **extra: Any,
-    ) -> "Lead":
+    ) -> Lead:
         return cls(id=_lead_id(slot_id, sector), slot_id=slot_id,
                    sector=sector, region=region, **extra)

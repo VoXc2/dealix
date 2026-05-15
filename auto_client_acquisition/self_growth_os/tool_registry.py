@@ -153,7 +153,7 @@ def _is_installed(module_name: str) -> bool:
     try:
         importlib.import_module(module_name)
         return True
-    except BaseException:  # noqa: BLE001 — intentional broad catch for panics
+    except BaseException:
         return False
 
 

@@ -9,7 +9,7 @@ from __future__ import annotations
 
 from collections import defaultdict
 from dataclasses import dataclass, field
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta, timezone
 from typing import Any
 
 from auto_client_acquisition.market_intelligence.signal_detectors import SignalDetection
@@ -105,7 +105,7 @@ def build_sector_pulse(
 
     return SectorPulse(
         sector=sector,
-        week_label=week_label or datetime.now(timezone.utc).strftime("%Y-W%U"),
+        week_label=week_label or datetime.now(UTC).strftime("%Y-W%U"),
         active_signals=n_this,
         n_companies_with_signals=len(companies),
         trend=trend,

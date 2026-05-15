@@ -20,7 +20,7 @@ Used by:
 from __future__ import annotations
 
 import logging
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta, timezone
 from typing import Any
 
 from fastapi import APIRouter, HTTPException, Path
@@ -122,7 +122,7 @@ async def get_customer_usage(
     if tenant is None:
         # 404 only if we got past DB lookup; else degrade to "no data yet"
         try:
-            from db.session import async_session_factory  # noqa: F401
+            from db.session import async_session_factory
             raise HTTPException(status_code=404, detail=f"tenant {handle!r} not found")
         except Exception:
             # DB layer not importable — return neutral
@@ -134,7 +134,7 @@ async def get_customer_usage(
 
     plan = tenant.plan
     limits = _plan_to_limits(plan)
-    period_start = datetime.now(timezone.utc).replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+    period_start = datetime.now(UTC).replace(day=1, hour=0, minute=0, second=0, microsecond=0)
     next_renewal = (period_start + timedelta(days=32)).replace(day=1)
 
     leads_count = await _count_leads_this_period(handle, period_start)
@@ -153,7 +153,7 @@ async def get_customer_usage(
         "period": {
             "start": period_start.isoformat(),
             "next_renewal": next_renewal.isoformat(),
-            "days_left": max(0, (next_renewal - datetime.now(timezone.utc)).days),
+            "days_left": max(0, (next_renewal - datetime.now(UTC)).days),
         },
         "limits": limits,
         "consumption": {

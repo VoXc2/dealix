@@ -251,7 +251,7 @@ class ETagMiddleware(BaseHTTPMiddleware):
         async for chunk in response.body_iterator:  # type: ignore[attr-defined]
             body += chunk if isinstance(chunk, bytes) else chunk.encode()
 
-        etag = f'"{hashlib.md5(body, usedforsecurity=False).hexdigest()}"'  # noqa: S324
+        etag = f'"{hashlib.md5(body, usedforsecurity=False).hexdigest()}"'
         response.headers["ETag"] = etag
         response.headers.setdefault(
             "Last-Modified",

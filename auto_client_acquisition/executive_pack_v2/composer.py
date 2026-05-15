@@ -12,7 +12,7 @@ All best-effort; missing sources degrade gracefully (empty list).
 from __future__ import annotations
 
 import uuid
-from datetime import datetime, timezone
+from datetime import UTC, datetime, timezone
 from typing import Any
 
 from auto_client_acquisition.full_ops_contracts.schemas import (
@@ -185,7 +185,7 @@ def build_weekly_pack(*, customer_handle: str) -> ExecutivePackRecord:
     """Weekly pack — same data shape, different cadence + week_label."""
     pack = build_daily_pack(customer_handle=customer_handle)
     pack.cadence = "weekly"
-    now = datetime.now(timezone.utc)
+    now = datetime.now(UTC)
     week_num = now.isocalendar().week
     pack.week_label = f"{now.year}-W{week_num:02d}"
     return pack

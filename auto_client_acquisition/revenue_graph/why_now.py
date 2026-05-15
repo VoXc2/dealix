@@ -9,7 +9,7 @@ makes every message feel handcrafted.
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta, timezone
 from typing import Any
 
 # ── Signal taxonomy — every signal has weight + freshness decay ────
@@ -49,7 +49,7 @@ def freshness_factor(detected_at: datetime, *, now: datetime | None = None, half
     Exponential decay: freshness halves every 14 days.
     A signal detected today = 1.0; 14 days old = 0.5; 28 days = 0.25; 60+ ≈ 0.05.
     """
-    n = now or datetime.now(timezone.utc).replace(tzinfo=None)
+    n = now or datetime.now(UTC).replace(tzinfo=None)
     detected = detected_at.replace(tzinfo=None) if detected_at.tzinfo else detected_at
     delta_days = max(0.0, (n - detected).total_seconds() / 86400)
     return 0.5 ** (delta_days / half_life_days)
@@ -149,7 +149,7 @@ def explain_why_now(
     if not signals:
         return None
 
-    n = now or datetime.now(timezone.utc).replace(tzinfo=None)
+    n = now or datetime.now(UTC).replace(tzinfo=None)
     scored: list[tuple[WhyNowSignal, float]] = []
     for s in signals:
         weight = SIGNAL_WEIGHTS.get(s.signal_type, 2.0)

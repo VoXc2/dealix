@@ -9,7 +9,7 @@ from __future__ import annotations
 
 import uuid
 from dataclasses import dataclass, field
-from datetime import datetime, timezone
+from datetime import UTC, datetime, timezone
 from typing import Any
 
 
@@ -166,7 +166,7 @@ def register_vendor(vendor: Vendor) -> Vendor:
     if not vendor.vendor_id:
         vendor.vendor_id = f"vnd_{uuid.uuid4().hex[:16]}"
     if vendor.onboarded_at is None:
-        vendor.onboarded_at = datetime.now(timezone.utc).replace(tzinfo=None)
+        vendor.onboarded_at = datetime.now(UTC).replace(tzinfo=None)
     return vendor
 
 

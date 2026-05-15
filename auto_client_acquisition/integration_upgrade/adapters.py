@@ -5,7 +5,8 @@ Never raises. Never leaks stacktrace to caller.
 """
 from __future__ import annotations
 
-from typing import Any, Callable
+from collections.abc import Callable
+from typing import Any
 
 from auto_client_acquisition.integration_upgrade.degraded import degraded_section
 
@@ -25,7 +26,7 @@ def safe_call(
     """
     try:
         return fn()
-    except BaseException as exc:  # noqa: BLE001 — by design, catch all
+    except BaseException as exc:
         # Defensive: never leak exception type/message to caller
         if fallback is not None:
             return fallback

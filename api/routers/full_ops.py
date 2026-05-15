@@ -36,7 +36,7 @@ _HARD_GATES = {
 def _safe(name: str, fn, default, degraded: list[str]) -> Any:
     try:
         return fn()
-    except BaseException as exc:  # noqa: BLE001 — never crash command center
+    except BaseException as exc:
         degraded.append(name)
         return {
             "_error": True,

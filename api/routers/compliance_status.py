@@ -22,7 +22,7 @@ from __future__ import annotations
 import importlib
 import logging
 import os
-from datetime import datetime, timezone
+from datetime import UTC, datetime, timezone
 from typing import Any
 
 from fastapi import APIRouter
@@ -182,7 +182,7 @@ async def compliance_status() -> dict[str, Any]:
     )
 
     return {
-        "generated_at": datetime.now(timezone.utc).isoformat(),
+        "generated_at": datetime.now(UTC).isoformat(),
         "schema_version": 1,
         "overall_posture": {
             "pdpl_articles": f"{pdpl_articles_implemented}/{len(pdpl)} implemented",

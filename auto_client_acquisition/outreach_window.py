@@ -21,7 +21,7 @@ Hard rules:
 from __future__ import annotations
 
 from dataclasses import dataclass
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta, timezone
 from typing import Literal
 from zoneinfo import ZoneInfo
 
@@ -30,7 +30,6 @@ from auto_client_acquisition.orchestrator.policies import (
     default_policy,
     is_in_quiet_hours,
 )
-
 
 _KSA_TZ = ZoneInfo("Asia/Riyadh")
 ACTIVE_WINDOW_HOURS = 72
@@ -51,8 +50,8 @@ def _ensure_aware_utc(dt: datetime | None) -> datetime | None:
     if dt is None:
         return None
     if dt.tzinfo is None:
-        return dt.replace(tzinfo=timezone.utc)
-    return dt.astimezone(timezone.utc)
+        return dt.replace(tzinfo=UTC)
+    return dt.astimezone(UTC)
 
 
 def check_outreach_window(
@@ -65,7 +64,7 @@ def check_outreach_window(
     AND KSA quiet-hours. Returns `allowed=True` only when both gates
     pass.
     """
-    now_utc = _ensure_aware_utc(now) or datetime.now(timezone.utc)
+    now_utc = _ensure_aware_utc(now) or datetime.now(UTC)
 
     # 1. Active-window gate
     last_utc = _ensure_aware_utc(last_inbound_at)

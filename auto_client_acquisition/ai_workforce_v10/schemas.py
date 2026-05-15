@@ -6,7 +6,6 @@ from typing import Any, Literal
 
 from pydantic import BaseModel, ConfigDict, Field
 
-
 ReviewerVerdict = Literal["approved", "needs_revision", "blocked"]
 
 

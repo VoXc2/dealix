@@ -12,7 +12,6 @@ from auto_client_acquisition.approval_center.schemas import (
     ApprovalStatus,
 )
 
-
 _RISK_BADGE_AR = {
     "low": "مخاطرة منخفضة",
     "medium": "مخاطرة متوسطة",

@@ -36,12 +36,12 @@ from auto_client_acquisition.learning_flywheel.funnel_metrics import (
 )
 
 __all__ = [
+    "FeatureRequestStatus",
+    "FunnelMetrics",
     "LearningEvent",
     "WeeklyLearningReport",
     "aggregate_weekly_report",
-    "record_learning_event",
-    "FeatureRequestStatus",
-    "triage_feature_request",
-    "FunnelMetrics",
     "compute_funnel",
+    "record_learning_event",
+    "triage_feature_request",
 ]

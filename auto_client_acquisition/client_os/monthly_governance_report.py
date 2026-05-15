@@ -23,7 +23,7 @@ def monthly_governance_report_sections_complete(
 
 
 def build_empty_monthly_governance_report() -> dict[str, str]:
-    return {k: "" for k in MONTHLY_GOVERNANCE_REPORT_SECTIONS}
+    return dict.fromkeys(MONTHLY_GOVERNANCE_REPORT_SECTIONS, "")
 
 
 __all__ = [

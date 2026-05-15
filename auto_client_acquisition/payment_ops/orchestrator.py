@@ -13,7 +13,7 @@ from __future__ import annotations
 import json
 import os
 import uuid
-from datetime import datetime, timezone
+from datetime import UTC, datetime, timezone
 from typing import Any
 
 from auto_client_acquisition.full_ops_contracts.schemas import (
@@ -125,7 +125,7 @@ def confirm_payment(
         return (None, "confirmed_by_required")
     rec.status = "payment_confirmed"
     rec.confirmed_by = confirmed_by
-    rec.confirmed_at = datetime.now(timezone.utc)
+    rec.confirmed_at = datetime.now(UTC)
     _persist(rec)
     return (rec, "payment_confirmed")
 

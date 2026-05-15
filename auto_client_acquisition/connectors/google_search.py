@@ -12,8 +12,8 @@ from __future__ import annotations
 import asyncio
 import logging
 import os
-from dataclasses import dataclass, asdict
-from datetime import datetime, timezone
+from dataclasses import asdict, dataclass
+from datetime import UTC, datetime, timezone
 from typing import Any
 
 import httpx
@@ -80,7 +80,7 @@ async def google_search(
     api_key = os.getenv("GOOGLE_SEARCH_API_KEY", "").strip()
     cx = os.getenv("GOOGLE_SEARCH_CX", "").strip()
 
-    fetched_at = datetime.now(timezone.utc).isoformat()
+    fetched_at = datetime.now(UTC).isoformat()
 
     if not api_key or not cx:
         return SearchResponse(
@@ -116,7 +116,7 @@ async def google_search(
             query=q, total_results=None, search_time=None, results=[],
             fetched_at=fetched_at, status="timeout", error=str(exc),
         )
-    except Exception as exc:  # noqa: BLE001
+    except Exception as exc:
         log.exception("google_search_network_error q=%r", q)
         return SearchResponse(
             query=q, total_results=None, search_time=None, results=[],

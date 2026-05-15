@@ -82,7 +82,7 @@ async def _send_via_green_api(
         r = await client.post(
             url, json={"chatId": f"{phone}@c.us", "message": message}, timeout=15.0
         )
-    except Exception as exc:  # noqa: BLE001
+    except Exception as exc:
         return WhatsAppSendResult(status="http_error", provider="green_api", error=str(exc))
     if r.status_code == 200:
         body = r.json() or {}
@@ -108,7 +108,7 @@ async def _send_via_ultramsg(
         r = await client.post(
             url, data={"token": token, "to": phone, "body": message}, timeout=15.0
         )
-    except Exception as exc:  # noqa: BLE001
+    except Exception as exc:
         return WhatsAppSendResult(status="http_error", provider="ultramsg", error=str(exc))
     if r.status_code in (200, 201):
         body = r.json() or {}
@@ -136,7 +136,7 @@ async def _send_via_fonnte(
             data={"target": phone, "message": message},
             timeout=15.0,
         )
-    except Exception as exc:  # noqa: BLE001
+    except Exception as exc:
         return WhatsAppSendResult(status="http_error", provider="fonnte", error=str(exc))
     if r.status_code == 200:
         body = r.json() or {}
@@ -169,7 +169,7 @@ async def _send_via_meta_cloud(
             },
             timeout=15.0,
         )
-    except Exception as exc:  # noqa: BLE001
+    except Exception as exc:
         return WhatsAppSendResult(status="http_error", provider="meta_cloud", error=str(exc))
     if r.status_code == 200:
         body = r.json() or {}

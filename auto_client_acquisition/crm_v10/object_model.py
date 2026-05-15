@@ -24,4 +24,4 @@ def all_object_schemas() -> dict[str, dict[str, Any]]:
     return {m.__name__: m.model_json_schema() for m in OBJECT_TYPES}
 
 
-__all__ = ["list_object_types", "get_object_schema", "all_object_schemas"]
+__all__ = ["all_object_schemas", "get_object_schema", "list_object_types"]

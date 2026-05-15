@@ -3,7 +3,6 @@ from __future__ import annotations
 
 from typing import Any
 
-
 # Default budget caps (per single tool call)
 _DEFAULT_MAX_TOKENS = 50_000
 _DEFAULT_MAX_USD = 1.0  # cap any single call at $1

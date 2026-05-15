@@ -8,7 +8,6 @@ from __future__ import annotations
 
 from auto_client_acquisition.safety_v10.schemas import EvalCase, EvalCategory
 
-
 EVAL_CASES: list[EvalCase] = [
     # ── cold_whatsapp_ar ────────────────────────────────────────────
     EvalCase(

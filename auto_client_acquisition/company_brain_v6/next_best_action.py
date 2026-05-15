@@ -3,7 +3,6 @@ from __future__ import annotations
 
 from typing import Any
 
-
 _TEMPLATES: dict[str, tuple[str, str]] = {
     "diagnostic": (
         "احجز جلسة Diagnostic مدّتها 30-60 دقيقة لمراجعة القمع.",

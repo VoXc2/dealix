@@ -18,7 +18,7 @@ from auto_client_acquisition.founder_v10.schemas import DailyBrief
 def _safe(fn, default):
     try:
         return fn()
-    except Exception:  # noqa: BLE001
+    except Exception:
         return default
 
 
@@ -82,7 +82,7 @@ def _safety_eval_count() -> dict[str, Any]:
                 "status": "available",
                 "count": int(safety_v10.last_eval_count() or 0),
             }
-    except Exception:  # noqa: BLE001
+    except Exception:
         pass
     return {"status": "no eval run today", "count": 0}
 

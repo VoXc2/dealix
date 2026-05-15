@@ -17,8 +17,9 @@ Usage in BaseAgent:
 from __future__ import annotations
 
 import logging
+from collections.abc import Awaitable, Callable
 from dataclasses import dataclass, field
-from typing import Any, Callable, Awaitable
+from typing import Any
 
 logger = logging.getLogger(__name__)
 
@@ -69,9 +70,10 @@ async def _search_company(
     البحث عن شركة في قاعدة بيانات الحسابات.
     """
     try:
-        from db.session import get_session
+        from sqlalchemy import or_, select
+
         from db.models import AccountRecord
-        from sqlalchemy import select, or_
+        from db.session import get_session
 
         async with get_session() as session:
             stmt = select(AccountRecord).where(
@@ -155,10 +157,11 @@ async def _create_deal(
     إنشاء صفقة جديدة مرتبطة بحساب.
     """
     try:
-        from db.session import get_session
-        from db.models import DealRecord, LeadRecord
-        from core.utils import generate_id
         from sqlalchemy import select
+
+        from core.utils import generate_id
+        from db.models import DealRecord, LeadRecord
+        from db.session import get_session
 
         async with get_session() as session:
             # Find or create a lead linked to this account
@@ -236,8 +239,9 @@ async def _generate_invoice(
     إنشاء مسودة فاتورة إلكترونية متوافقة مع مرحلة فاتورة زاتكا الثانية.
     """
     try:
-        from core.utils import generate_id, utcnow
         from datetime import timezone
+
+        from core.utils import generate_id, utcnow
 
         vat_amount = round(amount_sar * vat_rate, 2)
         total = round(amount_sar + vat_amount, 2)

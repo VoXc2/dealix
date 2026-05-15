@@ -31,7 +31,7 @@ __all__ = [
     "WeeklyReport",
     "build_weekly_report",
     "decision_summary",
-    "risk_summary",
-    "proof_summary",
     "next_week_plan",
+    "proof_summary",
+    "risk_summary",
 ]

@@ -32,7 +32,7 @@ from __future__ import annotations
 import logging
 import re
 import uuid
-from datetime import datetime, timezone
+from datetime import UTC, datetime, timezone
 from typing import Any
 
 from fastapi import APIRouter, Depends, HTTPException, Path, Query
@@ -186,7 +186,7 @@ async def create_tenant_via_api(body: _TenantCreateRequest) -> dict[str, Any]:
             )
 
         tenant_id = f"tn_{uuid.uuid4().hex[:16]}"
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
         new_tenant = TenantRecord(
             id=tenant_id,
             name=body.name,
@@ -271,7 +271,7 @@ async def update_tenant(
             tenant.max_users = body.max_users
         if body.max_leads_per_month is not None:
             tenant.max_leads_per_month = body.max_leads_per_month
-        tenant.updated_at = datetime.now(timezone.utc)
+        tenant.updated_at = datetime.now(UTC)
         await session.commit()
         await session.refresh(tenant)
 

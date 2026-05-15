@@ -26,7 +26,6 @@ from auto_client_acquisition.company_brain_v6.service_matcher import (
     CUSTOMER_FACING_BUNDLES,
 )
 
-
 _GUARDRAILS: dict[str, bool] = {
     "no_live_send": True,
     "no_scraping": True,
@@ -100,7 +99,7 @@ def run_workforce_goal(goal: WorkforceGoal) -> WorkforceRun:
     for agent_id in plan:
         try:
             task = agent_contracts.run_agent(agent_id, goal, prior_outputs)
-        except Exception as exc:  # noqa: BLE001 — last-resort safety net
+        except Exception as exc:
             spec = get_agent(agent_id)
             task = AgentTask(
                 agent_id=agent_id,

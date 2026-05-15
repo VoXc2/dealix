@@ -38,7 +38,7 @@ def generate_proof_pack(
             customer_handle=customer_handle,
             period_label=period_label,
         )
-    except Exception:  # noqa: BLE001 — defensive
+    except Exception:
         pack = {
             "decision": "blocked",
             "audience": "invalid",

@@ -14,9 +14,9 @@ from api.routers import (
     founder_v10,
     observability_v6,
     service_mapping_v7,
+    v3,
     v10_status,
     v11_status,
-    v3,
 )
 
 # Wrap each deprecated router with a Deprecation response header middleware

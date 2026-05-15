@@ -1,7 +1,7 @@
 """Schemas for Executive Command Center (Phase 5)."""
 from __future__ import annotations
 
-from datetime import datetime, timezone
+from datetime import UTC, datetime, timezone
 from typing import Any, Literal
 
 from pydantic import BaseModel, ConfigDict, Field
@@ -30,4 +30,4 @@ class CommandCenterView(BaseModel):
     whatsapp_decision_preview: dict[str, Any] = Field(default_factory=dict)
     degraded_sections: list[dict[str, Any]] = Field(default_factory=list)
     safety_summary: str = "no_fake_revenue_no_fake_proof_customer_safe_labels"
-    built_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    built_at: datetime = Field(default_factory=lambda: datetime.now(UTC))

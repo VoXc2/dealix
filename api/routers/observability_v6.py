@@ -37,7 +37,7 @@ async def audit(limit: int = Query(default=100, ge=1, le=1000)) -> dict[str, Any
 
 @router.get("/incidents")
 async def incidents(
-    severity: Optional[IncidentSeverity] = Query(default=None),
+    severity: IncidentSeverity | None = Query(default=None),
 ) -> dict[str, Any]:
     items = list_incidents(severity_filter=severity)
     return {

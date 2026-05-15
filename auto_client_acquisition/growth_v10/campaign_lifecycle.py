@@ -3,7 +3,6 @@ from __future__ import annotations
 
 from auto_client_acquisition.growth_v10.schemas import Campaign
 
-
 # Valid transitions: state → set of allowed next states.
 _VALID_TRANSITIONS: dict[str, set[str]] = {
     "draft": {"approved", "blocked"},

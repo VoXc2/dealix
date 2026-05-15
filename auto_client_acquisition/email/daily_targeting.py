@@ -151,8 +151,8 @@ async def llm_personalize(account: dict[str, Any], base_email: dict[str, str]) -
     if not has_llm:
         return base_email
     try:
-        from core.llm.router import get_router
         from core.llm.base import Message
+        from core.llm.router import get_router
     except Exception:
         return base_email
 
@@ -176,7 +176,7 @@ async def llm_personalize(account: dict[str, Any], base_email: dict[str, str]) -
         new_body = (resp.content or "").strip()
         if 50 < len(new_body) < 2000 and "Dealix" in new_body:
             return {**base_email, "body_ar": new_body, "personalized_by_llm": "true"}
-    except Exception as exc:  # noqa: BLE001
+    except Exception as exc:
         log.warning("llm_personalize_failed account=%s err=%s",
                     account.get("company_name", "?"), exc)
     return base_email

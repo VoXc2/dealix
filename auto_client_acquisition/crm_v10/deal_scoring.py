@@ -6,7 +6,6 @@ from typing import Any
 
 from auto_client_acquisition.crm_v10.schemas import Account, Deal
 
-
 # Stage → base win probability before adjustments. Mirrors the value-ladder
 # stages: pilot offered → paid → in delivery → won/lost.
 STAGE_BASE_WIN_PROB: dict[str, float] = {

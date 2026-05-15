@@ -22,7 +22,6 @@ from uuid import uuid4
 
 from pydantic import BaseModel, ConfigDict, Field
 
-
 # ─── Enums ──────────────────────────────────────────────────────────
 
 
@@ -101,7 +100,7 @@ class ServiceActivationCheck(_Base):
     next_activation_step_en: str = ""
 
     @classmethod
-    def new(cls, **kwargs: Any) -> "ServiceActivationCheck":
+    def new(cls, **kwargs: Any) -> ServiceActivationCheck:
         kwargs.setdefault("id", _gen_id("sac"))
         return cls(**kwargs)
 
@@ -115,7 +114,7 @@ class SafePublishingResult(_Base):
     notes: str = ""
 
     @classmethod
-    def new(cls, **kwargs: Any) -> "SafePublishingResult":
+    def new(cls, **kwargs: Any) -> SafePublishingResult:
         kwargs.setdefault("id", _gen_id("spr"))
         return cls(**kwargs)
 
@@ -130,7 +129,7 @@ class ToolCapability(_Base):
     safe_usage_notes: str = ""
 
     @classmethod
-    def new(cls, **kwargs: Any) -> "ToolCapability":
+    def new(cls, **kwargs: Any) -> ToolCapability:
         kwargs.setdefault("id", _gen_id("tool"))
         kwargs.setdefault("approval_status", ApprovalStatus.APPROVED)  # tooling rows aren't external actions
         return cls(**kwargs)
@@ -145,7 +144,7 @@ class EvidenceRecord(_Base):
     payload: dict[str, Any] = Field(default_factory=dict)
 
     @classmethod
-    def new(cls, **kwargs: Any) -> "EvidenceRecord":
+    def new(cls, **kwargs: Any) -> EvidenceRecord:
         kwargs.setdefault("id", _gen_id("evt"))
         kwargs.setdefault("approval_status", ApprovalStatus.APPROVED)
         return cls(**kwargs)

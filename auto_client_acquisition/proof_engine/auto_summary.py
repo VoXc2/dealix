@@ -91,7 +91,7 @@ def _safe_format(template: str, **kwargs: Any) -> str:
     """
     class _Defaulter(dict):
         def __missing__(self, key: str) -> str:
-            return f"[—]"
+            return "[—]"
     return template.format_map(_Defaulter(**{k: str(v) for k, v in kwargs.items()}))
 
 

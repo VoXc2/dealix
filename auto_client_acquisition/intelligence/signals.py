@@ -30,7 +30,6 @@ import re
 from dataclasses import asdict, dataclass, field
 from typing import Any
 
-
 # ── Sector urgency tiers (always-on signals derived from the sector itself) ─
 HIGH_URGENCY_SECTORS = {
     "real_estate", "real_estate_developer", "events", "logistics",

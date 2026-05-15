@@ -17,7 +17,7 @@ from __future__ import annotations
 
 import uuid
 from dataclasses import dataclass
-from datetime import datetime, timezone
+from datetime import UTC, datetime, timezone
 from typing import Any
 
 from auto_client_acquisition.full_ops_contracts.schemas import (
@@ -47,7 +47,7 @@ class TickResult:
 
 
 def _today_utc() -> datetime:
-    return datetime.now(timezone.utc).replace(hour=0, minute=0, second=0, microsecond=0)
+    return datetime.now(UTC).replace(hour=0, minute=0, second=0, microsecond=0)
 
 
 def _last_artifact_day(rec: ServiceSessionRecord) -> int:
@@ -138,7 +138,7 @@ def record_artifact(
         "title_en": title_en,
         "customer_visible": bool(customer_visible),
         "status": status,
-        "created_at": datetime.now(timezone.utc).isoformat(),
+        "created_at": datetime.now(UTC).isoformat(),
     }
     rec.daily_artifacts.append(artifact)
     return artifact

@@ -106,11 +106,7 @@ def parse_command(*, text: str, customer_handle: str | None = None) -> CommandRe
         "show_top_decision_today",
     ):
         action_mode = "preview_only"
-    elif intent == "draft_reply":
-        action_mode = "draft_only"
-    # Wave 12 §32.3.5 — generating an exec report is a draft-only action
-    # (founder reviews + sends manually; never auto-distributed)
-    elif intent == "prepare_exec_report":
+    elif intent == "draft_reply" or intent == "prepare_exec_report":
         action_mode = "draft_only"
     elif intent in ("approve_reply", "escalate_ticket"):
         action_mode = "approval_required"

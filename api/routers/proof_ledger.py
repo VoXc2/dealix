@@ -34,7 +34,7 @@ async def record_event(payload: dict = Body(...)) -> dict:
     """Persist one ProofEvent. Returns the stored (redacted) record."""
     try:
         event = ProofEvent.model_validate(payload)
-    except Exception as exc:  # noqa: BLE001
+    except Exception as exc:
         raise HTTPException(status_code=400, detail=f"invalid event: {exc}") from exc
     stored = get_default_ledger().record(event)
     return stored.model_dump(mode="json")
@@ -58,7 +58,7 @@ async def list_events(
 async def record_unit(payload: dict = Body(...)) -> dict:
     try:
         unit = RevenueWorkUnit.model_validate(payload)
-    except Exception as exc:  # noqa: BLE001
+    except Exception as exc:
         raise HTTPException(status_code=400, detail=f"invalid unit: {exc}") from exc
     stored = get_default_ledger().record_unit(unit)
     return stored.model_dump(mode="json")
@@ -111,6 +111,7 @@ async def attachments_endpoint(payload: dict = Body(default_factory=dict)) -> di
     }
     """
     import base64
+
     from auto_client_acquisition.proof_ledger.file_storage import store_attachment
 
     required = ["customer_handle", "event_id", "filename", "mime_type", "data_base64"]

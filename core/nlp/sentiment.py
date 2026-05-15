@@ -112,7 +112,7 @@ class ArabicSentimentAnalyzer:
                 llm_result = await self._analyze_llm(text, task)
                 llm_result["lexicon_backup"] = result
                 return llm_result
-            except Exception as exc:  # noqa: BLE001
+            except Exception as exc:
                 logger.warning("sentiment_llm_error", error=str(exc))
 
         return result
@@ -179,9 +179,10 @@ class ArabicSentimentAnalyzer:
 
     async def _analyze_llm(self, text: str, task: Any) -> dict[str, Any]:
         """LLM-based sentiment analysis for complex cases."""
-        from core.llm import get_router  # noqa: PLC0415
-        from core.llm.base import Message  # noqa: PLC0415
-        import json  # noqa: PLC0415
+        import json
+
+        from core.llm import get_router
+        from core.llm.base import Message
 
         prompt = (
             "Analyze the sentiment of this Arabic business text.\n"

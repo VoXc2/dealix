@@ -11,7 +11,7 @@ from auto_client_acquisition.proof_architecture_os.proof_pack_v2 import (
 
 
 def build_empty_proof_pack_v2() -> dict[str, str]:
-    return {k: "" for k in PROOF_PACK_V2_SECTIONS}
+    return dict.fromkeys(PROOF_PACK_V2_SECTIONS, "")
 
 
 def merge_proof_pack_v2(base: Mapping[str, str], updates: Mapping[str, str]) -> dict[str, str]:

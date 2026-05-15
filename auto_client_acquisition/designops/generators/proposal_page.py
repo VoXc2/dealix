@@ -15,7 +15,6 @@ from auto_client_acquisition.designops.generators.markdown_renderer import (
     render_artifact_markdown,
 )
 
-
 # Hard line baked into every proposal.
 _FOUNDER_SEND_RULE_AR = (
     "المؤسس يجب أن يرسل هذا العرض يدويًا — لا إرسال آلي."

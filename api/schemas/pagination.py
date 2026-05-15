@@ -48,7 +48,7 @@ class PaginationParams(BaseModel):
         cls,
         cursor: str | None = Query(default=None, description="Pagination cursor"),
         limit: int = Query(default=20, ge=1, le=200, description="Items per page"),
-    ) -> "PaginationParams":
+    ) -> PaginationParams:
         return cls(cursor=cursor, limit=limit)
 
 
@@ -82,7 +82,7 @@ def decode_cursor(cursor: str) -> tuple[str | None, str | None]:
         raw = base64.urlsafe_b64decode(cursor.encode() + b"==").decode()
         data = json.loads(raw)
         return data.get("ts"), data.get("id")
-    except Exception:  # noqa: BLE001
+    except Exception:
         return None, None
 
 
@@ -97,7 +97,7 @@ def offset_from_cursor(cursor: str | None, limit: int) -> int:
         raw = base64.urlsafe_b64decode(cursor.encode() + b"==").decode()
         data = json.loads(raw)
         return int(data.get("offset", 0))
-    except Exception:  # noqa: BLE001
+    except Exception:
         return 0
 
 

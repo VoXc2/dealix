@@ -72,7 +72,7 @@ async def _refresh_access_token(client: httpx.AsyncClient) -> str | None:
     }
     try:
         r = await client.post(OAUTH_TOKEN_URL, data=data, timeout=10.0)
-    except Exception as exc:  # noqa: BLE001
+    except Exception as exc:
         log.warning("gmail_oauth_refresh_failed err=%s", exc)
         return None
     if r.status_code != 200:
@@ -151,7 +151,7 @@ async def send_email(
                 json={"raw": b64},
                 timeout=15.0,
             )
-        except Exception as exc:  # noqa: BLE001
+        except Exception as exc:
             return GmailSendResult(status="http_error", error=str(exc))
 
     if r.status_code == 200:
@@ -215,7 +215,7 @@ async def create_draft(
                 json={"message": {"raw": b64}},
                 timeout=15.0,
             )
-        except Exception as exc:  # noqa: BLE001
+        except Exception as exc:
             return GmailDraftResult(status="http_error", error=str(exc))
 
     if r.status_code == 200:

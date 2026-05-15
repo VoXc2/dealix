@@ -40,12 +40,12 @@ from auto_client_acquisition.designops.generators.proposal_page import (
 )
 
 __all__ = [
-    "generate_mini_diagnostic",
-    "generate_proof_pack",
-    "generate_executive_weekly_pack",
-    "generate_proposal_page",
-    "generate_pricing_page",
     "generate_customer_room_dashboard",
+    "generate_executive_weekly_pack",
+    "generate_mini_diagnostic",
+    "generate_pricing_page",
+    "generate_proof_pack",
+    "generate_proposal_page",
     "html_renderer",
     "markdown_renderer",
 ]

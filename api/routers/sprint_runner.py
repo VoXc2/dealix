@@ -41,7 +41,7 @@ async def run_sprint_endpoint(body: _SprintRunBody) -> dict[str, Any]:
             problem_summary=body.problem_summary,
             workflow_owner_present=body.workflow_owner_present,
         )
-    except Exception as e:  # noqa: BLE001
+    except Exception as e:
         raise HTTPException(status_code=500, detail=f"sprint_run_failed: {e}") from e
 
     return run.to_dict()
@@ -54,6 +54,7 @@ async def sample_sprint() -> dict[str, Any]:
     """
     import csv
     from pathlib import Path
+
     from auto_client_acquisition.delivery_factory.delivery_sprint import run_sprint
 
     demo_path = Path(__file__).resolve().parent.parent.parent / "data" / "demo" / "saudi_b2b_demo.csv"

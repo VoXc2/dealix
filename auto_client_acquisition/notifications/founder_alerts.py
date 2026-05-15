@@ -49,7 +49,7 @@ class FounderAlertPayload:
     lead_id: str
 
     @classmethod
-    def from_lead(cls, lead: Any) -> "FounderAlertPayload":
+    def from_lead(cls, lead: Any) -> FounderAlertPayload:
         """Build the payload from a LeadRecord (or anything duck-typed similar)."""
         return cls(
             company_name=str(getattr(lead, "company_name", "") or ""),
@@ -162,7 +162,7 @@ async def notify_founder_on_intake(lead: Any) -> EmailResult:
                 error=result.error,
             )
         return result
-    except Exception as exc:  # noqa: BLE001 — defensive at the alerting layer
+    except Exception as exc:
         logger.exception("founder_alert_exception", lead_id=payload.lead_id)
         return EmailResult(
             success=False,

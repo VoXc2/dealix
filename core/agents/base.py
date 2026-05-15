@@ -66,12 +66,12 @@ class BaseAgent(ABC):
         self.log = logger.bind(agent=self.name, agent_id=self.agent_id)
 
         # ── Revenue Memory ────────────────────────────────────────
-        from core.memory.revenue_memory import RevenueMemory  # noqa: PLC0415
+        from core.memory.revenue_memory import RevenueMemory
         self.memory = RevenueMemory()
 
         # ── Tool registry ─────────────────────────────────────────
-        from core.agents.tools import Tool  # noqa: PLC0415
-        self._tools: dict[str, "Tool"] = {}
+        from core.agents.tools import Tool
+        self._tools: dict[str, Tool] = {}
 
         # ── Episodic conversation history ─────────────────────────
         self.history: list[Message] = []
@@ -87,12 +87,12 @@ class BaseAgent(ABC):
 
     # ── Tool management ────────────────────────────────────────────
 
-    def register_tool(self, tool: "Tool") -> None:
+    def register_tool(self, tool: Tool) -> None:
         """Register a single tool | سجّل أداة واحدة."""
         self._tools[tool.name] = tool
         self.log.debug("tool_registered", tool=tool.name)
 
-    def register_tools(self, tools: list["Tool"]) -> None:
+    def register_tools(self, tools: list[Tool]) -> None:
         """Register multiple tools at once | سجّل عدة أدوات."""
         for tool in tools:
             self.register_tool(tool)
@@ -102,7 +102,7 @@ class BaseAgent(ABC):
         Register all built-in Dealix tools.
         تسجيل جميع الأدوات المدمجة في Dealix.
         """
-        from core.agents.tools import TOOL_REGISTRY  # noqa: PLC0415
+        from core.agents.tools import TOOL_REGISTRY
         for tool in TOOL_REGISTRY.values():
             self.register_tool(tool)
 
@@ -214,7 +214,7 @@ class BaseAgent(ABC):
             return {"error": f"Unknown tool: {tool_name}", "available": list(self._tools.keys())}
         try:
             return await tool.function(**arguments)
-        except Exception as exc:  # noqa: BLE001
+        except Exception as exc:
             self.log.warning("tool_invocation_error", tool=tool_name, error=str(exc))
             return {"error": str(exc), "tool": tool_name}
 

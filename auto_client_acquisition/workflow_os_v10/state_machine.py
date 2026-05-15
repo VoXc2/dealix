@@ -31,7 +31,6 @@ from auto_client_acquisition.workflow_os_v10.schemas import (
     WorkflowStep,
 )
 
-
 # In-memory store keyed by run_id. Tests may reset via _reset_workflow_buffer.
 _RUN_BUFFER: dict[str, WorkflowRun] = {}
 _DEFINITION_BUFFER: dict[str, WorkflowDefinition] = {}

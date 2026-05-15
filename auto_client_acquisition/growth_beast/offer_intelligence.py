@@ -1,7 +1,6 @@
 """Offer Intelligence — sector/pain → recommended offer."""
 from __future__ import annotations
 
-
 _OFFER_MAP: dict[tuple[str, str], dict] = {
     ("marketing_agency", "no_proof_visible"): {
         "offer_name_ar": "Sprint إثبات النتائج للوكالات",

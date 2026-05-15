@@ -17,7 +17,8 @@ from __future__ import annotations
 import asyncio
 import json
 import logging
-from typing import Annotated, Any, AsyncGenerator
+from collections.abc import AsyncGenerator
+from typing import Annotated, Any
 
 from fastapi import APIRouter, Depends, HTTPException, Query, Request, status
 from fastapi.responses import StreamingResponse
@@ -41,9 +42,10 @@ async def _get_redis_pool() -> Any:
     """Get or create the ARQ Redis pool."""
     global _redis_pool
     if _redis_pool is None:
-        from arq import create_pool  # noqa: PLC0415
-        from arq.connections import RedisSettings  # noqa: PLC0415
-        from core.config.settings import get_settings  # noqa: PLC0415
+        from arq import create_pool
+        from arq.connections import RedisSettings
+
+        from core.config.settings import get_settings
         settings = get_settings()
         _redis_pool = await create_pool(RedisSettings.from_dsn(settings.redis_url))
     return _redis_pool

@@ -39,7 +39,7 @@ import hashlib
 import logging
 import re
 import uuid
-from datetime import datetime, timezone
+from datetime import UTC, datetime, timezone
 from typing import Any
 
 from fastapi import APIRouter, Depends, HTTPException, Path
@@ -164,7 +164,7 @@ async def submit_request(body: _ServiceRequest) -> dict[str, Any]:
                 status_code=400, detail="invalid existing_customer_handle format",
             )
 
-    submitted_at = datetime.now(timezone.utc)
+    submitted_at = datetime.now(UTC)
     request_id = _request_id(body.company_name, submitted_at)
     estimate = _compute_estimate(body)
 

@@ -11,7 +11,7 @@ proceeding to the next step. NO external sends.
 from __future__ import annotations
 
 from dataclasses import asdict, dataclass, field
-from datetime import datetime, timezone
+from datetime import UTC, datetime, timezone
 from typing import Any
 
 
@@ -61,7 +61,7 @@ def _safe(step_name: str, fn, **kwargs) -> SprintStep:
             status="ran",
             output=out if isinstance(out, dict) else {"value": out},
         )
-    except Exception as exc:  # noqa: BLE001
+    except Exception as exc:
         try:
             from auto_client_acquisition.friction_log.store import emit
             emit(
@@ -288,7 +288,7 @@ def step7_capital_assets(
                 notes=s.get("notes", ""),
             )
             registered.append(a.asset_id)
-        except Exception:  # noqa: BLE001
+        except Exception:
             continue
     return {"registered": registered, "count": len(registered)}
 
@@ -337,7 +337,7 @@ def run_sprint(
     The founder reviews intermediate outputs before proceeding in
     production. For tests, all steps run sequentially.
     """
-    started = datetime.now(timezone.utc).isoformat()
+    started = datetime.now(UTC).isoformat()
     run = SprintRun(
         engagement_id=engagement_id,
         customer_id=customer_id,

@@ -20,17 +20,17 @@ from auto_client_acquisition.vertical_os.base import (
     list_vertical_summaries,
 )
 from auto_client_acquisition.vertical_os.clinics import CLINICS
-from auto_client_acquisition.vertical_os.real_estate import REAL_ESTATE
 from auto_client_acquisition.vertical_os.logistics import LOGISTICS
+from auto_client_acquisition.vertical_os.real_estate import REAL_ESTATE
 
 __all__ = [
-    "VerticalOS",
-    "KPI",
-    "MessageTemplate",
     "ALL_VERTICALS",
+    "CLINICS",
+    "KPI",
+    "LOGISTICS",
+    "REAL_ESTATE",
+    "MessageTemplate",
+    "VerticalOS",
     "get_vertical",
     "list_vertical_summaries",
-    "CLINICS",
-    "REAL_ESTATE",
-    "LOGISTICS",
 ]

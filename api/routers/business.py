@@ -18,8 +18,8 @@ from auto_client_acquisition.business import (
     estimate_ltv,
     estimate_mrr_path,
     estimate_roi,
-    first_100_customers_plan,
     first_10_customers_plan,
+    first_100_customers_plan,
     founder_led_sales_script,
     north_star_metrics,
     partner_strategy,
@@ -28,9 +28,16 @@ from auto_client_acquisition.business import (
     retention_metrics,
     revenue_metrics,
 )
-from auto_client_acquisition.business.pricing_strategy import calculate_performance_fee, get_pricing_tiers
-from auto_client_acquisition.business.proof_pack import build_demo_proof_pack, calculate_roi_summary, grade_account_health
 from auto_client_acquisition.business.market_positioning import Segment
+from auto_client_acquisition.business.pricing_strategy import (
+    calculate_performance_fee,
+    get_pricing_tiers,
+)
+from auto_client_acquisition.business.proof_pack import (
+    build_demo_proof_pack,
+    calculate_roi_summary,
+    grade_account_health,
+)
 from auto_client_acquisition.business.verticals import get_vertical_playbooks, recommend_vertical
 
 router = APIRouter(prefix="/api/v1/business", tags=["business"])

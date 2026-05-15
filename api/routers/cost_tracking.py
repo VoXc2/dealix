@@ -21,7 +21,7 @@ matches the unit used in api/routers/pricing.py PLANS.
 from __future__ import annotations
 
 import logging
-from datetime import datetime, timezone
+from datetime import UTC, datetime, timezone
 from typing import Any
 
 from fastapi import APIRouter, Depends
@@ -146,7 +146,7 @@ async def cost_summary() -> dict[str, Any]:
     Returns the model parameters in the meantime so dashboards have
     a stable schema to render against.
     """
-    now = datetime.now(timezone.utc)
+    now = datetime.now(UTC)
     return {
         "period": {
             "month": now.strftime("%Y-%m"),

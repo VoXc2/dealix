@@ -23,5 +23,5 @@ def cache_key(req: RoutingPolicy) -> str:
             ]
         )
         return hashlib.sha256(payload.encode("utf-8")).hexdigest()
-    except Exception:  # noqa: BLE001 - defensive default
+    except Exception:
         return hashlib.sha256(b"llm_gateway_v10:fallback").hexdigest()

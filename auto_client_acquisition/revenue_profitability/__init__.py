@@ -10,11 +10,11 @@ Hard rule:
   payment_evidence_uploaded → possible revenue (not yet)
   payment_confirmed       = revenue
 """
-from auto_client_acquisition.revenue_profitability.gross_margin import (
-    compute_gross_margin,
-)
 from auto_client_acquisition.revenue_profitability.finance_radar import (
     finance_radar_summary,
+)
+from auto_client_acquisition.revenue_profitability.gross_margin import (
+    compute_gross_margin,
 )
 from auto_client_acquisition.revenue_profitability.revenue_truth import (
     is_revenue,

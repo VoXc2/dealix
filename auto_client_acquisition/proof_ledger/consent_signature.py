@@ -17,7 +17,7 @@ import hashlib
 import json
 import os
 import uuid
-from datetime import datetime, timezone
+from datetime import UTC, datetime, timezone
 from typing import Any, Literal
 
 from pydantic import BaseModel, ConfigDict, Field
@@ -26,7 +26,7 @@ ConsentScope = Literal["single_event", "single_pack", "all_future"]
 ConsentStatus = Literal["requested", "signed", "declined", "revoked"]
 
 _JSONL_PATH = os.path.join("data", "consent_signatures.jsonl")
-_INDEX: dict[str, "ConsentSignature"] = {}
+_INDEX: dict[str, ConsentSignature] = {}
 
 
 class ConsentSignature(BaseModel):
@@ -40,7 +40,7 @@ class ConsentSignature(BaseModel):
     document_hash: str  # sha256 of the narrative being consented to
     signed_by: str | None = None  # name/title of customer signer
     status: ConsentStatus = "requested"
-    requested_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    requested_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
     signed_at: datetime | None = None
     safety_summary: str = "no_publish_without_signed_status"
 
@@ -102,7 +102,7 @@ def record_signature(
         raise ValueError("document_hash mismatch — cannot sign different narrative")
     sig.signed_by = signed_by
     sig.status = "signed"
-    sig.signed_at = datetime.now(timezone.utc)
+    sig.signed_at = datetime.now(UTC)
     _persist(sig)
     return sig
 
@@ -115,7 +115,7 @@ def decline(*, signature_id: str, declined_by: str) -> ConsentSignature:
         raise ValueError(f"signature {signature_id} is {sig.status}; cannot decline")
     sig.status = "declined"
     sig.signed_by = declined_by
-    sig.signed_at = datetime.now(timezone.utc)
+    sig.signed_at = datetime.now(UTC)
     _persist(sig)
     return sig
 
@@ -125,10 +125,10 @@ def revoke(*, signature_id: str, revoked_by: str) -> ConsentSignature:
     if sig is None:
         raise ValueError(f"signature {signature_id} not found")
     if sig.status != "signed":
-        raise ValueError(f"only signed consents can be revoked")
+        raise ValueError("only signed consents can be revoked")
     sig.status = "revoked"
     sig.signed_by = revoked_by
-    sig.signed_at = datetime.now(timezone.utc)
+    sig.signed_at = datetime.now(UTC)
     _persist(sig)
     return sig
 

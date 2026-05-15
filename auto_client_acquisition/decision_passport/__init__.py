@@ -19,14 +19,14 @@ from auto_client_acquisition.decision_passport.schema import (
 
 __all__ = [
     "SCHEMA_VERSION",
-    "DecisionPassport",
-    "build_from_pipeline_result",
-    "validate_passport",
-    "ValidationFailure",
     "ActionMode",
+    "DecisionPassport",
     "Owner",
     "PriorityBucket",
     "ScoreBoard",
+    "ValidationFailure",
+    "build_from_pipeline_result",
+    "validate_passport",
 ]
 
 # Wave 12 §32.3.4 — bumped from 1.0 → 1.1 (added owner / deadline / action_mode).

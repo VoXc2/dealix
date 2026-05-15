@@ -17,7 +17,7 @@ These endpoints power /landing/command-center.html and the customer portal.
 from __future__ import annotations
 
 import logging
-from datetime import datetime, timezone
+from datetime import UTC, datetime, timezone
 from typing import Any
 
 from fastapi import APIRouter, Body, HTTPException, Query
@@ -41,8 +41,8 @@ from auto_client_acquisition.revenue_graph.graph import (
 )
 from auto_client_acquisition.revenue_graph.leak_detector import detect_all_leaks
 from auto_client_acquisition.revenue_graph.maturity_score import (
-    DIMENSIONS,
     DIMENSION_WEIGHTS,
+    DIMENSIONS,
     compute_benchmark_score,
 )
 from auto_client_acquisition.revenue_graph.objection_library import (
@@ -78,7 +78,7 @@ log = logging.getLogger(__name__)
 
 
 def _utcnow() -> datetime:
-    return datetime.now(timezone.utc).replace(tzinfo=None)
+    return datetime.now(UTC).replace(tzinfo=None)
 
 
 def _spec_to_dict(a: Any) -> dict[str, Any]:

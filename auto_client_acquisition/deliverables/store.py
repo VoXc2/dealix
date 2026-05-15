@@ -12,7 +12,7 @@ from __future__ import annotations
 import json
 import os
 import uuid
-from datetime import datetime, timezone
+from datetime import UTC, datetime, timezone
 
 from auto_client_acquisition.deliverables.schemas import (
     Deliverable,
@@ -63,8 +63,8 @@ def create_deliverable(
         proof_related=proof_related,
         proof_event_id=proof_event_id,
         artifact_uri=artifact_uri,
-        created_at=datetime.now(timezone.utc),
-        updated_at=datetime.now(timezone.utc),
+        created_at=datetime.now(UTC),
+        updated_at=datetime.now(UTC),
     )
     if persist:
         _persist(rec)

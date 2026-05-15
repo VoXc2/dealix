@@ -4,7 +4,6 @@ from __future__ import annotations
 import os
 from typing import Any
 
-
 _SUPPORTED_SOURCES = (
     "whatsapp", "form", "csv", "warm_intro",
     "google_places", "referral", "api", "manual",

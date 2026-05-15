@@ -10,7 +10,6 @@ from __future__ import annotations
 import html as _html
 from typing import Any
 
-
 _DEALIX_CSS = """
 *{box-sizing:border-box}
 html,body{margin:0;padding:0}

@@ -40,6 +40,10 @@ from auto_client_acquisition.proof_architecture_os.roi_discipline import (
     roi_observed_ok_for_internal_report,
     roi_safe_for_public_case,
 )
+from auto_client_acquisition.proof_architecture_os.value_ledger import (
+    ValueLedgerEvent,
+    value_ledger_event_valid,
+)
 from auto_client_acquisition.proof_architecture_os.value_metrics_by_offer import (
     OFFER_AI_GOVERNANCE_REVIEW,
     OFFER_AI_QUICK_WIN_SPRINT,
@@ -48,10 +52,6 @@ from auto_client_acquisition.proof_architecture_os.value_metrics_by_offer import
     OFFER_REVENUE_INTELLIGENCE_SPRINT,
     VALUE_METRICS_BY_OFFER,
     value_metrics_for_offer,
-)
-from auto_client_acquisition.proof_architecture_os.value_ledger import (
-    ValueLedgerEvent,
-    value_ledger_event_valid,
 )
 
 __all__ = (

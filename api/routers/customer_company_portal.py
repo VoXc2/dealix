@@ -507,7 +507,7 @@ def _workspace_capability(customer_handle: str) -> dict[str, Any] | None:
             avg_response_hours=48.0,
         )
         return {"score": scores.get("expansion_readiness"), "comfort": scores.get("comfort_score")}
-    except Exception:  # noqa: BLE001
+    except Exception:
         return None
 
 
@@ -521,7 +521,7 @@ def _workspace_data_readiness(customer_handle: str) -> dict[str, Any] | None:
             "dq_score": None,
             "value_events_in_ledger": len(events),
         }
-    except Exception:  # noqa: BLE001
+    except Exception:
         return None
 
 
@@ -535,7 +535,7 @@ def _workspace_governance(customer_handle: str) -> dict[str, Any]:
             "last_decision": "allow_with_review",
             "open_blocks": len(events),
         }
-    except Exception:  # noqa: BLE001
+    except Exception:
         return {"last_decision": "unknown", "open_blocks": 0}
 
 
@@ -544,7 +544,7 @@ def _workspace_ranked_opportunities(customer_handle: str) -> list[dict[str, Any]
         from auto_client_acquisition.leadops_spine import list_records
         recs = [r for r in list_records(limit=50) if r.customer_handle == customer_handle]
         return [{"id": getattr(r, "id", ""), "company": getattr(r, "company_name", "")} for r in recs[:10]]
-    except Exception:  # noqa: BLE001
+    except Exception:
         return None
 
 
@@ -557,7 +557,7 @@ def _workspace_drafts_pending(customer_handle: str) -> list[dict[str, Any]] | No
         pending = store.list_pending() if hasattr(store, "list_pending") else []
         scoped = [p for p in pending if getattr(p, "customer_handle", None) == customer_handle]
         return [{"id": getattr(p, "id", ""), "kind": getattr(p, "kind", "")} for p in scoped]
-    except Exception:  # noqa: BLE001
+    except Exception:
         return None
 
 
@@ -570,7 +570,7 @@ def _workspace_proof_timeline(customer_handle: str) -> list[dict[str, Any]] | No
             {"id": e.id, "event_type": str(e.event_type), "created_at": e.created_at.isoformat()}
             for e in events
         ]
-    except Exception:  # noqa: BLE001
+    except Exception:
         return None
 
 
@@ -579,7 +579,7 @@ def _workspace_adoption(customer_handle: str) -> dict[str, Any] | None:
         from auto_client_acquisition.adoption_os.adoption_score import compute as compute_adoption
         score = compute_adoption(customer_id=customer_handle)
         return score.to_dict()
-    except Exception:  # noqa: BLE001
+    except Exception:
         return None
 
 
@@ -588,7 +588,7 @@ def _workspace_friction(customer_handle: str) -> dict[str, Any] | None:
         from auto_client_acquisition.friction_log.aggregator import aggregate
         agg = aggregate(customer_id=customer_handle, window_days=30)
         return agg.to_dict()
-    except Exception:  # noqa: BLE001
+    except Exception:
         return None
 
 
@@ -605,7 +605,7 @@ def _workspace_monthly_value(customer_handle: str) -> dict[str, Any] | None:
             "limitations": d["limitations"][:5],
             "governance_decision": d["governance_decision"],
         }
-    except Exception:  # noqa: BLE001
+    except Exception:
         return None
 
 
@@ -698,7 +698,7 @@ async def client_workspace(customer_handle: str) -> dict[str, Any]:
                     workflow_id="client_workspace_mvp",
                     notes=f"panel:{panel_name}:unavailable",
                 )
-    except Exception:  # noqa: BLE001
+    except Exception:
         pass
 
     # Aggregate friction LAST so missing-panel events emitted above are

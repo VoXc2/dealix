@@ -9,8 +9,12 @@ from fastapi import APIRouter
 
 from api.routers import (
     channel_policy_gateway as channel_policy_gateway_router,
+)
+from api.routers import (
     support_webhook,
     webhooks,
+)
+from api.routers import (
     whatsapp_decision_bot as whatsapp_decision_bot_router,
 )
 

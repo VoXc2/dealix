@@ -32,7 +32,7 @@ class InternalTechProvider:
     async def detect(self, url: str) -> ProviderResult:
         try:
             result = await detect_stack(url)
-        except Exception as exc:  # noqa: BLE001
+        except Exception as exc:
             return ProviderResult(provider=self.name, status="http_error", error=str(exc))
         if not isinstance(result, dict):
             return ProviderResult(
@@ -58,7 +58,7 @@ class WappalyzerProvider:
                     "https://api.wappalyzer.com/v2/lookup/",
                     params={"urls": url}, headers={"x-api-key": api_key},
                 )
-        except Exception as exc:  # noqa: BLE001
+        except Exception as exc:
             return ProviderResult(provider=self.name, status="http_error", error=str(exc))
         if r.status_code != 200:
             return ProviderResult(

@@ -14,7 +14,7 @@ import json
 import os
 import threading
 from dataclasses import asdict, dataclass, field
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta, timezone
 from enum import StrEnum
 from pathlib import Path
 from typing import Any
@@ -59,7 +59,7 @@ class RenewalSchedule:
     auto_charge_eligible: bool = False  # flips to True after 3 confirmed manual cycles
     notes: str = ""
     created_at: str = field(
-        default_factory=lambda: datetime.now(timezone.utc).isoformat()
+        default_factory=lambda: datetime.now(UTC).isoformat()
     )
 
     def to_dict(self) -> dict[str, Any]:
@@ -82,7 +82,7 @@ def schedule_renewal(
         raise ValueError("customer_id is required")
     if amount_sar <= 0:
         raise ValueError("amount_sar must be positive")
-    last_paid = last_paid_at or datetime.now(timezone.utc).isoformat()
+    last_paid = last_paid_at or datetime.now(UTC).isoformat()
     last_dt = datetime.fromisoformat(last_paid)
     next_dt = last_dt + timedelta(days=cadence_days)
     schedule = RenewalSchedule(
@@ -97,35 +97,33 @@ def schedule_renewal(
     )
     path = _path()
     _ensure_dir(path)
-    with _lock:
-        with path.open("a", encoding="utf-8") as f:
-            f.write(json.dumps(schedule.to_dict(), ensure_ascii=False) + "\n")
+    with _lock, path.open("a", encoding="utf-8") as f:
+        f.write(json.dumps(schedule.to_dict(), ensure_ascii=False) + "\n")
     return schedule
 
 
 def list_due(*, on_date: datetime | None = None) -> list[RenewalSchedule]:
     """Return scheduled renewals whose next_attempt_at is in the past."""
-    target = (on_date or datetime.now(timezone.utc)).isoformat()
+    target = (on_date or datetime.now(UTC)).isoformat()
     path = _path()
     if not path.exists():
         return []
     out: list[RenewalSchedule] = []
-    with _lock:
-        with path.open("r", encoding="utf-8") as f:
-            for line in f:
-                line = line.strip()
-                if not line:
-                    continue
-                try:
-                    data = json.loads(line)
-                    s = RenewalSchedule(**data)
-                except Exception:  # noqa: BLE001
-                    continue
-                if s.status in (
-                    RenewalStatus.SCHEDULED.value,
-                    RenewalStatus.AWAITING_FOUNDER.value,
-                ) and s.next_attempt_at <= target:
-                    out.append(s)
+    with _lock, path.open("r", encoding="utf-8") as f:
+        for line in f:
+            line = line.strip()
+            if not line:
+                continue
+            try:
+                data = json.loads(line)
+                s = RenewalSchedule(**data)
+            except Exception:
+                continue
+            if s.status in (
+                RenewalStatus.SCHEDULED.value,
+                RenewalStatus.AWAITING_FOUNDER.value,
+            ) and s.next_attempt_at <= target:
+                out.append(s)
     return out
 
 
@@ -134,19 +132,18 @@ def list_by_customer(customer_id: str) -> list[RenewalSchedule]:
     if not path.exists():
         return []
     out: list[RenewalSchedule] = []
-    with _lock:
-        with path.open("r", encoding="utf-8") as f:
-            for line in f:
-                line = line.strip()
-                if not line:
-                    continue
-                try:
-                    data = json.loads(line)
-                    s = RenewalSchedule(**data)
-                except Exception:  # noqa: BLE001
-                    continue
-                if s.customer_id == customer_id:
-                    out.append(s)
+    with _lock, path.open("r", encoding="utf-8") as f:
+        for line in f:
+            line = line.strip()
+            if not line:
+                continue
+            try:
+                data = json.loads(line)
+                s = RenewalSchedule(**data)
+            except Exception:
+                continue
+            if s.customer_id == customer_id:
+                out.append(s)
     return out
 
 
@@ -183,7 +180,7 @@ def _patch(schedule_id: str, patch: dict[str, Any]) -> bool:
                 continue
             try:
                 data = json.loads(line)
-            except Exception:  # noqa: BLE001
+            except Exception:
                 new_lines.append(line)
                 continue
             if data.get("schedule_id") == schedule_id:

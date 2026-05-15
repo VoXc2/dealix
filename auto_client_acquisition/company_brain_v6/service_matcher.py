@@ -7,7 +7,6 @@ from __future__ import annotations
 
 from typing import Any
 
-
 # The 5 customer-facing bundles. Aligned with finance_os.pricing_catalog
 # tier_ids but expressed as the simpler bundle ids the customer sees.
 CUSTOMER_FACING_BUNDLES: tuple[str, ...] = (

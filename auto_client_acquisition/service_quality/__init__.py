@@ -20,9 +20,9 @@ from auto_client_acquisition.service_quality.sla_tracker import (
 )
 
 __all__ = [
+    "SLA",
     "QAGateResult",
     "QAVerdict",
-    "SLA",
     "check_delivery_payload",
     "get_sla",
     "list_slas",

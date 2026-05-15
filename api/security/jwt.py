@@ -13,7 +13,7 @@ from __future__ import annotations
 import hashlib
 import hmac as _hmac
 import secrets
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta, timezone
 from typing import Any
 
 from jose import JWTError, jwt
@@ -27,7 +27,7 @@ _TYPE_INVITE = "invite"
 
 
 def _utcnow() -> datetime:
-    return datetime.now(timezone.utc)
+    return datetime.now(UTC)
 
 
 def _secret() -> str:
@@ -162,7 +162,7 @@ def token_expires_at(token_str: str) -> datetime | None:
         )
         exp = payload.get("exp")
         if exp:
-            return datetime.fromtimestamp(exp, tz=timezone.utc)
+            return datetime.fromtimestamp(exp, tz=UTC)
     except JWTError:
         pass
     return None

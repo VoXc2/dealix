@@ -19,7 +19,6 @@ from auto_client_acquisition.full_ops_contracts.schemas import (
     ExecutivePackRecord,
 )
 
-
 # Tokens forbidden in customer-facing output (Article 8 honesty)
 _CUSTOMER_FORBIDDEN_TOKENS = (
     "guaranteed",

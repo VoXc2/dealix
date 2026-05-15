@@ -3,7 +3,6 @@ from __future__ import annotations
 
 from auto_client_acquisition.workflow_os_v10.schemas import WorkflowDefinition
 
-
 MINI_DIAGNOSTIC = WorkflowDefinition(
     workflow_id="wf_mini_diagnostic",
     name="mini_diagnostic",

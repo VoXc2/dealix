@@ -55,7 +55,6 @@ from auto_client_acquisition.workflow_os_v10.state_machine import (
     start_workflow,
 )
 
-
 # Auto-register the pre-defined workflows so the API can list them.
 register_definition(GROWTH_STARTER_7_DAY)
 register_definition(PROOF_PACK_ASSEMBLY)

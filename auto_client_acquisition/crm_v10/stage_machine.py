@@ -3,7 +3,6 @@ from __future__ import annotations
 
 from auto_client_acquisition.crm_v10.schemas import Deal, Lead
 
-
 LEAD_TRANSITIONS: dict[str, tuple[str, ...]] = {
     "new": ("qualifying", "disqualified"),
     "qualifying": ("qualified", "disqualified"),
@@ -48,9 +47,9 @@ def advance_deal(deal: Deal, target_stage: str) -> Deal:
 
 
 __all__ = [
-    "LEAD_TRANSITIONS",
     "DEAL_TRANSITIONS",
+    "LEAD_TRANSITIONS",
     "InvalidStageTransition",
-    "advance_lead",
     "advance_deal",
+    "advance_lead",
 ]

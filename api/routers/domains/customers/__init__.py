@@ -9,8 +9,9 @@ from fastapi import APIRouter
 
 from api.routers import (
     company_brain_mvp as company_brain_mvp_router,
+)
+from api.routers import (
     crm_v10,
-    customer_brain as customer_brain_router,
     customer_company_portal,
     customer_data_plane,
     customer_inbox_v10,
@@ -18,9 +19,16 @@ from api.routers import (
     customer_success,
     customer_success_os,
     executive_pack_per_customer,
-    service_sessions as service_sessions_router,
-    support_journey as support_journey_router,
     support_os,
+)
+from api.routers import (
+    customer_brain as customer_brain_router,
+)
+from api.routers import (
+    service_sessions as service_sessions_router,
+)
+from api.routers import (
+    support_journey as support_journey_router,
 )
 
 _ROUTERS = [

@@ -25,7 +25,7 @@ import json
 import os
 import re
 from dataclasses import asdict, dataclass, field
-from datetime import datetime, timezone
+from datetime import UTC, datetime, timezone
 from pathlib import Path
 from typing import Any, Literal
 
@@ -135,7 +135,7 @@ def record_event(
     _validate_handle(customer_handle)  # validate even when base_dir overridden
 
     event = TimelineEvent(
-        timestamp=datetime.now(timezone.utc).isoformat(),
+        timestamp=datetime.now(UTC).isoformat(),
         kind=kind,
         summary_ar=(summary_ar or "")[:140],
         summary_en=(summary_en or "")[:140],

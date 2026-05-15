@@ -51,7 +51,7 @@ def _try_weasyprint(md: str, title: str) -> bytes | None:
     except ImportError:
         log.debug("pdf_renderer: weasyprint not installed")
         return None
-    except Exception:  # noqa: BLE001
+    except Exception:
         log.exception("pdf_renderer_weasyprint_failed")
         return None
 
@@ -88,10 +88,10 @@ def _try_pandoc(md: str, title: str) -> bytes | None:
         try:
             md_path.unlink(missing_ok=True)
             out_path.unlink(missing_ok=True)
-        except Exception:  # noqa: BLE001
+        except Exception:
             pass
         return data
-    except Exception:  # noqa: BLE001
+    except Exception:
         log.exception("pdf_renderer_pandoc_exception")
         return None
 
@@ -115,7 +115,7 @@ def is_pdf_available() -> dict[str, bool]:
     """Diagnostic helper used by /api/v1/health and tests."""
     weasy = False
     try:
-        import weasyprint  # noqa: F401
+        import weasyprint
         weasy = True
     except ImportError:
         pass

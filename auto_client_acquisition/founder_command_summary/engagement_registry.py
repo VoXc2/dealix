@@ -13,7 +13,7 @@ from datetime import UTC, datetime
 from typing import Any
 
 _lock = threading.Lock()
-_STORE: dict[str, "EngagementSnapshot"] = {}
+_STORE: dict[str, EngagementSnapshot] = {}
 
 
 @dataclass

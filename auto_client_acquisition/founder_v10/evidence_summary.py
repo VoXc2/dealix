@@ -10,7 +10,7 @@ def summarize_evidence(limit: int = 10) -> dict[str, Any]:
         from auto_client_acquisition.proof_ledger import get_default_ledger
         ledger = get_default_ledger()
         events = ledger.list_events(limit=limit)
-    except Exception:  # noqa: BLE001
+    except Exception:
         return {
             "total": 0,
             "by_type": {},
@@ -25,7 +25,7 @@ def summarize_evidence(limit: int = 10) -> dict[str, Any]:
         by_type[t] = by_type.get(t, 0) + 1
         try:
             month = ev.created_at.strftime("%Y-%m")
-        except Exception:  # noqa: BLE001
+        except Exception:
             month = "unknown"
         by_month[month] = by_month.get(month, 0) + 1
 

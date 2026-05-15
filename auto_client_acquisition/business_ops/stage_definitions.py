@@ -4,8 +4,8 @@ Wave 9 - Customer Journey Stage Definitions
 HARD RULES: no revenue before payment_confirmed, no public proof without permission,
             no delivery without payment, no cold WhatsApp.
 """
-from enum import Enum
 from dataclasses import dataclass, field
+from enum import Enum
 from typing import List, Optional
 
 
@@ -40,14 +40,14 @@ class StageDefinition:
     label_en: str
     label_ar: str
     action_mode: str   # suggest_only / draft_only / approval_required / approved_manual / blocked
-    gate_conditions: List[str] = field(default_factory=list)
-    exit_conditions: List[str] = field(default_factory=list)
-    hard_rules: List[str] = field(default_factory=list)
+    gate_conditions: list[str] = field(default_factory=list)
+    exit_conditions: list[str] = field(default_factory=list)
+    hard_rules: list[str] = field(default_factory=list)
     owner: str = "founder"
-    estimated_days: Optional[int] = None
+    estimated_days: int | None = None
 
 
-STAGES: List[StageDefinition] = [
+STAGES: list[StageDefinition] = [
     StageDefinition(
         stage=JourneyStage.TARGET_IDENTIFIED,
         label_en="Target Identified",

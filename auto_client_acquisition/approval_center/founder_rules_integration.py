@@ -107,7 +107,7 @@ def try_auto_approve_via_founder_rule(
 
 
 __all__ = [
-    "try_auto_approve_via_founder_rule",
     "get_default_engine",
     "reset_default_engine_for_tests",
+    "try_auto_approve_via_founder_rule",
 ]

@@ -8,7 +8,6 @@ from __future__ import annotations
 
 from auto_client_acquisition.ai_workforce.schemas import WorkforceGoal
 
-
 # The middle band — everything between the opening (CompanyBrain +
 # MarketRadar) and the closing (ComplianceGuard).
 _MIDDLE_AGENTS: tuple[str, ...] = (

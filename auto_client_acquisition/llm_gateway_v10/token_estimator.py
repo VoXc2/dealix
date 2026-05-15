@@ -15,5 +15,5 @@ def estimate_tokens(text: str, multiplier: float = 1.3) -> int:
         chars = len(text)
         base = chars / 4.0
         return max(0, int(round(base * m)))
-    except Exception:  # noqa: BLE001 - never raise from estimator
+    except Exception:
         return 0

@@ -1,7 +1,7 @@
 """Schemas for the unified operating graph (Phase 3)."""
 from __future__ import annotations
 
-from datetime import datetime, timezone
+from datetime import UTC, datetime, timezone
 from typing import Any, Literal
 
 from pydantic import BaseModel, ConfigDict, Field
@@ -61,7 +61,7 @@ class UnifiedGraph(BaseModel):
     degraded_sections: list[dict[str, Any]] = Field(default_factory=list)
     data_status: Literal["insufficient_data", "partial", "live"] = "insufficient_data"
     safety_summary: str = "no_pii_no_internal_terms_read_only"
-    built_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    built_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
 
     def is_empty(self) -> bool:
         return len(self.nodes) == 0

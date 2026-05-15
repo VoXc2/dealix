@@ -8,8 +8,11 @@ from fastapi.responses import PlainTextResponse, Response
 from pydantic import BaseModel, ConfigDict, Field
 
 from auto_client_acquisition.proof_to_market import (
-    approval_gate_check, case_study_candidate, proof_to_snippet,
-    sector_learning_summary, select_publishable_proofs,
+    approval_gate_check,
+    case_study_candidate,
+    proof_to_snippet,
+    sector_learning_summary,
+    select_publishable_proofs,
 )
 
 router = APIRouter(prefix="/api/v1/proof-to-market", tags=["proof-to-market"])
@@ -119,8 +122,9 @@ async def case_candidate(req: _EventsRequest) -> dict[str, Any]:
 async def sector_learning() -> dict[str, Any]:
     """Reads from proof-events directory if available."""
     try:
-        from auto_client_acquisition.runtime_paths import resolve_proof_events_dir
         import json
+
+        from auto_client_acquisition.runtime_paths import resolve_proof_events_dir
         proof_dir = resolve_proof_events_dir()
         events: list[dict] = []
         if proof_dir.exists():
@@ -133,11 +137,11 @@ async def sector_learning() -> dict[str, Any]:
                     continue
                 try:
                     events.append(json.loads(f.read_text(encoding="utf-8")))
-                except Exception:  # noqa: BLE001
+                except Exception:
                     continue
         return {"learning": sector_learning_summary(events),
                 "events_loaded": len(events),
                 "hard_gates": _HARD_GATES}
-    except Exception as exc:  # noqa: BLE001
+    except Exception as exc:
         return {"learning": {"insufficient_data": True, "error": str(exc)},
                 "events_loaded": 0, "hard_gates": _HARD_GATES}

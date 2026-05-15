@@ -1,7 +1,7 @@
 """Schemas for the WhatsApp Decision Layer (Phase 7)."""
 from __future__ import annotations
 
-from datetime import datetime, timezone
+from datetime import UTC, datetime, timezone
 from typing import Any, Literal
 
 from pydantic import BaseModel, ConfigDict, Field
@@ -45,7 +45,7 @@ class CommandResult(BaseModel):
     requires_approval: bool = True
     payload: dict[str, Any] = Field(default_factory=dict)
     safety_summary: str = "no_live_send_no_customer_outbound"
-    timestamp: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    timestamp: datetime = Field(default_factory=lambda: datetime.now(UTC))
 
 
 class ApprovalPreview(BaseModel):

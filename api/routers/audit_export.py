@@ -83,6 +83,7 @@ async def evidence_chain_pdf(
     engagement_id: str = Query(""),
 ):
     from fastapi.responses import PlainTextResponse, Response
+
     from auto_client_acquisition.auditability_os.evidence_chain import build_chain
     from auto_client_acquisition.proof_to_market.pdf_renderer import render_markdown_to_pdf
     chain = build_chain(customer_id=customer_id, engagement_id=engagement_id)

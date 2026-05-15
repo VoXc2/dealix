@@ -25,7 +25,7 @@ from __future__ import annotations
 import logging
 import os
 import threading
-from datetime import datetime, timezone
+from datetime import UTC, datetime, timezone
 from typing import Any
 
 log = logging.getLogger(__name__)
@@ -58,10 +58,10 @@ class QuotaGuard:
     def __init__(self) -> None:
         self._lock = threading.RLock()
         self._counters: dict[str, int] = {}
-        self._date_iso = datetime.now(timezone.utc).date().isoformat()
+        self._date_iso = datetime.now(UTC).date().isoformat()
 
     def _maybe_reset(self) -> None:
-        today = datetime.now(timezone.utc).date().isoformat()
+        today = datetime.now(UTC).date().isoformat()
         if today != self._date_iso:
             self._counters.clear()
             self._date_iso = today

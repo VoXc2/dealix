@@ -202,7 +202,7 @@ class _HunterProvider(EnrichmentProvider):
         # Live path. Imported lazily so test environments without
         # httpx still work for the no-op / mock providers.
         try:
-            import httpx  # noqa: PLC0415
+            import httpx
 
             with httpx.Client(timeout=10.0) as client:
                 r = client.get(
@@ -233,7 +233,7 @@ class _HunterProvider(EnrichmentProvider):
                 provider_id=self.provider_id,
                 metadata={"emails_found": len(emails)},
             )
-        except Exception as exc:  # noqa: BLE001
+        except Exception as exc:
             return EnrichmentResult(
                 domain=domain,
                 contact_email=contact_email,

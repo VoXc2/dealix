@@ -11,7 +11,7 @@ denominator is zero. Never divides-by-fake.
 from __future__ import annotations
 
 from dataclasses import dataclass
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta, timezone
 from pathlib import Path
 
 from auto_client_acquisition.learning_flywheel.aggregator import _read_events
@@ -60,7 +60,7 @@ def compute_funnel(
     Returns:
         FunnelMetrics with honest counts + ratios.
     """
-    end = period_end or datetime.now(timezone.utc)
+    end = period_end or datetime.now(UTC)
     start = end - timedelta(days=period_days)
     all_events = _read_events(storage_path=storage_path)
 

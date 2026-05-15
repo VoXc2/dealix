@@ -17,7 +17,7 @@ Each leak comes with: severity, estimated $ impact, and a recommended action.
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta, timezone
 from typing import Any
 
 # ── Leak taxonomy with severity weights ──────────────────────────
@@ -55,7 +55,7 @@ class RevenueLeak:
     estimated_impact_sar: float
     suggested_action_ar: str
     days_in_state: int
-    detected_at: datetime = field(default_factory=lambda: datetime.now(timezone.utc).replace(tzinfo=None))
+    detected_at: datetime = field(default_factory=lambda: datetime.now(UTC).replace(tzinfo=None))
 
 
 # ── Detector functions — pure, stateless, testable ───────────────
@@ -67,7 +67,7 @@ def detect_lead_no_followup(
     now: datetime | None = None,
 ) -> list[RevenueLeak]:
     """A lead with no draft sent within SLA."""
-    n = now or datetime.now(timezone.utc).replace(tzinfo=None)
+    n = now or datetime.now(UTC).replace(tzinfo=None)
     leaks: list[RevenueLeak] = []
     for lead in leads:
         last = lead.get("last_outreach_at")
@@ -110,7 +110,7 @@ def detect_meeting_no_proposal(
     now: datetime | None = None,
 ) -> list[RevenueLeak]:
     """Meeting held without a proposal sent."""
-    n = now or datetime.now(timezone.utc).replace(tzinfo=None)
+    n = now or datetime.now(UTC).replace(tzinfo=None)
     leaks: list[RevenueLeak] = []
     for m in meetings:
         if m.get("proposal_sent"):
@@ -150,7 +150,7 @@ def detect_stalled_deals(
     now: datetime | None = None,
 ) -> list[RevenueLeak]:
     """Deals with no activity for too long."""
-    n = now or datetime.now(timezone.utc).replace(tzinfo=None)
+    n = now or datetime.now(UTC).replace(tzinfo=None)
     leaks: list[RevenueLeak] = []
     for d in deals:
         if d.get("status") in ("won", "lost"):

@@ -35,10 +35,10 @@ class TraceRecord(BaseModel):
     action_mode: str
     approval_status: str
     risk_level: str
-    proof_event_id: Optional[str] = None
+    proof_event_id: str | None = None
     latency_ms: float = Field(ge=0)
-    cost: Optional[float] = None
-    error_type: Optional[str] = None
+    cost: float | None = None
+    error_type: str | None = None
     created_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
 
 
@@ -72,4 +72,4 @@ class Incident(BaseModel):
     root_cause: str = ""
     customer_impact: str = ""
     occurred_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
-    resolved_at: Optional[datetime] = None
+    resolved_at: datetime | None = None

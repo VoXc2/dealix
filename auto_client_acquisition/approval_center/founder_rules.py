@@ -38,14 +38,14 @@ import json
 import os
 import re
 import secrets
-from dataclasses import dataclass, asdict
+from dataclasses import asdict, dataclass
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
 from typing import Any
 
 from auto_client_acquisition.approval_center.approval_policy import (
-    CHANNEL_POLICY,
     _RISK_ORDER,
+    CHANNEL_POLICY,
 )
 from auto_client_acquisition.approval_center.schemas import ApprovalRequest
 

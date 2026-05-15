@@ -31,11 +31,11 @@ def _backend_name() -> str:
     """
     try:
         from core.config.settings import get_settings
-    except Exception:  # noqa: BLE001 — settings import never blocks ledger
+    except Exception:
         return "file"
     try:
         return getattr(get_settings(), "proof_ledger_backend", "file") or "file"
-    except Exception:  # noqa: BLE001
+    except Exception:
         return "file"
 
 

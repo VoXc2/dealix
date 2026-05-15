@@ -18,7 +18,7 @@ Rules:
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from datetime import datetime, timezone
+from datetime import UTC, datetime, timezone
 from typing import Any
 
 from auto_client_acquisition.capital_os.capital_ledger import list_assets
@@ -136,7 +136,7 @@ def _strip_proof_pack(pack_dict: dict[str, Any]) -> tuple[str, str, dict[str, An
         try:
             dq_val = dq_section.split("DQ=")[1].split("/")[0].strip()
             metrics["data_quality_score"] = dq_val
-        except Exception:  # noqa: BLE001
+        except Exception:
             pass
 
     governance_section = sections.get("governance_decisions", "")
@@ -197,7 +197,7 @@ def export_case_safe(
     return CaseStudyExport(
         engagement_id=engagement_id,
         anonymized_label=_anonymize_label(sector=sector, customer_id=customer_id),
-        generated_at=datetime.now(timezone.utc).isoformat(),
+        generated_at=datetime.now(UTC).isoformat(),
         sector=sector,
         summary_ar=summary_ar,
         summary_en=summary_en,

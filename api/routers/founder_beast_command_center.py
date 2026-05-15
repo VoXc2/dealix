@@ -36,14 +36,15 @@ _HARD_GATES = {
 def _safe(name: str, fn, default, degraded: list[str]):
     try:
         return fn()
-    except BaseException as exc:  # noqa: BLE001
+    except BaseException as exc:
         degraded.append(name)
         return {"_error": True, "_type": type(exc).__name__, "_default": default}
 
 
 def _today_top_3() -> list[dict[str, Any]]:
-    from auto_client_acquisition.growth_beast import (  # noqa: PLC0415
-        compute_icp_score, rank_accounts,
+    from auto_client_acquisition.growth_beast import (
+        compute_icp_score,
+        rank_accounts,
     )
     score = compute_icp_score(
         pain_intensity=18, urgency=14, ability_to_pay=12,
@@ -54,18 +55,18 @@ def _today_top_3() -> list[dict[str, Any]]:
 
 
 def _growth_beast_snapshot() -> dict[str, Any]:
-    from auto_client_acquisition.growth_beast import weekly_summary  # noqa: PLC0415
+    from auto_client_acquisition.growth_beast import weekly_summary
     return weekly_summary(signals={})
 
 
 def _revenue_truth() -> dict[str, Any]:
-    from auto_client_acquisition.revenue_pipeline import (  # noqa: PLC0415
+    from auto_client_acquisition.revenue_pipeline import (
         snapshot_revenue_truth,
     )
-    from auto_client_acquisition.revenue_pipeline.pipeline import (  # noqa: PLC0415
+    from auto_client_acquisition.revenue_pipeline.pipeline import (
         get_default_pipeline,
     )
-    from auto_client_acquisition.revenue_pipeline.revenue_truth import (  # noqa: PLC0415
+    from auto_client_acquisition.revenue_pipeline.revenue_truth import (
         to_dict,
     )
     pipeline = get_default_pipeline()
@@ -73,10 +74,10 @@ def _revenue_truth() -> dict[str, Any]:
 
 
 def _finance_brief() -> dict[str, Any]:
-    from auto_client_acquisition.revops import build_finance_brief  # noqa: PLC0415
-    from auto_client_acquisition.revenue_pipeline.pipeline import (  # noqa: PLC0415
+    from auto_client_acquisition.revenue_pipeline.pipeline import (
         get_default_pipeline,
     )
+    from auto_client_acquisition.revops import build_finance_brief
     pipeline = get_default_pipeline()
     brief = build_finance_brief(pipeline_summary=pipeline.summary())
     return {
@@ -93,7 +94,7 @@ def _finance_brief() -> dict[str, Any]:
 def _delivery_status() -> dict[str, Any]:
     # delivery_os router uses an in-memory _SESSIONS dict; expose count only
     try:
-        from api.routers.delivery_os import _SESSIONS  # noqa: PLC0415
+        from api.routers.delivery_os import _SESSIONS
         return {
             "active_sessions": len(_SESSIONS),
             "by_status": {
@@ -101,7 +102,7 @@ def _delivery_status() -> dict[str, Any]:
                 for s in ("new", "in_progress", "delivered", "blocked")
             },
         }
-    except Exception:  # noqa: BLE001
+    except Exception:
         return {"active_sessions": 0, "by_status": {}}
 
 
@@ -110,13 +111,14 @@ def _support_alerts() -> dict[str, Any]:
 
 
 def _proof_summary() -> dict[str, Any]:
-    from auto_client_acquisition.proof_to_market import (  # noqa: PLC0415
+    import json
+
+    from auto_client_acquisition.proof_to_market import (
         sector_learning_summary,
     )
-    from auto_client_acquisition.runtime_paths import (  # noqa: PLC0415
+    from auto_client_acquisition.runtime_paths import (
         resolve_proof_events_dir,
     )
-    import json
     pdir = resolve_proof_events_dir()
     events: list[dict] = []
     if pdir.exists():
@@ -129,7 +131,7 @@ def _proof_summary() -> dict[str, Any]:
                 continue
             try:
                 events.append(json.loads(f.read_text(encoding="utf-8")))
-            except Exception:  # noqa: BLE001
+            except Exception:
                 continue
     return {
         "real_events_count": len(events),
@@ -211,7 +213,7 @@ async def beast_command_center() -> dict[str, Any]:
     Read-only. 200 always. Cached 60s. Lazy imports so a missing
     sub-module degrades gracefully.
     """
-    from auto_client_acquisition.founder_v10.cache import (  # noqa: PLC0415
+    from auto_client_acquisition.founder_v10.cache import (
         cached_dashboard_payload,
     )
     return cached_dashboard_payload(_build_payload, ttl_seconds=60)

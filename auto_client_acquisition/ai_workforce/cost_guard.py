@@ -211,7 +211,7 @@ def estimate_cost(agent_id: str) -> float:
         from auto_client_acquisition.ai_workforce.agent_registry import (
             AGENT_REGISTRY,
         )
-    except Exception:  # noqa: BLE001
+    except Exception:
         return 0.0
     spec = AGENT_REGISTRY.get(agent_id)
     if spec is None:
@@ -232,9 +232,9 @@ def enforce_budget(
 
 
 __all__ = [
+    "DEFAULT_BUDGET_USD",
     "CostBudget",
     "CostEstimate",
-    "DEFAULT_BUDGET_USD",
     "ModelTier",
     "enforce_budget",
     "enforce_run_budget",

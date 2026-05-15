@@ -9,7 +9,7 @@ from __future__ import annotations
 
 import uuid
 from dataclasses import dataclass, field
-from datetime import datetime, timezone
+from datetime import UTC, datetime, timezone
 from typing import Any
 
 
@@ -78,7 +78,7 @@ def record_consent(
         purpose=purpose,
         channel=channel,
         source=source,
-        occurred_at=occurred_at or datetime.now(timezone.utc).replace(tzinfo=None),
+        occurred_at=occurred_at or datetime.now(UTC).replace(tzinfo=None),
         expires_at=expires_at,
         proof_url=proof_url,
     )
@@ -102,7 +102,7 @@ def record_opt_out(
         purpose="opt_out_request",
         channel=channel,
         source=source,
-        occurred_at=occurred_at or datetime.now(timezone.utc).replace(tzinfo=None),
+        occurred_at=occurred_at or datetime.now(UTC).replace(tzinfo=None),
     )
 
 
@@ -135,7 +135,7 @@ def latest_state(records: list[ConsentRecord]) -> dict[str, Any]:
             "last_recorded_at": last_opt_out.occurred_at,
         }
     latest = by_recent[0]
-    n = datetime.now(timezone.utc).replace(tzinfo=None)
+    n = datetime.now(UTC).replace(tzinfo=None)
     expired = bool(latest.expires_at and latest.expires_at < n)
     return {
         "has_consent": latest.record_type == "consent_granted" and not expired,

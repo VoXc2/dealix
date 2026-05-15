@@ -11,7 +11,7 @@ from __future__ import annotations
 import json
 import os
 import uuid
-from datetime import datetime, timezone
+from datetime import UTC, datetime, timezone
 from typing import Any
 
 from auto_client_acquisition.full_ops_contracts.schemas import (
@@ -101,7 +101,7 @@ def transition_session(
         rec.approval_ids.append(approval_id)
     rec.status = target
     if target == "complete":
-        rec.completed_at = datetime.now(timezone.utc)
+        rec.completed_at = datetime.now(UTC)
 
     # Update next_step for clarity
     next_step_map: dict[SessionStatus, dict[str, Any]] = {

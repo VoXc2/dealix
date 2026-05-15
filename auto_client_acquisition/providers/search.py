@@ -74,7 +74,7 @@ class TavilyProvider:
         try:
             async with httpx.AsyncClient(timeout=12.0) as client:
                 r = await client.post("https://api.tavily.com/search", json=payload)
-        except Exception as exc:  # noqa: BLE001
+        except Exception as exc:
             return ProviderResult(provider=self.name, status="http_error", error=str(exc))
         if r.status_code != 200:
             return ProviderResult(

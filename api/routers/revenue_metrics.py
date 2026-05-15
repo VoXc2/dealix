@@ -22,7 +22,7 @@ from __future__ import annotations
 
 import logging
 from collections import defaultdict
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta, timezone
 from typing import Any
 
 from fastapi import APIRouter, Depends, Query
@@ -87,7 +87,7 @@ async def _load_paid_history() -> list[dict[str, Any]]:
 
 def _compute_dashboard(paid: list[dict[str, Any]]) -> dict[str, Any]:
     """Compute aggregate revenue dashboard from paid history."""
-    now = datetime.now(timezone.utc)
+    now = datetime.now(UTC)
     period_start = now.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
     prev_period_start = (period_start - timedelta(days=1)).replace(
         day=1, hour=0, minute=0, second=0, microsecond=0,
@@ -240,11 +240,11 @@ async def cohort_analysis(
 
     try:
         year, month = map(int, cohort_month.split("-"))
-        cohort_start = datetime(year, month, 1, tzinfo=timezone.utc)
+        cohort_start = datetime(year, month, 1, tzinfo=UTC)
         if month == 12:
-            cohort_end = datetime(year + 1, 1, 1, tzinfo=timezone.utc)
+            cohort_end = datetime(year + 1, 1, 1, tzinfo=UTC)
         else:
-            cohort_end = datetime(year, month + 1, 1, tzinfo=timezone.utc)
+            cohort_end = datetime(year, month + 1, 1, tzinfo=UTC)
     except ValueError:
         return {"cohort_month": cohort_month, "error": "invalid date format"}
 

@@ -26,7 +26,7 @@ Sources:
 from __future__ import annotations
 
 from dataclasses import dataclass
-from datetime import date, datetime, timedelta, timezone
+from datetime import UTC, date, datetime, timedelta, timezone
 from typing import Literal
 
 # Saudi Season type — drives messaging + offer routing
@@ -162,7 +162,7 @@ def detect_saudi_season(
         SaudiSeasonalContext — never raises; defaults to "ordinary"
         when nothing matches.
     """
-    today = on_date or datetime.now(timezone.utc).date()
+    today = on_date or datetime.now(UTC).date()
 
     # Eid takes priority (highest business impact)
     if _EID_FITR_2026_START <= today <= _EID_FITR_2026_END:

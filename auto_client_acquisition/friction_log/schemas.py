@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 from dataclasses import asdict, dataclass, field
-from datetime import datetime, timezone
+from datetime import UTC, datetime, timezone
 from enum import StrEnum
 from typing import Any
 from uuid import uuid4
@@ -33,7 +33,7 @@ class FrictionEvent:
     kind: str = FrictionKind.MANUAL_OVERRIDE.value
     severity: str = FrictionSeverity.LOW.value
     evidence_ref: str = ""
-    occurred_at: str = field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
+    occurred_at: str = field(default_factory=lambda: datetime.now(UTC).isoformat())
     resolved_at: str = ""
     cost_minutes: int = 0
     notes: str = ""  # already-sanitized by store.emit before persistence

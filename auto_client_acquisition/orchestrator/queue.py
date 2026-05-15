@@ -11,7 +11,7 @@ from __future__ import annotations
 import uuid
 from collections.abc import Iterator
 from dataclasses import dataclass, field
-from datetime import datetime, timezone
+from datetime import UTC, datetime, timezone
 from typing import Any
 
 
@@ -53,7 +53,7 @@ class AgentTask:
     correlation_id: str | None = None
     causation_task_id: str | None = None
     parent_workflow_id: str | None = None
-    created_at: datetime = field(default_factory=lambda: datetime.now(timezone.utc).replace(tzinfo=None))
+    created_at: datetime = field(default_factory=lambda: datetime.now(UTC).replace(tzinfo=None))
     approved_at: datetime | None = None
     approved_by: str | None = None
     executed_at: datetime | None = None
@@ -104,7 +104,7 @@ class TaskQueue:
         if task.status != TaskStatus.AWAITING_APPROVAL:
             raise ValueError(f"task {task_id} is not awaiting approval (status={task.status})")
         task.status = TaskStatus.APPROVED
-        task.approved_at = datetime.now(timezone.utc).replace(tzinfo=None)
+        task.approved_at = datetime.now(UTC).replace(tzinfo=None)
         task.approved_by = approved_by
         return task
 
@@ -113,7 +113,7 @@ class TaskQueue:
         if task.status != TaskStatus.AWAITING_APPROVAL:
             raise ValueError(f"task {task_id} is not awaiting approval (status={task.status})")
         task.status = TaskStatus.REJECTED
-        task.completed_at = datetime.now(timezone.utc).replace(tzinfo=None)
+        task.completed_at = datetime.now(UTC).replace(tzinfo=None)
         task.approved_by = rejected_by
         task.error = f"rejected: {reason}" if reason else "rejected"
         return task
@@ -123,7 +123,7 @@ class TaskQueue:
         if task.status in (TaskStatus.SUCCEEDED, TaskStatus.FAILED, TaskStatus.CANCELLED):
             raise ValueError(f"task {task_id} is already terminal (status={task.status})")
         task.status = TaskStatus.CANCELLED
-        task.completed_at = datetime.now(timezone.utc).replace(tzinfo=None)
+        task.completed_at = datetime.now(UTC).replace(tzinfo=None)
         return task
 
     def mark_executing(self, task_id: str) -> AgentTask:
@@ -131,14 +131,14 @@ class TaskQueue:
         if task.status not in (TaskStatus.PENDING, TaskStatus.APPROVED):
             raise ValueError(f"cannot execute task in status={task.status}")
         task.status = TaskStatus.EXECUTING
-        task.executed_at = datetime.now(timezone.utc).replace(tzinfo=None)
+        task.executed_at = datetime.now(UTC).replace(tzinfo=None)
         return task
 
     def succeed(self, task_id: str, *, result: dict[str, Any]) -> AgentTask:
         task = self._get(task_id)
         task.status = TaskStatus.SUCCEEDED
         task.result = result
-        task.completed_at = datetime.now(timezone.utc).replace(tzinfo=None)
+        task.completed_at = datetime.now(UTC).replace(tzinfo=None)
         return task
 
     def fail(self, task_id: str, *, error: str) -> AgentTask:
@@ -149,7 +149,7 @@ class TaskQueue:
             task.status = TaskStatus.PENDING
         else:
             task.status = TaskStatus.FAILED
-            task.completed_at = datetime.now(timezone.utc).replace(tzinfo=None)
+            task.completed_at = datetime.now(UTC).replace(tzinfo=None)
         return task
 
     # ── Query API ─────────────────────────────────────────────
@@ -163,7 +163,7 @@ class TaskQueue:
         return [t for t in self.tasks.values() if t.parent_workflow_id == workflow_id]
 
     def summary(self, customer_id: str | None = None) -> dict[str, int]:
-        out: dict[str, int] = {s: 0 for s in ALL_STATUSES}
+        out: dict[str, int] = dict.fromkeys(ALL_STATUSES, 0)
         for t in self.tasks.values():
             if customer_id and t.customer_id != customer_id:
                 continue

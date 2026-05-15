@@ -29,9 +29,9 @@ from auto_client_acquisition.intelligence_os.venture_signal import (
 __all__ = [
     "CapabilityScores",
     "PriorityBand",
+    "SprintOpportunity",
     "StrategyDecisionBand",
     "StrategySignalInputs",
-    "SprintOpportunity",
     "VentureReadinessBand",
     "capital_priority_band",
     "classify_sprint_opportunity",

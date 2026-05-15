@@ -46,7 +46,7 @@ class InvoiceState(BaseModel):
 
 def _invoice_id(customer: str, amount: int, ts: datetime) -> str:
     digest = hashlib.sha256(
-        f"{customer}|{amount}|{ts.isoformat()}".encode("utf-8")
+        f"{customer}|{amount}|{ts.isoformat()}".encode()
     ).hexdigest()
     return f"inv_{digest[:16]}"
 

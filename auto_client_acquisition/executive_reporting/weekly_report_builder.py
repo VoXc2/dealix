@@ -24,7 +24,6 @@ from auto_client_acquisition.executive_reporting.risk_summary import (
 )
 from auto_client_acquisition.executive_reporting.schemas import WeeklyReport
 
-
 _FORBIDDEN_TOKENS = ("نضمن", "guaranteed", "blast", "scrape")
 
 
@@ -32,7 +31,7 @@ def _safe(fn, *args, default=None, **kwargs):
     """Wrap a callable so any exception becomes ``default``."""
     try:
         return fn(*args, **kwargs)
-    except Exception:  # noqa: BLE001 — defensive composition
+    except Exception:
         return default
 
 
@@ -82,7 +81,7 @@ def _build_executive_summary(
 
 def _render_markdown_ar(report: dict[str, Any]) -> str:
     lines: list[str] = []
-    lines.append(f"# Dealix — التقرير التنفيذي الأسبوعي")
+    lines.append("# Dealix — التقرير التنفيذي الأسبوعي")
     if report.get("week_label"):
         lines.append(f"_الأسبوع: {report['week_label']}_")
     lines.append(f"_تم التوليد: {report.get('generated_at')}_")
@@ -152,7 +151,7 @@ def _render_markdown_ar(report: dict[str, Any]) -> str:
 
 def _render_markdown_en(report: dict[str, Any]) -> str:
     lines: list[str] = []
-    lines.append(f"# Dealix — Weekly Executive Report")
+    lines.append("# Dealix — Weekly Executive Report")
     if report.get("week_label"):
         lines.append(f"_Week: {report['week_label']}_")
     lines.append(f"_generated_at: {report.get('generated_at')}_")
@@ -238,12 +237,12 @@ def build_weekly_report(
     """
     # Imports are deferred so a missing optional layer doesn't
     # break import of this module.
+    from auto_client_acquisition.reliability_os import build_health_matrix
     from auto_client_acquisition.self_growth_os import (
         daily_growth_loop,
         service_activation_matrix,
         weekly_growth_scorecard,
     )
-    from auto_client_acquisition.reliability_os import build_health_matrix
 
     label = week_label.strip() or _default_week_label()
 
@@ -262,7 +261,7 @@ def build_weekly_report(
         from auto_client_acquisition.proof_ledger import get_default_ledger
         led = ledger or get_default_ledger()
         proof_events = _safe(led.list_events, limit=200, default=[]) or []
-    except Exception:  # noqa: BLE001
+    except Exception:
         proof_events = []
 
     risks = risk_summary(health, proof_events)

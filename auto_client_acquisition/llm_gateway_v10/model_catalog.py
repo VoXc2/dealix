@@ -8,7 +8,6 @@ from __future__ import annotations
 
 from auto_client_acquisition.llm_gateway_v10.schemas import ModelTier
 
-
 # (tier, language) → metering descriptor.
 # language "x" entries act as a generic fallback if a specific lookup misses.
 _CATALOG: dict[tuple[ModelTier, str], dict[str, float | str]] = {
@@ -91,7 +90,7 @@ def lookup_model(tier: ModelTier, language: str) -> dict[str, float | str]:
             "input_cost_per_1k_usd": 0.0,
             "output_cost_per_1k_usd": 0.0,
         }
-    except Exception:  # noqa: BLE001 - defensive fallback
+    except Exception:
         return {
             "model_name": "local-deterministic",
             "input_cost_per_1k_usd": 0.0,

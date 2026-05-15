@@ -12,7 +12,6 @@ from auto_client_acquisition.diagnostic_workflow.schemas import (
 )
 from auto_client_acquisition.proof_ledger import ProofEventType
 
-
 # Anchored to ProofEventType so a typo here breaks the test, not prod.
 _DEFAULT_EXPECTED_EVENTS: tuple[ProofEventType, ...] = (
     ProofEventType.LEAD_INTAKE,

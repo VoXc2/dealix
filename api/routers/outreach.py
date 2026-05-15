@@ -27,7 +27,7 @@ from __future__ import annotations
 
 import logging
 import uuid
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta, timezone
 from typing import Any
 
 from fastapi import APIRouter, Body, HTTPException
@@ -52,7 +52,7 @@ def _new_id(prefix: str = "") -> str:
 
 
 def _utcnow() -> datetime:
-    return datetime.now(timezone.utc).replace(tzinfo=None)
+    return datetime.now(UTC).replace(tzinfo=None)
 
 
 # Channel policy
@@ -149,7 +149,7 @@ async def prepare_from_data(body: dict[str, Any] = Body(default={})) -> dict[str
                 contacts_by_acc.setdefault(c.account_id, []).append(c)
 
             suppressed = (await session.execute(select(SuppressionRecord))).scalars().all()
-        except Exception as exc:  # noqa: BLE001
+        except Exception as exc:
             return {"status": "skipped_db_unreachable", "error": str(exc)}
 
         sup_emails = {s.email for s in suppressed if s.email}
@@ -249,7 +249,7 @@ async def prepare_from_data(body: dict[str, Any] = Body(default={})) -> dict[str
                 session.add(q)
             try:
                 await session.commit()
-            except Exception as exc:  # noqa: BLE001
+            except Exception as exc:
                 await session.rollback()
                 return {"status": "commit_failed", "error": str(exc)}
 
@@ -274,7 +274,7 @@ async def list_queue(status: str | None = None, limit: int = 100) -> dict[str, A
             if status:
                 q = q.where(OutreachQueueRecord.status == status)
             rows = (await session.execute(q)).scalars().all()
-        except Exception as exc:  # noqa: BLE001
+        except Exception as exc:
             return {"status": "skipped_db_unreachable", "error": str(exc), "items": []}
         return {
             "count": len(rows),
@@ -303,11 +303,11 @@ async def approve_queue(queue_id: str) -> dict[str, Any]:
             q.status = "approved"
         except HTTPException:
             raise
-        except Exception as exc:  # noqa: BLE001
+        except Exception as exc:
             return {"status": "skipped_db_unreachable", "error": str(exc)}
         try:
             await session.commit()
-        except Exception as exc:  # noqa: BLE001
+        except Exception as exc:
             await session.rollback()
             return {"status": "commit_failed", "error": str(exc)}
     return {"id": queue_id, "status": "approved"}
@@ -327,11 +327,11 @@ async def skip_queue(queue_id: str, body: dict[str, Any] = Body(default={})) -> 
             q.risk_reason = reason
         except HTTPException:
             raise
-        except Exception as exc:  # noqa: BLE001
+        except Exception as exc:
             return {"status": "skipped_db_unreachable", "error": str(exc)}
         try:
             await session.commit()
-        except Exception as exc:  # noqa: BLE001
+        except Exception as exc:
             await session.rollback()
             return {"status": "commit_failed", "error": str(exc)}
     return {"id": queue_id, "status": "skipped", "reason": reason}

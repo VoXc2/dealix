@@ -10,16 +10,22 @@ from fastapi import APIRouter
 from api.routers import (
     company_brain,
     company_growth_beast,
-    full_ops_radar as full_ops_radar_router,
     growth_beast,
     growth_os,
     growth_v10,
     gtm_os,
     partnership_os,
     proof_to_market,
-    radar_events as radar_events_router,
     revenue_pipeline,
     search_radar,
+)
+from api.routers import (
+    full_ops_radar as full_ops_radar_router,
+)
+from api.routers import (
+    radar_events as radar_events_router,
+)
+from api.routers import (
     unified_operating_graph as unified_operating_graph_router,
 )
 

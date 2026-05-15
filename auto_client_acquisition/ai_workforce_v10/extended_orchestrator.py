@@ -19,7 +19,6 @@ from auto_client_acquisition.ai_workforce_v10.schemas import (
     ReviewerOutput,
 )
 
-
 _GUARDRAILS: dict[str, bool] = {
     "no_llm_calls": True,
     "no_live_send": True,
@@ -42,7 +41,7 @@ def run_workforce_v10(goal: WorkforceGoal) -> dict[str, Any]:
     try:
         run = run_workforce_goal(goal)
         run_dump = run.model_dump(mode="json")
-    except Exception as exc:  # noqa: BLE001 — never crash callers
+    except Exception as exc:
         run_dump = {
             "_error": True,
             "_type": type(exc).__name__,

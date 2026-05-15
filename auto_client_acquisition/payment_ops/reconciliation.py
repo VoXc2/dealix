@@ -183,7 +183,7 @@ def _confirm_payment(invoice_id: str, evidence_ref: str) -> tuple[str, str]:
             confirmed_by="moyasar_webhook",
         )
         return invoice_id, confirm_status
-    except Exception as exc:  # noqa: BLE001
+    except Exception as exc:
         logger.warning("confirm_payment_failed: %s", exc)
         return invoice_id, f"error: {exc}"
 
@@ -224,7 +224,7 @@ def _log_l5_proof_event(
             customer_visible=True,
             publish_consent=False,  # Customer must sign separately
         )
-    except Exception as exc:  # noqa: BLE001
+    except Exception as exc:
         logger.warning("append_proof_event_failed: %s", exc)
     return event_id
 
@@ -245,7 +245,7 @@ def _queue_cs_handoff(customer_handle: str, invoice_id: str, amount_sar: float) 
     try:
         enqueue_cs_handoff(customer_handle, invoice_id, amount_sar)
         return True
-    except Exception as exc:  # noqa: BLE001
+    except Exception as exc:
         logger.warning("cs_handoff_enqueue_failed: %s", exc)
         return False
 

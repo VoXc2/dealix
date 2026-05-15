@@ -17,12 +17,13 @@ from auto_client_acquisition.knowledge_v10 import (
     RetrievalRequest,
     RetrievalResult,
     SourceType,
-    answer as kg_answer,
     evaluate_answer,
     retrieve,
     validate_manifest,
 )
-
+from auto_client_acquisition.knowledge_v10 import (
+    answer as kg_answer,
+)
 
 router = APIRouter(
     prefix="/api/v1/knowledge-v10",
@@ -68,7 +69,7 @@ async def knowledge_sources() -> dict[str, Any]:
 async def knowledge_manifest_validate(payload: dict) -> dict[str, Any]:
     try:
         manifest = validate_manifest(payload)
-    except Exception as exc:  # noqa: BLE001
+    except Exception as exc:
         raise HTTPException(status_code=422, detail=str(exc)) from exc
     return manifest.model_dump(mode="json")
 

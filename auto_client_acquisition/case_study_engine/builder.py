@@ -14,7 +14,7 @@ import json
 import os
 import re
 import uuid
-from datetime import datetime, timezone
+from datetime import UTC, datetime, timezone
 from typing import Any
 
 from auto_client_acquisition.full_ops_contracts.schemas import (
@@ -220,7 +220,7 @@ def approve_candidate(
         "approval_status": candidate.approval_status,
         "publishable_now": candidate.is_publishable(),
         "approver": approver,
-        "approved_at": datetime.now(timezone.utc).isoformat(),
+        "approved_at": datetime.now(UTC).isoformat(),
     }
 
 

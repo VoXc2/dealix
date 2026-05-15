@@ -5,7 +5,6 @@ from typing import Any
 
 from auto_client_acquisition.leadops_reliability.debug import diagnose
 
-
 _SEVERITY_ORDER = {"critical": 0, "high": 1, "medium": 2, "low": 3}
 
 

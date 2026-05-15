@@ -7,10 +7,18 @@ from fastapi import APIRouter
 from pydantic import BaseModel, ConfigDict, Field
 
 from auto_client_acquisition.growth_beast import (
-    MarketSignal, SignalSource, SignalType,
-    compute_icp_score, draft_content, draft_warm_route,
-    evaluate_signals, match_offer, next_experiment,
-    proof_to_content_idea, rank_accounts, weekly_summary,
+    MarketSignal,
+    SignalSource,
+    SignalType,
+    compute_icp_score,
+    draft_content,
+    draft_warm_route,
+    evaluate_signals,
+    match_offer,
+    next_experiment,
+    proof_to_content_idea,
+    rank_accounts,
+    weekly_summary,
 )
 
 router = APIRouter(prefix="/api/v1/growth-beast", tags=["growth-beast"])

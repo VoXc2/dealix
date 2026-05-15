@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from datetime import datetime, timezone
+from datetime import UTC, datetime, timezone
 from typing import Any
 
 from auto_client_acquisition.friction_log.schemas import FrictionEvent
@@ -34,12 +34,12 @@ class FrictionAggregate:
 
 
 def _events_in_window(events: list[FrictionEvent], window_days: int) -> list[FrictionEvent]:
-    cutoff = datetime.now(timezone.utc).timestamp() - window_days * 86400
+    cutoff = datetime.now(UTC).timestamp() - window_days * 86400
     out: list[FrictionEvent] = []
     for ev in events:
         try:
             ts = datetime.fromisoformat(ev.occurred_at).timestamp()
-        except Exception:  # noqa: BLE001
+        except Exception:
             ts = 0.0
         if ts >= cutoff:
             out.append(ev)
@@ -50,13 +50,13 @@ def aggregate(*, customer_id: str, window_days: int = 30) -> FrictionAggregate:
     # Pull a wide window so we can compute WoW delta within the same call.
     events_2x = list_events(customer_id=customer_id, since_days=window_days * 2, limit=10000)
     current = _events_in_window(events_2x, window_days)
-    older_start = datetime.now(timezone.utc).timestamp() - window_days * 2 * 86400
-    older_end = datetime.now(timezone.utc).timestamp() - window_days * 86400
+    older_start = datetime.now(UTC).timestamp() - window_days * 2 * 86400
+    older_end = datetime.now(UTC).timestamp() - window_days * 86400
     previous: list[FrictionEvent] = []
     for ev in events_2x:
         try:
             ts = datetime.fromisoformat(ev.occurred_at).timestamp()
-        except Exception:  # noqa: BLE001
+        except Exception:
             continue
         if older_start <= ts < older_end:
             previous.append(ev)

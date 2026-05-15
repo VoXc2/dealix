@@ -12,7 +12,6 @@ from auto_client_acquisition.customer_inbox_v10.schemas import (
     ReplySuggestion,
 )
 
-
 _TEMPLATES_AR: dict[str, str] = {
     "lead_intake": (
         "شكراً لتواصلك معنا. هل يمكنك مشاركتي تحدّيك الرئيسي حالياً "

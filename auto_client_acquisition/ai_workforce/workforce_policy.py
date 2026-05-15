@@ -23,7 +23,6 @@ from typing import Any
 
 from auto_client_acquisition.ai_workforce.schemas import AgentTask, RiskLevel
 
-
 # Hard-rule tool tokens that NO task may carry as a live action.
 HARD_RULE_TOOLS: tuple[str, ...] = (
     "cold_whatsapp",
@@ -63,7 +62,7 @@ def _stringify(value: Any) -> str:
         return value
     try:
         return json.dumps(value, ensure_ascii=False, default=str)
-    except Exception:  # noqa: BLE001
+    except Exception:
         return str(value)
 
 

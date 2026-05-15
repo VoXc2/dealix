@@ -14,6 +14,9 @@ from auto_client_acquisition.enterprise_rollout_os.platform_pull import (
     PLATFORM_PULL_SIGNALS,
     platform_pull_coverage_score,
 )
+from auto_client_acquisition.enterprise_rollout_os.role_map import (
+    ENTERPRISE_ROLLOUT_ROLES,
+)
 from auto_client_acquisition.enterprise_rollout_os.rollout_dashboard import (
     ROLLOUT_DASHBOARD_SIGNALS,
     rollout_dashboard_coverage_score,
@@ -26,9 +29,6 @@ from auto_client_acquisition.enterprise_rollout_os.rollout_stage import (
     ROLLOUT_STAGES,
     rollout_next_stage,
     rollout_stage_index,
-)
-from auto_client_acquisition.enterprise_rollout_os.role_map import (
-    ENTERPRISE_ROLLOUT_ROLES,
 )
 
 __all__ = (

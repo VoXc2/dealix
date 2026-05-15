@@ -16,8 +16,8 @@ from typing import Any
 
 from arq.connections import RedisSettings
 
-from core.queue.tasks import run_agent_job
 from core.config.settings import get_settings
+from core.queue.tasks import run_agent_job
 
 logger = logging.getLogger(__name__)
 

@@ -21,7 +21,7 @@ Reuses ``dealix_payment_confirmation_stub.py`` payment state lexicon.
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from datetime import datetime, timezone
+from datetime import UTC, datetime, timezone
 from typing import Any, Literal
 
 RefundState = Literal[
@@ -110,7 +110,7 @@ def request_refund(
         raise RefundTransitionError(
             f"refund actor {actor!r} is not human — Article 4 requires founder/csm/admin"
         )
-    ts = (now or datetime.now(timezone.utc)).isoformat()
+    ts = (now or datetime.now(UTC)).isoformat()
     event = RefundEvent(
         timestamp=ts,
         from_state=record.state,
@@ -153,7 +153,7 @@ def upload_refund_evidence(
         raise RefundTransitionError(
             "evidence_ref required (≥3 chars) — Article 8: no fake refund completion"
         )
-    ts = (now or datetime.now(timezone.utc)).isoformat()
+    ts = (now or datetime.now(UTC)).isoformat()
     event = RefundEvent(
         timestamp=ts,
         from_state=record.state,
@@ -201,7 +201,7 @@ def complete_refund(
         raise RefundTransitionError(
             "ledger_entry_id required (≥3 chars) — Article 8: no completion without trail"
         )
-    ts = (now or datetime.now(timezone.utc)).isoformat()
+    ts = (now or datetime.now(UTC)).isoformat()
     event = RefundEvent(
         timestamp=ts,
         from_state=record.state,
@@ -235,7 +235,7 @@ def void_refund(
         raise RefundTransitionError(
             f"cannot void from state {record.state!r}"
         )
-    ts = (now or datetime.now(timezone.utc)).isoformat()
+    ts = (now or datetime.now(UTC)).isoformat()
     event = RefundEvent(
         timestamp=ts,
         from_state=record.state,
@@ -315,7 +315,7 @@ def request_zatca_draft_on_payment_confirmed(
     """
     if payment_state != "payment_confirmed":
         return None
-    ts = (now or datetime.now(timezone.utc)).isoformat()
+    ts = (now or datetime.now(UTC)).isoformat()
     return ZATCADraftRequest(
         payment_id=payment_id,
         customer_handle=customer_handle,

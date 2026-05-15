@@ -8,7 +8,6 @@ from __future__ import annotations
 
 from auto_client_acquisition.workflow_os_v10.schemas import WorkflowDefinition
 
-
 GROWTH_STARTER_7_DAY = WorkflowDefinition(
     workflow_id="wf_growth_starter_7_day",
     name="growth_starter_7_day",

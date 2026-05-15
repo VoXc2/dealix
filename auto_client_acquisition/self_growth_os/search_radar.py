@@ -215,7 +215,7 @@ def build_search_radar(top_n: int = 10) -> dict[str, Any]:
     top = scored[: max(1, top_n)]
     return {
         "schema_version": 1,
-        "generated_at": _dt.datetime.now(_dt.timezone.utc).isoformat(timespec="seconds"),
+        "generated_at": _dt.datetime.now(_dt.UTC).isoformat(timespec="seconds"),
         "keywords_total": len(scored),
         "top_priority_keywords": top,
         "all_keywords": scored,

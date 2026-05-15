@@ -138,7 +138,7 @@ def _queue_to_approval(parsed: dict[str, Any], original_command: str) -> str:
             channel="founder_command_bus",
             risk_level="medium",
         )
-    except Exception as exc:  # noqa: BLE001
+    except Exception as exc:
         logger.warning("command_bus_enqueue_failed: %s", exc)
     return approval_id
 
@@ -219,7 +219,7 @@ async def submit_command(body: dict[str, Any] = Body(...)) -> dict[str, Any]:
             "hard_gates": _HARD_GATES,
             "next_step": "افتح /decisions.html لاعتماد الـ draft أو راجعه على واتساب",
         }
-    except (TimeoutError, asyncio.TimeoutError):
+    except TimeoutError:
         return {
             "approval_id": None,
             "action_type": "timeout",
@@ -229,7 +229,7 @@ async def submit_command(body: dict[str, Any] = Body(...)) -> dict[str, Any]:
             "draft_body": "",
             "hard_gates": _HARD_GATES,
         }
-    except Exception as exc:  # noqa: BLE001
+    except Exception as exc:
         logger.warning("command_bus_failed: %s", exc)
         raise HTTPException(status_code=503, detail=f"command_bus_unavailable: {exc}") from exc
 

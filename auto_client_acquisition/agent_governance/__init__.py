@@ -14,13 +14,6 @@ Hard guarantees (each enforced by tests):
   - ``evaluate_action`` returns a typed verdict + the reason; never
     silently approves a forbidden combination.
 """
-from auto_client_acquisition.agent_governance.schemas import (
-    ActionEvaluation,
-    AgentSpec,
-    AutonomyLevel,
-    ToolCategory,
-    ToolPermission,
-)
 from auto_client_acquisition.agent_governance.agent_registry import (
     AGENT_REGISTRY,
     get_agent,
@@ -31,15 +24,22 @@ from auto_client_acquisition.agent_governance.policy import (
     evaluate_action,
     summary,
 )
+from auto_client_acquisition.agent_governance.schemas import (
+    ActionEvaluation,
+    AgentSpec,
+    AutonomyLevel,
+    ToolCategory,
+    ToolPermission,
+)
 
 __all__ = [
+    "AGENT_REGISTRY",
+    "FORBIDDEN_TOOLS",
     "ActionEvaluation",
     "AgentSpec",
     "AutonomyLevel",
     "ToolCategory",
     "ToolPermission",
-    "AGENT_REGISTRY",
-    "FORBIDDEN_TOOLS",
     "evaluate_action",
     "get_agent",
     "list_agents",

@@ -20,7 +20,7 @@ from __future__ import annotations
 import json
 import os
 import threading
-from datetime import datetime, timezone
+from datetime import UTC, datetime, timezone
 from pathlib import Path
 from typing import Any
 
@@ -48,9 +48,9 @@ def append(record: dict[str, Any]) -> dict[str, Any]:
     never returns 5xx because of a disk hiccup. Returns the input
     on failure (with `persisted=False`).
     """
-    ts = datetime.now(timezone.utc).isoformat()
+    ts = datetime.now(UTC).isoformat()
     rec = {
-        "id": f"lead_{int(datetime.now(timezone.utc).timestamp() * 1000)}",
+        "id": f"lead_{int(datetime.now(UTC).timestamp() * 1000)}",
         "received_at": ts,
         "status": "new",  # new | contacted | qualified | converted | lost
         **{k: v for k, v in record.items() if k not in {"id", "received_at"}},
@@ -58,11 +58,10 @@ def append(record: dict[str, Any]) -> dict[str, Any]:
     try:
         path = _path()
         _ensure_dir(path)
-        with _lock:
-            with path.open("a", encoding="utf-8") as f:
-                f.write(json.dumps(rec, ensure_ascii=False) + "\n")
+        with _lock, path.open("a", encoding="utf-8") as f:
+            f.write(json.dumps(rec, ensure_ascii=False) + "\n")
         rec["persisted"] = True
-    except Exception:  # noqa: BLE001 — fire-and-forget contract
+    except Exception:
         rec["persisted"] = False
     return rec
 
@@ -82,12 +81,12 @@ def list_leads(limit: int = 200, status: str | None = None) -> list[dict[str, An
                     continue
                 try:
                     rec = json.loads(line)
-                except Exception:  # noqa: BLE001
+                except Exception:
                     continue
                 if status and rec.get("status") != status:
                     continue
                 out.append(rec)
-    except Exception:  # noqa: BLE001
+    except Exception:
         return []
     out.reverse()  # newest first
     return out[:limit]
@@ -132,12 +131,11 @@ def update_status(lead_id: str, new_status: str) -> dict[str, Any] | None:
         "event": "status_change",
         "lead_id": lead_id,
         "status": new_status,
-        "ts": datetime.now(timezone.utc).isoformat(),
+        "ts": datetime.now(UTC).isoformat(),
     }
     try:
-        with _lock:
-            with path.open("a", encoding="utf-8") as f:
-                f.write(json.dumps(rec, ensure_ascii=False) + "\n")
+        with _lock, path.open("a", encoding="utf-8") as f:
+            f.write(json.dumps(rec, ensure_ascii=False) + "\n")
         return rec
-    except Exception:  # noqa: BLE001
+    except Exception:
         return None

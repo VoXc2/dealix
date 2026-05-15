@@ -19,7 +19,7 @@ def proof_summary(
     """
     try:
         export = export_redacted(limit=limit, ledger=ledger)
-    except Exception:  # noqa: BLE001 — defensive
+    except Exception:
         return {
             "total": 0,
             "by_type": {},

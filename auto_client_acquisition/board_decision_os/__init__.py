@@ -11,10 +11,6 @@ from auto_client_acquisition.board_decision_os.board_memo_generator import (
     BOARD_MEMO_SECTIONS,
     board_memo_sections_complete,
 )
-from auto_client_acquisition.board_decision_os.board_signal_inputs import (
-    BOARD_DECISION_INPUT_SIGNALS,
-    board_input_signal_valid,
-)
 from auto_client_acquisition.board_decision_os.board_scorecards import (
     ClientScorecardDimensions,
     OfferScorecardDimensions,
@@ -25,6 +21,10 @@ from auto_client_acquisition.board_decision_os.board_scorecards import (
     offer_scorecard_score,
     productization_scorecard_band,
     productization_scorecard_score,
+)
+from auto_client_acquisition.board_decision_os.board_signal_inputs import (
+    BOARD_DECISION_INPUT_SIGNALS,
+    board_input_signal_valid,
 )
 from auto_client_acquisition.board_decision_os.capital_allocation_board import (
     CAPITAL_BOARD_BUCKETS,
@@ -57,8 +57,8 @@ __all__ = (
     "BOARD_MEMO_SECTIONS",
     "CAPITAL_BOARD_BUCKETS",
     "CEO_COMMAND_CENTER_SURFACES",
-    "STRATEGIC_BET_TYPES",
     "RISK_REGISTER_CODES",
+    "STRATEGIC_BET_TYPES",
     "AgentDecisionGate",
     "ClientScorecardDimensions",
     "CompoundingDecision",

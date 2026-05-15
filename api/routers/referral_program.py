@@ -31,7 +31,7 @@ from __future__ import annotations
 import hashlib
 import logging
 import secrets
-from datetime import datetime, timezone
+from datetime import UTC, datetime, timezone
 from typing import Any
 
 from fastapi import APIRouter, Depends, HTTPException, Path
@@ -149,7 +149,7 @@ async def create_referral(
             f"first month with code: {rc.code}. https://dealix.me/refer?code={rc.code}"
         ),
         "expires_at": rc.valid_until or (
-            datetime.now(timezone.utc).replace(month=12, day=31).isoformat()
+            datetime.now(UTC).replace(month=12, day=31).isoformat()
         ),
         "persistence": "jsonl_via_referral_store",
         "governance_decision": "allow",

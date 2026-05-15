@@ -10,7 +10,6 @@ from auto_client_acquisition.company_brain_v6.schemas import (
 )
 from auto_client_acquisition.company_brain_v6.service_matcher import recommend_service
 
-
 _OFFER_TEMPLATES: dict[str, str] = {
     "b2b_services": "B2B services tailored for KSA mid-market.",
     "b2b_saas": "B2B SaaS platform for Saudi operators.",

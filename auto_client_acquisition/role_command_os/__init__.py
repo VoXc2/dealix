@@ -23,9 +23,9 @@ from auto_client_acquisition.role_command_os.schemas import (
 )
 
 __all__ = [
-    "RoleName",
     "RoleBrief",
     "RoleDecision",
+    "RoleName",
     "build_role_brief",
     "list_roles",
 ]

@@ -237,9 +237,9 @@ async def generate_llm_brief(
             duration_ms=duration_ms,
             model_used=model,
         )
-    except (TimeoutError, asyncio.TimeoutError):
+    except TimeoutError:
         logger.warning("daily_brief_llm_timeout")
-    except Exception as exc:  # noqa: BLE001 — graceful fallback always
+    except Exception as exc:
         logger.warning("daily_brief_llm_failed: %s", exc)
 
     brief = _fallback_brief(proof_events, pending_approvals, inbound_count)
@@ -260,7 +260,7 @@ async def fetch_recent_proof_events(window_hours: int = 24) -> list[dict[str, An
     try:
         events = recent_events(since=cutoff) or []
         return [e if isinstance(e, dict) else e.__dict__ for e in events]
-    except Exception:  # noqa: BLE001
+    except Exception:
         return []
 
 
@@ -272,7 +272,7 @@ async def fetch_pending_approvals() -> list[dict[str, Any]]:
     try:
         items = list_pending() or []
         return [a if isinstance(a, dict) else a.__dict__ for a in items]
-    except Exception:  # noqa: BLE001
+    except Exception:
         return []
 
 
@@ -283,5 +283,5 @@ async def fetch_inbound_count() -> int:
         return 0
     try:
         return int(inbound_pending_count() or 0)
-    except Exception:  # noqa: BLE001
+    except Exception:
         return 0

@@ -37,7 +37,7 @@ def _safe_call(fn, *args, default=None, **kwargs):
     module errors (e.g. SEO report not yet generated)."""
     try:
         return fn(*args, **kwargs)
-    except Exception:  # noqa: BLE001 — defensive at the orchestration layer
+    except Exception:
         return default
 
 
@@ -55,7 +55,7 @@ def _decisions_from_personal_operator() -> list[dict[str, Any]]:
         )
         brief = build_daily_brief(default_sami_profile())
         payload = brief.to_dict() if hasattr(brief, "to_dict") else dict(brief)
-    except Exception:  # noqa: BLE001
+    except Exception:
         return [{
             "title_ar": "افتح /api/v1/personal-operator/daily-brief يدوياً",
             "title_en": "Open /api/v1/personal-operator/daily-brief manually",
@@ -125,7 +125,7 @@ def _seo_gap_pages(limit: int = 3) -> list[dict[str, Any]]:
     """Pages that would benefit most from a content/structure improvement."""
     try:
         pages = geo_aio_radar.top_priority_pages(limit=limit)
-    except Exception:  # noqa: BLE001
+    except Exception:
         return []
     return [
         {"path": p["path"], "score": p["score"], "gaps": p["gaps"][:5]}
@@ -150,7 +150,7 @@ def _open_loops() -> list[str]:
         orphans = linking["issues"].get("orphan_core_pages") or []
         if orphans:
             out.append(f"orphan core page(s): {', '.join(orphans)}")
-    except Exception:  # noqa: BLE001
+    except Exception:
         pass
     return out
 

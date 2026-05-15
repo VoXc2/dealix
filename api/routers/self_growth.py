@@ -22,8 +22,8 @@ from auto_client_acquisition.self_growth_os import (
     partner_distribution_radar,
     proof_snippet_engine,
     safe_publishing_gate,
-    service_activation_matrix,
     seo_technical_auditor,
+    service_activation_matrix,
     tool_registry,
     weekly_growth_scorecard,
 )

@@ -21,29 +21,43 @@ import logging
 import os
 import uuid
 from collections import Counter, defaultdict
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta, timezone
 from typing import Any
 
 from fastapi import APIRouter, Body, HTTPException
 from sqlalchemy import func, select
 
-from auto_client_acquisition.email.research_agent import research_company_with_llm
 from auto_client_acquisition.email.reply_classifier import (
-    PATTERNS, RESPONSE_TEMPLATES,
+    PATTERNS,
+    RESPONSE_TEMPLATES,
 )
+from auto_client_acquisition.email.research_agent import research_company_with_llm
 from auto_client_acquisition.intelligence.next_action import (
-    compute_priority, decide,
+    compute_priority,
+    decide,
 )
 from auto_client_acquisition.intelligence.offers import (
-    DEFAULT_OFFER, OFFER_ROUTES, build_tomorrow_recommendation, route_offer,
+    DEFAULT_OFFER,
+    OFFER_ROUTES,
+    build_tomorrow_recommendation,
+    route_offer,
 )
 from auto_client_acquisition.intelligence.signals import (
-    detect_signals, signals_to_intent_lift,
+    detect_signals,
+    signals_to_intent_lift,
 )
 from db.models import (
-    AccountRecord, ContactRecord, CustomerRecord, DealRecord,
-    EmailSendLog, GmailDraftRecord, LeadScoreRecord, LinkedInDraftRecord,
-    OutreachQueueRecord, PartnerRecord, SignalRecord,
+    AccountRecord,
+    ContactRecord,
+    CustomerRecord,
+    DealRecord,
+    EmailSendLog,
+    GmailDraftRecord,
+    LeadScoreRecord,
+    LinkedInDraftRecord,
+    OutreachQueueRecord,
+    PartnerRecord,
+    SignalRecord,
 )
 from db.session import async_session_factory
 
@@ -56,7 +70,7 @@ def _new_id(prefix: str = "") -> str:
 
 
 def _utcnow() -> datetime:
-    return datetime.now(timezone.utc).replace(tzinfo=None)
+    return datetime.now(UTC).replace(tzinfo=None)
 
 
 # ── Sector → Offer routing table (canonical lives in intelligence/offers.py) ─
@@ -180,7 +194,7 @@ async def get_signals_for_account(account_id: str) -> dict[str, Any]:
             )).scalars().all()
         except HTTPException:
             raise
-        except Exception as exc:  # noqa: BLE001
+        except Exception as exc:
             return {"status": "skipped_db_unreachable", "error": str(exc)}
 
     # Compute fresh signals from current account data (no website crawl here —
@@ -234,7 +248,7 @@ async def account_brief(account_id: str) -> dict[str, Any]:
             )).scalars().all()
         except HTTPException:
             raise
-        except Exception as exc:  # noqa: BLE001
+        except Exception as exc:
             return {"status": "skipped_db_unreachable", "error": str(exc)}
 
     account_dict = {
@@ -341,7 +355,7 @@ async def score_tuner_run(body: dict[str, Any] = Body(default={})) -> dict[str, 
                     AccountRecord.id.in_(account_ids)
                 )
             )).scalars().all() if account_ids else []
-        except Exception as exc:  # noqa: BLE001
+        except Exception as exc:
             return {"status": "skipped_db_unreachable", "error": str(exc)}
 
     sector_by_acc = {a.id: a.sector for a in accounts}
@@ -429,7 +443,7 @@ async def customer_proof_pack(customer_id: str) -> dict[str, Any]:
                 raise HTTPException(404, "customer_not_found")
         except HTTPException:
             raise
-        except Exception as exc:  # noqa: BLE001
+        except Exception as exc:
             return {"status": "skipped_db_unreachable", "error": str(exc)}
 
     case_study_template = (
@@ -451,16 +465,16 @@ async def customer_proof_pack(customer_id: str) -> dict[str, Any]:
     )
 
     testimonial_request = (
-        f"السلام عليكم،\n\n"
-        f"شكراً على إكمال Pilot Dealix معنا. النتائج كانت مفيدة لكم — "
-        f"هل ممكن نسجّل اقتباس قصير (60 ثانية) عن تجربتكم؟\n"
-        f"يمكن نص أو فيديو. نشكركم على الوقت."
+        "السلام عليكم،\n\n"
+        "شكراً على إكمال Pilot Dealix معنا. النتائج كانت مفيدة لكم — "
+        "هل ممكن نسجّل اقتباس قصير (60 ثانية) عن تجربتكم؟\n"
+        "يمكن نص أو فيديو. نشكركم على الوقت."
     )
 
     referral_ask = (
-        f"بناءً على نتيجة Pilot، تعرفون شركة سعودية ثانية تواجه نفس "
-        f"المشكلة (تأخر الرد على leads العربية)؟ نعطي 10% من اشتراكها "
-        f"السنوي لكل إحالة جدية."
+        "بناءً على نتيجة Pilot، تعرفون شركة سعودية ثانية تواجه نفس "
+        "المشكلة (تأخر الرد على leads العربية)؟ نعطي 10% من اشتراكها "
+        "السنوي لكل إحالة جدية."
     )
 
     return {
@@ -495,7 +509,7 @@ async def partners_revenue_machine_run(body: dict[str, Any] = Body(default={})) 
                 q = q.where(AccountRecord.city == city)
             q = q.order_by(AccountRecord.data_quality_score.desc()).limit(max_partners * 2)
             partner_pool = (await session.execute(q)).scalars().all()
-        except Exception as exc:  # noqa: BLE001
+        except Exception as exc:
             return {"status": "skipped_db_unreachable", "error": str(exc)}
 
         drafts_created: list[dict[str, Any]] = []
@@ -530,7 +544,7 @@ async def partners_revenue_machine_run(body: dict[str, Any] = Body(default={})) 
 
         try:
             await session.commit()
-        except Exception as exc:  # noqa: BLE001
+        except Exception as exc:
             await session.rollback()
             return {"status": "commit_failed", "error": str(exc)}
 
@@ -635,7 +649,7 @@ async def dashboard_dominance() -> dict[str, Any]:
                 )
             )).all():
                 channel_dist[c[0] or "unknown"] += 1
-        except Exception as exc:  # noqa: BLE001
+        except Exception as exc:
             return {"status": "skipped_db_unreachable", "error": str(exc)}
 
     tomorrow_recommendation = build_tomorrow_recommendation(

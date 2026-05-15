@@ -4,7 +4,6 @@ from __future__ import annotations
 
 from auto_client_acquisition.vertical_os.base import KPI, MessageTemplate, VerticalOS, _register
 
-
 REAL_ESTATE = VerticalOS(
     vertical_id="real_estate",
     sector_ar="تطوير عقاري",

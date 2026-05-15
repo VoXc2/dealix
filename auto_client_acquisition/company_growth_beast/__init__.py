@@ -4,10 +4,10 @@ no scraping, no live action, no fake proof."""
 from auto_client_acquisition.company_growth_beast.engine import (
     CompanyProfile,
     build_company_profile,
-    build_growth_diagnostic,
-    build_target_segments,
-    build_offer_recommendation,
     build_content_pack,
+    build_growth_diagnostic,
+    build_offer_recommendation,
+    build_target_segments,
     build_weekly_report,
     support_to_growth_insight,
 )
@@ -15,10 +15,10 @@ from auto_client_acquisition.company_growth_beast.engine import (
 __all__ = [
     "CompanyProfile",
     "build_company_profile",
-    "build_growth_diagnostic",
-    "build_target_segments",
-    "build_offer_recommendation",
     "build_content_pack",
+    "build_growth_diagnostic",
+    "build_offer_recommendation",
+    "build_target_segments",
     "build_weekly_report",
     "support_to_growth_insight",
 ]

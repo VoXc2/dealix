@@ -92,7 +92,7 @@ class WorkItem(BaseModel):
         action_mode: ActionMode = "draft_only",
         customer_id: str | None = None,
         **extra: Any,
-    ) -> "WorkItem":
+    ) -> WorkItem:
         """Construct with a deterministic id derived from os/source/title."""
         wid = _deterministic_id(os_type, source, title_en, customer_id or "")
         return cls(

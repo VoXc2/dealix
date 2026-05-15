@@ -25,7 +25,6 @@ from auto_client_acquisition.crm_v10 import (
     score_lead,
 )
 
-
 router = APIRouter(prefix="/api/v1/crm-v10", tags=["crm-v10"])
 
 

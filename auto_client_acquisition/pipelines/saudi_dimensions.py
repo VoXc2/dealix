@@ -18,7 +18,7 @@ from __future__ import annotations
 
 import re
 from dataclasses import dataclass
-from datetime import date, datetime, timezone
+from datetime import UTC, date, datetime, timezone
 from typing import Any, Literal
 
 from auto_client_acquisition.market_intelligence.saudi_seasons import (
@@ -222,7 +222,7 @@ def score_seasonality(
     Higher = better timing. Eid → very low (PAUSE). Ordinary → neutral.
     Pre-Ramadan → high urgency (close before month). Exhibitions → high.
     """
-    today = on_date or datetime.now(timezone.utc).date()
+    today = on_date or datetime.now(UTC).date()
     season_ctx = detect_saudi_season(on_date=today)
 
     # Map each season to a favorability score

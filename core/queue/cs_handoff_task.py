@@ -87,7 +87,7 @@ async def cs_handoff_handler(
                 invoice_id=invoice_id,
             )
             welcome_sent = True
-        except Exception as exc:  # noqa: BLE001
+        except Exception as exc:
             errors.append(f"welcome_email: {exc}")
 
     # Step 2 — Customer Brain bootstrap
@@ -106,7 +106,7 @@ async def cs_handoff_handler(
                 invoice_id=invoice_id,
             )
             brain_bootstrapped = True
-        except Exception as exc:  # noqa: BLE001
+        except Exception as exc:
             errors.append(f"customer_brain: {exc}")
 
     # Step 3 — founder WhatsApp notification (informational, NOT external send)
@@ -127,7 +127,7 @@ async def cs_handoff_handler(
                 ),
             )
             founder_notified = True
-        except Exception as exc:  # noqa: BLE001
+        except Exception as exc:
             errors.append(f"founder_notification: {exc}")
 
     return {

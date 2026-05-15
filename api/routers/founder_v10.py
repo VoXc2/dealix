@@ -13,7 +13,6 @@ from auto_client_acquisition.founder_v10 import (
     summarize_evidence,
 )
 
-
 router = APIRouter(
     prefix="/api/v1/founder-v10",
     tags=["founder-v10"],

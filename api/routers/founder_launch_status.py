@@ -22,7 +22,7 @@ from __future__ import annotations
 
 import os
 import subprocess
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta, timezone
 from typing import Any
 
 from fastapi import APIRouter, Depends
@@ -74,7 +74,7 @@ def _gmail_status() -> dict[str, Any]:
     try:
         from auto_client_acquisition.email.gmail_send import is_configured
         configured = configured and is_configured()
-    except Exception:  # noqa: BLE001
+    except Exception:
         pass
     return {
         "configured": configured,
@@ -109,7 +109,7 @@ def _git_status() -> dict[str, Any]:
             out["commits"] = [
                 line for line in proc.stdout.splitlines() if line.strip()
             ]
-    except Exception:  # noqa: BLE001
+    except Exception:
         pass
     return out
 
@@ -124,7 +124,7 @@ def _friction_summary() -> dict[str, Any]:
             "top_3_kinds": agg.top_3_kinds,
             "high_severity_count": agg.by_severity.get("high", 0),
         }
-    except Exception:  # noqa: BLE001
+    except Exception:
         return {"window_days": 14, "total": 0, "top_3_kinds": [], "high_severity_count": 0}
 
 
@@ -133,30 +133,30 @@ def _lead_count_today() -> int:
         from auto_client_acquisition import lead_inbox
         if not hasattr(lead_inbox, "list_records"):
             return 0
-        cutoff = datetime.now(timezone.utc) - timedelta(hours=24)
+        cutoff = datetime.now(UTC) - timedelta(hours=24)
         count = 0
         for r in lead_inbox.list_records(limit=500):
             try:
                 created = datetime.fromisoformat(getattr(r, "created_at", "") or "")
                 if created.tzinfo is None:
-                    created = created.replace(tzinfo=timezone.utc)
-            except Exception:  # noqa: BLE001
+                    created = created.replace(tzinfo=UTC)
+            except Exception:
                 continue
             if created >= cutoff:
                 count += 1
         return count
-    except Exception:  # noqa: BLE001
+    except Exception:
         return 0
 
 
 def _value_events_today() -> int:
     try:
         from auto_client_acquisition.value_os.value_ledger import list_events
-        cutoff = (datetime.now(timezone.utc) - timedelta(hours=24)).isoformat()
+        cutoff = (datetime.now(UTC) - timedelta(hours=24)).isoformat()
         return sum(
             1 for ev in list_events(limit=500) if ev.occurred_at >= cutoff
         )
-    except Exception:  # noqa: BLE001
+    except Exception:
         return 0
 
 
@@ -209,7 +209,7 @@ async def launch_status() -> dict[str, Any]:
     )
 
     return {
-        "generated_at": datetime.now(timezone.utc).isoformat(),
+        "generated_at": datetime.now(UTC).isoformat(),
         "healthcheck": _healthcheck(),
         "database": _db_status(),
         "moyasar": moyasar,
@@ -236,7 +236,7 @@ async def launch_status_public() -> dict[str, Any]:
     moyasar = _moyasar_status()
     gmail = _gmail_status()
     return {
-        "generated_at": datetime.now(timezone.utc).isoformat(),
+        "generated_at": datetime.now(UTC).isoformat(),
         "healthcheck_ok": True,
         "moyasar_mode": moyasar["mode"],
         "zatca_mode": _zatca_status()["mode"],

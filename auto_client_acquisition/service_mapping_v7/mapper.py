@@ -11,7 +11,6 @@ from auto_client_acquisition.service_mapping_v7.schemas import (
     ServiceRecommendation,
 )
 
-
 # Service id → routing config. First-match wins, scanned in declared order.
 _ROUTES: tuple[dict, ...] = (
     {

@@ -11,7 +11,6 @@ from auto_client_acquisition.customer_loop.schemas import (
     JourneyTransition,
 )
 
-
 # Per-state checklist of NEXT actions. Each item is bilingual.
 # Actions describe what a HUMAN should do — they are not run
 # automatically. No external sends, no charges, no scraping.

@@ -19,7 +19,6 @@ from auto_client_acquisition.integration_capability.schemas import (
     IntegrationCapability,
 )
 
-
 # ── Lead sources ──────────────────────────────────────────────────────
 _HUNTER = IntegrationCapability(
     integration_id="hunter_io",

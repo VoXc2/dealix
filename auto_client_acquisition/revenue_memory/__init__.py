@@ -16,15 +16,15 @@ Public API:
     )
 """
 
-from auto_client_acquisition.revenue_memory.events import (
-    EVENT_TYPES,
-    RevenueEvent,
-    make_event,
-)
 from auto_client_acquisition.revenue_memory.event_store import (
     EventStore,
     InMemoryEventStore,
     append_event,
+)
+from auto_client_acquisition.revenue_memory.events import (
+    EVENT_TYPES,
+    RevenueEvent,
+    make_event,
 )
 from auto_client_acquisition.revenue_memory.projections import (
     AccountTimeline,
@@ -41,17 +41,17 @@ from auto_client_acquisition.revenue_memory.replay import (
 
 __all__ = [
     "EVENT_TYPES",
-    "RevenueEvent",
-    "make_event",
-    "EventStore",
-    "InMemoryEventStore",
-    "append_event",
     "AccountTimeline",
     "AgentActionLedger",
     "CampaignPerformanceProjection",
     "ComplianceAuditProjection",
     "CustomerROIProjection",
     "DealHealthProjection",
+    "EventStore",
+    "InMemoryEventStore",
+    "RevenueEvent",
+    "append_event",
+    "make_event",
     "replay_for_account",
     "replay_for_customer",
 ]

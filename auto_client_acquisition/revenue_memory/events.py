@@ -10,7 +10,7 @@ from __future__ import annotations
 
 import uuid
 from dataclasses import dataclass, field
-from datetime import datetime, timezone
+from datetime import UTC, datetime, timezone
 from typing import Any
 
 # ── The canonical event taxonomy — versioned ─────────────────────
@@ -122,7 +122,7 @@ def make_event(
         event_id=f"evt_{uuid.uuid4().hex[:24]}",
         event_type=event_type,
         customer_id=customer_id,
-        occurred_at=occurred_at or datetime.now(timezone.utc).replace(tzinfo=None),
+        occurred_at=occurred_at or datetime.now(UTC).replace(tzinfo=None),
         subject_type=subject_type,
         subject_id=subject_id,
         payload=payload or {},

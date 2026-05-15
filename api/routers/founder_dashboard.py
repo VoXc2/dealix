@@ -9,7 +9,7 @@ This is the operator-facing "command center" — NOT the public portal.
 """
 from __future__ import annotations
 
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta, timezone
 from typing import Any
 
 from fastapi import APIRouter, Depends
@@ -25,14 +25,14 @@ def _leads_waiting() -> dict[str, Any]:
         records = lead_inbox.list_records(limit=200) if hasattr(lead_inbox, "list_records") else []
         if not records:
             return {"count": 0, "items": []}
-        cutoff = datetime.now(timezone.utc) - timedelta(hours=24)
+        cutoff = datetime.now(UTC) - timedelta(hours=24)
         items: list[dict[str, Any]] = []
         for r in records:
             try:
                 created = datetime.fromisoformat(getattr(r, "created_at", "") or "")
                 if created.tzinfo is None:
-                    created = created.replace(tzinfo=timezone.utc)
-            except Exception:  # noqa: BLE001
+                    created = created.replace(tzinfo=UTC)
+            except Exception:
                 continue
             if created < cutoff:
                 items.append({
@@ -43,7 +43,7 @@ def _leads_waiting() -> dict[str, Any]:
                     "created_at": created.isoformat(),
                 })
         return {"count": len(items), "items": items[:20]}
-    except Exception:  # noqa: BLE001
+    except Exception:
         return {"count": 0, "items": [], "note": "lead_inbox_unavailable"}
 
 
@@ -52,7 +52,7 @@ def _friction_last_7d(customer_id: str | None = None) -> dict[str, Any]:
         from auto_client_acquisition.friction_log.aggregator import aggregate
         agg = aggregate(customer_id=customer_id or "dealix_internal", window_days=7)
         return agg.to_dict()
-    except Exception:  # noqa: BLE001
+    except Exception:
         return {"total": 0, "note": "friction_log_unavailable"}
 
 
@@ -68,7 +68,7 @@ def _renewals_due() -> dict[str, Any]:
                 for s in due[:10]
             ],
         }
-    except Exception:  # noqa: BLE001
+    except Exception:
         return {"count": 0, "items": [], "note": "renewal_scheduler_unavailable"}
 
 
@@ -80,7 +80,7 @@ def _pending_approvals() -> dict[str, Any]:
         store = get_default_approval_store()
         items = store.list_pending() if hasattr(store, "list_pending") else []
         return {"count": len(items), "items": items[:20]}
-    except Exception:  # noqa: BLE001
+    except Exception:
         return {"count": 0, "items": [], "note": "approval_center_unavailable"}
 
 
@@ -98,7 +98,7 @@ def _recent_proof_events() -> dict[str, Any]:
                 for e in events
             ],
         }
-    except Exception:  # noqa: BLE001
+    except Exception:
         return {"count": 0, "items": [], "note": "proof_ledger_unavailable"}
 
 
@@ -106,14 +106,14 @@ def _capital_this_week() -> dict[str, Any]:
     try:
         from auto_client_acquisition.capital_os.capital_ledger import list_assets
         assets = list_assets(limit=100)
-        cutoff = datetime.now(timezone.utc) - timedelta(days=7)
+        cutoff = datetime.now(UTC) - timedelta(days=7)
         recent: list[dict[str, Any]] = []
         for a in assets:
             try:
                 created = datetime.fromisoformat(a.created_at)
                 if created.tzinfo is None:
-                    created = created.replace(tzinfo=timezone.utc)
-            except Exception:  # noqa: BLE001
+                    created = created.replace(tzinfo=UTC)
+            except Exception:
                 continue
             if created >= cutoff:
                 recent.append({
@@ -124,7 +124,7 @@ def _capital_this_week() -> dict[str, Any]:
                     "created_at": a.created_at,
                 })
         return {"count": len(recent), "items": recent[:20]}
-    except Exception:  # noqa: BLE001
+    except Exception:
         return {"count": 0, "items": [], "note": "capital_ledger_unavailable"}
 
 
@@ -132,7 +132,7 @@ def _capital_this_week() -> dict[str, Any]:
 async def founder_dashboard() -> dict[str, Any]:
     """Single consolidated founder view. Admin-key gated."""
     return {
-        "generated_at": datetime.now(timezone.utc).isoformat(),
+        "generated_at": datetime.now(UTC).isoformat(),
         "leads_waiting_24h_plus": _leads_waiting(),
         "friction_last_7d": _friction_last_7d(),
         "renewals_due_next_7d": _renewals_due(),
@@ -149,7 +149,7 @@ async def founder_customer_view(customer_id: str) -> dict[str, Any]:
     """Per-customer drill-down."""
     return {
         "customer_id": customer_id,
-        "generated_at": datetime.now(timezone.utc).isoformat(),
+        "generated_at": datetime.now(UTC).isoformat(),
         "friction_last_30d": _friction_last_7d(customer_id),
         "governance_decision": "allow",
     }

@@ -19,7 +19,7 @@ Pure-function — takes pre-fetched data, computes the brief.
 from __future__ import annotations
 
 from dataclasses import asdict, dataclass, field
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta, timezone
 from typing import Any
 
 
@@ -67,7 +67,7 @@ class QBRReport:
             f"**Period:** {self.period_start} → {self.period_end} ({self.period_days} days)",
             f"**Health Score:** {self.health_overall}/100 ({self.health_bucket})",
             "",
-            f"## 🎯 Headline",
+            "## 🎯 Headline",
             f"**{self.headline_metric}** — {self.headline_delta}",
             "",
         ]
@@ -130,14 +130,14 @@ def generate_qbr(
     current_plan: str = "Growth",
 ) -> QBRReport:
     """Compose QBR from raw metrics."""
-    now = datetime.now(timezone.utc)
+    now = datetime.now(UTC)
     period_start = (now - timedelta(days=period_days)).date().isoformat()
     period_end = now.date().isoformat()
 
     # Headline = highest-impact metric
     if deals_won > 0:
         headline_metric = f"Closed {deals_won} deals worth {closed_revenue_sar:,.0f} SAR"
-        headline_delta = f"via Dealix-generated pipeline"
+        headline_delta = "via Dealix-generated pipeline"
     elif demos_booked > 0:
         headline_metric = f"{demos_booked} demos booked from {emails_sent + linkedin_sent} outreaches"
         ratio = (demos_booked / max(1, emails_sent + linkedin_sent)) * 100
@@ -196,8 +196,8 @@ def generate_qbr(
         bullets=[
             f"{suppression_added} new suppression entries added",
             f"{opt_outs_received} opt-outs honored automatically (RFC 8058 + STOP)",
-            f"All sends passed 11-gate compliance check",
-            f"Audit log: 100% complete",
+            "All sends passed 11-gate compliance check",
+            "Audit log: 100% complete",
         ],
         metrics={
             "suppression_added": suppression_added,

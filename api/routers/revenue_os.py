@@ -16,7 +16,7 @@ Endpoints under /api/v1/revenue-os/:
 from __future__ import annotations
 
 import logging
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta, timezone
 from typing import Any
 
 from fastapi import APIRouter, Body, HTTPException, Query
@@ -71,6 +71,12 @@ from auto_client_acquisition.orchestrator.queue import TaskQueue, TaskStatus
 from auto_client_acquisition.orchestrator.runtime import DAILY_GROWTH_RUN, Orchestrator
 from auto_client_acquisition.orchestrator.tools import default_executors
 
+# Why-Now (used by opportunity_feed)
+from auto_client_acquisition.revenue_graph.why_now import (
+    WhyNowSignal,
+    explain_why_now,
+)
+
 # Revenue Memory
 from auto_client_acquisition.revenue_memory.event_store import (
     InMemoryEventStore,
@@ -106,18 +112,12 @@ from auto_client_acquisition.vertical_os import (
     list_vertical_summaries,
 )
 
-# Why-Now (used by opportunity_feed)
-from auto_client_acquisition.revenue_graph.why_now import (
-    WhyNowSignal,
-    explain_why_now,
-)
-
 router = APIRouter(prefix="/api/v1/revenue-os", tags=["revenue-os"])
 log = logging.getLogger(__name__)
 
 
 def _now() -> datetime:
-    return datetime.now(timezone.utc).replace(tzinfo=None)
+    return datetime.now(UTC).replace(tzinfo=None)
 
 
 # ── Module-level singletons (in-memory adapters; production replaces) ─

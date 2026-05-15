@@ -42,7 +42,7 @@ _store_singleton: IsolatedSyncPostgresEventStore | None = None
 class IsolatedSyncPostgresEventStore:
     """Sync ``EventStore``-shaped facade over ``PostgresEventStore`` on a worker loop."""
 
-    __slots__ = ("_loop", "_inner")
+    __slots__ = ("_inner", "_loop")
 
     def __init__(self, loop: asyncio.AbstractEventLoop, inner: PostgresEventStore) -> None:
         self._loop = loop

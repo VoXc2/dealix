@@ -18,7 +18,6 @@ from auto_client_acquisition.safety_v10.schemas import (
     EvalResult,
 )
 
-
 # Canonical perimeter regex — single source of truth for what gets blocked.
 # Each pattern maps to (category, reason).
 _BLOCK_PATTERNS: list[tuple[re.Pattern[str], EvalCategory, str]] = [

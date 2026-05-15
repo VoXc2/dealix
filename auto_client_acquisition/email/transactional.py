@@ -24,7 +24,7 @@ Every send is logged with `email_kind` so audit_export sees it.
 from __future__ import annotations
 
 from dataclasses import asdict, dataclass
-from datetime import datetime, timezone
+from datetime import UTC, datetime, timezone
 from typing import Any
 
 from auto_client_acquisition.consent_table import is_consented
@@ -67,7 +67,7 @@ def _is_revoked_for_transactional(to_email: str) -> bool:
         return not is_consented(
             contact_id=to_email, channel="email", purpose="transactional"
         ) and _explicit_revoke(to_email)
-    except Exception:  # noqa: BLE001
+    except Exception:
         # default-allow for transactional (customer opted-in by interacting)
         return False
 
@@ -83,7 +83,7 @@ def _explicit_revoke(to_email: str) -> bool:
             if rec.channel == "email" and rec.purpose == "transactional":
                 return rec.kind == "revoke"
         return False
-    except Exception:  # noqa: BLE001
+    except Exception:
         return False
 
 
@@ -99,7 +99,7 @@ async def send_transactional(
     """Send a transactional email. Whitelisted kinds only. PDPL Article 5
     revoke is always honored.
     """
-    now = datetime.now(timezone.utc).isoformat()
+    now = datetime.now(UTC).isoformat()
 
     if kind not in ALLOWED_KINDS:
         return TransactionalSendResult(

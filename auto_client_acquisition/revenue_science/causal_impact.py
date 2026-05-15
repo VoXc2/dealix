@@ -13,7 +13,6 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Any
 
-
 # Historical lift coefficients (calibrated from pilot data + Pulse)
 RESPONSE_TIME_LIFT_PER_HOUR_REDUCTION = 0.014  # +1.4% reply per hour faster
 FOLLOWUP_LIFT_PER_EXTRA_TOUCH = 0.025          # +2.5% reply per extra follow-up (cap 3)

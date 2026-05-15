@@ -13,7 +13,7 @@ of adapters grows.
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta, timezone
 from typing import Any
 
 # ── Signal taxonomy — 23 signal types Dealix tracks (Wave 12.5 §33.2.1) ──
@@ -273,7 +273,7 @@ def detect_hiring_signal(
 
     Each posting is dict with: title, posted_at (datetime), url.
     """
-    n = now or datetime.now(timezone.utc).replace(tzinfo=None)
+    n = now or datetime.now(UTC).replace(tzinfo=None)
     out: list[SignalDetection] = []
     for jp in job_postings:
         title = (jp.get("title") or "").lower()
@@ -332,7 +332,7 @@ def detect_website_change(
       - WhatsApp Business widget added
       - new service / product launched
     """
-    n = now or datetime.now(timezone.utc).replace(tzinfo=None)
+    n = now or datetime.now(UTC).replace(tzinfo=None)
     out: list[SignalDetection] = []
     added_paths = set(diff.get("added_paths", []))
     added_widgets = set(diff.get("added_widgets", []))
@@ -400,7 +400,7 @@ def detect_ads_signal(
     """
     if len(weekly_ad_spend_history) < 4:
         return []
-    n = now or datetime.now(timezone.utc).replace(tzinfo=None)
+    n = now or datetime.now(UTC).replace(tzinfo=None)
     recent = weekly_ad_spend_history[-2:]
     baseline = weekly_ad_spend_history[:-2]
     if not baseline or sum(baseline) == 0:
@@ -432,7 +432,7 @@ def detect_funding_signal(
 
     announcements: list of {round_type, amount_sar, announced_at, url}
     """
-    n = now or datetime.now(timezone.utc).replace(tzinfo=None)
+    n = now or datetime.now(UTC).replace(tzinfo=None)
     out: list[SignalDetection] = []
     for a in announcements:
         announced = a.get("announced_at")
@@ -470,7 +470,7 @@ def detect_tender_signal(
 
     tenders: list of {title, body, published_at, deadline, url, value_sar}
     """
-    n = now or datetime.now(timezone.utc).replace(tzinfo=None)
+    n = now or datetime.now(UTC).replace(tzinfo=None)
     out: list[SignalDetection] = []
     for t in tenders:
         published = t.get("published_at")

@@ -22,7 +22,6 @@ from auto_client_acquisition.ai_workforce import (
     run_workforce_goal,
 )
 
-
 router = APIRouter(
     prefix="/api/v1/ai-workforce",
     tags=["ai-workforce"],

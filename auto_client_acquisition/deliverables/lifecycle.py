@@ -10,7 +10,7 @@ Truth table:
 
 from __future__ import annotations
 
-from datetime import datetime, timezone
+from datetime import UTC, datetime, timezone
 
 from auto_client_acquisition.deliverables.schemas import (
     Deliverable,
@@ -67,5 +67,5 @@ def advance(
         )
 
     rec.status = target
-    rec.updated_at = datetime.now(timezone.utc)
+    rec.updated_at = datetime.now(UTC)
     return rec

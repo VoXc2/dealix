@@ -198,8 +198,8 @@ async def research_company_with_llm(account: dict[str, Any]) -> CompanyBrief:
     if not has_llm:
         return base
     try:
-        from core.llm.router import get_router
         from core.llm.base import Message
+        from core.llm.router import get_router
     except Exception:
         return base
 
@@ -229,6 +229,6 @@ async def research_company_with_llm(account: dict[str, Any]) -> CompanyBrief:
             base.pain_hypothesis = polished
             base.confidence = min(0.95, base.confidence + 0.15)
             base.sources_used.append("llm:groq_polish")
-    except Exception as exc:  # noqa: BLE001
+    except Exception as exc:
         log.info("research_llm_polish_skipped err=%s", exc)
     return base

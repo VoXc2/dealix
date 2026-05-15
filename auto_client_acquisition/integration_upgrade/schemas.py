@@ -1,7 +1,7 @@
 """Schemas for the integration_upgrade adapter shim."""
 from __future__ import annotations
 
-from datetime import datetime, timezone
+from datetime import UTC, datetime, timezone
 from typing import Any, Literal
 
 from pydantic import BaseModel, ConfigDict, Field
@@ -22,7 +22,7 @@ class DegradedSection(BaseModel):
     next_fix_ar: str = ""
     next_fix_en: str = ""
     safety_summary: str = "no_500_no_internal_leak"
-    timestamp: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    timestamp: datetime = Field(default_factory=lambda: datetime.now(UTC))
 
 
 class ContractStatus(BaseModel):
@@ -32,7 +32,7 @@ class ContractStatus(BaseModel):
     available: bool
     degraded: bool = False
     blockers: list[str] = Field(default_factory=list)
-    timestamp: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    timestamp: datetime = Field(default_factory=lambda: datetime.now(UTC))
 
 
 class SafeLabel(BaseModel):

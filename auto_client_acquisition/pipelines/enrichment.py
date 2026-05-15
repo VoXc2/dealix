@@ -120,7 +120,7 @@ async def enrich_account(
                 contacts.append({"type": "whatsapp", "value": wa, "source": "public_pages"})
             for li in contact_info.get("linkedin", []):
                 contacts.append({"type": "linkedin", "value": li, "source": "public_pages"})
-        except Exception as exc:  # noqa: BLE001
+        except Exception as exc:
             log.warning("contact_extract_failed domain=%s err=%s", domain, exc)
 
     # Step 5: email intel (deep only)

@@ -11,9 +11,9 @@ from __future__ import annotations
 
 import json
 import threading
+from collections.abc import Iterable
 from datetime import UTC, datetime
 from pathlib import Path
-from typing import Iterable
 
 from auto_client_acquisition.customer_data_plane.pii_redactor import redact_text
 from auto_client_acquisition.proof_ledger.schemas import (
@@ -65,9 +65,8 @@ class FileProofLedger:
 
         line = stored.model_dump_json() + "\n"
         path = _date_file(self._base)
-        with self._lock:
-            with path.open("a", encoding="utf-8") as f:
-                f.write(line)
+        with self._lock, path.open("a", encoding="utf-8") as f:
+            f.write(line)
         return stored
 
     def list_events(
@@ -93,7 +92,7 @@ class FileProofLedger:
                         try:
                             data = json.loads(line)
                             ev = ProofEvent.model_validate(data)
-                        except Exception:  # noqa: BLE001
+                        except Exception:
                             continue
                         if customer_handle and ev.customer_handle != customer_handle:
                             continue
@@ -111,9 +110,8 @@ class FileProofLedger:
     def record_unit(self, unit: RevenueWorkUnit) -> RevenueWorkUnit:
         line = unit.model_dump_json() + "\n"
         path = _units_file(self._base)
-        with self._lock:
-            with path.open("a", encoding="utf-8") as f:
-                f.write(line)
+        with self._lock, path.open("a", encoding="utf-8") as f:
+            f.write(line)
         return unit
 
     def list_units(
@@ -136,7 +134,7 @@ class FileProofLedger:
                         try:
                             data = json.loads(line)
                             u = RevenueWorkUnit.model_validate(data)
-                        except Exception:  # noqa: BLE001
+                        except Exception:
                             continue
                         if customer_handle and u.customer_handle != customer_handle:
                             continue

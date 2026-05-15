@@ -27,13 +27,13 @@ from auto_client_acquisition.intelligence_compounding_os.event_collector import 
     INTELLIGENCE_EVENT_STREAMS,
     intelligence_event_stream_valid,
 )
-from auto_client_acquisition.intelligence_compounding_os.intelligence_dashboard import (
-    INTELLIGENCE_DASHBOARD_SIGNALS,
-    intelligence_dashboard_coverage_score,
-)
 from auto_client_acquisition.intelligence_compounding_os.governance_intelligence import (
     GOVERNANCE_INTELLIGENCE_SIGNALS,
     governance_intelligence_coverage_score,
+)
+from auto_client_acquisition.intelligence_compounding_os.intelligence_dashboard import (
+    INTELLIGENCE_DASHBOARD_SIGNALS,
+    intelligence_dashboard_coverage_score,
 )
 from auto_client_acquisition.intelligence_compounding_os.intelligence_quality import (
     INTELLIGENCE_QUALITY_CONTROLS,
@@ -61,8 +61,8 @@ __all__ = (
     "CLIENT_INTELLIGENCE_METRICS",
     "DATA_PATTERN_TYPES",
     "GOVERNANCE_INTELLIGENCE_SIGNALS",
-    "INTELLIGENCE_EVENT_STREAMS",
     "INTELLIGENCE_DASHBOARD_SIGNALS",
+    "INTELLIGENCE_EVENT_STREAMS",
     "INTELLIGENCE_QUALITY_CONTROLS",
     "MARKET_SIGNAL_SOURCES",
     "PRODUCT_SIGNAL_SOURCES",
@@ -75,8 +75,8 @@ __all__ = (
     "client_intelligence_coverage_score",
     "data_pattern_actionable",
     "governance_intelligence_coverage_score",
-    "intelligence_event_stream_valid",
     "intelligence_dashboard_coverage_score",
+    "intelligence_event_stream_valid",
     "intelligence_quality_controls_met",
     "market_pattern_actionable_repeats",
     "market_signal_record_valid",

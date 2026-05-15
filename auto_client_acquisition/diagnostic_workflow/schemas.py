@@ -14,7 +14,6 @@ from pydantic import BaseModel, ConfigDict, Field
 
 from auto_client_acquisition.company_brain_v6 import CompanyBrainV6
 
-
 SourceLiteral = Literal["warm_intro", "inbound", "founder_network"]
 
 

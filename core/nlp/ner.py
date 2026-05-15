@@ -128,7 +128,7 @@ async def extract_entities(
         try:
             llm_entities = await _extract_entities_llm(text, llm_task)
             entities.extend(llm_entities)
-        except Exception as exc:  # noqa: BLE001
+        except Exception as exc:
             logger.warning("ner_llm_error", error=str(exc))
 
     return entities
@@ -139,8 +139,8 @@ async def _extract_entities_llm(text: str, task: Any) -> list[dict[str, Any]]:
     LLM-based NER for PERSON, ORG, GPE, PRODUCT.
     استخراج الكيانات بالذكاء الاصطناعي.
     """
-    from core.llm import get_router  # noqa: PLC0415
-    from core.llm.base import Message  # noqa: PLC0415
+    from core.llm import get_router
+    from core.llm.base import Message
 
     prompt = (
         "Extract named entities from the following Arabic text. "
@@ -159,12 +159,12 @@ async def _extract_entities_llm(text: str, task: Any) -> list[dict[str, Any]]:
         temperature=0.0,
     )
 
-    import json  # noqa: PLC0415
+    import json
     try:
         raw = response.content.strip()
         # Strip markdown fences if present
         if raw.startswith("```"):
             raw = re.sub(r"```(?:json)?|```", "", raw).strip()
         return json.loads(raw)
-    except Exception:  # noqa: BLE001
+    except Exception:
         return []

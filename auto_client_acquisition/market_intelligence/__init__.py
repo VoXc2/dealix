@@ -7,20 +7,6 @@ SignalDetection objects that flow into the Why-Now? engine and the
 Daily Growth Run workflow.
 """
 
-from auto_client_acquisition.market_intelligence.signal_detectors import (
-    SIGNAL_TYPES,
-    SignalDetection,
-    detect_ads_signal,
-    detect_funding_signal,
-    detect_hiring_signal,
-    detect_tender_signal,
-    detect_website_change,
-)
-from auto_client_acquisition.market_intelligence.sector_pulse import (
-    SectorPulse,
-    build_sector_pulse,
-    rank_hot_sectors,
-)
 from auto_client_acquisition.market_intelligence.city_heatmap import (
     CityHeat,
     build_city_heatmap,
@@ -30,21 +16,35 @@ from auto_client_acquisition.market_intelligence.opportunity_feed import (
     Opportunity,
     build_opportunity_feed,
 )
+from auto_client_acquisition.market_intelligence.sector_pulse import (
+    SectorPulse,
+    build_sector_pulse,
+    rank_hot_sectors,
+)
+from auto_client_acquisition.market_intelligence.signal_detectors import (
+    SIGNAL_TYPES,
+    SignalDetection,
+    detect_ads_signal,
+    detect_funding_signal,
+    detect_hiring_signal,
+    detect_tender_signal,
+    detect_website_change,
+)
 
 __all__ = [
     "SIGNAL_TYPES",
+    "CityHeat",
+    "Opportunity",
+    "SectorPulse",
     "SignalDetection",
-    "detect_hiring_signal",
-    "detect_website_change",
+    "build_city_heatmap",
+    "build_opportunity_feed",
+    "build_sector_pulse",
     "detect_ads_signal",
     "detect_funding_signal",
+    "detect_hiring_signal",
     "detect_tender_signal",
-    "SectorPulse",
-    "build_sector_pulse",
+    "detect_website_change",
     "rank_hot_sectors",
-    "CityHeat",
-    "build_city_heatmap",
     "top_hot_cities",
-    "Opportunity",
-    "build_opportunity_feed",
 ]

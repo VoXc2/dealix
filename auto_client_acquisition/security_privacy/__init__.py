@@ -11,26 +11,26 @@ modules can call inline:
   - ``data_minimization_for(object_type)`` — returns the typed
     contract of which fields are PII-flagged per object type.
 """
-from auto_client_acquisition.security_privacy.secret_scan_policy import (
-    SECRET_PATTERNS,
-    SecretFinding,
-    scan_text_for_secrets,
-)
-from auto_client_acquisition.security_privacy.log_redaction import (
-    redact_log_entry,
-)
 from auto_client_acquisition.security_privacy.data_minimization import (
     DataMinimizationContract,
     data_minimization_for,
     list_known_object_types,
 )
+from auto_client_acquisition.security_privacy.log_redaction import (
+    redact_log_entry,
+)
+from auto_client_acquisition.security_privacy.secret_scan_policy import (
+    SECRET_PATTERNS,
+    SecretFinding,
+    scan_text_for_secrets,
+)
 
 __all__ = [
     "SECRET_PATTERNS",
-    "SecretFinding",
-    "scan_text_for_secrets",
-    "redact_log_entry",
     "DataMinimizationContract",
+    "SecretFinding",
     "data_minimization_for",
     "list_known_object_types",
+    "redact_log_entry",
+    "scan_text_for_secrets",
 ]

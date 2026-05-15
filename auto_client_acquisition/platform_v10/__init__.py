@@ -24,8 +24,8 @@ from auto_client_acquisition.platform_v10.tenant_contract import (
 
 __all__ = [
     "AuthPrincipal",
-    "Permission",
     "ObjectStorageContract",
+    "Permission",
     "RLSPolicy",
     "StoredObjectRef",
     "TenantContext",

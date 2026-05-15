@@ -10,11 +10,13 @@ Hard guarantees:
   - Customer name never on-disk unless ``consent_for_publication=True``
   - Every event has approval_status=approval_required by default
 """
-from auto_client_acquisition.proof_ledger.schemas import (
-    ProofEvent,
-    ProofEventType,
-    RevenueWorkUnit,
-    RevenueWorkUnitType,
+from auto_client_acquisition.proof_ledger.evidence_export import (
+    export_for_audit,
+    export_redacted,
+)
+from auto_client_acquisition.proof_ledger.factory import (
+    get_default_ledger,
+    recent_events,
 )
 from auto_client_acquisition.proof_ledger.file_backend import (
     FileProofLedger,
@@ -22,24 +24,22 @@ from auto_client_acquisition.proof_ledger.file_backend import (
 from auto_client_acquisition.proof_ledger.postgres_backend import (
     PostgresProofLedger,
 )
-from auto_client_acquisition.proof_ledger.factory import (
-    get_default_ledger,
-    recent_events,
-)
-from auto_client_acquisition.proof_ledger.evidence_export import (
-    export_redacted,
-    export_for_audit,
+from auto_client_acquisition.proof_ledger.schemas import (
+    ProofEvent,
+    ProofEventType,
+    RevenueWorkUnit,
+    RevenueWorkUnitType,
 )
 
 __all__ = [
+    "FileProofLedger",
+    "PostgresProofLedger",
     "ProofEvent",
     "ProofEventType",
     "RevenueWorkUnit",
     "RevenueWorkUnitType",
-    "FileProofLedger",
-    "PostgresProofLedger",
+    "export_for_audit",
+    "export_redacted",
     "get_default_ledger",
     "recent_events",
-    "export_redacted",
-    "export_for_audit",
 ]

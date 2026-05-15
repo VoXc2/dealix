@@ -115,7 +115,7 @@ class RevenueMemory:
         """
         try:
             await self.index_account(account_id=account_id, tenant_id=tenant_id)
-        except Exception as exc:  # noqa: BLE001
+        except Exception as exc:
             logger.warning(
                 "auto_index_account_failed",
                 account_id=account_id,
@@ -136,7 +136,7 @@ class RevenueMemory:
                 conversation_id=conversation_id,
                 tenant_id=tenant_id,
             )
-        except Exception as exc:  # noqa: BLE001
+        except Exception as exc:
             logger.warning(
                 "auto_index_conversation_failed",
                 conversation_id=conversation_id,

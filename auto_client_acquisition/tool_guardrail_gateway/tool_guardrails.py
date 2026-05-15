@@ -13,7 +13,6 @@ from __future__ import annotations
 import os
 from typing import Any
 
-
 # Tool registry — what each tool needs to be permitted
 _TOOL_REGISTRY: dict[str, dict[str, Any]] = {
     "moyasar_charge_live": {

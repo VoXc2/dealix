@@ -8,11 +8,11 @@ from __future__ import annotations
 
 import logging
 import uuid
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta, timezone
 from typing import Any
 
 from fastapi import APIRouter, Body, HTTPException
-from sqlalchemy import select, func
+from sqlalchemy import func, select
 
 from db.models import ConversationRecord, DealRecord, LeadRecord, TaskRecord
 from db.session import async_session_factory
@@ -26,7 +26,7 @@ def _new_id(prefix: str = "rec") -> str:
 
 
 def _utcnow() -> datetime:
-    return datetime.now(timezone.utc)
+    return datetime.now(UTC)
 
 
 async def _safe_commit(session, obj_to_add=None) -> bool:
@@ -302,7 +302,7 @@ async def dashboard_metrics() -> dict[str, Any]:
             log.warning("dashboard_query_skip: %s", str(e)[:120])
             return 0.0
 
-    today_start = datetime.now(timezone.utc).replace(hour=0, minute=0, second=0, microsecond=0)
+    today_start = datetime.now(UTC).replace(hour=0, minute=0, second=0, microsecond=0)
 
     async with async_session_factory()() as session:
         leads_total = await _count(session, select(func.count()).select_from(LeadRecord))
@@ -345,7 +345,6 @@ async def dashboard_metrics() -> dict[str, Any]:
 
 
 from db.models import CompanyRecord, CustomerRecord, OutreachQueueRecord, PartnerRecord
-
 
 # ── Companies (subscriber intake) ───────────────────────────────
 

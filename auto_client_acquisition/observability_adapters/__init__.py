@@ -20,9 +20,9 @@ from auto_client_acquisition.observability_adapters.redaction import RedactionFi
 
 __all__ = [
     "BaseObservabilityAdapter",
+    "LangfuseAdapter",
     "NoopAdapter",
     "ObservabilityEvent",
     "OtelAdapter",
-    "LangfuseAdapter",
     "RedactionFilter",
 ]

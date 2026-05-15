@@ -9,7 +9,6 @@ from auto_client_acquisition.growth_v10.schemas import (
     FunnelStep,
 )
 
-
 # Transition rules: (from, to, triggering_event)
 _STAGE_TRANSITIONS: list[tuple[FunnelStage, FunnelStage, EventName]] = [
     (FunnelStage.VISITOR, FunnelStage.LEAD, EventName.LEAD_CREATED),

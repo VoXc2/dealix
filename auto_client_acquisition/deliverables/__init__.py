@@ -26,10 +26,10 @@ from auto_client_acquisition.deliverables.store import (
 )
 
 __all__ = [
+    "DELIVERABLE_TRANSITIONS",
     "Deliverable",
     "DeliverableStatus",
     "DeliverableType",
-    "DELIVERABLE_TRANSITIONS",
     "InvalidTransitionError",
     "advance",
     "create_deliverable",

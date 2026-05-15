@@ -42,7 +42,7 @@ import logging
 import re
 import secrets
 import time
-from datetime import datetime, timezone
+from datetime import UTC, datetime, timezone
 from typing import Any
 
 from fastapi import APIRouter, Depends, HTTPException, Path
@@ -261,7 +261,7 @@ async def unsubscribe_webhook(
             )
 
         sub.is_active = False
-        sub.updated_at = datetime.now(timezone.utc)
+        sub.updated_at = datetime.now(UTC)
         await session.commit()
 
     log.info("customer_webhook_unsubscribed id=%s tenant=%s", subscription_id, handle)
@@ -319,7 +319,7 @@ async def ping_subscription(
         "event_id": f"ping_{int(time.time())}",
         "event_type": "dealix.ping",
         "tenant_handle": handle,
-        "delivered_at": datetime.now(timezone.utc).isoformat(),
+        "delivered_at": datetime.now(UTC).isoformat(),
         "data": {
             "message": "If you see this in your endpoint, integration works.",
         },

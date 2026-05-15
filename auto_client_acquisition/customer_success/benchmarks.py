@@ -17,7 +17,6 @@ from __future__ import annotations
 from dataclasses import asdict, dataclass, field
 from typing import Any
 
-
 MIN_COHORT_SIZE = 5  # Privacy guarantee: never publish below this
 
 

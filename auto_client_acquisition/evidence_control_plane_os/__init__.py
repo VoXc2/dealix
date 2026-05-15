@@ -26,8 +26,8 @@ from auto_client_acquisition.evidence_control_plane_os.evidence_graph import (
     mini_evidence_chain_complete,
 )
 from auto_client_acquisition.evidence_control_plane_os.evidence_object import (
-    EvidenceType,
     EvidenceObject,
+    EvidenceType,
     evidence_object_valid,
     is_critical_evidence_type,
 )

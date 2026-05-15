@@ -4,7 +4,7 @@ Used by the Daily Executive Pack (Phase 8) to surface overdue tickets.
 """
 from __future__ import annotations
 
-from datetime import datetime, timezone
+from datetime import UTC, datetime, timezone
 from typing import Any
 
 from auto_client_acquisition.support_inbox.state_store import _INDEX
@@ -16,7 +16,7 @@ def find_breached_tickets(
     customer_id: str | None = None,
 ) -> list[dict[str, Any]]:
     """Return all tickets where sla_due_at < now and status not terminal."""
-    now = datetime.now(timezone.utc)
+    now = datetime.now(UTC)
     out: list[dict[str, Any]] = []
     for t in _INDEX.values():
         if customer_id and t.customer_id != customer_id:

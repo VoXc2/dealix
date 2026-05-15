@@ -20,7 +20,6 @@ from auto_client_acquisition.diagnostic_workflow.schemas import (
     IntakeRecord,
 )
 
-
 _DEFAULT_GAPS_AR_EN: tuple[str, ...] = (
     "no_structured_inbound_pipeline",
     "founder_bottleneck_after_hours",

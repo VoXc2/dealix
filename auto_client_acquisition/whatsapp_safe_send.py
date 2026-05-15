@@ -44,7 +44,6 @@ from auto_client_acquisition.orchestrator.policies import (
     is_in_quiet_hours,
 )
 
-
 _KSA_TZ = ZoneInfo("Asia/Riyadh")
 
 _VALID_WHATSAPP_ACTIONS = frozenset({
@@ -175,7 +174,7 @@ async def safe_send_text(
         client = WhatsAppClient()
     try:
         result = await client.send_text(msisdn, body)
-    except Exception as exc:  # noqa: BLE001
+    except Exception as exc:
         return _refuse(
             "client_error",
             ar=f"خطأ في عميل WhatsApp: {type(exc).__name__}",

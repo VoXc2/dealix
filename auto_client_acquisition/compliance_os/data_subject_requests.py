@@ -17,7 +17,7 @@ from __future__ import annotations
 
 import uuid
 from dataclasses import dataclass, field
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta, timezone
 from typing import Any
 
 
@@ -79,7 +79,7 @@ def open_dsr(
 ) -> DataSubjectRequest:
     if request_type not in DSR_TYPES:
         raise ValueError(f"unknown DSR type: {request_type}")
-    received = received_at or datetime.now(timezone.utc).replace(tzinfo=None)
+    received = received_at or datetime.now(UTC).replace(tzinfo=None)
     sla = received + timedelta(days=SLA_DAYS[request_type])
     return DataSubjectRequest(
         request_id=_new_id(),
@@ -101,7 +101,7 @@ def process_dsr(
     completed_at: datetime | None = None,
 ) -> DataSubjectRequest:
     """Mark a DSR as completed or rejected. Updates the request in place."""
-    n = completed_at or datetime.now(timezone.utc).replace(tzinfo=None)
+    n = completed_at or datetime.now(UTC).replace(tzinfo=None)
     request.handled_by = handled_by
     request.completed_at = n
     if action_taken == "completed":
@@ -119,13 +119,13 @@ def process_dsr(
 
 
 def is_overdue(request: DataSubjectRequest, *, now: datetime | None = None) -> bool:
-    n = now or datetime.now(timezone.utc).replace(tzinfo=None)
+    n = now or datetime.now(UTC).replace(tzinfo=None)
     return request.status not in (DSRStatus.COMPLETED, DSRStatus.REJECTED) and n > request.sla_due_at
 
 
 def dsr_dashboard(requests: list[DataSubjectRequest], *, now: datetime | None = None) -> dict[str, Any]:
     """Aggregate counts for the Trust Center DSR tile."""
-    n = now or datetime.now(timezone.utc).replace(tzinfo=None)
+    n = now or datetime.now(UTC).replace(tzinfo=None)
     by_type: dict[str, int] = {}
     by_status: dict[str, int] = {}
     overdue = 0

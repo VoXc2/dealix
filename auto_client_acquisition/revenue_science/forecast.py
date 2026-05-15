@@ -8,9 +8,8 @@ Probabilities come from stage-historical win rates × deal-specific risk.
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta, timezone
 from typing import Any
-
 
 # Stage → base probability of close (calibrated over Pulse cohort)
 STAGE_BASE_PROBABILITY: dict[str, float] = {
@@ -81,7 +80,7 @@ def compute_forecast(
     Each deal is dict with: id, stage, value_sar, last_activity_at,
     days_in_stage, multi_threaded, expected_close_at (optional).
     """
-    n = now or datetime.now(timezone.utc).replace(tzinfo=None)
+    n = now or datetime.now(UTC).replace(tzinfo=None)
     horizon_end = n + timedelta(days=horizon_days)
 
     breakdown: list[dict[str, Any]] = []

@@ -27,7 +27,7 @@ from __future__ import annotations
 import hashlib
 import logging
 import os
-from datetime import datetime, timezone
+from datetime import UTC, datetime, timezone
 from typing import Any
 
 from fastapi import APIRouter, Header, HTTPException, Path, Query
@@ -197,7 +197,7 @@ async def generate_report(
             detail=f"sector must be one of {sorted(SUPPORTED_SECTORS)}",
         )
 
-    generated_at = datetime.now(timezone.utc)
+    generated_at = datetime.now(UTC)
     report_id = _report_id(body.sector, generated_at)
 
     accounts = await _collect_sector_accounts(body.sector)

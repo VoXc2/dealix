@@ -63,7 +63,7 @@ async def journey_advance(payload: dict = Body(...)) -> dict:
     """
     try:
         req = JourneyAdvanceRequest(**payload)
-    except Exception as exc:  # noqa: BLE001
+    except Exception as exc:
         raise HTTPException(
             status_code=400, detail=f"invalid payload: {exc}"
         ) from exc

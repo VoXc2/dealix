@@ -19,16 +19,6 @@ from api.middleware import (
     RequestIDMiddleware,
     SecurityHeadersMiddleware,
 )
-
-# ── Domain router aggregators (replaces 80+ flat imports) ─────────
-from api.routers.domains import admin as admin_domain
-from api.routers.domains import agents as agents_domain
-from api.routers.domains import analytics as analytics_domain
-from api.routers.domains import compliance as compliance_domain
-from api.routers.domains import customers as customers_domain
-from api.routers.domains import deprecated as deprecated_domain
-from api.routers.domains import sales as sales_domain
-from api.routers.domains import webhooks as webhooks_domain
 from api.routers import (
     admin_tenants,
     auth,
@@ -49,37 +39,54 @@ from api.routers import (
     tenant_theming,
     zatca,
 )
-# Wave 12.7 — Intelligence Layer + Expansion Engine routers
-from api.routers import expansion_engine as expansion_engine_router
-from api.routers import intelligence_layer as intelligence_layer_router
+
+# Wave 14F — Agent OS
+from api.routers import agent_os as agent_os_router
+from api.routers import audit_export as audit_export_router
+
 # Wave 13 — Full Ops Productization routers
 from api.routers import bottleneck_radar as bottleneck_radar_router
 from api.routers import business_metrics_board as business_metrics_board_router
-from api.routers import customer_success_scores as customer_success_scores_router
-from api.routers import deliverables as deliverables_router
-from api.routers import integration_capability as integration_capability_router
-from api.routers import service_catalog as service_catalog_router
-# Wave 14 — Canonical Trust MVP + Retainer Engine (Phase 2)
-from api.routers import friction_log as friction_log_router
-from api.routers import value_os as value_os_router
-# 90-day commercial activation — Wave 14B
-from api.routers import data_os as data_os_router
-from api.routers import sprint_runner as sprint_runner_router
-from api.routers import founder_dashboard as founder_dashboard_router
-from api.routers import audit_export as audit_export_router
-# Wave 14F — Agent OS
-from api.routers import agent_os as agent_os_router
+
 # Wave 14J — Commercial wiring map (source of truth for landing↔backend)
 from api.routers import commercial_map as commercial_map_router
+from api.routers import customer_success_scores as customer_success_scores_router
+
+# 90-day commercial activation — Wave 14B
+from api.routers import data_os as data_os_router
+from api.routers import deliverables as deliverables_router
+
+# Wave 12.7 — Intelligence Layer + Expansion Engine routers
+from api.routers import expansion_engine as expansion_engine_router
+from api.routers import founder_dashboard as founder_dashboard_router
+
 # Wave 15 — Founder launch-status (single-pane production readiness)
 from api.routers import founder_launch_status as founder_launch_status_router
+
+# Wave 14 — Canonical Trust MVP + Retainer Engine (Phase 2)
+from api.routers import friction_log as friction_log_router
+from api.routers import integration_capability as integration_capability_router
+from api.routers import intelligence_layer as intelligence_layer_router
+from api.routers import service_catalog as service_catalog_router
+from api.routers import sprint_runner as sprint_runner_router
+from api.routers import value_os as value_os_router
+
+# ── Domain router aggregators (replaces 80+ flat imports) ─────────
+from api.routers.domains import admin as admin_domain
+from api.routers.domains import agents as agents_domain
+from api.routers.domains import analytics as analytics_domain
+from api.routers.domains import compliance as compliance_domain
+from api.routers.domains import customers as customers_domain
+from api.routers.domains import deprecated as deprecated_domain
+from api.routers.domains import sales as sales_domain
+from api.routers.domains import webhooks as webhooks_domain
 from api.security import APIKeyMiddleware, setup_rate_limit
 from core.config.settings import get_settings
 from core.errors import AICompanyError
 from core.logging import configure_logging, get_logger
 
 
-def _validate_production_secrets(settings: "Settings") -> None:  # type: ignore[name-defined]
+def _validate_production_secrets(settings: Settings) -> None:  # type: ignore[name-defined]
     """
     Fail fast if production is started with insecure defaults.
     يرفض تشغيل الإنتاج بإعدادات غير آمنة.

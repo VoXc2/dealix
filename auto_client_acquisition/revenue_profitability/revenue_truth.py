@@ -15,7 +15,6 @@ from typing import Any
 
 from auto_client_acquisition.integration_upgrade import safe_call
 
-
 _REVENUE_STATUSES = {"payment_confirmed", "delivery_kickoff"}
 _NEGATIVE_STATUSES = {"refunded"}
 

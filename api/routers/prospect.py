@@ -23,6 +23,8 @@ from auto_client_acquisition.agents.prospector import (
 )
 from auto_client_acquisition.agents.rules_router import (
     generate_messages as _rules_generate_messages,
+)
+from auto_client_acquisition.agents.rules_router import (
     route_account as _rules_route,
 )
 from auto_client_acquisition.connectors.google_search import google_search
@@ -189,7 +191,7 @@ async def search(body: dict[str, Any] = Body(...)) -> dict[str, Any]:
 
     try:
         resp = await google_search(q, num=num, site=site, lang=lang, timeout=10.0)
-    except Exception as exc:  # noqa: BLE001
+    except Exception as exc:
         log.exception("google_search_call_failed q=%r", q)
         raise HTTPException(status_code=502, detail="search_error") from exc
 
@@ -216,7 +218,7 @@ async def enrich_tech(body: dict[str, Any] = Body(...)) -> dict[str, Any]:
 
     try:
         result = await detect_stack(domain, timeout=10.0, extra_paths=extra)
-    except Exception as exc:  # noqa: BLE001
+    except Exception as exc:
         log.exception("tech_detect_failed domain=%s", domain)
         raise HTTPException(status_code=502, detail="tech_detect_error") from exc
     return result.to_dict()
@@ -254,7 +256,7 @@ async def enrich_domain(body: dict[str, Any] = Body(...)) -> dict[str, Any]:
     tech_dict = tech.to_dict() if tech else {"tools": [], "signals": [], "status": "unavailable"}
 
     # Step 2 — LLM analysis using ProspectorAgent-style prompt but domain-scoped
-    from auto_client_acquisition.agents.prospector import ProspectorAgent, USE_CASES
+    from auto_client_acquisition.agents.prospector import USE_CASES, ProspectorAgent
 
     agent = ProspectorAgent()
     icp_text = (
@@ -440,7 +442,7 @@ async def bulk_enrich(body: dict[str, Any] = Body(...)) -> dict[str, Any]:
             try:
                 r = await detect_stack(d, timeout=10.0)
                 return d, r.to_dict()
-            except Exception as exc:  # noqa: BLE001
+            except Exception as exc:
                 return d, {"status": "error", "error": str(exc), "domain": d}
 
     pairs = await _asyncio.gather(*(_one(d) for d in domains))
@@ -556,7 +558,7 @@ async def inbound_handle(body: dict[str, Any] = Body(...)) -> dict[str, Any]:
         "already_has_crm":      "Dealix ما يستبدل CRM — يشتغل كطبقة أولى فوقه. يرد بالعربي، يؤهّل، ويسلّم الـ CRM قائمة leads جاهزة. تكامل مباشر HubSpot/Salesforce/Zoho/webhook. 20 دقيقة demo: " + CAL,
         "arabic_concern":       f"نقطة مهمة. Dealix خليجي حقيقي، ما يكتب 'حضرتك' و'تعطفكم'. 20 دقيقة demo تختبره بنفسك على سيناريو شركتكم: {CAL}",
         "privacy_concern":      f"مصمم PDPL-compliant: بياناتكم في سيرفرات السعودية، opt-out في كل email، audit log كامل. 20 دقيقة نناقش compliance + demo: {CAL}",
-        "partnership_interest": f"ممتاز. 3 tiers:\n- Referral: 10% MRR × 12 شهر\n- Agency: setup 3-15K + 20-30% MRR\n- White-label (Scale)\n20 دقيقة partner call: https://dealix.me/partners.html",
+        "partnership_interest": "ممتاز. 3 tiers:\n- Referral: 10% MRR × 12 شهر\n- Agency: setup 3-15K + 20-30% MRR\n- White-label (Scale)\n20 دقيقة partner call: https://dealix.me/partners.html",
         "referral_opportunity": "شكراً! 10% من MRR × 12 شهر لأي عميل يجي عبرك. ممكن تخبرني بمعلومات الشركة والشخص؟",
     }
     response_ar = responses.get(classification, responses["interested"])

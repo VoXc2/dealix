@@ -43,7 +43,7 @@ class HunterProvider:
                     "https://api.hunter.io/v2/domain-search",
                     params={"domain": domain, "limit": limit, "api_key": api_key},
                 )
-        except Exception as exc:  # noqa: BLE001
+        except Exception as exc:
             return ProviderResult(provider=self.name, status="http_error", error=str(exc))
         if r.status_code != 200:
             return ProviderResult(
@@ -77,7 +77,7 @@ class HunterProvider:
                     "https://api.hunter.io/v2/email-verifier",
                     params={"email": email, "api_key": api_key},
                 )
-        except Exception as exc:  # noqa: BLE001
+        except Exception as exc:
             return ProviderResult(provider=self.name, status="http_error", error=str(exc))
         if r.status_code != 200:
             return ProviderResult(
@@ -125,7 +125,7 @@ class AbstractEmailProvider:
                     "https://emailvalidation.abstractapi.com/v1/",
                     params={"api_key": api_key, "email": email},
                 )
-        except Exception as exc:  # noqa: BLE001
+        except Exception as exc:
             return ProviderResult(provider=self.name, status="http_error", error=str(exc))
         if r.status_code != 200:
             return ProviderResult(

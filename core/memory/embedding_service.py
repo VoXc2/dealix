@@ -47,7 +47,7 @@ class EmbeddingService:
     def _get_client(self) -> Any:
         """Lazily build AsyncOpenAI client."""
         if self._client is None:
-            import openai as _openai  # noqa: PLC0415
+            import openai as _openai
             settings = get_settings()
             if settings.openai_api_key is None:
                 raise RuntimeError(
@@ -117,11 +117,11 @@ class EmbeddingService:
 
         If `text` is None, builds a summary from AccountRecord fields.
         """
-        from db.models import AccountEmbeddingRecord, AccountRecord  # noqa: PLC0415
+        from db.models import AccountEmbeddingRecord, AccountRecord
 
         sess = session or self._session
         if sess is None:
-            from db.session import get_session  # noqa: PLC0415
+            from db.session import get_session
             async with get_session() as auto_sess:
                 return await self.index_account(
                     account_id=account_id,
@@ -176,11 +176,11 @@ class EmbeddingService:
         Embed a conversation turn and upsert into conversation_embeddings.
         تضمين محادثة وتحديث سجل التضمين.
         """
-        from db.models import ConversationEmbeddingRecord, ConversationRecord  # noqa: PLC0415
+        from db.models import ConversationEmbeddingRecord, ConversationRecord
 
         sess = session or self._session
         if sess is None:
-            from db.session import get_session  # noqa: PLC0415
+            from db.session import get_session
             async with get_session() as auto_sess:
                 return await self.index_conversation(
                     conversation_id=conversation_id,
@@ -234,11 +234,11 @@ class EmbeddingService:
         Semantic search over account embeddings using cosine similarity.
         بحث دلالي في تضمينات الحسابات.
         """
-        from db.models import AccountEmbeddingRecord  # noqa: PLC0415
+        from db.models import AccountEmbeddingRecord
 
         sess = session or self._session
         if sess is None:
-            from db.session import get_session  # noqa: PLC0415
+            from db.session import get_session
             async with get_session() as auto_sess:
                 return await self.search_accounts(
                     query=query,
@@ -283,11 +283,11 @@ class EmbeddingService:
         Semantic search over conversation embeddings.
         بحث دلالي في تضمينات المحادثات.
         """
-        from db.models import ConversationEmbeddingRecord  # noqa: PLC0415
+        from db.models import ConversationEmbeddingRecord
 
         sess = session or self._session
         if sess is None:
-            from db.session import get_session  # noqa: PLC0415
+            from db.session import get_session
             async with get_session() as auto_sess:
                 return await self.search_conversations(
                     query=query,

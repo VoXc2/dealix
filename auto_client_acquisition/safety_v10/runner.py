@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 from collections import defaultdict
-from typing import Iterable
+from collections.abc import Iterable
 
 from auto_client_acquisition.safety_v10.eval_cases import EVAL_CASES
 from auto_client_acquisition.safety_v10.policies import evaluate_case

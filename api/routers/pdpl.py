@@ -16,7 +16,7 @@ Endpoints:
 from __future__ import annotations
 
 import uuid
-from datetime import datetime, timezone
+from datetime import UTC, datetime, timezone
 from typing import Any
 
 from fastapi import APIRouter, Body, Depends, HTTPException, Query
@@ -28,8 +28,8 @@ from core.logging import get_logger
 from core.utils import utcnow
 from db.models import (
     AuditLogRecord,
-    ContactRecord,
     ConsentRequestRecord,
+    ContactRecord,
     LeadRecord,
 )
 from db.session import get_db
@@ -278,7 +278,7 @@ async def erase_data(
     if not contact:
         raise HTTPException(status_code=404, detail="Contact not found or already erased")
 
-    now = datetime.now(timezone.utc)
+    now = datetime.now(UTC)
     erased_entities: list[str] = []
 
     # Capture PII before anonymization for lead lookup
@@ -350,7 +350,7 @@ async def erase_data(
                         purpose=purpose,
                         source="pdpl_erasure",
                     )
-            except Exception:  # noqa: BLE001
+            except Exception:
                 pass
 
     log.info("pdpl_erasure_completed", contact_id=contact_id, tenant_id=tenant_id)
@@ -460,11 +460,11 @@ async def monthly_audit_report(
         raise HTTPException(status_code=422, detail="report_month must be YYYY-MM") from exc
 
     year, month = report_month.split("-")
-    from_dt = datetime(int(year), int(month), 1, tzinfo=timezone.utc)
+    from_dt = datetime(int(year), int(month), 1, tzinfo=UTC)
     if int(month) == 12:
-        to_dt = datetime(int(year) + 1, 1, 1, tzinfo=timezone.utc)
+        to_dt = datetime(int(year) + 1, 1, 1, tzinfo=UTC)
     else:
-        to_dt = datetime(int(year), int(month) + 1, 1, tzinfo=timezone.utc)
+        to_dt = datetime(int(year), int(month) + 1, 1, tzinfo=UTC)
 
     # Fetch audit records for the month
     audit_result = await db.execute(
@@ -534,7 +534,7 @@ async def consent_dashboard(
             "kind": r.kind,
             "occurred_at": r.occurred_at,
         }
-        for r in consent_table._all_records()  # noqa: SLF001
+        for r in consent_table._all_records()
     ]
 
     dashboard = build_consent_dashboard(tenant_id=tenant_id, consent_records=records_raw)
@@ -558,7 +558,7 @@ async def breach_notification(
         breach_description=payload.get("description", ""),
         affected_data_categories=payload.get("affected_categories", []),
         estimated_subjects_count=payload.get("subjects_count", 0),
-        discovery_datetime=payload.get("discovery_datetime", datetime.now(timezone.utc).isoformat()),
+        discovery_datetime=payload.get("discovery_datetime", datetime.now(UTC).isoformat()),
         mitigation_steps=payload.get("mitigation_steps", []),
     )
 

@@ -14,7 +14,7 @@ def summarize_cost(period_days: int = 7) -> dict[str, Any]:
     try:
         # Optional import — module ships in §S5 / Phase A.
         from auto_client_acquisition import llm_gateway_v10  # type: ignore[attr-defined]
-    except Exception:  # noqa: BLE001
+    except Exception:
         return {
             "period_days": period_days,
             "total_usd": 0.0,
@@ -28,7 +28,7 @@ def summarize_cost(period_days: int = 7) -> dict[str, Any]:
             if isinstance(payload, dict):
                 payload.setdefault("period_days", period_days)
                 return payload
-    except Exception:  # noqa: BLE001
+    except Exception:
         pass
 
     return {

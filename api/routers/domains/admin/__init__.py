@@ -18,13 +18,11 @@ from api.routers import (
     diagnostic_workflow,
     drafts,
     ecosystem,
-    executive_command_center as executive_command_center_router,
     executive_os,
     executive_reporting,
     finance_os,
     founder,
     founder_beast_command_center,
-    founder_command_summary as founder_command_summary_router,
     full_ops,
     full_os,
     health,
@@ -35,6 +33,12 @@ from api.routers import (
     sectors,
     self_growth,
     self_improvement_os,
+)
+from api.routers import (
+    executive_command_center as executive_command_center_router,
+)
+from api.routers import (
+    founder_command_summary as founder_command_summary_router,
 )
 
 _ROUTERS = [

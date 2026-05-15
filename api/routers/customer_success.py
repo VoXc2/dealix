@@ -16,20 +16,27 @@ from __future__ import annotations
 
 import logging
 from collections import defaultdict
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta, timezone
 from typing import Any
 
 from fastapi import APIRouter, Body, HTTPException
 from sqlalchemy import func, select
 
 from auto_client_acquisition.customer_success.benchmarks import (
-    MIN_COHORT_SIZE, compare_customer, compute_sector_benchmark, saudi_b2b_pulse,
+    MIN_COHORT_SIZE,
+    compare_customer,
+    compute_sector_benchmark,
+    saudi_b2b_pulse,
 )
 from auto_client_acquisition.customer_success.health_score import compute_health
 from auto_client_acquisition.customer_success.qbr_generator import generate_qbr
 from db.models import (
-    AccountRecord, CustomerRecord, EmailSendLog, GmailDraftRecord,
-    LeadScoreRecord, LinkedInDraftRecord,
+    AccountRecord,
+    CustomerRecord,
+    EmailSendLog,
+    GmailDraftRecord,
+    LeadScoreRecord,
+    LinkedInDraftRecord,
 )
 from db.session import async_session_factory
 
@@ -38,7 +45,7 @@ log = logging.getLogger(__name__)
 
 
 def _utcnow() -> datetime:
-    return datetime.now(timezone.utc).replace(tzinfo=None)
+    return datetime.now(UTC).replace(tzinfo=None)
 
 
 # ── Health score for one customer ─────────────────────────────────
@@ -76,7 +83,7 @@ async def compute_customer_health(customer_id: str) -> dict[str, Any]:
             )).scalar() or 0)
         except HTTPException:
             raise
-        except Exception as exc:  # noqa: BLE001
+        except Exception as exc:
             return {"status": "skipped_db_unreachable", "error": str(exc)}
 
     days_since_login = (
@@ -111,7 +118,7 @@ async def list_at_risk_customers() -> dict[str, Any]:
     async with async_session_factory() as session:
         try:
             customers = (await session.execute(select(CustomerRecord))).scalars().all()
-        except Exception as exc:  # noqa: BLE001
+        except Exception as exc:
             return {"status": "skipped_db_unreachable", "error": str(exc), "items": []}
 
     at_risk: list[dict[str, Any]] = []
@@ -191,7 +198,7 @@ async def generate_customer_qbr(customer_id: str, body: dict[str, Any] = Body(de
             )).scalar() or 0)
         except HTTPException:
             raise
-        except Exception as exc:  # noqa: BLE001
+        except Exception as exc:
             return {"status": "skipped_db_unreachable", "error": str(exc)}
 
     # Health score
@@ -244,7 +251,7 @@ async def get_sector_benchmarks(sector: str, metric: str = "reply_rate") -> dict
                     EmailSendLog.sent_at >= cutoff_30d,
                 )
             )).scalars().all()
-        except Exception as exc:  # noqa: BLE001
+        except Exception as exc:
             return {"status": "skipped_db_unreachable", "error": str(exc)}
 
     # Group by account_id, compute reply rates
@@ -308,7 +315,7 @@ async def compare_to_sector(customer_id: str, body: dict[str, Any] = Body(defaul
                     EmailSendLog.sent_at >= cutoff_30d,
                 )
             )).scalars().all()
-        except Exception as exc:  # noqa: BLE001
+        except Exception as exc:
             return {"status": "skipped_db_unreachable", "error": str(exc)}
 
     by_acc: dict[str, dict[str, int]] = defaultdict(lambda: {"sent": 0, "replied": 0})
@@ -353,7 +360,7 @@ async def get_saudi_b2b_pulse() -> dict[str, Any]:
                 by_acc[s.account_id]["sent"] += 1
                 if s.reply_received_at:
                     by_acc[s.account_id]["replied"] += 1
-        except Exception as exc:  # noqa: BLE001
+        except Exception as exc:
             return {"status": "skipped_db_unreachable", "error": str(exc)}
 
     sector_data: dict[str, dict[str, list[float]]] = {}

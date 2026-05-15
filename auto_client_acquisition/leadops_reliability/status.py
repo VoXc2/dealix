@@ -1,7 +1,7 @@
 """Overall LeadOps health snapshot."""
 from __future__ import annotations
 
-from datetime import datetime, timezone
+from datetime import UTC, datetime, timezone
 from typing import Any
 
 from auto_client_acquisition.integration_upgrade import safe_call
@@ -22,7 +22,7 @@ def overall_status() -> dict[str, Any]:
     return {
         "records_total": records_count if isinstance(records_count, int) else 0,
         "drafts_pending": drafts_count if isinstance(drafts_count, int) else 0,
-        "last_check_at": datetime.now(timezone.utc).isoformat(),
+        "last_check_at": datetime.now(UTC).isoformat(),
         "is_healthy": (
             isinstance(records_count, int)
             and isinstance(drafts_count, int)

@@ -11,7 +11,6 @@ from datetime import UTC, datetime, timedelta
 
 from auto_client_acquisition.ai_workforce_v10.schemas import WorkforceMemoryEntry
 
-
 _LOCK = threading.RLock()
 _MEMORY: dict[str, list[WorkforceMemoryEntry]] = {}
 

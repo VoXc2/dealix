@@ -125,13 +125,13 @@ def _gather_signals() -> dict[str, Any]:
                     e.get("payload") if isinstance(e, dict) else getattr(e, "payload", {})
                 ) or {}
                 signals["revenue_sar"] += float(payload.get("amount_sar", 0))
-    except (ImportError, Exception):  # noqa: BLE001
+    except (ImportError, Exception):
         pass
 
     try:
         from auto_client_acquisition.approval_center import list_pending  # type: ignore
         signals["pending_approvals"] = len(list_pending() or [])
-    except (ImportError, Exception):  # noqa: BLE001
+    except (ImportError, Exception):
         pass
 
     return signals
@@ -303,7 +303,7 @@ def _queue_suggestions_to_approval(
                 channel="weekly_self_improvement",
                 risk_level="low",
             )
-        except Exception as exc:  # noqa: BLE001
+        except Exception as exc:
             logger.warning("weekly_suggestion_enqueue_failed: %s", exc)
         approval_ids.append(approval_id)
     return approval_ids

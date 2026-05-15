@@ -34,10 +34,10 @@ _PHASE_E_DOCS = (
 def _check_dashboard_cache() -> dict[str, Any]:
     try:
         from auto_client_acquisition.founder_v10 import (
-            cached_dashboard_payload,  # noqa: F401
+            cached_dashboard_payload,
         )
         return {"name": "dashboard_cache", "status": "ok"}
-    except BaseException as exc:  # noqa: BLE001
+    except BaseException as exc:
         return {"name": "dashboard_cache", "status": "degraded",
                 "error_type": type(exc).__name__}
 
@@ -51,7 +51,7 @@ def _check_runtime_paths() -> dict[str, Any]:
             "status": "ok" if path.exists() else "degraded",
             "registry_dir_exists": path.exists(),
         }
-    except BaseException as exc:  # noqa: BLE001
+    except BaseException as exc:
         return {"name": "runtime_paths", "status": "degraded",
                 "error_type": type(exc).__name__}
 

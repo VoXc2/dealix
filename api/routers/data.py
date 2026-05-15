@@ -26,7 +26,7 @@ from __future__ import annotations
 
 import logging
 import uuid
-from datetime import datetime, timezone
+from datetime import UTC, datetime, timezone
 from typing import Any
 
 from fastapi import APIRouter, Body, HTTPException
@@ -159,7 +159,7 @@ def _new_id(prefix: str = "") -> str:
 
 
 def _utcnow() -> datetime:
-    return datetime.now(timezone.utc).replace(tzinfo=None)
+    return datetime.now(UTC).replace(tzinfo=None)
 
 
 async def _safe_commit(session, *objs: Any) -> bool:
@@ -168,7 +168,7 @@ async def _safe_commit(session, *objs: Any) -> bool:
             session.add(o)
         await session.commit()
         return True
-    except Exception as exc:  # noqa: BLE001
+    except Exception as exc:
         log.warning("data_router_commit_failed err=%s", exc)
         try:
             await session.rollback()
@@ -273,7 +273,7 @@ async def normalize_import(import_id: str) -> dict[str, Any]:
             imp_rec = (await session.execute(
                 select(RawLeadImport).where(RawLeadImport.id == import_id)
             )).scalar_one_or_none()
-        except Exception as exc:  # noqa: BLE001
+        except Exception as exc:
             return {"status": "skipped_db_unreachable", "error": str(exc)}
         if not imp_rec:
             raise HTTPException(404, "import_not_found")
@@ -291,7 +291,7 @@ async def normalize_import(import_id: str) -> dict[str, Any]:
                 continue
             try:
                 normalized = normalize_row(row.raw_json or {})
-            except Exception as exc:  # noqa: BLE001
+            except Exception as exc:
                 row.normalized_status = "rejected"
                 row.error = f"normalize_error: {exc}"
                 rejected_count += 1
@@ -358,7 +358,7 @@ async def normalize_import(import_id: str) -> dict[str, Any]:
 
         try:
             await session.commit()
-        except Exception as exc:  # noqa: BLE001
+        except Exception as exc:
             await session.rollback()
             return {"status": "commit_failed", "error": str(exc)}
 
@@ -386,7 +386,7 @@ async def dedupe_import(import_id: str) -> dict[str, Any]:
             all_accounts = (await session.execute(select(AccountRecord))).scalars().all()
         except HTTPException:
             raise
-        except Exception as exc:  # noqa: BLE001
+        except Exception as exc:
             return {"status": "skipped_db_unreachable", "error": str(exc)}
 
         # Split into already-existing (from prior imports) vs this-import's new ones
@@ -440,7 +440,7 @@ async def dedupe_import(import_id: str) -> dict[str, Any]:
 
         try:
             await session.commit()
-        except Exception as exc:  # noqa: BLE001
+        except Exception as exc:
             await session.rollback()
             return {"status": "commit_failed", "error": str(exc)}
 
@@ -475,7 +475,7 @@ async def enrich_import(import_id: str, body: dict[str, Any] = Body(default={}))
                     AccountRecord.status == "new"
                 ).limit(max_accounts)
             )).scalars().all()
-        except Exception as exc:  # noqa: BLE001
+        except Exception as exc:
             return {"status": "skipped_db_unreachable", "error": str(exc)}
 
         # Filter to accounts from this import
@@ -502,7 +502,7 @@ async def enrich_import(import_id: str, body: dict[str, Any] = Body(default={}))
             }
             try:
                 result = await enrich_account(account_dict, enrichment_level=level)
-            except Exception as exc:  # noqa: BLE001
+            except Exception as exc:
                 log.warning("enrich_failed acc=%s err=%s", acc.id, exc)
                 continue
 
@@ -571,7 +571,7 @@ async def enrich_import(import_id: str, body: dict[str, Any] = Body(default={}))
 
         try:
             await session.commit()
-        except Exception as exc:  # noqa: BLE001
+        except Exception as exc:
             await session.rollback()
             return {"status": "commit_failed", "error": str(exc)}
 
@@ -597,7 +597,7 @@ async def import_report(import_id: str) -> dict[str, Any]:
             accounts = (await session.execute(select(AccountRecord))).scalars().all()
         except HTTPException:
             raise
-        except Exception as exc:  # noqa: BLE001
+        except Exception as exc:
             return {"status": "skipped_db_unreachable", "error": str(exc)}
 
         related = [a for a in accounts if (a.extra or {}).get("import_id") == import_id]
@@ -668,7 +668,7 @@ async def list_suppression(limit: int = 200) -> dict[str, Any]:
             rows = (await session.execute(
                 select(SuppressionRecord).limit(min(1000, limit))
             )).scalars().all()
-        except Exception as exc:  # noqa: BLE001
+        except Exception as exc:
             return {"status": "skipped_db_unreachable", "error": str(exc), "items": []}
         return {
             "status": "ok",
@@ -691,7 +691,7 @@ async def list_imports(limit: int = 50) -> dict[str, Any]:
             rows = (await session.execute(
                 select(RawLeadImport).order_by(RawLeadImport.created_at.desc()).limit(min(500, limit))
             )).scalars().all()
-        except Exception as exc:  # noqa: BLE001
+        except Exception as exc:
             return {"status": "skipped_db_unreachable", "error": str(exc), "items": []}
         return {
             "count": len(rows),
@@ -737,7 +737,7 @@ async def list_accounts(
                 for s in scores:
                     if s.account_id not in score_map or s.created_at > score_map[s.account_id].created_at:
                         score_map[s.account_id] = s
-        except Exception as exc:  # noqa: BLE001
+        except Exception as exc:
             return {"status": "skipped_db_unreachable", "error": str(exc), "items": []}
 
         items = []
@@ -782,7 +782,7 @@ async def get_account(account_id: str) -> dict[str, Any]:
             )).scalars().all()
         except HTTPException:
             raise
-        except Exception as exc:  # noqa: BLE001
+        except Exception as exc:
             return {"status": "skipped_db_unreachable", "error": str(exc)}
 
         latest = scores[0] if scores else None
@@ -837,7 +837,7 @@ async def score_account(account_id: str) -> dict[str, Any]:
             )).scalars().all()
         except HTTPException:
             raise
-        except Exception as exc:  # noqa: BLE001
+        except Exception as exc:
             return {"status": "skipped_db_unreachable", "error": str(exc)}
 
         first_email = next((c.email for c in contacts if c.email), None)

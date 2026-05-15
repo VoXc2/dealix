@@ -28,7 +28,7 @@ def monthly_value_report_sections_complete(
 
 
 def build_empty_monthly_value_report() -> dict[str, str]:
-    return {k: "" for k in MONTHLY_VALUE_REPORT_SECTIONS}
+    return dict.fromkeys(MONTHLY_VALUE_REPORT_SECTIONS, "")
 
 
 def monthly_value_report_from_sprint_kpis(

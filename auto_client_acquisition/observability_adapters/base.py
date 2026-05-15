@@ -100,7 +100,9 @@ def get_adapter(adapter_type: str = "noop") -> BaseObservabilityAdapter:
             from auto_client_acquisition.observability_adapters.otel_adapter import OtelAdapter
             return OtelAdapter()
         if adapter_type == "langfuse":
-            from auto_client_acquisition.observability_adapters.langfuse_adapter import LangfuseAdapter
+            from auto_client_acquisition.observability_adapters.langfuse_adapter import (
+                LangfuseAdapter,
+            )
             return LangfuseAdapter()
     except Exception as exc:
         logger.warning("Failed to initialize %s adapter: %s — falling back to noop", adapter_type, exc)

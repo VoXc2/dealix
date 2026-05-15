@@ -15,25 +15,25 @@ from __future__ import annotations
 import logging
 import os
 import uuid
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta, timezone
 from typing import Any
 
 from fastapi import APIRouter, Body, HTTPException
 from sqlalchemy import func, select
 
-from auto_client_acquisition.email.daily_targeting import (
-    DailyTargetingResult,
-    compute_followup_schedule,
-    llm_personalize,
-    render_email_template,
-    select_top_n_diversified,
-)
 from auto_client_acquisition.email.compliance import (
     append_opt_out_line,
     check_outreach,
     get_batch_interval_seconds,
     get_batch_size,
     get_daily_limit,
+)
+from auto_client_acquisition.email.daily_targeting import (
+    DailyTargetingResult,
+    compute_followup_schedule,
+    llm_personalize,
+    render_email_template,
+    select_top_n_diversified,
 )
 from auto_client_acquisition.email.reply_classifier import (
     classify_reply,
@@ -57,7 +57,7 @@ def _new_id(prefix: str = "") -> str:
 
 
 def _utcnow() -> datetime:
-    return datetime.now(timezone.utc).replace(tzinfo=None)
+    return datetime.now(UTC).replace(tzinfo=None)
 
 
 # ── Compliance check single-row ───────────────────────────────────
@@ -80,7 +80,7 @@ async def compliance_check(body: dict[str, Any] = Body(...)) -> dict[str, Any]:
                 if r.email: sup_emails.add(r.email.lower())
                 if r.domain: sup_domains.add(r.domain.lower())
                 if r.phone: sup_phones.add(r.phone)
-        except Exception as exc:  # noqa: BLE001
+        except Exception as exc:
             log.warning("suppression_load_failed err=%s", exc)
 
     chk = check_outreach(
@@ -164,7 +164,7 @@ async def run_daily_targeting(body: dict[str, Any] = Body(default={})) -> dict[s
                 ).distinct()
             )).scalars().all() if ids else []
             recently_contacted = set(recent_logs)
-        except Exception as exc:  # noqa: BLE001
+        except Exception as exc:
             return {"status": "skipped_db_unreachable", "error": str(exc)}
 
     # 2. Filter
@@ -262,7 +262,7 @@ async def run_daily_targeting(body: dict[str, Any] = Body(default={})) -> dict[s
             queued_count += 1
         try:
             await session.commit()
-        except Exception as exc:  # noqa: BLE001
+        except Exception as exc:
             await session.rollback()
             log.warning("daily_targeting_commit_failed err=%s", exc)
 
@@ -306,7 +306,7 @@ async def run_followups(body: dict[str, Any] = Body(default={})) -> dict[str, An
                     EmailSendLog.sent_at >= now - timedelta(days=15),
                 )
             )).scalars().all()
-        except Exception as exc:  # noqa: BLE001
+        except Exception as exc:
             return {"status": "skipped_db_unreachable", "error": str(exc)}
 
         for log_row in sent_logs:
@@ -334,7 +334,7 @@ async def run_followups(body: dict[str, Any] = Body(default={})) -> dict[str, An
                     break
         try:
             await session.commit()
-        except Exception as exc:  # noqa: BLE001
+        except Exception as exc:
             await session.rollback()
             return {"status": "commit_failed", "error": str(exc)}
 
@@ -349,7 +349,7 @@ async def run_followups(body: dict[str, Any] = Body(default={})) -> dict[str, An
 def _followup_template(step: int, prev_subject: str) -> str:
     if step == 2:
         return (
-            f"متابعة سريعة لرسالتي السابقة بخصوص Pilot Dealix.\n\n"
+            "متابعة سريعة لرسالتي السابقة بخصوص Pilot Dealix.\n\n"
             "هل عندكم سؤال محدد قبل ما نبدأ؟ أو الوقت غير مناسب الأسبوع هذا؟\n\n"
             "سامي\n— لإلغاء الاستلام: ردّ بـ STOP."
         )
@@ -428,7 +428,7 @@ async def automation_status() -> dict[str, Any]:
                     select(func.count()).select_from(SuppressionRecord)
                 )).scalar() or 0
             )
-        except Exception as exc:  # noqa: BLE001
+        except Exception as exc:
             return {"status": "skipped_db_unreachable", "error": str(exc)}
 
     return {

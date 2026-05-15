@@ -1,7 +1,7 @@
 """Schemas for the channel policy gateway (Phase 8)."""
 from __future__ import annotations
 
-from datetime import datetime, timezone
+from datetime import UTC, datetime, timezone
 from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, Field
@@ -34,4 +34,4 @@ class PolicyDecision(BaseModel):
     required_conditions: list[str] = Field(default_factory=list)
     missing_conditions: list[str] = Field(default_factory=list)
     safety_summary: str = "no_live_send_no_cold_outreach_no_scraping"
-    timestamp: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    timestamp: datetime = Field(default_factory=lambda: datetime.now(UTC))

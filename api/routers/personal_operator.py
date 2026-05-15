@@ -15,8 +15,14 @@ from auto_client_acquisition.personal_operator import (
     suggest_opportunities,
 )
 from auto_client_acquisition.personal_operator.launch_report import build_launch_report
-from auto_client_acquisition.personal_operator.operator import apply_decision, launch_readiness_score
-from auto_client_acquisition.v3.project_intelligence import answer_operator_question, explain_project_intelligence_stack
+from auto_client_acquisition.personal_operator.operator import (
+    apply_decision,
+    launch_readiness_score,
+)
+from auto_client_acquisition.v3.project_intelligence import (
+    answer_operator_question,
+    explain_project_intelligence_stack,
+)
 
 router = APIRouter(prefix="/api/v1/personal-operator", tags=["personal-operator"])
 

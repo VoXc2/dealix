@@ -12,15 +12,15 @@ Public API:
     )
 """
 
-from auto_client_acquisition.copilot.intent_router import (
-    Intent,
-    classify_intent,
-    list_intents,
-)
 from auto_client_acquisition.copilot.answer_engine import (
     CopilotAnswer,
     answer,
     explain_metric,
+)
+from auto_client_acquisition.copilot.intent_router import (
+    Intent,
+    classify_intent,
+    list_intents,
 )
 from auto_client_acquisition.copilot.safe_actions import (
     SAFE_ACTIONS,
@@ -29,14 +29,14 @@ from auto_client_acquisition.copilot.safe_actions import (
 )
 
 __all__ = [
-    "Intent",
-    "classify_intent",
-    "list_intents",
-    "CopilotAnswer",
-    "answer",
-    "explain_metric",
     "SAFE_ACTIONS",
+    "CopilotAnswer",
+    "Intent",
     "SafeAction",
+    "answer",
+    "classify_intent",
+    "explain_metric",
+    "list_intents",
     "propose_actions",
 ]
 

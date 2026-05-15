@@ -13,7 +13,7 @@ Endpoints:
 from __future__ import annotations
 
 import uuid
-from datetime import datetime, timezone
+from datetime import UTC, datetime, timezone
 from typing import Any
 
 from fastapi import APIRouter, Body, Depends, HTTPException, Query
@@ -139,7 +139,7 @@ async def generate_invoice(
         log.exception("zatca_generation_failed", error=str(exc))
         raise HTTPException(status_code=500, detail=f"Invoice generation failed: {exc}") from exc
 
-    now_utc = datetime.now(timezone.utc)
+    now_utc = datetime.now(UTC)
     invoice_record = ZATCAInvoiceRecord(
         id=str(uuid.uuid4()),
         tenant_id=tenant_id,
@@ -212,7 +212,7 @@ async def submit_invoice(
         # Sandbox mode without credentials: mark as simulated_cleared
         record.zatca_status = "reported" if record.invoice_type == "simplified" else "cleared"
         record.zatca_response = {"simulated": True, "note": "No ZATCA credentials configured"}
-        record.zatca_cleared_at = datetime.now(timezone.utc)
+        record.zatca_cleared_at = datetime.now(UTC)
         await _audit(db, "zatca_invoice.submit_simulated", record.id, record.tenant_id)
         return {
             "id": record.id,
@@ -240,7 +240,7 @@ async def submit_invoice(
     record.zatca_response = response
     if response.get("ok"):
         record.zatca_status = "reported" if record.invoice_type == "simplified" else "cleared"
-        record.zatca_cleared_at = datetime.now(timezone.utc)
+        record.zatca_cleared_at = datetime.now(UTC)
     else:
         record.zatca_status = "rejected"
 

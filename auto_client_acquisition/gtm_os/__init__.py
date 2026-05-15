@@ -15,7 +15,7 @@ from auto_client_acquisition.gtm_os.message_experiment import (
 
 __all__ = [
     "ContentCalendarSlot",
-    "build_weekly_calendar",
     "MessageExperiment",
+    "build_weekly_calendar",
     "draft_experiment",
 ]

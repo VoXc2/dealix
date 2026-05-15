@@ -59,7 +59,9 @@ class OtelAdapter(BaseObservabilityAdapter):
 
             if endpoint:
                 try:
-                    from opentelemetry.exporter.otlp.proto.http.trace_exporter import OTLPSpanExporter
+                    from opentelemetry.exporter.otlp.proto.http.trace_exporter import (
+                        OTLPSpanExporter,
+                    )
                     exporter = OTLPSpanExporter(endpoint=endpoint)
                     self._provider.add_span_processor(BatchSpanProcessor(exporter))
                     logger.info("OtelAdapter: OTLP exporter configured → %s", endpoint)

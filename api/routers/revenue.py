@@ -16,7 +16,7 @@ from __future__ import annotations
 
 import logging
 import uuid
-from datetime import datetime, timezone
+from datetime import UTC, datetime, timezone
 from typing import Any
 
 from fastapi import APIRouter, Body, HTTPException
@@ -43,7 +43,7 @@ def _new_id(prefix: str = "") -> str:
 
 
 def _utcnow() -> datetime:
-    return datetime.now(timezone.utc).replace(tzinfo=None)
+    return datetime.now(UTC).replace(tzinfo=None)
 
 
 # ── Score alias on /leads namespace ───────────────────────────────
@@ -168,10 +168,10 @@ async def customers_daily_report(body: dict[str, Any] = Body(...)) -> dict[str, 
             session.add(task)
             try:
                 await session.commit()
-            except Exception as exc:  # noqa: BLE001
+            except Exception as exc:
                 await session.rollback()
                 return {"status": "skipped_db_unreachable", "error": str(exc)}
-        except Exception as exc:  # noqa: BLE001
+        except Exception as exc:
             return {"status": "skipped_db_unreachable", "error": str(exc)}
 
     # Optional: bump customer record metric counters
@@ -224,10 +224,10 @@ async def partners_outreach(body: dict[str, Any] = Body(...)) -> dict[str, Any]:
             partner.updated_at = _utcnow()
             try:
                 await session.commit()
-            except Exception as exc:  # noqa: BLE001
+            except Exception as exc:
                 await session.rollback()
                 return {"status": "commit_failed", "error": str(exc)}
-        except Exception as exc:  # noqa: BLE001
+        except Exception as exc:
             return {"status": "skipped_db_unreachable", "error": str(exc)}
 
     return {
@@ -272,10 +272,10 @@ async def partners_deal(body: dict[str, Any] = Body(...)) -> dict[str, Any]:
             ))[:5000]
             try:
                 await session.commit()
-            except Exception as exc:  # noqa: BLE001
+            except Exception as exc:
                 await session.rollback()
                 return {"status": "commit_failed", "error": str(exc)}
-        except Exception as exc:  # noqa: BLE001
+        except Exception as exc:
             return {"status": "skipped_db_unreachable", "error": str(exc)}
 
     return {

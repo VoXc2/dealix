@@ -3,8 +3,14 @@
 from __future__ import annotations
 
 from auto_client_acquisition.auditability_os.audit_event import AuditEvent, audit_event_valid
-from auto_client_acquisition.auditability_os.audit_metrics import AUDIT_METRIC_KEYS, audit_metrics_coverage_score
-from auto_client_acquisition.auditability_os.evidence_chain import EVIDENCE_CHAIN_STAGES, evidence_chain_complete
+from auto_client_acquisition.auditability_os.audit_metrics import (
+    AUDIT_METRIC_KEYS,
+    audit_metrics_coverage_score,
+)
+from auto_client_acquisition.auditability_os.evidence_chain import (
+    EVIDENCE_CHAIN_STAGES,
+    evidence_chain_complete,
+)
 from auto_client_acquisition.auditability_os.policy_check_log import PolicyCheckLogEntry
 from auto_client_acquisition.auditability_os.responsibility_attribution import (
     ResponsibilityAttribution,

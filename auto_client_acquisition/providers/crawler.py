@@ -57,7 +57,7 @@ class FirecrawlProvider:
                     },
                     json={"url": url, "formats": ["markdown"], "onlyMainContent": True},
                 )
-        except Exception as exc:  # noqa: BLE001
+        except Exception as exc:
             return ProviderResult(provider=self.name, status="http_error", error=str(exc))
         if r.status_code != 200:
             return ProviderResult(
@@ -95,7 +95,7 @@ class RequestsBs4Provider:
                 r = await client.get(url)
         except httpx.TimeoutException as exc:
             return ProviderResult(provider=self.name, status="timeout", error=str(exc))
-        except Exception as exc:  # noqa: BLE001
+        except Exception as exc:
             return ProviderResult(provider=self.name, status="http_error", error=str(exc))
         if r.status_code >= 400:
             return ProviderResult(provider=self.name, status="http_error", error=f"HTTP {r.status_code}")

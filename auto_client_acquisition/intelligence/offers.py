@@ -9,7 +9,6 @@ from __future__ import annotations
 
 from typing import Any
 
-
 OFFER_ROUTES: dict[str, dict[str, Any]] = {
     "real_estate_developer": {
         "primary_offer": "pilot_499_lead_qualification_plus_viewing_booking",

@@ -12,11 +12,10 @@ Hard rules baked into every external-facing schema:
 from __future__ import annotations
 
 import re
-from datetime import datetime, timezone
+from datetime import UTC, datetime, timezone
 from typing import Any, Literal
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator
-
 
 # ── Action mode (used everywhere external) ────────────────────
 ActionMode = Literal[
@@ -49,7 +48,7 @@ class CustomerHandle(BaseModel):
 
 
 def _now_utc() -> datetime:
-    return datetime.now(timezone.utc)
+    return datetime.now(UTC)
 
 
 # ── 2. LeadOpsRecord ──────────────────────────────────────────

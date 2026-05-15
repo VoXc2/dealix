@@ -7,7 +7,7 @@ Never auto-executes — pure suggestion.
 """
 from __future__ import annotations
 
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta, timezone
 from typing import Any
 
 
@@ -22,7 +22,7 @@ def suggest_next_action(
     offer_route = offer_route or {}
     fit = float(score.get("fit", 0))
 
-    now = datetime.now(timezone.utc)
+    now = datetime.now(UTC)
 
     if compliance_status == "blocked":
         return {

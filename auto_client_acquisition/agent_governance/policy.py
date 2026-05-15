@@ -10,7 +10,6 @@ from auto_client_acquisition.agent_governance.schemas import (
     ToolPermission,
 )
 
-
 # Forbidden by default at the platform level. NO agent may use these
 # regardless of autonomy level. Mirrors the runtime block in
 # auto_client_acquisition/v3/agents.py:SafeAgentRuntime.restricted_actions.

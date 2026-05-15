@@ -19,8 +19,8 @@ import asyncio
 import logging
 import os
 import re
-from dataclasses import dataclass, field, asdict
-from datetime import datetime, timezone
+from dataclasses import asdict, dataclass, field
+from datetime import UTC, datetime, timezone
 from typing import Any
 
 import httpx
@@ -179,7 +179,7 @@ async def _fetch_place_details(
     }
     try:
         r = await client.get(PLACE_DETAILS_URL, params=params, timeout=timeout)
-    except Exception as exc:  # noqa: BLE001
+    except Exception as exc:
         log.warning("place_details_error place_id=%s err=%s", place_id, exc)
         return None
     if r.status_code != 200:
@@ -201,7 +201,7 @@ async def discover_local(
     timeout: float = 12.0,
 ) -> LocalDiscoveryResponse:
     api_key = os.getenv("GOOGLE_MAPS_API_KEY", "").strip()
-    fetched_at = datetime.now(timezone.utc).isoformat()
+    fetched_at = datetime.now(UTC).isoformat()
 
     if not api_key:
         return LocalDiscoveryResponse(
@@ -295,7 +295,7 @@ async def discover_local(
             industry=industry, city=city, query_used=query, total=0,
             fetched_at=fetched_at, status="timeout", error=str(exc),
         )
-    except Exception as exc:  # noqa: BLE001
+    except Exception as exc:
         log.exception("places_text_search_error q=%r", query)
         return LocalDiscoveryResponse(
             industry=industry, city=city, query_used=query, total=0,

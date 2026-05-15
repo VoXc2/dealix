@@ -18,14 +18,13 @@ Endpoints:
 """
 from __future__ import annotations
 
-from datetime import datetime, timezone
+from datetime import UTC, datetime, timezone
 from typing import Any
 
 from fastapi import APIRouter
 from fastapi.responses import PlainTextResponse
 
 from auto_client_acquisition.service_catalog.registry import OFFERINGS
-
 
 router = APIRouter(prefix="/api/v1/commercial-map", tags=["commercial-map"])
 
@@ -188,7 +187,7 @@ def _build_payload() -> dict[str, Any]:
     return {
         "version": "1.0",
         "wave": "14J",
-        "generated_at": datetime.now(timezone.utc).isoformat(),
+        "generated_at": datetime.now(UTC).isoformat(),
         "source_of_truth": "auto_client_acquisition/service_catalog/registry.py",
         "registry_count": len(OFFERINGS),
         "offers": offers,

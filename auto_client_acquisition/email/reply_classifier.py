@@ -30,7 +30,7 @@ from __future__ import annotations
 
 import logging
 import re
-from dataclasses import dataclass, asdict
+from dataclasses import asdict, dataclass
 from typing import Any
 
 log = logging.getLogger(__name__)
@@ -252,8 +252,8 @@ async def classify_with_llm(text: str) -> ReplyClassification | None:
     if not (os.getenv("GROQ_API_KEY") or os.getenv("ANTHROPIC_API_KEY") or os.getenv("OPENAI_API_KEY")):
         return None
     try:
-        from core.llm.router import get_router
         from core.llm.base import Message
+        from core.llm.router import get_router
     except Exception:
         return None
 
@@ -270,7 +270,7 @@ async def classify_with_llm(text: str) -> ReplyClassification | None:
         router = get_router()
         msg = Message(role="user", content=prompt)
         resp = await router.complete([msg], max_tokens=400, temperature=0.2)
-    except Exception as exc:  # noqa: BLE001
+    except Exception as exc:
         log.warning("llm_classify_failed err=%s", exc)
         return None
 

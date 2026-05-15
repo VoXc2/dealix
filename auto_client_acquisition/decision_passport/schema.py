@@ -20,7 +20,7 @@ v1.0 callers (builder.py, tests) keep working without code changes.
 
 from __future__ import annotations
 
-from datetime import datetime, timezone
+from datetime import UTC, datetime, timezone
 from typing import Any, Literal
 
 from pydantic import BaseModel, Field
@@ -153,10 +153,10 @@ def validate_passport(
 
     # Rule 3b: deadline must not be in the past (None is allowed = "today EOD")
     if p.deadline is not None:
-        ref = now if now is not None else datetime.now(timezone.utc)
+        ref = now if now is not None else datetime.now(UTC)
         # Normalize naive deadlines to UTC (assumes UTC if no tz)
         if p.deadline.tzinfo is None:
-            deadline_aware = p.deadline.replace(tzinfo=timezone.utc)
+            deadline_aware = p.deadline.replace(tzinfo=UTC)
         else:
             deadline_aware = p.deadline
         if deadline_aware < ref:

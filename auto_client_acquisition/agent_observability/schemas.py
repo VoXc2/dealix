@@ -1,7 +1,7 @@
 """Schemas for the agent_observability shim (Phase 11)."""
 from __future__ import annotations
 
-from datetime import datetime, timezone
+from datetime import UTC, datetime, timezone
 from typing import Any, Literal
 
 from pydantic import BaseModel, ConfigDict, Field
@@ -33,4 +33,4 @@ class AgentTrace(BaseModel):
     error_type: str | None = None
     redacted_payload: dict[str, Any] = Field(default_factory=dict)
     safety_summary: str = "no_pii_no_secrets_no_full_transcripts"
-    timestamp: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    timestamp: datetime = Field(default_factory=lambda: datetime.now(UTC))

@@ -3,7 +3,6 @@ from __future__ import annotations
 
 from auto_client_acquisition.workflow_os_v10.schemas import WorkflowDefinition
 
-
 PROOF_PACK_ASSEMBLY = WorkflowDefinition(
     workflow_id="wf_proof_pack_assembly",
     name="proof_pack_assembly",

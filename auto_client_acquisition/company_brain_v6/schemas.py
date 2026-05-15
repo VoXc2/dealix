@@ -6,7 +6,6 @@ from typing import Any
 
 from pydantic import BaseModel, ConfigDict, Field
 
-
 FORBIDDEN_CHANNELS: tuple[str, ...] = (
     "cold_whatsapp",
     "linkedin_automation",

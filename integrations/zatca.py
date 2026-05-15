@@ -27,7 +27,7 @@ import hashlib
 import struct
 import uuid
 from dataclasses import dataclass, field
-from datetime import datetime, timezone
+from datetime import UTC, datetime, timezone
 from decimal import ROUND_HALF_UP, Decimal
 from typing import Any
 from xml.etree.ElementTree import (
@@ -134,7 +134,7 @@ class ZATCAInvoicePayload:
 
     def __post_init__(self) -> None:
         if self.issue_datetime is None:
-            self.issue_datetime = datetime.now(timezone.utc)
+            self.issue_datetime = datetime.now(UTC)
 
     @property
     def subtotal(self) -> Decimal:
@@ -519,7 +519,7 @@ class InvoiceGenerator:
         Returns:
             (xml_string, xml_b64, qr_code_b64)
         """
-        ts = payload.issue_datetime or datetime.now(timezone.utc)
+        ts = payload.issue_datetime or datetime.now(UTC)
         timestamp_iso = ts.strftime("%Y-%m-%dT%H:%M:%SZ")
 
         qr_code_b64 = TLVEncoder.encode(
@@ -580,7 +580,7 @@ class InvoiceGenerator:
 def _genesis_hash() -> str:
     """Return the genesis (first) invoice hash per ZATCA spec."""
     return base64.b64encode(
-        hashlib.sha256("00000000000000000000000000000000".encode()).digest()
+        hashlib.sha256(b"00000000000000000000000000000000").digest()
     ).decode("ascii")
 
 

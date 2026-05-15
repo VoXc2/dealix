@@ -35,13 +35,13 @@ from auto_client_acquisition.responsible_ai_os.use_case_risk_classifier import (
 )
 
 __all__ = (
-    "AIInventoryRow",
     "COMPLIANCE_NEED_TO_PRODUCT",
     "LITERACY_MODULE_IDS",
     "REQUIRED_INVENTORY_FIELDS",
+    "TRUST_PACK_SECTIONS",
+    "AIInventoryRow",
     "ResponsibleAIDimensions",
     "RiskLevel",
-    "TRUST_PACK_SECTIONS",
     "UseCaseCard",
     "ai_inventory_row_complete",
     "all_governance_needs",

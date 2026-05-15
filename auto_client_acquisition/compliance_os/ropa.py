@@ -11,7 +11,7 @@ Output is exportable as JSON + CSV for SDAIA inspection.
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from datetime import datetime, timezone
+from datetime import UTC, datetime, timezone
 from typing import Any
 
 
@@ -125,7 +125,7 @@ class RoPAExporter:
     dpo_name: str | None = None
     dpo_email: str | None = None
     generated_at: datetime = field(
-        default_factory=lambda: datetime.now(timezone.utc).replace(tzinfo=None)
+        default_factory=lambda: datetime.now(UTC).replace(tzinfo=None)
     )
 
     def to_json(self) -> dict[str, Any]:

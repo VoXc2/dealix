@@ -30,7 +30,7 @@ def _check_module(name: str) -> dict[str, Any]:
     try:
         __import__(f"auto_client_acquisition.{name}")
         return {"name": name, "status": "ok"}
-    except BaseException as exc:  # noqa: BLE001 — never crash status
+    except BaseException as exc:
         return {
             "name": name,
             "status": "degraded",

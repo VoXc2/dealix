@@ -22,7 +22,7 @@ fix_ar/en, owner_role, related_endpoint?, related_doc?
 """
 from __future__ import annotations
 
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta, timezone
 from typing import Any, Literal
 
 from auto_client_acquisition.integration_upgrade import safe_call
@@ -131,7 +131,7 @@ def _stuck_service_sessions() -> list[dict[str, Any]]:
     try:
         from auto_client_acquisition.service_sessions import list_sessions
         sessions = list_sessions(limit=100)
-        threshold = datetime.now(timezone.utc) - timedelta(days=7)
+        threshold = datetime.now(UTC) - timedelta(days=7)
         stuck = [s for s in sessions if s.status == "waiting_for_approval" and s.started_at < threshold]
         if stuck:
             return [_wk(
@@ -178,7 +178,7 @@ def _approvals_pending_too_long() -> list[dict[str, Any]]:
     try:
         from auto_client_acquisition.approval_center import approval_store
         pending = approval_store.get_default_approval_store().list_pending()
-        threshold = datetime.now(timezone.utc) - timedelta(hours=24)
+        threshold = datetime.now(UTC) - timedelta(hours=24)
         old = [a for a in pending if a.created_at < threshold]
         if old:
             return [_wk(

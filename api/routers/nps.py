@@ -32,7 +32,7 @@ from __future__ import annotations
 
 import hashlib
 import logging
-from datetime import datetime, timezone
+from datetime import UTC, datetime, timezone
 from typing import Any
 
 from fastapi import APIRouter, Depends, HTTPException
@@ -115,7 +115,7 @@ async def submit_score(body: _NPSSubmission) -> dict[str, Any]:
         "score": body.score,
         "milestone": body.milestone,
         "next_action": next_action,
-        "submitted_at": datetime.now(timezone.utc).isoformat(),
+        "submitted_at": datetime.now(UTC).isoformat(),
         "note": (
             "Persistence + automated detractor escalation deferred to "
             "follow-up commit. Manual review of NPS submissions for "
@@ -130,7 +130,7 @@ async def aggregate_nps() -> dict[str, Any]:
     # Stub: real aggregation needs nps_submissions table + persistence
     # logic. Schema locked in /score so dashboards can plan against shape.
     return {
-        "period_start": datetime.now(timezone.utc).replace(day=1).isoformat(),
+        "period_start": datetime.now(UTC).replace(day=1).isoformat(),
         "submissions_count": 0,
         "nps_score": None,
         "promoters_count": 0,
