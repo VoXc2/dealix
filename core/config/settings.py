@@ -168,6 +168,12 @@ class Settings(BaseSettings):
     n8n_webhook_url: str | None = None
     n8n_encryption_key: SecretStr | None = None
 
+    # ── Enterprise connectors (Drive / Sheets / Slack / Teams) ──
+    # Google service-account / OAuth access token (Drive + Sheets share it).
+    google_workspace_token: SecretStr | None = None
+    slack_bot_token: SecretStr | None = None
+    teams_webhook_url: str | None = None
+
     # ── Observability ───────────────────────────────────────────
     langfuse_public_key: SecretStr | None = None
     langfuse_secret_key: SecretStr | None = None
