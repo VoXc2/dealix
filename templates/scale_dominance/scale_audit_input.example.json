@@ -1,0 +1,15 @@
+{
+  "workflows_running": 12,
+  "workflow_chaos_incidents_last_30d": 0,
+  "agents_active": 24,
+  "governed_agent_ratio": 1.0,
+  "isolated_clients": 4,
+  "memory_contamination_incidents_last_30d": 0,
+  "rollback_time_minutes_p95": 3.1,
+  "proactive_failure_detection_rate": 0.97,
+  "dangerous_agent_stop_time_seconds_p95": 18.0,
+  "explainability_coverage_ratio": 0.995,
+  "executive_insights_emitted_last_30d": 4,
+  "workflow_optimization_improvement_ratio": 0.09,
+  "business_impact_accuracy_ratio": 0.93
+}
