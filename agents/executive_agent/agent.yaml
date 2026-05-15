@@ -1,0 +1,23 @@
+agent_id: executive_agent_v1
+name: Executive Agent
+namespace: executive_agent
+version: 1.0.0
+status: candidate
+risk_tier: medium
+mission: Generate weekly executive briefs with verified KPI evidence and risk commentary.
+inputs:
+  - workflow metrics, governance outcomes, cost and pipeline signals
+tool_allowlist:
+  - metrics.aggregate
+  - knowledge.retrieve
+  - workflow.generate_brief
+permissions_profile: default_executive_agent
+approval_required_for:
+  - external_side_effect
+  - high_risk_action
+owners:
+  - revenue_os_owner
+control_ids:
+  gate: G-AGT-EXC-001
+  evidence: E-AGT-EXC-001
+  test: T-AGT-EXC-001

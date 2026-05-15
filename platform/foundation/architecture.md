@@ -43,3 +43,12 @@ Foundation provides secure multi-tenant runtime primitives:
 - Backup/restore logs.
 - Rollback drill report.
 - Audit log samples with actor and reason.
+
+## Control IDs (FND)
+
+| Type | ID | Purpose |
+|---|---|---|
+| Gate | G-FND-001 | Minimum release gate for foundation architecture |
+| Evidence | E-FND-001 | Architecture evidence record for release review |
+| Test | T-FND-001 | Architecture conformance test |
+

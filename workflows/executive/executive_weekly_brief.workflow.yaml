@@ -1,0 +1,60 @@
+workflow_id: executive_weekly_brief_v1
+name: Executive Weekly Brief (Governed)
+version: 1.0.0
+domain: executive
+owner: executive_office
+trigger:
+  type: schedule
+  cron: "0 8 * * MON"
+conditions:
+  - condition_id: metrics_snapshot_available
+    expression: "inputs.kpi_snapshot_id != null"
+  - condition_id: tenant_resolved
+    expression: "context.tenant_id != null"
+actions:
+  - action_id: resolve_identity_context
+    type: identity.resolve_context
+  - action_id: aggregate_kpis
+    type: metrics.aggregate
+  - action_id: retrieve_supporting_evidence
+    type: knowledge.retrieve
+    input:
+      require_citations: true
+  - action_id: governance_risk_check
+    type: governance.risk_score
+  - action_id: generate_executive_brief
+    type: agent.run
+    agent_id: executive_agent_v1
+    input:
+      task: generate_weekly_brief
+  - action_id: publish_internal_brief
+    type: workflow.publish_internal_report
+approvals:
+  - rule_id: executive_brief_publish_approval
+    when: "risk.level in ['high', 'critical']"
+    approver_roles:
+      - owner
+retries:
+  max_retries: 1
+  strategy: fixed_delays
+  delays_seconds:
+    - 300
+compensation:
+  - on_action_failure: publish_internal_brief
+    action_id: mark_brief_as_pending_review
+    type: workflow.compensate
+metrics:
+  - brief_generation_time_seconds
+  - evidence_coverage_rate
+  - executive_readout_completeness_score
+audit_logs:
+  enabled: true
+  include_input_payload_hash: true
+observability:
+  trace_required: true
+  log_correlation_required: true
+eval_hooks:
+  - eval.business_impact.executive_weekly_brief
+rollback:
+  workflow_version_pin: executive_weekly_brief_v1
+  rollback_to: executive_weekly_brief_v0

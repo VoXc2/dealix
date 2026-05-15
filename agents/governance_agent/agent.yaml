@@ -1,0 +1,23 @@
+agent_id: governance_agent_v1
+name: Governance Agent
+namespace: governance_agent
+version: 1.0.0
+status: candidate
+risk_tier: critical
+mission: Evaluate action risk, enforce policy constraints, and route approvals.
+inputs:
+  - action proposal, risk factors, policy version
+tool_allowlist:
+  - governance.risk_score
+  - governance.policy_check
+  - workflow.request_approval
+permissions_profile: default_governance_agent
+approval_required_for:
+  - external_side_effect
+  - high_risk_action
+owners:
+  - revenue_os_owner
+control_ids:
+  gate: G-AGT-GOV-001
+  evidence: E-AGT-GOV-001
+  test: T-AGT-GOV-001

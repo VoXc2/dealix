@@ -10,3 +10,12 @@ This namespace mirrors `platform/identity/rbac.md` and exists to keep architectu
 - auth audit logging
 
 Primary reference: `platform/identity/rbac.md`.
+
+## Control IDs (RBA)
+
+| Type | ID | Purpose |
+|---|---|---|
+| Gate | G-RBA-001 | Minimum release gate for rbac architecture |
+| Evidence | E-RBA-001 | Architecture evidence record for release review |
+| Test | T-RBA-001 | Architecture conformance test |
+

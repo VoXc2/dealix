@@ -43,3 +43,12 @@ If a workflow fails mid-flight, customer-facing state must remain consistent thr
 - compensation action,
 - explicit terminal state with reason,
 - operator alert.
+
+## Control IDs (WFE)
+
+| Type | ID | Purpose |
+|---|---|---|
+| Gate | G-WFE-001 | Minimum release gate for workflow engine architecture |
+| Evidence | E-WFE-001 | Architecture evidence record for release review |
+| Test | T-WFE-001 | Architecture conformance test |
+

@@ -1,0 +1,63 @@
+workflow_id: ops_incident_response_v1
+name: Ops Incident Response (Governed)
+version: 1.0.0
+domain: operations
+owner: platform_ops
+trigger:
+  type: incident_detected
+  sources:
+    - observability_alert
+    - manual_incident_report
+conditions:
+  - condition_id: incident_has_severity
+    expression: "incident.severity != null"
+  - condition_id: tenant_resolved
+    expression: "context.tenant_id != null"
+actions:
+  - action_id: resolve_identity_context
+    type: identity.resolve_context
+  - action_id: triage_incident
+    type: agent.run
+    agent_id: ops_agent_v1
+    input:
+      task: triage_and_plan
+  - action_id: gather_observability_context
+    type: observability.query
+  - action_id: governance_risk_check
+    type: governance.risk_score
+  - action_id: create_remediation_tasks
+    type: integration.task.create
+  - action_id: publish_internal_status
+    type: workflow.notify_internal
+approvals:
+  - rule_id: critical_incident_change_approval
+    when: "risk.level in ['high', 'critical']"
+    approver_roles:
+      - owner
+      - manager
+retries:
+  max_retries: 3
+  strategy: exponential_backoff
+  delays_seconds:
+    - 30
+    - 90
+    - 180
+compensation:
+  - on_action_failure: create_remediation_tasks
+    action_id: rollback_incident_task_batch
+    type: workflow.compensate
+metrics:
+  - incident_triage_time_seconds
+  - remediation_task_creation_success
+  - approval_wait_seconds
+audit_logs:
+  enabled: true
+  include_input_payload_hash: true
+observability:
+  trace_required: true
+  log_correlation_required: true
+eval_hooks:
+  - eval.agent_behavior.ops_incident_response
+rollback:
+  workflow_version_pin: ops_incident_response_v1
+  rollback_to: ops_incident_response_v0

@@ -1,0 +1,23 @@
+agent_id: ops_agent_v1
+name: Ops Agent
+namespace: ops_agent
+version: 1.0.0
+status: candidate
+risk_tier: high
+mission: Coordinate operational incidents, preserve auditability, and drive remediation tasks.
+inputs:
+  - incident event, service health data, runbook hints
+tool_allowlist:
+  - observability.query
+  - workflow.dispatch_incident
+  - integration.task.create
+permissions_profile: default_ops_agent
+approval_required_for:
+  - external_side_effect
+  - high_risk_action
+owners:
+  - revenue_os_owner
+control_ids:
+  gate: G-AGT-OPS-001
+  evidence: E-AGT-OPS-001
+  test: T-AGT-OPS-001

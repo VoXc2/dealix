@@ -1,0 +1,23 @@
+agent_id: support_agent_v1
+name: Support Agent
+namespace: support_agent
+version: 1.0.0
+status: candidate
+risk_tier: medium
+mission: Triage support requests, propose resolution plans, and escalate high-risk cases.
+inputs:
+  - ticket text, customer tier, SLA policy
+tool_allowlist:
+  - knowledge.retrieve
+  - workflow.route_case
+  - integration.ticketing.update
+permissions_profile: default_support_agent
+approval_required_for:
+  - external_side_effect
+  - high_risk_action
+owners:
+  - revenue_os_owner
+control_ids:
+  gate: G-AGT-SUP-001
+  evidence: E-AGT-SUP-001
+  test: T-AGT-SUP-001

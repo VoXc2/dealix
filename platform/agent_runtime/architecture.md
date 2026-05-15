@@ -49,3 +49,12 @@ Transition rules are policy-driven and auditable.
 - `rollback.md`
 
 These files are required before promoting a new production-grade agent.
+
+## Control IDs (ART)
+
+| Type | ID | Purpose |
+|---|---|---|
+| Gate | G-ART-001 | Minimum release gate for agent runtime architecture |
+| Evidence | E-ART-001 | Architecture evidence record for release review |
+| Test | T-ART-001 | Architecture conformance test |
+
