@@ -35,9 +35,9 @@ from auto_client_acquisition.data_os.validation_rules import validate_account_ro
 
 __all__ = [
     "DedupeHint",
+    "SourcePassport",
     "account_row_completeness",
     "column_name_suggests_pii",
-    "SourcePassport",
     "duplicate_ratio_by_field",
     "governance_decision_hints_for_passport_gate",
     "import_preview_csv",
