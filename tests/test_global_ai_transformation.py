@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import sys
 from pathlib import Path
 from subprocess import run
 
@@ -27,7 +28,7 @@ from auto_client_acquisition.revenue_os.data_flywheel import FlywheelInputs, com
 def test_global_transformation_verifier_passes() -> None:
     root = Path(__file__).resolve().parents[1]
     proc = run(
-        ["python3", "scripts/verify_global_ai_transformation.py"],
+        [sys.executable, "scripts/verify_global_ai_transformation.py"],
         cwd=root,
         capture_output=True,
         text=True,
@@ -38,15 +39,7 @@ def test_global_transformation_verifier_passes() -> None:
 
 
 def test_delivery_control_tower_risk_logic() -> None:
-    ok, missing = stage_gate_passes({gate: True for gate in (
-        "intake_ready",
-        "scope_ready",
-        "data_ready",
-        "governance_ready",
-        "qa_ready",
-        "proof_ready",
-        "handoff_ready",
-    )})
+    ok, missing = stage_gate_passes(dict.fromkeys(("intake_ready", "scope_ready", "data_ready", "governance_ready", "qa_ready", "proof_ready", "handoff_ready"), True))
     assert ok and missing == ()
 
     risk = DeliveryRisk(

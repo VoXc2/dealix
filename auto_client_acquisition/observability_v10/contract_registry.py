@@ -5,7 +5,6 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any
 
-
 REQUIRED_FIELDS: tuple[str, ...] = (
     "tenant_id",
     "correlation_id",

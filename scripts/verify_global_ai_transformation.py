@@ -9,7 +9,6 @@ import re
 import sys
 from pathlib import Path
 
-
 TODO_IDS = (
     "doctrine-lock",
     "gap-closure",
@@ -66,7 +65,7 @@ MODULE_IMPORTS = (
 
 
 def _extract_todo_ids(text: str) -> tuple[str, ...]:
-    ids = re.findall(r"^\\s*-\\s+id:\\s*([a-z0-9\\-]+)\\s*$", text, flags=re.MULTILINE)
+    ids = re.findall(r"^\s*-\s+id:\s*([a-z0-9\-]+)\s*$", text, flags=re.MULTILINE)
     return tuple(ids)
 
 
@@ -93,7 +92,7 @@ def _check_module_imports() -> list[str]:
     for module_name in MODULE_IMPORTS:
         try:
             importlib.import_module(module_name)
-        except Exception as exc:  # noqa: BLE001
+        except Exception as exc:
             failures.append(f"import_failed:{module_name}:{type(exc).__name__}")
     return failures
 

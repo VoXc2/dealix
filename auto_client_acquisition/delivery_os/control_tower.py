@@ -4,7 +4,6 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
-
 REQUIRED_STAGE_GATES: tuple[str, ...] = (
     "intake_ready",
     "scope_ready",
@@ -51,8 +50,8 @@ def delivery_risk_band(score: int) -> str:
 
 
 __all__ = [
-    "DeliveryRisk",
     "REQUIRED_STAGE_GATES",
+    "DeliveryRisk",
     "compute_delivery_risk_score",
     "delivery_risk_band",
     "stage_gate_passes",
