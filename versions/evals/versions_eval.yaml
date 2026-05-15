@@ -1,0 +1,10 @@
+# Versions — eval spec
+# Phase 7 evaluation gate.
+system: versions
+path: versions
+description: Every artifact is versioned and rollbackable.
+gate: nothing reaches production without this eval passing.
+metrics:
+  - versioned_artifact_pct
+  - rollback_success_rate
+cases: []  # add concrete cases; wire to auto_client_acquisition runners.

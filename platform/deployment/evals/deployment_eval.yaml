@@ -1,0 +1,11 @@
+# Deployment / Infrastructure-as-Code — eval spec
+# Phase 1 evaluation gate.
+system: deployment
+path: platform/deployment
+description: Reproducible, rollbackable deployments via IaC and CI.
+gate: nothing reaches production without this eval passing.
+metrics:
+  - deploy_lead_time_h
+  - rollback_time_min
+  - failed_deploy_rate
+cases: []  # add concrete cases; wire to auto_client_acquisition runners.

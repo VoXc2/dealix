@@ -1,0 +1,11 @@
+# Risk Engine — eval spec
+# Phase 5 evaluation gate.
+system: risk_engine
+path: platform/risk_engine
+description: Score every action's risk before it runs.
+gate: nothing reaches production without this eval passing.
+metrics:
+  - high_risk_action_pct
+  - risk_model_calibration_error
+  - unscored_action_count
+cases: []  # add concrete cases; wire to auto_client_acquisition runners.

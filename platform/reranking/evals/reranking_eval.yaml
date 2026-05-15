@@ -1,0 +1,11 @@
+# Reranking — eval spec
+# Phase 4 evaluation gate.
+system: reranking
+path: platform/reranking
+description: Confidence-scored reranking on top of first-stage retrieval.
+gate: nothing reaches production without this eval passing.
+metrics:
+  - rerank_ndcg_at_10
+  - low_confidence_answer_pct
+  - rerank_latency_ms
+cases: []  # add concrete cases; wire to auto_client_acquisition runners.

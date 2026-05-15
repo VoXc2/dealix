@@ -1,0 +1,11 @@
+# Governance — eval spec
+# Phase 5 evaluation gate.
+system: governance
+path: governance
+description: Every action passes risk scoring -> policy -> approval -> execution -> audit.
+gate: nothing reaches production without this eval passing.
+metrics:
+  - ungoverned_action_count
+  - policy_coverage_pct
+  - audit_completeness_pct
+cases: []  # add concrete cases; wire to auto_client_acquisition runners.

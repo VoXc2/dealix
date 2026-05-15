@@ -1,0 +1,11 @@
+# Tool Registry — eval spec
+# Phase 2 evaluation gate.
+system: tool_registry
+path: platform/tool_registry
+description: Every tool is declared, permissioned, and guardrailed.
+gate: nothing reaches production without this eval passing.
+metrics:
+  - undeclared_tool_call_count
+  - guardrail_block_rate
+  - tool_permission_coverage_pct
+cases: []  # add concrete cases; wire to auto_client_acquisition runners.

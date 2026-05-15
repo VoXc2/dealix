@@ -1,0 +1,11 @@
+# Execution Engine — eval spec
+# Phase 3 evaluation gate.
+system: execution_engine
+path: platform/execution_engine
+description: Deterministic execution of approved actions with full audit.
+gate: nothing reaches production without this eval passing.
+metrics:
+  - execution_success_rate
+  - unaudited_execution_count
+  - p95_execution_latency_ms
+cases: []  # add concrete cases; wire to auto_client_acquisition runners.

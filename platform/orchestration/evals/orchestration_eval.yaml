@@ -1,0 +1,11 @@
+# Orchestration — eval spec
+# Phase 3 evaluation gate.
+system: orchestration
+path: platform/orchestration
+description: Event-driven coordination of agents and workflows.
+gate: nothing reaches production without this eval passing.
+metrics:
+  - event_lag_ms
+  - orchestration_error_rate
+  - fan_out_depth
+cases: []  # add concrete cases; wire to auto_client_acquisition runners.

@@ -1,0 +1,11 @@
+# Escalation — eval spec
+# Phase 2 evaluation gate.
+system: escalation
+path: platform/escalation
+description: Every high-risk action escalates to a human above the loop.
+gate: nothing reaches production without this eval passing.
+metrics:
+  - escalation_response_time_min
+  - auto_approved_high_risk_count
+  - escalation_sla_pct
+cases: []  # add concrete cases; wire to auto_client_acquisition runners.

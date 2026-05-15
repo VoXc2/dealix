@@ -1,0 +1,11 @@
+# Observability — eval spec
+# Phase 1 evaluation gate.
+system: observability
+path: platform/observability
+description: Traces, metrics, logs, and alerts from the first request.
+gate: nothing reaches production without this eval passing.
+metrics:
+  - trace_coverage_pct
+  - alert_precision
+  - mean_time_to_detect_min
+cases: []  # add concrete cases; wire to auto_client_acquisition runners.

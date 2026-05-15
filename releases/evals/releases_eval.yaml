@@ -1,0 +1,11 @@
+# Releases — eval spec
+# Phase 7 evaluation gate.
+system: releases
+path: releases
+description: Staged rollouts with evaluation and observability gates.
+gate: nothing reaches production without this eval passing.
+metrics:
+  - release_gate_pass_rate
+  - staged_rollout_pct
+  - post_release_incident_count
+cases: []  # add concrete cases; wire to auto_client_acquisition runners.

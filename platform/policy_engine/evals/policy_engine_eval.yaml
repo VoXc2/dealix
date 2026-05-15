@@ -1,0 +1,11 @@
+# Policy Engine — eval spec
+# Phase 5 evaluation gate.
+system: policy_engine
+path: platform/policy_engine
+description: Declarative policies validated at runtime on every action.
+gate: nothing reaches production without this eval passing.
+metrics:
+  - policy_eval_count
+  - policy_violation_rate
+  - policy_eval_latency_ms
+cases: []  # add concrete cases; wire to auto_client_acquisition runners.

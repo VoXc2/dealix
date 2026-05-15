@@ -1,0 +1,10 @@
+# Changelogs — eval spec
+# Phase 7 evaluation gate.
+system: changelogs
+path: changelogs
+description: Every change is recorded and attributable.
+gate: nothing reaches production without this eval passing.
+metrics:
+  - changelog_coverage_pct
+  - undocumented_change_count
+cases: []  # add concrete cases; wire to auto_client_acquisition runners.

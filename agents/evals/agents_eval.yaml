@@ -1,0 +1,11 @@
+# Agent Catalog — eval spec
+# Phase 2 evaluation gate.
+system: agents
+path: agents
+description: Every agent has identity, role, permissions, memory scope, risk level, KPIs.
+gate: nothing reaches production without this eval passing.
+metrics:
+  - governed_agent_pct
+  - agent_eval_pass_rate
+  - ungoverned_action_count
+cases: []  # add concrete cases; wire to auto_client_acquisition runners.

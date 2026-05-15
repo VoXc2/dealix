@@ -1,0 +1,11 @@
+# Multi-Tenant Architecture — eval spec
+# Phase 1 evaluation gate.
+system: multi_tenant
+path: platform/multi_tenant
+description: Every record bound to tenant_id; 100% data isolation.
+gate: nothing reaches production without this eval passing.
+metrics:
+  - cross_tenant_leak_count
+  - tenant_id_coverage_pct
+  - isolation_test_pass_rate
+cases: []  # add concrete cases; wire to auto_client_acquisition runners.

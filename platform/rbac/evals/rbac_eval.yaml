@@ -1,0 +1,11 @@
+# RBAC — eval spec
+# Phase 1 evaluation gate.
+system: rbac
+path: platform/rbac
+description: No unrestricted access; no shared permissions.
+gate: nothing reaches production without this eval passing.
+metrics:
+  - unrestricted_role_count
+  - deny_decision_rate
+  - permission_review_age_days
+cases: []  # add concrete cases; wire to auto_client_acquisition runners.

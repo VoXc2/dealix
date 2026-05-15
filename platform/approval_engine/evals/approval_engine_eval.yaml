@@ -1,0 +1,11 @@
+# Approval Engine — eval spec
+# Phase 5 evaluation gate.
+system: approval_engine
+path: platform/approval_engine
+description: Risk-tiered approval routing with SLAs and an approval matrix.
+gate: nothing reaches production without this eval passing.
+metrics:
+  - approval_sla_pct
+  - pending_approval_count
+  - approval_cycle_time_h
+cases: []  # add concrete cases; wire to auto_client_acquisition runners.

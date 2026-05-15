@@ -1,0 +1,11 @@
+# Workflow Catalog — eval spec
+# Phase 3 evaluation gate.
+system: workflows
+path: workflows
+description: trigger -> conditions -> actions -> approvals -> retries -> compensation -> analytics.
+gate: nothing reaches production without this eval passing.
+metrics:
+  - workflow_completion_rate
+  - retry_success_rate
+  - unrecovered_failure_count
+cases: []  # add concrete cases; wire to auto_client_acquisition runners.

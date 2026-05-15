@@ -1,0 +1,11 @@
+# Continuous Improvement — eval spec
+# Phase 7 evaluation gate.
+system: continuous_improvement
+path: continuous_improvement
+description: Feedback loops and regression detection feeding safe change.
+gate: nothing reaches production without this eval passing.
+metrics:
+  - regression_detection_rate
+  - improvement_cycle_time_d
+  - feedback_actioned_pct
+cases: []  # add concrete cases; wire to auto_client_acquisition runners.

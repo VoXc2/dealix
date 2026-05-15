@@ -1,0 +1,11 @@
+# Agent Memory — eval spec
+# Phase 2 evaluation gate.
+system: agent_memory
+path: platform/agent_memory
+description: Per-agent memory scope with isolation between agents and tenants.
+gate: nothing reaches production without this eval passing.
+metrics:
+  - memory_scope_violation_count
+  - memory_recall_precision
+  - stale_memory_pct
+cases: []  # add concrete cases; wire to auto_client_acquisition runners.

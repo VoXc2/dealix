@@ -1,0 +1,11 @@
+# Platform Foundation — eval spec
+# Phase 1 evaluation gate.
+system: foundation
+path: platform/foundation
+description: Single bootstrap and capability registry for the whole platform.
+gate: nothing reaches production without this eval passing.
+metrics:
+  - tenant_provision_time_s
+  - capability_registry_coverage_pct
+  - bootstrap_success_rate
+cases: []  # add concrete cases; wire to auto_client_acquisition runners.

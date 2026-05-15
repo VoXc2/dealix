@@ -1,0 +1,11 @@
+# Security — eval spec
+# Phase 1 evaluation gate.
+system: security
+path: platform/security
+description: Secrets, encryption, and runtime hardening as a baseline, not an add-on.
+gate: nothing reaches production without this eval passing.
+metrics:
+  - open_secret_findings
+  - mean_time_to_patch_h
+  - encrypted_at_rest_pct
+cases: []  # add concrete cases; wire to auto_client_acquisition runners.

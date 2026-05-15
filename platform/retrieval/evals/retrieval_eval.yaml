@@ -1,0 +1,11 @@
+# Retrieval — eval spec
+# Phase 4 evaluation gate.
+system: retrieval
+path: platform/retrieval
+description: Hybrid, permission-aware retrieval with citations and lineage.
+gate: nothing reaches production without this eval passing.
+metrics:
+  - retrieval_recall_at_10
+  - citation_coverage_pct
+  - permission_filtered_pct
+cases: []  # add concrete cases; wire to auto_client_acquisition runners.

@@ -1,0 +1,11 @@
+# Organizational Memory — eval spec
+# Phase 4 evaluation gate.
+system: memory
+path: memory
+description: Durable organizational memory with lineage and permission-aware recall.
+gate: nothing reaches production without this eval passing.
+metrics:
+  - memory_lineage_coverage_pct
+  - answer_with_source_pct
+  - memory_growth_rate
+cases: []  # add concrete cases; wire to auto_client_acquisition runners.

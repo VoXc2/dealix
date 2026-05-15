@@ -1,0 +1,11 @@
+# Workflow Engine — eval spec
+# Phase 3 evaluation gate.
+system: workflow_engine
+path: platform/workflow_engine
+description: Durable execution with retries, fallback, and compensation.
+gate: nothing reaches production without this eval passing.
+metrics:
+  - engine_uptime_pct
+  - stuck_run_count
+  - p95_step_latency_ms
+cases: []  # add concrete cases; wire to auto_client_acquisition runners.

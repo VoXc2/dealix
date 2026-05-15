@@ -1,0 +1,11 @@
+# Knowledge — eval spec
+# Phase 4 evaluation gate.
+system: knowledge
+path: platform/knowledge
+description: Ingestion + metadata + permission-aware enterprise knowledge.
+gate: nothing reaches production without this eval passing.
+metrics:
+  - ingestion_throughput_docs_h
+  - metadata_completeness_pct
+  - index_freshness_h
+cases: []  # add concrete cases; wire to auto_client_acquisition runners.

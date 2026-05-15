@@ -1,0 +1,11 @@
+# Identity — eval spec
+# Phase 1 evaluation gate.
+system: identity
+path: platform/identity
+description: One identity per human, agent, and service principal.
+gate: nothing reaches production without this eval passing.
+metrics:
+  - auth_success_rate
+  - token_ttl_compliance_pct
+  - orphan_principal_count
+cases: []  # add concrete cases; wire to auto_client_acquisition runners.

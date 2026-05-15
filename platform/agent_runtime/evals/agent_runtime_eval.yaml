@@ -1,0 +1,11 @@
+# Agent Runtime — eval spec
+# Phase 2 evaluation gate.
+system: agent_runtime
+path: platform/agent_runtime
+description: goal -> plan -> memory -> tools -> execute -> validate -> approve -> analytics.
+gate: nothing reaches production without this eval passing.
+metrics:
+  - runtime_success_rate
+  - validation_block_rate
+  - p95_runtime_latency_ms
+cases: []  # add concrete cases; wire to auto_client_acquisition runners.
