@@ -56,8 +56,8 @@ low-commitment intro so you can judge whether this is real before anything forma
 Would 20 minutes work? Senior to senior, no deck.
 
 Best,
-[Founder Name]
-Dealix — Governed AI Operations
+Eng. Sami Al-Mani Assiri
+Founder, Dealix — Governed AI Operations
 
 ---
 
@@ -95,15 +95,16 @@ Proof Pack وValue Ledger — وليس لتقديم ادعاءات لا نملك
 هل تناسبك 20 دقيقة؟ حديث بين مستوى قيادي ومستوى قيادي، بدون عرض تقديمي.
 
 مع التقدير،
-[اسم المؤسس]
-Dealix — التشغيل المحكوم للذكاء الاصطناعي
+م. سامي ال مانع عسيري
+المؤسس، Dealix — التشغيل المحكوم للذكاء الاصطناعي
 
 ---
 
 ## Founder notes (not part of the message)
 
-- Placeholders to fill before send: `[Partner Contact Name]` / `[اسم جهة الاتصال لدى الشريك]`,
-  `[Firm]` if you choose to name it inline, `[Founder Name]` / `[اسم المؤسس]`.
+- Founder signature filled: Eng. Sami Al-Mani Assiri / م. سامي ال مانع عسيري.
+- Placeholders still to fill before send: `[Partner Contact Name]` / `[اسم جهة الاتصال لدى الشريك]`,
+  `[Firm]` if you choose to name it inline.
 - Pick ONE language per channel; do not send both in the same message.
 - No guaranteed outcomes, no metrics, no case studies — kept honest at controlled-proof stage.
 - If the partner forwards this to a client, that client is a NEW intake and must be
