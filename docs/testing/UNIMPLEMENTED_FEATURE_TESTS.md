@@ -41,3 +41,18 @@ Until then these 9 files are excluded from a clean `pytest` collection.
 `tests/test_qualification.py` is confirmed *not* a simple rename: the
 module's `qualify_opportunity` takes `icp`/`risk` dataclasses, while the
 test expects boolean keyword flags — a genuinely different design.
+
+## Open security-design decision — قرار أمني معلّق
+
+`tests/unit/test_auth_flow.py` has **2 failing tests** that were *not*
+patched, because they hinge on intentional security-design questions —
+deciding them by editing the test could mask a real gap:
+
+| Test | Question for the security owner |
+|---|---|
+| `test_key_in_query_param_passes` | Should `?api_key=` query-param auth be supported? `APIKeyMiddleware` is currently **header-only** (`X-API-Key`) — the more secure design, since query params leak into logs. The test expects query-param auth to work. |
+| `test_empty_keys_env_blocks_all` | Should `APIKeyMiddleware` **fail-closed** in production when `API_KEYS` is empty? Today it allows all requests when no keys are configured (dev mode); production safety is enforced only at `api/main.py` startup. The test expects middleware-level fail-closed (defense in depth). |
+
+Resolve by either hardening `api/security/api_key.py` to match the tests,
+or updating the tests to the documented header-only / startup-guarded
+contract — a call for the security owner, not a cleanup patch.
