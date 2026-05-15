@@ -1,6 +1,7 @@
 """Referral program persistence — Wave 14D.1.
 
-JSONL-backed store matching the SQL schema in db/migrations/010_referral_program.sql.
+JSONL-backed store matching the schema in
+db/migrations/versions/20260514_010_referral_program.py.
 Same persistence pattern as friction_log, value_ledger, capital_ledger,
 renewal_scheduler. When Postgres lands later, swap _path()-based JSONL for
 the corresponding SQL via asyncpg with NO API change.

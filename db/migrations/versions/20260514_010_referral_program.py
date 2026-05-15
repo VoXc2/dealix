@@ -3,9 +3,8 @@
 Companion to `api/routers/referral_program.py` (W13.13) +
 `auto_client_acquisition/partnership_os/referral_store.py` (W14D.1).
 
-The original raw SQL at `db/migrations/010_referral_program.sql` is
-preserved for reference but Alembic now owns the schema so Railway's
-`release: alembic upgrade head` applies it automatically on deploy.
+Alembic owns the schema so Railway's `release: alembic upgrade head`
+applies it automatically on deploy.
 
 Migration 010.
 Down revision: 009 (customer_webhooks).
