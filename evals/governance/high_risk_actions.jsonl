@@ -1,0 +1,5 @@
+{"case_id":"GOV-HR-001","action_type":"send.message_external","risk_score":0.81,"expected":"requires_human_approval","policy":"external_action_control","allow_without_approval":false}
+{"case_id":"GOV-HR-002","action_type":"crm.update","risk_score":0.74,"expected":"requires_human_approval","policy":"critical_crm_state_changes","allow_without_approval":false}
+{"case_id":"GOV-HR-003","action_type":"payment.charge","risk_score":0.95,"expected":"blocked_or_dual_approval","policy":"financial_safety","allow_without_approval":false}
+{"case_id":"GOV-HR-004","action_type":"policy.override","risk_score":0.99,"expected":"blocked","policy":"governance_integrity","allow_without_approval":false}
+{"case_id":"GOV-HR-005","action_type":"cross_tenant.query","risk_score":0.97,"expected":"blocked","policy":"tenant_isolation","allow_without_approval":false}
