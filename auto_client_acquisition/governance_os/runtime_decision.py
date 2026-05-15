@@ -104,7 +104,7 @@ def decide(*, action: str, context: dict[str, Any] | None = None) -> DecisionRes
         validate,
     )
     from auto_client_acquisition.governance_os.channel_policy import is_forbidden
-    from auto_client_acquisition.governance_os.claim_safety import contains_unsafe_claim
+    from auto_client_acquisition.governance_os.claim_safety import audit_claim_safety
 
     ctx = context or {}
     reasons: list[str] = []
@@ -120,9 +120,24 @@ def decide(*, action: str, context: dict[str, Any] | None = None) -> DecisionRes
 
     channel = str(ctx.get("channel", "")).lower()
     mode = str(ctx.get("mode", "")).lower()
+
+    # Cold WhatsApp: explicit consent turns it into a consented (warm)
+    # contact. Resolve this BEFORE the generic forbidden-mode sweep so a
+    # consented request is not hard-blocked by the ("whatsapp","cold")
+    # rule — otherwise the consent check below would be unreachable.
+    whatsapp_cold_consented = False
+    if channel == "whatsapp" and ctx.get("is_cold"):
+        if not ctx.get("explicit_consent"):
+            return DecisionResult(
+                decision=GovernanceDecision.BLOCK,
+                reasons=("cold WhatsApp without explicit_consent is blocked",),
+                safe_alternative="draft only; human delivers via warm intro",
+            )
+        whatsapp_cold_consented = True
+
     if channel:
         if not mode:
-            if ctx.get("is_cold"):
+            if ctx.get("is_cold") and not whatsapp_cold_consented:
                 mode = "cold"
             elif "automate" in action.lower():
                 mode = "automate"
@@ -136,14 +151,6 @@ def decide(*, action: str, context: dict[str, Any] | None = None) -> DecisionRes
                     reasons=(why,),
                     safe_alternative="draft_only message for human review",
                 )
-
-    if channel == "whatsapp":
-        if ctx.get("is_cold") and not ctx.get("explicit_consent"):
-            return DecisionResult(
-                decision=GovernanceDecision.BLOCK,
-                reasons=("cold WhatsApp without explicit_consent is blocked",),
-                safe_alternative="draft only; human delivers via warm intro",
-            )
 
     passport = ctx.get("source_passport")
     intended_use = str(ctx.get("intended_use") or _default_intended_use(action))
@@ -181,11 +188,25 @@ def decide(*, action: str, context: dict[str, Any] | None = None) -> DecisionRes
 
     text = str(ctx.get("text", ""))
     if text:
-        unsafe, why_list = contains_unsafe_claim(text)
-        if unsafe:
-            decision = _hardest(decision, GovernanceDecision.REDACT)
-            reasons.extend(f"unsafe_claim:{w}" for w in why_list)
-            safe_alt = safe_alt or "remove guarantee/100% language; restate as observed outcome"
+        claim = audit_claim_safety(text)
+        if claim.issues:
+            # Preserve claim-safety severity: a forbidden marketing claim
+            # (guarantees, fake proof) escalates harder than an operational
+            # term (e.g. "scraping") mentioned in a policy/negation context.
+            forbidden_claim = any(
+                i.startswith("forbidden_claim:") for i in claim.issues
+            )
+            decision = _hardest(decision, claim.suggested_decision)
+            reasons.extend(f"unsafe_claim:{w}" for w in claim.issues)
+            if forbidden_claim:
+                safe_alt = safe_alt or (
+                    "remove guarantee/100% language; restate as observed outcome"
+                )
+            else:
+                safe_alt = safe_alt or (
+                    "keep operational terms in a negation/policy context only; "
+                    "human review before any external use"
+                )
 
     external_send = action.startswith(("send_", "post_", "publish_")) or "_send" in action
     if external_send and channel:
