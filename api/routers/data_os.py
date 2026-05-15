@@ -2,8 +2,12 @@
 
 POST /api/v1/data-os/import-preview
   Upload a small CSV (multipart form OR JSON with raw_csv string) and get a
-  preview + Data Quality Score back. Tenant-scoped via X-Tenant header /
-  customer_handle in body. No PII retained beyond the response.
+  preview + Data Quality Score back. Tenant-scoped via customer_handle in
+  body. No PII retained beyond the response.
+
+The Data Quality Score is a 0-100 composite derived from the deterministic
+`import_preview_csv` metrics (completeness + duplicate-inverse) plus a small
+source-clarity modifier driven by the Source Passport.
 """
 from __future__ import annotations
 
@@ -12,15 +16,14 @@ from typing import Any
 from fastapi import APIRouter, File, Form, HTTPException, UploadFile
 from pydantic import BaseModel, Field
 
-from auto_client_acquisition.data_os.data_quality_score import compute_dq
-from auto_client_acquisition.data_os.import_preview import preview as preview_csv
+from auto_client_acquisition.data_os.import_preview import import_preview_csv
 from auto_client_acquisition.data_os.source_passport import (
     SourcePassport,
-    validate as validate_passport,
+    source_passport_valid_for_ai,
 )
 from auto_client_acquisition.governance_os.runtime_decision import (
     GovernanceDecision,
-    decide,
+    governance_decision_from_passport_ai_gate,
 )
 
 router = APIRouter(prefix="/api/v1/data-os", tags=["data-os"])
@@ -43,31 +46,45 @@ def _build_passport(raw: dict[str, Any] | None) -> SourcePassport | None:
             source_id=str(raw.get("source_id", "")),
             source_type=str(raw.get("source_type", "client_upload")),
             owner=str(raw.get("owner", "client")),
-            allowed_use=tuple(raw.get("allowed_use", ("internal_analysis",))),
+            allowed_use=frozenset(raw.get("allowed_use", ("internal_analysis",))),
             contains_pii=bool(raw.get("contains_pii", False)),
             sensitivity=str(raw.get("sensitivity", "medium")),
+            retention_policy=str(raw.get("retention_policy", "project_duration")),
             ai_access_allowed=bool(raw.get("ai_access_allowed", True)),
             external_use_allowed=bool(raw.get("external_use_allowed", False)),
-            retention_policy=str(raw.get("retention_policy", "project_duration")),
         )
     except Exception:  # noqa: BLE001
         return None
 
 
-def _governance_envelope(*, passport: SourcePassport | None) -> dict[str, Any]:
-    result = decide(
-        action="run_scoring",
-        context={
-            "source_passport": passport,
-            "contains_pii": passport.contains_pii if passport else False,
-            "external_use": passport.external_use_allowed if passport else False,
-        },
+def _dq_score(quality: dict[str, Any], *, source_clarity: float) -> dict[str, float]:
+    """Composite 0-100 DQ score: 60% completeness, 30% duplicate-inverse,
+    5% format consistency, 5% source clarity."""
+    completeness = round(float(quality.get("mean_completeness", 0.0)) * 100.0, 2)
+    dup_ratio = float(quality.get("duplicate_ratio_company_name", 0.0))
+    duplicate_inverse = round(max(0.0, 1.0 - dup_ratio) * 100.0, 2)
+    format_consistency = 100.0  # neutral — deterministic parser already normalised
+    overall = round(
+        completeness * 0.60
+        + duplicate_inverse * 0.30
+        + format_consistency * 0.05
+        + source_clarity * 0.05,
+        2,
     )
     return {
-        "decision": result.decision.value,
-        "reasons": list(result.reasons),
-        "safe_alternative": result.safe_alternative,
+        "overall": max(0.0, min(100.0, overall)),
+        "completeness": completeness,
+        "duplicate_inverse": duplicate_inverse,
+        "format_consistency": format_consistency,
+        "source_clarity": round(source_clarity, 2),
     }
+
+
+def _governance(passport: SourcePassport | None) -> tuple[GovernanceDecision, list[str]]:
+    if passport is None:
+        return GovernanceDecision.BLOCK, ["no_source_passport_provided"]
+    ok, errors = source_passport_valid_for_ai(passport)
+    return governance_decision_from_passport_ai_gate(ok, errors), list(errors)
 
 
 @router.post("/import-preview")
@@ -77,40 +94,37 @@ async def import_preview(body: _RawCSVBody) -> dict[str, Any]:
         raise HTTPException(status_code=413, detail="csv exceeds 5MB cap")
 
     passport = _build_passport(body.passport)
-    passport_validation = validate_passport(passport) if passport else None
-
-    preview = preview_csv(body.raw_csv.encode("utf-8"))
-    dq = compute_dq(
-        preview=preview,
-        duplicates_found=0,
-        source_passport=passport,
+    passport_ok, passport_errors = (
+        source_passport_valid_for_ai(passport) if passport else (False, ())
     )
-    envelope = _governance_envelope(passport=passport)
+
+    preview = import_preview_csv(body.raw_csv)
+    if isinstance(preview, dict) and preview.get("error"):
+        raise HTTPException(status_code=400, detail=str(preview["error"]))
+
+    quality = preview.get("data_quality", {})
+    source_clarity = 100.0 if passport_ok else (50.0 if passport else 0.0)
+    dq = _dq_score(quality, source_clarity=source_clarity)
+    decision, reasons = _governance(passport)
+    decision_value = decision.value.lower()  # machine-stable, lowercase vocabulary
+
     return {
         "customer_handle": body.customer_handle,
         "preview": {
-            "columns": list(preview.columns),
-            "row_count": preview.row_count,
-            "missing_pct": dict(preview.missing_pct),
-            "pii_columns": list(preview.pii_columns),
-            "suggested_cleanup": list(preview.suggested_cleanup),
+            "columns": list(preview.get("detected_columns", [])),
+            "row_count": int(preview.get("parsed_row_count", 0)),
+            "preview_rows": preview.get("preview_rows", []),
         },
-        "data_quality_score": {
-            "overall": dq.overall,
-            "completeness": dq.completeness,
-            "duplicate_inverse": dq.duplicate_inverse,
-            "format_consistency": dq.format_consistency,
-            "source_clarity": dq.source_clarity,
-        },
+        "data_quality_score": dq,
         "source_passport": {
             "provided": passport is not None,
-            "valid": bool(passport_validation and passport_validation.is_valid),
-            "reasons": list(passport_validation.reasons) if passport_validation else [],
+            "valid": bool(passport is not None and passport_ok),
+            "reasons": list(passport_errors),
         },
-        "governance_decision": envelope["decision"],
-        "governance": envelope,
+        "governance_decision": decision_value,
+        "governance": {"decision": decision_value, "reasons": reasons},
         "is_estimate": True,
-        "next_step_recommendation": _next_step(dq.overall, envelope["decision"]),
+        "next_step_recommendation": _next_step(dq["overall"], decision),
     }
 
 
@@ -134,8 +148,8 @@ async def import_preview_upload(
     return await import_preview(body)
 
 
-def _next_step(dq_overall: float, decision: str) -> str:
-    if decision == GovernanceDecision.BLOCK.value:
+def _next_step(dq_overall: float, decision: GovernanceDecision) -> str:
+    if decision == GovernanceDecision.BLOCK:
         return "block_until_source_passport_provided"
     if dq_overall < 50:
         return "data_cleanup_required_before_scoring"
