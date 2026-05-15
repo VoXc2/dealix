@@ -17,12 +17,14 @@ from auto_client_acquisition.knowledge_v10 import (
     RetrievalRequest,
     RetrievalResult,
     SourceType,
-    answer as kg_answer,
     evaluate_answer,
+    ingest_text,
     retrieve,
     validate_manifest,
 )
-
+from auto_client_acquisition.knowledge_v10 import (
+    answer as kg_answer,
+)
 
 router = APIRouter(
     prefix="/api/v1/knowledge-v10",
@@ -54,7 +56,7 @@ async def knowledge_status() -> dict[str, Any]:
         "guardrails": _GUARDRAILS,
         "endpoints": [
             "/status", "/sources", "/manifest/validate",
-            "/search", "/answer", "/evaluate",
+            "/ingest", "/search", "/answer", "/evaluate",
         ],
     }
 
@@ -68,14 +70,38 @@ async def knowledge_sources() -> dict[str, Any]:
 async def knowledge_manifest_validate(payload: dict) -> dict[str, Any]:
     try:
         manifest = validate_manifest(payload)
-    except Exception as exc:  # noqa: BLE001
+    except Exception as exc:
         raise HTTPException(status_code=422, detail=str(exc)) from exc
     return manifest.model_dump(mode="json")
 
 
+class _IngestRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    document_id: str = Field(..., min_length=1)
+    text: str = Field(..., min_length=1)
+    customer_handle: str = ""
+    source_type: SourceType = SourceType.INTERNAL_DOC
+    language: str = "ar"
+
+
+@router.post("/ingest")
+async def knowledge_ingest(payload: _IngestRequest) -> dict[str, Any]:
+    try:
+        return await ingest_text(
+            document_id=payload.document_id,
+            text=payload.text,
+            customer_handle=payload.customer_handle,
+            source_type=payload.source_type,
+            language=payload.language,
+        )
+    except ValueError as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
+
+
 @router.post("/search")
 async def knowledge_search(payload: RetrievalRequest) -> list[dict[str, Any]]:
-    results = retrieve(payload)
+    results = await retrieve(payload)
     return [r.model_dump(mode="json") for r in results]
 
 

@@ -54,17 +54,19 @@ def test_official_public_site_is_allowed():
     assert is_source_allowed(SourceType.OFFICIAL_PUBLIC_SITE) is True
 
 
-def test_retrieve_with_no_allowed_sources_returns_empty():
+@pytest.mark.asyncio
+async def test_retrieve_with_no_allowed_sources_returns_empty():
     req = RetrievalRequest(query="how do we onboard", allowed_sources=[])
-    assert retrieve(req) == []
+    assert await retrieve(req) == []
 
 
-def test_retrieve_with_only_blocked_sources_returns_empty():
+@pytest.mark.asyncio
+async def test_retrieve_with_only_blocked_sources_returns_empty():
     req = RetrievalRequest(
         query="anything goes",
         allowed_sources=[SourceType.BLOCKED_SCRAPING_SOURCE],
     )
-    assert retrieve(req) == []
+    assert await retrieve(req) == []
 
 
 def test_answer_with_empty_chunks_returns_insufficient_evidence():

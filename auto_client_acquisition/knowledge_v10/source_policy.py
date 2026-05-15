@@ -9,7 +9,6 @@ from __future__ import annotations
 
 from auto_client_acquisition.knowledge_v10.schemas import SourceType
 
-
 _BLOCKED: frozenset[str] = frozenset({
     SourceType.BLOCKED_SCRAPING_SOURCE.value,
     SourceType.BLOCKED_PERSONAL_DATA_SOURCE.value,
