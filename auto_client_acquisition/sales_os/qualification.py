@@ -104,12 +104,19 @@ def qualify(
     proof_path_visible: bool,
     retainer_path_visible: bool,
     raw_request_text: str = "",
+    sector: str = "",
+    city: str = "",
 ) -> QualificationResult:
     """Map discovery answers + the raw request to a commercial verdict.
 
     Deterministic and doctrine-gated: any non-negotiable red line in the
     request text — or a client declining safe methods — forces REJECT.
+
+    ``sector`` / ``city`` are optional engagement context (accepted so the
+    ``/api/v1/service-setup/qualify`` body maps straight through); they do
+    not change the verdict.
     """
+    _ = (sector, city)  # contextual metadata; verdict is doctrine + signals
     answers = {
         "pain_clear": pain_clear,
         "owner_present": owner_present,
