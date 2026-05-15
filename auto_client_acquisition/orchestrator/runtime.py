@@ -26,8 +26,11 @@ from typing import Any
 from auto_client_acquisition.orchestrator.policies import (
     BudgetUsage,
     Policy,
-    requires_approval,
     within_budget,
+)
+from auto_client_acquisition.orchestrator.control_runtime import (
+    build_control_envelope,
+    emit_control_trace,
 )
 from auto_client_acquisition.orchestrator.queue import AgentTask, TaskQueue, TaskStatus
 from auto_client_acquisition.revenue_memory.event_store import EventStore
@@ -141,9 +144,35 @@ class Orchestrator:
                 "draft_text": step_inputs.get("draft_text", ""),
                 "consecutive_followup_index": step_inputs.get("consecutive_followup_index", 0),
             }
-            needs_approval, reason = requires_approval(
-                action_type=step.action_type, policy=policy, risk_factors=risks
+            control = build_control_envelope(
+                actor_id=actor,
+                customer_id=customer_id,
+                workflow_id=workflow.workflow_id,
+                step_id=step.step_id,
+                agent_id=step.agent_id,
+                action_type=step.action_type,
+                policy=policy,
+                risk_factors=risks,
             )
+            if control.decision == "block":
+                self._emit_event(
+                    customer_id=customer_id,
+                    event_type="agent.action_rejected",
+                    actor=actor,
+                    correlation_id=correlation_id,
+                    payload={
+                        "agent_id": step.agent_id,
+                        "step_id": step.step_id,
+                        "reason": "control_runtime_block",
+                    },
+                )
+                emit_control_trace(
+                    control,
+                    correlation_id=correlation_id,
+                    stage="requested",
+                    approval_status="blocked",
+                )
+                continue
 
             ok, budget_reason = within_budget(usage=usage, budget=policy.budget)
             if not ok:
@@ -159,6 +188,13 @@ class Orchestrator:
                         "reason": f"budget:{budget_reason}",
                     },
                 )
+                emit_control_trace(
+                    control,
+                    correlation_id=correlation_id,
+                    stage="requested",
+                    approval_status="blocked",
+                    extra_payload={"reason": f"budget:{budget_reason}"},
+                )
                 break
 
             task = self.queue.enqueue(
@@ -166,8 +202,8 @@ class Orchestrator:
                 agent_id=step.agent_id,
                 action_type=step.action_type,
                 payload={"step_id": step.step_id, "inputs": step_inputs},
-                requires_approval=needs_approval,
-                approval_reason=reason,
+                requires_approval=control.approval_required,
+                approval_reason=control.approval_reason,
                 correlation_id=correlation_id,
                 parent_workflow_id=workflow.workflow_id,
             )
@@ -181,13 +217,20 @@ class Orchestrator:
                     "agent_id": step.agent_id,
                     "task_id": task.task_id,
                     "step_id": step.step_id,
-                    "requires_approval": needs_approval,
-                    "approval_reason": reason,
+                    "requires_approval": control.approval_required,
+                    "approval_reason": control.approval_reason,
                 },
+            )
+            emit_control_trace(
+                control,
+                correlation_id=correlation_id,
+                stage="requested",
+                approval_status="pending" if control.approval_required else "approved",
+                extra_payload={"task_id": task.task_id},
             )
 
             # Execute immediately if no approval needed
-            if not needs_approval:
+            if not control.approval_required:
                 result = self._execute_task(task, actor=actor, correlation_id=correlation_id)
                 if result is not None:
                     outputs[step.step_id] = result
@@ -207,12 +250,29 @@ class Orchestrator:
     def approve_and_execute(self, *, task_id: str, approved_by: str) -> AgentTask:
         """Human approves a pending task — orchestrator runs it."""
         task = self.queue.approve(task_id, approved_by=approved_by)
+        control = build_control_envelope(
+            actor_id=approved_by,
+            customer_id=task.customer_id,
+            workflow_id=task.parent_workflow_id or "unknown_workflow",
+            step_id=task.payload.get("step_id", "unknown_step"),
+            agent_id=task.agent_id,
+            action_type=task.action_type,
+            policy=self.policy_resolver(task.customer_id),
+            risk_factors={},
+        )
         self._emit_event(
             customer_id=task.customer_id,
             event_type="agent.action_approved",
             actor=approved_by,
             correlation_id=task.correlation_id,
             payload={"agent_id": task.agent_id, "task_id": task_id},
+        )
+        emit_control_trace(
+            control,
+            correlation_id=task.correlation_id or f"task_{task.task_id}",
+            stage="approved",
+            approval_status="granted",
+            extra_payload={"task_id": task.task_id},
         )
         self._execute_task(task, actor=approved_by, correlation_id=task.correlation_id)
         return task
