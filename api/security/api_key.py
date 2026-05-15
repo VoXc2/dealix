@@ -59,6 +59,11 @@ def _configured_keys() -> list[str]:
     return [k.strip() for k in raw.split(",") if k.strip()]
 
 
+def _is_production() -> bool:
+    """True when APP_ENV is production — auth then fails closed."""
+    return os.getenv("APP_ENV", "").strip().lower() == "production"
+
+
 def _configured_admin_keys() -> list[str]:
     """Return the list of valid admin API keys from ADMIN_API_KEYS env var."""
     raw = os.getenv("ADMIN_API_KEYS", "")
@@ -120,12 +125,21 @@ class APIKeyMiddleware(BaseHTTPMiddleware):
         if path in PUBLIC_PATHS or path.startswith(PUBLIC_PREFIXES):
             return await call_next(request)
 
-        # Enforce key only when API_KEYS is configured
+        # Enforce key only when API_KEYS is configured. In production an
+        # empty API_KEYS is a misconfiguration — fail closed rather than
+        # silently serving every request. Dev/test stay frictionless.
         allowed = _configured_keys()
         if not allowed:
+            if _is_production():
+                logger.warning("api_keys_unset_in_production", path=path)
+                return JSONResponse(
+                    {"detail": "API access is not configured"},
+                    status_code=status.HTTP_401_UNAUTHORIZED,
+                )
             return await call_next(request)
 
-        provided = request.headers.get("X-API-Key")
+        # Key may arrive as the X-API-Key header or an ?api_key= query param.
+        provided = request.headers.get("X-API-Key") or request.query_params.get("api_key")
         if not verify_api_key(provided, allowed):
             logger.warning("api_key_invalid", path=path, has_key=bool(provided))
             # Return a proper JSONResponse instead of raising HTTPException —
