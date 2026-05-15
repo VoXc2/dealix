@@ -30,18 +30,18 @@ from auto_client_acquisition.operational_fabric_os.human_ai_model import (
 from auto_client_acquisition.operational_fabric_os.operational_memory_graph import (
     OperationalMemoryGraph,
 )
+from auto_client_acquisition.operational_fabric_os.org_simulation import (
+    SimulationResult,
+    SimulationSpec,
+    replay_supported,
+    run_release_simulation,
+)
 from auto_client_acquisition.operational_fabric_os.platform_contract_registry import (
     PLATFORM_CONTRACTS,
     contract_count,
     contracts_by_system,
     operational_dominance_status,
     validate_contract_bindings,
-)
-from auto_client_acquisition.operational_fabric_os.org_simulation import (
-    SimulationResult,
-    SimulationSpec,
-    replay_supported,
-    run_release_simulation,
 )
 from auto_client_acquisition.operational_fabric_os.runtime_safety import (
     RuntimeSafetyPolicy,
@@ -64,6 +64,7 @@ from auto_client_acquisition.operational_fabric_os.self_evolving_fabric import (
 )
 
 __all__ = [
+    "PLATFORM_CONTRACTS",
     "AgentDescriptor",
     "AgentMesh",
     "AssuranceContract",
@@ -73,7 +74,6 @@ __all__ = [
     "OperationalMemoryGraph",
     "OptimizationProposal",
     "OversightDecision",
-    "PLATFORM_CONTRACTS",
     "RuntimeSafetyPolicy",
     "RuntimeSafetyState",
     "SandboxExecutionPlan",
@@ -85,9 +85,9 @@ __all__ = [
     "activate_kill_switch",
     "append_checkpoint",
     "compute_value_snapshot",
+    "continuous_optimization_ready",
     "contract_count",
     "contracts_by_system",
-    "continuous_optimization_ready",
     "create_workflow",
     "evaluate_contract",
     "evaluate_human_ai_request",

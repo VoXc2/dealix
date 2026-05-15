@@ -2,13 +2,20 @@
 
 from __future__ import annotations
 
+from fastapi import FastAPI
 from starlette.testclient import TestClient
 
-from api.main import app
+from api.routers import operational_fabric as operational_fabric_router
+
+
+def _test_client() -> TestClient:
+    app = FastAPI()
+    app.include_router(operational_fabric_router.router)
+    return TestClient(app)
 
 
 def test_platform_contracts_endpoint() -> None:
-    client = TestClient(app)
+    client = _test_client()
     response = client.get("/api/v1/platform/contracts")
     assert response.status_code == 200
     payload = response.json()
@@ -18,7 +25,7 @@ def test_platform_contracts_endpoint() -> None:
 
 
 def test_platform_contract_health_endpoint() -> None:
-    client = TestClient(app)
+    client = _test_client()
     response = client.get("/api/v1/platform/contracts/health")
     assert response.status_code == 200
     payload = response.json()
