@@ -65,7 +65,7 @@ def preview(raw: bytes, *, max_rows: int = 500) -> ImportPreview:
                     missing += 1
             missing_pct[c] = round((missing / n) * 100.0, 2)
     else:
-        missing_pct = {c: 100.0 for c in columns}
+        missing_pct = dict.fromkeys(columns, 100.0)
 
     pii_columns: list[str] = []
     for c in columns:

@@ -93,7 +93,7 @@ def compute_dq(
     """
     # Completeness
     if hasattr(preview, "missing_pct"):
-        missing = getattr(preview, "missing_pct") or {}
+        missing = preview.missing_pct or {}
         if isinstance(missing, dict) and missing:
             completeness = _clip_pct(100.0 - (sum(float(v) for v in missing.values()) / len(missing)))
         else:
