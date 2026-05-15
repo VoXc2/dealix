@@ -191,6 +191,7 @@ graph TB
 ```
 
 Full blueprint: [`docs/blueprint/master-architecture.md`](docs/blueprint/master-architecture.md).
+AI OS layer maturity & roadmap: [`docs/architecture/AI_OS_GAP_ANALYSIS.md`](docs/architecture/AI_OS_GAP_ANALYSIS.md).
 
 ---
 

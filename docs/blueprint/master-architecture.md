@@ -3,6 +3,7 @@
 > **Status**: Canonical · Source of truth for architecture, governance, and execution
 > **Last updated**: 2026-04-21
 > **Owner**: Architecture Council
+> **Companion**: [AI OS Gap Analysis](../architecture/AI_OS_GAP_ANALYSIS.md) — layer-by-layer maturity & phased roadmap
 
 ---
 
