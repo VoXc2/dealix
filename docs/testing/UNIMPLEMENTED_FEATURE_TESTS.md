@@ -2,19 +2,24 @@
 
 ## Summary — ملخّص
 
-These 9 test files fail at **collection** because they import symbols that
+These 8 test files fail at **collection** because they import symbols that
 their target module never implemented. They are **not regressions** — the
 modules never exported these names (verified against the Wave 1/2 baseline
 commit `fe334e5`). Each test describes an *intended* feature surface that
 the current module only partially (or differently) implements.
 
-هذه الاختبارات التسعة تصف ميزات لم تُنفَّذ بعد. لم تُحذف ولم تُعلَّم skip —
+هذه الاختبارات تصف ميزات لم تُنفَّذ بعد. لم تُحذف ولم تُعلَّم skip —
 تُترك كسجل للثغرات حتى يُقرَّر تنفيذ الميزة أو تحديث الاختبار.
 
 Per the cleanup decision: **documented and left as-is** — neither deleted
 nor `skip`-marked, and the feature is not guessed/implemented here.
 
-## The 9 tests — الاختبارات
+> **Resolved:** `tests/test_trust_pack.py` was one of the original 9 — the
+> Enterprise Trust Pack feature has since been implemented
+> (`auto_client_acquisition/trust_os/trust_pack.py::assemble_trust_pack`),
+> the test passes, and it is no longer `--ignore`d in CI.
+
+## The 8 tests — الاختبارات
 
 | Test file | Imports (missing) | Module | What the module has instead |
 |---|---|---|---|
@@ -26,7 +31,6 @@ nor `skip`-marked, and the feature is not guessed/implemented here.
 | `tests/test_operating_empire_os.py` | `PartnerGateSignals` | `auto_client_acquisition.market_power_os` | (same as above) |
 | `tests/test_qualification.py` | `Decision`, `qualify` | `auto_client_acquisition.sales_os.qualification` | `QualificationVerdict`, `qualify_opportunity` (different signature) |
 | `tests/test_secure_agent_runtime.py` | `RuntimeState`, `can_transition`, `check_all_boundaries`, … | `auto_client_acquisition.secure_agent_runtime_os` | `AgentRuntimeState`, `evaluate_runtime_state`, `*_boundary_ok` |
-| `tests/test_trust_pack.py` | `assemble_trust_pack` | `auto_client_acquisition.trust_os.trust_pack` | `ENTERPRISE_TRUST_SECTIONS`, `TRUST_PACK_MARKDOWN_PATH` (constants only) |
 
 ## Resolution options — خيارات المعالجة
 

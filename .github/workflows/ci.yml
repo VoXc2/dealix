@@ -81,8 +81,7 @@ jobs:
             --ignore=tests/test_market_power_os.py \
             --ignore=tests/test_operating_empire_os.py \
             --ignore=tests/test_qualification.py \
-            --ignore=tests/test_secure_agent_runtime.py \
-            --ignore=tests/test_trust_pack.py
+            --ignore=tests/test_secure_agent_runtime.py
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v4
