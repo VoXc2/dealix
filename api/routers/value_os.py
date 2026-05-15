@@ -111,7 +111,10 @@ async def trust_pack_pdf(customer_handle: str):
     when neither weasyprint nor pandoc is installed.
     """
     from fastapi.responses import PlainTextResponse, Response
-    from auto_client_acquisition.proof_os import classify_tier  # noqa: F401 — keep canonical imports warm
+
+    from auto_client_acquisition.proof_os import (
+        classify_tier,
+    )
     from auto_client_acquisition.proof_to_market.pdf_renderer import render_markdown_to_pdf
     from auto_client_acquisition.trust_os.trust_pack import assemble_trust_pack
 
