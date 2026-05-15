@@ -1,0 +1,42 @@
+# Catalog of JSONL / file-append persistence outside critical control-plane Postgres paths.
+# Tier: 1=critical_path_candidate (migrate first), 2=operational_support, 3=legacy_low_risk
+version: 1
+policy_doc: docs/transformation/02_gap_closure_matrix.md
+entries:
+  - id: value_ledger_jsonl
+    module_hint: auto_client_acquisition.value_os.value_ledger
+    default_path_env: DEALIX_VALUE_LEDGER_PATH
+    default_path: data/value_ledger.jsonl
+    tier: 1
+    target_cutoff_iso: "2026-08-01"
+    postgres_target: value_metrics / revenue_events (see migrations)
+  - id: radar_events_jsonl
+    module_hint: auto_client_acquisition.radar_events.event_store
+    path: data/radar_events.jsonl
+    tier: 2
+    target_cutoff_iso: "2026-09-01"
+  - id: referral_store_jsonl
+    module_hint: auto_client_acquisition.partnership_os.referral_store
+    path: var/referral-*.jsonl
+    tier: 2
+    target_cutoff_iso: "2026-10-01"
+  - id: renewal_schedule_jsonl
+    module_hint: auto_client_acquisition.payment_ops.renewal_scheduler
+    path: var/renewal-schedule.jsonl
+    tier: 2
+    target_cutoff_iso: "2026-09-15"
+  - id: payment_states_jsonl
+    module_hint: auto_client_acquisition.payment_ops.orchestrator
+    path: data/payment_states.jsonl
+    tier: 2
+    target_cutoff_iso: "2026-09-01"
+  - id: proof_ledger_daily_jsonl
+    module_hint: auto_client_acquisition.proof_ledger.file_backend
+    path: docs/proof-events/*.jsonl
+    tier: 1
+    target_cutoff_iso: "2026-08-15"
+  - id: leadops_records_jsonl
+    module_hint: auto_client_acquisition.leadops_spine.orchestrator
+    path: data/leadops_records.jsonl
+    tier: 2
+    target_cutoff_iso: "2026-09-01"

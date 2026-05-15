@@ -5,6 +5,7 @@ from __future__ import annotations
 import sys
 from pathlib import Path
 from subprocess import run
+from types import SimpleNamespace
 
 from auto_client_acquisition.delivery_os.control_tower import (
     DeliveryRisk,
@@ -12,7 +13,11 @@ from auto_client_acquisition.delivery_os.control_tower import (
     delivery_risk_band,
     stage_gate_passes,
 )
+from auto_client_acquisition.observability_v10 import _reset_v10_buffer
 from auto_client_acquisition.observability_v10.contract_registry import validate_observability_event
+from auto_client_acquisition.observability_v10.contract_trace_hook import (
+    record_contract_trace_event,
+)
 from auto_client_acquisition.operating_finance_os.lifecycle_unit_economics import (
     LifecycleEconomicsInputs,
     compute_lifecycle_economics,
@@ -22,7 +27,12 @@ from auto_client_acquisition.reliability_os.mission_critical_program import (
     DrillResult,
     compute_mission_critical_score,
 )
-from auto_client_acquisition.revenue_os.data_flywheel import FlywheelInputs, compute_flywheel_score
+from auto_client_acquisition.revenue_os.data_flywheel import (
+    FlywheelInputs,
+    compute_flywheel_score,
+    flywheel_inputs_from_preview,
+)
+from dealix.execution.weekly_cross_os_snapshot import weekly_cross_os_snapshot
 
 
 def test_global_transformation_verifier_passes() -> None:
@@ -106,3 +116,47 @@ def test_flywheel_and_reliability_scores() -> None:
         slo_breaches_open=0,
     )
     assert mission.status in {"enterprise_ready", "mission_critical_ready"}
+
+
+def test_contract_trace_hook_records_trace() -> None:
+    _reset_v10_buffer()
+    try:
+        stored = record_contract_trace_event(
+            tenant_id="t1",
+            correlation_id="c1",
+            run_id="r1",
+            event_type="workflow.registered",
+            source_module="control_plane",
+            actor="system",
+            occurred_at="2026-05-15T12:00:00Z",
+        )
+        assert stored.correlation_id == "c1"
+        assert stored.redacted_payload.get("tenant_id") == "t1"
+    finally:
+        _reset_v10_buffer()
+
+
+def test_flywheel_inputs_from_preview_wiring() -> None:
+    preview = SimpleNamespace(row_count=20, missing_pct={"field_a": 0.05, "field_b": 0.1})
+    inputs = flywheel_inputs_from_preview(preview=preview, duplicates_found=2, source_passport=object())
+    score = compute_flywheel_score(inputs)
+    assert score.overall > 0
+
+
+def test_weekly_cross_os_snapshot_integration() -> None:
+    snap = weekly_cross_os_snapshot(gtm_discovery_to_pilot_conversion_pct=33.0)
+    assert snap.gross_margin_pct > 0
+    assert snap.flywheel_band in {"stable", "developing", "fragile", "compounding"}
+    assert snap.reliability_posture_status in {"enterprise_ready", "mission_critical_ready", "not_ready"}
+
+
+def test_category_expansion_gate_checker_passes() -> None:
+    root = Path(__file__).resolve().parents[1]
+    proc = run(
+        [sys.executable, "scripts/verify_global_ai_transformation.py", "--check-category-expansion"],
+        cwd=root,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    assert proc.returncode == 0, proc.stderr or proc.stdout

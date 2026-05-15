@@ -8,6 +8,13 @@ import importlib
 import re
 import sys
 from pathlib import Path
+from typing import Any
+
+import yaml
+
+_REPO_ROOT = Path(__file__).resolve().parents[1]
+if str(_REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(_REPO_ROOT))
 
 TODO_IDS = (
     "doctrine-lock",
@@ -52,6 +59,13 @@ CONTROL_ARTIFACTS = (
     "dealix/transformation/kpi_registry.yaml",
     "dealix/transformation/ownership_matrix.yaml",
     "dealix/transformation/risk_register.yaml",
+    "dealix/transformation/jsonl_migration_catalog.yaml",
+    "dealix/transformation/reliability_drills.yaml",
+    "dealix/transformation/category_expansion_gates.yaml",
+)
+
+ENTERPRISE_RUNBOOK_FILES = (
+    "docs/transformation/enterprise_package/PILOT_EXECUTION_RUNBOOK_AR.md",
 )
 
 MODULE_IMPORTS = (
@@ -59,8 +73,10 @@ MODULE_IMPORTS = (
     "auto_client_acquisition.revenue_os.data_flywheel",
     "auto_client_acquisition.reliability_os.mission_critical_program",
     "auto_client_acquisition.observability_v10.contract_registry",
+    "auto_client_acquisition.observability_v10.contract_trace_hook",
     "auto_client_acquisition.operating_finance_os.lifecycle_unit_economics",
     "auto_client_acquisition.delivery_os.control_tower",
+    "dealix.execution.weekly_cross_os_snapshot",
 )
 
 
@@ -75,6 +91,13 @@ def _require_paths(repo: Path, paths: tuple[str, ...]) -> list[str]:
         if not (repo / rel).exists():
             missing.append(rel)
     return missing
+
+
+def _load_yaml(repo: Path, rel: str) -> dict[str, Any]:
+    path = repo / rel
+    if not path.exists():
+        return {}
+    return yaml.safe_load(path.read_text(encoding="utf-8")) or {}
 
 
 def _check_todo_registry(repo: Path) -> list[str]:
@@ -98,13 +121,26 @@ def _check_module_imports() -> list[str]:
 
 
 def _check_jsonl_migration_policy(repo: Path) -> list[str]:
+    failures: list[str] = []
     report = repo / "docs/reports/enterprise_control_plane_hardening_report.md"
     if not report.exists():
-        return ["missing_hardening_report"]
-    text = report.read_text(encoding="utf-8")
-    if "JSONL" not in text and "jsonl" not in text:
-        return ["jsonl_policy_not_documented"]
-    return []
+        failures.append("missing_hardening_report")
+    else:
+        text = report.read_text(encoding="utf-8")
+        if "JSONL" not in text and "jsonl" not in text:
+            failures.append("jsonl_policy_not_documented")
+
+    catalog = _load_yaml(repo, "dealix/transformation/jsonl_migration_catalog.yaml")
+    if not catalog.get("entries"):
+        failures.append("jsonl_migration_catalog_missing_entries")
+        return failures
+    for entry in catalog["entries"]:
+        eid = entry.get("id", "?")
+        if entry.get("tier") is None:
+            failures.append(f"jsonl_catalog_missing_tier:{eid}")
+        if not entry.get("target_cutoff_iso"):
+            failures.append(f"jsonl_catalog_missing_cutoff:{eid}")
+    return failures
 
 
 def _check_observability_contracts(repo: Path) -> list[str]:
@@ -118,17 +154,79 @@ def _check_observability_contracts(repo: Path) -> list[str]:
 
 
 def _check_enterprise_package(repo: Path) -> list[str]:
-    missing = _require_paths(repo, ENTERPRISE_PACKAGE_FILES)
-    return [f"missing_enterprise_package_file:{path}" for path in missing]
+    failures = [f"missing_enterprise_package_file:{path}" for path in _require_paths(repo, ENTERPRISE_PACKAGE_FILES)]
+    failures.extend([f"missing_enterprise_runbook:{path}" for path in _require_paths(repo, ENTERPRISE_RUNBOOK_FILES)])
+    return failures
 
 
 def _check_reliability(repo: Path) -> list[str]:
+    failures: list[str] = []
     doc = repo / "docs/transformation/06_reliability_program.md"
     if not doc.exists():
-        return ["missing_reliability_program_doc"]
+        failures.append("missing_reliability_program_doc")
+        return failures
     text = doc.read_text(encoding="utf-8")
     required = ("drill", "SLO", "rollback", "kill-switch")
-    return [f"missing_reliability_token:{token}" for token in required if token not in text]
+    failures.extend([f"missing_reliability_token:{token}" for token in required if token not in text])
+
+    drills_file = _load_yaml(repo, "dealix/transformation/reliability_drills.yaml")
+    drills = drills_file.get("drills") or []
+    if len(drills) < 3:
+        failures.append("reliability_drills_yaml_insufficient")
+    return failures
+
+
+def _check_kpi_registry_evidence(repo: Path) -> list[str]:
+    data = _load_yaml(repo, "dealix/transformation/kpi_registry.yaml")
+    if int(data.get("version", 0)) < 2:
+        return ["kpi_registry_version_must_be_2"]
+    failures: list[str] = []
+    buckets = data.get("kpis") or {}
+    for bucket_name in ("north_star", "leading", "guardrails"):
+        for row in buckets.get(bucket_name, []):
+            key = row.get("key", "?")
+            ev = row.get("evidence")
+            if not isinstance(ev, dict):
+                failures.append(f"kpi_missing_evidence:{key}")
+                continue
+            if not str(ev.get("primary_source", "")).strip():
+                failures.append(f"kpi_missing_primary_source:{key}")
+            fields = ev.get("weekly_proof_fields")
+            if not isinstance(fields, list) or not fields:
+                failures.append(f"kpi_missing_weekly_proof_fields:{key}")
+    return failures
+
+
+def _check_ownership_matrix_human_fields(repo: Path) -> list[str]:
+    data = _load_yaml(repo, "dealix/transformation/ownership_matrix.yaml")
+    if int(data.get("version", 0)) < 2:
+        return ["ownership_matrix_version_must_be_2"]
+    failures: list[str] = []
+    for os_key, row in (data.get("os_ownership") or {}).items():
+        if not isinstance(row, dict):
+            failures.append(f"ownership_invalid_os:{os_key}")
+            continue
+        if "human_assignee_name" not in row:
+            failures.append(f"ownership_missing_human_assignee_key:{os_key}")
+        if "human_assignee_notes_ar" not in row:
+            failures.append(f"ownership_missing_human_notes_key:{os_key}")
+    return failures
+
+
+def _check_category_expansion_gates(repo: Path) -> list[str]:
+    data = _load_yaml(repo, "dealix/transformation/category_expansion_gates.yaml")
+    gates = data.get("gates") or []
+    if len(gates) < 3:
+        return ["category_expansion_gates_insufficient"]
+    failures: list[str] = []
+    for gate in gates:
+        gid = gate.get("id", "?")
+        if not gate.get("metric_key"):
+            failures.append(f"category_gate_missing_metric:{gid}")
+        ver = gate.get("verification_commands")
+        if not isinstance(ver, list) or not ver:
+            failures.append(f"category_gate_missing_verification:{gid}")
+    return failures
 
 
 def main() -> int:
@@ -138,9 +236,10 @@ def main() -> int:
     parser.add_argument("--check-observability", action="store_true")
     parser.add_argument("--check-enterprise-package", action="store_true")
     parser.add_argument("--check-reliability", action="store_true")
+    parser.add_argument("--check-category-expansion", action="store_true")
     args = parser.parse_args()
 
-    repo = Path(__file__).resolve().parents[1]
+    repo = _REPO_ROOT
     failures: list[str] = []
 
     checks = {
@@ -171,11 +270,20 @@ def main() -> int:
         failures.extend(_check_enterprise_package(repo))
     elif args.check_reliability:
         failures.extend(_check_reliability(repo))
+    elif args.check_category_expansion:
+        failures.extend(_check_category_expansion_gates(repo))
     else:
         failures.extend(_require_paths(repo, DOC_FILES))
         failures.extend(_require_paths(repo, CONTROL_ARTIFACTS))
         failures.extend(_check_todo_registry(repo))
         failures.extend(_check_module_imports())
+        failures.extend(_check_kpi_registry_evidence(repo))
+        failures.extend(_check_ownership_matrix_human_fields(repo))
+        failures.extend(_check_jsonl_migration_policy(repo))
+        failures.extend(_check_category_expansion_gates(repo))
+        failures.extend(_check_enterprise_package(repo))
+        failures.extend(_check_observability_contracts(repo))
+        failures.extend(_check_reliability(repo))
 
     if failures:
         print("GLOBAL AI TRANSFORMATION: FAIL")

@@ -3,6 +3,9 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from typing import Any
+
+from auto_client_acquisition.data_os.data_quality_score import DataQualityScore, compute_dq
 
 
 @dataclass(frozen=True, slots=True)
@@ -56,4 +59,48 @@ def gating_failures(inputs: FlywheelInputs) -> tuple[str, ...]:
     return tuple(failures)
 
 
-__all__ = ["FlywheelInputs", "FlywheelScore", "compute_flywheel_score", "gating_failures"]
+def flywheel_inputs_from_import_quality(
+    dq: DataQualityScore,
+    *,
+    signal_freshness: float = 78.0,
+    outcome_conversion: float = 62.0,
+    learning_adoption: float = 72.0,
+) -> FlywheelInputs:
+    """Map Data OS quality scoring into flywheel dimensions (production hook for governed imports)."""
+    return FlywheelInputs(
+        source_reliability=float(dq.source_clarity),
+        dedupe_precision=float(dq.duplicate_inverse),
+        signal_freshness=float(signal_freshness),
+        actionability_precision=float(dq.completeness),
+        outcome_conversion=float(outcome_conversion),
+        learning_adoption=float(learning_adoption),
+    )
+
+
+def flywheel_inputs_from_preview(
+    *,
+    preview: Any,
+    duplicates_found: int = 0,
+    source_passport: Any | None = None,
+    signal_freshness: float = 78.0,
+    outcome_conversion: float = 62.0,
+    learning_adoption: float = 72.0,
+) -> FlywheelInputs:
+    """Convenience: compute DQ from import preview then derive flywheel inputs."""
+    dq = compute_dq(preview=preview, duplicates_found=duplicates_found, source_passport=source_passport)
+    return flywheel_inputs_from_import_quality(
+        dq,
+        signal_freshness=signal_freshness,
+        outcome_conversion=outcome_conversion,
+        learning_adoption=learning_adoption,
+    )
+
+
+__all__ = [
+    "FlywheelInputs",
+    "FlywheelScore",
+    "compute_flywheel_score",
+    "flywheel_inputs_from_import_quality",
+    "flywheel_inputs_from_preview",
+    "gating_failures",
+]

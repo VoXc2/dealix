@@ -38,8 +38,12 @@ This directory is the execution spine for the comprehensive transformation from 
 - `dealix/transformation/kpi_registry.yaml`
 - `dealix/transformation/ownership_matrix.yaml`
 - `dealix/transformation/risk_register.yaml`
+- `dealix/transformation/jsonl_migration_catalog.yaml`
+- `dealix/transformation/reliability_drills.yaml`
+- `dealix/transformation/category_expansion_gates.yaml`
 
 ## Verification
 
 - `python3 scripts/verify_global_ai_transformation.py`
 - `bash scripts/verify_global_ai_transformation.sh`
+- `python3 scripts/generate_weekly_operating_proof_pack.py --out docs/transformation/evidence/weekly_proof_latest.md`

@@ -17,6 +17,14 @@ from auto_client_acquisition.revenue_os.action_catalog import (
 )
 from auto_client_acquisition.revenue_os.anti_waste import AntiWasteViolation, validate_pipeline_step
 from auto_client_acquisition.revenue_os.dedupe import DedupeHint, suggest_dedupe_fingerprint
+from auto_client_acquisition.revenue_os.data_flywheel import (
+    FlywheelInputs,
+    FlywheelScore,
+    compute_flywheel_score,
+    flywheel_inputs_from_import_quality,
+    flywheel_inputs_from_preview,
+    gating_failures,
+)
 from auto_client_acquisition.revenue_os.draft_pack import build_revenue_draft_pack
 from auto_client_acquisition.revenue_os.enrichment_waterfall import (
     WATERFALL_ORDER,
@@ -27,6 +35,8 @@ from auto_client_acquisition.revenue_os.data_flywheel import (
     FlywheelInputs,
     FlywheelScore,
     compute_flywheel_score,
+    flywheel_inputs_from_import_quality,
+    flywheel_inputs_from_preview,
     gating_failures,
 )
 from auto_client_acquisition.revenue_os.expansion_engine import next_best_offer
@@ -62,6 +72,8 @@ __all__ = [
     "ActionMode",
     "AntiWasteViolation",
     "DedupeHint",
+    "FlywheelInputs",
+    "FlywheelScore",
     "FactFieldProvenance",
     "FlywheelInputs",
     "FlywheelScore",
@@ -72,6 +84,10 @@ __all__ = [
     "WaterfallStage",
     "anti_waste_violations_for_tier1_intake",
     "assert_tier1_storage_allowed",
+    "compute_flywheel_score",
+    "flywheel_inputs_from_import_quality",
+    "flywheel_inputs_from_preview",
+    "gating_failures",
     "build_local_discover_body",
     "build_revenue_draft_pack",
     "default_follow_up_plan_bullets",
@@ -90,5 +106,7 @@ __all__ = [
     "summarize_scored_accounts",
     "suggest_dedupe_fingerprint",
     "compute_flywheel_score",
+    "flywheel_inputs_from_import_quality",
+    "flywheel_inputs_from_preview",
     "validate_pipeline_step",
 ]

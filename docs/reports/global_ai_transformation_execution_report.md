@@ -27,6 +27,19 @@ This report operationalizes the comprehensive transformation blueprint into audi
 - CI workflow: `.github/workflows/global-ai-transformation.yml`.
 - Automated tests: `tests/test_global_ai_transformation.py`.
 
+## Executive mega-roadmap operational layer
+
+- KPI registry version 2 ties each KPI to evidence sources and weekly proof fields.
+- Ownership matrix version 2 carries human assignee slots for weekly ops completion.
+- JSONL migration catalog captures tier and cutoff targets for non-Postgres persistence.
+- Reliability drills YAML captures cadence and scoring anchors for mission-critical reviews.
+- Category expansion gates YAML encodes prerequisites before regional or sector scaling.
+- Weekly proof pack generator: `scripts/generate_weekly_operating_proof_pack.py`.
+- Enterprise pilot operational runbook (Arabic): `docs/transformation/enterprise_package/PILOT_EXECUTION_RUNBOOK_AR.md`.
+- Observability contract events can be persisted into trace buffer via `contract_trace_hook.record_contract_trace_event`.
+- Cross-OS weekly snapshot composes finance, delivery risk, flywheel, and reliability posture in `dealix/execution/weekly_cross_os_snapshot.py`.
+- Data flywheel integrates Data OS `compute_dq` outputs through `flywheel_inputs_from_preview`.
+
 ## Remaining operational work (execution, not design)
 
 - Populate owner names from real organizational assignments.

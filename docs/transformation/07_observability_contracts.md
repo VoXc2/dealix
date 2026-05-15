@@ -30,6 +30,14 @@ Enforce standardized telemetry contracts for run/action/tool events so operation
 - Timestamp ordering checks required for lifecycle chains.
 - Value lifecycle events must include source evidence references for measured metrics.
 
+## Trace storage bridge (in-process)
+
+Contract-compliant dict events can be appended to the observability v10 in-memory trace buffer via
+`auto_client_acquisition.observability_v10.contract_trace_hook.record_contract_trace_event`, which runs
+`validate_observability_event` before constructing a `TraceRecordV10` (payload fields live under
+`redacted_payload`). This complements external OpenTelemetry exporters by keeping a deterministic,
+code-level enforcement path for CI and local verification.
+
 ## Consumption policy
 
 - Executive dashboards consume only contract-compliant events.
