@@ -26,4 +26,4 @@ jobs:
             echo "STAGING_BASE_URL secret not set — skipping."
             exit 0
           fi
-          python scripts/smoke_staging.py --base-url "$STAGING_BASE_URL"
+          python3 scripts/smoke_staging.py --base-url "$STAGING_BASE_URL"
