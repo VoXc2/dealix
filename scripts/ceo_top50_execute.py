@@ -23,6 +23,14 @@ AUTOMATABLE_ACTIONS: tuple[ActionCommand, ...] = (
     ActionCommand("run_founder_status", "python3 scripts/dealix_status.py --json"),
     ActionCommand("run_daily_scorecard", "python3 scripts/founder_daily_scorecard.py --json"),
     ActionCommand("weekly_go_no_go_gate", "bash scripts/dealix_market_launch_ready_verify.sh", 240),
+    ActionCommand(
+        "weekly_friction_review",
+        (
+            "python3 -c \"from auto_client_acquisition.friction_log.aggregator import aggregate; "
+            "print(aggregate(customer_id='dealix_internal', window_days=7).to_dict())\""
+        ),
+    ),
+    ActionCommand("align_30_60_90_outputs", "python3 scripts/ceo_top50_planning_sync.py --mode align"),
     ActionCommand("revenue_os_baseline", "bash scripts/revenue_os_master_verify.sh", 240),
     ActionCommand("capability_baseline", "bash scripts/dealix_capability_verify.sh", 240),
     ActionCommand("list_sector_bundles", "python3 scripts/dealix_diagnostic.py --list-bundles"),
@@ -33,6 +41,7 @@ AUTOMATABLE_ACTIONS: tuple[ActionCommand, ...] = (
             "--sector b2b_services --region riyadh --pipeline-state \"manual follow-up\" --json"
         ),
     ),
+    ActionCommand("weekly_p0_p1_backlog", "python3 scripts/ceo_top50_planning_sync.py --mode backlog"),
     ActionCommand("create_warm_list_file", "cp data/warm_list.csv.template data/warm_list.csv"),
     ActionCommand("generate_bilingual_drafts", "python3 scripts/warm_list_outreach.py"),
     ActionCommand("run_first10_board", "python3 scripts/dealix_first10_warm_intros.py"),
@@ -113,6 +122,40 @@ AUTOMATABLE_ACTIONS: tuple[ActionCommand, ...] = (
     ActionCommand("check_alembic_single_head", "python3 scripts/check_alembic_single_head.py"),
     ActionCommand("run_morning_readiness_gate", "bash scripts/dealix_market_launch_ready_verify.sh", 240),
     ActionCommand("daily_payment_reconciliation", "python3 scripts/reconcile_moyasar.py --dry-run"),
+    ActionCommand("prepare_saudi_seed_dry_run", "python3 scripts/import_seed_leads.py --dry-run"),
+    ActionCommand(
+        "qualification_gate_per_lead",
+        (
+            "curl -sS -X POST http://localhost:8000/api/v1/service-setup/qualify "
+            "-H \"Content-Type: application/json\" "
+            "-d '{\"pain_clear\":true,\"owner_present\":true,\"data_available\":true,"
+            "\"accepts_governance\":true,\"has_budget\":true,\"wants_safe_methods\":true,"
+            "\"proof_path_visible\":true,\"retainer_path_visible\":true,"
+            "\"raw_request_text\":\"Warm intro lead\",\"sector\":\"technology\",\"city\":\"riyadh\"}' "
+            "| python3 -m json.tool"
+        ),
+        120,
+    ),
+    ActionCommand(
+        "follow_up_sla_24h",
+        (
+            "python3 scripts/dealix_founder_daily_brief.py --blocking-approvals 0 "
+            "--pending-payments 0 --pending-proof-packs 0 --overdue-followups 0 "
+            "--sla-at-risk 0 --format json"
+        ),
+    ),
+    ActionCommand("watch_ci_blockers", "bash scripts/ci_watch.sh", 180),
+    ActionCommand(
+        "one_capital_asset_per_engagement",
+        (
+            "python3 -c \"from auto_client_acquisition.capital_os.capital_ledger import add_asset; "
+            "a=add_asset(customer_id='sample', engagement_id='eng_ceo_top50', "
+            "asset_type='playbook', owner='ceo', asset_ref='docs/strategic/CEO_TOP50_EXECUTION_SYSTEM_AR.md', "
+            "notes='CEO Top50 operating system'); print(a.asset_id)\""
+        ),
+    ),
+    ActionCommand("prepare_live_payment_cutover", "python3 scripts/moyasar_live_cutover.py --skip-test-charge", 120),
+    ActionCommand("monthly_refund_payment_governance", "python3 scripts/monthly_cadence_runner.py --all-active"),
     ActionCommand("run_weekly_executive_pack", "python3 scripts/dealix_weekly_executive_pack.py --all-customers"),
     ActionCommand("weekly_retro_friction_proof_capital", "python3 scripts/dealix_pm_daily.py --json"),
 )
@@ -155,6 +198,11 @@ def main() -> int:
         action="store_true",
         help="Also execute automatable NEXT_7 items if defined",
     )
+    parser.add_argument(
+        "--run-next-30",
+        action="store_true",
+        help="Also execute automatable NEXT_30 items if defined",
+    )
     args = parser.parse_args()
 
     repo_root = Path(__file__).resolve().parent.parent
@@ -173,25 +221,39 @@ def main() -> int:
         row = rows_by_action.get(item.action)
         if row is None:
             continue
-        if row["status"] not in {"DONE_NOW", "NEXT_7"}:
+        if row["status"] not in {"DONE_NOW", "NEXT_7", "NEXT_30"}:
             continue
         if row["status"] == "NEXT_7" and not args.run_next_7:
             continue
+        if row["status"] == "NEXT_30" and not args.run_next_30:
+            continue
 
         started = _now_utc()
-        proc = subprocess.run(
-            item.command,
-            cwd=repo_root,
-            text=True,
-            shell=True,
-            capture_output=True,
-            timeout=item.timeout_seconds,
-        )
+        timed_out = False
+        try:
+            proc = subprocess.run(
+                item.command,
+                cwd=repo_root,
+                text=True,
+                shell=True,
+                capture_output=True,
+                timeout=item.timeout_seconds,
+            )
+            exit_code = proc.returncode
+            stdout_tail = "\n".join(proc.stdout.strip().splitlines()[-20:])
+            stderr_tail = "\n".join(proc.stderr.strip().splitlines()[-20:])
+        except subprocess.TimeoutExpired as exc:
+            timed_out = True
+            exit_code = 124
+            out = exc.stdout if isinstance(exc.stdout, str) else (exc.stdout or b"").decode("utf-8", "ignore")
+            err = exc.stderr if isinstance(exc.stderr, str) else (exc.stderr or b"").decode("utf-8", "ignore")
+            stdout_tail = "\n".join(out.strip().splitlines()[-20:])
+            stderr_tail = "\n".join(err.strip().splitlines()[-20:])
         ended = _now_utc()
-        status = "PASS" if proc.returncode == 0 else "FAIL"
+        status = "PASS" if exit_code == 0 else "FAIL"
         row["last_run_utc"] = ended.isoformat()
         row["next_review_utc"] = next_review
-        if row["status"] == "NEXT_7" and proc.returncode == 0:
+        if row["status"] in {"NEXT_7", "NEXT_30"} and exit_code == 0:
             row["status"] = "DONE_NOW"
 
         results.append(
@@ -199,11 +261,12 @@ def main() -> int:
                 "action": item.action,
                 "status": status,
                 "command": item.command,
-                "exit_code": proc.returncode,
+                "exit_code": exit_code,
+                "timed_out": timed_out,
                 "started_at_utc": started.isoformat(),
                 "ended_at_utc": ended.isoformat(),
-                "stdout_tail": "\n".join(proc.stdout.strip().splitlines()[-20:]),
-                "stderr_tail": "\n".join(proc.stderr.strip().splitlines()[-20:]),
+                "stdout_tail": stdout_tail,
+                "stderr_tail": stderr_tail,
             }
         )
 
