@@ -5,7 +5,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any
 
-from auto_client_acquisition.data_os.data_quality_score import DataQualityScore, compute_dq
+from auto_client_acquisition.data_os.data_quality_score import DataQualityScore, compute_dq_from_preview
 
 
 @dataclass(frozen=True, slots=True)
@@ -87,7 +87,7 @@ def flywheel_inputs_from_preview(
     learning_adoption: float = 72.0,
 ) -> FlywheelInputs:
     """Convenience: compute DQ from import preview then derive flywheel inputs."""
-    dq = compute_dq(preview=preview, duplicates_found=duplicates_found, source_passport=source_passport)
+    dq = compute_dq_from_preview(preview=preview, duplicates_found=duplicates_found, source_passport=source_passport)
     return flywheel_inputs_from_import_quality(
         dq,
         signal_freshness=signal_freshness,

@@ -1,6 +1,7 @@
-"""Value OS — auditable value ledger with discipline checks."""
+"""Value OS — auditable value ledger with discipline checks and JSONL/Postgres backends."""
 
 from auto_client_acquisition.value_os.value_ledger import (
+    VALID_TIERS,
     ValueDisciplineError,
     ValueEvent,
     ValueLedgerEvent,
@@ -12,6 +13,7 @@ from auto_client_acquisition.value_os.value_ledger import (
 )
 
 __all__ = [
+    "VALID_TIERS",
     "ValueDisciplineError",
     "ValueEvent",
     "ValueLedgerEvent",

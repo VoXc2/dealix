@@ -15,6 +15,10 @@ from auto_client_acquisition.proof_architecture_os.value_ledger import (
     value_ledger_event_valid,
 )
 
+VALID_TIERS: frozenset[str] = frozenset(
+    {"estimated", "observed", "verified", "client_confirmed"},
+)
+
 
 class ValueDisciplineError(ValueError):
     """Raised when tier/source discipline is violated."""
@@ -66,7 +70,7 @@ def _serialize(ev: ValueEvent) -> str:
 def _deserialize(line: str) -> ValueEvent:
     data = json.loads(line)
     return ValueEvent(
-        event_id=str(data.get("event_id", "")),
+        event_id=str(data.get("event_id", data.get("value_event_id", ""))),
         customer_id=str(data.get("customer_id", "")),
         kind=str(data.get("kind", "")),
         amount=float(data.get("amount", 0.0)),
@@ -80,7 +84,7 @@ def _deserialize(line: str) -> ValueEvent:
 
 def _dict_to_event(data: dict[str, Any]) -> ValueEvent:
     return ValueEvent(
-        event_id=str(data.get("event_id", "")),
+        event_id=str(data.get("event_id", data.get("value_event_id", ""))),
         customer_id=str(data.get("customer_id", "")),
         kind=str(data.get("kind", "")),
         amount=float(data.get("amount", 0.0)),
@@ -94,6 +98,10 @@ def _dict_to_event(data: dict[str, Any]) -> ValueEvent:
 
 def _discipline_check(*, tier: str, source_ref: str, confirmation_ref: str) -> None:
     normalized_tier = tier.strip().lower()
+    if normalized_tier not in VALID_TIERS:
+        raise ValueDisciplineError(
+            f"invalid_tier: {normalized_tier!r} (allowed: {sorted(VALID_TIERS)})"
+        )
     if normalized_tier == "verified" and not source_ref.strip():
         raise ValueDisciplineError("verified tier requires source_ref")
     if normalized_tier == "client_confirmed":
@@ -249,7 +257,11 @@ def clear_for_test(customer_id: str | None = None) -> None:
         if not customer_id:
             path.unlink()
         else:
-            kept = [ev for ev in _list_jsonl(customer_id=None, since_days=None, limit=100_000) if ev.customer_id != customer_id]
+            kept = [
+                ev
+                for ev in _list_jsonl(customer_id=None, since_days=None, limit=100_000)
+                if ev.customer_id != customer_id
+            ]
             with path.open("w", encoding="utf-8") as handle:
                 for ev in kept:
                     handle.write(_serialize(ev))
@@ -261,6 +273,7 @@ def clear_for_test(customer_id: str | None = None) -> None:
 
 
 __all__ = [
+    "VALID_TIERS",
     "ValueDisciplineError",
     "ValueEvent",
     "ValueLedgerEvent",

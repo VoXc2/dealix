@@ -105,13 +105,13 @@ def step1_kickoff(*, customer_id: str, engagement_id: str, source_passport: dict
 
 def step2_data_quality(*, customer_id: str, engagement_id: str, raw_csv: str | bytes = b"") -> dict:
     """Day 2: Import preview + DQ score."""
-    from auto_client_acquisition.data_os.data_quality_score import compute_dq
+    from auto_client_acquisition.data_os.data_quality_score import compute_dq_from_preview
     from auto_client_acquisition.data_os.import_preview import preview
     raw = raw_csv.encode("utf-8") if isinstance(raw_csv, str) else raw_csv
     if not raw:
         return {"row_count": 0, "dq": 0, "skipped": "no_csv_provided"}
     p = preview(raw)
-    dq = compute_dq(preview=p, duplicates_found=0)
+    dq = compute_dq_from_preview(preview=p, duplicates_found=0)
     return {
         "row_count": p.row_count,
         "columns": list(p.columns),

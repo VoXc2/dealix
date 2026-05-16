@@ -19,6 +19,8 @@ from auto_client_acquisition.trust_os.trust_dashboard import TRUST_DASHBOARD_SIG
 from auto_client_acquisition.trust_os.trust_pack import (
     ENTERPRISE_TRUST_SECTIONS,
     TRUST_PACK_MARKDOWN_PATH,
+    TrustPack,
+    assemble_trust_pack,
 )
 
 __all__ = [
@@ -29,6 +31,8 @@ __all__ = [
     "TRUST_DASHBOARD_SIGNALS",
     "TRUST_PACK_MARKDOWN_PATH",
     "SourcePassport",
+    "TrustPack",
+    "assemble_trust_pack",
     "compliance_report_sections_complete",
     "example_ai_run_record",
     "example_client_upload_passport",
