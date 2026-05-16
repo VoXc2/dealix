@@ -20,7 +20,10 @@ from auto_client_acquisition.governance_os.policy_check import (
     run_policy_check,
 )
 from auto_client_acquisition.governance_os.runtime_decision import (
+    DecideResult,
     GovernanceDecision,
+    RuntimeVerdict,
+    decide,
     governance_decision_from_passport_ai_gate,
     governance_decision_from_policy_check,
 )
@@ -33,16 +36,19 @@ from auto_client_acquisition.governance_os.lawful_basis import LawfulBasis, desc
 __all__ = [
     "CHANNEL_POLICY_AR",
     "ClaimSafetyResult",
+    "DecideResult",
     "FORBIDDEN_CHANNEL_MARKERS",
     "GovernanceDecision",
     "LawfulBasis",
     "ApprovalRequirement",
     "PolicyCheckResult",
     "PolicyVerdict",
+    "RuntimeVerdict",
     "approval_for_action",
     "approval_for_external_channel",
     "audit_claim_safety",
     "audit_draft_text",
+    "decide",
     "describe_basis",
     "draft_text_has_forbidden_channel_language",
     "forbidden_channel_markers",

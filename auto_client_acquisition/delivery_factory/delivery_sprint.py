@@ -84,21 +84,23 @@ def step1_kickoff(*, customer_id: str, engagement_id: str, source_passport: dict
     """Day 1: Source Passport agreement."""
     from auto_client_acquisition.data_os.source_passport import (
         SourcePassport,
-        validate,
+        source_passport_valid_for_ai,
     )
     if not source_passport:
         return {
             "passport_provided": False,
-            "validation": {"is_valid": False, "reasons": ("no_passport",)},
+            "validation": {"is_valid": False, "reasons": ["no_passport"]},
         }
-    sp = SourcePassport(**source_passport)
-    result = validate(sp)
+    fields = dict(source_passport)
+    if "allowed_use" in fields:
+        fields["allowed_use"] = frozenset(fields["allowed_use"])
+    sp = SourcePassport(**fields)
+    is_valid, reasons = source_passport_valid_for_ai(sp)
     return {
         "passport_provided": True,
         "validation": {
-            "is_valid": result.is_valid,
-            "reasons": list(result.reasons),
-            "missing": list(result.missing),
+            "is_valid": is_valid,
+            "reasons": list(reasons),
         },
     }
 
@@ -106,16 +108,19 @@ def step1_kickoff(*, customer_id: str, engagement_id: str, source_passport: dict
 def step2_data_quality(*, customer_id: str, engagement_id: str, raw_csv: str | bytes = b"") -> dict:
     """Day 2: Import preview + DQ score."""
     from auto_client_acquisition.data_os.data_quality_score import compute_dq
-    from auto_client_acquisition.data_os.import_preview import preview
-    raw = raw_csv.encode("utf-8") if isinstance(raw_csv, str) else raw_csv
-    if not raw:
-        return {"row_count": 0, "dq": 0, "skipped": "no_csv_provided"}
-    p = preview(raw)
-    dq = compute_dq(preview=p, duplicates_found=0)
+    from auto_client_acquisition.data_os.import_preview import import_preview_csv
+    text = raw_csv.decode("utf-8") if isinstance(raw_csv, bytes) else raw_csv
+    if not text.strip():
+        return {"row_count": 0, "dq_overall": 0.0, "skipped": "no_csv_provided"}
+    p = import_preview_csv(text)
+    if "error" in p:
+        return {"row_count": 0, "dq_overall": 0.0, "error": p["error"]}
+    rows = list(p.get("preview_rows", []))
+    columns = list(p.get("detected_columns", []))
+    dq = compute_dq(rows, columns=columns, has_valid_passport=False)
     return {
-        "row_count": p.row_count,
-        "columns": list(p.columns),
-        "pii_columns": list(p.pii_columns),
+        "row_count": int(p.get("parsed_row_count", len(rows))),
+        "columns": columns,
         "dq_overall": dq.overall,
         "dq_breakdown": {
             "completeness": dq.completeness,

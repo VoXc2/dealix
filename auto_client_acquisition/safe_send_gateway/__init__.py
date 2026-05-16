@@ -23,6 +23,7 @@ Hard rules:
 from __future__ import annotations
 
 from .doctrine import (
+    DOCTRINE_REASONS,
     doctrine_violations_for_revenue_intelligence,
     enforce_doctrine_non_negotiables,
 )
@@ -34,6 +35,7 @@ from .middleware import (
 )
 
 __all__ = [
+    "DOCTRINE_REASONS",
     "SendBlocked",
     "SendDecision",
     "doctrine_violations_for_revenue_intelligence",
