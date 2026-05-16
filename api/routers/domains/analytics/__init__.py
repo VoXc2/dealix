@@ -8,6 +8,7 @@ from __future__ import annotations
 from fastapi import APIRouter
 
 from api.routers import (
+    board_decision_os as board_decision_os_router,
     company_brain,
     company_growth_beast,
     full_ops_radar as full_ops_radar_router,
@@ -36,6 +37,7 @@ _ROUTERS = [
     unified_operating_graph_router.router,
     partnership_os.router,
     proof_to_market.router,
+    board_decision_os_router.router,
 ]
 
 
