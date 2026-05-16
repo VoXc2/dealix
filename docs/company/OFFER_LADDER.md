@@ -1,76 +1,29 @@
 # Dealix Offer Ladder
 
-## Level 1 — Diagnostic
+> Single source of truth for the offer set and prices:
+> [`../COMPANY_SERVICE_LADDER.md`](../COMPANY_SERVICE_LADDER.md).
+> Dealix sells one 5-rung service ladder. This file must match it.
 
-```text
-Price: SAR 3.5k–7.5k
-Purpose: clarity
-```
+> Dealix is pre-revenue with zero customers. The table below describes
+> offers, not traction.
 
-Examples:
+## The 5-rung ladder
 
-```text
-Revenue Diagnostic
-AI Ops Diagnostic
-Data Readiness Assessment
-```
+| Rung | Offer | Price (SAR) | Trigger to unlock next rung |
+|---|---|---|---|
+| 0 | Free AI Ops Diagnostic | 0 | 3 diagnostics delivered |
+| 1 | 7-Day Revenue Intelligence Sprint | 499 | 1 paid pilot fully delivered |
+| 2 | Data-to-Revenue Pack | 1,500 | 3 pilots in the same sector |
+| 3 | Managed Revenue Ops | 2,999–4,999 / month | 3 consecutive months of paid retainer |
+| 4 | Custom AI Service Setup | 5,000–25,000 | 3 pilots delivered + signed publish permission |
 
-## Level 2 — Sprint
+## Rule
 
-```text
-Price: SAR 7.5k–25k
-Purpose: first proof
-```
+No jumping rungs. No Custom Enterprise tier without 6+ months of retainer
+history. No live charge, cold outreach, or scraping at any rung.
 
-Examples:
+See [`OFFER_ARCHITECTURE.md`](OFFER_ARCHITECTURE.md).
 
-```text
-Lead Intelligence Sprint
-AI Quick Win Sprint
-```
-
-## Level 3 — Pilot
-
-```text
-Price: SAR 22k–60k
-Purpose: operational validation
-```
-
-Examples:
-
-```text
-Pilot Conversion Sprint
-Workflow Pilot
-Support Desk Pilot
-```
-
-## Level 4 — Retainer
-
-```text
-Price: SAR 8k–60k/month
-Purpose: continuity
-```
-
-Examples:
-
-```text
-Monthly RevOps OS
-Monthly AI Ops
-Monthly Company Brain
-```
-
-## Level 5 — Enterprise
-
-```text
-Price: SAR 85k–300k+ setup (indicative)
-Purpose: scale
-```
-
-Examples:
-
-```text
-Enterprise AI OS
-Governed AI Operations Platform
-```
-
-See [`OFFER_ARCHITECTURE.md`](OFFER_ARCHITECTURE.md), [`IMPLEMENTATION_TIERS.md`](IMPLEMENTATION_TIERS.md).
+> Estimated value is not Verified value / القيمة التقديرية ليست قيمة مُتحقَّقة.
+</content>
+</invoke>

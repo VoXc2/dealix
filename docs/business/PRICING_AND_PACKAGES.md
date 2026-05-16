@@ -1,78 +1,83 @@
 # Dealix — Pricing & Packages (Saudi B2B)
 
-Pricing in SAR. All packages assume PDPL compliance + opt-out + human approval for first 30 days.
+> Single source of truth for the offer set and prices:
+> [`../COMPANY_SERVICE_LADDER.md`](../COMPANY_SERVICE_LADDER.md).
+> Dealix sells one 5-rung service ladder. This file must match it.
 
-## Tier 1: Managed Pilot (cash-positive in 7 days)
+> Dealix is pre-revenue with zero customers. The tables below describe
+> offers, not traction.
 
-**Sami runs Dealix manually for 7 days; customer pays a small entry fee, then upgrades.**
+Pricing in SAR. All rungs assume PDPL compliance, opt-out, and human approval.
 
-| | Pilot Lite | Pilot Standard | Pilot Pro |
+## The 5-rung ladder
+
+| Rung | Offer | Price (SAR) | Trigger to unlock next rung |
 |---|---|---|---|
-| **Price** | 499 SAR | 999 SAR | 1,500 SAR |
-| **Duration** | 7 days | 7 days | 7 days |
-| **Leads handled** | up to 10 | up to 25 | up to 50 |
-| **Channels** | website form + WhatsApp inbound | + email | + phone call routing |
-| **Daily report** | end-of-day | morning + evening | live dashboard |
-| **Refund window** | 3 days | 5 days | 7 days |
+| 0 | Free AI Ops Diagnostic | 0 | 3 diagnostics delivered |
+| 1 | 7-Day Revenue Intelligence Sprint | 499 | 1 paid pilot fully delivered |
+| 2 | Data-to-Revenue Pack | 1,500 | 3 pilots in the same sector |
+| 3 | Managed Revenue Ops | 2,999–4,999 / month | 3 consecutive months of paid retainer |
+| 4 | Custom AI Service Setup | 5,000–25,000 | 3 pilots delivered + signed publish permission |
 
-**Why it works:** customer risks the price of a coffee dinner, sees real Arabic responses inside 24h. Conversion to paid Starter: target 50%+.
+## Rung 0 — Free AI Ops Diagnostic
 
-## Tier 2: Setup Fee (one-time integration)
+- 1-page bilingual diagnostic in 24-48 hours.
+- 3 prioritized opportunities + 1 message draft + 1 risk + a next-step recommendation.
+- Price: 0 SAR.
 
-| | Lite | Standard | Advanced |
-|---|---|---|---|
-| **Price** | 1,000 SAR | 3,000 SAR | 7,500–12,000 SAR |
-| **Includes** | 1 channel + 1 CRM mapping | 3 channels + CRM + Calendly | Full multi-channel + custom integrations + bilingual prompts |
-| **Delivery** | 3 business days | 5 business days | 10 business days |
+## Rung 1 — 7-Day Revenue Intelligence Sprint
 
-## Tier 3: Monthly Subscription (after pilot)
+- 499 SAR, paid once in advance.
+- Detailed diagnostic + 10 opportunities + approval-ready message drafts +
+  30-day follow-up plan + Proof Pack draft.
+- Refund window: 7 days from delivery.
+- Payment: Moyasar test mode or bank transfer. Live charge is blocked.
 
-> **Code-truth alignment:** The prices below match `api/routers/pricing.py` PLANS dict. Any divergence is a bug.
+## Rung 2 — Data-to-Revenue Pack
 
-| | Starter | Growth | Scale | Enterprise |
-|---|---|---|---|---|
-| **Price/month** | 999 SAR | 2,999 SAR | 7,999 SAR | custom |
-| **Leads/month** | 200 | 1,000 | 5,000 | unlimited |
-| **Channels** | 2 | 4 | all | all + private LLM |
-| **Approval mode** | manual first 30 days, then mixed | mixed | mixed | mixed |
-| **SLA** | 1h | 30 min | 15 min | 5 min |
-| **Onboarding** | 1 hour | 2 hours | half-day | dedicated |
-| **AI services bundled** | S1+S3 | S1+S3+S6+S7 | All 7 (S1-S7) | All 7 + custom |
+- 1,500 SAR, single project.
+- Full pipeline analysis + ranked opportunity map + 10 targeting drafts +
+  sector playbook. The customer supplies the data; no scraping.
 
-## Tier 4: Agency / Partner Revenue Share
+## Rung 3 — Managed Revenue Ops
 
-| Partner type | Setup | Recurring share |
-|---|---|---|
-| Referral partner | 0 | 10% MRR for 12 months |
-| Agency reseller | 1,000 SAR setup, included in client price | 25% MRR while client active |
-| Implementation partner | 2,500 SAR per setup | 15% MRR for 6 months |
-| White-label (later) | 25,000 SAR | 30% MRR |
+- 2,999–4,999 SAR per month, confirmed per engagement.
+- Weekly executive brief + monthly approval-ready drafts + monthly Proof Pack
+  + KPI report + monthly strategy session.
+- Requires a Rung 1 pilot delivered for the same customer first.
 
-## Tier 5: Pay-per-result (post-validation)
+## Rung 4 — Custom AI Service Setup
 
-For customers who hate subscription:
+- 5,000–25,000 SAR, scoped per engagement.
+- A customer-specific AI service build on top of an existing retainer.
+- Requires 3 pilots delivered + a signed publish permission.
 
-| Outcome | Price |
-|---|---|
-| Qualified Arabic-replied lead | 25 SAR |
-| Booked demo on calendar | 150 SAR |
-| Closed customer (success fee) | 5–10% of first-year contract |
+## Locked / future — not active offers
 
-## Discount + bundle rules
+"Executive Command Center", "Support OS Add-on", and "Agency Partner OS" are
+not standalone offers. They may become components of Rung 3 or Rung 4 only
+after that rung's unlock trigger is met. Do not quote or sell them.
 
-- Annual prepay → 2 months free.
-- 3 customer referral → 1 free month.
-- Saudi-flag founders → 25% off pilot.
-- Sponsor a case study → 50% off month 1.
+## Hard rules
+
+- No skipping rungs.
+- No Custom Enterprise tier without 6+ months of retainer history.
+- Never promise sales numbers, conversion rates, or ROI as fact.
+- No live charge, cold outreach, cold WhatsApp, or scraping at any rung.
+- No public customer name without signed permission.
 
 ## Refund policy
 
-- Pilot: 100% refund in window if Dealix didn't reply to a single Arabic lead.
-- Subscription: 7-day money-back on first month.
-- After 30 days: pro-rata.
+- Rung 1 Sprint: 7-day money-back from delivery.
+- Rung 3 retainer: pro-rata after the first month.
 
-## When to NOT discount
+## When NOT to discount
 
-- 5,000+ SAR contracts where customer hasn't seen pilot proof. Make them pilot first.
-- Customers asking "can you also send cold WhatsApp?" — politely decline. Dealix is inbound-only.
-- Anyone asking to skip the manual approval gate in first 30 days.
+- Customers who haven't seen Rung 0 or Rung 1 proof. Move them through the
+  ladder first.
+- Anyone asking for cold WhatsApp or scraping — politely decline; Dealix is
+  inbound-only and the customer supplies the data.
+
+> Estimated value is not Verified value / القيمة التقديرية ليست قيمة مُتحقَّقة.
+</content>
+</invoke>

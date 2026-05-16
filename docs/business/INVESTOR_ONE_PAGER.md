@@ -23,14 +23,14 @@
 
 **Three engines (already built):**
 1. **Lead Engine** — 5 data adapters (Google Maps/CSE/Hunter/Firecrawl/Wappalyzer) + Saudi sources (Chambers, SDAIA, MCI, ZATCA)
-2. **Service Engine** — 7 AI services productized (S1-S7) with endpoint surface + landing page
+2. **Service Engine** — delivers a single 5-rung service ladder with endpoint surface + landing pages
 3. **Trust Engine** — PDPL Articles 5/13/14/18/21/32 wired + ZATCA Phase 2 e-invoice + 24-hour breach notification SLA
 
-**Seven revenue streams (all scaffolded):**
-- R1 Managed Pilot (499 SAR), R2 SaaS (999-7,999 SAR/mo), R3 LaaS (25/150 SAR metered), R4 Sector Reports (1.5K-10K), R5 Bespoke AI (5K-25K), R6 White-Label (1K + 25% rev share), R7 Enterprise PMO (25K-100K/mo)
+**One 5-rung service ladder** (single source of truth: `docs/COMPANY_SERVICE_LADDER.md`):
+- Rung 0 Free AI Ops Diagnostic (0 SAR), Rung 1 7-Day Revenue Intelligence Sprint (499 SAR), Rung 2 Data-to-Revenue Pack (1,500 SAR), Rung 3 Managed Revenue Ops (2,999-4,999 SAR/mo), Rung 4 Custom AI Service Setup (5,000-25,000 SAR). Each rung unlocks only after the prior rung ships real evidence. Dealix is pre-revenue with zero customers.
 
 **Engineering state:**
-- 120+ FastAPI routers, 300+ tests, 8 Alembic migrations
+- ~145 FastAPI router files (750 API paths), 3,730 tests collected, 8 Alembic migrations
 - Tenant theming end-to-end, ICP scoring, PDPL DSAR endpoints
 - Live compliance status endpoint (computed from actual code state, not hardcoded badges)
 
@@ -76,7 +76,7 @@ We close pre-seed when we have **10 paying customers** because:
 - **Repo:** `github.com/VoXc2/dealix` (admin access granted to serious diligence parties)
 - **Live compliance posture:** `GET /api/v1/compliance/status` (returns real-time state, not screenshots)
 - **Landing:** `dealix.me` with 60+ pages including:
-  - `/services.html` — 7 productized AI services
+  - `/services.html` — the 5-rung service ladder
   - `/bespoke-ai.html` — R5 intake form wired to API
   - `/vision.html` — 2026-2032 strategic plan
   - `/dpo.html` — PDPL Art. 32 disclosure

@@ -1,24 +1,36 @@
 # Dealix — Pricing and Packaging
 
-Full pricing logic: `docs/sales-kit/dealix_pricing_roi_calculator.html` and `docs/revenue/REVENUE_READINESS.md`.
+> Single source of truth for the offer set and prices:
+> [`../COMPANY_SERVICE_LADDER.md`](../COMPANY_SERVICE_LADDER.md).
+> Dealix sells one 5-rung service ladder. This file must match it.
 
-## Tiers
-- Pilot: 1 SAR x 7 days
-- Starter: 999 SAR/mo
-- Growth: 2,999 SAR/mo
-- Scale: 7,999 SAR/mo
-- Enterprise: custom
+> Dealix is pre-revenue with zero customers. The table below describes
+> offers, not traction.
 
-## Add-ons
-- Setup: 1,000-3,000 SAR
-- White-label: 15,000 SAR
+## The 5-rung ladder
 
-## Annual discount: 15%
+| Rung | Offer | Price (SAR) | Trigger to unlock next rung |
+|---|---|---|---|
+| 0 | Free AI Ops Diagnostic | 0 | 3 diagnostics delivered |
+| 1 | 7-Day Revenue Intelligence Sprint | 499 | 1 paid pilot fully delivered |
+| 2 | Data-to-Revenue Pack | 1,500 | 3 pilots in the same sector |
+| 3 | Managed Revenue Ops | 2,999–4,999 / month | 3 consecutive months of paid retainer |
+| 4 | Custom AI Service Setup | 5,000–25,000 | 3 pilots delivered + signed publish permission |
 
-## Partner commissions
-- Referral: 10% / 12 months
-- Service provider: 20% lifetime
-- Agency: 25-40% lifetime
+## Rules
 
-## Overage
-Leads above monthly quota: 0.50 SAR/additional lead.
+- No skipping rungs.
+- No Custom Enterprise tier without 6+ months of retainer history.
+- Rung 3 and Rung 4 prices are ranges, confirmed per engagement.
+- Never promise metrics the customer didn't supply.
+- No live charge, cold outreach, or scraping at any rung.
+
+## Locked / future — not active offers
+
+"Executive Command Center", "Support OS Add-on", and "Agency Partner OS" are
+not standalone offers. They may become components of Rung 3 or Rung 4 only
+after that rung's unlock trigger is met. Do not quote or sell them.
+
+> Estimated value is not Verified value / القيمة التقديرية ليست قيمة مُتحقَّقة.
+</content>
+</invoke>

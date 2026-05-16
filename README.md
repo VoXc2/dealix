@@ -9,8 +9,9 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.115-green)](https://fastapi.tiangolo.com/)
-[![Tests: 290+](https://img.shields.io/badge/tests-290+-green)](tests/)
-[![Routers: 117](https://img.shields.io/badge/API%20routers-117-blue)](api/routers/)
+[![Tests: 3730 collected](https://img.shields.io/badge/tests-3730%20collected-green)](tests/)
+[![API: 145 routers / 750 paths](https://img.shields.io/badge/API-145%20routers%20%2F%20750%20paths-blue)](api/routers/)
+[![Stage: pre-revenue](https://img.shields.io/badge/stage-pre--revenue-lightgrey)](docs/COMPANY_SERVICE_LADDER.md)
 [![PDPL: native](https://img.shields.io/badge/PDPL-native-success)](integrations/pdpl.py)
 [![ZATCA: Phase 2](https://img.shields.io/badge/ZATCA-Phase%202-success)](integrations/zatca.py)
 
@@ -24,15 +25,29 @@
 
 A **Saudi B2B Revenue Engine** with three layers:
 
-1. **Lead Engine** — acquire Saudi B2B leads from Google/Maps/Chambers/SDAIA/MCI, enrich them, score against ICP, suppress dupes. PDPL-compliant by design.
-2. **Service Engine** — 7 productized AI services (Diagnostic, AI Sales Assistant, Decision Passport, Customer Health, Proof Curation, Growth Signals, Executive Command Center). See `/api/v1/...` endpoints.
+1. **Lead Engine** — acquire Saudi B2B leads from Google/Maps/Chambers/SDAIA/MCI, enrich them, score against ICP, suppress dupes. PDPL-compliant by design. The customer supplies the data; no scraping.
+2. **Service Engine** — the offers a customer can buy are organized as a single **5-rung service ladder** (see below), not a flat catalog. See `/api/v1/...` endpoints.
 3. **Trust Engine** — PDPL Art. 5/13/14/18/21 wiring, ZATCA Phase 2 e-invoice, decision audit trail. The defensible moat against translated US tools.
 
-**7 revenue streams** monetize the 3 engines: Managed Pilot (499 SAR), SaaS Subscription (999/2,999/7,999 SAR/mo), Lead-as-a-Service (25 SAR/replied lead), Sector Reports (1.5K-10K SAR), Bespoke AI Setup (5K-25K SAR), Agency White-Label (1K setup + 25% rev share), Enterprise PMO (25K-100K SAR/mo).
+**Dealix sells one 5-rung service ladder.** Each rung unlocks only after the
+prior rung has shipped real evidence. This is the single source of truth —
+the canonical reference is [`docs/COMPANY_SERVICE_LADDER.md`](docs/COMPANY_SERVICE_LADDER.md).
+
+| Rung | Offer | Price (SAR) | Unlocks next rung when |
+|---|---|---|---|
+| 0 | Free AI Ops Diagnostic | 0 | 3 diagnostics delivered |
+| 1 | 7-Day Revenue Intelligence Sprint | 499 | 1 paid pilot fully delivered |
+| 2 | Data-to-Revenue Pack | 1,500 | 3 pilots in the same sector |
+| 3 | Managed Revenue Ops | 2,999–4,999 / month | 3 consecutive months of paid retainer |
+| 4 | Custom AI Service Setup | 5,000–25,000 | 3 pilots delivered + signed publish permission |
+
+**Stage:** Dealix is **pre-revenue with zero customers**. The ladder describes
+offers, not traction. No skipping rungs; no Custom Enterprise tier without 6+
+months of retainer history; no live charge, cold outreach, or scraping at any rung.
 
 ## 🎯 What's in this repo
 
-**Backend** — FastAPI + SQLAlchemy 2.0 async + Postgres. 117 routers across customer, sales, agents, compliance, analytics, webhooks domains. See [API_MAP.md](docs/architecture/API_MAP.md).
+**Backend** — FastAPI + SQLAlchemy 2.0 async + Postgres. ~145 router files exposing ~750 API paths across customer, sales, agents, compliance, analytics, webhooks domains. See [API_MAP.md](docs/architecture/API_MAP.md).
 
 **Lead Machine** — Provider adapter chains for Search / Maps / Crawler / Tech / EmailIntel that fall back gracefully when env keys are missing. See [PROVIDER_ADAPTERS.md](docs/architecture/PROVIDER_ADAPTERS.md).
 
@@ -40,7 +55,7 @@ A **Saudi B2B Revenue Engine** with three layers:
 
 **Frontend** — Static landing on GitHub Pages + interactive dashboard with live Saudi Lead Engine demo. See [landing/](landing/).
 
-**Day-1 Operating Kit** — 287 outreach-ready Saudi B2B accounts pre-built across 7 segments (real-estate / construction / hospitality / events / food / logistics / SaaS / agency). Pricing ladder + Pilot offer + Partner model + Channel templates. See [docs/business/](docs/business/).
+**Day-1 Operating Kit** — pre-built Saudi B2B account research across 7 segments (real-estate / construction / hospitality / events / food / logistics / SaaS / agency). The 5-rung service ladder + Diagnostic intake + channel templates. These are internal preparation assets — Dealix has not yet acquired a paying customer. See [docs/business/](docs/business/).
 
 </div>
 
@@ -131,7 +146,7 @@ Not localization — Gulf business register Arabic, SAR pricing tiers, Riyadh ti
 ## ✨ Core technical features
 
 - 🧠 **Multi-LLM routing with fallback** — Claude, Gemini, Groq, DeepSeek, GLM, OpenAI. Task → best provider → auto-fallback on failure. Per-provider usage tracking.
-- 🤖 **15+ production agents** — typed I/O, structured logging, graceful degradation, 63 tests.
+- 🤖 **15+ production agents** — typed I/O, structured logging, graceful degradation.
 - 🌍 **First-class bilingual AR/EN** — detection, routing (Arabic → GLM), content generation, sales scripts, docs.
 - 🔒 **Security-first** — `.env`-only config, `SecretStr` everywhere, gitleaks + detect-secrets + trufflehog + bandit in pre-commit AND CI, webhook HMAC verification, non-root Docker, ToS-safe LinkedIn.
 - 🐳 **Cloud-ready** — multi-stage Dockerfile, docker-compose stack (Postgres + Redis + Mongo), GitHub Actions CI/CD, GHCR image push on release tags.
@@ -272,7 +287,7 @@ All under [`dealix/masters/`](dealix/masters/) and [`dealix/registers/`](dealix/
 ## 🧪 Testing
 
 ```bash
-make test              # 63 tests, all passing
+make test              # 3,730 tests collected
 ```
 
 Tests include: intake, ICP matcher, pain extractor, model router, API endpoints, full Phase 8 pipeline, **Dealix contracts (with high-stakes validation)**, **Trust Plane (policy + approval + audit + tool verification)**, **Governed pipeline end-to-end**.

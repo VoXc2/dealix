@@ -1,23 +1,30 @@
 # Pricing
 
-## Entry
+> Single source of truth for the offer set and prices:
+> [`../COMPANY_SERVICE_LADDER.md`](../COMPANY_SERVICE_LADDER.md).
+> Dealix sells one 5-rung service ladder. This file must match it.
 
-- Revenue Diagnostic: SAR 3,500–7,500
-- AI Quick Win Sprint: SAR 7,500–15,000
+> Dealix is pre-revenue with zero customers. The table below describes
+> offers, not traction.
 
-## Core
+## The 5-rung ladder
 
-- Lead Intelligence Sprint: SAR 9,500–18,000
-- AI Support Desk Sprint: SAR 12,000–30,000
-- Workflow Automation Sprint: SAR 15,000–50,000
-- Company Brain Sprint: SAR 20,000–60,000
+| Rung | Offer | Price (SAR) | Trigger to unlock next rung |
+|---|---|---|---|
+| 0 | Free AI Ops Diagnostic | 0 | 3 diagnostics delivered |
+| 1 | 7-Day Revenue Intelligence Sprint | 499 | 1 paid pilot fully delivered |
+| 2 | Data-to-Revenue Pack | 1,500 | 3 pilots in the same sector |
+| 3 | Managed Revenue Ops | 2,999–4,999 / month | 3 consecutive months of paid retainer |
+| 4 | Custom AI Service Setup | 5,000–25,000 | 3 pilots delivered + signed publish permission |
 
-## Retainer
+## Rules
 
-- Monthly RevOps OS: SAR 15,000–60,000/month
-- Monthly AI Ops: SAR 15,000–60,000/month
+- No skipping rungs.
+- No Custom Enterprise tier without 6+ months of retainer history.
+- Rung 3 and Rung 4 prices are ranges, confirmed per engagement.
+- Never promise metrics the customer didn't supply.
+- No live charge, cold outreach, or scraping at any rung.
 
-## Enterprise
-
-- Enterprise AI OS: SAR 85,000–300,000+ setup
-- Enterprise Retainer: SAR 35,000–150,000/month
+> Estimated value is not Verified value / القيمة التقديرية ليست قيمة مُتحقَّقة.
+</content>
+</invoke>

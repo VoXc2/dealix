@@ -1,6 +1,13 @@
 # Offer Architecture
 
-Keep the **surface** simple; organize SKUs in **layers**.
+> The single source of truth for what Dealix sells and at what price is
+> [`../COMPANY_SERVICE_LADDER.md`](../COMPANY_SERVICE_LADDER.md) — one 5-rung
+> ladder (Free Diagnostic, 499 Sprint, 1,500 Pack, 2,999–4,999/mo Managed
+> Revenue Ops, 5,000–25,000 Custom AI Service Setup). The internal layering
+> below is a delivery-organization view only; it must not be quoted to
+> customers as a separate price list. Dealix is pre-revenue with zero customers.
+
+Keep the **surface** simple; organize internal delivery SKUs in **layers**.
 
 ## Front-end offers (entry, low-risk)
 

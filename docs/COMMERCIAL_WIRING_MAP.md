@@ -8,27 +8,49 @@ This document is the **single source of truth** showing how every commercial off
 
 ---
 
-## 1. The 7-offer canonical registry — السجل الرسمي للعروض السبعة
+## 1. The 5-rung canonical ladder — سُلَّم العروض الرسمي بدرجاته الخمس
 
-| `service_id` | Name (AR / EN) | Price (SAR) | Cadence | Customer Journey Stage |
-|---|---|---|---|---|
-| `free_mini_diagnostic` | التشخيص المجاني / Free Mini Diagnostic | 0 | one_time | discovery |
-| `revenue_proof_sprint_499` | سبرنت إثبات الإيرادات / Revenue Proof Sprint | 499 | one_time | first_paid |
-| `data_to_revenue_pack_1500` | حزمة من البيانات إلى الإيراد / Data-to-Revenue Pack | 1,500 | one_time | expansion |
-| `growth_ops_monthly_2999` | عمليات النمو الشهرية / Growth Ops Monthly | 2,999 | per_month | monthly |
-| `support_os_addon_1500` | إضافة دعم العمليات / Support OS Add-on | 1,500 | per_month | support_addon |
-| `executive_command_center_7500` | غرفة قيادة الإدارة / Executive Command Center | 7,500 | per_month | executive |
-| `agency_partner_os` | منصة شركاء الوكالات / Agency Partner OS | custom | — | channel |
+The canonical reference for what Dealix sells is
+[`docs/COMPANY_SERVICE_LADDER.md`](COMPANY_SERVICE_LADDER.md). This wiring map
+must align to it. There are **5 active rungs**, not 7 offers.
 
-The registry is authoritative — any disagreement with this table means **the code, not the table, is wrong**. Run `python -c "from auto_client_acquisition.service_catalog.registry import OFFERINGS; print([o.id for o in OFFERINGS])"` to verify.
+المرجع الرسمي لما تبيعه Dealix هو
+[`docs/COMPANY_SERVICE_LADDER.md`](COMPANY_SERVICE_LADDER.md). يجب أن تتوافق هذه
+الخريطة معه. توجد **5 درجات فعّالة** لا 7 عروض.
 
-السجل هو المرجع الرسمي — أي تعارض مع هذا الجدول يعني أن **الكود، وليس الجدول، هو الخطأ**.
+| Rung | `service_id` | Name (AR / EN) | Price (SAR) | Cadence | Journey Stage |
+|---|---|---|---|---|---|
+| 0 | `free_ai_ops_diagnostic` | تشخيص العمليات المجاني / Free AI Ops Diagnostic | 0 | one_time | discovery |
+| 1 | `revenue_intelligence_sprint_499` | سبرنت ذكاء الإيرادات / 7-Day Revenue Intelligence Sprint | 499 | one_time | first_paid |
+| 2 | `data_to_revenue_pack_1500` | حزمة من البيانات إلى الإيراد / Data-to-Revenue Pack | 1,500 | one_time | expansion |
+| 3 | `managed_revenue_ops` | إدارة عمليات الإيرادات / Managed Revenue Ops | 2,999–4,999 | per_month | monthly |
+| 4 | `custom_ai_service_setup` | إعداد خدمة ذكاء اصطناعي مخصصة / Custom AI Service Setup | 5,000–25,000 | scoped | custom |
+
+### Locked / future — not active offers — مغلقة / مستقبلية — ليست عروضاً فعّالة
+
+The following appeared in earlier registries. They are **not active offers**
+and must not be sold or quoted. They may become components of Rung 3 or Rung 4
+in the future, but only after the rung's unlock trigger is met.
+
+- `support_os_addon` — a possible Rung 3 component, not a standalone offer.
+- `executive_command_center` — a possible Rung 3/4 surface, not a standalone offer.
+- `agency_partner_os` — partner/channel motion. Locked until 3 pilots delivered + signed permission; not a customer-facing rung.
+
+العناصر التالية ظهرت في سجلات سابقة. **ليست عروضاً فعّالة** ولا تُباع ولا تُسعَّر.
+قد تصبح مكوّنات للدرجة 3 أو 4 مستقبلاً بعد استيفاء شرط الفتح فقط.
+
+If the code registry (`service_catalog/registry.py`) still lists 7 offers, the
+**registry is stale** and must be reconciled to this 5-rung ladder. The
+service ladder doc — not the code — is the source of truth for the offer set.
+
+إذا كان سجل الكود لا يزال يُدرج 7 عروض، فإن **السجل قديم** ويجب توفيقه مع هذا
+السُّلَّم بدرجاته الخمس.
 
 ---
 
 ## 2. Per-offer wiring — الربط لكل عرض
 
-### 2.1 `free_mini_diagnostic` — التشخيص المجاني
+### 2.1 Rung 0 — `free_ai_ops_diagnostic` — تشخيص العمليات المجاني
 
 - **Public landing:** `landing/diagnostic.html`
 - **Intake endpoint:** `POST /api/v1/company-growth-beast/diagnostic` + `POST /api/v1/public/demo-request`
@@ -38,7 +60,7 @@ The registry is authoritative — any disagreement with this table means **the c
 - **Founder dashboard surface:** `landing/founder-leads.html` + `GET /api/v1/founder/dashboard`
 - **Non-negotiables enforced:** `no_live_send`, `no_live_charge`, `no_cold_whatsapp`, `no_scraping`, `no_fake_proof`
 
-### 2.2 `revenue_proof_sprint_499` — سبرنت إثبات الإيرادات
+### 2.2 Rung 1 — `revenue_intelligence_sprint_499` — سبرنت ذكاء الإيرادات
 
 - **Public landing:** `landing/start.html` (with `landing/sprint-sample.html` for live preview)
 - **Intake endpoint:** `POST /api/v1/service-setup/qualify` → `POST /api/v1/service-setup/proposal/{customer_id}`
@@ -48,7 +70,7 @@ The registry is authoritative — any disagreement with this table means **the c
 - **Founder dashboard surface:** `landing/founder-dashboard.html` + `GET /api/v1/founder/dashboard`
 - **Non-negotiables enforced:** all 7 hard_gates from `registry.py`
 
-### 2.3 `data_to_revenue_pack_1500` — حزمة من البيانات إلى الإيراد
+### 2.3 Rung 2 — `data_to_revenue_pack_1500` — حزمة من البيانات إلى الإيراد
 
 - **Public landing:** `landing/data-pack.html` (NEW) + `landing/services.html` card
 - **Intake endpoint:** CSV upload via `POST /api/v1/data-os/import-preview/upload` (live demo) → qualified via `POST /api/v1/service-setup/qualify`
@@ -58,41 +80,40 @@ The registry is authoritative — any disagreement with this table means **the c
 - **Founder dashboard surface:** founder reviews CSV uploads and approves cleaned output
 - **Non-negotiables enforced:** 6 hard_gates
 
-### 2.4 `growth_ops_monthly_2999` — عمليات النمو الشهرية
+### 2.4 Rung 3 — `managed_revenue_ops` — إدارة عمليات الإيرادات
 
-- **Public landing:** `landing/pricing.html` (Growth card)
+- **Public landing:** `landing/pricing.html` (Managed Revenue Ops card)
+- **Price:** 2,999–4,999 SAR / month, confirmed per engagement.
 - **Intake endpoint:** `POST /api/v1/service-setup/qualify` → proposal
-- **Checkout:** `landing/checkout.html?tier=growth` → `POST /api/v1/payment-ops/invoice-intent`
+- **Checkout:** `landing/checkout.html?tier=managed_revenue_ops` → `POST /api/v1/payment-ops/invoice-intent`
 - **Delivery:** `scripts/weekly_brief_runner.py --all-active` + `scripts/monthly_cadence_runner.py --all-active --schedule-renewals`
 - **Proof / report:** `GET /api/v1/value/{handle}/report/monthly` + workspace
-- **Founder dashboard surface:** `landing/customer-portal.html?handle={customer}` (Wave 14J wired)
+- **Founder dashboard surface:** `landing/customer-portal.html?handle={customer}`
+- **Unlock rule:** requires a Rung 1 pilot delivered for the same customer.
 - **Non-negotiables enforced:** 8 hard_gates
 
-### 2.5 `support_os_addon_1500` — Support OS Add-on
+### 2.5 Rung 4 — `custom_ai_service_setup` — إعداد خدمة ذكاء اصطناعي مخصصة
 
-- **Public landing:** `landing/services.html` (card 4)
-- **Intake endpoint:** same qualification flow as Growth Ops
-- **Checkout:** `landing/checkout.html?tier=support_addon`
-- **Delivery:** `auto_client_acquisition/support_os/` (existing module)
-- **Proof / report:** monthly value report
-- **Non-negotiables enforced:** 5 hard_gates
-
-### 2.6 `executive_command_center_7500` — غرفة قيادة الإدارة
-
-- **Public landing:** `landing/executive-command-center.html`
+- **Public landing:** founder-led; no self-serve page.
+- **Price:** 5,000–25,000 SAR, scoped per engagement.
 - **Intake endpoint:** founder-led; `POST /api/v1/service-setup/requests`
-- **Checkout:** founder-issued invoice (manual Moyasar link)
-- **Delivery:** `auto_client_acquisition/executive_command_center/` (existing module)
-- **Proof / report:** daily founder brief (WhatsApp) + monthly board pack
-- **Non-negotiables enforced:** 8 hard_gates
+- **Checkout:** founder-issued invoice (manual Moyasar link).
+- **Delivery:** scoped build on top of an existing retainer relationship.
+- **Unlock rule:** 3 pilots delivered + a signed publish permission from the customer.
+- **Non-negotiables enforced:** 8 hard_gates; no Custom Enterprise tier without 6+ months retainer history.
 
-### 2.7 `agency_partner_os` — Agency Partner OS
+### 2.6 Locked / future surfaces — أسطح مغلقة / مستقبلية
 
-- **Public landing:** `landing/agency-partner.html`
-- **Intake endpoint:** `POST /api/v1/public/partner-application`
-- **Referral program:** `auto_client_acquisition/partnership_os/referral_store` (5,000 SAR per closed deal; persistence landed in Wave 14D.1)
-- **Founder dashboard surface:** `landing/founder-leads.html` + referral dashboard
-- **Non-negotiables enforced:** 8 hard_gates + the Partner Covenant (`docs/40_partners/PARTNER_COVENANT.md`)
+The surfaces below exist in the repo but are **not active offers**. They must
+not be quoted or sold as standalone products. They may later be folded into
+Rung 3 or Rung 4 once that rung's unlock trigger is met.
+
+- `support_os_addon` — `auto_client_acquisition/support_os/` module. Possible Rung 3 component. Locked.
+- `executive_command_center` — `auto_client_acquisition/executive_command_center/` module + `landing/executive-command-center.html`. Possible Rung 3/4 surface. Locked.
+- `agency_partner_os` — `landing/agency-partner.html` + `auto_client_acquisition/partnership_os/`. Partner/channel motion, not a customer-facing rung. Locked until 3 pilots delivered + signed permission, per the Partner Covenant (`docs/40_partners/PARTNER_COVENANT.md`).
+
+الأسطح أعلاه موجودة في الريبو لكنها **ليست عروضاً فعّالة**. لا تُسعَّر ولا تُباع
+كمنتجات مستقلة.
 
 ---
 
@@ -145,11 +166,13 @@ Each of these modules has its own bilingual README under `auto_client_acquisitio
 ## 5. The commercial-map endpoint — نقطة نهاية خريطة الربط
 
 ```
-GET /api/v1/commercial-map           → JSON list of 7 offers + URLs + endpoints
-GET /api/v1/commercial-map/markdown  → this document (always in sync with the registry)
+GET /api/v1/commercial-map           → JSON list of the 5 active rungs + URLs + endpoints
+GET /api/v1/commercial-map/markdown  → this document
 ```
 
-The markdown variant is rendered directly from `service_catalog/registry.py`. If you change the registry, this document changes automatically — there is no second source of truth to drift.
+This document and `docs/COMPANY_SERVICE_LADDER.md` define the 5-rung offer set.
+If `service_catalog/registry.py` still emits 7 offers, the registry is stale
+and must be reconciled — the service ladder doc is the source of truth.
 
 النسخة Markdown تُولَّد مباشرة من `service_catalog/registry.py`. عند تغيير السجل، تتغير هذه الوثيقة تلقائيًا.
 
@@ -180,4 +203,4 @@ If any of the three disagree, the deploy is broken. Roll back per `docs/RAILWAY_
 
 ## Footer
 
-> Estimated outcomes are not guaranteed outcomes / النتائج التقديرية ليست نتائج مضمونة.
+> Estimated value is not Verified value / القيمة التقديرية ليست قيمة مُتحقَّقة.
