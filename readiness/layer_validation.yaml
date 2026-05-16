@@ -1,0 +1,406 @@
+version: 1
+scoring:
+  ready_threshold: 80
+  cross_layer_ready_threshold: 85
+layers:
+  - id: foundation
+    title: "Foundation Layer"
+    owner: "Platform + Security"
+    kpis:
+      - "tenant_isolation_pass_rate"
+      - "auth_failure_rate"
+      - "backup_restore_success_rate"
+      - "deployment_rollback_mtta_minutes"
+    required_paths:
+      - "api/routers/auth.py"
+      - "api/security/rbac.py"
+      - "api/middleware/tenant_isolation.py"
+      - "db/session.py"
+      - "scripts/verify_backup.py"
+    tests:
+      - "tests/unit/test_auth_flow.py"
+      - "tests/test_tenant_isolation_v1.py"
+      - "tests/test_secure_agent_runtime.py"
+    checks:
+      - id: "tenant_isolation_tested"
+        description: "Tenant isolation has explicit automated test coverage."
+        evidence_paths:
+          - "tests/test_tenant_isolation_v1.py"
+      - id: "rbac_tested"
+        description: "RBAC controls are implemented and validated."
+        evidence_paths:
+          - "api/security/rbac.py"
+          - "tests/test_secure_agent_runtime.py"
+      - id: "audit_logs_working"
+        description: "Security and runtime actions are auditable."
+        evidence_paths:
+          - "auto_client_acquisition/compliance_trust_os/audit_trail.py"
+          - "tests/test_audit_export.py"
+      - id: "backups_tested"
+        description: "Backup verification exists and is executable."
+        evidence_paths:
+          - "scripts/verify_backup.py"
+          - "docs/V6_OBSERVABILITY_AND_INCIDENT_RUNBOOK.md"
+      - id: "rollback_tested"
+        description: "Rollback process is defined and recoverable."
+        evidence_paths:
+          - "docs/ops/INCIDENT_RUNBOOK.md"
+          - "dealix/masters/incident_rollback_runbook.md"
+      - id: "infra_observable"
+        description: "Infrastructure has monitoring/incident visibility."
+        evidence_paths:
+          - "auto_client_acquisition/observability_v6/incident.py"
+          - "docs/observability/posthog_dashboard.json"
+  - id: agents
+    title: "Agent Runtime Layer"
+    owner: "Agent Platform"
+    kpis:
+      - "agent_task_success_rate"
+      - "agent_escalation_rate"
+      - "agent_policy_block_rate"
+      - "agent_retry_recovery_rate"
+    required_paths:
+      - "auto_client_acquisition/agentic_operations_os/agent_lifecycle.py"
+      - "auto_client_acquisition/agentic_operations_os/agent_permissions.py"
+      - "auto_client_acquisition/agentic_operations_os/agent_governance.py"
+      - "auto_client_acquisition/agent_governance/agent_registry.py"
+      - "auto_client_acquisition/agent_governance/policy.py"
+    tests:
+      - "tests/test_agentic_operations_os.py"
+      - "tests/test_agent_autonomy_mvp_limit.py"
+      - "tests/test_agent_maturity_gates.py"
+    checks:
+      - id: "agent_lifecycle_working"
+        description: "Agent lifecycle states and transitions exist."
+        evidence_paths:
+          - "auto_client_acquisition/agentic_operations_os/agent_lifecycle.py"
+          - "tests/test_agent_maturity_gates.py"
+      - id: "tools_sandboxed"
+        description: "Tool use is policy-gated and bounded."
+        evidence_paths:
+          - "auto_client_acquisition/agent_governance/policy.py"
+          - "tests/test_secure_agent_runtime.py"
+      - id: "permissions_enforced"
+        description: "Agent permissions are implemented and tested."
+        evidence_paths:
+          - "auto_client_acquisition/agentic_operations_os/agent_permissions.py"
+          - "tests/test_agent_autonomy_mvp_limit.py"
+      - id: "retries_and_escalation_working"
+        description: "Retries and escalation paths are represented."
+        evidence_paths:
+          - "auto_client_acquisition/agentic_operations_os/handoff.py"
+          - "tests/test_agentic_operations_os.py"
+      - id: "memory_isolated"
+        description: "Agent memory interactions are isolated by context."
+        evidence_paths:
+          - "auto_client_acquisition/revenue_memory/isolated_pg_event_store.py"
+          - "tests/test_isolated_pg_event_store.py"
+      - id: "agent_logs_visible"
+        description: "Agent actions are visible in observability/audit paths."
+        evidence_paths:
+          - "auto_client_acquisition/agent_observability/trace.py"
+          - "tests/test_agent_observability_integration.py"
+  - id: workflows
+    title: "Workflow Engine Layer"
+    owner: "Delivery + Platform"
+    kpis:
+      - "workflow_success_rate"
+      - "workflow_retry_success_rate"
+      - "workflow_failure_recovery_time_minutes"
+      - "queue_backlog_age_minutes"
+    required_paths:
+      - "auto_client_acquisition/workflow_os/workflow_model.py"
+      - "auto_client_acquisition/workflow_os/workflow_metrics.py"
+      - "auto_client_acquisition/workflow_os/workflow_mapper.py"
+      - "core/queue/tasks.py"
+      - "auto_client_acquisition/delivery_factory/workflow_loader.py"
+    tests:
+      - "tests/test_workflow_os_v10.py"
+      - "tests/test_delivery_workflows_v2.py"
+      - "tests/test_diagnostic_workflow.py"
+    checks:
+      - id: "workflows_deterministic"
+        description: "Workflow contracts and schemas are deterministic."
+        evidence_paths:
+          - "auto_client_acquisition/workflow_os/workflow_model.py"
+          - "tests/test_workflow_os_v10.py"
+      - id: "workflows_retryable"
+        description: "Retry paths exist for workflow execution."
+        evidence_paths:
+          - "core/queue/tasks.py"
+          - "tests/test_delivery_workflows_v2.py"
+      - id: "workflows_auditable"
+        description: "Workflow execution can be audited."
+        evidence_paths:
+          - "auto_client_acquisition/compliance_trust_os/audit_trail.py"
+          - "tests/test_delivery_workflows_v2.py"
+      - id: "failure_recovery_tested"
+        description: "Failure recovery paths are explicitly tested."
+        evidence_paths:
+          - "tests/test_diagnostic_workflow.py"
+          - "docs/ops/INCIDENT_RUNBOOK.md"
+      - id: "workflows_observable"
+        description: "Workflow metrics and traces are available."
+        evidence_paths:
+          - "auto_client_acquisition/workflow_os/workflow_metrics.py"
+          - "tests/test_observability_v10.py"
+      - id: "workflow_versioning_defined"
+        description: "Workflow loading/version hooks exist."
+        evidence_paths:
+          - "auto_client_acquisition/delivery_factory/workflow_loader.py"
+          - "docs/product/WORKFLOW_REGISTRY.md"
+  - id: memory
+    title: "Memory & Knowledge Layer"
+    owner: "Knowledge + Data"
+    kpis:
+      - "citation_coverage_rate"
+      - "retrieval_relevance_score"
+      - "memory_isolation_incidents"
+      - "source_lineage_coverage_rate"
+    required_paths:
+      - "auto_client_acquisition/revenue_memory/event_store.py"
+      - "auto_client_acquisition/revenue_memory/isolated_pg_event_store.py"
+      - "auto_client_acquisition/knowledge_os/answer_with_citations.py"
+      - "auto_client_acquisition/knowledge_os/knowledge_eval.py"
+      - "docs/architecture/SOURCE_PASSPORT.md"
+    tests:
+      - "tests/unit/test_revenue_memory.py"
+      - "tests/test_knowledge_os_policy.py"
+      - "tests/test_data_os_source_passport_bridge.py"
+    checks:
+      - id: "citations_working"
+        description: "Cited answer path exists for knowledge responses."
+        evidence_paths:
+          - "auto_client_acquisition/knowledge_os/answer_with_citations.py"
+          - "tests/test_knowledge_os_policy.py"
+      - id: "retrieval_evals_present"
+        description: "Knowledge evaluation logic exists."
+        evidence_paths:
+          - "auto_client_acquisition/knowledge_os/knowledge_eval.py"
+          - "evals/company_brain_eval.yaml"
+      - id: "permissions_respected"
+        description: "Data/source policy bridges are enforced."
+        evidence_paths:
+          - "auto_client_acquisition/governance_os/policy_check.py"
+          - "tests/test_data_os_source_passport_bridge.py"
+      - id: "memory_isolated"
+        description: "Event store isolation exists for safer memory operations."
+        evidence_paths:
+          - "auto_client_acquisition/revenue_memory/isolated_pg_event_store.py"
+          - "tests/test_isolated_pg_event_store.py"
+      - id: "lineage_visible"
+        description: "Source passport and lineage docs exist."
+        evidence_paths:
+          - "docs/architecture/SOURCE_PASSPORT.md"
+          - "docs/revenue_memory/CANONICAL_EVENT_SPEC.md"
+  - id: governance
+    title: "Governance Layer"
+    owner: "Governance + Compliance"
+    kpis:
+      - "approval_sla_minutes"
+      - "policy_violation_rate"
+      - "audit_trail_completeness_rate"
+      - "compliance_check_pass_rate"
+    required_paths:
+      - "auto_client_acquisition/governance_os/runtime_decision.py"
+      - "auto_client_acquisition/governance_os/approval_matrix.py"
+      - "auto_client_acquisition/governance_os/policy_registry.py"
+      - "auto_client_acquisition/compliance_trust_os/audit_trail.py"
+      - "auto_client_acquisition/compliance_trust_os/compliance_report.py"
+    tests:
+      - "tests/test_governance_runtime_decision.py"
+      - "tests/test_governance_approval_matrix.py"
+      - "tests/test_governance_policy_check.py"
+      - "tests/test_governance_os_draft_gate.py"
+    checks:
+      - id: "approvals_enforced"
+        description: "Approval matrix and approval engine are enforced."
+        evidence_paths:
+          - "auto_client_acquisition/governance_os/approval_matrix.py"
+          - "auto_client_acquisition/compliance_trust_os/approval_engine.py"
+          - "tests/test_governance_approval_matrix.py"
+      - id: "audit_trails_complete"
+        description: "Audit trail is modeled and exported."
+        evidence_paths:
+          - "auto_client_acquisition/compliance_trust_os/audit_trail.py"
+          - "tests/test_audit_export.py"
+      - id: "policies_versioned"
+        description: "Policy registries/rules are centrally organized."
+        evidence_paths:
+          - "auto_client_acquisition/governance_os/policy_registry.py"
+          - "auto_client_acquisition/governance_os/rules/no_cold_whatsapp.yaml"
+      - id: "risk_scoring_working"
+        description: "Risk scoring and runtime decision are available."
+        evidence_paths:
+          - "auto_client_acquisition/risk_resilience_os/client_risk_score.py"
+          - "auto_client_acquisition/governance_os/runtime_decision.py"
+      - id: "compliance_checks_passing"
+        description: "Compliance rule engine has test coverage."
+        evidence_paths:
+          - "auto_client_acquisition/compliance_trust_os/claim_compliance.py"
+          - "tests/test_governance_policy_check.py"
+  - id: observability
+    title: "Observability Layer"
+    owner: "Reliability + Platform"
+    kpis:
+      - "trace_coverage_rate"
+      - "incident_detection_mttd_minutes"
+      - "incident_recovery_mttr_minutes"
+      - "alert_noise_ratio"
+    required_paths:
+      - "auto_client_acquisition/agent_observability/trace.py"
+      - "auto_client_acquisition/observability_v10/trace_schema.py"
+      - "auto_client_acquisition/observability_v6/incident.py"
+      - "docs/observability/posthog_dashboard.json"
+      - "docs/ops/INCIDENT_RUNBOOK.md"
+    tests:
+      - "tests/test_observability_v10.py"
+      - "tests/test_observability_v6.py"
+      - "tests/test_agent_observability_integration.py"
+    checks:
+      - id: "tracing_complete"
+        description: "Tracing schema and trace emitters exist."
+        evidence_paths:
+          - "auto_client_acquisition/agent_observability/trace.py"
+          - "auto_client_acquisition/observability_v10/trace_schema.py"
+      - id: "alerts_configured"
+        description: "Alerting runbook and policies are documented."
+        evidence_paths:
+          - "docs/ops/INCIDENT_RUNBOOK.md"
+          - "docs/V6_OBSERVABILITY_AND_INCIDENT_RUNBOOK.md"
+      - id: "incidents_tracked"
+        description: "Incident model exists and is covered."
+        evidence_paths:
+          - "auto_client_acquisition/observability_v6/incident.py"
+          - "tests/test_observability_v6.py"
+      - id: "dashboards_live"
+        description: "Dashboard artifacts exist for ops visibility."
+        evidence_paths:
+          - "docs/observability/posthog_dashboard.json"
+          - "docs/command/COMMAND_DASHBOARD.md"
+      - id: "bottlenecks_visible"
+        description: "Workflow metrics expose bottleneck signals."
+        evidence_paths:
+          - "auto_client_acquisition/workflow_os/workflow_metrics.py"
+          - "tests/test_observability_v10.py"
+  - id: evals
+    title: "Evaluation Layer"
+    owner: "Quality + Product"
+    kpis:
+      - "eval_automation_coverage_rate"
+      - "regression_detection_rate"
+      - "hallucination_flag_rate"
+      - "workflow_success_rate"
+    required_paths:
+      - "evals/governance_eval.yaml"
+      - "evals/company_brain_eval.yaml"
+      - "evals/revenue_os_cases.jsonl"
+      - "scripts/verify_ai_output_quality.py"
+      - "scripts/verify_service_readiness_matrix.py"
+    tests:
+      - "tests/test_output_quality_gate.py"
+      - "tests/test_readiness_gates.py"
+      - "tests/test_governance_os_draft_gate.py"
+      - "tests/test_service_readiness_matrix.py"
+    checks:
+      - id: "eval_suites_automated"
+        description: "Evaluation assets and scripts are automated."
+        evidence_paths:
+          - "evals/governance_eval.yaml"
+          - "scripts/verify_ai_output_quality.py"
+      - id: "regression_tests_passing"
+        description: "Regression guard tests are present."
+        evidence_paths:
+          - "tests/test_output_quality_gate.py"
+          - "tests/test_readiness_gates.py"
+      - id: "hallucination_monitored"
+        description: "Knowledge/business answer quality eval exists."
+        evidence_paths:
+          - "evals/company_brain_eval.yaml"
+          - "auto_client_acquisition/knowledge_os/knowledge_eval.py"
+      - id: "workflow_success_measured"
+        description: "Workflow success metrics are measured."
+        evidence_paths:
+          - "auto_client_acquisition/workflow_os/workflow_metrics.py"
+          - "tests/test_workflow_os_v10.py"
+      - id: "business_kpis_tracked"
+        description: "Business KPI dashboard specs exist."
+        evidence_paths:
+          - "docs/BUSINESS_KPI_DASHBOARD_SPEC.md"
+          - "tests/test_service_readiness_score.py"
+  - id: executive
+    title: "Executive Intelligence Layer"
+    owner: "CEO Office + Reporting"
+    kpis:
+      - "executive_brief_generation_rate"
+      - "forecast_accuracy"
+      - "strategic_alert_latency_minutes"
+      - "roi_measurement_coverage_rate"
+    required_paths:
+      - "auto_client_acquisition/reporting_os/executive_report.py"
+      - "auto_client_acquisition/designops/generators/executive_weekly_pack.py"
+      - "api/routers/founder_dashboard.py"
+      - "docs/command/COMMAND_DASHBOARD.md"
+      - "docs/company/STRATEGIC_DASHBOARD.md"
+    tests:
+      - "tests/test_weekly_executive_pack.py"
+      - "tests/test_executive_reporting.py"
+      - "tests/test_executive_command_center_integration.py"
+    checks:
+      - id: "executive_reports_generated"
+        description: "Executive report generators and tests exist."
+        evidence_paths:
+          - "auto_client_acquisition/reporting_os/executive_report.py"
+          - "tests/test_executive_reporting.py"
+      - id: "roi_measurable"
+        description: "Value/ROI artifacts are linked to executive view."
+        evidence_paths:
+          - "auto_client_acquisition/value_capture_os/value_capture_dashboard.py"
+          - "docs/BUSINESS_KPI_DASHBOARD_SPEC.md"
+      - id: "forecasts_validated"
+        description: "Forecasting capability exists."
+        evidence_paths:
+          - "auto_client_acquisition/revenue_science/churn_model.py"
+          - "tests/test_service_readiness_score.py"
+      - id: "strategic_alerts_working"
+        description: "Strategic dashboard and command center assets exist."
+        evidence_paths:
+          - "docs/command/COMMAND_DASHBOARD.md"
+          - "tests/test_executive_command_center_integration.py"
+cross_layer_checks:
+  - id: "agents_follow_governance"
+    description: "Agents obey governance policies and approvals."
+    evidence_paths:
+      - "tests/test_agent_autonomy_mvp_limit.py"
+      - "tests/test_governance_runtime_decision.py"
+      - "tests/test_governance_os_draft_gate.py"
+  - id: "workflows_respect_permissions"
+    description: "Workflow execution respects policy and permissions."
+    evidence_paths:
+      - "tests/test_workflow_os_v10.py"
+      - "tests/test_secure_agent_runtime.py"
+      - "auto_client_acquisition/governance_os/runtime_decision.py"
+  - id: "memory_respects_tenant_isolation"
+    description: "Memory and retrieval are tenant-isolation aware."
+    evidence_paths:
+      - "tests/test_tenant_isolation_v1.py"
+      - "tests/unit/test_revenue_memory.py"
+      - "api/middleware/tenant_isolation.py"
+  - id: "evals_tied_to_business_impact"
+    description: "Evaluation links to value and business KPIs."
+    evidence_paths:
+      - "tests/test_output_quality_gate.py"
+      - "tests/test_value_capture_os.py"
+      - "docs/BUSINESS_KPI_DASHBOARD_SPEC.md"
+  - id: "observability_covers_all_layers"
+    description: "Observability captures workflow, agent, and governance layers."
+    evidence_paths:
+      - "tests/test_observability_v10.py"
+      - "tests/test_agent_observability_integration.py"
+      - "tests/test_governance_runtime_decision.py"
+  - id: "rollback_cross_system_ready"
+    description: "Rollback and recovery paths are documented across the stack."
+    evidence_paths:
+      - "scripts/verify_backup.py"
+      - "docs/ops/INCIDENT_RUNBOOK.md"
+      - "dealix/masters/incident_rollback_runbook.md"
