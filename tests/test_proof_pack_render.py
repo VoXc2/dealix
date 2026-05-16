@@ -80,3 +80,14 @@ def test_render_coerces_non_string_section_values():
     pack["sections"]["executive_summary"] = 12345
     md = proof_pack_to_markdown(pack, customer_handle="Acme")
     assert "12345" in md
+
+
+def test_render_handles_non_dict_pack():
+    """A non-dict pack (malformed client JSON) renders the safe notice, not
+    a 500/AttributeError."""
+    assert "not yet generated" in proof_pack_to_markdown(
+        123, customer_handle="X"
+    ).lower()
+    assert "not yet generated" in proof_pack_email_body(
+        "garbage", customer_handle="X"
+    ).lower()

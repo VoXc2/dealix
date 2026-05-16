@@ -39,14 +39,20 @@ _SECTION_TITLES: tuple[tuple[str, str, str], ...] = (
 )
 
 
-def _sections(pack: dict[str, Any] | None) -> dict[str, str]:
+def _as_dict(pack: Any) -> dict[str, Any]:
+    """Coerce arbitrary client JSON to a dict — the render routes accept
+    ``dict[str, Any]`` but a client may post a non-dict (e.g. ``123``)."""
+    return pack if isinstance(pack, dict) else {}
+
+
+def _sections(pack: Any) -> dict[str, str]:
     """Section map with every value coerced to ``str``.
 
-    The render routes accept arbitrary client JSON, so a section value may be
-    a non-string (e.g. a number); coercing here keeps ``.strip()`` downstream
-    safe instead of raising a 500.
+    The render routes accept arbitrary client JSON, so ``pack`` or a section
+    value may be a non-dict / non-string; coercing here keeps ``.strip()``
+    downstream safe instead of raising a 500.
     """
-    raw = (pack or {}).get("sections")
+    raw = _as_dict(pack).get("sections")
     if not isinstance(raw, dict):
         return {}
     return {str(k): ("" if v is None else str(v)) for k, v in raw.items()}
@@ -87,13 +93,14 @@ def proof_pack_to_markdown(
     rather than a fabricated pack.
     """
     customer_handle = customer_handle or "(customer)"
+    pack = _as_dict(pack)
     generated_at = datetime.now(timezone.utc).isoformat()
     sections = _sections(pack)
     if not _has_content(sections):
         return _not_generated_notice(customer_handle, generated_at)
 
-    score = (pack or {}).get("score")
-    tier = (pack or {}).get("tier", "")
+    score = pack.get("score")
+    tier = pack.get("tier", "")
     lines = [
         f"# Dealix Proof Pack — {customer_handle}",
         "",
@@ -136,9 +143,10 @@ def proof_pack_email_body(
     This is render-only — it never sends. Approval-first stands.
     """
     customer_handle = customer_handle or "(customer)"
+    pack = _as_dict(pack)
     sections = _sections(pack)
     generated = _has_content(sections)
-    score = (pack or {}).get("score")
+    score = pack.get("score")
     next_step = (sections.get("recommended_next_step") or "").strip()
 
     if not generated:

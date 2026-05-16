@@ -102,6 +102,16 @@ def test_render_empty_pack_is_honest_not_generated_notice():
     assert "not yet generated" in r.text.lower()
 
 
+def test_render_handles_malformed_run_payload():
+    """A non-dict proof_pack inside `run` must not 500 the render endpoint."""
+    r = client.post(
+        "/api/v1/sprint/render/markdown",
+        json={"customer_handle": "Acme", "run": {"proof_pack": 123}},
+    )
+    assert r.status_code == 200
+    assert "not yet generated" in r.text.lower()
+
+
 def test_render_pdf_sanitizes_engagement_id_in_header():
     """A CR/LF-bearing engagement_id must not inject extra response headers."""
     r = client.post(

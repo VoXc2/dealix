@@ -8,22 +8,35 @@ from typing import Any
 
 from auto_client_acquisition.compliance_trust_os.approval_engine import GovernanceDecision
 from auto_client_acquisition.governance_os.policy_check import PolicyCheckResult, PolicyVerdict
-from auto_client_acquisition.saudi_layer.forbidden_claims import (
-    forbidden_arabic_claim_detected,
-)
 
-# Negated forms — a guarantee word preceded by a negation is a compliant
-# disclaimer, not an affirmative claim. Stripped before the affirmative check.
+# --- Guaranteed-outcome claim detection (NO_GUARANTEED_CLAIMS gate) ----------
+# Strategy: neutralize negated and refund forms first, then detect affirmative
+# claims on what survives — so disclaimers ("لا نضمن", "no/without guarantee")
+# and refund guarantees ("نضمن استرجاع") are never mistaken for a claim.
+
+# Negated guarantee forms — a negator within a few words before "guarantee".
 _NEGATED_AR = re.compile(r"(?:لا|لن|لم|ما)\s*نضمن")
 _NEGATED_EN = re.compile(
-    r"\b(?:no|not|never|without|cannot|can't|don't|won't|doesn't|"
-    r"wouldn't)\s+guarantee",
+    r"\b(?:no|not|never|without|cannot|can't|don't|won't|doesn't|wouldn't)"
+    r"\s+(?:\w+\s+){0,3}?guarantee",
     re.IGNORECASE,
 )
+# A refund / money-back guarantee is a service guarantee, not a guaranteed
+# sales OUTCOME — permitted, so neutralized before the affirmative check.
+_REFUND_AR = re.compile(r"نضمن\s*استرجاع")
 
-# Affirmative English guarantee — the verb/adjective near an outcome noun,
-# or a first-person promise. Matches "we/I guarantee revenue", "guarantee
-# results", "guaranteed sales", "100% guaranteed", etc.
+_AR_OUTCOME = r"نتائج|نتيجة|مبيعات|أرباح|إيرادات|إيراد|عوائد|نمو|صفقات|عملاء"
+# Affirmative Arabic guarantee — the verb نضمن, an outcome noun paired with
+# the adjective مضمون or the noun ضمان, or the "ربح مؤكد" idiom.
+_AFFIRMATIVE_GUARANTEE_AR = re.compile(
+    rf"نضمن"
+    rf"|(?:{_AR_OUTCOME})\s*مضمون"
+    rf"|مضمون[ةه]?\s*(?:{_AR_OUTCOME})"
+    rf"|ضمان\s*(?:{_AR_OUTCOME})"
+    rf"|ربح\s*مؤكد"
+)
+# Affirmative English guarantee — verb/adjective near an outcome noun, or a
+# first-person promise.
 _AFFIRMATIVE_GUARANTEE_EN = re.compile(
     r"guarantee[ds]?\b[\w%\s-]{0,20}?\b"
     r"(revenue|sales?|results?|roi|growth|deals?|leads?|customers?|"
@@ -35,19 +48,17 @@ _AFFIRMATIVE_GUARANTEE_EN = re.compile(
 
 
 def _contains_guaranteed_claim(text: str) -> bool:
-    """True when text makes an affirmative guaranteed-outcome promise.
+    """True when text makes an affirmative guaranteed-OUTCOME promise.
 
-    Negated forms ("لا نضمن" / "no guarantee" / "without guarantee") are
-    stripped first, so a doctrine-compliant disclaimer is not mistaken for an
-    affirmative claim.
+    Negated forms ("لا نضمن", "no/without ... guarantee") and refund
+    guarantees ("نضمن استرجاع" — a service guarantee, not an outcome) are
+    neutralized first, so a doctrine-compliant disclaimer is not blocked.
     """
-    blob = text.lower()
-    if forbidden_arabic_claim_detected(blob):
+    neutral_ar = _REFUND_AR.sub(" ", _NEGATED_AR.sub(" ", text))
+    if _AFFIRMATIVE_GUARANTEE_AR.search(neutral_ar):
         return True
-    if "نضمن" in _NEGATED_AR.sub(" ", text):
-        return True
-    en = _NEGATED_EN.sub(" ", blob)
-    return _AFFIRMATIVE_GUARANTEE_EN.search(en) is not None
+    neutral_en = _NEGATED_EN.sub(" ", text.lower())
+    return _AFFIRMATIVE_GUARANTEE_EN.search(neutral_en) is not None
 
 
 class _DecisionLabel(str):

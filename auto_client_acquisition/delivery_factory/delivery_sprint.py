@@ -322,7 +322,8 @@ def step6_proof_pack(
             "pilot — subject to the retainer-readiness check."
         ),
         "capital_assets_created": (
-            "A reusable account-scoring rule registered to the capital ledger."
+            "Capital-asset registration is performed in step 7; the registered "
+            "count is reflected here once that step completes."
         ),
     }
     pack = merge_proof_pack_v2(sections, {})
@@ -488,6 +489,18 @@ def run_sprint(
                customer_id=customer_id, engagement_id=engagement_id)
     run.steps.append(s7)
     run.capital_assets_registered = list(s7.output.get("registered", []))
+
+    # Reflect the real step-7 registration outcome in the Proof Pack so the
+    # customer-facing pack never claims assets that were not registered.
+    if isinstance(run.proof_pack, dict) and isinstance(
+        run.proof_pack.get("sections"), dict
+    ):
+        _n = len(run.capital_assets_registered)
+        run.proof_pack["sections"]["capital_assets_created"] = (
+            f"{_n} reusable capital asset(s) registered to the capital ledger."
+            if _n
+            else "No capital assets were registered in this run."
+        )
 
     # Step 8 — retainer check
     s8 = _safe("retainer_check", step8_retainer_check,

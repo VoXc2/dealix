@@ -213,3 +213,27 @@ def test_step5_blocks_verb_form_guarantee_claims():
     ]
     out = step5_governance_review(customer_id="x", engagement_id="e1", drafts=drafts)
     assert all(r["decision"] == "block" for r in out["reviews"])
+
+
+def test_step5_blocks_arabic_adjective_form_guarantee_claims():
+    """Arabic adjective/noun guarantee forms (نتائج مضمونة / ضمان نتائج) must
+    be blocked, not only the verb نضمن."""
+    drafts = [
+        {"account": "A", "outline_ar": "نتائج مضمونة لك", "outline_en": "safe"},
+        {"account": "B", "outline_ar": "ضمان نتائج خلال شهر", "outline_en": "safe"},
+    ]
+    out = step5_governance_review(customer_id="x", engagement_id="e1", drafts=drafts)
+    assert all(r["decision"] == "block" for r in out["reviews"])
+
+
+def test_step5_allows_refund_guarantee_and_without_any():
+    """A refund guarantee (نضمن استرجاع) and "without any guarantee" are not
+    guaranteed-outcome claims and must not be blocked."""
+    drafts = [
+        {"account": "A", "outline_ar": "نضمن استرجاع 100% للعميل",
+         "outline_en": "safe note"},
+        {"account": "B", "outline_ar": "نص آمن",
+         "outline_en": "we work without any guarantee of results"},
+    ]
+    out = step5_governance_review(customer_id="x", engagement_id="e1", drafts=drafts)
+    assert "block" not in {r["decision"] for r in out["reviews"]}
