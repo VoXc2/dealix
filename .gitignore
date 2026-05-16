@@ -163,8 +163,13 @@ traces/
 
 # ─────────────────────────────────────────────────────────────
 # 🤖 Claude Code agent worktrees + runtime ledger artifacts
+# (agent definitions, the SessionStart hook, and settings.json are
+#  tracked deliberately so web sessions stay reproducible.)
 # ─────────────────────────────────────────────────────────────
-.claude/
+.claude/*
+!.claude/agents/
+!.claude/hooks/
+!.claude/settings.json
 
 # Proof ledger runtime artifacts (template + schema + readme stay tracked)
 docs/proof-events/*.jsonl
