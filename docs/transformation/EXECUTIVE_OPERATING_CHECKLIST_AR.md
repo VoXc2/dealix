@@ -6,15 +6,24 @@
 
 ## 1) أسبوعياً (كل أسبوع تشغيل)
 
-1. شغّل:
-   ```bash
-   bash scripts/run_executive_weekly_checklist.sh
-   ```
-   - يولّد حزمة إثبات بتاريخ عبر [`../scripts/run_ceo_signal_weekly_loop.sh`](../scripts/run_ceo_signal_weekly_loop.sh).
-   - يشغّل [`scripts/verify_global_ai_transformation.py`](../scripts/verify_global_ai_transformation.py) ويسجّل نتيجة في [`evidence/weekly_ops_checklist.log`](evidence/weekly_ops_checklist.log).
-   - عند **PASS** يحدّث تلقائياً حقل `weekly_ops.last_checklist_run_iso` في [`dealix/transformation/kpi_baselines.yaml`](../dealix/transformation/kpi_baselines.yaml) عبر [`scripts/sync_weekly_ops_from_checklist_log.py`](../scripts/sync_weekly_ops_from_checklist_log.py).
+**جلسة واحدة شاملة (مُوصى به):**
 
-2. عبّئ الأرقام الفعلية في [`dealix/transformation/kpi_baselines.yaml`](../dealix/transformation/kpi_baselines.yaml) (`value_numeric` + `source_ref` غير فارغ + `updated_period_iso` عند تغيّر الأرقام).
+```bash
+bash scripts/run_ceo_one_session_readiness.sh
+```
+
+أو خطوة بخطوة:
+
+```bash
+bash scripts/run_executive_weekly_checklist.sh
+python3 scripts/populate_kpi_baselines_platform_signals.py
+```
+
+- يولّد حزمة إثبات بتاريخ عبر [`../scripts/run_ceo_signal_weekly_loop.sh`](../scripts/run_ceo_signal_weekly_loop.sh).
+- يشغّل [`scripts/verify_global_ai_transformation.py`](../scripts/verify_global_ai_transformation.py) ويسجّل نتيجة في [`evidence/weekly_ops_checklist.log`](evidence/weekly_ops_checklist.log).
+- عند **PASS** يحدّث تلقائياً `weekly_ops.last_checklist_run_iso` عبر [`scripts/sync_weekly_ops_from_checklist_log.py`](../scripts/sync_weekly_ops_from_checklist_log.py).
+
+2. عبّئ الأرقام الفعلية في [`dealix/transformation/kpi_baselines.yaml`](../dealix/transformation/kpi_baselines.yaml) (`value_numeric` + `source_ref` غير فارغ + `updated_period_iso` عند تغيّر الأرقام). الإشارات المنصة تُملأ جزئياً عبر `populate_kpi_baselines_platform_signals.py` — **لا تغني عن CRM/المالية**.
 
 3. راجع الملاك البشرية في [`dealix/transformation/ownership_matrix.yaml`](../dealix/transformation/ownership_matrix.yaml) وحدّث `executive_review.last_ownership_matrix_review_iso` بعد المراجعة.
 
