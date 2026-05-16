@@ -109,7 +109,17 @@ project without Proof Pack · no project without Capital Asset.
   - `api/routers/domains/sales/__init__.py` (updated — registers the new router)
   - `tests/test_revenue_ops_engagement_state_machine.py` (new — 11 doctrine tests, all passing)
   - `docs/strategic/GOVERNED_REVENUE_OPS_BACKEND_DOMAINS.md` (new — domain manifest + API + state machine)
-- [ ] Phase 3 — frontend
+- [x] **Phase 3 — frontend** (2026-05-16)
+  - 6 screens under `frontend/src/app/[locale]/`: `founder-command-center`,
+    `service-catalog`, `market-proof`, `revenue-ops-console`,
+    `evidence-ledger`, `billing-invoices` (each a `page.tsx`)
+  - `frontend/src/components/revenue-ops/RevenueOpsConsole.tsx` (new — primary console)
+  - `frontend/src/components/revenue-ops/RevenueOpsScreens.tsx` (new — other 5 screens)
+  - `frontend/src/lib/api.ts` (updated — `/api/v1/revenue-ops` client functions)
+  - `frontend/src/components/layout/Sidebar.tsx` (updated — 6 new nav entries)
+  - `frontend/messages/{en,ar}.json` (updated — `revenueOps` namespace + nav, bilingual)
+  - Doctrine: NO "Send automatically" button on any screen; invoices are
+    draft-only; every screen ends with the bilingual disclaimer.
 - [ ] Phase 4 — outreach + metrics
 
 ---

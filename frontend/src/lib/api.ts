@@ -119,6 +119,34 @@ export const api = {
   health: () =>
     apiClient.get<{ status: string }>("/health"),
 
+  // ── Governed Revenue Ops (repositioning, 2026-05-16) ──────────────
+  postRevenueOpsDiagnostic: (body: Record<string, unknown>) =>
+    apiClient.post("/api/v1/revenue-ops/diagnostics", body),
+
+  postRevenueOpsUpload: (body: Record<string, unknown>) =>
+    apiClient.post("/api/v1/revenue-ops/upload", body),
+
+  postRevenueOpsScore: (engagementId: string) =>
+    apiClient.post("/api/v1/revenue-ops/score", { engagement_id: engagementId }),
+
+  getRevenueOpsDecisionPassport: (engagementId: string) =>
+    apiClient.get(`/api/v1/revenue-ops/${encodeURIComponent(engagementId)}/decision-passport`),
+
+  postRevenueOpsFollowUpDrafts: (engagementId: string) =>
+    apiClient.post(`/api/v1/revenue-ops/${encodeURIComponent(engagementId)}/follow-up-drafts`, {}),
+
+  postRevenueOpsApproval: (body: Record<string, unknown>) =>
+    apiClient.post("/api/v1/revenue-ops/approvals", body),
+
+  postRevenueOpsInvoiceDraft: (body: Record<string, unknown>) =>
+    apiClient.post("/api/v1/revenue-ops/invoices", body),
+
+  getRevenueOpsEngagement: (engagementId: string) =>
+    apiClient.get(`/api/v1/revenue-ops/${encodeURIComponent(engagementId)}`),
+
+  getRevenueOpsEvidence: (engagementId: string) =>
+    apiClient.get(`/api/v1/revenue-ops/${encodeURIComponent(engagementId)}/evidence`),
+
   getDashboardMetrics: () =>
     apiClient.get("/api/v1/dashboard/metrics"),
 

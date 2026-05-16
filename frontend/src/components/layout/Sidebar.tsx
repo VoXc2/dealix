@@ -17,6 +17,12 @@ import {
   Zap,
   Shield,
   Building2,
+  Command,
+  BookOpen,
+  Award,
+  Workflow,
+  ScrollText,
+  Receipt,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
@@ -29,6 +35,14 @@ interface NavItem {
 
 const navItems: NavItem[] = [
   { key: "dashboard", href: "/dashboard", icon: LayoutDashboard },
+  // ── Governed Revenue Ops (repositioning, 2026-05-16) ──
+  { key: "founderCommandCenter", href: "/founder-command-center", icon: Command },
+  { key: "serviceCatalog", href: "/service-catalog", icon: BookOpen },
+  { key: "marketProof", href: "/market-proof", icon: Award },
+  { key: "revenueOpsConsole", href: "/revenue-ops-console", icon: Workflow },
+  { key: "evidenceLedger", href: "/evidence-ledger", icon: ScrollText },
+  { key: "billingInvoices", href: "/billing-invoices", icon: Receipt },
+  // ── Existing ──
   { key: "pipeline", href: "/pipeline", icon: GitBranch },
   { key: "agents", href: "/agents", icon: Bot },
   { key: "approvals", href: "/approvals", icon: CheckSquare },

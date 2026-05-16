@@ -9,7 +9,13 @@
     "clients": "إدارة العملاء",
     "analytics": "التحليلات والتقارير",
     "settings": "الإعدادات",
-    "logout": "تسجيل الخروج"
+    "logout": "تسجيل الخروج",
+    "founderCommandCenter": "مركز قيادة المؤسس",
+    "serviceCatalog": "كتالوج الخدمات",
+    "marketProof": "إثبات السوق",
+    "revenueOpsConsole": "كونسول عمليات الإيراد",
+    "evidenceLedger": "سجل الأدلة",
+    "billingInvoices": "الفوترة والفواتير"
   },
   "dashboard": {
     "title": "لوحة التحكم التنفيذية",
@@ -154,5 +160,85 @@
     "handleLabel": "معرّف العميل",
     "load": "تحميل",
     "promiseTitle": "التزام الخدمة"
+  },
+  "revenueOps": {
+    "command": {
+      "title": "مركز قيادة المؤسس",
+      "subtitle": "نظرة سريعة على عمليات الإيراد المحكومة",
+      "activeEngagements": "الارتباطات النشطة",
+      "pendingApprovals": "موافقات معلّقة",
+      "proofPacks": "حزم الإثبات",
+      "metricsTitle": "مؤشرات إعادة التموضع",
+      "metricsNote": "تبقى المؤشرات صفرًا حتى يحدث إرسال معتمد ونشاط عميل حقيقي. لا نختلق أي مؤشرات."
+    },
+    "catalog": {
+      "title": "كتالوج الخدمات",
+      "subtitle": "كتالوج عمليات الإيراد والذكاء الاصطناعي المحكومة — سبع خدمات",
+      "entryOffer": "العرض الأول",
+      "catalogService": "خدمة في الكتالوج",
+      "governed_revenue_ops_diagnostic": "تشخيص عمليات الإيراد المحكومة",
+      "revenue_intelligence_sprint": "سبرنت ذكاء الإيراد",
+      "governed_ops_retainer": "ريتينر التشغيل المحكوم",
+      "ai_governance_for_revenue_teams": "حوكمة الذكاء الاصطناعي لفرق الإيراد",
+      "crm_data_readiness_for_ai": "جاهزية بيانات الـCRM للذكاء الاصطناعي",
+      "board_decision_memo": "مذكرة قرار لمجلس الإدارة",
+      "trust_pack_lite": "حزمة الثقة المختصرة"
+    },
+    "marketProof": {
+      "title": "كونسول إثبات السوق",
+      "subtitle": "ملخصات آمنة للحالات وفرص إثبات القيمة",
+      "caseSafeTitle": "ملخصات آمنة للحالات",
+      "proofOpportunitiesTitle": "فرص إثبات القيمة"
+    },
+    "console": {
+      "title": "كونسول عمليات الإيراد",
+      "subtitle": "العملاء، ملفات خط الأنابيب، الفرص، المخاطر، المسودات والإثبات",
+      "actionsTitle": "الإجراءات",
+      "noAutoSend": "وفقًا للحوكمة، لا يوجد إجراء إرسال تلقائي. كل إجراء خارجي يتطلب موافقة صريحة من المؤسس.",
+      "stateMachineTitle": "آلة حالات الارتباط",
+      "stateMachineNote": "draft → approved إلزامية قبل أي إرسال. لا يجوز تخطّي أي حالة.",
+      "clientsTitle": "العملاء",
+      "pipelineFilesTitle": "ملفات خط الأنابيب",
+      "opportunitiesTitle": "الفرص",
+      "dealRisksTitle": "مخاطر الصفقات",
+      "nextActionsTitle": "الإجراءات التالية",
+      "followupDraftsTitle": "مسودات المتابعة",
+      "passportsTitle": "جوازات القرار",
+      "proofEventsTitle": "أحداث الإثبات",
+      "draftOnly": "مسودة فقط",
+      "empty": "لا توجد عناصر بعد — تظهر البيانات بعد إنشاء ارتباط."
+    },
+    "evidence": {
+      "title": "سجل الأدلة",
+      "subtitle": "مسار التدقيق خلف كل قرار محكوم",
+      "trailTitle": "مسار الأدلة",
+      "note": "كل نتيجة تحمل source_ref. لا تُخزَّن أي بيانات شخصية في أحداث الأدلة."
+    },
+    "billing": {
+      "title": "الفوترة والفواتير",
+      "subtitle": "مسودات فواتير — لا يُجرى أي تحصيل من هذه الشاشة",
+      "draftsTitle": "مسودات الفواتير",
+      "note": "الفواتير مسودات فقط. التحصيل يتطلب وضع Moyasar المباشر الذي يتحكم به المؤسس."
+    },
+    "actions": {
+      "createDiagnostic": "إنشاء تشخيص",
+      "uploadCrm": "رفع تصدير CRM",
+      "generateReview": "توليد مراجعة الإيراد",
+      "createPassport": "إنشاء جواز قرار",
+      "draftFollowup": "صياغة متابعة",
+      "markApproved": "وسم كمعتمد",
+      "createInvoice": "إنشاء مسودة فاتورة",
+      "generateProof": "توليد حزمة إثبات"
+    },
+    "states": {
+      "draft": "مسودة",
+      "approved": "معتمد",
+      "sent": "مُرسل",
+      "used_in_meeting": "استُخدم في اجتماع",
+      "scope_requested": "طُلب النطاق",
+      "invoice_sent": "أُرسلت الفاتورة",
+      "invoice_paid": "دُفعت الفاتورة"
+    },
+    "disclaimer": "Estimated value is not Verified value / القيمة التقديرية ليست قيمة مُتحقَّقة"
   }
 }

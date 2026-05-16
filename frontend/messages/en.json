@@ -9,7 +9,13 @@
     "clients": "Client Management",
     "analytics": "Analytics & Reports",
     "settings": "Settings",
-    "logout": "Sign Out"
+    "logout": "Sign Out",
+    "founderCommandCenter": "Founder Command Center",
+    "serviceCatalog": "Service Catalog",
+    "marketProof": "Market Proof",
+    "revenueOpsConsole": "Revenue Ops Console",
+    "evidenceLedger": "Evidence Ledger",
+    "billingInvoices": "Billing & Invoices"
   },
   "dashboard": {
     "title": "Executive Dashboard",
@@ -154,5 +160,85 @@
     "handleLabel": "Customer handle",
     "load": "Load",
     "promiseTitle": "Service promise"
+  },
+  "revenueOps": {
+    "command": {
+      "title": "Founder Command Center",
+      "subtitle": "Governed Revenue Ops at a glance",
+      "activeEngagements": "Active engagements",
+      "pendingApprovals": "Pending approvals",
+      "proofPacks": "Proof Packs",
+      "metricsTitle": "Repositioning metrics",
+      "metricsNote": "Metrics stay at 0 until real approved sends and customer activity occur. We never invent metrics."
+    },
+    "catalog": {
+      "title": "Service Catalog",
+      "subtitle": "The 7-service Governed Revenue & AI Operations catalog",
+      "entryOffer": "Entry offer",
+      "catalogService": "Catalog service",
+      "governed_revenue_ops_diagnostic": "Governed Revenue Ops Diagnostic",
+      "revenue_intelligence_sprint": "Revenue Intelligence Sprint",
+      "governed_ops_retainer": "Governed Ops Retainer",
+      "ai_governance_for_revenue_teams": "AI Governance for Revenue Teams",
+      "crm_data_readiness_for_ai": "CRM / Data Readiness for AI",
+      "board_decision_memo": "Board Decision Memo",
+      "trust_pack_lite": "Trust Pack Lite"
+    },
+    "marketProof": {
+      "title": "Market Proof Console",
+      "subtitle": "Case-safe summaries and proof-of-value opportunities",
+      "caseSafeTitle": "Case-safe summaries",
+      "proofOpportunitiesTitle": "Proof-of-value opportunities"
+    },
+    "console": {
+      "title": "Revenue Ops Console",
+      "subtitle": "Clients, pipeline files, opportunities, risks, drafts and proof",
+      "actionsTitle": "Actions",
+      "noAutoSend": "By doctrine, there is no automatic-send action. Every external action requires an explicit founder approval.",
+      "stateMachineTitle": "Engagement state machine",
+      "stateMachineNote": "draft → approved is mandatory before any send. No state may be skipped.",
+      "clientsTitle": "Clients",
+      "pipelineFilesTitle": "Pipeline files",
+      "opportunitiesTitle": "Opportunities",
+      "dealRisksTitle": "Deal risks",
+      "nextActionsTitle": "Next actions",
+      "followupDraftsTitle": "Follow-up drafts",
+      "passportsTitle": "Decision passports",
+      "proofEventsTitle": "Proof events",
+      "draftOnly": "Draft only",
+      "empty": "No items yet — data appears once an engagement is created."
+    },
+    "evidence": {
+      "title": "Evidence Ledger",
+      "subtitle": "The audit trail behind every governed decision",
+      "trailTitle": "Evidence trail",
+      "note": "Every finding carries a source_ref. No PII is stored in evidence events."
+    },
+    "billing": {
+      "title": "Billing & Invoices",
+      "subtitle": "Invoice drafts — no charge is initiated from this screen",
+      "draftsTitle": "Invoice drafts",
+      "note": "Invoices are drafts only. Charging requires founder-controlled Moyasar live mode."
+    },
+    "actions": {
+      "createDiagnostic": "Create Diagnostic",
+      "uploadCrm": "Upload CRM Export",
+      "generateReview": "Generate Revenue Review",
+      "createPassport": "Create Decision Passport",
+      "draftFollowup": "Draft Follow-up",
+      "markApproved": "Mark Approved",
+      "createInvoice": "Create Invoice Draft",
+      "generateProof": "Generate Proof Pack"
+    },
+    "states": {
+      "draft": "Draft",
+      "approved": "Approved",
+      "sent": "Sent",
+      "used_in_meeting": "Used in meeting",
+      "scope_requested": "Scope requested",
+      "invoice_sent": "Invoice sent",
+      "invoice_paid": "Invoice paid"
+    },
+    "disclaimer": "Estimated value is not Verified value / القيمة التقديرية ليست قيمة مُتحقَّقة"
   }
 }
