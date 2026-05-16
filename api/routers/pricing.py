@@ -2,12 +2,13 @@
 Pricing + Moyasar checkout endpoints.
 
 Usage:
-  POST /api/v1/checkout   body: {"plan":"starter","email":"x@y.com","lead_id":"optional"}
+  POST /api/v1/checkout   body: {"plan":"sprint","email":"x@y.com","lead_id":"optional"}
     → returns {"invoice_id":"...", "payment_url":"https://..."}
   POST /api/v1/webhooks/moyasar  — Moyasar payment webhook (status updates)
 
-Plans are intentionally NOT published on the public landing page; the checkout
-endpoint validates against `ALLOWED_PLANS` to prevent tampering.
+`PLANS` mirrors the 5-rung service ladder (docs/COMPANY_SERVICE_LADDER.md);
+the checkout endpoint validates the requested plan against it to prevent
+tampering.
 """
 
 from __future__ import annotations
@@ -109,31 +110,31 @@ async def _persist_payment_event(
 #   "subscription" — recurring monthly Moyasar invoice
 #   "one_off"      — single charge (e.g. pilot)
 #   "metered"      — billed per usage event (LaaS R3 model)
+#
+# Customer-facing plans mirror the 5-rung ladder
+# (docs/COMPANY_SERVICE_LADDER.md). Rung 0 (Free AI Ops Diagnostic) carries
+# no charge, and Rung 4 (Custom AI Service Setup) is quote-based — neither
+# is a fixed checkout plan. Metered LaaS + the 1-SAR sandbox plan are
+# operational, not part of the customer ladder.
 PLANS: dict[str, dict[str, Any]] = {
-    "starter": {
-        "name": "Starter",
-        "amount_halalas": 99900,
-        "monthly": True,
-        "kind": "subscription",
-    },  # 999 SAR/mo
-    "growth": {
-        "name": "Growth",
-        "amount_halalas": 299900,
-        "monthly": True,
-        "kind": "subscription",
-    },  # 2,999 SAR/mo
-    "scale": {
-        "name": "Scale",
-        "amount_halalas": 799900,
-        "monthly": True,
-        "kind": "subscription",
-    },  # 7,999 SAR/mo
-    "pilot_managed": {
-        "name": "Managed Pilot (7 days)",
+    "sprint": {
+        "name": "7-Day Revenue Intelligence Sprint",
         "amount_halalas": 49900,
         "monthly": False,
         "kind": "one_off",
-    },  # 499 SAR one-off — founder-led pilot per v4 §3 R1
+    },  # Rung 1 — 499 SAR one-off
+    "data_pack": {
+        "name": "Data-to-Revenue Pack",
+        "amount_halalas": 150000,
+        "monthly": False,
+        "kind": "one_off",
+    },  # Rung 2 — 1,500 SAR one-off
+    "managed_ops": {
+        "name": "Managed Revenue Ops",
+        "amount_halalas": 299900,
+        "monthly": True,
+        "kind": "subscription",
+    },  # Rung 3 — 2,999 SAR/mo (range 2,999–4,999; entry tier)
     "laas_per_reply": {
         "name": "Lead-as-a-Service · Per Reply",
         "amount_halalas": 2500,

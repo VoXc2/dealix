@@ -13,9 +13,9 @@ def test_all_plan_amounts_positive_halalas():
 
 def test_halalas_to_sar_conversion():
     """Display amounts use halalas / 100 as SAR (see Moyasar docs)."""
-    starter = PLANS["starter"]
-    sar = starter["amount_halalas"] / 100
-    assert sar == 999.0
+    sprint = PLANS["sprint"]
+    sar = sprint["amount_halalas"] / 100
+    assert sar == 499.0
 
 
 def test_pilot_plan_small_amount_for_sandbox_smoke():

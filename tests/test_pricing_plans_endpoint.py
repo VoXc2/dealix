@@ -23,22 +23,24 @@ async def test_list_plans_hides_pilot_1sar(async_client):
 
 
 @pytest.mark.asyncio
-async def test_list_plans_includes_subscription_tiers(async_client):
+async def test_list_plans_includes_managed_ops_subscription(async_client):
+    """Rung 3 — Managed Revenue Ops — is the recurring subscription plan."""
     res = await async_client.get("/api/v1/pricing/plans")
     plans = res.json()["plans"]
-    for key in ("starter", "growth", "scale"):
-        assert key in plans, f"missing subscription plan: {key}"
-        assert plans[key]["kind"] == "subscription"
-        assert plans[key]["amount_sar"] > 0
+    assert "managed_ops" in plans
+    assert plans["managed_ops"]["kind"] == "subscription"
+    assert plans["managed_ops"]["amount_sar"] == 2999.0
 
 
 @pytest.mark.asyncio
-async def test_list_plans_includes_managed_pilot(async_client):
+async def test_list_plans_includes_ladder_one_off_rungs(async_client):
+    """Rung 1 (Sprint, 499) and Rung 2 (Data Pack, 1,500) are one-off plans."""
     res = await async_client.get("/api/v1/pricing/plans")
     plans = res.json()["plans"]
-    assert "pilot_managed" in plans
-    assert plans["pilot_managed"]["kind"] == "one_off"
-    assert plans["pilot_managed"]["amount_sar"] == 499.0
+    assert plans["sprint"]["kind"] == "one_off"
+    assert plans["sprint"]["amount_sar"] == 499.0
+    assert plans["data_pack"]["kind"] == "one_off"
+    assert plans["data_pack"]["amount_sar"] == 1500.0
 
 
 @pytest.mark.asyncio
