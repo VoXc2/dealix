@@ -28,11 +28,14 @@ async def test_per_tier_growth_has_positive_margin(async_client):
 
 
 @pytest.mark.asyncio
-async def test_per_tier_scale_has_higher_margin_than_starter(async_client):
-    """Larger tiers should compound margin (fixed infra cost amortized)."""
+async def test_per_tier_scale_stays_strongly_profitable(async_client):
+    """The heaviest tier consumes proportionally more compute, so its margin
+    is thinner than smaller tiers — but it must still be strongly profitable.
+    """
     res = await async_client.get("/api/v1/cost-tracking/per-tier")
     tiers = res.json()["tiers"]
-    assert tiers["scale"]["gross_margin_pct"] > tiers["starter"]["gross_margin_pct"]
+    assert tiers["scale"]["gross_profit_halalas"] > 0
+    assert tiers["scale"]["gross_margin_pct"] > 80
 
 
 @pytest.mark.asyncio

@@ -14,13 +14,31 @@ from __future__ import annotations
 import hashlib
 import logging
 import os
+import time
 from typing import Any
 
 log = logging.getLogger(__name__)
 
+# Process-level fallback used when Redis is unavailable. Keeps idempotency
+# correct for single-process deployments (and tests); a multi-process
+# deployment still needs Redis for cross-worker dedup.
+_MEMORY_STORE: dict[str, float] = {}
+
+
+def _memory_claim(key: str, ttl_seconds: int) -> bool:
+    """In-memory SET-NX-EX. Returns True on first claim, False if still live."""
+    now = time.time()
+    # Opportunistically drop expired keys to bound memory.
+    for k in [k for k, exp in _MEMORY_STORE.items() if exp <= now]:
+        _MEMORY_STORE.pop(k, None)
+    if _MEMORY_STORE.get(key, 0.0) > now:
+        return False
+    _MEMORY_STORE[key] = now + ttl_seconds
+    return True
+
 
 class IdempotencyStore:
-    """Redis-backed idempotency set with TTL."""
+    """Idempotency set with TTL — Redis-backed, in-memory fallback."""
 
     def __init__(self, prefix: str = "idem:", redis_client: Any | None = None):
         self.prefix = prefix
@@ -55,7 +73,7 @@ class IdempotencyStore:
 
     def seen(self, key: str) -> bool:
         if not self._redis:
-            return False
+            return _MEMORY_STORE.get(self._key(key), 0.0) > time.time()
         try:
             return bool(self._redis.exists(self._key(key)))
         except Exception:  # pragma: no cover
@@ -64,7 +82,7 @@ class IdempotencyStore:
     def mark(self, key: str, ttl_seconds: int = 86400) -> bool:
         """Mark key as processed. Returns True if newly marked, False if already existed."""
         if not self._redis:
-            return True
+            return _memory_claim(self._key(key), ttl_seconds)
         try:
             # SET NX EX — atomic check-and-set
             result = self._redis.set(self._key(key), "1", nx=True, ex=ttl_seconds)

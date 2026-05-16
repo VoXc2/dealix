@@ -122,12 +122,19 @@ def test_pricing_no_longer_routes_priced_tiers_to_launchpad():
     html = _read("pricing.html")
     # Find all .cta hrefs
     ctas = re.findall(r'class="cta"\s+href="([^"]+)"', html)
-    # Allowed targets: /checkout.html?..., /diagnostic.html, mailto:
+    # Allowed targets: /checkout.html?..., /diagnostic.html, a service
+    # detail page (e.g. /data-pack.html), or mailto:. The contract this
+    # test enforces is the negative one — no CTA may route to the old
+    # static /launchpad.html.
+    allowed_pages = {"/diagnostic.html", "/data-pack.html"}
     for href in ctas:
         if href.startswith("mailto:"):
             continue
+        assert "launchpad" not in href, (
+            f"pricing.html CTA still routes to launchpad: {href}"
+        )
         assert (
-            href.startswith("/checkout.html") or href == "/diagnostic.html"
+            href.startswith("/checkout.html") or href in allowed_pages
         ), f"pricing.html CTA points to unexpected target: {href}"
 
 
