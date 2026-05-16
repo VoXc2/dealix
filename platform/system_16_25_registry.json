@@ -1,0 +1,114 @@
+{
+  "version": "1.0",
+  "scope": "dealix-agentic-enterprise-systems-16-25",
+  "systems": [
+    {
+      "system_id": 16,
+      "code": "ENTERPRISE_REALITY_ENGINE",
+      "required_paths": [
+        "/platform/reality_engine",
+        "/platform/operational_health",
+        "/platform/org_pressure_detection",
+        "/platform/workflow_congestion",
+        "/platform/execution_monitoring"
+      ]
+    },
+    {
+      "system_id": 17,
+      "code": "ORGANIZATIONAL_REASONING_ENGINE",
+      "required_paths": [
+        "/platform/org_reasoning",
+        "/platform/causal_analysis",
+        "/platform/impact_modeling",
+        "/platform/strategic_reasoning",
+        "/platform/decision_graph"
+      ]
+    },
+    {
+      "system_id": 18,
+      "code": "AUTONOMOUS_BUSINESS_MODEL_ENGINE",
+      "required_paths": [
+        "/platform/business_optimization",
+        "/platform/revenue_optimization",
+        "/platform/cost_optimization",
+        "/platform/process_optimization",
+        "/platform/operational_ai"
+      ]
+    },
+    {
+      "system_id": 19,
+      "code": "AGENT_SUPERVISION_ENGINE",
+      "required_paths": [
+        "/platform/agent_supervision",
+        "/platform/agent_coordination",
+        "/platform/agent_conflict_resolution",
+        "/platform/agent_lifecycle",
+        "/platform/agent_monitoring"
+      ]
+    },
+    {
+      "system_id": 20,
+      "code": "TRUST_AND_SAFETY_DOMINANCE_ENGINE",
+      "required_paths": [
+        "/platform/runtime_safety",
+        "/platform/reversibility",
+        "/platform/explainability",
+        "/platform/accountability",
+        "/platform/trust_engine"
+      ]
+    },
+    {
+      "system_id": 21,
+      "code": "ORGANIZATIONAL_LEARNING_ENGINE",
+      "required_paths": [
+        "/platform/org_learning",
+        "/platform/pattern_detection",
+        "/platform/feedback_loops",
+        "/platform/outcome_analysis",
+        "/platform/adaptive_optimization"
+      ]
+    },
+    {
+      "system_id": 22,
+      "code": "STRATEGIC_INTELLIGENCE_ENGINE",
+      "required_paths": [
+        "/platform/market_intelligence",
+        "/platform/risk_forecasting",
+        "/platform/competitive_analysis",
+        "/platform/opportunity_detection",
+        "/platform/strategic_reasoning"
+      ]
+    },
+    {
+      "system_id": 23,
+      "code": "SELF_EVOLVING_WORKFLOW_ENGINE",
+      "required_paths": [
+        "/platform/workflow_optimization",
+        "/platform/adaptive_orchestration",
+        "/platform/process_learning",
+        "/platform/execution_optimization"
+      ]
+    },
+    {
+      "system_id": 24,
+      "code": "CIVILIZATIONAL_SCALING_ENGINE",
+      "required_paths": [
+        "/platform/industry_intelligence",
+        "/platform/cross_org_learning",
+        "/platform/benchmarking",
+        "/platform/pattern_library"
+      ]
+    },
+    {
+      "system_id": 25,
+      "code": "SELF_EVOLVING_ENTERPRISE_CORE",
+      "required_paths": [
+        "/platform/self_evolving_core",
+        "/platform/meta_orchestration",
+        "/platform/meta_governance",
+        "/platform/org_intelligence_core",
+        "/platform/continuous_optimization"
+      ]
+    }
+  ]
+}
