@@ -8,30 +8,30 @@ from typing import Any
 def first_10_customers_plan() -> dict[str, Any]:
     return {
         "who": [
-            "B2B founders in Riyadh/Jeddah with outbound pain",
-            "SMB revenue leaders in clinics, logistics, training",
-            "Agencies wanting a differentiated Saudi stack",
+            "B2B service firms with messy pipeline + weak follow-up",
+            "Fintech/processors needing governed approvals and auditability",
+            "VC portfolio teams running AI fast without governance",
         ],
         "how_to_find": [
-            "Warm intros from Sami network",
-            "LinkedIn lists + manual verify (no cold WhatsApp)",
-            "Sector events + follow-up drafts",
+            "Founder-led warm intros only",
+            "Manual shortlist of 5 high-context contacts first",
+            "Reply classification loop before scaling outreach",
         ],
         "qualification": [
-            "Has ICP clarity or willing to define in onboarding",
-            "Uses WhatsApp for business conversations",
-            "Willing to pilot with weekly proof pack",
+            "Active revenue workflow pain (pipeline, scoring, follow-up)",
+            "AI usage exists but lacks source/approval boundaries",
+            "Willing to run diagnostic -> sprint -> retainer path",
         ],
-        "pilot_offer_ar": "تجربة 7 أيام لمشغّل المؤسس + تقرير جاهزية + 10 فرص مؤهلة تجريبياً.",
+        "pilot_offer_ar": "نبدأ بـ Diagnostic محكوم، ثم Sprint لإثبات القيمة، ثم Retainer للتكرار الشهري.",
         "success_criteria": [
-            "Weekly active review of daily brief",
-            ">=3 approved drafts / week OR 1 booked meeting / month",
-            "Documented ROI story",
+            "First 5 warm messages sent with explicit founder confirmation",
+            "At least one L5 or L6 signal captured in evidence ledger",
+            "Paid conversion path documented with proof links",
         ],
         "actions": [
-            "Build list of 30 targets, close 10 pilots",
-            "Run demo using command center snapshot + market radar",
-            "Send WhatsApp-style approval cards in demo only",
+            "Select first 5 warm contacts by strategic fit",
+            "Send governed outreach draft (no autonomous send)",
+            "Classify replies and log proof before building new features",
         ],
     }
 
@@ -52,8 +52,8 @@ def first_100_customers_plan() -> dict[str, Any]:
 
 def channel_strategy() -> dict[str, Any]:
     return {
-        "primary": "founder_led_outbound_plus_partners",
-        "secondary": "community_whatsapp_opt_in",
+        "primary": "founder_led_warm_outreach_with_governed_followup",
+        "secondary": "community_opt_in_and_partner_intros",
         "avoid": ["cold_whatsapp_broadcasts", "unchecked_scraped_lists"],
     }
 
@@ -69,15 +69,15 @@ def partner_strategy() -> dict[str, Any]:
 def founder_led_sales_script() -> dict[str, Any]:
     return {
         "discovery_questions": [
-            "من أهم 3 قرارات إيرادات هذا الأسبوع؟",
-            "كيف تتابع واتساب اليوم بدون فوضى؟",
-            "وش يثبت للإدارة أن التسويق نجح؟",
+            "ما أهم 3 قرارات إيراد تحتاجونها هذا الأسبوع؟",
+            "أين يحدث كسر الثقة بين AI output والقرار التنفيذي؟",
+            "كيف تثبتون ROI اليوم بمصدر واضح وأدلة قابلة للتدقيق؟",
         ],
-        "demo_story_ar": "أعرض: رادار السوق → فرصة → مسودة عربية → زر موافقة → تقرير جاهزية.",
+        "demo_story_ar": "أعرض: Source clarity → Draft with approval gate → Decision Passport → Proof Pack.",
         "objections": {
-            "crm": "Dealix ليس بديل CRM بالكامل؛ هو طبقة إيرادات وفهم سياق فوق أدواتكم.",
-            "price": "نبدأ بمشغّل المؤسس أو pilot بسيط ثم نربط الأداء بالنتائج.",
-            "ai_failed_before": "هنا التنفيذ مسودة + موافقة + تتبع؛ لا إرسال تلقائي خارجي.",
+            "crm": "Dealix ليس CRM بديلاً؛ هو طبقة تشغيل محكومة فوق CRM والعمليات الحالية.",
+            "price": "نبدأ بـ Diagnostic صغير عالي الوضوح، ثم Sprint عند إثبات القيمة، ثم Retainer.",
+            "ai_failed_before": "النظام هنا approval-first + evidence-first، وليس agent يرسل تلقائياً.",
         },
-        "pilot_framing_ar": "أسبوعان: موجز يومي + 10 فرص + تقرير جاهزية + مسودات بموافقة.",
+        "pilot_framing_ar": "Sprint محكوم: ترتيب أولويات الحسابات + مخاطر الصفقات + Drafts مع موافقة + Proof Pack.",
     }

@@ -5,7 +5,13 @@
 ## Primary North Star (Gate 0)
 
 ```text
-Number of client business workflows transformed into measurable AI operating systems.
+Governed Value Decisions Created
+```
+
+Definition:
+
+```text
+Count of operating or revenue decisions taken with explicit source, explicit approval, logged evidence, and measurable impact.
 ```
 
 ## Principles

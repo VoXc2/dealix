@@ -41,6 +41,17 @@ from auto_client_acquisition.revenue_os.data_flywheel import (
 )
 from auto_client_acquisition.revenue_os.expansion_engine import next_best_offer
 from auto_client_acquisition.revenue_os.followup_plan import default_follow_up_plan_bullets
+from auto_client_acquisition.revenue_os.governed_value_decisions import (
+    CORE_COMMERCIAL_OFFERS,
+    EVIDENCE_STATE_LEVEL,
+    NORTH_STAR_DEFINITION_AR,
+    NORTH_STAR_DEFINITION_EN,
+    NORTH_STAR_KEY,
+    can_recognize_revenue,
+    is_governed_value_decision,
+    next_allowed_states,
+    validate_transition,
+)
 from auto_client_acquisition.revenue_os.proof_canonical import ProofEventCanonical
 from auto_client_acquisition.revenue_os.revenue_summary import summarize_scored_accounts
 from auto_client_acquisition.revenue_os.signal_normalizer import (
@@ -71,12 +82,17 @@ __all__ = [
     "ActionKind",
     "ActionMode",
     "AntiWasteViolation",
+    "CORE_COMMERCIAL_OFFERS",
     "DedupeHint",
+    "EVIDENCE_STATE_LEVEL",
     "FlywheelInputs",
     "FlywheelScore",
     "FactFieldProvenance",
     "FlywheelInputs",
     "FlywheelScore",
+    "NORTH_STAR_DEFINITION_AR",
+    "NORTH_STAR_DEFINITION_EN",
+    "NORTH_STAR_KEY",
     "ProofEventCanonical",
     "SaudiTargetingProfile",
     "SourcePolicy",
@@ -98,6 +114,7 @@ __all__ = [
     "map_tier1_to_intake_lead_source",
     "merge_targeting_into_discover_body",
     "next_best_offer",
+    "next_allowed_states",
     "normalize_market_signal",
     "normalize_signals_batch",
     "parse_tier1_lead_source",
@@ -105,8 +122,11 @@ __all__ = [
     "source_policies",
     "summarize_scored_accounts",
     "suggest_dedupe_fingerprint",
+    "can_recognize_revenue",
     "compute_flywheel_score",
     "flywheel_inputs_from_import_quality",
     "flywheel_inputs_from_preview",
+    "is_governed_value_decision",
     "validate_pipeline_step",
+    "validate_transition",
 ]

@@ -1,9 +1,15 @@
 # Dealix Offer Ladder
 
+Core commercial motion:
+
+```text
+Diagnostic → Sprint → Retainer
+```
+
 ## Level 1 — Diagnostic
 
 ```text
-Price: SAR 3.5k–7.5k
+Price: SAR 4,999–15,000 (up to 25,000 for larger scopes)
 Purpose: clarity
 ```
 
@@ -18,7 +24,7 @@ Data Readiness Assessment
 ## Level 2 — Sprint
 
 ```text
-Price: SAR 7.5k–25k
+Price: starts at SAR 25,000
 Purpose: first proof
 ```
 
@@ -29,48 +35,45 @@ Lead Intelligence Sprint
 AI Quick Win Sprint
 ```
 
-## Level 3 — Pilot
+## Level 3 — Retainer
 
 ```text
-Price: SAR 22k–60k
-Purpose: operational validation
+Price: SAR 4,999–15,000/month (up to 35,000/month for larger scopes)
+Purpose: recurring governed execution
+```
+
+Example:
+
+```text
+Governed Ops Retainer
+```
+
+## Level 4 — Governance & Data
+
+```text
+Price: scoped by policy and data complexity
+Purpose: trust + readiness
 ```
 
 Examples:
 
 ```text
-Pilot Conversion Sprint
-Workflow Pilot
-Support Desk Pilot
+AI Governance for Revenue Teams
+CRM / Data Readiness for AI
 ```
 
-## Level 4 — Retainer
+## Level 5 — Executive / Enterprise
 
 ```text
-Price: SAR 8k–60k/month
-Purpose: continuity
-```
-
-Examples:
-
-```text
-Monthly RevOps OS
-Monthly AI Ops
-Monthly Company Brain
-```
-
-## Level 5 — Enterprise
-
-```text
-Price: SAR 85k–300k+ setup (indicative)
-Purpose: scale
+Price: custom
+Purpose: board-level decisions + enterprise trust boundaries
 ```
 
 Examples:
 
 ```text
-Enterprise AI OS
-Governed AI Operations Platform
+Board Decision Memo
+Trust Pack Lite
 ```
 
 See [`OFFER_ARCHITECTURE.md`](OFFER_ARCHITECTURE.md), [`IMPLEMENTATION_TIERS.md`](IMPLEMENTATION_TIERS.md).
