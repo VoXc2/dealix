@@ -34,7 +34,7 @@ sys.path.insert(0, str(REPO_ROOT))
 
 
 # ─────────────────────────────────────────────────────────────────────
-# Step 1 — Service Catalog: 7 offerings, ascending price ladder
+# Step 1 — Service Catalog: 7 offerings, CEO/Board pricing
 # ─────────────────────────────────────────────────────────────────────
 
 
@@ -46,15 +46,17 @@ def test_step_01_service_catalog_has_7_offerings_with_valid_ladder() -> None:
     offerings = list_offerings()
     assert len(offerings) == 7
 
-    # Free Diagnostic must be at price 0
-    free = get_offering("free_mini_diagnostic")
-    assert free is not None
-    assert free.price_sar == 0.0
+    diagnostic = get_offering("free_mini_diagnostic")
+    assert diagnostic is not None
+    assert diagnostic.price_min_sar == 4999.0
+    assert diagnostic.price_max_sar == 15000.0
 
-    # Revenue Proof Sprint = 499 (first paid tier)
+    # Revenue Intelligence Sprint uses fixed scope price
     sprint = get_offering("revenue_proof_sprint_499")
     assert sprint is not None
-    assert sprint.price_sar == 499.0
+    assert sprint.price_sar == 25000.0
+    assert sprint.price_min_sar == 25000.0
+    assert sprint.price_max_sar == 25000.0
 
     # Article 4: no live actions in any offering's action_modes_used
     for off in offerings:

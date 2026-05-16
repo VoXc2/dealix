@@ -1,19 +1,16 @@
-"""The 7 canonical Dealix offerings — Wave 13 Phase 2.
+"""Canonical Dealix commercial catalog — CEO/Board operating plan.
 
-Truth registry. Backend + portal + WhatsApp + landing pages all read from here.
+This is the single source of truth for the 7 offers under the positioning:
+  Governed Revenue & AI Operations
+
+Compatibility note:
+- Existing service IDs are intentionally preserved to avoid breaking older
+  integrations and tests. Names/pricing/deliverables represent the new model.
 
 Constitution:
-- Article 4: action_modes never include 'live_send' or 'live_charge'.
-- Article 8: KPI language is commitment ("نشتغل بدون مقابل لو لم يتحقق…"),
-  not guarantee ("نضمن"). All `is_estimate=True`.
-- Article 11: pricing changes are 1-line edits to this file (no engine code).
-
-Pricing ladder (must be ascending for paid services):
-  Free Diagnostic (0) → Sprint (499) → Data-to-Revenue (1500)
-  → Growth Ops (2999/mo) → Support Add-on (1500/mo) → ECC (7500/mo)
-  → Agency Partner OS (custom)
-
-Strategic mapping (roles → offerings): docs/strategic/DEALIX_ROLE_SERVICE_LADDER_AR.md
+- Article 4: no `live_send` or `live_charge`.
+- Article 8: commitment language only, no guaranteed claims.
+- Article 11: data registry only (no business logic).
 """
 
 from __future__ import annotations
@@ -21,65 +18,86 @@ from __future__ import annotations
 from auto_client_acquisition.service_catalog.schemas import ServiceOffering
 
 
-_FREE_DIAGNOSTIC = ServiceOffering(
+_GOVERNED_REVENUE_OPS_DIAGNOSTIC = ServiceOffering(
     id="free_mini_diagnostic",
-    name_ar="التشخيص المجاني المختصر",
-    name_en="Free Mini Diagnostic",
-    price_sar=0.0,
+    name_ar="تشخيص تشغيل الإيراد والذكاء الاصطناعي بحوكمة",
+    name_en="Governed Revenue Ops Diagnostic",
+    price_sar=4999.0,
+    price_min_sar=4999.0,
+    price_max_sar=15000.0,
     price_unit="one_time",
-    duration_days=1,
+    duration_days=14,
     deliverables=(
-        "1-page sector-fit analysis",
-        "3 ranked opportunities",
-        "1 Arabic message draft",
-        "1 best channel recommendation",
-        "1 risk to avoid",
-        "1 next-step decision passport",
+        "Revenue Workflow Map",
+        "CRM / Source Quality Review",
+        "Pipeline Risk Map",
+        "Follow-up Gap Analysis",
+        "Decision Passport",
+        "Proof-of-Value Opportunities",
+        "Recommended Sprint / Retainer path",
     ),
-    kpi_commitment_ar="نسلّم خلال 24 ساعة من تعبئة النموذج.",
-    kpi_commitment_en="Delivered within 24 hours of form submission.",
-    refund_policy_ar="مجاني — لا يوجد دفع.",
-    refund_policy_en="Free — no payment.",
-    action_modes_used=("suggest_only", "draft_only"),
+    target_segments=(
+        "b2b_services",
+        "fintech_processors",
+        "vc_portfolio",
+    ),
+    trigger_signals=(
+        "pipeline_messy",
+        "follow_up_weak",
+        "ai_usage_unmanaged",
+        "forecast_unclear",
+    ),
+    kpi_commitment_ar="نسلّم التشخيص وجواز القرار خلال نافذة التسليم المتفق عليها مع العميل.",
+    kpi_commitment_en="Diagnostic and decision-passport outputs are delivered within the agreed delivery window.",
+    refund_policy_ar="خدمة تشخيص مدفوعة؛ أي تعديل على النطاق يتم توثيقه قبل بدء التنفيذ.",
+    refund_policy_en="Paid diagnostic service; any scope change is documented before execution.",
+    action_modes_used=("suggest_only", "draft_only", "approval_required"),
     hard_gates=(
         "no_live_send",
         "no_live_charge",
         "no_cold_whatsapp",
+        "no_linkedin_auto",
         "no_scraping",
         "no_fake_proof",
+        "no_fake_revenue",
     ),
     customer_journey_stage="discovery",
 )
 
 
-_REVENUE_PROOF_SPRINT = ServiceOffering(
+_REVENUE_INTELLIGENCE_SPRINT = ServiceOffering(
     id="revenue_proof_sprint_499",
-    name_ar="سبرنت إثبات الإيرادات (٤٩٩ ر.س)",
-    name_en="499 SAR Revenue Proof Sprint",
-    price_sar=499.0,
+    name_ar="سبرنت ذكاء الإيراد المحكوم",
+    name_en="Revenue Intelligence Sprint",
+    price_sar=25000.0,
+    price_min_sar=25000.0,
+    price_max_sar=25000.0,
     price_unit="one_time",
-    duration_days=7,
+    duration_days=21,
     deliverables=(
-        "Company Brain v1",
-        "Top 10 Opportunities (ranked)",
-        "Decision Passports for top 3",
-        "Arabic Draft Pack (5 messages)",
-        "Follow-up Plan (7-day timeline)",
-        "Risk + Objection Map",
-        "Executive Pack",
+        "Account Prioritization",
+        "Deal Risk Scoring",
+        "Next-Best-Action Drafts",
+        "Follow-up Templates (approval-first)",
+        "Revenue Opportunity Ledger",
+        "Decision Passport",
         "Proof Pack",
-        "Next Best Offer recommendation",
+        "Retainer Recommendation",
     ),
-    kpi_commitment_ar=(
-        "نسلّم ٧ مخرجات في ٧ أيام. إذا لم يصل عدد الفرص ≥١٠، "
-        "نشتغل بدون مقابل حتى نوصل."
+    target_segments=(
+        "b2b_services",
+        "fintech_processors",
+        "vc_portfolio",
     ),
-    kpi_commitment_en=(
-        "7 deliverables in 7 days. If we don't surface ≥10 opportunities, "
-        "we work for free until we do."
+    trigger_signals=(
+        "scope_requested",
+        "meeting_booked",
+        "high_value_accounts_need_prioritization",
     ),
-    refund_policy_ar="استرداد كامل ١٠٠٪ خلال ١٤ يومًا، بدون أسئلة.",
-    refund_policy_en="Full 100% refund within 14 days, no questions asked.",
+    kpi_commitment_ar="نربط قرارات المتابعة والمخاطر بالأدلة وبموافقة واضحة قبل أي إجراء خارجي.",
+    kpi_commitment_en="Follow-up and risk decisions are tied to evidence with explicit approvals before external action.",
+    refund_policy_ar="سياسة الاسترداد تُحدد في أمر العمل حسب نطاق الـSprint والاعتمادات المطلوبة.",
+    refund_policy_en="Refund terms are defined in the statement of work based on sprint scope and dependencies.",
     action_modes_used=(
         "suggest_only",
         "draft_only",
@@ -99,33 +117,37 @@ _REVENUE_PROOF_SPRINT = ServiceOffering(
 )
 
 
-_DATA_TO_REVENUE_PACK = ServiceOffering(
+_CRM_DATA_READINESS_FOR_AI = ServiceOffering(
     id="data_to_revenue_pack_1500",
-    name_ar="حزمة من البيانات إلى الإيراد (١٥٠٠ ر.س)",
-    name_en="Data-to-Revenue Pack",
-    price_sar=1500.0,
+    name_ar="جاهزية CRM والبيانات للذكاء الاصطناعي",
+    name_en="CRM / Data Readiness for AI",
+    price_sar=8999.0,
+    price_min_sar=4999.0,
+    price_max_sar=15000.0,
     price_unit="one_time",
-    duration_days=14,
+    duration_days=10,
     deliverables=(
-        "Clean Lead Board (deduplicated)",
-        "Duplicate Report",
-        "Source Validation Report",
-        "Risk Report",
-        "Top 20 Opportunities (scored)",
-        "10 Arabic Drafts",
-        "Follow-up Plan",
-        "Decision Passports for top 5",
+        "CRM Hygiene Report",
+        "Source Mapping",
+        "Missing Fields Report",
+        "Duplicate Accounts Report",
+        "Bad Lifecycle Stages Review",
+        "Data Readiness Score",
+        "AI Readiness Recommendation",
     ),
-    kpi_commitment_ar=(
-        "تنظيف ٤٠٠+ سطر في ١٤ يومًا. إذا لم نصل لـ٢٠ فرصة معتمدة، "
-        "نواصل العمل حتى نوصل."
+    target_segments=(
+        "b2b_services",
+        "fintech_processors",
     ),
-    kpi_commitment_en=(
-        "Clean 400+ rows in 14 days. If we don't surface 20 approved "
-        "opportunities, we work until we do."
+    trigger_signals=(
+        "crm_quality_low",
+        "duplicate_accounts_high",
+        "ai_outputs_unreliable",
     ),
-    refund_policy_ar="استرداد ٧٥٪ إذا لم يتحقق التزام KPI خلال ٢١ يومًا.",
-    refund_policy_en="75% refund if KPI commitment unmet within 21 days.",
+    kpi_commitment_ar="نسلّم درجة جاهزية بيانات قابلة للتدقيق مع خطة معالجة واضحة قبل أي أتمتة.",
+    kpi_commitment_en="An auditable data-readiness score and remediation plan are delivered before automation.",
+    refund_policy_ar="تتم مراجعة القبول وفق عناصر التسليم المدرجة في أمر العمل.",
+    refund_policy_en="Acceptance is reviewed against the statement-of-work deliverables.",
     action_modes_used=(
         "suggest_only",
         "draft_only",
@@ -143,34 +165,38 @@ _DATA_TO_REVENUE_PACK = ServiceOffering(
 )
 
 
-_GROWTH_OPS_MONTHLY = ServiceOffering(
+_GOVERNED_OPS_RETAINER = ServiceOffering(
     id="growth_ops_monthly_2999",
-    name_ar="عمليات النمو الشهرية (٢٩٩٩ ر.س / شهر)",
-    name_en="Growth Ops Monthly",
-    price_sar=2999.0,
+    name_ar="ريتـينر التشغيل المحكوم للإيراد",
+    name_en="Governed Ops Retainer",
+    price_sar=4999.0,
+    price_min_sar=4999.0,
+    price_max_sar=15000.0,
     price_unit="per_month",
-    duration_days=120,  # 4-month minimum commitment
+    duration_days=30,
     deliverables=(
-        "4 Weekly Pipeline Audits",
-        "Weekly Lead Board",
-        "Approval Queue (daily)",
-        "Draft Pack (≥20 messages/month)",
-        "Support Insights",
-        "Proof Events (ongoing)",
-        "Monthly Proof Pack",
-        "Monthly Executive Summary",
-        "Expansion Recommendation",
+        "Monthly Revenue Review",
+        "Pipeline Quality Review",
+        "AI Decision Review",
+        "Approved Follow-up Queue",
+        "Risk Register",
+        "Value Report",
+        "Board Memo",
     ),
-    kpi_commitment_ar=(
-        "نلتزم بزيادة معدل الردود +٢٠٪ خلال ٤ أشهر. "
-        "إن لم يتحقق، نشتغل بدون مقابل حتى يتحقق."
+    target_segments=(
+        "b2b_services",
+        "fintech_processors",
+        "vc_portfolio",
     ),
-    kpi_commitment_en=(
-        "Commit to +20% reply-rate lift in 4 months. "
-        "If not reached, we work for free until reached."
+    trigger_signals=(
+        "invoice_paid",
+        "proof_pack_delivered",
+        "repeatable_workflow_detected",
     ),
-    refund_policy_ar="استرداد تناسبي للأشهر غير المستخدمة عند عدم تحقيق KPI.",
-    refund_policy_en="Pro-rata refund of unused months if KPI commitment unmet.",
+    kpi_commitment_ar="كل دورة شهرية تنتهي بتقرير قيمة ومذكرة قرارات وربط واضح بين الإجراء والأثر.",
+    kpi_commitment_en="Each monthly cycle ends with a value report, decision memo, and traceable action-to-impact chain.",
+    refund_policy_ar="العقد الشهري يتبع إشعار إلغاء مكتوب وفترة انتقال متفق عليها.",
+    refund_policy_en="Monthly contracts follow written cancellation notice and agreed transition terms.",
     action_modes_used=(
         "suggest_only",
         "draft_only",
@@ -191,32 +217,37 @@ _GROWTH_OPS_MONTHLY = ServiceOffering(
 )
 
 
-_SUPPORT_OS_ADDON = ServiceOffering(
+_AI_GOVERNANCE_FOR_REVENUE_TEAMS = ServiceOffering(
     id="support_os_addon_1500",
-    name_ar="دعم Support OS (١٥٠٠ ر.س / شهر)",
-    name_en="Support OS Add-on",
-    price_sar=1500.0,
-    price_unit="per_month",
-    duration_days=30,
+    name_ar="حوكمة الذكاء الاصطناعي لفرق الإيراد",
+    name_en="AI Governance for Revenue Teams",
+    price_sar=9999.0,
+    price_min_sar=7000.0,
+    price_max_sar=18000.0,
+    price_unit="one_time",
+    duration_days=14,
     deliverables=(
-        "Ticket Classification (12 categories)",
-        "Suggested Replies (draft_only)",
-        "Escalation List (weekly)",
-        "Root Cause Map",
-        "Customer Health Score updates",
-        "Support Proof Events",
-        "SLA breach alerts",
+        "Allowed AI Actions Policy",
+        "Forbidden AI Actions Policy",
+        "Approval Boundaries Matrix",
+        "Source Rules",
+        "No Autonomous External Send Policy",
+        "Evidence Logging Playbook",
     ),
-    kpi_commitment_ar=(
-        "نقلّل وقت الرد الأول إلى ≤٣٠ دقيقة في ساعات العمل. "
-        "إن لم يتحقق، اشتراكان مجانيان."
+    target_segments=(
+        "fintech_processors",
+        "regulated_enterprises",
+        "vc_portfolio",
     ),
-    kpi_commitment_en=(
-        "Reduce first-response time to ≤30 min business hours. "
-        "If unmet, 2 free months."
+    trigger_signals=(
+        "asks_for_security",
+        "approval_boundaries_missing",
+        "external_send_risk",
     ),
-    refund_policy_ar="استرداد ١٠٠٪ في الشهر الأول إذا لم يلتزم KPI.",
-    refund_policy_en="100% refund in month 1 if KPI commitment unmet.",
+    kpi_commitment_ar="نفعّل مصفوفة موافقات قابلة للتدقيق تمنع أي إجراء خارجي دون موافقة صريحة.",
+    kpi_commitment_en="An auditable approval matrix is activated to block external actions without explicit approval.",
+    refund_policy_ar="نطاق الحوكمة يعتمد على عدد الأنظمة والقنوات ويُوثّق قبل التنفيذ.",
+    refund_policy_en="Governance scope depends on systems/channels count and is documented before execution.",
     action_modes_used=(
         "suggest_only",
         "draft_only",
@@ -233,38 +264,36 @@ _SUPPORT_OS_ADDON = ServiceOffering(
 )
 
 
-_EXECUTIVE_COMMAND_CENTER = ServiceOffering(
+_BOARD_DECISION_MEMO = ServiceOffering(
     id="executive_command_center_7500",
-    name_ar="غرفة قيادة الإدارة (٧٥٠٠ ر.س / شهر)",
-    name_en="Executive Command Center",
-    price_sar=7500.0,
-    price_unit="per_month",
-    duration_days=120,
+    name_ar="مذكرة قرارات مجلس الإدارة",
+    name_en="Board Decision Memo",
+    price_sar=4999.0,
+    price_min_sar=4999.0,
+    price_max_sar=12000.0,
+    price_unit="one_time",
+    duration_days=7,
     deliverables=(
-        "Daily founder brief (WhatsApp)",
-        "Weekly Pipeline Audit",
-        "Monthly board pack",
-        "Revenue Radar (live)",
-        "Sales Pipeline view",
-        "Growth Signals dashboard",
-        "Support Health overview",
-        "Delivery Progress tracker",
-        "Payment State view",
-        "Proof Ledger access",
-        "Approval Queue (daily)",
-        "Risk register (weekly)",
-        "Next 7 days plan",
+        "Top Revenue Decisions",
+        "Pipeline Risks",
+        "AI Governance Risks",
+        "Capital Allocation Options",
+        "Build / Hold / Kill Recommendations",
     ),
-    kpi_commitment_ar=(
-        "نوفر للإدارة ٤٠٪+ من وقت اتخاذ القرار خلال ٤ أشهر. "
-        "إن لم يتحقق، شهر مجاني."
+    target_segments=(
+        "board_level_teams",
+        "ceo_office",
+        "vc_portfolio",
     ),
-    kpi_commitment_en=(
-        "Save executive 40%+ of decision time in 4 months. "
-        "If unmet, 1 free month."
+    trigger_signals=(
+        "board_update_needed",
+        "capital_allocation_decision_due",
+        "risk_register_growth",
     ),
-    refund_policy_ar="استرداد تناسبي للأشهر غير المستخدمة.",
-    refund_policy_en="Pro-rata refund of unused months.",
+    kpi_commitment_ar="تصدر المذكرة بقرارات قابلة للتنفيذ ومربوطة بأدلة تشغيلية واضحة.",
+    kpi_commitment_en="The memo is issued with executable decisions tied to explicit operating evidence.",
+    refund_policy_ar="المذكرة خدمة تحليلية قابلة للمراجعة حسب الملاحظات خلال دورة التسليم.",
+    refund_policy_en="The memo is an analytical deliverable reviewable against feedback within the delivery cycle.",
     action_modes_used=(
         "suggest_only",
         "draft_only",
@@ -285,32 +314,39 @@ _EXECUTIVE_COMMAND_CENTER = ServiceOffering(
 )
 
 
-_AGENCY_PARTNER_OS = ServiceOffering(
+_TRUST_PACK_LITE = ServiceOffering(
     id="agency_partner_os",
-    name_ar="نظام الشريك الوكالة",
-    name_en="Agency Partner OS",
-    price_sar=0.0,  # custom — actual price set per partnership
-    price_unit="custom",
-    duration_days=0,  # ongoing
+    name_ar="حزمة الثقة الخفيفة",
+    name_en="Trust Pack Lite",
+    price_sar=3000.0,
+    price_min_sar=3000.0,
+    price_max_sar=8000.0,
+    price_unit="one_time",
+    duration_days=7,
     deliverables=(
-        "Partner Intake doc",
-        "Co-branded Diagnostic",
-        "Client Proof Sprint (per client)",
-        "Proof Pack (per client)",
-        "Renewal / Upsell Pack",
-        "Partner Revenue Tracking",
-        "30% commission tracking",
+        "AI Action Policy",
+        "Approval Matrix",
+        "Evidence Handling Guide",
+        "Forbidden Actions Register",
+        "Agent Safety Rules",
+        "Trust Boundaries Sheet",
+    ),
+    target_segments=(
+        "security_sensitive_buyers",
+        "regulated_enterprises",
+    ),
+    trigger_signals=(
+        "asks_for_security",
+        "asks_for_trust_pack",
     ),
     kpi_commitment_ar=(
-        "نلتزم بـ٣٠٪ عمولة لأول سنة من كل عميل محوّل. "
-        "ولا نشر proof بدون موافقة موقّعة."
+        "نصدر حزمة ثقة تشغيلية قابلة للتدقيق توضح الحدود والموافقات ومسار الأدلة."
     ),
     kpi_commitment_en=(
-        "30% commission for first paid year per referred customer. "
-        "Never publish proof without signed consent."
+        "An auditable trust pack is issued with clear boundaries, approvals, and evidence handling."
     ),
-    refund_policy_ar="عقد رسمي بشروط الإلغاء — يتم بمراجعة قانونية.",
-    refund_policy_en="Formal contract with cancellation terms — lawyer-reviewed.",
+    refund_policy_ar="تُنفّذ الحزمة عند طلب الثقة/الأمن ضمن نطاق محدد وموافقات موثقة.",
+    refund_policy_en="The pack is delivered on security/trust demand with documented scope and approvals.",
     action_modes_used=(
         "suggest_only",
         "draft_only",
@@ -332,13 +368,13 @@ _AGENCY_PARTNER_OS = ServiceOffering(
 
 # Canonical 7-offering registry (order = catalog display order)
 OFFERINGS: tuple[ServiceOffering, ...] = (
-    _FREE_DIAGNOSTIC,
-    _REVENUE_PROOF_SPRINT,
-    _DATA_TO_REVENUE_PACK,
-    _GROWTH_OPS_MONTHLY,
-    _SUPPORT_OS_ADDON,
-    _EXECUTIVE_COMMAND_CENTER,
-    _AGENCY_PARTNER_OS,
+    _GOVERNED_REVENUE_OPS_DIAGNOSTIC,
+    _REVENUE_INTELLIGENCE_SPRINT,
+    _GOVERNED_OPS_RETAINER,
+    _AI_GOVERNANCE_FOR_REVENUE_TEAMS,
+    _CRM_DATA_READINESS_FOR_AI,
+    _BOARD_DECISION_MEMO,
+    _TRUST_PACK_LITE,
 )
 
 SERVICE_IDS: frozenset[str] = frozenset(o.id for o in OFFERINGS)

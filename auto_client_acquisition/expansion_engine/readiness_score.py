@@ -39,11 +39,11 @@ class NextBestOffer:
     """Recommended next offer based on customer pain + readiness."""
 
     offer_key: Literal[
-        "data_to_revenue_pack",
-        "managed_growth_ops",
-        "support_os",
-        "executive_command_center",
-        "agency_partner_os",
+        "crm_data_readiness_for_ai",
+        "governed_ops_retainer",
+        "ai_governance_revenue_teams",
+        "board_decision_memo",
+        "trust_pack_lite",
         "no_recommendation_yet",
     ]
     offer_name_ar: str
@@ -206,11 +206,11 @@ def recommend_next_offer(
     """Map readiness + pain → concrete offer.
 
     Pain → Offer mapping (from plan §32.3.10):
-        dormant_data        → Data-to-Revenue Pack
-        follow_up_gap       → Managed Growth Ops
-        support_chaos       → Support OS
-        executive_visibility → Executive Command Center
-        agency_proof_gap    → Agency Partner OS
+        dormant_data         → CRM / Data Readiness for AI
+        follow_up_gap        → Governed Ops Retainer
+        support_chaos        → AI Governance for Revenue Teams
+        executive_visibility → Board Decision Memo
+        agency_proof_gap     → Trust Pack Lite
         unknown             → no_recommendation_yet (founder must clarify)
 
     Action mode (Article 8):
@@ -220,21 +220,50 @@ def recommend_next_offer(
     """
     # Pain → offer
     pain_to_offer = {
-        "dormant_data": ("data_to_revenue_pack", "Data-to-Revenue Pack",
-                         "تحويل البيانات الخاملة إلى فرص"),
-        "follow_up_gap": ("managed_growth_ops", "Managed Growth Ops Monthly",
-                          "متابعة منظَّمة للفرص"),
-        "support_chaos": ("support_os", "Support OS",
-                          "تنظيم الدعم وتحسين تجربة العميل"),
-        "executive_visibility": ("executive_command_center",
-                                 "Executive Command Center",
-                                 "رؤية إدارة شاملة للنمو والمخاطر"),
-        "agency_proof_gap": ("agency_partner_os", "Agency Partner OS",
-                             "بناء proof للوكالات لزيادة الاحتفاظ"),
-        "unknown": ("no_recommendation_yet", "No recommendation yet",
-                    "تحتاج توضيح مصدر الألم قبل الاقتراح"),
+        "dormant_data": (
+            "crm_data_readiness_for_ai",
+            "CRM / Data Readiness for AI",
+            "جاهزية CRM والبيانات للذكاء الاصطناعي",
+            "جاهزية البيانات قبل أي توسيع للـAI في الإيراد",
+            "Data readiness before scaling AI in revenue operations",
+        ),
+        "follow_up_gap": (
+            "governed_ops_retainer",
+            "Governed Ops Retainer",
+            "ريتينر التشغيل المحكوم للإيراد",
+            "تحويل المتابعة إلى تشغيل شهري محكوم ومقاس",
+            "Convert follow-up into a governed monthly operating cadence",
+        ),
+        "support_chaos": (
+            "ai_governance_revenue_teams",
+            "AI Governance for Revenue Teams",
+            "حوكمة الذكاء الاصطناعي لفرق الإيراد",
+            "فرض حدود الموافقات ومنع الأفعال الخارجية غير المحكومة",
+            "Set approval boundaries and block ungoverned external actions",
+        ),
+        "executive_visibility": (
+            "board_decision_memo",
+            "Board Decision Memo",
+            "مذكرة قرارات مجلس الإدارة",
+            "مذكرة قرارات للإدارة تربط المخاطر بالقرارات والقيمة",
+            "Board memo linking risks, decisions, and measurable value",
+        ),
+        "agency_proof_gap": (
+            "trust_pack_lite",
+            "Trust Pack Lite",
+            "حزمة الثقة الخفيفة",
+            "حزمة ثقة سريعة عند طلب الأمن والحوكمة",
+            "Fast trust package when security/governance is requested",
+        ),
+        "unknown": (
+            "no_recommendation_yet",
+            "No recommendation yet",
+            "لا توصية بعد",
+            "تحتاج توضيح مصدر الألم قبل الاقتراح",
+            "Pain source needs clarification before recommendation",
+        ),
     }
-    offer_key, name_en, rationale_ar = pain_to_offer.get(
+    offer_key, name_en, name_ar, rationale_ar, rationale_en = pain_to_offer.get(
         primary_pain, pain_to_offer["unknown"],
     )
 
@@ -242,11 +271,11 @@ def recommend_next_offer(
     if not readiness.ready:
         action_mode: Literal["suggest_only", "draft_only", "approval_required"] = "suggest_only"
         rat_ar_suffix = "غير جاهز للتوصية الآن — راجع blockers."
-        rat_en_suffix = "Not yet ready — review blockers."
+        rat_en_suffix = "Not yet ready - review blockers."
     elif readiness.score < 0.8:
         action_mode = "draft_only"
         rat_ar_suffix = "جاهز ولكن أقل من ممتاز — جهّز مسوّدة وانتظر."
-        rat_en_suffix = "Ready but below peak — draft and hold."
+        rat_en_suffix = "Ready but below peak - draft and hold."
     else:
         action_mode = "approval_required"
         rat_ar_suffix = "جاهز جداً — اقترح بعد موافقة المؤسس."
@@ -257,10 +286,10 @@ def recommend_next_offer(
 
     return NextBestOffer(
         offer_key=offer_key,  # type: ignore[arg-type]
-        offer_name_ar=name_en,  # English name is universal in product surface
+        offer_name_ar=name_ar,
         offer_name_en=name_en,
         rationale_ar=f"{rationale_ar} — {rat_ar_suffix}",
-        rationale_en=f"score={readiness.score:.2f} · {rat_en_suffix}",
+        rationale_en=f"{rationale_en}. score={readiness.score:.2f} · {rat_en_suffix}",
         confidence=confidence,
         action_mode=action_mode,
         is_estimate=True,

@@ -106,17 +106,19 @@ def test_no_guaranteed_language_anywhere():
 
 # ── Test 5 ────────────────────────────────────────────────────────────
 def test_price_ladder_ascending_for_paid_one_time_services():
-    """Free → 499 (Sprint) → 1500 (Data-to-Revenue) one-time pricing ladder."""
+    """Diagnostic start price stays below sprint price; ranges are coherent."""
     one_time_paid = [
         o for o in OFFERINGS if o.price_unit == "one_time" and o.price_sar > 0
     ]
-    prices = [o.price_sar for o in one_time_paid]
-    assert prices == sorted(prices), f"one-time prices not ascending: {prices}"
-    # Specifically: Sprint must be cheaper than Data-to-Revenue
+    assert one_time_paid, "expected at least one paid one-time offering"
+    for o in one_time_paid:
+        if o.price_min_sar is not None and o.price_max_sar is not None:
+            assert o.price_min_sar <= o.price_sar <= o.price_max_sar
+
+    diagnostic = get_offering("free_mini_diagnostic")
     sprint = get_offering("revenue_proof_sprint_499")
-    d2r = get_offering("data_to_revenue_pack_1500")
-    assert sprint is not None and d2r is not None
-    assert sprint.price_sar < d2r.price_sar
+    assert diagnostic is not None and sprint is not None
+    assert diagnostic.price_sar < sprint.price_sar
 
 
 # ── Test 6 ────────────────────────────────────────────────────────────
