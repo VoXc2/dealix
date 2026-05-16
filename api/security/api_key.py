@@ -126,7 +126,9 @@ class APIKeyMiddleware(BaseHTTPMiddleware):
             # In production a missing API_KEYS list must reject every request
             # rather than silently disabling auth.
             env = (os.getenv("APP_ENV") or os.getenv("ENVIRONMENT") or "").lower()
-            if env == "production":
+            # "production" and "prod" both denote prod (cf. control_plane_os
+            # tenant_context._PRODUCTION_ENVS).
+            if env in ("production", "prod"):
                 logger.warning("api_keys_not_configured_in_production", path=path)
                 return JSONResponse(
                     {"detail": "API authentication is not configured"},
