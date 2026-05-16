@@ -15,3 +15,18 @@ mappings:
     service_id: ai_governance_program
   - folder: client_ai_policy_pack
     service_id: client_ai_policy_pack
+  # --- Governed Revenue & AI Operations catalog (Phase 5, 2026-05-16) ---
+  - folder: governed_revenue_ops_diagnostic
+    service_id: governed_revenue_ops_diagnostic
+  - folder: revenue_intelligence_sprint
+    service_id: revenue_intelligence_sprint
+  - folder: governed_ops_retainer
+    service_id: governed_ops_retainer
+  - folder: ai_governance_for_revenue_teams
+    service_id: ai_governance_for_revenue_teams
+  - folder: crm_data_readiness_for_ai
+    service_id: crm_data_readiness_for_ai
+  - folder: board_decision_memo
+    service_id: board_decision_memo
+  - folder: trust_pack_lite
+    service_id: trust_pack_lite

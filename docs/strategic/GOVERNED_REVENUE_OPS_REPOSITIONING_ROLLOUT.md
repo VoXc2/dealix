@@ -125,6 +125,59 @@ project without Proof Pack · no project without Capital Asset.
     drafts: B2B services, consulting, SaaS, fintech, agency; all `draft` state,
     `approval_required=true`; email / warm intro only; signed "Sami")
   - `data/outreach/governed_revenue_ops_metrics.md` (new — 8-metric sheet, all 0)
+- [x] **Phase 5 — readiness matrix wiring (all 7 services)** (2026-05-16)
+  - All 7 catalog services now appear in the automated readiness matrix
+    (`scripts/print_service_readiness_matrix.py`), each with an HONEST score.
+  - `scripts/verify_service_files.py` (updated — added `REQUIRED_BY_FOLDER`
+    keys for all 7 new folders + their required file lists).
+  - `docs/company/SERVICE_ID_MAP.yaml` (updated — 7 new `{folder, service_id}`
+    mappings).
+  - `auto_client_acquisition/governance_os/policies/service_readiness_defaults.yaml`
+    (updated — 7 new `service_id` entries with honest evidence flags).
+  - 7 new service folders under `docs/services/` with real delivery blueprints:
+    - `governed_revenue_ops_diagnostic/` — 10 new files + fixed `offer.md`
+      (added `## Best for`, `## Duration`, `## Not included`, `## Success metric`
+      to satisfy the verifier's 7 offer markers).
+    - `revenue_intelligence_sprint/` — 11 files.
+    - `governed_ops_retainer/` — 11 files.
+    - `ai_governance_for_revenue_teams/` — 10 files.
+    - `crm_data_readiness_for_ai/` — 10 files.
+    - `board_decision_memo/` — 8 files (lighter document-led set).
+    - `trust_pack_lite/` — 8 files (lighter request-only set).
+  - Honest flag notes:
+    - `has_demo: false` for ALL 7 — no demo pack was built under `demos/`.
+    - `has_module_support: true` only for the 3 revenue-ops services backed by
+      `auto_client_acquisition/revenue_ops/` + the `/api/v1/revenue-ops` router;
+      `false` for the 4 document-led services (no dedicated code module).
+    - `has_upsell_path: false` for `board_decision_memo` and `trust_pack_lite`
+      (compact / request-only — no `upsell.md`).
+  - Resulting honest scores: 3 revenue-ops services = 90 (Sellable/Excellent);
+    `ai_governance_for_revenue_teams` and `crm_data_readiness_for_ai` = 75
+    (Beta); `board_decision_memo` and `trust_pack_lite` = 65 (Not Ready).
+  - Owner: dealix-engineer + dealix-content.
+
+### Phase 5 readiness matrix (actual scores, 2026-05-16)
+
+| Service folder | service_id | Score | Tier |
+|----------------|------------|------:|------|
+| lead_intelligence_sprint | lead_intelligence_sprint | 100 | Sellable/Excellent |
+| ai_quick_win_sprint | quick_win_ops | 100 | Sellable/Excellent |
+| company_brain_sprint | company_brain_sprint | 100 | Sellable/Excellent |
+| ai_support_desk_sprint | support_desk_sprint | 90 | Sellable/Excellent |
+| ai_governance_program | ai_governance_program | 100 | Sellable/Excellent |
+| client_ai_policy_pack | client_ai_policy_pack | 100 | Sellable/Excellent |
+| governed_revenue_ops_diagnostic | governed_revenue_ops_diagnostic | 90 | Sellable/Excellent |
+| revenue_intelligence_sprint | revenue_intelligence_sprint | 90 | Sellable/Excellent |
+| governed_ops_retainer | governed_ops_retainer | 90 | Sellable/Excellent |
+| ai_governance_for_revenue_teams | ai_governance_for_revenue_teams | 75 | Beta |
+| crm_data_readiness_for_ai | crm_data_readiness_for_ai | 75 | Beta |
+| board_decision_memo | board_decision_memo | 65 | Not Ready |
+| trust_pack_lite | trust_pack_lite | 65 | Not Ready |
+
+The four sub-90 scores are correct and acceptable: they honestly reflect that
+no demo pack and (for the document-led services) no backing code module exist
+yet. Raising them is a deliberate future step (build demo packs; build code
+modules where it makes sense) — not a flag flip.
 
 ---
 

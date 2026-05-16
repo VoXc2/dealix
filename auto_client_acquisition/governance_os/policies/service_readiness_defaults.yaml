@@ -72,3 +72,78 @@ services:
     has_demo: true
     has_compliance_checks: true
     has_upsell_path: true
+  # --- Governed Revenue & AI Operations catalog (Phase 5, 2026-05-16) ---
+  # Flags reflect ONLY artifacts that genuinely exist. has_demo is false for
+  # all 7: no demo pack was built under demos/. has_module_support is true only
+  # where the auto_client_acquisition/revenue_ops package + /api/v1/revenue-ops
+  # router actually back the service.
+  governed_revenue_ops_diagnostic:
+    has_offer_page: true       # docs/services/governed_revenue_ops_diagnostic/offer.md
+    has_intake: true           # intake.md
+    has_scope_template: true   # scope.md
+    has_module_support: true   # revenue_ops/diagnostics.py + POST /diagnostics
+    has_report_template: true  # report_template.md
+    has_qa_checklist: true     # qa_checklist.md
+    has_demo: false            # no demo pack built
+    has_compliance_checks: true  # qa_checklist Governance QA section
+    has_upsell_path: true      # upsell.md
+  revenue_intelligence_sprint:
+    has_offer_page: true
+    has_intake: true
+    has_scope_template: true
+    has_module_support: true   # /api/v1/revenue-ops upload/score/passport/drafts
+    has_report_template: true
+    has_qa_checklist: true
+    has_demo: false
+    has_compliance_checks: true
+    has_upsell_path: true
+  governed_ops_retainer:
+    has_offer_page: true
+    has_intake: true
+    has_scope_template: true
+    has_module_support: true   # /api/v1/revenue-ops evidence/approvals/invoices
+    has_report_template: true
+    has_qa_checklist: true
+    has_demo: false
+    has_compliance_checks: true
+    has_upsell_path: true
+  ai_governance_for_revenue_teams:
+    has_offer_page: true
+    has_intake: true
+    has_scope_template: true
+    has_module_support: false  # document-led service, no dedicated code module
+    has_report_template: true
+    has_qa_checklist: true
+    has_demo: false
+    has_compliance_checks: true
+    has_upsell_path: true
+  crm_data_readiness_for_ai:
+    has_offer_page: true
+    has_intake: true
+    has_scope_template: true
+    has_module_support: false  # no standalone module; overlaps diagnostics only
+    has_report_template: true
+    has_qa_checklist: true
+    has_demo: false
+    has_compliance_checks: true
+    has_upsell_path: true
+  board_decision_memo:
+    has_offer_page: true
+    has_intake: true
+    has_scope_template: true
+    has_module_support: false  # document-led service, no code module
+    has_report_template: true
+    has_qa_checklist: true
+    has_demo: false
+    has_compliance_checks: true
+    has_upsell_path: false     # no upsell.md (compact add-on, sold within an engagement)
+  trust_pack_lite:
+    has_offer_page: true
+    has_intake: true
+    has_scope_template: true
+    has_module_support: false  # document-led service, no code module
+    has_report_template: true
+    has_qa_checklist: true
+    has_demo: false
+    has_compliance_checks: true
+    has_upsell_path: false     # no upsell.md (request-only compact pack)
