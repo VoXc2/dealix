@@ -13,7 +13,11 @@
 # ═══════════════════════════════════════════════════════════════════
 
 schema_version: "1.0"
-last_reviewed: "2026-04-21"
+last_reviewed: "2026-05-16"
+# 2026-05-16 honesty pass: every claim re-verified against the current codebase
+# (full repo audit). All Production statuses confirmed; Pilot/Partial/Planned
+# statuses remain accurate (Trust Plane is in-memory; orchestration is MVP).
+# No status changes required. See NORTH_STAR.md and REPO_MAP.md.
 
 claims:
   # ───────────── Core platform ─────────────
