@@ -117,12 +117,27 @@ def main() -> int:
         ]
     )
 
+    founder_required: set[str] = set()
+    founder_path = root / "dealix/transformation/kpi_founder_required.yaml"
+    if founder_path.exists():
+        founder_required = set(
+            (yaml.safe_load(founder_path.read_text(encoding="utf-8")) or {}).get(
+                "founder_required_keys"
+            )
+            or []
+        )
+
     snaps = baselines.get("snapshots") or {}
     for key in sorted(snaps.keys()):
         row = snaps.get(key) or {}
         val = row.get("value_numeric")
         ref = row.get("source_ref") or ""
-        status = "FILLED" if val is not None and str(ref).strip() else "PENDING_NULL"
+        if val is not None and str(ref).strip():
+            status = "FILLED"
+        elif key in founder_required:
+            status = "FOUNDER_REQUIRED"
+        else:
+            status = "PENDING_NULL"
         lines.append(f"- **{key}**: value={val!r} source_ref=`{ref}` ({status})")
     lines.append("")
 

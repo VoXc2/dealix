@@ -2,6 +2,15 @@
 
 This directory is the execution spine for the comprehensive transformation from a strong AI product repository into a category-defining governed AI company.
 
+## Unified master strategy (12 + 200)
+
+- [MASTER_STRATEGY_UNIFIED_AR.md](MASTER_STRATEGY_UNIFIED_AR.md) — كيف تتعايش الـ 12 مبادرة التشغيلية مع Dealix 200
+- [`dealix/transformation/program_unified.yaml`](../dealix/transformation/program_unified.yaml) — ربط `todo_registry` ↔ `strategic_initiatives_registry`
+- [`dealix/transformation/os_tier_registry.yaml`](../dealix/transformation/os_tier_registry.yaml) — T1/T2/T3 (لا ميزة خارج السلسلة الذهبية)
+- **تحقق موحّد:** `bash scripts/run_master_strategy_verify.sh`
+- **مراجعة ربع سنوية:** `bash scripts/run_quarterly_strategy_review.sh`
+- **KPIs من CRM (مؤسس):** `python3 scripts/import_kpi_baselines_export.py --file exports/kpi_week.json`
+
 ## Program scope
 
 - Strategic doctrine lock

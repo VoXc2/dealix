@@ -1,5 +1,7 @@
 version: 1
 program: global_ai_transformation
+unified_program: dealix/transformation/program_unified.yaml
+master_verify: scripts/run_master_strategy_verify.sh
 todos:
   - id: doctrine-lock
     owner_os: strategy

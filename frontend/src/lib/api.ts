@@ -131,8 +131,19 @@ export const api = {
   getPricing: () =>
     apiClient.get("/api/v1/pricing/plans"),
 
-  getCommandCenter: () =>
+  getUnifiedReadiness: (serviceId = "revenue_os_core") =>
+    apiClient.get("/api/v1/readiness/unified", {
+      params: { service_id: serviceId, gate: "production" },
+    }),
+
+  /** @deprecated v3 snapshot — prefer getUnifiedReadiness + getRevenueOsCatalog */
+  getCommandCenterV3: () =>
     apiClient.get("/api/v1/v3/command-center/snapshot"),
+
+  getCommandCenter: () =>
+    apiClient.get("/api/v1/readiness/unified", {
+      params: { service_id: "revenue_os_core", gate: "production" },
+    }),
 
   getAIWorkforce: () =>
     apiClient.get("/api/v1/ai-workforce/agents"),

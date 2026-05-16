@@ -1,0 +1,16 @@
+version: 1
+program: dealix_master_strategy
+target_pilots: 5
+minimum_pilots: 3
+checklist_ref: docs/PHASE2_PRIVATE_BETA_CHECKLIST.md
+pilots: []
+sprint_499:
+  service_id: revenue_proof_sprint_499
+  delivery_module: auto_client_acquisition/delivery_factory/delivery_sprint.py
+  weekly_hello_world: POST /api/v1/leads
+p0_enterprise:
+  workflow_v10: auto_client_acquisition/workflow_os_v10/
+  ai_workforce_v10: auto_client_acquisition/ai_workforce_v10/
+  platform_v10: auto_client_acquisition/platform_v10/
+status_ar: >-
+  تتبّع بايلوتات Private Beta — أضف صفوف pilots عند توقيع كل عميل (founder-only metadata، لا PII في الريبو).

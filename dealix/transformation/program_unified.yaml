@@ -1,0 +1,31 @@
+version: 1
+program: dealix_unified_transformation
+description_ar: >-
+  يوحّد برنامج الـ 12 مبادرة (تشغيل أسبوعي) مع Dealix 200 (قدرة ربع سنوية).
+layers:
+  operational_12:
+    registry: dealix/transformation/todo_registry.yaml
+    cadence: weekly
+    verify: python3 scripts/verify_global_ai_transformation.py
+  strategic_200:
+    registry: dealix/transformation/strategic_initiatives_registry.yaml
+    cadence: quarterly
+    verify: python3 scripts/verify_global_ai_transformation.py --check-initiatives
+  north_star:
+    manifest: dealix/transformation/north_star_manifest.yaml
+    kpi_registry: dealix/transformation/kpi_registry.yaml
+    baselines: dealix/transformation/kpi_baselines.yaml
+mapping:
+  doctrine-lock: { initiative_ids: [1, 6, 106], parent_role: accountable }
+  gap-closure: { initiative_ids: [2, 11, 111, 112], parent_role: responsible }
+  enterprise-package: { initiative_ids: [111, 112, 113, 114, 115], parent_role: accountable }
+  governance-expansion: { initiative_ids: [105, 106, 108, 140], parent_role: responsible }
+  data-flywheel: { initiative_ids: [15, 16, 172, 173], parent_role: responsible }
+  reliability-program: { initiative_ids: [17, 117, 148, 181], parent_role: responsible }
+  observability-contracts: { initiative_ids: [109, 146, 190], parent_role: responsible }
+  gtm-system: { initiative_ids: [131, 132, 137, 138], parent_role: accountable }
+  unit-economics: { initiative_ids: [101, 121, 122, 127], parent_role: accountable }
+  delivery-control-tower: { initiative_ids: [151, 152, 157, 158], parent_role: responsible }
+  org-operating-system: { initiative_ids: [191, 195, 198], parent_role: accountable }
+  category-dominance: { initiative_ids: [131, 134, 139, 140], parent_role: accountable }
+master_verify: scripts/run_master_strategy_verify.sh
