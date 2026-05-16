@@ -18,5 +18,9 @@ data handling policy signed path with customer
 ## ما يلي بعد التحقق
 
 - Multi-tenant، RBAC، SSO، تصدير audit، retention، تكاملات CRM/ERP، تدريب إداري.
+- القياس التنفيذي الرسمي لهذه المحاور موجود في:
+  - `docs/enterprise/ENTERPRISE_MATURITY_OPERATING_SYSTEM.md`
+  - `docs/enterprise/ENTERPRISE_READINESS_MODEL.yaml`
+  - `scripts/verify_enterprise_maturity_os.py`
 
 **الربط:** [`DEALIX_AI_OS_LONG_TERM_AR.md`](../company/DEALIX_AI_OS_LONG_TERM_AR.md)، [`SELLABILITY_POLICY.md`](../company/SELLABILITY_POLICY.md).

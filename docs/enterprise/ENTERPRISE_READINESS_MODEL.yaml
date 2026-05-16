@@ -1,0 +1,21 @@
+capabilities:
+  workflow_redesign: 72
+  agent_orchestration: 68
+  action_governance: 81
+  memory_management: 70
+  execution_supervision: 74
+  business_impact_measurement: 67
+  safe_evolution: 69
+  digital_workforce_management: 63
+  executive_intelligence_generation: 66
+  organizational_intelligence_scaling: 64
+
+metadata:
+  model_name: dealix_enterprise_maturity_operating_system
+  scoring_scale: 0_to_100
+  rule:
+    transformation_ready_requires_each_domain_gte: 75
+  note: >
+    Capability scores are strategic self-assessment inputs. Runtime transformation
+    readiness is blended with filesystem implementation coverage from
+    scripts/verify_enterprise_maturity_os.py.
