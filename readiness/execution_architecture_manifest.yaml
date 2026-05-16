@@ -1,0 +1,89 @@
+version: 1
+name: dealix-enterprise-execution-architecture
+
+required_directories:
+  - infra/terraform
+  - infra/docker
+  - infra/k8s
+  - infra/networking
+  - infra/monitoring
+  - platform/foundation
+  - platform/agent_runtime
+  - platform/workflow_engine
+  - platform/orchestration
+  - platform/execution_engine
+  - platform/knowledge
+  - platform/memory
+  - platform/governance
+  - platform/observability
+  - platform/integrations
+  - platform/analytics
+  - platform/identity
+  - platform/multi_tenant
+  - platform/policy_engine
+  - platform/approval_engine
+  - platform/risk_engine
+  - platform/retrieval
+  - platform/reranking
+  - platform/auth
+  - platform/rbac
+  - agents/sales_agent
+  - agents/support_agent
+  - agents/ops_agent
+  - agents/executive_agent
+  - workflows
+  - memory
+  - governance
+  - observability
+  - playbooks
+  - transformation
+  - executive
+  - continuous_improvement
+  - readiness
+  - versions
+  - releases
+  - changelogs
+
+required_files:
+  - docs/architecture/ENTERPRISE_EXECUTION_ARCHITECTURE.md
+  - readiness/execution_architecture_manifest.yaml
+  - platform/multi_tenant/tenant_model.md
+  - platform/multi_tenant/isolation_rules.md
+  - platform/multi_tenant/tenant_lifecycle.md
+  - platform/agent_runtime/planner.md
+  - platform/agent_runtime/execution.md
+  - platform/agent_runtime/retries.md
+  - platform/agent_runtime/escalation.md
+  - platform/agent_runtime/validation.md
+  - agents/sales_agent/agent_card.md
+  - agents/support_agent/agent_card.md
+  - agents/ops_agent/agent_card.md
+  - agents/executive_agent/agent_card.md
+  - workflows/README.md
+  - infra/terraform/README.md
+  - infra/docker/README.md
+  - infra/k8s/README.md
+  - infra/networking/README.md
+  - infra/monitoring/README.md
+
+content_rules:
+  docs/architecture/ENTERPRISE_EXECUTION_ARCHITECTURE.md:
+    - "Phase 1"
+    - "Phase 2"
+    - "Phase 3"
+    - "Phase 4"
+    - "Phase 5"
+    - "Phase 6"
+    - "Phase 7"
+    - "Architecture Contract"
+  platform/agent_runtime/execution.md:
+    - "policy checks"
+    - "validation"
+    - "approval"
+  platform/multi_tenant/isolation_rules.md:
+    - "tenant_id"
+    - "reject by default"
+  workflows/README.md:
+    - "versioned"
+    - "retryable"
+    - "auditable"
