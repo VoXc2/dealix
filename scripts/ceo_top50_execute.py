@@ -42,9 +42,27 @@ AUTOMATABLE_ACTIONS: tuple[ActionCommand, ...] = (
         ),
     ),
     ActionCommand("weekly_p0_p1_backlog", "python3 scripts/ceo_top50_planning_sync.py --mode backlog"),
-    ActionCommand("create_warm_list_file", "cp data/warm_list.csv.template data/warm_list.csv"),
+    ActionCommand(
+        "create_warm_list_file",
+        "python3 -c \"from pathlib import Path;p=Path('data/warm_list.csv');"
+        "t=Path('data/warm_list.csv.template');"
+        "print('exists' if p.exists() else 'created');"
+        "p.write_text(t.read_text(encoding='utf-8'),encoding='utf-8') if not p.exists() else None\"",
+    ),
+    ActionCommand(
+        "fill_first_20_warm_contacts",
+        "python3 scripts/seed_warm_contacts.py --min-contacts 20",
+    ),
     ActionCommand("generate_bilingual_drafts", "python3 scripts/warm_list_outreach.py"),
     ActionCommand("run_first10_board", "python3 scripts/dealix_first10_warm_intros.py"),
+    ActionCommand(
+        "personalize_first_5_messages",
+        (
+            "python3 scripts/seed_warm_contacts.py --min-contacts 20 && "
+            "python3 scripts/warm_list_outreach.py && "
+            "python3 scripts/warm_list_first5_personalized.py"
+        ),
+    ),
     ActionCommand(
         "prepare_499_pilot_brief",
         "python3 scripts/dealix_pilot_brief.py --company \"Sample Co\" --sector b2b_services --amount-sar 499",
@@ -101,6 +119,15 @@ AUTOMATABLE_ACTIONS: tuple[ActionCommand, ...] = (
     ),
     ActionCommand("run_governance_verifier", "python3 scripts/verify_governance.py"),
     ActionCommand("keep_live_actions_safe_default", "python3 scripts/dealix_status.py --json"),
+    ActionCommand(
+        "close_review_pending_claims",
+        (
+            "python3 -c \"from pathlib import Path;import re;"
+            "txt=Path('tests/test_landing_forbidden_claims.py').read_text(encoding='utf-8');"
+            "n=len(re.findall(r':\\s*\\\"REVIEW_PENDING\\\"', txt));"
+            "print({'review_pending_count':n});raise SystemExit(0 if n==0 else 1)\""
+        ),
+    ),
     ActionCommand("enforce_no_source_no_answer", "pytest tests/test_no_source_no_answer.py -q"),
     ActionCommand("start_postgres_redis", "docker compose up -d postgres redis", 120),
     ActionCommand(

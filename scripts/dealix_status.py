@@ -65,7 +65,8 @@ def _review_pending_count() -> int:
     if not test_file.exists():
         return -1
     txt = test_file.read_text(encoding="utf-8")
-    return txt.count('"REVIEW_PENDING"')
+    # Count only allowlist reason assignments, not comments/assertions.
+    return len(re.findall(r':\s*"REVIEW_PENDING"', txt))
 
 
 def _open_founder_decisions() -> int:

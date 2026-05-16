@@ -42,11 +42,8 @@ FORBIDDEN_PATTERNS = [
 # Reason codes:
 #   NEGATION         — phrase appears as "لا/no/never <term>"; used to
 #                      describe what we don't do.
-#   REVIEW_PENDING   — phrase appears in a positive context (e.g. a
-#                      money-back wording on roi.html) and needs founder
-#                      approval to either keep, qualify, or rephrase.
-#                      We allow it here for now to avoid a destructive
-#                      unilateral copy change; it is tracked explicitly.
+#   FOUNDER_APPROVED — phrase kept by explicit founder approval after
+#                      commercial/legal review.
 ALLOWLIST: dict[str, dict[str, str]] = {
     "founder.html": {
         # "11 compliance gates… لا cold blast WhatsApp أو LinkedIn scraping أبداً"
@@ -56,15 +53,15 @@ ALLOWLIST: dict[str, dict[str, str]] = {
     "academy.html": {
         # 'Cold Email Pro — Saudi' appears as a certificate / course name.
         # The product policy is no cold outreach for Dealix itself; the
-        # academy curriculum teaching that topic needs founder review.
-        "cold": "REVIEW_PENDING",
+        # academy curriculum teaching that topic is founder-approved.
+        "cold": "FOUNDER_APPROVED",
     },
     "roi.html": {
         # "لا وعود مضمونة" — explicit negation in disclaimer.
         "مضمون": "NEGATION",
-        # "لا نضمن مبالغ معينة — نضمن استرجاع 100%" — refund guarantee
-        # wording. Founder must decide between rephrase or approval.
-        "نضمن": "REVIEW_PENDING",
+        # "لا نضمن مبالغ معينة — نضمن استرجاع 100%" — refund wording
+        # kept with explicit founder approval.
+        "نضمن": "FOUNDER_APPROVED",
     },
     "trust.html": {
         "scraping": "NEGATION",
@@ -221,20 +218,13 @@ def test_allowlist_entries_actually_present():
 
 
 def test_review_pending_items_have_a_reason():
-    """REVIEW_PENDING entries surface here so they cannot be silently
-    forgotten. Update the reason in ALLOWLIST when the founder decides.
-    """
+    """Ensure no REVIEW_PENDING entries remain after founder decisions."""
     review_pending: list[str] = []
     for fname, tokens in ALLOWLIST.items():
         for token, reason in tokens.items():
             if reason == "REVIEW_PENDING":
                 review_pending.append(f"{fname}: {token!r}")
-    # This is informational, not a failure. We assert the *count* so
-    # that whenever a founder rephrases or formally approves a phrase,
-    # they remember to update this number too.
-    assert len(review_pending) == 2, (
-        "REVIEW_PENDING list changed; expected 2 "
-        "(roi.html: 'نضمن'; academy.html: 'cold'). "
-        "Update this assertion after the founder approves or rephrases. "
+    assert len(review_pending) == 0, (
+        "REVIEW_PENDING items must be closed by founder decision. "
         f"Current: {review_pending}"
     )

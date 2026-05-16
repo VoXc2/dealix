@@ -198,6 +198,26 @@ def main() -> int:
     secret = os.environ.get("MOYASAR_SECRET_KEY")
     db_url = os.environ.get("DATABASE_URL")
     if not secret or not db_url:
+        if args.dry_run:
+            report = {
+                "window_start": parse_since(args.since).isoformat(),
+                "window_end": datetime.now(timezone.utc).isoformat(),
+                "moyasar_count": 0,
+                "db_count": 0,
+                "discrepancies": [],
+                "status": "dry_run_blocked_missing_env",
+                "missing": [
+                    name
+                    for name, val in (
+                        ("MOYASAR_SECRET_KEY", secret),
+                        ("DATABASE_URL", db_url),
+                    )
+                    if not val
+                ],
+            }
+            print(json.dumps(report, indent=2, ensure_ascii=False))
+            logger.warning("dry-run reconciliation skipped: missing required env")
+            return 0
         logger.error("MOYASAR_SECRET_KEY and DATABASE_URL are required")
         return 2
 
