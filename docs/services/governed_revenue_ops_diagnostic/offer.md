@@ -19,12 +19,17 @@ plan for a sprint or retainer.
 This is the **lead commercial entry point** for Dealix. It is a governed
 diagnostic — not a CRM tidy-up.
 
-## Who it is for
+## Best for
 
 B2B services firms, consulting firms, SaaS companies, fintech, agencies,
 enterprise sales teams, and VC portfolio companies — especially teams already
 experimenting with AI or revenue automation but lacking source clarity,
 approval boundaries, evidence trails, and proof of value.
+
+## Duration
+
+5–8 business days from intake. Larger firms (15,000–25,000 SAR scope): 8–12
+business days. Quoted precisely after intake.
 
 ## Problems it addresses
 
@@ -56,6 +61,21 @@ part of this diagnostic. All findings carry a `source_ref`.
 
 4,999–15,000 SAR. Larger firms: 15,000–25,000 SAR. Scope-dependent — quoted
 after intake.
+
+## Not included
+
+- Scraping, cold WhatsApp, or LinkedIn automation.
+- Automated external sends — all drafts are review-only.
+- CRM platform migration or integration (separately scoped).
+- Sprint or retainer delivery (the diagnostic recommends, it does not deliver).
+- Guaranteed pipeline, meetings, or revenue outcomes.
+
+## Success metric
+
+A decision-ready plan accepted by the client: revenue workflow map delivered,
+CRM/source quality reviewed, pipeline risks mapped, and a Sprint or Retainer
+recommendation issued with a Decision Passport. Delivery is confirmed by a
+Proof Pack (score ≥ 70) and at least one Capital Asset.
 
 ## What happens next
 
