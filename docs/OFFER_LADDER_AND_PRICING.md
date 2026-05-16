@@ -1,5 +1,10 @@
 # Dealix — Offer Ladder & Pricing
 <!-- PHASE 3 | Owner: Founder | Date: 2026-05-07 -->
+
+> **⚠️ Superseded.** The canonical service catalog and pricing now live in
+> [COMPANY_SERVICE_LADDER.md](COMPANY_SERVICE_LADDER.md) and
+> [commercial/DEALIX_REVOPS_PACKAGES_AR.md](commercial/DEALIX_REVOPS_PACKAGES_AR.md).
+> This file is kept for historical context only.
 <!-- Arabic primary — العربية أولاً -->
 
 > **قاعدة ذهبية:** كل درجة تُفتح فقط بعد إثبات حقيقي من الدرجة السابقة.

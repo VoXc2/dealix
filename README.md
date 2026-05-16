@@ -1,9 +1,9 @@
 <div align="center">
 
-# 🏢 Dealix — Saudi B2B Revenue Engine
+# 🏢 Dealix — Governed Revenue & AI Operations Company
 
-### AI revenue, growth, and compliance engine for Saudi B2B — PDPL-native, ZATCA-compliant, approval-first.
-### محرّك إيرادات ونمو وامتثال بـ AI للشركات السعودية — PDPL أصلاً، ZATCA متوافق، الموافقة-أولاً.
+### The governed operating layer between AI experiments, revenue workflows, approvals, evidence, and proof of value — for Saudi B2B. PDPL-native, ZATCA-compliant, approval-first.
+### طبقة التشغيل المحكومة بين تجارب الذكاء الاصطناعي وworkflows الإيراد والموافقات والأدلة وإثبات القيمة — للشركات السعودية. PDPL أصلاً، ZATCA متوافق، الموافقة-أولاً.
 
 [![CI](https://github.com/VoXc2/dealix/actions/workflows/ci.yml/badge.svg)](https://github.com/VoXc2/dealix/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)

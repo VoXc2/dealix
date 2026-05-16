@@ -1,3 +1,8 @@
+> **⚠️ Superseded.** كتالوج الخدمات والأسعار المعتمد الآن في
+> [COMPANY_SERVICE_LADDER.md](COMPANY_SERVICE_LADDER.md) و
+> [commercial/DEALIX_REVOPS_PACKAGES_AR.md](commercial/DEALIX_REVOPS_PACKAGES_AR.md).
+> هذا الملف يبقى للسياق التاريخي فقط.
+
 # سلم العروض — Dealix (نتائج أولاً)
 
 **إطار الفئة وسلم التقدم (GTM + Pilot + مراحل تقنية):** راجع القسم 5 في [CATEGORY_DESIGN_AND_MASTER_OPERATING_SYSTEM_AR.md](strategic/CATEGORY_DESIGN_AND_MASTER_OPERATING_SYSTEM_AR.md) مع الحفاظ على هذا الملف كمصدر تفصيلي للعروض داخل الريبو.

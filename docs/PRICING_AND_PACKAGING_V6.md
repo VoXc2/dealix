@@ -1,5 +1,10 @@
 # Pricing & Packaging v6 — التسعير والباقات
 
+> **⚠️ Superseded.** The canonical service catalog and pricing now live in
+> [COMPANY_SERVICE_LADDER.md](COMPANY_SERVICE_LADDER.md) and
+> [commercial/DEALIX_REVOPS_PACKAGES_AR.md](commercial/DEALIX_REVOPS_PACKAGES_AR.md).
+> This file is kept for historical context only.
+
 > **Hard rule:** This doc does NOT change live pricing in code.
 > The current `auto_client_acquisition.finance_os.pricing_catalog`
 > stays the source of truth. This doc is the **founder's reference**

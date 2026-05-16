@@ -1,60 +1,116 @@
-# Dealix Company Service Ladder
+# Dealix Company Service Catalog
 
-> One offer per maturity stage. Each rung unlocks ONLY when the prior
-> rung has shipped real evidence (per `docs/V12_1_TRIGGER_RULES.md`).
+> Canonical service catalog for Dealix — a **Governed Revenue & AI Operations
+> Company**. Supersedes the older five-rung ladder. Pricing is expressed
+> as **ranges** or **`recommended_draft`**, never as a fabricated single number.
+> Code source of truth: `auto_client_acquisition/service_catalog/registry.py`.
 
-## The 5-rung ladder
+## How to read the pricing
 
-| Rung | Offer | Price | Trigger to unlock NEXT rung |
-|---|---|---|---|
-| 0 | Mini Diagnostic | Free or token | 3 diagnostics delivered |
-| 1 | 7-Day Growth Proof Sprint | **499 SAR** | 1 paid pilot fully delivered |
-| 2 | 30-Day Operating Sprint | recommended_draft | 3 paid pilots in same sector |
-| 3 | Monthly Operating Layer | recommended_draft | 3+ months of consecutive paid retainer |
-| 4 | Partner / Agency Co-Branded | recommended_draft | 3 paid pilots delivered + signed permission to publish |
+| `price_mode` | Meaning |
+|--------------|---------|
+| `range` | A real min–max band the founder quotes within, based on scope. |
+| `recommended_draft` | No fixed number yet — quoted per engagement until 3 paid pilots inform a real band. |
+| `fixed` | A single confirmed price (used only after evidence supports it). |
 
-## Rung 0 — Mini Diagnostic (entry)
+**Pricing rule:** a `recommended_draft` service does not get a fixed price until
+**≥ 3 paid pilots** of that service have been delivered. This protects against
+pricing ahead of evidence.
 
-- **Promise:** 1-page bilingual diagnostic in 24-48 hours.
-- **Inputs needed:** 6 questions (per `dealix_diagnostic.py`).
-- **Output:** 3 opportunities + 1 message draft + 1 risk + service recommendation.
-- **Hard rule:** NO Pilot offer until Diagnostic is in customer's hands.
+## The three headline offers (lead with these)
 
-## Rung 1 — 7-Day Growth Proof Sprint (first paid product)
+Do not open with seven services. Internally and externally, lead with three:
 
-- **Promise:** 10 opportunities + drafts + follow-up plan + Proof Pack draft.
-- **Price:** 499 SAR (= 49,900 halalah). DO NOT change without ≥ 3 paid pilots.
-- **Payment:** Moyasar **test mode** OR bank transfer. Live charge blocked.
-- **Refund window:** 7 days from delivery.
-- **Hard rule:** No `auto-send`, no guarantee, no fake metric in Proof Pack.
+1. **Governed Revenue Ops Diagnostic** — the entry service.
+2. **Revenue Intelligence Sprint** — the core service after the diagnostic.
+3. **Governed Ops Retainer** — the recurring engagement after the first sprint.
 
-## Rung 2 — 30-Day Operating Sprint
+> Sales line: *"We start with a small diagnostic. If it proves value we move to
+> a Sprint. If the workflow recurs, it becomes a Retainer."*
 
-- **Promise:** 4-week operating cadence: weekly Growth + Sales + Support + Delivery + Proof.
-- **Price:** **recommended_draft** until 3 paid pilots inform a real number.
-- **Hard rule:** Cannot upsell from 499 → 30-day without a customer-approved Proof Pack from rung 1.
+## The seven services
 
-## Rung 3 — Monthly Operating Layer
+| # | Service | `price_mode` | Price (SAR) |
+|---|---------|--------------|-------------|
+| 1 | Governed Revenue Ops Diagnostic | `range` | 4,999 – 25,000 |
+| 2 | Revenue Intelligence Sprint | `recommended_draft` | quoted per scope |
+| 3 | Governed Ops Retainer | `recommended_draft` | quoted per month |
+| 4 | AI Governance for Revenue Teams | `recommended_draft` | quoted per scope |
+| 5 | CRM / Data Readiness for AI | `recommended_draft` | quoted per scope |
+| 6 | Board Decision Memo | `recommended_draft` | quoted per scope |
+| 7 | Trust Pack Lite | `recommended_draft` | quoted per scope |
 
-- **Promise:** Recurring monthly engagement; full V12 Daily Command Center as the customer's daily console.
-- **Price:** recommended_draft.
-- **Hard rule:** Cannot offer until ≥ 3 months of continuous delivery for an existing customer (i.e. retainer history exists in your private vault).
+### 1 — Governed Revenue Ops Diagnostic (entry)
 
-## Rung 4 — Partner / Agency Co-Branded
+- **Solves:** unclear CRM, unreliable pipeline, weak follow-up, ungoverned AI
+  usage, inaccurate forecast, sales decisions with no evidence.
+- **Deliverables:** Revenue Workflow Map, CRM / source quality review, pipeline
+  risk map, follow-up gap analysis, decision passport, proof-of-value
+  opportunities, recommended Sprint / Retainer.
+- **Price:** `range` 4,999 – 25,000 SAR (upper band for larger orgs).
+- **Why start here:** revenue is the language closest to the buyer — pipeline,
+  follow-up, conversion, deal risk — so Dealix's value is understood quickly.
 
-- **Promise:** Partner gets co-branded Mini Diagnostic for their clients; Dealix gets referral.
-- **Price:** recommended_draft.
-- **Hard rule:** NO white-label / NO revenue-share / NO exclusivity until ≥ 3 paid pilots delivered (per `partnership_os/partner_motion.py`).
+### 2 — Revenue Intelligence Sprint
 
-## Forbidden across all rungs
+- **Deliverables:** account prioritization, deal-risk scoring, next-best-action
+  drafts, follow-up templates, revenue opportunity ledger, decision passport,
+  proof pack.
+- **Price:** `recommended_draft`.
+- **Sold:** after a diagnostic, or when the prospect requests scope, or on a
+  clear CRM / pipeline pain.
 
-- ❌ Skipping rungs (e.g. Diagnostic → Monthly without Pilot)
-- ❌ Adding a "Custom Enterprise" tier without ≥ 6 months retainer history
-- ❌ Promising a tier with metrics the customer didn't supply
-- ❌ Public mention of a customer name without signed permission
-- ❌ Live charge / cold outreach / scraping at any rung
+### 3 — Governed Ops Retainer
+
+- **Monthly deliverables:** revenue review, pipeline quality review, AI decision
+  review, approved follow-up queue, risk register, value report, board memo.
+- **Price:** `recommended_draft` per month. This is the path to recurring revenue.
+
+### 4 — AI Governance for Revenue Teams
+
+- **Deliverables:** allowed AI actions, forbidden AI actions, approval
+  boundaries, source rules, no-autonomous-external-send policy, evidence logging.
+
+### 5 — CRM / Data Readiness for AI
+
+- **Deliverables:** CRM hygiene report, source mapping, missing fields,
+  duplicate accounts, bad lifecycle stages, data-readiness score, AI-readiness
+  recommendation. Sold before any AI automation.
+
+### 6 — Board Decision Memo
+
+- **Deliverables:** top revenue decisions, pipeline risks, AI governance risks,
+  capital allocation, build / hold / kill recommendations.
+
+### 7 — Trust Pack Lite
+
+- **Deliverables:** AI action policy, approval matrix, evidence handling,
+  forbidden actions, agent safety rules, trust boundaries.
+- **Sold:** only on a signal (`asks_for_security`, enterprise risk review,
+  compliance reviewer) — not as a first offer.
+
+## Forbidden across all services
+
+- ❌ Skipping the diagnostic before a Sprint or Retainer.
+- ❌ Putting a fixed price on a `recommended_draft` service before 3 paid pilots.
+- ❌ Promising a metric the customer did not supply.
+- ❌ Guaranteed outcomes or ROI promises.
+- ❌ Public mention of a customer name without signed permission.
+- ❌ Cold outreach, scraping, or live charge at any stage.
+
+## Natural progression
+
+```
+Diagnostic -> Sprint -> Retainer -> Reusable Playbook -> Internal Platform
+```
+
+A new platform feature is built **only** when a workflow has repeated 3+ times
+(Gate G7) — see [COMMERCIAL_GATES.md](commercial/COMMERCIAL_GATES.md).
 
 ## Bilingual one-liner
 
-**Arabic:** سُلَّم خدمات بسيط — كل درجة تفتح فقط بعد دليل حقيقي من الدرجة السابقة.
-**English:** Simple service ladder — each rung unlocks ONLY after real evidence from the rung below.
+**English:** A governed service catalog — every engagement carries a source, an
+approval, documented evidence, and a measurable outcome.
+
+**Arabic:** كتالوج خدمات محكوم — كل ارتباط يحمل مصدراً، وموافقة، ودليلاً موثقاً،
+ونتيجة قابلة للقياس.

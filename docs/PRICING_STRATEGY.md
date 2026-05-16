@@ -1,5 +1,10 @@
 # استراتيجية التسعير — Dealix
 
+> **⚠️ Superseded.** كتالوج الخدمات والأسعار المعتمد الآن في
+> [COMPANY_SERVICE_LADDER.md](COMPANY_SERVICE_LADDER.md) و
+> [commercial/DEALIX_REVOPS_PACKAGES_AR.md](commercial/DEALIX_REVOPS_PACKAGES_AR.md).
+> هذا الملف يبقى للسياق التاريخي فقط.
+
 ## المبدأ
 
 التسعير يعكس **قيمة السياق + التنفيذ الآمن + إثبات العائد**، وليس عدد المستخدمين فقط. طبقة الأداء اختيارية و**تتطلب تعريف تأهيل + نزاعات + عقود** قبل أي فوترة حقيقية.
