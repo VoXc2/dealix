@@ -120,7 +120,27 @@ project without Proof Pack · no project without Capital Asset.
   - `frontend/messages/{en,ar}.json` (updated — `revenueOps` namespace + nav, bilingual)
   - Doctrine: NO "Send automatically" button on any screen; invoices are
     draft-only; every screen ends with the bilingual disclaimer.
-- [ ] Phase 4 — outreach + metrics
+- [x] **Phase 4 — outreach + metrics** (2026-05-16)
+  - `data/outreach/governed_revenue_ops_warm_list_drafts.md` (new — 5 segment
+    drafts: B2B services, consulting, SaaS, fintech, agency; all `draft` state,
+    `approval_required=true`; email / warm intro only; signed "Sami")
+  - `data/outreach/governed_revenue_ops_metrics.md` (new — 8-metric sheet, all 0)
+
+---
+
+## 7. Verification status (2026-05-16)
+
+- `scripts/verify_dealix_ready.py --skip-tests` → **SELL_READY_STACK**.
+- `scripts/verify_service_catalog.py` → **SERVICE_CATALOG_PASS=true**.
+- `tests/test_revenue_ops_engagement_state_machine.py` → 11/11 passing.
+- Doctrine guards (`test_no_guaranteed_claims`, `test_doctrine_guardrails`,
+  `test_no_cold_whatsapp`, `test_no_scraping_engine`, `test_no_linkedin_automation`,
+  `test_v7_no_fake_proof`, `test_decision_passport`, `test_revenue_os_catalog`,
+  `test_commercial_engagements_lead_intelligence`) → all passing.
+- Known pre-existing failure (NOT a regression from this work):
+  `test_v7_no_guaranteed_claims::test_landing_pages_have_no_unallowlisted_forbidden_claims`
+  fails on the merge-base commit `fe25274` as well — a landing-HTML allowlist
+  gap. No landing HTML file was touched by this repositioning.
 
 ---
 

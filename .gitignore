@@ -100,6 +100,9 @@ dumps/
 !landing/assets/data/service-readiness.json
 # Wave 12.5 §33.2.3 — canonical workflow YAMLs (product data, not customer data)
 !data/workflows/
+# Governed Revenue Ops repositioning — outreach drafts + metrics (doctrine
+# artifacts: unsent drafts and zeroed metrics, not customer data or secrets)
+!data/outreach/
 
 # ─────────────────────────────────────────────────────────────
 # 📝 Logs
