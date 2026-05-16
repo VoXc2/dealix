@@ -46,6 +46,22 @@
 - **Price:** recommended_draft.
 - **Hard rule:** NO white-label / NO revenue-share / NO exclusivity until ≥ 3 paid pilots delivered (per `partnership_os/partner_motion.py`).
 
+## Governed Revenue tier (above the ladder)
+
+A separate higher tier — the **Governed Revenue & AI Operations** offers — sits
+above the 5-rung ladder for customers who already need governed revenue
+workflows. It is a distinct catalog tuple (`GOVERNED_TIER_OFFERINGS` in
+`auto_client_acquisition/service_catalog/registry.py`); it does not change the
+5 rungs above.
+
+| Offer | Price | Notes |
+|---|---|---|
+| Governed Revenue Ops Diagnostic | 4,999–25,000 SAR (one-time) | Entry point for this tier |
+| Revenue Intelligence Sprint | 25,000 SAR (one-time) | One governed workflow + evidence pack |
+| Governed Ops Retainer | 4,999–35,000 SAR/mo | Continuous governed operating cadence |
+
+Full positioning: [`02_strategy/GOVERNED_REVENUE_AI_OPERATIONS.md`](02_strategy/GOVERNED_REVENUE_AI_OPERATIONS.md).
+
 ## Forbidden across all rungs
 
 - ❌ Skipping rungs (e.g. Diagnostic → Monthly without Pilot)

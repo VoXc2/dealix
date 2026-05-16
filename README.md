@@ -2,8 +2,8 @@
 
 # 🏢 Dealix — Saudi B2B Revenue Engine
 
-### AI revenue, growth, and compliance engine for Saudi B2B — PDPL-native, ZATCA-compliant, approval-first.
-### محرّك إيرادات ونمو وامتثال بـ AI للشركات السعودية — PDPL أصلاً، ZATCA متوافق، الموافقة-أولاً.
+### Governed Revenue & AI Operations for Saudi B2B — PDPL-native, ZATCA-compliant, approval-first.
+### تشغيل الإيراد والذكاء الاصطناعي بحوكمة للشركات السعودية — PDPL أصلاً، ZATCA متوافق، الموافقة-أولاً.
 
 [![CI](https://github.com/VoXc2/dealix/actions/workflows/ci.yml/badge.svg)](https://github.com/VoXc2/dealix/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
@@ -16,7 +16,7 @@
 
 **[العربية](README.ar.md)** · **English**
 
-### [🚀 Deploy Runbook](docs/ops/DEPLOY_RUNBOOK.md) · [🛒 Service Catalog](landing/services.html) · [💰 Pricing](landing/pricing.html) · [🗺️ API Map](docs/architecture/API_MAP.md) · [📦 Env Template](docs/ops/PRODUCTION_ENV_TEMPLATE.md) · [👤 Customer Onboarding](docs/ops/CUSTOMER_ONBOARDING_DAY_BY_DAY.md)
+### [🧭 Strategy](docs/02_strategy/GOVERNED_REVENUE_AI_OPERATIONS.md) · [🚀 Deploy Runbook](docs/ops/DEPLOY_RUNBOOK.md) · [🛒 Service Catalog](landing/services.html) · [💰 Pricing](landing/pricing.html) · [🗺️ API Map](docs/architecture/API_MAP.md) · [📦 Env Template](docs/ops/PRODUCTION_ENV_TEMPLATE.md) · [👤 Customer Onboarding](docs/ops/CUSTOMER_ONBOARDING_DAY_BY_DAY.md)
 
 ---
 

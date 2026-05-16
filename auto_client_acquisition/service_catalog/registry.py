@@ -20,7 +20,6 @@ from __future__ import annotations
 
 from auto_client_acquisition.service_catalog.schemas import ServiceOffering
 
-
 _FREE_DIAGNOSTIC = ServiceOffering(
     id="free_mini_diagnostic",
     name_ar="التشخيص المجاني المختصر",
@@ -330,6 +329,152 @@ _AGENCY_PARTNER_OS = ServiceOffering(
 )
 
 
+# ── Governed Revenue & AI Operations tier ───────────────────────────────
+# A higher-tier set of offers that sits ABOVE the 5-rung core ladder.
+# Kept in a separate tuple so the canonical `OFFERINGS` stays exactly 7.
+# Strategy reference: docs/02_strategy/GOVERNED_REVENUE_AI_OPERATIONS.md
+
+
+_GOVERNED_REVENUE_OPS_DIAGNOSTIC = ServiceOffering(
+    id="governed_revenue_ops_diagnostic",
+    name_ar="تشخيص عمليات الإيراد المحكومة",
+    name_en="Governed Revenue Ops Diagnostic",
+    price_sar=4999.0,
+    price_sar_max=25000.0,
+    tier="governed_revenue",
+    price_unit="one_time",
+    duration_days=5,
+    deliverables=(
+        "Revenue Workflow Map",
+        "CRM / Source Quality Review",
+        "Pipeline Risk Map",
+        "Follow-up Gap Analysis",
+        "Decision Passport",
+        "Proof-of-Value Opportunities",
+        "Recommended Sprint / Retainer path",
+    ),
+    kpi_commitment_ar=(
+        "نسلّم خريطة عمليات الإيراد وخريطة المخاطر خلال ٥ أيام عمل، "
+        "مع مصدر واضح لكل توصية."
+    ),
+    kpi_commitment_en=(
+        "Revenue workflow map + risk map delivered within 5 business days, "
+        "with a clear source behind every recommendation."
+    ),
+    refund_policy_ar="استرداد كامل ١٠٠٪ قبل بدء العمل التحليلي.",
+    refund_policy_en="Full 100% refund before analysis work begins.",
+    action_modes_used=(
+        "suggest_only",
+        "draft_only",
+        "approval_required",
+    ),
+    hard_gates=(
+        "no_live_send",
+        "no_live_charge",
+        "no_cold_whatsapp",
+        "no_scraping",
+        "no_fake_proof",
+        "no_fake_revenue",
+    ),
+    customer_journey_stage="governed_diagnostic",
+)
+
+
+_REVENUE_INTELLIGENCE_SPRINT = ServiceOffering(
+    id="revenue_intelligence_sprint",
+    name_ar="سبرنت ذكاء الإيراد",
+    name_en="Revenue Intelligence Sprint",
+    price_sar=25000.0,
+    tier="governed_revenue",
+    price_unit="one_time",
+    duration_days=14,
+    deliverables=(
+        "Account Prioritization",
+        "Deal Risk Scoring",
+        "Next-Best-Action Drafts",
+        "Follow-up Templates",
+        "Revenue Opportunity Ledger",
+        "Decision Passport",
+        "Proof Pack",
+    ),
+    kpi_commitment_ar=(
+        "نسلّم ٧ مخرجات في ١٤ يومًا، وكل قرار مرتبط بمصدر ودليل. "
+        "إن لم تكتمل المخرجات، نواصل العمل حتى تكتمل."
+    ),
+    kpi_commitment_en=(
+        "7 deliverables in 14 days, every decision tied to a source and "
+        "evidence. If deliverables are incomplete, we keep working until done."
+    ),
+    refund_policy_ar="استرداد ٧٥٪ إذا لم تكتمل المخرجات خلال ٢١ يومًا.",
+    refund_policy_en="75% refund if deliverables are not complete within 21 days.",
+    action_modes_used=(
+        "suggest_only",
+        "draft_only",
+        "approval_required",
+        "approved_manual",
+    ),
+    hard_gates=(
+        "no_live_send",
+        "no_live_charge",
+        "no_cold_whatsapp",
+        "no_linkedin_auto",
+        "no_scraping",
+        "no_fake_proof",
+        "no_fake_revenue",
+    ),
+    customer_journey_stage="revenue_sprint",
+)
+
+
+_GOVERNED_OPS_RETAINER = ServiceOffering(
+    id="governed_ops_retainer",
+    name_ar="اشتراك العمليات المحكومة الشهري",
+    name_en="Governed Ops Retainer",
+    price_sar=4999.0,
+    price_sar_max=35000.0,
+    tier="governed_revenue",
+    price_unit="per_month",
+    duration_days=120,  # 4-month minimum commitment
+    deliverables=(
+        "Monthly Revenue Review",
+        "Pipeline Quality Review",
+        "AI Decision Review",
+        "Approved Follow-up Queue",
+        "Risk Register",
+        "Value Report",
+        "Board Memo",
+    ),
+    kpi_commitment_ar=(
+        "مراجعة إيراد شهرية وقائمة متابعة معتمدة كل شهر، "
+        "مع سجل قرارات وأدلة. إن لم نسلّم المراجعة الشهرية، الشهر بدون مقابل."
+    ),
+    kpi_commitment_en=(
+        "Monthly revenue review + an approved follow-up queue every month, "
+        "with a decision and evidence ledger. If a monthly review is not "
+        "delivered, that month is free."
+    ),
+    refund_policy_ar="استرداد تناسبي للأشهر غير المستخدمة.",
+    refund_policy_en="Pro-rata refund of unused months.",
+    action_modes_used=(
+        "suggest_only",
+        "draft_only",
+        "approval_required",
+        "approved_manual",
+    ),
+    hard_gates=(
+        "no_live_send",
+        "no_live_charge",
+        "no_cold_whatsapp",
+        "no_linkedin_auto",
+        "no_scraping",
+        "no_fake_proof",
+        "no_fake_revenue",
+        "no_blast",
+    ),
+    customer_journey_stage="governed_retainer",
+)
+
+
 # Canonical 7-offering registry (order = catalog display order)
 OFFERINGS: tuple[ServiceOffering, ...] = (
     _FREE_DIAGNOSTIC,
@@ -341,17 +486,32 @@ OFFERINGS: tuple[ServiceOffering, ...] = (
     _AGENCY_PARTNER_OS,
 )
 
+# Higher-tier Governed Revenue & AI Operations offers (display order).
+GOVERNED_TIER_OFFERINGS: tuple[ServiceOffering, ...] = (
+    _GOVERNED_REVENUE_OPS_DIAGNOSTIC,
+    _REVENUE_INTELLIGENCE_SPRINT,
+    _GOVERNED_OPS_RETAINER,
+)
+
+# Every offering across both tiers.
+ALL_OFFERINGS: tuple[ServiceOffering, ...] = OFFERINGS + GOVERNED_TIER_OFFERINGS
+
 SERVICE_IDS: frozenset[str] = frozenset(o.id for o in OFFERINGS)
 
 
 def list_offerings() -> tuple[ServiceOffering, ...]:
-    """All 7 offerings in catalog display order."""
+    """All 7 core-ladder offerings in catalog display order."""
     return OFFERINGS
 
 
+def list_governed_tier() -> tuple[ServiceOffering, ...]:
+    """The 3 higher-tier Governed Revenue & AI Operations offerings."""
+    return GOVERNED_TIER_OFFERINGS
+
+
 def get_offering(service_id: str) -> ServiceOffering | None:
-    """Return one offering by id, or None if not found."""
-    for o in OFFERINGS:
+    """Return one offering by id from either tier, or None if not found."""
+    for o in ALL_OFFERINGS:
         if o.id == service_id:
             return o
     return None

@@ -21,6 +21,7 @@ from fastapi import APIRouter, HTTPException
 from auto_client_acquisition.service_catalog import (
     ServiceOffering,
     get_offering,
+    list_governed_tier,
     list_offerings,
 )
 
@@ -60,6 +61,18 @@ async def service_catalog() -> dict[str, Any]:
     return {
         "offerings": [_serialize(o) for o in list_offerings()],
         "count": len(list_offerings()),
+        "hard_gates": _HARD_GATES,
+    }
+
+
+@router.get("/governed-tier")
+async def service_catalog_governed_tier() -> dict[str, Any]:
+    """The 3 higher-tier Governed Revenue & AI Operations offerings."""
+    offerings = list_governed_tier()
+    return {
+        "tier": "governed_revenue",
+        "offerings": [_serialize(o) for o in offerings],
+        "count": len(offerings),
         "hard_gates": _HARD_GATES,
     }
 

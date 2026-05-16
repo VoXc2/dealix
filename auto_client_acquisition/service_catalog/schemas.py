@@ -7,13 +7,21 @@ from typing import Literal
 from pydantic import BaseModel, ConfigDict, Field
 
 CustomerJourneyStage = Literal[
-    "discovery",      # Free Mini Diagnostic
-    "first_paid",     # 499 Sprint
-    "expansion",      # Data-to-Revenue Pack
-    "monthly",        # Growth Ops Monthly
-    "executive",      # Executive Command Center
-    "support_addon",  # Support OS Add-on
-    "channel",        # Agency Partner OS
+    "discovery",            # Free Mini Diagnostic
+    "first_paid",           # 499 Sprint
+    "expansion",            # Data-to-Revenue Pack
+    "monthly",              # Growth Ops Monthly
+    "executive",            # Executive Command Center
+    "support_addon",        # Support OS Add-on
+    "channel",              # Agency Partner OS
+    "governed_diagnostic",  # Governed Revenue Ops Diagnostic
+    "revenue_sprint",       # Revenue Intelligence Sprint
+    "governed_retainer",    # Governed Ops Retainer
+]
+
+ServiceTier = Literal[
+    "core_ladder",        # the canonical 7-offering ladder
+    "governed_revenue",   # higher-tier Governed Revenue & AI Operations offers
 ]
 
 ActionMode = Literal[
@@ -37,6 +45,10 @@ class ServiceOffering(BaseModel):
     name_ar: str = Field(..., min_length=1, max_length=120)
     name_en: str = Field(..., min_length=1, max_length=120)
     price_sar: float = Field(..., ge=0)
+    # Optional upper bound when an offering is quoted as a range
+    # (e.g. 4,999 → 25,000 SAR). None means a single fixed price.
+    price_sar_max: float | None = Field(default=None, ge=0)
+    tier: ServiceTier = "core_ladder"
     price_unit: Literal["one_time", "per_month", "custom"] = "one_time"
     duration_days: int = Field(..., ge=0, le=365)
     deliverables: tuple[str, ...] = Field(..., min_length=1)

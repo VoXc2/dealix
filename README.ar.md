@@ -2,13 +2,15 @@
 
 # 🏢 شركة AI السعودية
 
-### منصة ذكاء اصطناعي متعددة الوكلاء، جاهزة للإنتاج، للسوق السعودي والخليجي
+### تشغيل الإيراد والذكاء الاصطناعي بحوكمة — للسوق السعودي والخليجي
 
 [![CI](https://github.com/VoXc2/dealix/actions/workflows/ci.yml/badge.svg)](https://github.com/VoXc2/dealix/actions/workflows/ci.yml)
 [![الرخصة: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Python 3.12](https://img.shields.io/badge/python-3.12-blue.svg)](https://www.python.org/downloads/)
 
 **العربية** · **[English](README.md)**
+
+### [🧭 وثيقة الاستراتيجية](docs/02_strategy/GOVERNED_REVENUE_AI_OPERATIONS.md)
 
 </div>
 
