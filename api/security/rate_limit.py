@@ -51,7 +51,9 @@ def _key_func(request: Request) -> str:
     each tenant an isolated counter.
     مفتاح الحاوية: مفتاح API أو عنوان IP.
     """
-    key = request.headers.get("X-API-Key", "").strip()
+    key = (
+        request.headers.get("X-API-Key") or request.query_params.get("api_key") or ""
+    ).strip()
     if key:
         # Truncate to 16 chars — enough for uniqueness, avoids storing full key
         return f"tenant:{key[:16]}"
