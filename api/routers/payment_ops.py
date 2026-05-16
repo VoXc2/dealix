@@ -135,4 +135,18 @@ async def kickoff(payment_id: str) -> dict[str, Any]:
         "delivery_kickoff_id": rec.delivery_kickoff_id,
         "transition_reason": reason,
         "hard_gates": _HARD_GATES,
+        # The Sprint is not auto-run: at kickoff the customer's data is not
+        # yet uploaded. The founder runs it next, passing delivery_kickoff_id
+        # as engagement_id — that id is the audit link between payment and
+        # delivery.
+        "next_action": {
+            "step": "run_sprint",
+            "endpoint": "POST /api/v1/sprint/run",
+            "engagement_id": rec.delivery_kickoff_id,
+            "customer_id": rec.customer_handle,
+            "note": (
+                "Run the Sprint with the customer's data, then render the "
+                "Proof Pack via POST /api/v1/sprint/render/pdf."
+            ),
+        },
     }

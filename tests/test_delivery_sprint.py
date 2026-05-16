@@ -146,3 +146,125 @@ def test_sprint_sample_endpoint():
     body = resp.json()
     assert body["customer_id"] == "dealix_internal_demo"
     assert body["proof_pack"] is not None
+
+
+def test_run_sprint_proof_pack_has_real_populated_sections():
+    """Step 6 assembles a real 14-section Proof Pack (regression: it used to
+    import a non-existent `assemble` and silently produce an empty dict)."""
+    from auto_client_acquisition.proof_architecture_os.proof_pack_v2 import (
+        PROOF_PACK_V2_SECTIONS,
+    )
+
+    run = run_sprint(
+        engagement_id="eng_pp",
+        customer_id="cust_pp",
+        source_passport=_GOOD_PASSPORT,
+        raw_csv=_DEMO_CSV,
+        accounts=[
+            {"company_name": "Co1", "sector": "b2b_services", "city": "Riyadh",
+             "relationship_status": "warm", "last_interaction": "2026-05",
+             "notes": "fit"},
+        ],
+        problem_summary="rank Saudi B2B accounts",
+    )
+    pack = run.proof_pack
+    assert pack and pack.get("sections")
+    for k in PROOF_PACK_V2_SECTIONS:
+        assert (pack["sections"].get(k) or "").strip(), f"empty section: {k}"
+    assert run.proof_score > 0
+    s6 = next(s for s in run.steps if s.name == "proof_pack")
+    assert s6.status == "ran"
+
+
+def test_zero_data_sprint_does_not_score_case_ready():
+    """A run with no CSV and no accounts must score as weak_proof — template
+    section completeness alone is not real evidence."""
+    run = run_sprint(engagement_id="eng_empty", customer_id="cust_empty")
+    pack = run.proof_pack
+    assert pack and pack.get("sections")  # sections are still populated
+    assert run.proof_score < 55           # below every non-weak band
+    assert run.proof_tier == "weak_proof"
+    # The outputs section must not claim a ranked list that was not produced.
+    assert "No accounts were scored" in pack["sections"]["outputs"]
+
+
+def test_step5_allows_directly_negated_guarantee_disclaimer():
+    """A directly-negated disclaimer ("we do NOT guarantee", "without
+    guaranteed revenue", "لا نضمن") must not be blocked."""
+    drafts = [
+        {"account": "A", "outline_ar": "لا نضمن نتائج",
+         "outline_en": "we do not guarantee results"},
+        {"account": "B", "outline_ar": "نص آمن",
+         "outline_en": "we work without guaranteed revenue promises"},
+    ]
+    out = step5_governance_review(customer_id="x", engagement_id="e1", drafts=drafts)
+    decisions = {r["decision"] for r in out["reviews"]}
+    assert "block" not in decisions
+
+
+def test_step5_blocks_verb_form_guarantee_claims():
+    """Affirmative claims — verb form, no leading "we", and reverse word
+    order ("results guaranteed") — must all be blocked, no hard-gate bypass."""
+    drafts = [
+        {"account": "A", "outline_ar": "نص آمن",
+         "outline_en": "I guarantee revenue for you"},
+        {"account": "B", "outline_ar": "نص آمن",
+         "outline_en": "guarantee results in 30 days"},
+        {"account": "C", "outline_ar": "نص آمن",
+         "outline_en": "your sales are guaranteed with us"},
+    ]
+    out = step5_governance_review(customer_id="x", engagement_id="e1", drafts=drafts)
+    assert all(r["decision"] == "block" for r in out["reviews"])
+
+
+def test_step5_blocks_arabic_adjective_form_guarantee_claims():
+    """Arabic adjective/noun guarantee forms (نتائج مضمونة / ضمان نتائج) must
+    be blocked, not only the verb نضمن."""
+    drafts = [
+        {"account": "A", "outline_ar": "نتائج مضمونة لك", "outline_en": "safe"},
+        {"account": "B", "outline_ar": "ضمان نتائج خلال شهر", "outline_en": "safe"},
+    ]
+    out = step5_governance_review(customer_id="x", engagement_id="e1", drafts=drafts)
+    assert all(r["decision"] == "block" for r in out["reviews"])
+
+
+def test_step5_allows_refund_guarantee():
+    """A refund / money-back guarantee (نضمن استرجاع) is a service guarantee,
+    not a guaranteed sales outcome — it must not be blocked."""
+    drafts = [
+        {"account": "A", "outline_ar": "نضمن استرجاع 100% للعميل",
+         "outline_en": "safe note — money-back terms apply"},
+    ]
+    out = step5_governance_review(customer_id="x", engagement_id="e1", drafts=drafts)
+    assert "block" not in {r["decision"] for r in out["reviews"]}
+
+
+def test_step5_handles_punctuation_and_service_guarantees():
+    """Punctuation-separated outcome claims are blocked; a refund or
+    non-outcome service "we guarantee X" is not a guaranteed-outcome claim."""
+    drafts = [
+        {"account": "A", "outline_ar": "نص آمن",
+         "outline_en": "guaranteed, results in 30 days"},
+        {"account": "B", "outline_ar": "نص آمن",
+         "outline_en": "we guarantee a full refund within 7 days"},
+        {"account": "C", "outline_ar": "نص آمن",
+         "outline_en": "we guarantee a response within 24 hours"},
+    ]
+    out = step5_governance_review(customer_id="x", engagement_id="e1", drafts=drafts)
+    by = {r["account"]: r["decision"] for r in out["reviews"]}
+    assert by["A"] == "block"
+    assert by["B"] != "block"
+    assert by["C"] != "block"
+
+
+def test_step5_blocks_guarantee_after_unrelated_negation():
+    """A negator that negates a *different* word must not let an affirmative
+    guarantee bypass the gate ("without risk we guarantee revenue")."""
+    drafts = [
+        {"account": "A", "outline_ar": "بدون تأخير نضمن نتائج",
+         "outline_en": "safe"},
+        {"account": "B", "outline_ar": "نص آمن",
+         "outline_en": "without risk we guarantee revenue"},
+    ]
+    out = step5_governance_review(customer_id="x", engagement_id="e1", drafts=drafts)
+    assert all(r["decision"] == "block" for r in out["reviews"])

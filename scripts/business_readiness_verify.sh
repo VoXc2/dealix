@@ -87,10 +87,16 @@ echo ""
 # =============================================================================
 echo "--- SECTION 3: Hard Gate — NO_COLD_WHATSAPP ---"
 
-# Check no file contains "cold whatsapp" enablement language (beyond policy docs)
-COLD_WA=$(grep -rl "cold.*whatsapp\|whatsapp.*blast\|bulk.*whatsapp\|mass.*whatsapp" \
+# A genuine violation ENABLES cold WhatsApp — a function definition, a call,
+# or a positive flag. The doctrine terms are named across the codebase to
+# *refuse* them (guards, restricted-action lists, tests); those mentions are
+# not violations. Match enablement syntax only, then drop refusal context.
+COLD_WA=$(grep -rnEi "def [a-z_]*cold_?whatsapp|[a-z_]*cold_?whatsapp[a-z_]*\s*\(|cold_?whatsapp[a-z_]*\s*=\s*(true|1)\b|whatsapp_blast\s*\(|(bulk|mass)_whatsapp[a-z_]*\s*\(" \
   --include="*.py" --include="*.js" --include="*.ts" --include="*.sh" \
-  . 2>/dev/null | grep -v "DEALIX_OPERATING_CONSTITUTION\|business_readiness_verify" || true)
+  . 2>/dev/null \
+  | grep -v "DEALIX_OPERATING_CONSTITUTION\|business_readiness_verify" \
+  | grep -viE "no_cold_whatsapp|\btest|refus|block|forbid|reject|assert|restrict" \
+  | cut -d: -f1 | sort -u || true)
 
 if [ -z "$COLD_WA" ]; then
   pass "NO_COLD_WHATSAPP: No code files enable cold WhatsApp"
@@ -105,9 +111,15 @@ echo ""
 # =============================================================================
 echo "--- SECTION 4: Hard Gate — NO_FAKE_PROOF ---"
 
-FAKE_PROOF=$(grep -rl "fake.*proof\|mock.*testimonial\|synthetic.*case.study\|fabricat" \
+# A genuine violation GENERATES fake proof — a definition or a call. Mentions
+# in guards, anti-fabrication docstrings, and the negated `no_fake_proof`
+# constant are not violations. Match generation syntax, drop refusal context.
+FAKE_PROOF=$(grep -rnEi "def [a-z_]*(fake|mock|synthetic|fabricate)[a-z_]*(proof|testimonial|case)|(fake|mock|synthetic)_?(proof|testimonial|case_study)\s*\(|fabricate[a-z_]*\s*\(|fake_proof\s*=\s*(true|1)\b" \
   --include="*.py" --include="*.js" --include="*.ts" \
-  . 2>/dev/null | grep -v "test_\|_test\|verify\|verif" || true)
+  . 2>/dev/null \
+  | grep -v "test_\|_test\|verify\|verif" \
+  | grep -viE "no_fake_proof|refus|block|forbid|reject|assert|never|rather than|honest" \
+  | cut -d: -f1 | sort -u || true)
 
 if [ -z "$FAKE_PROOF" ]; then
   pass "NO_FAKE_PROOF: No code files generate fake proof"
@@ -122,9 +134,24 @@ echo ""
 # =============================================================================
 echo "--- SECTION 5: Hard Gate — NO_GUARANTEED_CLAIMS ---"
 
-# Check landing pages for guaranteed claims
-GUARANTEED=$(grep -rl "نضمن\|guaranteed.*result\|guarantee.*revenue\|100% guaranteed\|مضمون.*نتيجة" \
-  landing/ 2>/dev/null || true)
+# Check landing/marketing pages for affirmative guaranteed-OUTCOME claims.
+# Approach: drop negation / money-back lines, neutralize negated/refund
+# Arabic forms IN PLACE, then re-match. The English match requires an
+# outcome word adjacent to "guarantee" (either word order) so CSS class
+# names like "pkg__guarantee" and refund "money-back guarantee" copy are
+# not flagged. terms.html is skipped: a terms doc legitimately *enumerates*
+# prohibited guarantee claims. Heuristic limits (local hygiene gate, not a
+# CI gate): a line mixing a negated and an affirmative Arabic claim may be
+# over-stripped.
+_EN_OUT="revenue|sales|results?|roi|growth|profit|income|deals?|leads?|customers?"
+GUARANTEED=$(grep -rnE "نضمن|مضمون|guarantee" \
+  landing/ 2>/dev/null \
+  | grep -v "landing/terms.html" \
+  | grep -viE "no[[:space:]]+guarantee|not[[:space:]]+guarantee|never[[:space:]]+guarantee|without[[:space:]]+(any[[:space:]]+)?guarantee|seeking[[:space:]]+guarantee|needs evidence|money.?back|refund" \
+  | sed -E 's/(لا|لن|لم|ما|بدون|دون)([[:space:]]+[^[:space:]]+){0,4}[[:space:]]*(نضمن|ضمان|مضمون[ةه]?)/__NEG__/g' \
+  | sed -E 's/نضمن[[:space:]]*استرجاع/__REFUND__/g' \
+  | grep -Ei "نضمن|مضمون|guarantee[a-z]*[^.]{0,15}($_EN_OUT)|($_EN_OUT)[^.]{0,15}guarantee" \
+  | cut -d: -f1 | sort -u || true)
 
 if [ -z "$GUARANTEED" ]; then
   pass "NO_GUARANTEED_CLAIMS: No guaranteed claims in landing pages"
