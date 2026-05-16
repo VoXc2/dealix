@@ -18,6 +18,7 @@
 ### 💬 تواصل أول (Cold Outreach)
 - [dealix_personalized_messages.md](./dealix_personalized_messages.md) — 5 رسائل مخصصة لـ leads الحقيقيين
 - [dealix_followup_cadence.md](./dealix_followup_cadence.md) — 7 رسائل متابعة عبر 21 يوم
+- [CEO_MARKET_MOTION_OS_AR.md](./CEO_MARKET_MOTION_OS_AR.md) — نظام CEO لتحويل أول 5 رسائل إلى Scope/Invoice بإثبات L4→L7
 
 ### 🎤 Demo & إقناع
 - [dealix_demo_script_30min.md](./dealix_demo_script_30min.md) — سكريبت 30 دقيقة دقيقة بدقيقة
