@@ -43,7 +43,9 @@ def test_gtm_first_10_returns_actions():
 
 
 def test_launch_metrics_exist():
-    assert "primary" in north_star_metrics()
+    metrics = north_star_metrics()
+    assert metrics["primary"] == "governed_value_decisions_created"
+    assert metrics["primary_requirements"]["approval_recorded"] is True
 
 
 @pytest.mark.asyncio
