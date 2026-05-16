@@ -134,13 +134,19 @@ echo ""
 # =============================================================================
 echo "--- SECTION 5: Hard Gate — NO_GUARANTEED_CLAIMS ---"
 
-# Check landing pages for guaranteed claims. Line-level match, then drop
-# negation/refusal context so doctrine-compliant disclaimers ("No
-# guaranteed-revenue claims", "Dealix does not sell 'we guarantee results'")
-# are not themselves flagged as guarantees.
+# Check landing pages for guaranteed claims. Neutralize provably-negated
+# and refusal/quoted forms IN PLACE, then re-match — so a doctrine-compliant
+# disclaimer is dropped while a line that mixes a disclaimer with a real
+# affirmative claim still gets flagged (the negated part is removed, the
+# affirmative part survives the second match).
 GUARANTEED=$(grep -rnE "نضمن|guaranteed.*result|guarantee.*revenue|100% guaranteed|مضمون.*نتيجة" \
   landing/ 2>/dev/null \
-  | grep -viE "no guarantee|not guarantee|never guarantee|no guaranteed|not guaranteed|does not|doesn't|do not|needs evidence|seeking guaranteed|not for| لا |بدون|ليست" \
+  | sed -E 's/«[^»]*»/__QUOTED__/g' \
+  | sed -E 's/(لا|لن|لم|ما)[[:space:]]*نضمن/__NEG__/g' \
+  | sed -E 's/نضمن[[:space:]]*استرجاع/__REFUND__/g' \
+  | sed -E 's/(no|not|never|without)[[:space:]]+guarantee[a-z]*/__NEG__/Ig' \
+  | sed -E 's/seeking[[:space:]]+guaranteed/__NEG__/Ig' \
+  | grep -E "نضمن|guaranteed.*result|guarantee.*revenue|100% guaranteed|مضمون.*نتيجة" \
   | cut -d: -f1 | sort -u || true)
 
 if [ -z "$GUARANTEED" ]; then

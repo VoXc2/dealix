@@ -174,3 +174,26 @@ def test_run_sprint_proof_pack_has_real_populated_sections():
     assert run.proof_score > 0
     s6 = next(s for s in run.steps if s.name == "proof_pack")
     assert s6.status == "ran"
+
+
+def test_zero_data_sprint_does_not_score_case_ready():
+    """A run with no CSV and no accounts must score as weak_proof — template
+    section completeness alone is not real evidence."""
+    run = run_sprint(engagement_id="eng_empty", customer_id="cust_empty")
+    pack = run.proof_pack
+    assert pack and pack.get("sections")  # sections are still populated
+    assert run.proof_score < 55           # below every non-weak band
+    assert run.proof_tier == "weak_proof"
+    # The outputs section must not claim a ranked list that was not produced.
+    assert "No accounts were scored" in pack["sections"]["outputs"]
+
+
+def test_step5_allows_negated_guarantee_disclaimer():
+    """A compliant disclaimer ("we do NOT guarantee") must not be blocked."""
+    drafts = [
+        {"account": "A", "outline_ar": "لا نضمن نتائج",
+         "outline_en": "we do not guarantee results"},
+    ]
+    out = step5_governance_review(customer_id="x", engagement_id="e1", drafts=drafts)
+    decisions = {r["decision"] for r in out["reviews"]}
+    assert "block" not in decisions

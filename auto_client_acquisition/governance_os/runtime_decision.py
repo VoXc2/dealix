@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import re
 from dataclasses import dataclass
 from typing import Any
 
@@ -23,19 +24,25 @@ _AFFIRMATIVE_GUARANTEE_EN: tuple[str, ...] = (
     "guaranteed roi",
 )
 
+# Negated forms — a guarantee word preceded by a negation is a compliant
+# disclaimer, not an affirmative claim.
+_NEGATED_AR = re.compile(r"(?:لا|لن|لم|ما)\s*نضمن")
+_NEGATED_EN = re.compile(r"\b(?:no|not|never)\s+guarantee", re.IGNORECASE)
+
 
 def _contains_guaranteed_claim(text: str) -> bool:
     """True when text makes an affirmative guaranteed-outcome promise.
 
-    Keyed on the Arabic verb ``نضمن`` (we guarantee) and affirmative English
-    phrasings, so a doctrine-compliant disclaimer is not itself flagged.
+    Negated forms ("لا نضمن" / "no guarantee") are stripped first, so a
+    doctrine-compliant disclaimer is not mistaken for an affirmative claim.
     """
     blob = text.lower()
     if forbidden_arabic_claim_detected(blob):
         return True
-    if "نضمن" in text:
+    if "نضمن" in _NEGATED_AR.sub(" ", text):
         return True
-    return any(n in blob for n in _AFFIRMATIVE_GUARANTEE_EN)
+    en = _NEGATED_EN.sub(" ", blob)
+    return any(n in en for n in _AFFIRMATIVE_GUARANTEE_EN)
 
 
 class _DecisionLabel(str):

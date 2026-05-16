@@ -1,4 +1,8 @@
-"""Sprint render endpoints — /api/v1/sprint/render/*."""
+"""Sprint render endpoints — /api/v1/sprint/render/*.
+
+The render routes are pure formatting: they take the Proof Pack from a prior
+/run response and never execute the Sprint again.
+"""
 from __future__ import annotations
 
 import pytest
@@ -8,7 +12,7 @@ from api.main import app
 
 client = TestClient(app)
 
-_BODY = {
+_RUN_BODY = {
     "engagement_id": "eng_render_1",
     "customer_id": "Acme Saudi",
     "raw_csv": (
@@ -36,8 +40,18 @@ def _isolated(tmp_path, monkeypatch):
     yield
 
 
+def _proof_pack() -> dict:
+    """Run the Sprint once and return its Proof Pack for rendering."""
+    run = client.post("/api/v1/sprint/run", json=_RUN_BODY)
+    assert run.status_code == 200, run.text
+    return run.json()["proof_pack"]
+
+
 def test_render_markdown_returns_bilingual_proof_pack():
-    r = client.post("/api/v1/sprint/render/markdown", json=_BODY)
+    r = client.post(
+        "/api/v1/sprint/render/markdown",
+        json={"customer_handle": "Acme Saudi", "proof_pack": _proof_pack()},
+    )
     assert r.status_code == 200, r.text
     assert "Dealix Proof Pack" in r.text
     assert "Acme Saudi" in r.text
@@ -45,7 +59,10 @@ def test_render_markdown_returns_bilingual_proof_pack():
 
 
 def test_render_pdf_or_markdown_fallback():
-    r = client.post("/api/v1/sprint/render/pdf", json=_BODY)
+    r = client.post(
+        "/api/v1/sprint/render/pdf",
+        json={"customer_handle": "Acme Saudi", "proof_pack": _proof_pack()},
+    )
     assert r.status_code == 200, r.text
     if "application/pdf" in r.headers.get("content-type", ""):
         assert r.content[:5] == b"%PDF-"
@@ -55,7 +72,31 @@ def test_render_pdf_or_markdown_fallback():
 
 
 def test_render_email_body():
-    r = client.post("/api/v1/sprint/render/email-body", json=_BODY)
+    r = client.post(
+        "/api/v1/sprint/render/email-body",
+        json={"customer_handle": "Acme Saudi", "proof_pack": _proof_pack()},
+    )
     assert r.status_code == 200, r.text
     assert "Subject" in r.text
     assert "Acme Saudi" in r.text
+
+
+def test_render_accepts_whole_run_response():
+    """The full /run response can be posted back via the `run` field."""
+    run = client.post("/api/v1/sprint/run", json=_RUN_BODY)
+    assert run.status_code == 200
+    r = client.post(
+        "/api/v1/sprint/render/markdown",
+        json={"customer_handle": "Acme Saudi", "run": run.json()},
+    )
+    assert r.status_code == 200, r.text
+    assert "Dealix Proof Pack" in r.text
+
+
+def test_render_empty_pack_is_honest_not_generated_notice():
+    r = client.post(
+        "/api/v1/sprint/render/markdown",
+        json={"customer_handle": "Acme Saudi", "proof_pack": {}},
+    )
+    assert r.status_code == 200
+    assert "not yet generated" in r.text.lower()
