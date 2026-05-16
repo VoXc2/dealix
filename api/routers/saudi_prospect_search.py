@@ -143,6 +143,11 @@ async def search_prospects(
         "filters_applied": {
             "sector": sector, "region": region, "size_band": size_band, "q": q,
         },
+        # size_band is validated + echoed for the API contract, but the
+        # canonical account table has no size column yet — so it is NOT a
+        # SQL predicate. Surface that explicitly so callers don't assume
+        # the result set was narrowed by it.
+        "unsupported_filters": ["size_band"] if size_band is not None else [],
         "pdpl_note": (
             "All fields above are public business registry attributes only. "
             "Contact PII (emails, phone numbers) is gated by PDPL Art. 5 consent."

@@ -167,6 +167,7 @@ async def list_leads(
         async with async_session_factory()() as session:
             stmt = (
                 select(LeadRecord)
+                .where(LeadRecord.deleted_at.is_(None))
                 .order_by(LeadRecord.created_at.desc())
                 .offset(offset)
                 .limit(limit + 1)

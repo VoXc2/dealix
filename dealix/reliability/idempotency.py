@@ -25,6 +25,10 @@ log = logging.getLogger(__name__)
 # a multi-process deployment must configure REDIS_URL for shared idempotency.
 _MEMORY_STORE: dict[str, float] = {}
 _MEMORY_LOCK = threading.Lock()
+# Expired-key eviction runs at most once per interval (not per mark) so the
+# no-Redis fallback neither grows unbounded nor pays an O(n) sweep per call.
+_MEMORY_SWEEP_INTERVAL_S = 60.0
+_MEMORY_LAST_SWEEP = 0.0
 
 
 class IdempotencyStore:
@@ -75,13 +79,15 @@ class IdempotencyStore:
     @staticmethod
     def _memory_mark(namespaced_key: str, ttl_seconds: int) -> bool:
         """Returns True if newly marked, False if a live mark already existed."""
+        global _MEMORY_LAST_SWEEP
         now = time.time()
         with _MEMORY_LOCK:
-            # Opportunistically evict expired keys: unique-ID webhook traffic
-            # would otherwise grow the no-Redis fallback store unbounded.
-            expired = [k for k, exp in _MEMORY_STORE.items() if exp <= now]
-            for k in expired:
-                del _MEMORY_STORE[k]
+            # Evict expired keys at most once per sweep interval — bounds
+            # memory without an O(n) sweep on every mark() hot-path call.
+            if now - _MEMORY_LAST_SWEEP >= _MEMORY_SWEEP_INTERVAL_S:
+                for k in [k for k, exp in _MEMORY_STORE.items() if exp <= now]:
+                    del _MEMORY_STORE[k]
+                _MEMORY_LAST_SWEEP = now
             expiry = _MEMORY_STORE.get(namespaced_key)
             if expiry is not None and expiry > now:
                 return False
