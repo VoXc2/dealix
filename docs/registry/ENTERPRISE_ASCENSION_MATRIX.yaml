@@ -1,0 +1,286 @@
+version: 1
+owner: sami_assiri
+last_updated: "2026-05-15"
+
+allowed_statuses:
+  - live
+  - in_progress
+  - target
+  - blocked
+
+axes:
+  - axis_id: operational_data_dominance
+    title_ar: هيمنة البيانات التشغيلية
+    title_en: Operational Data Dominance
+    status: in_progress
+    objective: توحيد السياق التشغيلي والـ lineage والصلاحيات قبل أي قرار تنفيذي.
+    required_paths:
+      - platform/data_fabric/README.md
+    required_capabilities:
+      - unified_operational_context
+      - permission_aware_data
+      - lineage_traceability
+    gates:
+      architecture_defined: true
+      readiness_defined: true
+      observability_defined: true
+      rollback_defined: true
+      metrics_defined: true
+      risk_model_defined: true
+      tests_defined: true
+      evals_defined: true
+
+  - axis_id: agentic_workforce_system
+    title_ar: نظام القوى العاملة الوكيلية
+    title_en: Agentic Workforce System
+    status: in_progress
+    objective: إدارة workforce رقمي بهوية وصلاحيات وحدود حوكمة ومؤشرات أداء.
+    required_paths:
+      - platform/agent_runtime/README.md
+    required_capabilities:
+      - agent_identity
+      - agent_permissions
+      - agent_supervision
+      - escalation_paths
+    gates:
+      architecture_defined: true
+      readiness_defined: true
+      observability_defined: true
+      rollback_defined: true
+      metrics_defined: true
+      risk_model_defined: true
+      tests_defined: true
+      evals_defined: true
+
+  - axis_id: governed_autonomy
+    title_ar: الاستقلالية المحكومة
+    title_en: Governed Autonomy
+    status: in_progress
+    objective: ضمان مرور كل إجراء عبر risk scoring وpolicy checks وapproval validation.
+    required_paths:
+      - platform/policy_engine/README.md
+    required_capabilities:
+      - runtime_policy_enforcement
+      - approval_validation
+      - auditability
+      - reversibility
+    gates:
+      architecture_defined: true
+      readiness_defined: true
+      observability_defined: true
+      rollback_defined: true
+      metrics_defined: true
+      risk_model_defined: true
+      tests_defined: true
+      evals_defined: true
+
+  - axis_id: organizational_memory
+    title_ar: الذاكرة التنظيمية
+    title_en: Organizational Memory
+    status: in_progress
+    objective: جعل كل إجابة grounded ومسنودة بمراجع وقابلة للتتبع.
+    required_paths:
+      - memory/README.md
+    required_capabilities:
+      - retrieval
+      - reranking
+      - citations
+      - permission_aware_memory
+    gates:
+      architecture_defined: true
+      readiness_defined: true
+      observability_defined: true
+      rollback_defined: true
+      metrics_defined: true
+      risk_model_defined: true
+      tests_defined: true
+      evals_defined: true
+
+  - axis_id: execution_infrastructure
+    title_ar: بنية التنفيذ
+    title_en: Execution Infrastructure
+    status: in_progress
+    objective: تنفيذ عمليات الأعمال بشكل retryable وidempotent وrecoverable.
+    required_paths:
+      - platform/execution_engine/README.md
+    required_capabilities:
+      - orchestration
+      - queueing
+      - retry_policies
+      - compensation_logic
+    gates:
+      architecture_defined: true
+      readiness_defined: true
+      observability_defined: true
+      rollback_defined: true
+      metrics_defined: true
+      risk_model_defined: true
+      tests_defined: true
+      evals_defined: true
+
+  - axis_id: observability_dominance
+    title_ar: هيمنة المراقبة
+    title_en: Observability Dominance
+    status: in_progress
+    objective: رؤية كل خطوة وقرار وفشل وإعادة محاولة على مستوى workflow وagent.
+    required_paths:
+      - observability/README.md
+    required_capabilities:
+      - tracing
+      - metrics
+      - alerts
+      - incident_tracking
+    gates:
+      architecture_defined: true
+      readiness_defined: true
+      observability_defined: true
+      rollback_defined: true
+      metrics_defined: true
+      risk_model_defined: true
+      tests_defined: true
+      evals_defined: true
+
+  - axis_id: evaluation_dominance
+    title_ar: هيمنة التقييم
+    title_en: Evaluation Dominance
+    status: in_progress
+    objective: منع أي release بدون بوابات تقييم جودة وامتثال وأثر أعمال.
+    required_paths:
+      - evals/retrieval/README.md
+      - evals/hallucination/README.md
+      - evals/workflow_execution/README.md
+      - evals/governance/README.md
+      - evals/business_impact/README.md
+    required_capabilities:
+      - retrieval_quality_evals
+      - hallucination_evals
+      - workflow_evals
+      - governance_evals
+      - business_impact_evals
+    gates:
+      architecture_defined: true
+      readiness_defined: true
+      observability_defined: true
+      rollback_defined: true
+      metrics_defined: true
+      risk_model_defined: true
+      tests_defined: true
+      evals_defined: true
+
+  - axis_id: continuous_evolution
+    title_ar: التطور المستمر الآمن
+    title_en: Continuous Evolution
+    status: in_progress
+    objective: تمكين staged rollout وrollback واكتشاف الانحرافات.
+    required_paths:
+      - continuous_improvement/README.md
+    required_capabilities:
+      - staged_rollout
+      - rollback
+      - versioning
+      - regression_detection
+    gates:
+      architecture_defined: true
+      readiness_defined: true
+      observability_defined: true
+      rollback_defined: true
+      metrics_defined: true
+      risk_model_defined: true
+      tests_defined: true
+      evals_defined: true
+
+  - axis_id: executive_intelligence
+    title_ar: الذكاء التنفيذي
+    title_en: Executive Intelligence
+    status: in_progress
+    objective: توليد briefings وتوقعات ومخاطر مع أثر أعمال قابل للقياس.
+    required_paths:
+      - executive/README.md
+      - intelligence/README.md
+      - platform/forecasting/README.md
+      - platform/organizational_insights/README.md
+    required_capabilities:
+      - executive_briefs
+      - roi_reporting
+      - risk_forecasting
+      - bottleneck_detection
+    gates:
+      architecture_defined: true
+      readiness_defined: true
+      observability_defined: true
+      rollback_defined: true
+      metrics_defined: true
+      risk_model_defined: true
+      tests_defined: true
+      evals_defined: true
+
+  - axis_id: transformation_system
+    title_ar: نظام التحول التنظيمي
+    title_en: Transformation System
+    status: in_progress
+    objective: تحويل الخدمة من تنفيذ AI إلى تمكين تحول تشغيلي كامل لدى العميل.
+    required_paths:
+      - transformation/maturity_model.md
+      - transformation/operating_model.md
+      - transformation/workflow_redesign.md
+      - transformation/adoption_framework.md
+    required_capabilities:
+      - maturity_models
+      - operating_models
+      - workflow_redesign
+      - adoption_systems
+    gates:
+      architecture_defined: true
+      readiness_defined: true
+      observability_defined: true
+      rollback_defined: true
+      metrics_defined: true
+      risk_model_defined: true
+      tests_defined: true
+      evals_defined: true
+
+  - axis_id: enterprise_readiness_system
+    title_ar: نظام جاهزية المؤسسة
+    title_en: Enterprise Readiness System
+    status: live
+    objective: قياس capability الفعلية وليس عدد الميزات، مع بوابات قرار واضحة.
+    required_paths:
+      - docs/registry/ENTERPRISE_ASCENSION_MATRIX.yaml
+      - scripts/verify_enterprise_ascension.py
+      - tests/test_enterprise_ascension_matrix.py
+    required_capabilities:
+      - readiness_gating
+      - automated_verification
+      - release_blockers
+    gates:
+      architecture_defined: true
+      readiness_defined: true
+      observability_defined: true
+      rollback_defined: true
+      metrics_defined: true
+      risk_model_defined: true
+      tests_defined: true
+      evals_defined: true
+
+  - axis_id: category_defining_moat
+    title_ar: خندق الفئة المعرِّف للسوق
+    title_en: Category-Defining Moat
+    status: target
+    objective: بناء moat مركب من الذاكرة والحوكمة والتنفيذ والذكاء التنظيمي.
+    required_paths:
+      - docs/strategic/DEALIX_ENTERPRISE_ASCENSION_EXECUTION_AR.md
+      - platform/README.md
+    required_capabilities:
+      - cumulative_operational_memory
+      - governance_proof
+      - execution_evidence
+      - measurable_business_impact
+    gates:
+      architecture_defined: true
+      readiness_defined: true
+      observability_defined: false
+      rollback_defined: false
+      metrics_defined: true
+      risk_model_defined: true
+      tests_defined: false
+      evals_defined: false
