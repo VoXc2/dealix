@@ -8,8 +8,11 @@ from __future__ import annotations
 from fastapi import APIRouter
 
 from api.routers import (
+    board_metrics as board_metrics_router,
     case_study_engine,
     deal_desk as deal_desk_router,
+    grounding_score as grounding_score_router,
+    unit_economics as unit_economics_router,
     commercial_engagements as commercial_engagements_router,
     commercial_readiness as commercial_readiness_router,
     decision_passport as decision_passport_router,
@@ -39,6 +42,9 @@ from api.routers import (
 
 _ROUTERS = [
     unified_readiness_router.router,
+    unit_economics_router.router,
+    grounding_score_router.router,
+    board_metrics_router.router,
     deal_desk_router.router,
     trust_dashboard_router.router,
     decision_passport_router.router,

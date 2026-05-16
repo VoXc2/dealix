@@ -1,0 +1,4 @@
+version: 1
+per_tenant_daily_sar_cap: 500
+alert_threshold_pct: 0.85
+hard_stop: true

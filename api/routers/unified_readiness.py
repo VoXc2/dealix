@@ -2,8 +2,10 @@
 
 from __future__ import annotations
 
+from pathlib import Path
 from typing import Any, Literal
 
+import yaml
 from fastapi import APIRouter, Query
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -38,13 +40,28 @@ def _revenue_os_snapshot() -> dict[str, Any]:
     }
 
 
+def _canary_enabled(context: dict[str, Any]) -> bool:
+    if context.get("canary") is True:
+        return True
+    path = Path(__file__).resolve().parents[2] / "dealix/transformation/feature_flags.yaml"
+    if not path.exists():
+        return False
+    data = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
+    for flag in data.get("flags") or []:
+        if flag.get("id") == "canary_readiness" and flag.get("default"):
+            return True
+    return False
+
+
 def compute_unified_readiness(
     *,
     service_id: str = "revenue_os_core",
     gate: Literal["delivery", "ai", "production"] = "production",
     context: dict[str, Any] | None = None,
+    canary: bool = False,
 ) -> dict[str, Any]:
     ctx = context or {}
+    canary_on = canary or _canary_enabled(ctx)
     service = compute_service_readiness_score(service_id.strip() or "revenue_os_core")
     gate_result = check_readiness_gate(gate, ctx)
     control = _control_plane_snapshot()
@@ -59,11 +76,14 @@ def compute_unified_readiness(
     if score < 50:
         blockers.append("service_readiness_low")
 
+    if canary_on and score < 70:
+        blockers.append("canary_readiness_threshold")
     go = len(blockers) == 0
     return {
         "verdict": "go" if go else "no_go",
         "go": go,
         "blockers": blockers,
+        "canary_mode": canary_on,
         "service_readiness": service,
         "gate_check": gate_result,
         "control_plane": control,

@@ -1,14 +1,21 @@
 #!/usr/bin/env python3
-"""Generate dealix/transformation/strategic_initiatives_registry.yaml (100 initiatives)."""
+"""Generate dealix/transformation/strategic_initiatives_registry.yaml (200 initiatives)."""
 
 from __future__ import annotations
 
+import sys
 from pathlib import Path
 
 import yaml
 
-# (id, title_en, wave, owner_os, raci_R, deliverable_slug, verification)
-_INITIATIVES: list[tuple[int, str, int, str, str, str, str]] = [
+_REPO_ROOT = Path(__file__).resolve().parents[1]
+if str(_REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(_REPO_ROOT))
+
+from scripts.initiatives_phase2_data import INITIATIVES_PHASE2, PHASE2_ACTIVE_IDS  # noqa: E402
+
+# Phase 1: (id, title_en, wave, owner_os, raci_R, deliverable_slug, verification)
+_INITIATIVES_PHASE1: list[tuple[int, str, int, str, str, str, str]] = [
     (1, "Unified North Star across layers", 0, "strategy", "CEO", "north_star_manifest.yaml", "verify_global_ai_transformation.py --check-initiatives"),
     (2, "Constitution to Policy-as-Code", 1, "trust", "CTO", "governance_os/constitution_policy_map.yaml", "pytest tests/test_constitution_policy_map.py -q"),
     (3, "API domain ownership reorganization", 2, "platform", "CTO", "docs/architecture/API_DOMAIN_OWNERSHIP.md", "pytest tests/test_api_domain_ownership.py -q"),
@@ -111,6 +118,8 @@ _INITIATIVES: list[tuple[int, str, int, str, str, str, str]] = [
     (100, "Dealix 2030 strategic endgame", 0, "strategy", "CEO", "docs/transformation/DEALIX_2030_ENDGAME_AR.md", "verify_global_ai_transformation.py --check-initiatives"),
 ]
 
+_PHASE1_ACTIVE = {1, 5, 13, 35, 100}
+
 _RACI_ACCOUNTABLE = {
     "CEO": "founder",
     "CTO": "enterprise_control_plane_owner",
@@ -119,32 +128,47 @@ _RACI_ACCOUNTABLE = {
 }
 
 
+def _row_to_initiative(
+    row: tuple[int, str, int, str, str, str, str],
+    *,
+    phase: int,
+    active_ids: set[int],
+) -> dict:
+    iid, title, wave, owner_os, raci_r, deliverable, verification = row
+    item: dict = {
+        "id": iid,
+        "key": f"initiative_{iid:03d}",
+        "title_en": title,
+        "title_ar": title,
+        "phase": phase,
+        "wave": wave,
+        "owner_os": owner_os,
+        "status": "active" if iid in active_ids else "proposed",
+        "impact_tier": "critical" if iid in active_ids else "high",
+        "raci": {
+            "R": raci_r,
+            "A": _RACI_ACCOUNTABLE.get(raci_r, "founder"),
+            "C": "product,trust",
+            "I": "finance,delivery",
+        },
+        "deliverable": deliverable,
+        "verification": verification,
+    }
+    if phase == 2 and iid >= 185:
+        item["okr_key"] = "dealix_200_scale"
+    return item
+
+
 def _build() -> dict:
     initiatives = []
-    for row in _INITIATIVES:
-        iid, title, wave, owner_os, raci_r, deliverable, verification = row
-        initiatives.append(
-            {
-                "id": iid,
-                "key": f"initiative_{iid:03d}",
-                "title_en": title,
-                "title_ar": title,
-                "wave": wave,
-                "owner_os": owner_os,
-                "status": "active" if iid in {1, 5, 13, 35, 100} else "proposed",
-                "raci": {
-                    "R": raci_r,
-                    "A": _RACI_ACCOUNTABLE.get(raci_r, "founder"),
-                    "C": "product,trust",
-                    "I": "finance,delivery",
-                },
-                "deliverable": deliverable,
-                "verification": verification,
-            }
-        )
+    for row in _INITIATIVES_PHASE1:
+        initiatives.append(_row_to_initiative(row, phase=1, active_ids=_PHASE1_ACTIVE))
+    for row in INITIATIVES_PHASE2:
+        initiatives.append(_row_to_initiative(row, phase=2, active_ids=PHASE2_ACTIVE_IDS))
     return {
-        "version": 1,
-        "program": "dealix_100_strategic_initiatives",
+        "version": 2,
+        "program": "dealix_200_strategic_initiatives",
+        "initiative_target": 200,
         "north_star_program_link": "dealix/transformation/north_star_manifest.yaml",
         "initiatives": initiatives,
     }
@@ -153,11 +177,12 @@ def _build() -> dict:
 def main() -> int:
     root = Path(__file__).resolve().parents[1]
     out = root / "dealix/transformation/strategic_initiatives_registry.yaml"
+    data = _build()
     out.write_text(
-        yaml.safe_dump(_build(), sort_keys=False, allow_unicode=True),
+        yaml.safe_dump(data, sort_keys=False, allow_unicode=True),
         encoding="utf-8",
     )
-    print(f"Wrote {out} ({len(_INITIATIVES)} initiatives)")
+    print(f"Wrote {out} ({len(data['initiatives'])} initiatives)")
     return 0
 
 

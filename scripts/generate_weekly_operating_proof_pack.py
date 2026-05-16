@@ -60,6 +60,20 @@ def main() -> int:
         status_counts[st] = status_counts.get(st, 0) + 1
     for st, count in sorted(status_counts.items()):
         lines.append(f"- **{st}**: {count}")
+    phase_counts: dict[int, int] = {}
+    for row in init_rows:
+        ph = int(row.get("phase", 1))
+        phase_counts[ph] = phase_counts.get(ph, 0) + 1
+    lines.append("")
+    lines.append("### Phase rollup")
+    for ph in sorted(phase_counts):
+        lines.append(f"- **phase {ph}**: {phase_counts[ph]} initiatives")
+    ai_econ = root / "dealix/transformation/ai_unit_economics.yaml"
+    if ai_econ.exists():
+        lines.append("")
+        lines.append("## AI unit economics (phase 2)")
+        lines.append("")
+        lines.append(f"- config: `{ai_econ.relative_to(root).as_posix()}`")
     active = [r for r in init_rows if r.get("status") == "active"]
     if active:
         lines.append("")

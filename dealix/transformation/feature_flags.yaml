@@ -1,0 +1,11 @@
+version: 1
+flags:
+  - id: canary_readiness
+    lane: fast_lane
+    default: false
+  - id: partner_sandbox
+    lane: fast_lane
+    default: false
+  - id: grounding_score_api
+    lane: governed_lane
+    default: true
