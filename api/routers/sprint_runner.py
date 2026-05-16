@@ -9,6 +9,7 @@ from __future__ import annotations
 from typing import Any
 
 from fastapi import APIRouter, HTTPException
+from fastapi.responses import PlainTextResponse, Response
 from pydantic import BaseModel, Field
 
 router = APIRouter(prefix="/api/v1/sprint", tags=["sprint"])
@@ -24,15 +25,12 @@ class _SprintRunBody(BaseModel):
     workflow_owner_present: bool = True
 
 
-@router.post("/run")
-async def run_sprint_endpoint(body: _SprintRunBody) -> dict[str, Any]:
-    """Run the 10-step Sprint orchestrator. Returns the full run record
-    including each step's output, the Proof Pack, capital assets, and
-    retainer eligibility."""
+def _run(body: _SprintRunBody):
+    """Run the 10-step orchestrator, mapping failures to HTTP 500."""
     from auto_client_acquisition.delivery_factory.delivery_sprint import run_sprint
 
     try:
-        run = run_sprint(
+        return run_sprint(
             engagement_id=body.engagement_id,
             customer_id=body.customer_id,
             source_passport=body.source_passport,
@@ -44,7 +42,67 @@ async def run_sprint_endpoint(body: _SprintRunBody) -> dict[str, Any]:
     except Exception as e:  # noqa: BLE001
         raise HTTPException(status_code=500, detail=f"sprint_run_failed: {e}") from e
 
-    return run.to_dict()
+
+@router.post("/run")
+async def run_sprint_endpoint(body: _SprintRunBody) -> dict[str, Any]:
+    """Run the 10-step Sprint orchestrator. Returns the full run record
+    including each step's output, the Proof Pack, capital assets, and
+    retainer eligibility."""
+    return _run(body).to_dict()
+
+
+@router.post("/render/markdown", response_class=PlainTextResponse)
+async def render_proof_pack_markdown(body: _SprintRunBody) -> str:
+    """Run the Sprint and render its Proof Pack as a customer-facing
+    bilingual markdown report."""
+    from auto_client_acquisition.proof_architecture_os.proof_pack_render import (
+        proof_pack_to_markdown,
+    )
+
+    run = _run(body)
+    return proof_pack_to_markdown(run.proof_pack, customer_handle=body.customer_id)
+
+
+@router.post("/render/pdf")
+async def render_proof_pack_pdf(body: _SprintRunBody):
+    """Run the Sprint and render its Proof Pack as PDF. Falls back to
+    markdown with an ``X-PDF-Renderer`` header when no PDF renderer is
+    installed."""
+    from auto_client_acquisition.proof_architecture_os.proof_pack_render import (
+        proof_pack_to_markdown,
+        proof_pack_to_pdf,
+    )
+
+    run = _run(body)
+    pdf = proof_pack_to_pdf(run.proof_pack, customer_handle=body.customer_id)
+    if pdf is None:
+        return PlainTextResponse(
+            content=proof_pack_to_markdown(
+                run.proof_pack, customer_handle=body.customer_id
+            ),
+            headers={"X-PDF-Renderer": "unavailable; markdown returned as fallback"},
+        )
+    return Response(
+        content=pdf,
+        media_type="application/pdf",
+        headers={
+            "Content-Disposition": (
+                f'inline; filename="proof_pack_{body.engagement_id}.pdf"'
+            )
+        },
+    )
+
+
+@router.post("/render/email-body", response_class=PlainTextResponse)
+async def render_proof_pack_email_body(body: _SprintRunBody) -> str:
+    """Run the Sprint and render a short bilingual cover note the founder
+    copies into their own mailbox. Render-only — never auto-sent."""
+    from auto_client_acquisition.proof_architecture_os.proof_pack_render import (
+        proof_pack_email_body,
+    )
+
+    run = _run(body)
+    return proof_pack_email_body(run.proof_pack, customer_handle=body.customer_id)
 
 
 @router.get("/sample")

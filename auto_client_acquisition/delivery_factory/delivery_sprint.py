@@ -238,27 +238,78 @@ def step6_proof_pack(
     outputs_summary: str = "",
     problem_summary: str = "",
 ) -> dict:
-    """Day 5: Proof Pack assembly."""
-    from auto_client_acquisition.data_os.source_passport import SourcePassport
-    from auto_client_acquisition.proof_os.proof_pack import assemble
-
-    governance_events = [
-        {"decision": d, "count": n} for d, n in governance_summary.items()
-    ]
-    sp = SourcePassport(**passport) if passport else None
-    pack = assemble(
-        engagement_id=engagement_id,
-        customer_id=customer_id,
-        source_passport=sp,
-        dq_score=dq_score,
-        value_events=[],
-        governance_events=governance_events,
-        work_completed=work_completed_summary or "10-step sprint executed",
-        problem=problem_summary or "(provided in kickoff)",
-        outputs_summary=outputs_summary or "ranked top 10 + governance-reviewed drafts",
-        next_step="founder review and handoff",
+    """Day 5: Proof Pack assembly — fills the 14 canonical v2 sections."""
+    from auto_client_acquisition.proof_os import (
+        merge_proof_pack_v2,
+        proof_pack_score_with_governance_penalty,
+        proof_strength_band,
     )
-    return pack.to_dict()
+
+    governance_blocked = governance_summary.get("block", 0) > 0
+    gov_lines = (
+        ", ".join(f"{d}: {n}" for d, n in sorted(governance_summary.items()))
+        or "none recorded"
+    )
+    passport_desc = (
+        f"source_id={passport.get('source_id', '?')}, "
+        f"type={passport.get('source_type', '?')}, "
+        f"contains_pii={passport.get('contains_pii', '?')}"
+        if passport
+        else "No Source Passport provided at kickoff."
+    )
+
+    sections = {
+        "executive_summary": (
+            f"7-Day Revenue Proof Sprint for {customer_id} "
+            f"(engagement {engagement_id}). {work_completed_summary}"
+        ),
+        "problem": problem_summary or "(provided in kickoff)",
+        "inputs": f"Customer data import. Data-quality score: {dq_score:.2f}/1.00.",
+        "source_passports": passport_desc,
+        "work_completed": work_completed_summary or "10-step sprint executed",
+        "outputs": outputs_summary
+        or "Ranked top-10 accounts and governance-reviewed draft outlines.",
+        "quality_scores": f"Data-quality (DQ) score: {dq_score:.2f}/1.00.",
+        "governance_decisions": f"Draft governance decisions — {gov_lines}.",
+        "blocked_risks": (
+            "One or more drafts were blocked by governance review — "
+            "see governance decisions."
+            if governance_blocked
+            else "No governance blocks recorded in this run."
+        ),
+        "value_metrics": (
+            "A ranked, governed account list and review-ready draft outlines. "
+            "Estimated outcomes are not guaranteed outcomes."
+        ),
+        "limitations": (
+            "Outputs are estimates from the data provided; thin or low-quality "
+            "input lowers confidence. No external messages were sent. Founder "
+            "review is required before any customer-facing action."
+        ),
+        "recommended_next_step": (
+            "Founder review and handoff; consider the 1,500 SAR "
+            "Data-to-Revenue Pack."
+        ),
+        "retainer_expansion_path": (
+            "Managed Revenue Ops (2,999-4,999 SAR/mo) after a successful "
+            "pilot — subject to the retainer-readiness check."
+        ),
+        "capital_assets_created": (
+            "A reusable account-scoring rule registered to the capital ledger."
+        ),
+    }
+    pack = merge_proof_pack_v2(sections, {})
+    score = proof_pack_score_with_governance_penalty(
+        pack, governance_blocked=governance_blocked
+    )
+    return {
+        "engagement_id": engagement_id,
+        "customer_id": customer_id,
+        "sections": pack,
+        "score": score,
+        "tier": proof_strength_band(score),
+        "governance_blocked": governance_blocked,
+    }
 
 
 def step7_capital_assets(

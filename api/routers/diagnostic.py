@@ -3,9 +3,11 @@ Diagnostic Router — bilingual diagnostic brief generator.
 موجِّه التشخيص — مُولِّد موجز ثنائي اللغة.
 
 Endpoints under /api/v1/diagnostic/:
-    GET  /status     — module health + supported sectors + guardrails
-    GET  /sectors    — list of supported sector keys
-    POST /generate   — build a diagnostic brief from a request body
+    GET  /status            — module health + supported sectors + guardrails
+    GET  /sectors           — list of supported sector keys
+    POST /generate          — build a diagnostic brief from a request body
+    POST /report/markdown   — customer-facing 1-page bilingual report
+    POST /report/pdf        — the same report rendered as PDF
 
 Pure local composition: no LLM calls, no live sends, no external HTTP.
 Every generated brief is tagged ``approval_status="approval_required"``.
@@ -16,6 +18,7 @@ from __future__ import annotations
 from typing import Any
 
 from fastapi import APIRouter, HTTPException
+from fastapi.responses import PlainTextResponse, Response
 from pydantic import BaseModel, ConfigDict, Field
 
 from auto_client_acquisition.compliance_trust_os.approval_engine import GovernanceDecision
@@ -75,6 +78,70 @@ async def diagnostic_generate(payload: DiagnosticRequest) -> dict[str, Any]:
     """Render a bilingual diagnostic brief — never auto-sent."""
     result = generate_diagnostic(payload)
     return result.model_dump(mode="json")
+
+
+_DISCLAIMER = (
+    "Estimated outcomes are not guaranteed outcomes / "
+    "النتائج التقديرية ليست نتائج مضمونة."
+)
+
+
+def _diagnostic_report_markdown(result: Any) -> str:
+    """Wrap a DiagnosticResult's bilingual body in a 1-page customer header.
+
+    Keeps the ``approval_required`` status visible — the report is a
+    deliverable the founder reviews and sends, never auto-sent.
+    """
+    return "\n".join(
+        [
+            f"# Dealix AI Ops Diagnostic — {result.company}",
+            "",
+            f"**Recommended bundle / الحزمة الموصى بها:** "
+            f"{result.bundle_name_ar} · {result.bundle_name_en} "
+            f"(`{result.recommended_bundle}`)",
+            "",
+            f"**Status / الحالة:** {result.approval_status} — "
+            "founder review required before sending / "
+            "مراجعة المؤسس مطلوبة قبل الإرسال.",
+            "",
+            "---",
+            "",
+            result.markdown_ar_en,
+            "",
+            "---",
+            f"_{_DISCLAIMER}_",
+        ]
+    )
+
+
+@router.post("/report/markdown", response_class=PlainTextResponse)
+async def diagnostic_report_markdown(payload: DiagnosticRequest) -> str:
+    """Customer-facing 1-page bilingual diagnostic report (markdown)."""
+    result = generate_diagnostic(payload)
+    return _diagnostic_report_markdown(result)
+
+
+@router.post("/report/pdf")
+async def diagnostic_report_pdf(payload: DiagnosticRequest):
+    """The diagnostic report rendered as PDF. Falls back to markdown with an
+    ``X-PDF-Renderer`` header when no PDF renderer is installed."""
+    from auto_client_acquisition.proof_to_market.pdf_renderer import (
+        render_markdown_to_pdf,
+    )
+
+    result = generate_diagnostic(payload)
+    md = _diagnostic_report_markdown(result)
+    pdf = render_markdown_to_pdf(md, title=f"Dealix Diagnostic — {result.company}")
+    if pdf is None:
+        return PlainTextResponse(
+            content=md,
+            headers={"X-PDF-Renderer": "unavailable; markdown returned as fallback"},
+        )
+    return Response(
+        content=pdf,
+        media_type="application/pdf",
+        headers={"Content-Disposition": 'inline; filename="diagnostic_report.pdf"'},
+    )
 
 
 @router.post("/intent")

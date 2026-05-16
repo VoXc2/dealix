@@ -165,3 +165,34 @@ async def test_unknown_payment_404() -> None:
     async with AsyncClient(transport=transport, base_url="http://test") as c:
         r = await c.get("/api/v1/payment-ops/pay_doesnotexist/state")
     assert r.status_code == 404
+
+
+@pytest.mark.asyncio
+async def test_kickoff_returns_run_sprint_next_action() -> None:
+    """kickoff-delivery links payment → Sprint: the response carries a
+    run_sprint next-action keyed on delivery_kickoff_id (the audit link)."""
+    from api.main import app
+    transport = ASGITransport(app=app)
+    async with AsyncClient(transport=transport, base_url="http://test") as c:
+        intent = await c.post("/api/v1/payment-ops/invoice-intent", json={
+            "customer_handle": "next-action-test",
+            "amount_sar": 499.0,
+            "method": "bank_transfer",
+        })
+        pid = intent.json()["payment"]["payment_id"]
+        await c.post("/api/v1/payment-ops/manual-evidence", json={
+            "payment_id": pid, "evidence_reference": "BANK-TXN-99999",
+        })
+        await c.post("/api/v1/payment-ops/confirm", json={
+            "payment_id": pid, "confirmed_by": "founder",
+        })
+        r = await c.post(f"/api/v1/payment-ops/{pid}/kickoff-delivery")
+    assert r.status_code == 200
+    body = r.json()
+    assert body["payment"]["status"] == "delivery_kickoff"
+    na = body["next_action"]
+    assert na["step"] == "run_sprint"
+    assert na["endpoint"] == "POST /api/v1/sprint/run"
+    # delivery_kickoff_id is the engagement_id → the payment↔delivery link.
+    assert na["engagement_id"] == body["delivery_kickoff_id"]
+    assert na["customer_id"] == "next-action-test"

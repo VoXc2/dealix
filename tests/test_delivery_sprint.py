@@ -146,3 +146,31 @@ def test_sprint_sample_endpoint():
     body = resp.json()
     assert body["customer_id"] == "dealix_internal_demo"
     assert body["proof_pack"] is not None
+
+
+def test_run_sprint_proof_pack_has_real_populated_sections():
+    """Step 6 assembles a real 14-section Proof Pack (regression: it used to
+    import a non-existent `assemble` and silently produce an empty dict)."""
+    from auto_client_acquisition.proof_architecture_os.proof_pack_v2 import (
+        PROOF_PACK_V2_SECTIONS,
+    )
+
+    run = run_sprint(
+        engagement_id="eng_pp",
+        customer_id="cust_pp",
+        source_passport=_GOOD_PASSPORT,
+        raw_csv=_DEMO_CSV,
+        accounts=[
+            {"company_name": "Co1", "sector": "b2b_services", "city": "Riyadh",
+             "relationship_status": "warm", "last_interaction": "2026-05",
+             "notes": "fit"},
+        ],
+        problem_summary="rank Saudi B2B accounts",
+    )
+    pack = run.proof_pack
+    assert pack and pack.get("sections")
+    for k in PROOF_PACK_V2_SECTIONS:
+        assert (pack["sections"].get(k) or "").strip(), f"empty section: {k}"
+    assert run.proof_score > 0
+    s6 = next(s for s in run.steps if s.name == "proof_pack")
+    assert s6.status == "ran"
