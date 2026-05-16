@@ -3,7 +3,7 @@
   "summary": {
     "total_pages": 76,
     "pages_with_required_gap": 0,
-    "pages_with_advisory_gap": 3
+    "pages_with_advisory_gap": 1
   },
   "required_checks": [
     "title",
@@ -943,14 +943,11 @@
         "html_dir": true,
         "canonical": true,
         "og_title": true,
-        "og_description": false,
-        "twitter_card": false
+        "og_description": true,
+        "twitter_card": true
       },
       "missing_required": [],
-      "missing_advisory": [
-        "og_description",
-        "twitter_card"
-      ]
+      "missing_advisory": []
     },
     {
       "path": "sector-report-realestate-sample.html",
@@ -1218,14 +1215,11 @@
         "html_dir": true,
         "canonical": true,
         "og_title": true,
-        "og_description": false,
-        "twitter_card": false
+        "og_description": true,
+        "twitter_card": true
       },
       "missing_required": [],
-      "missing_advisory": [
-        "og_description",
-        "twitter_card"
-      ]
+      "missing_advisory": []
     },
     {
       "path": "why-saudi-ai.html",
