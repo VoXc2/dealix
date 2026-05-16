@@ -10,12 +10,28 @@
 | **PostgreSQL 16** | 5432 | Primary DB (via `docker compose up -d postgres`) |
 | **Redis 7** | 6379 | Cache/queue (via `docker compose up -d redis`) |
 | **Next.js Frontend** | 3000 | Dashboard UI (`npm run dev` in `frontend/`) |
+| **MongoDB 7** | 27017 | Optional document store (full `docker compose` stack) |
+
+### Python command (`python` vs `python3`)
+
+- **GitHub Actions** workflows invoke **`python3`** for scripts so runners match Debian/minimal images where `python` may be absent.
+- **Locally**, use `python3` if `python` is not on your `PATH`; after `actions/setup-python`, both names exist on CI.
 
 ### Starting infrastructure
 
 ```bash
 docker compose up -d postgres redis
 ```
+
+For a **full data-plane check** (Postgres + PgBouncer + Redis + Mongo + gates + TCP `/health` + Next.js build/tests), run:
+
+```bash
+bash scripts/dealix_local_stack_verify.sh
+# Faster: skip Docker / skip frontend
+bash scripts/dealix_local_stack_verify.sh --skip-docker --skip-frontend
+```
+
+In GitHub: **Actions → Local stack verify → Run workflow** (same script with `--teardown`).
 
 Then start the backend:
 
@@ -84,6 +100,13 @@ Optional — isolated Postgres revenue memory integration test ([`tests/test_iso
 - `POST /api/v1/revenue-os/signals/normalize` — يحوّل `MarketSignal` (مدخلات من المؤسس، بدون scraping) إلى Why Now / Offer / Proof target
 - `POST /api/v1/revenue-os/anti-waste/check` — قواعد: لا إجراء خارجي بدون جواز قرار، لا upsell بدون proof، لا تسويق عام تحت L4
 - `GET /api/v1/revenue-os/learning/weekly-template` — هيكل تقرير التعلّم الأسبوعي (فارغ حتى ربط التحليلات)
+
+### Board Decision OS (Strategic Intelligence)
+
+- `GET /api/v1/board-decision-os/overview` — فهرس الطبقة + المسارات
+- `POST /api/v1/board-decision-os/scorecards/{offer|client|productization}` — بطاقات CEO/Board (أوزان ثابتة)
+- `POST /api/v1/board-decision-os/ceo-top-decisions` — أعلى قرارات أسبوعية (حتمي من إشارات مضغوطة)
+- `docs/board_decision_system/STRATEGIC_INTELLIGENCE_BOARD_SYSTEM.md` — مرجع المنتج لهذه الطبقة
 
 تحقق سريع للوكلاء: `bash scripts/revenue_os_master_verify.sh` (يطبع `DEALIX_REVENUE_OS_VERDICT`).  
 تحقق جاهزية الخدمات والبوابات: `bash scripts/dealix_capability_verify.sh`.  

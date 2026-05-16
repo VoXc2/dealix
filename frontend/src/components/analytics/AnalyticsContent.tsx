@@ -1,16 +1,17 @@
 "use client";
 
+import { useQuery } from "@tanstack/react-query";
 import { useLocale } from "next-intl";
 import { motion } from "framer-motion";
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
-  FunnelChart, Funnel, Cell, LabelList,
   RadarChart, Radar, PolarGrid, PolarAngleAxis, PolarRadiusAxis,
 } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Download } from "lucide-react";
 import { formatCurrency } from "@/lib/utils";
+import { api } from "@/lib/api";
 
 const monthlyRevenueAr = [
   { month: "يناير", revenue: 4200000, deals: 12 },
@@ -67,8 +68,64 @@ export function AnalyticsContent() {
   const monthlyData = isAr ? monthlyRevenueAr : monthlyRevenueEn;
   const funnelData = isAr ? funnelDataAr : funnelDataEn;
 
+  const pipelineQuery = useQuery({
+    queryKey: ["analytics", "pipeline-summary"],
+    queryFn: async () => (await api.getPipeline()).data,
+  });
+
+  const pipelineSummary =
+    pipelineQuery.data &&
+    typeof pipelineQuery.data === "object" &&
+    "pipeline_summary" in pipelineQuery.data
+      ? (pipelineQuery.data as { pipeline_summary?: Record<string, number> })
+          .pipeline_summary
+      : undefined;
+
   return (
     <div className="space-y-6">
+      <div
+        role="status"
+        className="rounded-xl border border-border bg-muted/30 px-4 py-3 text-xs text-muted-foreground"
+      >
+        {isAr
+          ? "الرسوم البيانية أدناه بيانات توضيحية للعرض فقط إلى حين ربط تقارير الإيرادات الكاملة. أرقام مسار الإيرادات تأتي من الـ API عند توفرها."
+          : "Charts below use illustrative sample data until full revenue reporting is wired. Pipeline figures load from the API when available."}
+      </div>
+
+      {pipelineQuery.isError && (
+        <div
+          role="alert"
+          className="rounded-xl border border-destructive/40 bg-destructive/10 px-4 py-3 text-sm"
+        >
+          {isAr
+            ? "تعذر تحميل ملخص مسار الإيرادات."
+            : "Could not load revenue pipeline summary."}
+        </div>
+      )}
+
+      {pipelineSummary && (
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+          {(
+            [
+              ["total_leads", isAr ? "إجمالي العملاء المحتملين" : "Total leads"],
+              ["commitments", isAr ? "التزامات" : "Commitments"],
+              ["paid", isAr ? "مدفوع" : "Paid"],
+              ["total_revenue_sar", isAr ? "إيراد مسجّل (ر.س)" : "Recorded SAR"],
+            ] as const
+          ).map(([key, label]) => (
+            <div
+              key={key}
+              className="rounded-xl border border-border bg-card p-4"
+            >
+              <p className="text-xs text-muted-foreground">{label}</p>
+              <p className="text-xl font-bold tabular-nums mt-1">
+                {pipelineSummary[key] ?? "—"}
+              </p>
+            </div>
+          ))}
+        </div>
+      )}
+
       {/* Header actions */}
       <div className="flex justify-end">
         <Button variant="outline" size="sm">

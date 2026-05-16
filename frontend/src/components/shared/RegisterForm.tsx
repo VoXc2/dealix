@@ -9,7 +9,6 @@ import { Zap, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useAuth } from "@/lib/hooks/useAuth";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 
@@ -18,7 +17,6 @@ export function RegisterForm() {
   const locale = useLocale();
   const isAr = locale === "ar";
   const router = useRouter();
-  const { login } = useAuth();
   const [form, setForm] = useState({
     fullName: "",
     company: "",

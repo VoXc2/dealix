@@ -1406,9 +1406,11 @@ details.ds-portal-deep > .ds-portal-deep__body {
 }
 .ds-wadl__stage {
   display: grid;
-  grid-template-columns: minmax(280px, 360px) 1fr;
+  grid-template-columns: minmax(280px, 360px) minmax(0, 1fr);
   gap: var(--space-9);
   align-items: center;
+  min-width: 0;
+  max-width: 100%;
 }
 @media (max-width: 880px) {
   .ds-wadl__stage {
@@ -1547,6 +1549,7 @@ details.ds-portal-deep > .ds-portal-deep__body {
   display: grid;
   gap: var(--space-5);
   font-family: var(--font-ar);
+  min-width: 0;
 }
 .ds-wadl__step {
   display: grid;
@@ -1580,6 +1583,8 @@ details.ds-portal-deep > .ds-portal-deep__body {
   font-size: var(--fs-sm);
   color: var(--text-muted);
   line-height: var(--lh-base);
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 /* ─── ds-section--tier1 (large rhythm wrapper) ───────────────── */

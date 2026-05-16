@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>تسجيل الدخول — Dealix</title>
-  <meta name="description" content="تسجيل دخول عبر رابط مغناطيسي. لا كلمات سرّ — رابط آمن لمرة واحدة على إيميلك خلال 60 ثانية." />
+  <meta name="description" content="طلب رابط استعادة كلمة المرور عبر البريد — متصل بـ /api/v1/auth/password/reset-request عندما يكون الخادم مفعّلاً." />
   <meta name="theme-color" content="#0f172a" />
   <link rel="canonical" href="https://dealix.me/login.html" />
   <meta name="robots" content="noindex,follow" />
@@ -58,12 +58,12 @@
 
     <main class="login-card">
       <h1>تسجيل الدخول</h1>
-      <p class="lede">رابط مغناطيسي على إيميلك — لا كلمات سرّ، لا تطبيقات MFA إضافيّة. الرابط صالح 15 دقيقة + لمرّة واحدة فقط.</p>
+      <p class="lede">أدخل بريدك لإرسال رابط استعادة كلمة المرور (إن وُجد حساب). للوحة التشغيل الكاملة استخدم تطبيق Next.js على /ar/login.</p>
 
       <form id="loginForm" novalidate>
         <label for="email">الإيميل المسجَّل عند Dealix</label>
         <input type="email" id="email" name="email" required placeholder="founder@yourco.sa" autocomplete="email">
-        <button type="submit" class="submit-btn" id="submitBtn">أرسل الرابط المغناطيسي</button>
+        <button type="submit" class="submit-btn" id="submitBtn">أرسل رابط استعادة كلمة المرور</button>
 
         <div class="response" id="response" aria-live="polite"></div>
 
@@ -114,18 +114,18 @@
 
       var apiBase = (window.DEALIX_API_BASE || "").replace(/\/$/, "");
       try {
-        var res = await fetch(apiBase + "/api/v1/auth/magic-link", {
+        var res = await fetch(apiBase + "/api/v1/auth/password/reset-request", {
           method: "POST",
           headers: { "Content-Type": "application/json", "Accept": "application/json" },
           body: JSON.stringify({ email: email })
         });
         if (res.ok) {
           response.classList.add("success");
-          response.textContent = "✓ أرسلنا الرابط على بريدك. تحقّق خلال 60 ثانية + المجلّد المُهمل لو ما وصل.";
+          response.textContent = "✓ إن كان البريد مسجّلاً لدينا، ستصلك تعليمات استعادة كلمة المرور. تحقّق من المجلّد المُهمل أيضاً.";
           form.querySelector("input").value = "";
         } else if (res.status === 404) {
           response.classList.add("error");
-          response.textContent = "هذا الإيميل غير مسجَّل. ابدأ بـ Mini Diagnostic مجّاني.";
+          response.textContent = "تعذّر إكمال الطلب. جرّب لاحقاً أو تواصل مع founder@dealix.sa";
         } else {
           response.classList.add("error");
           response.textContent = "تعذّر الإرسال (" + res.status + "). تواصل مع الدعم: founder@dealix.sa";
@@ -135,7 +135,7 @@
         response.textContent = "خطأ في الاتصال — حاول مجدّداً أو راسلنا على founder@dealix.sa";
       } finally {
         btn.disabled = false;
-        btn.textContent = "أرسل الرابط المغناطيسي";
+        btn.textContent = "أرسل رابط استعادة كلمة المرور";
       }
     });
   </script>

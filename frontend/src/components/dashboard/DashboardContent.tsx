@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useMemo } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { useTranslations, useLocale } from "next-intl";
 import { motion } from "framer-motion";
 import { KPICard } from "./KPICard";
@@ -8,6 +9,7 @@ import { RevenueChart } from "./RevenueChart";
 import { DealPipelineChart } from "./DealPipelineChart";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { formatRelativeTime, getStatusColor } from "@/lib/utils";
 import { api } from "@/lib/api";
 import type { KPIMetric } from "@/types";
@@ -20,49 +22,6 @@ interface Activity {
   status: string;
   timestamp: string;
 }
-
-const mockActivities: Activity[] = [
-  {
-    id: "1",
-    agent: "outreach",
-    actionAr: "أرسل رسالة تواصل إلى شركة أرامكو",
-    actionEn: "Sent outreach to Aramco Company",
-    status: "completed",
-    timestamp: new Date(Date.now() - 5 * 60000).toISOString(),
-  },
-  {
-    id: "2",
-    agent: "scoring",
-    actionAr: "قيّم 12 عميلاً محتملاً جديداً",
-    actionEn: "Scored 12 new leads",
-    status: "completed",
-    timestamp: new Date(Date.now() - 18 * 60000).toISOString(),
-  },
-  {
-    id: "3",
-    agent: "compliance",
-    actionAr: "مراجعة امتثال حملة التسويق Q4",
-    actionEn: "Reviewing Q4 campaign compliance",
-    status: "running",
-    timestamp: new Date(Date.now() - 2 * 60000).toISOString(),
-  },
-  {
-    id: "4",
-    agent: "intelligence",
-    actionAr: "رصد إشارات التوظيف في القطاع المالي",
-    actionEn: "Monitoring hiring signals in fintech",
-    status: "running",
-    timestamp: new Date(Date.now() - 8 * 60000).toISOString(),
-  },
-  {
-    id: "5",
-    agent: "orchestrator",
-    actionAr: "جدولة دورة النمو اليومية",
-    actionEn: "Scheduled daily growth cycle",
-    status: "pending",
-    timestamp: new Date(Date.now() - 30 * 60000).toISOString(),
-  },
-];
 
 function KPISkeletonCard() {
   return (
@@ -93,135 +52,129 @@ function ActivitySkeletonRow() {
   );
 }
 
+function parseKpiFromResponse(
+  raw: unknown,
+  defaults: KPIMetric[],
+): KPIMetric[] | null {
+  if (!raw || typeof raw !== "object") return null;
+  const root = raw as Record<string, unknown>;
+  const data = (root.data ?? root) as Record<string, unknown>;
+  const metrics = data.metrics;
+  if (!Array.isArray(metrics) || metrics.length === 0) return null;
+  return metrics.map((m: unknown, i: number) => {
+    const row = m as Record<string, unknown>;
+    const d = defaults[i];
+    return {
+      label: (row.label as string) ?? d?.label ?? "",
+      value: (row.value as number) ?? d?.value ?? 0,
+      change: (row.change as number) ?? d?.change ?? 0,
+      trend: (row.trend as KPIMetric["trend"]) ?? d?.trend ?? "neutral",
+      icon: (row.icon as string) ?? d?.icon ?? "📊",
+      format: (row.format as KPIMetric["format"]) ?? d?.format ?? "number",
+    };
+  });
+}
+
+function parseActivitiesFromCommandCenter(raw: unknown): Activity[] | null {
+  if (!raw || typeof raw !== "object") return null;
+  const root = raw as Record<string, unknown>;
+  const data = (root.data ?? root) as Record<string, unknown>;
+  const items: unknown[] =
+    (data.recent_decisions as unknown[]) ??
+    (data.decisions as unknown[]) ??
+    (data.activities as unknown[]) ??
+    [];
+  if (!Array.isArray(items) || items.length === 0) return null;
+  return items.map((rawItem: unknown, i: number) => {
+    const item = rawItem as Record<string, unknown>;
+    return {
+      id: (item.id as string) ?? String(i + 1),
+      agent:
+        (item.agent as string) ??
+        (item.agent_type as string) ??
+        "orchestrator",
+      actionAr:
+        (item.action_ar as string) ?? (item.action as string) ?? "",
+      actionEn:
+        (item.action_en as string) ?? (item.action as string) ?? "",
+      status: (item.status as string) ?? "completed",
+      timestamp:
+        (item.timestamp as string) ??
+        (item.created_at as string) ??
+        new Date().toISOString(),
+    };
+  });
+}
+
 export function DashboardContent() {
   const t = useTranslations();
   const locale = useLocale();
   const isAr = locale === "ar";
 
-  const [kpiMetrics, setKpiMetrics] = useState<KPIMetric[] | null>(null);
-  const [activities, setActivities] = useState<Activity[] | null>(null);
-  const [loadingKpi, setLoadingKpi] = useState(true);
-  const [loadingActivities, setLoadingActivities] = useState(true);
+  const defaultKpiMetrics = useMemo<KPIMetric[]>(
+    () => [
+      {
+        label: t("dashboard.kpi.totalRevenue"),
+        value: 0,
+        change: 0,
+        trend: "neutral",
+        icon: "💰",
+        format: "currency",
+      },
+      {
+        label: t("dashboard.kpi.activeDeals"),
+        value: 0,
+        change: 0,
+        trend: "neutral",
+        icon: "📊",
+        format: "number",
+      },
+      {
+        label: t("dashboard.kpi.conversionRate"),
+        value: 0,
+        change: 0,
+        trend: "neutral",
+        icon: "🎯",
+        format: "percentage",
+      },
+      {
+        label: t("dashboard.kpi.aiActions"),
+        value: 0,
+        change: 0,
+        trend: "neutral",
+        icon: "🤖",
+        format: "number",
+      },
+    ],
+    [t],
+  );
 
-  const defaultKpiMetrics: KPIMetric[] = [
-    {
-      label: t("dashboard.kpi.totalRevenue"),
-      value: 42800000,
-      change: 18.5,
-      trend: "up",
-      icon: "💰",
-      format: "currency",
+  const kpiQuery = useQuery({
+    queryKey: ["dashboard", "metrics"],
+    queryFn: async () => {
+      const res = await api.getDashboardMetrics();
+      return res.data;
     },
-    {
-      label: t("dashboard.kpi.activeDeals"),
-      value: 104,
-      change: 12.3,
-      trend: "up",
-      icon: "📊",
-      format: "number",
+  });
+
+  const activityQuery = useQuery({
+    queryKey: ["dashboard", "command-center"],
+    queryFn: async () => {
+      const res = await api.getCommandCenter();
+      return res.data;
     },
-    {
-      label: t("dashboard.kpi.conversionRate"),
-      value: 23.4,
-      change: 3.2,
-      trend: "up",
-      icon: "🎯",
-      format: "percentage",
-    },
-    {
-      label: t("dashboard.kpi.aiActions"),
-      value: 2847,
-      change: 47.1,
-      trend: "up",
-      icon: "🤖",
-      format: "number",
-    },
-  ];
+  });
 
-  useEffect(() => {
-    let cancelled = false;
-
-    async function fetchKpi() {
-      try {
-        const res = await api.getDashboardMetrics();
-        if (!cancelled && res.data) {
-          const data = res.data.data ?? res.data;
-          if (Array.isArray(data.metrics) && data.metrics.length > 0) {
-            setKpiMetrics(
-              data.metrics.map((m: Record<string, unknown>, i: number) => ({
-                label:
-                  (m.label as string) ?? defaultKpiMetrics[i]?.label ?? "",
-                value: (m.value as number) ?? defaultKpiMetrics[i]?.value ?? 0,
-                change:
-                  (m.change as number) ?? defaultKpiMetrics[i]?.change ?? 0,
-                trend:
-                  (m.trend as string) ?? defaultKpiMetrics[i]?.trend ?? "neutral",
-                icon:
-                  (m.icon as string) ?? defaultKpiMetrics[i]?.icon ?? "📊",
-                format:
-                  (m.format as string) ?? defaultKpiMetrics[i]?.format ?? "number",
-              }))
-            );
-          } else {
-            setKpiMetrics(defaultKpiMetrics);
-          }
-        }
-      } catch {
-        if (!cancelled) setKpiMetrics(defaultKpiMetrics);
-      } finally {
-        if (!cancelled) setLoadingKpi(false);
-      }
-    }
-
-    fetchKpi();
-    return () => { cancelled = true; };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  useEffect(() => {
-    let cancelled = false;
-
-    async function fetchActivities() {
-      try {
-        const res = await api.getCommandCenter();
-        if (!cancelled && res.data) {
-          const data = res.data.data ?? res.data;
-          const items: unknown[] =
-            data.recent_decisions ?? data.decisions ?? data.activities ?? [];
-          if (Array.isArray(items) && items.length > 0) {
-            setActivities(
-              items.map((raw: unknown, i: number) => {
-                const item = raw as Record<string, unknown>;
-                return {
-                id: (item.id as string) ?? String(i + 1),
-                agent: (item.agent as string) ?? (item.agent_type as string) ?? "orchestrator",
-                actionAr: (item.action_ar as string) ?? (item.action as string) ?? "",
-                actionEn: (item.action_en as string) ?? (item.action as string) ?? "",
-                status: (item.status as string) ?? "completed",
-                timestamp:
-                  (item.timestamp as string) ??
-                  (item.created_at as string) ??
-                  new Date().toISOString(),
-                };
-              })
-            );
-          } else {
-            setActivities(mockActivities);
-          }
-        }
-      } catch {
-        if (!cancelled) setActivities(mockActivities);
-      } finally {
-        if (!cancelled) setLoadingActivities(false);
-      }
-    }
-
-    fetchActivities();
-    return () => { cancelled = true; };
-  }, []);
-
+  const kpiMetrics =
+    kpiQuery.data != null
+      ? parseKpiFromResponse(kpiQuery.data, defaultKpiMetrics)
+      : null;
   const displayedKpi = kpiMetrics ?? defaultKpiMetrics;
-  const displayedActivities = activities ?? mockActivities;
+
+  const activities =
+    activityQuery.data != null
+      ? parseActivitiesFromCommandCenter(activityQuery.data)
+      : null;
 
   const agentLabels: Record<string, string> = {
     outreach: isAr ? "وكيل التواصل" : "Outreach",
@@ -231,11 +184,48 @@ export function DashboardContent() {
     orchestrator: isAr ? "المنسق" : "Orchestrator",
   };
 
+  const showKpiError = kpiQuery.isError;
+  const showActivityError = activityQuery.isError;
+
   return (
     <div className="space-y-6">
-      {/* KPI Grid */}
+      {(showKpiError || showActivityError) && (
+        <div
+          role="alert"
+          className="rounded-xl border border-destructive/40 bg-destructive/10 px-4 py-3 text-sm text-foreground"
+        >
+          <p className="font-medium">
+            {isAr
+              ? "تعذر تحميل بعض بيانات لوحة التحكم من الخادم."
+              : "Some dashboard data could not be loaded from the server."}
+          </p>
+          <div className="mt-2 flex flex-wrap gap-2">
+            {showKpiError && (
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => kpiQuery.refetch()}
+              >
+                {isAr ? "إعادة محاولة المؤشرات" : "Retry metrics"}
+              </Button>
+            )}
+            {showActivityError && (
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => activityQuery.refetch()}
+              >
+                {isAr ? "إعادة محاولة النشاط" : "Retry activity"}
+              </Button>
+            )}
+          </div>
+        </div>
+      )}
+
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {loadingKpi
+        {kpiQuery.isLoading
           ? Array.from({ length: 4 }).map((_, i) => (
               <KPISkeletonCard key={i} />
             ))
@@ -244,13 +234,11 @@ export function DashboardContent() {
             ))}
       </div>
 
-      {/* Charts Row */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         <RevenueChart />
         <DealPipelineChart />
       </div>
 
-      {/* Activity Feed */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -272,45 +260,62 @@ export function DashboardContent() {
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
-              {loadingActivities ? (
+              {activityQuery.isLoading ? (
                 Array.from({ length: 4 }).map((_, i) => (
                   <ActivitySkeletonRow key={i} />
                 ))
-              ) : displayedActivities.map((activity, i) => (
-                <motion.div
-                  key={activity.id}
-                  initial={{ opacity: 0, x: isAr ? 10 : -10 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.6 + i * 0.07 }}
-                  className="flex items-start gap-3 p-3 rounded-xl hover:bg-muted/50 transition-colors"
-                >
-                  <div className="w-8 h-8 rounded-xl bg-muted flex items-center justify-center text-base flex-shrink-0">
-                    {activity.agent === "outreach" ? "📤" :
-                     activity.agent === "scoring" ? "📊" :
-                     activity.agent === "compliance" ? "🛡️" :
-                     activity.agent === "intelligence" ? "🔍" : "⚙️"}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm text-foreground">
-                      {agentLabels[activity.agent]}
-                    </p>
-                    <p className="text-xs text-muted-foreground mt-0.5 truncate">
-                      {isAr ? activity.actionAr : activity.actionEn}
-                    </p>
-                  </div>
-                  <div className="flex flex-col items-end gap-1 flex-shrink-0">
-                    <Badge
-                      className={`text-[10px] px-1.5 py-0 h-5 ${getStatusColor(activity.status)}`}
-                      variant="outline"
-                    >
-                      {t(`agents.status.${activity.status}` as "agents.status.running")}
-                    </Badge>
-                    <span className="text-[10px] text-muted-foreground">
-                      {formatRelativeTime(activity.timestamp, locale)}
-                    </span>
-                  </div>
-                </motion.div>
-              ))}
+              ) : activities && activities.length > 0 ? (
+                activities.map((activity, i) => (
+                  <motion.div
+                    key={activity.id}
+                    initial={{ opacity: 0, x: isAr ? 10 : -10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.6 + i * 0.07 }}
+                    className="flex items-start gap-3 p-3 rounded-xl hover:bg-muted/50 transition-colors"
+                  >
+                    <div className="w-8 h-8 rounded-xl bg-muted flex items-center justify-center text-base flex-shrink-0">
+                      {activity.agent === "outreach"
+                        ? "📤"
+                        : activity.agent === "scoring"
+                          ? "📊"
+                          : activity.agent === "compliance"
+                            ? "🛡️"
+                            : activity.agent === "intelligence"
+                              ? "🔍"
+                              : "⚙️"}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm text-foreground">
+                        {agentLabels[activity.agent] ?? activity.agent}
+                      </p>
+                      <p className="text-xs text-muted-foreground mt-0.5 truncate">
+                        {isAr ? activity.actionAr : activity.actionEn}
+                      </p>
+                    </div>
+                    <div className="flex flex-col items-end gap-1 flex-shrink-0">
+                      <Badge
+                        className={`text-[10px] px-1.5 py-0 h-5 ${getStatusColor(activity.status)}`}
+                        variant="outline"
+                      >
+                        {t(`agents.status.${activity.status}` as "agents.status.running")}
+                      </Badge>
+                      <span className="text-[10px] text-muted-foreground">
+                        {formatRelativeTime(activity.timestamp, locale)}
+                      </span>
+                    </div>
+                  </motion.div>
+                ))
+              ) : (
+                <p className="text-sm text-muted-foreground px-2 py-6 text-center">
+                  {activityQuery.isError
+                    ? isAr
+                      ? "لا يوجد نشاط للعرض. تحقق من الاتصال بالـ API."
+                      : "No activity to display. Check API connectivity."
+                    : isAr
+                      ? "لا يوجد نشاط حديث بعد. ربط الـ Command Center سيملأ هذه القائمة."
+                      : "No recent activity yet. Command Center data will appear here when available."}
+                </p>
+              )}
             </div>
           </CardContent>
         </Card>

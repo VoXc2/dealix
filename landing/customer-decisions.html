@@ -108,15 +108,12 @@
   <div class="response-toast" id="toast" role="status"></div>
 
   <script>
-    // Track B3 — Customer-side approval UI.
-    // Endpoint contract:
-    //   GET  /api/v1/customer-approvals/{handle}              → list pending
-    //   POST /api/v1/customer-approvals/{handle}/{id}/approve → ApprovalGate
-    //   POST /api/v1/customer-approvals/{handle}/{id}/reject  → ApprovalGate
-    //   POST /api/v1/customer-approvals/{handle}/{id}/edit    → ApprovalGate (queue edit)
+    // Track B3 — Customer-side approval UI (wired to Approval Command Center).
+    //   GET  /api/v1/approvals/pending
+    //   POST /api/v1/approvals/{approval_id}/approve  body: { who }
+    //   POST /api/v1/approvals/{approval_id}/reject  body: { who, reason }
     //
-    // Falls back to DEMO data if the endpoint returns 404 or the customer
-    // handle isn't provisioned. DEMO label is always shown when fallback fires.
+    // Falls back to DEMO data if the API is unreachable. DEMO label is shown when fallback fires.
     var apiBase = (window.DEALIX_API_BASE || "").replace(/\/$/, "");
 
     function getHandle() {
@@ -161,6 +158,24 @@
     ];
 
     var state = { items: [], filter: "all", isDemo: false };
+
+    function mapApprovalToDecision(a) {
+      var mode = "approval";
+      var am = String(a.action_mode || "");
+      if (am.indexOf("draft") !== -1) mode = "draft";
+      if (am.indexOf("suggest") !== -1 || am.indexOf("analyze") !== -1) mode = "suggest";
+      return {
+        id: String(a.approval_id || ""),
+        mode: mode,
+        title: String(a.summary_ar || a.summary_en || a.action_type || "Approval"),
+        context: String(a.proof_impact || a.summary_en || a.summary_ar || ""),
+        customer: String(a.object_id || a.customer_id || a.object_type || "—"),
+        channel: String(a.channel || "—"),
+        risk: String(a.risk_level || "low"),
+        evidence_preview: String(a.approval_id || ""),
+        is_demo: false
+      };
+    }
 
     function render() {
       var list = document.getElementById("decisions-list");
@@ -228,16 +243,27 @@
         showToast("✓ تمّ تسجيل " + action + " (DEMO mode — لا API call فعلي)");
         return;
       }
-      var url = apiBase + "/api/v1/customer-approvals/" + encodeURIComponent(handle) +
-                "/" + encodeURIComponent(id) + "/" + encodeURIComponent(action);
-      fetch(url, { method: "POST", headers: { "Accept": "application/json" } })
+      if (action === "edit" || action === "acknowledge") {
+        showToast(action === "edit" ? "التعديل عبر المراجعة البشرية — قريباً" : "تمّ ✓");
+        return;
+      }
+      var path = action === "approve"
+        ? "/api/v1/approvals/" + encodeURIComponent(id) + "/approve"
+        : "/api/v1/approvals/" + encodeURIComponent(id) + "/reject";
+      var payload = action === "approve"
+        ? { who: handle }
+        : { who: handle, reason: "customer_portal_reject" };
+      fetch(apiBase + path, {
+        method: "POST",
+        headers: { "Accept": "application/json", "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      })
         .then(function (r) {
           if (!r.ok) throw new Error("HTTP " + r.status);
           return r.json();
         })
         .then(function (body) {
-          showToast("✓ تمّ تسجيل القرار · evidence_id: " + (body.evidence_id || "—"));
-          // Remove the card from view
+          showToast("✓ تمّ تسجيل القرار · approval: " + (body.approval && body.approval.approval_id ? body.approval.approval_id : id));
           var card = document.querySelector('.decision-card[data-id="' + id + '"]');
           if (card) card.style.display = "none";
         })
@@ -247,16 +273,14 @@
     }
 
     function loadDecisions() {
-      var handle = getHandle();
-      var url = apiBase + "/api/v1/customer-approvals/" + encodeURIComponent(handle);
-      fetch(url, { headers: { "Accept": "application/json" } })
+      fetch(apiBase + "/api/v1/approvals/pending", { headers: { "Accept": "application/json" } })
         .then(function (r) {
           if (!r.ok) throw new Error("HTTP " + r.status);
           return r.json();
         })
         .then(function (body) {
-          var items = (body && Array.isArray(body.decisions)) ? body.decisions : [];
-          state.items = items;
+          var raw = (body && Array.isArray(body.approvals)) ? body.approvals : [];
+          state.items = raw.map(mapApprovalToDecision).filter(function (x) { return x.id; });
           state.isDemo = false;
           document.getElementById("demo-pill").style.display = "none";
           render();

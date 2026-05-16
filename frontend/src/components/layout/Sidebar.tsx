@@ -19,7 +19,6 @@ import {
   Building2,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useState } from "react";
 
 interface NavItem {
   key: string;

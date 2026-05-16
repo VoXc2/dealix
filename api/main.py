@@ -53,6 +53,7 @@ from api.routers import (
 from api.routers import expansion_engine as expansion_engine_router
 from api.routers import intelligence_layer as intelligence_layer_router
 # Wave 13 — Full Ops Productization routers
+from api.routers import board_decision_os as board_decision_os_router
 from api.routers import bottleneck_radar as bottleneck_radar_router
 from api.routers import business_metrics_board as business_metrics_board_router
 from api.routers import customer_success_scores as customer_success_scores_router
@@ -320,6 +321,8 @@ def create_app() -> FastAPI:
     app.include_router(founder_launch_status_router.router)
     # Enterprise Foundation Core — /api/v1/platform/* loop proof endpoints
     app.include_router(platform_foundation_router.router)
+    # Board Decision OS — read-only strategic intelligence (PR branch)
+    app.include_router(board_decision_os_router.router)
 
     @app.get("/", tags=["root"])
     async def root() -> dict[str, object]:
@@ -337,6 +340,7 @@ def create_app() -> FastAPI:
             "decision_passport_golden_chain": "/api/v1/decision-passport/golden-chain",
             "decision_passport_evidence_levels": "/api/v1/decision-passport/evidence-levels",
             "revenue_os_catalog": "/api/v1/revenue-os/catalog",
+            "board_decision_os_overview": "/api/v1/board-decision-os/overview",
             "founder_summary_daily": "/api/v1/founder-summary",
             "founder_summary_weekly_agenda": "/api/v1/founder-summary/weekly/agenda",
             "revenue_intelligence_import": "/api/v1/revenue-intelligence/{eid}/import",

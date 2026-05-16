@@ -100,6 +100,15 @@ export function LoginForm() {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
+                  aria-label={
+                    showPassword
+                      ? isAr
+                        ? "إخفاء كلمة المرور"
+                        : "Hide password"
+                      : isAr
+                        ? "إظهار كلمة المرور"
+                        : "Show password"
+                  }
                   className={cn(
                     "absolute top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground",
                     isAr ? "left-3" : "right-3"

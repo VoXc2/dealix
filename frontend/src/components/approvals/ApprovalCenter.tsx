@@ -1,7 +1,8 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
+import { useMemo } from "react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTranslations, useLocale } from "next-intl";
 import { motion, AnimatePresence } from "framer-motion";
 import { Check, X, AlertTriangle, Clock, Shield, RefreshCw } from "lucide-react";
@@ -10,52 +11,16 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { cn, getRiskColor, formatRelativeTime } from "@/lib/utils";
 import { toast } from "sonner";
-import type { ApprovalRequest, RiskLevel, AgentType, ApprovalStatus } from "@/types";
 import { api } from "@/lib/api";
+import {
+  backendApprovalToUi,
+  extractApprovalRows,
+} from "@/lib/api-normalize";
+import { useAuth } from "@/lib/hooks/useAuth";
+import type { ApprovalRequest, RiskLevel } from "@/types";
 
-const APPROVAL_WHO = process.env.NEXT_PUBLIC_APPROVAL_ACTOR?.trim() || "sami";
-
-function mapRisk(raw: string | undefined): RiskLevel {
-  const r = (raw || "low").toLowerCase();
-  if (r === "high" || r === "critical") return "high";
-  if (r === "medium") return "medium";
-  return "low";
-}
-
-function mapAgentType(actionType: string | undefined): AgentType {
-  const at = (actionType || "").toLowerCase();
-  if (at.includes("email") || at.includes("draft_email") || at.includes("outreach")) return "outreach";
-  if (at.includes("linkedin")) return "intelligence";
-  if (at.includes("support")) return "scoring";
-  if (at.includes("payment") || at.includes("compliance") || at.includes("pdpl")) return "compliance";
-  return "orchestrator";
-}
-
-function mapStatus(raw: string | undefined): ApprovalStatus {
-  const s = (raw || "pending").toLowerCase();
-  if (s === "approved") return "approved";
-  if (s === "rejected") return "rejected";
-  return "pending";
-}
-
-function mapApiApproval(raw: Record<string, unknown>): ApprovalRequest {
-  const summaryAr = String(raw.summary_ar || "");
-  const summaryEn = String(raw.summary_en || "");
-  const actionType = String(raw.action_type || "");
-  return {
-    id: String(raw.approval_id || raw.id || "unknown"),
-    agentType: mapAgentType(actionType),
-    action: summaryAr || summaryEn || actionType || "—",
-    description: `${String(raw.object_type || "object")} · ${String(raw.object_id || "—")}`,
-    riskLevel: mapRisk(String(raw.risk_level)),
-    status: mapStatus(String(raw.status)),
-    requestedAt: String(raw.created_at || new Date().toISOString()),
-    reviewedAt: raw.updated_at ? String(raw.updated_at) : undefined,
-    reviewedBy: undefined,
-    target: String(raw.channel || raw.object_id || "—"),
-    estimatedImpact: String(raw.proof_impact || raw.action_mode || ""),
-  };
-}
+const APPROVAL_WHO_FALLBACK =
+  process.env.NEXT_PUBLIC_APPROVAL_ACTOR?.trim() || "sami";
 
 const riskIcons: Record<RiskLevel, React.ReactNode> = {
   high: <AlertTriangle className="w-3.5 h-3.5" />,
@@ -67,10 +32,12 @@ function ApprovalCard({
   request,
   onApprove,
   onReject,
+  actionsDisabled,
 }: {
   request: ApprovalRequest;
   onApprove: (id: string) => void;
   onReject: (id: string) => void;
+  actionsDisabled?: boolean;
 }) {
   const t = useTranslations("approvals");
   const locale = useLocale();
@@ -107,7 +74,7 @@ function ApprovalCard({
         <div className="flex items-start justify-between gap-3 mb-4">
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 rounded-xl bg-muted flex items-center justify-center text-base">
-              {agentIconMap[request.agentType]}
+              {agentIconMap[request.agentType] ?? "⚙️"}
             </div>
             <div>
               <p className="text-xs text-muted-foreground capitalize">{request.agentType}</p>
@@ -148,7 +115,13 @@ function ApprovalCard({
 
         {request.status === "pending" && (
           <div className="flex gap-3">
-            <Button variant="emerald" size="sm" className="flex-1" onClick={() => onApprove(request.id)}>
+            <Button
+              variant="emerald"
+              size="sm"
+              className="flex-1"
+              disabled={actionsDisabled}
+              onClick={() => onApprove(request.id)}
+            >
               <Check className="w-3.5 h-3.5 me-1.5" />
               {t("approve")}
             </Button>
@@ -156,6 +129,7 @@ function ApprovalCard({
               variant="outline"
               size="sm"
               className="flex-1 text-destructive border-destructive/30 hover:bg-destructive/10"
+              disabled={actionsDisabled}
               onClick={() => onReject(request.id)}
             >
               <X className="w-3.5 h-3.5 me-1.5" />
@@ -167,17 +141,19 @@ function ApprovalCard({
         {request.status !== "pending" && (
           <div
             className={cn(
-              "flex items-center justify-between text-xs p-2 rounded-lg",
+              "flex items-center justify-between text-xs p-2 rounded-lg gap-2",
               request.status === "approved" ? "bg-emerald-500/10 text-emerald-400" : "bg-red-500/10 text-red-400",
             )}
           >
-            {request.status === "approved" ? <Check className="w-3.5 h-3.5" /> : <X className="w-3.5 h-3.5" />}
-            <span className="font-medium">
+            <span className="font-medium inline-flex items-center gap-1">
+              {request.status === "approved" ? <Check className="w-3.5 h-3.5" /> : <X className="w-3.5 h-3.5" />}
               {request.status === "approved" ? t("approved") : t("rejected")}
               {request.reviewedBy ? ` ${isAr ? "بواسطة" : "by"} ${request.reviewedBy}` : ""}
             </span>
             {request.reviewedAt && (
-              <span className="text-muted-foreground">{formatRelativeTime(request.reviewedAt, locale)}</span>
+              <span className="text-muted-foreground shrink-0">
+                {formatRelativeTime(request.reviewedAt, locale)}
+              </span>
             )}
           </div>
         )}
@@ -187,94 +163,115 @@ function ApprovalCard({
 }
 
 export function ApprovalCenter() {
-  const t = useTranslations("approvals");
   const locale = useLocale();
   const isAr = locale === "ar";
-  const [pending, setPending] = useState<ApprovalRequest[]>([]);
-  const [reviewed, setReviewed] = useState<ApprovalRequest[]>([]);
-  const [gmail, setGmail] = useState<Record<string, unknown>[]>([]);
-  const [linkedin, setLinkedin] = useState<Record<string, unknown>[]>([]);
-  const [policy, setPolicy] = useState<Record<string, unknown> | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const { user } = useAuth();
+  const queryClient = useQueryClient();
+  const who =
+    user?.email?.trim() || APPROVAL_WHO_FALLBACK || (isAr ? "لوحة_التحكم" : "dashboard_user");
 
-  const loadAll = useCallback(async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      const [pRes, hRes, gRes, lRes, polRes] = await Promise.all([
-        api.getApprovalsPending(),
-        api.getApprovalsHistory(80),
-        api.getGmailDraftsToday(),
-        api.getLinkedInDraftsToday(),
-        api.getChannelPolicyStatus(),
-      ]);
+  const pendingQuery = useQuery({
+    queryKey: ["approvals", "pending"],
+    queryFn: async () => (await api.getApprovals()).data,
+  });
 
-      const pRows = (pRes.data as { approvals?: unknown[] })?.approvals ?? [];
-      setPending(pRows.map((r) => mapApiApproval(r as Record<string, unknown>)));
+  const historyQuery = useQuery({
+    queryKey: ["approvals", "history"],
+    queryFn: async () => (await api.getApprovalsHistory(100)).data,
+  });
 
-      const hRows = (hRes.data as { approvals?: unknown[] })?.approvals ?? [];
-      setReviewed(
-        hRows
-          .map((r) => mapApiApproval(r as Record<string, unknown>))
-          .filter((a) => a.status !== "pending"),
-      );
+  const gmailQuery = useQuery({
+    queryKey: ["gmail", "drafts", "today"],
+    queryFn: async () => (await api.getGmailDraftsToday()).data,
+  });
 
-      const gData = gRes.data as { items?: Record<string, unknown>[]; count?: number };
-      setGmail(Array.isArray(gData.items) ? gData.items : []);
+  const linkedinQuery = useQuery({
+    queryKey: ["linkedin", "drafts", "today"],
+    queryFn: async () => (await api.getLinkedInDraftsToday()).data,
+  });
 
-      const lData = lRes.data as { items?: Record<string, unknown>[] };
-      setLinkedin(Array.isArray(lData.items) ? lData.items : []);
+  const policyQuery = useQuery({
+    queryKey: ["channel-policy", "status"],
+    queryFn: async () => (await api.getChannelPolicyStatus()).data,
+  });
 
-      setPolicy((polRes.data as Record<string, unknown>) || null);
-    } catch (e: unknown) {
-      const msg = e instanceof Error ? e.message : "load_failed";
-      setError(msg);
-      toast.error(isAr ? "تعذر تحميل البيانات من الخادم" : "Could not load from API");
-    } finally {
-      setLoading(false);
-    }
-  }, [isAr]);
+  const pending = useMemo(() => {
+    return extractApprovalRows(pendingQuery.data)
+      .map(backendApprovalToUi)
+      .filter((a) => a.status === "pending");
+  }, [pendingQuery.data]);
 
-  useEffect(() => {
-    void loadAll();
-  }, [loadAll]);
+  const reviewed = useMemo(() => {
+    return extractApprovalRows(historyQuery.data)
+      .map(backendApprovalToUi)
+      .filter((a) => a.status !== "pending");
+  }, [historyQuery.data]);
 
-  const counts = useMemo(
-    () => ({
-      pending: pending.length,
-      approved: reviewed.filter((a) => a.status === "approved").length,
-      rejected: reviewed.filter((a) => a.status === "rejected").length,
-    }),
-    [pending, reviewed],
-  );
+  const gmailItems = useMemo(() => {
+    const d = gmailQuery.data as { items?: Record<string, unknown>[] } | undefined;
+    return Array.isArray(d?.items) ? d.items : [];
+  }, [gmailQuery.data]);
 
-  const handleApprove = async (id: string) => {
-    try {
-      await api.postApprovalApprove(id, APPROVAL_WHO);
-      toast.success(isAr ? "تمت الموافقة في الخادم" : "Approved on server");
-      await loadAll();
-    } catch {
-      toast.error(isAr ? "فشلت الموافقة" : "Approve failed");
-    }
-  };
+  const linkedinItems = useMemo(() => {
+    const d = linkedinQuery.data as { items?: Record<string, unknown>[] } | undefined;
+    return Array.isArray(d?.items) ? d.items : [];
+  }, [linkedinQuery.data]);
 
-  const handleReject = async (id: string) => {
-    const reason = isAr ? "مرفوض من لوحة الموافقات" : "Rejected from approvals UI";
-    try {
-      await api.postApprovalReject(id, APPROVAL_WHO, reason);
-      toast.success(isAr ? "تم الرفض في الخادم" : "Rejected on server");
-      await loadAll();
-    } catch {
+  const policy = policyQuery.data as Record<string, unknown> | null | undefined;
+
+  const approveMut = useMutation({
+    mutationFn: (id: string) => api.approveApproval(id, who),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["approvals"] });
+      toast.success(isAr ? "تمت الموافقة بنجاح" : "Approved successfully");
+    },
+    onError: () => {
+      toast.error(isAr ? "فشلت الموافقة" : "Approval failed");
+    },
+  });
+
+  const rejectMut = useMutation({
+    mutationFn: (id: string) =>
+      api.rejectApproval(id, who, isAr ? "مرفوض من لوحة التحكم" : "Rejected from dashboard"),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["approvals"] });
+      toast.success(isAr ? "تم الرفض" : "Rejected");
+    },
+    onError: () => {
       toast.error(isAr ? "فشل الرفض" : "Reject failed");
-    }
+    },
+  });
+
+  const handleApprove = (id: string) => approveMut.mutate(id);
+  const handleReject = (id: string) => rejectMut.mutate(id);
+
+  const loading =
+    pendingQuery.isLoading ||
+    historyQuery.isLoading ||
+    gmailQuery.isLoading ||
+    linkedinQuery.isLoading ||
+    policyQuery.isLoading;
+
+  const hasError =
+    pendingQuery.isError ||
+    historyQuery.isError ||
+    gmailQuery.isError ||
+    linkedinQuery.isError ||
+    policyQuery.isError;
+
+  const refetchAll = () => {
+    void pendingQuery.refetch();
+    void historyQuery.refetch();
+    void gmailQuery.refetch();
+    void linkedinQuery.refetch();
+    void policyQuery.refetch();
   };
 
   return (
     <div>
       <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
         <div className="flex gap-2">
-          <Button variant="outline" size="sm" onClick={() => void loadAll()} disabled={loading}>
+          <Button type="button" variant="outline" size="sm" onClick={() => refetchAll()} disabled={loading}>
             <RefreshCw className={cn("w-4 h-4 me-1", loading && "animate-spin")} />
             {isAr ? "تحديث" : "Refresh"}
           </Button>
@@ -282,14 +279,41 @@ export function ApprovalCenter() {
             <Link href={`/${locale}/trust-check`}>{isAr ? "فحص منع الهدر" : "Anti-waste check"}</Link>
           </Button>
         </div>
-        {error && <p className="text-xs text-destructive">{error}</p>}
       </div>
+
+      {hasError && (
+        <div
+          role="alert"
+          className="mb-4 rounded-xl border border-destructive/40 bg-destructive/10 px-4 py-3 text-sm"
+        >
+          <p>
+            {isAr
+              ? "تعذر تحميل بعض البيانات من الخادم. يمكنك إعادة المحاولة."
+              : "Some data could not load from the server. You can retry."}
+          </p>
+          <div className="mt-2 flex gap-2">
+            <Button type="button" variant="outline" size="sm" onClick={() => refetchAll()}>
+              {isAr ? "إعادة المحاولة" : "Retry"}
+            </Button>
+          </div>
+        </div>
+      )}
 
       <div className="grid grid-cols-3 gap-4 mb-6">
         {[
-          { label: isAr ? "قيد الانتظار" : "Pending", value: counts.pending, color: "text-gold-400", bg: "bg-gold-400/10" },
-          { label: isAr ? "موافق عليه (سجل)" : "Approved (history)", value: counts.approved, color: "text-emerald-400", bg: "bg-emerald-400/10" },
-          { label: isAr ? "مرفوض (سجل)" : "Rejected (history)", value: counts.rejected, color: "text-red-400", bg: "bg-red-400/10" },
+          { label: isAr ? "قيد الانتظار" : "Pending", value: pending.length, color: "text-gold-400", bg: "bg-gold-400/10" },
+          {
+            label: isAr ? "موافق عليه" : "Approved",
+            value: reviewed.filter((a) => a.status === "approved").length,
+            color: "text-emerald-400",
+            bg: "bg-emerald-400/10",
+          },
+          {
+            label: isAr ? "مرفوض / منتهي" : "Rejected / closed",
+            value: reviewed.filter((a) => a.status !== "approved").length,
+            color: "text-red-400",
+            bg: "bg-red-400/10",
+          },
         ].map((s, i) => (
           <motion.div
             key={s.label}
@@ -319,7 +343,14 @@ export function ApprovalCenter() {
         <TabsContent value="pending">
           <AnimatePresence>
             {loading ? (
-              <p className="text-muted-foreground text-sm">{isAr ? "جاري التحميل…" : "Loading…"}</p>
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                {Array.from({ length: 4 }).map((_, i) => (
+                  <div
+                    key={i}
+                    className="h-48 rounded-2xl bg-muted/50 animate-pulse border border-border"
+                  />
+                ))}
+              </div>
             ) : pending.length === 0 ? (
               <div className="text-center py-16 text-muted-foreground">
                 <p className="text-4xl mb-3">✅</p>
@@ -333,6 +364,7 @@ export function ApprovalCenter() {
                     request={approval}
                     onApprove={handleApprove}
                     onReject={handleReject}
+                    actionsDisabled={approveMut.isPending || rejectMut.isPending}
                   />
                 ))}
               </div>
@@ -341,31 +373,45 @@ export function ApprovalCenter() {
         </TabsContent>
 
         <TabsContent value="reviewed">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-            {reviewed.length === 0 ? (
-              <p className="text-muted-foreground text-sm">{isAr ? "لا سجل بعد" : "No history yet"}</p>
-            ) : (
-              reviewed.map((approval) => (
-                <ApprovalCard
-                  key={`${approval.id}-${approval.status}`}
-                  request={approval}
-                  onApprove={handleApprove}
-                  onReject={handleReject}
+          {loading ? (
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+              {Array.from({ length: 4 }).map((_, i) => (
+                <div
+                  key={i}
+                  className="h-48 rounded-2xl bg-muted/50 animate-pulse border border-border"
                 />
-              ))
-            )}
-          </div>
+              ))}
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+              {reviewed.length === 0 ? (
+                <p className="text-sm text-muted-foreground col-span-full text-center py-12">
+                  {isAr ? "لا يوجد سجل مراجعة بعد." : "No review history yet."}
+                </p>
+              ) : (
+                reviewed.map((approval) => (
+                  <ApprovalCard
+                    key={`${approval.id}-${approval.status}`}
+                    request={approval}
+                    onApprove={handleApprove}
+                    onReject={handleReject}
+                    actionsDisabled={approveMut.isPending || rejectMut.isPending}
+                  />
+                ))
+              )}
+            </div>
+          )}
         </TabsContent>
 
         <TabsContent value="drafts">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <div>
               <h3 className="text-sm font-semibold mb-2">Gmail</h3>
-              {gmail.length === 0 ? (
+              {gmailItems.length === 0 ? (
                 <p className="text-xs text-muted-foreground">{isAr ? "لا مسودات اليوم" : "No Gmail drafts today"}</p>
               ) : (
                 <ul className="space-y-2 text-xs">
-                  {gmail.map((row) => (
+                  {gmailItems.map((row) => (
                     <li key={String(row.id)} className="rounded-lg border border-border p-3 bg-muted/30">
                       <p className="font-medium">{String(row.subject || "—")}</p>
                       <p className="text-muted-foreground truncate">{String(row.to_email || "")}</p>
@@ -376,11 +422,11 @@ export function ApprovalCenter() {
             </div>
             <div>
               <h3 className="text-sm font-semibold mb-2">LinkedIn</h3>
-              {linkedin.length === 0 ? (
+              {linkedinItems.length === 0 ? (
                 <p className="text-xs text-muted-foreground">{isAr ? "لا مسودات اليوم" : "No LinkedIn drafts today"}</p>
               ) : (
                 <ul className="space-y-2 text-xs">
-                  {linkedin.map((row) => (
+                  {linkedinItems.map((row) => (
                     <li key={String(row.id)} className="rounded-lg border border-border p-3 bg-muted/30">
                       <p className="font-medium">{String(row.company_name || "—")}</p>
                       <p className="text-muted-foreground line-clamp-3">{String(row.message_ar || "")}</p>
@@ -393,7 +439,7 @@ export function ApprovalCenter() {
         </TabsContent>
 
         <TabsContent value="policy">
-          {policy ? (
+          {policy && Object.keys(policy).length > 0 ? (
             <pre className="text-xs bg-muted/40 rounded-xl p-4 overflow-auto max-h-[420px]">
               {JSON.stringify(policy, null, 2)}
             </pre>

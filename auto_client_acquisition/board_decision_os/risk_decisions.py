@@ -35,3 +35,20 @@ def risk_register_code_valid(code: str) -> bool:
 
 def risk_to_mitigation_decision(risk_code: str) -> str | None:
     return _RISK_TO_DECISION.get(risk_code)
+
+
+def list_risk_register() -> list[dict[str, str]]:
+    """Advisory register for HTTP layer — short id + mitigation slug."""
+    rows: list[dict[str, str]] = []
+    for code in RISK_REGISTER_CODES:
+        short = code.split("_", 1)[0]
+        slug = risk_to_mitigation_decision(code) or ""
+        rows.append(
+            {
+                "id": short,
+                "code": code,
+                "default_motion_en": slug.replace("_", " "),
+                "default_motion_ar": slug,
+            }
+        )
+    return rows

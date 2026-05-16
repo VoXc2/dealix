@@ -1,4 +1,13 @@
 # ─────────────────────────────────────────────────────────────
+# Next.js / Playwright (frontend/)
+# ─────────────────────────────────────────────────────────────
+frontend/test-results/
+frontend/playwright-report/
+frontend/blob-report/
+# TypeScript incremental — local only (avoid noisy git status / cross-OS drift)
+**/tsconfig.tsbuildinfo
+
+# ─────────────────────────────────────────────────────────────
 # 🔒 SECRETS — NEVER COMMIT
 # ─────────────────────────────────────────────────────────────
 .env
@@ -35,7 +44,8 @@ dist/
 downloads/
 eggs/
 .eggs/
-lib/
+# Python packaging artifact at repo root only (do not use bare `lib/` — it ignores frontend/src/lib)
+/lib/
 lib64/
 parts/
 sdist/

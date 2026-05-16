@@ -7,6 +7,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { api } from "@/lib/api";
 
+function hasPromiseAr(data: unknown): data is { promise_ar: string } {
+  return typeof data === "object" && data !== null && "promise_ar" in data;
+}
+
 export default function CustomerPortalPage() {
   const t = useTranslations("customerPortal");
   const [handle, setHandle] = useState("Slot-A");
@@ -35,12 +39,12 @@ export default function CustomerPortalPage() {
         </Button>
       </div>
 
-      {data && typeof data === "object" && data !== null && "promise_ar" in data && (
+      {hasPromiseAr(data) ? (
         <div className="mb-4 rounded-xl border border-border p-4 bg-muted/20">
           <h3 className="text-sm font-semibold mb-2">{t("promiseTitle")}</h3>
-          <p className="text-sm leading-relaxed">{(data as { promise_ar: string }).promise_ar}</p>
+          <p className="text-sm leading-relaxed">{data.promise_ar}</p>
         </div>
-      )}
+      ) : null}
 
       {data ? (
         <pre className="text-xs bg-muted/40 rounded-xl p-4 overflow-auto max-h-[560px]">

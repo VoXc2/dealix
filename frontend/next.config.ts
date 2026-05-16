@@ -4,11 +4,12 @@ import createNextIntlPlugin from "next-intl/plugin";
 const withNextIntl = createNextIntlPlugin("./src/i18n/request.ts");
 
 const nextConfig: NextConfig = {
-  experimental: {
-    serverComponentsExternalPackages: [],
-  },
+  serverExternalPackages: [],
   images: {
-    domains: ["api.dealix.ai", "localhost"],
+    remotePatterns: [
+      { protocol: "https", hostname: "api.dealix.ai", pathname: "/**" },
+      { protocol: "http", hostname: "localhost", pathname: "/**" },
+    ],
   },
   async headers() {
     return [

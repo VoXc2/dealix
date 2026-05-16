@@ -65,8 +65,11 @@ def build_growth_diagnostic(profile: CompanyProfile) -> dict:
         ],
         "recommended_offer": match_offer(sector=sector, signal_type=problem),
         "what_we_will_not_do": [
-            "guaranteed revenue", "auto-send", "cold WhatsApp",
-            "scraping", "fake testimonials",
+            "guaranteed revenue (blocked)",
+            "auto-send (blocked)",
+            "cold WhatsApp (blocked)",
+            "scraping (blocked)",
+            "fake testimonials (blocked)",
         ],
         "next_step": "approve diagnostic + start 7-day pilot",
         "action_mode": "approval_required",

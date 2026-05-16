@@ -4,6 +4,13 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
+from auto_client_acquisition.board_decision_os.schemas import (
+    ClientScorecardInput,
+    OfferScorecardInput,
+    ProductizationScorecardInput,
+    ScorecardResult,
+)
+
 # Win rate, gross margin, proof strength, retainer conversion, repeatability,
 # governance safety, productization signal
 _OFFER_WEIGHTS: tuple[int, ...] = (15, 15, 20, 20, 15, 10, 5)
@@ -137,3 +144,130 @@ def productization_scorecard_band(score: int) -> str:
     if score >= 55:
         return "template_manual"
     return "hold"
+
+
+def _pct(v: float) -> int:
+    return max(0, min(100, int(round(v))))
+
+
+def score_offer(inp: OfferScorecardInput) -> ScorecardResult:
+    """HTTP helper: Pydantic input → weighted score + board-facing bands."""
+    d = OfferScorecardDimensions(
+        win_rate=_pct(inp.win_rate),
+        gross_margin=_pct(inp.gross_margin),
+        proof_strength=_pct(inp.proof_strength),
+        retainer_conversion=_pct(inp.retainer_conversion),
+        repeatability=_pct(inp.repeatability),
+        governance_safety=_pct(inp.governance_safety),
+        productization_signal=_pct(inp.productization_signal),
+    )
+    total_i = offer_scorecard_score(d)
+    key = offer_scorecard_band(total_i)
+    if key == "scale":
+        return ScorecardResult(
+            total=float(total_i),
+            band="top",
+            board_read_ar="توسيع (Scale)",
+            board_read_en="Scale",
+        )
+    if key == "improve_and_sell":
+        return ScorecardResult(
+            total=float(total_i),
+            band="strong",
+            board_read_ar="تحسين ثم البيع بقوة أكبر",
+            board_read_en="Improve and sell",
+        )
+    if key == "pilot_only":
+        return ScorecardResult(
+            total=float(total_i),
+            band="mid",
+            board_read_ar="بايلوت فقط",
+            board_read_en="Pilot only",
+        )
+    return ScorecardResult(
+        total=float(total_i),
+        band="low",
+        board_read_ar="تعليق / إيقاف",
+        board_read_en="Hold / Kill",
+    )
+
+
+def score_client(inp: ClientScorecardInput) -> ScorecardResult:
+    d = ClientScorecardDimensions(
+        clear_pain=_pct(inp.clear_pain),
+        executive_sponsor=_pct(inp.executive_sponsor),
+        data_readiness=_pct(inp.data_readiness),
+        governance_alignment=_pct(inp.governance_alignment),
+        adoption_score=_pct(inp.adoption_score),
+        proof_score=_pct(inp.proof_score),
+        expansion_potential=_pct(inp.expansion_potential),
+    )
+    total_i = client_scorecard_score(d)
+    key = client_scorecard_band(total_i)
+    if key == "strategic_account":
+        return ScorecardResult(
+            total=float(total_i),
+            band="top",
+            board_read_ar="حساب استراتيجي",
+            board_read_en="Strategic account",
+        )
+    if key == "retainer_ready":
+        return ScorecardResult(
+            total=float(total_i),
+            band="strong",
+            board_read_ar="جاهز للريتينر",
+            board_read_en="Retainer-ready",
+        )
+    if key == "enablement_needed":
+        return ScorecardResult(
+            total=float(total_i),
+            band="mid",
+            board_read_ar="يحتاج تمكين",
+            board_read_en="Enablement needed",
+        )
+    return ScorecardResult(
+        total=float(total_i),
+        band="low",
+        board_read_ar="تجنب / تشخيص فقط",
+        board_read_en="Avoid / diagnostic only",
+    )
+
+
+def score_productization(inp: ProductizationScorecardInput) -> ScorecardResult:
+    d = ProductizationScorecardDimensions(
+        repeated_pain=_pct(inp.repeated_pain),
+        delivery_hours_saved=_pct(inp.delivery_hours_saved),
+        revenue_linkage=_pct(inp.revenue_linkage),
+        risk_reduction=_pct(inp.risk_reduction),
+        client_pull=_pct(inp.client_pull),
+        build_simplicity=_pct(inp.build_simplicity),
+    )
+    total_i = productization_scorecard_score(d)
+    key = productization_scorecard_band(total_i)
+    if key == "build_now":
+        return ScorecardResult(
+            total=float(total_i),
+            band="top",
+            board_read_ar="ابنِ الآن",
+            board_read_en="Build now",
+        )
+    if key == "mvp":
+        return ScorecardResult(
+            total=float(total_i),
+            band="strong",
+            board_read_ar="MVP",
+            board_read_en="MVP",
+        )
+    if key == "template_manual":
+        return ScorecardResult(
+            total=float(total_i),
+            band="mid",
+            board_read_ar="قالب / يدوي",
+            board_read_en="Template / manual",
+        )
+    return ScorecardResult(
+        total=float(total_i),
+        band="low",
+        board_read_ar="تعليق",
+        board_read_en="Hold",
+    )
