@@ -1,29 +1,28 @@
-# كتاب تشغيل GTM — سلّم الخدمات السبع
+# كتاب تشغيل GTM — سلّم الخدمات (Diagnostic → Sprint → Retainer)
 
-**الغرض:** مسار مبيعات وتشغيل موحّد لكل `service_id` في [service_catalog/registry.py](../../auto_client_acquisition/service_catalog/registry.py).  
+**الغرض:** مسار مبيعات وتشغيل موحّد للتموضع الجديد: **Governed Revenue & AI Operations**.  
 **مرجع الأدوار:** [DEALIX_ROLE_SERVICE_LADDER_AR.md](DEALIX_ROLE_SERVICE_LADDER_AR.md).
 
 ## مبادئ
 
-- المصدر الوحيد للأسعار والالتزامات: `GET /api/v1/services/catalog`.
+- المصدر التجاري المعتمد: [DEALIX_REVOPS_PACKAGES_AR.md](../commercial/DEALIX_REVOPS_PACKAGES_AR.md).
 - لا إرسال خارجي بلا موافقة — الحوكمة في المنتج وليس في «وعد البائع».
 - كل عميل مدفوع يمر بقالب: [ENTERPRISE_PILOT_TEMPLATE_AR.md](ENTERPRISE_PILOT_TEMPLATE_AR.md).
+- لا بناء قبل تكرار workflow مدفوع أو طلب عميل واضح.
 
-## مسار لكل عرض (مختصر تشغيلي)
+## المسار التجاري المختصر
 
-| service_id | لمسة أولى | جلسة اكتشاف | التزام التسليم | مؤشر نجاح أسبوعي |
-|------------|-----------|-------------|----------------|------------------|
-| `free_mini_diagnostic` | نموذج 24 ساعة | — | صفحة + جواز قرار أولي | اكتمال النموذج |
-| `revenue_proof_sprint_499` | دفع + Kickoff | أهداف 7 أيام | 7 مخرجات سبرنت | ≥10 فرص |
-| `data_to_revenue_pack_1500` | تدقيق الملف | خريطة مصادر | تنظيف + تقرير مخاطر | ≥20 فرصة معتمدة |
-| `growth_ops_monthly_2999` | اجتماع أسبوعي ثابت | لوحة موافقات | مسودات + Proof | تحسين معدل رد (KPI في registry) |
-| `support_os_addon_1500` | ربط قناة دعم | تصنيف تذاكر | SLA + مسودات | زمن أول رد |
-| `executive_command_center_7500` | موجز يومي | لجنة قرار | board pack + مخاطر | توفير وقت قرار (KPI في registry) |
-| `agency_partner_os` | اتفاقية شريك | تدريب Co-brand | عمولة + Proof لكل عميل | إحالة مدفوعة |
+| المرحلة | لمسة أولى | التسليم | بوابة الانتقال |
+|---------|-----------|---------|----------------|
+| **Diagnostic** | مقابلة + ملف CRM/Signals | Workflow map + risk map + decision passport | وجود فرصة مالية قابلة للإثبات |
+| **Sprint** | Kickoff واضح + inputs | account prioritization + risk scoring + drafts + proof pack | طلب scope أو موافقة على خطة تشغيل |
+| **Retainer** | مراجعة شهرية + queue موافقات | revenue review + governance review + value report | تكرار workflow وفتح module signal |
 
-## شركاء الوكالة
+## قاعدة التواصل السوقي
 
-- عقد موقّع، عمولة 30% سنة أولى (كما في العرض)، **لا نشر Proof** بدون موافقة العميل النهائية.
+- ابدأ بـ 5 warm contacts فقط لكل دورة.
+- سجّل الحالات `prepared_not_sent` ثم `sent` ثم `replied_interested`.
+- لا ترفع claim الإيراد قبل `invoice_paid`.
 
 ## مراجع الثقة
 

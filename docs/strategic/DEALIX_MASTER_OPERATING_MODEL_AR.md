@@ -1,6 +1,8 @@
 # Dealix — نموذج التشغيل التجاري الأعظم (مرجع استراتيجي)
 
-هذا المستند يثبت **كيف تفكر Dealix كشركة تشغيل نمو** وليس كمجموعة endpoints.  
+**التموضع الرسمي:** Dealix — تشغيل الإيراد والذكاء الاصطناعي بحوكمة، أدلة، وموافقات.  
+هذا المستند يثبت كيف تفكر Dealix كشركة تشغيل نمو محكومة، وليس كمجموعة endpoints فقط.
+
 المعادلة المرجعية:
 
 ```text
@@ -14,6 +16,11 @@ Dealix = ذكاء الإيرادات + تنفيذ تشغيلي + محرك إثب
 ```
 
 **قاعدة المنتج:** بدون Decision Passport لا يُنفَّذ إجراء خارجي (الحوكمة في Trust Plane + Approval Center).
+
+## North Star
+
+**Governed Value Decisions Created**  
+عدد القرارات التي تمت بمصدر واضح + موافقة + أثر قابل للقياس + دليل محفوظ.
 
 واجهات API ثابتة (السلسلة الذهبية):
 
@@ -90,6 +97,7 @@ Dealix = ذكاء الإيرادات + تنفيذ تشغيلي + محرك إثب
 - `docs/strategic/ENTERPRISE_TRUST_COMPLIANCE_PACK_AR.md` — حزمة ثقة وامتثال للبيع
 - `docs/strategic/CUSTOMER_SUCCESS_PLAYBOOK_HOOKS_AR.md` — ربط محفزات CS بـ customer_readiness
 - `docs/strategic/DEALIX_ROLE_SERVICE_LADDER_AR.md` — سلّم الأدوار ↔ كتالوج الخدمات السبع
+- `docs/strategic/GOVERNED_REVENUE_AI_OPERATIONS_EXECUTION_AR.md` — العمود التنفيذي الجديد (Revenue/Governance/Evidence-first)
 - `docs/strategic/DEALIX_MARKET_DIFFERENTIATION_AR.md` — تمييز مقابل أنماط السوق
 - `docs/strategic/WAVE13_LANDING_PORTAL_ALIGNMENT_AR.md` — محاذاة البوابة مع Wave 13
 - `docs/strategic/CEO_OPERATING_METRICS_AR.md` — مؤشرات تشغيل تنفيذي داخلية
