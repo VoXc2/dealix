@@ -9,6 +9,7 @@ from fastapi import APIRouter
 
 from api.routers import (
     case_study_engine,
+    deal_desk as deal_desk_router,
     commercial_engagements as commercial_engagements_router,
     commercial_readiness as commercial_readiness_router,
     decision_passport as decision_passport_router,
@@ -32,9 +33,14 @@ from api.routers import (
     revops,
     sales,
     sales_os,
+    trust_dashboard as trust_dashboard_router,
+    unified_readiness as unified_readiness_router,
 )
 
 _ROUTERS = [
+    unified_readiness_router.router,
+    deal_desk_router.router,
+    trust_dashboard_router.router,
     decision_passport_router.router,
     revenue_os_catalog_router.router,
     commercial_readiness_router.router,

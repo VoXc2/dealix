@@ -24,17 +24,52 @@ def main() -> int:
     kpi_path = root / "dealix/transformation/kpi_registry.yaml"
     own_path = root / "dealix/transformation/ownership_matrix.yaml"
     baselines_path = root / "dealix/transformation/kpi_baselines.yaml"
+    initiatives_path = root / "dealix/transformation/strategic_initiatives_registry.yaml"
+    manifest_path = root / "dealix/transformation/north_star_manifest.yaml"
     kpis = _load(kpi_path)
     owners = _load(own_path)
     baselines = _load(baselines_path)
+    initiatives = _load(initiatives_path)
+    manifest = _load(manifest_path)
 
     period = datetime.now(UTC).strftime("%Y-%m-%d")
     lines: list[str] = [
         f"# Weekly Operating Proof Pack — {period}",
         "",
-        "## KPI evidence checklist",
+        "## North Star (canonical manifest)",
+        "",
+        f"- **statement**: {manifest.get('statement_en', manifest.get('statement_ar', ''))}",
+        f"- **primary_metric_key**: `{manifest.get('primary_metric_key', '')}`",
+        "",
+        "## Product Evidence Review Board (PERB)",
+        "",
+        "| decision | evidence_level | kpi_impact | owner | status |",
+        "| --- | --- | --- | --- | --- |",
+        "| _fill during Wednesday PERB_ | L2+ | _kpi key_ | product | proposed |",
+        "",
+        "Log file: `docs/transformation/evidence/perb_decisions.log`",
+        "",
+        "## Strategic initiatives rollup",
         "",
     ]
+
+    init_rows = initiatives.get("initiatives") or []
+    status_counts: dict[str, int] = {}
+    for row in init_rows:
+        st = str(row.get("status", "proposed"))
+        status_counts[st] = status_counts.get(st, 0) + 1
+    for st, count in sorted(status_counts.items()):
+        lines.append(f"- **{st}**: {count}")
+    active = [r for r in init_rows if r.get("status") == "active"]
+    if active:
+        lines.append("")
+        lines.append("### Active initiatives (sample)")
+        for row in active[:10]:
+            lines.append(
+                f"- #{row.get('id')} {row.get('title_en', '')} — wave {row.get('wave')} "
+                f"(`{row.get('deliverable', '')}`)"
+            )
+    lines.extend(["", "## KPI evidence checklist", ""])
 
     if int(kpis.get("version", 0)) < 2:
         raise SystemExit("kpi_registry.yaml version must be >= 2")

@@ -1,0 +1,4 @@
+[
+  {"company": "Acme SA", "sector": "technology", "region": "Riyadh", "expected_tier": "warm"},
+  {"company": "Clinic Riyadh", "sector": "healthcare", "region": "Riyadh", "expected_tier": "hot"}
+]

@@ -1,0 +1,20 @@
+version: 1
+program: dealix_100_strategic_initiatives
+market: Saudi Arabia
+verticals:
+  - id: healthcare
+    priority: high
+    radar_ref: docs/strategic/SAUDI_REVENUE_EXECUTION_OS_RADARS_AR.md
+  - id: technology
+    priority: high
+  - id: logistics
+    priority: medium
+  - id: retail
+    priority: medium
+gtm_motion:
+  - founder_led_pilot
+  - proof_pack_before_upsell
+  - no_cold_whatsapp
+compliance:
+  - PDPL_CLOSURE_CHECKLIST_AR.md
+  - ENTERPRISE_TRUST_COMPLIANCE_PACK_AR.md

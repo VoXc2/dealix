@@ -1,0 +1,29 @@
+version: 1
+program: dealix_100_strategic_initiatives
+lanes:
+  fast_lane:
+    description_ar: تغييرات داخلية منخفضة المخاطر — بدون إجراء خارجي
+    requires_approval: false
+    allowed_action_classes:
+      - internal_read
+      - internal_draft
+      - analytics_aggregate
+      - feature_flag_dev
+    router_tags:
+      - fast_lane
+  governed_lane:
+    description_ar: أي إجراء خارجي أو عالي المخاطر — موافقة إلزامية
+    requires_approval: true
+    blocked_without_decision_passport:
+      - external_email_send
+      - external_calendar_create
+      - cold_whatsapp
+      - linkedin_dm
+      - crm_write_production
+    router_tags:
+      - governed_lane
+experimentation:
+  enabled_env: DEALIX_EXPERIMENTATION_ENABLED
+  max_active_experiments: 5
+  requires_lane: fast_lane
+  guardrails_ref: dealix/transformation/kpi_registry.yaml

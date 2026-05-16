@@ -1,0 +1,15 @@
+version: 1
+program: dealix_100_strategic_initiatives
+rules:
+  - id: north_star_first
+    description_ar: أي مبادرة تتعارض مع North Star تُؤجَّل
+    check: north_star_manifest.yaml
+  - id: governed_external_actions
+    description_ar: لا أولوية لإجراء خارجي بلا موافقة
+    check: lane_policy.yaml governed_lane
+  - id: evidence_over_opinion
+    description_ar: قرارات PERB تسبق ميزات بدون دليل L2+
+    check: PRODUCT_EVIDENCE_REVIEW_BOARD_AR.md
+escalation:
+  owner: founder
+  weekly_review: monday

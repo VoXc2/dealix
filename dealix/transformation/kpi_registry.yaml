@@ -122,3 +122,14 @@ kpis:
           - cross_tenant_attempts_blocked
         verification_commands:
           - pytest tests/test_tenant_isolation_systems_26_35.py -q
+    - key: decision_quality_index
+      definition: Share of executive decisions with evidence L2+ and postmortem when No-Go
+      threshold: 0.8
+      owner_os: strategy
+      evidence:
+        primary_source: docs/transformation/evidence/perb_decisions.log + decision_postmortem_template.md
+        weekly_proof_fields:
+          - perb_decisions_logged
+          - postmortems_completed
+        verification_commands:
+          - python3 scripts/generate_weekly_operating_proof_pack.py

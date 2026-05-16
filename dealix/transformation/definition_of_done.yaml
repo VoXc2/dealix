@@ -1,0 +1,12 @@
+version: 1
+initiative_types:
+  code:
+    - tests_added
+    - verify_script_passes
+    - no_secrets_committed
+  doc:
+    - linked_from_readme
+    - arabic_copy_where_user_facing
+  ops:
+    - weekly_proof_field_updated
+    - source_ref_when_numeric

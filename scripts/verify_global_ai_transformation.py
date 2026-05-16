@@ -68,6 +68,20 @@ CONTROL_ARTIFACTS = (
     "dealix/transformation/category_expansion_gates.yaml",
     "dealix/transformation/ceo_signal_os.yaml",
     "dealix/transformation/engineering_cutover_policy.yaml",
+    "dealix/transformation/strategic_initiatives_registry.yaml",
+    "dealix/transformation/north_star_manifest.yaml",
+    "dealix/transformation/lane_policy.yaml",
+    "dealix/transformation/operating_calendar.yaml",
+    "dealix/transformation/slo_by_domain.yaml",
+    "dealix/transformation/capability_map.yaml",
+)
+
+STRATEGIC_DOC_FILES = (
+    "docs/transformation/DEALIX_2030_ENDGAME_AR.md",
+    "docs/transformation/PLATFORM_FIRST_12M_ROADMAP_AR.md",
+    "docs/transformation/PRODUCT_EVIDENCE_REVIEW_BOARD_AR.md",
+    "docs/transformation/EXECUTIVE_RHYTHM_2_AR.md",
+    "docs/transformation/DEALIX_OPERATING_PLAYBOOK_AR.md",
 )
 
 ENTERPRISE_RUNBOOK_FILES = (
@@ -276,6 +290,42 @@ def _check_ceo_signal_os(repo: Path) -> list[str]:
     return []
 
 
+def _check_strategic_initiatives(repo: Path) -> list[str]:
+    failures: list[str] = []
+    failures.extend([f"missing_strategic_doc:{p}" for p in _require_paths(repo, STRATEGIC_DOC_FILES)])
+    data = _load_yaml(repo, "dealix/transformation/strategic_initiatives_registry.yaml")
+    initiatives = data.get("initiatives") or []
+    if len(initiatives) != 100:
+        failures.append(f"strategic_initiatives_count:{len(initiatives)}_expected_100")
+    seen_ids: set[int] = set()
+    for row in initiatives:
+        iid = row.get("id")
+        if not isinstance(iid, int):
+            failures.append("strategic_initiative_missing_id")
+            continue
+        if iid in seen_ids:
+            failures.append(f"strategic_initiative_duplicate_id:{iid}")
+        seen_ids.add(iid)
+        for field in ("wave", "owner_os", "deliverable", "verification", "status"):
+            if field not in row:
+                failures.append(f"strategic_initiative_{iid}_missing_{field}")
+        raci = row.get("raci")
+        if not isinstance(raci, dict) or not all(k in raci for k in ("R", "A", "C", "I")):
+            failures.append(f"strategic_initiative_{iid}_invalid_raci")
+    if seen_ids != set(range(1, 101)):
+        missing = sorted(set(range(1, 101)) - seen_ids)
+        failures.append(f"strategic_initiative_missing_ids:{missing[:5]}")
+    manifest = _load_yaml(repo, "dealix/transformation/north_star_manifest.yaml")
+    if not manifest.get("canonical"):
+        failures.append("north_star_manifest_not_canonical")
+    if not manifest.get("metrics"):
+        failures.append("north_star_manifest_missing_metrics")
+    policy = repo / "auto_client_acquisition/governance_os/constitution_policy_map.yaml"
+    if not policy.exists():
+        failures.append("constitution_policy_map_missing")
+    return failures
+
+
 def _check_engineering_cutover_policy(repo: Path) -> list[str]:
     data = _load_yaml(repo, "dealix/transformation/engineering_cutover_policy.yaml")
     sigs = data.get("minimum_signals_any_one") or []
@@ -292,6 +342,7 @@ def main() -> int:
     parser.add_argument("--check-enterprise-package", action="store_true")
     parser.add_argument("--check-reliability", action="store_true")
     parser.add_argument("--check-category-expansion", action="store_true")
+    parser.add_argument("--check-initiatives", action="store_true")
     args = parser.parse_args()
 
     repo = _REPO_ROOT
@@ -327,6 +378,8 @@ def main() -> int:
         failures.extend(_check_reliability(repo))
     elif args.check_category_expansion:
         failures.extend(_check_category_expansion_gates(repo))
+    elif args.check_initiatives:
+        failures.extend(_check_strategic_initiatives(repo))
     else:
         failures.extend(_require_paths(repo, DOC_FILES))
         failures.extend(_require_paths(repo, CONTROL_ARTIFACTS))
@@ -342,6 +395,7 @@ def main() -> int:
         failures.extend(_check_ceo_signal_os(repo))
         failures.extend(_check_engineering_cutover_policy(repo))
         failures.extend(_check_kpi_baselines(repo))
+        failures.extend(_check_strategic_initiatives(repo))
 
     if failures:
         print("GLOBAL AI TRANSFORMATION: FAIL")

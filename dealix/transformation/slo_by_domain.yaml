@@ -1,0 +1,27 @@
+version: 1
+program: dealix_100_strategic_initiatives
+defaults:
+  availability_target: 0.995
+  error_budget_percent: 0.5
+  review_cadence: weekly
+domains:
+  sales:
+    owner_os: gtm
+    critical_routes:
+      - /api/v1/leads
+      - /api/v1/revenue-os/catalog
+    slo_ref: docs/SLO.md
+  platform:
+    owner_os: platform
+    critical_routes:
+      - /api/v1/readiness/unified
+      - /health
+  trust:
+    owner_os: trust
+    critical_routes:
+      - /api/v1/control-plane
+  delivery:
+    owner_os: delivery
+    critical_routes:
+      - /api/v1/commercial/service-readiness
+scorecard_command: python3 scripts/reliability_drills_scorecard.py

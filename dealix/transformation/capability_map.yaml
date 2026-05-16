@@ -1,0 +1,39 @@
+version: 1
+program: dealix_100_strategic_initiatives
+capabilities:
+  - id: revenue_memory
+    layer: data
+    modules:
+      - auto_client_acquisition/revenue_memory
+    apis:
+      - /api/v1/leads
+  - id: decision_passport
+    layer: governance
+    modules:
+      - auto_client_acquisition/decision_passport
+    apis:
+      - /api/v1/decision-passport
+  - id: revenue_os
+    layer: revenue
+    modules:
+      - auto_client_acquisition/revenue_os
+    apis:
+      - /api/v1/revenue-os
+  - id: deal_desk
+    layer: revenue
+    modules:
+      - auto_client_acquisition/commercial_engagements/deal_desk_os
+    apis:
+      - /api/v1/commercial/deal-desk
+  - id: unified_readiness
+    layer: platform
+    modules:
+      - api/routers/unified_readiness
+    apis:
+      - /api/v1/readiness/unified
+  - id: trust_dashboard
+    layer: trust
+    modules:
+      - api/routers/trust_dashboard
+    apis:
+      - /api/v1/trust/dashboard

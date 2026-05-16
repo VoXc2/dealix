@@ -1,0 +1,19 @@
+version: 1
+offers:
+  - id: diagnostic
+    price_sar: 0
+    door: 1
+  - id: pilot_499
+    price_sar: 499
+    door: 2
+  - id: data_pack_1500
+    price_sar: 1500
+    door: 3
+  - id: managed_ops
+    price_sar_min: 2999
+    price_sar_max: 4999
+    door: 4
+  - id: enterprise_custom
+    price_sar_min: 5000
+    price_sar_max: 25000
+    door: 5

@@ -1,0 +1,19 @@
+version: 1
+program: dealix_100_strategic_initiatives
+cadence:
+  weekly:
+    monday: priority_arbitration_review
+    wednesday: product_evidence_review_board
+    thursday: revenue_deal_desk_pipeline
+    friday: executive_weekly_checklist
+  monthly:
+    first_week: kpi_baselines_crm_finance_update
+    second_week: perb_retrospective
+  quarterly:
+    week_1: portfolio_bets_review
+    week_2: dealix_2030_endgame_review
+anchors:
+  - name: executive_weekly_checklist
+    command: bash scripts/run_executive_weekly_checklist.sh
+  - name: ceo_one_session
+    command: bash scripts/run_ceo_one_session_readiness.sh

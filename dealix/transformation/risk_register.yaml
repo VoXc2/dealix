@@ -1,4 +1,6 @@
 version: 1
+incident_response_ref: docs/SECURITY_RUNBOOK.md
+on_call_ref: docs/ON_CALL.md
 risks:
   - id: feature_sprawl_without_proof
     class: strategic

@@ -17,6 +17,10 @@ def main() -> int:
     data = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
     drills = data.get("drills") or []
     slo = data.get("slo_review") or {}
+    slo_domains_path = args.repo_root / "dealix/transformation/slo_by_domain.yaml"
+    slo_domains = {}
+    if slo_domains_path.exists():
+        slo_domains = yaml.safe_load(slo_domains_path.read_text(encoding="utf-8")) or {}
 
     print("Reliability drills scorecard")
     print("=" * 72)
@@ -37,6 +41,14 @@ def main() -> int:
     topics = slo.get("minimum_topics") or []
     for t in topics:
         print(f"  - {t}")
+    domains = slo_domains.get("domains") or {}
+    if domains:
+        print()
+        print("SLO by API domain (slo_by_domain.yaml)")
+        print("-" * 72)
+        for name, cfg in sorted(domains.items()):
+            routes = cfg.get("critical_routes") or []
+            print(f"  {name}: owner={cfg.get('owner_os', '')} routes={len(routes)}")
     return 0
 
 

@@ -1,0 +1,21 @@
+version: 1
+program: dealix_100_strategic_initiatives
+days:
+  - day: 1
+    checkpoint_ar: تفعيل الحساب + أول brief
+    owner: delivery
+  - day: 3
+    checkpoint_ar: أول proof target محدد
+    owner: delivery
+  - day: 7
+    checkpoint_ar: مراجعة جودة بيانات (DQ)
+    owner: data
+  - day: 10
+    checkpoint_ar: مسودة proof pack
+    owner: delivery
+  - day: 14
+    checkpoint_ar: قرار retainer / توسعة (L3+)
+    owner: founder_sales
+success_criteria:
+  - source_ref_on_all_value_claims
+  - no_external_send_without_approval

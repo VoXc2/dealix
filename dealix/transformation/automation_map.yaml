@@ -1,0 +1,11 @@
+version: 1
+candidates:
+  - id: weekly_proof_pack
+    script: scripts/generate_weekly_operating_proof_pack.py
+    lane: fast_lane
+  - id: kpi_platform_populate
+    script: scripts/populate_kpi_baselines_platform_signals.py
+    lane: fast_lane
+  - id: external_outreach
+    automation: prohibited
+    lane: governed_lane
