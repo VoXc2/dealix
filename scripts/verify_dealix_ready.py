@@ -108,9 +108,9 @@ ROOT_READINESS = "DEALIX_READINESS.md"
 PRODUCT_PACKAGES = (
     "auto_client_acquisition/data_os",
     "auto_client_acquisition/revenue_os",
-    "auto_client_acquisition/knowledge_os",
+    "auto_client_acquisition/company_brain",
     "auto_client_acquisition/governance_os",
-    "auto_client_acquisition/reporting_os",
+    "auto_client_acquisition/executive_reporting",
     "auto_client_acquisition/delivery_os",
 )
 

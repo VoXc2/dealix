@@ -113,10 +113,6 @@ ALLOWLIST: dict[str, dict[str, str]] = {
         "cold": "NEGATION",
         "scraping": "NEGATION",
     },
-    # Diagnostic intake — "صفر cold outreach" promise. Pure NEGATION.
-    "diagnostic.html": {
-        "cold": "NEGATION",
-    },
     # Founder leads inbox — footer states "لا cold outreach من النظام"
     # as a privacy promise. Pure NEGATION.
     "founder-leads.html": {
@@ -147,6 +143,9 @@ ALLOWLIST: dict[str, dict[str, str]] = {
     "trust-center.html": {
         "scraping": "NEGATION",
         "نضمن": "NEGATION",
+        # plus the standard "not guaranteed outcomes" disclaimer.
+        "guaranteed": "NEGATION",
+        "مضمون": "NEGATION",
     },
     # Agency Partner page (Tier-1 redesign) — agency-facing positioning
     # repeats the safety promise: "بدون cold WhatsApp" so partners can
@@ -170,6 +169,81 @@ ALLOWLIST: dict[str, dict[str, str]] = {
     "compare-salesloft.html": {
         "blast": "NEGATION",
         "cold": "NEGATION",
+    },
+    # Service / report pages carrying the standard outcome disclaimer
+    # "Estimated outcomes are not guaranteed outcomes / النتائج التقديرية
+    # ليست نتائج مضمونة." — pure NEGATION disclaimer copy.
+    "architecture.html": {
+        "guaranteed": "NEGATION",
+        "مضمون": "NEGATION",
+    },
+    "bespoke-ai.html": {
+        "guaranteed": "NEGATION",
+        "مضمون": "NEGATION",
+    },
+    "pricing.html": {
+        "guaranteed": "NEGATION",
+        "مضمون": "NEGATION",
+    },
+    "dpo.html": {
+        "guaranteed": "NEGATION",
+        "مضمون": "NEGATION",
+    },
+    "launch-status.html": {
+        "guaranteed": "NEGATION",
+        "مضمون": "NEGATION",
+    },
+    "customer-portal.html": {
+        "guaranteed": "NEGATION",
+        "مضمون": "NEGATION",
+    },
+    "sector-report-b2b-services.html": {
+        "guaranteed": "NEGATION",
+        "مضمون": "NEGATION",
+    },
+    # Diagnostic intake — "صفر cold outreach" promise plus the standard
+    # "not guaranteed outcomes / ليست نتائج مضمونة" disclaimer. Pure NEGATION.
+    "diagnostic.html": {
+        "cold": "NEGATION",
+        "guaranteed": "NEGATION",
+        "مضمون": "NEGATION",
+    },
+    # Data-to-Revenue pack page — enumerates the safety contract
+    # ("صفر cold WhatsApp", "لا scraping") and carries the outcome
+    # disclaimer. Pure NEGATION throughout.
+    "data-pack.html": {
+        "cold": "NEGATION",
+        "scraping": "NEGATION",
+        "guaranteed": "NEGATION",
+        "مضمون": "NEGATION",
+    },
+    # Roadmap page — lists "LinkedIn scraping automation" and "cold spam
+    # features" explicitly as policy-blocked / PDPL-incompatible
+    # anti-patterns Dealix rejects. Pure NEGATION context.
+    "roadmap.html": {
+        "scraping": "NEGATION",
+    },
+    # More pages carrying the standard outcome disclaimer
+    # "Estimated outcomes are not guaranteed outcomes / النتائج التقديرية
+    # ليست نتائج مضمونة." — pure NEGATION disclaimer copy.
+    "security.html": {
+        "guaranteed": "NEGATION",
+        "مضمون": "NEGATION",
+    },
+    "sprint-sample.html": {
+        "guaranteed": "NEGATION",
+        "مضمون": "NEGATION",
+    },
+    "webinar.html": {
+        "guaranteed": "NEGATION",
+        "مضمون": "NEGATION",
+    },
+    # Pilot case-study page — "7-day money-back guarantee" refund wording
+    # in a positive context. Same REVIEW_PENDING category as roi.html's
+    # refund copy; allowlisted to avoid a destructive unilateral copy
+    # change while the founder decides to keep, qualify, or rephrase.
+    "case-study-pilot-example.html": {
+        "guaranteed": "REVIEW_PENDING",
     },
 }
 
@@ -232,9 +306,10 @@ def test_review_pending_items_have_a_reason():
     # This is informational, not a failure. We assert the *count* so
     # that whenever a founder rephrases or formally approves a phrase,
     # they remember to update this number too.
-    assert len(review_pending) == 2, (
-        "REVIEW_PENDING list changed; expected 2 "
-        "(roi.html: 'نضمن'; academy.html: 'cold'). "
+    assert len(review_pending) == 3, (
+        "REVIEW_PENDING list changed; expected 3 "
+        "(roi.html: 'نضمن'; academy.html: 'cold'; "
+        "case-study-pilot-example.html: 'guaranteed'). "
         "Update this assertion after the founder approves or rephrases. "
         f"Current: {review_pending}"
     )

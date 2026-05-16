@@ -175,6 +175,59 @@ _PREFIX_ALLOWLIST: dict[str, str] = {
         "sales-kit hosted-checkout doc names the prefix in policy copy",
     "docs/sales-kit/dealix_1_riyal_test.sh":
         "sales-kit 1-riyal test shell script names the prefix in env",
+    # ── code that uses the prefix as policy (rejection / redaction) ──
+    "api/routers/founder_launch_status.py":
+        "launch-status endpoint detects sk_live_ prefix to report payment mode",
+    "auto_client_acquisition/agent_observability/redaction.py":
+        "redaction regex patterns themselves — the scanner's source of truth",
+    # ── scripts that grep for these prefixes or template env files ──
+    "scripts/dealix_integration_plan_quality_check.py":
+        "integration plan check greps for accidental secret prefixes",
+    "scripts/dealix_master_full_execution_verify.sh":
+        "master execution verifier shell script greps repo for these prefixes",
+    "scripts/generate_production_env.sh":
+        "production env generator names the placeholder prefix in template",
+    "scripts/integration_upgrade_verify.sh":
+        "integration upgrade verifier shell script greps repo for these prefixes",
+    "scripts/moyasar_live_cutover.py":
+        "Moyasar live cutover CLI validates the sk_live_ prefix on the pasted key",
+    "scripts/preflight_check.py":
+        "preflight check names the prefix when validating payment config",
+    "scripts/reconcile_moyasar.py":
+        "Moyasar reconciliation CLI names the prefix in placeholder env copy",
+    "scripts/ultimate_upgrade_verify.sh":
+        "ultimate upgrade verifier shell script greps repo for these prefixes",
+    "scripts/wave6_revenue_activation_verify.sh":
+        "wave6 revenue activation verifier greps repo for these prefixes",
+    "scripts/wave7_5_service_truth_verify.sh":
+        "wave7.5 service truth verifier greps repo for these prefixes",
+    "scripts/wave8_customer_data_boundary_check.sh":
+        "wave8 customer data boundary check greps repo for these prefixes",
+    "scripts/wave8_customer_ready_verify.sh":
+        "wave8 customer ready verifier greps repo for these prefixes",
+    "scripts/wave11_first3_paid_pilots_verify.sh":
+        "wave11 first-3-pilots verifier greps repo for these prefixes",
+    "scripts/wave12_saudi_revenue_command_center_verify.sh":
+        "wave12 revenue command center verifier greps repo for these prefixes",
+    # ── docs that name the prefix in placeholder / policy copy ──
+    "docs/LLM_PROVIDERS_SETUP.md":
+        "LLM providers setup doc names the API key prefix in placeholder text",
+    "docs/MOYASAR_LIVE_CUTOVER.md":
+        "Moyasar live cutover doc names sk_live_ in policy copy",
+    "docs/RAILWAY_DEPLOY_CHECKLIST.md":
+        "deploy checklist names the prefix in env-var checklist row",
+    "docs/WAVE11_FIRST3_PAID_PILOTS_EVIDENCE_TABLE.md":
+        "wave11 evidence table names the prefix in evidence cells",
+    "docs/integrations/PAYMENT_MOYASAR_LIVE.md":
+        "Moyasar live integration doc names sk_live_ in placeholder env copy",
+    "docs/ops/GO_LIVE_INDEX.md":
+        "go-live index names the prefix in the cutover checklist",
+    "docs/ops/MOYASAR_KYC_CHECKLIST.md":
+        "Moyasar KYC checklist names the prefix in policy copy",
+    "docs/ops/PRODUCTION_ENV_TEMPLATE.md":
+        "production env template names the placeholder prefix",
+    "docs/security/KEY_ROTATION.md":
+        "key rotation runbook names the prefix in the rotation matrix",
 }
 
 

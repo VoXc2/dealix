@@ -72,9 +72,24 @@ async def test_verify_code_validates_format(async_client):
     assert res.status_code == 422
 
 
+async def _create_code(async_client, monkeypatch, *, admin: str, handle: str) -> str:
+    """Seed a real referral code via the /create endpoint and return it."""
+    monkeypatch.setenv("ADMIN_API_KEYS", admin)
+    res = await async_client.post(
+        "/api/v1/referrals/create",
+        json={"referrer_handle": handle, "referrer_email": f"founder@{handle}.sa"},
+        headers={ADMIN_HEADER: admin},
+    )
+    assert res.status_code == 200, res.text
+    return res.json()["code"]
+
+
 @pytest.mark.asyncio
-async def test_verify_code_returns_discount_terms(async_client):
-    res = await async_client.get("/api/v1/referrals/REF-12345ABC")
+async def test_verify_code_returns_discount_terms(async_client, monkeypatch):
+    code = await _create_code(
+        async_client, monkeypatch, admin="test_admin_ref_verify", handle="acmeverify"
+    )
+    res = await async_client.get(f"/api/v1/referrals/{code}")
     assert res.status_code == 200
     body = res.json()
     assert body["discount_pct"] == 50
@@ -92,11 +107,14 @@ async def test_redeem_validates_inputs(async_client):
 
 
 @pytest.mark.asyncio
-async def test_redeem_success_returns_discount(async_client):
+async def test_redeem_success_returns_discount(async_client, monkeypatch):
+    code = await _create_code(
+        async_client, monkeypatch, admin="test_admin_ref_redeem", handle="acmeredeem"
+    )
     res = await async_client.post(
         "/api/v1/referrals/redeem",
         json={
-            "code": "REF-12345ABC",
+            "code": code,
             "referred_email": "newcustomer@example.sa",
             "referred_company": "New B2B Co",
         },
@@ -116,9 +134,22 @@ async def test_convert_requires_admin(async_client):
 
 @pytest.mark.asyncio
 async def test_convert_returns_credit_amount(async_client, monkeypatch):
-    monkeypatch.setenv("ADMIN_API_KEYS", "test_admin_ref_convert")
+    code = await _create_code(
+        async_client, monkeypatch, admin="test_admin_ref_convert", handle="acmeconvert"
+    )
+    # A referral must be redeemed before it can be converted.
+    redeem = await async_client.post(
+        "/api/v1/referrals/redeem",
+        json={
+            "code": code,
+            "referred_email": "converted@example.sa",
+            "referred_company": "Converted B2B Co",
+        },
+    )
+    assert redeem.status_code == 200, redeem.text
+
     res = await async_client.post(
-        "/api/v1/referrals/REF-12345ABC/convert",
+        f"/api/v1/referrals/{code}/convert",
         headers={ADMIN_HEADER: "test_admin_ref_convert"},
     )
     assert res.status_code == 200

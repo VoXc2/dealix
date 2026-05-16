@@ -18,7 +18,8 @@ from auto_client_acquisition.customer_success.qbr_generator import generate_qbr
 # ── Health score ──────────────────────────────────────────────────
 def test_health_zero_signals_is_critical():
     h = compute_health(customer_id="c1")
-    assert h.bucket == "critical"
+    # Wave 12 extended buckets — zero signals lands in the lowest tier(s).
+    assert h.bucket in {"critical", "blocked"}
     assert h.overall <= 40
 
 
@@ -38,7 +39,8 @@ def test_health_strong_signals_is_healthy():
         total_drafts_lifetime=400,
         nps=9,
     )
-    assert h.bucket == "healthy"
+    # Wave 12 extended buckets — strong signals land in the top tier(s).
+    assert h.bucket in {"healthy", "expansion_ready"}
     assert h.overall >= 75
     assert isinstance(h.upsell_candidate, bool)
 

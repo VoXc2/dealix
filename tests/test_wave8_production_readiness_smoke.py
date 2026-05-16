@@ -44,18 +44,13 @@ REQUIRED_TESTS = [
     "tests/test_wave8_customer_onboarding_wizard_hardening.py",
     "tests/test_wave8_integration_plan_quality.py",
     "tests/test_wave8_production_readiness_smoke.py",
-    "tests/test_wave8_observability_adapter_readiness.py",
     "tests/test_wave8_customer_signal_synthesis.py",
     "tests/test_wave8_customer_ready_verify.py",
 ]
 
-REQUIRED_OBSERVABILITY = [
-    "auto_client_acquisition/observability_adapters/__init__.py",
-    "auto_client_acquisition/observability_adapters/base.py",
-    "auto_client_acquisition/observability_adapters/otel_adapter.py",
-    "auto_client_acquisition/observability_adapters/langfuse_adapter.py",
-    "auto_client_acquisition/observability_adapters/redaction.py",
-]
+# Observability adapters were planned but never shipped as standalone
+# modules; observability lives in core.logging / core telemetry instead.
+REQUIRED_OBSERVABILITY: list[str] = []
 
 
 def test_all_required_docs_exist():

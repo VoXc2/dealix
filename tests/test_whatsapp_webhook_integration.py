@@ -66,14 +66,21 @@ async def test_post_rejects_invalid_signature_in_production(async_client, monkey
     This is the security gate that prevents anyone from POSTing arbitrary
     'leads' to our pipeline by impersonating Meta.
     """
+    from core.config.settings import get_settings
+
     monkeypatch.setenv("APP_ENV", "production")
     monkeypatch.setenv("WHATSAPP_APP_SECRET", "test_secret_xyz")
+    # get_settings is lru_cached — clear it so the patched env is re-read.
+    get_settings.cache_clear()
 
-    res = await async_client.post(
-        "/api/v1/webhooks/whatsapp",
-        content=b'{"entry":[]}',
-        headers={"Content-Type": "application/json"},  # no x-hub-signature-256
-    )
+    try:
+        res = await async_client.post(
+            "/api/v1/webhooks/whatsapp",
+            content=b'{"entry":[]}',
+            headers={"Content-Type": "application/json"},  # no x-hub-signature-256
+        )
+    finally:
+        get_settings.cache_clear()
     # 403 because signature is missing in strict env, OR 422 if APP_ENV
     # didn't propagate. Both indicate "did not silently accept."
     assert res.status_code in (403, 422, 503)

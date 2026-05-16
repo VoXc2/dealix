@@ -11,6 +11,7 @@ Covers:
 from __future__ import annotations
 
 import asyncio
+import importlib.util
 from datetime import datetime, timezone
 
 import pytest
@@ -133,6 +134,9 @@ def sample_events() -> list[RevenueEvent]:
     ]
 
 
+_AIOSQLITE_AVAILABLE = importlib.util.find_spec("aiosqlite") is not None
+
+
 @pytest.fixture
 async def pg_store():
     """Create a PostgresEventStore backed by an in-memory aiosqlite DB.
@@ -140,6 +144,8 @@ async def pg_store():
     We create a standalone SQLite-compatible table (JSON instead of JSONB)
     and rebind the ORM mapper to it for the duration of the test.
     """
+    if not _AIOSQLITE_AVAILABLE:
+        pytest.skip("aiosqlite driver not installed in this environment")
     import json
 
     from sqlalchemy import JSON, Column, DateTime, Integer, MetaData, String, Table, event, insert

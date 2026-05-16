@@ -43,7 +43,10 @@ class TestC2DailyBriefLLM:
             proof_events=[], pending_approvals=[], inbound_count=0
         )
         assert brief.data_status == "insufficient_data"
-        assert "warm-intro" in brief.next_action.lower() or "diagnostic" in brief.next_action.lower()
+        # No-data fallback steers the founder to manual warm intros and to
+        # generating a first Decision Passport via the leads endpoint.
+        guidance = (brief.next_action + " " + brief.narrative).lower()
+        assert "warm intro" in guidance or "leads" in guidance
         assert brief.headline  # non-empty
 
     def test_fallback_brief_with_data(self, llm_brief_module):
