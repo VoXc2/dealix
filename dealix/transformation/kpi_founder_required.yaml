@@ -1,0 +1,12 @@
+version: 1
+# KPIs that must be filled from CRM/finance exports — never synthesized by platform scripts.
+founder_required_keys:
+  - measured_customer_value_sar
+  - governance_integrity_rate
+  - expansion_quality_ratio
+  - time_to_proof_days
+  - approval_cycle_time_hours
+  - conversion_discovery_to_pilot
+  - decision_quality_index
+import_script: scripts/import_kpi_baselines_export.py
+populate_platform_script: scripts/populate_kpi_baselines_platform_signals.py

@@ -183,12 +183,35 @@ export function DashboardContent() {
 
     async function fetchActivities() {
       try {
-        const res = await api.getCommandCenter();
-        if (!cancelled && res.data) {
-          const data = res.data.data ?? res.data;
-          const items: unknown[] =
-            data.recent_decisions ?? data.decisions ?? data.activities ?? [];
-          if (Array.isArray(items) && items.length > 0) {
+        const [approvalsRes, readinessRes] = await Promise.allSettled([
+          api.getApprovalsHistory(20),
+          api.getUnifiedReadiness(),
+        ]);
+        const approvalItems: unknown[] =
+          approvalsRes.status === "fulfilled"
+            ? (approvalsRes.value.data?.items ??
+                approvalsRes.value.data?.history ??
+                approvalsRes.value.data ??
+                [])
+            : [];
+        const readiness =
+          readinessRes.status === "fulfilled" ? readinessRes.value.data : null;
+        const blockerItems =
+          readiness && Array.isArray(readiness.blockers)
+            ? readiness.blockers.map((b: string, i: number) => ({
+                id: `blocker-${i}`,
+                agent: "orchestrator",
+                actionAr: `حاجز جاهزية: ${b}`,
+                actionEn: `Readiness blocker: ${b}`,
+                status: "pending",
+                timestamp: new Date().toISOString(),
+              }))
+            : [];
+        const items: unknown[] = [
+          ...(Array.isArray(approvalItems) ? approvalItems : []),
+          ...blockerItems,
+        ];
+        if (!cancelled && items.length > 0) {
             setActivities(
               items.map((raw: unknown, i: number) => {
                 const item = raw as Record<string, unknown>;

@@ -1,2 +1,7 @@
 version: 1
-entries: []
+entries:
+- recorded_at: '2026-05-16T19:23:01.878623+00:00'
+  outcome: win
+  account: TestCo
+  evidence_ref: proof:test:1
+  notes: ''

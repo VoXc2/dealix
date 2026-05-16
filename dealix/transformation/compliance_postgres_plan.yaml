@@ -1,0 +1,10 @@
+version: 1
+program: dealix_master_strategy
+status: planned
+modules:
+  - auto_client_acquisition/compliance_os/consent_ledger.py
+  - auto_client_acquisition/compliance_os/contactability.py
+target: postgres_tables_via_alembic
+policy_ar: >-
+  لا cutover للموافقات حتى engineering_cutover_policy يستقبل إشارة خارجية.
+verify: python3 scripts/jsonl_tier1_cutover_readiness.py

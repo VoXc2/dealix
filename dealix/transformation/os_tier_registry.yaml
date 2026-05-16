@@ -1,0 +1,48 @@
+version: 1
+program: dealix_master_strategy
+policy_ar: >-
+  لا تُضاف ميزة خارج السلسلة الذهبية إلا إذا خُدمت من طبقة T1 أو عُرّفت في T2 بخطة P0.
+  طبقة T3 (doctrine) لا تُوسَّع ولا تُسجَّل كـ live في Service Matrix.
+golden_chain_modules:
+  - revenue_os
+  - decision_passport
+  - governance_os
+  - data_os
+  - delivery_factory
+  - proof_ledger
+  - compliance_os
+  - personal_operator
+tiers:
+  T1_production:
+    description_en: Golden chain + persistence + pytest required on change
+    modules:
+      - auto_client_acquisition/revenue_os
+      - auto_client_acquisition/decision_passport
+      - auto_client_acquisition/governance_os
+      - auto_client_acquisition/data_os
+      - auto_client_acquisition/delivery_factory
+      - auto_client_acquisition/proof_ledger
+      - auto_client_acquisition/compliance_os
+      - auto_client_acquisition/personal_operator
+      - auto_client_acquisition/service_catalog
+      - auto_client_acquisition/value_os
+  T2_platform:
+    description_en: Enterprise CP, agents, v10 layers — P0 backlog
+    modules:
+      - auto_client_acquisition/workflow_os_v10
+      - auto_client_acquisition/ai_workforce_v10
+      - auto_client_acquisition/platform_v10
+      - auto_client_acquisition/crm_v10
+      - auto_client_acquisition/llm_gateway_v10
+      - auto_client_acquisition/control_plane_os
+      - auto_client_acquisition/observability_v10
+      - auto_client_acquisition/knowledge_v10
+  T3_doctrine:
+    description_en: Scoring/registry only — no new HTTP until T1 mature
+    modules:
+      - auto_client_acquisition/moat_os
+      - auto_client_acquisition/endgame_os
+      - auto_client_acquisition/institutional_os
+      - auto_client_acquisition/sovereignty_os
+      - auto_client_acquisition/category_os
+      - auto_client_acquisition/market_power_os

@@ -2,6 +2,8 @@
 
 هذا المستند يربط **خطة التنفيذ التنفيذية** بملفات قابلة للتشغيل في المستودع.
 
+**المرجع الأعظم للتطوير الشامل (بدون أفق 2040):** [DEALIX_ULTIMATE_DEVELOPMENT_PLAN_AR.md](DEALIX_ULTIMATE_DEVELOPMENT_PLAN_AR.md)
+
 ## المرحلة 0 — دمج وتحقق
 
 - [docs/ops/PHASE0_CEO_RELEASE_GATE_AR.md](../ops/PHASE0_CEO_RELEASE_GATE_AR.md)

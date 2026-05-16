@@ -515,7 +515,7 @@ services:
     name_en: Proposal
     bundle: data_to_revenue
     capability_group: revenue
-    status: target
+    status: live
     customer_value_ar: |
       يولّد عرض تسعير PDF بناءً على القالب وسياسة التسعير، جاهزاً للمراجعة.
     customer_value_en: |
@@ -566,7 +566,7 @@ services:
     name_en: Approval (Multi-Step)
     bundle: data_to_revenue
     capability_group: revenue
-    status: target
+    status: live
     customer_value_ar: |
       مسار موافقة متعدّد الخطوات مع مهلة وتصعيد عند الفوات.
     customer_value_en: |
@@ -659,7 +659,7 @@ services:
     name_en: Onboarding Handoff
     bundle: data_to_revenue
     capability_group: revenue
-    status: target
+    status: live
     customer_value_ar: |
       عند الإغلاق، تسليم منظّم لفريق خدمة العملاء مع كل السياق.
     customer_value_en: |
@@ -706,7 +706,7 @@ services:
     name_en: Weekly Executive Pack
     bundle: executive_growth_os
     capability_group: executive_view
-    status: target
+    status: live
     customer_value_ar: |
       حزمة أسبوعية موحّدة للقيادة مع رابط لمصدر كل عنصر.
     customer_value_en: |

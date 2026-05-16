@@ -8,6 +8,7 @@ from pathlib import Path
 import yaml
 
 REPO = Path(__file__).resolve().parents[1]
+OS_TIER = REPO / "dealix/transformation/os_tier_registry.yaml"
 
 
 def _exists(deliverable: str) -> bool:
@@ -37,6 +38,13 @@ def main() -> int:
     all_hits = [h for hits in by_phase.values() for h in hits]
     total_pct = 100.0 * sum(all_hits) / max(len(all_hits), 1)
     print(f"  total: {total_pct:.1f}%")
+    if OS_TIER.exists():
+        tier_data = yaml.safe_load(OS_TIER.read_text(encoding="utf-8")) or {}
+        tiers = tier_data.get("tiers") or {}
+        for tid in ("T1_production", "T2_platform", "T3_doctrine"):
+            mods = tiers.get(tid, {}).get("modules") or []
+            live = sum(1 for m in mods if (REPO / m).exists())
+            print(f"  os_tier {tid}: {live}/{len(mods)} modules on disk")
     return 0
 
 
