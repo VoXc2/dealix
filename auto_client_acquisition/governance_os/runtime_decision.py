@@ -51,7 +51,7 @@ _EN_OUTCOME = (
 # first-person promise.
 _AFFIRMATIVE_GUARANTEE_EN = re.compile(
     rf"guarantee[ds]?\b[\w%\s-]{{0,20}}?\b(?:{_EN_OUTCOME})\b"
-    rf"|\b(?:{_EN_OUTCOME})\b[\w%\s-]{{0,15}}?\bguarantee[ds]\b"
+    rf"|\b(?:{_EN_OUTCOME})\b[\w%\s-]{{0,15}}?\bguarantee[ds]?\b"
     rf"|\b(?:we|i)\s+guarantee\b"
     rf"|100\s*%?\s*guarantee[ds]?|guarantee[ds]?\s+100",
     re.IGNORECASE,

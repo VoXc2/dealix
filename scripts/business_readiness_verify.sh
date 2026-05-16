@@ -134,21 +134,23 @@ echo ""
 # =============================================================================
 echo "--- SECTION 5: Hard Gate — NO_GUARANTEED_CLAIMS ---"
 
-# Check landing/marketing pages for affirmative guaranteed-outcome claims.
-# Approach: drop English negation lines, neutralize negated/refund Arabic
-# forms IN PLACE, then re-match — both word orders ("guaranteed results" /
-# "results guaranteed") are covered by the broad final pattern. terms.html
-# is skipped: a terms-of-service doc legitimately *enumerates* prohibited
-# guarantee claims, which is the opposite of marketing one.
-# Heuristic limits (this is a local hygiene gate, not a CI gate): a single
-# line mixing a negated and an affirmative Arabic claim may be over-stripped.
+# Check landing/marketing pages for affirmative guaranteed-OUTCOME claims.
+# Approach: drop negation / money-back lines, neutralize negated/refund
+# Arabic forms IN PLACE, then re-match. The English match requires an
+# outcome word adjacent to "guarantee" (either word order) so CSS class
+# names like "pkg__guarantee" and refund "money-back guarantee" copy are
+# not flagged. terms.html is skipped: a terms doc legitimately *enumerates*
+# prohibited guarantee claims. Heuristic limits (local hygiene gate, not a
+# CI gate): a line mixing a negated and an affirmative Arabic claim may be
+# over-stripped.
+_EN_OUT="revenue|sales|results?|roi|growth|profit|income|deals?|leads?|customers?"
 GUARANTEED=$(grep -rnE "نضمن|مضمون|guarantee" \
   landing/ 2>/dev/null \
   | grep -v "landing/terms.html" \
-  | grep -viE "no[[:space:]]+guarantee|not[[:space:]]+guarantee|never[[:space:]]+guarantee|without[[:space:]]+(any[[:space:]]+)?guarantee|seeking[[:space:]]+guarantee|needs evidence" \
+  | grep -viE "no[[:space:]]+guarantee|not[[:space:]]+guarantee|never[[:space:]]+guarantee|without[[:space:]]+(any[[:space:]]+)?guarantee|seeking[[:space:]]+guarantee|needs evidence|money.?back|refund" \
   | sed -E 's/(لا|لن|لم|ما|بدون|دون)([[:space:]]+[^[:space:]]+){0,4}[[:space:]]*(نضمن|ضمان|مضمون[ةه]?)/__NEG__/g' \
   | sed -E 's/نضمن[[:space:]]*استرجاع/__REFUND__/g' \
-  | grep -E "نضمن|مضمون|guarantee[ds]" \
+  | grep -Ei "نضمن|مضمون|guarantee[a-z]*[^.]{0,15}($_EN_OUT)|($_EN_OUT)[^.]{0,15}guarantee" \
   | cut -d: -f1 | sort -u || true)
 
 if [ -z "$GUARANTEED" ]; then
