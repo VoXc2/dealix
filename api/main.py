@@ -72,6 +72,7 @@ from api.routers import service_catalog as service_catalog_router
 # Wave 14 — Canonical Trust MVP + Retainer Engine (Phase 2)
 from api.routers import friction_log as friction_log_router
 # 90-day commercial activation — Wave 14B
+from api.routers import market_proof as market_proof_router
 from api.routers import sprint_runner as sprint_runner_router
 from api.routers import founder_dashboard as founder_dashboard_router
 from api.routers import audit_export as audit_export_router
@@ -317,6 +318,8 @@ def create_app() -> FastAPI:
     if data_os_router is not None:
         app.include_router(data_os_router.router)
     app.include_router(sprint_runner_router.router)
+    # Market-proof lifecycle: L2->L7 state machine. Self-prefix /api/v1/market-proof.
+    app.include_router(market_proof_router.router)
     app.include_router(founder_dashboard_router.router)
     app.include_router(audit_export_router.router)
     # Wave 14F — Agent OS (admin-gated)
