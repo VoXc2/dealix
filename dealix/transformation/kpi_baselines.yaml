@@ -3,11 +3,11 @@ program: global_ai_transformation
 notes_ar: >-
   عبّئ القيم الفعلية أسبوعيًا من CRM/المالية/التسليم. اترك null حتى يتوفر المصدر.
   كل قيمة يجب أن يمر مرجعها في Weekly Proof Pack.
-  بعد كل تشغيل لـ scripts/run_executive_weekly_checklist.sh حدّث weekly_ops.last_checklist_run_iso (UTC).
+  بعد تشغيل ناجح لـ scripts/run_executive_weekly_checklist.sh يُحدَّث weekly_ops.last_checklist_run_iso تلقائياً من السجل (انظر scripts/sync_weekly_ops_from_checklist_log.py).
 updated_period_iso: ""
 
 weekly_ops:
-  last_checklist_run_iso: ""
+  last_checklist_run_iso: "2026-05-16"
   checklist_script: scripts/run_executive_weekly_checklist.sh
 
 snapshots:

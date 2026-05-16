@@ -9,6 +9,9 @@ echo "== Verify transformation artifacts =="
 echo "== Weekly operating proof pack generator (sanity) =="
 "$PYTHON_BIN" scripts/generate_weekly_operating_proof_pack.py >/dev/null
 
+echo "== Reliability drills scorecard (sanity) =="
+"$PYTHON_BIN" scripts/reliability_drills_scorecard.py >/dev/null
+
 echo "== Verify enterprise control plane baseline =="
 bash scripts/verify_enterprise_control_plane.sh
 

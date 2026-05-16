@@ -23,8 +23,13 @@ rm -f "$TMP_VERIFY"
 mkdir -p "$(dirname "$LOG")"
 echo "${DATE_UTC} verify_global_ai_transformation=${VERIFY_STATUS}" >>"$LOG"
 
+if [[ "${VERIFY_STATUS}" == "PASS" ]]; then
+  "$PYTHON_BIN" "${ROOT}/scripts/sync_weekly_ops_from_checklist_log.py" || true
+fi
+
 echo ""
 echo "Executive checklist: OK"
 echo "Next: fill dealix/transformation/kpi_baselines.yaml (value_numeric + source_ref + updated_period_iso)."
 echo "Review: dealix/transformation/ownership_matrix.yaml human_assignee fields."
 echo "Audit log appended: ${LOG}"
+echo "Optional dry-run sync: python3 scripts/sync_weekly_ops_from_checklist_log.py --dry-run"

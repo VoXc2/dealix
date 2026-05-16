@@ -50,6 +50,7 @@ This directory is the execution spine for the comprehensive transformation from 
 - Taxonomy and targets: `dealix/transformation/ceo_signal_os.yaml`
 - Weekly dated proof pack: `bash scripts/run_ceo_signal_weekly_loop.sh`
 - **Executive operating checklist (weekly):** `bash scripts/run_executive_weekly_checklist.sh` — يولّد الـ proof pack، يشغّل `verify_global_ai_transformation.py`، ويسجّل سطرًا في `docs/transformation/evidence/weekly_ops_checklist.log`.
+- **دليل تشغيل تنفيذي (عربي):** [EXECUTIVE_OPERATING_CHECKLIST_AR.md](EXECUTIVE_OPERATING_CHECKLIST_AR.md)
 - **قبل التوسع القطاعي/الإقليمي:** `bash scripts/run_pre_scale_gate_bundle.sh` (بوابات التوسع + `verify_ceo_signal_readiness.sh category_gates`).
 - **دليل القطع الهندسي (إشارة خارجية + PR):** [ENGINEERING_CUTOVER_RUNBOOK_AR.md](ENGINEERING_CUTOVER_RUNBOOK_AR.md)
 - Pick verification gate: `bash scripts/verify_ceo_signal_readiness.sh transformation|control_plane|revenue_os|category_gates|all`
