@@ -87,7 +87,7 @@ pyotp>=2.9.0,<3
 qrcode[pil]>=7.4.2,<8
 
 # Async Task Queue (ARQ — async Redis queue for background LLM processing)
-arq>=0.25.0
+arq>=0.28.0
 
 # Numeric / vector ops (cosine similarity for Revenue Memory)
 # Held at 1.26 series — bumping to numpy 2.x cascades through embedding
