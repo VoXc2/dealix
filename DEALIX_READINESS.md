@@ -15,60 +15,64 @@ python scripts/verify_dealix_ready.py --skip-tests
 
 ---
 
+> **آخر تحديث صادق:** 2026-05-16. الحالة أدناه واقعية وليست طموحة — راجع `قاعدة البيع`.
+
 ## Company Status
 
 | Field | Value |
 |-------|--------|
-| **Current Stage** | (مثال: Gate 6 Pass — جاهز للبيع للخدمات الثلاث الأولى) |
-| **Officially Sellable Services** | |
-| **Services in Beta** | (Score 70–84 أو ناقص demo فقط) |
-| **Services Not Ready** | (أقل من 70 أو hard fail) |
+| **Current Stage** | ما قبل الإيرادات — منشور تقنياً (`api.dealix.me`)، صفر عملاء، صفر إيراد. |
+| **Officially Sellable Services** | Rung 0 — Free AI Ops Diagnostic. |
+| **Services in Beta** | Rung 1 — 7-Day Revenue Intelligence Sprint (499 SAR): مسار التسليم أُصلح ويعمل end-to-end؛ ينتظر أول عميل حقيقي + تفعيل Moyasar. |
+| **Services Not Ready** | Rung 2 (Data Pack)، Rung 3 (Managed Ops)، Rung 4 (Custom AI) — مقفلة ببوابات السُلّم حتى تُسلَّم pilots. |
 
 ---
 
 ## Gate Scores (يدوي: نقاط / آلي: راجع مخرجات السكربت)
 
-| Gate | الاسم | قرار (PASS / FIX / BLOCKED) | Score يدوي / ملاحظة |
-|------|--------|-----------------------------|---------------------|
-| 0 | Founder Clarity | | /100 (Pass ≥ 85) |
-| 1 | Offer Readiness | | /100 (Pass ≥ 85 لكل عرض) |
-| 2 | Delivery Readiness | | /100 (Pass ≥ 85) |
-| 3 | Product Readiness | | /100 (Pass ≥ 80 MVP) |
-| 4 | Governance Readiness | | /100 (Pass ≥ 90) |
-| 5 | Demo Readiness | | /100 (Pass ≥ 85) |
-| 6 | Sales Readiness | | /100 (Pass ≥ 85) |
-| 7 | Client Delivery Readiness | | |
-| 8 | Retainer Readiness | | /100 (Pass ≥ 85) |
-| 9 | Scale Readiness | | /100 (Pass ≥ 85) |
-| 10 | World-Class Readiness | | (معيار طموح — انظر [`docs/company/WORLD_CLASS_READINESS_AR.md`](docs/company/WORLD_CLASS_READINESS_AR.md)) |
+| Gate | الاسم | قرار | ملاحظة |
+|------|--------|------|---------|
+| 0 | Founder Clarity | PASS | العقيدة والسُلّم الخماسي محسومان. |
+| 1 | Offer Readiness | FIX | السُلّم الخماسي مُعتمد؛ يلزم مواءمة README/landing عليه (مصدر حقيقة واحد). |
+| 2 | Delivery Readiness | FIX | منسّق الـ7-Day Sprint أُصلح ويعمل؛ يلزم تشغيله على بيانات عميل حقيقي مرة واحدة. |
+| 3 | Product Readiness | FIX | الـAPI يقلع (750 مسار)؛ المجموعة الكاملة فيها ~57 فشل سابق (انجراف اختبار↔كود). |
+| 4 | Governance Readiness | PASS | الـ11 غير-قابل-للتفاوض مُنفَّذة في `doctrine.py` ومُختبرة. |
+| 5 | Demo Readiness | FIX | حزم demo موجودة؛ تحتاج تحقق على المنسّق المُصلَّح. |
+| 6 | Sales Readiness | BLOCKED | لا بيع رسمي قبل تفعيل Moyasar (لا قدرة تحصيل حالياً). |
+| 7 | Client Delivery Readiness | FIX | السجلات (Proof/Capital/Value/Governance) موجودة؛ صفر Proof Pack مُسلَّم. |
+| 8 | Retainer Readiness | BLOCKED | يعتمد على ≥3 pilots. |
+| 9 | Scale Readiness | BLOCKED | يعتمد على إيراد متكرر. |
+| 10 | World-Class Readiness | BLOCKED | معيار طموح — بعيد. |
 
 **قرار ثلاثي:** `PASS` → انتقل | `FIX` → أصلح ثم أعد التقييم | `BLOCKED` → لا بيع ولا توسع حتى تُزال المعرقلات.
 
 ---
 
-## Official Services
+## Official Services (السُلّم الخماسي — مصدر الحقيقة الوحيد)
 
-1. Lead Intelligence Sprint — `docs/services/lead_intelligence_sprint/`
-2. AI Quick Win Sprint — `docs/services/ai_quick_win_sprint/`
-3. Company Brain Sprint — `docs/services/company_brain_sprint/`
+راجع [`docs/COMPANY_SERVICE_LADDER.md`](docs/COMPANY_SERVICE_LADDER.md).
+
+1. **Rung 0** — Free AI Ops Diagnostic (0 SAR) — قابل للبيع الآن.
+2. **Rung 1** — 7-Day Revenue Intelligence Sprint (499 SAR) — Beta، ينتظر Moyasar + أول عميل.
+3. **Rung 2–4** — Data Pack / Managed Ops / Custom AI — مقفلة ببوابات الفتح.
 
 ## Do Not Sell Yet
 
-1.
-2.
-3.
+1. Rung 2 (Data Pack) — يُفتح بعد 3 pilots بنفس القطاع.
+2. Rung 3 (Managed Ops) — يُفتح بعد 3 أشهر retainer.
+3. Rung 4 (Custom AI) — يُفتح بعد 3 pilots + إذن موقّع.
 
 ## Critical Gaps
 
-1.
-2.
-3.
+1. **Moyasar غير مُفعّل** — لا قدرة تحصيل (`account_inactive_error`). إجراء KYC على المؤسس. يحجب كل إيراد.
+2. **صفر Proof Pack مُسلَّم وصفر case study** — لا دليل أثر؛ يحجب الترقّي في السُلّم.
+3. **~57 فشل اختبار سابق** في المجموعة الكاملة — انجراف اختبار↔كود من موجات البناء السابقة (مثل LLM router `route` مفقود، enum `ACTIVE` مفقود) — دَيْن جودة يجب سداده.
 
 ## Next Build Decisions
 
-1.
-2.
-3.
+1. مواءمة README/landing/COMMERCIAL_WIRING على السُلّم الخماسي (مصدر حقيقة واحد).
+2. تشغيل الـ7-Day Sprint المُصلَّح على بيانات تجريبية كاملة وإصدار أول Proof Pack داخلي.
+3. سداد دَيْن الاختبارات الـ57 (إصلاح انجراف اختبار↔كود) قبل ادعاء "جاهز للإنتاج".
 
 ---
 
