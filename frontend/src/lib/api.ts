@@ -181,6 +181,58 @@ export const api = {
 
   getCustomerPortal: (handle = "Slot-A") =>
     apiClient.get(`/api/v1/customer-portal/${encodeURIComponent(handle)}`),
+
+  // --- Governed Revenue & AI Operations (Phase C) ---
+
+  getServices: () =>
+    apiClient.get("/api/v1/services"),
+
+  postRevenueOpsDiagnostic: (body: Record<string, unknown>) =>
+    apiClient.post("/api/v1/revenue-ops/diagnostics", body),
+
+  postRevenueOpsUpload: (body: Record<string, unknown>) =>
+    apiClient.post("/api/v1/revenue-ops/upload", body),
+
+  postRevenueOpsScore: (body: Record<string, unknown>) =>
+    apiClient.post("/api/v1/revenue-ops/score", body),
+
+  getRevenueOpsDecisionPassport: (
+    diagnosticId: string,
+    customerId: string,
+    signals?: string[],
+  ) =>
+    apiClient.get(
+      `/api/v1/revenue-ops/${encodeURIComponent(diagnosticId)}/decision-passport`,
+      {
+        params: {
+          customer_id: customerId,
+          ...(signals && signals.length ? { signals: signals.join(",") } : {}),
+        },
+      },
+    ),
+
+  postRevenueOpsFollowUpDrafts: (
+    diagnosticId: string,
+    body: Record<string, unknown>,
+  ) =>
+    apiClient.post(
+      `/api/v1/revenue-ops/${encodeURIComponent(diagnosticId)}/follow-up-drafts`,
+      body,
+    ),
+
+  postEvidenceEvent: (body: Record<string, unknown>) =>
+    apiClient.post("/api/v1/evidence/events", body),
+
+  postApproval: (body: Record<string, unknown>) =>
+    apiClient.post("/api/v1/approvals", body),
+
+  getBoardDecisionOverview: (customerId: string, hasActiveRetainer = false) =>
+    apiClient.get("/api/v1/board-decision-os/overview", {
+      params: {
+        customer_id: customerId,
+        has_active_retainer: hasActiveRetainer,
+      },
+    }),
 };
 
 export default api;

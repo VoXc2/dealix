@@ -17,6 +17,12 @@ import {
   Zap,
   Shield,
   Building2,
+  Package,
+  Gauge,
+  Target,
+  Receipt,
+  ClipboardCheck,
+  FileText,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
@@ -32,6 +38,12 @@ const navItems: NavItem[] = [
   { key: "pipeline", href: "/pipeline", icon: GitBranch },
   { key: "agents", href: "/agents", icon: Bot },
   { key: "approvals", href: "/approvals", icon: CheckSquare },
+  { key: "revenueOps", href: "/revenue-ops", icon: Gauge },
+  { key: "marketProof", href: "/market-proof", icon: Target },
+  { key: "billing", href: "/billing", icon: Receipt },
+  { key: "boardDecisionOs", href: "/board-decision-os", icon: ClipboardCheck },
+  { key: "proofPack", href: "/proof-pack", icon: FileText },
+  { key: "services", href: "/services", icon: Package },
   { key: "trustCheck", href: "/trust-check", icon: Shield },
   { key: "customerPortal", href: "/customer-portal", icon: Building2 },
   { key: "clients", href: "/clients", icon: Users },
@@ -145,6 +157,12 @@ export function Sidebar({ collapsed = false, onToggle }: SidebarProps) {
                           | "pipeline"
                           | "agents"
                           | "approvals"
+                          | "revenueOps"
+                          | "marketProof"
+                          | "billing"
+                          | "boardDecisionOs"
+                          | "proofPack"
+                          | "services"
                           | "trustCheck"
                           | "customerPortal"
                           | "clients"

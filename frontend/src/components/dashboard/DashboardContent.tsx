@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 import { KPICard } from "./KPICard";
 import { RevenueChart } from "./RevenueChart";
 import { DealPipelineChart } from "./DealPipelineChart";
+import { BoardSignalTile } from "./BoardSignalTile";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { formatRelativeTime, getStatusColor } from "@/lib/utils";
@@ -249,6 +250,9 @@ export function DashboardContent() {
         <RevenueChart />
         <DealPipelineChart />
       </div>
+
+      {/* Board Decision OS signal — Governed Revenue & AI Operations */}
+      <BoardSignalTile />
 
       {/* Activity Feed */}
       <motion.div
