@@ -1,0 +1,21 @@
+name: foundation_enterprise_loop_eval
+version: 1
+cases:
+  - id: approved_path
+    input:
+      tenant_id: t_demo
+      user_role: sales_manager
+      approval_granted: true
+    expected:
+      status: completed
+      crm_update_present: true
+      rollback_drill: passed
+  - id: blocked_without_approval
+    input:
+      tenant_id: t_demo
+      user_role: sales_manager
+      approval_granted: false
+    expected:
+      status: blocked
+      crm_update_present: false
+      governance_reason: manual_approval_required

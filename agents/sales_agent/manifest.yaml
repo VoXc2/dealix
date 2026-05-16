@@ -1,0 +1,13 @@
+name: sales_agent
+version: 1
+mode: suggest_only
+purpose: qualify_score_and_draft_response
+requires_permissions:
+  - agent:run:sales_agent
+hard_gates:
+  no_autonomous_external_send: true
+  approval_required_for_external_actions: true
+outputs:
+  - qualification_score
+  - qualification_tier
+  - suggested_response

@@ -1,0 +1,16 @@
+checklist:
+  tenant_count: 1
+  user_count: 3
+  role_count: 2
+  workflow_count: 1
+  agent_count: 1
+  approval_rules_count: 1
+  crm_integrations_count: 1
+  executive_reports_count: 1
+  eval_reports_count: 1
+  rollback_drill_required: true
+success_criteria:
+  - one_complete_governed_enterprise_loop_runs_end_to_end
+  - no_external_execution_without_approval
+  - traces_logs_metrics_are_emitted
+  - audit_log_records_all_major_actions
