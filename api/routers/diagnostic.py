@@ -92,17 +92,23 @@ def _diagnostic_report_markdown(result: Any) -> str:
     Keeps the ``approval_required`` status visible — the report is a
     deliverable the founder reviews and sends, never auto-sent.
     """
+    bundle_line = (
+        "**Recommended bundle / الحزمة الموصى بها:** "
+        + f"{result.bundle_name_ar} · {result.bundle_name_en} "
+        + f"(`{result.recommended_bundle}`)"
+    )
+    status_line = (
+        f"**Status / الحالة:** {result.approval_status} — "
+        + "founder review required before sending / "
+        + "مراجعة المؤسس مطلوبة قبل الإرسال."
+    )
     return "\n".join(
         [
             f"# Dealix AI Ops Diagnostic — {result.company}",
             "",
-            f"**Recommended bundle / الحزمة الموصى بها:** "
-            f"{result.bundle_name_ar} · {result.bundle_name_en} "
-            f"(`{result.recommended_bundle}`)",
+            bundle_line,
             "",
-            f"**Status / الحالة:** {result.approval_status} — "
-            "founder review required before sending / "
-            "مراجعة المؤسس مطلوبة قبل الإرسال.",
+            status_line,
             "",
             "---",
             "",

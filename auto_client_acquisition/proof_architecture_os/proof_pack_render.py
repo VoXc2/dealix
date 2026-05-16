@@ -48,6 +48,11 @@ def _has_content(sections: dict[str, str]) -> bool:
 
 
 def _not_generated_notice(customer_handle: str, generated_at: str) -> str:
+    body = (
+        "> This engagement has not produced a scored Proof Pack. Run the "
+        + "Sprint with the customer's data first. No proof is fabricated — "
+        + "an empty pack is reported honestly as empty."
+    )
     return "\n".join(
         [
             f"# Dealix Proof Pack — {customer_handle}",
@@ -56,9 +61,7 @@ def _not_generated_notice(customer_handle: str, generated_at: str) -> str:
             "",
             "> **Proof Pack not yet generated / لم يُولَّد Proof Pack بعد.**",
             ">",
-            "> This engagement has not produced a scored Proof Pack. Run the "
-            "Sprint with the customer's data first. No proof is fabricated — "
-            "an empty pack is reported honestly as empty.",
+            body,
             "",
             "---",
             f"_{_DISCLAIMER}_",
@@ -130,26 +133,35 @@ def proof_pack_email_body(
     next_step = (sections.get("recommended_next_step") or "").strip()
 
     if not generated:
+        not_ready = (
+            "Proof Pack not yet generated. Run the Sprint with the "
+            + "customer's data before sending. / لم يُولَّد Proof Pack بعد."
+        )
         return "\n".join(
             [
                 f"Subject / الموضوع: Dealix — {customer_handle}",
                 "",
-                "Proof Pack not yet generated. Run the Sprint with the "
-                "customer's data before sending. / لم يُولَّد Proof Pack بعد.",
+                not_ready,
             ]
         )
 
+    score_str = score if score is not None else "—"
+    body_ar = (
+        f"مرحباً، مرفق Proof Pack الخاص بـ{customer_handle} من Revenue Proof "
+        + f"Sprint. درجة الإثبات: {score_str}/100."
+    )
+    body_en = (
+        f"Hello — attached is the Proof Pack for {customer_handle} from the "
+        + f"Revenue Proof Sprint. Proof score: {score_str}/100."
+    )
     return "\n".join(
         [
             f"Subject / الموضوع: Dealix Proof Pack — {customer_handle}",
             "",
-            f"مرحباً، مرفق Proof Pack الخاص بـ{customer_handle} من Revenue Proof "
-            f"Sprint. درجة الإثبات: {score if score is not None else '—'}/100.",
+            body_ar,
             (f"الخطوة التالية الموصى بها: {next_step}" if next_step else ""),
             "",
-            f"Hello — attached is the Proof Pack for {customer_handle} from the "
-            f"Revenue Proof Sprint. Proof score: "
-            f"{score if score is not None else '—'}/100.",
+            body_en,
             "",
             _DISCLAIMER,
         ]
