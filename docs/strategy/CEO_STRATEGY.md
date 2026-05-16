@@ -1,5 +1,8 @@
 # CEO Strategy
 
+> Full CEO/Board plan (positioning, offers, sales, product, engineering, governance, finance,
+> team, decision rules): [`docs/company/DEALIX_CEO_BOARD_STRATEGY.md`](../company/DEALIX_CEO_BOARD_STRATEGY.md).
+
 ## Strategic thesis
 
 Companies are experimenting with AI, but struggle to operationalize it. Dealix wins by converting AI into measurable business workflows.
