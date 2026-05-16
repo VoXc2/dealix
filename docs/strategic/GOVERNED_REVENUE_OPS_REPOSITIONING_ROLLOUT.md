@@ -101,7 +101,14 @@ project without Proof Pack · no project without Capital Asset.
   - `docs/company/OFFER_LADDER.md` (updated — SUPERSEDED banner)
   - `docs/company/POSITIONING.md` (updated — new canonical section at top)
   - `DEALIX_READINESS.md` (updated — official services = 7-service catalog)
-- [ ] Phase 2 — backend
+- [x] **Phase 2 — backend** (2026-05-16)
+  - `auto_client_acquisition/revenue_ops/__init__.py` (new — domain package)
+  - `auto_client_acquisition/revenue_ops/state_machine.py` (new — governed engagement state machine)
+  - `auto_client_acquisition/revenue_ops/diagnostics.py` (new — Governed Revenue Ops Diagnostic engine)
+  - `api/routers/revenue_ops_engagements.py` (new — `/api/v1/revenue-ops` surface, 10 endpoints)
+  - `api/routers/domains/sales/__init__.py` (updated — registers the new router)
+  - `tests/test_revenue_ops_engagement_state_machine.py` (new — 11 doctrine tests, all passing)
+  - `docs/strategic/GOVERNED_REVENUE_OPS_BACKEND_DOMAINS.md` (new — domain manifest + API + state machine)
 - [ ] Phase 3 — frontend
 - [ ] Phase 4 — outreach + metrics
 
