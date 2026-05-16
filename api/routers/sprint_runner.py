@@ -11,6 +11,7 @@ would duplicate ledger and capital-asset side effects.
 """
 from __future__ import annotations
 
+import re
 from typing import Any
 
 from fastapi import APIRouter, HTTPException
@@ -103,13 +104,14 @@ async def render_proof_pack_pdf(body: _ProofPackRenderBody):
             ),
             headers={"X-PDF-Renderer": "unavailable; markdown returned as fallback"},
         )
+    # Sanitize the client-supplied id before it reaches a response header —
+    # strip anything outside [A-Za-z0-9._-] to prevent CR/LF header injection.
+    safe_id = re.sub(r"[^A-Za-z0-9._-]", "_", body.engagement_id)[:64] or "proof_pack"
     return Response(
         content=pdf,
         media_type="application/pdf",
         headers={
-            "Content-Disposition": (
-                f'inline; filename="proof_pack_{body.engagement_id}.pdf"'
-            )
+            "Content-Disposition": f'inline; filename="proof_pack_{safe_id}.pdf"'
         },
     )
 

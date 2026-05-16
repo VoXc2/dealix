@@ -189,11 +189,27 @@ def test_zero_data_sprint_does_not_score_case_ready():
 
 
 def test_step5_allows_negated_guarantee_disclaimer():
-    """A compliant disclaimer ("we do NOT guarantee") must not be blocked."""
+    """A compliant disclaimer ("we do NOT guarantee", "without guaranteed
+    revenue") must not be blocked."""
     drafts = [
         {"account": "A", "outline_ar": "لا نضمن نتائج",
          "outline_en": "we do not guarantee results"},
+        {"account": "B", "outline_ar": "نص آمن",
+         "outline_en": "we work without guaranteed revenue promises"},
     ]
     out = step5_governance_review(customer_id="x", engagement_id="e1", drafts=drafts)
     decisions = {r["decision"] for r in out["reviews"]}
     assert "block" not in decisions
+
+
+def test_step5_blocks_verb_form_guarantee_claims():
+    """Affirmative claims that don't start with "we" or use the adjective
+    form must still be blocked — no hard-gate bypass."""
+    drafts = [
+        {"account": "A", "outline_ar": "نص آمن",
+         "outline_en": "I guarantee revenue for you"},
+        {"account": "B", "outline_ar": "نص آمن",
+         "outline_en": "guarantee results in 30 days"},
+    ]
+    out = step5_governance_review(customer_id="x", engagement_id="e1", drafts=drafts)
+    assert all(r["decision"] == "block" for r in out["reviews"])

@@ -40,7 +40,16 @@ _SECTION_TITLES: tuple[tuple[str, str, str], ...] = (
 
 
 def _sections(pack: dict[str, Any] | None) -> dict[str, str]:
-    return dict(((pack or {}).get("sections") or {}))
+    """Section map with every value coerced to ``str``.
+
+    The render routes accept arbitrary client JSON, so a section value may be
+    a non-string (e.g. a number); coercing here keeps ``.strip()`` downstream
+    safe instead of raising a 500.
+    """
+    raw = (pack or {}).get("sections")
+    if not isinstance(raw, dict):
+        return {}
+    return {str(k): ("" if v is None else str(v)) for k, v in raw.items()}
 
 
 def _has_content(sections: dict[str, str]) -> bool:

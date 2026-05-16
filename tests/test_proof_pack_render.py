@@ -67,3 +67,16 @@ def test_email_body_is_bilingual_render_only():
 def test_email_body_empty_pack_flags_not_generated():
     body = proof_pack_email_body({}, customer_handle="Acme")
     assert "not yet generated" in body.lower()
+
+
+def test_render_coerces_non_string_section_values():
+    """A non-string section value (arbitrary client JSON) must not crash
+    rendering with an AttributeError."""
+    pack = {
+        "sections": {k: 0 for k in PROOF_PACK_V2_SECTIONS},
+        "score": 10,
+        "tier": "weak_proof",
+    }
+    pack["sections"]["executive_summary"] = 12345
+    md = proof_pack_to_markdown(pack, customer_handle="Acme")
+    assert "12345" in md

@@ -12,29 +12,34 @@ from auto_client_acquisition.saudi_layer.forbidden_claims import (
     forbidden_arabic_claim_detected,
 )
 
-# Affirmative guarantee phrasings only — the verb form, never the adjective
-# used in compliant disclaimers ("no guaranteed claims" / "ادعاءات مضمونة").
-_AFFIRMATIVE_GUARANTEE_EN: tuple[str, ...] = (
-    "we guarantee",
-    "guarantee 100",
-    "100% guarantee",
-    "guaranteed sales",
-    "guaranteed revenue",
-    "guaranteed result",
-    "guaranteed roi",
+# Negated forms — a guarantee word preceded by a negation is a compliant
+# disclaimer, not an affirmative claim. Stripped before the affirmative check.
+_NEGATED_AR = re.compile(r"(?:لا|لن|لم|ما)\s*نضمن")
+_NEGATED_EN = re.compile(
+    r"\b(?:no|not|never|without|cannot|can't|don't|won't|doesn't|"
+    r"wouldn't)\s+guarantee",
+    re.IGNORECASE,
 )
 
-# Negated forms — a guarantee word preceded by a negation is a compliant
-# disclaimer, not an affirmative claim.
-_NEGATED_AR = re.compile(r"(?:لا|لن|لم|ما)\s*نضمن")
-_NEGATED_EN = re.compile(r"\b(?:no|not|never)\s+guarantee", re.IGNORECASE)
+# Affirmative English guarantee — the verb/adjective near an outcome noun,
+# or a first-person promise. Matches "we/I guarantee revenue", "guarantee
+# results", "guaranteed sales", "100% guaranteed", etc.
+_AFFIRMATIVE_GUARANTEE_EN = re.compile(
+    r"guarantee[ds]?\b[\w%\s-]{0,20}?\b"
+    r"(revenue|sales?|results?|roi|growth|deals?|leads?|customers?|"
+    r"conversions?|profit|income|outcomes?)\b"
+    r"|\b(?:we|i)\s+guarantee\b"
+    r"|100\s*%?\s*guarantee[ds]?|guarantee[ds]?\s+100",
+    re.IGNORECASE,
+)
 
 
 def _contains_guaranteed_claim(text: str) -> bool:
     """True when text makes an affirmative guaranteed-outcome promise.
 
-    Negated forms ("لا نضمن" / "no guarantee") are stripped first, so a
-    doctrine-compliant disclaimer is not mistaken for an affirmative claim.
+    Negated forms ("لا نضمن" / "no guarantee" / "without guarantee") are
+    stripped first, so a doctrine-compliant disclaimer is not mistaken for an
+    affirmative claim.
     """
     blob = text.lower()
     if forbidden_arabic_claim_detected(blob):
@@ -42,7 +47,7 @@ def _contains_guaranteed_claim(text: str) -> bool:
     if "نضمن" in _NEGATED_AR.sub(" ", text):
         return True
     en = _NEGATED_EN.sub(" ", blob)
-    return any(n in en for n in _AFFIRMATIVE_GUARANTEE_EN)
+    return _AFFIRMATIVE_GUARANTEE_EN.search(en) is not None
 
 
 class _DecisionLabel(str):

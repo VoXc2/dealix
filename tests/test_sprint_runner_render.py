@@ -100,3 +100,19 @@ def test_render_empty_pack_is_honest_not_generated_notice():
     )
     assert r.status_code == 200
     assert "not yet generated" in r.text.lower()
+
+
+def test_render_pdf_sanitizes_engagement_id_in_header():
+    """A CR/LF-bearing engagement_id must not inject extra response headers."""
+    r = client.post(
+        "/api/v1/sprint/render/pdf",
+        json={
+            "customer_handle": "Acme",
+            "engagement_id": "evil\r\nX-Injected: 1",
+            "proof_pack": _proof_pack(),
+        },
+    )
+    assert r.status_code == 200
+    cd = r.headers.get("content-disposition", "")
+    assert "\r" not in cd and "\n" not in cd
+    assert "x-injected" not in {k.lower() for k in r.headers}
