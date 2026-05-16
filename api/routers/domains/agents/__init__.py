@@ -8,6 +8,7 @@ from __future__ import annotations
 from fastapi import APIRouter
 
 from api.routers import (
+    agentic_enterprise,
     agent_governance,
     agent_observability as agent_observability_router,
     agents,
@@ -25,6 +26,7 @@ from api.routers import (
 )
 
 _ROUTERS = [
+    agentic_enterprise.router,
     agents.router,
     ai_workforce.router,
     llm_gateway_v10.router,
