@@ -31,7 +31,7 @@ jobs:
         env:
           REDIS_URL: ${{ secrets.STAGING_REDIS_URL }}
         run: |
-          python scripts/check_dlq_size.py --max 5 --json
+          python3 scripts/check_dlq_size.py --max 5 --json
 
   production:
     name: DLQ — production
@@ -46,4 +46,4 @@ jobs:
         env:
           REDIS_URL: ${{ secrets.PRODUCTION_REDIS_URL }}
         run: |
-          python scripts/check_dlq_size.py --max 5 --json
+          python3 scripts/check_dlq_size.py --max 5 --json

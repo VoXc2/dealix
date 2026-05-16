@@ -38,9 +38,9 @@ jobs:
           WATCHDOG_BASE_URL: https://api.dealix.me
           WATCHDOG_SLACK_URL: ${{ secrets.WATCHDOG_SLACK_URL }}
         run: |
-          python scripts/watchdog_drift_check.py --json | tee watchdog-report.json
+          python3 scripts/watchdog_drift_check.py --json | tee watchdog-report.json
           # Re-run for non-JSON console output to make Action logs readable
-          python scripts/watchdog_drift_check.py || echo "Drift detected — see Slack."
+          python3 scripts/watchdog_drift_check.py || echo "Drift detected — see Slack."
 
       - name: Upload watchdog report
         if: always()

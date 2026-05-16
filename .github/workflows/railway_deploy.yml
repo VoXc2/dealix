@@ -132,7 +132,7 @@ jobs:
           echo "→ /api/v1/prospect/search-diag"
           # Tier readiness is informational; non-fatal if optional providers are absent
           curl -fsS --max-time 10 "$BASE_URL/api/v1/prospect/search-diag" \
-            | python -c "import sys,json; d=json.load(sys.stdin); print('tier1=', d.get('tier1_ready'), 'tier2=', d.get('tier2_ready'))"
+            | python3 -c "import sys,json; d=json.load(sys.stdin); print('tier1=', d.get('tier1_ready'), 'tier2=', d.get('tier2_ready'))"
 
           echo "→ webhook 401-on-bad-signature (security smoke)"
           code=$(curl -sS -o /dev/null -w "%{http_code}" --max-time 10 \

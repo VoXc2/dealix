@@ -36,7 +36,7 @@ jobs:
         env:
           DEALIX_FOUNDER_ID: sami_assiri
         run: |
-          python -m core.queue.weekly_self_improvement | tee weekly-scorecard.json
+          python3 -m core.queue.weekly_self_improvement | tee weekly-scorecard.json
 
       - name: Upload scorecard
         if: always()
