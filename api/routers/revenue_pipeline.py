@@ -9,7 +9,14 @@ from pydantic import BaseModel, ConfigDict, Field
 
 from auto_client_acquisition.revenue_pipeline import (
     PipelineStage,
+    count_governed_value_decisions,
+    event_label_for_stage,
+    governed_value_decision_from_lead,
+    level_for_stage,
     snapshot_revenue_truth,
+)
+from auto_client_acquisition.revenue_pipeline.governed_value_decisions import (
+    REQUIRED_ELEMENTS,
 )
 from auto_client_acquisition.revenue_pipeline.lead import Lead
 from auto_client_acquisition.revenue_pipeline.pipeline import get_default_pipeline
@@ -114,6 +121,49 @@ def _count_real_proof_events() -> int:
             continue
         count += 1
     return count
+
+
+@router.get("/north-star")
+async def north_star() -> dict[str, Any]:
+    """North-star metric — Governed Value Decisions Created.
+
+    Counts pipeline leads whose decision carries all four required
+    elements: clear source, clear approval, documented evidence, and
+    measurable value. A commitment with no measurable amount does not
+    count.
+    """
+    pipeline = get_default_pipeline()
+    decisions = [
+        d
+        for d in (
+            governed_value_decision_from_lead(lead)
+            for lead in pipeline.list_all()
+        )
+        if d is not None
+    ]
+    return {
+        "metric": "governed_value_decisions_created",
+        "required_elements": list(REQUIRED_ELEMENTS),
+        "candidate_decisions": len(decisions),
+        "governed_value_decisions_created": count_governed_value_decisions(decisions),
+        "hard_gates": _HARD_GATES,
+    }
+
+
+@router.get("/{lead_id}/level")
+async def lead_level(lead_id: str) -> dict[str, Any]:
+    """Evidence level (L2-L7) + strategy event label for one lead."""
+    pipeline = get_default_pipeline()
+    lead = pipeline.get(lead_id)
+    if lead is None:
+        raise HTTPException(status_code=404, detail=f"unknown lead: {lead_id}")
+    return {
+        "lead_id": lead_id,
+        "stage": lead.stage,
+        "level": level_for_stage(lead.stage),
+        "event_label": event_label_for_stage(lead.stage),
+        "hard_gates": _HARD_GATES,
+    }
 
 
 @router.get("/summary")

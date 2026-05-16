@@ -18,6 +18,20 @@ A pipeline stage advances ONLY on real evidence:
 
 Pure-local. NO DB. NO external call. NO LLM.
 """
+from auto_client_acquisition.revenue_pipeline.governed_value_decisions import (
+    GovernedValueDecision,
+    count_governed_value_decisions,
+    governed_value_decision_from_lead,
+    qualifies_as_governed_value_decision,
+)
+from auto_client_acquisition.revenue_pipeline.level_overlay import (
+    EvidenceStateLevel,
+    event_label_for_stage,
+    is_l7_candidate,
+    is_l7_confirmed,
+    level_for_stage,
+    level_rank,
+)
 from auto_client_acquisition.revenue_pipeline.revenue_truth import (
     RevenueTruthSnapshot,
     is_v12_1_unlocked,
@@ -32,12 +46,22 @@ from auto_client_acquisition.revenue_pipeline.stage_policy import (
 )
 
 __all__ = [
+    "EvidenceStateLevel",
+    "GovernedValueDecision",
     "PipelineStage",
     "RevenueTruthSnapshot",
     "advance_stage",
+    "count_governed_value_decisions",
     "counts_as_commitment",
     "counts_as_revenue",
+    "event_label_for_stage",
+    "governed_value_decision_from_lead",
+    "is_l7_candidate",
+    "is_l7_confirmed",
     "is_v12_1_unlocked",
+    "level_for_stage",
+    "level_rank",
+    "qualifies_as_governed_value_decision",
     "snapshot_revenue_truth",
     "valid_transitions",
 ]
