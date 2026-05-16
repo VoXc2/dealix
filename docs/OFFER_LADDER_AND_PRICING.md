@@ -5,6 +5,19 @@
 > **قاعدة ذهبية:** كل درجة تُفتح فقط بعد إثبات حقيقي من الدرجة السابقة.
 > لا ترقية قبل نتيجة موثقة. لا ضمانات. لا ادعاءات مبالغ فيها.
 
+> **إفصاح نمط التسليم — Delivery-mode disclosure.** الدرجتان 0 و1 (التشخيص
+> المجاني وSprint الـ499 ريال) مُسلّمتان عبر منتج مُتحقَّق منه يُنتج مُخرجاً
+> حقيقياً جاهزاً للعميل. أمّا الدرجات 3–5 فهي اليوم **بقيادة المؤسس /
+> شبه-مؤتمتة** (founder-assisted / semi-automated): الأدوات موجودة لكن التسليم
+> يتطلّب تشغيلاً يدوياً من المؤسس. لا تُعرض كخدمات مُدارة بالكامل، ولا تُفتح
+> إلا بعد استيفاء شروط الدخول المذكورة لكل درجة. الأتمتة الكاملة لها لا تُبنى
+> إلا عند ظهور طلب حقيقي — انظر
+> `docs/sales-kit/CONDITIONAL_BUILD_TRIGGERS.md`.
+>
+> Rungs 0–1 ship a verified product deliverable. Rungs 3–5 are
+> **founder-assisted / semi-automated** today — not full managed services —
+> and unlock only on the stated entry conditions.
+
 ---
 
 ## سلم الخدمات — نظرة عامة
@@ -91,6 +104,7 @@
 | **مسار الترقية** | → 7,500/mo Executive Command Center |
 | **الهامش** | ~70% (تكلفة: 10–15 ساعة/شهر + < 50 SAR LLM) |
 | **وقت التسليم** | تسليم مستمر شهري |
+| **نمط التسليم اليوم** | بقيادة المؤسس / شبه-مؤتمت — تشغيل يدوي شهري، لا أتمتة جدولة بعد |
 | **وضع الإجراء** | `approval_required` لكل مسودة |
 
 ---
@@ -109,6 +123,7 @@
 | **مسار الترقية** | → Agency Partner OS أو Custom Enterprise |
 | **الهامش** | ~65% (تكلفة: 20–30 ساعة/شهر) |
 | **وقت التسليم** | تسليم يومي/أسبوعي/شهري |
+| **نمط التسليم اليوم** | بقيادة المؤسس / شبه-مؤتمت — لا تقرير يومي مُجدوَل ولا رادار آلي بعد |
 | **وضع الإجراء** | `approval_required` |
 
 ---
@@ -126,21 +141,23 @@
 | **الاستثناءات** | لا white-label كامل قبل 3 proof packs، لا مشاركة بيانات عملاء عبر شركاء |
 | **الهامش** | ~55–60% (بعد rev-share) |
 | **وقت التسليم** | إعداد الشريك: 2–4 أسابيع |
+| **نمط التسليم اليوم** | بقيادة المؤسس / شبه-مؤتمت — لا بوابة شريك مؤتمتة بعد |
 | **وضع الإجراء** | `approval_required` — كل شريك يحتاج موافقة يدوية |
 
 ---
 
 ## ملخص الأسعار السريع
 
-| الخدمة | السعر | الوضع |
-|--------|-------|-------|
-| AI Ops Diagnostic | مجاني | متاح الآن |
-| 7-Day Proof Sprint | 499 SAR | متاح الآن |
-| Data-to-Revenue Pack | 1,500 SAR | بعد تأهيل |
-| Managed Revenue Ops | 2,999–4,999 SAR/شهر | بعد pilot |
-| Executive Command Center | 7,500–15,000 SAR/شهر | بعد 3 pilots |
-| Agency Partner OS | مخصص + rev-share | بعد 3 proof packs |
+| الخدمة | السعر | الوضع | نمط التسليم |
+|--------|-------|-------|------------|
+| AI Ops Diagnostic | مجاني | متاح الآن | منتج مُتحقَّق منه |
+| 7-Day Proof Sprint | 499 SAR | متاح الآن | منتج مُتحقَّق منه |
+| Data-to-Revenue Pack | 1,500 SAR | بعد تأهيل | بقيادة المؤسس |
+| Managed Revenue Ops | 2,999–4,999 SAR/شهر | بعد pilot | بقيادة المؤسس / شبه-مؤتمت |
+| Executive Command Center | 7,500–15,000 SAR/شهر | بعد 3 pilots | بقيادة المؤسس / شبه-مؤتمت |
+| Agency Partner OS | مخصص + rev-share | بعد 3 proof packs | بقيادة المؤسس / شبه-مؤتمت |
 
 ---
 
-*Version 1.0 | No guaranteed claims | Missing data = insufficient_data*
+*Version 1.1 | No guaranteed claims | Missing data = insufficient_data |
+Delivery-mode disclosure added 2026-05-16 — rungs 3–5 are founder-assisted.*
