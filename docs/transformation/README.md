@@ -2,6 +2,10 @@
 
 This directory is the execution spine for the comprehensive transformation from a strong AI product repository into a category-defining governed AI company.
 
+## خطة التطوير الشاملة (مرجع CEO — بدون أفق 2040)
+
+- **[DEALIX_ULTIMATE_DEVELOPMENT_PLAN_AR.md](../strategic/DEALIX_ULTIMATE_DEVELOPMENT_PLAN_AR.md)** — المحاور الثمانية، P0/P1/P2، سلّم الخدمات، قوائم «لا تبني»، إيقاع أسبوعي
+
 ## Unified master strategy (12 + 200)
 
 - [MASTER_STRATEGY_UNIFIED_AR.md](MASTER_STRATEGY_UNIFIED_AR.md) — كيف تتعايش الـ 12 مبادرة التشغيلية مع Dealix 200
