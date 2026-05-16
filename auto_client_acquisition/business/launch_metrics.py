@@ -7,9 +7,13 @@ from typing import Any
 
 def north_star_metrics() -> dict[str, Any]:
     return {
-        "primary": "weekly_qualified_opportunities_accepted_or_drafted",
-        "secondary": "meetings_booked_post_approval",
-        "guardrail": "blocked_high_risk_outreach_count",
+        "primary": "governed_value_decisions_created",
+        "primary_definition": (
+            "Operating or revenue decisions with explicit source, approval, "
+            "evidence trail, and measurable impact."
+        ),
+        "secondary": "meeting_or_scope_pull_after_governed_workflow",
+        "guardrail": "unauthorized_external_action_count",
     }
 
 

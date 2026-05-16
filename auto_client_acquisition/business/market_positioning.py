@@ -79,36 +79,34 @@ def compare_competitors() -> list[dict[str, Any]]:
 
 def dealix_differentiators() -> list[str]:
     return [
-        "Saudi-first GTM context",
-        "Arabic-first personal operator",
-        "WhatsApp-first but compliance-safe",
-        "Why-now market signals",
-        "Project intelligence + strategic memory",
-        "Revenue memory",
-        "Agent approval flows",
-        "PDPL-aware contactability",
-        "Outcome / performance packaging option",
-        "Founder daily brief",
-        "Vertical playbooks",
-        "Relationship-to-revenue workflow",
+        "Governed Revenue & AI Operations positioning",
+        "Approval-first external action safety",
+        "Decision Passport + evidence-led operating rhythm",
+        "Source-backed ROI narrative (no vanity metrics)",
+        "Service-led to platform learning loop",
+        "Arabic-first + Saudi/GCC localization",
+        "Trust moat: no autonomous external send",
+        "Workflow moat: repeated delivery playbooks",
     ]
 
 
 def positioning_statement(segment: Segment) -> str:
     statements: dict[Segment, str] = {
         "founder": (
-            "Dealix هو نظام إيرادات B2B سعودي مع مشغّل استراتيجي عربي: يومياً يقول لك ماذا يهم، "
-            "من تكلّم، ماذا تقول، وما يحتاج موافقة قبل أي إرسال خارجي."
+            "Dealix شركة Governed Revenue & AI Operations: نحوّل تجارب AI وعمليات الإيراد "
+            "إلى workflow محكوم بالمصدر والموافقة والدليل قبل أي إجراء خارجي."
         ),
         "sme": (
-            "Dealix يربط إشارات السوق السعودية بقرارات المبيعات والمتابعة عبر واتساب وبريد "
-            "بمسارات موافقة وتتبع عائد."
+            "للشركات المتوسطة: Dealix يبني طبقة تشغيل تربط CRM والمتابعة والحوكمة مع "
+            "Decision Passport وProof Pack لإثبات قيمة قابلة للقياس."
         ),
         "enterprise": (
-            "Dealix للمؤسسات: حوكمة، تكاملات، ذاكرة مشروع/إيرادات، ووكلاء آمنون مع سياسات واضحة وSSO عند النشر الخاص."
+            "للمؤسسات: Dealix طبقة تشغيل محكومة تجمع approvals وevidence وauditability "
+            "لوكلاء AI وعمليات الإيراد ضمن حدود ثقة واضحة."
         ),
         "agency": (
-            "لوكالات النمو: تنفذون التطبيق والتدريب، وDealix يبقى منصة الاشتراك مع حزمة أداء اختيارية مُعرّفة تعاقدياً."
+            "لشركاء التنفيذ: نبدأ بخدمات Revenue Ops محكومة ثم نحوّل التشغيل المتكرر إلى "
+            "playbooks ومنصة داخلية بدل بيع أتمتة AI غير منضبطة."
         ),
     }
     return statements.get(segment, statements["founder"])

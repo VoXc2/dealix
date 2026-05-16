@@ -18,6 +18,24 @@ def get_pricing_tiers() -> dict[str, Any]:
     """Product packaging aligned with docs/PRICING_STRATEGY.md (SAR/month unless noted)."""
     return {
         "currency": "SAR",
+        "positioning": "Governed Revenue & AI Operations",
+        "operating_motion": "service_led_software_assisted_evidence_first",
+        "focus_offers": [
+            {
+                "key": "governed_revenue_ops_diagnostic",
+                "price_sar_range": [4999, 15000],
+                "expanded_enterprise_range_sar": [15000, 25000],
+            },
+            {
+                "key": "revenue_intelligence_sprint",
+                "price_sar_start": 25000,
+            },
+            {
+                "key": "governed_ops_retainer",
+                "price_sar_monthly_range": [4999, 15000],
+                "expanded_enterprise_range_sar": [15000, 35000],
+            },
+        ],
         "tiers": [
             {
                 "key": "founder_operator",
@@ -119,6 +137,7 @@ def recommend_plan(
     return {
         "recommended_plan": recommended,
         "rationale_ar": rationale_ar,
+        "positioning": "Governed Revenue & AI Operations",
         "tier_summary": tier,
         "inputs": {"company_size": company_size, "monthly_budget_sar": monthly_budget_sar, "goal": goal},
     }
