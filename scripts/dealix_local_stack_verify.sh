@@ -92,7 +92,15 @@ if [[ "$SKIP_DOCKER" -eq 0 ]]; then
   echo "postgres: ready"
 
   echo "== Redis PING =="
-  if ! docker compose exec -T redis redis-cli -a "$RP" ping 2>/dev/null | grep -q PONG; then
+  ok=0
+  for _ in $(seq 1 45); do
+    if docker compose exec -T redis redis-cli -a "$RP" ping 2>/dev/null | grep -q PONG; then
+      ok=1
+      break
+    fi
+    sleep 2
+  done
+  if [[ "$ok" -ne 1 ]]; then
     echo "ERROR: Redis ping failed"
     docker compose logs redis --tail 40 || true
     exit 1
@@ -100,7 +108,15 @@ if [[ "$SKIP_DOCKER" -eq 0 ]]; then
   echo "redis: PONG"
 
   echo "== Mongo admin ping =="
-  if ! docker compose exec -T mongo mongosh "mongodb://mongo_user:${MP}@127.0.0.1:27017/admin" --quiet --eval "db.adminCommand('ping').ok" 2>/dev/null | grep -q 1; then
+  ok=0
+  for _ in $(seq 1 45); do
+    if docker compose exec -T mongo mongosh "mongodb://mongo_user:${MP}@127.0.0.1:27017/admin" --quiet --eval "db.adminCommand('ping').ok" 2>/dev/null | grep -q 1; then
+      ok=1
+      break
+    fi
+    sleep 2
+  done
+  if [[ "$ok" -ne 1 ]]; then
     echo "ERROR: Mongo ping failed"
     docker compose logs mongo --tail 40 || true
     exit 1
