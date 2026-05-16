@@ -77,6 +77,11 @@ class IdempotencyStore:
         """Returns True if newly marked, False if a live mark already existed."""
         now = time.time()
         with _MEMORY_LOCK:
+            # Opportunistically evict expired keys: unique-ID webhook traffic
+            # would otherwise grow the no-Redis fallback store unbounded.
+            expired = [k for k, exp in _MEMORY_STORE.items() if exp <= now]
+            for k in expired:
+                del _MEMORY_STORE[k]
             expiry = _MEMORY_STORE.get(namespaced_key)
             if expiry is not None and expiry > now:
                 return False

@@ -42,7 +42,6 @@ def audit_draft_text(text: str) -> list[str]:
         "نضمن النتائج",
         "نضمن لك مبيعات",
         "نضمن مبيعات",
-        "نضمن",
         "fake proof",
         "fake testimonial",
     )
