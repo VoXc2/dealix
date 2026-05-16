@@ -200,6 +200,38 @@ _STATIC_ITEMS = (
         test_paths=["tests/test_delivery_sprint.py"],
         status="implemented",
     ),
+    ComplianceItem(
+        framework="Internal",
+        reference="No revenue before invoice paid",
+        requirement="Revenue is recognized only at the invoice_paid state.",
+        evidence_paths=["auto_client_acquisition/governed_value_os/state_machine.py"],
+        test_paths=["tests/test_governed_value_state_machine.py"],
+        status="implemented",
+    ),
+    ComplianceItem(
+        framework="Internal",
+        reference="No L5 before meeting",
+        requirement="Proof cannot reach L5 without a prior booked meeting.",
+        evidence_paths=["auto_client_acquisition/governed_value_os/state_machine.py"],
+        test_paths=["tests/test_governed_value_state_machine.py"],
+        status="implemented",
+    ),
+    ComplianceItem(
+        framework="Internal",
+        reference="No L7 confirmed before payment",
+        requirement="invoice_paid (L7 confirmed) requires a payment reference.",
+        evidence_paths=["auto_client_acquisition/governed_value_os/state_machine.py"],
+        test_paths=["tests/test_governed_value_state_machine.py"],
+        status="implemented",
+    ),
+    ComplianceItem(
+        framework="Internal",
+        reference="No unconsented public proof",
+        requirement="Public case studies require signed consent (L4 + consent).",
+        evidence_paths=["auto_client_acquisition/proof_engine/evidence.py"],
+        test_paths=["tests/test_doctrine_11_non_negotiables.py"],
+        status="implemented",
+    ),
 )
 
 

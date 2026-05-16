@@ -1,9 +1,9 @@
 <div align="center">
 
-# 🏢 Dealix — Saudi B2B Revenue Engine
+# 🏢 Dealix — Governed Revenue & AI Operations
 
-### AI revenue, growth, and compliance engine for Saudi B2B — PDPL-native, ZATCA-compliant, approval-first.
-### محرّك إيرادات ونمو وامتثال بـ AI للشركات السعودية — PDPL أصلاً، ZATCA متوافق، الموافقة-أولاً.
+### Governed operation of revenue and AI for Saudi & GCC B2B — clear sources, approvals, evidence, decisions, measurable value.
+### تشغيل الإيراد والذكاء الاصطناعي بحوكمة للشركات السعودية والخليجية — مصادر واضحة، موافقات، أدلة، قرارات، وقيمة قابلة للقياس.
 
 [![CI](https://github.com/VoXc2/dealix/actions/workflows/ci.yml/badge.svg)](https://github.com/VoXc2/dealix/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
@@ -19,6 +19,22 @@
 ### [🚀 Deploy Runbook](docs/ops/DEPLOY_RUNBOOK.md) · [🛒 Service Catalog](landing/services.html) · [💰 Pricing](landing/pricing.html) · [🗺️ API Map](docs/architecture/API_MAP.md) · [📦 Env Template](docs/ops/PRODUCTION_ENV_TEMPLATE.md) · [👤 Customer Onboarding](docs/ops/CUSTOMER_ONBOARDING_DAY_BY_DAY.md)
 
 ---
+
+## 🧭 Positioning — Governed Revenue & AI Operations
+
+Dealix sells the **governed operation** of revenue and AI: clear sources,
+approvals, evidence, decisions, and measurable value. Every unit of work passes
+through the canonical chain:
+
+```
+Signal → Source → Approval → Action → Evidence → Decision → Value → Asset
+```
+
+**North Star — Governed Value Decisions Created:** the count of revenue or
+operational decisions taken with a clear source, a clear approval, an evidence
+trail, and a measurable impact. See
+[docs/positioning/GOVERNED_REVENUE_AI_OPERATIONS.md](docs/positioning/GOVERNED_REVENUE_AI_OPERATIONS.md)
+and the `governed_value_os` module (`/api/v1/governed-value/*`).
 
 ## 🎯 What Dealix Is
 

@@ -102,6 +102,8 @@ except Exception as _exc:  # noqa: BLE001
     _OPTIONAL_ROUTER_ERRORS["agent_os"] = repr(_exc)
 # Wave 14J — Commercial wiring map (source of truth for landing↔backend)
 from api.routers import commercial_map as commercial_map_router
+# Governed Value OS — North Star metric, proof state machine, 7-gate map
+from api.routers import governed_value as governed_value_router
 # Wave 15 — Founder launch-status (single-pane production readiness)
 from api.routers import founder_launch_status as founder_launch_status_router
 # Enterprise Foundation Core — platform_core enterprise-loop proof endpoints
@@ -271,6 +273,8 @@ def create_app() -> FastAPI:
     # ── Wave 13 — Full Ops Productization ─────────────────────────
     # Self-prefix /api/v1/services. Registry-only; no live actions.
     app.include_router(service_catalog_router.router)
+    # Self-prefix /api/v1/governed-value. North Star + proof state machine.
+    app.include_router(governed_value_router.router)
     # Self-prefix /api/v1/deliverables. State-machine-gated.
     app.include_router(deliverables_router.router)
     # Self-prefix /api/v1/customer-success. 5-score read-only.

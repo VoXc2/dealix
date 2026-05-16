@@ -18,8 +18,17 @@ def doctrine_violations_for_revenue_intelligence(
     request_guaranteed_sales_claim: bool = False,
     request_fake_proof: bool = False,
     request_external_send_without_approval: bool = False,
+    request_revenue_before_invoice_paid: bool = False,
+    request_l5_before_meeting: bool = False,
+    request_l7_confirmed_before_payment: bool = False,
+    request_unconsented_public_proof: bool = False,
 ) -> tuple[tuple[str, ...], dict[str, dict[str, str]]]:
-    """Return (violation_codes, reasons_by_code with ar/en)."""
+    """Return (violation_codes, reasons_by_code with ar/en).
+
+    The 11 codified non-negotiables: the first 7 govern outreach and claims; the
+    last 4 govern the governed-value proof progression (see
+    ``governed_value_os.state_machine``).
+    """
     reasons: dict[str, dict[str, str]] = {
         "no_cold_whatsapp": {
             "ar": "ممنوع واتساب بارد أو أتمتة واتساب باردة — مسودات فقط مع موافقة.",
@@ -49,6 +58,22 @@ def doctrine_violations_for_revenue_intelligence(
             "ar": "أي إرسال خارجي يتطلب موافقة صريحة — لا تنفيذ تلقائي.",
             "en": "External sends require explicit approval — no autonomous execution.",
         },
+        "no_revenue_before_invoice_paid": {
+            "ar": "ممنوع احتساب إيراد قبل تأكيد دفع الفاتورة.",
+            "en": "Revenue must not be counted before invoice payment is confirmed.",
+        },
+        "no_l5_before_meeting": {
+            "ar": "ممنوع رفع الإثبات إلى L5 قبل استخدامه في اجتماع فعلي.",
+            "en": "Proof must not reach L5 before it is used in an actual meeting.",
+        },
+        "no_l7_confirmed_before_payment": {
+            "ar": "ممنوع تأكيد L7 قبل ثبوت الدفع.",
+            "en": "L7 must not be confirmed before payment is established.",
+        },
+        "no_unconsented_public_proof": {
+            "ar": "ممنوع نشر دراسة حالة أو إثبات عام بدون موافقة موقّعة.",
+            "en": "Public case studies / proof must not be published without signed consent.",
+        },
     }
     hits: list[str] = []
     if request_cold_whatsapp:
@@ -65,6 +90,14 @@ def doctrine_violations_for_revenue_intelligence(
         hits.append("no_fake_proof")
     if request_external_send_without_approval:
         hits.append("external_action_requires_approval")
+    if request_revenue_before_invoice_paid:
+        hits.append("no_revenue_before_invoice_paid")
+    if request_l5_before_meeting:
+        hits.append("no_l5_before_meeting")
+    if request_l7_confirmed_before_payment:
+        hits.append("no_l7_confirmed_before_payment")
+    if request_unconsented_public_proof:
+        hits.append("no_unconsented_public_proof")
     return tuple(hits), {k: reasons[k] for k in hits if k in reasons}
 
 
@@ -77,6 +110,10 @@ def enforce_doctrine_non_negotiables(
     request_guaranteed_sales_claim: bool = False,
     request_fake_proof: bool = False,
     request_external_send_without_approval: bool = False,
+    request_revenue_before_invoice_paid: bool = False,
+    request_l5_before_meeting: bool = False,
+    request_l7_confirmed_before_payment: bool = False,
+    request_unconsented_public_proof: bool = False,
 ) -> None:
     """Raise ValueError with bilingual detail dict if any doctrine line is crossed.
 
@@ -90,6 +127,10 @@ def enforce_doctrine_non_negotiables(
         request_guaranteed_sales_claim=request_guaranteed_sales_claim,
         request_fake_proof=request_fake_proof,
         request_external_send_without_approval=request_external_send_without_approval,
+        request_revenue_before_invoice_paid=request_revenue_before_invoice_paid,
+        request_l5_before_meeting=request_l5_before_meeting,
+        request_l7_confirmed_before_payment=request_l7_confirmed_before_payment,
+        request_unconsented_public_proof=request_unconsented_public_proof,
     )
     if not codes:
         return
