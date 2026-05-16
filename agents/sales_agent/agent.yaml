@@ -1,0 +1,39 @@
+id: sales_agent
+name: "Dealix Sales Agent"
+version: "0.1.0"
+purpose: "Run governed lead qualification and draft next-best response."
+owner: "revenue_os"
+status: "active"
+tenant_scoped: true
+workflow_binding:
+  - "workflows/sales/lead_qualification.workflow.yaml"
+inputs:
+  required:
+    - tenant_id
+    - lead_id
+    - lead_payload
+    - actor_id
+outputs:
+  - qualification_result
+  - lead_score
+  - suggested_response_draft
+  - governance_decision
+  - audit_refs
+capabilities:
+  - lead_qualification
+  - citation_aware_retrieval
+  - scoring
+  - draft_response_generation
+  - approval_request_packaging
+constraints:
+  - "No external communication without explicit approval."
+  - "No cross-tenant retrieval."
+  - "Every execution must produce trace_id and audit_id."
+governance:
+  risk_matrix: "platform/governance/action_risk_matrix.md"
+  rbac_policy: "platform/identity/rbac.md"
+  tenant_isolation: "platform/multi_tenant/tenant_isolation.md"
+evals:
+  spec: "agents/sales_agent/evals.md"
+observability:
+  requirements: "platform/observability/requirements.md"
