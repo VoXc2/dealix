@@ -3,6 +3,7 @@
 **الخريطة العليا من الصفر إلى شركة قابضة:** [from_zero/DEALIX_FROM_ZERO_TO_HOLDING_BLUEPRINT.md](from_zero/DEALIX_FROM_ZERO_TO_HOLDING_BLUEPRINT.md) — دستور الرحلة الكاملة (الفكرة الأم، ICP، العرض، الطبقات 1–40، MVP، أول تجربة).
 
 هذا المستند **فهرس التنقل** لطبقات Dealix كـ *Saudi Governed AI Operations OS*. كل طبقة لها ملف `README.md` داخل المجلد المرقّم `docs/NN_*` وفق هيكل القسم 41 في دستور الطبقات. التعيين إلى الكود: `docs/enterprise_architecture/SYSTEM_MAP.md` و`auto_client_acquisition/dealix_master_layers/registry.py`.
+المنظور التنفيذي الموازي (10 طبقات هيمنة تنظيمية): `docs/architecture/ORGANIZATIONAL_INTELLIGENCE_DOMINANCE_AR.md`.
 
 ---
 

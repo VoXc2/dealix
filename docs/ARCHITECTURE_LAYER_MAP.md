@@ -4,6 +4,8 @@
 
 The Dealix Constitution names twelve canonical operating modules. The repository, grown across many waves, contains those capabilities under their historical folder names. This document is the bridge.
 
+For the executive 10-layer overlay (Organizational Intelligence Dominance), see [`architecture/ORGANIZATIONAL_INTELLIGENCE_DOMINANCE_AR.md`](architecture/ORGANIZATIONAL_INTELLIGENCE_DOMINANCE_AR.md).
+
 ## The map — الخريطة
 
 | Canonical Module | Existing Repo Location | Status |
@@ -79,4 +81,5 @@ When the map shows a row as **E (existing-named)**:
 
 - [Dealix Constitution](./00_constitution/DEALIX_CONSTITUTION.md) — the operating equation that lists the canonical layers.
 - [Non-Negotiables](./00_constitution/NON_NEGOTIABLES.md) — the rules each layer is built to enforce.
+- [Organizational Intelligence Dominance Map](./architecture/ORGANIZATIONAL_INTELLIGENCE_DOMINANCE_AR.md) — 10-layer executive capability overlay.
 - Layer docs: [Source Passport](./04_data_os/SOURCE_PASSPORT.md), [Runtime Governance](./05_governance_os/RUNTIME_GOVERNANCE.md), [Proof Pack Standard](./07_proof_os/PROOF_PACK_STANDARD.md), [Value Ledger](./08_value_os/VALUE_LEDGER.md), [Capital Ledger](./09_capital_os/CAPITAL_LEDGER.md), [Client Workspace MVP](./11_client_os/CLIENT_WORKSPACE_MVP.md), [Adoption Score](./12_adoption_os/ADOPTION_SCORE.md).

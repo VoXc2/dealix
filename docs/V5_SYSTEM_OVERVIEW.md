@@ -45,6 +45,11 @@ If you change one of these, you've changed policy. Everything else is mechanical
 | Founder aggregate | (composes all of the above) | `/api/v1/founder` |
 | CompanyBrain | `auto_client_acquisition/company_brain/` | `/api/v1/company-brain` |
 
+### Executive overlay (10-layer dominance map)
+
+- `docs/architecture/ORGANIZATIONAL_INTELLIGENCE_DOMINANCE_AR.md`
+- Runtime registry: `auto_client_acquisition/dealix_master_layers/registry.py::OI_DOMINANCE_LAYERS`
+
 ---
 
 ## 3. CLIs — founder-facing
@@ -57,6 +62,7 @@ If you change one of these, you've changed policy. Everything else is mechanical
 | `scripts/dealix_diagnostic.py` | Bilingual Diagnostic brief generator | When warm intro lands |
 | `scripts/dealix_invoice.py` | Manual Moyasar invoice (refuses sk_live_) | When customer says yes |
 | `scripts/dealix_morning_digest.py` | Daily founder digest email | Daily (cron) |
+| `scripts/dealix_dominance_status.py` | Organizational dominance gates + capability contracts status | Weekly architecture review |
 | `bash scripts/post_redeploy_verify.sh` | 22-point Production verifier | After Railway redeploy |
 
 ---

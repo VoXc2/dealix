@@ -7,6 +7,9 @@ from pathlib import Path
 from auto_client_acquisition.dealix_master_layers import (
     IMPLEMENTATION_HINTS,
     MASTER_LAYERS,
+    OI_DOMINANCE_LAYERS,
+    dominance_layer_by_id,
+    dominance_layer_by_slug,
     layer_by_folder,
     readme_path,
 )
@@ -33,3 +36,31 @@ def test_readme_paths_exist() -> None:
 
 def test_implementation_hints_nonempty() -> None:
     assert "saudi_layer" in IMPLEMENTATION_HINTS
+
+
+def test_organizational_intelligence_layer_catalog_shape() -> None:
+    assert len(OI_DOMINANCE_LAYERS) == 10
+    assert OI_DOMINANCE_LAYERS[0].layer_id == 1
+    assert OI_DOMINANCE_LAYERS[-1].layer_id == 10
+
+
+def test_organizational_intelligence_lookup_helpers() -> None:
+    layer = dominance_layer_by_slug("digital_workforce_infrastructure")
+    assert layer is not None
+    assert layer.layer_id == 2
+    assert layer.title == "Digital Workforce Infrastructure"
+    assert dominance_layer_by_slug("missing-layer") is None
+    assert dominance_layer_by_id(10) is not None
+    assert dominance_layer_by_id(999) is None
+
+
+def test_organizational_intelligence_mapped_paths_exist() -> None:
+    repo = Path(__file__).resolve().parents[1]
+    for layer in OI_DOMINANCE_LAYERS:
+        assert layer.mapped_paths, f"missing mapped_paths for {layer.slug}"
+        assert layer.target_paths, f"missing target_paths for {layer.slug}"
+        for target in layer.target_paths:
+            assert target.startswith("/"), f"target path must be absolute style: {target}"
+        for mapped_path in layer.mapped_paths:
+            resolved = repo / mapped_path
+            assert resolved.exists(), f"mapped path does not exist: {mapped_path}"

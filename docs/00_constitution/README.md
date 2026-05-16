@@ -11,4 +11,5 @@
 
 - [DEALIX_EXECUTION_WAVES_AR.md](../strategic/DEALIX_EXECUTION_WAVES_AR.md)
 - [docs/00_foundation/](../00_foundation/) — طبقة دستور موازية مرقمة
+- [ORGANIZATIONAL_INTELLIGENCE_DOMINANCE_AR.md](../architecture/ORGANIZATIONAL_INTELLIGENCE_DOMINANCE_AR.md) — خريطة الهيمنة التنظيمية (10 طبقات)
 
