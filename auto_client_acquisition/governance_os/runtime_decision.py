@@ -7,6 +7,35 @@ from typing import Any
 
 from auto_client_acquisition.compliance_trust_os.approval_engine import GovernanceDecision
 from auto_client_acquisition.governance_os.policy_check import PolicyCheckResult, PolicyVerdict
+from auto_client_acquisition.saudi_layer.forbidden_claims import (
+    forbidden_arabic_claim_detected,
+)
+
+# Affirmative guarantee phrasings only — the verb form, never the adjective
+# used in compliant disclaimers ("no guaranteed claims" / "ادعاءات مضمونة").
+_AFFIRMATIVE_GUARANTEE_EN: tuple[str, ...] = (
+    "we guarantee",
+    "guarantee 100",
+    "100% guarantee",
+    "guaranteed sales",
+    "guaranteed revenue",
+    "guaranteed result",
+    "guaranteed roi",
+)
+
+
+def _contains_guaranteed_claim(text: str) -> bool:
+    """True when text makes an affirmative guaranteed-outcome promise.
+
+    Keyed on the Arabic verb ``نضمن`` (we guarantee) and affirmative English
+    phrasings, so a doctrine-compliant disclaimer is not itself flagged.
+    """
+    blob = text.lower()
+    if forbidden_arabic_claim_detected(blob):
+        return True
+    if "نضمن" in text:
+        return True
+    return any(n in blob for n in _AFFIRMATIVE_GUARANTEE_EN)
 
 
 class _DecisionLabel(str):
@@ -43,6 +72,19 @@ def decide(
     context = context or {}
     normalized_action = action_type or action or "unknown_action"
     score = float(risk_score if risk_score is not None else context.get("risk_score", 0.0))
+
+    # Content gate: an affirmative guaranteed-outcome claim is a hard
+    # NO_GUARANTEED_CLAIMS violation regardless of the action type.
+    text = str(context.get("text") or "")
+    if text and _contains_guaranteed_claim(text):
+        return RuntimeDecision(
+            decision=_DecisionLabel("block"),
+            reason="content makes a guaranteed-outcome claim (NO_GUARANTEED_CLAIMS)",
+            risk_level="high",
+            approval_required=True,
+            safe_alternative="draft_only",
+            evidence={"actor": actor, "action_type": normalized_action},
+        )
     high_risk_actions = {
         "send_external_message",
         "whatsapp.send_message",

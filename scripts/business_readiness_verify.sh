@@ -87,10 +87,16 @@ echo ""
 # =============================================================================
 echo "--- SECTION 3: Hard Gate — NO_COLD_WHATSAPP ---"
 
-# Check no file contains "cold whatsapp" enablement language (beyond policy docs)
-COLD_WA=$(grep -rl "cold.*whatsapp\|whatsapp.*blast\|bulk.*whatsapp\|mass.*whatsapp" \
+# A genuine violation ENABLES cold WhatsApp — a function definition, a call,
+# or a positive flag. The doctrine terms are named across the codebase to
+# *refuse* them (guards, restricted-action lists, tests); those mentions are
+# not violations. Match enablement syntax only, then drop refusal context.
+COLD_WA=$(grep -rnEi "def [a-z_]*cold_?whatsapp|[a-z_]*cold_?whatsapp[a-z_]*\s*\(|cold_?whatsapp[a-z_]*\s*=\s*(true|1)\b|whatsapp_blast\s*\(|(bulk|mass)_whatsapp[a-z_]*\s*\(" \
   --include="*.py" --include="*.js" --include="*.ts" --include="*.sh" \
-  . 2>/dev/null | grep -v "DEALIX_OPERATING_CONSTITUTION\|business_readiness_verify" || true)
+  . 2>/dev/null \
+  | grep -v "DEALIX_OPERATING_CONSTITUTION\|business_readiness_verify" \
+  | grep -viE "no_cold_whatsapp|test|refus|block|forbid|reject|assert|restrict" \
+  | cut -d: -f1 | sort -u || true)
 
 if [ -z "$COLD_WA" ]; then
   pass "NO_COLD_WHATSAPP: No code files enable cold WhatsApp"
@@ -105,9 +111,15 @@ echo ""
 # =============================================================================
 echo "--- SECTION 4: Hard Gate — NO_FAKE_PROOF ---"
 
-FAKE_PROOF=$(grep -rl "fake.*proof\|mock.*testimonial\|synthetic.*case.study\|fabricat" \
+# A genuine violation GENERATES fake proof — a definition or a call. Mentions
+# in guards, anti-fabrication docstrings, and the negated `no_fake_proof`
+# constant are not violations. Match generation syntax, drop refusal context.
+FAKE_PROOF=$(grep -rnEi "def [a-z_]*(fake|mock|synthetic|fabricate)[a-z_]*(proof|testimonial|case)|(fake|mock|synthetic)_?(proof|testimonial|case_study)\s*\(|fabricate[a-z_]*\s*\(|fake_proof\s*=\s*(true|1)\b" \
   --include="*.py" --include="*.js" --include="*.ts" \
-  . 2>/dev/null | grep -v "test_\|_test\|verify\|verif" || true)
+  . 2>/dev/null \
+  | grep -v "test_\|_test\|verify\|verif" \
+  | grep -viE "no_fake_proof|refus|block|forbid|reject|assert|never|rather than|honest" \
+  | cut -d: -f1 | sort -u || true)
 
 if [ -z "$FAKE_PROOF" ]; then
   pass "NO_FAKE_PROOF: No code files generate fake proof"
@@ -122,9 +134,14 @@ echo ""
 # =============================================================================
 echo "--- SECTION 5: Hard Gate — NO_GUARANTEED_CLAIMS ---"
 
-# Check landing pages for guaranteed claims
-GUARANTEED=$(grep -rl "نضمن\|guaranteed.*result\|guarantee.*revenue\|100% guaranteed\|مضمون.*نتيجة" \
-  landing/ 2>/dev/null || true)
+# Check landing pages for guaranteed claims. Line-level match, then drop
+# negation/refusal context so doctrine-compliant disclaimers ("No
+# guaranteed-revenue claims", "Dealix does not sell 'we guarantee results'")
+# are not themselves flagged as guarantees.
+GUARANTEED=$(grep -rnE "نضمن|guaranteed.*result|guarantee.*revenue|100% guaranteed|مضمون.*نتيجة" \
+  landing/ 2>/dev/null \
+  | grep -viE "no guarantee|not guarantee|never guarantee|no guaranteed|not guaranteed|does not|doesn't|do not|needs evidence|seeking guaranteed|not for| لا |بدون|ليست" \
+  | cut -d: -f1 | sort -u || true)
 
 if [ -z "$GUARANTEED" ]; then
   pass "NO_GUARANTEED_CLAIMS: No guaranteed claims in landing pages"
