@@ -235,30 +235,118 @@ def step6_proof_pack(
     dq_score: float,
     governance_summary: dict[str, int],
     work_completed_summary: str,
-    outputs_summary: str = "",
     problem_summary: str = "",
+    rows_imported: int = 0,
+    accounts_scored: int = 0,
+    drafts_reviewed: int = 0,
 ) -> dict:
-    """Day 5: Proof Pack assembly."""
-    from auto_client_acquisition.data_os.source_passport import SourcePassport
-    from auto_client_acquisition.proof_os.proof_pack import assemble
+    """Day 5: Proof Pack assembly — fills the 14 canonical v2 sections.
 
-    governance_events = [
-        {"decision": d, "count": n} for d, n in governance_summary.items()
-    ]
-    sp = SourcePassport(**passport) if passport else None
-    pack = assemble(
-        engagement_id=engagement_id,
-        customer_id=customer_id,
-        source_passport=sp,
-        dq_score=dq_score,
-        value_events=[],
-        governance_events=governance_events,
-        work_completed=work_completed_summary or "10-step sprint executed",
-        problem=problem_summary or "(provided in kickoff)",
-        outputs_summary=outputs_summary or "ranked top 10 + governance-reviewed drafts",
-        next_step="founder review and handoff",
+    The score is evidence-weighted: section completeness is multiplied by how
+    many real signals the run produced (rows, scored accounts, reviewed
+    drafts, data quality). A template-only run with no input data therefore
+    scores as ``weak_proof`` — boilerplate completeness cannot pass as
+    case-ready evidence.
+    """
+    from auto_client_acquisition.proof_os import (
+        merge_proof_pack_v2,
+        proof_pack_completeness_score,
+        proof_strength_band,
     )
-    return pack.to_dict()
+
+    governance_blocked = governance_summary.get("block", 0) > 0
+    gov_lines = (
+        ", ".join(f"{d}: {n}" for d, n in sorted(governance_summary.items()))
+        or "none recorded"
+    )
+    passport_desc = (
+        f"source_id={passport.get('source_id', '?')}, "
+        f"type={passport.get('source_type', '?')}, "
+        f"contains_pii={passport.get('contains_pii', '?')}"
+        if passport
+        else "No Source Passport provided at kickoff."
+    )
+    if accounts_scored > 0:
+        outputs_text = (
+            f"Ranked top {min(10, accounts_scored)} of {accounts_scored} "
+            f"scored account(s) and {drafts_reviewed} governance-reviewed "
+            "draft outline(s)."
+        )
+        value_text = (
+            "A ranked, governed account list and review-ready draft outlines. "
+            "Estimated outcomes are not guaranteed outcomes."
+        )
+    else:
+        outputs_text = (
+            "No accounts were scored — input data was empty or unusable, so "
+            "no ranked account list was produced."
+        )
+        value_text = (
+            "No ranked outputs were produced in this run — insufficient input "
+            "data. Estimated outcomes are not guaranteed outcomes."
+        )
+
+    sections = {
+        "executive_summary": (
+            f"7-Day Revenue Proof Sprint for {customer_id} "
+            f"(engagement {engagement_id}). {work_completed_summary}"
+        ),
+        "problem": problem_summary or "(provided in kickoff)",
+        "inputs": (
+            f"Customer data import: {rows_imported} row(s). "
+            f"Data-quality score: {dq_score:.2f}/1.00."
+        ),
+        "source_passports": passport_desc,
+        "work_completed": work_completed_summary or "10-step sprint executed",
+        "outputs": outputs_text,
+        "quality_scores": f"Data-quality (DQ) score: {dq_score:.2f}/1.00.",
+        "governance_decisions": f"Draft governance decisions — {gov_lines}.",
+        "blocked_risks": (
+            "One or more drafts were blocked by governance review — "
+            "see governance decisions."
+            if governance_blocked
+            else "No governance blocks recorded in this run."
+        ),
+        "value_metrics": value_text,
+        "limitations": (
+            "Outputs are estimates from the data provided; thin or low-quality "
+            "input lowers confidence. No external messages were sent. Founder "
+            "review is required before any customer-facing action."
+        ),
+        "recommended_next_step": (
+            "Founder review and handoff; consider the 1,500 SAR "
+            "Data-to-Revenue Pack."
+        ),
+        "retainer_expansion_path": (
+            "Managed Revenue Ops (2,999-4,999 SAR/mo) after a successful "
+            "pilot — subject to the retainer-readiness check."
+        ),
+        "capital_assets_created": (
+            "Capital-asset registration is performed in step 7; the registered "
+            "count is reflected here once that step completes."
+        ),
+    }
+    pack = merge_proof_pack_v2(sections, {})
+    completeness = proof_pack_completeness_score(pack)
+    evidence_signals = sum(
+        (
+            rows_imported > 0,
+            accounts_scored > 0,
+            drafts_reviewed > 0,
+            dq_score >= 0.5,
+        )
+    )
+    score = int(round(completeness * evidence_signals / 4))
+    if governance_blocked:
+        score = min(score, 69)
+    return {
+        "engagement_id": engagement_id,
+        "customer_id": customer_id,
+        "sections": pack,
+        "score": score,
+        "tier": proof_strength_band(score),
+        "governance_blocked": governance_blocked,
+    }
 
 
 def step7_capital_assets(
@@ -375,12 +463,21 @@ def run_sprint(
     gov_summary = s5.output.get("summary", {})
 
     # Step 6 — proof pack
+    rows_imported = int(s2.output.get("row_count", 0) or 0)
+    accounts_scored = int(s3.output.get("total_scored", 0) or 0)
+    drafts_reviewed = len(drafts)
     s6 = _safe("proof_pack", step6_proof_pack,
                customer_id=customer_id, engagement_id=engagement_id,
                passport=source_passport, dq_score=dq_score,
                governance_summary=gov_summary,
-               work_completed_summary=f"Imported {s2.output.get('row_count', 0)} rows; scored {s3.output.get('total_scored', 0)} accounts; reviewed {len(drafts)} draft outlines.",
-               problem_summary=problem_summary)
+               work_completed_summary=(
+                   f"Imported {rows_imported} rows; scored {accounts_scored} "
+                   f"accounts; reviewed {drafts_reviewed} draft outlines."
+               ),
+               problem_summary=problem_summary,
+               rows_imported=rows_imported,
+               accounts_scored=accounts_scored,
+               drafts_reviewed=drafts_reviewed)
     run.steps.append(s6)
     pack = s6.output if s6.status == "ran" else {}
     run.proof_pack = pack
@@ -392,6 +489,18 @@ def run_sprint(
                customer_id=customer_id, engagement_id=engagement_id)
     run.steps.append(s7)
     run.capital_assets_registered = list(s7.output.get("registered", []))
+
+    # Reflect the real step-7 registration outcome in the Proof Pack so the
+    # customer-facing pack never claims assets that were not registered.
+    if isinstance(run.proof_pack, dict) and isinstance(
+        run.proof_pack.get("sections"), dict
+    ):
+        _n = len(run.capital_assets_registered)
+        run.proof_pack["sections"]["capital_assets_created"] = (
+            f"{_n} reusable capital asset(s) registered to the capital ledger."
+            if _n
+            else "No capital assets were registered in this run."
+        )
 
     # Step 8 — retainer check
     s8 = _safe("retainer_check", step8_retainer_check,

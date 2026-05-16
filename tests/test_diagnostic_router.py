@@ -71,3 +71,36 @@ def test_diagnostic_generate_extra_field_returns_422(client: TestClient):
         },
     )
     assert resp.status_code == 422
+
+
+def test_diagnostic_report_markdown_is_bilingual_and_approval_tagged(
+    client: TestClient,
+):
+    resp = client.post(
+        "/api/v1/diagnostic/report/markdown",
+        json={
+            "company": "Acme Saudi Co.",
+            "sector": "b2b_services",
+            "region": "riyadh",
+            "pipeline_state": "founder responds at night",
+        },
+    )
+    assert resp.status_code == 200
+    text = resp.text
+    assert "Acme Saudi Co." in text
+    assert "approval_required" in text
+    assert "Recommended bundle" in text
+    assert "النتائج التقديرية ليست نتائج مضمونة" in text
+
+
+def test_diagnostic_report_pdf_or_markdown_fallback(client: TestClient):
+    resp = client.post(
+        "/api/v1/diagnostic/report/pdf",
+        json={"company": "Acme Saudi Co.", "sector": "b2b_services"},
+    )
+    assert resp.status_code == 200
+    if "application/pdf" in resp.headers.get("content-type", ""):
+        assert resp.content[:5] == b"%PDF-"
+    else:
+        assert resp.headers.get("X-PDF-Renderer", "").startswith("unavailable")
+        assert "Acme Saudi Co." in resp.text

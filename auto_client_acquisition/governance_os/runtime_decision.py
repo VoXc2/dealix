@@ -2,11 +2,85 @@
 
 from __future__ import annotations
 
+import re
 from dataclasses import dataclass
 from typing import Any
 
 from auto_client_acquisition.compliance_trust_os.approval_engine import GovernanceDecision
 from auto_client_acquisition.governance_os.policy_check import PolicyCheckResult, PolicyVerdict
+
+# --- Guaranteed-outcome claim detection (NO_GUARANTEED_CLAIMS gate) ----------
+# Strategy: neutralize negated and refund forms first, then detect affirmative
+# claims on what survives — so disclaimers ("لا نضمن", "no/without guarantee")
+# and refund guarantees ("نضمن استرجاع") are never mistaken for a claim.
+
+# Negated guarantee forms — the negator must be DIRECTLY before the guarantee
+# word. This is deliberately strict: a wider window would let a negator that
+# negates a different word swallow a real claim ("بدون تأخير نضمن نتائج",
+# "without risk we guarantee revenue"). The cost is that a multi-word
+# disclaimer ("we cannot really guarantee", "لا يمكننا أن نضمن") is flagged
+# for human review rather than auto-allowed — the safe direction for a hard
+# gate (a false positive is reviewed; a false negative ships a violation).
+_NEGATED_AR = re.compile(r"(?:لا|لن|لم|ما|بدون|دون)\s*(?:نضمن|ضمان)")
+_NEGATED_EN = re.compile(
+    r"\b(?:no|not|never|without|cannot|can't|don't|won't|doesn't|wouldn't)"
+    r"\s+guarantee",
+    re.IGNORECASE,
+)
+# A refund / money-back guarantee is a service guarantee, not a guaranteed
+# sales OUTCOME — permitted, so neutralized before the affirmative check.
+_REFUND_AR = re.compile(r"نضمن\s*استرجاع")
+_REFUND_EN = re.compile(
+    r"\b(?:money.?back|refunds?)\b[\w%\s,/;:()'-]{0,15}?\bguarantee[ds]?\b"
+    r"|guarantee[ds]?\b[\w%\s,/;:()'-]{0,15}?\b(?:money.?back|refunds?)\b",
+    re.IGNORECASE,
+)
+
+_AR_OUTCOME = r"نتائج|نتيجة|مبيعات|أرباح|إيرادات|إيراد|عوائد|نمو|صفقات|عملاء"
+# Affirmative Arabic guarantee — the verb نضمن, an outcome noun paired with
+# the adjective مضمون or the noun ضمان (either order), or the "ربح مؤكد" idiom.
+# Outcome/adjective gaps allow Arabic and Latin commas.
+_AFFIRMATIVE_GUARANTEE_AR = re.compile(
+    rf"نضمن"
+    rf"|(?:{_AR_OUTCOME})[\s،,]*مضمون"
+    rf"|مضمون[ةه]?[\s،,]*(?:{_AR_OUTCOME})"
+    rf"|ضمان[\s،,]*(?:{_AR_OUTCOME})"
+    rf"|(?:{_AR_OUTCOME})[\s،,]*ضمان"
+    rf"|ربح\s*مؤكد"
+)
+_EN_OUTCOME = (
+    r"revenue|sales?|results?|roi|growth|deals?|leads?|customers?|"
+    r"conversions?|profit|income|outcomes?"
+)
+# Gap between "guarantee" and an outcome word — includes punctuation so a
+# comma/slash ("guaranteed, results", "revenue/guaranteed") cannot suppress
+# the match.
+_GAP = r"[\w%\s,/;:()'-]"
+# Affirmative English guarantee — "guarantee" adjacent to an outcome noun in
+# EITHER order. A bare first-person "we guarantee X" is NOT matched here: it
+# is a guaranteed-OUTCOME claim only when X is an outcome (caught by the
+# outcome branches); "we guarantee a refund / a response" is not an outcome.
+_AFFIRMATIVE_GUARANTEE_EN = re.compile(
+    rf"guarantee[ds]?\b{_GAP}{{0,20}}?\b(?:{_EN_OUTCOME})\b"
+    rf"|\b(?:{_EN_OUTCOME})\b{_GAP}{{0,15}}?\bguarantee[ds]?\b"
+    rf"|100\s*%?\s*guarantee[ds]?\b",
+    re.IGNORECASE,
+)
+
+
+def _contains_guaranteed_claim(text: str) -> bool:
+    """True when text makes an affirmative guaranteed-OUTCOME promise.
+
+    Directly-negated forms ("لا نضمن", "no/without guarantee") and refund
+    guarantees ("نضمن استرجاع" — a service guarantee, not an outcome) are
+    neutralized first. Negation is matched strictly (adjacent only); a
+    multi-word disclaimer is conservatively flagged for human review.
+    """
+    neutral_ar = _REFUND_AR.sub(" ", _NEGATED_AR.sub(" ", text))
+    if _AFFIRMATIVE_GUARANTEE_AR.search(neutral_ar):
+        return True
+    neutral_en = _REFUND_EN.sub(" ", _NEGATED_EN.sub(" ", text.lower()))
+    return _AFFIRMATIVE_GUARANTEE_EN.search(neutral_en) is not None
 
 
 class _DecisionLabel(str):
@@ -44,46 +118,18 @@ def decide(
     normalized_action = action_type or action or "unknown_action"
     score = float(risk_score if risk_score is not None else context.get("risk_score", 0.0))
 
-    # Scan any free-text payload for forbidden/unsafe claims (guarantees,
-    # fabricated proof, …). Unsafe claims always block — this keeps the
-    # no-guaranteed-claims doctrine enforced through the runtime path.
-    text = str(context.get("text") or "").strip()
-    if text:
-        from auto_client_acquisition.governance_os.claim_safety import (
-            audit_claim_safety,
+    # Content gate: an affirmative guaranteed-outcome claim is a hard
+    # NO_GUARANTEED_CLAIMS violation regardless of the action type.
+    text = str(context.get("text") or "")
+    if text and _contains_guaranteed_claim(text):
+        return RuntimeDecision(
+            decision=_DecisionLabel("block"),
+            reason="content makes a guaranteed-outcome claim (NO_GUARANTEED_CLAIMS)",
+            risk_level="high",
+            approval_required=True,
+            safe_alternative="draft_only",
+            evidence={"actor": actor, "action_type": normalized_action},
         )
-
-        claim_result = audit_claim_safety(text)
-        claim_hits = [
-            i for i in claim_result.issues if i.startswith("forbidden_claim:")
-        ]
-        if claim_hits:
-            return RuntimeDecision(
-                decision=_DecisionLabel("block"),
-                reason="forbidden claim detected in draft text",
-                risk_level="high",
-                approval_required=True,
-                safe_alternative="rewrite_without_unsafe_claim",
-                evidence={
-                    "actor": actor,
-                    "action_type": normalized_action,
-                    "issues": list(claim_result.issues),
-                },
-            )
-        if claim_result.issues:
-            return RuntimeDecision(
-                decision=_DecisionLabel("redact"),
-                reason="forbidden operational term detected in draft text",
-                risk_level="medium",
-                approval_required=True,
-                safe_alternative="draft_only",
-                evidence={
-                    "actor": actor,
-                    "action_type": normalized_action,
-                    "issues": list(claim_result.issues),
-                },
-            )
-
     high_risk_actions = {
         "send_external_message",
         "whatsapp.send_message",
