@@ -17,12 +17,16 @@ python scripts/verify_dealix_ready.py --skip-tests
 
 ## Company Status
 
+> آخر تحديث آلي: 2026-05-16 — مُشتقّ من مُحقِّقات `scripts/`. الدرجات
+> اليدوية تبقى `FOUNDER_PENDING`. راجع
+> [`docs/ops/live/CEO_EXECUTION_REPORT_2026-05-16.md`](docs/ops/live/CEO_EXECUTION_REPORT_2026-05-16.md).
+
 | Field | Value |
 |-------|--------|
-| **Current Stage** | (مثال: Gate 6 Pass — جاهز للبيع للخدمات الثلاث الأولى) |
-| **Officially Sellable Services** | |
-| **Services in Beta** | (Score 70–84 أو ناقص demo فقط) |
-| **Services Not Ready** | (أقل من 70 أو hard fail) |
+| **Current Stage** | LAUNCHED تقنياً (`api.dealix.me` حيّ، 25/29 من CEO Top-50 ناجح) — **BLOCKED** على تفعيل Moyasar لـREVENUE VERIFIED |
+| **Officially Sellable Services** | FOUNDER_PENDING — درجات البوابات اليدوية لم تُسجَّل بعد |
+| **Services in Beta** | FOUNDER_PENDING (Score 70–84 أو ناقص demo فقط) |
+| **Services Not Ready** | FOUNDER_PENDING (أقل من 70 أو hard fail) |
 
 ---
 
@@ -54,21 +58,19 @@ python scripts/verify_dealix_ready.py --skip-tests
 
 ## Do Not Sell Yet
 
-1.
-2.
-3.
+1. FOUNDER_PENDING — يُحدَّد بعد تسجيل درجات البوابات اليدوية.
 
-## Critical Gaps
+## Critical Gaps (مُشتقّ آلياً 2026-05-16)
 
-1.
-2.
-3.
+1. تفعيل حساب Moyasar (KYC) — يحبس كل مسار الإيراد (`account_inactive_error`).
+2. صفر عملاء مدفوعين — بوابة المادة 13 `NOT_YET (0/3)`؛ بوابات الإطلاق BLOCKED.
+3. `SENTRY_DSN` غير مضبوط + UptimeRobot غير مُهيّأ — رصد ناقص قبل أول عميل.
 
 ## Next Build Decisions
 
-1.
-2.
-3.
+1. صندوق قرارات المؤسس بالكامل في [`CEO_EXECUTION_REPORT_2026-05-16.md`](docs/ops/live/CEO_EXECUTION_REPORT_2026-05-16.md) §7 (D1–D9، S1–S5).
+2. ربط سجل الإثبات (revenue_os `PARTIAL`→`pass`) — مؤجَّل عمداً لما بعد أول عميل دافع (Strategic Master Plan Part V.B).
+3. تصريف تراكم 20 PR مفتوح — جلسة دمج/إغلاق/توحيد.
 
 ---
 
