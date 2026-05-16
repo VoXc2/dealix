@@ -1,10 +1,5 @@
-import dynamic from "next/dynamic";
 import Link from "next/link";
-
-const SprintToolsPanel = dynamic(
-  () => import("@/components/services/SprintToolsPanel"),
-  { ssr: false },
-);
+import SprintToolsPanel from "@/components/services/SprintToolsPanel";
 
 interface ServicesHubProps {
   params: Promise<{ locale: string }>;

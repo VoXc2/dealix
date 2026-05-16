@@ -57,7 +57,7 @@ services:
   # from the pool; idle app connections don't hold PostgreSQL connections.
   # Tune pool_size here to limit max connections on the PostgreSQL side.
   pgbouncer:
-    image: bitnami/pgbouncer:1.23.1
+    image: bitnamilegacy/pgbouncer:latest
     container_name: dealix-pgbouncer
     environment:
       POSTGRESQL_HOST: postgres
