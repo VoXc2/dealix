@@ -14,6 +14,7 @@ from __future__ import annotations
 from typing import Any
 
 from fastapi import APIRouter, Body, HTTPException, Query
+from pydantic import ValidationError
 
 from auto_client_acquisition.approval_center import (
     ApprovalRequest,
@@ -74,6 +75,12 @@ async def create(payload: dict[str, Any] = Body(...)) -> dict[str, Any]:
         "approval": stored.model_dump(mode="json"),
         "card": render_approval_card(stored),
     }
+
+
+@router.post("")
+async def create_alias(payload: dict[str, Any] = Body(...)) -> dict[str, Any]:
+    """Alias for clients using POST /api/v1/approvals directly."""
+    return await create(payload)
 
 
 @router.post("/{approval_id}/approve")
