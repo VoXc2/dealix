@@ -171,6 +171,19 @@ ALLOWLIST: dict[str, dict[str, str]] = {
         "blast": "NEGATION",
         "cold": "NEGATION",
     },
+    # Data Pack page — "السياسات · Policies" card explicitly states
+    # "صفر cold WhatsApp / LinkedIn" and "لا scraping. لا إرسال آلي."
+    # Pure NEGATION context (what Dealix does not do).
+    "data-pack.html": {
+        "cold": "NEGATION",
+        "scraping": "NEGATION",
+    },
+    # Roadmap page — "الأشياء التي رفضنا بناؤها" (things we refused to
+    # build) section lists "LinkedIn scraping automation — policy-blocked"
+    # as a rejected anti-pattern. Pure NEGATION context.
+    "roadmap.html": {
+        "scraping": "NEGATION",
+    },
 }
 
 

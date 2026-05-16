@@ -20,7 +20,7 @@
 ## اختبارات موجودة مسبقًا (لا تكرر المنطق)
 
 - `tests/test_no_source_no_answer.py` — سياسة المعرفة بدون مصادر.
-- `tests/test_no_linkedin_scraper_string_anywhere.py` — قفل repo على `linkedin_scraper`.
+- `tests/` يحتوي اختبار قفل repo يمنع ظهور سلسلة استخراج بيانات LinkedIn الممنوعة في أيّ ملف متتبَّع (راجع مجلّد الاختبارات لاسم الملف الدقيق).
 - `tests/test_proof_architecture_os.py` — proof score و case study.
 - `tests/test_risk_resilience_os.py` — `claim_may_appear_in_case_study`.
 

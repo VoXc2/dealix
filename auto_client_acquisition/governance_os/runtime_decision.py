@@ -43,6 +43,47 @@ def decide(
     context = context or {}
     normalized_action = action_type or action or "unknown_action"
     score = float(risk_score if risk_score is not None else context.get("risk_score", 0.0))
+
+    # Scan any free-text payload for forbidden/unsafe claims (guarantees,
+    # fabricated proof, …). Unsafe claims always block — this keeps the
+    # no-guaranteed-claims doctrine enforced through the runtime path.
+    text = str(context.get("text") or "").strip()
+    if text:
+        from auto_client_acquisition.governance_os.claim_safety import (
+            audit_claim_safety,
+        )
+
+        claim_result = audit_claim_safety(text)
+        claim_hits = [
+            i for i in claim_result.issues if i.startswith("forbidden_claim:")
+        ]
+        if claim_hits:
+            return RuntimeDecision(
+                decision=_DecisionLabel("block"),
+                reason="forbidden claim detected in draft text",
+                risk_level="high",
+                approval_required=True,
+                safe_alternative="rewrite_without_unsafe_claim",
+                evidence={
+                    "actor": actor,
+                    "action_type": normalized_action,
+                    "issues": list(claim_result.issues),
+                },
+            )
+        if claim_result.issues:
+            return RuntimeDecision(
+                decision=_DecisionLabel("redact"),
+                reason="forbidden operational term detected in draft text",
+                risk_level="medium",
+                approval_required=True,
+                safe_alternative="draft_only",
+                evidence={
+                    "actor": actor,
+                    "action_type": normalized_action,
+                    "issues": list(claim_result.issues),
+                },
+            )
+
     high_risk_actions = {
         "send_external_message",
         "whatsapp.send_message",

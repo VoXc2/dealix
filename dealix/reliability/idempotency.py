@@ -14,9 +14,17 @@ from __future__ import annotations
 import hashlib
 import logging
 import os
+import threading
+import time
 from typing import Any
 
 log = logging.getLogger(__name__)
+
+# Process-local fallback used when Redis is not configured. Maps the namespaced
+# key to its expiry epoch. Sufficient for single-process deployments and tests;
+# a multi-process deployment must configure REDIS_URL for shared idempotency.
+_MEMORY_STORE: dict[str, float] = {}
+_MEMORY_LOCK = threading.Lock()
 
 
 class IdempotencyStore:
@@ -53,9 +61,31 @@ class IdempotencyStore:
     def _key(self, key: str) -> str:
         return f"{self.prefix}{key}"
 
+    @staticmethod
+    def _memory_seen(namespaced_key: str) -> bool:
+        with _MEMORY_LOCK:
+            expiry = _MEMORY_STORE.get(namespaced_key)
+            if expiry is None:
+                return False
+            if expiry <= time.time():
+                _MEMORY_STORE.pop(namespaced_key, None)
+                return False
+            return True
+
+    @staticmethod
+    def _memory_mark(namespaced_key: str, ttl_seconds: int) -> bool:
+        """Returns True if newly marked, False if a live mark already existed."""
+        now = time.time()
+        with _MEMORY_LOCK:
+            expiry = _MEMORY_STORE.get(namespaced_key)
+            if expiry is not None and expiry > now:
+                return False
+            _MEMORY_STORE[namespaced_key] = now + ttl_seconds
+            return True
+
     def seen(self, key: str) -> bool:
         if not self._redis:
-            return False
+            return self._memory_seen(self._key(key))
         try:
             return bool(self._redis.exists(self._key(key)))
         except Exception:  # pragma: no cover
@@ -64,7 +94,9 @@ class IdempotencyStore:
     def mark(self, key: str, ttl_seconds: int = 86400) -> bool:
         """Mark key as processed. Returns True if newly marked, False if already existed."""
         if not self._redis:
-            return True
+            # Fall back to a process-local store so idempotency still holds
+            # without Redis (tests, single-process deployments).
+            return self._memory_mark(self._key(key), ttl_seconds)
         try:
             # SET NX EX — atomic check-and-set
             result = self._redis.set(self._key(key), "1", nx=True, ex=ttl_seconds)

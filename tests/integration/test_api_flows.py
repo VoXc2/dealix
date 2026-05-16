@@ -29,8 +29,12 @@ VALID_API_KEY = "test-integration-key-xyz"
 # ── App fixture ────────────────────────────────────────────────────
 
 @pytest.fixture(scope="module")
-def app():
-    """Create the app with all external calls mocked."""
+def client():
+    """Create the app + client with all external calls mocked.
+
+    The env patch must stay active for the lifetime of the client because
+    the API-key middleware reads ``os.getenv("API_KEYS")`` at request time.
+    """
     with (
         patch.dict(
             "os.environ",
@@ -49,13 +53,9 @@ def app():
         patch("db.session.init_db", new=AsyncMock()),
     ):
         from api.main import create_app
-        return create_app()
-
-
-@pytest.fixture(scope="module")
-def client(app):
-    with TestClient(app, raise_server_exceptions=False) as c:
-        yield c
+        app = create_app()
+        with TestClient(app, raise_server_exceptions=False) as c:
+            yield c
 
 
 @pytest.fixture()

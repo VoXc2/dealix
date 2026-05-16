@@ -287,6 +287,7 @@ def answer_operator_question(
             answer_ar = f"{answer_ar}\n\nأقرب مطابقات في الكود: {paths}."
             note_ar = (
                 f"تم فحص {scan_meta['documents_scanned']} ملفاً تقريباً (~{scan_meta['chars_scanned']} حرف). "
+                "البحث الدلالي غير متصل بعد (semantic search not connected yet)؛ "
                 "للبحث الدلالي الكامل: ربط pgvector في Supabase."
             )
 

@@ -120,12 +120,23 @@ class APIKeyMiddleware(BaseHTTPMiddleware):
         if path in PUBLIC_PATHS or path.startswith(PUBLIC_PREFIXES):
             return await call_next(request)
 
-        # Enforce key only when API_KEYS is configured
         allowed = _configured_keys()
         if not allowed:
+            # No keys configured. Allowed only outside production (dev mode).
+            # In production a missing API_KEYS list must reject every request
+            # rather than silently disabling auth.
+            if os.getenv("APP_ENV", "").lower() == "production":
+                logger.warning("api_keys_not_configured_in_production", path=path)
+                return JSONResponse(
+                    {"detail": "API authentication is not configured"},
+                    status_code=status.HTTP_401_UNAUTHORIZED,
+                )
             return await call_next(request)
 
-        provided = request.headers.get("X-API-Key")
+        # Accept the key from the X-API-Key header or an ?api_key= query param.
+        provided = request.headers.get("X-API-Key") or request.query_params.get(
+            "api_key"
+        )
         if not verify_api_key(provided, allowed):
             logger.warning("api_key_invalid", path=path, has_key=bool(provided))
             # Return a proper JSONResponse instead of raising HTTPException —

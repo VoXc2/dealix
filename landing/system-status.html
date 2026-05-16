@@ -69,7 +69,7 @@
 
   <div id="overall" class="loading">⏳ جارٍ التحقّق من الحالة...</div>
 
-  <h2>الـ Dependencies <span class="endpoint-link"><a href="/healthz?deep=1">GET /healthz?deep=1</a></span></h2>
+  <h2>الـ Dependencies <span class="endpoint-link"><a href="/health?deep=1">GET /health?deep=1</a></span></h2>
   <div id="dependencies" class="grid">
     <div class="loading">جارٍ التحميل...</div>
   </div>
@@ -125,7 +125,7 @@ async function loadAll() {
   const tStart = Date.now();
   try {
     const [healthRes, compRes] = await Promise.all([
-      fetch(`${API_BASE}/healthz?deep=1`).then(r => r.ok ? r.json() : null).catch(() => null),
+      fetch(`${API_BASE}/health?deep=1`).then(r => r.ok ? r.json() : null).catch(() => null),
       fetch(`${API_BASE}/api/v1/compliance/status`).then(r => r.ok ? r.json() : null).catch(() => null),
     ]);
 

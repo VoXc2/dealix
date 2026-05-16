@@ -20,6 +20,12 @@ from api.schemas import (
     LeadsBatchResponse,
     PipelineResponse,
 )
+from api.schemas.pagination import (
+    PaginationParams,
+    encode_offset_cursor,
+    offset_from_cursor,
+)
+from api.schemas.response import paginated
 from auto_client_acquisition.agents.intake import LeadSource
 from auto_client_acquisition.connectors.google_maps import (
     INDUSTRY_QUERIES as _LOCAL_INDUSTRY_QUERIES,
@@ -146,6 +152,54 @@ async def _persist_lead_row(
         except Exception as exc:
             await session.rollback()
             log.warning("lead_batch_persist_skipped: %s", exc)
+
+
+@router.get("")
+async def list_leads(
+    pagination: PaginationParams = Depends(PaginationParams.from_query),
+) -> dict[str, Any]:
+    """List persisted leads (most recent first) with cursor/limit pagination."""
+    limit = pagination.limit
+    offset = offset_from_cursor(pagination.cursor, limit)
+    items: list[dict[str, Any]] = []
+    total: int | None = None
+    try:
+        async with async_session_factory() as session:
+            stmt = (
+                select(LeadRecord)
+                .order_by(LeadRecord.created_at.desc())
+                .offset(offset)
+                .limit(limit + 1)
+            )
+            rows = list((await session.execute(stmt)).scalars().all())
+            has_more = len(rows) > limit
+            rows = rows[:limit]
+            items = [
+                {
+                    "id": str(row.id),
+                    "company_name": row.company_name,
+                    "sector": row.sector,
+                    "region": row.region,
+                    "status": row.status,
+                    "fit_score": row.fit_score,
+                    "urgency_score": row.urgency_score,
+                    "created_at": row.created_at.isoformat() if row.created_at else None,
+                }
+                for row in rows
+            ]
+    except Exception as exc:  # noqa: BLE001
+        log.warning("list_leads_query_failed: %s", exc)
+        raise HTTPException(status_code=503, detail="leads store unavailable") from exc
+
+    next_cursor = encode_offset_cursor(offset + limit) if has_more else None
+    return paginated(
+        items,
+        total=total,
+        per_page=limit,
+        cursor=pagination.cursor,
+        next_cursor=next_cursor,
+        has_more=has_more,
+    )
 
 
 @router.post("", response_model=PipelineResponse)
