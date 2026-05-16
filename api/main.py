@@ -55,6 +55,7 @@ from api.routers import (
     simulation_os,
     tenant_theming,
     human_ai_os,
+    governed_revenue_ops,
     org_graph_os,
     value_engine_os,
     zatca,
@@ -326,6 +327,8 @@ def create_app() -> FastAPI:
         get_logger(__name__).warning("optional_router_skipped", router=_name, error=_err)
     # Wave 14J — Commercial wiring map (public)
     app.include_router(commercial_map_router.router)
+    # Governed Revenue & AI Operations — positioning + strict L2→L7 state machine
+    app.include_router(governed_revenue_ops.router)
     # Wave 15 — Founder launch-status (admin /launch-status + public /launch-status/public)
     app.include_router(founder_launch_status_router.router)
     # Systems 26–35 — Enterprise Control Plane hardening

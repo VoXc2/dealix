@@ -2,6 +2,7 @@
 
 | Document | Purpose |
 |----------|---------|
+| [../strategic/GOVERNED_REVENUE_AI_OPERATIONS_PLAYBOOK_AR.md](../strategic/GOVERNED_REVENUE_AI_OPERATIONS_PLAYBOOK_AR.md) | Playbook التموضع الجديد: Governed Revenue & AI Operations + North Star + State Machine + Gates |
 | [DEALIX_REVOPS_PACKAGES_AR.md](DEALIX_REVOPS_PACKAGES_AR.md) | أسعار ونطاق حزم الإيراد (Diagnostic، Sprint، Pilot، RevOps، Enterprise) |
 | [DEALIX_AI_OPERATING_COMPANY_AR.md](DEALIX_AI_OPERATING_COMPANY_AR.md) | **المرجع الشامل**: تسعة أنظمة تشغيل، أبواب العميل الخمسة، كتالوج الخدمات، معيار التسليم، QA، خارطة بناء |
 | [OFFER_LEAD_INTELLIGENCE_SPRINT_AR.md](OFFER_LEAD_INTELLIGENCE_SPRINT_AR.md) | صفحة عرض Sprint |
