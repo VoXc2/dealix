@@ -114,7 +114,7 @@ SERVICE_LADDER: tuple[ServiceOffer, ...] = (
     ),
     ServiceOffer(
         service_id="governed_ops_retainer",
-        name_ar="ريتainer تشغيل محكوم",
+        name_ar="ريتينر تشغيل محكوم",
         name_en="Governed Ops Retainer",
         price_range_sar="4,999 - 35,000 / month",
         stage="retainer",
