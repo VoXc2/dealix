@@ -35,7 +35,7 @@ python scripts/verify_dealix_ready.py --skip-tests
 | 0 | Founder Clarity | PASS | العقيدة والسُلّم الخماسي محسومان. |
 | 1 | Offer Readiness | FIX | السُلّم الخماسي مُعتمد؛ يلزم مواءمة README/landing عليه (مصدر حقيقة واحد). |
 | 2 | Delivery Readiness | FIX | منسّق الـ7-Day Sprint أُصلح ويعمل؛ يلزم تشغيله على بيانات عميل حقيقي مرة واحدة. |
-| 3 | Product Readiness | FIX | الـAPI يقلع (750 مسار)؛ المجموعة الكاملة فيها ~57 فشل سابق (انجراف اختبار↔كود). |
+| 3 | Product Readiness | PASS | الـAPI يقلع (750 مسار)؛ المجموعة الكاملة خضراء (3,700 اختبار ينجح، 0 فشل). |
 | 4 | Governance Readiness | PASS | الـ11 غير-قابل-للتفاوض مُنفَّذة في `doctrine.py` ومُختبرة. |
 | 5 | Demo Readiness | FIX | حزم demo موجودة؛ تحتاج تحقق على المنسّق المُصلَّح. |
 | 6 | Sales Readiness | BLOCKED | لا بيع رسمي قبل تفعيل Moyasar (لا قدرة تحصيل حالياً). |
@@ -66,13 +66,13 @@ python scripts/verify_dealix_ready.py --skip-tests
 
 1. **Moyasar غير مُفعّل** — لا قدرة تحصيل (`account_inactive_error`). إجراء KYC على المؤسس. يحجب كل إيراد.
 2. **صفر Proof Pack مُسلَّم وصفر case study** — لا دليل أثر؛ يحجب الترقّي في السُلّم.
-3. **~57 فشل اختبار سابق** في المجموعة الكاملة — انجراف اختبار↔كود من موجات البناء السابقة (مثل LLM router `route` مفقود، enum `ACTIVE` مفقود) — دَيْن جودة يجب سداده.
+3. **كود التسعير غير مُواءَم** — `api/routers/pricing.py` وصفحات `landing/*.html` ما زالت على نموذج SaaS ثلاثي قديم بينما التوثيق صار على السُلّم الخماسي. مواءمتها تغيير منسّق يمسّ checkout المنشور.
 
 ## Next Build Decisions
 
-1. مواءمة README/landing/COMMERCIAL_WIRING على السُلّم الخماسي (مصدر حقيقة واحد).
+1. مواءمة كود التسعير: `pricing.py` + `service_catalog/registry.py` + صفحات `landing/*.html` على السُلّم الخماسي (التوثيق تمّت مواءمته؛ الكود والهبوط متبقّيان).
 2. تشغيل الـ7-Day Sprint المُصلَّح على بيانات تجريبية كاملة وإصدار أول Proof Pack داخلي.
-3. سداد دَيْن الاختبارات الـ57 (إصلاح انجراف اختبار↔كود) قبل ادعاء "جاهز للإنتاج".
+3. تفعيل حساب Moyasar (إجراء KYC على المؤسس) — يفتح أول إيراد.
 
 ---
 
