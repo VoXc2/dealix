@@ -20,6 +20,7 @@ from fastapi import APIRouter, HTTPException
 
 from auto_client_acquisition.service_catalog import (
     ServiceOffering,
+    build_governed_revenue_ai_ops_blueprint,
     get_offering,
     list_offerings,
 )
@@ -62,6 +63,12 @@ async def service_catalog() -> dict[str, Any]:
         "count": len(list_offerings()),
         "hard_gates": _HARD_GATES,
     }
+
+
+@router.get("/governed-operating-model")
+async def governed_operating_model() -> dict[str, Any]:
+    """Founder-facing strategy payload for Governed Revenue & AI Ops."""
+    return build_governed_revenue_ai_ops_blueprint()
 
 
 @router.get("/{service_id}")
