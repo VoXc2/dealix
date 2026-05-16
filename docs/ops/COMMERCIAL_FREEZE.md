@@ -2,9 +2,9 @@
 
 **Status:** ACTIVE
 **Started:** 2026-05-16
-**Scope (amended 2026-05-16):** the freeze applies to **rungs 3–5** of the offer
-ladder (Managed Ops, Command Center, Partner OS). The rung 0–1 *delivery finish*
-is explicitly permitted — see "Allowed" below.
+**Scope (amended 2026-05-16):** the freeze applies to **rungs 2–5** of the offer
+ladder (Data-to-Revenue Pack, Managed Ops, Command Center, Partner OS). The
+rung 0–1 *delivery finish* is explicitly permitted — see "Allowed" below.
 **Exit condition:** first paid pilot delivered + customer-approved Proof Pack (L3+).
 
 ---
@@ -35,7 +35,7 @@ The freeze does **not** cover the **rung 0–1 delivery finish**: the minimum wo
 needed for the Free Diagnostic (rung 0) and the 499 SAR 7-Day Revenue Proof
 Sprint (rung 1) to ship a real, customer-facing rendered deliverable. That work
 is in service of *delivering the first paid pilot* — which is the freeze's own
-exit condition — so it is permitted and scoped tightly (no rung 3–5 capability).
+exit condition — so it is permitted and scoped tightly (no rung 2–5 capability).
 
 ## Frozen — do NOT do during the freeze | مُجمَّد
 
@@ -53,7 +53,7 @@ exit condition — so it is permitted and scoped tightly (no rung 3–5 capabili
   `docs/sales-kit/`).
 - ✅ **Rung 0–1 delivery finish**: customer-facing rendered (HTML/PDF) Proof Pack
   and Diagnostic report, the payment→delivery audit link, and the doctrine
-  hotfixes that support them. Minimum scope only — no rung 3–5 capability.
+  hotfixes that support them. Minimum scope only — no rung 2–5 capability.
 - ✅ Delivery of a signed pilot + Proof Pack assembly.
 - ✅ Production hotfixes and CI hygiene only (P0/P1 — broken build, broken gate,
   security/doctrine).

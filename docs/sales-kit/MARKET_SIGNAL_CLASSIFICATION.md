@@ -37,7 +37,7 @@ Two standing rules govern every row:
 
 | Signal | الإشارة | Exact next action | الإجراء التالي | Record in |
 |---|---|---|---|---|
-| `replied_interested` | رد بالاهتمام | Reply the same working day, during working hours — promptly but not instant (`WARM_LIST_WORKFLOW.md` §4.1). Request a 20-min qualification call. | رد في نفس يوم العمل وخلال ساعات العمل — بسرعة دون أن يبدو آليًّا (§4.1). اطلب مكالمة تأهيل 20 دقيقة. | War Room §3 |
+| `replied_interested` | رد بالاهتمام | Reply within 24 hours, never sooner than 1 hour (`WARM_LIST_WORKFLOW.md` §4.1). Request a 20-min qualification call. | رد خلال 24 ساعة وليس قبل ساعة واحدة (وفق §4.1). اطلب مكالمة تأهيل 20 دقيقة. | War Room §3 |
 | `meeting_booked` | حُجز اجتماع | Prepare a tight agenda only. Do **not** pre-build an offer or pitch a rung ahead of proof. Ask them to nominate one real customer to discuss. | جهّز أجندة فقط — لا عرض مسبق ولا ترقية قبل الإثبات. | War Room §3 |
 | `used_in_meeting` | استُخدم في اجتماع | After the meeting, record a proof event in [`../ledgers/PROOF_LEDGER.md`](../ledgers/PROOF_LEDGER.md) — what was shown, the type, the outcome. | سجّل حدث إثبات في سجل الإثبات بعد الاجتماع. | PROOF_LEDGER |
 | `qualify_decision_returned` | عاد قرار التأهيل | Log the five-decision outcome (`ACCEPT` / `DIAGNOSTIC_ONLY` / `REFRAME` / `REJECT` / `REFER_OUT`) as `event=qualify_decision`, exactly as `WARM_LIST_WORKFLOW.md` §5 specifies. | سجّل قرار التأهيل كـ`event=qualify_decision` وفق §5. | PROOF_LEDGER |

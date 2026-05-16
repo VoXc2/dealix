@@ -84,7 +84,7 @@ Checks 1, 2, 3 ALL pass?  (sent + founder_confirmed + timestamp)
 | Outcome | What it means | The honest action |
 |---|---|---|
 | **REAL** | Sent, confirmed, timestamped, engaged, consistent. | Release the prepared follow-up. Then classify the reply. |
-| **SENT BUT SILENT** | Real send, no reply yet. | Hold at `first_touch_sent`. One follow-up max, then stop. |
+| **SENT BUT SILENT** | Real send, no reply yet. | Hold at `first_touch_sent`. No unsolicited follow-up — a second message only if a window was agreed (`WARM_LIST_WORKFLOW.md` §1); otherwise wait 7 days, then stop. |
 | **RECORD DRIFT** | Send is real but the recorded stage is wrong. | Reconcile the record, re-run the tree. |
 | **NOT REAL** | No genuine send behind the claim. | Set `prepared_not_sent`, send the real first-touch, log the correction. |
 

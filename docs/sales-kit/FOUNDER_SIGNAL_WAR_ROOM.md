@@ -14,7 +14,7 @@
 A fixed 4-step open. Total time ≤ 45 minutes. No new contacts beyond the cadence.
 افتتاحية ثابتة من 4 خطوات. الوقت الإجمالي ≤ 45 دقيقة. لا تتجاوز إيقاع التواصل.
 
-1. **Read the Signal log (Section 3).** Any reply received in the last 24h is classified before anything else. Reply SLA: same working day, during working hours — promptly but not instant (`WARM_LIST_WORKFLOW.md` §4.1).
+1. **Read the Signal log (Section 3).** Any reply received in the last 24h is classified before anything else. Reply SLA: within 24 hours, never sooner than 1 hour (`WARM_LIST_WORKFLOW.md` §4.1).
 2. **Send the day's 5 contacts.** Cadence is 5 warm contacts/day, one outreach each — no automation, no second contact without a reply. Log each at *send time* in the Warm-list pipeline (Section 1).
 3. **Advance the Partner pipeline (Section 2).** One honest status per active partner. Before promoting any partner stage, run [`L4_TRUTH_CHECK.md`](L4_TRUTH_CHECK.md).
 4. **Write the daily wrap** into [`../adoption/FRICTION_LOG.md`](../adoption/FRICTION_LOG.md): messages sent, replies, biggest objection (verbatim, anonymized), one change for tomorrow or "no change + reason".
@@ -66,8 +66,8 @@ Every incoming reply, classified the moment it is read. Signal names match [`MAR
 | | | | replied_interested / meeting_booked / used_in_meeting / qualify_decision_returned / pilot_intro_requested / asks_for_pdf / asks_for_english / asks_for_scope / asks_for_pricing / asks_for_security / no_response_after_follow_up / low_intent / not_interested / invoice_sent / invoice_paid | |
 | | | | | |
 
-> Same-working-day reply applies to `replied_interested` and `meeting_booked`. `no_response_after_follow_up` = mark and move on; no chasing.
-> الرد في نفس يوم العمل للمهتمين والاجتماعات. لا مطاردة بعد انتظار الرد.
+> Reply within 24 hours (never sooner than 1 hour) for `replied_interested` and `meeting_booked`. `no_response_after_follow_up` = mark and move on; no chasing.
+> الرد خلال 24 ساعة (وليس قبل ساعة) للمهتمين والاجتماعات. لا مطاردة بعد انتظار الرد.
 
 ---
 
@@ -83,7 +83,7 @@ The war room points; the ledgers are the record of truth. Update the matching le
 | Capital asset deposited (sector pattern, reusable draft) | [`../ledgers/CAPITAL_LEDGER.md`](../ledgers/CAPITAL_LEDGER.md) |
 | Governance decision / refusal | [`../ledgers/GOVERNANCE_LEDGER.md`](../ledgers/GOVERNANCE_LEDGER.md) |
 | Objection, decline, confusion, daily wrap | [`../adoption/FRICTION_LOG.md`](../adoption/FRICTION_LOG.md) |
-| Outbound referral made | [`../ledgers/CLIENT_LEDGER.md`](../ledgers/CLIENT_LEDGER.md) — referral entry |
+| Outbound referral made | `referral_ledger` — referral entries kept in [`../ledgers/CLIENT_LEDGER.md`](../ledgers/CLIENT_LEDGER.md) |
 
 > A proof pack without a Value Ledger entry is incomplete. Source-less claims are not recorded.
 > حزمة إثبات بلا قيد في سجل القيمة = ناقصة. لا تُسجَّل ادعاءات بلا مصدر.
