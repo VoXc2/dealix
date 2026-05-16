@@ -105,18 +105,27 @@ def test_no_guaranteed_language_anywhere():
 
 
 # ── Test 5 ────────────────────────────────────────────────────────────
-def test_price_ladder_ascending_for_paid_one_time_services():
-    """Free → 499 (Sprint) → 1500 (Data-to-Revenue) one-time pricing ladder."""
-    one_time_paid = [
-        o for o in OFFERINGS if o.price_unit == "one_time" and o.price_sar > 0
-    ]
-    prices = [o.price_sar for o in one_time_paid]
-    assert prices == sorted(prices), f"one-time prices not ascending: {prices}"
-    # Specifically: Sprint must be cheaper than Data-to-Revenue
-    sprint = get_offering("revenue_proof_sprint_499")
-    d2r = get_offering("data_to_revenue_pack_1500")
-    assert sprint is not None and d2r is not None
-    assert sprint.price_sar < d2r.price_sar
+def test_pricing_modes_are_governed():
+    """Governed-revenue catalog: pricing is a range or a recommended_draft.
+
+    The entry Diagnostic is a real range band; every other offering is a
+    `recommended_draft` until >= 3 paid pilots inform a real band. Every
+    offering carries `is_estimate=True` (Article 8).
+    """
+    diagnostic = get_offering("governed_revenue_ops_diagnostic")
+    assert diagnostic is not None
+    assert diagnostic.price_mode == "range"
+    assert diagnostic.price_sar_min == 4999.0
+    assert diagnostic.price_sar_max == 25000.0
+    # `price_sar` stays valid (equal to the min) so consumers do not break.
+    assert diagnostic.price_sar == diagnostic.price_sar_min
+
+    for o in OFFERINGS:
+        assert o.is_estimate is True, f"{o.id} must be is_estimate=True"
+        if o.id != "governed_revenue_ops_diagnostic":
+            assert o.price_mode == "recommended_draft", (
+                f"{o.id} should be recommended_draft until 3 paid pilots"
+            )
 
 
 # ── Test 6 ────────────────────────────────────────────────────────────
@@ -146,9 +155,10 @@ def test_every_offering_lists_relevant_hard_gates():
 # ── Test 8 ────────────────────────────────────────────────────────────
 def test_get_offering_lookup_works():
     """Helper function returns correct offering by id, None for unknown."""
-    assert get_offering("revenue_proof_sprint_499") is not None
-    assert get_offering("free_mini_diagnostic") is not None
-    assert get_offering("agency_partner_os") is not None
+    assert get_offering("governed_revenue_ops_diagnostic") is not None
+    assert get_offering("revenue_intelligence_sprint") is not None
+    assert get_offering("governed_ops_retainer") is not None
+    assert get_offering("trust_pack_lite") is not None
     assert get_offering("nonexistent_id") is None
     assert get_offering("") is None
     # SERVICE_IDS frozenset must match

@@ -14,6 +14,7 @@ from __future__ import annotations
 from typing import Any
 
 from fastapi import APIRouter, Body, HTTPException, Query
+from pydantic import ValidationError
 
 from auto_client_acquisition.approval_center import (
     ApprovalRequest,
@@ -60,10 +61,8 @@ async def pending() -> dict[str, Any]:
     }
 
 
-@router.post("/create")
-async def create(payload: dict[str, Any] = Body(...)) -> dict[str, Any]:
-    """Create a new approval request. Body must match ``ApprovalRequest``
-    minus auto-generated fields. Unknown fields → 422 (extra='forbid')."""
+def _create_approval(payload: dict[str, Any]) -> dict[str, Any]:
+    """Validate and persist a new approval request. Shared by /create and ''."""
     try:
         req = ApprovalRequest.model_validate(payload)
     except ValidationError as exc:
@@ -74,6 +73,19 @@ async def create(payload: dict[str, Any] = Body(...)) -> dict[str, Any]:
         "approval": stored.model_dump(mode="json"),
         "card": render_approval_card(stored),
     }
+
+
+@router.post("/create")
+async def create(payload: dict[str, Any] = Body(...)) -> dict[str, Any]:
+    """Create a new approval request. Body must match ``ApprovalRequest``
+    minus auto-generated fields. Unknown fields → 422 (extra='forbid')."""
+    return _create_approval(payload)
+
+
+@router.post("")
+async def create_canonical(payload: dict[str, Any] = Body(...)) -> dict[str, Any]:
+    """Canonical alias of ``/create`` — POST /api/v1/approvals."""
+    return _create_approval(payload)
 
 
 @router.post("/{approval_id}/approve")

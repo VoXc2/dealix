@@ -77,6 +77,15 @@ EVENT_TYPES: tuple[str, ...] = (
     "ai.regression_detected",
     # Pulse
     "pulse.published",
+    # Commercial Evidence State Machine (CEL) — append-only
+    "commercial.prepared",
+    "commercial.sent",
+    "commercial.reply_classified",
+    "commercial.meeting_used",
+    "commercial.scope_requested",
+    "commercial.pilot_intro_requested",
+    "commercial.invoice_sent",
+    "commercial.invoice_paid",
 )
 
 

@@ -106,6 +106,10 @@ from api.routers import commercial_map as commercial_map_router
 from api.routers import founder_launch_status as founder_launch_status_router
 # Enterprise Foundation Core — platform_core enterprise-loop proof endpoints
 from api.routers import platform_foundation as platform_foundation_router
+# Governed Revenue Ops — Commercial Evidence State Machine + Diagnostic
+from api.routers import board_decision_os as board_decision_os_router
+from api.routers import evidence as evidence_router
+from api.routers import revenue_ops as revenue_ops_router
 from api.security import APIKeyMiddleware, setup_rate_limit
 from core.config.settings import get_settings
 from core.errors import AICompanyError
@@ -341,6 +345,12 @@ def create_app() -> FastAPI:
     app.include_router(self_evolving_os.router)
     # Enterprise Foundation Core — /api/v1/platform/* loop proof endpoints
     app.include_router(platform_foundation_router.router)
+    # Governed Revenue Ops — Diagnostic delivery surface (/api/v1/revenue-ops)
+    app.include_router(revenue_ops_router.router)
+    # Commercial Evidence State Machine — CEL transitions (/api/v1/evidence)
+    app.include_router(evidence_router.router)
+    # Board Decision OS — strategic overview (/api/v1/board-decision-os)
+    app.include_router(board_decision_os_router.router)
 
     @app.get("/", tags=["root"])
     async def root() -> dict[str, object]:

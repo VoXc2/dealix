@@ -64,6 +64,17 @@ async def service_catalog() -> dict[str, Any]:
     }
 
 
+@router.get("")
+async def services_list() -> dict[str, Any]:
+    """Canonical list alias of the catalog — GET /api/v1/services."""
+    offerings = list_offerings()
+    return {
+        "offerings": [_serialize(o) for o in offerings],
+        "count": len(offerings),
+        "hard_gates": _HARD_GATES,
+    }
+
+
 @router.get("/{service_id}")
 async def service_offering_detail(service_id: str) -> dict[str, Any]:
     """One offering by id."""

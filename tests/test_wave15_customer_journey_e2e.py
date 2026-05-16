@@ -46,15 +46,17 @@ def test_step_01_service_catalog_has_7_offerings_with_valid_ladder() -> None:
     offerings = list_offerings()
     assert len(offerings) == 7
 
-    # Free Diagnostic must be at price 0
-    free = get_offering("free_mini_diagnostic")
-    assert free is not None
-    assert free.price_sar == 0.0
+    # Governed Revenue Ops Diagnostic is the entry service — a real range band.
+    diagnostic = get_offering("governed_revenue_ops_diagnostic")
+    assert diagnostic is not None
+    assert diagnostic.price_mode == "range"
+    assert diagnostic.price_sar_min == 4999.0
+    assert diagnostic.price_sar_max == 25000.0
 
-    # Revenue Proof Sprint = 499 (first paid tier)
-    sprint = get_offering("revenue_proof_sprint_499")
+    # Revenue Intelligence Sprint is the core service — recommended_draft.
+    sprint = get_offering("revenue_intelligence_sprint")
     assert sprint is not None
-    assert sprint.price_sar == 499.0
+    assert sprint.price_mode == "recommended_draft"
 
     # Article 4: no live actions in any offering's action_modes_used
     for off in offerings:

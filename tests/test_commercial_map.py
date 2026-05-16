@@ -86,20 +86,30 @@ def test_markdown_endpoint_is_bilingual():
         assert sid in body, f"markdown missing service_id={sid}"
 
 
-def test_referral_persistence_offer_links_to_partnership_module():
+def test_board_memo_offer_links_to_board_decision_os():
     body = client.get("/api/v1/commercial-map").json()
-    agency = next(o for o in body["offers"] if o["service_id"] == "agency_partner_os")
-    assert "partnership_os" in agency["wiring"]["delivery_module"]
+    memo = next(
+        o for o in body["offers"] if o["service_id"] == "board_decision_memo"
+    )
+    assert "board_decision_os" in memo["wiring"]["delivery_module"]
 
 
-def test_growth_ops_links_to_workspace_endpoint():
+def test_retainer_links_to_workspace_endpoint():
     body = client.get("/api/v1/commercial-map").json()
-    growth = next(o for o in body["offers"] if o["service_id"] == "growth_ops_monthly_2999")
-    assert "workspace" in growth["wiring"]["delivery_endpoint"]
+    retainer = next(
+        o for o in body["offers"] if o["service_id"] == "governed_ops_retainer"
+    )
+    assert "workspace" in retainer["wiring"]["delivery_endpoint"]
 
 
-def test_sprint_offer_links_to_sample_preview():
+def test_diagnostic_offer_links_to_revenue_ops_intake():
     body = client.get("/api/v1/commercial-map").json()
-    sprint = next(o for o in body["offers"] if o["service_id"] == "revenue_proof_sprint_499")
-    assert sprint["wiring"]["sample_endpoint"] == "GET /api/v1/sprint/sample"
-    assert sprint["wiring"]["preview_url"] == "/sprint-sample.html"
+    diagnostic = next(
+        o
+        for o in body["offers"]
+        if o["service_id"] == "governed_revenue_ops_diagnostic"
+    )
+    assert diagnostic["wiring"]["intake_endpoint"] == (
+        "POST /api/v1/revenue-ops/diagnostics"
+    )
+    assert "decision-passport" in diagnostic["wiring"]["delivery_endpoint"]
