@@ -14,12 +14,16 @@ from auto_client_acquisition.service_catalog.registry import (
     get_offering,
     list_offerings,
 )
+from auto_client_acquisition.service_catalog.governed_revenue_ai_ops import (
+    build_governed_revenue_ai_ops_blueprint,
+)
 from auto_client_acquisition.service_catalog.schemas import ServiceOffering
 
 __all__ = [
     "OFFERINGS",
     "SERVICE_IDS",
     "ServiceOffering",
+    "build_governed_revenue_ai_ops_blueprint",
     "get_offering",
     "list_offerings",
 ]
