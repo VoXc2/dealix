@@ -89,7 +89,18 @@ Optional — isolated Postgres revenue memory integration test ([`tests/test_iso
 تحقق جاهزية الخدمات والبوابات: `bash scripts/dealix_capability_verify.sh`.  
 تحقق Company OS (وثائق + سكربتات): `py -3 scripts/verify_full_mvp_ready.py --skip-tests` أو بدون `--skip-tests` لتشغيل pytest المرتبط.
 
-- مكينة ليدز سعودية: `docs/ops/SAUDI_LEAD_MACHINE_AR.md`؛ بذرة YAML + `python scripts/import_seed_leads.py --dry-run`؛ دفعة API: `POST /api/v1/leads/batch`.
+تحقق الحزمة الكاملة محليًا (Docker data plane + بوابات Python + smoke + Next.js + Playwright Tier-1):
+
+```bash
+bash scripts/dealix_local_stack_verify.sh                       # تشغيل كامل
+bash scripts/dealix_local_stack_verify.sh --skip-docker --skip-frontend   # البوابات + pytest فقط
+```
+
+نفس السطح متاح على GitHub عبر **Actions → Local stack verify → Run workflow** (`.github/workflows/local_stack_verify.yml`).
+
+**اصطلاح Python:** خطوات السكربتات في GitHub Actions تستخدم `python3` (تكافؤ مع صور Linux الأدنى).
+
+- مكينة ليدز سعودية: `docs/ops/SAUDI_LEAD_MACHINE_AR.md`؛ بذرة YAML + `python3 scripts/import_seed_leads.py --dry-run`؛ دفعة API: `POST /api/v1/leads/batch`.
 
 استراتيجية التشغيل الكاملة: `docs/strategic/DEALIX_MASTER_OPERATING_MODEL_AR.md`
 
