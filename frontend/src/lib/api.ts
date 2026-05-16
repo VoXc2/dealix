@@ -181,6 +181,27 @@ export const api = {
 
   getCustomerPortal: (handle = "Slot-A") =>
     apiClient.get(`/api/v1/customer-portal/${encodeURIComponent(handle)}`),
+
+  getMarketProofStages: () =>
+    apiClient.get("/api/v1/market-proof/stages"),
+
+  getMarketProofLedger: () =>
+    apiClient.get("/api/v1/market-proof/ledger"),
+
+  getMarketProofSnapshot: () =>
+    apiClient.get("/api/v1/market-proof/command-center/snapshot"),
+
+  postMarketProofEvent: (body: Record<string, unknown>) =>
+    apiClient.post("/api/v1/market-proof/events", body),
+
+  postProofPackGenerate: (engagementId: string, body: Record<string, unknown>) =>
+    apiClient.post(
+      `/api/v1/proof-pack/${encodeURIComponent(engagementId)}/generate`,
+      body,
+    ),
+
+  getDecisionPassportStatus: () =>
+    apiClient.get("/api/v1/decision-passport/status"),
 };
 
 export default api;

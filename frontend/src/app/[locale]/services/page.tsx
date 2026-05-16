@@ -1,10 +1,5 @@
-import dynamic from "next/dynamic";
 import Link from "next/link";
-
-const SprintToolsPanel = dynamic(
-  () => import("@/components/services/SprintToolsPanel"),
-  { ssr: false },
-);
+import SprintToolsPanel from "@/components/services/SprintToolsPanel";
 
 interface ServicesHubProps {
   params: Promise<{ locale: string }>;
@@ -19,16 +14,20 @@ export default async function ServicesHubPage({ params }: ServicesHubProps) {
       <div className="min-h-screen bg-background grid-pattern">
         <div className="mx-auto max-w-4xl px-6 py-16 text-right" dir="rtl">
           <p className="text-sm font-medium text-muted-foreground">
-            Dealix — AI Operating Partner
+            Dealix — Governed Revenue & AI Operations
           </p>
           <h1 className="mt-3 text-3xl font-bold tracking-tight text-foreground">
-            خطوط الخدمات الخمس
+            كتالوج الخدمات السبع
           </h1>
           <p className="mt-4 text-muted-foreground leading-relaxed">
-            كل باب يربط تشغيل الشركة بنتائج واضحة، وليس بـ«ذكاء عام» بدون
-            تسليم. التفاصيل الكاملة والكتالوج في وثائق المستودع تحت{" "}
+            ديالكس تبيع قرارات إيراد وذكاء اصطناعي محكومة بالأدلة — لا روبوتات
+            ولا أتمتة. التسعير الكامل في{" "}
             <code className="rounded bg-muted px-1 py-0.5 text-foreground">
-              docs/commercial/
+              docs/OFFER_LADDER_AND_PRICING.md
+            </code>{" "}
+            والاستراتيجية في{" "}
+            <code className="rounded bg-muted px-1 py-0.5 text-foreground">
+              docs/strategy/
             </code>
             .
           </p>
@@ -36,53 +35,74 @@ export default async function ServicesHubPage({ params }: ServicesHubProps) {
           <ul className="mt-10 space-y-6 text-base leading-relaxed">
             <li className="rounded-lg border border-border bg-card/40 p-5">
               <h2 className="text-lg font-semibold text-foreground">
-                1) Grow Revenue — نمو الإيراد
+                0) Governed Revenue Ops Diagnostic — التشخيص
+                <span className="ms-2 text-sm font-normal text-emerald-400">مجاني</span>
               </h2>
               <p className="mt-2 text-muted-foreground">
-                تنظيف وترتيب الحسابات، scoring، مسودات outreach آمنة،
-                pipeline أوضح.
+                خريطة سير عمل الإيراد، مراجعة جودة المصدر، فجوات المتابعة،
+                وتوصية الخطوة التالية.
+              </p>
+            </li>
+            <li className="rounded-lg border border-border bg-card/40 p-5">
+              <h2 className="text-lg font-semibold text-foreground">
+                1) Revenue Intelligence Sprint — سبرنت ذكاء الإيراد
+                <span className="ms-2 text-sm font-normal text-gold-400">25,000 ر.س</span>
+              </h2>
+              <p className="mt-2 text-muted-foreground">
+                ترتيب الحسابات، تقييم مخاطر الصفقات، مسودات الإجراء التالي،
+                سجل الفرص، Decision Passport، وProof Pack.
               </p>
               <Link
                 href={`/${locale}/offer/lead-intelligence-sprint`}
                 className="mt-3 inline-block text-sm font-medium text-primary hover:underline"
               >
-                عرض Lead Intelligence Sprint
+                عرض السبرنت
               </Link>
             </li>
             <li className="rounded-lg border border-border bg-card/40 p-5">
               <h2 className="text-lg font-semibold text-foreground">
-                2) Serve Customers — خدمة العملاء
+                2) Governed Ops Retainer — الاحتفاظ التشغيلي المحكوم
+                <span className="ms-2 text-sm font-normal text-gold-400">4,999–35,000 ر.س/شهر</span>
               </h2>
               <p className="mt-2 text-muted-foreground">
-                تصنيف، مسودات رد، SLA، تقارير شكاوى — موافقة بشرية أولاً.
-              </p>
-              <p className="mt-2 text-xs text-muted-foreground">
-                API: <code className="rounded bg-muted px-1">/api/v1/customer-inbox-v10</code> —{" "}
-                <code className="rounded bg-muted px-1">GET /sla-policy</code>
+                مراجعة إيراد شهرية، مراجعة جودة الأنبوب، مراجعة قرارات الذكاء
+                الاصطناعي، قائمة متابعة موافق عليها، سجل مخاطر، ومذكرة مجلس.
               </p>
             </li>
             <li className="rounded-lg border border-border bg-card/40 p-5">
               <h2 className="text-lg font-semibold text-foreground">
-                3) Automate Operations — أتمتة التشغيل
+                3) AI Governance for Revenue Teams — حوكمة الذكاء الاصطناعي
               </h2>
               <p className="mt-2 text-muted-foreground">
-                workflow واحد متكرر مع مراجعة وتدقيق.
+                الإجراءات المسموحة والممنوعة، حدود الموافقة، قواعد المصدر،
+                وسياسة منع الإرسال الخارجي التلقائي.
               </p>
             </li>
             <li className="rounded-lg border border-border bg-card/40 p-5">
               <h2 className="text-lg font-semibold text-foreground">
-                4) Build Company Brain — المعرفة الموثقة
+                4) CRM / Data Readiness for AI — جاهزية البيانات
               </h2>
               <p className="mt-2 text-muted-foreground">
-                إجابات بمصادر — بدون مصدر لا إجابة.
+                تقرير نظافة الـCRM، خرائط المصادر، الحقول الناقصة، الحسابات
+                المكررة، ودرجة جاهزية البيانات للذكاء الاصطناعي.
               </p>
             </li>
             <li className="rounded-lg border border-border bg-card/40 p-5">
               <h2 className="text-lg font-semibold text-foreground">
-                5) Govern AI — الحوكمة والامتثال
+                5) Board Decision Memo — مذكرة قرارات المجلس
               </h2>
               <p className="mt-2 text-muted-foreground">
-                سياسات استخدام، موافقات، PDPL، سجلات تدقيق.
+                أهم قرارات الإيراد، مخاطر الأنبوب، مخاطر حوكمة الذكاء
+                الاصطناعي، وتوصيات ابنِ/ثبّت/أوقِف.
+              </p>
+            </li>
+            <li className="rounded-lg border border-border bg-card/40 p-5">
+              <h2 className="text-lg font-semibold text-foreground">
+                6) Trust Pack Lite — حزمة الثقة
+              </h2>
+              <p className="mt-2 text-muted-foreground">
+                سياسة إجراءات الذكاء الاصطناعي، مصفوفة الموافقات، الإجراءات
+                الممنوعة، وحدود الثقة — تُعرض عند طلب الأمان فقط.
               </p>
             </li>
           </ul>
@@ -106,16 +126,20 @@ export default async function ServicesHubPage({ params }: ServicesHubProps) {
     <div className="min-h-screen bg-background grid-pattern">
       <div className="mx-auto max-w-4xl px-6 py-16 text-left" dir="ltr">
         <p className="text-sm font-medium text-muted-foreground">
-          Dealix — AI Operating Partner
+          Dealix — Governed Revenue & AI Operations
         </p>
         <h1 className="mt-3 text-3xl font-bold tracking-tight text-foreground">
-          Five service lines
+          Seven service lines
         </h1>
         <p className="mt-4 text-muted-foreground leading-relaxed">
-          Each line ties AI work to measurable delivery — not generic
-          &quot;AI consulting&quot;. Full catalog lives in the repo under{" "}
+          Dealix sells governed, evidence-backed revenue &amp; AI decisions —
+          not bots, not automation. Full pricing lives in{" "}
           <code className="rounded bg-muted px-1 py-0.5 text-foreground">
-            docs/commercial/
+            docs/OFFER_LADDER_AND_PRICING.md
+          </code>{" "}
+          and the strategy in{" "}
+          <code className="rounded bg-muted px-1 py-0.5 text-foreground">
+            docs/strategy/
           </code>
           .
         </p>
@@ -123,54 +147,74 @@ export default async function ServicesHubPage({ params }: ServicesHubProps) {
         <ul className="mt-10 space-y-6 text-base leading-relaxed">
           <li className="rounded-lg border border-border bg-card/40 p-5">
             <h2 className="text-lg font-semibold text-foreground">
-              1) Grow Revenue
+              0) Governed Revenue Ops Diagnostic
+              <span className="ms-2 text-sm font-normal text-emerald-400">Free</span>
             </h2>
             <p className="mt-2 text-muted-foreground">
-              Clean accounts, scoring, safe outreach drafts, clearer
-              pipeline.
+              Revenue workflow map, source-quality review, follow-up gaps,
+              and a recommended next step.
+            </p>
+          </li>
+          <li className="rounded-lg border border-border bg-card/40 p-5">
+            <h2 className="text-lg font-semibold text-foreground">
+              1) Revenue Intelligence Sprint
+              <span className="ms-2 text-sm font-normal text-gold-400">25,000 SAR</span>
+            </h2>
+            <p className="mt-2 text-muted-foreground">
+              Account prioritization, deal-risk scoring, next-best-action
+              drafts, opportunity ledger, Decision Passport, and Proof Pack.
             </p>
             <Link
               href={`/${locale}/offer/lead-intelligence-sprint`}
               className="mt-3 inline-block text-sm font-medium text-primary hover:underline"
             >
-              Lead Intelligence Sprint offer
+              View the Sprint offer
             </Link>
           </li>
           <li className="rounded-lg border border-border bg-card/40 p-5">
             <h2 className="text-lg font-semibold text-foreground">
-              2) Serve Customers
+              2) Governed Ops Retainer
+              <span className="ms-2 text-sm font-normal text-gold-400">4,999–35,000 SAR/mo</span>
             </h2>
             <p className="mt-2 text-muted-foreground">
-              Classification, reply drafts, SLA, issue reports — human
-              approval first.
-            </p>
-            <p className="mt-2 text-xs text-muted-foreground">
-              API: <code className="rounded bg-muted px-1">/api/v1/customer-inbox-v10</code> —{" "}
-              <code className="rounded bg-muted px-1">GET /sla-policy</code>
+              Monthly revenue review, pipeline-quality review, AI decision
+              review, approved follow-up queue, risk register, board memo.
             </p>
           </li>
           <li className="rounded-lg border border-border bg-card/40 p-5">
             <h2 className="text-lg font-semibold text-foreground">
-              3) Automate Operations
+              3) AI Governance for Revenue Teams
             </h2>
             <p className="mt-2 text-muted-foreground">
-              One clear recurring workflow with review and audit.
+              Allowed and forbidden AI actions, approval boundaries, source
+              rules, and a no-autonomous-external-send policy.
             </p>
           </li>
           <li className="rounded-lg border border-border bg-card/40 p-5">
             <h2 className="text-lg font-semibold text-foreground">
-              4) Build Company Brain
+              4) CRM / Data Readiness for AI
             </h2>
             <p className="mt-2 text-muted-foreground">
-              Answers with citations — no source, no answer.
+              CRM hygiene report, source mapping, missing fields, duplicate
+              accounts, and a data-readiness score.
             </p>
           </li>
           <li className="rounded-lg border border-border bg-card/40 p-5">
             <h2 className="text-lg font-semibold text-foreground">
-              5) Govern AI
+              5) Board Decision Memo
             </h2>
             <p className="mt-2 text-muted-foreground">
-              Usage policies, approvals, PDPL alignment, audit trails.
+              Top revenue decisions, pipeline risks, AI governance risks,
+              and build / hold / kill recommendations.
+            </p>
+          </li>
+          <li className="rounded-lg border border-border bg-card/40 p-5">
+            <h2 className="text-lg font-semibold text-foreground">
+              6) Trust Pack Lite
+            </h2>
+            <p className="mt-2 text-muted-foreground">
+              AI action policy, approval matrix, forbidden actions, and
+              trust boundaries — offered only on a security request.
             </p>
           </li>
         </ul>

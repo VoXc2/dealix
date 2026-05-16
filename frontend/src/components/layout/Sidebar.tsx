@@ -17,22 +17,48 @@ import {
   Zap,
   Shield,
   Building2,
+  Compass,
+  Target,
+  ClipboardList,
+  FileCheck,
+  Gavel,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
 
+type NavKey =
+  | "dashboard"
+  | "commandCenter"
+  | "pipeline"
+  | "marketProof"
+  | "agents"
+  | "approvals"
+  | "evidenceLedger"
+  | "proofPack"
+  | "trustCheck"
+  | "boardDecision"
+  | "customerPortal"
+  | "clients"
+  | "analytics"
+  | "settings";
+
 interface NavItem {
-  key: string;
+  key: NavKey;
   href: string;
   icon: React.ComponentType<{ className?: string }>;
 }
 
 const navItems: NavItem[] = [
   { key: "dashboard", href: "/dashboard", icon: LayoutDashboard },
+  { key: "commandCenter", href: "/command-center", icon: Compass },
   { key: "pipeline", href: "/pipeline", icon: GitBranch },
+  { key: "marketProof", href: "/market-proof", icon: Target },
   { key: "agents", href: "/agents", icon: Bot },
   { key: "approvals", href: "/approvals", icon: CheckSquare },
+  { key: "evidenceLedger", href: "/evidence-ledger", icon: ClipboardList },
+  { key: "proofPack", href: "/proof-pack", icon: FileCheck },
   { key: "trustCheck", href: "/trust-check", icon: Shield },
+  { key: "boardDecision", href: "/board-decision", icon: Gavel },
   { key: "customerPortal", href: "/customer-portal", icon: Building2 },
   { key: "clients", href: "/clients", icon: Users },
   { key: "analytics", href: "/analytics", icon: BarChart3 },
@@ -139,18 +165,7 @@ export function Sidebar({ collapsed = false, onToggle }: SidebarProps) {
                         isActive ? "text-gold-400" : ""
                       )}
                     >
-                      {t(
-                        item.key as
-                          | "dashboard"
-                          | "pipeline"
-                          | "agents"
-                          | "approvals"
-                          | "trustCheck"
-                          | "customerPortal"
-                          | "clients"
-                          | "analytics"
-                          | "settings",
-                      )}
+                      {t(item.key)}
                     </motion.span>
                   )}
                 </AnimatePresence>
