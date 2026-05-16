@@ -1,0 +1,10 @@
+version: 1
+edges:
+  - from: north_star_manifest
+    to: kpi_registry
+  - from: unified_readiness_api
+    to: launch_war_room
+  - from: deal_desk_os
+    to: proof_pack_productization
+  - from: lane_policy
+    to: constitution_policy_map

@@ -1,0 +1,8 @@
+version: 1
+items:
+  - id: api_main_flat_routers
+    impact: growth
+    mitigation: API_DOMAIN_OWNERSHIP migration batches
+  - id: jsonl_postgres_dual_ledgers
+    impact: reliability
+    mitigation: engineering_cutover_policy.yaml

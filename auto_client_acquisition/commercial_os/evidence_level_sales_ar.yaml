@@ -1,0 +1,21 @@
+version: 1
+# ترجمة تجارية لمستويات الأدلة L0–L5 للمبيعات
+levels:
+  L0:
+    ar: فرضية داخلية — غير للعميل
+    sales_use: لا تُستخدم في عرض خارجي
+  L1:
+    ar: إشارة ضعيفة — استكشاف فقط
+    sales_use: أسئلة discovery
+  L2:
+    ar: دليل تشغيلي — pilot مقترح
+    sales_use: عرض 499 SAR sprint
+  L3:
+    ar: دليل موثّق — case داخلي
+    sales_use: data pack / workshop
+  L4:
+    ar: إثبات قابل للمشاركة
+    sales_use: proof pack + توسعة
+  L5:
+    ar: تأكيد عميل / عقد
+    sales_use: retainer / enterprise
