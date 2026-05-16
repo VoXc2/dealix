@@ -1,0 +1,74 @@
+workflow_id: sales_lead_qualification_v1
+name: Sales Lead Qualification (Governed)
+version: 1.0.0
+domain: sales
+owner: revenue_os
+trigger:
+  type: inbound_lead_created
+  sources:
+    - website_form
+    - whatsapp_inbox
+conditions:
+  - condition_id: has_contact_channel
+    expression: "lead.email != null or lead.phone != null"
+  - condition_id: tenant_resolved
+    expression: "context.tenant_id != null"
+actions:
+  - action_id: identify_tenant_and_permissions
+    type: identity.resolve_context
+    timeout_seconds: 15
+  - action_id: qualify_lead
+    type: agent.run
+    agent_id: sales_agent_v1
+    input:
+      task: qualify_lead
+  - action_id: knowledge_enrichment
+    type: knowledge.retrieve
+    input:
+      require_citations: true
+  - action_id: score_and_next_action
+    type: workflow.score
+  - action_id: governance_risk_check
+    type: governance.risk_score
+  - action_id: draft_message
+    type: agent.run
+    agent_id: sales_agent_v1
+    input:
+      task: draft_next_message
+  - action_id: execute_crm_update
+    type: integration.crm.update_lead
+approvals:
+  - rule_id: approval_high_risk_external_actions
+    when: "risk.level in ['high', 'critical']"
+    approver_roles:
+      - owner
+      - manager
+retries:
+  max_retries: 3
+  strategy: exponential_backoff
+  delays_seconds:
+    - 30
+    - 120
+    - 300
+compensation:
+  - on_action_failure: execute_crm_update
+    action_id: revert_local_status
+    type: workflow.compensate
+metrics:
+  - lead_qualification_score
+  - lead_cycle_time_seconds
+  - approval_wait_seconds
+  - crm_update_success
+audit_logs:
+  enabled: true
+  include_input_payload_hash: true
+  include_decision_passport: true
+observability:
+  trace_required: true
+  log_correlation_required: true
+eval_hooks:
+  - eval.workflow_execution.lead_qualification
+  - eval.governance.high_risk_actions
+rollback:
+  workflow_version_pin: sales_lead_qualification_v1
+  rollback_to: sales_lead_qualification_v0

@@ -1,0 +1,67 @@
+workflow_id: support_case_resolution_v1
+name: Support Case Resolution (Governed)
+version: 1.0.0
+domain: support
+owner: support_ops
+trigger:
+  type: support_case_created
+  sources:
+    - support_portal
+    - email_intake
+conditions:
+  - condition_id: case_has_customer_reference
+    expression: "case.customer_id != null"
+  - condition_id: tenant_resolved
+    expression: "context.tenant_id != null"
+actions:
+  - action_id: resolve_identity_context
+    type: identity.resolve_context
+  - action_id: classify_case
+    type: agent.run
+    agent_id: support_agent_v1
+    input:
+      task: classify_and_propose_resolution
+  - action_id: retrieve_knowledge
+    type: knowledge.retrieve
+    input:
+      require_citations: true
+  - action_id: governance_risk_check
+    type: governance.risk_score
+  - action_id: draft_customer_response
+    type: agent.run
+    agent_id: support_agent_v1
+    input:
+      task: draft_resolution_message
+  - action_id: update_ticket_system
+    type: integration.ticketing.update
+approvals:
+  - rule_id: support_high_risk_approval
+    when: "risk.level in ['high', 'critical']"
+    approver_roles:
+      - manager
+      - owner
+retries:
+  max_retries: 2
+  strategy: exponential_backoff
+  delays_seconds:
+    - 30
+    - 120
+compensation:
+  - on_action_failure: update_ticket_system
+    action_id: revert_case_state
+    type: workflow.compensate
+metrics:
+  - case_resolution_cycle_time_seconds
+  - first_response_draft_quality
+  - approval_wait_seconds
+audit_logs:
+  enabled: true
+  include_input_payload_hash: true
+observability:
+  trace_required: true
+  log_correlation_required: true
+eval_hooks:
+  - eval.agent_behavior.support_case_resolution
+rollback:
+  workflow_version_pin: support_case_resolution_v1
+  rollback_to: support_case_resolution_v0

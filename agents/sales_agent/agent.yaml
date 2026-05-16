@@ -1,0 +1,23 @@
+agent_id: sales_agent_v1
+name: Sales Agent
+namespace: sales_agent
+version: 1.0.0
+status: candidate
+risk_tier: medium
+mission: Qualify inbound leads, produce evidence-backed next steps, and draft approved outreach.
+inputs:
+  - lead profile, prior interactions, qualification signals
+tool_allowlist:
+  - knowledge.retrieve
+  - workflow.score
+  - integration.crm.update_lead
+permissions_profile: default_sales_agent
+approval_required_for:
+  - external_side_effect
+  - high_risk_action
+owners:
+  - revenue_os_owner
+control_ids:
+  gate: G-AGT-SLS-001
+  evidence: E-AGT-SLS-001
+  test: T-AGT-SLS-001

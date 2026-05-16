@@ -1,0 +1,54 @@
+workflow_id: high_risk_approval_v1
+name: High Risk Approval Routing (Governed)
+version: 1.0.0
+domain: governance
+owner: governance_office
+trigger:
+  type: high_risk_action_proposed
+  sources:
+    - workflow_engine
+    - agent_runtime
+conditions:
+  - condition_id: has_risk_score
+    expression: "proposal.risk_score >= 0"
+  - condition_id: tenant_resolved
+    expression: "context.tenant_id != null"
+actions:
+  - action_id: resolve_identity_context
+    type: identity.resolve_context
+  - action_id: evaluate_policy
+    type: governance.policy_check
+  - action_id: evaluate_risk
+    type: governance.risk_score
+  - action_id: request_human_approval
+    type: workflow.request_approval
+  - action_id: write_governance_audit
+    type: governance.audit_write
+approvals:
+  - rule_id: dual_approval_for_critical_actions
+    when: "risk.level == 'critical'"
+    approver_roles:
+      - owner
+      - compliance_officer
+retries:
+  max_retries: 0
+  strategy: none
+compensation:
+  - on_action_failure: request_human_approval
+    action_id: close_proposal_as_rejected
+    type: workflow.compensate
+metrics:
+  - approval_sla_seconds
+  - approval_reject_rate
+  - policy_override_attempt_count
+audit_logs:
+  enabled: true
+  include_input_payload_hash: true
+observability:
+  trace_required: true
+  log_correlation_required: true
+eval_hooks:
+  - eval.governance.high_risk_actions
+rollback:
+  workflow_version_pin: high_risk_approval_v1
+  rollback_to: high_risk_approval_v0
