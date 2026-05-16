@@ -1,0 +1,16 @@
+name: sales_agent
+version: 1.0.0
+risk_level: medium
+allowed_tools:
+  - leads.normalize
+  - leads.enrich
+  - lead.score
+  - crm.create_lead
+  - metrics.publish
+requires_approval_for:
+  - crm.create_lead
+  - pricing_commitment
+memory_scope:
+  - customer_memory
+  - product_knowledge
+  - governance_policies
