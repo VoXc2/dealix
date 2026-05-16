@@ -63,7 +63,7 @@ Every incoming reply, classified the moment it is read. Signal names match [`MAR
 
 | Date/time received | Source label | Raw message (short, anonymized) | Signal classification | Action taken + ledger entry |
 |---|---|---|---|---|
-| | | | replied_interested / meeting_booked / asks_for_pdf / asks_for_pricing / asks_for_scope / asks_for_english / asks_for_security / pilot_intro_requested / no_response_after_follow_up / invoice_paid | |
+| | | | replied_interested / meeting_booked / used_in_meeting / qualify_decision_returned / pilot_intro_requested / asks_for_pdf / asks_for_english / asks_for_scope / asks_for_pricing / asks_for_security / no_response_after_follow_up / low_intent / not_interested / invoice_sent / invoice_paid | |
 | | | | | |
 
 > Same-working-day reply applies to `replied_interested` and `meeting_booked`. `no_response_after_follow_up` = mark and move on; no chasing.
@@ -83,7 +83,7 @@ The war room points; the ledgers are the record of truth. Update the matching le
 | Capital asset deposited (sector pattern, reusable draft) | [`../ledgers/CAPITAL_LEDGER.md`](../ledgers/CAPITAL_LEDGER.md) |
 | Governance decision / refusal | [`../ledgers/GOVERNANCE_LEDGER.md`](../ledgers/GOVERNANCE_LEDGER.md) |
 | Objection, decline, confusion, daily wrap | [`../adoption/FRICTION_LOG.md`](../adoption/FRICTION_LOG.md) |
-| Outbound referral made | `referral_ledger` — see [`../ledgers/CLIENT_LEDGER.md`](../ledgers/CLIENT_LEDGER.md) |
+| Outbound referral made | [`../ledgers/CLIENT_LEDGER.md`](../ledgers/CLIENT_LEDGER.md) — referral entry |
 
 > A proof pack without a Value Ledger entry is incomplete. Source-less claims are not recorded.
 > حزمة إثبات بلا قيد في سجل القيمة = ناقصة. لا تُسجَّل ادعاءات بلا مصدر.

@@ -166,17 +166,24 @@ does not invent a sixth:
 > تحياتي،
 > Sami
 
-### B.2 — Email Draft 2: "Regulated workflows" (re-introduction / no prior response) / إعادة تعريف
+### B.2 — Email Draft 2: "Regulated workflows" — clean re-introduction / إعادة تعريف
 
-**Subject / الموضoع:** Governed AI operations for regulated workflows — a re-introduction
+> **Use only when** re-contact is legitimate under `WARM_LIST_WORKFLOW.md` §1:
+> a follow-up window was explicitly agreed, **or** enough time has passed
+> (≥ ~3 months) that this is a genuine fresh introduction on a new basis —
+> **never** as an unsolicited chase of a recent unanswered note.
+> يُستخدَم فقط عند اتّفاق صريح على متابعة، أو بعد انقضاء مدة كافية (≈3 أشهر)
+> بحيث يكون تعريفًا جديدًا فعليًّا — لا كمطاردة لرسالة حديثة بلا رد.
+
+**Subject / الموضوع:** Governed AI operations for regulated workflows — a re-introduction
 — عمليات ذكاء اصطناعي محوكَمة للأعمال المنظَّمة: إعادة تعريف
 
 **English:**
 
 > Hi [Name],
 >
-> Reaching out again — no reply needed to the earlier note; I'd rather re-introduce this
-> cleanly than assume the timing was right.
+> It has been a while — I'd rather re-introduce this cleanly than assume the
+> earlier timing was right. No reply to the earlier note is expected.
 >
 > I'm building Dealix, a governed AI operations company starting in Saudi Arabia. It is most
 > relevant for regulated workflows — settings where AI experimentation is already happening,
@@ -202,7 +209,7 @@ does not invent a sixth:
 
 > مرحباً [الاسم]،
 >
-> أعاود التواصل — لا حاجة للرد على رسالتي السابقة؛ أفضّل إعادة تعريف الأمر بوضوح بدل افتراض أن التوقيت كان مناسباً.
+> مرّت فترة — أفضّل إعادة تعريف الأمر بوضوح بدل افتراض أن التوقيت السابق كان مناسباً. لا يُنتظَر ردّ على الرسالة السابقة.
 >
 > أبني Dealix، شركة عمليات ذكاء اصطناعي محوكَمة تنطلق من السعودية. هي الأكثر صلة بالأعمال المنظَّمة — البيئات التي يجري فيها تجريب الذكاء الاصطناعي فعلاً، لكن وضوح المصدر والاعتماد البشري وسجلات الأدلة وإثبات القيمة لم تُفعَّل تشغيلياً بعد. هذه ليست أتمتة ذكاء اصطناعي عامة؛ طبقة الحوكمة هي المنتج.
 >

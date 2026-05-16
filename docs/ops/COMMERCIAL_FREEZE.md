@@ -23,10 +23,13 @@ motion.
 
 ## Scope of the freeze | نطاق التجميد
 
-The freeze covers **rungs 3–5** of the offer ladder — the offers that are
-*marketed* but today are delivered as founder-assisted tooling, not fully
-managed services. No new automation for those rungs ships until real pilot
-demand unlocks it (`docs/sales-kit/CONDITIONAL_BUILD_TRIGGERS.md`).
+The freeze covers **rungs 2–5** of the offer ladder. Rungs 3–5 (Managed Ops,
+Command Center, Partner OS) are *marketed* but today delivered as
+founder-assisted tooling, not fully managed services. Rung 2 (the 1,500 SAR
+Data-to-Revenue Pack) is also frozen — it received **no** delivery-finish
+exception, so no new build for it ships during the freeze. No new automation
+for rungs 2–5 ships until real pilot demand unlocks it
+(`docs/sales-kit/CONDITIONAL_BUILD_TRIGGERS.md`).
 
 The freeze does **not** cover the **rung 0–1 delivery finish**: the minimum work
 needed for the Free Diagnostic (rung 0) and the 499 SAR 7-Day Revenue Proof
@@ -36,10 +39,10 @@ exit condition — so it is permitted and scoped tightly (no rung 3–5 capabili
 
 ## Frozen — do NOT do during the freeze | مُجمَّد
 
-- ❌ No new feature PRs for **rungs 3–5**.
+- ❌ No new feature PRs for **rungs 2–5**.
 - ❌ No new product/architecture docs.
 - ❌ No Board OS v2, no new `*_os` modules unrelated to rung 0–1 delivery.
-- ❌ No new API routers or endpoints for **rungs 3–5**.
+- ❌ No new API routers or endpoints for **rungs 2–5**.
 - ❌ No frontend redesign or polish.
 - ❌ No new dashboards.
 
