@@ -1,0 +1,31 @@
+version: 1
+program: dealix_100_strategic_initiatives
+canonical: true
+statement_ar: >-
+  شركة محكومة بالأدلة: كل قرار تنفيذي مربوط بـ KPI بمرجع مصدر، وكل إجراء خارجي بموافقة،
+  وكل مسار تجاري يمر عبر Revenue Memory وDecision Passport.
+statement_en: >-
+  Evidence-governed revenue company: executive decisions map to source-backed KPIs,
+  external actions require approval, commercial paths flow through Revenue Memory.
+primary_metric_key: measured_customer_value_sar
+sync_targets:
+  - dealix/transformation/kpi_registry.yaml
+  - auto_client_acquisition/business/launch_metrics.py
+  - docs/commercial/NORTH_STAR_METRICS_AR.md
+metrics:
+  - key: measured_customer_value_sar
+    layer: north_star
+    definition_en: Total source-backed measured customer value in SAR
+  - key: governance_integrity_rate
+    layer: north_star
+    definition_en: High-risk actions respecting approval policy
+  - key: reliability_posture_score
+    layer: north_star
+    definition_en: Composite reliability and drill readiness
+  - key: expansion_quality_ratio
+    layer: north_star
+    definition_en: Expansion revenue with proof-backed outcomes
+launch_metrics_bridge:
+  primary: measured_customer_value_sar
+  secondary: governance_integrity_rate
+  guardrail: blocked_high_risk_outreach_count

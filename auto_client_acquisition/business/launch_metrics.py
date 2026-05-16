@@ -2,10 +2,31 @@
 
 from __future__ import annotations
 
+from pathlib import Path
 from typing import Any
+
+import yaml
+
+_MANIFEST_PATH = Path(__file__).resolve().parents[2] / "dealix" / "transformation" / "north_star_manifest.yaml"
+
+
+def _load_manifest_bridge() -> dict[str, str]:
+    if not _MANIFEST_PATH.exists():
+        return {}
+    data = yaml.safe_load(_MANIFEST_PATH.read_text(encoding="utf-8")) or {}
+    bridge = data.get("launch_metrics_bridge") or {}
+    return {k: str(v) for k, v in bridge.items() if v}
 
 
 def north_star_metrics() -> dict[str, Any]:
+    bridge = _load_manifest_bridge()
+    if bridge:
+        return {
+            "primary": bridge.get("primary", "measured_customer_value_sar"),
+            "secondary": bridge.get("secondary", "governance_integrity_rate"),
+            "guardrail": bridge.get("guardrail", "blocked_high_risk_outreach_count"),
+            "manifest": "dealix/transformation/north_star_manifest.yaml",
+        }
     return {
         "primary": "weekly_qualified_opportunities_accepted_or_drafted",
         "secondary": "meetings_booked_post_approval",

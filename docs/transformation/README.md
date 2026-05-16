@@ -32,6 +32,17 @@ This directory is the execution spine for the comprehensive transformation from 
 - `11_org_operating_system.md`
 - `12_category_dominance.md`
 
+## Dealix 100 strategic program
+
+- [DEALIX_2030_ENDGAME_AR.md](DEALIX_2030_ENDGAME_AR.md)
+- [PLATFORM_FIRST_12M_ROADMAP_AR.md](PLATFORM_FIRST_12M_ROADMAP_AR.md)
+- [DEALIX_OPERATING_PLAYBOOK_AR.md](DEALIX_OPERATING_PLAYBOOK_AR.md)
+- [EXECUTIVE_RHYTHM_2_AR.md](EXECUTIVE_RHYTHM_2_AR.md)
+- [PRODUCT_EVIDENCE_REVIEW_BOARD_AR.md](PRODUCT_EVIDENCE_REVIEW_BOARD_AR.md)
+- `dealix/transformation/strategic_initiatives_registry.yaml` (100 initiatives)
+- `dealix/transformation/north_star_manifest.yaml`
+- Verify: `python3 scripts/verify_global_ai_transformation.py --check-initiatives`
+
 ## Control artifacts
 
 - `dealix/transformation/todo_registry.yaml`

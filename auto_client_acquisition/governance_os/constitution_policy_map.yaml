@@ -1,0 +1,26 @@
+version: 1
+program: dealix_100_strategic_initiatives
+non_negotiables:
+  - id: no_cold_whatsapp
+    rule: never_auto_send_cold_whatsapp
+    enforcement: workflow_control_registry
+    test: tests/test_governance_os_draft_gate.py
+  - id: no_linkedin_dm
+    rule: never_auto_send_linkedin_dm
+    enforcement: workflow_control_registry
+    test: tests/test_governance_os_draft_gate.py
+  - id: gmail_approval
+    rule: no_external_gmail_without_explicit_approval
+    enforcement: approval_center
+    test: tests/test_enterprise_control_plane_e2e.py
+  - id: calendar_approval
+    rule: no_external_calendar_without_explicit_approval
+    enforcement: approval_center
+    test: tests/test_enterprise_control_plane_e2e.py
+  - id: traceable_ai
+    rule: every_ai_action_traceable_auditable
+    enforcement: observability_v10.contract_trace_hook
+    test: tests/test_observability_contracts.py
+doctrine_refs:
+  - docs/transformation/01_doctrine_lock.md
+  - dealix/registers/no_overclaim.yaml

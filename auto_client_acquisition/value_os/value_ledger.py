@@ -272,6 +272,28 @@ def clear_for_test(customer_id: str | None = None) -> None:
             store.clear_for_test(customer_id)
 
 
+def record_attribution(
+    *,
+    path_id: str,
+    customer_id: str,
+    amount: float,
+    source_ref: str,
+    tier: str = "estimated",
+    notes: str = "",
+) -> ValueEvent:
+    """Delegate to attribution module (lazy import)."""
+    from auto_client_acquisition.value_os.attribution import record_path_attribution
+
+    return record_path_attribution(
+        path_id=path_id,
+        customer_id=customer_id,
+        amount=amount,
+        source_ref=source_ref,
+        tier=tier,
+        notes=notes,
+    )
+
+
 __all__ = [
     "VALID_TIERS",
     "ValueDisciplineError",
@@ -280,6 +302,7 @@ __all__ = [
     "add_event",
     "clear_for_test",
     "list_events",
+    "record_attribution",
     "summarize",
     "value_ledger_event_valid",
 ]

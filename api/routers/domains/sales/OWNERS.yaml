@@ -1,0 +1,5 @@
+domain: sales
+primary_owner: founder_sales_owner
+backup_owner: enterprise_sales_lead
+escalation_owner: founder
+owner_os: gtm

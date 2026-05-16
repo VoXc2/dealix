@@ -1,0 +1,14 @@
+version: 1
+terms:
+  - key: revenue_memory
+    ar: ذاكرة الإيرادات
+    en: Revenue Memory
+  - key: decision_passport
+    ar: جواز القرار
+    en: Decision Passport
+  - key: north_star
+    ar: النجم الشمالي التشغيلي
+    en: North Star
+  - key: proof_pack
+    ar: حزمة الإثبات
+    en: Proof Pack

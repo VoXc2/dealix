@@ -1,0 +1,1404 @@
+version: 1
+program: dealix_100_strategic_initiatives
+north_star_program_link: dealix/transformation/north_star_manifest.yaml
+initiatives:
+- id: 1
+  key: initiative_001
+  title_en: Unified North Star across layers
+  title_ar: Unified North Star across layers
+  wave: 0
+  owner_os: strategy
+  status: active
+  raci:
+    R: CEO
+    A: founder
+    C: product,trust
+    I: finance,delivery
+  deliverable: north_star_manifest.yaml
+  verification: verify_global_ai_transformation.py --check-initiatives
+- id: 2
+  key: initiative_002
+  title_en: Constitution to Policy-as-Code
+  title_ar: Constitution to Policy-as-Code
+  wave: 1
+  owner_os: trust
+  status: proposed
+  raci:
+    R: CTO
+    A: enterprise_control_plane_owner
+    C: product,trust
+    I: finance,delivery
+  deliverable: governance_os/constitution_policy_map.yaml
+  verification: pytest tests/test_constitution_policy_map.py -q
+- id: 3
+  key: initiative_003
+  title_en: API domain ownership reorganization
+  title_ar: API domain ownership reorganization
+  wave: 2
+  owner_os: platform
+  status: proposed
+  raci:
+    R: CTO
+    A: enterprise_control_plane_owner
+    C: product,trust
+    I: finance,delivery
+  deliverable: docs/architecture/API_DOMAIN_OWNERSHIP.md
+  verification: pytest tests/test_api_domain_ownership.py -q
+- id: 4
+  key: initiative_004
+  title_en: Product Evidence Review Board weekly
+  title_ar: Product Evidence Review Board weekly
+  wave: 4
+  owner_os: product
+  status: proposed
+  raci:
+    R: CEO
+    A: founder
+    C: product,trust
+    I: finance,delivery
+  deliverable: docs/transformation/PRODUCT_EVIDENCE_REVIEW_BOARD_AR.md
+  verification: grep PERB weekly_proof
+- id: 5
+  key: initiative_005
+  title_en: KPI Registry SSOT
+  title_ar: KPI Registry SSOT
+  wave: 0
+  owner_os: strategy
+  status: active
+  raci:
+    R: CEO
+    A: founder
+    C: product,trust
+    I: finance,delivery
+  deliverable: dealix/transformation/kpi_registry.yaml
+  verification: verify_global_ai_transformation.py
+- id: 6
+  key: initiative_006
+  title_en: Revenue attribution per commercial path
+  title_ar: Revenue attribution per commercial path
+  wave: 3
+  owner_os: value
+  status: proposed
+  raci:
+    R: Revenue
+    A: founder_sales_owner
+    C: product,trust
+    I: finance,delivery
+  deliverable: value_os/attribution_paths.yaml
+  verification: pytest tests/test_value_attribution.py -q
+- id: 7
+  key: initiative_007
+  title_en: Fast Lane vs Governed Lane
+  title_ar: Fast Lane vs Governed Lane
+  wave: 1
+  owner_os: trust
+  status: proposed
+  raci:
+    R: CTO
+    A: enterprise_control_plane_owner
+    C: product,trust
+    I: finance,delivery
+  deliverable: dealix/transformation/lane_policy.yaml
+  verification: pytest tests/test_lane_policy.py -q
+- id: 8
+  key: initiative_008
+  title_en: Productized offers from capabilities
+  title_ar: Productized offers from capabilities
+  wave: 3
+  owner_os: gtm
+  status: proposed
+  raci:
+    R: Revenue
+    A: founder_sales_owner
+    C: product,trust
+    I: finance,delivery
+  deliverable: commercial_os/productized_offers.yaml
+  verification: bash scripts/revenue_os_master_verify.sh
+- id: 9
+  key: initiative_009
+  title_en: Upsell engine evidence-level gating
+  title_ar: Upsell engine evidence-level gating
+  wave: 3
+  owner_os: sales
+  status: proposed
+  raci:
+    R: Revenue
+    A: founder_sales_owner
+    C: product,trust
+    I: finance,delivery
+  deliverable: revenue_os upsell rules
+  verification: pytest tests/test_revenue_os_catalog.py -q
+- id: 10
+  key: initiative_010
+  title_en: Saudi vertical GTM framework
+  title_ar: Saudi vertical GTM framework
+  wave: 3
+  owner_os: gtm
+  status: proposed
+  raci:
+    R: Revenue
+    A: founder_sales_owner
+    C: product,trust
+    I: finance,delivery
+  deliverable: gtm_os/saudi_vertical_playbook.yaml
+  verification: pytest tests/test_saudi_targeting_profile.py -q
+- id: 11
+  key: initiative_011
+  title_en: Data Quality Operating System
+  title_ar: Data Quality Operating System
+  wave: 5
+  owner_os: data
+  status: proposed
+  raci:
+    R: Operations
+    A: delivery_factory_owner
+    C: product,trust
+    I: finance,delivery
+  deliverable: data_os DQ cadence
+  verification: pytest tests/test_data_os_quality.py -q
+- id: 12
+  key: initiative_012
+  title_en: Error budget SLO per API domain
+  title_ar: Error budget SLO per API domain
+  wave: 2
+  owner_os: reliability
+  status: proposed
+  raci:
+    R: CTO
+    A: enterprise_control_plane_owner
+    C: product,trust
+    I: finance,delivery
+  deliverable: dealix/transformation/slo_by_domain.yaml
+  verification: python3 scripts/reliability_drills_scorecard.py
+- id: 13
+  key: initiative_013
+  title_en: Deal Desk operating layer
+  title_ar: Deal Desk operating layer
+  wave: 3
+  owner_os: sales
+  status: active
+  raci:
+    R: Revenue
+    A: founder_sales_owner
+    C: product,trust
+    I: finance,delivery
+  deliverable: commercial_engagements/deal_desk_os.py
+  verification: pytest tests/test_deal_desk_os.py -q
+- id: 14
+  key: initiative_014
+  title_en: First 14 days onboarding program
+  title_ar: First 14 days onboarding program
+  wave: 6
+  owner_os: delivery
+  status: proposed
+  raci:
+    R: Operations
+    A: delivery_factory_owner
+    C: product,trust
+    I: finance,delivery
+  deliverable: adoption_os/first_14_days_playbook.yaml
+  verification: pytest tests/test_delivery_os_framework.py -q
+- id: 15
+  key: initiative_015
+  title_en: Live risk register linked to execution
+  title_ar: Live risk register linked to execution
+  wave: 1
+  owner_os: trust
+  status: proposed
+  raci:
+    R: CEO
+    A: founder
+    C: product,trust
+    I: finance,delivery
+  deliverable: dealix/transformation/risk_register.yaml
+  verification: verify_global_ai_transformation.py
+- id: 16
+  key: initiative_016
+  title_en: Incident command via security runbook
+  title_ar: Incident command via security runbook
+  wave: 1
+  owner_os: reliability
+  status: proposed
+  raci:
+    R: CTO
+    A: enterprise_control_plane_owner
+    C: product,trust
+    I: finance,delivery
+  deliverable: docs/SECURITY_RUNBOOK.md
+  verification: verify_global_ai_transformation.py --check-reliability
+- id: 17
+  key: initiative_017
+  title_en: Value-based pricing engine
+  title_ar: Value-based pricing engine
+  wave: 3
+  owner_os: finance
+  status: proposed
+  raci:
+    R: Revenue
+    A: founder_sales_owner
+    C: product,trust
+    I: finance,delivery
+  deliverable: value_os/pricing_engine.py
+  verification: pytest tests/test_pricing_engine.py -q
+- id: 18
+  key: initiative_018
+  title_en: Customer value narrative framework
+  title_ar: Customer value narrative framework
+  wave: 6
+  owner_os: delivery
+  status: proposed
+  raci:
+    R: Operations
+    A: delivery_factory_owner
+    C: product,trust
+    I: finance,delivery
+  deliverable: proof pack monthly narrative template
+  verification: pytest tests/test_proof_pack.py -q
+- id: 19
+  key: initiative_019
+  title_en: Dealix capability map
+  title_ar: Dealix capability map
+  wave: 4
+  owner_os: product
+  status: proposed
+  raci:
+    R: CEO
+    A: founder
+    C: product,trust
+    I: finance,delivery
+  deliverable: dealix/transformation/capability_map.yaml
+  verification: python3 scripts/generate_capability_map_md.py
+- id: 20
+  key: initiative_020
+  title_en: Quarterly strategic bets portfolio
+  title_ar: Quarterly strategic bets portfolio
+  wave: 8
+  owner_os: strategy
+  status: proposed
+  raci:
+    R: CEO
+    A: founder
+    C: product,trust
+    I: finance,delivery
+  deliverable: strategic_initiatives_registry portfolio_status
+  verification: verify_global_ai_transformation.py --check-initiatives
+- id: 21
+  key: initiative_021
+  title_en: Proof pack productization for sales
+  title_ar: Proof pack productization for sales
+  wave: 3
+  owner_os: sales
+  status: proposed
+  raci:
+    R: Revenue
+    A: founder_sales_owner
+    C: product,trust
+    I: finance,delivery
+  deliverable: commercial proof pack playbook
+  verification: bash scripts/revenue_os_master_verify.sh
+- id: 22
+  key: initiative_022
+  title_en: Pipeline decay alerts
+  title_ar: Pipeline decay alerts
+  wave: 3
+  owner_os: sales
+  status: proposed
+  raci:
+    R: Revenue
+    A: founder_sales_owner
+    C: product,trust
+    I: finance,delivery
+  deliverable: revenue_os pipeline decay signals
+  verification: pytest tests/test_revenue_os_catalog.py -q
+- id: 23
+  key: initiative_023
+  title_en: Decision postmortem loop
+  title_ar: Decision postmortem loop
+  wave: 4
+  owner_os: strategy
+  status: proposed
+  raci:
+    R: CEO
+    A: founder
+    C: product,trust
+    I: finance,delivery
+  deliverable: docs/transformation/decision_postmortem_template.md
+  verification: weekly proof DQI section
+- id: 24
+  key: initiative_024
+  title_en: Saudi compliance control plane
+  title_ar: Saudi compliance control plane
+  wave: 1
+  owner_os: trust
+  status: proposed
+  raci:
+    R: CTO
+    A: enterprise_control_plane_owner
+    C: product,trust
+    I: finance,delivery
+  deliverable: compliance PDPL + contracts
+  verification: pytest tests/unit/test_compliance_os.py -q
+- id: 25
+  key: initiative_025
+  title_en: Partner strategy execution layer
+  title_ar: Partner strategy execution layer
+  wave: 3
+  owner_os: gtm
+  status: proposed
+  raci:
+    R: Revenue
+    A: founder_sales_owner
+    C: product,trust
+    I: finance,delivery
+  deliverable: market_power_os partner gates
+  verification: pytest tests/test_market_power_os.py -q
+- id: 26
+  key: initiative_026
+  title_en: Executive daily weekly rhythm 2.0
+  title_ar: Executive daily weekly rhythm 2.0
+  wave: 0
+  owner_os: strategy
+  status: proposed
+  raci:
+    R: CEO
+    A: founder
+    C: product,trust
+    I: finance,delivery
+  deliverable: docs/transformation/EXECUTIVE_RHYTHM_2_AR.md
+  verification: bash scripts/run_executive_weekly_checklist.sh
+- id: 27
+  key: initiative_027
+  title_en: Time to first value acceleration
+  title_ar: Time to first value acceleration
+  wave: 6
+  owner_os: delivery
+  status: proposed
+  raci:
+    R: Operations
+    A: delivery_factory_owner
+    C: product,trust
+    I: finance,delivery
+  deliverable: adoption_os TTFV checkpoints
+  verification: pytest tests/test_adoption_os.py -q
+- id: 28
+  key: initiative_028
+  title_en: AI workforce governance unified
+  title_ar: AI workforce governance unified
+  wave: 1
+  owner_os: trust
+  status: proposed
+  raci:
+    R: CTO
+    A: enterprise_control_plane_owner
+    C: product,trust
+    I: finance,delivery
+  deliverable: workflow_control_registry AI paths
+  verification: pytest tests/test_governance_os_draft_gate.py -q
+- id: 29
+  key: initiative_029
+  title_en: Margin expansion OS
+  title_ar: Margin expansion OS
+  wave: 8
+  owner_os: finance
+  status: proposed
+  raci:
+    R: CEO
+    A: founder
+    C: product,trust
+    I: finance,delivery
+  deliverable: 09_unit_economics_governance.md
+  verification: verify_global_ai_transformation.py --check unit-economics
+- id: 30
+  key: initiative_030
+  title_en: Script lifecycle governance
+  title_ar: Script lifecycle governance
+  wave: 2
+  owner_os: platform
+  status: proposed
+  raci:
+    R: CTO
+    A: enterprise_control_plane_owner
+    C: product,trust
+    I: finance,delivery
+  deliverable: scripts/script_inventory.yaml
+  verification: verify_global_ai_transformation.py --check-initiatives
+- id: 31
+  key: initiative_031
+  title_en: Launch war room protocol
+  title_ar: Launch war room protocol
+  wave: 7
+  owner_os: reliability
+  status: proposed
+  raci:
+    R: CTO
+    A: enterprise_control_plane_owner
+    C: product,trust
+    I: finance,delivery
+  deliverable: docs/ops/LAUNCH_WAR_ROOM_AR.md
+  verification: file exists LAUNCH_WAR_ROOM_AR.md
+- id: 32
+  key: initiative_032
+  title_en: Strategy to execution traceability
+  title_ar: Strategy to execution traceability
+  wave: 0
+  owner_os: strategy
+  status: proposed
+  raci:
+    R: CEO
+    A: founder
+    C: product,trust
+    I: finance,delivery
+  deliverable: strategic_initiatives_registry.yaml
+  verification: verify_global_ai_transformation.py --check-initiatives
+- id: 33
+  key: initiative_033
+  title_en: Dealix Method Academy
+  title_ar: Dealix Method Academy
+  wave: 10
+  owner_os: people_ops
+  status: proposed
+  raci:
+    R: CEO
+    A: founder
+    C: product,trust
+    I: finance,delivery
+  deliverable: docs/academy/README.md
+  verification: verify_global_ai_transformation.py --check-initiatives
+- id: 34
+  key: initiative_034
+  title_en: Objection intelligence system
+  title_ar: Objection intelligence system
+  wave: 3
+  owner_os: sales
+  status: proposed
+  raci:
+    R: Revenue
+    A: founder_sales_owner
+    C: product,trust
+    I: finance,delivery
+  deliverable: commercial_engagements objection templates
+  verification: pytest tests/test_deal_desk_os.py -q
+- id: 35
+  key: initiative_035
+  title_en: Unified readiness Go No-Go API
+  title_ar: Unified readiness Go No-Go API
+  wave: 1
+  owner_os: platform
+  status: active
+  raci:
+    R: CTO
+    A: enterprise_control_plane_owner
+    C: product,trust
+    I: finance,delivery
+  deliverable: api/routers/unified_readiness.py
+  verification: pytest tests/test_unified_readiness.py -q
+- id: 36
+  key: initiative_036
+  title_en: Executive knowledge graph
+  title_ar: Executive knowledge graph
+  wave: 5
+  owner_os: platform
+  status: proposed
+  raci:
+    R: CTO
+    A: enterprise_control_plane_owner
+    C: product,trust
+    I: finance,delivery
+  deliverable: dealix/execution/executive_knowledge_index.py
+  verification: pytest tests/test_executive_knowledge_index.py -q
+- id: 37
+  key: initiative_037
+  title_en: BU level scorecards
+  title_ar: BU level scorecards
+  wave: 4
+  owner_os: finance
+  status: proposed
+  raci:
+    R: CEO
+    A: founder
+    C: product,trust
+    I: finance,delivery
+  deliverable: kpi_registry BU extensions
+  verification: generate_weekly_operating_proof_pack.py
+- id: 38
+  key: initiative_038
+  title_en: Enterprise sales motion hardening
+  title_ar: Enterprise sales motion hardening
+  wave: 3
+  owner_os: gtm
+  status: proposed
+  raci:
+    R: Revenue
+    A: founder_sales_owner
+    C: product,trust
+    I: finance,delivery
+  deliverable: docs/strategic/ENTERPRISE_OFFER_POSITIONING_AR.md
+  verification: verify_global_ai_transformation.py --check enterprise-package
+- id: 39
+  key: initiative_039
+  title_en: Growth critical tech debt program
+  title_ar: Growth critical tech debt program
+  wave: 2
+  owner_os: platform
+  status: proposed
+  raci:
+    R: CTO
+    A: enterprise_control_plane_owner
+    C: product,trust
+    I: finance,delivery
+  deliverable: docs/transformation/growth_tech_debt_register.yaml
+  verification: verify_global_ai_transformation.py --check-initiatives
+- id: 40
+  key: initiative_040
+  title_en: Service readiness standardization
+  title_ar: Service readiness standardization
+  wave: 4
+  owner_os: delivery
+  status: proposed
+  raci:
+    R: Operations
+    A: delivery_factory_owner
+    C: product,trust
+    I: finance,delivery
+  deliverable: delivery_os service_readiness
+  verification: pytest tests/test_service_readiness_score.py -q
+- id: 41
+  key: initiative_041
+  title_en: Decision quality index leadership
+  title_ar: Decision quality index leadership
+  wave: 4
+  owner_os: strategy
+  status: proposed
+  raci:
+    R: CEO
+    A: founder
+    C: product,trust
+    I: finance,delivery
+  deliverable: kpi_registry guardrails DQI
+  verification: generate_weekly_operating_proof_pack.py
+- id: 42
+  key: initiative_042
+  title_en: Institution mode beyond founder
+  title_ar: Institution mode beyond founder
+  wave: 10
+  owner_os: people_ops
+  status: proposed
+  raci:
+    R: CEO
+    A: founder
+    C: product,trust
+    I: finance,delivery
+  deliverable: ownership_matrix institutionalization
+  verification: verify_global_ai_transformation.py
+- id: 43
+  key: initiative_043
+  title_en: Customer facing API documentation
+  title_ar: Customer facing API documentation
+  wave: 2
+  owner_os: product
+  status: proposed
+  raci:
+    R: CTO
+    A: enterprise_control_plane_owner
+    C: product,trust
+    I: finance,delivery
+  deliverable: docs/product/API_SPEC.md
+  verification: file exists API_SPEC.md
+- id: 44
+  key: initiative_044
+  title_en: Lead scoring calibration program
+  title_ar: Lead scoring calibration program
+  wave: 5
+  owner_os: data
+  status: proposed
+  raci:
+    R: Operations
+    A: delivery_factory_owner
+    C: product,trust
+    I: finance,delivery
+  deliverable: scripts/calibrate_lead_scoring.py
+  verification: pytest tests/test_strategy_os_scoring.py -q
+- id: 45
+  key: initiative_045
+  title_en: Global transformation program office
+  title_ar: Global transformation program office
+  wave: 0
+  owner_os: strategy
+  status: proposed
+  raci:
+    R: CEO
+    A: founder
+    C: product,trust
+    I: finance,delivery
+  deliverable: docs/transformation/README.md
+  verification: verify_global_ai_transformation.py
+- id: 46
+  key: initiative_046
+  title_en: Decision brief standard for reports
+  title_ar: Decision brief standard for reports
+  wave: 4
+  owner_os: strategy
+  status: proposed
+  raci:
+    R: CEO
+    A: founder
+    C: product,trust
+    I: finance,delivery
+  deliverable: docs/transformation/decision_brief_template.md
+  verification: weekly proof decision brief section
+- id: 47
+  key: initiative_047
+  title_en: Revenue OS monetization blueprint
+  title_ar: Revenue OS monetization blueprint
+  wave: 3
+  owner_os: sales
+  status: proposed
+  raci:
+    R: Revenue
+    A: founder_sales_owner
+    C: product,trust
+    I: finance,delivery
+  deliverable: docs/transformation/revenue_os_monetization.md
+  verification: bash scripts/revenue_os_master_verify.sh
+- id: 48
+  key: initiative_048
+  title_en: Trust and assurance client dashboard
+  title_ar: Trust and assurance client dashboard
+  wave: 4
+  owner_os: trust
+  status: proposed
+  raci:
+    R: CTO
+    A: enterprise_control_plane_owner
+    C: product,trust
+    I: finance,delivery
+  deliverable: api/routers/trust_dashboard.py
+  verification: pytest tests/test_trust_dashboard.py -q
+- id: 49
+  key: initiative_049
+  title_en: Experimentation OS with guardrails
+  title_ar: Experimentation OS with guardrails
+  wave: 1
+  owner_os: product
+  status: proposed
+  raci:
+    R: CTO
+    A: enterprise_control_plane_owner
+    C: product,trust
+    I: finance,delivery
+  deliverable: lane_policy experimentation flags
+  verification: pytest tests/test_lane_policy.py -q
+- id: 50
+  key: initiative_050
+  title_en: 12 month platform first roadmap
+  title_ar: 12 month platform first roadmap
+  wave: 9
+  owner_os: strategy
+  status: proposed
+  raci:
+    R: CEO
+    A: founder
+    C: product,trust
+    I: finance,delivery
+  deliverable: docs/transformation/PLATFORM_FIRST_12M_ROADMAP_AR.md
+  verification: verify_global_ai_transformation.py --check-initiatives
+- id: 51
+  key: initiative_051
+  title_en: Unified operating calendar
+  title_ar: Unified operating calendar
+  wave: 0
+  owner_os: strategy
+  status: proposed
+  raci:
+    R: CEO
+    A: founder
+    C: product,trust
+    I: finance,delivery
+  deliverable: dealix/transformation/operating_calendar.yaml
+  verification: verify_global_ai_transformation.py --check-initiatives
+- id: 52
+  key: initiative_052
+  title_en: Priority arbitration framework
+  title_ar: Priority arbitration framework
+  wave: 0
+  owner_os: strategy
+  status: proposed
+  raci:
+    R: CEO
+    A: founder
+    C: product,trust
+    I: finance,delivery
+  deliverable: dealix/transformation/priority_arbitration.yaml
+  verification: verify_global_ai_transformation.py --check-initiatives
+- id: 53
+  key: initiative_053
+  title_en: Unified executive command center
+  title_ar: Unified executive command center
+  wave: 4
+  owner_os: product
+  status: proposed
+  raci:
+    R: CEO
+    A: founder
+    C: product,trust
+    I: finance,delivery
+  deliverable: v3 command center + founder dashboard
+  verification: pytest tests/test_v5_layers.py -q
+- id: 54
+  key: initiative_054
+  title_en: Voice of customer institutional
+  title_ar: Voice of customer institutional
+  wave: 4
+  owner_os: product
+  status: proposed
+  raci:
+    R: CEO
+    A: founder
+    C: product,trust
+    I: finance,delivery
+  deliverable: friction_log + NPS routers
+  verification: pytest tests/test_commercial_engagements_support_desk.py -q
+- id: 55
+  key: initiative_055
+  title_en: Definition of done unified
+  title_ar: Definition of done unified
+  wave: 4
+  owner_os: delivery
+  status: proposed
+  raci:
+    R: Operations
+    A: delivery_factory_owner
+    C: product,trust
+    I: finance,delivery
+  deliverable: docs/transformation/definition_of_done.yaml
+  verification: verify_global_ai_transformation.py --check-initiatives
+- id: 56
+  key: initiative_056
+  title_en: Strategic dependency graph
+  title_ar: Strategic dependency graph
+  wave: 4
+  owner_os: strategy
+  status: proposed
+  raci:
+    R: CEO
+    A: founder
+    C: product,trust
+    I: finance,delivery
+  deliverable: dealix/transformation/strategic_dependency_graph.yaml
+  verification: verify_global_ai_transformation.py --check-initiatives
+- id: 57
+  key: initiative_057
+  title_en: Commercial translation L0-L5
+  title_ar: Commercial translation L0-L5
+  wave: 3
+  owner_os: sales
+  status: proposed
+  raci:
+    R: Revenue
+    A: founder_sales_owner
+    C: product,trust
+    I: finance,delivery
+  deliverable: commercial_os/evidence_level_sales_ar.yaml
+  verification: bash scripts/revenue_os_master_verify.sh
+- id: 58
+  key: initiative_058
+  title_en: Land and expand motion
+  title_ar: Land and expand motion
+  wave: 3
+  owner_os: sales
+  status: proposed
+  raci:
+    R: Revenue
+    A: founder_sales_owner
+    C: product,trust
+    I: finance,delivery
+  deliverable: expansion_engine readiness
+  verification: pytest tests/test_commercial_engagements_quick_win_ops.py -q
+- id: 59
+  key: initiative_059
+  title_en: Standardized QBRs
+  title_ar: Standardized QBRs
+  wave: 6
+  owner_os: delivery
+  status: proposed
+  raci:
+    R: Operations
+    A: delivery_factory_owner
+    C: product,trust
+    I: finance,delivery
+  deliverable: docs/transformation/qbr_template_ar.md
+  verification: verify_global_ai_transformation.py --check-initiatives
+- id: 60
+  key: initiative_060
+  title_en: Commercial forecast accuracy program
+  title_ar: Commercial forecast accuracy program
+  wave: 3
+  owner_os: finance
+  status: proposed
+  raci:
+    R: Revenue
+    A: founder_sales_owner
+    C: product,trust
+    I: finance,delivery
+  deliverable: revenue_pipeline forecasting
+  verification: pytest tests/test_revenue_pipeline.py -q
+- id: 61
+  key: initiative_061
+  title_en: Strategic PMO lightweight
+  title_ar: Strategic PMO lightweight
+  wave: 10
+  owner_os: strategy
+  status: proposed
+  raci:
+    R: CEO
+    A: founder
+    C: product,trust
+    I: finance,delivery
+  deliverable: strategic_initiatives_registry.yaml
+  verification: verify_global_ai_transformation.py --check-initiatives
+- id: 62
+  key: initiative_062
+  title_en: Zero blind spots observability
+  title_ar: Zero blind spots observability
+  wave: 2
+  owner_os: observability
+  status: proposed
+  raci:
+    R: CTO
+    A: enterprise_control_plane_owner
+    C: product,trust
+    I: finance,delivery
+  deliverable: observability_v10 contracts
+  verification: verify_global_ai_transformation.py --check-observability
+- id: 63
+  key: initiative_063
+  title_en: Cost to serve per customer
+  title_ar: Cost to serve per customer
+  wave: 8
+  owner_os: finance
+  status: proposed
+  raci:
+    R: CEO
+    A: founder
+    C: product,trust
+    I: finance,delivery
+  deliverable: 09_unit_economics cost_to_serve
+  verification: verify_global_ai_transformation.py --check unit-economics
+- id: 64
+  key: initiative_064
+  title_en: Contract intelligence tracking
+  title_ar: Contract intelligence tracking
+  wave: 8
+  owner_os: finance
+  status: proposed
+  raci:
+    R: CEO
+    A: founder
+    C: product,trust
+    I: finance,delivery
+  deliverable: dealix/registers/contracts_register.yaml
+  verification: verify_global_ai_transformation.py --check-initiatives
+- id: 65
+  key: initiative_065
+  title_en: Business glossary unified
+  title_ar: Business glossary unified
+  wave: 5
+  owner_os: data
+  status: proposed
+  raci:
+    R: Operations
+    A: delivery_factory_owner
+    C: product,trust
+    I: finance,delivery
+  deliverable: dealix/registers/business_glossary.yaml
+  verification: verify_global_ai_transformation.py --check-initiatives
+- id: 66
+  key: initiative_066
+  title_en: Regional expansion readiness
+  title_ar: Regional expansion readiness
+  wave: 9
+  owner_os: strategy
+  status: proposed
+  raci:
+    R: CEO
+    A: founder
+    C: product,trust
+    I: finance,delivery
+  deliverable: category_expansion_gates.yaml
+  verification: bash scripts/verify_category_expansion_before_scale.sh
+- id: 67
+  key: initiative_067
+  title_en: PMF signal engine
+  title_ar: PMF signal engine
+  wave: 4
+  owner_os: product
+  status: proposed
+  raci:
+    R: CEO
+    A: founder
+    C: product,trust
+    I: finance,delivery
+  deliverable: growth_v10 PMF signals
+  verification: pytest tests/test_growth_v10.py -q
+- id: 68
+  key: initiative_068
+  title_en: Customer health intelligence
+  title_ar: Customer health intelligence
+  wave: 5
+  owner_os: delivery
+  status: proposed
+  raci:
+    R: Operations
+    A: delivery_factory_owner
+    C: product,trust
+    I: finance,delivery
+  deliverable: customer_success_scores router
+  verification: pytest tests/test_customer_success_scores.py -q
+- id: 69
+  key: initiative_069
+  title_en: Execution quality score per team
+  title_ar: Execution quality score per team
+  wave: 7
+  owner_os: delivery
+  status: proposed
+  raci:
+    R: Operations
+    A: delivery_factory_owner
+    C: product,trust
+    I: finance,delivery
+  deliverable: delivery control tower metrics
+  verification: pytest tests/test_delivery_os_framework.py -q
+- id: 70
+  key: initiative_070
+  title_en: Enterprise anti-waste framework
+  title_ar: Enterprise anti-waste framework
+  wave: 4
+  owner_os: trust
+  status: proposed
+  raci:
+    R: CTO
+    A: enterprise_control_plane_owner
+    C: product,trust
+    I: finance,delivery
+  deliverable: revenue_os anti-waste extended
+  verification: bash scripts/revenue_os_master_verify.sh
+- id: 71
+  key: initiative_071
+  title_en: Trust by design product wide
+  title_ar: Trust by design product wide
+  wave: 1
+  owner_os: trust
+  status: proposed
+  raci:
+    R: CTO
+    A: enterprise_control_plane_owner
+    C: product,trust
+    I: finance,delivery
+  deliverable: governance_os + compliance
+  verification: pytest tests/test_enterprise_control_plane_e2e.py -q
+- id: 72
+  key: initiative_072
+  title_en: Executive simulation drills
+  title_ar: Executive simulation drills
+  wave: 7
+  owner_os: strategy
+  status: proposed
+  raci:
+    R: CEO
+    A: founder
+    C: product,trust
+    I: finance,delivery
+  deliverable: reliability_drills executive tier
+  verification: python3 scripts/reliability_drills_scorecard.py
+- id: 73
+  key: initiative_073
+  title_en: Revenue assurance program
+  title_ar: Revenue assurance program
+  wave: 3
+  owner_os: finance
+  status: proposed
+  raci:
+    R: Revenue
+    A: founder_sales_owner
+    C: product,trust
+    I: finance,delivery
+  deliverable: payment_ops + revenue assurance
+  verification: pytest tests/test_payment_ops.py -q
+- id: 74
+  key: initiative_074
+  title_en: Buy build partner map
+  title_ar: Buy build partner map
+  wave: 8
+  owner_os: platform
+  status: proposed
+  raci:
+    R: CTO
+    A: enterprise_control_plane_owner
+    C: product,trust
+    I: finance,delivery
+  deliverable: dealix/transformation/buy_build_partner_log.yaml
+  verification: verify_global_ai_transformation.py --check-initiatives
+- id: 75
+  key: initiative_075
+  title_en: Strategic narrative consistency
+  title_ar: Strategic narrative consistency
+  wave: 4
+  owner_os: strategy
+  status: proposed
+  raci:
+    R: CEO
+    A: founder
+    C: product,trust
+    I: finance,delivery
+  deliverable: docs/strategic narrative index
+  verification: verify_global_ai_transformation.py --check-initiatives
+- id: 76
+  key: initiative_076
+  title_en: Delivery excellence framework
+  title_ar: Delivery excellence framework
+  wave: 6
+  owner_os: delivery
+  status: proposed
+  raci:
+    R: Operations
+    A: delivery_factory_owner
+    C: product,trust
+    I: finance,delivery
+  deliverable: delivery_factory blueprints
+  verification: pytest tests/test_delivery_os_framework.py -q
+- id: 77
+  key: initiative_077
+  title_en: Meeting operating system
+  title_ar: Meeting operating system
+  wave: 0
+  owner_os: strategy
+  status: proposed
+  raci:
+    R: CEO
+    A: founder
+    C: product,trust
+    I: finance,delivery
+  deliverable: docs/transformation/meeting_os_ar.md
+  verification: verify_global_ai_transformation.py --check-initiatives
+- id: 78
+  key: initiative_078
+  title_en: Talent density critical teams
+  title_ar: Talent density critical teams
+  wave: 10
+  owner_os: people_ops
+  status: proposed
+  raci:
+    R: CEO
+    A: founder
+    C: product,trust
+    I: finance,delivery
+  deliverable: 11_org_operating_system.md
+  verification: verify_global_ai_transformation.py --check org-operating-system
+- id: 79
+  key: initiative_079
+  title_en: Knowledge retention program
+  title_ar: Knowledge retention program
+  wave: 10
+  owner_os: people_ops
+  status: proposed
+  raci:
+    R: CEO
+    A: founder
+    C: product,trust
+    I: finance,delivery
+  deliverable: knowledge_v10 + academy
+  verification: pytest tests/test_knowledge_v10.py -q
+- id: 80
+  key: initiative_080
+  title_en: Governed innovation pipeline
+  title_ar: Governed innovation pipeline
+  wave: 1
+  owner_os: product
+  status: proposed
+  raci:
+    R: CTO
+    A: enterprise_control_plane_owner
+    C: product,trust
+    I: finance,delivery
+  deliverable: lane_policy innovation lane
+  verification: pytest tests/test_lane_policy.py -q
+- id: 81
+  key: initiative_081
+  title_en: Enterprise audit readiness kit
+  title_ar: Enterprise audit readiness kit
+  wave: 9
+  owner_os: trust
+  status: proposed
+  raci:
+    R: CTO
+    A: enterprise_control_plane_owner
+    C: product,trust
+    I: finance,delivery
+  deliverable: enterprise_package trust pack
+  verification: verify_global_ai_transformation.py --check-enterprise-package
+- id: 82
+  key: initiative_082
+  title_en: API product tiering
+  title_ar: API product tiering
+  wave: 2
+  owner_os: platform
+  status: proposed
+  raci:
+    R: CTO
+    A: enterprise_control_plane_owner
+    C: product,trust
+    I: finance,delivery
+  deliverable: platform_foundation API tiers
+  verification: pytest tests/test_platform_foundation.py -q
+- id: 83
+  key: initiative_083
+  title_en: Customer segment strategy map
+  title_ar: Customer segment strategy map
+  wave: 3
+  owner_os: gtm
+  status: proposed
+  raci:
+    R: Revenue
+    A: founder_sales_owner
+    C: product,trust
+    I: finance,delivery
+  deliverable: docs/strategic segment map
+  verification: verify_global_ai_transformation.py --check-initiatives
+- id: 84
+  key: initiative_084
+  title_en: Strategic risk heatmap quarterly
+  title_ar: Strategic risk heatmap quarterly
+  wave: 8
+  owner_os: strategy
+  status: proposed
+  raci:
+    R: CEO
+    A: founder
+    C: product,trust
+    I: finance,delivery
+  deliverable: risk_register heatmap section
+  verification: verify_global_ai_transformation.py
+- id: 85
+  key: initiative_085
+  title_en: Renewal expansion intelligence
+  title_ar: Renewal expansion intelligence
+  wave: 3
+  owner_os: sales
+  status: proposed
+  raci:
+    R: Revenue
+    A: founder_sales_owner
+    C: product,trust
+    I: finance,delivery
+  deliverable: referral_program + renewal
+  verification: pytest tests/test_referral_program.py -q
+- id: 86
+  key: initiative_086
+  title_en: Service blueprint library
+  title_ar: Service blueprint library
+  wave: 6
+  owner_os: delivery
+  status: proposed
+  raci:
+    R: Operations
+    A: delivery_factory_owner
+    C: product,trust
+    I: finance,delivery
+  deliverable: delivery_factory/blueprints/
+  verification: verify_global_ai_transformation.py --check-initiatives
+- id: 87
+  key: initiative_087
+  title_en: Internal benchmarking program
+  title_ar: Internal benchmarking program
+  wave: 7
+  owner_os: strategy
+  status: proposed
+  raci:
+    R: CEO
+    A: founder
+    C: product,trust
+    I: finance,delivery
+  deliverable: weekly_cross_os_snapshot
+  verification: python3 -c from dealix.execution.weekly_cross_os_snapshot
+- id: 88
+  key: initiative_088
+  title_en: Escalation clarity unified
+  title_ar: Escalation clarity unified
+  wave: 7
+  owner_os: strategy
+  status: proposed
+  raci:
+    R: CEO
+    A: founder
+    C: product,trust
+    I: finance,delivery
+  deliverable: ownership_matrix escalation
+  verification: verify_global_ai_transformation.py
+- id: 89
+  key: initiative_089
+  title_en: Strategic automation map
+  title_ar: Strategic automation map
+  wave: 7
+  owner_os: platform
+  status: proposed
+  raci:
+    R: CTO
+    A: enterprise_control_plane_owner
+    C: product,trust
+    I: finance,delivery
+  deliverable: dealix/transformation/automation_map.yaml
+  verification: verify_global_ai_transformation.py --check-initiatives
+- id: 90
+  key: initiative_090
+  title_en: Executive KPI narratives
+  title_ar: Executive KPI narratives
+  wave: 4
+  owner_os: finance
+  status: proposed
+  raci:
+    R: CEO
+    A: founder
+    C: product,trust
+    I: finance,delivery
+  deliverable: weekly proof narrative section
+  verification: generate_weekly_operating_proof_pack.py
+- id: 91
+  key: initiative_091
+  title_en: Multi product readiness
+  title_ar: Multi product readiness
+  wave: 9
+  owner_os: product
+  status: proposed
+  raci:
+    R: CTO
+    A: enterprise_control_plane_owner
+    C: product,trust
+    I: finance,delivery
+  deliverable: platform_core multi product flags
+  verification: pytest tests/test_platform_foundation.py -q
+- id: 92
+  key: initiative_092
+  title_en: Strategic customer council
+  title_ar: Strategic customer council
+  wave: 6
+  owner_os: gtm
+  status: proposed
+  raci:
+    R: CEO
+    A: founder
+    C: product,trust
+    I: finance,delivery
+  deliverable: docs/transformation/customer_council_ar.md
+  verification: verify_global_ai_transformation.py --check-initiatives
+- id: 93
+  key: initiative_093
+  title_en: Quality of revenue indicator
+  title_ar: Quality of revenue indicator
+  wave: 8
+  owner_os: finance
+  status: proposed
+  raci:
+    R: CEO
+    A: founder
+    C: product,trust
+    I: finance,delivery
+  deliverable: kpi_registry QoR guardrail
+  verification: verify_global_ai_transformation.py
+- id: 94
+  key: initiative_094
+  title_en: Strategic scenario planning 12-24m
+  title_ar: Strategic scenario planning 12-24m
+  wave: 8
+  owner_os: strategy
+  status: proposed
+  raci:
+    R: CEO
+    A: founder
+    C: product,trust
+    I: finance,delivery
+  deliverable: docs/transformation/scenario_planning_ar.md
+  verification: verify_global_ai_transformation.py --check-initiatives
+- id: 95
+  key: initiative_095
+  title_en: Board ready operating system
+  title_ar: Board ready operating system
+  wave: 9
+  owner_os: strategy
+  status: proposed
+  raci:
+    R: CEO
+    A: founder
+    C: product,trust
+    I: finance,delivery
+  deliverable: scripts/generate_board_ready_pack.py
+  verification: python3 scripts/generate_board_ready_pack.py
+- id: 96
+  key: initiative_096
+  title_en: Internal strategic SLAs
+  title_ar: Internal strategic SLAs
+  wave: 7
+  owner_os: operations
+  status: proposed
+  raci:
+    R: CEO
+    A: founder
+    C: product,trust
+    I: finance,delivery
+  deliverable: ownership_matrix internal_sla
+  verification: verify_global_ai_transformation.py --check-initiatives
+- id: 97
+  key: initiative_097
+  title_en: Dealix operating playbook single
+  title_ar: Dealix operating playbook single
+  wave: 0
+  owner_os: strategy
+  status: proposed
+  raci:
+    R: CEO
+    A: founder
+    C: product,trust
+    I: finance,delivery
+  deliverable: docs/transformation/DEALIX_OPERATING_PLAYBOOK_AR.md
+  verification: verify_global_ai_transformation.py --check-initiatives
+- id: 98
+  key: initiative_098
+  title_en: Strategic API governance council
+  title_ar: Strategic API governance council
+  wave: 2
+  owner_os: platform
+  status: proposed
+  raci:
+    R: CTO
+    A: enterprise_control_plane_owner
+    C: product,trust
+    I: finance,delivery
+  deliverable: docs/architecture/API_GOVERNANCE_COUNCIL_AR.md
+  verification: verify_global_ai_transformation.py --check-initiatives
+- id: 99
+  key: initiative_099
+  title_en: Capital efficiency growth plan
+  title_ar: Capital efficiency growth plan
+  wave: 8
+  owner_os: finance
+  status: proposed
+  raci:
+    R: CEO
+    A: founder
+    C: product,trust
+    I: finance,delivery
+  deliverable: 09_unit_economics capital efficiency
+  verification: verify_global_ai_transformation.py --check unit-economics
+- id: 100
+  key: initiative_100
+  title_en: Dealix 2030 strategic endgame
+  title_ar: Dealix 2030 strategic endgame
+  wave: 0
+  owner_os: strategy
+  status: active
+  raci:
+    R: CEO
+    A: founder
+    C: product,trust
+    I: finance,delivery
+  deliverable: docs/transformation/DEALIX_2030_ENDGAME_AR.md
+  verification: verify_global_ai_transformation.py --check-initiatives

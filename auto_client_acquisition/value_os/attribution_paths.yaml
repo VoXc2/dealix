@@ -1,0 +1,17 @@
+version: 1
+program: dealix_100_strategic_initiatives
+paths:
+  - id: discovery_to_pilot
+    stages: [lead_intake, icp_match, pilot_offer]
+    ledger_kind: pipeline_influenced
+  - id: pilot_to_retainer
+    stages: [pilot_sprint, proof_pack, retainer_gate]
+    ledger_kind: expansion_value
+  - id: enterprise_procurement
+    stages: [procurement_intake, trust_pack, contract]
+    ledger_kind: enterprise_contracted
+default_tier: estimated
+required_fields:
+  - customer_id
+  - source_ref
+  - path_id

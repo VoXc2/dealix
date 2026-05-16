@@ -1,0 +1,24 @@
+version: 1
+program: dealix_100_strategic_initiatives
+required_fields:
+  - owner_os
+  - verification_command
+entries:
+  - path: scripts/verify_global_ai_transformation.py
+    owner_os: platform
+    verification_command: python3 scripts/verify_global_ai_transformation.py
+  - path: scripts/generate_weekly_operating_proof_pack.py
+    owner_os: strategy
+    verification_command: python3 scripts/generate_weekly_operating_proof_pack.py
+  - path: scripts/reliability_drills_scorecard.py
+    owner_os: reliability
+    verification_command: python3 scripts/reliability_drills_scorecard.py
+  - path: scripts/generate_strategic_initiatives_registry.py
+    owner_os: strategy
+    verification_command: python3 scripts/generate_strategic_initiatives_registry.py
+  - path: scripts/generate_capability_map_md.py
+    owner_os: product
+    verification_command: python3 scripts/generate_capability_map_md.py
+  - path: scripts/generate_board_ready_pack.py
+    owner_os: strategy
+    verification_command: python3 scripts/generate_board_ready_pack.py
