@@ -40,6 +40,13 @@ from auto_client_acquisition.scale_os.scale_gates import (
     evaluate_gate6,
     evaluate_gate7,
 )
+from auto_client_acquisition.scale_os.scale_dominance_audit import (
+    FinalScaleInputs,
+    ScaleAuditReport,
+    ScaleCriterionResult,
+    report_as_dict,
+    run_final_scale_test,
+)
 
 __all__ = [
     "Gate1FounderToProductized",
@@ -57,7 +64,10 @@ __all__ = [
     "PricingSignals",
     "SaasReadinessBand",
     "SaasTransitionSignals",
+    "ScaleAuditReport",
+    "ScaleCriterionResult",
     "ScaleLadderStep",
+    "FinalScaleInputs",
     "compute_partner_readiness_score",
     "compute_saas_transition_score",
     "evaluate_gate1",
@@ -68,6 +78,8 @@ __all__ = [
     "evaluate_gate6",
     "evaluate_gate7",
     "infer_pricing_stage",
+    "report_as_dict",
     "recommend_hires",
+    "run_final_scale_test",
     "saas_readiness_band",
 ]
