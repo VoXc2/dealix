@@ -14,15 +14,17 @@ from auto_client_acquisition.governance_os.policy_check import PolicyCheckResult
 # claims on what survives — so disclaimers ("لا نضمن", "no/without guarantee")
 # and refund guarantees ("نضمن استرجاع") are never mistaken for a claim.
 
-# Negated guarantee forms — a negator within a few words before the guarantee
-# word, including multi-word constructions ("لا يمكننا أن نضمن", "we cannot
-# really guarantee").
-_NEGATED_AR = re.compile(
-    r"(?:لا|لن|لم|ما|بدون|دون)(?:\s+\S+){0,3}?\s*(?:نضمن|ضمان)"
-)
+# Negated guarantee forms — the negator must be DIRECTLY before the guarantee
+# word. This is deliberately strict: a wider window would let a negator that
+# negates a different word swallow a real claim ("بدون تأخير نضمن نتائج",
+# "without risk we guarantee revenue"). The cost is that a multi-word
+# disclaimer ("we cannot really guarantee", "لا يمكننا أن نضمن") is flagged
+# for human review rather than auto-allowed — the safe direction for a hard
+# gate (a false positive is reviewed; a false negative ships a violation).
+_NEGATED_AR = re.compile(r"(?:لا|لن|لم|ما|بدون|دون)\s*(?:نضمن|ضمان)")
 _NEGATED_EN = re.compile(
     r"\b(?:no|not|never|without|cannot|can't|don't|won't|doesn't|wouldn't)"
-    r"\s+(?:\w+\s+){0,3}?guarantee",
+    r"\s+guarantee",
     re.IGNORECASE,
 )
 # A refund / money-back guarantee is a service guarantee, not a guaranteed
@@ -59,9 +61,10 @@ _AFFIRMATIVE_GUARANTEE_EN = re.compile(
 def _contains_guaranteed_claim(text: str) -> bool:
     """True when text makes an affirmative guaranteed-OUTCOME promise.
 
-    Negated forms ("لا نضمن", "no/without ... guarantee") and refund
+    Directly-negated forms ("لا نضمن", "no/without guarantee") and refund
     guarantees ("نضمن استرجاع" — a service guarantee, not an outcome) are
-    neutralized first, so a doctrine-compliant disclaimer is not blocked.
+    neutralized first. Negation is matched strictly (adjacent only); a
+    multi-word disclaimer is conservatively flagged for human review.
     """
     neutral_ar = _REFUND_AR.sub(" ", _NEGATED_AR.sub(" ", text))
     if _AFFIRMATIVE_GUARANTEE_AR.search(neutral_ar):
