@@ -59,8 +59,11 @@ Checks 1, 2, 3 ALL pass?  (sent + founder_confirmed + timestamp)
                  |
             no --+--> SENT BUT SILENT: message is real, no engagement yet.
                  |        - Stage = first_touch_sent (not "in progress").
-                 |        - Wait the agreed window. One follow-up max,
-                 |          then no_response_after_follow_up. No chasing.
+                 |        - No unsolicited follow-up. A second message goes
+                 |          out only if a follow-up window was explicitly
+                 |          agreed (WARM_LIST_WORKFLOW §1). Otherwise wait
+                 |          7 days, then no_response_after_follow_up. No
+                 |          chasing.
                  |
            yes --+--> Check 5 passes? (consistent with ledgers)
                           |

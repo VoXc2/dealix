@@ -45,10 +45,18 @@ feature*. A single request never becomes a feature; it is logged and watched.
 | `asks_for_security` | يطلب الأمان/الحوكمة | Trust Pack Lite — short summary of governance posture: sourcing, approval gates, evidence trail, PII handling. | حزمة الثقة المختصرة — ملخّص الحوكمة: المصدر، بوّابات الاعتماد، سجل الأدلة، التعامل مع البيانات الشخصية. | ≤ 2 pages |
 | `repeated_pilot_demand` | طلب Pilot متكرّر | Small Partner Sales Kit — only after the *same* pilot ask appears from two or more separate contacts. Bundles the assets above; no new content. | حزمة بيع للشركاء صغيرة — فقط بعد تكرّر طلب الـPilot من جهتين منفصلتين فأكثر. | ≤ 4 pages, bundle only |
 
-> Note on "repeated pilot demand": the founder's shorthand sometimes calls an
-> advanced partner conversation an "L6-style" demand. There is no L6 — the
-> proof ladder is L0–L5 (see `L4_TRUTH_CHECK.md` §0). What matters here is
-> simply *repetition from independent contacts*, verified, before a kit is built.
+> Note on "repeated pilot demand": `repeated_pilot_demand` is **not** a
+> standalone signal in `MARKET_SIGNAL_CLASSIFICATION.md`. It is an aggregate
+> the founder counts from two or more `pilot_intro_requested` signals — each
+> already classified and logged in the War Room §3 Signal log — from
+> independent contacts. Classification path: classify each ask as
+> `pilot_intro_requested`; once two independent ones are recorded, the
+> `repeated_pilot_demand` build trigger is satisfied.
+>
+> The founder's shorthand sometimes calls an advanced partner conversation an
+> "L6-style" demand. There is no L6 — the proof ladder is L0–L5 (see
+> `L4_TRUTH_CHECK.md` §0). What matters here is simply *repetition from
+> independent contacts*, verified, before a kit is built.
 
 ملاحظة: لا يوجد L6. ما يهم هو تكرار الطلب من جهات مستقلّة، مُتحقَّق منه، قبل بناء أي حزمة.
 
