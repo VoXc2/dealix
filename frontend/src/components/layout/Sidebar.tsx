@@ -17,6 +17,10 @@ import {
   Zap,
   Shield,
   Building2,
+  TrendingUp,
+  Award,
+  Gavel,
+  FileCheck,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
@@ -30,8 +34,12 @@ interface NavItem {
 const navItems: NavItem[] = [
   { key: "dashboard", href: "/dashboard", icon: LayoutDashboard },
   { key: "pipeline", href: "/pipeline", icon: GitBranch },
+  { key: "revenueOps", href: "/revenue-ops", icon: TrendingUp },
+  { key: "marketProof", href: "/market-proof", icon: Award },
   { key: "agents", href: "/agents", icon: Bot },
   { key: "approvals", href: "/approvals", icon: CheckSquare },
+  { key: "boardDecision", href: "/board-decision", icon: Gavel },
+  { key: "proofPack", href: "/proof-pack", icon: FileCheck },
   { key: "trustCheck", href: "/trust-check", icon: Shield },
   { key: "customerPortal", href: "/customer-portal", icon: Building2 },
   { key: "clients", href: "/clients", icon: Users },
@@ -143,8 +151,12 @@ export function Sidebar({ collapsed = false, onToggle }: SidebarProps) {
                         item.key as
                           | "dashboard"
                           | "pipeline"
+                          | "revenueOps"
+                          | "marketProof"
                           | "agents"
                           | "approvals"
+                          | "boardDecision"
+                          | "proofPack"
                           | "trustCheck"
                           | "customerPortal"
                           | "clients"

@@ -181,6 +181,58 @@ export const api = {
 
   getCustomerPortal: (handle = "Slot-A") =>
     apiClient.get(`/api/v1/customer-portal/${encodeURIComponent(handle)}`),
+
+  // ── Governed Revenue & AI Operations ──────────────────────────────
+  getServicesGovernedTier: () =>
+    apiClient.get("/api/v1/services/governed-tier"),
+
+  getRevenuePipelineNorthStar: () =>
+    apiClient.get("/api/v1/revenue-pipeline/north-star"),
+
+  getRevenuePipelineLeadLevel: (leadId: string) =>
+    apiClient.get(
+      `/api/v1/revenue-pipeline/${encodeURIComponent(leadId)}/level`,
+    ),
+
+  getProofToMarketStatus: () =>
+    apiClient.get("/api/v1/proof-to-market/status"),
+
+  getProofToMarketSectorLearning: () =>
+    apiClient.get("/api/v1/proof-to-market/sector-learning"),
+
+  getBoardDecisionOverview: () =>
+    apiClient.get("/api/v1/board-decision-os/overview"),
+
+  getBoardDecisionRisks: () =>
+    apiClient.get("/api/v1/board-decision-os/risks"),
+
+  getBoardDecisionCapitalAllocation: (investments: string) =>
+    apiClient.get("/api/v1/board-decision-os/capital-allocation", {
+      params: { investments },
+    }),
+
+  postBoardDecisionMemo: (sectionsPresent: string[]) =>
+    apiClient.post("/api/v1/board-decision-os/memo", {
+      sections_present: sectionsPresent,
+    }),
+
+  postProofPackGenerate: (
+    engagementId: string,
+    body: Record<string, unknown>,
+  ) =>
+    apiClient.post(
+      `/api/v1/proof-pack/${encodeURIComponent(engagementId)}/generate`,
+      body,
+    ),
+
+  postProofPackRetainerGate: (
+    engagementId: string,
+    body: Record<string, unknown>,
+  ) =>
+    apiClient.post(
+      `/api/v1/proof-pack/${encodeURIComponent(engagementId)}/retainer-gate`,
+      body,
+    ),
 };
 
 export default api;

@@ -35,7 +35,7 @@ export default function CustomerPortalPage() {
         </Button>
       </div>
 
-      {data && typeof data === "object" && data !== null && "promise_ar" in data && (
+      {data != null && typeof data === "object" && "promise_ar" in data && (
         <div className="mb-4 rounded-xl border border-border p-4 bg-muted/20">
           <h3 className="text-sm font-semibold mb-2">{t("promiseTitle")}</h3>
           <p className="text-sm leading-relaxed">{(data as { promise_ar: string }).promise_ar}</p>
