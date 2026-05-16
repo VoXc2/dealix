@@ -193,10 +193,6 @@ ALLOWLIST: dict[str, dict[str, str]] = {
         "guaranteed": "NEGATION",
         "مضمون": "NEGATION",
     },
-    "customer-portal.html": {
-        "guaranteed": "NEGATION",
-        "مضمون": "NEGATION",
-    },
     "sector-report-b2b-services.html": {
         "guaranteed": "NEGATION",
         "مضمون": "NEGATION",

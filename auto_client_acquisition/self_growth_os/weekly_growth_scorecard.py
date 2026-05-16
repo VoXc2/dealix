@@ -147,6 +147,18 @@ def build_scorecard() -> dict:
             "anchor": "service_activation_matrix.candidates_for_promotion",
         })
 
+    if not recommendations:
+        # No technical gap is open this week. The scorecard still surfaces
+        # one forward-looking action so the founder always has a next step.
+        recommendations.append({
+            "priority": "P2",
+            "action": (
+                "technical perimeter clean — focus the week on warm-intro "
+                "outreach and converting the next pilot conversation"
+            ),
+            "anchor": "weekly_growth_scorecard.all_gates_clear",
+        })
+
     return {
         "schema_version": 1,
         "generated_at": datetime.now(UTC).isoformat(),
