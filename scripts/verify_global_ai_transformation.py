@@ -45,6 +45,7 @@ DOC_FILES = (
     "docs/transformation/10_delivery_control_tower.md",
     "docs/transformation/11_org_operating_system.md",
     "docs/transformation/12_category_dominance.md",
+    "docs/transformation/ENGINEERING_CUTOVER_RUNBOOK_AR.md",
 )
 
 ENTERPRISE_PACKAGE_FILES = (

@@ -106,6 +106,7 @@ dumps/
 # ─────────────────────────────────────────────────────────────
 logs/
 *.log
+!docs/transformation/evidence/weekly_ops_checklist.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*

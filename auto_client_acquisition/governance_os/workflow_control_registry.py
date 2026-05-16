@@ -43,6 +43,11 @@ _WORKFLOW_CONTROL_RULES: dict[str, tuple[ControlRule, ...]] = {
         ControlRule("data_export", True, False),
         ControlRule("irreversible_action", True, True),
     ),
+    "procurement_intake": (
+        ControlRule("data_export", True, False),
+        ControlRule("contract_commitment", True, False),
+        ControlRule("external_action", True, False),
+    ),
     "self_evolving": (
         ControlRule("self_evolving_apply", True, True),
         ControlRule("autonomy_change", True, True),

@@ -10,3 +10,21 @@
 | **Verification** | `python3 scripts/verify_global_ai_transformation.py --check-enterprise-package` |
 
 **Closure statement:** Templates and verification hooks exist in-repo; customer-specific numbers belong in `kpi_baselines.yaml` + weekly proof packs.
+
+---
+
+## Verification record (reference)
+
+Command:
+
+```bash
+python3 scripts/verify_global_ai_transformation.py --check-enterprise-package
+```
+
+Last captured output (trimmed):
+
+```text
+GLOBAL AI TRANSFORMATION: PASS
+```
+
+**KPI numeric closure:** record `conversion_discovery_to_pilot` and `time_to_proof_days` in [dealix/transformation/kpi_baselines.yaml](dealix/transformation/kpi_baselines.yaml) with CRM / delivery timestamps in `source_ref`.

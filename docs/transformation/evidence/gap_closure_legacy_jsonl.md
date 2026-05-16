@@ -10,3 +10,21 @@
 | **Verification** | `python3 scripts/verify_global_ai_transformation.py --check-jsonl` |
 
 **Closure statement:** JSONL usage is catalogued with tiers, Postgres targets, and optional `DEALIX_OPERATIONAL_STREAM_BACKEND` mirroring for tier-2 append paths; tier-1 value ledger supports `postgres`/`dual`.
+
+---
+
+## Verification record (reference)
+
+Command:
+
+```bash
+python3 scripts/verify_global_ai_transformation.py --check-jsonl
+```
+
+Last captured output (trimmed):
+
+```text
+GLOBAL AI TRANSFORMATION: PASS
+```
+
+**KPI numeric closure:** tie `measured_customer_value_sar` and operational completeness metrics in [dealix/transformation/kpi_baselines.yaml](dealix/transformation/kpi_baselines.yaml) once finance exports exist.

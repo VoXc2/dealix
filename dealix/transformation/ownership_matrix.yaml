@@ -1,5 +1,10 @@
 version: 2
 program: global_ai_transformation
+executive_review:
+  last_ownership_matrix_review_iso: ""
+  notes_ar: >-
+    راجع أسبوعياً حقول human_assignee_name لكل OS؛ حدّث last_ownership_matrix_review_iso بعد المراجعة.
+    عند التوظيف استبدل العنصر النائب «Sami Alsubaiei (founder)» بالاسم الدائم وحدّث human_assignee_notes_ar.
 os_ownership:
   strategy:
     primary_owner: chief_strategy_officer

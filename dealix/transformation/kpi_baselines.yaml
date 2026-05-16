@@ -3,7 +3,12 @@ program: global_ai_transformation
 notes_ar: >-
   عبّئ القيم الفعلية أسبوعيًا من CRM/المالية/التسليم. اترك null حتى يتوفر المصدر.
   كل قيمة يجب أن يمر مرجعها في Weekly Proof Pack.
+  بعد كل تشغيل لـ scripts/run_executive_weekly_checklist.sh حدّث weekly_ops.last_checklist_run_iso (UTC).
 updated_period_iso: ""
+
+weekly_ops:
+  last_checklist_run_iso: ""
+  checklist_script: scripts/run_executive_weekly_checklist.sh
 
 snapshots:
   measured_customer_value_sar:

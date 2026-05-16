@@ -18,6 +18,16 @@ def test_partner_channel_is_governed() -> None:
     assert "contract_commitment" in control_classes_for("partner_channel")
 
 
+def test_support_desk_resolution_is_governed() -> None:
+    assert workflow_domain_is_governed("support_desk_resolution")
+    assert "data_export" in control_classes_for("support_desk_resolution")
+
+
+def test_procurement_intake_is_governed() -> None:
+    assert workflow_domain_is_governed("procurement_intake")
+    assert "contract_commitment" in control_classes_for("procurement_intake")
+
+
 def test_back_office_automation_is_governed() -> None:
     assert workflow_domain_is_governed("back_office_automation")
     assert "irreversible_action" in control_classes_for("back_office_automation")
