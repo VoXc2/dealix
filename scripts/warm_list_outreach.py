@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-"""Warm-list outreach generator — Wave 15 (A5).
+"""Warm-list outreach generator — governed market motion.
 
-Reads `data/warm_list.csv` (founder fills 20 contacts), generates per-
+Reads `data/warm_list.csv` (founder fills warm contacts), generates per-
 contact personalized bilingual messages, writes them to
 `data/outreach/warm_list_drafts.md` for founder copy-paste into
 LinkedIn / WhatsApp / email.
@@ -31,49 +31,47 @@ sys.path.insert(0, str(REPO_ROOT))
 
 _BASE_MESSAGE_AR = (
     "السلام عليكم {name},\n\n"
-    "أبني MVP لخدمة Revenue Intelligence لشركات B2B سعودية — تشخيص قدرة "
-    "تشغيلية، بيانات نظيفة، فرص مرتبة، رسائل عربية جاهزة، Proof Pack — "
-    "كلها محكومة بحوكمة AI واضحة (لا scraping، لا واتساب بارد، لا وعود).\n\n"
-    "بالنظر إلى دورك في {company} كـ{role} وقطاع {sector}، {context_line}\n\n"
-    "أبحث عن 2-3 شركات تجرّب:\n"
-    "  • تشخيص مجاني 24 ساعة (https://dealix.me/diagnostic.html)\n"
-    "  • Sprint مدفوع 499 ريال (7 أيام، Proof Pack مضمون، استرداد 14 يوم)\n\n"
-    "هل أنت أو أحد من شبكتك يستفيد من هذا؟\n\n"
-    "شكرًا — سامي."
+    "أنا أبني Dealix كشركة تشغيل ذكاء اصطناعي محكوم تبدأ من السعودية.\n\n"
+    "هذا ليس بيع أتمتة AI عامة. زاويتنا تشخيص تشغيلي محكوم للشركات التي تستخدم AI "
+    "لكن ينقصها وضوح المصدر وحدود الموافقات ومسار الأدلة وقياس القيمة.\n\n"
+    "بالنظر إلى دورك في {company} كـ{role} في قطاع {sector}، {context_line}\n\n"
+    "هل لديكم شريحة عميل تعاني من AI بلا حوكمة كافية؟\n\n"
+    "تحياتي،\n"
+    "Sami"
 )
 
 
 _BASE_MESSAGE_EN = (
     "Hi {name},\n\n"
-    "I'm building Revenue Intelligence MVP for Saudi B2B companies — "
-    "operating-capability diagnostic, clean data, ranked opportunities, "
-    "Arabic drafts, Proof Pack — all under explicit AI governance "
-    "(no scraping, no cold WhatsApp, no guarantees).\n\n"
+    "I’m building Dealix, a governed AI operations company starting in Saudi Arabia.\n\n"
+    "This is not an AI automation resale motion.\n\n"
+    "The angle is a governed AI operations diagnostic for clients already experimenting "
+    "with AI but lacking source clarity, approval boundaries, evidence trails, proof "
+    "of value, and agent identity controls.\n\n"
     "Given your role at {company} as {role} in {sector}, {context_line}\n\n"
-    "Looking for 2-3 companies to try:\n"
-    "  • Free 24h diagnostic (https://dealix.me/diagnostic.html)\n"
-    "  • 499 SAR paid Sprint (7 days, guaranteed Proof Pack, 14-day refund)\n\n"
-    "Anyone in your network this might fit?\n\n"
-    "Thanks — Sami."
+    "Would it be useful to compare this against one client segment you already see "
+    "asking about AI governance or AI-driven revenue operations?\n\n"
+    "Best,\n"
+    "Sami"
 )
 
 
 _CONTEXT_BY_RELATIONSHIP = {
     "warm": {
-        "ar": "أعتقد فيه match لخدمتنا — Sprint 499 ريال يثبت القيمة قبل الالتزام.",
-        "en": "I think there's a fit — the 499 SAR Sprint proves value before any commitment.",
+        "ar": "أثق أن عندك رؤية عملية مباشرة عن هذا النوع من التحدي.",
+        "en": "you likely have direct visibility into this kind of challenge.",
     },
     "cold": {
-        "ar": "لا أعرف القطاع بعمق — Sprint بسيط 499 ريال يكشف الفرص بسرعة.",
-        "en": "I don't know the sector deeply yet — a quick 499 SAR Sprint surfaces opportunities fast.",
+        "ar": "ما زلت أتعلم هذا القطاع وأقدّر توجيهك على شريحة عميل مناسبة.",
+        "en": "I am still learning this segment and value your guidance on a fit client profile.",
     },
     "active": {
-        "ar": "نتعاون سابقًا، عرض الـSprint قد يكون مكمل لما تشتغل عليه.",
-        "en": "We've collaborated before — the Sprint may complement your current work.",
+        "ar": "تعاوننا السابق يجعل رأيك مهمًا جدًا في اختبار هذا الاتجاه.",
+        "en": "our prior collaboration makes your view especially valuable for this motion.",
     },
     "": {
-        "ar": "أبحث عن 2-3 شركات تجرب التشخيص المجاني.",
-        "en": "Looking for 2-3 companies to try the free diagnostic.",
+        "ar": "أبحث عن رأي واضح حول مدى مناسبة هذا التوجه للسوق.",
+        "en": "I am looking for a clear signal on whether this angle is market-relevant.",
     },
 }
 
@@ -172,6 +170,12 @@ def main() -> int:
         default="data/outreach/warm_list_drafts.md",
         help="Output markdown",
     )
+    parser.add_argument(
+        "--limit",
+        type=int,
+        default=5,
+        help="How many contacts to include (default 5 for the first batch)",
+    )
     args = parser.parse_args()
 
     csv_path = REPO_ROOT / args.csv
@@ -193,6 +197,10 @@ def main() -> int:
         print(f"⚠ CSV is empty — fill {csv_path} with at least 1 contact then re-run.")
         return 1
 
+    selected_rows = rows
+    if args.limit and args.limit > 0:
+        selected_rows = rows[: args.limit]
+
     out_path = REPO_ROOT / args.out
     out_path.parent.mkdir(parents=True, exist_ok=True)
 
@@ -200,10 +208,12 @@ def main() -> int:
     drafts.append(f"# Warm-list outreach drafts · مسوّدات التواصل\n")
     drafts.append(f"_Generated: {datetime.now(timezone.utc).isoformat()}_\n")
     drafts.append(f"_Contacts in CSV: {len(rows)}_\n")
+    drafts.append(f"_Contacts selected for this batch: {len(selected_rows)}_\n")
     drafts.append("\n")
     drafts.append(
-        "**Usage:** copy 5/day into LinkedIn / WhatsApp / email. Pre-screen "
-        "decision badge tells you whether to reach out, deprioritize, or refer-out. "
+        "**Usage:** send the first batch manually (default 5 contacts). Keep each message "
+        "as-is: one personalized line + one question, no deck/PDF/attachments. "
+        "Pre-screen decision badge tells you whether to reach out, deprioritize, or refer-out. "
         "Doctrine violations BLOCK the outreach — refuse the contact cleanly.\n\n"
     )
     drafts.append("---\n\n")
@@ -211,7 +221,7 @@ def main() -> int:
     accepted = 0
     deprioritized = 0
     rejected = 0
-    for row in rows:
+    for row in selected_rows:
         q = _qualify_contact(
             role=row.get("role", ""),
             sector=row.get("sector", ""),
@@ -229,8 +239,9 @@ def main() -> int:
 
     summary = (
         f"## Summary\n\n"
-        f"- Total contacts: {len(rows)}\n"
-        f"- Accept (reach out today): {accepted}\n"
+        f"- Total contacts in CSV: {len(rows)}\n"
+        f"- Contacts in this batch: {len(selected_rows)}\n"
+        f"- Accept (reach out now): {accepted}\n"
         f"- Diagnostic-only / reframe: {deprioritized}\n"
         f"- Reject / refer-out: {rejected}\n\n"
         f"_Estimated outcomes are not guaranteed outcomes / "
@@ -239,7 +250,8 @@ def main() -> int:
     drafts.append(summary)
 
     out_path.write_text("".join(drafts), encoding="utf-8")
-    print(f"✓ Wrote {len(rows)} drafts to {out_path}")
+    print(f"✓ Wrote {len(selected_rows)} drafts to {out_path}")
+    print(f"  - source contacts in csv: {len(rows)}")
     print(f"  - accept: {accepted}")
     print(f"  - diagnostic_only/reframe: {deprioritized}")
     print(f"  - reject/refer_out: {rejected}")
