@@ -1,7 +1,7 @@
 # Pricing Guide | دليل الأسعار
 
-> **⚠️ Canonical offer = the 5-rung ladder.** The current commercial offer
-> Dealix sells is the 5-rung ladder in
+> **⚠️ Canonical offer = the offer ladder (rungs 0–5).** The current commercial
+> offer Dealix sells is the six-rung ladder (rungs `[0]`–`[5]`) in
 > [`docs/OFFER_LADDER_AND_PRICING.md`](OFFER_LADDER_AND_PRICING.md) (Free
 > Diagnostic → 499 SAR Sprint → 1,500 SAR Pack → Managed Ops → Command Center →
 > Partner OS). This file is the *legacy custom-engagement* pricing reference for

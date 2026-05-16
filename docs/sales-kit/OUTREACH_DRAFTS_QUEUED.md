@@ -111,7 +111,7 @@ does not invent a sixth:
 | `DIAGNOSTIC_ONLY` | Fits at the diagnostic tier only; do not pitch the sprint yet. | Run the Free Diagnostic; recommendation field decides on a sprint invite. |
 | `REFRAME` | Genuine intent, wrong frame (asking for a service we don't offer, but the underlying need fits one we do). | Send a 3-line reframe note; re-run qualify with the new framing. |
 | `REJECT` | Outside scope (cold-outreach automation, LinkedIn automation, guaranteed sales, scraped-list enrichment). | Polite refusal citing the constitutional clause; `friction_log` entry; no follow-up. |
-| `REFER_OUT` | Legitimate need, better served by a partner. | Make the intro; record in `referral_ledger`. |
+| `REFER_OUT` | Legitimate need, better served by a partner. | Make the intro; record in `referral_ledger` (entries kept in `../ledgers/CLIENT_LEDGER.md`). |
 
 ---
 
