@@ -1,5 +1,12 @@
 # Dealix Company Service Ladder
 
+> **SUPERSEDED — 2026-05-16.** This 5-rung ladder is superseded by
+> [`docs/OFFER_LADDER_AND_PRICING.md`](OFFER_LADDER_AND_PRICING.md) v2 and the
+> canonical strategy doc
+> [`docs/strategy/GOVERNED_REVENUE_AI_OPERATIONS.md`](strategy/GOVERNED_REVENUE_AI_OPERATIONS.md).
+> Content kept for history only. For the current 7-service Governed Revenue &
+> AI Operations catalog and pricing, use the v2 ladder.
+
 > One offer per maturity stage. Each rung unlocks ONLY when the prior
 > rung has shipped real evidence (per `docs/V12_1_TRIGGER_RULES.md`).
 
