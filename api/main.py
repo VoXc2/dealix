@@ -36,6 +36,7 @@ from api.routers import (
     cost_tracking,
     customer_usage,
     customer_webhooks,
+    enterprise_runtime,
     enterprise_pmo,
     jobs,
     nps,
@@ -252,6 +253,7 @@ def create_app() -> FastAPI:
     app.include_router(jobs.router, prefix="/api/v1")
     app.include_router(zatca.router)
     app.include_router(pdpl.router)
+    app.include_router(enterprise_runtime.router)
 
     # ── Wave 12.7 — Intelligence Layer + Expansion Engine ─────────
     # Both routers self-prefix /api/v1/intelligence and /api/v1/expansion-engine.
