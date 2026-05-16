@@ -184,7 +184,7 @@
     </thead>
     <tbody>
       <tr><td><code>GET /health</code></td><td>K8s/UptimeRobot liveness</td><td>none</td></tr>
-      <tr><td><code>GET /health?deep=1</code></td><td>4-dependency deep check</td><td>none</td></tr>
+      <tr><td><code>GET /health/deep</code></td><td>4-dependency deep check</td><td>none</td></tr>
       <tr><td><code>GET /api/v1/compliance/status</code></td><td>Live PDPL+ZATCA posture</td><td>none</td></tr>
       <tr><td><code>GET /api/v1/pricing/plans</code></td><td>5 customer-facing plans</td><td>none</td></tr>
       <tr><td><code>POST /api/v1/checkout</code></td><td>Moyasar checkout init</td><td>none</td></tr>
@@ -318,7 +318,7 @@
 curl https://api.dealix.me/api/v1/compliance/status | jq
 
 # Deep health (DB, Redis, Sentry, LLM providers, 4 DLQs)
-curl https://api.dealix.me/health?deep=1 | jq
+curl https://api.dealix.me/health/deep | jq
 
 # Cost-to-serve transparency (margin per tier)
 curl https://api.dealix.me/api/v1/cost-tracking/per-tier | jq

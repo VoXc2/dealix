@@ -100,8 +100,14 @@ async def search_prospects(
         }
 
     async with async_session_factory()() as session:
-        stmt = select(AccountRecord)
-        count_stmt = select(func.count()).select_from(AccountRecord)
+        # Active rows only — soft-deleted accounts must not surface in
+        # a public search response (PDPL erasure / suppression workflow).
+        stmt = select(AccountRecord).where(AccountRecord.deleted_at.is_(None))
+        count_stmt = (
+            select(func.count())
+            .select_from(AccountRecord)
+            .where(AccountRecord.deleted_at.is_(None))
+        )
 
         # Only sector/q map to real columns on AccountRecord. region and
         # size_band are accepted + validated for the API contract but the
