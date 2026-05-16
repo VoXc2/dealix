@@ -108,22 +108,35 @@ async def compute_customer_health(customer_id: str) -> dict[str, Any]:
 @router.get("/at-risk")
 async def list_at_risk_customers() -> dict[str, Any]:
     """Return all customers in at_risk or critical buckets."""
+    cutoff_30d = _utcnow() - timedelta(days=30)
     async with async_session_factory() as session:
         try:
             customers = (await session.execute(select(CustomerRecord))).scalars().all()
+            # One grouped query for sent-draft counts per account, then map to
+            # customers via CustomerRecord.company_id → GmailDraftRecord.account_id
+            # (avoids an N+1 query inside the loop below).
+            drafts_by_account: dict[str, int] = dict(
+                (await session.execute(
+                    select(GmailDraftRecord.account_id, func.count())
+                    .where(
+                        GmailDraftRecord.created_at >= cutoff_30d,
+                        GmailDraftRecord.status == "sent",
+                    )
+                    .group_by(GmailDraftRecord.account_id)
+                )).all()
+            )
         except Exception as exc:  # noqa: BLE001
             return {"status": "skipped_db_unreachable", "error": str(exc), "items": []}
 
     at_risk: list[dict[str, Any]] = []
     for c in customers:
-        # Simplified: pull the full health score per customer
         days_idle = (_utcnow() - c.updated_at).days if c.updated_at else 0
         score = compute_health(
             customer_id=c.id,
             logins_last_30d=max(0, 22 - days_idle),
             nps=c.nps_score,
             days_since_last_login=days_idle,
-            drafts_approved_last_30d=0,  # TODO query per customer
+            drafts_approved_last_30d=drafts_by_account.get(c.company_id or "", 0),
         )
         if score.bucket in {"at_risk", "critical"}:
             at_risk.append(score.to_dict())

@@ -340,7 +340,9 @@ async def moyasar_webhook(req: Request) -> dict[str, Any]:
             payment=payment,
             raw_event=body,
         )
-        # TODO: sync to HubSpot via ConnectorFacade in D+2 E2E test
+        # Deferred: mirroring paid events to HubSpot via ConnectorFacade is
+        # intentionally not built — no customer signal yet requires CRM sync.
+        # Add it (with an E2E test) only when a deal requires it.
         return {"status": "ok", "event_id": event_id, "event_type": event_type}
     except Exception as exc:
         log.exception("moyasar_webhook_processing_failed event_fp=%s", event_fp)

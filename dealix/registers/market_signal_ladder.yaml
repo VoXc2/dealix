@@ -1,0 +1,93 @@
+# ═══════════════════════════════════════════════════════════════════
+# Market Signal Ladder
+# سلّم الإشارات السوقية
+# ═══════════════════════════════════════════════════════════════════
+# Canonical definition of the market-signal levels (L0–L7) used in the
+# commercial doctrine to classify how far a real market interaction has
+# progressed.
+#
+# IMPORTANT — this is NOT the proof EvidenceLevel.
+#   - EvidenceLevel (auto_client_acquisition/proof_engine/evidence.py, L0–L5)
+#     classifies how strong a piece of PROOF is and whether it may be used
+#     publicly.
+#   - This ladder classifies a MARKET SIGNAL — how far an outreach/asset has
+#     travelled toward revenue. The two scales are independent.
+#
+# This register is terminology only. There is intentionally no enforcement
+# code, enum, or router — the founder records events by hand. Building
+# automation here before a market signal asks for it would violate the
+# freeze doctrine (Gate 3).
+# ═══════════════════════════════════════════════════════════════════
+
+schema_version: "1.0"
+last_reviewed: "2026-05-16"
+
+levels:
+  - level: 0
+    id: not_started
+    name_en: "Not started"
+    name_ar: "لم يبدأ"
+    meaning: "No asset and no interaction yet."
+
+  - level: 1
+    id: internal_draft
+    name_en: "Internal draft"
+    name_ar: "مسودة داخلية"
+    meaning: "Asset drafted, internal only — not customer-facing."
+
+  - level: 2
+    id: prepared_not_sent
+    name_en: "Prepared, not sent"
+    name_ar: "مُجهّز ولم يُرسَل"
+    meaning: "Asset ready but not yet sent to a real audience. founder_confirmed = false."
+
+  - level: 3
+    id: sent_no_response
+    name_en: "Sent, no response"
+    name_ar: "أُرسل بلا رد"
+    meaning: "Asset sent to a real audience; no reply yet."
+
+  - level: 4
+    id: exposure
+    name_en: "Exposure"
+    name_ar: "تعرّض"
+    meaning: "Real audience engaged — e.g. follow_up_sent, replied_interested."
+
+  - level: 5
+    id: meeting_utility
+    name_en: "Meeting utility"
+    name_ar: "فائدة في اجتماع"
+    meaning: "Asset was actually used in a real meeting — e.g. meeting_booked, used_in_meeting."
+
+  - level: 6
+    id: market_pull
+    name_en: "Market pull"
+    name_ar: "جذب سوقي"
+    meaning: "Market asks for more — e.g. pilot_intro_requested, scope_requested."
+
+  - level: 7
+    id: revenue
+    name_en: "Revenue"
+    name_ar: "إيراد"
+    meaning: "Commercial close. Sub-states below."
+    substates:
+      - id: candidate
+        trigger: invoice_sent
+        meaning: "Invoice sent — revenue candidate, not yet confirmed."
+      - id: confirmed
+        trigger: invoice_paid
+        meaning: "Invoice paid — revenue confirmed. Run First Invoice Unlock."
+
+# Reference — outcome → level mapping from the commercial doctrine.
+# Used by the founder when recording an event; no code reads this.
+outcome_to_level:
+  prepared_not_sent: 2
+  no_response_after_follow_up: 3
+  follow_up_sent: 4
+  replied_interested: 4
+  meeting_booked: 5
+  used_in_meeting: 5
+  pilot_intro_requested: 6
+  scope_requested: 6
+  invoice_sent: 7   # substate: candidate
+  invoice_paid: 7   # substate: confirmed

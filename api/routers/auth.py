@@ -23,6 +23,7 @@ from __future__ import annotations
 from typing import Any
 
 import hashlib
+import logging
 import secrets
 import uuid
 from datetime import datetime, timezone
@@ -60,6 +61,8 @@ from db.models import (
     UserRecord,
 )
 from db.session import get_db
+
+log = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
@@ -444,6 +447,33 @@ async def get_me(user: CurrentUser) -> UserProfileResponse:
 
 # ── Invite flow ─────────────────────────────────────────────────────
 
+async def _send_invite_email(
+    *, to: str, invite_token: str, inviter_email: str, expires_hours: int
+) -> bool:
+    """Deliver an invite token by email. Best-effort — returns False on failure."""
+    from integrations.email import EmailClient
+
+    subject = "You've been invited to Dealix | دعوة للانضمام إلى Dealix"
+    body_text = (
+        f"{inviter_email} invited you to join their Dealix workspace.\n\n"
+        f"Invite token (valid {expires_hours}h):\n{invite_token}\n\n"
+        "Redeem it via POST /api/v1/auth/invite/accept with this token and your "
+        "chosen password.\n\n"
+        "— Dealix\n"
+        "—————\n"
+        f"دعاك {inviter_email} للانضمام إلى مساحة عمل Dealix.\n"
+        f"رمز الدعوة (صالح {expires_hours} ساعة):\n{invite_token}\n"
+    )
+    try:
+        result = await EmailClient().send(to=to, subject=subject, body_text=body_text)
+        if not result.success:
+            log.warning("invite_email_failed to=%s error=%s", to, result.error)
+        return result.success
+    except Exception as exc:  # noqa: BLE001 — delivery must never break invite creation
+        log.warning("invite_email_failed to=%s error=%s", to, exc)
+        return False
+
+
 @router.post("/invite", status_code=status.HTTP_201_CREATED)
 async def send_invite(
     body: InviteRequest,
@@ -498,18 +528,28 @@ async def send_invite(
     )
     db.add(invite_record)
 
-    # TODO(production): deliver invite_token via transactional email (e.g. SendGrid/SES)
-    # instead of returning it in the API response.
     response: dict[str, Any] = {
         "email": body.email,
         "role": body.role.value,
         "expires_hours": settings.jwt_invite_token_expire_hours,
     }
+    # In dev/test the token is returned for local testing; in production it is
+    # emailed to the recipient and never returned in the API response.
     if settings.app_env in ("development", "test"):
         response["invite_token"] = invite_token
         response["note"] = "Share this token via email — POST /api/v1/auth/invite/accept to redeem"
     else:
-        response["message"] = "Invite sent. The recipient will receive an email with instructions."
+        delivered = await _send_invite_email(
+            to=body.email,
+            invite_token=invite_token,
+            inviter_email=user.email,
+            expires_hours=settings.jwt_invite_token_expire_hours,
+        )
+        response["message"] = (
+            "Invite sent. The recipient will receive an email with instructions."
+            if delivered
+            else "Invite created, but the email could not be delivered — resend the invite."
+        )
     return response
 
 

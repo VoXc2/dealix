@@ -111,8 +111,12 @@ async def subscribe_webhook(
 ) -> dict[str, Any]:
     """Register a webhook subscription for a tenant. Returns subscription_id + secret.
 
-    The secret is shown ONCE in this response — caller must store it.
-    Dealix only stores a hash for verification (production hardening: TODO).
+    The signing secret is shown ONCE in this response — the caller must store it.
+    Dealix retains the raw secret because it is required to compute the outbound
+    HMAC-SHA256 signature on every delivery; it is never returned again after this
+    call (see `list_webhooks`) and never logged. Encryption-at-rest of the stored
+    `secret` column is the remaining production hardening — it requires a managed
+    encryption key and is tracked separately.
     """
     if not _validate_https_url(body.url):
         raise HTTPException(

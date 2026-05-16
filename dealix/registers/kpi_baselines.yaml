@@ -1,0 +1,78 @@
+# ═══════════════════════════════════════════════════════════════════
+# KPI Baselines Register
+# سجل خطوط الأساس لمؤشرات الأداء
+# ═══════════════════════════════════════════════════════════════════
+# Gate 4 of the commercial doctrine: "fill truth, not hope".
+# Every KPI here ships EMPTY until it has a real source. A `value` MUST
+# NOT be set unless `source_ref` is also set (verified by
+# scripts/verify_global_ai_transformation.py).
+#
+# Field contract per KPI:
+#   value            — the measured number, or null if not yet measured
+#   unit             — unit of measure (informational)
+#   source_ref       — system/report the number was read from (CRM, finance,
+#                       delivery ledger); null until a real source exists
+#   owner            — person accountable for keeping it current; null = TBD
+#   last_verified_at — ISO date the value was last confirmed; null if never
+#   reason           — why value is null (required while value is null)
+#
+# Rule: never invent a number. An honest null beats a fabricated KPI.
+# ═══════════════════════════════════════════════════════════════════
+
+schema_version: "1.0"
+last_reviewed: "2026-05-16"
+
+kpis:
+  - id: measured_customer_value_sar
+    description: "Value delivered to customers, measured in SAR"
+    unit: "SAR"
+    value: null
+    source_ref: null
+    owner: null
+    last_verified_at: null
+    reason: "awaiting CRM/finance/delivery source"
+
+  - id: conversion_discovery_to_pilot
+    description: "Conversion rate from discovery conversation to paid pilot"
+    unit: "ratio"
+    value: null
+    source_ref: null
+    owner: null
+    last_verified_at: null
+    reason: "awaiting CRM/finance/delivery source"
+
+  - id: approval_cycle_time_hours
+    description: "Median time from decision raised to founder approval"
+    unit: "hours"
+    value: null
+    source_ref: null
+    owner: null
+    last_verified_at: null
+    reason: "awaiting CRM/finance/delivery source"
+
+  - id: governance_integrity_rate
+    description: "Share of decisions with a complete, valid governance trail"
+    unit: "ratio"
+    value: null
+    source_ref: null
+    owner: null
+    last_verified_at: null
+    reason: "awaiting CRM/finance/delivery source"
+
+  - id: expansion_quality_ratio
+    description: "Quality-weighted expansion vs. raw expansion count"
+    unit: "ratio"
+    value: null
+    source_ref: null
+    owner: null
+    last_verified_at: null
+    reason: "awaiting CRM/finance/delivery source"
+
+  - id: time_to_proof_days
+    description: "Days from engagement start to first verified Proof Pack"
+    unit: "days"
+    value: null
+    source_ref: null
+    owner: null
+    last_verified_at: null
+    reason: "awaiting CRM/finance/delivery source"
