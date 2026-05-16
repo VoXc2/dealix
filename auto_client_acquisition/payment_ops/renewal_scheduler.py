@@ -100,6 +100,13 @@ def schedule_renewal(
     with _lock:
         with path.open("a", encoding="utf-8") as f:
             f.write(json.dumps(schedule.to_dict(), ensure_ascii=False) + "\n")
+    from auto_client_acquisition.persistence.operational_stream_mirror import mirror_append
+
+    mirror_append(
+        stream_id="renewal_schedule_jsonl",
+        payload=schedule.to_dict(),
+        event_id=schedule.schedule_id,
+    )
     return schedule
 
 

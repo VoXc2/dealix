@@ -1,0 +1,27 @@
+version: 1
+risks:
+  - id: feature_sprawl_without_proof
+    class: strategic
+    severity: high
+    mitigation: enforce proof-gated product decisions and golden-chain architecture
+    owner_os: strategy
+  - id: governance_drift_under_scale
+    class: operational
+    severity: high
+    mitigation: CI gates, approval-first enforcement, and trace audits
+    owner_os: trust
+  - id: growth_without_margin
+    class: financial
+    severity: high
+    mitigation: offer-level unit economics governance and margin floor policy
+    owner_os: finance
+  - id: position_confusion
+    class: market
+    severity: medium
+    mitigation: unified category narrative and strict offer architecture
+    owner_os: gtm
+  - id: key_person_dependency
+    class: organizational
+    severity: medium
+    mitigation: backup ownership and operating playbooks for critical flows
+    owner_os: people_ops

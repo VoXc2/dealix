@@ -1,0 +1,80 @@
+version: 2
+program: global_ai_transformation
+executive_review:
+  last_ownership_matrix_review_iso: ""
+  notes_ar: >-
+    راجع أسبوعياً حقول human_assignee_name لكل OS؛ حدّث last_ownership_matrix_review_iso بعد المراجعة.
+    عند التوظيف استبدل العنصر النائب «Sami Alsubaiei (founder)» بالاسم الدائم وحدّث human_assignee_notes_ar.
+os_ownership:
+  strategy:
+    primary_owner: chief_strategy_officer
+    backup_owner: category_strategy_manager
+    escalation_owner: founder
+    human_assignee_name: Sami Alsubaiei (founder)
+    human_assignee_notes_ar: مسؤولية المؤسس التشغيلية؛ حدّث عند تعيين مالك لكل OS
+  product:
+    primary_owner: product_os_owner
+    backup_owner: platform_product_manager
+    escalation_owner: founder
+    human_assignee_name: Sami Alsubaiei (founder)
+    human_assignee_notes_ar: مسؤولية مؤقتة للمؤسس إلى حين توظيف المالك الدائم
+  trust:
+    primary_owner: governance_runtime_owner
+    backup_owner: approval_center_owner
+    escalation_owner: founder
+    human_assignee_name: Sami Alsubaiei (founder)
+    human_assignee_notes_ar: مسؤولية مؤقتة للمؤسس إلى حين توظيف المالك الدائم
+  platform:
+    primary_owner: enterprise_control_plane_owner
+    backup_owner: runtime_architecture_owner
+    escalation_owner: founder
+    human_assignee_name: Sami Alsubaiei (founder)
+    human_assignee_notes_ar: مسؤولية مؤقتة للمؤسس إلى حين توظيف المالك الدائم
+  observability:
+    primary_owner: observability_owner
+    backup_owner: sre_owner
+    escalation_owner: enterprise_control_plane_owner
+    human_assignee_name: Sami Alsubaiei (founder)
+    human_assignee_notes_ar: مسؤولية مؤقتة للمؤسس إلى حين توظيف المالك الدائم
+  reliability:
+    primary_owner: runtime_safety_owner
+    backup_owner: incident_response_owner
+    escalation_owner: enterprise_control_plane_owner
+    human_assignee_name: Sami Alsubaiei (founder)
+    human_assignee_notes_ar: مسؤولية مؤقتة للمؤسس إلى حين توظيف المالك الدائم
+  gtm:
+    primary_owner: founder_sales_owner
+    backup_owner: enterprise_sales_lead
+    escalation_owner: founder
+    human_assignee_name: Sami Alsubaiei (founder)
+    human_assignee_notes_ar: مسؤولية مؤقتة للمؤسس إلى حين توظيف المالك الدائم
+  finance:
+    primary_owner: operating_finance_owner
+    backup_owner: revenue_operations_owner
+    escalation_owner: founder
+    human_assignee_name: Sami Alsubaiei (founder)
+    human_assignee_notes_ar: مسؤولية مؤقتة للمؤسس إلى حين توظيف المالك الدائم
+  delivery:
+    primary_owner: delivery_factory_owner
+    backup_owner: service_sessions_owner
+    escalation_owner: founder
+    human_assignee_name: Sami Alsubaiei (founder)
+    human_assignee_notes_ar: مسؤولية مؤقتة للمؤسس إلى حين توظيف المالك الدائم
+  people_ops:
+    primary_owner: operating_system_chief
+    backup_owner: talent_ops_lead
+    escalation_owner: founder
+    human_assignee_name: Sami Alsubaiei (founder)
+    human_assignee_notes_ar: مسؤولية مؤقتة للمؤسس إلى حين توظيف المالك الدائم
+  control_plane:
+    primary_owner: enterprise_control_plane_owner
+    backup_owner: governance_runtime_owner
+    escalation_owner: founder
+    human_assignee_name: Sami Alsubaiei (founder)
+    human_assignee_notes_ar: مسؤول عن approval_cycle_time_hours وتذاكر التحكم
+  value:
+    primary_owner: operating_finance_owner
+    backup_owner: delivery_factory_owner
+    escalation_owner: founder
+    human_assignee_name: Sami Alsubaiei (founder)
+    human_assignee_notes_ar: مسؤول عن قيمة العميل المثبتة والمراجع المصدرية

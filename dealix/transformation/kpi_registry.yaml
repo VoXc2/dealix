@@ -1,0 +1,124 @@
+version: 2
+program: global_ai_transformation
+kpis:
+  north_star:
+    - key: measured_customer_value_sar
+      definition: Total source-backed measured customer value in SAR
+      owner_os: value
+      target_direction: up
+      evidence:
+        primary_source: postgres:value_metrics ledger + proof Architecture value events
+        weekly_proof_fields:
+          - total_measured_value_sar
+          - pct_events_with_source_ref
+          - top_accounts_by_realized_value
+        verification_commands:
+          - pytest tests/test_value_engine_source_discipline.py -q
+    - key: governance_integrity_rate
+      definition: Ratio of high-risk actions that respected approval policy
+      owner_os: trust
+      target_direction: up
+      evidence:
+        primary_source: approval_tickets + control_events tables / in-memory parity tests
+        weekly_proof_fields:
+          - high_risk_actions_total
+          - approved_before_execute_pct
+          - approval_cycle_time_hours_median
+        verification_commands:
+          - pytest tests/test_enterprise_control_plane_e2e.py -q
+    - key: reliability_posture_score
+      definition: Composite service reliability and drill readiness score
+      owner_os: reliability
+      target_direction: up
+      evidence:
+        primary_source: reliability_drills.yaml + mission_critical_program scoring + SLO reviews
+        weekly_proof_fields:
+          - drill_pass_matrix
+          - open_slo_breaches
+          - incident_count_severity
+        verification_commands:
+          - python3 scripts/verify_global_ai_transformation.py --check-reliability
+    - key: expansion_quality_ratio
+      definition: Expansion revenue sourced from proof-backed outcomes
+      owner_os: sales
+      target_direction: up
+      evidence:
+        primary_source: CRM notes + proof packs + revenue_os anti-waste checks
+        weekly_proof_fields:
+          - expansion_pipeline_count
+          - pct_with_proof_pack_link
+          - expansion_forecast_sar
+        verification_commands:
+          - bash scripts/revenue_os_master_verify.sh
+  leading:
+    - key: time_to_proof_days
+      owner_os: delivery
+      target_direction: down
+      evidence:
+        primary_source: delivery control tower snapshots + engagement milestones
+        weekly_proof_fields:
+          - engagements_active
+          - median_days_to_first_proof
+          - blocked_engagements
+        verification_commands:
+          - python3 -c "from dealix.execution.weekly_cross_os_snapshot import weekly_cross_os_snapshot; print(weekly_cross_os_snapshot().ltv_sar)"
+    - key: approval_cycle_time_hours
+      owner_os: control_plane
+      target_direction: down
+      evidence:
+        primary_source: approval_tickets timestamps + human_ai oversight queue exports
+        weekly_proof_fields:
+          - median_hours_open
+          - tickets_open_gt_48h
+        verification_commands:
+          - pytest tests/test_control_plane_rollback_flow.py -q
+    - key: conversion_discovery_to_pilot
+      owner_os: gtm
+      target_direction: up
+      evidence:
+        primary_source: CRM stage transitions + pilot checklist completion (enterprise_package)
+        weekly_proof_fields:
+          - discovery_meetings
+          - pilots_signed
+          - lost_reasons_top3
+        verification_commands:
+          - python3 scripts/verify_global_ai_transformation.py --check-enterprise-package
+    - key: gross_margin_by_offer
+      owner_os: finance
+      target_direction: up
+      evidence:
+        primary_source: finance ledger + lifecycle_unit_economics snapshots
+        weekly_proof_fields:
+          - margin_pct_by_offer_line
+          - contribution_sar_by_offer_line
+        verification_commands:
+          - pytest tests/test_global_ai_transformation.py -q
+  guardrails:
+    - key: unauthorized_external_action_count
+      threshold: 0
+      owner_os: trust
+      evidence:
+        primary_source: runtime_decision escalations + outbound draft-only enforcement logs
+        weekly_proof_fields:
+          - violations_detected
+          - corrective_actions
+        verification_commands:
+          - pytest tests/test_assurance_contracts_enterprise_rules.py -q
+    - key: measured_metric_without_source_ref_count
+      threshold: 0
+      owner_os: value
+      evidence:
+        primary_source: value metric writes + contract_trace_hook events
+        weekly_proof_fields:
+          - invalid_metric_writes
+        verification_commands:
+          - pytest tests/test_value_engine_source_discipline.py -q
+    - key: tenant_isolation_violation_count
+      threshold: 0
+      owner_os: platform
+      evidence:
+        primary_source: tenant isolation tests + Postgres query audits
+        weekly_proof_fields:
+          - cross_tenant_attempts_blocked
+        verification_commands:
+          - pytest tests/test_tenant_isolation_systems_26_35.py -q

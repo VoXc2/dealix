@@ -1,0 +1,4 @@
+*.md
+!gap_closure_*.md
+!session_report_*.md
+!.gitkeep

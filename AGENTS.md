@@ -31,7 +31,7 @@ APP_ENV=development uvicorn api.main:app --host 0.0.0.0 --port 8000 --reload
 
 ### Operational caveats (still important)
 
-- **Alembic**: migration graph includes merge revision `006` (joins `005` + `0001`) and continues to **`009` as the expected single head**. CI runs `python scripts/check_alembic_single_head.py`. Run `alembic heads` before production `upgrade head`; if a future PR introduces multiple heads, add another merge revision (see [docs/ops/ALEMBIC_MIGRATION_POLICY.md](docs/ops/ALEMBIC_MIGRATION_POLICY.md)).
+- **Alembic**: migration graph includes merge revision `006` (joins `005` + `0001`) and later enterprise revisions. **CI enforces a single Alembic head** via `python scripts/check_alembic_single_head.py` (from repo root). Run `alembic heads` before production `upgrade head`; if multiple heads appear, add a merge revision (see [docs/ops/ALEMBIC_MIGRATION_POLICY.md](docs/ops/ALEMBIC_MIGRATION_POLICY.md)).
 - **`get_default_store(backend="postgres")`**: uses [`auto_client_acquisition/revenue_memory/isolated_pg_event_store.py`](auto_client_acquisition/revenue_memory/isolated_pg_event_store.py) — a **dedicated worker thread + separate async engine** (same `DATABASE_URL`) so `Orchestrator`, `append_event()`, and sync `store.append()` callers stay safe. The main app’s `db.session` pool remains separate (**two async pools** to the same DB when the worker is active — budget connections; see module docstring).
 - **Lint (ruff/black)**: Large pre-existing drift; not API correctness gates.
 
@@ -40,6 +40,13 @@ APP_ENV=development uvicorn api.main:app --host 0.0.0.0 --port 8000 --reload
 - [docs/SECURITY_RUNBOOK.md](docs/SECURITY_RUNBOOK.md) — استجابة الحوادث والأسرار
 - [docs/SLO.md](docs/SLO.md) — أهداف التوفر والزمن
 - [docs/ON_CALL.md](docs/ON_CALL.md) — تغطية الطوارئ
+
+### Global AI transformation (CEO / operating spine)
+
+- Weekly executive checklist: `bash scripts/run_executive_weekly_checklist.sh` (proof pack + `verify_global_ai_transformation.py` + audit log; syncs `weekly_ops.last_checklist_run_iso` when PASS).
+- **One-session full readiness:** `bash scripts/run_ceo_one_session_readiness.sh` — checklist + platform KPI signals + pre-scale gates + full verify + session report (see [CEO_ONE_SESSION_MASTER_PLAN_AR.md](docs/transformation/CEO_ONE_SESSION_MASTER_PLAN_AR.md)).
+- Readiness helper (defaults to **transformation** when run with no args): `bash scripts/verify_ceo_signal_readiness.sh`
+- Doc map: [docs/transformation/README.md](docs/transformation/README.md) — Arabic operating SOP: [docs/transformation/EXECUTIVE_OPERATING_CHECKLIST_AR.md](docs/transformation/EXECUTIVE_OPERATING_CHECKLIST_AR.md)
 
 ### Environment — frontend API URL
 
@@ -54,7 +61,7 @@ APP_ENV=test pytest -v
 The full test suite has 500+ test files; full runs take ~15–20 minutes. Quick regression bundle:
 
 ```bash
-pytest tests/test_pg_event_store.py tests/test_model_router.py tests/test_integrations.py tests/test_v5_layers.py tests/unit/test_compliance_os.py tests/test_isolated_pg_event_store.py tests/test_saudi_targeting_profile.py tests/test_leads_batch_router.py tests/test_strategy_os_scoring.py tests/test_strategy_os_ai_readiness.py tests/test_data_os_quality.py tests/test_governance_os_draft_gate.py tests/test_delivery_os_framework.py tests/test_commercial_engagements_lead_intelligence.py tests/test_commercial_engagements_support_desk.py tests/test_commercial_engagements_quick_win_ops.py tests/test_commercial_roadmap_mvp.py tests/test_service_readiness_score.py tests/test_readiness_gates.py -q --no-cov
+pytest tests/test_pg_event_store.py tests/test_model_router.py tests/test_integrations.py tests/test_v5_layers.py tests/unit/test_compliance_os.py tests/test_isolated_pg_event_store.py tests/test_saudi_targeting_profile.py tests/test_leads_batch_router.py tests/test_strategy_os_scoring.py tests/test_strategy_os_ai_readiness.py tests/test_data_os_quality.py tests/test_governance_os_draft_gate.py tests/test_delivery_os_framework.py tests/test_commercial_engagements_lead_intelligence.py tests/test_commercial_engagements_support_desk.py tests/test_commercial_engagements_quick_win_ops.py tests/test_commercial_roadmap_mvp.py tests/test_service_readiness_score.py tests/test_readiness_gates.py tests/test_db_sync_url.py tests/test_sync_weekly_ops_from_checklist_log.py tests/test_workflow_control_registry.py tests/test_populate_kpi_baselines_platform_signals.py -q --no-cov
 ```
 
 `tests/test_revenue_os_catalog.py` (included in `scripts/revenue_os_master_verify.sh`) imports the FastAPI app stack and **requires optional deps from `requirements.txt`** (notably **`pyotp`**). Run `pip install -r requirements.txt` before that script or the catalog test locally.

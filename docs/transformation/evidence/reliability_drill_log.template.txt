@@ -1,0 +1,15 @@
+Reliability drill execution log (template)
+==========================================
+
+Drill name:
+Date (UTC):
+Owner OS:
+Participants:
+
+Evidence links (runbook / ticket / test output):
+-
+
+Scorecard reference: python3 scripts/reliability_drills_scorecard.py
+
+Notes:
+- Scorecard output is a schedule/reminder only; this file (or linked logs) proves the drill was executed.

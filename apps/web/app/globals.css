@@ -1,0 +1,30 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Inter, "IBM Plex Sans Arabic", system-ui, -apple-system, sans-serif;
+  background: #f4f6fb;
+  color: #0f172a;
+}
+
+a {
+  color: inherit;
+}
+
+main {
+  padding: 24px;
+}
+
+.card {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 16px;
+}
+
+.grid {
+  display: grid;
+  gap: 16px;
+}

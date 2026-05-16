@@ -1,7 +1,9 @@
 """Data OS — tabular quality, preview, validation, PII hints, source coverage."""
 
 from auto_client_acquisition.data_os.data_quality_score import (
+    DataQualityScore,
     account_row_completeness,
+    compute_dq,
     duplicate_ratio_by_field,
     mean_completeness,
     summarize_table_quality,
@@ -35,9 +37,11 @@ from auto_client_acquisition.data_os.validation_rules import validate_account_ro
 
 __all__ = [
     "DedupeHint",
+    "DataQualityScore",
     "account_row_completeness",
     "column_name_suggests_pii",
     "SourcePassport",
+    "compute_dq",
     "duplicate_ratio_by_field",
     "governance_decision_hints_for_passport_gate",
     "import_preview_csv",

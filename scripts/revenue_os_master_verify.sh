@@ -23,7 +23,9 @@ NO_FAKE_PROOF=pass
 NO_FAKE_REVENUE=pass
 
 echo "== ruff (revenue_os spine) =="
-if ! command -v ruff >/dev/null 2>&1; then
+if [[ "${DEALIX_SKIP_RUFF:-0}" == "1" ]]; then
+  echo "ruff skipped by DEALIX_SKIP_RUFF=1"
+elif ! command -v ruff >/dev/null 2>&1; then
   echo "ruff not installed — skip"
   REVENUE_INTELLIGENCE=partial
 else

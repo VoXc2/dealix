@@ -1,0 +1,63 @@
+version: 1
+program: global_ai_transformation
+todos:
+  - id: doctrine-lock
+    owner_os: strategy
+    owner_role: chief_product_strategy
+    deliverable: docs/transformation/01_doctrine_lock.md
+    verification: python3 scripts/verify_global_ai_transformation.py --check doctrine-lock
+  - id: gap-closure
+    owner_os: platform
+    owner_role: enterprise_control_plane_owner
+    deliverable: docs/transformation/02_gap_closure_matrix.md
+    verification: python3 scripts/verify_global_ai_transformation.py --check gap-closure
+  - id: enterprise-package
+    owner_os: gtm
+    owner_role: enterprise_sales_lead
+    deliverable: docs/transformation/03_enterprise_package.md
+    verification: python3 scripts/verify_global_ai_transformation.py --check enterprise-package
+  - id: governance-expansion
+    owner_os: trust
+    owner_role: governance_runtime_owner
+    deliverable: docs/transformation/04_governance_expansion.md
+    verification: python3 scripts/verify_global_ai_transformation.py --check governance-expansion
+  - id: data-flywheel
+    owner_os: data
+    owner_role: revenue_intelligence_owner
+    deliverable: docs/transformation/05_data_flywheel_operationalization.md
+    verification: python3 scripts/verify_global_ai_transformation.py --check data-flywheel
+  - id: reliability-program
+    owner_os: reliability
+    owner_role: runtime_safety_owner
+    deliverable: docs/transformation/06_reliability_program.md
+    verification: python3 scripts/verify_global_ai_transformation.py --check reliability-program
+  - id: observability-contracts
+    owner_os: observability
+    owner_role: observability_owner
+    deliverable: docs/transformation/07_observability_contracts.md
+    verification: python3 scripts/verify_global_ai_transformation.py --check observability-contracts
+  - id: gtm-system
+    owner_os: sales
+    owner_role: founder_sales_owner
+    deliverable: docs/transformation/08_gtm_system_playbook.md
+    verification: python3 scripts/verify_global_ai_transformation.py --check gtm-system
+  - id: unit-economics
+    owner_os: finance
+    owner_role: operating_finance_owner
+    deliverable: docs/transformation/09_unit_economics_governance.md
+    verification: python3 scripts/verify_global_ai_transformation.py --check unit-economics
+  - id: delivery-control-tower
+    owner_os: delivery
+    owner_role: delivery_factory_owner
+    deliverable: docs/transformation/10_delivery_control_tower.md
+    verification: python3 scripts/verify_global_ai_transformation.py --check delivery-control-tower
+  - id: org-operating-system
+    owner_os: people_ops
+    owner_role: operating_system_chief
+    deliverable: docs/transformation/11_org_operating_system.md
+    verification: python3 scripts/verify_global_ai_transformation.py --check org-operating-system
+  - id: category-dominance
+    owner_os: strategy
+    owner_role: category_dominance_owner
+    deliverable: docs/transformation/12_category_dominance.md
+    verification: python3 scripts/verify_global_ai_transformation.py --check category-dominance

@@ -1,0 +1,35 @@
+version: 1
+reference_doc: docs/transformation/12_category_dominance.md
+# Regional / sector expansion may proceed only when ALL gates are satisfied (verified manually + CI helpers).
+gates:
+  - id: trust_guardrails_zero
+    metric_key: unauthorized_external_action_count
+    max_allowed: 0
+    verification_commands:
+      - bash scripts/verify_enterprise_control_plane.sh
+  - id: value_source_discipline_zero
+    metric_key: measured_metric_without_source_ref_count
+    max_allowed: 0
+    verification_commands:
+      - pytest tests/test_value_engine_source_discipline.py -q
+  - id: tenant_isolation_zero
+    metric_key: tenant_isolation_violation_count
+    max_allowed: 0
+    verification_commands:
+      - pytest tests/test_tenant_isolation_systems_26_35.py -q
+  - id: gross_margin_floor
+    metric_key: gross_margin_by_offer
+    min_pct: 35
+    notes: Use weekly finance snapshot; block expansion if below floor for flagship offer.
+    verification_commands:
+      - pytest tests/test_global_ai_transformation.py -q
+  - id: reliability_posture
+    metric_key: reliability_posture_score
+    min_score: 70
+    verification_commands:
+      - python3 scripts/verify_global_ai_transformation.py --check-reliability
+sectors:
+  - id: saudi_enterprise_default
+    region: SA
+    quality_bar: proof_pack_required
+    decision_passport_required: true

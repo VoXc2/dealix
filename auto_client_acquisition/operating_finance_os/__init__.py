@@ -48,6 +48,12 @@ from auto_client_acquisition.operating_finance_os.opportunity_cost import (
     opportunity_acceptance_ok,
 )
 from auto_client_acquisition.operating_finance_os.retainer_economics import RetainerEconomics
+from auto_client_acquisition.operating_finance_os.lifecycle_unit_economics import (
+    LifecycleEconomicsInputs,
+    LifecycleEconomicsSnapshot,
+    compute_lifecycle_economics,
+    margin_floor_violation,
+)
 
 __all__ = (
     "CAPITAL_REVIEW_OUTPUT_KEYS",
@@ -62,6 +68,8 @@ __all__ = (
     "OfferUnitEconomics",
     "OperatingBudgetStage",
     "RetainerEconomics",
+    "LifecycleEconomicsInputs",
+    "LifecycleEconomicsSnapshot",
     "capital_allocation_band",
     "capital_allocation_score",
     "capital_review_outputs_complete",
@@ -72,7 +80,9 @@ __all__ = (
     "investment_entry_complete",
     "good_revenue_green",
     "is_bad_revenue",
+    "compute_lifecycle_economics",
     "margin_percent_by_offer",
+    "margin_floor_violation",
     "margin_protection_action",
     "opportunity_acceptance_ok",
     "recommended_hire_focus",

@@ -24,6 +24,12 @@ from auto_client_acquisition.governance_os.runtime_decision import (
     governance_decision_from_passport_ai_gate,
     governance_decision_from_policy_check,
 )
+from auto_client_acquisition.governance_os.workflow_control_registry import (
+    ControlRule,
+    control_classes_for,
+    workflow_controls,
+    workflow_domain_is_governed,
+)
 from auto_client_acquisition.governance_os.forbidden_actions import (
     FORBIDDEN_CHANNEL_MARKERS,
     is_channel_forbidden,
@@ -53,4 +59,8 @@ __all__ = [
     "policy_check_draft",
     "policy_check_intake_source",
     "run_policy_check",
+    "ControlRule",
+    "control_classes_for",
+    "workflow_controls",
+    "workflow_domain_is_governed",
 ]

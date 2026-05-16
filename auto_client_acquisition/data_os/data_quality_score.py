@@ -98,15 +98,7 @@ def compute_dq(
     has_valid_passport: bool,
     required_keys: tuple[str, ...] = ("company_name", "sector", "city"),
 ) -> DataQualityScore:
-    """Compute a 0–100 Data Quality Score from real, deterministic metrics.
-
-    The score is a transparent weighted blend — no opaque heuristics:
-      * completeness       — mean share of required fields present.
-      * duplicate_inverse  — 1 minus the company-name duplicate ratio.
-      * format_consistency — share of structurally uniform rows.
-      * source_clarity     — source-field coverage; a valid Source Passport
-        documents provenance and floors this at 100.
-    """
+    """Compute a 0–100 Data Quality Score from real, deterministic metrics."""
     completeness = round(mean_completeness(rows, required_keys) * 100, 1)
     duplicate_inverse = round(
         (1.0 - duplicate_ratio_by_field(rows, "company_name")) * 100, 1,
@@ -127,3 +119,62 @@ def compute_dq(
         format_consistency=format_consistency,
         source_clarity=source_clarity,
     )
+
+
+def compute_dq_from_preview(
+    preview: Any,
+    *,
+    duplicates_found: int = 0,
+    source_passport: Any | None = None,
+) -> DataQualityScore:
+    """Legacy adapter for ImportPreview-style objects (flywheel, delivery sprint)."""
+    row_count = int(getattr(preview, "row_count", 0) or 0)
+    rows = list(getattr(preview, "rows", ()) or ())
+    columns = list(getattr(preview, "columns", ()) or getattr(preview, "detected_columns", ()) or [])
+    if not rows and hasattr(preview, "missing_pct"):
+        # ImportPreview dataclass path — no row bodies; approximate from metadata.
+        missing_pct = getattr(preview, "missing_pct", {}) or {}
+        if missing_pct:
+            avg_missing = sum(float(v) for v in missing_pct.values()) / len(missing_pct)
+            completeness = round(max(0.0, 100.0 - (avg_missing * 100.0)), 2)
+        elif row_count > 0:
+            completeness = 100.0
+        else:
+            completeness = 0.0
+        if row_count <= 0:
+            duplicate_inverse = 0.0
+        else:
+            duplicate_ratio = min(1.0, max(0.0, float(duplicates_found) / float(row_count)))
+            duplicate_inverse = round((1.0 - duplicate_ratio) * 100.0, 2)
+        format_consistency = 100.0 if row_count > 0 else 0.0
+        source_clarity = 100.0 if source_passport is not None else 70.0
+        overall = round(
+            (0.40 * completeness)
+            + (0.25 * duplicate_inverse)
+            + (0.20 * format_consistency)
+            + (0.15 * source_clarity),
+            2,
+        )
+        return DataQualityScore(
+            overall=overall,
+            completeness=completeness,
+            duplicate_inverse=duplicate_inverse,
+            format_consistency=format_consistency,
+            source_clarity=source_clarity,
+        )
+    return compute_dq(
+        rows,
+        columns=columns,
+        has_valid_passport=source_passport is not None,
+    )
+
+
+__all__ = [
+    "DataQualityScore",
+    "account_row_completeness",
+    "compute_dq",
+    "compute_dq_from_preview",
+    "duplicate_ratio_by_field",
+    "mean_completeness",
+    "summarize_table_quality",
+]
