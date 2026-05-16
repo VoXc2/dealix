@@ -1,5 +1,19 @@
 # Pricing Guide | دليل الأسعار
 
+> **⚠️ Canonical offer = the 5-rung ladder.** The current commercial offer
+> Dealix sells is the 5-rung ladder in
+> [`docs/OFFER_LADDER_AND_PRICING.md`](OFFER_LADDER_AND_PRICING.md) (Free
+> Diagnostic → 499 SAR Sprint → 1,500 SAR Pack → Managed Ops → Command Center →
+> Partner OS). This file is the *legacy custom-engagement* pricing reference for
+> bespoke consulting work; it is not the productized ladder. Rungs 3–5 of the
+> ladder are **founder-assisted / semi-automated** today — see that file's
+> delivery-mode disclosure.
+>
+> **Doctrine note:** any "automation" line item below (including WhatsApp) means
+> **approved, opt-in** messaging only. Cold WhatsApp automation, scraping, and
+> LinkedIn automation are forbidden by the non-negotiables and blocked at
+> runtime — they are never sold.
+
 ## 💰 Default pricing tiers
 
 All tiers are configurable via `.env` — see `PRICING_*` variables.
