@@ -14,8 +14,12 @@ from auto_client_acquisition.governance_os.policy_check import PolicyCheckResult
 # claims on what survives — so disclaimers ("لا نضمن", "no/without guarantee")
 # and refund guarantees ("نضمن استرجاع") are never mistaken for a claim.
 
-# Negated guarantee forms — a negator within a few words before "guarantee".
-_NEGATED_AR = re.compile(r"(?:لا|لن|لم|ما)\s*نضمن")
+# Negated guarantee forms — a negator within a few words before the guarantee
+# word, including multi-word constructions ("لا يمكننا أن نضمن", "we cannot
+# really guarantee").
+_NEGATED_AR = re.compile(
+    r"(?:لا|لن|لم|ما|بدون|دون)(?:\s+\S+){0,3}?\s*(?:نضمن|ضمان)"
+)
 _NEGATED_EN = re.compile(
     r"\b(?:no|not|never|without|cannot|can't|don't|won't|doesn't|wouldn't)"
     r"\s+(?:\w+\s+){0,3}?guarantee",
@@ -27,22 +31,27 @@ _REFUND_AR = re.compile(r"نضمن\s*استرجاع")
 
 _AR_OUTCOME = r"نتائج|نتيجة|مبيعات|أرباح|إيرادات|إيراد|عوائد|نمو|صفقات|عملاء"
 # Affirmative Arabic guarantee — the verb نضمن, an outcome noun paired with
-# the adjective مضمون or the noun ضمان, or the "ربح مؤكد" idiom.
+# the adjective مضمون or the noun ضمان (either order), or the "ربح مؤكد" idiom.
 _AFFIRMATIVE_GUARANTEE_AR = re.compile(
     rf"نضمن"
     rf"|(?:{_AR_OUTCOME})\s*مضمون"
     rf"|مضمون[ةه]?\s*(?:{_AR_OUTCOME})"
     rf"|ضمان\s*(?:{_AR_OUTCOME})"
+    rf"|(?:{_AR_OUTCOME})\s*ضمان"
     rf"|ربح\s*مؤكد"
 )
-# Affirmative English guarantee — verb/adjective near an outcome noun, or a
+_EN_OUTCOME = (
+    r"revenue|sales?|results?|roi|growth|deals?|leads?|customers?|"
+    r"conversions?|profit|income|outcomes?"
+)
+# Affirmative English guarantee — verb/adjective near an outcome noun in
+# EITHER order ("guarantee revenue" / "revenue is guaranteed"), or a
 # first-person promise.
 _AFFIRMATIVE_GUARANTEE_EN = re.compile(
-    r"guarantee[ds]?\b[\w%\s-]{0,20}?\b"
-    r"(revenue|sales?|results?|roi|growth|deals?|leads?|customers?|"
-    r"conversions?|profit|income|outcomes?)\b"
-    r"|\b(?:we|i)\s+guarantee\b"
-    r"|100\s*%?\s*guarantee[ds]?|guarantee[ds]?\s+100",
+    rf"guarantee[ds]?\b[\w%\s-]{{0,20}}?\b(?:{_EN_OUTCOME})\b"
+    rf"|\b(?:{_EN_OUTCOME})\b[\w%\s-]{{0,15}}?\bguarantee[ds]\b"
+    rf"|\b(?:we|i)\s+guarantee\b"
+    rf"|100\s*%?\s*guarantee[ds]?|guarantee[ds]?\s+100",
     re.IGNORECASE,
 )
 

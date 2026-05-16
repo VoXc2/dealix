@@ -95,7 +95,7 @@ COLD_WA=$(grep -rnEi "def [a-z_]*cold_?whatsapp|[a-z_]*cold_?whatsapp[a-z_]*\s*\
   --include="*.py" --include="*.js" --include="*.ts" --include="*.sh" \
   . 2>/dev/null \
   | grep -v "DEALIX_OPERATING_CONSTITUTION\|business_readiness_verify" \
-  | grep -viE "no_cold_whatsapp|test|refus|block|forbid|reject|assert|restrict" \
+  | grep -viE "no_cold_whatsapp|\btest|refus|block|forbid|reject|assert|restrict" \
   | cut -d: -f1 | sort -u || true)
 
 if [ -z "$COLD_WA" ]; then
@@ -134,19 +134,21 @@ echo ""
 # =============================================================================
 echo "--- SECTION 5: Hard Gate — NO_GUARANTEED_CLAIMS ---"
 
-# Check landing pages for guaranteed claims. Neutralize provably-negated
-# and refusal/quoted forms IN PLACE, then re-match — so a doctrine-compliant
-# disclaimer is dropped while a line that mixes a disclaimer with a real
-# affirmative claim still gets flagged (the negated part is removed, the
-# affirmative part survives the second match).
-GUARANTEED=$(grep -rnE "نضمن|guaranteed.*result|guarantee.*revenue|100% guaranteed|مضمون.*نتيجة" \
+# Check landing/marketing pages for affirmative guaranteed-outcome claims.
+# Approach: drop English negation lines, neutralize negated/refund Arabic
+# forms IN PLACE, then re-match — both word orders ("guaranteed results" /
+# "results guaranteed") are covered by the broad final pattern. terms.html
+# is skipped: a terms-of-service doc legitimately *enumerates* prohibited
+# guarantee claims, which is the opposite of marketing one.
+# Heuristic limits (this is a local hygiene gate, not a CI gate): a single
+# line mixing a negated and an affirmative Arabic claim may be over-stripped.
+GUARANTEED=$(grep -rnE "نضمن|مضمون|guarantee" \
   landing/ 2>/dev/null \
-  | sed -E 's/«[^»]*»/__QUOTED__/g' \
-  | sed -E 's/(لا|لن|لم|ما)[[:space:]]*نضمن/__NEG__/g' \
+  | grep -v "landing/terms.html" \
+  | grep -viE "no[[:space:]]+guarantee|not[[:space:]]+guarantee|never[[:space:]]+guarantee|without[[:space:]]+(any[[:space:]]+)?guarantee|seeking[[:space:]]+guarantee|needs evidence" \
+  | sed -E 's/(لا|لن|لم|ما|بدون|دون)([[:space:]]+[^[:space:]]+){0,4}[[:space:]]*(نضمن|ضمان|مضمون[ةه]?)/__NEG__/g' \
   | sed -E 's/نضمن[[:space:]]*استرجاع/__REFUND__/g' \
-  | sed -E 's/(no|not|never|without)[[:space:]]+guarantee[a-z]*/__NEG__/Ig' \
-  | sed -E 's/seeking[[:space:]]+guaranteed/__NEG__/Ig' \
-  | grep -E "نضمن|guaranteed.*result|guarantee.*revenue|100% guaranteed|مضمون.*نتيجة" \
+  | grep -E "نضمن|مضمون|guarantee[ds]" \
   | cut -d: -f1 | sort -u || true)
 
 if [ -z "$GUARANTEED" ]; then

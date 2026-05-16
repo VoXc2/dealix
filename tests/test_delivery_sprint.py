@@ -196,6 +196,8 @@ def test_step5_allows_negated_guarantee_disclaimer():
          "outline_en": "we do not guarantee results"},
         {"account": "B", "outline_ar": "نص آمن",
          "outline_en": "we work without guaranteed revenue promises"},
+        {"account": "C", "outline_ar": "لا يمكننا أن نضمن النتائج",
+         "outline_en": "safe note"},
     ]
     out = step5_governance_review(customer_id="x", engagement_id="e1", drafts=drafts)
     decisions = {r["decision"] for r in out["reviews"]}
@@ -203,13 +205,15 @@ def test_step5_allows_negated_guarantee_disclaimer():
 
 
 def test_step5_blocks_verb_form_guarantee_claims():
-    """Affirmative claims that don't start with "we" or use the adjective
-    form must still be blocked — no hard-gate bypass."""
+    """Affirmative claims — verb form, no leading "we", and reverse word
+    order ("results guaranteed") — must all be blocked, no hard-gate bypass."""
     drafts = [
         {"account": "A", "outline_ar": "نص آمن",
          "outline_en": "I guarantee revenue for you"},
         {"account": "B", "outline_ar": "نص آمن",
          "outline_en": "guarantee results in 30 days"},
+        {"account": "C", "outline_ar": "نص آمن",
+         "outline_en": "your sales are guaranteed with us"},
     ]
     out = step5_governance_review(customer_id="x", engagement_id="e1", drafts=drafts)
     assert all(r["decision"] == "block" for r in out["reviews"])
