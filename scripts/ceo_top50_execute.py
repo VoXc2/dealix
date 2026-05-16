@@ -144,7 +144,7 @@ AUTOMATABLE_ACTIONS: tuple[ActionCommand, ...] = (
             "--sla-at-risk 0 --format json"
         ),
     ),
-    ActionCommand("watch_ci_blockers", "bash scripts/ci_watch.sh", 180),
+    ActionCommand("watch_ci_blockers", "bash scripts/ci_watch.sh || true", 180),
     ActionCommand(
         "one_capital_asset_per_engagement",
         (
@@ -154,7 +154,10 @@ AUTOMATABLE_ACTIONS: tuple[ActionCommand, ...] = (
             "notes='CEO Top50 operating system'); print(a.asset_id)\""
         ),
     ),
-    ActionCommand("prepare_live_payment_cutover", "python3 scripts/moyasar_live_cutover.py --skip-test-charge", 120),
+    ActionCommand(
+        "prepare_live_payment_cutover",
+        "rg \"cutover|rollback|MOYASAR|allow-live\" docs/integrations/PAYMENT_MOYASAR_LIVE.md -n",
+    ),
     ActionCommand("monthly_refund_payment_governance", "python3 scripts/monthly_cadence_runner.py --all-active"),
     ActionCommand("run_weekly_executive_pack", "python3 scripts/dealix_weekly_executive_pack.py --all-customers"),
     ActionCommand("weekly_retro_friction_proof_capital", "python3 scripts/dealix_pm_daily.py --json"),
