@@ -8,6 +8,9 @@
 
 [`../sales/EXTERNAL_THREE_PROGRAMS_AR.md`](../sales/EXTERNAL_THREE_PROGRAMS_AR.md)
 
+المرجع التنفيذي المحدث للتموضع والسلم التجاري:
+[`../strategic/GOVERNED_REVENUE_AI_OPS_EXECUTION_AR.md`](../strategic/GOVERNED_REVENUE_AI_OPS_EXECUTION_AR.md)
+
 ## Grow Revenue
 
 - Revenue Diagnostic

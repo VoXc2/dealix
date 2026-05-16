@@ -7,6 +7,9 @@
 Dealix = ذكاء الإيرادات + تنفيذ تشغيلي + محرك إثبات + نجاح عميل + طبقة ثقة + حلقة تعلّم
 ```
 
+مرجع CEO/Board التنفيذي المختصر (positioning + gates + state machine):
+[`GOVERNED_REVENUE_AI_OPS_EXECUTION_AR.md`](GOVERNED_REVENUE_AI_OPS_EXECUTION_AR.md)
+
 ## السلسلة الذهبية
 
 ```text
