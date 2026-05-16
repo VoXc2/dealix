@@ -1,0 +1,112 @@
+version: 1
+program: ceo_board_operating_model
+positioning:
+  en: Governed Revenue & AI Operations
+  ar: تشغيل الإيراد والذكاء الاصطناعي بحوكمة، أدلة، وموافقات
+company_message:
+  en: >
+    Dealix helps companies turn AI experimentation and revenue operations
+    into governed, measurable workflows with source clarity, approval
+    boundaries, evidence trails, and proof of value.
+  ar: >
+    تساعد Dealix الشركات على تحويل تجارب الذكاء الاصطناعي وعمليات الإيراد
+    إلى تشغيل محكوم وقابل للقياس، عبر وضوح المصادر، حدود الموافقة،
+    مسارات الأدلة، وإثبات القيمة.
+
+north_star:
+  key: governed_value_decisions_created
+  definition: decisions with source + approval + evidence + measurable value
+
+golden_chain:
+  - signal
+  - source
+  - approval
+  - action
+  - evidence
+  - decision
+  - value
+  - asset
+
+go_to_market_model:
+  - service_led
+  - software_assisted
+  - evidence_first
+  - retainer_backed
+  - platform_later
+
+offer_ladder:
+  top_3_sales_sequence:
+    - governed_revenue_ops_diagnostic
+    - revenue_intelligence_sprint
+    - governed_ops_retainer
+  full_catalog:
+    - governed_revenue_ops_diagnostic
+    - revenue_intelligence_sprint
+    - governed_ops_retainer
+    - ai_governance_for_revenue_teams
+    - crm_data_readiness_for_ai
+    - board_decision_memo
+    - trust_pack_lite
+
+pricing_sar:
+  governed_revenue_ops_diagnostic:
+    min: 4999
+    max: 15000
+    enterprise_min: 15000
+    enterprise_max: 25000
+    unit: one_time
+  revenue_intelligence_sprint:
+    min: 25000
+    max: 25000
+    unit: one_time
+  governed_ops_retainer:
+    min: 4999
+    max: 15000
+    enterprise_min: 15000
+    enterprise_max: 35000
+    unit: per_month
+
+first_segments:
+  - b2b_services
+  - fintech_processors
+  - vc_portfolio
+
+state_machine:
+  prepared_not_sent: L2
+  sent: L4
+  replied_interested: L4
+  meeting_booked: L4
+  used_in_meeting: L5
+  scope_requested: L6
+  pilot_intro_requested: L6
+  invoice_sent: L7_candidate
+  invoice_paid: L7_confirmed
+rules:
+  - no_sent_without_founder_confirmed
+  - no_l5_without_used_in_meeting
+  - no_l6_without_scope_or_intro_request
+  - no_l7_confirmed_without_invoice_paid
+  - no_revenue_claim_before_invoice_paid
+
+decision_gates:
+  gate_1: first_market_proof
+  gate_2: meeting_proof
+  gate_3: pull_proof
+  gate_4: revenue_proof
+  gate_5: repeatability
+  gate_6: retainer
+  gate_7: platform_signal
+
+build_policy:
+  allow_when:
+    - explicit_customer_request
+    - workflow_repeated_3_times
+    - risk_reduction_required
+    - paid_delivery_acceleration
+    - clear_retainer_opening
+  default: no_build
+
+sales_execution:
+  first_batch_limit: 5
+  external_send_mode: manual_only
+  automation_policy: approval_first_no_autonomous_external_send

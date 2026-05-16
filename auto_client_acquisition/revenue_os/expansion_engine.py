@@ -24,26 +24,26 @@ def next_best_offer(
     base_note_ar = "لا upsell خارجي بدون Proof موثّق — اعتبر هذا اقتراحًا داخليًا فقط."
     base_note_en = "No external upsell without recorded proof — treat as internal suggestion."
 
-    offer_key = "managed_growth_ops"
-    offer_ar = "تشغيل نمو إداري شهرية"
-    offer_en = "Managed Growth Ops (monthly)"
+    offer_key = "governed_ops_retainer"
+    offer_ar = "ريتينر التشغيل المحكوم للإيراد"
+    offer_en = "Governed Ops Retainer"
 
     if any(k in pain for k in ("data", "crm", "sheet", "excel", "بيانات")):
-        offer_key = "data_to_revenue"
-        offer_ar = "حزمة من البيانات إلى الإيرادات"
-        offer_en = "Data-to-Revenue Pack"
+        offer_key = "crm_data_readiness_for_ai"
+        offer_ar = "جاهزية CRM والبيانات للذكاء الاصطناعي"
+        offer_en = "CRM / Data Readiness for AI"
     elif any(k in pain for k in ("support", "شكوى", "عملاء", "رد")):
-        offer_key = "support_os"
-        offer_ar = "نظام دعم وتذاكر خفيف"
-        offer_en = "Support OS"
+        offer_key = "ai_governance_revenue_teams"
+        offer_ar = "حوكمة الذكاء الاصطناعي لفرق الإيراد"
+        offer_en = "AI Governance for Revenue Teams"
     elif any(k in pain for k in ("report", "إدارة", "مجلس", "executive")):
-        offer_key = "executive_command_center"
-        offer_ar = "غرفة قيادة تنفيذية"
-        offer_en = "Executive Command Center"
+        offer_key = "board_decision_memo"
+        offer_ar = "مذكرة قرارات مجلس الإدارة"
+        offer_en = "Board Decision Memo"
     elif "agency" in sec or "وكالة" in (primary_pain_keyword or ""):
-        offer_key = "agency_partner_os"
-        offer_ar = "نظام شركاء الوكالات"
-        offer_en = "Agency Partner OS"
+        offer_key = "trust_pack_lite"
+        offer_ar = "حزمة الثقة الخفيفة"
+        offer_en = "Trust Pack Lite"
 
     mode = "suggest_only" if gated else "approval_required"
 

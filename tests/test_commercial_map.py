@@ -29,7 +29,8 @@ def test_each_offer_has_required_fields():
     body = client.get("/api/v1/commercial-map").json()
     required = {
         "service_id", "name_ar", "name_en", "price_sar", "price_unit",
-        "duration_days", "kpi_commitment_ar", "kpi_commitment_en",
+        "price_min_sar", "price_max_sar", "duration_days",
+        "target_segments", "trigger_signals", "kpi_commitment_ar", "kpi_commitment_en",
         "refund_policy_ar", "refund_policy_en", "deliverables",
         "action_modes_used", "non_negotiables_enforced", "wiring", "notes",
     }
@@ -86,20 +87,20 @@ def test_markdown_endpoint_is_bilingual():
         assert sid in body, f"markdown missing service_id={sid}"
 
 
-def test_referral_persistence_offer_links_to_partnership_module():
+def test_trust_pack_offer_links_to_trust_module():
     body = client.get("/api/v1/commercial-map").json()
     agency = next(o for o in body["offers"] if o["service_id"] == "agency_partner_os")
-    assert "partnership_os" in agency["wiring"]["delivery_module"]
+    assert "trust_os" in agency["wiring"]["delivery_module"]
 
 
-def test_growth_ops_links_to_workspace_endpoint():
+def test_growth_ops_links_to_board_decision_endpoint():
     body = client.get("/api/v1/commercial-map").json()
     growth = next(o for o in body["offers"] if o["service_id"] == "growth_ops_monthly_2999")
-    assert "workspace" in growth["wiring"]["delivery_endpoint"]
+    assert "board-decision-os/overview" in growth["wiring"]["delivery_endpoint"]
 
 
-def test_sprint_offer_links_to_sample_preview():
+def test_sprint_offer_links_to_revenue_os_sample_preview():
     body = client.get("/api/v1/commercial-map").json()
     sprint = next(o for o in body["offers"] if o["service_id"] == "revenue_proof_sprint_499")
-    assert sprint["wiring"]["sample_endpoint"] == "GET /api/v1/sprint/sample"
-    assert sprint["wiring"]["preview_url"] == "/sprint-sample.html"
+    assert sprint["wiring"]["sample_endpoint"] == "GET /api/v1/revenue-os/catalog"
+    assert sprint["wiring"]["preview_url"] == "/proof-pack-sample.html"

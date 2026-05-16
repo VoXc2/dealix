@@ -4,6 +4,7 @@ reference_plan_layer: 0
 operating_law: Event → classify → log → verify → decide → no-build unless signal
 
 external_events:
+  - prepared_not_sent
   - follow_up_sent
   - replied_interested
   - meeting_booked
@@ -33,9 +34,13 @@ weekly_targets:
   classify_every_external_touchpoint: true
   honest_classification_required: true
   fake_evidence_forbidden: true
+  first_batch_outreach_limit: 5
+  manual_external_send_only: true
 
 monthly_targets:
   partner_attempts_minimum: 3
+  diagnostic_to_sprint_target: 1
+  sprint_to_retainer_target: 1
   l5_meeting_utility_stretch: 1
   l6_market_pull_stretch: 1
 

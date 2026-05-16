@@ -1,4 +1,4 @@
-"""Commercial Map — Wave 14J.
+"""Commercial map — CEO/Board aligned service wiring.
 
 Single source of truth that maps every Dealix offer to:
   - landing page path
@@ -35,90 +35,90 @@ router = APIRouter(prefix="/api/v1/commercial-map", tags=["commercial-map"])
 _WIRING: dict[str, dict[str, Any]] = {
     "free_mini_diagnostic": {
         "landing_url": "/diagnostic.html",
-        "intake_endpoint": "POST /api/v1/company-growth-beast/diagnostic",
+        "intake_endpoint": "POST /api/v1/diagnostics",
         "lead_capture_endpoint": "POST /api/v1/public/demo-request",
-        "checkout_url": None,
-        "checkout_endpoint": None,
-        "delivery_module": "founder reviews via /api/v1/founder/leads",
-        "delivery_endpoint": "GET /api/v1/founder/leads",
-        "proof_endpoint": "auto_client_acquisition/email/transactional.send_transactional(kind=diagnostic_intake_confirmation)",
-        "founder_surface": "/founder-leads.html",
+        "checkout_url": "founder-issued",
+        "checkout_endpoint": "POST /api/v1/payment-ops/invoice-intent",
+        "delivery_module": "auto_client_acquisition.diagnostic_engine",
+        "delivery_endpoint": "POST /api/v1/revenue-ops/diagnostics",
+        "proof_endpoint": "GET /api/v1/decision-passport/golden-chain",
+        "founder_surface": "/founder-command-center.html",
         "next_offer": "revenue_proof_sprint_499",
     },
     "revenue_proof_sprint_499": {
-        "landing_url": "/start.html",
-        "preview_url": "/sprint-sample.html",
-        "intake_endpoint": "POST /api/v1/service-setup/qualify",
+        "landing_url": "/revenue-intelligence-sprint.html",
+        "preview_url": "/proof-pack-sample.html",
+        "intake_endpoint": "POST /api/v1/revenue-ops/diagnostics",
         "proposal_endpoint": "POST /api/v1/service-setup/proposal/{customer_id}",
-        "checkout_url": "/checkout.html?tier=sprint",
+        "checkout_url": "founder-issued",
         "checkout_endpoint": "POST /api/v1/payment-ops/invoice-intent",
-        "delivery_module": "auto_client_acquisition.delivery_factory.delivery_sprint.run_sprint",
-        "delivery_endpoint": "POST /api/v1/sprint/run",
-        "sample_endpoint": "GET /api/v1/sprint/sample",
-        "proof_endpoint": "auto_client_acquisition.proof_os.proof_pack.assemble",
-        "case_safe_endpoint": "GET /api/v1/proof-to-market/case-safe/{engagement_id}",
-        "founder_surface": "/founder-dashboard.html",
+        "delivery_module": "auto_client_acquisition.delivery_factory.delivery_sprint",
+        "delivery_endpoint": "POST /api/v1/revenue-ops/score",
+        "sample_endpoint": "GET /api/v1/revenue-os/catalog",
+        "proof_endpoint": "POST /api/v1/evidence/events",
+        "case_safe_endpoint": "GET /api/v1/revenue-ops/{id}/decision-passport",
+        "founder_surface": "/revenue-ops-console.html",
         "next_offer": "growth_ops_monthly_2999",
     },
     "data_to_revenue_pack_1500": {
-        "landing_url": "/data-pack.html",
-        "intake_endpoint": "POST /api/v1/data-os/import-preview/upload",
+        "landing_url": "/data-readiness.html",
+        "intake_endpoint": "POST /api/v1/revenue-ops/upload",
         "preview_endpoint": "POST /api/v1/data-os/import-preview",
-        "checkout_url": "/checkout.html?tier=data_pack",
+        "checkout_url": "founder-issued",
         "checkout_endpoint": "POST /api/v1/payment-ops/invoice-intent",
-        "delivery_module": "auto_client_acquisition.data_os + auto_client_acquisition.delivery_factory.delivery_sprint",
-        "delivery_endpoint": "POST /api/v1/sprint/run",
-        "proof_endpoint": "auto_client_acquisition.proof_os.proof_pack.assemble",
-        "founder_surface": "/founder-dashboard.html",
+        "delivery_module": "auto_client_acquisition.data_os",
+        "delivery_endpoint": "POST /api/v1/revenue-ops/upload",
+        "proof_endpoint": "POST /api/v1/evidence/events",
+        "founder_surface": "/revenue-ops-console.html",
         "next_offer": "growth_ops_monthly_2999",
     },
     "growth_ops_monthly_2999": {
-        "landing_url": "/pricing.html#growth",
+        "landing_url": "/governed-ops-retainer.html",
         "intake_endpoint": "POST /api/v1/service-setup/qualify",
         "proposal_endpoint": "POST /api/v1/service-setup/proposal/{customer_id}",
-        "checkout_url": "/checkout.html?tier=growth",
+        "checkout_url": "founder-issued",
         "checkout_endpoint": "POST /api/v1/payment-ops/invoice-intent",
-        "delivery_module": "scripts/weekly_brief_runner.py + scripts/monthly_cadence_runner.py",
-        "delivery_endpoint": "GET /api/v1/customer-portal/{handle}/workspace",
-        "proof_endpoint": "GET /api/v1/value/{handle}/report/monthly",
+        "delivery_module": "auto_client_acquisition.reporting_os + board_decision_os",
+        "delivery_endpoint": "GET /api/v1/board-decision-os/overview",
+        "proof_endpoint": "POST /api/v1/evidence/events",
         "adoption_endpoint": "GET /api/v1/customer-success/{handle}/adoption-score",
         "renewal_module": "auto_client_acquisition.payment_ops.renewal_scheduler",
-        "founder_surface": "/customer-portal.html?handle={customer}",
+        "founder_surface": "/founder-command-center.html",
         "next_offer": "executive_command_center_7500",
     },
     "support_os_addon_1500": {
-        "landing_url": "/services.html#support",
-        "intake_endpoint": "POST /api/v1/service-setup/qualify",
-        "checkout_url": "/checkout.html?tier=support_addon",
+        "landing_url": "/ai-governance-for-revenue.html",
+        "intake_endpoint": "POST /api/v1/approvals",
+        "checkout_url": "founder-issued",
         "checkout_endpoint": "POST /api/v1/payment-ops/invoice-intent",
-        "delivery_module": "auto_client_acquisition.support_os",
-        "delivery_endpoint": "GET /api/v1/support-os/*",
-        "proof_endpoint": "GET /api/v1/value/{handle}/report/monthly",
-        "founder_surface": "/founder-dashboard.html",
+        "delivery_module": "auto_client_acquisition.approval_center + responsible_ai_os",
+        "delivery_endpoint": "POST /api/v1/approvals",
+        "proof_endpoint": "POST /api/v1/evidence/events",
+        "founder_surface": "/approval-center.html",
         "next_offer": None,
     },
     "executive_command_center_7500": {
-        "landing_url": "/executive-command-center.html",
+        "landing_url": "/board-decision-memo.html",
         "intake_endpoint": "POST /api/v1/service-setup/requests",
         "checkout_url": "founder-issued",
         "checkout_endpoint": "POST /api/v1/payment-ops/invoice-intent",
-        "delivery_module": "auto_client_acquisition.executive_command_center",
-        "delivery_endpoint": "GET /api/v1/executive-command-center/*",
+        "delivery_module": "auto_client_acquisition.board_decision_os",
+        "delivery_endpoint": "GET /api/v1/board-decision-os/overview",
         "proof_endpoint": "GET /api/v1/audit/{handle}/control-graph/markdown",
         "trust_pack_endpoint": "GET /api/v1/value/trust-pack/{handle}/pdf",
-        "founder_surface": "/founder-dashboard.html",
+        "founder_surface": "/board-decision-os.html",
         "next_offer": None,
     },
     "agency_partner_os": {
-        "landing_url": "/agency-partner.html",
-        "intake_endpoint": "POST /api/v1/public/partner-application",
+        "landing_url": "/trust-pack-lite.html",
+        "intake_endpoint": "POST /api/v1/approvals",
         "checkout_url": "founder-issued",
-        "checkout_endpoint": None,
-        "delivery_module": "auto_client_acquisition.partnership_os.referral_store",
-        "delivery_endpoint": "POST /api/v1/referrals/create + /redeem + /{code}/convert",
-        "proof_endpoint": "GET /api/v1/founder/dashboard",
-        "covenant_doc": "docs/40_partners/PARTNER_COVENANT.md",
-        "founder_surface": "/founder-leads.html",
+        "checkout_endpoint": "POST /api/v1/payment-ops/invoice-intent",
+        "delivery_module": "auto_client_acquisition.trust_os.trust_pack",
+        "delivery_endpoint": "GET /api/v1/value/trust-pack/{handle}/pdf",
+        "proof_endpoint": "GET /api/v1/audit/{handle}/control-graph/markdown",
+        "covenant_doc": "docs/SECURITY_RUNBOOK.md",
+        "founder_surface": "/approval-center.html",
         "next_offer": None,
     },
 }
@@ -126,32 +126,32 @@ _WIRING: dict[str, dict[str, Any]] = {
 
 _OFFER_NOTES = {
     "free_mini_diagnostic": (
-        "Free 24h diagnostic — opens the funnel. Confirmation email auto-sent. "
-        "Founder reviews every intake within 24h."
+        "Entry offer for teams with AI/revenue drift. Produces source clarity, "
+        "decision passport, and a governed sprint recommendation."
     ),
     "revenue_proof_sprint_499": (
-        "First paid offer. 7 days. 10-step orchestrator. Proof Pack mandatory. "
-        "50% on acceptance, 50% on Proof Pack delivery. 14-day full refund."
+        "Core value offer. Converts diagnostic findings into prioritized accounts, "
+        "risk scoring, follow-up drafts, and proof-backed decisions."
     ),
     "data_to_revenue_pack_1500": (
-        "CSV upload → DQ score + cleaned + ranked. Live demo on /data-pack.html "
-        "via POST /api/v1/data-os/import-preview/upload. 14-day delivery."
+        "Data readiness guardrail for AI. Runs CRM hygiene + source mapping before "
+        "teams scale automation or outbound flows."
     ),
     "growth_ops_monthly_2999": (
-        "Retainer engine. Weekly brief + monthly value report + adoption score + "
-        "retainer readiness gate. Renewal auto-charge after 3 confirmed cycles."
+        "MRR engine. Monthly governed reviews for revenue, pipeline quality, AI "
+        "decisions, and board-facing value reports."
     ),
     "support_os_addon_1500": (
-        "Add-on to Growth. Ticket classification + suggested replies (draft_only). "
-        "SLA breach alerts. Sits inside the customer workspace."
+        "Policy package for teams using AI in revenue execution. Defines allowed "
+        "actions, forbidden actions, and approval boundaries."
     ),
     "executive_command_center_7500": (
-        "Founder/CEO surface. Daily founder brief (WhatsApp draft_only) + monthly "
-        "board pack. Includes Trust Pack PDF + Evidence Control Plane export."
+        "Board-facing synthesis of top revenue decisions, risks, and capital "
+        "allocation options tied to evidence."
     ),
     "agency_partner_os": (
-        "Channel offer. 5K SAR / closed deal + 30% commission first year. "
-        "Partner Covenant enforced: no unsafe automation, no guaranteed claims."
+        "Security/trust response pack sold on demand when buyers ask for policy, "
+        "controls, and safety boundaries."
     ),
 }
 
@@ -162,9 +162,13 @@ def _offer_to_dict(offering, wiring: dict[str, Any], notes: str) -> dict[str, An
         "name_ar": offering.name_ar,
         "name_en": offering.name_en,
         "price_sar": offering.price_sar,
+        "price_min_sar": offering.price_min_sar,
+        "price_max_sar": offering.price_max_sar,
         "price_unit": offering.price_unit,
         "duration_days": offering.duration_days,
         "customer_journey_stage": str(offering.customer_journey_stage),
+        "target_segments": list(offering.target_segments),
+        "trigger_signals": list(offering.trigger_signals),
         "kpi_commitment_ar": offering.kpi_commitment_ar,
         "kpi_commitment_en": offering.kpi_commitment_en,
         "refund_policy_ar": offering.refund_policy_ar,
@@ -229,8 +233,17 @@ async def commercial_map_markdown() -> str:
     for offer in payload["offers"]:
         lines.append(f"## {offer['name_en']} — {offer['name_ar']}")
         lines.append("")
-        if offer["price_unit"] == "custom":
-            price = "Custom (per partnership)"
+        min_price = offer.get("price_min_sar")
+        max_price = offer.get("price_max_sar")
+        if min_price is not None and max_price is not None and min_price != max_price:
+            if offer["price_unit"] == "per_month":
+                price = f"{int(min_price):,}–{int(max_price):,} SAR / month"
+            elif offer["price_unit"] == "custom":
+                price = f"{int(min_price):,}–{int(max_price):,} SAR (custom scope)"
+            else:
+                price = f"{int(min_price):,}–{int(max_price):,} SAR one-time"
+        elif offer["price_unit"] == "custom":
+            price = "Custom scope"
         elif offer["price_unit"] == "per_month":
             price = f"{int(offer['price_sar']):,} SAR / month"
         else:
@@ -239,6 +252,10 @@ async def commercial_map_markdown() -> str:
         lines.append(f"- **Price:** {price}")
         lines.append(f"- **Duration:** {offer['duration_days']} days")
         lines.append(f"- **Customer journey stage:** {offer['customer_journey_stage']}")
+        if offer["target_segments"]:
+            lines.append(f"- **Target segments:** {', '.join(offer['target_segments'])}")
+        if offer["trigger_signals"]:
+            lines.append(f"- **Trigger signals:** {', '.join(offer['trigger_signals'])}")
         lines.append("")
         if offer["notes"]:
             lines.append(f"_{offer['notes']}_")

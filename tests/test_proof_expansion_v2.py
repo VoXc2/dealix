@@ -273,11 +273,11 @@ def test_offer_mapping_5_pain_types() -> None:
         customer_health_bucket="expansion_ready", budget_tier_match_score=0.9,
     )
     pain_to_expected = {
-        "dormant_data": "data_to_revenue_pack",
-        "follow_up_gap": "managed_growth_ops",
-        "support_chaos": "support_os",
-        "executive_visibility": "executive_command_center",
-        "agency_proof_gap": "agency_partner_os",
+        "dormant_data": "crm_data_readiness_for_ai",
+        "follow_up_gap": "governed_ops_retainer",
+        "support_chaos": "ai_governance_revenue_teams",
+        "executive_visibility": "board_decision_memo",
+        "agency_proof_gap": "trust_pack_lite",
     }
     for pain, expected_offer in pain_to_expected.items():
         offer = recommend_next_offer(readiness=ready, primary_pain=pain)  # type: ignore[arg-type]
