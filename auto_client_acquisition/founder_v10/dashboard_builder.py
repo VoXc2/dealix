@@ -41,7 +41,12 @@ def build_dashboard_payload() -> dict[str, Any]:
     """Compose the founder dashboard payload using legacy section getters.
 
     Imports happen lazily so a missing optional module degrades cleanly.
+    The section getters are independent read-only aggregations, each
+    error-isolated by ``_safe_section`` — they are run concurrently so the
+    cold-cache build is bounded by the slowest section, not their sum.
     """
+    from concurrent.futures import ThreadPoolExecutor
+
     from api.routers.founder import (
         _ceo_brief_top,
         _daily_loop_summary,
@@ -55,54 +60,42 @@ def build_dashboard_payload() -> dict[str, Any]:
         _weekly_summary,
     )
 
-    degraded_sections: list[str] = []
+    degraded_sections: list[str] = []  # list.append is atomic under the GIL
 
-    services = _safe_section(
-        "services", _service_counts, default={}, degraded_sections=degraded_sections,
-    )
-    reliability = _safe_section(
-        "reliability", _reliability, default={}, degraded_sections=degraded_sections,
-    )
-    live_gates = _live_gates()  # already error-wrapped internally
-    daily_loop = _safe_section(
-        "daily_loop",
-        _daily_loop_summary,
-        default={},
-        degraded_sections=degraded_sections,
-    )
-    weekly_scorecard = _safe_section(
-        "weekly_scorecard",
-        _weekly_summary,
-        default={},
-        degraded_sections=degraded_sections,
-    )
-    ceo_brief = _safe_section(
-        "ceo_brief", _ceo_brief_top, default={}, degraded_sections=degraded_sections,
-    )
-    first_3_customers = _safe_section(
-        "first_3_customers",
-        _first_3_customers,
-        default={},
-        degraded_sections=degraded_sections,
-    )
-    pending_approvals = _safe_section(
-        "pending_approvals",
-        _pending_approvals,
-        default={"count": 0, "first_3": []},
-        degraded_sections=degraded_sections,
-    )
-    unsafe_blocks = _safe_section(
-        "unsafe_blocks",
-        _unsafe_blocks,
-        default={"count": 0, "names": []},
-        degraded_sections=degraded_sections,
-    )
-    next_founder_action = _safe_section(
-        "next_founder_action",
-        _next_founder_action,
-        default="no_action_today",
-        degraded_sections=degraded_sections,
-    )
+    # (payload key, getter, default-on-error)
+    section_specs: list[tuple[str, Callable[[], Any], Any]] = [
+        ("services", _service_counts, {}),
+        ("reliability", _reliability, {}),
+        ("daily_loop", _daily_loop_summary, {}),
+        ("weekly_scorecard", _weekly_summary, {}),
+        ("ceo_brief", _ceo_brief_top, {}),
+        ("first_3_customers", _first_3_customers, {}),
+        ("pending_approvals", _pending_approvals, {"count": 0, "first_3": []}),
+        ("unsafe_blocks", _unsafe_blocks, {"count": 0, "names": []}),
+        ("next_founder_action", _next_founder_action, "no_action_today"),
+    ]
+
+    with ThreadPoolExecutor(max_workers=len(section_specs) + 1) as pool:
+        section_futures = {
+            key: pool.submit(
+                _safe_section, key, fn,
+                default=default, degraded_sections=degraded_sections,
+            )
+            for key, fn, default in section_specs
+        }
+        live_gates_future = pool.submit(_live_gates)  # error-wrapped internally
+        section = {key: fut.result() for key, fut in section_futures.items()}
+        live_gates = live_gates_future.result()
+
+    services = section["services"]
+    reliability = section["reliability"]
+    daily_loop = section["daily_loop"]
+    weekly_scorecard = section["weekly_scorecard"]
+    ceo_brief = section["ceo_brief"]
+    first_3_customers = section["first_3_customers"]
+    pending_approvals = section["pending_approvals"]
+    unsafe_blocks = section["unsafe_blocks"]
+    next_founder_action = section["next_founder_action"]
 
     degraded = bool(degraded_sections)
     next_action_ar = (

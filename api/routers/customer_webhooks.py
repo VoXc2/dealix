@@ -175,6 +175,23 @@ async def subscribe_webhook(
     }
 
 
+@router.get("/_supported-events")
+async def list_supported_events() -> dict[str, Any]:
+    """Return the set of event types a customer may subscribe to.
+
+    Registered before ``/{handle}`` so the static path is not captured by
+    the dynamic tenant-handle route (which rejects the leading underscore).
+    """
+    return {
+        "event_types": sorted(SUPPORTED_EVENT_TYPES),
+        "signature_header": "X-Dealix-Signature",
+        "signature_algorithm": "HMAC-SHA256(secret, raw_body)",
+        "delivery_semantics": "at-least-once",
+        "retry_policy": "exponential backoff 5 attempts over 24 hours "
+                        "(deferred to follow-up commit)",
+    }
+
+
 @router.get("/{handle}")
 async def list_webhooks(
     handle: str = Path(..., pattern=r"^[a-z][a-z0-9_]{1,62}[a-z0-9]$"),
@@ -336,14 +353,3 @@ async def ping_subscription(
     }
 
 
-@router.get("/_supported-events")
-async def list_supported_events() -> dict[str, Any]:
-    """Return the set of event types a customer may subscribe to."""
-    return {
-        "event_types": sorted(SUPPORTED_EVENT_TYPES),
-        "signature_header": "X-Dealix-Signature",
-        "signature_algorithm": "HMAC-SHA256(secret, raw_body)",
-        "delivery_semantics": "at-least-once",
-        "retry_policy": "exponential backoff 5 attempts over 24 hours "
-                        "(deferred to follow-up commit)",
-    }

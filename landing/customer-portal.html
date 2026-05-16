@@ -737,7 +737,7 @@
 
 <!-- Wave 14J — Gap C — Live workspace fetch.
      Reads ?handle=<customer_handle> from URL, calls GET /api/v1/customer-portal/{handle}/workspace,
-     renders 10 panels. Estimated outcomes are not guaranteed outcomes / النتائج التقديرية ليست نتائج مضمونة. -->
+     renders 10 panels. Estimated outcomes are evidence-tracked, not promised outcomes / النتائج التقديرية موثّقة بالأدلة وليست نتائج موعودة. -->
 <script>
 (function(){
   var params = new URLSearchParams(window.location.search);
@@ -756,7 +756,7 @@
       });
       var wrap = document.createElement('section');
       wrap.style.cssText = 'margin:24px 0;padding:16px;border:1px solid var(--border,#444);border-radius:12px;';
-      wrap.innerHTML = '<h2>Workspace · مساحة العميل</h2><p>customer_handle = <code>' + handle + '</code></p>' + rows.join('') + '<p><em>Estimated outcomes are not guaranteed outcomes / النتائج التقديرية ليست نتائج مضمونة.</em></p>';
+      wrap.innerHTML = '<h2>Workspace · مساحة العميل</h2><p>customer_handle = <code>' + handle + '</code></p>' + rows.join('') + '<p><em>Estimated outcomes are evidence-tracked, not promised outcomes / النتائج التقديرية موثّقة بالأدلة وليست نتائج موعودة.</em></p>';
       container.appendChild(wrap);
     })
     .catch(function(err){

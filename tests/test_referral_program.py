@@ -5,6 +5,38 @@ import pytest
 
 ADMIN_HEADER = "X-Admin-API-Key"
 
+# Fixed code used by the verify/redeem/convert tests below. The referral
+# store generates random codes, so the tests that exercise an existing code
+# must seed this one explicitly into an isolated store.
+SEEDED_CODE = "REF-12345ABC"
+
+
+@pytest.fixture()
+def seeded_referral(tmp_path, monkeypatch):
+    """Isolate the referral store to a tmp dir and seed a known code."""
+    monkeypatch.setenv(
+        "DEALIX_REFERRAL_CODES_PATH", str(tmp_path / "codes.jsonl")
+    )
+    monkeypatch.setenv(
+        "DEALIX_REFERRALS_PATH", str(tmp_path / "refs.jsonl")
+    )
+    monkeypatch.setenv(
+        "DEALIX_REFERRAL_PAYOUTS_PATH", str(tmp_path / "payouts.jsonl")
+    )
+    from auto_client_acquisition.partnership_os import referral_store
+
+    code = referral_store.ReferralCode(
+        code=SEEDED_CODE,
+        referrer_id="acme_saas",
+        referrer_email_hash=referral_store._hash_email("founder@acme.sa"),
+    )
+    referral_store._append(
+        referral_store._codes_path(),
+        code.to_dict(),
+        stream_id="referral_store_codes",
+    )
+    return code
+
 
 @pytest.mark.asyncio
 async def test_program_terms_public_no_auth(async_client):
@@ -73,7 +105,7 @@ async def test_verify_code_validates_format(async_client):
 
 
 @pytest.mark.asyncio
-async def test_verify_code_returns_discount_terms(async_client):
+async def test_verify_code_returns_discount_terms(async_client, seeded_referral):
     res = await async_client.get("/api/v1/referrals/REF-12345ABC")
     assert res.status_code == 200
     body = res.json()
@@ -92,7 +124,7 @@ async def test_redeem_validates_inputs(async_client):
 
 
 @pytest.mark.asyncio
-async def test_redeem_success_returns_discount(async_client):
+async def test_redeem_success_returns_discount(async_client, seeded_referral):
     res = await async_client.post(
         "/api/v1/referrals/redeem",
         json={
@@ -115,8 +147,20 @@ async def test_convert_requires_admin(async_client):
 
 
 @pytest.mark.asyncio
-async def test_convert_returns_credit_amount(async_client, monkeypatch):
+async def test_convert_returns_credit_amount(
+    async_client, monkeypatch, seeded_referral
+):
     monkeypatch.setenv("ADMIN_API_KEYS", "test_admin_ref_convert")
+    # Convert requires a pending/redeemed referral for the code.
+    redeem = await async_client.post(
+        "/api/v1/referrals/redeem",
+        json={
+            "code": SEEDED_CODE,
+            "referred_email": "newcustomer@example.sa",
+            "referred_company": "New B2B Co",
+        },
+    )
+    assert redeem.status_code == 200
     res = await async_client.post(
         "/api/v1/referrals/REF-12345ABC/convert",
         headers={ADMIN_HEADER: "test_admin_ref_convert"},

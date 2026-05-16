@@ -182,7 +182,9 @@ class AuditLogMiddleware(BaseHTTPMiddleware):
         duration_ms = (time.perf_counter() - start) * 1000
 
         if is_personal_data_path:
-            api_key = request.headers.get("X-API-Key", "")
+            api_key = request.headers.get("X-API-Key", "") or request.query_params.get(
+                "api_key", ""
+            )
             # Use only a prefix of the key as tenant identifier — avoids
             # storing credential material in logs.
             tenant_id = api_key[:16] if api_key else "anonymous"

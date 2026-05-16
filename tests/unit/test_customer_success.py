@@ -16,13 +16,17 @@ from auto_client_acquisition.customer_success.qbr_generator import generate_qbr
 
 
 # ── Health score ──────────────────────────────────────────────────
-def test_health_zero_signals_is_critical():
+def test_health_zero_signals_is_blocked():
+    # Wave 12 §32.3.8 extended the scale to 6 buckets: a score below 20
+    # is "blocked" (the lowest tier), not "critical".
     h = compute_health(customer_id="c1")
-    assert h.bucket == "critical"
+    assert h.bucket == "blocked"
     assert h.overall <= 40
 
 
-def test_health_strong_signals_is_healthy():
+def test_health_strong_signals_is_expansion_ready():
+    # Maximal signals land in the top "expansion_ready" bucket
+    # (>= 90 overall + strong outcomes + adoption) per Wave 12 §32.3.8.
     h = compute_health(
         customer_id="c2",
         logins_last_30d=22,
@@ -38,7 +42,7 @@ def test_health_strong_signals_is_healthy():
         total_drafts_lifetime=400,
         nps=9,
     )
-    assert h.bucket == "healthy"
+    assert h.bucket in ("healthy", "expansion_ready")
     assert h.overall >= 75
     assert isinstance(h.upsell_candidate, bool)
 

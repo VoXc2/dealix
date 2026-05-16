@@ -96,7 +96,9 @@ def offset_from_cursor(cursor: str | None, limit: int) -> int:
     try:
         raw = base64.urlsafe_b64decode(cursor.encode() + b"==").decode()
         data = json.loads(raw)
-        return int(data.get("offset", 0))
+        # Clamp to >= 0: a tampered/malformed cursor must not yield a
+        # negative OFFSET (invalid on Postgres) — degrade to page one.
+        return max(0, int(data.get("offset", 0)))
     except Exception:  # noqa: BLE001
         return 0
 

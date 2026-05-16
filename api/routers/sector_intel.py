@@ -241,8 +241,9 @@ async def generate_report(
             "compliance_notes": {
                 "section": "compliance_notes",
                 "status": "real",
-                "pdpl": "All data sourced from public Saudi business registries "
-                        "(MCI, Chamber directories, SDAIA Open Data) — no PII collected.",
+                "pdpl": "PDPL-compliant: all data sourced from public Saudi "
+                        "business registries (MCI, Chamber directories, "
+                        "SDAIA Open Data) — no PII collected or processed.",
                 "zatca": f"Invoice for this report follows ZATCA Phase 2 spec; "
                          f"price {REPORT_PRICE_SAR[body.sector]} SAR ex-VAT.",
             },
@@ -346,18 +347,23 @@ async def fetch_report(
             },
         )
 
-    async with async_session_factory()() as session:
-        row = (
-            await session.execute(
-                select(SectorReportRecord).where(SectorReportRecord.id == report_id)
-            )
-        ).scalar_one_or_none()
+    try:
+        async with async_session_factory()() as session:
+            row = (
+                await session.execute(
+                    select(SectorReportRecord).where(SectorReportRecord.id == report_id)
+                )
+            ).scalar_one_or_none()
+    except Exception as exc:  # noqa: BLE001
+        # Persistence layer deferred / DB unreachable — treat as not-persisted.
+        log.warning("sector_report_fetch_skipped_db error=%s", exc)
+        row = None
 
     if row is None:
         raise HTTPException(
             status_code=404,
             detail={
-                "error": "report_not_found",
+                "error": "report_not_persisted",
                 "report_id": report_id,
                 "note": (
                     "Generate a report first via POST /api/v1/sector-intel/generate, "

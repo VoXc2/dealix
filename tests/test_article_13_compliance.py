@@ -66,6 +66,10 @@ ALLOWLIST_PATHS: list[str] = [
     # demo→delivery pipelines, NOT the bare receiving endpoint.
     "api/routers/webhooks.py",
     "api/security/webhook_signatures.py",
+    # Founder launch-status panel only *reports* whether CALENDLY_WEBHOOK_SECRET
+    # is set (a read-only env-var status field) — it builds no Calendly webhook
+    # handler. The forbidden-pattern regex over-matches the env-var name.
+    "api/routers/founder_launch_status.py",
 ]
 
 

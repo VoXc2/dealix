@@ -146,7 +146,6 @@ ALLOWLIST: dict[str, dict[str, str]] = {
     # "لا يبيع لك «نضمن نتائج»". Pure NEGATION throughout.
     "trust-center.html": {
         "scraping": "NEGATION",
-        "نضمن": "NEGATION",
     },
     # Agency Partner page (Tier-1 redesign) — agency-facing positioning
     # repeats the safety promise: "بدون cold WhatsApp" so partners can
@@ -157,10 +156,6 @@ ALLOWLIST: dict[str, dict[str, str]] = {
     # Homepage (Tier-1 redesign) — hero subheadline and #for-who NOT-FOR
     # list explicitly state "بدون cold WhatsApp ولا scraping" as part of
     # the safety promise. Pure NEGATION throughout.
-    "index.html": {
-        "cold": "NEGATION",
-        "scraping": "NEGATION",
-    },
     # Comparison pages (Track D3) — describe competitor mechanics
     # ("blast model", "cold sequences") explicitly as anti-patterns
     # Dealix rejects. Pure NEGATION context throughout.
@@ -170,6 +165,19 @@ ALLOWLIST: dict[str, dict[str, str]] = {
     "compare-salesloft.html": {
         "blast": "NEGATION",
         "cold": "NEGATION",
+    },
+    # Data Pack page — "السياسات · Policies" card explicitly states
+    # "صفر cold WhatsApp / LinkedIn" and "لا scraping. لا إرسال آلي."
+    # Pure NEGATION context (what Dealix does not do).
+    "data-pack.html": {
+        "cold": "NEGATION",
+        "scraping": "NEGATION",
+    },
+    # Roadmap page — "الأشياء التي رفضنا بناؤها" (things we refused to
+    # build) section lists "LinkedIn scraping automation — policy-blocked"
+    # as a rejected anti-pattern. Pure NEGATION context.
+    "roadmap.html": {
+        "scraping": "NEGATION",
     },
 }
 

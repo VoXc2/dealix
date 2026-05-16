@@ -42,7 +42,8 @@ def _safe_account_view(account: Any) -> dict[str, Any]:
     """Return only PDPL-safe public fields. No emails, no personal names."""
     return {
         "id": getattr(account, "id", None),
-        "name": getattr(account, "name", None),
+        "name": getattr(account, "name", None)
+        or getattr(account, "company_name", None),
         "domain": getattr(account, "domain", None),
         "sector": getattr(account, "industry", None) or getattr(account, "sector", None),
         "size_band": getattr(account, "size_band", None),
@@ -86,7 +87,7 @@ async def search_prospects(
     try:
         from sqlalchemy import func, or_, select
 
-        from db.models import CompanyRecord  # type: ignore
+        from db.models import AccountRecord  # type: ignore
         from db.session import async_session_factory
     except Exception:
         # Graceful degrade — surface empty results with hint
@@ -99,30 +100,37 @@ async def search_prospects(
         }
 
     async with async_session_factory()() as session:
-        stmt = select(CompanyRecord)
-        count_stmt = select(func.count()).select_from(CompanyRecord)
+        # Active rows only — soft-deleted accounts must not surface in
+        # a public search response (PDPL erasure / suppression workflow).
+        stmt = select(AccountRecord).where(AccountRecord.deleted_at.is_(None))
+        count_stmt = (
+            select(func.count())
+            .select_from(AccountRecord)
+            .where(AccountRecord.deleted_at.is_(None))
+        )
 
+        # Only sector/q map to real columns on AccountRecord. region and
+        # size_band are accepted + validated for the API contract but the
+        # canonical account table does not yet persist those attributes, so
+        # they are echoed back in filters_applied without a SQL predicate.
         if sector is not None:
-            stmt = stmt.where(CompanyRecord.industry == sector)
-            count_stmt = count_stmt.where(CompanyRecord.industry == sector)
+            stmt = stmt.where(AccountRecord.sector == sector)
+            count_stmt = count_stmt.where(AccountRecord.sector == sector)
         if region is not None:
-            stmt = stmt.where(CompanyRecord.region == region)
-            count_stmt = count_stmt.where(CompanyRecord.region == region)
-        if size_band is not None:
-            stmt = stmt.where(CompanyRecord.size_band == size_band)
-            count_stmt = count_stmt.where(CompanyRecord.size_band == size_band)
+            stmt = stmt.where(AccountRecord.city.ilike(f"%{region}%"))
+            count_stmt = count_stmt.where(AccountRecord.city.ilike(f"%{region}%"))
         if q:
             pattern = f"%{q}%"
             stmt = stmt.where(
-                or_(CompanyRecord.name.ilike(pattern),
-                    CompanyRecord.domain.ilike(pattern))
+                or_(AccountRecord.company_name.ilike(pattern),
+                    AccountRecord.domain.ilike(pattern))
             )
             count_stmt = count_stmt.where(
-                or_(CompanyRecord.name.ilike(pattern),
-                    CompanyRecord.domain.ilike(pattern))
+                or_(AccountRecord.company_name.ilike(pattern),
+                    AccountRecord.domain.ilike(pattern))
             )
 
-        stmt = stmt.order_by(CompanyRecord.name).limit(limit).offset(offset)
+        stmt = stmt.order_by(AccountRecord.company_name).limit(limit).offset(offset)
         try:
             rows = (await session.execute(stmt)).scalars().all()
             total = (await session.execute(count_stmt)).scalar() or 0
@@ -141,6 +149,11 @@ async def search_prospects(
         "filters_applied": {
             "sector": sector, "region": region, "size_band": size_band, "q": q,
         },
+        # size_band is validated + echoed for the API contract, but the
+        # canonical account table has no size column yet — so it is NOT a
+        # SQL predicate. Surface that explicitly so callers don't assume
+        # the result set was narrowed by it.
+        "unsupported_filters": ["size_band"] if size_band is not None else [],
         "pdpl_note": (
             "All fields above are public business registry attributes only. "
             "Contact PII (emails, phone numbers) is gated by PDPL Art. 5 consent."
