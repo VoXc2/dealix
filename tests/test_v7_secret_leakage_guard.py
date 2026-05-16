@@ -230,6 +230,8 @@ _PREFIX_ALLOWLIST: dict[str, str] = {
         "wave8 data-boundary check greps repo for the prefixes",
     "scripts/wave8_customer_ready_verify.sh":
         "wave8 customer-ready verify script greps repo for prefixes",
+    "docs/sales-kit/CUSTOMER_1_GO_LIVE_RUNBOOK.md":
+        "go-live runbook names the sk_live_ placeholder in founder policy copy",
 }
 
 
