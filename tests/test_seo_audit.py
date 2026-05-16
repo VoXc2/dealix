@@ -25,9 +25,11 @@ REPORT = REPO / "docs" / "SEO_AUDIT_REPORT.json"
 # full canonical + og:title + og:description + twitter:card. The
 # only exemptions are internal/noindex pages (e.g. the founder
 # dashboard) that should not be discoverable.
-ADVISORY_EXEMPT: set[str] = {
-    "founder-dashboard.html",  # noindex,nofollow — internal-only operator page
-}
+# The seo_audit script suppresses advisory checks for noindex / founder-only
+# pages via its own ADVISORY_ONLY_PAGES set, so no public page should carry an
+# advisory gap. This allowlist stays empty; add an entry only with an explicit
+# founder decision to defer OG/canonical tags for a specific page.
+ADVISORY_EXEMPT: set[str] = set()
 
 
 def _run_audit() -> dict:

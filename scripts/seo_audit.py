@@ -47,6 +47,7 @@ SKIP_PAGES = {
 # single-purpose readiness placeholders that carry noindex).
 ADVISORY_ONLY_PAGES = {
     "launch-readiness.html",
+    "launch-status.html",  # noindex,nofollow founder-only readiness board
     # Authenticated / noindex UIs (Track B + C of 30-day plan):
     "checkout.html",
     "checkout-success.html",

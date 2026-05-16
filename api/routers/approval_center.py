@@ -14,6 +14,7 @@ from __future__ import annotations
 from typing import Any
 
 from fastapi import APIRouter, Body, HTTPException, Query
+from pydantic import ValidationError
 
 from auto_client_acquisition.approval_center import (
     ApprovalRequest,

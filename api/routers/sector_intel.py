@@ -241,8 +241,9 @@ async def generate_report(
             "compliance_notes": {
                 "section": "compliance_notes",
                 "status": "real",
-                "pdpl": "All data sourced from public Saudi business registries "
-                        "(MCI, Chamber directories, SDAIA Open Data) — no PII collected.",
+                "pdpl": "PDPL-compliant: all data sourced from public Saudi "
+                        "business registries (MCI, Chamber directories, SDAIA "
+                        "Open Data) — no PII collected.",
                 "zatca": f"Invoice for this report follows ZATCA Phase 2 spec; "
                          f"price {REPORT_PRICE_SAR[body.sector]} SAR ex-VAT.",
             },
@@ -346,18 +347,38 @@ async def fetch_report(
             },
         )
 
-    async with async_session_factory()() as session:
-        row = (
-            await session.execute(
-                select(SectorReportRecord).where(SectorReportRecord.id == report_id)
-            )
-        ).scalar_one_or_none()
+    row = None
+    try:
+        async with async_session_factory()() as session:
+            row = (
+                await session.execute(
+                    select(SectorReportRecord).where(
+                        SectorReportRecord.id == report_id
+                    )
+                )
+            ).scalar_one_or_none()
+    except Exception as exc:
+        # Persistence is deferred (v4 §7): when the DB layer is unreachable
+        # or migration 008 is not yet applied, treat the report as
+        # not-yet-persisted rather than surfacing a connection error.
+        log.debug("sector_report_fetch_skipped reason=%s", exc)
+        raise HTTPException(
+            status_code=404,
+            detail={
+                "error": "report_not_persisted",
+                "report_id": report_id,
+                "note": (
+                    "Report persistence is deferred; generate a report via "
+                    "POST /api/v1/sector-intel/generate to obtain it inline."
+                ),
+            },
+        ) from None
 
     if row is None:
         raise HTTPException(
             status_code=404,
             detail={
-                "error": "report_not_found",
+                "error": "report_not_persisted",
                 "report_id": report_id,
                 "note": (
                     "Generate a report first via POST /api/v1/sector-intel/generate, "

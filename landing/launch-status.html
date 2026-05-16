@@ -107,7 +107,7 @@
     var friction = body.friction_last_14d || {};
 
     var cards = [
-      ['Healthcheck', '/healthz', body.healthcheck && body.healthcheck.ok, false, body.git && body.git.git_sha ? body.git.git_sha.slice(0,7) : ''],
+      ['Healthcheck', '/health', body.healthcheck && body.healthcheck.ok, false, body.git && body.git.git_sha ? body.git.git_sha.slice(0,7) : ''],
       ['Database', db.scheme || '—', db.configured, !db.configured && 'unset', db.scheme],
       ['Moyasar', moyasar.mode || '—', moyasar.mode === 'live', moyasar.mode === 'test', moyasar.key_prefix],
       ['ZATCA', zatca.mode || '—', zatca.mode === 'live' || zatca.mode === 'sandbox', zatca.mode === 'sandbox', zatca.csid_configured ? 'CSID set' : 'CSID missing'],

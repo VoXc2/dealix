@@ -66,6 +66,10 @@ ALLOWLIST_PATHS: list[str] = [
     # demo→delivery pipelines, NOT the bare receiving endpoint.
     "api/routers/webhooks.py",
     "api/security/webhook_signatures.py",
+    # Launch-readiness status endpoint — only reports whether the
+    # CALENDLY_WEBHOOK_SECRET env var is set (a bool). It builds no
+    # webhook handler; the receive-only stub lives in webhooks.py above.
+    "api/routers/founder_launch_status.py",
 ]
 
 

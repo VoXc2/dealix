@@ -8,6 +8,17 @@ set -uo pipefail
 
 cd "$(dirname "$0")/.."
 
+# Resolve a Python interpreter that has the test toolchain installed.
+# Prefer a project virtualenv; fall back to python3 on PATH.
+if [ -x ".venv/bin/python" ]; then
+  PY=".venv/bin/python"
+elif [ -n "${VIRTUAL_ENV:-}" ] && [ -x "${VIRTUAL_ENV}/bin/python" ]; then
+  PY="${VIRTUAL_ENV}/bin/python"
+else
+  PY="python3"
+fi
+export PY
+
 results=()
 overall_pass=true
 
@@ -23,51 +34,51 @@ run_check() {
 }
 
 echo "── Compile sanity ─────────────────────────────────────"
-run_check "COMPILEALL" "python3 -m compileall -q api auto_client_acquisition"
+run_check "COMPILEALL" "$PY -m compileall -q api auto_client_acquisition"
 
 echo "── Phase 2 — Adapter shim ─────────────────────────────"
-run_check "ADAPTERS" "python3 -m pytest tests/test_integration_upgrade_adapters.py -q --no-cov"
+run_check "ADAPTERS" "$PY -m pytest tests/test_integration_upgrade_adapters.py -q -o addopts="""
 
 echo "── Phase 3 — Unified Operating Graph ──────────────────"
-run_check "UNIFIED_OPERATING_GRAPH" "python3 -m pytest tests/test_unified_operating_graph.py -q --no-cov"
+run_check "UNIFIED_OPERATING_GRAPH" "$PY -m pytest tests/test_unified_operating_graph.py -q -o addopts="""
 
 echo "── Phase 4 — Full-Ops Score + Weakness Radar ──────────"
-run_check "FULL_OPS_SCORE" "python3 -m pytest tests/test_full_ops_radar_integration.py -q --no-cov"
-run_check "WEAKNESS_RADAR" "python3 -m pytest tests/test_weakness_radar_integration.py -q --no-cov"
+run_check "FULL_OPS_SCORE" "$PY -m pytest tests/test_full_ops_radar_integration.py -q -o addopts="""
+run_check "WEAKNESS_RADAR" "$PY -m pytest tests/test_weakness_radar_integration.py -q -o addopts="""
 
 echo "── Phase 5 — Executive Command Center API ─────────────"
-run_check "EXECUTIVE_COMMAND_CENTER" "python3 -m pytest tests/test_executive_command_center_integration.py -q --no-cov"
+run_check "EXECUTIVE_COMMAND_CENTER" "$PY -m pytest tests/test_executive_command_center_integration.py -q -o addopts="""
 
 echo "── Phase 6 — Executive Dashboard Frontend ─────────────"
-run_check "EXECUTIVE_DASHBOARD_FRONTEND" "python3 -m pytest tests/test_executive_dashboard_frontend_integration.py -q --no-cov"
+run_check "EXECUTIVE_DASHBOARD_FRONTEND" "$PY -m pytest tests/test_executive_dashboard_frontend_integration.py -q -o addopts="""
 
 echo "── Phase 7 — WhatsApp Decision Layer ──────────────────"
-run_check "WHATSAPP_DECISION" "python3 -m pytest tests/test_whatsapp_decision_layer_integration.py -q --no-cov"
+run_check "WHATSAPP_DECISION" "$PY -m pytest tests/test_whatsapp_decision_layer_integration.py -q -o addopts="""
 
 echo "── Phase 8 — Channel Policy Gateway ───────────────────"
-run_check "CHANNEL_POLICY" "python3 -m pytest tests/test_channel_policy_gateway_integration.py -q --no-cov"
+run_check "CHANNEL_POLICY" "$PY -m pytest tests/test_channel_policy_gateway_integration.py -q -o addopts="""
 
 echo "── Phase 9 — Radar Events ─────────────────────────────"
-run_check "RADAR_EVENTS" "python3 -m pytest tests/test_radar_events_integration.py -q --no-cov"
+run_check "RADAR_EVENTS" "$PY -m pytest tests/test_radar_events_integration.py -q -o addopts="""
 
 echo "── Phase 10 — Customer Portal Compatibility + v2 ──────"
-run_check "CUSTOMER_PORTAL_COMPAT" "python3 -m pytest tests/test_customer_portal_backward_compatibility.py tests/test_customer_portal_enriched_v2.py -q --no-cov"
+run_check "CUSTOMER_PORTAL_COMPAT" "$PY -m pytest tests/test_customer_portal_backward_compatibility.py tests/test_customer_portal_enriched_v2.py -q -o addopts="""
 
 echo "── Phase 11 — Agent Observability ─────────────────────"
-run_check "AGENT_OBSERVABILITY" "python3 -m pytest tests/test_agent_observability_integration.py -q --no-cov"
+run_check "AGENT_OBSERVABILITY" "$PY -m pytest tests/test_agent_observability_integration.py -q -o addopts="""
 
 echo "── Phase 12 — Customer Experience Audit ───────────────"
 run_check "CUSTOMER_EXPERIENCE" "bash scripts/customer_experience_audit.sh"
 
 echo "── Wave 3 + Constitution regression ───────────────────"
-run_check "CURRENT_CONTRACTS" "python3 -m pytest tests/test_constitution_closure.py -q --no-cov"
+run_check "CURRENT_CONTRACTS" "$PY -m pytest tests/test_constitution_closure.py -q -o addopts="""
 run_check "FULL_OPS_10_LAYER_REGRESSION" "bash scripts/full_ops_10_layer_verify.sh"
 
 echo "── Cross-cutting safety ───────────────────────────────"
-run_check "FORBIDDEN_CLAIMS" "python3 -m pytest tests/test_landing_forbidden_claims.py -q --no-cov"
-run_check "NO_LIVE_CHARGE" "python3 -m pytest tests/test_finance_os_no_live_charge_invariant.py -q --no-cov"
-run_check "PROOF_REDACTS_ON_EXPORT" "python3 -m pytest tests/test_proof_ledger_redacts_on_export.py -q --no-cov"
-run_check "PLANNER_CLEAN" "python3 -c 'from auto_client_acquisition.self_growth_os.internal_linking_planner import is_clean; assert is_clean()'"
+run_check "FORBIDDEN_CLAIMS" "$PY -m pytest tests/test_landing_forbidden_claims.py -q -o addopts="""
+run_check "NO_LIVE_CHARGE" "$PY -m pytest tests/test_finance_os_no_live_charge_invariant.py -q -o addopts="""
+run_check "PROOF_REDACTS_ON_EXPORT" "$PY -m pytest tests/test_proof_ledger_redacts_on_export.py -q -o addopts="""
+run_check "PLANNER_CLEAN" "$PY -c 'from auto_client_acquisition.self_growth_os.internal_linking_planner import is_clean; assert is_clean()'"
 
 echo "── No internal terms in public sweep ──────────────────"
 INTERNAL_TERMS_RE='\b(stacktrace|pytest|growth_beast)\b'

@@ -286,7 +286,8 @@ def answer_operator_question(
             paths = ", ".join(f"`{h.get('path', '')}`" for h in search_hits[:4])
             answer_ar = f"{answer_ar}\n\nأقرب مطابقات في الكود: {paths}."
             note_ar = (
-                f"تم فحص {scan_meta['documents_scanned']} ملفاً تقريباً (~{scan_meta['chars_scanned']} حرف). "
+                f"البحث الدلالي غير متصل حالياً. تم فحص {scan_meta['documents_scanned']} "
+                f"ملفاً تقريباً (~{scan_meta['chars_scanned']} حرف) بالبحث النصي. "
                 "للبحث الدلالي الكامل: ربط pgvector في Supabase."
             )
 

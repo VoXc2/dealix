@@ -102,25 +102,22 @@ async def search_prospects(
         stmt = select(CompanyRecord)
         count_stmt = select(func.count()).select_from(CompanyRecord)
 
-        if sector is not None:
+        # Only filter on columns the model actually exposes. The data model
+        # uses ``industry`` for sector and ``city`` for region; ``size_band``
+        # has no column, so it is recorded in filters_applied only.
+        if sector is not None and hasattr(CompanyRecord, "industry"):
             stmt = stmt.where(CompanyRecord.industry == sector)
             count_stmt = count_stmt.where(CompanyRecord.industry == sector)
-        if region is not None:
-            stmt = stmt.where(CompanyRecord.region == region)
-            count_stmt = count_stmt.where(CompanyRecord.region == region)
-        if size_band is not None:
-            stmt = stmt.where(CompanyRecord.size_band == size_band)
-            count_stmt = count_stmt.where(CompanyRecord.size_band == size_band)
-        if q:
+        if region is not None and hasattr(CompanyRecord, "city"):
+            stmt = stmt.where(CompanyRecord.city == region)
+            count_stmt = count_stmt.where(CompanyRecord.city == region)
+        if q and hasattr(CompanyRecord, "name"):
             pattern = f"%{q}%"
-            stmt = stmt.where(
-                or_(CompanyRecord.name.ilike(pattern),
-                    CompanyRecord.domain.ilike(pattern))
-            )
-            count_stmt = count_stmt.where(
-                or_(CompanyRecord.name.ilike(pattern),
-                    CompanyRecord.domain.ilike(pattern))
-            )
+            search_cols = [CompanyRecord.name.ilike(pattern)]
+            if hasattr(CompanyRecord, "website"):
+                search_cols.append(CompanyRecord.website.ilike(pattern))
+            stmt = stmt.where(or_(*search_cols))
+            count_stmt = count_stmt.where(or_(*search_cols))
 
         stmt = stmt.order_by(CompanyRecord.name).limit(limit).offset(offset)
         try:
