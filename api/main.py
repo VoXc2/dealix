@@ -56,6 +56,7 @@ from api.routers import (
     tenant_theming,
     human_ai_os,
     org_graph_os,
+    governed_revenue_ai_ops,
     value_engine_os,
     zatca,
 )
@@ -319,6 +320,7 @@ def create_app() -> FastAPI:
     app.include_router(sprint_runner_router.router)
     app.include_router(founder_dashboard_router.router)
     app.include_router(audit_export_router.router)
+    app.include_router(governed_revenue_ai_ops.router)
     # Wave 14F — Agent OS (admin-gated)
     if agent_os_router is not None:
         app.include_router(agent_os_router.router)
