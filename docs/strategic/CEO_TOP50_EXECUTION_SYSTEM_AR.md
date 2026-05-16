@@ -110,5 +110,12 @@
 8. `cp data/warm_list.csv.template data/warm_list.csv`
 9. `python3 scripts/warm_list_outreach.py`
 10. `python3 scripts/dealix_first10_warm_intros.py`
+11. `python3 scripts/ceo_top50_execute.py --run-next-7` لتشغيل البنود القابلة للأتمتة وتحديث الـTracker زمنيًا.
 
 هذا هو تعريف “CEO execution”: **كل بند له قرار + مخرج + أداة تشغيل + حالة متابعة**.
+
+## مبدأ الإغلاق الكامل (Complete Everything)
+
+- ما يمكن إغلاقه داخل الريبو: يُغلق فورًا عبر `scripts/ceo_top50_execute.py`.
+- ما يعتمد على قرار مؤسس/بيانات عميل/مفاتيح دفع: يبقى `NEXT_7` أو `NEXT_30` حتى يتحقق الشرط.
+- دليل التنفيذ الرسمي لكل تشغيل محفوظ في: `docs/ops/live/ceo_top50_run_<timestamp>.md|json`.

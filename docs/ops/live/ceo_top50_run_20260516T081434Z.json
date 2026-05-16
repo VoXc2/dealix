@@ -1,0 +1,306 @@
+{
+  "generated_at_utc": "2026-05-16T08:18:10.470706+00:00",
+  "tracker": "docs/ops/CEO_TOP50_TRACKER.csv",
+  "results": [
+    {
+      "action": "run_pm_daily_brief",
+      "status": "PASS",
+      "command": "python3 scripts/dealix_pm_daily.py --json",
+      "exit_code": 0,
+      "started_at_utc": "2026-05-16T08:14:34.788194+00:00",
+      "ended_at_utc": "2026-05-16T08:14:35.103757+00:00",
+      "stdout_tail": "    \"top_3_kinds\": [],\n    \"total_cost_minutes\": 0,\n    \"week_over_week_delta\": 0\n  },\n  \"renewals_due_next_7d\": {\n    \"count\": 0,\n    \"items\": []\n  },\n  \"recent_proof_events\": {\n    \"count\": 0,\n    \"items\": []\n  },\n  \"capital_assets_this_week\": {\n    \"count\": 0,\n    \"items\": []\n  },\n  \"top_recommendations\": [\n    \"No capital asset registered this week — every engagement must produce >= 1 reusable asset (capital_os.add_asset).\"\n  ]\n}",
+      "stderr_tail": ""
+    },
+    {
+      "action": "run_founder_status",
+      "status": "PASS",
+      "command": "python3 scripts/dealix_status.py --json",
+      "exit_code": 0,
+      "started_at_utc": "2026-05-16T08:14:35.103789+00:00",
+      "ended_at_utc": "2026-05-16T08:14:40.876462+00:00",
+      "stdout_tail": "      \"S4: compliance-tier premium\",\n      \"S5: first service to flip Live (recommendation: lead_intake_whatsapp)\"\n    ],\n    \"recommendations\": [\n      {\n        \"priority\": \"P1\",\n        \"action\": \"fix 3 broken relative landing-page links\",\n        \"anchor\": \"internal_linking_planner.issues.broken_relative_links\"\n      }\n    ]\n  },\n  \"review_pending_count\": 3,\n  \"open_founder_decisions\": 10,\n  \"live_gates\": {\n    \"live_charge\": \"BLOCKED\",\n    \"whatsapp_live_send\": \"BLOCKED\",\n    \"email_live_send\": \"BLOCKED (no flag exists by design)\",\n    \"linkedin_and_scraping\": \"BLOCKED\"\n  }\n}",
+      "stderr_tail": "/usr/lib/python3.12/importlib/__init__.py:90: FutureWarning: \n\nAll support for the `google.generativeai` package has ended. It will no longer be receiving \nupdates or bug fixes. Please switch to the `google.genai` package as soon as possible.\nSee README for more details:\n\nhttps://github.com/google-gemini/deprecated-generative-ai-python/blob/main/README.md\n\n  return _bootstrap._gcd_import(name[level:], package, level)"
+    },
+    {
+      "action": "run_daily_scorecard",
+      "status": "PASS",
+      "command": "python3 scripts/founder_daily_scorecard.py --json",
+      "exit_code": 0,
+      "started_at_utc": "2026-05-16T08:14:40.876543+00:00",
+      "ended_at_utc": "2026-05-16T08:14:40.918333+00:00",
+      "stdout_tail": "{\n  \"date\": \"2026-05-16\",\n  \"segment_focus\": \"—\",\n  \"messages_sent\": 0,\n  \"messages_target\": 5,\n  \"replies_received\": 0,\n  \"demos_booked\": 0,\n  \"demos_held\": 0,\n  \"pilots_cleared\": 0,\n  \"growth_signed\": 0,\n  \"cash_received_sar\": 0,\n  \"hours_coding\": 0.0,\n  \"tomorrow_targets\": [],\n  \"warnings\": []\n}",
+      "stderr_tail": ""
+    },
+    {
+      "action": "weekly_go_no_go_gate",
+      "status": "FAIL",
+      "command": "bash scripts/dealix_market_launch_ready_verify.sh",
+      "exit_code": 1,
+      "started_at_utc": "2026-05-16T08:14:40.918353+00:00",
+      "ended_at_utc": "2026-05-16T08:15:59.021068+00:00",
+      "stdout_tail": "  PAID_CUSTOMERS=0\n  ARTICLE_13_TRIGGER=NOT_YET (0/3)\n  CONSTITUTION_CLOSURE=PASS\n\n  Total: 17 · PASS: 5 · FAIL: 6 · FOUNDER_PENDING: 4 · SANDBOX_SKIP: 0 · INFO: 2\n\n  Hard gates (all 8 IMMUTABLE):\n    NO_LIVE_SEND=immutable\n    NO_LIVE_CHARGE=immutable\n    NO_COLD_WHATSAPP=immutable\n    NO_LINKEDIN_AUTO=immutable\n    NO_SCRAPING=immutable\n    NO_FAKE_PROOF=immutable\n    NO_FAKE_REVENUE=immutable\n    NO_BLAST=immutable\n\n  LOCAL_HEAD=b4683af45dc91ccd1334b1359bcfb7e85305de60\n  BRANCH=cursor/ceo-top50-execution-71da\n  MARKET_LAUNCH_READY=BLOCKED\n  NEXT_FOUNDER_ACTION=Resolve FAIL lines above before launching.",
+      "stderr_tail": ""
+    },
+    {
+      "action": "revenue_os_baseline",
+      "status": "FAIL",
+      "command": "bash scripts/revenue_os_master_verify.sh",
+      "exit_code": 1,
+      "started_at_utc": "2026-05-16T08:15:59.021162+00:00",
+      "ended_at_utc": "2026-05-16T08:16:03.245719+00:00",
+      "stdout_tail": "73 passed, 2 warnings in 2.86s\n== import smoke ==\nimport_ok\n\nDEALIX_REVENUE_OS_VERDICT=PARTIAL\nREVENUE_INTELLIGENCE=pass\nOPERATING_EXECUTION=pass\nPROOF_ENGINE=pass\nLEARNING_LOOP=pass\nCOMMAND_CENTER=pass\nFRONTEND=pass\nSECURITY=pass\nCOMPLIANCE=pass\nOBSERVABILITY=pass\nNO_COLD_WHATSAPP=pass\nNO_SCRAPING=pass\nNO_LIVE_SEND_DEFAULT=pass\nNO_FAKE_PROOF=pass\nNO_FAKE_REVENUE=pass\nNEXT_FOUNDER_ACTION=Wire portal metrics into customer_readiness and persist ProofEventCanonical payloads in proof_ledger.",
+      "stderr_tail": ""
+    },
+    {
+      "action": "capability_baseline",
+      "status": "FAIL",
+      "command": "bash scripts/dealix_capability_verify.sh",
+      "exit_code": 1,
+      "started_at_utc": "2026-05-16T08:16:03.245842+00:00",
+      "ended_at_utc": "2026-05-16T08:16:05.346254+00:00",
+      "stdout_tail": "\nFound 1 error.\n[\u001b[36m*\u001b[0m] 1 fixable with the `--fix` option.\n== pytest capability ==\n...........................                                              [100%]\n27 passed in 0.65s\n== verify Company OS (docs + scripts) ==\nSERVICE_FILES_PASS=true\nSERVICE_CATALOG_PASS=true\nGOVERNANCE_DOCS_PASS=true\nPROOF_PACK_PASS=true\nAI_OUTPUT_QUALITY_PASS=true\nSERVICE_FILES_PASS=true\nGOVERNANCE_PASS=true\nQUALITY_PASS=true\nPROOF_PACK_PASS=true\nSALES_ASSETS_PASS=true\nTESTS_PASS=true\nREADY_SERVICES=6/6\nDEALIX_READY=true",
+      "stderr_tail": ""
+    },
+    {
+      "action": "list_sector_bundles",
+      "status": "PASS",
+      "command": "python3 scripts/dealix_diagnostic.py --list-bundles",
+      "exit_code": 0,
+      "started_at_utc": "2026-05-16T08:16:05.346306+00:00",
+      "ended_at_utc": "2026-05-16T08:16:05.540130+00:00",
+      "stdout_tail": "Available bundles:\n  • growth_starter          Growth Starter                       باقة بداية النمو  [customer-facing]\n  • data_to_revenue         Data to Revenue                      من البيانات إلى الإيراد  [customer-facing]\n  • executive_growth_os     Executive Growth OS                  نظام تشغيل القيادة التنفيذية  [customer-facing]\n  • partnership_growth      Partnership Growth                   نمو الشراكات  [customer-facing]\n  • full_control_tower      Full Growth Control Tower            برج التحكم الكامل  [customer-facing]\n  • internal                Internal Foundations                 بنية تحتية داخلية  [internal]\n\nSector → bundle defaults:\n  • agency                  →  partnership_growth\n  • b2b_saas                →  growth_starter\n  • b2b_services            →  growth_starter\n  • ecommerce_b2c           →  growth_starter\n  • healthcare_clinic       →  growth_starter\n  • local_services          →  growth_starter\n  • real_estate             →  growth_starter\n  • training_consulting     →  growth_starter",
+      "stderr_tail": ""
+    },
+    {
+      "action": "create_icp_diagnostic",
+      "status": "PASS",
+      "command": "python3 scripts/dealix_diagnostic.py --company \"Sample Co\" --sector b2b_services --region riyadh --pipeline-state \"manual follow-up\" --json",
+      "exit_code": 0,
+      "started_at_utc": "2026-05-16T08:16:05.540166+00:00",
+      "ended_at_utc": "2026-05-16T08:16:05.737846+00:00",
+      "stdout_tail": "  \"pipeline_state\": \"manual follow-up\",\n  \"recommended_bundle\": \"growth_starter\",\n  \"services_in_bundle\": [\n    \"lead_intake_whatsapp\",\n    \"lead_intake_email\",\n    \"lead_intake_linkedin\",\n    \"enrichment\",\n    \"qualification\",\n    \"routing\",\n    \"outreach_drafts\"\n  ],\n  \"approval_status\": \"approval_required\",\n  \"guardrails\": {\n    \"no_live_send\": true,\n    \"no_scraping\": true,\n    \"no_cold_outreach\": true,\n    \"no_revenue_guarantee\": true,\n    \"manual_review_before_send\": true\n  }\n}",
+      "stderr_tail": ""
+    },
+    {
+      "action": "create_warm_list_file",
+      "status": "PASS",
+      "command": "cp data/warm_list.csv.template data/warm_list.csv",
+      "exit_code": 0,
+      "started_at_utc": "2026-05-16T08:16:05.737873+00:00",
+      "ended_at_utc": "2026-05-16T08:16:05.740101+00:00",
+      "stdout_tail": "",
+      "stderr_tail": ""
+    },
+    {
+      "action": "generate_bilingual_drafts",
+      "status": "PASS",
+      "command": "python3 scripts/warm_list_outreach.py",
+      "exit_code": 0,
+      "started_at_utc": "2026-05-16T08:16:05.740131+00:00",
+      "ended_at_utc": "2026-05-16T08:16:05.779270+00:00",
+      "stdout_tail": "✓ Wrote 1 drafts to /workspace/data/outreach/warm_list_drafts.md\n  - accept: 1\n  - diagnostic_only/reframe: 0\n  - reject/refer_out: 0",
+      "stderr_tail": ""
+    },
+    {
+      "action": "run_first10_board",
+      "status": "PASS",
+      "command": "python3 scripts/dealix_first10_warm_intros.py",
+      "exit_code": 0,
+      "started_at_utc": "2026-05-16T08:16:05.779288+00:00",
+      "ended_at_utc": "2026-05-16T08:16:05.809417+00:00",
+      "stdout_tail": "Wrote: /workspace/docs/phase-e/live/FIRST_10_CUSTOMER_BOARD.md\nWrote: /workspace/docs/phase-e/live/FIRST_10_CUSTOMER_BOARD.json",
+      "stderr_tail": ""
+    },
+    {
+      "action": "prepare_499_pilot_brief",
+      "status": "PASS",
+      "command": "python3 scripts/dealix_pilot_brief.py --company \"Sample Co\" --sector b2b_services --amount-sar 499",
+      "exit_code": 0,
+      "started_at_utc": "2026-05-16T08:16:05.809439+00:00",
+      "ended_at_utc": "2026-05-16T08:16:05.837129+00:00",
+      "stdout_tail": "OK: wrote docs/wave6/live/pilot_brief.md + docs/wave6/live/pilot_brief.json\n  amount_sar: 499.0\n  amount_halalah: 49900\n  live_charge: False",
+      "stderr_tail": ""
+    },
+    {
+      "action": "prepare_invoice_dry_run",
+      "status": "PASS",
+      "command": "python3 scripts/dealix_invoice.py --email sample@example.sa --amount-sar 499 --description \"Dealix Sprint\" --dry-run",
+      "exit_code": 0,
+      "started_at_utc": "2026-05-16T08:16:05.837160+00:00",
+      "ended_at_utc": "2026-05-16T08:16:05.989369+00:00",
+      "stdout_tail": "DRY_RUN=true\nAMOUNT_SAR=499\nAMOUNT_HALALAH=49900\nMODE=manual_only\nPAYMENT_METHOD=moyasar_manual_only|bank_transfer|other_manual\nDESCRIPTION=Dealix Sprint\nCUSTOMER_EMAIL=sample@example.sa\nREFUND_NOTE_REQUIRED=true\nREFUND_NOTE=7-day refund window from delivery date if Dealix delivery does not match the growth_starter spec. Refund processed manually by the founder.\nMANUAL_FALLBACK_STEPS:\n  1. Send IBAN + bank name + reference (DEALIX-PILOT-<slot>) manually via WhatsApp or email.\n  2. Wait for confirmation of bank transfer (screenshot or bank confirmation).\n  3. Do NOT mark pilot=paid until founder personally confirms funds landed.\n  4. Issue manual receipt (Markdown email is fine).\n\nThis is a dry-run preview. NO Moyasar API call was made. Run without --dry-run + with MOYASAR_SECRET_KEY set to actually create the invoice.",
+      "stderr_tail": ""
+    },
+    {
+      "action": "record_payment_intent_confirmation",
+      "status": "PASS",
+      "command": "rm -f docs/wave6/live/payment_state_top50.json ; python3 scripts/dealix_payment_confirmation_stub.py --action invoice-intent --customer sample --amount-sar 499 --service-type 7_day_revenue_proof_sprint --out-path docs/wave6/live/payment_state_top50.json ; python3 scripts/dealix_payment_confirmation_stub.py --action send-payment-link --out-path docs/wave6/live/payment_state_top50.json ; python3 scripts/dealix_payment_confirmation_stub.py --action upload-evidence --evidence-note \"bank transfer slip\" --evidence-kind transfer_reference --out-path docs/wave6/live/payment_state_top50.json ; python3 scripts/dealix_payment_confirmation_stub.py --action confirm --confirmed-by founder --out-path docs/wave6/live/payment_state_top50.json ; python3 scripts/dealix_payment_confirmation_stub.py --action kickoff-ready --out-path docs/wave6/live/payment_state_top50.json",
+      "exit_code": 0,
+      "started_at_utc": "2026-05-16T08:16:05.989388+00:00",
+      "ended_at_utc": "2026-05-16T08:16:06.146501+00:00",
+      "stdout_tail": "OK: invoice_intent_created (NOT revenue)\n  state: invoice_intent_created\n  is_revenue: False\nOK: payment_pending (still NOT revenue)\n  state: payment_pending\n  is_revenue: False\nOK: evidence_received (still NOT final until confirmed)\n  state: evidence_received\n  is_revenue: False\nOK: payment_confirmed = REVENUE\n  state: payment_confirmed\n  is_revenue: True\nOK: delivery_kickoff_ready — Phase 6 unlocked\n  state: delivery_kickoff_ready\n  is_revenue: True",
+      "stderr_tail": ""
+    },
+    {
+      "action": "run_delivery_kickoff",
+      "status": "PASS",
+      "command": "python3 scripts/dealix_delivery_kickoff.py --company \"Sample Co\" --service 7_day_revenue_proof_sprint --payment-state-file docs/wave6/live/payment_state_top50.json",
+      "exit_code": 0,
+      "started_at_utc": "2026-05-16T08:16:06.146526+00:00",
+      "ended_at_utc": "2026-05-16T08:16:06.177719+00:00",
+      "stdout_tail": "OK: kickoff allowed (basis=payment_confirmed)\n  session_id: sess_f54debfe6f\n  state: waiting_inputs\n  next_step: collect_inputs_for_diagnostic",
+      "stderr_tail": ""
+    },
+    {
+      "action": "generate_proof_pack_allow_empty",
+      "status": "PASS",
+      "command": "python3 scripts/dealix_proof_pack.py --customer-handle sample --allow-empty --out docs/wave6/live/sample-proof-pack.md",
+      "exit_code": 0,
+      "started_at_utc": "2026-05-16T08:16:06.177748+00:00",
+      "ended_at_utc": "2026-05-16T08:16:06.312012+00:00",
+      "stdout_tail": "",
+      "stderr_tail": "[proof-pack] wrote EMPTY Draft pack → docs/wave6/live/sample-proof-pack.md"
+    },
+    {
+      "action": "verify_proof_pack_templates",
+      "status": "PASS",
+      "command": "python3 scripts/verify_proof_pack.py",
+      "exit_code": 0,
+      "started_at_utc": "2026-05-16T08:16:06.312029+00:00",
+      "ended_at_utc": "2026-05-16T08:16:06.342727+00:00",
+      "stdout_tail": "PROOF_PACK_PASS=true",
+      "stderr_tail": ""
+    },
+    {
+      "action": "run_doctrine_core_tests",
+      "status": "PASS",
+      "command": "pytest tests/test_no_cold_whatsapp.py tests/test_no_linkedin_automation.py tests/test_no_scraping_engine.py tests/test_no_guaranteed_claims.py tests/test_no_source_no_answer.py -q",
+      "exit_code": 0,
+      "started_at_utc": "2026-05-16T08:16:06.342755+00:00",
+      "ended_at_utc": "2026-05-16T08:16:19.888276+00:00",
+      "stdout_tail": "core/queue/cs_handoff_task.py                                                       49     49      0      0   0.00%   17-133\ncore/queue/tasks.py                                                                128    128     30      0   0.00%   11-306\ncore/queue/weekly_self_improvement.py                                              125    125     26      0   0.00%   17-343\ncore/queue/worker.py                                                                29     29      0      0   0.00%   12-79\ncore/tasks/worker.py                                                                76     76      0      0   0.00%   20-195\ncore/utils.py                                                                       59     42     24      0  20.48%   16, 21, 26, 31-36, 41, 49-57, 62-67, 72-76, 80-88, 93-95\nintegrations/arabic_templates.py                                                    65     65     20      0   0.00%   20-407\nintegrations/calendar.py                                                            74     74     14      0   0.00%   6-157\nintegrations/email.py                                                               97     97     36      0   0.00%   6-199\nintegrations/hubspot.py                                                             12     12      0      0   0.00%   6-25\nintegrations/linkedin.py                                                            16     16      0      0   0.00%   13-43\nintegrations/n8n.py                                                                 39     39      2      0   0.00%   6-67\nintegrations/pdpl.py                                                                67     67     14      0   0.00%   25-443\nintegrations/saudi_market.py                                                       266    266     64      0   0.00%   13-644\nintegrations/whatsapp.py                                                            97     97     24      0   0.00%   8-179\nintegrations/zatca.py                                                              300    300     28      0   0.00%   23-651\n-----------------------------------------------------------------------------------------------------------------------------\nTOTAL                                                                            42780  41136   9768     10   3.17%\nCoverage HTML written to dir htmlcov\n5 passed in 12.73s",
+      "stderr_tail": ""
+    },
+    {
+      "action": "run_governance_verifier",
+      "status": "PASS",
+      "command": "python3 scripts/verify_governance.py",
+      "exit_code": 0,
+      "started_at_utc": "2026-05-16T08:16:19.888520+00:00",
+      "ended_at_utc": "2026-05-16T08:16:19.937800+00:00",
+      "stdout_tail": "GOVERNANCE_DOCS_PASS=true",
+      "stderr_tail": ""
+    },
+    {
+      "action": "keep_live_actions_safe_default",
+      "status": "PASS",
+      "command": "python3 scripts/dealix_status.py --json",
+      "exit_code": 0,
+      "started_at_utc": "2026-05-16T08:16:19.937829+00:00",
+      "ended_at_utc": "2026-05-16T08:16:25.644868+00:00",
+      "stdout_tail": "      \"S4: compliance-tier premium\",\n      \"S5: first service to flip Live (recommendation: lead_intake_whatsapp)\"\n    ],\n    \"recommendations\": [\n      {\n        \"priority\": \"P1\",\n        \"action\": \"fix 3 broken relative landing-page links\",\n        \"anchor\": \"internal_linking_planner.issues.broken_relative_links\"\n      }\n    ]\n  },\n  \"review_pending_count\": 3,\n  \"open_founder_decisions\": 10,\n  \"live_gates\": {\n    \"live_charge\": \"BLOCKED\",\n    \"whatsapp_live_send\": \"BLOCKED\",\n    \"email_live_send\": \"BLOCKED (no flag exists by design)\",\n    \"linkedin_and_scraping\": \"BLOCKED\"\n  }\n}",
+      "stderr_tail": "/usr/lib/python3.12/importlib/__init__.py:90: FutureWarning: \n\nAll support for the `google.generativeai` package has ended. It will no longer be receiving \nupdates or bug fixes. Please switch to the `google.genai` package as soon as possible.\nSee README for more details:\n\nhttps://github.com/google-gemini/deprecated-generative-ai-python/blob/main/README.md\n\n  return _bootstrap._gcd_import(name[level:], package, level)"
+    },
+    {
+      "action": "enforce_no_source_no_answer",
+      "status": "PASS",
+      "command": "pytest tests/test_no_source_no_answer.py -q",
+      "exit_code": 0,
+      "started_at_utc": "2026-05-16T08:16:25.644970+00:00",
+      "ended_at_utc": "2026-05-16T08:16:38.667275+00:00",
+      "stdout_tail": "core/queue/cs_handoff_task.py                                                       49     49      0      0   0.00%   17-133\ncore/queue/tasks.py                                                                128    128     30      0   0.00%   11-306\ncore/queue/weekly_self_improvement.py                                              125    125     26      0   0.00%   17-343\ncore/queue/worker.py                                                                29     29      0      0   0.00%   12-79\ncore/tasks/worker.py                                                                76     76      0      0   0.00%   20-195\ncore/utils.py                                                                       59     59     24      0   0.00%   3-95\nintegrations/arabic_templates.py                                                    65     65     20      0   0.00%   20-407\nintegrations/calendar.py                                                            74     74     14      0   0.00%   6-157\nintegrations/email.py                                                               97     97     36      0   0.00%   6-199\nintegrations/hubspot.py                                                             12     12      0      0   0.00%   6-25\nintegrations/linkedin.py                                                            16     16      0      0   0.00%   13-43\nintegrations/n8n.py                                                                 39     39      2      0   0.00%   6-67\nintegrations/pdpl.py                                                                67     67     14      0   0.00%   25-443\nintegrations/saudi_market.py                                                       266    266     64      0   0.00%   13-644\nintegrations/whatsapp.py                                                            97     97     24      0   0.00%   8-179\nintegrations/zatca.py                                                              300    300     28      0   0.00%   23-651\n-----------------------------------------------------------------------------------------------------------------------------\nTOTAL                                                                            42780  42487   9768      4   0.57%\nCoverage HTML written to dir htmlcov\n1 passed in 12.21s",
+      "stderr_tail": ""
+    },
+    {
+      "action": "start_postgres_redis",
+      "status": "FAIL",
+      "command": "docker compose up -d postgres redis",
+      "exit_code": 1,
+      "started_at_utc": "2026-05-16T08:16:38.667462+00:00",
+      "ended_at_utc": "2026-05-16T08:16:38.724302+00:00",
+      "stdout_tail": "",
+      "stderr_tail": "unable to get image 'postgres:16-alpine': Cannot connect to the Docker daemon at unix:///var/run/docker.sock. Is the docker daemon running?"
+    },
+    {
+      "action": "start_backend_dev_server",
+      "status": "PASS",
+      "command": "curl -sS -m 3 http://localhost:8000/health | python3 -m json.tool",
+      "exit_code": 0,
+      "started_at_utc": "2026-05-16T08:16:38.724331+00:00",
+      "ended_at_utc": "2026-05-16T08:16:38.754565+00:00",
+      "stdout_tail": "{\n    \"status\": \"ok\",\n    \"version\": \"3.0.0\",\n    \"env\": \"development\",\n    \"providers\": [],\n    \"git_sha\": \"unknown\"\n}",
+      "stderr_tail": ""
+    },
+    {
+      "action": "run_api_smoke",
+      "status": "PASS",
+      "command": "python3 scripts/dealix_smoke_test.py --base-url http://localhost:8000",
+      "exit_code": 0,
+      "started_at_utc": "2026-05-16T08:16:38.754582+00:00",
+      "ended_at_utc": "2026-05-16T08:16:52.395814+00:00",
+      "stdout_tail": "✅ agent_governance_agents          GET /api/v1/agent-governance/agents                   200      3.0 ms\n✅ reliability_status               GET /api/v1/reliability/status                        200      2.9 ms\n✅ reliability_health_matrix        GET /api/v1/reliability/health-matrix                 200     62.7 ms\n✅ vertical_playbooks_status        GET /api/v1/vertical-playbooks/status                 200      3.3 ms\n✅ vertical_playbooks_list          GET /api/v1/vertical-playbooks/list                   200      3.1 ms\n✅ customer_data_status             GET /api/v1/customer-data/status                      200      2.9 ms\n✅ finance_status                   GET /api/v1/finance/status                            200      2.5 ms\n✅ finance_pricing                  GET /api/v1/finance/pricing                           200      2.8 ms\n✅ delivery_factory_status          GET /api/v1/delivery-factory/status                   200     58.3 ms\n✅ delivery_factory_services        GET /api/v1/delivery-factory/services                 200     59.0 ms\n✅ proof_ledger_status              GET /api/v1/proof-ledger/status                       200      3.2 ms\n✅ gtm_status                       GET /api/v1/gtm/status                                200      3.1 ms\n✅ gtm_content_calendar             GET /api/v1/gtm/content-calendar                      200     27.6 ms\n✅ security_privacy_status          GET /api/v1/security-privacy/status                   200      3.3 ms\n✅ security_privacy_minimization    GET /api/v1/security-privacy/data-minimization        200      3.0 ms\n✅ founder_dashboard                GET /api/v1/founder/dashboard                         200   8244.3 ms\n─────────────────────────────────────────────────────────────\n passed: 28/28    failed_required: 0\n VERDICT: ✅ all required checks passed\n═════════════════════════════════════════════════════════════",
+      "stderr_tail": ""
+    },
+    {
+      "action": "run_hello_world_lead_pipeline",
+      "status": "PASS",
+      "command": "curl -sS -X POST http://localhost:8000/api/v1/leads -H \"Content-Type: application/json\" -d '{\"company\":\"Test Co\",\"name\":\"Test\",\"email\":\"test@example.sa\",\"phone\":\"+966501234567\",\"sector\":\"technology\",\"region\":\"Saudi Arabia\",\"budget\":50000,\"message\":\"Test message\"}' | python3 -m json.tool",
+      "exit_code": 0,
+      "started_at_utc": "2026-05-16T08:16:52.395862+00:00",
+      "ended_at_utc": "2026-05-16T08:16:52.423917+00:00",
+      "stdout_tail": "            \"budget_hint\": 50000.0\n        }\n    },\n    \"customer_readiness\": {\n        \"customer_comfort_score\": 58.0,\n        \"expansion_readiness_score\": 25.0,\n        \"breakdown\": {\n            \"has_status_timeline\": false,\n            \"has_next_action\": true,\n            \"pending_approvals\": 1,\n            \"open_support_tickets\": 0,\n            \"proof_events_count\": 0,\n            \"max_proof_level\": 0,\n            \"payment_ok\": false,\n            \"delivery_sessions_active\": 0\n        },\n        \"notes_ar\": \"\\u0627\\u0644\\u062f\\u0631\\u062c\\u0627\\u062a \\u062a\\u0642\\u062f\\u064a\\u0631\\u064a\\u0629 \\u0625\\u0644\\u0649 \\u0623\\u0646 \\u062a\\u064f\\u0631\\u0628\\u0637 \\u0628\\u0628\\u064a\\u0627\\u0646\\u0627\\u062a \\u0627\\u0644\\u0628\\u0648\\u0627\\u0628\\u0629 \\u0648\\u0627\\u0644\\u062f\\u0644\\u064a\\u0644 \\u0627\\u0644\\u0641\\u0639\\u0644\\u064a\\u0629.\",\n        \"notes_en\": \"Scores are heuristic until wired to portal + proof ledger aggregates.\"\n    }\n}",
+      "stderr_tail": ""
+    },
+    {
+      "action": "check_alembic_single_head",
+      "status": "PASS",
+      "command": "python3 scripts/check_alembic_single_head.py",
+      "exit_code": 0,
+      "started_at_utc": "2026-05-16T08:16:52.423968+00:00",
+      "ended_at_utc": "2026-05-16T08:16:52.716331+00:00",
+      "stdout_tail": "OK: single Alembic head (010)",
+      "stderr_tail": ""
+    },
+    {
+      "action": "run_morning_readiness_gate",
+      "status": "FAIL",
+      "command": "bash scripts/dealix_market_launch_ready_verify.sh",
+      "exit_code": 1,
+      "started_at_utc": "2026-05-16T08:16:52.716362+00:00",
+      "ended_at_utc": "2026-05-16T08:18:09.966678+00:00",
+      "stdout_tail": "  PAID_CUSTOMERS=0\n  ARTICLE_13_TRIGGER=NOT_YET (0/3)\n  CONSTITUTION_CLOSURE=PASS\n\n  Total: 17 · PASS: 5 · FAIL: 6 · FOUNDER_PENDING: 4 · SANDBOX_SKIP: 0 · INFO: 2\n\n  Hard gates (all 8 IMMUTABLE):\n    NO_LIVE_SEND=immutable\n    NO_LIVE_CHARGE=immutable\n    NO_COLD_WHATSAPP=immutable\n    NO_LINKEDIN_AUTO=immutable\n    NO_SCRAPING=immutable\n    NO_FAKE_PROOF=immutable\n    NO_FAKE_REVENUE=immutable\n    NO_BLAST=immutable\n\n  LOCAL_HEAD=b4683af45dc91ccd1334b1359bcfb7e85305de60\n  BRANCH=cursor/ceo-top50-execution-71da\n  MARKET_LAUNCH_READY=BLOCKED\n  NEXT_FOUNDER_ACTION=Resolve FAIL lines above before launching.",
+      "stderr_tail": ""
+    },
+    {
+      "action": "daily_payment_reconciliation",
+      "status": "FAIL",
+      "command": "python3 scripts/reconcile_moyasar.py --dry-run",
+      "exit_code": 2,
+      "started_at_utc": "2026-05-16T08:18:09.966745+00:00",
+      "ended_at_utc": "2026-05-16T08:18:10.010020+00:00",
+      "stdout_tail": "",
+      "stderr_tail": "[2026-05-16T08:18:10+0000] ERROR MOYASAR_SECRET_KEY and DATABASE_URL are required"
+    },
+    {
+      "action": "run_weekly_executive_pack",
+      "status": "PASS",
+      "command": "python3 scripts/dealix_weekly_executive_pack.py --all-customers",
+      "exit_code": 0,
+      "started_at_utc": "2026-05-16T08:18:10.010038+00:00",
+      "ended_at_utc": "2026-05-16T08:18:10.169793+00:00",
+      "stdout_tail": "=== Dealix Weekly Executive Pack — 2026-W20 (customer view) ===\n  ✓ test-rehearsal: data/wave13/exec_packs/test-rehearsal_2026-W20.md\n\n1 pack(s) written.\nArticle 4 NO_LIVE_SEND: founder copies + sends manually.",
+      "stderr_tail": ""
+    },
+    {
+      "action": "weekly_retro_friction_proof_capital",
+      "status": "PASS",
+      "command": "python3 scripts/dealix_pm_daily.py --json",
+      "exit_code": 0,
+      "started_at_utc": "2026-05-16T08:18:10.169826+00:00",
+      "ended_at_utc": "2026-05-16T08:18:10.470153+00:00",
+      "stdout_tail": "    \"top_3_kinds\": [],\n    \"total_cost_minutes\": 0,\n    \"week_over_week_delta\": 0\n  },\n  \"renewals_due_next_7d\": {\n    \"count\": 0,\n    \"items\": []\n  },\n  \"recent_proof_events\": {\n    \"count\": 0,\n    \"items\": []\n  },\n  \"capital_assets_this_week\": {\n    \"count\": 0,\n    \"items\": []\n  },\n  \"top_recommendations\": [\n    \"No capital asset registered this week — every engagement must produce >= 1 reusable asset (capital_os.add_asset).\"\n  ]\n}",
+      "stderr_tail": ""
+    }
+  ]
+}
