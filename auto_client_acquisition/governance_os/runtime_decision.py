@@ -30,30 +30,40 @@ _NEGATED_EN = re.compile(
 # A refund / money-back guarantee is a service guarantee, not a guaranteed
 # sales OUTCOME — permitted, so neutralized before the affirmative check.
 _REFUND_AR = re.compile(r"نضمن\s*استرجاع")
+_REFUND_EN = re.compile(
+    r"\b(?:money.?back|refunds?)\b[\w%\s,/;:()'-]{0,15}?\bguarantee[ds]?\b"
+    r"|guarantee[ds]?\b[\w%\s,/;:()'-]{0,15}?\b(?:money.?back|refunds?)\b",
+    re.IGNORECASE,
+)
 
 _AR_OUTCOME = r"نتائج|نتيجة|مبيعات|أرباح|إيرادات|إيراد|عوائد|نمو|صفقات|عملاء"
 # Affirmative Arabic guarantee — the verb نضمن, an outcome noun paired with
 # the adjective مضمون or the noun ضمان (either order), or the "ربح مؤكد" idiom.
+# Outcome/adjective gaps allow Arabic and Latin commas.
 _AFFIRMATIVE_GUARANTEE_AR = re.compile(
     rf"نضمن"
-    rf"|(?:{_AR_OUTCOME})\s*مضمون"
-    rf"|مضمون[ةه]?\s*(?:{_AR_OUTCOME})"
-    rf"|ضمان\s*(?:{_AR_OUTCOME})"
-    rf"|(?:{_AR_OUTCOME})\s*ضمان"
+    rf"|(?:{_AR_OUTCOME})[\s،,]*مضمون"
+    rf"|مضمون[ةه]?[\s،,]*(?:{_AR_OUTCOME})"
+    rf"|ضمان[\s،,]*(?:{_AR_OUTCOME})"
+    rf"|(?:{_AR_OUTCOME})[\s،,]*ضمان"
     rf"|ربح\s*مؤكد"
 )
 _EN_OUTCOME = (
     r"revenue|sales?|results?|roi|growth|deals?|leads?|customers?|"
     r"conversions?|profit|income|outcomes?"
 )
-# Affirmative English guarantee — verb/adjective near an outcome noun in
-# EITHER order ("guarantee revenue" / "revenue is guaranteed"), or a
-# first-person promise.
+# Gap between "guarantee" and an outcome word — includes punctuation so a
+# comma/slash ("guaranteed, results", "revenue/guaranteed") cannot suppress
+# the match.
+_GAP = r"[\w%\s,/;:()'-]"
+# Affirmative English guarantee — "guarantee" adjacent to an outcome noun in
+# EITHER order. A bare first-person "we guarantee X" is NOT matched here: it
+# is a guaranteed-OUTCOME claim only when X is an outcome (caught by the
+# outcome branches); "we guarantee a refund / a response" is not an outcome.
 _AFFIRMATIVE_GUARANTEE_EN = re.compile(
-    rf"guarantee[ds]?\b[\w%\s-]{{0,20}}?\b(?:{_EN_OUTCOME})\b"
-    rf"|\b(?:{_EN_OUTCOME})\b[\w%\s-]{{0,15}}?\bguarantee[ds]?\b"
-    rf"|\b(?:we|i)\s+guarantee\b"
-    rf"|100\s*%?\s*guarantee[ds]?|guarantee[ds]?\s+100",
+    rf"guarantee[ds]?\b{_GAP}{{0,20}}?\b(?:{_EN_OUTCOME})\b"
+    rf"|\b(?:{_EN_OUTCOME})\b{_GAP}{{0,15}}?\bguarantee[ds]?\b"
+    rf"|100\s*%?\s*guarantee[ds]?\b",
     re.IGNORECASE,
 )
 
@@ -69,7 +79,7 @@ def _contains_guaranteed_claim(text: str) -> bool:
     neutral_ar = _REFUND_AR.sub(" ", _NEGATED_AR.sub(" ", text))
     if _AFFIRMATIVE_GUARANTEE_AR.search(neutral_ar):
         return True
-    neutral_en = _NEGATED_EN.sub(" ", text.lower())
+    neutral_en = _REFUND_EN.sub(" ", _NEGATED_EN.sub(" ", text.lower()))
     return _AFFIRMATIVE_GUARANTEE_EN.search(neutral_en) is not None
 
 

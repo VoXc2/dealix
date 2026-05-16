@@ -239,6 +239,24 @@ def test_step5_allows_refund_guarantee():
     assert "block" not in {r["decision"] for r in out["reviews"]}
 
 
+def test_step5_handles_punctuation_and_service_guarantees():
+    """Punctuation-separated outcome claims are blocked; a refund or
+    non-outcome service "we guarantee X" is not a guaranteed-outcome claim."""
+    drafts = [
+        {"account": "A", "outline_ar": "نص آمن",
+         "outline_en": "guaranteed, results in 30 days"},
+        {"account": "B", "outline_ar": "نص آمن",
+         "outline_en": "we guarantee a full refund within 7 days"},
+        {"account": "C", "outline_ar": "نص آمن",
+         "outline_en": "we guarantee a response within 24 hours"},
+    ]
+    out = step5_governance_review(customer_id="x", engagement_id="e1", drafts=drafts)
+    by = {r["account"]: r["decision"] for r in out["reviews"]}
+    assert by["A"] == "block"
+    assert by["B"] != "block"
+    assert by["C"] != "block"
+
+
 def test_step5_blocks_guarantee_after_unrelated_negation():
     """A negator that negates a *different* word must not let an affirmative
     guarantee bypass the gate ("without risk we guarantee revenue")."""
