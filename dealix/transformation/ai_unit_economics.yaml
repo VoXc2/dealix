@@ -1,0 +1,8 @@
+version: 1
+program: dealix_200_strategic_initiatives
+metric_key: ai_cost_per_measured_revenue_sar
+formula: total_ai_spend_sar / max(measured_customer_value_sar, 1)
+ledger_kind: ai_spend
+guardrails:
+  max_ratio_without_review: 0.35
+  review_owner: enterprise_control_plane_owner

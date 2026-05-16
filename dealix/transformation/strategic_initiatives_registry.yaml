@@ -1,14 +1,17 @@
-version: 1
-program: dealix_100_strategic_initiatives
+version: 2
+program: dealix_200_strategic_initiatives
+initiative_target: 200
 north_star_program_link: dealix/transformation/north_star_manifest.yaml
 initiatives:
 - id: 1
   key: initiative_001
   title_en: Unified North Star across layers
   title_ar: Unified North Star across layers
+  phase: 1
   wave: 0
   owner_os: strategy
   status: active
+  impact_tier: critical
   raci:
     R: CEO
     A: founder
@@ -20,9 +23,11 @@ initiatives:
   key: initiative_002
   title_en: Constitution to Policy-as-Code
   title_ar: Constitution to Policy-as-Code
+  phase: 1
   wave: 1
   owner_os: trust
   status: proposed
+  impact_tier: high
   raci:
     R: CTO
     A: enterprise_control_plane_owner
@@ -34,9 +39,11 @@ initiatives:
   key: initiative_003
   title_en: API domain ownership reorganization
   title_ar: API domain ownership reorganization
+  phase: 1
   wave: 2
   owner_os: platform
   status: proposed
+  impact_tier: high
   raci:
     R: CTO
     A: enterprise_control_plane_owner
@@ -48,9 +55,11 @@ initiatives:
   key: initiative_004
   title_en: Product Evidence Review Board weekly
   title_ar: Product Evidence Review Board weekly
+  phase: 1
   wave: 4
   owner_os: product
   status: proposed
+  impact_tier: high
   raci:
     R: CEO
     A: founder
@@ -62,9 +71,11 @@ initiatives:
   key: initiative_005
   title_en: KPI Registry SSOT
   title_ar: KPI Registry SSOT
+  phase: 1
   wave: 0
   owner_os: strategy
   status: active
+  impact_tier: critical
   raci:
     R: CEO
     A: founder
@@ -76,9 +87,11 @@ initiatives:
   key: initiative_006
   title_en: Revenue attribution per commercial path
   title_ar: Revenue attribution per commercial path
+  phase: 1
   wave: 3
   owner_os: value
   status: proposed
+  impact_tier: high
   raci:
     R: Revenue
     A: founder_sales_owner
@@ -90,9 +103,11 @@ initiatives:
   key: initiative_007
   title_en: Fast Lane vs Governed Lane
   title_ar: Fast Lane vs Governed Lane
+  phase: 1
   wave: 1
   owner_os: trust
   status: proposed
+  impact_tier: high
   raci:
     R: CTO
     A: enterprise_control_plane_owner
@@ -104,9 +119,11 @@ initiatives:
   key: initiative_008
   title_en: Productized offers from capabilities
   title_ar: Productized offers from capabilities
+  phase: 1
   wave: 3
   owner_os: gtm
   status: proposed
+  impact_tier: high
   raci:
     R: Revenue
     A: founder_sales_owner
@@ -118,9 +135,11 @@ initiatives:
   key: initiative_009
   title_en: Upsell engine evidence-level gating
   title_ar: Upsell engine evidence-level gating
+  phase: 1
   wave: 3
   owner_os: sales
   status: proposed
+  impact_tier: high
   raci:
     R: Revenue
     A: founder_sales_owner
@@ -132,9 +151,11 @@ initiatives:
   key: initiative_010
   title_en: Saudi vertical GTM framework
   title_ar: Saudi vertical GTM framework
+  phase: 1
   wave: 3
   owner_os: gtm
   status: proposed
+  impact_tier: high
   raci:
     R: Revenue
     A: founder_sales_owner
@@ -146,9 +167,11 @@ initiatives:
   key: initiative_011
   title_en: Data Quality Operating System
   title_ar: Data Quality Operating System
+  phase: 1
   wave: 5
   owner_os: data
   status: proposed
+  impact_tier: high
   raci:
     R: Operations
     A: delivery_factory_owner
@@ -160,9 +183,11 @@ initiatives:
   key: initiative_012
   title_en: Error budget SLO per API domain
   title_ar: Error budget SLO per API domain
+  phase: 1
   wave: 2
   owner_os: reliability
   status: proposed
+  impact_tier: high
   raci:
     R: CTO
     A: enterprise_control_plane_owner
@@ -174,9 +199,11 @@ initiatives:
   key: initiative_013
   title_en: Deal Desk operating layer
   title_ar: Deal Desk operating layer
+  phase: 1
   wave: 3
   owner_os: sales
   status: active
+  impact_tier: critical
   raci:
     R: Revenue
     A: founder_sales_owner
@@ -188,9 +215,11 @@ initiatives:
   key: initiative_014
   title_en: First 14 days onboarding program
   title_ar: First 14 days onboarding program
+  phase: 1
   wave: 6
   owner_os: delivery
   status: proposed
+  impact_tier: high
   raci:
     R: Operations
     A: delivery_factory_owner
@@ -202,9 +231,11 @@ initiatives:
   key: initiative_015
   title_en: Live risk register linked to execution
   title_ar: Live risk register linked to execution
+  phase: 1
   wave: 1
   owner_os: trust
   status: proposed
+  impact_tier: high
   raci:
     R: CEO
     A: founder
@@ -216,9 +247,11 @@ initiatives:
   key: initiative_016
   title_en: Incident command via security runbook
   title_ar: Incident command via security runbook
+  phase: 1
   wave: 1
   owner_os: reliability
   status: proposed
+  impact_tier: high
   raci:
     R: CTO
     A: enterprise_control_plane_owner
@@ -230,9 +263,11 @@ initiatives:
   key: initiative_017
   title_en: Value-based pricing engine
   title_ar: Value-based pricing engine
+  phase: 1
   wave: 3
   owner_os: finance
   status: proposed
+  impact_tier: high
   raci:
     R: Revenue
     A: founder_sales_owner
@@ -244,9 +279,11 @@ initiatives:
   key: initiative_018
   title_en: Customer value narrative framework
   title_ar: Customer value narrative framework
+  phase: 1
   wave: 6
   owner_os: delivery
   status: proposed
+  impact_tier: high
   raci:
     R: Operations
     A: delivery_factory_owner
@@ -258,9 +295,11 @@ initiatives:
   key: initiative_019
   title_en: Dealix capability map
   title_ar: Dealix capability map
+  phase: 1
   wave: 4
   owner_os: product
   status: proposed
+  impact_tier: high
   raci:
     R: CEO
     A: founder
@@ -272,9 +311,11 @@ initiatives:
   key: initiative_020
   title_en: Quarterly strategic bets portfolio
   title_ar: Quarterly strategic bets portfolio
+  phase: 1
   wave: 8
   owner_os: strategy
   status: proposed
+  impact_tier: high
   raci:
     R: CEO
     A: founder
@@ -286,9 +327,11 @@ initiatives:
   key: initiative_021
   title_en: Proof pack productization for sales
   title_ar: Proof pack productization for sales
+  phase: 1
   wave: 3
   owner_os: sales
   status: proposed
+  impact_tier: high
   raci:
     R: Revenue
     A: founder_sales_owner
@@ -300,9 +343,11 @@ initiatives:
   key: initiative_022
   title_en: Pipeline decay alerts
   title_ar: Pipeline decay alerts
+  phase: 1
   wave: 3
   owner_os: sales
   status: proposed
+  impact_tier: high
   raci:
     R: Revenue
     A: founder_sales_owner
@@ -314,9 +359,11 @@ initiatives:
   key: initiative_023
   title_en: Decision postmortem loop
   title_ar: Decision postmortem loop
+  phase: 1
   wave: 4
   owner_os: strategy
   status: proposed
+  impact_tier: high
   raci:
     R: CEO
     A: founder
@@ -328,9 +375,11 @@ initiatives:
   key: initiative_024
   title_en: Saudi compliance control plane
   title_ar: Saudi compliance control plane
+  phase: 1
   wave: 1
   owner_os: trust
   status: proposed
+  impact_tier: high
   raci:
     R: CTO
     A: enterprise_control_plane_owner
@@ -342,9 +391,11 @@ initiatives:
   key: initiative_025
   title_en: Partner strategy execution layer
   title_ar: Partner strategy execution layer
+  phase: 1
   wave: 3
   owner_os: gtm
   status: proposed
+  impact_tier: high
   raci:
     R: Revenue
     A: founder_sales_owner
@@ -356,9 +407,11 @@ initiatives:
   key: initiative_026
   title_en: Executive daily weekly rhythm 2.0
   title_ar: Executive daily weekly rhythm 2.0
+  phase: 1
   wave: 0
   owner_os: strategy
   status: proposed
+  impact_tier: high
   raci:
     R: CEO
     A: founder
@@ -370,9 +423,11 @@ initiatives:
   key: initiative_027
   title_en: Time to first value acceleration
   title_ar: Time to first value acceleration
+  phase: 1
   wave: 6
   owner_os: delivery
   status: proposed
+  impact_tier: high
   raci:
     R: Operations
     A: delivery_factory_owner
@@ -384,9 +439,11 @@ initiatives:
   key: initiative_028
   title_en: AI workforce governance unified
   title_ar: AI workforce governance unified
+  phase: 1
   wave: 1
   owner_os: trust
   status: proposed
+  impact_tier: high
   raci:
     R: CTO
     A: enterprise_control_plane_owner
@@ -398,9 +455,11 @@ initiatives:
   key: initiative_029
   title_en: Margin expansion OS
   title_ar: Margin expansion OS
+  phase: 1
   wave: 8
   owner_os: finance
   status: proposed
+  impact_tier: high
   raci:
     R: CEO
     A: founder
@@ -412,9 +471,11 @@ initiatives:
   key: initiative_030
   title_en: Script lifecycle governance
   title_ar: Script lifecycle governance
+  phase: 1
   wave: 2
   owner_os: platform
   status: proposed
+  impact_tier: high
   raci:
     R: CTO
     A: enterprise_control_plane_owner
@@ -426,9 +487,11 @@ initiatives:
   key: initiative_031
   title_en: Launch war room protocol
   title_ar: Launch war room protocol
+  phase: 1
   wave: 7
   owner_os: reliability
   status: proposed
+  impact_tier: high
   raci:
     R: CTO
     A: enterprise_control_plane_owner
@@ -440,9 +503,11 @@ initiatives:
   key: initiative_032
   title_en: Strategy to execution traceability
   title_ar: Strategy to execution traceability
+  phase: 1
   wave: 0
   owner_os: strategy
   status: proposed
+  impact_tier: high
   raci:
     R: CEO
     A: founder
@@ -454,9 +519,11 @@ initiatives:
   key: initiative_033
   title_en: Dealix Method Academy
   title_ar: Dealix Method Academy
+  phase: 1
   wave: 10
   owner_os: people_ops
   status: proposed
+  impact_tier: high
   raci:
     R: CEO
     A: founder
@@ -468,9 +535,11 @@ initiatives:
   key: initiative_034
   title_en: Objection intelligence system
   title_ar: Objection intelligence system
+  phase: 1
   wave: 3
   owner_os: sales
   status: proposed
+  impact_tier: high
   raci:
     R: Revenue
     A: founder_sales_owner
@@ -482,9 +551,11 @@ initiatives:
   key: initiative_035
   title_en: Unified readiness Go No-Go API
   title_ar: Unified readiness Go No-Go API
+  phase: 1
   wave: 1
   owner_os: platform
   status: active
+  impact_tier: critical
   raci:
     R: CTO
     A: enterprise_control_plane_owner
@@ -496,9 +567,11 @@ initiatives:
   key: initiative_036
   title_en: Executive knowledge graph
   title_ar: Executive knowledge graph
+  phase: 1
   wave: 5
   owner_os: platform
   status: proposed
+  impact_tier: high
   raci:
     R: CTO
     A: enterprise_control_plane_owner
@@ -510,9 +583,11 @@ initiatives:
   key: initiative_037
   title_en: BU level scorecards
   title_ar: BU level scorecards
+  phase: 1
   wave: 4
   owner_os: finance
   status: proposed
+  impact_tier: high
   raci:
     R: CEO
     A: founder
@@ -524,9 +599,11 @@ initiatives:
   key: initiative_038
   title_en: Enterprise sales motion hardening
   title_ar: Enterprise sales motion hardening
+  phase: 1
   wave: 3
   owner_os: gtm
   status: proposed
+  impact_tier: high
   raci:
     R: Revenue
     A: founder_sales_owner
@@ -538,9 +615,11 @@ initiatives:
   key: initiative_039
   title_en: Growth critical tech debt program
   title_ar: Growth critical tech debt program
+  phase: 1
   wave: 2
   owner_os: platform
   status: proposed
+  impact_tier: high
   raci:
     R: CTO
     A: enterprise_control_plane_owner
@@ -552,9 +631,11 @@ initiatives:
   key: initiative_040
   title_en: Service readiness standardization
   title_ar: Service readiness standardization
+  phase: 1
   wave: 4
   owner_os: delivery
   status: proposed
+  impact_tier: high
   raci:
     R: Operations
     A: delivery_factory_owner
@@ -566,9 +647,11 @@ initiatives:
   key: initiative_041
   title_en: Decision quality index leadership
   title_ar: Decision quality index leadership
+  phase: 1
   wave: 4
   owner_os: strategy
   status: proposed
+  impact_tier: high
   raci:
     R: CEO
     A: founder
@@ -580,9 +663,11 @@ initiatives:
   key: initiative_042
   title_en: Institution mode beyond founder
   title_ar: Institution mode beyond founder
+  phase: 1
   wave: 10
   owner_os: people_ops
   status: proposed
+  impact_tier: high
   raci:
     R: CEO
     A: founder
@@ -594,9 +679,11 @@ initiatives:
   key: initiative_043
   title_en: Customer facing API documentation
   title_ar: Customer facing API documentation
+  phase: 1
   wave: 2
   owner_os: product
   status: proposed
+  impact_tier: high
   raci:
     R: CTO
     A: enterprise_control_plane_owner
@@ -608,9 +695,11 @@ initiatives:
   key: initiative_044
   title_en: Lead scoring calibration program
   title_ar: Lead scoring calibration program
+  phase: 1
   wave: 5
   owner_os: data
   status: proposed
+  impact_tier: high
   raci:
     R: Operations
     A: delivery_factory_owner
@@ -622,9 +711,11 @@ initiatives:
   key: initiative_045
   title_en: Global transformation program office
   title_ar: Global transformation program office
+  phase: 1
   wave: 0
   owner_os: strategy
   status: proposed
+  impact_tier: high
   raci:
     R: CEO
     A: founder
@@ -636,9 +727,11 @@ initiatives:
   key: initiative_046
   title_en: Decision brief standard for reports
   title_ar: Decision brief standard for reports
+  phase: 1
   wave: 4
   owner_os: strategy
   status: proposed
+  impact_tier: high
   raci:
     R: CEO
     A: founder
@@ -650,9 +743,11 @@ initiatives:
   key: initiative_047
   title_en: Revenue OS monetization blueprint
   title_ar: Revenue OS monetization blueprint
+  phase: 1
   wave: 3
   owner_os: sales
   status: proposed
+  impact_tier: high
   raci:
     R: Revenue
     A: founder_sales_owner
@@ -664,9 +759,11 @@ initiatives:
   key: initiative_048
   title_en: Trust and assurance client dashboard
   title_ar: Trust and assurance client dashboard
+  phase: 1
   wave: 4
   owner_os: trust
   status: proposed
+  impact_tier: high
   raci:
     R: CTO
     A: enterprise_control_plane_owner
@@ -678,9 +775,11 @@ initiatives:
   key: initiative_049
   title_en: Experimentation OS with guardrails
   title_ar: Experimentation OS with guardrails
+  phase: 1
   wave: 1
   owner_os: product
   status: proposed
+  impact_tier: high
   raci:
     R: CTO
     A: enterprise_control_plane_owner
@@ -692,9 +791,11 @@ initiatives:
   key: initiative_050
   title_en: 12 month platform first roadmap
   title_ar: 12 month platform first roadmap
+  phase: 1
   wave: 9
   owner_os: strategy
   status: proposed
+  impact_tier: high
   raci:
     R: CEO
     A: founder
@@ -706,9 +807,11 @@ initiatives:
   key: initiative_051
   title_en: Unified operating calendar
   title_ar: Unified operating calendar
+  phase: 1
   wave: 0
   owner_os: strategy
   status: proposed
+  impact_tier: high
   raci:
     R: CEO
     A: founder
@@ -720,9 +823,11 @@ initiatives:
   key: initiative_052
   title_en: Priority arbitration framework
   title_ar: Priority arbitration framework
+  phase: 1
   wave: 0
   owner_os: strategy
   status: proposed
+  impact_tier: high
   raci:
     R: CEO
     A: founder
@@ -734,9 +839,11 @@ initiatives:
   key: initiative_053
   title_en: Unified executive command center
   title_ar: Unified executive command center
+  phase: 1
   wave: 4
   owner_os: product
   status: proposed
+  impact_tier: high
   raci:
     R: CEO
     A: founder
@@ -748,9 +855,11 @@ initiatives:
   key: initiative_054
   title_en: Voice of customer institutional
   title_ar: Voice of customer institutional
+  phase: 1
   wave: 4
   owner_os: product
   status: proposed
+  impact_tier: high
   raci:
     R: CEO
     A: founder
@@ -762,9 +871,11 @@ initiatives:
   key: initiative_055
   title_en: Definition of done unified
   title_ar: Definition of done unified
+  phase: 1
   wave: 4
   owner_os: delivery
   status: proposed
+  impact_tier: high
   raci:
     R: Operations
     A: delivery_factory_owner
@@ -776,9 +887,11 @@ initiatives:
   key: initiative_056
   title_en: Strategic dependency graph
   title_ar: Strategic dependency graph
+  phase: 1
   wave: 4
   owner_os: strategy
   status: proposed
+  impact_tier: high
   raci:
     R: CEO
     A: founder
@@ -790,9 +903,11 @@ initiatives:
   key: initiative_057
   title_en: Commercial translation L0-L5
   title_ar: Commercial translation L0-L5
+  phase: 1
   wave: 3
   owner_os: sales
   status: proposed
+  impact_tier: high
   raci:
     R: Revenue
     A: founder_sales_owner
@@ -804,9 +919,11 @@ initiatives:
   key: initiative_058
   title_en: Land and expand motion
   title_ar: Land and expand motion
+  phase: 1
   wave: 3
   owner_os: sales
   status: proposed
+  impact_tier: high
   raci:
     R: Revenue
     A: founder_sales_owner
@@ -818,9 +935,11 @@ initiatives:
   key: initiative_059
   title_en: Standardized QBRs
   title_ar: Standardized QBRs
+  phase: 1
   wave: 6
   owner_os: delivery
   status: proposed
+  impact_tier: high
   raci:
     R: Operations
     A: delivery_factory_owner
@@ -832,9 +951,11 @@ initiatives:
   key: initiative_060
   title_en: Commercial forecast accuracy program
   title_ar: Commercial forecast accuracy program
+  phase: 1
   wave: 3
   owner_os: finance
   status: proposed
+  impact_tier: high
   raci:
     R: Revenue
     A: founder_sales_owner
@@ -846,9 +967,11 @@ initiatives:
   key: initiative_061
   title_en: Strategic PMO lightweight
   title_ar: Strategic PMO lightweight
+  phase: 1
   wave: 10
   owner_os: strategy
   status: proposed
+  impact_tier: high
   raci:
     R: CEO
     A: founder
@@ -860,9 +983,11 @@ initiatives:
   key: initiative_062
   title_en: Zero blind spots observability
   title_ar: Zero blind spots observability
+  phase: 1
   wave: 2
   owner_os: observability
   status: proposed
+  impact_tier: high
   raci:
     R: CTO
     A: enterprise_control_plane_owner
@@ -874,9 +999,11 @@ initiatives:
   key: initiative_063
   title_en: Cost to serve per customer
   title_ar: Cost to serve per customer
+  phase: 1
   wave: 8
   owner_os: finance
   status: proposed
+  impact_tier: high
   raci:
     R: CEO
     A: founder
@@ -888,9 +1015,11 @@ initiatives:
   key: initiative_064
   title_en: Contract intelligence tracking
   title_ar: Contract intelligence tracking
+  phase: 1
   wave: 8
   owner_os: finance
   status: proposed
+  impact_tier: high
   raci:
     R: CEO
     A: founder
@@ -902,9 +1031,11 @@ initiatives:
   key: initiative_065
   title_en: Business glossary unified
   title_ar: Business glossary unified
+  phase: 1
   wave: 5
   owner_os: data
   status: proposed
+  impact_tier: high
   raci:
     R: Operations
     A: delivery_factory_owner
@@ -916,9 +1047,11 @@ initiatives:
   key: initiative_066
   title_en: Regional expansion readiness
   title_ar: Regional expansion readiness
+  phase: 1
   wave: 9
   owner_os: strategy
   status: proposed
+  impact_tier: high
   raci:
     R: CEO
     A: founder
@@ -930,9 +1063,11 @@ initiatives:
   key: initiative_067
   title_en: PMF signal engine
   title_ar: PMF signal engine
+  phase: 1
   wave: 4
   owner_os: product
   status: proposed
+  impact_tier: high
   raci:
     R: CEO
     A: founder
@@ -944,9 +1079,11 @@ initiatives:
   key: initiative_068
   title_en: Customer health intelligence
   title_ar: Customer health intelligence
+  phase: 1
   wave: 5
   owner_os: delivery
   status: proposed
+  impact_tier: high
   raci:
     R: Operations
     A: delivery_factory_owner
@@ -958,9 +1095,11 @@ initiatives:
   key: initiative_069
   title_en: Execution quality score per team
   title_ar: Execution quality score per team
+  phase: 1
   wave: 7
   owner_os: delivery
   status: proposed
+  impact_tier: high
   raci:
     R: Operations
     A: delivery_factory_owner
@@ -972,9 +1111,11 @@ initiatives:
   key: initiative_070
   title_en: Enterprise anti-waste framework
   title_ar: Enterprise anti-waste framework
+  phase: 1
   wave: 4
   owner_os: trust
   status: proposed
+  impact_tier: high
   raci:
     R: CTO
     A: enterprise_control_plane_owner
@@ -986,9 +1127,11 @@ initiatives:
   key: initiative_071
   title_en: Trust by design product wide
   title_ar: Trust by design product wide
+  phase: 1
   wave: 1
   owner_os: trust
   status: proposed
+  impact_tier: high
   raci:
     R: CTO
     A: enterprise_control_plane_owner
@@ -1000,9 +1143,11 @@ initiatives:
   key: initiative_072
   title_en: Executive simulation drills
   title_ar: Executive simulation drills
+  phase: 1
   wave: 7
   owner_os: strategy
   status: proposed
+  impact_tier: high
   raci:
     R: CEO
     A: founder
@@ -1014,9 +1159,11 @@ initiatives:
   key: initiative_073
   title_en: Revenue assurance program
   title_ar: Revenue assurance program
+  phase: 1
   wave: 3
   owner_os: finance
   status: proposed
+  impact_tier: high
   raci:
     R: Revenue
     A: founder_sales_owner
@@ -1028,9 +1175,11 @@ initiatives:
   key: initiative_074
   title_en: Buy build partner map
   title_ar: Buy build partner map
+  phase: 1
   wave: 8
   owner_os: platform
   status: proposed
+  impact_tier: high
   raci:
     R: CTO
     A: enterprise_control_plane_owner
@@ -1042,9 +1191,11 @@ initiatives:
   key: initiative_075
   title_en: Strategic narrative consistency
   title_ar: Strategic narrative consistency
+  phase: 1
   wave: 4
   owner_os: strategy
   status: proposed
+  impact_tier: high
   raci:
     R: CEO
     A: founder
@@ -1056,9 +1207,11 @@ initiatives:
   key: initiative_076
   title_en: Delivery excellence framework
   title_ar: Delivery excellence framework
+  phase: 1
   wave: 6
   owner_os: delivery
   status: proposed
+  impact_tier: high
   raci:
     R: Operations
     A: delivery_factory_owner
@@ -1070,9 +1223,11 @@ initiatives:
   key: initiative_077
   title_en: Meeting operating system
   title_ar: Meeting operating system
+  phase: 1
   wave: 0
   owner_os: strategy
   status: proposed
+  impact_tier: high
   raci:
     R: CEO
     A: founder
@@ -1084,9 +1239,11 @@ initiatives:
   key: initiative_078
   title_en: Talent density critical teams
   title_ar: Talent density critical teams
+  phase: 1
   wave: 10
   owner_os: people_ops
   status: proposed
+  impact_tier: high
   raci:
     R: CEO
     A: founder
@@ -1098,9 +1255,11 @@ initiatives:
   key: initiative_079
   title_en: Knowledge retention program
   title_ar: Knowledge retention program
+  phase: 1
   wave: 10
   owner_os: people_ops
   status: proposed
+  impact_tier: high
   raci:
     R: CEO
     A: founder
@@ -1112,9 +1271,11 @@ initiatives:
   key: initiative_080
   title_en: Governed innovation pipeline
   title_ar: Governed innovation pipeline
+  phase: 1
   wave: 1
   owner_os: product
   status: proposed
+  impact_tier: high
   raci:
     R: CTO
     A: enterprise_control_plane_owner
@@ -1126,9 +1287,11 @@ initiatives:
   key: initiative_081
   title_en: Enterprise audit readiness kit
   title_ar: Enterprise audit readiness kit
+  phase: 1
   wave: 9
   owner_os: trust
   status: proposed
+  impact_tier: high
   raci:
     R: CTO
     A: enterprise_control_plane_owner
@@ -1140,9 +1303,11 @@ initiatives:
   key: initiative_082
   title_en: API product tiering
   title_ar: API product tiering
+  phase: 1
   wave: 2
   owner_os: platform
   status: proposed
+  impact_tier: high
   raci:
     R: CTO
     A: enterprise_control_plane_owner
@@ -1154,9 +1319,11 @@ initiatives:
   key: initiative_083
   title_en: Customer segment strategy map
   title_ar: Customer segment strategy map
+  phase: 1
   wave: 3
   owner_os: gtm
   status: proposed
+  impact_tier: high
   raci:
     R: Revenue
     A: founder_sales_owner
@@ -1168,9 +1335,11 @@ initiatives:
   key: initiative_084
   title_en: Strategic risk heatmap quarterly
   title_ar: Strategic risk heatmap quarterly
+  phase: 1
   wave: 8
   owner_os: strategy
   status: proposed
+  impact_tier: high
   raci:
     R: CEO
     A: founder
@@ -1182,9 +1351,11 @@ initiatives:
   key: initiative_085
   title_en: Renewal expansion intelligence
   title_ar: Renewal expansion intelligence
+  phase: 1
   wave: 3
   owner_os: sales
   status: proposed
+  impact_tier: high
   raci:
     R: Revenue
     A: founder_sales_owner
@@ -1196,9 +1367,11 @@ initiatives:
   key: initiative_086
   title_en: Service blueprint library
   title_ar: Service blueprint library
+  phase: 1
   wave: 6
   owner_os: delivery
   status: proposed
+  impact_tier: high
   raci:
     R: Operations
     A: delivery_factory_owner
@@ -1210,9 +1383,11 @@ initiatives:
   key: initiative_087
   title_en: Internal benchmarking program
   title_ar: Internal benchmarking program
+  phase: 1
   wave: 7
   owner_os: strategy
   status: proposed
+  impact_tier: high
   raci:
     R: CEO
     A: founder
@@ -1224,9 +1399,11 @@ initiatives:
   key: initiative_088
   title_en: Escalation clarity unified
   title_ar: Escalation clarity unified
+  phase: 1
   wave: 7
   owner_os: strategy
   status: proposed
+  impact_tier: high
   raci:
     R: CEO
     A: founder
@@ -1238,9 +1415,11 @@ initiatives:
   key: initiative_089
   title_en: Strategic automation map
   title_ar: Strategic automation map
+  phase: 1
   wave: 7
   owner_os: platform
   status: proposed
+  impact_tier: high
   raci:
     R: CTO
     A: enterprise_control_plane_owner
@@ -1252,9 +1431,11 @@ initiatives:
   key: initiative_090
   title_en: Executive KPI narratives
   title_ar: Executive KPI narratives
+  phase: 1
   wave: 4
   owner_os: finance
   status: proposed
+  impact_tier: high
   raci:
     R: CEO
     A: founder
@@ -1266,9 +1447,11 @@ initiatives:
   key: initiative_091
   title_en: Multi product readiness
   title_ar: Multi product readiness
+  phase: 1
   wave: 9
   owner_os: product
   status: proposed
+  impact_tier: high
   raci:
     R: CTO
     A: enterprise_control_plane_owner
@@ -1280,9 +1463,11 @@ initiatives:
   key: initiative_092
   title_en: Strategic customer council
   title_ar: Strategic customer council
+  phase: 1
   wave: 6
   owner_os: gtm
   status: proposed
+  impact_tier: high
   raci:
     R: CEO
     A: founder
@@ -1294,9 +1479,11 @@ initiatives:
   key: initiative_093
   title_en: Quality of revenue indicator
   title_ar: Quality of revenue indicator
+  phase: 1
   wave: 8
   owner_os: finance
   status: proposed
+  impact_tier: high
   raci:
     R: CEO
     A: founder
@@ -1308,9 +1495,11 @@ initiatives:
   key: initiative_094
   title_en: Strategic scenario planning 12-24m
   title_ar: Strategic scenario planning 12-24m
+  phase: 1
   wave: 8
   owner_os: strategy
   status: proposed
+  impact_tier: high
   raci:
     R: CEO
     A: founder
@@ -1322,9 +1511,11 @@ initiatives:
   key: initiative_095
   title_en: Board ready operating system
   title_ar: Board ready operating system
+  phase: 1
   wave: 9
   owner_os: strategy
   status: proposed
+  impact_tier: high
   raci:
     R: CEO
     A: founder
@@ -1336,9 +1527,11 @@ initiatives:
   key: initiative_096
   title_en: Internal strategic SLAs
   title_ar: Internal strategic SLAs
+  phase: 1
   wave: 7
   owner_os: operations
   status: proposed
+  impact_tier: high
   raci:
     R: CEO
     A: founder
@@ -1350,9 +1543,11 @@ initiatives:
   key: initiative_097
   title_en: Dealix operating playbook single
   title_ar: Dealix operating playbook single
+  phase: 1
   wave: 0
   owner_os: strategy
   status: proposed
+  impact_tier: high
   raci:
     R: CEO
     A: founder
@@ -1364,9 +1559,11 @@ initiatives:
   key: initiative_098
   title_en: Strategic API governance council
   title_ar: Strategic API governance council
+  phase: 1
   wave: 2
   owner_os: platform
   status: proposed
+  impact_tier: high
   raci:
     R: CTO
     A: enterprise_control_plane_owner
@@ -1378,9 +1575,11 @@ initiatives:
   key: initiative_099
   title_en: Capital efficiency growth plan
   title_ar: Capital efficiency growth plan
+  phase: 1
   wave: 8
   owner_os: finance
   status: proposed
+  impact_tier: high
   raci:
     R: CEO
     A: founder
@@ -1392,9 +1591,11 @@ initiatives:
   key: initiative_100
   title_en: Dealix 2030 strategic endgame
   title_ar: Dealix 2030 strategic endgame
+  phase: 1
   wave: 0
   owner_os: strategy
   status: active
+  impact_tier: critical
   raci:
     R: CEO
     A: founder
@@ -1402,3 +1603,1619 @@ initiatives:
     I: finance,delivery
   deliverable: docs/transformation/DEALIX_2030_ENDGAME_AR.md
   verification: verify_global_ai_transformation.py --check-initiatives
+- id: 101
+  key: initiative_101
+  title_en: AI cost per measured revenue SAR
+  title_ar: AI cost per measured revenue SAR
+  phase: 2
+  wave: 11
+  owner_os: finance
+  status: active
+  impact_tier: critical
+  raci:
+    R: CTO
+    A: enterprise_control_plane_owner
+    C: product,trust
+    I: finance,delivery
+  deliverable: dealix/transformation/ai_unit_economics.yaml
+  verification: pytest tests/test_ai_unit_economics.py -q
+- id: 102
+  key: initiative_102
+  title_en: Per-tenant LLM budget guardrails
+  title_ar: Per-tenant LLM budget guardrails
+  phase: 2
+  wave: 11
+  owner_os: platform
+  status: proposed
+  impact_tier: high
+  raci:
+    R: CTO
+    A: enterprise_control_plane_owner
+    C: product,trust
+    I: finance,delivery
+  deliverable: auto_client_acquisition/llm_gateway_v10/budget_policy.yaml
+  verification: pytest tests/test_llm_gateway_v10.py -q
+- id: 103
+  key: initiative_103
+  title_en: Agent action ROI events in value ledger
+  title_ar: Agent action ROI events in value ledger
+  phase: 2
+  wave: 11
+  owner_os: value
+  status: proposed
+  impact_tier: high
+  raci:
+    R: CTO
+    A: enterprise_control_plane_owner
+    C: product,trust
+    I: finance,delivery
+  deliverable: value_os/value_ledger.py ai_spend kind
+  verification: pytest tests/test_value_attribution.py -q
+- id: 104
+  key: initiative_104
+  title_en: Arabic outbound draft grounding eval
+  title_ar: Arabic outbound draft grounding eval
+  phase: 2
+  wave: 11
+  owner_os: trust
+  status: proposed
+  impact_tier: high
+  raci:
+    R: CTO
+    A: enterprise_control_plane_owner
+    C: product,trust
+    I: finance,delivery
+  deliverable: tests/fixtures/arabic_draft_golden.json
+  verification: pytest tests/test_arabic_draft_grounding.py -q
+- id: 105
+  key: initiative_105
+  title_en: Approval queue SLA breach alerts
+  title_ar: Approval queue SLA breach alerts
+  phase: 2
+  wave: 11
+  owner_os: trust
+  status: proposed
+  impact_tier: high
+  raci:
+    R: CTO
+    A: enterprise_control_plane_owner
+    C: product,trust
+    I: finance,delivery
+  deliverable: auto_client_acquisition/control_plane_os/sla_alerts.py
+  verification: pytest tests/test_control_plane_sla_alerts.py -q
+- id: 106
+  key: initiative_106
+  title_en: Prompt version registry
+  title_ar: Prompt version registry
+  phase: 2
+  wave: 11
+  owner_os: trust
+  status: proposed
+  impact_tier: high
+  raci:
+    R: CTO
+    A: enterprise_control_plane_owner
+    C: product,trust
+    I: finance,delivery
+  deliverable: auto_client_acquisition/governance_os/prompt_registry.yaml
+  verification: verify_global_ai_transformation.py --check-initiatives
+- id: 107
+  key: initiative_107
+  title_en: Agent role capability matrix
+  title_ar: Agent role capability matrix
+  phase: 2
+  wave: 11
+  owner_os: platform
+  status: proposed
+  impact_tier: high
+  raci:
+    R: CTO
+    A: enterprise_control_plane_owner
+    C: product,trust
+    I: finance,delivery
+  deliverable: auto_client_acquisition/ai_workforce_v10/capability_matrix.yaml
+  verification: pytest tests/test_ai_workforce_v10.py -q
+- id: 108
+  key: initiative_108
+  title_en: Governance red-team synthetic cases
+  title_ar: Governance red-team synthetic cases
+  phase: 2
+  wave: 11
+  owner_os: trust
+  status: proposed
+  impact_tier: high
+  raci:
+    R: CTO
+    A: enterprise_control_plane_owner
+    C: product,trust
+    I: finance,delivery
+  deliverable: tests/test_governance_red_team.py
+  verification: pytest tests/test_governance_red_team.py -q
+- id: 109
+  key: initiative_109
+  title_en: Token spend anomaly detection
+  title_ar: Token spend anomaly detection
+  phase: 2
+  wave: 11
+  owner_os: observability
+  status: proposed
+  impact_tier: high
+  raci:
+    R: CTO
+    A: enterprise_control_plane_owner
+    C: product,trust
+    I: finance,delivery
+  deliverable: auto_client_acquisition/observability_v10/token_anomaly_rules.yaml
+  verification: pytest tests/test_observability_v10.py -q
+- id: 110
+  key: initiative_110
+  title_en: Human override audit export API
+  title_ar: Human override audit export API
+  phase: 2
+  wave: 11
+  owner_os: trust
+  status: proposed
+  impact_tier: high
+  raci:
+    R: CTO
+    A: enterprise_control_plane_owner
+    C: product,trust
+    I: finance,delivery
+  deliverable: api/routers/audit_export.py
+  verification: pytest tests/test_audit_export_override.py -q
+- id: 111
+  key: initiative_111
+  title_en: Multi-tenant isolation evidence pack
+  title_ar: Multi-tenant isolation evidence pack
+  phase: 2
+  wave: 12
+  owner_os: platform
+  status: active
+  impact_tier: critical
+  raci:
+    R: CTO
+    A: enterprise_control_plane_owner
+    C: product,trust
+    I: finance,delivery
+  deliverable: docs/enterprise/TENANT_ISOLATION_EVIDENCE.md
+  verification: pytest tests/test_tenant_isolation_systems_26_35.py -q
+- id: 112
+  key: initiative_112
+  title_en: Enterprise SSO readiness gate
+  title_ar: Enterprise SSO readiness gate
+  phase: 2
+  wave: 12
+  owner_os: platform
+  status: proposed
+  impact_tier: high
+  raci:
+    R: CTO
+    A: enterprise_control_plane_owner
+    C: product,trust
+    I: finance,delivery
+  deliverable: api/routers/enterprise_sso_readiness.py
+  verification: pytest tests/test_enterprise_sso_readiness.py -q
+- id: 113
+  key: initiative_113
+  title_en: KSA data residency manifest
+  title_ar: KSA data residency manifest
+  phase: 2
+  wave: 12
+  owner_os: trust
+  status: proposed
+  impact_tier: high
+  raci:
+    R: CTO
+    A: enterprise_control_plane_owner
+    C: product,trust
+    I: finance,delivery
+  deliverable: dealix/registers/data_residency_ksa.yaml
+  verification: verify_global_ai_transformation.py --check-initiatives
+- id: 114
+  key: initiative_114
+  title_en: SOC2 control mapping
+  title_ar: SOC2 control mapping
+  phase: 2
+  wave: 12
+  owner_os: trust
+  status: proposed
+  impact_tier: high
+  raci:
+    R: CTO
+    A: enterprise_control_plane_owner
+    C: product,trust
+    I: finance,delivery
+  deliverable: docs/enterprise/SOC2_CONTROL_MAP.md
+  verification: verify_global_ai_transformation.py --check-initiatives
+- id: 115
+  key: initiative_115
+  title_en: Customer audit read-only API
+  title_ar: Customer audit read-only API
+  phase: 2
+  wave: 12
+  owner_os: trust
+  status: proposed
+  impact_tier: high
+  raci:
+    R: CTO
+    A: enterprise_control_plane_owner
+    C: product,trust
+    I: finance,delivery
+  deliverable: api/routers/customer_audit_view.py
+  verification: pytest tests/test_customer_audit_view.py -q
+- id: 116
+  key: initiative_116
+  title_en: Encryption-at-rest checklist
+  title_ar: Encryption-at-rest checklist
+  phase: 2
+  wave: 12
+  owner_os: trust
+  status: proposed
+  impact_tier: high
+  raci:
+    R: CTO
+    A: enterprise_control_plane_owner
+    C: product,trust
+    I: finance,delivery
+  deliverable: docs/enterprise/ENCRYPTION_CHECKLIST.md
+  verification: verify_global_ai_transformation.py --check-initiatives
+- id: 117
+  key: initiative_117
+  title_en: Secrets rotation hooks
+  title_ar: Secrets rotation hooks
+  phase: 2
+  wave: 12
+  owner_os: reliability
+  status: proposed
+  impact_tier: high
+  raci:
+    R: CTO
+    A: enterprise_control_plane_owner
+    C: product,trust
+    I: finance,delivery
+  deliverable: docs/SECURITY_RUNBOOK.md
+  verification: verify_global_ai_transformation.py --check-reliability
+- id: 118
+  key: initiative_118
+  title_en: Security questionnaire generator
+  title_ar: Security questionnaire generator
+  phase: 2
+  wave: 12
+  owner_os: trust
+  status: proposed
+  impact_tier: high
+  raci:
+    R: CTO
+    A: enterprise_control_plane_owner
+    C: product,trust
+    I: finance,delivery
+  deliverable: scripts/generate_security_questionnaire.py
+  verification: python3 scripts/generate_security_questionnaire.py
+- id: 119
+  key: initiative_119
+  title_en: Vendor risk registry
+  title_ar: Vendor risk registry
+  phase: 2
+  wave: 12
+  owner_os: trust
+  status: proposed
+  impact_tier: high
+  raci:
+    R: CTO
+    A: enterprise_control_plane_owner
+    C: product,trust
+    I: finance,delivery
+  deliverable: dealix/registers/vendor_risk.yaml
+  verification: verify_global_ai_transformation.py --check-initiatives
+- id: 120
+  key: initiative_120
+  title_en: Pen-test remediation tracker
+  title_ar: Pen-test remediation tracker
+  phase: 2
+  wave: 12
+  owner_os: trust
+  status: proposed
+  impact_tier: high
+  raci:
+    R: CTO
+    A: enterprise_control_plane_owner
+    C: product,trust
+    I: finance,delivery
+  deliverable: dealix/transformation/pentest_tracker.yaml
+  verification: verify_global_ai_transformation.py --check-initiatives
+- id: 121
+  key: initiative_121
+  title_en: CAC payback API
+  title_ar: CAC payback API
+  phase: 2
+  wave: 13
+  owner_os: finance
+  status: active
+  impact_tier: critical
+  raci:
+    R: Revenue
+    A: founder_sales_owner
+    C: product,trust
+    I: finance,delivery
+  deliverable: api/routers/unit_economics.py
+  verification: pytest tests/test_unit_economics_router.py -q
+- id: 122
+  key: initiative_122
+  title_en: LTV from revenue memory
+  title_ar: LTV from revenue memory
+  phase: 2
+  wave: 13
+  owner_os: finance
+  status: active
+  impact_tier: critical
+  raci:
+    R: Revenue
+    A: founder_sales_owner
+    C: product,trust
+    I: finance,delivery
+  deliverable: auto_client_acquisition/operating_finance_os/ltv_from_events.py
+  verification: pytest tests/test_ltv_from_events.py -q
+- id: 123
+  key: initiative_123
+  title_en: Churn risk composite
+  title_ar: Churn risk composite
+  phase: 2
+  wave: 13
+  owner_os: delivery
+  status: proposed
+  impact_tier: high
+  raci:
+    R: Operations
+    A: delivery_factory_owner
+    C: product,trust
+    I: finance,delivery
+  deliverable: api/routers/customer_success_scores.py
+  verification: pytest tests/test_customer_health_v2.py -q
+- id: 124
+  key: initiative_124
+  title_en: Expansion forecast by proof level
+  title_ar: Expansion forecast by proof level
+  phase: 2
+  wave: 13
+  owner_os: sales
+  status: proposed
+  impact_tier: high
+  raci:
+    R: Revenue
+    A: founder_sales_owner
+    C: product,trust
+    I: finance,delivery
+  deliverable: api/routers/expansion_engine.py
+  verification: pytest tests/test_expansion_forecast.py -q
+- id: 125
+  key: initiative_125
+  title_en: DSO cash collection KPI
+  title_ar: DSO cash collection KPI
+  phase: 2
+  wave: 13
+  owner_os: finance
+  status: proposed
+  impact_tier: high
+  raci:
+    R: Revenue
+    A: founder_sales_owner
+    C: product,trust
+    I: finance,delivery
+  deliverable: dealix/transformation/kpi_registry.yaml
+  verification: verify_global_ai_transformation.py
+- id: 126
+  key: initiative_126
+  title_en: Per-customer unit economics cockpit
+  title_ar: Per-customer unit economics cockpit
+  phase: 2
+  wave: 13
+  owner_os: finance
+  status: proposed
+  impact_tier: high
+  raci:
+    R: Revenue
+    A: founder_sales_owner
+    C: product,trust
+    I: finance,delivery
+  deliverable: api/routers/customer_unit_economics.py
+  verification: pytest tests/test_customer_unit_economics.py -q
+- id: 127
+  key: initiative_127
+  title_en: Margin floor in pricing engine
+  title_ar: Margin floor in pricing engine
+  phase: 2
+  wave: 13
+  owner_os: finance
+  status: proposed
+  impact_tier: high
+  raci:
+    R: Revenue
+    A: founder_sales_owner
+    C: product,trust
+    I: finance,delivery
+  deliverable: auto_client_acquisition/value_os/pricing_engine.py
+  verification: pytest tests/test_pricing_engine.py -q
+- id: 128
+  key: initiative_128
+  title_en: Cohort retention API
+  title_ar: Cohort retention API
+  phase: 2
+  wave: 13
+  owner_os: finance
+  status: proposed
+  impact_tier: high
+  raci:
+    R: Revenue
+    A: founder_sales_owner
+    C: product,trust
+    I: finance,delivery
+  deliverable: api/routers/cohort_retention.py
+  verification: pytest tests/test_cohort_retention.py -q
+- id: 129
+  key: initiative_129
+  title_en: Revenue leakage rules
+  title_ar: Revenue leakage rules
+  phase: 2
+  wave: 13
+  owner_os: sales
+  status: proposed
+  impact_tier: high
+  raci:
+    R: Revenue
+    A: founder_sales_owner
+    C: product,trust
+    I: finance,delivery
+  deliverable: auto_client_acquisition/revenue_os/leakage_rules.yaml
+  verification: bash scripts/revenue_os_master_verify.sh
+- id: 130
+  key: initiative_130
+  title_en: Finance reconciliation weekly
+  title_ar: Finance reconciliation weekly
+  phase: 2
+  wave: 13
+  owner_os: finance
+  status: proposed
+  impact_tier: high
+  raci:
+    R: Revenue
+    A: founder_sales_owner
+    C: product,trust
+    I: finance,delivery
+  deliverable: scripts/run_finance_reconciliation_weekly.sh
+  verification: bash scripts/run_finance_reconciliation_weekly.sh
+- id: 131
+  key: initiative_131
+  title_en: Win loss registry with evidence
+  title_ar: Win loss registry with evidence
+  phase: 2
+  wave: 14
+  owner_os: gtm
+  status: active
+  impact_tier: critical
+  raci:
+    R: CEO
+    A: founder
+    C: product,trust
+    I: finance,delivery
+  deliverable: dealix/registers/win_loss.yaml
+  verification: verify_global_ai_transformation.py --check-initiatives
+- id: 132
+  key: initiative_132
+  title_en: Competitive battlecard library
+  title_ar: Competitive battlecard library
+  phase: 2
+  wave: 14
+  owner_os: gtm
+  status: proposed
+  impact_tier: high
+  raci:
+    R: CEO
+    A: founder
+    C: product,trust
+    I: finance,delivery
+  deliverable: docs/sales-kit/battlecards/README.md
+  verification: verify_global_ai_transformation.py --check-initiatives
+- id: 133
+  key: initiative_133
+  title_en: Analyst briefing pack generator
+  title_ar: Analyst briefing pack generator
+  phase: 2
+  wave: 14
+  owner_os: strategy
+  status: proposed
+  impact_tier: high
+  raci:
+    R: CEO
+    A: founder
+    C: product,trust
+    I: finance,delivery
+  deliverable: scripts/generate_analyst_briefing_pack.py
+  verification: python3 scripts/generate_analyst_briefing_pack.py
+- id: 134
+  key: initiative_134
+  title_en: Category narrative linter
+  title_ar: Category narrative linter
+  phase: 2
+  wave: 14
+  owner_os: strategy
+  status: proposed
+  impact_tier: high
+  raci:
+    R: CEO
+    A: founder
+    C: product,trust
+    I: finance,delivery
+  deliverable: scripts/lint_category_narrative.py
+  verification: python3 scripts/lint_category_narrative.py
+- id: 135
+  key: initiative_135
+  title_en: Market signal to offer mapper v2
+  title_ar: Market signal to offer mapper v2
+  phase: 2
+  wave: 14
+  owner_os: gtm
+  status: proposed
+  impact_tier: high
+  raci:
+    R: Revenue
+    A: founder_sales_owner
+    C: product,trust
+    I: finance,delivery
+  deliverable: api/routers/revenue_os_catalog.py
+  verification: bash scripts/revenue_os_master_verify.sh
+- id: 136
+  key: initiative_136
+  title_en: Founder market signal API hardening
+  title_ar: Founder market signal API hardening
+  phase: 2
+  wave: 14
+  owner_os: gtm
+  status: proposed
+  impact_tier: high
+  raci:
+    R: Revenue
+    A: founder_sales_owner
+    C: product,trust
+    I: finance,delivery
+  deliverable: api/routers/revenue_os_catalog.py
+  verification: pytest tests/test_revenue_os_catalog.py -q
+- id: 137
+  key: initiative_137
+  title_en: Reference customer program
+  title_ar: Reference customer program
+  phase: 2
+  wave: 14
+  owner_os: gtm
+  status: proposed
+  impact_tier: high
+  raci:
+    R: CEO
+    A: founder
+    C: product,trust
+    I: finance,delivery
+  deliverable: docs/transformation/reference_customer_program_ar.md
+  verification: verify_global_ai_transformation.py --check-initiatives
+- id: 138
+  key: initiative_138
+  title_en: Case study approval workflow
+  title_ar: Case study approval workflow
+  phase: 2
+  wave: 14
+  owner_os: sales
+  status: proposed
+  impact_tier: high
+  raci:
+    R: Revenue
+    A: founder_sales_owner
+    C: product,trust
+    I: finance,delivery
+  deliverable: api/routers/case_study_engine.py
+  verification: pytest tests/test_case_study_governance.py -q
+- id: 139
+  key: initiative_139
+  title_en: Category benchmark doc
+  title_ar: Category benchmark doc
+  phase: 2
+  wave: 14
+  owner_os: strategy
+  status: proposed
+  impact_tier: high
+  raci:
+    R: CEO
+    A: founder
+    C: product,trust
+    I: finance,delivery
+  deliverable: docs/strategic/CATEGORY_BENCHMARK_AR.md
+  verification: verify_global_ai_transformation.py --check-initiatives
+- id: 140
+  key: initiative_140
+  title_en: Thought leadership draft gate
+  title_ar: Thought leadership draft gate
+  phase: 2
+  wave: 14
+  owner_os: product
+  status: proposed
+  impact_tier: high
+  raci:
+    R: CEO
+    A: founder
+    C: product,trust
+    I: finance,delivery
+  deliverable: dealix/transformation/lane_policy.yaml
+  verification: pytest tests/test_lane_policy.py -q
+- id: 141
+  key: initiative_141
+  title_en: Feature flag registry linked to lanes
+  title_ar: Feature flag registry linked to lanes
+  phase: 2
+  wave: 15
+  owner_os: platform
+  status: active
+  impact_tier: critical
+  raci:
+    R: CTO
+    A: enterprise_control_plane_owner
+    C: product,trust
+    I: finance,delivery
+  deliverable: dealix/transformation/feature_flags.yaml
+  verification: pytest tests/test_feature_flags_registry.py -q
+- id: 142
+  key: initiative_142
+  title_en: Internal experiment assignment
+  title_ar: Internal experiment assignment
+  phase: 2
+  wave: 15
+  owner_os: product
+  status: proposed
+  impact_tier: high
+  raci:
+    R: CTO
+    A: enterprise_control_plane_owner
+    C: product,trust
+    I: finance,delivery
+  deliverable: platform_core/experiment_assign.py
+  verification: pytest tests/test_experiment_assign.py -q
+- id: 143
+  key: initiative_143
+  title_en: Release train calendar
+  title_ar: Release train calendar
+  phase: 2
+  wave: 15
+  owner_os: platform
+  status: proposed
+  impact_tier: high
+  raci:
+    R: CTO
+    A: enterprise_control_plane_owner
+    C: product,trust
+    I: finance,delivery
+  deliverable: dealix/transformation/release_train.yaml
+  verification: verify_global_ai_transformation.py --check-initiatives
+- id: 144
+  key: initiative_144
+  title_en: API deprecation policy
+  title_ar: API deprecation policy
+  phase: 2
+  wave: 15
+  owner_os: platform
+  status: proposed
+  impact_tier: high
+  raci:
+    R: CTO
+    A: enterprise_control_plane_owner
+    C: product,trust
+    I: finance,delivery
+  deliverable: docs/architecture/API_DEPRECATION_POLICY.md
+  verification: verify_global_ai_transformation.py --check-initiatives
+- id: 145
+  key: initiative_145
+  title_en: Breaking change notification drafts
+  title_ar: Breaking change notification drafts
+  phase: 2
+  wave: 15
+  owner_os: platform
+  status: proposed
+  impact_tier: high
+  raci:
+    R: CTO
+    A: enterprise_control_plane_owner
+    C: product,trust
+    I: finance,delivery
+  deliverable: api/routers/changelog_drafts.py
+  verification: pytest tests/test_changelog_drafts.py -q
+- id: 146
+  key: initiative_146
+  title_en: Product telemetry privacy budget
+  title_ar: Product telemetry privacy budget
+  phase: 2
+  wave: 15
+  owner_os: trust
+  status: proposed
+  impact_tier: high
+  raci:
+    R: CTO
+    A: enterprise_control_plane_owner
+    C: product,trust
+    I: finance,delivery
+  deliverable: dealix/registers/telemetry_budget.yaml
+  verification: verify_global_ai_transformation.py --check-initiatives
+- id: 147
+  key: initiative_147
+  title_en: Canary readiness gate
+  title_ar: Canary readiness gate
+  phase: 2
+  wave: 15
+  owner_os: platform
+  status: active
+  impact_tier: critical
+  raci:
+    R: CTO
+    A: enterprise_control_plane_owner
+    C: product,trust
+    I: finance,delivery
+  deliverable: api/routers/unified_readiness.py
+  verification: pytest tests/test_unified_readiness.py -q
+- id: 148
+  key: initiative_148
+  title_en: Rollback runbook API link
+  title_ar: Rollback runbook API link
+  phase: 2
+  wave: 15
+  owner_os: reliability
+  status: proposed
+  impact_tier: high
+  raci:
+    R: CTO
+    A: enterprise_control_plane_owner
+    C: product,trust
+    I: finance,delivery
+  deliverable: api/routers/control_plane_os.py
+  verification: pytest tests/test_control_plane_rollback_flow.py -q
+- id: 149
+  key: initiative_149
+  title_en: FE BE version skew check
+  title_ar: FE BE version skew check
+  phase: 2
+  wave: 15
+  owner_os: platform
+  status: proposed
+  impact_tier: high
+  raci:
+    R: CTO
+    A: enterprise_control_plane_owner
+    C: product,trust
+    I: finance,delivery
+  deliverable: scripts/check_fe_be_version_skew.py
+  verification: python3 scripts/check_fe_be_version_skew.py
+- id: 150
+  key: initiative_150
+  title_en: Governed changelog generator
+  title_ar: Governed changelog generator
+  phase: 2
+  wave: 15
+  owner_os: platform
+  status: proposed
+  impact_tier: high
+  raci:
+    R: CTO
+    A: enterprise_control_plane_owner
+    C: product,trust
+    I: finance,delivery
+  deliverable: scripts/generate_governed_changelog.py
+  verification: python3 scripts/generate_governed_changelog.py
+- id: 151
+  key: initiative_151
+  title_en: Customer health 2.0 from events
+  title_ar: Customer health 2.0 from events
+  phase: 2
+  wave: 16
+  owner_os: delivery
+  status: active
+  impact_tier: critical
+  raci:
+    R: Operations
+    A: delivery_factory_owner
+    C: product,trust
+    I: finance,delivery
+  deliverable: auto_client_acquisition/customer_success/health_v2.py
+  verification: pytest tests/test_customer_health_v2.py -q
+- id: 152
+  key: initiative_152
+  title_en: Detractor playbook drafts
+  title_ar: Detractor playbook drafts
+  phase: 2
+  wave: 16
+  owner_os: delivery
+  status: proposed
+  impact_tier: high
+  raci:
+    R: Operations
+    A: delivery_factory_owner
+    C: product,trust
+    I: finance,delivery
+  deliverable: dealix/transformation/detractor_playbooks.yaml
+  verification: verify_global_ai_transformation.py --check-initiatives
+- id: 153
+  key: initiative_153
+  title_en: Vertical success plans
+  title_ar: Vertical success plans
+  phase: 2
+  wave: 16
+  owner_os: delivery
+  status: proposed
+  impact_tier: high
+  raci:
+    R: Operations
+    A: delivery_factory_owner
+    C: product,trust
+    I: finance,delivery
+  deliverable: auto_client_acquisition/adoption_os/first_14_days_playbook.yaml
+  verification: verify_global_ai_transformation.py --check-initiatives
+- id: 154
+  key: initiative_154
+  title_en: Executive sponsor field governance
+  title_ar: Executive sponsor field governance
+  phase: 2
+  wave: 16
+  owner_os: delivery
+  status: proposed
+  impact_tier: high
+  raci:
+    R: Operations
+    A: delivery_factory_owner
+    C: product,trust
+    I: finance,delivery
+  deliverable: docs/crm/executive_sponsor_fields.md
+  verification: verify_global_ai_transformation.py --check-initiatives
+- id: 155
+  key: initiative_155
+  title_en: Renewal 90-day early warning
+  title_ar: Renewal 90-day early warning
+  phase: 2
+  wave: 16
+  owner_os: sales
+  status: proposed
+  impact_tier: high
+  raci:
+    R: Revenue
+    A: founder_sales_owner
+    C: product,trust
+    I: finance,delivery
+  deliverable: scripts/generate_weekly_operating_proof_pack.py
+  verification: generate_weekly_operating_proof_pack.py
+- id: 156
+  key: initiative_156
+  title_en: NPS governed follow-up
+  title_ar: NPS governed follow-up
+  phase: 2
+  wave: 16
+  owner_os: delivery
+  status: proposed
+  impact_tier: high
+  raci:
+    R: Operations
+    A: delivery_factory_owner
+    C: product,trust
+    I: finance,delivery
+  deliverable: api/routers/nps.py
+  verification: pytest tests/test_nps_governed.py -q
+- id: 157
+  key: initiative_157
+  title_en: QBR auto-population
+  title_ar: QBR auto-population
+  phase: 2
+  wave: 16
+  owner_os: delivery
+  status: proposed
+  impact_tier: high
+  raci:
+    R: Operations
+    A: delivery_factory_owner
+    C: product,trust
+    I: finance,delivery
+  deliverable: scripts/generate_qbr_pack.py
+  verification: python3 scripts/generate_qbr_pack.py
+- id: 158
+  key: initiative_158
+  title_en: Adoption milestone alerts
+  title_ar: Adoption milestone alerts
+  phase: 2
+  wave: 16
+  owner_os: delivery
+  status: proposed
+  impact_tier: high
+  raci:
+    R: Operations
+    A: delivery_factory_owner
+    C: product,trust
+    I: finance,delivery
+  deliverable: auto_client_acquisition/adoption_os/milestone_alerts.yaml
+  verification: verify_global_ai_transformation.py --check-initiatives
+- id: 159
+  key: initiative_159
+  title_en: White-glove escalation registry
+  title_ar: White-glove escalation registry
+  phase: 2
+  wave: 16
+  owner_os: strategy
+  status: proposed
+  impact_tier: high
+  raci:
+    R: CEO
+    A: founder
+    C: product,trust
+    I: finance,delivery
+  deliverable: dealix/transformation/escalation_registry.yaml
+  verification: verify_global_ai_transformation.py --check-initiatives
+- id: 160
+  key: initiative_160
+  title_en: Customer council PERB bridge
+  title_ar: Customer council PERB bridge
+  phase: 2
+  wave: 16
+  owner_os: gtm
+  status: proposed
+  impact_tier: high
+  raci:
+    R: CEO
+    A: founder
+    C: product,trust
+    I: finance,delivery
+  deliverable: docs/transformation/customer_council_ar.md
+  verification: verify_global_ai_transformation.py --check-initiatives
+- id: 161
+  key: initiative_161
+  title_en: Partner sandbox tenant
+  title_ar: Partner sandbox tenant
+  phase: 2
+  wave: 17
+  owner_os: platform
+  status: active
+  impact_tier: critical
+  raci:
+    R: CTO
+    A: enterprise_control_plane_owner
+    C: product,trust
+    I: finance,delivery
+  deliverable: auto_client_acquisition/sandbox_os/partner_tenant.py
+  verification: pytest tests/test_partner_sandbox.py -q
+- id: 162
+  key: initiative_162
+  title_en: Integration certification
+  title_ar: Integration certification
+  phase: 2
+  wave: 17
+  owner_os: platform
+  status: proposed
+  impact_tier: high
+  raci:
+    R: CTO
+    A: enterprise_control_plane_owner
+    C: product,trust
+    I: finance,delivery
+  deliverable: docs/partners/INTEGRATION_CERTIFICATION.md
+  verification: verify_global_ai_transformation.py --check-initiatives
+- id: 163
+  key: initiative_163
+  title_en: Webhook delivery SLO and DLQ
+  title_ar: Webhook delivery SLO and DLQ
+  phase: 2
+  wave: 17
+  owner_os: platform
+  status: proposed
+  impact_tier: high
+  raci:
+    R: CTO
+    A: enterprise_control_plane_owner
+    C: product,trust
+    I: finance,delivery
+  deliverable: api/routers/customer_webhooks.py
+  verification: pytest tests/test_webhook_slo.py -q
+- id: 164
+  key: initiative_164
+  title_en: Public API rate tiers
+  title_ar: Public API rate tiers
+  phase: 2
+  wave: 17
+  owner_os: platform
+  status: proposed
+  impact_tier: high
+  raci:
+    R: CTO
+    A: enterprise_control_plane_owner
+    C: product,trust
+    I: finance,delivery
+  deliverable: platform_core/rate_tiers.yaml
+  verification: pytest tests/test_platform_foundation.py -q
+- id: 165
+  key: initiative_165
+  title_en: OAuth client governance
+  title_ar: OAuth client governance
+  phase: 2
+  wave: 17
+  owner_os: trust
+  status: proposed
+  impact_tier: high
+  raci:
+    R: CTO
+    A: enterprise_control_plane_owner
+    C: product,trust
+    I: finance,delivery
+  deliverable: dealix/registers/oauth_clients.yaml
+  verification: verify_global_ai_transformation.py --check-initiatives
+- id: 166
+  key: initiative_166
+  title_en: Partner revenue share attribution
+  title_ar: Partner revenue share attribution
+  phase: 2
+  wave: 17
+  owner_os: value
+  status: proposed
+  impact_tier: high
+  raci:
+    R: Revenue
+    A: founder_sales_owner
+    C: product,trust
+    I: finance,delivery
+  deliverable: auto_client_acquisition/value_os/attribution_paths.yaml
+  verification: pytest tests/test_value_attribution.py -q
+- id: 167
+  key: initiative_167
+  title_en: Marketplace criteria
+  title_ar: Marketplace criteria
+  phase: 2
+  wave: 17
+  owner_os: gtm
+  status: proposed
+  impact_tier: high
+  raci:
+    R: Revenue
+    A: founder_sales_owner
+    C: product,trust
+    I: finance,delivery
+  deliverable: docs/partners/MARKETPLACE_CRITERIA.md
+  verification: verify_global_ai_transformation.py --check-initiatives
+- id: 168
+  key: initiative_168
+  title_en: ISV co-sell playbook
+  title_ar: ISV co-sell playbook
+  phase: 2
+  wave: 17
+  owner_os: gtm
+  status: proposed
+  impact_tier: high
+  raci:
+    R: Revenue
+    A: founder_sales_owner
+    C: product,trust
+    I: finance,delivery
+  deliverable: docs/partners/ISV_COSELL_AR.md
+  verification: verify_global_ai_transformation.py --check-initiatives
+- id: 169
+  key: initiative_169
+  title_en: Partner API changelog
+  title_ar: Partner API changelog
+  phase: 2
+  wave: 17
+  owner_os: platform
+  status: proposed
+  impact_tier: high
+  raci:
+    R: CTO
+    A: enterprise_control_plane_owner
+    C: product,trust
+    I: finance,delivery
+  deliverable: docs/partners/API_CHANGELOG.md
+  verification: verify_global_ai_transformation.py --check-initiatives
+- id: 170
+  key: initiative_170
+  title_en: Developer trust status page
+  title_ar: Developer trust status page
+  phase: 2
+  wave: 17
+  owner_os: trust
+  status: proposed
+  impact_tier: high
+  raci:
+    R: CTO
+    A: enterprise_control_plane_owner
+    C: product,trust
+    I: finance,delivery
+  deliverable: api/routers/developer_trust_status.py
+  verification: pytest tests/test_developer_trust_status.py -q
+- id: 171
+  key: initiative_171
+  title_en: RAG freshness score
+  title_ar: RAG freshness score
+  phase: 2
+  wave: 18
+  owner_os: data
+  status: proposed
+  impact_tier: high
+  raci:
+    R: CTO
+    A: enterprise_control_plane_owner
+    C: product,trust
+    I: finance,delivery
+  deliverable: auto_client_acquisition/knowledge_v10/freshness_score.py
+  verification: pytest tests/test_knowledge_v10.py -q
+- id: 172
+  key: initiative_172
+  title_en: Embedding lineage in events
+  title_ar: Embedding lineage in events
+  phase: 2
+  wave: 18
+  owner_os: data
+  status: proposed
+  impact_tier: high
+  raci:
+    R: CTO
+    A: enterprise_control_plane_owner
+    C: product,trust
+    I: finance,delivery
+  deliverable: auto_client_acquisition/revenue_memory/embedding_lineage.py
+  verification: pytest tests/test_embedding_lineage.py -q
+- id: 173
+  key: initiative_173
+  title_en: Project intelligence sales brief export
+  title_ar: Project intelligence sales brief export
+  phase: 2
+  wave: 18
+  owner_os: product
+  status: proposed
+  impact_tier: high
+  raci:
+    R: CTO
+    A: enterprise_control_plane_owner
+    C: product,trust
+    I: finance,delivery
+  deliverable: dealix/execution/sales_brief_export.py
+  verification: pytest tests/test_sales_brief_export.py -q
+- id: 174
+  key: initiative_174
+  title_en: Competitive notes founder manual
+  title_ar: Competitive notes founder manual
+  phase: 2
+  wave: 18
+  owner_os: strategy
+  status: proposed
+  impact_tier: high
+  raci:
+    R: CEO
+    A: founder
+    C: product,trust
+    I: finance,delivery
+  deliverable: dealix/registers/competitive_notes.yaml
+  verification: verify_global_ai_transformation.py --check-initiatives
+- id: 175
+  key: initiative_175
+  title_en: Answer grounding score API
+  title_ar: Answer grounding score API
+  phase: 2
+  wave: 18
+  owner_os: trust
+  status: active
+  impact_tier: critical
+  raci:
+    R: CTO
+    A: enterprise_control_plane_owner
+    C: product,trust
+    I: finance,delivery
+  deliverable: api/routers/grounding_score.py
+  verification: pytest tests/test_grounding_score.py -q
+- id: 176
+  key: initiative_176
+  title_en: Chunk quality score
+  title_ar: Chunk quality score
+  phase: 2
+  wave: 18
+  owner_os: data
+  status: proposed
+  impact_tier: high
+  raci:
+    R: CTO
+    A: enterprise_control_plane_owner
+    C: product,trust
+    I: finance,delivery
+  deliverable: auto_client_acquisition/knowledge_v10/chunk_quality.py
+  verification: pytest tests/test_chunk_quality.py -q
+- id: 177
+  key: initiative_177
+  title_en: Hallucination incident register
+  title_ar: Hallucination incident register
+  phase: 2
+  wave: 18
+  owner_os: trust
+  status: proposed
+  impact_tier: high
+  raci:
+    R: CTO
+    A: enterprise_control_plane_owner
+    C: product,trust
+    I: finance,delivery
+  deliverable: dealix/transformation/hallucination_register.yaml
+  verification: verify_global_ai_transformation.py --check-initiatives
+- id: 178
+  key: initiative_178
+  title_en: Arabic tone compliance scorer
+  title_ar: Arabic tone compliance scorer
+  phase: 2
+  wave: 18
+  owner_os: trust
+  status: proposed
+  impact_tier: high
+  raci:
+    R: CTO
+    A: enterprise_control_plane_owner
+    C: product,trust
+    I: finance,delivery
+  deliverable: auto_client_acquisition/governance_os/arabic_tone_rules.yaml
+  verification: pytest tests/test_arabic_tone_rules.py -q
+- id: 179
+  key: initiative_179
+  title_en: Intelligence layer cost cap
+  title_ar: Intelligence layer cost cap
+  phase: 2
+  wave: 18
+  owner_os: finance
+  status: proposed
+  impact_tier: high
+  raci:
+    R: CTO
+    A: enterprise_control_plane_owner
+    C: product,trust
+    I: finance,delivery
+  deliverable: dealix/transformation/ai_unit_economics.yaml
+  verification: pytest tests/test_ai_unit_economics.py -q
+- id: 180
+  key: initiative_180
+  title_en: Weekly cross-OS snapshot v2
+  title_ar: Weekly cross-OS snapshot v2
+  phase: 2
+  wave: 18
+  owner_os: strategy
+  status: proposed
+  impact_tier: high
+  raci:
+    R: CEO
+    A: founder
+    C: product,trust
+    I: finance,delivery
+  deliverable: dealix/execution/weekly_cross_os_snapshot.py
+  verification: pytest tests/test_weekly_cross_os_snapshot_v2.py -q
+- id: 181
+  key: initiative_181
+  title_en: Runbook-as-code top incidents
+  title_ar: Runbook-as-code top incidents
+  phase: 2
+  wave: 19
+  owner_os: reliability
+  status: proposed
+  impact_tier: high
+  raci:
+    R: CTO
+    A: enterprise_control_plane_owner
+    C: product,trust
+    I: finance,delivery
+  deliverable: docs/ops/runbooks/README.md
+  verification: verify_global_ai_transformation.py --check-initiatives
+- id: 182
+  key: initiative_182
+  title_en: Auto-remediation proposals approval
+  title_ar: Auto-remediation proposals approval
+  phase: 2
+  wave: 19
+  owner_os: reliability
+  status: proposed
+  impact_tier: high
+  raci:
+    R: CTO
+    A: enterprise_control_plane_owner
+    C: product,trust
+    I: finance,delivery
+  deliverable: auto_client_acquisition/runtime_safety_os/remediation_proposals.py
+  verification: pytest tests/test_remediation_proposals.py -q
+- id: 183
+  key: initiative_183
+  title_en: Postgres pool capacity model
+  title_ar: Postgres pool capacity model
+  phase: 2
+  wave: 19
+  owner_os: platform
+  status: proposed
+  impact_tier: high
+  raci:
+    R: CTO
+    A: enterprise_control_plane_owner
+    C: product,trust
+    I: finance,delivery
+  deliverable: docs/ops/DB_CAPACITY_MODEL.md
+  verification: verify_global_ai_transformation.py --check-initiatives
+- id: 184
+  key: initiative_184
+  title_en: Cost-to-serve from logs
+  title_ar: Cost-to-serve from logs
+  phase: 2
+  wave: 19
+  owner_os: finance
+  status: proposed
+  impact_tier: high
+  raci:
+    R: CEO
+    A: founder
+    C: product,trust
+    I: finance,delivery
+  deliverable: scripts/estimate_cost_to_serve.py
+  verification: python3 scripts/estimate_cost_to_serve.py
+- id: 185
+  key: initiative_185
+  title_en: Engineering OKR initiative link
+  title_ar: Engineering OKR initiative link
+  phase: 2
+  wave: 19
+  owner_os: strategy
+  status: proposed
+  impact_tier: high
+  raci:
+    R: CEO
+    A: founder
+    C: product,trust
+    I: finance,delivery
+  deliverable: strategic_initiatives_registry.yaml okr_key
+  verification: verify_global_ai_transformation.py --check-initiatives
+  okr_key: dealix_200_scale
+- id: 186
+  key: initiative_186
+  title_en: CI initiative coverage report
+  title_ar: CI initiative coverage report
+  phase: 2
+  wave: 19
+  owner_os: platform
+  status: proposed
+  impact_tier: high
+  raci:
+    R: CTO
+    A: enterprise_control_plane_owner
+    C: product,trust
+    I: finance,delivery
+  deliverable: scripts/report_initiative_coverage.py
+  verification: python3 scripts/report_initiative_coverage.py
+  okr_key: dealix_200_scale
+- id: 187
+  key: initiative_187
+  title_en: API domain migration batch 2
+  title_ar: API domain migration batch 2
+  phase: 2
+  wave: 19
+  owner_os: platform
+  status: proposed
+  impact_tier: high
+  raci:
+    R: CTO
+    A: enterprise_control_plane_owner
+    C: product,trust
+    I: finance,delivery
+  deliverable: api/routers/domains/analytics
+  verification: pytest tests/test_api_domain_batch2.py -q
+  okr_key: dealix_200_scale
+- id: 188
+  key: initiative_188
+  title_en: API domain migration batch 3
+  title_ar: API domain migration batch 3
+  phase: 2
+  wave: 19
+  owner_os: platform
+  status: proposed
+  impact_tier: high
+  raci:
+    R: CTO
+    A: enterprise_control_plane_owner
+    C: product,trust
+    I: finance,delivery
+  deliverable: api/routers/domains/admin
+  verification: pytest tests/test_api_domain_batch3.py -q
+  okr_key: dealix_200_scale
+- id: 189
+  key: initiative_189
+  title_en: Dead code sunset registry
+  title_ar: Dead code sunset registry
+  phase: 2
+  wave: 19
+  owner_os: platform
+  status: proposed
+  impact_tier: high
+  raci:
+    R: CTO
+    A: enterprise_control_plane_owner
+    C: product,trust
+    I: finance,delivery
+  deliverable: dealix/transformation/dead_code_sunset.yaml
+  verification: verify_global_ai_transformation.py --check-initiatives
+  okr_key: dealix_200_scale
+- id: 190
+  key: initiative_190
+  title_en: Performance budget per route
+  title_ar: Performance budget per route
+  phase: 2
+  wave: 19
+  owner_os: reliability
+  status: proposed
+  impact_tier: high
+  raci:
+    R: CTO
+    A: enterprise_control_plane_owner
+    C: product,trust
+    I: finance,delivery
+  deliverable: dealix/transformation/slo_by_domain.yaml
+  verification: python3 scripts/reliability_drills_scorecard.py
+  okr_key: dealix_200_scale
+- id: 191
+  key: initiative_191
+  title_en: Second-line leadership matrix
+  title_ar: Second-line leadership matrix
+  phase: 2
+  wave: 20
+  owner_os: people_ops
+  status: proposed
+  impact_tier: high
+  raci:
+    R: CEO
+    A: founder
+    C: product,trust
+    I: finance,delivery
+  deliverable: dealix/transformation/ownership_matrix.yaml
+  verification: verify_global_ai_transformation.py
+  okr_key: dealix_200_scale
+- id: 192
+  key: initiative_192
+  title_en: Board metrics read API
+  title_ar: Board metrics read API
+  phase: 2
+  wave: 20
+  owner_os: strategy
+  status: proposed
+  impact_tier: high
+  raci:
+    R: CEO
+    A: founder
+    C: product,trust
+    I: finance,delivery
+  deliverable: api/routers/board_metrics.py
+  verification: pytest tests/test_board_metrics.py -q
+  okr_key: dealix_200_scale
+- id: 193
+  key: initiative_193
+  title_en: M&A data room export
+  title_ar: M&A data room export
+  phase: 2
+  wave: 20
+  owner_os: strategy
+  status: proposed
+  impact_tier: high
+  raci:
+    R: CEO
+    A: founder
+    C: product,trust
+    I: finance,delivery
+  deliverable: scripts/generate_ma_data_room_pack.py
+  verification: python3 scripts/generate_ma_data_room_pack.py
+  okr_key: dealix_200_scale
+- id: 194
+  key: initiative_194
+  title_en: IPO-light control matrix
+  title_ar: IPO-light control matrix
+  phase: 2
+  wave: 20
+  owner_os: trust
+  status: proposed
+  impact_tier: high
+  raci:
+    R: CEO
+    A: founder
+    C: product,trust
+    I: finance,delivery
+  deliverable: docs/enterprise/IPO_LIGHT_CONTROLS.md
+  verification: verify_global_ai_transformation.py --check-initiatives
+  okr_key: dealix_200_scale
+- id: 195
+  key: initiative_195
+  title_en: OS owner succession backups
+  title_ar: OS owner succession backups
+  phase: 2
+  wave: 20
+  owner_os: people_ops
+  status: proposed
+  impact_tier: high
+  raci:
+    R: CEO
+    A: founder
+    C: product,trust
+    I: finance,delivery
+  deliverable: dealix/transformation/ownership_matrix.yaml
+  verification: verify_global_ai_transformation.py
+  okr_key: dealix_200_scale
+- id: 196
+  key: initiative_196
+  title_en: DEALIX 2040 endgame
+  title_ar: DEALIX 2040 endgame
+  phase: 2
+  wave: 20
+  owner_os: strategy
+  status: proposed
+  impact_tier: high
+  raci:
+    R: CEO
+    A: founder
+    C: product,trust
+    I: finance,delivery
+  deliverable: docs/transformation/DEALIX_2040_ENDGAME_AR.md
+  verification: verify_global_ai_transformation.py --check-initiatives
+  okr_key: dealix_200_scale
+- id: 197
+  key: initiative_197
+  title_en: Institution mode phase 2
+  title_ar: Institution mode phase 2
+  phase: 2
+  wave: 20
+  owner_os: people_ops
+  status: proposed
+  impact_tier: high
+  raci:
+    R: CEO
+    A: founder
+    C: product,trust
+    I: finance,delivery
+  deliverable: docs/transformation/INSTITUTION_MODE_PHASE2_AR.md
+  verification: verify_global_ai_transformation.py --check-initiatives
+  okr_key: dealix_200_scale
+- id: 198
+  key: initiative_198
+  title_en: Strategic hire scorecard
+  title_ar: Strategic hire scorecard
+  phase: 2
+  wave: 20
+  owner_os: people_ops
+  status: proposed
+  impact_tier: high
+  raci:
+    R: CEO
+    A: founder
+    C: product,trust
+    I: finance,delivery
+  deliverable: docs/people_ops/HIRE_SCORECARD.md
+  verification: verify_global_ai_transformation.py --check-initiatives
+  okr_key: dealix_200_scale
+- id: 199
+  key: initiative_199
+  title_en: Culture ops decision log
+  title_ar: Culture ops decision log
+  phase: 2
+  wave: 20
+  owner_os: people_ops
+  status: proposed
+  impact_tier: high
+  raci:
+    R: CEO
+    A: founder
+    C: product,trust
+    I: finance,delivery
+  deliverable: docs/transformation/evidence/culture_decisions.log
+  verification: verify_global_ai_transformation.py --check-initiatives
+  okr_key: dealix_200_scale
+- id: 200
+  key: initiative_200
+  title_en: Dealix 200 completion gate
+  title_ar: Dealix 200 completion gate
+  phase: 2
+  wave: 20
+  owner_os: strategy
+  status: active
+  impact_tier: critical
+  raci:
+    R: CEO
+    A: founder
+    C: product,trust
+    I: finance,delivery
+  deliverable: scripts/run_phase2_top10_bundle.sh
+  verification: bash scripts/run_phase2_top10_bundle.sh
+  okr_key: dealix_200_scale

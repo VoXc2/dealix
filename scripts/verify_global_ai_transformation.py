@@ -79,9 +79,12 @@ CONTROL_ARTIFACTS = (
 STRATEGIC_DOC_FILES = (
     "docs/transformation/DEALIX_2030_ENDGAME_AR.md",
     "docs/transformation/PLATFORM_FIRST_12M_ROADMAP_AR.md",
+    "docs/transformation/PLATFORM_SCALE_PHASE2_ROADMAP_AR.md",
+    "docs/transformation/DEALIX_2040_ENDGAME_AR.md",
     "docs/transformation/PRODUCT_EVIDENCE_REVIEW_BOARD_AR.md",
     "docs/transformation/EXECUTIVE_RHYTHM_2_AR.md",
     "docs/transformation/DEALIX_OPERATING_PLAYBOOK_AR.md",
+    "docs/transformation/INSTITUTION_MODE_PHASE2_AR.md",
 )
 
 ENTERPRISE_RUNBOOK_FILES = (
@@ -290,13 +293,23 @@ def _check_ceo_signal_os(repo: Path) -> list[str]:
     return []
 
 
+def _expected_initiative_count() -> int:
+    import os
+
+    raw = os.environ.get("DEALIX_INITIATIVE_TARGET", "").strip()
+    if raw.isdigit():
+        return int(raw)
+    return 200
+
+
 def _check_strategic_initiatives(repo: Path) -> list[str]:
     failures: list[str] = []
     failures.extend([f"missing_strategic_doc:{p}" for p in _require_paths(repo, STRATEGIC_DOC_FILES)])
     data = _load_yaml(repo, "dealix/transformation/strategic_initiatives_registry.yaml")
     initiatives = data.get("initiatives") or []
-    if len(initiatives) != 100:
-        failures.append(f"strategic_initiatives_count:{len(initiatives)}_expected_100")
+    expected = _expected_initiative_count()
+    if len(initiatives) != expected:
+        failures.append(f"strategic_initiatives_count:{len(initiatives)}_expected_{expected}")
     seen_ids: set[int] = set()
     for row in initiatives:
         iid = row.get("id")
@@ -306,15 +319,18 @@ def _check_strategic_initiatives(repo: Path) -> list[str]:
         if iid in seen_ids:
             failures.append(f"strategic_initiative_duplicate_id:{iid}")
         seen_ids.add(iid)
-        for field in ("wave", "owner_os", "deliverable", "verification", "status"):
+        for field in ("wave", "owner_os", "deliverable", "verification", "status", "phase", "impact_tier"):
             if field not in row:
                 failures.append(f"strategic_initiative_{iid}_missing_{field}")
         raci = row.get("raci")
         if not isinstance(raci, dict) or not all(k in raci for k in ("R", "A", "C", "I")):
             failures.append(f"strategic_initiative_{iid}_invalid_raci")
-    if seen_ids != set(range(1, 101)):
-        missing = sorted(set(range(1, 101)) - seen_ids)
+    expected_ids = set(range(1, expected + 1))
+    if seen_ids != expected_ids:
+        missing = sorted(expected_ids - seen_ids)
         failures.append(f"strategic_initiative_missing_ids:{missing[:5]}")
+    if int(data.get("initiative_target", 0) or 0) != expected:
+        failures.append("strategic_initiatives_initiative_target_mismatch")
     manifest = _load_yaml(repo, "dealix/transformation/north_star_manifest.yaml")
     if not manifest.get("canonical"):
         failures.append("north_star_manifest_not_canonical")

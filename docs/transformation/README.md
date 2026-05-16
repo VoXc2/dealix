@@ -32,7 +32,15 @@ This directory is the execution spine for the comprehensive transformation from 
 - `11_org_operating_system.md`
 - `12_category_dominance.md`
 
-## Dealix 100 strategic program
+## Dealix 200 strategic program
+
+- [DEALIX_2040_ENDGAME_AR.md](DEALIX_2040_ENDGAME_AR.md)
+- [PLATFORM_SCALE_PHASE2_ROADMAP_AR.md](PLATFORM_SCALE_PHASE2_ROADMAP_AR.md)
+- [INSTITUTION_MODE_PHASE2_AR.md](INSTITUTION_MODE_PHASE2_AR.md)
+- `bash scripts/run_phase2_top10_bundle.sh`
+- `python3 scripts/report_initiative_coverage.py`
+
+## Dealix 100 strategic program (phase 1)
 
 - [DEALIX_2030_ENDGAME_AR.md](DEALIX_2030_ENDGAME_AR.md)
 - [PLATFORM_FIRST_12M_ROADMAP_AR.md](PLATFORM_FIRST_12M_ROADMAP_AR.md)
