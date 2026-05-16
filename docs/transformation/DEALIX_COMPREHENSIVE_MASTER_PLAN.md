@@ -500,11 +500,18 @@ Market Proof → Paid Diagnostic → Revenue Sprint → Retainer
 | قواعد البناء (§15) | `docs/company/PRODUCTIZATION_GATE.md` · `FEATURE_CANDIDATE_LOG.md` |
 | لا-مبالغة (§23) | `dealix/registers/no_overclaim.yaml` |
 
-## ملحق ب — بنود مزامنة مفتوحة — Open Sync Items
+## ملحق ب — حالة المزامنة — Sync Status
 
-عند أول تنفيذ معتمد، تُزامَن هذه المصادر مع هذه الخطة (لا تُترك متعارضة):
+| البند | الحالة | الملف |
+|-------|--------|-------|
+| كتالوج التموضع المستهدف (§6) | ✅ مُزامَن | `docs/company/SERVICE_CATALOG.md` |
+| ربط البوابات السوقية بالجاهزية (§16) | ✅ مُدرَج كمهمة محكومة | `90_day_execution.yaml` → `P1-11` |
+| إعادة تصميم الكتالوج البرمجي (§6/§19) | 🔶 محكوم — `Planned` | `90_day_execution.yaml` → `P1-12` · `no_overclaim.yaml` → `governed_revenue_ai_catalog` |
+| التسعير على `registry.py` / `services-catalog.json` | ⏸️ مؤجّل بقرار | انظر أدناه |
 
-1. **التسعير:** رفع `SERVICE_CATALOG.md` و `services-catalog.json` إلى تسعير §19.
-2. **الكتالوج:** اعتماد الخدمات السبع (§6) كمرجع، مع إبراز العروض الثلاثة (§7) أولًا.
-3. **البوابات:** ربط Gates 1–10 السوقية (§16) ببوابات الجاهزية `docs/readiness/`.
-4. **`no_overclaim.yaml`:** أي ادعاء أمني/قيمي يبقى `Planned` حتى يوجد دليل.
+**لماذا أُجِّل تعديل الكتالوج البرمجي:** `services-catalog.json` ملف **مُولَّد** من
+`registry.py` (المصدر الوحيد — Article 11). الكتالوج البرمجي الحالي (free / 499 / 1,500 /
+2,999/mo / …) مختلف بنيويًا عن كتالوج §6، ومربوط بـ4 ملفات اختبار + راوتر `commercial_map.py`
++ `service_readiness_defaults.yaml`. استبداله = إعادة تصميم هندسية محكومة، **ولا يُنشر على
+صفحة الهبوط قبل وجود delivery blueprints وbواجتياز بوابة الجاهزية** — وإلا خالف عقيدة
+no-overclaim. لذلك يُتتبَّع كبند `P1-12`، ولا يُعدَّل الـJSON المُولَّد يدويًا.

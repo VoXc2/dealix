@@ -13,7 +13,7 @@
 # ═══════════════════════════════════════════════════════════════════
 
 schema_version: "1.0"
-last_reviewed: "2026-04-21"
+last_reviewed: "2026-05-16"
 
 claims:
   # ───────────── Core platform ─────────────
@@ -192,6 +192,18 @@ claims:
       - auto_client_acquisition/service_catalog/schemas.py
       - api/routers/service_catalog.py
       - tests/test_service_catalog.py
+
+  - id: governed_revenue_ai_catalog
+    claim: "Service catalog repositioned to Governed Revenue & AI Operations (Diagnostic / Sprint / Retainer + 4 governance offerings, master plan §6)"
+    status: Planned
+    evidence:
+      - docs/transformation/DEALIX_COMPREHENSIVE_MASTER_PLAN.md
+      - docs/company/SERVICE_CATALOG.md
+    gaps:
+      - "registry.py + services-catalog.json still carry the prior catalog (free/499/1500/2999/...)"
+      - "Catalog redesign tracked as P1-12 in 90_day_execution.yaml"
+      - "No delivery blueprints or readiness scores for the new offerings yet"
+      - "Must not be published to landing before readiness gates pass"
 
   - id: platform_reference_contracts
     claim: "Reference platform contracts for tenant, RLS, storage, and auth (no stack replacement)"

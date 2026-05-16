@@ -155,6 +155,16 @@ phase_1:
       task: "Incident + rollback runbook (first draft)"
       status: PLANNED
       owner: "Ops"
+    - id: P1-11
+      task: "Link market gates 1-10 (master plan §16) to readiness gates 0-10 (docs/readiness/)"
+      status: PLANNED
+      owner: "Architecture"
+      notes: "Market gate must not be declared before its readiness gate passes — see DEALIX_COMPREHENSIVE_MASTER_PLAN.md §16"
+    - id: P1-12
+      task: "Redesign service catalog registry to Governed Revenue & AI Operations positioning"
+      status: PLANNED
+      owner: "Product + Engineering"
+      notes: "Master plan §6/§19 catalog. Touches registry.py + services-catalog.json (generated) + commercial_map.py + 4 test files + service_readiness_defaults.yaml. Do NOT publish to landing before delivery blueprints + readiness exist. Tracked in no_overclaim.yaml as 'governed_revenue_ai_catalog' (Planned)."
 
 # ═══════════════════════════════════════════════════════════════════
 # Phase 2 — Days 61-90: ENTERPRISE READINESS LIFT
