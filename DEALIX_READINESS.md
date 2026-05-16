@@ -48,9 +48,19 @@ python scripts/verify_dealix_ready.py --skip-tests
 
 ## Official Services
 
-1. Lead Intelligence Sprint — `docs/services/lead_intelligence_sprint/`
-2. AI Quick Win Sprint — `docs/services/ai_quick_win_sprint/`
-3. Company Brain Sprint — `docs/services/company_brain_sprint/`
+**Canonical 7-service catalog (Governed Revenue & AI Operations, 2026-05-16):**
+انظر [`docs/company/SERVICE_CATALOG_GOVERNED_REVENUE_OPS.md`](docs/company/SERVICE_CATALOG_GOVERNED_REVENUE_OPS.md).
+
+1. **Governed Revenue Ops Diagnostic** — `docs/services/governed_revenue_ops_diagnostic/` — **العرض الأول للسوق**
+2. Revenue Intelligence Sprint — flagship
+3. Governed Ops Retainer
+4. AI Governance for Revenue Teams
+5. CRM / Data Readiness for AI
+6. Board Decision Memo
+7. Trust Pack Lite — on request only
+
+> الخدمات الثلاث القديمة (Lead Intelligence / AI Quick Win / Company Brain Sprint)
+> superseded — انظر `SERVICE_REGISTRY.md`.
 
 ## Do Not Sell Yet
 

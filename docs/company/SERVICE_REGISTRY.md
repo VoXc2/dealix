@@ -3,7 +3,35 @@
 النسخة القانونية للمجلدات: `docs/services/<folder>/` + `SERVICE_ID_MAP.yaml`.  
 الحالة **Sellable/Beta** آلياً: `python scripts/print_service_readiness_matrix.py`.
 
+> **CANONICAL CATALOG (2026-05-16):** الكتالوج الرسمي هو **Governed Revenue & AI
+> Operations** بسبع خدمات — انظر
+> [`SERVICE_CATALOG_GOVERNED_REVENUE_OPS.md`](SERVICE_CATALOG_GOVERNED_REVENUE_OPS.md).
+> العرض الأول للسوق: **Governed Revenue Ops Diagnostic**.
+
 ---
+
+## Canonical 7-service catalog (Governed Revenue & AI Operations)
+
+| # | Service | service_id | Tier |
+|---|---------|-----------|------|
+| 1 | Governed Revenue Ops Diagnostic | `governed_revenue_ops_diagnostic` | Entry offer |
+| 2 | Revenue Intelligence Sprint | `revenue_intelligence_sprint` | Flagship sprint |
+| 3 | Governed Ops Retainer | `governed_ops_retainer` | Retainer |
+| 4 | AI Governance for Revenue Teams | `ai_governance_for_revenue_teams` | Add-on |
+| 5 | CRM / Data Readiness for AI | `crm_data_readiness_for_ai` | Add-on |
+| 6 | Board Decision Memo | `board_decision_memo` | Add-on |
+| 7 | Trust Pack Lite | `trust_pack_lite` | On request only |
+
+Full spec: [`SERVICE_CATALOG_GOVERNED_REVENUE_OPS.md`](SERVICE_CATALOG_GOVERNED_REVENUE_OPS.md).
+
+---
+
+## Superseded services (retained for history)
+
+> **SUPERSEDED by the Governed Revenue Ops catalog** — see
+> `SERVICE_CATALOG_GOVERNED_REVENUE_OPS.md`. The entries below are kept for
+> delivery history and code-mapping continuity; they are not the canonical
+> commercial offers.
 
 ## Lead Intelligence Sprint
 

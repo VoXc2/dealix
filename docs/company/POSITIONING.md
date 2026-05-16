@@ -1,6 +1,19 @@
 # Dealix Positioning
 
+## Governed Revenue & AI Operations Company (canonical 2026-05-16)
 
+**EN —** Dealix helps companies turn AI experiments and revenue operations into
+governed, measurable, evidence-backed workflows.
+
+**AR —** Dealix تساعد الشركات على تحويل تجارب الذكاء الاصطناعي وعمليات الإيراد إلى
+تشغيل محكوم، قابل للقياس، ومربوط بالأدلة.
+
+Canonical positioning doc:
+[`../strategic/DEALIX_GOVERNED_REVENUE_OPS_POSITIONING.md`](../strategic/DEALIX_GOVERNED_REVENUE_OPS_POSITIONING.md).
+The lead commercial entry point is the **Governed Revenue Ops Diagnostic**. The
+sections below are retained for history.
+
+---
 
 Dealix is an **Arabic-first AI Operating Partner** for Saudi and MENA companies.
 

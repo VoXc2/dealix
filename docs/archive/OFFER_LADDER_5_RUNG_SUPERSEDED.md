@@ -1,10 +1,10 @@
-# Dealix Offer Ladder
+# [SUPERSEDED] Dealix Offer Ladder — 5-rung (archived 2026-05-16)
 
-> **SUPERSEDED 2026-05-16** — the 5-rung offer ladder is replaced by the
-> 7-service Governed Revenue Ops catalog. See
-> [`SERVICE_CATALOG_GOVERNED_REVENUE_OPS.md`](SERVICE_CATALOG_GOVERNED_REVENUE_OPS.md)
-> and [`../strategic/DEALIX_GOVERNED_REVENUE_OPS_POSITIONING.md`](../strategic/DEALIX_GOVERNED_REVENUE_OPS_POSITIONING.md).
-> Retained for history. Archived copy: `docs/archive/OFFER_LADDER_5_RUNG_SUPERSEDED.md`.
+> **SUPERSEDED.** This is the archived copy of the original 5-rung offer ladder.
+> It was replaced by the 7-service Governed Revenue & AI Operations catalog —
+> see `docs/company/SERVICE_CATALOG_GOVERNED_REVENUE_OPS.md`. Kept for history.
+
+---
 
 ## Level 1 — Diagnostic
 
@@ -78,5 +78,3 @@ Examples:
 Enterprise AI OS
 Governed AI Operations Platform
 ```
-
-See [`OFFER_ARCHITECTURE.md`](OFFER_ARCHITECTURE.md), [`IMPLEMENTATION_TIERS.md`](IMPLEMENTATION_TIERS.md).

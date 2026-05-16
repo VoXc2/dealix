@@ -92,7 +92,15 @@ project without Proof Pack · no project without Capital Asset.
 
 (Updated incrementally as each phase commits.)
 
-- [ ] Phase 1 — docs
+- [x] **Phase 1 — docs** (2026-05-16)
+  - `docs/strategic/DEALIX_GOVERNED_REVENUE_OPS_POSITIONING.md` (new — canonical positioning)
+  - `docs/company/SERVICE_CATALOG_GOVERNED_REVENUE_OPS.md` (new — canonical 7-service catalog)
+  - `docs/services/governed_revenue_ops_diagnostic/offer.md` (new — first offer to market)
+  - `docs/archive/OFFER_LADDER_5_RUNG_SUPERSEDED.md` (new — archived 5-rung ladder)
+  - `docs/company/SERVICE_REGISTRY.md` (updated — 7-service catalog at top, old 3 marked SUPERSEDED)
+  - `docs/company/OFFER_LADDER.md` (updated — SUPERSEDED banner)
+  - `docs/company/POSITIONING.md` (updated — new canonical section at top)
+  - `DEALIX_READINESS.md` (updated — official services = 7-service catalog)
 - [ ] Phase 2 — backend
 - [ ] Phase 3 — frontend
 - [ ] Phase 4 — outreach + metrics
