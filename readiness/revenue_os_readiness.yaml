@@ -1,0 +1,24 @@
+name: revenue_os_foundation_readiness
+version: 1
+workflow: lead_qualification
+gates:
+  tenant_isolation:
+    status: implemented
+    evidence:
+      - tests/workflows/test_lead_qualification_workflow.py::test_tenant_isolation_prevents_cross_tenant_execution
+  rbac:
+    status: implemented
+    evidence:
+      - tests/workflows/test_lead_qualification_workflow.py::test_rbac_denies_execution_for_viewer_role
+  governance_approval:
+    status: implemented
+    evidence:
+      - tests/workflows/test_lead_qualification_workflow.py::test_high_risk_path_requests_approval_and_skips_crm_update
+  rollback:
+    status: implemented
+    evidence:
+      - tests/workflows/test_lead_qualification_workflow.py::test_completed_flow_updates_crm_and_supports_rollback
+  observability:
+    status: implemented
+    evidence:
+      - dealix/workflows/lead_qualification.py

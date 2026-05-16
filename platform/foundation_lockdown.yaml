@@ -1,0 +1,20 @@
+name: foundation_lockdown
+version: 1
+scope:
+  - tenant_isolation
+  - rbac
+  - audit_logs
+  - rollback
+controls:
+  tenant_isolation:
+    required_field: tenant_id
+    policy: default_deny_cross_tenant
+  rbac:
+    mode: role_permission_matrix
+    minimum_permission: workflow.lead_qualification.run
+  audit_logs:
+    sink: append_only
+    trace_required: true
+  rollback:
+    mode: compensation_journal
+    token_required: true

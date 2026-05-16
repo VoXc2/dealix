@@ -1,0 +1,14 @@
+name: lead_qualification_policy
+version: 1
+workflow: lead_qualification
+controls:
+  - id: tenant_isolation
+    description: "Block any run where actor.tenant_id != lead.tenant_id."
+  - id: workflow_rbac
+    description: "Require workflow.lead_qualification.run and memory.company_context.read."
+  - id: risk_based_approval
+    description: "If risk_score >= threshold, create approval request and skip CRM update."
+  - id: crm_write_guard
+    description: "Require crm.lead.write before any CRM mutation."
+  - id: audit_trace
+    description: "Emit append-only audit entry per control point with trace id."

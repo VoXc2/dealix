@@ -1,0 +1,15 @@
+version: 1
+workflow: lead_qualification
+agents:
+  - id: lead_intake_agent
+    responsibility: "normalize inbound lead payload"
+    action_mode: suggest_only
+  - id: qualification_agent
+    responsibility: "qualify and score lead deterministically"
+    action_mode: draft_only
+  - id: risk_guard_agent
+    responsibility: "compute risk and enforce approval gate"
+    action_mode: approval_required
+  - id: crm_sync_agent
+    responsibility: "update CRM only after governance clearance"
+    action_mode: approved_manual
