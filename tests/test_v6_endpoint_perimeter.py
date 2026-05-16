@@ -124,7 +124,11 @@ def test_in_process_app_exits_zero_with_all_required_passing():
     mod = _import_module()
     app = create_app()
     with _live_server(app) as base_url:
-        report = mod.run(base_url, timeout=30)
+        # 120s per-endpoint budget: under pytest --cov instrumentation the
+        # heavy /api/v1/founder/dashboard cold-cache aggregation takes ~45s
+        # (it still returns 200). The generous timeout absorbs coverage
+        # overhead while a genuinely hung endpoint is still caught.
+        report = mod.run(base_url, timeout=120)
     failed = [r for r in report["results"] if not r["ok"]]
     assert report["failed_required"] == 0, f"unexpected failures: {failed}"
     assert report["passed_required"] == report["total"], (

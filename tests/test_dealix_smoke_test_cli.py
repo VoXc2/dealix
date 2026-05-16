@@ -114,7 +114,11 @@ def test_smoke_against_local_app_passes_all_required():
     mod = _import_module()
     app = create_app()
     with _live_server(app) as base_url:
-        report = mod.run(base_url, timeout=30)
+        # 120s per-endpoint budget: under pytest --cov the heavy
+        # /api/v1/founder/dashboard cold-cache aggregation takes ~45s and
+        # still returns 200; the timeout absorbs coverage overhead while
+        # still catching a genuinely hung endpoint.
+        report = mod.run(base_url, timeout=120)
     assert report["failed_required"] == 0, (
         f"failures: "
         f"{[r for r in report['results'] if not r['ok']]}"
