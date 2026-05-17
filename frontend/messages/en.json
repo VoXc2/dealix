@@ -154,5 +154,121 @@
     "handleLabel": "Customer handle",
     "load": "Load",
     "promiseTitle": "Service promise"
+  },
+  "portals": {
+    "phaseLabel": "Scheduled phase",
+    "scopeLabel": "Planned scope",
+    "backLabel": "Back to dashboard",
+    "groups": {
+      "publicGrowth": "Public Growth Site",
+      "founderOps": "Founder Ops Console",
+      "customerWorkspace": "Customer Workspace",
+      "partnerPortal": "Partner Portal",
+      "affiliatePortal": "Affiliate Portal"
+    },
+    "pages": {
+      "dealix-diagnostic": {
+        "title": "Free Diagnostic",
+        "subtitle": "The public entry point — visitors run the free Dealix diagnostic and become scored leads.",
+        "phase": "V1",
+        "scope": ["Lead capture form", "Diagnostic intake", "Routes into lead scoring"]
+      },
+      "risk-score": {
+        "title": "Revenue Risk Score",
+        "subtitle": "Self-serve risk score that turns an anonymous visitor into a qualified, scored lead.",
+        "phase": "V1",
+        "scope": ["Risk questionnaire", "Instant score result", "Lead magnet capture"]
+      },
+      "proof-pack": {
+        "title": "Sample Proof Pack",
+        "subtitle": "Public sample of a delivered Proof Pack — evidence-first proof of the offer.",
+        "phase": "V2",
+        "scope": ["Proof Pack viewer", "Sample evidence ledger", "Booking CTA"]
+      },
+      "partners": {
+        "title": "Partner Program",
+        "subtitle": "Public page for strategic partners to apply and submit referrals.",
+        "phase": "V1",
+        "scope": ["Partner application form", "Program tiers", "Referral intake"]
+      },
+      "affiliate": {
+        "title": "Affiliate Program",
+        "subtitle": "Public page for affiliates to apply, with approved messaging and disclosure rules.",
+        "phase": "V1",
+        "scope": ["Affiliate application form", "Approved claims & disclosure", "Commission rules"]
+      },
+      "support": {
+        "title": "Support Center",
+        "subtitle": "Public support entry — opens tickets and surfaces the knowledge base.",
+        "phase": "V1",
+        "scope": ["Ticket intake", "Knowledge base search", "Escalation routing"]
+      },
+      "ops-founder": {
+        "title": "Founder Command Center",
+        "subtitle": "Daily command center — top actions, approvals, escalations, and the no-build warning.",
+        "phase": "V1",
+        "scope": ["Top 3 actions", "Pending approvals", "Full Ops health"]
+      },
+      "ops-sales": {
+        "title": "Sales Console",
+        "subtitle": "Pipeline, qualified leads, scopes, and invoice drafts for the founder-led motion.",
+        "phase": "V1",
+        "scope": ["Pipeline board", "Lead detail", "Scope & invoice drafts"]
+      },
+      "ops-marketing": {
+        "title": "Marketing Console",
+        "subtitle": "Traffic, lead magnets, webinars, and email conversion across the marketing factory.",
+        "phase": "V2",
+        "scope": ["Traffic by source", "Lead magnet funnel", "Campaign performance"]
+      },
+      "ops-support": {
+        "title": "Support Console",
+        "subtitle": "Support inbox, auto-resolved tickets, escalations, and knowledge gaps.",
+        "phase": "V1",
+        "scope": ["Support inbox", "Escalation queue", "Knowledge gaps"]
+      },
+      "ops-partners": {
+        "title": "Partner Console",
+        "subtitle": "Partner pipeline, referrals, and implementation handoffs.",
+        "phase": "V2",
+        "scope": ["Partner dashboard", "Referral status", "Handoff tracking"]
+      },
+      "ops-affiliates": {
+        "title": "Affiliate Console",
+        "subtitle": "Affiliate leads, commissions, payouts, and compliance flags.",
+        "phase": "V2",
+        "scope": ["Affiliate dashboard", "Commission review", "Compliance flags"]
+      },
+      "ops-approvals": {
+        "title": "Approval Center",
+        "subtitle": "Every external action, scope, invoice, and claim queued for founder approval.",
+        "phase": "V1",
+        "scope": ["Approval queue", "Risk levels", "Required evidence"]
+      },
+      "ops-evidence": {
+        "title": "Evidence Ledger",
+        "subtitle": "Immutable evidence timeline — every action linked to a source and event.",
+        "phase": "V1",
+        "scope": ["Evidence timeline", "Event sources", "Audit trail"]
+      },
+      "customer": {
+        "title": "Customer Workspace",
+        "subtitle": "Customer-facing workspace — diagnostic status, inputs, tickets, and proof.",
+        "phase": "V3",
+        "scope": ["Diagnostic status", "Document upload", "Proof Pack viewer"]
+      },
+      "partner-dashboard": {
+        "title": "Partner Portal",
+        "subtitle": "Strategic partner workspace — referrals, pipeline, and commissions.",
+        "phase": "V3",
+        "scope": ["Submit referral", "Partner pipeline", "Commission status"]
+      },
+      "affiliate-dashboard": {
+        "title": "Affiliate Portal",
+        "subtitle": "Affiliate workspace — links, approved assets, leads, and payouts.",
+        "phase": "V3",
+        "scope": ["Referral links", "Approved assets", "Commission & payouts"]
+      }
+    }
   }
 }

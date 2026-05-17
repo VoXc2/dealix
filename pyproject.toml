@@ -104,6 +104,9 @@ Issues = "https://github.com/VoXc2/dealix/issues"
 include = ["core*", "auto_client_acquisition*", "autonomous_growth*", "integrations*", "api*", "dashboard*", "db*"]
 exclude = ["tests*", "docs*", "scripts*"]
 
+[tool.setuptools.package-data]
+auto_client_acquisition = ["**/*.yaml"]
+
 [tool.ruff]
 line-length = 100
 target-version = "py311"

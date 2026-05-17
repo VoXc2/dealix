@@ -2,11 +2,40 @@
 
 Used by Revenue Intelligence draft/finalize surfaces. Returns structured bilingual
 reasons suitable for HTTP 403 payloads — does not send messages or charge cards.
+
+The seven boolean guards below stay in Python and are authoritative. Reason text
+is sourced from ``policy_config/claim_policy.yaml`` — config may add codes or
+reword reasons, it can never remove a guard (enforced by ``_BASE_CODES`` below).
 """
 
 from __future__ import annotations
 
 from typing import Any
+
+from auto_client_acquisition.policy_config.loader import load_policy
+
+# The seven doctrine codes that MUST always be present. config can extend, not shrink.
+_BASE_CODES = (
+    "no_cold_whatsapp",
+    "no_linkedin_automation",
+    "no_scraping",
+    "no_bulk_outreach",
+    "no_guaranteed_sales_claims",
+    "no_fake_proof",
+    "external_action_requires_approval",
+)
+
+
+def _doctrine_reasons() -> dict[str, dict[str, str]]:
+    codes = load_policy("claim_policy").get("codes") or {}
+    missing = [c for c in _BASE_CODES if c not in codes]
+    if missing:
+        msg = f"doctrine_codes_missing:{','.join(missing)}"
+        raise ValueError(msg)
+    return {
+        code: {"ar": str(spec.get("ar", "")), "en": str(spec.get("en", ""))}
+        for code, spec in codes.items()
+    }
 
 
 def doctrine_violations_for_revenue_intelligence(
@@ -20,36 +49,7 @@ def doctrine_violations_for_revenue_intelligence(
     request_external_send_without_approval: bool = False,
 ) -> tuple[tuple[str, ...], dict[str, dict[str, str]]]:
     """Return (violation_codes, reasons_by_code with ar/en)."""
-    reasons: dict[str, dict[str, str]] = {
-        "no_cold_whatsapp": {
-            "ar": "ممنوع واتساب بارد أو أتمتة واتساب باردة — مسودات فقط مع موافقة.",
-            "en": "Cold WhatsApp / WhatsApp automation is forbidden — draft-only with approval.",
-        },
-        "no_linkedin_automation": {
-            "ar": "ممنوع أتمتة LinkedIn — مسودات فقط.",
-            "en": "LinkedIn automation is forbidden — draft-only.",
-        },
-        "no_scraping": {
-            "ar": "ممنوع scraping أو جمع ويب غير مصرّح.",
-            "en": "Scraping / unauthorized web collection is forbidden.",
-        },
-        "no_bulk_outreach": {
-            "ar": "ممنوع تواصل جماعي خارجي بدون موافقة وحوكمة.",
-            "en": "Bulk external outreach without governance approval is forbidden.",
-        },
-        "no_guaranteed_sales_claims": {
-            "ar": "ممنوع وعود مبيعات مضمونة.",
-            "en": "Guaranteed sales claims are forbidden.",
-        },
-        "no_fake_proof": {
-            "ar": "ممنوع إثبات مزيّف أو أرقام مخترعة.",
-            "en": "Fake proof / invented metrics is forbidden.",
-        },
-        "external_action_requires_approval": {
-            "ar": "أي إرسال خارجي يتطلب موافقة صريحة — لا تنفيذ تلقائي.",
-            "en": "External sends require explicit approval — no autonomous execution.",
-        },
-    }
+    reasons = _doctrine_reasons()
     hits: list[str] = []
     if request_cold_whatsapp:
         hits.append("no_cold_whatsapp")

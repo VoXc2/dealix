@@ -1,0 +1,35 @@
+# Lead scoring policy — source of truth for dealix/intelligence/lead_scorer.py
+#
+# Heuristic weights/thresholds. Defaults are byte-equivalent to the previously
+# hardcoded `_heuristic_score`. The final score is clamped to [0, 1] and rounded
+# to 3 decimals; tier is assigned from `tiers` (>= hot → hot, >= warm → warm,
+# else cold). `reason` strings are appended (Arabic) when a band is hit.
+schema_version: "1.0"
+
+tiers:
+  hot: 0.7
+  warm: 0.45
+
+weights:
+  company_size:
+    - { min: 50, points: 0.20, reason: "شركة بحجم مناسب" }
+    - { min: 10, points: 0.10 }
+  budget_usd:
+    - { min: 10000, points: 0.25, reason: "ميزانية جاهزة" }
+    - { min: 2000, points: 0.12 }
+  urgency_score:
+    - { min: 0.7, points: 0.20, reason: "احتياج عاجل" }
+    - { min: 0.4, points: 0.10 }
+  has_company_email:
+    points: 0.08
+    reason: "إيميل شركة"
+  has_phone:
+    points: 0.04
+  pain_points_count:
+    min: 2
+    points: 0.08
+    reason: "نقاط ألم محددة"
+  sector_fit:
+    factor: 0.15
+    reason_min: 0.7
+    reason: "قطاع مستهدف"

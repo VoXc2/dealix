@@ -1,22 +1,36 @@
-"""Approval matrix — deterministic risk routing."""
+"""Approval matrix — deterministic risk routing (policy-driven).
+
+Routing rules live in ``policy_config/approval_policy.yaml``; this module is the
+deterministic evaluator. YAML defaults are byte-equivalent to the prior hardcoded
+if-chain, so behaviour is unchanged.
+"""
 
 from __future__ import annotations
 
 from typing import Literal
 
+from auto_client_acquisition.policy_config.loader import load_policy
+
 Risk = Literal["low", "medium", "high"]
+
+
+def _rule_matches(action: str, match: dict) -> bool:
+    if not match:
+        return False
+    any_terms = match.get("any") or []
+    all_terms = match.get("all") or []
+    if not any_terms and not all_terms:
+        return False
+    if any_terms and not any(term in action for term in any_terms):
+        return False
+    return not (all_terms and not all(term in action for term in all_terms))
 
 
 def approval_for_action(action: str) -> tuple[Risk, str]:
     a = action.lower().strip()
-    if "whatsapp" in a or "cold_whatsapp" in a:
-        return "high", "human+consent"
-    if "linkedin" in a and "automation" in a:
-        return "high", "blocked"
-    if "send" in a and "email" in a:
-        return "medium", "human"
-    if "pii" in a or "personal" in a:
-        return "high", "lawful_basis_required"
-    if "publish" in a or "claim" in a:
-        return "medium", "claim_qa"
-    return "low", "auto"
+    policy = load_policy("approval_policy")
+    for rule in policy.get("rules") or []:
+        if _rule_matches(a, rule.get("match") or {}):
+            return rule["risk"], rule["route"]
+    default = policy.get("default") or {}
+    return default.get("risk", "low"), default.get("route", "auto")

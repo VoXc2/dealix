@@ -3,7 +3,6 @@ import Link from "next/link";
 
 const SprintToolsPanel = dynamic(
   () => import("@/components/services/SprintToolsPanel"),
-  { ssr: false },
 );
 
 interface ServicesHubProps {

@@ -11,6 +11,8 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
+from auto_client_acquisition.policy_config.loader import load_policy
+
 MODEL_PATH = Path(os.getenv("LEAD_SCORER_MODEL", "/opt/dealix/models/lead_scorer.pkl"))
 
 
@@ -48,43 +50,49 @@ class ScoreResult:
     model: str = "heuristic"
 
 
+def _band_points(value: float, bands: list[dict], reasons: list[str]) -> float:
+    """First band (in declared order) whose `min` threshold is met."""
+    for band in bands:
+        if value >= band["min"]:
+            reason = band.get("reason")
+            if reason:
+                reasons.append(reason)
+            return float(band["points"])
+    return 0.0
+
+
 def _heuristic_score(f: LeadFeatures) -> ScoreResult:
+    policy = load_policy("lead_scoring")
+    weights = policy["weights"]
+    tiers = policy["tiers"]
     score = 0.0
     reasons: list[str] = []
 
-    if f.company_size >= 50:
-        score += 0.20
-        reasons.append("شركة بحجم مناسب")
-    elif f.company_size >= 10:
-        score += 0.10
-
-    if f.budget_usd >= 10000:
-        score += 0.25
-        reasons.append("ميزانية جاهزة")
-    elif f.budget_usd >= 2000:
-        score += 0.12
-
-    if f.urgency_score >= 0.7:
-        score += 0.20
-        reasons.append("احتياج عاجل")
-    elif f.urgency_score >= 0.4:
-        score += 0.10
+    score += _band_points(f.company_size, weights["company_size"], reasons)
+    score += _band_points(f.budget_usd, weights["budget_usd"], reasons)
+    score += _band_points(f.urgency_score, weights["urgency_score"], reasons)
 
     if f.has_company_email:
-        score += 0.08
-        reasons.append("إيميل شركة")
+        email_w = weights["has_company_email"]
+        score += float(email_w["points"])
+        if email_w.get("reason"):
+            reasons.append(email_w["reason"])
     if f.has_phone:
-        score += 0.04
-    if f.pain_points_count >= 2:
-        score += 0.08
-        reasons.append("نقاط ألم محددة")
+        score += float(weights["has_phone"]["points"])
 
-    score += 0.15 * f.sector_fit
-    if f.sector_fit >= 0.7:
-        reasons.append("قطاع مستهدف")
+    pain_w = weights["pain_points_count"]
+    if f.pain_points_count >= pain_w["min"]:
+        score += float(pain_w["points"])
+        if pain_w.get("reason"):
+            reasons.append(pain_w["reason"])
+
+    sector_w = weights["sector_fit"]
+    score += float(sector_w["factor"]) * f.sector_fit
+    if f.sector_fit >= sector_w["reason_min"]:
+        reasons.append(sector_w["reason"])
 
     score = min(max(score, 0.0), 1.0)
-    tier = "hot" if score >= 0.7 else "warm" if score >= 0.45 else "cold"
+    tier = "hot" if score >= tiers["hot"] else "warm" if score >= tiers["warm"] else "cold"
     return ScoreResult(score=round(score, 3), tier=tier, reasons=reasons, model="heuristic")
 
 

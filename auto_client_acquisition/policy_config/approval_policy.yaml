@@ -1,0 +1,50 @@
+# Approval routing policy — source of truth for governance_os/approval_matrix.py
+#
+# Rules are evaluated top-to-bottom, first match wins; if none match, `default`
+# applies. A rule matches when the normalised action string (lowercased, stripped)
+# satisfies BOTH clauses present under `match`:
+#   any:  at least one listed substring is in the action
+#   all:  every listed substring is in the action
+#
+# Defaults below are byte-equivalent to the previously hardcoded if-chain.
+schema_version: "1.0"
+
+default:
+  risk: low
+  route: auto
+
+rules:
+  - id: whatsapp
+    description: WhatsApp outreach — human review plus consent required.
+    match:
+      any: [whatsapp, cold_whatsapp]
+    risk: high
+    route: human+consent
+
+  - id: linkedin_automation
+    description: LinkedIn automation is blocked outright (non-negotiable 3).
+    match:
+      all: [linkedin, automation]
+    risk: high
+    route: blocked
+
+  - id: email_send
+    description: Outbound email — requires human approval before send.
+    match:
+      all: [send, email]
+    risk: medium
+    route: human
+
+  - id: pii_access
+    description: PII / personal-data actions need a documented lawful basis.
+    match:
+      any: [pii, personal]
+    risk: high
+    route: lawful_basis_required
+
+  - id: publish_claim
+    description: Published content / claims route through claim QA.
+    match:
+      any: [publish, claim]
+    risk: medium
+    route: claim_qa

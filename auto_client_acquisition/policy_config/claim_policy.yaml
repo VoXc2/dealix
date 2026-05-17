@@ -1,0 +1,63 @@
+# Claim / doctrine policy — source of truth for safe_send_gateway/doctrine.py
+#
+# `codes` supplies the bilingual reason text for each doctrine violation. The
+# boolean checks themselves stay in Python: config can add codes or tighten
+# wording, it can NEVER remove a guard. doctrine.py asserts the seven base
+# codes below all survive the load (fail-fast).
+#
+# `blocked_without_source` / `requires_approval` drive policy_config/claim_guard.py
+# (free-text claim scanning).
+schema_version: "1.0"
+
+codes:
+  no_cold_whatsapp:
+    non_negotiable: true
+    ar: "ممنوع واتساب بارد أو أتمتة واتساب باردة — مسودات فقط مع موافقة."
+    en: "Cold WhatsApp / WhatsApp automation is forbidden — draft-only with approval."
+  no_linkedin_automation:
+    non_negotiable: true
+    ar: "ممنوع أتمتة LinkedIn — مسودات فقط."
+    en: "LinkedIn automation is forbidden — draft-only."
+  no_scraping:
+    non_negotiable: true
+    ar: "ممنوع scraping أو جمع ويب غير مصرّح."
+    en: "Scraping / unauthorized web collection is forbidden."
+  no_bulk_outreach:
+    non_negotiable: true
+    ar: "ممنوع تواصل جماعي خارجي بدون موافقة وحوكمة."
+    en: "Bulk external outreach without governance approval is forbidden."
+  no_guaranteed_sales_claims:
+    non_negotiable: true
+    ar: "ممنوع وعود مبيعات مضمونة."
+    en: "Guaranteed sales claims are forbidden."
+  no_fake_proof:
+    non_negotiable: true
+    ar: "ممنوع إثبات مزيّف أو أرقام مخترعة."
+    en: "Fake proof / invented metrics is forbidden."
+  external_action_requires_approval:
+    non_negotiable: true
+    ar: "أي إرسال خارجي يتطلب موافقة صريحة — لا تنفيذ تلقائي."
+    en: "External sends require explicit approval — no autonomous execution."
+
+# Free-text claim scanning (claim_guard.scan_claim). Matching is case-insensitive
+# substring. `blocked_without_source` claims cannot ship without a cited source;
+# `requires_approval` topics need founder/governance sign-off before publishing.
+blocked_without_source:
+  - guaranteed revenue
+  - guaranteed roi
+  - guaranteed compliance
+  - guaranteed sales
+  - security certified
+  - legal compliance
+  - privacy guarantee
+  - autonomous send
+  - client result
+
+requires_approval:
+  - security
+  - compliance
+  - legal
+  - privacy
+  - roi
+  - revenue increase
+  - case study

@@ -1,0 +1,71 @@
+# Lead-lifecycle stage transitions — consumed by policy_config/stage_guard.py
+#
+# Each stage lists `allowed_next` (the only stages it may move to) and an
+# optional `required_evidence` list — evidence_event types that must exist
+# before the stage may be left. `validate_transition(from, to, evidence)`
+# enforces both. Stages with no `allowed_next` are terminal.
+#
+# Additive: no existing runtime module consumes this yet — it is the
+# declarative graph the V1 sales pipeline will be wired against.
+schema_version: "1.0"
+
+initial: new_lead
+
+stages:
+  new_lead:
+    allowed_next: [qualified_a, qualified_b, nurture, partner_candidate, closed_lost]
+
+  qualified_a:
+    allowed_next: [meeting_booked, nurture, closed_lost]
+
+  qualified_b:
+    allowed_next: [meeting_booked, nurture, closed_lost]
+
+  partner_candidate:
+    allowed_next: [meeting_booked, nurture, closed_lost]
+
+  nurture:
+    allowed_next: [qualified_a, qualified_b, closed_lost]
+
+  meeting_booked:
+    allowed_next: [meeting_done, nurture, closed_lost]
+
+  meeting_done:
+    required_evidence: [meeting_notes]
+    allowed_next: [scope_requested, nurture, closed_lost]
+
+  scope_requested:
+    allowed_next: [scope_sent, nurture, closed_lost]
+
+  scope_sent:
+    required_evidence: [scope_requested, scope_approved]
+    allowed_next: [invoice_sent, nurture, closed_lost]
+
+  invoice_sent:
+    allowed_next: [invoice_paid, nurture, closed_lost]
+
+  invoice_paid:
+    required_evidence: [payment_proof]
+    allowed_next: [delivery_started]
+
+  delivery_started:
+    allowed_next: [proof_pack_sent]
+
+  proof_pack_sent:
+    required_evidence: [founder_review, client_delivery]
+    allowed_next: [sprint_candidate, retainer_candidate, referral_requested, closed_won]
+
+  sprint_candidate:
+    allowed_next: [scope_requested, closed_won, closed_lost]
+
+  retainer_candidate:
+    allowed_next: [scope_requested, closed_won, closed_lost]
+
+  referral_requested:
+    allowed_next: [closed_won, closed_lost]
+
+  closed_won:
+    allowed_next: []
+
+  closed_lost:
+    allowed_next: []
