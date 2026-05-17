@@ -1,0 +1,51 @@
+# Full Ops System — Support knowledge risk levels + routing thresholds
+# STATUS: design contract for a later build phase. NOT yet code-wired.
+# Pairs with: data/config/support_intents.yaml
+# Canonical home: auto_client_acquisition/support_os/
+
+name: support_knowledge_risk
+version: 1
+
+risk_levels:
+  low:
+    description_ar: "إجابة عامة مغطاة بمقال معتمد في قاعدة المعرفة"
+    description_en: "General answer fully covered by an approved KB article"
+    auto_answer_allowed: true
+    requires_approval: false
+    requires_evidence: true
+
+  medium:
+    description_ar: "يمس النطاق أو الفوترة أو وعد بنتيجة"
+    description_en: "Touches scope, billing, or an outcome promise"
+    auto_answer_allowed: false
+    requires_approval: true
+    requires_evidence: true
+
+  high:
+    description_ar: "استرداد أموال أو شكوى أو إشارة فقدان عميل"
+    description_en: "Refund, complaint, or churn signal"
+    auto_answer_allowed: false
+    requires_approval: true
+    requires_escalation: true
+
+  critical:
+    description_ar: "خصوصية بيانات أو أمن أو امتثال — مؤسس/مختص فقط"
+    description_en: "Data privacy, security, or compliance — founder/specialist only"
+    auto_answer_allowed: false
+    requires_approval: true
+    requires_escalation: true
+    requires_source: true
+
+routing:
+  auto_answer_when:
+    - risk == low
+    - approved_kb_article_match == true
+  draft_when:
+    - risk == medium
+  escalate_when:
+    - risk in [high, critical]
+    - OR approved_kb_article_match == false   # knowledge gap -> human
+
+health_targets:
+  high_risk_escalation_rate_pct: 100   # every high/critical ticket must escalate
+  auto_answer_without_approved_kb_pct: 0

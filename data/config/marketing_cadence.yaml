@@ -1,0 +1,46 @@
+# Full Ops System — Marketing & content weekly cadence
+# STATUS: design contract for a later build phase. NOT yet code-wired.
+# Existing strategy doc (not restated here): docs/MARKETING_AND_CONTENT_SYSTEM.md,
+#   docs/sales-kit/dealix_marketing_full_playbook.md, docs/GEO_CONTENT_CALENDAR.md
+# Canonical home: auto_client_acquisition/gtm_os/ + autonomous_growth/
+# Governance: every external-facing asset is a draft until founder-approved
+#   (non-negotiable #1); every claim needs a source (non-negotiable #7).
+
+name: marketing_cadence
+version: 1
+
+content_pillars:
+  - id: founder_lesson
+    day: sunday
+  - id: ai_governance_mistake
+    day: monday
+  - id: crm_data_readiness
+    day: tuesday
+  - id: proof_snippet
+    day: wednesday
+    requires_source: true   # proof snippets must reference a real evidence event
+  - id: partner_angle
+    day: thursday
+  - id: ceo_review_insight
+    day: friday
+  - id: template_or_checklist
+    day: saturday
+
+channels:
+  - linkedin
+  - newsletter
+  - seo_article
+  - webinar
+
+asset_flow:
+  states: [idea, draft, claim_checked, founder_approved, scheduled, published]
+  external_publish_requires: founder_approved
+  claim_check_owner: ClaimCheckerAgent   # see data/config/agent_permissions.yaml
+
+tracking:
+  utm_required: true
+  lead_magnet_attribution: data_os
+
+future_test_gates:
+  - tests/test_no_marketing_publish_without_approval.py
+  - tests/test_proof_snippet_requires_source.py

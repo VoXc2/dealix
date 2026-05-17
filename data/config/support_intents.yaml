@@ -1,0 +1,66 @@
+# Full Ops System — Support Autopilot intent catalog
+# STATUS: design contract for a later build phase. NOT yet code-wired.
+# Canonical home: auto_client_acquisition/support_os/ (already exists).
+# Runtime workflow: data/workflows/support.yaml (ticket triage + reply draft).
+# Knowledge base: docs/knowledge-base/support_faq_{ar,en}.md
+# Risk routing thresholds: data/config/support_knowledge_risk.yaml
+
+name: support_intents
+version: 1
+
+# handling:
+#   auto_answer  -> low risk + answer fully covered by an approved KB article
+#   draft        -> medium risk -> drafted, then csm/founder approval (per support.yaml)
+#   escalate     -> high/critical risk -> human only, no draft auto-sent
+intents:
+  - id: pricing_question
+    risk: low
+    handling: auto_answer
+    kb_ref: docs/knowledge-base/support_faq_{locale}.md#pricing
+
+  - id: how_diagnostic_works
+    risk: low
+    handling: auto_answer
+    kb_ref: docs/knowledge-base/support_faq_{locale}.md#diagnostic
+
+  - id: proof_pack_question
+    risk: low
+    handling: auto_answer
+    kb_ref: docs/knowledge-base/support_faq_{locale}.md#proof-pack
+
+  - id: billing_or_invoice
+    risk: medium
+    handling: draft
+    notes: "Touches money — drafted, never auto-sent."
+
+  - id: scope_change_request
+    risk: medium
+    handling: draft
+
+  - id: refund_request
+    risk: high
+    handling: escalate
+    policy_ref: docs/REFUND_SOP.md
+
+  - id: data_or_privacy_request
+    risk: critical
+    handling: escalate
+    policy_ref: docs/PDPL_DATA_SUBJECT_REQUEST_SOP.md
+
+  - id: security_concern
+    risk: critical
+    handling: escalate
+
+  - id: complaint_or_churn_signal
+    risk: high
+    handling: escalate
+
+knowledge_gap_loop:
+  trigger: intent_matched_but_no_approved_kb_article
+  action: log_knowledge_gap
+  evidence_event: support_knowledge_gap_logged
+  review_owner: founder
+
+future_test_gates:
+  - tests/test_support_high_risk_escalates.py
+  - tests/test_support_auto_answer_requires_approved_kb.py

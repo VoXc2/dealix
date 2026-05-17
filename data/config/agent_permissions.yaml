@@ -1,0 +1,86 @@
+# Full Ops System — Agent permission registry
+# STATUS: design contract for a later build phase. NOT yet code-wired.
+# Satisfies non-negotiable #10 (no unbounded agents): every agent has an
+#   identity, a bounded scope, and an explicit approval rule.
+# Canonical home: auto_client_acquisition/agent_os/ +
+#   auto_client_acquisition/agent_identity_access_os/
+# Orchestration loop: docs/engineering/AGENT_ORCHESTRATOR.md
+
+name: agent_permissions
+version: 1
+
+# approval_rule:
+#   auto             -> output applied without human review (low-risk, internal only)
+#   approval_at_risk -> human approval required before any external/irreversible effect
+#   human_only       -> agent may only prepare; a human performs the action
+defaults:
+  external_send: never_autonomous   # non-negotiable #1 (no live send)
+  charge: never_autonomous          # non-negotiable #2 (no live charge)
+  every_run_logs: agent_run_log     # non-negotiable #11 (no unaudited changes)
+
+agents:
+  - name: LeadScoringAgent
+    scope: [data_os, sales_os]
+    produces: lead_score
+    risk_level: low
+    approval_rule: auto
+
+  - name: OutreachDraftAgent
+    scope: [sales_os]
+    produces: outreach_draft
+    risk_level: medium
+    approval_rule: approval_at_risk
+
+  - name: ReplyClassifierAgent
+    scope: [sales_os]
+    produces: reply_classification
+    risk_level: low
+    approval_rule: auto
+
+  - name: MeetingBriefAgent
+    scope: [sales_os]
+    produces: meeting_brief
+    risk_level: low
+    approval_rule: auto
+
+  - name: ScopeBuilderAgent
+    scope: [sales_os, delivery_os]
+    produces: scope_draft
+    risk_level: high
+    approval_rule: approval_at_risk
+    requires_sources: true
+
+  - name: SupportClassifierAgent
+    scope: [support_os]
+    produces: ticket_classification
+    risk_level: medium
+    approval_rule: approval_at_risk
+
+  - name: SupportAnswerAgent
+    scope: [support_os]
+    produces: support_reply_draft
+    risk_level: medium
+    approval_rule: approval_at_risk
+    requires_sources: true   # answer must cite an approved KB article
+
+  - name: ContentDraftAgent
+    scope: [gtm_os]
+    produces: content_draft
+    risk_level: medium
+    approval_rule: approval_at_risk
+
+  - name: AffiliateComplianceAgent
+    scope: [partnership_os]
+    produces: compliance_flag
+    risk_level: high
+    approval_rule: human_only
+
+  - name: ClaimCheckerAgent
+    scope: [governance_os]
+    produces: claim_risk_report
+    risk_level: high
+    approval_rule: human_only   # governance gate — agent flags, human decides
+
+future_test_gates:
+  - tests/test_no_agent_without_permission_entry.py
+  - tests/test_agent_run_logs_policy_result.py

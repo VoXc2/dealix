@@ -1,0 +1,53 @@
+# Full Ops System — Partner network rules
+# STATUS: design contract for a later build phase. NOT yet code-wired.
+# Doctrine: docs/00_constitution/AFFILIATE_PARTNER_DOCTRINE.md
+# Canonical home: auto_client_acquisition/partnership_os/ (already exists:
+#   referral_tracker.py, referral_store.py).
+# Existing partner docs: docs/partners/, docs/40_partners/,
+#   docs/AGENCY_PARTNER_PROGRAM.md — this config does not restate them.
+
+name: partner_rules
+version: 1
+
+partner_types:
+  - referral_partner       # sends qualified leads, no delivery
+  - implementation_partner # co-delivers diagnostics / sprints
+  - white_label_partner    # delivers under their own brand (later phase)
+
+tiers:
+  - tier: registered
+    requires: [signed_partner_agreement, disclosure_agreement]
+  - tier: certified
+    requires: [registered, completed_enablement, one_clean_paid_referral]
+  - tier: strategic
+    requires: [certified, three_paid_referrals, founder_review]
+
+referral_handoff:
+  intake_event: partner_referral_submitted
+  scoring: data_os.compute_dq          # reuse existing DQ scoring
+  routing_to: sales_os                 # qualified leads enter the normal pipeline
+  evidence_event_required: partner_referral_submitted
+
+commission:
+  basis: first_invoice_paid_amount
+  payout_precondition_event: invoice_paid
+  payout_requires_approval: true
+  ledger: value_os.referral
+
+compliance_flags:
+  - missing_disclosure
+  - unapproved_claim
+  - cold_outreach
+  - data_handling_violation   # PDPL — non-negotiable #6
+effect_of_open_flag: freeze_payout_and_pause_handoff
+
+suspension:
+  policy_doc: docs/40_partners/PARTNER_SUSPENSION_POLICY.md
+  triggers:
+    - repeated_compliance_flag
+    - fake_proof
+    - unconsented_data
+
+future_test_gates:
+  - tests/test_no_partner_payout_before_paid.py
+  - tests/test_partner_referral_requires_evidence.py

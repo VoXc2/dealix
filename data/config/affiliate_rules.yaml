@@ -1,0 +1,74 @@
+# Full Ops System — Affiliate program rules
+# STATUS: design contract for a later build phase. NOT yet code-wired.
+# Doctrine: docs/00_constitution/AFFILIATE_PARTNER_DOCTRINE.md
+# Money path: rides the existing referral ledger
+#   (auto_client_acquisition/value_os/value_ledger.py +
+#    auto_client_acquisition/partnership_os/referral_tracker.py).
+#   No standalone payout engine is introduced.
+
+name: affiliate_rules
+version: 1
+
+eligibility:
+  allowed:
+    - existing_customer
+    - vetted_individual_marketer
+    - registered_business
+  rejected:
+    - anonymous_applicant
+    - applicant_without_disclosure_agreement
+  requires_application_review: true
+  requires_approval: true   # founder approval before activation
+
+commission:
+  # Tiers describe one-time commission on the first paid deal an affiliate sources.
+  basis: first_invoice_paid_amount
+  tiers:
+    - tier: standard
+      rate_pct: 10
+    - tier: trusted          # unlocked after 3 clean paid referrals
+      rate_pct: 15
+      unlock_after_clean_paid_referrals: 3
+  payout_precondition_event: invoice_paid   # accrual is blocked until this evidence event exists
+  payout_requires_approval: true            # founder flips the payout (non-negotiable #2)
+  compliance_hold: true                     # an open compliance flag freezes payout
+
+tracking:
+  attribution: referral_link
+  window_days: 90
+  ledger: value_os.referral
+  duplicate_lead_policy: first_touch_wins
+
+disclosure:
+  required: true
+  machine_checkable: true
+  ar: "محتوى ترويجي بالشراكة مع Dealix"
+  en: "Promotional content in partnership with Dealix"
+  placement: visible_before_cta
+
+forbidden_claims:
+  - guaranteed_revenue
+  - guaranteed_roi
+  - security_or_compliance_guarantee
+  - autonomous_sending
+  - unverified_client_results
+  - unapproved_case_study
+approved_messaging_only: true   # affiliates may only use founder-approved templates
+
+no_cold_outreach:
+  cold_whatsapp: forbidden      # already enforced by non-negotiable #3
+  li_automation: forbidden
+  scraped_lists: forbidden
+
+termination:
+  triggers:
+    - misleading_claim
+    - missing_disclosure
+    - cold_outreach_violation
+    - fake_proof
+  effect: deactivate_links_and_freeze_unpaid_commission
+
+future_test_gates:
+  - tests/test_no_affiliate_payout_before_paid.py
+  - tests/test_no_affiliate_unapproved_message.py
+  - tests/test_affiliate_disclosure_required.py
