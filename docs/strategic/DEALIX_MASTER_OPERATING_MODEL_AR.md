@@ -4,8 +4,11 @@
 المعادلة المرجعية:
 
 ```text
-Dealix = ذكاء الإيرادات + تنفيذ تشغيلي + محرك إثبات + نجاح عميل + طبقة ثقة + حلقة تعلّم
+Dealix = Governed Revenue & AI Ops + تنفيذ تشغيلي + محرك إثبات + نجاح عميل + طبقة ثقة + حلقة تعلّم
 ```
+
+**خريطة السيطرة الاستراتيجية (GCC Control Map):**
+[GCC_GOVERNED_REVENUE_AI_OPS_CONTROL_MAP_AR.md](GCC_GOVERNED_REVENUE_AI_OPS_CONTROL_MAP_AR.md)
 
 ## السلسلة الذهبية
 
@@ -81,6 +84,7 @@ Dealix = ذكاء الإيرادات + تنفيذ تشغيلي + محرك إثب
 
 - [commercial/DEALIX_REVOPS_PACKAGES_AR.md](../commercial/DEALIX_REVOPS_PACKAGES_AR.md) — حزم Revenue Operations + AI Implementation (تسعير، نطاق، ربط بالكود)
 - [ops/DAILY_COMMERCIAL_LOOP_AR.md](../ops/DAILY_COMMERCIAL_LOOP_AR.md) — حلقة يومية/أسبوعية: إكمال، بوابات، scorecard
+- [GCC_GOVERNED_REVENUE_AI_OPS_CONTROL_MAP_AR.md](GCC_GOVERNED_REVENUE_AI_OPS_CONTROL_MAP_AR.md) — خريطة السيطرة: الفئة + النظام + الحوكمة + التوسع
 - `docs/v10/DEALIX_CAPABILITY_GAP_MAP.md` — فجوات قدرات
 - `AGENTS.md` — تشغيل الوكلاء السحابيين
 - `dealix/registers/no_overclaim.yaml` — سجل عدم المبالغة
