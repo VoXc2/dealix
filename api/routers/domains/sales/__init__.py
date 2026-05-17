@@ -12,6 +12,7 @@ from api.routers import (
     commercial_engagements as commercial_engagements_router,
     commercial_readiness as commercial_readiness_router,
     decision_passport as decision_passport_router,
+    governed_diagnostic as governed_diagnostic_router,
     proof_pack_governed as proof_pack_governed_router,
     revenue_data_intake as revenue_data_intake_router,
     revenue_intelligence as revenue_intelligence_router,
@@ -36,6 +37,7 @@ from api.routers import (
 
 _ROUTERS = [
     decision_passport_router.router,
+    governed_diagnostic_router.router,
     revenue_os_catalog_router.router,
     commercial_readiness_router.router,
     commercial_engagements_router.router,
