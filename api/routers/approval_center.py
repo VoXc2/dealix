@@ -14,6 +14,7 @@ from __future__ import annotations
 from typing import Any
 
 from fastapi import APIRouter, Body, HTTPException, Query
+from pydantic import ValidationError
 
 from auto_client_acquisition.approval_center import (
     ApprovalRequest,
@@ -60,6 +61,18 @@ async def pending() -> dict[str, Any]:
     }
 
 
+@router.get("")
+async def list_approvals() -> dict[str, Any]:
+    """Canonical list endpoint (alias for pending + history summary)."""
+    pending_rows = get_default_approval_store().list_pending()
+    history_rows = get_default_approval_store().list_history(limit=200)
+    return {
+        "pending_count": len(pending_rows),
+        "history_count": len(history_rows),
+        "items": [row.model_dump(mode="json") for row in pending_rows],
+    }
+
+
 @router.post("/create")
 async def create(payload: dict[str, Any] = Body(...)) -> dict[str, Any]:
     """Create a new approval request. Body must match ``ApprovalRequest``
@@ -74,6 +87,12 @@ async def create(payload: dict[str, Any] = Body(...)) -> dict[str, Any]:
         "approval": stored.model_dump(mode="json"),
         "card": render_approval_card(stored),
     }
+
+
+@router.post("")
+async def create_alias(payload: dict[str, Any] = Body(...)) -> dict[str, Any]:
+    """Canonical create endpoint alias: POST /api/v1/approvals."""
+    return await create(payload)
 
 
 @router.post("/{approval_id}/approve")
@@ -136,6 +155,15 @@ async def edit_endpoint(
         "approval": stored.model_dump(mode="json"),
         "card": render_approval_card(stored),
     }
+
+
+@router.post("/{approval_id}/request-edits")
+async def request_edits_endpoint(
+    approval_id: str,
+    payload: dict[str, Any] = Body(default_factory=dict),
+) -> dict[str, Any]:
+    """Canonical request-edits endpoint alias."""
+    return await edit_endpoint(approval_id=approval_id, payload=payload)
 
 
 @router.get("/history")

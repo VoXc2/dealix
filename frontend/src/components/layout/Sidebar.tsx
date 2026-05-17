@@ -28,6 +28,11 @@ interface NavItem {
 }
 
 const navItems: NavItem[] = [
+  { key: "opsFounder", href: "/ops/founder", icon: LayoutDashboard },
+  { key: "opsSales", href: "/ops/sales", icon: GitBranch },
+  { key: "opsApprovals", href: "/ops/approvals", icon: CheckSquare },
+  { key: "opsEvidence", href: "/ops/evidence", icon: Shield },
+  { key: "opsSupport", href: "/ops/support", icon: Users },
   { key: "dashboard", href: "/dashboard", icon: LayoutDashboard },
   { key: "pipeline", href: "/pipeline", icon: GitBranch },
   { key: "agents", href: "/agents", icon: Bot },
@@ -141,6 +146,11 @@ export function Sidebar({ collapsed = false, onToggle }: SidebarProps) {
                     >
                       {t(
                         item.key as
+                          | "opsFounder"
+                          | "opsSales"
+                          | "opsApprovals"
+                          | "opsEvidence"
+                          | "opsSupport"
                           | "dashboard"
                           | "pipeline"
                           | "agents"

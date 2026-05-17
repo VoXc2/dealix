@@ -181,6 +181,34 @@ export const api = {
 
   getCustomerPortal: (handle = "Slot-A") =>
     apiClient.get(`/api/v1/customer-portal/${encodeURIComponent(handle)}`),
+
+  // Ops Autopilot (Sales + Customer Ops)
+  getFounderCommandCenterReport: () =>
+    apiClient.get("/api/v1/reports/founder-command-center"),
+
+  getSalesPipelineOps: () =>
+    apiClient.get("/api/v1/sales/pipeline"),
+
+  getEvidenceEvents: () =>
+    apiClient.get("/api/v1/evidence/events"),
+
+  getSupportTickets: () =>
+    apiClient.get("/api/v1/support/tickets"),
+
+  postPublicRiskScore: (body: Record<string, unknown>) =>
+    apiClient.post("/api/v1/public/risk-score", body),
+
+  postPublicLead: (body: Record<string, unknown>) =>
+    apiClient.post("/api/v1/public/leads", body),
+
+  getPublicProofPackSample: () =>
+    apiClient.get("/api/v1/public/proof-pack/sample"),
+
+  postPublicBookingRequest: (body: Record<string, unknown>) =>
+    apiClient.post("/api/v1/public/booking-request", body),
+
+  getPublicServices: () =>
+    apiClient.get("/api/v1/public/services"),
 };
 
 export default api;

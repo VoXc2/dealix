@@ -1,5 +1,10 @@
 {
   "nav": {
+    "opsFounder": "Founder Center",
+    "opsSales": "Sales Console",
+    "opsApprovals": "Ops Approvals",
+    "opsEvidence": "Evidence Ledger",
+    "opsSupport": "Support Console",
     "dashboard": "Dashboard",
     "pipeline": "Lead Pipeline",
     "agents": "Agent Activity",

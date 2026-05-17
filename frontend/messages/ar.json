@@ -1,5 +1,10 @@
 {
   "nav": {
+    "opsFounder": "مركز المؤسس",
+    "opsSales": "كونسول المبيعات",
+    "opsApprovals": "موافقات العمليات",
+    "opsEvidence": "سجل الأدلة",
+    "opsSupport": "دعم العملاء",
     "dashboard": "لوحة التحكم",
     "pipeline": "خط الصفقات",
     "agents": "نشاط الوكلاء",

@@ -28,6 +28,7 @@ from api.routers import (
     full_ops,
     full_os,
     health,
+    ops_autopilot,
     personal_operator,
     public,
     role_command,
@@ -39,6 +40,7 @@ from api.routers import (
 
 _ROUTERS = [
     health.router,
+    ops_autopilot.router,
     admin.router,
     public.router,
     sectors.router,
