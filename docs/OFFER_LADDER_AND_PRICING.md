@@ -18,6 +18,16 @@
 > **founder-assisted / semi-automated** today — not full managed services —
 > and unlock only on the stated entry conditions.
 
+> **هذا الملف هو التسعير المعتمد الحالي للمنتجات — Live productized pricing.**
+> الأسعار والدرجات أدناه هي المرجع الساري. توجد مراجعة استراتيجية *مقترحة* لسلّم
+> العروض في [`docs/empire/OFFER_LADDER.md`](empire/OFFER_LADDER.md)، وهي **ليست
+> تسعيراً معتمداً** ولا تحلّ محلّ هذا الملف إلا بعد اعتمادها صراحةً من المؤسس.
+>
+> This file is the current **live productized pricing**. A *proposed* strategic
+> revision of the offer ladder lives at
+> [`docs/empire/OFFER_LADDER.md`](empire/OFFER_LADDER.md); it is **not yet adopted
+> as live pricing** and does not supersede this file until explicitly approved.
+
 ---
 
 ## سلم الخدمات — نظرة عامة
