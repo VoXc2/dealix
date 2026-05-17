@@ -1,10 +1,11 @@
 """Wave 13 Phase 2 — Service Catalog tests.
 
-Asserts the 7-offering registry meets:
+Asserts the offering registry meets:
 - Article 4: never includes 'live_send' or 'live_charge' in action_modes_used
 - Article 8: KPI commitment language uses commitment phrasing, never "guaranteed"/"نضمن"
 - Article 11: thin data registry (no business logic in tests)
-- Pricing ladder: ascending for paid services
+- Pricing ladder: ascending within the diagnostic-hero tier and within the
+  legacy upsell ladder
 - Bilingual: every offering has both name_ar + name_en
 
 Sandbox-safe — pure module imports, no api/security pyo3 cascade.
@@ -52,10 +53,10 @@ list_offerings = _REGISTRY_NS["list_offerings"]
 
 
 # ── Test 1 ────────────────────────────────────────────────────────────
-def test_registry_has_exactly_7_offerings():
-    """Article 11: catalog is the canonical 7 offerings."""
-    assert len(OFFERINGS) == 7, f"expected 7, got {len(OFFERINGS)}"
-    assert len(SERVICE_IDS) == 7, "duplicate service_id in registry"
+def test_registry_has_exactly_10_offerings():
+    """Article 11: catalog = 7 ladder offerings + the 3-tier hero diagnostic."""
+    assert len(OFFERINGS) == 10, f"expected 10, got {len(OFFERINGS)}"
+    assert len(SERVICE_IDS) == 10, "duplicate service_id in registry"
 
 
 # ── Test 2 ────────────────────────────────────────────────────────────
@@ -106,12 +107,32 @@ def test_no_guaranteed_language_anywhere():
 
 # ── Test 5 ────────────────────────────────────────────────────────────
 def test_price_ladder_ascending_for_paid_one_time_services():
-    """Free → 499 (Sprint) → 1500 (Data-to-Revenue) one-time pricing ladder."""
-    one_time_paid = [
-        o for o in OFFERINGS if o.price_unit == "one_time" and o.price_sar > 0
+    """Prices ascend within each group: the diagnostic-hero tier (4999 →
+    9999 → 15000) and the legacy upsell ladder (499 Sprint → 1500 Data Pack).
+
+    The hero offer deliberately sits above the ladder, so the two groups
+    are scored independently rather than as one global sequence.
+    """
+    hero = [
+        o for o in OFFERINGS
+        if o.price_unit == "one_time"
+        and o.price_sar > 0
+        and o.customer_journey_stage == "diagnostic_hero"
     ]
-    prices = [o.price_sar for o in one_time_paid]
-    assert prices == sorted(prices), f"one-time prices not ascending: {prices}"
+    ladder = [
+        o for o in OFFERINGS
+        if o.price_unit == "one_time"
+        and o.price_sar > 0
+        and o.customer_journey_stage != "diagnostic_hero"
+    ]
+    hero_prices = [o.price_sar for o in hero]
+    ladder_prices = [o.price_sar for o in ladder]
+    assert hero_prices == sorted(hero_prices), (
+        f"diagnostic-hero prices not ascending: {hero_prices}"
+    )
+    assert ladder_prices == sorted(ladder_prices), (
+        f"upsell-ladder one-time prices not ascending: {ladder_prices}"
+    )
     # Specifically: Sprint must be cheaper than Data-to-Revenue
     sprint = get_offering("revenue_proof_sprint_499")
     d2r = get_offering("data_to_revenue_pack_1500")

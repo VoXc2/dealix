@@ -7,7 +7,8 @@ from typing import Literal
 from pydantic import BaseModel, ConfigDict, Field
 
 CustomerJourneyStage = Literal[
-    "discovery",      # Free Mini Diagnostic
+    "discovery",        # Free Mini Diagnostic
+    "diagnostic_hero",  # 7-Day Governed Revenue & AI Ops Diagnostic (hero offer)
     "first_paid",     # 499 Sprint
     "expansion",      # Data-to-Revenue Pack
     "monthly",        # Growth Ops Monthly

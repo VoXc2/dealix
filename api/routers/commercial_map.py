@@ -10,7 +10,7 @@ Single source of truth that maps every Dealix offer to:
   - non-negotiables (hard_gates) honored by code
 
 Reads from `auto_client_acquisition.service_catalog.registry.OFFERINGS`
-so the map can never drift from the canonical 7-offer registry.
+so the map can never drift from the canonical offer registry.
 
 Endpoints:
   GET /api/v1/commercial-map           → JSON
@@ -43,6 +43,42 @@ _WIRING: dict[str, dict[str, Any]] = {
         "delivery_endpoint": "GET /api/v1/founder/leads",
         "proof_endpoint": "auto_client_acquisition/email/transactional.send_transactional(kind=diagnostic_intake_confirmation)",
         "founder_surface": "/founder-leads.html",
+        "next_offer": "revenue_proof_sprint_499",
+    },
+    "governed_diagnostic_starter_4999": {
+        "landing_url": "/dealix-diagnostic.html",
+        "intake_endpoint": "POST /api/v1/revenue-machine/risk-score",
+        "lead_capture_endpoint": "POST /api/v1/revenue-machine/risk-score",
+        "checkout_url": "founder-issued",
+        "checkout_endpoint": "POST /api/v1/payment-ops/invoice-intent",
+        "delivery_module": "auto_client_acquisition.diagnostic_workflow",
+        "delivery_endpoint": "POST /api/v1/revenue-machine/workflow/{name}",
+        "proof_endpoint": "auto_client_acquisition.proof_os.proof_pack.assemble",
+        "founder_surface": "/founder-dashboard.html",
+        "next_offer": "revenue_proof_sprint_499",
+    },
+    "governed_diagnostic_standard_9999": {
+        "landing_url": "/dealix-diagnostic.html",
+        "intake_endpoint": "POST /api/v1/revenue-machine/risk-score",
+        "lead_capture_endpoint": "POST /api/v1/revenue-machine/risk-score",
+        "checkout_url": "founder-issued",
+        "checkout_endpoint": "POST /api/v1/payment-ops/invoice-intent",
+        "delivery_module": "auto_client_acquisition.diagnostic_workflow",
+        "delivery_endpoint": "POST /api/v1/revenue-machine/workflow/{name}",
+        "proof_endpoint": "auto_client_acquisition.proof_os.proof_pack.assemble",
+        "founder_surface": "/founder-dashboard.html",
+        "next_offer": "revenue_proof_sprint_499",
+    },
+    "governed_diagnostic_executive_15000": {
+        "landing_url": "/dealix-diagnostic.html",
+        "intake_endpoint": "POST /api/v1/revenue-machine/risk-score",
+        "lead_capture_endpoint": "POST /api/v1/revenue-machine/risk-score",
+        "checkout_url": "founder-issued",
+        "checkout_endpoint": "POST /api/v1/payment-ops/invoice-intent",
+        "delivery_module": "auto_client_acquisition.diagnostic_workflow",
+        "delivery_endpoint": "POST /api/v1/revenue-machine/workflow/{name}",
+        "proof_endpoint": "auto_client_acquisition.proof_os.proof_pack.assemble",
+        "founder_surface": "/founder-dashboard.html",
         "next_offer": "revenue_proof_sprint_499",
     },
     "revenue_proof_sprint_499": {
@@ -129,6 +165,20 @@ _OFFER_NOTES = {
         "Free 24h diagnostic — opens the funnel. Confirmation email auto-sent. "
         "Founder reviews every intake within 24h."
     ),
+    "governed_diagnostic_starter_4999": (
+        "Hero offer (Starter tier). 7-day governed diagnostic — reviews 1 "
+        "revenue workflow across source clarity, approval boundaries, evidence "
+        "trail, proof of value. Founder-issued invoice. Proof Pack mandatory."
+    ),
+    "governed_diagnostic_standard_9999": (
+        "Hero offer (Standard tier). 7-day governed diagnostic — up to 3 "
+        "workflows reviewed + 60-min findings review. Founder-issued invoice."
+    ),
+    "governed_diagnostic_executive_15000": (
+        "Hero offer (Executive tier). 7-day governed diagnostic — all "
+        "workflows, AI governance roadmap, board-ready readout, 2 advisory "
+        "sessions. Founder-issued invoice."
+    ),
     "revenue_proof_sprint_499": (
         "First paid offer. 7 days. 10-step orchestrator. Proof Pack mandatory. "
         "50% on acceptance, 50% on Proof Pack delivery. 14-day full refund."
@@ -203,7 +253,7 @@ def _build_payload() -> dict[str, Any]:
 
 @router.get("")
 async def commercial_map_json() -> dict[str, Any]:
-    """JSON — 7 offers + wiring + non-negotiables + cross-links."""
+    """JSON — all offers + wiring + non-negotiables + cross-links."""
     return _build_payload()
 
 

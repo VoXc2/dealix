@@ -8,11 +8,20 @@ This document is the **single source of truth** showing how every commercial off
 
 ---
 
-## 1. The 7-offer canonical registry — السجل الرسمي للعروض السبعة
+## 1. The canonical offer registry — السجل الرسمي للعروض
+
+The catalog is the 3-tier **Governed Revenue & AI Ops Diagnostic** hero offer
+(top of funnel) plus the 7-rung upsell ladder below it — 10 offerings total.
+
+السجل هو عرض **التشخيص الحاكم للإيراد وعمليات الذكاء الاصطناعي** بثلاثة مستويات
+(أعلى القمع) إضافةً إلى سُلّم الترقية المكوّن من ٧ درجات تحته — ١٠ عروض إجمالاً.
 
 | `service_id` | Name (AR / EN) | Price (SAR) | Cadence | Customer Journey Stage |
 |---|---|---|---|---|
 | `free_mini_diagnostic` | التشخيص المجاني / Free Mini Diagnostic | 0 | one_time | discovery |
+| `governed_diagnostic_starter_4999` | التشخيص الحاكم — مبدئي / Governed Diagnostic — Starter | 4,999 | one_time | diagnostic_hero |
+| `governed_diagnostic_standard_9999` | التشخيص الحاكم — قياسي / Governed Diagnostic — Standard | 9,999 | one_time | diagnostic_hero |
+| `governed_diagnostic_executive_15000` | التشخيص الحاكم — تنفيذي / Governed Diagnostic — Executive | 15,000 | one_time | diagnostic_hero |
 | `revenue_proof_sprint_499` | سبرنت إثبات الإيرادات / Revenue Proof Sprint | 499 | one_time | first_paid |
 | `data_to_revenue_pack_1500` | حزمة من البيانات إلى الإيراد / Data-to-Revenue Pack | 1,500 | one_time | expansion |
 | `growth_ops_monthly_2999` | عمليات النمو الشهرية / Growth Ops Monthly | 2,999 | per_month | monthly |
@@ -27,6 +36,22 @@ The registry is authoritative — any disagreement with this table means **the c
 ---
 
 ## 2. Per-offer wiring — الربط لكل عرض
+
+### 2.0 Governed Revenue & AI Ops Diagnostic — التشخيص الحاكم (hero, 3 tiers)
+
+The hero offer — `governed_diagnostic_starter_4999`, `..._standard_9999`,
+`..._executive_15000`. All three tiers share one wiring surface.
+
+- **Public landing:** `landing/dealix-diagnostic.html`
+- **Lead magnet / intake:** `POST /api/v1/revenue-machine/risk-score` (the 7-question AI & Revenue Ops Risk Score)
+- **Lead scoring:** `POST /api/v1/revenue-machine/classify-lead`
+- **Pipeline read-model:** `GET /api/v1/revenue-machine/pipeline-view` (16 founder labels over the 22-stage journey)
+- **Workflows A–G:** `POST /api/v1/revenue-machine/workflow/{name}` — all draft-only / approval-gated
+- **KPI dashboard:** `GET /api/v1/revenue-machine/kpi-dashboard` — North Star = Paid Diagnostics
+- **Checkout:** founder-issued invoice → `POST /api/v1/payment-ops/invoice-intent`
+- **Delivery:** `auto_client_acquisition/diagnostic_workflow/`
+- **Proof / report:** `auto_client_acquisition/proof_os/proof_pack.assemble`
+- **Non-negotiables enforced:** `no_live_send`, `no_live_charge`, `no_cold_whatsapp`, `no_scraping`, `no_fake_proof`, `no_fake_revenue`, `no_unconsented_data`, `no_hidden_pricing`
 
 ### 2.1 `free_mini_diagnostic` — التشخيص المجاني
 

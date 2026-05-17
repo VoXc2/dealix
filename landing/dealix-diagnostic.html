@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-theme="dark">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>التشخيص الحاكم للإيراد و عمليات الذكاء الاصطناعي — Dealix Governed Diagnostic</title>
+<meta name="description" content="تشخيص حاكم خلال ٧ أيّام عمل: أين يضيع الإيراد، أين البيانات غير جاهزة، أين الذكاء الاصطناعي فيه مخاطرة، وأول ٣ قرارات تشغيليّة قابلة للتنفيذ بدليل. عربي أوّلاً، PDPL-aware." />
+<link rel="canonical" href="https://dealix.me/dealix-diagnostic.html" />
+<meta property="og:type" content="website" />
+<meta property="og:title" content="Dealix — Governed Revenue & AI Ops Diagnostic" />
+<meta property="og:description" content="٧ أسئلة. مؤشّر مخاطر فوري. تشخيص حاكم خلال ٧ أيّام عمل. عربي أوّلاً." />
+<meta property="og:url" content="https://dealix.me/dealix-diagnostic.html" />
+<meta property="og:locale" content="ar_SA" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Dealix — Governed Revenue & AI Ops Diagnostic" />
+<meta name="twitter:description" content="٧ أسئلة. مؤشّر مخاطر فوري. تشخيص حاكم خلال ٧ أيّام عمل." />
+<meta name="theme-color" content="#0f172a" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" />
+
+<link rel="stylesheet" href="/styles.css" />
+<link rel="stylesheet" href="/assets/css/design-system.css" />
+
+<style>
+  body {
+    background:
+      radial-gradient(900px 500px at 80% -10%, rgba(168, 85, 247, 0.16), transparent 60%),
+      radial-gradient(900px 500px at 0% 10%, rgba(14, 165, 233, 0.16), transparent 60%),
+      linear-gradient(180deg, #050816 0%, #0b1124 60%, #1e1b4b 100%);
+    color: var(--text);
+    min-height: 100vh;
+    margin: 0;
+    font-family: var(--font-ar);
+  }
+  main { padding: var(--space-7) var(--space-5) var(--space-9); }
+  .dx-form { display: grid; gap: var(--space-5); max-width: 760px; margin: 0 auto; }
+  .dx-q { display: grid; gap: var(--space-3); padding: var(--space-4);
+    border: 1px solid rgba(148, 163, 184, 0.18); border-radius: var(--radius, 14px); }
+  .dx-q__choices { display: flex; gap: var(--space-4); flex-wrap: wrap; }
+  .dx-q__choice { display: flex; gap: var(--space-2); align-items: center; cursor: pointer; }
+  .dx-q__choice input { width: 18px; height: 18px; accent-color: var(--accent-2); }
+  .dx-consent {
+    display: flex; gap: var(--space-3); align-items: flex-start; padding: var(--space-4);
+    background: rgba(34, 211, 238, 0.06); border: 1px solid rgba(34, 211, 238, 0.20);
+    border-radius: var(--radius, 14px); font-size: var(--fs-sm); line-height: var(--lh-base);
+  }
+  .dx-consent input[type="checkbox"] { width: 18px; height: 18px; accent-color: var(--accent-2);
+    margin-top: 2px; flex-shrink: 0; }
+  .dx-consent a { color: var(--accent-2); }
+  .dx-result { display: none; }
+  .dx-result.is-visible { display: block; }
+  textarea.ds-input__field { min-height: 80px; resize: vertical; font-family: var(--font-ar); }
+  .dx-tier { display: grid; gap: var(--space-2); }
+  .dx-tier__price { font-family: var(--font-lt); font-size: var(--fs-2xl); font-weight: 800;
+    background: linear-gradient(90deg, var(--accent-2), #a855f7);
+    -webkit-background-clip: text; background-clip: text; color: transparent; }
+</style>
+</head>
+<body>
+<a class="ds-skip-link" href="#main">تخطّ إلى المحتوى الرئيسي</a>
+
+<main id="main" class="ds-container--base ds-stack ds-stack--xl">
+
+  <nav class="ds-breadcrumb" aria-label="مسار التنقّل">
+    <a href="/">الرئيسيّة</a>
+    <span class="ds-breadcrumb__sep" aria-hidden="true"></span>
+    <span aria-current="page">التشخيص الحاكم</span>
+  </nav>
+
+  <!-- Hero -->
+  <section class="ds-banner ds-stack ds-stack--sm" aria-labelledby="hero-title">
+    <span class="ds-eyebrow">7-Day Governed Diagnostic · عربي أوّلاً · PDPL-aware</span>
+    <h1 id="hero-title" class="ds-banner__title">حوّل تجارب الذكاء الاصطناعي وعمليّات الإيراد إلى workflows محكومة وقابلة للقياس</h1>
+    <p class="ds-banner__subtitle">تشخيص ٧ أيّام للفرق التي تحتاج وضوح المصدر، حدود الموافقة، أثر الأدلّة، وإثبات القيمة — قبل أن توسّع.</p>
+  </section>
+
+  <!-- The problem -->
+  <section aria-label="المشكلة">
+    <div class="ds-card" style="background: linear-gradient(135deg, rgba(168,85,247,0.06), rgba(14,165,233,0.06)); border: 1px solid rgba(168,85,247,0.22);">
+      <h2 class="ds-card__title" style="font-size: var(--fs-xl);">المشكلة</h2>
+      <p class="ds-card__sub">الفرق تجرّب الذكاء الاصطناعي وأتمتة الإيراد — لكن غالباً بدون مصادر واضحة، بدون حدود موافقة، بدون أثر أدلّة، وبدون إثبات قيمة. هذا التشخيص يكشف أين يضيع الإيراد وأين الذكاء الاصطناعي فيه مخاطرة، ثم يحوّل ذلك إلى أوّل ٣ قرارات قابلة للتنفيذ بدليل.</p>
+    </div>
+  </section>
+
+  <!-- What you get -->
+  <section aria-label="ماذا ستحصل عليه">
+    <div class="ds-card" style="background: linear-gradient(135deg, rgba(34,211,238,0.06), rgba(168,85,247,0.06)); border: 1px solid rgba(34,211,238,0.22);">
+      <h2 class="ds-card__title" style="font-size: var(--fs-xl);">ماذا ستحصل عليه</h2>
+      <ul class="ds-list-clean" style="font-size: var(--fs-md);">
+        <li><strong>خريطة workflow الإيراد</strong> — Revenue Workflow Map</li>
+        <li><strong>مراجعة جودة CRM والمصادر</strong> — CRM / Source Quality Review</li>
+        <li><strong>مراجعة مخاطر استخدام الذكاء الاصطناعي</strong> — AI Usage Risk Review</li>
+        <li><strong>خريطة حدود الموافقة</strong> — Approval Boundaries Map</li>
+        <li><strong>تحليل ثغرات أثر الأدلّة</strong> — Evidence Trail Gap Analysis</li>
+        <li><strong>أعلى ٣ قرارات إيراد</strong> مدعومة بدليل</li>
+        <li><strong>Proof Pack</strong> + توصية مسار Sprint / Retainer</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- Risk Score form -->
+  <section aria-labelledby="form-title" class="ds-stack ds-stack--md">
+    <div>
+      <span class="ds-eyebrow">٧ أسئلة فقط</span>
+      <h2 id="form-title" class="ds-headline" style="font-size: var(--fs-3xl); margin-top: var(--space-3);">مؤشّر مخاطر الذكاء الاصطناعي والإيراد</h2>
+      <p class="ds-lede">احصل على درجة مخاطر فوريّة (منخفض / متوسّط / مرتفع) والخطوة التالية الموصى بها.</p>
+    </div>
+
+    <form id="riskForm" class="dx-form" novalidate>
+      <!-- Honeypot (hidden, anti-spam) -->
+      <input type="text" name="website" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px;height:0;width:0;opacity:0" aria-hidden="true" />
+
+      <label class="ds-input">
+        <span class="ds-input__label">اسم الشركة</span>
+        <input class="ds-input__field" type="text" name="company_handle" maxlength="120" placeholder="مثال: Acme B2B Co" autocomplete="organization" />
+        <span class="ds-input__hint">يظهر في تشخيصك فقط. غير منشور.</span>
+      </label>
+
+      <div class="dx-q" data-key="has_crm">
+        <span class="ds-input__label">١. هل لديكم نظام CRM؟</span>
+        <div class="dx-q__choices">
+          <label class="dx-q__choice"><input type="radio" name="has_crm" value="yes" /> نعم</label>
+          <label class="dx-q__choice"><input type="radio" name="has_crm" value="no" /> لا</label>
+        </div>
+      </div>
+
+      <div class="dx-q" data-key="uses_ai_in_sales_or_ops">
+        <span class="ds-input__label">٢. هل تستخدمون الذكاء الاصطناعي في المبيعات أو العمليّات؟</span>
+        <div class="dx-q__choices">
+          <label class="dx-q__choice"><input type="radio" name="uses_ai_in_sales_or_ops" value="yes" /> نعم</label>
+          <label class="dx-q__choice"><input type="radio" name="uses_ai_in_sales_or_ops" value="no" /> لا</label>
+        </div>
+      </div>
+
+      <div class="dx-q" data-key="approval_before_external_messages">
+        <span class="ds-input__label">٣. هل توجد موافقة قبل إرسال أي رسالة خارجيّة؟</span>
+        <div class="dx-q__choices">
+          <label class="dx-q__choice"><input type="radio" name="approval_before_external_messages" value="yes" /> نعم</label>
+          <label class="dx-q__choice"><input type="radio" name="approval_before_external_messages" value="no" /> لا</label>
+        </div>
+      </div>
+
+      <div class="dx-q" data-key="can_link_ai_to_financial_outcome">
+        <span class="ds-input__label">٤. هل يمكنكم ربط أي workflow ذكاء اصطناعي بنتيجة ماليّة؟</span>
+        <div class="dx-q__choices">
+          <label class="dx-q__choice"><input type="radio" name="can_link_ai_to_financial_outcome" value="yes" /> نعم</label>
+          <label class="dx-q__choice"><input type="radio" name="can_link_ai_to_financial_outcome" value="no" /> لا</label>
+        </div>
+      </div>
+
+      <div class="dx-q" data-key="followup_documented">
+        <span class="ds-input__label">٥. هل المتابعة (follow-up) موثّقة؟</span>
+        <div class="dx-q__choices">
+          <label class="dx-q__choice"><input type="radio" name="followup_documented" value="yes" /> نعم</label>
+          <label class="dx-q__choice"><input type="radio" name="followup_documented" value="no" /> لا</label>
+        </div>
+      </div>
+
+      <div class="dx-q" data-key="knows_source_of_every_decision">
+        <span class="ds-input__label">٦. هل تعرفون مصدر كل قرار؟</span>
+        <div class="dx-q__choices">
+          <label class="dx-q__choice"><input type="radio" name="knows_source_of_every_decision" value="yes" /> نعم</label>
+          <label class="dx-q__choice"><input type="radio" name="knows_source_of_every_decision" value="no" /> لا</label>
+        </div>
+      </div>
+
+      <div class="dx-q" data-key="has_ai_evidence_pack">
+        <span class="ds-input__label">٧. هل لديكم evidence pack لأي مبادرة ذكاء اصطناعي؟</span>
+        <div class="dx-q__choices">
+          <label class="dx-q__choice"><input type="radio" name="has_ai_evidence_pack" value="yes" /> نعم</label>
+          <label class="dx-q__choice"><input type="radio" name="has_ai_evidence_pack" value="no" /> لا</label>
+        </div>
+      </div>
+
+      <label class="ds-input">
+        <span class="ds-input__label">سياق إضافي (اختياري)</span>
+        <textarea class="ds-input__field" name="context_text" maxlength="2000" placeholder="مثال: نحاول نوسّع أتمتة المبيعات لكن ما عندنا أثر أدلّة واضح"></textarea>
+      </label>
+
+      <!-- PDPL Consent — REQUIRED -->
+      <label class="dx-consent">
+        <input type="checkbox" name="consent" required />
+        <span>
+          <strong>موافقة PDPL (إجباريّة)</strong> — أوافق على معالجة بياناتي المُدخَلة
+          لإصدار مؤشّر المخاطر فقط، حسب
+          <a href="/privacy.html" target="_blank" rel="noopener">سياسة الخصوصيّة</a>.
+          لن تُشارك مع طرف خارجي. أقدر أطلب حذفها في أيّ وقت.
+        </span>
+      </label>
+
+      <button class="ds-btn ds-btn--lg" type="submit" id="submitBtn">
+        <span class="dx-btn-label">احسب مؤشّر المخاطر</span>
+        <span class="ds-spinner ds-spinner--sm" id="dx-spinner" style="display:none"></span>
+      </button>
+
+      <p id="formStatus" class="ds-input__hint" role="status" aria-live="polite"></p>
+    </form>
+  </section>
+
+  <!-- Result -->
+  <section id="dxResult" class="dx-result ds-stack ds-stack--md" aria-live="polite">
+    <hr class="ds-divider" />
+    <div>
+      <span class="ds-eyebrow">نتيجتك جاهزة</span>
+      <h2 class="ds-headline" style="font-size: var(--fs-3xl); margin-top: var(--space-3);">مؤشّر المخاطر</h2>
+    </div>
+    <div class="ds-card ds-stack ds-stack--sm" id="dx-risk-card" style="background: linear-gradient(135deg, rgba(34,211,238,0.08), rgba(168,85,247,0.08)); border: 1px solid rgba(34,211,238,0.25);">
+      <div class="ds-row" style="justify-content: space-between; flex-wrap: wrap;">
+        <h3 class="ds-card__title" style="margin: 0;">درجة المخاطر</h3>
+        <span id="dx-risk-grade" class="ds-mode" style="font-size: var(--fs-md); padding: 4px 12px;">—</span>
+      </div>
+      <div style="display: grid; grid-template-columns: 80px 1fr; gap: var(--space-4); align-items: center;">
+        <div style="text-align: center;">
+          <div id="dx-risk-num" style="font-family: var(--font-lt); font-size: clamp(36px, 5vw, 56px); font-weight: 800; background: linear-gradient(90deg, var(--accent-2), #a855f7); -webkit-background-clip: text; background-clip: text; color: transparent; line-height: 1;">0</div>
+          <div style="font-size: var(--fs-xs); color: var(--text-muted); letter-spacing: 0.04em; text-transform: uppercase; margin-top: 4px;">/ 100</div>
+        </div>
+        <div>
+          <p class="ds-card__sub" id="dx-risk-next" style="margin: 0;">…</p>
+        </div>
+      </div>
+    </div>
+    <div class="ds-card ds-stack ds-stack--sm">
+      <h3 class="ds-card__title">الخطوة التالية الموصى بها <span class="ds-mode ds-mode--approval">approval_required</span></h3>
+      <a class="ds-btn ds-btn--lg" href="#pricing" id="dx-cta">شاهد تفاصيل التشخيص الحاكم →</a>
+    </div>
+  </section>
+
+  <!-- Pricing — visible (no_hidden_pricing) -->
+  <section id="pricing" aria-labelledby="pricing-title" class="ds-stack ds-stack--md">
+    <div>
+      <span class="ds-eyebrow">٣ مستويات · ٧ أيّام عمل · استرداد ١٠٠٪ إذا لم يُسلَّم</span>
+      <h2 id="pricing-title" class="ds-headline" style="font-size: var(--fs-3xl); margin-top: var(--space-3);">الأسعار</h2>
+    </div>
+    <div class="ds-grid ds-grid--wide">
+      <div class="ds-card dx-tier">
+        <h3 class="ds-card__title">مبدئي · Starter</h3>
+        <span class="dx-tier__price">4,999 SAR</span>
+        <p class="ds-card__sub">المخرجات الأساسيّة + مراجعة workflow إيراد واحد بعمق.</p>
+      </div>
+      <div class="ds-card dx-tier" style="border: 1px solid rgba(34,211,238,0.30);">
+        <h3 class="ds-card__title">قياسي · Standard</h3>
+        <span class="dx-tier__price">9,999 SAR</span>
+        <p class="ds-card__sub">حتى ٣ workflows + جلسة مراجعة نتائج ٦٠ دقيقة.</p>
+      </div>
+      <div class="ds-card dx-tier">
+        <h3 class="ds-card__title">تنفيذي · Executive</h3>
+        <span class="dx-tier__price">15,000 SAR</span>
+        <p class="ds-card__sub">كل الـ workflows + خارطة حوكمة الذكاء الاصطناعي + readout تنفيذي + جلستا متابعة.</p>
+      </div>
+    </div>
+    <p class="ds-input__hint">الأسعار تقديريّة بالريال السعودي · فاتورة يُصدرها المؤسّس · النتائج التقديريّة ليست نتائج مضمونة.</p>
+  </section>
+
+  <!-- What we do NOT do -->
+  <section aria-labelledby="not-title" class="ds-stack ds-stack--sm">
+    <h2 id="not-title" class="ds-headline" style="font-size: var(--fs-2xl);">ما الذي لا نفعله</h2>
+    <ul class="ds-list-clean" style="font-size: var(--fs-md);">
+      <li>لا نرسل رسائل ذكاء اصطناعي مستقلّة بدون موافقتك.</li>
+      <li>لا ندّعي إيراداً بدون دليل.</li>
+      <li>لا نستبدل نظام الـ CRM لديك.</li>
+      <li>لا ننشر دراسات حالة بدون موافقة موقّعة.</li>
+      <li>لا نبيع أتمتة chatbot عامّة.</li>
+    </ul>
+  </section>
+
+  <footer class="ds-footer">
+    <div class="ds-container ds-stack ds-stack--md" style="text-align: center;">
+      <p class="ds-lede" style="max-width: 640px; margin: 0 auto;">
+        Founder-led trust · proof-led funnel · governed revenue ops · disciplined approval system.
+      </p>
+      <div class="ds-row" style="justify-content: center; gap: var(--space-5); flex-wrap: wrap;">
+        <a class="ds-link" href="/">الرئيسيّة</a>
+        <a class="ds-link" href="/diagnostic.html">التشخيص المجّاني</a>
+        <a class="ds-link" href="/privacy.html">سياسة الخصوصيّة</a>
+        <a class="ds-link" href="/terms.html">الشروط</a>
+      </div>
+    </div>
+  </footer>
+
+</main>
+
+<script>
+  const API_BASE = window.DEALIX_API_BASE || 'https://api.dealix.me';
+  const QUESTION_KEYS = [
+    'has_crm', 'uses_ai_in_sales_or_ops', 'approval_before_external_messages',
+    'can_link_ai_to_financial_outcome', 'followup_documented',
+    'knows_source_of_every_decision', 'has_ai_evidence_pack',
+  ];
+  const form = document.getElementById('riskForm');
+  const statusEl = document.getElementById('formStatus');
+  const submitBtn = document.getElementById('submitBtn');
+  const submitLabel = submitBtn.querySelector('.dx-btn-label');
+  const spinner = document.getElementById('dx-spinner');
+  const result = document.getElementById('dxResult');
+
+  const RISK_AR = { Low: 'منخفض', Medium: 'متوسّط', High: 'مرتفع' };
+  const RISK_CLASS = { Low: 'ds-mode--approved', Medium: 'ds-mode--approval', High: 'ds-mode--blocked' };
+
+  function setStatus(text, kind) {
+    statusEl.textContent = text;
+    statusEl.style.color = kind === 'error' ? '#fca5a5' : (kind === 'success' ? '#4ade80' : 'var(--text-muted)');
+  }
+
+  function setBusy(busy) {
+    submitBtn.disabled = busy;
+    spinner.style.display = busy ? 'inline-block' : 'none';
+    submitLabel.textContent = busy ? 'جاري الحساب…' : 'احسب مؤشّر المخاطر';
+  }
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (form.website.value) return; // honeypot tripped
+
+    if (!form.consent.checked) {
+      setStatus('الموافقة على معالجة البيانات (PDPL) إجباريّة.', 'error');
+      return;
+    }
+
+    const payload = { consent: true, company_handle: form.company_handle.value.trim() || 'Saudi B2B lead',
+      context_text: form.context_text.value.trim() };
+    for (const key of QUESTION_KEYS) {
+      const choice = form.querySelector(`input[name="${key}"]:checked`);
+      if (!choice) {
+        setStatus('الرجاء الإجابة على كل الأسئلة السبعة.', 'error');
+        return;
+      }
+      payload[key] = choice.value === 'yes';
+    }
+
+    setBusy(true);
+    setStatus('جاري حساب مؤشّر المخاطر…');
+    try {
+      const resp = await fetch(`${API_BASE}/api/v1/revenue-machine/risk-score`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+      const data = await resp.json();
+      renderResult(data.result);
+      setStatus('تمّ حساب مؤشّر المخاطر.', 'success');
+    } catch (err) {
+      setStatus('تعذّر حساب المؤشّر الآن. حاول مرّة أخرى لاحقاً.', 'error');
+    } finally {
+      setBusy(false);
+    }
+  });
+
+  function renderResult(r) {
+    document.getElementById('dx-risk-num').textContent = r.score;
+    const grade = document.getElementById('dx-risk-grade');
+    grade.textContent = RISK_AR[r.risk_level] || r.risk_level;
+    grade.className = 'ds-mode ' + (RISK_CLASS[r.risk_level] || '');
+    document.getElementById('dx-risk-next').textContent = r.recommended_next_step;
+    result.classList.add('is-visible');
+    result.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+</script>
+</body>
+</html>

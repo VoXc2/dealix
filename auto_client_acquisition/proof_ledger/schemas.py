@@ -11,6 +11,8 @@ from pydantic import BaseModel, ConfigDict, Field
 
 class ProofEventType(StrEnum):
     LEAD_INTAKE = "lead_intake"
+    MEETING_BOOKED = "meeting_booked"
+    MEETING_COMPLETED = "meeting_completed"
     DIAGNOSTIC_DELIVERED = "diagnostic_delivered"
     PILOT_OFFERED = "pilot_offered"
     INVOICE_PREPARED = "invoice_prepared"

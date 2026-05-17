@@ -8,7 +8,11 @@ Constitution:
   not guarantee ("نضمن"). All `is_estimate=True`.
 - Article 11: pricing changes are 1-line edits to this file (no engine code).
 
-Pricing ladder (must be ascending for paid services):
+Hero offer (top of funnel, ascending within its 3 tiers):
+  Governed Revenue & AI Ops Diagnostic — Starter (4999) → Standard (9999)
+  → Executive (15000)
+
+Upsell ladder below the hero (ascending for paid services):
   Free Diagnostic (0) → Sprint (499) → Data-to-Revenue (1500)
   → Growth Ops (2999/mo) → Support Add-on (1500/mo) → ECC (7500/mo)
   → Agency Partner OS (custom)
@@ -49,6 +53,109 @@ _FREE_DIAGNOSTIC = ServiceOffering(
         "no_fake_proof",
     ),
     customer_journey_stage="discovery",
+)
+
+
+_DIAGNOSTIC_CORE_DELIVERABLES: tuple[str, ...] = (
+    "Revenue Workflow Map",
+    "CRM / Source Quality Review",
+    "AI Usage Risk Review",
+    "Approval Boundaries Map",
+    "Evidence Trail Gap Analysis",
+    "Top 3 Revenue Decisions (with evidence)",
+    "Proof Pack",
+    "Recommended Sprint / Retainer path",
+)
+
+_DIAGNOSTIC_KPI_AR = (
+    "نسلّم تشخيصاً حاكماً خلال ٧ أيام عمل مع أعلى ٣ قرارات إيراد قابلة "
+    "للتنفيذ بدليل. إذا لم نُخرج ٣ قرارات مدعومة بدليل، نواصل العمل حتى نوصل."
+)
+_DIAGNOSTIC_KPI_EN = (
+    "Governed diagnostic delivered in 7 business days with the top 3 "
+    "actionable revenue decisions, each evidence-backed. If we don't surface "
+    "3 evidence-backed decisions, we work until we do."
+)
+
+_DIAGNOSTIC_HARD_GATES: tuple[str, ...] = (
+    "no_live_send",
+    "no_live_charge",
+    "no_cold_whatsapp",
+    "no_scraping",
+    "no_fake_proof",
+    "no_fake_revenue",
+)
+
+_DIAGNOSTIC_ACTION_MODES = (
+    "suggest_only",
+    "draft_only",
+    "approval_required",
+    "approved_manual",
+)
+
+
+_GOVERNED_DIAGNOSTIC_STARTER = ServiceOffering(
+    id="governed_diagnostic_starter_4999",
+    name_ar="التشخيص الحاكم للإيراد و عمليات الذكاء الاصطناعي — مبدئي (٤٩٩٩ ر.س)",
+    name_en="Governed Revenue & AI Ops Diagnostic — Starter",
+    price_sar=4999.0,
+    price_unit="one_time",
+    duration_days=7,
+    deliverables=_DIAGNOSTIC_CORE_DELIVERABLES + (
+        "1 revenue workflow reviewed in depth",
+    ),
+    kpi_commitment_ar=_DIAGNOSTIC_KPI_AR,
+    kpi_commitment_en=_DIAGNOSTIC_KPI_EN,
+    refund_policy_ar="استرداد كامل ١٠٠٪ إذا لم يُسلَّم التشخيص خلال ٧ أيام عمل.",
+    refund_policy_en="Full 100% refund if the diagnostic is not delivered within 7 business days.",
+    action_modes_used=_DIAGNOSTIC_ACTION_MODES,
+    hard_gates=_DIAGNOSTIC_HARD_GATES,
+    customer_journey_stage="diagnostic_hero",
+)
+
+
+_GOVERNED_DIAGNOSTIC_STANDARD = ServiceOffering(
+    id="governed_diagnostic_standard_9999",
+    name_ar="التشخيص الحاكم للإيراد و عمليات الذكاء الاصطناعي — قياسي (٩٩٩٩ ر.س)",
+    name_en="Governed Revenue & AI Ops Diagnostic — Standard",
+    price_sar=9999.0,
+    price_unit="one_time",
+    duration_days=7,
+    deliverables=_DIAGNOSTIC_CORE_DELIVERABLES + (
+        "Up to 3 revenue workflows reviewed in depth",
+        "60-minute findings review session",
+    ),
+    kpi_commitment_ar=_DIAGNOSTIC_KPI_AR,
+    kpi_commitment_en=_DIAGNOSTIC_KPI_EN,
+    refund_policy_ar="استرداد كامل ١٠٠٪ إذا لم يُسلَّم التشخيص خلال ٧ أيام عمل.",
+    refund_policy_en="Full 100% refund if the diagnostic is not delivered within 7 business days.",
+    action_modes_used=_DIAGNOSTIC_ACTION_MODES,
+    hard_gates=_DIAGNOSTIC_HARD_GATES,
+    customer_journey_stage="diagnostic_hero",
+)
+
+
+_GOVERNED_DIAGNOSTIC_EXECUTIVE = ServiceOffering(
+    id="governed_diagnostic_executive_15000",
+    name_ar="التشخيص الحاكم للإيراد و عمليات الذكاء الاصطناعي — تنفيذي (١٥٠٠٠ ر.س)",
+    name_en="Governed Revenue & AI Ops Diagnostic — Executive",
+    price_sar=15000.0,
+    price_unit="one_time",
+    duration_days=7,
+    deliverables=_DIAGNOSTIC_CORE_DELIVERABLES + (
+        "All revenue workflows reviewed in depth",
+        "60-minute findings review session",
+        "AI governance roadmap (next 90 days)",
+        "Board-ready executive readout",
+        "2 follow-up advisory sessions",
+    ),
+    kpi_commitment_ar=_DIAGNOSTIC_KPI_AR,
+    kpi_commitment_en=_DIAGNOSTIC_KPI_EN,
+    refund_policy_ar="استرداد كامل ١٠٠٪ إذا لم يُسلَّم التشخيص خلال ٧ أيام عمل.",
+    refund_policy_en="Full 100% refund if the diagnostic is not delivered within 7 business days.",
+    action_modes_used=_DIAGNOSTIC_ACTION_MODES,
+    hard_gates=_DIAGNOSTIC_HARD_GATES,
+    customer_journey_stage="diagnostic_hero",
 )
 
 
@@ -330,9 +437,14 @@ _AGENCY_PARTNER_OS = ServiceOffering(
 )
 
 
-# Canonical 7-offering registry (order = catalog display order)
+# Canonical offering registry (order = catalog display order).
+# The 3-tier Governed Diagnostic is the hero offer — it sits above the
+# pre-existing ladder, which remains as upsell rungs below it.
 OFFERINGS: tuple[ServiceOffering, ...] = (
     _FREE_DIAGNOSTIC,
+    _GOVERNED_DIAGNOSTIC_STARTER,
+    _GOVERNED_DIAGNOSTIC_STANDARD,
+    _GOVERNED_DIAGNOSTIC_EXECUTIVE,
     _REVENUE_PROOF_SPRINT,
     _DATA_TO_REVENUE_PACK,
     _GROWTH_OPS_MONTHLY,

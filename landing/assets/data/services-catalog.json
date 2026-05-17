@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
   "source": "auto_client_acquisition/service_catalog/registry.py",
-  "generated_at": "2026-05-11T05:46:01+00:00",
+  "generated_at": "2026-05-17T00:17:42+00:00",
   "constitution": {
     "article_4_hard_gates": [
       "no_live_send",
@@ -16,7 +16,7 @@
     "article_8_no_fake_claims": true,
     "article_11_single_source_of_truth": true
   },
-  "count": 7,
+  "count": 10,
   "offerings": [
     {
       "id": "free_mini_diagnostic",
@@ -49,6 +49,128 @@
         "no_fake_proof"
       ],
       "customer_journey_stage": "discovery",
+      "is_estimate": true
+    },
+    {
+      "id": "governed_diagnostic_starter_4999",
+      "name_ar": "التشخيص الحاكم للإيراد و عمليات الذكاء الاصطناعي — مبدئي (٤٩٩٩ ر.س)",
+      "name_en": "Governed Revenue & AI Ops Diagnostic — Starter",
+      "price_sar": 4999.0,
+      "price_unit": "one_time",
+      "duration_days": 7,
+      "deliverables": [
+        "Revenue Workflow Map",
+        "CRM / Source Quality Review",
+        "AI Usage Risk Review",
+        "Approval Boundaries Map",
+        "Evidence Trail Gap Analysis",
+        "Top 3 Revenue Decisions (with evidence)",
+        "Proof Pack",
+        "Recommended Sprint / Retainer path",
+        "1 revenue workflow reviewed in depth"
+      ],
+      "kpi_commitment_ar": "نسلّم تشخيصاً حاكماً خلال ٧ أيام عمل مع أعلى ٣ قرارات إيراد قابلة للتنفيذ بدليل. إذا لم نُخرج ٣ قرارات مدعومة بدليل، نواصل العمل حتى نوصل.",
+      "kpi_commitment_en": "Governed diagnostic delivered in 7 business days with the top 3 actionable revenue decisions, each evidence-backed. If we don't surface 3 evidence-backed decisions, we work until we do.",
+      "refund_policy_ar": "استرداد كامل ١٠٠٪ إذا لم يُسلَّم التشخيص خلال ٧ أيام عمل.",
+      "refund_policy_en": "Full 100% refund if the diagnostic is not delivered within 7 business days.",
+      "action_modes_used": [
+        "suggest_only",
+        "draft_only",
+        "approval_required",
+        "approved_manual"
+      ],
+      "hard_gates": [
+        "no_live_send",
+        "no_live_charge",
+        "no_cold_whatsapp",
+        "no_scraping",
+        "no_fake_proof",
+        "no_fake_revenue"
+      ],
+      "customer_journey_stage": "diagnostic_hero",
+      "is_estimate": true
+    },
+    {
+      "id": "governed_diagnostic_standard_9999",
+      "name_ar": "التشخيص الحاكم للإيراد و عمليات الذكاء الاصطناعي — قياسي (٩٩٩٩ ر.س)",
+      "name_en": "Governed Revenue & AI Ops Diagnostic — Standard",
+      "price_sar": 9999.0,
+      "price_unit": "one_time",
+      "duration_days": 7,
+      "deliverables": [
+        "Revenue Workflow Map",
+        "CRM / Source Quality Review",
+        "AI Usage Risk Review",
+        "Approval Boundaries Map",
+        "Evidence Trail Gap Analysis",
+        "Top 3 Revenue Decisions (with evidence)",
+        "Proof Pack",
+        "Recommended Sprint / Retainer path",
+        "Up to 3 revenue workflows reviewed in depth",
+        "60-minute findings review session"
+      ],
+      "kpi_commitment_ar": "نسلّم تشخيصاً حاكماً خلال ٧ أيام عمل مع أعلى ٣ قرارات إيراد قابلة للتنفيذ بدليل. إذا لم نُخرج ٣ قرارات مدعومة بدليل، نواصل العمل حتى نوصل.",
+      "kpi_commitment_en": "Governed diagnostic delivered in 7 business days with the top 3 actionable revenue decisions, each evidence-backed. If we don't surface 3 evidence-backed decisions, we work until we do.",
+      "refund_policy_ar": "استرداد كامل ١٠٠٪ إذا لم يُسلَّم التشخيص خلال ٧ أيام عمل.",
+      "refund_policy_en": "Full 100% refund if the diagnostic is not delivered within 7 business days.",
+      "action_modes_used": [
+        "suggest_only",
+        "draft_only",
+        "approval_required",
+        "approved_manual"
+      ],
+      "hard_gates": [
+        "no_live_send",
+        "no_live_charge",
+        "no_cold_whatsapp",
+        "no_scraping",
+        "no_fake_proof",
+        "no_fake_revenue"
+      ],
+      "customer_journey_stage": "diagnostic_hero",
+      "is_estimate": true
+    },
+    {
+      "id": "governed_diagnostic_executive_15000",
+      "name_ar": "التشخيص الحاكم للإيراد و عمليات الذكاء الاصطناعي — تنفيذي (١٥٠٠٠ ر.س)",
+      "name_en": "Governed Revenue & AI Ops Diagnostic — Executive",
+      "price_sar": 15000.0,
+      "price_unit": "one_time",
+      "duration_days": 7,
+      "deliverables": [
+        "Revenue Workflow Map",
+        "CRM / Source Quality Review",
+        "AI Usage Risk Review",
+        "Approval Boundaries Map",
+        "Evidence Trail Gap Analysis",
+        "Top 3 Revenue Decisions (with evidence)",
+        "Proof Pack",
+        "Recommended Sprint / Retainer path",
+        "All revenue workflows reviewed in depth",
+        "60-minute findings review session",
+        "AI governance roadmap (next 90 days)",
+        "Board-ready executive readout",
+        "2 follow-up advisory sessions"
+      ],
+      "kpi_commitment_ar": "نسلّم تشخيصاً حاكماً خلال ٧ أيام عمل مع أعلى ٣ قرارات إيراد قابلة للتنفيذ بدليل. إذا لم نُخرج ٣ قرارات مدعومة بدليل، نواصل العمل حتى نوصل.",
+      "kpi_commitment_en": "Governed diagnostic delivered in 7 business days with the top 3 actionable revenue decisions, each evidence-backed. If we don't surface 3 evidence-backed decisions, we work until we do.",
+      "refund_policy_ar": "استرداد كامل ١٠٠٪ إذا لم يُسلَّم التشخيص خلال ٧ أيام عمل.",
+      "refund_policy_en": "Full 100% refund if the diagnostic is not delivered within 7 business days.",
+      "action_modes_used": [
+        "suggest_only",
+        "draft_only",
+        "approval_required",
+        "approved_manual"
+      ],
+      "hard_gates": [
+        "no_live_send",
+        "no_live_charge",
+        "no_cold_whatsapp",
+        "no_scraping",
+        "no_fake_proof",
+        "no_fake_revenue"
+      ],
+      "customer_journey_stage": "diagnostic_hero",
       "is_estimate": true
     },
     {

@@ -34,17 +34,17 @@ sys.path.insert(0, str(REPO_ROOT))
 
 
 # ─────────────────────────────────────────────────────────────────────
-# Step 1 — Service Catalog: 7 offerings, ascending price ladder
+# Step 1 — Service Catalog: 10 offerings (7 ladder + 3-tier hero diagnostic)
 # ─────────────────────────────────────────────────────────────────────
 
 
-def test_step_01_service_catalog_has_7_offerings_with_valid_ladder() -> None:
+def test_step_01_service_catalog_has_10_offerings_with_valid_ladder() -> None:
     from auto_client_acquisition.service_catalog.registry import (
         get_offering, list_offerings,
     )
 
     offerings = list_offerings()
-    assert len(offerings) == 7
+    assert len(offerings) == 10
 
     # Free Diagnostic must be at price 0
     free = get_offering("free_mini_diagnostic")
@@ -326,7 +326,7 @@ def test_step_08_service_catalog_json_export_in_sync_with_registry() -> None:
     import json
 
     payload = json.loads(json_path.read_text(encoding="utf-8"))
-    assert payload["count"] == 7
+    assert payload["count"] == 10
     assert payload["schema_version"] == "1.0"
     # Article 4: hard gates listed
     assert set(payload["constitution"]["article_4_hard_gates"]) == {
