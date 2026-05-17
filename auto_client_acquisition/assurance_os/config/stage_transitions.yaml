@@ -1,0 +1,37 @@
+# Dealix Assurance System — funnel ladder & stage transitions
+#
+# Declares the 10-rung commercial ladder the Assurance System measures and
+# maps each rung onto the canonical 22-stage customer journey defined in
+# auto_client_acquisition/business_ops/stage_definitions.py.
+version: 1
+
+# The commercial ladder — Attention → Referral.
+ladder:
+  - {key: attention, label_en: Attention, label_ar: انتباه}
+  - {key: lead,      label_en: Lead,      label_ar: عميل محتمل}
+  - {key: qualified, label_en: Qualified, label_ar: مؤهل}
+  - {key: meeting,   label_en: Meeting,   label_ar: اجتماع}
+  - {key: scope,     label_en: Scope,     label_ar: نطاق عمل}
+  - {key: invoice,   label_en: Invoice,   label_ar: فاتورة}
+  - {key: paid,      label_en: Paid,      label_ar: مدفوع}
+  - {key: delivered, label_en: Delivered, label_ar: مُسلّم}
+  - {key: upsell,    label_en: Upsell,    label_ar: بيع إضافي}
+  - {key: referral,  label_en: Referral,  label_ar: إحالة}
+
+# Each ladder rung → the journey stage(s) it covers.
+rung_to_journey_stage:
+  attention: [target_identified]
+  lead:      [icp_qualified, warm_intro_drafted]
+  qualified: [outreach_approved, outreach_sent, response_received]
+  meeting:   [discovery_scheduled, discovery_completed, fit_scored]
+  scope:     [offer_presented, proposal_sent, negotiation, verbal_agreement]
+  invoice:   [contract_sent, contract_signed, invoice_issued]
+  paid:      [payment_confirmed]
+  delivered: [onboarding_started, delivery_in_progress, delivery_completed, result_documented]
+  upsell:    []
+  referral:  [case_study_candidate]
+
+hard_gates:
+  no_revenue_before: payment_confirmed
+  no_delivery_before: payment_confirmed
+  no_public_proof_before: client_permission_granted

@@ -33,6 +33,7 @@ from api.routers import (
     admin_tenants,
     agent_mesh_os,
     assurance_contract_os,
+    assurance,
     auth,
     control_plane_os,
     compliance_status,
@@ -341,6 +342,8 @@ def create_app() -> FastAPI:
     app.include_router(self_evolving_os.router)
     # Enterprise Foundation Core — /api/v1/platform/* loop proof endpoints
     app.include_router(platform_foundation_router.router)
+    # Dealix Assurance System — 7-layer assurance pipeline (read-only)
+    app.include_router(assurance.router)
 
     @app.get("/", tags=["root"])
     async def root() -> dict[str, object]:

@@ -1,0 +1,34 @@
+# Dealix Assurance System — claim policy
+#
+# Declares the 11 non-negotiables (mirrors trust_os/trust_pack.py) plus the
+# forbidden-claim and escalation rules the Assurance System audits against.
+version: 1
+
+non_negotiables:
+  - {id: no_scraping,            rule: "No scraping — web, email and LinkedIn scraping engines are forbidden."}
+  - {id: no_cold_whatsapp,       rule: "No cold WhatsApp — cold WhatsApp automation is blocked at runtime."}
+  - {id: no_linkedin_automation, rule: "No LinkedIn automation — LinkedIn automation is blocked at runtime."}
+  - {id: no_fake_claims,         rule: "No fake / un-sourced claims — unverifiable claims are redacted."}
+  - {id: no_guaranteed_outcomes, rule: "No guaranteed sales outcomes — guarantee language is never produced."}
+  - {id: no_pii_in_logs,         rule: "No PII in logs — personal data is redacted before any persistence."}
+  - {id: no_sourceless_answers,  rule: "No source-less knowledge answers — every AI run needs a Source Passport."}
+  - {id: no_unapproved_external, rule: "No external action without approval — external sends require approval."}
+  - {id: no_agent_without_id,    rule: "No agent without identity — every agent has a registered identity card."}
+  - {id: no_project_no_proof,    rule: "No project without Proof Pack — delivery produces a scored Proof Pack."}
+  - {id: no_project_no_capital,  rule: "No project without Capital Asset — each engagement leaves a reusable asset."}
+
+forbidden_claims:
+  - guaranteed revenue increase
+  - guaranteed ROI
+  - guaranteed sales outcomes
+  - guaranteed results
+
+escalation_triggers:
+  - refund
+  - security
+  - custom_scope
+  - data_privacy
+  - contract_change
+  - pricing_commitment
+
+claim_requires_source: true

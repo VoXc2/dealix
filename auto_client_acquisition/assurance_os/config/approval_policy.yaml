@@ -1,0 +1,31 @@
+# Dealix Assurance System — approval policy
+#
+# Externalizes the channel approval rules that currently live in code at
+# auto_client_acquisition/approval_center/approval_policy.py (CHANNEL_POLICY)
+# so the Assurance System can AUDIT runtime behaviour against a declared
+# policy. This file is config only — it does not replace code enforcement.
+version: 1
+
+channels:
+  whatsapp:
+    required_approver: founder
+    max_auto_approve_risk: null      # null = nothing auto-approvable
+  email:
+    required_approver: csm_or_founder
+    max_auto_approve_risk: low
+  linkedin:
+    required_approver: founder
+    max_auto_approve_risk: null
+  phone:
+    required_approver: founder
+    max_auto_approve_risk: null
+  dashboard:
+    required_approver: csm_or_founder
+    max_auto_approve_risk: medium
+
+hard_rules:
+  high_risk_auto_send_allowed: false
+  external_action_requires_approval: true
+  affiliate_payout_before_payment_allowed: false
+  linkedin_automation_allowed: false
+  cold_whatsapp_allowed: false
