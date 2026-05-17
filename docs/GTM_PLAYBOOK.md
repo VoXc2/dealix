@@ -116,6 +116,41 @@
 
 ---
 
+## 12) حزمة أصول الإثبات — Proof Assets Kit
+
+لا تدخل أي ديمو بدون هذه الحزمة الجاهزة. أهمّها **Sample Proof Pack** لأنه
+يجيب سؤال العميل: "وش أستلم؟".
+
+| الأصل — Asset | الغرض — Purpose |
+|---------------|-----------------|
+| Sample Proof Pack | يوضح المُخرَج النهائي — "وش أستلم؟" |
+| 10-lead Audit Example | مثال على مراجعة 10 leads |
+| Decision Passport Example | مثال على توثيق قرار |
+| Approval Policy Example | ما الذي يخرج بموافقة وما لا يخرج |
+| Before/After Workflow Map | خريطة الـ workflow قبل/بعد |
+| Pricing Ladder | سلّم الأسعار — [`OFFER_LADDER_AND_PRICING.md`](OFFER_LADDER_AND_PRICING.md) |
+| Objection Sheet | ورقة الاعتراضات — [`OBJECTION_HANDLING_V6.md`](OBJECTION_HANDLING_V6.md) |
+| Agency Partner Pilot one-pager | صفحة واحدة لعرض pilot على وكالة |
+
+> Never enter a demo without this kit. The Sample Proof Pack matters most — it
+> answers the buyer's question: "what exactly do I receive?"
+
+## 13) إشارات حقيقية مقابل وهمية — Real vs fake buying signals
+
+**إشارات حقيقية (Real):** يرسل مثال leads · يطلب ديمو · يسأل عن السعر · يسأل
+عمّا هو مطلوب منه · يطلب تجربة على عميل واحد · يسأل عن شراكة · يطلب scope ·
+يدفع pilot.
+
+**إشارات وهمية (Fake):** "فكرة جميلة" · "أرسل التفاصيل" · "نرجع لك" · "عندنا
+AI داخلي" · "ممكن لاحقاً".
+
+**سؤال الاختبار — Test question:** إذا جاءك رد وهمي، اسأل:
+
+> "هل عندكم 10 leads أو workflow واحد نراجعه؟ إذا لا، أخلّيها لوقت لاحق."
+>
+> "Do you have 10 leads or one workflow we can review? If not, I'll set it
+> aside for later."
+
 ## روابط API سريعة
 
 - `GET /api/v1/business/gtm/first-10`  

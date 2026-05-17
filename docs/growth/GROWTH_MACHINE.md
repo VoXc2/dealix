@@ -112,6 +112,25 @@ Suggests follow-ups, next service, feature to build, retainer-ready clients, pro
 
 See also: [`FOUNDER_COMMAND_CENTER.md`](../company/FOUNDER_COMMAND_CENTER.md), [`MASTER_OPERATING_BLUEPRINT.md`](../company/MASTER_OPERATING_BLUEPRINT.md).
 
+## Customer success as a distribution channel
+
+After a Proof Pack is delivered, do **not** say "we're done". Customer success
+is itself a growth channel. Ask these five questions — each routes to a next move:
+
+| السؤال — Question | يفتح — Routes to |
+|-------------------|------------------|
+| هل القيمة واضحة؟ — Is the value clear? | تأكيد + مرجع — confirmation |
+| هل عندكم workflow ثانٍ؟ — Another workflow? | Sprint ثانٍ — second Sprint |
+| هل تحبّون نكمل؟ — Continue? | Retainer (Managed Revenue Ops) |
+| هل تعرفون وكالة/عميلاً عنده نفس المشكلة؟ — Know an agency/client with the same problem? | Referral / Partner intro |
+| هل تسمحون باستخدام insight مجهول؟ — Consent for an anonymized insight? | Anonymized case — [`../CASE_STUDY_FACTORY.md`](CASE_STUDY_FACTORY.md) |
+
+> **قاعدة:** كل Proof Pack يجب أن يفتح واحداً على الأقل من: Sprint · Retainer ·
+> Referral · Partner intro · Anonymized case.
+>
+> **Time-to-Proof target:** in the pilot, deliver Proof Pack v1 in **under 48
+> hours** — the first 48 hours after payment set the trust.
+
 ## Final line
 
 **Dealix scales when each client produces three assets: cash now, proof that sells the next client, and knowledge or product that lowers the cost of the next delivery.**

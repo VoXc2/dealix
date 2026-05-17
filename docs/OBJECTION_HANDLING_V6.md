@@ -108,7 +108,28 @@ Pilot ثانٍ على قطاع/خدمة مختلفة. القرار لكم."
 
 ---
 
-## و. ملاحظات للمؤسس / Founder notes
+## و. عكس المخاطرة / Risk reversal
+
+العميل يخاف الدفع على شيء جديد. لا تجادله — قلّل المخاطرة. **قلّل النطاق، لا
+السعر** (الخصم يُضعف قيمة المنتج؛ تقليل النطاق يحافظ عليها).
+
+### "ما زلت متردداً — كيف أبدأ بمخاطرة أقل؟"
+
+**Arabic:** "نبدأ على نطاق صغير: عميل واحد، أو 10 leads، أو Proof Pack واحد،
+خلال 7 أيّام فقط — بنفس سعر الـ Sprint المعلَن، بلا خصم. لو الـ Proof Pack لم
+يكشف قيمة أو خطراً واضحاً، لا ننتقل للخطوة التالية. القرار يبقى لكم بعد دليل
+حقيقي، لا بعد وعد."
+
+**English:** "We start on a small scope: one client, or 10 leads, or a single
+Proof Pack, within 7 days only — at the same published Sprint price, no
+discount. If the Proof Pack reveals no clear value or risk, we don't move to
+the next step. You decide after real evidence, not after a promise."
+
+> **قاعدة:** لا تخفض السعر — اخفض النطاق. *(Rule: never cut the price — cut the
+> scope.)* الأسعار المرجعية ثابتة كما في
+> [`OFFER_LADDER_AND_PRICING.md`](OFFER_LADDER_AND_PRICING.md) — لا أرقام جديدة.
+
+## ز. ملاحظات للمؤسس / Founder notes
 
 - **لا تتفاوض على الأمان.** لو طلب العميل تجاوز قاعدة، اعتذر وودّع. لا تعديل لـ "نضمن"، "cold WhatsApp"، "scraping".
 - **لا تعِد بأرقام.** يمكنك ذكر متوسطات قطاعيّة عامّة، لكن لا تَعِد عميلاً محدّداً بأيّ رقم.

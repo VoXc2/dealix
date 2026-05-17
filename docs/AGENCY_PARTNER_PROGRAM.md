@@ -139,4 +139,40 @@
 
 ---
 
-*Version 1.0 | No white-label before 3 proof packs | Rev-share: manual confirmation required*
+## 9. محرّك الإحالة المحوكَم (Governed Affiliate Engine)
+
+برنامج الإحالة يبدأ **مغلقاً**، لا عاماً. الهدف: إحالات موثوقة بإفصاح واضح، لا
+spam.
+
+### القواعد
+- **5–10 affiliates موثوقين فقط** في البداية — لا تسجيل مفتوح.
+- موافقة يدوية على كل affiliate (`approval_required`).
+- رسائل معتمدة فقط — الـ affiliate يستخدم نصوصاً وافقت عليها Dealix.
+- **الدفع فقط بعد `invoice_paid`** — لا عمولة قبل استلام دفعة العميل (متوافق مع
+  قواعد Rev-Share في القسم 2).
+- إفصاح إلزامي عن العلاقة المادية في كل توصية مدفوعة.
+
+### نص الإفصاح الإلزامي (Mandatory disclosure)
+
+كل affiliate يضع هذا النص بوضوح مع أي رابط أو توصية:
+
+> **تنويه:** قد أحصل على عمولة إحالة إذا اشتركت عبر هذا الرابط. أوصي بـ Dealix
+> فقط للفرق التي تحتاج تشغيل الإيراد والذكاء الاصطناعي بشكل محكوم وقابل للقياس.
+>
+> **Disclosure:** I may receive a referral commission if you sign up through
+> this link. I only recommend Dealix to teams that need governed, measurable
+> revenue & AI operations.
+
+### ما هو محظور في الإحالة
+
+```
+✗ ادعاء ROI أو امتثال مضمون
+✗ spam أو cold WhatsApp
+✗ proof مزيّف أو إحصاءات ملفّقة
+✗ توصية بلا إفصاح عن العلاقة المادية
+✗ أي ادعاء غير معتمد من Dealix
+```
+
+---
+
+*Version 1.1 | No white-label before 3 proof packs | Rev-share & affiliate payout: manual confirmation, paid only after invoice_paid*

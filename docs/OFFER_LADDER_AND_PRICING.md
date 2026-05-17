@@ -159,5 +159,30 @@
 
 ---
 
-*Version 1.1 | No guaranteed claims | Missing data = insufficient_data |
-Delivery-mode disclosure added 2026-05-16 — rungs 3–5 are founder-assisted.*
+## تأطيرات الإسفين — Wedge framings (micro-offers)
+
+> **مهم:** التأطيرات أدناه **ليست درجات تسعير جديدة ولا SKUs جديدة**. هي
+> **تسميات نطاق (scoping labels)** على الدرجة 0 (التشخيص المجاني) والدرجة 1
+> (Sprint الـ 499 ريال) فقط — تساعد على بيع نقطة دخول واضحة لمشترٍ محدّد. لا
+> سعر جديد يُنشأ هنا (انظر [`V12_1_TRIGGER_RULES.md`](V12_1_TRIGGER_RULES.md):
+> لا درجة تسعير جديدة قبل ≥ 3 pilots مدفوعة).
+>
+> The framings below are **not new pricing tiers or SKUs** — they are
+> **scoping labels** on rung 0 (Free Diagnostic) and rung 1 (499 SAR Sprint)
+> only. No new price is created.
+
+| التأطير — Framing | المشتري — Buyer | يُسلَّم على — Maps to |
+|-------------------|-----------------|----------------------|
+| Lead Follow-up Audit — مراجعة 10 leads وأين توقّفت المتابعة | مدير مبيعات / مؤسس | الدرجة 0 (مجاني) أو الدرجة 1 (499) |
+| Agency Proof Pack — Proof Pack يوضح ماذا حدث بعد حملة/قائمة leads | صاحب وكالة | الدرجة 1 (499 Sprint) |
+| CRM Hygiene Snapshot — هل الـ CRM جاهز للتشغيل أو الـ AI | مدير عمليات | الدرجة 0 (مجاني) |
+| AI Approval Policy Lite — ما الذي يجهّزه AI وما الذي لا يخرج إلا بموافقة | مدير عمليات / مستشار | الدرجة 0 (مجاني) |
+
+كل تأطير يستخدم نفس سعر ووضع الإجراء وحدود الدرجة التي يُسلَّم عليها — التغيير
+في **التسمية والـ scope المعروض للمشتري**، لا في السعر.
+
+---
+
+*Version 1.2 | No guaranteed claims | Missing data = insufficient_data |
+Delivery-mode disclosure added 2026-05-16 — rungs 3–5 are founder-assisted |
+Wedge framings added 2026-05-17 — scoping labels only, no new SKU.*
