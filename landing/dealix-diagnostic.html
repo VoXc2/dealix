@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-theme="dark">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>التشخيص المُحوكَم لعمليات الإيراد — Governed Revenue Ops Diagnostic — Dealix</title>
+<meta name="description" content="تشخيص مُحوكَم يرسم أين تُنتج سير عمل الإيراد وجودة بيانات CRM واستخدام الذكاء الاصطناعي خطراً أو قيمة ضائعة — وينتج 3 قرارات عملية وحزمة إثبات. PDPL-aware، عربي أوّلاً." />
+<link rel="canonical" href="https://dealix.me/dealix-diagnostic.html" />
+<meta property="og:type" content="website" />
+<meta property="og:title" content="Dealix — Governed Revenue Ops Diagnostic (التشخيص المُحوكَم لعمليات الإيراد)" />
+<meta property="og:description" content="تشخيص يرسم مخاطر وفرص عمليات الإيراد، ويُنتج 3 قرارات عملية + حزمة إثبات. باعتماد المؤسس قبل أي إرسال." />
+<meta property="og:url" content="https://dealix.me/dealix-diagnostic.html" />
+<meta property="og:locale" content="ar_SA" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Dealix — Governed Revenue Ops Diagnostic" />
+<meta name="twitter:description" content="تشخيص مُحوكَم. 3 قرارات عملية + حزمة إثبات. باعتماد المؤسس." />
+<meta name="theme-color" content="#0f172a" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" />
+
+<link rel="stylesheet" href="/styles.css" />
+<link rel="stylesheet" href="/assets/css/design-system.css" />
+
+<style>
+  body {
+    background:
+      radial-gradient(900px 500px at 80% -10%, rgba(168, 85, 247, 0.16), transparent 60%),
+      radial-gradient(900px 500px at 0% 10%, rgba(14, 165, 233, 0.16), transparent 60%),
+      linear-gradient(180deg, #050816 0%, #0b1124 60%, #1e1b4b 100%);
+    color: var(--text);
+    min-height: 100vh;
+    margin: 0;
+    font-family: var(--font-ar);
+  }
+  main { padding: var(--space-7) var(--space-5) var(--space-9); }
+  .dx-form { display: grid; gap: var(--space-5); max-width: 720px; margin: 0 auto; }
+  .dx-form__row { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4); }
+  @media (max-width: 600px) { .dx-form__row { grid-template-columns: 1fr; } }
+  .dx-consent {
+    display: flex;
+    gap: var(--space-3);
+    align-items: flex-start;
+    padding: var(--space-4);
+    background: rgba(34, 211, 238, 0.06);
+    border: 1px solid rgba(34, 211, 238, 0.20);
+    border-radius: var(--radius, 14px);
+    font-size: var(--fs-sm);
+    line-height: var(--lh-base);
+  }
+  .dx-consent input[type="checkbox"] {
+    width: 18px; height: 18px;
+    accent-color: var(--accent-2);
+    margin-top: 2px;
+    flex-shrink: 0;
+  }
+  .dx-consent a { color: var(--accent-2); }
+  .dx-en { color: var(--text-muted); font-family: var(--font-lt); }
+  .dx-cta-row { display: flex; gap: var(--space-4); flex-wrap: wrap; }
+  .dx-disclaimer {
+    font-size: var(--fs-sm);
+    color: var(--text-muted);
+    text-align: center;
+    border-top: 1px solid rgba(255,255,255,0.08);
+    padding-top: var(--space-5);
+  }
+  textarea.ds-input__field { min-height: 80px; resize: vertical; font-family: var(--font-ar); }
+</style>
+</head>
+<body>
+<a class="ds-skip-link" href="#main">تخطّ إلى المحتوى الرئيسي</a>
+
+<main id="main" class="ds-container--base ds-stack ds-stack--xl">
+
+  <!-- Breadcrumb -->
+  <nav class="ds-breadcrumb" aria-label="مسار التنقّل">
+    <a href="/">الرئيسيّة</a>
+    <span class="ds-breadcrumb__sep" aria-hidden="true"></span>
+    <a href="/services.html">الخدمات</a>
+    <span class="ds-breadcrumb__sep" aria-hidden="true"></span>
+    <span aria-current="page">التشخيص المُحوكَم لعمليات الإيراد</span>
+  </nav>
+
+  <!-- Hero -->
+  <section class="ds-banner ds-stack ds-stack--sm" aria-labelledby="hero-title">
+    <span class="ds-eyebrow">Governed Revenue Ops Diagnostic · باعتماد المؤسس</span>
+    <h1 id="hero-title" class="ds-banner__title">التشخيص المُحوكَم لعمليات الإيراد — أين يكمن الخطر، وأين تضيع القيمة</h1>
+    <p class="ds-banner__subtitle">
+      نرسم أين تُنتج سير عمل الإيراد، وجودة بيانات الـ CRM، واستخدامك للذكاء الاصطناعي
+      خطراً أو قيمة ضائعة — ونُسلّمك ثلاثة قرارات عمليّة وحزمة إثبات.
+      <br />
+      <span class="dx-en">We map where your revenue workflows, CRM/data quality, and AI usage create risk or missed value — and hand you three practical decisions plus a Proof Pack.</span>
+    </p>
+  </section>
+
+  <!-- Problem -->
+  <section aria-labelledby="problem-title" class="ds-stack ds-stack--sm">
+    <span class="ds-eyebrow">المشكلة — The problem</span>
+    <h2 id="problem-title" class="ds-headline" style="font-size: var(--fs-3xl);">عمليّات الإيراد تتسرّب قبل أن تنهار</h2>
+    <p class="ds-lede">
+      معظم شركات B2B في الخليج لا تخسر الإيراد في انهيار واحد كبير، بل في تسرّبات صغيرة:
+      متابعة تضيع بين WhatsApp وExcel، بيانات CRM مكرّرة أو قديمة تقود قرارات خاطئة،
+      ومخرجات ذكاء اصطناعي تُرسل دون مراجعة. لا تظهر هذه التسرّبات في لوحة بيانات،
+      لأن لوحة البيانات تعرض ما حدث، لا أين الخطر.
+    </p>
+    <p class="ds-lede dx-en">
+      Most GCC B2B companies do not lose revenue in one large failure; they lose it in small leaks:
+      follow-up scattered between WhatsApp and Excel, duplicate or stale CRM data driving wrong decisions,
+      and AI output sent without review. None of this shows in a dashboard, because a dashboard reports
+      what happened, not where the risk is.
+    </p>
+  </section>
+
+  <!-- What you get -->
+  <section aria-labelledby="get-title" class="ds-stack ds-stack--md">
+    <div>
+      <span class="ds-eyebrow">ما ستحصل عليه — What you get</span>
+      <h2 id="get-title" class="ds-headline" style="font-size: var(--fs-3xl); margin-top: var(--space-3);">مخرجات التشخيص</h2>
+    </div>
+    <div class="ds-grid ds-grid--wide">
+      <div class="ds-card ds-stack ds-stack--sm">
+        <h3 class="ds-card__title">خريطة الخطر — Risk map</h3>
+        <p class="ds-card__sub">
+          أين تُنتج عمليّاتك الحاليّة خطراً تشغيليّاً أو قيمة ضائعة، مرتّبة حسب الأثر.
+          <br /><span class="dx-en">Where your current operations create operational risk or missed value, ranked by impact.</span>
+        </p>
+      </div>
+      <div class="ds-card ds-stack ds-stack--sm">
+        <h3 class="ds-card__title">ثلاثة قرارات — Three decisions</h3>
+        <p class="ds-card__sub">
+          ثلاثة قرارات عمليّة محدّدة يمكنك اتخاذها هذا الشهر، لا قائمة من عشرين توصية.
+          <br /><span class="dx-en">Three specific, practical decisions you can act on this month — not a list of twenty recommendations.</span>
+        </p>
+      </div>
+      <div class="ds-card ds-stack ds-stack--sm">
+        <h3 class="ds-card__title">قراءة جودة البيانات — Data quality read</h3>
+        <p class="ds-card__sub">
+          قراءة صريحة لمدى جاهزية بيانات الـ CRM لاستخدام الذكاء الاصطناعي عليها.
+          <br /><span class="dx-en">An honest read on whether your CRM data is ready for AI to be used on top of it.</span>
+        </p>
+      </div>
+      <div class="ds-card ds-stack ds-stack--sm">
+        <h3 class="ds-card__title">حزمة إثبات — Proof Pack</h3>
+        <p class="ds-card__sub">
+          حزمة من 14 قسماً توثّق المدخلات، القرارات، القيود، والخطوة التالية الموصى بها.
+          <br /><span class="dx-en">A 14-section pack documenting inputs, decisions, limitations, and the recommended next step.</span>
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Who it is for -->
+  <section aria-labelledby="who-title" class="ds-stack ds-stack--sm">
+    <span class="ds-eyebrow">لمن هذا — Who it is for</span>
+    <h2 id="who-title" class="ds-headline" style="font-size: var(--fs-2xl);">مناسب لك إذا</h2>
+    <ul class="ds-list-clean" style="font-size: var(--fs-md);">
+      <li>شركة B2B في الخليج، صاحب القرار حاضر في المحادثة. <span class="dx-en">/ A GCC B2B company, with the decision maker in the room.</span></li>
+      <li>تستخدم CRM أو تنوي استخدامه، ولديك بيانات عملاء حقيقيّة. <span class="dx-en">/ You use a CRM or plan to, and you hold real customer data.</span></li>
+      <li>بدأت أو تخطّط لاستخدام الذكاء الاصطناعي في المبيعات أو التشغيل. <span class="dx-en">/ You have started, or plan to start, using AI in sales or operations.</span></li>
+      <li>تريد قراراً قابلاً للتنفيذ خلال أيّام، لا تقريراً يُؤرشَف. <span class="dx-en">/ You want a decision you can act on in days, not a report that gets filed.</span></li>
+    </ul>
+  </section>
+
+  <!-- What we do NOT do -->
+  <section aria-labelledby="not-title" class="ds-stack ds-stack--sm">
+    <span class="ds-eyebrow">ما لا نفعله — What we do NOT do</span>
+    <h2 id="not-title" class="ds-headline" style="font-size: var(--fs-2xl);">حدود واضحة</h2>
+    <div class="ds-card" style="border: 1px solid rgba(239,68,68,0.25); background: rgba(239,68,68,0.05);">
+      <ul class="ds-list-clean" style="font-size: var(--fs-md);">
+        <li><strong>لا كشط بيانات.</strong> لا نجمع بيانات بلا جواز مصدر ولا إذن مالكها. <span class="dx-en">/ No scraping. We do not collect data without a Source Passport and owner permission.</span></li>
+        <li><strong>لا رسائل WhatsApp باردة.</strong> لا نرسل، ولا نبني أدوات تُرسل نيابة عنك. <span class="dx-en">/ No cold WhatsApp. We do not send, and we do not build tools that send on your behalf.</span></li>
+        <li><strong>لا أتمتة LinkedIn.</strong> لا أتمتة طلبات اتصال أو رسائل أو زحف على المحتوى. <span class="dx-en">/ No LinkedIn automation — no automated connection requests, messages, or feed scraping.</span></li>
+        <li><strong>لا ضمان نتائج.</strong> لا نَعِد بأرقام مبيعات أو نسب تحويل. نُسلّم فرصاً مُثبتة بأدلة. <span class="dx-en">/ No guaranteed outcomes. We do not promise sales numbers or conversion rates; we deliver evidenced opportunities.</span></li>
+        <li><strong>لا إرسال خارجي تلقائي.</strong> كل مسوّدة تنتظر اعتماد المؤسس قبل أن تخرج. <span class="dx-en">/ No automatic external sending. Every draft waits for founder approval before it leaves.</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- Sample outputs -->
+  <section aria-labelledby="sample-title" class="ds-stack ds-stack--sm">
+    <span class="ds-eyebrow">نموذج المخرجات — Sample outputs</span>
+    <h2 id="sample-title" class="ds-headline" style="font-size: var(--fs-2xl);">شاهد قبل أن تبدأ</h2>
+    <div class="ds-card ds-stack ds-stack--sm" style="background: linear-gradient(135deg, rgba(34,211,238,0.06), rgba(168,85,247,0.06)); border: 1px solid rgba(34,211,238,0.22);">
+      <p class="ds-card__sub">
+        أعددنا نموذج حزمة إثبات كاملاً من 14 قسماً، ببيانات توضيحيّة مُخفاة الهويّة بالكامل لشركة خدمات B2B افتراضيّة.
+        لا يحتوي على أي بيانات عميل حقيقيّة. اطّلع عليه لتعرف بالضبط شكل ما ستستلمه.
+        <br /><span class="dx-en">We have prepared a full 14-section Sample Proof Pack with fully anonymized, illustrative data for a fictional B2B services company. It contains no real customer data. Review it to see exactly what you would receive.</span>
+      </p>
+      <a class="ds-link" href="/assets/proof/sample-proof-pack.html">افتح نموذج حزمة الإثبات — Open the Sample Proof Pack &rarr;</a>
+    </div>
+  </section>
+
+  <!-- Price range -->
+  <section aria-labelledby="price-title" class="ds-stack ds-stack--sm">
+    <span class="ds-eyebrow">السعر — Price range</span>
+    <h2 id="price-title" class="ds-headline" style="font-size: var(--fs-2xl);">أين يقع هذا في سلّم العروض</h2>
+    <p class="ds-lede">
+      التشخيص المُحوكَم لعمليّات الإيراد ليس سعراً جديداً — هو مدخل إلى سلّم العروض القائم.
+      تبدأ بالرُّكن المناسب لحالتك، ويوجّهك التشخيص نفسه إلى القرار التالي.
+      <br /><span class="dx-en">The Governed Revenue Ops Diagnostic is not a new price — it is an entry into the existing offer ladder. You start at the rung that fits your situation, and the diagnostic itself routes you to the next decision.</span>
+    </p>
+    <table class="ds-table">
+      <thead>
+        <tr>
+          <th>الرُّكن — Rung</th>
+          <th>السعر — Price</th>
+          <th>ما هو — What it is</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Free Mini Diagnostic — التشخيص المصغّر المجّاني</td>
+          <td>0 SAR</td>
+          <td>قراءة أوّليّة سريعة لمكامن الخطر والقيمة، وتوصية بالخطوة التالية. <span class="dx-en">/ A fast first read of risk and value, with a next-step recommendation.</span></td>
+        </tr>
+        <tr>
+          <td>Revenue Proof Sprint — سبرنت إثبات الإيراد</td>
+          <td>499 SAR</td>
+          <td>التشخيص الكامل خلال 7 أيّام: خريطة خطر، 3 قرارات، قراءة جودة بيانات، وحزمة إثبات من 14 قسماً. <span class="dx-en">/ The full diagnostic over 7 days: risk map, 3 decisions, data quality read, and a 14-section Proof Pack.</span></td>
+        </tr>
+      </tbody>
+    </table>
+    <p class="ds-input__hint">
+      الأركان الأعلى في السلّم (Data-to-Revenue Pack، Growth Ops Monthly، Executive Command Center) تُعرض فقط إذا أظهر التشخيص أن القيمة تتكرّر — ولا تُقترح قبل ذلك. راجع <a class="ds-link" href="/pricing.html">صفحة الأسعار الكاملة</a>.
+      <br /><span class="dx-en">Higher rungs are only offered if the diagnostic shows value recurs — never before. See the full pricing page.</span>
+    </p>
+  </section>
+
+  <!-- CTAs -->
+  <section aria-label="دعوات الإجراء" class="ds-stack ds-stack--sm">
+    <div class="dx-cta-row">
+      <a class="ds-btn ds-btn--lg" href="#form-title">احجز مراجعة تشخيصيّة — Book Diagnostic Review</a>
+      <a class="ds-btn ds-btn--lg ds-btn--ghost" href="/assets/proof/sample-proof-pack.html">احصل على نموذج حزمة الإثبات — Get the Sample Proof Pack</a>
+    </div>
+  </section>
+
+  <!-- Book a call / Form -->
+  <section aria-labelledby="form-title" class="ds-stack ds-stack--md">
+    <div>
+      <span class="ds-eyebrow">احجز مكالمة — Book a call</span>
+      <h2 id="form-title" class="ds-headline" style="font-size: var(--fs-3xl); margin-top: var(--space-3);">عرّفنا على شركتك</h2>
+      <p class="ds-lede">نراجع طلبك ونعود إليك خلال يوم عمل واحد لتحديد موعد المراجعة. <span class="dx-en">/ We review your request and reply within one business day to set the review.</span></p>
+    </div>
+
+    <form id="diagnosticForm" class="dx-form" novalidate>
+      <!-- Honeypot -->
+      <input type="text" name="company_url" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px;height:0;width:0;opacity:0" aria-hidden="true" />
+
+      <label class="ds-input">
+        <span class="ds-input__label">اسم الشركة — Company name *</span>
+        <input class="ds-input__field" type="text" name="company" required minlength="2" maxlength="80" placeholder="مثال: Acme B2B Services" autocomplete="organization" />
+        <span class="ds-input__hint">يظهر في تشخيصك فقط. غير منشور. — Shown in your diagnostic only. Not published.</span>
+      </label>
+
+      <div class="dx-form__row">
+        <label class="ds-input">
+          <span class="ds-input__label">القطاع — Sector *</span>
+          <select class="ds-input__field" name="sector" required>
+            <option value="">اختر القطاع — Choose</option>
+            <option value="b2b_services">خدمات B2B — B2B services</option>
+            <option value="agency">وكالة تسويق — Marketing agency</option>
+            <option value="consulting">استشارات — Consulting</option>
+            <option value="saas">SaaS</option>
+            <option value="ecommerce">تجارة إلكترونيّة — E-commerce</option>
+            <option value="real_estate">عقار — Real estate</option>
+            <option value="logistics">لوجستيّات — Logistics</option>
+            <option value="other">أخرى — Other</option>
+          </select>
+        </label>
+        <label class="ds-input">
+          <span class="ds-input__label">حجم قاعدة العملاء — Customer base</span>
+          <select class="ds-input__field" name="size">
+            <option value="">اختر — Choose</option>
+            <option value="0_10">٠–١٠ عملاء — 0–10</option>
+            <option value="10_50">١٠–٥٠ عميل — 10–50</option>
+            <option value="50_200">٥٠–٢٠٠ عميل — 50–200</option>
+            <option value="200_plus">+٢٠٠ عميل — 200+</option>
+          </select>
+        </label>
+      </div>
+
+      <div class="dx-form__row">
+        <label class="ds-input">
+          <span class="ds-input__label">اسم جهة الاتصال — Contact name *</span>
+          <input class="ds-input__field" type="text" name="name" required minlength="2" placeholder="الاسم الكامل" autocomplete="name" />
+        </label>
+        <label class="ds-input">
+          <span class="ds-input__label">جوّال — Phone *</span>
+          <input class="ds-input__field" type="tel" name="phone" required pattern="^\+?\d[\d\s]{8,15}$" placeholder="+966 5X XXX XXXX" autocomplete="tel" />
+        </label>
+      </div>
+
+      <label class="ds-input">
+        <span class="ds-input__label">البريد الإلكتروني — Email *</span>
+        <input class="ds-input__field" type="email" name="email" required placeholder="you@company.sa" autocomplete="email" />
+        <span class="ds-input__hint">سنرسل تأكيد الموعد هنا. — We will send the booking confirmation here.</span>
+      </label>
+
+      <label class="ds-input">
+        <span class="ds-input__label">أين تشعر أن عمليّات الإيراد تتسرّب اليوم؟ — Where do revenue operations leak today? *</span>
+        <textarea class="ds-input__field" name="message" required minlength="6" placeholder="مثال: المتابعة مشتّتة بين WhatsApp وExcel، وبيانات الـ CRM فيها تكرار — Example: follow-up scattered across WhatsApp and Excel, CRM data has duplicates"></textarea>
+      </label>
+
+      <hr class="ds-divider" />
+
+      <!-- PDPL Consent -->
+      <label class="dx-consent">
+        <input type="checkbox" name="consent" required />
+        <span>
+          <strong>موافقة PDPL (إجباريّة) — PDPL consent (required)</strong> — أوافق على معالجة بياناتي
+          المُدخَلة لترتيب مراجعة التشخيص فقط، حسب
+          <a href="/privacy.html" target="_blank" rel="noopener">سياسة الخصوصيّة</a>.
+          لن تُشارك مع طرف خارجي. أقدر أطلب حذفها في أيّ وقت.
+        </span>
+      </label>
+
+      <button class="ds-btn ds-btn--lg" type="submit" id="submitBtn">
+        <span class="dx-btn-label">احجز مراجعة تشخيصيّة — Book Diagnostic Review</span>
+        <span class="ds-spinner ds-spinner--sm" id="dx-spinner" style="display:none"></span>
+      </button>
+
+      <p id="formStatus" class="ds-input__hint" role="status" aria-live="polite"></p>
+      <p class="ds-input__hint">
+        طلبك يصل المؤسس كمسوّدة في طابور الاعتماد — لا يُرسَل أي شيء خارجيّاً تلقائيّاً.
+        <span class="dx-en">/ Your request reaches the founder as a draft in the approval queue — nothing is sent externally automatically.</span>
+      </p>
+    </form>
+  </section>
+
+  <!-- Disclaimer -->
+  <section class="dx-disclaimer">
+    <p><strong>النتائج التقديريّة ليست نتائج مضمونة — Estimated outcomes are not guaranteed outcomes.</strong></p>
+  </section>
+
+  <!-- Footer -->
+  <footer class="ds-footer">
+    <div class="ds-container ds-stack ds-stack--md" style="text-align: center;">
+      <p class="ds-lede" style="max-width: 640px; margin: 0 auto;">
+        Dealix طبقة تشغيل ذكاء اصطناعي مُحوكَمة. كل قرار يحمل أثراً تدقيقيّاً، وكل مسوّدة تنتظر اعتماد المؤسس.
+      </p>
+      <div class="ds-row" style="justify-content: center; gap: var(--space-5); flex-wrap: wrap;">
+        <a class="ds-link" href="/">الرئيسيّة</a>
+        <a class="ds-link" href="/services.html">الخدمات</a>
+        <a class="ds-link" href="/pricing.html">الأسعار</a>
+        <a class="ds-link" href="/assets/proof/sample-proof-pack.html">نموذج حزمة الإثبات</a>
+        <a class="ds-link" href="/privacy.html">سياسة الخصوصيّة</a>
+        <a class="ds-link" href="/terms.html">الشروط</a>
+      </div>
+    </div>
+  </footer>
+
+</main>
+
+<script>
+  const API_BASE = window.DEALIX_API_BASE || 'https://api.dealix.me';
+  const form = document.getElementById('diagnosticForm');
+  const statusEl = document.getElementById('formStatus');
+  const submitBtn = document.getElementById('submitBtn');
+  const submitLabel = submitBtn.querySelector('.dx-btn-label');
+  const spinner = document.getElementById('dx-spinner');
+
+  function setStatus(text, kind) {
+    statusEl.textContent = text;
+    statusEl.style.color = kind === 'error' ? '#fca5a5' : (kind === 'success' ? '#4ade80' : 'var(--text-muted)');
+  }
+
+  function setBusy(busy) {
+    submitBtn.disabled = busy;
+    spinner.style.display = busy ? 'inline-block' : 'none';
+    submitLabel.textContent = busy ? 'جاري الإرسال… — Submitting…' : 'احجز مراجعة تشخيصيّة — Book Diagnostic Review';
+  }
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    setStatus('', 'info');
+
+    // Honeypot — silent drop bots
+    if (form.elements['company_url'] && form.elements['company_url'].value.trim() !== '') {
+      return;
+    }
+
+    if (!form.consent.checked) {
+      setStatus('الموافقة على PDPL إجباريّة قبل الإرسال. — PDPL consent is required.', 'error');
+      return;
+    }
+    if (!form.checkValidity()) {
+      setStatus('فضلاً اكمل الحقول المطلوبة (*). — Please complete the required fields.', 'error');
+      form.reportValidity();
+      return;
+    }
+
+    const body = {
+      name: form.name.value.trim(),
+      company: form.company.value.trim(),
+      sector: form.sector.value,
+      size: form.size.value,
+      phone: form.phone.value.trim(),
+      email: form.email.value.trim(),
+      message: '[governed-revenue-ops-diagnostic] ' + form.message.value.trim(),
+      source: 'landing/dealix-diagnostic',
+      ref: document.referrer || '',
+      consent: true,
+      ts: new Date().toISOString(),
+    };
+
+    setBusy(true);
+    setStatus('جاري إرسال طلبك… — Submitting your request…', 'info');
+
+    try {
+      // Public endpoint — same pattern as diagnostic.html. Not the admin capture route.
+      const res = await fetch(`${API_BASE}/api/v1/public/demo-request`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      });
+      if (!res.ok) {
+        if (res.status === 422) throw new Error('validation: تحقّق من الحقول. — Check the fields.');
+        if (res.status === 404) throw new Error('الخدمة قيد النشر — حاول بعد دقائق. — Service deploying, try again shortly.');
+        throw new Error(`HTTP ${res.status}`);
+      }
+      setStatus('✓ وصل طلبك. سيراجعه المؤسس ويعود إليك خلال يوم عمل. — Request received. The founder will review and reply within one business day.', 'success');
+      form.reset();
+    } catch (err) {
+      setStatus(`خطأ — Error: ${err.message}`, 'error');
+    } finally {
+      setBusy(false);
+    }
+  });
+</script>
+
+</body>
+</html>

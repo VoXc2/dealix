@@ -157,6 +157,36 @@ Rotation rule: the four hashtags `#SaudiAI #PDPL #RevenueOps #B2B` are mandatory
 
 ---
 
+## Revenue Ops Machine launch — 14-day run / إطلاق آلة عمليّات الإيراد — جولة 14 يوماً
+
+> Added 2026-05-17. A focused 14-day launch run for posts 007–020, supporting the Governed Revenue Ops Diagnostic offer and the `/dealix-diagnostic` landing page. This run sits on top of the standard 12-week rotation; map each post to the nearest Monday/Wednesday/Saturday lane so the lane logic above still holds. Posts not landing on a lane day publish on the closest weekday and inherit the nearest lane's hashtags.
+
+**Lane mapping for the run:** Monday-lane posts (technical proof) take `#SaudiAI` `#PDPL`. Wednesday-lane posts (case-safe pattern) take `#RevenueOps` `#B2B`. Saturday-lane posts (counter-narrative) take `#SaudiAI` `#B2B`. The Arabic equivalents `#السعودية` `#حماية_البيانات_السعودية` `#عمليات_الإيراد` `#الذكاء_الاصطناعي` are appended on every post, as in the standard rule.
+
+| Day | Post | Lane | Hook — الخطّاف (bilingual) |
+|---|---|---|---|
+| 1 — Mon | 007 | Technical proof | "الأتمتة لا تفشل لأن النموذج ضعيف، بل لأن لا أحد يُثبت ما حدث / Automation fails because nobody can prove what happened." |
+| 2 — Tue | 008 | Technical proof | "لوحة البيانات تُراقِب؛ جواز القرار يُحاسِب / A dashboard monitors; a decision passport holds someone accountable." |
+| 3 — Wed | 009 | Case-safe pattern | "تشغيل الذكاء الاصطناعي على بيانات غير جاهزة يُسرّع أخطاءك / Running AI on unready data accelerates your mistakes." |
+| 4 — Thu | 010 | Technical proof | "لا تُرسِل مخرَج ذكاء اصطناعي خارجيّاً قبل أن يقرأه بشر / Never send AI output externally before a human reads it." |
+| 5 — Fri | 011 | Case-safe pattern | "إن وثق فريقك بخطّ الأنابيب في الاجتماع لا في القرار، فالبيانات غير موثوقة / If the team trusts the pipeline in the meeting but not the decision, the data is untrustworthy." |
+| 6 — Sat | 012 | Counter-narrative | "القصّة هي النصف السهل؛ حزمة الإثبات هي النصف الصعب / The story is the easy half; the Proof Pack is the hard half." |
+| 7 — Sun | 013 | Technical proof | "التصنيف ليس حُكماً على قيمتك، بل على ما إذا كان الوقت مناسباً / The grade judges timing, not your worth." |
+| 8 — Mon | 014 | Technical proof | "القمع غير المُحوكَم يسمح بالقفز؛ القمع المُحوكَم يرفض / An ungoverned funnel allows leap-frogging; a governed one refuses." |
+| 9 — Tue | 015 | Technical proof | "لا شيء يخرج لأنه جاهز، بل لأنه اعتُمِد / Nothing leaves because it is ready — only because it was approved." |
+| 10 — Wed | 016 | Case-safe pattern | "إن وصلتك فاتورة قبل نطاق موقَّع، فأنت تدفع مقابل شيء لم يُتّفق عليه / An invoice before a signed scope means paying for something never agreed." |
+| 11 — Thu | 017 | Case-safe pattern | "البيع الزائد يربح صفقةً ويخسر عميلاً؛ التوجيه الصادق يربح الاثنين / Overselling wins a deal and loses a customer; honest routing wins both." |
+| 12 — Fri | 018 | Case-safe pattern | "عرض واحد مركَّز: نرسم الخطر، ونُسلّم ثلاثة قرارات وحزمة إثبات / One focused offer: map the risk, deliver three decisions and a Proof Pack." |
+| 13 — Sat | 019 | Counter-narrative | "سعة محدودة حقيقيّة، لا ندرة مصطنعة / Real limited capacity, not artificial scarcity." |
+| 14 — Sun | 020 | Case-safe pattern | "على مدى أسبوعين شرحنا الآلة؛ الآن نفتح الباب / For two weeks we explained the machine; now we open the door." |
+
+**Run notes — ملاحظات الجولة:**
+- Every post in the run ends with the standard disclaimer and carries two of the four mandatory hashtags per its lane, plus the Arabic equivalents.
+- The run drives one destination: `/dealix-diagnostic`. Posts 012, 018, and 020 also link the Sample Proof Pack at `/assets/proof/sample-proof-pack.html`.
+- Cross-reference: [REVENUE_OPS_MACHINE.md](./REVENUE_OPS_MACHINE.md) explains the funnel, scoring, and approval-queue logic that these posts reference; [LINKEDIN_POST_007.md](./LINKEDIN_POST_007.md) opens the run, [LINKEDIN_POST_020.md](./LINKEDIN_POST_020.md) closes it.
+
+---
+
 ## Operating notes — ملاحظات التشغيل
 
 - **Drafting time / وقت الصياغة:** 25–35 minutes per post, founder voice only. Drafts are reviewed against the non-negotiables before publishing.
