@@ -1,6 +1,6 @@
 """Dealix Service Catalog (Wave 13 Phase 2).
 
-Single source of truth for the 7 priced offerings.
+Single source of truth for the priced offerings.
 Backend + portal + WhatsApp + landing pages all read from here.
 
 Article 8: commitment language only ("we will work for free until KPI met"),

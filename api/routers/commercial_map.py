@@ -10,7 +10,7 @@ Single source of truth that maps every Dealix offer to:
   - non-negotiables (hard_gates) honored by code
 
 Reads from `auto_client_acquisition.service_catalog.registry.OFFERINGS`
-so the map can never drift from the canonical 7-offer registry.
+so the map can never drift from the canonical 10-offer registry.
 
 Endpoints:
   GET /api/v1/commercial-map           → JSON
@@ -33,7 +33,7 @@ router = APIRouter(prefix="/api/v1/commercial-map", tags=["commercial-map"])
 # Per-service wiring overlays (landing + endpoints).
 # Keys MUST match `auto_client_acquisition.service_catalog.registry` ids.
 _WIRING: dict[str, dict[str, Any]] = {
-    "free_mini_diagnostic": {
+    "governed_revenue_risk_score": {
         "landing_url": "/diagnostic.html",
         "intake_endpoint": "POST /api/v1/company-growth-beast/diagnostic",
         "lead_capture_endpoint": "POST /api/v1/public/demo-request",
@@ -43,14 +43,14 @@ _WIRING: dict[str, dict[str, Any]] = {
         "delivery_endpoint": "GET /api/v1/founder/leads",
         "proof_endpoint": "auto_client_acquisition/email/transactional.send_transactional(kind=diagnostic_intake_confirmation)",
         "founder_surface": "/founder-leads.html",
-        "next_offer": "revenue_proof_sprint_499",
+        "next_offer": "diagnostic_starter",
     },
-    "revenue_proof_sprint_499": {
+    "diagnostic_starter": {
         "landing_url": "/start.html",
         "preview_url": "/sprint-sample.html",
         "intake_endpoint": "POST /api/v1/service-setup/qualify",
         "proposal_endpoint": "POST /api/v1/service-setup/proposal/{customer_id}",
-        "checkout_url": "/checkout.html?tier=sprint",
+        "checkout_url": "/checkout.html?tier=diagnostic_starter",
         "checkout_endpoint": "POST /api/v1/payment-ops/invoice-intent",
         "delivery_module": "auto_client_acquisition.delivery_factory.delivery_sprint.run_sprint",
         "delivery_endpoint": "POST /api/v1/sprint/run",
@@ -58,107 +58,170 @@ _WIRING: dict[str, dict[str, Any]] = {
         "proof_endpoint": "auto_client_acquisition.proof_os.proof_pack.assemble",
         "case_safe_endpoint": "GET /api/v1/proof-to-market/case-safe/{engagement_id}",
         "founder_surface": "/founder-dashboard.html",
-        "next_offer": "growth_ops_monthly_2999",
+        "next_offer": "diagnostic_standard",
     },
-    "data_to_revenue_pack_1500": {
-        "landing_url": "/data-pack.html",
-        "intake_endpoint": "POST /api/v1/data-os/import-preview/upload",
-        "preview_endpoint": "POST /api/v1/data-os/import-preview",
-        "checkout_url": "/checkout.html?tier=data_pack",
+    "diagnostic_standard": {
+        "landing_url": "/start.html",
+        "preview_url": "/sprint-sample.html",
+        "intake_endpoint": "POST /api/v1/service-setup/qualify",
+        "proposal_endpoint": "POST /api/v1/service-setup/proposal/{customer_id}",
+        "checkout_url": "/checkout.html?tier=diagnostic_standard",
+        "checkout_endpoint": "POST /api/v1/payment-ops/invoice-intent",
+        "delivery_module": "auto_client_acquisition.delivery_factory.delivery_sprint.run_sprint",
+        "delivery_endpoint": "POST /api/v1/sprint/run",
+        "sample_endpoint": "GET /api/v1/sprint/sample",
+        "proof_endpoint": "auto_client_acquisition.proof_os.proof_pack.assemble",
+        "case_safe_endpoint": "GET /api/v1/proof-to-market/case-safe/{engagement_id}",
+        "founder_surface": "/founder-dashboard.html",
+        "next_offer": "diagnostic_executive",
+    },
+    "diagnostic_executive": {
+        "landing_url": "/start.html",
+        "preview_url": "/sprint-sample.html",
+        "intake_endpoint": "POST /api/v1/service-setup/qualify",
+        "proposal_endpoint": "POST /api/v1/service-setup/proposal/{customer_id}",
+        "checkout_url": "/checkout.html?tier=diagnostic_executive",
+        "checkout_endpoint": "POST /api/v1/payment-ops/invoice-intent",
+        "delivery_module": "auto_client_acquisition.delivery_factory.delivery_sprint.run_sprint",
+        "delivery_endpoint": "POST /api/v1/sprint/run",
+        "sample_endpoint": "GET /api/v1/sprint/sample",
+        "proof_endpoint": "auto_client_acquisition.proof_os.proof_pack.assemble",
+        "case_safe_endpoint": "GET /api/v1/proof-to-market/case-safe/{engagement_id}",
+        "founder_surface": "/founder-dashboard.html",
+        "next_offer": "diagnostic_enterprise",
+    },
+    "diagnostic_enterprise": {
+        "landing_url": "/start.html",
+        "preview_url": "/sprint-sample.html",
+        "intake_endpoint": "POST /api/v1/service-setup/requests",
+        "proposal_endpoint": "POST /api/v1/service-setup/proposal/{customer_id}",
+        "checkout_url": "/checkout.html?tier=diagnostic_enterprise",
+        "checkout_endpoint": "POST /api/v1/payment-ops/invoice-intent",
+        "delivery_module": "auto_client_acquisition.delivery_factory.delivery_sprint.run_sprint",
+        "delivery_endpoint": "POST /api/v1/sprint/run",
+        "sample_endpoint": "GET /api/v1/sprint/sample",
+        "proof_endpoint": "auto_client_acquisition.proof_os.proof_pack.assemble",
+        "case_safe_endpoint": "GET /api/v1/proof-to-market/case-safe/{engagement_id}",
+        "founder_surface": "/founder-dashboard.html",
+        "next_offer": "revenue_intelligence_sprint",
+    },
+    "revenue_intelligence_sprint": {
+        "landing_url": "/services.html#sprint",
+        "intake_endpoint": "POST /api/v1/service-setup/qualify",
+        "proposal_endpoint": "POST /api/v1/service-setup/proposal/{customer_id}",
+        "checkout_url": "/checkout.html?tier=revenue_intelligence_sprint",
         "checkout_endpoint": "POST /api/v1/payment-ops/invoice-intent",
         "delivery_module": "auto_client_acquisition.data_os + auto_client_acquisition.delivery_factory.delivery_sprint",
         "delivery_endpoint": "POST /api/v1/sprint/run",
         "proof_endpoint": "auto_client_acquisition.proof_os.proof_pack.assemble",
         "founder_surface": "/founder-dashboard.html",
-        "next_offer": "growth_ops_monthly_2999",
+        "next_offer": "governed_ops_retainer",
     },
-    "growth_ops_monthly_2999": {
-        "landing_url": "/pricing.html#growth",
+    "governed_ops_retainer": {
+        "landing_url": "/pricing.html#retainer",
         "intake_endpoint": "POST /api/v1/service-setup/qualify",
         "proposal_endpoint": "POST /api/v1/service-setup/proposal/{customer_id}",
-        "checkout_url": "/checkout.html?tier=growth",
+        "checkout_url": "/checkout.html?tier=governed_ops_retainer",
         "checkout_endpoint": "POST /api/v1/payment-ops/invoice-intent",
         "delivery_module": "scripts/weekly_brief_runner.py + scripts/monthly_cadence_runner.py",
         "delivery_endpoint": "GET /api/v1/customer-portal/{handle}/workspace",
         "proof_endpoint": "GET /api/v1/value/{handle}/report/monthly",
         "adoption_endpoint": "GET /api/v1/customer-success/{handle}/adoption-score",
         "renewal_module": "auto_client_acquisition.payment_ops.renewal_scheduler",
+        "trust_pack_endpoint": "GET /api/v1/value/trust-pack/{handle}/pdf",
         "founder_surface": "/customer-portal.html?handle={customer}",
-        "next_offer": "executive_command_center_7500",
+        "next_offer": None,
     },
-    "support_os_addon_1500": {
-        "landing_url": "/services.html#support",
-        "intake_endpoint": "POST /api/v1/service-setup/qualify",
-        "checkout_url": "/checkout.html?tier=support_addon",
+    "board_decision_memo": {
+        "landing_url": "/services.html#board-memo",
+        "intake_endpoint": "POST /api/v1/service-setup/requests",
+        "checkout_url": "/checkout.html?tier=board_decision_memo",
         "checkout_endpoint": "POST /api/v1/payment-ops/invoice-intent",
-        "delivery_module": "auto_client_acquisition.support_os",
-        "delivery_endpoint": "GET /api/v1/support-os/*",
-        "proof_endpoint": "GET /api/v1/value/{handle}/report/monthly",
+        "delivery_module": "auto_client_acquisition.proof_os.proof_pack.assemble",
+        "delivery_endpoint": "GET /api/v1/audit/{handle}/control-graph/markdown",
+        "proof_endpoint": "GET /api/v1/value/trust-pack/{handle}/pdf",
         "founder_surface": "/founder-dashboard.html",
         "next_offer": None,
     },
-    "executive_command_center_7500": {
-        "landing_url": "/executive-command-center.html",
-        "intake_endpoint": "POST /api/v1/service-setup/requests",
-        "checkout_url": "founder-issued",
+    "trust_pack_lite": {
+        "landing_url": "/services.html#trust-pack",
+        "intake_endpoint": "POST /api/v1/service-setup/qualify",
+        "checkout_url": "/checkout.html?tier=trust_pack_lite",
         "checkout_endpoint": "POST /api/v1/payment-ops/invoice-intent",
-        "delivery_module": "auto_client_acquisition.executive_command_center",
-        "delivery_endpoint": "GET /api/v1/executive-command-center/*",
+        "delivery_module": "auto_client_acquisition.trust_os.trust_pack",
+        "delivery_endpoint": "GET /api/v1/value/trust-pack/{handle}/pdf",
         "proof_endpoint": "GET /api/v1/audit/{handle}/control-graph/markdown",
         "trust_pack_endpoint": "GET /api/v1/value/trust-pack/{handle}/pdf",
         "founder_surface": "/founder-dashboard.html",
-        "next_offer": None,
+        "next_offer": "governed_ops_retainer",
     },
-    "agency_partner_os": {
-        "landing_url": "/agency-partner.html",
-        "intake_endpoint": "POST /api/v1/public/partner-application",
-        "checkout_url": "founder-issued",
-        "checkout_endpoint": None,
-        "delivery_module": "auto_client_acquisition.partnership_os.referral_store",
-        "delivery_endpoint": "POST /api/v1/referrals/create + /redeem + /{code}/convert",
-        "proof_endpoint": "GET /api/v1/founder/dashboard",
-        "covenant_doc": "docs/40_partners/PARTNER_COVENANT.md",
-        "founder_surface": "/founder-leads.html",
-        "next_offer": None,
+    "crm_data_readiness": {
+        "landing_url": "/data-pack.html",
+        "intake_endpoint": "POST /api/v1/data-os/import-preview/upload",
+        "preview_endpoint": "POST /api/v1/data-os/import-preview",
+        "checkout_url": "/checkout.html?tier=crm_data_readiness",
+        "checkout_endpoint": "POST /api/v1/payment-ops/invoice-intent",
+        "delivery_module": "auto_client_acquisition.data_os + auto_client_acquisition.delivery_factory.delivery_sprint",
+        "delivery_endpoint": "POST /api/v1/sprint/run",
+        "proof_endpoint": "auto_client_acquisition.proof_os.proof_pack.assemble",
+        "founder_surface": "/founder-dashboard.html",
+        "next_offer": "revenue_intelligence_sprint",
     },
 }
 
 
-# Governed Revenue & AI Ops ladder — narrative overlay (Rung 0 → Retainer).
+# Governed Revenue & AI Ops ladder — narrative overlay (Rung 0 -> Retainer).
 # The price ladder itself stays in service_catalog/registry.py; these notes
 # describe how each offer maps onto the new ladder framing.
 _OFFER_NOTES = {
-    "free_mini_diagnostic": (
-        "Rung 0 (Free). Governed Revenue & AI Ops Risk Score + Sample Proof Pack. "
-        "Opens the funnel; confirmation email auto-sent; founder reviews within 24h."
+    "governed_revenue_risk_score": (
+        "Rung 0 (Free). Governed Revenue & AI Ops Risk Score + Sample Proof Pack "
+        "+ top-3 ranked workflow risks. Opens the funnel; confirmation email "
+        "auto-sent; founder reviews within 24h."
     ),
-    "revenue_proof_sprint_499": (
-        "Public 7-Day Governed Revenue & AI Ops Diagnostic, then a paid "
-        "Revenue Intelligence Sprint from 25,000 SAR. Diagnostic tiers are priced "
-        "4,999 / 9,999 / 15,000 / 25,000 SAR by scope. Proof Pack mandatory; "
-        "staged payment; 14-day full refund."
+    "diagnostic_starter": (
+        "Rung 1 entry tier of the 7-Day Governed Revenue & AI Ops Diagnostic. "
+        "Priced at 4,999 SAR; the tier ladder runs 4,999 / 9,999 / 15,000 / "
+        "25,000 SAR by scope. Proof Pack mandatory; staged payment; 14-day "
+        "full refund."
     ),
-    "data_to_revenue_pack_1500": (
-        "Data scope inside the Governed Revenue & AI Ops Diagnostic. CSV upload → "
-        "DQ score + cleaned + ranked. Live demo on /data-pack.html."
+    "diagnostic_standard": (
+        "Rung 1 standard tier of the 7-Day Governed Revenue & AI Ops Diagnostic. "
+        "Priced at 9,999 SAR within the 4,999 / 9,999 / 15,000 / 25,000 SAR "
+        "ladder. Adds evidence gaps and a sprint recommendation."
     ),
-    "growth_ops_monthly_2999": (
-        "Governed Ops Retainer — 4,999 to 35,000 SAR / month by scope. Weekly brief "
-        "+ monthly value report + adoption score + retainer readiness gate. "
-        "Renewal auto-charge after 3 confirmed cycles."
+    "diagnostic_executive": (
+        "Rung 1 executive tier of the 7-Day Governed Revenue & AI Ops Diagnostic. "
+        "Priced at 15,000 SAR within the 4,999 / 9,999 / 15,000 / 25,000 SAR "
+        "ladder. Adds an executive readout session."
     ),
-    "support_os_addon_1500": (
-        "Add-on to the Governed Ops Retainer. Ticket classification + suggested "
-        "replies (draft_only). SLA breach alerts. Sits inside the customer workspace."
+    "diagnostic_enterprise": (
+        "Rung 1 enterprise tier of the 7-Day Governed Revenue & AI Ops "
+        "Diagnostic. Priced at 25,000 SAR, the top of the 4,999 / 9,999 / "
+        "15,000 / 25,000 SAR ladder. Adds a board-ready summary."
     ),
-    "executive_command_center_7500": (
-        "Top of the Governed Ops Retainer band. Founder/CEO surface: daily founder "
-        "brief (WhatsApp draft_only) + monthly board pack. Includes Trust Pack PDF "
-        "+ Evidence Control Plane export."
+    "revenue_intelligence_sprint": (
+        "Rung 2. The Revenue Intelligence Sprint — a multi-week governed build "
+        "from 25,000 SAR (floor). Builds governed revenue workflows and the "
+        "evidence trail; recommends retainer readiness."
     ),
-    "agency_partner_os": (
-        "Channel offer. 5K SAR / closed deal + 30% commission first year. "
-        "Partner Covenant enforced: no unsafe automation, no guaranteed claims."
+    "governed_ops_retainer": (
+        "Rung 3. Governed Ops Retainer — 4,999 to 35,000 SAR / month by scope. "
+        "Weekly brief + monthly value report + adoption score + retainer "
+        "readiness gate. Renewal scheduled after 3 confirmed cycles."
+    ),
+    "board_decision_memo": (
+        "Adjacent offer. Board-ready decision memo with a governed evidence "
+        "appendix. Priced from 9,999 SAR (estimate)."
+    ),
+    "trust_pack_lite": (
+        "Adjacent offer. AI Governance / Trust Pack Lite — governance baseline "
+        "plus bilingual Trust Pack document. Priced from 9,999 SAR (estimate)."
+    ),
+    "crm_data_readiness": (
+        "Adjacent offer. CRM / Data Readiness for AI — data source inventory, "
+        "DQ score, and AI-readiness gap assessment. Priced from 9,999 SAR "
+        "(estimate)."
     ),
 }
 
@@ -210,7 +273,7 @@ def _build_payload() -> dict[str, Any]:
 
 @router.get("")
 async def commercial_map_json() -> dict[str, Any]:
-    """JSON — 7 offers + wiring + non-negotiables + cross-links."""
+    """JSON — 10 offers + wiring + non-negotiables + cross-links."""
     return _build_payload()
 
 

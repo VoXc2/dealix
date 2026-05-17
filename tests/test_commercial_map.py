@@ -86,42 +86,42 @@ def test_markdown_endpoint_is_bilingual():
         assert sid in body, f"markdown missing service_id={sid}"
 
 
-def test_referral_persistence_offer_links_to_partnership_module():
+def test_retainer_offer_links_to_workspace_endpoint():
     body = client.get("/api/v1/commercial-map").json()
-    agency = next(o for o in body["offers"] if o["service_id"] == "agency_partner_os")
-    assert "partnership_os" in agency["wiring"]["delivery_module"]
+    retainer = next(
+        o for o in body["offers"] if o["service_id"] == "governed_ops_retainer"
+    )
+    assert "workspace" in retainer["wiring"]["delivery_endpoint"]
 
 
-def test_growth_ops_links_to_workspace_endpoint():
+def test_diagnostic_offer_links_to_sample_preview():
     body = client.get("/api/v1/commercial-map").json()
-    growth = next(o for o in body["offers"] if o["service_id"] == "growth_ops_monthly_2999")
-    assert "workspace" in growth["wiring"]["delivery_endpoint"]
-
-
-def test_sprint_offer_links_to_sample_preview():
-    body = client.get("/api/v1/commercial-map").json()
-    sprint = next(o for o in body["offers"] if o["service_id"] == "revenue_proof_sprint_499")
-    assert sprint["wiring"]["sample_endpoint"] == "GET /api/v1/sprint/sample"
-    assert sprint["wiring"]["preview_url"] == "/sprint-sample.html"
+    diagnostic = next(
+        o for o in body["offers"] if o["service_id"] == "diagnostic_starter"
+    )
+    assert diagnostic["wiring"]["sample_endpoint"] == "GET /api/v1/sprint/sample"
+    assert diagnostic["wiring"]["preview_url"] == "/sprint-sample.html"
 
 
 def test_offer_notes_reflect_governed_revenue_ladder():
-    """Notes describe the Governed Revenue & AI Ops ladder (Rung 0 → Retainer)."""
+    """Notes describe the Governed Revenue & AI Ops ladder (Rung 0 -> Retainer)."""
     body = client.get("/api/v1/commercial-map").json()
     notes_by_id = {o["service_id"]: o["notes"] for o in body["offers"]}
 
-    free = notes_by_id["free_mini_diagnostic"]
+    free = notes_by_id["governed_revenue_risk_score"]
     assert "Rung 0" in free
     assert "Risk Score" in free
     assert "Sample Proof Pack" in free
 
-    sprint = notes_by_id["revenue_proof_sprint_499"]
-    assert "7-Day Governed Revenue & AI Ops Diagnostic" in sprint
+    diagnostic = notes_by_id["diagnostic_starter"]
+    assert "7-Day Governed Revenue & AI Ops Diagnostic" in diagnostic
     for tier in ("4,999", "9,999", "15,000", "25,000"):
-        assert tier in sprint
+        assert tier in diagnostic
+
+    sprint = notes_by_id["revenue_intelligence_sprint"]
     assert "Revenue Intelligence Sprint" in sprint
 
-    retainer = notes_by_id["growth_ops_monthly_2999"]
+    retainer = notes_by_id["governed_ops_retainer"]
     assert "Governed Ops Retainer" in retainer
     assert "4,999" in retainer
     assert "35,000" in retainer
