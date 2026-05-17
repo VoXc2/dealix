@@ -2,6 +2,7 @@
 
 | Document | Purpose |
 |----------|---------|
+| [COMMERCIAL_EMPIRE_INDEX.md](COMMERCIAL_EMPIRE_INDEX.md) | **المدخل الرئيسي** لطبقة الإمبراطورية التجارية — منهج Dealix الثماني، 20 وثيقة تشغيل، الجدول الزمني التنفيذي |
 | [DEALIX_REVOPS_PACKAGES_AR.md](DEALIX_REVOPS_PACKAGES_AR.md) | أسعار ونطاق حزم الإيراد (Diagnostic، Sprint، Pilot، RevOps، Enterprise) |
 | [DEALIX_AI_OPERATING_COMPANY_AR.md](DEALIX_AI_OPERATING_COMPANY_AR.md) | **المرجع الشامل**: تسعة أنظمة تشغيل، أبواب العميل الخمسة، كتالوج الخدمات، معيار التسليم، QA، خارطة بناء |
 | [OFFER_LEAD_INTELLIGENCE_SPRINT_AR.md](OFFER_LEAD_INTELLIGENCE_SPRINT_AR.md) | صفحة عرض Sprint |
