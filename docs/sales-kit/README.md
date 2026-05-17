@@ -5,7 +5,8 @@
 ## ابدأ من هنا
 
 **[DEALIX_MASTER_PLAYBOOK.md](./DEALIX_MASTER_PLAYBOOK.md)** — 🆕 المرجع الموحّد لكل الأصول  
-**[START_HERE.md](./START_HERE.md)** — خارطة طريق من 5 مراحل للوصول لأول عميل دفع.
+**[START_HERE.md](./START_HERE.md)** — خارطة طريق من 5 مراحل للوصول لأول عميل دفع.  
+**[GTM_SALES_STRATEGY.md](./GTM_SALES_STRATEGY.md)** — استراتيجية الذهاب إلى السوق والبيع (ثنائية اللغة): الأطروحة، القنوات، الاعتراضات، خطة 30 يوماً.
 
 ---
 
