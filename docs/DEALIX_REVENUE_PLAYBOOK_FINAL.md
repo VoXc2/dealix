@@ -19,16 +19,17 @@ NOT YET in scope (deferred until 3 paid pilots):
 - E-commerce (volume too high for 1-founder approval-first model)
 - Restaurants / hospitality (channel mismatch)
 
-## 6-tier offer ladder (recap from Wave 4 doc)
+## Offer ladder — Governed Revenue & AI Ops
 
-| # | Package | Price (SAR) | Trigger condition |
+Canonical source: [`OFFER_LADDER_AND_PRICING.md`](OFFER_LADDER_AND_PRICING.md) and [`strategic/GOVERNED_REVENUE_AI_OPS_STRATEGY.md`](strategic/GOVERNED_REVENUE_AI_OPS_STRATEGY.md).
+
+| # | Offer | Price (SAR) | Trigger condition |
 |---|---|---|---|
-| 1 | Free AI Ops Diagnostic | 0 | warm intro |
-| 2 | 7-Day Revenue Proof Sprint | 499 | diagnostic completed |
-| 3 | Data-to-Revenue Pack | 1,500 | Sprint customer wants more |
-| 4 | Managed Revenue Ops | 2,999–4,999/mo | Sprint → Partner |
-| 5 | Executive Command Center | 7,500–15,000/mo | Partner with KPI commitment |
-| 6 | Agency Partner OS | custom / rev-share | Agency channel partner |
+| 0 | Governed Revenue & AI Ops Risk Score + Sample Proof Pack | 0 | warm intro |
+| 1 | 7-Day Governed Revenue & AI Ops Diagnostic | 4,999 / 9,999 / 15,000 / 25,000 (4 tiers) | Risk Score completed |
+| 2 | Revenue Intelligence Sprint | 25,000+ (scoped) | diagnostic completed |
+| 3 | Governed Ops Retainer | 4,999–35,000/mo | Sprint proven |
+| 4 | Adjacent offers — Board Decision Memo · AI Governance / Trust Pack Lite · CRM/Data Readiness for AI | scoped | on request |
 
 ---
 
@@ -74,9 +75,9 @@ https://dealix.me/diagnostic.html?ref=warm
 
 ---
 
-## 499 SAR Sprint conversion
+## Diagnostic conversion
 
-**Goal:** 25%+ diagnostic→Sprint conversion.
+**Goal:** convert Risk Score completions into a paid 7-Day Governed Revenue & AI Ops Diagnostic (4,999 SAR Starter and up).
 
 ### Day 0 onboarding
 - Customer signs Service Agreement + PDPL consent (electronic)
@@ -111,16 +112,16 @@ Every published Proof Pack contains:
 
 ---
 
-## Upsell to monthly Managed Revenue Ops
+## Upsell to the Governed Ops Retainer
 
-**Goal:** 80%+ Sprint→Managed conversion at 2,999-4,999 SAR/month.
+**Goal:** convert proven Sprint customers to a monthly Governed Ops Retainer at 4,999–35,000 SAR/month (scoped).
 
 ### Conversion script (post-Sprint)
-- Run during Day 7 review call
+- Run during the Sprint review call
 - Lead with the Proof Pack (concrete evidence)
-- "بعد ما شفت قيمة الـ Sprint في ٧ أيّام، الباقة الشهريّة تخلّيك تشغّل هذا بشكل دائم لمدّة ٤ شهور بسعر تأسيسي ٢٬٩٩٩ ريال/شهر"
-- KPI commitment: founder works free until +20% lift on agreed metric
-- 4-month minimum (not month-to-month)
+- "بعد ما شفت قيمة الـ Sprint، احتفاظ العمليات المُحوكَمة يخلّيك تشغّل هذا بإيقاع شهري — قرارات مُجهَّزة، موافقات، حزمة إثبات شهرية."
+- No guaranteed revenue — evidenced opportunities and a monthly proof pack
+- Scoped monthly commitment, unlocked only on a proven Sprint
 
 ### Key objections + Saudi-style responses
 
@@ -162,9 +163,9 @@ Every published Proof Pack contains:
 |---|---|
 | Warm intros sent | 30 |
 | Diagnostics completed | 12 |
-| Paid Sprints (499) | 8 |
-| Sprint→Managed conversion | 6 |
-| Active Managed customers | 6 (est. 24K SAR/mo MRR) |
+| Paid 7-Day Diagnostics | 8 |
+| Diagnostic→Sprint→Retainer conversion | 6 |
+| Active Governed Ops Retainer customers | 6 (MRR is an estimate, not a guarantee) |
 | Published Proof Packs | 4 |
 | Customer NPS (P50) | ≥ 7 |
 | Full-Ops Score (avg) | ≥ 90 |

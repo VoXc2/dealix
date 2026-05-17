@@ -10,7 +10,8 @@
 LIVE_CHARGE_READY = no
 PAYMENT_DEFAULT_MODE = test_or_manual
 ALLOW_LIVE_FLAG = none (no MOYASAR_ALLOW_LIVE_CHARGE env var exists)
-PILOT_AMOUNT = 499 SAR (49,900 halalah)
+ENTRY_OFFER = 7-Day Governed Revenue & AI Ops Diagnostic
+ENTRY_OFFER_TIERS_SAR = 4,999 / 9,999 / 15,000 / 25,000 (see docs/OFFER_LADDER_AND_PRICING.md)
 REFUND_WINDOW_DAYS = 7
 ```
 
@@ -25,9 +26,8 @@ REFUND_WINDOW_DAYS = 7
 
 ### الاسترجاع
 
-- استرجاع كامل خلال 7 أيّام من تسليم الـ Pilot لو التسليم ما طابق
-  مواصفات `growth_starter` في
-  `docs/registry/SERVICE_READINESS_MATRIX.yaml`.
+- سياسة الاسترجاع موثّقة في `docs/REFUND_SOP.md`. الاسترجاع يُطبَّق إذا
+  لم يطابق التسليم المواصفات الموثّقة للعرض.
 - الاسترجاع يديره المؤسس يدويّاً (Moyasar refund أو حوالة بنكيّة
   معاكسة).
 
@@ -49,9 +49,8 @@ REFUND_WINDOW_DAYS = 7
 
 ### Refunds
 
-- Full refund within 7 days of Pilot delivery if delivery did not
-  match the `growth_starter` spec in
-  `docs/registry/SERVICE_READINESS_MATRIX.yaml`.
+- Refund policy is documented in `docs/REFUND_SOP.md`. A refund
+  applies if delivery did not match the documented spec for the offer.
 - Refunds are processed manually by the founder (Moyasar refund or
   reverse bank transfer).
 

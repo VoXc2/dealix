@@ -6,20 +6,21 @@
 
 ---
 
-## Six packaging tiers
+## Governed Revenue & AI Ops ladder
 
-| # | Package | Price (SAR) | Tier |
+Canonical pricing source: [`OFFER_LADDER_AND_PRICING.md`](OFFER_LADDER_AND_PRICING.md). The sections below describe the modules powering each rung; prices follow the canonical ladder.
+
+| # | Offer | Price (SAR) | Rung |
 |---|---|---|---|
-| 1 | Free AI Ops Diagnostic | 0 | Free |
-| 2 | 7-Day Revenue Proof Sprint | 499 | Entry |
-| 3 | Data-to-Revenue Pack | 1,500 | Sprint |
-| 4 | Managed Revenue Ops | 2,999 – 4,999/mo | Subscription |
-| 5 | Executive Command Center | 7,500 – 15,000/mo | Premium |
-| 6 | Agency Partner OS | custom / rev-share | Partner |
+| 1 | Governed Revenue & AI Ops Risk Score + Sample Proof Pack | 0 | Free (Rung 0) |
+| 2 | 7-Day Governed Revenue & AI Ops Diagnostic | 4,999 / 9,999 / 15,000 / 25,000 (4 tiers) | Public entry |
+| 3 | Revenue Intelligence Sprint | 25,000+ (scoped) | Execution |
+| 4 | Governed Ops Retainer | 4,999 – 35,000/mo | Retainer |
+| 5 | Adjacent offers — Board Decision Memo · AI Governance / Trust Pack Lite · CRM/Data Readiness for AI | scoped | On request |
 
 ---
 
-## 1. Free AI Ops Diagnostic — 0 SAR
+## 1. Governed Revenue & AI Ops Risk Score + Sample Proof Pack — 0 SAR
 
 ### Target customer
 Saudi B2B owner curious about AI ops; not yet committed.
@@ -56,7 +57,7 @@ Saudi B2B owner curious about AI ops; not yet committed.
 - No automated follow-up
 
 ### Upsell path
-- Diagnostic → 499 SAR Sprint (within 14 days)
+- Risk Score → 7-Day Governed Revenue & AI Ops Diagnostic (4,999 SAR Starter and up)
 
 ### Readiness status
 ✅ LIVE
@@ -67,7 +68,7 @@ Saudi B2B owner curious about AI ops; not yet committed.
 
 ---
 
-## 2. 7-Day Revenue Proof Sprint — 499 SAR
+## 2. 7-Day Governed Revenue & AI Ops Diagnostic — 4,999 / 9,999 / 15,000 / 25,000 SAR
 
 ### Target customer
 Saudi B2B owner who completed the diagnostic and wants a quick proof point.
@@ -109,20 +110,20 @@ Saudi B2B owner who completed the diagnostic and wants a quick proof point.
 - No automated outreach
 
 ### Upsell path
-- Sprint → Data-to-Revenue Pack (1,500 SAR) OR Managed Revenue Ops
+- Diagnostic → Revenue Intelligence Sprint (25,000 SAR+, scoped)
 
 ### Readiness status
 ✅ LIVE (all modules in Wave 3)
 
 ---
 
-## 3. Data-to-Revenue Pack — 1,500 SAR
+## 3. Revenue Intelligence Sprint — 25,000 SAR+ (scoped)
 
 ### Target customer
-B2B owner who saw Sprint result and wants deeper data work.
+B2B owner who completed a diagnostic and wants the top decisions executed with evidence.
 
 ### Problem solved
-Lead enrichment + ICP mapping + sector benchmarks against their actual data.
+Governed execution of the workflow: deterministic delivery, approval-ready drafts, recorded governance decisions, and a full Proof Pack.
 
 ### Existing modules
 - `auto_client_acquisition/customer_brain` — builds per-customer snapshot
@@ -155,7 +156,7 @@ Lead enrichment + ICP mapping + sector benchmarks against their actual data.
 
 ---
 
-## 4. Managed Revenue Ops — 2,999 – 4,999 SAR/month
+## 4. Governed Ops Retainer — 4,999 – 35,000 SAR/month (scoped)
 
 ### Target customer
 SMB with 5-50 employees, growing pipeline.
@@ -183,7 +184,7 @@ All 8 + every enriched_view key (Wave 3 + Wave 4)
 All 15 sections of `/executive-command-center.html`
 
 ### Proof metrics
-- KPI commitment: +20% lift baseline
+- Evidenced opportunities, not guaranteed outcomes
 - ≥ 100 proof events/month
 - Full-Ops Score ≥ 75 maintained
 
@@ -198,7 +199,7 @@ All 15 sections of `/executive-command-center.html`
 - Any blast (NO_BLAST)
 
 ### Upsell path
-- Managed → Executive Command Center after 3 months proof
+- Retainer → adjacent offers (Board Decision Memo, AI Governance / Trust Pack Lite, CRM/Data Readiness for AI) on request
 
 ### Readiness status
 ✅ LIVE (Wave 4 unlocks the full Exec Command Center for premium pricing)
@@ -209,13 +210,13 @@ All 15 sections of `/executive-command-center.html`
 
 ---
 
-## 5. Executive Command Center — 7,500 – 15,000 SAR/month
+## 5. Adjacent offers — Board Decision Memo · AI Governance / Trust Pack Lite · CRM/Data Readiness for AI (scoped)
 
 ### Target customer
-Founder/CEO who needs daily visibility but has no time for dashboards.
+Retainer customers, or buyers with a specific need: a board-level decision, a governance evidence pack, or a data-readiness check before a Sprint.
 
 ### Problem solved
-"I need ONE screen that tells me what to do today and where I'm bleeding."
+"I need a board-level decision memo, a governance/trust pack, or proof our data is AI-ready." The executive-command-center modules below also power the Executive tier of the 7-Day Diagnostic and the top tier of the Governed Ops Retainer.
 
 ### Existing modules
 - `auto_client_acquisition/executive_command_center/` (Wave 4 — 15 sections)
@@ -258,13 +259,13 @@ All 15 sections live with real data
 
 ---
 
-## 6. Agency Partner OS — custom / rev-share
+## 6. Partner-led distribution (GTM engine, not a numbered offer)
 
 ### Target customer
-Saudi/MENA marketing agency with 5+ B2B clients.
+Saudi/MENA consultants and agencies who distribute Dealix to their clients after real proof.
 
 ### Problem solved
-"How do I scale my agency without hiring 10 more analysts?"
+"How do I extend Dealix to my clients?" Partner-led distribution is a GTM engine (see `strategic/GOVERNED_REVENUE_AI_OPS_STRATEGY.md` section 9), not a priced rung on the ladder.
 
 ### Existing modules
 - `api/routers/partnership_os` (existing, optional)

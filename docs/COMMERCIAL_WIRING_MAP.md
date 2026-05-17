@@ -8,19 +8,21 @@ This document is the **single source of truth** showing how every commercial off
 
 ---
 
-## 1. The 7-offer canonical registry — السجل الرسمي للعروض السبعة
+## 1. The canonical Governed Revenue & AI Ops ladder — سلم الإيراد المُحوكَم وعمليات الذكاء الاصطناعي
+
+This map reflects the Governed Revenue & AI Ops ladder adopted 2026-05-17 (Decision Ledger D-003). The single source of truth for offer names and prices is [`OFFER_LADDER_AND_PRICING.md`](OFFER_LADDER_AND_PRICING.md) and [`strategic/GOVERNED_REVENUE_AI_OPS_STRATEGY.md`](strategic/GOVERNED_REVENUE_AI_OPS_STRATEGY.md).
 
 | `service_id` | Name (AR / EN) | Price (SAR) | Cadence | Customer Journey Stage |
 |---|---|---|---|---|
-| `free_mini_diagnostic` | التشخيص المجاني / Free Mini Diagnostic | 0 | one_time | discovery |
-| `revenue_proof_sprint_499` | سبرنت إثبات الإيرادات / Revenue Proof Sprint | 499 | one_time | first_paid |
-| `data_to_revenue_pack_1500` | حزمة من البيانات إلى الإيراد / Data-to-Revenue Pack | 1,500 | one_time | expansion |
-| `growth_ops_monthly_2999` | عمليات النمو الشهرية / Growth Ops Monthly | 2,999 | per_month | monthly |
-| `support_os_addon_1500` | إضافة دعم العمليات / Support OS Add-on | 1,500 | per_month | support_addon |
-| `executive_command_center_7500` | غرفة قيادة الإدارة / Executive Command Center | 7,500 | per_month | executive |
-| `agency_partner_os` | منصة شركاء الوكالات / Agency Partner OS | custom | — | channel |
+| `governed_revenue_risk_score` | درجة مخاطرة الإيراد + حزمة إثبات عيّنة / Governed Revenue & AI Ops Risk Score + Sample Proof Pack | 0 | one_time | discovery |
+| `governed_revenue_diagnostic_7day` | التشخيص في 7 أيام / 7-Day Governed Revenue & AI Ops Diagnostic | 4,999 / 9,999 / 15,000 / 25,000 (4 tiers) | one_time | first_paid |
+| `revenue_intelligence_sprint` | سبرنت ذكاء الإيراد / Revenue Intelligence Sprint | 25,000+ (scoped) | one_time | execution |
+| `governed_ops_retainer` | احتفاظ العمليات المُحوكَمة / Governed Ops Retainer | 4,999–35,000 | per_month | monthly |
+| `adjacent_board_decision_memo` | مذكرة قرار المجلس / Board Decision Memo | scoped | on_request | expansion |
+| `adjacent_trust_pack_lite` | حزمة الحوكمة والثقة المختصرة / AI Governance · Trust Pack Lite | scoped | on_request | expansion |
+| `adjacent_data_readiness` | جاهزية البيانات والـ CRM للذكاء الاصطناعي / CRM·Data Readiness for AI | scoped | on_request | expansion |
 
-The registry is authoritative — any disagreement with this table means **the code, not the table, is wrong**. Run `python -c "from auto_client_acquisition.service_catalog.registry import OFFERINGS; print([o.id for o in OFFERINGS])"` to verify.
+The offer ladder doc is authoritative for names and prices — any disagreement means this map needs reconciliation against [`OFFER_LADDER_AND_PRICING.md`](OFFER_LADDER_AND_PRICING.md). The `service_id` values above are the intended identifiers for the registry; verify with `python -c "from auto_client_acquisition.service_catalog.registry import OFFERINGS; print([o.id for o in OFFERINGS])"`.
 
 السجل هو المرجع الرسمي — أي تعارض مع هذا الجدول يعني أن **الكود، وليس الجدول، هو الخطأ**.
 
@@ -28,7 +30,7 @@ The registry is authoritative — any disagreement with this table means **the c
 
 ## 2. Per-offer wiring — الربط لكل عرض
 
-### 2.1 `free_mini_diagnostic` — التشخيص المجاني
+### 2.1 `governed_revenue_risk_score` — درجة مخاطرة الإيراد (Rung 0, free)
 
 - **Public landing:** `landing/diagnostic.html`
 - **Intake endpoint:** `POST /api/v1/company-growth-beast/diagnostic` + `POST /api/v1/public/demo-request`
@@ -38,7 +40,7 @@ The registry is authoritative — any disagreement with this table means **the c
 - **Founder dashboard surface:** `landing/founder-leads.html` + `GET /api/v1/founder/dashboard`
 - **Non-negotiables enforced:** `no_live_send`, `no_live_charge`, `no_cold_whatsapp`, `no_scraping`, `no_fake_proof`
 
-### 2.2 `revenue_proof_sprint_499` — سبرنت إثبات الإيرادات
+### 2.2 `governed_revenue_diagnostic_7day` — التشخيص في 7 أيام (public entry, 4 tiers)
 
 - **Public landing:** `landing/start.html` (with `landing/sprint-sample.html` for live preview)
 - **Intake endpoint:** `POST /api/v1/service-setup/qualify` → `POST /api/v1/service-setup/proposal/{customer_id}`
@@ -48,7 +50,7 @@ The registry is authoritative — any disagreement with this table means **the c
 - **Founder dashboard surface:** `landing/founder-dashboard.html` + `GET /api/v1/founder/dashboard`
 - **Non-negotiables enforced:** all 7 hard_gates from `registry.py`
 
-### 2.3 `data_to_revenue_pack_1500` — حزمة من البيانات إلى الإيراد
+### 2.3 `revenue_intelligence_sprint` — سبرنت ذكاء الإيراد (25,000 SAR+, scoped)
 
 - **Public landing:** `landing/data-pack.html` (NEW) + `landing/services.html` card
 - **Intake endpoint:** CSV upload via `POST /api/v1/data-os/import-preview/upload` (live demo) → qualified via `POST /api/v1/service-setup/qualify`
@@ -58,7 +60,7 @@ The registry is authoritative — any disagreement with this table means **the c
 - **Founder dashboard surface:** founder reviews CSV uploads and approves cleaned output
 - **Non-negotiables enforced:** 6 hard_gates
 
-### 2.4 `growth_ops_monthly_2999` — عمليات النمو الشهرية
+### 2.4 `governed_ops_retainer` — احتفاظ العمليات المُحوكَمة (4,999–35,000 SAR/mo)
 
 - **Public landing:** `landing/pricing.html` (Growth card)
 - **Intake endpoint:** `POST /api/v1/service-setup/qualify` → proposal
@@ -68,31 +70,33 @@ The registry is authoritative — any disagreement with this table means **the c
 - **Founder dashboard surface:** `landing/customer-portal.html?handle={customer}` (Wave 14J wired)
 - **Non-negotiables enforced:** 8 hard_gates
 
-### 2.5 `support_os_addon_1500` — Support OS Add-on
+### 2.5 `adjacent_board_decision_memo` — مذكرة قرار المجلس
 
-- **Public landing:** `landing/services.html` (card 4)
-- **Intake endpoint:** same qualification flow as Growth Ops
-- **Checkout:** `landing/checkout.html?tier=support_addon`
-- **Delivery:** `auto_client_acquisition/support_os/` (existing module)
-- **Proof / report:** monthly value report
-- **Non-negotiables enforced:** 5 hard_gates
-
-### 2.6 `executive_command_center_7500` — غرفة قيادة الإدارة
-
-- **Public landing:** `landing/executive-command-center.html`
+- **Offered to:** retainer customers or on a specific request — scoped pricing.
 - **Intake endpoint:** founder-led; `POST /api/v1/service-setup/requests`
 - **Checkout:** founder-issued invoice (manual Moyasar link)
-- **Delivery:** `auto_client_acquisition/executive_command_center/` (existing module)
-- **Proof / report:** daily founder brief (WhatsApp) + monthly board pack
-- **Non-negotiables enforced:** 8 hard_gates
+- **Proof / report:** bilingual board-level decision memo for one expansion/investment decision
+- **Non-negotiables enforced:** all applicable hard_gates (no guaranteed outcomes, no fake proof)
 
-### 2.7 `agency_partner_os` — Agency Partner OS
+### 2.6 `adjacent_trust_pack_lite` — AI Governance / Trust Pack Lite
 
-- **Public landing:** `landing/agency-partner.html`
-- **Intake endpoint:** `POST /api/v1/public/partner-application`
-- **Referral program:** `auto_client_acquisition/partnership_os/referral_store` (5,000 SAR per closed deal; persistence landed in Wave 14D.1)
-- **Founder dashboard surface:** `landing/founder-leads.html` + referral dashboard
-- **Non-negotiables enforced:** 8 hard_gates + the Partner Covenant (`docs/40_partners/PARTNER_COVENANT.md`)
+- **Offered to:** customers who need governance evidence — scoped pricing.
+- **Intake endpoint:** founder-led; `POST /api/v1/service-setup/requests`
+- **Checkout:** founder-issued invoice (manual Moyasar link)
+- **Delivery:** `auto_client_acquisition/trust_os/trust_pack.py` (lite scope: approval gates, risk levels, audit trail)
+- **Proof / report:** condensed trust pack
+- **Non-negotiables enforced:** all applicable hard_gates
+
+### 2.7 `adjacent_data_readiness` — CRM/Data Readiness for AI
+
+- **Offered to:** customers with low data quality or before a Sprint — scoped pricing.
+- **Intake endpoint:** CSV upload via `POST /api/v1/data-os/import-preview/upload` → founder-led qualification
+- **Checkout:** founder-issued invoice (manual Moyasar link)
+- **Delivery:** `auto_client_acquisition/data_os/` (SourcePassport + preview + compute_dq)
+- **Proof / report:** data readiness assessment + DQ output
+- **Non-negotiables enforced:** all applicable hard_gates (`no_scraping`, `no_unconsented_data`)
+
+> Partner-led distribution remains a GTM engine (see `strategic/GOVERNED_REVENUE_AI_OPS_STRATEGY.md` section 9 and `docs/40_partners/PARTNER_COVENANT.md`) but is not a numbered offer on the ladder.
 
 ---
 
@@ -145,7 +149,7 @@ Each of these modules has its own bilingual README under `auto_client_acquisitio
 ## 5. The commercial-map endpoint — نقطة نهاية خريطة الربط
 
 ```
-GET /api/v1/commercial-map           → JSON list of 7 offers + URLs + endpoints
+GET /api/v1/commercial-map           → JSON list of ladder offers + URLs + endpoints
 GET /api/v1/commercial-map/markdown  → this document (always in sync with the registry)
 ```
 

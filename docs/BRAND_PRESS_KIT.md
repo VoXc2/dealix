@@ -29,14 +29,14 @@
 **EN:**
 > Sami [last name] is the founder and CEO of Dealix, the first Saudi-built AI Operating Team designed specifically for B2B SMBs in the Kingdom. Built Arabic-first and PDPL-compliant from the ground up, Dealix replaces the first three hires of a growing Saudi SMB — sales, growth, and customer support — with five AI agents that operate exclusively under founder approval, never sending external messages or executing transactions without explicit human consent.
 >
-> Dealix's product-engineering is feature-complete after six waves of disciplined development, with eight LIVE services in the registry, ~415 unit tests, and eight constitutional hard gates that prevent cold WhatsApp outreach, scraping, fake testimonials, and unauthorized payment processing. The first paid pilots are running in May 2026, with a 7-Day Revenue Proof Sprint at 499 SAR converting to a Managed Revenue Ops Partner tier at 12,000 SAR/month for founding partners.
+> Dealix's product-engineering is feature-complete after six waves of disciplined development, with the Governed Revenue & AI Ops offer ladder in the registry, ~415 unit tests, and eight constitutional hard gates that prevent cold WhatsApp outreach, scraping, fake testimonials, and unauthorized payment processing. The first paid pilots are running in May 2026, entering through a 7-Day Governed Revenue & AI Ops Diagnostic (from 4,999 SAR) and converting to a Governed Ops Retainer (4,999–35,000 SAR/month).
 >
 > Sami previously [founder fills: prior role / experience]. He holds [credentials / education]. He is based in [Riyadh / Jeddah], and Dealix is registered with [SDAIA registration pending May 2026].
 
 **AR:**
 > سامي [اسم العائلة] هو مؤسّس ورئيس Dealix — أوّل AI Operating Team سعودي مصمّم خصّيصاً للشركات الصغيرة والمتوسّطة في المملكة. مبنيّ بالعربيّة السعوديّة وبامتثال كامل لنظام حماية البيانات منذ اللحظة الأولى، Dealix يحلّ محلّ أوّل ٣ توظيفات في شركة سعوديّة ناشئة — المبيعات والنموّ والدعم — بـ ٥ وكلاء ذكاء اصطناعي يعملون حصراً بموافقة المؤسّس، ولا يرسلون رسائل خارجيّة أو يجرون أيّ معاملات بدون موافقة صريحة.
 >
-> منتج Dealix جاهز كاملاً بعد ٦ موجات تطوير منضبطة، مع ٨ خدمات LIVE في الـ registry، و ~٤١٥ unit test، و ٨ بوّابات أمان دستوريّة تمنع التواصل البارد على واتساب، scraping، الشهادات المزيّفة، والمعاملات المالية غير المُعتمدة. أوّل العملاء المدفوعين يبدؤون مايو ٢٠٢٦، مع 7-Day Revenue Proof Sprint بـ ٤٩٩ ريال يتحوّل إلى Managed Revenue Ops Partner بـ ١٢,٠٠٠ ريال شهريّاً للشركاء المؤسّسين.
+> منتج Dealix جاهز كاملاً بعد ٦ موجات تطوير منضبطة، مع سلم عروض الإيراد المُحوكَم وعمليات الذكاء الاصطناعي في الـ registry، و ~٤١٥ unit test، و ٨ بوّابات أمان دستوريّة تمنع التواصل البارد على واتساب، scraping، الشهادات المزيّفة، والمعاملات المالية غير المُعتمدة. أوّل العملاء المدفوعين يبدؤون مايو ٢٠٢٦، عبر 7-Day Governed Revenue & AI Ops Diagnostic (يبدأ من ٤٬٩٩٩ ريال) يتحوّل إلى Governed Ops Retainer (٤٬٩٩٩–٣٥٬٠٠٠ ريال شهريّاً).
 >
 > سامي قبل ذلك [يعبّيها المؤسّس: دور / خبرة سابقة]. حاصل على [مؤهّلات]. مقيم في [الرياض / جدّة]، و Dealix مسجّلة في [SDAIA مايو ٢٠٢٦].
 
@@ -52,10 +52,10 @@
 ### 50-word version
 
 **EN:**
-> Dealix replaces the first 3 hires of Saudi B2B SMBs with 5 AI agents — Sales, Growth, Support, Operations, Executive — operating under founder approval. Built Arabic-first, WhatsApp-aware, PDPL-compliant by design. Outcome-priced: 499 SAR Sprint → 12,000 SAR/month Partner. 8 hard gates immutable in code (no cold outreach, no live charge, no scraping).
+> Dealix is the GCC operating layer for Governed Revenue & AI Ops, serving Saudi B2B SMBs with AI agents that operate under founder approval. Built Arabic-first, WhatsApp-aware, PDPL-compliant by design. Ladder: free Risk Score → 7-Day Diagnostic (from 4,999 SAR) → Revenue Intelligence Sprint (25,000 SAR+) → Governed Ops Retainer (4,999–35,000 SAR/month). 8 hard gates immutable in code (no cold outreach, no live charge, no scraping).
 
 **AR:**
-> Dealix يحلّ محلّ أوّل ٣ توظيفات في شركة سعوديّة B2B بـ ٥ وكلاء AI — مبيعات، نموّ، دعم، عمليّات، تنفيذ — كلّها بموافقة المؤسّس. مبنيّ بالعربيّة السعوديّة، يتعامل بواتساب، وملتزم بـ PDPL منذ اللحظة الأولى. تسعير قائم على النتائج: ٤٩٩ ريال Sprint → ١٢,٠٠٠ ريال شهريّاً Partner. ٨ بوّابات أمان مفروضة في الكود (لا تواصل بارد، لا خصم حيّ، لا scraping).
+> Dealix هي طبقة التشغيل في الخليج للإيراد المُحوكَم وعمليات الذكاء الاصطناعي، تخدم الشركات السعوديّة B2B بوكلاء ذكاء اصطناعي يعملون بموافقة المؤسّس. مبنيّ بالعربيّة السعوديّة، يتعامل بواتساب، وملتزم بـ PDPL منذ اللحظة الأولى. السلم: Risk Score مجاني ← التشخيص في ٧ أيّام (يبدأ من ٤٬٩٩٩ ريال) ← Revenue Intelligence Sprint (٢٥٬٠٠٠ ريال+) ← Governed Ops Retainer (٤٬٩٩٩–٣٥٬٠٠٠ ريال شهريّاً). ٨ بوّابات أمان مفروضة في الكود (لا تواصل بارد، لا خصم حيّ، لا scraping).
 
 ### 200-word version
 
@@ -64,7 +64,7 @@
 >
 > Built around 8 constitutional hard gates encoded immutably in software (no cold outreach, no live charge, no scraping, no fake proof, no fake revenue, no LinkedIn automation, no unapproved testimonials, no blast), Dealix is positioned as the antidote to Western SaaS configurability — where compliance is a setting that can be turned off — by making PDPL-safety architecturally non-negotiable.
 >
-> Dealix offers two products: a 7-Day Revenue Proof Sprint at 499 SAR (one-time, fully refundable for 14 days) and a Managed Revenue Operations Partner tier at 12,000 SAR/month (4-month commitment with KPI commitment, not guarantee). The first three founding partners keep their pricing for life. Dealix is bootstrapped, founder-led, and operating without outside capital pending first paid pilots' commercial validation.
+> Dealix's offer ladder runs from a free Governed Revenue & AI Ops Risk Score, to a public 7-Day Governed Revenue & AI Ops Diagnostic (four tiers from 4,999 SAR), to a Revenue Intelligence Sprint (25,000 SAR+, scoped), to a Governed Ops Retainer (4,999–35,000 SAR/month, scoped) — with adjacent offers for board memos, AI governance, and data readiness. Dealix sells evidenced opportunities, not guaranteed outcomes. The first three founding partners keep their pricing for life. Dealix is bootstrapped, founder-led, and operating without outside capital pending first paid pilots' commercial validation. Canonical pricing: `docs/OFFER_LADDER_AND_PRICING.md`.
 
 **AR (200 words):** [founder personalizes — translate the EN version with sectoral examples relevant to the prospect's industry]
 

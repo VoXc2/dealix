@@ -6,16 +6,18 @@
 
 ## How do I start with Dealix?
 
-We begin with a free **Mini Diagnostic** — a bilingual report with
-3 opportunities + an Arabic draft message + a safe-channel
-recommendation + 1 risk to avoid. If it fits, we offer a 7-day
-Pilot for 499 SAR.
+We begin with a free **Governed Revenue & AI Ops Risk Score** — a
+risk score for your revenue and AI operations plus a sample proof
+pack. If it fits, we offer the **7-Day Governed Revenue & AI Ops
+Diagnostic** (from 4,999 SAR).
 
-## What's the difference between Diagnostic and Pilot?
+## What's the difference between the Risk Score and the Diagnostic?
 
-- **Diagnostic** is free, 30-minute read, recommendations only.
-- **Pilot** is 7 days, 499 SAR, includes 10 opportunities + draft
-  messages + follow-up plan + initial Proof Pack.
+- **Risk Score** is free — a risk score plus a sample proof pack.
+- **7-Day Diagnostic** runs 7 days across four tiers (Starter 4,999 ·
+  Standard 9,999 · Executive 15,000 · Enterprise 25,000 SAR) and
+  includes a workflow map + top 3 decisions + a proof pack. Prices:
+  `docs/OFFER_LADDER_AND_PRICING.md`.
 
 ## Do you contact my customers on my behalf?
 
@@ -33,15 +35,14 @@ send it manually.
 ## How do I connect Dealix to my existing system?
 
 Today Dealix reads but does not write to external systems. We send
-the setup guide after Pilot approval. HubSpot / Zoho / Moyasar
-read-only integrations available.
+the setup guide after the Diagnostic is approved. HubSpot / Zoho /
+Moyasar read-only integrations available.
 
 ## What if I'm not satisfied?
 
-Full refund within 7 days of Pilot delivery if delivery did NOT
-match the documented spec in
-`docs/registry/SERVICE_READINESS_MATRIX.yaml` (`growth_starter`
-bundle).
+Refund policy is documented in `docs/REFUND_SOP.md`. A refund
+applies if delivery did NOT match the documented spec for the
+offer.
 
 ## Do you retain my data?
 

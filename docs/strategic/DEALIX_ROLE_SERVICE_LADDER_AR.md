@@ -1,46 +1,45 @@
 # سلّم الأدوار التشغيلية ↔ خدمات Dealix
 
-**مصدر الحقيقة للعروض والأسعار:** [`auto_client_acquisition/service_catalog/registry.py`](../../auto_client_acquisition/service_catalog/registry.py) (`OFFERINGS` — ترتيب العرض = ترتيب الكتالوج).
+**مصدر الحقيقة للعروض والأسعار:** [`../OFFER_LADDER_AND_PRICING.md`](../OFFER_LADDER_AND_PRICING.md) و [`GOVERNED_REVENUE_AI_OPS_STRATEGY.md`](GOVERNED_REVENUE_AI_OPS_STRATEGY.md) — سلم الإيراد المُحوكَم وعمليات الذكاء الاصطناعي.
 
 **إطار المؤسسات:** طبقات A / B / C في [ENTERPRISE_OFFER_POSITIONING_AR.md](ENTERPRISE_OFFER_POSITIONING_AR.md).
 
-## معرّفات الخدمات السبع (IDs)
+## درجات سلّم الإيراد المُحوكَم وعمليات الذكاء الاصطناعي
 
-| `service_id` | اسم عربي (مختصر) | مرحلة الرحلة |
-|----------------|-------------------|----------------|
-| `free_mini_diagnostic` | التشخيص المجاني المختصر | discovery |
-| `revenue_proof_sprint_499` | سبرنت إثبات الإيرادات (٤٩٩ ر.س) | first_paid |
-| `data_to_revenue_pack_1500` | حزمة من البيانات إلى الإيراد | expansion |
-| `growth_ops_monthly_2999` | عمليات النمو الشهرية | monthly |
-| `support_os_addon_1500` | دعم Support OS | support_addon |
-| `executive_command_center_7500` | غرفة قيادة الإدارة | executive |
-| `agency_partner_os` | نظام الشريك الوكالة | channel |
+| الدرجة | الاسم | السعر | مرحلة الرحلة |
+|--------|-------|-------|----------------|
+| Rung 0 | Governed Revenue & AI Ops Risk Score + Sample Proof Pack | مجاني | discovery |
+| العرض العام | 7-Day Governed Revenue & AI Ops Diagnostic | 4,999 / 9,999 / 15,000 / 25,000 SAR (4 شرائح) | first_paid |
+| Sprint | Revenue Intelligence Sprint | 25,000 SAR+ | execution |
+| Retainer | Governed Ops Retainer | 4,999–35,000 SAR/شهر | monthly |
+| مجاور | Board Decision Memo · AI Governance / Trust Pack Lite · CRM/Data Readiness for AI | حسب النطاق | expansion |
 
 ## من يشتري ماذا؟ (أدوار المشتري)
 
 ### مالك تشغيل المبيعات / RevOps
 
-- **دخول:** `free_mini_diagnostic` → فهم التوافق والمخاطر بلا التزام مالي.
-- **أول إثبات مدفوع:** `revenue_proof_sprint_499` — Company Brain، فرص مرتّبة، Decision Passports، مسودات عربية، Proof Pack.
-- **تنظيف بيانات وتوسيع قمع:** `data_to_revenue_pack_1500`.
-- **إضافة شهرية:** غالباً `growth_ops_monthly_2999` (لوحات، موافقات يومية، مسودات، Proof مستمر).
+- **دخول:** Governed Revenue & AI Ops Risk Score المجاني → فهم التوافق والمخاطر بلا التزام مالي.
+- **أول إثبات مدفوع:** 7-Day Governed Revenue & AI Ops Diagnostic — خريطة سير العمل، فرص مرتّبة، خريطة حدود الموافقة، مسودات عربية، Proof Pack.
+- **تنفيذ مُحوكَم:** Revenue Intelligence Sprint بعد التشخيص.
+- **استمرارية شهرية:** Governed Ops Retainer (إيقاع شهري: قرارات مُجهَّزة، موافقات، حزمة إثبات، تقرير KPIs).
 
 **طبقات A/B/C:** A أقوى؛ B يتفعّل مع التسليم وProof؛ C عبر `hard_gates` وموافقات على كل قناة.
 
 ### مدير النمو / رئيس قسم GTM
 
-- **قلب الرитم:** `growth_ops_monthly_2999` — تدقيقات أسبوعية، Lead Board، طابور موافقات، Proof Events، ملخص تنفيذي شهري، توصية توسعة.
-- **تكثيف البيانات:** `data_to_revenue_pack_1500` عند استيراد أو فوضى مصادر.
-- **دعم ما بعد البيع (اختياري):** `support_os_addon_1500` — تصنيف تذاكر، ردود مقترحة (مسودة فقط)، صحة عميل.
+- **قلب الإيقاع:** Governed Ops Retainer — تدقيقات أسبوعية، Lead Board، طابور موافقات، Proof Events، ملخص تنفيذي شهري، توصية توسعة.
+- **جاهزية البيانات:** CRM/Data Readiness for AI عند استيراد أو فوضى مصادر.
+- **حوكمة وثقة (اختياري):** AI Governance / Trust Pack Lite — بوابات موافقة، مستويات مخاطرة، سجل تدقيق.
 
 **ربط تقني:** إشارات وتطبيع عبر `revenue_os` وواجهات `/api/v1/revenue-os/*` كما في [DEALIX_MASTER_OPERATING_MODEL_AR.md](DEALIX_MASTER_OPERATING_MODEL_AR.md).
 
 ### الإدارة التنفيذية / لجنة القرار (CEO والمكافئ)
 
-- **`executive_command_center_7500`** — موجز يومي (واتساب حسب التصميم)، تدقيق أسبوعي، board pack شهري، لوحات Radar / Pipeline / Growth / Support / Delivery / Payment / Proof Ledger، سجل مخاطر، خطة ٧ أيام.
-- **KPI مذكور في السجل:** توفير وقت قرار تنفيذي (تقديري، مع التزام تعاقدي كما في `registry`).
+- **Executive Diagnostic ثم Governed Ops Retainer (الشريحة العليا)** — تشخيص تنفيذي، خريطة حدود الموافقة، مذكرة قرار، board pack شهري، لوحات Radar / Pipeline / Delivery / Proof Ledger، سجل مخاطر، خطة ٧ أيام.
+- **عرض مجاور:** Board Decision Memo عند قرار توسّع/استثمار كبير.
+- **KPI مذكور في العرض:** توفير وقت قرار تنفيذي (تقديري، لا ضمان).
 
-**لا يُ sold كـ «استبدال CEO»:** الصياغة الصحيحة — **مشغّل إيرادات وقرار معتمد** ضمن حدود المنتج والعقد.
+**لا يُباع كـ «استبدال CEO»:** الصياغة الصحيحة — **مشغّل إيرادات وقرار معتمد** ضمن حدود المنتج والعقد.
 
 ### شركاء وكلاء / قنوات
 

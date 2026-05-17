@@ -1,4 +1,4 @@
-# Dealix — Pilot Delivery SOP: 7-Day Revenue Proof Sprint
+# Dealix — Pilot Delivery SOP: 7-Day Governed Revenue & AI Ops Diagnostic
 <!-- PHASE 5 | Owner: Founder | Date: 2026-05-07 -->
 <!-- Arabic primary | NO_LIVE_SEND | draft_only -->
 
@@ -10,7 +10,7 @@
 
 | البند | الوضع | المالك |
 |-------|-------|--------|
-| تم تحصيل 499 SAR (bank transfer أو Moyasar) | مطلوب | مؤسس |
+| تم تحصيل قيمة الشريحة (Starter 4,999 وما فوق — انظر `docs/OFFER_LADDER_AND_PRICING.md`) bank transfer أو Moyasar | مطلوب | مؤسس |
 | تم إرسال DPA للعميل وتوقيعه | مطلوب | مؤسس |
 | تم استلام بيانات onboarding (pipeline / ICP / قائمة عملاء) | مطلوب | مؤسس |
 | تم إعطاء العميل reference code DLX-XXXX | مطلوب | النظام |
@@ -141,7 +141,7 @@
 
 **المخرجات:**
 - [ ] تسليم Proof Pack رسمياً (اجتماع 30 دقيقة)
-- [ ] عرض خطة 30 يوم (Managed Ops 2,999 SAR)
+- [ ] عرض الخطوة التالية: Revenue Intelligence Sprint (25,000 SAR+، حسب النطاق)
 - [ ] طلب رأي/تقييم مكتوب (بموافقة للنشر إن وُجدت)
 - [ ] قرار التجديد: تحويل → اشتراك شهري أو إنهاء محترم
 
@@ -218,7 +218,7 @@ DPA:             موقّع قبل Day 1
 | Day 7 | 1.5 ساعة | 15 دقيقة |
 | **الإجمالي** | **~9 ساعات** | **~3.5 ساعات** |
 
-**الهامش الإجمالي على 499 SAR:** ~85% (تكلفة < 75 SAR)
+**الهامش الإجمالي على شريحة Starter 4,999 SAR:** ~98%+ (تكلفة < 100 SAR)
 
 ---
 

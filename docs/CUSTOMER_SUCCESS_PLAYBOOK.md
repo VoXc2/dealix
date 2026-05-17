@@ -108,20 +108,21 @@ Dealix Weekly Executive Brief
 - [ ] رد على 80%+ من المسودات
 - [ ] طلب تقارير إضافية
 - [ ] شارك Proof Pack مع أشخاص آخرين
-- [ ] سأل عن مستوى Managed Ops
+- [ ] سأل عن Governed Ops Retainer
 
 ---
 
 ## 5. إشارات Upsell / Downgrade
 
 ### إشارات Upsell (اعرض الخطوة التالية)
-- "هل يمكن تغطية قطاع آخر؟" → عرض Data-to-Revenue Pack
-- "نريد هذا بشكل شهري" → عرض Managed Revenue Ops
-- "أريد تقارير يومية" → عرض Executive Command Center
-- طلب تدريب فريق → عرض حزمة team onboarding (مخصص)
+- "نريد تنفيذ القرارات بدليل" → عرض Revenue Intelligence Sprint
+- "نريد هذا بإيقاع شهري" → عرض Governed Ops Retainer
+- "نحتاج مذكرة قرار لمجلس الإدارة" → عرض Board Decision Memo
+- "نحتاج إثبات حوكمة" → عرض AI Governance / Trust Pack Lite
+- "بياناتنا غير جاهزة للذكاء الاصطناعي" → عرض CRM/Data Readiness for AI
 
 ### إشارات Downgrade (تعامل مع توقع)
-- "الميزانية ضاقت هذا الربع" → عرض Sprint بدلاً من Managed Ops
+- "الميزانية ضاقت هذا الربع" → عرض شريحة تشخيص أقل بدلاً من Retainer
 - "لا أحتاج هذا الشهر" → اعرض pause (إذا كان مناسباً)
 - "يحتاج فريق أكبر" → أجّل حتى يكون جاهزاً
 

@@ -1,28 +1,27 @@
 # Pricing & Packaging v6 — التسعير والباقات
 
-> **Hard rule:** This doc does NOT change live pricing in code.
-> The current `auto_client_acquisition.finance_os.pricing_catalog`
-> stays the source of truth. This doc is the **founder's reference**
-> for when + why + how to change it later.
+> **SUPERSEDED — 2026-05-17.** The Governed Revenue & AI Ops ladder (Decision Ledger D-003)
+> is now canonical. For current offers and prices, see
+> [`OFFER_LADDER_AND_PRICING.md`](OFFER_LADDER_AND_PRICING.md) and
+> [`strategic/GOVERNED_REVENUE_AI_OPS_STRATEGY.md`](strategic/GOVERNED_REVENUE_AI_OPS_STRATEGY.md).
+> The "When to flip pricing" process below remains useful as a price-governance reference.
 
-**Date:** 2026-05-05
+**Date:** 2026-05-05 (original) · superseded 2026-05-17
 **Owner:** Founder (Decision Pack §S1 covers the formal flip)
-**Hard invariant:** Pilot price 499 SAR locked until customer #5.
 
 ---
 
-## Today (locked)
+## Current ladder — Governed Revenue & AI Ops
 
-| Tier | Price | Pricing basis | Why this tier exists |
+Canonical source: [`OFFER_LADDER_AND_PRICING.md`](OFFER_LADDER_AND_PRICING.md).
+
+| Rung | Offer | Price | Why this rung exists |
 |---|---|---|---|
-| **Free Growth Diagnostic** | 0 SAR | free | Door-opener; 30-min session; 3 actionable recommendations. |
-| **Growth Starter Pilot** | 499 SAR | one-shot | First proof. 7 days. 10 opportunities. Arabic drafts. Proof Pack. |
-| **Data to Revenue** | 1,500–3,000 SAR | project | For prospects with existing list/CRM/pipeline data. |
-| **Executive Growth OS** | 2,999 SAR/month | recurring | Daily brief + weekly report + role briefs + proof ledger. |
-| **Partnership Growth** | 3,000–7,500 SAR | project | Sell-through-partners motion. |
-
-**Note:** "Full Growth Control Tower" is custom-only — no public price.
-Internal foundations (consent registry, etc.) are not customer-facing.
+| 0 | **Governed Revenue & AI Ops Risk Score + Sample Proof Pack** | 0 SAR | Door-opener; risk score + sample proof pack. |
+| Entry | **7-Day Governed Revenue & AI Ops Diagnostic** | 4,999 / 9,999 / 15,000 / 25,000 SAR (4 tiers) | Evidenced diagnosis: workflow map, top 3 decisions, proof pack. |
+| Sprint | **Revenue Intelligence Sprint** | 25,000 SAR+ (scoped) | Governed execution of the top decisions. |
+| Retainer | **Governed Ops Retainer** | 4,999–35,000 SAR/month (scoped) | Monthly governed decision rhythm + proof. |
+| Adjacent | **Board Decision Memo · AI Governance / Trust Pack Lite · CRM/Data Readiness for AI** | scoped | Specific board, governance, or data-readiness needs. |
 
 ---
 

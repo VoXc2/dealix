@@ -14,8 +14,9 @@
 
 ## 3. معدل التحويل على سلّم الخدمات
 
-- **التعريف:** نسبة الانتقال `free_mini_diagnostic` → `revenue_proof_sprint_499` → `growth_ops_monthly_2999` → `executive_command_center_7500`.
+- **التعريف:** نسبة الانتقال على سلّم الإيراد المُحوكَم وعمليات الذكاء الاصطناعي: Risk Score المجاني → 7-Day Governed Revenue & AI Ops Diagnostic → Revenue Intelligence Sprint → Governed Ops Retainer.
 - **المصدر المستهدف:** CRM/فواتير/تكامل دفع — عند توفرها.
+- **مرجع السلم:** [docs/OFFER_LADDER_AND_PRICING.md](../OFFER_LADDER_AND_PRICING.md).
 
 ## 4. Degraded portal rate
 

@@ -18,11 +18,11 @@ Warm intros sent           100%              5              15
 Replied (within 48h)       60%               3              9
 Diagnostic call booked     50% of replies    1-2            4-5
 Diagnostic completed       80% of booked     1              3-4
-Sprint signed (499 SAR)    40% of completed  0-1            1-2 paid
-Partner upsell (12K/mo)    80% of Sprint     0              1
+Diagnostic signed          40% of completed  0-1            1-2 paid
+Sprint / Retainer upsell   80% of Diagnostic 0              1
 ```
 
-**Interpretation:** 15 warm intros → 9 replies → 4-5 diagnostics → 3-4 completed → 1-2 paid Sprints → 1 Partner. This is the math behind §23.4 calendar.
+**Interpretation:** 15 warm intros → 9 replies → 4-5 diagnostic calls → 3-4 completed → 1-2 paid 7-Day Diagnostics → 1 Sprint/Retainer upsell. This is the math behind §23.4 calendar. Pricing: `docs/OFFER_LADDER_AND_PRICING.md`.
 
 If conversion drops below the target rate at any stage, **fix that stage before sending more leads**. More volume on a leaky funnel = more burnout, no revenue.
 
@@ -38,7 +38,7 @@ Pick warm intros that match **all** of these:
 - ✅ Has a CRM/Excel/Sheet of leads, even if messy
 - ✅ Knows the founder personally OR has 1 mutual contact (NOT cold)
 - ✅ Decision-maker is on the call (no "let me ask my partner" block)
-- ✅ Can pay 499 SAR same week (not "let me wait for next quarter")
+- ✅ Can pay the 7-Day Diagnostic fee (Starter from 4,999 SAR) within the month (not "let me wait for next quarter")
 
 **Disqualifiers (decline politely):**
 
@@ -73,9 +73,9 @@ Use these in the 30-min diagnostic call (free). Take notes verbatim — these go
 2. **«كيف تتابع leads واتساب اليوم؟ كم وقت تأخذ متابعة كل lead؟»** — surfaces operational burn
 3. **«وش أحدث صفقة كبيرة فقدتها؟ ليش؟»** — surfaces measurable opportunity cost
 4. **«هل عندك ICP محدّد ولا نشتغل عليه أوّل ١٤ يوم؟»** — surfaces readiness
-5. **«٤٩٩ ريال خلال ٧ أيّام يناسبك للـ Sprint؟»** — surfaces buying capacity (LITMUS)
+5. **«التشخيص في ٧ أيّام يبدأ من ٤٬٩٩٩ ريال (شريحة Starter) — يناسبك؟»** — surfaces buying capacity (LITMUS)
 
-If question 5 → "نحتاج نراجع المالية" or "ممكن بعدين" → not Sprint-ready. Park for follow-up in 30 days.
+If question 5 → "نحتاج نراجع المالية" or "ممكن بعدين" → not Diagnostic-ready. Park for follow-up in 30 days.
 
 ---
 
@@ -91,8 +91,8 @@ Use `docs/WAVE6_REAL_DEMO_RUNBOOK_AR_EN.md` verbatim. Time-boxed:
 7:00–9:00   Support journey + guardrails
 9:00–11:00  Customer Portal (their future view)
 11:00–13:00 Proof Path (no fake testimonials shown)
-13:00–14:00 499 SAR Sprint offer
-14:00–15:00 Q&A + close (or "I'll send Sprint Brief in 1 hour")
+13:00–14:00 7-Day Governed Revenue & AI Ops Diagnostic offer (Starter from 4,999 SAR)
+14:00–15:00 Q&A + close (or "I'll send the Diagnostic Brief in 1 hour")
 ```
 
 **The single sentence to memorize:**
@@ -136,13 +136,13 @@ Log writes to gitignored `docs/wave6/live/demo_outcomes.jsonl` (PII auto-redacte
 
 ## 8. Pricing pin — first 3 customers only
 
-Per Wave 7 §23.4 + `docs/V14_TURNKEY_PACKAGE.md`:
+Canonical ladder: `docs/OFFER_LADDER_AND_PRICING.md` (Governed Revenue & AI Ops).
 
-- **Sprint price after Day 30 of customer #3 paying:** rises from 5,000 → 7,500 SAR
-- **Partner price after Day 30 of customer #3 paying:** rises from 12,000 → 15,000 SAR/month
-- **First 3 = founding partners:** keep original pricing for life
+- **Public entry:** 7-Day Governed Revenue & AI Ops Diagnostic — Starter 4,999 / Standard 9,999 / Executive 15,000 / Enterprise 25,000 SAR.
+- **First 3 = founding partners:** keep their original tier pricing for life.
+- Any future price change is a logged founder decision (see Decision Ledger).
 
-Mention this DURING the close — it's a real anchor, not a fake discount.
+Mention founding-partner pricing DURING the close — it's a real anchor, not a fake discount.
 
 ---
 

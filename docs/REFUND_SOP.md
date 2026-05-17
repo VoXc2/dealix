@@ -9,21 +9,29 @@
 
 ---
 
-## 1. Refund commitments by SKU
+## 1. Refund commitments by offer
 
-### Sprint (499 SAR · 14 days)
+Offer ladder and prices: `docs/OFFER_LADDER_AND_PRICING.md` (Governed Revenue & AI Ops).
+
+### 7-Day Governed Revenue & AI Ops Diagnostic (4,999 / 9,999 / 15,000 / 25,000 SAR)
 
 - **Window:** 14 calendar days from `payment_confirmed` state
-- **Coverage:** 100% refund, no questions asked
+- **Coverage:** 100% refund if delivery did not match the documented spec
 - **Mechanism:** same channel as payment (bank transfer ↔ bank transfer; Moyasar card ↔ Moyasar reverse)
 - **Turnaround:** 3-5 business days bank transfer · 2 business days Moyasar live
 - **Ledger entry:** `dealix_payment_confirmation_stub.py --action refund --evidence-note "..."`
 
-### Partner (12,000 SAR/month · 4-month commitment)
+### Revenue Intelligence Sprint (25,000 SAR+, scoped)
 
-- **Window:** any time during the 4-month commitment if KPI commitment unmet
-- **Coverage:** pro-rata refund of unused months IF +20% lift on agreed KPI not achieved (per `docs/WAVE6_PILOT_TO_MONTHLY_UPSELL_AR_EN.md` §2D)
-- **Alternative remedy:** founder works free until KPI achieved (this is the COMMITMENT, not refund)
+- **Window:** per the signed scope of work
+- **Coverage:** refund applies if delivery did not match the agreed scope; no guaranteed outcomes — Dealix delivers evidenced opportunities and a proof pack
+- **Mechanism:** refunded via original payment channel
+
+### Governed Ops Retainer (4,999–35,000 SAR/month, scoped)
+
+- **Window:** any month, on 30-day notice
+- **Coverage:** pro-rata refund of unused months absent Dealix fault
+- **Note:** no guaranteed revenue or KPI outcomes — the retainer delivers a monthly governed decision rhythm plus a proof pack
 - **Mechanism:** prorated by completed days, refunded via original payment channel
 - **Turnaround:** 5-7 business days
 
@@ -33,19 +41,19 @@
 
 ### Automatic eligibility (no founder discretion needed)
 
-- Sprint customer requests refund within 14 days
-- Partner customer's KPI commitment unmet at end of month 1, 2, or 3 review
+- Diagnostic customer requests refund within 14 days where delivery did not match spec
+- Retainer customer cancels on 30-day notice (pro-rata for unused months)
 
 ### Founder-discretion eligibility
 
-- Sprint customer requests refund after Day 14 with a real complaint (rare; default is no, but log + escalate)
-- Partner customer wants to exit before end of 4-month commitment (default is pro-rata for unused months minus 1-month commitment fee)
+- Diagnostic customer requests refund after Day 14 with a real complaint (rare; default is no, but log + escalate)
+- Retainer customer wants to exit mid-month (default is pro-rata for unused days)
 - Customer reports a service breakdown that wasn't fixed within 24h SLA
 
 ### Not eligible
 
-- Customer "changed mind" after Day 14 of Sprint without service issue
-- Customer wants to "try" Partner without commitment (Partner = 4-month minimum)
+- Customer "changed mind" after Day 14 of the Diagnostic without a service issue
+- Customer demands a guaranteed revenue or KPI outcome (Dealix sells evidenced opportunities, not guarantees)
 - Customer demands Dealix automate something blocked by hard gates (NO_LIVE_SEND, NO_COLD_WHATSAPP, etc.) — refund not applicable; explain gates
 
 ---
@@ -61,8 +69,8 @@
 **Step 2 — verify eligibility (within 24 hours)**
 - Open `docs/wave6/live/payment_state.json` for that customer
 - Check: payment_confirmed date · days elapsed · SKU type
-- Determine: Sprint within 14 days? → AUTO-APPROVE
-- Partner KPI commitment unmet? → check KPI evidence in `proof_ledger`
+- Determine: Diagnostic within 14 days with spec mismatch? → AUTO-APPROVE
+- Retainer cancellation on notice? → compute pro-rata for unused days
 - Founder discretion? → write decision + reason in `docs/wave6/live/refund_log.jsonl` (gitignored)
 
 **Step 3 — execute refund (within 24-72 hours of approval)**
@@ -119,13 +127,13 @@ Same gitignore protection as other live data.
 
 ## 5. Communication templates (Saudi Arabic)
 
-### When Sprint customer requests refund within 14 days
+### When a Diagnostic customer requests a refund within 14 days
 
 > «شكراً على تواصلك [الاسم]. استلمت الطلب.
-> سأحوّل لك مبلغ ٤٩٩ ريال خلال ٣ أيام عمل بأمر الله.
+> سأحوّل لك المبلغ المدفوع لشريحة التشخيص خلال ٣ أيام عمل بأمر الله.
 > هل تفضّل التحويل على نفس الـ IBAN اللي حوّلت منه أوّل مرّة، أو IBAN ثاني؟»
 
-### When Partner customer wants to exit at month 2
+### When a Retainer customer wants to exit
 
 > «وصلتني الرسالة [الاسم]. أقدّر صراحتك.
 > أتحرّك على الفور:
@@ -147,14 +155,14 @@ Same gitignore protection as other live data.
 
 In monthly Friday review (per `SALES_OPS_SOP.md` §10):
 
-- Refund count by SKU
+- Refund count by offer
 - Refund rate as % of paid customers
 - Days-to-refund average
 - Top reason (categorize: ICP-mismatch · expectations-mismatch · service-breakdown · other)
 
 **Healthy targets:**
-- Sprint refund rate: <10% (if higher → ICP problem)
-- Partner refund rate: <5% (if higher → onboarding/CS problem)
+- Diagnostic refund rate: <10% (if higher → ICP problem)
+- Retainer refund rate: <5% (if higher → onboarding/CS problem)
 - Days-to-refund: <5 average
 
 **Warning signs:**

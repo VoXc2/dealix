@@ -1,25 +1,23 @@
-# كتاب تشغيل GTM — سلّم الخدمات السبع
+# كتاب تشغيل GTM — سلّم الإيراد المُحوكَم وعمليات الذكاء الاصطناعي
 
-**الغرض:** مسار مبيعات وتشغيل موحّد لكل `service_id` في [service_catalog/registry.py](../../auto_client_acquisition/service_catalog/registry.py).  
+**الغرض:** مسار مبيعات وتشغيل موحّد لكل درجة في سلم الإيراد المُحوكَم وعمليات الذكاء الاصطناعي.  
 **مرجع الأدوار:** [DEALIX_ROLE_SERVICE_LADDER_AR.md](DEALIX_ROLE_SERVICE_LADDER_AR.md).
 
 ## مبادئ
 
-- المصدر الوحيد للأسعار والالتزامات: `GET /api/v1/services/catalog`.
+- المصدر الوحيد للأسعار والالتزامات: [`../OFFER_LADDER_AND_PRICING.md`](../OFFER_LADDER_AND_PRICING.md) و [`GOVERNED_REVENUE_AI_OPS_STRATEGY.md`](GOVERNED_REVENUE_AI_OPS_STRATEGY.md).
 - لا إرسال خارجي بلا موافقة — الحوكمة في المنتج وليس في «وعد البائع».
 - كل عميل مدفوع يمر بقالب: [ENTERPRISE_PILOT_TEMPLATE_AR.md](ENTERPRISE_PILOT_TEMPLATE_AR.md).
 
-## مسار لكل عرض (مختصر تشغيلي)
+## مسار لكل درجة (مختصر تشغيلي)
 
-| service_id | لمسة أولى | جلسة اكتشاف | التزام التسليم | مؤشر نجاح أسبوعي |
-|------------|-----------|-------------|----------------|------------------|
-| `free_mini_diagnostic` | نموذج 24 ساعة | — | صفحة + جواز قرار أولي | اكتمال النموذج |
-| `revenue_proof_sprint_499` | دفع + Kickoff | أهداف 7 أيام | 7 مخرجات سبرنت | ≥10 فرص |
-| `data_to_revenue_pack_1500` | تدقيق الملف | خريطة مصادر | تنظيف + تقرير مخاطر | ≥20 فرصة معتمدة |
-| `growth_ops_monthly_2999` | اجتماع أسبوعي ثابت | لوحة موافقات | مسودات + Proof | تحسين معدل رد (KPI في registry) |
-| `support_os_addon_1500` | ربط قناة دعم | تصنيف تذاكر | SLA + مسودات | زمن أول رد |
-| `executive_command_center_7500` | موجز يومي | لجنة قرار | board pack + مخاطر | توفير وقت قرار (KPI في registry) |
-| `agency_partner_os` | اتفاقية شريك | تدريب Co-brand | عمولة + Proof لكل عميل | إحالة مدفوعة |
+| الدرجة | لمسة أولى | جلسة اكتشاف | التزام التسليم | مؤشر نجاح أسبوعي |
+|--------|-----------|-------------|----------------|------------------|
+| Risk Score المجاني (Rung 0) | نموذج 15 دقيقة | — | درجة مخاطرة + حزمة إثبات عيّنة | اكتمال النموذج |
+| 7-Day Governed Revenue & AI Ops Diagnostic | دفع + Kickoff | أهداف 7 أيام | خريطة سير عمل + أعلى 3 قرارات + Proof Pack | حزمة إثبات مكتملة |
+| Revenue Intelligence Sprint | عرض حسب النطاق | تأكيد القرارات | تنفيذ سير العمل + Proof Pack كامل | فرص مُثبتة بأدلة |
+| Governed Ops Retainer | اجتماع شهري ثابت | لوحة موافقات | إيقاع شهري + Proof + تقرير KPIs | استمرار الاحتفاظ |
+| العروض المجاورة (Board Memo · Trust Pack Lite · Data Readiness) | طلب محدد | تحديد النطاق | مخرج العرض حسب النطاق | تسليم مقبول من العميل |
 
 ## شركاء الوكالة
 
