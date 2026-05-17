@@ -103,3 +103,34 @@ def test_sprint_offer_links_to_sample_preview():
     sprint = next(o for o in body["offers"] if o["service_id"] == "revenue_proof_sprint_499")
     assert sprint["wiring"]["sample_endpoint"] == "GET /api/v1/sprint/sample"
     assert sprint["wiring"]["preview_url"] == "/sprint-sample.html"
+
+
+def test_offer_notes_reflect_governed_revenue_ladder():
+    """Notes describe the Governed Revenue & AI Ops ladder (Rung 0 → Retainer)."""
+    body = client.get("/api/v1/commercial-map").json()
+    notes_by_id = {o["service_id"]: o["notes"] for o in body["offers"]}
+
+    free = notes_by_id["free_mini_diagnostic"]
+    assert "Rung 0" in free
+    assert "Risk Score" in free
+    assert "Sample Proof Pack" in free
+
+    sprint = notes_by_id["revenue_proof_sprint_499"]
+    assert "7-Day Governed Revenue & AI Ops Diagnostic" in sprint
+    for tier in ("4,999", "9,999", "15,000", "25,000"):
+        assert tier in sprint
+    assert "Revenue Intelligence Sprint" in sprint
+
+    retainer = notes_by_id["growth_ops_monthly_2999"]
+    assert "Governed Ops Retainer" in retainer
+    assert "4,999" in retainer
+    assert "35,000" in retainer
+
+
+def test_every_offer_keeps_non_negotiables_after_ladder_update():
+    """The ladder narrative update must not strip any offer's hard gates."""
+    body = client.get("/api/v1/commercial-map").json()
+    for offer in body["offers"]:
+        assert offer["non_negotiables_enforced"], (
+            f"{offer['service_id']} lost non_negotiables_enforced"
+        )

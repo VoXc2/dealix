@@ -27,6 +27,9 @@ from auto_client_acquisition.diagnostic_engine import (
     generate_diagnostic,
     list_supported_sectors,
 )
+from auto_client_acquisition.diagnostic_engine.diagnostic_store import (
+    get_default_diagnostic_store,
+)
 
 router = APIRouter(prefix="/api/v1/diagnostic", tags=["diagnostic"])
 
@@ -213,3 +216,71 @@ async def diagnostic_intent(body: DiagnosticIntentBody) -> dict[str, Any]:
             "evidence_reference_required_for_confirm": True,
         },
     }
+
+
+# ── Diagnostics store ──────────────────────────────────────────────
+
+
+class DiagnosticStoreBody(BaseModel):
+    """Inbound body for persisting one diagnostic run."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    subject_type: str = Field(..., min_length=1)
+    subject_id: str = Field(..., min_length=1)
+    diagnostic_type: str = Field(..., min_length=1)
+    findings: dict[str, Any] = Field(default_factory=dict)
+    score: float = Field(default=0.0, ge=0.0, le=100.0)
+    severity: str = "low"
+    recommendations: list[Any] = Field(default_factory=list)
+    run_by: str = ""
+    tenant_id: str | None = None
+
+
+@router.post("/store")
+async def store_diagnostic(body: DiagnosticStoreBody) -> dict[str, Any]:
+    """Persist one diagnostic run. ``findings`` is PII-redacted before insert."""
+    row = get_default_diagnostic_store().add(
+        subject_type=body.subject_type,
+        subject_id=body.subject_id,
+        diagnostic_type=body.diagnostic_type,
+        findings=body.findings,
+        score=body.score,
+        severity=body.severity,
+        recommendations=body.recommendations,
+        run_by=body.run_by,
+        tenant_id=body.tenant_id,
+    )
+    return {"diagnostic": row, "governance_decision": GovernanceDecision.ALLOW.value}
+
+
+@router.get("/store")
+async def list_diagnostics(
+    tenant_id: str | None = None,
+    subject_type: str | None = None,
+    subject_id: str | None = None,
+    diagnostic_type: str | None = None,
+    limit: int = 200,
+) -> dict[str, Any]:
+    """List persisted diagnostic runs, newest first."""
+    rows = get_default_diagnostic_store().list(
+        tenant_id=tenant_id,
+        subject_type=subject_type,
+        subject_id=subject_id,
+        diagnostic_type=diagnostic_type,
+        limit=max(1, min(int(limit), 1000)),
+    )
+    return {
+        "count": len(rows),
+        "diagnostics": rows,
+        "governance_decision": GovernanceDecision.ALLOW.value,
+    }
+
+
+@router.get("/store/{diagnostic_id}")
+async def get_diagnostic(diagnostic_id: str) -> dict[str, Any]:
+    """Fetch one persisted diagnostic run by id."""
+    row = get_default_diagnostic_store().get(diagnostic_id)
+    if row is None:
+        raise HTTPException(status_code=404, detail=f"diagnostic {diagnostic_id!r} not found")
+    return {"diagnostic": row, "governance_decision": GovernanceDecision.ALLOW.value}

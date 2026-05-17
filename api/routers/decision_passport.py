@@ -16,7 +16,9 @@ from fastapi import APIRouter, HTTPException, Query
 
 from auto_client_acquisition.decision_passport import (
     DecisionPassport,
+    PassportPersistenceError,
     ValidationFailure,
+    get_default_passport_store,
     validate_passport,
 )
 from auto_client_acquisition.proof_engine.evidence import (
@@ -136,4 +138,56 @@ async def create_passport(
         ) from exc
     body = passport.model_dump(mode="json")
     body["validated"] = True
+    return body
+
+
+# ── Governed Revenue — append-only passport store ─────────────────
+
+
+@router.post("/store")
+async def store_passport(
+    passport: DecisionPassport,
+    tenant_id: str | None = Query(default=None, description="Optional tenant scope."),
+) -> dict[str, Any]:
+    """Validate + persist a Decision Passport into the append-only store.
+
+    The store re-runs ``validate_passport()`` and requires an explicit
+    ``source`` + ``approval``. Append-only — there is no update/delete.
+    """
+    try:
+        passport_id = get_default_passport_store().add(passport, tenant_id=tenant_id)
+    except PassportPersistenceError as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
+    return {
+        "stored": True,
+        "passport_id": passport_id,
+        "governance_decision": "allow",
+    }
+
+
+@router.get("/store")
+async def list_stored_passports(
+    tenant_id: str | None = Query(default=None),
+    lead_id: str | None = Query(default=None),
+    limit: int = Query(default=200, ge=1, le=1000),
+) -> dict[str, Any]:
+    """List stored Decision Passports, newest first."""
+    rows = get_default_passport_store().list(
+        tenant_id=tenant_id, lead_id=lead_id, limit=limit
+    )
+    return {
+        "count": len(rows),
+        "passports": [r.model_dump(mode="json") for r in rows],
+        "governance_decision": "allow",
+    }
+
+
+@router.get("/store/{passport_id}")
+async def get_stored_passport(passport_id: str) -> dict[str, Any]:
+    """Fetch one stored Decision Passport by id."""
+    passport = get_default_passport_store().get(passport_id)
+    if passport is None:
+        raise HTTPException(status_code=404, detail=f"passport {passport_id!r} not found")
+    body = passport.model_dump(mode="json")
+    body["governance_decision"] = "allow"
     return body

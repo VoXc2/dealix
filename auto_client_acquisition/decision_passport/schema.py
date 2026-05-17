@@ -61,10 +61,23 @@ class ScoreBoard(BaseModel):
     deliverability_risk_score: float = Field(ge=0.0, le=1.0, description="Email/channel readiness risk")
 
 
+class PassportApproval(BaseModel):
+    """Explicit approval record attached to a Decision Passport.
+
+    Governed Revenue: a passport carries who approved it and when —
+    no source-less, no approval-less passports reach the store.
+    """
+
+    approver: str = Field(..., min_length=1)
+    approved_at: datetime
+
+
 class DecisionPassport(BaseModel):
     """جواز القرار — قرار تجاري واحد لكل lead.
 
     Schema v1.1 (Wave 12 §32.3.4): adds owner / deadline / action_mode.
+    Governed Revenue extension: adds explicit source / approval /
+    evidence_event_ids / measurable_impact.
     """
 
     schema_version: str = "1.1"
@@ -95,6 +108,13 @@ class DecisionPassport(BaseModel):
     """When the action must complete (ISO 8601). None = "today by EOD KSA"."""
     action_mode: ActionMode = "approval_required"
     """One of the canonical 5 modes. Hard rule: live send/charge always require approval."""
+    # Governed Revenue & AI Ops fields — explicit governance trail.
+    approval: PassportApproval | None = None
+    """Explicit approver + timestamp. Required before a passport is persisted."""
+    evidence_event_ids: list[str] = Field(default_factory=list)
+    """Links to Evidence Events ledger ids (B1) — the source-of-truth trail."""
+    measurable_impact: str = ""
+    """The measurable commercial impact this passport targets (Article 8 framing)."""
     meta: dict[str, Any] = Field(default_factory=dict)
 
 

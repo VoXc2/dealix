@@ -270,3 +270,97 @@ async def generate_customer_room_dashboard_endpoint(
         customer_handle=payload.customer_handle,
         customer_payload=payload.customer_payload,
     )
+
+
+# ── Content Assets store — approval-gated ─────────────────────────
+
+
+class ContentAssetCreateRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    asset_type: str = Field(..., min_length=1)
+    title: str = Field(..., min_length=1)
+    tenant_id: str | None = None
+    uri: str = ""
+    template_id: str | None = None
+    linked_deal_id: str | None = None
+    meta_json: dict[str, Any] = Field(default_factory=dict)
+
+
+class ContentAssetApproveRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    approver: str = Field(..., min_length=1)
+
+
+@router.post("/assets")
+async def create_content_asset(payload: ContentAssetCreateRequest) -> dict[str, Any]:
+    """Create one content asset. Always created in ``draft`` — no approver."""
+    from auto_client_acquisition.designops.asset_store import (
+        get_default_content_asset_store,
+    )
+
+    row = get_default_content_asset_store().add(
+        asset_type=payload.asset_type,
+        title=payload.title,
+        tenant_id=payload.tenant_id,
+        uri=payload.uri,
+        template_id=payload.template_id,
+        linked_deal_id=payload.linked_deal_id,
+        meta_json=payload.meta_json,
+    )
+    return {"asset": row, "governance_decision": "allow"}
+
+
+@router.get("/assets")
+async def list_content_assets(
+    tenant_id: str | None = None,
+    asset_type: str | None = None,
+    status: str | None = None,
+    limit: int = 200,
+) -> dict[str, Any]:
+    """List active content assets, newest first."""
+    from auto_client_acquisition.designops.asset_store import (
+        get_default_content_asset_store,
+    )
+
+    rows = get_default_content_asset_store().list(
+        tenant_id=tenant_id,
+        asset_type=asset_type,
+        status=status,
+        limit=max(1, min(int(limit), 1000)),
+    )
+    return {"count": len(rows), "assets": rows, "governance_decision": "allow"}
+
+
+@router.get("/assets/{asset_id}")
+async def get_content_asset(asset_id: str) -> dict[str, Any]:
+    """Fetch one content asset by id."""
+    from auto_client_acquisition.designops.asset_store import (
+        get_default_content_asset_store,
+    )
+
+    row = get_default_content_asset_store().get(asset_id)
+    if row is None:
+        raise HTTPException(status_code=404, detail=f"asset {asset_id!r} not found")
+    return {"asset": row, "governance_decision": "allow"}
+
+
+@router.post("/assets/{asset_id}/approve")
+async def approve_content_asset(
+    asset_id: str, payload: ContentAssetApproveRequest
+) -> dict[str, Any]:
+    """Approve a content asset. The only path from ``draft`` to ``approved``."""
+    from auto_client_acquisition.designops.asset_store import (
+        get_default_content_asset_store,
+    )
+
+    try:
+        row = get_default_content_asset_store().approve(
+            asset_id, approver=payload.approver
+        )
+    except ValueError as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
+    if row is None:
+        raise HTTPException(status_code=404, detail=f"asset {asset_id!r} not found")
+    return {"asset": row, "governance_decision": "allow"}

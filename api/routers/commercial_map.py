@@ -124,30 +124,37 @@ _WIRING: dict[str, dict[str, Any]] = {
 }
 
 
+# Governed Revenue & AI Ops ladder — narrative overlay (Rung 0 → Retainer).
+# The price ladder itself stays in service_catalog/registry.py; these notes
+# describe how each offer maps onto the new ladder framing.
 _OFFER_NOTES = {
     "free_mini_diagnostic": (
-        "Free 24h diagnostic — opens the funnel. Confirmation email auto-sent. "
-        "Founder reviews every intake within 24h."
+        "Rung 0 (Free). Governed Revenue & AI Ops Risk Score + Sample Proof Pack. "
+        "Opens the funnel; confirmation email auto-sent; founder reviews within 24h."
     ),
     "revenue_proof_sprint_499": (
-        "First paid offer. 7 days. 10-step orchestrator. Proof Pack mandatory. "
-        "50% on acceptance, 50% on Proof Pack delivery. 14-day full refund."
+        "Public 7-Day Governed Revenue & AI Ops Diagnostic, then a paid "
+        "Revenue Intelligence Sprint from 25,000 SAR. Diagnostic tiers are priced "
+        "4,999 / 9,999 / 15,000 / 25,000 SAR by scope. Proof Pack mandatory; "
+        "staged payment; 14-day full refund."
     ),
     "data_to_revenue_pack_1500": (
-        "CSV upload → DQ score + cleaned + ranked. Live demo on /data-pack.html "
-        "via POST /api/v1/data-os/import-preview/upload. 14-day delivery."
+        "Data scope inside the Governed Revenue & AI Ops Diagnostic. CSV upload → "
+        "DQ score + cleaned + ranked. Live demo on /data-pack.html."
     ),
     "growth_ops_monthly_2999": (
-        "Retainer engine. Weekly brief + monthly value report + adoption score + "
-        "retainer readiness gate. Renewal auto-charge after 3 confirmed cycles."
+        "Governed Ops Retainer — 4,999 to 35,000 SAR / month by scope. Weekly brief "
+        "+ monthly value report + adoption score + retainer readiness gate. "
+        "Renewal auto-charge after 3 confirmed cycles."
     ),
     "support_os_addon_1500": (
-        "Add-on to Growth. Ticket classification + suggested replies (draft_only). "
-        "SLA breach alerts. Sits inside the customer workspace."
+        "Add-on to the Governed Ops Retainer. Ticket classification + suggested "
+        "replies (draft_only). SLA breach alerts. Sits inside the customer workspace."
     ),
     "executive_command_center_7500": (
-        "Founder/CEO surface. Daily founder brief (WhatsApp draft_only) + monthly "
-        "board pack. Includes Trust Pack PDF + Evidence Control Plane export."
+        "Top of the Governed Ops Retainer band. Founder/CEO surface: daily founder "
+        "brief (WhatsApp draft_only) + monthly board pack. Includes Trust Pack PDF "
+        "+ Evidence Control Plane export."
     ),
     "agency_partner_os": (
         "Channel offer. 5K SAR / closed deal + 30% commission first year. "

@@ -8,7 +8,9 @@ from __future__ import annotations
 from fastapi import APIRouter
 
 from api.routers import (
+    evidence_events,
     governance_risk_dashboard,
+    playbooks,
     proof_ledger,
     reliability_os,
     security_privacy,
@@ -18,6 +20,8 @@ from api.routers import (
 
 _ROUTERS = [
     governance_risk_dashboard.router,
+    evidence_events.router,
+    playbooks.router,
     security_privacy.router,
     proof_ledger.router,
     reliability_os.router,

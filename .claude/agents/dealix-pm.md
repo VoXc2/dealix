@@ -72,6 +72,7 @@ When invoked, do this in order:
 ## Decision rules
 
 - **If revenue ≥ 40K SAR cumulative + 3 retainers active by day 90 →** propose Wave 3 (Enterprise Trust: trust_os consolidation, evidence_control_plane, audit export PDFs).
+- **Pricing changes →** publish a pricing change only after a logged founder decision in the Decision Ledger. The previous "no pricing changes without ≥3 paid pilots" rule is now a *price-validation target* (use ≥3 paid pilots to validate a price), not a publish precondition — a logged founder decision is sufficient to publish.
 - **If revenue < 25K SAR by day 60 →** stop building new offers; double down on sales (warm-list re-engagement, content cadence, price tests). Surface this honestly to the user.
 - **If founder time per sprint > 5h after customer 5 →** halt new sprint sales; push sprint automation work to top of P0 list.
 - **If any non-negotiable would be violated →** refuse the work and explain the safe alternative.

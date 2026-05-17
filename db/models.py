@@ -21,6 +21,7 @@ from datetime import datetime
 from sqlalchemy import (
     JSON,
     Boolean,
+    DateTime,
     Float,
     ForeignKey,
     Index,
@@ -1032,3 +1033,183 @@ class CustomerWebhookDelivery(Base):
                          name="uq_webhook_subscription_event"),
         Index("ix_cwd_event_type_created", "event_type", "delivered_at"),
     )
+
+
+# ── Governed Revenue & AI Ops — governance persistence (B2–B7) ────
+
+class DecisionPassportRecord(Base):
+    """
+    Append-only Decision Passport store — one immutable row per built passport.
+    سجل جواز القرار — صفّ ثابت لكل جواز.
+
+    Append-only by construction: no soft-delete, no updated_at. Governance
+    fields (source / approved_by / approved_at) are NOT NULL — every stored
+    passport carries explicit source + approval.
+    """
+
+    __tablename__ = "decision_passports"
+
+    id: Mapped[str] = mapped_column(String(64), primary_key=True)
+    tenant_id: Mapped[str | None] = mapped_column(
+        String(64), ForeignKey("tenants.id"), nullable=True, index=True
+    )
+    lead_id: Mapped[str] = mapped_column(String(64), index=True)
+    company: Mapped[str] = mapped_column(String(255), default="")
+    schema_version: Mapped[str] = mapped_column(String(16), default="1.1")
+    source: Mapped[str] = mapped_column(String(128), nullable=False)
+    approved_by: Mapped[str] = mapped_column(String(128), nullable=False)
+    approved_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+    proof_target: Mapped[str] = mapped_column(String(128), default="")
+    owner: Mapped[str] = mapped_column(String(64), default="founder")
+    priority_bucket: Mapped[str] = mapped_column(String(32), default="P2_NURTURE", index=True)
+    measurable_impact: Mapped[str] = mapped_column(Text, default="")
+    evidence_event_ids: Mapped[list] = mapped_column(JSON, default=list)
+    signature: Mapped[str] = mapped_column(String(128), default="UNSIGNED")
+    passport_json: Mapped[dict] = mapped_column("passport_json", JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(default=utcnow, index=True)
+
+    __table_args__ = (Index("ix_decision_passports_tenant_lead", "tenant_id", "lead_id"),)
+
+
+class AgentRegistryRecord(Base):
+    """
+    Agent Registry — doctrine #9: no AI agent without owner + scope + audit.
+    سجل الوكلاء — لا وكيل بدون مالك ونطاق وتدقيق.
+
+    Every registered agent carries a named owner, an explicit scope, an
+    allowed-tool allowlist, a risk class and an audit hook reference.
+    """
+
+    __tablename__ = "agent_registry"
+
+    id: Mapped[str] = mapped_column(String(64), primary_key=True)
+    agent_name: Mapped[str] = mapped_column(String(64), unique=True, index=True)
+    owner: Mapped[str] = mapped_column(String(128), nullable=False)
+    scope: Mapped[str] = mapped_column(Text, nullable=False)
+    allowed_tools: Mapped[list] = mapped_column(JSON, default=list)
+    risk_class: Mapped[str] = mapped_column(String(32), default="draft_only", index=True)
+    audit_hook: Mapped[str] = mapped_column(String(128), default="default_audit_hook")
+    enabled: Mapped[bool] = mapped_column(Boolean, default=True, index=True)
+    meta_json: Mapped[dict] = mapped_column("metadata", JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(default=utcnow, onupdate=utcnow)
+
+
+class RiskRecord(SoftDeleteMixin, Base):
+    """
+    Risk Register entry — one strategic / operational risk.
+    سجل المخاطر — مخاطرة واحدة.
+
+    ``category`` is validated against ``RISK_TAXONOMY_CATEGORIES``.
+    """
+
+    __tablename__ = "risks"
+
+    id: Mapped[str] = mapped_column(String(64), primary_key=True)
+    tenant_id: Mapped[str | None] = mapped_column(
+        String(64), ForeignKey("tenants.id"), nullable=True, index=True
+    )
+    category: Mapped[str] = mapped_column(String(64), index=True)
+    title: Mapped[str] = mapped_column(String(255))
+    description: Mapped[str] = mapped_column(Text, default="")
+    owner: Mapped[str] = mapped_column(String(128), default="")
+    severity: Mapped[str] = mapped_column(String(16), default="medium", index=True)
+    likelihood: Mapped[str] = mapped_column(String(16), default="medium")
+    control: Mapped[str] = mapped_column(Text, default="")
+    early_warning_signal: Mapped[str] = mapped_column(Text, default="")
+    response_plan: Mapped[str] = mapped_column(Text, default="")
+    test_or_checklist: Mapped[str] = mapped_column(Text, default="")
+    status: Mapped[str] = mapped_column(String(32), default="open", index=True)
+    linked_deal_id: Mapped[str | None] = mapped_column(String(64), nullable=True, index=True)
+    linked_customer_id: Mapped[str | None] = mapped_column(String(64), nullable=True, index=True)
+    meta_json: Mapped[dict] = mapped_column("metadata", JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(default=utcnow, onupdate=utcnow)
+
+    __table_args__ = (Index("ix_risks_tenant_status", "tenant_id", "status"),)
+
+
+class DiagnosticRecord(SoftDeleteMixin, Base):
+    """
+    Diagnostics store — one persisted diagnostic run.
+    سجل التشخيص — تشغيل تشخيصي واحد.
+    """
+
+    __tablename__ = "diagnostics"
+
+    id: Mapped[str] = mapped_column(String(64), primary_key=True)
+    tenant_id: Mapped[str | None] = mapped_column(
+        String(64), ForeignKey("tenants.id"), nullable=True, index=True
+    )
+    subject_type: Mapped[str] = mapped_column(String(64), index=True)
+    subject_id: Mapped[str] = mapped_column(String(64), index=True)
+    diagnostic_type: Mapped[str] = mapped_column(String(64), index=True)
+    findings: Mapped[dict] = mapped_column(JSON, default=dict)
+    score: Mapped[float] = mapped_column(Float, default=0.0)
+    severity: Mapped[str] = mapped_column(String(16), default="low", index=True)
+    recommendations: Mapped[list] = mapped_column(JSON, default=list)
+    run_by: Mapped[str] = mapped_column(String(128), default="")
+    created_at: Mapped[datetime] = mapped_column(default=utcnow, index=True)
+    updated_at: Mapped[datetime] = mapped_column(default=utcnow, onupdate=utcnow)
+
+    __table_args__ = (Index("ix_diagnostics_subject", "subject_type", "subject_id"),)
+
+
+class PlaybookRecord(SoftDeleteMixin, Base):
+    """
+    Playbooks store — one persisted vertical playbook.
+    سجل أدلّة العمل — دليل عمل قطاعي واحد.
+    """
+
+    __tablename__ = "playbooks"
+
+    id: Mapped[str] = mapped_column(String(64), primary_key=True)
+    tenant_id: Mapped[str | None] = mapped_column(
+        String(64), ForeignKey("tenants.id"), nullable=True, index=True
+    )
+    name: Mapped[str] = mapped_column(String(255), index=True)
+    vertical: Mapped[str] = mapped_column(String(64), index=True)
+    version: Mapped[int] = mapped_column(Integer, default=1)
+    stage: Mapped[str] = mapped_column(String(64), default="")
+    steps: Mapped[list] = mapped_column(JSON, default=list)
+    entry_criteria: Mapped[list] = mapped_column(JSON, default=list)
+    exit_criteria: Mapped[list] = mapped_column(JSON, default=list)
+    owner: Mapped[str] = mapped_column(String(128), default="")
+    status: Mapped[str] = mapped_column(String(32), default="draft", index=True)
+    meta_json: Mapped[dict] = mapped_column("metadata", JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(default=utcnow, onupdate=utcnow)
+
+    __table_args__ = (Index("ix_playbooks_tenant_vertical", "tenant_id", "vertical"),)
+
+
+class ContentAssetRecord(SoftDeleteMixin, Base):
+    """
+    Content Assets store — one persisted DesignOps content artifact.
+    سجل أصول المحتوى — أصل محتوى واحد.
+
+    Approval-gated: an asset without an approver stays ``draft``.
+    """
+
+    __tablename__ = "content_assets"
+
+    id: Mapped[str] = mapped_column(String(64), primary_key=True)
+    tenant_id: Mapped[str | None] = mapped_column(
+        String(64), ForeignKey("tenants.id"), nullable=True, index=True
+    )
+    asset_type: Mapped[str] = mapped_column(String(64), index=True)
+    title: Mapped[str] = mapped_column(String(255))
+    uri: Mapped[str] = mapped_column(String(2048), default="")
+    template_id: Mapped[str | None] = mapped_column(String(128), nullable=True, index=True)
+    status: Mapped[str] = mapped_column(String(32), default="draft", index=True)
+    approved_by: Mapped[str | None] = mapped_column(String(128), nullable=True)
+    approved_at: Mapped[datetime | None] = mapped_column(
+        DateTime(timezone=True), nullable=True
+    )
+    linked_deal_id: Mapped[str | None] = mapped_column(String(64), nullable=True, index=True)
+    checksum: Mapped[str] = mapped_column(String(128), default="")
+    meta_json: Mapped[dict] = mapped_column("metadata", JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(default=utcnow, onupdate=utcnow)
+
+    __table_args__ = (Index("ix_content_assets_tenant_status", "tenant_id", "status"),)
