@@ -15,6 +15,35 @@ def test_revenue_os_catalog_endpoint():
     assert "source_registry" in data
     assert "cold_whatsapp" in data["forbidden_sources"]
     assert "enrichment_waterfall_order" in data
+    assert data["factory_blueprint_endpoint"] == "/api/v1/revenue-os/factory/blueprint"
+
+
+def test_factory_blueprint_endpoint_shape():
+    client = TestClient(app)
+    r = client.get("/api/v1/revenue-os/factory/blueprint")
+    assert r.status_code == 200
+    data = r.json()
+    assert data["primary_offer"]["name"] == "7-Day Governed Revenue & AI Ops Diagnostic"
+    assert len(data["layers"]) == 7
+    assert len(data["automation_workflows"]) == 18
+    assert data["execution_targets"]["day_30_targets"]["paid_diagnostics"] == 1
+    assert data["execution_targets"]["day_90_targets"]["diagnostics_range"] == [3, 5]
+
+
+def test_factory_blueprint_governance_guards_present():
+    client = TestClient(app)
+    data = client.get("/api/v1/revenue-os/factory/blueprint").json()
+    guards = set(data["non_negotiables"])
+    assert "no_external_send_without_founder_approval" in guards
+    assert "no_revenue_mark_before_payment_proof" in guards
+
+    approval_rows = {row["action"]: row for row in data["approval_matrix"]}
+    assert approval_rows["send_invoice"]["needs_founder"] is True
+    assert approval_rows["create_crm_contact"]["needs_founder"] is False
+
+    levels = data["automation_levels"]
+    assert "send_external_message" in levels["founder_approval"]
+    assert "score_lead" in levels["autopilot"]
 
 
 def test_normalize_signals_endpoint():
