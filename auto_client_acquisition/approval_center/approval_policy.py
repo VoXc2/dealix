@@ -12,11 +12,43 @@ from auto_client_acquisition.approval_center.schemas import (
 )
 
 
+# ── Critical action types ─────────────────────────────────────
+# Actions that always carry the ``critical`` risk tier: they require
+# approval + evidence + an optional second review before they execute.
+# Money movement, data egress, public claims and autonomous external
+# actions all qualify.
+CRITICAL_ACTION_TYPES: frozenset[str] = frozenset({
+    "invoice_send",
+    "refund",
+    "affiliate_payout",
+    "client_data_export",
+    "security_compliance_claim",
+    "case_study_publish",
+    "external_autonomous_action",
+})
+
+
+def is_critical_action(action_type: str) -> bool:
+    """True if the action type always demands the ``critical`` tier."""
+    return (action_type or "").strip().lower() in CRITICAL_ACTION_TYPES
+
+
 def evaluate_safety(req: ApprovalRequest) -> ApprovalRequest:
     """Inspect a freshly-created request and force ``blocked`` status
-    if policy demands it. Idempotent."""
+    if policy demands it. Idempotent.
+
+    Critical actions (see ``CRITICAL_ACTION_TYPES``) are upgraded to the
+    ``critical`` risk tier and can never be auto-executed — they require
+    explicit founder approval (plus evidence and optional second
+    review, enforced downstream)."""
     if req.action_mode == "blocked" or req.risk_level == "blocked":
         req.status = ApprovalStatus.BLOCKED
+    # Critical actions: pin the risk tier and refuse pre-approved execute.
+    if is_critical_action(req.action_type):
+        if _RISK_ORDER.get(req.risk_level or "low", 1) < _RISK_ORDER["critical"]:
+            req.risk_level = "critical"
+        if req.action_mode == "approved_execute":
+            req.action_mode = "approval_required"
     # Per-channel hard rules
     if (req.channel or "").lower() == "linkedin":
         # NO_LINKEDIN_AUTO — every LinkedIn action must be founder-approved
@@ -39,7 +71,10 @@ CHANNEL_POLICY: dict[str, dict[str, str | None]] = {
     "dashboard": {"required_approver": "csm_or_founder", "max_auto_approve_risk": "medium"},
 }
 
-_RISK_ORDER = {"low": 1, "medium": 2, "high": 3, "blocked": 4}
+# Risk ordering — ``critical`` sits between ``high`` and ``blocked``.
+# A critical action is still actionable (with approval + evidence +
+# optional second review) whereas ``blocked`` can never be approved.
+_RISK_ORDER = {"low": 1, "medium": 2, "high": 3, "critical": 4, "blocked": 5}
 
 
 def can_auto_approve(req: ApprovalRequest) -> bool:

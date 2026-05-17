@@ -302,11 +302,14 @@ class FounderRuleEngine:
         channel = (req.channel or "").lower()
         if channel in _BLOCKED_AUTO_CHANNELS:
             return None
-        # Risk gate — fail-closed on unknown risk labels (e.g. "critical").
-        # Don't default unknowns to "low"; refuse instead.
+        # Risk gate — fail-closed on unknown risk labels. Don't default
+        # unknowns to "low"; refuse instead.
         risk = (req.risk_level or "low").lower()
         if risk not in _RISK_ORDER:
             return None
+        # "critical" is a recognized tier (between high and blocked):
+        # critical actions always need explicit founder approval and can
+        # never be matched by a pre-approved rule.
         if _RISK_ORDER[risk] > _RISK_ORDER["medium"]:
             return None
         # Channel must allow auto-approve at all (per CHANNEL_POLICY)
