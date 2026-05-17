@@ -181,6 +181,76 @@ export const api = {
 
   getCustomerPortal: (handle = "Slot-A") =>
     apiClient.get(`/api/v1/customer-portal/${encodeURIComponent(handle)}`),
+
+  // ── Public diagnostic funnel (PR5) ──────────────────────────────
+  postPublicLead: (data: Record<string, unknown>) =>
+    apiClient.post("/api/v1/public/leads", data),
+
+  postPublicRiskScore: (data: Record<string, unknown>) =>
+    apiClient.post("/api/v1/public/risk-score", data),
+
+  getPublicProofPackSample: () =>
+    apiClient.get("/api/v1/public/proof-pack/sample"),
+
+  postPublicSupport: (data: Record<string, unknown>) =>
+    apiClient.post("/api/v1/public/support", data),
+
+  getPublicServices: () =>
+    apiClient.get("/api/v1/public/services"),
+
+  // ── Ops console (PR7) ───────────────────────────────────────────
+  getEvidence: (params?: Record<string, unknown>) =>
+    apiClient.get("/api/v1/evidence", { params }),
+
+  getOrchestratorStatus: () =>
+    apiClient.get("/api/v1/orchestrator/status"),
+
+  getOrchestratorTasks: () =>
+    apiClient.get("/api/v1/orchestrator/tasks"),
+
+  triggerAutomation: (name: string, body: Record<string, unknown>) =>
+    apiClient.post(`/api/v1/orchestrator/trigger/${name}`, body),
+
+  getRevenuePipelineSummary: () =>
+    apiClient.get("/api/v1/revenue-pipeline/summary"),
+
+  // ── Support console (PR8) ───────────────────────────────────────
+  getSupportTickets: (params?: Record<string, unknown>) =>
+    apiClient.get("/api/v1/support/tickets", { params }),
+
+  getSupportTicket: (id: string) =>
+    apiClient.get(`/api/v1/support/tickets/${id}`),
+
+  classifySupportTicket: (id: string) =>
+    apiClient.post(`/api/v1/support/tickets/${id}/classify`),
+
+  draftSupportResponse: (id: string) =>
+    apiClient.post(`/api/v1/support/tickets/${id}/draft-response`),
+
+  escalateSupportTicket: (id: string, reason: string) =>
+    apiClient.post(`/api/v1/support/tickets/${id}/escalate`, { reason }),
+
+  resolveSupportTicket: (id: string) =>
+    apiClient.post(`/api/v1/support/tickets/${id}/resolve`),
+
+  sendSupportReply: (id: string) =>
+    apiClient.post(`/api/v1/support/tickets/${id}/send-reply`),
+
+  getKnowledgeArticles: (params?: Record<string, unknown>) =>
+    apiClient.get("/api/v1/knowledge/articles", { params }),
+
+  getKnowledgeGaps: () =>
+    apiClient.get("/api/v1/knowledge/gaps"),
+
+  createKnowledgeArticle: (data: Record<string, unknown>) =>
+    apiClient.post("/api/v1/knowledge/articles", data),
+
+  publishKnowledgeArticle: (id: string) =>
+    apiClient.post(`/api/v1/knowledge/articles/${id}/publish`),
+
+  // ── Customer chat widget (PR9) ──────────────────────────────────
+  postChatMessage: (message: string) =>
+    apiClient.post("/api/v1/public/chat/message", { message }),
 };
 
 export default api;
