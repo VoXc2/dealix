@@ -163,6 +163,19 @@ def test_category_expansion_gate_checker_passes() -> None:
     assert proc.returncode == 0, proc.stderr or proc.stdout
 
 
+def test_revenue_factory_checker_passes() -> None:
+    root = Path(__file__).resolve().parents[1]
+    proc = run(
+        [sys.executable, "scripts/verify_global_ai_transformation.py", "--check-revenue-factory"],
+        cwd=root,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    assert proc.returncode == 0, proc.stderr or proc.stdout
+    assert "GLOBAL AI TRANSFORMATION: PASS" in proc.stdout
+
+
 def test_verify_category_expansion_shell_wrapper() -> None:
     root = Path(__file__).resolve().parents[1]
     bash = shutil.which("bash") or "/usr/bin/bash"

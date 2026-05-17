@@ -45,6 +45,7 @@ DOC_FILES = (
     "docs/transformation/10_delivery_control_tower.md",
     "docs/transformation/11_org_operating_system.md",
     "docs/transformation/12_category_dominance.md",
+    "docs/transformation/13_revenue_ai_ops_factory_ar.md",
     "docs/transformation/ENGINEERING_CUTOVER_RUNBOOK_AR.md",
     "docs/transformation/EXECUTIVE_OPERATING_CHECKLIST_AR.md",
     "docs/transformation/CEO_ONE_SESSION_MASTER_PLAN_AR.md",
@@ -68,6 +69,7 @@ CONTROL_ARTIFACTS = (
     "dealix/transformation/category_expansion_gates.yaml",
     "dealix/transformation/ceo_signal_os.yaml",
     "dealix/transformation/engineering_cutover_policy.yaml",
+    "dealix/transformation/revenue_ai_ops_factory.yaml",
 )
 
 ENTERPRISE_RUNBOOK_FILES = (
@@ -284,6 +286,68 @@ def _check_engineering_cutover_policy(repo: Path) -> list[str]:
     return []
 
 
+def _check_revenue_ai_ops_factory(repo: Path) -> list[str]:
+    data = _load_yaml(repo, "dealix/transformation/revenue_ai_ops_factory.yaml")
+    if int(data.get("version", 0)) < 1:
+        return ["revenue_ai_ops_factory_version_missing"]
+
+    failures: list[str] = []
+    doctrine_chain = data.get("doctrine_chain") or []
+    expected_chain = ("Signal", "Source", "Approval", "Action", "Evidence", "Decision", "Value", "Asset")
+    if tuple(doctrine_chain) != expected_chain:
+        failures.append("revenue_ai_ops_factory_doctrine_chain_invalid")
+
+    policies = data.get("policies") or {}
+    if not bool(policies.get("no_autonomous_external_send")):
+        failures.append("revenue_ai_ops_factory_policy_missing_no_autonomous_external_send")
+    if not bool(policies.get("external_send_requires_human_approval")):
+        failures.append("revenue_ai_ops_factory_policy_missing_human_approval_gate")
+
+    levels = data.get("automation_levels") or []
+    if len(levels) != 3:
+        failures.append("revenue_ai_ops_factory_automation_levels_invalid")
+    else:
+        level_ids = {str(level.get("id")) for level in levels if isinstance(level, dict)}
+        required_ids = {"level_1_fully_automated", "level_2_agent_assisted", "level_3_founder_approval_required"}
+        for level_id in sorted(required_ids - level_ids):
+            failures.append(f"revenue_ai_ops_factory_missing_level:{level_id}")
+
+    approval = data.get("approval_center") or {}
+    approval_types = set(approval.get("approval_types") or [])
+    required_approval_types = {"external_message", "invoice_send", "scope_send", "diagnostic_final", "security_claim"}
+    for approval_type in sorted(required_approval_types - approval_types):
+        failures.append(f"revenue_ai_ops_factory_missing_approval_type:{approval_type}")
+    risk_levels = approval.get("risk_levels") or {}
+    if "critical" not in risk_levels:
+        failures.append("revenue_ai_ops_factory_missing_critical_risk_level")
+
+    ledger = data.get("evidence_ledger") or {}
+    required_fields = set(ledger.get("required_fields") or [])
+    for field in sorted({"event_type", "source", "approval_required", "created_by"} - required_fields):
+        failures.append(f"revenue_ai_ops_factory_missing_evidence_field:{field}")
+
+    agents = data.get("agents") or []
+    if len(agents) < 10:
+        failures.append("revenue_ai_ops_factory_agents_insufficient")
+    for agent in agents:
+        if not isinstance(agent, dict):
+            failures.append("revenue_ai_ops_factory_invalid_agent_entry")
+            continue
+        aid = agent.get("id", "?")
+        if not agent.get("mission"):
+            failures.append(f"revenue_ai_ops_factory_agent_missing_mission:{aid}")
+        if not isinstance(agent.get("forbidden_actions"), list) or not agent.get("forbidden_actions"):
+            failures.append(f"revenue_ai_ops_factory_agent_missing_forbidden_actions:{aid}")
+        if "send" in "".join(agent.get("allowed_actions", [])) and not agent.get("approval_required_for"):
+            failures.append(f"revenue_ai_ops_factory_agent_send_without_approval_contract:{aid}")
+
+    orchestration = data.get("orchestration") or {}
+    routes = orchestration.get("routing_rules") or []
+    if len(routes) < 7:
+        failures.append("revenue_ai_ops_factory_routing_rules_insufficient")
+    return failures
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--check", default="", help="Check one todo id only")
@@ -292,6 +356,7 @@ def main() -> int:
     parser.add_argument("--check-enterprise-package", action="store_true")
     parser.add_argument("--check-reliability", action="store_true")
     parser.add_argument("--check-category-expansion", action="store_true")
+    parser.add_argument("--check-revenue-factory", action="store_true")
     args = parser.parse_args()
 
     repo = _REPO_ROOT
@@ -327,6 +392,8 @@ def main() -> int:
         failures.extend(_check_reliability(repo))
     elif args.check_category_expansion:
         failures.extend(_check_category_expansion_gates(repo))
+    elif args.check_revenue_factory:
+        failures.extend(_check_revenue_ai_ops_factory(repo))
     else:
         failures.extend(_require_paths(repo, DOC_FILES))
         failures.extend(_require_paths(repo, CONTROL_ARTIFACTS))
@@ -341,6 +408,7 @@ def main() -> int:
         failures.extend(_check_reliability(repo))
         failures.extend(_check_ceo_signal_os(repo))
         failures.extend(_check_engineering_cutover_policy(repo))
+        failures.extend(_check_revenue_ai_ops_factory(repo))
         failures.extend(_check_kpi_baselines(repo))
 
     if failures:

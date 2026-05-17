@@ -1,0 +1,379 @@
+version: 1
+program: revenue_ai_ops_factory
+operating_identity: AI-native Revenue Operating Company
+formula:
+  - founder_led_trust
+  - proof_led_funnel
+  - automated_revenue_ops
+  - agentic_execution_loops
+  - disciplined_approval_system
+  - evidence_ledger
+  - delivery_to_product_learning
+  - partner_leverage
+  - security_by_design
+doctrine_chain:
+  - Signal
+  - Source
+  - Approval
+  - Action
+  - Evidence
+  - Decision
+  - Value
+  - Asset
+platform_layers:
+  - id: signal_layer
+    mission: capture governed market and pipeline signals
+  - id: agent_layer
+    mission: classify, draft, score, and recommend
+  - id: workflow_layer
+    mission: orchestrate internal loops and handoffs
+  - id: approval_layer
+    mission: enforce founder and role-based approvals
+  - id: action_layer
+    mission: execute approved internal and external actions
+  - id: evidence_layer
+    mission: store auditable event trail and assets
+  - id: learning_layer
+    mission: convert outcomes into playbooks and updates
+  - id: productization_layer
+    mission: convert repeated workflows into product modules
+automation_levels:
+  - id: level_1_fully_automated
+    mode: fully_automated
+    approval_required: false
+    examples:
+      - lead_capture
+      - crm_creation
+      - lead_scoring
+      - tagging
+      - enrichment_draft
+      - meeting_brief_draft
+      - followup_reminder
+      - scope_draft
+      - invoice_draft
+      - proof_pack_skeleton
+      - delivery_checklist
+      - weekly_report
+      - evidence_logging
+  - id: level_2_agent_assisted
+    mode: recommendation
+    approval_required: selective
+    examples:
+      - best_icp
+      - best_message
+      - best_offer_angle
+      - best_pricing_band
+      - next_best_action
+      - best_upsell
+      - best_partner
+      - objection_response
+  - id: level_3_founder_approval_required
+    mode: blocked_until_approval
+    approval_required: true
+    examples:
+      - first_external_send
+      - invoice_send
+      - scope_approval
+      - final_diagnostic_delivery
+      - case_study_publish
+      - security_or_compliance_claim
+      - reputation_or_cash_impacting_action
+policies:
+  no_autonomous_external_send: true
+  no_cold_whatsapp: true
+  no_linkedin_automation: true
+  no_unsupported_claims: true
+  external_send_requires_human_approval: true
+  every_action_requires_traceability: true
+  every_claim_requires_source_or_is_estimate: true
+agents:
+  - id: market_intelligence_agent
+    mission: collect daily market signals and rank accounts
+    allowed_actions:
+      - classify_signal
+      - score_target_accounts
+      - generate_personalized_drafts
+    forbidden_actions:
+      - send_external_messages
+      - scrape_disallowed_sources
+      - process_sensitive_personal_data_without_basis
+    approval_required_for:
+      - external_outreach_send
+  - id: icp_scoring_agent
+    mission: score lead fit and route stage
+    allowed_actions:
+      - compute_icp_score
+      - set_pipeline_stage
+      - propose_next_action
+    forbidden_actions:
+      - override_founder_decision
+      - fabricate_budget
+    approval_required_for:
+      - stage_override_high_risk
+  - id: positioning_agent
+    mission: generate sector-specific positioning angle
+    allowed_actions:
+      - draft_message_angle
+      - predict_objections
+      - recommend_offer_path
+    forbidden_actions:
+      - make_unverified_security_claims
+      - make_unverified_revenue_claims
+    approval_required_for:
+      - client_facing_positioning_send
+  - id: content_engine_agent
+    mission: turn delivery and sales learnings into content drafts
+    allowed_actions:
+      - draft_linkedin_post
+      - draft_email_snippet
+      - draft_partner_note
+    forbidden_actions:
+      - publish_without_approval
+    approval_required_for:
+      - external_publish
+  - id: outreach_personalization_agent
+    mission: generate personalized outreach drafts
+    allowed_actions:
+      - generate_linkedin_dm_draft
+      - generate_email_draft
+      - generate_followup_draft
+    forbidden_actions:
+      - live_send_message
+    approval_required_for:
+      - send_any_outreach
+  - id: lead_capture_agent
+    mission: normalize inbound triggers to CRM and evidence event
+    allowed_actions:
+      - create_contact_record
+      - assign_source
+      - score_and_stage
+      - log_evidence_event
+    forbidden_actions:
+      - expose_client_data_cross_tenant
+    approval_required_for:
+      - none
+  - id: meeting_brief_agent
+    mission: prepare pre-call decision brief
+    allowed_actions:
+      - compile_company_snapshot
+      - build_demo_path
+      - generate_discovery_questions
+    forbidden_actions:
+      - mark_meeting_outcome_before_meeting
+    approval_required_for:
+      - meeting_brief_external_share
+  - id: sales_call_coach_agent
+    mission: convert call notes into governed decision outcomes
+    allowed_actions:
+      - classify_outcome
+      - request_scope_or_nurture
+      - generate_next_action
+    forbidden_actions:
+      - mark_l5_without_used_in_meeting
+      - mark_l6_without_scope_or_request
+      - mark_revenue_before_invoice_paid
+    approval_required_for:
+      - finalize_call_outcome_for_client
+  - id: scope_builder_agent
+    mission: generate scope and exclusions from approved notes
+    allowed_actions:
+      - create_scope_draft
+      - create_timeline_draft
+      - create_invoice_recommendation
+    forbidden_actions:
+      - send_scope_to_client
+      - make_unsupported_claims
+    approval_required_for:
+      - scope_send
+      - invoice_send
+  - id: billing_agent
+    mission: move approved scope into payment workflow
+    allowed_actions:
+      - generate_invoice_draft
+      - schedule_payment_reminder
+      - update_payment_status
+    forbidden_actions:
+      - send_invoice_without_scope_approved
+      - start_delivery_without_invoice_paid
+      - recognize_revenue_without_payment_proof
+    approval_required_for:
+      - invoice_send
+      - refund_or_discount
+  - id: delivery_diagnostic_agent
+    mission: execute governed diagnostic with source discipline
+    allowed_actions:
+      - build_workflow_map
+      - produce_risk_register
+      - produce_decision_recommendations
+    forbidden_actions:
+      - invent_data
+      - hide_missing_data
+      - use_estimate_without_is_estimate
+    approval_required_for:
+      - diagnostic_final_delivery
+  - id: proof_pack_agent
+    mission: convert delivery output into proof asset
+    allowed_actions:
+      - build_proof_pack
+      - generate_internal_learning_note
+      - generate_anonymized_content_draft
+    forbidden_actions:
+      - publish_case_study_without_client_approval
+    approval_required_for:
+      - proof_pack_send
+      - case_study_publish
+  - id: upsell_agent
+    mission: recommend next commercial step post-diagnostic
+    allowed_actions:
+      - classify_next_offer
+      - rank_upsell_fit
+      - draft_referral_request
+    forbidden_actions:
+      - force_upsell_without_proof
+    approval_required_for:
+      - upsell_offer_send
+  - id: partner_agent
+    mission: build referral channel with governed terms
+    allowed_actions:
+      - score_partner_fit
+      - draft_partner_pitch
+      - draft_referral_terms
+    forbidden_actions:
+      - commit_referral_terms_without_approval
+    approval_required_for:
+      - partner_terms_send
+  - id: governance_risk_agent
+    mission: stop risky actions and enforce policy
+    allowed_actions:
+      - classify_risk
+      - block_non_compliant_actions
+      - request_missing_evidence
+    forbidden_actions:
+      - bypass_policy_gate
+    approval_required_for:
+      - policy_exception
+major_loops:
+  - demand_loop
+  - sales_loop
+  - delivery_loop
+  - product_learning_loop
+  - partner_loop
+  - governance_loop
+  - weekly_ceo_loop
+approval_center:
+  required: true
+  approval_types:
+    - external_message
+    - invoice_send
+    - scope_send
+    - diagnostic_final
+    - case_study
+    - security_claim
+    - agent_tool_action
+    - refund_or_discount
+    - partner_terms
+  risk_levels:
+    low:
+      examples:
+        - internal_note
+        - tagging
+        - draft
+        - reminder
+    medium:
+      examples:
+        - proof_pack_send_after_consent
+        - meeting_invite
+        - follow_up_after_existing_consent
+    high:
+      examples:
+        - invoice
+        - scope
+        - diagnostic
+        - public_claim
+        - case_study
+    critical:
+      examples:
+        - security_claim
+        - client_data_transfer
+        - autonomous_external_action
+evidence_ledger:
+  required: true
+  event_types:
+    - lead_captured
+    - message_prepared
+    - message_sent
+    - reply_received
+    - meeting_booked
+    - meeting_done
+    - scope_requested
+    - scope_sent
+    - invoice_sent
+    - invoice_paid
+    - onboarding_received
+    - diagnostic_started
+    - proof_pack_sent
+    - upsell_proposed
+    - retainer_won
+    - referral_requested
+    - case_study_approved
+  required_fields:
+    - event_id
+    - timestamp
+    - account_id
+    - contact_id
+    - event_type
+    - source
+    - summary
+    - approval_required
+    - confidence
+    - created_by
+orchestration:
+  orchestrator_name: dealix_revenue_orchestrator
+  responsibilities:
+    - receive_event
+    - route_agent
+    - enforce_policy
+    - verify_sources
+    - request_approval_when_required
+    - log_evidence
+    - dispatch_next_action
+  routing_rules:
+    - event: new_lead
+      route_to:
+        - lead_capture_agent
+    - event: high_score
+      route_to:
+        - icp_scoring_agent
+        - meeting_brief_agent
+    - event: reply_received
+      route_to:
+        - outreach_personalization_agent
+        - icp_scoring_agent
+    - event: meeting_booked
+      route_to:
+        - meeting_brief_agent
+    - event: meeting_done
+      route_to:
+        - sales_call_coach_agent
+        - scope_builder_agent
+    - event: invoice_paid
+      route_to:
+        - delivery_diagnostic_agent
+    - event: proof_pack_sent
+      route_to:
+        - upsell_agent
+    - event: public_action_request
+      route_to:
+        - governance_risk_agent
+build_vs_automate:
+  workflow_new: manual_checklist
+  workflow_repeated_twice: template
+  workflow_repeated_three_times: automation
+  repeated_with_two_clients: internal_module
+  repeated_with_three_clients_plus_retainer: product_feature
+execution_order:
+  - sprint_1_revenue_control_base
+  - sprint_2_agent_drafting
+  - sprint_3_delivery_automation
+  - sprint_4_governance_automation
+  - sprint_5_productization_after_repeatability
