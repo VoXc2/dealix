@@ -1,13 +1,16 @@
 # Pricing Guide | دليل الأسعار
 
-> **⚠️ Canonical offer = the offer ladder (rungs 0–5).** The current commercial
-> offer Dealix sells is the six-rung ladder (rungs `[0]`–`[5]`) in
-> [`docs/OFFER_LADDER_AND_PRICING.md`](OFFER_LADDER_AND_PRICING.md) (Free
-> Diagnostic → 499 SAR Sprint → 1,500 SAR Pack → Managed Ops → Command Center →
-> Partner OS). This file is the *legacy custom-engagement* pricing reference for
-> bespoke consulting work; it is not the productized ladder. Rungs 3–5 of the
-> ladder are **founder-assisted / semi-automated** today — see that file's
-> delivery-mode disclosure.
+> **⚠️ Canonical offer = the Governed Revenue & AI Ops ladder.** The current
+> commercial offer Dealix sells is the ladder in
+> [`docs/OFFER_LADDER_AND_PRICING.md`](OFFER_LADDER_AND_PRICING.md): Free Risk
+> Score → 7-Day Governed Revenue & AI Ops Diagnostic (4,999 / 9,999 / 15,000 /
+> 25,000 SAR) → Revenue Intelligence Sprint (25,000 SAR+) → Governed Ops Retainer
+> (4,999–35,000 SAR/mo) → adjacent offers. Full strategy and category:
+> [`docs/strategic/GOVERNED_REVENUE_AI_OPS_STRATEGY.md`](strategic/GOVERNED_REVENUE_AI_OPS_STRATEGY.md).
+> This file is the *legacy custom-engagement* pricing reference for bespoke
+> consulting work; it is not the productized ladder. The Sprint and Retainer are
+> **founder-assisted / semi-automated** today — see that file's delivery-mode
+> disclosure.
 >
 > **Doctrine note:** any "automation" line item below (including WhatsApp) means
 > **approved, opt-in** messaging only. Cold WhatsApp automation, scraping, and

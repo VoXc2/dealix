@@ -1,6 +1,6 @@
 # Sprint Delivery Playbook — كتاب تشغيل سبرنت ذكاء الإيرادات
 
-> Purpose — الغرض: the 7-day, 10-step runbook for delivering the 499 SAR Revenue Intelligence Sprint. Every step names the module that runs, the founder checkpoint, and the ledger entry produced. Cross-link: [REVENUE_INTELLIGENCE_SPRINT.md](./REVENUE_INTELLIGENCE_SPRINT.md), [DIAGNOSTIC_DELIVERY_SOP.md](./DIAGNOSTIC_DELIVERY_SOP.md), [PROOF_PACK_STANDARD.md](../07_proof_os/PROOF_PACK_STANDARD.md), [NON_NEGOTIABLES.md](../00_constitution/NON_NEGOTIABLES.md).
+> Purpose — الغرض: the 7-day, 10-step runbook for delivering the Revenue Intelligence Sprint (25,000 SAR+ per the Governed Revenue & AI Ops ladder). Every step names the module that runs, the founder checkpoint, and the ledger entry produced. Cross-link: [REVENUE_INTELLIGENCE_SPRINT.md](./REVENUE_INTELLIGENCE_SPRINT.md), [DIAGNOSTIC_DELIVERY_SOP.md](./DIAGNOSTIC_DELIVERY_SOP.md), [OFFER_LADDER_AND_PRICING.md](../OFFER_LADDER_AND_PRICING.md), [GOVERNED_REVENUE_AI_OPS_STRATEGY.md](../strategic/GOVERNED_REVENUE_AI_OPS_STRATEGY.md), [PROOF_PACK_STANDARD.md](../07_proof_os/PROOF_PACK_STANDARD.md), [NON_NEGOTIABLES.md](../00_constitution/NON_NEGOTIABLES.md).
 
 كتاب تشغيل عملي لسبرنت الإيرادات المُحوكَم على مدى سبعة أيام. كل خطوة تربط بالمنهجية، بالنماذج البرمجية المفعّلة، وبسجلات الإثبات والقيمة والأصول.
 
@@ -32,7 +32,7 @@ python -m cli data import --passport <passport_id> --file client.csv --preview-o
 python -m cli data compute-dq --passport <passport_id> --out out/dq_<engagement_id>.json
 ```
 
-**Founder checkpoint:** review the DQ score. A baseline DQ < 40 means the client has a data-readiness problem, not a sprint problem; pause the sprint and propose the 1,500 SAR Data Pack instead. DQ between 40 and 70 → proceed with documented caveats. DQ ≥ 70 → proceed clean.
+**Founder checkpoint:** review the DQ score. A baseline DQ < 40 means the client has a data-readiness problem, not a sprint problem; pause the sprint and propose the **CRM/Data Readiness for AI** adjacent offer instead (scoped — see [OFFER_LADDER_AND_PRICING.md](../OFFER_LADDER_AND_PRICING.md)). DQ between 40 and 70 → proceed with documented caveats. DQ ≥ 70 → proceed clean.
 
 **Ledger entries:** `proof_ledger.dq_baseline = <score>`, `proof_ledger.import_preview_recorded = true`. No external action taken.
 
@@ -70,7 +70,7 @@ python -m cli data compute-dq --passport <passport_id> --out out/dq_<engagement_
 
 ## Day 6 — Handoff + Retainer Readiness — اليوم السادس: التسليم وفحص جاهزية الاحتفاظ
 
-**What runs:** Handoff call (60 minutes) walking the client through the Proof Pack section by section. Then `adoption_os.retainer_readiness` evaluates whether the client is ready to enter the 2,999 SAR/mo Managed Revenue Ops retainer.
+**What runs:** Handoff call (60 minutes) walking the client through the Proof Pack section by section. Then `adoption_os.retainer_readiness` evaluates whether the client is ready to enter the Governed Ops Retainer (4,999–35,000 SAR/mo, scoped).
 
 **Retainer eligibility (estimated criteria):**
 

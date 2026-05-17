@@ -64,9 +64,11 @@ curl localhost:8000/health
 
 ## 🌟 One-line definition
 
-> **Dealix is a sovereign, policy-governed Growth & Execution OS for Saudi enterprises. It combines agentic intelligence, deterministic execution, approval controls, and executive observability to drive revenue, partnerships, expansion, and strategic operations with enterprise-grade trust.**
+> **Dealix is the GCC operating layer for Governed Revenue & AI Ops.** It enters a Saudi company through one defined workflow, diagnoses the gap with evidence, prepares the decision, runs approval gates, executes deterministically, and proves value — then converts that into a governed monthly retainer.
 
-It is **not** a CRM, **not** a chatbot, **not** a sales automation tool.
+The product/architecture name for this layer is the **Growth & Execution OS**: a sovereign, policy-governed system combining agentic intelligence, deterministic execution, approval controls, and executive observability across revenue, partnerships, expansion, and strategic operations.
+
+It is **not** a CRM, **not** a chatbot, **not** a sales automation tool. Category, offer ladder, and full strategy: [`docs/strategic/GOVERNED_REVENUE_AI_OPS_STRATEGY.md`](docs/strategic/GOVERNED_REVENUE_AI_OPS_STRATEGY.md).
 
 ## 🧭 The Prime Operating Rule
 

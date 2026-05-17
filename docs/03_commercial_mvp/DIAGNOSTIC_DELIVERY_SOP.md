@@ -1,6 +1,6 @@
 # Diagnostic Delivery SOP — إجراءات تسليم التشخيص المجاني
 
-> Purpose — الغرض: a one-page founder runbook for converting a fresh diagnostic intake into a delivered, governed, bilingual diagnostic in less than 24 hours. The Free Diagnostic is the top of the Dealix offer ladder; its job is to demonstrate methodology, not to make claims. Cross-link: [REVENUE_INTELLIGENCE_SPRINT.md](./REVENUE_INTELLIGENCE_SPRINT.md), [NON_NEGOTIABLES.md](../00_constitution/NON_NEGOTIABLES.md).
+> Purpose — الغرض: a one-page founder runbook for converting a fresh diagnostic intake into a delivered, governed, bilingual diagnostic in less than 24 hours. This SOP covers the **Free Risk Score** (Rung 0 of the Governed Revenue & AI Ops ladder); its job is to demonstrate methodology, not to make claims, and to route the prospect into the paid 7-Day Diagnostic. Cross-link: [REVENUE_INTELLIGENCE_SPRINT.md](./REVENUE_INTELLIGENCE_SPRINT.md), [OFFER_LADDER_AND_PRICING.md](../OFFER_LADDER_AND_PRICING.md), [NON_NEGOTIABLES.md](../00_constitution/NON_NEGOTIABLES.md).
 
 الغرض: دليل تشغيلي من صفحة واحدة لتحويل طلب تشخيص جديد إلى تسليم مُحوكَم ثنائي اللغة في أقل من 24 ساعة. التشخيص المجاني هو المدخل لسُلَّم العروض، ووظيفته إثبات المنهجية لا إطلاق وعود.
 
@@ -66,7 +66,7 @@ Tick every item before approval:
 4. Every claim is labeled `Estimated` / `Sample` / `Hypothetical`.
 5. Sector match is honest; no fabricated sector expertise.
 6. Bilingual sections are mirror-equivalent (AR not a thin summary of EN or vice versa).
-7. Recommended next step is the 499 SAR Sprint, not a custom quote.
+7. Recommended next step is the paid 7-Day Governed Revenue & AI Ops Diagnostic (Starter 4,999 SAR and up), not a custom quote.
 8. Proposal attachment is the current Sprint template version.
 9. Any redactions logged in the governance decisions log.
 10. Approver identity + timestamp recorded (non-negotiable #9).
@@ -103,7 +103,7 @@ Send one PDF + one editable Markdown:
 
 ## 8. Sprint proposal attached — مرفق عرض السبرنت
 
-Attach the rendered proposal from [PROPOSAL_REVENUE_INTELLIGENCE_SPRINT.md.j2](../../templates/PROPOSAL_REVENUE_INTELLIGENCE_SPRINT.md.j2) with the customer-specific Jinja variables filled. The proposal cites the 499 SAR price, 7-day delivery, and explicit exclusions.
+Attach the rendered proposal from [PROPOSAL_REVENUE_INTELLIGENCE_SPRINT.md.j2](../../templates/PROPOSAL_REVENUE_INTELLIGENCE_SPRINT.md.j2) with the customer-specific Jinja variables filled. The proposal cites the applicable 7-Day Diagnostic tier price (4,999 / 9,999 / 15,000 / 25,000 SAR), 7-day delivery, and explicit exclusions.
 
 ---
 

@@ -55,6 +55,21 @@ Turn messy data, manual workflows, and scattered knowledge into governed AI oper
 
 ---
 
+## Pricing Amendment Rule (amended 2026-05-17)
+
+Pricing changes require an **explicit, logged founder decision in the Decision
+Ledger** ([`../ledgers/DECISION_LEDGER.md`](../ledgers/DECISION_LEDGER.md)). The
+prior doctrine — "no pricing change without ≥ 3 paid pilots at the new price" —
+is amended: the **≥ 3-paid-pilot rule is now a validation target to confirm the
+published price, not a precondition to publish it.** A new price may be published
+once the founder decision is logged; the pilots then validate or correct it.
+
+This amendment governs the adoption of the Governed Revenue & AI Ops pricing
+ladder (Decision D-003, 2026-05-17). The 11 Non-Negotiables below are unchanged
+by this amendment.
+
+---
+
 ## The Final Rule
 
 From now on, everything in Dealix must answer:
