@@ -89,4 +89,25 @@ def compute_full_ops_score() -> dict[str, Any]:
         "breakdown": breakdown,
         "weights_table": SCORE_WEIGHTS,
         "safety_summary": "no_fake_green_each_layer_verified_via_health_check",
+        # Superseded-by note: the layer breakdown above is a coarse
+        # module-presence proxy. The canonical, evidence-attested 0-5
+        # maturity score now lives in the Execution Assurance System.
+        "canonical_score_source": "execution_assurance_os",
+        "execution_assurance": _execution_assurance_score(),
     }
+
+
+def _execution_assurance_score() -> dict[str, Any]:
+    """Canonical 0-5 maturity score from the Execution Assurance registry.
+
+    Best-effort: a registry problem must never break the legacy radar.
+    """
+    try:
+        from auto_client_acquisition.execution_assurance_os import (
+            aggregate_score,
+            load_machine_registry,
+        )
+
+        return aggregate_score(load_machine_registry()).to_dict()
+    except Exception as exc:  # noqa: BLE001
+        return {"available": False, "reason": str(exc)}

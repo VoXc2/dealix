@@ -10,6 +10,7 @@ from fastapi import APIRouter
 from api.routers import (
     company_brain,
     company_growth_beast,
+    execution_assurance,
     full_ops_radar as full_ops_radar_router,
     growth_beast,
     growth_os,
@@ -33,6 +34,7 @@ _ROUTERS = [
     search_radar.router,
     radar_events_router.router,
     full_ops_radar_router.router,
+    execution_assurance.router,
     unified_operating_graph_router.router,
     partnership_os.router,
     proof_to_market.router,

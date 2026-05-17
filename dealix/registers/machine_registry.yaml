@@ -1,0 +1,817 @@
+# ═══════════════════════════════════════════════════════════════════
+# Machine Registry — Dealix Execution Assurance System
+# ═══════════════════════════════════════════════════════════════════
+# Every operational "machine" is declared here with a goal, owner,
+# inputs, outputs, KPIs, Definition of Done, failure modes, an honest
+# 0-5 maturity score, and an acceptance gate.
+#
+# This register IS the assurance state. It is read by:
+#   - the scorecard engine (auto_client_acquisition/execution_assurance_os)
+#   - the read-only API (api/routers/execution_assurance.py)
+#   - the Weekly CEO Review and Monthly Quality Audit scripts
+#   - CI (tests/assurance/test_registry_invariants.py)
+#
+# NO FAKE GREEN. A Definition-of-Done item may only set `met: true`
+# if it carries a concrete `evidence_ref` (a file path or artifact).
+# A machine's maturity_score must be earned, not assumed.
+#
+# Maturity ladder (0-5):
+#   0  Absent          — does not exist
+#   1  Manual          — exists but run by hand, no automation
+#   2  Partial         — exists with templates, not automated end-to-end
+#   3  Automated       — runs internally, not yet measured or approval-gated
+#   4  Governed        — automated + measured + approval gates in place
+#   5  Self-improving  — automated + measured + governed + learns from failure
+#
+# Update by editing this YAML and opening a PR. Do not edit Python.
+# ═══════════════════════════════════════════════════════════════════
+
+schema_version: "1.0"
+last_reviewed: "2026-05-17"
+
+maturity_levels:
+  0: "Absent — does not exist"
+  1: "Manual — exists but run by hand, no automation"
+  2: "Partial — exists with templates, not automated end-to-end"
+  3: "Automated — runs internally, not yet measured or approval-gated"
+  4: "Governed — automated + measured + approval gates in place"
+  5: "Self-improving — automated + measured + governed + learns from failure"
+
+machines:
+
+  # ───────────────────────── Sales Autopilot ─────────────────────────
+  - id: sales_autopilot
+    name: "Sales Autopilot"
+    goal: "Turn target accounts into qualified, staged, scored pipeline with a clear next action — without auto-sending anything external."
+    owner: "founder"
+    inputs:
+      - "Inbound leads (landing page, risk-score form, referral, manual)"
+      - "ICP definition"
+      - "Lead signals (sector, region, role, budget, urgency, tooling)"
+    outputs:
+      - "Scored lead with stage and next action"
+      - "Meeting brief drafts for qualified leads"
+      - "Scope drafts and invoice drafts queued for founder approval"
+    kpis:
+      - name: "lead_capture_success_rate"
+        target: "95"
+        unit: "percent"
+        current: null
+      - name: "lead_scoring_coverage"
+        target: "100"
+        unit: "percent"
+        current: null
+      - name: "qualified_lead_response_time"
+        target: "24"
+        unit: "hours_max"
+        current: null
+      - name: "high_risk_auto_send"
+        target: "0"
+        unit: "percent"
+        current: null
+    scorecard_target: 4
+    maturity_score: 3
+    maturity_rationale: "Intake, ICP scoring, stage machine and approval-gated drafting exist in code; not yet fully measured against KPI targets, so not yet level 4."
+    definition_of_done:
+      - id: sales_dod_1
+        text: "Any lead that enters is recorded automatically"
+        met: true
+        evidence_ref: "auto_client_acquisition/pipeline.py"
+      - id: sales_dod_2
+        text: "Every lead receives a score"
+        met: true
+        evidence_ref: "auto_client_acquisition/icp_scorer.py"
+      - id: sales_dod_3
+        text: "Every lead is placed in a pipeline stage"
+        met: true
+        evidence_ref: "auto_client_acquisition/crm_v10/stage_machine.py"
+      - id: sales_dod_4
+        text: "Every lead has a next action"
+        met: true
+        evidence_ref: "auto_client_acquisition/full_ops_contracts/schemas.py::LeadOpsRecord.next_action"
+      - id: sales_dod_5
+        text: "Qualified-A leads generate a meeting draft"
+        met: true
+        evidence_ref: "auto_client_acquisition/full_ops_contracts/schemas.py::LeadOpsRecord.draft_id"
+      - id: sales_dod_6
+        text: "Every meeting produces a brief"
+        met: false
+        evidence_ref: ""
+      - id: sales_dod_7
+        text: "meeting_done is not accepted without notes"
+        met: false
+        evidence_ref: ""
+      - id: sales_dod_8
+        text: "scope_requested generates a scope draft"
+        met: false
+        evidence_ref: ""
+      - id: sales_dod_9
+        text: "Invoices are not sent without approval"
+        met: true
+        evidence_ref: "auto_client_acquisition/finance_os/guardrails.py"
+      - id: sales_dod_10
+        text: "invoice_paid starts delivery automatically"
+        met: false
+        evidence_ref: ""
+    failure_modes:
+      - "Lead enters but is never scored (silent drop)"
+      - "Weak lead misclassified as qualified, interrupting the founder"
+      - "Draft auto-sent to an external channel without approval"
+      - "Invoice sent before scope is approved"
+    nist:
+      govern: "Founder owns the pipeline; all external sends require approval; cold WhatsApp and LinkedIn automation are forbidden."
+      map: "Events: lead_captured, message_prepared, message_sent, meeting_booked, meeting_done, scope_requested. Risk concentrated at external-send and invoice steps."
+      measure: "Lead capture rate, scoring coverage, qualified response time, high-risk auto-send rate."
+      manage: "Bottlenecks routed to Weekly CEO Review; misclassification feeds back into ICP scoring thresholds."
+    acceptance_gate:
+      - "10 test leads processed, 100% scored"
+      - "100% of test leads assigned a stage"
+      - "100% of test leads have a next action"
+      - "0 high-risk auto-sends"
+    evidence_event_names:
+      - lead_captured
+      - message_prepared
+      - message_sent
+      - meeting_booked
+      - meeting_done
+      - scope_requested
+    approval_required_actions:
+      - "message_sent"
+      - "invoice_sent"
+      - "scope_sent"
+
+  # ──────────────────────── Support Autopilot ────────────────────────
+  - id: support_autopilot
+    name: "Support Autopilot"
+    goal: "Answer low-risk questions instantly from a sourced knowledge base and escalate high-risk questions to the founder."
+    owner: "founder"
+    inputs:
+      - "Support tickets and inbound questions"
+      - "Knowledge Base articles"
+    outputs:
+      - "Sourced auto-answers for low-risk questions"
+      - "Escalations with a safe draft for high-risk questions"
+      - "Knowledge-gap entries for unanswered questions"
+    kpis:
+      - name: "support_auto_resolution_rate"
+        target: "40-60"
+        unit: "percent"
+        current: null
+      - name: "support_escalation_accuracy"
+        target: "100"
+        unit: "percent"
+        current: null
+      - name: "high_risk_auto_send"
+        target: "0"
+        unit: "percent"
+        current: null
+    scorecard_target: 4
+    maturity_score: 3
+    maturity_rationale: "Ticket intake and intent classification exist in support_os; KB sourcing and the gap loop are partially wired and not yet measured."
+    definition_of_done:
+      - id: support_dod_1
+        text: "Every ticket is classified by intent"
+        met: true
+        evidence_ref: "auto_client_acquisition/support_os"
+      - id: support_dod_2
+        text: "The system searches the Knowledge Base for an answer"
+        met: false
+        evidence_ref: ""
+      - id: support_dod_3
+        text: "Low-risk questions receive an auto-answer"
+        met: false
+        evidence_ref: ""
+      - id: support_dod_4
+        text: "High-risk questions are escalated, not auto-answered"
+        met: true
+        evidence_ref: "auto_client_acquisition/governance_os/policy_check.py::policy_check_draft"
+      - id: support_dod_5
+        text: "Every reply carries a source"
+        met: false
+        evidence_ref: ""
+      - id: support_dod_6
+        text: "Every unanswered question generates a knowledge gap"
+        met: false
+        evidence_ref: ""
+      - id: support_dod_7
+        text: "No security, compliance or refund answer is sent without approval"
+        met: true
+        evidence_ref: "auto_client_acquisition/governance_os/policy_check.py::policy_check_draft"
+    failure_modes:
+      - "High-risk question auto-answered without escalation"
+      - "Answer given with no source (un-sourced claim)"
+      - "Knowledge gap not logged, so the same question recurs"
+    nist:
+      govern: "Founder approves all high-risk answers; no source means no answer."
+      map: "Events: ticket_received, ticket_answered, ticket_escalated, knowledge_gap_logged. Risk concentrated at the auto-answer decision."
+      measure: "Auto-resolution rate, escalation accuracy, high-risk auto-send rate."
+      manage: "Knowledge gaps feed KB updates reviewed in the Monthly Quality Audit."
+    acceptance_gate:
+      - "30 FAQ questions tested"
+      - "80% answered from the Knowledge Base"
+      - "100% of high-risk questions escalated"
+      - "0 un-sourced claims"
+    evidence_event_names:
+      - ticket_received
+      - ticket_answered
+      - ticket_escalated
+      - knowledge_gap_logged
+    approval_required_actions:
+      - "high_risk_answer_sent"
+      - "security_claim_sent"
+      - "refund_decision"
+
+  # ──────────────────────── Marketing Factory ────────────────────────
+  - id: marketing_factory
+    name: "Marketing Factory"
+    goal: "Produce content that generates proof-pack requests and qualified leads — measured by pipeline, not vanity metrics."
+    owner: "founder"
+    inputs:
+      - "Sales objections and frequently asked questions"
+      - "Proof packs and case studies"
+      - "Sector context"
+    outputs:
+      - "Content assets with a CTA and UTM tracking"
+      - "Lead magnets that generate leads"
+      - "A weekly content calendar"
+    kpis:
+      - name: "qualified_leads_from_content"
+        target: "tracked"
+        unit: "count"
+        current: null
+      - name: "lead_magnet_conversion"
+        target: "tracked"
+        unit: "percent"
+        current: null
+      - name: "content_calendar_coverage"
+        target: "100"
+        unit: "percent"
+        current: null
+    scorecard_target: 3
+    maturity_score: 1
+    maturity_rationale: "Marketing exists only as documentation today; no automated content pipeline, no UTM-to-lead wiring. Honestly level 1, not green."
+    definition_of_done:
+      - id: marketing_dod_1
+        text: "Every content asset has a CTA"
+        met: false
+        evidence_ref: ""
+      - id: marketing_dod_2
+        text: "Every CTA is wired to a UTM"
+        met: false
+        evidence_ref: ""
+      - id: marketing_dod_3
+        text: "Every lead magnet generates a lead"
+        met: false
+        evidence_ref: ""
+      - id: marketing_dod_4
+        text: "Every key post is repurposed into a snippet, email or short video"
+        met: false
+        evidence_ref: ""
+      - id: marketing_dod_5
+        text: "There is a content calendar every week"
+        met: false
+        evidence_ref: ""
+      - id: marketing_dod_6
+        text: "Every sales objection is turned into content"
+        met: false
+        evidence_ref: ""
+      - id: marketing_dod_7
+        text: "Content is measured by qualified leads, not likes"
+        met: false
+        evidence_ref: ""
+    failure_modes:
+      - "Content produced with no CTA, so it cannot convert"
+      - "Traffic with no UTM, so attribution is impossible"
+      - "Measuring likes instead of qualified leads"
+    nist:
+      govern: "Founder owns the content calendar; no guaranteed-outcome claims in any asset."
+      map: "Events: content_published, lead_captured. Risk concentrated in un-attributed traffic and overclaiming."
+      measure: "Qualified leads from content, lead-magnet conversion, calendar coverage."
+      manage: "Underperforming channels are flagged for Kill / Improve decisions in the Weekly CEO Review."
+    acceptance_gate:
+      - "Lead magnet live"
+      - "UTM tracking live"
+      - "Content calendar ready"
+      - "Email sequence ready"
+    evidence_event_names:
+      - content_published
+      - lead_captured
+    approval_required_actions:
+      - "content_published"
+      - "market_facing_statement"
+
+  # ───────────────────────── Affiliate Machine ───────────────────────
+  - id: affiliate_machine
+    name: "Affiliate Machine"
+    goal: "Acquire leads through approved partners with enforced disclosure and commissions that pay only after invoice_paid."
+    owner: "founder"
+    inputs:
+      - "Partner applications"
+      - "Approved messaging and forbidden-claims list"
+    outputs:
+      - "Approved affiliates with a referral code"
+      - "Commissions calculated only after invoice_paid"
+      - "Compliance flags that stop payout on violation"
+    kpis:
+      - name: "affiliate_disclosure_rate"
+        target: "100"
+        unit: "percent"
+        current: null
+      - name: "commission_after_paid_only"
+        target: "100"
+        unit: "percent"
+        current: null
+      - name: "compliance_violations_open"
+        target: "0"
+        unit: "count"
+        current: null
+    scorecard_target: 4
+    maturity_score: 1
+    maturity_rationale: "Affiliate program exists only as documentation; no referral tracking or commission engine in code. Honestly level 1."
+    definition_of_done:
+      - id: affiliate_dod_1
+        text: "A partner application exists"
+        met: false
+        evidence_ref: ""
+      - id: affiliate_dod_2
+        text: "Affiliate scoring exists"
+        met: false
+        evidence_ref: ""
+      - id: affiliate_dod_3
+        text: "Approved messaging exists"
+        met: false
+        evidence_ref: ""
+      - id: affiliate_dod_4
+        text: "Forbidden claims are clearly defined"
+        met: true
+        evidence_ref: "auto_client_acquisition/governance_os/policy_check.py::policy_check_draft"
+      - id: affiliate_dod_5
+        text: "Each affiliate has a referral code"
+        met: false
+        evidence_ref: ""
+      - id: affiliate_dod_6
+        text: "Commission is calculated only after invoice_paid"
+        met: false
+        evidence_ref: ""
+      - id: affiliate_dod_7
+        text: "Disclosure is required and enforced"
+        met: false
+        evidence_ref: ""
+      - id: affiliate_dod_8
+        text: "Compliance violations stop the commission"
+        met: false
+        evidence_ref: ""
+    failure_modes:
+      - "Affiliate posts a misleading guaranteed-growth claim"
+      - "Commission paid before invoice_paid"
+      - "Referral published with no disclosure"
+    nist:
+      govern: "Disclosure is mandatory; misleading claims block payout; founder approves messaging."
+      map: "Events: affiliate_referral, commission_calculated, compliance_violation. Risk concentrated in claims and early payout."
+      measure: "Disclosure rate, commission-after-paid compliance, open violations."
+      manage: "Violations stop payout and feed an affiliate audit in the Monthly Quality Audit."
+    acceptance_gate:
+      - "Approved messaging ready"
+      - "Disclosure requirement enforced"
+      - "Referral tracking live"
+      - "Commission rules live"
+      - "Compliance flags live"
+    evidence_event_names:
+      - affiliate_referral
+      - commission_calculated
+      - compliance_violation
+    approval_required_actions:
+      - "affiliate_messaging_approved"
+      - "commission_payout"
+
+  # ───────────────────────── Partner Channel ─────────────────────────
+  - id: partner_channel
+    name: "Partner Channel"
+    goal: "Manage agency and referral partners so every partner has a clear status and next action."
+    owner: "founder"
+    inputs:
+      - "Partner applications and partner profiles"
+    outputs:
+      - "Partner status and next action"
+      - "Co-delivery and referral arrangements"
+    kpis:
+      - name: "partners_with_status"
+        target: "100"
+        unit: "percent"
+        current: null
+      - name: "partners_with_next_action"
+        target: "100"
+        unit: "percent"
+        current: null
+    scorecard_target: 3
+    maturity_score: 2
+    maturity_rationale: "partnership_os exists with a partner-application endpoint; status and next-action tracking are partial and template-based, not automated."
+    definition_of_done:
+      - id: partner_dod_1
+        text: "Every partner has a status"
+        met: true
+        evidence_ref: "auto_client_acquisition/partnership_os"
+      - id: partner_dod_2
+        text: "Every partner has a next action"
+        met: false
+        evidence_ref: ""
+      - id: partner_dod_3
+        text: "A partner application intake exists"
+        met: true
+        evidence_ref: "auto_client_acquisition/partnership_os"
+      - id: partner_dod_4
+        text: "Partner agreements require founder approval"
+        met: false
+        evidence_ref: ""
+    failure_modes:
+      - "Partner goes stale with no next action"
+      - "Co-delivery agreed without an approved scope"
+    nist:
+      govern: "Founder approves all partner agreements; no contract auto-execution."
+      map: "Events: partner_application. Risk concentrated in agreements and commitments."
+      measure: "Partners with a status, partners with a next action."
+      manage: "Stale partners surfaced in the Weekly CEO Review."
+    acceptance_gate:
+      - "Every partner has a status"
+      - "Every partner has a next action"
+      - "Partner agreement approval flow exists"
+    evidence_event_names:
+      - partner_application
+      - approval_requested
+    approval_required_actions:
+      - "partner_agreement_signed"
+      - "contract_change"
+
+  # ────────────────────────── Media Engine ───────────────────────────
+  - id: media_engine
+    name: "Media Engine"
+    goal: "Turn proof and delivered work into governed media assets — without publishing client data or overclaiming."
+    owner: "founder"
+    inputs:
+      - "Proof packs and case-study candidates"
+      - "Client publication consent"
+    outputs:
+      - "Media assets cleared for publication"
+    kpis:
+      - name: "media_assets_with_consent"
+        target: "100"
+        unit: "percent"
+        current: null
+      - name: "overclaim_violations"
+        target: "0"
+        unit: "count"
+        current: null
+    scorecard_target: 3
+    maturity_score: 1
+    maturity_rationale: "Media production exists only as documentation; no automated asset pipeline. Honestly level 1."
+    definition_of_done:
+      - id: media_dod_1
+        text: "Every media asset is built from a real proof event"
+        met: false
+        evidence_ref: ""
+      - id: media_dod_2
+        text: "No client data is published without explicit consent"
+        met: true
+        evidence_ref: "auto_client_acquisition/full_ops_contracts/schemas.py::CaseStudyCandidate.is_publishable"
+      - id: media_dod_3
+        text: "No overclaiming — every claim is sourced"
+        met: true
+        evidence_ref: "dealix/registers/no_overclaim.yaml"
+      - id: media_dod_4
+        text: "Every asset is approved before publication"
+        met: false
+        evidence_ref: ""
+    failure_modes:
+      - "Client data leaked into a public asset"
+      - "Asset publishes an unsourced or guaranteed-outcome claim"
+    nist:
+      govern: "No publication without client consent and founder approval; claims tracked in the no-overclaim register."
+      map: "Events: content_published. Risk concentrated in consent and overclaiming."
+      measure: "Assets with consent, overclaim violations."
+      manage: "Overclaim violations feed the Monthly Quality Audit."
+    acceptance_gate:
+      - "Consent gate enforced before publication"
+      - "Approval gate enforced before publication"
+      - "0 overclaim violations"
+    evidence_event_names:
+      - content_published
+      - approval_requested
+    approval_required_actions:
+      - "content_published"
+      - "market_facing_statement"
+
+  # ───────────────────────── Delivery Factory ────────────────────────
+  - id: delivery_factory
+    name: "Delivery Factory"
+    goal: "Turn every paid diagnostic into a delivery checklist and a proof pack with sourced findings."
+    owner: "founder"
+    inputs:
+      - "Paid engagements (invoice_paid)"
+      - "Customer onboarding data and Source Passport"
+    outputs:
+      - "Delivery checklist per engagement"
+      - "Proof pack with sourced findings and an upsell recommendation"
+    kpis:
+      - name: "paid_to_checklist_rate"
+        target: "100"
+        unit: "percent"
+        current: null
+      - name: "proof_pack_score"
+        target: "70"
+        unit: "min_score"
+        current: null
+      - name: "findings_with_source"
+        target: "100"
+        unit: "percent"
+        current: null
+    scorecard_target: 4
+    maturity_score: 3
+    maturity_rationale: "delivery_factory and the 7-day sprint playbook exist in code; proof-pack scoring exists; not yet fully measured against KPI targets."
+    definition_of_done:
+      - id: delivery_dod_1
+        text: "Every paid diagnostic becomes a delivery checklist"
+        met: true
+        evidence_ref: "auto_client_acquisition/delivery_factory"
+      - id: delivery_dod_2
+        text: "Every engagement produces a proof pack"
+        met: true
+        evidence_ref: "api/routers/proof_pack_governed.py"
+      - id: delivery_dod_3
+        text: "Every finding in the proof pack has a source"
+        met: true
+        evidence_ref: "api/routers/proof_pack_governed.py"
+      - id: delivery_dod_4
+        text: "A missing-data flow exists for incomplete inputs"
+        met: false
+        evidence_ref: ""
+      - id: delivery_dod_5
+        text: "Every proof pack carries an upsell recommendation"
+        met: false
+        evidence_ref: ""
+      - id: delivery_dod_6
+        text: "Delivery does not start before payment_confirmed"
+        met: true
+        evidence_ref: "auto_client_acquisition/business_ops/stage_definitions.py"
+    failure_modes:
+      - "Delivery started before payment is confirmed"
+      - "Proof pack finding stated with no source"
+      - "Incomplete input data delivered as if complete"
+    nist:
+      govern: "No delivery before payment_confirmed; no fake results; no public proof without client permission."
+      map: "Events: delivery_kickoff, proof_pack_assembled, proof_pack_sent. Risk concentrated in unsourced findings."
+      measure: "Paid-to-checklist rate, proof-pack score, findings-with-source rate."
+      manage: "Low proof-pack scores feed a delivery audit in the Monthly Quality Audit."
+    acceptance_gate:
+      - "Onboarding form ready"
+      - "Diagnostic checklist ready"
+      - "Proof pack template ready"
+      - "Missing-data flow ready"
+      - "Upsell recommendation ready"
+    evidence_event_names:
+      - delivery_kickoff
+      - proof_pack_assembled
+      - proof_pack_sent
+      - upsell_candidate
+    approval_required_actions:
+      - "proof_pack_sent"
+      - "public_case_study"
+
+  # ─────────────────────────── Billing Ops ───────────────────────────
+  - id: billing_ops
+    name: "Billing Ops"
+    goal: "Issue invoices only after an approved scope, and recognize revenue only after invoice_paid."
+    owner: "founder"
+    inputs:
+      - "Approved scopes"
+      - "Payment evidence"
+    outputs:
+      - "Draft invoices queued for approval"
+      - "Confirmed revenue with payment proof"
+    kpis:
+      - name: "scope_to_invoice_conversion"
+        target: "tracked"
+        unit: "percent"
+        current: null
+      - name: "invoice_to_paid_conversion"
+        target: "tracked"
+        unit: "percent"
+        current: null
+      - name: "revenue_before_paid"
+        target: "0"
+        unit: "count"
+        current: null
+    scorecard_target: 4
+    maturity_score: 3
+    maturity_rationale: "finance_os guardrails block live charge and fake revenue; invoices are draft-only with approval_required. Not yet measured against conversion targets."
+    definition_of_done:
+      - id: billing_dod_1
+        text: "No invoice is sent without an approved scope"
+        met: true
+        evidence_ref: "auto_client_acquisition/finance_os/guardrails.py"
+      - id: billing_dod_2
+        text: "No live charge happens automatically"
+        met: true
+        evidence_ref: "auto_client_acquisition/finance_os/guardrails.py::is_live_charge_allowed"
+      - id: billing_dod_3
+        text: "Revenue is recognized only after payment_confirmed"
+        met: true
+        evidence_ref: "auto_client_acquisition/full_ops_contracts/schemas.py::PaymentStateRecord"
+      - id: billing_dod_4
+        text: "Every invoice requires founder approval"
+        met: true
+        evidence_ref: "auto_client_acquisition/finance_os/guardrails.py"
+      - id: billing_dod_5
+        text: "Payment evidence is required before confirmation"
+        met: true
+        evidence_ref: "auto_client_acquisition/full_ops_contracts/schemas.py::PaymentStateRecord.evidence_reference"
+      - id: billing_dod_6
+        text: "Invoices are ZATCA-compliant"
+        met: false
+        evidence_ref: ""
+    failure_modes:
+      - "Invoice sent before scope is approved"
+      - "Revenue counted before invoice_paid (fake revenue)"
+      - "Live charge attempted automatically"
+    nist:
+      govern: "No invoice without approved scope; no revenue before payment_confirmed; no auto-charge anywhere."
+      map: "Events: invoice_sent, invoice_paid. Risk concentrated in early revenue recognition."
+      measure: "Scope-to-invoice conversion, invoice-to-paid conversion, revenue-before-paid count."
+      manage: "Payment-friction bottlenecks routed to the Weekly CEO Review."
+    acceptance_gate:
+      - "Invoice guard blocks invoice without approved scope"
+      - "Revenue guard blocks revenue before invoice_paid"
+      - "No auto-charge path exists"
+    evidence_event_names:
+      - invoice_sent
+      - invoice_paid
+    approval_required_actions:
+      - "invoice_sent"
+      - "payment_terms_change"
+
+  # ──────────────────────── Governance Layer ─────────────────────────
+  - id: governance_layer
+    name: "Governance Layer"
+    goal: "Ensure no external or high-risk action happens without approval, a source, or evidence."
+    owner: "founder"
+    inputs:
+      - "Draft actions, claims, scopes, invoices, case studies"
+    outputs:
+      - "Approval decisions with status and reason"
+      - "Policy verdicts and blocked-action records"
+    kpis:
+      - name: "approval_compliance_rate"
+        target: "100"
+        unit: "percent"
+        current: null
+      - name: "high_risk_auto_send"
+        target: "0"
+        unit: "percent"
+        current: null
+      - name: "unsourced_claims"
+        target: "0"
+        unit: "count"
+        current: null
+    scorecard_target: 5
+    maturity_score: 4
+    maturity_rationale: "governance_os, the approval center and finance guardrails enforce approval and claim gates with audit history; the self-improving loop from failures is not yet automated."
+    definition_of_done:
+      - id: gov_dod_1
+        text: "Every external send requires approval"
+        met: true
+        evidence_ref: "auto_client_acquisition/approval_center/approval_store.py"
+      - id: gov_dod_2
+        text: "Every invoice requires approval"
+        met: true
+        evidence_ref: "auto_client_acquisition/finance_os/guardrails.py"
+      - id: gov_dod_3
+        text: "Every scope requires approval"
+        met: false
+        evidence_ref: ""
+      - id: gov_dod_4
+        text: "Every case study requires client permission"
+        met: true
+        evidence_ref: "auto_client_acquisition/full_ops_contracts/schemas.py::CaseStudyCandidate.is_publishable"
+      - id: gov_dod_5
+        text: "Every security or compliance claim requires a source"
+        met: true
+        evidence_ref: "dealix/registers/no_overclaim.yaml"
+      - id: gov_dod_6
+        text: "Every approval has a status"
+        met: true
+        evidence_ref: "auto_client_acquisition/approval_center/approval_store.py"
+      - id: gov_dod_7
+        text: "Every rejection has a reason"
+        met: true
+        evidence_ref: "auto_client_acquisition/approval_center/approval_store.py"
+      - id: gov_dod_8
+        text: "Every approval produces an evidence event"
+        met: false
+        evidence_ref: ""
+    failure_modes:
+      - "An external action slips through without approval"
+      - "A claim is published with no source"
+      - "Over-blocking — safe actions blocked, slowing the business"
+    nist:
+      govern: "Founder is the approver of record; never-auto-execute actions are hardcoded."
+      map: "Events: approval_requested, approval_granted, approval_rejected, governance_decision. Risk concentrated in any bypass of the approval gate."
+      measure: "Approval compliance rate, high-risk auto-send rate, unsourced-claim count."
+      manage: "Blocked actions reviewed monthly to detect over-blocking and gaps."
+    acceptance_gate:
+      - "No external high-risk action without approval"
+      - "Never-auto-execute actions route to approval or block"
+      - "0 unsourced claims"
+    evidence_event_names:
+      - approval_requested
+      - approval_granted
+      - approval_rejected
+      - governance_decision
+    approval_required_actions:
+      - "pricing_offer_commit"
+      - "contract_change"
+      - "regulator_communication"
+      - "market_facing_statement"
+
+  # ───────────────────────── Evidence Ledger ─────────────────────────
+  - id: evidence_ledger
+    name: "Evidence Ledger"
+    goal: "Record an evidence event for every important step so nothing is claimed without proof."
+    owner: "founder"
+    inputs:
+      - "Lifecycle events from every machine"
+    outputs:
+      - "An append-only, PII-redacted ledger of evidence events"
+    kpis:
+      - name: "evidence_completeness_score"
+        target: "90"
+        unit: "min_percent"
+        current: null
+      - name: "events_with_source"
+        target: "100"
+        unit: "percent"
+        current: null
+    scorecard_target: 5
+    maturity_score: 4
+    maturity_rationale: "evidence_control_plane_os provides an append-only, PII-redacted JSONL ledger with typed events; per-stage completeness is not yet measured end-to-end."
+    definition_of_done:
+      - id: evidence_dod_1
+        text: "lead_captured is recorded"
+        met: true
+        evidence_ref: "auto_client_acquisition/evidence_control_plane_os/evidence_object.py"
+      - id: evidence_dod_2
+        text: "message_prepared is recorded"
+        met: true
+        evidence_ref: "auto_client_acquisition/evidence_control_plane_os/evidence_object.py"
+      - id: evidence_dod_3
+        text: "message_sent is recorded only after approval"
+        met: true
+        evidence_ref: "auto_client_acquisition/evidence_control_plane_os/evidence_object.py"
+      - id: evidence_dod_4
+        text: "meeting_booked is recorded"
+        met: true
+        evidence_ref: "auto_client_acquisition/evidence_control_plane_os/evidence_object.py"
+      - id: evidence_dod_5
+        text: "meeting_done is recorded with notes"
+        met: false
+        evidence_ref: ""
+      - id: evidence_dod_6
+        text: "scope_requested is recorded"
+        met: false
+        evidence_ref: ""
+      - id: evidence_dod_7
+        text: "invoice_sent is recorded"
+        met: true
+        evidence_ref: "auto_client_acquisition/evidence_control_plane_os/evidence_object.py"
+      - id: evidence_dod_8
+        text: "invoice_paid is recorded with proof"
+        met: true
+        evidence_ref: "auto_client_acquisition/evidence_control_plane_os/evidence_object.py"
+      - id: evidence_dod_9
+        text: "proof_pack_sent is recorded"
+        met: true
+        evidence_ref: "auto_client_acquisition/evidence_control_plane_os/evidence_object.py"
+      - id: evidence_dod_10
+        text: "upsell_candidate is recorded"
+        met: false
+        evidence_ref: ""
+    failure_modes:
+      - "An important step happens with no evidence event (silent gap)"
+      - "An event is recorded but the ledger is mutable (tampering risk)"
+      - "PII leaks into an evidence event"
+    nist:
+      govern: "The ledger is append-only and PII-redacted; events are never edited or deleted."
+      map: "All lifecycle events flow here. Risk concentrated in missing events and PII leakage."
+      measure: "Evidence completeness score, events-with-source rate."
+      manage: "Gaps detected in the Monthly Quality Audit by reconciling the registry against the ledger."
+    acceptance_gate:
+      - "Evidence ledger append works"
+      - "Ledger is append-only and PII-redacted"
+      - "Each machine's key events resolve to ledger event names"
+    evidence_event_names:
+      - lead_captured
+      - message_prepared
+      - message_sent
+      - meeting_booked
+      - invoice_sent
+      - invoice_paid
+      - proof_pack_sent
+    approval_required_actions: []
