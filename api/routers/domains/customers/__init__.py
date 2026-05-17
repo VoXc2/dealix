@@ -21,6 +21,7 @@ from api.routers import (
     service_sessions as service_sessions_router,
     support_journey as support_journey_router,
     support_os,
+    support_tickets,
 )
 
 _ROUTERS = [
@@ -37,6 +38,7 @@ _ROUTERS = [
     service_sessions_router.router,
     support_journey_router.router,
     support_os.router,
+    support_tickets.router,
 ]
 
 
