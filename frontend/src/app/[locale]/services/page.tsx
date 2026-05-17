@@ -1,10 +1,5 @@
-import dynamic from "next/dynamic";
 import Link from "next/link";
-
-const SprintToolsPanel = dynamic(
-  () => import("@/components/services/SprintToolsPanel"),
-  { ssr: false },
-);
+import { SprintToolsPanelLoader } from "@/components/services/SprintToolsPanelLoader";
 
 interface ServicesHubProps {
   params: Promise<{ locale: string }>;
@@ -87,7 +82,7 @@ export default async function ServicesHubPage({ params }: ServicesHubProps) {
             </li>
           </ul>
 
-          <SprintToolsPanel locale={locale} />
+          <SprintToolsPanelLoader locale={locale} />
 
           <div className="mt-12">
             <Link
@@ -175,7 +170,7 @@ export default async function ServicesHubPage({ params }: ServicesHubProps) {
           </li>
         </ul>
 
-        <SprintToolsPanel locale={locale} />
+        <SprintToolsPanelLoader locale={locale} />
 
         <div className="mt-12">
           <Link

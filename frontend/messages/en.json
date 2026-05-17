@@ -1,5 +1,6 @@
 {
   "nav": {
+    "opsFounder": "Founder Command",
     "dashboard": "Dashboard",
     "pipeline": "Lead Pipeline",
     "agents": "Agent Activity",
@@ -154,5 +155,22 @@
     "handleLabel": "Customer handle",
     "load": "Load",
     "promiseTitle": "Service promise"
+  },
+  "opsFounder": {
+    "title": "Founder Command Center",
+    "subtitle": "One screen that tells you what to do today",
+    "refresh": "Refresh",
+    "loading": "Loading…",
+    "noItems": "No items",
+    "frictionEmpty": "No friction events",
+    "governance": "Governance",
+    "estimate": "Estimate",
+    "generatedAt": "Last updated",
+    "leadsWaiting": "Leads waiting 24h+",
+    "friction": "Friction events (7d)",
+    "renewals": "Renewals due (7d)",
+    "approvals": "Pending approvals",
+    "proofEvents": "Recent proof events",
+    "capitalAssets": "Capital assets this week"
   }
 }

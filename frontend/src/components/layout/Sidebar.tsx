@@ -17,6 +17,7 @@ import {
   Zap,
   Shield,
   Building2,
+  Gauge,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
@@ -28,6 +29,7 @@ interface NavItem {
 }
 
 const navItems: NavItem[] = [
+  { key: "opsFounder", href: "/ops/founder", icon: Gauge },
   { key: "dashboard", href: "/dashboard", icon: LayoutDashboard },
   { key: "pipeline", href: "/pipeline", icon: GitBranch },
   { key: "agents", href: "/agents", icon: Bot },
@@ -141,6 +143,7 @@ export function Sidebar({ collapsed = false, onToggle }: SidebarProps) {
                     >
                       {t(
                         item.key as
+                          | "opsFounder"
                           | "dashboard"
                           | "pipeline"
                           | "agents"

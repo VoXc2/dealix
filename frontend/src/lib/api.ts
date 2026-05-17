@@ -181,6 +181,13 @@ export const api = {
 
   getCustomerPortal: (handle = "Slot-A") =>
     apiClient.get(`/api/v1/customer-portal/${encodeURIComponent(handle)}`),
+
+  getFounderDashboard: () => {
+    const adminKey = process.env.NEXT_PUBLIC_ADMIN_API_KEY?.trim();
+    return apiClient.get("/api/v1/founder/dashboard", {
+      headers: adminKey ? { "X-Admin-API-Key": adminKey } : undefined,
+    });
+  },
 };
 
 export default api;
