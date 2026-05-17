@@ -2,7 +2,7 @@
 
 ## Objective
 
-Build and defend category leadership in governed AI operations through narrative, proof, trust posture, and repeatable enterprise outcomes.
+Build and defend category leadership in governed revenue + AI operations through narrative control, proof discipline, trust posture, and repeatable GCC outcomes.
 
 ## Dominance pillars
 

@@ -31,6 +31,7 @@ This directory is the execution spine for the comprehensive transformation from 
 - `10_delivery_control_tower.md`
 - `11_org_operating_system.md`
 - `12_category_dominance.md`
+- `13_gcc_governed_revenue_ai_ops_operating_layer.md`
 
 ## Control artifacts
 

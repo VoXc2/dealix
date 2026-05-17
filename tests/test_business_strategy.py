@@ -13,14 +13,18 @@ from auto_client_acquisition.business.launch_metrics import north_star_metrics
 def test_pricing_tiers_exist():
     data = get_pricing_tiers()
     keys = {t["key"] for t in data["tiers"]}
-    assert "founder_operator" in keys
-    assert "growth_os" in keys
-    assert "scale_os" in keys
+    assert "governed_revenue_ai_ops_diagnostic" in keys
+    assert "revenue_intelligence_sprint" in keys
+    assert "governed_ops_retainer" in keys
 
 
 def test_recommend_plan_works():
     r = recommend_plan(company_size="sme", monthly_budget_sar=3500, goal="pipeline")
-    assert r["recommended_plan"] in ("growth_os", "scale_os", "founder_operator")
+    assert r["recommended_plan"] in (
+        "governed_revenue_ai_ops_diagnostic",
+        "revenue_intelligence_sprint",
+        "governed_ops_retainer",
+    )
 
 
 def test_roi_calculation():
@@ -43,7 +47,9 @@ def test_gtm_first_10_returns_actions():
 
 
 def test_launch_metrics_exist():
-    assert "primary" in north_star_metrics()
+    metrics = north_star_metrics()
+    assert "primary" in metrics
+    assert metrics["primary"] == "governed_value_decisions_created"
 
 
 @pytest.mark.asyncio

@@ -5,90 +5,76 @@ from __future__ import annotations
 from typing import Any, Literal
 
 PlanKey = Literal[
-    "founder_operator",
-    "growth_os",
-    "scale_os",
-    "performance_addon",
-    "enterprise",
-    "agency_partner",
+    "governed_revenue_ai_ops_diagnostic",
+    "revenue_intelligence_sprint",
+    "governed_ops_retainer",
 ]
 
 
 def get_pricing_tiers() -> dict[str, Any]:
-    """Product packaging aligned with docs/PRICING_STRATEGY.md (SAR/month unless noted)."""
+    """Governed offers ladder (SAR) aligned with Dealix strategic doctrine."""
     return {
         "currency": "SAR",
+        "category_en": "Governed Revenue + AI Workflows Operating Layer",
+        "positioning_en": "We do not sell AI automation; we sell governed execution.",
+        "entry_offer_en": "7-Day Governed Revenue & AI Ops Diagnostic",
         "tiers": [
             {
-                "key": "founder_operator",
-                "name_ar": "مشغّل المؤسس",
-                "target": "solo founders / early B2B startups",
-                "price_monthly_sar_range": [299, 499],
-                "price_future_sar": 999,
+                "key": "governed_revenue_ai_ops_diagnostic",
+                "name_ar": "تشخيص تشغيل الإيراد والذكاء الاصطناعي المحكوم (7 أيام)",
+                "target": "B2B teams with AI/revenue workflow noise",
+                "price_packages_sar": {
+                    "starter": 4999,
+                    "standard": 9999,
+                    "executive": 15000,
+                    "enterprise": 25000,
+                },
                 "includes": [
-                    "Arabic daily brief",
-                    "20 strategic opportunities / month",
-                    "project memory (local + Supabase path)",
-                    "draft messages (approval-first)",
-                    "launch readiness",
-                    "limited market radar",
+                    "Revenue workflow map",
+                    "CRM/source quality review",
+                    "approval boundary review",
+                    "evidence trail review",
+                    "top 3 governed value decisions",
+                    "decision passport + proof pack",
                 ],
             },
             {
-                "key": "growth_os",
-                "name_ar": "نظام النمو",
-                "target": "B2B SMEs",
-                "price_monthly_sar": 2999,
+                "key": "revenue_intelligence_sprint",
+                "name_ar": "Revenue Intelligence Sprint",
+                "target": "Post-diagnostic workflow execution",
+                "price_starting_sar": 25000,
+                "sell_condition": "Only after paid diagnostic confirms clear workflow opportunity",
                 "includes": [
-                    "Revenue Command Center",
-                    "Market Radar",
-                    "500 prospects / month (enrichment cap — policy)",
-                    "AI message drafts",
-                    "WhatsApp approval flow",
-                    "Gmail draft",
-                    "meeting schedule drafts",
-                    "weekly proof pack",
+                    "Workflow implementation with controls",
+                    "governed AI/revenue execution playbook",
+                    "proof of value checkpoint",
                 ],
             },
             {
-                "key": "scale_os",
-                "name_ar": "نظام التوسّع",
-                "target": "mature B2B teams",
-                "price_monthly_sar": 7999,
+                "key": "governed_ops_retainer",
+                "name_ar": "Governed Ops Retainer",
+                "target": "Teams with recurring governed workflow needs",
+                "price_monthly_sar_range": [4999, 15000],
+                "enterprise_monthly_sar_range": [15000, 35000],
+                "sell_condition": "Only after repeated monthly workflow evidence",
                 "includes": [
-                    "multi-seat",
-                    "team performance",
-                    "customer success signals",
-                    "churn / expansion scoring",
-                    "integrations",
-                    "advanced analytics",
-                    "API / webhooks",
+                    "approval queue operations",
+                    "evidence ledger maintenance",
+                    "continuous proof packs",
+                    "policy and risk updates",
                 ],
-            },
-            {
-                "key": "performance_addon",
-                "name_ar": "طبقة الأداء",
-                "target": "optional add-on",
-                "fee_qualified_lead_sar_range": [25, 75],
-                "fee_booked_meeting_sar_range": [150, 500],
-                "success_fee_pct_range": [3, 10],
-                "notes": ["Strict qualification + dispute logic required before billing."],
-            },
-            {
-                "key": "enterprise",
-                "name_ar": "المؤسسات / نشر خاص",
-                "target": "enterprise",
-                "pricing": "custom",
-                "includes": ["SSO", "advanced PDPL", "custom integrations", "dedicated success", "private data", "SLA"],
-            },
-            {
-                "key": "agency_partner",
-                "name_ar": "شراكة وكالات",
-                "setup_fee_sar_range": [3000, 25000],
-                "revenue_share_pct_range": [15, 30],
-                "notes": ["Dealix keeps platform subscription; agency sells implementation."],
             },
         ],
+        "discount_policy": {
+            "default": "no_discount_without_value_exchange",
+            "accepted_exchanges": [
+                "testimonial_permission",
+                "referral_intro",
+                "faster_payment_terms",
+                "public_anonymous_case_permission",
+                "partner_intro",
+            ],
+        },
     }
 
 
@@ -98,27 +84,28 @@ def recommend_plan(
     monthly_budget_sar: float,
     goal: str,
 ) -> dict[str, Any]:
-    """Heuristic plan recommendation — deterministic rules."""
+    """Heuristic recommendation on the governed offer ladder."""
     size = company_size.lower().strip()
     goal_l = goal.lower()
-    recommended: PlanKey = "founder_operator"
-    rationale_ar = "ميزانية محدودة أو مرحلة مبكرة — ابدأ بمشغّل المؤسس للتحقق السريع."
+    recommended: PlanKey = "governed_revenue_ai_ops_diagnostic"
+    rationale_ar = "نبدأ دائماً بالتشخيص المدفوع قبل أي تنفيذ؛ هذا يحمي الثقة ويمنع بناء حلول بلا دليل."
 
-    if monthly_budget_sar >= 6500 or size in ("large", "enterprise", "scale"):
-        recommended = "scale_os"
-        rationale_ar = "فريق ناضج أو ميزانية عالية — Scale OS يلائم التنسيق متعدد المقاعد والتحليلات."
-    elif monthly_budget_sar >= 2000 or size in ("sme", "medium", "growth"):
-        recommended = "growth_os"
-        rationale_ar = "شركة B2B نامية — Growth OS يوازن بين الرادار والتنفيذ الآمن ودليل العائد."
-
-    if "performance" in goal_l or "pay per" in goal_l:
-        rationale_ar += " أضف طبقة الأداء لاحقاً بعد تعريف التأهيل والنزاعات."
+    if "retainer" in goal_l or "monthly" in goal_l:
+        recommended = "governed_ops_retainer"
+        rationale_ar = "الهدف تشغيلي شهري؛ المناسب Retainer بشرط وجود أدلة تكرار workflow بعد التشخيص."
+    elif monthly_budget_sar >= 25000 or "sprint" in goal_l or "implementation" in goal_l:
+        recommended = "revenue_intelligence_sprint"
+        rationale_ar = "تتوفر ميزانية تنفيذ؛ Sprint يأتي بعد تشخيص يثبت مسار workflow واضح وقابل للقياس."
+    elif monthly_budget_sar >= 4999 or size in ("sme", "medium", "growth", "large", "enterprise", "scale"):
+        recommended = "governed_revenue_ai_ops_diagnostic"
+        rationale_ar = "أفضل مسار: Diagnostic 7 أيام ثم قرار Sprint/Retainer بناءً على proof."
 
     tiers = get_pricing_tiers()
     tier = next((t for t in tiers["tiers"] if t["key"] == recommended), tiers["tiers"][0])
     return {
         "recommended_plan": recommended,
         "rationale_ar": rationale_ar,
+        "next_step_en": "Sell manually, deliver with evidence, then productize repeated workflows only.",
         "tier_summary": tier,
         "inputs": {"company_size": company_size, "monthly_budget_sar": monthly_budget_sar, "goal": goal},
     }

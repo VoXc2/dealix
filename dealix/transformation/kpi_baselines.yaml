@@ -11,6 +11,9 @@ weekly_ops:
   checklist_script: scripts/run_executive_weekly_checklist.sh
 
 snapshots:
+  governed_value_decisions_created:
+    value_numeric: null
+    source_ref: ""
   measured_customer_value_sar:
     value_numeric: null
     source_ref: ""
@@ -35,6 +38,9 @@ snapshots:
   gross_margin_by_offer:
     value_numeric: 43.33
     source_ref: "computed:weekly_cross_os_snapshot:2026-05-16;field=gross_margin_pct;note=synthetic_default_economics_inputs"
+  paid_diagnostic_conversion_rate:
+    value_numeric: null
+    source_ref: ""
   unauthorized_external_action_count:
     value_numeric: 0.0
     source_ref: "platform:guardrail_session:2026-05-16;verify_global_ai_transformation=PASS_required"

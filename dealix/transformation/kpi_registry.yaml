@@ -2,6 +2,19 @@ version: 2
 program: global_ai_transformation
 kpis:
   north_star:
+    - key: governed_value_decisions_created
+      definition: Count of governed revenue or AI workflow decisions with source, approval, evidence, and value impact.
+      owner_os: governance
+      target_direction: up
+      evidence:
+        primary_source: decision_passport events + approval_tickets + proof_pack ledger
+        weekly_proof_fields:
+          - decisions_with_source_ref
+          - decisions_with_approval_ref
+          - decisions_with_evidence_ref
+          - decisions_with_measurable_value_link
+        verification_commands:
+          - pytest tests/test_governance_os_draft_gate.py -q
     - key: measured_customer_value_sar
       definition: Total source-backed measured customer value in SAR
       owner_os: value
@@ -93,6 +106,17 @@ kpis:
           - contribution_sar_by_offer_line
         verification_commands:
           - pytest tests/test_global_ai_transformation.py -q
+    - key: paid_diagnostic_conversion_rate
+      owner_os: sales
+      target_direction: up
+      evidence:
+        primary_source: invoice ledger + CRM scope_requested to invoice_paid transitions
+        weekly_proof_fields:
+          - scopes_requested
+          - diagnostics_invoiced
+          - diagnostics_paid
+        verification_commands:
+          - pytest tests/test_commercial_roadmap_mvp.py -q
   guardrails:
     - key: unauthorized_external_action_count
       threshold: 0
