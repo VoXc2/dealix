@@ -104,3 +104,26 @@ def test_diagnostic_report_pdf_or_markdown_fallback(client: TestClient):
     else:
         assert resp.headers.get("X-PDF-Renderer", "").startswith("unavailable")
         assert "Acme Saudi Co." in resp.text
+
+
+def test_revenue_autopilot_blueprint_endpoint(client: TestClient):
+    resp = client.get("/api/v1/diagnostic/revenue-autopilot")
+    assert resp.status_code == 200
+    body = resp.json()
+
+    assert body["operating_formula"]["slug"] == (
+        "founder-led-trust-proof-led-funnel-automated-ops-disciplined-approval"
+    )
+    assert body["core_offer"]["name"] == "7-Day Governed Revenue & AI Ops Diagnostic"
+    assert [t["amount"] for t in body["core_offer"]["pricing_sar"]] == [4999, 9999, 15000]
+    assert body["hard_gates"]["all_external_actions_are_draft_or_approval_first"] is True
+    assert len(body["automation_playbooks"]) == 10
+
+
+def test_revenue_autopilot_score_preview_bucket_mapping(client: TestClient):
+    resp = client.get("/api/v1/diagnostic/revenue-autopilot?score_preview=12")
+    assert resp.status_code == 200
+    preview = resp.json()["score_preview"]
+    assert preview["score"] == 12
+    assert preview["bucket"] == "qualified_A"
+    assert preview["is_qualified"] is True

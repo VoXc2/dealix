@@ -27,6 +27,11 @@ from auto_client_acquisition.diagnostic_engine import (
     generate_diagnostic,
     list_supported_sectors,
 )
+from auto_client_acquisition.revenue_os.autopilot_blueprint import (
+    LeadBucket,
+    build_revenue_autopilot_blueprint,
+    classify_lead_bucket,
+)
 
 router = APIRouter(prefix="/api/v1/diagnostic", tags=["diagnostic"])
 
@@ -71,6 +76,24 @@ async def diagnostic_status() -> dict[str, Any]:
 async def diagnostic_sectors() -> dict[str, Any]:
     """List the sector keys backed by the Service Readiness Matrix."""
     return {"sectors": list_supported_sectors()}
+
+
+@router.get("/revenue-autopilot")
+async def diagnostic_revenue_autopilot(score_preview: int | None = None) -> dict[str, Any]:
+    """Founder operating blueprint for Dealix Revenue Autopilot.
+
+    Optional ``score_preview`` helps the founder validate bucket mapping for
+    the current lead scoring policy.
+    """
+    body = build_revenue_autopilot_blueprint()
+    if score_preview is not None:
+        bucket = classify_lead_bucket(score_preview)
+        body["score_preview"] = {
+            "score": score_preview,
+            "bucket": bucket.value,
+            "is_qualified": bucket in {LeadBucket.QUALIFIED_A, LeadBucket.QUALIFIED_B},
+        }
+    return body
 
 
 @router.post("/generate")
