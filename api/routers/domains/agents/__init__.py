@@ -16,6 +16,7 @@ from api.routers import (
     autonomous,
     delivery_factory,
     delivery_os,
+    knowledge,
     knowledge_v10,
     llm_gateway_v10,
     observability_v10,
@@ -39,6 +40,7 @@ _ROUTERS = [
     automation.router,
     autonomous.router,
     knowledge_v10.router,
+    knowledge.router,
 ]
 
 
