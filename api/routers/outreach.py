@@ -33,6 +33,11 @@ from typing import Any
 from fastapi import APIRouter, Body, HTTPException
 from sqlalchemy import select
 
+from auto_client_acquisition.outreach_sequence import (
+    compute_next_step,
+    list_sequences,
+)
+
 from db.models import (
     AccountRecord,
     ContactRecord,
@@ -311,6 +316,66 @@ async def approve_queue(queue_id: str) -> dict[str, Any]:
             await session.rollback()
             return {"status": "commit_failed", "error": str(exc)}
     return {"id": queue_id, "status": "approved"}
+
+
+@router.get("/sequences")
+async def get_sequences() -> dict[str, Any]:
+    """List the named multi-step outreach sequences.
+
+    DOCTRINE — sequences only PREPARE drafts. Every step that sends
+    externally carries `requires_approval=True`; nothing auto-sends.
+    """
+    return {
+        "status": "ok",
+        "sequences": list_sequences(),
+        "doctrine": "sequences_prepare_drafts_only_no_auto_send",
+    }
+
+
+@router.post("/sequences/next-step")
+async def sequence_next_step(body: dict[str, Any] = Body(default={})) -> dict[str, Any]:
+    """Compute the next pending step for a lead enrolled in a sequence.
+
+    Body:
+        sequence: sequence name (e.g. "warm_linkedin")
+        lead_id: the lead identifier
+        enrolled_on: ISO date the lead was enrolled
+        completed_steps: int — steps already prepared (default 0)
+        as_of: optional ISO date to evaluate against (default today)
+
+    Returns the next due step as a DRAFT instruction. The step always
+    carries `requires_approval` — the founder must approve before any
+    external message is sent.
+    """
+    sequence = str(body.get("sequence") or "").strip()
+    lead_id = str(body.get("lead_id") or "").strip()
+    enrolled_on = str(body.get("enrolled_on") or "").strip()
+    if not sequence or not lead_id or not enrolled_on:
+        raise HTTPException(400, "sequence, lead_id and enrolled_on are required")
+    try:
+        completed = int(body.get("completed_steps") or 0)
+    except (TypeError, ValueError):
+        raise HTTPException(400, "completed_steps must be an integer")
+
+    result = compute_next_step(
+        sequence_name=sequence,
+        lead_id=lead_id,
+        enrolled_on=enrolled_on,
+        completed_steps=completed,
+        as_of=body.get("as_of"),
+    )
+    return {
+        "status": "ok",
+        "sequence": result.sequence,
+        "lead_id": result.lead_id,
+        "has_pending_step": result.has_pending_step,
+        "next_step": result.next_step,
+        "completed_steps": result.completed_steps,
+        "total_steps": result.total_steps,
+        "reason_en": result.reason_en,
+        "reason_ar": result.reason_ar,
+        "doctrine": "prepare_draft_only_requires_founder_approval",
+    }
 
 
 @router.post("/queue/{queue_id}/skip")
