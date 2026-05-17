@@ -31,6 +31,7 @@ from api.routers import (
     revenue_profitability as revenue_profitability_router,
     revops,
     sales,
+    sales_loop,
     sales_os,
 )
 
@@ -48,6 +49,7 @@ _ROUTERS = [
     revenue.router,
     revenue_os.router,
     revenue_pipeline.router,
+    sales_loop.router,
     revops.router,
     revenue_profitability_router.router,
     outreach.router,
