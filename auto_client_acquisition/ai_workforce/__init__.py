@@ -29,6 +29,9 @@ from auto_client_acquisition.ai_workforce.cost_guard import (
 from auto_client_acquisition.ai_workforce.evidence_writer import record_evidence
 from auto_client_acquisition.ai_workforce.language_router import pick_language
 from auto_client_acquisition.ai_workforce.orchestrator import run_workforce_goal
+from auto_client_acquisition.ai_workforce.revenue_factory_blueprint import (
+    build_revenue_factory_blueprint,
+)
 from auto_client_acquisition.ai_workforce.risk_guard import summarize_risks
 from auto_client_acquisition.ai_workforce.schemas import (
     AgentSpec,
@@ -59,5 +62,6 @@ __all__ = [
     "route_for_goal",
     "run_agent",
     "run_workforce_goal",
+    "build_revenue_factory_blueprint",
     "summarize_risks",
 ]
