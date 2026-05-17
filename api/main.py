@@ -71,6 +71,8 @@ from api.routers import integration_capability as integration_capability_router
 from api.routers import service_catalog as service_catalog_router
 # Wave 14 — Canonical Trust MVP + Retainer Engine (Phase 2)
 from api.routers import friction_log as friction_log_router
+# Affiliate & Partner machine — recruitment + referral + commission + payout
+from api.routers import affiliate_machine as affiliate_machine_router
 # 90-day commercial activation — Wave 14B
 from api.routers import sprint_runner as sprint_runner_router
 from api.routers import founder_dashboard as founder_dashboard_router
@@ -307,6 +309,8 @@ def create_app() -> FastAPI:
     app.include_router(revenue_metrics.router)
     # Wave 13 W13.13 — Customer referral program (5K SAR per closed deal)
     app.include_router(referral_program.router)
+    # Affiliate & Partner machine — self-prefixes /api/v1; public + ops + portal
+    app.include_router(affiliate_machine_router.router)
     # Wave 13 W13.4 — NPS survey + detractor intervention
     app.include_router(nps.router)
     # Wave 14 — Canonical Trust MVP + Retainer Engine (Phase 2)

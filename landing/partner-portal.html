@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Dealix — بوابة الشريك | Partner Portal</title>
+  <meta name="description" content="بوابة شريك Dealix: رابط الإحالة، الأصول المعتمدة، الإحالات، العمولة، حالة الدفعات، وقواعد الالتزام." />
+  <meta name="robots" content="noindex" />
+  <link rel="canonical" href="https://dealix.me/partner-portal.html" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="/assets/css/design-system.css" />
+  <style>
+    .w{max-width:1000px;margin:0 auto;padding:64px 24px}
+    .nav-back{display:inline-block;margin-bottom:24px;color:#64748b;text-decoration:none;font-size:14px}
+    .hero-row{display:grid;gap:12px;text-align:center;margin-bottom:40px}
+    .lookup{background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:24px;max-width:560px;margin:0 auto 40px;display:flex;gap:12px;flex-wrap:wrap}
+    [data-theme="dark"] .lookup{background:rgba(15,23,42,.65);border-color:rgba(148,163,184,.18)}
+    .lookup input{flex:1;min-width:220px;padding:10px 12px;border:1px solid #cbd5e1;border-radius:8px;font-family:inherit;font-size:14px}
+    .lookup button{padding:10px 20px;background:#0f172a;color:#fff;border:0;border-radius:8px;font-weight:600;cursor:pointer}
+    .panel{display:none}
+    .panel.show{display:block}
+    .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;margin:24px 0}
+    .card{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:20px}
+    [data-theme="dark"] .card{background:rgba(15,23,42,.65);border-color:rgba(148,163,184,.18)}
+    .card .label{font-size:13px;color:#64748b}
+    .card .value{font-size:26px;font-weight:700;margin-top:6px}
+    .section{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:24px;margin:20px 0}
+    [data-theme="dark"] .section{background:rgba(15,23,42,.65);border-color:rgba(148,163,184,.18)}
+    .section h3{margin:0 0 12px;font-size:18px}
+    .code{font-family:monospace;background:#f1f5f9;padding:4px 8px;border-radius:6px}
+    [data-theme="dark"] .code{background:rgba(148,163,184,.15)}
+    .asset{border-top:1px solid #e2e8f0;padding:12px 0;font-size:14px}
+    .asset:first-of-type{border-top:0}
+    .asset .t{font-weight:600}
+    .asset .b{color:#64748b;margin-top:4px;line-height:1.6}
+    ul.rules{margin:0;padding-inline-start:20px}
+    ul.rules li{padding:4px 0;font-size:14px}
+    .err{display:none;background:#fee2e2;border:1px solid #ef4444;color:#991b1b;padding:14px;border-radius:10px;margin-top:16px;font-size:14px}
+    .err.show{display:block}
+    .footer-bar{margin-top:56px;padding:24px;border-top:1px solid #e2e8f0;text-align:center;color:#64748b;font-size:14px}
+    [data-theme="dark"] .footer-bar{border-color:rgba(148,163,184,.18)}
+    .footer-bar a{color:inherit;margin:0 8px}
+  </style>
+  <script>
+    window.DEALIX_API_BASE = window.DEALIX_API_BASE || 'https://api.dealix.me';
+  </script>
+</head>
+<body>
+  <div class="w">
+    <a href="/" class="nav-back">← العودة للرئيسية</a>
+
+    <section class="hero-row">
+      <span class="ds-eyebrow">Partner Portal</span>
+      <h1 class="ds-h1-ar">بوابة الشريك</h1>
+      <p style="color:#64748b;font-size:16px;margin:0">
+        أدخل رقم الشريك لعرض رابط الإحالة، الإحالات، العمولة، وحالة الدفعات.
+      </p>
+    </section>
+
+    <div class="lookup">
+      <input id="partnerId" placeholder="رقم الشريك (مثال: ptn_xxxxxxxxxxxx)" />
+      <button id="loadBtn" type="button">عرض البوابة</button>
+    </div>
+
+    <div class="err" id="err"></div>
+
+    <div class="panel" id="panel">
+      <div class="section">
+        <h3>الشريك</h3>
+        <p>
+          <strong id="companyName"></strong> ·
+          الحالة: <span id="status"></span> ·
+          المستوى: <span id="tier"></span>
+        </p>
+        <p>كود الإحالة: <span class="code" id="refCode"></span></p>
+      </div>
+
+      <div class="cards">
+        <div class="card">
+          <div class="label">إحالات مُرسلة</div>
+          <div class="value" id="refSubmitted">0</div>
+        </div>
+        <div class="card">
+          <div class="label">إحالات مؤهلة</div>
+          <div class="value" id="refQualified">0</div>
+        </div>
+        <div class="card">
+          <div class="label">العمولة المكتسبة (ريال)</div>
+          <div class="value" id="commission">0</div>
+        </div>
+      </div>
+
+      <div class="section">
+        <h3>روابط الإحالة</h3>
+        <div id="links"></div>
+      </div>
+
+      <div class="section">
+        <h3>الدفعات</h3>
+        <div id="payouts"></div>
+      </div>
+
+      <div class="section">
+        <h3>الأصول المعتمدة (استخدمها كما هي)</h3>
+        <div id="assets"></div>
+      </div>
+
+      <div class="section">
+        <h3>قواعد الالتزام</h3>
+        <ul class="rules" id="rules"></ul>
+      </div>
+    </div>
+
+    <div class="footer-bar">
+      <a href="/">Dealix</a> ·
+      <a href="/affiliate.html">برنامج الإحالة</a>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      var btn = document.getElementById('loadBtn');
+      var panel = document.getElementById('panel');
+      var err = document.getElementById('err');
+
+      function esc(s) {
+        var d = document.createElement('div');
+        d.textContent = s == null ? '' : String(s);
+        return d.innerHTML;
+      }
+
+      function render(data) {
+        var p = data.partner || {};
+        document.getElementById('companyName').textContent = p.company_name || '';
+        document.getElementById('status').textContent = p.status || '';
+        document.getElementById('tier').textContent = p.tier || '—';
+        document.getElementById('refCode').textContent = p.referral_code || '—';
+        document.getElementById('refSubmitted').textContent = data.referrals_submitted || 0;
+        document.getElementById('refQualified').textContent = data.referrals_qualified || 0;
+        document.getElementById('commission').textContent = data.commission_earned_sar || 0;
+
+        document.getElementById('links').innerHTML =
+          (data.links || []).map(function (l) {
+            return '<div class="asset"><div class="t">' + esc(l.code) +
+              '</div><div class="b">' + esc(l.target_url) +
+              ' · clicks: ' + esc(l.clicks) + '</div></div>';
+          }).join('') || '<p style="color:#64748b">لا توجد روابط بعد.</p>';
+
+        document.getElementById('payouts').innerHTML =
+          (data.payouts || []).map(function (po) {
+            return '<div class="asset"><div class="t">' + esc(po.period) +
+              ' — ' + esc(po.total_sar) + ' ريال</div><div class="b">الحالة: ' +
+              esc(po.status) + '</div></div>';
+          }).join('') || '<p style="color:#64748b">لا توجد دفعات بعد.</p>';
+
+        document.getElementById('assets').innerHTML =
+          (data.approved_assets || []).map(function (a) {
+            return '<div class="asset"><div class="t">' + esc(a.title) +
+              ' (' + esc(a.locale) + ')</div><div class="b">' + esc(a.body) +
+              '</div></div>';
+          }).join('');
+
+        document.getElementById('rules').innerHTML =
+          (data.compliance_rules || []).map(function (r) {
+            return '<li>' + esc(r) + '</li>';
+          }).join('');
+
+        panel.classList.add('show');
+      }
+
+      btn.addEventListener('click', function () {
+        var id = document.getElementById('partnerId').value.trim();
+        err.className = 'err';
+        panel.classList.remove('show');
+        if (!id) {
+          err.className = 'err show';
+          err.textContent = 'أدخل رقم الشريك.';
+          return;
+        }
+        fetch(window.DEALIX_API_BASE + '/api/v1/partner/' +
+              encodeURIComponent(id) + '/portal')
+          .then(function (r) {
+            return r.json().then(function (b) { return { ok: r.ok, body: b }; });
+          })
+          .then(function (res) {
+            if (res.ok) {
+              render(res.body);
+            } else {
+              err.className = 'err show';
+              err.textContent = 'تعذّر تحميل البوابة: ' +
+                ((res.body && res.body.detail) || 'غير معروف');
+            }
+          })
+          .catch(function () {
+            err.className = 'err show';
+            err.textContent = 'خطأ في الاتصال. حاول مرة أخرى.';
+          });
+      });
+    })();
+  </script>
+</body>
+</html>

@@ -358,7 +358,11 @@ class CompanyRecord(Base):
 
 
 class PartnerRecord(Base):
-    """Partner/agency record for distribution channel."""
+    """Partner/agency record for distribution channel.
+
+    Affiliate & Partner machine (migration 013) extends this with the
+    application/scoring/tier columns used by the affiliate funnel.
+    """
 
     __tablename__ = "partners"
 
@@ -375,9 +379,119 @@ class PartnerRecord(Base):
     next_action: Mapped[str | None] = mapped_column(String(64), nullable=True)
     next_action_at: Mapped[datetime | None] = mapped_column(nullable=True)
     notes: Mapped[str | None] = mapped_column(Text, nullable=True)
+    # ── Affiliate & Partner machine (migration 013) ──────────────────
+    country: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    audience_type: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    audience_size: Mapped[int] = mapped_column(Integer, default=0)
+    main_channel: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    partner_score: Mapped[int] = mapped_column(Integer, default=0)
+    tier: Mapped[str | None] = mapped_column(String(32), nullable=True)
+    referral_code: Mapped[str | None] = mapped_column(String(32), nullable=True, unique=True)
+    disclosure_accepted: Mapped[bool] = mapped_column(Boolean, default=False)
+    applied_at: Mapped[datetime | None] = mapped_column(nullable=True)
+    approved_at: Mapped[datetime | None] = mapped_column(nullable=True)
+    approved_by: Mapped[str | None] = mapped_column(String(64), nullable=True)
     created_at: Mapped[datetime] = mapped_column(default=utcnow)
     updated_at: Mapped[datetime] = mapped_column(default=utcnow, onupdate=utcnow)
     deleted_at: Mapped[datetime | None] = mapped_column(nullable=True)
+
+
+class PartnerLinkRecord(SoftDeleteMixin, Base):
+    """Tracked referral link / UTM-tagged URL owned by a partner."""
+
+    __tablename__ = "partner_links"
+
+    id: Mapped[str] = mapped_column(String(64), primary_key=True)
+    partner_id: Mapped[str] = mapped_column(String(64), ForeignKey("partners.id"), index=True)
+    code: Mapped[str] = mapped_column(String(32), index=True)
+    utm_source: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    utm_medium: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    utm_campaign: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    target_url: Mapped[str] = mapped_column(String(512), default="")
+    clicks: Mapped[int] = mapped_column(Integer, default=0)
+    created_at: Mapped[datetime] = mapped_column(default=utcnow)
+
+
+class ReferralRecord(SoftDeleteMixin, Base):
+    """A lead/deal attributed to a partner via link or code."""
+
+    __tablename__ = "partner_referrals"
+
+    id: Mapped[str] = mapped_column(String(64), primary_key=True)
+    partner_id: Mapped[str] = mapped_column(String(64), ForeignKey("partners.id"), index=True)
+    link_id: Mapped[str | None] = mapped_column(String(64), nullable=True, index=True)
+    lead_id: Mapped[str | None] = mapped_column(String(64), nullable=True, index=True)
+    deal_id: Mapped[str | None] = mapped_column(String(64), nullable=True, index=True)
+    contact_email_hash: Mapped[str | None] = mapped_column(String(64), nullable=True, index=True)
+    stage: Mapped[str] = mapped_column(String(32), default="submitted", index=True)
+    qualified: Mapped[bool] = mapped_column(Boolean, default=False)
+    created_at: Mapped[datetime] = mapped_column(default=utcnow)
+
+
+class CommissionRecord(SoftDeleteMixin, Base):
+    """A commission line computed from a paid deal for a partner referral."""
+
+    __tablename__ = "partner_commissions"
+
+    id: Mapped[str] = mapped_column(String(64), primary_key=True)
+    partner_id: Mapped[str] = mapped_column(String(64), ForeignKey("partners.id"), index=True)
+    referral_id: Mapped[str | None] = mapped_column(String(64), nullable=True, index=True)
+    deal_id: Mapped[str | None] = mapped_column(String(64), nullable=True, index=True)
+    tier: Mapped[str] = mapped_column(String(32), default="")
+    basis_amount_sar: Mapped[float] = mapped_column(Float, default=0.0)
+    rate: Mapped[float] = mapped_column(Float, default=0.0)
+    amount_sar: Mapped[float] = mapped_column(Float, default=0.0)
+    status: Mapped[str] = mapped_column(String(32), default="pending", index=True)
+    invoice_paid_at: Mapped[datetime | None] = mapped_column(nullable=True)
+    calculated_at: Mapped[datetime] = mapped_column(default=utcnow)
+
+
+class PayoutRecord(SoftDeleteMixin, Base):
+    """A batched payout of eligible commissions for one partner/period."""
+
+    __tablename__ = "partner_payouts"
+
+    id: Mapped[str] = mapped_column(String(64), primary_key=True)
+    partner_id: Mapped[str] = mapped_column(String(64), ForeignKey("partners.id"), index=True)
+    period: Mapped[str] = mapped_column(String(16), default="")
+    commission_ids: Mapped[list] = mapped_column(JSON, default=list)
+    total_sar: Mapped[float] = mapped_column(Float, default=0.0)
+    status: Mapped[str] = mapped_column(String(32), default="pending", index=True)
+    partner_invoice_ref: Mapped[str | None] = mapped_column(String(128), nullable=True)
+    marked_paid_at: Mapped[datetime | None] = mapped_column(nullable=True)
+    marked_paid_by: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    created_at: Mapped[datetime] = mapped_column(default=utcnow)
+
+
+class ApprovedAssetRecord(SoftDeleteMixin, Base):
+    """An approved messaging asset partners may use verbatim."""
+
+    __tablename__ = "partner_approved_assets"
+
+    id: Mapped[str] = mapped_column(String(64), primary_key=True)
+    asset_type: Mapped[str] = mapped_column(String(64), index=True)
+    locale: Mapped[str] = mapped_column(String(8), default="ar")
+    title: Mapped[str] = mapped_column(String(255), default="")
+    body: Mapped[str] = mapped_column(Text, default="")
+    allowed_claims: Mapped[list] = mapped_column(JSON, default=list)
+    forbidden_claims: Mapped[list] = mapped_column(JSON, default=list)
+    version: Mapped[str] = mapped_column(String(16), default="1.0")
+    approved: Mapped[bool] = mapped_column(Boolean, default=True)
+    created_at: Mapped[datetime] = mapped_column(default=utcnow)
+
+
+class PartnerComplianceEventRecord(SoftDeleteMixin, Base):
+    """A recorded compliance flag against a partner."""
+
+    __tablename__ = "partner_compliance_events"
+
+    id: Mapped[str] = mapped_column(String(64), primary_key=True)
+    partner_id: Mapped[str] = mapped_column(String(64), ForeignKey("partners.id"), index=True)
+    kind: Mapped[str] = mapped_column(String(32), index=True)
+    severity: Mapped[str] = mapped_column(String(16), default="low")
+    evidence_ref: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    notes: Mapped[str | None] = mapped_column(Text, nullable=True)
+    created_at: Mapped[datetime] = mapped_column(default=utcnow)
 
 
 class CustomerRecord(Base):

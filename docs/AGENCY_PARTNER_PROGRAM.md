@@ -1,50 +1,46 @@
 # Dealix — Agency Partner Program
 <!-- PHASE 9 | Owner: Founder | Date: 2026-05-07 -->
+<!-- Updated 2026-05-17: unified 4-tier ladder (Affiliate & Partner machine, migration 013) -->
 <!-- No white-label before 3 proof packs | Arabic primary -->
 
 > **قاعدة الذهب:** لا برنامج شراكة رسمي قبل 3 Proof Packs مكتملة.
 > الشراكة تُبنى على إثبات، لا على وعود.
 
----
-
-## 1. أنواع الشراكات (Partner Types)
-
-### النوع 1: شريك الإحالة (Referral Partner)
-**من هو:** أي شخص أو وكالة يحيل عملاء لـ Dealix  
-**ما يقدمه:** lead مؤهل (warmintro أو recommendation)  
-**ما يحصل:** عمولة 15% من أول دفعة للعميل المُحال  
-**متطلبات البدء:** موافقة شفهية أو مكتوبة، لا عقد معقد  
-**وضع الإجراء:** `suggest_only` — لا auto-pay قبل confirmation
-
-### النوع 2: شريك التنفيذ (Implementation Partner)
-**من هو:** وكالة تقدم خدمات Dealix لعملائها مباشرة  
-**ما يقدمه:** علاقة العميل + تنفيذ Sprint + إدارة العلاقة  
-**ما يحصل:** rev-share 20–25% من كل اشتراك يُدار  
-**متطلبات البدء:** إتمام ≥ 1 pilot ناجح كعميل أولاً + عقد موقع  
-**وضع الإجراء:** `approval_required`
-
-### النوع 3: شريك المبيعات المشتركة (Co-Selling Partner)
-**من هو:** وكالة تسويق أو استشارات تقدم Dealix كجزء من عرضها  
-**ما يقدمه:** تقديم مشترك للعملاء + اجتماعات مشتركة  
-**ما يحصل:** rev-share 25–30% + co-branded Proof Packs  
-**متطلبات البدء:** ≥ 3 proof packs مكتملة من Dealix + اتفاقية موقعة  
-**وضع الإجراء:** `approval_required`
+> **تحديث:** سُلّم العمولة موحّد الآن في 4 مستويات (Affiliate & Partner machine).
+> هذا المستند والـ playbook كانا يصفان جمهورين مختلفين؛ السُّلّم أدناه هو المصدر
+> الوحيد للحقيقة، ويُطبَّق برمجياً في `auto_client_acquisition/partnership_os/tiers.py`.
 
 ---
 
-## 2. قواعد Rev-Share
+## 1. سُلّم العمولة الموحّد — 4 مستويات (Partner Tiers)
 
-| نوع الشريك | نسبة الشريك | نسبة Dealix | قاعدة الحساب |
-|-----------|------------|------------|-------------|
-| إحالة (Referral) | 15% | 85% | من أول دفعة فقط |
-| تنفيذ (Implementation) | 20–25% | 75–80% | من كل دفعة طوال العلاقة |
-| مبيعات مشتركة | 25–30% | 70–75% | من كل دفعة طوال العلاقة |
+| المستوى | من هو | العمولة | قاعدة الحساب |
+|---|---|---|---|
+| 1 — مُحيل (Affiliate Lead) | يرسل lead عبر رابط/كود | 5% | أول Diagnostic مدفوع، دفعة واحدة |
+| 2 — إحالة مؤهلة (Qualified Referral) | يحجز اجتماعاً مع صاحب قرار | 10% | أول صفقة مدفوعة، دفعة واحدة |
+| 3 — شريك استراتيجي (Strategic Partner) | شريك CRM/AI/GRC يجلب عميلاً ضمن ICP | 15–20% | أول Diagnostic مدفوع، دفعة واحدة |
+| 4 — شريك تنفيذ (Implementation Partner) | Dealix يشخّص، الشريك ينفّذ | حسب الاتفاق / حصة MRR | متكرر، يتطلب موافقة |
 
-### قواعد إضافية
-- لا دفع rev-share قبل استلام دفعة العميل من Dealix
-- Rev-share لا يُحسب على تكاليف LLM أو infrastructure
-- كل مدفوعات rev-share تحتاج invoice من الشريك
-- لا rev-share على عملاء أتوا مباشرة لـ Dealix (بدون إحالة مثبتة)
+**ملاحظات على المستويات:**
+- المستوى 1: لا عقد معقد — موافقة شفهية أو مكتوبة تكفي. وضع الإجراء `suggest_only`.
+- المستوى 2: يتطلب إحالة مؤهلة (اجتماع صاحب قرار) قبل احتساب العمولة.
+- المستوى 3: نطاق 15–20% (الافتراضي 17.5%) — يتطلب اتفاقية موقعة.
+- المستوى 4: حصة MRR متكررة — `approval_required` لكل دورة، وإتمام ≥ 1 pilot ناجح كعميل أولاً.
+
+---
+
+## 2. قواعد العمولة الصارمة (Hard Money Rules)
+
+مُطبّقة برمجياً في `partnership_os/commission_engine.py` — لا يمكن تجاوزها:
+
+- العمولة تُنشأ **بعد** دفع فاتورة العميل فقط (`invoice_paid`).
+- **سحب العمولة (clawback)** إذا استُرجعت دفعة العميل خلال 30 يوماً.
+- لا **إحالة ذاتية** — الشريك لا يحيل نفسه (تُكشف عبر `contact_email_hash`).
+- لا عمولة على lead **غير مؤهل** أو **مكرر** أو **خارج ICP** أو **بدون موافقة**.
+- لا دفع rev-share قبل استلام دفعة العميل من Dealix.
+- Rev-share لا يُحسب على تكاليف LLM أو infrastructure.
+- كل مدفوعات rev-share تحتاج invoice من الشريك (`partner_invoice_ref`).
+- تأكيد دفع أي عمولة (`mark-paid`) يمر على **موافقة بشرية** — لا دفع تلقائي.
 
 ---
 
@@ -139,4 +135,4 @@
 
 ---
 
-*Version 1.0 | No white-label before 3 proof packs | Rev-share: manual confirmation required*
+*Version 2.0 | Unified 4-tier commission ladder | No white-label before 3 proof packs | Commission: created only after invoice paid, manual approval to pay*
