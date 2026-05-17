@@ -48,6 +48,8 @@ PUBLIC_PREFIXES: tuple[str, ...] = (
     "/api/v1/webhooks/",  # webhooks use signatures instead
     "/api/v1/public/",   # public landing endpoints (demo-request, health)
     "/api/v1/auth/",     # auth endpoints use JWT — no API key required
+    "/api/v1/affiliates/",  # partner-facing endpoints; admin routes here
+                            # self-gate with require_admin_key at route level
 )
 
 # FastAPI security scheme header (for OpenAPI schema generation)

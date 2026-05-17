@@ -31,6 +31,7 @@ from api.routers.domains import sales as sales_domain
 from api.routers.domains import webhooks as webhooks_domain
 from api.routers import (
     admin_tenants,
+    affiliate_program,
     agent_mesh_os,
     assurance_contract_os,
     auth,
@@ -307,6 +308,9 @@ def create_app() -> FastAPI:
     app.include_router(revenue_metrics.router)
     # Wave 13 W13.13 — Customer referral program (5K SAR per closed deal)
     app.include_router(referral_program.router)
+    # Affiliate / Partner Commission Machine — external partners, cash
+    # commissions gated on invoice_paid, 30-day clawback, approval-first.
+    app.include_router(affiliate_program.router)
     # Wave 13 W13.4 — NPS survey + detractor intervention
     app.include_router(nps.router)
     # Wave 14 — Canonical Trust MVP + Retainer Engine (Phase 2)
