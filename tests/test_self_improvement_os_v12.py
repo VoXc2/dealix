@@ -28,6 +28,7 @@ async def test_weekly_learning_returns_suggest_only() -> None:
     async with AsyncClient(transport=transport, base_url="http://test") as client:
         r = await client.get("/api/v1/self-improvement-os/weekly-learning")
     body = r.json()
-    assert len(body["suggestions"]) >= 3
-    for s in body["suggestions"]:
-        assert s["action_mode"] == "suggest_only"
+    # Full Ops 2.0 — real learning loops replace the placeholder stubs.
+    assert len(body["learning_loops"]) == 2
+    for loop in body["learning_loops"]:
+        assert loop["action_mode"] == "suggest_only"
