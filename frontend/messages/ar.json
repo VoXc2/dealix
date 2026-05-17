@@ -9,7 +9,16 @@
     "clients": "إدارة العملاء",
     "analytics": "التحليلات والتقارير",
     "settings": "الإعدادات",
-    "logout": "تسجيل الخروج"
+    "logout": "تسجيل الخروج",
+    "opsConsole": "غرفة التشغيل",
+    "commandCenter": "غرفة القيادة",
+    "serviceCatalog": "كتالوج الخدمات",
+    "marketProof": "إثبات السوق",
+    "revenueOps": "تشغيل الإيرادات",
+    "evidenceLedger": "سجل الأدلة",
+    "billing": "الفواتير والمدفوعات",
+    "boardDecisions": "نظام قرارات المجلس",
+    "proofPack": "مولّد حزمة الإثبات"
   },
   "dashboard": {
     "title": "لوحة التحكم التنفيذية",
@@ -154,5 +163,78 @@
     "handleLabel": "معرّف العميل",
     "load": "تحميل",
     "promiseTitle": "التزام الخدمة"
+  },
+  "ops": {
+    "estimate": "تقدير",
+    "confirmed": "مؤكد",
+    "governance": "الحوكمة",
+    "unavailable": "المصدر غير متاح",
+    "empty": "لا يوجد شيء بعد",
+    "refresh": "تحديث",
+    "commandCenter": {
+      "title": "غرفة قيادة المؤسس",
+      "subtitle": "صورة التشغيل اليوم — الإجراءات والمخاطر والنقد",
+      "top3": "أهم 3 إجراءات الآن",
+      "leadsWaiting": "عملاء محتملون منتظرون أكثر من 24 ساعة",
+      "blockedApprovals": "موافقات معلّقة",
+      "deliveryRisks": "مخاطر التسليم",
+      "pipeline": "ملخص خط الصفقات",
+      "cash": "الوضع النقدي"
+    },
+    "serviceCatalog": {
+      "title": "كتالوج الخدمات",
+      "subtitle": "سلّم العروض المنتَجة — النطاق والسعر والاستثناءات",
+      "ladder": "سلّم العروض",
+      "entryOffers": "عروض الدخول",
+      "exclusions": "الاستثناءات",
+      "hardGates": "البوابات الصارمة",
+      "price": "السعر"
+    },
+    "marketProof": {
+      "title": "غرفة إثبات السوق",
+      "subtitle": "درجة المخاطر، عيّنات حزم الإثبات، الإشارات، الحسابات المستهدفة",
+      "riskScore": "درجة مخاطر الإيراد والذكاء الاصطناعي",
+      "sampleProofPacks": "عيّنات حزم الإثبات",
+      "signals": "إشارات السوق",
+      "targetAccounts": "الحسابات المستهدفة"
+    },
+    "revenueOps": {
+      "title": "غرفة تشغيل الإيرادات",
+      "subtitle": "خط الصفقات حسب المرحلة، التحويل، الإجراءات التالية الأفضل",
+      "pipelineByStage": "خط الصفقات حسب المرحلة",
+      "opportunities": "الفرص",
+      "conversion": "معدلات التحويل",
+      "nextBestActions": "الإجراءات التالية الأفضل"
+    },
+    "evidenceLedger": {
+      "title": "سجل الأدلة",
+      "subtitle": "أحداث الإثبات والقيمة — كل ادعاء له مصدر",
+      "events": "تدفق الأحداث",
+      "levels": "مستويات الأدلة (L0–L5)",
+      "sources": "المصادر"
+    },
+    "billing": {
+      "title": "الفواتير والمدفوعات",
+      "subtitle": "الفواتير وحالة الدفع وسلّم الإيراد واقتصاديات الوحدة",
+      "invoices": "الفواتير",
+      "revenueLadder": "سلّم الإيراد",
+      "unitEconomics": "اقتصاديات الوحدة",
+      "confirmedRevenue": "الإيراد المؤكد"
+    },
+    "boardDecisions": {
+      "title": "نظام قرارات المجلس",
+      "subtitle": "أهم القرارات المحكومة، جوازات القرار، سجل المخاطر",
+      "topDecisions": "أهم القرارات المحكومة",
+      "passports": "جوازات القرار",
+      "riskRegister": "سجل المخاطر"
+    },
+    "proofPack": {
+      "title": "مولّد حزمة الإثبات",
+      "subtitle": "تجميع ومعاينة حزمة إثبات من تشخيص",
+      "template": "قالب حزمة الإثبات",
+      "generate": "توليد المعاينة",
+      "completeness": "درجة الاكتمال",
+      "strengthBand": "نطاق القوة"
+    }
   }
 }

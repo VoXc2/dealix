@@ -17,6 +17,14 @@ import {
   Zap,
   Shield,
   Building2,
+  Compass,
+  Package,
+  Target,
+  TrendingUp,
+  ScrollText,
+  Receipt,
+  Gavel,
+  FileCheck,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
@@ -39,6 +47,17 @@ const navItems: NavItem[] = [
   { key: "settings", href: "/settings", icon: Settings },
 ];
 
+const opsNavItems: NavItem[] = [
+  { key: "commandCenter", href: "/command-center", icon: Compass },
+  { key: "serviceCatalog", href: "/service-catalog", icon: Package },
+  { key: "marketProof", href: "/market-proof", icon: Target },
+  { key: "revenueOps", href: "/revenue-ops", icon: TrendingUp },
+  { key: "evidenceLedger", href: "/evidence-ledger", icon: ScrollText },
+  { key: "billing", href: "/billing", icon: Receipt },
+  { key: "boardDecisions", href: "/board-decisions", icon: Gavel },
+  { key: "proofPack", href: "/proof-pack", icon: FileCheck },
+];
+
 interface SidebarProps {
   collapsed?: boolean;
   onToggle?: () => void;
@@ -49,6 +68,52 @@ export function Sidebar({ collapsed = false, onToggle }: SidebarProps) {
   const locale = useLocale();
   const pathname = usePathname();
   const isRTL = locale === "ar";
+
+  const renderNavItem = (item: NavItem) => {
+    const Icon = item.icon;
+    const href = `/${locale}${item.href}`;
+    const isActive = pathname.includes(item.href);
+
+    return (
+      <Link key={item.key} href={href}>
+        <motion.div
+          whileHover={{ x: isRTL ? -2 : 2 }}
+          className={cn(
+            "flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-150 group relative",
+            isActive
+              ? "bg-sidebar-primary/15 text-gold-400"
+              : "text-sidebar-foreground/60 hover:text-sidebar-foreground hover:bg-sidebar-accent"
+          )}
+        >
+          {isActive && (
+            <motion.div
+              layoutId="activeIndicator"
+              className={cn(
+                "absolute top-1/2 -translate-y-1/2 w-0.5 h-6 rounded-full bg-gold-400",
+                isRTL ? "right-0" : "left-0"
+              )}
+            />
+          )}
+          <Icon className={cn("flex-shrink-0 w-5 h-5", isActive && "text-gold-400")} />
+          <AnimatePresence>
+            {!collapsed && (
+              <motion.span
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className={cn(
+                  "text-sm font-medium whitespace-nowrap",
+                  isActive ? "text-gold-400" : ""
+                )}
+              >
+                {t(item.key as Parameters<typeof t>[0])}
+              </motion.span>
+            )}
+          </AnimatePresence>
+        </motion.div>
+      </Link>
+    );
+  };
 
   return (
     <motion.aside
@@ -102,62 +167,19 @@ export function Sidebar({ collapsed = false, onToggle }: SidebarProps) {
 
       {/* Navigation */}
       <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto overflow-x-hidden">
-        {navItems.map((item) => {
-          const Icon = item.icon;
-          const href = `/${locale}${item.href}`;
-          const isActive = pathname.includes(item.href);
+        {navItems.map((item) => renderNavItem(item))}
 
-          return (
-            <Link key={item.key} href={href}>
-              <motion.div
-                whileHover={{ x: isRTL ? -2 : 2 }}
-                className={cn(
-                  "flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-150 group relative",
-                  isActive
-                    ? "bg-sidebar-primary/15 text-gold-400"
-                    : "text-sidebar-foreground/60 hover:text-sidebar-foreground hover:bg-sidebar-accent"
-                )}
-              >
-                {isActive && (
-                  <motion.div
-                    layoutId="activeIndicator"
-                    className={cn(
-                      "absolute top-1/2 -translate-y-1/2 w-0.5 h-6 rounded-full bg-gold-400",
-                      isRTL ? "right-0" : "left-0"
-                    )}
-                  />
-                )}
-                <Icon className={cn("flex-shrink-0 w-5 h-5", isActive && "text-gold-400")} />
-                <AnimatePresence>
-                  {!collapsed && (
-                    <motion.span
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      exit={{ opacity: 0 }}
-                      className={cn(
-                        "text-sm font-medium whitespace-nowrap",
-                        isActive ? "text-gold-400" : ""
-                      )}
-                    >
-                      {t(
-                        item.key as
-                          | "dashboard"
-                          | "pipeline"
-                          | "agents"
-                          | "approvals"
-                          | "trustCheck"
-                          | "customerPortal"
-                          | "clients"
-                          | "analytics"
-                          | "settings",
-                      )}
-                    </motion.span>
-                  )}
-                </AnimatePresence>
-              </motion.div>
-            </Link>
-          );
-        })}
+        {/* Ops Console group */}
+        <div className="pt-4 pb-1 px-3">
+          {!collapsed ? (
+            <span className="text-[10px] font-semibold tracking-widest uppercase text-sidebar-foreground/40">
+              {t("opsConsole")}
+            </span>
+          ) : (
+            <div className="h-px bg-sidebar-border" />
+          )}
+        </div>
+        {opsNavItems.map((item) => renderNavItem(item))}
       </nav>
 
       {/* Bottom section - version */}

@@ -9,7 +9,16 @@
     "clients": "Client Management",
     "analytics": "Analytics & Reports",
     "settings": "Settings",
-    "logout": "Sign Out"
+    "logout": "Sign Out",
+    "opsConsole": "Ops Console",
+    "commandCenter": "Command Center",
+    "serviceCatalog": "Service Catalog",
+    "marketProof": "Market Proof",
+    "revenueOps": "Revenue Ops",
+    "evidenceLedger": "Evidence Ledger",
+    "billing": "Billing & Invoices",
+    "boardDecisions": "Board Decision OS",
+    "proofPack": "Proof Pack Generator"
   },
   "dashboard": {
     "title": "Executive Dashboard",
@@ -154,5 +163,78 @@
     "handleLabel": "Customer handle",
     "load": "Load",
     "promiseTitle": "Service promise"
+  },
+  "ops": {
+    "estimate": "Estimate",
+    "confirmed": "Confirmed",
+    "governance": "Governance",
+    "unavailable": "Source unavailable",
+    "empty": "Nothing here yet",
+    "refresh": "Refresh",
+    "commandCenter": {
+      "title": "Founder Command Center",
+      "subtitle": "Today's operating picture — actions, risks, cash",
+      "top3": "Top 3 actions now",
+      "leadsWaiting": "Leads waiting > 24h",
+      "blockedApprovals": "Blocked approvals",
+      "deliveryRisks": "Delivery risks",
+      "pipeline": "Pipeline snapshot",
+      "cash": "Cash position"
+    },
+    "serviceCatalog": {
+      "title": "Service Catalog",
+      "subtitle": "The productized offer ladder — scope, price, exclusions",
+      "ladder": "Offer ladder",
+      "entryOffers": "Entry offers",
+      "exclusions": "Exclusions",
+      "hardGates": "Hard gates",
+      "price": "Price"
+    },
+    "marketProof": {
+      "title": "Market Proof Console",
+      "subtitle": "Risk score, sample proof packs, signals, target accounts",
+      "riskScore": "Revenue & AI Ops risk score",
+      "sampleProofPacks": "Sample proof packs",
+      "signals": "Market signals",
+      "targetAccounts": "Target accounts"
+    },
+    "revenueOps": {
+      "title": "Revenue Ops Console",
+      "subtitle": "Pipeline by stage, conversion, next best actions",
+      "pipelineByStage": "Pipeline by stage",
+      "opportunities": "Opportunities",
+      "conversion": "Conversion rates",
+      "nextBestActions": "Next best actions"
+    },
+    "evidenceLedger": {
+      "title": "Evidence Ledger",
+      "subtitle": "Proof and value events — every claim has a source",
+      "events": "Event stream",
+      "levels": "Evidence levels (L0–L5)",
+      "sources": "Sources"
+    },
+    "billing": {
+      "title": "Billing & Invoices",
+      "subtitle": "Invoices, payment status, revenue ladder, unit economics",
+      "invoices": "Invoices",
+      "revenueLadder": "Revenue ladder",
+      "unitEconomics": "Unit economics",
+      "confirmedRevenue": "Confirmed revenue"
+    },
+    "boardDecisions": {
+      "title": "Board Decision OS",
+      "subtitle": "Top governed decisions, decision passports, risk register",
+      "topDecisions": "Top governed decisions",
+      "passports": "Decision passports",
+      "riskRegister": "Risk register"
+    },
+    "proofPack": {
+      "title": "Proof Pack Generator",
+      "subtitle": "Assemble and preview a proof pack from a diagnostic",
+      "template": "Proof pack template",
+      "generate": "Generate preview",
+      "completeness": "Completeness score",
+      "strengthBand": "Strength band"
+    }
   }
 }

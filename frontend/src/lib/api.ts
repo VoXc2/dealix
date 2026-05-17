@@ -5,6 +5,12 @@ const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 const TOKEN_KEY = "dealix_access_token";
 const REFRESH_KEY = "dealix_refresh_token";
 
+// Ops Console endpoints are admin-key gated on the backend. The operator
+// console is an internal tool; the key is supplied via a build-time env var
+// (same pattern as NEXT_PUBLIC_DEMO_API_KEY).
+const ADMIN_API_KEY = process.env.NEXT_PUBLIC_ADMIN_API_KEY || "";
+const opsHeaders = ADMIN_API_KEY ? { "X-Admin-API-Key": ADMIN_API_KEY } : {};
+
 function getToken(): string | null {
   if (typeof window === "undefined") return null;
   try {
@@ -181,6 +187,37 @@ export const api = {
 
   getCustomerPortal: (handle = "Slot-A") =>
     apiClient.get(`/api/v1/customer-portal/${encodeURIComponent(handle)}`),
+
+  // ── Ops Console (admin-key gated) ──────────────────────────────
+  getOpsCommandCenter: () =>
+    apiClient.get("/api/v1/ops/command-center", { headers: opsHeaders }),
+
+  getOpsCatalog: () =>
+    apiClient.get("/api/v1/ops/catalog", { headers: opsHeaders }),
+
+  getOpsMarketProof: () =>
+    apiClient.get("/api/v1/ops/market-proof", { headers: opsHeaders }),
+
+  getOpsRevenue: () =>
+    apiClient.get("/api/v1/ops/revenue", { headers: opsHeaders }),
+
+  getOpsEvidence: () =>
+    apiClient.get("/api/v1/ops/evidence", { headers: opsHeaders }),
+
+  getOpsEvidenceLevels: () =>
+    apiClient.get("/api/v1/ops/evidence/levels", { headers: opsHeaders }),
+
+  getOpsBilling: () =>
+    apiClient.get("/api/v1/ops/billing", { headers: opsHeaders }),
+
+  getOpsBoard: () =>
+    apiClient.get("/api/v1/ops/board", { headers: opsHeaders }),
+
+  getOpsProofPackTemplate: () =>
+    apiClient.get("/api/v1/ops/proof-pack/template", { headers: opsHeaders }),
+
+  postOpsProofPackPreview: (body: Record<string, unknown>) =>
+    apiClient.post("/api/v1/ops/proof-pack/preview", body, { headers: opsHeaders }),
 };
 
 export default api;

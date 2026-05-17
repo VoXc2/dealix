@@ -322,6 +322,17 @@ def create_app() -> FastAPI:
     # Wave 14F — Agent OS (admin-gated)
     if agent_os_router is not None:
         app.include_router(agent_os_router.router)
+    # Ops Console — unified operator console (8 surfaces, /api/v1/ops/*).
+    # Guarded: a broken import degrades to a logged warning, never a crash.
+    try:
+        from api.routers.domains.ops_console import (
+            get_routers as _ops_console_routers,
+        )
+
+        for _ops_router in _ops_console_routers():
+            app.include_router(_ops_router)
+    except Exception as _ops_exc:  # noqa: BLE001
+        _OPTIONAL_ROUTER_ERRORS["ops_console"] = repr(_ops_exc)
     for _name, _err in _OPTIONAL_ROUTER_ERRORS.items():
         get_logger(__name__).warning("optional_router_skipped", router=_name, error=_err)
     # Wave 14J — Commercial wiring map (public)
