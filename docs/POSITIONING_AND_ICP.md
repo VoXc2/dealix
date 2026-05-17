@@ -1,137 +1,209 @@
-# Dealix — Positioning & Ideal Customer Profile (ICP)
-<!-- PHASE 2 | Owner: Founder | Date: 2026-05-07 -->
+# Dealix — Positioning, Category, and ICP Matrix (v2)
+<!-- PHASE MAX | Owner: Founder | Date: 2026-05-17 -->
 <!-- Arabic primary — العربية أولاً -->
 
 ---
 
-## الموقع التنافسي (Positioning Statement)
+## 0) Category Statement (التصنيف الرسمي)
 
-**للشركات السعودية B2B** التي تغرق في أدوات متفرقة وتفشل في إثبات ROI لقيادتها،
-**Dealix** هو **رادار العمليات بالذكاء الاصطناعي** الذي يحوّل السياق السوقي اليومي إلى قرارات، مسودات، وإثبات نتائج — بالعربية، بضمانات الخصوصية السعودية، وبدون ادعاءات مبالغ فيها.
+لا نقول: "Dealix منصة AI."
 
-**بعكس** HubSpot وZoho العامّين، Dealix **عربي أولاً، سعودي السياق، ومحمي بالحوكمة** من اليوم الأول.
+نقول:
 
----
+**Dealix = Governed Revenue & AI Ops Infrastructure for GCC companies.**
 
-## 1. ICP الأساسي (Primary ICP)
-
-### الوصف
-**مؤسس أو مدير تنفيذي في شركة B2B سعودية، 5–50 موظف، تدير علاقات عملاء عبر واتساب + بريد، ولا تستطيع إثبات قيمة AI أو مبيعاتها لمجلس الإدارة.**
-
-### المعايير الكمية
-| معيار | القيمة |
-|-------|--------|
-| الحجم | 5–50 موظف |
-| الإيراد السنوي | 500K–10M SAR |
-| دورة المبيعات | 2–8 أسابيع |
-| قنوات التواصل | واتساب + بريد إلكتروني + لقاءات |
-| قرار الشراء | المؤسس أو C-level مباشرةً |
-| السوق | السعودية (الرياض / جدة / المنطقة الشرقية أولاً) |
-
-### الإشارات المُطِلقة للشراء (Buying Triggers)
-- فشل متابعة صفقة بسبب ضياع رسائل واتساب
-- رفض استثمار أو عقد بسبب غياب بيانات الأداء
-- توظيف موظف مبيعات جديد وغياب playbook موثّق
-- توسع القطاع (رؤية 2030 مشاريع جديدة)
-- خسارة عميل بسبب ضعف المتابعة
-
-### أصحاب القرار
-1. **المؤسس/الرئيس التنفيذي** — القرار النهائي والميزانية
-2. **مدير المبيعات** — يشعر بالألم يومياً
-3. **مدير العمليات** — يحتاج حل الفوضى
-
-### الاعتراضات الشائعة
-| الاعتراض | الرد |
-|-----------|------|
-| "لدينا CRM بالفعل" | Dealix يعمل فوق CRM — لا يحل محله |
-| "AI لا يناسب B2B العربي" | مصمم للعربية والسياق السعودي أولاً |
-| "كيف نثبت ROI؟" | الـ 7 أيام الأولى Proof Sprint هي الإثبات |
-| "غالي للتجربة" | 499 SAR pilot = أقل من تكلفة موظف ليوم واحد |
-| "بياناتنا سرية" | DPA + PDPL consent مدمجة من اليوم الأول |
+أي أن Dealix هي طبقة التشغيل المحكومة لعمليات الإيراد والذكاء الاصطناعي داخل workflow حقيقي يمكن للقيادة اعتماده، تدقيقه، وتوسيعه.
 
 ---
 
-## 2. ICP الثانوي (Secondary ICP)
+## 1) Strategic Narrative (القصة الرسمية)
 
-### الوصف
-**وكالة تسويق أو استشارات B2B سعودية، 3–20 موظف، تريد تمييز خدماتها بـ AI وتقديم نتائج قابلة للإثبات لعملائها.**
+الشركات لا تحتاج AI أكثر.
+الشركات تحتاج AI يمكن الوثوق به داخل workflow حقيقي.
 
-### الخصائص
-- تعمل مع 5–30 عميل في نفس الوقت
-- تحتاج أدوات AI تعزز خدماتها لا تحل محلها
-- تبحث عن هامش إضافي من الـ AI
-- مستعدة لدفع رسوم شراكة مقابل white-label
+الثقة لا تأتي من النموذج.
+الثقة تأتي من:
 
-### الإشارات
-- تنافس على عروض أسعار وتخسرها بسبب غياب "الذكاء"
-- عملاؤها يسألون عن AI وليس لديها إجابة
-- تريد تقارير شهرية تثبت قيمتها للعملاء
+- source clarity
+- approval boundaries
+- evidence trails
+- proof of value
 
----
-
-## 3. القطاعات الثلاثة الأولى
-
-### القطاع 1: وكالات B2B السعودية (تسويق / إعلام / PR)
-**الألم الأساسي:** لا يستطيعون إثبات ROI AI لعملائهم.
-**Trigger:** عميل يطلب "AI في خدمتك".
-**أفضل قناة:** دخول دافئ عبر المؤسس مباشرة.
-**السعر المناسب:** بداية 499 SAR + اشتراك شهري 2999–4999.
-
-### القطاع 2: شركات الخدمات B2B (مقاولات / استشارات / تقنية)
-**الألم الأساسي:** إدارة مبيعات وعلاقات عبر واتساب الشخصي.
-**Trigger:** صفقة ضاعت بسبب غياب متابعة.
-**أفضل قناة:** شبكة المعرفة المباشرة للمؤسس.
-**السعر المناسب:** 499 SAR → 1500 SAR → 2999/mo.
-
-### القطاع 3: شركات الاستشارات والتدريب (B2B leads)
-**الألم الأساسي:** دورات مبيعات طويلة وعدم القدرة على متابعة pipeline.
-**Trigger:** مشروع رؤية 2030 جديد أو نمو سريع.
-**أفضل قناة:** ظهور في LinkedIn + إحالات.
-**السعر المناسب:** 499 SAR → 2999–4999/mo.
+**الصياغة التنفيذية:**
+Dealix turns messy revenue operations and unmanaged AI experiments into governed workflows that leaders can approve, audit, and scale.
 
 ---
 
-## 4. ICP المُستَبعَد (Excluded ICP)
+## 2) Category Problem Bundle (المشاكل الخمس تحت عنوان واحد)
 
-| الفئة | السبب |
-|-------|-------|
-| B2C / متاجر إلكترونية | سياق مختلف تماماً — مبيعات جماهيرية لا علاقات |
-| شركات Enterprise +500 موظف | دورة مبيعات طويلة + procurement معقد |
-| قطاع الصحة والتعليم | متطلبات امتثال مختلفة — Tier 3 لاحقاً |
-| خارج المملكة العربية السعودية | الأولوية للسوق المحلي حتى إثبات 10 عملاء |
-| من يبحث عن "ضمان نتائج" | يتعارض مع سياسة NO_GUARANTEED_CLAIMS |
+هذا التصنيف يحل خمس مشاكل متفرقة بعنوان موحّد:
 
----
-
-## 5. خريطة رحلة المشتري
-
-```
-الوعي (Awareness)
-  ↓ محتوى LinkedIn / إحالة مباشرة / دخول دافئ
-الاهتمام (Interest)
-  ↓ Diagnostic مجاني (15 دقيقة)
-التقييم (Evaluation)
-  ↓ Demo 30 دقيقة — نرى pipeline الحالي + نقترح خطة 7 أيام
-القرار (Decision)
-  ↓ 499 SAR Proof Sprint — نتيجة في 7 أيام
-الاحتفاظ (Retention)
-  ↓ نتيجة موثقة → اشتراك شهري 2999–4999
-الإحالة (Referral)
-  ↓ Proof Pack → شريك وكالة أو إحالة مباشرة
-```
+1. AI موجود لكن بلا governance.
+2. CRM موجود لكن غير موثوق.
+3. Pipeline موجود لكن لا يثبت القيمة.
+4. Automation موجودة لكن approval ضعيف.
+5. Dashboards موجودة لكن لا تصنع قرارات.
 
 ---
 
-## 6. Best Channels (أفضل القنوات)
+## 3) Strategic Wedge (مدخل السوق)
 
-| القناة | الأولوية | الملاحظة |
-|--------|---------|-----------|
-| المعرفة الشخصية للمؤسس | **أولى** | أسرع وأقل تكلفة |
-| إحالات من عملاء حاليين | **ثانية** | بعد أول pilot ناجح |
-| LinkedIn (محتوى عربي) | **ثالثة** | أعمدة محتوى 6 أسابيع |
-| شركاء وكالات | **رابعة** | بعد 3 proof packs |
-| تسويق مباشر دافئ | **خامسة** | بموافقة — NO_COLD_WHATSAPP |
+نقطة الدخول ليست "تحويل الشركة بالكامل بالذكاء الاصطناعي".
+نقطة الدخول:
+
+**One governed revenue workflow.**
+
+أمثلة workflow الدخول:
+
+- pipeline follow-up
+- CRM quality
+- lead qualification
+- sales handoff
+- AI message approval
+- proof pack generation
+- monthly revenue review
+
+**العرض الأساسي الوحيد حالياً:**
+7-Day Governed Revenue & AI Ops Diagnostic.
 
 ---
 
-*Version 1.0 | Next review: after 10 customers*
+## 4) ICP Matrix (أفضل العملاء)
+
+### ICP 1 — B2B Services
+
+- **الألم:** pipeline فوضوي، CRM ضعيف، no proof of value.
+- **البيع:** ضبط pipeline + follow-up + CRM quality قبل أي AI automation.
+- **العرض الأنسب:** Governed Revenue Ops Diagnostic.
+
+### ICP 2 — Clinics / Healthcare Operators
+
+- **الألم:** patient acquisition غير منضبط، approval risk مرتفع.
+- **البيع:** تحويل acquisition/follow-up إلى workflow محكوم قبل الأتمتة.
+- **العرض الأنسب:** Patient/Revenue Workflow Diagnostic.
+
+### ICP 3 — Fintech / Regulated Teams
+
+- **الألم:** audit trail ناقص، approval boundaries غير واضحة، AI risk.
+- **البيع:** AI + revenue workflows مع evidence وapproval boundaries.
+- **العرض الأنسب:** Governed AI Workflow Diagnostic.
+
+### ICP 4 — CRM / AI Consultants
+
+- **الألم:** غياب diagnostic front-end وproof assets قبل التنفيذ.
+- **البيع:** Dealix كطبقة diagnostic + proof قبل implementation.
+- **العرض الأنسب:** Partner Diagnostic Package.
+
+### ICP 5 — VC / Portfolio Operators
+
+- **الألم:** portfolio AI adoption بلا governance مع GTM discipline ضعيف.
+- **البيع:** diagnostic قابل للتكرار لكل شركة ضمن المحفظة.
+- **العرض الأنسب:** Portfolio AI & Revenue Ops Review.
+
+---
+
+## 5) What We Are Not (نطاق اللعب)
+
+لا نلعب في:
+
+- generic AI chatbot market
+- AI SDR market
+- cheap agency market
+- dashboard-only SaaS
+
+نلعب في:
+
+- trust-sensitive workflows
+- CRM/data readiness before AI
+- AI governance inside revenue teams
+- proof of value for AI initiatives
+- GCC-localized operating workflows
+
+---
+
+## 6) Governance Promise (حوكمة كمنتج)
+
+The system can prepare, suggest, draft, score, and warn.
+The founder approves external or high-risk action.
+
+### Approval gates (always-on)
+
+- external send
+- invoice
+- scope
+- final diagnosis
+- public proof / case study
+- client data export
+- agent high-risk tool actions
+
+---
+
+## 7) Operating KPI Tree (مختصر)
+
+### North Star
+
+**Governed Value Decisions Created**
+
+### Revenue KPIs
+
+- paid diagnostics
+- diagnostic revenue
+- sprint revenue
+- MRR
+- gross margin
+
+### Governance KPIs
+
+- blocked risky actions
+- approval compliance
+- unsupported claims caught
+- agent actions reviewed
+
+### Quality KPIs
+
+- evidence completeness
+- source coverage
+- delivery time
+- value confirmed
+
+---
+
+## 8) Offer Ladder (تدرج العرض)
+
+1. 7-Day Diagnostic (entry cash + proof)
+2. Sprint (workflow expansion)
+3. Retainer (monthly governed operations)
+4. Client Workspace (modules + reporting)
+
+**قاعدة المنتج:** لا productization قبل proof متكرر عبر عملاء دافعين.
+
+---
+
+## 9) Go-to-Market Motions (حركات GTM)
+
+1. Founder-led outbound
+2. Proof-led inbound
+3. Partner-led distribution
+4. Category content
+5. Executive offer ladder
+
+---
+
+## 10) Immediate Execution Rules (الأوامر التنفيذية الحالية)
+
+1. ثبّت Diagnostic كعرض دخول رئيسي.
+2. كل lead يدخل state machine.
+3. كل meeting ينتج scope أو nurture.
+4. كل scope ينتج invoice draft.
+5. كل payment ينتج proof pack.
+6. كل proof pack ينتج upsell أو referral.
+
+---
+
+## 11) Governing sentence (الجملة الحاكمة)
+
+**Dealix لا تبيع الذكاء الاصطناعي. Dealix تبيع القدرة على تشغيل الذكاء الاصطناعي والإيراد داخل الشركات بثقة: مصدر واضح، موافقة واضحة، دليل واضح، وقرار يخلق قيمة.**
+
+---
+
+*Version 2.0 | Next review trigger: after first 3 paid diagnostics under this category language.*
