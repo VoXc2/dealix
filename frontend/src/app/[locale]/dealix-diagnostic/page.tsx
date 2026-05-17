@@ -30,6 +30,8 @@ type Copy = {
   automationList: string[];
   formTitle: string;
   formHint: string;
+  contactHint: string;
+  contactValidationError: string;
   nameLabel: string;
   companyLabel: string;
   emailLabel: string;
@@ -102,6 +104,8 @@ const AR_COPY: Copy = {
   ],
   formTitle: "احصل على Sample Proof Pack",
   formHint: "النموذج يولّد lead داخل النظام بصيغة draft-first. لا يوجد إرسال خارجي آلي.",
+  contactHint: "أدخل بريدًا إلكترونيًا صحيحًا أو رقم جوال واحدًا على الأقل.",
+  contactValidationError: "الرجاء إدخال بريد صحيح أو رقم جوال صحيح.",
   nameLabel: "الاسم",
   companyLabel: "الشركة",
   emailLabel: "البريد الإلكتروني",
@@ -174,6 +178,8 @@ const EN_COPY: Copy = {
   ],
   formTitle: "Get Sample Proof Pack",
   formHint: "This form creates a lead in draft-first mode. No autonomous external send.",
+  contactHint: "Provide at least one valid contact method: email or phone.",
+  contactValidationError: "Please enter a valid email address or phone number.",
   nameLabel: "Name",
   companyLabel: "Company",
   emailLabel: "Email",
@@ -192,6 +198,7 @@ export default function DealixDiagnosticPage() {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState(false);
+  const [contactError, setContactError] = useState(false);
   const [form, setForm] = useState({
     name: "",
     company: "",
@@ -205,12 +212,29 @@ export default function DealixDiagnosticPage() {
     setLoading(true);
     setSuccess(false);
     setError(false);
+    setContactError(false);
     try {
+      let email = form.email.trim();
+      let phone = form.phone.trim();
+      // Handle accidental swap between email/phone fields in RTL layouts.
+      if (!email.includes("@") && phone.includes("@")) {
+        const swapped = email;
+        email = phone;
+        phone = swapped;
+      }
+      const hasEmail = email.length > 0;
+      const hasPhone = phone.length > 0;
+      const emailValid = !hasEmail || email.includes("@");
+      if ((!hasEmail && !hasPhone) || !emailValid) {
+        setContactError(true);
+        setLoading(false);
+        return;
+      }
       await api.submitLead({
         company: form.company,
         name: form.name,
-        email: form.email,
-        phone: form.phone || null,
+        email: hasEmail ? email : null,
+        phone: hasPhone ? phone : null,
         region: "Saudi Arabia",
         sector: "governed_revenue_ai_ops",
         budget: 5000,
@@ -333,20 +357,25 @@ export default function DealixDiagnosticPage() {
               <div>
                 <label className="mb-1 block text-sm text-muted-foreground">{copy.emailLabel}</label>
                 <Input
-                  type="email"
+                  type="text"
+                  placeholder="name@company.com"
+                  dir="ltr"
                   value={form.email}
                   onChange={(event) => setForm((prev) => ({ ...prev, email: event.target.value }))}
-                  required
                 />
               </div>
               <div>
                 <label className="mb-1 block text-sm text-muted-foreground">{copy.phoneLabel}</label>
                 <Input
+                  type="tel"
+                  placeholder="+9665XXXXXXXX"
+                  dir="ltr"
                   value={form.phone}
                   onChange={(event) => setForm((prev) => ({ ...prev, phone: event.target.value }))}
                 />
               </div>
             </div>
+            <p className="text-xs text-muted-foreground">{copy.contactHint}</p>
             <div>
               <label className="mb-1 block text-sm text-muted-foreground">{copy.messageLabel}</label>
               <textarea
@@ -362,6 +391,7 @@ export default function DealixDiagnosticPage() {
           </form>
 
           {success && <p className="mt-4 text-sm text-emerald-500">{copy.successLabel}</p>}
+          {contactError && <p className="mt-4 text-sm text-destructive">{copy.contactValidationError}</p>}
           {error && <p className="mt-4 text-sm text-destructive">{copy.failureLabel}</p>}
         </section>
       </div>
