@@ -8,17 +8,17 @@ This document is the **single source of truth** showing how every commercial off
 
 ---
 
-## 1. The 7-offer canonical registry — السجل الرسمي للعروض السبعة
+## 1. The canonical registry — السجل الرسمي للعروض
+
+The Revenue Autopilot sells one front-door offer — the 7-Day Governed Revenue & AI Ops Diagnostic, at three price tiers — with two evidence-led follow-ons. Doctrine: `docs/REVENUE_AUTOPILOT.md`.
 
 | `service_id` | Name (AR / EN) | Price (SAR) | Cadence | Customer Journey Stage |
 |---|---|---|---|---|
-| `free_mini_diagnostic` | التشخيص المجاني / Free Mini Diagnostic | 0 | one_time | discovery |
-| `revenue_proof_sprint_499` | سبرنت إثبات الإيرادات / Revenue Proof Sprint | 499 | one_time | first_paid |
-| `data_to_revenue_pack_1500` | حزمة من البيانات إلى الإيراد / Data-to-Revenue Pack | 1,500 | one_time | expansion |
-| `growth_ops_monthly_2999` | عمليات النمو الشهرية / Growth Ops Monthly | 2,999 | per_month | monthly |
-| `support_os_addon_1500` | إضافة دعم العمليات / Support OS Add-on | 1,500 | per_month | support_addon |
-| `executive_command_center_7500` | غرفة قيادة الإدارة / Executive Command Center | 7,500 | per_month | executive |
-| `agency_partner_os` | منصة شركاء الوكالات / Agency Partner OS | custom | — | channel |
+| `diagnostic_starter_4999` | تشخيص الإيراد والذكاء الاصطناعي المحكوم ٧ أيام — المبدئية / 7-Day Governed Revenue & AI Ops Diagnostic — Starter | 4,999 | one_time | diagnostic |
+| `diagnostic_standard_9999` | …القياسية / …Standard | 9,999 | one_time | diagnostic |
+| `diagnostic_executive_15000` | …التنفيذية / …Executive | 15,000 | one_time | diagnostic |
+| `revenue_intelligence_sprint` | سبرنت ذكاء الإيراد / Revenue Intelligence Sprint | per scope | custom | sprint |
+| `governed_ops_retainer` | اشتراك العمليات المحكومة / Governed Ops Retainer | per scope | custom | retainer |
 
 The registry is authoritative — any disagreement with this table means **the code, not the table, is wrong**. Run `python -c "from auto_client_acquisition.service_catalog.registry import OFFERINGS; print([o.id for o in OFFERINGS])"` to verify.
 
@@ -28,71 +28,34 @@ The registry is authoritative — any disagreement with this table means **the c
 
 ## 2. Per-offer wiring — الربط لكل عرض
 
-### 2.1 `free_mini_diagnostic` — التشخيص المجاني
+### 2.1–2.3 `diagnostic_starter_4999` / `diagnostic_standard_9999` / `diagnostic_executive_15000` — التشخيص المحكوم ٧ أيام
 
-- **Public landing:** `landing/diagnostic.html`
-- **Intake endpoint:** `POST /api/v1/company-growth-beast/diagnostic` + `POST /api/v1/public/demo-request`
-- **Checkout:** N/A (free / مجاني)
-- **Delivery:** founder reviews via `GET /api/v1/founder/leads`
-- **Proof / report:** bilingual brief emailed via `auto_client_acquisition/email/transactional.send_transactional(kind="diagnostic_intake_confirmation")`
-- **Founder dashboard surface:** `landing/founder-leads.html` + `GET /api/v1/founder/dashboard`
-- **Non-negotiables enforced:** `no_live_send`, `no_live_charge`, `no_cold_whatsapp`, `no_scraping`, `no_fake_proof`
+- **Public landing:** `landing/dealix-diagnostic.html`
+- **Intake endpoint:** `POST /api/v1/revenue-autopilot/lead` (Revenue Autopilot, automation 1)
+- **Checkout:** `landing/checkout.html?tier=diagnostic_starter|diagnostic_standard|diagnostic_executive` → `POST /api/v1/payment-ops/invoice-intent`
+- **Delivery:** `auto_client_acquisition/diagnostic_engine/` + `auto_client_acquisition/revenue_autopilot/` (automations 6–9) via `POST /api/v1/revenue-autopilot/engagements/{id}/automations/{automation_name}`
+- **Proof / report:** `auto_client_acquisition/proof_os/proof_pack.assemble` → 14-section Proof Pack
+- **Founder dashboard surface:** `landing/founder-dashboard.html` + approval queue
+- **Non-negotiables enforced:** all 8 hard_gates from `registry.py`
 
-### 2.2 `revenue_proof_sprint_499` — سبرنت إثبات الإيرادات
+### 2.4 `revenue_intelligence_sprint` — سبرنت ذكاء الإيراد
 
-- **Public landing:** `landing/start.html` (with `landing/sprint-sample.html` for live preview)
+- **Public landing:** `landing/dealix-diagnostic.html#sprint`
 - **Intake endpoint:** `POST /api/v1/service-setup/qualify` → `POST /api/v1/service-setup/proposal/{customer_id}`
-- **Checkout:** `landing/checkout.html?tier=sprint` → `POST /api/v1/payment-ops/invoice-intent`
-- **Delivery:** `auto_client_acquisition/delivery_factory/delivery_sprint.run_sprint` + `POST /api/v1/sprint/run` (10 steps)
-- **Proof / report:** `auto_client_acquisition/proof_os/proof_pack.assemble` → 14-section ProofPack
-- **Founder dashboard surface:** `landing/founder-dashboard.html` + `GET /api/v1/founder/dashboard`
-- **Non-negotiables enforced:** all 7 hard_gates from `registry.py`
+- **Checkout:** founder-issued invoice (scoped from the diagnostic findings)
+- **Delivery:** `auto_client_acquisition/revenue_autopilot/orchestrator` (automation 10 drafts the proposal)
+- **Proof / report:** `auto_client_acquisition/proof_os/proof_pack.assemble`
+- **Non-negotiables enforced:** all 8 hard_gates
 
-### 2.3 `data_to_revenue_pack_1500` — حزمة من البيانات إلى الإيراد
+### 2.5 `governed_ops_retainer` — اشتراك العمليات المحكومة
 
-- **Public landing:** `landing/data-pack.html` (NEW) + `landing/services.html` card
-- **Intake endpoint:** CSV upload via `POST /api/v1/data-os/import-preview/upload` (live demo) → qualified via `POST /api/v1/service-setup/qualify`
-- **Checkout:** `landing/checkout.html?tier=data_pack` → `POST /api/v1/payment-ops/invoice-intent`
-- **Delivery:** `auto_client_acquisition/data_os/` (SourcePassport + preview + compute_dq) plus the sprint orchestrator with a tighter scope
-- **Proof / report:** Proof Pack + `POST /api/v1/data-os/import-preview` JSON output
-- **Founder dashboard surface:** founder reviews CSV uploads and approves cleaned output
-- **Non-negotiables enforced:** 6 hard_gates
-
-### 2.4 `growth_ops_monthly_2999` — عمليات النمو الشهرية
-
-- **Public landing:** `landing/pricing.html` (Growth card)
-- **Intake endpoint:** `POST /api/v1/service-setup/qualify` → proposal
-- **Checkout:** `landing/checkout.html?tier=growth` → `POST /api/v1/payment-ops/invoice-intent`
-- **Delivery:** `scripts/weekly_brief_runner.py --all-active` + `scripts/monthly_cadence_runner.py --all-active --schedule-renewals`
-- **Proof / report:** `GET /api/v1/value/{handle}/report/monthly` + workspace
-- **Founder dashboard surface:** `landing/customer-portal.html?handle={customer}` (Wave 14J wired)
-- **Non-negotiables enforced:** 8 hard_gates
-
-### 2.5 `support_os_addon_1500` — Support OS Add-on
-
-- **Public landing:** `landing/services.html` (card 4)
-- **Intake endpoint:** same qualification flow as Growth Ops
-- **Checkout:** `landing/checkout.html?tier=support_addon`
-- **Delivery:** `auto_client_acquisition/support_os/` (existing module)
-- **Proof / report:** monthly value report
-- **Non-negotiables enforced:** 5 hard_gates
-
-### 2.6 `executive_command_center_7500` — غرفة قيادة الإدارة
-
-- **Public landing:** `landing/executive-command-center.html`
-- **Intake endpoint:** founder-led; `POST /api/v1/service-setup/requests`
-- **Checkout:** founder-issued invoice (manual Moyasar link)
-- **Delivery:** `auto_client_acquisition/executive_command_center/` (existing module)
-- **Proof / report:** daily founder brief (WhatsApp) + monthly board pack
-- **Non-negotiables enforced:** 8 hard_gates
-
-### 2.7 `agency_partner_os` — Agency Partner OS
-
-- **Public landing:** `landing/agency-partner.html`
-- **Intake endpoint:** `POST /api/v1/public/partner-application`
-- **Referral program:** `auto_client_acquisition/partnership_os/referral_store` (5,000 SAR per closed deal; persistence landed in Wave 14D.1)
-- **Founder dashboard surface:** `landing/founder-leads.html` + referral dashboard
-- **Non-negotiables enforced:** 8 hard_gates + the Partner Covenant (`docs/40_partners/PARTNER_COVENANT.md`)
+- **Public landing:** `landing/dealix-diagnostic.html#retainer`
+- **Intake endpoint:** `POST /api/v1/service-setup/qualify`
+- **Checkout:** founder-issued monthly invoice (price scoped per engagement)
+- **Delivery:** `scripts/monthly_cadence_runner.py` + `auto_client_acquisition/revenue_autopilot/`
+- **Proof / report:** `GET /api/v1/value/{handle}/report/monthly`
+- **Founder dashboard surface:** `landing/customer-portal.html?handle={customer}`
+- **Non-negotiables enforced:** all 8 hard_gates
 
 ---
 
@@ -145,7 +108,7 @@ Each of these modules has its own bilingual README under `auto_client_acquisitio
 ## 5. The commercial-map endpoint — نقطة نهاية خريطة الربط
 
 ```
-GET /api/v1/commercial-map           → JSON list of 7 offers + URLs + endpoints
+GET /api/v1/commercial-map           → JSON list of all offers + URLs + endpoints
 GET /api/v1/commercial-map/markdown  → this document (always in sync with the registry)
 ```
 

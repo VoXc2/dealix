@@ -86,20 +86,31 @@ def test_markdown_endpoint_is_bilingual():
         assert sid in body, f"markdown missing service_id={sid}"
 
 
-def test_referral_persistence_offer_links_to_partnership_module():
+def test_diagnostic_tiers_link_to_diagnostic_landing():
     body = client.get("/api/v1/commercial-map").json()
-    agency = next(o for o in body["offers"] if o["service_id"] == "agency_partner_os")
-    assert "partnership_os" in agency["wiring"]["delivery_module"]
+    tiers = [
+        o for o in body["offers"]
+        if o["customer_journey_stage"] == "diagnostic"
+    ]
+    assert len(tiers) == 3, "expected 3 diagnostic tiers"
+    for tier in tiers:
+        assert tier["wiring"]["landing_url"] == "/dealix-diagnostic.html"
+        assert tier["wiring"]["next_offer"] == "revenue_intelligence_sprint"
 
 
-def test_growth_ops_links_to_workspace_endpoint():
+def test_retainer_offer_links_to_workspace_endpoint():
     body = client.get("/api/v1/commercial-map").json()
-    growth = next(o for o in body["offers"] if o["service_id"] == "growth_ops_monthly_2999")
-    assert "workspace" in growth["wiring"]["delivery_endpoint"]
+    retainer = next(
+        o for o in body["offers"] if o["service_id"] == "governed_ops_retainer"
+    )
+    assert "workspace" in retainer["wiring"]["delivery_endpoint"]
 
 
-def test_sprint_offer_links_to_sample_preview():
+def test_sprint_offer_links_to_autopilot_orchestrator():
     body = client.get("/api/v1/commercial-map").json()
-    sprint = next(o for o in body["offers"] if o["service_id"] == "revenue_proof_sprint_499")
-    assert sprint["wiring"]["sample_endpoint"] == "GET /api/v1/sprint/sample"
-    assert sprint["wiring"]["preview_url"] == "/sprint-sample.html"
+    sprint = next(
+        o for o in body["offers"]
+        if o["service_id"] == "revenue_intelligence_sprint"
+    )
+    assert "revenue_autopilot" in sprint["wiring"]["delivery_module"]
+    assert sprint["wiring"]["next_offer"] == "governed_ops_retainer"

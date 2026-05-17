@@ -10,7 +10,7 @@ Single source of truth that maps every Dealix offer to:
   - non-negotiables (hard_gates) honored by code
 
 Reads from `auto_client_acquisition.service_catalog.registry.OFFERINGS`
-so the map can never drift from the canonical 7-offer registry.
+so the map can never drift from the canonical offer registry.
 
 Endpoints:
   GET /api/v1/commercial-map           → JSON
@@ -18,7 +18,7 @@ Endpoints:
 """
 from __future__ import annotations
 
-from datetime import datetime, timezone
+from datetime import UTC, datetime, timezone
 from typing import Any
 
 from fastapi import APIRouter
@@ -26,132 +26,82 @@ from fastapi.responses import PlainTextResponse
 
 from auto_client_acquisition.service_catalog.registry import OFFERINGS
 
-
 router = APIRouter(prefix="/api/v1/commercial-map", tags=["commercial-map"])
 
 
 # Per-service wiring overlays (landing + endpoints).
 # Keys MUST match `auto_client_acquisition.service_catalog.registry` ids.
+_DIAGNOSTIC_WIRING: dict[str, Any] = {
+    "landing_url": "/dealix-diagnostic.html",
+    "intake_endpoint": "POST /api/v1/revenue-autopilot/lead",
+    "checkout_endpoint": "POST /api/v1/payment-ops/invoice-intent",
+    "delivery_module": "auto_client_acquisition.diagnostic_engine + auto_client_acquisition.revenue_autopilot",
+    "delivery_endpoint": "POST /api/v1/revenue-autopilot/engagements/{id}/automations/{automation_name}",
+    "proof_endpoint": "auto_client_acquisition.proof_os.proof_pack.assemble",
+    "founder_surface": "/founder-dashboard.html",
+    "next_offer": "revenue_intelligence_sprint",
+}
+
 _WIRING: dict[str, dict[str, Any]] = {
-    "free_mini_diagnostic": {
-        "landing_url": "/diagnostic.html",
-        "intake_endpoint": "POST /api/v1/company-growth-beast/diagnostic",
-        "lead_capture_endpoint": "POST /api/v1/public/demo-request",
-        "checkout_url": None,
-        "checkout_endpoint": None,
-        "delivery_module": "founder reviews via /api/v1/founder/leads",
-        "delivery_endpoint": "GET /api/v1/founder/leads",
-        "proof_endpoint": "auto_client_acquisition/email/transactional.send_transactional(kind=diagnostic_intake_confirmation)",
-        "founder_surface": "/founder-leads.html",
-        "next_offer": "revenue_proof_sprint_499",
+    "diagnostic_starter_4999": {
+        **_DIAGNOSTIC_WIRING,
+        "checkout_url": "/checkout.html?tier=diagnostic_starter",
     },
-    "revenue_proof_sprint_499": {
-        "landing_url": "/start.html",
-        "preview_url": "/sprint-sample.html",
+    "diagnostic_standard_9999": {
+        **_DIAGNOSTIC_WIRING,
+        "checkout_url": "/checkout.html?tier=diagnostic_standard",
+    },
+    "diagnostic_executive_15000": {
+        **_DIAGNOSTIC_WIRING,
+        "checkout_url": "/checkout.html?tier=diagnostic_executive",
+    },
+    "revenue_intelligence_sprint": {
+        "landing_url": "/dealix-diagnostic.html#sprint",
         "intake_endpoint": "POST /api/v1/service-setup/qualify",
         "proposal_endpoint": "POST /api/v1/service-setup/proposal/{customer_id}",
-        "checkout_url": "/checkout.html?tier=sprint",
+        "checkout_url": "founder-issued",
         "checkout_endpoint": "POST /api/v1/payment-ops/invoice-intent",
-        "delivery_module": "auto_client_acquisition.delivery_factory.delivery_sprint.run_sprint",
-        "delivery_endpoint": "POST /api/v1/sprint/run",
-        "sample_endpoint": "GET /api/v1/sprint/sample",
-        "proof_endpoint": "auto_client_acquisition.proof_os.proof_pack.assemble",
-        "case_safe_endpoint": "GET /api/v1/proof-to-market/case-safe/{engagement_id}",
-        "founder_surface": "/founder-dashboard.html",
-        "next_offer": "growth_ops_monthly_2999",
-    },
-    "data_to_revenue_pack_1500": {
-        "landing_url": "/data-pack.html",
-        "intake_endpoint": "POST /api/v1/data-os/import-preview/upload",
-        "preview_endpoint": "POST /api/v1/data-os/import-preview",
-        "checkout_url": "/checkout.html?tier=data_pack",
-        "checkout_endpoint": "POST /api/v1/payment-ops/invoice-intent",
-        "delivery_module": "auto_client_acquisition.data_os + auto_client_acquisition.delivery_factory.delivery_sprint",
-        "delivery_endpoint": "POST /api/v1/sprint/run",
+        "delivery_module": "auto_client_acquisition.revenue_autopilot.orchestrator",
+        "delivery_endpoint": "POST /api/v1/revenue-autopilot/engagements/{id}/automations/{automation_name}",
         "proof_endpoint": "auto_client_acquisition.proof_os.proof_pack.assemble",
         "founder_surface": "/founder-dashboard.html",
-        "next_offer": "growth_ops_monthly_2999",
+        "next_offer": "governed_ops_retainer",
     },
-    "growth_ops_monthly_2999": {
-        "landing_url": "/pricing.html#growth",
+    "governed_ops_retainer": {
+        "landing_url": "/dealix-diagnostic.html#retainer",
         "intake_endpoint": "POST /api/v1/service-setup/qualify",
-        "proposal_endpoint": "POST /api/v1/service-setup/proposal/{customer_id}",
-        "checkout_url": "/checkout.html?tier=growth",
+        "checkout_url": "founder-issued",
         "checkout_endpoint": "POST /api/v1/payment-ops/invoice-intent",
-        "delivery_module": "scripts/weekly_brief_runner.py + scripts/monthly_cadence_runner.py",
+        "delivery_module": "scripts/monthly_cadence_runner.py + auto_client_acquisition.revenue_autopilot",
         "delivery_endpoint": "GET /api/v1/customer-portal/{handle}/workspace",
         "proof_endpoint": "GET /api/v1/value/{handle}/report/monthly",
-        "adoption_endpoint": "GET /api/v1/customer-success/{handle}/adoption-score",
         "renewal_module": "auto_client_acquisition.payment_ops.renewal_scheduler",
         "founder_surface": "/customer-portal.html?handle={customer}",
-        "next_offer": "executive_command_center_7500",
-    },
-    "support_os_addon_1500": {
-        "landing_url": "/services.html#support",
-        "intake_endpoint": "POST /api/v1/service-setup/qualify",
-        "checkout_url": "/checkout.html?tier=support_addon",
-        "checkout_endpoint": "POST /api/v1/payment-ops/invoice-intent",
-        "delivery_module": "auto_client_acquisition.support_os",
-        "delivery_endpoint": "GET /api/v1/support-os/*",
-        "proof_endpoint": "GET /api/v1/value/{handle}/report/monthly",
-        "founder_surface": "/founder-dashboard.html",
-        "next_offer": None,
-    },
-    "executive_command_center_7500": {
-        "landing_url": "/executive-command-center.html",
-        "intake_endpoint": "POST /api/v1/service-setup/requests",
-        "checkout_url": "founder-issued",
-        "checkout_endpoint": "POST /api/v1/payment-ops/invoice-intent",
-        "delivery_module": "auto_client_acquisition.executive_command_center",
-        "delivery_endpoint": "GET /api/v1/executive-command-center/*",
-        "proof_endpoint": "GET /api/v1/audit/{handle}/control-graph/markdown",
-        "trust_pack_endpoint": "GET /api/v1/value/trust-pack/{handle}/pdf",
-        "founder_surface": "/founder-dashboard.html",
-        "next_offer": None,
-    },
-    "agency_partner_os": {
-        "landing_url": "/agency-partner.html",
-        "intake_endpoint": "POST /api/v1/public/partner-application",
-        "checkout_url": "founder-issued",
-        "checkout_endpoint": None,
-        "delivery_module": "auto_client_acquisition.partnership_os.referral_store",
-        "delivery_endpoint": "POST /api/v1/referrals/create + /redeem + /{code}/convert",
-        "proof_endpoint": "GET /api/v1/founder/dashboard",
-        "covenant_doc": "docs/40_partners/PARTNER_COVENANT.md",
-        "founder_surface": "/founder-leads.html",
         "next_offer": None,
     },
 }
 
 
 _OFFER_NOTES = {
-    "free_mini_diagnostic": (
-        "Free 24h diagnostic — opens the funnel. Confirmation email auto-sent. "
-        "Founder reviews every intake within 24h."
+    "diagnostic_starter_4999": (
+        "Entry tier of the single front-door offer. 7-day governed diagnostic of "
+        "one revenue workflow. Surfaces 3 evidence-backed decisions + Proof Pack."
     ),
-    "revenue_proof_sprint_499": (
-        "First paid offer. 7 days. 10-step orchestrator. Proof Pack mandatory. "
-        "50% on acceptance, 50% on Proof Pack delivery. 14-day full refund."
+    "diagnostic_standard_9999": (
+        "Standard tier. Up to 3 workflows, approval-boundary gap analysis, 90-day "
+        "governed action plan, 5 evidence-backed decisions + executive readout."
     ),
-    "data_to_revenue_pack_1500": (
-        "CSV upload → DQ score + cleaned + ranked. Live demo on /data-pack.html "
-        "via POST /api/v1/data-os/import-preview/upload. 14-day delivery."
+    "diagnostic_executive_15000": (
+        "Executive tier. Full-funnel governance audit, 7 evidence-backed decisions, "
+        "board memo, and a Governed Ops Retainer scope draft."
     ),
-    "growth_ops_monthly_2999": (
-        "Retainer engine. Weekly brief + monthly value report + adoption score + "
-        "retainer readiness gate. Renewal auto-charge after 3 confirmed cycles."
+    "revenue_intelligence_sprint": (
+        "First evidence-led follow-on. Scoped from the diagnostic findings. "
+        "14-day governed rebuild of the prioritized workflow with a Proof Pack."
     ),
-    "support_os_addon_1500": (
-        "Add-on to Growth. Ticket classification + suggested replies (draft_only). "
-        "SLA breach alerts. Sits inside the customer workspace."
-    ),
-    "executive_command_center_7500": (
-        "Founder/CEO surface. Daily founder brief (WhatsApp draft_only) + monthly "
-        "board pack. Includes Trust Pack PDF + Evidence Control Plane export."
-    ),
-    "agency_partner_os": (
-        "Channel offer. 5K SAR / closed deal + 30% commission first year. "
-        "Partner Covenant enforced: no unsafe automation, no guaranteed claims."
+    "governed_ops_retainer": (
+        "Monthly follow-on. Runs the governed revenue ops, daily approval queue, "
+        "and a monthly Proof Pack. Price scoped per engagement."
     ),
 }
 
@@ -188,7 +138,7 @@ def _build_payload() -> dict[str, Any]:
     return {
         "version": "1.0",
         "wave": "14J",
-        "generated_at": datetime.now(timezone.utc).isoformat(),
+        "generated_at": datetime.now(UTC).isoformat(),
         "source_of_truth": "auto_client_acquisition/service_catalog/registry.py",
         "registry_count": len(OFFERINGS),
         "offers": offers,
@@ -203,7 +153,7 @@ def _build_payload() -> dict[str, Any]:
 
 @router.get("")
 async def commercial_map_json() -> dict[str, Any]:
-    """JSON — 7 offers + wiring + non-negotiables + cross-links."""
+    """JSON — every offer + wiring + non-negotiables + cross-links."""
     return _build_payload()
 
 

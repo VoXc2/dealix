@@ -7,13 +7,9 @@ from typing import Literal
 from pydantic import BaseModel, ConfigDict, Field
 
 CustomerJourneyStage = Literal[
-    "discovery",      # Free Mini Diagnostic
-    "first_paid",     # 499 Sprint
-    "expansion",      # Data-to-Revenue Pack
-    "monthly",        # Growth Ops Monthly
-    "executive",      # Executive Command Center
-    "support_addon",  # Support OS Add-on
-    "channel",        # Agency Partner OS
+    "diagnostic",  # 7-Day Governed Revenue & AI Ops Diagnostic (3 tiers)
+    "sprint",      # Revenue Intelligence Sprint (follow-on)
+    "retainer",    # Governed Ops Retainer (follow-on)
 ]
 
 ActionMode = Literal[

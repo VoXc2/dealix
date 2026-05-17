@@ -167,8 +167,8 @@ def test_session_offering_link_optional_and_typed():
     """service_offering_id is optional; when set, references service_catalog id."""
     rec = _make_session()
     assert rec.service_offering_id is None
-    rec.service_offering_id = "revenue_proof_sprint_499"
-    assert rec.service_offering_id == "revenue_proof_sprint_499"
+    rec.service_offering_id = "diagnostic_starter_4999"
+    assert rec.service_offering_id == "diagnostic_starter_4999"
     # Round-trip via model_dump
     d = rec.model_dump()
-    assert d["service_offering_id"] == "revenue_proof_sprint_499"
+    assert d["service_offering_id"] == "diagnostic_starter_4999"

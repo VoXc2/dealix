@@ -38,23 +38,23 @@ sys.path.insert(0, str(REPO_ROOT))
 # ─────────────────────────────────────────────────────────────────────
 
 
-def test_step_01_service_catalog_has_7_offerings_with_valid_ladder() -> None:
+def test_step_01_service_catalog_has_5_offerings_with_valid_ladder() -> None:
     from auto_client_acquisition.service_catalog.registry import (
         get_offering, list_offerings,
     )
 
     offerings = list_offerings()
-    assert len(offerings) == 7
+    assert len(offerings) == 5
 
-    # Free Diagnostic must be at price 0
-    free = get_offering("free_mini_diagnostic")
-    assert free is not None
-    assert free.price_sar == 0.0
+    # Diagnostic Starter is the front-door offer at 4,999 SAR
+    starter = get_offering("diagnostic_starter_4999")
+    assert starter is not None
+    assert starter.price_sar == 4999.0
 
-    # Revenue Proof Sprint = 499 (first paid tier)
-    sprint = get_offering("revenue_proof_sprint_499")
+    # Revenue Intelligence Sprint = first evidence-led follow-on
+    sprint = get_offering("revenue_intelligence_sprint")
     assert sprint is not None
-    assert sprint.price_sar == 499.0
+    assert sprint.customer_journey_stage == "sprint"
 
     # Article 4: no live actions in any offering's action_modes_used
     for off in offerings:
@@ -326,7 +326,7 @@ def test_step_08_service_catalog_json_export_in_sync_with_registry() -> None:
     import json
 
     payload = json.loads(json_path.read_text(encoding="utf-8"))
-    assert payload["count"] == 7
+    assert payload["count"] == 5
     assert payload["schema_version"] == "1.0"
     # Article 4: hard gates listed
     assert set(payload["constitution"]["article_4_hard_gates"]) == {

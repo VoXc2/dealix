@@ -1,6 +1,6 @@
-"""Wave 13 Phase 2 — Service Catalog tests.
+"""Service Catalog tests — Revenue Autopilot offer model.
 
-Asserts the 7-offering registry meets:
+Asserts the offering registry meets:
 - Article 4: never includes 'live_send' or 'live_charge' in action_modes_used
 - Article 8: KPI commitment language uses commitment phrasing, never "guaranteed"/"نضمن"
 - Article 11: thin data registry (no business logic in tests)
@@ -52,10 +52,10 @@ list_offerings = _REGISTRY_NS["list_offerings"]
 
 
 # ── Test 1 ────────────────────────────────────────────────────────────
-def test_registry_has_exactly_7_offerings():
-    """Article 11: catalog is the canonical 7 offerings."""
-    assert len(OFFERINGS) == 7, f"expected 7, got {len(OFFERINGS)}"
-    assert len(SERVICE_IDS) == 7, "duplicate service_id in registry"
+def test_registry_has_exactly_5_offerings():
+    """Article 11: catalog is the canonical 5 offerings (3 diagnostic tiers + 2 follow-ons)."""
+    assert len(OFFERINGS) == 5, f"expected 5, got {len(OFFERINGS)}"
+    assert len(SERVICE_IDS) == 5, "duplicate service_id in registry"
 
 
 # ── Test 2 ────────────────────────────────────────────────────────────
@@ -106,17 +106,17 @@ def test_no_guaranteed_language_anywhere():
 
 # ── Test 5 ────────────────────────────────────────────────────────────
 def test_price_ladder_ascending_for_paid_one_time_services():
-    """Free → 499 (Sprint) → 1500 (Data-to-Revenue) one-time pricing ladder."""
+    """Diagnostic tiers: Starter (4,999) → Standard (9,999) → Executive (15,000)."""
     one_time_paid = [
         o for o in OFFERINGS if o.price_unit == "one_time" and o.price_sar > 0
     ]
     prices = [o.price_sar for o in one_time_paid]
     assert prices == sorted(prices), f"one-time prices not ascending: {prices}"
-    # Specifically: Sprint must be cheaper than Data-to-Revenue
-    sprint = get_offering("revenue_proof_sprint_499")
-    d2r = get_offering("data_to_revenue_pack_1500")
-    assert sprint is not None and d2r is not None
-    assert sprint.price_sar < d2r.price_sar
+    starter = get_offering("diagnostic_starter_4999")
+    standard = get_offering("diagnostic_standard_9999")
+    executive = get_offering("diagnostic_executive_15000")
+    assert starter is not None and standard is not None and executive is not None
+    assert starter.price_sar < standard.price_sar < executive.price_sar
 
 
 # ── Test 6 ────────────────────────────────────────────────────────────
@@ -146,9 +146,9 @@ def test_every_offering_lists_relevant_hard_gates():
 # ── Test 8 ────────────────────────────────────────────────────────────
 def test_get_offering_lookup_works():
     """Helper function returns correct offering by id, None for unknown."""
-    assert get_offering("revenue_proof_sprint_499") is not None
-    assert get_offering("free_mini_diagnostic") is not None
-    assert get_offering("agency_partner_os") is not None
+    assert get_offering("diagnostic_starter_4999") is not None
+    assert get_offering("revenue_intelligence_sprint") is not None
+    assert get_offering("governed_ops_retainer") is not None
     assert get_offering("nonexistent_id") is None
     assert get_offering("") is None
     # SERVICE_IDS frozenset must match
