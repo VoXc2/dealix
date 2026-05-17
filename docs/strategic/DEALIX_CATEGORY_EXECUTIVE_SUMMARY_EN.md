@@ -1,45 +1,46 @@
-# Dealix — Category and execution thesis (executive summary)
+# Dealix — Category and control thesis (executive summary)
 
 **Full Arabic playbook:** [CATEGORY_DESIGN_AND_MASTER_OPERATING_SYSTEM_AR.md](CATEGORY_DESIGN_AND_MASTER_OPERATING_SYSTEM_AR.md)  
+**GCC control map (Arabic):** [GCC_GOVERNED_REVENUE_AI_OPS_CONTROL_MAP_AR.md](GCC_GOVERNED_REVENUE_AI_OPS_CONTROL_MAP_AR.md)  
 **Operating radars + loops + evidence:** [SAUDI_REVENUE_EXECUTION_OS_RADARS_AR.md](SAUDI_REVENUE_EXECUTION_OS_RADARS_AR.md)
 
 ---
 
 ## Category
 
-**Dealix = Saudi Revenue Operating System** — not a generic CRM, WhatsApp blaster, or lead list vendor. It connects **signal → context → service fit → risk check → draft → approval → execution → outcome → proof → learning → upgrade** for Saudi SMBs and agencies, with **consent-first channels** and **Proof Packs** instead of marketing claims.
+**Dealix = GCC operating layer for governed revenue and AI workflows** — not a generic CRM, automation bot, or lead list vendor. It connects **signal → diagnosis → decision → proof → execution → review → retainer → platform** with approval-first governance, evidence requirements, and measurable outcomes.
 
 ## Why we can win vs global platforms
 
-Salesforce and HubSpot are embedding **AI agents** at enterprise scale (e.g. Agentforce with visibility/control; Breeze for prospecting and outreach). Dealix does not win by cloning their CRM surface. It wins as the **Saudi SMB execution layer**: Arabic-native tone, WhatsApp-aware workflows, PDPL-aligned defaults, human-in-the-loop for sensitive channels (e.g. LinkedIn manual per platform rules), and **service-first pilots** with tangible proof.
+Global vendors are embedding AI agents at enterprise scale. Dealix does not win by cloning CRM surfaces. It wins as the **GCC governed workflow layer**: Arabic-first operating language, approval boundaries, evidence trails, PDPL-aware defaults, and proof-led commercial decisions before automation scale.
 
-## Product architecture (seven layers)
+## Control architecture
 
-1. **Intake** — minimal commercial fields + consent.  
-2. **Knowledge** — offers, objections, policies, ICP.  
-3. **Lead graph** — account, contact, signal, score, risk, channel, next action, outcome.  
-4. **Policy engine** — auto / approval / blocked per channel and action.  
-5. **Cards** — operational unit of work (diagnostic, pilot, invoice, proof).  
-6. **Execution** — drafts and runbooks; no unsupervised live send on restricted channels.  
-7. **Learning** — what message, channel, and segment worked; this becomes the moat.
+1. **Operating System** — command center, approval center, scope and invoice flow.  
+2. **Service Engine** — diagnostic-led delivery and retainer progression.  
+3. **Agent Layer** — policy-routed agent preparation with human approval.  
+4. **Evidence Layer** — event ledger + proof pack generation.  
+5. **Trust Standard** — no external action without approval, no claim without source.  
+6. **Expansion Path** — workflow-led, segment-led, offer-led, then geography-led scale.
 
-## GTM wedge
+## Strategic wedge
 
-**Agencies first** (understand leads, can refer or bundle), then **B2B services**, then **high-lead verticals**. Offer ladder: free diagnostic → managed pilot (e.g. 499 SAR / 7 days, scoped, no revenue guarantee) → monthly Growth OS — see [OFFER_LADDER.md](../OFFER_LADDER.md).
+Start from one governed workflow at a time via a **7-Day Governed Revenue & AI Ops Diagnostic**, then expand through sprint, retainer, executive memo, and trust packs.
 
-## Compliance as product
+## Governance as product
 
-Treat PDPL and channel rules (WhatsApp session vs template; LinkedIn automation policies) as **product requirements**, not legal footnotes. Record consent source, allowed channel, opt-out, and risk notes.
+Treat governance and trust as first-class product surfaces. Core doctrine: no external action without approval, no unsupported claims, no proofless upsell, no public case without permission.
 
-## 12-month arc (high level)
+## 12-month strategic map (high level)
 
-0–30d: prove Level 1 ops + pilots + proof.  
-31–90d: repeat, partners, first retainers, tighten mapping.  
-3–12m: productized Growth OS, vertical playbooks, partner channel, selective platform depth — without building a full CRM before market proof.
+0–3m: paid diagnostics + evidence baseline + first proof packs.  
+3–6m: repeatable sprint and retainer motion + partner distribution loop.  
+6–9m: internal platform primitives (approval center + evidence ledger + proof generator).  
+9–12m: client/partner workspace beta and GCC standard positioning.
 
-## Golden rule
+## North-star rule
 
-**Do not build to look big. Build to prove value, then turn value into a system, then the system into a platform.**
+**Dealix wins by making revenue and AI decisions auditable, approved, and measurable before scale.**
 
 ---
 

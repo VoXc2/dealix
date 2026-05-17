@@ -1,6 +1,7 @@
 # Dealix — تصميم الفئة والمنظومة التشغيلية القصوى
 
 هذا المستند **مرافق** لـ [SAUDI_REVENUE_EXECUTION_OS_RADARS_AR.md](SAUDI_REVENUE_EXECUTION_OS_RADARS_AR.md): الرادارات تركز على **كيف نشغّل الشركة أسبوعياً مع أدلة**؛ هذا الملف يجيب: **لماذا نفوز في الفئة، أي معمارية نبني نحوها، وما خارطة 12 شهراً.**
+ولنسخة "خريطة السيطرة" المخصصة لفئة **Governed Revenue & AI Ops** راجع: [GCC_GOVERNED_REVENUE_AI_OPS_CONTROL_MAP_AR.md](GCC_GOVERNED_REVENUE_AI_OPS_CONTROL_MAP_AR.md).
 
 **تنبيه للمراجعات الخارجية:** الروابط أدناه إلى مواقع جهات خارجية قد تتغير. راجع المصدر الرسمي قبل أي نشر أو عقد.
 
