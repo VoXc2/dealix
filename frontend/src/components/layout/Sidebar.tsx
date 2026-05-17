@@ -17,6 +17,10 @@ import {
   Zap,
   Shield,
   Building2,
+  Command,
+  ScrollText,
+  TrendingUp,
+  LifeBuoy,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
@@ -29,9 +33,13 @@ interface NavItem {
 
 const navItems: NavItem[] = [
   { key: "dashboard", href: "/dashboard", icon: LayoutDashboard },
+  { key: "opsFounder", href: "/ops/founder", icon: Command },
   { key: "pipeline", href: "/pipeline", icon: GitBranch },
+  { key: "opsSales", href: "/ops/sales", icon: TrendingUp },
   { key: "agents", href: "/agents", icon: Bot },
   { key: "approvals", href: "/approvals", icon: CheckSquare },
+  { key: "opsSupport", href: "/ops/support", icon: LifeBuoy },
+  { key: "opsEvidence", href: "/ops/evidence", icon: ScrollText },
   { key: "trustCheck", href: "/trust-check", icon: Shield },
   { key: "customerPortal", href: "/customer-portal", icon: Building2 },
   { key: "clients", href: "/clients", icon: Users },
