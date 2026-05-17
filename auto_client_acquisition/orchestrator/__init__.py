@@ -8,6 +8,10 @@ Public API:
     )
 """
 
+from auto_client_acquisition.orchestrator.operating_company_contract import (
+    DEFAULT_OPERATING_COMPANY_CONTRACT,
+    GOVERNED_ACCELERATION_CHAIN,
+)
 from auto_client_acquisition.orchestrator.policies import (
     AutonomyMode,
     BudgetLimit,
@@ -27,15 +31,17 @@ from auto_client_acquisition.orchestrator.runtime import (
 )
 
 __all__ = [
+    "DEFAULT_OPERATING_COMPANY_CONTRACT",
+    "GOVERNED_ACCELERATION_CHAIN",
     "AgentTask",
-    "TaskQueue",
-    "TaskStatus",
     "AutonomyMode",
     "BudgetLimit",
-    "Policy",
-    "default_policy",
-    "requires_approval",
     "Orchestrator",
+    "Policy",
+    "TaskQueue",
+    "TaskStatus",
     "WorkflowDefinition",
     "WorkflowStep",
+    "default_policy",
+    "requires_approval",
 ]

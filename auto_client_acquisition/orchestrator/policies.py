@@ -11,6 +11,10 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Any
 
+from auto_client_acquisition.orchestrator.operating_company_contract import (
+    DEFAULT_OPERATING_COMPANY_CONTRACT,
+)
+
 
 # ── Autonomy modes — the safety slider ────────────────────────────
 class AutonomyMode:
@@ -71,6 +75,13 @@ ACTION_TYPES: tuple[str, ...] = (
     "enrich_lead",
     "draft_message",
     "send_message",
+    "send_scope",
+    "send_invoice",
+    "start_delivery",
+    "final_diagnostic",
+    "publish_case_study",
+    "security_claim",
+    "agent_tool_action",
     "classify_reply",
     "book_meeting",
     "generate_proposal",
@@ -79,6 +90,31 @@ ACTION_TYPES: tuple[str, ...] = (
     "generate_qbr",
     "publish_pulse",
 )
+
+
+def _approval_action_id(action_type: str, risks: dict[str, Any]) -> str | None:
+    if action_type == "send_scope":
+        return "send_scope"
+    if action_type == "send_invoice":
+        return "send_invoice"
+    if action_type == "start_delivery":
+        return "start_delivery"
+    if action_type == "final_diagnostic":
+        return "final_diagnostic"
+    if action_type == "publish_case_study":
+        return "publish_case_study"
+    if action_type == "security_claim":
+        return "security_claim"
+    if action_type == "agent_tool_action":
+        return "agent_tool_action"
+    if action_type == "send_message":
+        if risks.get("is_first_send_to_account"):
+            return "send_first_outreach"
+        if risks.get("send_sample_proof_pack"):
+            return "send_sample_proof_pack"
+        if risks.get("reply_received"):
+            return "send_followup_after_reply"
+    return None
 
 
 # ── Decision: requires_approval? ──────────────────────────────────
@@ -102,8 +138,29 @@ def requires_approval(
         "send_message",
         "book_meeting",
         "generate_proposal",
+        "send_scope",
+        "send_invoice",
+        "final_diagnostic",
+        "security_claim",
+        "publish_case_study",
     ):
         return True, "mode=draft_and_approve_requires_human_for_outbound"
+
+    # Operating-company matrix gates (applies even in autopilot).
+    action_id = _approval_action_id(action_type=action_type, risks=risks)
+    if action_id:
+        needs_matrix_approval, matrix_reason = (
+            DEFAULT_OPERATING_COMPANY_CONTRACT.requires_approval_for_action(
+                action_id=action_id,
+                context={
+                    "payment_proof": risks.get("payment_proof"),
+                    "risk_level": risks.get("risk_level"),
+                    "auto_followup_allowed": risks.get("auto_followup_allowed"),
+                },
+            )
+        )
+        if needs_matrix_approval:
+            return True, f"operating_contract:{matrix_reason}"
 
     # Risk-based escalation (applies even in autopilot)
     if action_type == "send_message":
