@@ -9,6 +9,7 @@ from fastapi import APIRouter
 
 from api.routers import (
     governance_risk_dashboard,
+    media_os,
     proof_ledger,
     reliability_os,
     security_privacy,
@@ -18,6 +19,7 @@ from api.routers import (
 
 _ROUTERS = [
     governance_risk_dashboard.router,
+    media_os.router,
     security_privacy.router,
     proof_ledger.router,
     reliability_os.router,
