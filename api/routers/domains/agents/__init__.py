@@ -14,6 +14,7 @@ from api.routers import (
     ai_workforce,
     automation,
     autonomous,
+    dealix_orchestrator,
     delivery_factory,
     delivery_os,
     knowledge,
@@ -41,6 +42,7 @@ _ROUTERS = [
     autonomous.router,
     knowledge_v10.router,
     knowledge.router,
+    dealix_orchestrator.router,
 ]
 
 
