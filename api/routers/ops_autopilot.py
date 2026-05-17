@@ -14,6 +14,7 @@ from uuid import uuid4
 
 from fastapi import APIRouter, HTTPException, Query
 
+from auto_client_acquisition.approval_center import ApprovalRequest, get_default_approval_store
 from auto_client_acquisition.support_os import classify_message, draft_response
 
 router = APIRouter(prefix="/api/v1", tags=["ops-autopilot"])
@@ -194,8 +195,10 @@ def _create_approval(
     required_evidence: list[str],
     agent_rationale: str,
 ) -> dict[str, Any]:
+    local_id = _new_id("apr")
     approval = {
-        "id": _new_id("apr"),
+        "id": local_id,
+        "approval_id": local_id,
         "type": approval_type,
         "risk_level": risk_level,
         "entity_type": entity_type,
@@ -211,6 +214,25 @@ def _create_approval(
         "rejection_reason": "",
         "created_at": _now_iso(),
     }
+    # Mirror into the canonical Approval Center store so existing
+    # /api/v1/approvals endpoints and UI stay consistent.
+    canonical = get_default_approval_store().create(
+        ApprovalRequest.model_validate(
+            {
+                "object_type": entity_type,
+                "object_id": entity_id,
+                "action_type": approval_type,
+                "action_mode": "approval_required",
+                "channel": "internal",
+                "summary_ar": proposed_action,
+                "summary_en": proposed_action,
+                "risk_level": risk_level,
+                "proof_impact": ", ".join(required_evidence),
+            }
+        )
+    )
+    approval["id"] = canonical.approval_id
+    approval["approval_id"] = canonical.approval_id
     _APPROVALS[approval["id"]] = approval
     _log_evidence(
         event_type="approval_requested",
