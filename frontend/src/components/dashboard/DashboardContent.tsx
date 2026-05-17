@@ -21,6 +21,31 @@ interface Activity {
   timestamp: string;
 }
 
+interface BilingualAction {
+  ar: string;
+  en: string;
+}
+
+interface QualifiedLead {
+  id?: string;
+  company?: string;
+  name?: string;
+  bucket?: string;
+  fit_score?: number;
+  sector?: string;
+}
+
+interface CommandCenterData {
+  top_actions: BilingualAction[];
+  new_qualified_leads: { count: number; items: QualifiedLead[] };
+  new_leads_count: number;
+  pending_approvals: { count: number };
+  payments_pending: { count: number };
+  proof_packs_in_progress: { count: number };
+  blocked_actions: { count: number };
+  no_build_warning: { active: boolean; reason_ar: string; reason_en: string };
+}
+
 const mockActivities: Activity[] = [
   {
     id: "1",
@@ -102,6 +127,7 @@ export function DashboardContent() {
   const [activities, setActivities] = useState<Activity[] | null>(null);
   const [loadingKpi, setLoadingKpi] = useState(true);
   const [loadingActivities, setLoadingActivities] = useState(true);
+  const [commandCenter, setCommandCenter] = useState<CommandCenterData | null>(null);
 
   const defaultKpiMetrics: KPIMetric[] = [
     {
@@ -220,6 +246,24 @@ export function DashboardContent() {
     return () => { cancelled = true; };
   }, []);
 
+  useEffect(() => {
+    let cancelled = false;
+
+    async function fetchCommandCenter() {
+      try {
+        const res = await api.getFounderCommandCenter();
+        const data = res.data?.command_center;
+        // Anti-fabrication: only render real data — never a mock fallback.
+        if (!cancelled && data) setCommandCenter(data as CommandCenterData);
+      } catch {
+        if (!cancelled) setCommandCenter(null);
+      }
+    }
+
+    fetchCommandCenter();
+    return () => { cancelled = true; };
+  }, []);
+
   const displayedKpi = kpiMetrics ?? defaultKpiMetrics;
   const displayedActivities = activities ?? mockActivities;
 
@@ -233,6 +277,117 @@ export function DashboardContent() {
 
   return (
     <div className="space-y-6">
+      {/* Founder Command Center */}
+      {commandCenter && (
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="space-y-4"
+        >
+          {commandCenter.no_build_warning?.active && (
+            <div className="rounded-xl border border-amber-500/40 bg-amber-500/10 px-4 py-3">
+              <p className="text-sm font-semibold text-amber-400">
+                {isAr ? "تحذير: لا تبنِ بعد" : "No-build warning"}
+              </p>
+              <p className="mt-0.5 text-xs text-amber-300/90">
+                {isAr
+                  ? commandCenter.no_build_warning.reason_ar
+                  : commandCenter.no_build_warning.reason_en}
+              </p>
+            </div>
+          )}
+
+          <Card>
+            <CardHeader className="pb-3">
+              <CardTitle className="text-base font-semibold">
+                {isAr ? "مركز قيادة المؤسس" : "Founder Command Center"}
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-5">
+              <div>
+                <p className="mb-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                  {isAr ? "أهم 3 إجراءات اليوم" : "Top 3 actions today"}
+                </p>
+                <ol className="space-y-1.5">
+                  {commandCenter.top_actions.map((action, i) => (
+                    <li key={i} className="flex items-start gap-2 text-sm text-foreground/90">
+                      <span className="mt-0.5 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full bg-primary/15 text-[11px] font-semibold text-primary">
+                        {i + 1}
+                      </span>
+                      <span>{isAr ? action.ar : action.en}</span>
+                    </li>
+                  ))}
+                </ol>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
+                {[
+                  {
+                    label: isAr ? "عملاء مؤهلون" : "Qualified leads",
+                    value: commandCenter.new_qualified_leads?.count ?? 0,
+                  },
+                  {
+                    label: isAr ? "عملاء جدد" : "New leads",
+                    value: commandCenter.new_leads_count ?? 0,
+                  },
+                  {
+                    label: isAr ? "موافقات معلّقة" : "Pending approvals",
+                    value: commandCenter.pending_approvals?.count ?? 0,
+                  },
+                  {
+                    label: isAr ? "مدفوعات معلّقة" : "Payments pending",
+                    value: commandCenter.payments_pending?.count ?? 0,
+                  },
+                  {
+                    label: isAr ? "إجراءات محظورة" : "Blocked actions",
+                    value: commandCenter.blocked_actions?.count ?? 0,
+                  },
+                ].map((stat) => (
+                  <div
+                    key={stat.label}
+                    className="rounded-xl border border-border bg-muted/30 p-3"
+                  >
+                    <p className="text-xl font-bold text-foreground">{stat.value}</p>
+                    <p className="mt-0.5 text-xs text-muted-foreground">{stat.label}</p>
+                  </div>
+                ))}
+              </div>
+
+              {commandCenter.new_qualified_leads?.items?.length > 0 && (
+                <div>
+                  <p className="mb-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                    {isAr ? "عملاء مؤهلون جدد" : "New qualified leads"}
+                  </p>
+                  <div className="space-y-1.5">
+                    {commandCenter.new_qualified_leads.items.slice(0, 5).map((lead, i) => (
+                      <div
+                        key={lead.id ?? i}
+                        className="flex items-center justify-between rounded-lg border border-border px-3 py-2"
+                      >
+                        <span className="text-sm text-foreground">
+                          {lead.company || lead.name || "—"}
+                        </span>
+                        <div className="flex items-center gap-2">
+                          {lead.sector && (
+                            <span className="text-xs text-muted-foreground">{lead.sector}</span>
+                          )}
+                          <Badge
+                            className="h-5 px-1.5 text-[10px]"
+                            variant="outline"
+                          >
+                            {lead.bucket} · {lead.fit_score ?? 0}
+                          </Badge>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </motion.div>
+      )}
+
       {/* KPI Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {loadingKpi

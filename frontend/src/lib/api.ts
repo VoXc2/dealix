@@ -181,6 +181,12 @@ export const api = {
 
   getCustomerPortal: (handle = "Slot-A") =>
     apiClient.get(`/api/v1/customer-portal/${encodeURIComponent(handle)}`),
+
+  submitRiskScore: (data: Record<string, unknown>) =>
+    apiClient.post("/api/v1/public/risk-score", data),
+
+  getFounderCommandCenter: () =>
+    apiClient.get("/api/v1/founder-summary/command-center"),
 };
 
 export default api;
