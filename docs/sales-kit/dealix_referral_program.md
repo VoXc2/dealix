@@ -263,4 +263,45 @@
 
 ---
 
+## 14. Affiliate risk control & disclosure — ضبط مخاطر الـ Affiliates والإفصاح
+
+> ملاحظة: اقتصاديات الإحالة تحتاج مصدر حقيقة واحد — هذا الملف يستخدم نِسباً (20/25/30%)، بينما `partnership_os/referral_store` يستخدم رقماً ثابتاً لكل صفقة مغلقة. وحِّد المرجع قبل التوسّع.
+> Note: referral economics need one source of truth — this file uses tiers (20/25/30%) while `partnership_os/referral_store` uses a flat per-closed-deal fee. Unify the reference before scaling.
+
+### بالعربية
+
+**لا تفتح برنامج affiliate للعموم.** ابدأ بـ 5-10 affiliates موثوقين:
+- موافقة يدوية على كل affiliate
+- scripts معتمدة فقط
+- إفصاح إلزامي (مش اختياري)
+- الصرف **فقط بعد سداد الفاتورة**
+
+**ممنوع:**
+- ادعاءات ROI مضمون
+- ادعاءات امتثال مضمون
+- ادعاء أن Dealix يرسل تلقائياً
+- spam، أو رسائل WhatsApp باردة
+- أدلة/proof مزيّفة
+
+**عن الإفصاح:** وفقاً لـ FTC الأمريكية، أي علاقة مادية مع العلامة (مالية، عائلية، أو توظيف) يجب الإفصاح عنها بوضوح، يصعب تفويتها، وتُوضع مع التوصية نفسها. الإفصاحات القصيرة غير الموضِّحة لا تكفي. الإفصاح إلزامي.
+
+### In English
+
+**Do not open an affiliate program to the public.** Start with 5-10 trusted affiliates:
+- Manual approval of each affiliate
+- Approved scripts only
+- Mandatory disclosure (not optional)
+- Payout **only after the invoice is paid**
+
+**Prohibited:**
+- Guaranteed ROI claims
+- Guaranteed compliance claims
+- Claiming Dealix sends automatically
+- Spam, or cold WhatsApp messages
+- Fake proof
+
+**On disclosure:** Per the US FTC, any material connection with the brand (financial, family, or employment) must be clearly disclosed, hard to miss, and placed with the recommendation itself. Short, non-explanatory disclosures are not sufficient. Disclosure is mandatory, not optional.
+
+---
+
 *آخر تحديث: 2026-04-23 | التالي: بعد 90 يوم من الإطلاق*

@@ -213,5 +213,39 @@ SIG Lite مُتاح مكتمل.
 
 ---
 
+## ✅ Compliance as a Saudi sales advantage — الامتثال كميزة بيعية في السوق السعودي
+
+### بالعربية
+
+الامتثال ليس عبئاً قانونياً فقط — هو نقطة بيع. ما يميّز Dealix أمام العميل السعودي:
+- لا رسائل WhatsApp باردة
+- follow-up واعٍ بالموافقة (consent-aware)
+- خيار إلغاء الاشتراك (opt-out) واضح
+- تقليل البيانات (data minimization) — نجمع ما يلزم فقط
+- وضوح الغرض (purpose clarity)
+- أثر أدلة قابل للتتبع (evidence trail)
+- موافقة يدوية على الإجراءات الخارجية
+
+**الإطار التنظيمي:** نظام حماية البيانات الشخصية السعودي (PDPL) وهيئة SDAIA كمرجع عام — وضوح في التعامل مع البيانات، الحق في طلب الحذف، الحق في الحصول على نسخة، وقناة شكاوى.
+
+**جملة البيع:** Dealix لا يرسل عشوائياً ولا يجمع أكثر من اللازم؛ نبني follow-up قابلاً للتتبع، بموافقة، وبأدلة.
+
+### In English
+
+Compliance is not just a legal obligation — it is a selling point. What sets Dealix apart for the Saudi customer:
+- No cold WhatsApp
+- Consent-aware follow-up
+- Clear opt-out
+- Data minimization — we collect only what is needed
+- Purpose clarity
+- A traceable evidence trail
+- Manual approval for external actions
+
+**Regulatory frame:** Saudi PDPL and SDAIA as the general reference — data-handling clarity, the right to request deletion, the right to a copy, and a complaints channel.
+
+**Selling line:** Dealix does not send randomly and does not collect more than necessary. We build follow-up that is traceable, consented, and evidenced.
+
+---
+
 *هذا المستند يُحدّث ربع سنوياً. آخر تحديث: أبريل 2026.*
 *PGP key متاح عند الطلب للـ security-sensitive communications.*

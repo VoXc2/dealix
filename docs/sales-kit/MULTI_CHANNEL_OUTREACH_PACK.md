@@ -407,3 +407,59 @@ Pilot أسبوع بـ 1 ريال (قابل للاسترداد).
 **بدون warm leads:** 5-7 أيام واقعياً.
 
 **ابدأ الآن بـ الأصدقاء. أسهل way.**
+
+---
+
+## 🎯 Channel role clarity — وضوح دور كل قناة
+
+كل قناة لها **غرض واحد فقط**. القناة التي تحاول أن تفعل كل شيء لا تفعل شيئاً.
+Each channel has **one purpose only**. A channel that tries to do everything does nothing.
+
+| Channel / القناة | Purpose / الغرض |
+|---|---|
+| Founder-led LinkedIn / لينكدإن بقيادة المؤسس | Trust and conversations — building credibility and starting real dialogue. الثقة والمحادثات. |
+| Manual email / إيميل يدوي | Agency and partner outreach — considered, written, one at a time. التواصل مع الوكالات والشركاء. |
+| Warm WhatsApp / واتساب دافئ | **Existing relationships and opt-in contacts only.** علاقات قائمة وموافقة مسبقة فقط. |
+| Partner calls / مكالمات الشركاء | Opening channels faster than ads can — borrowed trust and reach. فتح قنوات أسرع من الإعلانات. |
+| Small webinars / ندوات صغيرة | Education and lead capture — teaching first, capturing interest second. التعليم والتقاط الاهتمام. |
+| Retargeting (later) / إعادة الاستهداف (لاحقاً) | Scaling a message that has **already worked** — never an untested one. توسيع رسالة نجحت فعلاً. |
+
+### Explicitly forbidden — ممنوع صراحةً
+
+The following are **not** Dealix outreach methods and are never offered as services:
+
+- Scraping contact data / كشط بيانات التواصل.
+- LinkedIn automation / أتمتة لينكدإن.
+- Cold WhatsApp blasting / إرسال واتساب بارد جماعي.
+- Mass connection spam / طلبات اتصال جماعية مزعجة.
+- Automated DMs / رسائل مباشرة مؤتمتة.
+
+---
+
+## 🤖 Automation boundaries — حدود الأتمتة
+
+أتمتة موجودة لتسريع العمل الداخلي — لا لتجاوز موافقة المؤسس.
+Automation exists to speed internal work — never to bypass founder approval.
+
+### What AI may do unattended — ما يجوز للذكاء الاصطناعي فعله دون إشراف
+
+Research, drafting, scoring, reminders, scorecards, briefs.
+البحث، الصياغة، التقييم، التذكيرات، بطاقات الأداء، الملخّصات.
+
+### What requires founder approval before it happens — ما يتطلّب موافقة المؤسس قبل التنفيذ
+
+Any external send, invoice send, scope send, discount, refund, case study,
+affiliate payout, security claim, final Proof Pack.
+أي إرسال خارجي، إرسال فاتورة، إرسال نطاق، خصم، استرداد، دراسة حالة،
+دفعة شريك بالعمولة، ادعاء أمني، حزمة الإثبات النهائية.
+
+### What is always forbidden — ما هو ممنوع دائماً
+
+Scraping, LinkedIn automation, cold WhatsApp, live charge without approval,
+fake proof, guaranteed ROI or compliance.
+الكشط، أتمتة لينكدإن، الواتساب البارد، السحب المالي المباشر دون موافقة،
+الإثبات المزيّف، ضمان العائد أو الامتثال.
+
+These boundaries restate, for outreach specifically, the 11 non-negotiables in
+[`../00_constitution/NON_NEGOTIABLES.md`](../00_constitution/NON_NEGOTIABLES.md).
+هذه الحدود تعيد، خاصةً للتواصل، صياغة الـ 11 بنداً غير القابلة للتفاوض.

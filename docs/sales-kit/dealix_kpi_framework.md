@@ -341,6 +341,49 @@ Financial:
 
 ---
 
+## 📋 Daily distribution dashboard — لوحة التوزيع اليومية
+
+الـ 5 KPIs أعلاه أسبوعية وتقيس الصحة. هذه اللوحة يومية وتقيس الحركة — تُراجَع آخر
+كل يوم عمل في دقيقتين. The 5 KPIs above are weekly and measure health. This
+dashboard is daily and measures motion — reviewed at the end of each working day
+in two minutes.
+
+### Daily fields — الحقول اليومية
+
+- **Messages sent / رسائل أُرسلت**
+- **Follow-ups / متابعات**
+- **Replies / ردود**
+- **Demos / عروض**
+- **Scopes / نطاقات مُرسَلة**
+- **Invoices / فواتير**
+- **Paid / commitments / مدفوع / التزامات**
+- **Proof Packs delivered / حزم إثبات سُلّمت**
+- **Partner conversations / محادثات شركاء**
+- **Affiliate leads / leads من الإحالات**
+- **Blocked risks / مخاطر معطّلة**
+- **Best message / أفضل رسالة**
+- **Worst channel / أضعف قناة**
+- **Tomorrow's priority / أولوية الغد**
+
+### If-then diagnostics — تشخيص: إذا/إذن
+
+The dashboard is only useful if it changes behavior. Read it against these rules:
+
+- **7 days with no replies → change the segment or the message.**
+  7 أيام بدون ردود ← غيّر القطاع أو الرسالة.
+- **Replies but no demos → change the CTA.**
+  ردود بدون عروض ← غيّر الـ CTA.
+- **Demos but no paid → change the offer, price scope, or proof.**
+  عروض بدون دفع ← غيّر العرض أو نطاق السعر أو الإثبات.
+- **Paid but no upsell → improve the Proof Pack and the end-of-delivery moment.**
+  دفع بدون ترقية ← حسّن حزمة الإثبات ولحظة نهاية التسليم.
+
+Any price or scope change stays inside the canonical offer registry in
+[`../COMMERCIAL_WIRING_MAP.md`](../COMMERCIAL_WIRING_MAP.md) — diagnostics adjust
+the message, never invent a number.
+
+---
+
 ## 🏆 الخلاصة
 
 **القياس = الوضوح = التحسين.**

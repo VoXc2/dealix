@@ -283,3 +283,64 @@ Dealix الآن مُتصل بـ [CRM]. إليك ما حصل:
 - ينتج أول referral
 
 **بعد أول 3 عملاء ناجحين:** أنت جاهز للتوسع.
+
+---
+
+## ⏱️ Onboarding-to-value timeline — جدول الوصول إلى القيمة
+
+**الهدف في الـ Pilot:** time-to-Proof أقل من 48 ساعة.
+**Target in the Pilot:** time-to-Proof under 48 hours.
+
+### بالعربية
+
+| النافذة الزمنية | ما يُسلَّم |
+|------------------|-----------|
+| أول 10 دقائق بعد الدفع | رسالة شكر، نموذج onboarding، قائمة بما هو مطلوب، تاريخ التسليم |
+| خلال 24 ساعة | لوحة leads/الفرص، قائمة الأسئلة الناقصة، نتائج أولية |
+| خلال 48 ساعة | Proof Pack v1، مسودات follow-up، ملاحظات المخاطر، الخطوات التالية |
+| خلال 7 أيام | مكالمة تسليم، تأكيد القيمة، توصية Sprint/Retainer، طلب إحالة |
+
+### In English
+
+| Time window | What is delivered |
+|-------------|-------------------|
+| First 10 minutes after payment | Thank-you message, onboarding form, list of what is needed, delivery date |
+| Within 24 hours | Lead/opportunity board, missing-questions list, initial findings |
+| Within 48 hours | Proof Pack v1, follow-up drafts, risk notes, next actions |
+| Within 7 days | Delivery call, value confirmation, Sprint/Retainer recommendation, referral ask |
+
+---
+
+## 🔁 Customer success as a sales channel — نجاح العميل كقناة بيع
+
+### بالعربية
+
+بعد تسليم الـ Proof Pack، لا تقل "انتهينا". اسأل:
+- هل القيمة واضحة؟
+- هل عندك workflow ثانٍ نشتغل عليه؟
+- هل ترغب بالاستمرار عبر Sprint؟
+- هل تعرف وكالة/عميلاً عنده نفس المشكلة؟
+- هل نستطيع استخدام insight مجهول الهوية (anonymized)؟
+
+**مسارات التوسّع:**
+- Proof Pack واضح → Sprint
+- workflow متكرر → Retainer
+- عميل راضٍ → إحالة
+- وكالة راضية → باقة شريك
+- insight قوي → محتوى مجهول الهوية
+
+### In English
+
+After delivering the Proof Pack, do not say "we're done." Ask:
+- Is the value clear?
+- Do you have a second workflow for us to work on?
+- Would you like to continue with a Sprint?
+- Do you know an agency or client with the same problem?
+- May we use an anonymized insight?
+
+**Expansion paths:**
+- Clear Proof Pack → Sprint
+- Recurring workflow → Retainer
+- Happy customer → referral
+- Happy agency → partner package
+- Strong insight → anonymized content

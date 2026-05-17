@@ -256,3 +256,34 @@ Founder, Dealix
 **القاعدة:** وكالات = multiplier. كل وكالة = 20-50 عميل محتمل بدون جهد مباشر.
 
 **أولى الخطوات:** افتح LinkedIn الآن، ابحث عن "Marketing agency Riyadh"، وابدأ.
+
+---
+
+## 💰 Partner economics — اقتصاديات الشريك
+
+> ملاحظة: اقتصاديات الإحالة تحتاج مصدر حقيقة واحد — هذا الملف يستخدم نسب عمولة، بينما `partnership_os/referral_store` يستخدم رقماً ثابتاً لكل صفقة. راجع `dealix_referral_program.md` ووحّد المرجع قبل التوسّع.
+> Note: referral economics need one source of truth — this file uses commission percentages while `partnership_os/referral_store` uses a flat per-deal fee. See `dealix_referral_program.md` and unify the reference before scaling.
+
+### بالعربية
+
+نموذج اقتصادي واضح لكل نوع شريك (الأرقام كما هي مذكورة أعلاه في هذا الملف — بدون أرقام جديدة):
+
+- **شريك إحالة (Referral partner):** رسوم إحالة على الدفعة الأولى / الأشهر الأولى. التفاصيل والنِسب في `dealix_referral_program.md`.
+- **شريك تنفيذ (Implementation partner):** الشريك يأخذ رسوم التنفيذ؛ Dealix يأخذ رسوم التشخيص / طبقة الإثبات (proof layer).
+- **تبادل خدمات (Service exchange):** محدّد ومُقيّد بمدة زمنية (مثال: 30 يوماً = 10 منشورات + 5 مقدمات دافئة + pilot عميل واحد). بدون مقايضة مفتوحة بلا سقف.
+- **pilot بيع مشترك (Co-selling pilot):** الوكالة تجلب العميل والسياق؛ Dealix يُجري الـ audit/الإثبات؛ تقسيم إيراد الـ pilot أو رسوم إحالة.
+- **White-label:** فقط بعد 3 pilots مدفوعة.
+
+**ضوابط:** لا بناء مخصّص قبل الدفع. لا White-label قبل إثبات الإيراد.
+
+### In English
+
+A clear economic model per partner type (numbers as already stated above in this file — no new numbers):
+
+- **Referral partner:** a referral fee on the first payment / first months. Details and tiers in `dealix_referral_program.md`.
+- **Implementation partner:** the partner takes the implementation fee; Dealix takes the diagnostic / proof-layer fee.
+- **Service exchange:** time-boxed and specific (e.g. 30 days = 10 posts + 5 warm intros + 1 client pilot). No open-ended barter.
+- **Co-selling pilot:** the agency brings the client and context; Dealix runs the audit/proof; split pilot revenue or take a referral fee.
+- **White-label:** only after 3 paid pilots.
+
+**Guardrails:** no custom build before payment; no white-label before revenue proof.

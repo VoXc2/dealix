@@ -142,3 +142,50 @@ Every Sunday 8:00 AM KSA:
 - Update metrics
 - Adjust priorities
 - Reset daily cadence for the week
+
+---
+
+## 30-day wedge-proof plan — خطة إثبات الإسفين في 30 يوماً
+
+The 30-day milestones above set the outcomes. This plan sets the founder's weekly
+execution rhythm to reach them — one wedge, proven, then scaled. معالم الـ 30 يوماً
+أعلاه تحدّد النتائج؛ هذه الخطة تحدّد إيقاع التنفيذ الأسبوعي للمؤسس للوصول إليها —
+إسفين واحد، يُثبَت، ثم يُوسَّع.
+
+### Week 1 — Wedge Proof / الأسبوع 1 — إثبات الإسفين
+
+- 20 agency targets / 20 هدفاً من الوكالات.
+- 50 manual touches / 50 تواصلاً يدوياً.
+- 10 follow-ups / 10 متابعات.
+- 2 demos / عرضان.
+- 1 pilot offer / عرض Pilot واحد.
+
+### Week 2 — First Proof / الأسبوع 2 — أول إثبات
+
+- 1 pilot or written commitment / Pilot واحد أو التزام مكتوب.
+- Delivery within 48h / تسليم خلال 48 ساعة.
+- Proof Pack v1 / حزمة إثبات النسخة 1.
+- Referral ask / طلب إحالة.
+- First anonymized insight / أول رؤية مجهّلة.
+
+### Week 3 — Partner Loop / الأسبوع 3 — حلقة الشركاء
+
+- 10 partner conversations / 10 محادثات مع شركاء.
+- 2 co-selling opportunities / فرصتا بيع مشترك.
+- 1 mini workshop / ورشة مصغّرة واحدة.
+- 5 partner / affiliate applications / 5 طلبات شراكة أو إحالة.
+
+### Week 4 — Scale / الأسبوع 4 — التوسّع
+
+- Double the best message / ضاعِف أفضل رسالة.
+- Stop the weak channel / أوقِف القناة الضعيفة.
+- Offer Sprint on the first proof / اعرض Sprint بناءً على أول إثبات.
+- Prepare the first case-style post / جهّز أول منشور بأسلوب دراسة الحالة.
+- Start small retargeting **only if there is traffic** / ابدأ إعادة استهداف صغيرة
+  **فقط إذا وُجدت زيارات**.
+
+Scaling never invents a price or an outcome claim. Any Sprint offer in Week 4
+draws its figures from the canonical offer registry in
+[`../../COMMERCIAL_WIRING_MAP.md`](../../COMMERCIAL_WIRING_MAP.md), and the
+case-style post reports patterns only — no guaranteed revenue, ROI, or compliance.
+التوسّع لا يخترع سعراً ولا ادعاء نتيجة؛ المنشور يعرض أنماطاً فقط دون ضمان.

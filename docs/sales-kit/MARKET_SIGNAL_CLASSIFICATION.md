@@ -77,4 +77,50 @@ Two standing rules govern every row:
 
 ---
 
+## 3. Strong vs weak buying signals — إشارات الشراء القوية مقابل الضعيفة
+
+The matrix above routes a signal once it is read. This section helps read it
+correctly first — separating a market that **wants** the offer from a market that
+is only being polite. المصفوفة أعلاه توجّه الإشارة بعد قراءتها؛ هذا القسم يساعد
+على قراءتها بشكل صحيح أولاً — فصل سوق **يريد** العرض عن سوق يجامل فقط.
+
+### Strong signals — إشارات قوية
+
+The prospect is doing work to move forward. The market is pulling:
+
+- Sends you a sample of their leads / يرسل عيّنة من leads عنده.
+- Asks for a demo / يطلب عرضاً.
+- Asks about price / يسأل عن السعر.
+- Asks what is required of them / يسأل ماذا يُطلب منه.
+- Asks to try it on one client / يطلب تجربته على عميل واحد.
+- Asks about partnership / يسأل عن الشراكة.
+- Asks for scope / يطلب النطاق.
+- Pays a Pilot / يدفع قيمة الـ Pilot.
+
+### Weak / fake signals — إشارات ضعيفة / مزيّفة
+
+Polite words with no work behind them. The market is not pulling:
+
+- "Nice idea" / "فكرة حلوة".
+- "Send me the details" / "أرسل لي التفاصيل".
+- "We'll get back to you" / "بنرجع لك".
+- "We have internal AI" / "عندنا AI داخلي".
+- "Maybe later" / "يمكن لاحقاً".
+
+### The closing question to test a fake signal — السؤال الحاسم لاختبار الإشارة المزيّفة
+
+When a signal reads weak, do not chase it and do not pitch. Ask one question and
+let the answer decide:
+
+> **"Do you have 10 leads or one workflow we can review? If not, let's leave it for
+> later."**
+> **"هل عندكم 10 leads أو workflow واحد نراجعه؟ إذا لا، نخليها لاحقاً."**
+
+A strong signal answers with the sample or the workflow. A weak signal deflects —
+and that deflection is itself the classification: log it as `low_intent` and leave
+the door open per the matrix. إشارة قوية تردّ بالعيّنة أو الـ workflow؛ إشارة ضعيفة
+تتهرّب — والتهرّب نفسه هو التصنيف.
+
+---
+
 **Estimated value is not Verified value / القيمة التقديرية ليست قيمة مُتحقَّقة.**
