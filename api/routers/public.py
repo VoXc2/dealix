@@ -5,6 +5,10 @@ Routes:
   POST /api/v1/public/demo-request   — landing form submission
     Body: {name, company, email, phone, sector?, size?, message?, consent, website(honeypot)}
     Returns: {ok: true, calendly_url: "...", lead_id?: "..."}
+  POST /api/v1/public/risk-score     — AI & Revenue Ops risk-score lead magnet
+    Body: {company, email, consent, governance answers, website(honeypot)}
+    Returns: {ok: true, risk_score, risk_band, gaps, recommended_next_step, ...}
+  POST /api/v1/public/partner-application — agency/freelancer partner signup
 """
 
 from __future__ import annotations
@@ -15,6 +19,7 @@ from typing import Any
 
 from fastapi import APIRouter, HTTPException, Request
 
+from auto_client_acquisition import risk_score as risk_score_engine
 from dealix.analytics import FUNNEL_EVENTS, capture_event
 
 log = logging.getLogger(__name__)
@@ -137,6 +142,95 @@ async def demo_request(req: Request) -> dict[str, Any]:
         "lead_id": lead_id,
         "transactional_confirmation": transactional_status,
         "governance_decision": "allow",
+    }
+
+
+@router.post("/risk-score")
+async def risk_score(req: Request) -> dict[str, Any]:
+    """Public lead-magnet — AI & Revenue Ops governance risk score.
+
+    Body: {company, email, name?, phone?, sector?, team_size?, budget_band?,
+           urgency?, consent, website(honeypot), plus the six governance
+           control answers — has_crm, pipeline_reliable,
+           approval_before_external_action, followup_documented,
+           can_link_workflow_to_value, has_evidence_pack — and uses_ai}.
+    Returns: the estimated risk score, gaps, and recommended next step.
+    """
+    try:
+        body = await req.json()
+    except Exception as e:
+        raise HTTPException(status_code=400, detail="invalid_json") from e
+
+    # Honeypot: silently drop bots without persisting.
+    if body.get("website"):
+        log.info("risk_score_honeypot_triggered")
+        return {"ok": True, **risk_score_engine.score({})}
+
+    company = str(body.get("company") or "").strip()
+    email = str(body.get("email") or "").strip()
+    name = str(body.get("name") or "").strip()
+
+    if not company or "@" not in email:
+        raise HTTPException(status_code=422, detail="missing_required_fields")
+    if not bool(body.get("consent")):
+        raise HTTPException(status_code=422, detail="consent_required")
+
+    result = risk_score_engine.score(body)
+
+    # Persist to founder lead inbox — review-only, no automated outreach.
+    lead_id: str | None = None
+    try:
+        from auto_client_acquisition import lead_inbox
+
+        rec = lead_inbox.append({
+            "name": name,
+            "company": company,
+            "email": email,
+            "phone": str(body.get("phone") or "").strip(),
+            "sector": str(body.get("sector") or "").strip(),
+            "team_size": str(body.get("team_size") or "").strip(),
+            "budget_band": str(body.get("budget_band") or "").strip(),
+            "urgency": str(body.get("urgency") or "").strip(),
+            "consent": True,
+            "source": str(body.get("source") or "landing.risk_score"),
+            "ref": str(body.get("ref") or ""),
+            "risk_score": result["risk_score"],
+            "risk_band": result["risk_band"],
+            "gap_count": result["gap_count"],
+        })
+        lead_id = rec.get("id")
+    except Exception:
+        log.exception("risk_score_lead_inbox_append_failed")
+
+    try:
+        await capture_event(
+            "risk_score_submitted",
+            distinct_id=email,
+            properties={
+                "company": company,
+                "risk_score": result["risk_score"],
+                "risk_band": result["risk_band"],
+                "gap_count": result["gap_count"],
+                "source": "landing.risk_score",
+            },
+        )
+    except Exception:
+        log.exception("posthog_capture_failed")
+
+    log.info(
+        "risk_score_accepted email=%s company=%s score=%s band=%s lead_id=%s",
+        email,
+        company,
+        result["risk_score"],
+        result["risk_band"],
+        lead_id,
+    )
+
+    return {
+        "ok": True,
+        "lead_id": lead_id,
+        "governance_decision": "allow",
+        **result,
     }
 
 
