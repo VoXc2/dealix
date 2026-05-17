@@ -106,6 +106,9 @@ from api.routers import commercial_map as commercial_map_router
 from api.routers import founder_launch_status as founder_launch_status_router
 # Enterprise Foundation Core — platform_core enterprise-loop proof endpoints
 from api.routers import platform_foundation as platform_foundation_router
+# Full Ops — Affiliate Network + Unified Ops command layer
+from api.routers import affiliate_os as affiliate_os_router
+from api.routers import ops_overview as ops_overview_router
 from api.security import APIKeyMiddleware, setup_rate_limit
 from core.config.settings import get_settings
 from core.errors import AICompanyError
@@ -307,6 +310,9 @@ def create_app() -> FastAPI:
     app.include_router(revenue_metrics.router)
     # Wave 13 W13.13 — Customer referral program (5K SAR per closed deal)
     app.include_router(referral_program.router)
+    # Full Ops — Affiliate Network (tiered commissions) + Unified Ops layer
+    app.include_router(affiliate_os_router.router)
+    app.include_router(ops_overview_router.router)
     # Wave 13 W13.4 — NPS survey + detractor intervention
     app.include_router(nps.router)
     # Wave 14 — Canonical Trust MVP + Retainer Engine (Phase 2)
