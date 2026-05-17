@@ -31,6 +31,11 @@ class ReferralStatus(StrEnum):
     INVOICE_PAID = "invoice_paid"
     CREDIT_ISSUED = "credit_issued"
     DECLINED = "declined"
+    CLAWED_BACK = "clawed_back"
+
+
+# Refund window during which an issued credit can be reclaimed.
+CLAWBACK_WINDOW_DAYS = 30
 
 
 REFERRER_CREDIT_SAR = 5000
@@ -325,10 +330,9 @@ def issue_credit(
     referral = get_referral(referral_id)
     if referral is None:
         return None
-    if referral.status not in (
-        ReferralStatus.INVOICE_PAID.value,
-        ReferralStatus.REDEEMED.value,
-    ):
+    # DOCTRINE — no credit before the referred invoice is paid. A merely
+    # REDEEMED referral has produced no revenue yet, so no payout issues.
+    if referral.status != ReferralStatus.INVOICE_PAID.value:
         return None
 
     code_obj = lookup_code(referral.code)
@@ -350,6 +354,67 @@ def issue_credit(
             break
     _rewrite(_referrals_path(), rows)
     return payout
+
+
+def clawback_credit(
+    *,
+    referral_id: str,
+    reason: str = "refund",
+    requested_at: str = "",
+) -> ReferralPayout | None:
+    """Reverse an issued credit within the 30-day refund window.
+
+    DOCTRINE — a payout is only ever reclaimed, never silently kept on a
+    refunded deal. The clawback:
+      - requires the referral to be in CREDIT_ISSUED status,
+      - is rejected if the refund request falls outside
+        ``CLAWBACK_WINDOW_DAYS`` from when the credit was issued,
+      - writes a negative-amount ``ReferralPayout`` row (audit trail) and
+        transitions the referral to CLAWED_BACK.
+
+    Returns the reversal payout, or None when no clawback is performed.
+    """
+    referral = get_referral(referral_id)
+    if referral is None:
+        return None
+    if referral.status != ReferralStatus.CREDIT_ISSUED.value:
+        return None
+
+    issued_at = referral.credit_issued_at
+    if issued_at:
+        try:
+            issued_dt = datetime.fromisoformat(issued_at)
+        except ValueError:
+            issued_dt = None
+        if issued_dt is not None:
+            req = (requested_at or datetime.now(timezone.utc).isoformat())
+            try:
+                req_dt = datetime.fromisoformat(req)
+            except ValueError:
+                req_dt = datetime.now(timezone.utc)
+            if (req_dt - issued_dt).days > CLAWBACK_WINDOW_DAYS:
+                return None
+
+    # Sum the credits that were issued so we reverse the exact amount.
+    issued_total = sum(
+        int(p.get("credit_sar", 0))
+        for p in _read_all(_payouts_path())
+        if p.get("referral_id") == referral_id and int(p.get("credit_sar", 0)) > 0
+    )
+    reversal = ReferralPayout(
+        referral_id=referral_id,
+        credit_sar=-issued_total,
+        notes=f"clawback: {reason[:200]}",
+    )
+    _append(_payouts_path(), reversal.to_dict(), stream_id="referral_store_payouts")
+
+    rows = _read_all(_referrals_path())
+    for row in rows:
+        if row.get("referral_id") == referral_id:
+            row["status"] = ReferralStatus.CLAWED_BACK.value
+            break
+    _rewrite(_referrals_path(), rows)
+    return reversal
 
 
 def decline_referral(*, referral_id: str, reason: str) -> Referral | None:
@@ -374,12 +439,14 @@ def clear_for_test() -> None:
 
 
 __all__ = [
+    "CLAWBACK_WINDOW_DAYS",
     "REFERRED_DISCOUNT_PCT",
     "REFERRER_CREDIT_SAR",
     "Referral",
     "ReferralCode",
     "ReferralPayout",
     "ReferralStatus",
+    "clawback_credit",
     "clear_for_test",
     "create_referral_code",
     "decline_referral",

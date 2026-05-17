@@ -7,11 +7,19 @@ from fastapi import APIRouter
 from pydantic import BaseModel, ConfigDict, Field
 
 from auto_client_acquisition.partnership_os import (
+    FTC_DISCLOSURE_TEXT_AR,
+    FTC_DISCLOSURE_TEXT_EN,
+    TIER_LABELS,
     Partner,
+    PartnerStage,
     PartnerType,
     add_referral,
+    can_advance,
     compute_fit_score,
+    compute_payout,
+    flag_forbidden_claims,
     list_referrals,
+    next_stage,
     recommend_motion,
 )
 
@@ -137,5 +145,123 @@ async def log_referral(req: _LogReferralRequest) -> dict[str, Any]:
     return {
         "referral": ref.model_dump(mode="json"),
         "total_for_partner": len(list_referrals(partner_id=req.partner_id)),
+        "hard_gates": _HARD_GATES,
+    }
+
+
+# ── Full Ops 2.0 — lifecycle, claim guard, payout ────────────────
+
+
+class _StageAdvanceRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    from_stage: PartnerStage
+    to_stage: PartnerStage
+    fit_score: int = Field(default=0, ge=0, le=100)
+    trained: bool = False
+    has_clean_compliance: bool = True
+
+
+class _ClaimScanRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    partner_copy: str = Field(default="", max_length=8000)
+
+
+class _PayoutRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    motion: str = Field(
+        default="affiliate_lead",
+        pattern=r"^(affiliate_lead|warm_qualified_intro|strategic_partner_deal)$",
+    )
+    deal_amount_sar: int = Field(default=0, ge=0, le=10_000_000)
+    invoice_paid: bool = False
+    is_duplicate: bool = False
+    is_self_referral: bool = False
+    compliance_violation: bool = False
+    approved_pct: float | None = Field(default=None, ge=0.0, le=100.0)
+
+
+@router.get("/lifecycle")
+async def lifecycle_overview() -> dict[str, Any]:
+    """Read-only — the explicit partner lifecycle stages + tiers."""
+    return {
+        "stages": [s.value for s in PartnerStage],
+        "tiers": TIER_LABELS,
+        "ftc_disclosure_en": FTC_DISCLOSURE_TEXT_EN,
+        "ftc_disclosure_ar": FTC_DISCLOSURE_TEXT_AR,
+        "hard_gates": _HARD_GATES,
+    }
+
+
+@router.post("/lifecycle/advance")
+async def lifecycle_advance(req: _StageAdvanceRequest) -> dict[str, Any]:
+    """Evaluate whether a partner may move to the next lifecycle stage.
+
+    Advisory — never executes a payout or external action.
+    """
+    decision = can_advance(
+        from_stage=req.from_stage,
+        to_stage=req.to_stage,
+        fit_score=req.fit_score,
+        trained=req.trained,
+        has_clean_compliance=req.has_clean_compliance,
+    )
+    nxt = next_stage(req.from_stage)
+    return {
+        "allowed": decision.allowed,
+        "from_stage": decision.from_stage.value,
+        "to_stage": decision.to_stage.value,
+        "next_stage": nxt.value if nxt else None,
+        "reason_en": decision.reason_en,
+        "reason_ar": decision.reason_ar,
+        "hard_gates": _HARD_GATES,
+    }
+
+
+@router.post("/claim-scan")
+async def claim_scan(req: _ClaimScanRequest) -> dict[str, Any]:
+    """Scan partner-submitted marketing copy for forbidden claims.
+
+    Flags only — never sends. Copy with forbidden claims must be
+    rewritten before any human approves external use.
+    """
+    result = flag_forbidden_claims(req.partner_copy)
+    return {
+        "is_clean": result.is_clean,
+        "flagged_claims": result.flagged_claims,
+        "requires_review": result.requires_review,
+        "reason_en": result.reason_en,
+        "reason_ar": result.reason_ar,
+        "ftc_disclosure_en": FTC_DISCLOSURE_TEXT_EN,
+        "ftc_disclosure_ar": FTC_DISCLOSURE_TEXT_AR,
+        "governance_decision": "blocked" if not result.is_clean else "allow_with_review",
+        "hard_gates": _HARD_GATES,
+    }
+
+
+@router.post("/payout/compute")
+async def payout_compute(req: _PayoutRequest) -> dict[str, Any]:
+    """Compute an advisory partner commission.
+
+    DOCTRINE — never pays out. Eligibility is False unless the deal
+    invoice is paid and no duplicate/self-referral/compliance flag is
+    set. Actual disbursement remains a founder-approved action.
+    """
+    decision = compute_payout(
+        motion=req.motion,
+        deal_amount_sar=req.deal_amount_sar,
+        invoice_paid=req.invoice_paid,
+        is_duplicate=req.is_duplicate,
+        is_self_referral=req.is_self_referral,
+        compliance_violation=req.compliance_violation,
+        approved_pct=req.approved_pct,
+    )
+    return {
+        "eligible": decision.eligible,
+        "motion": decision.motion,
+        "commission_pct": decision.commission_pct,
+        "commission_sar": decision.commission_sar,
+        "reason_en": decision.reason_en,
+        "reason_ar": decision.reason_ar,
+        "governance_decision": "approval_required" if decision.eligible else "blocked",
         "hard_gates": _HARD_GATES,
     }
