@@ -17,6 +17,7 @@ from fastapi import APIRouter, HTTPException
 from auto_client_acquisition.ai_workforce import (
     AGENT_REGISTRY,
     WorkforceGoal,
+    build_revenue_factory_blueprint,
     get_agent,
     list_agents,
     run_workforce_goal,
@@ -66,3 +67,16 @@ async def workforce_agent_detail(agent_id: str) -> dict[str, Any]:
 async def workforce_run(payload: WorkforceGoal) -> dict[str, Any]:
     result = run_workforce_goal(payload)
     return result.model_dump(mode="json")
+
+
+@router.get("/revenue-factory-blueprint")
+async def workforce_revenue_factory_blueprint() -> dict[str, Any]:
+    blueprint = build_revenue_factory_blueprint()
+    return {
+        "model": blueprint["model"],
+        "north_star": blueprint["north_star"],
+        "doctrine_chain": blueprint["doctrine_chain"],
+        "agents_total": len(blueprint["agent_contracts"]),
+        "automation_plays_total": len(blueprint["automation_plays"]),
+        "blueprint": blueprint,
+    }
