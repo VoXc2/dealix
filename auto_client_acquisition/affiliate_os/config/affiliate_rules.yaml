@@ -1,0 +1,45 @@
+# Affiliate OS — policy config. Loaded by rules_loader.py (lru_cache + yaml).
+# Doctrine: commissions are evidence-gated (paid invoice), payouts are
+# human-approval-gated, and no affiliate copy may promise guaranteed outcomes.
+version: 1
+
+# Commission tier resolved from the affiliate fit score at application time.
+# rate is applied to the first paid invoice amount of a referred deal.
+commission_tiers:
+  standard:
+    min_fit_score: 0
+    rate: 0.10
+  preferred:
+    min_fit_score: 70
+    rate: 0.15
+  strategic:
+    min_fit_score: 90
+    rate: 0.20
+
+# Substring claims that BLOCK an affiliate asset outright. This list is a
+# shallow backstop layered on top of the governance_os claim guards — it is
+# not the only check. Human review of every asset remains mandatory.
+forbidden_claims:
+  - guaranteed sales
+  - guaranteed results
+  - guaranteed roi
+  - guaranteed revenue
+  - guaranteed income
+  - risk-free returns
+  - "نضمن لك"
+  - "نضمن النتائج"
+  - "أرباح مضمونة"
+
+# Mandatory disclosure copy appended to every approved affiliate asset.
+disclosure_text:
+  en: >-
+    Affiliate disclosure: I earn a commission if you purchase via my link.
+    Estimated outcomes are not guaranteed outcomes.
+  ar: >-
+    إفصاح الشراكة: أحصل على عمولة عند الشراء عبر رابطي. النتائج التقديرية
+    ليست نتائج مضمونة.
+
+payout:
+  requires_human_approval: true
+  requires_invoice_paid_evidence: true
+  min_payout_sar: 100
