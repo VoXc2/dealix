@@ -25,6 +25,9 @@ from auto_client_acquisition.revenue_os import (
     suggest_dedupe_fingerprint,
     validate_pipeline_step,
 )
+from auto_client_acquisition.revenue_os.revenue_factory_blueprint import (
+    revenue_factory_blueprint,
+)
 from auto_client_acquisition.revenue_os.learning_weekly import weekly_learning_report_skeleton
 
 router = APIRouter(prefix="/api/v1/revenue-os", tags=["Revenue OS"])
@@ -72,6 +75,7 @@ async def revenue_os_catalog() -> dict[str, Any]:
         "forbidden_sources": forbidden_sources(),
         "enrichment_waterfall_order": WATERFALL_ORDER,
         "action_catalog": list_action_catalog(),
+        "factory_blueprint_endpoint": "/api/v1/revenue-os/factory/blueprint",
         "reference_modules": {
             "market_signal_input": "auto_client_acquisition.growth_beast.market_radar.MarketSignal",
             "signal_normalize": "auto_client_acquisition.revenue_os.signal_normalizer",
@@ -80,6 +84,9 @@ async def revenue_os_catalog() -> dict[str, Any]:
             "proof_canonical_payload": "auto_client_acquisition.revenue_os.proof_canonical",
             "service_sessions": "auto_client_acquisition.service_sessions",
             "learning_weekly": "auto_client_acquisition.revenue_os.learning_weekly",
+            "revenue_factory_blueprint": (
+                "auto_client_acquisition.revenue_os.revenue_factory_blueprint"
+            ),
         },
     }
 
@@ -130,6 +137,12 @@ async def anti_waste_check(body: AntiWasteRequest) -> dict[str, Any]:
 async def learning_weekly_template() -> dict[str, Any]:
     """Weekly Learning Report structure — hook retention/analytics sources later."""
     return weekly_learning_report_skeleton()
+
+
+@router.get("/factory/blueprint")
+async def factory_blueprint() -> dict[str, Any]:
+    """Founder-led Revenue Company Operating System blueprint."""
+    return revenue_factory_blueprint()
 
 
 @router.get("/scores/pricing-power-demo")

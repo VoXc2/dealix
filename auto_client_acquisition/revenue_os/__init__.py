@@ -26,6 +26,9 @@ from auto_client_acquisition.revenue_os.data_flywheel import (
     gating_failures,
 )
 from auto_client_acquisition.revenue_os.draft_pack import build_revenue_draft_pack
+from auto_client_acquisition.revenue_os.revenue_factory_blueprint import (
+    revenue_factory_blueprint,
+)
 from auto_client_acquisition.revenue_os.enrichment_waterfall import (
     WATERFALL_ORDER,
     FactFieldProvenance,
@@ -105,6 +108,7 @@ __all__ = [
     "source_policies",
     "summarize_scored_accounts",
     "suggest_dedupe_fingerprint",
+    "revenue_factory_blueprint",
     "compute_flywheel_score",
     "flywheel_inputs_from_import_quality",
     "flywheel_inputs_from_preview",
