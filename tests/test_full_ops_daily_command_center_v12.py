@@ -29,6 +29,9 @@ async def test_daily_command_center_returns_200_with_empty_queue() -> None:
         "cs_queue",
         "delivery_queue",
         "compliance_alerts",
+        "partner_queue",
+        "evidence_ledger",
+        "learning_loops",
         "executive_summary",
         "blocked_actions",
         "hard_gates",
@@ -37,6 +40,34 @@ async def test_daily_command_center_returns_200_with_empty_queue() -> None:
     ):
         assert key in body, f"missing field: {key}"
     assert body["growth_queue"]["count"] == 0
+    assert body["degraded"] is False
+
+
+@pytest.mark.asyncio
+async def test_command_center_rolls_up_all_nine_subsystems() -> None:
+    """Partner OS, Evidence Ledger and Learning loops must each roll up."""
+    from api.main import app
+
+    _reset()
+    transport = ASGITransport(app=app)
+    async with AsyncClient(transport=transport, base_url="http://test") as client:
+        r = await client.get("/api/v1/full-ops/daily-command-center")
+    assert r.status_code == 200
+    body = r.json()
+
+    partner = body["partner_queue"]
+    assert "total_referrals" in partner
+    assert "awaiting_invoice_paid" in partner
+    assert "clawed_back" in partner
+
+    evidence = body["evidence_ledger"]
+    assert isinstance(evidence["proof_events_recorded"], int)
+
+    learning = body["learning_loops"]
+    assert "objection_library_size" in learning
+    assert "kb_gap_candidates" in learning
+
+    # Adding three live rollups must not degrade the command center.
     assert body["degraded"] is False
 
 
