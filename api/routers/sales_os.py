@@ -8,7 +8,18 @@ from __future__ import annotations
 from typing import Any
 
 from fastapi import APIRouter
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field
+
+from auto_client_acquisition.sales_os.founder_revenue_machine import (
+    MACHINE_GUARDRAILS,
+    PIPELINE_STATES,
+    SALES_MACHINE_CONFIG,
+    RiskScoreInput,
+    compute_ops_risk_score,
+    score_lead_fit,
+    transitions,
+    validate_transition,
+)
 
 router = APIRouter(prefix="/api/v1/sales-os", tags=["sales-os"])
 
@@ -44,11 +55,43 @@ class _MeetingPrepRequest(BaseModel):
     duration_min: int = 30
 
 
+class _LeadScoreSignals(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    decision_maker: bool = False
+    b2b_company: bool = False
+    has_crm_or_revenue_process: bool = False
+    uses_or_plans_ai: bool = False
+    saudi_or_gcc: bool = True
+    urgency_within_30_days: bool = False
+    budget_5k_sar_plus: bool = False
+    no_company: bool = False
+    student_or_job_seeker: bool = False
+    vague_curiosity: bool = False
+
+
+class _RiskScoreRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    has_crm: bool = False
+    uses_ai: bool = False
+    has_external_approval_gate: bool = False
+    can_link_workflow_to_financial_outcome: bool = False
+    follow_up_is_documented: bool = False
+    source_clarity_for_decisions: bool = False
+    has_evidence_pack: bool = False
+
+
+class _PipelineTransitionRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    current_state: str
+    target_state: str
+    context: dict[str, Any] = Field(default_factory=dict)
+
+
 @router.get("/status")
 async def sales_os_status() -> dict[str, Any]:
     return {
         "service": "sales_os",
-        "module": "crm_v10+reply_classifier",
+        "module": "crm_v10+reply_classifier+founder_revenue_machine",
         "status": "operational",
         "version": "v12",
         "degraded": False,
@@ -56,6 +99,27 @@ async def sales_os_status() -> dict[str, Any]:
         "hard_gates": _HARD_GATES,
         "next_action_ar": "استخدم /qualify ثم /meeting-prep",
         "next_action_en": "Use /qualify then /meeting-prep.",
+    }
+
+
+@router.get("/machine-config")
+async def machine_config() -> dict[str, Any]:
+    return {
+        **SALES_MACHINE_CONFIG,
+        "pipeline_states": list(PIPELINE_STATES),
+        "transitions": transitions(),
+        "strict_rules": list(MACHINE_GUARDRAILS),
+        "hard_gates": _HARD_GATES,
+        "action_mode": "draft_only_or_approval_required",
+    }
+
+
+@router.get("/pipeline-states")
+async def pipeline_states() -> dict[str, Any]:
+    return {
+        "states": list(PIPELINE_STATES),
+        "transitions": transitions(),
+        "strict_rules": list(MACHINE_GUARDRAILS),
     }
 
 
@@ -91,6 +155,54 @@ async def sales_qualify(req: _QualifyRequest) -> dict[str, Any]:
         "recommendation_en": recommendation_en,
         "next_step": next_step,
         "action_mode": "suggest_only",
+        "hard_gates": _HARD_GATES,
+    }
+
+
+@router.post("/lead-score")
+async def lead_score(req: _LeadScoreSignals) -> dict[str, Any]:
+    result = score_lead_fit(signals=req.model_dump())
+    return {
+        **result,
+        "offer": SALES_MACHINE_CONFIG["offer_name"],
+        "pricing_sar": SALES_MACHINE_CONFIG["pricing_sar"],
+        "action_mode": "suggest_only",
+        "hard_gates": _HARD_GATES,
+    }
+
+
+@router.post("/risk-score")
+async def risk_score(req: _RiskScoreRequest) -> dict[str, Any]:
+    score = compute_ops_risk_score(
+        RiskScoreInput(
+            has_crm=req.has_crm,
+            uses_ai=req.uses_ai,
+            has_external_approval_gate=req.has_external_approval_gate,
+            can_link_workflow_to_financial_outcome=req.can_link_workflow_to_financial_outcome,
+            follow_up_is_documented=req.follow_up_is_documented,
+            source_clarity_for_decisions=req.source_clarity_for_decisions,
+            has_evidence_pack=req.has_evidence_pack,
+        )
+    )
+    return {
+        **score,
+        "offer": SALES_MACHINE_CONFIG["offer_name"],
+        "action_mode": "suggest_only",
+        "hard_gates": _HARD_GATES,
+    }
+
+
+@router.post("/pipeline-transition")
+async def pipeline_transition(req: _PipelineTransitionRequest) -> dict[str, Any]:
+    verdict = validate_transition(
+        current_state=req.current_state,
+        target_state=req.target_state,
+        context=req.context,
+    )
+    return {
+        **verdict,
+        "from": req.current_state,
+        "to": req.target_state,
         "hard_gates": _HARD_GATES,
     }
 

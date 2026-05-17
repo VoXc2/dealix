@@ -158,6 +158,12 @@ export const api = {
   postRevenueOsAntiWasteCheck: (body: Record<string, unknown>) =>
     apiClient.post("/api/v1/revenue-os/anti-waste/check", body),
 
+  getSalesMachineConfig: () =>
+    apiClient.get("/api/v1/sales-os/machine-config"),
+
+  postSalesOpsRiskScore: (body: Record<string, boolean>) =>
+    apiClient.post("/api/v1/sales-os/risk-score", body),
+
   getApprovalsPending: () =>
     apiClient.get("/api/v1/approvals/pending"),
 
