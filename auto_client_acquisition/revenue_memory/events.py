@@ -77,6 +77,21 @@ EVENT_TYPES: tuple[str, ...] = (
     "ai.regression_detected",
     # Pulse
     "pulse.published",
+    # Distribution / funnel — appended W (Distribution OS). Append-only:
+    # never reorder or remove; replay/projections depend on tuple stability.
+    "target.added",
+    "pain.hypothesized",
+    "proof.pack_requested",
+    "proof.pack_delivered",
+    "scope.sent",
+    "invoice.sent",
+    "invoice.paid",
+    "commitment.recorded",
+    "partner.conversation_logged",
+    "partner.classified",
+    "referral.requested",
+    "affiliate.application_received",
+    "commission.eligibility_checked",
 )
 
 
