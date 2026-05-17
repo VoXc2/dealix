@@ -27,6 +27,14 @@ from auto_client_acquisition.evidence_control_plane_os.evidence_graph import (
     build_control_graph,
     mini_evidence_chain_complete,
 )
+from auto_client_acquisition.evidence_control_plane_os.event_store import (
+    EvidenceEvent,
+    EvidenceLedger,
+    get_default_evidence_ledger,
+    list_evidence_events,
+    record_evidence_event,
+    reset_default_evidence_ledger,
+)
 from auto_client_acquisition.evidence_control_plane_os.evidence_object import (
     EvidenceItem,
     EvidenceObject,
@@ -47,7 +55,9 @@ __all__ = (
     "PROOF_PACK_V3_SECTIONS",
     "AccountabilityRecord",
     "EvidenceControlGraph",
+    "EvidenceEvent",
     "EvidenceItem",
+    "EvidenceLedger",
     "EvidenceObject",
     "EvidencePresence",
     "EvidenceType",
@@ -62,8 +72,12 @@ __all__ = (
     "evidence_route_registered",
     "external_action_accountable",
     "gap_severity",
+    "get_default_evidence_ledger",
     "is_critical_evidence_type",
     "list_evidence",
+    "list_evidence_events",
     "mini_evidence_chain_complete",
     "proof_pack_v3_sections_complete",
+    "record_evidence_event",
+    "reset_default_evidence_ledger",
 )
