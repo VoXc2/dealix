@@ -2,19 +2,23 @@
 
 ## Strategic thesis
 
-Companies are experimenting with AI, but struggle to operationalize it. Dealix wins by converting AI into measurable business workflows.
+Companies are experimenting with AI, but struggle to govern it. Dealix wins by turning AI + revenue workflows into governed, measurable execution.
 
 ## Wedge
 
-Start with service-assisted AI:
+Start with governed service-assisted execution:
 
-1. Lead Intelligence Sprint
-2. AI Quick Win Sprint
-3. Company Brain Sprint
+1. 7-Day Governed Revenue & AI Ops Diagnostic
+2. Revenue Intelligence Sprint
+3. Governed Ops Retainer
 
 ## Expansion
 
-Diagnostic → Sprint → Pilot → Retainer → Enterprise OS
+Diagnostic → Sprint → Retainer → Proof Packs → Playbooks → Internal Platform → Client Workspace → GCC Standard
+
+## North Star
+
+Governed Value Decisions Created
 
 ## Moat
 

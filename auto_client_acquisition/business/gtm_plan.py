@@ -8,30 +8,30 @@ from typing import Any
 def first_10_customers_plan() -> dict[str, Any]:
     return {
         "who": [
-            "B2B founders in Riyadh/Jeddah with outbound pain",
-            "SMB revenue leaders in clinics, logistics, training",
-            "Agencies wanting a differentiated Saudi stack",
+            "B2B service firms with messy pipeline and weak follow-up",
+            "Clinic operators needing governed patient acquisition workflows",
+            "Regulated teams (fintech / compliance-heavy) needing approval-first automation",
         ],
         "how_to_find": [
-            "Warm intros from Sami network",
-            "LinkedIn lists + manual verify (no cold WhatsApp)",
-            "Sector events + follow-up drafts",
+            "Founder-led warm intros and manual outreach",
+            "Proof-led LinkedIn conversations using sample proof packs",
+            "Partner intros from CRM/AI/GRC implementers",
         ],
         "qualification": [
-            "Has ICP clarity or willing to define in onboarding",
-            "Uses WhatsApp for business conversations",
-            "Willing to pilot with weekly proof pack",
+            "Willing to run a paid 7-day diagnostic",
+            "Has at least one revenue workflow with decision ambiguity",
+            "Accepts approval-first policy for external actions",
         ],
-        "pilot_offer_ar": "تجربة 7 أيام لمشغّل المؤسس + تقرير جاهزية + 10 فرص مؤهلة تجريبياً.",
+        "pilot_offer_ar": "تشخيص محكوم لمدة 7 أيام مع Proof Pack و3 قرارات تشغيلية قابلة للتنفيذ.",
         "success_criteria": [
-            "Weekly active review of daily brief",
-            ">=3 approved drafts / week OR 1 booked meeting / month",
-            "Documented ROI story",
+            ">=1 paid diagnostic invoice",
+            ">=1 proof pack delivered with source-backed findings",
+            ">=1 sprint-qualified opportunity",
         ],
         "actions": [
-            "Build list of 30 targets, close 10 pilots",
-            "Run demo using command center snapshot + market radar",
-            "Send WhatsApp-style approval cards in demo only",
+            "Build list of 50 target accounts and run trust-first outreach",
+            "Push sample proof pack + risk score CTA in every qualified conversation",
+            "Book meetings only after qualification around source/approval/evidence gaps",
         ],
     }
 
@@ -39,45 +39,64 @@ def first_10_customers_plan() -> dict[str, Any]:
 def first_100_customers_plan() -> dict[str, Any]:
     return {
         "channel_mix": [
-            "Founder content (Arabic case studies)",
-            "Partner agencies (15–30% rev share band)",
-            "Referrals from pilots",
-            "Select webinars (PDPL-safe outreach)",
+            "Founder-led trust motion (LinkedIn + warm network)",
+            "Proof-led funnel (sample pack -> risk score -> scope call)",
+            "Partner-led growth from implementers and consultants",
+            "Authority content on governance failures and evidence trails",
         ],
-        "partnerships": ["Regional CRM implementers", "Supabase consultants", "GTM freelancers"],
-        "referral_loop": "Give pilots a structured referral incentive after proof pack month 2.",
-        "notes": ["Cold email only with suppression lists + compliance review."],
+        "partnerships": [
+            "CRM implementers",
+            "AI consultants",
+            "GRC/security consultants",
+            "ERP/accounting consultants",
+        ],
+        "referral_loop": "No discount without exchange (testimonial/referral/faster payment/partner intro).",
+        "notes": ["Never run external autonomous messaging; keep human approval for every outbound action."],
     }
 
 
 def channel_strategy() -> dict[str, Any]:
     return {
-        "primary": "founder_led_outbound_plus_partners",
-        "secondary": "community_whatsapp_opt_in",
-        "avoid": ["cold_whatsapp_broadcasts", "unchecked_scraped_lists"],
+        "primary": "founder_led_trust_density",
+        "secondary": "proof_led_funnel_with_sample_pack",
+        "tertiary": "partner_led_distribution",
+        "avoid": ["cold_whatsapp_broadcasts", "unchecked_scraped_lists", "volume-first-automation"],
     }
 
 
 def partner_strategy() -> dict[str, Any]:
     return {
-        "agency": {"rev_share_pct_range": [15, 30], "setup_fee_sar_range": [3000, 25000]},
-        "technology": ["Supabase partners for memory hardening"],
-        "positioning_ar": "الشريك يبيع التنفيذ؛ Dealix يبيع المنصة والاشتراك.",
+        "referral": {"fee_pct_range": [10, 20]},
+        "delivery_models": [
+            "joint_diagnostic",
+            "white_label_diagnostic",
+            "implementation_handoff",
+            "portfolio_package",
+        ],
+        "positioning_ar": "الشريك يجلب العميل؛ Dealix تقدم التشخيص والـproof والحوكمة قبل/مع التنفيذ.",
     }
 
 
 def founder_led_sales_script() -> dict[str, Any]:
     return {
         "discovery_questions": [
-            "من أهم 3 قرارات إيرادات هذا الأسبوع؟",
-            "كيف تتابع واتساب اليوم بدون فوضى؟",
-            "وش يثبت للإدارة أن التسويق نجح؟",
+            "أين يضيع الإيراد اليوم تحديداً؟",
+            "هل CRM موثوق كمصدر قرار أم فيه فجوات جودة؟",
+            "من يوافق على الأفعال الخارجية المرتبطة بالذكاء الاصطناعي؟",
+            "ما الدليل الذي تستخدمونه لإثبات قيمة الـworkflow الحالي؟",
         ],
-        "demo_story_ar": "أعرض: رادار السوق → فرصة → مسودة عربية → زر موافقة → تقرير جاهزية.",
+        "positioning_opening_ar": (
+            "نحن لا نبيع chatbot ولا automation عامة؛ نحول AI وتجارب الإيراد "
+            "إلى تشغيل محكوم: مصدر واضح، موافقة واضحة، دليل واضح، وقيمة قابلة للقياس."
+        ),
+        "demo_story_ar": (
+            "أعرض workflow واحداً: source clarity -> approval boundary -> evidence trail "
+            "-> governed decision -> proof pack."
+        ),
         "objections": {
-            "crm": "Dealix ليس بديل CRM بالكامل؛ هو طبقة إيرادات وفهم سياق فوق أدواتكم.",
-            "price": "نبدأ بمشغّل المؤسس أو pilot بسيط ثم نربط الأداء بالنتائج.",
-            "ai_failed_before": "هنا التنفيذ مسودة + موافقة + تتبع؛ لا إرسال تلقائي خارجي.",
+            "crm": "Dealix ليست CRM بديلة؛ هي طبقة تشغيل حاكمة فوق CRM والـworkflows.",
+            "price": "السعر يعكس تقليل مخاطر القرارات الخاطئة وإنتاج proof قابل للتدقيق.",
+            "ai_failed_before": "نشتغل approval-first وevidence-first، بدون أي إرسال خارجي تلقائي.",
         },
-        "pilot_framing_ar": "أسبوعان: موجز يومي + 10 فرص + تقرير جاهزية + مسودات بموافقة.",
+        "diagnostic_framing_ar": "7 أيام: Workflow map + quality + approvals + evidence + Top 3 decisions + Proof Pack.",
     }

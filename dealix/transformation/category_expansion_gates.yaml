@@ -28,8 +28,18 @@ gates:
     min_score: 70
     verification_commands:
       - python3 scripts/verify_global_ai_transformation.py --check-reliability
+  - id: governed_decision_density
+    metric_key: governed_value_decisions_created
+    min_count: 10
+    notes: Expansion is blocked until proof shows recurring governed decisions, not activity noise.
+    verification_commands:
+      - python3 scripts/verify_global_ai_transformation.py --check-category-expansion
 sectors:
   - id: saudi_enterprise_default
     region: SA
+    quality_bar: proof_pack_required
+    decision_passport_required: true
+  - id: gcc_expansion_default
+    region: GCC
     quality_bar: proof_pack_required
     decision_passport_required: true

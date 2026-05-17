@@ -1,14 +1,23 @@
 version: 1
 program: ceo_signal_os
 reference_plan_layer: 0
-operating_law: Event → classify → log → verify → decide → no-build unless signal
+operating_law: Sell manually → deliver with governance → record evidence → automate repetition only
 
 external_events:
+  - proof_pack_requested
+  - risk_score_completed
   - follow_up_sent
   - replied_interested
   - meeting_booked
   - used_in_meeting
-  - pilot_intro_requested
+  - diagnostic_scope_requested
+  - diagnostic_invoice_sent
+  - diagnostic_invoice_paid
+  - diagnostic_completed
+  - sprint_recommended
+  - retainer_recommended
+  - governed_decision_logged
+  - risky_action_blocked
   - scope_requested
   - asks_for_pdf
   - asks_for_english
@@ -33,9 +42,14 @@ weekly_targets:
   classify_every_external_touchpoint: true
   honest_classification_required: true
   fake_evidence_forbidden: true
+  source_required_for_value_claims: true
+  approvals_required_for_external_actions: true
 
 monthly_targets:
   partner_attempts_minimum: 3
+  paid_diagnostics_minimum: 3
+  revenue_sprint_minimum: 1
+  retainer_candidate_minimum: 1
   l5_meeting_utility_stretch: 1
   l6_market_pull_stretch: 1
 
