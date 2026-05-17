@@ -197,3 +197,233 @@ async def partner_application(req: Request) -> dict[str, Any]:
         "message": "وصلنا طلبك. سنتواصل خلال 48 ساعة.",
         "next_step": "email_review",
     }
+
+
+# ── Public Diagnostic Funnel (PR4) ────────────────────────────────
+# Unauthenticated funnel endpoints. The /api/v1/public prefix is
+# auth-exempt; all of these reuse the honeypot pattern above.
+
+
+def _truthy(value: Any) -> bool:
+    return str(value or "").strip().lower() in {"1", "true", "yes", "y", "نعم"}
+
+
+def _parse_budget(value: Any) -> float:
+    digits = "".join(c for c in str(value or "") if c.isdigit())
+    return float(digits) if digits else 0.0
+
+
+def _public_risk_score(body: dict[str, Any]) -> dict[str, Any]:
+    """Deterministic 0–100 readiness estimate from public form input.
+
+    This is an ESTIMATE — it reads only the submitted form, never CRM
+    data — so callers tag the result is_estimate=True with a source.
+    """
+    score = 0
+    factors: list[str] = []
+
+    role = str(body.get("role") or "").lower()
+    if any(k in role for k in ("ceo", "founder", "owner", "coo", "cro",
+                               "head", "مدير", "مؤسس", "رئيس")):
+        score += 20
+        factors.append("decision_maker_role")
+    if str(body.get("company") or "").strip():
+        score += 10
+        factors.append("has_company")
+    if _truthy(body.get("has_crm")):
+        score += 15
+        factors.append("has_crm_process")
+    if _truthy(body.get("uses_ai")):
+        score += 15
+        factors.append("uses_or_plans_ai")
+
+    region = str(body.get("region") or body.get("country") or "").lower()
+    if any(k in region for k in ("saudi", "ksa", "gcc", "uae", "qatar",
+                                 "سعود", "خليج", "الإمارات", "قطر")):
+        score += 15
+        factors.append("saudi_gcc_region")
+
+    urgency = str(body.get("urgency") or "").lower()
+    if any(k in urgency for k in ("urgent", "30", "now", "asap",
+                                  "عاجل", "شهر", "الآن")):
+        score += 15
+        factors.append("near_term_urgency")
+    if _parse_budget(body.get("budget")) >= 5000:
+        score += 10
+        factors.append("budget_5k_plus")
+
+    score = min(100, score)
+    band = "high" if score >= 65 else "medium" if score >= 35 else "low"
+    return {"score": score, "band": band, "factors": factors}
+
+
+@router.post("/leads")
+async def public_lead(req: Request) -> dict[str, Any]:
+    """Public diagnostic-funnel lead capture. Consent is mandatory."""
+    try:
+        body = await req.json()
+    except Exception as e:
+        raise HTTPException(status_code=400, detail="invalid_json") from e
+
+    if body.get("website"):  # honeypot
+        return {"ok": True}
+
+    name = str(body.get("name") or "").strip()
+    company = str(body.get("company") or "").strip()
+    email = str(body.get("email") or "").strip()
+    if not name or not company or "@" not in email:
+        raise HTTPException(status_code=422, detail="missing_required_fields")
+    if not bool(body.get("consent")):
+        raise HTTPException(status_code=422, detail="consent_required")
+
+    lead_id: str | None = None
+    try:
+        from auto_client_acquisition import lead_inbox
+
+        rec = lead_inbox.append({
+            "name": name,
+            "company": company,
+            "email": email,
+            "phone": str(body.get("phone") or "").strip(),
+            "sector": str(body.get("sector") or "").strip(),
+            "role": str(body.get("role") or "").strip(),
+            "message": str(body.get("message") or "").strip(),
+            "consent": True,
+            "source": str(body.get("source") or "public.diagnostic_funnel"),
+        })
+        lead_id = rec.get("id")
+    except Exception:
+        log.exception("public_lead_inbox_append_failed")
+
+    try:
+        from auto_client_acquisition.evidence_control_plane_os.event_store import (
+            record_evidence_event,
+        )
+
+        record_evidence_event(
+            event_type="lead_captured",
+            entity_type="lead",
+            entity_id=lead_id or email,
+            action="public_funnel_submit",
+            summary_en=f"Public diagnostic-funnel lead captured: {company}",
+            source="public.diagnostic_funnel",
+        )
+    except Exception:
+        log.exception("public_lead_evidence_failed")
+
+    return {"ok": True, "lead_id": lead_id, "next_step": "risk_score"}
+
+
+@router.post("/risk-score")
+async def public_risk_score(req: Request) -> dict[str, Any]:
+    """Deterministic readiness estimate for the diagnostic funnel.
+
+    Always returns is_estimate=True — the score reads only the submitted
+    form, never persisted CRM data.
+    """
+    try:
+        body = await req.json()
+    except Exception as e:
+        raise HTTPException(status_code=400, detail="invalid_json") from e
+
+    result = _public_risk_score(body if isinstance(body, dict) else {})
+
+    try:
+        from auto_client_acquisition.evidence_control_plane_os.event_store import (
+            record_evidence_event,
+        )
+
+        record_evidence_event(
+            event_type="risk_score_estimated",
+            entity_type="lead",
+            entity_id=str(body.get("email") or "anonymous"),
+            action="public_risk_score",
+            summary_en=f"Public risk score estimated: {result['score']}",
+            payload={"score": result["score"], "band": result["band"]},
+            is_estimate=True,
+            source="public_diagnostic_estimate",
+        )
+    except Exception:
+        log.exception("public_risk_score_evidence_failed")
+
+    return {
+        "score": result["score"],
+        "band": result["band"],
+        "factors": result["factors"],
+        "is_estimate": True,
+        "source": "public_diagnostic_estimate",
+        "disclaimer": "تقدير أولي مبني على بياناتك فقط — ليس تقييماً نهائياً",
+    }
+
+
+@router.get("/proof-pack/sample")
+async def public_proof_pack_sample() -> dict[str, Any]:
+    """A synthetic sample Proof Pack. Contains NO real customer data."""
+    return {
+        "sample": True,
+        "is_estimate": True,
+        "source": "synthetic_sample",
+        "disclaimer": "نموذج توضيحي ببيانات افتراضية — لا يحتوي بيانات عملاء حقيقية",
+        "title_ar": "نموذج حزمة الإثبات",
+        "title_en": "Sample Proof Pack",
+        "sections": [
+            {
+                "id": "diagnosis",
+                "title_en": "Operational Diagnosis",
+                "body_en": "Illustrative finding: 38% of inbound leads waited "
+                           ">24h for a first reply (synthetic figure).",
+            },
+            {
+                "id": "opportunities",
+                "title_en": "Qualified Opportunities",
+                "body_en": "Illustrative output: 10 scored opportunities with "
+                           "next actions (synthetic figures).",
+            },
+            {
+                "id": "evidence",
+                "title_en": "Evidence Trail",
+                "body_en": "Every recommendation links to a sourced evidence "
+                           "event — no unverified claims.",
+            },
+        ],
+    }
+
+
+@router.post("/support")
+async def public_support(req: Request) -> dict[str, Any]:
+    """Public support entry — opens a ticket via the support lifecycle."""
+    try:
+        body = await req.json()
+    except Exception as e:
+        raise HTTPException(status_code=400, detail="invalid_json") from e
+
+    if body.get("website"):  # honeypot
+        return {"ok": True}
+
+    message = str(body.get("message") or "").strip()
+    if not message:
+        raise HTTPException(status_code=422, detail="message_required")
+
+    from auto_client_acquisition.support import create_ticket
+
+    ticket = create_ticket(
+        subject=str(body.get("subject") or "").strip(),
+        message=message,
+        channel="public_form",
+        customer_id=str(body.get("email") or "").strip() or None,
+    )
+    return {
+        "ok": True,
+        "ticket_id": ticket.ticket_id,
+        "status": ticket.status,
+        "message": "تم استلام طلبك — سنتواصل معك قريباً",
+    }
+
+
+@router.get("/services")
+async def public_services() -> dict[str, Any]:
+    """Public, read-only service catalog with disclosed pricing."""
+    from auto_client_acquisition.service_catalog import list_offerings
+
+    offerings = [o.model_dump(mode="json") for o in list_offerings()]
+    return {"count": len(offerings), "services": offerings}
