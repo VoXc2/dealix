@@ -38,3 +38,28 @@ If it only exchanges time for money, it is **structurally weak**—even when the
 ```
 
 Log materially in [`../ledgers/CAPITAL_LEDGER.md`](../ledgers/CAPITAL_LEDGER.md) and tie to [`COMPOUNDING_SYSTEM.md`](COMPOUNDING_SYSTEM.md), [`OPERATING_FLYWHEEL.md`](OPERATING_FLYWHEEL.md), [`CLOSED_LOOP_EXECUTION.md`](CLOSED_LOOP_EXECUTION.md).
+
+## Per-project capital minimum / الحد الأدنى لرأس المال لكل مشروع
+
+The "two forms of capital" rule has a firm floor. Every project must produce at least **1 Trust Asset + 1 Knowledge or Product Asset**. A project that ships without both does not close on the ledger.
+
+Example asset types:
+
+- **Trust Asset** — anonymized proof pack, QA'd deliverable narrative.
+- **Knowledge Asset** — playbook delta, objection, sector insight.
+- **Product Asset** — script, internal tool, feature candidate.
+
+القاعدة لها حد أدنى ثابت. كل مشروع يجب أن ينتج على الأقل **أصل ثقة واحد + أصل معرفة أو منتج واحد**. المشروع الذي يُسلَّم بدون كليهما لا يُغلق في السجل.
+
+أنواع الأصول كمثال:
+
+- **أصل ثقة** — حزمة إثبات مجهولة الهوية، سرد تسليم مُراجَع جودةً.
+- **أصل معرفة** — تحديث دليل عمل، اعتراض، رؤية قطاعية.
+- **أصل منتج** — سكربت، أداة داخلية، مرشّح ميزة.
+
+## Related / مرتبط
+
+- [`../distribution/README.md`](../distribution/README.md) — distribution layer index / فهرس طبقة التصريف.
+- [`../distribution/CASE_STUDY_FACTORY.md`](../distribution/CASE_STUDY_FACTORY.md) — turns Trust Assets into case-safe summaries / تحويل أصول الثقة إلى ملخصات آمنة الحالة.
+- [`../distribution/BENCHMARK_ENGINE.md`](../distribution/BENCHMARK_ENGINE.md) — turns Knowledge Assets into aggregated benchmarks / تحويل أصول المعرفة إلى معايير مجمّعة.
+- [`../assets/ASSET_GRADUATION_SYSTEM.md`](../assets/ASSET_GRADUATION_SYSTEM.md) — how assets climb to Market capital / كيف تتدرج الأصول إلى رأس المال السوقي.

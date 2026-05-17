@@ -32,3 +32,24 @@ Examples:
 | C-003 | Clinic Sprint | Knowledge | clinics playbook update | Yes | | clinic outreach |
 
 **Parent model:** [`DEALIX_CAPITAL_MODEL.md`](../company/DEALIX_CAPITAL_MODEL.md).
+
+## Graduation stage per row
+
+Capital assets are not static—they **graduate through stages**. See [`../assets/ASSET_GRADUATION_SYSTEM.md`](../assets/ASSET_GRADUATION_SYSTEM.md) for the full stage definitions.
+
+Each ledger row should note the asset's **current graduation stage**:
+
+```text
+Raw output
+→ Reusable template
+→ Standard asset
+→ Productized asset
+→ Market asset
+```
+
+A row is not "done" when the asset is created—it is tracked until the asset stops climbing. Note the stage in the `Next Use` column or as a parenthetical, e.g. `(Standard asset)`. An asset at **Market asset** stage is ready to hand to the distribution layer.
+
+## Related
+
+- [`../distribution/README.md`](../distribution/README.md) — distribution layer index.
+- [`../distribution/CASE_STUDY_FACTORY.md`](../distribution/CASE_STUDY_FACTORY.md) — consumes Trust Assets that reach Market stage.
