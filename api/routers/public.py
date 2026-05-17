@@ -427,3 +427,21 @@ async def public_services() -> dict[str, Any]:
 
     offerings = [o.model_dump(mode="json") for o in list_offerings()]
     return {"count": len(offerings), "services": offerings}
+
+
+@router.post("/chat/message")
+async def public_chat_message(req: Request) -> dict[str, Any]:
+    """Public chat widget — answers only from the approved KB, escalates
+    everything else into a support ticket."""
+    try:
+        body = await req.json()
+    except Exception as e:
+        raise HTTPException(status_code=400, detail="invalid_json") from e
+
+    message = str(body.get("message") or "").strip()
+    if not message:
+        raise HTTPException(status_code=422, detail="message_required")
+
+    from auto_client_acquisition.chat import respond
+
+    return respond(message, channel="public_chat_widget")

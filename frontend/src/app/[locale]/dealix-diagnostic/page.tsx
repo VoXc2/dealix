@@ -1,4 +1,5 @@
 import { DiagnosticFunnel } from "@/components/diagnostic/DiagnosticFunnel";
+import { ChatWidget } from "@/components/chat/ChatWidget";
 
 interface DiagnosticPageProps {
   params: Promise<{ locale: string }>;
@@ -21,6 +22,7 @@ export default async function DealixDiagnosticPage({ params }: DiagnosticPagePro
         </p>
       </div>
       <DiagnosticFunnel />
+      <ChatWidget />
     </main>
   );
 }

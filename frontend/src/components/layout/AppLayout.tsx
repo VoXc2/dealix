@@ -5,6 +5,7 @@ import { useLocale } from "next-intl";
 import { cn } from "@/lib/utils";
 import { Sidebar } from "./Sidebar";
 import { Header } from "./Header";
+import { ChatWidget } from "@/components/chat/ChatWidget";
 
 interface AppLayoutProps {
   children: React.ReactNode;
@@ -35,6 +36,7 @@ export function AppLayout({ children, title, subtitle }: AppLayoutProps) {
           {children}
         </div>
       </main>
+      <ChatWidget />
     </div>
   );
 }

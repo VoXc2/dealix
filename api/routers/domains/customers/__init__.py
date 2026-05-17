@@ -8,6 +8,7 @@ from __future__ import annotations
 from fastapi import APIRouter
 
 from api.routers import (
+    chat as chat_router,
     company_brain_mvp as company_brain_mvp_router,
     crm_v10,
     customer_brain as customer_brain_router,
@@ -39,6 +40,7 @@ _ROUTERS = [
     support_journey_router.router,
     support_os.router,
     support_tickets.router,
+    chat_router.router,
 ]
 
 
