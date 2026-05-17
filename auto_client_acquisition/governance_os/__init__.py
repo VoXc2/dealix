@@ -35,6 +35,15 @@ from auto_client_acquisition.governance_os.forbidden_actions import (
     is_channel_forbidden,
 )
 from auto_client_acquisition.governance_os.lawful_basis import LawfulBasis, describe_basis
+from auto_client_acquisition.governance_os.revenue_factory_policy import (
+    ACTION_POLICY,
+    AutomationLevel,
+    DecisionStatus,
+    PolicyDecision,
+    PolicyRisk,
+    evaluate_governed_action,
+    founder_approval_action_keys,
+)
 
 __all__ = [
     "CHANNEL_POLICY_AR",
@@ -51,6 +60,13 @@ __all__ = [
     "audit_draft_text",
     "describe_basis",
     "draft_text_has_forbidden_channel_language",
+    "ACTION_POLICY",
+    "AutomationLevel",
+    "DecisionStatus",
+    "PolicyDecision",
+    "PolicyRisk",
+    "evaluate_governed_action",
+    "founder_approval_action_keys",
     "forbidden_channel_markers",
     "governance_decision_from_passport_ai_gate",
     "governance_decision_from_policy_check",
