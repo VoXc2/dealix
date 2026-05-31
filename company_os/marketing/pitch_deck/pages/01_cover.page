@@ -1,0 +1,77 @@
+pageType: cover
+background:
+  type: solid
+  color: "$bgDark"
+elements:
+  - elementId: accent-line
+    elementType: shape
+    bounds: [540, 280, 200, 4]
+    shapeName: rect
+    fill:
+      type: solid
+      color: "$accent"
+
+  - elementId: title
+    elementType: text
+    bounds: [140, 180, 1000, 80]
+    content:
+      style: "$coverTitle"
+      align: [center, middle]
+      wrap: false
+      text: |
+        <p><span style="font-size:52px;">Dealix</span></p>
+
+  - elementId: subtitle-label
+    elementType: text
+    bounds: [140, 260, 1000, 40]
+    content:
+      fontSize: 22
+      color: "$primary"
+      fontFamily: "QuattrocentoSans"
+      align: [center, middle]
+      wrap: false
+      letterSpacing: 6
+      text: |
+        <p><strong>ARABIC REVENUE INTELLIGENCE</strong></p>
+
+  - elementId: description
+    elementType: text
+    bounds: [240, 320, 800, 80]
+    content:
+      style: "$coverSubtitle"
+      align: [center, middle]
+      text: |
+        <p>نكشف أين تضيع فرص الإيراد ونبني نظام تشغيلي مدعوم بالذكاء الاصطناعي</p>
+        <p>مع حوكمة سعودية كاملة</p>
+
+  - elementId: tagline
+    elementType: text
+    bounds: [340, 420, 600, 40]
+    content:
+      fontSize: 16
+      color: "$textMuted"
+      fontFamily: "QuattrocentoSans"
+      align: [center, middle]
+      wrap: false
+      text: |
+        <p>Revenue Operations + AI Governance + Saudi Context</p>
+
+  - elementId: year-badge
+    elementType: text
+    bounds: [540, 520, 200, 30]
+    content:
+      fontSize: 14
+      color: "$textMuted"
+      fontFamily: "QuattrocentoSans"
+      align: [center, middle]
+      wrap: false
+      text: |
+        <p>2026</p>
+
+  - elementId: bottom-line
+    elementType: shape
+    bounds: [0, 710, 1280, 10]
+    shapeName: rect
+    fill:
+      type: solid
+      color: "$primary"

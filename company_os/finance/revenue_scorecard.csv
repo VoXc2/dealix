@@ -1,0 +1,13 @@
+metric,week_target,week_actual,month_target,month_actual,ytd_target,ytd_actual,status
+New prospects added,50,10,200,10,200,10,behind
+Outreach messages sent,30,0,120,0,120,0,not_started
+Follow-ups sent,15,0,60,0,60,0,not_started
+Discovery calls booked,5,0,20,0,20,0,not_started
+Proposals sent,3,0,12,0,12,0,not_started
+P1 clients closed,1,0,4,0,4,0,not_started
+P2 retainers signed,0,0,2,0,2,0,not_started
+Proof events published,1,1,4,1,4,1,on_track
+Revenue collected SAR,7500,0,67500,0,67500,0,not_started
+MRR SAR,0,0,30000,0,30000,0,not_started
+CAC per client,0,0,500,0,500,0,on_track
+Gross margin %,60,0,60,0,60,0,not_started

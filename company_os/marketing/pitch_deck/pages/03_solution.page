@@ -1,0 +1,319 @@
+pageType: content
+background:
+  type: solid
+  color: "$bgDark"
+elements:
+  - elementId: page-title
+    elementType: text
+    bounds: [60, 40, 900, 50]
+    content:
+      style: "$pageTitleLight"
+      align: [left, middle]
+      wrap: false
+      text: |
+        <p><strong>الحل: Revenue Intelligence Sprint</strong></p>
+
+  - elementId: title-accent
+    elementType: shape
+    bounds: [60, 95, 80, 3]
+    shapeName: rect
+    fill:
+      type: solid
+      color: "$accent"
+
+  - elementId: subtitle
+    elementType: text
+    bounds: [60, 110, 800, 35]
+    content:
+      fontSize: 20
+      color: "$textMuted"
+      fontFamily: "QuattrocentoSans"
+      align: [left, middle]
+      wrap: false
+      text: |
+        <p>5 أيام تكشف وين تضيع فرصك وتعطيك خطة تشغيل واضحة</p>
+
+  - elementId: card-1-bg
+    elementType: shape
+    bounds: [60, 170, 360, 230]
+    shapeName: rect
+    fill:
+      type: solid
+      color: "#0F2E2C"
+    border:
+      style: solid
+      width: 1
+      color: "#15807A30"
+
+  - elementId: card-1-icon
+    elementType: icon
+    bounds: [85, 195, 36, 36]
+    iconName: "fas:chart-line"
+    fill:
+      type: solid
+      color: "$primary"
+
+  - elementId: card-1-title
+    elementType: text
+    bounds: [85, 245, 310, 30]
+    content:
+      fontSize: 20
+      color: "$textLight"
+      fontFamily: "QuattrocentoSans"
+      align: [left, middle]
+      wrap: false
+      text: |
+        <p><strong>Revenue Operations</strong></p>
+
+  - elementId: card-1-desc
+    elementType: text
+    bounds: [85, 280, 310, 50]
+    content:
+      fontSize: 16
+      color: "$textMuted"
+      fontFamily: "QuattrocentoSans"
+      lineHeight: 1.5
+      align: [left, top]
+      text: |
+        <p>كشف تسريب الإيرادات في كل مرحلة من مراحل المبيعات</p>
+
+  - elementId: card-2-bg
+    elementType: shape
+    bounds: [450, 170, 360, 230]
+    shapeName: rect
+    fill:
+      type: solid
+      color: "#0F2E2C"
+    border:
+      style: solid
+      width: 1
+      color: "#15807A30"
+
+  - elementId: card-2-icon
+    elementType: icon
+    bounds: [475, 195, 36, 36]
+    iconName: "fas:robot"
+    fill:
+      type: solid
+      color: "$primary"
+
+  - elementId: card-2-title
+    elementType: text
+    bounds: [475, 245, 310, 30]
+    content:
+      fontSize: 20
+      color: "$textLight"
+      fontFamily: "QuattrocentoSans"
+      align: [left, middle]
+      wrap: false
+      text: |
+        <p><strong>AI Intelligence</strong></p>
+
+  - elementId: card-2-desc
+    elementType: text
+    bounds: [475, 280, 310, 50]
+    content:
+      fontSize: 16
+      color: "$textMuted"
+      fontFamily: "QuattrocentoSans"
+      lineHeight: 1.5
+      align: [left, top]
+      text: |
+        <p>تحليل ذكي للمتابعات والعروض والاعتراضات</p>
+
+  - elementId: card-3-bg
+    elementType: shape
+    bounds: [840, 170, 380, 230]
+    shapeName: rect
+    fill:
+      type: solid
+      color: "#0F2E2C"
+    border:
+      style: solid
+      width: 1
+      color: "#15807A30"
+
+  - elementId: card-3-icon
+    elementType: icon
+    bounds: [865, 195, 36, 36]
+    iconName: "fas:shield-halved"
+    fill:
+      type: solid
+      color: "$primary"
+
+  - elementId: card-3-title
+    elementType: text
+    bounds: [865, 245, 330, 30]
+    content:
+      fontSize: 20
+      color: "$textLight"
+      fontFamily: "QuattrocentoSans"
+      align: [left, middle]
+      wrap: false
+      text: |
+        <p><strong>AI Governance</strong></p>
+
+  - elementId: card-3-desc
+    elementType: text
+    bounds: [865, 280, 330, 50]
+    content:
+      fontSize: 16
+      color: "$textMuted"
+      fontFamily: "QuattrocentoSans"
+      lineHeight: 1.5
+      align: [left, top]
+      text: |
+        <p>حوكمة كاملة تتوافق مع SDAIA ومعايير PDPL</p>
+
+  - elementId: flow-title
+    elementType: text
+    bounds: [60, 430, 400, 35]
+    content:
+      fontSize: 20
+      color: "$accent"
+      fontFamily: "QuattrocentoSans"
+      align: [left, middle]
+      wrap: false
+      text: |
+        <p><strong>نموذج العمل: Service-led SaaS</strong></p>
+
+  - elementId: step-1
+    elementType: shape
+    bounds: [60, 490, 220, 60]
+    shapeName: rect
+    fill:
+      type: solid
+      color: "$primary"
+
+  - elementId: step-1-text
+    elementType: text
+    bounds: [60, 490, 220, 60]
+    content:
+      fontSize: 16
+      color: "$textLight"
+      fontFamily: "QuattrocentoSans"
+      align: [center, middle]
+      wrap: false
+      text: |
+        <p><strong>1. بيع خدمة</strong> (P1)</p>
+
+  - elementId: arrow-1
+    elementType: shape
+    bounds: [290, 515, 40, 0]
+    shapeName: straightConnector1
+    arrow: [null, "arrow"]
+    border:
+      style: solid
+      width: 2
+      color: "$primary"
+
+  - elementId: step-2
+    elementType: shape
+    bounds: [340, 490, 220, 60]
+    shapeName: rect
+    fill:
+      type: solid
+      color: "#15807Acc"
+
+  - elementId: step-2-text
+    elementType: text
+    bounds: [340, 490, 220, 60]
+    content:
+      fontSize: 16
+      color: "$textLight"
+      fontFamily: "QuattrocentoSans"
+      align: [center, middle]
+      wrap: false
+      text: |
+        <p><strong>2. Retainer</strong> (P2)</p>
+
+  - elementId: arrow-2
+    elementType: shape
+    bounds: [570, 515, 40, 0]
+    shapeName: straightConnector1
+    arrow: [null, "arrow"]
+    border:
+      style: solid
+      width: 2
+      color: "$primary"
+
+  - elementId: step-3
+    elementType: shape
+    bounds: [620, 490, 220, 60]
+    shapeName: rect
+    fill:
+      type: solid
+      color: "#15807A99"
+
+  - elementId: step-3-text
+    elementType: text
+    bounds: [620, 490, 220, 60]
+    content:
+      fontSize: 16
+      color: "$textLight"
+      fontFamily: "QuattrocentoSans"
+      align: [center, middle]
+      wrap: false
+      text: |
+        <p><strong>3. بيانات + منتج</strong></p>
+
+  - elementId: arrow-3
+    elementType: shape
+    bounds: [850, 515, 40, 0]
+    shapeName: straightConnector1
+    arrow: [null, "arrow"]
+    border:
+      style: solid
+      width: 2
+      color: "$primary"
+
+  - elementId: step-4
+    elementType: shape
+    bounds: [900, 490, 220, 60]
+    shapeName: rect
+    fill:
+      type: solid
+      color: "#15807A66"
+
+  - elementId: step-4-text
+    elementType: text
+    bounds: [900, 490, 220, 60]
+    content:
+      fontSize: 16
+      color: "$textLight"
+      fontFamily: "QuattrocentoSans"
+      align: [center, middle]
+      wrap: false
+      text: |
+        <p><strong>4. SaaS منصة</strong></p>
+
+  - elementId: bottom-text
+    elementType: text
+    bounds: [60, 580, 1100, 35]
+    content:
+      fontSize: 18
+      color: "$textMuted"
+      fontFamily: "QuattrocentoSans"
+      align: [left, middle]
+      text: |
+        <p>يقلل المخاطر، يسرّع الإيراد، ويبني شركة حقيقية — بدون حرق فلوس على تطوير منتج قبل التحقق</p>
+
+  - elementId: page-num
+    elementType: text
+    bounds: [1180, 680, 60, 25]
+    content:
+      fontSize: 12
+      color: "$textMuted"
+      fontFamily: "QuattrocentoSans"
+      align: [right, middle]
+      wrap: false
+      text: |
+        <p>03</p>
+
+  - elementId: bottom-accent
+    elementType: shape
+    bounds: [0, 716, 1280, 4]
+    shapeName: rect
+    fill:
+      type: solid
+      color: "$primary"

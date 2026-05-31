@@ -1,0 +1,67 @@
+{
+  "queue": [
+    {
+      "id": "OUT-001",
+      "company": "Digital Rise Agency",
+      "decision_maker": "Founder / CEO",
+      "pain": "Leads not converting",
+      "draft_subject": "وين تضيع فرص عملائك؟",
+      "draft_body": "السلام عليكم [الاسم]،\nلاحظت أن كثير من وكالات التسويق تخسر فرصاً ليس بسبب قلة الطلب، بل بسبب بطء المتابعة وعدم وضوح pipeline.\nنحن في Dealix نسوي Revenue Intelligence Sprint خلال 5 أيام:\nنكشف أين تضيع الفرص، نحلل المتابعة والعروض، ونطلع لكم Proof Pack وخطة 30 يوم لتحسين التحويل.\nهل يناسبك أرسل لك مثال مختصر على التقرير؟",
+      "status": "pending_approval",
+      "priority": 1,
+      "created_at": "2026-05-31",
+      "scheduled_for": "2026-05-31"
+    },
+    {
+      "id": "OUT-002",
+      "company": "Growth Labs SA",
+      "decision_maker": "Managing Director",
+      "pain": "No follow-up system",
+      "draft_subject": "37% من الفرص تضيع بعد أول رد",
+      "draft_body": "السلام عليكم [الاسم]،\nبحثنا مع 20 وكالة بالسعودية اكتشفنا أن 37% من العملاء المحتملين لم يتم متابعتهم بعد أول رد.\nأكبر تسرب كان بين الاستفسار والعرض.\nDealix يسوي Sprint 5 أيام يكشف وين تضيع فرص عملائك ويعطيك خطة تشغيل.\nنقدر نرسل لك نبذة؟",
+      "status": "pending_approval",
+      "priority": 1,
+      "created_at": "2026-05-31",
+      "scheduled_for": "2026-05-31"
+    },
+    {
+      "id": "OUT-003",
+      "company": "TrainMe KSA",
+      "decision_maker": "CEO",
+      "pain": "WhatsApp inquiries lost",
+      "draft_subject": "فرص التسجيل اللي تروح واتساب",
+      "draft_body": "السلام عليكم [الاسم]،\nشركات التدريب اللي نشتغل معاها تكتشف أن 40-60% من استفسارات واتساب ما تتحول لتسجيلات بسبب بطء الرد أو غياب المتابعة.\nنسوي Sprint 5 أيام نحلل فيه استفساراتك ونكشف أين التسريب ونبني نظام متابعة.\nتهمني تجربة وكالة تدريب؟",
+      "status": "pending_approval",
+      "priority": 2,
+      "created_at": "2026-05-31",
+      "scheduled_for": "2026-06-01"
+    },
+    {
+      "id": "OUT-004",
+      "company": "SkillUp Arabia",
+      "decision_maker": "Business Manager",
+      "pain": "Low registration rate",
+      "draft_subject": "لماذا يتأخر التحويل من استفسار إلى تسجيل؟",
+      "draft_body": "السلام عليكم [الاسم]،\nشفت أن SkillUp Arabia تستقبل استفسارات كثيرة لكن نسبة التحويل للتسجيل تحتاج دفعة.\nنحن نسوي Revenue Intelligence Sprint: نحلل كل نقطة تلامس مع العميل، نكشف أين يتوقف، ونعطيك خطة 30 يوم.\nنقدر نرسل لك ملخص 10 دقايق؟",
+      "status": "pending_approval",
+      "priority": 2,
+      "created_at": "2026-05-31",
+      "scheduled_for": "2026-06-01"
+    },
+    {
+      "id": "OUT-005",
+      "company": "CloudShift Consulting",
+      "decision_maker": "Founder",
+      "pain": "Slow deal closure",
+      "draft_subject": "صفقات B2B تاخذ وقت أطول من اللازم؟",
+      "draft_body": "السلام عليكم [الاسم]،\nشركات الاستشارات B2B في السعودية تواجه تحدي إغلاق الصفقات بسرعة.\nDealix يسوي Sprint يكشف أين تتعطل صفقاتك:\n- سرعة الرد على العملاء\n- جودة المتابعات\n- قوة العروض\n- أكثر الاعتراضات تكراراً\nنقدم خطة تشغيل واضحة.\nنقدر نتواصل؟",
+      "status": "pending_approval",
+      "priority": 3,
+      "created_at": "2026-05-31",
+      "scheduled_for": "2026-06-02"
+    }
+  ],
+  "total_pending": 5,
+  "approved_today": 0,
+  "last_updated": "2026-05-31"
+}

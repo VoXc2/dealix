@@ -1,0 +1,47 @@
+{
+  "common_objections": [
+    {
+      "objection": "السعر غالي",
+      "response": "نفهم. خلينا نتكلم عن كم تخسر شهرياً من الفرص الضايعة. عادة العميل يكتشف أن التكلفة أقل من قيمة صفقة واحدة ضايعة. نقدر نبدي Sprint واحد بـ 2,500 ونثبت القيمة أولاً.",
+      "category": "pricing",
+      "frequency": "high"
+    },
+    {
+      "objection": "نحتاج نفكر",
+      "response": "طبيعي. عشان نسهل التفكير: هل الفرصة الأكبر هي سرعة المتابعة، جودة العروض، أو إدارة الـ pipeline؟ نقدر نركز Sprint على اللي يأثر أكثر.",
+      "category": "stall",
+      "frequency": "high"
+    },
+    {
+      "objection": "نشغالين على نظام داخلي",
+      "response": "ممتاز! Sprint ممكن يكشف هل النظام الداخلي يغطي نقاط الضعف فعلاً. نعطيك تقريم مقارنة بدون ما نلمس نظامكم.",
+      "category": "competition",
+      "frequency": "medium"
+    },
+    {
+      "objection": "ما عندنا وقت",
+      "response": "Sprint ياخذ 5 أيام فقط ونحتاج منكم 30 دقيقة إجمالي. الباقي نشتغل على البيانات اللي تزودونا فيها. الوقت الحقيقي المستثمر = 30 دقيقة.",
+      "category": "time",
+      "frequency": "medium"
+    },
+    {
+      "objection": "أبغى أشوف نتائج أول",
+      "response": "بالضبط! هذا اللي نسويه. Sprint الأول هو PoC — نكشف المشاكل ونعطيك خطة. إذا عجبتك النتيجة، ننتقل للتشغيل الشهري.",
+      "category": "trust",
+      "frequency": "medium"
+    },
+    {
+      "objection": "ليه Dealix وليس غيركم؟",
+      "response": "Dealix هو الوحيد اللي يجمع: Arabic Revenue Intelligence + AI Governance + Saudi Context. مو أداة عالمية مترجمة — نظام مبني لطريقة عملكم.",
+      "category": "differentiation",
+      "frequency": "low"
+    },
+    {
+      "objection": "نبي نجرب على قسم واحد أول",
+      "response": "ذكي! Sprint ممكن يركز على قسم أو خدمة واحدة. النتيجة = proof of concept حقيقي تقدر توسع منه.",
+      "category": "pilot",
+      "frequency": "medium"
+    }
+  ],
+  "last_updated": "2026-05-31"
+}

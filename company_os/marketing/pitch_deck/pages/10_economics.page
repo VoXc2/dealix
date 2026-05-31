@@ -1,0 +1,292 @@
+pageType: content
+background:
+  type: solid
+  color: "$bgLight"
+elements:
+  - elementId: page-title
+    elementType: text
+    bounds: [60, 40, 900, 50]
+    content:
+      style: "$pageTitle"
+      align: [left, middle]
+      wrap: false
+      text: |
+        <p><strong>Unit Economics: هامش ربح 85%+</strong></p>
+
+  - elementId: title-accent
+    elementType: shape
+    bounds: [60, 95, 80, 3]
+    shapeName: rect
+    fill:
+      type: solid
+      color: "$primary"
+
+  - elementId: p1-metric-bg
+    elementType: shape
+    bounds: [60, 120, 370, 180]
+    shapeName: rect
+    fill:
+      type: solid
+      color: "$cardBg"
+    border:
+      style: solid
+      width: 1
+      color: "$cardBorder"
+
+  - elementId: p1-label
+    elementType: text
+    bounds: [80, 130, 200, 25]
+    content:
+      fontSize: 16
+      color: "$textMutedLight"
+      fontFamily: "QuattrocentoSans"
+      align: [left, middle]
+      wrap: false
+      text: |
+        <p>P1 Sprint</p>
+
+  - elementId: p1-price
+    elementType: text
+    bounds: [80, 158, 200, 50]
+    content:
+      fontSize: 40
+      color: "$primary"
+      fontFamily: "QuattrocentoSans"
+      align: [left, middle]
+      wrap: false
+      text: |
+        <p><strong>5,000 ر.س</strong></p>
+
+  - elementId: p1-details
+    elementType: text
+    bounds: [80, 215, 330, 70]
+    content:
+      fontSize: 16
+      color: "$text"
+      fontFamily: "QuattrocentoSans"
+      lineHeight: 1.5
+      align: [left, top]
+      text: |
+        <p>20 ساعة توصيل × 250 ر.س/ساعة</p>
+        <p><span style="color:$primary;"><strong>هامش ربح: ~85%</strong></span></p>
+
+  - elementId: p2-metric-bg
+    elementType: shape
+    bounds: [455, 120, 370, 180]
+    shapeName: rect
+    fill:
+      type: solid
+      color: "$cardBg"
+    border:
+      style: solid
+      width: 1
+      color: "$cardBorder"
+
+  - elementId: p2-label
+    elementType: text
+    bounds: [475, 130, 250, 25]
+    content:
+      fontSize: 16
+      color: "$textMutedLight"
+      fontFamily: "QuattrocentoSans"
+      align: [left, middle]
+      wrap: false
+      text: |
+        <p>P2 Medium (شهري)</p>
+
+  - elementId: p2-price
+    elementType: text
+    bounds: [475, 158, 250, 50]
+    content:
+      fontSize: 40
+      color: "$primary"
+      fontFamily: "QuattrocentoSans"
+      align: [left, middle]
+      wrap: false
+      text: |
+        <p><strong>8,000 ر.س</strong></p>
+
+  - elementId: p2-details
+    elementType: text
+    bounds: [475, 215, 330, 70]
+    content:
+      fontSize: 16
+      color: "$text"
+      fontFamily: "QuattrocentoSans"
+      lineHeight: 1.5
+      align: [left, top]
+      text: |
+        <p>16 ساعة/شهر × 500 ر.س/ساعة</p>
+        <p><span style="color:$primary;"><strong>هامش ربح: ~80%</strong></span></p>
+
+  - elementId: cost-metric-bg
+    elementType: shape
+    bounds: [850, 120, 370, 180]
+    shapeName: rect
+    fill:
+      type: solid
+      color: "$primaryDark"
+
+  - elementId: cost-label
+    elementType: text
+    bounds: [870, 130, 250, 25]
+    content:
+      fontSize: 16
+      color: "$textMuted"
+      fontFamily: "QuattrocentoSans"
+      align: [left, middle]
+      wrap: false
+      text: |
+        <p>التكاليف الشهرية</p>
+
+  - elementId: cost-price
+    elementType: text
+    bounds: [870, 158, 250, 50]
+    content:
+      fontSize: 40
+      color: "$textMuted"
+      fontFamily: "QuattrocentoSans"
+      align: [left, middle]
+      wrap: false
+      text: |
+        <p><strong>~500 ر.س</strong></p>
+
+  - elementId: cost-details
+    elementType: text
+    bounds: [870, 215, 330, 70]
+    content:
+      fontSize: 16
+      color: "$textMuted"
+      fontFamily: "QuattrocentoSans"
+      lineHeight: 1.5
+      align: [left, top]
+      text: |
+        <p>GitHub + Hosting + AI API</p>
+        <p>Bootstrapped — لا رواتب</p>
+
+  - elementId: breakeven-title
+    elementType: text
+    bounds: [60, 330, 400, 35]
+    content:
+      fontSize: 20
+      color: "$primary"
+      fontFamily: "QuattrocentoSans"
+      align: [left, middle]
+      wrap: false
+      text: |
+        <p><strong>Break-even Analysis</strong></p>
+
+  - elementId: breakeven-chart
+    elementType: chart
+    bounds: [60, 375, 560, 260]
+    type: bar
+    data:
+      - {service: "P1 Sprint", revenue: 5000, cost: 750}
+      - {service: "P2 Small", revenue: 3000, cost: 750}
+      - {service: "P2 Medium", revenue: 8000, cost: 1500}
+      - {service: "P2 Enterprise", revenue: 20000, cost: 3000}
+    x: service
+    y: [revenue, cost]
+    colors: ["#15807A", "#D4A843"]
+    legend: true
+
+  - elementId: projections-title
+    elementType: text
+    bounds: [660, 330, 400, 35]
+    content:
+      fontSize: 20
+      color: "$primary"
+      fontFamily: "QuattrocentoSans"
+      align: [left, middle]
+      wrap: false
+      text: |
+        <p><strong>Projections 12 شهر</strong></p>
+
+  - elementId: projections-table
+    elementType: table
+    bounds: [660, 375, 560, 260]
+    columnWidths: [0.35, 0.20, 0.20, 0.25]
+    rowHeights: [0.2, 0.2, 0.2, 0.2, 0.2]
+    style: "$default"
+    rows:
+      - - content:
+            text: |
+              <p><strong>المؤشر</strong></p>
+        - content:
+            text: |
+              <p><strong>شهر 3</strong></p>
+        - content:
+            text: |
+              <p><strong>شهر 6</strong></p>
+        - content:
+            text: |
+              <p><strong>شهر 12</strong></p>
+      - - content:
+            text: |
+              <p>MRR (ألف ر.س)</p>
+        - content:
+            text: |
+              <p>23</p>
+        - content:
+            text: |
+              <p>50</p>
+        - content:
+            text: |
+              <p><strong>200+</strong></p>
+      - - content:
+            text: |
+              <p>العملاء</p>
+        - content:
+            text: |
+              <p>7</p>
+        - content:
+            text: |
+              <p>12</p>
+        - content:
+            text: |
+              <p><strong>35+</strong></p>
+      - - content:
+            text: |
+              <p>الربح الشهري</p>
+        - content:
+            text: |
+              <p>20k</p>
+        - content:
+            text: |
+              <p>45k</p>
+        - content:
+            text: |
+              <p><strong>170k+</strong></p>
+      - - content:
+            text: |
+              <p>هامش الربح</p>
+        - content:
+            text: |
+              <p>87%</p>
+        - content:
+            text: |
+              <p>90%</p>
+        - content:
+            text: |
+              <p><strong>85%</strong></p>
+
+  - elementId: page-num
+    elementType: text
+    bounds: [1180, 680, 60, 25]
+    content:
+      fontSize: 12
+      color: "$textMuted"
+      fontFamily: "QuattrocentoSans"
+      align: [right, middle]
+      wrap: false
+      text: |
+        <p>10</p>
+
+  - elementId: bottom-accent
+    elementType: shape
+    bounds: [0, 716, 1280, 4]
+    shapeName: rect
+    fill:
+      type: solid
+      color: "$primary"
+

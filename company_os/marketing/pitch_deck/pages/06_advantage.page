@@ -1,0 +1,120 @@
+pageType: content
+background:
+  type: solid
+  color: "$bgDark"
+elements:
+  - elementId: page-title
+    elementType: text
+    bounds: [60, 40, 900, 50]
+    content:
+      style: "$pageTitleLight"
+      align: [left, middle]
+      wrap: false
+      text: |
+        <p><strong>الميزة التنافسية</strong></p>
+
+  - elementId: title-accent
+    elementType: shape
+    bounds: [60, 95, 80, 3]
+    shapeName: rect
+    fill:
+      type: solid
+      color: "$accent"
+
+  - elementId: tagline
+    elementType: text
+    bounds: [60, 110, 700, 35]
+    content:
+      fontSize: 22
+      color: "$primary"
+      fontFamily: "QuattrocentoSans"
+      align: [left, middle]
+      wrap: false
+      text: |
+        <p><strong>"Arabic Revenue Intelligence"</strong></p>
+
+  - elementId: left-col
+    elementType: text
+    bounds: [60, 170, 560, 340]
+    content:
+      fontSize: 18
+      color: "$textLight"
+      fontFamily: "QuattrocentoSans"
+      lineHeight: 1.8
+      align: [left, top]
+      text: |
+        <p><span style="color:$primary;">✓</span> <strong>تحليل محادثات عربية</strong></p>
+        <p><span style="color:$textMuted;">ليس ترجمة — فهم عميق للغة</span></p>
+        <p><span style="color:$primary;">✓</span> <strong>فهم اعتراضات خليجية</strong></p>
+        <p><span style="color:$textMuted;">ثقافة محلية تؤثر على المبيعات</span></p>
+        <p><span style="color:$primary;">✓</span> <strong>رسائل واتساب مهنية</strong></p>
+        <p><span style="color:$textMuted;">القناة #1 في السعودية</span></p>
+
+  - elementId: divider
+    elementType: shape
+    bounds: [640, 170, 0, 340]
+    shapeName: straightConnector1
+    border:
+      style: solid
+      width: 1
+      color: "#15807A30"
+
+  - elementId: right-col
+    elementType: text
+    bounds: [670, 170, 560, 340]
+    content:
+      fontSize: 18
+      color: "$textLight"
+      fontFamily: "QuattrocentoSans"
+      lineHeight: 1.8
+      align: [left, top]
+      text: |
+        <p><span style="color:$primary;">✓</span> <strong>حوكمة سعودية</strong></p>
+        <p><span style="color:$textMuted;">SDAIA + PDPL Compliance</span></p>
+        <p><span style="color:$primary;">✓</span> <strong>CEO Brief عربي</strong></p>
+        <p><span style="color:$textMuted;">تقارير تنفيذية بالعربي</span></p>
+        <p><span style="color:$primary;">✓</span> <strong>Pipeline محلي</strong></p>
+        <p><span style="color:$textMuted;">مصمم لشركات خدمات سعودية</span></p>
+
+  - elementId: quote-bg
+    elementType: shape
+    bounds: [60, 550, 1160, 50]
+    shapeName: rect
+    fill:
+      type: solid
+      color: "#0F2E2C"
+    border:
+      style: solid
+      width: 1
+      color: "$accent"
+
+  - elementId: quote
+    elementType: text
+    bounds: [80, 550, 1120, 50]
+    content:
+      fontSize: 20
+      color: "$accent"
+      fontFamily: "QuattrocentoSans"
+      align: [center, middle]
+      text: |
+        <p><em>"نحن لا نترجم أدوات عالمية — نبني AI Revenue OS مصمم لطريقة عمل الشركات في السعودية"</em></p>
+
+  - elementId: page-num
+    elementType: text
+    bounds: [1180, 680, 60, 25]
+    content:
+      fontSize: 12
+      color: "$textMuted"
+      fontFamily: "QuattrocentoSans"
+      align: [right, middle]
+      wrap: false
+      text: |
+        <p>06</p>
+
+  - elementId: bottom-accent
+    elementType: shape
+    bounds: [0, 716, 1280, 4]
+    shapeName: rect
+    fill:
+      type: solid
+      color: "$primary"

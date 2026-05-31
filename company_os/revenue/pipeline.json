@@ -1,0 +1,39 @@
+{
+  "pipeline_stages": [
+    "Target",
+    "Researched",
+    "Contacted",
+    "Replied",
+    "Discovery Booked",
+    "Proposal Sent",
+    "Won",
+    "Delivery",
+    "Retainer",
+    "Referral"
+  ],
+  "counts": {
+    "Target": 50,
+    "Researched": 15,
+    "Contacted": 0,
+    "Replied": 0,
+    "Discovery Booked": 0,
+    "Proposal Sent": 0,
+    "Won": 0,
+    "Delivery": 0,
+    "Retainer": 0,
+    "Referral": 0
+  },
+  "value_sar": {
+    "Target": 0,
+    "Researched": 0,
+    "Contacted": 0,
+    "Replied": 0,
+    "Discovery Booked": 0,
+    "Proposal Sent": 0,
+    "Won": 0,
+    "Delivery": 0,
+    "Retainer": 0,
+    "Referral": 0
+  },
+  "last_updated": "2026-05-31"
+}

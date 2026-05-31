@@ -1,0 +1,267 @@
+pageType: content
+background:
+  type: solid
+  color: "$bgDark"
+elements:
+  - elementId: page-title
+    elementType: text
+    bounds: [60, 40, 900, 50]
+    content:
+      style: "$pageTitleLight"
+      align: [left, middle]
+      wrap: false
+      text: |
+        <p><strong>حوكمة AI: Human-in-the-Loop دائماً</strong></p>
+
+  - elementId: title-accent
+    elementType: shape
+    bounds: [60, 95, 80, 3]
+    shapeName: rect
+    fill:
+      type: solid
+      color: "$accent"
+
+  - elementId: flow-label
+    elementType: text
+    bounds: [60, 120, 600, 30]
+    content:
+      fontSize: 18
+      color: "$textMuted"
+      fontFamily: "QuattrocentoSans"
+      align: [left, middle]
+      wrap: false
+      text: |
+        <p>نموذج العمل: AI drafts → Human approves → System logs → Company learns</p>
+
+  - elementId: flow-box-1
+    elementType: shape
+    bounds: [60, 170, 220, 50]
+    shapeName: rect
+    fill:
+      type: solid
+      color: "$primary"
+
+  - elementId: flow-text-1
+    elementType: text
+    bounds: [60, 170, 220, 50]
+    content:
+      fontSize: 16
+      color: "$textLight"
+      fontFamily: "QuattrocentoSans"
+      align: [center, middle]
+      wrap: false
+      text: |
+        <p><strong>AI Drafts</strong></p>
+
+  - elementId: flow-arrow-1
+    elementType: shape
+    bounds: [290, 190, 50, 0]
+    shapeName: straightConnector1
+    arrow: [null, "arrow"]
+    border:
+      style: solid
+      width: 2
+      color: "$primary"
+
+  - elementId: flow-box-2
+    elementType: shape
+    bounds: [350, 170, 220, 50]
+    shapeName: rect
+    fill:
+      type: solid
+      color: "$accent"
+
+  - elementId: flow-text-2
+    elementType: text
+    bounds: [350, 170, 220, 50]
+    content:
+      fontSize: 16
+      color: "$primaryDark"
+      fontFamily: "QuattrocentoSans"
+      align: [center, middle]
+      wrap: false
+      text: |
+        <p><strong>Human Approves</strong></p>
+
+  - elementId: flow-arrow-2
+    elementType: shape
+    bounds: [580, 190, 50, 0]
+    shapeName: straightConnector1
+    arrow: [null, "arrow"]
+    border:
+      style: solid
+      width: 2
+      color: "$primary"
+
+  - elementId: flow-box-3
+    elementType: shape
+    bounds: [640, 170, 220, 50]
+    shapeName: rect
+    fill:
+      type: solid
+      color: "#15807Acc"
+
+  - elementId: flow-text-3
+    elementType: text
+    bounds: [640, 170, 220, 50]
+    content:
+      fontSize: 16
+      color: "$textLight"
+      fontFamily: "QuattrocentoSans"
+      align: [center, middle]
+      wrap: false
+      text: |
+        <p><strong>System Logs</strong></p>
+
+  - elementId: flow-arrow-3
+    elementType: shape
+    bounds: [870, 190, 50, 0]
+    shapeName: straightConnector1
+    arrow: [null, "arrow"]
+    border:
+      style: solid
+      width: 2
+      color: "$primary"
+
+  - elementId: flow-box-4
+    elementType: shape
+    bounds: [930, 170, 220, 50]
+    shapeName: rect
+    fill:
+      type: solid
+      color: "#15807A99"
+
+  - elementId: flow-text-4
+    elementType: text
+    bounds: [930, 170, 220, 50]
+    content:
+      fontSize: 16
+      color: "$textLight"
+      fontFamily: "QuattrocentoSans"
+      align: [center, middle]
+      wrap: false
+      text: |
+        <p><strong>Company Learns</strong></p>
+
+  - elementId: levels-title
+    elementType: text
+    bounds: [60, 250, 400, 35]
+    content:
+      fontSize: 20
+      color: "$accent"
+      fontFamily: "QuattrocentoSans"
+      align: [left, middle]
+      wrap: false
+      text: |
+        <p><strong>5 مستويات صلاحية AI</strong></p>
+
+  - elementId: levels-table
+    elementType: table
+    bounds: [60, 300, 1160, 270]
+    columnWidths: [0.15, 0.30, 0.30, 0.25]
+    rowHeights: [0.17, 0.17, 0.17, 0.17, 0.17, 0.15]
+    style: "$default"
+    rows:
+      - - content:
+            text: |
+              <p><strong>المستوى</strong></p>
+        - content:
+            text: |
+              <p><strong>الوصف</strong></p>
+        - content:
+            text: |
+              <p><strong>مثال</strong></p>
+        - content:
+            text: |
+              <p><strong>الحالة</strong></p>
+      - - content:
+            text: |
+              <p>Observe</p>
+        - content:
+            text: |
+              <p>قراءة وتحليل فقط</p>
+        - content:
+            text: |
+              <p>تحليل بيانات عميل</p>
+        - content:
+            text: |
+              <p><span style="color:#15807A;">✓ نشط</span></p>
+      - - content:
+            text: |
+              <p>Advise</p>
+        - content:
+            text: |
+              <p>توصية فقط</p>
+        - content:
+            text: |
+              <p>اقتراح تحسينات</p>
+        - content:
+            text: |
+              <p><span style="color:#15807A;">✓ نشط</span></p>
+      - - content:
+            text: |
+              <p>Draft</p>
+        - content:
+            text: |
+              <p>كتابة مسودة</p>
+        - content:
+            text: |
+              <p>صياغة رسالة outreach</p>
+        - content:
+            text: |
+              <p><span style="color:#15807A;">✓ نشط</span></p>
+      - - content:
+            text: |
+              <p>Act w/ Approval</p>
+        - content:
+            text: |
+              <p>تنفيذ بعد موافقة</p>
+        - content:
+            text: |
+              <p>إرسال بعد تأكيد</p>
+        - content:
+            text: |
+              <p><span style="color:#D4A843;">⏳ لاحقاً</span></p>
+      - - content:
+            text: |
+              <p>Autonomous</p>
+        - content:
+            text: |
+              <p>تنفيذ ذاتي كامل</p>
+        - content:
+            text: |
+              <p>—</p>
+        - content:
+            text: |
+              <p><span style="color:#8CB3B0;">✗ لا الآن</span></p>
+
+  - elementId: mckinsey-quote
+    elementType: text
+    bounds: [60, 590, 1160, 30]
+    content:
+      fontSize: 16
+      color: "$textMuted"
+      fontFamily: "QuattrocentoSans"
+      align: [left, middle]
+      text: |
+        <p><em>"الشركات الأعلى أداءً في AI تضع عمليات واضحة للتحقق البشري" — McKinsey State of AI 2025</em></p>
+
+  - elementId: page-num
+    elementType: text
+    bounds: [1180, 680, 60, 25]
+    content:
+      fontSize: 12
+      color: "$textMuted"
+      fontFamily: "QuattrocentoSans"
+      align: [right, middle]
+      wrap: false
+      text: |
+        <p>09</p>
+
+  - elementId: bottom-accent
+    elementType: shape
+    bounds: [0, 716, 1280, 4]
+    shapeName: rect
+    fill:
+      type: solid
+      color: "$primary"

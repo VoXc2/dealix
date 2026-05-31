@@ -1,0 +1,214 @@
+pageType: content
+background:
+  type: solid
+  color: "$bgLight"
+elements:
+  - elementId: page-title
+    elementType: text
+    bounds: [60, 40, 900, 50]
+    content:
+      style: "$pageTitle"
+      align: [left, middle]
+      wrap: false
+      text: |
+        <p><strong>المنتج: من Sprint إلى نظام شهري</strong></p>
+
+  - elementId: title-accent
+    elementType: shape
+    bounds: [60, 95, 80, 3]
+    shapeName: rect
+    fill:
+      type: solid
+      color: "$primary"
+
+  - elementId: p1-card-bg
+    elementType: shape
+    bounds: [60, 120, 560, 380]
+    shapeName: rect
+    fill:
+      type: solid
+      color: "$cardBg"
+    border:
+      style: solid
+      width: 1
+      color: "$cardBorder"
+
+  - elementId: p1-badge
+    elementType: shape
+    bounds: [80, 140, 120, 30]
+    shapeName: rect
+    fill:
+      type: solid
+      color: "$primary"
+
+  - elementId: p1-badge-text
+    elementType: text
+    bounds: [80, 140, 120, 30]
+    content:
+      fontSize: 14
+      color: "$textLight"
+      fontFamily: "QuattrocentoSans"
+      align: [center, middle]
+      wrap: false
+      text: |
+        <p><strong>P1 Sprint</strong></p>
+
+  - elementId: p1-price
+    elementType: text
+    bounds: [80, 185, 300, 50]
+    content:
+      fontSize: 36
+      color: "$primary"
+      fontFamily: "QuattrocentoSans"
+      align: [left, middle]
+      wrap: false
+      text: |
+        <p><strong>2,500 - 7,500 ر.س</strong></p>
+
+  - elementId: p1-duration
+    elementType: text
+    bounds: [390, 185, 210, 50]
+    content:
+      fontSize: 18
+      color: "$textMutedLight"
+      fontFamily: "QuattrocentoSans"
+      align: [left, middle]
+      wrap: false
+      text: |
+        <p>5 أيام تنفيذ</p>
+
+  - elementId: p1-divider
+    elementType: shape
+    bounds: [80, 240, 520, 0]
+    shapeName: straightConnector1
+    border:
+      style: solid
+      width: 1
+      color: "$cardBorder"
+
+  - elementId: p1-features
+    elementType: text
+    bounds: [80, 255, 520, 230]
+    content:
+      fontSize: 18
+      color: "$text"
+      fontFamily: "QuattrocentoSans"
+      lineHeight: 1.7
+      align: [left, top]
+      text: |
+        <p><span style="color:$primary;">✓</span> Revenue Leakage Map</p>
+        <p><span style="color:$primary;">✓</span> Lead Response Audit</p>
+        <p><span style="color:$primary;">✓</span> Follow-up Gap Report</p>
+        <p><span style="color:$primary;">✓</span> Offer Quality Review</p>
+        <p><span style="color:$primary;">✓</span> Objection Map</p>
+        <p><span style="color:$primary;">✓</span> 30-Day Revenue Plan</p>
+
+  - elementId: p2-card-bg
+    elementType: shape
+    bounds: [660, 120, 560, 380]
+    shapeName: rect
+    fill:
+      type: solid
+      color: "$primaryDark"
+
+  - elementId: p2-badge
+    elementType: shape
+    bounds: [680, 140, 160, 30]
+    shapeName: rect
+    fill:
+      type: solid
+      color: "$accent"
+
+  - elementId: p2-badge-text
+    elementType: text
+    bounds: [680, 140, 160, 30]
+    content:
+      fontSize: 14
+      color: "$textLight"
+      fontFamily: "QuattrocentoSans"
+      align: [center, middle]
+      wrap: false
+      text: |
+        <p><strong>P2 Retainer</strong></p>
+
+  - elementId: p2-price
+    elementType: text
+    bounds: [680, 185, 320, 50]
+    content:
+      fontSize: 36
+      color: "$accent"
+      fontFamily: "QuattrocentoSans"
+      align: [left, middle]
+      wrap: false
+      text: |
+        <p><strong>3,000 - 20,000 ر.س</strong></p>
+
+  - elementId: p2-period
+    elementType: text
+    bounds: [1010, 185, 190, 50]
+    content:
+      fontSize: 18
+      color: "$textMuted"
+      fontFamily: "QuattrocentoSans"
+      align: [left, middle]
+      wrap: false
+      text: |
+        <p>/شهر</p>
+
+  - elementId: p2-divider
+    elementType: shape
+    bounds: [680, 240, 520, 0]
+    shapeName: straightConnector1
+    border:
+      style: solid
+      width: 1
+      color: "#15807A30"
+
+  - elementId: p2-features
+    elementType: text
+    bounds: [680, 255, 520, 230]
+    content:
+      fontSize: 18
+      color: "$textLight"
+      fontFamily: "QuattrocentoSans"
+      lineHeight: 1.7
+      align: [left, top]
+      text: |
+        <p><span style="color:$accent;">✓</span> Weekly War Room</p>
+        <p><span style="color:$accent;">✓</span> Pipeline Tracking</p>
+        <p><span style="color:$accent;">✓</span> Message Optimization</p>
+        <p><span style="color:$accent;">✓</span> Monthly CEO Report</p>
+        <p><span style="color:$accent;">✓</span> Team Training</p>
+        <p><span style="color:$accent;">✓</span> Proof Pack Generation</p>
+
+  - elementId: target-sectors
+    elementType: text
+    bounds: [60, 520, 1160, 30]
+    content:
+      fontSize: 18
+      color: "$textMutedLight"
+      fontFamily: "QuattrocentoSans"
+      align: [left, middle]
+      wrap: false
+      text: |
+        <p>💡 الهدف: كل عميل P1 يصبح عميل P2 — نبيع تشغيل مستمر، لا مشروع مرة واحدة</p>
+
+  - elementId: page-num
+    elementType: text
+    bounds: [1180, 680, 60, 25]
+    content:
+      fontSize: 12
+      color: "$textMuted"
+      fontFamily: "QuattrocentoSans"
+      align: [right, middle]
+      wrap: false
+      text: |
+        <p>04</p>
+
+  - elementId: bottom-accent
+    elementType: shape
+    bounds: [0, 716, 1280, 4]
+    shapeName: rect
+    fill:
+      type: solid
+      color: "$primary"

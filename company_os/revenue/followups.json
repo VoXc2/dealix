@@ -1,0 +1,37 @@
+{
+  "followups": [
+    {
+      "id": "FU-001",
+      "company": "Digital Rise Agency",
+      "sequence": 1,
+      "message": "متابعة: هل اطلعت على عرض Revenue Sprint؟ نقدر نسوي call 15 دقيقة نشرح لك وين الفرص الضايعة؟",
+      "scheduled_date": "2026-06-03",
+      "status": "scheduled",
+      "trigger": "No reply to OUT-001 after 3 days"
+    },
+    {
+      "id": "FU-002",
+      "company": "Growth Labs SA",
+      "sequence": 1,
+      "message": "متابعة: 37% من الفرص تضيع بدون متابعة — هل تبي نسوي تحليل سريع لنظامكم الحالي؟",
+      "scheduled_date": "2026-06-03",
+      "status": "scheduled",
+      "trigger": "No reply to OUT-002 after 3 days"
+    },
+    {
+      "id": "FU-003",
+      "company": "TrainMe KSA",
+      "sequence": 1,
+      "message": "متابعة: استفسارات واتساب = فلوس على الطاولة. نقدر نكشف لك كم تخسر شهرياً؟",
+      "scheduled_date": "2026-06-04",
+      "status": "scheduled",
+      "trigger": "No reply to OUT-003 after 3 days"
+    }
+  ],
+  "rules": {
+    "follow_up_sequence": [3, 7, 14],
+    "max_followups": 3,
+    "stop_conditions": ["replied", "unsubscribed", "converted"]
+  },
+  "last_updated": "2026-05-31"
+}

@@ -1,0 +1,254 @@
+pageType: content
+background:
+  type: solid
+  color: "$bgLight"
+elements:
+  - elementId: page-title
+    elementType: text
+    bounds: [60, 40, 900, 50]
+    content:
+      style: "$pageTitle"
+      align: [left, middle]
+      wrap: false
+      text: |
+        <p><strong>خطة 90 يوم: من أول عميل إلى 30k MRR</strong></p>
+
+  - elementId: title-accent
+    elementType: shape
+    bounds: [60, 95, 80, 3]
+    shapeName: rect
+    fill:
+      type: solid
+      color: "$primary"
+
+  - elementId: timeline-line
+    elementType: shape
+    bounds: [100, 170, 1080, 0]
+    shapeName: straightConnector1
+    border:
+      style: solid
+      width: 3
+      color: "$primary"
+
+  - elementId: dot-1
+    elementType: shape
+    bounds: [90, 160, 20, 20]
+    shapeName: ellipse
+    fill:
+      type: solid
+      color: "$primary"
+
+  - elementId: phase-1-label
+    elementType: text
+    bounds: [60, 130, 160, 25]
+    content:
+      fontSize: 14
+      color: "$primary"
+      fontFamily: "QuattrocentoSans"
+      align: [center, middle]
+      wrap: false
+      text: |
+        <p><strong>0-30 يوم</strong></p>
+
+  - elementId: phase-1-bg
+    elementType: shape
+    bounds: [60, 200, 360, 300]
+    shapeName: rect
+    fill:
+      type: solid
+      color: "$cardBg"
+    border:
+      style: solid
+      width: 1
+      color: "$cardBorder"
+
+  - elementId: phase-1-title
+    elementType: text
+    bounds: [80, 215, 320, 30]
+    content:
+      fontSize: 20
+      color: "$primary"
+      fontFamily: "QuattrocentoSans"
+      align: [left, middle]
+      wrap: false
+      text: |
+        <p><strong>أول عميل + Proof</strong></p>
+
+  - elementId: phase-1-content
+    elementType: text
+    bounds: [80, 255, 320, 225]
+    content:
+      fontSize: 16
+      color: "$text"
+      fontFamily: "QuattrocentoSans"
+      lineHeight: 1.6
+      align: [left, top]
+      text: |
+        <p>• 50 Prospect</p>
+        <p>• 30 رسالة outreach</p>
+        <p>• 5 Discovery calls</p>
+        <p>• 1 عميل P1 مدفوع</p>
+        <p>• 1 Proof Pack كامل</p>
+        <p>• نظام War Room جاهز</p>
+
+  - elementId: dot-2
+    elementType: shape
+    bounds: [470, 160, 20, 20]
+    shapeName: ellipse
+    fill:
+      type: solid
+      color: "$primary"
+
+  - elementId: phase-2-label
+    elementType: text
+    bounds: [420, 130, 160, 25]
+    content:
+      fontSize: 14
+      color: "$primary"
+      fontFamily: "QuattrocentoSans"
+      align: [center, middle]
+      wrap: false
+      text: |
+        <p><strong>31-60 يوم</strong></p>
+
+  - elementId: phase-2-bg
+    elementType: shape
+    bounds: [420, 200, 360, 300]
+    shapeName: rect
+    fill:
+      type: solid
+      color: "$cardBg"
+    border:
+      style: solid
+      width: 1
+      color: "$cardBorder"
+
+  - elementId: phase-2-title
+    elementType: text
+    bounds: [440, 215, 320, 30]
+    content:
+      fontSize: 20
+      color: "$primary"
+      fontFamily: "QuattrocentoSans"
+      align: [left, middle]
+      wrap: false
+      text: |
+        <p><strong>تكرار + Retainer</strong></p>
+
+  - elementId: phase-2-content
+    elementType: text
+    bounds: [440, 255, 320, 225]
+    content:
+      fontSize: 16
+      color: "$text"
+      fontFamily: "QuattrocentoSans"
+      lineHeight: 1.6
+      align: [left, top]
+      text: |
+        <p>• 3-5 P1 إضافية</p>
+        <p>• أول Retainer شهري</p>
+        <p>• 2 Case studies</p>
+        <p>• تحديث العرض</p>
+        <p>• بناء Dashboard</p>
+        <p>• 3 Referral partners</p>
+
+  - elementId: dot-3
+    elementType: shape
+    bounds: [850, 160, 20, 20]
+    shapeName: ellipse
+    fill:
+      type: solid
+      color: "$accent"
+
+  - elementId: phase-3-label
+    elementType: text
+    bounds: [800, 130, 160, 25]
+    content:
+      fontSize: 14
+      color: "$accent"
+      fontFamily: "QuattrocentoSans"
+      align: [center, middle]
+      wrap: false
+      text: |
+        <p><strong>61-90 يوم</strong></p>
+
+  - elementId: phase-3-bg
+    elementType: shape
+    bounds: [800, 200, 420, 300]
+    shapeName: rect
+    fill:
+      type: solid
+      color: "$primaryDark"
+
+  - elementId: phase-3-title
+    elementType: text
+    bounds: [820, 215, 380, 30]
+    content:
+      fontSize: 20
+      color: "$accent"
+      fontFamily: "QuattrocentoSans"
+      align: [left, middle]
+      wrap: false
+      text: |
+        <p><strong>قطاع متخصص + Scale</strong></p>
+
+  - elementId: phase-3-content
+    elementType: text
+    bounds: [820, 255, 380, 225]
+    content:
+      fontSize: 16
+      color: "$textLight"
+      fontFamily: "QuattrocentoSans"
+      lineHeight: 1.6
+      align: [left, top]
+      text: |
+        <p>• 5-7 P1 شهرياً</p>
+        <p>• 2-3 Retainers</p>
+        <p>• MRR: 10k-30k ر.س</p>
+        <p>• قالب قطاع متخصص</p>
+        <p>• نظام تشغيلي مكتمل</p>
+        <p>• التحضير لـ SaaS</p>
+
+  - elementId: kpi-title
+    elementType: text
+    bounds: [60, 530, 400, 30]
+    content:
+      fontSize: 18
+      color: "$textMutedLight"
+      fontFamily: "QuattrocentoSans"
+      align: [left, middle]
+      wrap: false
+      text: |
+        <p><strong>KPIs الأسبوعية:</strong></p>
+
+  - elementId: kpi-values
+    elementType: text
+    bounds: [60, 565, 1160, 30]
+    content:
+      fontSize: 18
+      color: "$text"
+      fontFamily: "QuattrocentoSans"
+      align: [left, middle]
+      wrap: false
+      text: |
+        <p><span style="color:$primary;"><strong>5-10</strong></span> رسائل  |  <span style="color:$primary;"><strong>5</strong></span> Follow-ups  |  <span style="color:$primary;"><strong>10</strong></span> Prospects  |  <span style="color:$primary;"><strong>1</strong></span> Proof event  |  <span style="color:$primary;"><strong>2-5</strong></span> Calls</p>
+
+  - elementId: page-num
+    elementType: text
+    bounds: [1180, 680, 60, 25]
+    content:
+      fontSize: 12
+      color: "$textMuted"
+      fontFamily: "QuattrocentoSans"
+      align: [right, middle]
+      wrap: false
+      text: |
+        <p>08</p>
+
+  - elementId: bottom-accent
+    elementType: shape
+    bounds: [0, 716, 1280, 4]
+    shapeName: rect
+    fill:
+      type: solid
+      color: "$primary"
