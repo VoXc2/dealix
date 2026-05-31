@@ -1,0 +1,5 @@
+payment_id,invoice_id,client,amount_sar,payment_date,payment_method,status,reference,notes
+PAY-2026-001,INV-2026-001,مؤسسة استشارات مالية,5000,2026-06-08,Bank Transfer,Received,TRX-001,First client payment!
+PAY-2026-002,INV-2026-002,وكالة تسويق محتوى,7500,2026-06-15,Bank Transfer,Received,TRX-002,Premium package
+PAY-2026-003,INV-2026-003,مؤسسة استشارات مالية,3000,2026-07-05,Bank Transfer,Pending,,First retainer payment
+PAY-2026-004,INV-2026-004,وكالة تسويق محتوى,8000,2026-07-05,Bank Transfer,Pending,,Monthly retainer

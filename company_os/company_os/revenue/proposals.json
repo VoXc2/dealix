@@ -1,0 +1,91 @@
+{
+  "proposals": [
+    {
+      "id": "PROP-2026-001",
+      "client": "مؤسسة استشارات مالية",
+      "service": "Revenue Intelligence Sprint",
+      "package": "Standard",
+      "value_sar": 5000,
+      "status": "pending_approval",
+      "sent_date": null,
+      "expiry_date": "2026-06-15",
+      "approver": "Founder",
+      "approval_id": "APP-002",
+      "probability": 0.7,
+      "notes": "High-value first client, approve with possible 20% discount",
+      "deliverables": [
+        "Revenue Leakage Map",
+        "Lead Response Audit",
+        "Follow-up Gap Report",
+        "Offer Quality Review",
+        "Objection Map",
+        "CEO Brief",
+        "30-Day Revenue Plan",
+        "P2 Recommendation"
+      ]
+    },
+    {
+      "id": "PROP-2026-002",
+      "client": "وكالة تسويق محتوى",
+      "service": "Revenue Intelligence Sprint",
+      "package": "Premium",
+      "value_sar": 7500,
+      "status": "draft",
+      "sent_date": null,
+      "expiry_date": null,
+      "approver": "Founder",
+      "approval_id": null,
+      "probability": 0.6,
+      "notes": "Premium package for high-priority prospect",
+      "deliverables": [
+        "Revenue Leakage Map",
+        "Lead Response Audit",
+        "Follow-up Gap Report",
+        "Offer Quality Review",
+        "Objection Map",
+        "CEO Brief",
+        "30-Day Revenue Plan",
+        "P2 Recommendation",
+        "Priority Support"
+      ]
+    },
+    {
+      "id": "PROP-2026-003",
+      "client": "شركة تدريب القيادة",
+      "service": "Revenue Intelligence Sprint",
+      "package": "Standard",
+      "value_sar": 5000,
+      "status": "draft",
+      "sent_date": null,
+      "expiry_date": null,
+      "approver": "Founder",
+      "approval_id": null,
+      "probability": 0.8,
+      "notes": "High-prospect score 9, strong fit for training segment",
+      "deliverables": [
+        "Revenue Leakage Map",
+        "Lead Response Audit",
+        "Follow-up Gap Report",
+        "Offer Quality Review",
+        "Objection Map",
+        "CEO Brief",
+        "30-Day Revenue Plan",
+        "P2 Recommendation"
+      ]
+    }
+  ],
+  "templates": {
+    "standard": {
+      "price_range": "2500-7500 SAR",
+      "duration": "5 business days",
+      "includes": [
+        "Complete pipeline analysis",
+        "Revenue leakage identification",
+        "Follow-up gap audit",
+        "Offer and objection review",
+        "Executive brief",
+        "30-day improvement plan"
+      ]
+    }
+  }
+}

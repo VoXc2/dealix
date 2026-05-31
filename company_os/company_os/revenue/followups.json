@@ -1,0 +1,76 @@
+{
+  "followups": [
+    {
+      "id": "FU-001",
+      "company": "شركة تدريب القيادة",
+      "last_contact": "2026-05-30",
+      "next_due": "2026-06-01",
+      "status": "pending",
+      "stage": "Researched",
+      "draft_message": "أهلًا [الاسم]، أتابع معك بخصوص Revenue Intelligence Sprint. نقدر نرسل لك مثال على التقرير اليوم لو تحب. هل يناسبك؟",
+      "channel": "email",
+      "priority": "high",
+      "approved": false,
+      "notes": "High priority prospect, score 9"
+    },
+    {
+      "id": "FU-002",
+      "company": "وكالة تسويق محتوى",
+      "last_contact": "2026-05-30",
+      "next_due": "2026-06-01",
+      "status": "pending",
+      "stage": "Researched",
+      "draft_message": "أهلًا [الاسم]، أتابع معك بخصوص نظام إثبات النتائج للعملاء. عندنا نموذج Proof Pack جاهز نقدر نرسله لك. هل تفضل نرسله اليوم؟",
+      "channel": "email",
+      "priority": "high",
+      "approved": false,
+      "notes": "High priority prospect, score 9"
+    },
+    {
+      "id": "FU-003",
+      "company": "مؤسسة استشارات مالية",
+      "last_contact": "2026-05-29",
+      "next_due": "2026-06-01",
+      "status": "pending",
+      "stage": "Proposal Pending",
+      "draft_message": "أهلًا [الاسم]، أتابع معك بخصوص عرض Revenue Intelligence Sprint. هل لديك أي أسئلة حول التقرير أو الخدمة؟ نستعد لتحديد موعد البدء حال الموافقة.",
+      "channel": "email",
+      "priority": "high",
+      "approved": false,
+      "notes": "Proposal sent, awaiting approval"
+    },
+    {
+      "id": "FU-004",
+      "company": "شركة تطوير برمجيات",
+      "last_contact": "2026-05-31",
+      "next_due": "2026-06-03",
+      "status": "scheduled",
+      "stage": "Researched",
+      "draft_message": "أهلًا [الاسم]، أتابع معك بخصوص تحليل الـ pipeline. نقدر نرسل لكم نموذج تقرير يوضح أين تتعثر صفقاتكم. هل يناسبك؟",
+      "channel": "email",
+      "priority": "medium",
+      "approved": false,
+      "notes": "Follow up after initial outreach"
+    },
+    {
+      "id": "FU-005",
+      "company": "أكاديمية تدريب مهني",
+      "last_contact": "2026-05-31",
+      "next_due": "2026-06-03",
+      "status": "scheduled",
+      "stage": "Researched",
+      "draft_message": "أهلًا [الاسم]، أتابع بخصوص تحويل الاستفسارات إلى تسجيلات. نقدر نحدد مكالمة 15 دقيقة هذا الأسبوع لو مناسبك.",
+      "channel": "email",
+      "priority": "medium",
+      "approved": false,
+      "notes": "Training segment priority"
+    }
+  ],
+  "summary": {
+    "total_followups": 5,
+    "due_today": 3,
+    "overdue": 0,
+    "high_priority": 3,
+    "pending_approval": 5
+  }
+}

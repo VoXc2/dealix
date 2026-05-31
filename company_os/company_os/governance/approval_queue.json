@@ -1,0 +1,38 @@
+[
+  {
+    "id": "APP-001",
+    "type": "outreach_message",
+    "company": "شركة تدريب القيادة",
+    "risk": "medium",
+    "draft": "السلام عليكم [الاسم]،\nلاحظت أن كثير من شركات التدريب تخسر فرصاً بسبب بطء المتابعة، ضعف وضوح الـ pipeline، وعدم وجود تقرير تنفيذي يوضح أين تضيع الإيرادات.\nنحن في Dealix نسوي Revenue Intelligence Sprint خلال 5 أيام:\nنكشف أين تضيع الفرص، نحلل المتابعة والعروض، ونطلع Proof Pack وخطة 30 يوم لتحسين التحويل.\nهل يناسبك أرسل لك مثال مختصر على شكل التقرير؟",
+    "requires_approval": true,
+    "approved": false,
+    "created_at": "2026-05-31",
+    "reviewed_by": null,
+    "reviewed_at": null
+  },
+  {
+    "id": "APP-002",
+    "type": "proposal_pricing",
+    "company": "مؤسسة استشارات مالية",
+    "risk": "high",
+    "draft": "عرض Revenue Intelligence Sprint - بقيمة 5,000 ريال سعودي - يشمل تحليل كامل للـ pipeline وخريطة تسرب الإيرادات وخطة تحسين 30 يوم",
+    "requires_approval": true,
+    "approved": false,
+    "created_at": "2026-05-31",
+    "reviewed_by": null,
+    "reviewed_at": null
+  },
+  {
+    "id": "APP-003",
+    "type": "outreach_message",
+    "company": "وكالة تسويق محتوى",
+    "risk": "low",
+    "draft": "السلام عليكم [الاسم]،\nلاحظت أن كثير من وكالات التسويق تواجه تحدي إثبات القيمة للعملاء. في Dealix نبني نظام يثبت أين تضيع فرص عملائكم، ويطلع Proof Pack أسبوعي/شهري يرفع ثقة العميل ويقوي التجديد.\nهل يناسبك نشرح لك أكثر؟",
+    "requires_approval": true,
+    "approved": false,
+    "created_at": "2026-05-31",
+    "reviewed_by": null,
+    "reviewed_at": null
+  }
+]

@@ -1,0 +1,5 @@
+invoice_id,client,service,amount_sar,issue_date,due_date,paid_date,status,payment_method,notes
+INV-2026-001,مؤسسة استشارات مالية,Revenue Intelligence Sprint,5000,2026-06-08,2026-06-15,,Issued,Bank Transfer,First client
+INV-2026-002,وكالة تسويق محتوى,Revenue Intelligence Sprint,7500,2026-06-15,2026-06-22,,Issued,Bank Transfer,Premium package
+INV-2026-003,مؤسسة استشارات مالية,AI Sales Ops Retainer - Small,3000,2026-07-01,2026-07-05,,Draft,Bank Transfer,Monthly retainer
+INV-2026-004,وكالة تسويق محتوى,AI Sales Ops Retainer - Medium,8000,2026-07-01,2026-07-05,,Draft,Bank Transfer,Monthly retainer

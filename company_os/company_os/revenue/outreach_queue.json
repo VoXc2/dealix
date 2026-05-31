@@ -1,0 +1,119 @@
+{
+  "queue_id": "OUT-2026-05-31-001",
+  "generated_at": "2026-05-31T10:00:00+03:00",
+  "total_messages": 10,
+  "status": "pending_approval",
+  "messages": [
+    {
+      "id": "OUT-001",
+      "prospect": "شركة تدريب القيادة",
+      "segment": "Training",
+      "channel": "email",
+      "priority": 9,
+      "draft": "السلام عليكم [الاسم]،\n\nلاحظت أن كثير من شركات التدريب في المملكة تستقبل استفسارات كثيرة عبر الواتساب والمواقع، لكن نسبة التحويل إلى تسجيلات مدفوعة تبقى أقل من المتوقع.\n\nفي Dealix نسوي Revenue Intelligence Sprint خلال 5 أيام:\n• نكشف أين تضيع فرص التسجيل\n• نحلل جودة المتابعة والردود\n• نطلع Proof Pack واضح + خطة 30 يوم لتحسين التحويل\n\nهل يناسبك أرسل لك مثال مختصر على شكل التقرير؟\n\nمع التحية،\n[اسمك]",
+      "requires_approval": true,
+      "approved": false,
+      "risk": "low"
+    },
+    {
+      "id": "OUT-002",
+      "prospect": "وكالة تسويق محتوى",
+      "segment": "Marketing Agency",
+      "channel": "email",
+      "priority": 9,
+      "draft": "السلام عليكم [الاسم]،\n\nكمدير وكالة تسويق، أكيد تواجهكم تحدي إثبات النتائج للعملاء. عملاء يدفعون ويسألون: \"وش استفدنا؟\"\n\nفي Dealix نبني لكم نظام يثبت أين تضيع فرص عملائكم:\n• خريطة تسرب الإيرادات\n• Proof Pack أسبوعي/شهري\n• تحليل المتابعة والردود\n\nنبدأ بـ Sprint 5 أيام يكشف الوضع الحقيقي.\n\nهل يناسبك نشرح أكثر؟\n\nمع التحية،\n[اسمك]",
+      "requires_approval": true,
+      "approved": false,
+      "risk": "low"
+    },
+    {
+      "id": "OUT-003",
+      "prospect": "مؤسسة استشارات مالية",
+      "segment": "B2B Services",
+      "channel": "email",
+      "priority": 7,
+      "draft": "السلام عليكم [الاسم]،\n\nفي المؤسسات الاستشارية، كثير من العروض تُرسل لكن لا تُتابع. الصفقات تموت بصمت والمؤسس ما يعرف من قريب من الشراء.\n\nDealix يكشف الصفقات المتعثرة ويبني نظام متابعة وإغلاق واضح للإدارة:\n• Revenue Leakage Map\n• Follow-up Gap Analysis\n• Executive War Room\n\nنبدأ بـ Sprint 5 أيام.\n\nهل لديكم 15 دقيقة هذا الأسبوع؟\n\nمع التحية،\n[اسمك]",
+      "requires_approval": true,
+      "approved": false,
+      "risk": "medium"
+    },
+    {
+      "id": "OUT-004",
+      "prospect": "شركة تطوير برمجيات",
+      "segment": "B2B Services",
+      "channel": "email",
+      "priority": 8,
+      "draft": "السلام عليكم [الاسم]،\n\nدورات المبيعات الطويلة تستهلك وقت وموارد. في Dealix نحلل أين يتعثر الـ pipeline ونقترح إجراءات مباشرة تسرع الإغلاق.\n\nنبدأ بـ Revenue Intelligence Sprint 5 أيام:\n• تحليل كامل للمبيعات\n• خريطة تسرب الفرص\n• خطة تحسين 30 يوم\n\nهل يناسبك نرسل لكم نموذج تقرير؟\n\nمع التحية،\n[اسمك]",
+      "requires_approval": true,
+      "approved": false,
+      "risk": "low"
+    },
+    {
+      "id": "OUT-005",
+      "prospect": "أكاديمية تدريب مهني",
+      "segment": "Training",
+      "channel": "email",
+      "priority": 7,
+      "draft": "السلام عليكم [الاسم]،\n\nالتسجيلات غير المكتملة ومشاكل المتابعة بعد الاستفسار من أكبر تحديات مراكز التدريب.\n\nفي Dealix نحول الاستفسارات إلى تسجيلات مدفوعة:\n• نظام متابعة وتصنيف\n• تحليل الاعتراضات\n• War Room أسبوعي للتسجيلات\n\nنبدأ بـ Sprint 5 أيام.\n\nهل لديكم 10 دقائق لمكالمة تعريفية؟\n\nمع التحية،\n[اسمك]",
+      "requires_approval": true,
+      "approved": false,
+      "risk": "low"
+    },
+    {
+      "id": "OUT-006",
+      "prospect": "وكالة سيو وتحسين محركات",
+      "segment": "Marketing Agency",
+      "channel": "email",
+      "priority": 6,
+      "draft": "السلام عليكم [الاسم]،\n\nعملاء السيو دائماً يسألون: \"وش استفدنا؟\" وصعوبة إثبات النتائج تؤدي إلى فقدان العملاء.\n\nDealix يبني لكم Proof Pack أسبوعي/شهري:\n• إثبات واضح للقيمة\n• تحليل تسرب العملاء\n• تقوية التجديد\n\nنبدأ بـ Sprint 5 أيام.\n\nهل يناسبك؟\n\nمع التحية،\n[اسمك]",
+      "requires_approval": true,
+      "approved": false,
+      "risk": "low"
+    },
+    {
+      "id": "OUT-007",
+      "prospect": "مكتب محاسبة ومراجعة",
+      "segment": "B2B Services",
+      "channel": "email",
+      "priority": 6,
+      "draft": "السلام عليكم [الاسم]،\n\nضعف وضوح الـ pipeline يخلي المؤسس ما يعرف من قريب من الشراء.\n\nDealix يكشف الصفقات المتعثرة:\n• Pipeline monitoring\n• صفقات قريبة من الإغلاق\n• نظام متابعة واضح\n\nنبدأ بـ Sprint 5 أيام.\n\nهل لديكم 15 دقيقة هذا الأسبوع؟\n\nمع التحية،\n[اسمك]",
+      "requires_approval": true,
+      "approved": false,
+      "risk": "low"
+    },
+    {
+      "id": "OUT-008",
+      "prospect": "شركة توظيف وتوريد موارد بشرية",
+      "segment": "B2B Services",
+      "channel": "email",
+      "priority": 7,
+      "draft": "السلام عليكم [الاسم]،\n\nالعروض كثيرة بدون متابعة والصفقات تموت بصمت.\n\nDealix يكشف أين تضيع الفرص:\n• Revenue Leakage Map\n• Follow-up Gap Analysis\n• Executive War Room\n\nنبدأ بـ Sprint 5 أيام.\n\nهل يناسبك نرسل لكم تفاصيل؟\n\nمع التحية،\n[اسمك]",
+      "requires_approval": true,
+      "approved": false,
+      "risk": "low"
+    },
+    {
+      "id": "OUT-009",
+      "prospect": "مركز تدريب لغات",
+      "segment": "Training",
+      "channel": "email",
+      "priority": 8,
+      "draft": "السلام عليكم [الاسم]،\n\nمشاكل متابعة الدفعات بعد التسجيل والحملات الموسمية تحتاج نظام واضح.\n\nDealix يبني نظام متابعة كامل:\n• Follow-up automation\n• Payment tracking\n• Seasonal campaign planning\n\nنبدأ بـ Sprint 5 أيام.\n\nهل يناسبك؟\n\nمع التحية،\n[اسمك]",
+      "requires_approval": true,
+      "approved": false,
+      "risk": "low"
+    },
+    {
+      "id": "OUT-010",
+      "prospect": "شركة استشارات تقنية",
+      "segment": "B2B Services",
+      "channel": "email",
+      "priority": 8,
+      "draft": "السلام عليكم [الاسم]،\n\nبطء الرد على الاستفسارات يكلفكم فرصاً يومياً.\n\nDealix يحلل سرعة الرد ويجيب:\n• متوسط وقت الرد الحالي\n• الفرص المفقودة\n• خطة تحسين فورية\n\nنبدأ بـ Sprint 5 أيام.\n\nهل لديكم 10 دقائق؟\n\nمع التحية،\n[اسمك]",
+      "requires_approval": true,
+      "approved": false,
+      "risk": "low"
+    }
+  ],
+  "notes": "All messages require human approval before sending. No autonomous sending enabled."
+}

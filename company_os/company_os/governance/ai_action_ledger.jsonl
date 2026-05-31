@@ -1,0 +1,6 @@
+{"time":"2026-05-31T09:00:00+03:00","agent":"outreach_draft_agent","action":"created_outreach_draft","company":"شركة تدريب القيادة","risk":"medium","requires_approval":true,"approved":false,"human_approved":false}
+{"time":"2026-05-31T09:15:00+03:00","agent":"pipeline_analysis_agent","action":"scored_prospect","company":"مؤسسة استشارات مالية","risk":"low","requires_approval":false,"approved":true,"score":7}
+{"time":"2026-05-31T09:30:00+03:00","agent":"governance_monitor","action":"checked_sensitive_data","findings":"no_sensitive_data_detected","risk":"low","requires_approval":false,"approved":true}
+{"time":"2026-05-31T10:00:00+03:00","agent":"proposal_draft_agent","action":"created_proposal_draft","company":"مؤسسة استشارات مالية","value":"5000","currency":"SAR","risk":"high","requires_approval":true,"approved":false}
+{"time":"2026-05-31T10:30:00+03:00","agent":"proof_generator","action":"generated_case_insight","topic":"follow_up_gap_analysis","risk":"low","requires_approval":false,"approved":true}
+{"time":"2026-05-31T11:00:00+03:00","agent":"outreach_draft_agent","action":"created_outreach_draft","company":"وكالة تسويق محتوى","risk":"low","requires_approval":true,"approved":false,"human_approved":false}

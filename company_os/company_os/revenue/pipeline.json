@@ -1,0 +1,104 @@
+{
+  "pipeline_stages": [
+    {
+      "stage": "Target",
+      "description": "Companies identified as potential prospects",
+      "count": 30,
+      "value_sar": 0,
+      "avg_days": 0,
+      "criteria": "Matches ICP (Marketing Agency, Training, B2B Services in Saudi/GCC)"
+    },
+    {
+      "stage": "Researched",
+      "description": "Prospect researched, pain points identified",
+      "count": 30,
+      "value_sar": 0,
+      "avg_days": 1,
+      "criteria": "Decision maker identified, pain points known, outreach message drafted"
+    },
+    {
+      "stage": "Contacted",
+      "description": "Initial outreach sent, awaiting response",
+      "count": 0,
+      "value_sar": 0,
+      "avg_days": 0,
+      "criteria": "First message sent, logged in system"
+    },
+    {
+      "stage": "Replied",
+      "description": "Prospect responded to initial outreach",
+      "count": 0,
+      "value_sar": 0,
+      "avg_days": 0,
+      "criteria": "Any response received, positive or neutral"
+    },
+    {
+      "stage": "Discovery Booked",
+      "description": "Discovery call scheduled",
+      "count": 0,
+      "value_sar": 0,
+      "avg_days": 0,
+      "criteria": "Meeting confirmed with specific date/time"
+    },
+    {
+      "stage": "Proposal Sent",
+      "description": "P1 Sprint proposal delivered",
+      "count": 0,
+      "value_sar": 0,
+      "avg_days": 0,
+      "criteria": "Proposal sent and logged, awaiting decision"
+    },
+    {
+      "stage": "Won",
+      "description": "Client signed and paid",
+      "count": 0,
+      "value_sar": 0,
+      "avg_days": 0,
+      "criteria": "Invoice paid, kickoff scheduled"
+    },
+    {
+      "stage": "Delivery",
+      "description": "Sprint in progress",
+      "count": 0,
+      "value_sar": 0,
+      "avg_days": 0,
+      "criteria": "Day 0-5 of Sprint execution"
+    },
+    {
+      "stage": "Retainer",
+      "description": "Monthly retainer active",
+      "count": 0,
+      "value_sar": 0,
+      "avg_days": 0,
+      "criteria": "Monthly contract signed and active"
+    },
+    {
+      "stage": "Referral",
+      "description": "Client referred new prospect",
+      "count": 0,
+      "value_sar": 0,
+      "avg_days": 0,
+      "criteria": "Referral contact provided and logged"
+    }
+  ],
+  "summary": {
+    "total_pipeline_value": 0,
+    "total_prospects": 30,
+    "conversion_target": {
+      "target_to_contacted": 0.67,
+      "contacted_to_replied": 0.25,
+      "replied_to_discovery": 0.50,
+      "discovery_to_proposal": 0.67,
+      "proposal_to_won": 0.50,
+      "won_to_retainer": 0.67
+    },
+    "weekly_targets": {
+      "prospects_added": 10,
+      "messages_sent": 5,
+      "follow_ups": 5,
+      "meetings_booked": 3,
+      "proposals": 1,
+      "proof_events": 1
+    }
+  }
+}

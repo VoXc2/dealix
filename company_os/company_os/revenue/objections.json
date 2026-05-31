@@ -1,0 +1,102 @@
+{
+  "objections": [
+    {
+      "id": "OBJ-001",
+      "objection": "السعر غالي",
+      "frequency": "high",
+      "category": "pricing",
+      "context": "Saudi/GCC market price sensitivity",
+      "recommended_response": "نفهم أن الاستثمار مهم. لاحظ أن Sprint يكشف أين تضيع فرص بقيمة أضعاف السعر. معظم عملائنا يسترجعون الاستثمار من أول صفقة مغلقة بعد التحسينات. هل تفضل نبدأ بالباقة الأساسية (2,500 ريال)؟",
+      "prevention": "Lead with value, show ROI calculation upfront",
+      "usage_count": 0
+    },
+    {
+      "id": "OBJ-002",
+      "objection": "نحتاج نفكر في الموضوع",
+      "frequency": "high",
+      "category": "stalling",
+      "context": "Decision-making delay common in Saudi companies",
+      "recommended_response": "طبيعي جداً. عشان نسهل القرار، نقدر نرسل لكم مثال واقعي على التقرير (بدون بياناتكم) تشوفون جودة المخرجات. كذا القرار يكون مبني على دليل لا على وعد. يناسبكم؟",
+      "prevention": "Offer proof/sample before they ask for time",
+      "usage_count": 0
+    },
+    {
+      "id": "OBJ-003",
+      "objection": "عندنا نظام داخلي",
+      "frequency": "medium",
+      "category": "competition",
+      "context": "Companies believe their current system is sufficient",
+      "recommended_response": "ممتاز! وجود نظام يعني أنكم تقدرون على التنفيذ. Sprint ما يستبدل نظامكم، يكشف الثغرات فيه ويقترح تحسينات. كثير من عملائنا عندهم CRM لكن ما يعرفون أين تضيع الفرص داخله. نقدر ندمج التحليل مع نظامكم.",
+      "prevention": "Position as enhancement, not replacement",
+      "usage_count": 0
+    },
+    {
+      "id": "OBJ-004",
+      "objection": "الوقت ما يسمح",
+      "frequency": "medium",
+      "category": "timing",
+      "context": "Busy decision makers in Saudi market",
+      "recommended_response": "نفهم الضغط. السبب أننا نسوي Sprint في 5 أيام فقط ونطلب منكم ساعة واحدة في الأسبوع. كل الباقي نسويه نحن. هل تفضل نبدأ الأسبوع الجاي؟",
+      "prevention": "Emphasize low time commitment, high value",
+      "usage_count": 0
+    },
+    {
+      "id": "OBJ-005",
+      "objection": "نشوف نتائجكم مع غيرنا أول",
+      "frequency": "medium",
+      "category": "trust",
+      "context": "Early-stage company trust building",
+      "recommended_response": "منطقي جداً. نقدر نرسل لكم دراسة حالة (بدون اسم العميل) توضح قبل وبعد. وإذا رغبتم، نتواصل معكم بعد أسبوعين مع نتائج أول عميل. هل هذا يناسبكم؟",
+      "prevention": "Build case studies, offer anonymized proof",
+      "usage_count": 0
+    },
+    {
+      "id": "OBJ-006",
+      "objection": "AI ما نثق فيه للمبيعات",
+      "frequency": "high",
+      "category": "ai_trust",
+      "context": "AI governance concerns in Saudi market",
+      "recommended_response": "نفهم القلق. في Dealix، AI يسوي المسودات فقط والإنسان يوافق على كل شيء. عندنا نظام حوكمة كامل يسجل كل إجراء. كل التوصيات تمر على مراجعة بشرية قبل ما توصل لكم. نقدر نشرح لكم نظام الحوكمة في 10 دقائق.",
+      "prevention": "Lead with governance model, human-in-the-loop",
+      "usage_count": 0
+    },
+    {
+      "id": "OBJ-007",
+      "objection": "ما نحتاج، مبيعاتنا تمام",
+      "frequency": "low",
+      "category": "denial",
+      "context": "Prospect doesn't recognize the problem",
+      "recommended_response": "ممتاز أن المبيعات تمام! Sprint يكشف الفرص المخفية. نسبة كبيرة من الشركات تكتشف أن 20-30% من الفرص تضيع بسبب بطء المتابعة. نقدر نسوي Free Signal Scan مجاني (10 leads فقط) تشوفون إذا فيه فرصة. ما عليكم التزام.",
+      "prevention": "Offer free low-commitment scan",
+      "usage_count": 0
+    },
+    {
+      "id": "OBJ-008",
+      "objection": "نشوف العروض الثانية",
+      "frequency": "medium",
+      "category": "comparison",
+      "context": "Prospect comparing with competitors",
+      "recommended_response": "من حقكم تقارنون. الفرق الأساسي: Dealix يبيع نظام تشغيل إيرادات + حوكمة + إثبات. غيرنا يبيع أدوات. نحن نبدأ بـ Sprint يثبت القيمة قبل أي التزام شهري. هل تفضلون نرسل لكم جدول مقارنة؟",
+      "prevention": "Differentiate clearly, offer proof-before-sale",
+      "usage_count": 0
+    }
+  ],
+  "summary": {
+    "total_objections": 8,
+    "by_frequency": {
+      "high": 4,
+      "medium": 3,
+      "low": 1
+    },
+    "by_category": {
+      "pricing": 1,
+      "stalling": 1,
+      "competition": 1,
+      "timing": 1,
+      "trust": 1,
+      "ai_trust": 1,
+      "denial": 1,
+      "comparison": 1
+    }
+  }
+}

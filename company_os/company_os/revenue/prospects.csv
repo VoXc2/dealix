@@ -1,0 +1,31 @@
+company,segment,website,decision_maker,pain,status,next_action,next_date,offer,last_touch,score
+"مثال لوكالة تسويق",Marketing Agency,https://example-agency.sa,Founder,Leads not converting,Researched,Send P1 intro,2026-06-01,Revenue Intelligence Sprint,,8
+"شركة تدريب القيادة",Training Company,https://leadership-training.sa,CEO,High inquiries low enrollment,Researched,Send P1 intro,2026-06-01,Revenue Intelligence Sprint,,9
+"مؤسسة استشارات مالية",B2B Services,https://finance-consult.sa,Managing Partner,Proposals not followed up,Researched,Send P1 intro,2026-06-02,Revenue Intelligence Sprint,,7
+"وكالة إعلانات رقمية",Marketing Agency,https://digital-ads.sa,Business Dev Manager,Client retention issues,Researched,Send P1 intro,2026-06-02,Revenue Intelligence Sprint,,6
+"شركة تطوير برمجيات",B2B Services,https://software-dev.sa,CTO,Long sales cycles,Researched,Send P1 intro,2026-06-03,Revenue Intelligence Sprint,,8
+"أكاديمية تدريب مهني",Training Company,https://vocational-academy.sa,Operations Manager,Incomplete registrations,Researched,Send P1 intro,2026-06-03,Revenue Intelligence Sprint,,7
+"مكتب محاسبة ومراجعة",B2B Services,https://accounting-firm.sa,Senior Partner,Poor pipeline visibility,Researched,Send P1 intro,2026-06-04,Revenue Intelligence Sprint,,6
+"وكالة تسويق محتوى",Marketing Agency,https://content-marketing.sa,Founder,Difficulty proving ROI,Researched,Send P1 intro,2026-06-04,Revenue Intelligence Sprint,,9
+"شركة توظيف وتوريد موارد بشرية",B2B Services,https://hr-recruitment.sa,GM,Deals dying silently,Researched,Send P1 intro,2026-06-05,Revenue Intelligence Sprint,,7
+"مركز تدريب لغات",Training Company,https://language-center.sa,Director,Follow-up on payments weak,Researched,Send P1 intro,2026-06-05,Revenue Intelligence Sprint,,8
+"وكالة سيو وتحسين محركات",Marketing Agency,https://seo-agency.sa,CEO,Clients asking what did we get,Researched,Send P1 intro,2026-06-06,Revenue Intelligence Sprint,,6
+"شركة استشارات تقنية",B2B Services,https://tech-consulting.sa,Partner,Slow response to leads,Researched,Send P1 intro,2026-06-06,Revenue Intelligence Sprint,,8
+"معهد تدريب تقني",Training Company,https://tech-institute.sa,CEO,Seasonal campaigns hard to manage,Researched,Send P1 intro,2026-06-07,Revenue Intelligence Sprint,,7
+"وكالة وسائل التواصل الاجتماعي",Marketing Agency,https://social-media-agency.sa,Founder,Many leads weak follow-up,Researched,Send P1 intro,2026-06-07,Revenue Intelligence Sprint,,9
+"شركة خدمات قانونية",B2B Services,https://legal-services.sa,Managing Partner,Unclear proposal process,Researched,Send P1 intro,2026-06-08,Revenue Intelligence Sprint,,7
+"مركز تدريب إداري",Training Company,https://management-training.sa,Director,WhatsApp inquiries not tracked,Researched,Send P1 intro,2026-06-08,Revenue Intelligence Sprint,,6
+"وكالة تسويق بالعمولة",Marketing Agency,https://affiliate-marketing.sa,CEO,Lead response time too slow,Researched,Send P1 intro,2026-06-09,Revenue Intelligence Sprint,,8
+"شركة استشارات إدارية",B2B Services,https://mgmt-consulting.sa,Senior Consultant,Founder doesn't know who's close to buying,Researched,Send P1 intro,2026-06-09,Revenue Intelligence Sprint,,7
+"أكاديمية تدريب أونلاين",Training Company,https://online-academy.sa,Founder,Registration abandonment high,Researched,Send P1 intro,2026-06-10,Revenue Intelligence Sprint,,9
+"وكالة تسويق تجاري",Marketing Agency,https://commercial-marketing.sa,BDM,Pipeline not clear,Researched,Send P1 intro,2026-06-10,Revenue Intelligence Sprint,,6
+"شركة أمن سيبراني",B2B Services,https://cybersecurity.sa,CEO,Complex sales process,Researched,Send P1 intro,2026-06-11,Revenue Intelligence Sprint,,8
+"معهد تدريب مهارات soft skills",Training Company,https://softskills.sa,Training Manager,Payment follow-up weak,Researched,Send P1 intro,2026-06-11,Revenue Intelligence Sprint,,7
+"وكالة تسويق بالبريد الإلكتروني",Marketing Agency,https://email-marketing.sa,Founder,Offer clarity issues,Researched,Send P1 intro,2026-06-12,Revenue Intelligence Sprint,,6
+"شركة استشارات زكاة وضريبة",B2B Services,https://zakat-tax.sa,Partner,Objection handling not structured,Researched,Send P1 intro,2026-06-12,Revenue Intelligence Sprint,,8
+"مركز تدريب حكومي",Training Company,https://gov-training.sa,Program Director,Multiple decision makers,Researched,Send P1 intro,2026-06-13,Revenue Intelligence Sprint,,7
+"وكالة تسويق influencers",Marketing Agency,https://influencer-marketing.sa,CEO,Proving results to clients,Researched,Send P1 intro,2026-06-13,Revenue Intelligence Sprint,,9
+"شركة خدمات لوجستية",B2B Services,https://logistics-services.sa,COO,Price objections frequent,Researched,Send P1 intro,2026-06-14,Revenue Intelligence Sprint,,6
+"معهد تدريب تقنية المعلومات",Training Company,https://it-training.sa,Academic Director,CRM adoption low,Researched,Send P1 intro,2026-06-14,Revenue Intelligence Sprint,,7
+"وكالة تسويق محتوى مرئي",Marketing Agency,https://visual-content.sa,Creative Director,Client churn high,Researched,Send P1 intro,2026-06-15,Revenue Intelligence Sprint,,8
+"شركة استشارات استثمار",B2B Services,https://investment-consulting.sa,Managing Director,Revenue leakage unknown,Researched,Send P1 intro,2026-06-15,Revenue Intelligence Sprint,,7
