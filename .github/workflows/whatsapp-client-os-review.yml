@@ -1,0 +1,26 @@
+name: WhatsApp & Client OS Review
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+    branches: ["**"]
+
+permissions:
+  contents: read
+
+jobs:
+  whatsapp:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install --quiet pytest
+      - name: WhatsApp + reply routing safety
+        run: |
+          pytest -q \
+            tests/test_whatsapp_no_api_keys_in_text.py \
+            tests/test_whatsapp_post_consent_only.py \
+            tests/test_reply_classification_actions.py

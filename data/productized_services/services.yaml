@@ -1,0 +1,61 @@
+# Dealix Productized Services Catalog
+# Every service must validate against schemas/productized_service.schema.json.
+# Promises must be claim-safe (no guarantees). Final price always requires
+# human approval; only ranges are listed here.
+
+services:
+  - id: P1_SPRINT
+    name: Revenue Intelligence Sprint
+    buyer: "Founder / CEO of Saudi B2B SMEs (marketing agencies, training companies, B2B services)"
+    pain: "Leads and deals leak between inquiry and close; the founder is blind to where revenue is lost."
+    promise: "A 5-day diagnostic that shows where deals leak, with a prioritized 30-day operating plan."
+    deliverables:
+      - "Revenue leak map across response, follow-up, offer, and objections"
+      - "Proof Pack with redacted, evidence-based findings"
+      - "30-day operating plan with prioritized actions"
+    timeline: "5 working days"
+    price_range: "2,500 - 7,500 SAR"
+    scope:
+      - "Review of provided (consented) pipeline / CRM / conversation samples"
+      - "Funnel and follow-up analysis"
+      - "One readout session"
+    out_of_scope:
+      - "Implementation / execution of the plan"
+      - "Sending outreach on the client's behalf"
+      - "Legal, tax, or regulatory advice"
+    acceptance_criteria:
+      - "Client receives the leak map and 30-day plan"
+      - "Readout session completed"
+    evidence_level: internal_data
+    risks:
+      - "Client data quality may limit depth of analysis"
+    upsell_path: "P2_RETAINER"
+    renewal_path: "Quarterly re-diagnostic"
+
+  - id: P2_RETAINER
+    name: AI Sales Ops Retainer
+    buyer: "Founder / Sales lead of a Saudi B2B SME that completed a Sprint"
+    pain: "The 30-day plan needs ongoing operation and measurement; the team lacks sales-ops capacity."
+    promise: "Ongoing, human-approved sales-ops support to keep the operating plan running and measured."
+    deliverables:
+      - "Monthly operating review"
+      - "Approved follow-up and reply playbooks"
+      - "Funnel + unit-economics dashboard"
+    timeline: "Monthly (rolling)"
+    price_range: "3,000 - 20,000 SAR / month"
+    scope:
+      - "Operating cadence and reviews"
+      - "Playbook maintenance (human-approved)"
+      - "Metrics reporting"
+    out_of_scope:
+      - "Autonomous sending without approval"
+      - "Final pricing decisions for the client's customers"
+      - "Legal / regulatory commitments"
+    acceptance_criteria:
+      - "Monthly review delivered"
+      - "Dashboard kept current"
+    evidence_level: assumption
+    risks:
+      - "Scope creep beyond agreed cadence"
+    upsell_path: "Enterprise tier"
+    renewal_path: "Monthly auto-renew with delivered-value check"

@@ -1,0 +1,49 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://dealix.sa/schemas/suppression.schema.json",
+  "title": "Suppression Entry",
+  "description": "A contact that must never be sent to. Suppression is one-directional: entries are added, never silently removed by an agent.",
+  "type": "object",
+  "required": ["contact", "reason", "added_at", "source"],
+  "additionalProperties": false,
+  "properties": {
+    "contact": {
+      "type": "string",
+      "description": "Email or phone (normalized, lowercased)."
+    },
+    "channel": {
+      "type": "string",
+      "enum": ["email", "whatsapp", "all"],
+      "default": "all"
+    },
+    "reason": {
+      "type": "string",
+      "enum": [
+        "unsubscribe",
+        "bounce",
+        "angry_reply",
+        "do_not_contact",
+        "legal_request",
+        "privacy_request",
+        "duplicate_risky",
+        "invalid_email"
+      ]
+    },
+    "added_at": {
+      "type": "string",
+      "description": "ISO-8601 date/time the suppression was recorded."
+    },
+    "source": {
+      "type": "string",
+      "description": "Where the suppression came from (reply_handling, bounce_webhook, founder, privacy_runbook)."
+    },
+    "permanent": {
+      "type": "boolean",
+      "default": true,
+      "description": "Whether this suppression is permanent (legal/privacy/do_not_contact are always permanent)."
+    },
+    "notes": {
+      "type": "string"
+    }
+  }
+}

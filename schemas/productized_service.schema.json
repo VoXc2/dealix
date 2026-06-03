@@ -1,0 +1,37 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://dealix.sa/schemas/productized_service.schema.json",
+  "title": "Productized Service",
+  "type": "object",
+  "required": [
+    "id", "name", "buyer", "pain", "promise", "deliverables", "timeline",
+    "price_range", "scope", "out_of_scope", "acceptance_criteria", "evidence_level"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "id": { "type": "string" },
+    "name": { "type": "string" },
+    "buyer": { "type": "string", "description": "Who buys it (role + sector)." },
+    "pain": { "type": "string" },
+    "promise": {
+      "type": "string",
+      "description": "Outcome promise. Must NOT contain guaranteed/exaggerated claims."
+    },
+    "deliverables": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+    "timeline": { "type": "string" },
+    "price_range": {
+      "type": "string",
+      "description": "A range in SAR. Final price always requires human approval."
+    },
+    "scope": { "type": "array", "items": { "type": "string" } },
+    "out_of_scope": { "type": "array", "items": { "type": "string" } },
+    "acceptance_criteria": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+    "evidence_level": {
+      "type": "string",
+      "enum": ["none", "assumption", "anecdote", "internal_data", "verified", "third_party_verified"]
+    },
+    "risks": { "type": "array", "items": { "type": "string" } },
+    "upsell_path": { "type": "string" },
+    "renewal_path": { "type": "string" }
+  }
+}

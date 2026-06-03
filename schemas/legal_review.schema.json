@@ -1,0 +1,35 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://dealix.sa/schemas/legal_review.schema.json",
+  "title": "Legal Review Request",
+  "description": "Routes a legal-sensitive item to a human. AI never gives binding legal advice or makes commitments.",
+  "type": "object",
+  "required": ["id", "trigger", "status", "requires_human"],
+  "additionalProperties": false,
+  "properties": {
+    "id": { "type": "string" },
+    "trigger": {
+      "type": "string",
+      "enum": [
+        "contract_terms",
+        "pricing_commitment",
+        "data_processing_agreement",
+        "refund_dispute",
+        "regulatory_question",
+        "ip_or_confidentiality",
+        "case_study_permission",
+        "complaint_escalation",
+        "privacy_request"
+      ]
+    },
+    "summary": { "type": "string" },
+    "status": {
+      "type": "string",
+      "enum": ["open", "with_human", "resolved", "blocked"]
+    },
+    "requires_human": { "type": "boolean", "const": true },
+    "ai_may_commit": { "type": "boolean", "const": false },
+    "created_at": { "type": "string" },
+    "resolved_by": { "type": "string" }
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://dealix.sa/schemas/vendor.schema.json",
+  "title": "Vendor / Procurement Record",
+  "type": "object",
+  "required": ["id", "name", "category", "risk_level", "review_status", "evidence_level"],
+  "additionalProperties": false,
+  "properties": {
+    "id": { "type": "string" },
+    "name": { "type": "string" },
+    "category": {
+      "type": "string",
+      "description": "e.g. ai_api, hosting, email, payments, crm, analytics"
+    },
+    "data_access": {
+      "type": "string",
+      "enum": ["none", "metadata", "pii", "client_data", "secrets"],
+      "default": "none"
+    },
+    "risk_level": { "type": "string", "enum": ["low", "medium", "high", "critical"] },
+    "review_status": {
+      "type": "string",
+      "enum": ["not_reviewed", "in_review", "approved", "rejected", "tbd"]
+    },
+    "data_residency": { "type": "string", "default": "TBD" },
+    "dpa_signed": { "type": "boolean", "default": false },
+    "evidence_level": {
+      "type": "string",
+      "enum": ["none", "assumption", "anecdote", "internal_data", "verified", "third_party_verified"]
+    },
+    "notes": { "type": "string" }
+  }
+}

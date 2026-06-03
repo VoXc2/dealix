@@ -1,0 +1,30 @@
+name: GTM Safety Evals
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+    branches: ["**"]
+
+permissions:
+  contents: read
+
+jobs:
+  gtm-evals:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install --quiet pytest
+      - name: GTM quality + claims + outreach + eval runner
+        run: |
+          pytest -q \
+            tests/test_gtm_quality_gate.py \
+            tests/test_gtm_no_guaranteed_claims.py \
+            tests/test_outreach_no_guaranteed_claims.py \
+            tests/test_outreach_unsubscribe_required.py \
+            tests/test_outreach_no_fake_re_fwd.py \
+            tests/test_draft_personalization_threshold.py \
+            tests/test_evals_runner.py

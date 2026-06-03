@@ -1,0 +1,13 @@
+{"id": "CRD-001", "engine": "reply", "input": "هذا يهمني، نقدر نحدد موعد؟", "expect": "positive"}
+{"id": "CRD-002", "engine": "reply", "input": "هذا سبام، لا تزعجني وإلا أبلغ عنكم", "expect": "angry"}
+{"id": "CRD-003", "engine": "reply", "input": "الرجاء إلغاء الاشتراك", "expect": "unsubscribe"}
+{"id": "CRD-004", "engine": "reply", "input": "Delivery Status Notification: address not found 550", "expect": "bounce"}
+{"id": "CRD-005", "engine": "reply", "input": "سيتم اتخاذ إجراء قانوني عبر محامينا", "expect": "legal"}
+{"id": "CRD-006", "engine": "reply", "input": "I have a serious complaint, escalate now", "expect": "complaint"}
+{"id": "CRD-007", "engine": "reply", "input": "احذف بياناتي من نظامكم", "expect": "privacy_request"}
+{"id": "CRD-008", "engine": "payment", "input": {"qualified": true, "approved_by_human": false}, "expect": "block"}
+{"id": "CRD-009", "engine": "payment", "input": {"qualified": true, "approved_by_human": true}, "expect": "allow"}
+{"id": "CRD-010", "engine": "renewal", "input": {"delivered_value": false, "delivery_completed": true}, "expect": "block"}
+{"id": "CRD-011", "engine": "renewal", "input": {"delivered_value": true, "delivery_completed": true}, "expect": "allow"}
+{"id": "CRD-012", "engine": "won_deal", "input": {"won": true, "delivery_handoff": false, "customer_success_handoff": true}, "expect": "block"}
+{"id": "CRD-013", "engine": "won_deal", "input": {"won": true, "delivery_handoff": true, "customer_success_handoff": true}, "expect": "allow"}

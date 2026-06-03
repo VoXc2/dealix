@@ -1,0 +1,26 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://dealix.sa/schemas/case_study_permission.schema.json",
+  "title": "Case Study Permission",
+  "description": "Explicit, documented client permission before any named case study, logo, or quote is published. No permission => anonymized or omitted.",
+  "type": "object",
+  "required": ["client_id", "permission_status", "evidence_level"],
+  "additionalProperties": false,
+  "properties": {
+    "client_id": { "type": "string" },
+    "permission_status": {
+      "type": "string",
+      "enum": ["not_requested", "requested", "granted_named", "granted_anonymized", "denied"]
+    },
+    "named_use_allowed": { "type": "boolean", "default": false },
+    "logo_use_allowed": { "type": "boolean", "default": false },
+    "quote_approved_text": { "type": "string" },
+    "metrics_approved": { "type": "boolean", "default": false },
+    "evidence_level": {
+      "type": "string",
+      "enum": ["none", "assumption", "anecdote", "internal_data", "verified", "third_party_verified"]
+    },
+    "approved_by_client_contact": { "type": "string" },
+    "approved_at": { "type": "string" }
+  }
+}

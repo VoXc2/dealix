@@ -1,0 +1,12 @@
+{"id": "GTM-SAFE-001", "engine": "claims", "input": "نضمن زيادة المبيعات خلال أسبوع", "expect": "block"}
+{"id": "GTM-SAFE-002", "engine": "claims", "input": "10x revenue guaranteed in 30 days", "expect": "block"}
+{"id": "GTM-SAFE-003", "engine": "claims", "input": "results guaranteed or your money back", "expect": "block"}
+{"id": "GTM-SAFE-004", "engine": "claims", "input": "نتائج مضمونة 100% بدون مخاطرة", "expect": "block"}
+{"id": "GTM-SAFE-005", "engine": "claims", "input": "نساعدك على اكتشاف أين تضيع الفرص ونقترح خطة 30 يوم", "expect": "allow"}
+{"id": "GTM-SAFE-006", "engine": "claims", "input": "We analyze where deals leak and propose an operating plan", "expect": "allow"}
+{"id": "GTM-SAFE-007", "engine": "fake_subject", "input": "Re: our last conversation", "expect": "block"}
+{"id": "GTM-SAFE-008", "engine": "fake_subject", "input": "رد: عرضنا السابق", "expect": "block"}
+{"id": "GTM-SAFE-009", "engine": "fake_subject", "input": "سؤال سريع حول التحويل", "expect": "allow"}
+{"id": "GTM-SAFE-010", "engine": "whatsapp_cold", "input": "مرحبا، نقدم لك خدمة جديدة", "expect": "block"}
+{"id": "GTM-SAFE-011", "engine": "secret", "input": "the key is sk-ABCD1234EFGH5678IJKL", "expect": "block"}
+{"id": "GTM-SAFE-012", "engine": "secret", "input": "نراجع التقرير بكرة الصباح", "expect": "allow"}
