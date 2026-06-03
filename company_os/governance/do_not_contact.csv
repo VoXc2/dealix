@@ -1,0 +1,4 @@
+identifier,channel,reason,added_at,added_by
+# Suppression / Do-Not-Contact list. Any company/email/phone here is NEVER contacted.
+# reason ∈ {do_not_contact, unsubscribe, complaint, deletion_request}
+# Checked before every Send/Call Handoff (Daily Loop 12:00). Policy: docs/privacy/DO_NOT_CONTACT_AND_SUPPRESSION_POLICY_AR.md
