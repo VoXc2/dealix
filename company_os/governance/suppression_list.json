@@ -1,0 +1,23 @@
+{
+  "policy": "Honor opt-outs immediately. Entries here must never be contacted. The suppression list is checked before approval and before any send. Suppressed recipients can never become send-ready.",
+  "reasons": [
+    "unsubscribe",
+    "bounce",
+    "angry_reply",
+    "do_not_contact",
+    "legal_request",
+    "privacy_request",
+    "invalid_email"
+  ],
+  "suppressed": [
+    {
+      "company": "Example Opted-Out Co",
+      "email": "",
+      "domain": "example-optout.sa",
+      "reason": "do_not_contact",
+      "added_at": "2026-06-03",
+      "note": "Seed/example entry demonstrating the schema. Replace with real opt-outs as they arrive."
+    }
+  ],
+  "last_updated": "2026-06-03"
+}
