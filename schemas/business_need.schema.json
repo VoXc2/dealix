@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dealix/schemas/business_need.schema.json",
+  "title": "Business Need",
+  "description": "A detected business need attached to a sector or account, with the buyer roles that own it and the angle that resonates.",
+  "type": "object",
+  "required": ["id", "name_ar", "primary_core_system"],
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "type": "string",
+      "enum": [
+        "lead_capture",
+        "lead_response",
+        "qualification",
+        "follow_up",
+        "sales_execution",
+        "proposal",
+        "customer_support",
+        "client_onboarding",
+        "delivery",
+        "reporting",
+        "renewal",
+        "service_quality",
+        "knowledge",
+        "finance_visibility",
+        "ai_governance"
+      ]
+    },
+    "name_ar": { "type": "string", "minLength": 1 },
+    "meaning_ar": { "type": "string" },
+    "primary_core_system": { "$ref": "#/$defs/coreSystem" },
+    "secondary_core_systems": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/coreSystem" },
+      "uniqueItems": true
+    },
+    "specialized_system": { "type": "string" },
+    "primary_roles": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "secondary_roles": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "resonates_with": { "type": "string" },
+    "confidence": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1,
+      "description": "Evidence-aware confidence in the detection, 0..1. Never asserted as certainty."
+    }
+  },
+  "$defs": {
+    "coreSystem": {
+      "type": "string",
+      "enum": [
+        "revenue_os",
+        "executive_command_os",
+        "followup_recovery_os",
+        "whatsapp_client_os",
+        "proposal_proof_os"
+      ]
+    }
+  }
+}

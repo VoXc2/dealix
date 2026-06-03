@@ -1,0 +1,100 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dealix/schemas/account_pack_need_intelligence.schema.json",
+  "title": "Account Pack — Need Intelligence Block",
+  "description": "The Business Need Intelligence fields every Account Pack can carry, plus the Need Fit Score (0..100). No invented contacts; buyer roles are generic titles only.",
+  "type": "object",
+  "required": [
+    "company",
+    "sector",
+    "detected_business_need",
+    "need_confidence",
+    "recommended_core_system",
+    "recommended_specialized_system",
+    "sector_specific_sprint",
+    "specialized_delivery_pack",
+    "buyer_role_by_need",
+    "need_fit_score"
+  ],
+  "additionalProperties": true,
+  "properties": {
+    "company": { "type": "string", "minLength": 1 },
+    "sector": { "type": "string", "minLength": 1 },
+    "detected_business_need": { "$ref": "#/$defs/need" },
+    "need_confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+    "recommended_core_system": { "$ref": "#/$defs/coreSystem" },
+    "recommended_specialized_system": { "type": "string", "minLength": 1 },
+    "expansion_system": { "$ref": "#/$defs/coreSystem" },
+    "sector_specific_sprint": { "type": "string", "pattern": "^[a-z0-9_]+_sprint$" },
+    "specialized_delivery_pack": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "buyer_role_by_need": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "email_angle_by_need": { "type": "string" },
+    "call_angle_by_need": { "type": "string" },
+    "upsell_path_by_need": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/coreSystem" }
+    },
+    "need_fit_score": {
+      "type": "object",
+      "required": [
+        "sector_need_match",
+        "signal_strength",
+        "delivery_readiness",
+        "buyer_clarity",
+        "first_sprint_clarity",
+        "upsell_path",
+        "total"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "sector_need_match": { "type": "integer", "minimum": 0, "maximum": 25 },
+        "signal_strength": { "type": "integer", "minimum": 0, "maximum": 20 },
+        "delivery_readiness": { "type": "integer", "minimum": 0, "maximum": 20 },
+        "buyer_clarity": { "type": "integer", "minimum": 0, "maximum": 15 },
+        "first_sprint_clarity": { "type": "integer", "minimum": 0, "maximum": 10 },
+        "upsell_path": { "type": "integer", "minimum": 0, "maximum": 10 },
+        "total": { "type": "integer", "minimum": 0, "maximum": 100 }
+      }
+    }
+  },
+  "$defs": {
+    "coreSystem": {
+      "type": "string",
+      "enum": [
+        "revenue_os",
+        "executive_command_os",
+        "followup_recovery_os",
+        "whatsapp_client_os",
+        "proposal_proof_os"
+      ]
+    },
+    "need": {
+      "type": "string",
+      "enum": [
+        "lead_capture",
+        "lead_response",
+        "qualification",
+        "follow_up",
+        "sales_execution",
+        "proposal",
+        "customer_support",
+        "client_onboarding",
+        "delivery",
+        "reporting",
+        "renewal",
+        "service_quality",
+        "knowledge",
+        "finance_visibility",
+        "ai_governance"
+      ]
+    }
+  }
+}

@@ -1,0 +1,78 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dealix/schemas/specialized_sprint.schema.json",
+  "title": "Specialized Sprint",
+  "description": "A sector-specific first sprint. Maps to exactly one core system and must carry deliverables, required inputs, and acceptance criteria.",
+  "type": "object",
+  "required": [
+    "id",
+    "name_ar",
+    "name_en",
+    "core_system",
+    "sector",
+    "need",
+    "deliverables",
+    "required_inputs",
+    "acceptance_criteria"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "id": { "type": "string", "pattern": "^[a-z0-9_]+_sprint$" },
+    "name_ar": { "type": "string", "minLength": 1 },
+    "name_en": { "type": "string", "minLength": 1 },
+    "core_system": { "$ref": "#/$defs/coreSystem" },
+    "sector": { "type": "string", "minLength": 1 },
+    "need": { "$ref": "#/$defs/need" },
+    "duration_days": { "type": "integer", "minimum": 1, "maximum": 30 },
+    "deliverables": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "required_inputs": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "acceptance_criteria": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "email_angle": { "type": "string" },
+    "call_angle": { "type": "string" },
+    "upsell_path": { "$ref": "#/$defs/coreSystem" }
+  },
+  "$defs": {
+    "coreSystem": {
+      "type": "string",
+      "enum": [
+        "revenue_os",
+        "executive_command_os",
+        "followup_recovery_os",
+        "whatsapp_client_os",
+        "proposal_proof_os"
+      ]
+    },
+    "need": {
+      "type": "string",
+      "enum": [
+        "lead_capture",
+        "lead_response",
+        "qualification",
+        "follow_up",
+        "sales_execution",
+        "proposal",
+        "customer_support",
+        "client_onboarding",
+        "delivery",
+        "reporting",
+        "renewal",
+        "service_quality",
+        "knowledge",
+        "finance_visibility",
+        "ai_governance"
+      ]
+    }
+  }
+}

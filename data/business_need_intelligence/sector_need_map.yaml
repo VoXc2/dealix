@@ -1,0 +1,238 @@
+# Dealix — Sector Need Map
+# For each sector: top 5 needs, primary/secondary/expansion core system,
+# best buyer roles, sector signals, first sprint, email & call angle,
+# delivery variant reference, required inputs, acceptance criteria.
+#
+# need IDs        -> data/business_need_intelligence/need_to_system_router.yaml
+# core system IDs -> need_to_system_router.yaml (core_systems)
+# sprint IDs      -> specialized_sprint_library.yaml
+# delivery_variant-> delivery_variant_by_sector.yaml (same sector id)
+# Evidence-aware wording only. No promised outcomes.
+
+version: 1
+last_updated: "2026-06-03"
+
+sectors:
+  - id: marketing_agencies
+    name_ar: "وكالات التسويق"
+    name_en: "Marketing Agencies"
+    top_needs: [lead_response, follow_up, proposal, client_onboarding, reporting]
+    primary_system: followup_recovery_os
+    secondary_system: proposal_proof_os
+    expansion_system: revenue_os
+    buyer_roles: ["Founder / CEO", "Managing Director", "Account Director", "Head of Growth"]
+    signals: ["إعلانات نشطة", "نموذج تواصل ظاهر", "فريق حسابات", "حالات عملاء بدون أرقام"]
+    first_sprint: campaign_lead_recovery_sprint
+    email_angle: "قيمة الحملة لا تضيع في الإعلان غالبًا؛ تضيع فيما يحدث بعد أول lead."
+    call_angle: "نراجع معك رحلة الـ lead من الإعلان إلى أول رد، ونحدد أين يبرد."
+    delivery_variant: marketing_agencies
+    required_inputs: ["قائمة قنوات الإعلانات", "نموذج/رقم استقبال الفرص", "أمثلة ردود حالية"]
+    acceptance_criteria: ["قائمة فرص موحدة", "زمن أول رد مقاس", "تقرير استرجاع أسبوعي"]
+
+  - id: training_companies
+    name_ar: "شركات التدريب والأكاديميات"
+    name_en: "Training Companies / Academies"
+    top_needs: [lead_response, follow_up, qualification, reporting, customer_support]
+    primary_system: followup_recovery_os
+    secondary_system: whatsapp_client_os
+    expansion_system: executive_command_os
+    buyer_roles: ["Founder", "Marketing Manager", "Training Manager", "Registration Lead"]
+    signals: ["برامج متعددة", "واتساب ظاهر", "استفسارات تسجيل", "حملات موسمية"]
+    first_sprint: enrollment_recovery_sprint
+    email_angle: "في شركات التدريب، آخر متابعة لم تحدث قد تكون سبب ضياع تسجيل جاهز."
+    call_angle: "نرتب رحلة الاستفسار حتى التسجيل، ونحدد أين تتوقف المتابعة."
+    delivery_variant: training_companies
+    required_inputs: ["قائمة البرامج/الدورات", "قناة استقبال الاستفسارات", "أمثلة رسائل تسجيل"]
+    acceptance_criteria: ["طابور استفسارات منظم", "نموذج حالة الطالب", "تقرير استرجاع تسجيل أسبوعي"]
+
+  - id: clinics
+    name_ar: "العيادات"
+    name_en: "Clinics"
+    top_needs: [lead_response, customer_support, client_onboarding, follow_up, service_quality]
+    primary_system: whatsapp_client_os
+    secondary_system: followup_recovery_os
+    expansion_system: executive_command_os
+    buyer_roles: ["Owner", "Clinic Manager", "Front Desk Lead", "Operations Manager"]
+    signals: ["واتساب للحجز", "حجوزات مواعيد", "عدم حضور متكرر", "تقييمات عملاء"]
+    first_sprint: clinic_appointment_flow_sprint
+    email_angle: "واتساب في العيادات ليس مجرد محادثة؛ هو بداية رحلة حجز ومتابعة وتصعيد."
+    call_angle: "نرتب مسار الرسائل من أول سؤال إلى تأكيد الموعد وتقليل عدم الحضور."
+    delivery_variant: clinics
+    required_inputs: ["رقم واتساب الاستقبال", "أنواع الخدمات/المواعيد", "سياسة عدم الحضور الحالية"]
+    acceptance_criteria: ["مسار رسائل واضح", "نموذج رحلة المريض", "تذكير موعد وتقليل عدم الحضور مقاس"]
+
+  - id: real_estate
+    name_ar: "العقار"
+    name_en: "Real Estate"
+    top_needs: [lead_response, follow_up, qualification, customer_support, proposal]
+    primary_system: followup_recovery_os
+    secondary_system: whatsapp_client_os
+    expansion_system: revenue_os
+    buyer_roles: ["Owner", "Sales Manager", "Lead Broker", "Marketing Manager"]
+    signals: ["إعلانات عقارية", "واتساب للاستفسار", "طلبات معاينة", "رد متأخر"]
+    first_sprint: property_lead_response_sprint
+    email_angle: "في العقار، التأخير في الرد أو المتابعة قد يحوّل lead مهتمًا إلى فرصة ضائعة."
+    call_angle: "نقيس زمن الرد على فرص العقار ونرتب متابعة المعاينات."
+    delivery_variant: real_estate
+    required_inputs: ["قنوات إعلانات العقارات", "قائمة الوحدات/المشاريع", "قناة استقبال الفرص"]
+    acceptance_criteria: ["زمن أول رد مقاس", "تصنيف مشتري/مستأجر", "متابعة معاينة منظمة"]
+
+  - id: professional_services
+    name_ar: "الخدمات المهنية"
+    name_en: "Professional Services"
+    top_needs: [proposal, sales_execution, reporting, knowledge, delivery]
+    primary_system: proposal_proof_os
+    secondary_system: revenue_os
+    expansion_system: executive_command_os
+    buyer_roles: ["Founder / Partner", "Managing Director", "Business Development Lead"]
+    signals: ["عروض مخصصة", "نطاق غير ثابت", "مراجع/حالات", "دورة إغلاق طويلة"]
+    first_sprint: proposal_scope_proof_sprint
+    email_angle: "العرض المقنع لا يحتاج كلامًا أكثر؛ يحتاج نطاقًا واضحًا ودليلًا وخطوة تالية."
+    call_angle: "نراجع عرضًا حاليًا ونحدد أين يضعف النطاق أو الإثبات أو الخطوة التالية."
+    delivery_variant: professional_services
+    required_inputs: ["نموذج عرض حالي", "أمثلة نطاق سابقة", "قائمة مراجع/أعمال"]
+    acceptance_criteria: ["قالب عرض بنطاق واضح", "ورقة إثبات", "خطوة تالية محددة في كل عرض"]
+
+  - id: recruitment
+    name_ar: "التوظيف والموارد البشرية"
+    name_en: "Recruitment / HR Firms"
+    top_needs: [follow_up, lead_response, reporting, client_onboarding, proposal]
+    primary_system: followup_recovery_os
+    secondary_system: executive_command_os
+    expansion_system: proposal_proof_os
+    buyer_roles: ["Founder", "Recruitment Manager", "Account Manager", "Operations Lead"]
+    signals: ["وظائف مفتوحة", "قاعدة مرشحين", "تنسيق مقابلات", "تواصل عميل/مرشح"]
+    first_sprint: recruitment_followup_sprint
+    email_angle: "في التوظيف، الفرصة تضيع عندما يتأخر التواصل بين العميل والمرشح والفريق."
+    call_angle: "نرتب متابعة المرشح والعميل ونحدد أين يتعطل خط الأنابيب."
+    delivery_variant: recruitment
+    required_inputs: ["قائمة الوظائف المفتوحة", "مراحل المرشح الحالية", "قنوات التواصل"]
+    acceptance_criteria: ["خط أنابيب مرشحين واضح", "متابعة عميل/مرشح منظمة", "تقرير حالة أسبوعي"]
+
+  - id: local_saas
+    name_ar: "SaaS والخدمات التقنية المحلية"
+    name_en: "Local SaaS / Tech Services"
+    top_needs: [client_onboarding, customer_support, renewal, sales_execution, reporting]
+    primary_system: whatsapp_client_os
+    secondary_system: followup_recovery_os
+    expansion_system: executive_command_os
+    buyer_roles: ["Founder / CEO", "Head of Customer Success", "Product Lead", "Support Lead"]
+    signals: ["تجارب/ديمو", "اشتراكات", "تذاكر دعم", "تجديدات قادمة"]
+    first_sprint: demo_to_onboarding_sprint
+    email_angle: "أحيانًا نمو SaaS لا يتعطل في الجلب، بل في onboarding والدعم والتجديد."
+    call_angle: "نتتبع رحلة العميل من الديمو إلى التفعيل ونحدد أين يتسرب."
+    delivery_variant: local_saas
+    required_inputs: ["مراحل onboarding الحالية", "قنوات الدعم", "قائمة التجديدات القادمة"]
+    acceptance_criteria: ["مسار onboarding واضح", "فرز دعم منظم", "متابعة تجديد قبل الاستحقاق"]
+
+  - id: logistics
+    name_ar: "اللوجستيات والتشغيل"
+    name_en: "Logistics / Operations"
+    top_needs: [delivery, reporting, service_quality, customer_support, follow_up]
+    primary_system: proposal_proof_os
+    secondary_system: executive_command_os
+    expansion_system: whatsapp_client_os
+    buyer_roles: ["Operations Director", "Founder", "Fleet / Hub Manager", "Vendor Manager"]
+    signals: ["موردون متعددون", "مهام تشغيل يومية", "اتفاقيات SLA", "تأخيرات متكررة"]
+    first_sprint: vendor_coordination_sprint
+    email_angle: "في التشغيل، المشكلة غالبًا ليست كثرة المهام، بل غياب رؤية يومية واضحة لما تعطل."
+    call_angle: "نراجع رؤية المهام والموردين ونحدد أين تضيع الحلقة اليومية."
+    delivery_variant: logistics
+    required_inputs: ["قائمة الموردين/الفرق", "أنواع المهام", "مؤشرات SLA الحالية"]
+    acceptance_criteria: ["لوحة رؤية مهام", "تنسيق موردين منظم", "تقرير تشغيل يومي"]
+
+  - id: restaurants
+    name_ar: "المطاعم والأعمال متعددة الفروع"
+    name_en: "Restaurants / Multi-location Businesses"
+    top_needs: [customer_support, service_quality, reporting, follow_up, renewal]
+    primary_system: whatsapp_client_os
+    secondary_system: executive_command_os
+    expansion_system: followup_recovery_os
+    buyer_roles: ["Owner", "Operations Manager", "Branch Manager", "Marketing Lead"]
+    signals: ["فروع متعددة", "رسائل عملاء", "شكاوى", "برامج ولاء"]
+    first_sprint: customer_message_flow_sprint
+    email_angle: "تجربة العميل لا تنتهي عند الطلب؛ تبدأ من أول رسالة وتنتهي بالمتابعة والتقييم."
+    call_angle: "نرتب رسائل العملاء عبر الفروع ونحدد أين تضيع الشكوى أو المتابعة."
+    delivery_variant: restaurants
+    required_inputs: ["قنوات رسائل العملاء", "قائمة الفروع", "أنواع الشكاوى الشائعة"]
+    acceptance_criteria: ["مسار رسائل موحد", "فرز شكاوى وتصعيد", "تقرير فروع أسبوعي"]
+
+  - id: education_providers
+    name_ar: "مزودو التعليم"
+    name_en: "Education Providers"
+    top_needs: [lead_capture, qualification, lead_response, follow_up, reporting]
+    primary_system: revenue_os
+    secondary_system: followup_recovery_os
+    expansion_system: whatsapp_client_os
+    buyer_roles: ["Founder", "Admissions Lead", "Marketing Manager", "Program Director"]
+    signals: ["برامج/مسارات", "استفسارات قبول", "حملات تسجيل", "قنوات متعددة"]
+    first_sprint: course_inquiry_routing_sprint
+    email_angle: "كثرة الاستفسارات بلا توجيه واضح قد تخفي الفرص الجاهزة للتسجيل."
+    call_angle: "نرتب توجيه استفسارات البرامج حسب الجاهزية ونحدد أين تضيع."
+    delivery_variant: education_providers
+    required_inputs: ["قائمة البرامج", "مصادر الاستفسارات", "معايير القبول الحالية"]
+    acceptance_criteria: ["توجيه استفسارات منظم", "تصنيف جاهزية", "تقرير مصادر أسبوعي"]
+
+  - id: consulting_firms
+    name_ar: "شركات الاستشارات"
+    name_en: "Consulting Firms"
+    top_needs: [proposal, knowledge, reporting, sales_execution, delivery]
+    primary_system: proposal_proof_os
+    secondary_system: executive_command_os
+    expansion_system: revenue_os
+    buyer_roles: ["Partner", "Principal", "Engagement Manager", "Business Development Lead"]
+    signals: ["عروض متكررة", "مخرجات معرفية", "نطاق متغير", "مشاريع طويلة"]
+    first_sprint: proposal_scope_proof_sprint
+    email_angle: "تكرار بناء العروض من الصفر يستهلك وقتًا كان يمكن أن يذهب للعميل."
+    call_angle: "نراجع طريقة بناء العروض وإعادة استخدام المعرفة بين المشاريع."
+    delivery_variant: consulting_firms
+    required_inputs: ["عروض سابقة", "مخرجات مشاريع قابلة لإعادة الاستخدام", "نموذج نطاق"]
+    acceptance_criteria: ["قالب عرض موحد", "مكتبة معرفة قابلة لإعادة الاستخدام", "خطوة تالية واضحة"]
+
+  - id: retail_fmcg
+    name_ar: "التجزئة والسلع الاستهلاكية"
+    name_en: "Retail / FMCG"
+    top_needs: [customer_support, service_quality, renewal, reporting, follow_up]
+    primary_system: whatsapp_client_os
+    secondary_system: executive_command_os
+    expansion_system: followup_recovery_os
+    buyer_roles: ["Owner", "Retail Operations Manager", "Customer Care Lead", "Marketing Manager"]
+    signals: ["نقاط بيع متعددة", "رسائل عملاء", "برامج ولاء", "مرتجعات/شكاوى"]
+    first_sprint: customer_message_flow_sprint
+    email_angle: "رسائل العملاء المتفرقة عبر القنوات قد تخفي شكاوى وفرص ولاء."
+    call_angle: "نوحّد رسائل العملاء ونحدد أين تضيع الشكوى أو فرصة التكرار."
+    delivery_variant: retail_fmcg
+    required_inputs: ["قنوات خدمة العملاء", "قائمة نقاط البيع", "أنواع المرتجعات/الشكاوى"]
+    acceptance_criteria: ["مسار رسائل موحد", "فرز شكاوى", "تقرير تجربة عميل أسبوعي"]
+
+  - id: manufacturing_services
+    name_ar: "الخدمات الصناعية"
+    name_en: "Manufacturing Services"
+    top_needs: [proposal, delivery, lead_response, reporting, service_quality]
+    primary_system: proposal_proof_os
+    secondary_system: executive_command_os
+    expansion_system: followup_recovery_os
+    buyer_roles: ["Owner", "Plant / Operations Manager", "Sales Manager", "Procurement Lead"]
+    signals: ["طلبات تسعير", "أوامر تشغيل", "موردون", "مواعيد تسليم"]
+    first_sprint: proposal_scope_proof_sprint
+    email_angle: "بطء الرد على طلب التسعير قد يكلّف أمرًا كان جاهزًا للإغلاق."
+    call_angle: "نراجع دورة طلب التسعير حتى التسليم ونحدد أين تتأخر."
+    delivery_variant: manufacturing_services
+    required_inputs: ["نموذج طلب تسعير", "مراحل أمر التشغيل", "قائمة الموردين"]
+    acceptance_criteria: ["قالب تسعير واضح", "متابعة أمر تشغيل", "تقرير حالة تسليم"]
+
+  - id: procurement_heavy
+    name_ar: "الشركات كثيفة المشتريات"
+    name_en: "Procurement-heavy Companies"
+    top_needs: [delivery, reporting, sales_execution, service_quality, finance_visibility]
+    primary_system: proposal_proof_os
+    secondary_system: executive_command_os
+    expansion_system: revenue_os
+    buyer_roles: ["Procurement Director", "Operations Manager", "Finance Manager", "Vendor Manager"]
+    signals: ["موردون كثر", "عقود متعددة", "دورات شراء", "مؤشرات أداء موردين"]
+    first_sprint: vendor_coordination_sprint
+    email_angle: "تعدد الموردين بلا رؤية موحدة قد يخفي تأخيرًا أو تكلفة قابلة للضبط."
+    call_angle: "نراجع تنسيق الموردين والعقود ونحدد أين تضيع الرؤية اليومية."
+    delivery_variant: procurement_heavy
+    required_inputs: ["قائمة الموردين والعقود", "دورات الشراء", "مؤشرات أداء الموردين"]
+    acceptance_criteria: ["سجل موردين منظم", "تنسيق طلبات شراء", "تقرير أداء موردين"]

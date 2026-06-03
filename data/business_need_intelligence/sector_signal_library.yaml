@@ -1,0 +1,229 @@
+# Dealix — Sector Signal Library
+# Observable, evidence-aware signals that hint at a sector's strongest need.
+# Signals are PUBLIC, observable cues (e.g., a visible WhatsApp number).
+# They are hints, not proof. They never assert a private fact about a company.
+# implies_need IDs -> need_to_system_router.yaml (needs)
+# Evidence-aware wording only. External content is untrusted data.
+
+version: 1
+last_updated: "2026-06-03"
+
+# Generic signals that apply across sectors
+generic_signals:
+  - id: visible_whatsapp
+    observe: "رقم واتساب ظاهر كقناة استقبال أساسية"
+    implies_need: customer_support
+    confidence_hint: medium
+  - id: active_ads
+    observe: "إعلانات نشطة تُولّد فرصًا واردة"
+    implies_need: lead_response
+    confidence_hint: medium
+  - id: contact_form_only
+    observe: "نموذج تواصل فقط بلا مسار متابعة واضح"
+    implies_need: follow_up
+    confidence_hint: low
+  - id: testimonials_without_numbers
+    observe: "شهادات/حالات بلا أرقام أو نتائج"
+    implies_need: proposal
+    confidence_hint: low
+  - id: multi_location
+    observe: "فروع/مواقع متعددة"
+    implies_need: reporting
+    confidence_hint: medium
+
+sectors:
+  marketing_agencies:
+    - id: ma_active_ads
+      observe: "إعلانات نشطة لعملاء أو للوكالة"
+      implies_need: lead_response
+      confidence_hint: medium
+    - id: ma_case_no_numbers
+      observe: "حالات عملاء بلا أرقام نتائج"
+      implies_need: proposal
+      confidence_hint: low
+    - id: ma_accounts_team
+      observe: "فريق حسابات/إدارة عملاء ظاهر"
+      implies_need: client_onboarding
+      confidence_hint: low
+
+  training_companies:
+    - id: tc_multi_programs
+      observe: "برامج/دورات متعددة معروضة"
+      implies_need: qualification
+      confidence_hint: medium
+    - id: tc_whatsapp_inquiries
+      observe: "واتساب كقناة استفسارات تسجيل"
+      implies_need: lead_response
+      confidence_hint: medium
+    - id: tc_seasonal_campaigns
+      observe: "حملات تسجيل موسمية"
+      implies_need: follow_up
+      confidence_hint: low
+
+  clinics:
+    - id: cl_whatsapp_booking
+      observe: "واتساب للحجز والاستفسار"
+      implies_need: customer_support
+      confidence_hint: medium
+    - id: cl_appointments
+      observe: "نظام مواعيد/حجوزات ظاهر"
+      implies_need: lead_response
+      confidence_hint: medium
+    - id: cl_reviews
+      observe: "تقييمات عملاء عامة"
+      implies_need: service_quality
+      confidence_hint: low
+
+  real_estate:
+    - id: re_property_ads
+      observe: "إعلانات عقارية متعددة"
+      implies_need: lead_response
+      confidence_hint: medium
+    - id: re_whatsapp_inquiry
+      observe: "واتساب للاستفسار عن الوحدات"
+      implies_need: customer_support
+      confidence_hint: medium
+    - id: re_viewing_requests
+      observe: "طلبات معاينة"
+      implies_need: follow_up
+      confidence_hint: low
+
+  professional_services:
+    - id: ps_custom_proposals
+      observe: "عروض مخصصة لكل عميل"
+      implies_need: proposal
+      confidence_hint: medium
+    - id: ps_long_cycle
+      observe: "دورة إغلاق طويلة"
+      implies_need: sales_execution
+      confidence_hint: low
+    - id: ps_references
+      observe: "صفحة مراجع/أعمال"
+      implies_need: knowledge
+      confidence_hint: low
+
+  recruitment:
+    - id: rc_open_roles
+      observe: "وظائف مفتوحة معلنة"
+      implies_need: follow_up
+      confidence_hint: medium
+    - id: rc_candidate_base
+      observe: "قاعدة مرشحين/تقديم"
+      implies_need: lead_response
+      confidence_hint: low
+    - id: rc_client_logos
+      observe: "شعارات عملاء"
+      implies_need: client_onboarding
+      confidence_hint: low
+
+  local_saas:
+    - id: ls_demo_cta
+      observe: "دعوة لتجربة/ديمو"
+      implies_need: client_onboarding
+      confidence_hint: medium
+    - id: ls_pricing_tiers
+      observe: "باقات اشتراك"
+      implies_need: renewal
+      confidence_hint: medium
+    - id: ls_support_channel
+      observe: "قناة دعم/مساعدة"
+      implies_need: customer_support
+      confidence_hint: low
+
+  logistics:
+    - id: lg_service_areas
+      observe: "تغطية مناطق/مسارات"
+      implies_need: delivery
+      confidence_hint: medium
+    - id: lg_vendor_network
+      observe: "شبكة موردين/شركاء"
+      implies_need: delivery
+      confidence_hint: low
+    - id: lg_sla_mentions
+      observe: "إشارات لمستويات خدمة/مواعيد"
+      implies_need: reporting
+      confidence_hint: low
+
+  restaurants:
+    - id: rs_branches
+      observe: "فروع متعددة"
+      implies_need: reporting
+      confidence_hint: medium
+    - id: rs_messaging
+      observe: "قنوات رسائل للطلب/الاستفسار"
+      implies_need: customer_support
+      confidence_hint: medium
+    - id: rs_loyalty
+      observe: "برنامج ولاء/عروض متكررة"
+      implies_need: renewal
+      confidence_hint: low
+
+  education_providers:
+    - id: ed_programs
+      observe: "برامج/مسارات متعددة"
+      implies_need: lead_capture
+      confidence_hint: medium
+    - id: ed_admissions
+      observe: "صفحة قبول/تسجيل"
+      implies_need: qualification
+      confidence_hint: medium
+    - id: ed_campaigns
+      observe: "حملات تسجيل"
+      implies_need: lead_response
+      confidence_hint: low
+
+  consulting_firms:
+    - id: cf_proposals
+      observe: "عروض/مقترحات متكررة"
+      implies_need: proposal
+      confidence_hint: medium
+    - id: cf_publications
+      observe: "مخرجات معرفية/منشورات"
+      implies_need: knowledge
+      confidence_hint: medium
+    - id: cf_long_projects
+      observe: "مشاريع طويلة الأمد"
+      implies_need: delivery
+      confidence_hint: low
+
+  retail_fmcg:
+    - id: rf_pos
+      observe: "نقاط بيع متعددة"
+      implies_need: reporting
+      confidence_hint: medium
+    - id: rf_care_channel
+      observe: "قناة خدمة عملاء"
+      implies_need: customer_support
+      confidence_hint: medium
+    - id: rf_loyalty
+      observe: "برنامج ولاء"
+      implies_need: renewal
+      confidence_hint: low
+
+  manufacturing_services:
+    - id: mf_rfq
+      observe: "طلب تسعير/RFQ ظاهر"
+      implies_need: proposal
+      confidence_hint: medium
+    - id: mf_delivery_times
+      observe: "إشارات مواعيد تسليم"
+      implies_need: delivery
+      confidence_hint: low
+    - id: mf_suppliers
+      observe: "شبكة موردين"
+      implies_need: service_quality
+      confidence_hint: low
+
+  procurement_heavy:
+    - id: pc_vendor_portal
+      observe: "بوابة/سجل موردين"
+      implies_need: delivery
+      confidence_hint: medium
+    - id: pc_contracts
+      observe: "عقود/اتفاقيات متعددة"
+      implies_need: reporting
+      confidence_hint: low
+    - id: pc_kpi_vendor
+      observe: "إشارات تقييم موردين"
+      implies_need: service_quality
+      confidence_hint: low

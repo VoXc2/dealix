@@ -1,0 +1,165 @@
+# Dealix — Delivery Variant by Sector
+# How a core system's output is specialized per sector at delivery time.
+# Every variant has: core_system, specialized_delivery_pack, required_inputs,
+# acceptance_criteria. This is the delivery contract for the first sprint.
+# core_system IDs -> need_to_system_router.yaml (core_systems)
+# first_sprint    -> specialized_sprint_library.yaml
+# Evidence-aware wording only. No promised outcomes.
+
+version: 1
+last_updated: "2026-06-03"
+
+variants:
+  marketing_agencies:
+    core_system: followup_recovery_os
+    first_sprint: campaign_lead_recovery_sprint
+    specialized_delivery_pack:
+      - "Campaign Lead Queue — قائمة فرص الحملات الموحدة"
+      - "First-Response Template — قالب رد أول"
+      - "Post-Lead Follow-up Set — مجموعة متابعة بعد أول lead"
+      - "Weekly Recovery Report — تقرير استرجاع أسبوعي"
+    required_inputs: ["قائمة قنوات الإعلانات", "قناة استقبال الفرص", "أمثلة ردود حالية"]
+    acceptance_criteria: ["قائمة فرص موحدة", "زمن أول رد مقاس", "تقرير استرجاع يُسلَّم"]
+
+  training_companies:
+    core_system: followup_recovery_os
+    first_sprint: enrollment_recovery_sprint
+    specialized_delivery_pack:
+      - "Enrollment Inquiry Queue — طابور استفسارات التسجيل"
+      - "Student Status Model — نموذج حالة الطالب"
+      - "Course Inquiry Message Set — مجموعة رسائل الدورات"
+      - "Weekly Registration Recovery Report — تقرير استرجاع تسجيل أسبوعي"
+    required_inputs: ["قائمة البرامج", "قناة الاستفسارات", "أمثلة رسائل حالية"]
+    acceptance_criteria: ["طابور استفسارات منظم", "نموذج حالة طالب مطبق", "تقرير استرجاع يُسلَّم"]
+
+  clinics:
+    core_system: whatsapp_client_os
+    first_sprint: clinic_appointment_flow_sprint
+    specialized_delivery_pack:
+      - "WhatsApp Intake Flow — مسار استقبال واتساب"
+      - "Patient Journey Model — نموذج رحلة المريض"
+      - "Appointment Reminder Set — مجموعة تذكير المواعيد"
+      - "Booking & No-show Report — تقرير الحجوزات وعدم الحضور"
+    required_inputs: ["رقم واتساب الاستقبال", "أنواع الخدمات/المواعيد", "سياسة عدم الحضور"]
+    acceptance_criteria: ["مسار رسائل واضح", "تذكير موعد فعّال", "عدم الحضور مقاس"]
+
+  real_estate:
+    core_system: followup_recovery_os
+    first_sprint: property_lead_response_sprint
+    specialized_delivery_pack:
+      - "Property Lead Queue — قائمة فرص العقار"
+      - "Fast First-Response Template — قالب رد أول سريع"
+      - "Viewing Follow-up Set — متابعة المعاينة"
+      - "Response-Time Report — تقرير زمن الرد"
+    required_inputs: ["قنوات الإعلانات", "قائمة الوحدات/المشاريع", "قناة استقبال الفرص"]
+    acceptance_criteria: ["زمن أول رد مقاس", "تصنيف مشتري/مستأجر", "متابعة معاينة منظمة"]
+
+  professional_services:
+    core_system: proposal_proof_os
+    first_sprint: proposal_scope_proof_sprint
+    specialized_delivery_pack:
+      - "Scoped Proposal Template — قالب عرض بنطاق واضح"
+      - "Proof Sheet — ورقة إثبات"
+      - "Next-Step Block — كتلة الخطوة التالية"
+      - "Proposal Review Checklist — قائمة تحقق العرض"
+    required_inputs: ["نموذج عرض حالي", "أمثلة نطاق سابقة", "قائمة أعمال/مراجع"]
+    acceptance_criteria: ["نطاق واضح في كل عرض", "دليل/إثبات مرفق", "خطوة تالية محددة"]
+
+  recruitment:
+    core_system: followup_recovery_os
+    first_sprint: recruitment_followup_sprint
+    specialized_delivery_pack:
+      - "Candidate Pipeline — خط أنابيب المرشحين"
+      - "Client/Candidate Follow-up Set — متابعة العميل والمرشح"
+      - "Interview Coordination Flow — تنسيق المقابلات"
+      - "Weekly Status Report — تقرير حالة أسبوعي"
+    required_inputs: ["قائمة الوظائف المفتوحة", "مراحل المرشح", "قنوات التواصل"]
+    acceptance_criteria: ["خط أنابيب واضح", "متابعة منظمة", "تقرير حالة يُسلَّم"]
+
+  local_saas:
+    core_system: whatsapp_client_os
+    first_sprint: demo_to_onboarding_sprint
+    specialized_delivery_pack:
+      - "Onboarding Flow — مسار التفعيل"
+      - "Activation Checklist — قائمة تحقق التفعيل"
+      - "Post-Demo Follow-up — متابعة ما بعد الديمو"
+      - "Activation Report — تقرير التفعيل"
+    required_inputs: ["مراحل onboarding الحالية", "قائمة عملاء الديمو", "قنوات التواصل"]
+    acceptance_criteria: ["مسار تفعيل واضح", "خطوات مقاسة", "متابعة ما بعد الديمو"]
+
+  logistics:
+    core_system: proposal_proof_os
+    first_sprint: vendor_coordination_sprint
+    specialized_delivery_pack:
+      - "Vendor Register — سجل الموردين"
+      - "Coordination Flow — مسار التنسيق"
+      - "SLA Tracking — متابعة SLA"
+      - "Daily Operations Report — تقرير تشغيل يومي"
+    required_inputs: ["قائمة الموردين/الفرق", "أنواع الطلبات", "مؤشرات SLA الحالية"]
+    acceptance_criteria: ["سجل موردين منظم", "التزامات SLA متابَعة", "تقرير تشغيل يُسلَّم"]
+
+  restaurants:
+    core_system: whatsapp_client_os
+    first_sprint: customer_message_flow_sprint
+    specialized_delivery_pack:
+      - "Unified Message Flow — مسار رسائل موحد"
+      - "Complaint Triage — فرز الشكاوى"
+      - "Quick-Reply Template — قالب رد سريع"
+      - "Weekly Experience Report — تقرير تجربة أسبوعي"
+    required_inputs: ["قنوات رسائل العملاء", "قائمة الفروع", "أنواع الشكاوى الشائعة"]
+    acceptance_criteria: ["رسائل موحدة", "كل شكوى لها مسار", "تقرير تجربة يُسلَّم"]
+
+  education_providers:
+    core_system: revenue_os
+    first_sprint: course_inquiry_routing_sprint
+    specialized_delivery_pack:
+      - "Inquiry Routing Rules — قواعد توجيه الاستفسارات"
+      - "Readiness Tagging — تصنيف الجاهزية"
+      - "Lead Capture Form — نموذج التقاط الفرصة"
+      - "Source Report — تقرير المصادر"
+    required_inputs: ["قائمة البرامج", "مصادر الاستفسارات", "معايير القبول الحالية"]
+    acceptance_criteria: ["توجيه منظم", "تصنيف جاهزية مطبق", "تقرير مصادر يُسلَّم"]
+
+  consulting_firms:
+    core_system: proposal_proof_os
+    first_sprint: proposal_scope_proof_sprint
+    specialized_delivery_pack:
+      - "Unified Proposal Template — قالب عرض موحد"
+      - "Reusable Knowledge Library — مكتبة معرفة"
+      - "Scope Model — نموذج النطاق"
+      - "Next-Step Block — كتلة الخطوة التالية"
+    required_inputs: ["عروض سابقة", "مخرجات قابلة لإعادة الاستخدام", "نموذج نطاق"]
+    acceptance_criteria: ["قالب عرض موحد", "مكتبة قابلة لإعادة الاستخدام", "خطوة تالية واضحة"]
+
+  retail_fmcg:
+    core_system: whatsapp_client_os
+    first_sprint: customer_message_flow_sprint
+    specialized_delivery_pack:
+      - "Unified Message Flow — مسار رسائل موحد"
+      - "Complaint & Return Triage — فرز الشكاوى والمرتجعات"
+      - "Quick-Reply Template — قالب رد سريع"
+      - "Weekly Experience Report — تقرير تجربة أسبوعي"
+    required_inputs: ["قنوات خدمة العملاء", "قائمة نقاط البيع", "أنواع المرتجعات/الشكاوى"]
+    acceptance_criteria: ["مسار رسائل موحد", "فرز شكاوى مطبق", "تقرير تجربة يُسلَّم"]
+
+  manufacturing_services:
+    core_system: proposal_proof_os
+    first_sprint: proposal_scope_proof_sprint
+    specialized_delivery_pack:
+      - "Quote Template — قالب تسعير واضح"
+      - "Work-Order Follow-up — متابعة أمر التشغيل"
+      - "Delivery Status Model — نموذج حالة التسليم"
+      - "Quote-to-Delivery Report — تقرير من التسعير إلى التسليم"
+    required_inputs: ["نموذج طلب تسعير", "مراحل أمر التشغيل", "قائمة الموردين"]
+    acceptance_criteria: ["قالب تسعير واضح", "متابعة أمر تشغيل", "تقرير تسليم يُسلَّم"]
+
+  procurement_heavy:
+    core_system: proposal_proof_os
+    first_sprint: vendor_coordination_sprint
+    specialized_delivery_pack:
+      - "Vendor & Contract Register — سجل الموردين والعقود"
+      - "Purchase Request Flow — مسار طلبات الشراء"
+      - "Vendor Performance Tracking — متابعة أداء الموردين"
+      - "Vendor Performance Report — تقرير أداء الموردين"
+    required_inputs: ["قائمة الموردين والعقود", "دورات الشراء", "مؤشرات أداء الموردين"]
+    acceptance_criteria: ["سجل موردين منظم", "تنسيق طلبات الشراء", "تقرير أداء يُسلَّم"]

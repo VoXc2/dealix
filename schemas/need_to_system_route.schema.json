@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dealix/schemas/need_to_system_route.schema.json",
+  "title": "Need to System Route",
+  "description": "Maps one business need to one primary core system (and optional secondary core systems) plus the named specialized system used in delivery.",
+  "type": "object",
+  "required": ["id", "name_ar", "primary_core_system", "specialized_system"],
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "type": "string",
+      "enum": [
+        "lead_capture",
+        "lead_response",
+        "qualification",
+        "follow_up",
+        "sales_execution",
+        "proposal",
+        "customer_support",
+        "client_onboarding",
+        "delivery",
+        "reporting",
+        "renewal",
+        "service_quality",
+        "knowledge",
+        "finance_visibility",
+        "ai_governance"
+      ]
+    },
+    "name_ar": { "type": "string", "minLength": 1 },
+    "meaning_ar": { "type": "string" },
+    "primary_core_system": { "$ref": "#/$defs/coreSystem" },
+    "secondary_core_systems": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/coreSystem" },
+      "uniqueItems": true
+    },
+    "specialized_system": { "type": "string", "minLength": 1 }
+  },
+  "$defs": {
+    "coreSystem": {
+      "type": "string",
+      "enum": [
+        "revenue_os",
+        "executive_command_os",
+        "followup_recovery_os",
+        "whatsapp_client_os",
+        "proposal_proof_os"
+      ]
+    }
+  }
+}

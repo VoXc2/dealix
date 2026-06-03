@@ -1,0 +1,44 @@
+# Dealix — Account Pack (example, anonymized)
+# Demonstrates the Business Need Intelligence fields every Account Pack can carry.
+# This is a SAMPLE for schema/validation. No real company. No invented contacts.
+# Validated by scripts/business_need_validate.py against
+# schemas/account_pack_need_intelligence.schema.json
+#
+# Buyer roles are generic titles, never named individuals.
+# need_confidence in [0,1]. No promised outcomes.
+
+company: "Example Training Co (sample)"
+sector: training_companies
+
+# --- Business Need Intelligence block ---
+detected_business_need: follow_up
+need_confidence: 0.72
+recommended_core_system: followup_recovery_os
+recommended_specialized_system: "Admissions / Enrollment OS"
+expansion_system: executive_command_os
+sector_specific_sprint: enrollment_recovery_sprint
+
+specialized_delivery_pack:
+  - "Enrollment Inquiry Queue"
+  - "Student Status Model"
+  - "Course Inquiry Message Set"
+  - "Weekly Registration Recovery Report"
+
+buyer_role_by_need:
+  - "Founder"
+  - "Marketing Manager"
+  - "Training Manager"
+
+email_angle_by_need: "آخر متابعة لم تحدث قد تكون سبب ضياع تسجيل جاهز."
+call_angle_by_need: "نرتب رحلة الاستفسار حتى التسجيل ونحدد أين تتوقف المتابعة."
+upsell_path_by_need: ["executive_command_os", "revenue_os"]
+
+# --- Need Fit Score (0..100) ---
+need_fit_score:
+  sector_need_match: 25      # max 25
+  signal_strength: 16        # max 20
+  delivery_readiness: 18     # max 20
+  buyer_clarity: 13          # max 15
+  first_sprint_clarity: 10   # max 10
+  upsell_path: 9             # max 10
+  total: 91                  # sum of the above

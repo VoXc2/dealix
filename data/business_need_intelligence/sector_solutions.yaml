@@ -1,0 +1,85 @@
+# Dealix — Public Sector Solutions (web-facing projection)
+# A SIMPLE, public-safe projection for the website. It exposes ONLY:
+#   - 5 core systems
+#   - sector solution cards (one need-led line + first sprint + primary system)
+#   - a short diagnostic flow
+# It deliberately hides the internal 30 systems to avoid cluttering the site.
+# Evidence-aware wording only. No promised outcomes.
+
+version: 1
+last_updated: "2026-06-03"
+
+core_systems:
+  - id: revenue_os
+    name_ar: "نظام تشغيل الإيرادات"
+    line_ar: "من التقاط الفرصة إلى إغلاقها ورؤية ربحيتها."
+  - id: executive_command_os
+    name_ar: "نظام القيادة التنفيذية"
+    line_ar: "صورة يومية واحدة للقرار، مع حوكمة واضحة."
+  - id: followup_recovery_os
+    name_ar: "نظام استرجاع المتابعات"
+    line_ar: "لا تترك فرصة بلا رد سريع وخطوة تالية."
+  - id: whatsapp_client_os
+    name_ar: "نظام عملاء واتساب"
+    line_ar: "من أول رسالة إلى حجز ومتابعة وتصعيد منظّم."
+  - id: proposal_proof_os
+    name_ar: "نظام العرض والإثبات"
+    line_ar: "عرض بنطاق واضح ودليل وخطوة تالية."
+
+# Public sector cards. `first_sprint` -> specialized_sprint_library.yaml
+sectors:
+  - id: marketing_agencies
+    name_ar: "وكالات التسويق"
+    need_line_ar: "تنظيم متابعة فرص الحملات بعد أول lead."
+    primary_system: followup_recovery_os
+    first_sprint: campaign_lead_recovery_sprint
+  - id: training_companies
+    name_ar: "شركات التدريب"
+    need_line_ar: "متابعة استفسارات التسجيل حتى التحويل."
+    primary_system: followup_recovery_os
+    first_sprint: enrollment_recovery_sprint
+  - id: clinics
+    name_ar: "العيادات"
+    need_line_ar: "مسار واتساب للحجز وتقليل عدم الحضور."
+    primary_system: whatsapp_client_os
+    first_sprint: clinic_appointment_flow_sprint
+  - id: real_estate
+    name_ar: "العقار"
+    need_line_ar: "سرعة الرد على الفرص ومتابعة المعاينات."
+    primary_system: followup_recovery_os
+    first_sprint: property_lead_response_sprint
+  - id: professional_services
+    name_ar: "الخدمات المهنية"
+    need_line_ar: "عروض بنطاق واضح ودليل وخطوة تالية."
+    primary_system: proposal_proof_os
+    first_sprint: proposal_scope_proof_sprint
+  - id: recruitment
+    name_ar: "التوظيف"
+    need_line_ar: "متابعة منظّمة بين العميل والمرشح والفريق."
+    primary_system: followup_recovery_os
+    first_sprint: recruitment_followup_sprint
+  - id: local_saas
+    name_ar: "SaaS والخدمات التقنية"
+    need_line_ar: "من الديمو إلى التفعيل والدعم والتجديد."
+    primary_system: whatsapp_client_os
+    first_sprint: demo_to_onboarding_sprint
+  - id: logistics
+    name_ar: "اللوجستيات والتشغيل"
+    need_line_ar: "رؤية يومية للمهام وتنسيق الموردين."
+    primary_system: proposal_proof_os
+    first_sprint: vendor_coordination_sprint
+
+# Short public diagnostic. Maps an answer to a starting need (not a verdict).
+diagnostic:
+  question_ar: "أين تشعر أن العمل يتعطّل أكثر اليوم؟"
+  options:
+    - answer_ar: "فرص تدخل ولا يُرد عليها بسرعة"
+      starting_need: lead_response
+    - answer_ar: "متابعات تضيع بلا خطوة تالية"
+      starting_need: follow_up
+    - answer_ar: "عروض لا تُغلق"
+      starting_need: proposal
+    - answer_ar: "رسائل عملاء متفرقة وغير منظّمة"
+      starting_need: customer_support
+    - answer_ar: "لا توجد صورة يومية واضحة للإدارة"
+      starting_need: reporting

@@ -1,0 +1,238 @@
+# Dealix — Need → System Router
+# Source of truth that maps the 15 major business needs to:
+#   - one PRIMARY core system (one of the 5 public systems)
+#   - optional secondary core systems
+#   - the named specialized system used in delivery
+# RULE: every specialized system maps to exactly ONE core system.
+# Evidence-aware wording only. No promised outcomes.
+
+version: 1
+last_updated: "2026-06-03"
+
+# ---------------------------------------------------------------------------
+# The 5 public CORE systems. Everything internal rolls up to one of these.
+# ---------------------------------------------------------------------------
+core_systems:
+  - id: revenue_os
+    name_en: "Revenue Operating System"
+    name_ar: "نظام تشغيل الإيرادات"
+    owns_needs: [lead_capture, qualification, sales_execution, finance_visibility]
+  - id: executive_command_os
+    name_en: "Executive Command OS"
+    name_ar: "نظام القيادة التنفيذية"
+    owns_needs: [reporting, ai_governance, service_quality]
+  - id: followup_recovery_os
+    name_en: "Follow-up Recovery OS"
+    name_ar: "نظام استرجاع المتابعات"
+    owns_needs: [lead_response, follow_up, renewal]
+  - id: whatsapp_client_os
+    name_en: "WhatsApp Client OS"
+    name_ar: "نظام عملاء واتساب"
+    owns_needs: [customer_support, client_onboarding]
+  - id: proposal_proof_os
+    name_en: "Proposal & Proof OS"
+    name_ar: "نظام العرض والإثبات"
+    owns_needs: [proposal, delivery, knowledge]
+
+# ---------------------------------------------------------------------------
+# The 15 major business needs.
+# Every need maps to at least one core system (primary + optional secondary).
+# ---------------------------------------------------------------------------
+needs:
+  - id: lead_capture
+    name_ar: "تجميع الفرص"
+    meaning_ar: "التقاط الفرص قبل ضياعها من القنوات المختلفة"
+    primary_core_system: revenue_os
+    secondary_core_systems: [whatsapp_client_os]
+    specialized_system: "Lead Qualification OS"
+
+  - id: lead_response
+    name_ar: "الرد السريع"
+    meaning_ar: "الرد على الفرصة الجديدة في وقتها قبل أن تبرد"
+    primary_core_system: followup_recovery_os
+    secondary_core_systems: [whatsapp_client_os]
+    specialized_system: "Sector Lead Response OS"
+
+  - id: qualification
+    name_ar: "تصنيف العملاء"
+    meaning_ar: "فرز الفرص حسب الجاهزية والقيمة"
+    primary_core_system: revenue_os
+    secondary_core_systems: [followup_recovery_os]
+    specialized_system: "Lead Qualification OS"
+
+  - id: follow_up
+    name_ar: "متابعة الفرص"
+    meaning_ar: "متابعة منظمة لا تترك فرصة بلا خطوة تالية"
+    primary_core_system: followup_recovery_os
+    secondary_core_systems: []
+    specialized_system: "Follow-up Recovery OS"
+
+  - id: sales_execution
+    name_ar: "تنفيذ البيع"
+    meaning_ar: "تحويل الفرصة إلى صفقة عبر خطوات واضحة"
+    primary_core_system: revenue_os
+    secondary_core_systems: [proposal_proof_os]
+    specialized_system: "Revenue OS"
+
+  - id: proposal
+    name_ar: "العرض الواضح"
+    meaning_ar: "عرض مقنع بنطاق ودليل وخطوة تالية"
+    primary_core_system: proposal_proof_os
+    secondary_core_systems: [revenue_os]
+    specialized_system: "Proposal & Proof OS"
+
+  - id: customer_support
+    name_ar: "فرز الدعم"
+    meaning_ar: "استقبال وفرز رسائل الدعم وتصعيد المهم منها"
+    primary_core_system: whatsapp_client_os
+    secondary_core_systems: [executive_command_os]
+    specialized_system: "Customer Support Triage OS"
+
+  - id: client_onboarding
+    name_ar: "بدء العميل"
+    meaning_ar: "بداية منظمة للعميل الجديد تثبت القيمة مبكرًا"
+    primary_core_system: whatsapp_client_os
+    secondary_core_systems: [proposal_proof_os]
+    specialized_system: "Client Onboarding OS"
+
+  - id: delivery
+    name_ar: "تسليم الخدمة"
+    meaning_ar: "تشغيل وتسليم الخدمة بوضوح ومسؤولية"
+    primary_core_system: proposal_proof_os
+    secondary_core_systems: [executive_command_os]
+    specialized_system: "Delivery Operations OS"
+
+  - id: reporting
+    name_ar: "رؤية الإدارة"
+    meaning_ar: "صورة يومية/أسبوعية واضحة لما يحدث"
+    primary_core_system: executive_command_os
+    secondary_core_systems: [revenue_os]
+    specialized_system: "Executive Command / KPI Reporting OS"
+
+  - id: renewal
+    name_ar: "التجديد"
+    meaning_ar: "متابعة التجديد والتوسعة قبل فوات الأوان"
+    primary_core_system: followup_recovery_os
+    secondary_core_systems: [revenue_os]
+    specialized_system: "Renewal & Upsell OS"
+
+  - id: service_quality
+    name_ar: "جودة الخدمة"
+    meaning_ar: "قياس ومراجعة جودة الخدمة والتجربة"
+    primary_core_system: executive_command_os
+    secondary_core_systems: [whatsapp_client_os]
+    specialized_system: "Service Quality OS"
+
+  - id: knowledge
+    name_ar: "تنظيم المعرفة"
+    meaning_ar: "إعادة استخدام المعرفة والمستندات بدل إعادة البناء"
+    primary_core_system: proposal_proof_os
+    secondary_core_systems: [executive_command_os]
+    specialized_system: "Knowledge & Document OS"
+
+  - id: finance_visibility
+    name_ar: "وضوح الربحية"
+    meaning_ar: "رؤية اقتصاد الوحدة والربحية الحقيقية"
+    primary_core_system: revenue_os
+    secondary_core_systems: [executive_command_os]
+    specialized_system: "Finance & Unit Economics OS"
+
+  - id: ai_governance
+    name_ar: "ضبط الذكاء الاصطناعي"
+    meaning_ar: "حوكمة عمل الوكلاء وموافقات الإجراءات الحساسة"
+    primary_core_system: executive_command_os
+    secondary_core_systems: []
+    specialized_system: "AI Team Governance OS"
+
+# ---------------------------------------------------------------------------
+# Specialized systems catalog (the internal ~30). Each maps to ONE core.
+# This is what keeps the public site at 5 systems while delivery stays rich.
+# ---------------------------------------------------------------------------
+specialized_systems:
+  # → revenue_os
+  - name: "Lead Qualification OS"
+    core_system: revenue_os
+    serves_needs: [lead_capture, qualification]
+  - name: "Revenue OS (sector variants)"
+    core_system: revenue_os
+    serves_needs: [sales_execution]
+  - name: "Finance & Unit Economics OS"
+    core_system: revenue_os
+    serves_needs: [finance_visibility]
+  - name: "Partner / Channel OS"
+    core_system: revenue_os
+    serves_needs: [lead_capture, sales_execution]
+  - name: "Content Authority OS"
+    core_system: revenue_os
+    serves_needs: [lead_capture]
+
+  # → followup_recovery_os
+  - name: "Follow-up Recovery OS (sector variants)"
+    core_system: followup_recovery_os
+    serves_needs: [follow_up, lead_response]
+  - name: "Marketing Campaign Follow-up OS"
+    core_system: followup_recovery_os
+    serves_needs: [lead_response, follow_up]
+  - name: "Real Estate Lead Response OS"
+    core_system: followup_recovery_os
+    serves_needs: [lead_response]
+  - name: "Admissions / Enrollment OS"
+    core_system: followup_recovery_os
+    serves_needs: [follow_up, lead_response]
+  - name: "Recruitment Pipeline OS"
+    core_system: followup_recovery_os
+    serves_needs: [follow_up]
+  - name: "Candidate Follow-up OS"
+    core_system: followup_recovery_os
+    serves_needs: [follow_up]
+  - name: "Renewal & Upsell OS"
+    core_system: followup_recovery_os
+    serves_needs: [renewal]
+  - name: "Appointment Booking OS"
+    core_system: followup_recovery_os
+    serves_needs: [lead_response, follow_up]
+
+  # → whatsapp_client_os
+  - name: "WhatsApp Client OS (sector variants)"
+    core_system: whatsapp_client_os
+    serves_needs: [customer_support, lead_response]
+  - name: "Customer Support Triage OS"
+    core_system: whatsapp_client_os
+    serves_needs: [customer_support]
+  - name: "Clinic Patient Journey OS"
+    core_system: whatsapp_client_os
+    serves_needs: [customer_support, client_onboarding]
+  - name: "Client Onboarding OS"
+    core_system: whatsapp_client_os
+    serves_needs: [client_onboarding]
+
+  # → proposal_proof_os
+  - name: "Proposal & Proof OS (sector variants)"
+    core_system: proposal_proof_os
+    serves_needs: [proposal]
+  - name: "Delivery Operations OS"
+    core_system: proposal_proof_os
+    serves_needs: [delivery]
+  - name: "Vendor Management OS"
+    core_system: proposal_proof_os
+    serves_needs: [delivery]
+  - name: "Knowledge & Document OS"
+    core_system: proposal_proof_os
+    serves_needs: [knowledge]
+  - name: "Pricing & Scope Control OS"
+    core_system: proposal_proof_os
+    serves_needs: [proposal, sales_execution]
+
+  # → executive_command_os
+  - name: "Executive Command OS (role variants)"
+    core_system: executive_command_os
+    serves_needs: [reporting]
+  - name: "KPI Reporting OS"
+    core_system: executive_command_os
+    serves_needs: [reporting]
+  - name: "AI Team Governance OS"
+    core_system: executive_command_os
+    serves_needs: [ai_governance]
+  - name: "Service Quality OS"
+    core_system: executive_command_os
+    serves_needs: [service_quality]

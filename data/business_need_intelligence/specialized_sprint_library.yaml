@@ -1,0 +1,430 @@
+# Dealix — Specialized Sprint Library (20 sprints)
+# Every sprint maps to exactly ONE core system and carries:
+#   deliverables, required_inputs, acceptance_criteria.
+# core_system IDs -> need_to_system_router.yaml (core_systems)
+# need IDs        -> need_to_system_router.yaml (needs)
+# Evidence-aware wording only. No promised outcomes.
+
+version: 1
+last_updated: "2026-06-03"
+
+sprints:
+  - id: enrollment_recovery_sprint
+    name_ar: "سبرنت استرجاع التسجيل (7 أيام)"
+    name_en: "7-Day Enrollment Recovery Sprint"
+    core_system: followup_recovery_os
+    sector: training_companies
+    need: follow_up
+    duration_days: 7
+    deliverables:
+      - "طابور استفسارات التسجيل الموحد"
+      - "نموذج حالة الطالب (مهتم/متردد/جاهز)"
+      - "مجموعة رسائل متابعة للدورات"
+      - "تقرير استرجاع تسجيل أسبوعي"
+    required_inputs: ["قائمة البرامج", "قناة استقبال الاستفسارات", "أمثلة رسائل حالية"]
+    acceptance_criteria:
+      - "كل استفسار له حالة وخطوة تالية"
+      - "زمن أول رد مقاس قبل/بعد"
+      - "تقرير استرجاع يُسلَّم في نهاية السبرنت"
+    email_angle: "آخر متابعة لم تحدث قد تكون سبب ضياع تسجيل جاهز."
+    call_angle: "نرتب رحلة الاستفسار حتى التسجيل ونحدد أين تتوقف المتابعة."
+    upsell_path: executive_command_os
+
+  - id: property_lead_response_sprint
+    name_ar: "سبرنت سرعة الرد على فرص العقار"
+    name_en: "Property Lead Response Sprint"
+    core_system: followup_recovery_os
+    sector: real_estate
+    need: lead_response
+    duration_days: 7
+    deliverables:
+      - "قائمة فرص عقارية موحدة"
+      - "قالب رد أول سريع للوحدات"
+      - "متابعة معاينة منظمة"
+      - "تقرير زمن الرد الأسبوعي"
+    required_inputs: ["قنوات الإعلانات", "قائمة الوحدات/المشاريع", "قناة استقبال الفرص"]
+    acceptance_criteria:
+      - "زمن أول رد مقاس قبل/بعد"
+      - "كل فرصة مصنفة مشتري/مستأجر"
+      - "متابعة معاينة لها خطوة تالية"
+    email_angle: "التأخير في الرد قد يحوّل lead مهتمًا إلى فرصة ضائعة."
+    call_angle: "نقيس زمن الرد على فرص العقار ونرتب متابعة المعاينات."
+    upsell_path: whatsapp_client_os
+
+  - id: clinic_appointment_flow_sprint
+    name_ar: "سبرنت مسار واتساب والمواعيد للعيادة"
+    name_en: "Clinic Appointment Flow Sprint"
+    core_system: whatsapp_client_os
+    sector: clinics
+    need: customer_support
+    duration_days: 7
+    deliverables:
+      - "مسار رسائل واتساب من السؤال إلى الحجز"
+      - "نموذج رحلة المريض"
+      - "تذكير موعد ومتابعة عدم الحضور"
+      - "تقرير حجوزات وعدم حضور"
+    required_inputs: ["رقم واتساب الاستقبال", "أنواع الخدمات/المواعيد", "سياسة عدم الحضور"]
+    acceptance_criteria:
+      - "مسار رسائل واضح بخطوات"
+      - "تذكير موعد فعّال"
+      - "عدم الحضور مقاس قبل/بعد"
+    email_angle: "واتساب في العيادات بداية رحلة حجز ومتابعة وتصعيد."
+    call_angle: "نرتب مسار الرسائل من أول سؤال إلى تأكيد الموعد."
+    upsell_path: executive_command_os
+
+  - id: proposal_scope_proof_sprint
+    name_ar: "سبرنت العرض والنطاق والإثبات"
+    name_en: "Proposal & Scope Proof Sprint"
+    core_system: proposal_proof_os
+    sector: professional_services
+    need: proposal
+    duration_days: 7
+    deliverables:
+      - "قالب عرض بنطاق واضح"
+      - "ورقة إثبات (proof) منظمة"
+      - "خطوة تالية محددة في كل عرض"
+      - "قائمة تحقق لمراجعة العرض"
+    required_inputs: ["نموذج عرض حالي", "أمثلة نطاق سابقة", "قائمة أعمال/مراجع"]
+    acceptance_criteria:
+      - "كل عرض له نطاق واضح"
+      - "كل عرض له دليل/إثبات"
+      - "كل عرض له خطوة تالية"
+    email_angle: "العرض المقنع يحتاج نطاقًا واضحًا ودليلًا وخطوة تالية."
+    call_angle: "نراجع عرضًا حاليًا ونحدد أين يضعف النطاق أو الإثبات."
+    upsell_path: revenue_os
+
+  - id: campaign_lead_recovery_sprint
+    name_ar: "سبرنت استرجاع فرص الحملات"
+    name_en: "Campaign Lead Recovery Sprint"
+    core_system: followup_recovery_os
+    sector: marketing_agencies
+    need: lead_response
+    duration_days: 7
+    deliverables:
+      - "قائمة فرص الحملات الموحدة"
+      - "قالب رد أول للحملات"
+      - "مجموعة متابعة بعد أول lead"
+      - "تقرير استرجاع فرص أسبوعي"
+    required_inputs: ["قائمة قنوات الإعلانات", "قناة استقبال الفرص", "أمثلة ردود حالية"]
+    acceptance_criteria:
+      - "كل فرصة لها خطوة تالية"
+      - "زمن أول رد مقاس"
+      - "تقرير استرجاع يُسلَّم"
+    email_angle: "قيمة الحملة تضيع غالبًا فيما يحدث بعد أول lead."
+    call_angle: "نراجع رحلة الـ lead من الإعلان إلى أول رد ونحدد أين يبرد."
+    upsell_path: proposal_proof_os
+
+  - id: demo_to_onboarding_sprint
+    name_ar: "سبرنت من الديمو إلى التفعيل"
+    name_en: "Demo-to-Onboarding Sprint"
+    core_system: proposal_proof_os
+    sector: local_saas
+    need: client_onboarding
+    duration_days: 10
+    deliverables:
+      - "مسار onboarding واضح بخطوات"
+      - "قائمة تحقق تفعيل العميل"
+      - "متابعة ما بعد الديمو"
+      - "تقرير تفعيل أسبوعي"
+    required_inputs: ["مراحل onboarding الحالية", "قائمة عملاء الديمو", "قنوات التواصل"]
+    acceptance_criteria:
+      - "كل عميل جديد له مسار تفعيل"
+      - "خطوات التفعيل مقاسة"
+      - "متابعة ما بعد الديمو منظمة"
+    email_angle: "نمو SaaS قد يتعطل في onboarding لا في الجلب."
+    call_angle: "نتتبع رحلة العميل من الديمو إلى التفعيل ونحدد أين يتسرب."
+    upsell_path: executive_command_os
+
+  - id: recruitment_followup_sprint
+    name_ar: "سبرنت متابعة التوظيف"
+    name_en: "Recruitment Follow-up Sprint"
+    core_system: followup_recovery_os
+    sector: recruitment
+    need: follow_up
+    duration_days: 7
+    deliverables:
+      - "خط أنابيب مرشحين واضح"
+      - "متابعة عميل/مرشح منظمة"
+      - "تنسيق مقابلات بخطوات"
+      - "تقرير حالة أسبوعي"
+    required_inputs: ["قائمة الوظائف المفتوحة", "مراحل المرشح", "قنوات التواصل"]
+    acceptance_criteria:
+      - "كل مرشح له مرحلة وخطوة تالية"
+      - "متابعة العميل لها مواعيد"
+      - "تقرير حالة يُسلَّم"
+    email_angle: "الفرصة تضيع عندما يتأخر التواصل بين العميل والمرشح والفريق."
+    call_angle: "نرتب متابعة المرشح والعميل ونحدد أين يتعطل خط الأنابيب."
+    upsell_path: executive_command_os
+
+  - id: support_triage_sprint
+    name_ar: "سبرنت فرز الدعم"
+    name_en: "Support Triage Sprint"
+    core_system: whatsapp_client_os
+    sector: local_saas
+    need: customer_support
+    duration_days: 7
+    deliverables:
+      - "مسار استقبال وفرز الدعم"
+      - "قواعد تصعيد واضحة"
+      - "نموذج حالة التذكرة"
+      - "تقرير دعم أسبوعي"
+    required_inputs: ["قنوات الدعم", "أنواع الطلبات الشائعة", "قواعد التصعيد الحالية"]
+    acceptance_criteria:
+      - "كل طلب مُصنَّف ومُوجَّه"
+      - "قواعد تصعيد مطبقة"
+      - "تقرير دعم يُسلَّم"
+    email_angle: "الدعم غير المُفرز قد يخفي مشكلة عميل على وشك المغادرة."
+    call_angle: "نراجع استقبال الدعم ونحدد أين يتأخر التصعيد."
+    upsell_path: executive_command_os
+
+  - id: customer_message_flow_sprint
+    name_ar: "سبرنت مسار رسائل العملاء"
+    name_en: "Customer Message Flow Sprint"
+    core_system: whatsapp_client_os
+    sector: restaurants
+    need: customer_support
+    duration_days: 7
+    deliverables:
+      - "مسار رسائل عملاء موحد"
+      - "فرز شكاوى وتصعيد"
+      - "قالب رد سريع"
+      - "تقرير تجربة عميل أسبوعي"
+    required_inputs: ["قنوات رسائل العملاء", "قائمة الفروع", "أنواع الشكاوى الشائعة"]
+    acceptance_criteria:
+      - "رسائل موحدة عبر القنوات/الفروع"
+      - "كل شكوى لها مسار وتصعيد"
+      - "تقرير تجربة يُسلَّم"
+    email_angle: "تجربة العميل تبدأ من أول رسالة وتنتهي بالمتابعة والتقييم."
+    call_angle: "نرتب رسائل العملاء عبر الفروع ونحدد أين تضيع الشكوى."
+    upsell_path: executive_command_os
+
+  - id: renewal_recovery_sprint
+    name_ar: "سبرنت استرجاع التجديد"
+    name_en: "Renewal Recovery Sprint"
+    core_system: followup_recovery_os
+    sector: local_saas
+    need: renewal
+    duration_days: 7
+    deliverables:
+      - "قائمة التجديدات القادمة"
+      - "مجموعة رسائل تجديد قبل الاستحقاق"
+      - "نموذج حالة الحساب للتجديد"
+      - "تقرير تجديد أسبوعي"
+    required_inputs: ["قائمة الاشتراكات وتواريخ التجديد", "قنوات التواصل", "أمثلة رسائل حالية"]
+    acceptance_criteria:
+      - "كل تجديد له مالك وخطوة تالية"
+      - "تواصل التجديد قبل الاستحقاق"
+      - "تقرير تجديد يُسلَّم"
+    email_angle: "التجديد المتأخر تذكُّره قد يكون أصعب من تذكُّره مبكرًا."
+    call_angle: "نراجع قائمة التجديدات ونرتب متابعتها قبل الاستحقاق."
+    upsell_path: revenue_os
+
+  - id: executive_daily_command_sprint
+    name_ar: "سبرنت لوحة القيادة اليومية"
+    name_en: "Executive Daily Command Sprint"
+    core_system: executive_command_os
+    sector: professional_services
+    need: reporting
+    duration_days: 7
+    deliverables:
+      - "لوحة قيادة يومية للمؤسس"
+      - "مجموعة مؤشرات أساسية"
+      - "ملخص يومي/أسبوعي"
+      - "قائمة مخاطر ومتابعات"
+    required_inputs: ["مصادر البيانات المتاحة", "المؤشرات المهمة للإدارة", "إيقاع التقارير المطلوب"]
+    acceptance_criteria:
+      - "لوحة قيادة تُحدَّث بإيقاع ثابت"
+      - "مؤشرات واضحة ومصدرها معروف"
+      - "ملخص يُسلَّم بالإيقاع المتفق"
+    email_angle: "غياب صورة يومية واضحة يجعل القرار يتأخر."
+    call_angle: "نحدد أهم 5 مؤشرات للإدارة ونرتب لوحة قيادة يومية."
+    upsell_path: revenue_os
+
+  - id: agency_client_onboarding_sprint
+    name_ar: "سبرنت بدء عملاء الوكالة"
+    name_en: "Agency Client Onboarding Sprint"
+    core_system: proposal_proof_os
+    sector: marketing_agencies
+    need: client_onboarding
+    duration_days: 10
+    deliverables:
+      - "مسار onboarding للعميل الجديد"
+      - "قائمة تحقق بدء العمل"
+      - "نموذج توقعات ونطاق"
+      - "تقرير بداية أول 14 يوم"
+    required_inputs: ["خطوات البدء الحالية", "نماذج العقود/النطاق", "قنوات التواصل"]
+    acceptance_criteria:
+      - "كل عميل جديد له مسار بدء"
+      - "توقعات ونطاق موثقة"
+      - "تقرير بداية يُسلَّم"
+    email_angle: "أول أسبوعين يحددان انطباع العميل عن الوكالة لبقية التعاقد."
+    call_angle: "نراجع طريقة بدء العملاء الجدد ونحدد أين يضعف الانطباع الأول."
+    upsell_path: executive_command_os
+
+  - id: course_inquiry_routing_sprint
+    name_ar: "سبرنت توجيه استفسارات الدورات"
+    name_en: "Course Inquiry Routing Sprint"
+    core_system: revenue_os
+    sector: education_providers
+    need: qualification
+    duration_days: 7
+    deliverables:
+      - "قواعد توجيه استفسارات البرامج"
+      - "تصنيف جاهزية المستفسر"
+      - "نموذج التقاط الفرصة"
+      - "تقرير مصادر الاستفسارات"
+    required_inputs: ["قائمة البرامج", "مصادر الاستفسارات", "معايير القبول الحالية"]
+    acceptance_criteria:
+      - "كل استفسار مُوجَّه حسب البرنامج"
+      - "تصنيف جاهزية مطبق"
+      - "تقرير مصادر يُسلَّم"
+    email_angle: "كثرة الاستفسارات بلا توجيه قد تخفي الفرص الجاهزة."
+    call_angle: "نرتب توجيه الاستفسارات حسب الجاهزية ونحدد أين تضيع."
+    upsell_path: followup_recovery_os
+
+  - id: no_show_followup_sprint
+    name_ar: "سبرنت متابعة عدم الحضور"
+    name_en: "No-show Follow-up Sprint"
+    core_system: followup_recovery_os
+    sector: clinics
+    need: follow_up
+    duration_days: 7
+    deliverables:
+      - "قائمة مواعيد عدم الحضور"
+      - "مجموعة رسائل إعادة جدولة"
+      - "نموذج حالة الموعد"
+      - "تقرير عدم حضور وإعادة جدولة"
+    required_inputs: ["سجل المواعيد", "سياسة عدم الحضور", "قنوات التواصل"]
+    acceptance_criteria:
+      - "كل عدم حضور له محاولة إعادة جدولة"
+      - "إعادة الجدولة مقاسة"
+      - "تقرير يُسلَّم"
+    email_angle: "موعد لم يحضر بلا متابعة هو فرصة مزدوجة ضائعة."
+    call_angle: "نرتب متابعة عدم الحضور ونحدد أثرها على الجدول."
+    upsell_path: whatsapp_client_os
+
+  - id: vendor_coordination_sprint
+    name_ar: "سبرنت تنسيق الموردين"
+    name_en: "Vendor Coordination Sprint"
+    core_system: proposal_proof_os
+    sector: logistics
+    need: delivery
+    duration_days: 10
+    deliverables:
+      - "سجل موردين منظم"
+      - "مسار طلب/تنسيق واضح"
+      - "متابعة التزامات SLA"
+      - "تقرير تنسيق أسبوعي"
+    required_inputs: ["قائمة الموردين/الفرق", "أنواع الطلبات", "مؤشرات SLA الحالية"]
+    acceptance_criteria:
+      - "كل طلب له مالك وخطوة تالية"
+      - "التزامات SLA متابَعة"
+      - "تقرير تنسيق يُسلَّم"
+    email_angle: "تعدد الموردين بلا رؤية موحدة قد يخفي تأخيرًا قابلًا للضبط."
+    call_angle: "نراجع تنسيق الموردين ونحدد أين تضيع الحلقة اليومية."
+    upsell_path: executive_command_os
+
+  - id: service_quality_review_sprint
+    name_ar: "سبرنت مراجعة جودة الخدمة"
+    name_en: "Service Quality Review Sprint"
+    core_system: executive_command_os
+    sector: restaurants
+    need: service_quality
+    duration_days: 7
+    deliverables:
+      - "إطار قياس جودة الخدمة"
+      - "نموذج مراجعة دورية"
+      - "قائمة نقاط التحسين"
+      - "تقرير جودة أسبوعي"
+    required_inputs: ["مصادر تقييم العملاء", "معايير الجودة الحالية", "قائمة الفروع/الفرق"]
+    acceptance_criteria:
+      - "مؤشر جودة واضح ومصدره معروف"
+      - "مراجعة دورية مطبقة"
+      - "تقرير جودة يُسلَّم"
+    email_angle: "بدون قياس واضح، تتحول جودة الخدمة إلى انطباع لا قرار."
+    call_angle: "نحدد كيف تُقاس الجودة اليوم وأين تضعف المراجعة."
+    upsell_path: whatsapp_client_os
+
+  - id: partner_pipeline_sprint
+    name_ar: "سبرنت خط أنابيب الشركاء"
+    name_en: "Partner Pipeline Sprint"
+    core_system: revenue_os
+    sector: professional_services
+    need: sales_execution
+    duration_days: 10
+    deliverables:
+      - "خط أنابيب شركاء واضح"
+      - "مسار تأهيل الشريك"
+      - "متابعة فرص الإحالة"
+      - "تقرير شراكات أسبوعي"
+    required_inputs: ["قائمة الشركاء المحتملين", "مراحل الشراكة الحالية", "قنوات التواصل"]
+    acceptance_criteria:
+      - "كل شريك له مرحلة وخطوة تالية"
+      - "فرص الإحالة متابَعة"
+      - "تقرير شراكات يُسلَّم"
+    email_angle: "قناة الشركاء غالبًا أكبر مما تبدو حين تُدار بانتظام."
+    call_angle: "نراجع كيف تُدار الشراكات اليوم وأين تتعطل الإحالات."
+    upsell_path: executive_command_os
+
+  - id: content_to_lead_sprint
+    name_ar: "سبرنت من المحتوى إلى الفرصة"
+    name_en: "Content-to-Lead Sprint"
+    core_system: revenue_os
+    sector: consulting_firms
+    need: lead_capture
+    duration_days: 10
+    deliverables:
+      - "مسار التقاط الفرص من المحتوى"
+      - "نموذج فرصة من المحتوى"
+      - "متابعة أولى للمهتمين"
+      - "تقرير مصادر محتوى أسبوعي"
+    required_inputs: ["قنوات المحتوى الحالية", "نماذج التقاط الفرص", "أمثلة محتوى سابق"]
+    acceptance_criteria:
+      - "كل فرصة من المحتوى ملتقطة بمصدرها"
+      - "متابعة أولى منظمة"
+      - "تقرير مصادر يُسلَّم"
+    email_angle: "المحتوى الجيد بلا التقاط للفرص يبقى وعيًا لا إيرادًا."
+    call_angle: "نراجع كيف يتحول المحتوى إلى فرص اليوم وأين يضيع."
+    upsell_path: followup_recovery_os
+
+  - id: pricing_scope_control_sprint
+    name_ar: "سبرنت ضبط التسعير والنطاق"
+    name_en: "Pricing & Scope Control Sprint"
+    core_system: proposal_proof_os
+    sector: consulting_firms
+    need: sales_execution
+    duration_days: 7
+    deliverables:
+      - "حدود تسعير واضحة"
+      - "مسار طلب التغيير (change request)"
+      - "نموذج ضبط النطاق"
+      - "تقرير انحراف النطاق"
+    required_inputs: ["نماذج تسعير حالية", "أمثلة توسّع نطاق سابق", "قالب عرض"]
+    acceptance_criteria:
+      - "كل عرض ضمن حدود تسعير"
+      - "طلبات التغيير موثقة"
+      - "تقرير انحراف يُسلَّم"
+    email_angle: "تمدد النطاق بلا ضبط يأكل الربحية بهدوء."
+    call_angle: "نراجع أين يتمدد النطاق بلا مقابل ونرتب ضبطه."
+    upsell_path: revenue_os
+
+  - id: knowledge_reuse_sprint
+    name_ar: "سبرنت إعادة استخدام المعرفة"
+    name_en: "Knowledge Reuse Sprint"
+    core_system: proposal_proof_os
+    sector: consulting_firms
+    need: knowledge
+    duration_days: 10
+    deliverables:
+      - "مكتبة معرفة قابلة لإعادة الاستخدام"
+      - "قوالب مخرجات متكررة"
+      - "فهرس بحث بسيط"
+      - "تقرير إعادة استخدام"
+    required_inputs: ["مخرجات مشاريع سابقة", "قوالب حالية", "تصنيف الموضوعات"]
+    acceptance_criteria:
+      - "مخرجات متكررة موثقة كقوالب"
+      - "فهرس يسهّل الوصول"
+      - "تقرير إعادة استخدام يُسلَّم"
+    email_angle: "إعادة بناء نفس المخرج كل مرة ضريبة خفية على الوقت."
+    call_angle: "نحدد أكثر المخرجات تكرارًا ونحولها قوالب قابلة لإعادة الاستخدام."
+    upsell_path: executive_command_os

@@ -1,0 +1,83 @@
+# Dealix — Buyer Role by Need
+# For each of the 15 needs: the buyer roles most likely to own the problem,
+# plus the angle that resonates with each. Roles are generic titles, not
+# real contacts. No invented contacts. No promised outcomes.
+
+version: 1
+last_updated: "2026-06-03"
+
+needs:
+  lead_capture:
+    primary_roles: ["Head of Growth", "Marketing Manager", "Founder / CEO"]
+    secondary_roles: ["Sales Manager"]
+    resonates_with: "كم فرصة تدخل ولا تُلتقط بمصدرها؟"
+
+  lead_response:
+    primary_roles: ["Sales Manager", "Founder / CEO", "Operations Manager"]
+    secondary_roles: ["Marketing Manager"]
+    resonates_with: "كم يستغرق أول رد على الفرصة الجديدة؟"
+
+  qualification:
+    primary_roles: ["Sales Manager", "Head of Growth", "Admissions Lead"]
+    secondary_roles: ["Founder / CEO"]
+    resonates_with: "كيف تفرز الفرص الجاهزة عن غير الجاهزة؟"
+
+  follow_up:
+    primary_roles: ["Sales Manager", "Account Manager", "Founder / CEO"]
+    secondary_roles: ["Operations Manager"]
+    resonates_with: "كم فرصة بلا خطوة تالية محددة الآن؟"
+
+  sales_execution:
+    primary_roles: ["Sales Manager", "Managing Director", "Founder / CEO"]
+    secondary_roles: ["Business Development Lead"]
+    resonates_with: "أين تتوقف الصفقات في الطريق إلى الإغلاق؟"
+
+  proposal:
+    primary_roles: ["Founder / Partner", "Business Development Lead", "Managing Director"]
+    secondary_roles: ["Engagement Manager"]
+    resonates_with: "هل عروضك تحمل نطاقًا ودليلًا وخطوة تالية؟"
+
+  customer_support:
+    primary_roles: ["Support Lead", "Operations Manager", "Customer Care Lead"]
+    secondary_roles: ["Founder / CEO"]
+    resonates_with: "كيف تُفرز رسائل الدعم وتُصعَّد المهمة منها؟"
+
+  client_onboarding:
+    primary_roles: ["Head of Customer Success", "Account Director", "Operations Manager"]
+    secondary_roles: ["Founder / CEO"]
+    resonates_with: "كيف يبدأ العميل الجديد ومتى يرى أول قيمة؟"
+
+  delivery:
+    primary_roles: ["Operations Director", "Delivery Manager", "Plant / Operations Manager"]
+    secondary_roles: ["Founder / CEO"]
+    resonates_with: "هل لديك رؤية يومية واضحة لما تعطل في التسليم؟"
+
+  reporting:
+    primary_roles: ["Founder / CEO", "Managing Director", "Operations Director"]
+    secondary_roles: ["Finance Manager"]
+    resonates_with: "هل لديك صورة يومية واحدة لحالة العمل؟"
+
+  renewal:
+    primary_roles: ["Head of Customer Success", "Account Manager", "Sales Manager"]
+    secondary_roles: ["Founder / CEO"]
+    resonates_with: "كم تجديد يقترب بلا متابعة مالك له؟"
+
+  service_quality:
+    primary_roles: ["Operations Manager", "Branch Manager", "Customer Care Lead"]
+    secondary_roles: ["Founder / CEO"]
+    resonates_with: "كيف تُقاس جودة الخدمة اليوم — رقم أم انطباع؟"
+
+  knowledge:
+    primary_roles: ["Partner", "Engagement Manager", "Operations Director"]
+    secondary_roles: ["Program Director"]
+    resonates_with: "كم مرة يُعاد بناء نفس المخرج من الصفر؟"
+
+  finance_visibility:
+    primary_roles: ["Finance Manager", "Founder / CEO", "Managing Director"]
+    secondary_roles: ["Operations Director"]
+    resonates_with: "هل تعرف ربحية الوحدة الحقيقية لكل خدمة/عميل؟"
+
+  ai_governance:
+    primary_roles: ["Founder / CEO", "Operations Director", "Compliance / Risk Lead"]
+    secondary_roles: ["IT Manager"]
+    resonates_with: "هل لكل إجراء حسّاس من الوكلاء موافقة وسجل؟"
