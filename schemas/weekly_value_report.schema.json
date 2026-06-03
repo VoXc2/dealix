@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dealix/schemas/weekly_value_report.schema.json",
+  "title": "Weekly Value Report",
+  "description": "Weekly proof-of-value report sent to a client during delivery. Describes work done and evidence, with no guaranteed-outcome claims.",
+  "type": "object",
+  "required": ["report_id", "pipeline_id", "company", "week_of", "delivered_this_week", "evidence"],
+  "properties": {
+    "report_id": { "type": "string" },
+    "pipeline_id": { "type": "string" },
+    "company": { "type": "string", "minLength": 2 },
+    "recommended_system": {
+      "type": "string",
+      "enum": [
+        "revenue-operating-system",
+        "executive-command-os",
+        "follow-up-recovery-os",
+        "whatsapp-client-os",
+        "proposal-proof-os"
+      ]
+    },
+    "week_of": { "type": "string" },
+    "delivered_this_week": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+    "evidence": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+    "next_week_focus": { "type": "array", "items": { "type": "string" } },
+    "client_inputs_needed": { "type": "array", "items": { "type": "string" } },
+    "renewal_signal": { "type": "boolean", "default": false }
+  },
+  "additionalProperties": true
+}

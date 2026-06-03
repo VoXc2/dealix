@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dealix/schemas/email_draft.schema.json",
+  "title": "Email Draft",
+  "description": "A company-specific outreach email DRAFT produced by the daily factory. Stays a draft until founder approval; no external send by default.",
+  "type": "object",
+  "required": [
+    "company",
+    "recommended_system",
+    "subject",
+    "email_body",
+    "cta",
+    "risk_level",
+    "evidence_level",
+    "approval_status",
+    "send_readiness"
+  ],
+  "properties": {
+    "company": { "type": "string", "minLength": 2 },
+    "website": { "type": "string" },
+    "country": { "type": "string" },
+    "city": { "type": "string" },
+    "sector": { "type": "string" },
+    "signal": { "type": "string" },
+    "likely_pain": { "type": "string" },
+    "recommended_system": {
+      "type": "string",
+      "enum": [
+        "revenue-operating-system",
+        "executive-command-os",
+        "follow-up-recovery-os",
+        "whatsapp-client-os",
+        "proposal-proof-os"
+      ]
+    },
+    "why_this_system": { "type": "string" },
+    "first_mission": { "type": "string" },
+    "proof_angle": { "type": "string" },
+    "email_angle": { "type": "string" },
+    "subject": { "type": "string", "minLength": 3, "maxLength": 90 },
+    "email_body": { "type": "string", "minLength": 1 },
+    "cta": { "type": "string" },
+    "risk_level": { "type": "string", "enum": ["low", "medium", "high"] },
+    "evidence_level": { "type": "string", "enum": ["L0", "L1", "L2", "L3", "L4"] },
+    "quality_score": { "type": "integer", "minimum": 0, "maximum": 100 },
+    "approval_status": { "type": "string", "enum": ["draft", "pending", "approved", "rejected"], "default": "draft" },
+    "send_readiness": {
+      "type": "string",
+      "enum": ["not_ready", "ready_for_review", "approved_draft"],
+      "description": "Never includes an auto-send state. Sending is a separate manual step."
+    }
+  },
+  "additionalProperties": true
+}

@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dealix/schemas/mini_proposal.schema.json",
+  "title": "Mini Proposal",
+  "description": "Short proposal prepared after interest. Requires founder approval before it can be sent.",
+  "type": "object",
+  "required": [
+    "title",
+    "company",
+    "recommended_system",
+    "why_this_system",
+    "first_sprint",
+    "deliverables",
+    "timeline",
+    "starter_price",
+    "next_step",
+    "approval_required"
+  ],
+  "properties": {
+    "title": { "type": "string" },
+    "company": { "type": "string", "minLength": 2 },
+    "recommended_system": {
+      "type": "string",
+      "enum": [
+        "revenue-operating-system",
+        "executive-command-os",
+        "follow-up-recovery-os",
+        "whatsapp-client-os",
+        "proposal-proof-os"
+      ]
+    },
+    "why_this_system": { "type": "string" },
+    "current_likely_pain": { "type": "string" },
+    "first_sprint": { "type": "string" },
+    "deliverables": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+    "timeline": { "type": "string" },
+    "starter_price": { "type": "string", "description": "Phrased as 'starts at X SAR' to avoid fixed-scope claims." },
+    "required_inputs": { "type": "array", "items": { "type": "string" } },
+    "expected_first_proof": { "type": "string" },
+    "next_step": { "type": "string" },
+    "approval_required": { "type": "boolean", "const": true },
+    "approval_status": { "type": "string", "enum": ["pending", "approved", "rejected", "hold"], "default": "pending" }
+  },
+  "additionalProperties": true
+}

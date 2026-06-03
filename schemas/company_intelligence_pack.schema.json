@@ -1,0 +1,59 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dealix/schemas/company_intelligence_pack.schema.json",
+  "title": "Company Intelligence Pack",
+  "description": "Per-company research pack that personalizes outreach, calls, and proposals. Uses only public company information or founder-provided data.",
+  "type": "object",
+  "required": [
+    "company",
+    "sector",
+    "recommended_system",
+    "best_contact_role",
+    "likely_pain",
+    "why_this_system",
+    "first_mission",
+    "email_subject",
+    "email_draft",
+    "risk_level",
+    "evidence_level"
+  ],
+  "properties": {
+    "company": { "type": "string", "minLength": 2 },
+    "website": { "type": "string" },
+    "country": { "type": "string" },
+    "city": { "type": "string" },
+    "sector": { "type": "string" },
+    "public_contact_channels": { "type": "array", "items": { "type": "string" } },
+    "likely_decision_maker": { "type": "string" },
+    "best_contact_role": { "type": "string" },
+    "signal": { "type": "string", "description": "Public, observable trigger that motivates the outreach." },
+    "likely_pain": { "type": "string" },
+    "recommended_system": {
+      "type": "string",
+      "enum": [
+        "revenue-operating-system",
+        "executive-command-os",
+        "follow-up-recovery-os",
+        "whatsapp-client-os",
+        "proposal-proof-os"
+      ]
+    },
+    "why_this_system": { "type": "string" },
+    "first_mission": { "type": "string" },
+    "proof_angle": { "type": "string" },
+    "email_subject": { "type": "string", "maxLength": 90 },
+    "email_draft": { "type": "string" },
+    "call_opener": { "type": "string" },
+    "call_questions": { "type": "array", "items": { "type": "string" } },
+    "expected_objections": { "type": "array", "items": { "type": "string" } },
+    "mini_proposal_angle": { "type": "string" },
+    "next_action": { "type": "string" },
+    "risk_level": { "type": "string", "enum": ["low", "medium", "high"] },
+    "evidence_level": {
+      "type": "string",
+      "enum": ["L0", "L1", "L2", "L3", "L4"],
+      "description": "L0 sector guess, L1 company site, L2 specific page/job/news, L3 multiple consistent public sources, L4 founder-provided data."
+    }
+  },
+  "additionalProperties": true
+}

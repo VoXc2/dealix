@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dealix/schemas/call_brief.schema.json",
+  "title": "Call Brief",
+  "description": "Brief for a HUMAN caller following up after an approved email. No automated calling is performed.",
+  "type": "object",
+  "required": [
+    "company",
+    "contact_role",
+    "recommended_system",
+    "likely_pain",
+    "call_objective",
+    "opening_line",
+    "discovery_questions",
+    "next_step"
+  ],
+  "properties": {
+    "company": { "type": "string", "minLength": 2 },
+    "contact_role": { "type": "string" },
+    "recommended_system": {
+      "type": "string",
+      "enum": [
+        "revenue-operating-system",
+        "executive-command-os",
+        "follow-up-recovery-os",
+        "whatsapp-client-os",
+        "proposal-proof-os"
+      ]
+    },
+    "likely_pain": { "type": "string" },
+    "email_sent_summary": { "type": "string" },
+    "call_objective": { "type": "string" },
+    "opening_line": { "type": "string" },
+    "discovery_questions": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+    "expected_objection": { "type": "string" },
+    "best_response": { "type": "string" },
+    "next_step": { "type": "string" },
+    "evidence_level": { "type": "string", "enum": ["L0", "L1", "L2", "L3", "L4"] }
+  },
+  "additionalProperties": true
+}

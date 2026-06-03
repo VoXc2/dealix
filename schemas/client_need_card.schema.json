@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dealix/schemas/client_need_card.schema.json",
+  "title": "Client Need Card",
+  "description": "Compact summary of a company's likely need and the matching system, derived from a Company Intelligence Pack.",
+  "type": "object",
+  "required": ["company", "recommended_system", "likely_pain", "first_mission", "evidence_level"],
+  "properties": {
+    "company": { "type": "string", "minLength": 2 },
+    "sector": { "type": "string" },
+    "recommended_system": {
+      "type": "string",
+      "enum": [
+        "revenue-operating-system",
+        "executive-command-os",
+        "follow-up-recovery-os",
+        "whatsapp-client-os",
+        "proposal-proof-os"
+      ]
+    },
+    "likely_pain": { "type": "string" },
+    "why_this_system": { "type": "string" },
+    "first_mission": { "type": "string" },
+    "proof_angle": { "type": "string" },
+    "starter_price_sar": { "type": "integer", "minimum": 0 },
+    "risk_level": { "type": "string", "enum": ["low", "medium", "high"] },
+    "evidence_level": { "type": "string", "enum": ["L0", "L1", "L2", "L3", "L4"] }
+  },
+  "additionalProperties": true
+}

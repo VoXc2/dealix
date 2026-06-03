@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dealix/schemas/delivery_acceptance_gate.schema.json",
+  "title": "Delivery Acceptance Gate",
+  "description": "Acceptance criteria checklist for a delivery output before it moves to 'accepted'.",
+  "type": "object",
+  "required": ["gate_id", "pipeline_id", "recommended_system", "criteria"],
+  "properties": {
+    "gate_id": { "type": "string" },
+    "pipeline_id": { "type": "string" },
+    "recommended_system": {
+      "type": "string",
+      "enum": [
+        "revenue-operating-system",
+        "executive-command-os",
+        "follow-up-recovery-os",
+        "whatsapp-client-os",
+        "proposal-proof-os"
+      ]
+    },
+    "criteria": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["criterion", "met"],
+        "properties": {
+          "criterion": { "type": "string" },
+          "met": { "type": "boolean" },
+          "note": { "type": "string" }
+        },
+        "additionalProperties": true
+      }
+    },
+    "all_met": { "type": "boolean" },
+    "client_signed_off": { "type": "boolean", "default": false }
+  },
+  "additionalProperties": true
+}

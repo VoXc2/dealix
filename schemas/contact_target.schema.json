@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dealix/schemas/contact_target.schema.json",
+  "title": "Contact Target",
+  "description": "A company targeted for outreach, mapped to a recommended system and an allowed contact role. Public or founder-provided data only.",
+  "type": "object",
+  "required": ["company", "recommended_system", "best_contact_role", "do_not_contact"],
+  "properties": {
+    "company": { "type": "string", "minLength": 2 },
+    "website": { "type": "string" },
+    "country": { "type": "string" },
+    "city": { "type": "string" },
+    "sector": { "type": "string" },
+    "recommended_system": {
+      "type": "string",
+      "enum": [
+        "revenue-operating-system",
+        "executive-command-os",
+        "follow-up-recovery-os",
+        "whatsapp-client-os",
+        "proposal-proof-os"
+      ]
+    },
+    "best_contact_role": { "type": "string" },
+    "public_contact_channels": { "type": "array", "items": { "type": "string" } },
+    "source": { "type": "string", "description": "Where the public data came from (e.g. company website)." },
+    "do_not_contact": { "type": "boolean", "default": false },
+    "suppression_reason": { "type": "string" },
+    "evidence_level": { "type": "string", "enum": ["L0", "L1", "L2", "L3", "L4"] }
+  },
+  "additionalProperties": true
+}

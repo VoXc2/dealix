@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dealix/schemas/objection_response.schema.json",
+  "title": "Objection Response",
+  "description": "A reusable objection and a safe, non-guaranteeing response for calls and replies.",
+  "type": "object",
+  "required": ["objection", "response"],
+  "properties": {
+    "objection_id": { "type": "string" },
+    "objection": { "type": "string" },
+    "applies_to_systems": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "revenue-operating-system",
+          "executive-command-os",
+          "follow-up-recovery-os",
+          "whatsapp-client-os",
+          "proposal-proof-os"
+        ]
+      }
+    },
+    "response": { "type": "string" },
+    "reframe": { "type": "string" },
+    "proof_to_offer": { "type": "string" },
+    "avoid": { "type": "string", "description": "What not to claim (e.g. guaranteed revenue)." }
+  },
+  "additionalProperties": true
+}

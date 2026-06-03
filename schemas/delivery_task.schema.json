@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dealix/schemas/delivery_task.schema.json",
+  "title": "Delivery Task",
+  "description": "A single task in a delivery pipeline, usually generated from a system delivery checklist.",
+  "type": "object",
+  "required": ["task_id", "pipeline_id", "title", "status"],
+  "properties": {
+    "task_id": { "type": "string" },
+    "pipeline_id": { "type": "string" },
+    "recommended_system": {
+      "type": "string",
+      "enum": [
+        "revenue-operating-system",
+        "executive-command-os",
+        "follow-up-recovery-os",
+        "whatsapp-client-os",
+        "proposal-proof-os"
+      ]
+    },
+    "title": { "type": "string" },
+    "deliverable": { "type": "string", "description": "Which delivery-pack item this task produces." },
+    "status": { "type": "string", "enum": ["todo", "in_progress", "blocked", "done"] },
+    "blocker_reason": { "type": "string" },
+    "due": { "type": "string" }
+  },
+  "additionalProperties": true
+}

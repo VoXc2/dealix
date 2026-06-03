@@ -1,0 +1,62 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dealix/schemas/delivery_pipeline.schema.json",
+  "title": "Delivery Pipeline",
+  "description": "Tracks one client engagement from interest to renewal. Delivery work cannot start before required inputs are present.",
+  "type": "object",
+  "required": ["pipeline_id", "company", "recommended_system", "state", "required_inputs_received"],
+  "properties": {
+    "pipeline_id": { "type": "string" },
+    "company": { "type": "string", "minLength": 2 },
+    "recommended_system": {
+      "type": "string",
+      "enum": [
+        "revenue-operating-system",
+        "executive-command-os",
+        "follow-up-recovery-os",
+        "whatsapp-client-os",
+        "proposal-proof-os"
+      ]
+    },
+    "state": {
+      "type": "string",
+      "enum": [
+        "interested",
+        "qualified",
+        "mini_proposal_ready",
+        "proposal_sent",
+        "payment_handoff",
+        "won",
+        "intake_required",
+        "delivery_started",
+        "first_output_ready",
+        "client_review",
+        "accepted",
+        "weekly_value_report",
+        "renewal_candidate"
+      ]
+    },
+    "owner": { "type": "string" },
+    "starter_price_sar": { "type": "integer", "minimum": 0 },
+    "required_inputs_received": { "type": "boolean", "default": false },
+    "blockers": { "type": "array", "items": { "type": "string" } },
+    "created_at": { "type": "string" },
+    "updated_at": { "type": "string" }
+  },
+  "additionalProperties": true,
+  "allOf": [
+    {
+      "$comment": "Guardrail: delivery work states require inputs to be received.",
+      "if": {
+        "properties": {
+          "state": {
+            "enum": ["delivery_started", "first_output_ready", "client_review", "accepted", "weekly_value_report", "renewal_candidate"]
+          }
+        }
+      },
+      "then": {
+        "properties": { "required_inputs_received": { "const": true } }
+      }
+    }
+  ]
+}
