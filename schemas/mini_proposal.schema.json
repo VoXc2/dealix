@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dealix.sa/schemas/mini_proposal.schema.json",
+  "title": "Mini Proposal",
+  "description": "عرض من صفحة واحدة يُجهَّز بعد الاهتمام. يتطلب موافقة founder قبل الإرسال (approval_required=true).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "title",
+    "company",
+    "recommended_system",
+    "why_this_system",
+    "current_likely_pain",
+    "first_sprint",
+    "deliverables",
+    "timeline",
+    "starter_price",
+    "required_inputs",
+    "expected_first_proof",
+    "next_step",
+    "approval_required"
+  ],
+  "properties": {
+    "id": { "type": "string", "pattern": "^MP-[0-9]{3,}$" },
+    "title": { "type": "string", "minLength": 1 },
+    "company": { "type": "string", "minLength": 1 },
+    "recommended_system": {
+      "type": "string",
+      "enum": ["revenue_os", "executive_command_os", "followup_recovery_os", "whatsapp_client_os", "proposal_proof_os"]
+    },
+    "why_this_system": { "type": "string", "minLength": 1 },
+    "current_likely_pain": { "type": "string", "minLength": 1 },
+    "first_sprint": { "type": "string", "minLength": 1 },
+    "deliverables": { "type": "array", "items": { "type": "string", "minLength": 1 }, "minItems": 1 },
+    "timeline": { "type": "string", "minLength": 1 },
+    "starter_price": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["amount", "currency", "display"],
+      "properties": {
+        "amount": { "type": "integer", "minimum": 1 },
+        "currency": { "type": "string", "enum": ["SAR"] },
+        "display": { "type": "string", "minLength": 1, "description": "مثال: ابتداءً من 3,500 SAR" }
+      }
+    },
+    "required_inputs": { "type": "array", "items": { "type": "string", "minLength": 1 }, "minItems": 1 },
+    "expected_first_proof": { "type": "string", "minLength": 1 },
+    "next_step": { "type": "string", "minLength": 1 },
+    "approval_required": { "type": "boolean", "const": true },
+    "status": { "type": "string", "enum": ["draft", "pending_approval", "approved", "sent", "accepted", "declined"] },
+    "created_at": { "type": "string" }
+  }
+}

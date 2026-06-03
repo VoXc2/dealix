@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dealix.sa/schemas/delivery_acceptance_gate.schema.json",
+  "title": "Delivery Acceptance Gate",
+  "description": "بوابة قبول لانتقال حالة في delivery pipeline. لكل بوابة معايير واضحة وحالة.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "company", "recommended_system", "state", "criteria", "status"],
+  "properties": {
+    "id": { "type": "string", "pattern": "^GATE-[0-9]{3,}$" },
+    "company": { "type": "string", "minLength": 1 },
+    "recommended_system": {
+      "type": "string",
+      "enum": ["revenue_os", "executive_command_os", "followup_recovery_os", "whatsapp_client_os", "proposal_proof_os"]
+    },
+    "state": {
+      "type": "string",
+      "enum": ["qualified", "mini_proposal_ready", "proposal_sent", "won", "intake_required", "delivery_started", "first_output_ready", "client_review", "accepted", "weekly_value_report", "renewal_candidate"]
+    },
+    "criteria": { "type": "array", "items": { "type": "string", "minLength": 1 }, "minItems": 1 },
+    "status": { "type": "string", "enum": ["open", "passed", "failed"] },
+    "evidence_level": { "type": "string", "enum": ["L0", "L1", "L2", "L3", "L4"] },
+    "reviewed_by": { "type": "string" }
+  }
+}

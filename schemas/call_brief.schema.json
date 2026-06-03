@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dealix.sa/schemas/call_brief.schema.json",
+  "title": "Call Brief",
+  "description": "ملف اتصال جاهز لمتصل بشري — لا اتصال آلي. كل إيميل مُرسل له Call Brief.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "company",
+    "contact_role",
+    "recommended_system",
+    "likely_pain",
+    "email_sent_summary",
+    "call_objective",
+    "opening_line",
+    "discovery_questions",
+    "expected_objection",
+    "best_response",
+    "next_step"
+  ],
+  "properties": {
+    "id": { "type": "string", "pattern": "^CB-[0-9]{3,}$" },
+    "company": { "type": "string", "minLength": 1 },
+    "contact_role": {
+      "type": "string",
+      "enum": ["Founder", "CEO", "GM", "Head of Sales", "Sales Manager", "Sales Lead", "Marketing Manager", "Operations Manager", "Customer Service Manager", "BD Manager"]
+    },
+    "recommended_system": {
+      "type": "string",
+      "enum": ["revenue_os", "executive_command_os", "followup_recovery_os", "whatsapp_client_os", "proposal_proof_os"]
+    },
+    "likely_pain": { "type": "string", "minLength": 1 },
+    "email_sent_summary": { "type": "string", "minLength": 1 },
+    "call_objective": { "type": "string", "minLength": 1 },
+    "opening_line": { "type": "string", "minLength": 1 },
+    "discovery_questions": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+    "expected_objection": { "type": "string", "minLength": 1 },
+    "best_response": { "type": "string", "minLength": 1 },
+    "next_step": { "type": "string", "minLength": 1 },
+    "owner": { "type": "string" },
+    "status": { "type": "string", "enum": ["ready", "called", "no_answer", "interested", "not_interested", "callback_scheduled"] },
+    "created_at": { "type": "string" }
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dealix.sa/schemas/contact_target.schema.json",
+  "title": "Contact Target",
+  "description": "من نتواصل معه ولماذا — best_contact_role يجب أن يكون ضمن الأدوار المسموحة للنظام (راجع AGENTS.md §3).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "company",
+    "sector",
+    "recommended_system",
+    "best_contact_role",
+    "alternate_roles",
+    "public_contact_channels",
+    "preferred_channel",
+    "do_not_contact",
+    "risk_level",
+    "evidence_level"
+  ],
+  "properties": {
+    "id": { "type": "string", "pattern": "^CT-[0-9]{3,}$" },
+    "company": { "type": "string", "minLength": 1 },
+    "sector": { "type": "string", "minLength": 1 },
+    "recommended_system": {
+      "type": "string",
+      "enum": ["revenue_os", "executive_command_os", "followup_recovery_os", "whatsapp_client_os", "proposal_proof_os"]
+    },
+    "best_contact_role": {
+      "type": "string",
+      "enum": ["Founder", "CEO", "GM", "Head of Sales", "Sales Manager", "Sales Lead", "Marketing Manager", "Operations Manager", "Customer Service Manager", "BD Manager"]
+    },
+    "alternate_roles": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": ["Founder", "CEO", "GM", "Head of Sales", "Sales Manager", "Sales Lead", "Marketing Manager", "Operations Manager", "Customer Service Manager", "BD Manager"]
+      }
+    },
+    "public_contact_channels": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+    "preferred_channel": { "type": "string", "enum": ["email", "public_contact_form", "linkedin_public", "phone_published_business_line"] },
+    "do_not_contact": { "type": "boolean" },
+    "risk_level": { "type": "string", "enum": ["low", "medium", "high"] },
+    "evidence_level": { "type": "string", "enum": ["L0", "L1", "L2", "L3", "L4"] }
+  }
+}

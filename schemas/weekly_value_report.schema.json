@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dealix.sa/schemas/weekly_value_report.schema.json",
+  "title": "Weekly Value Report",
+  "description": "تقرير القيمة الأسبوعي. يصف قيمة فعلية مُسلَّمة بلا وعود مضمونة. metrics تُذكر كملاحظ لا كضمان.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "company", "recommended_system", "week_of", "value_delivered", "next_week_focus", "acceptance_status", "owner"],
+  "properties": {
+    "id": { "type": "string", "pattern": "^WVR-[0-9]{3,}$" },
+    "company": { "type": "string", "minLength": 1 },
+    "recommended_system": {
+      "type": "string",
+      "enum": ["revenue_os", "executive_command_os", "followup_recovery_os", "whatsapp_client_os", "proposal_proof_os"]
+    },
+    "week_of": { "type": "string", "minLength": 1 },
+    "period": { "type": "string" },
+    "value_delivered": { "type": "array", "items": { "type": "string", "minLength": 1 }, "minItems": 1 },
+    "metrics": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "observed"],
+        "properties": {
+          "name": { "type": "string" },
+          "observed": { "type": "string" },
+          "note": { "type": "string" }
+        }
+      }
+    },
+    "next_week_focus": { "type": "string", "minLength": 1 },
+    "acceptance_status": { "type": "string", "enum": ["pending", "accepted", "changes_requested"] },
+    "owner": { "type": "string", "minLength": 1 }
+  }
+}

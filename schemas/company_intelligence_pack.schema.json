@@ -1,0 +1,90 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dealix.sa/schemas/company_intelligence_pack.schema.json",
+  "title": "Company Intelligence Pack",
+  "description": "الملف الأساسي لكل شركة مستهدفة — يجعل الإيميل والاتصال والـ proposal مخصصين بعمق. عيّنات تركيبية فقط؛ مصادر عامة أو بيانات العميل.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "company",
+    "website",
+    "country",
+    "city",
+    "sector",
+    "public_contact_channels",
+    "likely_decision_maker",
+    "best_contact_role",
+    "signal",
+    "likely_pain",
+    "recommended_system",
+    "why_this_system",
+    "first_mission",
+    "proof_angle",
+    "email_subject",
+    "email_draft",
+    "call_opener",
+    "call_questions",
+    "expected_objections",
+    "mini_proposal_angle",
+    "next_action",
+    "risk_level",
+    "evidence_level"
+  ],
+  "properties": {
+    "id": { "type": "string", "pattern": "^CIP-[0-9]{3,}$" },
+    "company": { "type": "string", "minLength": 1 },
+    "website": { "type": "string", "minLength": 1 },
+    "country": { "type": "string", "minLength": 1 },
+    "city": { "type": "string", "minLength": 1 },
+    "sector": { "type": "string", "minLength": 1 },
+    "public_contact_channels": {
+      "type": "array",
+      "items": { "type": "string" },
+      "minItems": 1,
+      "description": "قنوات تواصل عامة فقط (website contact page, public social). لا أرقام جوال شخصية."
+    },
+    "likely_decision_maker": { "type": "string", "minLength": 1 },
+    "best_contact_role": {
+      "type": "string",
+      "enum": ["Founder", "CEO", "GM", "Head of Sales", "Sales Manager", "Sales Lead", "Marketing Manager", "Operations Manager", "Customer Service Manager", "BD Manager"]
+    },
+    "signal": { "type": "string", "minLength": 1, "description": "إشارة عامة لاحظناها (برامج متعددة، واتساب ظاهر، إلخ)" },
+    "likely_pain": { "type": "string", "minLength": 1, "description": "ألم محتمل — يُصاغ كاحتمال عند L0/L1" },
+    "recommended_system": {
+      "type": "string",
+      "enum": ["revenue_os", "executive_command_os", "followup_recovery_os", "whatsapp_client_os", "proposal_proof_os"]
+    },
+    "why_this_system": { "type": "string", "minLength": 1 },
+    "first_mission": { "type": "string", "minLength": 1 },
+    "proof_angle": { "type": "string", "minLength": 1 },
+    "email_subject": { "type": "string", "minLength": 1 },
+    "email_draft": { "type": "string", "minLength": 1, "description": "مسودة — لا تُرسل قبل موافقة founder. ممنوع fake Re:/Fwd: و claims مضمونة." },
+    "call_opener": { "type": "string", "minLength": 1 },
+    "call_questions": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+    "expected_objections": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+    "mini_proposal_angle": { "type": "string", "minLength": 1 },
+    "next_action": { "type": "string", "minLength": 1 },
+    "risk_level": { "type": "string", "enum": ["low", "medium", "high"] },
+    "evidence_level": { "type": "string", "enum": ["L0", "L1", "L2", "L3", "L4"] },
+    "status": {
+      "type": "string",
+      "enum": ["researched", "need_card_ready", "draft_ready", "approved_to_send", "sent", "follow_up_due", "call_brief_ready", "called", "interested", "mini_proposal_ready", "proposal_sent", "won", "delivery_started", "active", "renewal_candidate", "lost", "do_not_contact"]
+    },
+    "draft_quality": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "personalization": { "type": "integer", "minimum": 0, "maximum": 25 },
+        "pain_clarity": { "type": "integer", "minimum": 0, "maximum": 20 },
+        "system_fit": { "type": "integer", "minimum": 0, "maximum": 20 },
+        "cta_clarity": { "type": "integer", "minimum": 0, "maximum": 15 },
+        "risk_safety": { "type": "integer", "minimum": 0, "maximum": 10 },
+        "tone_quality": { "type": "integer", "minimum": 0, "maximum": 10 },
+        "total": { "type": "integer", "minimum": 0, "maximum": 100 }
+      }
+    },
+    "owner": { "type": "string" },
+    "created_at": { "type": "string" }
+  }
+}

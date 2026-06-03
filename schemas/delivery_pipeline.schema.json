@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dealix.sa/schemas/delivery_pipeline.schema.json",
+  "title": "Delivery Pipeline",
+  "description": "حالة تسليم العميل. لا ينتقل إلى delivery_started قبل required_inputs_received=true.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "company", "recommended_system", "current_state", "required_inputs", "required_inputs_received", "owner", "updated_at"],
+  "properties": {
+    "id": { "type": "string", "pattern": "^DP-[0-9]{3,}$" },
+    "company": { "type": "string", "minLength": 1 },
+    "recommended_system": {
+      "type": "string",
+      "enum": ["revenue_os", "executive_command_os", "followup_recovery_os", "whatsapp_client_os", "proposal_proof_os"]
+    },
+    "current_state": {
+      "type": "string",
+      "enum": ["interested", "qualified", "mini_proposal_ready", "proposal_sent", "payment_handoff", "won", "intake_required", "delivery_started", "first_output_ready", "client_review", "accepted", "weekly_value_report", "renewal_candidate", "lost", "do_not_contact"]
+    },
+    "required_inputs": { "type": "array", "items": { "type": "string" } },
+    "required_inputs_received": { "type": "boolean" },
+    "blockers": { "type": "array", "items": { "type": "string" } },
+    "state_history": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["state", "at"],
+        "properties": {
+          "state": { "type": "string" },
+          "at": { "type": "string" }
+        }
+      }
+    },
+    "owner": { "type": "string", "minLength": 1 },
+    "updated_at": { "type": "string", "minLength": 1 }
+  }
+}

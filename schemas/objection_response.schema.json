@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dealix.sa/schemas/objection_response.schema.json",
+  "title": "Objection Response",
+  "description": "بنك اعتراضات وردود آمنة — بلا وعود مضمونة. response_safe يجب ألا يحتوي لغة ضمان.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "objection", "category", "response", "frequency"],
+  "properties": {
+    "id": { "type": "string", "pattern": "^OBJ-[0-9]{3,}$" },
+    "objection": { "type": "string", "minLength": 1 },
+    "category": {
+      "type": "string",
+      "enum": ["pricing", "stall", "competition", "time", "trust", "differentiation", "pilot", "need", "info", "team"]
+    },
+    "response": { "type": "string", "minLength": 1 },
+    "frequency": { "type": "string", "enum": ["low", "medium", "high"] },
+    "applies_to_systems": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": ["revenue_os", "executive_command_os", "followup_recovery_os", "whatsapp_client_os", "proposal_proof_os"]
+      }
+    },
+    "risk_safety_note": { "type": "string" }
+  }
+}

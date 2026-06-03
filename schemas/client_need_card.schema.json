@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dealix.sa/schemas/client_need_card.schema.json",
+  "title": "Client Need Card",
+  "description": "بطاقة الحاجة — الجوهر الذي يربط الإشارة بالنظام والزاوية وCTA. مشتقة من Company Intelligence Pack.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "company",
+    "website",
+    "sector",
+    "signal",
+    "likely_pain",
+    "recommended_system",
+    "why_this_system",
+    "first_mission",
+    "proof_angle",
+    "email_angle",
+    "CTA",
+    "risk_level",
+    "evidence_level"
+  ],
+  "properties": {
+    "id": { "type": "string", "pattern": "^CNC-[0-9]{3,}$" },
+    "company": { "type": "string", "minLength": 1 },
+    "website": { "type": "string", "minLength": 1 },
+    "sector": { "type": "string", "minLength": 1 },
+    "signal": { "type": "string", "minLength": 1 },
+    "likely_pain": { "type": "string", "minLength": 1 },
+    "recommended_system": {
+      "type": "string",
+      "enum": ["revenue_os", "executive_command_os", "followup_recovery_os", "whatsapp_client_os", "proposal_proof_os"]
+    },
+    "why_this_system": { "type": "string", "minLength": 1 },
+    "first_mission": { "type": "string", "minLength": 1 },
+    "proof_angle": { "type": "string", "minLength": 1 },
+    "email_angle": { "type": "string", "minLength": 1 },
+    "CTA": { "type": "string", "minLength": 1 },
+    "risk_level": { "type": "string", "enum": ["low", "medium", "high"] },
+    "evidence_level": { "type": "string", "enum": ["L0", "L1", "L2", "L3", "L4"] }
+  }
+}
