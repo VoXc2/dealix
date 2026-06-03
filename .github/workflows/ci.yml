@@ -1,0 +1,64 @@
+name: Dealix Market + Commercial Gates
+
+# Runs the safety + commercial gates on every push/PR. No external sending is
+# ever performed; these jobs only validate data, run read-only gates, and tests.
+on:
+  push:
+    branches: [main, "claude/**"]
+  pull_request:
+
+jobs:
+  python-gates:
+    name: pytest safety + commercial rules
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install dev deps
+        run: pip install -r requirements-dev.txt
+      - name: Run test suite
+        run: pytest -q
+
+  node-gates:
+    name: commercial:* gates + draft eval
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Control check + daily plan + quality gate + brief (read-only)
+        run: npm run commercial:all
+      - name: Draft gate eval cross-check
+        run: node scripts/draft-quality-gate.js --eval
+
+  data-validation:
+    name: YAML/JSON/JSONL + schema conformance
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install PyYAML
+      - name: Validate data parses and conforms to schema required fields
+        run: |
+          python - <<'PY'
+          import yaml, json, glob, sys
+          bad = 0
+          for f in glob.glob('data/**/*.yaml', recursive=True):
+              try: yaml.safe_load(open(f, encoding='utf-8'))
+              except Exception as e: print('YAML FAIL', f, e); bad += 1
+          for f in glob.glob('data/**/*.jsonl', recursive=True):
+              for i, l in enumerate(open(f, encoding='utf-8'), 1):
+                  if l.strip():
+                      try: json.loads(l)
+                      except Exception as e: print('JSONL FAIL', f, i, e); bad += 1
+          for f in glob.glob('schemas/*.json'):
+              try: json.load(open(f, encoding='utf-8'))
+              except Exception as e: print('SCHEMA FAIL', f, e); bad += 1
+          print('parse failures:', bad)
+          sys.exit(1 if bad else 0)
+          PY
