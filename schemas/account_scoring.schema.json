@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dealix.sa/schemas/account_scoring.schema.json",
+  "title": "Dealix Account Scoring Record",
+  "description": "Top-100 ranking score for one account, out of 100. eligible_for_top100 is false when any hard exclusion applies (no system, no contact route, high risk, missing evidence, suppression, guaranteed claim, or pain stated as fact without evidence).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "pack_id",
+    "company_name",
+    "recommended_system",
+    "account_score",
+    "bucket",
+    "eligible_for_top100",
+    "exclusion_reasons",
+    "breakdown",
+    "evidence_level",
+    "risk_level",
+    "contact_confidence"
+  ],
+  "properties": {
+    "pack_id": { "type": "string", "pattern": "^AP-[0-9]{6}$" },
+    "company_name": { "type": "string" },
+    "recommended_system": { "type": "string" },
+    "account_score": { "type": "integer", "minimum": 0, "maximum": 100 },
+    "bucket": { "type": "string", "enum": ["top_priority", "approval_queue", "more_research", "reject_nurture"] },
+    "eligible_for_top100": { "type": "boolean" },
+    "exclusion_reasons": { "type": "array", "items": { "type": "string" } },
+    "breakdown": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["pain_clarity", "contact_availability", "system_fit", "ability_to_pay_signal", "evidence_level", "low_risk"],
+      "properties": {
+        "pain_clarity": { "type": "integer", "minimum": 0, "maximum": 25 },
+        "contact_availability": { "type": "integer", "minimum": 0, "maximum": 20 },
+        "system_fit": { "type": "integer", "minimum": 0, "maximum": 20 },
+        "ability_to_pay_signal": { "type": "integer", "minimum": 0, "maximum": 15 },
+        "evidence_level": { "type": "integer", "minimum": 0, "maximum": 10 },
+        "low_risk": { "type": "integer", "minimum": 0, "maximum": 10 }
+      }
+    },
+    "evidence_level": { "type": "string", "enum": ["L0", "L1", "L2", "L3", "L4"] },
+    "risk_level": { "type": "string", "enum": ["low", "medium", "high"] },
+    "contact_confidence": { "type": "string", "enum": ["C0", "C1", "C2", "C3", "C4"] }
+  }
+}

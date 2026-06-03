@@ -1,0 +1,34 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dealix.sa/schemas/contact_channel.schema.json",
+  "title": "Dealix Public Contact Channel",
+  "description": "A single public outreach channel for an account. channel_value is null unless the value was lawfully published or founder-provided. Purchased lists and leaked databases are never valid sources.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "pack_id",
+    "company_name",
+    "channel_type",
+    "channel_value",
+    "is_public",
+    "verified",
+    "source",
+    "confidence"
+  ],
+  "properties": {
+    "pack_id": { "type": "string", "pattern": "^AP-[0-9]{6}$" },
+    "company_name": { "type": "string" },
+    "channel_type": {
+      "type": "string",
+      "enum": ["contact_form", "public_social", "public_email", "public_phone", "role_based_outreach", "founder_provided"]
+    },
+    "channel_value": { "type": ["string", "null"] },
+    "is_public": { "type": "boolean" },
+    "verified": { "type": "boolean" },
+    "source": {
+      "type": "string",
+      "enum": ["official_website", "contact_page", "public_social", "public_directory", "public_job_post", "public_news", "founder_provided", "none"]
+    },
+    "confidence": { "type": "string", "enum": ["C0", "C1", "C2", "C3", "C4"] }
+  }
+}

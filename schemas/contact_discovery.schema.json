@@ -1,0 +1,60 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dealix.sa/schemas/contact_discovery.schema.json",
+  "title": "Dealix Contact Discovery Record",
+  "description": "Public-only contact discovery result for one account. The engine never invents names, phones, or emails. When no public channel is found, missing_contact is true and the route falls back to role-based outreach.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "pack_id",
+    "company_name",
+    "country",
+    "city",
+    "sector",
+    "public_contact_channels",
+    "phone_if_public",
+    "email_if_public",
+    "contact_page_url",
+    "social_links",
+    "google_business_hint",
+    "likely_decision_maker_role",
+    "secondary_contact_role",
+    "best_contact_route",
+    "contact_confidence",
+    "missing_contact",
+    "discovery_status",
+    "discovery_sources",
+    "generated_at"
+  ],
+  "properties": {
+    "pack_id": { "type": "string", "pattern": "^AP-[0-9]{6}$" },
+    "company_name": { "type": "string" },
+    "website": { "type": ["string", "null"] },
+    "country": { "type": "string" },
+    "city": { "type": "string" },
+    "sector": { "type": "string" },
+    "public_contact_channels": { "type": "array", "items": { "type": "string" } },
+    "phone_if_public": { "type": ["string", "null"] },
+    "email_if_public": { "type": ["string", "null"] },
+    "contact_page_url": { "type": ["string", "null"] },
+    "social_links": { "type": "array", "items": { "type": "string" } },
+    "google_business_hint": { "type": ["string", "null"] },
+    "likely_decision_maker_role": { "type": "string" },
+    "secondary_contact_role": { "type": "string" },
+    "best_contact_route": {
+      "type": "string",
+      "enum": ["contact_form", "public_social", "public_email", "public_phone", "role_based_outreach", "founder_provided"]
+    },
+    "contact_confidence": { "type": "string", "enum": ["C0", "C1", "C2", "C3", "C4"] },
+    "missing_contact": { "type": "boolean" },
+    "discovery_status": { "type": "string", "enum": ["found", "partial", "missing"] },
+    "discovery_sources": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": ["official_website", "contact_page", "public_social", "public_directory", "public_job_post", "public_news", "founder_provided"]
+      }
+    },
+    "generated_at": { "type": "string" }
+  }
+}
