@@ -1,0 +1,43 @@
+name: Launch Readiness
+
+# Least privilege by default: this workflow only reads the repository.
+permissions:
+  contents: read
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches: [main]
+
+jobs:
+  launch-readiness:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Node deps
+        run: npm install --no-audit --no-fund
+
+      - name: Build site
+        run: npm run build
+
+      - name: Run tests (pass with no tests until a suite exists)
+        run: npx vitest run --passWithNoTests
+
+      # Informational only: surfaces items awaiting founder approval (pending
+      # approvals are the expected, healthy state during a dry run, so this must
+      # not fail the gate). The hard gate is the launch readiness check below.
+      - name: Governance snapshot (informational, non-blocking)
+        continue-on-error: true
+        run: python scripts/governance_check.py
+
+      - name: Launch readiness check (structural + safety + score)
+        run: python scripts/checks/check_launch_readiness.py

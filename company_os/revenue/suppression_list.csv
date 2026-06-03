@@ -1,0 +1,3 @@
+domain,company,reason,added_by,added_date,channel
+# Append-only do-not-contact list. See company_os/governance/suppression_policy.md
+# Example row (commented): example.sa,Example Co,unsubscribe request,founder,2026-06-03,all
