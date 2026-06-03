@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dealix.sa/schemas/proposal.schema.json",
+  "title": "Proposal",
+  "description": "A client proposal. MUST map to the product catalog (product_id). No final price without founder approval.",
+  "type": "object",
+  "required": ["id", "created_at", "client", "sector", "problem", "product_id", "scope", "out_of_scope", "timeline", "price_range_sar", "assumptions", "evidence_level", "risks", "payment_terms", "approval_status", "next_action"],
+  "additionalProperties": false,
+  "properties": {
+    "id": { "type": "string", "pattern": "^PROP-[A-Za-z0-9_-]+$" },
+    "created_at": { "type": "string", "format": "date-time" },
+    "client": { "type": "string" },
+    "sector": { "type": "string", "enum": ["Marketing Agency", "Training", "B2B Services", "Other"] },
+    "problem": { "type": "string" },
+    "product_id": { "type": "string", "description": "MUST exist in data/catalog/product_catalog.json" },
+    "scope": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+    "out_of_scope": { "type": "array", "items": { "type": "string" } },
+    "timeline": { "type": "string" },
+    "price_range_sar": {
+      "type": "object",
+      "required": ["min", "max"],
+      "additionalProperties": false,
+      "properties": {
+        "min": { "type": "number", "minimum": 0 },
+        "max": { "type": "number", "minimum": 0 },
+        "is_final": { "type": "boolean", "default": false, "description": "A final price is only valid when founder_approved=true." }
+      }
+    },
+    "assumptions": { "type": "array", "items": { "type": "string" } },
+    "evidence_level": { "type": "string", "enum": ["none", "assumption", "benchmark", "client_reported", "client_data", "measured", "verified"] },
+    "risks": { "type": "array", "items": { "type": "string" } },
+    "payment_terms": { "type": "string" },
+    "approval_status": { "type": "string", "enum": ["draft", "pending_founder_approval", "founder_approved", "rejected"] },
+    "founder_approved": { "type": "boolean", "default": false },
+    "approved_by": { "type": ["string", "null"] },
+    "approved_at": { "type": ["string", "null"], "format": "date-time" },
+    "next_action": { "type": "string" }
+  }
+}

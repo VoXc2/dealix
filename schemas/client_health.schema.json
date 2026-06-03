@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dealix.sa/schemas/client_health.schema.json",
+  "title": "Client Health Score",
+  "description": "Composite health used to drive Customer Success and gate renewals.",
+  "type": "object",
+  "required": ["id", "created_at", "company", "signals", "health_score", "renewal_fit"],
+  "additionalProperties": false,
+  "properties": {
+    "id": { "type": "string", "pattern": "^CHS-[A-Za-z0-9_-]+$" },
+    "created_at": { "type": "string", "format": "date-time" },
+    "company": { "type": "string" },
+    "signals": {
+      "type": "object",
+      "description": "Each boolean or 0-5.",
+      "additionalProperties": false,
+      "properties": {
+        "onboarding_complete": { "type": "boolean" },
+        "access_complete": { "type": "boolean" },
+        "first_workflow_delivered": { "type": "boolean" },
+        "weekly_report_delivered": { "type": "boolean" },
+        "client_engagement": { "type": "integer", "minimum": 0, "maximum": 5 },
+        "value_proof": { "type": "boolean", "description": "true only if measured/verified value exists." },
+        "unresolved_risks": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "health_score": { "type": "integer", "minimum": 0, "maximum": 100 },
+    "health_band": { "type": "string", "enum": ["green", "amber", "red"] },
+    "renewal_fit": { "type": "string", "enum": ["strong", "possible", "not_yet", "at_risk"] },
+    "evidence_level": { "type": "string", "enum": ["none", "assumption", "benchmark", "client_reported", "client_data", "measured", "verified"] }
+  }
+}

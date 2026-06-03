@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dealix.sa/schemas/client_permission.schema.json",
+  "title": "Client Permission Grant",
+  "description": "A least-privilege, time-boxed permission granted by the client via the secure portal. Never stores raw secrets/keys.",
+  "type": "object",
+  "required": ["id", "created_at", "scope", "resource", "granted", "via", "expires_at", "least_privilege"],
+  "additionalProperties": false,
+  "properties": {
+    "id": { "type": "string", "pattern": "^PRM-[A-Za-z0-9_-]+$" },
+    "company": { "type": "string" },
+    "created_at": { "type": "string", "format": "date-time" },
+    "scope": { "type": "string", "enum": ["read_only_crm", "read_only_sheet", "read_only_inbox", "file_upload", "report_view", "none"] },
+    "resource": { "type": "string", "description": "Logical resource name, e.g. 'Leads sheet Q2'. Not a URL with a token." },
+    "granted": { "type": "boolean", "default": false },
+    "via": { "type": "string", "enum": ["secure_portal"], "description": "Permissions are granted ONLY via the secure portal, never WhatsApp." },
+    "secret_ref": { "type": ["string", "null"], "pattern": "^portal://[A-Za-z0-9_/-]+$", "description": "Reference to the secret in the vault. NEVER the secret itself." },
+    "expires_at": { "type": "string", "format": "date-time" },
+    "least_privilege": { "type": "boolean", "default": true },
+    "audit": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "granted_by": { "type": "string" },
+        "reviewed_by": { "type": ["string", "null"] },
+        "revoked": { "type": "boolean", "default": false },
+        "revoked_at": { "type": ["string", "null"], "format": "date-time" }
+      }
+    },
+    "risk_level": { "type": "string", "enum": ["low", "medium", "high", "critical"] }
+  }
+}

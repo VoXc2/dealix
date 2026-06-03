@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dealix.sa/schemas/client_portal_session.schema.json",
+  "title": "Client Portal Session",
+  "description": "A time-boxed, least-privilege session in the secure client portal. The portal — not WhatsApp — is where secrets/files/permissions live.",
+  "type": "object",
+  "required": ["id", "company", "created_at", "route", "expires_at", "status"],
+  "additionalProperties": false,
+  "properties": {
+    "id": { "type": "string", "pattern": "^CPS-[A-Za-z0-9_-]+$" },
+    "company": { "type": "string" },
+    "created_at": { "type": "string", "format": "date-time" },
+    "route": {
+      "type": "string",
+      "enum": ["/client/start", "/client/assessment", "/client/permissions", "/client/upload", "/client/proposal", "/client/proof-pack", "/client/payment", "/client/onboarding", "/client/weekly-report"]
+    },
+    "magic_link_ref": { "type": ["string", "null"], "pattern": "^portal://[A-Za-z0-9_/-]+$", "description": "Reference only. Never embed a live token in data/logs." },
+    "mfa_verified": { "type": "boolean", "default": false },
+    "least_privilege": { "type": "boolean", "default": true },
+    "expires_at": { "type": "string", "format": "date-time", "description": "Links must expire." },
+    "status": { "type": "string", "enum": ["issued", "active", "expired", "revoked", "completed"] },
+    "ip_country": { "type": ["string", "null"], "description": "For KSA residency checks. No full IP stored." }
+  }
+}

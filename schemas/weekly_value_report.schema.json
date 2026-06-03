@@ -1,0 +1,34 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dealix.sa/schemas/weekly_value_report.schema.json",
+  "title": "Weekly Value Report",
+  "description": "Required after delivery starts. Communicates measured value with evidence_level. No guaranteed ROI.",
+  "type": "object",
+  "required": ["id", "created_at", "company", "week_of", "value_delivered", "metrics", "evidence_level", "next_week_plan"],
+  "additionalProperties": false,
+  "properties": {
+    "id": { "type": "string", "pattern": "^WVR-[A-Za-z0-9_-]+$" },
+    "created_at": { "type": "string", "format": "date-time" },
+    "company": { "type": "string" },
+    "week_of": { "type": "string", "format": "date" },
+    "value_delivered": { "type": "string" },
+    "metrics": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "value", "evidence_level"],
+        "additionalProperties": false,
+        "properties": {
+          "name": { "type": "string" },
+          "baseline": { "type": ["string", "null"] },
+          "value": { "type": "string" },
+          "evidence_level": { "type": "string", "enum": ["none", "assumption", "benchmark", "client_reported", "client_data", "measured", "verified"] }
+        }
+      }
+    },
+    "evidence_level": { "type": "string", "enum": ["none", "assumption", "benchmark", "client_reported", "client_data", "measured", "verified"] },
+    "risks": { "type": "array", "items": { "type": "string" } },
+    "next_week_plan": { "type": "string" },
+    "delivered_via": { "type": "string", "enum": ["secure_portal", "portal_and_whatsapp_notice"], "default": "secure_portal" }
+  }
+}

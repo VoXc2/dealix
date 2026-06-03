@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dealix.sa/schemas/renewal.schema.json",
+  "title": "Renewal",
+  "description": "A renewal opportunity. Requires DELIVERED value: evidence_level must be one of client_data|measured|verified, and cites_delivered_value must be non-empty.",
+  "type": "object",
+  "required": ["id", "created_at", "company", "product_id", "trigger", "cites_delivered_value", "evidence_level", "suggested_next_step", "approval_required", "approved", "status"],
+  "additionalProperties": false,
+  "properties": {
+    "id": { "type": "string", "pattern": "^REN-[A-Za-z0-9_-]+$" },
+    "created_at": { "type": "string", "format": "date-time" },
+    "company": { "type": "string" },
+    "product_id": { "type": "string", "description": "Current product; must exist in catalog." },
+    "trigger": { "type": "string", "enum": ["first_successful_workflow", "weekly_value_proof", "positive_feedback", "21_30_days_post_delivery", "new_department_need", "new_campaign_or_source", "delivery_milestone"] },
+    "cites_delivered_value": { "type": "array", "minItems": 1, "items": { "type": "string" }, "description": "Concrete delivered value (e.g. WVR-2026-... metric). Non-empty is REQUIRED." },
+    "evidence_level": { "type": "string", "enum": ["client_data", "measured", "verified"], "description": "Weaker evidence is NOT allowed for a renewal draft." },
+    "suggested_next_step": { "type": "string", "description": "Exactly one next step. No pressure tactics." },
+    "approval_required": { "type": "boolean", "const": true },
+    "approved": { "type": "boolean", "default": false },
+    "approved_by": { "type": ["string", "null"] },
+    "status": { "type": "string", "enum": ["draft", "pending_approval", "approved", "sent_manually", "renewed", "declined"] }
+  }
+}

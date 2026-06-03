@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dealix.sa/schemas/client_portal_permission.schema.json",
+  "title": "Client Portal Permission",
+  "description": "Role/route access within the portal. Distinct from data-access grants (client_permission). Least privilege, audited, expiring.",
+  "type": "object",
+  "required": ["id", "company", "created_at", "role", "allowed_routes", "expires_at", "least_privilege"],
+  "additionalProperties": false,
+  "properties": {
+    "id": { "type": "string", "pattern": "^CPP-[A-Za-z0-9_-]+$" },
+    "company": { "type": "string" },
+    "created_at": { "type": "string", "format": "date-time" },
+    "role": { "type": "string", "enum": ["client_viewer", "client_approver", "client_uploader"] },
+    "allowed_routes": {
+      "type": "array",
+      "items": { "type": "string", "enum": ["/client/start", "/client/assessment", "/client/permissions", "/client/upload", "/client/proposal", "/client/proof-pack", "/client/payment", "/client/onboarding", "/client/weekly-report"] }
+    },
+    "mfa_required": { "type": "boolean", "default": true },
+    "expires_at": { "type": "string", "format": "date-time" },
+    "least_privilege": { "type": "boolean", "default": true },
+    "audit": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "granted_by": { "type": "string" },
+        "revoked": { "type": "boolean", "default": false },
+        "revoked_at": { "type": ["string", "null"], "format": "date-time" }
+      }
+    }
+  }
+}

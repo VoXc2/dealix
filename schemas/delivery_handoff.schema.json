@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dealix.sa/schemas/delivery_handoff.schema.json",
+  "title": "Sales-to-Delivery Handoff",
+  "description": "Produced for EVERY won deal. A won deal without a delivery handoff is invalid.",
+  "type": "object",
+  "required": ["id", "created_at", "company", "product_id", "scope", "out_of_scope", "success_metric", "required_access", "first_workflow", "delivery_owner", "timeline", "risks", "weekly_value_report_template"],
+  "additionalProperties": false,
+  "properties": {
+    "id": { "type": "string", "pattern": "^DHO-[A-Za-z0-9_-]+$" },
+    "created_at": { "type": "string", "format": "date-time" },
+    "proposal_id": { "type": "string" },
+    "company": { "type": "string" },
+    "client_profile": { "type": "string" },
+    "product_id": { "type": "string", "description": "Must exist in product catalog." },
+    "scope": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+    "out_of_scope": { "type": "array", "items": { "type": "string" } },
+    "success_metric": { "type": "string" },
+    "required_access": {
+      "type": "array",
+      "items": { "type": "string", "enum": ["read_only_crm", "read_only_sheet", "read_only_inbox", "file_upload", "report_view"] },
+      "description": "All access granted via secure portal, least privilege."
+    },
+    "first_workflow": { "type": "string" },
+    "delivery_owner": { "type": "string" },
+    "timeline": { "type": "string" },
+    "next_meeting": { "type": ["string", "null"], "format": "date-time" },
+    "risks": { "type": "array", "items": { "type": "string" } },
+    "weekly_value_report_template": { "type": "string", "description": "Reference to the WVR template to be used (e.g. reports/delivery/WEEKLY_VALUE_REPORT_QUEUE.md)." },
+    "status": { "type": "string", "enum": ["created", "accepted", "in_delivery", "blocked", "completed"] }
+  }
+}

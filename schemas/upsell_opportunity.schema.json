@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dealix.sa/schemas/upsell_opportunity.schema.json",
+  "title": "Upsell Opportunity",
+  "description": "A step up the upsell ladder. Like renewals, requires delivered value and approval.",
+  "type": "object",
+  "required": ["id", "created_at", "company", "from_product_id", "to_product_id", "ladder_step", "cites_delivered_value", "evidence_level", "suggested_next_step", "approval_required", "approved", "status"],
+  "additionalProperties": false,
+  "properties": {
+    "id": { "type": "string", "pattern": "^UPS-[A-Za-z0-9_-]+$" },
+    "created_at": { "type": "string", "format": "date-time" },
+    "company": { "type": "string" },
+    "from_product_id": { "type": "string", "description": "Must exist in catalog." },
+    "to_product_id": { "type": "string", "description": "Must exist in catalog and be higher on the ladder." },
+    "ladder_step": { "type": "string", "enum": ["readiness_scan", "revenue_leakage_diagnostic", "followup_recovery_workflow", "ai_revenue_ops_starter", "full_revenue_os", "monthly_optimization", "custom_company_os", "multi_department_rollout"] },
+    "cites_delivered_value": { "type": "array", "minItems": 1, "items": { "type": "string" } },
+    "evidence_level": { "type": "string", "enum": ["client_data", "measured", "verified"] },
+    "suggested_next_step": { "type": "string" },
+    "approval_required": { "type": "boolean", "const": true },
+    "approved": { "type": "boolean", "default": false },
+    "status": { "type": "string", "enum": ["draft", "pending_approval", "approved", "sent_manually", "won", "declined"] }
+  }
+}

@@ -1,0 +1,127 @@
+# Dealix WhatsApp Template Library (Arabic-first)
+# Rules: short messages, clear options, Saudi B2B tone, always offer "ما أعرف — اقترح علي".
+# No secrets/API keys. No cold templates (every template assumes prior consent).
+# All sends are dry_run=true / send_enabled=false until founder approval.
+version: 1
+locale_default: ar
+forbidden:
+  - cold_outreach            # there is intentionally NO cold template
+  - request_api_key          # never ask for keys in WhatsApp
+  - send_payment_link_auto   # never auto-send payment links
+mandatory_option:
+  label: "ما أعرف — اقترح علي"
+  value: "dont_know_suggest"
+  note: "Must be present on every recommendation/assessment card."
+
+templates:
+  welcome_after_consent:
+    channel: whatsapp
+    requires_consent: true
+    body_ar: |
+      أهلًا {first_name} 👋 معك Dealix.
+      شكرًا إنك تواصلت معنا. نساعد شركات B2B بالسعودية توقف تسرب الإيراد وتنظّم المتابعة.
+      تحب نبدأ بفحص جاهزية سريع (٥ أسئلة) أو عندك سؤال محدد؟
+    options:
+      - { label: "ابدأ فحص الجاهزية", value: "start_readiness" }
+      - { label: "عندي سؤال", value: "ask_question" }
+      - { label: "ما أعرف — اقترح علي", value: "dont_know_suggest" }
+
+  dont_know_suggest:
+    body_ar: |
+      تمام، خلني أقترح 👌
+      الأغلب في وضعك يبدأ بـ«فحص الجاهزية» (مجاني، دقيقتين) نعرف منه أكبر نقطة تسرب ونرشّح أول خطوة مناسبة لك.
+      نبدأ؟
+    options:
+      - { label: "نعم ابدأ الفحص", value: "start_readiness" }
+      - { label: "كلّمني بشري", value: "human_handoff" }
+
+  readiness_intro:
+    body_ar: |
+      حلو. راح أسألك ٥ أسئلة قصيرة عن: تدفّق العملاء، المتابعة، البيانات، التقارير، والاستعجال.
+      تقدر ترد برقم الخيار، وإذا ما تدري اختر «ما أعرف — اقترح علي».
+    options:
+      - { label: "يلا نبدأ", value: "q1" }
+
+  service_recommendation:
+    body_ar: |
+      بناءً على ردودك:
+      • جاهزية الإيراد: {revenue_readiness}/100
+      • نضج المتابعة: {followup_maturity}/100
+      الخطوة المقترحة: {recommended_product_name}.
+      السبب: {reason}. (مستوى الدليل: {evidence_level})
+      تحب التفاصيل أو نرتّب لك مكالمة؟
+    options:
+      - { label: "ابغى التفاصيل", value: "show_proposal" }
+      - { label: "رتّبوا مكالمة", value: "book_call" }
+      - { label: "ما أعرف — اقترح علي", value: "dont_know_suggest" }
+
+  proposal_review_notice:
+    body_ar: |
+      جهّزنا لك ملخص عرض مبدئي (غير نهائي — السعر النهائي يعتمد بعد مراجعة الفريق).
+      للأمان، التفاصيل والملفات داخل بوابتك الآمنة:
+      {portal_link_placeholder}
+    options:
+      - { label: "فتحت البوابة", value: "opened_portal" }
+      - { label: "أحتاج مساعدة", value: "support" }
+
+  proof_pack_notice:
+    body_ar: |
+      جاهز Proof Pack المبدئي (نقاط التسرب + كسب سريع + خطة قياس).
+      راجعه داخل البوابة الآمنة: {portal_link_placeholder}
+      ملاحظة: كل رقم فيه له «مستوى دليل» واضح، وما نوعد بعائد مضمون.
+    options:
+      - { label: "اطّلعت", value: "reviewed_proof" }
+      - { label: "عندي سؤال", value: "ask_question" }
+
+  permission_request_notice:
+    body_ar: |
+      عشان نكمّل، نحتاج صلاحية «قراءة فقط» لمصدر بياناتك (CRM/جدول).
+      ما نطلب أبدًا كلمات مرور أو مفاتيح هنا في واتساب — كل شيء عبر البوابة الآمنة بصلاحية محدودة وتنتهي تلقائيًا:
+      {portal_link_placeholder}
+    options:
+      - { label: "أعطيت الصلاحية", value: "granted" }
+      - { label: "ليش تحتاجونها؟", value: "explain_permission" }
+
+  payment_handoff_notice:
+    body_ar: |
+      بعد موافقتك على العرض، فريقنا راح يجهّز خطوة الدفع ويعتمدها يدويًا.
+      ما نرسل روابط دفع تلقائيًا. التأكيد والدفع يتم داخل البوابة الآمنة.
+    options:
+      - { label: "تمام", value: "ack" }
+      - { label: "كلّمني بشري", value: "human_handoff" }
+
+  onboarding_checklist_notice:
+    body_ar: |
+      مبروك انطلاقتنا 🎉 جهّزنا لك checklist أول ١٤ يوم داخل البوابة.
+      اليوم نحتاج: تأكيد المالك للبيانات + صلاحية قراءة فقط.
+    options:
+      - { label: "ببدأ الآن", value: "start_onboarding" }
+      - { label: "أحتاج مساعدة", value: "support" }
+
+  weekly_report_notice:
+    body_ar: |
+      جاهز تقرير القيمة الأسبوعي ({week_of}).
+      أبرز نقطة: {headline}. التفاصيل في البوابة: {portal_link_placeholder}
+    options:
+      - { label: "اطّلعت", value: "ack" }
+      - { label: "ناقشني", value: "book_call" }
+
+  support_escalation:
+    body_ar: |
+      وصلني طلبك، راح أحوّلك لزميل بشري يكمل معك.
+      ممكن تختصر لي المطلوب؟ (بدون أي بيانات حساسة)
+    options:
+      - { label: "كتبت المطلوب", value: "submitted" }
+
+  renewal_notice:
+    body_ar: |
+      مرّ شهر تقريبًا 👏 بناءً على القيمة اللي تحققت ({delivered_value}) نقترح خطوة وحدة بسيطة للاستمرار/التوسعة.
+      نشرح لك؟ (بدون أي ضغط)
+    options:
+      - { label: "اشرح لي", value: "explain_renewal" }
+      - { label: "ليس الآن", value: "later" }
+
+  opt_out_ack:
+    body_ar: |
+      تمام، أوقفنا الرسائل من طرفنا. تقدر ترجع لنا أي وقت. شكرًا {first_name}.
+    options: []

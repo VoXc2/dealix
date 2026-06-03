@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dealix.sa/schemas/delivery_acceptance.schema.json",
+  "title": "Delivery Acceptance",
+  "description": "Acceptance checkpoint (e.g. Day 11-14) confirming the deliverable meets agreed criteria.",
+  "type": "object",
+  "required": ["id", "created_at", "company", "handoff_id", "criteria", "accepted"],
+  "additionalProperties": false,
+  "properties": {
+    "id": { "type": "string", "pattern": "^ACC-[A-Za-z0-9_-]+$" },
+    "created_at": { "type": "string", "format": "date-time" },
+    "company": { "type": "string" },
+    "handoff_id": { "type": "string" },
+    "criteria": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["criterion", "met"],
+        "additionalProperties": false,
+        "properties": {
+          "criterion": { "type": "string" },
+          "met": { "type": "boolean" },
+          "evidence_level": { "type": "string", "enum": ["none", "assumption", "benchmark", "client_reported", "client_data", "measured", "verified"] }
+        }
+      }
+    },
+    "accepted": { "type": "boolean", "default": false },
+    "accepted_by": { "type": ["string", "null"], "description": "Client authorized contact." },
+    "accepted_at": { "type": ["string", "null"], "format": "date-time" },
+    "scope_changes_requested": { "type": "array", "items": { "type": "string" }, "description": "Routed through Scope Guard, not silently absorbed." }
+  }
+}

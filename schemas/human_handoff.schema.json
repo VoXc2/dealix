@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dealix.sa/schemas/human_handoff.schema.json",
+  "title": "Human Handoff",
+  "description": "Escalation from automated WhatsApp/portal flow to a human. Always available. Required for legal/contract/price-final/payment-send.",
+  "type": "object",
+  "required": ["id", "created_at", "reason", "from_channel", "urgency", "status"],
+  "additionalProperties": false,
+  "properties": {
+    "id": { "type": "string", "pattern": "^HHO-[A-Za-z0-9_-]+$" },
+    "session_id": { "type": ["string", "null"] },
+    "company": { "type": "string" },
+    "created_at": { "type": "string", "format": "date-time" },
+    "reason": {
+      "type": "string",
+      "enum": ["client_requested", "legal_or_contract", "final_price", "payment_send", "complaint", "out_of_scope", "low_confidence", "compliance_sensitive", "other"]
+    },
+    "from_channel": { "type": "string", "enum": ["whatsapp", "portal", "email"] },
+    "urgency": { "type": "string", "enum": ["low", "medium", "high", "critical"] },
+    "assigned_to": { "type": ["string", "null"] },
+    "sla_due_at": { "type": ["string", "null"], "format": "date-time" },
+    "status": { "type": "string", "enum": ["open", "assigned", "in_progress", "resolved", "closed"] },
+    "context": { "type": "string", "description": "Plain summary. No secrets, no API keys, no end-customer PII." }
+  }
+}

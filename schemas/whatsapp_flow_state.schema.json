@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dealix.sa/schemas/whatsapp_flow_state.schema.json",
+  "title": "WhatsApp Flow State",
+  "description": "Runtime state of a session moving through a defined flow (flows.yaml).",
+  "type": "object",
+  "required": ["session_id", "flow_id", "step", "updated_at"],
+  "additionalProperties": false,
+  "properties": {
+    "session_id": { "type": "string" },
+    "flow_id": {
+      "type": "string",
+      "enum": ["welcome_after_consent", "dont_know_suggest", "readiness_scan", "service_recommendation", "proposal_review", "proof_pack_review", "permission_request", "secure_portal_link", "payment_handoff", "onboarding_checklist", "weekly_report", "support_escalation", "renewal_upsell"]
+    },
+    "step": { "type": "string" },
+    "completed_steps": { "type": "array", "items": { "type": "string" } },
+    "allowed_next_steps": { "type": "array", "items": { "type": "string" } },
+    "collected": { "type": "object", "description": "Non-sensitive answers collected so far. No secrets/PII." },
+    "blocked_reason": { "type": ["string", "null"], "description": "e.g. requires_approval, requires_portal, requires_human_handoff" },
+    "updated_at": { "type": "string", "format": "date-time" }
+  }
+}

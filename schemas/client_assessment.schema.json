@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dealix.sa/schemas/client_assessment.schema.json",
+  "title": "Client Readiness Assessment",
+  "description": "Output of the WhatsApp/portal Readiness Scan. Scores 0-100. Every recommendation carries evidence_level.",
+  "type": "object",
+  "required": ["id", "created_at", "dimensions", "scores", "risk_level", "recommended_product_id", "next_best_action", "evidence_level"],
+  "additionalProperties": false,
+  "properties": {
+    "id": { "type": "string", "pattern": "^CAS-[A-Za-z0-9_-]+$" },
+    "session_id": { "type": ["string", "null"] },
+    "company": { "type": "string" },
+    "created_at": { "type": "string", "format": "date-time" },
+    "dimensions": {
+      "type": "object",
+      "description": "Each 0-5. Source of the Readiness Scan questions.",
+      "additionalProperties": false,
+      "properties": {
+        "lead_flow": { "type": "integer", "minimum": 0, "maximum": 5 },
+        "followup_maturity": { "type": "integer", "minimum": 0, "maximum": 5 },
+        "crm_data_readiness": { "type": "integer", "minimum": 0, "maximum": 5 },
+        "reporting_maturity": { "type": "integer", "minimum": 0, "maximum": 5 },
+        "urgency": { "type": "integer", "minimum": 0, "maximum": 5 },
+        "budget_fit": { "type": "integer", "minimum": 0, "maximum": 5 },
+        "decision_maker_access": { "type": "integer", "minimum": 0, "maximum": 5 },
+        "compliance_sensitivity": { "type": "integer", "minimum": 0, "maximum": 5 },
+        "automation_readiness": { "type": "integer", "minimum": 0, "maximum": 5 },
+        "first_workflow_fit": { "type": "integer", "minimum": 0, "maximum": 5 }
+      }
+    },
+    "scores": {
+      "type": "object",
+      "required": ["revenue_readiness", "followup_maturity", "automation_readiness"],
+      "additionalProperties": false,
+      "properties": {
+        "revenue_readiness": { "type": "integer", "minimum": 0, "maximum": 100 },
+        "followup_maturity": { "type": "integer", "minimum": 0, "maximum": 100 },
+        "automation_readiness": { "type": "integer", "minimum": 0, "maximum": 100 }
+      }
+    },
+    "risk_level": { "type": "string", "enum": ["low", "medium", "high", "critical"] },
+    "recommended_product_id": { "type": "string", "description": "Must exist in data/catalog/product_catalog.json" },
+    "next_best_action": { "type": "string" },
+    "evidence_level": { "type": "string", "enum": ["none", "assumption", "benchmark", "client_reported", "client_data", "measured", "verified"] },
+    "notes": { "type": "string" }
+  }
+}

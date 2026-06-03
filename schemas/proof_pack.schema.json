@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dealix.sa/schemas/proof_pack.schema.json",
+  "title": "Proof Pack",
+  "description": "Evidence-driven diagnostic. Extends company_os/delivery/proof_pack_template.md. No fake proof; every claim has evidence_level. No guaranteed ROI.",
+  "type": "object",
+  "required": ["id", "created_at", "company", "current_workflow", "leakage_points", "quick_win", "before_after", "measurement_plan", "evidence_level", "risks", "recommended_pilot_product_id"],
+  "additionalProperties": false,
+  "properties": {
+    "id": { "type": "string", "pattern": "^PRF-[A-Za-z0-9_-]+$" },
+    "created_at": { "type": "string", "format": "date-time" },
+    "company": { "type": "string" },
+    "current_workflow": { "type": "string" },
+    "leakage_points": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["stage", "description", "evidence_level"],
+        "additionalProperties": false,
+        "properties": {
+          "stage": { "type": "string" },
+          "description": { "type": "string" },
+          "estimated_impact_sar": { "type": ["number", "null"], "minimum": 0 },
+          "evidence_level": { "type": "string", "enum": ["none", "assumption", "benchmark", "client_reported", "client_data", "measured", "verified"] }
+        }
+      }
+    },
+    "quick_win": { "type": "string" },
+    "before_after": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "metric": { "type": "string" },
+        "before": { "type": "string" },
+        "after_target": { "type": "string", "description": "Target, not a guarantee." }
+      }
+    },
+    "measurement_plan": { "type": "string" },
+    "evidence_level": { "type": "string", "enum": ["none", "assumption", "benchmark", "client_reported", "client_data", "measured", "verified"] },
+    "risks": { "type": "array", "items": { "type": "string" } },
+    "recommended_pilot_product_id": { "type": "string", "description": "Must exist in data/catalog/product_catalog.json" },
+    "guaranteed_roi": { "type": "boolean", "const": false, "description": "Always false — Dealix never guarantees ROI." },
+    "confidential": { "type": "boolean", "default": true }
+  }
+}

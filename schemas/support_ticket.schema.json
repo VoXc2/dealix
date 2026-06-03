@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dealix.sa/schemas/support_ticket.schema.json",
+  "title": "Support Ticket",
+  "description": "Client support request raised from WhatsApp or portal.",
+  "type": "object",
+  "required": ["id", "created_at", "category", "severity", "status", "channel"],
+  "additionalProperties": false,
+  "properties": {
+    "id": { "type": "string", "pattern": "^SUP-[A-Za-z0-9_-]+$" },
+    "company": { "type": "string" },
+    "created_at": { "type": "string", "format": "date-time" },
+    "category": { "type": "string", "enum": ["onboarding", "access_permission", "report", "billing", "bug", "scope_question", "feature_request", "other"] },
+    "severity": { "type": "string", "enum": ["low", "medium", "high", "critical"] },
+    "channel": { "type": "string", "enum": ["whatsapp", "portal", "email"] },
+    "summary": { "type": "string", "description": "No secrets/PII." },
+    "assigned_to": { "type": ["string", "null"] },
+    "sla_due_at": { "type": ["string", "null"], "format": "date-time" },
+    "status": { "type": "string", "enum": ["open", "in_progress", "waiting_client", "resolved", "closed"] },
+    "linked_handoff_id": { "type": ["string", "null"] }
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dealix.sa/schemas/revenue_action_card.schema.json",
+  "title": "Revenue Action Card",
+  "description": "Founder-facing revenue execution action (generate proposal/proof, prepare payment handoff, request human handoff). Approval-first.",
+  "type": "object",
+  "required": ["id", "created_at", "type", "title", "summary", "reason", "risk_level", "evidence_level", "options", "approval_required", "next_action", "owner", "status"],
+  "additionalProperties": false,
+  "properties": {
+    "id": { "type": "string", "pattern": "^RAC-[A-Za-z0-9_-]+$" },
+    "created_at": { "type": "string", "format": "date-time" },
+    "type": {
+      "type": "string",
+      "enum": ["generate_proposal", "generate_proof_pack", "prepare_payment_handoff", "request_contract_handoff", "move_to_nurture", "do_not_contact", "request_human_handoff"]
+    },
+    "company": { "type": "string" },
+    "linked_proposal_id": { "type": ["string", "null"] },
+    "product_id": { "type": ["string", "null"], "description": "If set, must exist in product catalog." },
+    "title": { "type": "string" },
+    "summary": { "type": "string" },
+    "reason": { "type": "string" },
+    "risk_level": { "type": "string", "enum": ["low", "medium", "high", "critical"] },
+    "evidence_level": { "type": "string", "enum": ["none", "assumption", "benchmark", "client_reported", "client_data", "measured", "verified"] },
+    "options": { "type": "array", "minItems": 1, "items": { "type": "object", "required": ["label", "value"], "properties": { "label": { "type": "string" }, "value": { "type": "string" } }, "additionalProperties": false } },
+    "approval_required": { "type": "boolean" },
+    "approved": { "type": "boolean", "default": false },
+    "next_action": { "type": "string" },
+    "expires_at": { "type": ["string", "null"], "format": "date-time" },
+    "owner": { "type": "string" },
+    "status": { "type": "string", "enum": ["proposed", "approved", "rejected", "done", "expired"] }
+  }
+}

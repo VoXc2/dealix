@@ -1,0 +1,114 @@
+{
+  "$schema_note": "Canonical client-facing product catalog and source of truth for product_id mapping. Reconciles existing SKUs in company_os/revenue/proposals.json with the upsell ladder. Every proposal/action card/payment/renewal/upsell MUST reference a product_id listed here. Do NOT duplicate the SKU pricing source — sku_ref points back to it.",
+  "currency": "SAR",
+  "sku_source": "company_os/revenue/proposals.json",
+  "last_updated": "2026-06-03",
+  "products": [
+    {
+      "product_id": "readiness_scan",
+      "name_ar": "فحص الجاهزية",
+      "name_en": "Readiness Scan",
+      "ladder_step": "readiness_scan",
+      "ladder_order": 1,
+      "billing": "one_time",
+      "price_range_sar": { "min": 0, "max": 0 },
+      "sku_ref": null,
+      "summary_ar": "تشخيص أولي عبر واتساب/البوابة يقيس جاهزية الإيراد ويوصي بأول خطوة. مجاني/تمهيدي.",
+      "leads_to": "revenue_leakage_diagnostic"
+    },
+    {
+      "product_id": "revenue_leakage_diagnostic",
+      "name_ar": "تشخيص تسرب الإيراد (Sprint 5 أيام)",
+      "name_en": "Revenue Leakage Diagnostic / Revenue Intelligence Sprint",
+      "ladder_step": "revenue_leakage_diagnostic",
+      "ladder_order": 2,
+      "billing": "one_time",
+      "price_range_sar": { "min": 2500, "max": 5000 },
+      "sku_ref": "PROP-P1",
+      "summary_ar": "5 أيام: خريطة تسرب الإيراد + Proof Pack + خطة 30 يوم.",
+      "leads_to": "followup_recovery_workflow"
+    },
+    {
+      "product_id": "followup_recovery_workflow",
+      "name_ar": "ورشة استرجاع المتابعة",
+      "name_en": "Follow-up Recovery Workflow",
+      "ladder_step": "followup_recovery_workflow",
+      "ladder_order": 3,
+      "billing": "one_time",
+      "price_range_sar": { "min": 2500, "max": 6000 },
+      "sku_ref": null,
+      "summary_ar": "بناء أول workflow متابعة عملي يوقف أكبر نقطة تسرب.",
+      "leads_to": "ai_revenue_ops_starter"
+    },
+    {
+      "product_id": "ai_revenue_ops_starter",
+      "name_ar": "باقة عمليات الإيراد بالذكاء — مبتدئ",
+      "name_en": "AI Revenue Ops Starter",
+      "ladder_step": "ai_revenue_ops_starter",
+      "ladder_order": 4,
+      "billing": "monthly",
+      "price_range_sar": { "min": 3000, "max": 3000 },
+      "sku_ref": "PROP-P2-SMALL",
+      "summary_ar": "غرفة حرب أسبوعية + تتبع pipeline + تحسين الرسائل + تقرير شهري.",
+      "leads_to": "full_revenue_os"
+    },
+    {
+      "product_id": "full_revenue_os",
+      "name_ar": "نظام تشغيل الإيراد الكامل",
+      "name_en": "Full Revenue OS",
+      "ladder_step": "full_revenue_os",
+      "ladder_order": 5,
+      "billing": "monthly",
+      "price_range_sar": { "min": 8000, "max": 8000 },
+      "sku_ref": "PROP-P2-MEDIUM",
+      "summary_ar": "تشغيل كامل + A/B + ذكاء اعتراضات + تدريب أسبوعي + Proof Packs.",
+      "leads_to": "monthly_optimization"
+    },
+    {
+      "product_id": "monthly_optimization",
+      "name_ar": "تحسين شهري (إضافة)",
+      "name_en": "Monthly Optimization",
+      "ladder_step": "monthly_optimization",
+      "ladder_order": 6,
+      "billing": "monthly",
+      "price_range_sar": { "min": 1500, "max": 4000 },
+      "sku_ref": null,
+      "summary_ar": "طبقة تحسين مستمرة فوق أي باقة شهرية.",
+      "leads_to": "custom_company_os"
+    },
+    {
+      "product_id": "custom_company_os",
+      "name_ar": "نظام تشغيل المؤسسة المخصص",
+      "name_en": "Custom Company OS",
+      "ladder_step": "custom_company_os",
+      "ladder_order": 7,
+      "billing": "monthly",
+      "price_range_sar": { "min": 20000, "max": 20000 },
+      "sku_ref": "PROP-P2-ENTERPRISE",
+      "summary_ar": "تطبيق Revenue OS كامل + حوكمة مخصصة + مدير نجاح مخصص.",
+      "leads_to": "multi_department_rollout"
+    },
+    {
+      "product_id": "multi_department_rollout",
+      "name_ar": "تعميم متعدد الإدارات",
+      "name_en": "Multi-department Rollout",
+      "ladder_step": "multi_department_rollout",
+      "ladder_order": 8,
+      "billing": "custom",
+      "price_range_sar": { "min": 20000, "max": 100000 },
+      "sku_ref": null,
+      "summary_ar": "توسعة عبر أكثر من إدارة/فرع — تسعير مخصص بموافقة المؤسس.",
+      "leads_to": null
+    }
+  ],
+  "valid_product_ids": [
+    "readiness_scan",
+    "revenue_leakage_diagnostic",
+    "followup_recovery_workflow",
+    "ai_revenue_ops_starter",
+    "full_revenue_os",
+    "monthly_optimization",
+    "custom_company_os",
+    "multi_department_rollout"
+  ]
+}

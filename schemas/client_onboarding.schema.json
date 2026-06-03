@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dealix.sa/schemas/client_onboarding.schema.json",
+  "title": "Client Onboarding (First 14 Days)",
+  "description": "Tracks the Day 0 -> Day 14 onboarding model from a won deal.",
+  "type": "object",
+  "required": ["id", "created_at", "company", "handoff_id", "checklist", "status"],
+  "additionalProperties": false,
+  "properties": {
+    "id": { "type": "string", "pattern": "^ONB-[A-Za-z0-9_-]+$" },
+    "created_at": { "type": "string", "format": "date-time" },
+    "company": { "type": "string" },
+    "handoff_id": { "type": "string" },
+    "checklist": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "day0_handoff": { "type": "boolean", "default": false },
+        "day1_access_intake": { "type": "boolean", "default": false },
+        "day2_3_workflow_mapping": { "type": "boolean", "default": false },
+        "day4_7_first_draft": { "type": "boolean", "default": false },
+        "day8_10_review_correction": { "type": "boolean", "default": false },
+        "day11_14_first_report_acceptance": { "type": "boolean", "default": false }
+      }
+    },
+    "access_granted": { "type": "boolean", "default": false },
+    "first_workflow_delivered": { "type": "boolean", "default": false },
+    "owner": { "type": "string" },
+    "status": { "type": "string", "enum": ["not_started", "in_progress", "at_risk", "complete"] }
+  }
+}

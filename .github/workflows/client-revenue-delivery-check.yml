@@ -1,0 +1,67 @@
+name: Client/Revenue/Delivery Safety Check
+
+# Enforces Dealix Agent #2 non-negotiables (AGENTS.md): no secrets in data/reports,
+# WhatsApp post-consent only, payment/renewal approval-first, proposals map to catalog.
+# Pure stdlib (no network deps required).
+
+on:
+  push:
+    branches: ["**"]
+    paths:
+      - "data/**"
+      - "schemas/**"
+      - "reports/**"
+      - "scripts/client_revenue_delivery_check.py"
+      - "tests/**"
+      - "AGENTS.md"
+      - ".github/workflows/client-revenue-delivery-check.yml"
+  pull_request:
+    paths:
+      - "data/**"
+      - "schemas/**"
+      - "reports/**"
+      - "scripts/client_revenue_delivery_check.py"
+      - "tests/**"
+  workflow_dispatch: {}
+
+jobs:
+  safety-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Safety check (invariants + no-secrets scan)
+        run: python3 scripts/client_revenue_delivery_check.py
+
+      - name: Invariant tests (stdlib runner)
+        run: python3 tests/run_all.py
+
+      - name: Validate JSON / JSONL / YAML parse
+        run: |
+          python3 - <<'PY'
+          import json, glob, sys
+          from pathlib import Path
+          try:
+              import yaml; have_yaml = True
+          except Exception:
+              have_yaml = False
+          errors = 0
+          for f in glob.glob("schemas/*.json") + glob.glob("data/**/*.json", recursive=True):
+              try: json.loads(Path(f).read_text(encoding="utf-8"))
+              except Exception as e: print("JSON ERR", f, e); errors += 1
+          for f in glob.glob("data/**/*.jsonl", recursive=True):
+              for i, line in enumerate(Path(f).read_text(encoding="utf-8").splitlines(), 1):
+                  if line.strip():
+                      try: json.loads(line)
+                      except Exception as e: print("JSONL ERR", f, i, e); errors += 1
+          if have_yaml:
+              for f in glob.glob("data/**/*.yaml", recursive=True):
+                  try: yaml.safe_load(Path(f).read_text(encoding="utf-8"))
+                  except Exception as e: print("YAML ERR", f, e); errors += 1
+          print("PARSE OK" if errors == 0 else f"{errors} parse errors")
+          sys.exit(1 if errors else 0)
+          PY

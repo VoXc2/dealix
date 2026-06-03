@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dealix.sa/schemas/whatsapp_action_card.schema.json",
+  "title": "WhatsApp Action Card",
+  "description": "Structured, approval-first action presented in WhatsApp instead of long freeform chat.",
+  "type": "object",
+  "required": ["id", "type", "title", "summary", "reason", "risk_level", "evidence_level", "options", "approval_required", "next_action", "expires_at", "owner", "status", "dry_run", "send_enabled"],
+  "additionalProperties": false,
+  "properties": {
+    "id": { "type": "string", "pattern": "^WAC-[A-Za-z0-9_-]+$" },
+    "session_id": { "type": "string" },
+    "created_at": { "type": "string", "format": "date-time" },
+    "type": {
+      "type": "string",
+      "enum": ["recommendation", "approval", "permission", "proposal", "proof_pack", "payment_handoff", "onboarding", "support_escalation", "renewal"]
+    },
+    "title": { "type": "string", "maxLength": 80 },
+    "summary": { "type": "string", "maxLength": 600 },
+    "reason": { "type": "string" },
+    "risk_level": { "type": "string", "enum": ["low", "medium", "high", "critical"] },
+    "evidence_level": { "type": "string", "enum": ["none", "assumption", "benchmark", "client_reported", "client_data", "measured", "verified"] },
+    "options": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["label", "value"],
+        "additionalProperties": false,
+        "properties": {
+          "label": { "type": "string" },
+          "value": { "type": "string" },
+          "is_dont_know": { "type": "boolean", "description": "true for the mandatory 'ما أعرف — اقترح علي' option" }
+        }
+      }
+    },
+    "approval_required": { "type": "boolean" },
+    "approved": { "type": "boolean", "default": false },
+    "approved_by": { "type": ["string", "null"] },
+    "approved_at": { "type": ["string", "null"], "format": "date-time" },
+    "next_action": { "type": "string" },
+    "expires_at": { "type": "string", "format": "date-time" },
+    "owner": { "type": "string" },
+    "status": { "type": "string", "enum": ["proposed", "approved", "rejected", "sent_manually", "expired", "superseded"] },
+    "dry_run": { "type": "boolean", "default": true },
+    "send_enabled": { "type": "boolean", "default": false }
+  }
+}

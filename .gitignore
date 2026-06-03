@@ -39,3 +39,7 @@ build/
 # Test coverage
 coverage/
 .nyc_output/
+# Python (Agent #2 checks/tests are stdlib Python)
+__pycache__/
+*.py[cod]
+.pytest_cache/

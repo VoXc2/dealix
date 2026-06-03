@@ -1,0 +1,74 @@
+# Dealix WhatsApp Flows (post-consent only)
+# Each flow is a sequence of steps. Steps that affect the outside world or touch
+# secrets/files/money are GATED: gate=approval | gate=portal | gate=human_handoff.
+# Global defaults: dry_run=true, send_enabled=false. "dont_know_suggest" is always reachable.
+version: 1
+global_defaults:
+  dry_run: true
+  send_enabled: false
+  always_available:
+    - dont_know_suggest      # "ما أعرف — اقترح علي"
+    - human_handoff          # human is always one tap away
+    - opt_out                # opting out stops all messages immediately
+consent_required: true
+consent_basis_allowed: [explicit_optin, positive_reply, booking, form_submission, existing_client]
+
+flows:
+  - id: welcome_after_consent
+    entry: true
+    steps:
+      - { step: welcome, template: welcome_after_consent, next: [start_readiness, ask_question, dont_know_suggest] }
+
+  - id: dont_know_suggest
+    steps:
+      - { step: suggest, template: dont_know_suggest, next: [readiness_scan, human_handoff] }
+
+  - id: readiness_scan
+    steps:
+      - { step: intro, template: readiness_intro, next: [q1] }
+      - { step: q1, prompt: "تدفّق العملاء المحتملين كيف؟", scores: lead_flow, next: [q2] }
+      - { step: q2, prompt: "كيف متابعتكم للعملاء بعد أول رد؟", scores: followup_maturity, next: [q3] }
+      - { step: q3, prompt: "وضع بياناتكم/CRM؟", scores: crm_data_readiness, next: [q4] }
+      - { step: q4, prompt: "هل عندكم تقارير دورية؟", scores: reporting_maturity, next: [q5] }
+      - { step: q5, prompt: "ما مدى استعجالكم للتحسين؟", scores: urgency, next: [compute] }
+      - { step: compute, action: compute_scores, produces: client_assessment, next: [service_recommendation] }
+
+  - id: service_recommendation
+    steps:
+      - { step: recommend, template: service_recommendation, requires: client_assessment, gate: none, next: [proposal_review, book_call, dont_know_suggest] }
+
+  - id: proposal_review
+    steps:
+      - { step: notice, template: proposal_review_notice, gate: portal, note: "Full proposal/files only in portal. Price NOT final until founder approval.", next: [opened_portal, support] }
+
+  - id: proof_pack_review
+    steps:
+      - { step: notice, template: proof_pack_notice, gate: portal, note: "Every figure carries evidence_level. No guaranteed ROI.", next: [reviewed_proof, ask_question] }
+
+  - id: permission_request
+    steps:
+      - { step: request, template: permission_request_notice, gate: portal, note: "Read-only, least privilege, expiring. NEVER ask for keys/passwords in WhatsApp.", next: [granted, explain_permission] }
+
+  - id: secure_portal_link
+    steps:
+      - { step: send_link, action: issue_portal_link, gate: approval, note: "Link is expiring + MFA. Reference only in logs (portal://...).", next: [opened_portal] }
+
+  - id: payment_handoff
+    steps:
+      - { step: notice, template: payment_handoff_notice, gate: human_handoff, note: "No auto payment link. Founder approves, human sends manually, payment in portal.", next: [ack, human_handoff] }
+
+  - id: onboarding_checklist
+    steps:
+      - { step: notice, template: onboarding_checklist_notice, requires: won_deal, gate: portal, next: [start_onboarding, support] }
+
+  - id: weekly_report
+    steps:
+      - { step: notice, template: weekly_report_notice, requires: weekly_value_report, gate: portal, next: [ack, book_call] }
+
+  - id: support_escalation
+    steps:
+      - { step: escalate, template: support_escalation, gate: human_handoff, produces: support_ticket, next: [submitted] }
+
+  - id: renewal_upsell
+    steps:
+      - { step: notice, template: renewal_notice, requires: delivered_value, gate: approval, note: "Requires evidence_level in {client_data,measured,verified}. One next step, no pressure.", next: [explain_renewal, later] }

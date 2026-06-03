@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dealix.sa/schemas/client_upload.schema.json",
+  "title": "Client Upload",
+  "description": "A file uploaded by the client via the secure portal. Scanned, retention-bound, never a public URL.",
+  "type": "object",
+  "required": ["id", "company", "filename", "content_type", "storage_ref", "scanned", "retention_until", "status"],
+  "additionalProperties": false,
+  "properties": {
+    "id": { "type": "string", "pattern": "^UPL-[A-Za-z0-9_-]+$" },
+    "company": { "type": "string" },
+    "session_id": { "type": ["string", "null"] },
+    "created_at": { "type": "string", "format": "date-time" },
+    "filename": { "type": "string" },
+    "content_type": { "type": "string" },
+    "size_bytes": { "type": "integer", "minimum": 0 },
+    "storage_ref": { "type": "string", "pattern": "^(portal|s3)://[A-Za-z0-9_./-]+$", "description": "Private storage reference. Never a public/presigned URL committed to repo." },
+    "scanned": { "type": "boolean", "default": false },
+    "pii_flag": { "type": "boolean", "description": "true if end-customer PII may be present; triggers anonymization before analysis." },
+    "retention_until": { "type": "string", "format": "date", "description": "Default created_at + 90 days, then deletion (PDPL)." },
+    "status": { "type": "string", "enum": ["received", "scanning", "ready", "quarantined", "deleted"] }
+  }
+}
