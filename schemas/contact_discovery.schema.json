@@ -1,0 +1,31 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://dealix.sa/schemas/contact_discovery.schema.json",
+  "title": "Contact Discovery Record",
+  "description": "Result of public-only contact discovery for one account. Captures which public routes exist, the best role to target, and what is missing. Never stores invented names, phones, or emails.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "account_id", "company_name", "best_contact_route", "contact_confidence", "target_role", "discovered_at", "sources"],
+  "properties": {
+    "id": { "type": "string", "pattern": "^CD-[0-9]{3,}$" },
+    "account_id": { "type": "string", "pattern": "^ACC-[0-9]{3,}$" },
+    "company_name": { "type": "string" },
+    "target_role": { "type": "string", "description": "Role to address, e.g. Head of Sales. Never an invented person." },
+    "secondary_role": { "type": ["string", "null"] },
+    "person_name_if_public": { "type": ["string", "null"], "description": "Only if the person publicly represents the company in that role. Null otherwise." },
+    "phone_if_public": { "type": ["string", "null"] },
+    "email_if_public": { "type": ["string", "null"] },
+    "contact_page_url": { "type": ["string", "null"] },
+    "social_links": { "type": "array", "items": { "type": "string" } },
+    "best_contact_route": {
+      "type": "string",
+      "enum": ["official_contact_page", "contact_form_or_general_email", "general_listed_email", "listed_phone", "linkedin_company_page", "social_dm", "founder_provided"]
+    },
+    "contact_confidence": { "type": "string", "enum": ["C0", "C1", "C2", "C3", "C4"] },
+    "missing": { "type": "array", "items": { "type": "string", "enum": ["person_name", "direct_phone", "direct_email", "contact_page", "social_profile", "all"] }, "description": "What could not be found publicly." },
+    "sources": { "type": "array", "items": { "type": "string", "enum": ["official_website", "contact_page", "google_business", "linkedin_company", "x_profile", "instagram_profile", "facebook_profile", "public_directory", "public_job_post", "public_news", "founder_provided"] }, "minItems": 1 },
+    "do_not_contact": { "type": "boolean", "default": false, "description": "If true this account is suppressed and must never be contacted." },
+    "discovered_at": { "type": "string", "format": "date" },
+    "notes": { "type": ["string", "null"] }
+  }
+}

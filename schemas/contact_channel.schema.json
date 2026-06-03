@@ -1,0 +1,19 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://dealix.sa/schemas/contact_channel.schema.json",
+  "title": "Contact Channel",
+  "description": "A single public contact channel for an account, with its confidence and source. One account can have several channels.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "account_id", "channel_type", "confidence", "source", "is_public"],
+  "properties": {
+    "id": { "type": "string", "pattern": "^CH-[0-9]{3,}$" },
+    "account_id": { "type": "string", "pattern": "^ACC-[0-9]{3,}$" },
+    "channel_type": { "type": "string", "enum": ["website", "contact_page", "general_email", "listed_phone", "linkedin", "x", "instagram", "facebook", "google_business", "public_directory", "job_post"] },
+    "value": { "type": ["string", "null"], "description": "Public value (URL or listed address). Null when only the existence of the channel is known. Never invented." },
+    "confidence": { "type": "string", "enum": ["C0", "C1", "C2", "C3", "C4"] },
+    "source": { "type": "string", "enum": ["official_website", "contact_page", "google_business", "linkedin_company", "x_profile", "instagram_profile", "facebook_profile", "public_directory", "public_job_post", "public_news", "founder_provided"] },
+    "is_public": { "type": "boolean", "description": "Must be true. Non-public channels are not allowed in this dataset." },
+    "consent_basis": { "type": ["string", "null"], "enum": ["public_business_listing", "founder_provided", "client_relationship", null], "description": "Lawful basis under PDPL for using this channel." }
+  }
+}

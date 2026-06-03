@@ -1,0 +1,47 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://dealix.sa/schemas/mini_proposal.schema.json",
+  "title": "Mini Proposal",
+  "description": "A one-page proposal generated from an approved account pack. It cannot be sent until approval_required is satisfied by a human. No guaranteed claims allowed.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "account_id",
+    "company_name",
+    "recommended_system",
+    "likely_pain",
+    "first_sprint",
+    "deliverables",
+    "timeline",
+    "starter_price_sar",
+    "required_inputs",
+    "expected_first_proof",
+    "approval_required",
+    "status"
+  ],
+  "properties": {
+    "id": { "type": "string", "pattern": "^MP-[0-9]{3,}$" },
+    "account_id": { "type": "string", "pattern": "^ACC-[0-9]{3,}$" },
+    "company_name": { "type": "string" },
+    "title": { "type": ["string", "null"] },
+    "recommended_system": {
+      "type": "string",
+      "enum": ["Revenue Operating System", "Executive Command OS", "Follow-up Recovery OS", "WhatsApp Client OS", "Proposal & Proof OS"]
+    },
+    "public_signal": { "type": ["string", "null"], "description": "Public, evidence-backed signal. Null if none." },
+    "likely_pain": { "type": "string" },
+    "why_this_system": { "type": ["string", "null"] },
+    "first_sprint": { "type": "string" },
+    "deliverables": { "type": "array", "items": { "type": "string" }, "minItems": 3 },
+    "timeline": { "type": "string", "description": "e.g. '5-7 days'." },
+    "starter_price_sar": { "type": "integer", "minimum": 1, "description": "Opening price in SAR. Required. Pricing is a human decision; this is the catalog default." },
+    "required_inputs": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+    "expected_first_proof": { "type": "string" },
+    "risks_assumptions": { "type": "array", "items": { "type": "string" } },
+    "next_step": { "type": ["string", "null"] },
+    "approval_required": { "type": "boolean", "const": true, "description": "Must be true. Founder approval gates every send." },
+    "approved_by": { "type": ["string", "null"] },
+    "status": { "type": "string", "enum": ["draft", "approval_queue", "approved", "sent", "won", "lost"], "description": "Starts at draft." }
+  }
+}

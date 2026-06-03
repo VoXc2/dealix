@@ -1,0 +1,21 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://dealix.sa/schemas/account_scoring.schema.json",
+  "title": "Account Scoring (Top 100 Ranking)",
+  "description": "The 100-point quality score used to rank accounts for the Top 100 queue. Sum of weighted components must equal total_score.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["account_id", "pain_clarity", "contact_availability", "system_fit", "ability_to_pay", "evidence", "low_risk", "total_score", "tier"],
+  "properties": {
+    "account_id": { "type": "string", "pattern": "^ACC-[0-9]{3,}$" },
+    "pain_clarity": { "type": "integer", "minimum": 0, "maximum": 25, "description": "Weight 25." },
+    "contact_availability": { "type": "integer", "minimum": 0, "maximum": 20, "description": "Weight 20." },
+    "system_fit": { "type": "integer", "minimum": 0, "maximum": 20, "description": "Weight 20." },
+    "ability_to_pay": { "type": "integer", "minimum": 0, "maximum": 15, "description": "Weight 15." },
+    "evidence": { "type": "integer", "minimum": 0, "maximum": 10, "description": "Weight 10." },
+    "low_risk": { "type": "integer", "minimum": 0, "maximum": 10, "description": "Weight 10." },
+    "total_score": { "type": "integer", "minimum": 0, "maximum": 100 },
+    "tier": { "type": "string", "enum": ["top_priority", "approval_queue", "rewrite_more_research", "reject_nurture"], "description": ">=85 top_priority, 75-84 approval_queue, 65-74 rewrite_more_research, <65 reject_nurture." },
+    "excluded_reason": { "type": ["string", "null"], "description": "If the account is blocked from Top 100 (no system, no evidence, no contact route, high risk, unverified claim, suppression list)." }
+  }
+}

@@ -1,0 +1,8 @@
+{"account_id":"ACC-001","ability_to_pay":19,"urgency":18,"ease_of_delivery":16,"upsell_potential":12,"contact_availability":9,"total_score":74,"band":"this_week","expected_starter_price_sar":4500}
+{"account_id":"ACC-002","ability_to_pay":17,"urgency":17,"ease_of_delivery":18,"upsell_potential":10,"contact_availability":10,"total_score":72,"band":"this_week","expected_starter_price_sar":3500}
+{"account_id":"ACC-003","ability_to_pay":15,"urgency":16,"ease_of_delivery":15,"upsell_potential":9,"contact_availability":6,"total_score":61,"band":"this_week","expected_starter_price_sar":3500}
+{"account_id":"ACC-004","ability_to_pay":18,"urgency":17,"ease_of_delivery":16,"upsell_potential":10,"contact_availability":9,"total_score":70,"band":"this_week","expected_starter_price_sar":4500}
+{"account_id":"ACC-005","ability_to_pay":20,"urgency":16,"ease_of_delivery":17,"upsell_potential":12,"contact_availability":9,"total_score":74,"band":"this_week","expected_starter_price_sar":3000}
+{"account_id":"ACC-006","ability_to_pay":16,"urgency":14,"ease_of_delivery":14,"upsell_potential":9,"contact_availability":6,"total_score":59,"band":"nurture","expected_starter_price_sar":5500}
+{"account_id":"ACC-007","ability_to_pay":18,"urgency":15,"ease_of_delivery":17,"upsell_potential":11,"contact_availability":9,"total_score":70,"band":"this_week","expected_starter_price_sar":3000}
+{"account_id":"ACC-008","ability_to_pay":12,"urgency":14,"ease_of_delivery":16,"upsell_potential":10,"contact_availability":6,"total_score":58,"band":"nurture","expected_starter_price_sar":4500}

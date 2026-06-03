@@ -1,0 +1,20 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://dealix.sa/schemas/cash_priority_score.schema.json",
+  "title": "Cash Priority Score",
+  "description": "Scores an opportunity by how fast and how cleanly it can turn into cash. Sum of components must equal total_score.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["account_id", "ability_to_pay", "urgency", "ease_of_delivery", "upsell_potential", "contact_availability", "total_score", "band"],
+  "properties": {
+    "account_id": { "type": "string", "pattern": "^ACC-[0-9]{3,}$" },
+    "ability_to_pay": { "type": "integer", "minimum": 0, "maximum": 25, "description": "Weight 25." },
+    "urgency": { "type": "integer", "minimum": 0, "maximum": 25, "description": "Weight 25." },
+    "ease_of_delivery": { "type": "integer", "minimum": 0, "maximum": 20, "description": "Weight 20." },
+    "upsell_potential": { "type": "integer", "minimum": 0, "maximum": 15, "description": "Weight 15." },
+    "contact_availability": { "type": "integer", "minimum": 0, "maximum": 15, "description": "Weight 15." },
+    "total_score": { "type": "integer", "minimum": 0, "maximum": 100 },
+    "band": { "type": "string", "enum": ["now", "this_week", "nurture"], "description": ">=80 now, 60-79 this_week, <60 nurture." },
+    "expected_starter_price_sar": { "type": ["integer", "null"], "minimum": 0 }
+  }
+}
