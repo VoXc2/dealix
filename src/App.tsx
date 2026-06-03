@@ -1,5 +1,8 @@
 import { Routes, Route } from 'react-router'
 import LandingPage from './pages/LandingPage'
+import Systems from './pages/Systems'
+import SystemDetail from './pages/SystemDetail'
+import Pricing from './pages/Pricing'
 import Dashboard from './pages/Dashboard'
 import Prospects from './pages/Prospects'
 import Governance from './pages/Governance'
@@ -11,6 +14,9 @@ export default function App() {
   return (
     <Routes>
       <Route path="/" element={<LandingPage />} />
+      <Route path="/systems" element={<Systems />} />
+      <Route path="/systems/:slug" element={<SystemDetail />} />
+      <Route path="/pricing" element={<Pricing />} />
       <Route path="/dashboard" element={<Dashboard />} />
       <Route path="/prospects" element={<Prospects />} />
       <Route path="/governance" element={<Governance />} />

@@ -10,7 +10,7 @@ export default function LandingPage() {
       <nav className="border-b bg-white/80 backdrop-blur-sm sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
           <div className="flex items-center gap-2"><div className="w-8 h-8 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-lg flex items-center justify-center"><Zap className="w-5 h-5 text-white" /></div><span className="text-xl font-bold text-gray-900">Dealix</span></div>
-          <div className="hidden md:flex items-center gap-6"><a href="#features" className="text-sm text-gray-600 hover:text-gray-900">المميزات</a><a href="#pricing" className="text-sm text-gray-600 hover:text-gray-900">الأسعار</a><a href="#governance" className="text-sm text-gray-600 hover:text-gray-900">الحوكمة</a></div>
+          <div className="hidden md:flex items-center gap-6"><Link to="/systems" className="text-sm text-gray-600 hover:text-gray-900">الأنظمة</Link><Link to="/pricing" className="text-sm text-gray-600 hover:text-gray-900">الأسعار</Link><a href="#governance" className="text-sm text-gray-600 hover:text-gray-900">الحوكمة</a></div>
           <div className="flex gap-3"><Link to="/login"><Button variant="outline" size="sm">تسجيل الدخول</Button></Link><Link to="/dashboard"><Button size="sm" className="gap-2">ابدأ<ArrowRight className="w-4 h-4" /></Button></Link></div>
         </div>
       </nav>
@@ -67,7 +67,7 @@ export default function LandingPage() {
         <div className="max-w-7xl mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div><div className="flex items-center gap-2 mb-4"><div className="w-8 h-8 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-lg flex items-center justify-center"><Zap className="w-5 h-5 text-white" /></div><span className="text-xl font-bold text-white">Dealix</span></div><p className="text-sm">نظام تشغيل إيرادات مدعوم بالذكاء الاصطناعي للسعودية والخليج.</p></div>
-            <div><h4 className="text-white font-medium mb-4">المنتجات</h4><ul className="space-y-2 text-sm"><li>Revenue Intelligence Sprint</li><li>AI Sales Ops Retainer</li><li>Executive War Room</li><li>Proof Pack</li></ul></div>
+            <div><h4 className="text-white font-medium mb-4">الأنظمة الخمسة</h4><ul className="space-y-2 text-sm"><li><Link to="/systems/revenue-operating-system" className="hover:text-white">Revenue Operating System</Link></li><li><Link to="/systems/executive-command-os" className="hover:text-white">Executive Command OS</Link></li><li><Link to="/systems/follow-up-recovery-os" className="hover:text-white">Follow-up Recovery OS</Link></li><li><Link to="/systems/whatsapp-client-os" className="hover:text-white">WhatsApp Client OS</Link></li><li><Link to="/systems/proposal-proof-os" className="hover:text-white">Proposal & Proof OS</Link></li></ul></div>
             <div><h4 className="text-white font-medium mb-4">النظام</h4><ul className="space-y-2 text-sm"><li><Link to="/dashboard" className="hover:text-white">لوحة التحكم</Link></li><li><Link to="/prospects" className="hover:text-white">العملاء</Link></li><li><Link to="/governance" className="hover:text-white">الحوكمة</Link></li><li><Link to="/finance" className="hover:text-white">المالية</Link></li></ul></div>
             <div><h4 className="text-white font-medium mb-4">القطاعات</h4><ul className="space-y-2 text-sm"><li>وكالات التسويق</li><li>شركات التدريب</li><li>B2B Services</li></ul></div>
           </div>
