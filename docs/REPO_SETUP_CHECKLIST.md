@@ -20,11 +20,12 @@ GitHub → **Settings → Code security** (a.k.a. "Code security and analysis"):
 | **Dependency graph** | Required by `actions/dependency-review-action`. Without it the action errors: *"Dependency review is not supported on this repository."* | Makes the **Dependency Review** check work. It is currently `continue-on-error` in `security.yml`; once the graph is on, you can remove that to enforce it. |
 | **Dependabot alerts** (optional) | Surfaces vulnerable deps in the Security tab. | Advisory only. |
 | **Secret scanning** + **Push protection** (optional) | Native secret scanning in addition to the Gitleaks job. | Advisory only. |
-| **Code scanning** | The `CodeQL` (TypeScript) and `Analyze Python` (CodeQL) workflows upload SARIF to the Security tab. Code scanning is enabled automatically once these workflows run on the default branch; no manual toggle needed beyond allowing Actions. | Populates the Security → Code scanning tab. |
+| **Code scanning — use Advanced, not Default** | This repo uses **advanced** CodeQL via workflow files: `codeql.yml` (Python) + `security.yml` (JavaScript/TypeScript). If GitHub **default setup** is also enabled it conflicts with these and posts a failing 3-second "CodeQL" check (the workflow analysis jobs themselves still pass). **Action: disable default setup** — Settings → Code security → Code scanning → CodeQL analysis → **Switch to Advanced** (or set default setup to *Not configured*). | Removes the conflicting "CodeQL" check; the advanced Python + TS analyses (already green) own code scanning. |
 
 > The `github-advanced-security[bot]` comments on the PR ("Code Scanning has
 > recently been set up", "CodeQL found N potential problems") are **informational**.
 > CodeQL *findings* do not fail the check — they appear in the Security tab for triage.
+> The only CodeQL *check* failure here is the default-vs-advanced conflict above.
 
 ---
 
