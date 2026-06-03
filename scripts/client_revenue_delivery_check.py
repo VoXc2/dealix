@@ -289,8 +289,35 @@ def check_evals_consistency() -> list[dict]:
     return findings
 
 
+# High-confidence provider patterns only (no generic api_key=/password= kv) so prose
+# "forbidden pattern" reference tables in docs don't trip false positives.
+HIGH_CONFIDENCE_DOC_PATTERNS = [
+    (n, p) for (n, p) in SECRET_PATTERNS
+    if n in {"openai_key", "stripe_key", "aws_key", "google_key", "github_pat", "slack_token", "private_key"}
+]
+
+
+def check_docs() -> list[dict]:
+    """High-confidence secret + unmasked-PII scan over prose docs (docs/ + AGENTS.md)."""
+    findings = []
+    targets = list((ROOT / "docs").rglob("*.md"))
+    agents = ROOT / "AGENTS.md"
+    if agents.exists():
+        targets.append(agents)
+    for path in targets:
+        text = path.read_text(encoding="utf-8", errors="ignore")
+        rel = path.relative_to(ROOT)
+        for name, pat in HIGH_CONFIDENCE_DOC_PATTERNS:
+            if pat.search(text):
+                findings.append(_f("no_secrets", f"high-confidence secret '{name}' in {rel}"))
+        if UNMASKED_PHONE.search(text):
+            findings.append(_f("no_pii", f"unmasked_phone in {rel}"))
+    return findings
+
+
 CHECKS = [
     ("secrets/PII", check_secrets),
+    ("docs secrets", check_docs),
     ("whatsapp", check_whatsapp),
     ("payments", check_payments),
     ("proposals", check_proposals),

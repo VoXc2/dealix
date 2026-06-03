@@ -19,9 +19,9 @@
 | كلمات مرور | `password=MyPass123` | `portal://secrets/db-password` |
 | Bearer tokens | `Bearer eyJ...` | `portal://secrets/api-token` |
 | روابط دفع نشطة | `https://payment.co/pay/abc` | `portal://payment-links/PAY-1001` |
-| أرقام جوال حقيقية | `+966512345678` | `+9665XXXXXXXX` |
+| أرقام جوال حقيقية | رقم جوال حقيقي كامل غير مُقنَّع | `+9665XXXXXXXX` |
 | بريد إلكتروني شخصي | `user@gmail.com` | `REDACTED` أو `user@dealix.sa` |
-| مفاتيح خاصة | `-----BEGIN PRIVATE KEY-----` | `portal://certs/private-key` |
+| مفاتيح خاصة | نص يبدأ بـ BEGIN PRIVATE KEY | `portal://certs/private-key` |
 
 ### التطبيق الآلي
 الفحص `scripts/client_revenue_delivery_check.py` يفحص كل ملف `.json`, `.jsonl`, `.yaml`, `.md`, `.csv` في `data/`, `reports/`, `schemas/` ويرفض الأنماط المحظورة. CI تفشل تلقائيًا عند أي انتهاك.
