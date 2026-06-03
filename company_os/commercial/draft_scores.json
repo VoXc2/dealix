@@ -1,0 +1,139 @@
+{
+  "generated": "2026-06-03",
+  "distribution_target": {
+    "revenue_os": 100,
+    "followup_recovery_os": 90,
+    "executive_command_os": 70,
+    "whatsapp_client_os": 70,
+    "proposal_proof_os": 70,
+    "total": 400
+  },
+  "counts": {
+    "scored": 5,
+    "top_priority": 5,
+    "approval_queue": 0,
+    "needs_rewrite": 0,
+    "rejected": 0,
+    "gate_failed": 0,
+    "top_queue_size": 5
+  },
+  "top_queue_ids": [
+    "OUT-001",
+    "OUT-004",
+    "OUT-002",
+    "OUT-003",
+    "OUT-005"
+  ],
+  "drafts": [
+    {
+      "id": "OUT-001",
+      "company": "Digital Rise Agency",
+      "recommended_system": "revenue_os",
+      "recommended_system_name": "Revenue Operating System",
+      "evidence_level": "L2",
+      "client_need_card": true,
+      "scores": {
+        "personalization": 25,
+        "pain_clarity": 20,
+        "system_fit": 20,
+        "cta_clarity": 15,
+        "risk_safety": 10,
+        "tone_quality": 10
+      },
+      "total": 100,
+      "status": "top_priority",
+      "risk_level": "low",
+      "gate_pass": true,
+      "gate_fails": [],
+      "top_eligible": true
+    },
+    {
+      "id": "OUT-002",
+      "company": "Growth Labs SA",
+      "recommended_system": "revenue_os",
+      "recommended_system_name": "Revenue Operating System",
+      "evidence_level": "L2",
+      "client_need_card": true,
+      "scores": {
+        "personalization": 25,
+        "pain_clarity": 15,
+        "system_fit": 20,
+        "cta_clarity": 15,
+        "risk_safety": 10,
+        "tone_quality": 10
+      },
+      "total": 95,
+      "status": "top_priority",
+      "risk_level": "low",
+      "gate_pass": true,
+      "gate_fails": [],
+      "top_eligible": true
+    },
+    {
+      "id": "OUT-003",
+      "company": "TrainMe KSA",
+      "recommended_system": "whatsapp_client_os",
+      "recommended_system_name": "WhatsApp Client OS",
+      "evidence_level": "L2",
+      "client_need_card": true,
+      "scores": {
+        "personalization": 25,
+        "pain_clarity": 15,
+        "system_fit": 20,
+        "cta_clarity": 15,
+        "risk_safety": 10,
+        "tone_quality": 10
+      },
+      "total": 95,
+      "status": "top_priority",
+      "risk_level": "low",
+      "gate_pass": true,
+      "gate_fails": [],
+      "top_eligible": true
+    },
+    {
+      "id": "OUT-004",
+      "company": "SkillUp Arabia",
+      "recommended_system": "followup_recovery_os",
+      "recommended_system_name": "Follow-up Recovery OS",
+      "evidence_level": "L2",
+      "client_need_card": true,
+      "scores": {
+        "personalization": 25,
+        "pain_clarity": 20,
+        "system_fit": 20,
+        "cta_clarity": 15,
+        "risk_safety": 10,
+        "tone_quality": 10
+      },
+      "total": 100,
+      "status": "top_priority",
+      "risk_level": "low",
+      "gate_pass": true,
+      "gate_fails": [],
+      "top_eligible": true
+    },
+    {
+      "id": "OUT-005",
+      "company": "CloudShift Consulting",
+      "recommended_system": "revenue_os",
+      "recommended_system_name": "Revenue Operating System",
+      "evidence_level": "L2",
+      "client_need_card": true,
+      "scores": {
+        "personalization": 25,
+        "pain_clarity": 15,
+        "system_fit": 20,
+        "cta_clarity": 15,
+        "risk_safety": 10,
+        "tone_quality": 10
+      },
+      "total": 95,
+      "status": "top_priority",
+      "risk_level": "low",
+      "gate_pass": true,
+      "gate_fails": [],
+      "top_eligible": true
+    }
+  ]
+}

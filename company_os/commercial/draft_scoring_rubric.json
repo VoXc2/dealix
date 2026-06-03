@@ -1,0 +1,46 @@
+{
+  "version": "1.0",
+  "last_updated": "2026-06-03",
+  "max_score": 100,
+  "dimensions": {
+    "personalization": { "max": 25, "description": "Name slot, company-specific pain, role-specific language" },
+    "pain_clarity": { "max": 20, "description": "Concrete pain referenced, framed as likely (not asserted as fact)" },
+    "system_fit": { "max": 20, "description": "One of the Focus-5 systems confidently recommended for the pain" },
+    "cta_clarity": { "max": 15, "description": "One clear, low-pressure next step / question" },
+    "risk_safety": { "max": 10, "description": "No guaranteed claims, no fake thread, no pain-as-fact, no internal module names" },
+    "tone_quality": { "max": 10, "description": "Polite, respectful, professional Arabic; not pushy" }
+  },
+  "status_thresholds": {
+    "rejected": { "min": 0, "max": 64, "label": "rejected" },
+    "needs_rewrite": { "min": 65, "max": 74, "label": "needs_rewrite" },
+    "approval_queue": { "min": 75, "max": 84, "label": "approval_queue" },
+    "top_priority": { "min": 85, "max": 100, "label": "top_priority" }
+  },
+  "top_queue": {
+    "name": "Top 100 Approval Queue",
+    "capacity": 100,
+    "min_score": 75,
+    "must_pass_email_gate": true,
+    "requires": ["recommended_system", "client_need_card", "cta", "evidence_level"],
+    "exclude_if": ["risk_level == high", "score < 75", "email_gate == fail"]
+  },
+  "email_gate_fail_conditions": [
+    "no Client Need Card",
+    "no recommended_system",
+    "no CTA",
+    "guaranteed claim",
+    "fake Re/Fwd",
+    "unverified pain written as fact",
+    "internal module name leaked",
+    "suppression hit"
+  ],
+  "evidence_levels": {
+    "L0": "sector guess",
+    "L1": "company website",
+    "L2": "service/job/news page",
+    "L3": "multiple consistent public sources",
+    "L4": "data from the company itself"
+  },
+  "hedging_required_when_evidence_in": ["L0", "L1"],
+  "hedging_phrases_ar": ["غالبًا", "قد يكون", "في هذا النوع من الشركات", "عادةً"]
+}

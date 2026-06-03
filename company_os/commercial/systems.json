@@ -1,0 +1,98 @@
+{
+  "version": "1.0",
+  "last_updated": "2026-06-03",
+  "governance_principle": "AI drafts. Human approves. System logs.",
+  "note": "Canonical registry for the Dealix Focus-5 systems. Scripts in scripts/commercial-*.js and docs/ read from this file. Customer-facing copy MUST use customer_facing_name_*; it must NEVER leak any token listed in internal_module_names.",
+  "daily_capacity_target": {
+    "research_batch": 400,
+    "company_intelligence_packs": 400,
+    "client_need_cards": 400,
+    "email_drafts": 400,
+    "top_approval_queue": 100,
+    "call_brief_queue": 30,
+    "mini_proposal_queue": "as_earned",
+    "comment": "Targets describe daily factory capacity, not a promise of 400 real verified companies. Real research input only — no purchased lists."
+  },
+  "systems": [
+    {
+      "id": "revenue_os",
+      "internal_module": "REV_OS",
+      "customer_facing_name_ar": "نظام تشغيل الإيرادات",
+      "customer_facing_name_en": "Revenue Operating System",
+      "daily_draft_allocation": 100,
+      "pain_signals": ["leads not converting", "revenue leakage", "pipeline", "slow deal closure", "deals stuck", "founder blind", "تضيع", "تسرب", "تحويل", "صفقات"],
+      "delivery_readiness": ["Leakage Map", "Workflow", "Report Template"],
+      "starter_price_sar": 2500,
+      "content_theme_ar": "لماذا تضيع الفرص قبل العرض؟",
+      "partner_fit": ["وكالة تسويق", "Web Agency", "CRM Implementer"]
+    },
+    {
+      "id": "followup_recovery_os",
+      "internal_module": "FUR_OS",
+      "customer_facing_name_ar": "نظام استرجاع المتابعات",
+      "customer_facing_name_en": "Follow-up Recovery OS",
+      "daily_draft_allocation": 90,
+      "pain_signals": ["no follow-up", "follow-up takes too long", "low registration rate", "inquiry to enrollment gap", "leads not followed up", "متابعة", "استفسار", "تسجيل"],
+      "delivery_readiness": ["Queue", "Status Model", "Message Set"],
+      "starter_price_sar": 2500,
+      "content_theme_ar": "آخر متابعة لم تحدث قد تكون أغلى فرصة",
+      "partner_fit": ["شركة تدريب", "وكالة تسويق", "HR Firm"]
+    },
+    {
+      "id": "executive_command_os",
+      "internal_module": "EXEC_OS",
+      "customer_facing_name_ar": "نظام القيادة التنفيذية",
+      "customer_facing_name_en": "Executive Command OS",
+      "daily_draft_allocation": 70,
+      "pain_signals": ["weak crm usage", "founder blind to pipeline", "no visibility", "reports", "decision", "crm", "رؤية", "قرار", "تقارير"],
+      "delivery_readiness": ["KPI Map", "Daily Report", "Decision Log"],
+      "starter_price_sar": 3000,
+      "content_theme_ar": "التقارير لا تكفي إذا لا تعطي قرارًا",
+      "partner_fit": ["مستشار أعمال", "CRM Implementer", "HR Firm"]
+    },
+    {
+      "id": "whatsapp_client_os",
+      "internal_module": "WA_OS",
+      "customer_facing_name_ar": "نظام عملاء واتساب",
+      "customer_facing_name_en": "WhatsApp Client OS",
+      "daily_draft_allocation": 70,
+      "pain_signals": ["whatsapp", "واتساب", "inquiries lost", "استفسارات", "clients lost", "handoff"],
+      "delivery_readiness": ["Flow Map", "Action Cards", "Handoff Policy"],
+      "starter_price_sar": 2500,
+      "content_theme_ar": "واتساب ليس Inbox؛ هو workflow",
+      "partner_fit": ["شركة تدريب", "وكالة تسويق"]
+    },
+    {
+      "id": "proposal_proof_os",
+      "internal_module": "PNP_OS",
+      "customer_facing_name_ar": "نظام العروض والإثبات",
+      "customer_facing_name_en": "Proposal & Proof OS",
+      "daily_draft_allocation": 70,
+      "pain_signals": ["proposals not tracked", "deals stuck in proposal", "no proof for clients", "client churn due to no roi proof", "no roi proof", "عروض", "إثبات", "proof"],
+      "delivery_readiness": ["Proposal Template", "Proof Pack", "Scope Block"],
+      "starter_price_sar": 3000,
+      "content_theme_ar": "العرض المقنع يحتاج Proof وليس كلامًا أكثر",
+      "partner_fit": ["مستشار أعمال", "Web Agency"]
+    }
+  ],
+  "draft_distribution": {
+    "revenue_os": 100,
+    "followup_recovery_os": 90,
+    "executive_command_os": 70,
+    "whatsapp_client_os": 70,
+    "proposal_proof_os": 70,
+    "total": 400
+  },
+  "internal_module_names": [
+    "REV_OS", "FUR_OS", "EXEC_OS", "WA_OS", "PNP_OS",
+    "prospect_research", "war_room", "approval_queue", "ai_action_ledger",
+    "outreach_queue", "draft_scores", "draft-quality-gate", "commercial-control-check"
+  ],
+  "guaranteed_claim_phrases": [
+    "نضمن", "مضمون", "نضمن لك", "نضمن زيادة", "guarantee", "guaranteed", "we guarantee", "guaranteed revenue", "guaranteed increase"
+  ],
+  "unverified_pain_as_fact_phrases": [
+    "أنتم تعانون", "عندكم مشكلة", "واضح أنكم", "أنتم تخسرون", "you are losing", "you suffer from", "your problem is"
+  ],
+  "fake_thread_prefixes": ["Re:", "RE:", "Fwd:", "FWD:", "رد:", "تحويل:"]
+}

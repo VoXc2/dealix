@@ -1,0 +1,8 @@
+{
+  "version": "1.0",
+  "last_updated": "2026-06-03",
+  "note": "Companies/domains that must never receive outreach. Any draft targeting a suppressed company fails the Email Gate. Populated from opt-outs, do_not_contact requests, existing clients, and competitors. No purchased lists are ever ingested.",
+  "do_not_contact_companies": [],
+  "do_not_contact_domains": [],
+  "reasons_taxonomy": ["opt_out", "existing_client", "competitor", "legal_request", "founder_excluded"]
+}

@@ -1,0 +1,6 @@
+{
+  "version": "1.0",
+  "last_updated": "2026-06-03",
+  "note": "Inbound leads captured from the Dealix website (Diagnostic / Pricing / Contact forms). Each lead should produce a Client Need Card + Recommended System + Mini Proposal draft + Founder Review item. Populated by the web intake; empty until the first submission.",
+  "leads": []
+}

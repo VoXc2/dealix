@@ -1,0 +1,198 @@
+{
+  "generated": "2026-06-03",
+  "stages": [
+    "researched",
+    "need_card_ready",
+    "draft_ready",
+    "approved",
+    "sent",
+    "call_due",
+    "called",
+    "interested",
+    "mini_proposal_ready",
+    "proposal_sent",
+    "won",
+    "delivery_started",
+    "active",
+    "renewal_candidate",
+    "lost",
+    "do_not_contact"
+  ],
+  "counts": {
+    "researched": 10,
+    "need_card_ready": 0,
+    "draft_ready": 5,
+    "approved": 0,
+    "sent": 0,
+    "call_due": 0,
+    "called": 0,
+    "interested": 0,
+    "mini_proposal_ready": 0,
+    "proposal_sent": 0,
+    "won": 0,
+    "delivery_started": 0,
+    "active": 0,
+    "renewal_candidate": 0,
+    "lost": 0,
+    "do_not_contact": 0
+  },
+  "board": [
+    {
+      "company": "Digital Rise Agency",
+      "segment": "Marketing Agency",
+      "stage": "draft_ready",
+      "score": 100,
+      "recommended_system": "Revenue Operating System",
+      "owner": "Founder"
+    },
+    {
+      "company": "Growth Labs SA",
+      "segment": "Marketing Agency",
+      "stage": "draft_ready",
+      "score": 95,
+      "recommended_system": "Revenue Operating System",
+      "owner": "Founder"
+    },
+    {
+      "company": "TrainMe KSA",
+      "segment": "Training Company",
+      "stage": "draft_ready",
+      "score": 95,
+      "recommended_system": "WhatsApp Client OS",
+      "owner": "Founder"
+    },
+    {
+      "company": "SkillUp Arabia",
+      "segment": "Training Company",
+      "stage": "draft_ready",
+      "score": 100,
+      "recommended_system": "Follow-up Recovery OS",
+      "owner": "Founder"
+    },
+    {
+      "company": "CloudShift Consulting",
+      "segment": "B2B Services",
+      "stage": "draft_ready",
+      "score": 95,
+      "recommended_system": "Revenue Operating System",
+      "owner": "Founder"
+    },
+    {
+      "company": "Nexus IT Solutions",
+      "segment": "B2B Services",
+      "stage": "researched",
+      "score": "",
+      "recommended_system": "",
+      "owner": "Founder"
+    },
+    {
+      "company": "MediaPulse Agency",
+      "segment": "Marketing Agency",
+      "stage": "researched",
+      "score": "",
+      "recommended_system": "",
+      "owner": "Founder"
+    },
+    {
+      "company": "Elevate Training",
+      "segment": "Training Company",
+      "stage": "researched",
+      "score": "",
+      "recommended_system": "",
+      "owner": "Founder"
+    },
+    {
+      "company": "LegalEdge SA",
+      "segment": "B2B Services",
+      "stage": "researched",
+      "score": "",
+      "recommended_system": "",
+      "owner": "Founder"
+    },
+    {
+      "company": "TechVenture Partners",
+      "segment": "B2B Services",
+      "stage": "researched",
+      "score": "",
+      "recommended_system": "",
+      "owner": "Founder"
+    },
+    {
+      "company": "Saudi Marketing Pro",
+      "segment": "Marketing Agency",
+      "stage": "researched",
+      "score": "",
+      "recommended_system": "",
+      "owner": "Founder"
+    },
+    {
+      "company": "LearnFast Academy",
+      "segment": "Training Company",
+      "stage": "researched",
+      "score": "",
+      "recommended_system": "",
+      "owner": "Founder"
+    },
+    {
+      "company": "Alpha Consulting Group",
+      "segment": "B2B Services",
+      "stage": "researched",
+      "score": "",
+      "recommended_system": "",
+      "owner": "Founder"
+    },
+    {
+      "company": "BrandCraft Agency",
+      "segment": "Marketing Agency",
+      "stage": "researched",
+      "score": "",
+      "recommended_system": "",
+      "owner": "Founder"
+    },
+    {
+      "company": "NextGen Training",
+      "segment": "Training Company",
+      "stage": "researched",
+      "score": "",
+      "recommended_system": "",
+      "owner": "Founder"
+    }
+  ],
+  "call_queue": [
+    {
+      "company": "Digital Rise Agency",
+      "priority": "P1",
+      "recommended_system": "نظام تشغيل الإيرادات",
+      "opening_line": "السلام عليكم، معك فريق Dealix. تواصلنا معكم بخصوص Leads not converting. عندك دقيقتين نوضح الفكرة؟",
+      "questions": [
+        "كيف تتعاملون حاليًا مع Leads not converting؟",
+        "وش أكثر مرحلة تشعرون فيها أن الفرص تتأخر أو تضيع؟",
+        "لو قدرنا نكشف هذا بدقة خلال أيام، يهمكم نبدأ بجلسة تشخيص قصيرة؟"
+      ],
+      "expected_objection": {
+        "objection": "السعر غالي",
+        "response": "نفهم. خلينا نتكلم عن كم تخسر شهرياً من الفرص الضايعة. عادة العميل يكتشف أن التكلفة أقل من قيمة صفقة واحدة ضايعة. نقدر نبدي Sprint واحد بـ 2,500 ونثبت القيمة أولاً."
+      },
+      "next_step": "حجز جلسة تشخيص 15 دقيقة، ثم إعداد Mini Proposal للاعتماد",
+      "owner": "Founder"
+    },
+    {
+      "company": "Growth Labs SA",
+      "priority": "P1",
+      "recommended_system": "نظام تشغيل الإيرادات",
+      "opening_line": "السلام عليكم، معك فريق Dealix. تواصلنا معكم بخصوص No follow-up system. عندك دقيقتين نوضح الفكرة؟",
+      "questions": [
+        "كيف تتعاملون حاليًا مع No follow-up system؟",
+        "وش أكثر مرحلة تشعرون فيها أن الفرص تتأخر أو تضيع؟",
+        "لو قدرنا نكشف هذا بدقة خلال أيام، يهمكم نبدأ بجلسة تشخيص قصيرة؟"
+      ],
+      "expected_objection": {
+        "objection": "نحتاج نفكر",
+        "response": "طبيعي. عشان نسهل التفكير: هل الفرصة الأكبر هي سرعة المتابعة، جودة العروض، أو إدارة الـ pipeline؟ نقدر نركز Sprint على اللي يأثر أكثر."
+      },
+      "next_step": "حجز جلسة تشخيص 15 دقيقة، ثم إعداد Mini Proposal للاعتماد",
+      "owner": "Founder"
+    }
+  ],
+  "mini_proposal_queue": []
+}
