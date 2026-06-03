@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dealix.sa/schemas/partner_opportunity.schema.json",
+  "title": "Dealix Partner Opportunity",
+  "type": "object",
+  "required": ["partner_id", "name", "type", "model", "margin_pct", "min_margin_pct", "status", "approval_required"],
+  "properties": {
+    "partner_id": {"type": "string"},
+    "name": {"type": "string"},
+    "type": {"type": "string", "enum": ["marketing_agency", "crm_implementer", "business_consultant", "accounting_firm", "training_provider", "web_agency", "software_reseller", "operations_consultant"]},
+    "model": {"type": "string", "enum": ["referral", "reseller", "co_delivery"]},
+    "referral_fee_pct": {"type": "number"},
+    "reseller_discount_pct": {"type": "number"},
+    "revenue_share_pct": {"type": "number"},
+    "margin_pct": {"type": "number"},
+    "min_margin_pct": {"type": "number"},
+    "status": {"type": "string"},
+    "approval_required": {"type": "boolean"}
+  },
+  "additionalProperties": true
+}

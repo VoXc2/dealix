@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dealix.sa/schemas/pricing_rule.schema.json",
+  "title": "Dealix Pricing Rule",
+  "type": "object",
+  "required": ["id", "rule", "severity", "requires_approval"],
+  "properties": {
+    "id": {"type": "string", "pattern": "^PR-[0-9]{3}$"},
+    "rule": {"type": "string"},
+    "severity": {"type": "string", "enum": ["low", "medium", "high", "critical"]},
+    "requires_approval": {"type": "boolean"},
+    "enforced_by": {"type": "array", "items": {"type": "string"}}
+  },
+  "additionalProperties": true
+}

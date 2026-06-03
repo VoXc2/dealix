@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dealix.sa/schemas/commercial_proof_pack.schema.json",
+  "title": "Dealix Commercial Proof Pack",
+  "description": "Proof packs use only real, consented, anonymized-where-needed evidence. No fabricated clients or metrics.",
+  "type": "object",
+  "required": ["pack_id", "title", "evidence_level", "client_consent", "anonymized", "publishable"],
+  "properties": {
+    "pack_id": {"type": "string"},
+    "title": {"type": "string"},
+    "sector": {"type": "string"},
+    "evidence_level": {"type": "string", "enum": ["none", "assumed", "observed", "verified"]},
+    "client_consent": {"type": "boolean"},
+    "anonymized": {"type": "boolean"},
+    "publishable": {"type": "boolean"},
+    "metrics": {"type": "array", "items": {"type": "object", "required": ["label", "value", "evidence_level"], "properties": {"label": {"type": "string"}, "value": {"type": "string"}, "evidence_level": {"type": "string"}}}}
+  },
+  "additionalProperties": true
+}

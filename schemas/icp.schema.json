@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dealix.sa/schemas/icp.schema.json",
+  "title": "Dealix ICP Segment",
+  "type": "object",
+  "required": ["id", "name_ar", "priority", "primary_personas", "top_pains", "first_offer", "disqualifiers"],
+  "properties": {
+    "id": {"type": "string"},
+    "name_ar": {"type": "string"},
+    "priority": {"type": "integer", "minimum": 1},
+    "description": {"type": "string"},
+    "primary_personas": {"type": "array", "items": {"type": "string"}},
+    "top_pains": {"type": "array", "items": {"type": "string"}},
+    "first_offer": {"type": "string", "pattern": "^DLX-L[0-6]$"},
+    "payment_ability": {"type": "string", "enum": ["low", "medium", "high"]},
+    "disqualifiers": {"type": "array", "items": {"type": "string"}}
+  },
+  "additionalProperties": true
+}

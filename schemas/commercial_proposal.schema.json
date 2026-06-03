@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dealix.sa/schemas/commercial_proposal.schema.json",
+  "title": "Dealix Commercial Proposal",
+  "description": "No proposal without a qualified opportunity, pain category, product match, success metric, scope clarity. final_price requires founder approval.",
+  "type": "object",
+  "required": ["proposal_id", "opp_id", "company", "product_match", "pain_category", "success_metric", "scope_clarity", "includes_out_of_scope", "price_range", "approval_status", "send_status"],
+  "properties": {
+    "proposal_id": {"type": "string"},
+    "opp_id": {"type": "string"},
+    "company": {"type": "string"},
+    "product_match": {"type": "string", "pattern": "^DLX-L[0-6]$"},
+    "pain_category": {"type": "string"},
+    "success_metric": {"type": "string"},
+    "scope_clarity": {"type": "boolean", "const": true},
+    "includes_out_of_scope": {"type": "boolean", "const": true},
+    "price_range": {"type": "object", "required": ["min", "max", "currency"], "properties": {"min": {"type": "number"}, "max": {"type": ["number", "null"]}, "currency": {"type": "string"}}},
+    "final_price": {"type": ["number", "null"]},
+    "approval_status": {"type": "string", "enum": ["pending", "approved", "rejected", "needs_revision"]},
+    "send_status": {"type": "string", "enum": ["not_sent", "queued_plan", "approved_for_send", "sent"]}
+  },
+  "additionalProperties": true
+}

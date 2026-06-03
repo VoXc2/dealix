@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dealix.sa/schemas/product_offer.schema.json",
+  "title": "Dealix Product Offer",
+  "description": "A sellable offer in the Dealix ladder. Final price always requires founder approval.",
+  "type": "object",
+  "required": ["id", "name", "promise", "buyer", "pain", "deliverables", "timeline_days", "price_range", "scope", "out_of_scope", "success_metric", "requires_founder_pricing_approval"],
+  "properties": {
+    "id": {"type": "string", "pattern": "^DLX-L[0-6]$"},
+    "name": {"type": "string"},
+    "name_ar": {"type": "string"},
+    "alias": {"type": ["string", "null"]},
+    "promise": {"type": "string"},
+    "buyer": {"type": "array", "items": {"type": "string"}},
+    "pain": {"type": "array", "items": {"type": "string", "enum": ["lead_leakage", "follow_up_chaos", "crm_data_disorder", "proposal_delay", "weak_reporting", "sales_team_inconsistency", "support_overload", "no_proof_case_study_system", "slow_onboarding", "weak_renewal_upsell"]}},
+    "deliverables": {"type": "array", "items": {"type": "string"}, "minItems": 1},
+    "timeline_days": {"type": "object", "required": ["min", "max"], "properties": {"min": {"type": "number"}, "max": {"type": "number"}}},
+    "price_range": {"type": "object", "required": ["min", "max", "unit"], "properties": {"min": {"type": "number"}, "max": {"type": ["number", "null"]}, "unit": {"type": "string", "enum": ["one_time", "monthly"]}}},
+    "scope": {"type": "array", "items": {"type": "string"}},
+    "out_of_scope": {"type": "array", "items": {"type": "string"}, "minItems": 1},
+    "requirements": {"type": "array", "items": {"type": "string"}},
+    "proof_needed": {"type": "string", "enum": ["none", "assumed", "observed", "verified"]},
+    "success_metric": {"type": "string"},
+    "risks": {"type": "array", "items": {"type": "string"}},
+    "handoff": {"type": ["string", "null"]},
+    "renewal_path": {"type": ["string", "null"]},
+    "requires_founder_pricing_approval": {"type": "boolean", "const": true}
+  },
+  "additionalProperties": true
+}

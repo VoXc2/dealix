@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dealix.sa/schemas/email_account.schema.json",
+  "title": "Dealix Email Account",
+  "description": "send_enabled MUST be false until deliverability gates pass and founder approves.",
+  "type": "object",
+  "required": ["account_id", "mailbox", "domain", "spf", "dkim", "dmarc", "send_enabled", "deliverability_verdict"],
+  "properties": {
+    "account_id": {"type": "string"},
+    "mailbox": {"type": "string"},
+    "domain": {"type": "string"},
+    "spf": {"type": "string", "enum": ["pass", "fail", "pending"]},
+    "dkim": {"type": "string", "enum": ["pass", "fail", "pending"]},
+    "dmarc": {"type": "string", "enum": ["pass", "fail", "pending"]},
+    "reply_to_valid": {"type": "boolean"},
+    "warmup_status": {"type": "string", "enum": ["not_started", "in_progress", "complete"]},
+    "postmaster_configured": {"type": "boolean"},
+    "separated_sending_subdomain": {"type": "boolean"},
+    "send_enabled": {"type": "boolean"},
+    "daily_cap": {"type": "number", "minimum": 0},
+    "deliverability_verdict": {"type": "string", "enum": ["NOT_READY", "DRY_RUN_ONLY", "LIMITED_SEND_READY", "RAMP_READY", "PAUSE_REQUIRED"]}
+  },
+  "additionalProperties": true
+}

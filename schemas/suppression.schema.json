@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dealix.sa/schemas/suppression.schema.json",
+  "title": "Dealix Suppression Entry",
+  "type": "object",
+  "required": ["suppression_id", "type", "value", "reason", "scope"],
+  "properties": {
+    "suppression_id": {"type": "string"},
+    "type": {"type": "string", "enum": ["domain", "email", "company"]},
+    "value": {"type": "string"},
+    "reason": {"type": "string", "enum": ["opt_out_requested", "do_not_contact", "role_account", "competitor", "hard_bounce", "spam_complaint", "manual"]},
+    "scope": {"type": "string", "enum": ["all", "sector", "campaign"]},
+    "added_at": {"type": "string"}
+  },
+  "additionalProperties": true
+}

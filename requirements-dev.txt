@@ -1,0 +1,4 @@
+# Dev dependencies for the Dealix Market + Commercial test suite (pytest).
+# Install:  pip install -r requirements-dev.txt
+pytest>=8
+PyYAML>=6

@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dealix.sa/schemas/opportunity.schema.json",
+  "title": "Dealix Commercial Opportunity",
+  "type": "object",
+  "required": ["opp_id", "company", "sector", "stage", "pain_category", "qualified", "approval_status"],
+  "properties": {
+    "opp_id": {"type": "string"},
+    "company": {"type": "string"},
+    "sector": {"type": "string"},
+    "stage": {"type": "string", "enum": ["signal_detected", "researched", "qualified", "drafted", "approved_for_outreach", "contacted", "replied", "discovery_scheduled", "discovery_completed", "proposal_needed", "proposal_sent", "negotiation", "payment_handoff", "won", "delivery_handoff", "active_delivery", "renewal_candidate", "renewed", "lost", "nurture", "do_not_contact"]},
+    "pain_category": {"type": "string"},
+    "product_match": {"type": ["string", "null"]},
+    "success_metric": {"type": ["string", "null"]},
+    "scope_clarity": {"type": "boolean"},
+    "qualified": {"type": "boolean"},
+    "evidence_level": {"type": "string", "enum": ["none", "assumed", "observed", "verified"]},
+    "approval_status": {"type": "string", "enum": ["pending", "approved", "rejected", "needs_revision"]},
+    "next_action": {"type": "string"},
+    "value_sar_range": {"type": "object", "properties": {"min": {"type": "number"}, "max": {"type": "number"}}}
+  },
+  "additionalProperties": true
+}

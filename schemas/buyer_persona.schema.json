@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dealix.sa/schemas/buyer_persona.schema.json",
+  "title": "Dealix Buyer Persona",
+  "type": "object",
+  "required": ["id", "title_ar", "segments", "goals", "pains"],
+  "properties": {
+    "id": {"type": "string"},
+    "title_ar": {"type": "string"},
+    "segments": {"type": "array", "items": {"type": "string"}},
+    "goals": {"type": "array", "items": {"type": "string"}},
+    "pains": {"type": "array", "items": {"type": "string"}},
+    "triggers": {"type": "array", "items": {"type": "string"}},
+    "top_objection": {"type": "string"}
+  },
+  "additionalProperties": true
+}

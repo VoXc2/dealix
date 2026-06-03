@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dealix.sa/schemas/pain_signal.schema.json",
+  "title": "Dealix Pain Signal",
+  "type": "object",
+  "required": ["pain_category", "evidence_level"],
+  "properties": {
+    "pain_category": {"type": "string", "enum": ["lead_leakage", "follow_up_chaos", "crm_data_disorder", "proposal_delay", "weak_reporting", "sales_team_inconsistency", "support_overload", "no_proof_case_study_system", "slow_onboarding", "weak_renewal_upsell"]},
+    "evidence_level": {"type": "string", "enum": ["none", "assumed", "observed", "verified"]},
+    "source": {"type": "string"},
+    "note": {"type": "string"}
+  },
+  "additionalProperties": true
+}

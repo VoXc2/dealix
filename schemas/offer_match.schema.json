@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dealix.sa/schemas/offer_match.schema.json",
+  "title": "Dealix Pain to Offer Match",
+  "type": "object",
+  "required": ["pain_category", "recommended_offer", "ladder_id", "next_action", "evidence_required", "approval_required"],
+  "properties": {
+    "pain_category": {"type": "string", "enum": ["lead_leakage", "follow_up_chaos", "crm_data_disorder", "proposal_delay", "weak_reporting", "sales_team_inconsistency", "support_overload", "no_proof_case_study_system", "slow_onboarding", "weak_renewal_upsell"]},
+    "recommended_offer": {"type": "string"},
+    "ladder_id": {"type": "string", "pattern": "^DLX-L[0-6]$"},
+    "next_action": {"type": "string"},
+    "evidence_required": {"type": "string", "enum": ["none", "assumed", "observed", "verified"]},
+    "approval_required": {"type": "boolean"}
+  },
+  "additionalProperties": true
+}

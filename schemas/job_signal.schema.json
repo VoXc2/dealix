@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dealix.sa/schemas/job_signal.schema.json",
+  "title": "Dealix Job Signal",
+  "type": "object",
+  "required": ["signal_id", "company", "role_posted", "mapped_pain", "mapped_offer", "source", "observed_at"],
+  "properties": {
+    "signal_id": {"type": "string"},
+    "company": {"type": "string"},
+    "sector": {"type": "string"},
+    "role_posted": {"type": "string"},
+    "mapped_pain": {"type": "string"},
+    "mapped_offer": {"type": "string", "pattern": "^DLX-L[0-6]$"},
+    "source": {"type": "string"},
+    "observed_at": {"type": "string"},
+    "evidence_level": {"type": "string", "enum": ["none", "assumed", "observed", "verified"]}
+  },
+  "additionalProperties": true
+}

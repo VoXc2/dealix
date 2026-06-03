@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dealix.sa/schemas/discovery_note.schema.json",
+  "title": "Dealix Discovery Note",
+  "type": "object",
+  "required": ["note_id", "opp_id", "company", "pains_confirmed", "next_step"],
+  "properties": {
+    "note_id": {"type": "string"},
+    "opp_id": {"type": "string"},
+    "company": {"type": "string"},
+    "pains_confirmed": {"type": "array", "items": {"type": "string"}},
+    "decision_maker_role": {"type": "string"},
+    "budget_signal": {"type": "string", "enum": ["low", "medium", "high", "unknown"]},
+    "timeline": {"type": "string"},
+    "next_step": {"type": "string"},
+    "evidence_level": {"type": "string", "enum": ["none", "assumed", "observed", "verified"]}
+  },
+  "additionalProperties": true
+}

@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dealix.sa/schemas/sending_batch.schema.json",
+  "title": "Dealix Sending Batch (plan)",
+  "description": "A batch is a PLAN by default. dry_run=true and send_enabled=false until founder approves and verdict >= LIMITED_SEND_READY.",
+  "type": "object",
+  "required": ["batch_id", "date", "planned_count", "deliverability_verdict", "status", "dry_run", "send_enabled"],
+  "properties": {
+    "batch_id": {"type": "string"},
+    "date": {"type": "string"},
+    "planned_count": {"type": "integer", "minimum": 0},
+    "sector_focus": {"type": "string"},
+    "deliverability_verdict": {"type": "string", "enum": ["NOT_READY", "DRY_RUN_ONLY", "LIMITED_SEND_READY", "RAMP_READY", "PAUSE_REQUIRED"]},
+    "status": {"type": "string", "enum": ["plan_only", "approved", "sent", "paused"]},
+    "approved_by": {"type": ["string", "null"]},
+    "dry_run": {"type": "boolean"},
+    "send_enabled": {"type": "boolean"}
+  },
+  "additionalProperties": true
+}

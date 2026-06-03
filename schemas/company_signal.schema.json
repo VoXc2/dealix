@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dealix.sa/schemas/company_signal.schema.json",
+  "title": "Dealix Company Signal",
+  "type": "object",
+  "required": ["signal_id", "company", "sector", "signal_type", "source", "observed_at", "evidence_level"],
+  "properties": {
+    "signal_id": {"type": "string"},
+    "company": {"type": "string"},
+    "sector": {"type": "string"},
+    "signal_type": {"type": "string", "enum": ["job_posting", "new_branch", "new_service_launch", "marketing_campaign", "active_hiring", "multi_forms", "crm_sales_support_role_visible", "recent_press", "content_activity", "partner_ecosystem"]},
+    "source": {"type": "string"},
+    "observed_at": {"type": "string"},
+    "evidence_level": {"type": "string", "enum": ["none", "assumed", "observed", "verified"]},
+    "mapped_pain": {"type": "string"},
+    "confidence": {"type": "number", "minimum": 0, "maximum": 1}
+  },
+  "additionalProperties": true
+}
