@@ -1,0 +1,6 @@
+{"task_id":"t-001","pipeline_id":"pl-003","recommended_system":"whatsapp-client-os","title":"بناء خريطة مسارات واتساب","deliverable":"WhatsApp Flow Map","status":"done"}
+{"task_id":"t-002","pipeline_id":"pl-003","recommended_system":"whatsapp-client-os","title":"إنشاء بطاقات الإجراء","deliverable":"Action Cards","status":"in_progress"}
+{"task_id":"t-003","pipeline_id":"pl-003","recommended_system":"whatsapp-client-os","title":"سياسة التحويل للإنسان","deliverable":"Human Handoff Policy","status":"todo"}
+{"task_id":"t-004","pipeline_id":"pl-005","recommended_system":"whatsapp-client-os","title":"مراجعة المخرج الأول مع العميل","deliverable":"Readiness Scan","status":"in_progress"}
+{"task_id":"t-005","pipeline_id":"pl-001","recommended_system":"proposal-proof-os","title":"تجهيز قالب العرض","deliverable":"Proposal Template","status":"blocked","blocker_reason":"بانتظار مثال عرض حالي"}
+{"task_id":"t-006","pipeline_id":"pl-001","recommended_system":"proposal-proof-os","title":"بناء Proof Pack","deliverable":"Proof Pack Template","status":"todo"}

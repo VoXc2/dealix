@@ -1,0 +1,2 @@
+{"gate_id":"ag-001","pipeline_id":"pl-003","recommended_system":"whatsapp-client-os","criteria":[{"criterion":"كل نوع محادثة له مسار وبطاقة إجراء","met":false},{"criterion":"سياسة التحويل للإنسان واضحة ومطبّقة","met":false},{"criterion":"أول مراجعة أسبوعية تم تسليمها","met":true}],"all_met":false,"client_signed_off":false}
+{"gate_id":"ag-002","pipeline_id":"pl-005","recommended_system":"whatsapp-client-os","criteria":[{"criterion":"لا توجد محادثة مهمة بلا مسار","met":true},{"criterion":"أول مراجعة أسبوعية تم تسليمها","met":true}],"all_met":true,"client_signed_off":false}

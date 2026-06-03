@@ -15,11 +15,13 @@
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "db:push": "drizzle-kit push",
+    "commercial:seed": "node scripts/seed-sample-data.js",
     "commercial:check": "node scripts/commercial-control-check.js",
     "commercial:plan": "node scripts/commercial-daily-plan.js",
     "commercial:quality": "node scripts/draft-quality-gate.js",
+    "commercial:reports": "node scripts/generate-reports.js",
     "commercial:brief": "node scripts/commercial-daily-brief.js",
-    "commercial:all": "npm run commercial:check && npm run commercial:plan && npm run commercial:quality && npm run commercial:brief"
+    "commercial:all": "npm run commercial:check && npm run commercial:plan && npm run commercial:quality && npm run commercial:reports && npm run commercial:brief"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
