@@ -1,0 +1,27 @@
+{
+  "_meta": {
+    "title": "Focus 5 — Content Engine Source",
+    "description": "Weekly themes per system + a 7-day light-content queue. No fake case studies: use 'مثال توضيحي' / 'نموذج افتراضي' / 'Workflow sample' / 'Before/after template' only.",
+    "version": "1.0",
+    "week_of": "2026-06-01",
+    "daily_format": ["founder_insight", "system_pain_post", "example_workflow", "objection_answer", "mini_case_style_post"],
+    "allowed_proof_labels": ["مثال توضيحي", "نموذج افتراضي", "Workflow sample", "Before/after template"],
+    "banned": ["fake case studies", "named client results without consent", "guaranteed numbers"]
+  },
+  "weekly_themes": [
+    { "system": "revenue_operating_system", "theme": "لماذا تضيع الفرص قبل العرض؟" },
+    { "system": "executive_command_os", "theme": "التقارير لا تكفي إذا لا تعطي قرارًا" },
+    { "system": "followup_recovery_os", "theme": "آخر متابعة لم تحدث قد تكون أغلى فرصة" },
+    { "system": "whatsapp_client_os", "theme": "واتساب ليس Inbox؛ هو workflow" },
+    { "system": "proposal_proof_os", "theme": "العرض المقنع يحتاج Proof وليس كلامًا أكثر" }
+  ],
+  "queue": [
+    { "day": "السبت", "system": "revenue_operating_system", "format": "founder_insight", "hook": "الطلب موجود، لكن أين يتوقف؟", "status": "ready", "proof_label": "مثال توضيحي" },
+    { "day": "الأحد", "system": "followup_recovery_os", "format": "system_pain_post", "hook": "المتابعة التي لم تحدث", "status": "ready", "proof_label": "نموذج افتراضي" },
+    { "day": "الاثنين", "system": "whatsapp_client_os", "format": "example_workflow", "hook": "من يرد؟ ومن يسلّم؟", "status": "draft", "proof_label": "Workflow sample" },
+    { "day": "الثلاثاء", "system": "executive_command_os", "format": "objection_answer", "hook": "عندنا تقارير كثيرة أصلًا", "status": "draft", "proof_label": "Before/after template" },
+    { "day": "الأربعاء", "system": "proposal_proof_os", "format": "mini_case_style_post", "hook": "عرض قبل/بعد", "status": "idea", "proof_label": "Before/after template" },
+    { "day": "الخميس", "system": "revenue_operating_system", "format": "example_workflow", "hook": "رحلة الفرصة من الاستفسار للعرض", "status": "idea", "proof_label": "Workflow sample" },
+    { "day": "الجمعة", "system": "followup_recovery_os", "format": "founder_insight", "hook": "نظام يمنع نسيان المتابعة", "status": "idea", "proof_label": "مثال توضيحي" }
+  ]
+}

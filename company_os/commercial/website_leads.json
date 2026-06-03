@@ -1,0 +1,24 @@
+{
+  "_meta": {
+    "title": "Website Leads — Intake Queue",
+    "description": "Form/diagnostic submissions from the site. Each submission auto-generates a Client Need Card + recommended system + a Mini Proposal DRAFT (founder-approval-gated). Entries flagged demo:true are seed examples, NOT real customers.",
+    "version": "1.0",
+    "last_updated": "2026-06-03"
+  },
+  "leads": [
+    {
+      "id": "WEB-001",
+      "company": "(demo) عيادة مثال",
+      "intake_text": "عندنا واتساب كثير والعملاء يتوهون بين الموظفين",
+      "received_at": "2026-06-03",
+      "demo": true
+    },
+    {
+      "id": "WEB-002",
+      "company": "(demo) أكاديمية مثال",
+      "intake_text": "نخسر تسجيلات لأننا لا نتابع المهتمين بعد أول رد",
+      "received_at": "2026-06-03",
+      "demo": true
+    }
+  ]
+}

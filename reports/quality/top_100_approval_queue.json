@@ -1,0 +1,80 @@
+{
+  "generated_at": "2026-06-03",
+  "total": 18,
+  "target": 400,
+  "counts": {
+    "top_priority": 4,
+    "approval_queue": 3,
+    "needs_rewrite": 1,
+    "rejected": 10
+  },
+  "rejection_reasons": {
+    "no_cta": 1,
+    "guaranteed_claim": 1,
+    "fake_re_fwd": 1,
+    "no_need_card": 1,
+    "no_recommended_system": 1,
+    "internal_module_name_leaked": 1,
+    "unverified_pain_as_fact": 1,
+    "suppression_hit": 1,
+    "prompt_injection_in_source": 1
+  },
+  "top_100": [
+    {
+      "id": "DRAFT-0016",
+      "company": "FleetCo Logistics",
+      "system": "revenue_operating_system",
+      "score": 90,
+      "band": "top_priority",
+      "evidence_level": "L4"
+    },
+    {
+      "id": "DRAFT-0001",
+      "company": "Digital Rise Agency",
+      "system": "revenue_operating_system",
+      "score": 88,
+      "band": "top_priority",
+      "evidence_level": "L2"
+    },
+    {
+      "id": "DRAFT-0002",
+      "company": "Growth Labs SA",
+      "system": "followup_recovery_os",
+      "score": 86,
+      "band": "top_priority",
+      "evidence_level": "L3"
+    },
+    {
+      "id": "DRAFT-0018",
+      "company": "MediClinic Group",
+      "system": "whatsapp_client_os",
+      "score": 85,
+      "band": "top_priority",
+      "evidence_level": "L3"
+    },
+    {
+      "id": "DRAFT-0017",
+      "company": "EduPro Academy",
+      "system": "followup_recovery_os",
+      "score": 82,
+      "band": "approval_queue",
+      "evidence_level": "L2"
+    },
+    {
+      "id": "DRAFT-0003",
+      "company": "TrainMe KSA",
+      "system": "whatsapp_client_os",
+      "score": 80,
+      "band": "approval_queue",
+      "evidence_level": "L2"
+    },
+    {
+      "id": "DRAFT-0004",
+      "company": "Vision Consulting",
+      "system": "executive_command_os",
+      "score": 78,
+      "band": "approval_queue",
+      "evidence_level": "L2"
+    }
+  ]
+}

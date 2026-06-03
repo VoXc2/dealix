@@ -1,0 +1,24 @@
+{
+  "_meta": {
+    "title": "Suppression / Do-Not-Contact List",
+    "description": "Companies and domains that must never be contacted. The quality gate rejects any draft whose company or domain matches here (status: do_not_contact). Matching is case-insensitive on company name and on the domain suffix.",
+    "version": "1.0",
+    "last_updated": "2026-06-03"
+  },
+  "companies": ["Old Client Holding"],
+  "domains": ["donotcontact.sa"],
+  "reason_log": [
+    {
+      "value": "Old Client Holding",
+      "type": "company",
+      "reason": "طلب صريح بعدم التواصل",
+      "added_at": "2026-06-01"
+    },
+    {
+      "value": "donotcontact.sa",
+      "type": "domain",
+      "reason": "Unsubscribe / suppression request",
+      "added_at": "2026-06-01"
+    }
+  ]
+}

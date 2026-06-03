@@ -1,0 +1,96 @@
+{
+  "_meta": {
+    "title": "Dealix Focus 5 — Systems Catalog",
+    "description": "The five customer-facing operating systems Dealix sells and delivers. 'id' is internal and must NEVER appear in customer-facing copy (drafts, proposals, content). Use 'customer_name_ar' / 'customer_name_en' externally.",
+    "version": "1.0",
+    "last_updated": "2026-06-03",
+    "pricing_note": "starter_price_sar is an indicative opening price only. ALL pricing requires founder approval (governance rule G003). No price is ever sent automatically."
+  },
+  "systems": [
+    {
+      "id": "revenue_operating_system",
+      "customer_name_ar": "نظام تشغيل الإيرادات",
+      "customer_name_en": "Revenue Operating System",
+      "draft_quota": 100,
+      "target_segments": ["Marketing Agency", "Web Agency", "E-commerce", "SaaS"],
+      "target_pains": [
+        "الفرص تضيع قبل الوصول للعرض",
+        "لا يوجد pipeline واضح",
+        "صعوبة معرفة أين يتسرب الإيراد"
+      ],
+      "starter_price_sar": 2500,
+      "first_sprint": "تشخيص تسرب الإيراد خلال 5 أيام",
+      "deliverables": ["Revenue Leakage Map", "Workflow", "Report Template", "30-Day Revenue Plan"],
+      "delivery_readiness": ["Leakage Map", "Workflow", "Report Template"],
+      "weekly_content_theme": "لماذا تضيع الفرص قبل العرض؟"
+    },
+    {
+      "id": "executive_command_os",
+      "customer_name_ar": "نظام القيادة التنفيذية",
+      "customer_name_en": "Executive Command OS",
+      "draft_quota": 70,
+      "target_segments": ["Consulting", "Holding", "Multi-branch Retail", "HR Firm"],
+      "target_pains": [
+        "التقارير كثيرة لكن لا تعطي قرارًا",
+        "صعوبة رؤية الصورة التنفيذية يوميًا",
+        "القرارات تتأخر بسبب غياب لوحة واضحة"
+      ],
+      "starter_price_sar": 4500,
+      "first_sprint": "بناء لوحة قيادة تنفيذية + تقرير قرار يومي",
+      "deliverables": ["KPI Map", "Daily Report", "Decision Log"],
+      "delivery_readiness": ["KPI Map", "Daily Report", "Decision Log"],
+      "weekly_content_theme": "التقارير لا تكفي إذا لا تعطي قرارًا"
+    },
+    {
+      "id": "followup_recovery_os",
+      "customer_name_ar": "نظام استرجاع المتابعات",
+      "customer_name_en": "Follow-up Recovery OS",
+      "draft_quota": 90,
+      "target_segments": ["Training Company", "Clinic", "Real Estate", "Education"],
+      "target_pains": [
+        "متابعات لا تكتمل بعد أول تواصل",
+        "فرص تبرد بسبب غياب نظام متابعة",
+        "لا توجد حالة واضحة لكل عميل محتمل"
+      ],
+      "starter_price_sar": 3000,
+      "first_sprint": "بناء قائمة متابعة + نموذج حالات + مجموعة رسائل خلال 5 أيام",
+      "deliverables": ["Follow-up Queue", "Status Model", "Message Set"],
+      "delivery_readiness": ["Queue", "Status Model", "Message Set"],
+      "weekly_content_theme": "آخر متابعة لم تحدث قد تكون أغلى فرصة"
+    },
+    {
+      "id": "whatsapp_client_os",
+      "customer_name_ar": "نظام عملاء واتساب",
+      "customer_name_en": "WhatsApp Client OS",
+      "draft_quota": 70,
+      "target_segments": ["Training Company", "Clinic", "Retail", "Services"],
+      "target_pains": [
+        "واتساب مزدحم والعملاء يتوهون",
+        "استفسارات كثيرة بدون workflow",
+        "تسليم العميل بين الموظفين غير منظم"
+      ],
+      "starter_price_sar": 3000,
+      "first_sprint": "رسم flow واتساب + Action Cards + سياسة تسليم خلال 5 أيام",
+      "deliverables": ["Flow Map", "Action Cards", "Handoff Policy"],
+      "delivery_readiness": ["Flow Map", "Action Cards", "Handoff Policy"],
+      "weekly_content_theme": "واتساب ليس Inbox؛ هو workflow"
+    },
+    {
+      "id": "proposal_proof_os",
+      "customer_name_ar": "نظام العروض والإثبات",
+      "customer_name_en": "Proposal & Proof OS",
+      "draft_quota": 70,
+      "target_segments": ["Web Agency", "Consulting", "B2B Services", "SaaS"],
+      "target_pains": [
+        "العروض لا تُقنع لأنها بلا إثبات",
+        "بطء في إخراج عرض احترافي",
+        "صعوبة إظهار النتائج المتوقعة"
+      ],
+      "starter_price_sar": 3500,
+      "first_sprint": "بناء قالب عرض + Proof Pack + Scope Block خلال 5 أيام",
+      "deliverables": ["Proposal Template", "Proof Pack", "Scope Block"],
+      "delivery_readiness": ["Proposal Template", "Proof Pack", "Scope Block"],
+      "weekly_content_theme": "العرض المقنع يحتاج Proof وليس كلامًا أكثر"
+    }
+  ]
+}

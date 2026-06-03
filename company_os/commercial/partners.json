@@ -1,0 +1,22 @@
+{
+  "_meta": {
+    "title": "Focus 5 — Partner Channel Source",
+    "description": "Partner types mapped to recommended systems + a referral pipeline. Model: partner brings the relationship, Dealix runs the system, partner earns referral fee or margin. No client data is shared with partners without consent.",
+    "version": "1.0",
+    "last_updated": "2026-06-03"
+  },
+  "partner_fit": [
+    { "partner_type": "وكالة تسويق", "systems": ["revenue_operating_system", "followup_recovery_os"] },
+    { "partner_type": "CRM Implementer", "systems": ["executive_command_os", "revenue_operating_system"] },
+    { "partner_type": "شركة تدريب", "systems": ["followup_recovery_os", "whatsapp_client_os"] },
+    { "partner_type": "مستشار أعمال", "systems": ["executive_command_os", "proposal_proof_os"] },
+    { "partner_type": "Web Agency", "systems": ["proposal_proof_os", "revenue_operating_system"] },
+    { "partner_type": "HR Firm", "systems": ["followup_recovery_os", "executive_command_os"] }
+  ],
+  "pipeline": [
+    { "id": "PRT-001", "partner": "وكالة Reach", "partner_type": "وكالة تسويق", "stage": "intro", "model": "referral_fee", "owner": "Founder", "next_step": "اجتماع تعريفي" },
+    { "id": "PRT-002", "partner": "CRM Pro", "partner_type": "CRM Implementer", "stage": "agreement_draft", "model": "margin", "owner": "Founder", "next_step": "اتفاق إحالة" },
+    { "id": "PRT-003", "partner": "أكاديمية Skill", "partner_type": "شركة تدريب", "stage": "first_referral", "model": "referral_fee", "owner": "Founder", "next_step": "أول إحالة فعلية" },
+    { "id": "PRT-004", "partner": "مستشار نمو", "partner_type": "مستشار أعمال", "stage": "active", "model": "margin", "owner": "Founder", "next_step": "متابعة إحالات شهرية" }
+  ]
+}

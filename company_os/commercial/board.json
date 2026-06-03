@@ -1,0 +1,197 @@
+{
+  "_meta": {
+    "title": "Sales Ops Board — Opportunity State",
+    "description": "Single source of truth for opportunities across the 16 board statuses. Owners are ROLE placeholders (no personal names) to stay PDPL-aligned. call_brief / mini_proposal / delivery blocks must satisfy their gates before an opportunity advances; the control check enforces this.",
+    "version": "1.0",
+    "last_updated": "2026-06-03",
+    "statuses": [
+      "researched", "need_card_ready", "draft_ready", "approved", "sent",
+      "call_due", "called", "interested", "mini_proposal_ready", "proposal_sent",
+      "won", "delivery_started", "active", "renewal_candidate", "lost", "do_not_contact"
+    ]
+  },
+  "opportunities": [
+    {
+      "id": "OPP-001", "company": "Sigma Clinic", "system": "whatsapp_client_os",
+      "stage": "researched", "call_priority": "P3", "evidence_level": "L1",
+      "owners": { "research_owner": "Founder", "email_owner": "SDR-1", "call_owner": "Closer-1", "proposal_owner": "Founder", "delivery_owner": "Delivery-1" },
+      "next_step": "إكمال Client Need Card", "due_date": "2026-06-04"
+    },
+    {
+      "id": "OPP-002", "company": "Delta Agency", "system": "revenue_operating_system",
+      "stage": "need_card_ready", "call_priority": "P2", "evidence_level": "L2",
+      "owners": { "research_owner": "Founder", "email_owner": "SDR-1", "call_owner": "Closer-1", "proposal_owner": "Founder", "delivery_owner": "Delivery-1" },
+      "next_step": "كتابة Draft", "due_date": "2026-06-04"
+    },
+    {
+      "id": "OPP-003", "company": "Omega Web", "system": "proposal_proof_os",
+      "stage": "draft_ready", "call_priority": "P2", "evidence_level": "L2",
+      "owners": { "research_owner": "Founder", "email_owner": "SDR-1", "call_owner": "Closer-1", "proposal_owner": "Founder", "delivery_owner": "Delivery-1" },
+      "next_step": "اعتماد المؤسس قبل الإرسال", "due_date": "2026-06-04"
+    },
+    {
+      "id": "OPP-004", "company": "FleetCo Logistics", "system": "revenue_operating_system",
+      "stage": "approved", "call_priority": "P1", "evidence_level": "L4",
+      "owners": { "research_owner": "Founder", "email_owner": "SDR-1", "call_owner": "Closer-1", "proposal_owner": "Founder", "delivery_owner": "Delivery-1" },
+      "next_step": "إرسال اليوم", "due_date": "2026-06-03"
+    },
+    {
+      "id": "OPP-005", "company": "Digital Rise Agency", "system": "revenue_operating_system",
+      "stage": "sent", "call_priority": "P1", "evidence_level": "L2",
+      "owners": { "research_owner": "Founder", "email_owner": "SDR-1", "call_owner": "Closer-1", "proposal_owner": "Founder", "delivery_owner": "Delivery-1" },
+      "next_step": "متابعة بالاتصال خلال 48 ساعة", "due_date": "2026-06-04"
+    },
+    {
+      "id": "OPP-006", "company": "TrainMe KSA", "system": "whatsapp_client_os",
+      "stage": "call_due", "call_priority": "P2", "evidence_level": "L2",
+      "owners": { "research_owner": "Founder", "email_owner": "SDR-1", "call_owner": "Closer-1", "proposal_owner": "Founder", "delivery_owner": "Delivery-1" },
+      "call_brief": {
+        "opening_line": "أهلاً [الاسم]، تواصلنا بخصوص تنظيم استفسارات واتساب لديكم — عندك دقيقتين؟",
+        "questions": [
+          "كم تقريبًا عدد الاستفسارات اليومية عبر واتساب؟",
+          "من يتابعها الآن وكيف يتم التسليم بين الفريق؟",
+          "ما أكثر نقطة تضيع فيها الاستفسارات؟"
+        ],
+        "expected_objection": "عندنا موظف يرد، ليش نحتاج نظام؟",
+        "next_step": "تحديد مكالمة تشخيص 20 دقيقة"
+      },
+      "next_step": "إجراء مكالمة المتابعة", "due_date": "2026-06-03"
+    },
+    {
+      "id": "OPP-007", "company": "EduPro Academy", "system": "followup_recovery_os",
+      "stage": "called", "call_priority": "P2", "evidence_level": "L2",
+      "owners": { "research_owner": "Founder", "email_owner": "SDR-1", "call_owner": "Closer-1", "proposal_owner": "Founder", "delivery_owner": "Delivery-1" },
+      "call_brief": {
+        "opening_line": "أهلاً [الاسم]، نكمل اللي وقفنا عنده حول متابعة التسجيلات.",
+        "questions": [
+          "كم نسبة المهتمين الذين لا يكملون التسجيل؟",
+          "متى تتوقف المتابعة عادة؟",
+          "هل توجد رسائل جاهزة لكل مرحلة؟"
+        ],
+        "expected_objection": "الموسم مزدحم، نأجل بعدين",
+        "next_step": "إرسال Mini Proposal بعد اعتماد المؤسس"
+      },
+      "next_step": "تجهيز Mini Proposal", "due_date": "2026-06-04"
+    },
+    {
+      "id": "OPP-008", "company": "Growth Labs SA", "system": "followup_recovery_os",
+      "stage": "interested", "call_priority": "P1", "evidence_level": "L3",
+      "owners": { "research_owner": "Founder", "email_owner": "SDR-1", "call_owner": "Closer-1", "proposal_owner": "Founder", "delivery_owner": "Delivery-1" },
+      "call_brief": {
+        "opening_line": "أهلاً [الاسم]، سعدنا باهتمامكم بنظام استرجاع المتابعات.",
+        "questions": [
+          "ما حجم الفرص الشهرية التي تحتاج متابعة؟",
+          "من سيكون المسؤول عن المتابعة لديكم؟",
+          "ما المؤشر الذي يهمكم تحسينه أولًا؟"
+        ],
+        "expected_objection": "نخشى التعقيد على الفريق",
+        "next_step": "اعتماد Mini Proposal"
+      },
+      "mini_proposal": {
+        "status": "pending_founder_approval",
+        "system": "followup_recovery_os",
+        "why_this_system": "وضوح ألم المتابعة + ملاءمة عالية + تعقيد تسليم منخفض",
+        "deliverables": ["Follow-up Queue", "Status Model", "Message Set"],
+        "first_sprint": "5 أيام",
+        "timeline": "5 أيام عمل",
+        "starter_price_sar": 3000,
+        "required_inputs": ["قائمة الفرص الحالية", "قنوات التواصل", "مالك المتابعة"],
+        "expected_first_proof": "نموذج حالات يعمل على 20 فرصة فعلية",
+        "approval_required": true
+      },
+      "next_step": "اعتماد المؤسس على Mini Proposal", "due_date": "2026-06-03"
+    },
+    {
+      "id": "OPP-009", "company": "Vision Consulting", "system": "executive_command_os",
+      "stage": "mini_proposal_ready", "call_priority": "P1", "evidence_level": "L2",
+      "owners": { "research_owner": "Founder", "email_owner": "SDR-1", "call_owner": "Closer-1", "proposal_owner": "Founder", "delivery_owner": "Delivery-1" },
+      "mini_proposal": {
+        "status": "pending_founder_approval",
+        "system": "executive_command_os",
+        "why_this_system": "حاجة لقرار يومي أوضح من تقارير متفرقة",
+        "deliverables": ["KPI Map", "Daily Report", "Decision Log"],
+        "first_sprint": "5 أيام",
+        "timeline": "5 أيام عمل",
+        "starter_price_sar": 4500,
+        "required_inputs": ["قائمة المؤشرات الحالية", "مصادر البيانات", "أصحاب القرار"],
+        "expected_first_proof": "تقرير قرار يومي واحد مكتمل",
+        "approval_required": true
+      },
+      "next_step": "اعتماد المؤسس على Mini Proposal", "due_date": "2026-06-03"
+    },
+    {
+      "id": "OPP-010", "company": "BuildRight Web", "system": "proposal_proof_os",
+      "stage": "proposal_sent", "call_priority": "P2", "evidence_level": "L2",
+      "owners": { "research_owner": "Founder", "email_owner": "SDR-1", "call_owner": "Closer-1", "proposal_owner": "Founder", "delivery_owner": "Delivery-1" },
+      "next_step": "متابعة قرار العرض", "due_date": "2026-06-05"
+    },
+    {
+      "id": "OPP-011", "company": "Noor Retail", "system": "revenue_operating_system",
+      "stage": "won", "call_priority": "P1", "evidence_level": "L4",
+      "owners": { "research_owner": "Founder", "email_owner": "SDR-1", "call_owner": "Closer-1", "proposal_owner": "Founder", "delivery_owner": "Delivery-1" },
+      "delivery": {
+        "status": "ready",
+        "scope": "خريطة تسرب + workflow + قالب تقرير لقسم المبيعات",
+        "required_inputs": ["بيانات الفرص آخر 90 يوم", "مراحل البيع الحالية", "مالك العملية"],
+        "success_metric": "وضوح أماكن التسرب القابلة للاسترجاع",
+        "acceptance_criteria": "اعتماد العميل لخريطة التسرب وخطة 30 يوم",
+        "delivery_pack": ["Leakage Map", "Workflow", "Report Template"]
+      },
+      "next_step": "بدء التسليم", "due_date": "2026-06-04"
+    },
+    {
+      "id": "OPP-012", "company": "Alpha Trading", "system": "executive_command_os",
+      "stage": "delivery_started", "call_priority": "P1", "evidence_level": "L4",
+      "owners": { "research_owner": "Founder", "email_owner": "SDR-1", "call_owner": "Closer-1", "proposal_owner": "Founder", "delivery_owner": "Delivery-1" },
+      "delivery": {
+        "status": "active",
+        "scope": "خريطة مؤشرات + تقرير قرار يومي + سجل قرارات",
+        "required_inputs": ["مصادر بيانات المؤشرات", "قائمة القرارات المتكررة"],
+        "success_metric": "تقرير يومي يربط الرقم بقرار",
+        "acceptance_criteria": "اعتماد 5 تقارير يومية متتالية",
+        "delivery_pack": ["KPI Map", "Daily Report", "Decision Log"]
+      },
+      "next_step": "تسليم تقرير اليوم", "due_date": "2026-06-03"
+    },
+    {
+      "id": "OPP-013", "company": "Beta Services", "system": "followup_recovery_os",
+      "stage": "active", "call_priority": "P2", "evidence_level": "L4",
+      "owners": { "research_owner": "Founder", "email_owner": "SDR-1", "call_owner": "Closer-1", "proposal_owner": "Founder", "delivery_owner": "Delivery-1" },
+      "delivery": {
+        "status": "active",
+        "scope": "قائمة متابعة + نموذج حالات + مجموعة رسائل",
+        "required_inputs": ["قائمة الفرص", "مالك المتابعة"],
+        "success_metric": "عدم سقوط أي فرصة بدون متابعة محددة",
+        "acceptance_criteria": "تشغيل النموذج على الفرص الحالية لمدة أسبوع",
+        "delivery_pack": ["Queue", "Status Model", "Message Set"]
+      },
+      "next_step": "مراجعة أسبوعية", "due_date": "2026-06-06"
+    },
+    {
+      "id": "OPP-014", "company": "Gamma Group", "system": "proposal_proof_os",
+      "stage": "renewal_candidate", "call_priority": "P2", "evidence_level": "L4",
+      "owners": { "research_owner": "Founder", "email_owner": "SDR-1", "call_owner": "Closer-1", "proposal_owner": "Founder", "delivery_owner": "Delivery-1" },
+      "delivery": {
+        "status": "active",
+        "scope": "قالب عرض + Proof Pack + Scope Block",
+        "required_inputs": ["عروض سابقة", "نتائج متاحة"],
+        "success_metric": "سرعة إخراج عرض مقنع",
+        "acceptance_criteria": "إخراج 3 عروض بالقالب الجديد",
+        "delivery_pack": ["Proposal Template", "Proof Pack", "Scope Block"]
+      },
+      "next_step": "عرض تجديد", "due_date": "2026-06-08"
+    },
+    {
+      "id": "OPP-015", "company": "Lapsed Lead Co", "system": "revenue_operating_system",
+      "stage": "lost", "call_priority": "P4", "evidence_level": "L1",
+      "owners": { "research_owner": "Founder", "email_owner": "SDR-1", "call_owner": "Closer-1", "proposal_owner": "Founder", "delivery_owner": "Delivery-1" },
+      "next_step": "nurture بعد 60 يوم", "due_date": "2026-08-01"
+    },
+    {
+      "id": "OPP-016", "company": "Old Client Holding", "system": "revenue_operating_system",
+      "stage": "do_not_contact", "call_priority": "P4", "evidence_level": "L0",
+      "owners": { "research_owner": "Founder", "email_owner": "SDR-1", "call_owner": "Closer-1", "proposal_owner": "Founder", "delivery_owner": "Delivery-1" },
+      "next_step": "لا تواصل — مدرج في قائمة الحجب", "due_date": "—"
+    }
+  ]
+}
