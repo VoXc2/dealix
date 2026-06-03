@@ -1,0 +1,54 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://dealix.sa/schemas/contact_channel.schema.json",
+  "title": "Public Contact Channel",
+  "description": "A single PUBLIC contact channel discovered for a company. Only public, company-published channels are allowed. Personal emails and phone numbers are never guessed.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["channel_id", "company_name", "channel_type", "value", "source", "is_public", "confidence"],
+  "properties": {
+    "channel_id": { "type": "string", "minLength": 1 },
+    "company_name": { "type": "string", "minLength": 1 },
+    "channel_type": {
+      "type": "string",
+      "enum": [
+        "generic_email",
+        "role_email",
+        "main_phone",
+        "whatsapp_business_public",
+        "contact_form",
+        "linkedin_company",
+        "x_profile",
+        "instagram_profile",
+        "facebook_page",
+        "google_business",
+        "directory_listing"
+      ]
+    },
+    "value": {
+      "type": "string",
+      "minLength": 1,
+      "description": "The public channel value (e.g., info@company.sa, +9665..., or a URL)."
+    },
+    "source": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Where it was found: official_website | contact_page | public_social | public_directory | public_job_post | public_news | google_business"
+    },
+    "source_url": { "type": ["string", "null"] },
+    "is_public": {
+      "type": "boolean",
+      "description": "Must be true. Non-public channels are never stored."
+    },
+    "is_personal": {
+      "type": "boolean",
+      "description": "True only when a named person is published BY the company on a public page. Defaults false."
+    },
+    "confidence": {
+      "type": "string",
+      "enum": ["CC0", "CC1", "CC2", "CC3"],
+      "description": "See CONTACT_CONFIDENCE_LEVELS_AR.md"
+    },
+    "verified_at": { "type": ["string", "null"] }
+  }
+}

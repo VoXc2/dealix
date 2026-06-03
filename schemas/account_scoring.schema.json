@@ -1,0 +1,48 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://dealix.sa/schemas/account_scoring.schema.json",
+  "title": "Account Scoring Record",
+  "description": "Top-100 ranking score for one account pack. Components sum to a 0-100 total. Used to rank the nightly run and select daily send/call candidates.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["company_name", "components", "total", "rank_tier"],
+  "properties": {
+    "company_name": { "type": "string", "minLength": 1 },
+    "recommended_system": {
+      "type": ["string", "null"],
+      "enum": [
+        "revenue_os",
+        "executive_command_os",
+        "followup_recovery_os",
+        "whatsapp_client_os",
+        "proposal_proof_os",
+        null
+      ]
+    },
+    "components": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "pain_clarity",
+        "contact_availability",
+        "system_fit",
+        "ability_to_pay",
+        "evidence_level",
+        "low_risk"
+      ],
+      "properties": {
+        "pain_clarity": { "type": "number", "minimum": 0, "maximum": 25 },
+        "contact_availability": { "type": "number", "minimum": 0, "maximum": 20 },
+        "system_fit": { "type": "number", "minimum": 0, "maximum": 20 },
+        "ability_to_pay": { "type": "number", "minimum": 0, "maximum": 15 },
+        "evidence_level": { "type": "number", "minimum": 0, "maximum": 10 },
+        "low_risk": { "type": "number", "minimum": 0, "maximum": 10 }
+      }
+    },
+    "total": { "type": "number", "minimum": 0, "maximum": 100 },
+    "rank_tier": {
+      "type": "string",
+      "enum": ["top_20_send", "top_30_call", "top_100", "backlog", "hold"]
+    }
+  }
+}

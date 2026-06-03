@@ -1,0 +1,69 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://dealix.sa/schemas/contact_discovery.schema.json",
+  "title": "Contact Discovery Record",
+  "description": "The result of attempting to find a public contact route for one company. Designed so that 'no contact found' is a first-class, graceful outcome (role-only targeting), never a reason to invent data.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "company_name",
+    "recommended_system",
+    "target_role",
+    "channels_found",
+    "best_contact_route",
+    "contact_confidence",
+    "person_found",
+    "evidence_level",
+    "status"
+  ],
+  "properties": {
+    "company_name": { "type": "string", "minLength": 1 },
+    "recommended_system": {
+      "type": "string",
+      "enum": [
+        "revenue_os",
+        "executive_command_os",
+        "followup_recovery_os",
+        "whatsapp_client_os",
+        "proposal_proof_os"
+      ]
+    },
+    "target_role": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Role to address (e.g., 'Head of Sales'). When no person is found, outreach is addressed to the role/department only."
+    },
+    "secondary_role": { "type": ["string", "null"] },
+    "person_found": {
+      "type": "boolean",
+      "description": "True only if a named person was found on a PUBLIC company source. If false, address the role only — never invent a name."
+    },
+    "person_name": {
+      "type": ["string", "null"],
+      "description": "Only set when person_found is true and backed by a public source."
+    },
+    "person_source_url": { "type": ["string", "null"] },
+    "channels_found": {
+      "type": "array",
+      "description": "channel_id references into contact_channels data. Empty array is valid (handled gracefully).",
+      "items": { "type": "string" }
+    },
+    "best_contact_route": {
+      "type": "string",
+      "enum": ["email", "contact_form", "phone", "linkedin_public", "social_dm", "website_only", "none_found"]
+    },
+    "contact_confidence": {
+      "type": "string",
+      "enum": ["CC0", "CC1", "CC2", "CC3"]
+    },
+    "evidence_level": {
+      "type": "string",
+      "enum": ["L0", "L1", "L2", "L3", "L4"]
+    },
+    "notes": { "type": ["string", "null"] },
+    "status": {
+      "type": "string",
+      "enum": ["contact_found", "role_only", "no_public_channel", "do_not_contact"]
+    }
+  }
+}
