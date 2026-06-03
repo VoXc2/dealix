@@ -1,0 +1,36 @@
+{
+  "version": "1.0",
+  "last_updated": "2026-06-03",
+  "weights": {
+    "launch_readiness": 15,
+    "agent_governance": 12,
+    "account_pack_quality": 12,
+    "need_intelligence": 10,
+    "deliverability": 10,
+    "delivery_capacity": 10,
+    "security_privacy": 10,
+    "experimentation": 8,
+    "founder_control": 8,
+    "learning_loop": 5
+  },
+  "scores": {
+    "launch_readiness": 90,
+    "agent_governance": 95,
+    "account_pack_quality": 75,
+    "need_intelligence": 80,
+    "deliverability": 80,
+    "delivery_capacity": 85,
+    "security_privacy": 95,
+    "experimentation": 80,
+    "founder_control": 90,
+    "learning_loop": 70
+  },
+  "bands": {
+    "scale_ready": [90, 100],
+    "controlled_growth": [80, 89],
+    "launch_only": [70, 79],
+    "dry_run_only": [60, 69],
+    "not_ready": [0, 59]
+  },
+  "notes": "Scores reflect a freshly built governance/scale framework with operational metrics at baseline. Performance domains (account_pack_quality, deliverability live data, learning_loop) rise as real cycles run."
+}

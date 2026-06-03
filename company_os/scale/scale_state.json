@@ -1,0 +1,65 @@
+{
+  "version": "1.0",
+  "last_updated": "2026-06-03",
+  "current_mode": "soft_launch",
+  "modes": {
+    "dry_run": {
+      "account_packs_per_day": 25,
+      "sends_per_day": 0,
+      "calls_per_day": 0,
+      "min_account_pack_quality": 0,
+      "condition": "internal test only"
+    },
+    "soft_launch": {
+      "account_packs_per_day_min": 50,
+      "account_packs_per_day_max": 100,
+      "sends_per_day_min": 10,
+      "sends_per_day_max": 25,
+      "calls_per_day_min": 5,
+      "calls_per_day_max": 15,
+      "min_account_pack_quality": 75,
+      "condition": "Score >= 75"
+    },
+    "controlled_launch": {
+      "account_packs_per_day": 200,
+      "sends_per_day_min": 25,
+      "sends_per_day_max": 75,
+      "calls_per_day_min": 20,
+      "calls_per_day_max": 40,
+      "min_account_pack_quality": 85,
+      "condition": "Score >= 85"
+    },
+    "full_launch": {
+      "account_packs_per_day": 400,
+      "sends_policy": "controlled only",
+      "calls_per_day_min": 40,
+      "calls_per_day_max": 80,
+      "min_account_pack_quality": 90,
+      "condition": "Score >= 90"
+    },
+    "scale": {
+      "account_packs_per_day_min": 600,
+      "account_packs_per_day_max": 1000,
+      "sends_policy": "deliverability-bound",
+      "calls_policy": "ops team",
+      "min_account_pack_quality": 90,
+      "condition": "2 weeks of stable quality + delivery capacity proven"
+    }
+  },
+  "current": {
+    "account_packs_per_day": 80,
+    "sends_per_day": 20,
+    "calls_per_day": 10,
+    "account_pack_quality_score": 78
+  },
+  "scale_gates": {
+    "launch_score_min": 90,
+    "ultimate_scale_score_min": 90,
+    "no_go_blockers_max": 0,
+    "delivery_capacity_utilization_max_pct": 80,
+    "deliverability_checks_pass": true,
+    "agent_permission_audit_pass": true,
+    "security_redteam_pass": true,
+    "weekly_learning_report_required": true
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "version": "1.0",
+  "last_updated": "2026-06-03",
+  "domain": "dealix.sa",
+  "authentication": {
+    "spf": true,
+    "dkim": true,
+    "dmarc": true,
+    "dmarc_policy": "quarantine"
+  },
+  "compliance": {
+    "unsubscribe_present": true,
+    "one_click_unsubscribe": true,
+    "do_not_contact_respected": true,
+    "suppression_list_active": true,
+    "purchased_lists": false,
+    "fake_reply_fwd": false,
+    "guaranteed_claims": false,
+    "sudden_volume_spike": false
+  },
+  "spam": {
+    "spam_rate_pct": 0.08,
+    "spam_rate_warn_pct": 0.1,
+    "spam_rate_hard_pct": 0.3
+  },
+  "volume": {
+    "warmup_complete": true,
+    "current_daily_volume": 20,
+    "max_daily_volume_for_mode": 25,
+    "mode": "soft_launch"
+  },
+  "suppression_count": 0,
+  "bounce_rate_pct": 0.4,
+  "bounce_rate_hard_pct": 2.0
+}

@@ -1,0 +1,50 @@
+{
+  "version": "1.0",
+  "last_updated": "2026-06-03",
+  "rule": "Each experiment changes exactly one variable. Never change everything at once.",
+  "experiment_types": ["sector", "need", "offer", "cta", "buyer", "price", "proof"],
+  "experiments": [
+    {
+      "id": "EXP-001",
+      "type": "sector",
+      "hypothesis": "Training companies reply faster than clinics to the lead-recovery angle",
+      "variable": "sector",
+      "variables_changed": ["sector"],
+      "control": "Marketing Agencies",
+      "variants": ["Training Companies", "Clinics"],
+      "metric": "reply_rate",
+      "status": "running",
+      "owner": "founder",
+      "start_date": "2026-06-03",
+      "requires_approval_for_send": true
+    },
+    {
+      "id": "EXP-002",
+      "type": "cta",
+      "hypothesis": "A Mini Proposal CTA converts better than a 15-min call CTA",
+      "variable": "cta",
+      "variables_changed": ["cta"],
+      "control": "مكالمة 15 دقيقة؟",
+      "variants": ["أرسل Mini Proposal؟"],
+      "metric": "positive_reply_rate",
+      "status": "queued",
+      "owner": "founder",
+      "start_date": "2026-06-10",
+      "requires_approval_for_send": true
+    },
+    {
+      "id": "EXP-003",
+      "type": "offer",
+      "hypothesis": "A 7-day Sprint offer beats a diagnostic-first offer on close rate",
+      "variable": "offer",
+      "variables_changed": ["offer"],
+      "control": "diagnostic first",
+      "variants": ["Sprint 7 days"],
+      "metric": "close_rate",
+      "status": "queued",
+      "owner": "founder",
+      "start_date": "2026-06-17",
+      "requires_approval_for_send": true
+    }
+  ]
+}

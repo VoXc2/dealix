@@ -1,0 +1,60 @@
+{
+  "version": "1.0",
+  "last_updated": "2026-06-03",
+  "total_capacity_hours_per_week": 40,
+  "committed_hours_per_week": 24,
+  "scale_block_threshold_pct": 80,
+  "hard_block_threshold_pct": 100,
+  "systems": [
+    {
+      "name": "Proposal & Proof OS",
+      "estimated_delivery_hours": 6,
+      "complexity": "low",
+      "required_inputs_difficulty": "low",
+      "revision_risk": "low",
+      "founder_involvement": "low",
+      "can_delegate": true,
+      "gross_margin_pct": 80
+    },
+    {
+      "name": "Follow-up Recovery OS",
+      "estimated_delivery_hours": 5,
+      "complexity": "low",
+      "required_inputs_difficulty": "low",
+      "revision_risk": "low",
+      "founder_involvement": "low",
+      "can_delegate": true,
+      "gross_margin_pct": 82
+    },
+    {
+      "name": "Lead Qualification OS",
+      "estimated_delivery_hours": 6,
+      "complexity": "low",
+      "required_inputs_difficulty": "medium",
+      "revision_risk": "low",
+      "founder_involvement": "medium",
+      "can_delegate": true,
+      "gross_margin_pct": 78
+    },
+    {
+      "name": "Client Onboarding OS",
+      "estimated_delivery_hours": 8,
+      "complexity": "medium",
+      "required_inputs_difficulty": "medium",
+      "revision_risk": "medium",
+      "founder_involvement": "medium",
+      "can_delegate": true,
+      "gross_margin_pct": 72
+    },
+    {
+      "name": "Executive Command OS",
+      "estimated_delivery_hours": 8,
+      "complexity": "medium",
+      "required_inputs_difficulty": "medium",
+      "revision_risk": "medium",
+      "founder_involvement": "high",
+      "can_delegate": false,
+      "gross_margin_pct": 70
+    }
+  ]
+}
