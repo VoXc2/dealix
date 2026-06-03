@@ -31,17 +31,22 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      # NOTE: Python CodeQL is handled by codeql.yml (category /language:python).
+      # This job analyzes JavaScript/TypeScript only to avoid a duplicate
+      # SARIF category collision on /language:python (which fails the upload).
       - name: Initialize CodeQL
-        uses: github/codeql-action/init@v3
+        uses: github/codeql-action/init@v4
         with:
-          languages: python,javascript-typescript
+          languages: javascript-typescript
           config-file: ./.github/codeql/codeql-config.yml
 
       - name: Autobuild
-        uses: github/codeql-action/autobuild@v3
+        uses: github/codeql-action/autobuild@v4
 
       - name: Analyze
-        uses: github/codeql-action/analyze@v3
+        uses: github/codeql-action/analyze@v4
+        with:
+          category: "/language:javascript-typescript"
 
   dependency-review:
     name: Dependency Review
@@ -55,5 +60,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      # Advisory until "Dependency graph" is enabled in repo settings
+      # (Settings -> Code security -> Dependency graph). The action errors with
+      # "Dependency review is not supported on this repository" until then.
+      # See docs/REPO_SETUP_CHECKLIST.md. Remove continue-on-error to enforce.
       - name: Dependency review
         uses: actions/dependency-review-action@v4
+        continue-on-error: true

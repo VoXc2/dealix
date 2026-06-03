@@ -51,9 +51,15 @@ paths = [
     '''\.env\.example$''',
     '''\.gitleaks\.toml$''',
     '''\.secrets\.baseline$''',
-    '''tests/fixtures/.*''',
+    # Test suites use intentional placeholder/dummy keys to exercise
+    # secret-handling, redaction, and auth flows (e.g. sk_live_realdangerous,
+    # AKIA0123456789ABCDEF, test-valid-key-abc123).
+    '''tests/.*''',
     '''docs/.*\.md$''',
+    # Ops verification scripts that contain key *patterns* / shell var refs.
     '''scripts/infra/setup_uptimerobot\.sh$''',
+    '''docs/ops/moyasar_live_test\.sh$''',
+    '''scripts/ops/moyasar_pilot_test\.sh$''',
 ]
 
 regexes = [
@@ -61,4 +67,9 @@ regexes = [
     '''your-.*-key''',
     '''change-me''',
     '''example-.*''',
+    # Shell variable references like "${MOYASAR_SECRET_KEY}:" are not secrets.
+    '''\$\{[A-Za-z_][A-Za-z0-9_]*\}''',
+    # Generic-api-key false positives on ordinary code identifiers.
+    '''ttl_seconds''',
+    '''idempotency_key''',
 ]
