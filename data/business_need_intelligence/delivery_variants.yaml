@@ -1,0 +1,31 @@
+variants:
+- id: variant_diagnostic
+  name_ar: تشخيص
+  duration_days: 3
+  price_band_ar: منخفض
+  scope_ar: تشخيص سريع وخطة بدء بلا تنفيذ كامل.
+- id: variant_lite
+  name_ar: خفيف
+  duration_days: 7
+  price_band_ar: منخفض
+  scope_ar: تنفيذ مركّز لاحتياج واحد محدد.
+- id: variant_standard
+  name_ar: قياسي
+  duration_days: 14
+  price_band_ar: متوسط
+  scope_ar: سبرنت كامل لنظام واحد مع تسليمات معتمدة.
+- id: variant_pro
+  name_ar: احترافي
+  duration_days: 21
+  price_band_ar: مرتفع
+  scope_ar: سبرنت موسّع مع تكامل وتقارير قيمة.
+- id: variant_retainer
+  name_ar: اشتراك شهري
+  duration_days: 30
+  price_band_ar: متوسط
+  scope_ar: تشغيل وتحسين مستمر شهريًا.
+- id: variant_recovery
+  name_ar: استعادة
+  duration_days: 10
+  price_band_ar: منخفض
+  scope_ar: حملة استرجاع وإحياء للعملاء الخاملين.

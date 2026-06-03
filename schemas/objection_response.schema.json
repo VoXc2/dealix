@@ -1,0 +1,20 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Objection Response",
+  "type": "object",
+  "required": [
+    "objection_ar",
+    "response_ar"
+  ],
+  "properties": {
+    "objection_ar": {
+      "type": "string"
+    },
+    "response_ar": {
+      "type": "string"
+    },
+    "system": {
+      "type": "string"
+    }
+  }
+}

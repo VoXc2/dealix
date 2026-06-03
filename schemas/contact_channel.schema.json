@@ -1,0 +1,31 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Contact Channel",
+  "type": "object",
+  "required": [
+    "company_name",
+    "channel_type",
+    "source",
+    "verified"
+  ],
+  "properties": {
+    "company_name": {
+      "type": "string"
+    },
+    "channel_type": {
+      "type": "string"
+    },
+    "value": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "verified": {
+      "type": "boolean"
+    },
+    "source": {
+      "type": "string"
+    }
+  }
+}

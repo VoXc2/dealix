@@ -1,0 +1,27 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Client Need Card",
+  "type": "object",
+  "required": [
+    "company_name",
+    "primary_need",
+    "system"
+  ],
+  "properties": {
+    "company_name": {
+      "type": "string"
+    },
+    "primary_need": {
+      "type": "string"
+    },
+    "system": {
+      "type": "string"
+    },
+    "talking_points": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}

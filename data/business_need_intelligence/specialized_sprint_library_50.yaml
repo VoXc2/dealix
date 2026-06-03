@@ -1,0 +1,731 @@
+sprints:
+- id: sprint_01
+  name_ar: سبرنت توليد فرص الوكالات
+  need_id: need_01
+  sector_id: sector_01
+  system_id: revenue_operating_system
+  delivery_variant: variant_standard
+  deliverables:
+  - خريطة عملية بيع من أول تواصل حتى الإغلاق
+  - نموذج تأهيل (qualification) موحد
+  - قوالب متابعة ورسائل جاهزة
+  - تخصيص لقطاع وكالات التسويق
+  required_inputs: &id001
+  - قائمة الخدمات والأسعار
+  - سجل الفرص الحالية
+  - صلاحية بريد/واتساب للتواصل
+  acceptance_criteria: &id002
+  - خط أنابيب موحد فعّال
+  - كل فرصة لها مرحلة وحالة
+  - تقرير أسبوعي يصدر تلقائيًا
+  price: 6000
+- id: sprint_02
+  name_ar: سبرنت تحويل عروض الوكالات
+  need_id: need_06
+  sector_id: sector_01
+  system_id: proposal_proof_os
+  delivery_variant: variant_standard
+  deliverables:
+  - قوالب عروض مصغّرة سريعة
+  - بنك تسعير واضح
+  - تقارير إثبات نتائج
+  - تخصيص لقطاع وكالات التسويق
+  required_inputs: &id003
+  - الخدمات والنطاقات
+  - هيكل التسعير
+  - أمثلة نتائج سابقة (إن وجدت)
+  acceptance_criteria: &id004
+  - عرض مصغّر يُجهّز في دقائق
+  - كل عرض له سعر ونطاق
+  - اعتماد قبل الإرسال إلزامي
+  price: 6000
+- id: sprint_03
+  name_ar: سبرنت وضوح خط أنابيب الوكالات
+  need_id: need_13
+  sector_id: sector_01
+  system_id: revenue_operating_system
+  delivery_variant: variant_lite
+  deliverables:
+  - خريطة عملية بيع من أول تواصل حتى الإغلاق
+  - نموذج تأهيل (qualification) موحد
+  - قوالب متابعة ورسائل جاهزة
+  - تخصيص لقطاع وكالات التسويق
+  required_inputs: *id001
+  acceptance_criteria: *id002
+  price: 3500
+- id: sprint_04
+  name_ar: سبرنت إثبات نتائج الوكالات
+  need_id: need_14
+  sector_id: sector_01
+  system_id: proposal_proof_os
+  delivery_variant: variant_lite
+  deliverables:
+  - قوالب عروض مصغّرة سريعة
+  - بنك تسعير واضح
+  - تقارير إثبات نتائج
+  - تخصيص لقطاع وكالات التسويق
+  required_inputs: *id003
+  acceptance_criteria: *id004
+  price: 3500
+- id: sprint_05
+  name_ar: سبرنت توليد فرص التدريب
+  need_id: need_01
+  sector_id: sector_02
+  system_id: revenue_operating_system
+  delivery_variant: variant_standard
+  deliverables:
+  - خريطة عملية بيع من أول تواصل حتى الإغلاق
+  - نموذج تأهيل (qualification) موحد
+  - قوالب متابعة ورسائل جاهزة
+  - تخصيص لقطاع شركات التدريب
+  required_inputs: *id001
+  acceptance_criteria: *id002
+  price: 6000
+- id: sprint_06
+  name_ar: سبرنت متابعة المتدربين
+  need_id: need_02
+  sector_id: sector_02
+  system_id: follow_up_recovery_os
+  delivery_variant: variant_recovery
+  deliverables:
+  - تسلسلات متابعة مؤتمتة
+  - حملة استرجاع للعملاء الخاملين
+  - قواعد توقيت وتذكير
+  - تخصيص لقطاع شركات التدريب
+  required_inputs: &id005
+  - سجل العملاء/المهتمين
+  - قنوات التواصل المسموح بها
+  - قائمة عدم التواصل (إن وجدت)
+  acceptance_criteria: &id006
+  - لا فرصة بلا متابعة خلال 24 ساعة
+  - حملة استرجاع تعمل
+  - قائمة أولوية يومية تصدر
+  price: 3000
+- id: sprint_07
+  name_ar: سبرنت تسريع عروض التدريب
+  need_id: need_09
+  sector_id: sector_02
+  system_id: proposal_proof_os
+  delivery_variant: variant_lite
+  deliverables:
+  - قوالب عروض مصغّرة سريعة
+  - بنك تسعير واضح
+  - تقارير إثبات نتائج
+  - تخصيص لقطاع شركات التدريب
+  required_inputs: *id003
+  acceptance_criteria: *id004
+  price: 3500
+- id: sprint_08
+  name_ar: سبرنت تأهيل ما بعد التدريب
+  need_id: need_25
+  sector_id: sector_02
+  system_id: follow_up_recovery_os
+  delivery_variant: variant_standard
+  deliverables:
+  - تسلسلات متابعة مؤتمتة
+  - حملة استرجاع للعملاء الخاملين
+  - قواعد توقيت وتذكير
+  - تخصيص لقطاع شركات التدريب
+  required_inputs: *id005
+  acceptance_criteria: *id006
+  price: 6000
+- id: sprint_09
+  name_ar: سبرنت تنظيم واتساب العيادات
+  need_id: need_05
+  sector_id: sector_03
+  system_id: whatsapp_client_os
+  delivery_variant: variant_standard
+  deliverables:
+  - هيكلة قناة واتساب وتصنيف المحادثات
+  - قوالب رد سريعة موثّقة
+  - مسار حجز/طلب واضح
+  - تخصيص لقطاع العيادات
+  required_inputs: &id007
+  - رقم/حساب واتساب للأعمال
+  - قائمة الخدمات
+  - صلاحية الردود
+  acceptance_criteria: &id008
+  - زمن رد أقل
+  - كل طلب موثّق
+  - مسار حجز واضح يعمل
+  price: 6000
+- id: sprint_10
+  name_ar: سبرنت ردود العيادات السريعة
+  need_id: need_11
+  sector_id: sector_03
+  system_id: whatsapp_client_os
+  delivery_variant: variant_lite
+  deliverables:
+  - هيكلة قناة واتساب وتصنيف المحادثات
+  - قوالب رد سريعة موثّقة
+  - مسار حجز/طلب واضح
+  - تخصيص لقطاع العيادات
+  required_inputs: *id007
+  acceptance_criteria: *id008
+  price: 3500
+- id: sprint_11
+  name_ar: سبرنت حجوزات العيادات
+  need_id: need_18
+  sector_id: sector_03
+  system_id: whatsapp_client_os
+  delivery_variant: variant_standard
+  deliverables:
+  - هيكلة قناة واتساب وتصنيف المحادثات
+  - قوالب رد سريعة موثّقة
+  - مسار حجز/طلب واضح
+  - تخصيص لقطاع العيادات
+  required_inputs: *id007
+  acceptance_criteria: *id008
+  price: 6000
+- id: sprint_12
+  name_ar: سبرنت تذكير مواعيد العيادات
+  need_id: need_02
+  sector_id: sector_03
+  system_id: follow_up_recovery_os
+  delivery_variant: variant_recovery
+  deliverables:
+  - تسلسلات متابعة مؤتمتة
+  - حملة استرجاع للعملاء الخاملين
+  - قواعد توقيت وتذكير
+  - تخصيص لقطاع العيادات
+  required_inputs: *id005
+  acceptance_criteria: *id006
+  price: 3000
+- id: sprint_13
+  name_ar: سبرنت متابعة العملاء العقاريين
+  need_id: need_02
+  sector_id: sector_04
+  system_id: follow_up_recovery_os
+  delivery_variant: variant_recovery
+  deliverables:
+  - تسلسلات متابعة مؤتمتة
+  - حملة استرجاع للعملاء الخاملين
+  - قواعد توقيت وتذكير
+  - تخصيص لقطاع العقارات
+  required_inputs: *id005
+  acceptance_criteria: *id006
+  price: 3000
+- id: sprint_14
+  name_ar: سبرنت استرجاع العقاريين الخاملين
+  need_id: need_16
+  sector_id: sector_04
+  system_id: follow_up_recovery_os
+  delivery_variant: variant_recovery
+  deliverables:
+  - تسلسلات متابعة مؤتمتة
+  - حملة استرجاع للعملاء الخاملين
+  - قواعد توقيت وتذكير
+  - تخصيص لقطاع العقارات
+  required_inputs: *id005
+  acceptance_criteria: *id006
+  price: 3000
+- id: sprint_15
+  name_ar: سبرنت تقصير دورة البيع العقاري
+  need_id: need_23
+  sector_id: sector_04
+  system_id: revenue_operating_system
+  delivery_variant: variant_standard
+  deliverables:
+  - خريطة عملية بيع من أول تواصل حتى الإغلاق
+  - نموذج تأهيل (qualification) موحد
+  - قوالب متابعة ورسائل جاهزة
+  - تخصيص لقطاع العقارات
+  required_inputs: *id001
+  acceptance_criteria: *id002
+  price: 6000
+- id: sprint_16
+  name_ar: سبرنت منع تسرّب الصفقات العقارية
+  need_id: need_03
+  sector_id: sector_04
+  system_id: follow_up_recovery_os
+  delivery_variant: variant_standard
+  deliverables:
+  - تسلسلات متابعة مؤتمتة
+  - حملة استرجاع للعملاء الخاملين
+  - قواعد توقيت وتذكير
+  - تخصيص لقطاع العقارات
+  required_inputs: *id005
+  acceptance_criteria: *id006
+  price: 6000
+- id: sprint_17
+  name_ar: سبرنت عروض الخدمات الاحترافية
+  need_id: need_06
+  sector_id: sector_05
+  system_id: proposal_proof_os
+  delivery_variant: variant_standard
+  deliverables:
+  - قوالب عروض مصغّرة سريعة
+  - بنك تسعير واضح
+  - تقارير إثبات نتائج
+  - تخصيص لقطاع الخدمات الاحترافية
+  required_inputs: *id003
+  acceptance_criteria: *id004
+  price: 6000
+- id: sprint_18
+  name_ar: سبرنت تسريع عروض الاستشارات
+  need_id: need_09
+  sector_id: sector_05
+  system_id: proposal_proof_os
+  delivery_variant: variant_lite
+  deliverables:
+  - قوالب عروض مصغّرة سريعة
+  - بنك تسعير واضح
+  - تقارير إثبات نتائج
+  - تخصيص لقطاع الخدمات الاحترافية
+  required_inputs: *id003
+  acceptance_criteria: *id004
+  price: 3500
+- id: sprint_19
+  name_ar: سبرنت إثبات قيمة الاستشارات
+  need_id: need_14
+  sector_id: sector_05
+  system_id: proposal_proof_os
+  delivery_variant: variant_lite
+  deliverables:
+  - قوالب عروض مصغّرة سريعة
+  - بنك تسعير واضح
+  - تقارير إثبات نتائج
+  - تخصيص لقطاع الخدمات الاحترافية
+  required_inputs: *id003
+  acceptance_criteria: *id004
+  price: 3500
+- id: sprint_20
+  name_ar: سبرنت تسعير الخدمات الاحترافية
+  need_id: need_19
+  sector_id: sector_05
+  system_id: proposal_proof_os
+  delivery_variant: variant_diagnostic
+  deliverables:
+  - قوالب عروض مصغّرة سريعة
+  - بنك تسعير واضح
+  - تقارير إثبات نتائج
+  - تخصيص لقطاع الخدمات الاحترافية
+  required_inputs: *id003
+  acceptance_criteria: *id004
+  price: 1500
+- id: sprint_21
+  name_ar: سبرنت توليد فرص التوظيف
+  need_id: need_01
+  sector_id: sector_06
+  system_id: revenue_operating_system
+  delivery_variant: variant_standard
+  deliverables:
+  - خريطة عملية بيع من أول تواصل حتى الإغلاق
+  - نموذج تأهيل (qualification) موحد
+  - قوالب متابعة ورسائل جاهزة
+  - تخصيص لقطاع التوظيف
+  required_inputs: *id001
+  acceptance_criteria: *id002
+  price: 6000
+- id: sprint_22
+  name_ar: سبرنت تأهيل عملاء التوظيف
+  need_id: need_12
+  sector_id: sector_06
+  system_id: revenue_operating_system
+  delivery_variant: variant_lite
+  deliverables:
+  - خريطة عملية بيع من أول تواصل حتى الإغلاق
+  - نموذج تأهيل (qualification) موحد
+  - قوالب متابعة ورسائل جاهزة
+  - تخصيص لقطاع التوظيف
+  required_inputs: *id001
+  acceptance_criteria: *id002
+  price: 3500
+- id: sprint_23
+  name_ar: سبرنت تقصير دورة بيع التوظيف
+  need_id: need_23
+  sector_id: sector_06
+  system_id: revenue_operating_system
+  delivery_variant: variant_standard
+  deliverables:
+  - خريطة عملية بيع من أول تواصل حتى الإغلاق
+  - نموذج تأهيل (qualification) موحد
+  - قوالب متابعة ورسائل جاهزة
+  - تخصيص لقطاع التوظيف
+  required_inputs: *id001
+  acceptance_criteria: *id002
+  price: 6000
+- id: sprint_24
+  name_ar: سبرنت معالجة اعتراضات التوظيف
+  need_id: need_24
+  sector_id: sector_06
+  system_id: revenue_operating_system
+  delivery_variant: variant_lite
+  deliverables:
+  - خريطة عملية بيع من أول تواصل حتى الإغلاق
+  - نموذج تأهيل (qualification) موحد
+  - قوالب متابعة ورسائل جاهزة
+  - تخصيص لقطاع التوظيف
+  required_inputs: *id001
+  acceptance_criteria: *id002
+  price: 3500
+- id: sprint_25
+  name_ar: سبرنت لوحة قيادة SaaS
+  need_id: need_10
+  sector_id: sector_07
+  system_id: executive_command_os
+  delivery_variant: variant_pro
+  deliverables:
+  - لوحة قيادة يومية (إيراد، فرص، متابعات)
+  - تقرير قيمة أسبوعي للقيادة
+  - بوابات قرار (decision gates) واضحة
+  - تخصيص لقطاع البرمجيات (SaaS)
+  required_inputs: &id009
+  - مصادر الأرقام الحالية
+  - أهداف الربع
+  - صلاحية قراءة البيانات
+  acceptance_criteria: &id010
+  - لوحة قيادة محدثة يوميًا
+  - تقرير أسبوعي يصل القيادة
+  - كل مؤشر له مالك
+  price: 9000
+- id: sprint_26
+  name_ar: سبرنت رؤية أرقام SaaS
+  need_id: need_04
+  sector_id: sector_07
+  system_id: executive_command_os
+  delivery_variant: variant_standard
+  deliverables:
+  - لوحة قيادة يومية (إيراد، فرص، متابعات)
+  - تقرير قيمة أسبوعي للقيادة
+  - بوابات قرار (decision gates) واضحة
+  - تخصيص لقطاع البرمجيات (SaaS)
+  required_inputs: *id009
+  acceptance_criteria: *id010
+  price: 6000
+- id: sprint_27
+  name_ar: سبرنت تقليل تسرّب SaaS
+  need_id: need_08
+  sector_id: sector_07
+  system_id: follow_up_recovery_os
+  delivery_variant: variant_pro
+  deliverables:
+  - تسلسلات متابعة مؤتمتة
+  - حملة استرجاع للعملاء الخاملين
+  - قواعد توقيت وتذكير
+  - تخصيص لقطاع البرمجيات (SaaS)
+  required_inputs: *id005
+  acceptance_criteria: *id006
+  price: 9000
+- id: sprint_28
+  name_ar: سبرنت وضوح خط أنابيب SaaS
+  need_id: need_13
+  sector_id: sector_07
+  system_id: revenue_operating_system
+  delivery_variant: variant_lite
+  deliverables:
+  - خريطة عملية بيع من أول تواصل حتى الإغلاق
+  - نموذج تأهيل (qualification) موحد
+  - قوالب متابعة ورسائل جاهزة
+  - تخصيص لقطاع البرمجيات (SaaS)
+  required_inputs: *id001
+  acceptance_criteria: *id002
+  price: 3500
+- id: sprint_29
+  name_ar: سبرنت تنظيم واتساب اللوجستيات
+  need_id: need_05
+  sector_id: sector_08
+  system_id: whatsapp_client_os
+  delivery_variant: variant_standard
+  deliverables:
+  - هيكلة قناة واتساب وتصنيف المحادثات
+  - قوالب رد سريعة موثّقة
+  - مسار حجز/طلب واضح
+  - تخصيص لقطاع اللوجستيات
+  required_inputs: *id007
+  acceptance_criteria: *id008
+  price: 6000
+- id: sprint_30
+  name_ar: سبرنت ردود اللوجستيات السريعة
+  need_id: need_11
+  sector_id: sector_08
+  system_id: whatsapp_client_os
+  delivery_variant: variant_lite
+  deliverables:
+  - هيكلة قناة واتساب وتصنيف المحادثات
+  - قوالب رد سريعة موثّقة
+  - مسار حجز/طلب واضح
+  - تخصيص لقطاع اللوجستيات
+  required_inputs: *id007
+  acceptance_criteria: *id008
+  price: 3500
+- id: sprint_31
+  name_ar: سبرنت توثيق طلبات اللوجستيات
+  need_id: need_22
+  sector_id: sector_08
+  system_id: whatsapp_client_os
+  delivery_variant: variant_standard
+  deliverables:
+  - هيكلة قناة واتساب وتصنيف المحادثات
+  - قوالب رد سريعة موثّقة
+  - مسار حجز/طلب واضح
+  - تخصيص لقطاع اللوجستيات
+  required_inputs: *id007
+  acceptance_criteria: *id008
+  price: 6000
+- id: sprint_32
+  name_ar: سبرنت توحيد بيانات اللوجستيات
+  need_id: need_15
+  sector_id: sector_08
+  system_id: executive_command_os
+  delivery_variant: variant_standard
+  deliverables:
+  - لوحة قيادة يومية (إيراد، فرص، متابعات)
+  - تقرير قيمة أسبوعي للقيادة
+  - بوابات قرار (decision gates) واضحة
+  - تخصيص لقطاع اللوجستيات
+  required_inputs: *id009
+  acceptance_criteria: *id010
+  price: 6000
+- id: sprint_33
+  name_ar: سبرنت حجوزات المطاعم
+  need_id: need_18
+  sector_id: sector_09
+  system_id: whatsapp_client_os
+  delivery_variant: variant_lite
+  deliverables:
+  - هيكلة قناة واتساب وتصنيف المحادثات
+  - قوالب رد سريعة موثّقة
+  - مسار حجز/طلب واضح
+  - تخصيص لقطاع المطاعم والأغذية
+  required_inputs: *id007
+  acceptance_criteria: *id008
+  price: 3500
+- id: sprint_34
+  name_ar: سبرنت ردود المطاعم
+  need_id: need_11
+  sector_id: sector_09
+  system_id: whatsapp_client_os
+  delivery_variant: variant_lite
+  deliverables:
+  - هيكلة قناة واتساب وتصنيف المحادثات
+  - قوالب رد سريعة موثّقة
+  - مسار حجز/طلب واضح
+  - تخصيص لقطاع المطاعم والأغذية
+  required_inputs: *id007
+  acceptance_criteria: *id008
+  price: 3500
+- id: sprint_35
+  name_ar: سبرنت استرجاع عملاء المتجر
+  need_id: need_16
+  sector_id: sector_10
+  system_id: follow_up_recovery_os
+  delivery_variant: variant_recovery
+  deliverables:
+  - تسلسلات متابعة مؤتمتة
+  - حملة استرجاع للعملاء الخاملين
+  - قواعد توقيت وتذكير
+  - تخصيص لقطاع التجارة الإلكترونية
+  required_inputs: *id005
+  acceptance_criteria: *id006
+  price: 3000
+- id: sprint_36
+  name_ar: سبرنت تحويل سلة المتجر
+  need_id: need_06
+  sector_id: sector_10
+  system_id: proposal_proof_os
+  delivery_variant: variant_standard
+  deliverables:
+  - قوالب عروض مصغّرة سريعة
+  - بنك تسعير واضح
+  - تقارير إثبات نتائج
+  - تخصيص لقطاع التجارة الإلكترونية
+  required_inputs: *id003
+  acceptance_criteria: *id004
+  price: 6000
+- id: sprint_37
+  name_ar: سبرنت منع تسرّب طلبات المتجر
+  need_id: need_03
+  sector_id: sector_10
+  system_id: follow_up_recovery_os
+  delivery_variant: variant_standard
+  deliverables:
+  - تسلسلات متابعة مؤتمتة
+  - حملة استرجاع للعملاء الخاملين
+  - قواعد توقيت وتذكير
+  - تخصيص لقطاع التجارة الإلكترونية
+  required_inputs: *id005
+  acceptance_criteria: *id006
+  price: 6000
+- id: sprint_38
+  name_ar: سبرنت عروض المكاتب القانونية
+  need_id: need_06
+  sector_id: sector_11
+  system_id: proposal_proof_os
+  delivery_variant: variant_standard
+  deliverables:
+  - قوالب عروض مصغّرة سريعة
+  - بنك تسعير واضح
+  - تقارير إثبات نتائج
+  - تخصيص لقطاع مكاتب المحاماة
+  required_inputs: *id003
+  acceptance_criteria: *id004
+  price: 6000
+- id: sprint_39
+  name_ar: سبرنت تسعير الخدمات القانونية
+  need_id: need_19
+  sector_id: sector_11
+  system_id: proposal_proof_os
+  delivery_variant: variant_diagnostic
+  deliverables:
+  - قوالب عروض مصغّرة سريعة
+  - بنك تسعير واضح
+  - تقارير إثبات نتائج
+  - تخصيص لقطاع مكاتب المحاماة
+  required_inputs: *id003
+  acceptance_criteria: *id004
+  price: 1500
+- id: sprint_40
+  name_ar: سبرنت لوحة مكاتب المحاسبة
+  need_id: need_10
+  sector_id: sector_12
+  system_id: executive_command_os
+  delivery_variant: variant_standard
+  deliverables:
+  - لوحة قيادة يومية (إيراد، فرص، متابعات)
+  - تقرير قيمة أسبوعي للقيادة
+  - بوابات قرار (decision gates) واضحة
+  - تخصيص لقطاع مكاتب المحاسبة
+  required_inputs: *id009
+  acceptance_criteria: *id010
+  price: 6000
+- id: sprint_41
+  name_ar: سبرنت تقارير قيمة المحاسبة
+  need_id: need_21
+  sector_id: sector_12
+  system_id: executive_command_os
+  delivery_variant: variant_lite
+  deliverables:
+  - لوحة قيادة يومية (إيراد، فرص، متابعات)
+  - تقرير قيمة أسبوعي للقيادة
+  - بوابات قرار (decision gates) واضحة
+  - تخصيص لقطاع مكاتب المحاسبة
+  required_inputs: *id009
+  acceptance_criteria: *id010
+  price: 3500
+- id: sprint_42
+  name_ar: سبرنت عروض المقاولات
+  need_id: need_09
+  sector_id: sector_13
+  system_id: proposal_proof_os
+  delivery_variant: variant_standard
+  deliverables:
+  - قوالب عروض مصغّرة سريعة
+  - بنك تسعير واضح
+  - تقارير إثبات نتائج
+  - تخصيص لقطاع المقاولات
+  required_inputs: *id003
+  acceptance_criteria: *id004
+  price: 6000
+- id: sprint_43
+  name_ar: سبرنت خط أنابيب المقاولات
+  need_id: need_13
+  sector_id: sector_13
+  system_id: revenue_operating_system
+  delivery_variant: variant_pro
+  deliverables:
+  - خريطة عملية بيع من أول تواصل حتى الإغلاق
+  - نموذج تأهيل (qualification) موحد
+  - قوالب متابعة ورسائل جاهزة
+  - تخصيص لقطاع المقاولات
+  required_inputs: *id001
+  acceptance_criteria: *id002
+  price: 9000
+- id: sprint_44
+  name_ar: سبرنت تسجيل الطلاب
+  need_id: need_18
+  sector_id: sector_14
+  system_id: whatsapp_client_os
+  delivery_variant: variant_lite
+  deliverables:
+  - هيكلة قناة واتساب وتصنيف المحادثات
+  - قوالب رد سريعة موثّقة
+  - مسار حجز/طلب واضح
+  - تخصيص لقطاع التعليم
+  required_inputs: *id007
+  acceptance_criteria: *id008
+  price: 3500
+- id: sprint_45
+  name_ar: سبرنت متابعة أولياء الأمور
+  need_id: need_02
+  sector_id: sector_14
+  system_id: follow_up_recovery_os
+  delivery_variant: variant_recovery
+  deliverables:
+  - تسلسلات متابعة مؤتمتة
+  - حملة استرجاع للعملاء الخاملين
+  - قواعد توقيت وتذكير
+  - تخصيص لقطاع التعليم
+  required_inputs: *id005
+  acceptance_criteria: *id006
+  price: 3000
+- id: sprint_46
+  name_ar: سبرنت حجوزات الرعاية الصحية
+  need_id: need_18
+  sector_id: sector_15
+  system_id: whatsapp_client_os
+  delivery_variant: variant_standard
+  deliverables:
+  - هيكلة قناة واتساب وتصنيف المحادثات
+  - قوالب رد سريعة موثّقة
+  - مسار حجز/طلب واضح
+  - تخصيص لقطاع الرعاية الصحية
+  required_inputs: *id007
+  acceptance_criteria: *id008
+  price: 6000
+- id: sprint_47
+  name_ar: سبرنت لوحة قيادة الفنادق
+  need_id: need_10
+  sector_id: sector_16
+  system_id: executive_command_os
+  delivery_variant: variant_standard
+  deliverables:
+  - لوحة قيادة يومية (إيراد، فرص، متابعات)
+  - تقرير قيمة أسبوعي للقيادة
+  - بوابات قرار (decision gates) واضحة
+  - تخصيص لقطاع الضيافة والفنادق
+  required_inputs: *id009
+  acceptance_criteria: *id010
+  price: 6000
+- id: sprint_48
+  name_ar: سبرنت متابعة عملاء السيارات
+  need_id: need_02
+  sector_id: sector_17
+  system_id: follow_up_recovery_os
+  delivery_variant: variant_recovery
+  deliverables:
+  - تسلسلات متابعة مؤتمتة
+  - حملة استرجاع للعملاء الخاملين
+  - قواعد توقيت وتذكير
+  - تخصيص لقطاع السيارات
+  required_inputs: *id005
+  acceptance_criteria: *id006
+  price: 3000
+- id: sprint_49
+  name_ar: سبرنت اشتراكات النوادي
+  need_id: need_25
+  sector_id: sector_18
+  system_id: follow_up_recovery_os
+  delivery_variant: variant_standard
+  deliverables:
+  - تسلسلات متابعة مؤتمتة
+  - حملة استرجاع للعملاء الخاملين
+  - قواعد توقيت وتذكير
+  - تخصيص لقطاع اللياقة والنوادي
+  required_inputs: *id005
+  acceptance_criteria: *id006
+  price: 6000
+- id: sprint_50
+  name_ar: سبرنت حجوزات الصالونات
+  need_id: need_18
+  sector_id: sector_19
+  system_id: whatsapp_client_os
+  delivery_variant: variant_lite
+  deliverables:
+  - هيكلة قناة واتساب وتصنيف المحادثات
+  - قوالب رد سريعة موثّقة
+  - مسار حجز/طلب واضح
+  - تخصيص لقطاع التجميل والصالونات
+  required_inputs: *id007
+  acceptance_criteria: *id008
+  price: 3500

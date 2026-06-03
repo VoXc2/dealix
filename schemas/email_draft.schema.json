@@ -1,0 +1,43 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Email Draft",
+  "type": "object",
+  "required": [
+    "draft_id",
+    "company_name",
+    "system",
+    "evidence_level",
+    "subject",
+    "body",
+    "approval_required"
+  ],
+  "properties": {
+    "draft_id": {
+      "type": "string"
+    },
+    "company_name": {
+      "type": "string"
+    },
+    "system": {
+      "type": "string"
+    },
+    "evidence_level": {
+      "type": "string",
+      "enum": [
+        "high",
+        "medium",
+        "low",
+        "inferred"
+      ]
+    },
+    "subject": {
+      "type": "string"
+    },
+    "body": {
+      "type": "string"
+    },
+    "approval_required": {
+      "type": "boolean"
+    }
+  }
+}

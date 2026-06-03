@@ -1,0 +1,35 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Contact Discovery",
+  "type": "object",
+  "required": [
+    "company_name",
+    "discovery_status",
+    "invented",
+    "source"
+  ],
+  "properties": {
+    "company_name": {
+      "type": "string"
+    },
+    "discovery_status": {
+      "type": "string"
+    },
+    "invented": {
+      "type": "boolean"
+    },
+    "source": {
+      "type": "string"
+    },
+    "confidence": {
+      "type": "string",
+      "enum": [
+        "high",
+        "medium",
+        "low",
+        "unknown",
+        "missing"
+      ]
+    }
+  }
+}

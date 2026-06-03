@@ -1,0 +1,35 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Delivery Pipeline",
+  "type": "object",
+  "required": [
+    "pipeline_id",
+    "client",
+    "system",
+    "owner",
+    "required_inputs"
+  ],
+  "properties": {
+    "pipeline_id": {
+      "type": "string"
+    },
+    "client": {
+      "type": "string"
+    },
+    "system": {
+      "type": "string"
+    },
+    "owner": {
+      "type": "string"
+    },
+    "required_inputs": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "required_inputs_satisfied": {
+      "type": "boolean"
+    }
+  }
+}

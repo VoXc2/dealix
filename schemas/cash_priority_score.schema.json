@@ -1,0 +1,19 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Cash Priority Score",
+  "type": "object",
+  "required": [
+    "account_ref",
+    "cash_priority_score"
+  ],
+  "properties": {
+    "account_ref": {
+      "type": "string"
+    },
+    "cash_priority_score": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100
+    }
+  }
+}

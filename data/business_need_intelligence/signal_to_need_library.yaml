@@ -1,0 +1,91 @@
+signals:
+- signal_ar: نموذج تواصل بلا رد آلي
+  need_id: need_11
+  evidence_level: high
+- signal_ar: لا يوجد رقم واتساب أعمال واضح
+  need_id: need_05
+  evidence_level: medium
+- signal_ar: صفحة أسعار غير موجودة
+  need_id: need_19
+  evidence_level: high
+- signal_ar: لا توجد صفحة حجز
+  need_id: need_18
+  evidence_level: high
+- signal_ar: إعلانات نشطة بلا صفحة هبوط
+  need_id: need_01
+  evidence_level: medium
+- signal_ar: شكاوى عن تأخر الرد في المراجعات
+  need_id: need_11
+  evidence_level: high
+- signal_ar: لا يوجد إثبات نتائج أو دراسات حالة
+  need_id: need_14
+  evidence_level: medium
+- signal_ar: فريق مبيعات بلا CRM ظاهر
+  need_id: need_07
+  evidence_level: medium
+- signal_ar: توسّع في التوظيف (مبيعات)
+  need_id: need_13
+  evidence_level: low
+- signal_ar: منتج SaaS بلا لوحة مؤشرات
+  need_id: need_10
+  evidence_level: medium
+- signal_ar: معدل مغادرة مرتفع في المراجعات
+  need_id: need_08
+  evidence_level: medium
+- signal_ar: عروض تُرسل يدويًا وببطء
+  need_id: need_09
+  evidence_level: medium
+- signal_ar: قائمة عملاء خاملين كبيرة
+  need_id: need_16
+  evidence_level: low
+- signal_ar: استفسارات كثيرة على واتساب بلا تنظيم
+  need_id: need_22
+  evidence_level: high
+- signal_ar: غياب تقارير دورية للقيادة
+  need_id: need_21
+  evidence_level: low
+- signal_ar: تعدّد قنوات بلا توحيد بيانات
+  need_id: need_15
+  evidence_level: medium
+- signal_ar: اعتراضات سعرية متكررة
+  need_id: need_24
+  evidence_level: low
+- signal_ar: دورة بيع طويلة معلنة
+  need_id: need_23
+  evidence_level: low
+- signal_ar: لا يوجد مسار ما بعد البيع
+  need_id: need_25
+  evidence_level: low
+- signal_ar: ضعف تأهيل الفرص الواردة
+  need_id: need_12
+  evidence_level: medium
+- signal_ar: تسرّب واضح في مرحلة التفاوض
+  need_id: need_03
+  evidence_level: medium
+- signal_ar: لا توجد لوحة قيادة تنفيذية
+  need_id: need_04
+  evidence_level: medium
+- signal_ar: بطء متابعة بعد أول تواصل
+  need_id: need_02
+  evidence_level: high
+- signal_ar: ضعف عملية التحويل من زائر لعميل
+  need_id: need_06
+  evidence_level: medium
+- signal_ar: غياب أتمتة المتابعة
+  need_id: need_17
+  evidence_level: medium
+- signal_ar: ضعف توليد الفرص رغم وجود طلب
+  need_id: need_01
+  evidence_level: medium
+- signal_ar: عدم وضوح خط الأنابيب
+  need_id: need_13
+  evidence_level: medium
+- signal_ar: ضعف انضباط الفريق على الأهداف
+  need_id: need_20
+  evidence_level: low
+- signal_ar: طلبات غير موثّقة
+  need_id: need_22
+  evidence_level: medium
+- signal_ar: تجربة حجز مربكة
+  need_id: need_18
+  evidence_level: medium

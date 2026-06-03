@@ -1,0 +1,51 @@
+map:
+- core_system: revenue_operating_system
+  specialized_systems:
+  - bsys_01
+  - bsys_08
+  - bsys_11
+  - bsys_23
+  - bsys_33
+  - bsys_40
+- core_system: executive_command_os
+  specialized_systems:
+  - bsys_13
+  - bsys_21
+  - bsys_27
+  - bsys_35
+  - bsys_36
+- core_system: follow_up_recovery_os
+  specialized_systems:
+  - bsys_03
+  - bsys_06
+  - bsys_07
+  - bsys_12
+  - bsys_14
+  - bsys_18
+  - bsys_25
+  - bsys_29
+  - bsys_31
+  - bsys_37
+  - bsys_39
+- core_system: whatsapp_client_os
+  specialized_systems:
+  - bsys_04
+  - bsys_05
+  - bsys_15
+  - bsys_16
+  - bsys_17
+  - bsys_24
+  - bsys_26
+  - bsys_28
+  - bsys_32
+- core_system: proposal_proof_os
+  specialized_systems:
+  - bsys_02
+  - bsys_09
+  - bsys_10
+  - bsys_19
+  - bsys_20
+  - bsys_22
+  - bsys_30
+  - bsys_34
+  - bsys_38

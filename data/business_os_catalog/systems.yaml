@@ -1,0 +1,651 @@
+systems:
+- id: bsys_01
+  name_ar: نظام توليد الفرص للوكالات
+  core_system_mapping: revenue_operating_system
+  entry_sprint: sprint_01
+  starter_price: 7500
+  currency: SAR
+  deliverables: &id007
+  - خريطة عملية بيع من أول تواصل حتى الإغلاق
+  - نموذج تأهيل (qualification) موحد
+  - قوالب متابعة ورسائل جاهزة
+  - لوحة خط أنابيب أسبوعية
+  required_inputs: &id008
+  - قائمة الخدمات والأسعار
+  - سجل الفرص الحالية
+  - صلاحية بريد/واتساب للتواصل
+  acceptance_criteria: &id009
+  - خط أنابيب موحد فعّال
+  - كل فرصة لها مرحلة وحالة
+  - تقرير أسبوعي يصدر تلقائيًا
+  buyer_role: مدير النمو
+  email_angle: وقّفنا تسرب الفرص ببناء خط أنابيب واحد واضح خلال أسبوعين.
+  upsell_path: نظام إغلاق عروض الوكالات
+  sector_fit:
+  - sector_01
+  delivery_complexity: medium
+- id: bsys_02
+  name_ar: نظام إغلاق عروض الوكالات
+  core_system_mapping: proposal_proof_os
+  entry_sprint: sprint_02
+  starter_price: 6500
+  currency: SAR
+  deliverables: &id010
+  - قوالب عروض مصغّرة سريعة
+  - بنك تسعير واضح
+  - تقارير إثبات نتائج
+  - بوابة اعتماد قبل الإرسال
+  required_inputs: &id011
+  - الخدمات والنطاقات
+  - هيكل التسعير
+  - أمثلة نتائج سابقة (إن وجدت)
+  acceptance_criteria: &id012
+  - عرض مصغّر يُجهّز في دقائق
+  - كل عرض له سعر ونطاق
+  - اعتماد قبل الإرسال إلزامي
+  buyer_role: مدير الحسابات
+  email_angle: اختصرنا زمن إعداد العروض وأضفنا إثبات قيمة واضح قبل الإرسال.
+  upsell_path: نظام متابعة المتدربين المحتملين
+  sector_fit:
+  - sector_01
+  delivery_complexity: medium
+- id: bsys_03
+  name_ar: نظام متابعة المتدربين المحتملين
+  core_system_mapping: follow_up_recovery_os
+  entry_sprint: sprint_06
+  starter_price: 6000
+  currency: SAR
+  deliverables: &id004
+  - تسلسلات متابعة مؤتمتة
+  - حملة استرجاع للعملاء الخاملين
+  - قواعد توقيت وتذكير
+  - قائمة أولوية يومية للمتابعة
+  required_inputs: &id005
+  - سجل العملاء/المهتمين
+  - قنوات التواصل المسموح بها
+  - قائمة عدم التواصل (إن وجدت)
+  acceptance_criteria: &id006
+  - لا فرصة بلا متابعة خلال 24 ساعة
+  - حملة استرجاع تعمل
+  - قائمة أولوية يومية تصدر
+  buyer_role: مدير المبيعات
+  email_angle: استعدنا العملاء المهتمين الذين لم يُتابَعوا في الوقت المناسب.
+  upsell_path: نظام تسجيل الدورات
+  sector_fit:
+  - sector_02
+  delivery_complexity: low
+- id: bsys_04
+  name_ar: نظام تسجيل الدورات
+  core_system_mapping: whatsapp_client_os
+  entry_sprint: sprint_05
+  starter_price: 5500
+  currency: SAR
+  deliverables: &id001
+  - هيكلة قناة واتساب وتصنيف المحادثات
+  - قوالب رد سريعة موثّقة
+  - مسار حجز/طلب واضح
+  - سجل طلبات موثّق
+  required_inputs: &id002
+  - رقم/حساب واتساب للأعمال
+  - قائمة الخدمات
+  - صلاحية الردود
+  acceptance_criteria: &id003
+  - زمن رد أقل
+  - كل طلب موثّق
+  - مسار حجز واضح يعمل
+  buyer_role: مدير التسجيل
+  email_angle: حوّلنا فوضى واتساب إلى قناة منظمة بطلبات موثّقة وردود أسرع.
+  upsell_path: نظام حجوزات العيادات
+  sector_fit:
+  - sector_02
+  delivery_complexity: low
+- id: bsys_05
+  name_ar: نظام حجوزات العيادات
+  core_system_mapping: whatsapp_client_os
+  entry_sprint: sprint_09
+  starter_price: 5500
+  currency: SAR
+  deliverables: *id001
+  required_inputs: *id002
+  acceptance_criteria: *id003
+  buyer_role: مدير العيادة
+  email_angle: حوّلنا فوضى واتساب إلى قناة منظمة بطلبات موثّقة وردود أسرع.
+  upsell_path: نظام تذكير المواعيد
+  sector_fit:
+  - sector_03
+  delivery_complexity: medium
+- id: bsys_06
+  name_ar: نظام تذكير المواعيد
+  core_system_mapping: follow_up_recovery_os
+  entry_sprint: sprint_12
+  starter_price: 5000
+  currency: SAR
+  deliverables: *id004
+  required_inputs: *id005
+  acceptance_criteria: *id006
+  buyer_role: منسق المرضى
+  email_angle: استعدنا العملاء المهتمين الذين لم يُتابَعوا في الوقت المناسب.
+  upsell_path: نظام متابعة العملاء العقاريين
+  sector_fit:
+  - sector_03
+  delivery_complexity: low
+- id: bsys_07
+  name_ar: نظام متابعة العملاء العقاريين
+  core_system_mapping: follow_up_recovery_os
+  entry_sprint: sprint_13
+  starter_price: 6500
+  currency: SAR
+  deliverables: *id004
+  required_inputs: *id005
+  acceptance_criteria: *id006
+  buyer_role: مدير المبيعات
+  email_angle: استعدنا العملاء المهتمين الذين لم يُتابَعوا في الوقت المناسب.
+  upsell_path: نظام تأهيل المشترين العقاريين
+  sector_fit:
+  - sector_04
+  delivery_complexity: medium
+- id: bsys_08
+  name_ar: نظام تأهيل المشترين العقاريين
+  core_system_mapping: revenue_operating_system
+  entry_sprint: sprint_15
+  starter_price: 7000
+  currency: SAR
+  deliverables: *id007
+  required_inputs: *id008
+  acceptance_criteria: *id009
+  buyer_role: مدير المبيعات
+  email_angle: وقّفنا تسرب الفرص ببناء خط أنابيب واحد واضح خلال أسبوعين.
+  upsell_path: نظام عروض الخدمات الاحترافية
+  sector_fit:
+  - sector_04
+  delivery_complexity: medium
+- id: bsys_09
+  name_ar: نظام عروض الخدمات الاحترافية
+  core_system_mapping: proposal_proof_os
+  entry_sprint: sprint_17
+  starter_price: 7000
+  currency: SAR
+  deliverables: *id010
+  required_inputs: *id011
+  acceptance_criteria: *id012
+  buyer_role: الشريك
+  email_angle: اختصرنا زمن إعداد العروض وأضفنا إثبات قيمة واضح قبل الإرسال.
+  upsell_path: نظام تسعير الاستشارات
+  sector_fit:
+  - sector_05
+  delivery_complexity: medium
+- id: bsys_10
+  name_ar: نظام تسعير الاستشارات
+  core_system_mapping: proposal_proof_os
+  entry_sprint: sprint_17
+  starter_price: 6500
+  currency: SAR
+  deliverables: *id010
+  required_inputs: *id011
+  acceptance_criteria: *id012
+  buyer_role: الشريك
+  email_angle: اختصرنا زمن إعداد العروض وأضفنا إثبات قيمة واضح قبل الإرسال.
+  upsell_path: نظام فرز المرشحين
+  sector_fit:
+  - sector_05
+  delivery_complexity: medium
+- id: bsys_11
+  name_ar: نظام فرز المرشحين
+  core_system_mapping: revenue_operating_system
+  entry_sprint: sprint_21
+  starter_price: 6500
+  currency: SAR
+  deliverables: *id007
+  required_inputs: *id008
+  acceptance_criteria: *id009
+  buyer_role: مدير التوظيف
+  email_angle: وقّفنا تسرب الفرص ببناء خط أنابيب واحد واضح خلال أسبوعين.
+  upsell_path: نظام متابعة العملاء التوظيفيين
+  sector_fit:
+  - sector_06
+  delivery_complexity: medium
+- id: bsys_12
+  name_ar: نظام متابعة العملاء التوظيفيين
+  core_system_mapping: follow_up_recovery_os
+  entry_sprint: sprint_21
+  starter_price: 6000
+  currency: SAR
+  deliverables: *id004
+  required_inputs: *id005
+  acceptance_criteria: *id006
+  buyer_role: مدير الحسابات
+  email_angle: استعدنا العملاء المهتمين الذين لم يُتابَعوا في الوقت المناسب.
+  upsell_path: نظام لوحة قيادة SaaS
+  sector_fit:
+  - sector_06
+  delivery_complexity: low
+- id: bsys_13
+  name_ar: نظام لوحة قيادة SaaS
+  core_system_mapping: executive_command_os
+  entry_sprint: sprint_25
+  starter_price: 9000
+  currency: SAR
+  deliverables: &id013
+  - لوحة قيادة يومية (إيراد، فرص، متابعات)
+  - تقرير قيمة أسبوعي للقيادة
+  - بوابات قرار (decision gates) واضحة
+  - تنبيهات على المؤشرات الحرجة
+  required_inputs: &id014
+  - مصادر الأرقام الحالية
+  - أهداف الربع
+  - صلاحية قراءة البيانات
+  acceptance_criteria: &id015
+  - لوحة قيادة محدثة يوميًا
+  - تقرير أسبوعي يصل القيادة
+  - كل مؤشر له مالك
+  buyer_role: المؤسس
+  email_angle: أعطيناك رؤية يومية واحدة لكل أرقام الإيراد والمتابعات.
+  upsell_path: نظام تقليل التسرّب (Churn)
+  sector_fit:
+  - sector_07
+  delivery_complexity: high
+- id: bsys_14
+  name_ar: نظام تقليل التسرّب (Churn)
+  core_system_mapping: follow_up_recovery_os
+  entry_sprint: sprint_27
+  starter_price: 8000
+  currency: SAR
+  deliverables: *id004
+  required_inputs: *id005
+  acceptance_criteria: *id006
+  buyer_role: مدير النجاح
+  email_angle: استعدنا العملاء المهتمين الذين لم يُتابَعوا في الوقت المناسب.
+  upsell_path: نظام تتبّع شحنات اللوجستيات
+  sector_fit:
+  - sector_07
+  delivery_complexity: high
+- id: bsys_15
+  name_ar: نظام تتبّع شحنات اللوجستيات
+  core_system_mapping: whatsapp_client_os
+  entry_sprint: sprint_29
+  starter_price: 6000
+  currency: SAR
+  deliverables: *id001
+  required_inputs: *id002
+  acceptance_criteria: *id003
+  buyer_role: مدير العمليات
+  email_angle: حوّلنا فوضى واتساب إلى قناة منظمة بطلبات موثّقة وردود أسرع.
+  upsell_path: نظام توثيق طلبات اللوجستيات
+  sector_fit:
+  - sector_08
+  delivery_complexity: medium
+- id: bsys_16
+  name_ar: نظام توثيق طلبات اللوجستيات
+  core_system_mapping: whatsapp_client_os
+  entry_sprint: sprint_29
+  starter_price: 5500
+  currency: SAR
+  deliverables: *id001
+  required_inputs: *id002
+  acceptance_criteria: *id003
+  buyer_role: مدير العمليات
+  email_angle: حوّلنا فوضى واتساب إلى قناة منظمة بطلبات موثّقة وردود أسرع.
+  upsell_path: نظام حجوزات المطاعم
+  sector_fit:
+  - sector_08
+  delivery_complexity: medium
+- id: bsys_17
+  name_ar: نظام حجوزات المطاعم
+  core_system_mapping: whatsapp_client_os
+  entry_sprint: sprint_33
+  starter_price: 5000
+  currency: SAR
+  deliverables: *id001
+  required_inputs: *id002
+  acceptance_criteria: *id003
+  buyer_role: مدير الفرع
+  email_angle: حوّلنا فوضى واتساب إلى قناة منظمة بطلبات موثّقة وردود أسرع.
+  upsell_path: نظام استرجاع عملاء المتجر
+  sector_fit:
+  - sector_09
+  delivery_complexity: low
+- id: bsys_18
+  name_ar: نظام استرجاع عملاء المتجر
+  core_system_mapping: follow_up_recovery_os
+  entry_sprint: sprint_35
+  starter_price: 6000
+  currency: SAR
+  deliverables: *id004
+  required_inputs: *id005
+  acceptance_criteria: *id006
+  buyer_role: مدير التسويق
+  email_angle: استعدنا العملاء المهتمين الذين لم يُتابَعوا في الوقت المناسب.
+  upsell_path: نظام تحويل سلة المتجر
+  sector_fit:
+  - sector_10
+  delivery_complexity: medium
+- id: bsys_19
+  name_ar: نظام تحويل سلة المتجر
+  core_system_mapping: proposal_proof_os
+  entry_sprint: sprint_36
+  starter_price: 6500
+  currency: SAR
+  deliverables: *id010
+  required_inputs: *id011
+  acceptance_criteria: *id012
+  buyer_role: مدير التجارة
+  email_angle: اختصرنا زمن إعداد العروض وأضفنا إثبات قيمة واضح قبل الإرسال.
+  upsell_path: نظام عروض المكاتب القانونية
+  sector_fit:
+  - sector_10
+  delivery_complexity: medium
+- id: bsys_20
+  name_ar: نظام عروض المكاتب القانونية
+  core_system_mapping: proposal_proof_os
+  entry_sprint: sprint_38
+  starter_price: 7000
+  currency: SAR
+  deliverables: *id010
+  required_inputs: *id011
+  acceptance_criteria: *id012
+  buyer_role: الشريك
+  email_angle: اختصرنا زمن إعداد العروض وأضفنا إثبات قيمة واضح قبل الإرسال.
+  upsell_path: نظام لوحة مكاتب المحاسبة
+  sector_fit:
+  - sector_11
+  delivery_complexity: medium
+- id: bsys_21
+  name_ar: نظام لوحة مكاتب المحاسبة
+  core_system_mapping: executive_command_os
+  entry_sprint: sprint_40
+  starter_price: 8000
+  currency: SAR
+  deliverables: *id013
+  required_inputs: *id014
+  acceptance_criteria: *id015
+  buyer_role: المدير
+  email_angle: أعطيناك رؤية يومية واحدة لكل أرقام الإيراد والمتابعات.
+  upsell_path: نظام عروض المقاولات
+  sector_fit:
+  - sector_12
+  delivery_complexity: medium
+- id: bsys_22
+  name_ar: نظام عروض المقاولات
+  core_system_mapping: proposal_proof_os
+  entry_sprint: sprint_42
+  starter_price: 7500
+  currency: SAR
+  deliverables: *id010
+  required_inputs: *id011
+  acceptance_criteria: *id012
+  buyer_role: مدير المشاريع
+  email_angle: اختصرنا زمن إعداد العروض وأضفنا إثبات قيمة واضح قبل الإرسال.
+  upsell_path: نظام خط أنابيب المقاولات
+  sector_fit:
+  - sector_13
+  delivery_complexity: high
+- id: bsys_23
+  name_ar: نظام خط أنابيب المقاولات
+  core_system_mapping: revenue_operating_system
+  entry_sprint: sprint_43
+  starter_price: 8000
+  currency: SAR
+  deliverables: *id007
+  required_inputs: *id008
+  acceptance_criteria: *id009
+  buyer_role: مدير التطوير
+  email_angle: وقّفنا تسرب الفرص ببناء خط أنابيب واحد واضح خلال أسبوعين.
+  upsell_path: نظام تسجيل الطلاب
+  sector_fit:
+  - sector_13
+  delivery_complexity: high
+- id: bsys_24
+  name_ar: نظام تسجيل الطلاب
+  core_system_mapping: whatsapp_client_os
+  entry_sprint: sprint_44
+  starter_price: 5500
+  currency: SAR
+  deliverables: *id001
+  required_inputs: *id002
+  acceptance_criteria: *id003
+  buyer_role: مدير القبول
+  email_angle: حوّلنا فوضى واتساب إلى قناة منظمة بطلبات موثّقة وردود أسرع.
+  upsell_path: نظام متابعة أولياء الأمور
+  sector_fit:
+  - sector_14
+  delivery_complexity: low
+- id: bsys_25
+  name_ar: نظام متابعة أولياء الأمور
+  core_system_mapping: follow_up_recovery_os
+  entry_sprint: sprint_45
+  starter_price: 5500
+  currency: SAR
+  deliverables: *id004
+  required_inputs: *id005
+  acceptance_criteria: *id006
+  buyer_role: منسق العلاقات
+  email_angle: استعدنا العملاء المهتمين الذين لم يُتابَعوا في الوقت المناسب.
+  upsell_path: نظام حجوزات الرعاية الصحية
+  sector_fit:
+  - sector_14
+  delivery_complexity: low
+- id: bsys_26
+  name_ar: نظام حجوزات الرعاية الصحية
+  core_system_mapping: whatsapp_client_os
+  entry_sprint: sprint_46
+  starter_price: 6000
+  currency: SAR
+  deliverables: *id001
+  required_inputs: *id002
+  acceptance_criteria: *id003
+  buyer_role: مدير العيادة
+  email_angle: حوّلنا فوضى واتساب إلى قناة منظمة بطلبات موثّقة وردود أسرع.
+  upsell_path: نظام لوحة قيادة الفنادق
+  sector_fit:
+  - sector_15
+  delivery_complexity: medium
+- id: bsys_27
+  name_ar: نظام لوحة قيادة الفنادق
+  core_system_mapping: executive_command_os
+  entry_sprint: sprint_47
+  starter_price: 8500
+  currency: SAR
+  deliverables: *id013
+  required_inputs: *id014
+  acceptance_criteria: *id015
+  buyer_role: مدير الفندق
+  email_angle: أعطيناك رؤية يومية واحدة لكل أرقام الإيراد والمتابعات.
+  upsell_path: نظام حجوزات الضيافة
+  sector_fit:
+  - sector_16
+  delivery_complexity: medium
+- id: bsys_28
+  name_ar: نظام حجوزات الضيافة
+  core_system_mapping: whatsapp_client_os
+  entry_sprint: sprint_47
+  starter_price: 6000
+  currency: SAR
+  deliverables: *id001
+  required_inputs: *id002
+  acceptance_criteria: *id003
+  buyer_role: مدير الحجوزات
+  email_angle: حوّلنا فوضى واتساب إلى قناة منظمة بطلبات موثّقة وردود أسرع.
+  upsell_path: نظام متابعة عملاء السيارات
+  sector_fit:
+  - sector_16
+  delivery_complexity: medium
+- id: bsys_29
+  name_ar: نظام متابعة عملاء السيارات
+  core_system_mapping: follow_up_recovery_os
+  entry_sprint: sprint_48
+  starter_price: 6000
+  currency: SAR
+  deliverables: *id004
+  required_inputs: *id005
+  acceptance_criteria: *id006
+  buyer_role: مدير المعرض
+  email_angle: استعدنا العملاء المهتمين الذين لم يُتابَعوا في الوقت المناسب.
+  upsell_path: نظام عروض السيارات
+  sector_fit:
+  - sector_17
+  delivery_complexity: medium
+- id: bsys_30
+  name_ar: نظام عروض السيارات
+  core_system_mapping: proposal_proof_os
+  entry_sprint: sprint_48
+  starter_price: 6500
+  currency: SAR
+  deliverables: *id010
+  required_inputs: *id011
+  acceptance_criteria: *id012
+  buyer_role: مدير المبيعات
+  email_angle: اختصرنا زمن إعداد العروض وأضفنا إثبات قيمة واضح قبل الإرسال.
+  upsell_path: نظام اشتراكات النوادي
+  sector_fit:
+  - sector_17
+  delivery_complexity: medium
+- id: bsys_31
+  name_ar: نظام اشتراكات النوادي
+  core_system_mapping: follow_up_recovery_os
+  entry_sprint: sprint_49
+  starter_price: 5500
+  currency: SAR
+  deliverables: *id004
+  required_inputs: *id005
+  acceptance_criteria: *id006
+  buyer_role: مدير النادي
+  email_angle: استعدنا العملاء المهتمين الذين لم يُتابَعوا في الوقت المناسب.
+  upsell_path: نظام حجوزات الصالونات
+  sector_fit:
+  - sector_18
+  delivery_complexity: low
+- id: bsys_32
+  name_ar: نظام حجوزات الصالونات
+  core_system_mapping: whatsapp_client_os
+  entry_sprint: sprint_50
+  starter_price: 5000
+  currency: SAR
+  deliverables: *id001
+  required_inputs: *id002
+  acceptance_criteria: *id003
+  buyer_role: مدير الصالون
+  email_angle: حوّلنا فوضى واتساب إلى قناة منظمة بطلبات موثّقة وردود أسرع.
+  upsell_path: نظام خط أنابيب التصنيع
+  sector_fit:
+  - sector_19
+  delivery_complexity: low
+- id: bsys_33
+  name_ar: نظام خط أنابيب التصنيع
+  core_system_mapping: revenue_operating_system
+  entry_sprint: sprint_01
+  starter_price: 8500
+  currency: SAR
+  deliverables: *id007
+  required_inputs: *id008
+  acceptance_criteria: *id009
+  buyer_role: مدير المبيعات
+  email_angle: وقّفنا تسرب الفرص ببناء خط أنابيب واحد واضح خلال أسبوعين.
+  upsell_path: نظام عروض التصنيع
+  sector_fit:
+  - sector_20
+  delivery_complexity: high
+- id: bsys_34
+  name_ar: نظام عروض التصنيع
+  core_system_mapping: proposal_proof_os
+  entry_sprint: sprint_01
+  starter_price: 8000
+  currency: SAR
+  deliverables: *id010
+  required_inputs: *id011
+  acceptance_criteria: *id012
+  buyer_role: مدير الحسابات
+  email_angle: اختصرنا زمن إعداد العروض وأضفنا إثبات قيمة واضح قبل الإرسال.
+  upsell_path: نظام القيادة التنفيذية الموحّد
+  sector_fit:
+  - sector_20
+  delivery_complexity: high
+- id: bsys_35
+  name_ar: نظام القيادة التنفيذية الموحّد
+  core_system_mapping: executive_command_os
+  entry_sprint: sprint_17
+  starter_price: 9000
+  currency: SAR
+  deliverables: *id013
+  required_inputs: *id014
+  acceptance_criteria: *id015
+  buyer_role: المؤسس
+  email_angle: أعطيناك رؤية يومية واحدة لكل أرقام الإيراد والمتابعات.
+  upsell_path: نظام تقارير القيمة الأسبوعية
+  sector_fit:
+  - sector_05
+  delivery_complexity: medium
+- id: bsys_36
+  name_ar: نظام تقارير القيمة الأسبوعية
+  core_system_mapping: executive_command_os
+  entry_sprint: sprint_01
+  starter_price: 7000
+  currency: SAR
+  deliverables: *id013
+  required_inputs: *id014
+  acceptance_criteria: *id015
+  buyer_role: المؤسس
+  email_angle: أعطيناك رؤية يومية واحدة لكل أرقام الإيراد والمتابعات.
+  upsell_path: نظام أتمتة المتابعة العامة
+  sector_fit:
+  - sector_01
+  delivery_complexity: low
+- id: bsys_37
+  name_ar: نظام أتمتة المتابعة العامة
+  core_system_mapping: follow_up_recovery_os
+  entry_sprint: sprint_17
+  starter_price: 6000
+  currency: SAR
+  deliverables: *id004
+  required_inputs: *id005
+  acceptance_criteria: *id006
+  buyer_role: مدير المبيعات
+  email_angle: استعدنا العملاء المهتمين الذين لم يُتابَعوا في الوقت المناسب.
+  upsell_path: نظام بنك التسعير
+  sector_fit:
+  - sector_05
+  delivery_complexity: low
+- id: bsys_38
+  name_ar: نظام بنك التسعير
+  core_system_mapping: proposal_proof_os
+  entry_sprint: sprint_17
+  starter_price: 6000
+  currency: SAR
+  deliverables: *id010
+  required_inputs: *id011
+  acceptance_criteria: *id012
+  buyer_role: المؤسس
+  email_angle: اختصرنا زمن إعداد العروض وأضفنا إثبات قيمة واضح قبل الإرسال.
+  upsell_path: نظام تأهيل ما بعد البيع
+  sector_fit:
+  - sector_05
+  delivery_complexity: low
+- id: bsys_39
+  name_ar: نظام تأهيل ما بعد البيع
+  core_system_mapping: follow_up_recovery_os
+  entry_sprint: sprint_27
+  starter_price: 6500
+  currency: SAR
+  deliverables: *id004
+  required_inputs: *id005
+  acceptance_criteria: *id006
+  buyer_role: مدير النجاح
+  email_angle: استعدنا العملاء المهتمين الذين لم يُتابَعوا في الوقت المناسب.
+  upsell_path: نظام مركز قيادة المبيعات
+  sector_fit:
+  - sector_07
+  delivery_complexity: medium
+- id: bsys_40
+  name_ar: نظام مركز قيادة المبيعات
+  core_system_mapping: revenue_operating_system
+  entry_sprint: sprint_21
+  starter_price: 8000
+  currency: SAR
+  deliverables: *id007
+  required_inputs: *id008
+  acceptance_criteria: *id009
+  buyer_role: مدير المبيعات
+  email_angle: وقّفنا تسرب الفرص ببناء خط أنابيب واحد واضح خلال أسبوعين.
+  upsell_path: نظام توليد الفرص للوكالات
+  sector_fit:
+  - sector_06
+  delivery_complexity: high

@@ -1,0 +1,33 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Account Scoring",
+  "type": "object",
+  "required": [
+    "account_score",
+    "need_fit_score",
+    "cash_priority_score",
+    "final_account_score"
+  ],
+  "properties": {
+    "account_score": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100
+    },
+    "need_fit_score": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100
+    },
+    "cash_priority_score": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100
+    },
+    "final_account_score": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100
+    }
+  }
+}

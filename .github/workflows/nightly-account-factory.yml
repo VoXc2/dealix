@@ -1,0 +1,23 @@
+name: nightly-account-factory
+
+on:
+  schedule:
+    - cron: "0 2 * * *"  # 02:00 UTC nightly
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  factory:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install -r requirements-dev.txt
+      - name: Nightly factory (dry-run, no external sends)
+        run: |
+          python dealix.py account-packs --limit 400 --dry-run
+          python dealix.py factory-run --dry-run

@@ -1,0 +1,670 @@
+generated_by: scripts/launch/build.py
+total_files: 217
+packs:
+  launch_master_index:
+  - path: docs/LAUNCH_MASTER_INDEX_AR.md
+    type: doc
+    min_bytes: 64
+  website:
+  - path: docs/site/SITE_ARCHITECTURE_AR.md
+    type: doc
+    min_bytes: 64
+  - path: docs/site/FOCUS_5_SITE_COPY_AR.md
+    type: doc
+    min_bytes: 64
+  - path: docs/site/SYSTEM_PAGE_TEMPLATE_AR.md
+    type: doc
+    min_bytes: 64
+  - path: docs/site/PRICING_PAGE_COPY_AR.md
+    type: doc
+    min_bytes: 64
+  - path: docs/site/DIAGNOSTIC_FLOW_AR.md
+    type: doc
+    min_bytes: 64
+  - path: docs/site/SECTOR_SOLUTIONS_PAGES_AR.md
+    type: doc
+    min_bytes: 64
+  - path: docs/site/CONVERSION_COPY_BANK_AR.md
+    type: doc
+    min_bytes: 64
+  - path: docs/site/SEO_STRATEGY_AR.md
+    type: doc
+    min_bytes: 64
+  - path: reports/site/SITE_READINESS_REVIEW.md
+    type: report
+    min_bytes: 64
+  - path: reports/site/FOCUS_5_SITE_QA.md
+    type: report
+    min_bytes: 64
+  - path: reports/site/CONVERSION_REVIEW.md
+    type: report
+    min_bytes: 64
+  - path: src/pages/site/HomePage.tsx
+    type: route
+    min_bytes: 64
+  - path: src/pages/site/SystemsIndexPage.tsx
+    type: route
+    min_bytes: 64
+  - path: src/pages/site/PricingPage.tsx
+    type: route
+    min_bytes: 64
+  - path: src/pages/site/DiagnosticPage.tsx
+    type: route
+    min_bytes: 64
+  - path: src/pages/site/StartPage.tsx
+    type: route
+    min_bytes: 64
+  - path: src/pages/site/ContactPage.tsx
+    type: route
+    min_bytes: 64
+  - path: src/pages/site/SolutionsIndexPage.tsx
+    type: route
+    min_bytes: 64
+  - path: src/pages/site/RevenueOperatingSystemPage.tsx
+    type: route
+    min_bytes: 64
+  - path: src/pages/site/ExecutiveCommandOsPage.tsx
+    type: route
+    min_bytes: 64
+  - path: src/pages/site/FollowUpRecoveryOsPage.tsx
+    type: route
+    min_bytes: 64
+  - path: src/pages/site/WhatsappClientOsPage.tsx
+    type: route
+    min_bytes: 64
+  - path: src/pages/site/ProposalProofOsPage.tsx
+    type: route
+    min_bytes: 64
+  - path: src/pages/site/SolutionMarketingAgenciesPage.tsx
+    type: route
+    min_bytes: 64
+  - path: src/pages/site/SolutionTrainingCompaniesPage.tsx
+    type: route
+    min_bytes: 64
+  - path: src/pages/site/SolutionClinicsPage.tsx
+    type: route
+    min_bytes: 64
+  - path: src/pages/site/SolutionRealEstatePage.tsx
+    type: route
+    min_bytes: 64
+  - path: src/pages/site/SolutionProfessionalServicesPage.tsx
+    type: route
+    min_bytes: 64
+  - path: src/pages/site/SolutionRecruitmentPage.tsx
+    type: route
+    min_bytes: 64
+  - path: src/pages/site/SolutionSaasPage.tsx
+    type: route
+    min_bytes: 64
+  - path: src/pages/site/SolutionLogisticsPage.tsx
+    type: route
+    min_bytes: 64
+  - path: src/siteRoutes.tsx
+    type: route
+    min_bytes: 64
+  - path: data/site/routes.yaml
+    type: data
+    min_bytes: 64
+  core_5_systems:
+  - path: docs/commercial/FOCUS_5_SYSTEMS_MARKET_ENTRY_AR.md
+    type: doc
+    min_bytes: 64
+  - path: docs/commercial/SYSTEM_PRICING_STARTER_AR.md
+    type: doc
+    min_bytes: 64
+  - path: docs/commercial/SYSTEM_DELIVERY_PACKS_AR.md
+    type: doc
+    min_bytes: 64
+  - path: docs/commercial/SYSTEM_REQUIRED_INPUTS_AR.md
+    type: doc
+    min_bytes: 64
+  - path: docs/commercial/SYSTEM_SUCCESS_METRICS_AR.md
+    type: doc
+    min_bytes: 64
+  - path: reports/commercial/FOCUS_5_SYSTEMS_REVIEW.md
+    type: report
+    min_bytes: 64
+  business_os_catalog:
+  - path: data/business_os_catalog/systems.yaml
+    type: data
+    min_bytes: 64
+  - path: data/business_os_catalog/sector_to_system.yaml
+    type: data
+    min_bytes: 64
+  - path: data/business_os_catalog/system_pricing.yaml
+    type: data
+    min_bytes: 64
+  - path: data/business_os_catalog/delivery_complexity.yaml
+    type: data
+    min_bytes: 64
+  - path: data/business_os_catalog/core_to_specialized_system.yaml
+    type: data
+    min_bytes: 64
+  - path: docs/business_os_catalog/BUSINESS_OS_CATALOG_AR.md
+    type: doc
+    min_bytes: 64
+  - path: docs/business_os_catalog/TOP_40_BUSINESS_SYSTEMS_AR.md
+    type: doc
+    min_bytes: 64
+  - path: docs/business_os_catalog/SYSTEM_CARD_TEMPLATE_AR.md
+    type: doc
+    min_bytes: 64
+  - path: docs/business_os_catalog/SYSTEM_RECOMMENDATION_MATRIX_AR.md
+    type: doc
+    min_bytes: 64
+  - path: docs/business_os_catalog/SECTOR_TO_SYSTEM_MAP_AR.md
+    type: doc
+    min_bytes: 64
+  - path: docs/business_os_catalog/DELIVERY_COMPLEXITY_MAP_AR.md
+    type: doc
+    min_bytes: 64
+  - path: docs/business_os_catalog/PRICING_BY_SYSTEM_AR.md
+    type: doc
+    min_bytes: 64
+  - path: docs/business_os_catalog/CORE_TO_SPECIALIZED_SYSTEM_MAP_AR.md
+    type: doc
+    min_bytes: 64
+  - path: reports/business_os_catalog/SYSTEM_CATALOG_REVIEW.md
+    type: report
+    min_bytes: 64
+  - path: schemas/business_system.schema.json
+    type: schema
+    min_bytes: 64
+  - path: schemas/sector_system_map.schema.json
+    type: schema
+    min_bytes: 64
+  - path: schemas/system_recommendation.schema.json
+    type: schema
+    min_bytes: 64
+  business_need_intelligence:
+  - path: data/business_need_intelligence/need_taxonomy_25.yaml
+    type: data
+    min_bytes: 64
+  - path: data/business_need_intelligence/sector_need_matrix_20.yaml
+    type: data
+    min_bytes: 64
+  - path: data/business_need_intelligence/signal_to_need_library.yaml
+    type: data
+    min_bytes: 64
+  - path: data/business_need_intelligence/specialized_sprint_library_50.yaml
+    type: data
+    min_bytes: 64
+  - path: data/business_need_intelligence/delivery_variants.yaml
+    type: data
+    min_bytes: 64
+  - path: docs/business_need_intelligence/BUSINESS_NEED_INTELLIGENCE_ENGINE_AR.md
+    type: doc
+    min_bytes: 64
+  - path: docs/business_need_intelligence/NEED_TAXONOMY_25_AR.md
+    type: doc
+    min_bytes: 64
+  - path: docs/business_need_intelligence/SECTOR_NEED_MATRIX_20_AR.md
+    type: doc
+    min_bytes: 64
+  - path: docs/business_need_intelligence/SIGNAL_TO_NEED_LIBRARY_AR.md
+    type: doc
+    min_bytes: 64
+  - path: docs/business_need_intelligence/RECOMMENDATION_LOGIC_AR.md
+    type: doc
+    min_bytes: 64
+  - path: docs/business_need_intelligence/SPECIALIZED_SPRINT_LIBRARY_50_AR.md
+    type: doc
+    min_bytes: 64
+  - path: docs/business_need_intelligence/DELIVERY_VARIANT_SYSTEM_AR.md
+    type: doc
+    min_bytes: 64
+  - path: docs/business_need_intelligence/FINAL_ACCOUNT_SCORE_AR.md
+    type: doc
+    min_bytes: 64
+  - path: docs/business_need_intelligence/NEED_FIT_SCORE_AR.md
+    type: doc
+    min_bytes: 64
+  - path: reports/business_need_intelligence/BUSINESS_NEED_INTELLIGENCE_MAX_REPORT.md
+    type: report
+    min_bytes: 64
+  - path: schemas/need_taxonomy.schema.json
+    type: schema
+    min_bytes: 64
+  - path: schemas/business_need.schema.json
+    type: schema
+    min_bytes: 64
+  - path: schemas/signal_to_need.schema.json
+    type: schema
+    min_bytes: 64
+  - path: schemas/delivery_variant.schema.json
+    type: schema
+    min_bytes: 64
+  - path: schemas/final_account_score.schema.json
+    type: schema
+    min_bytes: 64
+  - path: schemas/need_fit_score.schema.json
+    type: schema
+    min_bytes: 64
+  account_intelligence:
+  - path: data/account_intelligence/account_packs.jsonl
+    type: data
+    min_bytes: 64
+  - path: docs/account_intelligence/ACCOUNT_INTELLIGENCE_OS_AR.md
+    type: doc
+    min_bytes: 64
+  - path: docs/account_intelligence/NIGHTLY_400_ACCOUNT_PACK_RUN_AR.md
+    type: doc
+    min_bytes: 64
+  - path: docs/account_intelligence/ACCOUNT_SCORING_MODEL_AR.md
+    type: doc
+    min_bytes: 64
+  - path: docs/account_intelligence/EVIDENCE_LEVELS_AR.md
+    type: doc
+    min_bytes: 64
+  - path: docs/account_intelligence/ACCOUNT_PACK_OUTPUT_CONTRACT_AR.md
+    type: doc
+    min_bytes: 64
+  - path: reports/account_intelligence/NIGHTLY_400_ACCOUNT_PACKS_REPORT.md
+    type: report
+    min_bytes: 64
+  - path: reports/account_intelligence/TOP_100_ACCOUNT_QUEUE.md
+    type: report
+    min_bytes: 64
+  - path: reports/account_intelligence/ACCOUNT_PACK_QUALITY_REVIEW.md
+    type: report
+    min_bytes: 64
+  - path: schemas/account_intelligence_pack.schema.json
+    type: schema
+    min_bytes: 64
+  - path: schemas/account_scoring.schema.json
+    type: schema
+    min_bytes: 64
+  contact_discovery:
+  - path: data/contacts/contact_discovery.jsonl
+    type: data
+    min_bytes: 64
+  - path: data/contacts/contact_channels.jsonl
+    type: data
+    min_bytes: 64
+  - path: docs/contacts/CONTACT_DISCOVERY_POLICY_AR.md
+    type: doc
+    min_bytes: 64
+  - path: docs/contacts/CONTACT_TARGETING_MATRIX_AR.md
+    type: doc
+    min_bytes: 64
+  - path: docs/contacts/PUBLIC_CONTACT_CHANNELS_AR.md
+    type: doc
+    min_bytes: 64
+  - path: docs/contacts/CONTACT_CONFIDENCE_LEVELS_AR.md
+    type: doc
+    min_bytes: 64
+  - path: reports/contacts/DAILY_CONTACT_DISCOVERY_REPORT.md
+    type: report
+    min_bytes: 64
+  - path: reports/contacts/MISSING_CONTACTS_REVIEW.md
+    type: report
+    min_bytes: 64
+  - path: schemas/contact_discovery.schema.json
+    type: schema
+    min_bytes: 64
+  - path: schemas/contact_channel.schema.json
+    type: schema
+    min_bytes: 64
+  outreach:
+  - path: data/outreach/email_drafts.jsonl
+    type: data
+    min_bytes: 64
+  - path: data/outreach/top_100_approval_queue.jsonl
+    type: data
+    min_bytes: 64
+  - path: docs/outreach/DAILY_400_SYSTEM_DRAFT_FACTORY_AR.md
+    type: doc
+    min_bytes: 64
+  - path: docs/outreach/SYSTEM_BASED_CLIENT_NEED_CARD_AR.md
+    type: doc
+    min_bytes: 64
+  - path: docs/outreach/FOCUS_5_COLD_EMAIL_LIBRARY_AR.md
+    type: doc
+    min_bytes: 64
+  - path: docs/outreach/TOP_100_APPROVAL_QUEUE_AR.md
+    type: doc
+    min_bytes: 64
+  - path: docs/outreach/SYSTEM_BASED_OUTREACH_PLAYBOOK_AR.md
+    type: doc
+    min_bytes: 64
+  - path: reports/outreach/DAILY_400_SYSTEM_DRAFT_PRODUCTION.md
+    type: report
+    min_bytes: 64
+  - path: reports/outreach/TOP_100_SYSTEM_APPROVAL_QUEUE.md
+    type: report
+    min_bytes: 64
+  - path: reports/outreach/SYSTEM_BASED_CLIENT_NEED_CARDS.md
+    type: report
+    min_bytes: 64
+  - path: reports/outreach/SYSTEM_EMAIL_DRAFTS_REVIEW.md
+    type: report
+    min_bytes: 64
+  - path: schemas/email_draft.schema.json
+    type: schema
+    min_bytes: 64
+  - path: schemas/client_need_card.schema.json
+    type: schema
+    min_bytes: 64
+  acquisition:
+  - path: data/acquisition/company_intelligence_packs.jsonl
+    type: data
+    min_bytes: 64
+  - path: data/acquisition/client_need_cards.jsonl
+    type: data
+    min_bytes: 64
+  - path: data/acquisition/contact_targets.jsonl
+    type: data
+    min_bytes: 64
+  - path: data/acquisition/call_briefs.jsonl
+    type: data
+    min_bytes: 64
+  - path: data/acquisition/follow_up_sequences.jsonl
+    type: data
+    min_bytes: 64
+  - path: data/acquisition/objection_responses.jsonl
+    type: data
+    min_bytes: 64
+  - path: docs/acquisition/COMPANY_INTELLIGENCE_PACK_AR.md
+    type: doc
+    min_bytes: 64
+  - path: docs/acquisition/CLIENT_NEED_CARD_AR.md
+    type: doc
+    min_bytes: 64
+  - path: docs/acquisition/CONTACT_TARGETING_RULES_AR.md
+    type: doc
+    min_bytes: 64
+  - path: docs/acquisition/CALL_BRIEF_SYSTEM_AR.md
+    type: doc
+    min_bytes: 64
+  - path: docs/acquisition/CALL_SCRIPT_LIBRARY_AR.md
+    type: doc
+    min_bytes: 64
+  - path: docs/acquisition/EMAIL_TO_CALL_HANDOFF_AR.md
+    type: doc
+    min_bytes: 64
+  - path: docs/acquisition/FOLLOW_UP_SEQUENCE_LIBRARY_AR.md
+    type: doc
+    min_bytes: 64
+  - path: docs/acquisition/OBJECTION_HANDLING_LIBRARY_AR.md
+    type: doc
+    min_bytes: 64
+  - path: reports/acquisition/CALL_FOLLOWUP_QUEUE.md
+    type: report
+    min_bytes: 64
+  - path: reports/acquisition/EMAIL_TO_CALL_HANDOFF_QUEUE.md
+    type: report
+    min_bytes: 64
+  - path: reports/acquisition/OBJECTION_REVIEW.md
+    type: report
+    min_bytes: 64
+  - path: schemas/company_intelligence_pack.schema.json
+    type: schema
+    min_bytes: 64
+  - path: schemas/contact_target.schema.json
+    type: schema
+    min_bytes: 64
+  - path: schemas/call_brief.schema.json
+    type: schema
+    min_bytes: 64
+  - path: schemas/follow_up_sequence.schema.json
+    type: schema
+    min_bytes: 64
+  - path: schemas/objection_response.schema.json
+    type: schema
+    min_bytes: 64
+  mini_proposals:
+  - path: data/proposals/mini_proposals.jsonl
+    type: data
+    min_bytes: 64
+  - path: docs/proposals/MINI_PROPOSAL_FACTORY_AR.md
+    type: doc
+    min_bytes: 64
+  - path: docs/proposals/PROPOSAL_APPROVAL_GATE_AR.md
+    type: doc
+    min_bytes: 64
+  - path: docs/proposals/PROPOSAL_COPY_LIBRARY_AR.md
+    type: doc
+    min_bytes: 64
+  - path: reports/proposals/MINI_PROPOSAL_QUEUE.md
+    type: report
+    min_bytes: 64
+  - path: reports/proposals/PROPOSAL_APPROVAL_QUEUE.md
+    type: report
+    min_bytes: 64
+  - path: schemas/mini_proposal.schema.json
+    type: schema
+    min_bytes: 64
+  delivery:
+  - path: data/delivery/pipelines.jsonl
+    type: data
+    min_bytes: 64
+  - path: data/delivery/tasks.jsonl
+    type: data
+    min_bytes: 64
+  - path: data/delivery/weekly_value_reports.jsonl
+    type: data
+    min_bytes: 64
+  - path: data/delivery/acceptance_gates.jsonl
+    type: data
+    min_bytes: 64
+  - path: docs/delivery/AUTOMATED_DELIVERY_PIPELINE_AR.md
+    type: doc
+    min_bytes: 64
+  - path: docs/delivery/SYSTEM_DELIVERY_CHECKLISTS_AR.md
+    type: doc
+    min_bytes: 64
+  - path: docs/delivery/DELIVERY_ACCEPTANCE_GATES_AR.md
+    type: doc
+    min_bytes: 64
+  - path: docs/delivery/WEEKLY_VALUE_REPORTS_AR.md
+    type: doc
+    min_bytes: 64
+  - path: docs/delivery/CLIENT_HANDOFF_AUTOMATION_AR.md
+    type: doc
+    min_bytes: 64
+  - path: docs/delivery/SYSTEM_REQUIRED_INPUTS_AR.md
+    type: doc
+    min_bytes: 64
+  - path: docs/delivery/SYSTEM_ACCEPTANCE_CRITERIA_AR.md
+    type: doc
+    min_bytes: 64
+  - path: reports/delivery/DELIVERY_PIPELINE_STATUS.md
+    type: report
+    min_bytes: 64
+  - path: reports/delivery/DELIVERY_BLOCKERS.md
+    type: report
+    min_bytes: 64
+  - path: reports/delivery/WEEKLY_VALUE_REPORT_QUEUE.md
+    type: report
+    min_bytes: 64
+  - path: reports/delivery/DELIVERY_ACCEPTANCE_REVIEW.md
+    type: report
+    min_bytes: 64
+  - path: schemas/delivery_pipeline.schema.json
+    type: schema
+    min_bytes: 64
+  - path: schemas/delivery_task.schema.json
+    type: schema
+    min_bytes: 64
+  - path: schemas/weekly_value_report.schema.json
+    type: schema
+    min_bytes: 64
+  - path: schemas/delivery_acceptance_gate.schema.json
+    type: schema
+    min_bytes: 64
+  finance_metrics:
+  - path: data/finance/cash_priority_scores.jsonl
+    type: data
+    min_bytes: 64
+  - path: docs/finance/STARTER_SPRINT_MARGIN_MODEL_AR.md
+    type: doc
+    min_bytes: 64
+  - path: docs/finance/CASH_PRIORITY_SCORE_AR.md
+    type: doc
+    min_bytes: 64
+  - path: reports/finance/DAILY_REVENUE_OPPORTUNITY_REPORT.md
+    type: report
+    min_bytes: 64
+  - path: docs/metrics/ACQUISITION_METRICS_AR.md
+    type: doc
+    min_bytes: 64
+  - path: docs/metrics/SALES_METRICS_AR.md
+    type: doc
+    min_bytes: 64
+  - path: docs/metrics/DELIVERY_METRICS_AR.md
+    type: doc
+    min_bytes: 64
+  - path: docs/metrics/QUALITY_METRICS_AR.md
+    type: doc
+    min_bytes: 64
+  - path: reports/metrics/DAILY_METRICS_DASHBOARD.md
+    type: report
+    min_bytes: 64
+  - path: reports/metrics/WEEKLY_METRICS_REVIEW.md
+    type: report
+    min_bytes: 64
+  - path: schemas/cash_priority_score.schema.json
+    type: schema
+    min_bytes: 64
+  security_privacy:
+  - path: docs/security/EXTERNAL_CONTENT_UNTRUSTED_DATA_POLICY.md
+    type: doc
+    min_bytes: 64
+  - path: docs/security/AGENT_PROMPT_INJECTION_GATE.md
+    type: doc
+    min_bytes: 64
+  - path: docs/security/TOOL_EXECUTION_ALLOWLIST_POLICY.md
+    type: doc
+    min_bytes: 64
+  - path: docs/security/AGENT_TOOL_USE_BOUNDARIES.md
+    type: doc
+    min_bytes: 64
+  - path: docs/privacy/PROSPECT_DATA_MINIMIZATION_AR.md
+    type: doc
+    min_bytes: 64
+  - path: docs/privacy/DO_NOT_CONTACT_AND_SUPPRESSION_POLICY_AR.md
+    type: doc
+    min_bytes: 64
+  - path: docs/privacy/CLIENT_DATA_HANDLING_AR.md
+    type: doc
+    min_bytes: 64
+  - path: docs/privacy/SECRET_HANDLING_POLICY_AR.md
+    type: doc
+    min_bytes: 64
+  - path: data/suppression/do_not_contact.jsonl
+    type: data
+    min_bytes: 64
+  - path: reports/security/DAILY_AGENT_SECURITY_REVIEW.md
+    type: report
+    min_bytes: 64
+  - path: reports/privacy/PRIVACY_READINESS_REVIEW.md
+    type: report
+    min_bytes: 64
+  founder_command:
+  - path: docs/founder_control/DAILY_SUPER_COMMAND_SYSTEM_AR.md
+    type: doc
+    min_bytes: 64
+  - path: docs/founder_control/FOUNDER_DAILY_OPERATING_RHYTHM_AR.md
+    type: doc
+    min_bytes: 64
+  - path: docs/founder_control/FOUNDER_DECISION_GATES_AR.md
+    type: doc
+    min_bytes: 64
+  - path: docs/operating_factory/DEALIX_MAXIMUM_REVENUE_FACTORY_AR.md
+    type: doc
+    min_bytes: 64
+  - path: docs/operating_factory/DAILY_LOOP_AR.md
+    type: doc
+    min_bytes: 64
+  - path: docs/operating_factory/WEEKLY_LOOP_AR.md
+    type: doc
+    min_bytes: 64
+  - path: docs/operating_factory/MONTHLY_REVIEW_AR.md
+    type: doc
+    min_bytes: 64
+  - path: docs/operating_factory/ROLE_OWNERSHIP_AR.md
+    type: doc
+    min_bytes: 64
+  - path: docs/operating_factory/QUALITY_GATES_AR.md
+    type: doc
+    min_bytes: 64
+  - path: docs/operating_factory/READY_TO_LAUNCH_CHECKLIST_AR.md
+    type: doc
+    min_bytes: 64
+  - path: reports/founder/DAILY_SUPER_COMMAND.md
+    type: report
+    min_bytes: 64
+  - path: reports/founder/WEEKLY_BOARD_REVIEW.md
+    type: report
+    min_bytes: 64
+  - path: reports/operating_factory/DAILY_LOOP_STATUS.md
+    type: report
+    min_bytes: 64
+  - path: reports/operating_factory/WEEKLY_LOOP_STATUS.md
+    type: report
+    min_bytes: 64
+  - path: reports/operating_factory/READY_TO_LAUNCH_SCORECARD.md
+    type: report
+    min_bytes: 64
+  ci_cd:
+  - path: scripts/checks/check_file_manifest.py
+    type: script
+    min_bytes: 64
+  - path: scripts/checks/check_schema_contracts.py
+    type: script
+    min_bytes: 64
+  - path: scripts/checks/check_business_os_catalog.py
+    type: script
+    min_bytes: 64
+  - path: scripts/checks/check_need_intelligence.py
+    type: script
+    min_bytes: 64
+  - path: scripts/checks/check_account_pack_contract.py
+    type: script
+    min_bytes: 64
+  - path: scripts/checks/check_email_quality_gate.py
+    type: script
+    min_bytes: 64
+  - path: scripts/checks/check_proposal_gate.py
+    type: script
+    min_bytes: 64
+  - path: scripts/checks/check_delivery_gate.py
+    type: script
+    min_bytes: 64
+  - path: scripts/checks/check_security_privacy_gates.py
+    type: script
+    min_bytes: 64
+  - path: scripts/checks/check_site_routes.py
+    type: script
+    min_bytes: 64
+  - path: scripts/checks/check_ready_to_launch_scorecard.py
+    type: script
+    min_bytes: 64
+  - path: dealix.py
+    type: cli
+    min_bytes: 64
+  - path: .github/workflows/ci.yml
+    type: workflow
+    min_bytes: 64
+  - path: .github/workflows/site-build.yml
+    type: workflow
+    min_bytes: 64
+  - path: .github/workflows/data-contracts.yml
+    type: workflow
+    min_bytes: 64
+  - path: .github/workflows/security-privacy.yml
+    type: workflow
+    min_bytes: 64
+  - path: .github/workflows/nightly-account-factory.yml
+    type: workflow
+    min_bytes: 64
+  - path: .github/workflows/ready-to-launch.yml
+    type: workflow
+    min_bytes: 64
+  - path: requirements-dev.txt
+    type: config
+    min_bytes: 4
+  final_report:
+  - path: reports/gtm/FULL_TECHNICAL_IMPLEMENTATION_FINAL_REPORT.md
+    type: report
+    min_bytes: 64

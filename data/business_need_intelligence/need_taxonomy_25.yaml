@@ -1,0 +1,127 @@
+needs:
+- id: need_01
+  name_ar: ضعف توليد العملاء المحتملين
+  category: acquisition
+  core_system: revenue_operating_system
+  description_ar: احتياج ضعف توليد العملاء المحتملين يُعالَج عبر نظام تشغيل الإيرادات.
+- id: need_02
+  name_ar: بطء متابعة العملاء المهتمين
+  category: retention
+  core_system: follow_up_recovery_os
+  description_ar: احتياج بطء متابعة العملاء المهتمين يُعالَج عبر نظام استعادة المتابعات.
+- id: need_03
+  name_ar: تسرّب الصفقات قبل الإغلاق
+  category: conversion
+  core_system: follow_up_recovery_os
+  description_ar: احتياج تسرّب الصفقات قبل الإغلاق يُعالَج عبر نظام استعادة المتابعات.
+- id: need_04
+  name_ar: غياب رؤية تنفيذية للأرقام
+  category: visibility
+  core_system: executive_command_os
+  description_ar: احتياج غياب رؤية تنفيذية للأرقام يُعالَج عبر نظام القيادة التنفيذية.
+- id: need_05
+  name_ar: فوضى قناة واتساب
+  category: operations
+  core_system: whatsapp_client_os
+  description_ar: احتياج فوضى قناة واتساب يُعالَج عبر نظام عملاء واتساب.
+- id: need_06
+  name_ar: ضعف معدل تحويل العروض
+  category: conversion
+  core_system: proposal_proof_os
+  description_ar: احتياج ضعف معدل تحويل العروض يُعالَج عبر نظام العروض والإثبات.
+- id: need_07
+  name_ar: عدم وجود عملية مبيعات موحدة
+  category: operations
+  core_system: revenue_operating_system
+  description_ar: احتياج عدم وجود عملية مبيعات موحدة يُعالَج عبر نظام تشغيل الإيرادات.
+- id: need_08
+  name_ar: ضعف الاحتفاظ بالعملاء
+  category: retention
+  core_system: follow_up_recovery_os
+  description_ar: احتياج ضعف الاحتفاظ بالعملاء يُعالَج عبر نظام استعادة المتابعات.
+- id: need_09
+  name_ar: بطء إعداد العروض
+  category: operations
+  core_system: proposal_proof_os
+  description_ar: احتياج بطء إعداد العروض يُعالَج عبر نظام العروض والإثبات.
+- id: need_10
+  name_ar: غياب لوحة قيادة يومية
+  category: visibility
+  core_system: executive_command_os
+  description_ar: احتياج غياب لوحة قيادة يومية يُعالَج عبر نظام القيادة التنفيذية.
+- id: need_11
+  name_ar: تأخر الرد على الاستفسارات
+  category: operations
+  core_system: whatsapp_client_os
+  description_ar: احتياج تأخر الرد على الاستفسارات يُعالَج عبر نظام عملاء واتساب.
+- id: need_12
+  name_ar: ضعف تأهيل العملاء
+  category: conversion
+  core_system: revenue_operating_system
+  description_ar: احتياج ضعف تأهيل العملاء يُعالَج عبر نظام تشغيل الإيرادات.
+- id: need_13
+  name_ar: عدم وضوح خط أنابيب المبيعات
+  category: visibility
+  core_system: revenue_operating_system
+  description_ar: احتياج عدم وضوح خط أنابيب المبيعات يُعالَج عبر نظام تشغيل الإيرادات.
+- id: need_14
+  name_ar: ضعف إثبات النتائج للعميل
+  category: conversion
+  core_system: proposal_proof_os
+  description_ar: احتياج ضعف إثبات النتائج للعميل يُعالَج عبر نظام العروض والإثبات.
+- id: need_15
+  name_ar: تشتّت بيانات العملاء
+  category: operations
+  core_system: executive_command_os
+  description_ar: احتياج تشتّت بيانات العملاء يُعالَج عبر نظام القيادة التنفيذية.
+- id: need_16
+  name_ar: ضعف استرجاع العملاء الخاملين
+  category: retention
+  core_system: follow_up_recovery_os
+  description_ar: احتياج ضعف استرجاع العملاء الخاملين يُعالَج عبر نظام استعادة المتابعات.
+- id: need_17
+  name_ar: غياب أتمتة المتابعات
+  category: operations
+  core_system: follow_up_recovery_os
+  description_ar: احتياج غياب أتمتة المتابعات يُعالَج عبر نظام استعادة المتابعات.
+- id: need_18
+  name_ar: ضعف تجربة الحجز عبر واتساب
+  category: conversion
+  core_system: whatsapp_client_os
+  description_ar: احتياج ضعف تجربة الحجز عبر واتساب يُعالَج عبر نظام عملاء واتساب.
+- id: need_19
+  name_ar: عدم وجود تسعير واضح
+  category: finance
+  core_system: proposal_proof_os
+  description_ar: احتياج عدم وجود تسعير واضح يُعالَج عبر نظام العروض والإثبات.
+- id: need_20
+  name_ar: ضعف انضباط الفريق على الأهداف
+  category: operations
+  core_system: executive_command_os
+  description_ar: احتياج ضعف انضباط الفريق على الأهداف يُعالَج عبر نظام القيادة التنفيذية.
+- id: need_21
+  name_ar: غياب تقارير قيمة أسبوعية
+  category: visibility
+  core_system: executive_command_os
+  description_ar: احتياج غياب تقارير قيمة أسبوعية يُعالَج عبر نظام القيادة التنفيذية.
+- id: need_22
+  name_ar: ضعف توثيق الطلبات الواردة
+  category: operations
+  core_system: whatsapp_client_os
+  description_ar: احتياج ضعف توثيق الطلبات الواردة يُعالَج عبر نظام عملاء واتساب.
+- id: need_23
+  name_ar: طول دورة البيع
+  category: conversion
+  core_system: revenue_operating_system
+  description_ar: احتياج طول دورة البيع يُعالَج عبر نظام تشغيل الإيرادات.
+- id: need_24
+  name_ar: ضعف إدارة الاعتراضات
+  category: conversion
+  core_system: revenue_operating_system
+  description_ar: احتياج ضعف إدارة الاعتراضات يُعالَج عبر نظام تشغيل الإيرادات.
+- id: need_25
+  name_ar: غياب مسار تأهيل العميل بعد البيع
+  category: retention
+  core_system: follow_up_recovery_os
+  description_ar: احتياج غياب مسار تأهيل العميل بعد البيع يُعالَج عبر نظام استعادة
+    المتابعات.

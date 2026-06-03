@@ -6,6 +6,7 @@ import Governance from './pages/Governance'
 import Finance from './pages/Finance'
 import Login from './pages/Login'
 import NotFound from './pages/NotFound'
+import { siteRoutes } from './siteRoutes'
 
 export default function App() {
   return (
@@ -16,6 +17,11 @@ export default function App() {
       <Route path="/governance" element={<Governance />} />
       <Route path="/finance" element={<Finance />} />
       <Route path="/login" element={<Login />} />
+      {siteRoutes
+        .filter((r) => r.path !== '/')
+        .map((r) => (
+          <Route key={r.path} path={r.path} element={r.element} />
+        ))}
       <Route path="*" element={<NotFound />} />
     </Routes>
   )

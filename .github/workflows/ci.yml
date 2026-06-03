@@ -1,0 +1,49 @@
+name: ci
+
+on:
+  push:
+    branches: [main, "claude/**"]
+  pull_request:
+  workflow_dispatch:
+
+# Least privilege: this workflow only needs to read the repo.
+permissions:
+  contents: read
+
+jobs:
+  python-checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install dev deps
+        run: pip install -r requirements-dev.txt
+      - name: Run all launch checks
+        run: |
+          set -e
+          for c in \
+            check_file_manifest check_schema_contracts check_business_os_catalog \
+            check_need_intelligence check_account_pack_contract check_email_quality_gate \
+            check_proposal_gate check_delivery_gate check_security_privacy_gates \
+            check_site_routes; do
+            echo "::group::$c"
+            python scripts/checks/$c.py
+            echo "::endgroup::"
+          done
+      - name: CLI smoke
+        run: |
+          python dealix.py account-packs --limit 5 --dry-run
+          python dealix.py delivery-status
+          python dealix.py founder-command --dry-run
+
+  pytest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install -r requirements-dev.txt
+      - run: pytest -q

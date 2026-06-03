@@ -1,0 +1,152 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Account Intelligence Pack",
+  "type": "object",
+  "required": [
+    "company_name",
+    "website",
+    "sector",
+    "city",
+    "country",
+    "signals_detected",
+    "detected_business_needs",
+    "primary_need",
+    "recommended_core_system",
+    "recommended_specialized_system",
+    "sector_specific_sprint",
+    "delivery_variant",
+    "buyer_roles",
+    "contact_confidence",
+    "email_angle",
+    "call_angle",
+    "mini_proposal_title",
+    "required_inputs",
+    "acceptance_criteria",
+    "cash_priority_score",
+    "need_fit_score",
+    "account_score",
+    "final_account_score",
+    "next_action",
+    "record_type",
+    "source",
+    "generated_at"
+  ],
+  "properties": {
+    "company_name": {
+      "type": "string"
+    },
+    "website": {
+      "type": "string"
+    },
+    "sector": {
+      "type": "string"
+    },
+    "city": {
+      "type": "string"
+    },
+    "country": {
+      "type": "string"
+    },
+    "primary_need": {
+      "type": "string"
+    },
+    "recommended_core_system": {
+      "type": "string"
+    },
+    "recommended_specialized_system": {
+      "type": "string"
+    },
+    "sector_specific_sprint": {
+      "type": "string"
+    },
+    "delivery_variant": {
+      "type": "string"
+    },
+    "email_angle": {
+      "type": "string"
+    },
+    "call_angle": {
+      "type": "string"
+    },
+    "mini_proposal_title": {
+      "type": "string"
+    },
+    "next_action": {
+      "type": "string"
+    },
+    "source": {
+      "type": "string"
+    },
+    "generated_at": {
+      "type": "string"
+    },
+    "signals_detected": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "detected_business_needs": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1
+    },
+    "buyer_roles": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "required_inputs": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "acceptance_criteria": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "contact_confidence": {
+      "type": "string",
+      "enum": [
+        "high",
+        "medium",
+        "low",
+        "unknown",
+        "missing"
+      ]
+    },
+    "cash_priority_score": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100
+    },
+    "need_fit_score": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100
+    },
+    "account_score": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100
+    },
+    "final_account_score": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100
+    },
+    "record_type": {
+      "type": "string",
+      "enum": [
+        "sample",
+        "live"
+      ]
+    }
+  }
+}

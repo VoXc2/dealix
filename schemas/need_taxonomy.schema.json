@@ -1,0 +1,25 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Need Taxonomy",
+  "type": "object",
+  "required": [
+    "id",
+    "name_ar",
+    "category",
+    "core_system"
+  ],
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "name_ar": {
+      "type": "string"
+    },
+    "category": {
+      "type": "string"
+    },
+    "core_system": {
+      "type": "string"
+    }
+  }
+}

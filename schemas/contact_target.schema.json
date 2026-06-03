@@ -1,0 +1,35 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Contact Target",
+  "type": "object",
+  "required": [
+    "company_name",
+    "target_role",
+    "confidence",
+    "source"
+  ],
+  "properties": {
+    "company_name": {
+      "type": "string"
+    },
+    "target_role": {
+      "type": "string"
+    },
+    "confidence": {
+      "type": "string",
+      "enum": [
+        "high",
+        "medium",
+        "low",
+        "unknown",
+        "missing"
+      ]
+    },
+    "source": {
+      "type": "string"
+    },
+    "invented": {
+      "type": "boolean"
+    }
+  }
+}

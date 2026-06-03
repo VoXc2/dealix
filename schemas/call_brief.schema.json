@@ -1,0 +1,31 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Call Brief",
+  "type": "object",
+  "required": [
+    "company_name",
+    "need",
+    "system",
+    "questions"
+  ],
+  "properties": {
+    "company_name": {
+      "type": "string"
+    },
+    "need": {
+      "type": "string"
+    },
+    "system": {
+      "type": "string"
+    },
+    "questions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "cta_ar": {
+      "type": "string"
+    }
+  }
+}

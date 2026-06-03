@@ -1,0 +1,32 @@
+name: data-contracts
+
+on:
+  push:
+    branches: [main, "claude/**"]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  contracts:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install -r requirements-dev.txt
+      - name: Schema + catalog + need intelligence + account pack contracts
+        run: |
+          set -e
+          python scripts/checks/check_schema_contracts.py
+          python scripts/checks/check_business_os_catalog.py
+          python scripts/checks/check_need_intelligence.py
+          python scripts/checks/check_account_pack_contract.py
+      - name: Determinism — generated contracts are committed and stable
+        run: |
+          python scripts/launch/build.py
+          git diff --exit-code -- data schemas docs src/pages/site src/siteRoutes.tsx \
+            || (echo "Generated contracts are stale; re-run scripts/launch/build.py and commit." && exit 1)

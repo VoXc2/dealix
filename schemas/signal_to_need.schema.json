@@ -1,0 +1,27 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Signal→Need",
+  "type": "object",
+  "required": [
+    "signal_ar",
+    "need_id",
+    "evidence_level"
+  ],
+  "properties": {
+    "signal_ar": {
+      "type": "string"
+    },
+    "need_id": {
+      "type": "string"
+    },
+    "evidence_level": {
+      "type": "string",
+      "enum": [
+        "high",
+        "medium",
+        "low",
+        "inferred"
+      ]
+    }
+  }
+}

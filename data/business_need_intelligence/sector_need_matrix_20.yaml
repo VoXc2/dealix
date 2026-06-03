@@ -1,0 +1,161 @@
+sectors:
+- id: sector_01
+  slug: marketing-agencies
+  name_ar: وكالات التسويق
+  top_needs:
+  - need_01
+  - need_06
+  - need_13
+  - need_14
+- id: sector_02
+  slug: training-companies
+  name_ar: شركات التدريب
+  top_needs:
+  - need_01
+  - need_02
+  - need_09
+  - need_25
+- id: sector_03
+  slug: clinics
+  name_ar: العيادات
+  top_needs:
+  - need_05
+  - need_11
+  - need_18
+  - need_02
+- id: sector_04
+  slug: real-estate
+  name_ar: العقارات
+  top_needs:
+  - need_02
+  - need_03
+  - need_16
+  - need_23
+- id: sector_05
+  slug: professional-services
+  name_ar: الخدمات الاحترافية
+  top_needs:
+  - need_06
+  - need_09
+  - need_14
+  - need_19
+- id: sector_06
+  slug: recruitment
+  name_ar: التوظيف
+  top_needs:
+  - need_01
+  - need_12
+  - need_23
+  - need_24
+- id: sector_07
+  slug: saas
+  name_ar: البرمجيات (SaaS)
+  top_needs:
+  - need_04
+  - need_10
+  - need_13
+  - need_08
+- id: sector_08
+  slug: logistics
+  name_ar: اللوجستيات
+  top_needs:
+  - need_05
+  - need_11
+  - need_22
+  - need_15
+- id: sector_09
+  slug: restaurants
+  name_ar: المطاعم والأغذية
+  top_needs:
+  - need_05
+  - need_11
+  - need_18
+  - need_22
+- id: sector_10
+  slug: ecommerce
+  name_ar: التجارة الإلكترونية
+  top_needs:
+  - need_03
+  - need_16
+  - need_18
+  - need_06
+- id: sector_11
+  slug: law-firms
+  name_ar: مكاتب المحاماة
+  top_needs:
+  - need_06
+  - need_09
+  - need_14
+  - need_19
+- id: sector_12
+  slug: accounting-firms
+  name_ar: مكاتب المحاسبة
+  top_needs:
+  - need_04
+  - need_10
+  - need_15
+  - need_21
+- id: sector_13
+  slug: construction
+  name_ar: المقاولات
+  top_needs:
+  - need_07
+  - need_13
+  - need_09
+  - need_19
+- id: sector_14
+  slug: education
+  name_ar: التعليم
+  top_needs:
+  - need_01
+  - need_02
+  - need_18
+  - need_25
+- id: sector_15
+  slug: healthcare
+  name_ar: الرعاية الصحية
+  top_needs:
+  - need_05
+  - need_11
+  - need_18
+  - need_02
+- id: sector_16
+  slug: hospitality
+  name_ar: الضيافة والفنادق
+  top_needs:
+  - need_05
+  - need_11
+  - need_18
+  - need_22
+- id: sector_17
+  slug: automotive
+  name_ar: السيارات
+  top_needs:
+  - need_02
+  - need_03
+  - need_06
+  - need_16
+- id: sector_18
+  slug: fitness
+  name_ar: اللياقة والنوادي
+  top_needs:
+  - need_02
+  - need_16
+  - need_18
+  - need_25
+- id: sector_19
+  slug: beauty
+  name_ar: التجميل والصالونات
+  top_needs:
+  - need_05
+  - need_11
+  - need_18
+  - need_02
+- id: sector_20
+  slug: manufacturing
+  name_ar: التصنيع
+  top_needs:
+  - need_07
+  - need_13
+  - need_04
+  - need_15

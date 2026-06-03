@@ -1,0 +1,22 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Delivery Variant",
+  "type": "object",
+  "required": [
+    "id",
+    "name_ar",
+    "duration_days"
+  ],
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "name_ar": {
+      "type": "string"
+    },
+    "duration_days": {
+      "type": "integer",
+      "minimum": 1
+    }
+  }
+}
