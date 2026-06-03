@@ -1,0 +1,79 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Delivery Pipeline",
+  "type": "object",
+  "properties": {
+    "client": {
+      "type": "string",
+      "minLength": 1
+    },
+    "selected_system": {
+      "type": "string",
+      "enum": [
+        "revenue-operating-system",
+        "executive-command-os",
+        "follow-up-recovery-os",
+        "whatsapp-client-os",
+        "proposal-proof-os"
+      ]
+    },
+    "sprint_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "scope": {
+      "type": "string",
+      "minLength": 1
+    },
+    "required_inputs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "minItems": 1
+    },
+    "success_metric": {
+      "type": "string",
+      "minLength": 1
+    },
+    "acceptance_criteria": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "minItems": 1
+    },
+    "owner": {
+      "type": "string",
+      "minLength": 1
+    },
+    "stage": {
+      "type": "string",
+      "enum": [
+        "intake",
+        "build",
+        "review",
+        "handoff",
+        "value_report",
+        "closed"
+      ]
+    },
+    "inputs_received": {
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "client",
+    "selected_system",
+    "sprint_id",
+    "scope",
+    "required_inputs",
+    "success_metric",
+    "acceptance_criteria",
+    "owner",
+    "stage"
+  ],
+  "additionalProperties": false
+}

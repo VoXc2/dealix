@@ -1,0 +1,68 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Call Brief",
+  "type": "object",
+  "properties": {
+    "company_name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "buyer_role": {
+      "type": "string",
+      "minLength": 1
+    },
+    "primary_need": {
+      "type": "string",
+      "minLength": 1
+    },
+    "core_system": {
+      "type": "string",
+      "enum": [
+        "revenue-operating-system",
+        "executive-command-os",
+        "follow-up-recovery-os",
+        "whatsapp-client-os",
+        "proposal-proof-os"
+      ]
+    },
+    "opening_ar": {
+      "type": "string",
+      "minLength": 1
+    },
+    "questions": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "minItems": 2
+    },
+    "value_points": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "minItems": 1
+    },
+    "objections_ref": {
+      "type": "string",
+      "minLength": 1
+    },
+    "next_step": {
+      "type": "string",
+      "minLength": 1
+    }
+  },
+  "required": [
+    "company_name",
+    "buyer_role",
+    "primary_need",
+    "core_system",
+    "opening_ar",
+    "questions",
+    "value_points",
+    "next_step"
+  ],
+  "additionalProperties": false
+}

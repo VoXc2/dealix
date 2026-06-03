@@ -1,0 +1,35 @@
+name: Nightly Account Factory
+
+on:
+  schedule:
+    - cron: "0 3 * * *"   # 03:00 UTC daily
+  workflow_dispatch:
+    inputs:
+      limit:
+        description: "Account pack limit"
+        required: false
+        default: "400"
+
+permissions:
+  contents: read
+
+jobs:
+  dry-run:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: pip install -r requirements.txt
+      # DRY RUN ONLY. The agent never sends email, never calls, never messages.
+      # All outward actions require founder approval (see docs/founder_control).
+      - name: Generate account packs (dry-run)
+        run: python dealix.py account-packs --limit "${{ github.event.inputs.limit || '400' }}" --dry-run
+      - name: Founder daily command (dry-run)
+        run: python dealix.py founder-command --dry-run
+      - name: Quality gates
+        run: |
+          python dealix.py seed
+          python dealix.py quality-check
+          python dealix.py security-check

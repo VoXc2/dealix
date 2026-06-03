@@ -1,0 +1,24 @@
+name: Ready To Launch
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  scorecard:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: pip install -r requirements.txt
+      - name: Build the full data layer
+        run: python dealix.py seed
+      - name: Compute the Ready-to-Launch scorecard
+        run: python dealix.py launch-score
+      - name: Fail if below Soft-Launch threshold (75)
+        run: python scripts/checks/check_ready_to_launch_scorecard.py --min 75

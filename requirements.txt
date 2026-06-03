@@ -1,0 +1,7 @@
+# Dealix Revenue Factory — Python tooling deps.
+# The check scripts run with only PyYAML (a dependency-free JSON-Schema subset
+# validator ships in scripts/dealix/lib.py). jsonschema is optional but used
+# when present for stricter validation. pytest drives the data-contract tests.
+PyYAML>=6.0
+jsonschema>=4.0
+pytest>=7.0

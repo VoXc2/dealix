@@ -1,0 +1,37 @@
+name: Data Contracts
+
+on:
+  pull_request:
+    paths:
+      - 'data/**'
+      - 'schemas/**'
+      - 'scripts/**'
+      - 'requirements.txt'
+      - '.github/workflows/data-contracts.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  contracts:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: pip install -r requirements.txt
+      - name: Data layer must regenerate identically from seeds
+        run: |
+          python dealix.py seed
+          git diff --exit-code -- data schemas src/marketing/catalog.ts \
+            || (echo "::error::Generated data drifted from seeds. Run 'python dealix.py seed' and commit." && exit 1)
+      - run: python scripts/checks/check_file_manifest.py
+      - run: python scripts/checks/check_schema_contracts.py
+      - run: python scripts/checks/check_business_os_catalog.py
+      - run: python scripts/checks/check_need_intelligence.py
+      - run: python scripts/checks/check_account_pack_contract.py
+      - run: python scripts/checks/check_email_quality_gate.py
+      - run: python scripts/checks/check_proposal_gate.py
+      - run: python scripts/checks/check_delivery_gate.py

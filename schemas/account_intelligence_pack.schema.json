@@ -1,0 +1,199 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Account Intelligence Pack",
+  "type": "object",
+  "properties": {
+    "company_name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "website": {
+      "type": "string",
+      "minLength": 1
+    },
+    "domain": {
+      "type": "string"
+    },
+    "sector": {
+      "type": "string",
+      "minLength": 1
+    },
+    "subsector": {
+      "type": "string"
+    },
+    "city": {
+      "type": "string"
+    },
+    "country": {
+      "type": "string"
+    },
+    "demo": {
+      "type": "boolean"
+    },
+    "signals_detected": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "minItems": 1
+    },
+    "evidence_level": {
+      "type": "string",
+      "enum": [
+        "public",
+        "founder_provided",
+        "inferred"
+      ]
+    },
+    "detected_business_needs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "minItems": 1
+    },
+    "primary_need": {
+      "type": "string",
+      "minLength": 1
+    },
+    "secondary_need": {
+      "type": "string"
+    },
+    "need_confidence": {
+      "type": "string",
+      "enum": [
+        "low",
+        "medium",
+        "high"
+      ]
+    },
+    "recommended_core_system": {
+      "type": "string",
+      "enum": [
+        "revenue-operating-system",
+        "executive-command-os",
+        "follow-up-recovery-os",
+        "whatsapp-client-os",
+        "proposal-proof-os"
+      ]
+    },
+    "recommended_specialized_system": {
+      "type": "string",
+      "minLength": 1
+    },
+    "sector_specific_sprint": {
+      "type": "string",
+      "minLength": 1
+    },
+    "delivery_variant": {
+      "type": "string",
+      "minLength": 1
+    },
+    "buyer_roles": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "minItems": 1
+    },
+    "public_contact_channels": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 0
+    },
+    "contact_confidence": {
+      "type": "string",
+      "enum": [
+        "low",
+        "medium",
+        "high"
+      ]
+    },
+    "email_angle": {
+      "type": "string",
+      "minLength": 1
+    },
+    "call_angle": {
+      "type": "string",
+      "minLength": 1
+    },
+    "mini_proposal_title": {
+      "type": "string",
+      "minLength": 1
+    },
+    "required_inputs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "minItems": 1
+    },
+    "acceptance_criteria": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "minItems": 1
+    },
+    "cash_priority_score": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100
+    },
+    "need_fit_score": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100
+    },
+    "account_score": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100
+    },
+    "final_account_score": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100
+    },
+    "next_action": {
+      "type": "string",
+      "minLength": 1
+    },
+    "suppressed": {
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "company_name",
+    "website",
+    "sector",
+    "signals_detected",
+    "evidence_level",
+    "detected_business_needs",
+    "primary_need",
+    "need_confidence",
+    "recommended_core_system",
+    "recommended_specialized_system",
+    "sector_specific_sprint",
+    "buyer_roles",
+    "contact_confidence",
+    "email_angle",
+    "call_angle",
+    "mini_proposal_title",
+    "required_inputs",
+    "acceptance_criteria",
+    "cash_priority_score",
+    "need_fit_score",
+    "account_score",
+    "final_account_score",
+    "next_action"
+  ],
+  "additionalProperties": false
+}

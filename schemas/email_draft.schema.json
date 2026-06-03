@@ -1,0 +1,69 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Email Draft",
+  "type": "object",
+  "properties": {
+    "company_name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "to_role": {
+      "type": "string",
+      "minLength": 1
+    },
+    "subject": {
+      "type": "string",
+      "minLength": 1
+    },
+    "body": {
+      "type": "string",
+      "minLength": 20
+    },
+    "core_system": {
+      "type": "string",
+      "enum": [
+        "revenue-operating-system",
+        "executive-command-os",
+        "follow-up-recovery-os",
+        "whatsapp-client-os",
+        "proposal-proof-os"
+      ]
+    },
+    "sector_specific_sprint": {
+      "type": "string",
+      "minLength": 1
+    },
+    "cta": {
+      "type": "string",
+      "minLength": 1
+    },
+    "client_need_card_ref": {
+      "type": "string",
+      "minLength": 1
+    },
+    "approval_required": {
+      "type": "boolean",
+      "const": true
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "approved",
+        "rejected"
+      ]
+    }
+  },
+  "required": [
+    "company_name",
+    "to_role",
+    "subject",
+    "body",
+    "core_system",
+    "sector_specific_sprint",
+    "cta",
+    "client_need_card_ref",
+    "approval_required"
+  ],
+  "additionalProperties": false
+}

@@ -1,0 +1,52 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Internal Business System",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "name_ar": {
+      "type": "string",
+      "minLength": 1
+    },
+    "core_system": {
+      "type": "string",
+      "enum": [
+        "revenue-operating-system",
+        "executive-command-os",
+        "follow-up-recovery-os",
+        "whatsapp-client-os",
+        "proposal-proof-os"
+      ]
+    },
+    "complexity": {
+      "type": "string",
+      "enum": [
+        "low",
+        "medium",
+        "high"
+      ]
+    },
+    "starter_price_sar": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "deliverables_count": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "internal_only": {
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "id",
+    "name_ar",
+    "core_system",
+    "complexity",
+    "starter_price_sar"
+  ],
+  "additionalProperties": false
+}

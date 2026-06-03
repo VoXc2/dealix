@@ -1,0 +1,36 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Cash Priority Score",
+  "type": "object",
+  "properties": {
+    "company_name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "urgency": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100
+    },
+    "ticket_potential": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100
+    },
+    "speed_to_cash": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100
+    },
+    "score": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100
+    }
+  },
+  "required": [
+    "company_name",
+    "score"
+  ],
+  "additionalProperties": false
+}
