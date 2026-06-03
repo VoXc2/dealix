@@ -1,0 +1,5 @@
+{"suppression_id":"SUP-001","type":"domain","value":"optout-example.sa","reason":"opt_out_requested","scope":"all","added_at":"2026-06-01","note":"mirror of canonical data/outreach/suppression_list.jsonl"}
+{"suppression_id":"SUP-002","type":"company","value":"DoNotContact Co","reason":"do_not_contact","scope":"all","added_at":"2026-06-01","note":"mirror of canonical data/outreach/suppression_list.jsonl"}
+{"suppression_id":"SUP-003","type":"email","value":"noreply@example.com","reason":"role_account","scope":"all","added_at":"2026-06-01","note":"mirror of canonical data/outreach/suppression_list.jsonl"}
+{"suppression_id":"SUP-004","type":"domain","value":"competitor-block.sa","reason":"competitor","scope":"all","added_at":"2026-06-01","note":"mirror of canonical data/outreach/suppression_list.jsonl"}
+{"suppression_id":"SUP-005","type":"domain","value":"bounced-hard.sa","reason":"hard_bounce","scope":"all","added_at":"2026-06-02","note":"mirror of canonical data/outreach/suppression_list.jsonl"}

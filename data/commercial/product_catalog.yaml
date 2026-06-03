@@ -1,0 +1,163 @@
+# Dealix Product Catalog — canonical source of truth
+# Schema: schemas/product_offer.schema.json
+# Defaults for every offer: dry_run=true, approval_required=true, send_enabled=false
+# Pricing is a RANGE only. A final price always requires founder approval
+# (see data/commercial/pricing_rules.yaml and docs/commercial/QUOTE_APPROVAL_POLICY_AR.md).
+currency: SAR
+ladder_order: [DLX-L0, DLX-L1, DLX-L2, DLX-L3, DLX-L4, DLX-L5, DLX-L6]
+offers:
+  - id: DLX-L0
+    name: Readiness Scan
+    name_ar: فحص الجاهزية
+    alias: null
+    promise: نعطيك درجة جاهزية ومسار موصى به خلال جلسة قصيرة
+    buyer: [founder_owner, ceo_gm, agency_owner]
+    pain: [lead_leakage, weak_reporting]
+    deliverables:
+      - درجة جاهزية (readiness score)
+      - مسار موصى به (recommended path)
+    timeline_days: {min: 0, max: 1}
+    price_range: {min: 0, max: 0, unit: one_time, note: free or low-friction}
+    scope: [مكالمة تشخيص قصيرة, درجة جاهزية مبدئية]
+    out_of_scope: [تحليل بيانات CRM, تقرير مفصّل, خطة تنفيذ]
+    requirements: [وصف مختصر لعملية المبيعات الحالية]
+    proof_needed: assumed
+    success_metric: تحويل عميل محتار إلى مسار واضح
+    risks: [توقعات مبالغ بها]
+    handoff: DLX-L1
+    renewal_path: DLX-L1
+    requires_founder_pricing_approval: true
+  - id: DLX-L1
+    name: Revenue Leakage Diagnostic
+    name_ar: تشخيص تسرّب الإيرادات
+    alias: P1 — Revenue Intelligence Sprint
+    promise: نكشف أين تضيع فرصك ونرتّب أولويات التحسين خلال 3 إلى 5 أيام
+    buyer: [founder_owner, head_of_sales, agency_owner, marketing_manager]
+    pain: [lead_leakage, follow_up_chaos, weak_reporting]
+    deliverables:
+      - خريطة تسرّب الإيرادات (leakage map)
+      - قائمة المشاكل ذات الأولوية
+      - أول توصية workflow
+    timeline_days: {min: 3, max: 5}
+    price_range: {min: 1500, max: 5000, unit: one_time}
+    scope: [مراجعة المتابعة والعروض, خريطة التسرّب, تقرير أولويات]
+    out_of_scope: [بناء أنظمة, تكامل CRM, إرسال نيابة عن العميل]
+    requirements: [عيّنة بيانات متابعة/استفسارات, 30 دقيقة من فريق العميل]
+    proof_needed: observed
+    success_metric: تحديد أكبر 3 نقاط تسرّب قابلة للمعالجة
+    risks: [بيانات غير كافية, توقع حلول فورية]
+    handoff: DLX-L2
+    renewal_path: DLX-L2
+    requires_founder_pricing_approval: true
+  - id: DLX-L2
+    name: Follow-up Recovery Workflow
+    name_ar: مسار استرجاع المتابعات
+    alias: null
+    promise: نبني طابور متابعة وقوالب مسودّات وworkflow موافقة لاسترجاع الفرص الضائعة
+    buyer: [head_of_sales, operations_manager, agency_owner]
+    pain: [follow_up_chaos, lead_leakage]
+    deliverables:
+      - طابور متابعة (follow-up queue)
+      - قوالب مسودّات (draft templates)
+      - workflow موافقة
+      - تقرير
+    timeline_days: {min: 7, max: 14}
+    price_range: {min: 8000, max: 18000, unit: one_time}
+    scope: [تصميم طابور المتابعة, قوالب معتمدة, تقرير أداء]
+    out_of_scope: [إرسال خارجي تلقائي, أتمتة واتساب باردة, scraping]
+    requirements: [وصول لبيانات المتابعة, مالك عملية من جهة العميل]
+    proof_needed: observed
+    success_metric: تغطية متابعة لكل lead خلال SLA متفق عليه
+    risks: [عدم التزام الفريق بالـ workflow]
+    handoff: DLX-L3
+    renewal_path: DLX-L5
+    requires_founder_pricing_approval: true
+  - id: DLX-L3
+    name: AI Revenue Ops Starter
+    name_ar: مشغّل عمليات الإيرادات
+    alias: null
+    promise: workflow + dashboard + تقارير + عملية مسودّات/متابعة خلال 14 إلى 30 يوم
+    buyer: [ceo_gm, head_of_sales, crm_sales_ops_manager]
+    pain: [crm_data_disorder, sales_team_inconsistency, weak_reporting, proposal_delay]
+    deliverables:
+      - workflow تشغيلي
+      - dashboard
+      - تقارير دورية
+      - عملية مسودّات ومتابعة
+    timeline_days: {min: 14, max: 30}
+    price_range: {min: 18000, max: 35000, unit: one_time}
+    scope: [ترتيب بيانات الـ pipeline, لوحة قياس, عملية مسودّات بموافقة]
+    out_of_scope: [إرسال خارجي بلا موافقة, ضمان نتائج, تطوير برمجي مخصّص ثقيل]
+    requirements: [وصول منظّم لبيانات المبيعات, راعٍ تنفيذي]
+    proof_needed: observed
+    success_metric: مصدر واحد للحقيقة + تقرير أسبوعي ثابت
+    risks: [فوضى بيانات أعلى من المتوقّع]
+    handoff: DLX-L4
+    renewal_path: DLX-L5
+    requires_founder_pricing_approval: true
+  - id: DLX-L4
+    name: Full Revenue OS
+    name_ar: نظام تشغيل الإيرادات الكامل
+    alias: null
+    promise: طبقة تشغيل إيرادات أوسع خلال 30 إلى 60 يوم
+    buyer: [founder_owner, ceo_gm]
+    pain: [crm_data_disorder, sales_team_inconsistency, weak_reporting, weak_renewal_upsell]
+    deliverables:
+      - طبقة تشغيل إيرادات متعددة الـ workflows
+      - لوحات قياس
+      - عملية حوكمة وموافقة
+    timeline_days: {min: 30, max: 60}
+    price_range: {min: 35000, max: 90000, unit: one_time}
+    scope: [عدة workflows مترابطة, حوكمة, تقارير تنفيذية]
+    out_of_scope: [إرسال خارجي بلا موافقة, ضمان إيرادات]
+    requirements: [التزام تنفيذي, وصول للبيانات, مالك من جهة العميل]
+    proof_needed: observed
+    success_metric: تشغيل إيرادات قابل للقياس عبر عدة فرق
+    risks: [نطاق متضخّم, ضعف تبنّي الفريق]
+    handoff: DLX-L5
+    renewal_path: DLX-L5
+    requires_founder_pricing_approval: true
+  - id: DLX-L5
+    name: Monthly Optimization Retainer
+    name_ar: اشتراك التحسين الشهري
+    alias: P2 — AI Sales Ops Retainer
+    promise: تحسينات أسبوعية وتقارير وتجارب شهرية
+    buyer: [head_of_sales, ceo_gm, operations_manager]
+    pain: [weak_reporting, weak_renewal_upsell, sales_team_inconsistency]
+    deliverables:
+      - تحسينات أسبوعية
+      - تقارير دورية
+      - تجارب (experiments)
+    timeline_days: {min: 30, max: 30}
+    price_range: {min: 3000, max: 15000, unit: monthly}
+    scope: [تحسين مستمر, تقارير, تجارب مُقاسة]
+    out_of_scope: [إرسال خارجي بلا موافقة, ضمان نتائج]
+    requirements: [نظام قائم أو ناتج من DLX-L2/L3/L4]
+    proof_needed: observed
+    success_metric: تحسّن مُقاس شهرياً في مقياس متفق عليه
+    risks: [توقّع تحسّن خطّي مستمر]
+    handoff: DLX-L4
+    renewal_path: DLX-L5
+    requires_founder_pricing_approval: true
+  - id: DLX-L6
+    name: Custom Company OS
+    name_ar: نظام تشغيل مخصّص للشركة
+    alias: null
+    promise: نظام تشغيل مخصّص متعدّد الـ workflows
+    buyer: [founder_owner, ceo_gm]
+    pain: [crm_data_disorder, sales_team_inconsistency, weak_renewal_upsell, slow_onboarding]
+    deliverables:
+      - نظام تشغيل مخصّص متعدّد الـ workflows
+      - حوكمة وتقارير مخصّصة
+    timeline_days: {min: 45, max: 90}
+    price_range: {min: 90000, max: null, unit: one_time}
+    scope: [نطاق مخصّص متفق عليه كتابياً]
+    out_of_scope: [أي شيء خارج بيان النطاق الموقّع]
+    requirements: [بيان نطاق موقّع, راعٍ تنفيذي, ميزانية معتمدة]
+    proof_needed: verified
+    success_metric: تسليم النطاق المخصّص المتفق عليه بالكامل
+    risks: [تضخّم النطاق, مخاطر تسليم عالية]
+    handoff: DLX-L5
+    renewal_path: DLX-L5
+    requires_founder_pricing_approval: true
+last_updated: "2026-06-03"

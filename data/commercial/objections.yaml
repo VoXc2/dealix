@@ -1,0 +1,61 @@
+# Dealix Objection Bank — canonical (extends company_os/revenue/objections.json)
+# Each objection maps to a category, response (approval-safe, no forbidden claims),
+# an evidence_level for any number cited, and the pain it usually hides.
+objections:
+  - id: OBJ-001
+    objection: السعر غالي
+    category: pricing
+    frequency: high
+    mapped_pain: lead_leakage
+    evidence_level: assumed
+    response: نفهم. خلّينا نقيس كم فرصة تضيع شهرياً. غالباً تكلفة Sprint أقل من قيمة صفقة واحدة ضائعة. نقدر نبدأ بتشخيص محدود ونثبت القيمة أولاً قبل أي التزام أكبر.
+  - id: OBJ-002
+    objection: نحتاج نفكر
+    category: stall
+    frequency: high
+    mapped_pain: weak_reporting
+    evidence_level: assumed
+    response: "طبيعي. لتسهيل التفكير: ما أكبر فرصة عندكم الآن — سرعة المتابعة، جودة العروض، أو ترتيب الـ pipeline؟ نركّز التشخيص على ما يؤثّر أكثر."
+  - id: OBJ-003
+    objection: نشتغل على نظام داخلي
+    category: competition
+    frequency: medium
+    mapped_pain: crm_data_disorder
+    evidence_level: assumed
+    response: ممتاز. التشخيص يكشف هل النظام الداخلي يغطّي نقاط الضعف فعلاً، ونعطيكم مقارنة دون أن نلمس نظامكم.
+  - id: OBJ-004
+    objection: ما عندنا وقت
+    category: time
+    frequency: medium
+    mapped_pain: follow_up_chaos
+    evidence_level: assumed
+    response: التشخيص يحتاج منكم حوالي 30 دقيقة إجمالاً، والباقي نشتغل عليه من البيانات التي تزوّدوننا بها.
+  - id: OBJ-005
+    objection: أبغى أشوف نتائج أول
+    category: trust
+    frequency: medium
+    mapped_pain: no_proof_case_study_system
+    evidence_level: assumed
+    response: هذا بالضبط ما نقدّمه. التشخيص الأول بمثابة proof of concept — نكشف المشاكل ونعطيكم خطة. إن ناسبتكم النتيجة ننتقل للتشغيل الشهري.
+  - id: OBJ-006
+    objection: ليه Dealix وليس غيركم
+    category: differentiation
+    frequency: low
+    mapped_pain: weak_reporting
+    evidence_level: assumed
+    response: Dealix يجمع تحليل المبيعات العربي + حوكمة AI + سياق سعودي بموافقة المؤسّس أولاً. ليست أداة عالمية مترجمة، بل نظام مبني لطريقة عملكم.
+  - id: OBJ-007
+    objection: نبي نجرّب على قسم واحد أول
+    category: pilot
+    frequency: medium
+    mapped_pain: sales_team_inconsistency
+    evidence_level: assumed
+    response: قرار ذكي. نركّز التشخيص على قسم أو خدمة واحدة، والنتيجة proof حقيقي تقدرون توسّعون منه.
+  - id: OBJ-008
+    objection: تقدرون ترسلون نيابة عنّا؟
+    category: scope
+    frequency: medium
+    mapped_pain: follow_up_chaos
+    evidence_level: verified
+    response: نجهّز المسودّات وطابور المتابعة، لكن الإرسال الخارجي يبقى بموافقتكم ووفق سياسة قابلية التسليم. لا نُفعّل إرسالاً تلقائياً أو رسائل باردة بالنيابة.
+last_updated: "2026-06-03"

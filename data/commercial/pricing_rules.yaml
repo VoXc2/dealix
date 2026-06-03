@@ -1,0 +1,51 @@
+# Dealix Pricing Rules — canonical
+# Schema: schemas/pricing_rule.schema.json
+# These rules are enforced by scripts/commercial-control-check.js and
+# tests/test_pricing_requires_approval.py. They never produce a final price.
+defaults:
+  dry_run: true
+  approval_required: true
+  send_enabled: false
+  final_price_requires_founder_approval: true
+rules:
+  - id: PR-001
+    rule: لا يُعرض سعر نهائي بدون موافقة المؤسّس
+    severity: critical
+    requires_approval: true
+    enforced_by: [commercial-control-check.js, test_pricing_requires_approval.py]
+  - id: PR-002
+    rule: لا خصم بدون سبب موثّق
+    severity: high
+    requires_approval: true
+    enforced_by: [commercial-control-check.js]
+  - id: PR-003
+    rule: لا بيع تحت تكلفة التسليم
+    severity: critical
+    requires_approval: true
+    enforced_by: [commercial-control-check.js]
+  - id: PR-004
+    rule: لا بيع نطاق مخصّص بسعر الباقة المبتدئة
+    severity: high
+    requires_approval: true
+    enforced_by: [commercial-control-check.js, test_pricing_requires_approval.py]
+  - id: PR-005
+    rule: لا وعد بمراجعات غير محدودة
+    severity: medium
+    requires_approval: false
+    enforced_by: [commercial-control-check.js]
+  - id: PR-006
+    rule: دائماً تضمين بند خارج النطاق (out-of-scope)
+    severity: high
+    requires_approval: false
+    enforced_by: [commercial-control-check.js]
+  - id: PR-007
+    rule: ربط السعر دائماً بالمخرجات والمدة الزمنية
+    severity: high
+    requires_approval: false
+    enforced_by: [commercial-control-check.js]
+discount_policy:
+  max_discount_pct_without_founder: 0
+  reason_required: true
+starter_offer_ids: [DLX-L0, DLX-L1]
+custom_offer_ids: [DLX-L6]
+last_updated: "2026-06-03"

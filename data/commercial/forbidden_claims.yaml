@@ -1,0 +1,52 @@
+# Dealix Forbidden Claims — canonical block-list
+# Used by: scripts/draft-quality-gate.js, docs/brand/BRAND_CLAIMS_POLICY_AR.md,
+# tests/test_no_guaranteed_revenue_claims.py, tests/test_outreach_no_guaranteed_claims.py
+#
+# IMPORTANT: this file is the ALLOW-LIST OF WHAT TO BLOCK. It is data, not outbound
+# content. The "no forbidden claims" tests scan OUTBOUND artifacts
+# (data/outreach/drafts.jsonl, data/content/post_ideas.jsonl) for these phrases —
+# they do NOT scan this file or the policy docs that legitimately cite examples.
+match: case_insensitive_substring
+forbidden_ar:
+  - "نضمن زيادة المبيعات"
+  - "نضمن زيادة الإيرادات"
+  - "نضاعف الإيرادات"
+  - "نضاعف مبيعاتك"
+  - "نتائج مضمونة"
+  - "إيرادات مضمونة"
+  - "ضمان الإيرادات"
+  - "بدون أي مخاطرة"
+  - "بدون مخاطرة"
+  - "يبيع عنك بالكامل"
+  - "يبيع نيابة عنك بالكامل"
+  - "10x"
+  - "١٠x"
+  - "أضعاف مضمونة"
+forbidden_en:
+  - "guaranteed revenue"
+  - "guaranteed results"
+  - "guaranteed sales"
+  - "guarantee increased sales"
+  - "double your revenue"
+  - "10x revenue"
+  - "10x your"
+  - "no risk"
+  - "risk-free"
+  - "sells for you completely"
+  - "fully autonomous selling"
+forbidden_subject_prefixes:
+  # fake reply/forward threads on cold mail
+  - "re:"
+  - "رد:"
+  - "fwd:"
+  - "fw:"
+  - "إعادة توجيه:"
+allowed_claim_verbs_ar:
+  - "نساعد"
+  - "نجهّز"
+  - "نرتّب"
+  - "نقيس"
+  - "نكشف فرص التحسين"
+  - "نقترح"
+  - "نجهّز مسودّات بموافقة"
+last_updated: "2026-06-03"

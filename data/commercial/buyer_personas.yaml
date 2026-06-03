@@ -1,0 +1,74 @@
+# Dealix Buyer Personas — canonical
+# Schema: schemas/buyer_persona.schema.json
+personas:
+  - id: founder_owner
+    title_ar: المؤسّس / المالك
+    segments: [marketing_agencies, professional_services, local_saas, restaurant_groups, clinics]
+    goals: [نمو الإيرادات, وضوح التشغيل, تقليل الاعتماد على شخص واحد]
+    pains: [lead_leakage, weak_reporting, sales_team_inconsistency]
+    triggers: [توسّع, توظيف مبيعات, إطلاق خدمة]
+    top_objection: السعر غالي
+  - id: ceo_gm
+    title_ar: الرئيس التنفيذي / المدير العام
+    segments: [professional_services, logistics_companies, local_saas, education_providers]
+    goals: [قابلية تنبؤ بالإيرادات, تقارير تنفيذية, حوكمة]
+    pains: [weak_reporting, crm_data_disorder, weak_renewal_upsell]
+    triggers: [مجلس إدارة, تخطيط سنوي, ضعف توقّع]
+    top_objection: نحتاج نفكر
+  - id: head_of_sales
+    title_ar: مدير المبيعات
+    segments: [real_estate_teams, marketing_agencies, logistics_companies, local_saas]
+    goals: [زيادة التحويل, التزام الفريق بالعملية, pipeline نظيف]
+    pains: [follow_up_chaos, sales_team_inconsistency, lead_leakage]
+    triggers: [نقص استهداف, تسرّب صفقات, فريق جديد]
+    top_objection: نشتغل على نظام داخلي
+  - id: marketing_manager
+    title_ar: مدير التسويق
+    segments: [marketing_agencies, education_providers, restaurant_groups]
+    goals: [إثبات ROI للحملات, متابعة leads الحملات]
+    pains: [lead_leakage, no_proof_case_study_system, weak_reporting]
+    triggers: [حملة كبيرة, مطالبة بإثبات أثر]
+    top_objection: أبغى أشوف نتائج أول
+  - id: operations_manager
+    title_ar: مدير العمليات
+    segments: [clinics, recruitment_agencies, logistics_companies, restaurant_groups]
+    goals: [إزالة الاختناقات, توحيد العملية]
+    pains: [follow_up_chaos, crm_data_disorder, slow_onboarding]
+    triggers: [اختناق عملية, نمو سريع]
+    top_objection: ما عندنا وقت
+  - id: support_manager
+    title_ar: مدير خدمة العملاء
+    segments: [clinics, local_saas, education_providers]
+    goals: [تقليل الضغط, سرعة الرد]
+    pains: [support_overload, follow_up_chaos]
+    triggers: [ارتفاع التذاكر, شكاوى بطء]
+    top_objection: نشتغل على نظام داخلي
+  - id: training_admissions_manager
+    title_ar: مدير التدريب / القبول
+    segments: [training_companies, education_providers]
+    goals: [رفع معدّل التسجيل, متابعة الاستفسارات]
+    pains: [lead_leakage, follow_up_chaos]
+    triggers: [موسم تسجيل, انخفاض تحويل]
+    top_objection: فرص التسجيل اللي تروح
+  - id: clinic_manager
+    title_ar: مدير العيادة
+    segments: [clinics]
+    goals: [رفع الحجوزات, تقليل عدم الحضور]
+    pains: [follow_up_chaos, support_overload]
+    triggers: [توسّع فروع, ضعف حجوزات]
+    top_objection: نشتغل على نظام داخلي
+  - id: agency_owner
+    title_ar: مالك الوكالة
+    segments: [marketing_agencies, recruitment_agencies]
+    goals: [تقليل churn العملاء, إثبات القيمة]
+    pains: [no_proof_case_study_system, lead_leakage, follow_up_chaos]
+    triggers: [فقدان عميل, مطالبة بإثبات]
+    top_objection: ليه Dealix وليس غيركم
+  - id: crm_sales_ops_manager
+    title_ar: مدير CRM / عمليات المبيعات
+    segments: [local_saas, logistics_companies]
+    goals: [بيانات نظيفة, تقارير موثوقة, أتمتة منضبطة]
+    pains: [crm_data_disorder, weak_reporting]
+    triggers: [ترحيل CRM, فوضى بيانات]
+    top_objection: نشتغل على نظام داخلي
+last_updated: "2026-06-03"

@@ -1,0 +1,67 @@
+# Dealix Pain → Offer mapping — canonical
+# Schema: schemas/offer_match.schema.json
+# Every pain_category maps to a sellable ladder offer (ladder_id must exist in
+# data/commercial/product_catalog.yaml), an evidence floor, a next action, and an
+# approval requirement. Enforced by tests/test_commercial_offer_mapping.py.
+mappings:
+  - pain_category: lead_leakage
+    recommended_offer: Revenue Leakage Diagnostic
+    ladder_id: DLX-L1
+    next_action: book_revenue_leakage_diagnostic
+    evidence_required: observed
+    approval_required: true
+  - pain_category: follow_up_chaos
+    recommended_offer: Follow-up Recovery Workflow
+    ladder_id: DLX-L2
+    next_action: scope_followup_recovery
+    evidence_required: observed
+    approval_required: true
+  - pain_category: crm_data_disorder
+    recommended_offer: AI Revenue Ops Starter
+    ladder_id: DLX-L3
+    next_action: scope_revenue_ops_starter
+    evidence_required: observed
+    approval_required: true
+  - pain_category: proposal_delay
+    recommended_offer: Proposal Factory + Proof Pack
+    ladder_id: DLX-L3
+    next_action: scope_proposal_factory
+    evidence_required: observed
+    approval_required: true
+  - pain_category: weak_reporting
+    recommended_offer: Weekly Revenue Command
+    ladder_id: DLX-L5
+    next_action: offer_weekly_revenue_command
+    evidence_required: observed
+    approval_required: true
+  - pain_category: sales_team_inconsistency
+    recommended_offer: Sales Playbook + Draft Factory
+    ladder_id: DLX-L3
+    next_action: scope_sales_playbook
+    evidence_required: observed
+    approval_required: true
+  - pain_category: support_overload
+    recommended_offer: Support Triage / Draft OS
+    ladder_id: DLX-L3
+    next_action: scope_support_draft_os
+    evidence_required: observed
+    approval_required: true
+  - pain_category: no_proof_case_study_system
+    recommended_offer: Proof Pack Factory
+    ladder_id: DLX-L1
+    next_action: scope_proof_pack_factory
+    evidence_required: observed
+    approval_required: true
+  - pain_category: slow_onboarding
+    recommended_offer: Delivery Handoff OS
+    ladder_id: DLX-L3
+    next_action: scope_delivery_handoff
+    evidence_required: observed
+    approval_required: true
+  - pain_category: weak_renewal_upsell
+    recommended_offer: Renewal Engine
+    ladder_id: DLX-L5
+    next_action: offer_renewal_engine
+    evidence_required: observed
+    approval_required: true
+last_updated: "2026-06-03"

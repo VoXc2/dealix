@@ -1,0 +1,125 @@
+# Dealix Sector Intelligence — canonical data table
+# Each sector here is expanded into a full playbook under docs/sectors/<SECTOR>_AR.md.
+# first_offer references data/commercial/product_catalog.yaml.
+sectors:
+  - id: marketing_agencies
+    name_ar: وكالات التسويق
+    buyer: agency_owner
+    decision_maker: المؤسّس / مدير الوكالة
+    pains: [lead_leakage, follow_up_chaos, no_proof_case_study_system]
+    buying_triggers: [توظيف account managers, إطلاق خدمة جديدة, فقدان عميل بسبب غياب الإثبات]
+    do_not_target: [وكالة بلا leads متكرّرة, من يطلب إرسال جماعي]
+    first_offer: DLX-L1
+    first_workflow: Revenue Leakage Diagnostic
+    cold_email_angle: كثير من الوكالات تخسر فرصاً بسبب بطء المتابعة لا قلّة الطلب
+    pricing_sensitivity: medium
+    cta: نرسل لك مثالاً مختصراً على تقرير التسرّب؟
+  - id: training_companies
+    name_ar: شركات التدريب
+    buyer: training_admissions_manager
+    decision_maker: مدير القبول / المالك
+    pains: [follow_up_chaos, lead_leakage, weak_reporting]
+    buying_triggers: [موسم تسجيل, حملة إعلانية, انخفاض معدّل التحويل]
+    do_not_target: [بلا قناة استفسارات ثابتة]
+    first_offer: DLX-L1
+    first_workflow: Revenue Leakage Diagnostic
+    cold_email_angle: جزء كبير من استفسارات واتساب لا يتحوّل لتسجيلات بسبب بطء الرد
+    pricing_sensitivity: medium
+    cta: تهمّك تجربة تشخيص على قناة الاستفسارات؟
+  - id: clinics
+    name_ar: العيادات
+    buyer: clinic_manager
+    decision_maker: مدير العيادة / المالك
+    pains: [follow_up_chaos, support_overload, weak_reporting]
+    buying_triggers: [توسّع فروع, ضعف حجوزات, ارتفاع عدم الحضور]
+    do_not_target: [من يطلب معالجة بيانات مرضى بلا أساس نظامي]
+    first_offer: DLX-L1
+    first_workflow: Revenue Leakage Diagnostic
+    cold_email_angle: حجوزات تضيع بين الاستفسار والتأكيد بسبب غياب متابعة منظّمة
+    pricing_sensitivity: medium
+    cta: نعطيك لمحة عن نقاط فقد الحجوزات؟
+  - id: real_estate_teams
+    name_ar: فرق العقار
+    buyer: head_of_sales
+    decision_maker: مدير المبيعات / المالك
+    pains: [lead_leakage, follow_up_chaos, crm_data_disorder]
+    buying_triggers: [حجم leads عالٍ, فريق جديد, مشروع جديد]
+    do_not_target: [من يريد إرسالاً جماعياً أو وعوداً مضمونة]
+    first_offer: DLX-L2
+    first_workflow: Follow-up Recovery Workflow
+    cold_email_angle: مع حجم leads عالٍ، التسرّب يحدث في المتابعة لا في الطلب
+    pricing_sensitivity: low
+    cta: نرتّب لك مكالمة قصيرة نكشف فيها أكبر نقطة تسرّب؟
+  - id: recruitment_agencies
+    name_ar: وكالات التوظيف
+    buyer: operations_manager
+    decision_maker: مدير العمليات / المالك
+    pains: [follow_up_chaos, crm_data_disorder, weak_reporting]
+    buying_triggers: [نمو الطلبات, فوضى بيانات المرشّحين]
+    do_not_target: [بلا تدفّق عملاء متكرّر]
+    first_offer: DLX-L2
+    first_workflow: Follow-up Recovery Workflow
+    cold_email_angle: متابعة المرشّحين والعملاء معاً تخلق تسرّباً مزدوجاً
+    pricing_sensitivity: medium
+    cta: نعطيك خريطة سريعة لنقاط الفقد؟
+  - id: professional_services
+    name_ar: الخدمات المهنية
+    buyer: founder_owner
+    decision_maker: الشريك / المؤسّس
+    pains: [proposal_delay, no_proof_case_study_system, weak_reporting]
+    buying_triggers: [تأخّر العروض, مطالبة بإثبات أثر]
+    do_not_target: [من يرفض عملية الموافقة]
+    first_offer: DLX-L1
+    first_workflow: Revenue Leakage Diagnostic
+    cold_email_angle: بطء تجهيز العروض يكلّف صفقات أكثر من السعر نفسه
+    pricing_sensitivity: low
+    cta: نريك كيف نختصر زمن تجهيز العرض؟
+  - id: education_providers
+    name_ar: مزوّدو التعليم
+    buyer: training_admissions_manager
+    decision_maker: مدير القبول / المدير العام
+    pains: [lead_leakage, follow_up_chaos, slow_onboarding]
+    buying_triggers: [موسم قبول, إطلاق برنامج]
+    do_not_target: [بلا قدرة دفع واضحة]
+    first_offer: DLX-L1
+    first_workflow: Revenue Leakage Diagnostic
+    cold_email_angle: دورة القبول الموسمية تفقد متقدّمين بين الاستفسار والتسجيل
+    pricing_sensitivity: medium
+    cta: نحلّل قمع القبول لديكم؟
+  - id: logistics_companies
+    name_ar: شركات اللوجستيك
+    buyer: operations_manager
+    decision_maker: مدير العمليات / المدير العام
+    pains: [sales_team_inconsistency, weak_reporting, crm_data_disorder]
+    buying_triggers: [عقود B2B متكرّرة, توسّع تشغيلي]
+    do_not_target: [بلا وصول لصانع قرار]
+    first_offer: DLX-L3
+    first_workflow: AI Revenue Ops Starter
+    cold_email_angle: تفاوت أداء فريق المبيعات يخفي تسرّباً يصعب قياسه بلا تقارير
+    pricing_sensitivity: low
+    cta: نريك مصدراً واحداً للحقيقة لمبيعاتكم؟
+  - id: restaurant_groups
+    name_ar: مجموعات المطاعم
+    buyer: operations_manager
+    decision_maker: مدير العمليات / المالك
+    pains: [follow_up_chaos, weak_reporting, weak_renewal_upsell]
+    buying_triggers: [خدمات فعاليات/تموين, توسّع فروع]
+    do_not_target: [بلا عمليات B2B متكرّرة]
+    first_offer: DLX-L1
+    first_workflow: Revenue Leakage Diagnostic
+    cold_email_angle: استفسارات الفعاليات والتموين تضيع بلا متابعة منظّمة
+    pricing_sensitivity: medium
+    cta: نكشف لكم نقاط فقد طلبات الفعاليات؟
+  - id: local_saas
+    name_ar: شركات SaaS المحلية
+    buyer: founder_owner
+    decision_maker: المؤسّس / مدير المبيعات
+    pains: [crm_data_disorder, weak_renewal_upsell, sales_team_inconsistency]
+    buying_triggers: [نمو الاشتراكات, churn مرتفع, ترحيل CRM]
+    do_not_target: [من يطلب ضمان مبيعات]
+    first_offer: DLX-L3
+    first_workflow: AI Revenue Ops Starter
+    cold_email_angle: ضعف التجديد غالباً مشكلة عملية لا مشكلة منتج
+    pricing_sensitivity: low
+    cta: نحلّل قمع التجديد لديكم؟
+last_updated: "2026-06-03"

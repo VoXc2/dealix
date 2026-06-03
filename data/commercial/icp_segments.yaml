@@ -1,0 +1,96 @@
+# Dealix ICP Segments — canonical
+# Schema: schemas/icp.schema.json
+# first_offer references data/commercial/product_catalog.yaml; personas reference
+# data/commercial/buyer_personas.yaml; pains use the canonical pain_category enum.
+segments:
+  - id: marketing_agencies
+    name_ar: وكالات التسويق
+    priority: 1
+    description: وكالات تدير حملات للعملاء وتستقبل leads لكن تخسرها في المتابعة
+    primary_personas: [agency_owner, head_of_sales, marketing_manager]
+    top_pains: [lead_leakage, follow_up_chaos, no_proof_case_study_system]
+    first_offer: DLX-L1
+    payment_ability: medium
+    disqualifiers: [no_recurring_leads, wants_mass_sending, refuses_approval_process]
+  - id: training_companies
+    name_ar: شركات التدريب
+    priority: 1
+    description: تستقبل استفسارات تسجيل عبر واتساب والنماذج وتفقد جزءاً كبيراً منها
+    primary_personas: [training_admissions_manager, operations_manager, ceo_gm]
+    top_pains: [follow_up_chaos, lead_leakage, weak_reporting]
+    first_offer: DLX-L1
+    payment_ability: medium
+    disqualifiers: [no_decision_maker_access, no_recurring_leads]
+  - id: clinics
+    name_ar: العيادات
+    priority: 2
+    description: عيادات تستقبل حجوزات واستفسارات وتعاني من ضعف المتابعة والتقارير
+    primary_personas: [clinic_manager, operations_manager, founder_owner]
+    top_pains: [follow_up_chaos, support_overload, weak_reporting]
+    first_offer: DLX-L1
+    payment_ability: medium
+    disqualifiers: [requests_pii_scraping, refuses_privacy_basics]
+  - id: real_estate_teams
+    name_ar: فرق العقار
+    priority: 2
+    description: فرق مبيعات عقارية بحجم leads عالٍ وتشتّت في المتابعة وضعف pipeline
+    primary_personas: [head_of_sales, operations_manager, founder_owner]
+    top_pains: [lead_leakage, follow_up_chaos, crm_data_disorder]
+    first_offer: DLX-L2
+    payment_ability: high
+    disqualifiers: [wants_guaranteed_sales_claims, wants_mass_sending]
+  - id: recruitment_agencies
+    name_ar: وكالات التوظيف
+    priority: 3
+    description: وكالات توظيف بعمليات متابعة مرشّحين وعملاء كثيفة
+    primary_personas: [operations_manager, head_of_sales, agency_owner]
+    top_pains: [follow_up_chaos, crm_data_disorder, weak_reporting]
+    first_offer: DLX-L2
+    payment_ability: medium
+    disqualifiers: [no_recurring_leads, refuses_approval_process]
+  - id: professional_services
+    name_ar: شركات الخدمات المهنية
+    priority: 2
+    description: شركات استشارية ومحاسبية وقانونية ببطء في العروض وضعف في الإثبات
+    primary_personas: [founder_owner, ceo_gm, head_of_sales]
+    top_pains: [proposal_delay, no_proof_case_study_system, weak_reporting]
+    first_offer: DLX-L1
+    payment_ability: high
+    disqualifiers: [no_decision_maker_access, delivery_risk_too_high]
+  - id: education_providers
+    name_ar: مزوّدو التعليم
+    priority: 3
+    description: مدارس ومعاهد ومنصّات تعليمية بدورة قبول وتسجيل موسمية
+    primary_personas: [training_admissions_manager, marketing_manager, ceo_gm]
+    top_pains: [lead_leakage, follow_up_chaos, slow_onboarding]
+    first_offer: DLX-L1
+    payment_ability: medium
+    disqualifiers: [no_recurring_leads, no_ability_to_pay]
+  - id: logistics_companies
+    name_ar: شركات اللوجستيك والعمليات الخدمية
+    priority: 3
+    description: شركات خدمات لوجستية بعمليات بيع B2B وعقود متكرّرة
+    primary_personas: [operations_manager, head_of_sales, ceo_gm]
+    top_pains: [sales_team_inconsistency, weak_reporting, crm_data_disorder]
+    first_offer: DLX-L3
+    payment_ability: high
+    disqualifiers: [no_decision_maker_access, refuses_approval_process]
+  - id: restaurant_groups
+    name_ar: مجموعات المطاعم
+    priority: 4
+    description: مجموعات مطاعم بعمليات B2B (فعاليات/تموين/امتياز) وضعف متابعة
+    primary_personas: [operations_manager, founder_owner, marketing_manager]
+    top_pains: [follow_up_chaos, weak_reporting, weak_renewal_upsell]
+    first_offer: DLX-L1
+    payment_ability: medium
+    disqualifiers: [no_recurring_leads, wants_mass_sending]
+  - id: local_saas
+    name_ar: شركات SaaS/الخدمات المحلية
+    priority: 2
+    description: شركات منتجات/خدمات محلية بعمليات اكتساب وتجديد واشتراك
+    primary_personas: [founder_owner, head_of_sales, crm_sales_ops_manager]
+    top_pains: [crm_data_disorder, weak_renewal_upsell, sales_team_inconsistency]
+    first_offer: DLX-L3
+    payment_ability: high
+    disqualifiers: [wants_guaranteed_sales_claims, refuses_approval_process]
+last_updated: "2026-06-03"
