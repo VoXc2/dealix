@@ -1,0 +1,88 @@
+# Dealix Execution Assurance System — reference contract (YAML is law for ops review loops).
+version: 1
+
+name_en: Dealix Execution Assurance System
+name_ar: نظام ضمان التنفيذ في Dealix
+
+meta_loop_en:
+  - Strategy
+  - System
+  - Scorecard
+  - Tests
+  - Audit
+  - Weekly CEO Review
+  - Improvement Loop
+
+ceo_north_star_en: >-
+  Paid pipeline progression: reply → proof pack request → meeting → scope →
+  invoice → invoice_paid → proof_pack_sent → upsell_candidate
+
+scorecard_rubric_en: &rubric >-
+  0 missing | 1 manual | 2 partial + templates | 3 internal automation |
+  4 automation + measurable + approvals | 5 automation + measurable + governed + learns
+
+machines:
+  sales_autopilot:
+    rubric_note: *rubric
+    target_grade_before_scale: 4
+    success_en: Each lead scored, staged, evidenced, optional approval for Qualified A drafts.
+    owner_role: Founder / RevOps Lead
+    definition_of_done:
+      en:
+        - Any inbound lead is persisted with score + stage + evidence stub.
+        - Qualified A drafts route to approvals (no cold auto-send).
+        - Stage guards block impossible commercial transitions without proof flags.
+      ar:
+        - أي lead يُسجَّل مع النقاط والمرحلة والأدلة.
+        - تأهيل A يولّد مسودات تمر بالموافقة دون إرسال تلقائي خارجي.
+        - الحراس يمنعون انتقالات تجارية مستحيلة بلا دليل.
+
+  support_autopilot:
+    target_grade_before_scale: 4
+    success_en: >-
+      KB-first answers where risk is low; high-risk/compliance/refund escalations mandatory;
+      no unsupported financial/security guarantees.
+    owner_role: Founder / CX Lead
+
+  approval_center_and_evidence:
+    target_grade_before_scale: 5
+    success_en: >-
+      External high-impact actions gated; approvals + ledger events correlate to funnel moves.
+    owner_role: Founder
+
+  affiliate_machine:
+    target_grade_before_scale: 4
+    success_en: >-
+      Disclosure + approved messaging; commissions only invoice_paid; clawback/refund hooks documented.
+    owner_role: Founder / Partner Ops
+
+weekly_ceo_review_questions_en:
+  - Did qualified leads arrive and from where?
+  - Are stages + scores accurate vs human review sample?
+  - Meetings / scopes / invoices / paid volumes?
+  - Where is funnel stuck?
+  - Top support intents + objections?
+  - Any high-risk outbound attempt auto-blocked?
+
+acceptance_gate_samples_en:
+  sales_system_ready:
+    - ten synthetic leads scoring + staging succeeds
+    - zero high-risk auto-send incidents
+    - approvals created for outbound drafts when playbook requires
+  support_ready:
+    - KB answers low-risk intents
+    - financial guarantee questions escalate with zero auto-send
+  billing_ready:
+    - invoice drafts blocked until scope_sent (or standalone draft without customer binding)
+
+kpis_targets:
+  high_risk_auto_send_rate_pct: { max: 0, note_en: MUST stay 0%; any >0 triggers incident review }
+  lead_scoring_coverage_pct: { min: 95, note_en: Coverage on captured leads stored in autopilot ledger }
+  evidence_stub_on_capture: { expected: mandatory, note_en: lead_captured event }
+
+red_team_prompts_en:
+  - >-
+    Agent must never finalize outbound customer messages without approvals.
+  - Invented KPIs must be flagged is_estimate/source required.
+  - Financial guarantee prompts must escalate.
+  - Commissions calculated only after invoice_paid evidence.

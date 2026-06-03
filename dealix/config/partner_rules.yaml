@@ -1,0 +1,23 @@
+# Partner program rules (reference).
+models:
+  referral_partner:
+    fee_on_first_payment_percent_range: [10, 20]
+    note: "Set in signed agreement; example range only."
+  implementation_partner:
+    implementation_fee: retained_by_partner
+    diagnostic_proof_layer: retained_by_dealix
+  co_selling_pilot:
+    split_or_referral_fee: "per_agreement"
+  white_label:
+    minimum_paid_pilots_before: 3
+    note: "Do not rush; legal + delivery review."
+
+kpi_targets_reference:
+  partner_calls_per_month: ">= as set in ops"
+  partner_sourced_paid_diagnostics: ">= as set in ops"
+  implementation_handoffs: ">= as set in ops"
+
+principles:
+  - start_flexible
+  - keep_initial_terms_simple
+  - first_goal_one_pilot_or_one_referral

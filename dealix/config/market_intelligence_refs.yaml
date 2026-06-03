@@ -1,0 +1,76 @@
+# Market intelligence pack — paths for digest, PM, and agents.
+version: "1"
+updated: "2026-05-18"
+index: docs/commercial/MARKET_INTELLIGENCE_MASTER_INDEX_AR.md
+content_calendar: dealix/config/market_intelligence_content_calendar.yaml
+status_script: scripts/market_intelligence_status.py
+
+pillars:
+  saas_market:
+    path: docs/commercial/MARKET_INTELLIGENCE_SAUDI_SAAS_MARKET_AR.md
+    label_ar: "سوق SaaS السعودي"
+  pdpl_legal:
+    path: docs/commercial/MARKET_INTELLIGENCE_PDPL_LEGAL_REVIEW_AR.md
+    label_ar: "PDPL وعقود"
+  cloud_residency:
+    path: docs/commercial/MARKET_INTELLIGENCE_CLOUD_CROSS_BORDER_AR.md
+    label_ar: "سحابة وإقامة"
+  infra_rubric:
+    path: docs/commercial/INFRA_HOSTING_REGION_RUBRIC_AR.md
+    label_ar: "جدول استضافة"
+  founder_revops:
+    path: docs/commercial/MARKET_INTELLIGENCE_FOUNDER_REVOPS_GTM_AR.md
+    label_ar: "مؤسس وRevOps"
+  governed_ai:
+    path: docs/commercial/MARKET_INTELLIGENCE_GOVERNED_AI_CATEGORY_AR.md
+    label_ar: "AI محكوم"
+  positioning:
+    path: docs/commercial/POSITIONING_WHY_NOW_SAUDI_ONEPAGER_AR.md
+    label_ar: "تموضع Why Now"
+  playbook:
+    path: docs/commercial/MARKET_INTELLIGENCE_IMPLEMENTATION_PLAYBOOK_AR.md
+    label_ar: "تنفيذ يومي"
+  objections:
+    path: docs/commercial/MARKET_INTELLIGENCE_OBJECTIONS_PDPL_AR.md
+    label_ar: "اعتراضات PDPL"
+  procurement:
+    path: docs/commercial/MARKET_INTELLIGENCE_PROCUREMENT_FAQ_AR.md
+    label_ar: "RFP وشراء"
+  content_gtm:
+    path: docs/commercial/MARKET_INTELLIGENCE_CONTENT_GTM_AR.md
+    label_ar: "محتوى GTM"
+  investor_partner:
+    path: docs/commercial/MARKET_INTELLIGENCE_INVESTOR_PARTNER_AR.md
+    label_ar: "مستثمر وشريك"
+  sales_champion:
+    path: docs/commercial/MARKET_INTELLIGENCE_SALES_CHAMPION_PACK_AR.md
+    label_ar: "Champion Pack"
+  weekly_review:
+    path: docs/commercial/MARKET_INTELLIGENCE_WEEKLY_REVIEW_CHECKLIST_AR.md
+    label_ar: "مراجعة أسبوعية"
+  metrics:
+    path: docs/commercial/MARKET_INTELLIGENCE_METRICS_CREDIBILITY_AR.md
+    label_ar: "مصداقية المقاييس"
+  en_summary:
+    path: docs/commercial/MARKET_INTELLIGENCE_EN_EXECUTIVE_SUMMARY.md
+    label_ar: "Executive summary EN"
+  email_templates:
+    path: docs/commercial/MARKET_INTELLIGENCE_EMAIL_TEMPLATES_AR.md
+    label_ar: "قوالب بريد وواتساب warm"
+  demo_script:
+    path: docs/commercial/MARKET_INTELLIGENCE_DEMO_SCRIPT_AR.md
+    label_ar: "سكربت ديمو 10 دقائق"
+  category_battlecard:
+    path: docs/commercial/MARKET_INTELLIGENCE_CATEGORY_BATTLECARD_AR.md
+    label_ar: "بطاقة فئة السوق"
+  trust_security:
+    path: docs/commercial/MARKET_INTELLIGENCE_TRUST_SECURITY_MATRIX_AR.md
+    label_ar: "مصفوفة ثقة وأمن"
+  customer_success:
+    path: docs/commercial/MARKET_INTELLIGENCE_CUSTOMER_SUCCESS_AR.md
+    label_ar: "نجاح العميل بعد البيع"
+
+external_sources:
+  saas_imarc: https://imarcgroup.com/saudi-arabia-software-as-a-service-%28saas%29-market
+  pdpl_sdaia: https://dgp.sdaia.gov.sa/wps/portal/pdp/knowledgecenter/details/PDPLCP/
+  cross_border_trade: https://www.trade.gov/market-intelligence/saudi-arabia-ict-cross-border-data-transfer-rules-now-under-enforcement

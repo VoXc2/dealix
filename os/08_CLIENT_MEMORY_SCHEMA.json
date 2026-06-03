@@ -1,0 +1,195 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Dealix Client Memory Schema",
+  "description": "الـ schema الكامل لتخزين معلومات العميل الفعلي بعد بدء التعاقد",
+  "version": "1.0.0",
+  "type": "object",
+  "required": ["client_id", "company_name", "status", "created_at"],
+  "properties": {
+
+    "client_id": {
+      "type": "string",
+      "description": "معرف فريد للعميل",
+      "pattern": "^CL-[0-9]{6}$",
+      "example": "CL-000001"
+    },
+
+    "company_ref": {
+      "type": "string",
+      "description": "مرجع لـ company memory (CO-XXXXXX)"
+    },
+
+    "company_name": {
+      "type": "string"
+    },
+
+    "client_since": {
+      "type": "string",
+      "format": "date",
+      "description": "تاريخ بداية العلاقة التجارية"
+    },
+
+    "status": {
+      "type": "string",
+      "enum": ["active", "paused", "completed", "churned", "retainer"],
+      "description": "حالة العميل الحالية"
+    },
+
+    "tier": {
+      "type": "string",
+      "enum": ["audit", "pilot", "full_system", "retainer", "enterprise"],
+      "description": "مستوى التعاقد الحالي"
+    },
+
+    "primary_contact": {
+      "type": "object",
+      "properties": {
+        "name": {"type": "string"},
+        "title": {"type": "string"},
+        "email": {"type": "string"},
+        "phone": {"type": "string"},
+        "preferred_contact": {"type": "string", "enum": ["email", "phone", "whatsapp"]},
+        "timezone": {"type": "string"},
+        "language_preference": {"type": "string", "enum": ["ar", "en", "both"]}
+      },
+      "required": ["name", "email"],
+      "description": "نقطة التواصل الرئيسية"
+    },
+
+    "decision_maker": {
+      "type": "object",
+      "properties": {
+        "name": {"type": "string"},
+        "title": {"type": "string"},
+        "email": {"type": "string"},
+        "is_same_as_primary_contact": {"type": "boolean"}
+      },
+      "description": "صاحب القرار النهائي"
+    },
+
+    "stakeholders": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {"type": "string"},
+          "title": {"type": "string"},
+          "role_in_project": {"type": "string"},
+          "email": {"type": "string"},
+          "influence_level": {"type": "string", "enum": ["high", "medium", "low"]}
+        }
+      },
+      "description": "جميع المعنيين بالمشروع"
+    },
+
+    "commercial": {
+      "type": "object",
+      "properties": {
+        "total_contract_value_sar": {"type": "number"},
+        "paid_to_date_sar": {"type": "number"},
+        "outstanding_sar": {"type": "number"},
+        "payment_terms": {"type": "string"},
+        "retainer_monthly_sar": {"type": "number"},
+        "retainer_start_date": {"type": "string", "format": "date"},
+        "retainer_end_date": {"type": "string", "format": "date"},
+        "invoices": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "invoice_id": {"type": "string"},
+              "amount_sar": {"type": "number"},
+              "issued_date": {"type": "string", "format": "date"},
+              "due_date": {"type": "string", "format": "date"},
+              "status": {"type": "string", "enum": ["pending", "paid", "overdue"]},
+              "payment_date": {"type": "string", "format": "date"}
+            }
+          }
+        }
+      },
+      "description": "المعلومات التجارية والمالية"
+    },
+
+    "projects": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "description": "project_id مرجع (PJ-XXXXXX)"
+      },
+      "description": "المشاريع المرتبطة بهذا العميل"
+    },
+
+    "satisfaction": {
+      "type": "object",
+      "properties": {
+        "last_nps_score": {"type": "integer", "minimum": 0, "maximum": 10},
+        "last_nps_date": {"type": "string", "format": "date"},
+        "health_status": {"type": "string", "enum": ["green", "yellow", "red"]},
+        "risks": {"type": "array", "items": {"type": "string"}},
+        "strengths": {"type": "array", "items": {"type": "string"}}
+      },
+      "description": "رضا العميل وصحة العلاقة"
+    },
+
+    "expansion_opportunities": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "opportunity": {"type": "string"},
+          "offer": {"type": "string"},
+          "estimated_value_sar": {"type": "number"},
+          "probability": {"type": "string", "enum": ["high", "medium", "low"]},
+          "next_step": {"type": "string"},
+          "identified_at": {"type": "string", "format": "date"}
+        }
+      },
+      "description": "فرص التوسعة داخل نفس العميل"
+    },
+
+    "governance": {
+      "type": "object",
+      "properties": {
+        "dpa_signed": {"type": "boolean"},
+        "dpa_signed_date": {"type": "string", "format": "date"},
+        "nda_signed": {"type": "boolean"},
+        "data_handling_classification": {"type": "string"},
+        "pdpl_requirements": {"type": "array", "items": {"type": "string"}},
+        "audit_log_enabled": {"type": "boolean"},
+        "approved_data_uses": {"type": "array", "items": {"type": "string"}}
+      },
+      "description": "متطلبات الحوكمة والامتثال"
+    },
+
+    "communication_log": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "date": {"type": "string", "format": "date-time"},
+          "type": {"type": "string", "enum": ["email", "call", "meeting", "whatsapp", "report"]},
+          "direction": {"type": "string", "enum": ["inbound", "outbound"]},
+          "summary": {"type": "string"},
+          "action_items": {"type": "array", "items": {"type": "string"}},
+          "logged_by": {"type": "string"}
+        }
+      },
+      "description": "سجل كامل لجميع التواصلات"
+    },
+
+    "weekly_review_schedule": {
+      "type": "object",
+      "properties": {
+        "day": {"type": "string", "enum": ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday"]},
+        "time": {"type": "string"},
+        "format": {"type": "string", "enum": ["call", "meeting", "async_report"]}
+      },
+      "description": "موعد المراجعة الأسبوعية الثابت"
+    },
+
+    "notes": {"type": "string"},
+
+    "created_at": {"type": "string", "format": "date-time"},
+    "updated_at": {"type": "string", "format": "date-time"}
+  }
+}

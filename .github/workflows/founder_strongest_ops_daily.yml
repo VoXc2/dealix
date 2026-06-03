@@ -1,0 +1,29 @@
+# Founder strongest-plan autonomous ops — brief + wiring (no external sends)
+name: Founder strongest ops
+
+on:
+  schedule:
+    # 05:30 UTC Sun–Thu — after founder_commercial_daily (05:00)
+    - cron: "30 5 * * 0-4"
+  workflow_dispatch:
+
+jobs:
+  strongest-ops:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install deps
+        run: pip install -r requirements.txt pyyaml
+      - name: Strongest plan wiring
+        run: python3 scripts/founder_strongest_plan_status.py
+      - name: Morning autonomous brief
+        run: python3 scripts/run_founder_strongest_ops.py --morning --run-checks
+      - name: Upload brief artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: founder-strongest-ops-brief
+          path: data/founder_briefs/strongest_ops_*.md
+          if-no-files-found: ignore

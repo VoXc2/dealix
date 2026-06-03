@@ -1,0 +1,5 @@
+# MCP Server optional dependencies
+# Install with: pip install -r mcp_server/requirements-mcp.txt
+# Not required for the main FastAPI app or tests.
+fastmcp>=2.0.0
+pyyaml>=6.0.2

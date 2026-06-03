@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>قرارات اليوم — Dealix Customer Portal</title>
+  <meta name="description" content="قائمة القرارات التي تحتاج موافقتك. اعتمد، عدّل، أو ارفض. كل قرار يُسجّل بـ evidence_id قابل للتدقيق." />
+  <meta name="theme-color" content="#0f172a" />
+  <link rel="canonical" href="https://dealix.me/customer-decisions.html" />
+  <meta name="robots" content="noindex,follow" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="/assets/css/design-system.css" />
+  <style>
+    .decisions-wrap{max-width:980px;margin:0 auto;padding:48px 24px}
+    .nav-back{display:inline-block;margin-bottom:18px;color:#64748b;text-decoration:none;font-size:14px}
+    .head{margin-bottom:32px}
+    .head h1{margin:0 0 8px;font-size:clamp(24px,3.5vw,36px)}
+    .head p{margin:0;color:#64748b;font-size:15px;line-height:1.7}
+    .filter-bar{display:flex;gap:8px;margin-bottom:24px;flex-wrap:wrap}
+    .filter-btn{padding:8px 16px;border-radius:999px;border:1px solid #cbd5e1;background:#fff;color:#0f172a;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;min-height:36px}
+    .filter-btn[aria-pressed="true"]{background:#0f172a;color:#fff;border-color:#0f172a}
+    [data-theme="dark"] .filter-btn{background:rgba(15,23,42,.65);color:#cbd5e1;border-color:rgba(148,163,184,.18)}
+    [data-theme="dark"] .filter-btn[aria-pressed="true"]{background:#22d3ee;color:#0f172a;border-color:#22d3ee}
+    .empty-state{text-align:center;padding:64px 24px;color:#64748b}
+    .empty-state h2{font-size:20px;margin:12px 0 6px;color:#0f172a}
+    [data-theme="dark"] .empty-state h2{color:#e2e8f0}
+    .decision-card{background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:20px;margin-bottom:14px;transition:transform .15s,box-shadow .15s}
+    .decision-card:hover{transform:translateY(-1px);box-shadow:0 12px 28px rgba(2,6,23,.08)}
+    [data-theme="dark"] .decision-card{background:rgba(15,23,42,.65);border-color:rgba(148,163,184,.18)}
+    .decision-card.featured{border:2px solid rgba(34,211,238,.45);background:linear-gradient(135deg,rgba(34,211,238,.06),rgba(168,85,247,.05))}
+    .decision-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:10px;flex-wrap:wrap}
+    .decision-title{font-size:16px;font-weight:700;margin:0;color:#0f172a}
+    [data-theme="dark"] .decision-title{color:#e2e8f0}
+    .decision-mode{font-family:ui-monospace,Menlo,monospace;font-size:11px;font-weight:700;letter-spacing:.04em;padding:2px 8px;border-radius:6px}
+    .decision-mode.approval{background:rgba(251,191,36,.18);color:#fbbf24}
+    .decision-mode.draft{background:rgba(168,85,247,.18);color:#c084fc}
+    .decision-mode.suggest{background:rgba(34,211,238,.18);color:#22d3ee}
+    .decision-context{font-size:14px;color:#64748b;line-height:1.6;margin:0 0 12px}
+    .decision-meta{display:flex;gap:16px;font-size:12px;color:#64748b;flex-wrap:wrap;margin-bottom:14px}
+    .decision-meta strong{color:#0f172a}
+    [data-theme="dark"] .decision-meta strong{color:#e2e8f0}
+    .decision-actions{display:flex;gap:8px;flex-wrap:wrap}
+    .action-btn{flex:1 1 auto;min-width:88px;min-height:44px;padding:10px 16px;border-radius:10px;border:1px solid #cbd5e1;background:#fff;color:#0f172a;font-family:inherit;font-size:14px;font-weight:600;cursor:pointer}
+    .action-btn:hover{transform:translateY(-1px)}
+    .action-btn.approve{background:rgba(34,197,94,.12);color:#15803d;border-color:rgba(34,197,94,.32)}
+    .action-btn.approve:hover{background:rgba(34,197,94,.22)}
+    .action-btn.edit{background:rgba(168,85,247,.12);color:#a855f7;border-color:rgba(168,85,247,.32)}
+    .action-btn.reject{background:rgba(220,38,38,.12);color:#dc2626;border-color:rgba(220,38,38,.32)}
+    .response-toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#0f172a;color:#fff;padding:12px 20px;border-radius:10px;box-shadow:0 12px 28px rgba(2,6,23,.3);font-size:14px;display:none}
+    .response-toast.show{display:block}
+    .response-toast.error{background:#dc2626}
+    .gate-strip{margin:24px 0;padding:14px;background:rgba(220,38,38,.06);border:1px solid rgba(220,38,38,.22);border-radius:10px;font-family:ui-monospace,Menlo,monospace;font-size:11px;color:#fca5a5;direction:ltr;unicode-bidi:isolate}
+    .gate-strip strong{color:#0f172a;font-family:'IBM Plex Sans Arabic',sans-serif;font-size:13px;display:block;margin-bottom:6px;direction:rtl}
+    [data-theme="dark"] .gate-strip strong{color:#e2e8f0}
+    .footer-bar{margin-top:48px;padding:24px;border-top:1px solid #e2e8f0;text-align:center;color:#64748b;font-size:14px}
+    [data-theme="dark"] .footer-bar{border-color:rgba(148,163,184,.18)}
+    .footer-bar a{color:inherit;margin:0 8px}
+    .demo-pill{background:rgba(168,85,247,.18);color:#c084fc;padding:2px 8px;border-radius:6px;font-family:ui-monospace,Menlo,monospace;font-size:10px;font-weight:700;letter-spacing:.04em;direction:ltr;unicode-bidi:isolate}
+  </style>
+  <script>
+    window.DEALIX_API_BASE = window.DEALIX_API_BASE || 'https://api.dealix.me';
+  </script>
+</head>
+<body>
+  <a class="ds-skip-link" href="#main">تخطّ إلى المحتوى الرئيسي</a>
+
+  <main id="main" class="decisions-wrap">
+    <a href="/customer-portal.html" class="nav-back">← رجوع إلى لوحة العميل</a>
+
+    <header class="head">
+      <h1>قرارات اليوم <span class="demo-pill" id="demo-pill" style="display:none">DEMO</span></h1>
+      <p>القرارات التي تحتاج موافقتك. اعتمد بضغطة، عدّل بتعليق، أو ارفض. كل قرار يُسجّل بـ <code>evidence_id</code> قابل للتدقيق. لا إرسال خارجي بدون موافقتك صراحة (NO_LIVE_SEND).</p>
+    </header>
+
+    <div class="filter-bar" role="group" aria-label="فلترة">
+      <button type="button" class="filter-btn" data-filter="all" aria-pressed="true">الكلّ</button>
+      <button type="button" class="filter-btn" data-filter="approval" aria-pressed="false">موافقات</button>
+      <button type="button" class="filter-btn" data-filter="draft" aria-pressed="false">Drafts</button>
+      <button type="button" class="filter-btn" data-filter="suggest" aria-pressed="false">اقتراحات</button>
+    </div>
+
+    <section id="decisions-list" aria-live="polite">
+      <p class="empty-state">جاري التحميل…</p>
+    </section>
+
+    <div class="gate-strip">
+      <strong>التزامات Dealix على كل قرار</strong>
+      🔒 NO_LIVE_SEND — لا رسالة تخرج باسمك بدون اعتمادك<br>
+      🔒 NO_FAKE_PROOF — كل approval تُسجَّل مع evidence_id + timestamp<br>
+      🔒 NO_UNAPPROVED_TESTIMONIAL — شعارك أو اقتباسك لا يُنشَر دون توقيع consent
+    </div>
+
+    <div class="footer-bar">
+      <strong>Saudi-PDPL · Approval-first · Proof-backed</strong>
+      <div style="margin-top:8px">
+        <a href="/privacy.html">الخصوصيّة</a>
+        <a href="/terms.html">الشروط</a>
+        <a href="/subprocessors.html">المعالجون الفرعيّون</a>
+        <a href="/proof.html">Proof</a>
+        <a href="/trust-center.html">Trust Center</a>
+      </div>
+    </div>
+  </main>
+
+  <div class="response-toast" id="toast" role="status"></div>
+
+  <script>
+    // Track B3 — Customer-side approval UI.
+    // Endpoint contract:
+    //   GET  /api/v1/customer-approvals/{handle}              → list pending
+    //   POST /api/v1/customer-approvals/{handle}/{id}/approve → ApprovalGate
+    //   POST /api/v1/customer-approvals/{handle}/{id}/reject  → ApprovalGate
+    //   POST /api/v1/customer-approvals/{handle}/{id}/edit    → ApprovalGate (queue edit)
+    //
+    // Falls back to DEMO data if the endpoint returns 404 or the customer
+    // handle isn't provisioned. DEMO label is always shown when fallback fires.
+    var apiBase = (window.DEALIX_API_BASE || "").replace(/\/$/, "");
+
+    function getHandle() {
+      var p = new URLSearchParams(window.location.search);
+      return p.get("handle") || p.get("org") || "Slot-A";
+    }
+
+    var DEMO_DECISIONS = [
+      {
+        id: "dec_001",
+        mode: "approval",
+        title: "رسالة لـ شركة النخلة للتطوير",
+        context: "ردّ على tender published منذ 18 ساعة · القناة: واتساب · المخاطرة: متوسطة",
+        customer: "النخلة للتطوير",
+        channel: "WhatsApp",
+        risk: "medium",
+        evidence_preview: "PRF-7a3c-f2",
+        is_demo: true
+      },
+      {
+        id: "dec_002",
+        mode: "draft",
+        title: "مسوّدة عرض سعر لـ Acme Marketing",
+        context: "بناءً على طلبهم في اجتماع 8 مايو · تعديل بسيط على template",
+        customer: "Acme Marketing",
+        channel: "Email",
+        risk: "low",
+        evidence_preview: "—",
+        is_demo: true
+      },
+      {
+        id: "dec_003",
+        mode: "approval",
+        title: "متابعة لـ Slot-B",
+        context: "آخر رد منذ 5 أيّام · يحتاج nudge ثاني",
+        customer: "Slot-B",
+        channel: "WhatsApp",
+        risk: "low",
+        evidence_preview: "—",
+        is_demo: true
+      }
+    ];
+
+    var state = { items: [], filter: "all", isDemo: false };
+
+    function render() {
+      var list = document.getElementById("decisions-list");
+      var visible = state.items.filter(function (it) {
+        return state.filter === "all" || it.mode === state.filter;
+      });
+      if (visible.length === 0) {
+        list.innerHTML = '<p class="empty-state">' +
+          '<span style="font-size:32px">✨</span><h2>لا قرارات معلّقة</h2>' +
+          '<p>عُد لاحقاً — Dealix يقترح القرارات يوميّاً بعد فحص الإشارات.</p></p>';
+        return;
+      }
+      var html = visible.map(function (d, i) {
+        var modeLabel = { approval: "APPROVAL", draft: "DRAFT", suggest: "SUGGEST" }[d.mode] || d.mode;
+        var demoLabel = d.is_demo ? '<span class="demo-pill">DEMO</span>' : '';
+        var actions = d.mode === "suggest"
+          ? '<button class="action-btn" data-id="' + d.id + '" data-action="acknowledge">✓ علمت</button>'
+          : '<button class="action-btn approve" data-id="' + d.id + '" data-action="approve">✓ اعتمد</button>' +
+            '<button class="action-btn edit" data-id="' + d.id + '" data-action="edit">✎ عدّل</button>' +
+            '<button class="action-btn reject" data-id="' + d.id + '" data-action="reject">✕ ارفض</button>';
+        return (
+          '<article class="decision-card' + (i === 0 ? ' featured' : '') + '" data-id="' + d.id + '">' +
+            '<div class="decision-head">' +
+              '<h2 class="decision-title">' + escapeHtml(d.title) + ' ' + demoLabel + '</h2>' +
+              '<span class="decision-mode ' + d.mode + '">' + modeLabel + '</span>' +
+            '</div>' +
+            '<p class="decision-context">' + escapeHtml(d.context) + '</p>' +
+            '<div class="decision-meta">' +
+              '<span><strong>العميل:</strong> ' + escapeHtml(d.customer || "—") + '</span>' +
+              '<span><strong>القناة:</strong> ' + escapeHtml(d.channel || "—") + '</span>' +
+              '<span><strong>المخاطرة:</strong> ' + escapeHtml(d.risk || "—") + '</span>' +
+              (d.evidence_preview ? '<span><strong>Evidence:</strong> <code>' + escapeHtml(d.evidence_preview) + '</code></span>' : '') +
+            '</div>' +
+            '<div class="decision-actions">' + actions + '</div>' +
+          '</article>'
+        );
+      }).join("");
+      list.innerHTML = html;
+
+      // Wire up action buttons
+      list.querySelectorAll(".action-btn").forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          handleAction(btn.dataset.id, btn.dataset.action);
+        });
+      });
+    }
+
+    function escapeHtml(s) {
+      return String(s == null ? "" : s)
+        .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+    }
+
+    function showToast(msg, isError) {
+      var t = document.getElementById("toast");
+      t.textContent = msg;
+      t.classList.toggle("error", !!isError);
+      t.classList.add("show");
+      setTimeout(function () { t.classList.remove("show"); }, 3500);
+    }
+
+    function handleAction(id, action) {
+      var handle = getHandle();
+      if (state.isDemo) {
+        showToast("✓ تمّ تسجيل " + action + " (DEMO mode — لا API call فعلي)");
+        return;
+      }
+      var url = apiBase + "/api/v1/customer-approvals/" + encodeURIComponent(handle) +
+                "/" + encodeURIComponent(id) + "/" + encodeURIComponent(action);
+      fetch(url, { method: "POST", headers: { "Accept": "application/json" } })
+        .then(function (r) {
+          if (!r.ok) throw new Error("HTTP " + r.status);
+          return r.json();
+        })
+        .then(function (body) {
+          showToast("✓ تمّ تسجيل القرار · evidence_id: " + (body.evidence_id || "—"));
+          // Remove the card from view
+          var card = document.querySelector('.decision-card[data-id="' + id + '"]');
+          if (card) card.style.display = "none";
+        })
+        .catch(function () {
+          showToast("تعذّر تسجيل القرار — حاول مجدّداً", true);
+        });
+    }
+
+    function loadDecisions() {
+      var handle = getHandle();
+      var url = apiBase + "/api/v1/customer-approvals/" + encodeURIComponent(handle);
+      fetch(url, { headers: { "Accept": "application/json" } })
+        .then(function (r) {
+          if (!r.ok) throw new Error("HTTP " + r.status);
+          return r.json();
+        })
+        .then(function (body) {
+          var items = (body && Array.isArray(body.decisions)) ? body.decisions : [];
+          state.items = items;
+          state.isDemo = false;
+          document.getElementById("demo-pill").style.display = "none";
+          render();
+        })
+        .catch(function () {
+          state.items = DEMO_DECISIONS;
+          state.isDemo = true;
+          document.getElementById("demo-pill").style.display = "inline-block";
+          render();
+        });
+    }
+
+    // Filter wiring
+    document.querySelectorAll(".filter-btn").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        document.querySelectorAll(".filter-btn").forEach(function (b) {
+          b.setAttribute("aria-pressed", b === btn ? "true" : "false");
+        });
+        state.filter = btn.dataset.filter;
+        render();
+      });
+    });
+
+    loadDecisions();
+
+    // PostHog
+    !function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.async=!0,p.src=s.api_host+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="init capture identify".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
+    if (window.POSTHOG_KEY) { posthog.init(window.POSTHOG_KEY, { api_host: 'https://app.posthog.com' }); posthog.capture('customer_decisions_viewed', { handle: getHandle() }); }
+  </script>
+</body>
+</html>

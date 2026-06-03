@@ -1,0 +1,21 @@
+# Primary offer ladder (UI + sales). Amounts in SAR unless noted.
+primary_surface_offer:
+  id: governed_revenue_ai_ops_diagnostic_7d
+  name_ar: "تشخيص 7 أيام — Governed Revenue & AI Ops"
+  promise_ar:
+    - "أين يضيع الإيراد"
+    - "أين CRM أو البيانات غير جاهزة"
+    - "أين AI/automation غير محكوم"
+    - "أول 3 قرارات تشغيلية قابلة للتنفيذ بدليل"
+  deliverables:
+    - revenue_workflow_map
+    - crm_source_quality_review
+    - approval_boundary_map
+    - evidence_trail_gaps
+    - top_3_governed_decisions
+    - proof_pack
+    - sprint_retainer_recommendation
+  ladder:
+    - diagnostic
+    - sprint_if_value_proven
+    - retainer_if_workflow_repeats

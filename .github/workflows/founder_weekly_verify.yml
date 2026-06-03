@@ -1,0 +1,39 @@
+name: Founder Weekly Verify
+
+# Sunday 06:00 UTC (09:00 KSA) — founder OS + commercial launch readiness (offline).
+
+on:
+  schedule:
+    - cron: "0 6 * * 0"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install pyyaml pytest
+      - name: Founder weekly loop (OS + launch + strongest plan + comprehensive + dogfood)
+        run: bash scripts/founder_weekly_loop.sh
+      - name: Strongest plan pytest
+        run: pytest tests/test_founder_strongest_plan.py -q --no-cov
+      - name: GTM + Railway + weekly metrics pytest
+        run: |
+          pytest tests/test_gtm_public_surfaces.py \
+            tests/test_railway_production_config.py \
+            tests/test_founder_weekly_metrics.py \
+            tests/test_founder_production_gates.py -q --no-cov
+      - uses: actions/upload-artifact@v4
+        with:
+          name: founder-weekly-verify-${{ github.run_id }}
+          path: |
+            data/dealix_dogfooding_war_room.json
+          retention-days: 14
+          if-no-files-found: ignore

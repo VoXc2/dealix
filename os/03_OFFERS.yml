@@ -1,0 +1,307 @@
+# Dealix Offers Catalog
+# كتالوج عروض Dealix — النسخة التشغيلية
+
+offers:
+
+  ai_workflow_audit:
+    id: "WFA"
+    name: "Agentic AI Workflow Audit"
+    name_ar: "تدقيق الـ Workflow بالذكاء الاصطناعي"
+    tagline: "نحلل workflow واحد ونطلع لكم خريطة كاملة لفرص AI Agents خلال 7 أيام"
+    category: "entry"
+    price_sar:
+      min: 5000
+      max: 25000
+      typical: 15000
+    duration_days:
+      min: 3
+      max: 7
+    best_for:
+      - "companies unsure where to start with AI"
+      - "operations-heavy teams with manual workflows"
+      - "companies with repetitive reporting tasks"
+      - "companies wanting low-risk AI entry"
+    not_for:
+      - "companies with no operations team"
+      - "pure trading companies with no workflows"
+    deliverables:
+      - id: "D1"
+        name: "Current Workflow Map"
+        description: "خريطة مرئية للـ workflow الحالي خطوة بخطوة"
+      - id: "D2"
+        name: "Pain Points Map"
+        description: "نقاط الألم والهدر والتكرار"
+      - id: "D3"
+        name: "Agent Opportunity Map"
+        description: "أين يمكن إدخال AI Agents بشكل عملي"
+      - id: "D4"
+        name: "Data & API Requirements"
+        description: "ما البيانات والأنظمة المطلوبة"
+      - id: "D5"
+        name: "Security / Privacy Constraints"
+        description: "القيود الأمنية والخصوصية"
+      - id: "D6"
+        name: "30-Day Pilot Plan"
+        description: "خطة pilot واقعية ومحددة"
+      - id: "D7"
+        name: "Estimated Cost"
+        description: "تقدير تكلفة الـ pilot"
+      - id: "D8"
+        name: "Expected ROI Areas"
+        description: "أين سيظهر العائد"
+      - id: "D9"
+        name: "Risks & Assumptions"
+        description: "المخاطر والافتراضات الأساسية"
+      - id: "D10"
+        name: "Recommended Next Step"
+        description: "التوصية الواضحة للخطوة التالية"
+    client_requirements:
+      - "نقطة تواصل رئيسية واحدة"
+      - "3–5 ساعات من وقت فريقهم للمقابلات"
+      - "الوصول لأمثلة workflow حالية"
+      - "sample data إذا أمكن"
+    natural_next_offer: "agentic_workflow_pilot"
+    sales_angle: "نقطة دخول آمنة ومنخفضة المخاطر — يعطيك الصورة الكاملة قبل أي التزام كبير"
+
+  agentic_workflow_pilot:
+    id: "AWP"
+    name: "Agentic Workflow Pilot"
+    name_ar: "تجربة Workflow بالـ Agentic AI"
+    tagline: "نبني نموذج عملي يثبت القيمة خلال 30 يوم"
+    category: "pilot"
+    price_sar:
+      min: 30000
+      max: 150000
+      typical: 75000
+    duration_days:
+      min: 20
+      max: 35
+    prerequisite: "ai_workflow_audit"
+    deliverables:
+      - "working prototype على بيانات حقيقية أو sample"
+      - "agent flow مُختبر ومُوثّق"
+      - "human approval points مُفعّلة"
+      - "demo path يعمل"
+      - "technical handover document"
+      - "next phase recommendation"
+    natural_next_offer: "full_ai_operations_os"
+
+  maintenance_intelligence_os:
+    id: "MIOS"
+    name: "Maintenance Intelligence OS"
+    name_ar: "نظام الذكاء الاصطناعي للصيانة"
+    tagline: "نظام AI Agentic متكامل لإدارة الصيانة، الفنيين، SLA، والتقارير"
+    category: "vertical_system"
+    price_sar:
+      min: 40000
+      max: 500000
+      typical: 150000
+    duration_days:
+      min: 30
+      max: 90
+    best_for:
+      - "facilities management companies"
+      - "maintenance contractors"
+      - "field service teams"
+      - "utility companies"
+      - "property management"
+    outcomes:
+      - name: "SLA Visibility"
+        description: "كل بلاغ له SLA واضح ومتابعة تلقائية"
+      - name: "Repeated Failure Detection"
+        description: "كشف الأعطال المتكررة قبل أن تصبح كارثية"
+      - name: "Technician Report Automation"
+        description: "تقارير الفنيين تُولَّد تلقائياً"
+      - name: "Management Dashboard"
+        description: "dashboard للإدارة يحدّث نفسه"
+      - name: "Vendor Follow-up Automation"
+        description: "متابعة الموردين والقطع تلقائياً"
+    typical_workflows:
+      - "استقبال وتصنيف البلاغات"
+      - "تعيين الفني المناسب"
+      - "متابعة SLA"
+      - "تقرير الإغلاق"
+      - "تجميع تقارير أسبوعية"
+      - "كشف الأعطال المتكررة"
+    natural_next_offer: "ai_ops_retainer"
+
+  project_controls_ai_os:
+    id: "PCOS"
+    name: "Project Controls AI OS"
+    name_ar: "نظام الذكاء الاصطناعي للتحكم بالمشاريع"
+    tagline: "نظام AI Agentic لمتابعة المشاريع، المخاطر، التقارير، والـ change requests"
+    category: "vertical_system"
+    price_sar:
+      min: 50000
+      max: 500000
+      typical: 175000
+    duration_days:
+      min: 45
+      max: 90
+    best_for:
+      - "contractors"
+      - "PMO teams"
+      - "engineering firms"
+      - "project-heavy organizations"
+    outcomes:
+      - name: "Risk Tracking"
+        description: "رصد المخاطر وتنبيه الإدارة تلقائياً"
+      - name: "Progress Reporting"
+        description: "تقارير التقدم الأسبوعية تُولَّد تلقائياً"
+      - name: "Approval Follow-up"
+        description: "متابعة الموافقات المعلقة"
+      - name: "Document Intelligence"
+        description: "البحث الذكي في وثائق المشروع"
+      - name: "Change Request Management"
+        description: "تتبع change requests من البداية للنهاية"
+    natural_next_offer: "ai_ops_retainer"
+
+  sovereign_knowledge_rag:
+    id: "SKRAG"
+    name: "Sovereign Knowledge / RAG System"
+    name_ar: "نظام المعرفة السيادية"
+    tagline: "مساعد AI داخلي يعمل على وثائقكم وسياساتكم — آمن ومتحكم به"
+    category: "vertical_system"
+    price_sar:
+      min: 50000
+      max: 750000
+      typical: 200000
+    duration_days:
+      min: 45
+      max: 120
+    best_for:
+      - "large enterprises"
+      - "government-adjacent entities"
+      - "policy-heavy organizations"
+      - "organizations with large document libraries"
+      - "law firms and compliance teams"
+    outcomes:
+      - name: "Secure Document Assistant"
+        description: "موظفوكم يسألون النظام بدل البحث اليدوي"
+      - name: "Policy Q&A"
+        description: "إجابات فورية من سياساتكم الداخلية"
+      - name: "Knowledge Retrieval"
+        description: "استرجاع المعلومات من آلاف الوثائق في ثوانٍ"
+      - name: "Controlled Access"
+        description: "كل موظف يرى فقط ما يحق له"
+    sovereignty_features:
+      - "البيانات لا تغادر بيئتكم"
+      - "لا تدريب على بياناتكم"
+      - "audit log لكل query"
+      - "role-based access control"
+    natural_next_offer: "ai_ops_retainer"
+
+  executive_command_center:
+    id: "ECC"
+    name: "Executive AI Command Center"
+    name_ar: "مركز قيادة الذكاء الاصطناعي التنفيذي"
+    tagline: "CEO يرى كل شيء في لوحة واحدة — مخاطر، أداء، قرارات"
+    category: "vertical_system"
+    price_sar:
+      min: 100000
+      max: 1000000
+      note: "يبدأ من 100k ويمتد حسب حجم المؤسسة"
+    duration_days:
+      min: 60
+      max: 180
+    best_for:
+      - "CEO offices"
+      - "holding companies"
+      - "large multi-department organizations"
+      - "C-suite requiring consolidated intelligence"
+    outcomes:
+      - name: "Executive Dashboard"
+        description: "لوحة تنفيذية تحدّث نفسها"
+      - name: "Risk Summary"
+        description: "أبرز المخاطر من جميع الأقسام"
+      - name: "Department Reporting"
+        description: "تقارير الأقسام تُجمَّع تلقائياً"
+      - name: "Next-Action Intelligence"
+        description: "النظام يقترح الإجراء التالي"
+    natural_next_offer: "ai_ops_retainer"
+
+  revenue_ai_os:
+    id: "RAOS"
+    name: "Revenue AI OS"
+    name_ar: "نظام AI للإيرادات"
+    tagline: "فريق المبيعات يركز على الإغلاق — AI يتولى البحث والتواصل والمتابعة"
+    category: "vertical_system"
+    price_sar:
+      min: 40000
+      max: 300000
+      typical: 100000
+    best_for:
+      - "B2B companies with sales teams"
+      - "companies with lead generation challenges"
+    outcomes:
+      - "lead research automation"
+      - "personalized outreach drafting"
+      - "follow-up sequences"
+      - "CRM update automation"
+      - "proposal draft generation"
+    natural_next_offer: "ai_ops_retainer"
+
+  ai_governance_pack:
+    id: "AGP"
+    name: "AI Governance Pack"
+    name_ar: "حزمة حوكمة الذكاء الاصطناعي"
+    tagline: "للشركات التي تريد AI آمناً وقابلاً للمراجعة والامتثال"
+    category: "governance"
+    price_sar:
+      min: 15000
+      max: 100000
+      typical: 35000
+    duration_days:
+      min: 14
+      max: 30
+    best_for:
+      - "companies hesitant about AI due to risk"
+      - "regulated industries"
+      - "companies requiring PDPL compliance"
+      - "companies with data privacy concerns"
+    deliverables:
+      - "AI Usage Policy (AR + EN)"
+      - "Permission and Role Matrix"
+      - "Human Approval Gate Design"
+      - "Data Handling Guidelines"
+      - "Risk Control Framework"
+      - "Audit Log Requirements"
+    often_paired_with:
+      - "sovereign_knowledge_rag"
+      - "executive_command_center"
+      - "maintenance_intelligence_os"
+
+  ai_ops_retainer:
+    id: "RET"
+    name: "AI Ops Retainer"
+    name_ar: "خدمة الدعم والتطوير المستمر"
+    tagline: "نظامكم يتحسن كل شهر — دعم، monitoring، تحسينات، وتوسعة"
+    category: "retainer"
+    price_sar_monthly:
+      min: 8000
+      max: 80000
+      typical: 20000
+    deliverables_monthly:
+      - "system monitoring and health check"
+      - "bug fixes and improvements"
+      - "monthly usage report"
+      - "expansion planning"
+      - "priority support"
+    prerequisite: "any delivered project"
+    natural_upsell: "department_expansion"
+
+  department_expansion:
+    id: "EXP"
+    name: "Department Expansion"
+    name_ar: "توسعة القسم أو الإدارة"
+    tagline: "طبّقنا على قسم — الآن نوسّع على الشركة كاملة"
+    category: "expansion"
+    price_sar:
+      min: 50000
+      max: 500000
+      note: "يعتمد على حجم التوسعة"
+    triggers:
+      - "pilot نجح وطلبوا توسعة"
+      - "قسم ثاني يطلب نفس النظام"
+      - "إدارة جديدة تنضم"
+      - "API integration إضافي"

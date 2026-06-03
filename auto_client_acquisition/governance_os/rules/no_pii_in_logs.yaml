@@ -1,0 +1,8 @@
+id: no_pii_in_logs
+severity: high
+if:
+  destination: audit_log
+  contains_pii: true
+then:
+  decision: redact_or_block
+  reason: PII must not be written to operational logs without policy.

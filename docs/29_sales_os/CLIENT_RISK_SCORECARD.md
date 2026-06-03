@@ -1,0 +1,14 @@
+# مخاطر العميل
+
+## الدور
+
+طلبات غير آمنة، ضغط وعود، بيانات ناقصة.
+
+## نقاط تشغيلية
+
+- رفض مبكر
+
+## روابط
+
+- [DEALIX_EXECUTION_WAVES_AR.md](../strategic/DEALIX_EXECUTION_WAVES_AR.md)
+- [DEALIX_FROM_ZERO_TO_HOLDING_BLUEPRINT.md](../from_zero/DEALIX_FROM_ZERO_TO_HOLDING_BLUEPRINT.md)

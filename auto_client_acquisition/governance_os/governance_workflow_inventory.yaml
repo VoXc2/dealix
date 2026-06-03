@@ -1,0 +1,52 @@
+version: 1
+program: global_ai_transformation
+# Inventory of high-impact workflows — maps to workflow_control_registry.py domains
+workflows:
+  - domain: revenue_intake_outreach
+    systems: [leads, revenue_os, approval_center]
+    control_classes: [external_action, data_export, pricing_commitment]
+  - domain: revenue_outreach
+    systems: [outreach_drafts, channel_policy]
+    control_classes: [external_action, pricing_commitment]
+  - domain: delivery_execution
+    systems: [delivery_factory, delivery_os, proof_os]
+    control_classes: [data_export, irreversible_action]
+  - domain: customer_success
+    systems: [customer_success_scores, adoption_os]
+    control_classes: [external_action, contract_commitment]
+  - domain: support_desk_resolution
+    systems: [support_os, customer_inbox_v10]
+    control_classes: [external_action, data_export]
+  - domain: partner_channel
+    systems: [partnership_os, commercial_map]
+    control_classes: [external_action, contract_commitment, pricing_commitment]
+  - domain: procurement_intake
+    systems: [enterprise_package, trust_os]
+    control_classes: [data_export, contract_commitment, external_action]
+  - domain: finance_reporting
+    systems: [operating_finance_os, value_os]
+    control_classes: [data_export, pricing_commitment]
+  - domain: product_release
+    systems: [release_gate, unified_readiness]
+    control_classes: [irreversible_action, autonomy_change]
+  - domain: executive_reporting
+    systems: [reporting_os, executive_command_center]
+    control_classes: [data_export, external_action]
+  - domain: back_office_automation
+    systems: [workflow_os_v10, control_plane_os]
+    control_classes: [data_export, irreversible_action]
+  - domain: self_evolving
+    systems: [self_evolving_os, runtime_safety_os]
+    control_classes: [self_evolving_apply, autonomy_change]
+  - domain: compliance_pdpl
+    systems: [pdpl, compliance_os, trust_os]
+    control_classes: [data_export, external_action, irreversible_action]
+  - domain: billing_collections
+    systems: [payment_ops, moyasar, operating_finance_os]
+    control_classes: [pricing_commitment, contract_commitment, external_action]
+  - domain: ai_model_routing
+    systems: [model_router, cost_guard, agent_os]
+    control_classes: [autonomy_change, pricing_commitment, data_export]
+  - domain: capital_allocation
+    systems: [capital_os, value_os, operating_finance_os]
+    control_classes: [pricing_commitment, contract_commitment, data_export]

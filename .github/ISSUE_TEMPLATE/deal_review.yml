@@ -1,0 +1,42 @@
+name: Deal review
+description: Prepare a B2B opportunity for execution
+title: "deal: "
+labels:
+  - sales
+body:
+  - type: input
+    id: account
+    attributes:
+      label: Account
+    validations:
+      required: true
+  - type: textarea
+    id: need
+    attributes:
+      label: Customer need
+    validations:
+      required: true
+  - type: textarea
+    id: people
+    attributes:
+      label: People involved
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidence needed
+    validations:
+      required: true
+  - type: textarea
+    id: blockers
+    attributes:
+      label: Blockers
+    validations:
+      required: true
+  - type: textarea
+    id: plan
+    attributes:
+      label: Next action plan
+    validations:
+      required: true

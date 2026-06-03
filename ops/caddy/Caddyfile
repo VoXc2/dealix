@@ -1,0 +1,32 @@
+{
+	email {$ACME_EMAIL:admin@dealix.me}
+	servers {
+		protocols h1 h2 h3
+	}
+}
+
+{$DEALIX_API_DOMAIN:api.dealix.me} {
+	encode gzip zstd
+	header {
+		Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+		X-Content-Type-Options "nosniff"
+		Referrer-Policy "strict-origin-when-cross-origin"
+		Permissions-Policy "camera=(), microphone=(), geolocation=()"
+	}
+	reverse_proxy api:8000
+}
+
+{$DEALIX_DOMAIN:dealix.me} {
+	encode gzip zstd
+	header {
+		Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+		X-Content-Type-Options "nosniff"
+		Referrer-Policy "strict-origin-when-cross-origin"
+		Permissions-Policy "camera=(), microphone=(), geolocation=()"
+	}
+	reverse_proxy {$DEALIX_FRONTEND_UPSTREAM:frontend:3000}
+}
+
+www.{$DEALIX_DOMAIN:dealix.me} {
+	redir https://{$DEALIX_DOMAIN:dealix.me}{uri} permanent
+}

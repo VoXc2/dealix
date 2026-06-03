@@ -1,0 +1,43 @@
+# Founder closure intake — copy to founder_closure_intake.yaml and fill (gitignored)
+# Ref: scripts/apply_founder_closure_commercial.py
+# Rule: no invented CRM/revenue numbers — real company + payment_ref + proof path only
+
+version: 1
+attestation_ar: "أقر أن البيانات أدناه من CRM/مالية/ميسر فعلية — ليست seed"
+
+active_deal:
+  company: ""  # اسم شركة حقيقية
+  contact: ""
+  motion: A  # A | B | C | D
+  offer_id: governed_diagnostic
+  source_channel: warm
+  pain_hypothesis_ar: ""
+  amount_sar: 4999
+  payment_date: ""  # YYYY-MM-DD
+  payment_ref: ""  # Moyasar invoice id أو مرجع تحويل
+  payment_method: moyasar_live  # moyasar_live | manual_transfer
+  proof_pack_path: ""  # e.g. docs/commercial/proof_packs/acme_diagnostic_2026.md
+
+weekly_decision:
+  week_iso: ""  # YYYY-MM-DD
+  one_decision_ar: ""
+  why_this_phase_ar: ""
+  success_by_friday_ar: ""
+
+pdpl:
+  mark_all_done: false  # true only after founder verifies refs exist
+
+paths:
+  hubspot_kpi_csv: ""  # optional HubSpot deals export
+  gtm_conversations_csv: ""  # optional — 30+ qualified rows
+
+evidence_funnel_dates:
+  lead_identified: ""
+  message_sent_manual: ""
+  reply_received: ""
+  discovery_completed: ""
+  demo_booked: ""
+  demo_held: ""
+  scope_requested: ""
+  scope_signed: ""
+  invoice_sent: ""

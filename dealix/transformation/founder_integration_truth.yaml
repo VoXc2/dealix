@@ -1,0 +1,105 @@
+# Founder integration truth matrix — edit status after manual verify (no invented PASS).
+# Consumed by: dealix.business_now.integration_truth, founder_go_live_verify.sh
+version: 1
+updated_note_ar: "حدّث status بعد كل اختبار يدوي — green/yellow/red فقط"
+
+ladder:
+  - id: ops_diagnostic
+    label_ar: "Governed Revenue Ops Diagnostic"
+    price_sar: "4999-15000"
+    endpoint: "POST /api/v1/service-setup/qualify"
+    verify_script: "manual qualify + founder proposal"
+    status: yellow
+    founder_says_ar: "تشخيص مدفوع أسبوعان — العقد والفاتورة يدوياً أو sandbox حتى Moyasar live"
+  - id: free_mini_diagnostic
+    label_ar: "تشخيص مجاني"
+    price_sar: "0"
+    endpoint: "POST /api/v1/company-growth-beast/diagnostic"
+    verify_script: "curl intake or landing"
+    status: green
+    founder_says_ar: "مجاني — مراجعة يدوية من المؤسس"
+  - id: revenue_proof_sprint_499
+    label_ar: "سبرنت إثبات 499"
+    price_sar: "499"
+    endpoint: "POST /api/v1/sprint/run"
+    verify_script: "tests/test_revenue_os_golden_chain_smoke.py"
+    status: green
+    founder_says_ar: "مسار Sprint + Proof Pack في الريبو — الدفع يدوي أو sandbox"
+  - id: data_to_revenue_pack_1500
+    label_ar: "حزمة بيانات 1500"
+    price_sar: "1500"
+    endpoint: "POST /api/v1/data-os/import-preview/upload"
+    verify_script: "tests/test_data_os_quality.py"
+    status: green
+    founder_says_ar: "رفع CSV + DQ score — لا ادّعاء L5 قبل اجتماع"
+  - id: growth_ops_monthly_2999
+    label_ar: "عمليات نمو شهرية"
+    price_sar: "2999/mo"
+    endpoint: "GET /api/v1/value/{handle}/report/monthly"
+    verify_script: "tenant + monthly report manual"
+    status: yellow
+    founder_says_ar: "بعد Sprint و Proof — يحتاج tenant فعّال"
+  - id: support_os_addon_1500
+    label_ar: "إضافة دعم"
+    price_sar: "1500/mo"
+    endpoint: "support_os module"
+    verify_script: "dealix_capability_verify.sh"
+    status: yellow
+    founder_says_ar: "بعد أول عميل مدفوع — مسودات دعم فقط"
+  - id: executive_command_center_7500
+    label_ar: "غرفة قيادة تنفيذية"
+    price_sar: "7500/mo"
+    endpoint: "GET founder command center"
+    verify_script: "WAVE6_REAL_DEMO_RUNBOOK"
+    status: yellow
+    founder_says_ar: "ديمو ECC — لا بيع قبل Proof على طبقة أدنى"
+
+integrations:
+  - id: postgres_redis
+    label_ar: "Postgres + Redis"
+    status: green
+    verify_script: "docker compose up -d postgres redis"
+    founder_says_ar: "أساس كل الاختبار المحلي"
+  - id: moyasar_live
+    label_ar: "Moyasar live"
+    status: red
+    verify_script: "POST /api/v1/payment-ops/invoice-intent"
+    founder_says_ar: "KYC أو فاتورة يدوية — sandbox للاختبار التقني فقط"
+  - id: moyasar_sandbox
+    label_ar: "Moyasar sandbox"
+    status: yellow
+    verify_script: "MOYASAR_SECRET_KEY=sk_test_* + invoice-intent"
+    founder_says_ar: "ضع sk_test في .env ثم أعد الاختبار"
+  - id: whatsapp_business
+    label_ar: "WhatsApp Business API"
+    status: red
+    verify_script: "integrations/whatsapp.py"
+    founder_says_ar: "ديمو = مسودات + موافقة — لا إرسال بارد"
+  - id: hubspot_crm
+    label_ar: "HubSpot CRM"
+    status: yellow
+    verify_script: "POST /api/v1/leads (sync skipped without key)"
+    founder_says_ar: "CRM يدوي + kpi_founder_commercial_import.yaml"
+  - id: gmail_external
+    label_ar: "Gmail خارجي"
+    status: red
+    verify_script: "approval gate"
+    founder_says_ar: "لا إرسال بدون founder_confirmed"
+
+platform_checks:
+  - id: golden_chain
+    label_ar: "Golden chain leads"
+    verify_script: "pytest tests/test_revenue_os_golden_chain_smoke.py"
+    status: green
+  - id: business_now
+    label_ar: "Business NOW snapshot"
+    verify_script: "scripts/run_business_now.sh"
+    status: green
+  - id: revenue_os
+    label_ar: "Revenue OS catalog"
+    verify_script: "scripts/revenue_os_master_verify.sh"
+    status: green
+  - id: capability
+    label_ar: "Delivery capability"
+    verify_script: "scripts/dealix_capability_verify.sh"
+    status: green

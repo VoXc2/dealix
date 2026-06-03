@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-theme="dark">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Saudi B2B Lead Score Calculator — Free · Dealix</title>
+<meta name="description" content="احسب درجة الـ lead الواحد في pipeline مكتبك خلال ٣٠ ثانية. مبني على بيانات سوق B2B السعودي مايو ٢٠٢٦. مجّاني، بدون تسجيل، PDPL-compliant." />
+<link rel="canonical" href="https://dealix.me/free-tools/lead-score-calculator.html" />
+<meta property="og:type" content="website" />
+<meta property="og:title" content="Free · Saudi B2B Lead Score Calculator" />
+<meta property="og:description" content="Calculate any lead's strength in 30 seconds. Built on KSA B2B 2026 benchmarks. Free, no signup needed." />
+<meta property="og:url" content="https://dealix.me/free-tools/lead-score-calculator.html" />
+<meta property="og:locale" content="ar_SA" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="theme-color" content="#0f172a" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" />
+
+<link rel="stylesheet" href="/styles.css" />
+<link rel="stylesheet" href="/assets/css/design-system.css" />
+<script src="https://unpkg.com/lucide@0.469.0/dist/umd/lucide.min.js" defer></script>
+
+<style>
+  body {
+    background:
+      radial-gradient(900px 500px at 80% -10%, rgba(34, 211, 238, 0.18), transparent 60%),
+      radial-gradient(900px 500px at 0% 10%, rgba(168, 85, 247, 0.16), transparent 60%),
+      linear-gradient(180deg, #050816 0%, #0b1124 60%, #1e1b4b 100%);
+    color: var(--text);
+    min-height: 100vh;
+    margin: 0;
+    font-family: var(--font-ar);
+  }
+  main { padding: var(--space-7) var(--space-5) var(--space-9); }
+  .calc {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-6);
+    align-items: start;
+  }
+  @media (max-width: 800px) { .calc { grid-template-columns: 1fr; } }
+
+  .calc__form { display: grid; gap: var(--space-4); }
+  .calc__result {
+    position: sticky;
+    top: var(--space-5);
+    padding: var(--space-6);
+    background: var(--ds-surface-1);
+    border: 1px solid var(--ds-border);
+    border-radius: var(--radius-lg, 20px);
+    display: grid;
+    gap: var(--space-3);
+  }
+
+  .score-circle {
+    width: 180px; height: 180px; margin: 0 auto;
+    border-radius: 50%;
+    background:
+      conic-gradient(
+        from -90deg,
+        var(--score-color, #22d3ee) calc(var(--score, 0) * 1%),
+        rgba(148, 163, 184, 0.18) 0
+      );
+    display: grid; place-items: center;
+    position: relative;
+    transition: background 600ms var(--ease-out-quart);
+  }
+  .score-circle::before {
+    content: "";
+    position: absolute;
+    inset: 12px;
+    border-radius: 50%;
+    background: var(--ds-surface-2, rgba(15, 23, 42, 0.85));
+  }
+  .score-circle__inner {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+  }
+  .score-num {
+    font-family: var(--font-lt);
+    font-size: 56px;
+    font-weight: 800;
+    line-height: 1;
+    background: linear-gradient(90deg, var(--accent-2), #a855f7);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .score-label {
+    font-size: var(--fs-xs);
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-top: 4px;
+  }
+
+  .score-grade { display: flex; justify-content: center; }
+  .score-reasons { display: grid; gap: var(--space-2); font-size: var(--fs-sm); }
+  .score-reason { display: flex; gap: var(--space-2); align-items: flex-start; padding: var(--space-2) var(--space-3); background: rgba(2, 6, 23, 0.4); border-radius: var(--radius-sm, 8px); }
+  .score-reason__pts { font-family: var(--font-lt); font-weight: 700; color: var(--accent-2); min-width: 36px; }
+  .score-reason__text { color: var(--text); flex: 1; line-height: var(--lh-base); }
+
+  .calc__field {
+    padding: var(--space-4);
+    background: var(--ds-surface-1);
+    border: 1px solid var(--ds-border);
+    border-radius: var(--radius, 14px);
+  }
+  .calc__field h3 { margin: 0 0 var(--space-2) 0; font-size: var(--fs-md); font-weight: 600; }
+  .calc__field-options { display: grid; gap: var(--space-2); }
+  .calc__field-options label { display: flex; gap: var(--space-3); align-items: center; cursor: pointer; padding: var(--space-2) var(--space-3); border-radius: var(--radius-sm, 8px); transition: background var(--dur-fast); }
+  .calc__field-options label:hover { background: rgba(34, 211, 238, 0.06); }
+  .calc__field-options input[type="radio"] { accent-color: var(--accent-2); }
+</style>
+</head>
+<body>
+<a class="ds-skip-link" href="#main">تخطّ إلى المحتوى الرئيسي</a>
+
+<main id="main" class="ds-container--full ds-stack ds-stack--xl">
+
+  <nav class="ds-breadcrumb" aria-label="مسار التنقّل">
+    <a href="/">الرئيسيّة</a>
+    <span class="ds-breadcrumb__sep" aria-hidden="true"></span>
+    <span aria-current="page">Saudi B2B Lead Score</span>
+  </nav>
+
+  <section class="ds-banner ds-stack ds-stack--sm" aria-labelledby="hero-title">
+    <span class="ds-eyebrow">Free · No signup · Built on KSA B2B 2026 data</span>
+    <h1 id="hero-title" class="ds-banner__title">🎯 Saudi B2B Lead Score Calculator</h1>
+    <p class="ds-banner__subtitle">احسب درجة أي lead في pipelineك خلال ٣٠ ثانية. ٦ أسئلة تبسيطيّة بناءً على KSA market benchmarks الحقيقيّة (MQL→SQL: ١٥-٢٥٪ · SQL→close: ١٠-٢٠٪). الدرجة تُحسب فوراً في متصفّحك — لا backend، لا تخزين بيانات.</p>
+  </section>
+
+  <!-- KPIs from real data -->
+  <section class="ds-grid ds-grid--narrow" aria-label="بيانات السوق">
+    <div class="ds-kpi"><span class="ds-kpi__num">15-25%</span><span class="ds-kpi__label">MQL→SQL · KSA average</span></div>
+    <div class="ds-kpi"><span class="ds-kpi__num">10-20%</span><span class="ds-kpi__label">SQL→close · KSA average</span></div>
+    <div class="ds-kpi"><span class="ds-kpi__num">18-30 mo</span><span class="ds-kpi__label">CAC payback · KSA SaaS</span></div>
+    <div class="ds-kpi"><span class="ds-kpi__num">+15-25%</span><span class="ds-kpi__label">close-rate boost · SAR + Arabic</span></div>
+  </section>
+
+  <!-- Calculator -->
+  <section aria-labelledby="calc-title" class="ds-stack ds-stack--md">
+    <div>
+      <span class="ds-eyebrow">٦ أسئلة سريعة</span>
+      <h2 id="calc-title" class="ds-headline" style="font-size: var(--fs-3xl); margin-top: var(--space-3);">احسب درجة الـ Lead</h2>
+      <p class="ds-lede" style="margin-top: var(--space-3);">الدرجة من ٠ إلى ١٠٠. أعلى من ٧٠ = اتّصل اليوم. ٤٠-٧٠ = حدّد follow-up خلال ٧ أيّام. أقلّ من ٤٠ = أرسل draft إيميلي مع consent + لا تطارد.</p>
+    </div>
+
+    <div class="calc">
+      <!-- Form (left side) -->
+      <form id="calcForm" class="calc__form" novalidate>
+        <!-- Q1: Source quality -->
+        <div class="calc__field">
+          <h3>1. مصدر الـ Lead</h3>
+          <div class="calc__field-options">
+            <label><input type="radio" name="source" value="20" /> Warm intro / إحالة شخصيّة (max signal)</label>
+            <label><input type="radio" name="source" value="17" /> Inbound من /diagnostic.html أو موقعنا</label>
+            <label><input type="radio" name="source" value="15" /> LinkedIn message دافئ من شخص أعرفه</label>
+            <label><input type="radio" name="source" value="12" /> ردّ على إعلان (paid ads)</label>
+            <label><input type="radio" name="source" value="8" /> Property portal (Bayut, aqar.fm, مماثل)</label>
+            <label><input type="radio" name="source" value="5" /> WhatsApp group post / forwarded</label>
+            <label><input type="radio" name="source" value="0" /> Cold (شراء قائمة، scraping) ❌</label>
+          </div>
+        </div>
+
+        <!-- Q2: Budget signal -->
+        <div class="calc__field">
+          <h3>2. هل ذكر الـ budget بشكل واضح؟</h3>
+          <div class="calc__field-options">
+            <label><input type="radio" name="budget" value="20" /> نعم — رقم محدّد، موافق عليه داخلياً</label>
+            <label><input type="radio" name="budget" value="15" /> نعم — range (مثلاً ٢-٥ مليون)</label>
+            <label><input type="radio" name="budget" value="10" /> ضمنيّاً (يبحث في category مماثل لميزانيتنا)</label>
+            <label><input type="radio" name="budget" value="5" /> ما ذكره بعد — يحتاج discovery call</label>
+            <label><input type="radio" name="budget" value="0" /> صراحة "ما عندي ميزانية حالياً"</label>
+          </div>
+        </div>
+
+        <!-- Q3: Authority -->
+        <div class="calc__field">
+          <h3>3. هل الـ lead = صاحب القرار؟</h3>
+          <div class="calc__field-options">
+            <label><input type="radio" name="authority" value="20" /> نعم — المالك / المؤسس / CEO مباشرة</label>
+            <label><input type="radio" name="authority" value="15" /> Decision-maker لكن يحتاج موافقة الشركاء</label>
+            <label><input type="radio" name="authority" value="10" /> Influencer قوي (head of sales/ops)</label>
+            <label><input type="radio" name="authority" value="5" /> موظف tactical (مساعد إداري، broker جديد)</label>
+            <label><input type="radio" name="authority" value="0" /> ما يقدر يقرّر — يحتاج "ايجيب الكفيل"</label>
+          </div>
+        </div>
+
+        <!-- Q4: Timeline urgency -->
+        <div class="calc__field">
+          <h3>4. الـ timeline (متى يحتاج)؟</h3>
+          <div class="calc__field-options">
+            <label><input type="radio" name="timeline" value="15" /> هذا الأسبوع — urgent</label>
+            <label><input type="radio" name="timeline" value="13" /> خلال شهر</label>
+            <label><input type="radio" name="timeline" value="10" /> خلال ربع (٣ شهور)</label>
+            <label><input type="radio" name="timeline" value="6" /> "في المستقبل القريب" (vague)</label>
+            <label><input type="radio" name="timeline" value="2" /> "بسأل بس" — exploratory فقط</label>
+          </div>
+        </div>
+
+        <!-- Q5: Pain clarity -->
+        <div class="calc__field">
+          <h3>5. هل وصف المشكلة بوضوح؟</h3>
+          <div class="calc__field-options">
+            <label><input type="radio" name="pain" value="15" /> مشكلة محدّدة + cost of inaction واضح</label>
+            <label><input type="radio" name="pain" value="12" /> مشكلة محدّدة بدون quantification</label>
+            <label><input type="radio" name="pain" value="8" /> "نريد نتحسّن" — vague</label>
+            <label><input type="radio" name="pain" value="3" /> ما عنده مشكلة معلنة — يستكشف فقط</label>
+          </div>
+        </div>
+
+        <!-- Q6: PDPL-safe + Arabic -->
+        <div class="calc__field">
+          <h3>6. خصائص KSA (مكافآت)</h3>
+          <div class="calc__field-options">
+            <label style="cursor: default;"><input type="checkbox" name="ksa_resident" value="3" /> الشركة سعوديّة (residency في KSA)</label>
+            <label style="cursor: default;"><input type="checkbox" name="ksa_arabic_pref" value="3" /> يفضّل الـ communication بالعربي السعودي</label>
+            <label style="cursor: default;"><input type="checkbox" name="ksa_b2b" value="2" /> B2B وليس B2C (sales cycle أطول لكن LTV أعلى)</label>
+            <label style="cursor: default;"><input type="checkbox" name="ksa_consent" value="2" /> أعطى PDPL consent صريح للـ outreach</label>
+          </div>
+        </div>
+      </form>
+
+      <!-- Result panel (right / sticky) -->
+      <aside class="calc__result" aria-labelledby="result-title">
+        <h3 id="result-title" style="margin: 0; font-size: var(--fs-md); text-align: center;">درجة الـ Lead</h3>
+        <div class="score-circle" id="score-circle" style="--score: 0; --score-color: rgba(148, 163, 184, 0.4);">
+          <div class="score-circle__inner">
+            <div class="score-num" id="score-num">0</div>
+            <div class="score-label">/ 100</div>
+          </div>
+        </div>
+        <div class="score-grade">
+          <span id="score-pill" class="ds-mode ds-mode--blocked" style="font-size: var(--fs-md); padding: 4px 12px;">—</span>
+        </div>
+        <p id="score-action" style="text-align: center; font-size: var(--fs-md); font-weight: 600; color: var(--text); margin: 0;">اختر الإجابات على اليمين لاحتساب الدرجة</p>
+        <div class="score-reasons" id="score-reasons"></div>
+        <div style="margin-top: var(--space-3); padding-top: var(--space-3); border-top: 1px solid var(--ds-border);">
+          <p class="ds-card__sub" style="font-size: var(--fs-xs); margin-bottom: var(--space-3);">
+            تريد Pipeline Audit كامل لمكتبك (مع scoring لكل lead نشط)؟
+          </p>
+          <a class="ds-btn ds-btn--block" href="/diagnostic-real-estate.html">
+            <i data-lucide="arrow-right" style="width:16px;height:16px;"></i>
+            تشخيص مكتبك مجّاني (٢٤ ساعة)
+          </a>
+        </div>
+      </aside>
+    </div>
+
+    <!-- How the score is calculated (transparency) -->
+    <div class="ds-card ds-stack ds-stack--sm" style="margin-top: var(--space-5);">
+      <h3 class="ds-card__title">كيف تُحسب الدرجة؟</h3>
+      <p class="ds-card__sub">الدرجة من ١٠٠، مبنيّة على إطار BANT الكلاسيكي مع تعديلات للسوق السعودي.</p>
+      <ul class="ds-list-clean" style="font-size: var(--fs-sm);">
+        <li><strong>Source quality (max 20)</strong> — warm intro = 20 · cold = 0 (KSA market: warm intros تُغلق ٣x أسرع من cold per industry data)</li>
+        <li><strong>Budget signal (max 20)</strong> — BANT-B</li>
+        <li><strong>Authority (max 20)</strong> — BANT-A · صاحب القرار = 20</li>
+        <li><strong>Timeline (max 15)</strong> — BANT-T · هذا الأسبوع = 15</li>
+        <li><strong>Pain clarity (max 15)</strong> — BANT-N · محدّد + quantified = 15</li>
+        <li><strong>KSA bonuses (max 10)</strong> — KSA residency, Arabic pref, B2B, PDPL consent = +10</li>
+      </ul>
+      <p class="ds-card__sub" style="font-size: var(--fs-xs); color: var(--text-muted);">
+        المصادر: KSA SaaS pipeline benchmarks (Mordor Intelligence May 2026) · BANT framework (Stewart, IBM 1960s) · MENA B2B data (5P Sales / Heimdall Partner 2026).
+      </p>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="ds-stack ds-stack--sm" style="text-align: center; padding: var(--space-7) 0;">
+    <h2 class="ds-headline" style="font-size: var(--fs-2xl);">جرّبه على ٣ leads وأرسل لي نتيجتك</h2>
+    <p class="ds-lede" style="max-width: 580px; margin: 0 auto;">
+      لو ٢ من ٣ leads عندك تجي بدرجة <40، فعليّاً تخسر CAC. الـ Sector Sprint ينظّفها خلال أسبوع.
+    </p>
+    <div class="ds-row" style="justify-content: center; gap: var(--space-4); margin-top: var(--space-4);">
+      <a class="ds-btn ds-btn--lg" href="/diagnostic-real-estate.html">
+        <i data-lucide="building-2" style="width:18px;height:18px;"></i>
+        تشخيص مكتب عقاري
+      </a>
+      <a class="ds-btn ds-btn--ghost ds-btn--lg" href="/start.html">
+        <i data-lucide="rocket" style="width:18px;height:18px;"></i>
+        ابدأ Sector Sprint
+      </a>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="ds-footer">
+    <div class="ds-container ds-stack ds-stack--md" style="text-align: center;">
+      <p class="ds-lede" style="max-width: 720px; margin: 0 auto; font-size: var(--fs-sm);">
+        الحساب يتمّ في متصفّحك بالكامل. لا backend، لا تخزين، لا cookies. PDPL-safe.
+      </p>
+      <div class="ds-row" style="justify-content: center; gap: var(--space-5); flex-wrap: wrap;">
+        <a class="ds-link" href="/">الرئيسيّة</a>
+        <a class="ds-link" href="/ai-team.html">AI Operating Team</a>
+        <a class="ds-link" href="/compare.html">مقارنة</a>
+        <a class="ds-link" href="/diagnostic.html">التشخيص</a>
+        <a class="ds-link" href="/proof.html">Proof</a>
+      </div>
+    </div>
+  </footer>
+
+</main>
+
+<script>
+  const form = document.getElementById('calcForm');
+  const scoreNum = document.getElementById('score-num');
+  const scoreCircle = document.getElementById('score-circle');
+  const scorePill = document.getElementById('score-pill');
+  const scoreAction = document.getElementById('score-action');
+  const scoreReasons = document.getElementById('score-reasons');
+
+  function gradeFromScore(score) {
+    if (score >= 75) return { label: 'CALL TODAY 🔥', cls: 'ds-mode--approved', color: '#22c55e', action: 'اتّصل اليوم — هذا lead ساخن. أرسل WhatsApp voice note خلال ٣٠ دقيقة.' };
+    if (score >= 55) return { label: 'PRIORITY 7d', cls: 'ds-mode--suggest', color: '#22d3ee', action: 'متابعة خلال ٧ أيّام. ابدأ بـ discovery call ٣٠ دقيقة.' };
+    if (score >= 35) return { label: 'NURTURE', cls: 'ds-mode--draft', color: '#a855f7', action: 'أرسل value-first email أو content مع PDPL consent. لا تتّصل بعد.' };
+    return { label: 'LOW · DEFER', cls: 'ds-mode--blocked', color: '#fca5a5', action: 'لا تطارد. ضع في drip بطيء (شهري) أو deprioritize.' };
+  }
+
+  function recompute() {
+    let total = 0;
+    const reasons = [];
+
+    const fields = [
+      { name: 'source', label: 'مصدر' },
+      { name: 'budget', label: 'ميزانيّة' },
+      { name: 'authority', label: 'سلطة' },
+      { name: 'timeline', label: 'urgency' },
+      { name: 'pain', label: 'وضوح ألم' },
+    ];
+
+    for (const f of fields) {
+      const sel = form.querySelector(`input[name="${f.name}"]:checked`);
+      if (sel) {
+        const pts = parseInt(sel.value, 10);
+        total += pts;
+        if (pts > 0) reasons.push({ pts: '+' + pts, text: f.label });
+      }
+    }
+
+    // KSA bonuses (checkboxes)
+    const ksa_resident = form.querySelector('input[name="ksa_resident"]:checked');
+    const ksa_arabic = form.querySelector('input[name="ksa_arabic_pref"]:checked');
+    const ksa_b2b = form.querySelector('input[name="ksa_b2b"]:checked');
+    const ksa_consent = form.querySelector('input[name="ksa_consent"]:checked');
+    if (ksa_resident) { total += 3; reasons.push({ pts: '+3', text: 'KSA residency' }); }
+    if (ksa_arabic) { total += 3; reasons.push({ pts: '+3', text: 'Arabic preferred' }); }
+    if (ksa_b2b) { total += 2; reasons.push({ pts: '+2', text: 'B2B (high LTV)' }); }
+    if (ksa_consent) { total += 2; reasons.push({ pts: '+2', text: 'PDPL consent given' }); }
+
+    total = Math.min(100, total);
+
+    // Update UI
+    scoreNum.textContent = total;
+    const grade = gradeFromScore(total);
+    scoreCircle.style.setProperty('--score', total);
+    scoreCircle.style.setProperty('--score-color', grade.color);
+    scorePill.textContent = grade.label;
+    scorePill.className = `ds-mode ${grade.cls}`;
+    scorePill.style.fontSize = 'var(--fs-md)';
+    scorePill.style.padding = '4px 12px';
+    scoreAction.textContent = grade.action;
+
+    // Reasons
+    scoreReasons.innerHTML = reasons
+      .map(r => `<div class="score-reason"><span class="score-reason__pts">${r.pts}</span><span class="score-reason__text">${r.text}</span></div>`)
+      .join('');
+  }
+
+  form.addEventListener('change', recompute);
+  recompute();
+
+  document.addEventListener('DOMContentLoaded', function () {
+    if (window.lucide && window.lucide.createIcons) window.lucide.createIcons();
+  });
+</script>
+
+</body>
+</html>

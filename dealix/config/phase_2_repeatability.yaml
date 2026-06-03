@@ -1,0 +1,32 @@
+# Phase 2 — Repeatability (بعد Phase 0–1 PASS)
+# Ref: CEO Master Plan · FOUNDER_STRONGEST_PLAN_AR.md phase_24
+
+version: 1
+unlocked_when:
+  phase_0_1_gate: PASS
+  min_paid_diagnostics: 1
+  min_proof_packs: 1
+
+deliverables:
+  case_study:
+    template: docs/commercial/operations/CASE_STUDY_TEMPLATE_AR.md
+    output_dir: docs/commercial/operations/case_studies/
+    min_count: 1
+    anonymized_ok: true
+  sales_playbook:
+    doc: docs/commercial/operations/FOUNDER_SALES_PLAYBOOK_AR.md
+    update_after_each: win_or_loss
+  partner_referrals:
+    kit: docs/commercial/operations/PARTNER_REFERRAL_KIT_AR.md
+    target_conversations: 2
+    target_intros: 1
+  delivery_hire:
+    spec: docs/commercial/operations/DELIVERY_OPERATOR_HIRE_SPEC_AR.md
+    trigger: after_10_founder_closes
+    role: delivery_cs_operator
+
+metrics_to_document:
+  - diagnostic_to_sprint_conversion_pct
+  - time_to_proof_days
+  - objection_patterns
+  - icp_fit_signals

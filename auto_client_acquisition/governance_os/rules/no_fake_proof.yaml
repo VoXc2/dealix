@@ -1,0 +1,10 @@
+id: no_fake_proof
+severity: critical
+if:
+  output_contains_any:
+    - fake proof
+    - fake testimonial
+    - fabricated case study
+then:
+  decision: block
+  reason: Fabricated proof is not allowed.

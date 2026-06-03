@@ -1,0 +1,50 @@
+{
+  "source_name": "gtm_revenue_machine_seed_v1",
+  "source_type": "public",
+  "allowed_use": "business_contact_research_only",
+  "consent_status": "legitimate_interest_business_directory",
+  "risk_level": "low",
+  "notes": "Synthetic Saudi B2B seed for revenue-machine — not warm outreach until founder marks warm_outreach_eligible in CRM.",
+  "rows": [
+    {
+      "company_name": "وكالة نبض الرقمية",
+      "domain": "nabdigital.sa",
+      "city": "Riyadh",
+      "sector": "marketing_agency",
+      "email": "ceo@nabdigital.sa",
+      "phone": "+966501000001"
+    },
+    {
+      "company_name": "مختبر SaaS السعودي",
+      "domain": "saudi-saas-lab.sa",
+      "city": "Riyadh",
+      "sector": "saas",
+      "email": "founder@saudi-saas-lab.sa",
+      "phone": "+966501000004"
+    },
+    {
+      "company_name": "استشارات نمو الأعمال",
+      "domain": "ngrowth.sa",
+      "city": "Riyadh",
+      "sector": "consulting_firm",
+      "email": "partner@ngrowth.sa",
+      "phone": "+966501000007"
+    },
+    {
+      "company_name": "تطوير أفق العقاري",
+      "domain": "ofuq-re.sa",
+      "city": "Riyadh",
+      "sector": "real_estate_developer",
+      "email": "sales@ofuq-re.sa",
+      "phone": "+966501000011"
+    },
+    {
+      "company_name": "وكالة فعل التسويق",
+      "domain": "fail-marketing.sa",
+      "city": "Riyadh",
+      "sector": "marketing_agency",
+      "email": "yousef@fail-marketing.sa",
+      "phone": "+966501000018"
+    }
+  ]
+}

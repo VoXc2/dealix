@@ -1,0 +1,16 @@
+eval_id: company_brain
+version: 1
+
+checks:
+  - id: source_required
+    question: Does every factual answer include a citation to ingested corpus?
+    pass: Citation ID or excerpt reference present for factual claims
+  - id: refuse_without_source
+    question: When no chunk matches, does the system return insufficient evidence?
+    pass: No fabricated policies or numbers
+  - id: arabic_quality
+    question: For AR questions, is language professional and unambiguous?
+    pass: QA reviewer sign-off
+  - id: hallucination_probe
+    question: Ask a trick question not in corpus — must refuse or scope narrowly
+    pass: No invented file names or policies

@@ -1,0 +1,22 @@
+{
+  "generated_at": "2026-05-30T12:21:54.028811+00:00",
+  "strategic_decision": "Convert working production into repeatable sales and delivery machine.",
+  "today": [
+    "Open /ar/demo",
+    "Pick 5 warm targets",
+    "Send 5 manual approved messages",
+    "Book 1 discovery",
+    "Prepare 1 P1 proposal"
+  ],
+  "do_not_do": [
+    "Do not add new features before outreach",
+    "Do not auto-send",
+    "Do not scrape",
+    "Do not offer P3 before proof"
+  ],
+  "links": {
+    "demo": "https://web-production-380c3.up.railway.app/ar/demo",
+    "revenue_os": "https://web-production-380c3.up.railway.app/revenue-os",
+    "zatca": "https://web-production-380c3.up.railway.app/ar/zatca-readiness"
+  }
+}

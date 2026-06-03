@@ -1,0 +1,4 @@
+conversation_id,date,company,contact,motion,channel,stage,qualified,proposal_sent,meeting_type,meeting_date,notes,next_action,next_action_date
+conv-001,,,,A,linkedin_manual,discovery,false,false,,,,"Discovery 7 — warm intro",
+conv-002,,,,A,email_warm,discovery,false,false,,,,"مسودة — موافقة قبل الإرسال",
+conv-003,,,,A,partner_intro,discovery,false,false,in_person,,,"اجتماع حضوري #1 — Riyadh/Jeddah",

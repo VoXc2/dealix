@@ -1,0 +1,51 @@
+version: 1
+reference_doc: docs/transformation/02_gap_closure_matrix.md
+generated_at: null
+verdict: pending
+failed_ids: []
+notes_ar: >-
+  شغّل python scripts/verify_gap_closure_bundle.py --write لتحديث pass/fail
+  لصفوف مصفوفة إغلاق الفجوات الستة.
+rows:
+  - id: in_memory_fallback
+    label: Postgres-first / in-memory fallback policy
+    owner_os: platform+control_plane
+    status: pending
+    last_run_iso: null
+    verification_detail: null
+    evidence_ref: docs/transformation/evidence/gap_closure_in_memory_fallback.md
+  - id: legacy_jsonl
+    label: Legacy JSONL catalog + migration tier
+    owner_os: platform+value+delivery
+    status: pending
+    last_run_iso: null
+    verification_detail: null
+    evidence_ref: docs/transformation/evidence/gap_closure_legacy_jsonl.md
+  - id: enterprise_ui
+    label: Enterprise UI / operator workflow controls
+    owner_os: product+frontend
+    status: pending
+    last_run_iso: null
+    verification_detail: null
+    evidence_ref: docs/transformation/evidence/gap_closure_enterprise_ui.md
+  - id: trace_telemetry
+    label: Trace coverage + telemetry contracts
+    owner_os: observability+trust
+    status: pending
+    last_run_iso: null
+    verification_detail: null
+    evidence_ref: docs/transformation/evidence/gap_closure_trace_telemetry.md
+  - id: enterprise_package
+    label: Enterprise package standardization
+    owner_os: gtm+trust+delivery
+    status: pending
+    last_run_iso: null
+    verification_detail: null
+    evidence_ref: docs/transformation/evidence/gap_closure_enterprise_package.md
+  - id: drills_automation
+    label: Mission-critical drills automation
+    owner_os: reliability+runtime_safety
+    status: pending
+    last_run_iso: null
+    verification_detail: null
+    evidence_ref: docs/transformation/evidence/gap_closure_drills_automation.md

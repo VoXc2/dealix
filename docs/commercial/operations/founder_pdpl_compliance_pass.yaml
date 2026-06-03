@@ -1,0 +1,54 @@
+# Founder PDPL pass — operational checklist (not legal sign-off)
+# Ref: FOUNDER_PDPL_COMPLIANCE_PASS_AR.md · TRUST_PACK_PROPOSAL_AR.md
+
+meta:
+  version: "2026-05-24"
+  legal_review_required: true
+  trust_pack_proposal: docs/commercial/operations/TRUST_PACK_PROPOSAL_AR.md
+
+items:
+  - id: privacy_policy_public
+    label_ar: "سياسة خصوصية منشورة ومربوطة من الموقع/التطبيق"
+    done: false
+    ref: "docs/knowledge-base/privacy_pdpl_ar_en.md"
+    founder_action_ar: "اربط /privacy من Next.js GTM footer بعد DNS Railway"
+    repo_ready: true
+  - id: dsar_path_tested
+    label_ar: "مسار طلبات أصحاب البيانات (وصول/حذف) موثّق ومُختبر مرة واحدة"
+    done: false
+    ref: "docs/PDPL_DATA_SUBJECT_REQUEST_SOP.md"
+    founder_action_ar: "نفّذ اختبار DSAR واحد داخلياً وسجّل النتيجة"
+    repo_ready: true
+  - id: dpa_vendors
+    label_ar: "DPA مع البائعين الذين يلمسون بيانات أفراد (Hosting, CRM, …)"
+    done: false
+    ref: "docs/SECURITY_PDPL_CHECKLIST.md"
+    founder_action_ar: "أرفق DPA template من Trust Pack مع Railway + HubSpot + Moyasar"
+    repo_ready: true
+  - id: breach_runbook
+    label_ar: "تمرين/مرجع خرق بيانات (72h) معروف للفريق"
+    done: false
+    ref: "docs/PDPL_BREACH_RESPONSE_PLAN.md"
+    founder_action_ar: "اقرأ runbook + حدّد جهة اتصال SDAIA في سجل داخلي"
+    repo_ready: true
+  - id: sales_copy_no_overclaim
+    label_ar: "نسخ المبيعات لا تدّعي امتثالاً كاملاً — محاذاة no_overclaim"
+    done: true
+    ref: "dealix/registers/no_overclaim.yaml"
+    founder_action_ar: "راجع proposals/ قبل كل إرسال"
+    repo_ready: true
+  - id: legal_review_scheduled
+    label_ar: "موعد مراجعة قانونية PDPL مجدول أو مكتمل"
+    done: false
+    ref: "docs/commercial/MARKET_INTELLIGENCE_PDPL_LEGAL_REVIEW_AR.md"
+    founder_action_ar: "جدول مراجعة قانونية — لا ادعاء compliance كامل في التسويق"
+    repo_ready: true
+
+trust_pack_attach:
+  required_in_proposals: true
+  doc: docs/commercial/operations/TRUST_PACK_PROPOSAL_AR.md
+  sections:
+    - pdpl_summary_ar
+    - dpa_pointer
+    - approval_first_architecture
+    - data_residency_note

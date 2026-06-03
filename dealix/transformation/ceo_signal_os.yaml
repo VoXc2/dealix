@@ -1,0 +1,49 @@
+version: 1
+program: ceo_signal_os
+reference_plan_layer: 0
+operating_law: Event → classify → log → verify → decide → no-build unless signal
+
+external_events:
+  - follow_up_sent
+  - replied_interested
+  - meeting_booked
+  - used_in_meeting
+  - pilot_intro_requested
+  - scope_requested
+  - asks_for_pdf
+  - asks_for_english
+  - asks_for_pricing
+  - asks_for_security
+  - no_response_after_follow_up
+  - invoice_sent
+  - invoice_paid
+
+partner_archetypes:
+  - id: PARTNER-001
+    label_en: Big4_Assurance
+    label_ar: شريك ضمان / BIG4
+  - id: PARTNER-002
+    label_en: Regulated_Tech_Processor
+    label_ar: معالج تقني خاضع للتنظيم
+  - id: PARTNER-003
+    label_en: Saudi_GCC_VC_Platform
+    label_ar: منصة رأس مال خليجية
+
+weekly_targets:
+  classify_every_external_touchpoint: true
+  honest_classification_required: true
+  fake_evidence_forbidden: true
+
+monthly_targets:
+  partner_attempts_minimum: 3
+  l5_meeting_utility_stretch: 1
+  l6_market_pull_stretch: 1
+
+verification_when_repo_changes:
+  default_gate: bash scripts/verify_global_ai_transformation.sh
+  control_plane_focused_change: bash scripts/verify_enterprise_control_plane.sh
+  revenue_os_focused_change: bash scripts/revenue_os_master_verify.sh
+
+weekly_proof_pack:
+  generator: scripts/generate_weekly_operating_proof_pack.py
+  suggested_output_dir: docs/transformation/evidence

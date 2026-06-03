@@ -1,0 +1,104 @@
+# Seeded KB for diagnostic funnel + CS autopilot (approved copy only — no hallucinated CRM numbers).
+version: 1
+
+articles:
+  - id: what_is_dealix
+    slug: dealix-overview
+    category: overview
+    title_ar: ما هي Dealix؟
+    title_en: What is Dealix?
+    question_ar: ما هي Dealix؟
+    question_en: What is Dealix?
+    answer_ar: >
+      Dealix شركة تشغيل إيراد وذكاء اصطناعي محكومة Governance لفرق الخليج: نحدد بوضوح
+      المصدر، حدود الموافقة، سجل الأدلة، وقياس القيمة — بدلاً من أتمتة عشوائية أو وكيل
+      بدون مساءلة. نبدأ بتشخيص 7 أيام حول مسارات الإيراد وجودة الـCRM واستخدام الذكاء الاصطناعي.
+    answer_en: >
+      Dealix is a governed revenue and AI operations company for GCC teams. We clarify
+      sources, approval boundaries, evidence trails, and proof of value—instead of
+      ungoverned automation. We typically start with a 7‑day diagnostic of revenue workflows,
+      CRM readiness, and AI usage.
+    allowed_claims_ar:
+      - تشغيل محكوم للإيراد والذكاء الاصطناعي مع حدود موافقة وسجل أدلة
+      - تشخيص 7 أيام كمدخل أساسي
+    forbidden_claims_ar:
+      - ضمان تحقيق إيراد
+      - امتثال قانوني نهائي دون مراجعة
+      - رسائل خارجية آلية بدون موافقة
+    risk_level: low
+    locale: ar
+
+  - id: pricing_range
+    slug: diagnostic-pricing
+    category: pricing
+    title_ar: نطاق أسعار التشخيص
+    title_en: Diagnostic pricing (ranges)
+    question_ar: ما السعر؟
+    question_en: What does it cost?
+    answer_ar: >
+      أسعار تشخيص 7 أيام Governance عادة Starter حوالي 4,999 ريال، Standard حوالي 9,999،
+      Executive حوالي 15,000 — بحسب عمق النطاق والجدول الزمني. الأرقام النهائية تُقرّ بعد
+      اجتماع التشخيص ومراجعتك الموافقة.
+    answer_en: >
+      Guided 7‑day governance diagnostics commonly map to Starter ≈ SAR 4,999,
+      Standard ≈ SAR 9,999, Executive ≈ SAR 15,000 depending on depth and timelines.
+      Final numbers are scoped after discovery and founder approval — never invented by automation.
+    allowed_claims_ar:
+      - نطاق أسعار تشخيص كمرجع تسويقي
+      - التأكيد أن السعر النهائي بعد النطاق والموافقة
+    forbidden_claims_ar:
+      - سعر ملزم دون خطوط نطاق وموافقة
+      - وعود ROI
+    risk_level: low
+    locale: ar
+
+  - id: what_we_do_not
+    slug: boundaries
+    category: governance
+    title_ar: ما لا نفعله
+    title_en: What we do NOT do
+    question_ar: هل ترسلون رسائل آلية خارجية؟
+    question_en: Do you send autonomous external messages?
+    answer_ar: >
+      لا. لا نرسل رسائل خارجية آلية؛ نجهز مسودات ونسجل أدلة ونصعّد ما يحتاج موافقة.
+      لا ندّعي إيراداً بلا دليل؛ لا نستبدل الـCRM؛ لا ننشر دراسات حالة بلا موافقة؛ لا نبيع
+      chatbot عام بدون governance.
+    answer_en: >
+      No autonomous external outreach. Drafts only with evidence logging and escalation
+      for approval. No revenue claims without evidence. We do not replace your CRM or
+      publish case studies without consent. No generic chatbot reseller positioning.
+    allowed_claims_ar:
+      - قواعد عدم الإرسال التلقائي وعدم ادعاءات الإيراد بلا دليل
+    forbidden_claims_ar:
+      - وعد بأدوات طرف ثالث بلا تأكيد
+    risk_level: low
+    locale: ar
+
+  - id: proof_pack_explainer
+    slug: proof-pack
+    category: proof
+    title_ar: ما هو Proof Pack؟
+    question_en: What is a Proof Pack?
+    answer_ar: >
+      Proof Pack مجموعة موثقة: ملخص أعمال، نقاط مخاطرة، أفضل 3 قرارات تشغيلية، وربط بحالة
+      أدلة بدون ادعاءات زائفة.
+    answer_en: >
+      A Proof Pack bundles findings, risk hotspots, three executable decisions,
+      and evidence-aligned recommendations—never invented metrics.
+    risk_level: low
+    locale: ar
+
+  - id: privacy_pdpl_orientation
+    slug: pdpl-short
+    category: privacy
+    title_ar: الخصوصية والتواصل
+    title_en: Privacy & contactability
+    question_ar: ماذا عن PDPL أو حذف بياناتي؟
+    question_en: PDPL / data deletion?
+    answer_ar: >
+      هذا السؤال قانوني/امتثالي: لا نقدّم تأكيد امتثال نهائي عبر الآلة؛ نرفع الطلب لفريق Dealix للمراجعة
+      وفق سياساتك وسجلات الموافقة.
+    answer_en: >
+      Compliance questions require human validation. We escalate to Dealix reviewers with your consent trail.
+    risk_level: high
+    locale: ar

@@ -1,0 +1,8 @@
+id: no_source_no_answer
+severity: critical
+if:
+  knowledge_answer: true
+  citation_count: 0
+then:
+  decision: insufficient_evidence
+  reason: No-source answers are blocked when citations are required.

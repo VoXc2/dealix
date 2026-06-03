@@ -1,0 +1,46 @@
+name: Brain Control Command
+
+on:
+  workflow_dispatch:
+    inputs:
+      command:
+        description: "Command to send to Dealix Brain"
+        required: true
+        type: string
+      priority:
+        description: "Priority"
+        required: false
+        default: "normal"
+        type: choice
+        options:
+          - low
+          - normal
+          - high
+
+permissions:
+  contents: read
+
+jobs:
+  brain-control:
+    runs-on: ubuntu-latest
+    env:
+      AUTO_SEND_ENABLED: "false"
+      EXTERNAL_OUTREACH_ENABLED: "false"
+      AGENT_APPROVAL_MODE: "required"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - name: Run brain command
+        run: |
+          python scripts/dealix_brain_control.py ask "${{ inputs.command }}" --priority "${{ inputs.priority }}"
+          python scripts/dealix_brain_control.py tick
+          python scripts/dealix_brain_control.py doctor || true
+      - name: Upload brain response
+        uses: actions/upload-artifact@v4
+        with:
+          name: brain-control-response
+          path: |
+            reports/company_os/control/**
+            data/company_os/control/**

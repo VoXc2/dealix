@@ -1,0 +1,40 @@
+{
+  "score": 100.0,
+  "result": "PASS",
+  "status": {
+    "generated_at": "2026-05-30T12:58:57.809586+00:00",
+    "production": {
+      "api_health": {
+        "ok": true,
+        "status": 200
+      },
+      "web_demo": {
+        "ok": true,
+        "status": 200
+      },
+      "revenue_os": {
+        "ok": true,
+        "status": 200
+      },
+      "zatca": {
+        "ok": true,
+        "status": 200
+      }
+    },
+    "repo": {
+      "branch": "main",
+      "last_commit": "8f6e8ddc company-os: add mobile founder control room",
+      "status": ""
+    },
+    "assets": {
+      "docs/company_os/enterprise/ENTERPRISE_OPERATING_MODEL_AR.md": true,
+      "docs/company_os/STRATEGIC_COMMAND_LAYER_AR.md": true,
+      "docs/data_room/DEALIX_COMPANY_ONE_PAGER_AR.md": true,
+      "docs/proof_factory/P1_PROOF_PACK_TEMPLATE_AR.md": true,
+      "docs/partner_os/PARTNER_REFERRAL_SYSTEM_AR.md": true,
+      "docs/brand/DEALIX_VISUAL_IDENTITY_AR.md": true,
+      "docs/pitch/DEALIX_MASTER_PITCH_DECK_AR.md": true,
+      "docs/conversion/DEALIX_HIGH_CONVICTION_SALES_PAGE_AR.md": true
+    }
+  }
+}

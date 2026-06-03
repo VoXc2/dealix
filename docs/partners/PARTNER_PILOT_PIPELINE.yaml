@@ -1,0 +1,81 @@
+# Partner pilot pipeline — first 5–10 conversations (manual CRM sync)
+# Rules: docs/partners/PARTNER_PROGRAM.md · dealix/config/partner_rules.yaml
+version: 1
+goal_first_pilot: one_referral_or_co_sell_pilot
+
+partner_types:
+  - referral
+  - implementation
+  - co_sell
+
+slots:
+  - id: slot_01
+    company: ""
+    contact: ""
+    type: referral
+    segment: crm_implementer
+    status: not_contacted
+    next_action: ""
+    notes: "HubSpot/Zoho implementer — diagnostic handoff"
+  - id: slot_02
+    company: ""
+    contact: ""
+    type: implementation
+    segment: erp_accounting
+    status: not_contacted
+    next_action: ""
+    notes: ""
+  - id: slot_03
+    company: ""
+    contact: ""
+    type: referral
+    segment: ai_advisory
+    status: not_contacted
+    next_action: ""
+    notes: "AI governance angle"
+  - id: slot_04
+    company: ""
+    contact: ""
+    type: co_sell
+    segment: b2b_agency
+    status: not_contacted
+    next_action: ""
+    notes: ""
+  - id: slot_05
+    company: ""
+    contact: ""
+    type: referral
+    segment: vc_portfolio_ops
+    status: not_contacted
+    next_action: ""
+    notes: ""
+  - id: slot_06
+    company: ""
+    contact: ""
+    type: implementation
+    segment: fractional_coo
+    status: not_contacted
+    next_action: ""
+    notes: ""
+  - id: slot_07
+    company: ""
+    contact: ""
+    type: referral
+    segment: grc_security
+    status: not_contacted
+    next_action: ""
+    notes: ""
+  - id: slot_08
+    company: ""
+    contact: ""
+    type: co_sell
+    segment: accelerator
+    status: not_contacted
+    next_action: ""
+    notes: ""
+
+public_apply_endpoint: POST /api/v1/public/partner-apply
+kpi_weekly:
+  partner_calls: 5
+  partner_sourced_meetings: 1
+  partner_sourced_paid_diagnostic: 0

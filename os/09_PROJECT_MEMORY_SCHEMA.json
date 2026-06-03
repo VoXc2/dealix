@@ -1,0 +1,308 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Dealix Project Memory Schema",
+  "description": "الـ schema الكامل لتخزين معلومات كل مشروع في Dealix",
+  "version": "1.0.0",
+  "type": "object",
+  "required": ["project_id", "client_id", "project_name", "status", "created_at"],
+  "properties": {
+
+    "project_id": {
+      "type": "string",
+      "pattern": "^PJ-[0-9]{6}$",
+      "example": "PJ-000001"
+    },
+
+    "client_id": {
+      "type": "string",
+      "description": "مرجع للعميل (CL-XXXXXX)"
+    },
+
+    "project_name": {"type": "string"},
+
+    "offer_type": {
+      "type": "string",
+      "enum": [
+        "ai_workflow_audit",
+        "agentic_workflow_pilot",
+        "maintenance_intelligence_os",
+        "project_controls_ai_os",
+        "sovereign_knowledge_rag",
+        "executive_command_center",
+        "revenue_ai_os",
+        "ai_governance_pack",
+        "department_expansion",
+        "custom"
+      ]
+    },
+
+    "status": {
+      "type": "string",
+      "enum": [
+        "intake",
+        "requirements",
+        "architecture",
+        "prototype",
+        "internal_qa",
+        "client_demo",
+        "fixes",
+        "acceptance",
+        "handover",
+        "support",
+        "completed",
+        "on_hold",
+        "cancelled"
+      ]
+    },
+
+    "phase": {
+      "type": "integer",
+      "description": "رقم المرحلة الحالية (1, 2, 3...)"
+    },
+
+    "workflow": {
+      "type": "object",
+      "properties": {
+        "name": {"type": "string", "description": "اسم الـ workflow المستهدف"},
+        "description": {"type": "string"},
+        "current_state": {"type": "string"},
+        "target_state": {"type": "string"},
+        "departments_involved": {"type": "array", "items": {"type": "string"}},
+        "estimated_transactions_per_day": {"type": "integer"}
+      },
+      "description": "وصف الـ workflow المستهدف"
+    },
+
+    "requirements": {
+      "type": "object",
+      "properties": {
+        "functional": {"type": "array", "items": {"type": "string"}},
+        "non_functional": {"type": "array", "items": {"type": "string"}},
+        "security": {"type": "array", "items": {"type": "string"}},
+        "privacy": {"type": "array", "items": {"type": "string"}},
+        "compliance": {"type": "array", "items": {"type": "string"}}
+      }
+    },
+
+    "success_criteria": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "criterion": {"type": "string"},
+          "measurement": {"type": "string"},
+          "target_value": {"type": "string"},
+          "achieved": {"type": "boolean"},
+          "achieved_value": {"type": "string"}
+        }
+      },
+      "description": "معايير النجاح المتفق عليها مسبقاً"
+    },
+
+    "acceptance_criteria": {
+      "type": "array",
+      "items": {"type": "string"},
+      "description": "شروط قبول التسليم",
+      "example": [
+        "The system processes sample input correctly",
+        "The system generates the expected output",
+        "Human approval points work",
+        "Errors are logged",
+        "No secrets are exposed",
+        "Client can run demo path",
+        "Documentation is complete"
+      ]
+    },
+
+    "data_environment": {
+      "type": "object",
+      "properties": {
+        "current_tools": {"type": "array", "items": {"type": "string"}},
+        "available_apis": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {"type": "string"},
+              "type": {"type": "string"},
+              "sandbox_available": {"type": "boolean"},
+              "auth_method": {"type": "string"},
+              "rate_limits": {"type": "string"},
+              "status": {"type": "string", "enum": ["pending", "sandbox_ready", "production_approved"]}
+            }
+          }
+        },
+        "sample_data_status": {
+          "type": "string",
+          "enum": ["not_received", "received_with_pii", "received_anonymized", "fully_ready"]
+        },
+        "data_files": {"type": "array", "items": {"type": "string"}},
+        "production_access_approved": {"type": "boolean"},
+        "production_access_date": {"type": "string", "format": "date"}
+      }
+    },
+
+    "architecture": {
+      "type": "object",
+      "properties": {
+        "diagram_file": {"type": "string"},
+        "agents": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {"type": "string"},
+              "purpose": {"type": "string"},
+              "inputs": {"type": "array", "items": {"type": "string"}},
+              "outputs": {"type": "array", "items": {"type": "string"}},
+              "approval_required": {"type": "boolean"}
+            }
+          }
+        },
+        "integrations": {"type": "array", "items": {"type": "string"}},
+        "human_approval_points": {"type": "array", "items": {"type": "string"}},
+        "tech_stack": {"type": "array", "items": {"type": "string"}},
+        "approved_by_founder": {"type": "boolean"},
+        "approved_date": {"type": "string", "format": "date"}
+      }
+    },
+
+    "timeline": {
+      "type": "object",
+      "properties": {
+        "start_date": {"type": "string", "format": "date"},
+        "planned_end_date": {"type": "string", "format": "date"},
+        "actual_end_date": {"type": "string", "format": "date"},
+        "milestones": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {"type": "string"},
+              "planned_date": {"type": "string", "format": "date"},
+              "actual_date": {"type": "string", "format": "date"},
+              "status": {"type": "string", "enum": ["pending", "in_progress", "done", "delayed"]}
+            }
+          }
+        }
+      }
+    },
+
+    "financials": {
+      "type": "object",
+      "properties": {
+        "contract_value_sar": {"type": "number"},
+        "cost_estimate_sar": {"type": "number"},
+        "actual_cost_sar": {"type": "number"},
+        "margin_percent": {"type": "number"},
+        "payment_schedule": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "milestone": {"type": "string"},
+              "amount_sar": {"type": "number"},
+              "due_date": {"type": "string", "format": "date"},
+              "status": {"type": "string", "enum": ["pending", "invoiced", "paid"]}
+            }
+          }
+        }
+      }
+    },
+
+    "qa_status": {
+      "type": "object",
+      "properties": {
+        "build_passes": {"type": "boolean"},
+        "unit_tests_pass": {"type": "boolean"},
+        "integration_tests_pass": {"type": "boolean"},
+        "sample_data_test_pass": {"type": "boolean"},
+        "no_hardcoded_secrets": {"type": "boolean"},
+        "permissions_correct": {"type": "boolean"},
+        "error_handling_present": {"type": "boolean"},
+        "logging_active": {"type": "boolean"},
+        "rollback_plan_exists": {"type": "boolean"},
+        "user_guide_ready": {"type": "boolean"},
+        "admin_guide_ready": {"type": "boolean"},
+        "demo_script_ready": {"type": "boolean"},
+        "handover_document_ready": {"type": "boolean"},
+        "qa_approved_by": {"type": "string"},
+        "qa_approved_date": {"type": "string", "format": "date"}
+      }
+    },
+
+    "blockers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "blocker": {"type": "string"},
+          "owner": {"type": "string", "enum": ["dealix", "client", "third_party"]},
+          "since": {"type": "string", "format": "date"},
+          "resolution": {"type": "string"},
+          "resolved_at": {"type": "string", "format": "date"}
+        }
+      }
+    },
+
+    "risks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "risk": {"type": "string"},
+          "probability": {"type": "string", "enum": ["high", "medium", "low"]},
+          "impact": {"type": "string", "enum": ["high", "medium", "low"]},
+          "mitigation": {"type": "string"},
+          "status": {"type": "string", "enum": ["open", "mitigated", "accepted", "closed"]}
+        }
+      }
+    },
+
+    "decisions_log": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "date": {"type": "string", "format": "date"},
+          "decision": {"type": "string"},
+          "made_by": {"type": "string"},
+          "context": {"type": "string"},
+          "impact": {"type": "string"}
+        }
+      },
+      "description": "سجل القرارات الرئيسية — خاصة قرارات العميل"
+    },
+
+    "approval_log": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "gate_id": {"type": "string"},
+          "action": {"type": "string"},
+          "approved_by": {"type": "string"},
+          "approved_at": {"type": "string", "format": "date-time"},
+          "notes": {"type": "string"}
+        }
+      },
+      "description": "سجل جميع الموافقات البشرية"
+    },
+
+    "handover": {
+      "type": "object",
+      "properties": {
+        "completed": {"type": "boolean"},
+        "handover_date": {"type": "string", "format": "date"},
+        "documents_delivered": {"type": "array", "items": {"type": "string"}},
+        "training_completed": {"type": "boolean"},
+        "client_signed_acceptance": {"type": "boolean"},
+        "next_phase_recommended": {"type": "string"}
+      }
+    },
+
+    "notes": {"type": "string"},
+    "created_at": {"type": "string", "format": "date-time"},
+    "updated_at": {"type": "string", "format": "date-time"}
+  }
+}

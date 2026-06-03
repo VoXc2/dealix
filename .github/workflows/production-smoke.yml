@@ -1,0 +1,51 @@
+name: Production Smoke
+
+on:
+  workflow_dispatch:
+    inputs:
+      base_url:
+        description: Production or staging API base URL
+        required: false
+        default: https://api.dealix.me
+  schedule:
+    - cron: '0 */6 * * *'
+
+permissions:
+  contents: read
+
+jobs:
+  smoke:
+    name: Production smoke test
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Select base URL
+        shell: bash
+        run: |
+          BASE_URL='${{ github.event.inputs.base_url }}'
+          if [ -z "$BASE_URL" ]; then BASE_URL='${{ secrets.DEALIX_PRODUCTION_BASE_URL }}'; fi
+          if [ -z "$BASE_URL" ]; then BASE_URL='https://api.dealix.me'; fi
+          echo "DEALIX_SMOKE_BASE_URL=$BASE_URL" >> "$GITHUB_ENV"
+
+      - name: Run smoke test
+        run: python scripts/dealix_smoke_test.py --base-url "$DEALIX_SMOKE_BASE_URL" --json > production-smoke-report.json
+
+      - name: Print report
+        if: always()
+        run: cat production-smoke-report.json || true
+
+      - name: Upload report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: production-smoke-report
+          path: production-smoke-report.json

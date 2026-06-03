@@ -1,0 +1,41 @@
+# Canonical Railway production settings — must match railway.toml + Dockerfile.
+# Used by scripts/railway_ui_alignment.* and verify_railway_production_config.py hints.
+api_base: https://api.dealix.me
+branch: main
+wait_for_ci: true
+
+build:
+  builder: DOCKERFILE
+  dockerfile_path: Dockerfile
+
+deploy:
+  start_command_ui: ""  # empty = use Dockerfile CMD
+  start_command_canonical: /app/start.sh
+  start_command_forbidden:
+    - ./start.sh
+    - uvicorn api.main:app
+  pre_deploy_canonical: sh /app/scripts/railway_predeploy.sh
+  pre_deploy_forbidden:
+    - echo "no migration needed"
+    - no migration needed
+  healthcheck_path: /healthz
+  healthcheck_timeout_sec: 300
+  restart_policy: ON_FAILURE
+  restart_max_retries: 3
+  public_target_port_hint: 8080  # Railway-injected PORT; app reads via start.sh
+
+migrations:
+  pre_deploy_script: scripts/railway_predeploy.sh
+  # Matches scripts/railway_predeploy.sh: SKIP by default; alembic only when flag is 1
+  runs_when: RUN_RAILWAY_PRE_DEPLOY_MIGRATE=1 and DATABASE_URL is set
+  enable_env: RUN_RAILWAY_PRE_DEPLOY_MIGRATE=1
+  bootstrap_once: scripts/railway_prod_bootstrap.sh
+
+verify_after_deploy:
+  - curl -fsS https://api.dealix.me/healthz
+  - python scripts/verify_railway_production_config.py
+  - bash scripts/prod_smoke.sh https://api.dealix.me
+
+docs:
+  - docs/ops/RAILWAY_PRODUCTION_SETTINGS_AR.md
+  - docs/ops/RAILWAY_PRODUCTION_POLICY_AR.md

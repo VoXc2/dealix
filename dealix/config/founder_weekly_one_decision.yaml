@@ -1,0 +1,36 @@
+# نسخة أسبوعية — قرار واحد يخدم مرحلة واحدة فقط (0–5).
+# Ref: FOUNDER_STRONGEST_PLAN_AR.md · MASTER_COMMERCIAL_OPERATING_PLAN_AR.md
+
+week_iso: "2026-05-24"
+launch_mode: soft  # soft | paid — لا تخلط الرسائل
+active_phase: 1  # 0 | 1 | 2 | 3 | 4 | 5 — واحدة فقط
+one_decision_ar: "إغلاق أول payment_received + proof_pack_delivered من حساب وكالة warm واحد (Motion A) — ليس seed strategic"
+why_this_phase_ar: "Phase 0–1 BLOCKED — لا توسع GTM ولا بناء قبل أول Diagnostic مدفوع + Proof Pack + KPI من HubSpot"
+no_build_acknowledged: true
+success_by_friday_ar: "invoice_sent + payment_received مسجّلان في evidence_events_tracker.csv لشركة حقيقية واحدة"
+evidence_events_to_log:
+  - scope_requested
+  - invoice_sent
+  - payment_received
+blocked_by: "لا شركة حقيقية مغلقة بعد — KPI import pending_founder_export"
+next_week_phase_hint: 1
+
+phase_prompts:
+  0:
+    question_ar: "هل مسار الإغلاق + Discovery موحّدان قبل أي ديمو؟"
+    doc: docs/commercial/operations/EVIDENCE_EVENTS_CLOSE_PATH_AR.md
+  1:
+    question_ar: "ما الخطوة الوحيدة نحو أول payment_received + proof_pack_delivered؟"
+    doc: docs/commercial/operations/FIRST_PAID_DIAGNOSTIC_DOD_AR.md
+  2:
+    question_ar: "أي رسالة/قناة Motion A نكرّر هذا الأسبوع؟"
+    doc: docs/commercial/operations/motion_a_agency/
+  3:
+    question_ar: "أي شريك تجريبي واحد نفعّل؟"
+    doc: docs/commercial/operations/PARTNER_ONBOARDING_KIT_AR.md
+  4:
+    question_ar: "أي اعتراض/AEO نثبت في السجل؟"
+    doc: docs/commercial/operations/objection_engine_registry.yaml
+  5:
+    question_ar: "أي أصل منصّة يخدم الأدلة المكررة — وليس بناءً عشوائياً؟"
+    doc: docs/commercial/MASTER_COMMERCIAL_OPERATING_PLAN_AR.md

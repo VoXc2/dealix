@@ -1,0 +1,177 @@
+# Dealix Target Markets
+# الأسواق المستهدفة — النسخة التشغيلية
+
+primary_markets:
+
+  facilities_management:
+    id: "FM"
+    name: "Facilities Management"
+    name_ar: "إدارة المرافق والصيانة"
+    priority: 1
+    why_dealix_fits: >
+      شركات FM تعتمد على عمليات متكررة يومياً — بلاغات، فنيين، SLA، تقارير.
+      هذه بالضبط المهام التي يُعيد فيها AI Agents الوقت للفريق.
+    typical_companies:
+      - "شركات صيانة المباني"
+      - "شركات FM متكاملة"
+      - "شركات إدارة العقارات التجارية"
+      - "شركات خدمات المرافق"
+    typical_operations:
+      - "استقبال وتصنيف بلاغات الصيانة"
+      - "تعيين وجدولة الفنيين"
+      - "متابعة SLA وأوقات الاستجابة"
+      - "تقارير إغلاق أعمال الصيانة"
+      - "متابعة الموردين وقطع الغيار"
+      - "تقارير أسبوعية وشهرية للإدارة"
+    typical_pain_points:
+      - "متابعة البلاغات يدوياً عبر Excel أو WhatsApp"
+      - "تأخر الإشعارات عند تجاوز SLA"
+      - "تقارير الفنيين ناقصة أو متأخرة"
+      - "الأعطال المتكررة لا تُكتشف إلا بعد تراكمها"
+      - "إعداد تقارير الإدارة يستغرق ساعات"
+    best_buyer_titles:
+      - "Operations Director"
+      - "FM Director"
+      - "VP Operations"
+      - "General Manager"
+    recommended_entry_offer: "ai_workflow_audit"
+    natural_upsell: "maintenance_intelligence_os"
+    gcс_size_estimate: "hundreds of companies"
+
+  contracting_pmo:
+    id: "CON"
+    name: "Contracting & Project Management"
+    name_ar: "المقاولات وإدارة المشاريع"
+    priority: 2
+    why_dealix_fits: >
+      شركات المقاولات تغرق في التقارير، الـ change requests، متابعة الموافقات،
+      وتتبع المخاطر. كلها مهام تستفيد بشكل مباشر من AI Agents.
+    typical_companies:
+      - "شركات مقاولات عامة"
+      - "شركات engineering & construction"
+      - "PMO offices"
+      - "شركات إدارة مشاريع"
+    typical_pain_points:
+      - "تقارير التقدم الأسبوعي تأكل يوم كامل"
+      - "الموافقات معلقة وتعطل العمل"
+      - "المخاطر تُكتشف متأخرة"
+      - "وثائق المشروع فوضوية وصعبة البحث"
+      - "change requests تضيع في الإيميلات"
+    best_buyer_titles:
+      - "PMO Director"
+      - "Project Director"
+      - "VP Engineering"
+      - "Operations Manager"
+    recommended_entry_offer: "ai_workflow_audit"
+    natural_upsell: "project_controls_ai_os"
+
+  industrial_manufacturing:
+    id: "IND"
+    name: "Industrial & Manufacturing"
+    name_ar: "الصناعة والتصنيع"
+    priority: 3
+    typical_pain_points:
+      - "تقارير الإنتاج اليدوية"
+      - "صيانة الآلات وتتبع الأعطال"
+      - "متابعة سلسلة الإمداد"
+      - "compliance وتوثيق العمليات"
+    best_buyer_titles:
+      - "Plant Manager"
+      - "Operations Director"
+      - "Maintenance Manager"
+    recommended_entry_offer: "ai_workflow_audit"
+    natural_upsell: "maintenance_intelligence_os"
+
+  b2b_services:
+    id: "B2B"
+    name: "B2B Professional Services"
+    name_ar: "الخدمات المهنية B2B"
+    priority: 4
+    typical_companies:
+      - "شركات استشارات"
+      - "شركات محاسبة وتدقيق"
+      - "شركات قانونية"
+      - "شركات training"
+    typical_pain_points:
+      - "proposal writing يأكل وقت كبير"
+      - "follow-up يدوي على العملاء"
+      - "تقارير العملاء متأخرة"
+      - "knowledge management ضعيف"
+    best_buyer_titles:
+      - "Managing Partner"
+      - "CEO"
+      - "Business Development Director"
+    recommended_entry_offer: "ai_workflow_audit"
+    natural_upsell: "revenue_ai_os"
+
+  large_enterprise_holdings:
+    id: "ENT"
+    name: "Large Enterprise & Holdings"
+    name_ar: "الشركات الكبيرة والقابضة"
+    priority: 5
+    why_dealix_fits: >
+      الشركات الكبيرة لديها مشاكل تنسيق ضخمة — الإدارة لا ترى الصورة كاملة،
+      التقارير تأخذ وقتاً طويلاً، والقرارات تتأخر.
+    typical_companies:
+      - "شركات قابضة"
+      - "مجموعات متعددة الأقسام"
+      - "CEO offices في شركات كبيرة"
+      - "جهات حكومية مجاورة"
+    typical_pain_points:
+      - "تجميع تقارير الأقسام يدوياً"
+      - "المخاطر لا تصل للإدارة في الوقت"
+      - "knowledge داخلي مبعثر في الإيميلات"
+      - "decision making بطيء لعدم وضوح البيانات"
+    best_buyer_titles:
+      - "CEO"
+      - "COO"
+      - "Group CFO"
+      - "Strategy Director"
+    recommended_entry_offer: "executive_command_center"
+    alternative_entry: "sovereign_knowledge_rag"
+
+geographic_focus:
+  primary:
+    - country: "Saudi Arabia"
+      cities: ["Riyadh", "Jeddah", "Dammam", "Khobar"]
+      why_priority: "Vision 2030 digitization push, large FM and contracting market"
+  secondary:
+    - country: "UAE"
+      cities: ["Dubai", "Abu Dhabi"]
+    - country: "Qatar"
+      cities: ["Doha"]
+  future:
+    - "Kuwait"
+    - "Bahrain"
+    - "Oman"
+
+company_size_targets:
+  sweet_spot:
+    employees: "50–500"
+    reason: "بيروقراطية أقل، قرار أسرع، ميزانية كافية"
+  also_valid:
+    employees: "500+"
+    reason: "مشاريع أكبر، retainer أعلى"
+  avoid:
+    employees: "<20"
+    reason: "ميزانية محدودة، عمليات بسيطة لا تحتاج AI"
+
+qualification_signals:
+  strong_positive:
+    - "تستخدم Excel لإدارة عمليات معقدة"
+    - "فريق operations أو maintenance موجود"
+    - "يشتكون من التقارير اليدوية"
+    - "عندهم نظام ERP/CRM ويريدون توسيعه"
+    - "يوظفون operations managers"
+    - "لديهم مشاريع نشطة متعددة"
+    - "يعلنون عن وظائف data/operations"
+    - "أخبار توسع أو نمو"
+  moderate:
+    - "قطاع operations-heavy بشكل عام"
+    - "حجم شركة مناسب"
+    - "في دولة GCC مستهدفة"
+  negative:
+    - "pure trading بدون operations"
+    - "startup صغيرة جداً"
+    - "شركة تقنية (منافس محتمل)"
+    - "قطاع consumer retail بدون B2B"

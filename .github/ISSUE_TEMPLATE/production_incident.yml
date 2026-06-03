@@ -1,0 +1,77 @@
+name: Production incident
+description: Track a live production, Railway, API, frontend, security, or customer-impacting incident.
+title: "[INCIDENT] "
+labels: ["incident", "production"]
+body:
+  - type: dropdown
+    id: severity
+    attributes:
+      label: Severity
+      options:
+        - SEV1 - customer-facing outage or security exposure
+        - SEV2 - degraded core workflow
+        - SEV3 - non-critical production issue
+        - SEV4 - internal-only issue
+    validations:
+      required: true
+  - type: dropdown
+    id: surface
+    attributes:
+      label: Surface
+      options:
+        - API
+        - frontend
+        - apps/web
+        - Railway deploy
+        - GitHub Actions
+        - Database
+        - Redis / queue
+        - Payments / webhook
+        - DNS / TLS
+        - Security / secrets
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: impact
+    attributes:
+      label: Impact
+      description: Who is affected, what is broken, and when it started.
+      placeholder: "Example: Railway frontend deploy fails healthcheck after build; public site unavailable."
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidence
+      description: Paste logs, failing URLs, screenshots, or command output. Include first real error line.
+      render: shell
+    validations:
+      required: true
+  - type: textarea
+    id: commands
+    attributes:
+      label: Verification commands run
+      value: |
+        python scripts/verify_railway_surfaces.py
+        python scripts/founder_launch_final_check.py --live
+        curl -fsS https://api.dealix.me/healthz
+        curl -fsS https://dealix.me/healthz
+    validations:
+      required: false
+  - type: textarea
+    id: rollback
+    attributes:
+      label: Rollback / mitigation
+      description: What was reverted, redeployed, disabled, or mitigated?
+    validations:
+      required: false
+  - type: checkboxes
+    id: close-gates
+    attributes:
+      label: Close criteria
+      options:
+        - label: Root cause identified or explicitly documented as unknown.
+        - label: Customer-facing service restored or impact resolved.
+        - label: Verification evidence attached.
+        - label: Follow-up task created if permanent fix is not complete.

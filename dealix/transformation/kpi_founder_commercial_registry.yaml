@@ -1,0 +1,43 @@
+version: 1
+program: global_ai_transformation
+notes_ar: 'عبّئ value_numeric و source_ref لكل مفتاح من مصدر CRM/مالية/تسليم حقيقي.
+  لا تُخترع أرقامًا. شغّل: python3 scripts/apply_kpi_founder_commercial.py للمزامنة
+  إلى kpi_baselines.yaml.'
+updated_period_iso: '2026-05-18'
+commercial_entries:
+  measured_customer_value_sar:
+    owner_os: value
+    required_source_kind: crm_or_value_ledger
+    source_ref_example: crm:hubspot:deal:12345;period=2026-Q1
+    value_numeric: 0.0
+    source_ref: crm:hubspot:export:period=2026-W20:not_synced_yet
+  governance_integrity_rate:
+    owner_os: trust
+    required_source_kind: governance_report
+    source_ref_example: governance:weekly_control_report:2026-W20
+    value_numeric: 0.0
+    source_ref: governance:weekly_report:2026-W20:not_synced_yet
+  expansion_quality_ratio:
+    owner_os: gtm
+    required_source_kind: crm_pipeline
+    source_ref_example: crm:hubspot:expansion_cohort:2026-Q1
+    value_numeric: 0.0
+    source_ref: crm:expansion_cohort:period=2026-Q2:not_synced_yet
+  time_to_proof_days:
+    owner_os: delivery
+    required_source_kind: proof_ledger_or_delivery
+    source_ref_example: proof_ledger:pilot:acct-001;median_days=12
+    value_numeric: 0.0
+    source_ref: proof_ledger:pilot:none_active
+  approval_cycle_time_hours:
+    owner_os: control_plane
+    required_source_kind: approval_tickets
+    source_ref_example: approval_center:tickets:2026-W20;median_hours=4.2
+    value_numeric: 0.0
+    source_ref: approval_center:median:2026-W20:not_synced_yet
+  conversion_discovery_to_pilot:
+    owner_os: gtm
+    required_source_kind: crm_funnel
+    source_ref_example: crm:hubspot:funnel:discovery_to_pilot:2026-Q1;pct=18.5
+    value_numeric: 0.0
+    source_ref: crm:funnel:discovery_to_pilot:period=2026-Q2:not_synced_yet

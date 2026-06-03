@@ -1,0 +1,56 @@
+# مسار إغلاق Phase 0–1 — صفقة واحدة نشطة (عبّئ يدوياً، لا أرقام مخترعة)
+# Ref: docs/commercial/operations/EVIDENCE_EVENTS_CLOSE_PATH_AR.md
+# Verify: python scripts/run_ceo_master_plan_status.py
+
+version: 1
+updated_iso: "2026-05-24"
+phase_gate: "FOUNDER_PHASE_0_1"
+status: open  # open | in_progress | closed
+
+active_deal:
+  company: ""  # اسم شركة حقيقية — ليس seed/strategic target
+  contact: ""
+  motion: A  # A | B | C | D
+  offer_id: governed_diagnostic  # Diagnostic Ops 4999–15000 SAR
+  source_channel: warm  # warm | linkedin_manual | partner_intro | inbound
+  pain_hypothesis_ar: ""
+  discovery_seven_complete: false
+  scope_signed: false
+
+close_path:
+  lead_identified: false
+  message_sent_manual: false
+  reply_received: false
+  discovery_completed: false
+  demo_booked: false
+  demo_held: false
+  scope_requested: false
+  scope_signed: false
+  invoice_sent: false
+  payment_received: false
+  delivery_started: false
+  proof_pack_delivered: false
+
+payment:
+  amount_sar: null
+  payment_date: ""
+  payment_ref: ""  # Moyasar invoice id أو مرجع تحويل يدوي
+  method: ""  # moyasar_live | moyasar_sandbox | manual_transfer
+
+proof:
+  delivery_sla_days: 7
+  proof_pack_path: ""  # مسار PDF/MD مسلّم للعميل
+  delivered_date: ""
+
+kpi_blockers:
+  import_file: dealix/transformation/kpi_founder_commercial_import.yaml
+  bootstrap_cmd: python scripts/bootstrap_founder_kpi_import.py
+  apply_cmd: python scripts/apply_kpi_founder_commercial.py
+  hubspot_export_cmd: python scripts/export_hubspot_kpi_scaffold.py --hubspot-csv PATH
+
+founder_next_actions:
+  - "اختر حساباً واحداً من agency_accounts_seed (priority=high) — ليس seed strategic"
+  - "أكمل Discovery السبعة + scope_signed"
+  - "سجّل invoice_sent ثم payment_received في evidence_events_tracker.csv"
+  - "سلّم Proof Pack حسب FIRST_PAID_DIAGNOSTIC_DOD_AR.md"
+  - "عبّئ KPI من HubSpot ثم apply_kpi_founder_commercial.py"

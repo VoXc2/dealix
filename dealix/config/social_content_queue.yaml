@@ -1,0 +1,1579 @@
+anchor_date: '2026-05-17'
+cycle_weeks: 20
+posts:
+- week: 1
+  day: 0
+  pillar: founder_media
+  title_ar: ما بعد الـ lead أهم من الحملة
+  body_ar: 'الإعلانات تجيب الاهتمام. السؤال الذي يدفع العميل للشراء:
+
+    من رد؟ من تابع؟ ما الدليل؟ ما الخطوة التالية؟
+
+    هذا Post-Lead Revenue Ops — وليس «أداة AI» عامة.
+
+    '
+  cta_ar: احصل على Risk Score مجاني أو Sample Proof Pack
+  aeo_slug: post-lead-revenue-ops
+  status: approved
+- week: 1
+  day: 1
+  pillar: proof
+  title_ar: ما هو Proof Pack؟
+  body_ar: 'Proof Pack ليس تقريراً طويلاً بلا قرار.
+
+    هو: workflow واحد · 10 leads · فجوات SOAEN · 3 قرارات · خطوة توسع أو توقف.
+
+    '
+  cta_ar: شاهد Sample Proof Pack للوكالات
+  aeo_slug: what-is-proof-pack
+  status: draft
+- week: 1
+  day: 2
+  pillar: objection
+  title_ar: عندنا CRM — لماذا Dealix؟
+  body_ar: 'CRM يخزّن. السؤال: من يملك follow-up؟
+
+    Dealix يكمّل CRM بطبقة ما بعد الـ lead: owner · evidence · next action.
+
+    '
+  cta_ar: ديمو 10 دقائق — بدون التزام
+  aeo_slug: crm-vs-revenue-ops
+  status: draft
+- week: 1
+  day: 3
+  pillar: trust
+  title_ar: لا واتساب بارد — عمداً
+  body_ar: 'Dealix لا يرسل واتساب بارد ولا LinkedIn آلي.
+
+    الحوكمة ليست عائقاً للبيع — هي ما يثبت الثقة لعميلك النهائي.
+
+    '
+  cta_ar: اقرأ سياسة No cold WhatsApp
+  aeo_slug: no-cold-whatsapp-policy
+  status: draft
+- week: 1
+  day: 4
+  pillar: founder_media
+  title_ar: معيار SOAEN في جملة
+  body_ar: 'Source · Owner · Approval · Evidence · Next Action.
+
+    أي lead بلا owner ليس pipeline. أي follow-up بلا evidence ليس تشغيلاً.
+
+    '
+  cta_ar: Risk Score لحسابكم
+  aeo_slug: soaen-standard
+  status: draft
+- week: 2
+  day: 0
+  pillar: proof
+  title_ar: الوكالة تجيب الاهتمام — Dealix يثبت ما بعده
+  body_ar: 'Motion A: pilot على عميل واحد · 10 leads · Proof Pack خلال ~7 أيام.
+
+    ثم قرار: تكرار · co-sell · أو Diagnostic أعمق.
+
+    '
+  cta_ar: Agency Proof Pack — عيّنة
+  aeo_slug: agency-proof-for-clients
+  status: draft
+- week: 2
+  day: 1
+  pillar: objection
+  title_ar: لماذا نبدأ بـ 10 leads فقط؟
+  body_ar: 'نخفّض المخاطرة لا القيمة: نطاق صغير · أدلة حقيقية · قرار واضح.
+
+    لا اشتراك كبير قبل Proof.
+
+    '
+  cta_ar: 10-Lead Audit من 499 SAR
+  aeo_slug: 10-lead-audit
+  status: draft
+- week: 2
+  day: 2
+  pillar: founder_media
+  title_ar: كيف تراجع متابعة leads؟
+  body_ar: '1) مصدر كل lead  2) owner  3) وقت أول رد  4) evidence  5) next action.
+
+    غياب أي عنصر = تسريب إيراد بعد الحملة.
+
+    '
+  cta_ar: قائمة مراجعة مجانية
+  aeo_slug: audit-lead-follow-up
+  status: draft
+- week: 2
+  day: 3
+  pillar: trust
+  title_ar: موافقة بشرية قبل أي إجراء AI في المبيعات
+  body_ar: 'قبل توسيع agents: من يملك action؟ ما approval؟ ما evidence؟ ما rollback؟
+
+    Dealix يبدأ بالحوكمة لا بالميزات.
+
+    '
+  cta_ar: دليل AI approval للمبيعات
+  aeo_slug: ai-approval-sales
+  status: draft
+- week: 2
+  day: 4
+  pillar: proof
+  title_ar: أين يضيع الإيراد بعد الإعلانات؟
+  body_ar: 'ليس دائماً في الإعلان — غالباً في: لا owner · رد متأخر · لا proof للعميل.
+
+    التشخيص أولاً ثم Sprint إن ثبتت القيمة.
+
+    '
+  cta_ar: Governed Diagnostic — نطاق محدود
+  aeo_slug: revenue-leakage-after-ads
+  status: draft
+- week: 3
+  day: 0
+  pillar: founder_media
+  title_ar: شراكة وكالة — عميل واحد أولاً
+  body_ar: 'Co-sell بدون التزام ضخم: أنتم العلاقة · Dealix التشخيص والـ Proof.
+
+    لا white-label قبل 3 pilots ناجحة.
+
+    '
+  cta_ar: Partner intro — ديمو 10 دقائق
+  aeo_slug: partner-onboarding
+  status: draft
+- week: 3
+  day: 1
+  pillar: objection
+  title_ar: عندنا AI داخلي
+  body_ar: 'ممتاز — السؤال: هل كل action له source وapproval وevidence؟
+
+    Dealix طبقة diagnostic/proof قبل التوسع.
+
+    '
+  cta_ar: Executive Growth OS — للمؤسسين
+  aeo_slug: govern-ai-before-scale
+  status: draft
+- week: 3
+  day: 2
+  pillar: proof
+  title_ar: قائمة متابعة للوكالات السعودية
+  body_ar: 'owner خلال 15 دقيقة · قالب follow-up · تقرير أسبوعي للعميل · حدود موافقة.
+
+    نطبّقها على 10 leads حقيقية عندكم.
+
+    '
+  cta_ar: Sample Proof Pack
+  aeo_slug: saudi-agency-follow-up-checklist
+  status: draft
+- week: 3
+  day: 3
+  pillar: trust
+  title_ar: لا proof مزيف — لا إيراد وهمي
+  body_ar: 'كل finding له مصدر أو «مفقود» صريح.
+
+    لا نعدّ revenue قبل invoice_paid.
+
+    '
+  cta_ar: Trust layer — كيف نبيع
+  aeo_slug: trust-layer
+  status: draft
+- week: 3
+  day: 4
+  pillar: founder_media
+  title_ar: 'Build in public: أول Diagnostic مدفوع'
+  body_ar: 'القرار: لا features قبل أول Diagnostic + Proof Pack مسلّم.
+
+    نستخدم ما بُني — لا نبني أكثر الآن.
+
+    '
+  cta_ar: تواصل إن كنت وكالة B2B في السعودية
+  aeo_slug: founder-build-in-public
+  status: draft
+- week: 4
+  day: 0
+  pillar: proof
+  title_ar: من lead إلى قرار في 7 أيام
+  body_ar: 'workflow واحد · تصنيف · مسودات متابعة (لا إرسال من Dealix) · Proof Pack
+    · توصية توسع.
+
+    '
+  cta_ar: احجز ديمو 10 دقائق
+  aeo_slug: lead-to-decision-7d
+  status: draft
+- week: 4
+  day: 1
+  pillar: objection
+  title_ar: السعر ليس المشكلة — المخاطرة هي
+  body_ar: 'Pilot صغير · عميل واحد للوكالة · أدلة قبل Retainer.
+
+    إن لم تظهر قيمة — نتوقف عند التشخيص باحترام.
+
+    '
+  cta_ar: Scope Agency Audit
+  aeo_slug: price-risk-not-value
+  status: draft
+- week: 4
+  day: 2
+  pillar: founder_media
+  title_ar: Revenue Ops ≠ Marketing
+  body_ar: 'Marketing يجلب الاهتمام. Revenue Ops يحوّل ما بعد الـ lead إلى قرار موثّق
+    قابل للبيع.
+
+    '
+  cta_ar: ما هو Post-Lead Revenue Ops؟
+  aeo_slug: post-lead-revenue-ops
+  status: draft
+- week: 4
+  day: 3
+  pillar: trust
+  title_ar: Human approval = selling point
+  body_ar: 'للمؤسسين والمجالس: حوكمة AI في الإيراد قبل التوسع.
+
+    ليس بطء — هو ثقة.
+
+    '
+  cta_ar: Motion D — Executive diagnostic
+  aeo_slug: human-approval-selling-point
+  status: draft
+- week: 4
+  day: 4
+  pillar: proof
+  title_ar: 'الأسبوع القادم: أهدافك العشر'
+  body_ar: '10 لمسات موافَق عليها · 5 متابعات · 1 شريك · 1 حدث أدلة · 1 منشور SOAEN.
+
+    نظام يخدمك — أنت توافق وتُرسل.
+
+    '
+  cta_ar: MASTER Commercial Plan — ابدأ صباحاً
+  aeo_slug: weekly-commercial-rhythm
+  status: draft
+- week: 5
+  day: 0
+  pillar: proof
+  title_ar: تشخيص 10 leads — ماذا نكتشف؟
+  body_ar: 'غياب owner · تأخر أول رد · لا evidence للعميل.
+
+    التشخيص يحدد إن كان Sprint يستحق — لا اشتراك قبل Proof.
+
+    '
+  cta_ar: 10-Lead Audit — 499 SAR
+  aeo_slug: diagnostic-10-leads
+  status: draft
+- week: 5
+  day: 1
+  pillar: founder_media
+  title_ar: لماذا نرفض cold WhatsApp؟
+  body_ar: 'الثقة أهم من الحجم. العميل السعودي يتذكر من أزعجه.
+
+    Dealix يبني Post-Lead Ops بموافقة واضحة.
+
+    '
+  cta_ar: سياسة No cold WhatsApp
+  aeo_slug: why-no-cold-whatsapp
+  status: draft
+- week: 5
+  day: 2
+  pillar: objection
+  title_ar: نحتاج فريق مبيعات أكبر
+  body_ar: 'السؤال: هل المشكلة عدد البشر أم غياب نظام متابعة؟
+
+    أحياناً Pilot يوضح أن المشكلة تشغيل لا توظيف.
+
+    '
+  cta_ar: ديمو 10 دقائق
+  aeo_slug: sales-headcount-objection
+  status: draft
+- week: 5
+  day: 3
+  pillar: trust
+  title_ar: Evidence قبل Upsell
+  body_ar: 'لا Growth tier قبل Proof Pack مسلّم.
+
+    هذا يحمي علاقتك مع عميل الوكالة أيضاً.
+
+    '
+  cta_ar: Sample Proof Pack
+  aeo_slug: evidence-before-upsell
+  status: draft
+- week: 5
+  day: 4
+  pillar: proof
+  title_ar: وكالة واحدة · عميل واحد · أسبوع واحد
+  body_ar: 'Motion A: نطاق ضيق · أدلة حقيقية · قرار توسع أو توقف.
+
+    '
+  cta_ar: Agency Proof Pack
+  aeo_slug: one-agency-one-client
+  status: draft
+- week: 6
+  day: 0
+  pillar: founder_media
+  title_ar: غرفة الحرب اليومية
+  body_ar: '10 أهداف · 5 متابعات · مسودة LinkedIn · حدث أدلة واحد.
+
+    الصباح = قرار لا بحث عشوائي.
+
+    '
+  cta_ar: MASTER Commercial Plan
+  aeo_slug: daily-war-room
+  status: draft
+- week: 6
+  day: 1
+  pillar: proof
+  title_ar: Risk Score — ماذا يقيس؟
+  body_ar: 'ليس lead score تسويقي — يقيس جاهزية ما بعد الـ lead:
+
+    owner · مصدر · موافقة · evidence · next action.
+
+    '
+  cta_ar: Risk Score مجاني
+  aeo_slug: risk-score-explained
+  status: draft
+- week: 6
+  day: 2
+  pillar: objection
+  title_ar: لدينا وكيل AI آخر
+  body_ar: 'ممتاز — هل يخرج مسودات بموافقة ولا يرسل بارد؟
+
+    Dealix طبقة حوكمة + Proof قبل التوسع.
+
+    '
+  cta_ar: Executive Growth OS
+  aeo_slug: another-ai-agent
+  status: draft
+- week: 6
+  day: 3
+  pillar: trust
+  title_ar: KPI من CRM فقط
+  body_ar: 'لا أرقام إيراد مخترعة في التقارير.
+
+    المؤسس يعبّئ import من CRM — الأتمتة تعرض الحالة فقط.
+
+    '
+  cta_ar: كيف نبيع بثقة
+  aeo_slug: kpi-from-crm-only
+  status: draft
+- week: 6
+  day: 4
+  pillar: proof
+  title_ar: بعد Pilot — ماذا بعد؟
+  body_ar: 'Proof Pack → قرار: Retainer · تكرار · أو توقف محترم.
+
+    لا ضغط upsell.
+
+    '
+  cta_ar: Governed Diagnostic
+  aeo_slug: after-pilot-next
+  status: draft
+- week: 7
+  day: 0
+  pillar: founder_media
+  title_ar: شراكة وكالة — 30% referral
+  body_ar: 'أنتم العلاقة · Dealix التشخيص والـ Proof.
+
+    عميل واحد أولاً — لا white-label مبكر.
+
+    '
+  cta_ar: Partner Kit
+  aeo_slug: agency-partner-referral
+  status: draft
+- week: 7
+  day: 1
+  pillar: proof
+  title_ar: سكربت مكالمة — ليس روبوت
+  body_ar: 'آلة الإيراد تولّد سكربتات — المؤسس يتصل ويوثّق النتيجة.
+
+    Human-in-the-loop by design.
+
+    '
+  cta_ar: Pilot 499 SAR
+  aeo_slug: call-scripts-human
+  status: draft
+- week: 7
+  day: 2
+  pillar: objection
+  title_ar: البيانات عندكم — أين الأمان؟
+  body_ar: 'PDPL · opt-out · allowed_use · suppression.
+
+    كل إجراء خارجي له سجل تدقيق.
+
+    '
+  cta_ar: Trust layer
+  aeo_slug: data-safety-pdpl
+  status: draft
+- week: 7
+  day: 3
+  pillar: trust
+  title_ar: مسودات Gmail — ليس إرسالاً جماعياً
+  body_ar: 'revenue-machine يملأ مسودات — أنت تراجع وتُرسل.
+
+    توسيع auto-send فقط ببوابة warm + RFC.
+
+    '
+  cta_ar: اقرأ GATED_AUTO_SEND_RFC
+  aeo_slug: gmail-drafts-not-blast
+  status: draft
+- week: 7
+  day: 4
+  pillar: proof
+  title_ar: أول Diagnostic مدفوع
+  body_ar: 'الهدف التجاري: Diagnostic + Proof قبل ميزات جديدة.
+
+    Build in public بانضباط.
+
+    '
+  cta_ar: تواصل — وكالة B2B
+  aeo_slug: first-paid-diagnostic
+  status: draft
+- week: 8
+  day: 0
+  pillar: founder_media
+  title_ar: تشغيل ذاتي 95% — موافقة 5%
+  body_ar: 'النظام يجهّز اليوم كاملاً — أنت توافق وتُرسل وتقيس.
+
+    هذا أقصى أتمتة آمنة في السوق السعودي.
+
+    '
+  cta_ar: 'ابدأ الصباح: run_founder_commercial_day'
+  aeo_slug: sovereign-gtm-95-5
+  status: draft
+- week: 8
+  day: 1
+  pillar: proof
+  title_ar: من إعلان إلى قرار
+  body_ar: 'الحملة تجيب lead — Revenue Ops يحوّلها لقرار موثّق.
+
+    الوكالة تبيع النتيجة لعميلها بـ Proof.
+
+    '
+  cta_ar: Post-Lead Revenue Ops
+  aeo_slug: ad-to-decision
+  status: draft
+- week: 8
+  day: 2
+  pillar: objection
+  title_ar: ليس CRM جديد
+  body_ar: 'طبقة فوق CRM: owner · evidence · next action بعد الـ lead.
+
+    '
+  cta_ar: CRM vs Revenue Ops
+  aeo_slug: not-another-crm
+  status: draft
+- week: 8
+  day: 3
+  pillar: trust
+  title_ar: LinkedIn يدوي — عمداً
+  body_ar: 'لا DM آلي — مسودة + بحث profile + أنت ترسل.
+
+    ToS + ثقة السوق.
+
+    '
+  cta_ar: مسودة LinkedIn اليوم
+  aeo_slug: linkedin-manual-by-design
+  status: draft
+- week: 8
+  day: 4
+  pillar: proof
+  title_ar: الأسبوع التاسع — كرّر الإيقاع
+  body_ar: 'نفس الحلقة: War Room · أدلة · مسودات · منشور SOAEN.
+
+    النظام يخدمك — لا يستبدلك.
+
+    '
+  cta_ar: DEALIX Unified Revenue Atlas
+  aeo_slug: repeat-the-rhythm
+  status: draft
+- week: 9
+  day: 0
+  pillar: founder_media
+  title_ar: معيار SOAEN
+  body_ar: 'Signal · Offer · Action · Evidence · Narrative — خمس فجوات قبل أي upsell.
+
+
+    #Dealix #RevenueOps #السعودية'
+  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
+  aeo_slug: soaen-standard
+  status: draft
+- week: 9
+  day: 1
+  pillar: proof
+  title_ar: لماذا 10 leads؟
+  body_ar: 'نبدأ بـ pilot صغير — أدلة حقيقية قبل التوسع.
+
+
+    #Dealix #RevenueOps #السعودية'
+  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
+  aeo_slug: 10-lead-audit
+  status: draft
+- week: 9
+  day: 2
+  pillar: objection
+  title_ar: حوكمة AI قبل التوسع
+  body_ar: 'لا أتمتة إرسال — موافقة بشرية على كل لمسة خارجية.
+
+
+    #Dealix #RevenueOps #السعودية'
+  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
+  aeo_slug: govern-ai-before-scale
+  status: draft
+- week: 9
+  day: 3
+  pillar: trust
+  title_ar: أين يضيع الإيراد؟
+  body_ar: 'بعد الإعلان: لا owner · لا evidence · لا next action.
+
+
+    #Dealix #RevenueOps #السعودية'
+  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
+  aeo_slug: revenue-leakage-after-ads
+  status: draft
+- week: 9
+  day: 4
+  pillar: proof
+  title_ar: كرّر الإيقاع
+  body_ar: 'War Room · أدلة · مسودات · منشور SOAEN — يومياً.
+
+
+    #Dealix #RevenueOps #السعودية'
+  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
+  aeo_slug: repeat-the-rhythm
+  status: draft
+- week: 10
+  day: 0
+  pillar: founder_media
+  title_ar: وكالة تبيع النتيجة
+  body_ar: 'Proof Pack أسبوعي لعميل الوكالة — ليس تقريراً عاماً.
+
+
+    #Dealix #RevenueOps #السعودية'
+  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
+  aeo_slug: agency-proof-for-clients
+  status: draft
+- week: 10
+  day: 1
+  pillar: proof
+  title_ar: قائمة متابعة سعودية
+  body_ar: '15 دقيقة owner · موافقة · evidence · تاريخ.
+
+
+    #Dealix #RevenueOps #السعودية'
+  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
+  aeo_slug: saudi-agency-follow-up-checklist
+  status: draft
+- week: 10
+  day: 2
+  pillar: objection
+  title_ar: موافقة AI للمبيعات
+  body_ar: 'مسودة → موافقة → إرسال يدوي — PDPL وثقة.
+
+
+    #Dealix #RevenueOps #السعودية'
+  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
+  aeo_slug: ai-approval-sales
+  status: draft
+- week: 10
+  day: 3
+  pillar: trust
+  title_ar: لا CRM جديد
+  body_ar: 'طبقة فوق CRM الحالي — قرار إيراد موثّق.
+
+
+    #Dealix #RevenueOps #السعودية'
+  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
+  aeo_slug: not-another-crm
+  status: draft
+- week: 10
+  day: 4
+  pillar: proof
+  title_ar: من إعلان إلى قرار
+  body_ar: 'الحملة تجيب lead — Revenue Ops يثبت المتابعة.
+
+
+    #Dealix #RevenueOps #السعودية'
+  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
+  aeo_slug: ad-to-decision
+  status: draft
+- week: 11
+  day: 0
+  pillar: founder_media
+  title_ar: تشغيل 95% / موافقة 5%
+  body_ar: 'النظام يجهّز اليوم — أنت توافق وتُرسل.
+
+
+    #Dealix #RevenueOps #السعودية'
+  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
+  aeo_slug: sovereign-gtm-95-5
+  status: draft
+- week: 11
+  day: 1
+  pillar: proof
+  title_ar: أول Diagnostic مدفوع
+  body_ar: 'هدف تجاري: Diagnostic + Proof قبل ميزات.
+
+
+    #Dealix #RevenueOps #السعودية'
+  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
+  aeo_slug: first-paid-diagnostic
+  status: draft
+- week: 11
+  day: 2
+  pillar: objection
+  title_ar: LinkedIn يدوي
+  body_ar: 'لا DM آلي — مسودة + أنت ترسل.
+
+
+    #Dealix #RevenueOps #السعودية'
+  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
+  aeo_slug: linkedin-manual-by-design
+  status: draft
+- week: 11
+  day: 3
+  pillar: trust
+  title_ar: لا واتساب بارد
+  body_ar: 'قوائم warm فقط — امتثال وثقة.
+
+
+    #Dealix #RevenueOps #السعودية'
+  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
+  aeo_slug: no-cold-whatsapp-policy
+  status: draft
+- week: 11
+  day: 4
+  pillar: proof
+  title_ar: Risk Score مجاني
+  body_ar: 'ابدأ بقياس الجاهزية — ثم Proof Pack.
+
+
+    #Dealix #RevenueOps #السعودية'
+  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
+  aeo_slug: post-lead-revenue-ops
+  status: draft
+- week: 12
+  day: 0
+  pillar: founder_media
+  title_ar: Unified Revenue Atlas
+  body_ar: 'خريطة واحدة: استراتيجية + تكتيك + أدلة.
+
+
+    #Dealix #RevenueOps #السعودية'
+  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
+  aeo_slug: crm-vs-revenue-ops
+  status: draft
+- week: 12
+  day: 1
+  pillar: proof
+  title_ar: Sample Proof Pack
+  body_ar: 'عينة عامة قبل الشراء — أقسام وحالة.
+
+
+    #Dealix #RevenueOps #السعودية'
+  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
+  aeo_slug: what-is-proof-pack
+  status: draft
+- week: 12
+  day: 2
+  pillar: objection
+  title_ar: سعر مرتفع؟
+  body_ar: 'ابدأ بـ 499 ر.س — pilot وليس عقد سنوي.
+
+
+    #Dealix #RevenueOps #السعودية'
+  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
+  aeo_slug: 10-lead-audit
+  status: draft
+- week: 12
+  day: 3
+  pillar: trust
+  title_ar: شريك co-sell
+  body_ar: 'Motion شركاء — عميل واحد مشترك.
+
+
+    #Dealix #RevenueOps #السعودية'
+  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
+  aeo_slug: partner-intro
+  status: draft
+- week: 12
+  day: 4
+  pillar: proof
+  title_ar: جاهز للتدشين
+  body_ar: 'صفحة /ar · funnel · آلة يومية — Soft Launch.
+
+
+    #Dealix #RevenueOps #السعودية'
+  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
+  aeo_slug: governed-max-launch
+  status: draft
+- week: 13
+  day: 0
+  pillar: founder_media
+  title_ar: توسعة Wave 2
+  body_ar: '100–150 حساب warm فقط — بعد 3 discovery حقيقية.
+
+
+    #Dealix #RevenueOps #السعودية'
+  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
+  aeo_slug: abm-wave2-warm
+  status: draft
+- week: 13
+  day: 1
+  pillar: proof
+  title_ar: حزمة عميل قبل الاجتماع
+  body_ar: 'War Room → client pack → Discovery سبعة أسئلة.
+
+
+    #Dealix #RevenueOps #السعودية'
+  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
+  aeo_slug: client-pack-sop
+  status: draft
+- week: 13
+  day: 2
+  pillar: objection
+  title_ar: لماذا لا أتمتة كاملة؟
+  body_ar: '95% تجهيز · 5% موافقة — امتثال وثقة.
+
+
+    #Dealix #RevenueOps #السعودية'
+  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
+  aeo_slug: governed-automation-95-5
+  status: draft
+- week: 13
+  day: 3
+  pillar: trust
+  title_ar: أدلة قابلة للتدقيق
+  body_ar: 'كل إيراد مربوط بحدث في CSV.
+
+
+    #Dealix #RevenueOps #السعودية'
+  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
+  aeo_slug: evidence-events-close
+  status: draft
+- week: 13
+  day: 4
+  pillar: proof
+  title_ar: Motion A يومياً
+  body_ar: '10 P0 وكالات — مسودة ثم إرسال يدوي.
+
+
+    #Dealix #RevenueOps #السعودية'
+  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
+  aeo_slug: motion-a-pipeline
+  status: draft
+- week: 14
+  day: 0
+  pillar: founder_media
+  title_ar: قيمة Diagnostic
+  body_ar: '4,999–15,000 ر.س — مدخل محادثة وليس CRM جديد.
+
+
+    #Dealix #RevenueOps #السعودية'
+  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
+  aeo_slug: first-paid-diagnostic-value
+  status: draft
+- week: 14
+  day: 1
+  pillar: proof
+  title_ar: Sprint 499
+  body_ar: 'بعد القبول — pilot صغير بأدلة.
+
+
+    #Dealix #RevenueOps #السعودية'
+  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
+  aeo_slug: lead-intelligence-sprint
+  status: draft
+- week: 14
+  day: 2
+  pillar: objection
+  title_ar: Growth بعد Proof
+  body_ar: 'لا upsell قبل proof_pack_delivered.
+
+
+    #Dealix #RevenueOps #السعودية'
+  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
+  aeo_slug: growth-after-proof-only
+  status: draft
+- week: 14
+  day: 3
+  pillar: trust
+  title_ar: KPI من CRM فقط
+  body_ar: 'kpi_founder_commercial_import.yaml — لا أرقام مخترعة.
+
+
+    #Dealix #RevenueOps #السعودية'
+  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
+  aeo_slug: no-invented-crm-kpi
+  status: draft
+- week: 14
+  day: 4
+  pillar: proof
+  title_ar: غرفة الحرب
+  body_ar: 'أعلى 10 + متابعات + أحداث اليوم.
+
+
+    #Dealix #RevenueOps #السعودية'
+  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
+  aeo_slug: revenue-war-room-daily
+  status: draft
+- week: 15
+  day: 0
+  pillar: founder_media
+  title_ar: شركاء co-sell
+  body_ar: 'Motion C — عميل مشترك · intro موثّق.
+
+
+    #Dealix #RevenueOps #السعودية'
+  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
+  aeo_slug: partner-motion-c
+  status: draft
+- week: 15
+  day: 1
+  pillar: proof
+  title_ar: تنفيذي AI
+  body_ar: 'Motion D — حوكمة قبل توسع AI.
+
+
+    #Dealix #RevenueOps #السعودية'
+  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
+  aeo_slug: executive-diagnostic-motion-d
+  status: draft
+- week: 15
+  day: 2
+  pillar: objection
+  title_ar: PDPL والاتصال
+  body_ar: 'قوائم warm · موافقة · لا scraping.
+
+
+    #Dealix #RevenueOps #السعودية'
+  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
+  aeo_slug: pdpl-contactability
+  status: draft
+- week: 15
+  day: 3
+  pillar: trust
+  title_ar: Risk Score عام
+  body_ar: '/ar/risk-score — قياس قبل البيع.
+
+
+    #Dealix #RevenueOps #السعودية'
+  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
+  aeo_slug: public-risk-score-funnel
+  status: draft
+- week: 15
+  day: 4
+  pillar: proof
+  title_ar: Learn AEO
+  body_ar: '/ar/learn — 6+ مقالات إجابة.
+
+
+    #Dealix #RevenueOps #السعودية'
+  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
+  aeo_slug: learn-hub-six-articles
+  status: draft
+- week: 16
+  day: 0
+  pillar: founder_media
+  title_ar: إطلاق مدفوع لاحقاً
+  body_ar: 'Moyasar + HubSpot — بعد أول Diagnostic.
+
+
+    #Dealix #RevenueOps #السعودية'
+  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
+  aeo_slug: paid-launch-after-soft
+  status: draft
+- week: 16
+  day: 1
+  pillar: proof
+  title_ar: تتبع أول مدفوع
+  body_ar: 'invoice → payment → proof pack.
+
+
+    #Dealix #RevenueOps #السعودية'
+  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
+  aeo_slug: first-paid-diagnostic-tracker
+  status: draft
+- week: 16
+  day: 2
+  pillar: objection
+  title_ar: لا إعلان قبل Proof
+  body_ar: '3–5 اجتماعات discovery قبل paid ads.
+
+
+    #Dealix #RevenueOps #السعودية'
+  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
+  aeo_slug: no-ads-before-proof
+  status: draft
+- week: 16
+  day: 3
+  pillar: trust
+  title_ar: Dealix Cloud
+  body_ar: 'Business NOW + Operator — قرار يومي.
+
+
+    #Dealix #RevenueOps #السعودية'
+  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
+  aeo_slug: dealix-cloud-founder
+  status: draft
+- week: 16
+  day: 4
+  pillar: proof
+  title_ar: توسع مستدام
+  body_ar: 'كرّر Motion A · أدلة · شريك · retainer.
+
+
+    #Dealix #RevenueOps #السعودية'
+  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
+  aeo_slug: sustainable-revenue-expansion
+  status: draft
+- week: 17
+  day: 0
+  pillar: founder_media
+  title_ar: قيمة يومية 90 دقيقة
+  body_ar: 'brief · war-room · approvals — لا بناء ميزات قبل scope.
+
+
+    #Dealix #RevenueOps #السعودية'
+  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
+  aeo_slug: founder-90min-cockpit
+  status: draft
+- week: 17
+  day: 1
+  pillar: proof
+  title_ar: حزمة عميل SOP
+  body_ar: 'generate_client_pack قبل كل Discovery.
+
+
+    #Dealix #RevenueOps #السعودية'
+  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
+  aeo_slug: client-pack-sop-daily
+  status: draft
+- week: 17
+  day: 2
+  pillar: objection
+  title_ar: لماذا Soft Launch؟
+  body_ar: 'بيع + قمع عام بدون Moyasar حتى 3–5 اجتماعات.
+
+
+    #Dealix #RevenueOps #السعودية'
+  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
+  aeo_slug: soft-launch-governed
+  status: draft
+- week: 17
+  day: 3
+  pillar: trust
+  title_ar: Value Plan JSON
+  body_ar: 'لقطة واحدة: Motion A + KPI + gates.
+
+
+    #Dealix #RevenueOps #السعودية'
+  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
+  aeo_slug: value-plan-json-daily
+  status: draft
+- week: 17
+  day: 4
+  pillar: proof
+  title_ar: توسعة 150 حساب
+  body_ar: 'Wave 2 — warm فقط · لا scraping.
+
+
+    #Dealix #RevenueOps #السعودية'
+  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
+  aeo_slug: abm-150-target-pool
+  status: draft
+- week: 18
+  day: 0
+  pillar: founder_media
+  title_ar: مسار Motion B
+  body_ar: 'B مباشر فقط بعد أول Proof من Motion A.
+
+
+    #Dealix #RevenueOps #السعودية'
+  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
+  aeo_slug: motion-b-after-a
+  status: draft
+- week: 18
+  day: 1
+  pillar: proof
+  title_ar: Data Pack 1500
+  body_ar: 'بعد قبول Diagnostic — لا upsell مبكر.
+
+
+    #Dealix #RevenueOps #السعودية'
+  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
+  aeo_slug: data-pack-offer
+  status: draft
+- week: 18
+  day: 2
+  pillar: objection
+  title_ar: تكامل HubSpot
+  body_ar: 'Truth Matrix: أخضر فقط عند المفتاح.
+
+
+    #Dealix #RevenueOps #السعودية'
+  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
+  aeo_slug: hubspot-when-ready
+  status: draft
+- week: 18
+  day: 3
+  pillar: trust
+  title_ar: أدلة مساءً
+  body_ar: 'founder_evening.ps1 — سطر واحد يومياً.
+
+
+    #Dealix #RevenueOps #السعودية'
+  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
+  aeo_slug: founder-evening-evidence
+  status: draft
+- week: 18
+  day: 4
+  pillar: proof
+  title_ar: Weekly scorecard
+  body_ar: 'أدلة · Proof · conversion — كل جمعة.
+
+
+    #Dealix #RevenueOps #السعودية'
+  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
+  aeo_slug: weekly-scorecard-friday
+  status: draft
+- week: 19
+  day: 0
+  pillar: founder_media
+  title_ar: شركاء /ar/partners
+  body_ar: 'Motion D · co-sell · intro موثّق.
+
+
+    #Dealix #RevenueOps #السعودية'
+  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
+  aeo_slug: partners-funnel
+  status: draft
+- week: 19
+  day: 1
+  pillar: proof
+  title_ar: Learn hub SEO
+  body_ar: '6+ مقالات — إجابة مباشرة للسوق.
+
+
+    #Dealix #RevenueOps #السعودية'
+  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
+  aeo_slug: learn-hub-aeo
+  status: draft
+- week: 19
+  day: 2
+  pillar: objection
+  title_ar: سعر Growth
+  body_ar: '2,999 SAR/mo — بعد Proof Pack فقط.
+
+
+    #Dealix #RevenueOps #السعودية'
+  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
+  aeo_slug: growth-2999-after-proof
+  status: draft
+- week: 19
+  day: 3
+  pillar: trust
+  title_ar: PDPL contactability
+  body_ar: 'قوائم opt-in · لا بارد.
+
+
+    #Dealix #RevenueOps #السعودية'
+  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
+  aeo_slug: pdpl-warm-lists
+  status: draft
+- week: 19
+  day: 4
+  pillar: proof
+  title_ar: Commercial expansion
+  body_ar: 'expand_commercial_ops_all — idempotent.
+
+
+    #Dealix #RevenueOps #السعودية'
+  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
+  aeo_slug: commercial-expansion-stack
+  status: draft
+- week: 20
+  day: 0
+  pillar: founder_media
+  title_ar: من 120 إلى 150
+  body_ar: 'توسعة استهداف — تدوير P0 يومي.
+
+
+    #Dealix #RevenueOps #السعودية'
+  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
+  aeo_slug: scale-targeting-wave2
+  status: draft
+- week: 20
+  day: 1
+  pillar: proof
+  title_ar: 20 أسبوع محتوى
+  body_ar: '80–100 منشور — مسودة وموافقة.
+
+
+    #Dealix #RevenueOps #السعودية'
+  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
+  aeo_slug: social-20-week-queue
+  status: draft
+- week: 20
+  day: 2
+  pillar: objection
+  title_ar: لا fake revenue
+  body_ar: 'كل رقم من CRM أو evidence.
+
+
+    #Dealix #RevenueOps #السعودية'
+  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
+  aeo_slug: no-fake-revenue-article-8
+  status: draft
+- week: 20
+  day: 3
+  pillar: trust
+  title_ar: Paid launch gate
+  body_ar: 'verify_paid_launch_readiness بعد Soft.
+
+
+    #Dealix #RevenueOps #السعودية'
+  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
+  aeo_slug: paid-launch-readiness
+  status: draft
+- week: 20
+  day: 4
+  pillar: proof
+  title_ar: أول عميل مدفوع
+  body_ar: 'Diagnostic → Proof → Sprint — حلقة واحدة.
+
+
+    #Dealix #RevenueOps #السعودية'
+  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
+  aeo_slug: first-customer-closed-loop
+  status: draft
+- week: 21
+  day: 0
+  pillar: founder_media
+  title_ar: من 150 إلى 200
+  body_ar: 'توسعة استراتيجية — inbound/AEO لا بث بارد.
+
+
+    #Dealix #RevenueOps #السعودية'
+  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
+  aeo_slug: wave3-200-pool
+  status: draft
+- week: 21
+  day: 1
+  pillar: proof
+  title_ar: 15 لمسة يومية
+  body_ar: 'موافقة ثم إرسال يدوي — حوكمة PDPL.
+
+
+    #Dealix #RevenueOps #السعودية'
+  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
+  aeo_slug: fifteen-touches-quota
+  status: draft
+- week: 21
+  day: 2
+  pillar: objection
+  title_ar: لماذا لا 500 حساب؟
+  body_ar: 'Wave 3 بعد أول Proof مدفوع — ليس scraping.
+
+
+    #Dealix #RevenueOps #السعودية'
+  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
+  aeo_slug: wave3-gate-inbound
+  status: draft
+- week: 21
+  day: 3
+  pillar: trust
+  title_ar: Commercial value map
+  body_ar: 'خريطة قيمة — Diagnostic → Sprint → Growth.
+
+
+    #Dealix #RevenueOps #السعودية'
+  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
+  aeo_slug: commercial-value-map
+  status: draft
+- week: 21
+  day: 4
+  pillar: proof
+  title_ar: Motion C/D بعد A
+  body_ar: 'شريك وتنفيذي — بعد إثبات Motion A.
+
+
+    #Dealix #RevenueOps #السعودية'
+  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
+  aeo_slug: motion-cd-after-proof
+  status: draft
+- week: 22
+  day: 0
+  pillar: founder_media
+  title_ar: تشغيل مساءً
+  body_ar: 'سطر evidence واحد — يغلق اليوم.
+
+
+    #Dealix #RevenueOps #السعودية'
+  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
+  aeo_slug: founder-evening-evidence
+  status: draft
+- week: 22
+  day: 1
+  pillar: proof
+  title_ar: حزم 12 اجتماع
+  body_ar: 'prepare_soft_launch_meetings — top-12.
+
+
+    #Dealix #RevenueOps #السعودية'
+  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
+  aeo_slug: twelve-meeting-packs
+  status: draft
+- week: 22
+  day: 2
+  pillar: objection
+  title_ar: Moyasar لاحقاً
+  body_ar: 'دفع يدوي أولاً — ثم live keys.
+
+
+    #Dealix #RevenueOps #السعودية'
+  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
+  aeo_slug: moyasar-after-soft-pass
+  status: draft
+- week: 22
+  day: 3
+  pillar: trust
+  title_ar: Railway bootstrap
+  body_ar: 'Alembic + War Room seed عند الإنتاج.
+
+
+    #Dealix #RevenueOps #السعودية'
+  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
+  aeo_slug: railway-prod-bootstrap
+  status: draft
+- week: 22
+  day: 4
+  pillar: proof
+  title_ar: Official launch verify
+  body_ar: 'company + GTM + FE build.
+
+
+    #Dealix #RevenueOps #السعودية'
+  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
+  aeo_slug: official-launch-verify
+  status: draft
+- week: 23
+  day: 0
+  pillar: founder_media
+  title_ar: Unified Revenue Atlas
+  body_ar: 'استراتيجية + تكتيك + أدلة — مرجع واحد.
+
+
+    #Dealix #RevenueOps #السعودية'
+  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
+  aeo_slug: unified-revenue-atlas-daily
+  status: draft
+- week: 23
+  day: 1
+  pillar: proof
+  title_ar: Full Ops Close
+  body_ar: 'Champion · Procurement · زوايا إغلاق.
+
+
+    #Dealix #RevenueOps #السعودية'
+  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
+  aeo_slug: full-ops-close-engine
+  status: draft
+- week: 23
+  day: 2
+  pillar: objection
+  title_ar: لا بناء قبل scope
+  body_ar: 'لا ميزات قبل scope_requested.
+
+
+    #Dealix #RevenueOps #السعودية'
+  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
+  aeo_slug: no-build-before-scope
+  status: draft
+- week: 23
+  day: 3
+  pillar: trust
+  title_ar: Article 13
+  body_ar: '3 عملاء مدفوعين — بوابة توسع.
+
+
+    #Dealix #RevenueOps #السعودية'
+  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
+  aeo_slug: article-13-three-paid
+  status: draft
+- week: 23
+  day: 4
+  pillar: proof
+  title_ar: Retainer بعد Proof
+  body_ar: 'Managed Ops — بعد تسليم Proof.
+
+
+    #Dealix #RevenueOps #السعودية'
+  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
+  aeo_slug: retainer-after-proof-pack
+  status: draft
+- week: 24
+  day: 0
+  pillar: founder_media
+  title_ar: 24 أسبوع محتوى
+  body_ar: '120 منشور مسودة — SOAEN أسبوعياً.
+
+
+    #Dealix #RevenueOps #السعودية'
+  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
+  aeo_slug: social-24-week-cycle
+  status: draft
+- week: 24
+  day: 1
+  pillar: proof
+  title_ar: 200 هدف warm
+  body_ar: 'ABM wave-3 seed — تدوير P0.
+
+
+    #Dealix #RevenueOps #السعودية'
+  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
+  aeo_slug: targeting-200-warm
+  status: draft
+- week: 24
+  day: 2
+  pillar: objection
+  title_ar: لا LinkedIn آلي
+  body_ar: 'مسودة في النظام — أنت ترسل.
+
+
+    #Dealix #RevenueOps #السعودية'
+  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
+  aeo_slug: linkedin-manual-only
+  status: draft
+- week: 24
+  day: 3
+  pillar: trust
+  title_ar: Dealix Revenue OS
+  body_ar: 'catalog · anti-waste · signals.
+
+
+    #Dealix #RevenueOps #السعودية'
+  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
+  aeo_slug: dealix-revenue-os-catalog
+  status: draft
+- week: 24
+  day: 4
+  pillar: proof
+  title_ar: إيراد حقيقي
+  body_ar: 'لمسة → أدلة → دفع → Proof Pack.
+
+
+    #Dealix #RevenueOps #السعودية'
+  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
+  aeo_slug: real-revenue-closed-loop
+  status: draft
+- week: 25
+  day: 0
+  pillar: founder_media
+  title_ar: Motions B/C/D
+  body_ar: 'أنابيب Motions — B بعد Proof · C شريك · D تنفيذي.
+
+
+    #Dealix #RevenueOps #السعودية'
+  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
+  aeo_slug: motions-bcd-pipelines
+  status: draft
+- week: 25
+  day: 1
+  pillar: proof
+  title_ar: Motion B مباشر
+  body_ar: 'B2B — governed_diagnostic بعد Motion A.
+
+
+    #Dealix #RevenueOps #السعودية'
+  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
+  aeo_slug: motion-b-direct
+  status: draft
+- week: 25
+  day: 2
+  pillar: objection
+  title_ar: لا فتح B مبكراً
+  body_ar: 'أول Proof Pack قبل توسعة B2B.
+
+
+    #Dealix #RevenueOps #السعودية'
+  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
+  aeo_slug: gate-motion-b
+  status: draft
+- week: 25
+  day: 3
+  pillar: trust
+  title_ar: شريك Motion C
+  body_ar: 'partner_intro موثّق — لا cold.
+
+
+    #Dealix #RevenueOps #السعودية'
+  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
+  aeo_slug: motion-c-partner-intro
+  status: draft
+- week: 25
+  day: 4
+  pillar: proof
+  title_ar: تنفيذي Motion D
+  body_ar: 'executive_diagnostic — حوكمة AI.
+
+
+    #Dealix #RevenueOps #السعودية'
+  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
+  aeo_slug: motion-d-executive
+  status: draft
+- week: 26
+  day: 0
+  pillar: founder_media
+  title_ar: 250 هدف تحضير
+  body_ar: 'wave4 — inbound/AEO بعد إثبات إيراد.
+
+
+    #Dealix #RevenueOps #السعودية'
+  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
+  aeo_slug: wave4-250-pool
+  status: draft
+- week: 26
+  day: 1
+  pillar: proof
+  title_ar: أنابيب يومية
+  body_ar: 'founder_all_motions_pipeline.py كل صباح.
+
+
+    #Dealix #RevenueOps #السعودية'
+  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
+  aeo_slug: founder-all-motions
+  status: draft
+- week: 26
+  day: 2
+  pillar: objection
+  title_ar: لا wave4 بارد
+  body_ar: '500+ لاحقاً — محتوى + inbound فقط.
+
+
+    #Dealix #RevenueOps #السعودية'
+  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
+  aeo_slug: wave4-warm-only
+  status: draft
+- week: 26
+  day: 3
+  pillar: trust
+  title_ar: توسعة أسبوعية CI
+  body_ar: 'GitHub Actions — expand idempotent.
+
+
+    #Dealix #RevenueOps #السعودية'
+  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
+  aeo_slug: weekly-expand-workflow
+  status: draft
+- week: 26
+  day: 4
+  pillar: proof
+  title_ar: Value map API
+  body_ar: 'خريطة قيمة + expansion status.
+
+
+    #Dealix #RevenueOps #السعودية'
+  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
+  aeo_slug: commercial-value-map
+  status: draft
+- week: 27
+  day: 0
+  pillar: founder_media
+  title_ar: 28 أسبوع محتوى
+  body_ar: '140 منشور — مسودة وموافقة.
+
+
+    #Dealix #RevenueOps #السعودية'
+  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
+  aeo_slug: social-28-weeks
+  status: draft
+- week: 27
+  day: 1
+  pillar: proof
+  title_ar: حزم 10 اجتماعات
+  body_ar: 'prepare_soft_launch_meetings --top-n 10.
+
+
+    #Dealix #RevenueOps #السعودية'
+  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
+  aeo_slug: ten-meeting-packs
+  status: draft
+- week: 27
+  day: 2
+  pillar: objection
+  title_ar: CRM حقيقي
+  body_ar: 'لا أرقام مخترعة في الأتمتة.
+
+
+    #Dealix #RevenueOps #السعودية'
+  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
+  aeo_slug: crm-kpi-only
+  status: draft
+- week: 27
+  day: 3
+  pillar: trust
+  title_ar: Dual track A/B
+  body_ar: 'مسار A للترويج · B للops حتى Proof.
+
+
+    #Dealix #RevenueOps #السعودية'
+  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
+  aeo_slug: gtm-dual-track
+  status: draft
+- week: 27
+  day: 4
+  pillar: proof
+  title_ar: TTV metrics
+  body_ar: 'من evidence CSV — شركات حقيقية.
+
+
+    #Dealix #RevenueOps #السعودية'
+  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
+  aeo_slug: ttv-evidence-metrics
+  status: draft
+- week: 28
+  day: 0
+  pillar: founder_media
+  title_ar: إغلاق الحلقة
+  body_ar: 'Diagnostic → Proof → Sprint — شركة واحدة.
+
+
+    #Dealix #RevenueOps #السعودية'
+  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
+  aeo_slug: close-revenue-loop
+  status: draft
+- week: 28
+  day: 1
+  pillar: proof
+  title_ar: Retainer لاحق
+  body_ar: 'Growth 2999 بعد Proof فقط.
+
+
+    #Dealix #RevenueOps #السعودية'
+  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
+  aeo_slug: retainer-after-proof
+  status: draft
+- week: 28
+  day: 2
+  pillar: objection
+  title_ar: لا بناء قبل إيراد
+  body_ar: 'بوابة القيمة مفتوحة = Motion A.
+
+
+    #Dealix #RevenueOps #السعودية'
+  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
+  aeo_slug: no-build-article
+  status: draft
+- week: 28
+  day: 3
+  pillar: trust
+  title_ar: حوكمة كاملة
+  body_ar: 'SOAEN في كل لمسة ومنشور.
+
+
+    #Dealix #RevenueOps #السعودية'
+  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
+  aeo_slug: full-soaen-stack
+  status: draft
+- week: 28
+  day: 4
+  pillar: proof
+  title_ar: Dealix جاهز
+  body_ar: '200–250 pool · 28w · 4 Motions.
+
+
+    #Dealix #RevenueOps #السعودية'
+  cta_ar: Risk Score · Sample Proof · ديمو 10 دقائق
+  aeo_slug: dealix-expansion-ready
+  status: draft

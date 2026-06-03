@@ -1,0 +1,113 @@
+version: 1
+program: global_ai_transformation
+blueprint: Global AI Company Transformation Plan
+entry_criterion: ENTERPRISE CONTROL PLANE PASS
+phases:
+  - id: phase_1
+    name_en: Foundation stabilization and doctrine lock
+    exit_criteria:
+      - verify_global_ai_transformation PASS
+      - ownership_matrix published
+      - release gate enforced
+  - id: phase_2
+    name_en: Enterprise productization and trust packs
+    exit_criteria:
+      - enterprise_package templates complete
+      - pilot runbooks linked
+  - id: phase_3
+    name_en: Scale systems and unit economics optimization
+    exit_criteria:
+      - gtm playbooks operational
+      - lifecycle unit economics instrumented
+  - id: phase_4
+    name_en: Category authority and regional expansion
+    exit_criteria:
+      - category_expansion_gates PASS
+      - ceo_signal_os targets met
+workstreams:
+  product_platform:
+    letter: A
+    initiatives: [gap-closure, delivery-control-tower]
+  trust_governance:
+    letter: B
+    initiatives: [doctrine-lock, governance-expansion]
+  intelligence_data:
+    letter: C
+    initiatives: [data-flywheel]
+  engineering_reliability:
+    letter: D
+    initiatives: [reliability-program, gap-closure]
+  observability:
+    letter: E
+    initiatives: [observability-contracts]
+  gtm_category:
+    letter: F
+    initiatives: [gtm-system, category-dominance, enterprise-package]
+  revenue_finance:
+    letter: G
+    initiatives: [unit-economics]
+  delivery_quality:
+    letter: H
+    initiatives: [delivery-control-tower]
+  organization:
+    letter: I
+    initiatives: [org-operating-system]
+  finance_capital:
+    letter: J
+    initiatives: [unit-economics]
+  security_enterprise:
+    letter: K
+    initiatives: [enterprise-package, governance-expansion]
+  self_evolution:
+    letter: L
+    initiatives: [governance-expansion]
+initiatives:
+  doctrine-lock:
+    deliverable: docs/transformation/01_doctrine_lock.md
+    verify: python3 scripts/verify_global_ai_transformation.py --check doctrine-lock
+    status: implemented
+  gap-closure:
+    deliverable: docs/transformation/02_gap_closure_matrix.md
+    verify: python3 scripts/verify_global_ai_transformation.py --check gap-closure
+    status: implemented
+  enterprise-package:
+    deliverable: docs/transformation/03_enterprise_package.md
+    verify: python3 scripts/verify_global_ai_transformation.py --check enterprise-package
+    status: implemented
+  governance-expansion:
+    deliverable: docs/transformation/04_governance_expansion.md
+    verify: python3 scripts/verify_global_ai_transformation.py --check governance-expansion
+    status: implemented
+  data-flywheel:
+    deliverable: docs/transformation/05_data_flywheel_operationalization.md
+    verify: python3 scripts/verify_global_ai_transformation.py --check data-flywheel
+    status: implemented
+  reliability-program:
+    deliverable: docs/transformation/06_reliability_program.md
+    verify: python3 scripts/verify_global_ai_transformation.py --check reliability-program
+    status: implemented
+  observability-contracts:
+    deliverable: docs/transformation/07_observability_contracts.md
+    verify: python3 scripts/verify_global_ai_transformation.py --check observability-contracts
+    status: implemented
+  gtm-system:
+    deliverable: docs/transformation/08_gtm_system_playbook.md
+    verify: python3 scripts/verify_global_ai_transformation.py --check gtm-system
+    status: implemented
+  unit-economics:
+    deliverable: docs/transformation/09_unit_economics_governance.md
+    verify: python3 scripts/verify_global_ai_transformation.py --check unit-economics
+    status: implemented
+  delivery-control-tower:
+    deliverable: docs/transformation/10_delivery_control_tower.md
+    verify: python3 scripts/verify_global_ai_transformation.py --check delivery-control-tower
+    status: implemented
+  org-operating-system:
+    deliverable: docs/transformation/11_org_operating_system.md
+    verify: python3 scripts/verify_global_ai_transformation.py --check org-operating-system
+    status: implemented
+  category-dominance:
+    deliverable: docs/transformation/12_category_dominance.md
+    verify: python3 scripts/verify_global_ai_transformation.py --check category-dominance
+    status: implemented
+master_bundle: scripts/run_global_ai_transformation_bundle.sh

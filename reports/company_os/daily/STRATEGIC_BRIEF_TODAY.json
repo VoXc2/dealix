@@ -1,0 +1,20 @@
+{
+  "generated_at": "2026-05-30T12:14:59.539709+00:00",
+  "decision": "Sell P1 today. Do not build new features before outreach.",
+  "targets": {
+    "manual_messages": 5,
+    "discovery_calls": 1,
+    "proposal": 1
+  },
+  "links": {
+    "demo": "https://web-production-380c3.up.railway.app/ar/demo",
+    "revenue_os": "https://web-production-380c3.up.railway.app/revenue-os",
+    "zatca": "https://web-production-380c3.up.railway.app/ar/zatca-readiness"
+  },
+  "guardrails": [
+    "no auto-send",
+    "no scraping",
+    "approval required",
+    "no ROI claim without baseline"
+  ]
+}

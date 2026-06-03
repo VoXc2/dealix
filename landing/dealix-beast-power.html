@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Dealix Beast-Level — نظام تشغيل سعودي ذاتي النمو للشركات. 7 طبقات تشغيلية + 9 رولات + Golden Loop + 8 hard gates مقفلة." />
+<link rel="canonical" href="https://dealix.me/dealix-beast-power.html" />
+<meta property="og:type" content="website" />
+<meta property="og:title" content="Dealix Beast-Level — نظام التشغيل الحي للشركات" />
+<meta property="og:description" content="عرض حي مباشر لقوة Dealix من api.dealix.me — 7 طبقات + 9 رولات + Golden Loop verified end-to-end." />
+<meta property="og:url" content="https://dealix.me/dealix-beast-power.html" />
+<meta property="og:locale" content="ar_SA" />
+<meta name="twitter:card" content="summary_large_image" />
+<title>Dealix Beast — قوّة النظام الحيّة</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" />
+
+<!-- Design system: foundation tokens + component library. -->
+<link rel="stylesheet" href="/styles.css" />
+<link rel="stylesheet" href="/assets/css/design-system.css" />
+
+<style>
+  /* Page-specific layout — components come from /assets/css/design-system.css */
+  body {
+    background:
+      radial-gradient(1100px 600px at 80% -10%, rgba(168, 85, 247, 0.18), transparent 60%),
+      radial-gradient(900px 500px at 0% 10%, rgba(14, 165, 233, 0.18), transparent 60%),
+      linear-gradient(180deg, #050816 0%, #0b1124 60%, #1e1b4b 100%);
+    color: var(--text);
+    min-height: 100vh;
+    margin: 0;
+    font-family: var(--font-ar);
+  }
+  main { padding: var(--space-7) var(--space-5) var(--space-9); }
+  /* Tiny layer-number circle used only on this page */
+  .bp-layer {
+    display: grid;
+    grid-template-columns: 44px 1fr;
+    gap: var(--space-3);
+    align-items: center;
+    padding: var(--space-4) var(--space-5);
+    background: var(--ds-surface-1);
+    border: 1px solid var(--ds-border);
+    border-radius: var(--radius, 14px);
+    transition: transform var(--dur-base) var(--ease-out-quart), border-color var(--dur-base);
+  }
+  .bp-layer:hover { transform: translateY(-2px); border-color: var(--ds-border-strong); }
+  .bp-layer__num {
+    width: 44px; height: 44px;
+    display: grid; place-items: center;
+    border-radius: 12px;
+    background: linear-gradient(135deg, rgba(34,211,238,0.20), rgba(168,85,247,0.20));
+    color: var(--accent-2);
+    font-weight: 800;
+    font-family: var(--font-lt);
+    letter-spacing: var(--tracking-tight);
+  }
+  .bp-layer__name-ar { font-weight: 700; font-size: var(--fs-md); color: var(--text); }
+  .bp-layer__name-en { font-size: var(--fs-xs); color: var(--text-muted); font-family: var(--font-lt); letter-spacing: var(--tracking-wide); text-transform: uppercase; }
+
+  /* Role click affordance */
+  .bp-role-card { cursor: pointer; }
+  .bp-role-card[aria-busy="true"] { opacity: 0.55; pointer-events: none; }
+
+  /* Card output details */
+  .bp-card-output {
+    margin: 0;
+    font-family: ui-monospace, "SFMono-Regular", "Cascadia Code", Menlo, monospace;
+    font-size: var(--fs-xs);
+    line-height: 1.7;
+    color: var(--text-muted);
+    background: rgba(2, 6, 23, 0.45);
+    padding: var(--space-3) var(--space-4);
+    border-radius: var(--radius-sm, 8px);
+    border: 1px solid var(--ds-border);
+    overflow-x: auto;
+    direction: ltr;
+    unicode-bidi: isolate;
+    max-height: 300px;
+  }
+
+  /* Section eyebrow row */
+  .bp-section-head { display: flex; align-items: baseline; justify-content: space-between; gap: var(--space-3); flex-wrap: wrap; margin-bottom: var(--space-4); }
+  .bp-section-head h2 { font-size: var(--fs-2xl); margin: 0; font-weight: 700; }
+
+  @media (max-width: 600px) {
+    main { padding: var(--space-5) var(--space-3) var(--space-7); }
+  }
+</style>
+</head>
+<body>
+<a class="ds-skip-link" href="#main">تخطّ إلى المحتوى الرئيسي</a>
+
+<main id="main" class="ds-container--full ds-stack ds-stack--xl">
+
+  <!-- Hero / banner -->
+  <section class="ds-banner ds-stack ds-stack--sm" aria-labelledby="hero-title">
+    <span class="ds-eyebrow">Dealix · BEAST-LEVEL · V12.5.1</span>
+    <h1 id="hero-title" class="ds-banner__title">🦁 قوّة Dealix الحيّة</h1>
+    <p class="ds-banner__subtitle">Self-Growing Saudi Company OS — 7 layers · 9 roles · 13 Golden-Loop stages · 8 immutable gates · revenue-truth enforced.</p>
+    <div class="ds-row" style="margin-top: var(--space-2);">
+      <span class="ds-endpoint">https://api.dealix.me</span>
+      <span class="ds-row" style="gap: 6px; font-size: var(--fs-xs); color: var(--text-muted);">
+        <span class="ds-pulse" aria-hidden="true"></span>
+        تحديث تلقائي كلّ ٦٠ ثانية · auto-refresh
+      </span>
+    </div>
+  </section>
+
+  <!-- Top KPIs -->
+  <section aria-labelledby="kpi-title" class="ds-stack ds-stack--md">
+    <h2 id="kpi-title" class="ds-sr-only">المؤشّرات الرئيسيّة</h2>
+    <div class="ds-grid ds-grid--narrow">
+      <div class="ds-kpi"><span class="ds-kpi__num">7</span><span class="ds-kpi__label">طبقات تشغيليّة</span></div>
+      <div class="ds-kpi"><span class="ds-kpi__num">9</span><span class="ds-kpi__label">أنظمة OS</span></div>
+      <div class="ds-kpi"><span class="ds-kpi__num">9</span><span class="ds-kpi__label">رولات يوميّة</span></div>
+      <div class="ds-kpi"><span class="ds-kpi__num">8</span><span class="ds-kpi__label">Hard Gates مقفلة</span></div>
+      <div class="ds-kpi"><span class="ds-kpi__num">13</span><span class="ds-kpi__label">Golden-Loop stages</span></div>
+      <div class="ds-kpi"><span class="ds-kpi__num">~1730</span><span class="ds-kpi__label">اختبار ناجح</span></div>
+      <div class="ds-kpi"><span class="ds-kpi__num">499</span><span class="ds-kpi__label">SAR Pilot 7-أيّام</span></div>
+      <div class="ds-kpi"><span class="ds-kpi__num">v3.0.0</span><span class="ds-kpi__label">Production</span></div>
+    </div>
+  </section>
+
+  <!-- 7 Layers -->
+  <section aria-labelledby="layers-title" class="ds-stack ds-stack--md">
+    <div class="bp-section-head">
+      <h2 id="layers-title">المعمارية — ٧ طبقات تشغيليّة</h2>
+      <span class="ds-chip">Article 7</span>
+    </div>
+    <div class="ds-grid">
+      <div class="bp-layer"><div class="bp-layer__num">L1</div><div><div class="bp-layer__name-ar">السوق والنمو الذاتي</div><div class="bp-layer__name-en">Market &amp; Self-Growth</div></div></div>
+      <div class="bp-layer"><div class="bp-layer__num">L2</div><div><div class="bp-layer__name-ar">خدمة الشركات</div><div class="bp-layer__name-en">Company Service</div></div></div>
+      <div class="bp-layer"><div class="bp-layer__num">L3</div><div><div class="bp-layer__name-ar">الإيراد والمبيعات</div><div class="bp-layer__name-en">Revenue &amp; Sales</div></div></div>
+      <div class="bp-layer"><div class="bp-layer__num">L4</div><div><div class="bp-layer__name-ar">التسليم والدعم</div><div class="bp-layer__name-en">Delivery &amp; Support</div></div></div>
+      <div class="bp-layer"><div class="bp-layer__num">L5</div><div><div class="bp-layer__name-ar">الإثبات والتعلّم</div><div class="bp-layer__name-en">Proof &amp; Learning</div></div></div>
+      <div class="bp-layer"><div class="bp-layer__num">L6</div><div><div class="bp-layer__name-ar">الامتثال والحوكمة</div><div class="bp-layer__name-en">Compliance &amp; Governance</div></div></div>
+      <div class="bp-layer"><div class="bp-layer__num">L7</div><div><div class="bp-layer__name-ar">القيادة والـ ٩ رولات</div><div class="bp-layer__name-en">Executive &amp; Role Command</div></div></div>
+    </div>
+  </section>
+
+  <!-- Live Beast layer status -->
+  <section aria-labelledby="status-title" class="ds-stack ds-stack--md">
+    <div class="bp-section-head">
+      <h2 id="status-title">الحالة الحيّة — Beast Layers</h2>
+      <span class="ds-chip ds-chip--accent">api.dealix.me</span>
+    </div>
+    <div class="ds-grid" id="beast-cards" aria-live="polite">
+      <!-- populated by JS -->
+    </div>
+  </section>
+
+  <!-- 9 daily roles -->
+  <section aria-labelledby="roles-title" class="ds-stack ds-stack--md">
+    <div class="bp-section-head">
+      <h2 id="roles-title">الـ ٩ رولات اليوميّة</h2>
+      <span class="ds-chip">Article 14</span>
+    </div>
+    <p class="ds-lede">انقر بطاقة أيّ رول لعرض قراراته الثلاثة لليوم — مباشرة من <span class="ds-endpoint">/role-command-v125/today/{role}</span>.</p>
+    <div class="ds-grid ds-grid--narrow" id="roles-grid">
+      <!-- populated by JS -->
+    </div>
+  </section>
+
+  <!-- Golden Loop + Hard Gates -->
+  <section aria-labelledby="loop-title" class="ds-stack ds-stack--md">
+    <div class="bp-section-head">
+      <h2 id="loop-title">الحلقة الذهبيّة + البوّابات الصلبة</h2>
+      <span class="ds-chip ds-chip--warn">Articles 2 + 4</span>
+    </div>
+    <div class="ds-grid ds-grid--wide">
+      <div class="ds-card ds-stack ds-stack--sm">
+        <h3 class="ds-card__title">📡 The Golden Loop <span class="ds-status ds-status--ok">verified end-to-end</span></h3>
+        <p class="ds-card__sub">كلّ مرحلة لها endpoint حيّ. الـ ١٣ مرحلة مختبرة في <code>tests/test_constitution_closure.py</code>.</p>
+        <pre class="ds-code">1.  Market Signal           → /growth-beast/signals/evaluate
+2.  ICP Score (90/100)      → /growth-beast/targets/rank
+3.  Offer Match (499 SAR)   → /growth-beast/offer/match
+4.  Warm Route (draft_only) → /growth-beast/warm-route/draft
+5.  Cold Channel BLOCKED    → cold_whatsapp = blocked ✓
+6.  Diagnostic (7-day plan) → /company-growth-beast/diagnostic
+7.  Invoice Draft (NOT rev) → /revops/invoice-state
+8.  Payment without proof   → REJECTED 422 ✓
+9.  Pipeline without proof  → REJECTED 400 ✓
+10. CEO Brief (3 decisions) → /role-command-v125/today/ceo
+11. Finance Truth (honest)  → /revops/finance-brief
+12. V12.1 Trigger Check     → /revenue-pipeline/summary
+13. Weekly Experiment       → /growth-beast/experiment/next</pre>
+        <p class="ds-card__sub">٥ فحوصات ثبات إضافيّة: ٨ بوّابات مقفلة · صفر ٥xx · ٥ أنماط إجراء فقط · بوّابة الإثبات مُفعَّلة · حقيقة الإيراد مصونة.</p>
+      </div>
+
+      <div class="ds-card ds-stack ds-stack--sm">
+        <h3 class="ds-card__title">🛡️ Hard Gates <span class="ds-status ds-status--ok">8/8 locked</span></h3>
+        <p class="ds-card__sub">الـ ٨ بوّابات صلبة، غير قابلة للتعديل (Article 4). كلّ واحدة مقفلة في كلّ router.</p>
+        <div class="ds-row">
+          <span class="ds-gate">NO_LIVE_SEND</span>
+          <span class="ds-gate">NO_LIVE_CHARGE</span>
+          <span class="ds-gate">NO_COLD_WHATSAPP</span>
+          <span class="ds-gate">NO_LINKEDIN_AUTOMATION</span>
+          <span class="ds-gate">NO_SCRAPING</span>
+          <span class="ds-gate">NO_FAKE_PROOF</span>
+          <span class="ds-gate">NO_FAKE_REVENUE</span>
+          <span class="ds-gate">NO_UNAPPROVED_TESTIMONIAL</span>
+        </div>
+        <p class="ds-card__sub">الفرق التنافسي: HubSpot/Zendesk يفعّلون live agents. Dealix يضيف <strong>طبقة موافقة المؤسس</strong> فوقهم — نمو قوي بدون مخاطرة قانونيّة (PDPL-aware).</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Service Ladder -->
+  <section aria-labelledby="ladder-title" class="ds-stack ds-stack--md">
+    <div class="bp-section-head">
+      <h2 id="ladder-title">سلّم الخدمات — ٥ درجات</h2>
+      <span class="ds-chip">Article 9</span>
+    </div>
+    <div class="ds-grid">
+      <div class="ds-card ds-stack ds-stack--sm">
+        <h3 class="ds-card__title">١. Mini Diagnostic <span class="ds-status ds-status--ok">مجّاني</span></h3>
+        <p class="ds-card__sub">٦ أسئلة فقط. تشخيص صفحة واحدة خلال ٢٤–٤٨ ساعة.</p>
+        <span class="ds-endpoint">POST /api/v1/company-growth-beast/diagnostic</span>
+        <p class="ds-card__sub">المخرج: أكبر فرصة + أكبر خطر + خطّة ٧ أيّام + توصية الخدمة.</p>
+      </div>
+      <div class="ds-card ds-stack ds-stack--sm">
+        <h3 class="ds-card__title">٢. 7-Day Growth Proof Sprint <span class="ds-status ds-status--ok">499 SAR</span></h3>
+        <p class="ds-card__sub">المنتج الأوّل المدفوع — ٤٩,٩٠٠ هللة، دفع يدوي، استرجاع ٧ أيّام.</p>
+        <span class="ds-endpoint">POST /api/v1/revops/invoice-state</span>
+        <p class="ds-card__sub">١٠ فرص + مسوّدات + خطّة متابعة + Proof Pack مبدئي.</p>
+      </div>
+      <div class="ds-card ds-stack ds-stack--sm">
+        <h3 class="ds-card__title">٣. 30-Day Growth Beast OS <span class="ds-mode ds-mode--draft">recommended_draft</span></h3>
+        <p class="ds-card__sub">يفتح بعد أوّل pilot ناجح. ٤ أسابيع تشغيل أسبوعي.</p>
+        <span class="ds-endpoint">POST /api/v1/company-growth-beast/weekly-report</span>
+        <p class="ds-card__sub">إشارات السوق + targeting + offer experiments + content pack + weekly executive.</p>
+      </div>
+      <div class="ds-card ds-stack ds-stack--sm">
+        <h3 class="ds-card__title">٤. Monthly Retainer <span class="ds-mode ds-mode--approval">approval_required</span></h3>
+        <p class="ds-card__sub">عقد شهري متكرّر بعد إثبات النتائج.</p>
+        <p class="ds-card__sub">العمليّات الحرجة تمرّ على موافقة المؤسس قبل التنفيذ.</p>
+      </div>
+      <div class="ds-card ds-stack ds-stack--sm">
+        <h3 class="ds-card__title">٥. Strategic Partner <span class="ds-mode ds-mode--blocked">blocked until proof</span></h3>
+        <p class="ds-card__sub">شراكة طويلة الأجل. مغلقة حتى ٣ بايلوتات مدفوعة (Article 13).</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Founder Beast Command Center + Revenue Truth -->
+  <section aria-labelledby="founder-title" class="ds-stack ds-stack--md">
+    <div class="bp-section-head">
+      <h2 id="founder-title">مركز قيادة المؤسس + الحقيقة الماليّة</h2>
+      <span class="ds-chip ds-chip--accent">live · read-only</span>
+    </div>
+    <div class="ds-grid ds-grid--wide">
+      <div class="ds-card ds-stack ds-stack--sm" id="card-beast-cc">
+        <h3 class="ds-card__title">👨‍💼 Beast Command Center <span class="ds-status ds-status--loading bp-status">جاري التحميل…</span></h3>
+        <p class="ds-card__sub">صفحة واحدة، ٨ طبقات، قراءة مباشرة. تحلّ محلّ ٩ داشبوردات.</p>
+        <span class="ds-endpoint">GET /api/v1/founder/beast-command-center</span>
+        <pre class="bp-card-output" id="beast-cc-output">…</pre>
+      </div>
+      <div class="ds-card ds-stack ds-stack--sm" id="card-revenue-truth">
+        <h3 class="ds-card__title">💰 Revenue Truth <span class="ds-status ds-status--loading bp-status">جاري التحميل…</span></h3>
+        <p class="ds-card__sub">الحقيقة الماليّة: draft invoice ≠ إيراد، verbal ≠ commitment.</p>
+        <span class="ds-endpoint">GET /api/v1/revops/finance-brief</span>
+        <pre class="bp-card-output" id="revenue-truth-output">…</pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- Customer Portal + Growth Today -->
+  <section aria-labelledby="customer-title" class="ds-stack ds-stack--md">
+    <div class="bp-section-head">
+      <h2 id="customer-title">بوّابة العميل + قرارات النمو اليوم</h2>
+      <span class="ds-chip">Articles 2 + 6</span>
+    </div>
+    <div class="ds-grid ds-grid--wide">
+      <div class="ds-card ds-stack ds-stack--sm" id="card-customer-portal">
+        <h3 class="ds-card__title">🏢 Customer Portal (Preview) <span class="ds-status ds-status--loading bp-status">جاري التحميل…</span></h3>
+        <p class="ds-card__sub">ما يراه العميل: ٨ أقسام فقط، صفر مصطلحات داخليّة (مختبَرة).</p>
+        <span class="ds-endpoint">GET /api/v1/customer-portal/Slot-A</span>
+        <pre class="bp-card-output" id="customer-portal-output">…</pre>
+      </div>
+      <div class="ds-card ds-stack ds-stack--sm" id="card-growth-today">
+        <h3 class="ds-card__title">🚀 Growth Beast Today <span class="ds-status ds-status--loading bp-status">جاري التحميل…</span></h3>
+        <p class="ds-card__sub">قرارات النمو اليوميّة: ٣ أهداف + best offer + best content + next experiment.</p>
+        <span class="ds-endpoint">GET /api/v1/growth-beast/today</span>
+        <pre class="bp-card-output" id="growth-today-output">…</pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="ds-footer">
+    <div class="ds-container">
+      <p class="ds-lede" style="text-align: center; max-width: 720px; margin: 0 auto var(--space-5);">
+        Dealix يجمع: Growth + Sales + Support + Delivery + Proof + Compliance + Executive
+        — في نظام واحد، آمن، ومُثبت بالأدلّة.
+      </p>
+      <p class="ds-row" style="justify-content: center; gap: var(--space-3); font-size: var(--fs-xs); margin-bottom: var(--space-5);">
+        <span class="ds-gate">NO_LIVE_SEND</span>
+        <span class="ds-gate">NO_LIVE_CHARGE</span>
+        <span class="ds-gate">NO_SCRAPING</span>
+        <span class="ds-gate">NO_COLD_WHATSAPP</span>
+        <span class="ds-gate">NO_FAKE_PROOF</span>
+      </p>
+      <div class="ds-row" style="justify-content: center; gap: var(--space-5); flex-wrap: wrap;">
+        <a class="ds-link" href="/">الصفحة الرئيسيّة</a>
+        <a class="ds-link" href="/ai-team.html">AI Operating Team</a>
+        <a class="ds-link" href="/diagnostic.html">التشخيص المجّاني</a>
+        <a class="ds-link" href="/start.html">7-Day Pilot</a>
+        <a class="ds-link" href="/styleguide.html">Styleguide</a>
+        <a class="ds-link" href="https://api.dealix.me/health" target="_blank" rel="noopener">/health</a>
+        <a class="ds-link" href="https://api.dealix.me/docs" target="_blank" rel="noopener">/docs</a>
+        <a class="ds-link" href="https://api.dealix.me/api/v1/founder/beast-command-center" target="_blank" rel="noopener">Beast CC</a>
+      </div>
+    </div>
+  </footer>
+
+</main>
+
+<script>
+  const API_BASE = window.DEALIX_API_BASE || 'https://api.dealix.me';
+
+  const BEAST_LAYERS = [
+    { id: 'growth-beast',         label: '🌱 Growth Beast',         desc: 'محرّك النمو الذاتي · self-growing engine',         endpoint: '/api/v1/growth-beast/status' },
+    { id: 'company-growth-beast', label: '🏢 Company Growth Beast', desc: 'النمو-للشركات-كخدمة · growth-as-a-service',         endpoint: '/api/v1/company-growth-beast/status' },
+    { id: 'revops',               label: '💰 RevOps',                desc: 'الحقيقة الماليّة · revenue truth',                  endpoint: '/api/v1/revops/status' },
+    { id: 'role-command-v125',    label: '👥 Role Command',          desc: '٩ رولات يوميّة · 9 daily-brief endpoints',          endpoint: '/api/v1/role-command-v125/status' },
+    { id: 'proof-to-market',      label: '🎯 Proof-to-Market',       desc: 'الإثبات إلى تسويق · proof flywheel',                endpoint: '/api/v1/proof-to-market/status' },
+    { id: 'support-os',           label: '🎧 Support OS',            desc: '١٢ فئة تذاكر · 12-category classifier',             endpoint: '/api/v1/support-os/status' },
+    { id: 'compliance',           label: '🛡️ Compliance v12',        desc: 'PDPL action policy',                                endpoint: '/api/v1/customer-data/status' },
+    { id: 'full-ops',             label: '📊 Full-Ops Daily',        desc: 'مركز القيادة الموحَّد',                              endpoint: '/api/v1/full-ops/status' },
+    { id: 'revenue-pipeline',     label: '📈 Revenue Pipeline',      desc: 'تتبّع الحقيقة',                                      endpoint: '/api/v1/revenue-pipeline/status' },
+  ];
+
+  const ROLES = [
+    { id: 'ceo',         ar: 'المؤسس / CEO',     en: 'Founder / CEO' },
+    { id: 'growth',      ar: 'مدير النمو',        en: 'Head of Growth' },
+    { id: 'sales',       ar: 'مدير المبيعات',     en: 'Sales Manager' },
+    { id: 'support',     ar: 'قائد الدعم',        en: 'Support Lead' },
+    { id: 'cs',          ar: 'نجاح العملاء',      en: 'Customer Success' },
+    { id: 'delivery',    ar: 'مدير التسليم',      en: 'Delivery Manager' },
+    { id: 'finance',     ar: 'الماليّة والإدارة', en: 'Finance / Admin' },
+    { id: 'compliance',  ar: 'الامتثال',          en: 'Compliance' },
+    { id: 'ops',         ar: 'العمليّات',         en: 'Operations' },
+  ];
+
+  function statusBadge(status, body) {
+    if (status >= 200 && status < 300) {
+      const isDegraded = body && body.degraded === true;
+      return isDegraded
+        ? '<span class="ds-status ds-status--degraded">DEGRADED</span>'
+        : '<span class="ds-status ds-status--ok">OPERATIONAL</span>';
+    }
+    if (status === 0)   return '<span class="ds-status ds-status--error">NETWORK</span>';
+    if (status === 404) return '<span class="ds-status ds-status--loading">DEPLOYING…</span>';
+    return `<span class="ds-status ds-status--error">HTTP ${status}</span>`;
+  }
+
+  function renderLayerCard(layer, status, body) {
+    const badge = statusBadge(status, body);
+    let gates = '', nextAction = '';
+    if (status >= 200 && status < 300 && body && body.hard_gates) {
+      const chips = Object.entries(body.hard_gates)
+        .filter(([, v]) => v === true).slice(0, 4)
+        .map(([k]) => `<span class="ds-gate">${k}</span>`).join('');
+      if (chips) gates = `<div class="ds-row">${chips}</div>`;
+    }
+    if (status >= 200 && status < 300 && body && (body.next_action_ar || body.next_action_en)) {
+      nextAction = `<p class="ds-card__sub">${body.next_action_ar || body.next_action_en}</p>`;
+    }
+    return `
+      <article class="ds-card ds-stack ds-stack--sm">
+        <h3 class="ds-card__title">${layer.label} ${badge}</h3>
+        <p class="ds-card__sub">${layer.desc}</p>
+        <span class="ds-endpoint">GET ${layer.endpoint}</span>
+        ${gates}${nextAction}
+      </article>`;
+  }
+
+  async function fetchEndpoint(path) {
+    try {
+      const r = await fetch(`${API_BASE}${path}`, { cache: 'no-store' });
+      let body = null;
+      try { body = await r.json(); } catch (_) {}
+      return { status: r.status, body };
+    } catch (_) {
+      return { status: 0, body: null };
+    }
+  }
+
+  async function refreshBeastCards() {
+    const grid = document.getElementById('beast-cards');
+    grid.innerHTML = BEAST_LAYERS.map(l => renderLayerCard(l, -1, null)).join('');
+    const results = await Promise.all(BEAST_LAYERS.map(l => fetchEndpoint(l.endpoint)));
+    grid.innerHTML = BEAST_LAYERS.map((l, i) => renderLayerCard(l, results[i].status, results[i].body)).join('');
+  }
+
+  function renderRoles() {
+    const grid = document.getElementById('roles-grid');
+    grid.innerHTML = ROLES.map(role => `
+      <article class="ds-card ds-card--clickable bp-role-card ds-stack ds-stack--xs"
+               role="button" tabindex="0"
+               onclick="loadRole('${role.id}', this)"
+               onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();loadRole('${role.id}', this);}">
+        <h3 class="ds-card__title">${role.ar}</h3>
+        <p class="ds-card__sub">${role.en}</p>
+        <span class="ds-mode ds-mode--suggest">3 decisions / day</span>
+      </article>`).join('');
+  }
+
+  async function loadRole(roleId, el) {
+    if (el) el.setAttribute('aria-busy', 'true');
+    const { status, body } = await fetchEndpoint(`/api/v1/role-command-v125/today/${roleId}`);
+    if (el) el.removeAttribute('aria-busy');
+    if (status >= 200 && status < 300 && body && body.top_3_decisions_ar) {
+      const decisions = body.top_3_decisions_ar.map((d, i) => `${i + 1}. ${d}`).join('\n');
+      alert(`قرارات اليوم لـ ${roleId.toUpperCase()}:\n\n${decisions}`);
+    } else if (status === 404) {
+      alert(`الـ endpoint قيد النشر — انتظر دقائق.\nstatus: ${status}`);
+    } else {
+      alert(`status ${status} — حاول مرّة أخرى.`);
+    }
+  }
+
+  function setCardStatus(cardEl, statusClass, text) {
+    const el = cardEl.querySelector('.bp-status');
+    if (!el) return;
+    el.className = `ds-status ${statusClass} bp-status`;
+    el.textContent = text;
+  }
+
+  async function refreshFounderCC() {
+    const card = document.getElementById('card-beast-cc');
+    const out = document.getElementById('beast-cc-output');
+    const { status, body } = await fetchEndpoint('/api/v1/founder/beast-command-center');
+    if (status >= 200 && status < 300 && body) {
+      setCardStatus(card, body.degraded ? 'ds-status--degraded' : 'ds-status--ok', body.degraded ? 'DEGRADED' : 'OPERATIONAL');
+      out.textContent = JSON.stringify({
+        title_ar: body.title_ar,
+        next_best_action: body.next_best_action,
+        revenue_truth: body.revenue_truth && {
+          revenue_live:   body.revenue_truth.revenue_live,
+          v12_1_unlocked: body.revenue_truth.v12_1_unlocked,
+          blockers:       body.revenue_truth.blockers,
+        },
+        hard_gates_count:   body.hard_gates ? Object.keys(body.hard_gates).length : 0,
+        degraded_sections:  body.degraded_sections,
+      }, null, 2);
+    } else if (status === 404) {
+      setCardStatus(card, 'ds-status--loading', 'DEPLOYING');
+      out.textContent = 'Endpoint قيد النشر على Railway — أعد التحميل خلال ٣–٥ دقائق.';
+    } else {
+      setCardStatus(card, 'ds-status--error', `HTTP ${status}`);
+      out.textContent = JSON.stringify(body, null, 2) || '(no body)';
+    }
+  }
+
+  async function refreshRevenueTruth() {
+    const card = document.getElementById('card-revenue-truth');
+    const out = document.getElementById('revenue-truth-output');
+    const { status, body } = await fetchEndpoint('/api/v1/revops/finance-brief');
+    if (status >= 200 && status < 300 && body) {
+      setCardStatus(card, 'ds-status--ok', body.data_status === 'live' ? 'LIVE DATA' : 'INSUFFICIENT_DATA');
+      out.textContent = JSON.stringify({
+        cash_collected_sar:    body.cash_collected_sar,
+        commitments_open_sar:  body.commitments_open_sar,
+        paid_pilots_count:     body.paid_pilots_count,
+        data_status:           body.data_status,
+        blockers:              body.blockers,
+        next_action_ar:        body.next_action_ar,
+        next_action_en:        body.next_action_en,
+      }, null, 2);
+    } else if (status === 404) {
+      setCardStatus(card, 'ds-status--loading', 'DEPLOYING');
+      out.textContent = 'Endpoint قيد النشر — أعد التحميل لاحقاً.';
+    } else {
+      setCardStatus(card, 'ds-status--error', `HTTP ${status}`);
+    }
+  }
+
+  async function refreshCustomerPortal() {
+    const card = document.getElementById('card-customer-portal');
+    const out = document.getElementById('customer-portal-output');
+    const { status, body } = await fetchEndpoint('/api/v1/customer-portal/Slot-A');
+    if (status >= 200 && status < 300 && body) {
+      const sectionCount = Object.keys(body.sections || {}).length;
+      setCardStatus(card, 'ds-status--ok', `${sectionCount} SECTIONS`);
+      const sections = Object.entries(body.sections || {}).map(([k, v]) =>
+        `${k.split('_').slice(1).join('_')}: ${v.title_ar || v.title_en}`).join('\n');
+      out.textContent = sections + '\n\nالوعد:\n' + (body.promise_ar || '');
+    } else if (status === 404) {
+      setCardStatus(card, 'ds-status--loading', 'DEPLOYING');
+      out.textContent = 'بوّابة العميل قيد النشر.';
+    } else {
+      setCardStatus(card, 'ds-status--error', `HTTP ${status}`);
+    }
+  }
+
+  async function refreshGrowthToday() {
+    const card = document.getElementById('card-growth-today');
+    const out = document.getElementById('growth-today-output');
+    const { status, body } = await fetchEndpoint('/api/v1/growth-beast/today');
+    if (status >= 200 && status < 300 && body) {
+      setCardStatus(card, 'ds-status--ok', 'OPERATIONAL');
+      out.textContent = JSON.stringify({
+        top_3_targets:                 body.top_3_targets,
+        best_segment:                  body.best_segment_today,
+        best_offer_price_sar:          body.best_offer && body.best_offer.price_sar,
+        best_content_type:             body.best_content && body.best_content.content_type,
+        next_experiment_safe_action:   body.next_experiment && body.next_experiment.safe_action,
+        blocked_actions:               body.blocked_actions,
+      }, null, 2);
+    } else if (status === 404) {
+      setCardStatus(card, 'ds-status--loading', 'DEPLOYING');
+      out.textContent = 'قيد النشر.';
+    } else {
+      setCardStatus(card, 'ds-status--error', `HTTP ${status}`);
+    }
+  }
+
+  async function refreshAll() {
+    renderRoles();
+    await Promise.all([
+      refreshBeastCards(),
+      refreshFounderCC(),
+      refreshRevenueTruth(),
+      refreshCustomerPortal(),
+      refreshGrowthToday(),
+    ]);
+  }
+
+  refreshAll();
+  setInterval(refreshAll, 60000);
+</script>
+
+</body>
+</html>

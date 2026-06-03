@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>حالة خدمات Dealix — Service Activation Console</title>
+  <meta name="description" content="مصفوفة جاهزية خدمات Dealix: كل خدمة، حالتها، ما هو جاهز، ما الناقص، خطوة التفعيل التالية، وSCT آمن. شفافية مطلقة بدون ادّعاء Live بدون دليل." />
+  <meta name="robots" content="index,follow" />
+  <link rel="canonical" href="https://dealix.me/status.html" />
+  <meta property="og:title" content="Dealix — Service Activation Console" />
+  <meta property="og:description" content="حالة خدمات Dealix — مباشر وشفاف. كل خدمة لها بوابات جودة قبل أن تظهر كـ Live." />
+  <meta property="og:type" content="website" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <link rel="icon" type="image/svg+xml" href='data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><rect x="3" y="3" width="26" height="26" rx="7" fill="%230f172a"/><path d="M10 10h7a6 6 0 0 1 0 12h-7z" fill="none" stroke="%2322d3ee" stroke-width="2.5" stroke-linejoin="round"/><circle cx="23" cy="22" r="2" fill="%2322d3ee"/></svg>' />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="/assets/css/design-system.css" />
+</head>
+<body>
+  <a href="#main" class="sr-only skip-link">تخطَّ إلى المحتوى الرئيسي</a>
+
+  <header class="nav" role="banner">
+    <div class="container nav__inner">
+      <a href="/" class="nav__brand" aria-label="Dealix — الصفحة الرئيسية">
+        <svg class="nav__logo" viewBox="0 0 40 40" aria-hidden="true" fill="none">
+          <rect x="2" y="2" width="36" height="36" rx="9" fill="currentColor" opacity="0.08"/>
+          <path d="M12 12h10a8 8 0 0 1 0 16H12z" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"/>
+          <circle cx="28" cy="28" r="2.5" fill="currentColor"/>
+        </svg>
+        <span class="nav__wordmark">Dealix</span>
+      </a>
+      <nav class="nav__links" aria-label="القائمة الرئيسية">
+        <a href="/#pillars">لماذا Dealix</a>
+        <a href="/#sectors">القطاعات</a>
+        <a href="/#how">كيف يعمل</a>
+        <a href="/#trust">الثقة</a>
+        <a href="/status.html" class="nav__status-link is-active"><span class="pulse pulse--small" aria-hidden="true"></span>الحالة</a>
+      </nav>
+      <div class="nav__actions">
+        <button class="icon-btn" data-theme-toggle aria-label="تبديل الوضع"></button>
+        <a href="/#pilot" class="btn btn--primary btn--sm">احجز تجربة</a>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="status-hero">
+      <div class="container">
+        <span class="kicker">Service Activation Console</span>
+        <h1 class="status-hero__title">حالة خدمات Dealix — مباشر وشفاف</h1>
+        <p class="status-hero__title-en" lang="en">Dealix Service Readiness</p>
+        <p class="status-hero__lede">كل خدمة لها بوابات جودة قبل أن تظهر كـ Live: workflow، موافقة، telemetry، proof، وسلامة القنوات. لا نرفع خدمة إلى Live إلا إذا اجتازت ثماني بوابات صريحة.</p>
+        <p class="status-hero__lede-en" lang="en">Every service becomes Live only after workflow, approval, telemetry, proof, and channel-safety gates pass. No fake greens.</p>
+
+        <div class="status-summary" id="services-counts-mount" aria-live="polite">
+          <!-- counts injected by service-console.js -->
+        </div>
+
+        <p class="status-hero__lede" style="margin-top: 24px; font-size: 13.5px;">
+          آخر تحديث · Last updated: <strong id="services-last-updated">2026-05-04</strong> ·
+          المصدر · Source: <code>docs/registry/SERVICE_READINESS_MATRIX.yaml</code> ·
+          المالك · Owner: Sami Assiri
+        </p>
+      </div>
+    </section>
+
+    <section class="section section--why">
+      <div class="container">
+        <h2 class="section__title">لماذا الكونسول · Why this console</h2>
+        <p class="section__lede">لا ندّعي أن كل شيء يعمل. نُظهر بصدق: ما المُنتج، وما المسار، وما الحدود — لأن صفحة تقول "كل شيء يعمل" أضعف من صفحة تثبت أن Dealix يعرف كيف يشغّل كل خدمة بأمان وبترتيب.</p>
+        <p class="section__lede" lang="en">We don't claim "everything works." We honestly surface what's produced, what the path is, and where the limits are — because a page that proves Dealix knows how to run every service safely beats a page that fakes a green.</p>
+        <p class="section__lede"><strong>التدفق · Flow:</strong> Signal → Context → Service Recommendation → Workflow → Approval → Proof → Learning → Upgrade.</p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <div id="services-filter-mount" class="services-filter-wrap" role="region" aria-label="فلاتر الخدمات">
+          <!-- filter chips injected by service-console.js -->
+        </div>
+        <div id="services-mount" class="services-mount">
+          <!-- service cards injected by service-console.js -->
+          <noscript>
+            <p>هذه الصفحة تحتاج JavaScript لعرض المصفوفة. راجع المصدر:
+              <code>docs/registry/SERVICE_READINESS_MATRIX.yaml</code>.
+            </p>
+          </noscript>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section--safety">
+      <div class="container">
+        <h2 class="section__title">لا أتمتة غير آمنة · No unsafe automation</h2>
+        <p class="section__lede">Dealix لا يبدأ تواصلاً بارداً، ولا يرسل بدون إذن، ولا يجمع بيانات من مصادر غير مرخّصة، ولا يتجاوز ساعات الهدوء، ولا يحوّل أموالاً بدون توقيع.</p>
+        <p class="section__lede" lang="en">Dealix never initiates cold outreach, never sends without consent, never collects data from unlicensed sources, never bypasses quiet hours, and never charges without a signature.</p>
+      </div>
+    </section>
+
+    <section class="section section--path">
+      <div class="container">
+        <h2 class="section__title">مسار العميل الأوّل · First customer path</h2>
+        <p class="section__lede">Free Diagnostic → Growth Starter (499 SAR Pilot) → Proof Pack → Executive Growth OS. نُثبت أوّلاً، ثم نرفع.</p>
+        <p class="section__lede" lang="en">Free Diagnostic → Growth Starter (499 SAR Pilot) → Proof Pack → Executive Growth OS. We prove first, then expand.</p>
+      </div>
+    </section>
+
+    <div class="container">
+      <div class="trust-note" style="margin-top: 40px; margin-bottom: 40px;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 8v5M12 16h.01"/></svg>
+        <p>لا ندّعي شهادات SOC 2 أو ISO 27001 أو GDPR certified. نتبع ممارسات أمنية موثّقة والشهادات الرسمية في خارطة الطريق. للحصول على وثيقة التصميم التقني الكاملة، <a href="/#pilot">تواصل معنا</a>.</p>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer" role="contentinfo">
+    <div class="container footer__bottom" style="margin-top:0; border-top:0;">
+      <p>© <span id="year">2026</span> Dealix. جميع الحقوق محفوظة.</p>
+      <p class="footer__note"><a href="/">← العودة للصفحة الرئيسية</a></p>
+    </div>
+  </footer>
+
+  <script>
+    // Light theme sync + year (in-memory state — iframe blocks storage APIs)
+    (function(){
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const theme = window.__dlxTheme || (prefersDark ? 'dark' : 'light');
+      window.__dlxTheme = theme;
+      document.documentElement.setAttribute('data-theme', theme);
+      const t = document.querySelector('[data-theme-toggle]');
+      const sun = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>';
+      const moon= '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>';
+      function render(){ t.innerHTML = document.documentElement.getAttribute('data-theme')==='dark'?sun:moon; }
+      if (t) { render(); t.addEventListener('click', function(){ const cur = document.documentElement.getAttribute('data-theme'); const nt = cur==='dark'?'light':'dark'; document.documentElement.setAttribute('data-theme', nt); window.__dlxTheme = nt; render(); }); }
+      const y = document.getElementById('year'); if (y) y.textContent = String(new Date().getFullYear());
+    })();
+  </script>
+  <script defer src="assets/js/service-console.js"></script>
+</body>
+</html>

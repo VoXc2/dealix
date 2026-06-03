@@ -1,0 +1,176 @@
+# Refund SOP — Dealix
+
+**Status:** DRAFT — clauses require lawyer review before customer #1
+**Owner:** Sami (founder) · Finance reviews monthly
+**Last updated:** 2026-05-07
+**Companion docs:** `docs/ops/MANUAL_PAYMENT_SOP.md` · `docs/INVOICING_ZATCA_READINESS.md` · `dealix/payments/moyasar.py` · `scripts/dealix_payment_confirmation_stub.py` · Plan §23.5.6
+
+> **Why this doc exists:** Without a refund SOP written before customer #1, the first unhappy customer either causes panic or breeds resentment. With it, every refund is calm, fast, documented, and good-for-reputation.
+
+---
+
+## 1. Refund commitments by SKU
+
+### Sprint (499 SAR · 14 days)
+
+- **Window:** 14 calendar days from `payment_confirmed` state
+- **Coverage:** 100% refund, no questions asked
+- **Mechanism:** same channel as payment (bank transfer ↔ bank transfer; Moyasar card ↔ Moyasar reverse)
+- **Turnaround:** 3-5 business days bank transfer · 2 business days Moyasar live
+- **Ledger entry:** `dealix_payment_confirmation_stub.py --action refund --evidence-note "..."`
+
+### Partner (12,000 SAR/month · 4-month commitment)
+
+- **Window:** any time during the 4-month commitment if KPI commitment unmet
+- **Coverage:** pro-rata refund of unused months IF +20% lift on agreed KPI not achieved (per `docs/WAVE6_PILOT_TO_MONTHLY_UPSELL_AR_EN.md` §2D)
+- **Alternative remedy:** founder works free until KPI achieved (this is the COMMITMENT, not refund)
+- **Mechanism:** prorated by completed days, refunded via original payment channel
+- **Turnaround:** 5-7 business days
+
+---
+
+## 2. Refund triggers (when customer can claim)
+
+### Automatic eligibility (no founder discretion needed)
+
+- Sprint customer requests refund within 14 days
+- Partner customer's KPI commitment unmet at end of month 1, 2, or 3 review
+
+### Founder-discretion eligibility
+
+- Sprint customer requests refund after Day 14 with a real complaint (rare; default is no, but log + escalate)
+- Partner customer wants to exit before end of 4-month commitment (default is pro-rata for unused months minus 1-month commitment fee)
+- Customer reports a service breakdown that wasn't fixed within 24h SLA
+
+### Not eligible
+
+- Customer "changed mind" after Day 14 of Sprint without service issue
+- Customer wants to "try" Partner without commitment (Partner = 4-month minimum)
+- Customer demands Dealix automate something blocked by hard gates (NO_LIVE_SEND, NO_COLD_WHATSAPP, etc.) — refund not applicable; explain gates
+
+---
+
+## 3. Refund process — step by step
+
+### When customer requests refund
+
+**Step 1 — receive request (any channel)**
+- Founder acknowledges within 4 hours: «استلمت طلبك. خلال يوم أرتب لك المبلغ.»
+- DO NOT argue. DO NOT ask "why" repeatedly. Listen, log.
+
+**Step 2 — verify eligibility (within 24 hours)**
+- Open `docs/wave6/live/payment_state.json` for that customer
+- Check: payment_confirmed date · days elapsed · SKU type
+- Determine: Sprint within 14 days? → AUTO-APPROVE
+- Partner KPI commitment unmet? → check KPI evidence in `proof_ledger`
+- Founder discretion? → write decision + reason in `docs/wave6/live/refund_log.jsonl` (gitignored)
+
+**Step 3 — execute refund (within 24-72 hours of approval)**
+- Bank transfer payments: re-transfer to customer's account, screenshot receipt
+- Moyasar card payments: log into Moyasar dashboard → Refund button → enter amount + reason
+- Record txn ID in `docs/wave6/live/refund_log.jsonl`
+
+**Step 4 — update payment state machine**
+```bash
+python3 scripts/dealix_payment_confirmation_stub.py \
+  --action refund \
+  --customer-handle <handle> \
+  --evidence-note "Refund issued via <channel>, txn <id>, reason: <short>"
+```
+
+This sets `is_revenue=False`, `state=refunded`. The `confirmed_revenue_sar` aggregator subtracts this customer's amount.
+
+**Step 5 — close-out communication**
+- Send customer: "تم تحويل المبلغ. ستصلك خلال 3-5 أيّام عمل. شاكر لك على ثقتك."
+- Offer: "لو احتجت تجربة Dealix مرّة ثانية بعد 90 يوم، احتفظت لك بنفس السعر الأوّل."
+- DO NOT ghost. DO NOT apologize 10 times. Be calm and grown.
+
+**Step 6 — internal post-mortem**
+- Within 1 week, write 1-page reflection: What signal did we miss in the diagnostic call? Was the ICP wrong? Was the value-narrative wrong? Append to `docs/V14_CUSTOMER_SIGNAL_SYNTHESIS.md`.
+
+---
+
+## 4. Refund log — what to record
+
+Append-only JSONL at `docs/wave6/live/refund_log.jsonl`:
+
+```json
+{
+  "refund_id": "rf_<timestamp>",
+  "customer_handle": "...",
+  "sku": "sprint_499 | partner_12000",
+  "original_payment_confirmed_at": "ISO date",
+  "refund_requested_at": "ISO date",
+  "refund_executed_at": "ISO date",
+  "amount_sar": 499.00,
+  "amount_halalah": 49900,
+  "channel": "bank_transfer | moyasar_card",
+  "txn_id": "...",
+  "eligibility_path": "auto_within_14 | founder_discretion | partner_kpi_unmet",
+  "reason_short": "...",
+  "reason_full": "...",
+  "post_mortem_doc_link": "..."
+}
+```
+
+Same gitignore protection as other live data.
+
+---
+
+## 5. Communication templates (Saudi Arabic)
+
+### When Sprint customer requests refund within 14 days
+
+> «شكراً على تواصلك [الاسم]. استلمت الطلب.
+> سأحوّل لك مبلغ ٤٩٩ ريال خلال ٣ أيام عمل بأمر الله.
+> هل تفضّل التحويل على نفس الـ IBAN اللي حوّلت منه أوّل مرّة، أو IBAN ثاني؟»
+
+### When Partner customer wants to exit at month 2
+
+> «وصلتني الرسالة [الاسم]. أقدّر صراحتك.
+> أتحرّك على الفور:
+> - أوقف الفوترة لشهر ٣ و٤
+> - أرتّب مبلغ الشهر الباقي مدفوع مسبقاً ([X]) أرجعه لك خلال ٥-٧ أيّام
+> - أرسل لك Proof Pack الجزئي للـ ٦ أسابيع اللي اشتغلناها (ملك لك للأبد)
+> هل في شيء غيره أقدر أساعدك فيه؟»
+
+### When customer demands feature blocked by hard gate
+
+> «أتفهّم وش تطلب [الاسم]. لكن Dealix فيه قواعد ثابتة في الكود (٨ بوّابات أمان) — هذي ما نقدر نطفّيها لأي عميل.
+> السبب: حماية لك من غرامة PDPL، حماية لرقمك من banned، حماية لسمعتك.
+> اللي نقدر نسوّيه: نجهّز draft، أنت ترسل بضغطة. هذا اللي ضمن السياسة.
+> لو هذا ما يكفي، أفهم — وأقدر أرتّب لك استرجاع كامل خلال ٧ أيّام.»
+
+---
+
+## 6. Refund metrics to track
+
+In monthly Friday review (per `SALES_OPS_SOP.md` §10):
+
+- Refund count by SKU
+- Refund rate as % of paid customers
+- Days-to-refund average
+- Top reason (categorize: ICP-mismatch · expectations-mismatch · service-breakdown · other)
+
+**Healthy targets:**
+- Sprint refund rate: <10% (if higher → ICP problem)
+- Partner refund rate: <5% (if higher → onboarding/CS problem)
+- Days-to-refund: <5 average
+
+**Warning signs:**
+- Same reason 3+ times → fix the upstream cause (pitch, onboarding, KPI definition)
+- Founder argues with customer in refund chat → STOP, re-read this doc
+
+---
+
+## 7. Hard rules
+
+- ❌ Never delay a Sprint refund past Day 14 — eats trust
+- ❌ Never charge a "processing fee" on refunds — Saudi B2B trust signal
+- ❌ Never refund without recording in refund_log.jsonl — finance ground truth
+- ❌ Never tweet/share/discuss a refund publicly — even if customer is wrong
+- ✅ Always cc yourself on the refund confirmation message
+- ✅ Always offer to keep the relationship warm for future ("احتفظت لك بنفس السعر بعد 90 يوم")
+- ✅ Always update `confirmed_revenue_sar` via CLI — keep ground truth honest
+
+> **Lawyer review checkpoint:** §1 refund commitments + §3 mechanism + §5 communication templates → must be reviewed by lawyer (per Wave 7 §23.5.5 deliverable L4) before customer #1. Specifically: confirm ZATCA refund handling for VAT (refund must NOT include VAT once collected; treat refund as supply reversal, refile VAT in next quarter).

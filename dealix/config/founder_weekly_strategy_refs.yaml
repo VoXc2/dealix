@@ -1,0 +1,50 @@
+# Founder weekly strategy anchor — consumed by digest, SOAEN, ops API.
+version: "1"
+cadence_ar: "يومياً 5 دقائق · أسبوعياً مراجعة GTM عميقة (أحد)"
+
+daily:
+  - id: master_commercial
+    path: docs/commercial/MASTER_COMMERCIAL_OPERATING_PLAN_AR.md
+    label_ar: "خطة التشغيل التجاري (5 دقائق)"
+    when_ar: "كل صباح قبل War Room"
+  - id: founder_strongest_plan
+    path: docs/commercial/FOUNDER_STRONGEST_PLAN_AR.md
+    label_ar: "أقوى خطة للمؤسس (134 مهمة + قرار أسبوعي)"
+    when_ar: "أسبوع 0 · ريترو الجمعة · عند ضبط المرحلة 0–5"
+  - id: founder_operating_system
+    path: docs/ops/FOUNDER_OPERATING_SYSTEM_AR.md
+    label_ar: "نظام تشغيل المؤسس"
+    when_ar: "عند ضبط العادة اليومية أو Ops UI"
+
+weekly:
+  - id: market_intelligence_index
+    path: docs/commercial/MARKET_INTELLIGENCE_MASTER_INDEX_AR.md
+    label_ar: "فهرس استخبارات السوق 2025–2026"
+    when_ar: "مراجعة أسبوعية — تموضع · امتثال · محتوى"
+  - id: market_intelligence_weekly_review
+    path: docs/commercial/MARKET_INTELLIGENCE_WEEKLY_REVIEW_CHECKLIST_AR.md
+    label_ar: "قائمة مراجعة استخبارات السوق (جمعة)"
+    when_ar: "كل جمعة — 20 دقيقة"
+  - id: gtm_saudi_playbook
+    path: docs/commercial/GTM_SAUDI_WEB_RESEARCH_PLAYBOOK_AR.md
+    label_ar: "GTM السعودية — بحث ويب + ABM + لوب المؤسس"
+    when_ar: "مراجعة أسبوعية — موجة 1، Proof Stack، TTV"
+  - id: sovereign_gtm
+    path: docs/commercial/DEALIX_SALES_GTM_SOVEREIGN_MASTER_AR.md
+    label_ar: "GTM سيادي — استراتيجية وتكتيك"
+    when_ar: "مراجعة أسبوعية — سوشال، استهداف، motions"
+  - id: unified_revenue_atlas
+    path: docs/commercial/DEALIX_UNIFIED_REVENUE_ATLAS_AR.md
+    label_ar: "أطلس الإيراد الموحّد"
+    when_ar: "قرارات عرض وتسعير وسلم البيع"
+
+ui_routes:
+  founder: /ar/ops/founder
+  war_room: /ar/ops/war-room
+  marketing: /ar/ops/marketing
+  approvals: /ar/ops/approvals
+
+morning_command:
+  windows: scripts/run_founder_commercial_day.ps1
+  unix: scripts/run_founder_commercial_day.sh
+  quick_windows: scripts/founder_morning.ps1

@@ -1,0 +1,48 @@
+---
+description: قواعد المؤسس — بيع السلم، الربط، وكلاء Cursor (لا إرسال خارجي)
+globs:
+  - docs/commercial/**
+  - docs/ops/FOUNDER_*
+  - dealix/business_now/**
+  - docs/commercial/ops_client_pack/**
+---
+
+# Dealix — Founder sales & go-live
+
+## سلم البيع
+
+1. **Diagnostic (Ops)** 4,999–15,000 SAR — مدخل المحادثة (ليس service_id في الكتالوج)
+2. **Sprint 499** أو **Data Pack 1500** — بعد القبول والدفع
+3. **Growth 2999** — فقط بعد Proof Pack
+
+## مصادر الحقيقة
+
+- **يومياً (ابدأ هنا):** `docs/commercial/MASTER_COMMERCIAL_OPERATING_PLAN_AR.md` + `docs/commercial/DEALIX_COMMERCIAL_SCALE_SYSTEM_AR.md` + `docs/commercial/FULL_OPS_CLOSE_ENGINE_AR.md` + `docs/commercial/DEALIX_SALES_GTM_SOVEREIGN_MASTER_AR.md`
+- **أمر صباح واحد:** `bash scripts/run_founder_commercial_day.sh` (Windows: `scripts/run_founder_commercial_day.ps1`)
+- تنفيذ: `docs/commercial/operations/` · config: `dealix/config/social_content_queue.yaml` · `dealix/config/icp_agency_wedge.yaml`
+- عروض: `auto_client_acquisition/service_catalog/registry.py` + `docs/COMMERCIAL_WIRING_MAP.md`
+- Ops pack: `docs/commercial/ops_client_pack/`
+- ربط: `dealix/transformation/founder_integration_truth.yaml` + `docs/ops/FOUNDER_INTEGRATION_TRUTH_MATRIX_AR.md`
+- وكلاء: `docs/ops/FOUNDER_AGENT_PLAYBOOK_AR.md`
+- غرفة تصريف يومية (هدف/قناة/proof/موافقة): `docs/ops/DEALIX_REVENUE_WAR_ROOM_AR.md`
+
+## ممنوعات (غير قابلة للتفاوض)
+
+- لا إرسال واتساب بارد أو LinkedIn تلقائي
+- لا Gmail/تقويم خارجي بدون موافقة صريحة
+- لا أرقام CRM أو إيراد مخترعة — KPI من `kpi_founder_commercial_import.yaml` فقط
+- لا revenue قبل `invoice_paid` · لا upsell قبل Proof
+- لا وعود على تكامل **red** في Truth Matrix
+
+## أوامر تشغيل
+
+- لقطة: `bash scripts/run_business_now.sh` أو `scripts/run_business_now.ps1`
+- تحقق: `bash scripts/founder_go_live_verify.sh`
+- ديمو UI: `/ar/business-now#strategy`
+
+## اختيار الوكيل
+
+- مبيعات/عروض → dealix-sales
+- تسليم/Proof → dealix-delivery
+- pytest/API → dealix-engineer
+- أسبوعي/أولويات → dealix-pm

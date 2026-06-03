@@ -1,0 +1,59 @@
+{
+  "_description": "إعدادات Claude Code المحسّنة لتقليل استهلاك التوكنز",
+  "_version": "2026-05-30",
+
+  "env": {
+    "CLAUDE_CODE_SUBAGENT_MODEL": "haiku",
+    "MAX_THINKING_TOKENS": "8000",
+    "CLAUDE_CODE_MAX_TOOL_OUTPUT_TOKENS": "8000"
+  },
+
+  "permissions": {
+    "allow": [
+      "Bash(git *)",
+      "Bash(make *)",
+      "Bash(pytest *)",
+      "Bash(ruff *)",
+      "Bash(mypy *)",
+      "Bash(tree *)",
+      "Bash(find . *)",
+      "Bash(grep *)",
+      "Bash(wc *)",
+      "Bash(head *)",
+      "Bash(tail *)",
+      "Bash(cat *)",
+      "Bash(ls *)",
+      "Bash(sed *)"
+    ]
+  },
+
+  "hooks": {
+    "SessionStart": [
+      {
+        "type": "command",
+        "command": "printf '=== Dealix Session ===\\nBranch: %s\\nDate: %s\\n=====================\\n' \"$(git branch --show-current 2>/dev/null || echo N/A)\" \"$(date '+%Y-%m-%d %H:%M')\""
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": {
+          "tool": "Bash"
+        },
+        "type": "truncateOutput",
+        "maxBytes": 20000
+      }
+    ]
+  },
+
+  "model": "claude-sonnet-4-6",
+
+  "includeCoAuthoredBy": false,
+
+  "_notes": [
+    "CLAUDE_CODE_SUBAGENT_MODEL=haiku: يوفر 70-80% على مهام Subagents",
+    "MAX_THINKING_TOKENS=8000: يمنع التفكير الموسّع المُفرط",
+    "CLAUDE_CODE_MAX_TOOL_OUTPUT_TOKENS=8000: يمنع مخرجات الأدوات الضخمة",
+    "hooks.PostToolUse.truncateOutput: يقطع مخرجات bash > 20KB",
+    "hooks.SessionStart: يحقن branch تلقائياً في بداية الجلسة"
+  ]
+}

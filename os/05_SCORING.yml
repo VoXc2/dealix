@@ -1,0 +1,212 @@
+# Dealix Company Scoring System
+# نظام تقييم الشركات المرشحة
+
+version: "1.0"
+max_score: 100
+
+scoring_dimensions:
+
+  operations_complexity:
+    weight: 20
+    name: "عمليات متكررة ومعقدة"
+    description: "هل الشركة تعتمد على عمليات يومية متكررة يمكن أتمتتها؟"
+    levels:
+      high:
+        score: 20
+        indicators:
+          - "عندها فريق operations أو maintenance"
+          - "تدير بلاغات أو تذاكر يومياً"
+          - "تدير فنيين أو field staff"
+          - "عندها SLA commitments"
+      medium:
+        score: 12
+        indicators:
+          - "عندها عمليات تكرارية لكن أقل تعقيداً"
+          - "عندها تقارير دورية"
+      low:
+        score: 5
+        indicators:
+          - "عمليات بسيطة"
+          - "فريق صغير"
+      none:
+        score: 0
+        indicators:
+          - "تجارة بسيطة بدون عمليات"
+
+  reporting_burden:
+    weight: 15
+    name: "عبء التقارير"
+    description: "هل الشركة تعاني من تقارير يدوية كثيرة؟"
+    levels:
+      high:
+        score: 15
+        indicators:
+          - "تقارير أسبوعية وشهرية يدوية"
+          - "dashboard يُبنى يدوياً"
+          - "consolidation من مصادر متعددة"
+      medium:
+        score: 9
+        indicators:
+          - "تقارير دورية لكن أبسط"
+      low:
+        score: 4
+        indicators:
+          - "تقارير بسيطة أو نادرة"
+
+  maintenance_or_field_ops:
+    weight: 20
+    name: "صيانة أو عمليات ميدانية"
+    description: "هل عندها فنيين، صيانة، أو field service؟"
+    levels:
+      yes:
+        score: 20
+        indicators:
+          - "شركة صيانة أو FM"
+          - "فريق فنيين ميدانيين"
+          - "إدارة مرافق"
+      partial:
+        score: 10
+        indicators:
+          - "صيانة داخلية محدودة"
+      no:
+        score: 0
+
+  multi_branch_or_scale:
+    weight: 10
+    name: "عدة فروع أو حجم كبير"
+    description: "هل الشركة لها عدة مواقع أو فروع؟"
+    levels:
+      many:
+        score: 10
+        indicators:
+          - "3+ فروع أو مواقع"
+          - "multi-city operations"
+      some:
+        score: 6
+        indicators:
+          - "2 فروع"
+          - "2 مدن"
+      one:
+        score: 2
+        indicators:
+          - "موقع واحد"
+
+  operations_data_roles:
+    weight: 10
+    name: "وظائف operations أو data"
+    description: "هل تستخدم وظائف تشير لحاجة تشغيلية؟"
+    levels:
+      strong:
+        score: 10
+        indicators:
+          - "Operations Director/Manager"
+          - "Data Analyst"
+          - "Business Intelligence"
+          - "PMO Manager"
+          - "Facilities Manager"
+      moderate:
+        score: 6
+        indicators:
+          - "Project Manager"
+          - "IT Manager"
+      weak:
+        score: 2
+        indicators:
+          - "General admin roles only"
+
+  growth_expansion_signals:
+    weight: 10
+    name: "إشارات نمو أو توسع"
+    description: "هل الشركة تنمو أو تتوسع؟"
+    levels:
+      strong:
+        score: 10
+        indicators:
+          - "أعلنت عن توسع"
+          - "عندها مشاريع جديدة"
+          - "تستأجر موظفين بكثرة"
+          - "حازت عقوداً جديدة"
+      moderate:
+        score: 6
+        indicators:
+          - "نمو طبيعي"
+      flat:
+        score: 2
+        indicators:
+          - "لا إشارات نمو"
+
+  reachable_decision_maker:
+    weight: 10
+    name: "وصول لصاحب القرار"
+    description: "هل يمكن الوصول لصاحب القرار؟"
+    levels:
+      clear:
+        score: 10
+        indicators:
+          - "LinkedIn profile واضح"
+          - "تفاصيل تواصل متاحة"
+          - "operations director معروف"
+      partial:
+        score: 6
+        indicators:
+          - "تواصل عبر موقع الشركة فقط"
+      unclear:
+        score: 2
+        indicators:
+          - "لا معلومات تواصل"
+
+  founder_background_fit:
+    weight: 5
+    name: "ملاءمة خلفية الفاوندر"
+    description: "هل القطاع قريب من خلفية الفاوندر أو تجربته؟"
+    levels:
+      strong:
+        score: 5
+        indicators:
+          - "قطاع عمل فيه الفاوندر سابقاً"
+          - "يعرف الألم من الداخل"
+      moderate:
+        score: 3
+        indicators:
+          - "قطاع مشابه"
+      weak:
+        score: 1
+        indicators:
+          - "قطاع جديد كلياً"
+
+decision_thresholds:
+  priority_high:
+    min_score: 80
+    action: "أولوية عالية — جهّز brief كامل وابدأ draft"
+    color: "green"
+  priority_medium:
+    min_score: 60
+    max_score: 79
+    action: "مرشحة — أرسل بعد تخصيص جيد"
+    color: "yellow"
+  nurture:
+    min_score: 40
+    max_score: 59
+    action: "ضعها في nurture list — تابع بعد 60 يوم"
+    color: "orange"
+  disqualified:
+    max_score: 39
+    action: "أرشفة — لا تستحق الوقت الآن"
+    color: "red"
+
+scoring_output_format:
+  fields:
+    - company_name
+    - total_score
+    - tier: "high|medium|nurture|disqualified"
+    - dimension_scores:
+        - dimension_id
+        - score
+        - level
+        - notes
+    - top_strengths: []
+    - top_weaknesses: []
+    - recommended_offer
+    - next_action
+    - scored_at
+    - scored_by: "agent|human"

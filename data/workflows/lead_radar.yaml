@@ -1,0 +1,62 @@
+# Wave 12.5 §33.2.3 — Lead Radar workflow (weekly opportunity scan)
+name: lead_radar
+duration_days: 5
+description_ar: "رادار فرص أسبوعي — 5 أيام لجلب 10 فرص مرتبة + Decision Passports"
+description_en: "Weekly 5-day opportunity radar — 10 ranked opportunities + Decision Passports"
+proof_target: "10_opportunities_ranked"
+final_deliverable: "Top-10 opportunity board + 10 Decision Passports + bilingual draft pack"
+
+steps:
+  - step_id: radar_intake
+    day: 1
+    title_ar: "مراجعة عقل الشركة + قنوات + قيود"
+    title_en: "Review Company Brain + channels + constraints"
+    owner: csm
+    daily_artifact_required: true
+    artifact_kind: "radar_intake_summary"
+    risk_level: low
+    next_action_kind: scan_signals
+
+  - step_id: radar_signal_scan
+    day: 2
+    title_ar: "فحص إشارات السوق + سياق الموسم"
+    title_en: "Scan market signals + season context"
+    owner: csm
+    daily_artifact_required: true
+    artifact_kind: "weekly_signal_dump"
+    risk_level: low
+    next_action_kind: dedupe_and_score
+
+  - step_id: radar_score
+    day: 3
+    title_ar: "تطبيق الـ 13-dim score على كل فرصة"
+    title_en: "Apply 13-dim score to each opportunity"
+    owner: system_auto
+    daily_artifact_required: true
+    artifact_kind: "scored_opportunity_list"
+    risk_level: low
+    next_action_kind: build_decision_passports
+
+  - step_id: radar_passports
+    day: 4
+    title_ar: "بناء Decision Passport لأفضل 10 فرص"
+    title_en: "Build Decision Passports for top 10"
+    owner: founder
+    daily_artifact_required: true
+    artifact_kind: "decision_passports_top10"
+    risk_level: medium
+    next_action_kind: draft_messages
+    approval_points:
+      - founder_passport_approval
+
+  - step_id: radar_drafts
+    day: 5
+    title_ar: "صياغة 10 رسائل بالعربية + خطة متابعة"
+    title_en: "Draft 10 Arabic messages + follow-up plan"
+    owner: founder
+    daily_artifact_required: true
+    artifact_kind: "draft_pack_10_messages"
+    risk_level: medium
+    next_action_kind: founder_review_then_manual_send
+    approval_points:
+      - founder_message_approval

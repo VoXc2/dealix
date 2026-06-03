@@ -1,0 +1,22 @@
+{
+  "generated_at": "2026-05-30T12:12:27.555080+00:00",
+  "mode": "approval_first_company_brain",
+  "rule": "AI drafts. Founder approves. Human sends.",
+  "today": {
+    "sell": "P1 Revenue Intelligence Sprint",
+    "manual_messages_target": 5,
+    "discovery_calls_target": 1,
+    "proposal_target": 1,
+    "links": {
+      "demo": "https://web-production-380c3.up.railway.app/ar/demo",
+      "revenue_os": "https://web-production-380c3.up.railway.app/revenue-os",
+      "zatca": "https://web-production-380c3.up.railway.app/ar/zatca-readiness"
+    },
+    "do_not_do": [
+      "no auto-send",
+      "no scraping",
+      "no spam",
+      "no ROI claims without baseline"
+    ]
+  }
+}

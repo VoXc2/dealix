@@ -1,0 +1,27 @@
+# Dealix code ownership
+# Replace @VoXc2 with GitHub teams as the project grows.
+
+* @VoXc2
+
+# Repository operations and security
+/.github/ @VoXc2
+/.env.example @VoXc2
+/SECURITY.md @VoXc2
+/Makefile @VoXc2
+/scripts/ @VoXc2
+
+# Product and architecture docs
+/docs/ @VoXc2
+/dealix/masters/ @VoXc2
+/dealix/registers/ @VoXc2
+
+# Application surfaces
+/api/ @VoXc2
+/core/ @VoXc2
+/db/ @VoXc2
+/integrations/ @VoXc2
+/auto_client_acquisition/ @VoXc2
+/autonomous_growth/ @VoXc2
+/apps/web/ @VoXc2
+/frontend/ @VoXc2
+/landing/ @VoXc2

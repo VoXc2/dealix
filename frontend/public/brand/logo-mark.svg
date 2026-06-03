@@ -1,0 +1,6 @@
+<svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="40" height="40" rx="8" fill="#001F3F"/>
+  <path d="M20 4L36 20L20 36L4 20L20 4Z" fill="#D4AF37" opacity="0.15"/>
+  <path d="M20 8L32 20L20 32L8 20L20 8Z" fill="none" stroke="#D4AF37" stroke-width="1.5"/>
+  <text x="20" y="25" text-anchor="middle" font-family="Poppins, sans-serif" font-weight="700" font-size="16" fill="#FFFFFF">D</text>
+</svg>

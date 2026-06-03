@@ -1,0 +1,12 @@
+event_id,event_date,event_type,company,contact,motion,offer_id,owner,source_channel,notes,next_action,next_action_date,war_room_status
+,2026-05-17,message_sent_manual,,,,,founder,,template_funnel_seed — عمود KPI فقط، ليس صفقة,,,
+,2026-05-17,reply_received,,,,,founder,,template_funnel_seed — عمود KPI فقط، ليس صفقة,,,
+,2026-05-17,demo_booked,,,,,founder,,template_funnel_seed — عمود KPI فقط، ليس صفقة,,,
+,2026-05-17,scope_requested,,,,,founder,,template_funnel_seed — عمود KPI فقط، ليس صفقة,,,
+,2026-05-17,invoice_sent,,,,,founder,,template_funnel_seed — عمود KPI فقط، ليس صفقة,,,
+,2026-05-17,payment_received,,,,,founder,,template_funnel_seed — عمود KPI فقط، ليس صفقة,,,
+,2026-05-17,proof_pack_delivered,,,,,founder,,template_funnel_seed — عمود KPI فقط، ليس صفقة,,,
+,2026-05-17,partner_intro_created,,,,,founder,,template_funnel_seed — عمود KPI فقط، ليس صفقة,,,
+,2026-05-17,referral_requested,,,,,founder,,template_funnel_seed — عمود KPI فقط، ليس صفقة,,,
+,2026-05-17,scope_requested,founder_launch_day,,,ten_lead_audit,,,launch_day — first revenue day orchestrator,,,
+,2026-05-18,scope_requested,Dealix Founder Commercial Day,,,ten_lead_audit,founder,automation,FOUNDER_COMMERCIAL_DAY verdict=PASS — War Room + digest + SOAEN,review P0 in /ar/ops/founder,2026-05-18,

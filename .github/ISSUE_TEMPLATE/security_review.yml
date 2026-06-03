@@ -1,0 +1,52 @@
+name: Security review
+description: Review a security-sensitive change
+title: "security-review: "
+labels:
+  - security
+  - review
+body:
+  - type: textarea
+    id: scope
+    attributes:
+      label: Scope
+      description: What changed or needs review?
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - Authentication
+        - Authorization
+        - Secrets
+        - Data handling
+        - API
+        - Frontend
+        - Infrastructure
+        - Third-party integration
+        - AI workflow
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: data
+    attributes:
+      label: Data exposure
+      description: What data is read, written, sent, logged, or displayed?
+    validations:
+      required: true
+  - type: textarea
+    id: checks
+    attributes:
+      label: Checks completed
+      placeholder: env check, tests, CodeQL, secret scan, manual review, access review
+    validations:
+      required: true
+  - type: textarea
+    id: residual
+    attributes:
+      label: Remaining risk
+      description: What risk remains and who accepts it?
+    validations:
+      required: true

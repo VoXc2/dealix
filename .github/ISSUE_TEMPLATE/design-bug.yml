@@ -1,0 +1,38 @@
+name: 🐛 Design Bug
+description: Report a visual or UI inconsistency
+labels: [bug, design]
+body:
+  - type: input
+    id: page
+    attributes:
+      label: Affected Page / Component
+      placeholder: e.g. Dashboard, LandingPage, Button
+    validations:
+      required: true
+  - type: textarea
+    id: describe
+    attributes:
+      label: What went wrong?
+      description: Describe the visual issue
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      description: What should it look like?
+  - type: dropdown
+    id: severity
+    attributes:
+      label: Severity
+      options: [Critical, High, Medium, Low]
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to Reproduce
+      placeholder: |
+        1. Go to /dashboard
+        2. Resize to mobile
+        3. See broken layout

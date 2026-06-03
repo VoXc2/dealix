@@ -1,0 +1,51 @@
+name: Verify Full Autonomous Ops Stack
+
+on:
+  pull_request:
+    paths:
+      - "dealix/commercial_ops/**"
+      - "scripts/verify_full_autonomous_ops_stack.py"
+      - "scripts/run_dealix_complete_autonomous_day.py"
+      - "scripts/run_full_commercial_ops_autopilot.py"
+      - "api/routers/revenue_ops_autopilot.py"
+      - "tests/test_full_ops_autopilot.py"
+      - "tests/test_complete_autonomous_day.py"
+      - "tests/test_founder_cockpit.py"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify-stack:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install API deps for smoke import
+        run: pip install -r requirements.txt
+
+      - name: Verify full autonomous ops stack
+        env:
+          PYTHONIOENCODING: utf-8
+          APP_ENV: test
+          ADMIN_API_KEYS: dev
+          DEALIX_ADMIN_API_KEY: dev
+        run: python scripts/verify_full_autonomous_ops_stack.py
+
+      - name: Pytest autonomous bundle
+        env:
+          PYTHONIOENCODING: utf-8
+          APP_ENV: test
+        run: |
+          python -m pytest \
+            tests/test_full_ops_autopilot.py \
+            tests/test_complete_autonomous_day.py \
+            tests/test_founder_cockpit.py \
+            tests/test_verify_full_autonomous_ops_stack.py \
+            -q --no-cov

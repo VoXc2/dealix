@@ -1,0 +1,25 @@
+{
+  "id": "evt_examplephasee01",
+  "event_type": "delivery_task_completed",
+  "customer_handle": "Acme-Saudi-Pilot-EXAMPLE",
+  "service_id": "svc_growth_starter_pilot",
+  "summary_ar": "تم تسليم فرصتين مؤهَّلتين باللغة العربية للعميل خلال اليوم الثالث من باقة Pilot. كل فرصة مرفقة بمسوّدة رسالة عربية جاهزة للمراجعة قبل الإرسال اليدوي.",
+  "summary_en": "Delivered 2 qualified opportunities to the customer on Day 3 of the 7-day Pilot. Each opportunity ships with an Arabic-first draft message awaiting customer approval before manual send.",
+  "evidence_source": "founder_notebook + delivery_factory_log",
+  "confidence": 0.9,
+  "consent_for_publication": false,
+  "redacted_summary_ar": "",
+  "redacted_summary_en": "",
+  "approval_status": "approval_required",
+  "risk_level": "low",
+  "payload": {
+    "pilot_day": 3,
+    "opportunities_delivered_today": 2,
+    "opportunities_delivered_total": 4,
+    "drafts_pending_customer_approval": 2,
+    "channel": "manual_whatsapp_after_opt_in",
+    "founder_notes_ar": "كل المسوّدات بصيغة عربية أولاً — لم تُرسل قبل موافقة العميل الكتابية.",
+    "founder_notes_en": "All drafts are Arabic-first — none sent before written customer approval."
+  },
+  "created_at": "2026-05-07T09:30:00+00:00"
+}

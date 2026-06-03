@@ -1,0 +1,15 @@
+# No-build guardrails — weekly review; prevents feature churn without distribution proof.
+rules:
+  - id: no_v13_random_sku_expansion
+    summary: "Do not expand SKUs/channels until diagnostic funnel has paid proof signals."
+  - id: no_live_external_without_approval
+    summary: "No live send/charge; drafts + approval only."
+  - id: no_fake_proof
+    summary: "No fabricated KPIs or case studies."
+  - id: no_automation_without_evidence_hooks
+    summary: "No new customer-facing automation without evidence event + KPI."
+
+weekly_review_prompts:
+  - "What did we ship that moved pipeline or proof this week?"
+  - "What failed and updated our ICP or messaging?"
+  - "What should we stop building?"

@@ -1,0 +1,64 @@
+name: Hermes Revenue Growth OS
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "data/dealix_product_network.json"
+      - "docs/revenue/**"
+      - "sales/service_pages/**"
+      - "apps/web/app/revenue-os/**"
+      - "apps/web/app/product-network/**"
+      - "apps/web/app/go-to-market/**"
+      - "scripts/generate_revenue_assets.py"
+  pull_request:
+    branches: [main]
+    paths:
+      - "data/dealix_product_network.json"
+      - "docs/revenue/**"
+      - "sales/service_pages/**"
+      - "apps/web/app/revenue-os/**"
+      - "apps/web/app/product-network/**"
+      - "apps/web/app/go-to-market/**"
+      - "scripts/generate_revenue_assets.py"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: hermes-revenue-growth-os-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate-revenue-assets:
+    name: Validate revenue/product/growth assets
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Generate revenue assets
+        run: python scripts/generate_revenue_assets.py
+
+      - name: Validate required pages and docs
+        run: |
+          test -f docs/revenue/DEALIX_FULL_GROWTH_OS.md
+          test -f docs/revenue/DEALIX_OFFER_ARCHITECTURE.md
+          test -f apps/web/app/revenue-os/page.tsx
+          test -f apps/web/app/product-network/page.tsx
+          test -f apps/web/app/go-to-market/page.tsx
+          test -f reports/revenue/dealix_revenue_asset_index.md
+
+      - name: Upload revenue asset index
+        uses: actions/upload-artifact@v4
+        with:
+          name: dealix-revenue-growth-os
+          path: reports/revenue/
