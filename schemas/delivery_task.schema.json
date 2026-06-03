@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dealix.sa/schemas/delivery_task.schema.json",
+  "title": "Delivery Task",
+  "description": "A single unit of delivery work inside a sprint, tied to a delivery pipeline.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "task_id",
+    "pipeline_id",
+    "company",
+    "system",
+    "title",
+    "owner",
+    "status"
+  ],
+  "properties": {
+    "task_id": { "type": "string", "pattern": "^DT-[0-9]{3,}$" },
+    "pipeline_id": { "type": "string", "pattern": "^DP-[0-9]{3,}$" },
+    "company": { "type": "string", "minLength": 2 },
+    "system": {
+      "type": "string",
+      "enum": [
+        "Revenue Operating System",
+        "Executive Command OS",
+        "Follow-up Recovery OS",
+        "WhatsApp Client OS",
+        "Proposal & Proof OS"
+      ]
+    },
+    "title": { "type": "string", "minLength": 2 },
+    "description": { "type": "string" },
+    "owner": { "type": "string" },
+    "status": {
+      "type": "string",
+      "enum": ["todo", "in_progress", "blocked", "done"]
+    },
+    "sprint": { "type": "string" },
+    "due_date": { "type": "string" },
+    "requires_approval": { "type": "boolean", "default": false },
+    "approved": { "type": "boolean", "default": false },
+    "output_ref": { "type": "string" },
+    "created_at": { "type": "string" }
+  }
+}

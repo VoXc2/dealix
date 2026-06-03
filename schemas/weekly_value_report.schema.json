@@ -1,0 +1,65 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dealix.sa/schemas/weekly_value_report.schema.json",
+  "title": "Weekly Value Report",
+  "description": "Weekly proof-of-value summary sent to a client during delivery. Stays draft until founder approval.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "report_id",
+    "pipeline_id",
+    "company",
+    "system",
+    "week_of",
+    "deliverables_completed",
+    "value_delivered",
+    "acceptance_status",
+    "next_week_focus",
+    "approval_required"
+  ],
+  "properties": {
+    "report_id": { "type": "string", "pattern": "^WVR-[0-9]{3,}$" },
+    "pipeline_id": { "type": "string", "pattern": "^DP-[0-9]{3,}$" },
+    "company": { "type": "string", "minLength": 2 },
+    "system": {
+      "type": "string",
+      "enum": [
+        "Revenue Operating System",
+        "Executive Command OS",
+        "Follow-up Recovery OS",
+        "WhatsApp Client OS",
+        "Proposal & Proof OS"
+      ]
+    },
+    "week_of": { "type": "string" },
+    "period_start": { "type": "string" },
+    "period_end": { "type": "string" },
+    "deliverables_completed": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "metrics": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "value"],
+        "properties": {
+          "name": { "type": "string" },
+          "value": { "type": "string" }
+        }
+      }
+    },
+    "value_delivered": { "type": "string", "minLength": 2 },
+    "acceptance_status": {
+      "type": "string",
+      "enum": ["pending", "accepted", "changes_requested"]
+    },
+    "next_week_focus": { "type": "string", "minLength": 2 },
+    "blockers": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "approval_required": { "type": "boolean", "const": true }
+  }
+}

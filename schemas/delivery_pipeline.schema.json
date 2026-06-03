@@ -1,0 +1,69 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dealix.sa/schemas/delivery_pipeline.schema.json",
+  "title": "Delivery Pipeline",
+  "description": "Tracks one client from interest to delivery and renewal. A pipeline can be created early with only the core keys; scope, success_metric and delivery_owner are enforced as a delivery-start GATE (see check C05) before stage 'delivery_started'.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "pipeline_id",
+    "company",
+    "system",
+    "stage",
+    "required_inputs"
+  ],
+  "properties": {
+    "pipeline_id": { "type": "string", "pattern": "^DP-[0-9]{3,}$" },
+    "company": { "type": "string", "minLength": 2 },
+    "system": {
+      "type": "string",
+      "enum": [
+        "Revenue Operating System",
+        "Executive Command OS",
+        "Follow-up Recovery OS",
+        "WhatsApp Client OS",
+        "Proposal & Proof OS"
+      ]
+    },
+    "stage": {
+      "type": "string",
+      "enum": [
+        "interested",
+        "qualified",
+        "mini_proposal_ready",
+        "proposal_sent",
+        "payment_handoff",
+        "won",
+        "intake_required",
+        "delivery_started",
+        "first_output_ready",
+        "client_review",
+        "accepted",
+        "weekly_value_report",
+        "renewal_candidate"
+      ]
+    },
+    "scope": { "type": "string" },
+    "success_metric": { "type": "string" },
+    "delivery_owner": { "type": "string" },
+    "required_inputs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "provided"],
+        "properties": {
+          "name": { "type": "string" },
+          "provided": { "type": "boolean" }
+        }
+      }
+    },
+    "approval_required": { "type": "boolean" },
+    "blockers": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "created_at": { "type": "string" },
+    "updated_at": { "type": "string" }
+  }
+}
