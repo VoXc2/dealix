@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dealix.sa/schemas/payment_handoff.schema.json",
+  "title": "Payment Handoff",
+  "description": "A request to send a payment link / invoice. ALWAYS requires founder approval; the system never auto-sends payment links. No card/secret data is stored here.",
+  "type": "object",
+  "required": ["id", "proposal_id", "company", "amount_sar", "payment_provider", "requires_approval", "approved", "status"],
+  "additionalProperties": false,
+  "properties": {
+    "id": { "type": "string", "pattern": "^PAY-[0-9]{3,}$" },
+    "proposal_id": { "type": "string", "pattern": "^PROP-[0-9]{3,}$" },
+    "company": { "type": "string", "minLength": 1 },
+    "amount_sar": { "type": "number", "minimum": 0 },
+    "payment_provider": { "type": "string", "enum": ["moyasar", "bank_transfer", "stcpay", "other"] },
+    "requires_approval": { "const": true },
+    "approved": { "type": "boolean" },
+    "status": { "type": "string", "enum": ["prepared", "approved", "link_sent", "pending", "paid", "overdue", "disputed", "cancelled", "refunded"] },
+    "risk": { "type": "string", "enum": ["low", "medium", "high"] },
+    "notes": { "type": "string" }
+  }
+}

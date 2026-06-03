@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dealix.sa/schemas/client_health.schema.json",
+  "title": "Client Health Record",
+  "description": "Health snapshot for an active client. Drives renewal/expansion/recovery actions. Renewal/expansion drafts require delivered value evidence (>= L3).",
+  "type": "object",
+  "required": ["client", "status", "score", "value_proof_level", "updated_at"],
+  "additionalProperties": true,
+  "properties": {
+    "client": { "type": "string", "minLength": 1 },
+    "status": {
+      "type": "string",
+      "enum": ["healthy", "watch", "at_risk", "blocked", "renewal_ready", "expansion_ready", "churn_risk"]
+    },
+    "score": { "type": "integer", "minimum": 0, "maximum": 100 },
+    "onboarding_complete": { "type": "boolean" },
+    "access_complete": { "type": "boolean" },
+    "first_workflow_delivered": { "type": "boolean" },
+    "weekly_report_sent": { "type": "boolean" },
+    "open_blockers": { "type": "integer", "minimum": 0 },
+    "value_proof_level": { "type": "string", "enum": ["L0", "L1", "L2", "L3", "L4", "L5"] },
+    "next_action": { "type": "string" },
+    "updated_at": { "type": "string" }
+  }
+}

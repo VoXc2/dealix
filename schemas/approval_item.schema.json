@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dealix.sa/schemas/approval_item.schema.json",
+  "title": "Approval Queue Item",
+  "description": "An action awaiting human (founder) approval. Sensitive types (pricing_offer, payment_handoff, data_handling, contract) must never auto-approve.",
+  "type": "object",
+  "required": ["id", "type", "company", "risk", "requires_approval", "approved"],
+  "additionalProperties": true,
+  "properties": {
+    "id": { "type": "string", "pattern": "^APP-[0-9]{3,}$" },
+    "type": {
+      "type": "string",
+      "enum": ["outreach_message", "pricing_offer", "payment_handoff", "data_handling", "contract", "case_study", "partner_agreement"]
+    },
+    "company": { "type": "string", "minLength": 1 },
+    "risk": { "type": "string", "enum": ["low", "medium", "high"] },
+    "details": { "type": "string" },
+    "draft_subject": { "type": "string" },
+    "draft_body": { "type": "string" },
+    "requires_approval": { "const": true },
+    "approved": { "type": "boolean" },
+    "reviewed_by": { "type": ["string", "null"] },
+    "created_at": { "type": "string" },
+    "approved_at": { "type": ["string", "null"] }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "type": { "enum": ["pricing_offer", "payment_handoff", "contract"] } } },
+      "then": { "properties": { "risk": { "const": "high" } } }
+    }
+  ]
+}

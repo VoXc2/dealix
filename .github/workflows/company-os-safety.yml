@@ -1,0 +1,59 @@
+name: Company OS Safety Gate
+
+# Trust/safety gate for the Dealix Company OS.
+# Report-only: runs governance + safety checks and tests. Never sends anything,
+# never deploys, never needs secrets.
+
+on:
+  push:
+    paths:
+      - "company_os/**"
+      - "schemas/**"
+      - "scripts/**"
+      - "tests/**"
+      - ".github/workflows/company-os-safety.yml"
+  pull_request:
+    paths:
+      - "company_os/**"
+      - "schemas/**"
+      - "scripts/**"
+      - "tests/**"
+  workflow_dispatch:
+
+# Least privilege: read-only. No write token, no secrets exposure.
+permissions:
+  contents: read
+
+concurrency:
+  group: company-os-safety-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  safety:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install test deps
+        run: python -m pip install --quiet pytest jsonschema
+
+      # Informational: surfaces items pending founder approval (the normal,
+      # healthy operating state). Does not fail the build.
+      - name: Governance review (informational)
+        continue-on-error: true
+        run: python scripts/governance_check.py
+
+      # Hard gate: real outbound safety violations fail the build.
+      - name: Safety gate (dry-run, report-only)
+        run: python scripts/safety_gate.py
+
+      # Hard gate: safety rules, governance data, and schemas.
+      - name: Run tests
+        run: python -m pytest tests/ -q

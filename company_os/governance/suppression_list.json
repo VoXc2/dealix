@@ -1,0 +1,34 @@
+{
+  "description": "Suppression list. Any recipient/company here must NEVER be contacted. Checked before approval and before any send. Opt-outs are honored immediately and are never re-added.",
+  "policy_version": "1.0",
+  "last_updated": "2026-06-03",
+  "entries": [
+    {
+      "company": "Opted Out Co",
+      "reason": "unsubscribe",
+      "added_at": "2026-05-28",
+      "permanent": true
+    },
+    {
+      "company": "Bounced Domain Ltd",
+      "reason": "hard_bounce",
+      "added_at": "2026-05-29",
+      "permanent": true
+    },
+    {
+      "company": "Do Not Contact LLC",
+      "reason": "do_not_contact",
+      "added_at": "2026-05-30",
+      "permanent": true
+    }
+  ],
+  "suppression_reasons": [
+    "unsubscribe",
+    "hard_bounce",
+    "angry_reply",
+    "do_not_contact",
+    "legal_request",
+    "privacy_request",
+    "invalid_email"
+  ]
+}

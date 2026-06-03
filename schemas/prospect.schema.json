@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dealix.sa/schemas/prospect.schema.json",
+  "title": "Prospect",
+  "description": "A B2B prospect company. Personal contact PII must be minimized and never placed into AI prompts or logs.",
+  "type": "object",
+  "required": ["company", "sector", "stage"],
+  "additionalProperties": true,
+  "properties": {
+    "company": { "type": "string", "minLength": 1 },
+    "sector": {
+      "type": "string",
+      "enum": ["marketing_agency", "training", "clinic", "real_estate", "recruitment", "professional_services", "education", "logistics", "restaurant", "local_saas", "other"]
+    },
+    "size": { "type": "string", "enum": ["micro", "small", "mid", "large"] },
+    "stage": {
+      "type": "string",
+      "enum": ["Target", "Researched", "Contacted", "Replied", "Discovery Booked", "Proposal Sent", "Won", "Delivery", "Retainer", "Referral", "Nurture", "Do Not Contact"]
+    },
+    "score": { "type": "integer", "minimum": 0, "maximum": 100 },
+    "first_offer": { "type": "string" },
+    "suppressed": { "type": "boolean", "default": false },
+    "source": { "type": "string", "description": "How the prospect was identified. Purchased lists are forbidden." }
+  }
+}

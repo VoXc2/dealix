@@ -1,0 +1,37 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dealix.sa/schemas/proposal.schema.json",
+  "title": "Proposal",
+  "description": "A commercial proposal. Must map to a product-catalog offer, carry an evidence level, and require founder approval before any external commitment.",
+  "type": "object",
+  "required": ["id", "company", "sector", "problem", "offer", "scope", "out_of_scope", "price_range_sar", "evidence_level", "requires_approval", "approved"],
+  "additionalProperties": true,
+  "properties": {
+    "id": { "type": "string", "pattern": "^PROP-[0-9]{3,}$" },
+    "company": { "type": "string", "minLength": 1 },
+    "sector": { "type": "string" },
+    "problem": { "type": "string", "minLength": 1 },
+    "offer": {
+      "type": "string",
+      "enum": ["readiness_scan", "revenue_leakage_diagnostic", "follow_up_recovery_workflow", "ai_revenue_ops_starter", "full_revenue_os", "monthly_optimization_retainer", "custom_company_os"]
+    },
+    "scope": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+    "out_of_scope": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+    "timeline_days": { "type": "integer", "minimum": 1 },
+    "price_range_sar": {
+      "type": "object",
+      "required": ["min", "max"],
+      "properties": {
+        "min": { "type": "number", "minimum": 0 },
+        "max": { "type": "number", "minimum": 0 }
+      }
+    },
+    "assumptions": { "type": "array", "items": { "type": "string" } },
+    "risks": { "type": "array", "items": { "type": "string" } },
+    "evidence_level": { "type": "string", "enum": ["L0", "L1", "L2", "L3", "L4", "L5"] },
+    "payment_terms": { "type": "string" },
+    "requires_approval": { "const": true },
+    "approved": { "type": "boolean" },
+    "guaranteed_results": { "const": false, "description": "Guaranteed revenue/ROI claims are forbidden." }
+  }
+}

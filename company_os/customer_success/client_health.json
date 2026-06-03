@@ -1,0 +1,28 @@
+[
+  {
+    "client": "Pilot Client A (anonymized)",
+    "status": "healthy",
+    "score": 82,
+    "onboarding_complete": true,
+    "access_complete": true,
+    "first_workflow_delivered": true,
+    "weekly_report_sent": true,
+    "open_blockers": 0,
+    "value_proof_level": "L3",
+    "next_action": "Prepare week-3 proof pack; monitor adoption.",
+    "updated_at": "2026-06-02"
+  },
+  {
+    "client": "Pilot Client B (anonymized)",
+    "status": "watch",
+    "score": 61,
+    "onboarding_complete": true,
+    "access_complete": false,
+    "first_workflow_delivered": false,
+    "weekly_report_sent": true,
+    "open_blockers": 2,
+    "value_proof_level": "L1",
+    "next_action": "Unblock CRM read-only access; do NOT pitch renewal until value proof >= L3.",
+    "updated_at": "2026-06-02"
+  }
+]
