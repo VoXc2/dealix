@@ -21,7 +21,7 @@ tenacity>=9.0.0,<10
 # even though they're rarely imported directly. See W4.1 in playbook §18.
 urllib3>=2.2.3,<3
 requests>=2.32.3,<3
-certifi>=2024.7.4
+certifi>=2026.5.20
 idna>=3.7
 
 # LLM SDKs (optional — router falls back gracefully if missing)
