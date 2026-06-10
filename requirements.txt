@@ -19,7 +19,7 @@ tenacity>=9.0.0,<10
 # Transitive dependencies pinned explicitly to override versions with
 # known CVEs. Without these pins, Dependabot flags vulnerable transitives
 # even though they're rarely imported directly. See W4.1 in playbook §18.
-urllib3>=2.2.3,<3
+urllib3>=2.7.0,<3
 requests>=2.32.3,<3
 certifi>=2024.7.4
 idna>=3.7
