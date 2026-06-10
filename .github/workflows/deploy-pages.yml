@@ -57,7 +57,7 @@ jobs:
           echo "── Site built ──"
           find _site -maxdepth 2 -type f | sort | head -40
 
-      - uses: actions/configure-pages@v5
+      - uses: actions/configure-pages@v6
 
       - uses: actions/upload-pages-artifact@v3
         with:
