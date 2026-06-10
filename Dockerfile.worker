@@ -1,7 +1,7 @@
 # Dealix Founder-OS Worker — long-running service for Railway
 # Shares the same base image as the API but runs the worker loop.
 
-FROM python:3.12-slim-bookworm AS builder
+FROM python:3.14-slim-bookworm AS builder
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
@@ -27,7 +27,7 @@ RUN pip install --upgrade pip setuptools wheel \
     && find /opt/venv -type d -name tests -exec rm -rf {} + 2>/dev/null || true \
     && find /opt/venv -type f -name "*.pyc" -delete 2>/dev/null || true
 
-FROM python:3.12-slim-bookworm AS runtime
+FROM python:3.14-slim-bookworm AS runtime
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
