@@ -22,7 +22,7 @@ tenacity>=9.0.0,<10
 urllib3>=2.2.3,<3
 requests>=2.32.3,<3
 certifi>=2024.7.4
-idna>=3.7
+idna>=3.18
 
 # LLM SDKs (optional — router falls back gracefully if missing)
 anthropic>=0.40.0
