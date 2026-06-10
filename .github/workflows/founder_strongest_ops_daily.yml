@@ -22,7 +22,7 @@ jobs:
       - name: Morning autonomous brief
         run: python3 scripts/run_founder_strongest_ops.py --morning --run-checks
       - name: Upload brief artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: founder-strongest-ops-brief
           path: data/founder_briefs/strongest_ops_*.md

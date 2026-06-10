@@ -40,7 +40,7 @@ jobs:
 
       - name: Upload autonomous ops artifacts
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: autonomous-ops-${{ github.run_id }}
           path: |

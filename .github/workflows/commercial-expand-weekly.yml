@@ -19,7 +19,7 @@ jobs:
           python scripts/expand_commercial_ops_all.py --wave3 --enrich-warm --skip-import
           python scripts/founder_all_motions_pipeline.py --top-n 5
       - name: Upload expansion artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: founder-expansion-briefs
           path: |

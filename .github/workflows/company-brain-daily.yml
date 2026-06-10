@@ -26,7 +26,7 @@ jobs:
           python scripts/dealix_content_factory_daily.py
           python scripts/dealix_growth_scorecard.py
       - name: Upload reports
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: company-brain-daily
           path: reports/company_os/**

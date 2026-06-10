@@ -21,7 +21,7 @@ jobs:
           python scripts/verify_enterprise_operating_layer.py
           python scripts/dealix_enterprise_readiness.py
       - name: Upload readiness report
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: enterprise-readiness
           path: reports/company_os/daily/ENTERPRISE_READINESS.*

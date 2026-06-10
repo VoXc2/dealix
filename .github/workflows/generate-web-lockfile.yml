@@ -30,7 +30,7 @@ jobs:
         run: npm ci && npm run verify
 
       - name: Upload package lock artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: apps-web-package-lock
           path: apps/web/package-lock.json

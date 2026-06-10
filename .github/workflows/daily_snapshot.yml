@@ -65,7 +65,7 @@ jobs:
           echo "✅ snapshot written: $FILE ($(wc -c < "$FILE") bytes)"
 
       - name: Upload snapshot as workflow artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           # Wave 10.8 §29.3: 90-day retention is enough audit-trail signal
           # for forensics; queryable via `gh run download <run-id>`.
