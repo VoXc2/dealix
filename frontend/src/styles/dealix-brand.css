@@ -1,0 +1,290 @@
+/* Dealix Brand System v2.0 — Navy #0c2742 · Gold #d4a843 · Emerald #059669 */
+/* RTL-aware · Light/Dark themes · WCAG AA compliant */
+
+:root {
+  /* ── Primary palette (50-950) ── */
+  --dealix-navy-50:   #eef3f8;
+  --dealix-navy-100:  #d4e0ed;
+  --dealix-navy-200:  #9db8d5;
+  --dealix-navy-300:  #678eb9;
+  --dealix-navy-400:  #33649b;
+  --dealix-navy-500:  #0c2742;
+  --dealix-navy-600:  #081828;
+  --dealix-navy-700:  #040d16;
+  --dealix-navy-800:  #02050a;
+  --dealix-navy-900:  #000103;
+  --dealix-navy-950:  #000001;
+
+  --dealix-gold-50:   #fdf8ee;
+  --dealix-gold-100:  #fcf1db;
+  --dealix-gold-200:  #f5dfa3;
+  --dealix-gold-300:  #edc967;
+  --dealix-gold-400:  #e2b032;
+  --dealix-gold-500:  #d4a843;
+  --dealix-gold-600:  #b48b2a;
+  --dealix-gold-700:  #916d16;
+  --dealix-gold-800:  #6b4e0a;
+  --dealix-gold-900:  #423004;
+  --dealix-gold-950:  #2c2003;
+
+  --dealix-emerald-50:  #ecfdf5;
+  --dealix-emerald-100: #d1fae5;
+  --dealix-emerald-200: #93efc0;
+  --dealix-emerald-300: #51df99;
+  --dealix-emerald-400: #1ac771;
+  --dealix-emerald-500: #059669;
+  --dealix-emerald-600: #037448;
+  --dealix-emerald-700: #02522d;
+  --dealix-emerald-800: #013118;
+  --dealix-emerald-900: #001209;
+  --dealix-emerald-950: #000603;
+
+  /* ── Neutral palette ── */
+  --dealix-slate-50:   #f8f9fb;
+  --dealix-slate-100:  #eef0f4;
+  --dealix-slate-200:  #d5d9e2;
+  --dealix-slate-300:  #b4bccb;
+  --dealix-slate-400:  #8d99af;
+  --dealix-slate-500:  #64748b;
+  --dealix-slate-600:  #4b5567;
+  --dealix-slate-700:  #364558;
+  --dealix-slate-800:  #1e293b;
+  --dealix-slate-900:  #0f172a;
+  --dealix-slate-950:  #020617;
+
+  --dealix-white:      #ffffff;
+  --dealix-black:      #02050a;
+
+  /* ── Semantic colors ── */
+  --dealix-success:    #059669;
+  --dealix-warning:    #d97706;
+  --dealix-error:      #dc2626;
+  --dealix-info:       #2563eb;
+
+  /* ── Typography ── */
+  --dealix-font-arabic:     "Noto Kufi Arabic", "Noto Naskh Arabic", "Cairo", "IBM Plex Sans Arabic", system-ui, sans-serif;
+  --dealix-font-display:    "Cairo", "Noto Kufi Arabic", "Poppins", system-ui, sans-serif;
+  --dealix-font-body:       "Inter", "Noto Sans Arabic", "Tajawal", system-ui, sans-serif;
+  --dealix-font-mono:       "JetBrains Mono", "IBM Plex Mono", "Fira Code", monospace;
+  --dealix-font-heading:    "Noto Kufi Arabic", "Cairo", "Inter", system-ui, sans-serif;
+
+  /* ── Spacing rhythm ── */
+  --dealix-space-1:   4px;
+  --dealix-space-2:   8px;
+  --dealix-space-3:   12px;
+  --dealix-space-4:   16px;
+  --dealix-space-5:   20px;
+  --dealix-space-6:   24px;
+  --dealix-space-8:   32px;
+  --dealix-space-10:  40px;
+  --dealix-space-12:  48px;
+  --dealix-space-16:  64px;
+  --dealix-space-20:  80px;
+  --dealix-space-24:  96px;
+  --dealix-section-gap: 5rem;
+
+  /* ── Border radius ── */
+  --dealix-radius-xs:  2px;
+  --dealix-radius-sm:  4px;
+  --dealix-radius-md:  8px;
+  --dealix-radius-lg:  12px;
+  --dealix-radius-xl:  16px;
+  --dealix-radius-2xl: 20px;
+  --dealix-radius-full: 9999px;
+
+  /* ── Shadows ── */
+  --dealix-shadow-xs:   0 1px 2px rgba(12,39,66,0.05);
+  --dealix-shadow-sm:   0 1px 3px rgba(12,39,66,0.08), 0 1px 2px rgba(12,39,66,0.04);
+  --dealix-shadow-md:   0 4px 6px rgba(12,39,66,0.07), 0 2px 4px rgba(12,39,66,0.04);
+  --dealix-shadow-lg:   0 10px 25px rgba(12,39,66,0.1), 0 4px 10px rgba(12,39,66,0.05);
+  --dealix-shadow-xl:   0 20px 40px rgba(12,39,66,0.12), 0 8px 20px rgba(12,39,66,0.06);
+  --dealix-shadow-2xl:  0 25px 50px rgba(12,39,66,0.18);
+  --dealix-shadow-gold-sm:  0 0 12px rgba(212,168,67,0.2);
+  --dealix-shadow-gold-md:  0 0 24px rgba(212,168,67,0.3);
+  --dealix-shadow-gold-lg:  0 0 40px rgba(212,168,67,0.4);
+  --dealix-shadow-emerald-sm: 0 0 12px rgba(5,150,105,0.2);
+  --dealix-shadow-emerald-md: 0 0 24px rgba(5,150,105,0.3);
+  --dealix-shadow-card:  0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.04);
+  --dealix-shadow-modal: 0 20px 60px rgba(0,0,0,0.15);
+
+  /* ── Transitions ── */
+  --dealix-transition-fast:  150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --dealix-transition-base:  200ms cubic-bezier(0.4, 0, 0.2, 1);
+  --dealix-transition-slow:  300ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ── Light theme (default) ── */
+:root,
+[data-theme="light"] {
+  --dealix-bg:            #fafbfc;
+  --dealix-bg-muted:      #f1f5f9;
+  --dealix-bg-soft:       #eef0f4;
+  --dealix-surface:       #ffffff;
+  --dealix-border:        #e2e8f0;
+  --dealix-border-strong: #cbd5e1;
+  --dealix-text:          #0c2742;
+  --dealix-text-secondary: #364558;
+  --dealix-text-muted:    #64748b;
+  --dealix-text-inverse:  #ffffff;
+  --dealix-accent:        #d4a843;
+  --dealix-accent-hover:  #c49a36;
+  --dealix-accent-soft:   rgba(212,168,67,0.1);
+  --dealix-primary:       #0c2742;
+  --dealix-primary-hover: #06111f;
+  --dealix-primary-soft:  rgba(12,39,66,0.08);
+  --dealix-emerald:       #059669;
+  --dealix-emerald-hover: #037448;
+  --dealix-emerald-soft:  rgba(5,150,105,0.1);
+  --dealix-gradient-hero: linear-gradient(135deg, #0c2742 0%, #06111f 100%);
+  --dealix-gradient-gold: linear-gradient(135deg, #d4a843 0%, #edc967 50%, #d4a843 100%);
+  --dealix-gradient-emerald: linear-gradient(135deg, #059669 0%, #51df99 100%);
+}
+
+/* ── Dark theme ── */
+[data-theme="dark"] {
+  --dealix-bg:            #0a0f1c;
+  --dealix-bg-muted:      #0f172a;
+  --dealix-bg-soft:       #111a2e;
+  --dealix-surface:       #0f172a;
+  --dealix-border:        #1e293b;
+  --dealix-border-strong: #334155;
+  --dealix-text:          #f1f5f9;
+  --dealix-text-secondary: #cbd5e1;
+  --dealix-text-muted:    #94a3b8;
+  --dealix-text-inverse:  #0c2742;
+  --dealix-accent:        #d4a843;
+  --dealix-accent-hover:  #edc967;
+  --dealix-accent-soft:   rgba(212,168,67,0.12);
+  --dealix-primary:       #d4a843;
+  --dealix-primary-hover: #edc967;
+  --dealix-primary-soft:  rgba(212,168,67,0.12);
+  --dealix-emerald:       #51df99;
+  --dealix-emerald-hover: #93efc0;
+  --dealix-emerald-soft:  rgba(5,150,105,0.15);
+  --dealix-gradient-hero: linear-gradient(135deg, #02050a 0%, #0a0f1c 50%, #06111f 100%);
+  --dealix-gradient-gold: linear-gradient(135deg, #d4a843 0%, #f5dfa3 50%, #d4a843 100%);
+  --dealix-gradient-emerald: linear-gradient(135deg, #059669 0%, #51df99 100%);
+}
+
+/* ── Gradient text helpers ── */
+.text-gradient-brand {
+  background: linear-gradient(135deg, var(--dealix-navy-500) 0%, var(--dealix-gold-500) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.text-gradient-gold {
+  background: var(--dealix-gradient-gold);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.text-gradient-emerald {
+  background: var(--dealix-gradient-emerald);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ── Background patterns ── */
+.bg-dot-pattern {
+  background-image: radial-gradient(circle, rgba(212,168,67,0.15) 1px, transparent 1px);
+  background-size: 16px 16px;
+}
+
+.bg-grid-pattern {
+  background-image:
+    linear-gradient(var(--dealix-border) 1px, transparent 1px),
+    linear-gradient(90deg, var(--dealix-border) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+.bg-grid-navy {
+  background-image:
+    linear-gradient(rgba(12,39,66,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(12,39,66,0.03) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+.dark .bg-grid-navy {
+  background-image:
+    linear-gradient(rgba(212,168,67,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(212,168,67,0.04) 1px, transparent 1px);
+}
+
+/* ── Card glow variants ── */
+.card-glow-gold {
+  box-shadow: 0 0 20px rgba(212,168,67,0.08), 0 1px 3px rgba(0,0,0,0.2);
+}
+
+.card-glow-emerald {
+  box-shadow: 0 0 20px rgba(5,150,105,0.08), 0 1px 3px rgba(0,0,0,0.2);
+}
+
+.card-hover {
+  transition: transform var(--dealix-transition-base), box-shadow var(--dealix-transition-base);
+}
+
+.card-hover:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--dealix-shadow-lg);
+}
+
+/* ── RTL-aware helpers ── */
+[dir="rtl"] .rtl-flip {
+  transform: scaleX(-1);
+}
+
+[dir="rtl"] .rtl-ms-auto {
+  margin-inline-start: auto;
+}
+
+[dir="rtl"] .rtl-me-auto {
+  margin-inline-end: auto;
+}
+
+[dir="rtl"] .rtl-text-start {
+  text-align: right;
+}
+
+[dir="ltr"] .rtl-text-start {
+  text-align: left;
+}
+
+/* ── Focus visible (accessibility) ── */
+:focus-visible {
+  outline: 2px solid var(--dealix-gold-500);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--dealix-bg-muted);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--dealix-slate-300);
+  border-radius: var(--dealix-radius-full);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--dealix-slate-400);
+}
+
+/* ── Print ── */
+@media print {
+  .dealix-hero,
+  .dealix-section {
+    background: var(--dealix-white) !important;
+    color: var(--dealix-black) !important;
+  }
+  .no-print { display: none !important; }
+}

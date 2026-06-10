@@ -1,0 +1,28 @@
+version: 1
+program: global_ai_transformation
+notes_ar: >-
+  أول توظيف مستهدف — حدّث ownership_matrix عند التعيين الفعلي.
+  لا تُدخل أسماء وهمية في human_assignee_name.
+
+first_hire_priority:
+  circle: delivery
+  role_title_en: Delivery / Customer success lead
+  owns_os_keys: [delivery, value]
+  status: open
+  target_start_iso: ""
+  hiring_manager: founder
+
+slots:
+  - id: hire_delivery_lead
+    circle: delivery
+    status: open
+    replaces_interim: Sami Alsubaiei (founder)
+    os_keys: [delivery]
+  - id: hire_platform_eng
+    circle: product_platform
+    status: backlog
+    os_keys: [platform]
+  - id: hire_governance_lead
+    circle: trust
+    status: backlog
+    os_keys: [trust, control_plane]

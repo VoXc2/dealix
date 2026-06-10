@@ -1,0 +1,28 @@
+# Weekly commercial pool expansion (idempotent, draft-only — no external send)
+name: Commercial expand weekly
+
+on:
+  schedule:
+    - cron: "0 6 * * 0"
+  workflow_dispatch:
+
+jobs:
+  expand:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Expand targeting + social + motions
+        run: |
+          python scripts/expand_commercial_ops_all.py --wave3 --enrich-warm --skip-import
+          python scripts/founder_all_motions_pipeline.py --top-n 5
+      - name: Upload expansion artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: founder-expansion-briefs
+          path: |
+            data/founder_briefs/value_plan_*.json
+            data/founder_briefs/motions_all_*.json
+          if-no-files-found: ignore

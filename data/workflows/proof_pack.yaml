@@ -1,0 +1,59 @@
+# Wave 12.5 §33.2.3 — Proof Pack workflow (multi-event narrative)
+name: proof_pack
+duration_days: 2
+description_ar: "تجميع Proof Pack من أحداث الإثبات — مع publish gate صارم (Article 8)"
+description_en: "Assemble Proof Pack from proof events — strict publish gate (Article 8)"
+proof_target: "proof_pack_assembled_and_approved"
+final_deliverable: "Bilingual Proof Pack: executive summary + actions + evidence + risks + next recommendation"
+
+steps:
+  - step_id: pp_select_events
+    day: 1
+    title_ar: "اختيار أحداث الإثبات الصالحة (L3+)"
+    title_en: "Select qualifying proof events (L3+)"
+    owner: founder
+    daily_artifact_required: true
+    artifact_kind: "selected_proof_events_list"
+    risk_level: low
+    next_action_kind: build_summary
+
+  - step_id: pp_auto_summary
+    day: 1
+    title_ar: "تشغيل auto-summary لكل حدث"
+    title_en: "Run auto_summary per event"
+    owner: system_auto
+    daily_artifact_required: true
+    artifact_kind: "proof_summaries_bilingual"
+    risk_level: low
+    next_action_kind: assemble_pack
+
+  - step_id: pp_assemble
+    day: 2
+    title_ar: "تجميع Proof Pack — تنفيذي + أحداث + مخاطر + تالي"
+    title_en: "Assemble Proof Pack — executive + events + risks + next"
+    owner: founder
+    daily_artifact_required: true
+    artifact_kind: "proof_pack_md_or_pdf"
+    risk_level: medium
+    next_action_kind: customer_review
+
+  - step_id: pp_publish_gate
+    day: 2
+    title_ar: "تطبيق publish gate (L4 + consent + approval)"
+    title_en: "Apply publish gate (L4 + consent + approval)"
+    owner: system_auto
+    daily_artifact_required: true
+    artifact_kind: "publish_gate_decision"
+    risk_level: high
+    next_action_kind: customer_approval_then_publish_or_internal_only
+    approval_points:
+      - customer_consent_for_publication
+      - founder_final_approval
+    blockers_ar:
+      - "evidence_level أقل من L4"
+      - "consent غير ممنوح"
+      - "approval ليست approved"
+    blockers_en:
+      - "evidence_level < L4"
+      - "consent not granted"
+      - "approval not approved"

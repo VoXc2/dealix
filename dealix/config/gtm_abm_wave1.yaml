@@ -1,0 +1,92 @@
+# ABM Wave 1 — Saudi B2B (founder-led, warm only)
+# Ref: docs/commercial/operations/targeting/ABM_WAVE1_ICP_AR.md
+# Seed CSV: docs/commercial/operations/targeting/agency_accounts_seed.csv
+
+version: "1"
+wave_id: abm_wave_1
+label_ar: "الموجة الأولى — beta خاص (warm)"
+
+account_count:
+  min: 30
+  target: 50
+  max: 50
+  wave2_seed_target: 150
+  wave3_seed_target: 200
+
+priority_motion: A
+secondary_motions: [B, C]
+
+icp_config_refs:
+  agency_wedge: dealix/config/icp_agency_wedge.yaml
+  primary: dealix/config/icp_primary.yaml
+
+inclusion_criteria:
+  - warm_intro_or_inbound_or_partner_intro
+  - segment_in: [agency_wedge, direct_b2b, crm_partner, agency_partner]
+  - pain_matches_motion_a_signals: true
+  - accepts_human_approval_on_outreach: true
+  - next_action_and_date_set: true
+
+exclusion_criteria:
+  - cold_scraped_list
+  - requests_cold_whatsapp_or_linkedin_auto
+  - budget_under_5k_sar_without_partner_referral
+  - no_company_name_or_student_probe
+
+scoring_weights:
+  warm_relationship: 40
+  pain_fit_agency_wedge: 30
+  buying_signal_recent: 20
+  channel_allowed: 10
+
+wave_roles:
+  wave_1_strategic:
+    count: "30-50"
+    purpose_ar: "إثبات اجتماعات discovery + تعلّم رسالة قبل إعلان مدفوع"
+    offer_priority: [ten_lead_audit, agency_proof_pack, governed_diagnostic]
+  wave_2_launch:
+    count: "100-150"
+    purpose_ar: "بعد 3+ discovery ورسالة مكررة — توسعة prospects عالية النية"
+    gate_ar: "لا تفتح حتى wave_1 يحقق founder_loop_weekly_review"
+    seed_script: "py -3 scripts/expand_agency_targets_seed.py --wave2"
+    expand_all_script: "py -3 scripts/expand_commercial_ops_all.py --wave2"
+  wave_3_broad:
+    count: "500+"
+    purpose_ar: "محتوى AEO + inbound — ليس بث بارد"
+    gate_ar: "بعد أول proof_pack_delivered مدفوع"
+    seed_script: "py -3 scripts/expand_agency_targets_seed.py --wave3"
+    expand_all_script: "py -3 scripts/expand_commercial_ops_all.py --wave3 --enrich-warm"
+    prep_rows: 200
+  wave_4_aeo_prep:
+    count: "250+"
+    purpose_ar: "محتوى 28 أسبوع + inbound — بعد Proof مدفوع"
+    gate_ar: "بعد proof_pack_delivered لعميل حقيقي"
+    seed_script: "py -3 scripts/expand_agency_targets_seed.py --wave4"
+    expand_all_script: "py -3 scripts/expand_commercial_ops_all.py --wave4 --enrich-warm --cycle-weeks 28"
+
+channels_allowed:
+  - linkedin_manual
+  - email_warm
+  - partner_intro
+  - inbound
+  - phone_task
+
+channels_forbidden:
+  - cold_whatsapp
+  - linkedin_auto_send
+  - scraping
+
+daily_quota_per_founder:
+  approved_touches: 15
+  follow_ups: 8
+  evidence_events_min: 1
+  meeting_packs_prepared: 10
+
+csv_import:
+  path: docs/commercial/operations/targeting/agency_accounts_seed.csv
+  dry_run_script: scripts/import_war_room_targets.py
+  expand_script: scripts/expand_agency_targets_seed.py
+  expand_wave2_flag: --wave2
+  expand_wave3_flag: --wave3
+  stack_script: scripts/expand_commercial_stack.py
+  filter_column_priority: [high, medium]

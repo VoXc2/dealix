@@ -1,0 +1,212 @@
+"""Arabic Personal Strategic Operator endpoints."""
+
+from __future__ import annotations
+
+from typing import Any
+
+from fastapi import APIRouter, Body, HTTPException
+
+from auto_client_acquisition.personal_operator import (
+    ApprovalDecision,
+    build_daily_brief,
+    default_sami_profile,
+    draft_follow_up,
+    draft_intro_message,
+    suggest_opportunities,
+)
+from auto_client_acquisition.personal_operator.launch_report import build_launch_report
+from auto_client_acquisition.personal_operator.operator import (
+    apply_decision,
+    launch_readiness_score,
+)
+from auto_client_acquisition.v3.project_intelligence import (
+    answer_operator_question,
+    explain_project_intelligence_stack,
+)
+
+router = APIRouter(prefix="/api/v1/personal-operator", tags=["personal-operator"])
+
+
+def _opportunity_by_id(opportunity_id: str):
+    for opportunity in suggest_opportunities(default_sami_profile()):
+        if opportunity.id == opportunity_id:
+            return opportunity
+    opportunities = suggest_opportunities(default_sami_profile())
+    return opportunities[0] if opportunities else None
+
+
+def _parse_decision(raw: Any) -> ApprovalDecision:
+    try:
+        return ApprovalDecision(str(raw).lower().strip())
+    except ValueError:
+        raise HTTPException(status_code=400, detail="invalid_decision") from None
+
+
+@router.get("/daily-brief")
+async def daily_brief() -> dict[str, Any]:
+    """Arabic executive daily brief for Sami."""
+    return build_daily_brief(default_sami_profile()).to_dict()
+
+
+@router.get("/daily-brief/llm")
+async def daily_brief_llm() -> dict[str, Any]:
+    """LLM-narrated daily brief — Track C2 of 30-day plan.
+
+    Layers an LLM-summarized founder-tone narrative on top of the
+    deterministic daily brief. Falls back gracefully when LLM is
+    unavailable (returns data_status="fallback" + canned text).
+
+    Hard gates: no inventing leads/customers/revenue. Reads only from
+    existing proof_ledger + approval_center + support_inbox.
+    """
+    from auto_client_acquisition.personal_operator.llm_brief import (
+        fetch_inbound_count,
+        fetch_pending_approvals,
+        fetch_recent_proof_events,
+        generate_llm_brief,
+    )
+
+    proof_events = await fetch_recent_proof_events(window_hours=24)
+    pending_approvals = await fetch_pending_approvals()
+    inbound_count = await fetch_inbound_count()
+
+    deterministic = build_daily_brief(default_sami_profile()).to_dict()
+    llm = await generate_llm_brief(
+        proof_events=proof_events,
+        pending_approvals=pending_approvals,
+        inbound_count=inbound_count,
+    )
+
+    from core.logging import get_logger
+
+    get_logger(__name__).info(
+        "personal_operator_llm_brief",
+        data_status=llm.data_status,
+        duration_ms=llm.duration_ms,
+        model_used=llm.model_used,
+        proof_events_count=len(proof_events),
+        pending_approvals_count=len(pending_approvals),
+    )
+
+    return {
+        "deterministic": deterministic,
+        "llm": llm.to_dict(),
+        "inputs": {
+            "proof_events_count": len(proof_events),
+            "pending_approvals_count": len(pending_approvals),
+            "inbound_count": inbound_count,
+        },
+        "hard_gates": {
+            "no_fake_revenue": True,
+            "no_fake_proof": True,
+            "no_invented_leads": True,
+            "max_input_tokens": 600,
+            "max_output_tokens": 300,
+        },
+    }
+
+
+@router.get("/opportunities")
+async def opportunities() -> dict[str, Any]:
+    items = suggest_opportunities(default_sami_profile())
+    return {"count": len(items), "items": [item.to_card() for item in items]}
+
+
+@router.post("/opportunities")
+async def create_contextual_opportunities(body: dict[str, Any] = Body(default_factory=dict)) -> dict[str, Any]:
+    """Return operator opportunities with optional context."""
+    items = suggest_opportunities(default_sami_profile())
+    return {
+        "context_received": body,
+        "count": len(items),
+        "items": [item.to_card() for item in items],
+    }
+
+
+@router.post("/opportunities/{opportunity_id}/decision")
+async def decide_opportunity(opportunity_id: str, body: dict[str, Any] = Body(...)) -> dict[str, Any]:
+    opportunity = _opportunity_by_id(opportunity_id)
+    if not opportunity:
+        raise HTTPException(status_code=404, detail="opportunity_not_found")
+    decision = _parse_decision(body.get("decision", "draft"))
+    result = apply_decision(opportunity, decision)
+    approval_required = bool(result.get("approval_required", decision != ApprovalDecision.SKIP))
+    next_action = str(result.get("next_action", "none"))
+    return {
+        "opportunity": opportunity.to_card(),
+        "decision": decision.value,
+        "result": result,
+        "approval_required": approval_required,
+        "next_action": next_action,
+    }
+
+
+@router.post("/messages/draft")
+async def draft_message(body: dict[str, Any] = Body(default_factory=dict)) -> dict[str, Any]:
+    opportunities = suggest_opportunities(default_sami_profile())
+    selected = opportunities[0]
+    if body.get("opportunity_id"):
+        selected = _opportunity_by_id(str(body["opportunity_id"])) or selected
+    tone = str(body.get("tone", "warm"))
+    return draft_intro_message(selected, tone=tone)
+
+
+@router.post("/followups/draft")
+async def followup(body: dict[str, Any] = Body(...)) -> dict[str, Any]:
+    return draft_follow_up(
+        meeting_title=str(body.get("meeting_title", "اجتماع Dealix")),
+        outcome=str(body.get("outcome", "اتفقنا على مراجعة الفكرة وإرسال ملخص")),
+        next_step=str(body.get("next_step", "إرسال ملخص تنفيذي وتجربة قصيرة")),
+    )
+
+
+@router.get("/project/intelligence")
+async def project_intelligence() -> dict[str, Any]:
+    return explain_project_intelligence_stack()
+
+
+@router.post("/project/ask")
+async def ask_project(body: dict[str, Any] = Body(...)) -> dict[str, Any]:
+    question = str(body.get("question", "وش ناقص المشروع؟"))
+    deep = bool(body.get("deep_scan", True))
+    root = str(body.get("root", "."))
+    answered = answer_operator_question(question, root=root, deep_scan=deep)
+    readiness = launch_readiness_score()
+    return {
+        "question": question,
+        "answer_ar": answered["answer_ar"],
+        "semantic_status_ar": answered["semantic_status_ar"],
+        "related_files": answered["related_files"],
+        "search_hits": answered.get("search_hits", []),
+        "citations": answered.get("citations", []),
+        "scan_meta": answered.get("scan_meta", {}),
+        "launch_readiness": readiness,
+    }
+
+
+@router.get("/launch-readiness")
+async def launch_readiness() -> dict[str, Any]:
+    return launch_readiness_score()
+
+
+@router.get("/launch-report")
+async def launch_report() -> dict[str, Any]:
+    return build_launch_report().to_dict()
+
+
+@router.post("/meetings/schedule-draft")
+async def schedule_draft(body: dict[str, Any] = Body(default_factory=dict)) -> dict[str, Any]:
+    return {
+        "status": "calendar_draft_ready",
+        "approval_required": True,
+        "title": body.get("title", "Dealix Strategic Intro"),
+        "duration": int(body.get("duration_minutes", 30)),
+        "duration_minutes": int(body.get("duration_minutes", 30)),
+        "agenda_ar": [
+            "تعريف سريع بـ Dealix",
+            "أخذ رأي الشخص في التموضع والسوق",
+            "تحديد فرصة تعاون أو intro قادمة",
+        ],
+        "note_ar": "هذا المسار يجهز payload الاجتماع فقط. إنشاء حدث في Google Calendar يتطلب موافقة صريحة وطبقة تكامل.",
+        "note": "This endpoint prepares the meeting payload. Actual Google Calendar creation should only happen after approval.",
+    }

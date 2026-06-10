@@ -1,0 +1,31 @@
+version: 1
+program: mission_critical_readiness
+reference_doc: docs/transformation/06_reliability_program.md
+drills:
+  - name: rollback
+    frequency: monthly
+    owner_os: reliability
+    evidence_log_template: docs/ops/ROLLBACK_RUNBOOK.md
+    scoring_weight: 1.0
+  - name: kill_switch
+    frequency: monthly
+    owner_os: runtime_safety
+    evidence_log_template: docs/ops/INCIDENT_RUNBOOK.md
+    scoring_weight: 1.0
+  - name: approval_center
+    frequency: monthly
+    owner_os: trust
+    evidence_log_template: readiness/enterprise_control_plane_scorecard.md
+    scoring_weight: 1.0
+  - name: tenant_isolation_regression
+    frequency: weekly_ci
+    owner_os: platform
+    evidence_log_template: tests/test_tenant_isolation_systems_26_35.py
+    scoring_weight: 1.0
+slo_review:
+  cadence: weekly
+  owner_os: observability
+  minimum_topics:
+    - error_budget
+    - incident_trends
+    - open_slo_breaches

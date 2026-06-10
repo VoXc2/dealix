@@ -1,0 +1,53 @@
+# Support intent taxonomy (reference for classifier + KB routing).
+intents:
+  service_overview:
+    risk: low
+    kb_required: true
+  pricing_range:
+    risk: low
+    kb_required: true
+  diagnostic_process:
+    risk: low
+    kb_required: true
+  delivery_timeline:
+    risk: low
+    kb_required: true
+  proof_pack_explained:
+    risk: low
+    kb_required: true
+  booking_help:
+    risk: low
+    kb_required: true
+  invoice_status:
+    risk: low
+    kb_required: true
+    note: "Link to internal billing state when available"
+  general_faq:
+    risk: low
+    kb_required: true
+
+  security_compliance:
+    risk: critical
+    escalate: true
+  refund:
+    risk: high
+    escalate: true
+  discount:
+    risk: high
+    escalate: true
+  custom_scope:
+    risk: high
+    escalate: true
+  client_specific_diagnosis:
+    risk: high
+    escalate: true
+  complaint:
+    risk: high
+    escalate: true
+  case_study_permission:
+    risk: high
+    escalate: true
+  data_deletion_export:
+    risk: high
+    escalate: true
+    note: "PDPL / DSR — human review"

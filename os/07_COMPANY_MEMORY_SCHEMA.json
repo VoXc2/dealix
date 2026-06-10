@@ -1,0 +1,268 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Dealix Company Memory Schema",
+  "description": "الـ schema الكامل لتخزين معلومات كل شركة مرشحة في ذاكرة Dealix",
+  "version": "1.0.0",
+  "type": "object",
+  "required": ["company_id", "company_name", "created_at", "status"],
+  "properties": {
+
+    "company_id": {
+      "type": "string",
+      "description": "معرف فريد للشركة",
+      "pattern": "^CO-[0-9]{6}$",
+      "example": "CO-000001"
+    },
+
+    "company_name": {
+      "type": "string",
+      "description": "الاسم الرسمي للشركة"
+    },
+
+    "company_name_ar": {
+      "type": "string",
+      "description": "اسم الشركة بالعربي إن وجد"
+    },
+
+    "website": {
+      "type": "string",
+      "format": "uri",
+      "description": "الموقع الإلكتروني"
+    },
+
+    "linkedin_url": {
+      "type": "string",
+      "format": "uri",
+      "description": "صفحة الشركة على LinkedIn"
+    },
+
+    "country": {
+      "type": "string",
+      "enum": ["Saudi Arabia", "UAE", "Qatar", "Kuwait", "Bahrain", "Oman", "Other"],
+      "description": "الدولة"
+    },
+
+    "city": {
+      "type": "string",
+      "description": "المدينة الرئيسية"
+    },
+
+    "sector": {
+      "type": "string",
+      "enum": [
+        "facilities_management",
+        "contracting_pmo",
+        "industrial_manufacturing",
+        "b2b_services",
+        "large_enterprise",
+        "holding",
+        "government_adjacent",
+        "real_estate",
+        "healthcare",
+        "logistics",
+        "other"
+      ],
+      "description": "القطاع"
+    },
+
+    "sub_sector": {
+      "type": "string",
+      "description": "القطاع الفرعي بتفصيل أكثر"
+    },
+
+    "employee_count_estimate": {
+      "type": "string",
+      "enum": ["<20", "20-50", "50-200", "200-500", "500-1000", "1000+", "unknown"],
+      "description": "تقدير عدد الموظفين"
+    },
+
+    "what_they_do": {
+      "type": "string",
+      "description": "ماذا تفعل الشركة — 2-3 جمل"
+    },
+
+    "operations_complexity": {
+      "type": "string",
+      "enum": ["low", "medium", "high"],
+      "description": "تعقيد العمليات التشغيلية"
+    },
+
+    "likely_departments": {
+      "type": "array",
+      "items": {"type": "string"},
+      "description": "الأقسام المحتملة ذات الصلة",
+      "example": ["Operations", "Maintenance", "Customer Service", "Quality"]
+    },
+
+    "likely_pain_points": {
+      "type": "array",
+      "items": {"type": "string"},
+      "description": "نقاط الألم المحتملة المستنتجة من القطاع والبيانات العامة"
+    },
+
+    "public_signals": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "signal": {"type": "string"},
+          "source": {"type": "string"},
+          "date": {"type": "string", "format": "date"},
+          "relevance": {"type": "string", "enum": ["high", "medium", "low"]}
+        }
+      },
+      "description": "الإشارات العامة المرصودة (أخبار، توظيف، توسع...)"
+    },
+
+    "best_buyer_title": {
+      "type": "string",
+      "description": "المسمى الوظيفي لصاحب القرار الأنسب",
+      "example": "Operations Director"
+    },
+
+    "known_contacts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {"type": "string"},
+          "title": {"type": "string"},
+          "linkedin": {"type": "string"},
+          "email": {"type": "string"},
+          "phone": {"type": "string"},
+          "is_decision_maker": {"type": "boolean"},
+          "notes": {"type": "string"}
+        }
+      },
+      "description": "جهات التواصل المعروفة"
+    },
+
+    "recommended_offer": {
+      "type": "string",
+      "description": "العرض المقترح من كتالوج Dealix"
+    },
+
+    "alternative_offer": {
+      "type": "string",
+      "description": "عرض بديل إذا لم يناسب الأول"
+    },
+
+    "why_this_offer_fits": {
+      "type": "string",
+      "description": "شرح سبب ملاءمة العرض لهذه الشركة — 3-5 جمل"
+    },
+
+    "custom_email_angle": {
+      "type": "string",
+      "description": "الزاوية المخصصة لكتابة رسالة هذه الشركة — جملة واحدة"
+    },
+
+    "fit_score": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 100,
+      "description": "نتيجة التقييم من نظام scoring"
+    },
+
+    "score_breakdown": {
+      "type": "object",
+      "description": "تفاصيل درجة كل بُعد من أبعاد الـ scoring",
+      "properties": {
+        "operations_complexity": {"type": "integer"},
+        "reporting_burden": {"type": "integer"},
+        "maintenance_or_field_ops": {"type": "integer"},
+        "multi_branch_or_scale": {"type": "integer"},
+        "operations_data_roles": {"type": "integer"},
+        "growth_expansion_signals": {"type": "integer"},
+        "reachable_decision_maker": {"type": "integer"},
+        "founder_background_fit": {"type": "integer"}
+      }
+    },
+
+    "tier": {
+      "type": "string",
+      "enum": ["high", "medium", "nurture", "disqualified"],
+      "description": "تصنيف الشركة بناءً على الـ score"
+    },
+
+    "status": {
+      "type": "string",
+      "enum": [
+        "researched",
+        "draft_ready",
+        "email_sent",
+        "replied",
+        "call_booked",
+        "proposal_sent",
+        "negotiating",
+        "won",
+        "lost",
+        "nurture",
+        "suppressed"
+      ],
+      "description": "الحالة الحالية في pipeline المبيعات"
+    },
+
+    "outreach_history": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "date": {"type": "string", "format": "date"},
+          "type": {"type": "string", "enum": ["email", "linkedin", "phone", "meeting"]},
+          "subject": {"type": "string"},
+          "sent_to": {"type": "string"},
+          "approved_by": {"type": "string"},
+          "response_received": {"type": "boolean"},
+          "response_classification": {"type": "string"},
+          "notes": {"type": "string"}
+        }
+      },
+      "description": "تاريخ كل تواصل مع الشركة"
+    },
+
+    "next_action": {
+      "type": "string",
+      "description": "الإجراء التالي الموصى به"
+    },
+
+    "next_action_date": {
+      "type": "string",
+      "format": "date",
+      "description": "تاريخ تنفيذ الإجراء التالي"
+    },
+
+    "disqualification_reason": {
+      "type": "string",
+      "description": "سبب الإقصاء إن وجد"
+    },
+
+    "notes": {
+      "type": "string",
+      "description": "ملاحظات حرة"
+    },
+
+    "data_sources": {
+      "type": "array",
+      "items": {"type": "string"},
+      "description": "مصادر المعلومات المستخدمة في البحث"
+    },
+
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "تاريخ إنشاء السجل"
+    },
+
+    "updated_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "آخر تحديث"
+    },
+
+    "researched_by": {
+      "type": "string",
+      "description": "من قام بالبحث (agent name أو founder)"
+    }
+  }
+}

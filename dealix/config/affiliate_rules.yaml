@@ -1,0 +1,34 @@
+# Affiliate program rules (reference). Legal review required for public terms.
+tiers:
+  - applicant
+  - approved_affiliate
+  - qualified_referral_partner
+  - strategic_partner
+  - implementation_partner
+
+commission_reference_percent:
+  paid_diagnostic_from_affiliate_lead: 5
+  warm_intro_to_decision_maker_paid_deal: 10
+  strategic_partner_deal_range: [15, 20]
+  custom_implementation_or_revshare: "per_agreement"
+
+no_commission_when:
+  - traffic_only
+  - unqualified_lead
+  - duplicate_lead
+  - no_explicit_consent
+  - outside_icp
+  - no_pain_or_budget
+  - refund_within_clawback_window
+
+payout:
+  only_after_event: invoice_paid
+  requires_approval: true
+
+messaging:
+  disclosure_required: true
+  no_spam: true
+  no_cold_whatsapp_brand_name: true
+  no_misleading_claims: true
+  no_roi_guarantee: true
+  no_compliance_guarantee: true

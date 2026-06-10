@@ -1,0 +1,10 @@
+FROM python:3.12-slim
+WORKDIR /app
+ENV PYTHONUNBUFFERED=1
+ENV PYTHONUTF8=1
+ENV AUTO_SEND_ENABLED=false
+ENV EXTERNAL_OUTREACH_ENABLED=false
+ENV AGENT_APPROVAL_MODE=required
+COPY . .
+RUN pip install --no-cache-dir --upgrade pip && pip install --no-cache-dir -e . || true
+CMD ["sh", "-c", "while true; do python scripts/dealix_company_brain_daily.py; python scripts/dealix_content_factory_daily.py; python scripts/dealix_growth_scorecard.py; sleep ${COMPANY_BRAIN_INTERVAL_SECONDS:-900}; done"]

@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dealix.sa/schemas/enterprise_risk.schema.json",
+  "title": "Enterprise Risk",
+  "type": "object",
+  "required": ["risk_id", "title", "category", "likelihood", "impact", "owner", "mitigation"],
+  "properties": {
+    "risk_id": { "type": "string" },
+    "title": { "type": "string" },
+    "description": { "type": "string" },
+    "category": { "enum": ["security", "privacy", "operational", "commercial", "reputational", "ai", "legal"] },
+    "likelihood": { "type": "integer", "minimum": 1, "maximum": 5 },
+    "impact": { "type": "integer", "minimum": 1, "maximum": 5 },
+    "tier": { "enum": ["low", "medium", "high", "critical"] },
+    "treatment": { "enum": ["avoid", "mitigate", "transfer", "accept"] },
+    "owner": { "type": "string" },
+    "mitigation": { "type": "string" },
+    "residual_likelihood": { "type": "integer", "minimum": 1, "maximum": 5 },
+    "residual_impact": { "type": "integer", "minimum": 1, "maximum": 5 },
+    "review_due": { "type": "string", "format": "date" }
+  }
+}

@@ -1,0 +1,32 @@
+# Allowed stage transitions (state machine reference). Implementation validates edges.
+stages:
+  - new_lead
+  - qualified_A
+  - qualified_B
+  - nurture
+  - partner_candidate
+  - meeting_booked
+  - meeting_done
+  - scope_requested
+  - scope_sent
+  - invoice_sent
+  - invoice_paid
+  - delivery_started
+  - proof_pack_sent
+  - sprint_candidate
+  - retainer_candidate
+  - closed_lost
+
+# Example edges (expand in code + tests)
+allowed_transitions:
+  new_lead: [qualified_A, qualified_B, nurture, partner_candidate, closed_lost]
+  qualified_A: [meeting_booked, nurture, closed_lost]
+  qualified_B: [meeting_booked, nurture, closed_lost]
+  meeting_booked: [meeting_done, closed_lost]
+  meeting_done: [scope_requested, nurture, closed_lost]
+  scope_requested: [scope_sent, closed_lost]
+  scope_sent: [invoice_sent, closed_lost]
+  invoice_sent: [invoice_paid, closed_lost]
+  invoice_paid: [delivery_started]
+  delivery_started: [proof_pack_sent, closed_lost]
+  proof_pack_sent: [sprint_candidate, retainer_candidate, closed_lost]

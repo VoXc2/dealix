@@ -1,0 +1,57 @@
+# Dealix Founder-OS Worker — long-running service for Railway
+# Shares the same base image as the API but runs the worker loop.
+
+FROM python:3.12-slim-bookworm AS builder
+
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PIP_NO_CACHE_DIR=1 \
+    PIP_DISABLE_PIP_VERSION_CHECK=1
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        build-essential \
+        curl \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /build
+
+RUN python -m venv /opt/venv
+ENV PATH="/opt/venv/bin:$PATH"
+
+COPY pyproject.toml ./
+COPY requirements.txt* ./
+
+RUN pip install --upgrade pip setuptools wheel \
+    && pip install --no-cache-dir --prefer-binary -r requirements.txt \
+    && find /opt/venv -type d -name __pycache__ -exec rm -rf {} + 2>/dev/null || true \
+    && find /opt/venv -type d -name tests -exec rm -rf {} + 2>/dev/null || true \
+    && find /opt/venv -type f -name "*.pyc" -delete 2>/dev/null || true
+
+FROM python:3.12-slim-bookworm AS runtime
+
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PATH="/opt/venv/bin:$PATH" \
+    APP_ENV=production \
+    AUTO_SEND_ENABLED=false \
+    EXTERNAL_OUTREACH_ENABLED=false \
+    AGENT_APPROVAL_MODE=required \
+    FOUNDER_OS_INTERVAL_SECONDS=900
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        curl \
+        tini \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN groupadd --gid 1000 app \
+    && useradd --uid 1000 --gid app --shell /bin/bash --create-home app
+
+COPY --from=builder /opt/venv /opt/venv
+
+WORKDIR /app
+COPY --chown=app:app . .
+
+USER app
+
+ENTRYPOINT ["/usr/bin/tini", "--"]
+CMD ["python", "scripts/founder_os_worker.py"]

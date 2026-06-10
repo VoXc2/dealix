@@ -1,0 +1,21 @@
+# Eval: Lead Intelligence
+
+# Human-run or semi-automated checklist; YAML for structure only.
+
+eval_id: lead_intelligence
+version: 1
+reference_simulation: simulations/lead_intelligence/
+
+checks:
+  - id: scoring_sanity
+    question: Are top accounts justified by documented signals (not vibes)?
+    pass: Each top account has at least one grounded reason tied to columns or notes
+  - id: executability
+    question: Are next actions concrete enough for a rep to act tomorrow?
+    pass: Who / what channel / what offer angle specified
+  - id: missing_fields
+    question: Are missing sources or PII issues flagged explicitly?
+    pass: Known bad rows called out; no fabricated attribution
+  - id: governance
+    question: Any forbidden channel or guarantee language?
+    pass: None found; drafts labeled as drafts pending approval

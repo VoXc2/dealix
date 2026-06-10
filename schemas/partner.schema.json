@@ -1,0 +1,268 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://dealix.sa/schemas/partner.schema.json",
+  "title": "Partner Schema",
+  "description": "Schema for Dealix partner records",
+  "type": "object",
+  "required": [
+    "id",
+    "company_name",
+    "segment",
+    "status",
+    "created_at"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Unique partner identifier",
+      "pattern": "^PTN-[0-9]{6}$"
+    },
+    "company_name": {
+      "type": "string",
+      "description": "Legal company name",
+      "minLength": 2,
+      "maxLength": 200
+    },
+    "trade_name": {
+      "type": "string",
+      "description": "Trading/commercial name if different from legal name"
+    },
+    "segment": {
+      "type": "string",
+      "enum": [
+        "marketing_agency",
+        "crm_implementer",
+        "business_consultant",
+        "accounting_firm",
+        "training_provider",
+        "software_reseller",
+        "web_agency",
+        "automation_consultant",
+        "sales_trainer",
+        "industry_association",
+        "other"
+      ],
+      "description": "Partner segment category"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "identified",
+        "researched",
+        "qualified",
+        "intro_drafted",
+        "contacted",
+        "replied",
+        "partner_call",
+        "pilot_referral",
+        "active_partner",
+        "revenue_partner",
+        "paused",
+        "rejected"
+      ],
+      "description": "Current stage in partner pipeline"
+    },
+    "qualification_level": {
+      "type": "integer",
+      "enum": [1, 2, 3],
+      "description": "Qualification level (1=Qualified, 2=Strategic, 3=Key)"
+    },
+    "qualification_score": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 100,
+      "description": "Total qualification score"
+    },
+    "primary_contact": {
+      "$ref": "#/definitions/contact"
+    },
+    "secondary_contacts": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/contact"
+      }
+    },
+    "company_info": {
+      "$ref": "#/definitions/company_info"
+    },
+    "partnership_model": {
+      "type": "string",
+      "enum": [
+        "referral_fee",
+        "revenue_share",
+        "white_label",
+        "joint_delivery",
+        "reseller",
+        "strategic_alliance",
+        "none"
+      ],
+      "description": "Active partnership model"
+    },
+    "commission_rate": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100,
+      "description": "Commission percentage"
+    },
+    "contract_start_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Contract start date"
+    },
+    "contract_end_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Contract end date"
+    },
+    "tier": {
+      "type": "string",
+      "enum": [
+        "bronze",
+        "silver",
+        "gold",
+        "platinum"
+      ],
+      "description": "Partner tier level"
+    },
+    "risk_level": {
+      "type": "string",
+      "enum": [
+        "low",
+        "medium",
+        "high",
+        "critical"
+      ],
+      "description": "Risk assessment level"
+    },
+    "performance_metrics": {
+      "$ref": "#/definitions/performance_metrics"
+    },
+    "assigned_partner_manager": {
+      "type": "string",
+      "description": "Partner manager user ID"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Additional notes about the partner"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Record creation timestamp"
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Last update timestamp"
+    }
+  },
+  "definitions": {
+    "contact": {
+      "type": "object",
+      "required": ["name", "email", "title"],
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string",
+          "format": "email"
+        },
+        "phone": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "linkedin_url": {
+          "type": "string",
+          "format": "uri"
+        },
+        "is_primary": {
+          "type": "boolean"
+        },
+        "is_decision_maker": {
+          "type": "boolean"
+        }
+      }
+    },
+    "company_info": {
+      "type": "object",
+      "properties": {
+        "website": {
+          "type": "string",
+          "format": "uri"
+        },
+        "linkedin_page": {
+          "type": "string",
+          "format": "uri"
+        },
+        "industry": {
+          "type": "string"
+        },
+        "employee_count": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "founded_year": {
+          "type": "integer"
+        },
+        "location": {
+          "type": "object",
+          "properties": {
+            "city": {
+              "type": "string"
+            },
+            "country": {
+              "type": "string"
+            }
+          }
+        },
+        "services": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "target_audience": {
+          "type": "string"
+        },
+        "current_partnerships": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "performance_metrics": {
+      "type": "object",
+      "properties": {
+        "total_referrals": {
+          "type": "integer"
+        },
+        "referrals_this_month": {
+          "type": "integer"
+        },
+        "closed_deals": {
+          "type": "integer"
+        },
+        "conversion_rate": {
+          "type": "number"
+        },
+        "total_revenue_generated": {
+          "type": "number"
+        },
+        "total_commissions_paid": {
+          "type": "number"
+        },
+        "active_clients": {
+          "type": "integer"
+        },
+        "churned_clients": {
+          "type": "integer"
+        }
+      }
+    }
+  }
+}

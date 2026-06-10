@@ -1,0 +1,104 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dealix.sa/schemas/agent_incident.schema.json",
+  "title": "Dealix Agent Incident",
+  "description": "An incident involving a Dealix agent. Severity P0–P3 drives response and learning loop.",
+  "type": "object",
+  "required": [
+    "incident_id",
+    "agent_id",
+    "severity",
+    "detected_at",
+    "summary",
+    "containment_action",
+    "status",
+    "post_mortem_link"
+  ],
+  "properties": {
+    "incident_id": {
+      "type": "string",
+      "pattern": "^INC-[0-9]{8}-[0-9]{4,}$",
+      "description": "Unique incident id, e.g. INC-20260603-0001"
+    },
+    "agent_id": {
+      "type": "string",
+      "pattern": "^AGENT-[A-Z]+-[0-9]{3,}$",
+      "description": "References agent_registry.agent_id"
+    },
+    "severity": {
+      "type": "string",
+      "enum": ["P0", "P1", "P2", "P3"],
+      "description": "Per AI_AGENT_INCIDENT_RESPONSE_AR.md"
+    },
+    "detected_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 detection timestamp"
+    },
+    "summary": {
+      "type": "string",
+      "minLength": 10,
+      "description": "2–3 sentence summary of the incident"
+    },
+    "containment_action": {
+      "type": "string",
+      "description": "Action taken to contain (e.g. 'kill_switch_activated', 'permission_revoked', 'paused_drift_evaluation')"
+    },
+    "containment_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When containment completed"
+    },
+    "detection_source": {
+      "type": "string",
+      "enum": ["eval_fail", "audit_anomaly", "customer_report", "security_alert", "owner_observation", "external_auditor", "other"],
+      "description": "How the incident was detected"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["open", "contained", "closed"],
+      "description": "Current status"
+    },
+    "post_mortem_link": {
+      "type": "string",
+      "description": "Path to post_mortem.md (may be empty string if status != closed)"
+    },
+    "blast_radius": {
+      "type": "object",
+      "properties": {
+        "customers_affected": { "type": "integer", "minimum": 0 },
+        "data_classes": { "type": "array", "items": { "type": "string" } },
+        "external_blast": { "type": "boolean" }
+      },
+      "additionalProperties": false
+    },
+    "root_cause": {
+      "type": "string"
+    },
+    "corrective_actions": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "learning_loop": {
+      "type": "object",
+      "properties": {
+        "registry_updated": { "type": "boolean" },
+        "eval_baseline_updated": { "type": "boolean" },
+        "policy_updated": { "type": "boolean" },
+        "test_added": { "type": "boolean" }
+      },
+      "additionalProperties": false
+    },
+    "linked_permission_id": {
+      "type": "string"
+    },
+    "linked_eval_id": {
+      "type": "string"
+    },
+    "evidence_level": {
+      "type": "string",
+      "enum": ["L0", "L1", "L2", "L3", "L4", "L5"]
+    }
+  },
+  "additionalProperties": false
+}

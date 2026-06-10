@@ -1,0 +1,128 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://dealix.sa/schemas/founder_decision.schema.json",
+  "title": "Founder Decision",
+  "description": "Decision recommendation or action from the Decision Intelligence system",
+  "type": "object",
+  "required": [
+    "decision_id",
+    "metric_trigger",
+    "trigger_value",
+    "decision_type",
+    "recommendation",
+    "evidence_level",
+    "risk_level",
+    "created_at",
+    "status"
+  ],
+  "properties": {
+    "decision_id": {
+      "type": "string",
+      "pattern": "^DEC_[0-9]{8}_[0-9]{3}$"
+    },
+    "metric_trigger": {
+      "type": "string",
+      "description": "The metric that triggered this decision"
+    },
+    "trigger_value": {
+      "type": "number",
+      "description": "Current value of the metric"
+    },
+    "threshold": {
+      "type": "number",
+      "description": "Threshold that was crossed"
+    },
+    "decision_type": {
+      "type": "string",
+      "enum": ["STOP", "SCALE", "FIX", "CONTINUE", "EXPERIMENT"]
+    },
+    "recommendation": {
+      "type": "string",
+      "description": "Specific action to take"
+    },
+    "evidence_level": {
+      "type": "string",
+      "enum": ["L0", "L1", "L2", "L3", "L4", "L5"],
+      "description": "Confidence level in the evidence"
+    },
+    "risk_level": {
+      "type": "string",
+      "enum": ["Critical", "High", "Medium", "Low"]
+    },
+    "owner": {
+      "type": "string",
+      "description": "Person responsible for implementing"
+    },
+    "approval_required": {
+      "type": "string",
+      "enum": ["Founder", "Head of GTM", "Head of Sales", "Head of CS", "None"],
+      "default": "Founder"
+    },
+    "approved_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When the decision was approved"
+    },
+    "approved_by": {
+      "type": "string",
+      "description": "Who approved the decision"
+    },
+    "rejected_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "rejected_by": {
+      "type": "string"
+    },
+    "rejection_reason": {
+      "type": "string"
+    },
+    "due_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "completed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "completed_by": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["pending_approval", "approved", "rejected", "in_progress", "completed", "cancelled"],
+      "default": "pending_approval"
+    },
+    "priority": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 5,
+      "default": 3,
+      "description": "1=highest, 5=lowest"
+    },
+    "category": {
+      "type": "string",
+      "enum": ["GTM", "Commercial", "Delivery", "Customer_Success", "Finance", "Operations", "Safety"]
+    },
+    "impact_description": {
+      "type": "string",
+      "description": "Expected business impact"
+    },
+    "success_criteria": {
+      "type": "string",
+      "description": "How to measure if decision was successful"
+    },
+    "notes": {
+      "type": "string"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "additionalProperties": false
+}

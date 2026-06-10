@@ -1,0 +1,51 @@
+# Enterprise Questionnaire Schema (JSON Schema)
+
+> يُستخدم لتخزين ردود Dealix على استبيانات تقييم المؤسسات.
+
+```json
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dealix.sa/schemas/enterprise_questionnaire.schema.json",
+  "title": "Enterprise Questionnaire Response",
+  "type": "object",
+  "required": ["questionnaire_id", "client", "submitted_at", "answers"],
+  "properties": {
+    "questionnaire_id": { "type": "string" },
+    "client": {
+      "type": "object",
+      "required": ["name", "sector"],
+      "properties": {
+        "name": { "type": "string" },
+        "sector": { "type": "string" },
+        "region": { "type": "string" }
+      }
+    },
+    "submitted_at": { "type": "string", "format": "date-time" },
+    "submitted_by": { "type": "string" },
+    "answers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["question_id", "question", "answer", "classification"],
+        "properties": {
+          "question_id": { "type": "string" },
+          "question": { "type": "string" },
+          "answer": { "type": "string" },
+          "classification": { "enum": ["D0", "D1", "D2", "D3", "D4", "D5", "D6"] },
+          "evidence_refs": { "type": "array", "items": { "type": "string" } },
+          "owner": { "type": "string" },
+          "needs_legal_review": { "type": "boolean" }
+        }
+      }
+    },
+    "status": { "enum": ["draft", "internal_review", "sent", "acknowledged"] },
+    "reviewer_notes": { "type": "string" }
+  }
+}
+```
+
+**مثال صف واحد في `data/enterprise/questionnaires.jsonl`:**
+
+```jsonl
+{"questionnaire_id":"q-2026-001","client":{"name":"Acme SA","sector":"healthcare","region":"Riyadh"},"submitted_at":"2026-06-03T03:00:00Z","submitted_by":"founder","answers":[{"question_id":"Q01","question":"أين تُخزّن البيانات؟","answer":"في مزود استضافة سحابي (Railway) — يُحدّد region في DPA","classification":"D1","evidence_refs":["docs/enterprise/SECURITY_OVERVIEW_AR.md"],"owner":"founder","needs_legal_review":false}],"status":"internal_review","reviewer_notes":""}
+```

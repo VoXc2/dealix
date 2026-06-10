@@ -1,0 +1,27 @@
+version: "1.0"
+tasks:
+  - id: pm_morning
+    agent: dealix-pm
+    cadence: daily
+    priority: P0
+    title_ar: "تنسيق صباحي"
+  - id: sales_touches
+    agent: dealix-sales
+    cadence: daily
+    priority: P0
+  - id: engineer_gates
+    agent: dealix-engineer
+    cadence: daily
+    priority: P0
+  - id: delivery_proof
+    agent: dealix-delivery
+    cadence: daily
+    priority: P1
+  - id: content_draft
+    agent: dealix-content
+    cadence: daily
+    priority: P1
+  - id: compliance_pdpl
+    agent: dealix-compliance
+    cadence: daily
+    priority: P0

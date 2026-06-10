@@ -1,0 +1,32 @@
+# Agent permissions — default is conservative; expand only with tests + policy.
+defaults:
+  external_send: blocked
+  external_dm: draft_only
+  invoice_charge: blocked
+  scrape_web: blocked
+  linkedin_automation: blocked
+  cold_whatsapp: blocked
+
+agents:
+  MarketSignalAgent:
+    max_automation: draft_only
+    requires_approval_for: [outreach_send]
+  LeadCaptureAgent:
+    max_automation: allowed_internal_only
+  ICPScoringAgent:
+    max_automation: allowed_internal_only
+  OutreachDraftAgent:
+    max_automation: draft_only
+  ReplyClassifierAgent:
+    max_automation: allowed_internal_only
+  MeetingBriefAgent:
+    max_automation: draft_only
+  ScopeBuilderAgent:
+    max_automation: draft_only
+  BillingDraftAgent:
+    max_automation: draft_only
+  GovernanceAgent:
+    max_automation: policy_evaluation_only
+
+tool_calls:
+  default: approval_required

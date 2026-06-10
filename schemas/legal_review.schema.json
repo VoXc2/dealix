@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dealix.sa/schemas/legal_review.schema.json",
+  "title": "Dealix Legal Review Record",
+  "description": "Operational record of a legal review (no final legal advice).",
+  "type": "object",
+  "required": ["review_id", "trigger_id", "risk_level", "decision", "decided_at", "decided_by"],
+  "properties": {
+    "review_id": { "type": "string", "pattern": "^rev_[0-9_]+$" },
+    "trigger_id": { "type": "integer", "description": "Trigger # from LEGAL_REVIEW_POLICY_AR.md." },
+    "artifact_kind": { "type": "string", "enum": ["contract", "case_study", "claim", "payment_terms", "partner_agreement", "dpa", "msa", "sow", "other"] },
+    "artifact_ref": { "type": "string", "description": "Path or identifier of the artifact under review." },
+    "claim": { "type": "string", "description": "The specific claim, term, or statement being reviewed." },
+    "evidence_refs": { "type": "array", "items": { "type": "string" }, "description": "List of evidence references." },
+    "evidence_tier": { "type": "string", "enum": ["L0", "L1", "L2", "L3", "L4", "L5"], "description": "Evidence strength (see DATA_ROOM_INDEX_AR.md)." },
+    "risk_level": { "type": "string", "enum": ["low", "medium", "high", "critical"] },
+    "requester_agent": { "type": "string", "description": "Which agent requested the review (e.g. agent_13)." },
+    "reviewer": { "type": "string", "description": "Who reviewed (founder, DPO, legal_counsel, etc.)." },
+    "decision": { "type": "string", "enum": ["PENDING", "APPROVED", "REJECTED", "MODIFIED"] },
+    "decision_notes": { "type": "string" },
+    "decided_at": { "type": "string", "format": "date-time" }
+  },
+  "additionalProperties": false
+}

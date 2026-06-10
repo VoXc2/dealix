@@ -1,0 +1,266 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://dealix.sa/schemas/experiment.schema.json",
+  "title": "Experiment",
+  "description": "A/B test or experiment definition in Dealix GTM system",
+  "type": "object",
+  "required": [
+    "experiment_id",
+    "name",
+    "hypothesis",
+    "owner",
+    "created_at",
+    "start_date",
+    "end_date",
+    "status",
+    "variants"
+  ],
+  "properties": {
+    "experiment_id": {
+      "type": "string",
+      "pattern": "^EXP_[0-9]{8}_[0-9]{3}$"
+    },
+    "name": {
+      "type": "string",
+      "minLength": 5,
+      "maxLength": 200
+    },
+    "description": {
+      "type": "string"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "subject_line",
+        "cta",
+        "sector_targeting",
+        "offer_framing",
+        "personalization",
+        "send_time",
+        "pricing",
+        "proposal_format",
+        "proof_pack",
+        "whatsapp_action_card",
+        "whatsapp_media",
+        "process"
+      ]
+    },
+    "hypothesis": {
+      "type": "string",
+      "pattern": "^We believe that.*because.*$",
+      "description": "Structured hypothesis format"
+    },
+    "owner": {
+      "type": "string"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "start_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "end_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "actual_end_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["planned", "in_review", "approved", "running", "paused", "completed", "cancelled"]
+    },
+    "segment": {
+      "type": "object",
+      "properties": {
+        "sectors": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": ["technology", "healthcare", "finance", "retail", "manufacturing", "education", "government", "real_estate", "logistics", "hospitality", "construction", "energy"]
+          }
+        },
+        "tiers": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": ["A", "B", "C"]
+          }
+        },
+        "channels": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": ["email", "whatsapp", "linkedin"]
+          }
+        }
+      }
+    },
+    "variants": {
+      "type": "array",
+      "minItems": 2,
+      "items": {
+        "type": "object",
+        "required": ["variant_id", "name", "traffic_allocation"],
+        "properties": {
+          "variant_id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "traffic_allocation": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100
+          },
+          "is_control": {
+            "type": "boolean",
+            "default": false
+          },
+          "content": {
+            "type": "object",
+            "description": "Variant-specific content"
+          }
+        }
+      }
+    },
+    "primary_metric": {
+      "type": "string",
+      "enum": [
+        "open_rate",
+        "click_rate",
+        "reply_rate",
+        "positive_rate",
+        "meeting_rate",
+        "proposal_rate",
+        "close_rate",
+        "engagement_rate",
+        "conversion_rate"
+      ]
+    },
+    "secondary_metrics": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "sample_size_target": {
+      "type": "integer",
+      "minimum": 100,
+      "description": "Required sample size per variant"
+    },
+    "actual_sample_size": {
+      "type": "integer"
+    },
+    "minimum_detectable_effect": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1,
+      "description": "Minimum relative effect to detect"
+    },
+    "statistical_significance_target": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1,
+      "default": 0.95
+    },
+    "result": {
+      "type": "object",
+      "properties": {
+        "winner_variant": {
+          "type": "string"
+        },
+        "control_value": {
+          "type": "number"
+        },
+        "treatment_value": {
+          "type": "number"
+        },
+        "lift": {
+          "type": "number",
+          "description": "Relative improvement percentage"
+        },
+        "p_value": {
+          "type": "number"
+        },
+        "confidence_level": {
+          "type": "number"
+        },
+        "is_significant": {
+          "type": "boolean"
+        },
+        "calculated_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "decision": {
+      "type": "string",
+      "enum": ["implement", "discard", "repeat", "inconclusive"]
+    },
+    "next_action": {
+      "type": "string"
+    },
+    "approvals": {
+      "type": "object",
+      "properties": {
+        "founder": {
+          "type": "object",
+          "properties": {
+            "approved": {
+              "type": "boolean"
+            },
+            "approved_by": {
+              "type": "string"
+            },
+            "approved_at": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        },
+        "compliance": {
+          "type": "object",
+          "properties": {
+            "approved": {
+              "type": "boolean"
+            },
+            "notes": {
+              "type": "string"
+            }
+          }
+        },
+        "legal": {
+          "type": "object",
+          "properties": {
+            "approved": {
+              "type": "boolean"
+            },
+            "notes": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "compliance_check_passed": {
+      "type": "boolean",
+      "default": false
+    },
+    "learnings": {
+      "type": "string"
+    },
+    "notes": {
+      "type": "string"
+    }
+  },
+  "additionalProperties": false
+}

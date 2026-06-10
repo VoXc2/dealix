@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Dealix — سجل التغييرات (Changelog)</title>
+  <meta name="description" content="سجل تغييرات Dealix العلني. كل تحديث منشور بتاريخه، نطاقه، والقيمة المضافة للعملاء." />
+  <meta name="robots" content="index,follow" />
+  <link rel="canonical" href="https://dealix.me/changelog.html" />
+  <meta property="og:title" content="Dealix Changelog" />
+  <meta property="og:description" content="سجل التغييرات المنشورة على main، مرتّب من الأحدث للأقدم. Commit hash قابل للتدقيق على GitHub." />
+  <meta property="og:type" content="website" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="theme-color" content="#0f172a" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="/assets/css/design-system.css" />
+  <style>
+    body { font-family: "IBM Plex Sans Arabic", system-ui, sans-serif; background: #f8fafc; color: #0f172a; margin: 0; line-height: 1.7; }
+    .container { max-width: 920px; margin: 0 auto; padding: 32px 20px; }
+    h1 { font-size: clamp(28px, 5vw, 40px); margin: 16px 0; }
+    .release { background: white; padding: 24px; border-radius: 14px; border: 1px solid #e2e8f0; margin: 24px 0; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
+    .release header { border-bottom: 1px solid #e2e8f0; padding-bottom: 12px; margin-bottom: 16px; }
+    .version { font-size: 24px; font-weight: 700; color: #10b981; }
+    .release-date { color: #64748b; font-size: 14px; margin-top: 4px; }
+    .change { display: flex; gap: 12px; padding: 6px 0; }
+    .change .tag { padding: 2px 10px; border-radius: 999px; font-size: 11px; font-weight: 700; flex-shrink: 0; min-width: 70px; text-align: center; }
+    .change .tag.feat { background: #dcfce7; color: #166534; }
+    .change .tag.fix { background: #fef3c7; color: #713f12; }
+    .change .tag.security { background: #fee2e2; color: #7f1d1d; }
+    .change .tag.docs { background: #dbeafe; color: #1e40af; }
+    .change .tag.ops { background: #ede9fe; color: #5b21b6; }
+    .change .text { flex: 1; }
+    .change code { background: #f1f5f9; padding: 1px 6px; border-radius: 4px; font-size: 90%; }
+    .footer { text-align: center; color: #64748b; font-size: 13px; padding: 24px 0; }
+    .footer a { color: #64748b; }
+  </style>
+</head>
+<body>
+
+<main class="container">
+  <h1>Changelog</h1>
+  <p style="color:#475569">
+    سجل التغييرات المنشورة على main. مرتّب من الأحدث للأقدم. كل تغيير له commit hash قابل للتدقيق على GitHub.
+  </p>
+
+  <div class="release">
+    <header>
+      <div class="version">v6.10 — Empire Vision + Trust Center</div>
+      <div class="release-date">2026-05-13 · Wave 9-10</div>
+    </header>
+    <div class="change"><span class="tag feat">FEAT</span><div class="text">صفحة <code>/vision.html</code> — رؤية 2026-2032 بالتفصيل (W10.1)</div></div>
+    <div class="change"><span class="tag feat">FEAT</span><div class="text">ICP fit scorer deterministic — 0-100 score across 6 signal categories (W9.11)</div></div>
+    <div class="change"><span class="tag feat">FEAT</span><div class="text">PDPL DSAR endpoints — access/rectify/port/erase (W9.9)</div></div>
+    <div class="change"><span class="tag feat">FEAT</span><div class="text">Saudi B2B prospect search — <code>GET /api/v1/prospects/search</code> (W9.8)</div></div>
+    <div class="change"><span class="tag feat">FEAT</span><div class="text">DPO public landing page <code>/dpo.html</code> (W9.5)</div></div>
+    <div class="change"><span class="tag feat">FEAT</span><div class="text">Sector reports DB persistence — model + migration 008 (W8.2)</div></div>
+    <div class="change"><span class="tag feat">FEAT</span><div class="text">Live compliance status endpoint <code>/api/v1/compliance/status</code> (W9.6)</div></div>
+    <div class="change"><span class="tag feat">FEAT</span><div class="text">R7 Enterprise PMO request endpoints + readiness scoring (W9.1)</div></div>
+    <div class="change"><span class="tag ops">OPS</span><div class="text">LaaS weekly batch runner script (W9.3)</div></div>
+    <div class="change"><span class="tag ops">OPS</span><div class="text">Founder daily scorecard generator (W9.7)</div></div>
+    <div class="change"><span class="tag docs">DOCS</span><div class="text">3-min onboarding video script (W6.5)</div></div>
+    <div class="change"><span class="tag docs">DOCS</span><div class="text">Investor one-pager — <code>docs/business/INVESTOR_ONE_PAGER.md</code></div></div>
+  </div>
+
+  <div class="release">
+    <header>
+      <div class="version">v6.8 — R5 Productization + Customer Usage</div>
+      <div class="release-date">2026-05-12 · Wave 8 (PR #229)</div>
+    </header>
+    <div class="change"><span class="tag feat">FEAT</span><div class="text">R5 Bespoke AI Service Setup — intake API + 14 tests + landing form (W8.1)</div></div>
+    <div class="change"><span class="tag feat">FEAT</span><div class="text">Customer usage dashboard endpoint (W8.3)</div></div>
+    <div class="change"><span class="tag feat">FEAT</span><div class="text"><code>landing/bespoke-ai.html</code> wired to API (W8.4)</div></div>
+    <div class="change"><span class="tag ops">OPS</span><div class="text">WhatsApp E2E pipeline mock script (W8.5)</div></div>
+  </div>
+
+  <div class="release">
+    <header>
+      <div class="version">v6.7 — Multi-product Foundation</div>
+      <div class="release-date">2026-05-12 · Wave 7 (PR #228)</div>
+    </header>
+    <div class="change"><span class="tag feat">FEAT</span><div class="text">Tenant theming end-to-end (R6 White-Label) — model + migration 007 + 2 endpoints + 10 tests (W7.5)</div></div>
+    <div class="change"><span class="tag feat">FEAT</span><div class="text">R4 Sector Intelligence API — generate + reports + sectors listing (W7.2)</div></div>
+    <div class="change"><span class="tag feat">FEAT</span><div class="text">Admin tenants CRUD endpoints (W7.3)</div></div>
+    <div class="change"><span class="tag feat">FEAT</span><div class="text"><code>scripts/create_tenant.py</code> — tenant provisioning CLI (W7.1)</div></div>
+    <div class="change"><span class="tag feat">FEAT</span><div class="text"><code>landing/sector-report-realestate-sample.html</code> — R4 demo (W6.3)</div></div>
+    <div class="change"><span class="tag ops">OPS</span><div class="text">WhatsApp webhook integration tests (W7.4)</div></div>
+    <div class="change"><span class="tag docs">DOCS</span><div class="text">README positioning sharpened (W6.1)</div></div>
+  </div>
+
+  <div class="release">
+    <header>
+      <div class="version">v6 — Hardening Sprint</div>
+      <div class="release-date">2026-05-12 · Waves 1+5+4+2+3 (PR #227)</div>
+    </header>
+    <div class="change"><span class="tag feat">FEAT</span><div class="text">Pay-per-result LaaS plans + <code>/usage</code> endpoint (W1.3)</div></div>
+    <div class="change"><span class="tag feat">FEAT</span><div class="text">Real-data Customer Health Score endpoint (W2.1)</div></div>
+    <div class="change"><span class="tag feat">FEAT</span><div class="text">Enriched <code>/health/deep</code> with DLQ + Sentry status (W5.1)</div></div>
+    <div class="change"><span class="tag ops">OPS</span><div class="text">Lead pipeline E2E smoke test (W1.2)</div></div>
+    <div class="change"><span class="tag ops">OPS</span><div class="text">One-command daily sanity gate (W1.5)</div></div>
+    <div class="change"><span class="tag ops">OPS</span><div class="text">Pipeline tracker CLI (W1.6)</div></div>
+    <div class="change"><span class="tag ops">OPS</span><div class="text">Backup verification script (W5.3)</div></div>
+    <div class="change"><span class="tag security">SECURITY</span><div class="text">Pin secure versions for known-CVE deps (urllib3, aiohttp, cryptography, python-jose) (W4.1)</div></div>
+    <div class="change"><span class="tag security">SECURITY</span><div class="text">Suppress ruff S310/S603/S607 false-positives with rationale (W4.2)</div></div>
+    <div class="change"><span class="tag docs">DOCS</span><div class="text">Production env template — 9 priority tiers (W5.2)</div></div>
+    <div class="change"><span class="tag docs">DOCS</span><div class="text">Deploy runbook — Railway → prod 7-phase (W5.4)</div></div>
+    <div class="change"><span class="tag docs">DOCS</span><div class="text">Customer onboarding day-by-day playbook (W1.7)</div></div>
+    <div class="change"><span class="tag docs">DOCS</span><div class="text">LaaS delivery + invoicing runbooks (W2.7)</div></div>
+    <div class="change"><span class="tag docs">DOCS</span><div class="text">DPO appointment kit + Enterprise MSA + Compliance inventory (W3.4, W3.9, W3.10)</div></div>
+    <div class="change"><span class="tag feat">FEAT</span><div class="text">White-label CSS theming scaffold + case study template (W3.2, W3.6, W3.8)</div></div>
+  </div>
+
+  <div class="release">
+    <header>
+      <div class="version">v5 — PR #226 Cleanup</div>
+      <div class="release-date">2026-05-12 · PR #226</div>
+    </header>
+    <div class="change"><span class="tag fix">FIX</span><div class="text">Preflight script: threshold, CORS wildcard, ADMIN_API_KEYS check, --dev flag, JSON exit code (10 fixes)</div></div>
+    <div class="change"><span class="tag fix">FIX</span><div class="text">Webhook simulator: redact secret_token from logs (CodeQL)</div></div>
+    <div class="change"><span class="tag fix">FIX</span><div class="text">Alembic 006 merge migration: explicit __all__ for static analyzers</div></div>
+    <div class="change"><span class="tag fix">FIX</span><div class="text">test_moyasar_webhook_persistence: async fixture decorator + DB skip guard</div></div>
+    <div class="change"><span class="tag fix">FIX</span><div class="text">SEO audit JSON regenerated after sub-processors.html drift</div></div>
+  </div>
+
+  <p style="text-align:center;margin:32px 0">
+    سجل أقدم؟ راجع <a href="https://github.com/VoXc2/dealix/commits/main" target="_blank">commits on GitHub</a>.
+  </p>
+
+  <footer class="footer">
+    <p>
+      <a href="/">الرئيسية</a> ·
+      <a href="/roadmap.html">Roadmap</a> ·
+      <a href="/status.html">Status</a> ·
+      <a href="/security.html">Security</a> ·
+      <a href="/api/v1/compliance/status">Compliance Live</a>
+    </p>
+  </footer>
+
+</main>
+
+</body>
+</html>

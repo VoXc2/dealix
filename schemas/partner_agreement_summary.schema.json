@@ -1,0 +1,400 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://dealix.sa/schemas/partner_agreement_summary.schema.json",
+  "title": "Partner Agreement Summary Schema",
+  "description": "Schema for partner agreement summaries and key terms",
+  "type": "object",
+  "required": [
+    "id",
+    "partner_id",
+    "agreement_type",
+    "status",
+    "effective_date"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Unique agreement summary identifier",
+      "pattern": "^AGR-[0-9]{6}$"
+    },
+    "partner_id": {
+      "type": "string",
+      "description": "Partner identifier",
+      "pattern": "^PTN-[0-9]{6}$"
+    },
+    "agreement_type": {
+      "type": "string",
+      "enum": [
+        "referral_agreement",
+        "reseller_agreement",
+        "strategic_alliance",
+        "white_label_agreement",
+        "joint_venture",
+        "non_disclosure"
+      ],
+      "description": "Type of agreement"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "under_review",
+        "pending_signature",
+        "active",
+        "expired",
+        "terminated",
+        "renewed"
+      ],
+      "description": "Agreement status"
+    },
+    "version": {
+      "type": "string",
+      "description": "Agreement version number"
+    },
+    "effective_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Agreement start date"
+    },
+    "expiry_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Agreement end date"
+    },
+    "renewal_type": {
+      "type": "string",
+      "enum": [
+        "auto_renew",
+        "manual_renew",
+        "no_renewal"
+      ]
+    },
+    "renewal_notice_days": {
+      "type": "integer",
+      "description": "Days before expiry to give renewal notice"
+    },
+    "key_terms": {
+      "$ref": "#/definitions/key_terms"
+    },
+    "financial_terms": {
+      "$ref": "#/definitions/financial_terms"
+    },
+    "partner_obligations": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "dealix_obligations": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "intellectual_property": {
+      "$ref": "#/definitions/intellectual_property"
+    },
+    "confidentiality": {
+      "type": "object",
+      "properties": {
+        "duration_years": {
+          "type": "integer"
+        },
+        "survives_termination": {
+          "type": "boolean"
+        }
+      }
+    },
+    "termination": {
+      "type": "object",
+      "properties": {
+        "notice_period_days": {
+          "type": "integer"
+        },
+        "immediate_termination_causes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "post_termination_obligations": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "governing_law": {
+      "type": "string",
+      "description": "Jurisdiction for legal matters"
+    },
+    "dispute_resolution": {
+      "type": "string",
+      "enum": [
+        "arbitration",
+        "litigation",
+        "mediation",
+        "negotiation"
+      ]
+    },
+    "signatories": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/signatory"
+      }
+    },
+    "approvals": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/approval"
+      }
+    },
+    "documents": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/document"
+      }
+    },
+    "notes": {
+      "type": "string"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "definitions": {
+    "key_terms": {
+      "type": "object",
+      "properties": {
+        "exclusivity": {
+          "type": "string",
+          "enum": [
+            "exclusive",
+            "non_exclusive",
+            "territory_limited",
+            "segment_limited"
+          ]
+        },
+        "territory": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Countries or regions covered"
+        },
+        "target_segments": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "minimum_commitments": {
+          "type": "object",
+          "properties": {
+            "partner": {
+              "type": "object",
+              "properties": {
+                "referrals_per_month": {
+                  "type": "integer"
+                },
+                "revenue_per_year": {
+                  "type": "number"
+                }
+              }
+            },
+            "dealix": {
+              "type": "object",
+              "properties": {
+                "support_hours_per_month": {
+                  "type": "integer"
+                },
+                "marketing_funds": {
+                  "type": "number"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "financial_terms": {
+      "type": "object",
+      "properties": {
+        "commission_structure": {
+          "type": "string",
+          "enum": [
+            "fixed_percentage",
+            "tiered_percentage",
+            "fixed_amount",
+            "revenue_share"
+          ]
+        },
+        "commission_rate": {
+          "type": "number",
+          "description": "Commission percentage"
+        },
+        "tiered_rates": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "threshold": {
+                "type": "number"
+              },
+              "rate": {
+                "type": "number"
+              }
+            }
+          }
+        },
+        "payment_terms": {
+          "type": "object",
+          "properties": {
+            "timing": {
+              "type": "string",
+              "enum": [
+                "upon_close",
+                "upon_invoice",
+                "upon_payment",
+                "monthly_arrears"
+              ]
+            },
+            "days_after": {
+              "type": "integer"
+            },
+            "currency": {
+              "type": "string"
+            }
+          }
+        },
+        "minimum_commission": {
+          "type": "number"
+        },
+        "maximum_commission": {
+          "type": "number"
+        },
+        "volume_discounts": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "volume_tier": {
+                "type": "string"
+              },
+              "discount_rate": {
+                "type": "number"
+              }
+            }
+          }
+        }
+      }
+    },
+    "intellectual_property": {
+      "type": "object",
+      "properties": {
+        "dealix_ip_usage": {
+          "type": "string",
+          "enum": [
+            "allowed",
+            "restricted",
+            "prohibited"
+          ]
+        },
+        "usage_guidelines": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "co_branding": {
+          "type": "boolean"
+        },
+        "trademark_usage": {
+          "type": "boolean"
+        }
+      }
+    },
+    "signatory": {
+      "type": "object",
+      "required": ["name", "title", "party"],
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "party": {
+          "type": "string",
+          "enum": [
+            "dealix",
+            "partner"
+          ]
+        },
+        "signed_date": {
+          "type": "string",
+          "format": "date"
+        }
+      }
+    },
+    "approval": {
+      "type": "object",
+      "required": ["role", "status"],
+      "properties": {
+        "role": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "pending",
+            "approved",
+            "rejected"
+          ]
+        },
+        "date": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "comments": {
+          "type": "string"
+        }
+      }
+    },
+    "document": {
+      "type": "object",
+      "required": ["name", "type"],
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "main_agreement",
+            "addendum",
+            "schedule",
+            "exhibit",
+            "amendment"
+          ]
+        },
+        "file_path": {
+          "type": "string"
+        },
+        "uploaded_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    }
+  }
+}

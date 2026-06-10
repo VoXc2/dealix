@@ -1,0 +1,121 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dealix.sa/schemas/agent_registry.schema.json",
+  "title": "Dealix AI Agent Registry",
+  "description": "Registry row for a single AI agent in the Dealix system. Tracks identity, autonomy, scopes, risk, eval cadence, and lifecycle status.",
+  "type": "object",
+  "required": [
+    "agent_id",
+    "agent_name",
+    "version",
+    "owner",
+    "autonomy_level",
+    "allowed_tools",
+    "allowed_file_areas",
+    "forbidden_file_areas",
+    "external_action_capability",
+    "approval_required",
+    "risk_level",
+    "eval_cadence",
+    "registered_at",
+    "status"
+  ],
+  "properties": {
+    "agent_id": {
+      "type": "string",
+      "pattern": "^AGENT-[A-Z]+-[0-9]{3,}$",
+      "description": "Stable identifier, e.g. AGENT-SALES-001"
+    },
+    "agent_name": {
+      "type": "string",
+      "minLength": 3,
+      "description": "Human-readable name of the agent"
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$",
+      "description": "Semantic version, e.g. 1.0.0"
+    },
+    "owner": {
+      "type": "string",
+      "description": "Department or human owner identifier"
+    },
+    "autonomy_level": {
+      "type": "string",
+      "enum": ["A0", "A1", "A2", "A3", "A4", "A5"],
+      "description": "Per docs/ai_governance/AGENT_AUTONOMY_LEVELS_AR.md"
+    },
+    "allowed_tools": {
+      "type": "array",
+      "items": { "type": "string" },
+      "minItems": 0,
+      "description": "Tool allowlist (e.g. read, write, send_email, send_whatsapp_template)"
+    },
+    "allowed_file_areas": {
+      "type": "array",
+      "items": { "type": "string" },
+      "minItems": 0,
+      "description": "Glob/path prefixes where the agent may read or write"
+    },
+    "forbidden_file_areas": {
+      "type": "array",
+      "items": { "type": "string" },
+      "minItems": 0,
+      "description": "Glob/path prefixes that are explicitly forbidden"
+    },
+    "external_action_capability": {
+      "type": "string",
+      "enum": ["none", "internal_only", "external_with_approval", "external_blocked"],
+      "description": "Whether/how the agent can act outside the repo"
+    },
+    "approval_required": {
+      "type": "boolean",
+      "description": "Whether the agent needs human approval for any action above read"
+    },
+    "risk_level": {
+      "type": "string",
+      "enum": ["low", "medium", "high", "critical"],
+      "description": "Aligned with AI_USE_CASE_RISK_CLASSIFIER"
+    },
+    "eval_cadence": {
+      "type": "string",
+      "enum": ["daily", "weekly", "monthly", "continuous"],
+      "description": "Per AGENT_EVAL_CADENCE_AR.md"
+    },
+    "registered_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 registration timestamp"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["active", "frozen", "paused", "retired", "pending"],
+      "description": "Lifecycle status"
+    },
+    "evidence_level": {
+      "type": "string",
+      "enum": ["L0", "L1", "L2", "L3", "L4", "L5"],
+      "description": "Evidence level supporting this registry entry"
+    },
+    "kill_switch_url": {
+      "type": "string",
+      "format": "uri",
+      "description": "Admin endpoint to disable the agent"
+    },
+    "external_vendor": {
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "dpa_signed": { "type": "boolean" },
+        "vendor_due_diligence_id": { "type": "string" }
+      },
+      "required": ["name"],
+      "description": "Required if agent is hosted by an external vendor"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Free-form governance notes"
+    }
+  },
+  "additionalProperties": false
+}

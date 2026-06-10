@@ -1,0 +1,70 @@
+name: Founder Daily Digest
+
+# Sends Sami the daily growth-loop digest each morning at 7AM KSA
+# (= 4AM UTC). The digest is composed from:
+#   - personal-operator daily-brief
+#   - service-activation candidates
+#   - partner-radar (rotating)
+#   - geo_aio_radar top priority pages
+#   - perimeter status
+# All purely additive read-only signals — no external send to anyone
+# except the founder.
+
+on:
+  schedule:
+    - cron: "0 4 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  digest:
+    name: Send founder digest
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Install minimal deps
+        run: |
+          python3 -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Check required secrets (skip gracefully if missing)
+        id: secrets_gate
+        env:
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+        run: |
+          # Wave 10.9 §30.4 — until RESEND_API_KEY is configured in repo
+          # secrets, exit 0 with a clear message instead of crashing the
+          # underlying script. The Send-digest step gates on this output.
+          if [ -z "${RESEND_API_KEY}" ]; then
+            echo "ℹ️  RESEND_API_KEY not yet configured — skipping daily digest"
+            echo "    Set via Settings → Secrets and variables → Actions"
+            echo "secrets_present=false" >> "${GITHUB_OUTPUT}"
+            exit 0
+          fi
+          echo "✅ RESEND_API_KEY present"
+          echo "secrets_present=true" >> "${GITHUB_OUTPUT}"
+
+      - name: Send digest
+        if: steps.secrets_gate.outputs.secrets_present == 'true'
+        env:
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          DEALIX_FOUNDER_EMAIL: ${{ secrets.DEALIX_FOUNDER_EMAIL || 'sami.assiri11@gmail.com' }}
+          EMAIL_PROVIDER: "resend"
+          EMAIL_FROM: "noreply@dealix.me"
+          EMAIL_FROM_NAME: "Dealix Daily"
+          APP_ENV: production
+          # The script needs the LLM keys only if personal-operator
+          # daily-brief inside it makes LLM calls. Falls back gracefully.
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+        run: python3 scripts/dealix_morning_digest.py

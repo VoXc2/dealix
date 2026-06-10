@@ -1,0 +1,54 @@
+# 12-week content themes — sync with MARKET_INTELLIGENCE_CONTENT_GTM_AR.md
+version: "1"
+cta_primary: "/ar/risk-score"
+cta_secondary: "https://calendly.com/sami-assiri11/dealix-demo"
+
+weeks:
+  - week: 1
+    theme_ar: "Revenue OS وليس CRM"
+    pillar: positioning
+    doc: docs/commercial/POSITIONING_WHY_NOW_SAUDI_ONEPAGER_AR.md
+  - week: 2
+    theme_ar: "Decision Passport"
+    pillar: governed_ai
+    doc: docs/commercial/MARKET_INTELLIGENCE_GOVERNED_AI_CATEGORY_AR.md
+  - week: 3
+    theme_ar: "PDPL وoutreach"
+    pillar: pdpl_legal
+    doc: docs/commercial/MARKET_INTELLIGENCE_PDPL_LEGAL_REVIEW_AR.md
+  - week: 4
+    theme_ar: "founder-led → نظام"
+    pillar: founder_revops
+    doc: docs/commercial/MARKET_INTELLIGENCE_FOUNDER_REVOPS_GTM_AR.md
+  - week: 5
+    theme_ar: "anti-waste L4"
+    pillar: trust_security
+    doc: docs/commercial/MARKET_INTELLIGENCE_TRUST_SECURITY_MATRIX_AR.md
+  - week: 6
+    theme_ar: "Motion A وكالات"
+    pillar: saas_market
+    doc: docs/commercial/MARKET_INTELLIGENCE_SAUDI_SAAS_MARKET_AR.md
+  - week: 7
+    theme_ar: "شفافية إقامة بيانات"
+    pillar: cloud_residency
+    doc: docs/commercial/MARKET_INTELLIGENCE_CLOUD_CROSS_BORDER_AR.md
+  - week: 8
+    theme_ar: "Sprint 499 TTV"
+    pillar: sales_champion
+    doc: docs/commercial/MARKET_INTELLIGENCE_SALES_CHAMPION_PACK_AR.md
+  - week: 9
+    theme_ar: "شركاء قناة"
+    pillar: investor_partner
+    doc: docs/commercial/MARKET_INTELLIGENCE_INVESTOR_PARTNER_AR.md
+  - week: 10
+    theme_ar: "Proof بدون أرقام وهمية"
+    pillar: customer_success
+    doc: docs/commercial/MARKET_INTELLIGENCE_CUSTOMER_SUCCESS_AR.md
+  - week: 11
+    theme_ar: "RevOps أسبوعي"
+    pillar: metrics
+    doc: docs/commercial/MARKET_INTELLIGENCE_METRICS_CREDIBILITY_AR.md
+  - week: 12
+    theme_ar: "مراجعة ربع + تعلّم"
+    pillar: weekly_review
+    doc: docs/commercial/MARKET_INTELLIGENCE_WEEKLY_REVIEW_CHECKLIST_AR.md

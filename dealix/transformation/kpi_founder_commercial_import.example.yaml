@@ -1,0 +1,27 @@
+# مثال — انسخ إلى kpi_founder_commercial_import.yaml وعبّئ من CRM حقيقي.
+# لا تستخدم REPLACE: في source_ref — يُرفض عند apply.
+
+version: 1
+founder_attestation: "أقر أن source_ref يشير إلى تصدير CRM/مالية فعلي"
+updated_period_iso: "2026-05-18"
+crm_sync_status: pending_founder_export
+
+entries:
+  measured_customer_value_sar:
+    value_numeric: 0.0
+    source_ref: "crm:hubspot:export:period=2026-W20:not_synced_yet"
+  governance_integrity_rate:
+    value_numeric: 0.0
+    source_ref: "governance:weekly_report:2026-W20:not_synced_yet"
+  expansion_quality_ratio:
+    value_numeric: 0.0
+    source_ref: "crm:expansion_cohort:period=2026-Q2:not_synced_yet"
+  time_to_proof_days:
+    value_numeric: 0.0
+    source_ref: "proof_ledger:pilot:none_active"
+  approval_cycle_time_hours:
+    value_numeric: 0.0
+    source_ref: "approval_center:median:2026-W20:not_synced_yet"
+  conversion_discovery_to_pilot:
+    value_numeric: 0.0
+    source_ref: "crm:funnel:discovery_to_pilot:period=2026-Q2:not_synced_yet"

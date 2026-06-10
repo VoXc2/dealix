@@ -1,0 +1,90 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dealix.sa/schemas/delivery_pattern.schema.json",
+  "title": "Delivery Pattern",
+  "description": "Anonymized delivery phase pattern by offer. No PII, no real contract values.",
+  "type": "object",
+  "required": [
+    "offer",
+    "phase",
+    "duration_band",
+    "blockers",
+    "success_criteria",
+    "handoff_artifacts",
+    "evidence_level"
+  ],
+  "properties": {
+    "offer": {
+      "type": "string",
+      "enum": [
+        "revenue_leakage_diagnostic",
+        "follow_up_recovery_workflow",
+        "ai_revenue_ops_starter",
+        "full_revenue_os",
+        "monthly_optimization",
+        "custom_company_os"
+      ]
+    },
+    "phase": {
+      "type": "string",
+      "enum": ["kickoff", "setup", "pilot", "optimization", "handover"]
+    },
+    "duration_band": {
+      "type": "object",
+      "required": ["min_days", "max_days"],
+      "properties": {
+        "min_days": {"type": "integer", "minimum": 0},
+        "max_days": {"type": "integer", "minimum": 0},
+        "typical_days": {"type": "integer", "minimum": 0}
+      }
+    },
+    "blockers": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "client_access_delay",
+          "data_quality",
+          "stakeholder_change",
+          "scope_creep",
+          "integration_block",
+          "low_engagement",
+          "missing_owner",
+          "regulatory_hold",
+          "approval_loop"
+        ]
+      }
+    },
+    "success_criteria": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"type": "string"},
+      "description": "Measurable outcomes that mark this phase as done."
+    },
+    "handoff_artifacts": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"type": "string"}
+    },
+    "complexity_weight": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1,
+      "description": "Weight of this phase in the overall delivery complexity score."
+    },
+    "early_failure_signals": {
+      "type": "array",
+      "items": {"type": "string"},
+      "description": "Behaviors that predict phase failure if seen in week 1."
+    },
+    "evidence_level": {
+      "type": "string",
+      "enum": ["assumption", "observed", "validated", "measured"]
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^v[0-9]+\\.[0-9]+$"
+    }
+  },
+  "additionalProperties": false
+}

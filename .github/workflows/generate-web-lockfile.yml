@@ -1,0 +1,36 @@
+name: Generate Web Lockfile
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  generate:
+    name: Generate package lock artifact
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Generate package lock
+        working-directory: apps/web
+        run: npm install --package-lock-only
+
+      - name: Verify generated lockfile
+        working-directory: apps/web
+        run: npm ci && npm run verify
+
+      - name: Upload package lock artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: apps-web-package-lock
+          path: apps/web/package-lock.json

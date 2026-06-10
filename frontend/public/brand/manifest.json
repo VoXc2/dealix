@@ -1,0 +1,32 @@
+{
+  "name": "Dealix — Saudi AI Revenue OS",
+  "short_name": "Dealix",
+  "description": "نظام تشغيل مؤسسي للإيراد والصفقات والشراكات والاعتمادات",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#fafbfc",
+  "theme_color": "#0c2742",
+  "categories": ["business", "productivity", "ai", "saudi"],
+  "lang": "ar-SA",
+  "dir": "rtl",
+  "icons": [
+    { "src": "/brand/logo-icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" },
+    { "src": "/brand/logo-icon.svg", "sizes": "48x48", "type": "image/svg+xml", "purpose": "any" },
+    { "src": "/brand/logo-icon.svg", "sizes": "72x72", "type": "image/svg+xml", "purpose": "any" },
+    { "src": "/brand/logo-icon.svg", "sizes": "96x96", "type": "image/svg+xml", "purpose": "any" },
+    { "src": "/brand/logo-icon.svg", "sizes": "128x128", "type": "image/svg+xml", "purpose": "any" },
+    { "src": "/brand/logo-icon.svg", "sizes": "192x192", "type": "image/svg+xml", "purpose": "any maskable" },
+    { "src": "/brand/logo-icon.svg", "sizes": "256x256", "type": "image/svg+xml", "purpose": "any" },
+    { "src": "/brand/logo-icon.svg", "sizes": "384x384", "type": "image/svg+xml", "purpose": "any" },
+    { "src": "/brand/logo-icon.svg", "sizes": "512x512", "type": "image/svg+xml", "purpose": "any maskable" }
+  ],
+  "screenshots": [],
+  "shortcuts": [
+    { "name": "Diagnostic", "short_name": "Diagnostic", "description": "ابدأ التشخيص المجاني", "url": "/diagnostic" },
+    { "name": "Pricing", "short_name": "Pricing", "description": "عرض الباقات", "url": "/pricing" },
+    { "name": "Customer Portal", "short_name": "Portal", "description": "لوحة العميل", "url": "/portal" }
+  ],
+  "related_applications": []
+}

@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dealix.sa/schemas/data_entity.schema.json",
+  "title": "Data Entity Definition",
+  "type": "object",
+  "required": ["entity_id", "name", "data_class", "retention_days", "tenant_scoped", "owner"],
+  "properties": {
+    "entity_id": { "type": "string" },
+    "name": { "type": "string" },
+    "description": { "type": "string" },
+    "data_class": { "enum": ["D0", "D1", "D2", "D3", "D4", "D5"] },
+    "retention_days": { "type": "integer", "minimum": 0 },
+    "tenant_scoped": { "type": "boolean" },
+    "owner": { "type": "string" },
+    "soft_delete": { "type": "boolean" },
+    "versioned": { "type": "boolean" },
+    "related_schemas": { "type": "array", "items": { "type": "string" } },
+    "allowed_reports": { "type": "array", "items": { "type": "string" } },
+    "forbidden_reports": { "type": "array", "items": { "type": "string" } }
+  }
+}

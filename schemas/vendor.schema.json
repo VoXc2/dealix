@@ -1,0 +1,62 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dealix.sa/schemas/vendor.schema.json",
+  "title": "Dealix Vendor",
+  "description": "Single source of truth for a Dealix vendor (SaaS, API, infrastructure, service provider).",
+  "type": "object",
+  "required": [
+    "vendor_id",
+    "name",
+    "purpose",
+    "owner",
+    "data_risk",
+    "business_criticality",
+    "cancellation_difficulty"
+  ],
+  "properties": {
+    "vendor_id": {
+      "type": "string",
+      "pattern": "^v_[a-z0-9_]+$",
+      "description": "Unique vendor id (snake_case, prefixed with v_)."
+    },
+    "name": { "type": "string", "description": "Vendor display name." },
+    "purpose": { "type": "string", "description": "What Dealix uses this vendor for." },
+    "owner": { "type": "string", "description": "Person or role responsible." },
+    "monthly_cost_sar_estimate": { "type": ["number", "null"], "description": "Estimated monthly cost in SAR (null if usage-based or unknown)." },
+    "monthly_cost_sar_actual": { "type": ["number", "null"], "description": "Actual monthly cost in SAR (null if not yet billed)." },
+    "usage_metric": { "type": ["string", "null"], "description": "Primary usage metric (e.g. tokens_in, transaction_count)." },
+    "data_risk": {
+      "type": "string",
+      "enum": ["low", "medium", "high", "critical"],
+      "description": "Highest data classification handled by this vendor."
+    },
+    "data_risk_reason": { "type": "string", "description": "Why the data_risk is what it is." },
+    "secrets_required": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Env-var names this vendor needs in Dealix (no values; only names)."
+    },
+    "replacement_option": { "type": ["string", "null"], "description": "Backup vendor or in-house alternative." },
+    "replacement_effort": {
+      "type": "string",
+      "enum": ["low", "medium", "high", "locked"],
+      "description": "Effort to switch to replacement."
+    },
+    "cancellation_difficulty": {
+      "type": "string",
+      "enum": ["low", "medium", "high", "locked"],
+      "description": "How hard it is to cancel the contract."
+    },
+    "business_criticality": {
+      "type": "string",
+      "enum": ["low", "medium", "high", "critical"],
+      "description": "How critical this vendor is to revenue or operations."
+    },
+    "review_date": { "type": "string", "format": "date", "description": "Next scheduled review date (YYYY-MM-DD)." },
+    "contract_end": { "type": ["string", "null"], "format": "date", "description": "Contract end date if applicable." },
+    "pdpl_compliant": { "type": "boolean", "description": "Whether the vendor is PDPL-compliant." },
+    "soc2_certified": { "type": "boolean", "description": "Whether the vendor has SOC 2 certification." },
+    "data_residency": { "type": "string", "description": "Where the vendor stores data (region)." }
+  },
+  "additionalProperties": false
+}

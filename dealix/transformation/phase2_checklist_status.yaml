@@ -1,0 +1,77 @@
+version: 1
+reference_doc: docs/PHASE2_PRIVATE_BETA_CHECKLIST.md
+notes_ar: >-
+  حدّث status يدوياً (done|pending|blocked). لا تُعلّم done لبنود تعتمد على عميل/قانوني
+  قبل تحقق فعلي.
+
+items:
+  - id: beta_clients_list
+    section: customers
+    label_ar: قائمة أسماء + قطاع واحد متفق عليه
+    status: pending
+    owner: founder
+  - id: beta_pilot_agreement
+    section: customers
+    label_ar: اتفاق pilot (مدة، نطاق، سعر)
+    status: pending
+    owner: founder
+  - id: beta_onboarding
+    section: customers
+    label_ar: جلسة onboarding لكل عميل
+    status: pending
+    owner: founder
+  - id: product_staging_smoke
+    section: product
+    label_ar: staging مستقر + smoke
+    status: pending
+    owner: platform
+  - id: product_daily_brief
+    section: product
+    label_ar: موجز يومي + فرص أسبوعية
+    status: pending
+    owner: founder
+  - id: product_weekly_proof
+    section: product
+    label_ar: Proof pack أسبوعي
+    status: pending
+    owner: delivery
+  - id: whatsapp_sandbox
+    section: whatsapp
+    label_ar: Meta sandbox + webhook + توقيع
+    status: pending
+    owner: founder
+  - id: whatsapp_no_live
+    section: whatsapp
+    label_ar: WHATSAPP_ALLOW_LIVE_SEND=false في staging
+    status: pending
+    owner: platform
+  - id: whatsapp_opt_in
+    section: whatsapp
+    label_ar: سجل opt-in لكل جهة اتصال تسويقية
+    status: pending
+    owner: founder
+  - id: compliance_pdpl
+    section: compliance
+    label_ar: بنود SECURITY_PDPL_CHECKLIST للـ pilot
+    status: pending
+    owner: trust
+  - id: compliance_dsar
+    section: compliance
+    label_ar: قناة حذف/تصدير
+    status: pending
+    owner: trust
+  - id: success_active_clients
+    section: success
+    label_ar: "≥3 عملاء نشطين أسبوعياً"
+    status: pending
+    owner: founder
+  - id: success_case_study
+    section: success
+    label_ar: "≥1 قصة نجاح موقعة"
+    status: pending
+    owner: founder
+  - id: success_no_cold
+    section: success
+    label_ar: صفر إرسال بارد
+    status: pending
+    owner: trust

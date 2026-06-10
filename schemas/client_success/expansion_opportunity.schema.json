@@ -1,0 +1,33 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Expansion Opportunity",
+  "type": "object",
+  "required": ["expansion_id", "engagement_id", "client_name", "expansion_type", "current_level", "target_level", "status"],
+  "properties": {
+    "expansion_id": {"type": "string"},
+    "engagement_id": {"type": "string"},
+    "client_name": {"type": "string"},
+    "expansion_type": {"type": "string", "enum": ["new_workflow", "new_team", "full_os", "custom"]},
+    "current_level": {"type": "integer", "minimum": 1, "maximum": 7},
+    "target_level": {"type": "integer", "minimum": 1, "maximum": 7},
+    "description": {"type": "string"},
+    "investment": {"type": "number"},
+    "timeline": {"type": "string"},
+    "expected_outcomes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "outcome": {"type": "string"},
+          "metric": {"type": "string"},
+          "expected_value": {"type": "string"}
+        }
+      }
+    },
+    "evidence_level": {"type": "string", "enum": ["L3", "L4", "L5"]},
+    "status": {"type": "string", "enum": ["identified", "qualified", "pitched", "negotiated", "signed", "lost"]},
+    "key_stakeholder": {"type": "string"},
+    "objections": {"type": "array", "items": {"type": "string"}},
+    "decision_date": {"type": "string", "format": "date"}
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dealix.sa/schemas/ai_task.schema.json",
+  "title": "AI Task Definition",
+  "type": "object",
+  "required": ["task_id", "agent_id", "tier", "input_text", "created_at"],
+  "properties": {
+    "task_id": { "type": "string" },
+    "agent_id": { "type": "integer" },
+    "tier": { "enum": ["R1", "R2", "R3"] },
+    "task_type": { "type": "string" },
+    "input_text": { "type": "string" },
+    "input_class": { "enum": ["T0", "T1", "T2", "T3", "T4"] },
+    "pii_class": { "enum": ["D0", "D1", "D2", "D3", "D4", "D5"] },
+    "requires_secrets": { "type": "boolean" },
+    "cost_sensitive": { "type": "boolean" },
+    "quality_bias": { "type": "boolean" },
+    "max_output_tokens": { "type": "integer" },
+    "preferred_model_id": { "type": "string" },
+    "created_at": { "type": "string", "format": "date-time" }
+  }
+}

@@ -1,0 +1,42 @@
+# نسخ هذا الملف لكل اجتماع: founder_debrief_YYYY-MM-DD_<company_slug>.yaml
+# Ref: FOUNDER_SALES_LOOP_AR.md
+
+meeting:
+  date: "YYYY-MM-DD"
+  company: ""
+  contact: ""
+  motion: "A"  # A | B | C | D
+  offer_id: ""
+  type: "discovery"  # discovery | demo | partner
+
+prep_checklist:
+  proof_stack_tier_sent: null  # 1-5 from PROOF_STACK_ORDER_AR.md
+  client_pack_generated: false
+
+discovery_notes:
+  lead_after_campaign: ""
+  owner_today: ""
+  proof_gap: ""
+  compliance_risk: ""
+  budget_timeline: ""
+  signer_approver: ""
+  agreed_next_step: ""
+
+debrief:
+  one_decision: ""  # message | price | next_step — pick ONE
+  message_winner: ""
+  objection_primary: ""
+  objection_registry_id: ""  # optional — objection_engine_registry.yaml
+  evidence_sent: []
+  next_action: ""
+  next_action_date: "YYYY-MM-DD"
+  stage_after: ""  # war_room status — e.g. replied, meeting_booked
+
+ttv_snapshot:
+  days_since_lead_identified: null
+  event_logged: ""  # discovery_completed | demo_held | ...
+
+weekly_learning:
+  repeat_message_winner: false
+  icp_adjustment: ""
+  no_build_this_week: false

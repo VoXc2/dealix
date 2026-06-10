@@ -1,0 +1,252 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://dealix.sa/schemas/partner_opportunity.schema.json",
+  "title": "Partner Opportunity Schema",
+  "description": "Schema for partner-sourced sales opportunities",
+  "type": "object",
+  "required": [
+    "id",
+    "opportunity_name",
+    "partner_id",
+    "referral_id",
+    "stage",
+    "created_at"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Unique opportunity identifier",
+      "pattern": "^OPP-[0-9]{6}$"
+    },
+    "opportunity_name": {
+      "type": "string",
+      "description": "Opportunity name (usually company name)"
+    },
+    "partner_id": {
+      "type": "string",
+      "description": "Reference to partner who made the referral",
+      "pattern": "^PTN-[0-9]{6}$"
+    },
+    "referral_id": {
+      "type": "string",
+      "description": "Reference to the referral that created this opportunity",
+      "pattern": "^REF-[0-9]{6}$"
+    },
+    "stage": {
+      "type": "string",
+      "enum": [
+        "new_lead",
+        "contacted",
+        "qualified",
+        "demo_scheduled",
+        "proposal_sent",
+        "negotiation",
+        "pending_contract",
+        "closed_won",
+        "closed_lost"
+      ],
+      "description": "Current stage in sales pipeline"
+    },
+    "value": {
+      "type": "number",
+      "minimum": 0,
+      "description": "Estimated deal value in SAR"
+    },
+    "actual_value": {
+      "type": "number",
+      "description": "Actual closed deal value"
+    },
+    "currency": {
+      "type": "string",
+      "default": "SAR"
+    },
+    "product": {
+      "type": "string",
+      "enum": [
+        "starter",
+        "professional",
+        "enterprise",
+        "add_ons"
+      ],
+      "description": "Product being sold"
+    },
+    "expected_close_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Expected closing date"
+    },
+    "actual_close_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Actual closing date"
+    },
+    "close_reason": {
+      "type": "string",
+      "enum": [
+        "won",
+        "lost_to_competitor",
+        "lost_no_budget",
+        "lost_no_decision",
+        "lost_other",
+        "cancelled"
+      ],
+      "description": "Reason for closing"
+    },
+    "customer_info": {
+      "$ref": "#/definitions/customer_info"
+    },
+    "contact_info": {
+      "$ref": "#/definitions/contact_info"
+    },
+    "owner_id": {
+      "type": "string",
+      "description": "Sales rep user ID who owns this opportunity"
+    },
+    "partner_manager_id": {
+      "type": "string",
+      "description": "Partner manager who should be notified"
+    },
+    "lead_source": {
+      "type": "string",
+      "description": "Original lead source for tracking"
+    },
+    "commission": {
+      "$ref": "#/definitions/commission_info"
+    },
+    "timeline": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/timeline_event"
+      },
+      "description": "History of stage changes and key events"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Additional notes"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "definitions": {
+    "customer_info": {
+      "type": "object",
+      "properties": {
+        "company_name": {
+          "type": "string"
+        },
+        "industry": {
+          "type": "string"
+        },
+        "employee_count": {
+          "type": "integer"
+        },
+        "location": {
+          "type": "object",
+          "properties": {
+            "city": {
+              "type": "string"
+            },
+            "country": {
+              "type": "string"
+            }
+          }
+        },
+        "website": {
+          "type": "string",
+          "format": "uri"
+        }
+      }
+    },
+    "contact_info": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string",
+          "format": "email"
+        },
+        "phone": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "is_decision_maker": {
+          "type": "boolean"
+        }
+      }
+    },
+    "commission_info": {
+      "type": "object",
+      "properties": {
+        "rate": {
+          "type": "number",
+          "description": "Commission percentage"
+        },
+        "amount": {
+          "type": "number",
+          "description": "Commission amount in SAR"
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "pending",
+            "approved",
+            "paid",
+            "cancelled"
+          ]
+        },
+        "paid_date": {
+          "type": "string",
+          "format": "date"
+        },
+        "invoice_id": {
+          "type": "string"
+        }
+      }
+    },
+    "timeline_event": {
+      "type": "object",
+      "required": ["date", "event_type", "description"],
+      "properties": {
+        "date": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "event_type": {
+          "type": "string",
+          "enum": [
+            "stage_change",
+            "note_added",
+            "call_scheduled",
+            "call_completed",
+            "email_sent",
+            "email_received",
+            "demo_scheduled",
+            "demo_completed",
+            "proposal_sent",
+            "contract_sent",
+            "contract_signed"
+          ]
+        },
+        "description": {
+          "type": "string"
+        },
+        "user_id": {
+          "type": "string"
+        },
+        "metadata": {
+          "type": "object"
+        }
+      }
+    }
+  }
+}

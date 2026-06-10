@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dealix.sa/schemas/model_registry.schema.json",
+  "title": "Model Registry Entry",
+  "type": "object",
+  "required": ["model_id", "provider", "model_name", "cost_class", "allowed_tasks", "pii_policy", "status"],
+  "properties": {
+    "model_id": { "type": "string" },
+    "provider": { "type": "string" },
+    "model_name": { "type": "string" },
+    "cost_class": { "enum": ["free", "low", "medium", "high"] },
+    "input_cost_per_1m": { "type": "number" },
+    "output_cost_per_1m": { "type": "number" },
+    "allowed_tasks": { "type": "array", "items": { "enum": ["R1", "R2", "R3"] } },
+    "forbidden_tasks": { "type": "array", "items": { "type": "string" } },
+    "pii_policy": { "enum": ["allow", "redact", "forbid"] },
+    "max_context_tokens": { "type": "integer" },
+    "fallback_model_id": { "type": "string" },
+    "eval_score_threshold": { "type": "number" },
+    "owner": { "type": "string" },
+    "added_at": { "type": "string", "format": "date-time" },
+    "status": { "enum": ["active", "deprecated", "testing", "paused"] },
+    "notes": { "type": "string" }
+  }
+}

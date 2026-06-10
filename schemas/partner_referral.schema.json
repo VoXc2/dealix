@@ -1,0 +1,216 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://dealix.sa/schemas/partner_referral.schema.json",
+  "title": "Partner Referral Schema",
+  "description": "Schema for partner referrals in Dealix",
+  "type": "object",
+  "required": [
+    "id",
+    "partner_id",
+    "customer_name",
+    "customer_email",
+    "status",
+    "referral_type",
+    "submitted_at"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Unique referral identifier",
+      "pattern": "^REF-[0-9]{6}$"
+    },
+    "partner_id": {
+      "type": "string",
+      "description": "Partner who submitted the referral",
+      "pattern": "^PTN-[0-9]{6}$"
+    },
+    "referral_type": {
+      "type": "string",
+      "enum": [
+        "warm_referral",
+        "qualified_lead",
+        "premium_referral"
+      ],
+      "description": "Type of referral"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "submitted",
+        "under_review",
+        "qualified",
+        "not_qualified",
+        "converted",
+        "converted_opportunity",
+        "closed_won",
+        "closed_lost",
+        "expired",
+        "cancelled"
+      ],
+      "description": "Current referral status"
+    },
+    "customer_name": {
+      "type": "string",
+      "description": "Customer company name"
+    },
+    "customer_email": {
+      "type": "string",
+      "format": "email",
+      "description": "Primary contact email"
+    },
+    "customer_phone": {
+      "type": "string",
+      "description": "Primary contact phone"
+    },
+    "customer_title": {
+      "type": "string",
+      "description": "Primary contact job title"
+    },
+    "customer_company": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "industry": {
+          "type": "string"
+        },
+        "employee_count": {
+          "type": "integer"
+        },
+        "location": {
+          "type": "string"
+        },
+        "website": {
+          "type": "string",
+          "format": "uri"
+        },
+        "estimated_budget": {
+          "type": "string",
+          "enum": [
+            "under_10k",
+            "10k_25k",
+            "25k_50k",
+            "50k_100k",
+            "over_100k",
+            "unknown"
+          ]
+        }
+      }
+    },
+    "how_did_you_meet": {
+      "type": "string",
+      "description": "How the partner knows the customer"
+    },
+    "partner_notes": {
+      "type": "string",
+      "description": "Additional notes from partner"
+    },
+    "qualification_result": {
+      "type": "object",
+      "properties": {
+        "qualified": {
+          "type": "boolean"
+        },
+        "reasons": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "reviewed_by": {
+          "type": "string"
+        },
+        "reviewed_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "conversion_info": {
+      "type": "object",
+      "properties": {
+        "opportunity_id": {
+          "type": "string",
+          "pattern": "^OPP-[0-9]{6}$"
+        },
+        "converted_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "deal_value": {
+          "type": "number"
+        }
+      }
+    },
+    "outcome_info": {
+      "type": "object",
+      "properties": {
+        "closed_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "won": {
+          "type": "boolean"
+        },
+        "deal_value": {
+          "type": "number"
+        },
+        "close_reason": {
+          "type": "string"
+        },
+        "lost_to_competitor": {
+          "type": "string"
+        }
+      }
+    },
+    "commission": {
+      "type": "object",
+      "properties": {
+        "eligible": {
+          "type": "boolean"
+        },
+        "rate": {
+          "type": "number"
+        },
+        "calculated_amount": {
+          "type": "number"
+        },
+        "approved_amount": {
+          "type": "number"
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "not_eligible",
+            "pending",
+            "calculated",
+            "approved",
+            "invoiced",
+            "paid"
+          ]
+        },
+        "paid_date": {
+          "type": "string",
+          "format": "date"
+        },
+        "invoice_number": {
+          "type": "string"
+        }
+      }
+    },
+    "expiry_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Referral validity expiry date (90 days from submission)"
+    },
+    "submitted_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  }
+}

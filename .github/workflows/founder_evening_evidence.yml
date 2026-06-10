@@ -1,0 +1,29 @@
+name: Founder Evening Evidence
+
+# Reminder path — optional CSV append via secret flag. 18:00 UTC ≈ 21:00 KSA.
+
+on:
+  schedule:
+    - cron: "0 18 * * 0-4"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  evening:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install pyyaml
+      - name: Evening evidence reminder
+        env:
+          PYTHONIOENCODING: utf-8
+        run: |
+          python3 scripts/founder_evening_evidence.py --json
+          python3 scripts/run_founder_strongest_ops.py --evening
+          python3 scripts/run_dealix_complete_autonomous_day.py --evening --skip-commercial-day || true

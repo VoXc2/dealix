@@ -1,0 +1,31 @@
+name: CTO Weekly Anchor
+
+on:
+  schedule:
+    - cron: "0 6 * * 1"
+  workflow_dispatch:
+
+jobs:
+  anchor:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+          pip install -r requirements-dev.txt
+      - name: Global AI transformation verify
+        run: python3 scripts/verify_global_ai_transformation.py
+      - name: Platform KPI populate (dry registry status)
+        run: |
+          python3 scripts/populate_kpi_baselines_platform_signals.py
+          python3 scripts/apply_kpi_founder_commercial.py --status
+      - name: Embeddings readiness
+        run: python3 scripts/check_embeddings_readiness.py || true
+      - name: Note
+        run: |
+          echo "Full run_cto_weekly_anchor.sh requires bash CEO loop; CI runs core verifies only."

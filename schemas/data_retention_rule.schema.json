@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dealix.sa/schemas/data_retention_rule.schema.json",
+  "title": "Data Retention Rule",
+  "type": "object",
+  "required": ["rule_id", "entity", "retention_days", "trigger", "deletion_method"],
+  "properties": {
+    "rule_id": { "type": "string" },
+    "entity": { "type": "string" },
+    "retention_days": { "type": "integer", "minimum": 0 },
+    "trigger": { "enum": ["creation", "last_interaction", "contract_end", "opt_out", "expiry"] },
+    "deletion_method": { "enum": ["soft", "hard", "anonymize", "aggregate_only"] },
+    "notify_before_days": { "type": "integer" },
+    "owner": { "type": "string" },
+    "legal_basis": { "type": "string" },
+    "notes": { "type": "string" }
+  }
+}

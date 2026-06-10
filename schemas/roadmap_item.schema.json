@@ -1,0 +1,328 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://dealix.sa/schemas/roadmap_item.schema.json",
+  "title": "Roadmap Item",
+  "description": "Roadmap item for Dealix product planning",
+  "type": "object",
+  "required": [
+    "id",
+    "title",
+    "time_horizon",
+    "status",
+    "created_at"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^road_[a-z0-9_]+$",
+      "description": "Unique roadmap item identifier"
+    },
+    "title": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 100,
+      "description": "Roadmap item title"
+    },
+    "description": {
+      "type": "string",
+      "description": "Detailed description"
+    },
+    "time_horizon": {
+      "type": "string",
+      "enum": [
+        "now",
+        "next",
+        "later",
+        "future"
+      ],
+      "description": "Time horizon: now (0-3 months), next (3-6 months), later (6-12 months), future (12+ months)"
+    },
+    "period": {
+      "type": "string",
+      "description": "Specific period (e.g., Q1 2026, Sprint 5)"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "planned",
+        "in_progress",
+        "completed",
+        "deferred",
+        "cancelled"
+      ],
+      "default": "planned"
+    },
+    "priority": {
+      "type": "string",
+      "enum": [
+        "P0",
+        "P1",
+        "P2",
+        "P3",
+        "P4",
+        "P5"
+      ],
+      "description": "Priority classification"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "feature",
+        "improvement",
+        "bug_fix",
+        "tech_debt",
+        "infrastructure",
+        "security",
+        "compliance",
+        "integration"
+      ],
+      "description": "Item category"
+    },
+    "module": {
+      "type": "string",
+      "enum": [
+        "control_room",
+        "gtm_factory",
+        "approval_queue",
+        "reply_handling",
+        "whatsapp_os",
+        "secure_portal",
+        "proposal_handoff",
+        "delivery_handoff",
+        "weekly_reports",
+        "renewal_engine",
+        "metrics",
+        "trust_security",
+        "platform",
+        "infrastructure"
+      ],
+      "description": "Affected product module"
+    },
+    "features": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Feature IDs included in this roadmap item"
+    },
+    "owner": {
+      "type": "string",
+      "description": "Person responsible"
+    },
+    "team": {
+      "type": "string",
+      "enum": [
+        "product",
+        "engineering",
+        "design",
+        "data",
+        "security",
+        "cross_functional"
+      ],
+      "description": "Primary team"
+    },
+    "metrics": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Metric name"
+        },
+        "target": {
+          "type": "number",
+          "description": "Target value"
+        },
+        "baseline": {
+          "type": "number",
+          "description": "Baseline value"
+        },
+        "current": {
+          "type": "number",
+          "description": "Current value"
+        }
+      }
+    },
+    "acceptance_criteria": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Criteria for completion"
+    },
+    "dependencies": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Roadmap item IDs this depends on"
+    },
+    "blockers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "description": {
+            "type": "string"
+          },
+          "severity": {
+            "type": "string",
+            "enum": [
+              "critical",
+              "major",
+              "minor"
+            ]
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "open",
+              "in_progress",
+              "resolved"
+            ]
+          }
+        }
+      }
+    },
+    "risks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "description": {
+            "type": "string"
+          },
+          "probability": {
+            "type": "string",
+            "enum": [
+              "high",
+              "medium",
+              "low"
+            ]
+          },
+          "impact": {
+            "type": "string",
+            "enum": [
+              "critical",
+              "major",
+              "minor"
+            ]
+          }
+        }
+      }
+    },
+    "estimated_effort": {
+      "type": "string",
+      "enum": [
+        "xs",
+        "sm",
+        "md",
+        "lg",
+        "xl",
+        "xxl"
+      ],
+      "description": "Estimated effort"
+    },
+    "estimated_start_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "estimated_end_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "actual_start_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "actual_end_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "release_gates": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "passed": {
+            "type": "boolean"
+          },
+          "passed_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      }
+    },
+    "tests_required": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Required test IDs"
+    },
+    "rollback_plan": {
+      "type": "string",
+      "description": "Rollback procedure"
+    },
+    "customer_evidence": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Evidence from customers"
+    },
+    "stakeholder_approval": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "stakeholder": {
+            "type": "string"
+          },
+          "approved": {
+            "type": "boolean"
+          },
+          "approved_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      }
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "notes": {
+      "type": "string"
+    },
+    "outcome_summary": {
+      "type": "string",
+      "description": "Summary of what was achieved"
+    },
+    "lessons_learned": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Lessons from this work"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "created_by": {
+      "type": "string"
+    }
+  },
+  "additionalProperties": false
+}

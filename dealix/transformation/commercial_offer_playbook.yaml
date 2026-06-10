@@ -1,0 +1,39 @@
+# Weekly success metrics per offer — aligned with GTM_PLAYBOOK_SERVICE_LADDER_AR.md
+version: 1
+
+offers:
+  free_mini_diagnostic:
+    success_metric_ar: اكتمال النموذج خلال 24 ساعة + جواز قرار أولي
+    first_touch_ar: نموذج تشخيص مجاني — لا ضغط بيع
+  revenue_proof_sprint_499:
+    success_metric_ar: "≥10 فرص مؤهلة + Proof Pack خلال 7 أيام"
+    first_touch_ar: Kickoff مدفوع — أهداف أسبوع واحد
+  data_to_revenue_pack_1500:
+    success_metric_ar: "≥20 فرصة معتمدة + تقرير مخاطر بيانات"
+    first_touch_ar: تدقيق ملف CSV + خريطة مصادر
+  growth_ops_monthly_2999:
+    success_metric_ar: موجز أسبوعي + تحسين معدل رد على المسودات
+    first_touch_ar: اجتماع أسبوعي ثابت + لوحة موافقات
+  support_os_addon_1500:
+    success_metric_ar: SLA أول رد + تصنيف تذاكر
+    first_touch_ar: ربط قناة دعم — مسودات فقط
+  executive_command_center_7500:
+    success_metric_ar: موجز يومي + board pack شهري
+    first_touch_ar: لجنة قرار تنفيذية
+  agency_partner_os:
+    success_metric_ar: إحالة مدفوعة واحدة على الأقل / ربع
+    first_touch_ar: اتفاقية شريك + تدريب Co-brand
+
+value_ladder:
+  - step: 1
+    label_ar: تعليم وثقة
+    offer_ids: [free_mini_diagnostic]
+  - step: 2
+    label_ar: تشخيص مدفوع / Sprint
+    offer_ids: [revenue_proof_sprint_499, data_to_revenue_pack_1500]
+  - step: 3
+    label_ar: Retainer ونمو
+    offer_ids: [growth_ops_monthly_2999, support_os_addon_1500]
+  - step: 4
+    label_ar: قيادة تنفيذية وشركاء
+    offer_ids: [executive_command_center_7500, agency_partner_os]

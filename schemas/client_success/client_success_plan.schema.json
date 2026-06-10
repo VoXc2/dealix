@@ -1,0 +1,40 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Client Success Plan",
+  "type": "object",
+  "required": ["plan_id", "engagement_id", "client_name", "created_date", "milestones", "success_metrics"],
+  "properties": {
+    "plan_id": {"type": "string"},
+    "engagement_id": {"type": "string"},
+    "client_name": {"type": "string"},
+    "created_date": {"type": "string", "format": "date"},
+    "updated_date": {"type": "string", "format": "date"},
+    "owner": {"type": "string"},
+    "success_metrics": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "metric": {"type": "string"},
+          "target": {"type": "string"},
+          "current": {"type": "string"},
+          "status": {"type": "string", "enum": ["on_track", "at_risk", "achieved"]}
+        }
+      }
+    },
+    "milestones": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "milestone": {"type": "string"},
+          "target_date": {"type": "string", "format": "date"},
+          "status": {"type": "string", "enum": ["pending", "in_progress", "completed", "delayed"]},
+          "notes": {"type": "string"}
+        }
+      }
+    },
+    "current_phase": {"type": "string", "enum": ["onboarding", "delivery", "value", "renewal", "expansion"]},
+    "health_score": {"type": "number", "minimum": 0, "maximum": 100}
+  }
+}

@@ -1,0 +1,126 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://dealix.sa/schemas/metric_event.schema.json",
+  "title": "Metric Event",
+  "description": "Aggregated metric event in Dealix analytics system",
+  "type": "object",
+  "required": [
+    "metric_id",
+    "metric_name",
+    "value",
+    "unit",
+    "period_start",
+    "period_end",
+    "recorded_at",
+    "aggregation_level"
+  ],
+  "properties": {
+    "metric_id": {
+      "type": "string",
+      "description": "Unique metric identifier",
+      "pattern": "^[a-z]+_[a-z_]+$"
+    },
+    "metric_name": {
+      "type": "string",
+      "description": "Human-readable metric name"
+    },
+    "value": {
+      "type": "number",
+      "description": "Metric value"
+    },
+    "unit": {
+      "type": "string",
+      "enum": ["count", "percentage", "ratio", "currency", "score", "days", "hours"]
+    },
+    "period_start": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Start of measurement period"
+    },
+    "period_end": {
+      "type": "string",
+      "format": "date-time",
+      "description": "End of measurement period"
+    },
+    "period_type": {
+      "type": "string",
+      "enum": ["hourly", "daily", "weekly", "monthly", "quarterly", "yearly"],
+      "default": "daily"
+    },
+    "aggregation_level": {
+      "type": "string",
+      "enum": ["company", "sector", "channel", "offer", "agent", "campaign", "global"],
+      "description": "Granularity of aggregation"
+    },
+    "segment": {
+      "type": "object",
+      "properties": {
+        "sector": {
+          "type": "string",
+          "enum": ["technology", "healthcare", "finance", "retail", "manufacturing", "education", "government", "real_estate", "logistics", "hospitality", "construction", "energy"]
+        },
+        "channel": {
+          "type": "string",
+          "enum": ["email", "whatsapp", "linkedin", "phone", "meeting"]
+        },
+        "offer_id": {
+          "type": "string",
+          "enum": ["offer_diagnostic", "offer_pilot", "offer_proof", "offer_retainer", "offer_training", "offer_consulting"]
+        },
+        "tier": {
+          "type": "string",
+          "enum": ["A", "B", "C", "nurture", "disqualified"]
+        }
+      }
+    },
+    "comparison": {
+      "type": "object",
+      "properties": {
+        "previous_value": {
+          "type": "number"
+        },
+        "change_pct": {
+          "type": "number"
+        },
+        "trend": {
+          "type": "string",
+          "enum": ["increasing", "decreasing", "stable"]
+        }
+      }
+    },
+    "threshold": {
+      "type": "object",
+      "properties": {
+        "target": {
+          "type": "number"
+        },
+        "warning": {
+          "type": "number"
+        },
+        "critical": {
+          "type": "number"
+        },
+        "status": {
+          "type": "string",
+          "enum": ["on_target", "warning", "critical", "excellent"]
+        }
+      }
+    },
+    "source_events": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Event IDs that contributed to this metric"
+    },
+    "recorded_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "calculated_by": {
+      "type": "string",
+      "description": "System or person who calculated"
+    }
+  },
+  "additionalProperties": false
+}

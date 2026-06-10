@@ -1,0 +1,172 @@
+# ============================================================
+# .claudeignore — مخصص لمشروع Dealix
+# يوفر 40-90% من التوكنز عند استكشاف الملفات
+# ============================================================
+
+# ==================== Python / Backend ====================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg
+*.egg-info/
+dist/
+build/
+eggs/
+parts/
+var/
+sdist/
+develop-eggs/
+.installed.cfg
+lib/
+lib64/
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+.mypy_cache/
+.dmypy.json
+dmypy.json
+.ruff_cache/
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.nox/
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+*.mo
+*.pot
+
+# ==================== Alembic ====================
+# (احتفظ بـ versions/ للمراجعة لكن اخف السجلات)
+alembic/versions/__pycache__/
+
+# ==================== Node / Frontend ====================
+node_modules/
+.next/
+.nuxt/
+.cache/
+.parcel-cache/
+dist/
+out/
+build/
+.turbo/
+*.min.js
+*.min.css
+*.map
+.npm/
+
+# ==================== Lock Files ====================
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+poetry.lock
+Pipfile.lock
+uv.lock
+composer.lock
+
+# ==================== Logs ====================
+*.log
+logs/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+.pnpm-debug.log*
+
+# ==================== Test Coverage ====================
+coverage/
+*.lcov
+.nyc_output/
+jest-results/
+pytest-results/
+test-results/
+playwright-report/
+test-output/
+
+# ==================== Database & Data ====================
+*.sqlite
+*.sqlite3
+*.db
+*.db-journal
+data/raw/
+data/cache/
+data/temp/
+*.csv.bak
+*.parquet
+*.feather
+
+# ==================== Docker ====================
+.docker/
+docker-volumes/
+
+# ==================== IDE ====================
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# ==================== CI/CD & Deployment ====================
+.github/workflows/
+.circleci/
+.travis.yml
+.env.production
+.env.staging
+.env.local
+.env.*.local
+
+# ==================== Supabase ====================
+supabase/.branches/
+supabase/.temp/
+
+# ==================== Generated & Compiled ====================
+*.compiled
+*.generated
+*_generated.py
+*_pb2.py
+*_pb2_grpc.py
+
+# ==================== Secrets & Certs ====================
+*.pem
+*.key
+*.cert
+*.p12
+*.pfx
+secrets/
+.secrets/
+
+# ==================== Locust / Load Tests ====================
+locust-results/
+locust_*.html
+
+# ==================== Demos & Simulations Data ====================
+demos/output/
+simulations/output/
+simulations/data/
+
+# ==================== Lighthouse ====================
+.lighthouseci/
+
+# ==================== Commercial / Generated Outputs ====================
+# Keep: dealix/commercial/*.py, dealix/payments/*.py, data/templates/
+data/exports/
+data/backups/
+data/processed/
+
+# ==================== Miscellaneous ====================
+*.tmp
+*.temp
+*.bak
+*.orig
+*.rej
+.hypothesis/

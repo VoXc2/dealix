@@ -1,0 +1,77 @@
+# Objection Engine — classify → draft → sales_asset → content_asset → FAQ
+# Workflow: objection_received → classify → response_draft → sales_asset → content_asset → faq_update
+
+version: "1.0"
+updated: "2026-05-17"
+
+objections:
+  - id: crm_exists
+    labels_ar: ["عندنا CRM", "عندنا زوهو", "عندنا هبسبوت"]
+    labels_en: ["we have CRM", "already use HubSpot"]
+    classify: positioning
+    response_draft_ar: >
+      CRM يخزّن؛ السؤال: من يملك follow-up؟ هل كل lead له owner وevidence وnext action؟
+      Dealix لا يستبدل CRM — يثبت ما بعد الـ lead.
+    sales_asset: docs/sales-kit/dealix_objection_handler.md
+    content_asset_slug: crm-vs-revenue-ops
+    aeo_week: 7
+    faq_snippet_ar: "Dealix يكمّل CRM بطبقة Post-Lead Revenue Ops وProof."
+
+  - id: have_agency
+    labels_ar: ["عندنا وكالة", "الوكالة تسوّق لنا"]
+    labels_en: ["we have an agency"]
+    classify: wedge_conflict
+    response_draft_ar: >
+      الوكالة تجيب الاهتمام. Dealix يثبت ماذا حدث بعد الاهتمام — للوكالة أو معها كشريك.
+    sales_asset: docs/commercial/operations/motion_a_agency/SCOPE_AGENCY_AUDIT_AR.md
+    content_asset_slug: agency-proof-for-clients
+    aeo_week: 8
+
+  - id: price_high
+    labels_ar: ["السعر عالي", "مكلف", "الميزانية"]
+    labels_en: ["too expensive", "price"]
+    classify: pricing
+    response_draft_ar: >
+      نخفّض المخاطرة لا القيمة: 10 leads فقط، ~7 أيام، Proof Pack ثم قرار.
+    sales_asset: docs/commercial/operations/motion_a_agency/SCOPE_AGENCY_AUDIT_AR.md
+    content_asset_slug: 10-lead-audit
+    aeo_week: 10
+    one_pager: docs/commercial/operations/sample_proof_pack/SAMPLE_PROOF_PACK_AGENCY_AR.md
+
+  - id: internal_ai
+    labels_ar: ["عندنا AI", "نبني داخلياً", "ChatGPT"]
+    labels_en: ["we have AI", "build in-house"]
+    classify: governance
+    response_draft_ar: >
+      قبل توسيع agents: من يملك action؟ ما approval؟ ما evidence؟ ما rollback؟
+    sales_asset: docs/sales-kit/dealix_security_faq.md
+    content_asset_slug: govern-ai-before-scale
+    aeo_week: 11
+
+  - id: ai_dialect
+    labels_ar: ["AI ما يفهم لهجتنا"]
+    labels_en: ["AI does not understand dialect"]
+    classify: product
+    response_draft_ar: >
+      اعتراف ثم اختبار محدود — لا وعد عام. ركّز على follow-up موثّق لا «ذكاء عام».
+    sales_asset: docs/sales-kit/dealix_objection_handler.md
+    content_asset_slug: null
+
+  - id: no_need_sales_team
+    labels_ar: ["عندنا فريق مبيعات"]
+    labels_en: ["we have sales team"]
+    classify: efficiency
+    response_draft_ar: >
+      كم lead أسبوعياً وكم demo فعلي؟ الفجوة بينهما هو Post-Lead Revenue Ops.
+    sales_asset: docs/sales-kit/dealix_objection_handler.md
+    content_asset_slug: audit-lead-follow-up
+    aeo_week: 3
+
+workflow:
+  on_objection_received:
+    - classify
+    - response_draft
+    - log_in_war_room
+  on_second_occurrence_same_id:
+    - prioritize_content_asset
+    - faq_update

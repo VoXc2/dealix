@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Dealix — {{ customer_name }} Case Study</title>
+  <meta name="description" content="{{ customer_name }} استخدمت Dealix لتحويل {{ before_state }} إلى {{ after_state }} خلال {{ duration }}." />
+  <meta name="robots" content="index,follow" />
+  <link rel="canonical" href="https://dealix.me/case-study-{{ handle }}.html" />
+  <meta property="og:title" content="{{ customer_name }} × Dealix" />
+  <meta property="og:description" content="{{ customer_name }}: {{ headline_metric }} خلال {{ duration }} مع Dealix." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://dealix.me/case-study-{{ handle }}.html" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="theme-color" content="#0f172a" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="/assets/css/design-system.css" />
+  <link rel="stylesheet" href="/assets/css/theme.css" />
+</head>
+<body>
+
+<!--
+  ============================================================================
+  CASE STUDY TEMPLATE — W3.6
+  ----------------------------------------------------------------------------
+  Replace ALL {{ placeholders }} with real values pulled from the customer
+  conversation + Dealix metrics (Decision Passport audit log + tenant dashboard).
+
+  REQUIRED placeholders:
+    {{ handle }}                  url-slug for canonical link
+    {{ customer_name }}           legal customer name (verify spelling!)
+    {{ customer_logo_url }}       https URL to their logo
+    {{ industry }}                "Saudi SaaS" / "Saudi Real Estate" / etc.
+    {{ company_size }}            e.g. "50 employees"
+    {{ duration }}                "7 days" / "30 days" / etc.
+    {{ before_state }}            quantified pain (e.g. "4-hour avg response time")
+    {{ after_state }}             quantified outcome (e.g. "3-min avg response time")
+    {{ headline_metric }}         "80% reduction in response time"
+    {{ founder_quote_ar }}        Arabic quote from customer founder (recorded permission)
+    {{ founder_quote_en }}        English translation of same quote
+    {{ founder_name }}            Customer's named founder
+    {{ founder_title }}           e.g. "CEO & Co-founder"
+
+  REQUIRED metrics (must ALL be true & verifiable in tenant dashboard):
+    inbound_handled                          Total messages handled
+    arabic_reply_percentage                  ≥ 70% to qualify as case study
+    avg_response_time_minutes                ≤ 5 min target
+    demos_booked                             Real bookings, not pseudo
+    decision_passport_entries                Audit log count
+    pdpl_compliance_rate                     100% required
+
+  PERMISSION required before publishing:
+    1. Customer signs a brief "Case Study Authorization" form (written or video)
+    2. Customer reviews + approves this draft via Decision Passport workflow
+    3. Customer provides logo + founder quote permission separately
+    4. Founder of Dealix reviews legal/compliance disclosures
+  ============================================================================
+-->
+
+<main class="case-container">
+
+  <header class="case-hero">
+    <img src="{{ customer_logo_url }}" alt="{{ customer_name }}" class="customer-logo">
+    <span class="industry-tag">{{ industry }} · {{ company_size }}</span>
+    <h1>كيف حوّلت {{ customer_name }} {{ before_state }} إلى {{ after_state }} خلال {{ duration }}</h1>
+    <p class="lead">{{ headline_metric }} — موثّق في Decision Passport بـ {{ decision_passport_entries }} قرار قابل للتدقيق</p>
+  </header>
+
+  <section class="metrics">
+    <div class="metric-card">
+      <div class="metric-value">{{ inbound_handled }}</div>
+      <div class="metric-label">Inbound message handled</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-value">{{ arabic_reply_percentage }}%</div>
+      <div class="metric-label">Arabic replies</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-value">{{ avg_response_time_minutes }}m</div>
+      <div class="metric-label">Avg response time</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-value">{{ demos_booked }}</div>
+      <div class="metric-label">Demos booked</div>
+    </div>
+  </section>
+
+  <section class="quote-section">
+    <blockquote class="founder-quote">
+      <p>"{{ founder_quote_ar }}"</p>
+      <p class="english-translation"><em>"{{ founder_quote_en }}"</em></p>
+      <footer>
+        — <strong>{{ founder_name }}</strong>, {{ founder_title }} of {{ customer_name }}
+      </footer>
+    </blockquote>
+  </section>
+
+  <section class="problem">
+    <h2>المشكلة قبل Dealix</h2>
+    <p>{{ problem_description_paragraph_1 }}</p>
+    <p>{{ problem_description_paragraph_2 }}</p>
+    <ul>
+      <li>{{ pain_point_1 }}</li>
+      <li>{{ pain_point_2 }}</li>
+      <li>{{ pain_point_3 }}</li>
+    </ul>
+  </section>
+
+  <section class="solution">
+    <h2>كيف Dealix حل المشكلة</h2>
+    <p>خلال {{ duration }}, Dealix قدّم لـ {{ customer_name }}:</p>
+    <ul>
+      <li><strong>{{ solution_component_1_name }}:</strong> {{ solution_component_1_description }}</li>
+      <li><strong>{{ solution_component_2_name }}:</strong> {{ solution_component_2_description }}</li>
+      <li><strong>{{ solution_component_3_name }}:</strong> {{ solution_component_3_description }}</li>
+    </ul>
+  </section>
+
+  <section class="results">
+    <h2>النتائج المُوثَّقة</h2>
+    <p>{{ results_paragraph }}</p>
+    <ul>
+      <li>{{ result_metric_1 }}</li>
+      <li>{{ result_metric_2 }}</li>
+      <li>{{ result_metric_3 }}</li>
+    </ul>
+  </section>
+
+  <section class="compliance-trust">
+    <h2>الثقة والامتثال</h2>
+    <p>كل قرار خارجي Dealix اتخذه لصالح {{ customer_name }} موثّق في Decision Passport:</p>
+    <ul>
+      <li>{{ decision_passport_entries }} audit log entries</li>
+      <li>PDPL Art. 5 consent flow: <strong>{{ pdpl_compliance_rate }}%</strong> compliant</li>
+      <li>ZATCA Phase 2 e-invoicing: <strong>fully wired</strong></li>
+      <li>Data residency: <strong>me-south-1 (Bahrain GCC)</strong>, no cross-border transfer</li>
+    </ul>
+  </section>
+
+  <section class="next-steps">
+    <h2>الخطوة التالية لـ {{ customer_name }}</h2>
+    <p>{{ next_steps_paragraph }}</p>
+  </section>
+
+  <aside class="cta">
+    <h2>هل قطاعكم مماثل لـ {{ customer_name }}؟</h2>
+    <p>تواصل معنا لمعرفة كيف نقدر نخدمكم بنفس النموذج.</p>
+    <a href="https://wa.me/9665XXXXXXXX?text=أبي%20Pilot%20-%20{{ customer_name }}%20case" class="cta-btn">احجز Pilot عبر WhatsApp</a>
+  </aside>
+
+  <footer class="case-footer">
+    <p class="meta">
+      Published {{ published_date }} · Approved by {{ customer_name }} on {{ approval_date }}
+    </p>
+    <nav>
+      <a href="/">الرئيسية</a> ·
+      <a href="/pricing.html">التسعير</a> ·
+      <a href="/case-study-pilot-example.html">نموذج Pilot (توضيحي)</a> ·
+      <a href="/case-studies.html">جميع دراسات الحالة</a>
+    </nav>
+  </footer>
+
+</main>
+
+</body>
+</html>

@@ -1,0 +1,68 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Weekly Value Report",
+  "type": "object",
+  "required": ["report_id", "engagement_id", "week_number", "report_date", "delivered_this_week", "improvements", "next_actions", "prepared_by"],
+  "properties": {
+    "report_id": {"type": "string"},
+    "engagement_id": {"type": "string"},
+    "client_name": {"type": "string"},
+    "week_number": {"type": "integer"},
+    "report_date": {"type": "string", "format": "date"},
+    "period_start": {"type": "string", "format": "date"},
+    "period_end": {"type": "string", "format": "date"},
+    "delivered_this_week": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "deliverable": {"type": "string"},
+          "status": {"type": "string", "enum": ["completed", "in_progress", "pending"]},
+          "client_impact": {"type": "string"}
+        }
+      }
+    },
+    "improvements": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "metric": {"type": "string"},
+          "before": {"type": "string"},
+          "after": {"type": "string"},
+          "improvement": {"type": "string"},
+          "is_hypothetical": {"type": "boolean", "default": false}
+        }
+      }
+    },
+    "evidence_level": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "claim": {"type": "string"},
+          "level": {"type": "integer", "minimum": 1, "maximum": 5}
+        }
+      }
+    },
+    "open_blockers": {"type": "array", "items": {"type": "string"}},
+    "required_approvals": {"type": "array", "items": {"type": "string"}},
+    "next_actions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "action": {"type": "string"},
+          "owner": {"type": "string"},
+          "deadline": {"type": "string", "format": "date"}
+        }
+      }
+    },
+    "renewal_signals": {"type": "object"},
+    "expansion_signals": {"type": "object"},
+    "prepared_by": {"type": "string"},
+    "approved_by": {"type": "string"},
+    "sent_to_client": {"type": "boolean"},
+    "sent_date": {"type": "string", "format": "date"}
+  }
+}

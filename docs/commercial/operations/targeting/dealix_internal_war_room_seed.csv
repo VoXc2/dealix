@@ -1,0 +1,7 @@
+company,contact,segment,pain_hypothesis,channel,motion,offer_id,status,next_action,next_action_date,priority,notes
+Dealix: أول Diagnostic مدفوع,Sami,internal_milestone,إغلاق بوابة 0–1,manual,internal,ten_lead_audit,in_progress,تسجيل payment_received في الأدلة,,high,dogfooding — لا إيراد وهمي
+Dealix: Proof Pack مسلّم,Sami,internal_milestone,تسليم Proof Pack عميل أول,manual,internal,agency_proof_pack,not_contacted,proof_pack_delivered في CSV,,high,dogfooding
+Dealix: verify أسبوعي,CI,internal_ops,تحقق نظام المؤسس أسبوعياً,github,internal,ten_lead_audit,not_contacted,founder_weekly_verify workflow,,medium,dogfooding J5
+Dealix: Soft Launch gate,Founder,internal_ops,verify_commercial_launch_ready,manual,internal,ten_lead_audit,not_contacted,مراجعة checklist,,medium,dogfooding
+Dealix: قرار أسبوعي,Founder,internal_ops,one_decision في data/founder_weekly,manual,internal,executive_diagnostic,message_drafted,founder_weekly_decision_init,,high,dogfooding A1
+Dealix: KPI من CRM,Sami,internal_ops,kpi_founder_commercial_import.yaml,manual,internal,ten_lead_audit,not_contacted,apply_kpi_founder_commercial,,high,dogfooding J4

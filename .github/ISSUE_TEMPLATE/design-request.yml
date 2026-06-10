@@ -1,0 +1,45 @@
+name: 🎨 Design Request
+description: Request a new component, page, or visual change
+labels: [design, needs-review]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## 🔷 Dealix Design Request
+        Please fill out this form as completely as possible.
+  - type: dropdown
+    id: type
+    attributes:
+      label: Type of Request
+      options:
+        - New Component
+        - Component Update
+        - New Page
+        - Brand/Style Change
+        - Animation/Interaction
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: Clear description of the design change needed
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance Criteria
+      description: What does "done" look like?
+      placeholder: |
+        - [ ] Component renders with Navy background
+        - [ ] Gold accent on hover state
+        - [ ] RTL layout works correctly
+    validations:
+      required: true
+  - type: textarea
+    id: reference
+    attributes:
+      label: Design Reference
+      description: Figma link, screenshot, or visual description

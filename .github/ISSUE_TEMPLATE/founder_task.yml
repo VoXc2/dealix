@@ -1,0 +1,59 @@
+name: Founder task
+description: Create a founder-level execution task
+title: "founder: "
+labels:
+  - founder-os
+body:
+  - type: textarea
+    id: objective
+    attributes:
+      label: Objective
+      description: What executive outcome should this create?
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - Strategy
+        - Product
+        - GTM
+        - Sales
+        - Customer Success
+        - Finance
+        - Legal
+        - Security
+        - AI Governance
+        - Operations
+        - Partnerships
+        - Hiring
+    validations:
+      required: true
+  - type: textarea
+    id: deliverable
+    attributes:
+      label: Deliverable
+      description: What artifact must exist when this closes?
+      placeholder: Dashboard, scorecard, playbook, decision record, policy, checklist, or roadmap.
+    validations:
+      required: true
+  - type: textarea
+    id: done
+    attributes:
+      label: Definition of Done
+      description: How do we know this is complete?
+    validations:
+      required: true
+  - type: input
+    id: owner
+    attributes:
+      label: Owner
+      placeholder: One directly responsible owner
+    validations:
+      required: true
+  - type: textarea
+    id: risks
+    attributes:
+      label: Risks and tradeoffs
+      description: What could go wrong or what must we stop to make room?

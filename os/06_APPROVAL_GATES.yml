@@ -1,0 +1,219 @@
+# Dealix Approval Gates
+# بوابات الموافقة البشرية — قانون لا استثناء منه
+
+version: "1.0"
+enforced_by: "all agents"
+override_authority: "founder only"
+
+principle: >
+  أي إجراء يؤثر على الخارج أو على بيانات حقيقية أو على التزامات تجارية
+  يتوقف تلقائياً ولا يُنفَّذ إلا بعد موافقة صريحة من المؤسس.
+
+gates:
+
+  # ============ COMMUNICATION GATES ============
+
+  send_first_email:
+    id: "G01"
+    name: "إرسال أول إيميل لشركة"
+    requires_human_approval: true
+    reason: >
+      التواصل الأول مع شركة يحمل مخاطر evaluation — الطريقة والتوقيت والصياغة
+      تحدد انطباعنا الأول. لا يمكن التراجع عن إيميل أُرسل.
+    what_agent_can_do:
+      - "بناء company brief"
+      - "كتابة email draft"
+      - "تشغيل email safety check"
+      - "تصنيف الشركة"
+    what_requires_approval:
+      - "الضغط على إرسال"
+    approval_checklist:
+      - "المؤسس راجع الدرافت"
+      - "التوقيت مناسب"
+      - "الشركة لم تُرسل لها من قبل"
+    escalation: "يُعرض على المؤسس في الـ Daily Brief"
+
+  send_followup_email:
+    id: "G02"
+    name: "إرسال follow-up"
+    requires_human_approval: true
+    reason: "كل تواصل خارجي يُصنَّف كقرار تجاري"
+    note: "المؤسس قد يفوض هذا لاحقاً بعد بناء الثقة في النظام"
+
+  share_pricing:
+    id: "G03"
+    name: "مشاركة أي سعر مع عميل"
+    requires_human_approval: true
+    reason: >
+      الأسعار هي التزامات تجارية. مشاركة سعر خاطئ أو غير مناسب
+      تضر بالتفاوض وبصورة الشركة.
+    what_agent_can_do:
+      - "حساب estimated cost"
+      - "بناء pricing section في proposal draft"
+    what_requires_approval:
+      - "إرسال أي رقم محدد للعميل"
+
+  send_proposal:
+    id: "G04"
+    name: "إرسال proposal للعميل"
+    requires_human_approval: true
+    reason: "Proposal يمثل التزاماً تجارياً وقانونياً"
+    approval_checklist:
+      - "المؤسس راجع المحتوى كاملاً"
+      - "الأسعار والمواعيد واقعية"
+      - "scope واضح ومحدد"
+      - "مخاطر وافتراضات مذكورة"
+
+  # ============ SECURITY GATES ============
+
+  request_client_credentials:
+    id: "G05"
+    name: "طلب credentials أو API keys من العميل"
+    requires_human_approval: true
+    reason: >
+      طلب credentials يعني أننا على وشك الوصول لأنظمة حقيقية.
+      هذا قرار ثقة كبير من العميل ويجب أن نكون جاهزين 100%.
+    prerequisites:
+      - "onboarding document مكتمل"
+      - "security checklist مراجعة"
+      - "scope واضح ومحدد"
+      - "sandbox متاح إن أمكن"
+
+  use_production_api:
+    id: "G06"
+    name: "استخدام production API أو بيانات حقيقية"
+    requires_human_approval: true
+    reason: >
+      أي خطأ في production يؤثر على العميل مباشرة.
+      نبدأ دائماً بـ sandbox أو sample data.
+    prerequisites:
+      - "pilot ناجح على sample data"
+      - "موافقة خطية من العميل"
+      - "rollback plan موجود"
+      - "error handling مُختبر"
+
+  access_client_systems:
+    id: "G07"
+    name: "الوصول لأي نظام داخلي للعميل"
+    requires_human_approval: true
+    reason: "الوصول لأنظمة العميل مسؤولية قانونية وأمنية"
+
+  # ============ DEPLOYMENT GATES ============
+
+  deploy_to_client_environment:
+    id: "G08"
+    name: "نشر على بيئة العميل"
+    requires_human_approval: true
+    reason: "Deployment في production يمكن أن يسبب downtime أو مشاكل"
+    prerequisites:
+      - "QA checklist مكتملة"
+      - "demo path يعمل"
+      - "rollback plan موثق"
+      - "موافقة العميل"
+      - "موافقة المؤسس"
+
+  run_automated_actions_externally:
+    id: "G09"
+    name: "تشغيل أي automation تؤثر على الخارج"
+    requires_human_approval: true
+    reason: "Automated actions على بيانات حقيقية لا يمكن التراجع عنها"
+
+  # ============ DATA GATES ============
+
+  delete_client_data:
+    id: "G10"
+    name: "حذف أي بيانات للعميل"
+    requires_human_approval: true
+    reason: "الحذف لا رجعة منه"
+    additional_requirement: "يُسجَّل في audit log قبل وبعد"
+
+  share_client_data:
+    id: "G11"
+    name: "مشاركة بيانات العميل مع أي طرف"
+    requires_human_approval: true
+    reason: "PDPL ومتطلبات الخصوصية"
+    note: "لا تُشارك بيانات العميل مع أي طرف ثالث حتى بعد الموافقة إلا بموجب DPA"
+
+  use_client_data_for_training:
+    id: "G12"
+    name: "استخدام بيانات العميل في تدريب AI"
+    requires_human_approval: false
+    allowed: false
+    reason: "محظور دائماً بدون موافقة مكتوبة صريحة وإطار قانوني كامل"
+
+  # ============ FREE ACTIONS (NO APPROVAL NEEDED) ============
+
+  research_company_public:
+    id: "F01"
+    name: "البحث عن معلومات عامة للشركة"
+    requires_human_approval: false
+    reason: "معلومات عامة ومتاحة"
+
+  build_company_brief:
+    id: "F02"
+    name: "بناء company brief"
+    requires_human_approval: false
+    reason: "تحليل داخلي لا يؤثر على الخارج"
+
+  create_email_draft:
+    id: "F03"
+    name: "كتابة email draft"
+    requires_human_approval: false
+    reason: "Draft فقط — لا يُرسل تلقائياً"
+
+  generate_proposal_draft:
+    id: "F04"
+    name: "بناء proposal draft"
+    requires_human_approval: false
+    reason: "Draft فقط — لا يُرسل تلقائياً"
+
+  analyze_sample_data:
+    id: "F05"
+    name: "تحليل sample data بدون PII"
+    requires_human_approval: false
+    reason: "sample data آمن للتحليل"
+    condition: "البيانات خالية من PII ومُقدَّمة بموافقة"
+
+  create_architecture_doc:
+    id: "F06"
+    name: "إنشاء وثيقة architecture"
+    requires_human_approval: false
+    reason: "وثيقة داخلية للمراجعة"
+
+  run_internal_qa:
+    id: "F07"
+    name: "تشغيل QA داخلي على sample"
+    requires_human_approval: false
+    reason: "QA على بيئة تطوير داخلية"
+
+  score_company:
+    id: "F08"
+    name: "تقييم شركة بنظام الـ scoring"
+    requires_human_approval: false
+    reason: "تحليل داخلي"
+
+  classify_reply:
+    id: "F09"
+    name: "تصنيف رد العميل"
+    requires_human_approval: false
+    reason: "تحليل داخلي"
+
+  prepare_discovery_brief:
+    id: "F10"
+    name: "تجهيز call brief للمؤسس"
+    requires_human_approval: false
+    reason: "تحضير داخلي"
+
+# ============ ESCALATION PROCEDURE ============
+
+escalation:
+  how: >
+    إذا واجه أي agent موقفاً غير مغطى في هذا الملف،
+    يتوقف ويضيف الموقف لـ Founder Daily Brief مع وصف واضح.
+  format: |
+    ## GATE ESCALATION
+    - Action: [ما أراد الـ agent فعله]
+    - Reason Triggered: [لماذا توقف]
+    - Context: [السياق الكامل]
+    - Recommended Decision: [توصية الـ agent]
+    - Options: [الخيارات المتاحة للمؤسس]

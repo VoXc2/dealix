@@ -1,0 +1,48 @@
+{
+  "_schema": "wave8_consent_record_v1",
+  "_note": "Fill this template for each consent event. Store in gitignored path (data/customers/<handle>/). NEVER commit with real data.",
+  "_lawyer_review": "draft_only — review required before live use",
+  "customer_handle": "<replace>",
+  "company_name": "<replace>",
+  "consent_events": [
+    {
+      "consent_type": "dpa_signing",
+      "status": "pending",
+      "signed_by": "<full_name>",
+      "signed_by_title": "<job_title>",
+      "signed_at_iso": null,
+      "method": "physical|electronic",
+      "document_ref": "docs/DPA_DEALIX_FULL.md",
+      "stored_at": "google_drive_link_or_physical_location",
+      "notes": ""
+    },
+    {
+      "consent_type": "whatsapp_opt_in",
+      "status": "pending",
+      "opted_in_by": "<customer_name>",
+      "opted_in_at_iso": null,
+      "method": "verbal_confirmed|written|digital_form",
+      "channel": "whatsapp",
+      "notes": ""
+    },
+    {
+      "consent_type": "proof_publication",
+      "status": "pending",
+      "approved_by": "<customer_name>",
+      "approved_at_iso": null,
+      "content_type": "case_study|testimonial|screenshot",
+      "document_ref": "docs/wave8/PROOF_PUBLICATION_CONSENT_TEMPLATE.md",
+      "notes": ""
+    },
+    {
+      "consent_type": "data_retention_acknowledgment",
+      "status": "pending",
+      "acknowledged_by": "<customer_name>",
+      "acknowledged_at_iso": null,
+      "retention_period_days": 730,
+      "notes": ""
+    }
+  ],
+  "dsr_requests": [],
+  "last_updated_at_iso": null
+}

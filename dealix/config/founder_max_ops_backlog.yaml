@@ -1,0 +1,425 @@
+# Founder Max Ops Backlog — 55 tasks (machine-readable status)
+# Human index: docs/ops/FOUNDER_MAX_OPS_BACKLOG_AR.md
+version: 1
+updated: "2026-05-18"
+sections:
+  A: { label_ar: "استراتيجية وقرار أسبوعي", count: 6 }
+  B: { label_ar: "منتج وقيمة وأدلة", count: 8 }
+  C: { label_ar: "GTM 0→100", count: 9 }
+  D: { label_ar: "إيقاع يومي/أسبوعي", count: 10 }
+  E: { label_ar: "PDPL وثقة", count: 6 }
+  F: { label_ar: "طاقة ومالية", count: 6 }
+  G: { label_ar: "مواد إقناع Full Ops", count: 9 }
+  H: { label_ar: "Frontend Ops", count: 10 }
+  I: { label_ar: "Backend وAPI", count: 10 }
+  J: { label_ar: "Dogfooding", count: 6 }
+
+tasks:
+  - id: A1
+    section: A
+    title_ar: "تثبيت قرار الأسبوع الواحد"
+    ref: docs/ops/FOUNDER_WEEKLY_ONE_DECISION_AR.md
+    status: in_progress
+    automation: scripts/founder_weekly_decision_init.py
+  - id: A2
+    section: A
+    title_ar: "ربط القرار الأسبوعي بلوحة /ops/founder"
+    ref: frontend/src/components/gtm/OpsFounderWarRoom.tsx
+    status: in_progress
+    automation: api/routers/revenue_ops_autopilot.py
+  - id: A3
+    section: A
+    title_ar: "مراجعة Soft vs Paid أسبوعياً"
+    ref: docs/commercial/COMMERCIAL_LAUNCH_CHECKLIST_AR.md
+    status: open
+  - id: A4
+    section: A
+    title_ar: "عرض مرحلة 0–5 في لوحة المؤسس"
+    ref: docs/commercial/MASTER_COMMERCIAL_OPERATING_PLAN_AR.md
+    status: in_progress
+  - id: A5
+    section: A
+    title_ar: "retro أسبوعي مع scorecard"
+    ref: docs/commercial/operations/COMMERCIAL_WEEKLY_SCORECARD_AR.md
+    status: open
+    automation: scripts/founder_weekly_scorecard.py
+  - id: A6
+    section: A
+    title_ar: "أرشفة قرارات الأسبوع YAML"
+    ref: data/founder_weekly/
+    status: done
+  - id: B1
+    section: B
+    title_ar: "نتيجة عميل 30–90 يوم Motion A"
+    ref: docs/commercial/operations/motion_a_agency/
+    status: open
+  - id: B2
+    section: B
+    title_ar: "مسار أول Diagnostic مدفوع + Proof"
+    ref: docs/commercial/operations/FIRST_PAID_DIAGNOSTIC_DOD_AR.md
+    status: in_progress
+    automation: dealix/commercial_ops/first_paid_tracker.py
+  - id: B3
+    section: B
+    title_ar: "ترميز GTM debrief"
+    ref: docs/commercial/operations/FOUNDER_GTM_CODIFICATION_AR.md
+    status: in_progress
+    automation: scripts/founder_meeting_debrief_init.py
+  - id: B4
+    section: B
+    title_ar: "جدول 10–20 محادثة"
+    ref: docs/commercial/operations/founder_gtm_codification_registry.yaml
+    status: open
+  - id: B5
+    section: B
+    title_ar: "معايير PLS كقرار أسبوعي"
+    ref: docs/ops/FOUNDER_WEEKLY_ONE_DECISION_AR.md
+    status: open
+  - id: B6
+    section: B
+    title_ar: "توحيد أحداث الأدلة CSV/API"
+    ref: docs/commercial/operations/evidence_events_tracker.csv
+    status: in_progress
+  - id: B7
+    section: B
+    title_ar: "anti-waste قبل حملة خارجية"
+    ref: POST /api/v1/revenue-os/anti-waste/check
+    status: done
+  - id: B8
+    section: B
+    title_ar: "Proof Pack vs قالب التسليم"
+    ref: docs/delivery/PROOF_PACK_TEMPLATE.md
+    status: open
+  - id: C1
+    section: C
+    title_ar: "تشغيل Motion A + ICP"
+    ref: dealix/config/icp_agency_wedge.yaml
+    status: in_progress
+  - id: C2
+    section: C
+    title_ar: "تدوير أهداف مع cooldown"
+    ref: scripts/rotate_agency_targets.py
+    status: done
+  - id: C3
+    section: C
+    title_ar: "اختبار Motion ثانٍ بعد قناة فائزة"
+    ref: docs/commercial/MASTER_COMMERCIAL_OPERATING_PLAN_AR.md
+    status: open
+  - id: C4
+    section: C
+    title_ar: "SOAEN على كل لمسة"
+    ref: docs/commercial/DEALIX_COMMERCIAL_SCALE_SYSTEM_AR.md
+    status: in_progress
+  - id: C5
+    section: C
+    title_ar: "محتوى أسبوعي مسودات فقط"
+    ref: scripts/generate_weekly_content_drafts.py
+    status: done
+  - id: C6
+    section: C
+    title_ar: "ربط سوشال /ops/marketing"
+    ref: frontend/src/app/[locale]/ops/marketing/page.tsx
+    status: in_progress
+  - id: C7
+    section: C
+    title_ar: "شراكة تجريبية واحدة"
+    ref: docs/commercial/operations/PARTNER_ONBOARDING_KIT_AR.md
+    status: open
+  - id: C8
+    section: C
+    title_ar: "objection/AEO من السجل الفعلي"
+    ref: docs/commercial/operations/objection_engine_registry.yaml
+    status: open
+  - id: C9
+    section: C
+    title_ar: "benchmark خارجي ربع سنوي"
+    ref: docs/ops/FOUNDER_MAX_OPS_BACKLOG_AR.md
+    status: open
+  - id: D1
+    section: D
+    title_ar: "أمر صباحي ثابت"
+    ref: scripts/run_founder_commercial_day.sh
+    status: done
+  - id: D2
+    section: D
+    title_ar: "مزامنة أدلة API"
+    ref: DEALIX_SYNC_EVIDENCE=1
+    status: in_progress
+  - id: D3
+    section: D
+    title_ar: "سطر أدلة مساءً"
+    ref: scripts/founder_evening_evidence.py
+    status: in_progress
+  - id: D4
+    section: D
+    title_ar: "scorecard جمعة"
+    ref: scripts/founder_weekly_scorecard.py
+    status: done
+  - id: D5
+    section: D
+    title_ar: "verify_founder_operating_system أسبوعياً"
+    ref: scripts/verify_founder_operating_system.ps1
+    status: in_progress
+    automation: .github/workflows/founder_weekly_verify.yml
+  - id: D6
+    section: D
+    title_ar: "verify_commercial_launch_ready"
+    ref: scripts/verify_commercial_launch_ready.py
+    status: in_progress
+    automation: .github/workflows/founder_weekly_verify.yml
+  - id: D7
+    section: D
+    title_ar: "مراجعة GitHub Actions cron"
+    ref: .github/workflows/founder_commercial_daily.yml
+    status: open
+  - id: D8
+    section: D
+    title_ar: "يوم القيمة الموحّد"
+    ref: scripts/run_value_plan_day.ps1
+    status: in_progress
+  - id: D9
+    section: D
+    title_ar: "SLA موجز founder_briefs"
+    ref: data/founder_briefs/
+    status: open
+  - id: D10
+    section: D
+    title_ar: "KPI 3–5 لمسات بشرية"
+    ref: docs/ops/FOUNDER_OPERATING_SYSTEM_AR.md
+    status: done
+  - id: E1
+    section: E
+    title_ar: "مسار PDPL pass"
+    ref: docs/commercial/FOUNDER_PDPL_COMPLIANCE_PASS_AR.md
+    status: in_progress
+  - id: E2
+    section: E
+    title_ar: "سياسات معالجة وسجل أنشطة"
+    ref: docs/ops/PDPL_CLOSURE_CHECKLIST_AR.md
+    status: open
+  - id: E3
+    section: E
+    title_ar: "مواءمة نسخ المواقع L0–L5"
+    ref: AGENTS.md
+    status: open
+  - id: E4
+    section: E
+    title_ar: "مراجعة قانونية عقد كبير"
+    ref: docs/commercial/operations/evidence_events_tracker.csv
+    status: open
+  - id: E5
+    section: E
+    title_ar: "battlecards PDPL"
+    ref: docs/commercial/MARKET_INTELLIGENCE_OBJECTIONS_PDPL_AR.md
+    status: in_progress
+  - id: E6
+    section: E
+    title_ar: "تدريب تسليم — لا بيانات عميل في مسودات"
+    ref: docs/delivery/PROOF_PACK_TEMPLATE.md
+    status: open
+  - id: F1
+    section: F
+    title_ar: "لوحة runway"
+    ref: docs/ops/FOUNDER_MAX_OPS_BACKLOG_AR.md
+    status: open
+  - id: F2
+    section: F
+    title_ar: "CAC payback من KPI import"
+    ref: dealix/transformation/kpi_founder_commercial_import.example.yaml
+    status: in_progress
+  - id: F3
+    section: F
+    title_ar: "سياسة founder-led → فريق"
+    ref: docs/ops/FOUNDER_MAX_OPS_BACKLOG_AR.md
+    status: open
+  - id: F4
+    section: F
+    title_ar: "كتل عميقة للقرارات"
+    ref: docs/ops/FOUNDER_REVENUE_DAY_ONE_AR.md
+    status: open
+  - id: F5
+    section: F
+    title_ar: "حد مبادرات متوازية ≤3"
+    ref: docs/ops/FOUNDER_WEEKLY_ONE_DECISION_AR.md
+    status: open
+  - id: F6
+    section: F
+    title_ar: "مراجعة شهرية حمولة"
+    ref: docs/ops/FOUNDER_COMPREHENSIVE_PLAN_EXECUTION_AR.md
+    status: open
+  - id: G1
+    section: G
+    title_ar: "Executive Deck عربي/إنجليزي"
+    ref: docs/commercial/ops_client_pack/EXECUTIVE_DECK_OUTLINE_AR.md
+    status: in_progress
+  - id: G2
+    section: G
+    title_ar: "Pitch 10 شرائح لكل Motion"
+    ref: docs/commercial/ops_client_pack/
+    status: open
+  - id: G3
+    section: G
+    title_ar: "Security & Governance للبيع"
+    ref: docs/commercial/MARKET_INTELLIGENCE_TRUST_SECURITY_MATRIX_AR.md
+    status: in_progress
+  - id: G4
+    section: G
+    title_ar: "قالب Proposal موحّد"
+    ref: docs/COMMERCIAL_WIRING_MAP.md
+    status: open
+  - id: G5
+    section: G
+    title_ar: "سكربت ديمو 12 دقيقة"
+    ref: docs/commercial/ops_client_pack/dealix_ops_runbook_ar.md
+    status: in_progress
+  - id: G6
+    section: G
+    title_ar: "حزمة Champion + Procurement"
+    ref: docs/commercial/FULL_OPS_CLOSE_ENGINE_AR.md
+    status: open
+  - id: G7
+    section: G
+    title_ar: "كتيب إحالة شركاء"
+    ref: docs/commercial/operations/PARTNER_ONBOARDING_KIT_AR.md
+    status: open
+  - id: G8
+    section: G
+    title_ar: "قائمة prep/debrief اجتماع"
+    ref: docs/commercial/operations/founder_meeting_debrief_template.yaml
+    status: in_progress
+  - id: G9
+    section: G
+    title_ar: "ملخص EN للمشتري الدولي"
+    ref: docs/commercial/MARKET_INTELLIGENCE_EN_EXECUTIVE_SUMMARY.md
+    status: done
+  - id: H1
+    section: H
+    title_ar: "مركز /ops hub على مسار 5 دقائق"
+    ref: frontend/src/app/[locale]/ops/page.tsx
+    status: open
+  - id: H2
+    section: H
+    title_ar: "/ops/founder قرار + مرحلة + Value Plan"
+    ref: frontend/src/components/gtm/OpsFounderWarRoom.tsx
+    status: in_progress
+  - id: H3
+    section: H
+    title_ar: "/ops/war-room war_room_today.json"
+    ref: frontend/src/app/[locale]/ops/war-room/page.tsx
+    status: in_progress
+  - id: H4
+    section: H
+    title_ar: "/ops/evidence بوابات مرحلة"
+    ref: frontend/src/app/[locale]/ops/evidence/page.tsx
+    status: open
+  - id: H5
+    section: H
+    title_ar: "/ops/approvals SOAEN"
+    ref: frontend/src/app/[locale]/ops/approvals/page.tsx
+    status: open
+  - id: H6
+    section: H
+    title_ar: "/ops/marketing طابور اليوم"
+    ref: frontend/src/components/gtm/OpsMarketingContent.tsx
+    status: in_progress
+  - id: H7
+    section: H
+    title_ar: "/ops/sales محاذاة أدلة"
+    ref: frontend/src/app/[locale]/ops/sales/page.tsx
+    status: open
+  - id: H8
+    section: H
+    title_ar: "CommercialLaunchHome Soft vs Paid"
+    ref: frontend/src/components/gtm/CommercialLaunchHome.tsx
+    status: open
+  - id: H9
+    section: H
+    title_ar: "Business NOW استراتيجية"
+    ref: frontend/src/components/business/BusinessNowContent.tsx
+    status: in_progress
+  - id: H10
+    section: H
+    title_ar: "شارات مسودة فقط"
+    ref: frontend/messages/ar.json
+    status: open
+  - id: I1
+    section: I
+    title_ar: "commercial-map vs wiring"
+    ref: GET /api/v1/commercial-map
+    status: in_progress
+  - id: I2
+    section: I
+    title_ar: "Evidence API متسق مع CSV"
+    ref: api/routers/revenue_ops_autopilot.py
+    status: in_progress
+  - id: I3
+    section: I
+    title_ar: "Ops autopilot founder pack"
+    ref: api/routers/revenue_ops_autopilot.py
+    status: in_progress
+  - id: I4
+    section: I
+    title_ar: "Moyasar Paid Launch"
+    ref: docs/LAUNCH_GATES.md
+    status: open
+  - id: I5
+    section: I
+    title_ar: "HubSpot/Calendly E2E"
+    ref: docs/ops/FOUNDER_INTEGRATION_TRUTH_MATRIX_AR.md
+    status: open
+  - id: I6
+    section: I
+    title_ar: "صحة مفاتيح التحقق"
+    ref: scripts/railway_launch_env_check.py
+    status: open
+  - id: I7
+    section: I
+    title_ar: "لا revenue قبل invoice_paid"
+    ref: auto_client_acquisition/service_catalog/registry.py
+    status: done
+  - id: I8
+    section: I
+    title_ar: "توثيق dealix-proxy"
+    ref: frontend/src/app/api/dealix-proxy/
+    status: open
+  - id: I9
+    section: I
+    title_ar: "smoke لوحات Ops"
+    ref: scripts/verify_commercial_fe_be.py
+    status: in_progress
+  - id: I10
+    section: I
+    title_ar: "catalog gates vs الويب"
+    ref: docs/COMMERCIAL_WIRING_MAP.md
+    status: in_progress
+  - id: J1
+    section: J
+    title_ar: "War Room داخلي Dealix"
+    ref: docs/ops/DEALIX_DOGFOODING_WAR_ROOM_AR.md
+    status: in_progress
+    automation: scripts/founder_dogfooding_war_room_sync.py
+  - id: J2
+    section: J
+    title_ar: "Diagnostic داخلي قبل قالب خارجي"
+    ref: docs/ops/DEALIX_DOGFOODING_WAR_ROOM_AR.md
+    status: open
+  - id: J3
+    section: J
+    title_ar: "anti-waste على حملات Dealix"
+    ref: POST /api/v1/revenue-os/anti-waste/check
+    status: open
+  - id: J4
+    section: J
+    title_ar: "KPI داخلي نفس import"
+    ref: dealix/transformation/kpi_founder_commercial_import.example.yaml
+    status: in_progress
+  - id: J5
+    section: J
+    title_ar: "CTO/executive checklist أسبوعي"
+    ref: scripts/run_cto_weekly_anchor.sh
+    status: open
+  - id: J6
+    section: J
+    title_ar: "صفقة داخلية اختبار شهري"
+    ref: docs/commercial/operations/targeting/dealix_internal_war_room_seed.csv
+    status: in_progress

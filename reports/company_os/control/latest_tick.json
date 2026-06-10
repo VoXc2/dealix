@@ -1,0 +1,65 @@
+{
+  "status": {
+    "generated_at": "2026-05-30T12:59:01.283191+00:00",
+    "production": {
+      "api_health": {
+        "ok": true,
+        "status": 200
+      },
+      "web_demo": {
+        "ok": true,
+        "status": 200
+      },
+      "revenue_os": {
+        "ok": true,
+        "status": 200
+      },
+      "zatca": {
+        "ok": true,
+        "status": 200
+      }
+    },
+    "repo": {
+      "branch": "main",
+      "last_commit": "8f6e8ddc company-os: add mobile founder control room",
+      "status": " M reports/company_os/control/doctor.json\n"
+    },
+    "assets": {
+      "docs/company_os/enterprise/ENTERPRISE_OPERATING_MODEL_AR.md": true,
+      "docs/company_os/STRATEGIC_COMMAND_LAYER_AR.md": true,
+      "docs/data_room/DEALIX_COMPANY_ONE_PAGER_AR.md": true,
+      "docs/proof_factory/P1_PROOF_PACK_TEMPLATE_AR.md": true,
+      "docs/partner_os/PARTNER_REFERRAL_SYSTEM_AR.md": true,
+      "docs/brand/DEALIX_VISUAL_IDENTITY_AR.md": true,
+      "docs/pitch/DEALIX_MASTER_PITCH_DECK_AR.md": true,
+      "docs/conversion/DEALIX_HIGH_CONVICTION_SALES_PAGE_AR.md": true
+    }
+  },
+  "processed_now": [
+    {
+      "command": {
+        "id": "bb32cbf9",
+        "created_at": "2026-05-30T12:59:01.152284+00:00",
+        "priority": "high",
+        "command": "افحص هل company-brain شغال 24 ساعة وجهز لي خطة التشغيل التالية",
+        "status": "queued"
+      },
+      "plan": {
+        "areas": [
+          "brain"
+        ],
+        "actions": [
+          "Run CEO brain, content factory, and growth scorecard."
+        ],
+        "guardrails": [
+          "no auto-send",
+          "no scraping",
+          "human approval",
+          "no ROI claim without baseline"
+        ]
+      },
+      "status": "planned",
+      "planned_at": "2026-05-30T12:59:01.282973+00:00"
+    }
+  ]
+}

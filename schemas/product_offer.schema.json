@@ -1,0 +1,120 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://dealix.sa/schemas/product_offer.schema.json",
+  "title": "Product Offer",
+  "description": "Product/Service offer definition for Dealix commercial operations",
+  "type": "object",
+  "required": ["id", "name_ar", "tier", "price_range_sar", "scope", "out_of_scope", "deliverables", "timeline_days", "approval_required"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_]+$"
+    },
+    "name_ar": {
+      "type": "string",
+      "minLength": 3
+    },
+    "name_en": {
+      "type": "string"
+    },
+    "tier": {
+      "type": "string",
+      "enum": ["entry", "starter", "standard", "pro", "premium", "custom"]
+    },
+    "tier_position": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 7,
+      "description": "Position in the 7-product ladder (1-7)"
+    },
+    "price_range_sar": {
+      "type": "object",
+      "required": ["min", "max"],
+      "properties": {
+        "min": {"type": "number", "minimum": 0},
+        "max": {"type": "number", "minimum": 0}
+      }
+    },
+    "recurring": {
+      "type": "boolean",
+      "default": false
+    },
+    "monthly_price_sar": {
+      "type": "object",
+      "properties": {
+        "min": {"type": "number", "minimum": 0},
+        "max": {"type": "number", "minimum": 0}
+      }
+    },
+    "scope": {
+      "type": "array",
+      "items": {"type": "string"},
+      "minItems": 1
+    },
+    "out_of_scope": {
+      "type": "array",
+      "items": {"type": "string"},
+      "minItems": 1
+    },
+    "deliverables": {
+      "type": "array",
+      "items": {"type": "string"},
+      "minItems": 1
+    },
+    "timeline_days": {
+      "type": "object",
+      "properties": {
+        "min": {"type": "integer", "minimum": 0},
+        "max": {"type": "integer", "minimum": 0}
+      }
+    },
+    "target_buyers": {
+      "type": "array",
+      "items": {"type": "string"}
+    },
+    "target_segments": {
+      "type": "array",
+      "items": {"type": "string"},
+      "description": "ICP segment IDs from icp_segments.yaml"
+    },
+    "primary_pain": {
+      "type": "array",
+      "items": {"type": "string"},
+      "description": "Pain category IDs from pain_to_offer.yaml"
+    },
+    "evidence_level_required": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 5
+    },
+    "approval_required": {
+      "type": "boolean",
+      "default": true
+    },
+    "approval_level": {
+      "type": "string",
+      "enum": ["L1", "L2", "L3", "L4", "L5"],
+      "default": "L1"
+    },
+    "compliance_review_required": {
+      "type": "boolean",
+      "default": false
+    },
+    "renewal_path": {
+      "type": "string",
+      "description": "ID of next offer in ladder"
+    },
+    "success_metric": {
+      "type": "string"
+    },
+    "risks": {
+      "type": "array",
+      "items": {"type": "string"}
+    },
+    "is_estimate": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "additionalProperties": false
+}

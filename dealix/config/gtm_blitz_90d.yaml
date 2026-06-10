@@ -1,0 +1,47 @@
+# GTM Blitz 90 يوم — Motion A (وكالات) · CEO Master Plan
+# Ref: dealix/config/icp_agency_wedge.yaml · agency_accounts_seed.csv
+
+version: 1
+start_iso: "2026-05-24"
+end_iso: "2026-08-22"
+motion: A
+launch_mode: soft
+
+targets:
+  icp_accounts_min: 75
+  qualified_conversations: 30
+  diagnostic_proposals_sent: 5
+  in_person_meetings: 3
+  paid_diagnostics: 1
+  proof_packs_delivered: 1
+
+daily_quotas:
+  approved_touches: 10
+  follow_ups: 5
+  partner_conversations: 1
+  evidence_events_min: 1
+  linkedin_posts_per_week: 2
+
+tracking:
+  icp_csv: docs/commercial/operations/targeting/agency_accounts_seed.csv
+  conversations_csv: docs/commercial/operations/gtm_conversation_tracker.csv
+  proposals_dir: docs/commercial/operations/proposals/
+  evidence_csv: docs/commercial/operations/evidence_events_tracker.csv
+
+offer_ladder:
+  entry: governed_diagnostic
+  price_sar_range: "4999-15000"
+  next_after_payment: ten_lead_audit
+  retainer_after_proof: growth_2999
+
+channels_allowed:
+  - linkedin_manual
+  - email_warm
+  - partner_intro
+  - inbound
+  - phone_task
+
+channels_forbidden:
+  - cold_whatsapp
+  - linkedin_auto_send
+  - scraping

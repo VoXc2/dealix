@@ -1,0 +1,28 @@
+# Motion segments B/C/D — governed targeting (no scraping)
+# Ref: docs/commercial/DEALIX_COMMERCIAL_SCALE_SYSTEM_AR.md
+
+motions:
+  B:
+    name_ar: "B2B مباشر"
+    priority: P1
+    entry_offers: [governed_diagnostic, ten_lead_audit]
+    channels_allowed: [inbound, email_warm, linkedin_manual]
+  C:
+    name_ar: "شريك CRM/تنفيذ"
+    priority: P1
+    entry_offers: [diagnostic_layer, partner_sprint]
+    channels_allowed: [partner_intro, email_warm]
+  D:
+    name_ar: "حوكمة تنفيذية"
+    priority: P2
+    entry_offers: [executive_diagnostic]
+    channels_allowed: [linkedin_manual, partner_intro]
+
+weekly_rotation:
+  sunday: A
+  monday: A
+  tuesday: B
+  wednesday: A
+  thursday: C
+  friday: D
+  saturday: A

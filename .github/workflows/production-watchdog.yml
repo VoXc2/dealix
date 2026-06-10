@@ -1,0 +1,21 @@
+name: Production Watchdog
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "*/30 * * * *"
+
+permissions:
+  contents: read
+
+jobs:
+  production-watchdog:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check production
+        run: |
+          set -e
+          curl -fsS https://api.dealix.me/healthz
+          curl -fsS https://web-production-380c3.up.railway.app/ar/demo >/dev/null
+          curl -fsS https://web-production-380c3.up.railway.app/revenue-os >/dev/null
+          echo "PRODUCTION_WATCHDOG=PASS"

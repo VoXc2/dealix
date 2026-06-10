@@ -1,0 +1,53 @@
+name: AI risk review
+description: Review an AI workflow before release or expansion
+title: "ai-risk: "
+labels:
+  - ai-governance
+  - risk
+body:
+  - type: textarea
+    id: workflow
+    attributes:
+      label: AI workflow
+      description: What does the AI system do?
+    validations:
+      required: true
+  - type: textarea
+    id: data
+    attributes:
+      label: Data used
+      description: What data is sent to or used by the model?
+    validations:
+      required: true
+  - type: dropdown
+    id: risk_level
+    attributes:
+      label: Risk level
+      options:
+        - Low
+        - Medium
+        - High
+        - Critical
+    validations:
+      required: true
+  - type: textarea
+    id: human_review
+    attributes:
+      label: Human review
+      description: Who approves outputs before customer-facing use?
+    validations:
+      required: true
+  - type: textarea
+    id: evaluation
+    attributes:
+      label: Evaluation plan
+      description: How will accuracy, safety, usefulness, and evidence quality be tested?
+    validations:
+      required: true
+  - type: textarea
+    id: fallback
+    attributes:
+      label: Fallback plan
+      description: What happens if AI output is low-confidence, wrong, unavailable, or unsafe?
+    validations:
+      required: true

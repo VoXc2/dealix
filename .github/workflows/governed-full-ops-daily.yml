@@ -1,0 +1,63 @@
+name: Governed Full Ops Daily
+
+# Unified governed autopilot: expand (wave2) + founder day + value plan.
+# ~08:00 KSA (05:00 UTC Sun-Thu). No external send — draft/approval only.
+
+on:
+  schedule:
+    - cron: "0 5 * * 0-4"
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "morning | evening | commercial | full"
+        default: "morning"
+
+concurrency:
+  group: governed-full-ops-daily
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  governed-ops:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install minimal deps
+        run: pip install pyyaml
+
+      - name: Run governed autopilot
+        env:
+          DEALIX_SYNC_EVIDENCE: ${{ secrets.DEALIX_SYNC_EVIDENCE || '0' }}
+          DEALIX_API_BASE: ${{ secrets.DEALIX_API_BASE }}
+          DEALIX_ADMIN_API_KEY: ${{ secrets.DEALIX_ADMIN_API_KEY }}
+          PYTHONIOENCODING: utf-8
+        run: |
+          MODE="${{ github.event.inputs.mode || 'morning' }}"
+          if [ "$MODE" = "full" ]; then
+            python scripts/run_dealix_complete_autonomous_day.py --weekly
+          elif [ "$MODE" = "commercial" ]; then
+            python scripts/run_dealix_complete_autonomous_day.py
+          elif [ "$MODE" = "evening" ]; then
+            python scripts/run_dealix_complete_autonomous_day.py --evening --skip-commercial-day
+          else
+            python scripts/run_dealix_complete_autonomous_day.py --skip-commercial-day
+          fi
+
+      - name: Upload artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: governed-full-ops-${{ github.run_id }}
+          path: |
+            data/founder_briefs/
+            data/war_room_today.json
+          retention-days: 14
+          if-no-files-found: ignore

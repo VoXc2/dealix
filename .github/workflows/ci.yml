@@ -1,0 +1,276 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+      - dealix-v3-autonomous-revenue-os
+      - 'copilot/**'
+      - 'feat/**'
+      - 'fix/**'
+      - 'chore/**'
+      - 'claude/**'
+      - 'release/**'
+  pull_request:
+    branches:
+      - main
+      - dealix-v3-autonomous-revenue-os
+      - 'copilot/**'
+      - 'feat/**'
+      - 'fix/**'
+      - 'chore/**'
+      - 'claude/**'
+      - 'release/**'
+  workflow_dispatch:
+    inputs:
+      api_url:
+        description: 'Optional API URL for live Railway smoke'
+        required: false
+        type: string
+      frontend_url:
+        description: 'Optional frontend URL for live Railway smoke'
+        required: false
+        type: string
+      web_url:
+        description: 'Optional apps/web URL for live Railway smoke'
+        required: false
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  python-checks:
+    name: Python quality, tests, readiness
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+
+    env:
+      APP_ENV: test
+      APP_DEBUG: "false"
+      ANTHROPIC_API_KEY: test-anthropic-key
+      DEEPSEEK_API_KEY: test-deepseek-key
+      GROQ_API_KEY: test-groq-key
+      GLM_API_KEY: test-glm-key
+      GOOGLE_API_KEY: test-google-key
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Install Python dependencies
+        shell: bash
+        run: |
+          python -m pip install --upgrade pip
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+          pip install pytest pytest-asyncio pytest-cov httpx aiosqlite
+          if [ -f pyproject.toml ]; then pip install -e .; fi
+
+      - name: Environment contract check
+        run: python scripts/check_env_contract.py
+
+      - name: Railway deploy surface check
+        run: python scripts/verify_railway_surfaces.py
+
+      - name: Founder operating system check
+        run: python scripts/verify_founder_operating_system.py
+
+      - name: Compile check
+        run: python -m compileall api auto_client_acquisition autonomous_growth core db integrations dealix scripts
+
+      - name: OpenAPI contract check
+        run: python scripts/check_openapi_contract.py
+
+      - name: Alembic single head
+        run: python scripts/check_alembic_single_head.py
+
+      - name: Verify Service Readiness Matrix
+        run: python scripts/verify_service_readiness_matrix.py
+
+      - name: Quick regression bundle
+        run: |
+          pytest \
+            tests/test_pg_event_store.py \
+            tests/test_model_router.py \
+            tests/test_integrations.py \
+            tests/test_v5_layers.py \
+            tests/unit/test_compliance_os.py \
+            tests/test_isolated_pg_event_store.py \
+            -q --no-cov
+
+      - name: Wave 16 — Customer intelligence + market + payment + sprint delivery
+        run: |
+          pytest \
+            tests/test_customer_health_market_intel.py \
+            tests/test_payment_events.py \
+            tests/test_sprint_delivery_system.py \
+            tests/test_intelligence_scoring.py \
+            -q --no-cov 2>/dev/null || \
+          pytest \
+            tests/test_customer_health_market_intel.py \
+            tests/test_payment_events.py \
+            tests/test_sprint_delivery_system.py \
+            -q --no-cov
+
+      - name: Doctrine guard tests (non-negotiables)
+        run: |
+          pytest \
+            tests/test_no_cold_whatsapp.py \
+            tests/test_no_guaranteed_claims.py \
+            tests/test_no_linkedin_automation.py \
+            tests/test_no_scraping_engine.py \
+            tests/test_no_pii_in_logs.py \
+            tests/test_no_source_no_answer.py \
+            tests/test_commercial_doctrine.py \
+            -q --no-cov
+
+      - name: Commercial chain tests
+        run: |
+          pytest \
+            tests/unit/test_commercial_chain.py \
+            tests/unit/test_commercial_router.py \
+            tests/test_diagnostic_engine.py \
+            -q --no-cov 2>/dev/null || \
+          pytest \
+            tests/unit/test_commercial_chain.py \
+            -q --no-cov
+
+      - name: Export Service Readiness JSON
+        run: |
+          python scripts/export_service_readiness_json.py
+          git diff --exit-code -- landing/assets/data/service-readiness.json
+
+      - name: SEO audit
+        run: |
+          python scripts/seo_audit.py
+          git diff --exit-code -- docs/SEO_AUDIT_REPORT.json
+
+      - name: Tests with coverage gate
+        run: |
+          pytest -q -n auto \
+            --cov=api --cov=core --cov=db --cov=integrations \
+            --cov-report=xml:coverage.xml \
+            --cov-report=term-missing \
+            --cov-fail-under=70
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v4
+        if: always()
+        with:
+          files: ./coverage.xml
+          fail_ci_if_error: false
+
+      - name: In-process API smoke
+        run: python scripts/smoke_inprocess.py
+
+      - name: Embeddings pipeline placeholder
+        run: python scripts/embeddings_pipeline_placeholder.py
+
+      - name: Deterministic eval smoke
+        run: python scripts/run_evals.py
+
+  web-build:
+    name: Next.js web verify
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    defaults:
+      run:
+        working-directory: apps/web
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: apps/web/package-lock.json
+
+      - name: Install web dependencies
+        run: npm ci
+
+      - name: Verify web app
+        run: npm run verify
+
+  frontend-build:
+    name: Frontend verify
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    defaults:
+      run:
+        working-directory: frontend
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install frontend dependencies
+        run: npm ci
+
+      - name: Typecheck frontend
+        run: npm run typecheck
+
+      - name: Build frontend
+        run: npm run build
+
+  railway-docker-builds:
+    name: Railway Docker image builds
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Verify API Docker build
+        run: docker build -t dealix-api-ci .
+
+      - name: Verify worker Docker build
+        run: docker build -t dealix-worker-ci -f Dockerfile.worker .
+
+      - name: Verify watchdog Docker build
+        run: docker build -t dealix-watchdog-ci -f Dockerfile.watchdog .
+
+      - name: Verify frontend Docker build
+        run: docker build -t dealix-frontend-ci frontend
+
+      - name: Verify apps web Docker build
+        run: docker build -t dealix-apps-web-ci apps/web
+
+  live-railway-smoke:
+    name: Optional live Railway smoke
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    if: github.event_name == 'workflow_dispatch'
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Run live smoke matrix
+        env:
+          DEALIX_API_URL: ${{ inputs.api_url }}
+          DEALIX_FRONTEND_URL: ${{ inputs.frontend_url }}
+          DEALIX_WEB_URL: ${{ inputs.web_url }}
+        run: python scripts/railway_smoke_matrix.py

@@ -1,0 +1,100 @@
+{
+  "services": [
+    {
+      "name": "dealix-api",
+      "rootDirectory": ".",
+      "dockerfilePath": "Dockerfile",
+      "railwayConfig": "railway.json",
+      "healthcheckPath": "/healthz",
+      "publicHealthUrl": "https://api.dealix.me/healthz",
+      "publicNetworking": true,
+      "requiredEnv": [
+        "APP_ENV",
+        "APP_SECRET_KEY",
+        "JWT_SECRET_KEY",
+        "API_KEYS",
+        "ADMIN_API_KEYS"
+      ],
+      "optionalEnv": [
+        "DATABASE_URL",
+        "REDIS_URL",
+        "SENTRY_DSN",
+        "ANTHROPIC_API_KEY",
+        "OPENAI_API_KEY",
+        "GROQ_API_KEY",
+        "GOOGLE_API_KEY",
+        "DEALIX_ADMIN_API_KEY",
+        "CORS_ORIGINS"
+      ],
+      "runsPredeploy": true
+    },
+    {
+      "name": "founder-os-worker",
+      "rootDirectory": ".",
+      "dockerfilePath": "Dockerfile.worker",
+      "startCommand": "python scripts/founder_os_worker.py",
+      "publicNetworking": false,
+      "requiredEnv": [
+        "APP_ENV"
+      ],
+      "optionalEnv": [
+        "DATABASE_URL",
+        "FOUNDER_OS_INTERVAL_SECONDS",
+        "AGENT_APPROVAL_MODE",
+        "AUTO_SEND_ENABLED",
+        "EXTERNAL_OUTREACH_ENABLED"
+      ],
+      "restartPolicyType": "ON_FAILURE",
+      "restartPolicyMaxRetries": 10,
+      "runsPredeploy": false
+    },
+    {
+      "name": "dealix-watchdog",
+      "rootDirectory": ".",
+      "dockerfilePath": "Dockerfile.watchdog",
+      "startCommand": "python scripts/railway_watchdog.py",
+      "publicNetworking": false,
+      "cronSchedule": "*/15 * * * *",
+      "requiredEnv": [],
+      "optionalEnv": [
+        "APP_URL",
+        "DEALIX_API_URL",
+        "DEALIX_HEALTH_PATH"
+      ],
+      "runsPredeploy": false
+    },
+    {
+      "name": "dealix-frontend",
+      "rootDirectory": "frontend",
+      "dockerfilePath": "Dockerfile",
+      "railwayConfig": "frontend/railway.json",
+      "healthcheckPath": "/healthz",
+      "publicHealthUrl": "https://dealix.me/healthz",
+      "publicNetworking": true,
+      "requiredEnv": [
+        "NEXT_PUBLIC_API_URL",
+        "NEXT_PUBLIC_SITE_URL",
+        "NEXT_PUBLIC_USE_DEALIX_OPS_PROXY"
+      ],
+      "optionalEnv": [
+        "DEALIX_OPS_PROXY_SECRET"
+      ],
+      "runsPredeploy": false
+    },
+    {
+      "name": "dealix-apps-web",
+      "rootDirectory": "apps/web",
+      "dockerfilePath": "Dockerfile",
+      "railwayConfig": "apps/web/railway.json",
+      "healthcheckPath": "/healthz",
+      "publicHealthUrl": "https://dealix.me/healthz",
+      "publicNetworking": true,
+      "requiredEnv": [
+        "NEXT_PUBLIC_API_URL",
+        "NEXT_PUBLIC_SITE_URL"
+      ],
+      "optionalEnv": [],
+      "runsPredeploy": false
+    }
+  ]
+}

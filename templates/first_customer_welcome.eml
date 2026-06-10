@@ -1,0 +1,61 @@
+Subject: مرحباً بك في Dealix Pilot — ٧ أيام تبدأ اليوم
+From: Sami Asiri <sami@dealix.me>
+To: {customer_email}
+Content-Type: text/html; charset=UTF-8
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <style>
+    body { font-family: -apple-system, "Segoe UI", Tahoma, sans-serif; line-height: 1.7; color: #0f172a; max-width: 600px; margin: 24px auto; padding: 0 16px; }
+    h1 { font-size: 20px; color: #0f172a; }
+    .box { background: #f1f5f9; border-right: 4px solid #0f172a; padding: 16px; margin: 16px 0; border-radius: 6px; }
+    .day { display: flex; gap: 8px; margin: 8px 0; }
+    .day-num { font-weight: 700; min-width: 70px; }
+    .cta { display: inline-block; padding: 12px 24px; background: #0f172a; color: white; text-decoration: none; border-radius: 6px; margin: 16px 0; }
+    .footer { color: #64748b; font-size: 12px; border-top: 1px solid #e2e8f0; padding-top: 12px; margin-top: 24px; }
+  </style>
+</head>
+<body>
+
+<h1>السلام عليكم {first_name} 🙏</h1>
+
+<p>شكراً لثقتك. تم استلام الـ <strong>499 SAR</strong> وبدأت رسمياً تجربة Dealix Managed Pilot لمدة ٧ أيام.</p>
+
+<div class="box">
+  <strong>التزامي تجاهك خلال هذه الأيام:</strong>
+  <ul>
+    <li>أنا شخصياً (سامي) أُشرف على onboarding كل يوم</li>
+    <li>ردود AI عربية على inbound عملائك، بـ <strong>اعتمادك</strong> أولاً</li>
+    <li>كل قرار خارجي موثّق في Decision Passport قابل للتدقيق</li>
+    <li>بياناتك في خوادم سعودية (me-south-1) تحت <strong>PDPL</strong></li>
+    <li>فواتيرك تطلع عبر <strong>ZATCA Phase 2</strong> e-invoice</li>
+  </ul>
+</div>
+
+<div class="day"><span class="day-num">Day 1:</span> Discovery call 30 دقيقة + إعداد تقني كامل (4 ساعات معك)</div>
+<div class="day"><span class="day-num">Day 2-3:</span> أول ردود عربية على inbound — أنت تعتمد كل واحدة</div>
+<div class="day"><span class="day-num">Day 4-5:</span> Mixed-mode — AI auto-send للسهل، أنت تعتمد المهم فقط</div>
+<div class="day"><span class="day-num">Day 6:</span> مراجعة Decision Passport — كل قرار خارجي مع المصدر</div>
+<div class="day"><span class="day-num">Day 7:</span> القرار — Growth plan (2,999/شهر) أو وقف مع refund كامل</div>
+
+<p><strong>أول خطوة:</strong> متى يناسبك الـ Discovery call اليوم أو غداً؟</p>
+
+<a href="{calendly_link}" class="cta">احجز 30 دقيقة معي</a>
+
+<p>أو رد على هذا البريد وأقترح وقتاً، أو راسلني واتس آب على +966 5X XXX XXXX.</p>
+
+<p>سعيد جداً بانضمامك. خلّينا نبدأ.</p>
+
+<p>— سامي عسيري<br>
+<a href="https://dealix.me">dealix.me</a></p>
+
+<div class="footer">
+  <p>This email is sent because you subscribed to Dealix Managed Pilot ({customer_email}).
+  Your data is processed under Saudi PDPL — you can request export or erasure anytime by replying to this email.</p>
+  <p>Dealix · Saudi Arabia · CR {commercial_registration} · VAT {vat_number}</p>
+</div>
+
+</body>
+</html>

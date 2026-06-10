@@ -1,0 +1,136 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://dealix.sa/schemas/commercial_proposal.schema.json",
+  "title": "Commercial Proposal",
+  "description": "Sales proposal with all required fields for Dealix",
+  "type": "object",
+  "required": ["id", "opportunity_id", "client_name", "offer_id", "scope", "deliverables", "timeline_days", "price_sar", "approval_level", "evidence_level"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^prop_[a-z0-9_]+$"
+    },
+    "opportunity_id": {
+      "type": "string"
+    },
+    "discovery_note_id": {
+      "type": "string"
+    },
+    "client_name": {
+      "type": "string"
+    },
+    "client_sector": {
+      "type": "string"
+    },
+    "client_contact": {
+      "type": "string"
+    },
+    "problem_statement": {
+      "type": "string",
+      "minLength": 10
+    },
+    "why_now": {
+      "type": "string"
+    },
+    "offer_id": {
+      "type": "string"
+    },
+    "scope": {
+      "type": "array",
+      "items": {"type": "string"},
+      "minItems": 1
+    },
+    "out_of_scope": {
+      "type": "array",
+      "items": {"type": "string"},
+      "minItems": 1
+    },
+    "deliverables": {
+      "type": "array",
+      "items": {"type": "string"},
+      "minItems": 1
+    },
+    "timeline_days": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "price_sar": {
+      "type": "number",
+      "minimum": 0
+    },
+    "discount_pct": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100,
+      "default": 0
+    },
+    "discount_reason": {
+      "type": "string"
+    },
+    "final_price_sar": {
+      "type": "number",
+      "minimum": 0
+    },
+    "currency": {
+      "type": "string",
+      "default": "SAR"
+    },
+    "payment_terms": {
+      "type": "string"
+    },
+    "assumptions": {
+      "type": "array",
+      "items": {"type": "string"}
+    },
+    "risks": {
+      "type": "array",
+      "items": {"type": "string"}
+    },
+    "success_metric": {
+      "type": "string"
+    },
+    "evidence_level": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 5
+    },
+    "evidence_source": {
+      "type": "string"
+    },
+    "approval_level": {
+      "type": "string",
+      "enum": ["L1", "L2", "L3", "L4", "L5"]
+    },
+    "founder_approved": {
+      "type": "boolean",
+      "default": false
+    },
+    "approved_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "approved_by": {
+      "type": "string"
+    },
+    "valid_until": {
+      "type": "string",
+      "format": "date"
+    },
+    "next_step": {
+      "type": "string"
+    },
+    "next_step_due": {
+      "type": "string",
+      "format": "date"
+    },
+    "is_estimate": {
+      "type": "boolean",
+      "default": true
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "additionalProperties": false
+}

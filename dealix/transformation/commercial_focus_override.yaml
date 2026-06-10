@@ -1,0 +1,5 @@
+# Optional founder override — applied after KPI/platform gates pass.
+# Uncomment and edit; leave commented to use automatic focus rules.
+
+# primary_offer_id: revenue_proof_sprint_499
+# preferred_vertical: clinics

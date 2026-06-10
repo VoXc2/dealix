@@ -1,0 +1,118 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dealix.sa/schemas/mutual_action_plan.schema.json",
+  "title": "Mutual Action Plan (MAP) — Enterprise Sales",
+  "description": "خطة عمل مشتركة بين Dealix والحساب المؤسسي، تغطّي 10 مراحل من الاكتشاف حتى توسيع العلاقة بعد التسليم. current_stage يحدّد المرحلة الحالية، وstages يوضّح جميع المراحل مع المالكين والمخاطر ومعايير الإنجاز.",
+  "type": "object",
+  "required": [
+    "map_id",
+    "account_id",
+    "stages",
+    "current_stage",
+    "evidence_level"
+  ],
+  "properties": {
+    "map_id": {
+      "type": "string",
+      "description": "معرّف فريد للخطة، مثال: MAP-ACC-ENT-001-V1"
+    },
+    "account_id": {
+      "type": "string"
+    },
+    "version": {
+      "type": "string",
+      "description": "نسخة الخطة (مثال: V1، V2)"
+    },
+    "created_at": { "type": "string", "format": "date-time" },
+    "updated_at": { "type": "string", "format": "date-time" },
+    "current_stage": {
+      "enum": [
+        "discovery",
+        "problem_confirmation",
+        "pilot_scope",
+        "security_privacy_review",
+        "proposal",
+        "procurement",
+        "payment_contract",
+        "kickoff",
+        "pilot_delivery",
+        "expansion_review"
+      ]
+    },
+    "stages": {
+      "type": "array",
+      "minItems": 10,
+      "maxItems": 10,
+      "items": {
+        "type": "object",
+        "required": [
+          "stage",
+          "owner",
+          "target_date",
+          "required_inputs",
+          "risk",
+          "done_criteria"
+        ],
+        "properties": {
+          "stage": {
+            "enum": [
+              "discovery",
+              "problem_confirmation",
+              "pilot_scope",
+              "security_privacy_review",
+              "proposal",
+              "procurement",
+              "payment_contract",
+              "kickoff",
+              "pilot_delivery",
+              "expansion_review"
+            ]
+          },
+          "owner": {
+            "type": "string",
+            "description": "مالك المرحلة من Dealix + نظير العميل (مثال: Sales Lead + Champion)"
+          },
+          "target_date": {
+            "type": "string",
+            "description": "تاريخ أو نافذة زمنية مستهدفة (ISO date أو نطاق نصي)"
+          },
+          "required_inputs": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "المدخلات المطلوبة من كل طرف لإكمال المرحلة"
+          },
+          "risk": {
+            "type": "string",
+            "description": "أكبر خطر قد يؤخّر أو يعطّل هذه المرحلة"
+          },
+          "done_criteria": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "شروط اعتبار المرحلة منتهية وقابلة للإغلاق"
+          },
+          "status": {
+            "enum": ["not_started", "in_progress", "blocked", "completed", "skipped"],
+            "description": "حالة المرحلة الحالية (اختياري)"
+          }
+        }
+      }
+    },
+    "executive_sponsor_account": {
+      "type": "string",
+      "description": "الكفيل التنفيذي على جانب العميل"
+    },
+    "executive_sponsor_dealix": {
+      "type": "string"
+    },
+    "success_metrics_overall": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "evidence_level": {
+      "enum": ["assumption", "observed", "validated", "measured"]
+    },
+    "notes": {
+      "type": "string"
+    }
+  }
+}

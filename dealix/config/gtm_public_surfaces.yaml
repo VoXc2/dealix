@@ -1,0 +1,48 @@
+# GTM public demand surfaces — source of truth for verify_gtm_public_surfaces.py
+version: 1
+api_base_production: https://api.dealix.me
+
+api_trust_endpoints:
+  - path: /healthz
+    purpose_ar: "Railway healthcheck + uptime probes"
+    auth: public
+  - path: /health
+    purpose_ar: "Liveness + version summary"
+    auth: public
+  - path: /version
+    purpose_ar: "Deploy identity (version, git_sha, env)"
+    auth: public
+  - path: /api/v1/meta
+    purpose_ar: "GTM surface registry + docs links"
+    auth: public
+  - path: /docs
+    purpose_ar: "OpenAPI interactive docs"
+    auth: public
+  - path: /openapi.json
+    purpose_ar: "OpenAPI machine-readable"
+    auth: public
+
+frontend_public_routes:
+  - path: "/[locale]"
+    file_hint: "frontend/src/app/[locale]/page.tsx"
+    purpose_ar: "Commercial launch home"
+  - path: "/[locale]/dealix-diagnostic"
+    purpose_ar: "Free / low-friction diagnostic intake"
+  - path: "/[locale]/risk-score"
+    purpose_ar: "Risk score funnel"
+  - path: "/[locale]/proof-pack"
+    purpose_ar: "Proof pack story + CTA"
+  - path: "/[locale]/learn"
+    purpose_ar: "AEO content hub"
+  - path: "/[locale]/partners"
+    purpose_ar: "Partner interest"
+  - path: "/[locale]/services"
+    purpose_ar: "Service ladder overview"
+
+ops_admin_routes:
+  note_ar: "تتطلب DEALIX_ADMIN_API_KEY — ليست قنوات توزيع عامة"
+  paths:
+    - "/[locale]/ops/founder"
+    - "/[locale]/ops/war-room"
+    - "/[locale]/ops/marketing"
+    - "/[locale]/ops/sales"

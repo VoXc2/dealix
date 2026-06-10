@@ -1,0 +1,51 @@
+name: Founder Autonomous Ops Weekly
+
+# Sunday: re-expand pool + verify gates + artifact report (governed, no send).
+
+on:
+  schedule:
+    - cron: "0 3 * * 0"
+  workflow_dispatch:
+
+concurrency:
+  group: founder-autonomous-ops-weekly
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  weekly-full-ops:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install minimal deps
+        run: pip install pyyaml
+
+      - name: Weekly expansion + gates (skip founder day in CI)
+        env:
+          DEALIX_API_BASE: ${{ secrets.DEALIX_API_BASE }}
+          DEALIX_ADMIN_API_KEY: ${{ secrets.DEALIX_ADMIN_API_KEY }}
+          PYTHONIOENCODING: utf-8
+          APP_ENV: test
+        run: |
+          chmod +x scripts/run_dealix_full_autonomous_ops.py scripts/expand_commercial_ops_all.py
+          python3 scripts/run_dealix_full_autonomous_ops.py --skip-founder-day
+
+      - name: Upload autonomous ops artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: autonomous-ops-${{ github.run_id }}
+          path: |
+            data/founder_briefs/autonomous_ops_*.md
+            data/founder_briefs/autonomous_ops_last_run.json
+            data/founder_briefs/value_plan_*.json
+          retention-days: 30
+          if-no-files-found: ignore

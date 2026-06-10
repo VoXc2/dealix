@@ -1,0 +1,22 @@
+# Lead scoring weights (reference). Tune in ops; tests should lock invariants.
+rules:
+  positive:
+    title_founder_exec: 4  # CEO / Founder / COO / CRO / Head Ops
+    b2b_company: 3
+    crm_or_pipeline: 3
+    uses_or_plans_ai: 3
+    saudi_or_gcc: 2
+    urgent_within_30d: 2
+    budget_5k_plus_sar: 2
+    partner_or_referral_potential: 2
+  negative:
+    no_company: -4
+    student_or_job_seeker: -3
+    vague_ai_curiosity: -3
+    no_clear_workflow_pain: -2
+
+routing_thresholds:
+  qualified_a_min: 15
+  qualified_b_min: 10
+  nurture_min: 6
+  # below nurture_min → archive

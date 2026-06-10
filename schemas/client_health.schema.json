@@ -1,0 +1,71 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://dealix.sa/schemas/client_health.schema.json",
+  "title": "Client Health",
+  "description": "Client health score with 8 components and tier classification",
+  "type": "object",
+  "required": ["id", "client_id", "date", "scores", "total", "tier"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^health_[a-z0-9_]+$"
+    },
+    "client_id": {
+      "type": "string"
+    },
+    "date": {
+      "type": "string",
+      "format": "date"
+    },
+    "scores": {
+      "type": "object",
+      "required": [
+        "onboarding_complete",
+        "access_complete",
+        "first_workflow_delivered",
+        "weekly_report_delivered",
+        "client_engagement",
+        "value_proof",
+        "unresolved_risks",
+        "renewal_fit"
+      ],
+      "properties": {
+        "onboarding_complete": {"type": "integer", "minimum": 0, "maximum": 10},
+        "access_complete": {"type": "integer", "minimum": 0, "maximum": 10},
+        "first_workflow_delivered": {"type": "integer", "minimum": 0, "maximum": 15},
+        "weekly_report_delivered": {"type": "integer", "minimum": 0, "maximum": 10},
+        "client_engagement": {"type": "integer", "minimum": 0, "maximum": 15},
+        "value_proof": {"type": "integer", "minimum": 0, "maximum": 15},
+        "unresolved_risks": {"type": "integer", "minimum": 0, "maximum": 15},
+        "renewal_fit": {"type": "integer", "minimum": 0, "maximum": 10}
+      }
+    },
+    "total": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 100
+    },
+    "tier": {
+      "type": "string",
+      "enum": ["green", "yellow", "orange", "red"]
+    },
+    "trend": {
+      "type": "string",
+      "enum": ["improving", "stable", "declining"]
+    },
+    "next_action": {
+      "type": "string"
+    },
+    "owner": {
+      "type": "string"
+    },
+    "notes": {
+      "type": "string"
+    },
+    "is_estimate": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "additionalProperties": false
+}

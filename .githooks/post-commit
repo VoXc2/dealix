@@ -1,0 +1,6 @@
+#!/bin/sh
+# Auto-push current branch after commit
+branch="$(git rev-parse --abbrev-ref HEAD 2>/dev/null)"
+if [ -n "$branch" ]; then
+  git push --no-verify origin "$branch" >/dev/null 2>&1 || true
+fi

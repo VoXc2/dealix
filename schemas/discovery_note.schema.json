@@ -1,0 +1,121 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://dealix.sa/schemas/discovery_note.schema.json",
+  "title": "Discovery Note",
+  "description": "Structured note from a sales discovery call",
+  "type": "object",
+  "required": ["id", "opportunity_id", "date", "duration_min", "attendees", "pain_categories", "next_step"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^disc_[a-z0-9_]+$"
+    },
+    "opportunity_id": {
+      "type": "string"
+    },
+    "date": {
+      "type": "string",
+      "format": "date"
+    },
+    "duration_min": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "attendees": {
+      "type": "object",
+      "properties": {
+        "dealix": {"type": "array", "items": {"type": "string"}},
+        "client": {"type": "array", "items": {"type": "string"}}
+      }
+    },
+    "pain_categories": {
+      "type": "object",
+      "properties": {
+        "primary": {"type": "string"},
+        "secondary": {"type": "array", "items": {"type": "string"}}
+      }
+    },
+    "pain_severity": {
+      "type": "string",
+      "enum": ["critical", "high", "medium", "low"]
+    },
+    "pain_evidence": {
+      "type": "string",
+      "description": "Quote or data point"
+    },
+    "budget": {
+      "type": "object",
+      "properties": {
+        "confirmed": {"type": "boolean"},
+        "range_sar": {"type": "number", "minimum": 0},
+        "source": {"type": "string", "enum": ["explicit", "implied", "unknown"]}
+      }
+    },
+    "authority": {
+      "type": "object",
+      "properties": {
+        "dm_name": {"type": "string"},
+        "dm_role": {"type": "string"},
+        "accessible": {"type": "boolean"},
+        "champion_name": {"type": "string"}
+      }
+    },
+    "timing": {
+      "type": "object",
+      "properties": {
+        "urgency": {"type": "string", "enum": ["now", "30_days", "60_days", "90_days", "later"]},
+        "reason": {"type": "string"}
+      }
+    },
+    "data_readiness": {
+      "type": "object",
+      "properties": {
+        "crm": {"type": "string"},
+        "structured": {"type": "boolean"},
+        "accessible": {"type": "boolean"}
+      }
+    },
+    "previous_attempts": {
+      "type": "array",
+      "items": {"type": "string"}
+    },
+    "success_metric": {
+      "type": "string"
+    },
+    "objections": {
+      "type": "array",
+      "items": {"type": "string"}
+    },
+    "next_step": {
+      "type": "string",
+      "enum": [
+        "send_proposal",
+        "schedule_proposal_review",
+        "nurture",
+        "disqualify",
+        "second_discovery",
+        "stakeholder_mapping"
+      ]
+    },
+    "next_step_due": {
+      "type": "string",
+      "format": "date"
+    },
+    "founder_attended": {
+      "type": "boolean",
+      "default": true
+    },
+    "approval_required_for_next": {
+      "type": "string",
+      "enum": ["L1", "L2", "L3", "L4", "L5"]
+    },
+    "notes": {
+      "type": "string"
+    },
+    "is_estimate": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "additionalProperties": false
+}

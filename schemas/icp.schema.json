@@ -1,0 +1,139 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://dealix.sa/schemas/icp.schema.json",
+  "title": "ICP Segment",
+  "description": "Ideal Customer Profile segment definition for Dealix commercial operations",
+  "type": "object",
+  "required": ["id", "label_ar", "sector", "scores", "first_offer", "disqualifiers"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_]+$",
+      "description": "Unique segment identifier (snake_case)"
+    },
+    "label_ar": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 200,
+      "description": "Arabic label for the segment"
+    },
+    "label_en": {
+      "type": "string",
+      "description": "Optional English label"
+    },
+    "sector": {
+      "type": "string",
+      "enum": [
+        "agency",
+        "training",
+        "clinic",
+        "real_estate",
+        "recruitment",
+        "professional_services",
+        "local_saas",
+        "education",
+        "logistics",
+        "restaurant",
+        "other"
+      ]
+    },
+    "scores": {
+      "type": "object",
+      "required": [
+        "lead_flow_maturity",
+        "sales_process_maturity",
+        "urgency",
+        "budget_fit",
+        "decision_maker_access",
+        "delivery_complexity",
+        "proof_speed",
+        "risk_level"
+      ],
+      "properties": {
+        "lead_flow_maturity": {"type": "integer", "minimum": 0, "maximum": 5},
+        "sales_process_maturity": {"type": "integer", "minimum": 0, "maximum": 5},
+        "urgency": {"type": "integer", "minimum": 0, "maximum": 5},
+        "budget_fit": {"type": "integer", "minimum": 0, "maximum": 5},
+        "decision_maker_access": {"type": "integer", "minimum": 0, "maximum": 5},
+        "delivery_complexity": {"type": "integer", "minimum": 0, "maximum": 5},
+        "proof_speed": {"type": "integer", "minimum": 0, "maximum": 5},
+        "risk_level": {"type": "integer", "minimum": 0, "maximum": 5}
+      }
+    },
+    "total_score": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 50,
+      "description": "Sum of all scores; auto-derived"
+    },
+    "priority": {
+      "type": "string",
+      "enum": ["P1", "P2", "P3", "P4"]
+    },
+    "first_offer": {
+      "type": "string",
+      "description": "Offer ID from product_catalog.yaml"
+    },
+    "disqualifiers": {
+      "type": "array",
+      "items": {"type": "string"},
+      "minItems": 1
+    },
+    "preferred_channels": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "inbound",
+          "email_warm",
+          "linkedin_manual",
+          "partner_intro",
+          "content",
+          "events",
+          "referral"
+        ]
+      }
+    },
+    "decision_maker": {
+      "type": "string",
+      "description": "Primary decision maker role"
+    },
+    "avg_deal_size_sar": {
+      "type": "object",
+      "properties": {
+        "min": {"type": "number", "minimum": 0},
+        "max": {"type": "number", "minimum": 0}
+      }
+    },
+    "cycle_days": {
+      "type": "object",
+      "properties": {
+        "min": {"type": "integer", "minimum": 0},
+        "max": {"type": "integer", "minimum": 0}
+      }
+    },
+    "geographic_focus": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": ["Riyadh", "Jeddah", "Dammam", "Eastern", "Makkah", "Madinah", "Other"]
+      }
+    },
+    "language": {
+      "type": "string",
+      "enum": ["ar", "en", "bilingual"]
+    },
+    "evidence_level_required": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 5,
+      "description": "Min evidence level needed for first proposal"
+    },
+    "is_estimate": {
+      "type": "boolean",
+      "default": true,
+      "description": "If true, all numbers in this segment are estimates"
+    }
+  },
+  "additionalProperties": false
+}

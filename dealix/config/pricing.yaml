@@ -1,0 +1,18 @@
+# Reference pricing (SAR). Legal/commercial review before publish.
+currency: SAR
+
+diagnostic:
+  starter: 4999
+  standard: 9999
+  executive: 15000
+  enterprise: 25000
+
+sprint:
+  revenue_intelligence_from: 25000
+
+retainer:
+  governed_ops_monthly_min: 4999
+  governed_ops_monthly_max: 35000
+
+# Placeholder for future platform / add-ons
+addons: {}

@@ -1,0 +1,60 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dealix.sa/schemas/productized_service.schema.json",
+  "title": "Dealix Productized Service",
+  "description": "Single source of truth for a Dealix productized service definition.",
+  "type": "object",
+  "required": [
+    "id",
+    "name_ar",
+    "name_en",
+    "icp",
+    "problem_solved",
+    "price_range_sar",
+    "timeline_days",
+    "required_access",
+    "client_responsibilities",
+    "dealix_responsibilities",
+    "deliverables",
+    "out_of_scope",
+    "acceptance_criteria",
+    "risks",
+    "first_7_days",
+    "weekly_reporting",
+    "renewal_path"
+  ],
+  "properties": {
+    "id": { "type": "string", "pattern": "^[a-z][a-z0-9_]*$" },
+    "name_ar": { "type": "string" },
+    "name_en": { "type": "string" },
+    "icp": { "type": "array", "items": { "type": "string" } },
+    "problem_solved": { "type": "string" },
+    "price_range_sar": {
+      "type": "object",
+      "required": ["min", "max"],
+      "properties": {
+        "min": { "type": "number" },
+        "max": { "type": "number" }
+      }
+    },
+    "timeline_days": {
+      "type": "object",
+      "required": ["min", "max"],
+      "properties": {
+        "min": { "type": "integer", "minimum": 1 },
+        "max": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "required_access": { "type": "array", "items": { "type": "string" } },
+    "client_responsibilities": { "type": "array", "items": { "type": "string" } },
+    "dealix_responsibilities": { "type": "array", "items": { "type": "string" } },
+    "deliverables": { "type": "array", "items": { "type": "string" } },
+    "out_of_scope": { "type": "array", "items": { "type": "string" } },
+    "acceptance_criteria": { "type": "array", "items": { "type": "string" } },
+    "risks": { "type": "array", "items": { "type": "string" } },
+    "first_7_days": { "type": "object", "description": "day-keyed action list." },
+    "weekly_reporting": { "type": "string" },
+    "renewal_path": { "type": "string" }
+  },
+  "additionalProperties": true
+}

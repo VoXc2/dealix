@@ -1,0 +1,22 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Client Advocacy",
+  "type": "object",
+  "required": ["advocacy_id", "engagement_id", "client_name", "advocacy_type", "advocacy_level", "status"],
+  "properties": {
+    "advocacy_id": {"type": "string"},
+    "engagement_id": {"type": "string"},
+    "client_name": {"type": "string"},
+    "advocacy_type": {"type": "string", "enum": ["testimonial", "case_study", "referral", "reference"]},
+    "advocacy_level": {"type": "integer", "minimum": 1, "maximum": 5},
+    "status": {"type": "string", "enum": ["identified", "requested", "secured", "active", "inactive"]},
+    "permission_granted": {"type": "boolean"},
+    "permission_date": {"type": "string", "format": "date"},
+    "content_approved": {"type": "boolean"},
+    "testimonial_text": {"type": "string"},
+    "case_study_url": {"type": "string"},
+    "referrals_generated": {"type": "integer"},
+    "opportunities_generated": {"type": "integer"},
+    "notes": {"type": "string"}
+  }
+}

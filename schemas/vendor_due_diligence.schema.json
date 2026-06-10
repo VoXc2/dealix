@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dealix.sa/schemas/vendor_due_diligence.schema.json",
+  "title": "Vendor Due Diligence Item",
+  "type": "object",
+  "required": ["item_id", "category", "question", "status"],
+  "properties": {
+    "item_id": { "type": "string" },
+    "category": { "enum": ["company", "financial", "security", "privacy", "operational", "legal", "ai", "localization"] },
+    "question": { "type": "string" },
+    "answer": { "type": "string" },
+    "evidence_refs": { "type": "array", "items": { "type": "string" } },
+    "status": { "enum": ["pending", "in_progress", "answered", "n/a"] },
+    "owner": { "type": "string" },
+    "reviewer": { "type": "string" },
+    "reviewed_at": { "type": "string", "format": "date-time" },
+    "needs_legal_review": { "type": "boolean" }
+  }
+}

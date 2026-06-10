@@ -1,0 +1,32 @@
+name: Company Brain Daily
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 4 * * *"
+
+permissions:
+  contents: read
+
+jobs:
+  company-brain-daily:
+    runs-on: ubuntu-latest
+    env:
+      AUTO_SEND_ENABLED: "false"
+      EXTERNAL_OUTREACH_ENABLED: "false"
+      AGENT_APPROVAL_MODE: "required"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - name: Run company brain
+        run: |
+          python scripts/dealix_company_brain_daily.py
+          python scripts/dealix_content_factory_daily.py
+          python scripts/dealix_growth_scorecard.py
+      - name: Upload reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: company-brain-daily
+          path: reports/company_os/**

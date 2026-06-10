@@ -1,0 +1,65 @@
+version: 2
+updates:
+  - package-ecosystem: pip
+    directory: "/"
+    schedule:
+      interval: weekly
+      day: monday
+      time: "09:00"
+      timezone: "Asia/Riyadh"
+    open-pull-requests-limit: 10
+    labels:
+      - dependencies
+      - python
+    commit-message:
+      prefix: "chore(deps)"
+
+  - package-ecosystem: npm
+    directory: "/apps/web"
+    schedule:
+      interval: weekly
+      day: monday
+      time: "09:30"
+      timezone: "Asia/Riyadh"
+    open-pull-requests-limit: 10
+    labels:
+      - dependencies
+      - frontend
+    commit-message:
+      prefix: "chore(web-deps)"
+
+  - package-ecosystem: npm
+    directory: "/frontend"
+    schedule:
+      interval: weekly
+      day: monday
+      time: "09:45"
+      timezone: "Asia/Riyadh"
+    open-pull-requests-limit: 10
+    labels:
+      - dependencies
+      - frontend
+    commit-message:
+      prefix: "chore(frontend-deps)"
+
+  - package-ecosystem: github-actions
+    directory: "/"
+    schedule:
+      interval: weekly
+      day: monday
+    labels:
+      - dependencies
+      - ci
+    commit-message:
+      prefix: "chore(actions)"
+
+  - package-ecosystem: docker
+    directory: "/"
+    schedule:
+      interval: weekly
+      day: monday
+    labels:
+      - dependencies
+      - docker
+    commit-message:
+      prefix: "chore(docker)"

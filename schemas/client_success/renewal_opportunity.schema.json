@@ -1,0 +1,38 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Renewal Opportunity",
+  "type": "object",
+  "required": ["renewal_id", "engagement_id", "client_name", "current_term_end", "renewal_readiness_score", "status"],
+  "properties": {
+    "renewal_id": {"type": "string"},
+    "engagement_id": {"type": "string"},
+    "client_name": {"type": "string"},
+    "current_term_end": {"type": "string", "format": "date"},
+    "renewal_readiness_score": {"type": "number", "minimum": 0, "maximum": 100},
+    "status": {"type": "string", "enum": ["renewal_ready", "likely", "uncertain", "at_risk"]},
+    "proposed_terms": {
+      "type": "object",
+      "properties": {
+        "duration": {"type": "number"},
+        "amount": {"type": "number"},
+        "scope": {"type": "string"}
+      }
+    },
+    "value_proof": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "metric": {"type": "string"},
+          "result": {"type": "string"},
+          "evidence_level": {"type": "integer", "minimum": 1, "maximum": 5}
+        }
+      }
+    },
+    "key_stakeholder": {"type": "string"},
+    "objections": {"type": "array", "items": {"type": "string"}},
+    "next_steps": {"type": "string"},
+    "renewal_date": {"type": "string", "format": "date"},
+    "renewal_status": {"type": "string", "enum": ["signed", "declined", "pending", "at_risk"]}
+  }
+}

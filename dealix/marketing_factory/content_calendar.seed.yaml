@@ -1,0 +1,23 @@
+version: 1
+slots:
+  - scheduled_date: "2026-05-19"
+    channel: linkedin
+    title_ar: "تشخيص إيراد محكوم — لماذا الآن؟"
+    body_draft_ar: >
+      فرق B2B في السعودية تسرّع AI قبل تثبيت الموافقات وسجل الأدلة.
+      ابدأ بـ Risk Score + Proof Pack — بدون وعود إيراد وهمية.
+    cta_label_ar: "Risk Score"
+    cta_path: /dealix-diagnostic
+    utm_source: dealix
+    utm_medium: social
+    utm_campaign: founder_linkedin_w1
+    status: draft
+  - scheduled_date: "2026-05-21"
+    channel: email_newsletter
+    title_ar: "نشرة: 3 بوابات قبل أتمتة المبيعات"
+    body_draft_ar: >
+      Lead scoring + Approval Center + Evidence Ledger — ثم التوسع.
+    cta_label_ar: "التشخيص"
+    utm_campaign: founder_newsletter_w1
+    utm_medium: email
+    status: draft

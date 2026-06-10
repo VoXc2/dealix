@@ -1,0 +1,34 @@
+name: Production API trust smoke
+
+# Daily probe of api.dealix.me trust layer (/healthz, /version, /api/v1/meta).
+# WARN (not fail) when deploy is behind main — founder must align Railway UI + wait for deploy.
+
+on:
+  schedule:
+    - cron: "30 4 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install pyyaml pytest
+      - name: Railway config + live trust probes
+        run: |
+          python scripts/verify_railway_production_config.py --api-base https://api.dealix.me
+          python scripts/run_founder_production_gates.py --api-base https://api.dealix.me
+        continue-on-error: true
+      - name: GTM + railway pytest bundle
+        run: |
+          pytest tests/test_railway_production_config.py \
+            tests/test_gtm_public_surfaces.py \
+            tests/test_founder_weekly_metrics.py \
+            tests/test_founder_production_gates.py -q --no-cov

@@ -1,0 +1,47 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "type": "command",
+        "command": "echo \"=== Session Context ===\"; echo \"Branch: $(git branch --show-current 2>/dev/null || echo 'not a git repo')\"; echo \"Date: $(date '+%Y-%m-%d %H:%M')\"; echo \"========================\""
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": {
+          "tool": "Bash",
+          "pattern": "find .* -name"
+        },
+        "type": "inject",
+        "message": "IMPORTANT: Limit find results to 50 lines maximum. Use 'head -50' if needed."
+      },
+      {
+        "matcher": {
+          "tool": "Read",
+          "fileSize": ">50000"
+        },
+        "type": "warn",
+        "message": "WARNING: This file is large (>50KB). Consider reading only specific line ranges."
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": {
+          "tool": "Bash"
+        },
+        "type": "pipe",
+        "command": "head -200"
+      },
+      {
+        "matcher": {
+          "tool": "Bash",
+          "outputSize": ">10000"
+        },
+        "type": "truncate",
+        "max_chars": 10000,
+        "suffix": "\n\n[OUTPUT TRUNCATED — use more specific commands to see less output]"
+      }
+    ]
+  },
+  "_comment": "هذا الملف يوفر 60-90% من التوكنز على مخرجات الأدوات. انسخه إلى .claude/settings.json"
+}

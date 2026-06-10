@@ -1,0 +1,37 @@
+name: Business NOW snapshot
+
+on:
+  push:
+    paths:
+      - "dealix/transformation/**"
+      - "dealix/business_now/**"
+      - "docs/business/**"
+      - "scripts/generate_business_now_snapshot.py"
+      - "scripts/run_business_now.sh"
+      - "api/routers/business_now.py"
+      - "tests/test_business_now*.py"
+  pull_request:
+    paths:
+      - "dealix/transformation/**"
+      - "dealix/business_now/**"
+      - "docs/business/**"
+      - "scripts/generate_business_now_snapshot.py"
+      - "api/routers/business_now.py"
+      - "tests/test_business_now*.py"
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      - name: Pytest business NOW
+        run: pytest tests/test_business_now_snapshot.py tests/test_business_now_cache.py tests/test_commercial_strategy_snapshot.py tests/test_commercial_strategy_simulate.py -q --no-cov
+      - name: Generate snapshot (no fail on verify timeout)
+        run: python scripts/generate_business_now_snapshot.py || true
+      - name: Generate commercial strategy doc
+        run: python scripts/generate_commercial_strategy_doc.py || true

@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dealix.sa/schemas/audit_event.schema.json",
+  "title": "Audit Event",
+  "type": "object",
+  "required": ["event_id", "ts", "actor", "action", "entity", "status"],
+  "properties": {
+    "event_id": { "type": "string" },
+    "ts": { "type": "string", "format": "date-time" },
+    "actor": { "type": "string" },
+    "actor_type": { "enum": ["human", "agent", "service"] },
+    "action": { "type": "string" },
+    "entity": { "type": "string" },
+    "entity_id": { "type": "string" },
+    "tenant_id": { "type": "string" },
+    "data_class": { "enum": ["D0", "D1", "D2", "D3", "D4", "D5"] },
+    "fields_accessed": { "type": "array", "items": { "type": "string" } },
+    "justification": { "type": "string" },
+    "source_ip": { "type": "string" },
+    "request_id": { "type": "string" },
+    "status": { "enum": ["ok", "denied", "failed"] },
+    "notes": { "type": "string" }
+  }
+}

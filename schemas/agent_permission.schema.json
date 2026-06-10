@@ -1,0 +1,96 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dealix.sa/schemas/agent_permission.schema.json",
+  "title": "Dealix Agent Permission Grant",
+  "description": "A single permission grant for a Dealix agent. All permissions expire — no permanent high-risk grants.",
+  "type": "object",
+  "required": [
+    "permission_id",
+    "agent_id",
+    "scope",
+    "granted_at",
+    "expires_at",
+    "owner",
+    "evidence_level",
+    "status"
+  ],
+  "properties": {
+    "permission_id": {
+      "type": "string",
+      "pattern": "^PERM-[0-9]{8}-[0-9]{4,}$",
+      "description": "Unique permission grant id, e.g. PERM-20260603-0001"
+    },
+    "agent_id": {
+      "type": "string",
+      "pattern": "^AGENT-[A-Z]+-[0-9]{3,}$",
+      "description": "References agent_registry.agent_id"
+    },
+    "scope": {
+      "type": "string",
+      "description": "Scope expression, e.g. 'file:reports/', 'network:api.moyasar.com', 'send:email', 'data:customer_pilot'"
+    },
+    "scope_type": {
+      "type": "string",
+      "enum": ["file_read", "file_write", "network", "send", "pay", "secret", "customer_data", "model_promote", "schema_change"],
+      "description": "Category of scope for audit and renewal logic"
+    },
+    "risk_level": {
+      "type": "string",
+      "enum": ["low", "medium", "high", "critical"],
+      "description": "Determines renewal cadence"
+    },
+    "granted_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 grant timestamp"
+    },
+    "expires_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 expiry timestamp — required for all grants"
+    },
+    "owner": {
+      "type": "string",
+      "description": "Approver identifier (founder / department head / agent #30)"
+    },
+    "approver_role": {
+      "type": "string",
+      "enum": ["founder", "department_head", "security_lead", "legal", "mlops", "agent_30"],
+      "description": "Per HUMAN_APPROVAL_BOUNDARIES_AR.md"
+    },
+    "evidence_level": {
+      "type": "string",
+      "enum": ["L0", "L1", "L2", "L3", "L4", "L5"],
+      "description": "Evidence supporting the grant"
+    },
+    "evidence_link": {
+      "type": "string",
+      "description": "Path to artifact (test result, pilot contract, eval report)"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["active", "expired", "revoked", "pending"],
+      "description": "Current lifecycle state"
+    },
+    "revoked_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "revoked_by": {
+      "type": "string"
+    },
+    "revocation_reason": {
+      "type": "string"
+    },
+    "renewal_count": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "How many times this permission has been renewed"
+    },
+    "linked_incident_id": {
+      "type": "string",
+      "description": "If the revocation was incident-triggered"
+    }
+  },
+  "additionalProperties": false
+}

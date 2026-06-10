@@ -1,0 +1,49 @@
+name: Official Launch Verify
+
+# Manual / pre-release gate — does not deploy.
+on:
+  workflow_dispatch:
+    inputs:
+      api_base:
+        description: "Production API base (optional)"
+        required: false
+        default: ""
+      skip_fe_build:
+        description: "Skip npm run build"
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+jobs:
+  launch-verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install Python test deps
+        run: pip install -r requirements.txt pytest
+
+      - name: Run official launch verify (local)
+        env:
+          DEALIX_API_BASE: ${{ github.event.inputs.api_base }}
+          DEALIX_ADMIN_API_KEY: ${{ secrets.DEALIX_ADMIN_API_KEY }}
+        run: |
+          ARGS="--skip-go-live"
+          if [[ "${{ github.event.inputs.skip_fe_build }}" == "true" ]]; then
+            ARGS="$ARGS --skip-fe-build"
+          fi
+          if [[ -n "${DEALIX_API_BASE}" ]]; then
+            ARGS="$ARGS --api-base=${DEALIX_API_BASE}"
+          fi
+          bash scripts/official_launch_verify.sh $ARGS

@@ -1,0 +1,55 @@
+# Revenue War Room — 30-day GTM scorecard (fill weekly; CRM truth only)
+# Reference: docs/ops/DEALIX_REVENUE_WAR_ROOM_AR.md
+version: 1
+period_days: 30
+
+targets:
+  target_accounts: 100
+  meaningful_conversations: 30
+  proof_pack_requests: 10
+  meetings: 5
+  scopes_sent: 2
+  paid_diagnostics: 1
+  partner_sourced_opportunities: 1
+  approved_partners_or_affiliates: 5
+
+daily_90_min_blocks:
+  - id: approvals
+    minutes: 20
+    focus_ar: "موافقات عالية المخاطر (رسائل، نطاق، فاتورة)"
+  - id: sales
+    minutes: 20
+    focus_ar: "متابعة مبيعات دافئة + مسودات"
+  - id: partners
+    minutes: 20
+    focus_ar: "شركاء ومسوقون بالعمولة"
+  - id: support
+    minutes: 15
+    focus_ar: "تصعيدات دعم"
+  - id: content
+    minutes: 15
+    focus_ar: "محتوى / قصة إثبات"
+
+weekly_reviews:
+  - pipeline
+  - marketing
+  - partners
+  - support
+  - governance
+  - no_build_decision
+
+ops_ui:
+  founder_dashboard: "/ar/ops/founder"
+  sales_pipeline: "/ar/ops/sales"
+  evidence_ledger: "/ar/ops/evidence"
+  approvals: "/ar/approvals"
+
+actuals:
+  week_1: {}
+  week_2: {}
+  week_3: {}
+  week_4: {}
+
+notes_ar: >
+  لا تُدخل أرقام إيراد هنا إلا من CRM/دفع حقيقي.
+  استورد KPI عبر kpi_founder_commercial_import.yaml عند الجاهزية.

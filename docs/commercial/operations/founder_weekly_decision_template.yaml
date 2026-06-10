@@ -1,0 +1,19 @@
+# Weekly founder decision — one deviation + one decision + stop list
+# Ref: docs/ops/FOUNDER_WEEKLY_ONE_DECISION_AR.md
+
+week_id: "YYYY-Www"
+created_at: null
+
+deviation_metric:
+  name: ""
+  planned: ""
+  actual: ""
+  notes: ""
+
+one_decision: ""
+
+stop_list: []
+
+supports_phase: "0-1"  # 0-1 | 2 | 3 | 4 | 5
+
+evidence_events_this_week: []

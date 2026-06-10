@@ -1,0 +1,30 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Client Health",
+  "type": "object",
+  "required": ["health_id", "engagement_id", "calculation_date", "overall_score", "status", "components"],
+  "properties": {
+    "health_id": {"type": "string"},
+    "engagement_id": {"type": "string"},
+    "client_name": {"type": "string"},
+    "calculation_date": {"type": "string", "format": "date"},
+    "overall_score": {"type": "number", "minimum": 0, "maximum": 100},
+    "status": {"type": "string", "enum": ["healthy", "watch", "at_risk", "blocked", "renewal_ready", "expansion_ready", "churn_risk"]},
+    "components": {
+      "type": "object",
+      "properties": {
+        "onboarding_progress": {"type": "number"},
+        "access_completeness": {"type": "number"},
+        "delivery_progress": {"type": "number"},
+        "weekly_report_delivered": {"type": "number"},
+        "client_engagement": {"type": "number"},
+        "unresolved_blockers": {"type": "number"},
+        "payment_status": {"type": "number"},
+        "value_proof_level": {"type": "number"},
+        "stakeholder_engagement": {"type": "number"}
+      }
+    },
+    "trend": {"type": "string", "enum": ["improving", "stable", "declining"]},
+    "recommended_actions": {"type": "array", "items": {"type": "string"}}
+  }
+}

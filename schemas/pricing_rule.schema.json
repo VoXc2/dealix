@@ -1,0 +1,78 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://dealix.sa/schemas/pricing_rule.schema.json",
+  "title": "Pricing Rule",
+  "description": "Pricing rule with discount, approval, and constraints",
+  "type": "object",
+  "required": ["id", "offer_id", "rule_type", "min_price_sar", "max_price_sar", "approval_level"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^rule_[a-z0-9_]+$"
+    },
+    "offer_id": {
+      "type": "string",
+      "description": "Reference to product_offer.id"
+    },
+    "rule_type": {
+      "type": "string",
+      "enum": [
+        "base_range",
+        "tier_floor",
+        "discount_allowed",
+        "approval_level",
+        "margin_floor",
+        "anchor"
+      ]
+    },
+    "min_price_sar": {
+      "type": "number",
+      "minimum": 0
+    },
+    "max_price_sar": {
+      "type": "number",
+      "minimum": 0
+    },
+    "discount_pct_max": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100
+    },
+    "margin_floor_pct": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100
+    },
+    "approval_level": {
+      "type": "string",
+      "enum": ["L1", "L2", "L3", "L4", "L5"]
+    },
+    "conditions": {
+      "type": "object",
+      "description": "Conditions under which this rule applies"
+    },
+    "scope_reduction_required": {
+      "type": "boolean",
+      "default": false
+    },
+    "legal_review_required": {
+      "type": "boolean",
+      "default": false
+    },
+    "is_estimate": {
+      "type": "boolean",
+      "default": true
+    },
+    "approved_by": {
+      "type": "string"
+    },
+    "approved_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "notes": {
+      "type": "string"
+    }
+  },
+  "additionalProperties": false
+}

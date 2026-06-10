@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dealix.sa/schemas/contract_handoff.schema.json",
+  "title": "Dealix Contract Handoff",
+  "description": "Operational contract handoff record (no binding signature).",
+  "type": "object",
+  "required": ["contract_id", "client", "product", "status", "updated_at"],
+  "properties": {
+    "contract_id": { "type": "string", "pattern": "^con_[0-9_]+$" },
+    "client": { "type": "string" },
+    "product": { "type": "string" },
+    "scope": { "type": "string" },
+    "out_of_scope": { "type": "string" },
+    "price_sar": { "type": "number" },
+    "payment_terms": { "type": "string" },
+    "delivery_timeline": { "type": "string" },
+    "data_access": { "type": "string" },
+    "privacy_sensitivity": { "type": "string", "enum": ["low", "medium", "high"] },
+    "risk_level": { "type": "string", "enum": ["low", "medium", "high", "critical"] },
+    "non_standard_terms": { "type": "array", "items": { "type": "string" } },
+    "founder_approval": { "type": "boolean" },
+    "legal_review_needed": { "type": "boolean" },
+    "legal_review_id": { "type": ["string", "null"] },
+    "status": { "type": "string", "enum": ["DRAFT", "LEGAL_REVIEW", "FOUNDER_REVIEW", "APPROVED", "SIGNED", "ACTIVE", "CLOSED"] },
+    "status_updated_at": { "type": "string", "format": "date-time" }
+  },
+  "additionalProperties": false
+}

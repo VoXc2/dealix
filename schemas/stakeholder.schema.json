@@ -1,0 +1,100 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dealix.sa/schemas/stakeholder.schema.json",
+  "title": "Enterprise Stakeholder Map",
+  "description": "يمثّل شخصًا واحدًا داخل Buying Committee لحساب مؤسسي. يربط account_id بـ enterprise_account، ويُستخدم لقياس قوة العلاقة، multi-threading، وتخصيص الرسائل. كل صف يحمل evidence_level.",
+  "type": "object",
+  "required": [
+    "stakeholder_id",
+    "account_id",
+    "name_placeholder",
+    "role",
+    "decision_influence",
+    "cares_about",
+    "objection",
+    "proof_needed",
+    "message_angle",
+    "engagement_status",
+    "evidence_level"
+  ],
+  "properties": {
+    "stakeholder_id": {
+      "type": "string",
+      "description": "معرّف فريد، مثال: STK-001"
+    },
+    "account_id": {
+      "type": "string",
+      "description": "مرجع إلى enterprise_account.account_id"
+    },
+    "name_placeholder": {
+      "type": "string",
+      "description": "اسم مستعار مجهول الهوية (مثال: 'شخص_A' أو 'Person A — placeholder')"
+    },
+    "role": {
+      "enum": [
+        "economic_buyer",
+        "business_owner",
+        "technical_reviewer",
+        "security_privacy",
+        "operations",
+        "daily_user",
+        "procurement",
+        "legal",
+        "champion",
+        "blocker",
+        "influencer",
+        "evaluator",
+        "other"
+      ]
+    },
+    "title_hint": {
+      "type": "string",
+      "description": "تلميح للمسمى الوظيفي (مثال: VP Sales, CISO, Head of Operations)"
+    },
+    "department": {
+      "type": "string"
+    },
+    "seniority_band": {
+      "enum": ["individual_contributor", "manager", "director", "vp", "c_suite", "board"]
+    },
+    "decision_influence": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 5,
+      "description": "1 = لا تأثير، 5 = قرار نهائي"
+    },
+    "cares_about": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "ما يهتم به (مثال: [عائد الاستثمار، أمن البيانات، سرعة التنفيذ])"
+    },
+    "objection": {
+      "type": "string",
+      "description": "الاعتراض الأكثر احتمالاً"
+    },
+    "proof_needed": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "الأدلة اللازمة لإقناعه"
+    },
+    "message_angle": {
+      "type": "string",
+      "description": "الزاوية/الرسالة المخصّصة بالعربية (Arabic narrative)"
+    },
+    "engagement_status": {
+      "enum": ["not_contacted", "intro_made", "engaged", "supportive", "neutral", "skeptical", "blocker", "champion_active", "signed_off"],
+      "description": "حالة العلاقة الحالية"
+    },
+    "last_touch_at": { "type": "string", "format": "date-time" },
+    "next_touch_at": { "type": "string", "format": "date-time" },
+    "relationship_health": {
+      "enum": ["unknown", "cold", "warm", "hot", "advocate"]
+    },
+    "evidence_level": {
+      "enum": ["assumption", "observed", "validated", "measured"]
+    },
+    "notes": {
+      "type": "string"
+    }
+  }
+}

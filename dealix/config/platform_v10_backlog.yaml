@@ -1,0 +1,5 @@
+# Platform v10 backlog — items tracked by analyze_platform_v10_readiness()
+# Add real items below as they are identified. Empty list = no backlog = ready.
+items: []
+last_updated: "2026-05-30"
+phase_01_gate_passed: false

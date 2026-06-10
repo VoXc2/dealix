@@ -1,0 +1,52 @@
+# Motion A — Agency Wedge ICP (P0)
+# Ref: docs/commercial/DEALIX_SALES_GTM_SOVEREIGN_MASTER_AR.md §3
+
+motion: A
+name_ar: "وتد الوكالات"
+priority: P0
+
+fit_yes:
+  - وكالة تسويق أو إعلانات أو محتوى أو أداء
+  - تدير حملات لعملاء متعددين
+  - تحتاج إثباتاً لعميلها بعد الحملة
+  - تقبل pilot على عميل end واحد
+
+fit_no:
+  - بائع أدوات SaaS فقط بدون خدمة متابعة
+  - لا leads حقيقية بعد الحملة
+  - يطلب cold blast أو scraping
+  - يرفض أي موافقة بشرية على الرسائل
+
+buying_signals:
+  - "العميل يسأل ماذا حدث بعد الحملة"
+  - CRM أو جدول مليء بلا owner
+  - فريق مبيعات العميل غير واضح المالك
+
+core_message_ar: >
+  أنتم تجيبون الاهتمام. Dealix يثبت ماذا حدث بعد الاهتمام:
+  مالك، متابعة، موافقة، دليل، خطوة تالية (SOAEN).
+
+entry_offers:
+  - id: ten_lead_audit
+    price_sar: 499
+  - id: agency_proof_pack
+    price_sar: 990
+
+path: "Agency → 10-Lead Audit → Agency Proof Pack → Co-selling Pilot → Partner"
+
+daily_quotas:
+  approved_touches: 10
+  follow_ups: 5
+  partner_conversations: 1
+  evidence_events_min: 1
+
+channels_allowed:
+  - linkedin_manual
+  - email_warm
+  - partner_intro
+  - inbound
+
+channels_forbidden:
+  - cold_whatsapp
+  - linkedin_auto_send
+  - scraping

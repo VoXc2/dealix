@@ -1,0 +1,30 @@
+name: Founder Weekly Scorecard
+
+# Friday 12:00 KSA (09:00 UTC) — commercial weekly KPIs from evidence CSV.
+
+on:
+  schedule:
+    - cron: "0 9 * * 5"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  scorecard:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install pyyaml
+      - name: Weekly scorecard
+        run: python scripts/founder_weekly_scorecard.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: weekly-scorecard-${{ github.run_id }}
+          path: data/founder_briefs/weekly_scorecard_*.md
+          retention-days: 30
+          if-no-files-found: ignore

@@ -1,0 +1,57 @@
+backend:
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'api/**'
+          - 'core/**'
+          - 'db/**'
+          - 'integrations/**'
+          - 'dealix/**'
+
+frontend:
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'frontend/**'
+          - 'apps/web/**'
+          - 'landing/**'
+
+ci:
+  - changed-files:
+      - any-glob-to-any-file:
+          - '.github/**'
+          - 'scripts/**'
+          - 'Makefile'
+
+railway:
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'railway.json'
+          - 'frontend/railway.json'
+          - 'apps/web/railway.json'
+          - 'dealix/config/railway_services.json'
+          - 'scripts/verify_railway_surfaces.py'
+          - 'scripts/railway_smoke_matrix.py'
+
+security:
+  - changed-files:
+      - any-glob-to-any-file:
+          - '.github/workflows/security.yml'
+          - '.github/workflows/repository-hardening.yml'
+          - '.secrets.baseline'
+          - 'pyproject.toml'
+          - 'requirements*.txt'
+          - 'package*.json'
+          - 'frontend/package*.json'
+          - 'apps/web/package*.json'
+
+documentation:
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'docs/**'
+          - '*.md'
+
+commercial:
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'docs/commercial/**'
+          - 'dealix/commercial_ops/**'
+          - 'landing/**'

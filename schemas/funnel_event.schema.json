@@ -1,0 +1,130 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://dealix.sa/schemas/funnel_event.schema.json",
+  "title": "Funnel Event",
+  "description": "Funnel stage transition event in Dealix GTM system",
+  "type": "object",
+  "required": [
+    "event_id",
+    "entity_type",
+    "entity_id",
+    "from_stage",
+    "to_stage",
+    "transitioned_at",
+    "transition_reason"
+  ],
+  "properties": {
+    "event_id": {
+      "type": "string",
+      "pattern": "^funnel_[a-z0-9_]+$"
+    },
+    "entity_type": {
+      "type": "string",
+      "enum": ["lead", "company", "deal", "customer", "opportunity"]
+    },
+    "entity_id": {
+      "type": "string"
+    },
+    "from_stage": {
+      "type": "string",
+      "enum": [
+        "signal_detected",
+        "researched",
+        "qualified",
+        "drafted",
+        "approved_for_outreach",
+        "contacted",
+        "replied",
+        "positive_reply",
+        "discovery_scheduled",
+        "discovery_completed",
+        "proposal_needed",
+        "proposal_sent",
+        "negotiation",
+        "payment_handoff",
+        "won",
+        "delivery_handoff",
+        "active_delivery",
+        "renewal_candidate",
+        "renewed",
+        "lost",
+        "nurture",
+        "do_not_contact"
+      ]
+    },
+    "to_stage": {
+      "type": "string",
+      "enum": [
+        "signal_detected",
+        "researched",
+        "qualified",
+        "drafted",
+        "approved_for_outreach",
+        "contacted",
+        "replied",
+        "positive_reply",
+        "discovery_scheduled",
+        "discovery_completed",
+        "proposal_needed",
+        "proposal_sent",
+        "negotiation",
+        "payment_handoff",
+        "won",
+        "delivery_handoff",
+        "active_delivery",
+        "renewal_candidate",
+        "renewed",
+        "lost",
+        "nurture",
+        "do_not_contact"
+      ]
+    },
+    "transition_reason": {
+      "type": "string",
+      "description": "Why the transition occurred"
+    },
+    "transition_trigger": {
+      "type": "string",
+      "enum": ["automatic", "manual", "external", "system"]
+    },
+    "transitioned_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "time_in_previous_stage_days": {
+      "type": "number",
+      "minimum": 0,
+      "description": "Days spent in from_stage before transition"
+    },
+    "sector": {
+      "type": "string",
+      "enum": ["technology", "healthcare", "finance", "retail", "manufacturing", "education", "government", "real_estate", "logistics", "hospitality", "construction", "energy"]
+    },
+    "offer_id": {
+      "type": "string",
+      "enum": ["offer_diagnostic", "offer_pilot", "offer_proof", "offer_retainer", "offer_training", "offer_consulting"]
+    },
+    "value_sar": {
+      "type": "number",
+      "minimum": 0,
+      "description": "Deal value in SAR (for deal events)"
+    },
+    "is_regression": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether this is a backward transition (except to nurture)"
+    },
+    "regression_reason": {
+      "type": "string",
+      "description": "Why regression occurred (if is_regression)"
+    },
+    "actor": {
+      "type": "string",
+      "description": "Who/what triggered the transition"
+    },
+    "notes": {
+      "type": "string"
+    }
+  },
+  "additionalProperties": false
+}

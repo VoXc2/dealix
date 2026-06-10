@@ -1,0 +1,33 @@
+# ============================================================
+# .claudeignore — قالب Node.js / React / Next.js
+# ============================================================
+node_modules/
+.next/
+.nuxt/
+.cache/
+.parcel-cache/
+dist/
+out/
+build/
+.turbo/
+*.min.js
+*.min.css
+*.map
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+*.log
+logs/
+coverage/
+*.lcov
+.nyc_output/
+jest-results/
+playwright-report/
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+.env.local
+.env.production
+.env.staging
+.env.*.local

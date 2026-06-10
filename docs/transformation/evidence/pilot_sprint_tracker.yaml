@@ -1,0 +1,39 @@
+version: 1
+program: global_ai_transformation
+reference_runbook: docs/transformation/enterprise_package/PILOT_EXECUTION_RUNBOOK_AR.md
+reference_checklist: docs/transformation/enterprise_package/PILOT_REPEAT_CHECKLIST_AR.md
+target_sprint_count: 3
+minimum_evidence_level: L4
+
+sprints:
+  - id: sprint_001
+    account_ref: ""
+    sector: ""
+    status: template_ready
+    proof_pack_path: ""
+    evidence_level: null
+    started_iso: ""
+    closed_iso: ""
+    notes_ar: "عبّئ account_ref وربط Proof Pack عند الإغلاق"
+  - id: sprint_002
+    account_ref: ""
+    sector: ""
+    status: template_ready
+    proof_pack_path: ""
+    evidence_level: null
+    started_iso: ""
+    closed_iso: ""
+    notes_ar: ""
+  - id: sprint_003
+    account_ref: ""
+    sector: ""
+    status: template_ready
+    proof_pack_path: ""
+    evidence_level: null
+    started_iso: ""
+    closed_iso: ""
+    notes_ar: ""
+
+completion_gate:
+  required_closed_with_l4: 3
+  verification: "count sprints where status=closed and evidence_level >= L4"

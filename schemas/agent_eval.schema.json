@@ -1,0 +1,77 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dealix.sa/schemas/agent_eval.schema.json",
+  "title": "Dealix Agent Evaluation Record",
+  "description": "A single evaluation record for a Dealix agent. Demonstrates cadence compliance and pass/fail tracking.",
+  "type": "object",
+  "required": [
+    "eval_id",
+    "agent_id",
+    "eval_type",
+    "eval_date",
+    "result",
+    "score",
+    "evidence_link"
+  ],
+  "properties": {
+    "eval_id": {
+      "type": "string",
+      "pattern": "^EVAL-[0-9]{8}-[0-9]{4,}$",
+      "description": "Unique eval id, e.g. EVAL-20260603-0001"
+    },
+    "agent_id": {
+      "type": "string",
+      "pattern": "^AGENT-[A-Z]+-[0-9]{3,}$",
+      "description": "References agent_registry.agent_id"
+    },
+    "eval_type": {
+      "type": "string",
+      "enum": ["behavioral", "security", "drift", "hallucination", "permission_scope", "cost"],
+      "description": "Per AGENT_EVAL_CADENCE_AR.md §2"
+    },
+    "eval_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 evaluation timestamp"
+    },
+    "result": {
+      "type": "string",
+      "enum": ["pass", "fail"],
+      "description": "Pass/fail outcome"
+    },
+    "score": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1,
+      "description": "Numeric score, 0.0–1.0"
+    },
+    "evidence_link": {
+      "type": "string",
+      "description": "Path to the eval artifact (JSON / log / report)"
+    },
+    "evaluator": {
+      "type": "string",
+      "enum": ["auto_pipeline", "human_reviewer", "external_auditor"],
+      "description": "Who/what ran the eval"
+    },
+    "cadence_compliance": {
+      "type": "string",
+      "enum": ["on_schedule", "late", "missed"],
+      "description": "Whether this eval happened on the schedule defined by eval_cadence"
+    },
+    "next_eval_due": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When the next eval is due"
+    },
+    "thresholds": {
+      "type": "object",
+      "description": "Pass thresholds applied (e.g. min_score, min_pass_count)",
+      "additionalProperties": true
+    },
+    "notes": {
+      "type": "string"
+    }
+  },
+  "additionalProperties": false
+}

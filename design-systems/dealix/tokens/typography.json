@@ -1,0 +1,19 @@
+{
+  "_comment": "Dealix Typography Tokens v1.0",
+  "families": {
+    "display": "Poppins, Cairo, system-ui, sans-serif",
+    "body":    "Inter, Tajawal, system-ui, sans-serif",
+    "mono":    "IBM Plex Mono, monospace"
+  },
+  "weights":  { "light":300, "regular":400, "medium":500, "semibold":600, "bold":700, "black":900 },
+  "sizes": {
+    "h1":      { "size":"48px", "lineHeight":"56px", "letterSpacing":"-0.5px" },
+    "h2":      { "size":"36px", "lineHeight":"44px", "letterSpacing":"-0.3px" },
+    "h3":      { "size":"28px", "lineHeight":"36px" },
+    "h4":      { "size":"24px", "lineHeight":"32px" },
+    "body-lg": { "size":"18px", "lineHeight":"28px" },
+    "body":    { "size":"16px", "lineHeight":"24px" },
+    "body-sm": { "size":"14px", "lineHeight":"22px" },
+    "caption": { "size":"12px", "lineHeight":"18px", "letterSpacing":"0.5px" }
+  }
+}

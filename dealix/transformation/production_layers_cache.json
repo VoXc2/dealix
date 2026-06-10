@@ -1,0 +1,138 @@
+{
+  "verdict": "WARN",
+  "overall_pct": 65,
+  "api_base": "https://api.dealix.me",
+  "frontend_base": "https://dealix.me",
+  "trust_layer": {
+    "probes": {
+      "healthz": {
+        "probed": true,
+        "url": "https://api.dealix.me/healthz",
+        "status": 200,
+        "ok": true,
+        "snippet": "{\"status\":\"ok\",\"service\":\"dealix\",\"version\":\"3.0.0\",\"env\":\"production\",\"git_sha\":\"8099b00\"}"
+      },
+      "version": {
+        "probed": true,
+        "url": "https://api.dealix.me/version",
+        "status": 200,
+        "ok": true,
+        "snippet": "{\"service\":\"dealix-api\",\"status\":\"ok\",\"version\":\"3.0.0\",\"env\":\"production\",\"git_sha\":\"8099b00\",\"health\":\"/healthz\",\"docs\":\"/docs\",\"meta\":\"/api/v1/meta\"}"
+      },
+      "api_v1_meta": {
+        "probed": true,
+        "url": "https://api.dealix.me/api/v1/meta",
+        "status": 200,
+        "ok": true,
+        "snippet": "{\"service\":\"Dealix\",\"version\":\"3.0.0\",\"env\":\"production\",\"git_sha\":\"8099b00\",\"surfaces\":{\"version\":1,\"api_base_production\":\"https://api.dealix.me\",\"api_trust_endpoints\":[{\"path\":\"/healthz\",\"purpose_ar"
+      },
+      "health": {
+        "probed": true,
+        "url": "https://api.dealix.me/health",
+        "status": 200,
+        "ok": true,
+        "snippet": "{\"status\":\"ok\",\"version\":\"3.0.0\",\"env\":\"production\",\"providers\":[\"groq\"],\"git_sha\":\"8099b00\"}"
+      }
+    },
+    "deploy_stale_hint_ar": "",
+    "ok": true
+  },
+  "layers": [
+    {
+      "id": 0,
+      "name": "DNS + healthz",
+      "pct": 100,
+      "dns_ok": true,
+      "healthz": {
+        "probed": true,
+        "url": "https://api.dealix.me/healthz",
+        "status": 200,
+        "ok": true,
+        "snippet": "{\"status\":\"ok\",\"service\":\"dealix\",\"version\":\"3.0.0\",\"env\":\"production\",\"git_sha\":\"8099b00\"}"
+      },
+      "health": {
+        "probed": true,
+        "url": "https://api.dealix.me/health",
+        "status": 200,
+        "ok": true,
+        "snippet": "{\"status\":\"ok\",\"version\":\"3.0.0\",\"env\":\"production\",\"providers\":[\"groq\"],\"git_sha\":\"8099b00\"}"
+      },
+      "healthz_has_version": true,
+      "blocker_ar": ""
+    },
+    {
+      "id": 1,
+      "name": "Railway P0 secrets",
+      "pct": 50,
+      "repo_ok": true,
+      "api_env_ready": false,
+      "missing_required": [
+        "ENVIRONMENT"
+      ],
+      "blocker_ar": "أكمل متغيرات API: ENVIRONMENT"
+    },
+    {
+      "id": 2,
+      "name": "Webhooks",
+      "pct": 100,
+      "moyasar_secret": true,
+      "hubspot": true,
+      "calendly": true,
+      "webhook_routes_live": true,
+      "blocker_ar": ""
+    },
+    {
+      "id": 3,
+      "name": "Paid launch",
+      "pct": 100,
+      "posthog": true,
+      "moyasar_key": true,
+      "meta_live": true,
+      "blocker_ar": ""
+    },
+    {
+      "id": 4,
+      "name": "Frontend /ar",
+      "pct": 40,
+      "ar": {
+        "probed": true,
+        "url": "https://dealix.me/ar",
+        "status": 404,
+        "ok": false,
+        "server": "GitHub.com",
+        "location": ""
+      },
+      "root": {
+        "probed": true,
+        "url": "https://dealix.me",
+        "status": 200,
+        "ok": true,
+        "server": "GitHub.com",
+        "location": ""
+      },
+      "github_pages": true,
+      "fe_env_ready": true,
+      "missing_fe": [],
+      "blocker_ar": "dealix.me يشير إلى GitHub Pages — انقل DNS إلى Railway Frontend (docs/ops/DEALIX_ME_FRONTEND_DNS_RAILWAY_AR.md)"
+    },
+    {
+      "id": 5,
+      "name": "First revenue",
+      "pct": 0,
+      "paid": 0,
+      "proof": 0,
+      "pipeline_open": true,
+      "blocker_ar": "Phase 0–1: أول دفعة + Proof Pack (بعد Layer 0–4)"
+    }
+  ],
+  "blockers_ar": [
+    "أكمل متغيرات API: ENVIRONMENT",
+    "dealix.me يشير إلى GitHub Pages — انقل DNS إلى Railway Frontend (docs/ops/DEALIX_ME_FRONTEND_DNS_RAILWAY_AR.md)",
+    "Phase 0–1: أول دفعة + Proof Pack (بعد Layer 0–4)"
+  ],
+  "founder_next_ar": [
+    "أكمل متغيرات API: ENVIRONMENT",
+    "dealix.me يشير إلى GitHub Pages — انقل DNS إلى Railway Frontend (docs/ops/DEALIX_ME_FRONTEND_DNS_RAILWAY_AR.md)",
+    "Phase 0–1: أول دفعة + Proof Pack (بعد Layer 0–4)"
+  ]
+}

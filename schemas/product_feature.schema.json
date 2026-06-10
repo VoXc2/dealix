@@ -1,0 +1,267 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://dealix.sa/schemas/product_feature.schema.json",
+  "title": "Product Feature",
+  "description": "Product feature record for Dealix backlog",
+  "type": "object",
+  "required": [
+    "id",
+    "name",
+    "user",
+    "problem",
+    "outcome",
+    "priority",
+    "created_at",
+    "created_by"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^feat_[a-z0-9_]+$",
+      "description": "Unique feature identifier"
+    },
+    "name": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 100,
+      "description": "Feature name"
+    },
+    "description": {
+      "type": "string",
+      "description": "Detailed description"
+    },
+    "user": {
+      "type": "string",
+      "enum": [
+        "founder",
+        "sales_manager",
+        "operations_manager",
+        "client",
+        "partner",
+        "all"
+      ],
+      "description": "Target user persona"
+    },
+    "module": {
+      "type": "string",
+      "enum": [
+        "control_room",
+        "gtm_factory",
+        "approval_queue",
+        "reply_handling",
+        "whatsapp_os",
+        "secure_portal",
+        "proposal_handoff",
+        "delivery_handoff",
+        "weekly_reports",
+        "renewal_engine",
+        "metrics",
+        "trust_security"
+      ],
+      "description": "Affected product module"
+    },
+    "problem": {
+      "type": "string",
+      "minLength": 10,
+      "description": "Problem this feature solves"
+    },
+    "outcome": {
+      "type": "string",
+      "minLength": 10,
+      "description": "Expected outcome"
+    },
+    "revenue_impact": {
+      "type": "string",
+      "enum": [
+        "critical",
+        "high",
+        "medium",
+        "low",
+        "none"
+      ],
+      "description": "Impact on revenue"
+    },
+    "risk": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 10,
+      "description": "Risk level 1-10"
+    },
+    "effort": {
+      "type": "string",
+      "enum": [
+        "xs",
+        "sm",
+        "md",
+        "lg",
+        "xl",
+        "xxl"
+      ],
+      "description": "Effort estimate: xs (<1 day), sm (1 week), md (2-4 weeks), lg (1-2 months), xl (2-3 months), xxl (3+ months)"
+    },
+    "priority": {
+      "type": "string",
+      "enum": [
+        "P0",
+        "P1",
+        "P2",
+        "P3",
+        "P4",
+        "P5"
+      ],
+      "description": "Priority classification"
+    },
+    "ice_score": {
+      "type": "object",
+      "properties": {
+        "impact": {
+          "type": "number",
+          "minimum": 1,
+          "maximum": 10
+        },
+        "confidence": {
+          "type": "number",
+          "minimum": 1,
+          "maximum": 10
+        },
+        "ease": {
+          "type": "number",
+          "minimum": 1,
+          "maximum": 10
+        },
+        "total": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+        }
+      }
+    },
+    "rice_score": {
+      "type": "object",
+      "properties": {
+        "reach": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "impact": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "confidence": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "effort_months": {
+          "type": "number",
+          "minimum": 0.5
+        },
+        "total": {
+          "type": "number",
+          "minimum": 0
+        }
+      }
+    },
+    "dependencies": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Feature IDs this depends on"
+    },
+    "blockers": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Current blockers"
+    },
+    "acceptance_criteria": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1,
+      "description": "Acceptance criteria for completion"
+    },
+    "source": {
+      "type": "string",
+      "enum": [
+        "customer_feedback",
+        "delivery_pain",
+        "market_signal",
+        "competitor_analysis",
+        "internal_request",
+        "strategic_initiative"
+      ],
+      "description": "Where this feature originated"
+    },
+    "source_id": {
+      "type": "string",
+      "description": "Reference to source feedback/item"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "idea",
+        "backlog",
+        "planned",
+        "in_progress",
+        "review",
+        "launched",
+        "deferred",
+        "rejected"
+      ],
+      "default": "idea"
+    },
+    "planned_sprint": {
+      "type": "string",
+      "description": "Sprint/planning period"
+    },
+    "launched_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When feature was launched"
+    },
+    "metrics": {
+      "type": "object",
+      "properties": {
+        "adoption_rate": {
+          "type": "number"
+        },
+        "user_satisfaction": {
+          "type": "number"
+        },
+        "revenue_impact_actual": {
+          "type": "number"
+        }
+      }
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Tags for categorization"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Additional notes"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "created_by": {
+      "type": "string",
+      "description": "Creator identifier"
+    }
+  },
+  "additionalProperties": false
+}

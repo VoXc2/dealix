@@ -1,0 +1,73 @@
+name: Deploy Frontend to Railway
+
+# Deploys Dealix Next.js frontend when RAILWAY_TOKEN is configured.
+# Setup: gh secret set RAILWAY_TOKEN --repo VoXc2/dealix
+# Optional: gh variable set RAILWAY_FRONTEND_SERVICE --repo VoXc2/dealix (default: web)
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "frontend/**"
+      - ".github/workflows/railway_deploy_frontend.yml"
+  workflow_dispatch:
+    inputs:
+      service:
+        description: "Railway frontend service name"
+        required: false
+        default: "web"
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  deploy-frontend:
+    name: Deploy Frontend
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check for RAILWAY_TOKEN
+        id: check_token
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+        run: |
+          if [ -z "$RAILWAY_TOKEN" ]; then
+            echo "::warning::RAILWAY_TOKEN not configured - skip frontend deploy"
+            echo "token_present=false" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+          echo "token_present=true" >> $GITHUB_OUTPUT
+
+      - name: Install Railway CLI
+        if: steps.check_token.outputs.token_present == 'true'
+        run: |
+          curl -fsSL https://railway.com/install.sh | sh
+          echo "$HOME/.railway/bin" >> $GITHUB_PATH
+
+      - name: Deploy frontend
+        if: steps.check_token.outputs.token_present == 'true'
+        working-directory: frontend
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+        run: |
+          SERVICE="${{ inputs.service || vars.RAILWAY_FRONTEND_SERVICE || 'web' }}"
+          echo "Deploying frontend service: $SERVICE"
+          railway up --service "$SERVICE" --detach
+
+      - name: Smoke /ar on dealix.me
+        if: steps.check_token.outputs.token_present == 'true'
+        run: |
+          FE="${{ vars.DEALIX_FRONTEND_BASE || 'https://dealix.me' }}"
+          for i in {1..8}; do
+            code=$(curl -sS -o /dev/null -w "%{http_code}" --max-time 15 "$FE/ar" || echo "000")
+            echo "Attempt $i: $FE/ar -> $code"
+            if [ "$code" = "200" ]; then
+              echo "frontend /ar live"
+              exit 0
+            fi
+            sleep 20
+          done
+          echo "::warning::$FE/ar not 200 - update DNS from GitHub Pages to Railway Frontend"
+          exit 0

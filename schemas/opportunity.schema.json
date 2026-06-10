@@ -1,0 +1,118 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://dealix.sa/schemas/opportunity.schema.json",
+  "title": "Sales Opportunity",
+  "description": "Sales opportunity record in Dealix pipeline",
+  "type": "object",
+  "required": ["id", "client_name", "stage", "created_at", "updated_at", "owner", "next_step", "next_step_due"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^opp_[a-z0-9_]+$"
+    },
+    "client_name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "client_contact": {
+      "type": "string"
+    },
+    "client_sector": {
+      "type": "string",
+      "description": "ICP segment ID"
+    },
+    "stage": {
+      "type": "string",
+      "enum": [
+        "signal_detected",
+        "researched",
+        "qualified",
+        "drafted",
+        "approved_for_outreach",
+        "contacted",
+        "replied",
+        "discovery_scheduled",
+        "discovery_completed",
+        "proposal_needed",
+        "proposal_sent",
+        "negotiation",
+        "payment_handoff",
+        "won",
+        "delivery_handoff",
+        "active_delivery",
+        "renewal_candidate",
+        "renewed",
+        "lost",
+        "nurture",
+        "do_not_contact"
+      ]
+    },
+    "qualification": {
+      "type": "object",
+      "properties": {
+        "score": {"type": "integer", "minimum": 0, "maximum": 25},
+        "tier": {"type": "string", "enum": ["qualified_A", "qualified_B", "nurture", "disqualify"]},
+        "budget_confirmed": {"type": "boolean"},
+        "budget_range_sar": {"type": "number", "minimum": 0},
+        "dm_accessible": {"type": "boolean"},
+        "pain_category": {"type": "string"},
+        "timing_urgency": {"type": "string"},
+        "compliance_passed": {"type": "boolean"}
+      }
+    },
+    "value_sar": {
+      "type": "number",
+      "minimum": 0,
+      "description": "Estimated deal value"
+    },
+    "offer_id": {
+      "type": "string",
+      "description": "Recommended offer"
+    },
+    "owner": {
+      "type": "string",
+      "description": "Person or agent responsible"
+    },
+    "next_step": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Specific next action"
+    },
+    "next_step_due": {
+      "type": "string",
+      "format": "date"
+    },
+    "source": {
+      "type": "string",
+      "description": "Where the lead came from"
+    },
+    "partner_id": {
+      "type": "string",
+      "description": "If partner-sourced"
+    },
+    "founder_approved": {
+      "type": "boolean",
+      "default": false
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "lost_reason": {
+      "type": "string"
+    },
+    "won_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "is_estimate": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "additionalProperties": false
+}

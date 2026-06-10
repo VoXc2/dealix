@@ -1,0 +1,94 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://dealix.sa/schemas/buyer_persona.schema.json",
+  "title": "Buyer Persona",
+  "description": "Buyer persona definition for Dealix commercial operations",
+  "type": "object",
+  "required": ["id", "label_ar", "cares_about", "fears", "buying_trigger", "decision_speed_days"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_]+$"
+    },
+    "label_ar": {
+      "type": "string",
+      "minLength": 3
+    },
+    "label_en": {
+      "type": "string"
+    },
+    "cares_about": {
+      "type": "array",
+      "items": {"type": "string"},
+      "minItems": 1
+    },
+    "fears": {
+      "type": "array",
+      "items": {"type": "string"},
+      "minItems": 1
+    },
+    "buying_trigger": {
+      "type": "array",
+      "items": {"type": "string"},
+      "minItems": 1
+    },
+    "objection": {
+      "type": "array",
+      "items": {"type": "string"}
+    },
+    "best_cta": {
+      "type": "string",
+      "description": "Recommended call-to-action phrasing"
+    },
+    "best_proof": {
+      "type": "string",
+      "description": "Recommended proof type"
+    },
+    "best_first_offer": {
+      "type": "string",
+      "description": "Recommended first offer ID"
+    },
+    "language_tone": {
+      "type": "string",
+      "description": "Communication tone"
+    },
+    "decision_speed_days": {
+      "type": "object",
+      "properties": {
+        "min": {"type": "integer", "minimum": 0},
+        "max": {"type": "integer", "minimum": 0},
+        "typical": {"type": "integer", "minimum": 0}
+      }
+    },
+    "preferred_channels": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "inbound",
+          "email_warm",
+          "linkedin_manual",
+          "partner_intro",
+          "content",
+          "events",
+          "referral"
+        ]
+      }
+    },
+    "forbidden_phrases": {
+      "type": "array",
+      "items": {"type": "string"},
+      "description": "Phrases to never use with this persona"
+    },
+    "evidence_level_required": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 5
+    },
+    "is_estimate": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "additionalProperties": false
+}

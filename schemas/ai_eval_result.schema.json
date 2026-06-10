@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dealix.sa/schemas/ai_eval_result.schema.json",
+  "title": "AI Eval Result",
+  "type": "object",
+  "required": ["eval_id", "ts", "agent_id", "task_id", "model_id", "scores", "overall_pass"],
+  "properties": {
+    "eval_id": { "type": "string" },
+    "ts": { "type": "string", "format": "date-time" },
+    "agent_id": { "type": "integer" },
+    "task_id": { "type": "string" },
+    "model_id": { "type": "string" },
+    "output_text_hash": { "type": "string" },
+    "scores": {
+      "type": "object",
+      "properties": {
+        "factuality": { "type": "integer", "minimum": 0, "maximum": 5 },
+        "brand_voice": { "type": "integer", "minimum": 0, "maximum": 5 },
+        "compliance": { "type": "integer", "minimum": 0, "maximum": 5 },
+        "personalization": { "type": "integer", "minimum": 0, "maximum": 5 },
+        "arabic_quality": { "type": "integer", "minimum": 0, "maximum": 5 },
+        "commercial_safety": { "type": "integer", "minimum": 0, "maximum": 5 },
+        "schema_validity": { "type": "integer", "minimum": 0, "maximum": 5 },
+        "actionability": { "type": "integer", "minimum": 0, "maximum": 5 },
+        "evidence_mapping": { "type": "integer", "minimum": 0, "maximum": 5 }
+      }
+    },
+    "overall_pass": { "type": "boolean" },
+    "failure_modes": { "type": "array", "items": { "type": "string" } },
+    "reviewer": { "enum": ["auto", "human", "red_team"] }
+  }
+}

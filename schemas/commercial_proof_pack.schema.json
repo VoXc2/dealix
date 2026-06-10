@@ -1,0 +1,120 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://dealix.sa/schemas/commercial_proof_pack.schema.json",
+  "title": "Commercial Proof Pack",
+  "description": "Proof pack / evidence pack for Dealix commercial operations",
+  "type": "object",
+  "required": ["id", "client_name", "evidence_level", "approval_status", "founder_approved"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^proof_[a-z0-9_]+$"
+    },
+    "opportunity_id": {
+      "type": "string"
+    },
+    "client_name": {
+      "type": "string",
+      "description": "Real or 'Sample' or 'Anonymized'"
+    },
+    "is_anonymized": {
+      "type": "boolean",
+      "default": false
+    },
+    "is_hypothetical": {
+      "type": "boolean",
+      "default": false
+    },
+    "industry_sector": {
+      "type": "string"
+    },
+    "time_period": {
+      "type": "object",
+      "properties": {
+        "start": {"type": "string", "format": "date"},
+        "end": {"type": "string", "format": "date"}
+      }
+    },
+    "problem_identified": {
+      "type": "string"
+    },
+    "leakage_points": {
+      "type": "array",
+      "items": {"type": "string"}
+    },
+    "solution_delivered": {
+      "type": "string"
+    },
+    "workflow_description": {
+      "type": "string"
+    },
+    "results": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "metric": {"type": "string"},
+          "value": {"type": "string"},
+          "methodology": {"type": "string"},
+          "is_estimate": {"type": "boolean"}
+        }
+      }
+    },
+    "evidence_level": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 5
+    },
+    "evidence_source": {
+      "type": "string"
+    },
+    "client_permission": {
+      "type": "object",
+      "properties": {
+        "granted": {"type": "boolean"},
+        "type": {"type": "string"},
+        "valid_until": {"type": "string", "format": "date"}
+      }
+    },
+    "assumptions": {
+      "type": "array",
+      "items": {"type": "string"}
+    },
+    "risks": {
+      "type": "array",
+      "items": {"type": "string"}
+    },
+    "recommended_pilot": {
+      "type": "object",
+      "properties": {
+        "scope": {"type": "string"},
+        "timeline_days": {"type": "integer", "minimum": 0},
+        "investment_sar": {"type": "number", "minimum": 0}
+      }
+    },
+    "next_step": {
+      "type": "string"
+    },
+    "approval_status": {
+      "type": "string",
+      "enum": ["draft", "review", "approved", "rejected"]
+    },
+    "founder_approved": {
+      "type": "boolean",
+      "default": false
+    },
+    "approved_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "is_estimate": {
+      "type": "boolean",
+      "default": true
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "additionalProperties": false
+}

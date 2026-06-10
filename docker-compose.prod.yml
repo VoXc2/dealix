@@ -1,0 +1,270 @@
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        GIT_SHA: ${GIT_SHA:-local}
+    image: dealix-api:${IMAGE_TAG:-latest}
+    container_name: dealix-api
+    env_file:
+      - .env.prod
+    environment:
+      APP_ENV: production
+      PORT: 8000
+      DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER:-dealix}:${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD}@pgbouncer:6432/${POSTGRES_DB:-dealix}
+      REDIS_URL: redis://:${REDIS_PASSWORD:?set REDIS_PASSWORD}@redis:6379/0
+    depends_on:
+      pgbouncer:
+        condition: service_started
+      redis:
+        condition: service_healthy
+    expose:
+      - "8000"
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://localhost:8000/healthz || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    restart: unless-stopped
+    networks:
+      - dealix-private
+      - dealix-public
+    deploy:
+      resources:
+        limits:
+          cpus: "2.0"
+          memory: 2G
+        reservations:
+          cpus: "0.50"
+          memory: 512M
+
+  frontend:
+    build:
+      context: frontend
+      dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-https://api.dealix.me}
+        NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL:-https://dealix.me}
+        NEXT_PUBLIC_USE_DEALIX_OPS_PROXY: ${NEXT_PUBLIC_USE_DEALIX_OPS_PROXY:-1}
+    image: dealix-frontend:${IMAGE_TAG:-latest}
+    container_name: dealix-frontend
+    env_file:
+      - .env.prod
+    environment:
+      PORT: 3000
+      HOSTNAME: 0.0.0.0
+    expose:
+      - "3000"
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:3000/healthz >/dev/null || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    restart: unless-stopped
+    networks:
+      - dealix-public
+    deploy:
+      resources:
+        limits:
+          cpus: "1.0"
+          memory: 1G
+        reservations:
+          cpus: "0.25"
+          memory: 256M
+
+  web:
+    build:
+      context: apps/web
+      dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-https://api.dealix.me}
+        NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL:-https://dealix.me}
+    image: dealix-web:${IMAGE_TAG:-latest}
+    container_name: dealix-web
+    env_file:
+      - .env.prod
+    environment:
+      PORT: 3000
+      HOSTNAME: 0.0.0.0
+    expose:
+      - "3000"
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:3000/healthz >/dev/null || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    restart: unless-stopped
+    networks:
+      - dealix-public
+    deploy:
+      resources:
+        limits:
+          cpus: "1.0"
+          memory: 1G
+        reservations:
+          cpus: "0.25"
+          memory: 256M
+
+  founder-os-worker:
+    build:
+      context: .
+      dockerfile: Dockerfile.worker
+    image: dealix-worker:${IMAGE_TAG:-latest}
+    container_name: dealix-founder-os-worker
+    env_file:
+      - .env.prod
+    environment:
+      APP_ENV: production
+      DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER:-dealix}:${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD}@pgbouncer:6432/${POSTGRES_DB:-dealix}
+      FOUNDER_OS_INTERVAL_SECONDS: ${FOUNDER_OS_INTERVAL_SECONDS:-900}
+      AGENT_APPROVAL_MODE: required
+      AUTO_SEND_ENABLED: "false"
+      EXTERNAL_OUTREACH_ENABLED: "false"
+    depends_on:
+      api:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - dealix-private
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 512M
+        reservations:
+          cpus: "0.1"
+          memory: 128M
+
+  dealix-watchdog:
+    build:
+      context: .
+      dockerfile: Dockerfile.watchdog
+    image: dealix-watchdog:${IMAGE_TAG:-latest}
+    container_name: dealix-watchdog
+    environment:
+      APP_URL: https://api.dealix.me
+      DEALIX_HEALTH_PATH: /healthz
+    restart: "no"
+    networks:
+      - dealix-public
+    deploy:
+      resources:
+        limits:
+          cpus: "0.25"
+          memory: 128M
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: dealix-postgres
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-dealix}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB:-dealix}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-dealix} -d ${POSTGRES_DB:-dealix}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    networks:
+      - dealix-private
+    deploy:
+      resources:
+        limits:
+          cpus: "2.0"
+          memory: 3G
+
+  pgbouncer:
+    image: bitnami/pgbouncer:1.23.1
+    container_name: dealix-pgbouncer
+    environment:
+      POSTGRESQL_HOST: postgres
+      POSTGRESQL_PORT: 5432
+      POSTGRESQL_DATABASE: ${POSTGRES_DB:-dealix}
+      POSTGRESQL_USERNAME: ${POSTGRES_USER:-dealix}
+      POSTGRESQL_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD}
+      PGBOUNCER_DATABASE: ${POSTGRES_DB:-dealix}
+      PGBOUNCER_PORT: 6432
+      PGBOUNCER_POOL_MODE: transaction
+      PGBOUNCER_MAX_CLIENT_CONN: ${PGBOUNCER_MAX_CLIENT_CONN:-300}
+      PGBOUNCER_DEFAULT_POOL_SIZE: ${PGBOUNCER_DEFAULT_POOL_SIZE:-30}
+      PGBOUNCER_MIN_POOL_SIZE: ${PGBOUNCER_MIN_POOL_SIZE:-5}
+      PGBOUNCER_RESERVE_POOL_SIZE: ${PGBOUNCER_RESERVE_POOL_SIZE:-10}
+      PGBOUNCER_IGNORE_STARTUP_PARAMETERS: extra_float_digits
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - dealix-private
+
+  redis:
+    image: redis:7-alpine
+    container_name: dealix-redis
+    command:
+      - redis-server
+      - --requirepass
+      - ${REDIS_PASSWORD:?set REDIS_PASSWORD}
+      - --appendonly
+      - "yes"
+      - --maxmemory
+      - ${REDIS_MAXMEMORY:-512mb}
+      - --maxmemory-policy
+      - allkeys-lru
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli -a ${REDIS_PASSWORD:?set REDIS_PASSWORD} ping | grep PONG"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    networks:
+      - dealix-private
+    deploy:
+      resources:
+        limits:
+          cpus: "1.0"
+          memory: 1G
+
+  caddy:
+    image: caddy:2-alpine
+    container_name: dealix-caddy
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      DEALIX_DOMAIN: ${DEALIX_DOMAIN:-dealix.me}
+      DEALIX_API_DOMAIN: ${DEALIX_API_DOMAIN:-api.dealix.me}
+      DEALIX_FRONTEND_UPSTREAM: ${DEALIX_FRONTEND_UPSTREAM:-frontend:3000}
+    volumes:
+      - ./ops/caddy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      api:
+        condition: service_healthy
+      frontend:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - dealix-public
+
+volumes:
+  postgres_data:
+  redis_data:
+  caddy_data:
+  caddy_config:
+
+networks:
+  dealix-private:
+    driver: bridge
+    internal: true
+  dealix-public:
+    driver: bridge

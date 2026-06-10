@@ -1,0 +1,62 @@
+/* Dealix Brand Colors for Landing Pages */
+:root {
+  --brand-navy-50:  #eef3f8;
+  --brand-navy-100: #d4e0ed;
+  --brand-navy-200: #9db8d5;
+  --brand-navy-300: #678eb9;
+  --brand-navy-400: #33649b;
+  --brand-navy-500: #0c2742;
+  --brand-navy-600: #081828;
+  --brand-navy-700: #040d16;
+  --brand-navy-800: #02050a;
+  --brand-navy-900: #000103;
+
+  --brand-gold-50:  #fdf8ee;
+  --brand-gold-100: #fcf1db;
+  --brand-gold-200: #f5dfa3;
+  --brand-gold-300: #edc967;
+  --brand-gold-400: #e2b032;
+  --brand-gold-500: #d4a843;
+  --brand-gold-600: #b48b2a;
+  --brand-gold-700: #916d16;
+  --brand-gold-800: #6b4e0a;
+  --brand-gold-900: #423004;
+
+  --brand-emerald-50:  #ecfdf5;
+  --brand-emerald-100: #d1fae5;
+  --brand-emerald-200: #93efc0;
+  --brand-emerald-300: #51df99;
+  --brand-emerald-400: #1ac771;
+  --brand-emerald-500: #059669;
+  --brand-emerald-600: #037448;
+  --brand-emerald-700: #02522d;
+  --brand-emerald-800: #013118;
+  --brand-emerald-900: #001209;
+
+  --brand-slate-50:  #f8f9fb;
+  --brand-slate-100: #eef0f4;
+  --brand-slate-200: #d5d9e2;
+  --brand-slate-300: #b4bccb;
+  --brand-slate-400: #8d99af;
+  --brand-slate-500: #64748b;
+  --brand-slate-600: #4b5567;
+  --brand-slate-700: #364558;
+  --brand-slate-800: #1e293b;
+  --brand-slate-900: #0f172a;
+
+  --brand-white: #ffffff;
+  --brand-black: #02050a;
+
+  --brand-success: #059669;
+  --brand-warning: #d97706;
+  --brand-error:   #dc2626;
+  --brand-info:    #2563eb;
+
+  --brand-font-arabic:  "Noto Kufi Arabic", "Noto Naskh Arabic", "Cairo", "system-ui", sans-serif;
+  --brand-font-display: "Cairo", "Noto Kufi Arabic", "Poppins", "system-ui", sans-serif;
+  --brand-font-body:    "Inter", "Noto Sans Arabic", "Tajawal", "system-ui", sans-serif;
+  --brand-font-mono:    "JetBrains Mono", "IBM Plex Mono", monospace;
+  --brand-shadow-gold-sm: 0 0 12px rgba(212,168,67,0.2);
+  --brand-shadow-gold-md: 0 0 24px rgba(212,168,67,0.3);
+  --brand-shadow-emerald-sm: 0 0 12px rgba(5,150,105,0.2);
+}

@@ -1,0 +1,246 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://dealix.sa/schemas/product_feedback.schema.json",
+  "title": "Product Feedback",
+  "description": "Product feedback record for Dealix decision-making",
+  "type": "object",
+  "required": [
+    "id",
+    "source",
+    "quote_summary",
+    "affected_module",
+    "product_decision",
+    "created_at",
+    "created_by"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^fb_[a-z0-9_]+$",
+      "description": "Unique feedback identifier"
+    },
+    "source": {
+      "type": "string",
+      "enum": [
+        "reply",
+        "discovery_call",
+        "proposal_objection",
+        "delivery_blocker",
+        "customer_success_report",
+        "renewal_reason",
+        "churn_risk",
+        "partner_feedback",
+        "founder_decision",
+        "market_signal",
+        "competitor_analysis",
+        "internal_request"
+      ],
+      "description": "Feedback source channel"
+    },
+    "source_detail": {
+      "type": "string",
+      "description": "Detailed source information (e.g., customer name, call recording ID)"
+    },
+    "quote_summary": {
+      "type": "string",
+      "minLength": 10,
+      "description": "Original quote or summary"
+    },
+    "original_language": {
+      "type": "string",
+      "enum": [
+        "ar",
+        "en",
+        "mixed"
+      ],
+      "default": "ar",
+      "description": "Original language of feedback"
+    },
+    "affected_module": {
+      "type": "string",
+      "enum": [
+        "control_room",
+        "gtm_factory",
+        "approval_queue",
+        "reply_handling",
+        "whatsapp_os",
+        "secure_portal",
+        "proposal_handoff",
+        "delivery_handoff",
+        "weekly_reports",
+        "renewal_engine",
+        "metrics",
+        "trust_security",
+        "onboarding",
+        "pricing",
+        "general"
+      ],
+      "description": "Product module affected"
+    },
+    "affected_feature": {
+      "type": "string",
+      "description": "Specific feature if known (feat_xxx)"
+    },
+    "revenue_impact": {
+      "type": "string",
+      "enum": [
+        "critical",
+        "high",
+        "medium",
+        "low",
+        "none"
+      ],
+      "description": "Impact on revenue if addressed"
+    },
+    "urgency": {
+      "type": "string",
+      "enum": [
+        "critical",
+        "high",
+        "medium",
+        "low"
+      ],
+      "description": "How urgent this feedback is"
+    },
+    "evidence_level": {
+      "type": "string",
+      "enum": [
+        "high",
+        "medium",
+        "low"
+      ],
+      "description": "Confidence level in this feedback"
+    },
+    "evidence_details": {
+      "type": "object",
+      "properties": {
+        "repeat_count": {
+          "type": "integer",
+          "description": "How many times similar feedback received"
+        },
+        "sources_count": {
+          "type": "integer",
+          "description": "Number of different sources"
+        },
+        "has_recordings": {
+          "type": "boolean"
+        },
+        "has_written": {
+          "type": "boolean"
+        }
+      }
+    },
+    "product_decision": {
+      "type": "string",
+      "enum": [
+        "build_now",
+        "backlog",
+        "do_not_build",
+        "investigate",
+        "deferred",
+        "duplicate"
+      ],
+      "description": "Product decision made"
+    },
+    "decision_rationale": {
+      "type": "string",
+      "description": "Why this decision was made"
+    },
+    "decision_date": {
+      "type": "string",
+      "format": "date",
+      "description": "When decision was made"
+    },
+    "decided_by": {
+      "type": "string",
+      "enum": [
+        "founder",
+        "product_manager",
+        "engineering_lead",
+        "committee"
+      ],
+      "description": "Who made the decision"
+    },
+    "related_features": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Feature IDs related to this feedback"
+    },
+    "similar_feedback_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "IDs of similar feedback items"
+    },
+    "customer_id": {
+      "type": "string",
+      "description": "Customer providing feedback"
+    },
+    "customer_segment": {
+      "type": "string",
+      "enum": [
+        "founder",
+        "sales_manager",
+        "operations_manager",
+        "client",
+        "partner"
+      ],
+      "description": "Customer persona"
+    },
+    "deal_id": {
+      "type": "string",
+      "description": "Related deal/opportunity"
+    },
+    "deal_value_sar": {
+      "type": "number",
+      "description": "Value of related deal"
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Tags for categorization"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Additional notes"
+    },
+    "impact_tracked": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether impact was tracked"
+    },
+    "impact_result": {
+      "type": "string",
+      "enum": [
+        "resolved",
+        "partially_resolved",
+        "not_resolved",
+        "worsened"
+      ],
+      "description": "Result of addressing feedback"
+    },
+    "impact_result_date": {
+      "type": "string",
+      "format": "date",
+      "description": "When impact was assessed"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "created_by": {
+      "type": "string",
+      "description": "Who logged this feedback"
+    }
+  },
+  "additionalProperties": false
+}

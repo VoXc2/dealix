@@ -1,0 +1,52 @@
+# Wave 12.5 §33.2.3 — Support workflow (ticket triage + reply draft)
+name: support
+duration_days: 1
+description_ar: "معالجة تذكرة دعم — تصنيف + sentiment + جذر السبب + رد مقترح + موافقة"
+description_en: "Support ticket processing — classify + sentiment + root cause + suggested reply + approval"
+proof_target: "support_reply_approved"
+final_deliverable: "Resolved/escalated ticket with bilingual reply draft + customer health impact recorded"
+
+steps:
+  - step_id: sup_intake
+    day: 1
+    title_ar: "استلام التذكرة + redaction للـ PII"
+    title_en: "Receive ticket + PII redaction"
+    owner: system_auto
+    daily_artifact_required: true
+    artifact_kind: "ticket_record"
+    risk_level: low
+    next_action_kind: classify_and_score
+
+  - step_id: sup_classify
+    day: 1
+    title_ar: "تصنيف الفئة + sentiment + الأولوية + جذر السبب"
+    title_en: "Classify category + sentiment + priority + root cause"
+    owner: csm
+    daily_artifact_required: true
+    artifact_kind: "ticket_classification"
+    risk_level: medium
+    next_action_kind: draft_reply
+
+  - step_id: sup_draft_reply
+    day: 1
+    title_ar: "صياغة رد ثنائي اللغة (draft_only)"
+    title_en: "Draft bilingual reply (draft_only)"
+    owner: csm
+    daily_artifact_required: true
+    artifact_kind: "support_reply_draft"
+    risk_level: medium
+    next_action_kind: founder_or_csm_approval
+    approval_points:
+      - csm_or_founder_approval
+    blockers_ar: ["الرد قد يحتاج تصعيد"]
+    blockers_en: ["Reply may need escalation"]
+
+  - step_id: sup_health_impact
+    day: 1
+    title_ar: "تسجيل تأثير الـ ticket على Health Score"
+    title_en: "Record ticket health-score impact"
+    owner: system_auto
+    daily_artifact_required: true
+    artifact_kind: "health_score_delta"
+    risk_level: low
+    next_action_kind: close_or_escalate

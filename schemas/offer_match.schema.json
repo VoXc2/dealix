@@ -1,0 +1,77 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://dealix.sa/schemas/offer_match.schema.json",
+  "title": "Offer Match",
+  "description": "Matched offer for a pain signal with confidence and next action",
+  "type": "object",
+  "required": ["id", "pain_id", "offer_id", "confidence", "evidence_level", "next_action"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^match_[a-z0-9_]+$"
+    },
+    "pain_id": {
+      "type": "string",
+      "description": "Reference to pain_signal.id"
+    },
+    "offer_id": {
+      "type": "string",
+      "description": "Reference to product offer in product_catalog.yaml"
+    },
+    "is_primary": {
+      "type": "boolean",
+      "default": true
+    },
+    "is_secondary": {
+      "type": "boolean",
+      "default": false
+    },
+    "confidence": {
+      "type": "string",
+      "enum": ["high", "medium", "low"]
+    },
+    "evidence_level": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 5
+    },
+    "evidence_source": {
+      "type": "string",
+      "description": "Where the evidence came from"
+    },
+    "next_action": {
+      "type": "string",
+      "enum": [
+        "schedule_diagnostic",
+        "schedule_workflow_design",
+        "schedule_discovery",
+        "send_proposal",
+        "nurture",
+        "disqualify",
+        "founder_escalation"
+      ]
+    },
+    "expected_outcome": {
+      "type": "string",
+      "description": "Expected outcome (not guaranteed)"
+    },
+    "is_estimate": {
+      "type": "boolean",
+      "default": true
+    },
+    "warnings": {
+      "type": "array",
+      "items": {"type": "string"},
+      "description": "Any warnings about this match"
+    },
+    "founder_approval_required": {
+      "type": "boolean",
+      "default": false
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "additionalProperties": false
+}

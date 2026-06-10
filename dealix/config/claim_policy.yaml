@@ -1,0 +1,14 @@
+# Guards for revenue, ROI, security, and compliance claims in customer-facing artifacts.
+rules:
+  numeric_claim_in_customer_pack:
+    must_have_source_or: is_estimate_true
+  security_or_compliance_claim:
+    must_have_source: true
+    requires_approval: true
+  revenue_recognition:
+    require_payment_proof: true
+  roi_or_guarantee:
+    allowed: false
+
+labels:
+  estimate_marker: "is_estimate"

@@ -1,0 +1,8 @@
+id: no_scraping
+severity: critical
+if:
+  data_acquisition: scraping
+  lawful_basis_present: false
+then:
+  decision: block
+  reason: Scraping and unapproved bulk harvesting are not allowed.

@@ -1,0 +1,87 @@
+{
+  "version": "1.0.0",
+  "positioning": {
+    "one_liner": "Dealix is a Saudi-first AI operating system for revenue, growth, operations, trust, and client proof.",
+    "market_category": "Agentic Business Operating System",
+    "promise": "Turn scattered work into pipeline, controlled automation, client proof, and recurring revenue."
+  },
+  "product_families": [
+    {
+      "id": "revenue-os",
+      "name": "Dealix Revenue OS",
+      "buyer": "CEO / Sales Lead",
+      "outcome": "More qualified opportunities, faster follow-up, and clearer revenue control.",
+      "offers": [
+        "Pipeline Audit",
+        "AI Lead Engine",
+        "Follow-up Automation",
+        "Founder Sales Cockpit"
+      ]
+    },
+    {
+      "id": "marketing-os",
+      "name": "Dealix Marketing OS",
+      "buyer": "Founder / Marketing Lead",
+      "outcome": "Offer pages, campaigns, proof assets, and AI-visible positioning.",
+      "offers": [
+        "Landing Page Pack",
+        "Campaign Factory",
+        "Content Engine",
+        "AI Visibility Pack"
+      ]
+    },
+    {
+      "id": "ops-os",
+      "name": "Dealix Operations OS",
+      "buyer": "COO / Founder",
+      "outcome": "Visible execution rhythm, approvals, SLA tracking, and weekly reports.",
+      "offers": [
+        "Ops Map",
+        "Approval Workflow",
+        "SLA Dashboard",
+        "Founder Report"
+      ]
+    },
+    {
+      "id": "trust-os",
+      "name": "Dealix Trust OS",
+      "buyer": "CEO / Enterprise Buyer",
+      "outcome": "Approval-first AI governance, risk control, evidence packs, and audit readiness.",
+      "offers": [
+        "AI Governance Pack",
+        "Risk Register",
+        "Evidence Pack",
+        "Policy Layer"
+      ]
+    },
+    {
+      "id": "client-portal-os",
+      "name": "Dealix Client Portal OS",
+      "buyer": "Agency / Consultant / Service Business",
+      "outcome": "Client-facing progress, proof rooms, documents, renewal signals, and expansion opportunities.",
+      "offers": [
+        "Client Portal",
+        "Proof Room",
+        "Renewal Dashboard",
+        "Executive Client Report"
+      ]
+    }
+  ],
+  "pricing": [
+    {
+      "tier": "Launch",
+      "price_sar_month": 2500,
+      "best_for": "One focused business system shipped fast."
+    },
+    {
+      "tier": "Growth",
+      "price_sar_month": 7500,
+      "best_for": "Revenue + marketing + operations connected."
+    },
+    {
+      "tier": "Enterprise",
+      "price_sar_month": 15000,
+      "best_for": "Full OS with governance, portals, integrations, and proof."
+    }
+  ]
+}

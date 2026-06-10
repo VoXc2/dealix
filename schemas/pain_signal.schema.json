@@ -1,0 +1,79 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://dealix.sa/schemas/pain_signal.schema.json",
+  "title": "Pain Signal",
+  "description": "Detected customer pain signal from lead, discovery, or observation",
+  "type": "object",
+  "required": ["id", "category", "source", "confidence", "severity", "captured_at"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^pain_[a-z0-9_]+$"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "lead_leakage",
+        "follow_up_chaos",
+        "crm_data_disorder",
+        "proposal_delay",
+        "weak_reporting",
+        "sales_team_inconsistency",
+        "support_overload",
+        "no_proof_case_study_system",
+        "slow_onboarding",
+        "weak_renewal_upsell"
+      ]
+    },
+    "source": {
+      "type": "string",
+      "enum": [
+        "lead_form",
+        "discovery_call",
+        "inbound_demo",
+        "partner_referral",
+        "content_engagement",
+        "support_conversation",
+        "internal_observation"
+      ]
+    },
+    "confidence": {
+      "type": "string",
+      "enum": ["high", "medium", "low"]
+    },
+    "severity": {
+      "type": "string",
+      "enum": ["critical", "high", "medium", "low"]
+    },
+    "evidence_level": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 5
+    },
+    "evidence_text": {
+      "type": "string",
+      "description": "Quote or data point that supports the pain signal"
+    },
+    "vertical": {
+      "type": "string",
+      "description": "Industry vertical"
+    },
+    "captured_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "captured_by": {
+      "type": "string",
+      "description": "agent or person who captured"
+    },
+    "is_estimate": {
+      "type": "boolean",
+      "default": true
+    },
+    "founder_review_required": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "additionalProperties": false
+}

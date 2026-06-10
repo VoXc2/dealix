@@ -1,0 +1,83 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dealix.sa/schemas/enterprise_deal_risk.schema.json",
+  "title": "Enterprise Deal Risk",
+  "description": "يمثّل عنصر خطر واحدًا مرتبطًا بصفقة مؤسسية (Deal Risk). يُستخدم في مراجعات Deal Risk الأسبوعية لتجميع المخاطر حسب الفئة، تعيين المالك، وقياس الشدة.",
+  "type": "object",
+  "required": [
+    "risk_id",
+    "account_id",
+    "deal_id",
+    "risk_category",
+    "signal",
+    "mitigation",
+    "escalation_owner",
+    "severity",
+    "status",
+    "evidence_level"
+  ],
+  "properties": {
+    "risk_id": {
+      "type": "string",
+      "description": "معرّف فريد للمخاطرة، مثال: DR-ACC-001-01"
+    },
+    "account_id": {
+      "type": "string"
+    },
+    "deal_id": {
+      "type": "string",
+      "description": "معرّف الصفقة أو الفرصة في CRM"
+    },
+    "risk_category": {
+      "enum": [
+        "champion",
+        "economic_buyer",
+        "technical",
+        "security",
+        "procurement",
+        "timeline",
+        "budget",
+        "competitive",
+        "internal_change",
+        "other"
+      ]
+    },
+    "title": {
+      "type": "string"
+    },
+    "signal": {
+      "type": "string",
+      "description": "إشارة الرصد (مثال: 'صمت Champion لأسبوعين')"
+    },
+    "mitigation": {
+      "type": "string",
+      "description": "إجراء أو خطة التخفيف"
+    },
+    "escalation_owner": {
+      "type": "string",
+      "description": "مالك التصعيد (مثال: Sales Lead, Founder, Delivery Lead)"
+    },
+    "severity": {
+      "enum": ["low", "medium", "high"]
+    },
+    "likelihood": {
+      "enum": ["low", "medium", "high"]
+    },
+    "status": {
+      "enum": ["open", "mitigating", "watching", "closed_resolved", "closed_accepted", "escalated"]
+    },
+    "detected_at": { "type": "string", "format": "date-time" },
+    "review_due": { "type": "string", "format": "date-time" },
+    "linked_evidence_refs": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "مراجع وثائق (مثال: اسم ملف، رابط ملاحظة اكتشاف)"
+    },
+    "evidence_level": {
+      "enum": ["assumption", "observed", "validated", "measured"]
+    },
+    "notes": {
+      "type": "string"
+    }
+  }
+}

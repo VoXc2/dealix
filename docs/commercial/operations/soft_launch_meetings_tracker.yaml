@@ -1,0 +1,118 @@
+updated_at: '2026-05-18T12:49:13.454448+00:00'
+goal: 3-5 discovery meetings before paid launch announcement
+sop: docs/commercial/operations/CLIENT_PACK_SOP_AR.md
+ui:
+  founder: /ar/ops/founder
+  war_room: /ar/ops/war-room
+  approvals: /ar/ops/approvals
+meetings:
+- slot: 1
+  company: هدف استراتيجي 90
+  contact: مدير حسابات 90
+  motion: B
+  offer_id: governed_diagnostic
+  status: scheduled
+  client_pack_dir: data\client_packs\هدف-استراتيجي-90
+  checklist:
+  - 'قبل: generate_client_pack + deck_notes'
+  - 'أثناء: /ar/business-now#strategy + Calendly'
+  - 'بعد: war-room status + evidence CSV'
+- slot: 2
+  company: هدف استراتيجي 55 — وكالة/خدمات
+  contact: مدير حسابات 55
+  motion: A
+  offer_id: executive_diagnostic
+  status: scheduled
+  client_pack_dir: data\client_packs\هدف-استراتيجي-55-وكالة-خدمات
+  checklist:
+  - 'قبل: generate_client_pack + deck_notes'
+  - 'أثناء: /ar/business-now#strategy + Calendly'
+  - 'بعد: war-room status + evidence CSV'
+- slot: 3
+  company: هدف استراتيجي 52 — وكالة/خدمات
+  contact: مدير حسابات 52
+  motion: B
+  offer_id: governed_diagnostic
+  status: scheduled
+  client_pack_dir: data\client_packs\هدف-استراتيجي-52-وكالة-خدمات
+  checklist:
+  - 'قبل: generate_client_pack + deck_notes'
+  - 'أثناء: /ar/business-now#strategy + Calendly'
+  - 'بعد: war-room status + evidence CSV'
+- slot: 4
+  company: هدف استراتيجي 49 — وكالة/خدمات
+  contact: مدير حسابات 49
+  motion: D
+  offer_id: partner_sprint
+  status: scheduled
+  client_pack_dir: data\client_packs\هدف-استراتيجي-49-وكالة-خدمات
+  checklist:
+  - 'قبل: generate_client_pack + deck_notes'
+  - 'أثناء: /ar/business-now#strategy + Calendly'
+  - 'بعد: war-room status + evidence CSV'
+- slot: 5
+  company: هدف استراتيجي 46 — وكالة/خدمات
+  contact: مدير حسابات 46
+  motion: A
+  offer_id: ten_lead_audit
+  status: scheduled
+  client_pack_dir: data\client_packs\هدف-استراتيجي-46-وكالة-خدمات
+  checklist:
+  - 'قبل: generate_client_pack + deck_notes'
+  - 'أثناء: /ar/business-now#strategy + Calendly'
+  - 'بعد: war-room status + evidence CSV'
+- slot: 6
+  company: هدف استراتيجي 43 — وكالة/خدمات
+  contact: مدير حسابات 43
+  motion: C
+  offer_id: diagnostic_layer
+  status: scheduled
+  client_pack_dir: data\client_packs\هدف-استراتيجي-43-وكالة-خدمات
+  checklist:
+  - 'قبل: generate_client_pack + deck_notes'
+  - 'أثناء: /ar/business-now#strategy + Calendly'
+  - 'بعد: war-room status + evidence CSV'
+- slot: 7
+  company: هدف استراتيجي 40 — وكالة/خدمات
+  contact: مدير حسابات 40
+  motion: A
+  offer_id: executive_diagnostic
+  status: scheduled
+  client_pack_dir: data\client_packs\هدف-استراتيجي-40-وكالة-خدمات
+  checklist:
+  - 'قبل: generate_client_pack + deck_notes'
+  - 'أثناء: /ar/business-now#strategy + Calendly'
+  - 'بعد: war-room status + evidence CSV'
+- slot: 8
+  company: هدف استراتيجي 37 — وكالة/خدمات
+  contact: مدير حسابات 37
+  motion: B
+  offer_id: governed_diagnostic
+  status: scheduled
+  client_pack_dir: data\client_packs\هدف-استراتيجي-37-وكالة-خدمات
+  checklist:
+  - 'قبل: generate_client_pack + deck_notes'
+  - 'أثناء: /ar/business-now#strategy + Calendly'
+  - 'بعد: war-room status + evidence CSV'
+- slot: 9
+  company: هدف استراتيجي 34 — وكالة/خدمات
+  contact: مدير حسابات 34
+  motion: D
+  offer_id: partner_sprint
+  status: scheduled
+  client_pack_dir: data\client_packs\هدف-استراتيجي-34-وكالة-خدمات
+  checklist:
+  - 'قبل: generate_client_pack + deck_notes'
+  - 'أثناء: /ar/business-now#strategy + Calendly'
+  - 'بعد: war-room status + evidence CSV'
+- slot: 10
+  company: هدف استراتيجي 31 — وكالة/خدمات
+  contact: مدير حسابات 31
+  motion: A
+  offer_id: ten_lead_audit
+  status: scheduled
+  client_pack_dir: data\client_packs\هدف-استراتيجي-31-وكالة-خدمات
+  checklist:
+  - 'قبل: generate_client_pack + deck_notes'
+  - 'أثناء: /ar/business-now#strategy + Calendly'
+  - 'بعد: war-room status + evidence CSV'

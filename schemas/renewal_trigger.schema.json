@@ -1,0 +1,90 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dealix.sa/schemas/renewal_trigger.schema.json",
+  "title": "Renewal Trigger",
+  "description": "Anonymized renewal risk signal with detection method, intervention playbook, and owner.",
+  "type": "object",
+  "required": [
+    "trigger",
+    "detection_method",
+    "intervention_playbook",
+    "owner",
+    "evidence_level"
+  ],
+  "properties": {
+    "trigger": {
+      "type": "string",
+      "enum": [
+        "usage_drop",
+        "stakeholder_change",
+        "missed_check_in",
+        "scope_creep",
+        "budget_cycle",
+        "leadership_change",
+        "competitor_mention",
+        "low_nps"
+      ]
+    },
+    "trigger_label_ar": {
+      "type": "string"
+    },
+    "detection_method": {
+      "type": "string",
+      "description": "How to detect this trigger (data source + signal)."
+    },
+    "data_source": {
+      "type": "string",
+      "enum": [
+        "client_health_score",
+        "weekly_reporting",
+        "discovery_call",
+        "support_ticket",
+        "stakeholder_map",
+        "product_usage",
+        "manual_csm_note",
+        "nps_survey"
+      ]
+    },
+    "risk_band": {
+      "type": "string",
+      "enum": ["low", "medium", "high", "critical"]
+    },
+    "intervention_playbook": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["step", "owner", "due_in_days"],
+        "properties": {
+          "step": {"type": "string"},
+          "owner": {"type": "string", "enum": ["csm", "sales", "founder", "support", "partner"]},
+          "due_in_days": {"type": "integer", "minimum": 0},
+          "language": {"type": "string", "enum": ["ar", "en", "mixed"]},
+          "body": {"type": "string", "description": "Arabic-first intervention template, anonymized."}
+        }
+      }
+    },
+    "owner": {
+      "type": "string",
+      "enum": ["csm", "sales", "founder", "support", "partner"]
+    },
+    "save_vs_let_go_framework": {
+      "type": "string",
+      "description": "Decision rule: when to save, when to let go."
+    },
+    "timing_default": {
+      "type": "string",
+      "enum": ["month_9_review", "month_10_decision", "month_11_close"],
+      "description": "Default renewal timing window."
+    },
+    "evidence_level": {
+      "type": "string",
+      "enum": ["assumption", "observed", "validated", "measured"]
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^v[0-9]+\\.[0-9]+$"
+    }
+  },
+  "additionalProperties": false
+}

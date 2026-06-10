@@ -1,0 +1,221 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dealix.sa/schemas/enterprise_account.schema.json",
+  "title": "Enterprise Account (TAP — Target Account Profile)",
+  "description": "يمثّل حساب مؤسسي (Account) ضمن نظام Enterprise Sales OS. يُستخدم لتقييم الأهلية الاستراتيجية، تخطيط ABM، خارطة أصحاب المصلحة، وتتبّع مسار Mutual Action Plan (MAP). كل صف يجب أن يحمل evidence_level يبيّن طبيعة المعلومات (assumption, observed, validated, measured).",
+  "type": "object",
+  "required": [
+    "account_id",
+    "company",
+    "sector",
+    "size",
+    "pain",
+    "trigger",
+    "stakeholder_map",
+    "champion_hypothesis",
+    "economic_buyer_hypothesis",
+    "technical_reviewer",
+    "legal_procurement_reviewer",
+    "first_offer",
+    "pilot_scope",
+    "expansion_path",
+    "proof_needed",
+    "risks",
+    "next_action",
+    "evidence_level"
+  ],
+  "properties": {
+    "account_id": {
+      "type": "string",
+      "description": "معرّف فريد للحساب، مثال: ACC-ENT-001"
+    },
+    "company": {
+      "type": "object",
+      "required": ["name_placeholder", "sector", "hq_region", "public_or_private"],
+      "properties": {
+        "name_placeholder": {
+          "type": "string",
+          "description": "اسم مستعار مجهول الهوية، مثال: شركة_X_صناعية أو ExampleCo KSA"
+        },
+        "legal_name_hint": {
+          "type": "string",
+          "description": "تلميح للاسم القانوني (اختياري، لا يكشف الهوية الحقيقية)"
+        },
+        "sector": {
+          "enum": ["industrial", "healthcare", "retail", "financial_services", "logistics", "real_estate", "education", "government", "telecom", "other"]
+        },
+        "sub_sector": {
+          "type": "string"
+        },
+        "hq_region": {
+          "enum": ["Riyadh", "Jeddah", "Dammam", "Mecca", "Medina", "NEOM", "Tabuk", "Jizan", "Abha", "multi_region", "other"]
+        },
+        "public_or_private": {
+          "enum": ["public_listed", "private_family", "private_pe", "government_entity", "semi_government", "other"]
+        },
+        "fiscal_year_start_month": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 12
+        }
+      }
+    },
+    "size": {
+      "type": "object",
+      "required": ["employees_band", "revenue_band_sar"],
+      "properties": {
+        "employees_band": {
+          "enum": ["1-50", "51-200", "201-500", "501-1000", "1001-5000", "5001-10000", "10000+"]
+        },
+        "revenue_band_sar": {
+          "enum": ["<50M", "50-200M", "200M-1B", "1-5B", "5B+", "undisclosed"]
+        },
+        "decision_makers_hint": {
+          "type": "string",
+          "description": "تلميح حول مستويات اتخاذ القرار (مثال: C-Suite + Board + Procurement)"
+        }
+      }
+    },
+    "pain": {
+      "type": "object",
+      "required": ["primary_pain", "severity"],
+      "properties": {
+        "primary_pain": {
+          "type": "string",
+          "description": "نص الألم الأساسي المرصود/المُفترض"
+        },
+        "secondary_pains": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "severity": {
+          "enum": ["low", "medium", "high", "critical"]
+        }
+      }
+    },
+    "trigger": {
+      "type": "object",
+      "required": ["trigger_type", "description"],
+      "properties": {
+        "trigger_type": {
+          "enum": ["strategic_initiative", "regulatory_pressure", "competitive_pressure", "leadership_change", "vendor_dissatisfaction", "ma_event", "budget_cycle", "audit_finding", "incident", "growth_target", "other"]
+        },
+        "description": {
+          "type": "string"
+        },
+        "urgency": {
+          "enum": ["low", "medium", "high", "critical"]
+        }
+      }
+    },
+    "stakeholder_map": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string" },
+      "description": "مرجع لقائمة stakeholders IDs في data/enterprise_sales/stakeholders.jsonl"
+    },
+    "champion_hypothesis": {
+      "type": "string",
+      "description": "افتراض البطل الداخلي (Internal Champion)"
+    },
+    "economic_buyer_hypothesis": {
+      "type": "string",
+      "description": "افتراض صانع القرار الاقتصادي (Economic Buyer)"
+    },
+    "technical_reviewer": {
+      "type": "string",
+      "description": "مراجع تقني (Technical Reviewer / IT / Security)"
+    },
+    "legal_procurement_reviewer": {
+      "type": "string",
+      "description": "مراجع قانوني / مشتريات (Legal & Procurement Reviewer)"
+    },
+    "first_offer": {
+      "type": "object",
+      "required": ["offer_type", "price_band_placeholder"],
+      "properties": {
+        "offer_type": {
+          "enum": ["diagnostic", "pilot", "proof_of_value", "annual_contract", "multi_department_rollout", "other"]
+        },
+        "price_band_placeholder": {
+          "type": "string",
+          "description": "نطاق سعري كنص فقط — placeholder بانتظار تأكيد المؤسس"
+        },
+        "currency": {
+          "type": "string",
+          "default": "SAR"
+        }
+      }
+    },
+    "pilot_scope": {
+      "type": "object",
+      "properties": {
+        "team_in_scope": { "type": "string" },
+        "channel_in_scope": { "type": "string" },
+        "duration_weeks": { "type": "integer", "minimum": 1, "maximum": 26 },
+        "success_metrics": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "exit_criteria": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    },
+    "expansion_path": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["stage", "description"],
+        "properties": {
+          "stage": { "type": "string" },
+          "description": { "type": "string" },
+          "expected_window": { "type": "string" }
+        }
+      }
+    },
+    "proof_needed": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "ما يحتاجه العميل من أدلة (security, ROI, references, integration, إلخ)"
+    },
+    "risks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["category", "description"],
+        "properties": {
+          "category": {
+            "enum": ["champion", "economic_buyer", "technical", "security", "procurement", "timeline", "budget", "competitive", "internal_change", "other"]
+          },
+          "description": { "type": "string" },
+          "severity": { "enum": ["low", "medium", "high"] }
+        }
+      }
+    },
+    "next_action": {
+      "type": "object",
+      "required": ["action", "owner", "due_window"],
+      "properties": {
+        "action": { "type": "string" },
+        "owner": { "type": "string" },
+        "due_window": { "type": "string" }
+      }
+    },
+    "tier": {
+      "enum": ["tier_1", "tier_2", "tier_3"],
+      "description": "تصنيف ABM: Tier-1 = استراتيجي مخصّص، Tier-2 = حملة مخصّصة، Tier-3 = حملة برمجية"
+    },
+    "stage": {
+      "enum": ["prospect", "discovery", "problem_confirmation", "pilot_design", "security_review", "proposal", "procurement", "kickoff", "pilot_delivery", "expansion_review", "closed_won", "closed_lost", "stalled"],
+      "description": "مرحلة الصفقة في الـ Pipeline"
+    },
+    "evidence_level": {
+      "enum": ["assumption", "observed", "validated", "measured"],
+      "description": "مستوى الدليل على دقة المعلومات. الافتراضي design-time = assumption"
+    },
+    "created_at": { "type": "string", "format": "date-time" },
+    "updated_at": { "type": "string", "format": "date-time" }
+  }
+}

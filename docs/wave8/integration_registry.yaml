@@ -1,0 +1,429 @@
+# Wave 8 Integration Registry
+# Source of truth for all 20 integrations
+# Generated: 2026-05-07
+# Policy: missing_data=insufficient_data, missing_credentials=not_configured|demo_fallback
+
+wave: "8"
+generated_at: "2026-05-07"
+
+integrations:
+
+  - name: Google Sheets
+    purpose: Lead intake, customer data import/export, reporting
+    current_status: configured_manual
+    required_env_vars: [GOOGLE_SERVICE_ACCOUNT_JSON]
+    optional_env_vars: [GOOGLE_SHEETS_SPREADSHEET_ID]
+    live_gate: approval_required
+    read_only_allowed: true
+    write_allowed: true
+    customer_facing: false
+    requires_dpa: true
+    requires_customer_consent: false
+    requires_human_approval: true
+    risk_level: MEDIUM
+    safe_default: demo_fallback
+    first_customer_needed: false
+    setup_steps_ar: "1. أنشئ Service Account في Google Cloud. 2. شارك الـ Spreadsheet مع بريد الـ Service Account."
+    setup_steps_en: "1. Create Service Account in Google Cloud. 2. Share spreadsheet with service account email."
+    test_command: "py scripts/dealix_customer_credentials_check.py --check google_sheets"
+    fallback_behavior: "Returns insufficient_data if GOOGLE_SERVICE_ACCOUNT_JSON missing"
+    blocked_actions: ["scraping", "cold_outreach"]
+
+  - name: Google Drive
+    purpose: Document storage for integration plans, proof packs, DPA copies
+    current_status: not_configured
+    required_env_vars: [GOOGLE_SERVICE_ACCOUNT_JSON]
+    optional_env_vars: [GOOGLE_DRIVE_FOLDER_ID]
+    live_gate: approval_required
+    read_only_allowed: true
+    write_allowed: true
+    customer_facing: false
+    requires_dpa: true
+    requires_customer_consent: false
+    requires_human_approval: true
+    risk_level: LOW
+    safe_default: local_filesystem
+    first_customer_needed: false
+    setup_steps_ar: "استخدم نفس Service Account من Google Sheets."
+    setup_steps_en: "Reuse Google Sheets service account."
+    test_command: "py scripts/dealix_customer_credentials_check.py --check google_drive"
+    fallback_behavior: "Falls back to local filesystem storage"
+    blocked_actions: ["cold_outreach"]
+
+  - name: HubSpot
+    purpose: CRM sync for customer leads and pipeline tracking
+    current_status: not_configured
+    required_env_vars: [HUBSPOT_API_KEY]
+    optional_env_vars: [HUBSPOT_PORTAL_ID]
+    live_gate: approval_required
+    read_only_allowed: true
+    write_allowed: true
+    customer_facing: false
+    requires_dpa: true
+    requires_customer_consent: true
+    requires_human_approval: true
+    risk_level: MEDIUM
+    safe_default: not_configured
+    first_customer_needed: false
+    setup_steps_ar: "1. اطلب من العميل مشاركة HubSpot API Key. 2. أضف HUBSPOT_API_KEY في Railway."
+    setup_steps_en: "1. Request customer HubSpot API key. 2. Add HUBSPOT_API_KEY to Railway env vars."
+    test_command: "py scripts/dealix_customer_credentials_check.py --check hubspot"
+    fallback_behavior: "Returns not_configured; suggest manual CRM export/import"
+    blocked_actions: ["cold_outreach", "mass_email"]
+
+  - name: Gmail Drafts
+    purpose: Draft outreach emails for founder review and manual send
+    current_status: suggest_only
+    required_env_vars: [GMAIL_CLIENT_ID, GMAIL_CLIENT_SECRET, GMAIL_REFRESH_TOKEN]
+    optional_env_vars: []
+    live_gate: blocked
+    read_only_allowed: true
+    write_allowed: draft_only
+    customer_facing: false
+    requires_dpa: true
+    requires_customer_consent: false
+    requires_human_approval: true
+    risk_level: HIGH
+    safe_default: draft_only
+    first_customer_needed: false
+    setup_steps_ar: "Dealix يكتب مسوّدات فقط — المؤسس يراجع ويرسل يدويًا."
+    setup_steps_en: "Dealix writes drafts only — founder reviews and sends manually."
+    test_command: "py scripts/dealix_customer_credentials_check.py --check gmail_drafts"
+    fallback_behavior: "Returns draft text for manual copy-paste"
+    blocked_actions: ["live_send", "auto_send", "bulk_email"]
+
+  - name: WhatsApp Business
+    purpose: Inbound lead capture, template-based notifications (founder-approved)
+    current_status: configured_manual
+    required_env_vars: [WHATSAPP_ACCESS_TOKEN, WHATSAPP_VERIFY_TOKEN, WHATSAPP_APP_SECRET]
+    optional_env_vars: [WHATSAPP_PHONE_NUMBER_ID]
+    live_gate: approval_required
+    read_only_allowed: true
+    write_allowed: false
+    customer_facing: true
+    requires_dpa: true
+    requires_customer_consent: true
+    requires_human_approval: true
+    risk_level: HIGH
+    safe_default: blocked
+    first_customer_needed: false
+    setup_steps_ar: "1. اطلب Meta Business Verification. 2. أنشئ WhatsApp Business Account. 3. اضبط Webhook."
+    setup_steps_en: "1. Get Meta Business Verification. 2. Create WhatsApp Business Account. 3. Configure Webhook."
+    test_command: "py scripts/dealix_customer_credentials_check.py --check whatsapp"
+    fallback_behavior: "Returns blocked; founder sends via personal WhatsApp"
+    blocked_actions: ["live_customer_outbound", "cold_whatsapp", "bulk_whatsapp", "auto_send"]
+
+  - name: Moyasar
+    purpose: KSA payment processing (bank card + Apple Pay + STC Pay)
+    current_status: not_configured
+    required_env_vars: [MOYASAR_SECRET_KEY, MOYASAR_WEBHOOK_SECRET]
+    optional_env_vars: [MOYASAR_PUBLISHABLE_KEY]
+    live_gate: blocked
+    read_only_allowed: true
+    write_allowed: false
+    customer_facing: true
+    requires_dpa: true
+    requires_customer_consent: true
+    requires_human_approval: true
+    risk_level: HIGH
+    safe_default: bank_transfer
+    first_customer_needed: false
+    setup_steps_ar: "1. سجّل في Moyasar. 2. اجمع Keys من Dashboard. 3. تأكيد المؤسس قبل أي خصم."
+    setup_steps_en: "1. Register at Moyasar. 2. Collect Keys from dashboard. 3. Founder confirms before any charge."
+    test_command: "py scripts/dealix_customer_credentials_check.py --check moyasar"
+    fallback_behavior: "Returns bank_transfer instructions; live charge blocked"
+    blocked_actions: ["live_charge", "auto_charge", "subscription_charge"]
+
+  - name: Resend
+    purpose: Transactional email (system notifications, not cold outreach)
+    current_status: not_configured
+    required_env_vars: [RESEND_API_KEY]
+    optional_env_vars: [RESEND_FROM_EMAIL]
+    live_gate: approval_required
+    read_only_allowed: false
+    write_allowed: true
+    customer_facing: false
+    requires_dpa: true
+    requires_customer_consent: false
+    requires_human_approval: false
+    risk_level: MEDIUM
+    safe_default: not_configured
+    first_customer_needed: false
+    setup_steps_ar: "1. سجّل في Resend. 2. أضف RESEND_API_KEY في Railway."
+    setup_steps_en: "1. Register at Resend. 2. Add RESEND_API_KEY to Railway."
+    test_command: "py scripts/dealix_customer_credentials_check.py --check resend"
+    fallback_behavior: "Returns not_configured; send manually via Gmail"
+    blocked_actions: ["cold_email", "bulk_cold_outreach"]
+
+  - name: Slack
+    purpose: Internal founder notifications for lead signals and approvals
+    current_status: not_configured
+    required_env_vars: [SLACK_BOT_TOKEN, SLACK_CHANNEL_ID]
+    optional_env_vars: [SLACK_WEBHOOK_URL]
+    live_gate: suggest_only
+    read_only_allowed: true
+    write_allowed: true
+    customer_facing: false
+    requires_dpa: false
+    requires_customer_consent: false
+    requires_human_approval: false
+    risk_level: LOW
+    safe_default: not_configured
+    first_customer_needed: false
+    setup_steps_ar: "أنشئ Slack App وأضف Bot Token."
+    setup_steps_en: "Create Slack App and add Bot Token."
+    test_command: "py scripts/dealix_customer_credentials_check.py --check slack"
+    fallback_behavior: "Internal notifications silenced; check Dashboard manually"
+    blocked_actions: []
+
+  - name: Notion
+    purpose: Knowledge base for SOPs and internal documentation sync
+    current_status: not_configured
+    required_env_vars: [NOTION_API_KEY, NOTION_DATABASE_ID]
+    optional_env_vars: []
+    live_gate: approval_required
+    read_only_allowed: true
+    write_allowed: true
+    customer_facing: false
+    requires_dpa: false
+    requires_customer_consent: false
+    requires_human_approval: false
+    risk_level: LOW
+    safe_default: not_configured
+    first_customer_needed: false
+    setup_steps_ar: "أنشئ Notion Integration وشارك الـ Database."
+    setup_steps_en: "Create Notion Integration and share the Database."
+    test_command: "py scripts/dealix_customer_credentials_check.py --check notion"
+    fallback_behavior: "Knowledge base unavailable; use local docs/"
+    blocked_actions: []
+
+  - name: Chatwoot
+    purpose: Unified customer inbox for WhatsApp + email threads
+    current_status: not_configured
+    required_env_vars: [CHATWOOT_API_TOKEN, CHATWOOT_ACCOUNT_ID, CHATWOOT_BASE_URL]
+    optional_env_vars: [CHATWOOT_INBOX_ID]
+    live_gate: approval_required
+    read_only_allowed: true
+    write_allowed: true
+    customer_facing: true
+    requires_dpa: true
+    requires_customer_consent: true
+    requires_human_approval: true
+    risk_level: MEDIUM
+    safe_default: not_configured
+    first_customer_needed: false
+    setup_steps_ar: "انشر Chatwoot (self-hosted أو Cloud). أضف API Token."
+    setup_steps_en: "Deploy Chatwoot (self-hosted or Cloud). Add API Token."
+    test_command: "py scripts/dealix_customer_credentials_check.py --check chatwoot"
+    fallback_behavior: "Returns not_configured; use manual inbox"
+    blocked_actions: ["auto_close", "auto_respond_without_approval"]
+
+  - name: Cal.com
+    purpose: Demo/onboarding call booking via calendar widget
+    current_status: configured_manual
+    required_env_vars: [CALENDLY_URL]
+    optional_env_vars: [CALENDLY_WEBHOOK_SECRET, CALCOM_API_KEY]
+    live_gate: suggest_only
+    read_only_allowed: true
+    write_allowed: false
+    customer_facing: true
+    requires_dpa: false
+    requires_customer_consent: false
+    requires_human_approval: false
+    risk_level: LOW
+    safe_default: calendly_link
+    first_customer_needed: true
+    setup_steps_ar: "استخدم رابط Calendly الموجود في .env. أو أضف Cal.com API Key."
+    setup_steps_en: "Use existing Calendly link from .env. Or add Cal.com API Key."
+    test_command: "py scripts/dealix_customer_credentials_check.py --check calcom"
+    fallback_behavior: "Returns Calendly link from env; Cal.com optional upgrade"
+    blocked_actions: []
+
+  - name: Langfuse
+    purpose: LLM observability — trace, eval, cost tracking
+    current_status: not_configured
+    required_env_vars: [LANGFUSE_SECRET_KEY, LANGFUSE_PUBLIC_KEY]
+    optional_env_vars: [LANGFUSE_HOST]
+    live_gate: suggest_only
+    read_only_allowed: true
+    write_allowed: true
+    customer_facing: false
+    requires_dpa: false
+    requires_customer_consent: false
+    requires_human_approval: false
+    risk_level: LOW
+    safe_default: not_configured
+    first_customer_needed: false
+    setup_steps_ar: "سجّل في Langfuse Cloud. أضف LANGFUSE_SECRET_KEY و LANGFUSE_PUBLIC_KEY."
+    setup_steps_en: "Register at Langfuse Cloud. Add LANGFUSE_SECRET_KEY and LANGFUSE_PUBLIC_KEY."
+    test_command: "py scripts/dealix_customer_credentials_check.py --check langfuse"
+    fallback_behavior: "Observability adapter returns noop; LLM calls continue normally"
+    blocked_actions: []
+
+  - name: OpenTelemetry
+    purpose: Distributed tracing for API and background tasks
+    current_status: configured_manual
+    required_env_vars: []
+    optional_env_vars: [OTEL_EXPORTER_OTLP_ENDPOINT, OTEL_SERVICE_NAME]
+    live_gate: suggest_only
+    read_only_allowed: true
+    write_allowed: true
+    customer_facing: false
+    requires_dpa: false
+    requires_customer_consent: false
+    requires_human_approval: false
+    risk_level: LOW
+    safe_default: noop
+    first_customer_needed: false
+    setup_steps_ar: "اضبط OTEL_EXPORTER_OTLP_ENDPOINT لخدمة Traces (مثل Jaeger أو Grafana)."
+    setup_steps_en: "Set OTEL_EXPORTER_OTLP_ENDPOINT pointing to traces backend."
+    test_command: "py scripts/dealix_customer_credentials_check.py --check otel"
+    fallback_behavior: "NoopSpan used; no traces exported"
+    blocked_actions: []
+
+  - name: PostHog
+    purpose: Product analytics — feature flags, user behavior, conversion funnels
+    current_status: not_configured
+    required_env_vars: [POSTHOG_API_KEY]
+    optional_env_vars: [POSTHOG_HOST]
+    live_gate: suggest_only
+    read_only_allowed: false
+    write_allowed: true
+    customer_facing: false
+    requires_dpa: true
+    requires_customer_consent: false
+    requires_human_approval: false
+    risk_level: LOW
+    safe_default: not_configured
+    first_customer_needed: false
+    setup_steps_ar: "سجّل في PostHog Cloud. أضف POSTHOG_API_KEY."
+    setup_steps_en: "Register at PostHog Cloud. Add POSTHOG_API_KEY."
+    test_command: "py scripts/dealix_customer_credentials_check.py --check posthog"
+    fallback_behavior: "Analytics silenced; no events captured"
+    blocked_actions: []
+
+  - name: Qdrant
+    purpose: Vector search for lead scoring and company-brain semantic memory
+    current_status: not_configured
+    required_env_vars: [QDRANT_URL]
+    optional_env_vars: [QDRANT_API_KEY]
+    live_gate: approval_required
+    read_only_allowed: true
+    write_allowed: true
+    customer_facing: false
+    requires_dpa: true
+    requires_customer_consent: false
+    requires_human_approval: false
+    risk_level: MEDIUM
+    safe_default: degraded
+    first_customer_needed: false
+    setup_steps_ar: "انشر Qdrant (self-hosted على Railway) أو استخدم Qdrant Cloud."
+    setup_steps_en: "Deploy Qdrant (self-hosted on Railway) or use Qdrant Cloud."
+    test_command: "py scripts/dealix_customer_credentials_check.py --check qdrant"
+    fallback_behavior: "Returns degraded; semantic search disabled"
+    blocked_actions: []
+
+  - name: pgvector
+    purpose: Postgres vector extension for embeddings stored alongside relational data
+    current_status: not_configured
+    required_env_vars: [DATABASE_URL]
+    optional_env_vars: []
+    live_gate: approval_required
+    read_only_allowed: true
+    write_allowed: true
+    customer_facing: false
+    requires_dpa: true
+    requires_customer_consent: false
+    requires_human_approval: false
+    risk_level: MEDIUM
+    safe_default: degraded
+    first_customer_needed: false
+    setup_steps_ar: "أضف pgvector extension إلى Postgres instance على Railway."
+    setup_steps_en: "Add pgvector extension to Postgres instance on Railway."
+    test_command: "py scripts/dealix_customer_credentials_check.py --check pgvector"
+    fallback_behavior: "Returns degraded; use Qdrant for vector ops"
+    blocked_actions: []
+
+  - name: Sentry
+    purpose: Error tracking and alerting for production incidents
+    current_status: not_configured
+    required_env_vars: []
+    optional_env_vars: [SENTRY_DSN]
+    live_gate: suggest_only
+    read_only_allowed: false
+    write_allowed: true
+    customer_facing: false
+    requires_dpa: false
+    requires_customer_consent: false
+    requires_human_approval: false
+    risk_level: LOW
+    safe_default: not_configured
+    first_customer_needed: false
+    setup_steps_ar: "سجّل في Sentry. أضف SENTRY_DSN."
+    setup_steps_en: "Register at Sentry. Add SENTRY_DSN."
+    test_command: "py scripts/dealix_customer_credentials_check.py --check sentry"
+    fallback_behavior: "Errors logged via structlog only"
+    blocked_actions: []
+
+  - name: Meta WhatsApp Templates
+    purpose: Pre-approved WhatsApp Business message templates for notifications
+    current_status: not_configured
+    required_env_vars: [WHATSAPP_ACCESS_TOKEN, WHATSAPP_PHONE_NUMBER_ID]
+    optional_env_vars: [META_BUSINESS_ID]
+    live_gate: approval_required
+    read_only_allowed: true
+    write_allowed: false
+    customer_facing: true
+    requires_dpa: true
+    requires_customer_consent: true
+    requires_human_approval: true
+    risk_level: HIGH
+    safe_default: blocked
+    first_customer_needed: false
+    setup_steps_ar: "1. اعتمد Templates في Meta Business Manager. 2. انتظر موافقة Meta (24-48 ساعة)."
+    setup_steps_en: "1. Submit Templates in Meta Business Manager. 2. Wait for Meta approval (24-48h)."
+    test_command: "py scripts/dealix_customer_credentials_check.py --check meta_templates"
+    fallback_behavior: "Returns blocked; use manual personal WhatsApp"
+    blocked_actions: ["live_customer_outbound", "cold_whatsapp", "unapproved_templates"]
+
+  - name: Railway
+    purpose: Cloud deployment platform for Dealix backend and workers
+    current_status: deployed
+    required_env_vars: [RAILWAY_TOKEN]
+    optional_env_vars: [RAILWAY_PROJECT_ID]
+    live_gate: approved_manual
+    read_only_allowed: true
+    write_allowed: true
+    customer_facing: false
+    requires_dpa: false
+    requires_customer_consent: false
+    requires_human_approval: true
+    risk_level: LOW
+    safe_default: deployed
+    first_customer_needed: true
+    setup_steps_ar: "الـ project موجود على Railway. Founder يضيف ENV vars لكل عميل."
+    setup_steps_en: "Project exists on Railway. Founder adds per-customer ENV vars."
+    test_command: "py scripts/dealix_customer_credentials_check.py --check railway"
+    fallback_behavior: "Deployment manual via railway CLI"
+    blocked_actions: []
+
+  - name: GitHub Actions
+    purpose: CI/CD pipeline — lint, typecheck, test, deploy on push to main
+    current_status: configured_manual
+    required_env_vars: [GITHUB_TOKEN]
+    optional_env_vars: [RAILWAY_TOKEN]
+    live_gate: approved_manual
+    read_only_allowed: true
+    write_allowed: true
+    customer_facing: false
+    requires_dpa: false
+    requires_customer_consent: false
+    requires_human_approval: false
+    risk_level: LOW
+    safe_default: configured_manual
+    first_customer_needed: true
+    setup_steps_ar: "موجود في .github/workflows/ci.yml — يعمل تلقائيًا."
+    setup_steps_en: "Configured in .github/workflows/ci.yml — runs automatically on push."
+    test_command: "py scripts/dealix_customer_credentials_check.py --check github_actions"
+    fallback_behavior: "Manual deploy via railway up"
+    blocked_actions: []

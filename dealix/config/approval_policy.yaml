@@ -1,0 +1,63 @@
+# Approval gates — aligns with docs/governance/APPROVAL_POLICY.md
+external_message:
+  risk_level: medium
+  requires_approval: true
+  creates_evidence: true
+
+scope_send:
+  risk_level: high
+  requires_approval: true
+  creates_evidence: true
+  required_evidence:
+    - scope_requested
+
+invoice_send:
+  risk_level: high
+  requires_approval: true
+  creates_evidence: true
+  required_evidence:
+    - scope_approved
+
+diagnostic_final:
+  risk_level: high
+  requires_approval: true
+  creates_evidence: true
+
+proof_pack_final:
+  risk_level: high
+  requires_approval: true
+  creates_evidence: true
+
+case_study_publish:
+  risk_level: high
+  requires_approval: true
+  creates_evidence: true
+
+security_claim:
+  risk_level: critical
+  requires_approval: true
+  creates_evidence: true
+  requires_source: true
+
+discount_request:
+  risk_level: medium
+  requires_approval: true
+  creates_evidence: true
+
+refund_request:
+  risk_level: high
+  requires_approval: true
+  creates_evidence: true
+
+affiliate_payout:
+  risk_level: high
+  requires_approval: true
+  creates_evidence: true
+  required_evidence:
+    - invoice_paid
+
+agent_tool_action:
+  risk_level: variable
+  requires_approval: true
+  creates_evidence: true
+  note: "Per-tool policy in agent_permissions.yaml"

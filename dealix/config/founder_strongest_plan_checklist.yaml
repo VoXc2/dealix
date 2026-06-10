@@ -1,0 +1,849 @@
+# Founder strongest plan — machine-readable checklist (138 tasks).
+# Human doc: docs/commercial/FOUNDER_STRONGEST_PLAN_AR.md
+version: "2"
+min_task_count: 138
+title_ar: "أقوى خطة للمؤسس × Dealix"
+no_build_rule_ar: "لا بناء مزايا جديدة قبل أول Diagnostic مدفوع + Proof Pack مسلّم"
+
+sections:
+  - id: week0
+    label_ar: "أسبوع 0 — بوابات وقرار"
+  - id: daily
+    label_ar: "يومي — إيقاع المؤسس"
+  - id: weekly
+    label_ar: "أسبوعي — scorecard وريترو"
+  - id: motion_a
+    label_ar: "Motion A — وكالة"
+  - id: content
+    label_ar: "محتوى وموافقات"
+  - id: phase_01
+    label_ar: "مرحلة 0–1 — إغلاق وأول دفع"
+  - id: phase_24
+    label_ar: "مرحلة 2–4 — تكرار وشراكة"
+  - id: governance
+    label_ar: "حوكمة وامتثال"
+  - id: kpi
+    label_ar: "KPI من CRM"
+  - id: optional
+    label_ar: "اختياري — Value Plan وBusiness NOW"
+  - id: presentations
+    label_ar: "عروض وإقناع"
+  - id: public_gtm
+    label_ar: "قناة عامة وإطلاق"
+  - id: dogfood
+    label_ar: "المنتج يخدم نفسه"
+  - id: engineering_fe
+    label_ar: "واجهة Ops والقمع العام"
+  - id: engineering_be
+    label_ar: "خلفية وبوابات تقنية"
+  - id: value_delivery
+    label_ar: "قيمة وتسليم"
+  - id: autonomous_ops
+    label_ar: "Full Ops ذاتي بحوكمة"
+  - id: integrations
+    label_ar: "تكاملات (Truth Matrix)"
+  - id: finance_unit
+    label_ar: "مالية ووحدة اقتصادية"
+  - id: customer_success
+    label_ar: "نجاح عميل وتوسعة"
+  - id: trust_security
+    label_ar: "ثقة وأمان"
+  - id: research
+    label_ar: "بحث خارجي منضبط"
+
+phases:
+  - id: 0
+    label_ar: "آلة إغلاق + Discovery قبل ديمو"
+    doc: docs/commercial/operations/EVIDENCE_EVENTS_CLOSE_PATH_AR.md
+  - id: 1
+    label_ar: "أول payment_received + proof_pack_delivered"
+    doc: docs/commercial/operations/FIRST_PAID_DIAGNOSTIC_DOD_AR.md
+  - id: 2
+    label_ar: "تكرار Motion A (وكالة)"
+    doc: docs/commercial/operations/motion_a_agency/README.md
+  - id: 3
+    label_ar: "شريك + إحالة"
+    doc: docs/commercial/operations/PARTNER_ONBOARDING_KIT_AR.md
+  - id: 4
+    label_ar: "AEO + Objection Engine"
+    doc: docs/commercial/operations/AEO_CONTENT_CALENDAR_AR.md
+  - id: 5
+    label_ar: "منصة — بعد تكرار الأدلة"
+    doc: docs/commercial/MASTER_COMMERCIAL_OPERATING_PLAN_AR.md
+
+weekly_one_decision:
+  template_path: dealix/config/founder_weekly_one_decision.yaml
+  rule_ar: "قرار واحد أسبوعياً يخدم مرحلة نشطة واحدة فقط (0–5)"
+
+tasks:
+  - id: t01
+    n: 1
+    section: week0
+    title_ar: "صِغ قراراً أسبوعياً واحداً لمرحلة 0–5"
+    docs: [docs/commercial/MASTER_COMMERCIAL_OPERATING_PLAN_AR.md, dealix/config/founder_weekly_one_decision.yaml]
+  - id: t02
+    n: 2
+    section: week0
+    title_ar: "ثبّت Soft Launch vs Paid Launch"
+    docs: [docs/commercial/MASTER_COMMERCIAL_OPERATING_PLAN_AR.md, docs/LAUNCH_GATES.md]
+  - id: t03
+    n: 3
+    section: week0
+    title_ar: "تحقق نظام المؤسس"
+    commands: [scripts/verify_founder_operating_system.sh, scripts/verify_founder_operating_system.ps1]
+    docs: [docs/ops/FOUNDER_OPERATING_SYSTEM_AR.md]
+  - id: t04
+    n: 4
+    section: week0
+    title_ar: "بوابة Soft Launch"
+    commands: [python scripts/verify_commercial_launch_ready.py]
+    docs: [docs/commercial/COMMERCIAL_LAUNCH_CHECKLIST_AR.md]
+  - id: t05
+    n: 5
+    section: daily
+    title_ar: "الأمر الصباحي الموحّد"
+    commands: [scripts/run_founder_commercial_day.sh, scripts/run_founder_commercial_day.ps1]
+    docs: [docs/ops/FOUNDER_OPERATING_SYSTEM_AR.md]
+  - id: t06
+    n: 6
+    section: daily
+    title_ar: "مسار اليوم 5 دقائق"
+    docs: [docs/commercial/MASTER_COMMERCIAL_OPERATING_PLAN_AR.md, docs/commercial/DEALIX_COMMERCIAL_SCALE_SYSTEM_AR.md, docs/commercial/FULL_OPS_CLOSE_ENGINE_AR.md]
+  - id: t07
+    n: 7
+    section: daily
+    title_ar: "راجع War Room"
+    ui: [/ar/ops/war-room]
+    artifacts: [data/war_room_today.json]
+    docs: [docs/ops/DEALIX_REVENUE_WAR_ROOM_AR.md]
+  - id: t08
+    n: 8
+    section: daily
+    title_ar: "سجّل حدث أدلة واحداً على الأقل"
+    artifacts: [docs/commercial/operations/evidence_events_tracker.csv]
+  - id: t09
+    n: 9
+    section: daily
+    title_ar: "3–5 لمسات بشرية بعد الموجز"
+    docs: [docs/ops/FOUNDER_OPERATING_SYSTEM_AR.md]
+  - id: t10
+    n: 10
+    section: weekly
+    title_ar: "Scorecard الجمعة"
+    docs: [docs/commercial/operations/COMMERCIAL_WEEKLY_SCORECARD_AR.md]
+    commands: [python scripts/founder_weekly_scorecard.py]
+  - id: t11
+    n: 11
+    section: weekly
+    title_ar: "ريترو 30 دقيقة"
+    docs: [docs/commercial/FOUNDER_STRONGEST_PLAN_AR.md]
+  - id: t12
+    n: 12
+    section: weekly
+    title_ar: "مرجعان يوميان (Scale + Close Engine)"
+    docs: [docs/commercial/DEALIX_COMMERCIAL_SCALE_SYSTEM_AR.md, docs/commercial/FULL_OPS_CLOSE_ENGINE_AR.md]
+  - id: t13
+    n: 13
+    section: motion_a
+    title_ar: "راجع ICP والوتد"
+    configs: [dealix/config/icp_agency_wedge.yaml]
+  - id: t14
+    n: 14
+    section: motion_a
+    title_ar: "دوّر التارجتينج عند الجفاف"
+    commands: [python scripts/rotate_agency_targets.py --dry-run]
+  - id: t15
+    n: 15
+    section: motion_a
+    title_ar: "أعلى 10 أهداف أسبوعياً"
+    artifacts: [docs/commercial/operations/targeting/agency_accounts_seed.csv]
+    docs: [docs/ops/DEALIX_REVENUE_WAR_ROOM_AR.md]
+  - id: t16
+    n: 16
+    section: content
+    title_ar: "مسودات محتوى أسبوعية"
+    commands: [python scripts/generate_weekly_content_drafts.py, python scripts/queue_content_drafts_for_approval.py]
+  - id: t17
+    n: 17
+    section: content
+    title_ar: "موافقة قبل النشر"
+    ui: [/ar/ops/approvals]
+    docs: [docs/ops/FOUNDER_OPERATING_SYSTEM_AR.md]
+  - id: t18
+    n: 18
+    section: phase_01
+    title_ar: "مسار إغلاق موحّد"
+    docs: [docs/commercial/operations/EVIDENCE_EVENTS_CLOSE_PATH_AR.md]
+    phase: 0
+  - id: t19
+    n: 19
+    section: phase_01
+    title_ar: "DoD أول Diagnostic مدفوع"
+    docs: [docs/commercial/operations/FIRST_PAID_DIAGNOSTIC_DOD_AR.md, docs/ops/MANUAL_PAYMENT_SOP.md]
+    phase: 1
+  - id: t20
+    n: 20
+    section: phase_01
+    title_ar: "تسليم Proof Pack"
+    docs: [docs/delivery/PROOF_PACK_TEMPLATE.md]
+    evidence_event: proof_pack_delivered
+    phase: 1
+  - id: t21
+    n: 21
+    section: phase_24
+    title_ar: "كرّر Motion A"
+    docs: [docs/commercial/operations/motion_a_agency/]
+    phase: 2
+  - id: t22
+    n: 22
+    section: phase_24
+    title_ar: "شراكة تجريبية واحدة"
+    docs: [docs/commercial/operations/PARTNER_ONBOARDING_KIT_AR.md]
+    phase: 3
+  - id: t23
+    n: 23
+    section: phase_24
+    title_ar: "AEO/Objections"
+    docs: [docs/commercial/operations/AEO_CONTENT_CALENDAR_AR.md, docs/commercial/operations/objection_engine_registry.yaml]
+    phase: 4
+  - id: t24
+    n: 24
+    section: governance
+    title_ar: "anti-waste قبل لمسة خارجية"
+    api: "POST /api/v1/revenue-os/anti-waste/check"
+  - id: t25
+    n: 25
+    section: governance
+    title_ar: "مراجعة PDPL مع محامٍ + حزمة امتثال"
+    commands: [bash scripts/run_compliance_gtm_gate_bundle.sh]
+    docs: [docs/commercial/MARKET_INTELLIGENCE_PDPL_LEGAL_REVIEW_AR.md]
+  - id: t26
+    n: 26
+    section: kpi
+    title_ar: "KPI من CRM فقط"
+    commands: [python scripts/apply_kpi_founder_commercial.py]
+    configs: [dealix/transformation/kpi_founder_commercial_import.example.yaml]
+  - id: t27
+    n: 27
+    section: optional
+    title_ar: "لقطة Value Plan"
+    commands: [python scripts/export_value_plan_snapshot.py]
+    api: "GET /api/v1/ops-autopilot/founder/value-plan"
+  - id: t28
+    n: 28
+    section: optional
+    title_ar: "Business NOW أسبوعياً"
+    commands: [scripts/run_founder_revenue_day.sh, scripts/run_founder_revenue_day.ps1]
+    docs: [docs/business/DEALIX_BUSINESS_NOW_AR.md]
+  - id: t29
+    n: 29
+    section: presentations
+    title_ar: "خصّص حزمة Ops للعميل (pptx + runbook)"
+    docs: [docs/commercial/ops_client_pack/README_AR.md, docs/commercial/ops_client_pack/dealix_ops_runbook_ar.md]
+  - id: t30
+    n: 30
+    section: presentations
+    title_ar: "راجع سلم العروض والتسعير (Wiring Map + Registry)"
+    docs: [docs/COMMERCIAL_WIRING_MAP.md]
+    configs: [auto_client_acquisition/service_catalog/registry.py]
+  - id: t31
+    n: 31
+    section: presentations
+    title_ar: "سكربت الديمو (Market Intelligence)"
+    docs: [docs/commercial/MARKET_INTELLIGENCE_DEMO_SCRIPT_AR.md]
+  - id: t32
+    n: 32
+    section: presentations
+    title_ar: "حزمة بطل المبيعات (Sales Champion Pack)"
+    docs: [docs/commercial/MARKET_INTELLIGENCE_SALES_CHAMPION_PACK_AR.md]
+  - id: t33
+    n: 33
+    section: presentations
+    title_ar: "FAQ المشتريات والامتثال"
+    docs: [docs/commercial/MARKET_INTELLIGENCE_PROCUREMENT_FAQ_AR.md]
+  - id: t34
+    n: 34
+    section: presentations
+    title_ar: "بطاقة الفئة (Category Battlecard)"
+    docs: [docs/commercial/MARKET_INTELLIGENCE_CATEGORY_BATTLECARD_AR.md]
+  - id: t35
+    n: 35
+    section: public_gtm
+    title_ar: "تحقق Soft Launch (جاهزية تجارية)"
+    commands: [python scripts/verify_commercial_launch_ready.py]
+    docs: [docs/commercial/COMMERCIAL_LAUNCH_CHECKLIST_AR.md]
+  - id: t36
+    n: 36
+    section: public_gtm
+    title_ar: "تموضع Why Now (one-pager)"
+    docs: [docs/commercial/POSITIONING_WHY_NOW_SAUDI_ONEPAGER_AR.md]
+  - id: t37
+    n: 37
+    section: public_gtm
+    title_ar: "بوابة Paid Launch عند الانتقال"
+    commands: [python scripts/verify_paid_launch_readiness.py]
+    docs: [docs/commercial/PAID_LAUNCH_AFTER_SOFT_PASS_AR.md]
+  - id: t38
+    n: 38
+    section: dogfood
+    title_ar: "حلقة Dealix Daily Ops (الشركة كعميل صفر)"
+    commands: [python scripts/run_dealix_daily_ops.py]
+    docs: [docs/ops/FOUNDER_OPERATING_SYSTEM_AR.md]
+  - id: t39
+    n: 39
+    section: dogfood
+    title_ar: "تحقق Company Ready"
+    commands: [bash scripts/company_ready_verify.sh, scripts/company_ready_verify.ps1]
+    docs: [docs/company/DEALIX_COMPANY_READY_MASTER_AR.md]
+  - id: t40
+    n: 40
+    section: dogfood
+    title_ar: "لقطة الخطة الشاملة (7 محاور)"
+    commands: [python scripts/founder_comprehensive_plan_status.py]
+    docs: [docs/ops/FOUNDER_COMPREHENSIVE_PLAN_EXECUTION_AR.md]
+  - id: t41
+    n: 41
+    section: dogfood
+    title_ar: "خريطة القيمة التجارية + حالة"
+    commands: [python scripts/commercial_value_map_status.py]
+    docs: [docs/commercial/COMMERCIAL_VALUE_MAP_AR.md]
+  - id: t42
+    n: 42
+    section: engineering_fe
+    title_ar: "مركز قيادة المؤسس (/ops/founder)"
+    ui: [/ar/ops/founder]
+    docs: [docs/ops/FOUNDER_OPERATING_SYSTEM_AR.md]
+  - id: t43
+    n: 43
+    section: engineering_fe
+    title_ar: "سجل الأدلة + موافقات"
+    ui: [/ar/ops/evidence, /ar/ops/approvals]
+    docs: [docs/commercial/operations/evidence_events_tracker.csv]
+  - id: t44
+    n: 44
+    section: engineering_fe
+    title_ar: "تحقق FE/BE بعد تغييرات GTM"
+    commands: [python scripts/verify_commercial_fe_be.py]
+  - id: t45
+    n: 45
+    section: engineering_fe
+    title_ar: "مسار الإطلاق العام + Value Map"
+    docs: [docs/commercial/LAUNCH_EXECUTION_NOW_AR.md, docs/commercial/COMMERCIAL_VALUE_MAP_AR.md]
+  - id: t46
+    n: 46
+    section: engineering_be
+    title_ar: "تحقق Official Launch"
+    commands: [bash scripts/official_launch_verify.sh, scripts/official_launch_verify.ps1]
+    docs: [docs/LAUNCH_GATES.md]
+  - id: t47
+    n: 47
+    section: engineering_be
+    title_ar: "تحقق Value Plan stack"
+    commands: [python scripts/verify_value_plan_stack.py]
+  - id: t48
+    n: 48
+    section: engineering_be
+    title_ar: "إيقاع المؤسس (صباح/مساء/أسبوع)"
+    commands: [bash scripts/founder_cadence.sh, scripts/founder_cadence.ps1]
+    docs: [docs/ops/FOUNDER_DAILY_ANCHOR_AR.md]
+  - id: t49
+    n: 49
+    section: engineering_be
+    title_ar: "فهرس Market Intelligence"
+    commands: [python scripts/market_intelligence_status.py]
+    docs: [docs/commercial/MARKET_INTELLIGENCE_MASTER_INDEX_AR.md]
+  - id: t50
+    n: 50
+    section: research
+    title_ar: "مقارنات GTM خارجية + سؤال GTM debt أسبوعي"
+    docs: [docs/commercial/operations/FOUNDER_GTM_BENCHMARKS_AR.md, docs/ops/objection_library_ar.md]
+  - id: t51
+    n: 51
+    section: week0
+    title_ar: "بوابة Paid Launch (عند الانتقال من Soft)"
+    commands: [python scripts/founder_paid_launch_gate.py]
+    docs: [docs/commercial/PAID_LAUNCH_AFTER_SOFT_PASS_AR.md]
+  - id: t52
+    n: 52
+    section: week0
+    title_ar: "تهيئة قرار الأسبوع من القالب"
+    commands: [python scripts/founder_weekly_decision_init.py]
+    configs: [docs/commercial/operations/founder_weekly_decision_template.yaml]
+  - id: t53
+    n: 53
+    section: week0
+    title_ar: "تحقق الإطلاق التجاري الرسمي"
+    commands: [bash scripts/verify_dealix_commercial_go_live.sh, scripts/verify_dealix_commercial_go_live.ps1]
+    docs: [docs/LAUNCH_GATES.md]
+  - id: t54
+    n: 54
+    section: week0
+    title_ar: "بذرة KPI المؤسس من CRM"
+    commands: [python scripts/bootstrap_founder_kpi_import.py]
+    configs: [dealix/transformation/kpi_founder_commercial_import.example.yaml]
+  - id: t55
+    n: 55
+    section: daily
+    title_ar: "يوم تجاري كامل (مزامنة أدلة)"
+    commands: [scripts/run_founder_commercial_day.sh, scripts/run_founder_commercial_day.ps1]
+    docs: [docs/ops/FOUNDER_OPERATING_SYSTEM_AR.md]
+  - id: t56
+    n: 56
+    section: daily
+    title_ar: "مساء — سجل أدلة المؤسس"
+    commands: [python scripts/founder_evening_evidence.py]
+    docs: [docs/ops/FOUNDER_DAILY_ANCHOR_AR.md]
+  - id: t57
+    n: 57
+    section: daily
+    title_ar: "SOAEN يومي (مصدر/مالك/موافقة/دليل/تالي)"
+    commands: [python scripts/founder_soaen_daily.py]
+    docs: [docs/commercial/DEALIX_COMMERCIAL_SCALE_SYSTEM_AR.md]
+  - id: t58
+    n: 58
+    section: daily
+    title_ar: "تسجيل يوم تجاري في السجل"
+    commands: [python scripts/log_founder_commercial_day_evidence.py]
+    artifacts: [docs/commercial/operations/evidence_events_tracker.csv]
+  - id: t59
+    n: 59
+    section: daily
+    title_ar: "موجز المؤسس اليومي"
+    commands: [python scripts/dealix_founder_daily_brief.py]
+    artifacts: [data/founder_briefs/]
+  - id: t60
+    n: 60
+    section: weekly
+    title_ar: "قائمة مراجعة GTM الأسبوعية"
+    docs: [docs/commercial/operations/GTM_WEEKLY_REVIEW_CHECKLIST_AR.md]
+  - id: t61
+    n: 61
+    section: weekly
+    title_ar: "Scorecard يومي للمؤسس"
+    commands: [python scripts/founder_daily_scorecard.py]
+  - id: t62
+    n: 62
+    section: weekly
+    title_ar: "مراجعة Market Intelligence أسبوعياً"
+    docs: [docs/commercial/MARKET_INTELLIGENCE_WEEKLY_REVIEW_CHECKLIST_AR.md]
+  - id: t63
+    n: 63
+    section: motion_a
+    title_ar: "خط أنابيب Motion A"
+    commands: [python scripts/founder_motion_a_pipeline.py]
+    docs: [docs/commercial/operations/motion_a_agency/README.md]
+  - id: t64
+    n: 64
+    section: motion_a
+    title_ar: "توسيع بذرة الوكالات"
+    commands: [python scripts/expand_agency_targets_seed.py]
+    artifacts: [docs/commercial/operations/targeting/agency_accounts_seed.csv]
+  - id: t65
+    n: 65
+    section: motion_a
+    title_ar: "إثراء قائمة warm"
+    commands: [python scripts/enrich_targeting_warm.py]
+    docs: [docs/commercial/operations/targeting/README_WARM_FILL_AR.md]
+  - id: t66
+    n: 66
+    section: motion_a
+    title_ar: "تحقق CSV الاستهداف"
+    commands: [python scripts/validate_warm_targeting_csv.py]
+  - id: t67
+    n: 67
+    section: motion_a
+    title_ar: "استيراد أهداف War Room"
+    commands: [python scripts/import_war_room_targets.py]
+    docs: [docs/ops/DEALIX_REVENUE_WAR_ROOM_AR.md]
+  - id: t68
+    n: 68
+    section: content
+    title_ar: "محتوى اليوم من الطابور"
+    commands: [python scripts/social_queue_today.py]
+    configs: [dealix/config/social_content_queue.yaml]
+  - id: t69
+    n: 69
+    section: content
+    title_ar: "توسيع طابور 16 أسبوعاً"
+    commands: [python scripts/expand_social_queue_16w.py]
+  - id: t70
+    n: 70
+    section: content
+    title_ar: "مزامنة War Room مع الأدلة"
+    commands: [python scripts/commercial_war_room_sync.py]
+  - id: t71
+    n: 71
+    section: phase_01
+    title_ar: "تحقق متتبع أول Diagnostic مدفوع"
+    commands: [python scripts/verify_first_paid_diagnostic_tracker.py]
+    docs: [docs/commercial/operations/FIRST_PAID_DIAGNOSTIC_DOD_AR.md]
+    phase: 1
+  - id: t72
+    n: 72
+    section: phase_01
+    title_ar: "توليد Proof Pack تشغيلي"
+    commands: [python scripts/dealix_proof_pack.py]
+    docs: [docs/delivery/PROOF_PACK_TEMPLATE.md]
+    phase: 1
+  - id: t73
+    n: 73
+    section: phase_01
+    title_ar: "SOP الدفع اليدوي"
+    docs: [docs/ops/MANUAL_PAYMENT_SOP.md]
+    phase: 1
+  - id: t74
+    n: 74
+    section: phase_01
+    title_ar: "تحضير اجتماعات Soft Launch"
+    commands: [python scripts/prepare_soft_launch_meetings.py]
+    artifacts: [docs/commercial/operations/soft_launch_meetings_tracker.yaml]
+    phase: 0
+  - id: t75
+    n: 75
+    section: phase_24
+    title_ar: "كل Motions في خط واحد"
+    commands: [python scripts/founder_all_motions_pipeline.py]
+    phase: 2
+  - id: t76
+    n: 76
+    section: phase_24
+    title_ar: "توسعة المكدس التجاري"
+    commands: [python scripts/run_commercial_expansion.py]
+    phase: 2
+  - id: t77
+    n: 77
+    section: phase_24
+    title_ar: "حالة التوسعة التجارية"
+    commands: [python scripts/founder_expansion_status.py]
+    phase: 2
+  - id: t78
+    n: 78
+    section: phase_24
+    title_ar: "قنوات GTM (Playbook)"
+    docs: [docs/commercial/operations/GTM_CHANNELS_PLAYBOOK_AR.md]
+    phase: 2
+  - id: t79
+    n: 79
+    section: governance
+    title_ar: "مرور PDPL للمؤسس"
+    docs: [docs/commercial/FOUNDER_PDPL_COMPLIANCE_PASS_AR.md, docs/commercial/operations/founder_pdpl_compliance_pass.yaml]
+  - id: t80
+    n: 80
+    section: governance
+    title_ar: "بوابات الحوكمة التجارية"
+    docs: [docs/commercial/operations/COMMERCIAL_GOVERNANCE_GATES_AR.md]
+  - id: t81
+    n: 81
+    section: governance
+    title_ar: "RFC — لا إرسال تلقائي خارجي"
+    docs: [docs/commercial/operations/GATED_AUTO_SEND_RFC_AR.md]
+  - id: t82
+    n: 82
+    section: governance
+    title_ar: "تحقق Revenue OS"
+    commands: [bash scripts/revenue_os_master_verify.sh]
+    api: "GET /api/v1/revenue-os/catalog"
+  - id: t83
+    n: 83
+    section: kpi
+    title_ar: "إشارات منصة لخط الأساس KPI"
+    commands: [python scripts/populate_kpi_baselines_platform_signals.py]
+    configs: [dealix/transformation/kpi_baselines.yaml]
+  - id: t84
+    n: 84
+    section: kpi
+    title_ar: "لقطة KPI للتحوّل"
+    api: "GET /api/v1/transformation/kpi-snapshot"
+    docs: [dealix/transformation/kpi_founder_commercial_registry.yaml]
+  - id: t85
+    n: 85
+    section: presentations
+    title_ar: "قوالب بريد Market Intelligence"
+    docs: [docs/commercial/MARKET_INTELLIGENCE_EMAIL_TEMPLATES_AR.md]
+  - id: t86
+    n: 86
+    section: presentations
+    title_ar: "مصداقية المقاييس أمام المشتري"
+    docs: [docs/commercial/MARKET_INTELLIGENCE_METRICS_CREDIBILITY_AR.md]
+  - id: t87
+    n: 87
+    section: presentations
+    title_ar: "مصفوفة الثقة والأمان"
+    docs: [docs/commercial/MARKET_INTELLIGENCE_TRUST_SECURITY_MATRIX_AR.md]
+  - id: t88
+    n: 88
+    section: presentations
+    title_ar: "ملخص تنفيذي EN للشركاء"
+    docs: [docs/commercial/MARKET_INTELLIGENCE_EN_EXECUTIVE_SUMMARY.md]
+  - id: t89
+    n: 89
+    section: presentations
+    title_ar: "قالب ROI لصفقة واحدة"
+    docs: [docs/commercial/operations/GTM_ROI_ONEPAGER_TEMPLATE_AR.md]
+  - id: t90
+    n: 90
+    section: presentations
+    title_ar: "SOP حزمة العميل"
+    docs: [docs/commercial/operations/CLIENT_PACK_SOP_AR.md]
+  - id: t91
+    n: 91
+    section: public_gtm
+    title_ar: "متتبع اجتماعات Soft Launch"
+    artifacts: [docs/commercial/operations/soft_launch_meetings_tracker.yaml]
+  - id: t92
+    n: 92
+    section: public_gtm
+    title_ar: "أطلس الإيراد الموحّد"
+    docs: [docs/commercial/DEALIX_UNIFIED_REVENUE_ATLAS_AR.md]
+  - id: t93
+    n: 93
+    section: public_gtm
+    title_ar: "تحقق Soft → Paid"
+    commands: [bash scripts/founder_soft_to_paid_verify.sh, scripts/founder_soft_to_paid_verify.ps1]
+  - id: t94
+    n: 94
+    section: dogfood
+    title_ar: "مزامنة War Room داخلية (dogfood)"
+    commands: [python scripts/founder_dogfooding_war_room_sync.py]
+    artifacts: [docs/commercial/operations/targeting/dealix_internal_war_room_seed.csv]
+  - id: t95
+    n: 95
+    section: dogfood
+    title_ar: "Dealix على Dealix — دليل تشغيل"
+    commands: [python scripts/dealix_on_dealix_proof.py]
+  - id: t96
+    n: 96
+    section: dogfood
+    title_ar: "حالة GTM المؤسس"
+    commands: [python scripts/founder_gtm_status.py]
+    docs: [docs/commercial/operations/FOUNDER_GTM_CODIFICATION_AR.md]
+  - id: t97
+    n: 97
+    section: engineering_fe
+    title_ar: "Ops — تسويق اليوم"
+    ui: [/ar/ops/marketing]
+  - id: t98
+    n: 98
+    section: engineering_fe
+    title_ar: "Ops — مبيعات"
+    ui: [/ar/ops/sales]
+  - id: t99
+    n: 99
+    section: engineering_fe
+    title_ar: "Ops — شركاء"
+    ui: [/ar/ops/partners]
+  - id: t100
+    n: 100
+    section: engineering_fe
+    title_ar: "Ops — استهداف"
+    ui: [/ar/ops/targeting]
+  - id: t101
+    n: 101
+    section: value_delivery
+    title_ar: "ترتيب مكدس الأدلة (Proof Stack)"
+    docs: [docs/commercial/operations/PROOF_STACK_ORDER_AR.md]
+    phase: 1
+  - id: t102
+    n: 102
+    section: value_delivery
+    title_ar: "نموذج Proof Pack وكالة"
+    docs: [docs/commercial/operations/motion_a_agency/PROOF_PACK_AGENCY_AR.md, docs/commercial/operations/sample_proof_pack/SAMPLE_PROOF_PACK_AGENCY_AR.md]
+    phase: 1
+  - id: t103
+    n: 103
+    section: value_delivery
+    title_ar: "تهيئة debrief اجتماع"
+    commands: [python scripts/founder_meeting_debrief_init.py]
+    configs: [docs/commercial/operations/founder_meeting_debrief_template.yaml]
+  - id: t104
+    n: 104
+    section: value_delivery
+    title_ar: "مسودات لمسات War Room"
+    commands: [python scripts/generate_war_room_touch_drafts.py]
+    docs: [docs/ops/DEALIX_REVENUE_WAR_ROOM_AR.md]
+  - id: t105
+    n: 105
+    section: value_delivery
+    title_ar: "انطلاق تسليم العميل"
+    commands: [python scripts/dealix_delivery_kickoff.py]
+    docs: [docs/commercial/operations/CLIENT_PACK_SOP_AR.md]
+  - id: t106
+    n: 106
+    section: value_delivery
+    title_ar: "تحقق حزمة Proof"
+    commands: [python scripts/verify_proof_pack.py]
+    docs: [docs/delivery/PROOF_PACK_TEMPLATE.md]
+  - id: t107
+    n: 107
+    section: value_delivery
+    title_ar: "حلقة مبيعات المؤسس (ترميز)"
+    docs: [docs/commercial/operations/FOUNDER_SALES_LOOP_AR.md]
+    phase: 0
+  - id: t108
+    n: 108
+    section: research
+    title_ar: "ترميز GTM + سجل الاعتراضات"
+    docs: [docs/commercial/operations/FOUNDER_GTM_CODIFICATION_AR.md, docs/commercial/operations/GTM_OBJECTION_MATRIX_AR.md]
+  - id: t109
+    n: 109
+    section: autonomous_ops
+    title_ar: "تشغيل نواة Full Ops صباحاً (--execute)"
+    commands: [python scripts/run_full_commercial_ops_autopilot.py, python scripts/run_full_commercial_ops_autopilot.py --execute]
+    docs: [docs/commercial/FULL_AUTONOMOUS_COMMERCIAL_OPS_AR.md]
+  - id: t110
+    n: 110
+    section: autonomous_ops
+    title_ar: "حلقة المؤسس الكاملة (صباح+مساء+أسبوع)"
+    commands: [python scripts/run_founder_full_autopilot.py, scripts/run_founder_full_autopilot.sh]
+    api: "GET /api/v1/ops-autopilot/founder/full-autopilot"
+  - id: t111
+    n: 111
+    section: autonomous_ops
+    title_ar: "أقوى خطة + Full Ops في أمر واحد"
+    commands: [python scripts/run_founder_strongest_ops.py, python scripts/run_founder_strongest_ops.py --full --run-checks]
+  - id: t112
+    n: 112
+    section: autonomous_ops
+    title_ar: "لقطة Full Autonomous Ops (API)"
+    api: "GET /api/v1/ops-autopilot/founder/full-autonomous-ops"
+    docs: [docs/commercial/FULL_AUTONOMOUS_COMMERCIAL_OPS_AR.md]
+  - id: t113
+    n: 113
+    section: autonomous_ops
+    title_ar: "تشغيل صباحي عبر API (بدون إرسال خارجي)"
+    api: "POST /api/v1/ops-autopilot/founder/full-autonomous-ops/run"
+  - id: t114
+    n: 114
+    section: autonomous_ops
+    title_ar: "مركز قيادة المؤسس — بطاقات Full Ops"
+    ui: [/ar/ops/founder]
+    docs: [frontend/src/components/gtm/OpsFounderCommandCenter.tsx]
+  - id: t115
+    n: 115
+    section: autonomous_ops
+    title_ar: "بحث GTM السعودي + مقارنة Best Practice"
+    docs: [docs/commercial/GTM_SAUDI_WEB_RESEARCH_PLAYBOOK_AR.md]
+  - id: t116
+    n: 116
+    section: autonomous_ops
+    title_ar: "Max Ops Backlog (55+ مهمة تشغيل)"
+    docs: [docs/ops/FOUNDER_MAX_OPS_BACKLOG_AR.md]
+    configs: [dealix/config/founder_max_ops_backlog.yaml]
+  - id: t117
+    n: 117
+    section: autonomous_ops
+    title_ar: "تحقق أقوى خطة (CI)"
+    commands: [python scripts/founder_strongest_plan_status.py]
+  - id: t118
+    n: 118
+    section: autonomous_ops
+    title_ar: "CI يومي تجاري"
+    artifacts: [.github/workflows/founder_commercial_daily.yml]
+  - id: t119
+    n: 119
+    section: autonomous_ops
+    title_ar: "CI مساء أدلة"
+    artifacts: [.github/workflows/founder_evening_evidence.yml]
+  - id: t120
+    n: 120
+    section: autonomous_ops
+    title_ar: "CI أسبوعي scorecard"
+    artifacts: [.github/workflows/founder_weekly_scorecard.yml]
+  - id: t121
+    n: 121
+    section: autonomous_ops
+    title_ar: "موجز تجاري يومي (digest)"
+    commands: [python scripts/founder_commercial_digest.py]
+  - id: t122
+    n: 122
+    section: autonomous_ops
+    title_ar: "حزمة يومية API (daily-pack)"
+    api: "GET /api/v1/ops-autopilot/founder/daily-pack"
+  - id: t123
+    n: 123
+    section: integrations
+    title_ar: "مصفوفة حقيقة التكاملات (لا وعد أحمر)"
+    docs: [docs/ops/FOUNDER_INTEGRATION_TRUTH_MATRIX_AR.md, docs/COMMERCIAL_WIRING_MAP.md]
+  - id: t124
+    n: 124
+    section: integrations
+    title_ar: "HubSpot + Calendly + webhooks (جاهزية Soft)"
+    docs: [docs/commercial/COMMERCIAL_LAUNCH_CHECKLIST_AR.md, docs/commercial/COMMERCIAL_OPS_QUICK_REFERENCE_AR.md]
+    api: "POST /api/v1/webhooks/calendly"
+  - id: t125
+    n: 125
+    section: integrations
+    title_ar: "Smoke تكاملات Soft Launch"
+    commands: [python scripts/soft_launch_api_smoke.py]
+  - id: t126
+    n: 126
+    section: finance_unit
+    title_ar: "خريطة القيمة + سلم الإيراد (لا أرقام مخترعة)"
+    docs: [docs/commercial/COMMERCIAL_VALUE_MAP_AR.md, docs/commercial/DEALIX_UNIFIED_REVENUE_ATLAS_AR.md]
+  - id: t127
+    n: 127
+    section: finance_unit
+    title_ar: "KPI من CRM + registry"
+    configs: [dealix/transformation/kpi_founder_commercial_registry.yaml]
+    commands: [python scripts/apply_kpi_founder_commercial.py]
+  - id: t128
+    n: 128
+    section: finance_unit
+    title_ar: "جاهزية Paid + Moyasar (عند الانتقال)"
+    commands: [python scripts/verify_paid_launch_readiness.py]
+    docs: [docs/commercial/PAID_LAUNCH_AFTER_SOFT_PASS_AR.md]
+  - id: t129
+    n: 129
+    section: customer_success
+    title_ar: "نجاح عميل — مرجع MI"
+    docs: [docs/commercial/MARKET_INTELLIGENCE_CUSTOMER_SUCCESS_AR.md]
+  - id: t130
+    n: 130
+    section: customer_success
+    title_ar: "توسعة بعد Proof (لا upsell مبكر)"
+    docs: [docs/commercial/operations/CLIENT_PACK_SOP_AR.md, docs/delivery/PROOF_PACK_TEMPLATE.md]
+    phase: 1
+  - id: t131
+    n: 131
+    section: customer_success
+    title_ar: "QBR مصغّر + debrief"
+    commands: [python scripts/founder_meeting_debrief_init.py]
+    configs: [docs/commercial/operations/founder_meeting_debrief_template.yaml]
+  - id: t132
+    n: 132
+    section: trust_security
+    title_ar: "مصفوفة الثقة أمام المشتري"
+    docs: [docs/commercial/MARKET_INTELLIGENCE_TRUST_SECURITY_MATRIX_AR.md, docs/SECURITY_RUNBOOK.md]
+  - id: t133
+    n: 133
+    section: trust_security
+    title_ar: "حزمة امتثال GTM"
+    commands: [bash scripts/run_compliance_gtm_gate_bundle.sh]
+    docs: [docs/commercial/MARKET_INTELLIGENCE_PDPL_LEGAL_REVIEW_AR.md]
+  - id: t134
+    n: 134
+    section: autonomous_ops
+    title_ar: "يوم ذاتي كامل موحّد (صباح+حوكمة+أقوى خطة)"
+    commands: [python scripts/run_dealix_complete_autonomous_day.py, python scripts/run_dealix_complete_autonomous_day.py --dry-run]
+    docs: [docs/commercial/FULL_AUTONOMOUS_COMMERCIAL_OPS_AR.md]
+  - id: t135
+    n: 135
+    section: autonomous_ops
+    title_ar: "API — تشغيل يوم ذاتي كامل"
+    api: "POST /api/v1/ops-autopilot/founder/complete-autonomous-day/run"
+  - id: t136
+    n: 136
+    section: autonomous_ops
+    title_ar: "API — لوحة موحّدة (cockpit)"
+    api: "GET /api/v1/ops-autopilot/founder/cockpit"
+  - id: t137
+    n: 137
+    section: autonomous_ops
+    title_ar: "مساء ذاتي — cockpit/API"
+    api: "POST /api/v1/ops-autopilot/founder/cockpit/run-evening"
+    commands: [python scripts/run_dealix_complete_autonomous_day.py --evening --skip-commercial-day]
+  - id: t138
+    n: 138
+    section: research
+    title_ar: "مقارنة بحث GTM 2026 (موقف Dealix)"
+    docs: [docs/commercial/GTM_SAUDI_WEB_RESEARCH_PLAYBOOK_AR.md, docs/commercial/FULL_AUTONOMOUS_COMMERCIAL_OPS_AR.md]

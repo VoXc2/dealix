@@ -1,0 +1,61 @@
+# Primary ICP — Saudi-first B2B (GTM reference; tune weekly in War Room)
+version: 1
+positioning_ar: >
+  نشغّل الإيراد والذكاء الاصطناعي بطريقة محكومة ومثبتة وقابلة للتوسع —
+  وضوح مصادر، حدود موافقة، مسارات أدلة، إثبات قيمة.
+positioning_en: >
+  Governed Revenue and AI Operations with source clarity, approval boundaries,
+  evidence trails, and proof of value.
+
+primary_offer_id: seven_day_governance_diagnostic
+
+segments:
+  - id: b2b_services_founder_led
+    label_ar: خدمات B2B — مبيعات بقيادة المؤسس
+    pain_signals:
+      - pipeline غير موثوق
+      - follow-up غير موثّق
+      - قرارات بلا دليل
+  - id: crm_revops_gap
+    label_ar: CRM / RevOps — بيانات غير جاهزة للـAI
+    pain_signals:
+      - مصادر متضاربة
+      - أتمتة بلا حوكمة
+  - id: ai_without_governance
+    label_ar: تجارب AI بلا حوكمة تشغيلية
+    pain_signals:
+      - agents بلا موافقة
+      - لا evidence trail
+  - id: agency_followup
+    label_ar: وكالة — متابعة عملاء ضعيفة
+    pain_signals:
+      - تسرّب إيراد
+      - تقارير بلا مصدر
+  - id: clinic_lead_followup
+    label_ar: عيادات / خدمات — متابعة leads
+    pain_signals:
+      - مواعيد تضيع
+      - لا مسار موافقة
+  - id: crm_implementer_partner
+    label_ar: شريك — منفّذ CRM (إحالة)
+    pain_signals:
+      - عملاء يحتاجون readiness قبل AI
+
+disqualifiers:
+  - student_or_job_seeker
+  - vague_ai_curiosity_no_workflow
+  - no_company_name
+  - budget_under_5k_sar_unless_partner_referral
+
+routing_from_score:
+  qualified_a_min: 15
+  qualified_b_min: 10
+  nurture_min: 6
+
+materials:
+  close_engine: docs/commercial/FULL_OPS_CLOSE_ENGINE_AR.md
+  ops_client_pack: docs/commercial/ops_client_pack/
+  demo_path: "/{locale}/business-now#strategy"
+  diagnostic_landing: "/{locale}/dealix-diagnostic"
+  risk_score: "/{locale}/risk-score"
+  proof_pack_sample: "/{locale}/proof-pack"

@@ -1,0 +1,99 @@
+/* ============================================================================
+   Dealix Theme Variables — Multi-Tenant White-Label Scaffold (W3.2)
+   ----------------------------------------------------------------------------
+   This file defines the CSS custom properties that all branded surfaces read.
+   Tenants override these via inline <style> tag (server-side rendered) or a
+   tenant-specific stylesheet loaded after this file. Untouched tenants get
+   the Dealix default look.
+
+   When activating R6 White-Label Agency partners, each tenant gets:
+     1. A tenant config row (logo URL, color palette, font choices)
+     2. A small inline <style> tag injected into the landing template before
+        this file, defining the same variables with their values
+   ============================================================================ */
+
+:root {
+  /* ── Brand palette ──────────────────────────────────────────────────── */
+  --dealix-brand-primary:   #0f172a;   /* slate-900 — main brand */
+  --dealix-brand-accent:    #10b981;   /* emerald-500 — CTAs */
+  --dealix-brand-muted:     #64748b;   /* slate-500 — secondary text */
+  --dealix-brand-surface:   #ffffff;   /* card / panel background */
+  --dealix-brand-bg:        #f8fafc;   /* slate-50 — page background */
+
+  /* ── Semantic colors (rarely overridden) ────────────────────────────── */
+  --dealix-success:         #16a34a;
+  --dealix-warning:         #f59e0b;
+  --dealix-danger:          #dc2626;
+  --dealix-info:            #0ea5e9;
+
+  /* ── Text colors ────────────────────────────────────────────────────── */
+  --dealix-text-strong:     #0f172a;
+  --dealix-text-default:    #334155;
+  --dealix-text-muted:      #64748b;
+  --dealix-text-on-brand:   #ffffff;
+  --dealix-text-on-accent:  #ffffff;
+
+  /* ── Typography ─────────────────────────────────────────────────────── */
+  --dealix-font-ar:         "IBM Plex Sans Arabic", system-ui, sans-serif;
+  --dealix-font-en:         "Inter", system-ui, sans-serif;
+  --dealix-font-base-size:  16px;
+  --dealix-font-scale-h1:   clamp(28px, 4.5vw, 44px);
+  --dealix-font-scale-h2:   clamp(22px, 3vw, 30px);
+  --dealix-font-weight-strong: 700;
+
+  /* ── Spacing & radius ───────────────────────────────────────────────── */
+  --dealix-radius-sm: 6px;
+  --dealix-radius-md: 10px;
+  --dealix-radius-lg: 14px;
+  --dealix-shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.04);
+  --dealix-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+
+  /* ── Layout ─────────────────────────────────────────────────────────── */
+  --dealix-max-content-width: 1080px;
+  --dealix-page-padding: 24px;
+
+  /* ── Tenant-only — set via inline tenant override ───────────────────── */
+  --dealix-tenant-logo-url: none;       /* if set, used as <img> background or header */
+  --dealix-tenant-favicon-url: none;
+  --dealix-tenant-name: "Dealix";
+  --dealix-tenant-domain: "dealix.me";
+}
+
+/* Dark theme override (auto when [data-theme="dark"] on html) */
+[data-theme="dark"] {
+  --dealix-brand-bg:        #0f172a;
+  --dealix-brand-surface:   #1e293b;
+  --dealix-text-default:    #e2e8f0;
+  --dealix-text-muted:      #94a3b8;
+  --dealix-text-strong:     #f1f5f9;
+}
+
+/* RTL adjustments — these are already standard but listed here so tenant
+   theming docs (W3.8) can reference them. */
+[dir="rtl"] {
+  --dealix-paragraph-align: right;
+}
+
+[dir="ltr"] {
+  --dealix-paragraph-align: left;
+}
+
+/* ============================================================================
+   Tenant Override Template
+   ----------------------------------------------------------------------------
+   Server-side rendered <style> tag goes BEFORE the link to theme.css:
+
+   <style>
+     :root {
+       --dealix-brand-primary: #2563eb;  // tenant's blue
+       --dealix-brand-accent:  #f59e0b;  // tenant's amber
+       --dealix-tenant-logo-url: url("/static/tenants/acme/logo.png");
+       --dealix-tenant-name: "ACME via Dealix";
+     }
+   </style>
+   <link rel="stylesheet" href="/assets/css/theme.css">
+
+   Anything unset falls back to the Dealix default. Brand colors should be
+   the only thing tenants override for the first 5 agency partners — full
+   tenant-specific stylesheets come after partner #5.
+   ============================================================================ */
