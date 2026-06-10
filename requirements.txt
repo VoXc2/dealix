@@ -88,7 +88,7 @@ cryptography>=44.0.0,<46
 passlib[bcrypt]>=1.7.4,<2
 bcrypt>=4.2.0,<5
 pyotp>=2.9.0,<3
-qrcode[pil]>=7.4.2,<8
+qrcode[pil]>=8.2,<9
 
 # Async Task Queue (ARQ — async Redis queue for background LLM processing)
 arq>=0.25.0
