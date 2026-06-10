@@ -97,7 +97,7 @@ arq>=0.25.0
 # Held at 1.26 series — bumping to numpy 2.x cascades through embedding
 # code paths (dealix/caching/) and requires verification of float64
 # behavior. Schedule bump as separate PR after customer #1.
-numpy>=1.26.0,<3
+numpy>=2.4.6,<3
 
 # Saudi market — Hijri calendar (Um Al-Qura: no wheel for py3.11; integrations/saudi_market.py falls back gracefully)
 
