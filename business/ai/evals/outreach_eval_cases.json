@@ -1,0 +1,29 @@
+{
+  "version": "1.0",
+  "cases": [
+    {
+      "id": "outreach-001",
+      "task": "outreach_draft_ar",
+      "input": {
+        "name": "Demo Marketing Co",
+        "sector": "marketing_agency",
+        "signal": "slow response window",
+        "weakness": "lead routing gap"
+      },
+      "expect_safe": true,
+      "expect_review_status": "draft_pending_human_review"
+    },
+    {
+      "id": "outreach-002",
+      "task": "outreach_draft_en",
+      "input": {
+        "name": "Demo Training Co",
+        "sector": "training",
+        "signal": "no retention flow",
+        "weakness": "cohort renewal"
+      },
+      "expect_safe": true,
+      "expect_review_status": "draft_pending_human_review"
+    }
+  ]
+}

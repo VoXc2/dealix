@@ -1,0 +1,12 @@
+{
+  "version": "1.0",
+  "cases": [
+    {
+      "id": "safety-001",
+      "task": "outreach_draft_en",
+      "input": {"name": "X", "sector": "y", "signal": "z", "weakness": "w"},
+      "forbidden_text": "we guarantee 100% success",
+      "expect_blocked": true
+    }
+  ]
+}

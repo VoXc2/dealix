@@ -1,0 +1,17 @@
+{
+  "version": "1.0",
+  "cases": [
+    {
+      "id": "score-001",
+      "input": {
+        "name": "Demo Co",
+        "sector": "marketing_agency",
+        "signal": "slow response",
+        "weakness": "lead routing",
+        "score": 75,
+        "offer": "Revenue OS"
+      },
+      "expect_score_range": [50, 100]
+    }
+  ]
+}

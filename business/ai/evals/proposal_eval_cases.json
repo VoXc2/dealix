@@ -1,0 +1,16 @@
+{
+  "version": "1.0",
+  "cases": [
+    {
+      "id": "proposal-001",
+      "task": "proposal_section_en",
+      "input": {
+        "name": "Demo Logistics Group",
+        "offer": "Command Center",
+        "setup": 35000,
+        "monthly": 9000
+      },
+      "expect_safe": true
+    }
+  ]
+}
