@@ -1,0 +1,15 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Dealix Audit Event",
+  "type": "object",
+  "required": ["id", "ts", "actor", "action", "target"],
+  "properties": {
+    "id": {"type": "string"},
+    "ts": {"type": "string", "format": "date-time"},
+    "actor": {"type": "string"},
+    "action": {"type": "string"},
+    "target": {"type": "string"},
+    "metadata": {"type": "object"},
+    "demo": {"type": "boolean"}
+  }
+}

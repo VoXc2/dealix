@@ -1,0 +1,13 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Dealix Proof Item",
+  "type": "object",
+  "required": ["id", "accountId", "type", "note", "addedAt"],
+  "properties": {
+    "id": {"type": "string"},
+    "accountId": {"type": "string"},
+    "type": {"type": "string"},
+    "note": {"type": "string"},
+    "addedAt": {"type": "string", "format": "date"}
+  }
+}

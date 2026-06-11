@@ -1,0 +1,21 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Dealix Lead",
+  "type": "object",
+  "required": ["id", "name", "segment", "sourceType", "sourceNote", "createdAt"],
+  "properties": {
+    "id": {"type": "string"},
+    "name": {"type": "string"},
+    "segment": {"type": "string"},
+    "city": {"type": "string"},
+    "sourceType": {"type": "string"},
+    "sourceNote": {"type": "string"},
+    "visibleSignal": {"type": "string"},
+    "weaknessHypothesis": {"type": "string"},
+    "score": {"type": "integer", "minimum": 0, "maximum": 100},
+    "stage": {"type": "string"},
+    "reviewStatus": {"type": "string"},
+    "demo": {"type": "boolean"},
+    "createdAt": {"type": "string", "format": "date"}
+  }
+}

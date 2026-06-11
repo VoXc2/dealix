@@ -1,0 +1,16 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Dealix Deal",
+  "type": "object",
+  "required": ["id", "accountId", "status", "closedAt"],
+  "properties": {
+    "id": {"type": "string"},
+    "accountId": {"type": "string"},
+    "status": {"type": "string", "enum": ["won", "lost", "open"]},
+    "value": {"type": "integer", "minimum": 0},
+    "monthlyRecurring": {"type": "integer", "minimum": 0},
+    "closedAt": {"type": "string", "format": "date"},
+    "reason": {"type": "string"},
+    "demo": {"type": "boolean"}
+  }
+}

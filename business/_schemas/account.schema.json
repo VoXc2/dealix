@@ -1,0 +1,24 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Dealix Account",
+  "type": "object",
+  "required": ["id", "name", "segment", "city", "sourceType", "sourceNote", "createdAt"],
+  "properties": {
+    "id": {"type": "string", "minLength": 1},
+    "name": {"type": "string", "minLength": 1},
+    "segment": {"type": "string", "enum": ["marketing_agency", "training", "clinic", "real_estate", "logistics", "consulting", "b2b_services", "retail"]},
+    "city": {"type": "string"},
+    "website": {"type": "string", "format": "uri"},
+    "sourceType": {"type": "string", "enum": ["open_data", "csv_import", "manual_research", "website_signal", "google_places", "hubspot", "whatsapp_business", "referral"]},
+    "sourceNote": {"type": "string", "minLength": 1},
+    "visibleSignal": {"type": "string"},
+    "weaknessHypothesis": {"type": "string"},
+    "recommendedOffer": {"type": "string", "enum": ["diagnostic_sprint", "revenue_os", "command_center", "delivery_os", "review_reputation", "custom_enterprise", "managed_retainer"]},
+    "score": {"type": "integer", "minimum": 0, "maximum": 100},
+    "stage": {"type": "string", "enum": ["new", "qualified", "drafted", "review", "meeting", "proposal", "won", "lost", "retainer"]},
+    "owner": {"type": "string"},
+    "reviewStatus": {"type": "string", "enum": ["not_started", "draft_pending_human_review", "approved", "rejected"]},
+    "demo": {"type": "boolean"},
+    "createdAt": {"type": "string", "format": "date"}
+  }
+}

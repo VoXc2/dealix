@@ -1,0 +1,22 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Dealix Outreach Draft",
+  "type": "object",
+  "required": ["draftId", "accountId", "language", "channel", "opener", "reviewStatus", "generatedAt"],
+  "properties": {
+    "draftId": {"type": "string"},
+    "accountId": {"type": "string"},
+    "language": {"type": "string", "enum": ["ar", "en"]},
+    "channel": {"type": "string", "enum": ["whatsapp", "email", "linkedin"]},
+    "tone": {"type": "string"},
+    "opener": {"type": "string", "minLength": 1},
+    "followUp1": {"type": "string"},
+    "followUp2": {"type": "string"},
+    "reviewStatus": {"type": "string", "enum": ["draft_pending_human_review", "approved", "rejected"]},
+    "generatedAt": {"type": "string", "format": "date"},
+    "reviewer": {"type": ["string", "null"]},
+    "reviewedAt": {"type": ["string", "null"]},
+    "rejectionReason": {"type": ["string", "null"]},
+    "safetyFlags": {"type": "array", "items": {"type": "string"}}
+  }
+}

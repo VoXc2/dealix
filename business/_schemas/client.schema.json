@@ -1,0 +1,15 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Dealix Client (post-signature)",
+  "type": "object",
+  "required": ["id", "accountId", "tier", "startedAt"],
+  "properties": {
+    "id": {"type": "string"},
+    "accountId": {"type": "string"},
+    "tier": {"type": "string", "enum": ["diagnostic_sprint", "revenue_os", "command_center", "delivery_os", "review_reputation", "custom_enterprise", "managed_retainer"]},
+    "startedAt": {"type": "string", "format": "date"},
+    "monthlyValue": {"type": "integer", "minimum": 0},
+    "owner": {"type": "string"},
+    "status": {"type": "string", "enum": ["active", "paused", "churned"]}
+  }
+}
