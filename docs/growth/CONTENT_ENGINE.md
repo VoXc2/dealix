@@ -1,26 +1,28 @@
-# Content Engine
+# Content Engine (Dealix)
 
-Turn **ledgers + proof** into **market capital** without generic AI noise.
+## Cadence
+- 1 LinkedIn post per day
+- 1 X post per day
+- 1 industry case-card per week
+- 1 proof report per week (real, demo-flagged)
+- 1 long-form (Medium or blog) per month
 
-## Pillars (themes)
+## Categories (10)
+1. AI Operating Systems
+2. Revenue OS
+3. Review OS
+4. Command Centers
+5. Saudi B2B operations
+6. Follow-up leakage
+7. Proof reports
+8. Human-reviewed AI
+9. PDPL-aware AI operations
+10. Founder execution
 
-1. AI projects fail because of **data + process**, not model hype  
-2. **AI operations** vs AI tools  
-3. Saudi / **Arabic-first** business use cases  
-4. **Governance-first** AI  
-5. Proof pack patterns (anonymized)  
-6. Company Brain / RAG with **no-source-no-answer**  
-7. Lead intelligence / revenue ops  
-8. Arabic **quality** as a standard  
+## Voice
+- Executive, direct, Saudi-rooted
+- Bilingual (AR primary, EN secondary)
+- No hype, no fake ROI, no fake testimonials
 
-## Cadence (target)
-
-```text
-~2 posts / week (when capacity allows)
-1 case-style piece / month
-1 playbook update / month (sector or function)
-1 benchmark rollup / quarter (once data exists)
-```
-
-**System:** [`AUTHORITY_SYSTEM.md`](AUTHORITY_SYSTEM.md), [`PUBLIC_AUTHORITY_ENGINE.md`](PUBLIC_AUTHORITY_ENGINE.md), [`BENCHMARK_ENGINE.md`](BENCHMARK_ENGINE.md).  
-**Inputs:** [`../ledgers/PROOF_LEDGER.md`](../ledgers/PROOF_LEDGER.md), [`../ledgers/LEARNING_LEDGER.md`](../ledgers/LEARNING_LEDGER.md).
+## Source
+- Run `python3 scripts/generate_content_calendar.py --days 30`
