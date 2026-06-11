@@ -1,0 +1,93 @@
+{
+  "version": "1.0",
+  "sources": [
+    {
+      "source_name": "Saudi Open Data",
+      "source_type": "open_data",
+      "allowed_use": "Public aggregate sector data",
+      "restricted_use": ["Personal data", "Re-identification"],
+      "data_fields": ["sector", "company_count", "city", "year"],
+      "retention_period": "indefinite (public)",
+      "terms_review_required": false,
+      "risk_level": "low",
+      "notes": "data.gov.sa public datasets"
+    },
+    {
+      "source_name": "Founder CSV",
+      "source_type": "csv_import",
+      "allowed_use": "Bulk upload from approved public lists",
+      "restricted_use": ["Private lists", "Lists without source"],
+      "data_fields": ["name", "segment", "city", "source_note"],
+      "retention_period": "12 months",
+      "terms_review_required": false,
+      "risk_level": "low",
+      "notes": "Founder must provide source URL/note per row"
+    },
+    {
+      "source_name": "Manual research",
+      "source_type": "manual_research",
+      "allowed_use": "Public web + social reading by founder",
+      "restricted_use": ["Behind-login", "Private DMs"],
+      "data_fields": ["name", "segment", "visible_signal", "weakness_hypothesis"],
+      "retention_period": "12 months",
+      "terms_review_required": false,
+      "risk_level": "low",
+      "notes": "URL/quote required per lead"
+    },
+    {
+      "source_name": "Website signal (local)",
+      "source_type": "website_signal",
+      "allowed_use": "Read saved HTML/text snapshot",
+      "restricted_use": ["Crawling live internet", "Form submission"],
+      "data_fields": ["signals", "weakness_score"],
+      "retention_period": "indefinite (analysis output)",
+      "terms_review_required": false,
+      "risk_level": "low",
+      "notes": "Founder must save the file"
+    },
+    {
+      "source_name": "HubSpot CRM",
+      "source_type": "hubspot",
+      "allowed_use": "Read from client-owned portal",
+      "restricted_use": ["Write", "Other tenants"],
+      "data_fields": ["deals", "contacts", "companies"],
+      "retention_period": "lifetime + 24 months",
+      "terms_review_required": true,
+      "risk_level": "medium",
+      "notes": "OAuth scope review required"
+    },
+    {
+      "source_name": "Google Places",
+      "source_type": "google_places",
+      "allowed_use": "Public business profile",
+      "restricted_use": ["Personal data", "Write calls"],
+      "data_fields": ["address", "hours", "rating", "review_count"],
+      "retention_period": "7 days cache",
+      "terms_review_required": true,
+      "risk_level": "low",
+      "notes": "Rate-limit aware"
+    },
+    {
+      "source_name": "WhatsApp Business",
+      "source_type": "whatsapp_business",
+      "allowed_use": "Approved templates only",
+      "restricted_use": ["Unapproved templates", "Bulk unsolicited"],
+      "data_fields": ["message_id", "template_id", "contact_id"],
+      "retention_period": "12 months",
+      "terms_review_required": true,
+      "risk_level": "high",
+      "notes": "Send only after human approval"
+    },
+    {
+      "source_name": "Email provider",
+      "source_type": "email_provider",
+      "allowed_use": "Approved outreach drafts",
+      "restricted_use": ["Bulk unsolicited", "Without unsubscribe"],
+      "data_fields": ["message_id", "to_hash", "subject_hash"],
+      "retention_period": "12 months",
+      "terms_review_required": true,
+      "risk_level": "medium",
+      "notes": "SMTP or transactional API"
+    }
+  ]
+}

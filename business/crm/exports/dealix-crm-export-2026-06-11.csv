@@ -1,0 +1,5 @@
+account_id,account_name,sector,city,website,score,priority,recommended_offer,stage,next_action,follow_up_date,review_status,source,source_url_or_note
+demo-acc-001,Demo Marketing Agency 001,marketing_agency,Riyadh,,78,high,revenue_os,drafted,Approve outreach draft,2026-06-12,draft_pending_human_review,manual_research,Public campaigns + slow response window
+demo-acc-002,Demo Training Co 002,training,Jeddah,,64,medium,delivery_os,qualified,Generate Arabic opener draft,2026-06-12,not_started,open_data,Public training catalog
+demo-acc-003,Demo Logistics Group 003,logistics,Dammam,,71,high,command_center,meeting,Send proposal,2026-06-12,approved,csv_import,Founder-supplied B2B event list
+demo-acc-004,Demo Clinic 004,clinic,Riyadh,,58,medium,review_reputation,new,,,not_started,manual_research,Google reviews scan
