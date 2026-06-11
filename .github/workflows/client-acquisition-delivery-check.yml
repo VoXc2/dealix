@@ -1,0 +1,34 @@
+name: dealix-client-acquisition-delivery-check
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "apps/web/app/war-room/**"
+      - "apps/web/app/client-acquisition/**"
+      - "apps/web/app/delivery-os/**"
+      - "apps/web/app/kpi-finance/**"
+      - "apps/web/app/api/company-os/**"
+      - "apps/web/lib/company-os/**"
+      - "business/acquisition/**"
+      - "business/delivery/**"
+      - "business/finance/**"
+      - "business/ceo/**"
+      - "business/reports/**"
+      - "scripts/generate_daily_ceo_brief.py"
+      - "scripts/verify_client_acquisition_delivery_os.py"
+  pull_request:
+    branches: [main]
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Run Stage 1 verification
+        run: python3 scripts/verify_client_acquisition_delivery_os.py
+      - name: Generate CEO brief
+        run: python3 scripts/generate_daily_ceo_brief.py

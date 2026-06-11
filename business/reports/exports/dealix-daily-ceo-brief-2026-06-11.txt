@@ -1,0 +1,37 @@
+# Dealix Daily CEO Brief — 2026-06-11
+
+## 1. Acquisition Moves
+- **Discover** (اكتشاف): Identify companies with visible operational leakage.
+- **Qualify** (تأهيل): Score against BANT, segment, weakness severity.
+- **Outreach (Drafts Only)** (تواصل (مسوّدة فقط)): Generate bilingual drafts.
+- **Human Review Gate** (بوابة المراجعة البشرية): Approve/reject every draft.
+- **Workflow Review Call** (مكالمة مراجعة سير العمل): 20-min diagnostic call.
+
+## 2. Delivery Moves
+- **Day 0 — Intake** (0–1) — Signed contract, stakeholder map, channel of truth.
+- **Workflow Map** (2–4) — End-to-end workflow map, pain points tagged.
+- **Command Center Setup** (5–8) — URL live, owners assigned, cadence defined.
+
+## 3. KPI Checks
+- [GAP] MRR (SAR): target 250000, current 42000 (-83%) — monthly · watch
+- [GAP] Active Retainers: target 12, current 3 (-75%) — monthly · on_track
+- [GAP] Proposal → Close %: target 35, current 22 (-37%) — monthly · watch
+- [OK] Drafts Pending Review: target 0, current 14 (0%) — daily · off_track
+- [OK] Follow-ups Due Today: target 5, current 8 (60%) — daily · on_track
+- [GAP] Proof Items Logged: target 20, current 7 (-65%) — monthly · watch
+
+## 4. Risks
+- Review queue not cleared → no outreach should be sent.
+- Conversion rate below 35% — tighten close criteria and proposal quality.
+- Proof vault underused — coach delivery lead to log proof items weekly.
+- MRR target not met — slow expansion, speed up retainer conversion.
+
+## 5. Operating Focus
+- [P1] Clear the review queue — due in 1d
+- [P2] Ship launch brief + CEO brief — due in 1d
+- [P3] First 100 leads plan — due in 3d
+- [P4] Deployment readiness — due in 5d
+- [P5] First retainer contract — due in 14d
+
+---
+Draft only. Human review required before any external action.
