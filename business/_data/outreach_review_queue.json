@@ -1,0 +1,165 @@
+{
+  "drafts": [
+    {
+      "draftId": "draft-demo-acc-001-ar",
+      "accountId": "demo-acc-001",
+      "language": "ar",
+      "channel": "whatsapp",
+      "tone": "executive",
+      "opener": "مرحبًا، شفت إن وكالتكم تنشر حملات قوية، بس الاستجابة على الليدز الواردة تتأخر. Dealix يحلّه — مسوّدات مولّدة + مراجعة بشرية.",
+      "followUp1": "لو تبغى مكالمة 20 دقيقة بدون التزام، اختر الوقت اللي يناسبك.",
+      "followUp2": "أقدر أرسل one-pager للفريق.",
+      "reviewStatus": "draft_pending_human_review",
+      "generatedAt": "2026-06-11",
+      "reviewer": null,
+      "reviewedAt": null,
+      "rejectionReason": null,
+      "safetyFlags": [
+        "no_roi_claim",
+        "no_fake_testimonial",
+        "no_pressure"
+      ]
+    },
+    {
+      "draftId": "draft-demo-acc-001-en",
+      "accountId": "demo-acc-001",
+      "language": "en",
+      "channel": "whatsapp",
+      "tone": "executive",
+      "opener": "Hi, I noticed your agency ships strong campaigns but inbound response is slow. Dealix closes that window with drafts + human review.",
+      "followUp1": "Open to a 20-min diagnostic call?",
+      "followUp2": "I can send a one-pager to your team.",
+      "reviewStatus": "draft_pending_human_review",
+      "generatedAt": "2026-06-11",
+      "reviewer": null,
+      "reviewedAt": null,
+      "rejectionReason": null,
+      "safetyFlags": [
+        "no_roi_claim",
+        "no_fake_testimonial",
+        "no_pressure"
+      ]
+    },
+    {
+      "draftId": "draft-demo-acc-002-ar",
+      "accountId": "demo-acc-002",
+      "language": "ar",
+      "channel": "whatsapp",
+      "tone": "executive",
+      "opener": "السلام عليكم، لاحظت إن دوراتكم قوية، بس المتابعة بعد الكورس ضعيفة. Dealix يبني نظام متابعة قابل للقياس.",
+      "followUp1": "لو تبغى مكالمة 20 دقيقة بدون التزام، اختر الوقت اللي يناسبك.",
+      "followUp2": "أقدر أرسل one-pager للفريق.",
+      "reviewStatus": "draft_pending_human_review",
+      "generatedAt": "2026-06-11",
+      "reviewer": null,
+      "reviewedAt": null,
+      "rejectionReason": null,
+      "safetyFlags": [
+        "no_roi_claim",
+        "no_fake_testimonial",
+        "no_pressure"
+      ]
+    },
+    {
+      "draftId": "draft-demo-acc-002-en",
+      "accountId": "demo-acc-002",
+      "language": "en",
+      "channel": "whatsapp",
+      "tone": "executive",
+      "opener": "Hello, your courses are strong but post-course follow-up is light. Dealix builds a measurable retention flow.",
+      "followUp1": "Open to a 20-min diagnostic call?",
+      "followUp2": "I can send a one-pager to your team.",
+      "reviewStatus": "draft_pending_human_review",
+      "generatedAt": "2026-06-11",
+      "reviewer": null,
+      "reviewedAt": null,
+      "rejectionReason": null,
+      "safetyFlags": [
+        "no_roi_claim",
+        "no_fake_testimonial",
+        "no_pressure"
+      ]
+    },
+    {
+      "draftId": "draft-demo-acc-003-ar",
+      "accountId": "demo-acc-003",
+      "language": "ar",
+      "channel": "whatsapp",
+      "tone": "executive",
+      "opener": "السلام عليكم، أعرف إن تحديثات الشحنات عندكم يدوية. Dealix يبني غرفة قيادة بخمسة مؤشرات فقط.",
+      "followUp1": "لو تبغى مكالمة 20 دقيقة بدون التزام، اختر الوقت اللي يناسبك.",
+      "followUp2": "أقدر أرسل one-pager للفريق.",
+      "reviewStatus": "draft_pending_human_review",
+      "generatedAt": "2026-06-11",
+      "reviewer": null,
+      "reviewedAt": null,
+      "rejectionReason": null,
+      "safetyFlags": [
+        "no_roi_claim",
+        "no_fake_testimonial",
+        "no_pressure"
+      ]
+    },
+    {
+      "draftId": "draft-demo-acc-003-en",
+      "accountId": "demo-acc-003",
+      "language": "en",
+      "channel": "whatsapp",
+      "tone": "executive",
+      "opener": "Hello, shipment updates are manual. Dealix builds a command center with five KPIs only.",
+      "followUp1": "Open to a 20-min diagnostic call?",
+      "followUp2": "I can send a one-pager to your team.",
+      "reviewStatus": "draft_pending_human_review",
+      "generatedAt": "2026-06-11",
+      "reviewer": null,
+      "reviewedAt": null,
+      "rejectionReason": null,
+      "safetyFlags": [
+        "no_roi_claim",
+        "no_fake_testimonial",
+        "no_pressure"
+      ]
+    },
+    {
+      "draftId": "draft-demo-acc-004-ar",
+      "accountId": "demo-acc-004",
+      "language": "ar",
+      "channel": "whatsapp",
+      "tone": "executive",
+      "opener": "السلام عليكم، لاحظت إن تقييماتكم على Google ما عليها متابعة. Dealix يبني نظام ردود بموافقة بشرية + تقرير شهري.",
+      "followUp1": "لو تبغى مكالمة 20 دقيقة بدون التزام، اختر الوقت اللي يناسبك.",
+      "followUp2": "أقدر أرسل one-pager للفريق.",
+      "reviewStatus": "draft_pending_human_review",
+      "generatedAt": "2026-06-11",
+      "reviewer": null,
+      "reviewedAt": null,
+      "rejectionReason": null,
+      "safetyFlags": [
+        "no_roi_claim",
+        "no_fake_testimonial",
+        "no_pressure"
+      ]
+    },
+    {
+      "draftId": "draft-demo-acc-004-en",
+      "accountId": "demo-acc-004",
+      "language": "en",
+      "channel": "whatsapp",
+      "tone": "executive",
+      "opener": "Hello, your Google reviews need a steady response system. Dealix installs human-approved replies + a monthly report.",
+      "followUp1": "Open to a 20-min diagnostic call?",
+      "followUp2": "I can send a one-pager to your team.",
+      "reviewStatus": "draft_pending_human_review",
+      "generatedAt": "2026-06-11",
+      "reviewer": null,
+      "reviewedAt": null,
+      "rejectionReason": null,
+      "safetyFlags": [
+        "no_roi_claim",
+        "no_fake_testimonial",
+        "no_pressure"
+      ]
+    }
+  ],
+  "version": "1.0"
+}

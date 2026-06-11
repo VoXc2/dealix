@@ -1,0 +1,63 @@
+{
+  "generated_at": "2026-06-11T05:23:50",
+  "mode": "demo",
+  "summary": {
+    "total_accounts": 4,
+    "review_pending": 8,
+    "followups_due": 0,
+    "proposal_ready": 1,
+    "pipeline_value_sar": 160500,
+    "top_segment": "marketing_agency"
+  },
+  "top_accounts": [
+    {
+      "id": "demo-acc-001",
+      "name": "Demo Marketing Agency 001",
+      "segment": "marketing_agency",
+      "score": 78,
+      "stage": "drafted",
+      "reviewStatus": "draft_pending_human_review"
+    },
+    {
+      "id": "demo-acc-003",
+      "name": "Demo Logistics Group 003",
+      "segment": "logistics",
+      "score": 71,
+      "stage": "meeting",
+      "reviewStatus": "approved"
+    },
+    {
+      "id": "demo-acc-002",
+      "name": "Demo Training Co 002",
+      "segment": "training",
+      "score": 64,
+      "stage": "qualified",
+      "reviewStatus": "not_started"
+    },
+    {
+      "id": "demo-acc-004",
+      "name": "Demo Clinic 004",
+      "segment": "clinic",
+      "score": 58,
+      "stage": "new",
+      "reviewStatus": "not_started"
+    }
+  ],
+  "risks": [
+    "Review queue has drafts pending — clear before any new outreach.",
+    "Pipeline value is concentrated in top accounts — diversify the top of funnel.",
+    "Demo accounts should never be reported as real traction."
+  ],
+  "today_actions": [
+    "Approve or reject pending drafts",
+    "Send the highest-priority proposal",
+    "Log 1 proof item from any active delivery",
+    "Generate today's CEO brief"
+  ],
+  "assets_to_create": [
+    "Daily CEO brief (.txt)",
+    "Outreach draft (top scored lead)",
+    "Proposal (highest-value demo account)"
+  ],
+  "next_ceo_decision": "Approve the review queue and ship the proposal to the highest-value demo account."
+}

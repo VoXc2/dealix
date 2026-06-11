@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#0E1A33"/>
+      <stop offset="100%" stop-color="#070A12"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#F2C66A"/>
+      <stop offset="100%" stop-color="#E2A53A"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <g transform="translate(80 110)">
+    <rect x="0" y="0" width="120" height="120" rx="24" fill="#070A12" stroke="url(#gold)" stroke-width="3"/>
+    <path d="M30 24 L60 24 C84 24 100 42 100 60 C100 78 84 96 60 96 L30 96 Z M44 40 L44 80 L60 80 C76 80 90 70 90 60 C90 50 76 40 60 40 Z" fill="url(#gold)"/>
+    <circle cx="104" cy="22" r="6" fill="url(#gold)"/>
+  </g>
+  <g transform="translate(230 175)" font-family="Inter, Segoe UI, Arial, sans-serif" fill="#FFFFFF">
+    <text x="0" y="0" font-size="84" font-weight="700" letter-spacing="2">DEALIX</text>
+    <text x="0" y="48" font-size="22" font-weight="500" fill="#E2A53A" letter-spacing="8">AI OPERATING SYSTEMS FOR COMPANIES</text>
+  </g>
+  <g transform="translate(80 380)" font-family="Inter, Segoe UI, Arial, sans-serif" fill="#FFFFFF">
+    <text x="0" y="0" font-size="36" font-weight="500" opacity="0.85">From scattered sales, WhatsApp, reputation, and reports</text>
+    <text x="0" y="50" font-size="36" font-weight="500" opacity="0.85">to measurable, human-reviewed, proof-driven systems.</text>
+  </g>
+  <g transform="translate(80 540)" font-family="Inter, Segoe UI, Arial, sans-serif" fill="#E2A53A" font-size="18" letter-spacing="3">
+    <text x="0" y="0">COMMAND CENTERS · REVENUE OS · DELIVERY OS · REVIEW OS</text>
+  </g>
+</svg>

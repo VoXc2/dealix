@@ -1,39 +1,24 @@
-## Summary
+<!-- .github/pull_request_template.md -->
+## What this PR does
+<!-- 1-3 sentences -->
 
-- 
+## Why
+<!-- business reasoning -->
 
-## Type of change
+## How to test
+```bash
+python3 scripts/production_readiness_check.py
+python3 scripts/dealix_daily_operator.py --mode demo
+```
 
-- [ ] Product / feature
-- [ ] Backend / API
-- [ ] Frontend / UX
-- [ ] Trust / compliance
-- [ ] Security
-- [ ] Operations / CI / deployment
-- [ ] Documentation
+## Safety
+- [ ] No auto-send added
+- [ ] No scraping added
+- [ ] No fake ROI / testimonial
+- [ ] No PII without consent
+- [ ] Demo records marked demo=true
 
-## Verification
-
-- [ ] `make env-check`
-- [ ] `make openapi-export`
-- [ ] `make test`
-- [ ] `make prod-verify` when production-facing
-- [ ] Manual smoke test documented below
-
-## Trust, compliance, and claims
-
-- [ ] No public claim was added or changed
-- [ ] Public claims are backed by tests, docs, or `dealix/registers/no_overclaim.yaml`
-- [ ] No secrets, production data, or customer personal data are included
-- [ ] Approval class / risk level is unchanged or documented
-
-## Deployment notes
-
-Rollback plan:
-
-
-Environment changes:
-
-
-Screenshots / evidence, if relevant:
-
+## Docs
+- [ ] README updated (if user-facing)
+- [ ] CHANGELOG updated
+- [ ] Affected `business/*.md` updated

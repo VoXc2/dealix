@@ -1,0 +1,124 @@
+{
+  "date": "2026-06-11",
+  "lead_sources": [
+    {
+      "id": "open_data",
+      "label": "Saudi Open Data (Official)",
+      "guardrail": "No auto-send"
+    },
+    {
+      "id": "csv_import",
+      "label": "Local CSV Import",
+      "guardrail": "No auto-send"
+    },
+    {
+      "id": "manual_research",
+      "label": "Manual Research",
+      "guardrail": "No auto-send"
+    },
+    {
+      "id": "website_signal",
+      "label": "Website Signal Analyzer (Local File)",
+      "guardrail": "No auto-send"
+    },
+    {
+      "id": "google_places_official",
+      "label": "Google Places API (Official Plan)",
+      "guardrail": "No auto-send"
+    },
+    {
+      "id": "hubspot_official",
+      "label": "HubSpot CRM (Official Plan)",
+      "guardrail": "No auto-send"
+    },
+    {
+      "id": "whatsapp_business_official",
+      "label": "WhatsApp Business (Official Plan)",
+      "guardrail": "No auto-send"
+    },
+    {
+      "id": "referral_warm",
+      "label": "Referral (Warm Intro)",
+      "guardrail": "No auto-send"
+    }
+  ],
+  "persuasion_angles": [
+    {
+      "id": "leakage_to_revenue",
+      "title": "From leakage to revenue",
+      "signal": "Slow follow-up on inbound leads"
+    },
+    {
+      "id": "reputation_to_trust",
+      "title": "From scattered reviews to a trust wall",
+      "signal": "Reviews on Google/Maps are inconsistent"
+    },
+    {
+      "id": "delivery_to_proof",
+      "title": "From delivery to proof",
+      "signal": "No weekly report shared with client base"
+    },
+    {
+      "id": "data_to_decision",
+      "title": "From data to a one-page decision",
+      "signal": "Many dashboards, no daily decision"
+    },
+    {
+      "id": "ops_to_growth",
+      "title": "From operational chaos to growth capacity",
+      "signal": "Founder is the bottleneck on most decisions"
+    }
+  ],
+  "offer_ladder": [
+    {
+      "id": "diagnostic_sprint",
+      "price": "Free",
+      "scope": "60-min workflow review"
+    },
+    {
+      "id": "revenue_os",
+      "price": "SAR 18,000 setup + 5,000/mo",
+      "scope": "Lead flow + outreach drafts + proof"
+    },
+    {
+      "id": "command_center",
+      "price": "SAR 35,000 setup + 9,000/mo",
+      "scope": "One-page decision view"
+    },
+    {
+      "id": "delivery_os",
+      "price": "SAR 25,000 setup + 6,000/mo",
+      "scope": "Workflow map + automation build"
+    },
+    {
+      "id": "review_reputation",
+      "price": "SAR 12,000 setup + 3,500/mo",
+      "scope": "Review monitoring + replies"
+    },
+    {
+      "id": "custom_enterprise",
+      "price": "SAR 80,000+",
+      "scope": "Architecture + custom modules"
+    },
+    {
+      "id": "managed_retainer",
+      "price": "SAR 4,000–12,000/mo",
+      "scope": "Ongoing ops + reviews"
+    }
+  ],
+  "openers": {
+    "ar": [
+      "مرحبًا [الاسم]، شفت إن [الشركة] تنشر محتوى قوي في [القطاع] بس الاستجابة على الليدز تأخذ وقت. Dealix يحلّه — مسوّدات مولّدة + مراجعة بشرية.",
+      "السلام عليكم، لاحظت إن موقعكم ما عنده مسار حجز واضح. Dealix يركّب المسار ويولّد المسوّدات، وأنتم توافقون قبل ما تنرسل."
+    ],
+    "en": [
+      "Hi [Name], I noticed [Company] publishes strong work in [sector] but inbound response time is wide. Dealix closes that window — no spam, no auto-send.",
+      "Hello, I saw your site doesn't surface a clear booking path. Dealix installs the path and drafts the messages; your team approves what goes out."
+    ]
+  },
+  "safety": {
+    "auto_send": false,
+    "human_review": true,
+    "no_scraping": true
+  }
+}

@@ -1,0 +1,104 @@
+{
+  "proposals": [
+    {
+      "id": "prop-demo-acc-003-2026-06-11",
+      "accountId": "demo-acc-003",
+      "offer": "Command Center",
+      "lang": "both",
+      "timeline": "21 days",
+      "setupPrice": 35000,
+      "monthlyPrice": 9000,
+      "status": "draft",
+      "createdAt": "2026-06-11"
+    },
+    {
+      "id": "prop-demo-acc-003-2026-06-11",
+      "accountId": "demo-acc-003",
+      "offer": "Command Center",
+      "lang": "both",
+      "timeline": "21 days",
+      "setupPrice": 35000,
+      "monthlyPrice": 9000,
+      "status": "draft",
+      "createdAt": "2026-06-11"
+    },
+    {
+      "id": "prop-demo-acc-003-2026-06-11",
+      "accountId": "demo-acc-003",
+      "offer": "Command Center",
+      "lang": "both",
+      "timeline": "21 days",
+      "setupPrice": 35000,
+      "monthlyPrice": 9000,
+      "status": "draft",
+      "createdAt": "2026-06-11"
+    },
+    {
+      "id": "prop-demo-acc-003-2026-06-11",
+      "accountId": "demo-acc-003",
+      "offer": "Command Center",
+      "lang": "both",
+      "timeline": "21 days",
+      "setupPrice": 35000,
+      "monthlyPrice": 9000,
+      "status": "draft",
+      "createdAt": "2026-06-11"
+    },
+    {
+      "id": "prop-demo-acc-003-2026-06-11",
+      "accountId": "demo-acc-003",
+      "offer": "Command Center",
+      "lang": "both",
+      "timeline": "21 days",
+      "setupPrice": 35000,
+      "monthlyPrice": 9000,
+      "status": "draft",
+      "createdAt": "2026-06-11"
+    },
+    {
+      "id": "prop-demo-acc-003-2026-06-11",
+      "accountId": "demo-acc-003",
+      "offer": "Command Center",
+      "lang": "both",
+      "timeline": "21 days",
+      "setupPrice": 35000,
+      "monthlyPrice": 9000,
+      "status": "draft",
+      "createdAt": "2026-06-11"
+    },
+    {
+      "id": "prop-demo-acc-003-2026-06-11",
+      "accountId": "demo-acc-003",
+      "offer": "Command Center",
+      "lang": "both",
+      "timeline": "21 days",
+      "setupPrice": 35000,
+      "monthlyPrice": 9000,
+      "status": "draft",
+      "createdAt": "2026-06-11"
+    },
+    {
+      "id": "prop-demo-acc-003-2026-06-11",
+      "accountId": "demo-acc-003",
+      "offer": "Command Center",
+      "lang": "both",
+      "timeline": "21 days",
+      "setupPrice": 35000,
+      "monthlyPrice": 9000,
+      "status": "draft",
+      "createdAt": "2026-06-11"
+    },
+    {
+      "id": "prop-demo-acc-003-2026-06-11",
+      "accountId": "demo-acc-003",
+      "offer": "Command Center",
+      "lang": "both",
+      "timeline": "21 days",
+      "setupPrice": 35000,
+      "monthlyPrice": 9000,
+      "status": "draft",
+      "createdAt": "2026-06-11"
+    }
+  ],
+  "version": "1.0"
+}

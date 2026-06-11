@@ -1,0 +1,45 @@
+name: dealix-ultimate-os-check
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Secrets check
+        run: python3 scripts/check_no_secrets.py
+      - name: Master verification
+        run: python3 scripts/verify_dealix_ultimate_os.py
+      - name: Sub-verifications
+        run: |
+          python3 scripts/verify_ultimate_sales_os.py
+          python3 scripts/verify_sales_machine.py
+          python3 scripts/verify_client_acquisition_delivery_os.py
+          python3 scripts/verify_crm_pipeline.py
+          python3 scripts/verify_delivery_os.py
+          python3 scripts/verify_company_os.py
+      - name: Daily operator (demo)
+        run: python3 scripts/dealix_daily_operator.py --mode demo
+      - name: First 100 leads plan
+        run: python3 scripts/build_first_100_leads_plan.py --mode demo
+      - name: Launch brief
+        run: python3 scripts/generate_launch_brief.py
+      - name: Conversion scorecard
+        run: python3 scripts/generate_conversion_scorecard.py
+      - name: Proof report
+        run: python3 scripts/generate_proof_report.py --account-id demo-001 --lang both
+      - name: Production readiness
+        run: python3 scripts/production_readiness_check.py
+      - name: Pre-push guard
+        run: python3 scripts/pre_push_guard.py
+      - name: Test: no auto-send
+        run: |
+          python3 -c "from tests.test_no_auto_send import test_no_auto_send; test_no_auto_send(); print('OK')"
