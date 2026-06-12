@@ -93,6 +93,16 @@ production-smoke: ## Run production API smoke test (PRODUCTION_BASE_URL=...)
 prod-verify: env-check security-smoke api-contract-check dependency-inventory release-manifest v5-verify ## Canonical production-readiness verification bundle
 	@echo "✅ Dealix production verification bundle completed"
 
+# --- MiniMax factory binding (P1, additive, no breaking change) ----------------
+# These targets are part of the daily founder loop. They do NOT mutate
+# production and do NOT send anything external. They print status only.
+
+minimax-status: ## Print MiniMax provider health + today's draft queue (read-only)
+	$(PYTHON) scripts/minimax_status.py
+
+minimax-evals: ## Run MiniMax eval suite (mock by default; real with MINIMAX_API_KEY)
+	$(PYTHON) scripts/minimax_evals.py
+
 # ── Tests ──────────────────────────────────────────────────────
 test: ## Run full test suite with coverage
 	pytest -v
