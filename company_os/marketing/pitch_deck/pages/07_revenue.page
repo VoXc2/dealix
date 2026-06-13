@@ -1,0 +1,357 @@
+pageType: content
+background:
+  type: solid
+  color: "$bgLight"
+elements:
+  - elementId: page-title
+    elementType: text
+    bounds: [60, 40, 900, 50]
+    content:
+      style: "$pageTitle"
+      align: [left, middle]
+      wrap: false
+      text: |
+        <p><strong>نموذج الإيرادات: Service-led SaaS</strong></p>
+
+  - elementId: title-accent
+    elementType: shape
+    bounds: [60, 95, 80, 3]
+    shapeName: rect
+    fill:
+      type: solid
+      color: "$primary"
+
+  - elementId: stage-1-bg
+    elementType: shape
+    bounds: [60, 120, 270, 200]
+    shapeName: rect
+    fill:
+      type: solid
+      color: "$primary"
+
+  - elementId: stage-1-num
+    elementType: text
+    bounds: [80, 130, 60, 40]
+    content:
+      fontSize: 28
+      color: "$accent"
+      fontFamily: "QuattrocentoSans"
+      align: [left, middle]
+      wrap: false
+      text: |
+        <p><strong>1</strong></p>
+
+  - elementId: stage-1-title
+    elementType: text
+    bounds: [80, 175, 230, 30]
+    content:
+      fontSize: 20
+      color: "$textLight"
+      fontFamily: "QuattrocentoSans"
+      align: [left, middle]
+      wrap: false
+      text: |
+        <p><strong>بيع خدمة</strong></p>
+
+  - elementId: stage-1-desc
+    elementType: text
+    bounds: [80, 210, 230, 90]
+    content:
+      fontSize: 16
+      color: "#FFFFFFcc"
+      fontFamily: "QuattrocentoSans"
+      lineHeight: 1.5
+      align: [left, top]
+      text: |
+        <p>P1 Sprint</p>
+        <p>5 أيام / 2,500 ر.س</p>
+        <p>إثبات القيمة</p>
+
+  - elementId: arrow-1
+    elementType: shape
+    bounds: [340, 200, 40, 0]
+    shapeName: straightConnector1
+    arrow: [null, "arrow"]
+    border:
+      style: solid
+      width: 2
+      color: "$primary"
+
+  - elementId: stage-2-bg
+    elementType: shape
+    bounds: [390, 120, 270, 200]
+    shapeName: rect
+    fill:
+      type: solid
+      color: "#15807Acc"
+
+  - elementId: stage-2-num
+    elementType: text
+    bounds: [410, 130, 60, 40]
+    content:
+      fontSize: 28
+      color: "$accent"
+      fontFamily: "QuattrocentoSans"
+      align: [left, middle]
+      wrap: false
+      text: |
+        <p><strong>2</strong></p>
+
+  - elementId: stage-2-title
+    elementType: text
+    bounds: [410, 175, 230, 30]
+    content:
+      fontSize: 20
+      color: "$textLight"
+      fontFamily: "QuattrocentoSans"
+      align: [left, middle]
+      wrap: false
+      text: |
+        <p><strong>Retainer</strong></p>
+
+  - elementId: stage-2-desc
+    elementType: text
+    bounds: [410, 210, 230, 90]
+    content:
+      fontSize: 16
+      color: "#FFFFFFcc"
+      fontFamily: "QuattrocentoSans"
+      lineHeight: 1.5
+      align: [left, top]
+      text: |
+        <p>P2 Monthly</p>
+        <p>3,000 - 20,000 ر.س</p>
+        <p>إيراد متكرر</p>
+
+  - elementId: arrow-2
+    elementType: shape
+    bounds: [670, 200, 40, 0]
+    shapeName: straightConnector1
+    arrow: [null, "arrow"]
+    border:
+      style: solid
+      width: 2
+      color: "$primary"
+
+  - elementId: stage-3-bg
+    elementType: shape
+    bounds: [720, 120, 270, 200]
+    shapeName: rect
+    fill:
+      type: solid
+      color: "#15807A99"
+
+  - elementId: stage-3-num
+    elementType: text
+    bounds: [740, 130, 60, 40]
+    content:
+      fontSize: 28
+      color: "$primaryDark"
+      fontFamily: "QuattrocentoSans"
+      align: [left, middle]
+      wrap: false
+      text: |
+        <p><strong>3</strong></p>
+
+  - elementId: stage-3-title
+    elementType: text
+    bounds: [740, 175, 230, 30]
+    content:
+      fontSize: 20
+      color: "$textLight"
+      fontFamily: "QuattrocentoSans"
+      align: [left, middle]
+      wrap: false
+      text: |
+        <p><strong>بيانات + منتج</strong></p>
+
+  - elementId: stage-3-desc
+    elementType: text
+    bounds: [740, 210, 230, 90]
+    content:
+      fontSize: 16
+      color: "#FFFFFFcc"
+      fontFamily: "QuattrocentoSans"
+      lineHeight: 1.5
+      align: [left, top]
+      text: |
+        <p>تجميع Insights</p>
+        <p>قوالب قطاعية</p>
+        <p>Playbooks</p>
+
+  - elementId: arrow-3
+    elementType: shape
+    bounds: [1000, 200, 40, 0]
+    shapeName: straightConnector1
+    arrow: [null, "arrow"]
+    border:
+      style: solid
+      width: 2
+      color: "$primary"
+
+  - elementId: stage-4-bg
+    elementType: shape
+    bounds: [1050, 120, 170, 200]
+    shapeName: rect
+    fill:
+      type: solid
+      color: "$accent"
+
+  - elementId: stage-4-num
+    elementType: text
+    bounds: [1070, 130, 60, 40]
+    content:
+      fontSize: 28
+      color: "$primaryDark"
+      fontFamily: "QuattrocentoSans"
+      align: [left, middle]
+      wrap: false
+      text: |
+        <p><strong>4</strong></p>
+
+  - elementId: stage-4-title
+    elementType: text
+    bounds: [1070, 175, 130, 30]
+    content:
+      fontSize: 20
+      color: "$primaryDark"
+      fontFamily: "QuattrocentoSans"
+      align: [left, middle]
+      wrap: false
+      text: |
+        <p><strong>SaaS</strong></p>
+
+  - elementId: stage-4-desc
+    elementType: text
+    bounds: [1070, 210, 130, 90]
+    content:
+      fontSize: 16
+      color: "#0A1F1Ecc"
+      fontFamily: "QuattrocentoSans"
+      lineHeight: 1.5
+      align: [left, top]
+      text: |
+        <p>منصة</p>
+        <p>شراكات</p>
+        <p>Scale</p>
+
+  - elementId: metrics-title
+    elementType: text
+    bounds: [60, 350, 400, 35]
+    content:
+      fontSize: 20
+      color: "$primary"
+      fontFamily: "QuattrocentoSans"
+      align: [left, middle]
+      wrap: false
+      text: |
+        <p><strong>المؤشرات المالية المستهدفة</strong></p>
+
+  - elementId: metric-table
+    elementType: table
+    bounds: [60, 400, 1160, 240]
+    columnWidths: [0.25, 0.15, 0.15, 0.15, 0.15, 0.15]
+    rowHeights: [0.25, 0.25, 0.25, 0.25]
+    style: "$default"
+    rows:
+      - - content:
+            text: |
+              <p><strong>المؤشر</strong></p>
+        - content:
+            text: |
+              <p><strong>الشهر 1</strong></p>
+        - content:
+            text: |
+              <p><strong>الشهر 2</strong></p>
+        - content:
+            text: |
+              <p><strong>الشهر 3</strong></p>
+        - content:
+            text: |
+              <p><strong>الشهر 6</strong></p>
+        - content:
+            text: |
+              <p><strong>السنة 1</strong></p>
+      - - content:
+            text: |
+              <p>P1 Clients</p>
+        - content:
+            text: |
+              <p>1</p>
+        - content:
+            text: |
+              <p>3</p>
+        - content:
+            text: |
+              <p>5</p>
+        - content:
+            text: |
+              <p>8</p>
+        - content:
+            text: |
+              <p>50+</p>
+      - - content:
+            text: |
+              <p>P2 Retainers</p>
+        - content:
+            text: |
+              <p>0</p>
+        - content:
+            text: |
+              <p>1</p>
+        - content:
+            text: |
+              <p>2</p>
+        - content:
+            text: |
+              <p>4</p>
+        - content:
+            text: |
+              <p>15+</p>
+      - - content:
+            text: |
+              <p>MRR (ألف ر.س)</p>
+        - content:
+            text: |
+              <p>0</p>
+        - content:
+            text: |
+              <p>8</p>
+        - content:
+            text: |
+              <p>23</p>
+          fill:
+            type: solid
+            color: "$accent"
+        - content:
+            text: |
+              <p>50</p>
+          fill:
+            type: solid
+            color: "$accent"
+        - content:
+            text: |
+              <p>200+</p>
+          fill:
+            type: solid
+            color: "$accent"
+
+  - elementId: page-num
+    elementType: text
+    bounds: [1180, 680, 60, 25]
+    content:
+      fontSize: 12
+      color: "$textMuted"
+      fontFamily: "QuattrocentoSans"
+      align: [right, middle]
+      wrap: false
+      text: |
+        <p>07</p>
+
+  - elementId: bottom-accent
+    elementType: shape
+    bounds: [0, 716, 1280, 4]
+    shapeName: rect
+    fill:
+      type: solid
+      color: "$primary"
