@@ -1,0 +1,72 @@
+{
+  "templates": [
+    {
+      "id": "PROP-P1",
+      "name": "Revenue Intelligence Sprint",
+      "price_sar": 2500,
+      "duration_days": 5,
+      "deliverables": [
+        "Revenue Leakage Map",
+        "Lead Response Audit",
+        "Follow-up Gap Report",
+        "Offer Quality Review",
+        "Objection Map",
+        "30-Day Revenue Plan",
+        "CEO Brief",
+        "P2 Upgrade Proposal"
+      ],
+      "terms": {
+        "payment": "50% upfront, 50% on delivery",
+        "valid_for_days": 7,
+        "revision_rounds": 1
+      }
+    },
+    {
+      "id": "PROP-P2-SMALL",
+      "name": "AI Sales Ops Retainer - Small",
+      "price_sar_monthly": 3000,
+      "min_commitment_months": 3,
+      "includes": [
+        "Weekly War Room",
+        "Pipeline tracking",
+        "Message optimization",
+        "Monthly CEO report",
+        "SLA review",
+        "Team training (2 hrs/month)"
+      ]
+    },
+    {
+      "id": "PROP-P2-MEDIUM",
+      "name": "AI Sales Ops Retainer - Medium",
+      "price_sar_monthly": 8000,
+      "min_commitment_months": 3,
+      "includes": [
+        "Weekly War Room",
+        "Pipeline tracking + optimization",
+        "Message optimization + A/B testing",
+        "Objection intelligence",
+        "Weekly team training",
+        "Monthly CEO report + ROI review",
+        "Proof Pack generation"
+      ]
+    },
+    {
+      "id": "PROP-P2-ENTERPRISE",
+      "name": "AI Sales Ops Retainer - Enterprise",
+      "price_sar_monthly": 20000,
+      "min_commitment_months": 6,
+      "includes": [
+        "Daily War Room support",
+        "Full Revenue OS implementation",
+        "Custom AI governance setup",
+        "Dedicated success manager",
+        "Unlimited team training",
+        "Weekly executive briefing",
+        "Quarterly business review",
+        "Priority support"
+      ]
+    }
+  ],
+  "active_proposals": [],
+  "last_updated": "2026-05-31"
+}
