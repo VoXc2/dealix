@@ -1,0 +1,228 @@
+pageType: content
+background:
+  type: solid
+  color: "$bgLight"
+elements:
+  - elementId: page-title
+    elementType: text
+    bounds: [60, 40, 900, 50]
+    content:
+      style: "$pageTitle"
+      align: [left, middle]
+      wrap: false
+      text: |
+        <p><strong>3 قطاعات أولوية تشتري بسرعة</strong></p>
+
+  - elementId: title-accent
+    elementType: shape
+    bounds: [60, 95, 80, 3]
+    shapeName: rect
+    fill:
+      type: solid
+      color: "$primary"
+
+  - elementId: sector-1-bg
+    elementType: shape
+    bounds: [60, 120, 370, 380]
+    shapeName: rect
+    fill:
+      type: solid
+      color: "$cardBg"
+    border:
+      style: solid
+      width: 1
+      color: "$cardBorder"
+
+  - elementId: sector-1-icon
+    elementType: icon
+    bounds: [85, 145, 40, 40]
+    iconName: "fas:bullhorn"
+    fill:
+      type: solid
+      color: "$primary"
+
+  - elementId: sector-1-title
+    elementType: text
+    bounds: [85, 200, 320, 35]
+    content:
+      fontSize: 22
+      color: "$primary"
+      fontFamily: "QuattrocentoSans"
+      align: [left, middle]
+      wrap: false
+      text: |
+        <p><strong>وكالات التسويق</strong></p>
+
+  - elementId: sector-1-pain
+    elementType: text
+    bounds: [85, 245, 320, 95]
+    content:
+      fontSize: 16
+      color: "$textMutedLight"
+      fontFamily: "QuattrocentoSans"
+      lineHeight: 1.6
+      align: [left, top]
+      text: |
+        <p>• Leads تضيع بدون متابعة</p>
+        <p>• يحتاجون Proof لعملائهم</p>
+        <p>• Follow-up ضعيف أو معدوم</p>
+
+  - elementId: sector-1-solution
+    elementType: text
+    bounds: [85, 350, 320, 50]
+    content:
+      fontSize: 16
+      color: "$text"
+      fontFamily: "QuattrocentoSans"
+      lineHeight: 1.5
+      align: [left, top]
+      text: |
+        <p><span style="color:$primary;"><strong>الحل:</strong></span> نظام يثبت أين تضيع فرص عملائك + تقارير أسبوعية</p>
+
+  - elementId: sector-2-bg
+    elementType: shape
+    bounds: [455, 120, 370, 380]
+    shapeName: rect
+    fill:
+      type: solid
+      color: "$cardBg"
+    border:
+      style: solid
+      width: 1
+      color: "$cardBorder"
+
+  - elementId: sector-2-icon
+    elementType: icon
+    bounds: [480, 145, 40, 40]
+    iconName: "fas:graduation-cap"
+    fill:
+      type: solid
+      color: "$primary"
+
+  - elementId: sector-2-title
+    elementType: text
+    bounds: [480, 200, 320, 35]
+    content:
+      fontSize: 22
+      color: "$primary"
+      fontFamily: "QuattrocentoSans"
+      align: [left, middle]
+      wrap: false
+      text: |
+        <p><strong>شركات التدريب</strong></p>
+
+  - elementId: sector-2-pain
+    elementType: text
+    bounds: [480, 245, 320, 95]
+    content:
+      fontSize: 16
+      color: "$textMutedLight"
+      fontFamily: "QuattrocentoSans"
+      lineHeight: 1.6
+      align: [left, top]
+      text: |
+        <p>• واتساب مليان استفسارات</p>
+        <p>• تحويل ضعيف للتسجيلات</p>
+        <p>• حملات موسمية بدون نظام</p>
+
+  - elementId: sector-2-solution
+    elementType: text
+    bounds: [480, 350, 320, 50]
+    content:
+      fontSize: 16
+      color: "$text"
+      fontFamily: "QuattrocentoSans"
+      lineHeight: 1.5
+      align: [left, top]
+      text: |
+        <p><span style="color:$primary;"><strong>الحل:</strong></span> نظام متابعة وتحويل استفسارات → تسجيلات مدفوعة</p>
+
+  - elementId: sector-3-bg
+    elementType: shape
+    bounds: [850, 120, 370, 380]
+    shapeName: rect
+    fill:
+      type: solid
+      color: "$cardBg"
+    border:
+      style: solid
+      width: 1
+      color: "$cardBorder"
+
+  - elementId: sector-3-icon
+    elementType: icon
+    bounds: [875, 145, 40, 40]
+    iconName: "fas:briefcase"
+    fill:
+      type: solid
+      color: "$primary"
+
+  - elementId: sector-3-title
+    elementType: text
+    bounds: [875, 200, 320, 35]
+    content:
+      fontSize: 22
+      color: "$primary"
+      fontFamily: "QuattrocentoSans"
+      align: [left, middle]
+      wrap: false
+      text: |
+        <p><strong>شركات B2B Services</strong></p>
+
+  - elementId: sector-3-pain
+    elementType: text
+    bounds: [875, 245, 320, 95]
+    content:
+      fontSize: 16
+      color: "$textMutedLight"
+      fontFamily: "QuattrocentoSans"
+      lineHeight: 1.6
+      align: [left, top]
+      text: |
+        <p>• صفقات بطيئة</p>
+        <p>• CRM ضعيف أو غير مستخدم</p>
+        <p>• مؤسس لا يرى الحقيقة</p>
+
+  - elementId: sector-3-solution
+    elementType: text
+    bounds: [875, 350, 320, 50]
+    content:
+      fontSize: 16
+      color: "$text"
+      fontFamily: "QuattrocentoSans"
+      lineHeight: 1.5
+      align: [left, top]
+      text: |
+        <p><span style="color:$primary;"><strong>الحل:</strong></span> War Room يوضح الفرص والتأخيرات لكل صفقة</p>
+
+  - elementId: market-note
+    elementType: text
+    bounds: [60, 530, 1160, 30]
+    content:
+      fontSize: 18
+      color: "$textMutedLight"
+      fontFamily: "QuattrocentoSans"
+      align: [left, middle]
+      wrap: false
+      text: |
+        <p>🎯 السوق السعودي B2B في مرحلة تحول رقمي سريع — الشركات تبحث عن حلول عملية لا أدوات معقدة</p>
+
+  - elementId: page-num
+    elementType: text
+    bounds: [1180, 680, 60, 25]
+    content:
+      fontSize: 12
+      color: "$textMuted"
+      fontFamily: "QuattrocentoSans"
+      align: [right, middle]
+      wrap: false
+      text: |
+        <p>05</p>
+
+  - elementId: bottom-accent
+    elementType: shape
+    bounds: [0, 716, 1280, 4]
+    shapeName: rect
+    fill:
+      type: solid
+      color: "$primary"
