@@ -1,0 +1,113 @@
+pageType: final
+background:
+  type: solid
+  color: "$bgDark"
+elements:
+  - elementId: accent-top
+    elementType: shape
+    bounds: [540, 160, 200, 4]
+    shapeName: rect
+    fill:
+      type: solid
+      color: "$accent"
+
+  - elementId: title
+    elementType: text
+    bounds: [140, 200, 1000, 80]
+    content:
+      fontSize: 48
+      color: "$textLight"
+      fontFamily: "QuattrocentoSans"
+      align: [center, middle]
+      wrap: false
+      text: |
+        <p><strong>نستثمر في Dealix؟</strong></p>
+
+  - elementId: subtitle
+    elementType: text
+    bounds: [240, 300, 800, 60]
+    content:
+      fontSize: 22
+      color: "$textMuted"
+      fontFamily: "QuattrocentoSans"
+      lineHeight: 1.5
+      align: [center, middle]
+      text: |
+        <p>Dealix ينتقل من "مشروع قوي" إلى شركة تثبت نفسها في السوق</p>
+
+  - elementId: priority-label
+    elementType: text
+    bounds: [340, 390, 600, 35]
+    content:
+      fontSize: 20
+      color: "$accent"
+      fontFamily: "QuattrocentoSans"
+      align: [center, middle]
+      wrap: false
+      text: |
+        <p><strong>الأولوية القصوى:</strong></p>
+
+  - elementId: priorities
+    elementType: text
+    bounds: [240, 435, 800, 80]
+    content:
+      fontSize: 20
+      color: "$textLight"
+      fontFamily: "QuattrocentoSans"
+      lineHeight: 1.6
+      align: [center, top]
+      text: |
+        <p>أول عميل P1 مدفوع + أول Proof Pack + أول عرض P2 شهري</p>
+
+  - elementId: contact-divider
+    elementType: shape
+    bounds: [490, 540, 300, 0]
+    shapeName: straightConnector1
+    border:
+      style: solid
+      width: 1
+      color: "#15807A30"
+
+  - elementId: contact
+    elementType: text
+    bounds: [340, 560, 600, 40]
+    content:
+      fontSize: 20
+      color: "$primary"
+      fontFamily: "QuattrocentoSans"
+      align: [center, middle]
+      wrap: false
+      text: |
+        <p><strong>contact@dealix.sa</strong></p>
+
+  - elementId: website
+    elementType: text
+    bounds: [340, 600, 600, 30]
+    content:
+      fontSize: 16
+      color: "$textMuted"
+      fontFamily: "QuattrocentoSans"
+      align: [center, middle]
+      wrap: false
+      text: |
+        <p>https://3cgfiqdhkey7i.kimi.page</p>
+
+  - elementId: year
+    elementType: text
+    bounds: [540, 660, 200, 25]
+    content:
+      fontSize: 14
+      color: "$textMuted"
+      fontFamily: "QuattrocentoSans"
+      align: [center, middle]
+      wrap: false
+      text: |
+        <p>2026</p>
+
+  - elementId: bottom-line
+    elementType: shape
+    bounds: [0, 710, 1280, 10]
+    shapeName: rect
+    fill:
+      type: solid
+      color: "$primary"
