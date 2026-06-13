@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: dealix-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: dealix_root_2026
+      MYSQL_DATABASE: dealix
+      MYSQL_USER: dealix
+      MYSQL_PASSWORD: dealix_pass_2026
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  app:
+    build: .
+    container_name: dealix-app
+    environment:
+      DATABASE_URL: mysql://dealix:dealix_pass_2026@mysql:3306/dealix
+      NODE_ENV: production
+    ports:
+      - "3000:3000"
+    depends_on:
+      mysql:
+        condition: service_healthy
+    restart: unless-stopped
+
+volumes:
+  mysql_data:
