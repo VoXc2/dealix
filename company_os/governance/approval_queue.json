@@ -1,0 +1,65 @@
+[
+  {
+    "id": "APP-001",
+    "type": "outreach_message",
+    "company": "Digital Rise Agency",
+    "risk": "medium",
+    "draft_subject": "وين تضيع فرص عملائك؟",
+    "draft_body": "السلام عليكم [الاسم]،\nلاحظت أن كثير من وكالات التسويق تخسر فرصاً ليس بسبب قلة الطلب، بل بسبب بطء المتابعة وعدم وضوح pipeline.\nنحن في Dealix نسوي Revenue Intelligence Sprint خلال 5 أيام:\nنكشف أين تضيع الفرص، نحلل المتابعة والعروض، ونطلع لكم Proof Pack وخطة 30 يوم لتحسين التحويل.\nهل يناسبك أرسل لك مثال مختصر على التقرير؟",
+    "requires_approval": true,
+    "approved": false,
+    "reviewed_by": null,
+    "created_at": "2026-05-31",
+    "approved_at": null
+  },
+  {
+    "id": "APP-002",
+    "type": "outreach_message",
+    "company": "Growth Labs SA",
+    "risk": "medium",
+    "draft_subject": "37% من الفرص تضيع بعد أول رد",
+    "draft_body": "السلام عليكم [الاسم]،\nبحثنا مع 20 وكالة بالسعودية اكتشفنا أن 37% من العملاء المحتملين لم يتم متابعتهم بعد أول رد.\nأكبر تسرب كان بين الاستفسار والعرض.\nDealix يسوي Sprint 5 أيام يكشف وين تضيع فرص عملائك ويعطيك خطة تشغيل.\nنقدر نرسل لك نبذة؟",
+    "requires_approval": true,
+    "approved": false,
+    "reviewed_by": null,
+    "created_at": "2026-05-31",
+    "approved_at": null
+  },
+  {
+    "id": "APP-003",
+    "type": "outreach_message",
+    "company": "TrainMe KSA",
+    "risk": "medium",
+    "draft_subject": "فرص التسجيل اللي تروح واتساب",
+    "draft_body": "السلام عليكم [الاسم]،\nشركات التدريب اللي نشتغل معاها تكتشف أن 40-60% من استفسارات واتساب ما تتحول لتسجيلات بسبب بطء الرد أو غياب المتابعة.\nنسوي Sprint 5 أيام نحلل فيه استفساراتك ونكشف أين التسريب ونبني نظام متابعة.\nتهمني تجربة وكالة تدريب؟",
+    "requires_approval": true,
+    "approved": false,
+    "reviewed_by": null,
+    "created_at": "2026-05-31",
+    "approved_at": null
+  },
+  {
+    "id": "APP-004",
+    "type": "pricing_offer",
+    "company": "Digital Rise Agency",
+    "risk": "high",
+    "details": "Offer P1 at 50% discount (2,500 SAR instead of 5,000) as first client",
+    "requires_approval": true,
+    "approved": false,
+    "reviewed_by": null,
+    "created_at": "2026-05-31",
+    "approved_at": null
+  },
+  {
+    "id": "APP-005",
+    "type": "data_handling",
+    "company": "New Client",
+    "risk": "high",
+    "details": "Request to process client CRM data — requires PDPL compliance check",
+    "requires_approval": true,
+    "approved": false,
+    "reviewed_by": null,
+    "created_at": "2026-05-31",
+    "approved_at": null
+  }
+]
