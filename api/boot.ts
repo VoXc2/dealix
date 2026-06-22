@@ -13,8 +13,12 @@ import {
   whatsappConversations,
   whatsappMessages,
 } from "@db/schema";
+import health from "./health";
 
 const app = new Hono<{ Bindings: HttpBindings }>();
+
+// Health check endpoints
+app.route('/', health);
 
 app.use(bodyLimit({ maxSize: 50 * 1024 * 1024 }));
 app.get(Paths.oauthCallback, createOAuthCallbackHandler());

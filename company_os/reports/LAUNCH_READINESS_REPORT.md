@@ -1,5 +1,5 @@
 # Dealix Launch Readiness Report
-*Generated: 2026-06-22 12:02*
+*Generated: 2026-06-22 12:20*
 
 ---
 
@@ -7,8 +7,8 @@
 
 | Metric | Count |
 |--------|-------|
-| Total Checks | 25 |
-| Passed | 23 |
+| Total Checks | 26 |
+| Passed | 24 |
 | Blocking | 0 |
 | Warnings | 2 |
 
@@ -31,6 +31,7 @@
 | File: scripts/verify_no_auto_external_send.py | OK |  |
 | DB: MySQL connection | WARNING | Skipped; DATABASE_URL not loaded. See docs/ops/ENVIRONMENT_VARIABLES.md |
 | Node modules | OK | node_modules present |
+| Compile: scripts/backup_database.py | OK |  |
 | Compile: scripts/client_delivery.py | OK |  |
 | Compile: scripts/generate_outreach_queue.py | OK |  |
 | Compile: scripts/generate_proof_pack.py | OK |  |
