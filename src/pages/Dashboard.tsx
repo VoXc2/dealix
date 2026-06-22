@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/table";
 import {
   BarChart3,
+  Brain,
   Users,
   DollarSign,
   Activity,
@@ -96,7 +97,27 @@ export default function Dashboard() {
           <span className="text-lg font-bold text-white">Dealix</span>
           <Badge className="bg-[#15807A]/20 text-[#15807A] border-[#15807A]/30 text-xs">War Room</Badge>
         </div>
+        
         <div className="flex items-center gap-3">
+          <Button
+            size="sm"
+            variant="outline"
+            className="border-[#15807A]/30 text-[#E8F4F3] hover:bg-[#15807A]/20"
+            onClick={() => window.open("/command-room", "_self")}
+          >
+            <BarChart3 className="w-4 h-4 ml-1" />
+            Command Room
+          </Button>
+          <Button
+            size="sm"
+            variant="outline"
+            className="border-[#15807A]/30 text-[#E8F4F3] hover:bg-[#15807A]/20"
+            onClick={() => window.open("/brain", "_self")}
+          >
+            <Brain className="w-4 h-4 ml-1" />
+            Brain OS
+          </Button>
+
           <Button
             size="sm"
             variant="outline"
@@ -368,14 +389,14 @@ export default function Dashboard() {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
           {[
             { label: "إضافة عميل", icon: Plus, color: "bg-[#15807A]" },
-            { label: "إرسال رسالة", icon: Mail, color: "bg-[#2A9D8F]" },
-            { label: "تسجيل مكالمة", icon: Phone, color: "bg-[#264653]" },
+            { label: "Command Room", icon: BarChart3, color: "bg-[#2A9D8F]", href: "/command-room" },
+            { label: "Brain OS", icon: Brain, color: "bg-[#264653]", href: "/brain" },
             { label: "تتبع المتابعات", icon: MessageSquare, color: "bg-[#D4A843]" },
           ].map((action) => (
             <Button
               key={action.label}
               className={`${action.color} hover:opacity-90 text-white h-14`}
-              onClick={() => alert(`Coming soon: ${action.label}`)}
+              onClick={() => action.href ? window.open(action.href, "_self") : alert("Coming soon: " + action.label)}
             >
               <action.icon className="w-4 h-4 ml-2" />
               {action.label}
