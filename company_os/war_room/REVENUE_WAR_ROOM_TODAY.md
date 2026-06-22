@@ -1,5 +1,5 @@
 # Dealix Revenue War Room — Today
-*Date: 2026-05-31*
+*Date: 2026-06-22*
 
 ---
 
@@ -13,20 +13,10 @@
 
 ---
 
-## 2. Top Prospects (15 total)
+## 2. Top Prospects (0 total)
 
 | Company | Segment | Pain | Status | Next Action | Score |
 |---------|---------|------|--------|-------------|-------|
-| Digital Rise Agency | Marketing Agency | Leads not converting | Researched | Send P1 intro | 9 |
-| Growth Labs SA | Marketing Agency | No follow-up system | Researched | Send P1 intro | 9 |
-| BrandCraft Agency | Marketing Agency | Leads from ads not followed up | Researched | Send P1 intro | 9 |
-| TrainMe KSA | Training Company | WhatsApp inquiries lost | Researched | Send P1 intro | 8 |
-| SkillUp Arabia | Training Company | Low registration rate | Researched | Send P1 intro | 8 |
-| MediaPulse Agency | Marketing Agency | No proof for clients | Researched | Send P1 intro | 8 |
-| Saudi Marketing Pro | Marketing Agency | Client churn due to no ROI proof | Researched | Send P1 intro | 8 |
-| CloudShift Consulting | B2B Services | Slow deal closure | Researched | Send P1 intro | 7 |
-| Nexus IT Solutions | B2B Services | Weak CRM usage | Researched | Send P1 intro | 7 |
-| Elevate Training | Training Company | Seasonal campaigns fail | Researched | Send P1 intro | 7 |
 
 ---
 
@@ -34,7 +24,9 @@
 
 | Company | Last Contact | Next Message | Owner | Deadline | Status |
 |---------|-------------|--------------|-------|----------|--------|
-| — | — | No follow-ups due today | — | — | ✅ |
+| Digital Rise Agency | — | متابعة: هل اطلعت على عرض Revenue Sprint؟ نقدر نسوي... | Founder | 2026-06-03 | 🔴 Due |
+| Growth Labs SA | — | متابعة: 37% من الفرص تضيع بدون متابعة — هل تبي نسو... | Founder | 2026-06-03 | 🔴 Due |
+| TrainMe KSA | — | متابعة: استفسارات واتساب = فلوس على الطاولة. نقدر ... | Founder | 2026-06-04 | 🔴 Due |
 
 ---
 

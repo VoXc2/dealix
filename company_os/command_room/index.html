@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>Dealix Command Room — 2026-06-22</title>
+<style>
+:root{--primary:#15807A;--bg:#F0F9F8;--card:#fff;--text:#0A1F1E;}
+body{font-family:'Segoe UI',sans-serif;background:var(--bg);margin:0;color:var(--text);}
+.header{background:var(--primary);color:#fff;padding:1.5rem 2rem;text-align:center;}
+.container{max-width:1200px;margin:0 auto;padding:2rem;}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1.5rem;}
+.card{background:var(--card);border-radius:12px;padding:1.5rem;box-shadow:0 2px 8px rgba(0,0,0,0.06);}
+.card h2{margin-top:0;color:var(--primary);font-size:1.1rem;}
+.pipeline-row{display:flex;align-items:center;gap:0.75rem;margin:0.4rem 0;}
+.pipeline-row .stage{width:100px;font-size:0.85rem;}
+.pipeline-row .bar-container{flex:1;height:18px;background:#eee;border-radius:4px;overflow:hidden;}
+.pipeline-row .bar{height:100%;background:var(--primary);border-radius:4px;}
+.pipeline-row .count{width:30px;text-align:center;font-weight:700;}
+table{width:100%;border-collapse:collapse;font-size:0.9rem;}
+th{text-align:right;padding:0.6rem;color:#4A6B69;border-bottom:1px solid #eee;}
+td{padding:0.6rem;border-bottom:1px solid #eee;}
+.badge{padding:0.3rem 0.6rem;border-radius:20px;font-size:0.75rem;font-weight:600;}
+.badge.approved{background:#d1fae5;color:#065f46;}
+.badge.pending{background:#fef3c7;color:#92400e;}
+.status-bar{position:fixed;bottom:0;left:0;right:0;background:#0A1F1E;color:#fff;padding:0.75rem;text-align:center;font-size:0.85rem;}
+.status-bar .safe{color:#34d399;font-weight:700;}
+</style>
+</head>
+<body>
+<div class="header">
+<h1> Dealix Revenue Command Room</h1>
+<p>2026-06-22 | OUTBOUND_MODE: <strong>draft_only</strong></p>
+</div>
+<div class="container">
+<div class="grid">
+<div class="card">
+<h2> Pipeline Health</h2>
+
+        <div class="pipeline-row">
+            <span class="stage">Target</span>
+            <div class="bar-container"><div class="bar" style="width:100.0%"></div></div>
+            <span class="count">50</span>
+        </div>
+        
+        <div class="pipeline-row">
+            <span class="stage">Researched</span>
+            <div class="bar-container"><div class="bar" style="width:30.0%"></div></div>
+            <span class="count">15</span>
+        </div>
+        
+        <div class="pipeline-row">
+            <span class="stage">Contacted</span>
+            <div class="bar-container"><div class="bar" style="width:0.0%"></div></div>
+            <span class="count">0</span>
+        </div>
+        
+        <div class="pipeline-row">
+            <span class="stage">Replied</span>
+            <div class="bar-container"><div class="bar" style="width:0.0%"></div></div>
+            <span class="count">0</span>
+        </div>
+        
+        <div class="pipeline-row">
+            <span class="stage">Discovery Booked</span>
+            <div class="bar-container"><div class="bar" style="width:0.0%"></div></div>
+            <span class="count">0</span>
+        </div>
+        
+        <div class="pipeline-row">
+            <span class="stage">Proposal Sent</span>
+            <div class="bar-container"><div class="bar" style="width:0.0%"></div></div>
+            <span class="count">0</span>
+        </div>
+        
+        <div class="pipeline-row">
+            <span class="stage">Won</span>
+            <div class="bar-container"><div class="bar" style="width:0.0%"></div></div>
+            <span class="count">0</span>
+        </div>
+        
+        <div class="pipeline-row">
+            <span class="stage">Delivery</span>
+            <div class="bar-container"><div class="bar" style="width:0.0%"></div></div>
+            <span class="count">0</span>
+        </div>
+        
+        <div class="pipeline-row">
+            <span class="stage">Retainer</span>
+            <div class="bar-container"><div class="bar" style="width:0.0%"></div></div>
+            <span class="count">0</span>
+        </div>
+        
+        <div class="pipeline-row">
+            <span class="stage">Referral</span>
+            <div class="bar-container"><div class="bar" style="width:0.0%"></div></div>
+            <span class="count">0</span>
+        </div>
+        
+</div>
+<div class="card">
+<h2> Outreach Drafts (0)</h2>
+<table>
+<thead><tr><th>Company</th><th>Priority</th><th>Status</th><th>Channel</th><th>Date</th></tr></thead>
+<tbody></tbody>
+</table>
+</div>
+<div class="card">
+<h2> Proposals in Queue (0)</h2>
+
+</div>
+<div class="card">
+<h2> Follow-up Sequences</h2>
+<p>AI-generated multi-day follow-up sequences available.</p>
+<p>Review sequences in drafts before activation.</p>
+</div>
+</div>
+</div>
+<div class="status-bar">
+<span class="safe">● SAFE MODE:</span> No outbound messages will be sent without manual approval. All AI-generated content has been tagged and awaits founder review.
+</div>
+</body>
+</html>

@@ -175,3 +175,97 @@ export const settings = mysqlTable("settings", {
 
 export type Setting = typeof settings.$inferSelect;
 export type InsertSetting = typeof settings.$inferInsert;
+
+// ─── Company Signals (Brain OS) ────────────────────────────
+export const companySignals = mysqlTable("company_signals", {
+  id: serial("id").primaryKey(),
+  signalType: mysqlEnum("signal_type", ["revenue", "pain", "opportunity", "risk", "market", "competitor", "bottleneck"]).notNull(),
+  source: varchar("source", { length: 255 }),
+  description: text("description").notNull(),
+  strength: int("strength").default(5).notNull(),
+  confidence: decimal("confidence", { precision: 3, scale: 2 }).default("0.50"),
+  verified: boolean("verified").default(false),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export type CompanySignal = typeof companySignals.$inferSelect;
+export type InsertCompanySignal = typeof companySignals.$inferInsert;
+
+// ─── Decisions Log (Brain OS) ──────────────────────────────
+export const decisionsLog = mysqlTable("decisions_log", {
+  id: serial("id").primaryKey(),
+  decision: text("decision").notNull(),
+  owner: varchar("owner", { length: 255 }).notNull(),
+  metric: varchar("metric", { length: 255 }),
+  assumption: text("assumption"),
+  nextAction: text("next_action").notNull(),
+  priority: int("priority").default(5).notNull(),
+  status: mysqlEnum("decision_status", ["pending", "in_progress", "completed", "cancelled", "deferred"]).default("pending").notNull(),
+  dueDate: varchar("due_date", { length: 10 }),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export type DecisionLog = typeof decisionsLog.$inferSelect;
+export type InsertDecisionLog = typeof decisionsLog.$inferInsert;
+
+// ─── Assumptions Log (Brain OS) ────────────────────────────
+export const assumptionsLog = mysqlTable("assumptions_log", {
+  id: serial("id").primaryKey(),
+  assumption: text("assumption").notNull(),
+  source: varchar("source", { length: 255 }),
+  validated: boolean("validated").default(false),
+  validationDate: timestamp("validation_date"),
+  impact: mysqlEnum("impact", ["high", "medium", "low"]).default("medium").notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export type AssumptionLog = typeof assumptionsLog.$inferSelect;
+export type InsertAssumptionLog = typeof assumptionsLog.$inferInsert;
+
+// ─── Experiments Log (Brain OS) ────────────────────────────
+export const experimentsLog = mysqlTable("experiments_log", {
+  id: serial("id").primaryKey(),
+  name: varchar("name", { length: 255 }).notNull(),
+  hypothesis: text("hypothesis").notNull(),
+  status: mysqlEnum("experiment_status", ["planned", "running", "completed", "cancelled"]).default("planned").notNull(),
+  result: text("result"),
+  metric: varchar("metric", { length: 255 }),
+  startDate: varchar("start_date", { length: 10 }),
+  endDate: varchar("end_date", { length: 10 }),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export type ExperimentLog = typeof experimentsLog.$inferSelect;
+export type InsertExperimentLog = typeof experimentsLog.$inferInsert;
+
+// ─── Risk Register (Brain OS) ──────────────────────────────
+export const riskRegister = mysqlTable("risk_register", {
+  id: serial("id").primaryKey(),
+  risk: text("risk").notNull(),
+  probability: int("probability").default(3).notNull(),
+  impact: int("impact").default(3).notNull(),
+  severity: int("severity").default(9).notNull(),
+  mitigation: text("mitigation"),
+  owner: varchar("owner", { length: 255 }),
+  status: mysqlEnum("risk_status", ["active", "mitigated", "accepted", "transferred"]).default("active").notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export type RiskRegister = typeof riskRegister.$inferSelect;
+export type InsertRiskRegister = typeof riskRegister.$inferInsert;
+
+// ─── Opportunity Register (Brain OS) ───────────────────────
+export const opportunityRegister = mysqlTable("opportunity_register", {
+  id: serial("id").primaryKey(),
+  opportunity: text("opportunity").notNull(),
+  potentialValue: decimal("potential_value", { precision: 12, scale: 2 }).default("0"),
+  confidence: decimal("confidence", { precision: 3, scale: 2 }).default("0.50"),
+  effort: mysqlEnum("effort", ["low", "medium", "high"]).default("medium").notNull(),
+  priority: int("priority").default(5).notNull(),
+  owner: varchar("owner", { length: 255 }),
+  status: mysqlEnum("opp_status", ["new", "evaluating", "approved", "rejected"]).default("new").notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export type OpportunityRegister = typeof opportunityRegister.$inferSelect;
+export type InsertOpportunityRegister = typeof opportunityRegister.$inferInsert;
