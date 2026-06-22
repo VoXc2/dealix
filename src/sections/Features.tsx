@@ -1,35 +1,35 @@
-import { BarChart3, Shield, MessageSquare, LineChart, Lock, Target } from 'lucide-react'
+import { BarChart3, Shield, Brain, Zap, Send, Target } from 'lucide-react'
 
 const features = [
   {
     icon: BarChart3,
-    title: 'Revenue Leakage Map',
-    description: 'اكتشف بالضبط أين تضيع فرص الإيراد في كل مرحلة من مراحل المبيعات — من الاستفسار إلى الإغلاق.',
+    title: 'Revenue Command Room OS',
+    description: 'War room يومي للإيرادات: Pipeline health, Top prospects, Outreach drafts للمراجعة, Follow-up queue, CEO daily report.',
   },
   {
-    icon: MessageSquare,
-    title: 'Follow-up Audit',
-    description: 'تحليل كامل لجودة المتابعات وتوقيتها مع تحديد الفجوات وإنشاء نظام متابعة محسّن.',
+    icon: Brain,
+    title: 'Company Brain OS',
+    description: 'القرارات اليومية مبنية على بيانات: Company brain map, Daily decision desk, Future radar, Bottleneck scanner.',
   },
   {
-    icon: LineChart,
-    title: 'Objection Intelligence',
-    description: 'حصر أكثر الاعتراضات تكراراً مع قوالب جاهزة للرد وتحسين نسبة التحويل.',
+    icon: Zap,
+    title: 'Client Delivery OS',
+    description: 'نظام تسليم مشاريعك بحوكمة: Intake → Diagnosis → Blueprint → Delivery → Proof pack.',
   },
   {
     icon: Shield,
-    title: 'AI Governance',
-    description: 'نظام حوكمة متكامل يضمن أن كل إجراء AI يتم بموافقة بشرية وتوثيق كامل ومطابق لمعايير SDAIA.',
+    title: 'AI Trust & Compliance OS',
+    description: 'حوكمة AI متكاملة: Safety gates, Audit trail, Manual approval, SDAIA compliance, No auto-send.',
   },
   {
-    icon: Lock,
-    title: 'PDPL Compliance',
-    description: 'التزام كامل بنظام حماية البيانات الشخصية السعودي — تشفير، تجهيل، وسياسة احتفاف 90 يوم.',
+    icon: Send,
+    title: 'WhatsApp / Inbox Follow-up OS',
+    description: 'متابعات آلية بموافقة يدوية: AI drafts, Approval queue, Sequences, Performance analytics.',
   },
   {
     icon: Target,
-    title: 'War Room أسبوعي',
-    description: 'جلسات أسبوعية لمراجعة الأداء وتحديد الإجراءات وضمان التنفيذ المستمر لتحسين الإيرادات.',
+    title: 'Proof Pack System',
+    description: 'توثيق القيمة قبل وبعد كل مشروع: Before/after metrics, Command room reports, Decision log.',
   },
 ]
 
@@ -38,12 +38,12 @@ export default function Features() {
     <section id="features" className="py-20 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
-          <span className="text-[#15807A] text-sm font-semibold tracking-wide uppercase">المميزات</span>
+          <span className="text-[#15807A] text-sm font-semibold tracking-wide uppercase">منتجات Dealix</span>
           <h2 className="text-3xl sm:text-4xl font-bold text-[#0A1F1E] mt-2 mb-4">
-            نظام كامل لإدارة إيراداتك
+            5 أنظمة تشغيل لتحويل شركتك
           </h2>
           <p className="text-[#4A6B69] text-lg max-w-2xl mx-auto">
-            ليس مجرد تقرير — بل نظام تشغيل متكامل يكشف التسريب ويحسّن التحويل ويثبت القيمة
+            لا نبيع "أداة". نبني أنظمة تشغيل (Operating Systems) تربط الإيرادات والمتابعة والقرارات والحوكمة في workflow يومي.
           </p>
         </div>
 

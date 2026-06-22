@@ -14,7 +14,11 @@
     "test": "vitest run",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
-    "db:push": "drizzle-kit push"
+    "command-room": "python scripts/revenue_engine.py",
+    "revenue-day": "python scripts/revenue_engine.py",
+    "company-day": "python scripts/verify_company_launch_ready.py && python scripts/revenue_engine.py && python scripts/generate_war_room.py",
+    "production-check": "python scripts/verify_company_launch_ready.py && python scripts/verify_no_auto_external_send.py",
+    "client-day": "python scripts/client_delivery.py"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",

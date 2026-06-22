@@ -28,17 +28,17 @@ export default function Hero() {
 
             <div className="flex flex-col sm:flex-row gap-4 mb-12">
               <a
-                href="#cta"
+                href="/book-call"
                 className="inline-flex items-center justify-center gap-2 bg-[#15807A] text-white px-8 py-4 rounded-xl text-lg font-semibold hover:bg-[#0F5F5A] transition-all hover:scale-105"
               >
-                احجز Revenue Diagnostic Call
+                احجز تشخيص AI Revenue — 30 دقيقة
                 <ArrowLeft className="w-5 h-5" />
               </a>
               <a
-                href="#how"
+                href="/dashboard"
                 className="inline-flex items-center justify-center gap-2 border border-[#15807A]/40 text-[#E8F4F3] px-8 py-4 rounded-xl text-lg font-medium hover:bg-[#15807A]/10 transition-all"
               >
-                شاهد كيف يعمل
+                دخول Command Room
               </a>
             </div>
 

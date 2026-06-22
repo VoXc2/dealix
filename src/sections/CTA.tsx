@@ -20,38 +20,34 @@ export default function CTA() {
 
               <div className="flex flex-col sm:flex-row gap-4">
                 <a
-                  href="https://calendly.com/dealix/revenue-diagnostic"
-                  target="_blank"
-                  rel="noopener noreferrer"
+                  href="/book-call"
                   className="inline-flex items-center justify-center gap-2 bg-[#15807A] text-white px-8 py-4 rounded-xl text-lg font-semibold hover:bg-[#0F5F5A] transition-all hover:scale-105"
                 >
                   <Phone className="w-5 h-5" />
-                  احجز مكالمة 20 دقيقة
+                  احجز تشخيص AI — 30 دقيقة
                   <ArrowLeft className="w-5 h-5" />
                 </a>
                 <a
-                  href="https://wa.me/966500000000"
-                  target="_blank"
-                  rel="noopener noreferrer"
+                  href="/dashboard"
                   className="inline-flex items-center justify-center gap-2 border border-[#15807A]/40 text-[#E8F4F3] px-8 py-4 rounded-xl text-lg font-medium hover:bg-[#15807A]/10 transition-all"
                 >
                   <MessageCircle className="w-5 h-5" />
-                  تواصل واتساب
+                  دخول Command Room
                 </a>
               </div>
 
-              <div className="mt-8 flex items-center gap-4 text-sm text-[#8CB3B0]">
+              <div className="mt-8 flex flex-wrap items-center gap-4 text-sm text-[#8CB3B0]">
                 <div className="flex items-center gap-1">
                   <svg className="w-4 h-4 text-[#15807A]" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                   </svg>
-                  <span>بدون التزام</span>
+                  <span>بدون commitment</span>
                 </div>
                 <div className="flex items-center gap-1">
                   <svg className="w-4 h-4 text-[#15807A]" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                   </svg>
-                  <span>مكالمة مجانية</span>
+                  <span>بدون إرسال آلي</span>
                 </div>
                 <div className="flex items-center gap-1">
                   <svg className="w-4 h-4 text-[#15807A]" fill="currentColor" viewBox="0 0 20 20">
@@ -64,12 +60,12 @@ export default function CTA() {
 
             <div className="hidden lg:block">
               <div className="bg-[#0F2E2C] rounded-2xl p-6 border border-[#15807A]/20">
-                <h4 className="text-white font-bold mb-4">ماذا تحصل في المكالمة؟</h4>
+                <h4 className="text-white font-bold mb-4">ماذا تحصل في الجلسة؟</h4>
                 <ul className="space-y-3">
                   {[
-                    'تشخيص سريع لأكبر نقطة تسريب',
-                    'تقييم سرعة ردك الحالي',
-                    'توصية مخصصة لقطاعك',
+                    'تشخيص سريع لأكبر نقطة تسريب إيرادات',
+                    'تقييم سرعة المتابعة لديك',
+                    'خريطة فرص واضحة',
                     'عرض Sprint إذا كان مناسب',
                   ].map((item, index) => (
                     <li key={item} className="flex items-center gap-3">

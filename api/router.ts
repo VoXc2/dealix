@@ -3,6 +3,7 @@ import { prospectRouter } from "./prospect-router";
 import { dealRouter } from "./deal-router";
 import { activityRouter } from "./activity-router";
 import { warRoomRouter } from "./warroom-router";
+import { bookingRouter } from "./booking-router";
 import { createRouter, publicQuery } from "./middleware";
 
 export const appRouter = createRouter({
@@ -12,6 +13,7 @@ export const appRouter = createRouter({
   deal: dealRouter,
   activity: activityRouter,
   warRoom: warRoomRouter,
+  booking: bookingRouter,
 });
 
 export type AppRouter = typeof appRouter;

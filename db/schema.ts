@@ -128,6 +128,42 @@ export const warRoomSnapshots = mysqlTable("war_room_snapshots", {
 export type WarRoomSnapshot = typeof warRoomSnapshots.$inferSelect;
 export type InsertWarRoomSnapshot = typeof warRoomSnapshots.$inferInsert;
 
+// ─── Bookings (Built-in Booking System) ────────────────────
+export const bookings = mysqlTable("bookings", {
+  id: serial("id").primaryKey(),
+  name: varchar("name", { length: 255 }).notNull(),
+  company: varchar("company", { length: 255 }).notNull(),
+  role: varchar("role", { length: 255 }).notNull(),
+  website: varchar("website", { length: 255 }),
+  pain: varchar("pain", { length: 255 }),
+  currentSystems: varchar("current_systems", { length: 255 }),
+  consentEmail: boolean("consent_email").default(false),
+  scheduledAt: timestamp("scheduled_at"),
+  status: mysqlEnum("status", ["scheduled", "completed", "cancelled"]).default("scheduled").notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export type Booking = typeof bookings.$inferSelect;
+export type InsertBooking = typeof bookings.$inferInsert;
+
+// ─── Drafts (Outreach Approval Queue) ──────────────────────
+export const drafts = mysqlTable("drafts", {
+  id: serial("id").primaryKey(),
+  prospectId: bigint("prospect_id", { mode: "number", unsigned: true }).references(() => prospects.id),
+  type: mysqlEnum("draft_type", ["email", "linkedin", "whatsapp", "proposal"]).notNull(),
+  contentAr: text("content_ar"),
+  contentEn: text("content_en"),
+  priority: int("priority").default(5).notNull(),
+  recommendedSendDate: varchar("recommended_send_date", { length: 10 }),
+  approved: boolean("approved").default(false),
+  sent: boolean("sent").default(false),
+  outboundMode: varchar("outbound_mode", { length: 50 }).default("draft_only"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export type Draft = typeof drafts.$inferSelect;
+export type InsertDraft = typeof drafts.$inferInsert;
+
 // ─── Settings ──────────────────────────────────────────────
 export const settings = mysqlTable("settings", {
   id: serial("id").primaryKey(),
