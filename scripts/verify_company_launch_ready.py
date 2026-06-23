@@ -33,9 +33,11 @@ REQUIRED_FILES = [
     "api/router.ts",
     "src/App.tsx",
     "scripts/verify_no_auto_external_send.py",
+    ".env.example",
 ]
 
 ENV_DOC_PATH = "docs/ops/ENVIRONMENT_VARIABLES.md"
+ENV_EXAMPLE_PATH = ".env.example"
 
 
 def load_local_env_files() -> None:
@@ -231,6 +233,29 @@ def generate_launch_report(results: list[dict], output_path: str | None = None) 
     return report
 
 
+def check_env_doc() -> dict:
+    base = Path(__file__).parent.parent
+    env_doc = base / ENV_DOC_PATH
+    env_example = base / ENV_EXAMPLE_PATH
+    if not env_example.exists():
+        return {
+            "check": "Env: .env.example contract file",
+            "status": "MISSING",
+            "detail": f"Create {ENV_EXAMPLE_PATH} with safe placeholder values",
+        }
+    if not env_doc.exists():
+        return {
+            "check": "Env: environment docs",
+            "status": "WARNING",
+            "detail": f"{ENV_DOC_PATH} missing; create from {ENV_EXAMPLE_PATH}",
+        }
+    return {
+        "check": "Env: environment contract",
+        "status": "OK",
+        "detail": f"{ENV_EXAMPLE_PATH} present; see {ENV_DOC_PATH}",
+    }
+
+
 def main():
     load_local_env_files()
 
@@ -241,6 +266,7 @@ def main():
 
     all_results = []
     all_results.extend(check_env_vars())
+    all_results.append(check_env_doc())
     all_results.extend(check_directory_structure())
     all_results.extend(check_files())
     all_results.append(check_db_connection())
