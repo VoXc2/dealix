@@ -4,9 +4,13 @@ dist
 *.lock
 *.pptd
 company_os/outbox/
-reports/
 company_os/reports/*.html
 company_os/reports/LAUNCH_READINESS_REPORT.md
 scripts/__pycache__/
 *.pyc
 .dealix_allow_external_send
+
+# Allow deliberate planning/execution reports
+!reports/
+!reports/go_live/
+
