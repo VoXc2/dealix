@@ -1,0 +1,52 @@
+title = "Dealix gitleaks configuration"
+
+[extend]
+useDefault = true
+
+[allowlist]
+description = "False positives — test fixtures, documentation placeholders, and ops scripts using env vars"
+paths = [
+    '''\.env\.example$''',
+    '''\.gitleaks\.toml$''',
+    '''\.secrets\.baseline$''',
+    # Test suites legitimately carry fabricated credentials (e.g. the "no live
+    # charge" invariant tests assert a fake sk_live_ value is never used/leaked).
+    # Consistent with the existing tests/fixtures allowlist; broadened to all tests.
+    '''tests/.*''',
+    # NOTE: the former blanket `docs/.*\.md$` allowlist was REMOVED on 2026-07-22.
+    # Root cause: it let a truncated-but-real GitHub PAT fragment sit in
+    # docs/launch/DEALIX_LAUNCH_NOW_BUNDLE.md undetected (incident documented in
+    # docs/SECURITY_INCIDENT_PAT_EXPOSURE.md). Documentation must use explicit
+    # placeholders (covered by the regexes below) instead of blanket exclusion.
+    # Moyasar verification scripts interpolate ${MOYASAR_SECRET_KEY} from
+    # the environment in `curl -u` — no literal secret is committed.
+    '''docs/ops/moyasar_live_test\.sh$''',
+    '''scripts/ops/moyasar_pilot_test\.sh$''',
+    '''scripts/infra/setup_uptimerobot\.sh$''',
+    # Versioned launch/verify scripts embed the secret-detection regex itself
+    # (e.g. sk_live_[A-Za-z0-9]{20,}) plus dummy examples like sk_live_xxxx.
+    '''scripts/v\d+_.*verify\.sh$''',
+    # Doctrine *_verify.py scripts feed fabricated sample secrets to the secret
+    # scanner on purpose (e.g. whatsapp_client_os_verify.py calls
+    # scan_for_secrets("api_key = sk-...") to assert detection works).
+    '''scripts/.*_verify\.py$''',
+    # reports/github-context/ are stale PR-context snapshots from past
+    # automation debugging; they contain redacted text that gitleaks flags
+    # as stripe-access-token / generic-api-key but no real secrets.
+    '''reports/github-context/.*''',
+]
+
+regexes = [
+    '''sk-placeholder''',
+    '''your-.*-key''',
+    '''change-me''',
+    '''CHANGE_ME''',
+    '''example-.*''',
+    # Explicit documentation placeholders used across docs/*.md
+    '''sk_live_CHANGE_ME''',
+    '''sk_live_x+''',
+    '''<your-.*>''',
+    # `ttl_seconds=30` is the idempotency window arg in api/routers/pricing.py
+    # (idem.claim(record_key, ttl_seconds=30 * 86400)) — not a credential.
+    '''ttl_seconds=\d+''',
+]
