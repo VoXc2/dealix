@@ -7,7 +7,7 @@ regenerate with:
 python3 scripts/ops/build_verify_catalog.py > docs/ops/VERIFY_SCRIPTS_CATALOG.md
 ```
 
-Total scripts: 61
+Total scripts: 62
 
 | Script | Purpose |
 |---|---|
@@ -25,6 +25,7 @@ Total scripts: 61
 | `scripts/verify_company_ready.py` | Aggregate company readiness checks (fast, no pytest unless requested). |
 | `scripts/verify_crm_pipeline.py` | Verify CRM pipeline files exist. |
 | `scripts/verify_cutover_pr_body.py` | Validate PR body contains engineering cutover markers when cutover env vars mentioned. |
+| `scripts/verify_data_flow_register.py` | Verify data flow register seed against JSON schema — PDPA readiness gate. |
 | `scripts/verify_dealix_growth_assets.py` | Verify Dealix growth assets exist (P2 launch-readiness inputs). |
 | `scripts/verify_dealix_launch_readiness.py` | Private Launch Readiness scorer for Dealix. |
 | `scripts/verify_dealix_module_status.py` | Verify Dealix module/service status truth: nothing unbuilt presented as live. |

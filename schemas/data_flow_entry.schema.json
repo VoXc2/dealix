@@ -1,0 +1,213 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dealix.sa/schemas/data_flow_entry.schema.json",
+  "title": "DataFlowEntry",
+  "description": "Single data flow record in the Saudi data-flow register (issue #918). Captures what personal/business data moves through Dealix for PDPA self-assessment.",
+  "type": "object",
+  "required": [
+    "flow_id",
+    "category",
+    "controller_role",
+    "purpose",
+    "lawful_basis",
+    "source",
+    "fields",
+    "recipients",
+    "processors",
+    "region",
+    "retention_days",
+    "deletion_method",
+    "consent_capture",
+    "data_subject_path",
+    "cross_border_transfer",
+    "review_status"
+  ],
+  "properties": {
+    "flow_id": {
+      "type": "string",
+      "pattern": "^DF-[A-Z0-9-]+$",
+      "description": "Stable identifier, e.g. DF-CRM-001"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "company_facts",
+        "business_contact_data",
+        "message_content",
+        "approvals",
+        "proposals",
+        "payments",
+        "support",
+        "telemetry",
+        "model_prompts",
+        "audit_logs",
+        "consent_records"
+      ]
+    },
+    "controller_role": {
+      "type": "string",
+      "enum": ["controller", "processor", "joint_controller", "sub_processor"],
+      "description": "Dealix role per PDPA Art. 9-12"
+    },
+    "purpose": {
+      "type": "string",
+      "minLength": 8,
+      "description": "Business purpose in clear text (Arabic/English)"
+    },
+    "lawful_basis": {
+      "type": "string",
+      "enum": [
+        "consent",
+        "contract",
+        "legal_obligation",
+        "vital_interest",
+        "public_task",
+        "legitimate_interest",
+        "not_yet_determined"
+      ]
+    },
+    "legitimate_interest_notes": {
+      "type": "string",
+      "description": "Required when lawful_basis=legitimate_interest"
+    },
+    "source": {
+      "type": "object",
+      "required": ["system", "method"],
+      "properties": {
+        "system": { "type": "string", "description": "e.g. crm, form, api, import" },
+        "method": { "type": "string", "enum": ["direct", "indirect", "derived", "third_party"] },
+        "third_party_name": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+    "fields": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "minItems": 1,
+      "description": "Exact field names flowing through this entry"
+    },
+    "recipients": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "role"],
+        "properties": {
+          "name": { "type": "string" },
+          "role": { "type": "string", "enum": ["processor", "sub_processor", "controller", "third_party"] },
+          "region": { "type": "string" },
+          "dpo_contact": { "type": "string" },
+          "safeguards": { "type": "string" }
+        },
+        "additionalProperties": false
+      },
+      "minItems": 1
+    },
+    "processors": {
+      "type": "object",
+      "description": "Known vendor/subprocessor inventory",
+      "required": ["railway_postgres", "vercel_hosting", "llm_providers", "email_service", "whatsapp_bsp", "calendar", "analytics", "payment_provider"],
+      "properties": {
+        "railway_postgres": { "$ref": "#/definitions/processorRef" },
+        "vercel_hosting": { "$ref": "#/definitions/processorRef" },
+        "llm_providers": { "type": "array", "items": { "$ref": "#/definitions/processorRef" } },
+        "email_service": { "$ref": "#/definitions/processorRef" },
+        "whatsapp_bsp": { "$ref": "#/definitions/processorRef" },
+        "calendar": { "$ref": "#/definitions/processorRef" },
+        "analytics": { "$ref": "#/definitions/processorRef" },
+        "payment_provider": { "$ref": "#/definitions/processorRef" }
+      },
+      "additionalProperties": false
+    },
+    "region": {
+      "type": "string",
+      "enum": [
+        "sa-central-1",
+        "sa-west-1",
+        "gcc-region",
+        "us-west-1",
+        "us-east-1",
+        "eu-central-1",
+        "multi-region",
+        "unknown"
+      ],
+      "description": "Primary storage/processing region"
+    },
+    "retention_days": { "type": "integer", "minimum": 0 },
+    "retention_trigger": {
+      "type": "string",
+      "enum": ["creation", "last_interaction", "contract_end", "opt_out", "expiry", "legal_hold"]
+    },
+    "deletion_method": {
+      "type": "string",
+      "enum": ["soft_delete", "hard_delete", "anonymize", "aggregate_only"]
+    },
+    "consent_capture": {
+      "type": "object",
+      "required": ["required", "method"],
+      "properties": {
+        "required": { "type": "boolean" },
+        "method": { "type": "string", "enum": ["explicit_checkbox", "signed_dpa", "verbal_recorded", "in_app_toggle", "none_yet"] },
+        "timestamp_field": { "type": "string" },
+        "evidence_ref": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+    "data_subject_path": {
+      "type": "object",
+      "required": ["access", "rectification", "deletion", "portability"],
+      "properties": {
+        "access": { "type": "string", "description": "API/flow for data subject access request" },
+        "rectification": { "type": "string" },
+        "deletion": { "type": "string" },
+        "portability": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+    "cross_border_transfer": {
+      "type": "object",
+      "required": ["occurs", "mechanism"],
+      "properties": {
+        "occurs": { "type": "boolean" },
+        "mechanism": {
+          "type": "string",
+          "enum": [
+            "adequacy",
+            "binding_corporate_rules",
+            "standard_contractual_clauses",
+            "consent_explicit",
+            "no_mechanism_yet"
+          ]
+        },
+        "safeguards": { "type": "string" },
+        "counsel_review_ref": { "type": "string", "description": "issue/docket reference for legal review" }
+      },
+      "additionalProperties": false
+    },
+    "review_status": {
+      "type": "string",
+      "enum": ["draft", "counsel_review", "approved", "superseded"],
+      "default": "draft"
+    },
+    "sdaia_ndgp_ref": {
+      "type": "string",
+      "description": "Optional reference to SDAIA NDGP self-assessment entry"
+    },
+    "notes": { "type": "string" }
+  },
+  "additionalProperties": false,
+  "definitions": {
+    "processorRef": {
+      "type": "object",
+      "required": ["name", "role_in_flow", "region"],
+      "properties": {
+        "name": { "type": "string" },
+        "role_in_flow": { "type": "string", "description": "controller | processor | sub_processor" },
+        "region": { "type": "string" },
+        "safeguards": { "type": "string" },
+        "dpa_signed": { "type": "boolean" },
+        "dpa_ref": { "type": "string" }
+      },
+      "additionalProperties": false
+    }
+  }
+}

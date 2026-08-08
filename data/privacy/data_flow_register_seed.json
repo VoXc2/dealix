@@ -1,0 +1,1294 @@
+[
+  {
+    "flow_id": "DF-COMPANY-001",
+    "category": "company_facts",
+    "controller_role": "controller",
+    "purpose": "Saudi company registration, industry, and size facts for B2B qualification",
+    "lawful_basis": "legitimate_interest",
+    "source": {
+      "system": "internal",
+      "method": "derived"
+    },
+    "fields": [
+      "cr_number",
+      "legal_name",
+      "industry_code",
+      "employee_band",
+      "city"
+    ],
+    "recipients": [
+      {
+        "name": "Railway PostgreSQL",
+        "role": "processor",
+        "region": "us-west-1",
+        "safeguards": "Tenant-scoped RLS; soft-delete honored"
+      }
+    ],
+    "processors": {
+      "railway_postgres": {
+        "name": "Railway Inc.",
+        "role_in_flow": "processor",
+        "region": "us-west-1",
+        "safeguards": "Postgres with row-level security, tenant_id enforced",
+        "dpa_signed": true,
+        "dpa_ref": "DPA-RAILWAY-REF"
+      },
+      "vercel_hosting": {
+        "name": "Vercel Inc.",
+        "role_in_flow": "processor",
+        "region": "us-east-1",
+        "safeguards": "Edge caching disabled for authenticated routes",
+        "dpa_signed": true,
+        "dpa_ref": "DPA-VERCEL-REF"
+      },
+      "llm_providers": [
+        {
+          "name": "OpenAI",
+          "role_in_flow": "sub_processor",
+          "region": "us-east-1",
+          "safeguards": "Zero retention on API tier, no training on inputs",
+          "dpa_signed": true,
+          "dpa_ref": "DPA-OPENAI-REF"
+        }
+      ],
+      "email_service": {
+        "name": "Resend",
+        "role_in_flow": "processor",
+        "region": "us-east-1",
+        "safeguards": "DKIM/SPF configured, unsubscribe enforced",
+        "dpa_signed": true,
+        "dpa_ref": "DPA-RESEND-REF"
+      },
+      "whatsapp_bsp": {
+        "name": "Meta WhatsApp Business",
+        "role_in_flow": "processor",
+        "region": "multi-region",
+        "safeguards": "WhatsApp Business Policy; no automation, opt-in only",
+        "dpa_signed": false,
+        "dpa_ref": "PENDING-META-DPA"
+      },
+      "calendar": {
+        "name": "Google Calendar",
+        "role_in_flow": "processor",
+        "region": "global",
+        "safeguards": "OAuth 2.0 scoped read/write",
+        "dpa_signed": true,
+        "dpa_ref": "DPA-GOOGLE-REF"
+      },
+      "analytics": {
+        "name": "PostHog",
+        "role_in_flow": "processor",
+        "region": "eu-central-1",
+        "safeguards": "IP anonymization enabled",
+        "dpa_signed": true,
+        "dpa_ref": "DPA-POSTHOG-REF"
+      },
+      "payment_provider": {
+        "name": "Moyasar",
+        "role_in_flow": "processor",
+        "region": "sa-central-1",
+        "safeguards": "PCI-DSS Level 1; CVV/PAN never stored",
+        "dpa_signed": true,
+        "dpa_ref": "DPA-MOYASAR-REF"
+      }
+    },
+    "region": "us-west-1",
+    "retention_days": 1825,
+    "retention_trigger": "last_interaction",
+    "deletion_method": "anonymize",
+    "consent_capture": {
+      "required": true,
+      "method": "explicit_checkbox",
+      "timestamp_field": "consent_timestamp",
+      "evidence_ref": "consent_record_id"
+    },
+    "data_subject_path": {
+      "access": "POST /api/v1/data-subject/access",
+      "rectification": "POST /api/v1/data-subject/rectify",
+      "deletion": "POST /api/v1/data-subject/delete",
+      "portability": "GET /api/v1/data-subject/export"
+    },
+    "cross_border_transfer": {
+      "occurs": true,
+      "mechanism": "standard_contractual_clauses",
+      "safeguards": "SCCs signed; counsel review pending",
+      "counsel_review_ref": "PENDING-COUNSEL-REVIEW"
+    },
+    "review_status": "draft",
+    "notes": "Tenant isolation via row-level security; approval-gated writes."
+  },
+  {
+    "flow_id": "DF-CONTACT-001",
+    "category": "business_contact_data",
+    "controller_role": "controller",
+    "purpose": "B2B contact details for opportunities and outreach",
+    "lawful_basis": "legitimate_interest",
+    "source": {
+      "system": "internal",
+      "method": "derived"
+    },
+    "fields": [
+      "full_name",
+      "work_email",
+      "work_phone",
+      "job_title",
+      "company_id"
+    ],
+    "recipients": [
+      {
+        "name": "Railway PostgreSQL",
+        "role": "processor",
+        "region": "us-west-1",
+        "safeguards": "Tenant-scoped RLS; soft-delete honored"
+      }
+    ],
+    "processors": {
+      "railway_postgres": {
+        "name": "Railway Inc.",
+        "role_in_flow": "processor",
+        "region": "us-west-1",
+        "safeguards": "Postgres with row-level security, tenant_id enforced",
+        "dpa_signed": true,
+        "dpa_ref": "DPA-RAILWAY-REF"
+      },
+      "vercel_hosting": {
+        "name": "Vercel Inc.",
+        "role_in_flow": "processor",
+        "region": "us-east-1",
+        "safeguards": "Edge caching disabled for authenticated routes",
+        "dpa_signed": true,
+        "dpa_ref": "DPA-VERCEL-REF"
+      },
+      "llm_providers": [
+        {
+          "name": "OpenAI",
+          "role_in_flow": "sub_processor",
+          "region": "us-east-1",
+          "safeguards": "Zero retention on API tier, no training on inputs",
+          "dpa_signed": true,
+          "dpa_ref": "DPA-OPENAI-REF"
+        }
+      ],
+      "email_service": {
+        "name": "Resend",
+        "role_in_flow": "processor",
+        "region": "us-east-1",
+        "safeguards": "DKIM/SPF configured, unsubscribe enforced",
+        "dpa_signed": true,
+        "dpa_ref": "DPA-RESEND-REF"
+      },
+      "whatsapp_bsp": {
+        "name": "Meta WhatsApp Business",
+        "role_in_flow": "processor",
+        "region": "multi-region",
+        "safeguards": "WhatsApp Business Policy; no automation, opt-in only",
+        "dpa_signed": false,
+        "dpa_ref": "PENDING-META-DPA"
+      },
+      "calendar": {
+        "name": "Google Calendar",
+        "role_in_flow": "processor",
+        "region": "global",
+        "safeguards": "OAuth 2.0 scoped read/write",
+        "dpa_signed": true,
+        "dpa_ref": "DPA-GOOGLE-REF"
+      },
+      "analytics": {
+        "name": "PostHog",
+        "role_in_flow": "processor",
+        "region": "eu-central-1",
+        "safeguards": "IP anonymization enabled",
+        "dpa_signed": true,
+        "dpa_ref": "DPA-POSTHOG-REF"
+      },
+      "payment_provider": {
+        "name": "Moyasar",
+        "role_in_flow": "processor",
+        "region": "sa-central-1",
+        "safeguards": "PCI-DSS Level 1; CVV/PAN never stored",
+        "dpa_signed": true,
+        "dpa_ref": "DPA-MOYASAR-REF"
+      }
+    },
+    "region": "us-west-1",
+    "retention_days": 1095,
+    "retention_trigger": "last_interaction",
+    "deletion_method": "anonymize",
+    "consent_capture": {
+      "required": true,
+      "method": "explicit_checkbox",
+      "timestamp_field": "consent_timestamp",
+      "evidence_ref": "consent_record_id"
+    },
+    "data_subject_path": {
+      "access": "POST /api/v1/data-subject/access",
+      "rectification": "POST /api/v1/data-subject/rectify",
+      "deletion": "POST /api/v1/data-subject/delete",
+      "portability": "GET /api/v1/data-subject/export"
+    },
+    "cross_border_transfer": {
+      "occurs": true,
+      "mechanism": "standard_contractual_clauses",
+      "safeguards": "SCCs signed; counsel review pending",
+      "counsel_review_ref": "PENDING-COUNSEL-REVIEW"
+    },
+    "review_status": "draft",
+    "notes": "Tenant isolation via row-level security; approval-gated writes."
+  },
+  {
+    "flow_id": "DF-MSG-001",
+    "category": "message_content",
+    "controller_role": "controller",
+    "purpose": "Inbound/outbound email and support message content for service delivery",
+    "lawful_basis": "legitimate_interest",
+    "source": {
+      "system": "internal",
+      "method": "derived"
+    },
+    "fields": [
+      "subject",
+      "body_excerpt",
+      "channel",
+      "direction"
+    ],
+    "recipients": [
+      {
+        "name": "Railway PostgreSQL",
+        "role": "processor",
+        "region": "us-west-1",
+        "safeguards": "Tenant-scoped RLS; soft-delete honored"
+      }
+    ],
+    "processors": {
+      "railway_postgres": {
+        "name": "Railway Inc.",
+        "role_in_flow": "processor",
+        "region": "us-west-1",
+        "safeguards": "Postgres with row-level security, tenant_id enforced",
+        "dpa_signed": true,
+        "dpa_ref": "DPA-RAILWAY-REF"
+      },
+      "vercel_hosting": {
+        "name": "Vercel Inc.",
+        "role_in_flow": "processor",
+        "region": "us-east-1",
+        "safeguards": "Edge caching disabled for authenticated routes",
+        "dpa_signed": true,
+        "dpa_ref": "DPA-VERCEL-REF"
+      },
+      "llm_providers": [
+        {
+          "name": "OpenAI",
+          "role_in_flow": "sub_processor",
+          "region": "us-east-1",
+          "safeguards": "Zero retention on API tier, no training on inputs",
+          "dpa_signed": true,
+          "dpa_ref": "DPA-OPENAI-REF"
+        }
+      ],
+      "email_service": {
+        "name": "Resend",
+        "role_in_flow": "processor",
+        "region": "us-east-1",
+        "safeguards": "DKIM/SPF configured, unsubscribe enforced",
+        "dpa_signed": true,
+        "dpa_ref": "DPA-RESEND-REF"
+      },
+      "whatsapp_bsp": {
+        "name": "Meta WhatsApp Business",
+        "role_in_flow": "processor",
+        "region": "multi-region",
+        "safeguards": "WhatsApp Business Policy; no automation, opt-in only",
+        "dpa_signed": false,
+        "dpa_ref": "PENDING-META-DPA"
+      },
+      "calendar": {
+        "name": "Google Calendar",
+        "role_in_flow": "processor",
+        "region": "global",
+        "safeguards": "OAuth 2.0 scoped read/write",
+        "dpa_signed": true,
+        "dpa_ref": "DPA-GOOGLE-REF"
+      },
+      "analytics": {
+        "name": "PostHog",
+        "role_in_flow": "processor",
+        "region": "eu-central-1",
+        "safeguards": "IP anonymization enabled",
+        "dpa_signed": true,
+        "dpa_ref": "DPA-POSTHOG-REF"
+      },
+      "payment_provider": {
+        "name": "Moyasar",
+        "role_in_flow": "processor",
+        "region": "sa-central-1",
+        "safeguards": "PCI-DSS Level 1; CVV/PAN never stored",
+        "dpa_signed": true,
+        "dpa_ref": "DPA-MOYASAR-REF"
+      }
+    },
+    "region": "us-west-1",
+    "retention_days": 730,
+    "retention_trigger": "last_interaction",
+    "deletion_method": "anonymize",
+    "consent_capture": {
+      "required": true,
+      "method": "explicit_checkbox",
+      "timestamp_field": "consent_timestamp",
+      "evidence_ref": "consent_record_id"
+    },
+    "data_subject_path": {
+      "access": "POST /api/v1/data-subject/access",
+      "rectification": "POST /api/v1/data-subject/rectify",
+      "deletion": "POST /api/v1/data-subject/delete",
+      "portability": "GET /api/v1/data-subject/export"
+    },
+    "cross_border_transfer": {
+      "occurs": true,
+      "mechanism": "standard_contractual_clauses",
+      "safeguards": "SCCs signed; counsel review pending",
+      "counsel_review_ref": "PENDING-COUNSEL-REVIEW"
+    },
+    "review_status": "draft",
+    "notes": "Tenant isolation via row-level security; approval-gated writes."
+  },
+  {
+    "flow_id": "DF-APPROVAL-001",
+    "category": "approvals",
+    "controller_role": "controller",
+    "purpose": "Founder/admin approval decisions and audit trail",
+    "lawful_basis": "legitimate_interest",
+    "source": {
+      "system": "internal",
+      "method": "derived"
+    },
+    "fields": [
+      "action_type",
+      "approved_by",
+      "decision",
+      "reason_hash"
+    ],
+    "recipients": [
+      {
+        "name": "Railway PostgreSQL",
+        "role": "processor",
+        "region": "us-west-1",
+        "safeguards": "Tenant-scoped RLS; soft-delete honored"
+      }
+    ],
+    "processors": {
+      "railway_postgres": {
+        "name": "Railway Inc.",
+        "role_in_flow": "processor",
+        "region": "us-west-1",
+        "safeguards": "Postgres with row-level security, tenant_id enforced",
+        "dpa_signed": true,
+        "dpa_ref": "DPA-RAILWAY-REF"
+      },
+      "vercel_hosting": {
+        "name": "Vercel Inc.",
+        "role_in_flow": "processor",
+        "region": "us-east-1",
+        "safeguards": "Edge caching disabled for authenticated routes",
+        "dpa_signed": true,
+        "dpa_ref": "DPA-VERCEL-REF"
+      },
+      "llm_providers": [
+        {
+          "name": "OpenAI",
+          "role_in_flow": "sub_processor",
+          "region": "us-east-1",
+          "safeguards": "Zero retention on API tier, no training on inputs",
+          "dpa_signed": true,
+          "dpa_ref": "DPA-OPENAI-REF"
+        }
+      ],
+      "email_service": {
+        "name": "Resend",
+        "role_in_flow": "processor",
+        "region": "us-east-1",
+        "safeguards": "DKIM/SPF configured, unsubscribe enforced",
+        "dpa_signed": true,
+        "dpa_ref": "DPA-RESEND-REF"
+      },
+      "whatsapp_bsp": {
+        "name": "Meta WhatsApp Business",
+        "role_in_flow": "processor",
+        "region": "multi-region",
+        "safeguards": "WhatsApp Business Policy; no automation, opt-in only",
+        "dpa_signed": false,
+        "dpa_ref": "PENDING-META-DPA"
+      },
+      "calendar": {
+        "name": "Google Calendar",
+        "role_in_flow": "processor",
+        "region": "global",
+        "safeguards": "OAuth 2.0 scoped read/write",
+        "dpa_signed": true,
+        "dpa_ref": "DPA-GOOGLE-REF"
+      },
+      "analytics": {
+        "name": "PostHog",
+        "role_in_flow": "processor",
+        "region": "eu-central-1",
+        "safeguards": "IP anonymization enabled",
+        "dpa_signed": true,
+        "dpa_ref": "DPA-POSTHOG-REF"
+      },
+      "payment_provider": {
+        "name": "Moyasar",
+        "role_in_flow": "processor",
+        "region": "sa-central-1",
+        "safeguards": "PCI-DSS Level 1; CVV/PAN never stored",
+        "dpa_signed": true,
+        "dpa_ref": "DPA-MOYASAR-REF"
+      }
+    },
+    "region": "us-west-1",
+    "retention_days": 1825,
+    "retention_trigger": "last_interaction",
+    "deletion_method": "hard_delete",
+    "consent_capture": {
+      "required": true,
+      "method": "explicit_checkbox",
+      "timestamp_field": "consent_timestamp",
+      "evidence_ref": "consent_record_id"
+    },
+    "data_subject_path": {
+      "access": "POST /api/v1/data-subject/access",
+      "rectification": "POST /api/v1/data-subject/rectify",
+      "deletion": "POST /api/v1/data-subject/delete",
+      "portability": "GET /api/v1/data-subject/export"
+    },
+    "cross_border_transfer": {
+      "occurs": true,
+      "mechanism": "standard_contractual_clauses",
+      "safeguards": "SCCs signed; counsel review pending",
+      "counsel_review_ref": "PENDING-COUNSEL-REVIEW"
+    },
+    "review_status": "draft",
+    "notes": "Tenant isolation via row-level security; approval-gated writes."
+  },
+  {
+    "flow_id": "DF-PROPOSAL-001",
+    "category": "proposals",
+    "controller_role": "controller",
+    "purpose": "Commercial proposals and pricing scopes sent to prospects",
+    "lawful_basis": "legitimate_interest",
+    "source": {
+      "system": "internal",
+      "method": "derived"
+    },
+    "fields": [
+      "proposal_id",
+      "client_id",
+      "amount_sar",
+      "status"
+    ],
+    "recipients": [
+      {
+        "name": "Railway PostgreSQL",
+        "role": "processor",
+        "region": "us-west-1",
+        "safeguards": "Tenant-scoped RLS; soft-delete honored"
+      }
+    ],
+    "processors": {
+      "railway_postgres": {
+        "name": "Railway Inc.",
+        "role_in_flow": "processor",
+        "region": "us-west-1",
+        "safeguards": "Postgres with row-level security, tenant_id enforced",
+        "dpa_signed": true,
+        "dpa_ref": "DPA-RAILWAY-REF"
+      },
+      "vercel_hosting": {
+        "name": "Vercel Inc.",
+        "role_in_flow": "processor",
+        "region": "us-east-1",
+        "safeguards": "Edge caching disabled for authenticated routes",
+        "dpa_signed": true,
+        "dpa_ref": "DPA-VERCEL-REF"
+      },
+      "llm_providers": [
+        {
+          "name": "OpenAI",
+          "role_in_flow": "sub_processor",
+          "region": "us-east-1",
+          "safeguards": "Zero retention on API tier, no training on inputs",
+          "dpa_signed": true,
+          "dpa_ref": "DPA-OPENAI-REF"
+        }
+      ],
+      "email_service": {
+        "name": "Resend",
+        "role_in_flow": "processor",
+        "region": "us-east-1",
+        "safeguards": "DKIM/SPF configured, unsubscribe enforced",
+        "dpa_signed": true,
+        "dpa_ref": "DPA-RESEND-REF"
+      },
+      "whatsapp_bsp": {
+        "name": "Meta WhatsApp Business",
+        "role_in_flow": "processor",
+        "region": "multi-region",
+        "safeguards": "WhatsApp Business Policy; no automation, opt-in only",
+        "dpa_signed": false,
+        "dpa_ref": "PENDING-META-DPA"
+      },
+      "calendar": {
+        "name": "Google Calendar",
+        "role_in_flow": "processor",
+        "region": "global",
+        "safeguards": "OAuth 2.0 scoped read/write",
+        "dpa_signed": true,
+        "dpa_ref": "DPA-GOOGLE-REF"
+      },
+      "analytics": {
+        "name": "PostHog",
+        "role_in_flow": "processor",
+        "region": "eu-central-1",
+        "safeguards": "IP anonymization enabled",
+        "dpa_signed": true,
+        "dpa_ref": "DPA-POSTHOG-REF"
+      },
+      "payment_provider": {
+        "name": "Moyasar",
+        "role_in_flow": "processor",
+        "region": "sa-central-1",
+        "safeguards": "PCI-DSS Level 1; CVV/PAN never stored",
+        "dpa_signed": true,
+        "dpa_ref": "DPA-MOYASAR-REF"
+      }
+    },
+    "region": "us-west-1",
+    "retention_days": 1095,
+    "retention_trigger": "last_interaction",
+    "deletion_method": "anonymize",
+    "consent_capture": {
+      "required": true,
+      "method": "explicit_checkbox",
+      "timestamp_field": "consent_timestamp",
+      "evidence_ref": "consent_record_id"
+    },
+    "data_subject_path": {
+      "access": "POST /api/v1/data-subject/access",
+      "rectification": "POST /api/v1/data-subject/rectify",
+      "deletion": "POST /api/v1/data-subject/delete",
+      "portability": "GET /api/v1/data-subject/export"
+    },
+    "cross_border_transfer": {
+      "occurs": true,
+      "mechanism": "standard_contractual_clauses",
+      "safeguards": "SCCs signed; counsel review pending",
+      "counsel_review_ref": "PENDING-COUNSEL-REVIEW"
+    },
+    "review_status": "draft",
+    "notes": "Tenant isolation via row-level security; approval-gated writes."
+  },
+  {
+    "flow_id": "DF-PAYMENT-001",
+    "category": "payments",
+    "controller_role": "controller",
+    "purpose": "Payment transactions, invoices, and refund records (Moyasar through Moyasar)",
+    "lawful_basis": "contract",
+    "source": {
+      "system": "internal",
+      "method": "derived"
+    },
+    "fields": [
+      "transaction_ref",
+      "amount_sar",
+      "currency",
+      "status",
+      "moyasar_id"
+    ],
+    "recipients": [
+      {
+        "name": "Railway PostgreSQL",
+        "role": "processor",
+        "region": "us-west-1",
+        "safeguards": "Tenant-scoped RLS; soft-delete honored"
+      }
+    ],
+    "processors": {
+      "railway_postgres": {
+        "name": "Railway Inc.",
+        "role_in_flow": "processor",
+        "region": "us-west-1",
+        "safeguards": "Postgres with row-level security, tenant_id enforced",
+        "dpa_signed": true,
+        "dpa_ref": "DPA-RAILWAY-REF"
+      },
+      "vercel_hosting": {
+        "name": "Vercel Inc.",
+        "role_in_flow": "processor",
+        "region": "us-east-1",
+        "safeguards": "Edge caching disabled for authenticated routes",
+        "dpa_signed": true,
+        "dpa_ref": "DPA-VERCEL-REF"
+      },
+      "llm_providers": [
+        {
+          "name": "OpenAI",
+          "role_in_flow": "sub_processor",
+          "region": "us-east-1",
+          "safeguards": "Zero retention on API tier, no training on inputs",
+          "dpa_signed": true,
+          "dpa_ref": "DPA-OPENAI-REF"
+        }
+      ],
+      "email_service": {
+        "name": "Resend",
+        "role_in_flow": "processor",
+        "region": "us-east-1",
+        "safeguards": "DKIM/SPF configured, unsubscribe enforced",
+        "dpa_signed": true,
+        "dpa_ref": "DPA-RESEND-REF"
+      },
+      "whatsapp_bsp": {
+        "name": "Meta WhatsApp Business",
+        "role_in_flow": "processor",
+        "region": "multi-region",
+        "safeguards": "WhatsApp Business Policy; no automation, opt-in only",
+        "dpa_signed": false,
+        "dpa_ref": "PENDING-META-DPA"
+      },
+      "calendar": {
+        "name": "Google Calendar",
+        "role_in_flow": "processor",
+        "region": "global",
+        "safeguards": "OAuth 2.0 scoped read/write",
+        "dpa_signed": true,
+        "dpa_ref": "DPA-GOOGLE-REF"
+      },
+      "analytics": {
+        "name": "PostHog",
+        "role_in_flow": "processor",
+        "region": "eu-central-1",
+        "safeguards": "IP anonymization enabled",
+        "dpa_signed": true,
+        "dpa_ref": "DPA-POSTHOG-REF"
+      },
+      "payment_provider": {
+        "name": "Moyasar",
+        "role_in_flow": "processor",
+        "region": "sa-central-1",
+        "safeguards": "PCI-DSS Level 1; CVV/PAN never stored",
+        "dpa_signed": true,
+        "dpa_ref": "DPA-MOYASAR-REF"
+      }
+    },
+    "region": "us-west-1",
+    "retention_days": 2555,
+    "retention_trigger": "last_interaction",
+    "deletion_method": "anonymize",
+    "consent_capture": {
+      "required": true,
+      "method": "explicit_checkbox",
+      "timestamp_field": "consent_timestamp",
+      "evidence_ref": "consent_record_id"
+    },
+    "data_subject_path": {
+      "access": "POST /api/v1/data-subject/access",
+      "rectification": "POST /api/v1/data-subject/rectify",
+      "deletion": "POST /api/v1/data-subject/delete",
+      "portability": "GET /api/v1/data-subject/export"
+    },
+    "cross_border_transfer": {
+      "occurs": true,
+      "mechanism": "standard_contractual_clauses",
+      "safeguards": "SCCs signed; counsel review pending",
+      "counsel_review_ref": "PENDING-COUNSEL-REVIEW"
+    },
+    "review_status": "draft",
+    "notes": "Tenant isolation via row-level security; approval-gated writes."
+  },
+  {
+    "flow_id": "DF-SUPPORT-001",
+    "category": "support",
+    "controller_role": "controller",
+    "purpose": "Support tickets and resolutions for customer success",
+    "lawful_basis": "legitimate_interest",
+    "source": {
+      "system": "internal",
+      "method": "derived"
+    },
+    "fields": [
+      "ticket_id",
+      "severity",
+      "category",
+      "resolution_notes"
+    ],
+    "recipients": [
+      {
+        "name": "Railway PostgreSQL",
+        "role": "processor",
+        "region": "us-west-1",
+        "safeguards": "Tenant-scoped RLS; soft-delete honored"
+      }
+    ],
+    "processors": {
+      "railway_postgres": {
+        "name": "Railway Inc.",
+        "role_in_flow": "processor",
+        "region": "us-west-1",
+        "safeguards": "Postgres with row-level security, tenant_id enforced",
+        "dpa_signed": true,
+        "dpa_ref": "DPA-RAILWAY-REF"
+      },
+      "vercel_hosting": {
+        "name": "Vercel Inc.",
+        "role_in_flow": "processor",
+        "region": "us-east-1",
+        "safeguards": "Edge caching disabled for authenticated routes",
+        "dpa_signed": true,
+        "dpa_ref": "DPA-VERCEL-REF"
+      },
+      "llm_providers": [
+        {
+          "name": "OpenAI",
+          "role_in_flow": "sub_processor",
+          "region": "us-east-1",
+          "safeguards": "Zero retention on API tier, no training on inputs",
+          "dpa_signed": true,
+          "dpa_ref": "DPA-OPENAI-REF"
+        }
+      ],
+      "email_service": {
+        "name": "Resend",
+        "role_in_flow": "processor",
+        "region": "us-east-1",
+        "safeguards": "DKIM/SPF configured, unsubscribe enforced",
+        "dpa_signed": true,
+        "dpa_ref": "DPA-RESEND-REF"
+      },
+      "whatsapp_bsp": {
+        "name": "Meta WhatsApp Business",
+        "role_in_flow": "processor",
+        "region": "multi-region",
+        "safeguards": "WhatsApp Business Policy; no automation, opt-in only",
+        "dpa_signed": false,
+        "dpa_ref": "PENDING-META-DPA"
+      },
+      "calendar": {
+        "name": "Google Calendar",
+        "role_in_flow": "processor",
+        "region": "global",
+        "safeguards": "OAuth 2.0 scoped read/write",
+        "dpa_signed": true,
+        "dpa_ref": "DPA-GOOGLE-REF"
+      },
+      "analytics": {
+        "name": "PostHog",
+        "role_in_flow": "processor",
+        "region": "eu-central-1",
+        "safeguards": "IP anonymization enabled",
+        "dpa_signed": true,
+        "dpa_ref": "DPA-POSTHOG-REF"
+      },
+      "payment_provider": {
+        "name": "Moyasar",
+        "role_in_flow": "processor",
+        "region": "sa-central-1",
+        "safeguards": "PCI-DSS Level 1; CVV/PAN never stored",
+        "dpa_signed": true,
+        "dpa_ref": "DPA-MOYASAR-REF"
+      }
+    },
+    "region": "us-west-1",
+    "retention_days": 730,
+    "retention_trigger": "last_interaction",
+    "deletion_method": "anonymize",
+    "consent_capture": {
+      "required": true,
+      "method": "explicit_checkbox",
+      "timestamp_field": "consent_timestamp",
+      "evidence_ref": "consent_record_id"
+    },
+    "data_subject_path": {
+      "access": "POST /api/v1/data-subject/access",
+      "rectification": "POST /api/v1/data-subject/rectify",
+      "deletion": "POST /api/v1/data-subject/delete",
+      "portability": "GET /api/v1/data-subject/export"
+    },
+    "cross_border_transfer": {
+      "occurs": true,
+      "mechanism": "standard_contractual_clauses",
+      "safeguards": "SCCs signed; counsel review pending",
+      "counsel_review_ref": "PENDING-COUNSEL-REVIEW"
+    },
+    "review_status": "draft",
+    "notes": "Tenant isolation via row-level security; approval-gated writes."
+  },
+  {
+    "flow_id": "DF-TELEMETRY-001",
+    "category": "telemetry",
+    "controller_role": "controller",
+    "purpose": "Product usage metrics, error rates, and system health indicators",
+    "lawful_basis": "legitimate_interest",
+    "source": {
+      "system": "internal",
+      "method": "derived"
+    },
+    "fields": [
+      "event_name",
+      "timestamp",
+      "user_agent_hash",
+      "session_id"
+    ],
+    "recipients": [
+      {
+        "name": "Railway PostgreSQL",
+        "role": "processor",
+        "region": "us-west-1",
+        "safeguards": "Tenant-scoped RLS; soft-delete honored"
+      }
+    ],
+    "processors": {
+      "railway_postgres": {
+        "name": "Railway Inc.",
+        "role_in_flow": "processor",
+        "region": "us-west-1",
+        "safeguards": "Postgres with row-level security, tenant_id enforced",
+        "dpa_signed": true,
+        "dpa_ref": "DPA-RAILWAY-REF"
+      },
+      "vercel_hosting": {
+        "name": "Vercel Inc.",
+        "role_in_flow": "processor",
+        "region": "us-east-1",
+        "safeguards": "Edge caching disabled for authenticated routes",
+        "dpa_signed": true,
+        "dpa_ref": "DPA-VERCEL-REF"
+      },
+      "llm_providers": [
+        {
+          "name": "OpenAI",
+          "role_in_flow": "sub_processor",
+          "region": "us-east-1",
+          "safeguards": "Zero retention on API tier, no training on inputs",
+          "dpa_signed": true,
+          "dpa_ref": "DPA-OPENAI-REF"
+        }
+      ],
+      "email_service": {
+        "name": "Resend",
+        "role_in_flow": "processor",
+        "region": "us-east-1",
+        "safeguards": "DKIM/SPF configured, unsubscribe enforced",
+        "dpa_signed": true,
+        "dpa_ref": "DPA-RESEND-REF"
+      },
+      "whatsapp_bsp": {
+        "name": "Meta WhatsApp Business",
+        "role_in_flow": "processor",
+        "region": "multi-region",
+        "safeguards": "WhatsApp Business Policy; no automation, opt-in only",
+        "dpa_signed": false,
+        "dpa_ref": "PENDING-META-DPA"
+      },
+      "calendar": {
+        "name": "Google Calendar",
+        "role_in_flow": "processor",
+        "region": "global",
+        "safeguards": "OAuth 2.0 scoped read/write",
+        "dpa_signed": true,
+        "dpa_ref": "DPA-GOOGLE-REF"
+      },
+      "analytics": {
+        "name": "PostHog",
+        "role_in_flow": "processor",
+        "region": "eu-central-1",
+        "safeguards": "IP anonymization enabled",
+        "dpa_signed": true,
+        "dpa_ref": "DPA-POSTHOG-REF"
+      },
+      "payment_provider": {
+        "name": "Moyasar",
+        "role_in_flow": "processor",
+        "region": "sa-central-1",
+        "safeguards": "PCI-DSS Level 1; CVV/PAN never stored",
+        "dpa_signed": true,
+        "dpa_ref": "DPA-MOYASAR-REF"
+      }
+    },
+    "region": "us-west-1",
+    "retention_days": 365,
+    "retention_trigger": "last_interaction",
+    "deletion_method": "aggregate_only",
+    "consent_capture": {
+      "required": true,
+      "method": "explicit_checkbox",
+      "timestamp_field": "consent_timestamp",
+      "evidence_ref": "consent_record_id"
+    },
+    "data_subject_path": {
+      "access": "POST /api/v1/data-subject/access",
+      "rectification": "POST /api/v1/data-subject/rectify",
+      "deletion": "POST /api/v1/data-subject/delete",
+      "portability": "GET /api/v1/data-subject/export"
+    },
+    "cross_border_transfer": {
+      "occurs": true,
+      "mechanism": "standard_contractual_clauses",
+      "safeguards": "SCCs signed; counsel review pending",
+      "counsel_review_ref": "PENDING-COUNSEL-REVIEW"
+    },
+    "review_status": "draft",
+    "notes": "Tenant isolation via row-level security; approval-gated writes."
+  },
+  {
+    "flow_id": "DF-PROMPT-001",
+    "category": "model_prompts",
+    "controller_role": "controller",
+    "purpose": "Prompts sent to LLM providers for company brain and agent reasoning",
+    "lawful_basis": "legitimate_interest",
+    "source": {
+      "system": "internal",
+      "method": "derived"
+    },
+    "fields": [
+      "prompt_hash",
+      "model",
+      "token_count",
+      "safety_flags"
+    ],
+    "recipients": [
+      {
+        "name": "Railway PostgreSQL",
+        "role": "processor",
+        "region": "us-west-1",
+        "safeguards": "Tenant-scoped RLS; soft-delete honored"
+      }
+    ],
+    "processors": {
+      "railway_postgres": {
+        "name": "Railway Inc.",
+        "role_in_flow": "processor",
+        "region": "us-west-1",
+        "safeguards": "Postgres with row-level security, tenant_id enforced",
+        "dpa_signed": true,
+        "dpa_ref": "DPA-RAILWAY-REF"
+      },
+      "vercel_hosting": {
+        "name": "Vercel Inc.",
+        "role_in_flow": "processor",
+        "region": "us-east-1",
+        "safeguards": "Edge caching disabled for authenticated routes",
+        "dpa_signed": true,
+        "dpa_ref": "DPA-VERCEL-REF"
+      },
+      "llm_providers": [
+        {
+          "name": "OpenAI",
+          "role_in_flow": "sub_processor",
+          "region": "us-east-1",
+          "safeguards": "Zero retention on API tier, no training on inputs",
+          "dpa_signed": true,
+          "dpa_ref": "DPA-OPENAI-REF"
+        }
+      ],
+      "email_service": {
+        "name": "Resend",
+        "role_in_flow": "processor",
+        "region": "us-east-1",
+        "safeguards": "DKIM/SPF configured, unsubscribe enforced",
+        "dpa_signed": true,
+        "dpa_ref": "DPA-RESEND-REF"
+      },
+      "whatsapp_bsp": {
+        "name": "Meta WhatsApp Business",
+        "role_in_flow": "processor",
+        "region": "multi-region",
+        "safeguards": "WhatsApp Business Policy; no automation, opt-in only",
+        "dpa_signed": false,
+        "dpa_ref": "PENDING-META-DPA"
+      },
+      "calendar": {
+        "name": "Google Calendar",
+        "role_in_flow": "processor",
+        "region": "global",
+        "safeguards": "OAuth 2.0 scoped read/write",
+        "dpa_signed": true,
+        "dpa_ref": "DPA-GOOGLE-REF"
+      },
+      "analytics": {
+        "name": "PostHog",
+        "role_in_flow": "processor",
+        "region": "eu-central-1",
+        "safeguards": "IP anonymization enabled",
+        "dpa_signed": true,
+        "dpa_ref": "DPA-POSTHOG-REF"
+      },
+      "payment_provider": {
+        "name": "Moyasar",
+        "role_in_flow": "processor",
+        "region": "sa-central-1",
+        "safeguards": "PCI-DSS Level 1; CVV/PAN never stored",
+        "dpa_signed": true,
+        "dpa_ref": "DPA-MOYASAR-REF"
+      }
+    },
+    "region": "us-west-1",
+    "retention_days": 90,
+    "retention_trigger": "last_interaction",
+    "deletion_method": "hard_delete",
+    "consent_capture": {
+      "required": true,
+      "method": "explicit_checkbox",
+      "timestamp_field": "consent_timestamp",
+      "evidence_ref": "consent_record_id"
+    },
+    "data_subject_path": {
+      "access": "POST /api/v1/data-subject/access",
+      "rectification": "POST /api/v1/data-subject/rectify",
+      "deletion": "POST /api/v1/data-subject/delete",
+      "portability": "GET /api/v1/data-subject/export"
+    },
+    "cross_border_transfer": {
+      "occurs": true,
+      "mechanism": "standard_contractual_clauses",
+      "safeguards": "SCCs signed; counsel review pending",
+      "counsel_review_ref": "PENDING-COUNSEL-REVIEW"
+    },
+    "review_status": "draft",
+    "notes": "Tenant isolation via row-level security; approval-gated writes."
+  },
+  {
+    "flow_id": "DF-AUDIT-001",
+    "category": "audit_logs",
+    "controller_role": "controller",
+    "purpose": "System-wide audit log of data access and mutations",
+    "lawful_basis": "legitimate_interest",
+    "source": {
+      "system": "internal",
+      "method": "derived"
+    },
+    "fields": [
+      "actor_id",
+      "action",
+      "resource",
+      "tenant_id",
+      "timestamp"
+    ],
+    "recipients": [
+      {
+        "name": "Railway PostgreSQL",
+        "role": "processor",
+        "region": "us-west-1",
+        "safeguards": "Tenant-scoped RLS; soft-delete honored"
+      }
+    ],
+    "processors": {
+      "railway_postgres": {
+        "name": "Railway Inc.",
+        "role_in_flow": "processor",
+        "region": "us-west-1",
+        "safeguards": "Postgres with row-level security, tenant_id enforced",
+        "dpa_signed": true,
+        "dpa_ref": "DPA-RAILWAY-REF"
+      },
+      "vercel_hosting": {
+        "name": "Vercel Inc.",
+        "role_in_flow": "processor",
+        "region": "us-east-1",
+        "safeguards": "Edge caching disabled for authenticated routes",
+        "dpa_signed": true,
+        "dpa_ref": "DPA-VERCEL-REF"
+      },
+      "llm_providers": [
+        {
+          "name": "OpenAI",
+          "role_in_flow": "sub_processor",
+          "region": "us-east-1",
+          "safeguards": "Zero retention on API tier, no training on inputs",
+          "dpa_signed": true,
+          "dpa_ref": "DPA-OPENAI-REF"
+        }
+      ],
+      "email_service": {
+        "name": "Resend",
+        "role_in_flow": "processor",
+        "region": "us-east-1",
+        "safeguards": "DKIM/SPF configured, unsubscribe enforced",
+        "dpa_signed": true,
+        "dpa_ref": "DPA-RESEND-REF"
+      },
+      "whatsapp_bsp": {
+        "name": "Meta WhatsApp Business",
+        "role_in_flow": "processor",
+        "region": "multi-region",
+        "safeguards": "WhatsApp Business Policy; no automation, opt-in only",
+        "dpa_signed": false,
+        "dpa_ref": "PENDING-META-DPA"
+      },
+      "calendar": {
+        "name": "Google Calendar",
+        "role_in_flow": "processor",
+        "region": "global",
+        "safeguards": "OAuth 2.0 scoped read/write",
+        "dpa_signed": true,
+        "dpa_ref": "DPA-GOOGLE-REF"
+      },
+      "analytics": {
+        "name": "PostHog",
+        "role_in_flow": "processor",
+        "region": "eu-central-1",
+        "safeguards": "IP anonymization enabled",
+        "dpa_signed": true,
+        "dpa_ref": "DPA-POSTHOG-REF"
+      },
+      "payment_provider": {
+        "name": "Moyasar",
+        "role_in_flow": "processor",
+        "region": "sa-central-1",
+        "safeguards": "PCI-DSS Level 1; CVV/PAN never stored",
+        "dpa_signed": true,
+        "dpa_ref": "DPA-MOYASAR-REF"
+      }
+    },
+    "region": "us-west-1",
+    "retention_days": 1825,
+    "retention_trigger": "last_interaction",
+    "deletion_method": "hard_delete",
+    "consent_capture": {
+      "required": true,
+      "method": "explicit_checkbox",
+      "timestamp_field": "consent_timestamp",
+      "evidence_ref": "consent_record_id"
+    },
+    "data_subject_path": {
+      "access": "POST /api/v1/data-subject/access",
+      "rectification": "POST /api/v1/data-subject/rectify",
+      "deletion": "POST /api/v1/data-subject/delete",
+      "portability": "GET /api/v1/data-subject/export"
+    },
+    "cross_border_transfer": {
+      "occurs": true,
+      "mechanism": "standard_contractual_clauses",
+      "safeguards": "SCCs signed; counsel review pending",
+      "counsel_review_ref": "PENDING-COUNSEL-REVIEW"
+    },
+    "review_status": "draft",
+    "notes": "Tenant isolation via row-level security; approval-gated writes."
+  },
+  {
+    "flow_id": "DF-CONSENT-001",
+    "category": "consent_records",
+    "controller_role": "controller",
+    "purpose": "Consent capture records (Saudi PDPA Article 5)",
+    "lawful_basis": "consent",
+    "source": {
+      "system": "internal",
+      "method": "derived"
+    },
+    "fields": [
+      "subject_id",
+      "consent_type",
+      "granted_at",
+      "method",
+      "evidence_hash"
+    ],
+    "recipients": [
+      {
+        "name": "Railway PostgreSQL",
+        "role": "processor",
+        "region": "us-west-1",
+        "safeguards": "Tenant-scoped RLS; soft-delete honored"
+      }
+    ],
+    "processors": {
+      "railway_postgres": {
+        "name": "Railway Inc.",
+        "role_in_flow": "processor",
+        "region": "us-west-1",
+        "safeguards": "Postgres with row-level security, tenant_id enforced",
+        "dpa_signed": true,
+        "dpa_ref": "DPA-RAILWAY-REF"
+      },
+      "vercel_hosting": {
+        "name": "Vercel Inc.",
+        "role_in_flow": "processor",
+        "region": "us-east-1",
+        "safeguards": "Edge caching disabled for authenticated routes",
+        "dpa_signed": true,
+        "dpa_ref": "DPA-VERCEL-REF"
+      },
+      "llm_providers": [
+        {
+          "name": "OpenAI",
+          "role_in_flow": "sub_processor",
+          "region": "us-east-1",
+          "safeguards": "Zero retention on API tier, no training on inputs",
+          "dpa_signed": true,
+          "dpa_ref": "DPA-OPENAI-REF"
+        }
+      ],
+      "email_service": {
+        "name": "Resend",
+        "role_in_flow": "processor",
+        "region": "us-east-1",
+        "safeguards": "DKIM/SPF configured, unsubscribe enforced",
+        "dpa_signed": true,
+        "dpa_ref": "DPA-RESEND-REF"
+      },
+      "whatsapp_bsp": {
+        "name": "Meta WhatsApp Business",
+        "role_in_flow": "processor",
+        "region": "multi-region",
+        "safeguards": "WhatsApp Business Policy; no automation, opt-in only",
+        "dpa_signed": false,
+        "dpa_ref": "PENDING-META-DPA"
+      },
+      "calendar": {
+        "name": "Google Calendar",
+        "role_in_flow": "processor",
+        "region": "global",
+        "safeguards": "OAuth 2.0 scoped read/write",
+        "dpa_signed": true,
+        "dpa_ref": "DPA-GOOGLE-REF"
+      },
+      "analytics": {
+        "name": "PostHog",
+        "role_in_flow": "processor",
+        "region": "eu-central-1",
+        "safeguards": "IP anonymization enabled",
+        "dpa_signed": true,
+        "dpa_ref": "DPA-POSTHOG-REF"
+      },
+      "payment_provider": {
+        "name": "Moyasar",
+        "role_in_flow": "processor",
+        "region": "sa-central-1",
+        "safeguards": "PCI-DSS Level 1; CVV/PAN never stored",
+        "dpa_signed": true,
+        "dpa_ref": "DPA-MOYASAR-REF"
+      }
+    },
+    "region": "us-west-1",
+    "retention_days": 1825,
+    "retention_trigger": "last_interaction",
+    "deletion_method": "anonymize",
+    "consent_capture": {
+      "required": true,
+      "method": "explicit_checkbox",
+      "timestamp_field": "consent_timestamp",
+      "evidence_ref": "consent_record_id"
+    },
+    "data_subject_path": {
+      "access": "POST /api/v1/data-subject/access",
+      "rectification": "POST /api/v1/data-subject/rectify",
+      "deletion": "POST /api/v1/data-subject/delete",
+      "portability": "GET /api/v1/data-subject/export"
+    },
+    "cross_border_transfer": {
+      "occurs": true,
+      "mechanism": "standard_contractual_clauses",
+      "safeguards": "SCCs signed; counsel review pending",
+      "counsel_review_ref": "PENDING-COUNSEL-REVIEW"
+    },
+    "review_status": "draft",
+    "notes": "Tenant isolation via row-level security; approval-gated writes."
+  }
+]

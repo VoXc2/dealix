@@ -115,6 +115,9 @@ dumps/
 !data/workflows/
 # Demo data — synthetic only, no PII, committed for landing page + CI demos
 !data/demo/
+# Canonical demo data for PDPA data-flow register (synthetic, no PII)
+!data/privacy/
+!data/privacy/data_flow_register_seed.json
 # Commercial templates — bilingual AR+EN, no customer PII
 !data/templates/
 # Commercial product data — pain→offer map, catalog, ICP, pricing rules

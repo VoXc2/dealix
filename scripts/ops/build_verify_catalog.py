@@ -19,6 +19,7 @@ from __future__ import annotations
 
 import argparse
 import ast
+import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -88,6 +89,7 @@ def main() -> None:
         print(f"OK: {CATALOG_PATH} in sync ({len(rows)} scripts)")
         raise SystemExit(0)
 
+    sys.stdout = sys.stdout.reconfigure(encoding="utf-8", errors="strict")
     print(rendered, end="")
 
 
