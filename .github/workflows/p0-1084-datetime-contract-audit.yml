@@ -1,0 +1,151 @@
+name: P0 1084 PostgreSQL Datetime Contract Audit
+
+on:
+  push:
+    branches:
+      - fix/p0-1084-postgres-timestamp-contract
+    paths:
+      - db/models*.py
+      - db/datetime_types.py
+      - core/utils.py
+      - scripts/ops/audit_datetime_contract.py
+      - scripts/ops/audit_datetime_runtime_semantics.py
+      - scripts/ops/prove_datetime_boundary.py
+      - tests/test_datetime_contract_audit.py
+      - .github/workflows/p0-1084-datetime-contract-audit.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  inventory:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout exact branch
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Validate auditor without repository test harness
+        run: |
+          python - <<'PY'
+          from scripts.ops.audit_datetime_contract import audit_source
+
+          risky = audit_source('''
+          from sqlalchemy import Column, DateTime
+          from core.utils import utcnow
+          created_at = Column(DateTime, default=utcnow)
+          ''')
+          assert len(risky) == 1
+          assert risky[0].risk == 'aware_default_into_naive_timestamp'
+
+          inferred = audit_source('''
+          from datetime import datetime
+          from sqlalchemy.orm import Mapped, mapped_column
+          from core.utils import utcnow
+          created_at: Mapped[datetime] = mapped_column(default=utcnow)
+          ''')
+          assert len(inferred) == 1
+          assert inferred[0].risk == 'aware_default_into_naive_timestamp'
+
+          safe = audit_source('''
+          from sqlalchemy import Column, DateTime
+          from core.utils import utcnow
+          created_at = Column(DateTime(timezone=True), default=utcnow)
+          ''')
+          assert len(safe) == 1
+          assert safe[0].risk == 'ok_timezone_aware'
+          print('DATETIME_AUDITOR_SELF_TEST=PASS')
+          PY
+
+      - name: Inventory repository datetime contract
+        run: |
+          python scripts/ops/audit_datetime_contract.py
+          python scripts/ops/audit_datetime_contract.py --json > /tmp/datetime-contract-audit.json
+          cat /tmp/datetime-contract-audit.json
+
+      - name: Inventory runtime datetime arithmetic
+        run: |
+          python scripts/ops/audit_datetime_runtime_semantics.py > /tmp/datetime-runtime-semantics.json
+          cat /tmp/datetime-runtime-semantics.json
+
+      - name: Upload inventory evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: p0-1084-datetime-contract-audit
+          path: |
+            /tmp/datetime-contract-audit.json
+            /tmp/datetime-runtime-semantics.json
+          if-no-files-found: error
+          retention-days: 14
+
+  postgres-boundary-proof:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: dealix
+          POSTGRES_PASSWORD: dealix
+          POSTGRES_DB: dealix
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready -U dealix -d dealix"
+          --health-interval=5s
+          --health-timeout=5s
+          --health-retries=10
+    env:
+      DATABASE_URL: postgresql+asyncpg://dealix:dealix@127.0.0.1:5432/dealix
+      DEALIX_DATETIME_PROOF_EPHEMERAL: '1'
+
+    steps:
+      - name: Checkout exact branch
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: requirements.txt
+
+      - name: Install runtime dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements.txt
+
+      - name: Prove listener is scoped to canonical model metadata
+        run: |
+          python - <<'PY'
+          from datetime import datetime
+          from sqlalchemy import DateTime
+          from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
+          from db.datetime_types import UTCNaiveDateTime
+          from db.models import TenantRecord
+
+          class UnrelatedBase(DeclarativeBase):
+              pass
+
+          class UnrelatedProbe(UnrelatedBase):
+              __tablename__ = '_unrelated_datetime_listener_probe_ci'
+              id: Mapped[int] = mapped_column(primary_key=True)
+              created_at: Mapped[datetime]
+
+          canonical = TenantRecord.__table__.c.created_at.type
+          unrelated = UnrelatedProbe.__table__.c.created_at.type
+          assert isinstance(canonical, UTCNaiveDateTime)
+          assert isinstance(unrelated, DateTime)
+          assert not isinstance(unrelated, UTCNaiveDateTime)
+          assert unrelated.timezone is False
+          print('DATETIME_LISTENER_SCOPE=PASS')
+          PY
+
+      - name: Prove UTC boundary without changing physical timestamp type
+        run: python scripts/ops/prove_datetime_boundary.py
