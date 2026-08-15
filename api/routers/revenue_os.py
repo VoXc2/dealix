@@ -16,10 +16,14 @@ Endpoints under /api/v1/revenue-os/:
 from __future__ import annotations
 
 import logging
+import os
 from datetime import UTC, datetime, timedelta
 from typing import Any
 
-from fastapi import APIRouter, Body, HTTPException, Query
+from fastapi import APIRouter, Body, Depends, HTTPException, Query
+from sqlalchemy import create_engine
+
+from api.security.api_key import require_admin_key
 
 # Compliance OS
 from auto_client_acquisition.compliance_os.consent_ledger import (
@@ -41,6 +45,7 @@ from auto_client_acquisition.compliance_os.vendor_registry import (
     DEFAULT_VENDORS,
     vendors_summary,
 )
+from auto_client_acquisition.control_plane_os.tenant_context import resolve_tenant_id
 
 # Copilot
 from auto_client_acquisition.copilot import ask
@@ -67,9 +72,19 @@ from auto_client_acquisition.orchestrator.policies import (
     AutonomyMode,
     default_policy,
 )
-from auto_client_acquisition.orchestrator.queue import TaskQueue, TaskStatus
-from auto_client_acquisition.orchestrator.runtime import DAILY_GROWTH_RUN, Orchestrator
+from auto_client_acquisition.orchestrator.postgres_state import (
+    PostgresTaskQueue,
+    PostgresWorkflowRunStore,
+)
+from auto_client_acquisition.orchestrator.queue import JsonTaskQueue, TaskQueue
+from auto_client_acquisition.orchestrator.runtime import (
+    DAILY_GROWTH_RUN,
+    InMemoryWorkflowRunStore,
+    JsonWorkflowRunStore,
+    Orchestrator,
+)
 from auto_client_acquisition.orchestrator.tools import default_executors
+from auto_client_acquisition.persistence.db_sync_url import sync_sqlalchemy_url
 
 # Why-Now (used by opportunity_feed)
 from auto_client_acquisition.revenue_graph.why_now import (
@@ -111,6 +126,7 @@ from auto_client_acquisition.vertical_os import (
     get_vertical,
     list_vertical_summaries,
 )
+from core.config.settings import get_settings
 
 router = APIRouter(prefix="/api/v1/revenue-os", tags=["revenue-os"])
 log = logging.getLogger(__name__)
@@ -120,23 +136,82 @@ def _now() -> datetime:
     return datetime.now(UTC).replace(tzinfo=None)
 
 
-# ── Module-level singletons (in-memory adapters; production replaces) ─
-_QUEUE = TaskQueue()
+# ── Durable state backend selection ──────────────────────────────
+_ORCHESTRATOR_STATE_PATH = os.environ.get("DEALIX_ORCHESTRATOR_STATE_PATH", "").strip()
+_APP_ENV = (os.environ.get("APP_ENV") or os.environ.get("ENVIRONMENT") or "development")
+_APP_ENV = _APP_ENV.strip().lower()
+_ORCHESTRATOR_BACKEND = os.environ.get("DEALIX_ORCHESTRATOR_BACKEND", "").strip().lower()
+if not _ORCHESTRATOR_BACKEND:
+    if _APP_ENV in {"production", "prod"}:
+        _ORCHESTRATOR_BACKEND = "postgres"
+    elif _ORCHESTRATOR_STATE_PATH:
+        _ORCHESTRATOR_BACKEND = "json"
+    else:
+        _ORCHESTRATOR_BACKEND = "memory"
+if _ORCHESTRATOR_BACKEND not in {"memory", "json", "postgres"}:
+    raise RuntimeError("DEALIX_ORCHESTRATOR_BACKEND must be memory, json, or postgres")
+if _APP_ENV in {"production", "prod"} and _ORCHESTRATOR_BACKEND != "postgres":
+    raise RuntimeError("production requires DEALIX_ORCHESTRATOR_BACKEND=postgres")
+
+_ORCHESTRATOR_ENGINE = None
+if _ORCHESTRATOR_BACKEND == "postgres":
+    database_url = (
+        os.environ.get("DEALIX_ORCHESTRATOR_DATABASE_URL", "").strip()
+        or get_settings().database_url
+    )
+    if _APP_ENV in {"production", "prod"} and not database_url.startswith(
+        ("postgresql://", "postgresql+")
+    ):
+        raise RuntimeError("production orchestrator database must be PostgreSQL")
+    _ORCHESTRATOR_ENGINE = create_engine(
+        sync_sqlalchemy_url(database_url),
+        future=True,
+        pool_pre_ping=True,
+    )
+    _QUEUE = None
+    _RUN_STORE = None
+elif _ORCHESTRATOR_BACKEND == "json":
+    if not _ORCHESTRATOR_STATE_PATH:
+        raise RuntimeError("json orchestrator backend requires DEALIX_ORCHESTRATOR_STATE_PATH")
+    _QUEUE = JsonTaskQueue(f"{_ORCHESTRATOR_STATE_PATH}.tasks.json")
+    _RUN_STORE = JsonWorkflowRunStore(f"{_ORCHESTRATOR_STATE_PATH}.runs.json")
+else:
+    _QUEUE = TaskQueue()
+    _RUN_STORE = InMemoryWorkflowRunStore()
 _ORCHESTRATOR_FACTORY = None
 
 
-def _get_orchestrator(customer_id: str) -> Orchestrator:
-    """Build an orchestrator with the default in-memory store + policy."""
+def _control_tenant(tenant_id: str | None) -> str:
+    try:
+        return resolve_tenant_id(tenant_id, app_env=_APP_ENV)
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+
+
+def _stores_for_tenant(tenant_id: str):
+    if _ORCHESTRATOR_ENGINE is not None:
+        return (
+            PostgresTaskQueue(_ORCHESTRATOR_ENGINE, tenant_id=tenant_id),
+            PostgresWorkflowRunStore(_ORCHESTRATOR_ENGINE, tenant_id=tenant_id),
+        )
+    return _QUEUE, _RUN_STORE
+
+
+def _get_orchestrator(customer_id: str, *, tenant_id: str) -> Orchestrator:
+    """Build a tenant-bound governed orchestrator."""
     store = get_default_store()
+    queue, run_store = _stores_for_tenant(tenant_id)
 
     def policy_resolver(c):
         return default_policy(c)
 
     return Orchestrator(
-        queue=_QUEUE,
+        queue=queue,
         event_store=store,
         policy_resolver=policy_resolver,
         executor_registry=default_executors(),
+        tenant_id=tenant_id,
+        run_store=run_store,
     )
 
 
@@ -211,17 +286,21 @@ async def get_retention_summary(customer_id: str = Query(...)) -> dict[str, Any]
 # ─────────────────────────────────────────────────────────────────
 # 2. AGENT ORCHESTRATOR ENDPOINTS
 # ─────────────────────────────────────────────────────────────────
-@router.post("/workflows/run")
+@router.post("/workflows/run", dependencies=[Depends(require_admin_key)])
 async def run_workflow(
     workflow_id: str = Body(default="daily_growth_run", embed=True),
     customer_id: str = Body(..., embed=True),
+    tenant_id: str | None = Body(default=None, embed=True),
     autonomy_mode: str = Body(default=AutonomyMode.DRAFT_APPROVE, embed=True),
+    idempotency_key: str | None = Body(default=None, embed=True),
 ) -> dict[str, Any]:
     """Trigger a workflow — Daily Growth Run by default."""
     if workflow_id != "daily_growth_run":
         raise HTTPException(status_code=404, detail=f"unknown workflow: {workflow_id}")
 
+    effective_tenant = _control_tenant(tenant_id)
     store = get_default_store()
+    queue, run_store = _stores_for_tenant(effective_tenant)
 
     def resolver(c):
         p = default_policy(c)
@@ -229,26 +308,43 @@ async def run_workflow(
         return p
 
     orch = Orchestrator(
-        queue=_QUEUE,
+        queue=queue,
         event_store=store,
         policy_resolver=resolver,
         executor_registry=default_executors(),
+        tenant_id=effective_tenant,
+        run_store=run_store,
     )
-    summary = orch.run_workflow(workflow=DAILY_GROWTH_RUN, customer_id=customer_id)
+    summary = orch.run_workflow(
+        workflow=DAILY_GROWTH_RUN,
+        customer_id=customer_id,
+        idempotency_key=idempotency_key,
+    )
+    summary["executor_profile"] = "synthetic_internal_only"
+    summary["external_execution_configured"] = False
+    summary["state_backend"] = run_store.backend_name
     return summary
 
 
-@router.get("/tasks")
+@router.get("/tasks", dependencies=[Depends(require_admin_key)])
 async def list_tasks(
     customer_id: str = Query(...),
+    tenant_id: str | None = Query(default=None),
     status: str | None = Query(default=None),
 ) -> dict[str, Any]:
+    effective_tenant = _control_tenant(tenant_id)
+    queue, _run_store = _stores_for_tenant(effective_tenant)
     if status:
-        tasks = [t for t in _QUEUE.for_customer(customer_id) if t.status == status]
+        tasks = [
+            t
+            for t in queue.for_customer(customer_id, tenant_id=effective_tenant)
+            if t.status == status
+        ]
     else:
-        tasks = _QUEUE.for_customer(customer_id)
+        tasks = queue.for_customer(customer_id, tenant_id=effective_tenant)
     return {
-        "summary": _QUEUE.summary(customer_id),
+        "tenant_id": effective_tenant,
+        "summary": queue.summary(customer_id, tenant_id=effective_tenant),
         "tasks": [
             {
                 "task_id": t.task_id,
@@ -264,23 +360,81 @@ async def list_tasks(
     }
 
 
-@router.post("/tasks/{task_id}/approve")
-async def approve_task(task_id: str, approved_by: str = Body(..., embed=True)) -> dict[str, Any]:
-    orch = _get_orchestrator("any")
+@router.post(
+    "/tasks/{task_id}/approve",
+    dependencies=[Depends(require_admin_key)],
+)
+async def approve_task(
+    task_id: str,
+    approved_by: str = Body(..., embed=True),
+    tenant_id: str | None = Body(default=None, embed=True),
+) -> dict[str, Any]:
+    effective_tenant = _control_tenant(tenant_id)
+    orch = _get_orchestrator("any", tenant_id=effective_tenant)
     try:
         task = orch.approve_and_execute(task_id=task_id, approved_by=approved_by)
     except (KeyError, ValueError) as exc:
         raise HTTPException(status_code=400, detail=str(exc)) from exc
-    return {"task_id": task.task_id, "status": task.status}
+    response = {
+        "task_id": task.task_id,
+        "status": task.status,
+        "error": task.error,
+        "external_execution_configured": task.action_type in orch.executor_registry,
+    }
+    if task.correlation_id:
+        try:
+            response["workflow_run"] = orch.get_workflow_run(task.correlation_id)
+        except KeyError:
+            # The task outcome remains authoritative if its parent run was
+            # already pruned or is unavailable in the selected state backend.
+            pass
+    return response
 
 
-@router.post("/tasks/{task_id}/reject")
+@router.get(
+    "/workflows/runs/{run_id}",
+    dependencies=[Depends(require_admin_key)],
+)
+async def get_workflow_run(
+    run_id: str,
+    tenant_id: str | None = Query(default=None),
+) -> dict[str, Any]:
+    orch = _get_orchestrator("any", tenant_id=_control_tenant(tenant_id))
+    try:
+        return orch.get_workflow_run(run_id)
+    except KeyError as exc:
+        raise HTTPException(status_code=404, detail=str(exc)) from exc
+
+
+@router.post(
+    "/workflows/runs/{run_id}/retry",
+    dependencies=[Depends(require_admin_key)],
+)
+async def retry_workflow_run(
+    run_id: str,
+    actor: str = Body(default="system", embed=True),
+    tenant_id: str | None = Body(default=None, embed=True),
+) -> dict[str, Any]:
+    orch = _get_orchestrator("any", tenant_id=_control_tenant(tenant_id))
+    try:
+        return orch.retry_workflow(run_id=run_id, actor=actor)
+    except KeyError as exc:
+        raise HTTPException(status_code=404, detail=str(exc)) from exc
+    except ValueError as exc:
+        raise HTTPException(status_code=409, detail=str(exc)) from exc
+
+
+@router.post(
+    "/tasks/{task_id}/reject",
+    dependencies=[Depends(require_admin_key)],
+)
 async def reject_task(
     task_id: str,
     rejected_by: str = Body(..., embed=True),
     reason: str = Body(default="", embed=True),
+    tenant_id: str | None = Body(default=None, embed=True),
 ) -> dict[str, Any]:
-    orch = _get_orchestrator("any")
+    orch = _get_orchestrator("any", tenant_id=_control_tenant(tenant_id))
     try:
         task = orch.reject_task(task_id=task_id, rejected_by=rejected_by, reason=reason)
     except (KeyError, ValueError) as exc:

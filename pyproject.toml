@@ -60,6 +60,8 @@ dependencies = [
     "qrcode[pil]>=7.4.2,<9",
     "pyotp>=2.9.0,<3",
     "passlib[bcrypt]>=1.7.4,<2",
+    # passlib 1.7.4 relies on bcrypt's pre-v5 72-byte compatibility probe.
+    "bcrypt>=4.0.1,<5",
     # Follows cryptography: 49 requires cffi>=2.0.0, so a <2 ceiling here
     # makes the dependency set unresolvable.
     "cffi>=2.0.0,<3",

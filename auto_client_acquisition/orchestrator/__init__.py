@@ -19,12 +19,19 @@ from auto_client_acquisition.orchestrator.policies import (
     default_policy,
     requires_approval,
 )
+from auto_client_acquisition.orchestrator.postgres_state import (
+    PostgresTaskQueue,
+    PostgresWorkflowRunStore,
+)
 from auto_client_acquisition.orchestrator.queue import (
     AgentTask,
+    JsonTaskQueue,
     TaskQueue,
     TaskStatus,
 )
 from auto_client_acquisition.orchestrator.runtime import (
+    InMemoryWorkflowRunStore,
+    JsonWorkflowRunStore,
     Orchestrator,
     WorkflowDefinition,
     WorkflowStep,
@@ -36,8 +43,13 @@ __all__ = [
     "AgentTask",
     "AutonomyMode",
     "BudgetLimit",
+    "InMemoryWorkflowRunStore",
+    "JsonTaskQueue",
+    "JsonWorkflowRunStore",
     "Orchestrator",
     "Policy",
+    "PostgresTaskQueue",
+    "PostgresWorkflowRunStore",
     "TaskQueue",
     "TaskStatus",
     "WorkflowDefinition",

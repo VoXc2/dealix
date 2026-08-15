@@ -72,6 +72,10 @@ EVENT_TYPES: tuple[str, ...] = (
     "agent.action_rejected",
     "agent.action_executed",
     "agent.action_failed",
+    # Governed workflow closure
+    "workflow.outcome_recorded",
+    "workflow.proof_recorded",
+    "workflow.learning_proposed",
     # AI quality
     "ai.eval_run",
     "ai.regression_detected",

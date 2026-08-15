@@ -9,6 +9,19 @@
 set -uo pipefail
 cd "$(dirname "$0")/.."
 
+# Use the repository environment when present. Calling bare ``python3`` made
+# this verifier report every pytest phase as FAIL when invoked by
+# ``.venv/bin/pytest`` without an activated shell, even though the same tests
+# were passing in the parent process.
+PYTHON_BIN="${DEALIX_PYTHON_BIN:-}"
+if [[ -z "$PYTHON_BIN" ]]; then
+  if [[ -x ".venv/bin/python" ]]; then
+    PYTHON_BIN=".venv/bin/python"
+  else
+    PYTHON_BIN="$(command -v python3)"
+  fi
+fi
+
 results=()
 overall_pass=true
 
@@ -23,19 +36,19 @@ run_check() {
 }
 
 # ── Phase A — Compile sanity ────────────────────────────────────────
-run_check "COMPILEALL" "python3 -m compileall -q auto_client_acquisition/service_catalog auto_client_acquisition/deliverables auto_client_acquisition/bottleneck_radar auto_client_acquisition/integration_capability auto_client_acquisition/business_metrics_board auto_client_acquisition/customer_success api/routers/service_catalog.py api/routers/deliverables.py api/routers/bottleneck_radar.py api/routers/integration_capability.py api/routers/business_metrics_board.py api/routers/customer_success_scores.py scripts/dealix_weekly_executive_pack.py scripts/dealix_whatsapp_morning_brief.py"
+run_check "COMPILEALL" "\"$PYTHON_BIN\" -m compileall -q auto_client_acquisition/service_catalog auto_client_acquisition/deliverables auto_client_acquisition/bottleneck_radar auto_client_acquisition/integration_capability auto_client_acquisition/business_metrics_board auto_client_acquisition/customer_success api/routers/service_catalog.py api/routers/deliverables.py api/routers/bottleneck_radar.py api/routers/integration_capability.py api/routers/business_metrics_board.py api/routers/customer_success_scores.py scripts/dealix_weekly_executive_pack.py scripts/dealix_whatsapp_morning_brief.py"
 
 # ── Phase B — Wave 13 per-phase tests ────────────────────────────────
-run_check "SERVICE_CATALOG"            "python3 -m pytest tests/test_service_catalog.py -q --no-cov"
-run_check "SERVICE_SESSION_RUNTIME"    "python3 -m pytest tests/test_service_session_runtime.py -q --no-cov"
-run_check "DELIVERABLES"               "python3 -m pytest tests/test_deliverables.py -q --no-cov"
-run_check "WEEKLY_EXECUTIVE_PACK"      "python3 -m pytest tests/test_weekly_executive_pack.py -q --no-cov"
-run_check "CUSTOMER_PORTAL_FULL_OPS"   "python3 -m pytest tests/test_customer_portal_full_ops.py -q --no-cov"
-run_check "WHATSAPP_DECISION_FULL_OPS" "python3 -m pytest tests/test_whatsapp_full_ops.py -q --no-cov"
-run_check "CUSTOMER_SUCCESS_SCORES"    "python3 -m pytest tests/test_customer_success_intelligence.py -q --no-cov"
-run_check "BOTTLENECK_RADAR"           "python3 -m pytest tests/test_bottleneck_radar.py -q --no-cov"
-run_check "INTEGRATION_CAPABILITY_REGISTRY" "python3 -m pytest tests/test_integration_capability.py -q --no-cov"
-run_check "BUSINESS_METRICS_BOARD"     "python3 -m pytest tests/test_business_metrics_board.py -q --no-cov"
+run_check "SERVICE_CATALOG"            "\"$PYTHON_BIN\" -m pytest tests/test_service_catalog.py -q --no-cov"
+run_check "SERVICE_SESSION_RUNTIME"    "\"$PYTHON_BIN\" -m pytest tests/test_service_session_runtime.py -q --no-cov"
+run_check "DELIVERABLES"               "\"$PYTHON_BIN\" -m pytest tests/test_deliverables.py -q --no-cov"
+run_check "WEEKLY_EXECUTIVE_PACK"      "\"$PYTHON_BIN\" -m pytest tests/test_weekly_executive_pack.py -q --no-cov"
+run_check "CUSTOMER_PORTAL_FULL_OPS"   "\"$PYTHON_BIN\" -m pytest tests/test_customer_portal_full_ops.py -q --no-cov"
+run_check "WHATSAPP_DECISION_FULL_OPS" "\"$PYTHON_BIN\" -m pytest tests/test_whatsapp_full_ops.py -q --no-cov"
+run_check "CUSTOMER_SUCCESS_SCORES"    "\"$PYTHON_BIN\" -m pytest tests/test_customer_success_intelligence.py -q --no-cov"
+run_check "BOTTLENECK_RADAR"           "\"$PYTHON_BIN\" -m pytest tests/test_bottleneck_radar.py -q --no-cov"
+run_check "INTEGRATION_CAPABILITY_REGISTRY" "\"$PYTHON_BIN\" -m pytest tests/test_integration_capability.py -q --no-cov"
+run_check "BUSINESS_METRICS_BOARD"     "\"$PYTHON_BIN\" -m pytest tests/test_business_metrics_board.py -q --no-cov"
 
 # ── Phase C — Hard-gate audit ────────────────────────────────────────
 # Article 4: test that no Wave 13 module accidentally imports a forbidden
@@ -51,17 +64,17 @@ run_check "NO_LIVE_CHARGE_IN_WAVE13" "! grep -RE '(\\.charge\\s*\\(|charge_card\
 run_check "NO_FAKE_REVENUE" "! grep -RE 'confirmed_revenue_sar\\s*=\\s*.*invoice_intent' auto_client_acquisition/business_metrics_board/ 2>/dev/null"
 
 # ── Phase D — Forbidden-claim scrub ──────────────────────────────────
-run_check "FORBIDDEN_CLAIMS" "python3 -m pytest tests/test_landing_forbidden_claims.py -q --no-cov"
+run_check "FORBIDDEN_CLAIMS" "\"$PYTHON_BIN\" -m pytest tests/test_landing_forbidden_claims.py -q --no-cov"
 
 # ── Phase E — Hard-gate IMMUTABLE check ──────────────────────────────
 # Article 6 invariant: customer-portal still has at least 9 <section> blocks
 # (8 original + Wave 13's additive w13-fourcards = 10+). This bypasses the
 # sandbox _cffi_backend cascade in test_constitution_closure.py.
-run_check "PORTAL_SECTIONS_INVARIANT" "python3 -c \"import re; html=open('landing/customer-portal.html').read(); n=len(re.findall(r'<section[\\s>]', html)); assert n >= 10, f'sections regressed: {n}'\""
+run_check "PORTAL_SECTIONS_INVARIANT" "\"$PYTHON_BIN\" -c \"import re; html=open('landing/customer-portal.html').read(); n=len(re.findall(r'<section[\\s>]', html)); assert n >= 10, f'sections regressed: {n}'\""
 
 # ── Phase F — Wave 11 + 12 regression ────────────────────────────────
 # Best-effort: just check key tests still PASS (catches schema-extension breakage)
-run_check "FULL_OPS_CONTRACTS_REGRESSION" "python3 -m pytest tests/test_full_ops_contracts.py -q --no-cov"
+run_check "FULL_OPS_CONTRACTS_REGRESSION" "\"$PYTHON_BIN\" -m pytest tests/test_full_ops_contracts.py -q --no-cov"
 
 # ── Final verdict ───────────────────────────────────────────────────
 echo

@@ -17,6 +17,9 @@
 | APP_URL | http://localhost:8000 | No | Public API URL |
 | BASE_URL | http://localhost:8000 | No | Base URL for links |
 | DEALIX_API_BASE | http://localhost:8000 | No | API base for frontend |
+| DEALIX_ORCHESTRATOR_BACKEND | automatic | Production | `memory`, `json`, or `postgres`. Production defaults to and requires `postgres`; non-production defaults to JSON when a state path exists, otherwise memory. |
+| DEALIX_ORCHESTRATOR_DATABASE_URL | DATABASE_URL | No | Optional dedicated PostgreSQL URL for workflow/task state. Empty reuses `DATABASE_URL`. |
+| DEALIX_ORCHESTRATOR_STATE_PATH | (empty) | JSON only | Prefix for atomic JSON task/run state in single-node non-production deployments. Creates `.tasks.json` and `.runs.json`. |
 
 ## Outbound Safety (all disabled by default)
 | Variable | Default | Description |

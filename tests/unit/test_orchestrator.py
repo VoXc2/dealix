@@ -15,9 +15,14 @@ from auto_client_acquisition.orchestrator.policies import (
     requires_approval,
     within_budget,
 )
-from auto_client_acquisition.orchestrator.queue import AgentTask, TaskQueue, TaskStatus
+from auto_client_acquisition.orchestrator.queue import (
+    JsonTaskQueue,
+    TaskQueue,
+    TaskStatus,
+)
 from auto_client_acquisition.orchestrator.runtime import (
     DAILY_GROWTH_RUN,
+    JsonWorkflowRunStore,
     Orchestrator,
     WorkflowDefinition,
     WorkflowStep,
@@ -39,7 +44,7 @@ def test_manual_mode_always_requires_approval():
     assert needs is True
 
 
-def test_safe_autopilot_allows_routine_send():
+def test_safe_autopilot_still_requires_human_for_routine_send():
     p = default_policy("c1")
     p.autonomy_mode = AutonomyMode.SAFE_AUTOPILOT
     p.require_human_for_first_send = False
@@ -48,7 +53,7 @@ def test_safe_autopilot_allows_routine_send():
         policy=p,
         risk_factors={"is_first_send_to_account": False, "deal_value_sar": 5000},
     )
-    assert needs is False
+    assert needs is True
 
 
 def test_high_value_deal_escalates_even_in_autopilot():
@@ -164,9 +169,26 @@ def test_summary_counts():
     assert s[TaskStatus.AWAITING_APPROVAL] == 1
 
 
+def test_workflow_step_enqueue_is_idempotent():
+    q = TaskQueue()
+    kwargs = {
+        "tenant_id": "tenant-a",
+        "customer_id": "c1",
+        "agent_id": "prospecting",
+        "action_type": "discover_leads",
+        "payload": {"step_id": "1_discover"},
+        "correlation_id": "run-1",
+    }
+    first = q.enqueue(**kwargs)
+    replay = q.enqueue(**kwargs)
+    assert replay.task_id == first.task_id
+    assert replay.execution_idempotency_key == f"dealix:tenant-a:{first.task_id}"
+    assert len(q.tasks) == 1
+
+
 # ── Runtime ──────────────────────────────────────────────────────
-def test_run_workflow_executes_safe_autopilot():
-    """In safe autopilot with no risk flags, all steps should execute."""
+def test_run_workflow_executes_internal_steps_and_holds_external():
+    """Full autopilot executes internal work but never bypasses external approval."""
     queue = TaskQueue()
     store = InMemoryEventStore()
 
@@ -183,9 +205,15 @@ def test_run_workflow_executes_safe_autopilot():
         executor_registry=default_executors(),
     )
     summary = orch.run_workflow(workflow=DAILY_GROWTH_RUN, customer_id="c1")
-    assert summary["tasks_created"] == len(DAILY_GROWTH_RUN.steps)
-    assert len(summary["awaiting_approval"]) == 0
-    assert len(summary["succeeded"]) == len(DAILY_GROWTH_RUN.steps)
+    assert summary["tasks_created"] == 6
+    assert len(summary["awaiting_approval"]) == 1
+    assert len(summary["succeeded"]) == 5
+    assert summary["status"] == "awaiting_approval"
+    assert summary["blocked_steps"] == []
+    assert summary["deferred_steps"] == [
+        "7_classify",
+        "8_brief",
+    ]
 
 
 def test_run_workflow_draft_approve_holds_send():
@@ -211,6 +239,32 @@ def test_run_workflow_draft_approve_holds_send():
     assert "send_message" in awaiting_actions
 
 
+def test_risk_context_reaches_external_approval_reason():
+    queue = TaskQueue()
+    store = InMemoryEventStore()
+
+    def resolver(customer_id):
+        policy = default_policy(customer_id)
+        policy.autonomy_mode = AutonomyMode.FULL_AUTOPILOT
+        policy.require_human_for_first_send = False
+        return policy
+
+    orch = Orchestrator(
+        queue=queue,
+        event_store=store,
+        policy_resolver=resolver,
+        executor_registry=default_executors(),
+    )
+    summary = orch.run_workflow(
+        workflow=DAILY_GROWTH_RUN,
+        customer_id="c1",
+        initial_inputs={"deal_value_sar": 250_000},
+    )
+
+    task = queue.tasks[summary["awaiting_approval"][0]]
+    assert task.approval_reason == "high_value_deal_sar=250000"
+
+
 def test_run_workflow_emits_events():
     queue = TaskQueue()
     store = InMemoryEventStore()
@@ -227,8 +281,35 @@ def test_run_workflow_emits_events():
 
     requested = [e for e in store._sorted_events() if e.event_type == "agent.action_requested"]
     executed = [e for e in store._sorted_events() if e.event_type == "agent.action_executed"]
-    assert len(requested) == len(DAILY_GROWTH_RUN.steps)
-    assert len(executed) == len(DAILY_GROWTH_RUN.steps)
+    assert len(requested) == 6
+    assert len(executed) == 5
+
+
+def test_telemetry_failure_does_not_revert_committed_task_outcome():
+    class FailingExecutionEventStore(InMemoryEventStore):
+        def append(self, event):
+            if event.event_type == "agent.action_executed":
+                raise RuntimeError("telemetry unavailable")
+            return super().append(event)
+
+    workflow = WorkflowDefinition(
+        workflow_id="telemetry-resilience",
+        name="Telemetry resilience",
+        description="task outcome remains authoritative",
+        steps=(WorkflowStep("step-1", "prospecting", "discover_leads"),),
+    )
+    queue = TaskQueue()
+    orchestrator = Orchestrator(
+        queue=queue,
+        event_store=FailingExecutionEventStore(),
+        policy_resolver=default_policy,
+        executor_registry=default_executors(),
+    )
+
+    summary = orchestrator.run_workflow(workflow=workflow, customer_id="c1")
+
+    assert summary["status"] == "completed"
+    assert queue.get(summary["succeeded"][0]).status == TaskStatus.SUCCEEDED
 
 
 def test_approve_and_execute_flow():
@@ -245,8 +326,158 @@ def test_approve_and_execute_flow():
     summary = orch.run_workflow(workflow=DAILY_GROWTH_RUN, customer_id="c1")
     assert len(summary["awaiting_approval"]) > 0
     pending_id = summary["awaiting_approval"][0]
+    orch.executor_registry["send_message"] = lambda _task: {"sent": 1}
     task = orch.approve_and_execute(task_id=pending_id, approved_by="user@x.sa")
     assert task.status == TaskStatus.SUCCEEDED
+    resumed = orch.get_workflow_run(summary["correlation_id"])
+    assert resumed["status"] == "completed"
+    assert resumed["finalized"] is True
+    assert len(resumed["succeeded"]) == len(DAILY_GROWTH_RUN.steps)
+    assert resumed["completed_steps"] == [step.step_id for step in DAILY_GROWTH_RUN.steps]
+    closure_events = [
+        event
+        for event in store._sorted_events()
+        if event.event_type.startswith("workflow.")
+    ]
+    assert [event.event_type for event in closure_events] == [
+        "workflow.outcome_recorded",
+        "workflow.proof_recorded",
+        "workflow.learning_proposed",
+    ]
+    proof = closure_events[1]
+    assert proof.payload["claimable_external"] is False
+    assert proof.payload["evidence_level"] == "L0"
+
+
+def test_idempotency_replays_existing_run_without_duplicate_tasks():
+    queue = TaskQueue()
+    orch = Orchestrator(
+        queue=queue,
+        event_store=InMemoryEventStore(),
+        policy_resolver=default_policy,
+        executor_registry=default_executors(),
+    )
+
+    first = orch.run_workflow(
+        workflow=DAILY_GROWTH_RUN,
+        customer_id="c1",
+        idempotency_key="riyadh-2026-08-15",
+    )
+    replay = orch.run_workflow(
+        workflow=DAILY_GROWTH_RUN,
+        customer_id="c1",
+        idempotency_key="riyadh-2026-08-15",
+    )
+
+    assert replay["correlation_id"] == first["correlation_id"]
+    assert replay["replayed"] is True
+    assert replay["tasks_created"] == first["tasks_created"]
+    assert len(queue.tasks) == first["tasks_created"]
+
+
+def test_retry_resumes_transient_failure_and_completes():
+    attempts = {"count": 0}
+
+    def flaky(_task):
+        attempts["count"] += 1
+        if attempts["count"] == 1:
+            raise RuntimeError("temporary")
+        return {"ok": True}
+
+    workflow = WorkflowDefinition(
+        workflow_id="retryable",
+        name="Retryable",
+        description="",
+        steps=(WorkflowStep("one", "ops", "discover_leads"),),
+    )
+    orch = Orchestrator(
+        queue=TaskQueue(),
+        event_store=InMemoryEventStore(),
+        policy_resolver=default_policy,
+        executor_registry={"discover_leads": flaky},
+    )
+
+    first = orch.run_workflow(workflow=workflow, customer_id="c1")
+    assert first["status"] == "retry_pending"
+    done = orch.retry_workflow(run_id=first["correlation_id"])
+    assert done["status"] == "completed"
+    assert attempts["count"] == 2
+
+
+def test_json_state_survives_restart_and_resumes_after_approval(tmp_path):
+    queue_path = tmp_path / "tasks.json"
+    runs_path = tmp_path / "runs.json"
+
+    first = Orchestrator(
+        queue=JsonTaskQueue(queue_path),
+        event_store=InMemoryEventStore(),
+        policy_resolver=default_policy,
+        executor_registry=default_executors(),
+        run_store=JsonWorkflowRunStore(runs_path),
+    )
+    started = first.run_workflow(
+        workflow=DAILY_GROWTH_RUN,
+        customer_id="c1",
+        idempotency_key="restart-proof",
+    )
+    pending_id = started["awaiting_approval"][0]
+
+    executors = default_executors()
+    executors["send_message"] = lambda _task: {
+        "sent": 1,
+        "source_ref": "provider-receipt-1",
+    }
+    restarted = Orchestrator(
+        queue=JsonTaskQueue(queue_path),
+        event_store=InMemoryEventStore(),
+        policy_resolver=default_policy,
+        executor_registry=executors,
+        run_store=JsonWorkflowRunStore(runs_path),
+    )
+
+    task = restarted.approve_and_execute(
+        task_id=pending_id,
+        approved_by="founder@dealix.sa",
+    )
+    completed = restarted.get_workflow_run(started["correlation_id"])
+
+    assert task.status == TaskStatus.SUCCEEDED
+    assert completed["status"] == "completed"
+    assert completed["finalized"] is True
+    replay = restarted.run_workflow(
+        workflow=DAILY_GROWTH_RUN,
+        customer_id="c1",
+        idempotency_key="restart-proof",
+    )
+    assert replay["replayed"] is True
+    assert replay["correlation_id"] == started["correlation_id"]
+
+
+def test_approved_external_task_without_connector_fails_closed():
+    queue = TaskQueue()
+    store = InMemoryEventStore()
+
+    orch = Orchestrator(
+        queue=queue,
+        event_store=store,
+        policy_resolver=default_policy,
+        executor_registry=default_executors(),
+    )
+    task = queue.enqueue(
+        customer_id="c1",
+        agent_id="outreach",
+        action_type="send_message",
+        requires_approval=True,
+    )
+
+    result = orch.approve_and_execute(
+        task_id=task.task_id,
+        approved_by="user@x.sa",
+    )
+
+    assert result.status == TaskStatus.FAILED
+    assert result.retries == 0
+    assert result.error == "no executor for send_message"
 
 
 def test_budget_exhaustion_stops_workflow():

@@ -92,6 +92,24 @@ ACTION_TYPES: tuple[str, ...] = (
 )
 
 
+# Actions that create an external commitment or side effect.  These are
+# intentionally independent from the selected autonomy mode: Dealix may
+# prepare everything around them autonomously, but a human approval remains a
+# hard boundary before execution.
+EXTERNAL_ACTION_TYPES: frozenset[str] = frozenset(
+    {
+        "send_message",
+        "send_scope",
+        "send_invoice",
+        "final_diagnostic",
+        "publish_case_study",
+        "security_claim",
+        "book_meeting",
+        "publish_pulse",
+    }
+)
+
+
 def _approval_action_id(action_type: str, risks: dict[str, Any]) -> str | None:
     if action_type == "send_scope":
         return "send_scope"
@@ -179,6 +197,13 @@ def requires_approval(
                 return True, f"blocked_keyword={kw}"
         if risks.get("consecutive_followup_index", 0) >= policy.max_consecutive_followups:
             return True, "max_consecutive_followups_reached"
+
+    # Non-negotiable boundary: autonomy modes control internal execution only.
+    # The more specific policy and risk reasons above are preserved for the
+    # approval card, while this final guard prevents routine external effects
+    # from ever falling through to agent-only execution.
+    if action_type in EXTERNAL_ACTION_TYPES:
+        return True, "external_action_requires_human_approval"
 
     return False, None
 

@@ -38,17 +38,13 @@ def upgrade() -> None:
             name="ck_communication_hub_collection",
         ),
     )
-    snapshot_table = sa.table(
-        "communication_hub_snapshots",
-        sa.column("collection", sa.String(32)),
-        sa.column("data", JSONB),
-    )
-    op.bulk_insert(
-        snapshot_table,
-        [
-            {"collection": "contact_log", "data": []},
-            {"collection": "sequences", "data": []},
-        ],
+    # Explicit JSONB literals keep both online migration and ``--sql`` offline
+    # rendering deterministic; Alembic cannot literal-render Python lists for JSONB.
+    op.execute(
+        """
+        INSERT INTO communication_hub_snapshots (collection, data)
+        VALUES ('contact_log', '[]'::jsonb), ('sequences', '[]'::jsonb)
+        """
     )
 
 
