@@ -1,15 +1,16 @@
 name: Deploy to Railway
 
-# Deploys Dealix backend to Railway using Railway CLI.
+# Deploys the Dealix backend to Railway using exactly one credential mode.
 # Project tokens use RAILWAY_TOKEN. Account/workspace tokens use
 # RAILWAY_API_TOKEN. Values remain sealed in GitHub Actions secrets.
+# Workflow-only changes do not auto-deploy; use workflow_dispatch after the
+# separate production-deployment approval gate.
 
 on:
   push:
     branches:
       - main
     paths:
-      - ".github/workflows/railway_deploy.yml"
       - "api/**"
       - "core/**"
       - "dealix/**"
@@ -32,15 +33,13 @@ on:
         default: "dealix"
         type: string
 
-# Serialize deployments per backend service so each waiter can only observe
-# the deployment initiated by its own run.
 concurrency:
   group: railway-backend-${{ inputs.service || vars.RAILWAY_SERVICE_NAME || 'dealix' }}
   cancel-in-progress: false
 
 jobs:
   deploy:
-    name: 🚂 Deploy to Railway
+    name: Deploy to Railway
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
@@ -52,16 +51,21 @@ jobs:
           RAILWAY_API_TOKEN: ${{ secrets.RAILWAY_API_TOKEN }}
         run: |
           set -euo pipefail
-          if [ -n "$RAILWAY_TOKEN" ]; then
+          if [ -n "$RAILWAY_TOKEN" ] && [ -n "$RAILWAY_API_TOKEN" ]; then
+            echo "token_present=false" >> "$GITHUB_OUTPUT"
+            echo "token_mode=conflict" >> "$GITHUB_OUTPUT"
+            echo "::error::Configure exactly one Railway credential mode, not both."
+            exit 1
+          elif [ -n "$RAILWAY_TOKEN" ]; then
             echo "token_present=true" >> "$GITHUB_OUTPUT"
             echo "token_mode=project" >> "$GITHUB_OUTPUT"
           elif [ -n "$RAILWAY_API_TOKEN" ]; then
             echo "token_present=true" >> "$GITHUB_OUTPUT"
             echo "token_mode=account_or_workspace" >> "$GITHUB_OUTPUT"
           else
-            echo "::warning::Neither RAILWAY_TOKEN nor RAILWAY_API_TOKEN is configured."
             echo "token_present=false" >> "$GITHUB_OUTPUT"
             echo "token_mode=none" >> "$GITHUB_OUTPUT"
+            echo "::warning::Neither Railway credential is configured."
           fi
 
       - name: Install Railway CLI
@@ -76,18 +80,31 @@ jobs:
         id: railway_deploy
         if: steps.check_token.outputs.token_present == 'true'
         env:
-          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
-          RAILWAY_API_TOKEN: ${{ secrets.RAILWAY_API_TOKEN }}
+          RAILWAY_TOKEN: ${{ steps.check_token.outputs.token_mode == 'project' && secrets.RAILWAY_TOKEN || '' }}
+          RAILWAY_API_TOKEN: ${{ steps.check_token.outputs.token_mode == 'account_or_workspace' && secrets.RAILWAY_API_TOKEN || '' }}
           TOKEN_MODE: ${{ steps.check_token.outputs.token_mode }}
           INPUT_SERVICE: ${{ inputs.service }}
           CONFIG_SERVICE: ${{ vars.RAILWAY_SERVICE_NAME }}
           PROJECT_ID: ${{ vars.RAILWAY_PROJECT_ID }}
           ENVIRONMENT_NAME: ${{ vars.RAILWAY_ENVIRONMENT_NAME }}
         run: |
-          set -uo pipefail
+          set -Eeuo pipefail
           mkdir -p reports/ci
           LOG="reports/ci/railway-deploy.log"
           SERVICE="${INPUT_SERVICE:-${CONFIG_SERVICE:-dealix}}"
+
+          case "$TOKEN_MODE" in
+            project)
+              [ -n "$RAILWAY_TOKEN" ] && [ -z "$RAILWAY_API_TOKEN" ]
+              ;;
+            account_or_workspace)
+              [ -z "$RAILWAY_TOKEN" ] && [ -n "$RAILWAY_API_TOKEN" ]
+              ;;
+            *)
+              echo "::error::Unsupported Railway credential mode."
+              exit 1
+              ;;
+          esac
 
           cmd=(railway up --service "$SERVICE" --detach --json)
           if [ -n "$PROJECT_ID" ]; then
@@ -111,7 +128,7 @@ jobs:
               railway whoami || true
             else
               echo "== identity check =="
-              echo "Skipped account-level whoami for project-scoped RAILWAY_TOKEN."
+              echo "Skipped account-level whoami for project-scoped authentication."
             fi
             echo "== railway up =="
           } 2>&1 | tee "$LOG"
@@ -152,20 +169,35 @@ jobs:
           retention-days: 7
 
       - name: Wait for deployment to become active
+        id: railway_wait
         if: steps.railway_deploy.outcome == 'success'
         env:
-          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
-          RAILWAY_API_TOKEN: ${{ secrets.RAILWAY_API_TOKEN }}
+          RAILWAY_TOKEN: ${{ steps.check_token.outputs.token_mode == 'project' && secrets.RAILWAY_TOKEN || '' }}
+          RAILWAY_API_TOKEN: ${{ steps.check_token.outputs.token_mode == 'account_or_workspace' && secrets.RAILWAY_API_TOKEN || '' }}
+          TOKEN_MODE: ${{ steps.check_token.outputs.token_mode }}
           INPUT_SERVICE: ${{ inputs.service }}
           CONFIG_SERVICE: ${{ vars.RAILWAY_SERVICE_NAME }}
           PROJECT_ID: ${{ vars.RAILWAY_PROJECT_ID }}
           ENVIRONMENT_NAME: ${{ vars.RAILWAY_ENVIRONMENT_NAME }}
           TARGET_DEPLOYMENT_ID: ${{ steps.railway_deploy.outputs.deployment_id }}
         run: |
-          set -euo pipefail
+          set -Eeuo pipefail
           SERVICE="${INPUT_SERVICE:-${CONFIG_SERVICE:-dealix}}"
-          echo "Waiting for the Railway deployment created by this run for service '$SERVICE'..."
 
+          case "$TOKEN_MODE" in
+            project)
+              [ -n "$RAILWAY_TOKEN" ] && [ -z "$RAILWAY_API_TOKEN" ]
+              ;;
+            account_or_workspace)
+              [ -z "$RAILWAY_TOKEN" ] && [ -n "$RAILWAY_API_TOKEN" ]
+              ;;
+            *)
+              echo "::error::Unsupported Railway credential mode."
+              exit 1
+              ;;
+          esac
+
+          echo "Waiting for deployment $TARGET_DEPLOYMENT_ID for service '$SERVICE'..."
           for i in {1..80}; do
             cmd=(railway deployment list --service "$SERVICE" --limit 100 --json)
             if [ -n "$PROJECT_ID" ]; then
@@ -175,42 +207,40 @@ jobs:
               cmd+=(--environment "$ENVIRONMENT_NAME")
             fi
             "${cmd[@]}" > /tmp/railway-deployments.json
+
             read -r deployment_id deployment_status < <(
               python3 - <<'PY'
           import json
+          import os
           from pathlib import Path
 
           deployments = json.loads(Path("/tmp/railway-deployments.json").read_text())
           deployment = next(
-              (
-                  item
-                  for item in deployments
-                  if item.get("id") == __import__("os").environ["TARGET_DEPLOYMENT_ID"]
-              ),
+              (item for item in deployments if item.get("id") == os.environ["TARGET_DEPLOYMENT_ID"]),
               None,
           )
           if deployment is None:
               print("MISSING MISSING")
           else:
-              print(
-                  deployment.get("id", "MISSING"),
-                  deployment.get("status", "MISSING"),
-              )
+              print(deployment.get("id", "MISSING"), deployment.get("status", "MISSING"))
           PY
             )
+
             if [ "$deployment_id" != "$TARGET_DEPLOYMENT_ID" ]; then
-              echo "Attempt $i: Railway has not listed this run's deployment yet."
+              echo "Attempt $i: Railway has not listed this deployment yet."
               sleep 15
               continue
             fi
-            echo "Attempt $i: requested deployment status=$deployment_status"
 
+            echo "Attempt $i: deployment status=$deployment_status"
             case "$deployment_status" in
               SUCCESS)
-                echo "✅ Railway reports the new deployment as successful."
+                echo "Railway reports the exact deployment as successful."
+                echo "terminal_status=SUCCESS" >> "$GITHUB_OUTPUT"
                 exit 0
                 ;;
               FAILED|CRASHED|REMOVED|SKIPPED)
+                echo "terminal_status=$deployment_status" >> "$GITHUB_OUTPUT"
                 echo "::error::Railway deployment reached terminal status: $deployment_status"
                 exit 1
                 ;;
@@ -224,15 +254,97 @@ jobs:
             esac
           done
 
+          echo "terminal_status=TIMEOUT" >> "$GITHUB_OUTPUT"
           echo "::error::Railway deployment did not become successful within 20 minutes."
           exit 1
 
-      # CLI uploads may not expose Git commit metadata in `railway deployment list`.
-      # The exact deployment ID above proves which upload became active; the live
-      # /version check below is the authoritative commit-identity proof.
-      - name: Smoke test /healthz
+      - name: Capture exact Railway terminal diagnostics
+        if: failure() && steps.railway_deploy.outcome == 'success'
+        env:
+          RAILWAY_TOKEN: ${{ steps.check_token.outputs.token_mode == 'project' && secrets.RAILWAY_TOKEN || '' }}
+          RAILWAY_API_TOKEN: ${{ steps.check_token.outputs.token_mode == 'account_or_workspace' && secrets.RAILWAY_API_TOKEN || '' }}
+          TOKEN_MODE: ${{ steps.check_token.outputs.token_mode }}
+          INPUT_SERVICE: ${{ inputs.service }}
+          CONFIG_SERVICE: ${{ vars.RAILWAY_SERVICE_NAME }}
+          ENVIRONMENT_NAME: ${{ vars.RAILWAY_ENVIRONMENT_NAME }}
+          TARGET_DEPLOYMENT_ID: ${{ steps.railway_deploy.outputs.deployment_id }}
+          TERMINAL_STATUS: ${{ steps.railway_wait.outputs.terminal_status }}
+        run: |
+          set -Eeuo pipefail
+          mkdir -p reports/ci
+          SERVICE="${INPUT_SERVICE:-${CONFIG_SERVICE:-dealix}}"
+          LOG="reports/ci/railway-terminal.log"
+
+          case "$TOKEN_MODE" in
+            project)
+              [ -n "$RAILWAY_TOKEN" ] && [ -z "$RAILWAY_API_TOKEN" ]
+              ;;
+            account_or_workspace)
+              [ -z "$RAILWAY_TOKEN" ] && [ -n "$RAILWAY_API_TOKEN" ]
+              ;;
+            *)
+              echo "::error::Unsupported Railway credential mode."
+              exit 1
+              ;;
+          esac
+
+          {
+            echo "commit=${GITHUB_SHA}"
+            echo "service=${SERVICE}"
+            echo "deployment_id=${TARGET_DEPLOYMENT_ID}"
+            echo "terminal_status=${TERMINAL_STATUS:-UNKNOWN}"
+            echo "== exact deployment metadata =="
+          } > "$LOG"
+
+          if [ -s /tmp/railway-deployments.json ]; then
+            TARGET_DEPLOYMENT_ID="$TARGET_DEPLOYMENT_ID" python3 - <<'PY' \
+              > reports/ci/railway-terminal-deployment.json
+          import json
+          import os
+          from pathlib import Path
+
+          deployments = json.loads(Path("/tmp/railway-deployments.json").read_text())
+          target = next(
+              (item for item in deployments if item.get("id") == os.environ["TARGET_DEPLOYMENT_ID"]),
+              {"id": os.environ["TARGET_DEPLOYMENT_ID"], "status": "MISSING"},
+          )
+          print(json.dumps(target, indent=2, sort_keys=True))
+          PY
+            cat reports/ci/railway-terminal-deployment.json >> "$LOG"
+          else
+            echo "deployment_list_snapshot=missing" >> "$LOG"
+          fi
+
+          log_common=(--service "$SERVICE" --lines 250)
+          if [ -n "$ENVIRONMENT_NAME" ]; then
+            log_common+=(--environment "$ENVIRONMENT_NAME")
+          fi
+
+          {
+            echo
+            echo "== build logs for exact deployment =="
+            railway logs "$TARGET_DEPLOYMENT_ID" "${log_common[@]}" --build || true
+            echo
+            echo "== deployment logs for exact deployment =="
+            railway logs "$TARGET_DEPLOYMENT_ID" "${log_common[@]}" --deployment || true
+          } >> "$LOG" 2>&1
+
+          echo "Captured exact failed-deployment diagnostics without exposing credentials."
+
+      - name: Upload Railway terminal diagnostics
+        if: always() && steps.railway_deploy.outcome == 'success' && steps.railway_wait.outcome != 'success'
+        uses: actions/upload-artifact@v7
+        with:
+          name: railway-terminal-diagnostics
+          path: |
+            reports/ci/railway-terminal.log
+            reports/ci/railway-terminal-deployment.json
+          if-no-files-found: warn
+          retention-days: 7
+
+      - name: Smoke test health and release identity
         id: healthz
-        if: steps.railway_deploy.outcome == 'success'
+        if: steps.railway_deploy.outcome == 'success' && steps.railway_wait.outcome == 'success'
         run: |
           set -euo pipefail
           URL="${{ vars.RAILWAY_PUBLIC_URL || 'https://api.dealix.me' }}"
@@ -266,12 +378,13 @@ jobs:
               print("")
           PY
             )
-            echo "Attempt $i: healthz_status=$(echo "$hz" | python3 -c 'import json,sys; print(json.load(sys.stdin).get("status", ""))' 2>/dev/null || true) git_sha=$live_sha version=$ver meta=$meta"
+            health_status=$(echo "$hz" | python3 -c 'import json,sys; print(json.load(sys.stdin).get("status", ""))' 2>/dev/null || true)
+            echo "Attempt $i: healthz_status=$health_status git_sha=$live_sha version=$ver meta=$meta"
             if [ "$ver" = "200" ] \
               && [ "$meta" = "200" ] \
               && [ -n "$live_sha" ] \
               && [ "${GITHUB_SHA,,}" = "${live_sha,,}" ]; then
-              echo "✅ trust layer proves the requested SHA: $live_sha"
+              echo "Trust layer proves the requested SHA: $live_sha"
               exit 0
             fi
             sleep 15
@@ -287,7 +400,7 @@ jobs:
           DEALIX_API_KEY: ${{ secrets.DEALIX_API_KEY }}
         run: |
           set -euo pipefail
-          echo "→ public pricing must not expose the retired 499 offer"
+          echo "Checking that public pricing does not expose the retired 499 offer."
           pricing=$(curl -fsS --max-time 10 "$BASE_URL/api/v1/pricing/plans")
           PRICING_JSON="$pricing" python3 - <<'PY'
           import json
@@ -300,16 +413,15 @@ jobs:
             exit 1
           fi
 
-          echo "→ protected prospect diagnostic rejects anonymous access"
+          echo "Checking anonymous access rejection for the protected diagnostic."
           code=$(curl -sS -o /dev/null -w "%{http_code}" --max-time 10 \
             "$BASE_URL/api/v1/prospect/search-diag")
           if [ "$code" != "401" ] && [ "$code" != "403" ]; then
             echo "::error::Protected diagnostic returned $code anonymously."
             exit 1
           fi
-          echo "✓ protected diagnostic rejects anonymous access"
 
-          echo "→ protected prospect diagnostic accepts the service credential"
+          echo "Checking service-credential access for the protected diagnostic."
           if [ -z "$DEALIX_API_KEY" ]; then
             echo "::error::DEALIX_API_KEY is required for the positive protected smoke."
             exit 1
@@ -319,24 +431,23 @@ jobs:
             "$BASE_URL/api/v1/prospect/search-diag" \
             | python3 -c "import sys,json; d=json.load(sys.stdin); print('tier1=', d.get('tier1_ready'), 'tier2=', d.get('tier2_ready'))"
 
-          echo "→ auth boundary rejects anonymous session access"
+          echo "Checking anonymous session rejection."
           auth_code=$(curl -sS -o /dev/null -w "%{http_code}" --max-time 10 \
             "$BASE_URL/api/v1/auth/me")
           if [ "$auth_code" != "401" ] && [ "$auth_code" != "403" ]; then
             echo "::error::Anonymous auth smoke returned $auth_code, expected 401/403."
             exit 1
           fi
-          echo "✓ anonymous session rejected"
 
-          echo "→ webhook 401-on-bad-signature (security smoke)"
+          echo "Checking webhook rejection for a bad signature."
           code=$(curl -sS -o /dev/null -w "%{http_code}" --max-time 10 \
             -X POST "$BASE_URL/api/v1/webhooks/moyasar" \
             -H "Content-Type: application/json" \
             -H "X-Moyasar-Signature: bogus" \
             -d '{"event":"payment_paid","data":{}}')
           if [ "$code" != "401" ] && [ "$code" != "403" ]; then
-            echo "::error::Moyasar webhook accepted bad signature (got $code, expected 401/403)"
+            echo "::error::Moyasar webhook accepted bad signature (got $code, expected 401/403)."
             exit 1
           fi
-          echo "✓ webhook rejected bad signature"
-          echo "✅ post-deploy smoke pack passed"
+
+          echo "Post-deploy smoke pack passed."

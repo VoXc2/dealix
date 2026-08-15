@@ -12,10 +12,134 @@ jobs:
   production-watchdog:
     runs-on: ubuntu-latest
     steps:
-      - name: Check production
+      - name: Prove watchdog TSV parser preserves empty fields
+        shell: bash
         run: |
-          set -e
-          curl -fsS https://api.dealix.me/healthz
-          curl -fsS https://web-production-380c3.up.railway.app/ar/demo >/dev/null
-          curl -fsS https://web-production-380c3.up.railway.app/revenue-os >/dev/null
+          set -Eeuo pipefail
+          python3 - <<'PY'
+          import csv
+          import io
+
+          sample = (
+              "name\turl\thttp_status\tcontent_type\tbytes\tcurl_exit\n"
+              "tls-failure\thttps://example.invalid\t000\t\t0\t6\n"
+          )
+          row = next(csv.DictReader(io.StringIO(sample), delimiter="\t"))
+          assert row == {
+              "name": "tls-failure",
+              "url": "https://example.invalid",
+              "http_status": "000",
+              "content_type": "",
+              "bytes": "0",
+              "curl_exit": "6",
+          }
+          print("PRODUCTION_WATCHDOG_TSV_EMPTY_FIELD_CONTRACT=PASS")
+          PY
+
+      - name: Check production surfaces with attributable evidence
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+
+          report_dir="production-watchdog-report"
+          mkdir -p "$report_dir"
+          report="$report_dir/summary.tsv"
+          printf 'name\turl\thttp_status\tcontent_type\tbytes\tcurl_exit\n' > "$report"
+
+          failures=0
+
+          check_url() {
+            local name="$1"
+            local url="$2"
+            local body="$report_dir/${name}.body"
+            local headers="$report_dir/${name}.headers"
+            local curl_exit=0
+            local http_status
+
+            set +e
+            http_status="$(
+              curl \
+                --silent \
+                --show-error \
+                --location \
+                --connect-timeout 10 \
+                --max-time 30 \
+                --output "$body" \
+                --dump-header "$headers" \
+                --write-out '%{http_code}' \
+                "$url"
+            )"
+            curl_exit=$?
+            set -e
+
+            if [ -z "$http_status" ]; then
+              http_status="000"
+            fi
+
+            local content_type
+            content_type="$(
+              awk -F': *' 'tolower($1) == "content-type" { value=$2 } END { gsub(/\r/, "", value); print value }' "$headers" 2>/dev/null || true
+            )"
+            local bytes
+            bytes="$(wc -c < "$body" 2>/dev/null || printf '0')"
+
+            printf '%s\t%s\t%s\t%s\t%s\t%s\n' \
+              "$name" "$url" "$http_status" "$content_type" "$bytes" "$curl_exit" \
+              | tee -a "$report"
+
+            if [ "$curl_exit" -ne 0 ] || ! [[ "$http_status" =~ ^[23][0-9][0-9]$ ]]; then
+              failures=$((failures + 1))
+              printf 'PRODUCTION_WATCHDOG_SURFACE=FAIL name=%s status=%s curl_exit=%s\n' \
+                "$name" "$http_status" "$curl_exit"
+            else
+              printf 'PRODUCTION_WATCHDOG_SURFACE=PASS name=%s status=%s\n' \
+                "$name" "$http_status"
+            fi
+          }
+
+          check_url "api-healthz" "https://api.dealix.me/healthz"
+          check_url "railway-ar-demo" "https://web-production-380c3.up.railway.app/ar/demo"
+          check_url "railway-revenue-os" "https://web-production-380c3.up.railway.app/revenue-os"
+
+          REPORT_PATH="$report" FAILURE_COUNT="$failures" python3 - <<'PY' \
+            >> "$GITHUB_STEP_SUMMARY"
+          import csv
+          import os
+          from pathlib import Path
+
+          report = Path(os.environ["REPORT_PATH"])
+          failures = int(os.environ["FAILURE_COUNT"])
+
+          print("## Production Watchdog")
+          print()
+          print("| Surface | HTTP | curl exit | Bytes | Content-Type |")
+          print("|---|---:|---:|---:|---|")
+          with report.open(encoding="utf-8", newline="") as handle:
+              for row in csv.DictReader(handle, delimiter="\t"):
+                  content_type = (row.get("content_type") or "<missing>").replace(
+                      "|", "\\|"
+                  )
+                  print(
+                      f"| `{row['name']}` | `{row['http_status']}` | "
+                      f"`{row['curl_exit']}` | `{row['bytes']}` | "
+                      f"`{content_type}` |"
+                  )
+          print()
+          print(f"Failures: **{failures}**")
+          PY
+
+          if [ "$failures" -ne 0 ]; then
+            echo "PRODUCTION_WATCHDOG=FAIL failures=$failures"
+            exit 1
+          fi
+
           echo "PRODUCTION_WATCHDOG=PASS"
+
+      - name: Upload watchdog evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: production-watchdog-${{ github.run_id }}
+          path: production-watchdog-report/
+          if-no-files-found: error
+          retention-days: 14
