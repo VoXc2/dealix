@@ -13,6 +13,9 @@ if [ -z "${DATABASE_URL:-}" ]; then
   exit 0
 fi
 
+echo "RAILWAY_PREDEPLOY: checking Alembic version-table capacity"
+python scripts/ops/check_alembic_version_capacity.py
+
 echo "RAILWAY_PREDEPLOY: alembic upgrade head"
 
 if command -v alembic >/dev/null 2>&1; then
