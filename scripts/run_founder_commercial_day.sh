@@ -56,6 +56,13 @@ echo "  date: $DATE"
 echo "  dry_run: $DRY_RUN"
 echo ""
 
+# A dry-run is a read-only plan preview. Keep this exit before production
+# probes and every generator/importer so verification cannot mutate tracked
+# operating data, local ledgers, drafts, or remote APIs.
+if [[ "$DRY_RUN" -eq 1 ]]; then
+  exec "$PYTHON_BIN" "$ROOT/scripts/founder_revenue_day_runner.py" --dry-run
+fi
+
 echo "== 0a/7 Agent work packets (today) =="
 $PYTHON_BIN "$ROOT/scripts/print_agent_work_packets.py" --cadence daily || true
 echo ""
@@ -72,10 +79,6 @@ echo ""
 echo "== Expand stack (targeting + social + content) =="
 $PYTHON_BIN "$ROOT/scripts/expand_commercial_operating_stack.py" --daily || true
 echo ""
-
-if [[ "$DRY_RUN" -eq 1 ]]; then
-  exec "$PYTHON_BIN" "$ROOT/scripts/founder_revenue_day_runner.py" --dry-run
-fi
 
 DAILY_ARGS=(--api-only)
 if [[ -z "$ADMIN_KEY" ]]; then
