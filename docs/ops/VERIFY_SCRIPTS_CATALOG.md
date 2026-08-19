@@ -7,7 +7,7 @@ regenerate with:
 python3 scripts/ops/build_verify_catalog.py > docs/ops/VERIFY_SCRIPTS_CATALOG.md
 ```
 
-Total scripts: 62
+Total scripts: 63
 
 | Script | Purpose |
 |---|---|
@@ -49,6 +49,7 @@ Total scripts: 62
 | `scripts/verify_gtm_public_surfaces.py` | Verify GTM public surfaces registry + API trust endpoints (repo + optional live). |
 | `scripts/verify_gtm_stack.py` | Verify GTM stack docs, config, and snapshot. |
 | `scripts/verify_integrations_activation.py` | Verify external integration env + suggest founder_integration_truth.yaml updates. |
+| `scripts/verify_minimum_data_pilot_profile.py` | Fail-closed verifier for Dealix's minimum-data first-pilot profile. |
 | `scripts/verify_mobile_control_room.py` | (no docstring — needs one) |
 | `scripts/verify_moyasar_e2e.py` | Moyasar sandbox E2E checklist — webhook route + side-effects (no live charge). |
 | `scripts/verify_no_auto_external_send.py` | Verify Dealix does not enable uncontrolled external sending in test/release gates. |

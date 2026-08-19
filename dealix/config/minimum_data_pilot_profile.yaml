@@ -1,0 +1,153 @@
+version: "1.1"
+updated: "2026-08-19"
+profile_id: revenue_command_minimum_data_v1
+status: technical_profile_only
+legal_effect: none
+purpose: >-
+  Run one bounded Revenue Command Pilot using pseudonymous references and
+  aggregate business metrics only, while the broader customer-data/privacy gate
+  remains open.
+
+product:
+  identity: "Dealix — Saudi-first AI Business Operating System"
+  wedge: "Revenue + Proof + Command"
+  motion: revenue_command_pilot_30d
+  one_icp: true
+  one_revenue_workflow: true
+
+hard_blocks:
+  personal_data_allowed: false
+  sensitive_personal_data_allowed: false
+  raw_contact_data_allowed: false
+  raw_message_bodies_allowed: false
+  meeting_transcripts_allowed: false
+  customer_file_uploads_allowed: false
+  crm_raw_export_allowed: false
+  payment_or_bank_data_allowed: false
+  identity_documents_allowed: false
+  employee_hr_data_allowed: false
+  health_data_allowed: false
+  credentials_or_secrets_allowed: false
+  external_send_allowed: false
+  live_checkout_or_charge_allowed: false
+  production_mutation_allowed: false
+  legal_or_compliance_conclusion_allowed: false
+
+allowed_data_classes:
+  - id: company_public_facts
+    description: Approved non-personal company facts remain behind an opaque company_context_source_ref; raw text is not carried in the minimum-data dataset.
+    provenance_required: true
+  - id: company_operating_context
+    description: Approved non-personal operating context remains behind opaque company/ICP/workflow/acceptance references; raw notes are not carried in the minimum-data dataset.
+    provenance_required: true
+  - id: pseudonymous_opportunity
+    description: Customer-generated opaque opportunity ID plus stage, age, value band, status and next-action state; no person, email, phone, message body or free-text notes.
+    provenance_required: true
+  - id: aggregate_baseline_metric
+    description: Aggregate numeric counts, rates or durations with opaque definition/window/source references; no arbitrary metric free text.
+    provenance_required: true
+  - id: approval_metadata
+    description: Approval status and policy/role references using role/opaque IDs rather than human names.
+    provenance_required: true
+  - id: non_personal_proof_event
+    description: Outcome/proof records containing aggregate or pseudonymous business evidence only.
+    provenance_required: true
+  - id: technical_run_metadata
+    description: Tenant-scoped run/action/proof IDs, status, latency/cost/risk metadata without prompt bodies, secrets or personal identifiers.
+    provenance_required: true
+
+prohibited_fields:
+  - full_name
+  - first_name
+  - last_name
+  - personal_email
+  - work_email
+  - phone
+  - whatsapp_number
+  - linkedin_profile
+  - national_id
+  - iqama
+  - passport
+  - bank_account
+  - iban
+  - card_data
+  - home_address
+  - precise_person_location
+  - health_record
+  - employee_record
+  - message_body
+  - transcript
+  - recording
+  - raw_prompt_with_personal_data
+  - api_key
+  - password
+  - access_token
+  - refresh_token
+
+free_text_policy:
+  default_allowed: false
+  allowed_fields: []
+  rule: >-
+    The exact typed minimum-data Pilot dataset accepts no arbitrary free-text
+    business notes. Company/ICP/workflow/acceptance context must be represented
+    by approved opaque source references. If personal or sensitive content is
+    detected or suspected in any referenced source, reject/quarantine it before
+    that source is eligible for this profile.
+
+minimum_required_inputs:
+  - tenant_id
+  - company_id
+  - company_context_source_ref
+  - icp_id
+  - workflow_id
+  - acceptance_criteria_ref
+  - accountable_owner_role
+  - approval_policy_ref
+  - proof_target_id
+  - baseline_metrics
+
+outputs:
+  allowed:
+    - company_brain_candidate_facts
+    - pseudonymous_opportunity_priorities
+    - internal_next_best_actions
+    - approval_queue_items
+    - executive_command_brief
+    - aggregate_weekly_proof_pack
+    - final_outcome_review
+    - learning_proposal
+  prohibited:
+    - customer_facing_send
+    - named_person_outreach_draft_from_imported_contact_data
+    - invoice_or_payment_request
+    - legal_compliance_opinion
+    - public_customer_claim
+
+exit_conditions:
+  pilot_can_start_only_if:
+    - named_customer_scope_approved
+    - this_profile_is_accepted_for_the_exact_dataset
+    - no_personal_or_sensitive_data_is_required_for_the_scoped_workflow
+    - baseline_and_proof_path_are_defined
+    - approval_owner_and_delivery_owner_are_defined
+    - production_and_tenant_controls_required_by_the_workflow_are_green
+  expand_data_scope_only_if:
+    - broader_data_flow_register_is_completed
+    - accountable_privacy_legal_decisions_are_recorded_where_required
+    - tenant_suppression_retention_deletion_controls_are_proven_for_the_new_scope
+    - customer_specific_terms_match_the_actual_processing
+
+fail_closed:
+  missing_profile_or_dataset_approval: reject
+  unknown_data_class: reject
+  prohibited_field_present: reject
+  personal_data_detected_or_suspected: quarantine
+  sensitive_data_detected_or_suspected: quarantine
+  external_effect_requested: approval_block_and_product_block
+  legal_or_compliance_conclusion_requested: human_only
+
+proof_labels:
+  synthetic: never_customer_proof
+  internal_dealix: internal_only
+  minimum_data_customer_pilot: customer_evidence_only_if_same_company_and_source_bound
+  publication: separate_written_permission_required

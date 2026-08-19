@@ -1,0 +1,50 @@
+{
+  "profile_id": "revenue_command_minimum_data_v1",
+  "tenant_id": "tenant_example_001",
+  "company_id": "company_example_001",
+  "company_context_source_ref": "company_context_example_001",
+  "icp_id": "icp_example_001",
+  "workflow_id": "lead_to_cash_001",
+  "acceptance_criteria_ref": "acceptance_example_001",
+  "approval_policy_ref": "approval_policy_example_001",
+  "proof_target_id": "proof_target_example_001",
+  "accountable_owner_role": "founder",
+  "baseline_metrics": [
+    {
+      "metric_id": "metric_next_action_coverage",
+      "metric_definition_ref": "metric_definition_next_action_coverage",
+      "value": 62.0,
+      "unit": "percent",
+      "source_ref": "source_customer_aggregate_001",
+      "measurement_window_ref": "window_previous_30_days"
+    },
+    {
+      "metric_id": "metric_overdue_approvals",
+      "metric_definition_ref": "metric_definition_overdue_approvals",
+      "value": 7.0,
+      "unit": "count",
+      "source_ref": "source_customer_aggregate_001",
+      "measurement_window_ref": "window_snapshot_day_0"
+    }
+  ],
+  "opportunities": [
+    {
+      "opportunity_id": "OPP-017",
+      "stage": "proposal",
+      "age_days": 19,
+      "value_band": "medium",
+      "next_action_status": "missing",
+      "owner_role": "sales_manager",
+      "source_ref": "source_customer_aggregate_001"
+    },
+    {
+      "opportunity_id": "OPP-023",
+      "stage": "approval",
+      "age_days": 11,
+      "value_band": "high",
+      "next_action_status": "blocked",
+      "owner_role": "sales_manager",
+      "source_ref": "source_customer_aggregate_001"
+    }
+  ]
+}
