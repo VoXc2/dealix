@@ -2,7 +2,8 @@
 
 These tests never call Railway or Dealix production. They prove that the
 workflow text preserves attributable evidence, uses one Railway credential
-mode at a time, and keeps Watchdog evidence columns correctly attributed.
+mode at a time, sanitizes environment posture without exposing values, and
+keeps Watchdog evidence columns correctly attributed.
 """
 
 from __future__ import annotations
@@ -43,11 +44,27 @@ def test_watchdog_uses_csv_parser_not_whitespace_splitting() -> None:
 
 
 def test_watchdog_records_each_surface_before_failing() -> None:
-    for surface in ("api-healthz", "railway-ar-demo", "railway-revenue-os"):
+    for surface in (
+        "public-home",
+        "public-ar",
+        "api-healthz",
+        "railway-ar-demo",
+        "railway-revenue-os",
+    ):
         assert f'check_url "{surface}"' in WATCHDOG
     assert "if [ \"$failures\" -ne 0 ]" in WATCHDOG
     assert "if: always()" in WATCHDOG
     assert "production-watchdog-report/" in WATCHDOG
+
+
+def test_watchdog_rejects_github_pages_as_canonical_public_frontend() -> None:
+    assert 'check_url "public-home" "https://dealix.me/"' in WATCHDOG
+    assert 'check_url "public-ar" "https://dealix.me/ar"' in WATCHDOG
+    assert '"$report_dir/public-home.headers"' in WATCHDOG
+    assert '"${public_server,,}" == *"github.com"*' in WATCHDOG
+    assert "github_pages_is_not_canonical_frontend" in WATCHDOG
+    assert "PRODUCTION_WATCHDOG_FRONTEND_ORIGIN=FAIL" in WATCHDOG
+    assert "PRODUCTION_WATCHDOG_FRONTEND_ORIGIN=PASS" in WATCHDOG
 
 
 def test_workflow_only_merge_does_not_auto_deploy() -> None:
@@ -86,7 +103,65 @@ def test_railway_diagnostics_are_bound_to_exact_deployment() -> None:
     assert 'railway logs "$TARGET_DEPLOYMENT_ID"' in RAILWAY
     assert "--build || true" in RAILWAY
     assert "--deployment || true" in RAILWAY
+    assert "== default logs for exact deployment ==" in RAILWAY
+    assert "== error/warning logs for exact deployment ==" in RAILWAY
     assert "railway-terminal-deployment.json" in RAILWAY
+
+
+def test_terminal_diagnostics_bind_variable_inventory_to_project() -> None:
+    """Account/workspace-token diagnostics must select the intended Railway project."""
+    assert RAILWAY.count("PROJECT_ID: ${{ vars.RAILWAY_PROJECT_ID }}") == 3
+    diagnostics = RAILWAY.split(
+        "      - name: Capture exact Railway terminal diagnostics", 1
+    )[1].split("      - name: Upload Railway terminal diagnostics", 1)[0]
+    variable_command = diagnostics.split(
+        '          variable_cmd=(railway variable list --service "$SERVICE" --json)', 1
+    )[1].split("          set +e", 1)[0]
+    assert 'if [ -n "$PROJECT_ID" ]; then' in variable_command
+    assert 'variable_cmd+=(--project "$PROJECT_ID")' in variable_command
+    assert 'variable_cmd+=(--environment "$ENVIRONMENT_NAME")' in variable_command
+    assert variable_command.index("--project") < variable_command.index("--environment")
+
+
+def test_terminal_diagnostics_record_only_sanitized_variable_posture() -> None:
+    """Read Railway variables but never persist or print their raw values."""
+    assert 'railway variable list --service "$SERVICE" --json' in RAILWAY
+    assert "railway-terminal-config-posture.json" in RAILWAY
+    for field in (
+        "variable_inventory_readable",
+        "run_railway_pre_deploy_migrate_enabled",
+        "database_url_configured",
+        "app_secret_key_configured",
+        "app_secret_key_valid",
+        "jwt_secret_key_configured",
+        "jwt_secret_key_valid",
+        "api_keys_configured",
+        "admin_api_keys_configured",
+        "orchestrator_backend",
+        "app_env",
+        "fresh_db_bootstrap_enabled",
+        "alembic_version_widen_enabled",
+    ):
+        assert field in RAILWAY
+
+    assert 'app_env_raw = (value("APP_ENV") or value("ENVIRONMENT")).lower()' in RAILWAY
+    assert 'app_secret = value("APP_SECRET_KEY")' in RAILWAY
+    assert 'jwt_secret = value("JWT_SECRET_KEY")' in RAILWAY
+    assert '"change-me", "CHANGE_ME_to_64_byte_hex", "changeme"' in RAILWAY
+    assert '"change-me" not in jwt_secret and len(jwt_secret) >= 32' in RAILWAY
+    assert '"app_secret_key_valid": app_secret_valid' in RAILWAY
+    assert '"jwt_secret_key_valid": jwt_secret_valid' in RAILWAY
+    assert '"api_keys_configured": bool(value("API_KEYS"))' in RAILWAY
+    assert '"admin_api_keys_configured": bool(value("ADMIN_API_KEYS"))' in RAILWAY
+
+    forbidden = (
+        "cat /tmp/railway-vars.json",
+        "cat \"/tmp/railway-vars.json\"",
+        "cp /tmp/railway-vars.json",
+        "reports/ci/railway-vars.json",
+    )
+    for raw_export in forbidden:
+        assert raw_export not in RAILWAY
 
 
 def test_railway_smoke_waits_for_exact_deployment_success() -> None:

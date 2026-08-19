@@ -266,6 +266,7 @@ jobs:
           TOKEN_MODE: ${{ steps.check_token.outputs.token_mode }}
           INPUT_SERVICE: ${{ inputs.service }}
           CONFIG_SERVICE: ${{ vars.RAILWAY_SERVICE_NAME }}
+          PROJECT_ID: ${{ vars.RAILWAY_PROJECT_ID }}
           ENVIRONMENT_NAME: ${{ vars.RAILWAY_ENVIRONMENT_NAME }}
           TARGET_DEPLOYMENT_ID: ${{ steps.railway_deploy.outputs.deployment_id }}
           TERMINAL_STATUS: ${{ steps.railway_wait.outputs.terminal_status }}
@@ -315,11 +316,103 @@ jobs:
             echo "deployment_list_snapshot=missing" >> "$LOG"
           fi
 
+          variable_cmd=(railway variable list --service "$SERVICE" --json)
+          if [ -n "$PROJECT_ID" ]; then
+            variable_cmd+=(--project "$PROJECT_ID")
+          fi
+          if [ -n "$ENVIRONMENT_NAME" ]; then
+            variable_cmd+=(--environment "$ENVIRONMENT_NAME")
+          fi
+          set +e
+          "${variable_cmd[@]}" > /tmp/railway-vars.json 2> /tmp/railway-vars.err
+          variable_rc=$?
+          set -e
+
+          if [ "$variable_rc" -eq 0 ]; then
+            python3 - <<'PY' > reports/ci/railway-terminal-config-posture.json
+          import json
+          from pathlib import Path
+
+          raw = json.loads(Path("/tmp/railway-vars.json").read_text())
+          source = raw.get("variables", raw) if isinstance(raw, dict) else raw
+          values: dict[str, str] = {}
+          if isinstance(source, dict):
+              for key, value in source.items():
+                  if isinstance(value, dict):
+                      value = value.get("value", "")
+                  if value is not None:
+                      values[str(key)] = str(value)
+          elif isinstance(source, list):
+              for item in source:
+                  if not isinstance(item, dict):
+                      continue
+                  key = item.get("name") or item.get("key")
+                  if not key:
+                      continue
+                  value = item.get("value", "")
+                  values[str(key)] = "" if value is None else str(value)
+
+          def value(name: str) -> str:
+              return values.get(name, "").strip()
+
+          app_env_raw = (value("APP_ENV") or value("ENVIRONMENT")).lower()
+          app_env = app_env_raw if app_env_raw in {
+              "production", "prod", "staging", "stage", "development", "dev", "test"
+          } else ("configured_other" if app_env_raw else "unset")
+          backend_raw = value("DEALIX_ORCHESTRATOR_BACKEND").lower()
+          backend = backend_raw if backend_raw in {"postgres", "json", "memory"} else (
+              "configured_other" if backend_raw else "unset"
+          )
+          app_secret = value("APP_SECRET_KEY")
+          jwt_secret = value("JWT_SECRET_KEY")
+          app_secret_valid = bool(app_secret) and app_secret not in {
+              "change-me", "CHANGE_ME_to_64_byte_hex", "changeme"
+          }
+          jwt_secret_valid = (
+              bool(jwt_secret) and "change-me" not in jwt_secret and len(jwt_secret) >= 32
+          )
+
+          posture = {
+              "variable_inventory_readable": True,
+              "run_railway_pre_deploy_migrate_enabled": value("RUN_RAILWAY_PRE_DEPLOY_MIGRATE") == "1",
+              "database_url_configured": bool(value("DATABASE_URL")),
+              "app_secret_key_configured": bool(app_secret),
+              "app_secret_key_valid": app_secret_valid,
+              "jwt_secret_key_configured": bool(jwt_secret),
+              "jwt_secret_key_valid": jwt_secret_valid,
+              "api_keys_configured": bool(value("API_KEYS")),
+              "admin_api_keys_configured": bool(value("ADMIN_API_KEYS")),
+              "orchestrator_backend": backend,
+              "app_env": app_env,
+              "fresh_db_bootstrap_enabled": value("DEALIX_ALLOW_FRESH_DB_BOOTSTRAP") == "1",
+              "alembic_version_widen_enabled": value("DEALIX_ALLOW_ALEMBIC_VERSION_WIDEN") == "1",
+          }
+          print(json.dumps(posture, indent=2, sort_keys=True))
+          PY
+          else
+            VARIABLE_RC="$variable_rc" python3 - <<'PY' \
+              > reports/ci/railway-terminal-config-posture.json
+          import json
+          import os
+
+          print(json.dumps({
+              "variable_inventory_readable": False,
+              "variable_list_exit_code": int(os.environ["VARIABLE_RC"]),
+              "reason": "railway_variable_list_failed",
+          }, indent=2, sort_keys=True))
+          PY
+          fi
+
+          {
+            echo
+            echo "== sanitized configuration posture =="
+            cat reports/ci/railway-terminal-config-posture.json
+          } >> "$LOG"
+
           log_common=(--service "$SERVICE" --lines 250)
           if [ -n "$ENVIRONMENT_NAME" ]; then
             log_common+=(--environment "$ENVIRONMENT_NAME")
           fi
-
           {
             echo
             echo "== build logs for exact deployment =="
@@ -327,9 +420,16 @@ jobs:
             echo
             echo "== deployment logs for exact deployment =="
             railway logs "$TARGET_DEPLOYMENT_ID" "${log_common[@]}" --deployment || true
+            echo
+            echo "== default logs for exact deployment =="
+            railway logs "$TARGET_DEPLOYMENT_ID" "${log_common[@]}" || true
+            echo
+            echo "== error/warning logs for exact deployment =="
+            railway logs "$TARGET_DEPLOYMENT_ID" "${log_common[@]}" --filter '@level:error OR @level:warn' || true
           } >> "$LOG" 2>&1
 
-          echo "Captured exact failed-deployment diagnostics without exposing credentials."
+          rm -f /tmp/railway-vars.json /tmp/railway-vars.err
+          echo "Captured exact failed-deployment diagnostics without exposing credentials or raw variables."
 
       - name: Upload Railway terminal diagnostics
         if: always() && steps.railway_deploy.outcome == 'success' && steps.railway_wait.outcome != 'success'
@@ -339,6 +439,7 @@ jobs:
           path: |
             reports/ci/railway-terminal.log
             reports/ci/railway-terminal-deployment.json
+            reports/ci/railway-terminal-config-posture.json
           if-no-files-found: warn
           retention-days: 7
 

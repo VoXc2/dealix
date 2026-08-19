@@ -97,9 +97,24 @@ jobs:
             fi
           }
 
+          check_url "public-home" "https://dealix.me/"
+          check_url "public-ar" "https://dealix.me/ar"
           check_url "api-healthz" "https://api.dealix.me/healthz"
           check_url "railway-ar-demo" "https://web-production-380c3.up.railway.app/ar/demo"
           check_url "railway-revenue-os" "https://web-production-380c3.up.railway.app/revenue-os"
+
+          public_server="$(
+            awk -F': *' 'tolower($1) == "server" { value=$2 } END { gsub(/\r/, "", value); print value }' \
+              "$report_dir/public-home.headers" 2>/dev/null || true
+          )"
+          if [[ "${public_server,,}" == *"github.com"* ]]; then
+            failures=$((failures + 1))
+            printf 'PRODUCTION_WATCHDOG_FRONTEND_ORIGIN=FAIL server=%s reason=github_pages_is_not_canonical_frontend\n' \
+              "$public_server"
+          else
+            printf 'PRODUCTION_WATCHDOG_FRONTEND_ORIGIN=PASS server=%s\n' \
+              "${public_server:-<missing>}"
+          fi
 
           REPORT_PATH="$report" FAILURE_COUNT="$failures" python3 - <<'PY' \
             >> "$GITHUB_STEP_SUMMARY"
