@@ -57,13 +57,10 @@ async def get_session() -> AsyncGenerator[AsyncSession, None]:
 
 
 async def init_db() -> None:
-    """Create all tables (dev only — production uses Alembic)."""
-    # Side-effect import — registers RevenueEventRecord on Base.metadata
-    # (model lives in db/models_revenue_events.py to avoid bloating models.py).
-    import db.models_revenue_events
-    import db.models_company_targeting
-    import db.models_commercial_intelligence
+    """Create all registered tables (development only)."""
+    from db.model_registry import load_all_models
     from db.models import Base
 
+    load_all_models()
     async with _engine().begin() as conn:
         await conn.run_sync(Base.metadata.create_all)

@@ -1,0 +1,488 @@
+name: P0 1077 Fresh PostgreSQL Bootstrap
+run-name: P0 1077 Fresh PostgreSQL Bootstrap @ ${{ github.event.pull_request.head.sha || github.sha }}
+
+concurrency:
+  group: p0-1077-fresh-postgres-bootstrap-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - alembic.ini
+      - auto_client_acquisition/proof_ledger/postgres_backend.py
+      - db/fresh_schema.py
+      - db/model_registry.py
+      - db/models*.py
+      - db/session.py
+      - db/migrations/env.py
+      - db/migrations/versions/**
+      - intelligence/communication_storage.py
+      - intelligence/knowledge_storage.py
+      - scripts/ops/bootstrap_fresh_database.py
+      - tests/test_fresh_database_bootstrap_contract.py
+      - tests/test_fresh_database_version_table_contract.py
+      - .github/workflows/p0-1077-fresh-postgres-bootstrap.yml
+  push:
+    branches:
+      - fix/p0-fresh-postgres-current-main-20260815
+    paths:
+      - alembic.ini
+      - auto_client_acquisition/proof_ledger/postgres_backend.py
+      - db/fresh_schema.py
+      - db/model_registry.py
+      - db/models*.py
+      - db/session.py
+      - db/migrations/env.py
+      - db/migrations/versions/**
+      - intelligence/communication_storage.py
+      - intelligence/knowledge_storage.py
+      - scripts/ops/bootstrap_fresh_database.py
+      - tests/test_fresh_database_bootstrap_contract.py
+      - tests/test_fresh_database_version_table_contract.py
+      - .github/workflows/p0-1077-fresh-postgres-bootstrap.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  fresh-bootstrap-proof:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: dealix_test
+          POSTGRES_PASSWORD: dealix_test
+          POSTGRES_DB: dealix_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U dealix_test -d dealix_test"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+
+    env:
+      APP_ENV: test
+      DATABASE_URL: postgresql+asyncpg://dealix_test:dealix_test@127.0.0.1:5432/dealix_test
+      DEALIX_ALLOW_FRESH_DB_BOOTSTRAP: '1'
+
+    steps:
+      - name: Checkout exact head
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: |
+            requirements.txt
+            requirements-dev.txt
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements.txt -r requirements-dev.txt
+
+      - name: Run bootstrap safety contracts
+        run: |
+          python -m pytest -q \
+            tests/test_fresh_database_bootstrap_contract.py \
+            tests/test_fresh_database_version_table_contract.py
+
+      - name: Bootstrap brand-new PostgreSQL database
+        run: python scripts/ops/bootstrap_fresh_database.py --confirm-empty-bootstrap
+
+      - name: Assert required runtime tables exist
+        run: |
+          python - <<'PY'
+          import asyncio
+          import asyncpg
+
+          REQUIRED = {
+              "proof_events",
+              "proof_revenue_work_units",
+              "workflow_runs",
+              "control_events",
+              "approval_tickets",
+              "agent_mesh_agents",
+              "assurance_contracts",
+              "runtime_safety_kill_switches",
+              "value_metrics",
+              "improvement_proposals",
+              "communication_hub_snapshots",
+              "knowledge_accumulator_snapshots",
+          }
+
+          async def main() -> None:
+              connection = await asyncpg.connect(
+                  "postgresql://dealix_test:dealix_test@127.0.0.1:5432/dealix_test"
+              )
+              try:
+                  rows = await connection.fetch(
+                      "SELECT tablename FROM pg_tables WHERE schemaname = 'public'"
+                  )
+                  actual = {row["tablename"] for row in rows}
+                  missing = sorted(REQUIRED - actual)
+                  assert not missing, f"missing runtime tables: {missing}"
+              finally:
+                  await connection.close()
+
+          asyncio.run(main())
+          print("P0_1077_RUNTIME_TABLES=PASS")
+          PY
+
+      - name: Prove migration-defined foreign-key actions
+        run: |
+          python - <<'PY'
+          from datetime import UTC, datetime, timedelta
+
+          from sqlalchemy import create_engine, inspect, text
+          from sqlalchemy.orm import Session
+
+          from db.models import (
+              PaymentRecord,
+              RefreshTokenRecord,
+              TenantRecord,
+              UserInviteRecord,
+              UserRecord,
+          )
+
+          engine = create_engine(
+              "postgresql+psycopg://dealix_test:dealix_test@127.0.0.1:5432/dealix_test",
+              future=True,
+          )
+
+          def ondelete(table: str, column: str) -> str | None:
+              inspector = inspect(engine)
+              matches = [
+                  foreign_key
+                  for foreign_key in inspector.get_foreign_keys(table)
+                  if foreign_key.get("constrained_columns") == [column]
+              ]
+              assert len(matches) == 1, (table, column, matches)
+              return (matches[0].get("options") or {}).get("ondelete")
+
+          try:
+              assert ondelete("refresh_tokens", "user_id") == "CASCADE"
+              assert ondelete("user_invites", "tenant_id") == "CASCADE"
+              assert ondelete("payments", "tenant_id") == "SET NULL"
+
+              with Session(engine) as session:
+                  tenant = TenantRecord(
+                      id="fk-action-tenant",
+                      name="FK Action Tenant",
+                      slug="fk-action-tenant",
+                  )
+                  user = UserRecord(
+                      id="fk-action-user",
+                      tenant_id=tenant.id,
+                      email="fk-action-user@example.invalid",
+                  )
+                  token = RefreshTokenRecord(
+                      id="fk-action-token",
+                      user_id=user.id,
+                      tenant_id=tenant.id,
+                      token_hash="fk-action-token-hash",
+                      expires_at=datetime.now(UTC) + timedelta(days=1),
+                  )
+                  invite = UserInviteRecord(
+                      id="fk-action-invite",
+                      tenant_id=tenant.id,
+                      email="fk-action-invite@example.invalid",
+                      invited_by="bootstrap-proof",
+                      token_hash="fk-action-invite-token-hash",
+                      expires_at=datetime.now(UTC) + timedelta(days=1),
+                  )
+                  payment = PaymentRecord(
+                      id="fk-action-payment",
+                      tenant_id=tenant.id,
+                      provider="bootstrap-proof",
+                      provider_payment_id="fk-action-provider-payment",
+                      amount_halalas=1,
+                      currency="SAR",
+                  )
+
+                  # These models intentionally do not define ORM relationships.
+                  # Persist parents first so this proof tests database FK actions,
+                  # not SQLAlchemy unit-of-work insertion ordering.
+                  session.add(tenant)
+                  session.commit()
+                  session.add(user)
+                  session.commit()
+                  session.add_all([token, invite, payment])
+                  session.commit()
+
+              with engine.begin() as connection:
+                  connection.execute(
+                      text("DELETE FROM users WHERE id = 'fk-action-user'")
+                  )
+                  refresh_count = connection.execute(
+                      text(
+                          "SELECT count(*) FROM refresh_tokens "
+                          "WHERE id = 'fk-action-token'"
+                      )
+                  ).scalar_one()
+                  assert refresh_count == 0, refresh_count
+
+                  connection.execute(
+                      text("DELETE FROM tenants WHERE id = 'fk-action-tenant'")
+                  )
+                  invite_count = connection.execute(
+                      text(
+                          "SELECT count(*) FROM user_invites "
+                          "WHERE id = 'fk-action-invite'"
+                      )
+                  ).scalar_one()
+                  payment_tenant = connection.execute(
+                      text(
+                          "SELECT tenant_id FROM payments "
+                          "WHERE id = 'fk-action-payment'"
+                      )
+                  ).scalar_one()
+                  assert invite_count == 0, invite_count
+                  assert payment_tenant is None, payment_tenant
+          finally:
+              engine.dispose()
+
+          print("P0_1077_FOREIGN_KEY_ACTIONS=PASS")
+          PY
+
+      - name: Prove structural snapshot rows and concurrent mutations
+        run: |
+          python - <<'PY'
+          from concurrent.futures import ThreadPoolExecutor
+
+          from sqlalchemy import create_engine, text
+
+          from intelligence.communication_storage import PostgresCommunicationStorage
+          from intelligence.knowledge_storage import PostgresKnowledgeStorage
+
+          engine = create_engine(
+              "postgresql+psycopg://dealix_test:dealix_test@127.0.0.1:5432/dealix_test",
+              future=True,
+              pool_size=4,
+              max_overflow=0,
+          )
+          try:
+              with engine.connect() as connection:
+                  communication_rows = connection.execute(
+                      text(
+                          "SELECT collection, data FROM communication_hub_snapshots "
+                          "ORDER BY collection"
+                      )
+                  ).all()
+                  knowledge_rows = connection.execute(
+                      text(
+                          "SELECT collection, data FROM knowledge_accumulator_snapshots "
+                          "ORDER BY collection"
+                      )
+                  ).all()
+              assert [row.collection for row in communication_rows] == [
+                  "contact_log",
+                  "sequences",
+              ]
+              assert all(row.data == [] for row in communication_rows)
+              assert [(row.collection, row.data) for row in knowledge_rows] == [
+                  ("entries", []),
+              ]
+
+              communication = PostgresCommunicationStorage(
+                  engine=engine,
+                  create_tables=False,
+              )
+              knowledge = PostgresKnowledgeStorage(
+                  engine=engine,
+                  create_tables=False,
+              )
+
+              def mutate_communication(label: str) -> int:
+                  def apply(data: list[dict[str, object]]) -> int:
+                      data.append({"label": label})
+                      return len(data)
+
+                  return communication.mutate("contact_log", apply)
+
+              def mutate_knowledge(label: str) -> int:
+                  def apply(data: list[dict[str, object]]) -> int:
+                      data.append({"label": label})
+                      return len(data)
+
+                  return knowledge.mutate(apply)
+
+              with ThreadPoolExecutor(max_workers=2) as pool:
+                  comm_results = list(pool.map(mutate_communication, ("a", "b")))
+              with ThreadPoolExecutor(max_workers=2) as pool:
+                  knowledge_results = list(pool.map(mutate_knowledge, ("a", "b")))
+
+              assert sorted(comm_results) == [1, 2], comm_results
+              assert sorted(knowledge_results) == [1, 2], knowledge_results
+              assert sorted(item["label"] for item in communication.read("contact_log")) == [
+                  "a",
+                  "b",
+              ]
+              assert sorted(item["label"] for item in knowledge.read()) == ["a", "b"]
+          finally:
+              engine.dispose()
+
+          print("P0_1077_STRUCTURAL_SNAPSHOT_LOCKING=PASS")
+          PY
+
+      - name: Prove PostgreSQL proof-ledger runtime writes without create-all
+        run: |
+          python - <<'PY'
+          from sqlalchemy import create_engine, inspect
+
+          from auto_client_acquisition.proof_ledger.postgres_backend import PostgresProofLedger
+          from auto_client_acquisition.proof_ledger.schemas import (
+              ProofEvent,
+              ProofEventType,
+              RevenueWorkUnit,
+              RevenueWorkUnitType,
+          )
+
+          engine = create_engine(
+              "postgresql+psycopg://dealix_test:dealix_test@127.0.0.1:5432/dealix_test",
+              future=True,
+          )
+          try:
+              inspector = inspect(engine)
+              proof_columns = {c["name"] for c in inspector.get_columns("proof_events")}
+              work_columns = {
+                  c["name"] for c in inspector.get_columns("proof_revenue_work_units")
+              }
+              assert {"id", "event_type", "summary_ar", "summary_en", "payload_json"} <= proof_columns
+              assert "event_id" not in proof_columns
+              assert "claim" not in proof_columns
+              assert {"id", "unit_type", "quantity", "proof_event_id"} <= work_columns
+
+              ledger = PostgresProofLedger(engine=engine, create_tables=False)
+              event = ledger.record(
+                  ProofEvent(
+                      event_type=ProofEventType.RISK_BLOCKED,
+                      customer_handle="bootstrap-proof",
+                      summary_en="fresh bootstrap proof-ledger write",
+                      evidence_source="ephemeral-postgres-proof",
+                  )
+              )
+              unit = ledger.record_unit(
+                  RevenueWorkUnit(
+                      unit_type=RevenueWorkUnitType.RISK_BLOCKED,
+                      customer_handle="bootstrap-proof",
+                      description="fresh bootstrap revenue-work-unit write",
+                      proof_event_id=event.id,
+                  )
+              )
+              assert any(row.id == event.id for row in ledger.list_events(customer_handle="bootstrap-proof"))
+              assert any(row.id == unit.id for row in ledger.list_units(customer_handle="bootstrap-proof"))
+          finally:
+              engine.dispose()
+
+          print("P0_1077_PROOF_LEDGER_RUNTIME_WRITE=PASS")
+          PY
+
+      - name: Verify Alembic stamp and repository drift
+        run: |
+          alembic current
+          alembic heads
+          alembic check
+          echo 'P0_1077_ALEMBIC_CHECK=PASS'
+
+      - name: Prove second bootstrap is rejected
+        run: |
+          set +e
+          output="$(python scripts/ops/bootstrap_fresh_database.py --confirm-empty-bootstrap 2>&1)"
+          code=$?
+          set -e
+          printf '%s\n' "$output"
+          if [ "$code" -eq 0 ]; then
+            echo 'fresh bootstrap unexpectedly accepted a non-empty database'
+            exit 1
+          fi
+          grep -q 'refusing fresh bootstrap on non-empty database' <<<"$output"
+          echo 'P0_1077_NONEMPTY_GUARD=PASS'
+
+      - name: Assert no commercial plan seed was inserted
+        run: |
+          python - <<'PY'
+          import asyncio
+          import asyncpg
+
+          async def main() -> None:
+              connection = await asyncpg.connect(
+                  "postgresql://dealix_test:dealix_test@127.0.0.1:5432/dealix_test"
+              )
+              try:
+                  exists = await connection.fetchval(
+                      "SELECT to_regclass('public.plans') IS NOT NULL"
+                  )
+                  if exists:
+                      count = await connection.fetchval("SELECT count(*) FROM plans")
+                      assert count == 0, (
+                          f"fresh bootstrap unexpectedly seeded {count} plan rows"
+                      )
+              finally:
+                  await connection.close()
+
+          asyncio.run(main())
+          print("P0_1077_COMMERCIAL_SEED=NONE")
+          PY
+
+      - name: Prove user-owned views schemas routines types and collations are rejected
+        run: |
+          prove_rejected() {
+            local statement="$1"
+            local expected="$2"
+            python - "$statement" <<'PY'
+          import asyncio
+          import asyncpg
+          import sys
+
+          ADMIN = "postgresql://dealix_test:dealix_test@127.0.0.1:5432/postgres"
+          GUARD = "postgresql://dealix_test:dealix_test@127.0.0.1:5432/dealix_bootstrap_guard"
+          statement = sys.argv[1]
+
+          async def recreate() -> None:
+              admin = await asyncpg.connect(ADMIN)
+              try:
+                  await admin.execute("DROP DATABASE IF EXISTS dealix_bootstrap_guard WITH (FORCE)")
+                  await admin.execute("CREATE DATABASE dealix_bootstrap_guard")
+              finally:
+                  await admin.close()
+              target = await asyncpg.connect(GUARD)
+              try:
+                  await target.execute(statement)
+              finally:
+                  await target.close()
+
+          asyncio.run(recreate())
+          PY
+            set +e
+            output="$(DATABASE_URL=postgresql+asyncpg://dealix_test:dealix_test@127.0.0.1:5432/dealix_bootstrap_guard python scripts/ops/bootstrap_fresh_database.py --confirm-empty-bootstrap 2>&1)"
+            code=$?
+            set -e
+            printf '%s\n' "$output"
+            if [ "$code" -eq 0 ]; then
+              echo "fresh bootstrap unexpectedly accepted occupied database: $expected"
+              exit 1
+            fi
+            grep -q "$expected" <<<"$output"
+          }
+
+          prove_rejected "CREATE VIEW public.bootstrap_guard_view AS SELECT 1 AS value" "public.bootstrap_guard_view:relation:v"
+          echo 'P0_1077_VIEW_ONLY_GUARD=PASS'
+          prove_rejected "CREATE SCHEMA pgdata" "pgdata"
+          echo 'P0_1077_CUSTOM_SCHEMA_GUARD=PASS'
+          prove_rejected "CREATE FUNCTION public.bootstrap_guard_fn() RETURNS integer LANGUAGE SQL AS \$\$ SELECT 1 \$\$" "public.bootstrap_guard_fn:routine"
+          echo 'P0_1077_FUNCTION_GUARD=PASS'
+          prove_rejected "CREATE TYPE public.bootstrap_guard_enum AS ENUM ('one', 'two')" "public.bootstrap_guard_enum:type:e"
+          echo 'P0_1077_ENUM_GUARD=PASS'
+          prove_rejected "CREATE COLLATION public.bootstrap_guard_collation (locale = 'C')" "public.bootstrap_guard_collation:collation"
+          echo 'P0_1077_COLLATION_GUARD=PASS'

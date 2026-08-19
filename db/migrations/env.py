@@ -10,7 +10,6 @@ from __future__ import annotations
 
 import asyncio
 import os
-from importlib import import_module
 from logging.config import fileConfig
 
 from alembic import context
@@ -18,16 +17,15 @@ from sqlalchemy import pool
 from sqlalchemy.engine import Connection
 from sqlalchemy.ext.asyncio import async_engine_from_config
 
-# ── Load app metadata ──────────────────────────────────────────────
-# Import Base and load model modules for their SQLAlchemy registration side
-# effects. import_module makes that Alembic contract explicit to static tools.
-from db.models import Base
+from db.fresh_schema import build_fresh_schema_metadata
 
-for _model_module in (
-    "db.models_company_targeting",
-    "db.models_commercial_intelligence",
-):
-    import_module(_model_module)
+# Alembic autogenerate/check and the guarded fresh bootstrap must use one
+# canonical schema contract.  The combined metadata starts with every current
+# ORM table, then adds the raw-SQL tables, indexes, and constraints owned by
+# historical migrations.  Comparing against ORM metadata alone would falsely
+# propose deleting valid migration-owned persistence and would fail to detect a
+# stamped-but-incomplete database.
+target_metadata, _fresh_schema_report = build_fresh_schema_metadata()
 
 # ── Alembic Config ─────────────────────────────────────────────────
 config = context.config
@@ -35,6 +33,7 @@ config = context.config
 # Inject DATABASE_URL from app settings (respects .env)
 try:
     from core.config.settings import get_settings
+
     _db_url = get_settings().database_url
 except Exception:
     _db_url = os.getenv("DATABASE_URL", "")
@@ -46,8 +45,6 @@ config.set_main_option("sqlalchemy.url", _sync_url)
 # Setup Python logging from alembic.ini
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
-
-target_metadata = Base.metadata
 
 
 # ── Offline mode (generate SQL without connecting) ─────────────────
@@ -80,7 +77,6 @@ def do_run_migrations(connection: Connection) -> None:
 
 async def run_async_migrations() -> None:
     """Use the async engine to run migrations."""
-    # Use asyncpg URL for the live run
     config.set_main_option("sqlalchemy.url", _db_url)
     connectable = async_engine_from_config(
         config.get_section(config.config_ini_section, {}),
