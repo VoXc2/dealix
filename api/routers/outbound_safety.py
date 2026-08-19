@@ -7,11 +7,12 @@ is draft_only, meaning no external sending occurs.
 
 from __future__ import annotations
 
-import os
 from typing import Any
 
 from fastapi import APIRouter
 from pydantic import BaseModel
+
+from app.outbound import policy_gate
 
 router = APIRouter(prefix="/api/outbound", tags=["outbound-safety"])
 
@@ -26,6 +27,7 @@ class SafetyStatus(BaseModel):
     whatsapp_send_enabled: bool
     whatsapp_allow_live_send: bool
     sms_send_enabled: bool
+    persistent_suppression_ready: bool
     safe_to_send: bool
     reason: str
 
@@ -57,43 +59,18 @@ class SendResponse(BaseModel):
 # ── Helpers ─────────────────────────────────────────────────────
 
 
-def _get_bool_env(key: str, default: bool = False) -> bool:
-    return os.getenv(key, str(default)).lower() in ("true", "1", "yes")
-
-
-def _get_str_env(key: str, default: str = "") -> str:
-    return os.getenv(key, default)
-
-
 def _default_safety_status() -> dict[str, Any]:
-    external_enabled = _get_bool_env("EXTERNAL_SEND_ENABLED", False)
-    mode = _get_str_env("OUTBOUND_MODE", "draft_only")
-    email_enabled = _get_bool_env("EMAIL_SEND_ENABLED", False)
-    wa_enabled = _get_bool_env("WHATSAPP_SEND_ENABLED", False)
-    wa_live = _get_bool_env("WHATSAPP_ALLOW_LIVE_SEND", False)
-    sms_enabled = _get_bool_env("SMS_SEND_ENABLED", False)
+    """Delegate status truth to the canonical outbound policy gate."""
 
-    safe = external_enabled and mode != "draft_only"
-    reason = "external_send_disabled" if not external_enabled else (
-        "draft_only_mode" if mode == "draft_only" else "ready"
-    )
-
-    return {
-        "external_send_enabled": external_enabled,
-        "outbound_mode": mode,
-        "email_send_enabled": email_enabled,
-        "whatsapp_send_enabled": wa_enabled,
-        "whatsapp_allow_live_send": wa_live,
-        "sms_send_enabled": sms_enabled,
-        "safe_to_send": safe,
-        "reason": reason,
-    }
+    return policy_gate.default_safety_status()
 
 
 def _evaluate_send(channel: str) -> dict[str, Any]:
+    """Evaluate configuration readiness without claiming recipient safety."""
+
     status = _default_safety_status()
     external_ok = status["external_send_enabled"]
-    mode_ok = status["outbound_mode"] != "draft_only"
+    mode_ok = status["outbound_mode"] == "controlled_live"
 
     channel_key = f"{channel}_send_enabled"
     channel_enabled = status.get(channel_key, False) if channel_key in status else False
@@ -124,7 +101,16 @@ def _evaluate_send(channel: str) -> dict[str, Any]:
             "allowed": False,
             "safe_to_send": False,
             "mode": status["outbound_mode"],
-            "reason": "draft_only_mode",
+            "reason": "mode_not_controlled_live",
+            "channel": channel,
+        }
+
+    if not status["persistent_suppression_ready"]:
+        return {
+            "allowed": False,
+            "safe_to_send": False,
+            "mode": status["outbound_mode"],
+            "reason": "persistent_suppression_not_verified",
             "channel": channel,
         }
 
@@ -139,11 +125,37 @@ def _evaluate_send(channel: str) -> dict[str, Any]:
 
     return {
         "allowed": True,
-        "safe_to_send": True,
+        # Channel configuration is ready, but a recipient/message policy
+        # evaluation is still required before any safe-to-send decision.
+        "safe_to_send": False,
         "mode": status["outbound_mode"],
-        "reason": "approved",
+        "reason": "recipient_policy_evaluation_required",
         "channel": channel,
     }
+
+
+def _evaluate_request(channel: str, request: SendRequest) -> dict[str, Any]:
+    """Route active API attempts through the canonical recipient policy gate.
+
+    This legacy request schema carries no approval, verification, consent, or
+    source evidence. The canonical gate therefore fails closed rather than
+    letting configuration flags manufacture a safe-to-send decision.
+    """
+
+    contact: dict[str, Any]
+    if channel == "email":
+        contact = {"email": request.to}
+    elif channel == "whatsapp":
+        contact = {"whatsapp": request.to}
+    else:
+        contact = {"phone": request.to}
+    message = {
+        "status": "pending_review",
+        "subject": request.subject,
+        "body": request.body,
+        "template_name": request.template_id,
+    }
+    return policy_gate.evaluate_channel_send(channel, message, contact).to_dict()
 
 
 # ── Endpoints ───────────────────────────────────────────────────
@@ -179,95 +191,62 @@ async def outbound_channels() -> dict[str, Any]:
 @router.get("/readiness/email")
 async def email_readiness() -> dict[str, Any]:
     """Email channel readiness."""
+    evaluation = _evaluate_send("email")
     status = _default_safety_status()
-    ready = status["external_send_enabled"] and status["email_send_enabled"]
+    ready = evaluation["allowed"]
     return {
         "channel": "email",
         "enabled": status["email_send_enabled"],
         "mode": status["outbound_mode"],
         "ready": ready,
-        "reason": "ready" if ready else "email_send_disabled",
+        "reason": evaluation["reason"],
     }
 
 
 @router.get("/readiness/whatsapp")
 async def whatsapp_readiness() -> dict[str, Any]:
     """WhatsApp channel readiness."""
+    evaluation = _evaluate_send("whatsapp")
     status = _default_safety_status()
-    ready = (
-        status["external_send_enabled"]
-        and status["whatsapp_send_enabled"]
-        and status["whatsapp_allow_live_send"]
-    )
+    ready = evaluation["allowed"]
     return {
         "channel": "whatsapp",
         "enabled": status["whatsapp_send_enabled"],
         "allow_live": status["whatsapp_allow_live_send"],
         "mode": status["outbound_mode"],
         "ready": ready,
-        "reason": "ready" if ready else "whatsapp_not_enabled_or_not_live",
+        "reason": evaluation["reason"],
     }
 
 
 @router.get("/readiness/sms")
 async def sms_readiness() -> dict[str, Any]:
     """SMS channel readiness."""
+    evaluation = _evaluate_send("sms")
     status = _default_safety_status()
-    ready = status["external_send_enabled"] and status["sms_send_enabled"]
+    ready = evaluation["allowed"]
     return {
         "channel": "sms",
         "enabled": status["sms_send_enabled"],
         "mode": status["outbound_mode"],
         "ready": ready,
-        "reason": "ready" if ready else "sms_send_disabled",
+        "reason": evaluation["reason"],
     }
 
 
 @router.post("/send/email")
 async def send_email(request: SendRequest) -> dict[str, Any]:
     """Send email — blocked by default."""
-    result = _evaluate_send("email")
-    if not result["allowed"]:
-        return result
-    # In a real system, this would queue the email.
-    # For now, even if enabled, we just log and return a draft response.
-    return {
-        "allowed": True,
-        "safe_to_send": True,
-        "mode": result["mode"],
-        "reason": "queued_for_review",
-        "channel": "email",
-        "to": request.to,
-    }
+    return _evaluate_request("email", request)
 
 
 @router.post("/send/whatsapp")
 async def send_whatsapp(request: SendRequest) -> dict[str, Any]:
     """Send WhatsApp — blocked by default."""
-    result = _evaluate_send("whatsapp")
-    if not result["allowed"]:
-        return result
-    return {
-        "allowed": True,
-        "safe_to_send": True,
-        "mode": result["mode"],
-        "reason": "queued_for_review",
-        "channel": "whatsapp",
-        "to": request.to,
-    }
+    return _evaluate_request("whatsapp", request)
 
 
 @router.post("/send/sms")
 async def send_sms(request: SendRequest) -> dict[str, Any]:
     """Send SMS — blocked by default."""
-    result = _evaluate_send("sms")
-    if not result["allowed"]:
-        return result
-    return {
-        "allowed": True,
-        "safe_to_send": True,
-        "mode": result["mode"],
-        "reason": "queued_for_review",
-        "channel": "sms",
-        "to": request.to,
-    }
+    return _evaluate_request("sms", request)

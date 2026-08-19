@@ -13,6 +13,7 @@ Live send is only possible when:
   - consent is recorded where required
   - rate limits are respected
   - the recipient is not on the suppression list
+  - suppression persistence is independently proven
 
 This module never performs a real network send. Provider functions are
 dry-run stubs (see provider_router.py).
@@ -26,7 +27,7 @@ from typing import Any, Mapping
 
 from app.outbound.consent import has_consent
 from app.outbound.rate_limiter import within_rate_limits
-from app.outbound.suppression import is_suppressed
+from app.outbound.suppression import is_suppressed, persistent_suppression_ready
 
 BLOCKED_CLAIMS = [
     "guaranteed roi",
@@ -42,8 +43,6 @@ BLOCKED_CLAIMS = [
 # channel — it's an internal-only action handled elsewhere.
 CHANNELS = ("email", "whatsapp", "sms")
 
-# ── Backwards-compatible result type used by can_send_email/can_send_whatsapp ──
-
 
 @dataclass(frozen=True)
 class GateResult:
@@ -53,23 +52,13 @@ class GateResult:
     reasons: list[str]
 
 
-# ── Authoritative result type for the new evaluate_* API ──────────────────────
-
-
 @dataclass(frozen=True)
 class SendEvaluation:
     """Full evaluation of an outbound send attempt.
 
-    `allowed`        — would the send be permitted at all (draft/approval ok)?
-    `safe_to_send`   — would the send actually leave the system right now?
-                       False whenever mode != controlled_live or external sends
-                       are disabled, even if the draft itself is approved.
-    `mode`           — the current outbound mode (draft_only | controlled_live).
-    `channel`        — the evaluated channel name.
-    `reason`         — primary human-readable reason when blocked.
-    `reasons`        — full list of blocking reasons (empty when allowed).
-    `contact`        — echo of the contact dict (sanitised).
-    `message`        — echo of the message dict (sanitised).
+    ``allowed`` means the action satisfies the active channel policy.
+    ``safe_to_send`` can only become true in controlled-live mode after every
+    cross-cutting guard, including durable suppression, succeeds.
     """
 
     allowed: bool
@@ -85,38 +74,44 @@ class SendEvaluation:
         return asdict(self)
 
 
-# ── Env helpers ───────────────────────────────────────────────────────────────
-
-
 def _env_true(env: Mapping[str, str], key: str) -> bool:
     return str(env.get(key, "")).lower() == "true"
 
 
 def _env() -> Mapping[str, str]:
-    # Always read os.environ at call time so tests can monkeypatch.
     return os.environ
 
 
 def is_external_send_enabled(env: Mapping[str, str] | None = None) -> bool:
     """True only when EXTERNAL_SEND_ENABLED=true (default: False)."""
+
     e = env if env is not None else _env()
     return _env_true(e, "EXTERNAL_SEND_ENABLED")
 
 
 def get_outbound_mode(env: Mapping[str, str] | None = None) -> str:
-    """Return the active outbound mode. Defaults to 'draft_only'."""
+    """Return the active outbound mode. Defaults to ``draft_only``."""
+
     e = env if env is not None else _env()
     return str(e.get("OUTBOUND_MODE", "draft_only")) or "draft_only"
 
 
 def default_safety_status(env: Mapping[str, str] | None = None) -> dict[str, Any]:
-    """Return the canonical default (fail-closed) safety status dict.
+    """Return the canonical default fail-closed safety status."""
 
-    This is what every endpoint should report when no overrides are applied.
-    """
     e = env if env is not None else _env()
     mode = get_outbound_mode(e)
     external = is_external_send_enabled(e)
+    suppression_ready = persistent_suppression_ready()
+    if not external:
+        reason = "external_send_disabled"
+    elif mode != "controlled_live":
+        reason = "mode_not_controlled_live"
+    elif not suppression_ready:
+        reason = "persistent_suppression_not_verified"
+    else:
+        # Configuration alone can never prove a recipient/message safe.
+        reason = "recipient_policy_evaluation_required"
     return {
         "external_send_enabled": external,
         "outbound_mode": mode,
@@ -125,11 +120,9 @@ def default_safety_status(env: Mapping[str, str] | None = None) -> dict[str, Any
         "whatsapp_send_enabled": _env_true(e, "WHATSAPP_SEND_ENABLED"),
         "whatsapp_allow_live_send": _env_true(e, "WHATSAPP_ALLOW_LIVE_SEND"),
         "sms_send_enabled": _env_true(e, "SMS_SEND_ENABLED"),
-        "reason": "external_send_disabled" if not external else "mode_not_controlled_live",
+        "persistent_suppression_ready": suppression_ready,
+        "reason": reason,
     }
-
-
-# ── Content checks ───────────────────────────────────────────────────────────
 
 
 def _contains_unsubscribe(text: str) -> bool:
@@ -149,10 +142,11 @@ def _has_blocked_claims(text: str) -> bool:
     return any(claim in t for claim in BLOCKED_CLAIMS)
 
 
-# ── Channel-specific checks ──────────────────────────────────────────────────
-
-
-def _check_email(contact: Mapping[str, Any], message: Mapping[str, Any], env: Mapping[str, str]) -> list[str]:
+def _check_email(
+    contact: Mapping[str, Any],
+    message: Mapping[str, Any],
+    env: Mapping[str, str],
+) -> list[str]:
     reasons: list[str] = []
 
     if not is_external_send_enabled(env):
@@ -181,7 +175,11 @@ def _check_email(contact: Mapping[str, Any], message: Mapping[str, Any], env: Ma
     return reasons
 
 
-def _check_whatsapp(contact: Mapping[str, Any], message: Mapping[str, Any], env: Mapping[str, str]) -> list[str]:
+def _check_whatsapp(
+    contact: Mapping[str, Any],
+    message: Mapping[str, Any],
+    env: Mapping[str, str],
+) -> list[str]:
     reasons: list[str] = []
 
     if not is_external_send_enabled(env):
@@ -216,7 +214,11 @@ def _check_whatsapp(contact: Mapping[str, Any], message: Mapping[str, Any], env:
     return reasons
 
 
-def _check_sms(contact: Mapping[str, Any], message: Mapping[str, Any], env: Mapping[str, str]) -> list[str]:
+def _check_sms(
+    contact: Mapping[str, Any],
+    message: Mapping[str, Any],
+    env: Mapping[str, str],
+) -> list[str]:
     reasons: list[str] = []
 
     if not is_external_send_enabled(env):
@@ -252,16 +254,42 @@ _CHANNEL_CHECKS = {
 }
 
 
-# ── Cross-cutting guards (suppression, consent, rate limit) ─────────────────
+def _contact_identifier(channel: str, contact: Mapping[str, Any]) -> str:
+    if channel == "email":
+        return str(contact.get("email", "")).lower().strip()
+    if channel == "whatsapp":
+        return str(contact.get("whatsapp", "")).lower().strip()
+    if channel == "sms":
+        return str(contact.get("phone", "")).lower().strip()
+    return str(
+        contact.get("email")
+        or contact.get("whatsapp")
+        or contact.get("phone")
+        or ""
+    ).lower().strip()
 
 
 def _apply_cross_cutting(
     channel: str,
     contact: Mapping[str, Any],
     message: Mapping[str, Any],
+    env: Mapping[str, str],
     reasons: list[str],
 ) -> None:
-    """Append suppression, consent, and rate-limit reasons in-place."""
+    """Append suppression, consent, and rate-limit reasons in-place.
+
+    Draft-only work remains available. A missing durable suppression backend
+    becomes a blocker only when configuration is attempting controlled-live
+    external execution.
+    """
+
+    if (
+        is_external_send_enabled(env)
+        and get_outbound_mode(env) == "controlled_live"
+        and not persistent_suppression_ready()
+    ):
+        reasons.append("persistent suppression backend is not verified")
+
     identifier = _contact_identifier(channel, contact)
     if is_suppressed(identifier, channel=channel):
         reasons.append("recipient is on suppression list")
@@ -271,19 +299,6 @@ def _apply_cross_cutting(
 
     if not within_rate_limits(channel, identifier):
         reasons.append("rate limit exceeded for channel")
-
-
-def _contact_identifier(channel: str, contact: Mapping[str, Any]) -> str:
-    if channel == "email":
-        return str(contact.get("email", "")).lower().strip()
-    if channel == "whatsapp":
-        return str(contact.get("whatsapp", "")).lower().strip()
-    if channel == "sms":
-        return str(contact.get("phone", "")).lower().strip()
-    return str(contact.get("email") or contact.get("whatsapp") or contact.get("phone") or "").lower().strip()
-
-
-# ── Public evaluate API ──────────────────────────────────────────────────────
 
 
 def _evaluate(
@@ -307,12 +322,11 @@ def _evaluate(
         )
 
     reasons = list(check(contact, message, e))
-    _apply_cross_cutting(channel, contact, message, reasons)
+    _apply_cross_cutting(channel, contact, message, e, reasons)
 
     external = is_external_send_enabled(e)
     mode = get_outbound_mode(e)
     allowed = len(reasons) == 0
-    # safe_to_send requires allowed AND controlled_live AND external enabled.
     safe_to_send = allowed and external and mode == "controlled_live"
 
     if reasons:
@@ -342,6 +356,7 @@ def evaluate_email_send(
     env: Mapping[str, str] | None = None,
 ) -> SendEvaluation:
     """Evaluate whether an email send is allowed."""
+
     return _evaluate("email", message, contact, env)
 
 
@@ -351,6 +366,7 @@ def evaluate_whatsapp_send(
     env: Mapping[str, str] | None = None,
 ) -> SendEvaluation:
     """Evaluate whether a WhatsApp send is allowed."""
+
     return _evaluate("whatsapp", message, contact, env)
 
 
@@ -360,6 +376,7 @@ def evaluate_sms_send(
     env: Mapping[str, str] | None = None,
 ) -> SendEvaluation:
     """Evaluate whether an SMS send is allowed."""
+
     return _evaluate("sms", message, contact, env)
 
 
@@ -370,10 +387,8 @@ def evaluate_channel_send(
     env: Mapping[str, str] | None = None,
 ) -> SendEvaluation:
     """Evaluate a send for an arbitrary channel name."""
+
     return _evaluate(channel, message, contact, env)
-
-
-# ── Legacy backwards-compatible API ──────────────────────────────────────────
 
 
 def can_send_email(
@@ -382,8 +397,9 @@ def can_send_email(
     env: Mapping[str, str],
 ) -> GateResult:
     """Legacy gate — returns GateResult(allowed, reasons)."""
+
     reasons = _check_email(contact, message, env)
-    _apply_cross_cutting("email", contact, message, reasons)
+    _apply_cross_cutting("email", contact, message, env, reasons)
     return GateResult(allowed=not reasons, reasons=reasons)
 
 
@@ -393,6 +409,7 @@ def can_send_whatsapp(
     env: Mapping[str, str],
 ) -> GateResult:
     """Legacy gate — returns GateResult(allowed, reasons)."""
+
     reasons = _check_whatsapp(contact, message, env)
-    _apply_cross_cutting("whatsapp", contact, message, reasons)
+    _apply_cross_cutting("whatsapp", contact, message, env, reasons)
     return GateResult(allowed=not reasons, reasons=reasons)

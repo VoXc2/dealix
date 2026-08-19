@@ -5,6 +5,8 @@ import os
 import pytest
 from fastapi.testclient import TestClient
 
+import app.outbound.policy_gate as policy_gate
+
 # Set safe env before importing app
 os.environ.setdefault("APP_ENV", "test")
 os.environ.setdefault("ENVIRONMENT", "test")
@@ -106,3 +108,57 @@ class TestOutboundBlockedByDefault:
         assert response.status_code == 200
         data = response.json()
         assert data["ready"] is False
+
+
+def test_controlled_live_api_blocks_memory_suppression_backend(monkeypatch):
+    monkeypatch.setenv("EXTERNAL_SEND_ENABLED", "true")
+    monkeypatch.setenv("OUTBOUND_MODE", "controlled_live")
+    monkeypatch.setenv("EMAIL_SEND_ENABLED", "true")
+
+    response = client.post(
+        "/api/outbound/send/email",
+        json={
+            "channel": "email",
+            "to": "test@example.com",
+            "subject": "Test",
+            "body": "Test body. Unsubscribe anytime.",
+        },
+    )
+
+    assert response.status_code == 200
+    data = response.json()
+    assert data["allowed"] is False
+    assert data["safe_to_send"] is False
+    assert "persistent suppression backend is not verified" in data["reasons"]
+
+    readiness = client.get("/api/outbound/readiness/email").json()
+    assert readiness["ready"] is False
+    assert readiness["reason"] == "persistent_suppression_not_verified"
+
+    safety = client.get("/api/outbound/safety").json()
+    assert safety["safe_to_send"] is False
+    assert safety["persistent_suppression_ready"] is False
+    assert safety["reason"] == "persistent_suppression_not_verified"
+
+
+def test_active_api_requires_recipient_policy_evidence_even_when_durable(monkeypatch):
+    monkeypatch.setenv("EXTERNAL_SEND_ENABLED", "true")
+    monkeypatch.setenv("OUTBOUND_MODE", "controlled_live")
+    monkeypatch.setenv("EMAIL_SEND_ENABLED", "true")
+    monkeypatch.setattr(policy_gate, "persistent_suppression_ready", lambda: True)
+
+    response = client.post(
+        "/api/outbound/send/email",
+        json={
+            "channel": "email",
+            "to": "test@example.com",
+            "subject": "Test",
+            "body": "Test body. Unsubscribe anytime.",
+        },
+    )
+
+    assert response.status_code == 200
+    data = response.json()
+    assert data["allowed"] is False
+    assert data["safe_to_send"] is False
+    assert data["reason"] == "message.status must be approved"
