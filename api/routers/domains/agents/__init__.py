@@ -13,7 +13,6 @@ from api.routers import (
     agents,
     ai_workforce,
     automation,
-    autonomous,
     delivery_factory,
     delivery_os,
     knowledge_v10,
@@ -29,6 +28,14 @@ from api.routers import (
     tool_guardrail_gateway as tool_guardrail_gateway_router,
 )
 
+# api.routers.autonomous remains deliberately unregistered while #1070 is open.
+# That legacy mixed-generation router still contains public/global surfaces that
+# can create tenant-less records or assert sent/paid/customer states without the
+# canonical Approval/Outcome/Proof chain. The bounded schema and test work in
+# #1094 may continue, but production registration must fail closed until every
+# retained endpoint has explicit authentication, tenant, policy, and evidence
+# contracts. Do not re-add it here merely because revision 020 exists.
+
 _ROUTERS = [
     agentic_enterprise.router,
     agents.router,
@@ -43,11 +50,10 @@ _ROUTERS = [
     delivery_factory.router,
     delivery_os.router,
     automation.router,
-    autonomous.router,
     knowledge_v10.router,
 ]
 
 
 def get_routers() -> list[APIRouter]:
-    """Return all agents-domain routers."""
+    """Return all production-registered agents-domain routers."""
     return _ROUTERS

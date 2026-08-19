@@ -1,29 +1,18 @@
-"""Indexing a conversation must not overwrite another tenant's embedding.
+"""Tenant-isolation regression tests for revenue-memory conversation embeddings.
 
-``EmbeddingService.index_conversation`` upserts into
-``conversation_embeddings``. The lookup filtered on ``conversation_id`` alone:
+Conversation memory is tenant-owned end to end: the base ``ConversationRecord``
+read, the ``ConversationEmbeddingRecord`` upsert, and semantic search must all
+stay inside a non-empty tenant scope. ``tenant_id=None`` is rejected before
+session creation, model access, or database access.
 
-    select(ConversationEmbeddingRecord).where(
-        ConversationEmbeddingRecord.conversation_id == conversation_id
-    )
-
-``conversation_id`` is not unique on that table, so several tenants can hold a
-row for one conversation — and the unscoped lookup returned whichever tenant
-indexed it first, then overwrote that row's ``embedding_json`` in place while
-leaving its ``tenant_id`` untouched. Nothing in the row afterwards shows that
-another tenant wrote it.
-
-It is reachable, not theoretical: ``conversation_id`` arrives from a
-background-job payload the caller supplies
-(``core/queue/tasks.py:_run_embedding_index``), so one tenant naming another's
-conversation poisons that tenant's semantic memory.
-
-``index_account`` is deliberately *not* scoped the same way — see
-``test_account_embeddings_are_intentionally_global`` at the bottom for why the
-two differ, so a future reader does not "fix" the asymmetry into a bug.
+``index_account`` remains deliberately different because ``AccountRecord`` is a
+platform-global entity in the current schema and ``account_embeddings.account_id``
+is unique. The final contract test pins that intentional asymmetry.
 """
 
 from __future__ import annotations
+
+import inspect
 
 import pytest
 import pytest_asyncio
@@ -42,10 +31,8 @@ async def session() -> AsyncSession:
     engine = create_async_engine("sqlite+aiosqlite:///:memory:")
     async with engine.begin() as conn:
         # Only the table under test, matching the other *_tenant_isolation
-        # suites. Creating the whole metadata works in isolation but fails
-        # once any other test has imported a model with a PostgreSQL-only
-        # column type — SQLite cannot render JSONB — which makes the failure
-        # depend on collection order rather than on this code.
+        # suites. Creating the whole metadata can fail once another test has
+        # imported a PostgreSQL-only column type that SQLite cannot render.
         await conn.run_sync(
             Base.metadata.create_all,
             tables=[ConversationEmbeddingRecord.__table__],
@@ -82,7 +69,7 @@ async def _rows(session) -> list[ConversationEmbeddingRecord]:
 
 @pytest.mark.asyncio
 async def test_second_tenant_does_not_overwrite_the_first(service, session):
-    """The defect: tenant A's index call rewrote tenant B's vector."""
+    """A second tenant must get its own embedding row, never rewrite the first."""
     await service.index_conversation(
         conversation_id=CONVERSATION, text="victim", tenant_id=TENANT_B, session=session
     )
@@ -131,28 +118,26 @@ async def test_a_tenant_still_updates_its_own_row_in_place(service, session):
 
 
 @pytest.mark.asyncio
-async def test_a_tenantless_caller_cannot_reach_a_tenant_row(service, session):
-    """``tenant_id=None`` must match NULL, not match everything."""
+async def test_a_tenantless_caller_is_rejected_before_data_access(service, session):
+    """Missing tenant context fails closed instead of matching NULL or every row."""
     await service.index_conversation(
         conversation_id=CONVERSATION, text="victim", tenant_id=TENANT_B, session=session
     )
     await session.commit()
     original = list((await _rows(session))[0].embedding_json)
 
-    await service.index_conversation(
-        conversation_id=CONVERSATION,
-        text="anonymous caller with different length",
-        tenant_id=None,
-        session=session,
-    )
-    await session.commit()
+    with pytest.raises(ValueError, match="tenant_id_required"):
+        await service.index_conversation(
+            conversation_id=CONVERSATION,
+            text="anonymous caller with different length",
+            tenant_id=None,
+            session=session,
+        )
 
-    rows = {row.tenant_id: row for row in await _rows(session)}
-
-    assert rows[TENANT_B].embedding_json == original, (
-        "a tenant-less caller reached a tenant-owned row"
-    )
-    assert None in rows
+    rows = await _rows(session)
+    assert len(rows) == 1
+    assert rows[0].tenant_id == TENANT_B
+    assert rows[0].embedding_json == original
 
 
 @pytest.mark.asyncio
@@ -169,22 +154,28 @@ async def test_different_conversations_stay_separate(service, session):
     assert len({row.conversation_id for row in result.scalars().all()}) == 2
 
 
-def test_account_embeddings_are_intentionally_global():
-    """Pins why ``index_account`` is not scoped, so nobody "fixes" it into a bug.
+def test_base_conversation_read_and_search_are_always_tenant_scoped():
+    """Pin fail-closed tenant validation and both owned-memory read predicates."""
+    from core.memory.embedding_service import EmbeddingService
 
-    ``account_embeddings.account_id`` is unique, so one row exists per account
-    platform-wide, and ``accounts`` carries no ``tenant_id`` at all — the
-    entity is global and ``tenant_id`` on the embedding is provenance, not
-    ownership. Adding a tenant predicate to that upsert would make a second
-    tenant's call miss the row and violate the unique constraint, raising an
-    IntegrityError inside a worker.
+    index_source = inspect.getsource(EmbeddingService.index_conversation)
+    search_source = inspect.getsource(EmbeddingService.search_conversations)
 
-    If either fact changes, this test fails and the asymmetry must be
-    revisited rather than silently inherited.
-    """
+    assert "tenant_id = self._required_tenant_id(tenant_id)" in index_source
+    assert "tenant_id = self._required_tenant_id(tenant_id)" in search_source
+    assert "ConversationRecord.id == conversation_id" in index_source
+    assert "ConversationRecord.tenant_id == tenant_id" in index_source
+    assert "ConversationEmbeddingRecord.tenant_id == tenant_id" in search_source
+    assert "if tenant_id:" not in search_source, (
+        "omitting tenant_id must never turn semantic search into a platform-wide read"
+    )
+
+
+def test_account_embeddings_are_intentionally_global_but_conversations_are_owned():
+    """Pin the current schema boundary so the account/conversation asymmetry is explicit."""
     from db.models import AccountEmbeddingRecord, AccountRecord, ConversationRecord
 
     assert AccountEmbeddingRecord.__table__.columns["account_id"].unique is True
     assert "tenant_id" not in AccountRecord.__table__.columns
-    assert "tenant_id" not in ConversationRecord.__table__.columns
+    assert "tenant_id" in ConversationRecord.__table__.columns
     assert ConversationEmbeddingRecord.__table__.columns["conversation_id"].unique is not True

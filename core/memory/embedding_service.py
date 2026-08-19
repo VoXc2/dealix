@@ -42,12 +42,22 @@ class EmbeddingService:
     def __init__(self, session: AsyncSession | None = None) -> None:
         self._session = session
         self._model = DEFAULT_EMBEDDING_MODEL
-        self._client: Any = None  # lazy — only built when OpenAI key available
+        self._client: Any = None
+
+    @staticmethod
+    def _required_tenant_id(tenant_id: str | None) -> str:
+        """Return a normalized tenant identifier or fail before any data access."""
+
+        normalized = str(tenant_id or "").strip()
+        if not normalized:
+            raise ValueError("tenant_id_required")
+        return normalized
 
     def _get_client(self) -> Any:
         """Lazily build AsyncOpenAI client."""
         if self._client is None:
             import openai as _openai
+
             settings = get_settings()
             if settings.openai_api_key is None:
                 raise RuntimeError(
@@ -59,15 +69,8 @@ class EmbeddingService:
             )
         return self._client
 
-    # ── Public API ────────────────────────────────────────────────
-
     async def embed(self, text: str) -> list[float]:
-        """
-        Call OpenAI Embeddings API and return the float vector.
-        استدعاء API لتضمين النص وإعادة المتجه.
-
-        Falls back to zero-vector on API failure so callers never crash.
-        """
+        """Call the embeddings API and return a float vector."""
         text = text.strip().replace("\n", " ")
         if not text:
             return [0.0] * EMBEDDING_DIMS
@@ -84,10 +87,7 @@ class EmbeddingService:
             return [0.0] * EMBEDDING_DIMS
 
     async def embed_batch(self, texts: list[str]) -> list[list[float]]:
-        """
-        Embed multiple texts in a single API call (up to 2048 inputs).
-        تضمين عدة نصوص في استدعاء واحد.
-        """
+        """Embed multiple texts in a single API call."""
         cleaned = [t.strip().replace("\n", " ") for t in texts]
         if not any(cleaned):
             return [[0.0] * EMBEDDING_DIMS] * len(texts)
@@ -98,7 +98,6 @@ class EmbeddingService:
                 input=cleaned,
                 encoding_format="float",
             )
-            # API returns embeddings in the same order as input
             return [item.embedding for item in response.data]
         except Exception as exc:
             logger.warning("embedding_batch_api_error", extra={"error": str(exc)})
@@ -111,17 +110,13 @@ class EmbeddingService:
         tenant_id: str | None = None,
         session: AsyncSession | None = None,
     ) -> dict[str, Any]:
-        """
-        Embed an account and upsert into account_embeddings.
-        تضمين حساب وتحديث سجل التضمين في قاعدة البيانات.
-
-        If `text` is None, builds a summary from AccountRecord fields.
-        """
+        """Embed an account and upsert into account_embeddings."""
         from db.models import AccountEmbeddingRecord, AccountRecord
 
         sess = session or self._session
         if sess is None:
             from db.session import get_session
+
             async with get_session() as auto_sess:
                 return await self.index_account(
                     account_id=account_id,
@@ -130,7 +125,6 @@ class EmbeddingService:
                     session=auto_sess,
                 )
 
-        # Build text if not provided
         if text is None:
             result = await sess.execute(
                 select(AccountRecord).where(AccountRecord.id == account_id)
@@ -142,21 +136,12 @@ class EmbeddingService:
 
         vector = await self.embed(text)
 
-        # Deliberately NOT tenant-scoped, unlike index_conversation below.
-        # `account_embeddings.account_id` is declared unique, so exactly one
-        # row exists per account across the whole platform, and `accounts`
-        # itself carries no tenant_id — accounts are global in this schema and
-        # `tenant_id` here is provenance, not ownership. Adding the predicate
-        # would make a second tenant's index call miss the existing row and
-        # attempt an insert that violates that unique constraint, turning a
-        # working flow into an IntegrityError inside a worker.
-        #
-        # The real gap is in the schema, not this query: an embedding table
-        # carrying tenant_id over a base table that has none cannot express a
-        # tenant boundary either way. Recorded in the gate's ALLOWLIST rather
-        # than papered over here.
+        # AccountRecord is currently platform-global and account_id is unique.
+        # tenant_id on this embedding remains provenance rather than ownership.
         existing = await sess.execute(
-            select(AccountEmbeddingRecord).where(AccountEmbeddingRecord.account_id == account_id)
+            select(AccountEmbeddingRecord).where(
+                AccountEmbeddingRecord.account_id == account_id
+            )
         )
         record = existing.scalar_one_or_none()
         if record:
@@ -184,15 +169,14 @@ class EmbeddingService:
         tenant_id: str | None = None,
         session: AsyncSession | None = None,
     ) -> dict[str, Any]:
-        """
-        Embed a conversation turn and upsert into conversation_embeddings.
-        تضمين محادثة وتحديث سجل التضمين.
-        """
+        """Embed one tenant-owned conversation and upsert its vector."""
         from db.models import ConversationEmbeddingRecord, ConversationRecord
 
+        tenant_id = self._required_tenant_id(tenant_id)
         sess = session or self._session
         if sess is None:
             from db.session import get_session
+
             async with get_session() as auto_sess:
                 return await self.index_conversation(
                     conversation_id=conversation_id,
@@ -201,10 +185,12 @@ class EmbeddingService:
                     session=auto_sess,
                 )
 
-        # Build text if not provided
         if text is None:
             result = await sess.execute(
-                select(ConversationRecord).where(ConversationRecord.id == conversation_id)
+                select(ConversationRecord).where(
+                    ConversationRecord.id == conversation_id,
+                    ConversationRecord.tenant_id == tenant_id,
+                )
             )
             conv = result.scalar_one_or_none()
             if not conv:
@@ -213,17 +199,6 @@ class EmbeddingService:
 
         vector = await self.embed(text)
 
-        # Upsert, tenant-scoped. Unlike account_embeddings, conversation_id is
-        # NOT unique here, so several rows may exist for one conversation and
-        # the unscoped lookup returned whichever tenant happened to index it
-        # first — then overwrote that row's embedding_json in place, leaving
-        # its tenant_id untouched. `conversation_id` arrives from a
-        # background-job payload the caller controls
-        # (core/queue/tasks.py:_run_embedding_index), so one tenant could name
-        # another's conversation and silently poison its semantic memory.
-        #
-        # A None tenant is matched as NULL rather than skipped: a tenant-less
-        # caller must reach only tenant-less rows, never every row.
         existing = await sess.execute(
             select(ConversationEmbeddingRecord).where(
                 ConversationEmbeddingRecord.conversation_id == conversation_id,
@@ -243,7 +218,14 @@ class EmbeddingService:
             )
             sess.add(record)
 
-        logger.info("conversation_indexed", conversation_id=conversation_id, dims=len(vector))
+        logger.info(
+            "conversation_indexed",
+            extra={
+                "conversation_id": conversation_id,
+                "tenant_id": tenant_id,
+                "dims": len(vector),
+            },
+        )
         return {"status": "ok", "conversation_id": conversation_id, "dims": len(vector)}
 
     async def search_accounts(
@@ -253,15 +235,13 @@ class EmbeddingService:
         top_k: int = 10,
         session: AsyncSession | None = None,
     ) -> list[dict[str, Any]]:
-        """
-        Semantic search over account embeddings using cosine similarity.
-        بحث دلالي في تضمينات الحسابات.
-        """
+        """Semantic search over account embeddings using cosine similarity."""
         from db.models import AccountEmbeddingRecord
 
         sess = session or self._session
         if sess is None:
             from db.session import get_session
+
             async with get_session() as auto_sess:
                 return await self.search_accounts(
                     query=query,
@@ -285,7 +265,7 @@ class EmbeddingService:
                 sim = cosine_similarity(query_vec, emb)
                 scored.append((sim, rec))
 
-        scored.sort(key=lambda x: x[0], reverse=True)
+        scored.sort(key=lambda item: item[0], reverse=True)
         return [
             {
                 "account_id": rec.account_id,
@@ -302,15 +282,14 @@ class EmbeddingService:
         top_k: int = 10,
         session: AsyncSession | None = None,
     ) -> list[dict[str, Any]]:
-        """
-        Semantic search over conversation embeddings.
-        بحث دلالي في تضمينات المحادثات.
-        """
+        """Semantic search over tenant-owned conversation embeddings."""
         from db.models import ConversationEmbeddingRecord
 
+        tenant_id = self._required_tenant_id(tenant_id)
         sess = session or self._session
         if sess is None:
             from db.session import get_session
+
             async with get_session() as auto_sess:
                 return await self.search_conversations(
                     query=query,
@@ -321,9 +300,9 @@ class EmbeddingService:
 
         query_vec = await self.embed(query)
 
-        stmt = select(ConversationEmbeddingRecord)
-        if tenant_id:
-            stmt = stmt.where(ConversationEmbeddingRecord.tenant_id == tenant_id)
+        stmt = select(ConversationEmbeddingRecord).where(
+            ConversationEmbeddingRecord.tenant_id == tenant_id
+        )
         result = await sess.execute(stmt)
         records = result.scalars().all()
 
@@ -334,7 +313,7 @@ class EmbeddingService:
                 sim = cosine_similarity(query_vec, emb)
                 scored.append((sim, rec))
 
-        scored.sort(key=lambda x: x[0], reverse=True)
+        scored.sort(key=lambda item: item[0], reverse=True)
         return [
             {
                 "conversation_id": rec.conversation_id,
@@ -343,8 +322,6 @@ class EmbeddingService:
             for sim, rec in scored[:top_k]
         ]
 
-
-# ── Text builders ──────────────────────────────────────────────────
 
 def _account_to_text(account: Any) -> str:
     """Build a rich text string from AccountRecord for embedding."""
@@ -356,7 +333,7 @@ def _account_to_text(account: Any) -> str:
         f"domain:{account.domain}" if account.domain else "",
         f"status:{account.status}" if account.status else "",
     ]
-    return " | ".join(p for p in parts if p)
+    return " | ".join(part for part in parts if part)
 
 
 def _conversation_to_text(conv: Any) -> str:
@@ -368,10 +345,8 @@ def _conversation_to_text(conv: Any) -> str:
         f"classification:{conv.classification}" if conv.classification else "",
         f"sentiment:{conv.sentiment}" if conv.sentiment else "",
     ]
-    return " ".join(p for p in parts if p)
+    return " ".join(part for part in parts if part)
 
-
-# ── Math ───────────────────────────────────────────────────────────
 
 def cosine_similarity(a: list[float], b: list[float]) -> float:
     """Compute cosine similarity between two float vectors."""

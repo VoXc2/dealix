@@ -16,7 +16,16 @@ from sqlalchemy import func, select
 
 from api.security.auth_deps import get_current_user
 from api.security.tenant_scope import TenantScopeDenied, resolve_tenant_for_request
-from db.models import ConversationRecord, DealRecord, LeadRecord, TaskRecord
+from db.models import (
+    CompanyRecord,
+    ConversationRecord,
+    CustomerRecord,
+    DealRecord,
+    LeadRecord,
+    OutreachQueueRecord,
+    PartnerRecord,
+    TaskRecord,
+)
 from db.session import async_session_factory
 
 router = APIRouter(prefix="/api/v1", tags=["autonomous"])
@@ -42,6 +51,8 @@ def _tenant_scope(
             detail={"error": denied.reason, "message": denied.detail},
         ) from denied
     return tenant_id
+
+
 log = logging.getLogger(__name__)
 
 
@@ -73,22 +84,34 @@ async def _safe_commit(session, obj_to_add=None) -> bool:
 # ── Conversations ───────────────────────────────────────────────
 
 @router.post("/conversations")
-async def create_conversation(body: dict[str, Any] = Body(...)) -> dict[str, Any]:
-    """
-    Log an inbound message + outbound auto-response.
-    Body: {lead_id?, channel, sender, inbound_message, outbound_response?,
-           classification?, next_action?, escalation_required?, auto_sent?}
-    """
+async def create_conversation(
+    request: Request,
+    body: dict[str, Any] = Body(...),
+    user: Any = Depends(get_current_user),
+) -> dict[str, Any]:
+    """Log a tenant-owned inbound conversation. External sending is not performed here."""
     channel = str(body.get("channel") or "").strip().lower()
     inbound = str(body.get("inbound_message") or "").strip()
     if not channel or not inbound:
         raise HTTPException(status_code=400, detail="channel_and_inbound_required")
+    tenant_id = _tenant_scope(request, user, body.get("tenant_id"))
+    lead_id = str(body.get("lead_id")) if body.get("lead_id") else None
 
     rec_id = _new_id("conv")
     async with async_session_factory()() as session:
+        if lead_id:
+            linked = await session.execute(
+                select(LeadRecord.id).where(
+                    LeadRecord.id == lead_id,
+                    LeadRecord.tenant_id == tenant_id,
+                )
+            )
+            if linked.scalar_one_or_none() is None:
+                raise HTTPException(status_code=404, detail="lead_not_found")
         rec = ConversationRecord(
             id=rec_id,
-            lead_id=str(body.get("lead_id")) if body.get("lead_id") else None,
+            tenant_id=tenant_id,
+            lead_id=lead_id,
             channel=channel,
             sender=str(body.get("sender") or "") or None,
             inbound_message=inbound[:8000],
@@ -97,22 +120,37 @@ async def create_conversation(body: dict[str, Any] = Body(...)) -> dict[str, Any
             sentiment=str(body.get("sentiment") or "") or None,
             next_action=str(body.get("next_action") or "") or None,
             escalation_required=bool(body.get("escalation_required", False)),
-            auto_sent=bool(body.get("auto_sent", False)),
+            # A caller cannot claim a message was sent. Sending belongs behind the
+            # canonical approval/action adapter and must update evidence separately.
+            auto_sent=False,
         )
-        ok = await _safe_commit(session, rec)
+        session.add(rec)
+        await session.commit()
 
-    return {"id": rec_id, "status": "logged" if ok else "skipped_db_unreachable", "created_at": _utcnow().isoformat()}
+    return {
+        "id": rec_id,
+        "status": "logged",
+        "created_at": _utcnow().isoformat(),
+    }
 
 
 @router.get("/conversations")
 async def list_conversations(
+    request: Request,
     lead_id: str | None = None,
     channel: str | None = None,
     limit: int = 20,
+    user: Any = Depends(get_current_user),
 ) -> dict[str, Any]:
+    tenant_id = _tenant_scope(request, user)
     limit = max(1, min(100, limit))
     async with async_session_factory()() as session:
-        stmt = select(ConversationRecord).order_by(ConversationRecord.created_at.desc()).limit(limit)
+        stmt = (
+            select(ConversationRecord)
+            .where(ConversationRecord.tenant_id == tenant_id)
+            .order_by(ConversationRecord.created_at.desc())
+            .limit(limit)
+        )
         if lead_id:
             stmt = stmt.where(ConversationRecord.lead_id == lead_id)
         if channel:
@@ -163,6 +201,14 @@ async def create_deal(
 
     deal_id = _new_id("deal")
     async with async_session_factory()() as session:
+        linked_lead = await session.execute(
+            select(LeadRecord.id).where(
+                LeadRecord.id == lead_id,
+                LeadRecord.tenant_id == tenant_id,
+            )
+        )
+        if linked_lead.scalar_one_or_none() is None:
+            raise HTTPException(status_code=404, detail="lead_not_found")
         deal = DealRecord(
             id=deal_id,
             tenant_id=tenant_id,
@@ -173,8 +219,14 @@ async def create_deal(
             currency=str(body.get("currency") or "SAR"),
             stage=str(body.get("stage") or "new"),
         )
-        ok = await _safe_commit(session, deal)
-    return {"id": deal_id, "stage": "new", "status": "ok" if ok else "skipped_db_unreachable", "created_at": _utcnow().isoformat()}
+        session.add(deal)
+        await session.commit()
+    return {
+        "id": deal_id,
+        "stage": deal.stage,
+        "status": "ok",
+        "created_at": _utcnow().isoformat(),
+    }
 
 
 @router.patch("/deals/{deal_id}")
@@ -254,28 +306,51 @@ async def list_deals(
 # ── Tasks ───────────────────────────────────────────────────────
 
 @router.post("/tasks")
-async def create_task(body: dict[str, Any] = Body(...)) -> dict[str, Any]:
-    """
-    Schedule a follow-up task.
-    Body: {lead_id?, deal_id?, task_type, due_at?(iso), notes?, owner?}
-    """
+async def create_task(
+    request: Request,
+    body: dict[str, Any] = Body(...),
+    user: Any = Depends(get_current_user),
+) -> dict[str, Any]:
+    """Schedule a tenant-owned follow-up task."""
     task_type = str(body.get("task_type") or "follow_up").strip()
     if not task_type:
         raise HTTPException(status_code=400, detail="task_type_required")
+    tenant_id = _tenant_scope(request, user, body.get("tenant_id"))
 
-    due_at = _utcnow() + timedelta(days=2)  # default +2d
+    due_at = _utcnow() + timedelta(days=2)
     if body.get("due_at"):
         try:
             due_at = datetime.fromisoformat(str(body["due_at"]).replace("Z", "+00:00"))
         except Exception:
             pass
 
+    lead_id = str(body.get("lead_id")) if body.get("lead_id") else None
+    deal_id = str(body.get("deal_id")) if body.get("deal_id") else None
     task_id = _new_id("task")
     async with async_session_factory()() as session:
+        if lead_id:
+            linked_lead = await session.execute(
+                select(LeadRecord.id).where(
+                    LeadRecord.id == lead_id,
+                    LeadRecord.tenant_id == tenant_id,
+                )
+            )
+            if linked_lead.scalar_one_or_none() is None:
+                raise HTTPException(status_code=404, detail="lead_not_found")
+        if deal_id:
+            linked_deal = await session.execute(
+                select(DealRecord.id).where(
+                    DealRecord.id == deal_id,
+                    DealRecord.tenant_id == tenant_id,
+                )
+            )
+            if linked_deal.scalar_one_or_none() is None:
+                raise HTTPException(status_code=404, detail="deal_not_found")
         task = TaskRecord(
             id=task_id,
-            lead_id=body.get("lead_id") or None,
-            deal_id=body.get("deal_id") or None,
+            tenant_id=tenant_id,
+            lead_id=lead_id,
+            deal_id=deal_id,
             task_type=task_type,
             due_at=due_at,
             status="pending",
@@ -288,9 +363,20 @@ async def create_task(body: dict[str, Any] = Body(...)) -> dict[str, Any]:
 
 
 @router.patch("/tasks/{task_id}")
-async def update_task(task_id: str, body: dict[str, Any] = Body(...)) -> dict[str, Any]:
+async def update_task(
+    task_id: str,
+    request: Request,
+    body: dict[str, Any] = Body(...),
+    user: Any = Depends(get_current_user),
+) -> dict[str, Any]:
+    tenant_id = _tenant_scope(request, user, body.get("tenant_id"))
     async with async_session_factory()() as session:
-        result = await session.execute(select(TaskRecord).where(TaskRecord.id == task_id))
+        result = await session.execute(
+            select(TaskRecord).where(
+                TaskRecord.id == task_id,
+                TaskRecord.tenant_id == tenant_id,
+            )
+        )
         task = result.scalar_one_or_none()
         if not task:
             raise HTTPException(status_code=404, detail="task_not_found")
@@ -310,12 +396,21 @@ async def update_task(task_id: str, body: dict[str, Any] = Body(...)) -> dict[st
 
 
 @router.get("/tasks")
-async def list_tasks(status: str = "pending", limit: int = 20) -> dict[str, Any]:
+async def list_tasks(
+    request: Request,
+    status: str = "pending",
+    limit: int = 20,
+    user: Any = Depends(get_current_user),
+) -> dict[str, Any]:
+    tenant_id = _tenant_scope(request, user)
     limit = max(1, min(100, limit))
     async with async_session_factory()() as session:
         result = await session.execute(
             select(TaskRecord)
-            .where(TaskRecord.status == status)
+            .where(
+                TaskRecord.tenant_id == tenant_id,
+                TaskRecord.status == status,
+            )
             .order_by(TaskRecord.due_at.asc())
             .limit(limit)
         )
@@ -341,70 +436,60 @@ async def list_tasks(status: str = "pending", limit: int = 20) -> dict[str, Any]
 # ── Dashboard metrics ───────────────────────────────────────────
 
 @router.get("/dashboard/metrics")
-async def dashboard_metrics() -> dict[str, Any]:
-    """
-    Public/internal dashboard summary — counts + top of pipeline.
-    Resilient: if a table doesn't exist yet, returns 0 for that metric.
-    """
+async def dashboard_metrics(
+    request: Request,
+    user: Any = Depends(get_current_user),
+) -> dict[str, Any]:
+    """Tenant-scoped dashboard summary. Never aggregates another tenant's data."""
+    tenant_id = _tenant_scope(request, user)
+
     async def _count(session, stmt):
         try:
-            r = await session.execute(stmt)
-            return int(r.scalar() or 0)
-        except Exception as e:
-            log.warning("dashboard_query_skip: %s", str(e)[:120])
+            result = await session.execute(stmt)
+            return int(result.scalar() or 0)
+        except Exception as exc:
+            log.warning("dashboard_query_skip: %s", str(exc)[:120])
             return 0
 
     async def _sum(session, stmt):
         try:
-            r = await session.execute(stmt)
-            return float(r.scalar() or 0.0)
-        except Exception as e:
-            log.warning("dashboard_query_skip: %s", str(e)[:120])
+            result = await session.execute(stmt)
+            return float(result.scalar() or 0.0)
+        except Exception as exc:
+            log.warning("dashboard_query_skip: %s", str(exc)[:120])
             return 0.0
 
     today_start = datetime.now(UTC).replace(hour=0, minute=0, second=0, microsecond=0)
 
     async with async_session_factory()() as session:
-        leads_total = await _count(session, select(func.count()).select_from(LeadRecord))
-        leads_new = await _count(session, select(func.count()).select_from(LeadRecord).where(LeadRecord.status == "new"))
-        leads_qualified = await _count(session, select(func.count()).select_from(LeadRecord).where(LeadRecord.status == "qualified"))
-        leads_won = await _count(session, select(func.count()).select_from(LeadRecord).where(LeadRecord.status == "won"))
+        lead_scope = LeadRecord.tenant_id == tenant_id
+        deal_scope = DealRecord.tenant_id == tenant_id
+        conversation_scope = ConversationRecord.tenant_id == tenant_id
+        task_scope = TaskRecord.tenant_id == tenant_id
 
-        deals_total = await _count(session, select(func.count()).select_from(DealRecord))
-        deals_paid_count = await _count(session, select(func.count()).select_from(DealRecord).where(DealRecord.stage == "paid"))
-        revenue_paid = await _sum(session, select(func.coalesce(func.sum(DealRecord.amount), 0.0)).where(DealRecord.stage == "paid"))
+        leads_total = await _count(session, select(func.count()).select_from(LeadRecord).where(lead_scope))
+        leads_new = await _count(session, select(func.count()).select_from(LeadRecord).where(lead_scope, LeadRecord.status == "new"))
+        leads_qualified = await _count(session, select(func.count()).select_from(LeadRecord).where(lead_scope, LeadRecord.status == "qualified"))
+        leads_won = await _count(session, select(func.count()).select_from(LeadRecord).where(lead_scope, LeadRecord.status == "won"))
 
-        conversations_total = await _count(session, select(func.count()).select_from(ConversationRecord))
-        conversations_today = await _count(session, select(func.count()).select_from(ConversationRecord).where(ConversationRecord.created_at >= today_start))
+        deals_total = await _count(session, select(func.count()).select_from(DealRecord).where(deal_scope))
+        deals_paid_count = await _count(session, select(func.count()).select_from(DealRecord).where(deal_scope, DealRecord.stage == "paid"))
+        revenue_paid = await _sum(session, select(func.coalesce(func.sum(DealRecord.amount), 0.0)).where(deal_scope, DealRecord.stage == "paid"))
 
-        tasks_pending = await _count(session, select(func.count()).select_from(TaskRecord).where(TaskRecord.status == "pending"))
-        tasks_overdue = await _count(session, select(func.count()).select_from(TaskRecord).where(TaskRecord.status == "pending", TaskRecord.due_at < _utcnow()))
+        conversations_total = await _count(session, select(func.count()).select_from(ConversationRecord).where(conversation_scope))
+        conversations_today = await _count(session, select(func.count()).select_from(ConversationRecord).where(conversation_scope, ConversationRecord.created_at >= today_start))
+
+        tasks_pending = await _count(session, select(func.count()).select_from(TaskRecord).where(task_scope, TaskRecord.status == "pending"))
+        tasks_overdue = await _count(session, select(func.count()).select_from(TaskRecord).where(task_scope, TaskRecord.status == "pending", TaskRecord.due_at < _utcnow()))
 
     return {
         "as_of": _utcnow().isoformat(),
-        "leads": {
-            "total": int(leads_total),
-            "new": int(leads_new),
-            "qualified": int(leads_qualified),
-            "won": int(leads_won),
-        },
-        "deals": {
-            "total": int(deals_total),
-            "paid": int(deals_paid_count),
-            "revenue_sar_paid": float(revenue_paid),
-        },
-        "conversations": {
-            "total": int(conversations_total),
-            "today": int(conversations_today),
-        },
-        "tasks": {
-            "pending": int(tasks_pending),
-            "overdue": int(tasks_overdue),
-        },
+        "leads": {"total": leads_total, "new": leads_new, "qualified": leads_qualified, "won": leads_won},
+        "deals": {"total": deals_total, "paid": deals_paid_count, "revenue_sar_paid": revenue_paid},
+        "conversations": {"total": conversations_total, "today": conversations_today},
+        "tasks": {"pending": tasks_pending, "overdue": tasks_overdue},
     }
 
-
-from db.models import CompanyRecord, CustomerRecord, OutreachQueueRecord, PartnerRecord
 
 # ── Companies (subscriber intake) ───────────────────────────────
 
@@ -625,6 +710,7 @@ async def manual_payment_request(
         # Schedule check-in task in 3 days
         task = TaskRecord(
             id=_new_id("task"),
+            tenant_id=tenant_id,
             deal_id=deal_id,
             lead_id=deal.lead_id,
             task_type="payment_check",
@@ -689,6 +775,7 @@ async def mark_paid(
         # Schedule onboarding kickoff task
         task = TaskRecord(
             id=_new_id("task"),
+            tenant_id=tenant_id,
             deal_id=deal_id,
             lead_id=deal.lead_id,
             task_type="onboarding_kickoff",

@@ -20,10 +20,12 @@ from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 
 from api.routers import autonomous
 from api.security.auth_deps import get_current_user
-from db.models import Base, CustomerRecord, DealRecord, TaskRecord
+from db.models import Base, CustomerRecord, DealRecord, LeadRecord, TaskRecord
 
 ATTACKER_TENANT = "tenant_a"
 VICTIM_TENANT = "tenant_b"
+ATTACKER_LEAD = "lead_of_a"
+VICTIM_LEAD = "lead_of_b"
 VICTIM_DEAL = "deal_of_b"
 
 
@@ -41,6 +43,7 @@ async def engine(monkeypatch):
         await conn.run_sync(
             Base.metadata.create_all,
             tables=[
+                LeadRecord.__table__,
                 DealRecord.__table__,
                 CustomerRecord.__table__,
                 TaskRecord.__table__,
@@ -49,14 +52,28 @@ async def engine(monkeypatch):
     factory = async_sessionmaker(engine, expire_on_commit=False)
 
     async with factory() as session:
-        session.add(
-            DealRecord(
-                id=VICTIM_DEAL,
-                tenant_id=VICTIM_TENANT,
-                lead_id="lead_of_b",
-                stage="payment_requested",
-                amount=1000.0,
-            )
+        session.add_all(
+            [
+                LeadRecord(
+                    id=ATTACKER_LEAD,
+                    tenant_id=ATTACKER_TENANT,
+                    source="test",
+                    company_name="Attacker Tenant Company",
+                ),
+                LeadRecord(
+                    id=VICTIM_LEAD,
+                    tenant_id=VICTIM_TENANT,
+                    source="test",
+                    company_name="Victim Tenant Company",
+                ),
+                DealRecord(
+                    id=VICTIM_DEAL,
+                    tenant_id=VICTIM_TENANT,
+                    lead_id=VICTIM_LEAD,
+                    stage="payment_requested",
+                    amount=1000.0,
+                ),
+            ]
         )
         await session.commit()
 
@@ -149,7 +166,7 @@ async def test_created_deal_is_visible_to_its_creator(engine):
     """
     async with _client(_User(ATTACKER_TENANT)) as client:
         created = await client.post(
-            "/api/v1/deals", json={"lead_id": "lead_of_a", "amount": 500}
+            "/api/v1/deals", json={"lead_id": ATTACKER_LEAD, "amount": 500}
         )
         assert created.status_code == 200
         deal_id = created.json()["id"]
@@ -168,9 +185,22 @@ async def test_created_deal_is_visible_to_its_creator(engine):
 
 
 @pytest.mark.asyncio
+async def test_create_deal_rejects_another_tenants_lead(engine):
+    async with _client(_User(ATTACKER_TENANT)) as client:
+        response = await client.post(
+            "/api/v1/deals", json={"lead_id": VICTIM_LEAD, "amount": 500}
+        )
+
+    assert response.status_code == 404
+
+
+@pytest.mark.asyncio
 async def test_a_created_deal_stays_invisible_to_other_tenants(engine):
     async with _client(_User(ATTACKER_TENANT)) as client:
-        created = await client.post("/api/v1/deals", json={"lead_id": "lead_of_a"})
+        created = await client.post(
+            "/api/v1/deals", json={"lead_id": ATTACKER_LEAD}
+        )
+        assert created.status_code == 200
         deal_id = created.json()["id"]
 
     async with _client(_User(VICTIM_TENANT)) as client:

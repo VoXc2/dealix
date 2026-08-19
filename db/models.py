@@ -280,11 +280,12 @@ class AgentRunRecord(Base):
 
 
 class ConversationRecord(Base):
-    """Inbound message + outbound auto-response — full audit log."""
+    """Inbound message + outbound response audit log, tenant-owned."""
 
     __tablename__ = "conversations"
 
     id: Mapped[str] = mapped_column(String(64), primary_key=True)
+    tenant_id: Mapped[str | None] = mapped_column(String(64), ForeignKey("tenants.id", ondelete="CASCADE"), nullable=True)
     lead_id: Mapped[str | None] = mapped_column(String(64), nullable=True, index=True)
     channel: Mapped[str] = mapped_column(String(32), index=True)  # whatsapp/email/form/sms/linkedin
     sender: Mapped[str | None] = mapped_column(String(255), nullable=True)
@@ -298,15 +299,19 @@ class ConversationRecord(Base):
     created_at: Mapped[datetime] = mapped_column(default=utcnow, index=True)
     deleted_at: Mapped[datetime | None] = mapped_column(nullable=True)
 
-    __table_args__ = (Index("ix_conversations_channel_created", "channel", "created_at"),)
+    __table_args__ = (
+        Index("ix_conversations_channel_created", "channel", "created_at"),
+        Index("ix_conversations_tenant_created", "tenant_id", "created_at"),
+    )
 
 
 class TaskRecord(Base):
-    """Follow-up tasks scheduled by the autonomous engine."""
+    """Follow-up task owned by exactly one tenant."""
 
     __tablename__ = "tasks"
 
     id: Mapped[str] = mapped_column(String(64), primary_key=True)
+    tenant_id: Mapped[str | None] = mapped_column(String(64), ForeignKey("tenants.id", ondelete="CASCADE"), nullable=True)
     lead_id: Mapped[str | None] = mapped_column(String(64), nullable=True, index=True)
     deal_id: Mapped[str | None] = mapped_column(String(64), nullable=True, index=True)
     task_type: Mapped[str] = mapped_column(String(32), index=True)  # follow_up, demo, payment_check, onboarding
@@ -318,7 +323,10 @@ class TaskRecord(Base):
     completed_at: Mapped[datetime | None] = mapped_column(nullable=True)
     deleted_at: Mapped[datetime | None] = mapped_column(nullable=True)
 
-    __table_args__ = (Index("ix_tasks_status_due", "status", "due_at"),)
+    __table_args__ = (
+        Index("ix_tasks_status_due", "status", "due_at"),
+        Index("ix_tasks_tenant_status_due", "tenant_id", "status", "due_at"),
+    )
 
 
 class CompanyRecord(Base):
