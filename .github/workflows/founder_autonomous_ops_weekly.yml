@@ -1,6 +1,6 @@
 name: Founder Autonomous Ops Weekly
 
-# Sunday: re-expand pool + verify gates + artifact report (governed, no send).
+# Sunday: validate the governed weekly plan without a live commercial day.
 
 on:
   schedule:
@@ -28,15 +28,15 @@ jobs:
       - name: Install minimal deps
         run: pip install pyyaml
 
-      - name: Weekly expansion + gates (skip founder day in CI)
+      - name: Weekly governed plan (no live commercial day in CI)
         env:
           DEALIX_API_BASE: ${{ secrets.DEALIX_API_BASE }}
           DEALIX_ADMIN_API_KEY: ${{ secrets.DEALIX_ADMIN_API_KEY }}
           PYTHONIOENCODING: utf-8
           APP_ENV: test
         run: |
-          chmod +x scripts/run_dealix_full_autonomous_ops.py scripts/expand_commercial_ops_all.py
-          python3 scripts/run_dealix_full_autonomous_ops.py --skip-founder-day
+          chmod +x scripts/run_dealix_full_autonomous_ops.py
+          python3 scripts/run_dealix_full_autonomous_ops.py --dry-run --weekly --skip-commercial-day --json
 
       - name: Upload autonomous ops artifacts
         if: always()

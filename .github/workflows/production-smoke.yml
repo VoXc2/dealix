@@ -42,7 +42,7 @@ jobs:
           echo "DEALIX_SMOKE_BASE_URL=$BASE_URL" >> "$GITHUB_ENV"
 
       - name: Run smoke test
-        run: python scripts/dealix_smoke_test.py --base-url "$DEALIX_SMOKE_BASE_URL" --json > production-smoke-report.json
+        run: python scripts/production_smoke_auth.py --base-url "$DEALIX_SMOKE_BASE_URL" --json > production-smoke-report.json
 
       - name: Print report
         if: always()
