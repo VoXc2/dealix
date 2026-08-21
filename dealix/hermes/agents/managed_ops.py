@@ -1,4 +1,4 @@
-"""ManagedOpsAgent — runs weekly managed operations cycle."""
+"""ManagedOpsAgent — runs an approved weekly managed-operations cycle."""
 
 from __future__ import annotations
 
@@ -15,26 +15,29 @@ from dealix.hermes.tools.scoring_tools import score_account_health
 logger = structlog.get_logger(__name__)
 
 _SYSTEM = """\
-You are the Dealix Managed Ops Agent — you run the weekly operations cycle for clients on the
-2,999-4,999 SAR/month managed tier.
+You are the Dealix Managed Ops Agent — you run a weekly managed-operations cycle only inside an
+already approved customer scope. Dealix does not have a public Managed Ops price tier in the
+current first-launch authority. Price, scope, expansion, and commercial concessions come only
+from a customer-specific approved quote/contract after evidence-backed discovery/Pilot review.
 
 Weekly ops cycle:
-1. Health check all accounts — score every account and flag at-risk ones.
-2. Review open deals — check pipeline velocity and stalled deals.
-3. Analyse revenue trend — detect week-over-week shifts.
-4. Prioritise actions — rank interventions by impact.
-5. Log all completed activities in CRM.
-6. Generate weekly ops report for client delivery.
+1. Health check all in-scope accounts — score every account and flag at-risk ones.
+2. Review open in-scope deals — check pipeline velocity and stalled deals.
+3. Analyse revenue trend — detect week-over-week shifts from provided/source-bound data.
+4. Prioritise internal actions — rank interventions by impact.
+5. Log approved internal CRM activities; never infer authority for external customer/prospect send.
+6. Generate weekly ops report for client delivery review.
 
-Be systematic. Flag risks clearly (CRITICAL / AT_RISK / HEALTHY). Always log activities.
+Be systematic. Flag risks clearly (CRITICAL / AT_RISK / HEALTHY). Missing evidence stays unknown;
+do not invent revenue, customer value, delivery, payment, or commercial authority.
 """
 
 
 class ManagedOpsAgent(HermesAgent):
-    """Runs weekly managed operations cycle (2,999-4,999 SAR/mo tier)."""
+    """Runs an approved weekly managed-operations cycle; no public price tier."""
 
     name = "managed_ops"
-    description = "Runs weekly managed operations cycle (2,999-4,999 SAR/mo tier)"
+    description = "Runs an approved weekly managed-operations cycle (customer-specific scope)"
 
     def __init__(self, config=None) -> None:
         super().__init__(config)
@@ -61,7 +64,7 @@ class ManagedOpsAgent(HermesAgent):
         )
         self.register_hermes_tool(
             name="log_activity",
-            description="Log a CRM activity (call, email, meeting, note, task).",
+            description="Log an approved internal CRM activity (call, email, meeting, note, task record).",
             properties={
                 "entity_id": {"type": "string"},
                 "activity_type": {"type": "string"},
@@ -72,7 +75,7 @@ class ManagedOpsAgent(HermesAgent):
         )
         self.register_hermes_tool(
             name="analyze_revenue_trend",
-            description="Analyse MoM revenue trends.",
+            description="Analyse MoM revenue trends from provided/source-bound data.",
             properties={
                 "monthly_data": {"type": "array", "items": {"type": "object"}},
             },
@@ -97,12 +100,13 @@ class ManagedOpsAgent(HermesAgent):
         week_label = input_data.get("week_label", datetime.now(UTC).strftime("W%W %Y"))
 
         user_msg = (
-            f"Run the weekly managed ops cycle for tenant: {tenant_id}\n"
+            f"Run the approved weekly managed ops cycle for tenant: {tenant_id}\n"
             f"Week: {week_label}\n"
             f"Accounts to check: {len(accounts)}\n"
             f"Revenue data months: {len(monthly_data)}\n\n"
-            "Health-check all accounts, review pipeline, flag risks, prioritise actions, "
-            "log activities, and generate the weekly report."
+            "Health-check in-scope accounts, review pipeline, flag risks, prioritise internal actions, "
+            "log approved CRM records, and generate the weekly report. Do not create or send external "
+            "messages and do not infer pricing or expansion authority."
         )
 
         result = await self.run_with_tools(system=_SYSTEM, user_msg=user_msg, context=input_data)

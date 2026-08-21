@@ -57,7 +57,7 @@ def write_daily_pack_index(
         "- [ ] سجّل صفاً في `docs/commercial/operations/evidence_events_tracker.csv`",
         "- [ ] راجع مسودة LinkedIn من digest أو `scripts/social_queue_today.py`",
         "- [ ] مركز الموافقات قبل Gmail/LinkedIn",
-        f"- [ ] أول Diagnostic مدفوع: `{first_paid['dod_doc']}`",
+        f"- [ ] أول Revenue Command Pilot مدفوع: `{first_paid['dod_doc']}`",
         f"- [ ] اجتماعات Soft Launch: `{first_paid['soft_launch_tracker']}`",
         "",
         "## GTM (مسار اليوم + ABM)",
@@ -69,7 +69,7 @@ def write_daily_pack_index(
         "- [ ] بعد مكالمة: `py -3 scripts/founder_meeting_debrief_init.py --company \"...\"`",
         f"- [ ] دليل: `{gtm['playbook_path']}`",
         "",
-        "## سلم الإيراد (لا تخترع أرقاماً)",
+        "## مسار الإيراد الحالي (لا تخترع أرقاماً)",
         "",
         first_paid["revenue_ladder_ar"],
         "",
@@ -155,6 +155,8 @@ def _write_index_json(
             "approvals": "/ar/ops/approvals",
             "marketing": "/ar/ops/marketing",
         },
+        # Compatibility key retained while the current paid motion is the
+        # 30-day Revenue Command Pilot, not a paid Diagnostic.
         "first_paid_diagnostic": fp,
         "value_plan": vp,
         "gtm_stack": gtm_snap,

@@ -36,11 +36,8 @@ def _assert_safe_artifact(art: dict, *, expect_keys: bool = True) -> None:
     manifest = art["manifest"]
     assert manifest["safe_to_send"] is False
     assert manifest["approval_status"] == "approval_required"
-    # Arabic primary signal: html starts with the AR-tagged document.
     assert '<html lang="ar" dir="rtl">' in art["html"]
-    # Approval banner present in HTML.
     assert "approval_required" in art["html"]
-    # Forbidden tokens must not leak.
     blob = (
         art.get("markdown_ar", "")
         + "\n"
@@ -72,9 +69,8 @@ def test_html_renderer_basic_structure() -> None:
     assert "internal_review" in html
     assert "ref:1" in html
     assert "Founder approval required" in html
-    # No external CDN.
     assert "cdn." not in html.lower()
-    assert "https://" not in html  # all assets inline
+    assert "https://" not in html
 
 
 def test_markdown_renderer_arabic_first_separator_then_english() -> None:
@@ -87,7 +83,6 @@ def test_markdown_renderer_arabic_first_separator_then_english() -> None:
         audience="internal_review",
         evidence_refs=["ref:1"],
     )
-    # Arabic title appears before English title (Arabic primary).
     ar_idx = md.index("عنوان")
     en_idx = md.index("Title")
     assert ar_idx < en_idx
@@ -104,7 +99,7 @@ def test_generate_mini_diagnostic_returns_safe_artifact() -> None:
         company="ACME Saudi Co.",
         sector="b2b_services",
         region="riyadh",
-        pipeline_state="WhatsApp incoming, founder responds at night",
+        pipeline_state="manual founder handoff",
     )
     _assert_safe_artifact(art)
     assert art["manifest"]["artifact_type"] == "mini_diagnostic"
@@ -129,9 +124,9 @@ def test_generate_proof_pack_no_consent_is_internal_only() -> None:
     events = [
         {
             "event_type": "delivery_complete",
-            "service_id": "growth_starter",
-            "outcome_metric": "qualified_leads",
-            "outcome_value": "10",
+            "service_id": "revenue_command_pilot_30d",
+            "outcome_metric": "workflow_cycle_time",
+            "outcome_value": "measured",
             "consent_for_publication": False,
             "customer_anonymized": "Saudi B2B customer",
         }
@@ -170,17 +165,21 @@ def test_generate_executive_weekly_pack_safe_artifact() -> None:
 def test_generate_proposal_page_safe_artifact() -> None:
     art = generate_proposal_page(
         customer_handle="ACME",
-        recommended_service="growth_starter",
-        scope_ar="مساعدة الفريق على إغلاق صفقات B2B خلال 7 أيّام.",
-        scope_en="Help the team close B2B deals within 7 days.",
-        deliverables=["10 Arabic drafts", "Follow-up plan"],
-        timeline_days=7,
-        price_band_sar="499",
+        recommended_service="revenue_command_pilot_30d",
+        scope_ar="Workflow إيرادي واحد مع baseline وowner وProof.",
+        scope_en="One revenue workflow with a baseline, owner, and Proof.",
+        deliverables=["Baseline", "Weekly Proof Pack", "Final Proof Pack"],
+        timeline_days=30,
+        price_band_sar="quote_after_discovery",
         blocked_actions=["No cold WhatsApp"],
-        proof_plan=["Daily ledger entries"],
+        proof_plan=["Baseline → source → measured outcome"],
     )
     _assert_safe_artifact(art)
     assert art["manifest"]["artifact_type"] == "proposal_page"
+    assert art["manifest"]["recommended_service"] == "Revenue Command Pilot"
+    assert art["manifest"]["timeline_days"] == 30
+    assert art["manifest"]["quote_only"] is True
+    assert art["manifest"]["price_band_sar"] == "quote_after_discovery"
 
 
 # ── Pricing ────────────────────────────────────────────────────────
@@ -190,7 +189,15 @@ def test_generate_pricing_page_safe_artifact() -> None:
     art = generate_pricing_page()
     _assert_safe_artifact(art)
     assert art["manifest"]["artifact_type"] == "pricing_page"
-    assert art["manifest"]["tier_count"] >= 7
+    assert art["manifest"]["tier_count"] == 1
+    assert art["manifest"]["product_count"] == 1
+    assert art["manifest"]["quote_only"] is True
+    assert art["manifest"]["public_fixed_price"] is False
+    blob = art["markdown"] + art["html"]
+    assert "Revenue Command Pilot" in blob
+    assert "customer-specific quote" in blob.lower() or "Quote" in blob
+    for token in ("1500-3000", "2999/month", "3000-7500", "7-Tier Value Ladder"):
+        assert token not in blob
 
 
 # ── Customer room ──────────────────────────────────────────────────
@@ -199,7 +206,10 @@ def test_generate_pricing_page_safe_artifact() -> None:
 def test_generate_customer_room_dashboard_safe_artifact() -> None:
     art = generate_customer_room_dashboard(
         customer_handle="ACME",
-        customer_payload={"stage": "pilot", "active_services": ["growth_starter"]},
+        customer_payload={
+            "stage": "pilot",
+            "active_services": ["revenue_command_pilot_30d"],
+        },
     )
     _assert_safe_artifact(art)
     assert art["manifest"]["artifact_type"] == "customer_room_dashboard"
@@ -251,9 +261,11 @@ def test_designops_generate_mini_diagnostic_endpoint(client: TestClient) -> None
 def test_designops_generate_pricing_page_endpoint(client: TestClient) -> None:
     resp = client.post(
         "/api/v1/designops/generate/pricing-page",
-        json={"highlight": "growth_starter"},
+        json={"highlight": "revenue_command_pilot_30d"},
     )
     assert resp.status_code == 200
     body = resp.json()
     assert body["manifest"]["artifact_type"] == "pricing_page"
     assert body["manifest"]["safe_to_send"] is False
+    assert body["manifest"]["tier_count"] == 1
+    assert body["manifest"]["quote_only"] is True

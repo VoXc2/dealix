@@ -15,7 +15,8 @@ DOD_DOC = REPO_ROOT / "docs/commercial/operations/FIRST_PAID_DIAGNOSTIC_DOD_AR.m
 SOFT_LAUNCH_TRACKER = REPO_ROOT / "docs/commercial/operations/soft_launch_meetings_tracker.yaml"
 
 REVENUE_LADDER_AR = (
-    "Diagnostic (Ops) 4,999–15,000 SAR → Sprint/Data Pack بعد الدفع → Growth 2,999 بعد Proof"
+    "Free Mini Diagnostic → qualified discovery → customer-specific quote → "
+    "30-day Revenue Command Pilot → source-backed Proof → stop / expand / redesign"
 )
 
 

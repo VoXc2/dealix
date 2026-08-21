@@ -1,9 +1,9 @@
-"""Pricing page generator.
+"""Current-authority Dealix pricing-path artifact generator.
 
-Renders the 7-tier ladder from ``service_mapping_v7.value_ladder``
-when available; otherwise falls back to a hardcoded copy of the same
-ladder. Includes a "proof-before-scale" rule banner + a no-guaranteed
--claims footer.
+Dealix has one first-launch product path, not a public seven-tier price ladder.
+The artifact is internal-review only and carries no quote, invoice, checkout, or
+payment authority. ``highlight`` is accepted for API compatibility but cannot
+restore a retired package/tier.
 """
 from __future__ import annotations
 
@@ -16,160 +16,111 @@ from auto_client_acquisition.designops.generators.markdown_renderer import (
     render_artifact_markdown,
 )
 
-_FALLBACK_LADDER: list[dict[str, Any]] = [
+CURRENT_PATH: list[dict[str, Any]] = [
     {
-        "rung": 1,
-        "service": "diagnostic",
-        "name_ar": "Diagnostic مجاني",
-        "name_en": "Free Growth Diagnostic",
-        "price_band_sar": "0",
-        "summary_ar": "جلسة 30-60 دقيقة + 3 توصيات + توصية بأفضل عرض أوّل.",
-        "summary_en": "30-60 min session + 3 recommendations + best-first-offer pick.",
+        "stage": "entry",
+        "name_ar": "Free Mini Diagnostic",
+        "name_en": "Free Mini Diagnostic",
+        "price_authority": "free_entry_no_payment",
+        "summary_ar": (
+            "تشخيص minimum-data ينتج leak hypothesis وwritten diagnosis و"
+            "missing-evidence report وPilot hypothesis؛ لا Lead persistence أو دفع تلقائي."
+        ),
+        "summary_en": (
+            "Minimum-data diagnostic producing a leak hypothesis, written diagnosis, "
+            "missing-evidence report, and Pilot hypothesis; no automatic lead persistence or payment."
+        ),
     },
     {
-        "rung": 2,
-        "service": "growth_starter_pilot",
+        "stage": "paid_motion",
         "name_ar": "Revenue Command Pilot — 30 يومًا",
         "name_en": "Revenue Command Pilot — 30 days",
-        "price_band_sar": "quote_after_discovery",
-        "summary_ar": "نطاق تشغيل واحد + baseline + مسوّدات محكومة + Proof Pack.",
-        "summary_en": "One operating scope + baseline + governed drafts + Proof Pack.",
+        "price_authority": "customer_specific_quote_after_qualified_discovery",
+        "summary_ar": (
+            "Workflow واحد + baseline + owner + approved data boundary + approval path + "
+            "acceptance criteria + weekly/final Proof."
+        ),
+        "summary_en": (
+            "One workflow + baseline + owner + approved data boundary + approval path + "
+            "acceptance criteria + weekly/final Proof."
+        ),
     },
     {
-        "rung": 3,
-        "service": "growth_starter",
-        "name_ar": "Growth Starter",
-        "name_en": "Growth Starter",
-        "price_band_sar": "1500-3000",
-        "summary_ar": "شهر مكثف من حلقة النمو الأسبوعيّة + Proof Pack موسّع.",
-        "summary_en": "One intensive month of weekly growth loop + extended Proof Pack.",
-    },
-    {
-        "rung": 4,
-        "service": "data_to_revenue",
-        "name_ar": "Data to Revenue",
-        "name_en": "Data to Revenue",
-        "price_band_sar": "1500-3000",
-        "summary_ar": "تنظيف قائمة + درجة contactability + رسائل مقسّمة + تقرير مخاطر.",
-        "summary_en": "List cleanup + contactability score + segmented drafts + risk report.",
-    },
-    {
-        "rung": 5,
-        "service": "executive_growth_os",
-        "name_ar": "Executive Growth OS",
-        "name_en": "Executive Growth OS",
-        "price_band_sar": "2999/month",
-        "summary_ar": "حزمة أسبوعيّة: قرارات معلّقة + عوائق + مخاطر + actual vs forecast.",
-        "summary_en": "Weekly pack: pending decisions + blockers + risks + actual-vs-forecast.",
-    },
-    {
-        "rung": 6,
-        "service": "partnership_growth",
-        "name_ar": "Partnership Growth",
-        "name_en": "Partnership Growth",
-        "price_band_sar": "3000-7500",
-        "summary_ar": "8 فئات شراكة + fit-score + مسوّدات تواصل دافئة + Proof Pack مشترك.",
-        "summary_en": "8 partner categories + fit-score + warm-intro drafts + co-branded Proof Pack.",
-    },
-    {
-        "rung": 7,
-        "service": "full_growth_control_tower",
-        "name_ar": "Full Growth Control Tower / Custom Enterprise",
-        "name_en": "Full Growth Control Tower / Custom Enterprise",
-        "price_band_sar": "custom",
-        "summary_ar": "تخصيص كامل لمؤسسات متعدّدة الأقسام + لوحة قرارات + إيقاع شهريّ.",
-        "summary_en": "Full customisation for multi-division orgs + decision board + monthly cadence.",
+        "stage": "decision",
+        "name_ar": "Stop / Expand / Redesign",
+        "name_en": "Stop / Expand / Redesign",
+        "price_authority": "no_automatic_expansion",
+        "summary_ar": "التوسع ليس package تلقائيًا؛ يقرر من source-backed Proof ونطاق جديد معتمد.",
+        "summary_en": "Expansion is not an automatic package; it is earned by source-backed Proof and a newly approved scope.",
     },
 ]
 
 
-def _load_ladder() -> list[dict[str, Any]]:
-    try:
-        from auto_client_acquisition.service_mapping_v7 import value_ladder
-
-        rungs = value_ladder() or []
-        if rungs and len(rungs) >= 6:
-            return list(rungs)
-    except Exception:
-        pass
-    return list(_FALLBACK_LADDER)
-
-
 def generate_pricing_page(highlight: str | None = None) -> dict[str, Any]:
-    """Compose a bilingual pricing page artifact."""
-    ladder = _load_ladder()
+    """Compose the current one-product buying/pricing-path artifact."""
+    del highlight
 
-    title_ar = "أسعار Dealix — السلّم القيميّ ٧ درجات"
-    title_en = "Dealix Pricing — 7-Tier Value Ladder"
+    title_ar = "مسار شراء Dealix — منتج واحد، Quote خاص بالعميل"
+    title_en = "Dealix Buying Path — One Product, Customer-Specific Quote"
 
-    items_ar: list[str] = []
-    items_en: list[str] = []
-    for rung in ladder:
-        marker_ar = "★ " if highlight and rung.get("service") == highlight else "• "
-        marker_en = "★ " if highlight and rung.get("service") == highlight else "- "
-        items_ar.append(
-            f"{marker_ar}الدرجة {rung.get('rung', '?')} — "
-            f"{rung.get('name_ar', '')} ({rung.get('price_band_sar', '—')} ريال): "
-            f"{rung.get('summary_ar', '')}"
-        )
-        items_en.append(
-            f"{marker_en}Tier {rung.get('rung', '?')} — "
-            f"{rung.get('name_en', '')} ({rung.get('price_band_sar', '-')} SAR): "
-            f"{rung.get('summary_en', '')}"
-        )
-
-    # Spec-required tier labels — render explicit named-section block.
-    named_tiers_ar = [
-        "Free Diagnostic",
-        "30-Day Revenue Command Pilot (quote after discovery)",
-        "Growth Starter",
-        "Data to Revenue",
-        "Executive Growth OS",
-        "Partnership Growth",
-        "Full Growth Control Tower / Custom Enterprise",
+    items_ar = [
+        f"{row['name_ar']}: {row['summary_ar']}"
+        for row in CURRENT_PATH
+    ]
+    items_en = [
+        f"{row['name_en']}: {row['summary_en']}"
+        for row in CURRENT_PATH
     ]
 
     sections_ar = [
         {
-            "title": "قاعدة الإثبات قبل التوسّع",
+            "title": "السلطة الحالية",
             "items": [
-                "كل درجة أعلى تتطلّب Proof Pack موقَّع من الدرجة الأدنى.",
-                "لا قفزات تسعير بدون أدلّة — التوسّع يتبع الإثبات.",
+                "Dealix — Saudi-first AI Business Operating System.",
+                "أول wedge: Revenue + Proof + Command.",
+                "لا سعر عام ثابت للـPilot، ولا self-serve checkout، ولا package ladder عام.",
             ],
         },
-        {"title": "السلّم القيميّ", "items": items_ar},
+        {"title": "مسار الشراء", "items": items_ar},
         {
-            "title": "الأسماء الرسميّة للدرجات",
-            "items": named_tiers_ar,
+            "title": "بوابة السعر",
+            "items": [
+                "السعر الفعلي يأتي من customer-specific quote بعد qualified discovery.",
+                "مراجعة النطاق والهامش والقدرة والموافقات تسبق اعتماد العرض.",
+                "هذا artifact لا يصدر Quote أو Invoice أو Payment request.",
+            ],
         },
         {
-            "title": "ضمانات",
+            "title": "حدود النتيجة",
             "items": [
-                "❌ لا ضمانات بأرقام أو ترتيب أو إيرادات.",
-                "❌ لا ادعاءات تسويقيّة من نوع (المفردات الممنوعة).",
-                "✅ التزام بالعمل + Proof Pack.",
+                "لا ضمان إيراد أو ROI أو conversion أو نتيجة سوقية محددة.",
+                "أي expansion يحتاج Proof ونطاقًا وموافقة جديدة.",
             ],
         },
     ]
     sections_en = [
         {
-            "title": "Proof-before-scale rule",
+            "title": "Current authority",
             "items": [
-                "Every higher tier requires a signed Proof Pack from the tier below.",
-                "No price jumps without evidence — scale follows proof.",
+                "Dealix — Saudi-first AI Business Operating System.",
+                "First wedge: Revenue + Proof + Command.",
+                "No public fixed Pilot price, self-serve checkout, or public package ladder.",
             ],
         },
-        {"title": "Value ladder", "items": items_en},
+        {"title": "Buying path", "items": items_en},
         {
-            "title": "Official tier names",
-            "items": named_tiers_ar,  # tier names are bilingual / proper nouns
+            "title": "Price gate",
+            "items": [
+                "The actual price comes from a customer-specific quote after qualified discovery.",
+                "Scope, margin, capacity, and approval review precede quote approval.",
+                "This artifact does not issue a quote, invoice, or payment request.",
+            ],
         },
         {
-            "title": "Guarantees",
+            "title": "Outcome boundary",
             "items": [
-                "No guarantees on numbers, ranking, or revenue.",
-                "No marketing claims.",
-                "Commitment is on the work + a documented Proof Pack.",
+                "No promise of revenue, ROI, conversion, or a specific market outcome.",
+                "Any expansion requires Proof, a new scope, and a new approval decision.",
             ],
         },
     ]
@@ -177,8 +128,10 @@ def generate_pricing_page(highlight: str | None = None) -> dict[str, Any]:
     approval_status = "approval_required"
     audience = "internal_review"
     evidence_refs = [
-        f"value_ladder.rungs={len(ladder)}",
-        f"highlight={highlight or 'none'}",
+        "launch_authority=revenue_command_pilot_30d",
+        "price_authority=customer_specific_quote_after_qualified_discovery",
+        "public_fixed_price=false",
+        "live_checkout=false",
     ]
 
     md_full = render_artifact_markdown(
@@ -190,11 +143,10 @@ def generate_pricing_page(highlight: str | None = None) -> dict[str, Any]:
         audience=audience,
         evidence_refs=evidence_refs,
     )
-    # Footer: explicit no-guaranteed-claims line in the document body.
     md_full += (
         "\n---\n"
-        "> No-guarantee policy — commitment is on the work, not the numbers.\n"
-        "> لا ادعاءات مضمونة — الالتزام بالعمل، لا بالأرقام.\n"
+        "> Quote-only after qualified discovery — no live checkout or outcome promise.\n"
+        "> Quote خاص بالعميل بعد Discovery — لا Checkout حي ولا وعد بنتيجة.\n"
     )
 
     html = render_artifact_html(
@@ -209,13 +161,13 @@ def generate_pricing_page(highlight: str | None = None) -> dict[str, Any]:
 
     markdown_ar = (
         f"# {title_ar}\n\n"
-        + "\n".join(items_ar)
-        + "\n\n> الإثبات قبل التوسّع — لا ادعاءات مضمونة.\n"
+        + "\n".join(f"- {item}" for item in items_ar)
+        + "\n\n> السعر: customer-specific quote بعد qualified discovery فقط.\n"
     )
     markdown_en = (
         f"# {title_en}\n\n"
-        + "\n".join(items_en)
-        + "\n\n> Proof before scale — no-guarantee policy.\n"
+        + "\n".join(f"- {item}" for item in items_en)
+        + "\n\n> Price: customer-specific quote after qualified discovery only.\n"
     )
 
     return {
@@ -223,14 +175,19 @@ def generate_pricing_page(highlight: str | None = None) -> dict[str, Any]:
         "markdown_en": markdown_en,
         "markdown": md_full,
         "html": html,
-        "ladder": ladder,
+        "ladder": CURRENT_PATH,
         "manifest": {
             "artifact_type": "pricing_page",
             "approval_status": approval_status,
             "safe_to_send": False,
             "evidence_refs": evidence_refs,
             "audience": audience,
-            "highlight": highlight,
-            "tier_count": len(ladder),
+            "highlight": None,
+            "tier_count": 1,
+            "product_count": 1,
+            "public_fixed_price": False,
+            "quote_only": True,
+            "live_checkout": False,
+            "price_authority": "customer_specific_quote_after_qualified_discovery",
         },
     }

@@ -1,10 +1,12 @@
 # Governance checkpoint for Dealix's first paid launch motion.
 # This file is not a pricing catalogue and cannot authorize checkout or a quote.
 
-version: "1.1"
-updated: "2026-07-27"
+version: "1.5"
+updated: "2026-08-16"
 status: founder_approval_required
 decision_issue: "https://github.com/Dealix-sa/dealix/issues/917"
+canonical_business_model_source: docs/DEALIX_BUSINESS_MODEL.md
+canonical_business_model_wins_if_stricter: true
 
 primary_motion:
   id: revenue_command_pilot_30d
@@ -20,9 +22,15 @@ primary_motion:
     - one_icp
     - one_revenue_workflow
     - one_first_party_baseline
+    - accountable_delivery_owner
+    - approved_data_boundary
+    - approval_path_defined
+    - acceptance_criteria_defined
     - one_measured_operating_target
+    - weekly_proof_pack
     - weekly_executive_readout
     - final_proof_pack
+    - final_outcome_review
     - stop_expand_or_redesign_decision
   excluded:
     - guaranteed_revenue_or_roi
@@ -33,25 +41,53 @@ primary_motion:
 
 icp_hypothesis:
   status: validate_with_first_five_qualified_conversations
-  segment: "Saudi B2B service businesses with an existing sales tool and weak post-lead operating visibility"
+  source: docs/DEALIX_BUSINESS_MODEL.md
+  source_contract_wins_if_stricter: true
+  segment: "Saudi B2B SaaS and business-service companies with approximately 20-200 employees"
+  approximate_employee_range:
+    min: 20
+    max: 200
+  required_decision_access:
+    - founder
+    - general_manager
+  required_characteristics:
+    - identifiable_revenue_operations_pain
+    - usable_lawful_data
+    - accountable_owner
+    - willingness_to_run_measured_30_day_pilot
+    - acceptance_of_human_approval_gates
   operating_signals:
     - opportunities_without_verified_owner_or_next_action
     - inconsistent_follow_up_or_response_time
     - executive_reporting_assembled_manually
     - existing_crm_without_evidence_governance
-  likely_buyers:
-    - founder_or_general_manager
-    - revenue_or_sales_leader
   phase_one_exclusions:
+    - banks
+    - government
+    - heavily_regulated_enterprise_transformation
+    - anonymous_mass_outbound
+    - guaranteed_revenue_request
     - public_sector_procurement_without_readiness_review
-    - highly_regulated_workloads_without_legal_and_security_review
 
 pricing_experiment:
   currency: SAR
   status: no_public_amount_until_validation
   public_amount_sar: null
   qualified_conversations_required: 5
-  canonical_price_source_after_approval: auto_client_acquisition/service_catalog/registry.py
+  qualified_conversation_exit_criteria_source: docs/DEALIX_BUSINESS_MODEL.md
+  qualification_source_contract_wins_if_stricter: true
+  qualified_conversation_requires:
+    - active_icp_match
+    - painful_specific_business_problem
+    - accountable_decision_owner
+    - relevant_data_usable_lawfully
+    - measurable_baseline_and_proof_path
+    - approval_gate_willingness
+    - budget_and_timing_discussion_completed
+    - no_guarantee_compliance_bypass_or_prohibited_data_request
+  # Semantic authority only. The service registry remains offering metadata;
+  # its quote-only 0.0 placeholder is never an authorized customer price.
+  canonical_price_source_after_approval: founder_approved_named_customer_quote
   approval_owner: founder
   margin_floor_review_required: true
   tax_and_einvoice_review_required: true
@@ -89,6 +125,7 @@ runtime_blocks:
 
 reconciliation_status:
   canonical_sources_updated:
+    - docs/DEALIX_BUSINESS_MODEL.md
     - auto_client_acquisition/service_catalog/registry.py
     - auto_client_acquisition/finance_os/pricing_catalog.py
     - data/commercial/product_catalog.yaml

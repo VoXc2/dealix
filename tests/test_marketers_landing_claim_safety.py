@@ -115,6 +115,15 @@ def test_public_pilot_pages_do_not_capture_or_send_data_directly() -> None:
         assert "<form" not in lowered
         assert "fetch(" not in lowered
         assert "xmlhttprequest" not in lowered
-        assert "mailto:" in lowered
         assert "/trust-center.html" in lowered
         assert "/privacy.html" in lowered
+
+    marketers = _read(MARKETERS_PAGE).lower()
+    assert "mailto:" not in marketers
+    assert marketers.count('href="/diagnostic.html"') >= 4
+
+    # The broader services page still uses a draft-only mail client handoff.
+    # Its eventual retirement is part of the wider public-authority alignment
+    # scope; this focused PR owns only the marketers.html slice.
+    services = _read(SERVICES_PAGE).lower()
+    assert "mailto:" in services

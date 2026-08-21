@@ -1,140 +1,149 @@
-"""Track B2 — Pricing → evidence-first checkout request flow assertions.
+"""Public commercial-surface contracts for the quote-only first launch.
 
-Verifies:
-- /checkout.html exists with all 5 priced tiers (sprint, growth, scale, partner, enterprise)
-- /checkout-success.html exists and reads request_id from URL
-- /pricing.html CTAs route to /checkout.html?tier=X
-- NO_LIVE_CHARGE banner is visible on checkout.html
-- VAT wording is deferred to the approved invoice/payment path
-- Footer trust badges remain present
+The current launch has one customer path:
+Free Mini Diagnostic -> qualified discovery -> quote-only 30-day
+Revenue Command Pilot -> verified proof -> evidence-based expansion.
+
+These tests deliberately reject the retired fixed-price/self-serve ladder and
+prevent capability pages from becoming parallel commercial products.
 """
 
 from __future__ import annotations
 
-import re
 from pathlib import Path
 
 LANDING = Path(__file__).resolve().parents[1] / "landing"
+RETIRED_PRICE_TOKENS = ("499", "1500", "1,500", "2999", "2,999", "7999", "7,999", "12000", "12,000")
+RETIRED_TIER_NAMES = (
+    "Revenue Proof Sprint",
+    "Growth OS",
+    "Scale OS",
+    "Executive Command Center",
+    "Data Pack",
+)
 
 
 def _read(name: str) -> str:
     return (LANDING / name).read_text(encoding="utf-8")
 
 
-def test_checkout_html_exists():
-    assert (LANDING / "checkout.html").exists()
+def test_public_commercial_pages_exist() -> None:
+    for name in (
+        "pricing.html",
+        "services.html",
+        "checkout.html",
+        "checkout-success.html",
+        "llms.txt",
+    ):
+        assert (LANDING / name).exists(), name
 
 
-def test_checkout_success_html_exists():
-    assert (LANDING / "checkout-success.html").exists()
+def test_pricing_page_exposes_one_quote_only_launch_path() -> None:
+    html = _read("pricing.html")
+    for required in (
+        "Free Mini Diagnostic",
+        "Revenue Command Pilot — 30 يومًا",
+        "Quote-only",
+        "30-day Pilot",
+        "Weekly Proof Pack",
+        "Final Proof Pack",
+        "NO_LIVE_CHARGE",
+        "لا Checkout حي",
+    ):
+        assert required in html, required
+    assert 'href="/diagnostic.html"' in html
+    assert 'href="/proof.html"' in html
 
 
-def test_checkout_html_lists_all_pricing_tiers():
-    html = _read("checkout.html")
-    for key in ("sprint", "growth", "scale", "partner", "enterprise"):
-        assert f"{key}:" in html or f'"{key}"' in html, f"checkout.html missing tier {key!r}"
-
-
-def test_checkout_html_includes_amount_for_each_priced_tier():
-    html = _read("checkout.html")
-    for amount in ("499", "2999", "7999", "12000"):
-        assert amount in html, f"checkout.html missing amount {amount!r}"
-
-
-def test_checkout_html_has_no_live_charge_banner():
-    html = _read("checkout.html")
-    assert "NO_LIVE_CHARGE" in html
-    assert "TEST" in html
-    assert "REQUEST ≠ INVOICE ≠ REVENUE" in html
-
-
-def test_checkout_html_defers_vat_to_approved_invoice_path():
-    html = _read("checkout.html")
-    assert "السعر والضريبة" in html
-    assert "المسار المعتمد" in html
-    assert "VAT 15% مُحتسب" not in html
-    assert "الفاتورة جاهزة" not in html
-
-
-def test_checkout_html_has_footer_trust_badges():
-    html = _read("checkout.html")
-    for badge in ("Saudi-PDPL", "Approval-first", "Proof-backed"):
-        assert badge in html, f"checkout.html missing footer badge {badge!r}"
-
-
-def test_checkout_html_uses_test_intent_endpoint_only_for_test_path():
-    html = _read("checkout.html")
-    assert "/api/v1/payment-ops/invoice-intent" in html
-    manual_start = html.index("if(method==='bank_transfer_manual')")
-    test_path_start = html.index("btn.disabled=true", manual_start)
-    assert "/api/v1/payment-ops/invoice-intent" not in html[manual_start:test_path_start]
-
-
-def test_checkout_html_handles_enterprise_tier_separately():
-    html = _read("checkout.html")
-    assert "mailto:sales@dealix.sa" in html
-    assert "Enterprise assessment request" in html
-
-
-def test_checkout_success_reads_request_id_from_url():
-    html = _read("checkout-success.html")
-    assert "request_id" in html
-    assert "invoice_id" not in html
-
-
-def test_checkout_success_is_request_not_invoice_or_payment():
-    html = _read("checkout-success.html")
-    assert "test_request_recorded" in html
-    assert "REQUEST ≠ INVOICE ≠ REVENUE" in html
-    assert "لم يتم خصم أي مبلغ" in html
-    assert "لم تصدر فاتورة حية" in html
-    assert "لم يبدأ تنفيذ الخدمة" in html
+def test_pricing_page_has_no_retired_price_ladder_or_checkout_cta() -> None:
+    html = _read("pricing.html")
+    for token in RETIRED_PRICE_TOKENS:
+        assert token not in html, token
+    for name in RETIRED_TIER_NAMES:
+        assert name not in html, name
+    assert "/checkout.html?tier=" not in html
+    assert "إكمال الاشتراك" not in html
     assert "VAT 15%" not in html
+    assert "SLA 99.9%" not in html
+    assert "price-lock" not in html
 
 
-def test_checkout_success_has_no_live_charge_disclaimer():
+def test_services_page_is_capability_map_under_one_product() -> None:
+    html = _read("services.html")
+    for required in (
+        "One Product",
+        "Dealix منتج واحد",
+        "Revenue + Proof + Command",
+        "Free Mini Diagnostic",
+        "Revenue Command Pilot — 30 يومًا",
+        "Company Brain + Business Graph",
+        "Daily Executive Command",
+        "Governed Execution",
+        "Proof + Learning + Model Router",
+    ):
+        assert required in html, required
+    assert "سلّم العروض" not in html
+    assert "Saudi Opportunity Snapshot" not in html
+    assert "AI Company OS Setup" not in html
+    assert "Partner & Distributor Desk" not in html
+    assert "Revenue Proof Sprint" not in html
+    assert 'href="/diagnostic.html"' in html
+    assert 'href="/pricing.html"' in html
+    assert "sami.assiri11@gmail.com" not in html
+
+
+def test_checkout_is_hard_blocked_before_named_customer_quote() -> None:
+    html = _read("checkout.html")
+    for required in (
+        "NO_LIVE_CHARGE",
+        "QUOTE_ONLY",
+        "NO_PUBLIC_FIXED_PRICE",
+        "NO_SELF_SERVE_CHECKOUT",
+        "REQUEST ≠ QUOTE ≠ INVOICE ≠ PAYMENT ≠ REVENUE",
+    ):
+        assert required in html, required
+    assert "/diagnostic.html" in html
+    assert "/proof.html" in html
+
+
+def test_checkout_has_no_payment_intent_or_customer_input_form() -> None:
+    html = _read("checkout.html")
+    assert "/api/v1/payment-ops/invoice-intent" not in html
+    assert "TIERS=" not in html
+    assert "fetch(" not in html
+    assert "<form" not in html
+    assert "amount_sar" not in html
+    assert "bank_transfer_manual" not in html
+    for token in RETIRED_PRICE_TOKENS:
+        assert token not in html, token
+
+
+def test_checkout_success_is_a_legacy_fail_closed_surface() -> None:
     html = _read("checkout-success.html")
-    assert "NO_LIVE_CHARGE" in html
+    for required in (
+        "Checkout العام غير مفعّل",
+        "NO_LIVE_CHARGE",
+        "NO_PUBLIC_FIXED_PRICE",
+        "NO_SELF_SERVE_CHECKOUT",
+        "REQUEST ≠ QUOTE ≠ INVOICE ≠ PAYMENT ≠ REVENUE",
+    ):
+        assert required in html, required
+    assert "request_id" not in html
+    assert "tier-label" not in html
+    assert "amount-shown" not in html
+    assert "payment_received" not in html
+    for token in RETIRED_PRICE_TOKENS:
+        assert token not in html, token
 
 
-def test_checkout_success_has_footer_trust_badges():
-    html = _read("checkout-success.html")
-    for badge in ("Saudi-PDPL", "Approval-first", "Proof-backed"):
-        assert badge in html, f"checkout-success.html missing footer badge {badge!r}"
-
-
-def test_pricing_ctas_route_to_checkout():
-    html = _read("pricing.html")
-    for tier_key in ("sprint", "growth", "scale", "partner"):
-        pattern = f"/checkout.html?tier={tier_key}"
-        assert pattern in html, f"pricing.html missing CTA for tier={tier_key}"
-
-
-def test_pricing_no_longer_routes_priced_tiers_to_launchpad():
-    html = _read("pricing.html")
-    ctas = re.findall(r'class="cta"\s+href="([^"]+)"', html)
-    for href in ctas:
-        if href.startswith("mailto:"):
-            continue
-        assert href.startswith("/checkout.html") or href == "/diagnostic.html", (
-            f"pricing.html CTA points to unexpected target: {href}"
-        )
-
-
-def test_robots_txt_disallows_checkout_pages():
-    robots = (LANDING / "robots.txt").read_text(encoding="utf-8")
+def test_robots_txt_disallows_checkout_pages() -> None:
+    robots = _read("robots.txt")
     assert "Disallow: /checkout.html" in robots
     assert "Disallow: /checkout-success.html" in robots
 
 
-def test_robots_txt_allows_ai_crawlers():
-    robots = (LANDING / "robots.txt").read_text(encoding="utf-8")
-    for bot in ("PerplexityBot", "ChatGPT-User", "GPTBot", "ClaudeBot"):
-        assert f"User-agent: {bot}" in robots, f"robots.txt missing AI crawler {bot}"
-
-
-def test_llms_txt_exists_and_lists_hard_gates():
-    llms = (LANDING / "llms.txt").read_text(encoding="utf-8")
+def test_llms_txt_lists_current_hard_gates() -> None:
+    llms = _read("llms.txt")
     for gate in (
         "NO_LIVE_SEND",
         "NO_LIVE_CHARGE",
@@ -144,18 +153,33 @@ def test_llms_txt_exists_and_lists_hard_gates():
         "NO_FAKE_PROOF",
         "NO_FAKE_REVENUE",
         "NO_UNAPPROVED_TESTIMONIAL",
+        "NO_UNPROVEN_COMPLIANCE_CLAIM",
     ):
-        assert gate in llms, f"llms.txt missing hard gate {gate!r}"
+        assert gate in llms, gate
 
 
-def test_llms_txt_lists_pricing_tiers():
-    llms = (LANDING / "llms.txt").read_text(encoding="utf-8")
-    assert "499 SAR" in llms
-    assert "2,999 SAR" in llms or "2999 SAR" in llms
-    assert "12,000 SAR" in llms or "12000 SAR" in llms
+def test_llms_txt_matches_quote_only_authority() -> None:
+    llms = _read("llms.txt")
+    for required in (
+        "Saudi-first AI Business Operating System",
+        "Revenue + Proof + Command",
+        "Free Mini Diagnostic",
+        "Revenue Command Pilot — 30 days",
+        "no public fixed first-launch price",
+        "no public self-serve checkout",
+        "founder-approved named-customer quote",
+    ):
+        assert required.lower() in llms.lower(), required
+    for token in RETIRED_PRICE_TOKENS:
+        assert token not in llms, token
+    for name in RETIRED_TIER_NAMES:
+        assert name not in llms, name
+    assert "Saudi data residency" not in llms
+    assert "Pricing is **transparent**" not in llms
 
 
-def test_llms_txt_includes_vision_2030_alignment():
-    llms = (LANDING / "llms.txt").read_text(encoding="utf-8")
-    assert "Vision 2030" in llms
-    assert "PDPL" in llms
+def test_llms_txt_does_not_claim_payment_intent_is_public_offer() -> None:
+    llms = _read("llms.txt")
+    assert "POST /api/v1/payment-ops/invoice-intent" not in llms
+    assert "VAT 15% included" not in llms
+    assert "full refund" not in llms.lower()

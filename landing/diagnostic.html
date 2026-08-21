@@ -1,346 +1,93 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl" data-theme="dark">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>الفحص المجاني المبدئي — Dealix</title>
-<meta name="description" content="فحص مجاني مبدئي بفرضيات قابلة للمراجعة البشرية. بدون بطاقة أو دفع أو كلمات مرور أو ربط أنظمة أو صلاحيات حساسة." />
-<link rel="canonical" href="https://dealix.me/diagnostic.html" />
-<meta property="og:type" content="website" />
-<meta property="og:title" content="Dealix — الفحص المجاني المبدئي" />
-<meta property="og:description" content="٦ أسئلة فقط. فرضيات أولية وفجوات أدلة وخطوة تالية للمراجعة البشرية — بلا دفع أو ربط أنظمة." />
-<meta property="og:url" content="https://dealix.me/diagnostic.html" />
-<meta property="og:locale" content="ar_SA" />
-<meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:title" content="Dealix — الفحص المجاني المبدئي" />
-<meta name="twitter:description" content="٦ أسئلة. فحص أولي مجاني. مراجعة بشرية قبل أي عرض مدفوع." />
-<meta name="theme-color" content="#0f172a" />
-
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" />
-
-<link rel="stylesheet" href="/styles.css" />
-<link rel="stylesheet" href="/assets/css/design-system.css" />
-
-<style>
-  body {
-    background:
-      radial-gradient(900px 500px at 80% -10%, rgba(168, 85, 247, 0.16), transparent 60%),
-      radial-gradient(900px 500px at 0% 10%, rgba(14, 165, 233, 0.16), transparent 60%),
-      linear-gradient(180deg, #050816 0%, #0b1124 60%, #1e1b4b 100%);
-    color: var(--text);
-    min-height: 100vh;
-    margin: 0;
-    font-family: var(--font-ar);
-  }
-  main { padding: var(--space-7) var(--space-5) var(--space-9); }
-  .dx-form { display: grid; gap: var(--space-5); max-width: 720px; margin: 0 auto; }
-  .dx-form__row { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4); }
-  @media (max-width: 600px) { .dx-form__row { grid-template-columns: 1fr; } }
-  .dx-consent {
-    display: flex;
-    gap: var(--space-3);
-    align-items: flex-start;
-    padding: var(--space-4);
-    background: rgba(34, 211, 238, 0.06);
-    border: 1px solid rgba(34, 211, 238, 0.20);
-    border-radius: var(--radius, 14px);
-    font-size: var(--fs-sm);
-    line-height: var(--lh-base);
-  }
-  .dx-consent input[type="checkbox"] {
-    width: 18px; height: 18px;
-    accent-color: var(--accent-2);
-    margin-top: 2px;
-    flex-shrink: 0;
-  }
-  .dx-consent a { color: var(--accent-2); }
-  .dx-result { display: none; }
-  .dx-result.is-visible { display: block; }
-  textarea.ds-input__field { min-height: 80px; resize: vertical; font-family: var(--font-ar); }
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Free Mini Diagnostic — Dealix</title>
+  <meta name="description" content="تشخيص مجاني محدود ببيانات الشركة والتشغيل فقط: leak hypothesis، written diagnosis، missing-evidence report، وPilot hypothesis. لا اسم شخص أو جوال أو بريد أو دفع أو ربط أنظمة." />
+  <link rel="canonical" href="https://dealix.me/diagnostic.html" />
+  <meta property="og:title" content="Dealix — Free Mini Diagnostic" />
+  <meta property="og:description" content="تشخيص محدود قبل أي عرض مدفوع. لا PII، لا دفع، لا auto-send، ولا ربط أنظمة." />
+  <meta property="og:url" content="https://dealix.me/diagnostic.html" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="theme-color" content="#0f172a" />
+  <link rel="stylesheet" href="/styles.css" />
+  <link rel="stylesheet" href="/assets/css/design-system.css" />
+  <style>
+    body{background:radial-gradient(900px 500px at 80% -10%,rgba(168,85,247,.16),transparent 60%),radial-gradient(900px 500px at 0 10%,rgba(14,165,233,.16),transparent 60%),linear-gradient(180deg,#050816 0%,#0b1124 60%,#1e1b4b 100%);color:var(--text);min-height:100vh;margin:0;font-family:var(--font-ar)}main{padding:var(--space-7) var(--space-5) var(--space-9)}.dx-form{display:grid;gap:var(--space-5);max-width:760px;margin:0 auto}.dx-form__row{display:grid;grid-template-columns:1fr 1fr;gap:var(--space-4)}.dx-ack{display:flex;gap:var(--space-3);align-items:flex-start;padding:var(--space-4);background:rgba(34,211,238,.06);border:1px solid rgba(34,211,238,.20);border-radius:14px;font-size:var(--fs-sm);line-height:var(--lh-base)}.dx-ack input{width:18px;height:18px;accent-color:var(--accent-2);margin-top:2px;flex-shrink:0}.dx-result{display:none}.dx-result.is-visible{display:block}.dx-gate{direction:ltr;unicode-bidi:isolate;font-family:ui-monospace,Menlo,monospace;font-size:12px;line-height:1.8;background:rgba(15,23,42,.55);border:1px solid rgba(148,163,184,.2);padding:12px;border-radius:10px}.dx-output{background:rgba(15,23,42,.55);border:1px solid rgba(148,163,184,.2);border-radius:14px;padding:20px}.dx-output h3{margin-top:0}.dx-output p,.dx-output li{color:var(--text-muted)}@media(max-width:640px){.dx-form__row{grid-template-columns:1fr}}
+  </style>
 </head>
 <body>
 <a class="ds-skip-link" href="#main">تخطّ إلى المحتوى الرئيسي</a>
-
 <main id="main" class="ds-container--base ds-stack ds-stack--xl">
+  <nav class="ds-breadcrumb" aria-label="مسار التنقّل"><a href="/">الرئيسية</a><span class="ds-breadcrumb__sep" aria-hidden="true"></span><span aria-current="page">Free Mini Diagnostic</span></nav>
 
-  <!-- Breadcrumb + back -->
-  <nav class="ds-breadcrumb" aria-label="مسار التنقّل">
-    <a href="/">الرئيسيّة</a>
-    <span class="ds-breadcrumb__sep" aria-hidden="true"></span>
-    <a href="/ai-team.html">AI Operating Team</a>
-    <span class="ds-breadcrumb__sep" aria-hidden="true"></span>
-    <span aria-current="page">الفحص المجاني المبدئي</span>
-  </nav>
-
-  <!-- Hero -->
   <section class="ds-banner ds-stack ds-stack--sm" aria-labelledby="hero-title">
-    <span class="ds-eyebrow">Free · بدون بطاقة أو ربط أنظمة · مراجعة بشرية</span>
-    <h1 id="hero-title" class="ds-banner__title">ابدأ بالفحص المجاني المبدئي</h1>
-    <p class="ds-banner__subtitle">٦ أسئلة فقط. تحصل على فرضيات أولية وفجوات أدلة و٣ فرص بحثية تحتاج تحققًا ومسودة عربية داخلية. هدفنا مراجعة الطلب خلال ٢٤ ساعة عمل؛ هذا ليس وعدًا بنتيجة أو قبولًا في نطاق مدفوع.</p>
+    <span class="ds-eyebrow">Free · minimum-data · no payment · no system access</span>
+    <h1 id="hero-title" class="ds-banner__title">Free Mini Diagnostic</h1>
+    <p class="ds-banner__subtitle">نستخدم معلومات الشركة والتشغيل التي تختار إدخالها لننتج فرضية فجوة واحدة، تشخيصًا مكتوبًا، تقرير نقص الأدلة، وPilot hypothesis. لا نطلب اسم شخص أو جوال أو بريد، ولا نحفظ Lead تلقائيًا من هذه الصفحة.</p>
   </section>
 
-  <!-- Output promise card -->
-  <section aria-label="ماذا ستحصل عليه">
-    <div class="ds-card" style="background: linear-gradient(135deg, rgba(34, 211, 238, 0.06), rgba(168, 85, 247, 0.06)); border: 1px solid rgba(34, 211, 238, 0.22);">
-      <h2 class="ds-card__title" style="font-size: var(--fs-xl);">📩 ما يخرجه الفحص المبدئي</h2>
-      <ul class="ds-list-clean" style="font-size: var(--fs-md);">
-        <li><strong>فرضيات</strong> عن الوضع والفرصة، وليست حقائق أو نتائج عميل</li>
-        <li><strong>٣ فرص بحثية</strong> مرتبة، وكل واحدة تحتاج مصدرًا عامًا وتحققًا بشريًا</li>
-        <li><strong>رسالة عربيّة</strong> كمسودة داخلية غير جاهزة للإرسال الخارجي</li>
-        <li><strong>أفضل قناة مبدئية ومخاطرة</strong> للمراجعة قبل أي تواصل</li>
-        <li><strong>قرار التالي</strong>: توقف أو تحقق إضافي أو مراجعة ملاءمة بشرية</li>
+  <section aria-label="مخرجات التشخيص">
+    <div class="ds-card" style="background:linear-gradient(135deg,rgba(34,211,238,.06),rgba(168,85,247,.06));border:1px solid rgba(34,211,238,.22)">
+      <h2 class="ds-card__title">ماذا يخرج؟</h2>
+      <ul class="ds-list-clean">
+        <li><strong>Credible leak hypothesis</strong> مبنية على مدخلاتكم، لا على Claim من Dealix.</li>
+        <li><strong>Written diagnosis</strong> يوضح الوضع، الفرصة، الخطر، وما نعرفه/لا نعرفه.</li>
+        <li><strong>Missing-evidence report</strong> يحدد ما يلزم قبل أي قرار مدفوع.</li>
+        <li><strong>Pilot hypothesis</strong> فقط إذا كان هناك نطاق يمكن قياسه؛ لا Quote أو Price أو قبول آلي.</li>
       </ul>
+      <div class="dx-gate">NO_PII_CAPTURE · NO_LEAD_PERSISTENCE · NO_LIVE_SEND · NO_LIVE_CHARGE · HUMAN_REVIEW_REQUIRED</div>
     </div>
   </section>
 
-  <!-- Trust strip -->
-  <section class="ds-grid ds-grid--narrow" aria-label="ضمانات الخصوصيّة والأمان">
-    <div class="ds-feature ds-feature--icon-side">
-      <span class="ds-feature__icon">🛡️</span>
-      <div>
-        <h3 class="ds-feature__title">غرض محدد</h3>
-        <p class="ds-feature__desc">نعالج ما ترسله لإصدار الفحص ومراجعته فقط، وفق سياسة الخصوصية وطلب الحذف.</p>
-      </div>
-    </div>
-    <div class="ds-feature ds-feature--icon-side">
-      <span class="ds-feature__icon">📨</span>
-      <div>
-        <h3 class="ds-feature__title">صفر cold outreach</h3>
-        <p class="ds-feature__desc">لا نرسل أي رسالة خارجية ولا نفعّل حملة أو موعدًا تلقائيًا.</p>
-      </div>
-    </div>
-    <div class="ds-feature ds-feature--icon-side">
-      <span class="ds-feature__icon">⚡</span>
-      <div>
-        <h3 class="ds-feature__title">لا وصول حساس</h3>
-        <p class="ds-feature__desc">لا بطاقة أو دفع، ولا كلمات مرور أو ربط CRM أو صلاحيات بريد أو واتساب.</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- Form -->
   <section aria-labelledby="form-title" class="ds-stack ds-stack--md">
-    <div>
-      <span class="ds-eyebrow">٦ أسئلة فقط</span>
-      <h2 id="form-title" class="ds-headline" style="font-size: var(--fs-3xl); margin-top: var(--space-3);">عرّفنا على شركتك</h2>
-    </div>
+    <div><span class="ds-eyebrow">بيانات شركة وتشغيل فقط</span><h2 id="form-title" class="ds-headline" style="font-size:var(--fs-3xl);margin-top:var(--space-3)">أعطنا أقل سياق ممكن</h2></div>
 
     <form id="diagnosticForm" class="dx-form" novalidate>
-      <!-- Honeypot (hidden, anti-spam) -->
       <input type="text" name="website" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px;height:0;width:0;opacity:0" aria-hidden="true" />
 
-      <!-- Company name (maps to company_handle) -->
-      <label class="ds-input">
-        <span class="ds-input__label">اسم الشركة *</span>
-        <input class="ds-input__field" type="text" name="company_handle" required minlength="2" maxlength="80" placeholder="مثال: Acme Marketing Co" autocomplete="organization" />
-        <span class="ds-input__hint">يظهر في تشخيصك فقط. غير منشور.</span>
-      </label>
+      <div class="dx-form__row">
+        <label class="ds-input"><span class="ds-input__label">اسم/Handle الشركة *</span><input class="ds-input__field" type="text" name="company_handle" required minlength="2" maxlength="80" placeholder="Acme B2B" autocomplete="organization" /></label>
+        <label class="ds-input"><span class="ds-input__label">القطاع *</span><select class="ds-input__field" name="sector" required><option value="">اختر</option><option value="b2b_services">B2B Services</option><option value="saas">SaaS</option><option value="agency">Agency</option><option value="consulting">Consulting</option><option value="education">Education</option><option value="logistics">Logistics</option><option value="real_estate">Real Estate</option><option value="other">Other</option></select></label>
+      </div>
+
+      <label class="ds-input"><span class="ds-input__label">موقع الشركة العام — اختياري</span><input class="ds-input__field" type="url" name="company_url" placeholder="https://company.example" autocomplete="url" /><span class="ds-input__hint">استخدم رابط الشركة العام فقط؛ لا تضع رابطًا خاصًا أو يحمل token.</span></label>
+
+      <label class="ds-input"><span class="ds-input__label">ما الفجوة التشغيلية/الإيرادية الأكثر ألمًا الآن؟ *</span><textarea class="ds-input__field" name="biggest_problem" required minlength="8" maxlength="1200" placeholder="مثال: الفرص موزعة بين البريد وCRM ولا يوجد owner/next action واضح"></textarea></label>
 
       <div class="dx-form__row">
-        <!-- Sector -->
-        <label class="ds-input">
-          <span class="ds-input__label">القطاع *</span>
-          <select class="ds-input__field" name="sector" required>
-            <option value="">اختر القطاع</option>
-            <optgroup label="Tier 1 — أولويّة">
-              <option value="agency">وكالة تسويق / إعلانيّة</option>
-              <option value="b2b_services">خدمات B2B</option>
-              <option value="consulting">استشارات</option>
-            </optgroup>
-            <optgroup label="Tier 2">
-              <option value="saas">SaaS</option>
-              <option value="ecommerce">تجارة إلكترونيّة</option>
-              <option value="real_estate">عقار</option>
-            </optgroup>
-            <optgroup label="Tier 3 — إثبات أوّلاً">
-              <option value="healthcare">صحّي (admin only)</option>
-              <option value="education">تعليم</option>
-              <option value="logistics">لوجستيّات</option>
-              <option value="other">أخرى</option>
-            </optgroup>
-          </select>
-        </label>
-
-        <!-- Website / handle (free text, mapped to ideal_customer hint) -->
-        <label class="ds-input">
-          <span class="ds-input__label">رابط موقع / حساب الشركة</span>
-          <input class="ds-input__field" type="url" name="company_url" placeholder="https://acme.sa" autocomplete="url" />
-        </label>
+        <label class="ds-input"><span class="ds-input__label">المقياس الذي نحتاج Baseline له</span><input class="ds-input__field" type="text" name="target_metric" maxlength="160" placeholder="مثال: زمن الرد الأول أو opportunities بدون next action" /></label>
+        <label class="ds-input"><span class="ds-input__label">حالة التشغيل الحالية</span><select class="ds-input__field" name="tech_level"><option value="">اختر</option><option value="manual">Manual / Excel / Email</option><option value="basic">CRM basic</option><option value="integrated">CRM + integrations</option><option value="advanced">Analytics + APIs</option></select></label>
       </div>
 
-      <div class="dx-form__row">
-        <label class="ds-input">
-          <span class="ds-input__label">اسم جهة الاتصال *</span>
-          <input class="ds-input__field" type="text" name="contact_name" required minlength="2" placeholder="الاسم الكامل" autocomplete="name" />
-        </label>
-        <label class="ds-input">
-          <span class="ds-input__label">جوّال *</span>
-          <input class="ds-input__field" type="tel" name="phone" required pattern="^\+?\d[\d\s]{8,15}$" placeholder="+966 5X XXX XXXX" autocomplete="tel" />
-        </label>
-      </div>
+      <label class="ds-input"><span class="ds-input__label">ما العملية أو الحل الذي تستخدمه الآن؟</span><textarea class="ds-input__field" name="current_channels" maxlength="800" placeholder="مثال: HubSpot + WhatsApp يدوي + تقرير أسبوعي Excel"></textarea></label>
 
-      <label class="ds-input">
-        <span class="ds-input__label">البريد الإلكتروني *</span>
-        <input class="ds-input__field" type="email" name="email" required placeholder="you@company.sa" autocomplete="email" />
-        <span class="ds-input__hint">نستخدمه لتأكيد الاستلام ومراجعة الفحص فقط؛ لا يُضاف تلقائيًا إلى حملة تسويقية.</span>
-      </label>
+      <label class="dx-ack"><input type="checkbox" name="minimum_data_ack" required /><span><strong>Minimum-data acknowledgement</strong> — أؤكد أنني لا أضع بيانات شخصية لعملاء/موظفين، بيانات حساسة، أسرار، كلمات مرور، ملفات خاصة، أو معلومات لا أملك صلاحية مشاركتها. أسمح باستخدام المدخلات أعلاه فقط لإنتاج هذا التشخيص اللحظي. <a href="/privacy.html" target="_blank" rel="noopener">راجع إشعار الخصوصية</a>.</span></label>
 
-      <hr class="ds-divider" />
-
-      <!-- 6 diagnostic questions -->
-      <div>
-        <span class="ds-eyebrow">الأسئلة التشخيصيّة</span>
-        <h3 class="ds-headline" style="font-size: var(--fs-2xl); margin-top: var(--space-3);">٦ أسئلة سريعة</h3>
-      </div>
-
-      <label class="ds-input">
-        <span class="ds-input__label">١. أكبر عائق حالياً يمنع نموّك (jab الإيراد، التسليم، الدعم، التسويق…)؟ *</span>
-        <textarea class="ds-input__field" name="biggest_problem" required minlength="6" placeholder="مثال: ما عندي follow-up منظّم، الـ pipeline مشتّت بين WhatsApp وExcel"></textarea>
-      </label>
-
-      <label class="ds-input">
-        <span class="ds-input__label">٢. أسرع رافعة ربح (تسعير / عمليّة المبيعات / الاحتفاظ بالعملاء / التسليم)؟</span>
-        <textarea class="ds-input__field" name="fastest_lever" placeholder="مثال: الـ retention — عندي تسرّب ٣٠٪ بعد الشهر الأوّل"></textarea>
-      </label>
-
-      <div class="dx-form__row">
-        <label class="ds-input">
-          <span class="ds-input__label">٣. حجم قاعدة العملاء الحاليّة</span>
-          <select class="ds-input__field" name="customer_base">
-            <option value="">اختر</option>
-            <option value="0_10">٠–١٠ عملاء (early)</option>
-            <option value="10_50">١٠–٥٠ عميل</option>
-            <option value="50_200">٥٠–٢٠٠ عميل</option>
-            <option value="200_plus">+٢٠٠ عميل</option>
-          </select>
-        </label>
-        <label class="ds-input">
-          <span class="ds-input__label">٤. مستوى التشغيل التقني</span>
-          <select class="ds-input__field" name="tech_level">
-            <option value="">اختر</option>
-            <option value="manual">يدوي بالكامل (Excel + WhatsApp)</option>
-            <option value="basic">أدوات أساسيّة (CRM متفرّق)</option>
-            <option value="integrated">منظومة متكاملة (CRM + automation)</option>
-            <option value="advanced">متقدّمة (analytics + APIs)</option>
-          </select>
-        </label>
-      </div>
-
-      <label class="ds-input">
-        <span class="ds-input__label">٥. ما المقياس الذي تريد تثبيت baseline له (revenue, leads, retention…)؟</span>
-        <input class="ds-input__field" type="text" name="target_metric" placeholder="مثال: زمن الرد الأول أو عدد الفرص المؤهلة" />
-      </label>
-
-      <label class="ds-input">
-        <span class="ds-input__label">٦. حلول جرّبتها سابقاً ولم تنجح (CRM، وكالات، أتمتة…)؟</span>
-        <textarea class="ds-input__field" name="current_channels" placeholder="مثال: جرّبنا وكالة قبل ٦ شهور — لا proof، فلوس راحت"></textarea>
-      </label>
-
-      <hr class="ds-divider" />
-
-      <!-- PDPL Consent — REQUIRED -->
-      <label class="dx-consent">
-        <input type="checkbox" name="consent" required />
-        <span>
-          <strong>موافقة معالجة (إجباريّة)</strong> — أوافق على معالجة البيانات
-          المُدخَلة لإصدار الفحص المجاني ومراجعته فقط، حسب
-          <a href="/privacy.html" target="_blank" rel="noopener">سياسة الخصوصيّة</a>.
-          لا أمنح بهذا النص إذن إرسال خارجي أو دفع أو ربط نظام. أقدر أطلب حذفها في أيّ وقت.
-        </span>
-      </label>
-
-      <button class="ds-btn ds-btn--lg" type="submit" id="submitBtn">
-        <span class="dx-btn-label">ابدأ الفحص المجاني</span>
-        <span class="ds-spinner ds-spinner--sm" id="dx-spinner" style="display:none"></span>
-      </button>
-
+      <button class="ds-btn ds-btn--lg" type="submit" id="submitBtn"><span class="dx-btn-label">أنشئ Free Mini Diagnostic</span><span class="ds-spinner ds-spinner--sm" id="dx-spinner" style="display:none"></span></button>
       <p id="formStatus" class="ds-input__hint" role="status" aria-live="polite"></p>
     </form>
   </section>
 
-  <!-- Result (filled in by JS) -->
   <section id="dxResult" class="dx-result ds-stack ds-stack--md" aria-live="polite">
     <hr class="ds-divider" />
-    <div>
-      <span class="ds-eyebrow">الفحص المبدئي جاهز</span>
-      <h2 class="ds-headline" style="font-size: var(--fs-3xl); margin-top: var(--space-3);">فرضيات أولية للمراجعة</h2>
-    </div>
+    <div><span class="ds-eyebrow">Diagnostic output · human review required</span><h2 class="ds-headline" style="font-size:var(--fs-3xl);margin-top:var(--space-3)">تشخيص أولي، وليس Quote أو Customer proof</h2></div>
 
-    <!-- Fit Score card — real-time scoring based on form answers -->
-    <div class="ds-card ds-stack ds-stack--sm" id="dx-fit-card" style="background: linear-gradient(135deg, rgba(34,211,238,0.08), rgba(168,85,247,0.08)); border: 1px solid rgba(34,211,238,0.25);">
-      <div class="ds-row" style="justify-content: space-between; flex-wrap: wrap;">
-        <h3 class="ds-card__title" style="margin: 0;">🎯 إشارة ملاءمة أولية · ليست قبولًا آليًا</h3>
-        <span id="dx-fit-grade" class="ds-mode" style="font-size: var(--fs-md); padding: 4px 12px;">—</span>
-      </div>
-      <div style="display: grid; grid-template-columns: 80px 1fr; gap: var(--space-4); align-items: center;">
-        <div style="text-align: center;">
-          <div id="dx-fit-num" style="font-family: var(--font-lt); font-size: clamp(36px, 5vw, 56px); font-weight: 800; background: linear-gradient(90deg, var(--accent-2), #a855f7); -webkit-background-clip: text; background-clip: text; color: transparent; line-height: 1;">0</div>
-          <div style="font-size: var(--fs-xs); color: var(--text-muted); letter-spacing: 0.04em; text-transform: uppercase; margin-top: 4px;">/ 100</div>
-        </div>
-        <div>
-          <p class="ds-card__sub" id="dx-fit-desc" style="margin: 0;">جاري الحساب…</p>
-          <p class="ds-card__sub" id="dx-fit-next" style="font-size: var(--fs-xs); color: var(--text-muted); margin-top: var(--space-2);"></p>
-        </div>
-      </div>
-    </div>
+    <article class="dx-output"><h3>1. Credible leak hypothesis</h3><p id="dx-leak">—</p></article>
+    <article class="dx-output"><h3>2. Written diagnosis</h3><p id="dx-diagnosis">—</p></article>
+    <article class="dx-output"><h3>3. Missing-evidence report</h3><ul id="dx-missing"></ul></article>
+    <article class="dx-output"><h3>4. Pilot hypothesis</h3><p id="dx-pilot">—</p></article>
+    <article class="dx-output"><h3>Validation steps</h3><div id="dx-plan"></div></article>
 
-    <div class="ds-grid ds-grid--wide">
-      <div class="ds-card ds-stack ds-stack--sm">
-        <h3 class="ds-card__title">📍 الوضع الحالي</h3>
-        <p class="ds-card__sub" id="dx-current-situation">…</p>
-      </div>
-      <div class="ds-card ds-stack ds-stack--sm">
-        <h3 class="ds-card__title">🚀 أكبر فرصة</h3>
-        <p class="ds-card__sub" id="dx-opportunity">…</p>
-      </div>
-      <div class="ds-card ds-stack ds-stack--sm">
-        <h3 class="ds-card__title">⚠️ أكبر خطر</h3>
-        <p class="ds-card__sub" id="dx-risk">…</p>
-      </div>
-      <div class="ds-card ds-stack ds-stack--sm">
-        <h3 class="ds-card__title">📡 القناة الأكثر أماناً</h3>
-        <p class="ds-card__sub" id="dx-channel">…</p>
-      </div>
-    </div>
-    <div>
-      <h3 class="ds-headline" style="font-size: var(--fs-2xl);">خطّة تحقق أولية</h3>
-    </div>
-    <div class="ds-grid ds-grid--narrow" id="dx-plan-grid"></div>
-
-    <div class="ds-card ds-stack ds-stack--sm">
-      <h3 class="ds-card__title">💎 نطاق محتمل للمراجعة البشرية <span class="ds-mode ds-mode--approval">approval_required</span></h3>
-      <p class="ds-card__sub" id="dx-recommended">…</p>
-    </div>
-
-    <!-- Optional human review CTA -->
-    <div class="ds-card ds-stack ds-stack--sm" style="background: linear-gradient(135deg, rgba(34,197,94,0.10), rgba(14,165,233,0.10)); border: 1px solid rgba(34,197,94,0.25);">
-      <h3 class="ds-card__title">🟢 الخطوة التالية الاختيارية — مراجعة بشرية للملاءمة</h3>
-      <p class="ds-card__sub">لا دفع أو تفعيل تلقائي. إذا رغبت، اطلب مراجعة بشرية لتثبيت المصادر والـ baseline وتحديد هل يوجد نطاق يستحق عرضًا منفصلًا.</p>
-      <p class="ds-card__sub">أي سعر أو مدة أو صلاحية أو تكامل يحتاج موافقة صريحة لاحقة من الطرفين.</p>
-      <a class="ds-btn ds-btn--lg" href="mailto:sami.assiri11@gmail.com?subject=مراجعة%20الفحص%20المجاني" id="reviewCta">اطلب مراجعة بشرية اختيارية →</a>
+    <div class="ds-card ds-stack ds-stack--sm" style="background:linear-gradient(135deg,rgba(34,197,94,.10),rgba(14,165,233,.10));border:1px solid rgba(34,197,94,.25)">
+      <h3 class="ds-card__title">المتابعة اختيارية وبإرسال منك</h3>
+      <p class="ds-card__sub">لا نحفظ بيانات اتصال من هذا النموذج. إذا رغبت بمراجعة بشرية، أرسل لنا بنفسك من بريدك، ثم نحدد إن كانت الحالة مؤهلة لـDiscovery. لا سعر أو التزام أو إرسال تلقائي.</p>
+      <a class="ds-btn ds-btn--lg" href="mailto:hello@dealix.me?subject=Free%20Mini%20Diagnostic%20human%20review">اطلب مراجعة بشرية عبر بريدك →</a>
     </div>
   </section>
 
-  <!-- Footer -->
-  <footer class="ds-footer">
-    <div class="ds-container ds-stack ds-stack--md" style="text-align: center;">
-      <p class="ds-lede" style="max-width: 640px; margin: 0 auto;">
-        Dealix لا يستبدل فريقك بالكامل. هو طبقة تشغيل AI تساعدك تبدأ قبل التوظيف.
-      </p>
-      <div class="ds-row" style="justify-content: center; gap: var(--space-5); flex-wrap: wrap;">
-        <a class="ds-link" href="/">الرئيسيّة</a>
-        <a class="ds-link" href="/ai-team.html">AI Operating Team</a>
-        <a class="ds-link" href="/diagnostic.html">الفحص المجاني</a>
-        <a class="ds-link" href="/styleguide.html">Styleguide</a>
-        <a class="ds-link" href="/privacy.html">سياسة الخصوصيّة</a>
-        <a class="ds-link" href="/terms.html">الشروط</a>
-      </div>
-    </div>
-  </footer>
-
+  <footer class="ds-footer"><div class="ds-container ds-stack ds-stack--md" style="text-align:center"><p class="ds-lede" style="max-width:640px;margin:0 auto">Dealix منتج واحد: Revenue + Proof + Command أولًا، والتوسع بعد Proof.</p><div class="ds-row" style="justify-content:center;gap:var(--space-5);flex-wrap:wrap"><a class="ds-link" href="/">الرئيسية</a><a class="ds-link" href="/services.html">القدرات</a><a class="ds-link" href="/pricing.html">مسار الـPilot</a><a class="ds-link" href="/proof.html">Proof</a><a class="ds-link" href="/privacy.html">الخصوصية</a><a class="ds-link" href="/terms.html">الشروط</a></div></div></footer>
 </main>
 
 <script>
@@ -356,123 +103,68 @@
     statusEl.textContent = text;
     statusEl.style.color = kind === 'error' ? '#fca5a5' : (kind === 'success' ? '#4ade80' : 'var(--text-muted)');
   }
-
   function setBusy(busy) {
     submitBtn.disabled = busy;
     spinner.style.display = busy ? 'inline-block' : 'none';
-    submitLabel.textContent = busy ? 'جاري إعداد الفحص…' : 'ابدأ الفحص المجاني';
+    submitLabel.textContent = busy ? 'جاري إعداد التشخيص…' : 'أنشئ Free Mini Diagnostic';
   }
-
-  function escapeHtml(value) {
-    return String(value ?? '')
-      .replaceAll('&', '&amp;')
-      .replaceAll('<', '&lt;')
-      .replaceAll('>', '&gt;')
-      .replaceAll('"', '&quot;')
-      .replaceAll("'", '&#039;');
-  }
-
-  function computeFitScore(payload) {
-    // 0-100 fit score based on 6 form answers. Pure heuristic, deterministic.
-    let score = 0;
-    let reasons = [];
-
-    // Sector tier (max 30 points)
-    const tier1 = ['agency', 'b2b_services', 'consulting'];
-    const tier2 = ['saas', 'ecommerce', 'real_estate'];
-    if (tier1.includes(payload.sector)) { score += 30; reasons.push('قطاع Tier-1 (الأنسب لـ Dealix)'); }
-    else if (tier2.includes(payload.sector)) { score += 20; reasons.push('قطاع Tier-2 (مناسب)'); }
-    else { score += 10; reasons.push('قطاع Tier-3 (يحتاج إثبات أوّلاً)'); }
-
-    // Biggest problem clarity (max 25 points)
-    const probLen = (payload.biggest_problem || '').length;
-    if (probLen >= 30) { score += 25; reasons.push('مشكلة محدّدة بوضوح'); }
-    else if (probLen >= 15) { score += 15; reasons.push('مشكلة معروفة جزئياً'); }
-    else { score += 5; reasons.push('المشكلة تحتاج توضيح أكثر'); }
-
-    // Has ideal_customer hint (composed from target_metric, fastest_lever, customer_base, tech_level) — max 25 points
-    const idealLen = (payload.ideal_customer || '').length;
-    if (idealLen >= 20) { score += 25; reasons.push('فهم واضح لقاعدة العملاء + الرافعة الأسرع'); }
-    else if (idealLen >= 10) { score += 15; reasons.push('فهم أوّلي'); }
-    else { score += 5; }
-
-    // Has current_channels feedback (max 20 points)
-    const chLen = (payload.current_channels || '').length;
-    if (chLen >= 15) { score += 20; reasons.push('وعي بالحلول السابقة + ما لم ينجح'); }
-    else if (chLen >= 5) { score += 10; }
-    else { score += 0; }
-
-    return { score: Math.min(100, score), reasons };
-  }
-
-  function gradeFromScore(score) {
-    if (score >= 80) return { grade: 'إشارة قوية', cls: 'ds-mode--approved', desc: 'المعلومات كافية للمراجعة البشرية؛ لا تعني قبولًا أو نتيجة متوقعة.' };
-    if (score >= 60) return { grade: 'إشارة متوسطة', cls: 'ds-mode--suggest', desc: 'قد توجد ملاءمة، لكن يلزم تثبيت المصادر والـ baseline.' };
-    if (score >= 40) return { grade: 'غير محسوم', cls: 'ds-mode--draft', desc: 'نحتاج معلومات إضافية قبل أي توصية أو عرض.' };
-    return { grade: 'يحتاج تحقق', cls: 'ds-mode--blocked', desc: 'لا نقترح نطاقًا مدفوعًا قبل اكتمال الأدلة الأساسية.' };
-  }
+  function text(value, fallback='—') { return String(value || fallback); }
 
   function renderResult(diag, payload) {
-    // Compute and render Fit Score
-    const fit = computeFitScore(payload);
-    const grade = gradeFromScore(fit.score);
-    document.getElementById('dx-fit-num').textContent = fit.score;
-    const gradeEl = document.getElementById('dx-fit-grade');
-    gradeEl.textContent = grade.grade;
-    gradeEl.className = `ds-mode ${grade.cls}`;
-    gradeEl.style.fontSize = 'var(--fs-md)';
-    gradeEl.style.padding = '4px 12px';
-    document.getElementById('dx-fit-desc').textContent = grade.desc;
-    document.getElementById('dx-fit-next').textContent =
-      'العوامل: ' + fit.reasons.slice(0, 3).join(' · ');
+    const situation = text(diag.current_situation_ar || diag.current_situation);
+    const opportunity = text(diag.biggest_opportunity);
+    const risk = text(diag.biggest_risk);
+    document.getElementById('dx-leak').textContent = `${payload.biggest_problem} — هذه فجوة مقدمة منكم وتبقى Hypothesis حتى تُراجع مع baseline/source.`;
+    document.getElementById('dx-diagnosis').textContent = `${situation} | opportunity: ${opportunity} | risk: ${risk}`;
 
-    document.getElementById('dx-current-situation').textContent = diag.current_situation_ar || '—';
-    document.getElementById('dx-opportunity').textContent = diag.biggest_opportunity || '—';
-    document.getElementById('dx-risk').textContent = diag.biggest_risk || '—';
-    document.getElementById('dx-channel').textContent = diag.safest_channel || '—';
-
-    const planGrid = document.getElementById('dx-plan-grid');
-    planGrid.innerHTML = (diag.seven_day_plan || []).map((step, i) => `
-      <div class="ds-card ds-stack ds-stack--xs">
-        <h4 class="ds-card__title" style="font-size: var(--fs-md);">خطوة ${i + 1}</h4>
-        <p class="ds-card__sub">${escapeHtml(step).replace(/^Day \d+:\s*/i, '')}</p>
-      </div>
-    `).join('');
-
-    const offer = diag.recommended_offer || {};
-    const offerName = offer.name_ar || offer.name_en || offer.name || 'مراجعة نطاق محتمل';
-    document.getElementById('dx-recommended').textContent =
-      `${offerName} — مرشح للمراجعة البشرية فقط · ${offer.why_ar || offer.why_en || 'لا يُعتمد قبل التحقق والاتفاق المنفصل.'}`;
-
-    // Pre-fill an optional human-review email; this does not start or buy anything.
-    const params = new URLSearchParams({
-      company: payload.company_handle || '',
-      sector: payload.sector || '',
-    });
-    document.getElementById('reviewCta').href =
-      `mailto:sami.assiri11@gmail.com?subject=${encodeURIComponent('مراجعة الفحص المجاني')}&body=${encodeURIComponent(params.toString())}`;
-
-    result.classList.add('is-visible');
-    result.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }
-
-  form.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    setStatus('', 'info');
-
-    // Honeypot
-    const honeypot = form.elements.namedItem('website');
-    if (honeypot && honeypot.value.trim() !== '') {
-      // silent drop the bot
-      return;
+    const missing = [];
+    if (!payload.ideal_customer) missing.push('Baseline metric/source غير محدد بما يكفي.');
+    missing.push('Current baseline value + first-party source.');
+    missing.push('Accountable decision owner / delivery owner.');
+    missing.push('Approved data boundary and allowed systems/connectors.');
+    missing.push('Acceptance criteria and proof measurement window.');
+    const missingList = document.getElementById('dx-missing');
+    missingList.innerHTML = '';
+    for (const item of missing) {
+      const li = document.createElement('li');
+      li.textContent = item;
+      missingList.appendChild(li);
     }
 
-    if (!form.consent.checked) {
-      setStatus('الموافقة على PDPL إجباريّة قبل التشخيص.', 'error');
+    const offer = diag.recommended_offer || {};
+    const offerName = offer.name_ar || offer.name_en || offer.name || '30-day Revenue Command Pilot hypothesis';
+    const why = offer.why_ar || offer.why_en || 'يحتاج qualified discovery قبل أي نطاق أو سعر.';
+    document.getElementById('dx-pilot').textContent = `${offerName} — ${why} هذا ليس قبولًا أو Quote؛ أي Pilot يحتاج first-launch gate + human approval.`;
+
+    const plan = document.getElementById('dx-plan');
+    plan.innerHTML = '';
+    const steps = Array.isArray(diag.seven_day_plan) ? diag.seven_day_plan : [];
+    if (!steps.length) {
+      plan.textContent = 'Human review → baseline/source check → qualification → stop or scoped Pilot hypothesis.';
+    } else {
+      const ol = document.createElement('ol');
+      for (const step of steps) {
+        const li = document.createElement('li');
+        li.textContent = String(step).replace(/^Day \d+:\s*/i, '');
+        ol.appendChild(li);
+      }
+      plan.appendChild(ol);
+    }
+    result.classList.add('is-visible');
+    result.scrollIntoView({behavior:'smooth',block:'start'});
+  }
+
+  form.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    setStatus('', 'info');
+    const honeypot = form.elements.namedItem('website');
+    if (honeypot && honeypot.value.trim() !== '') return;
+    if (!form.minimum_data_ack.checked) {
+      setStatus('أكد Minimum-data acknowledgement قبل التشخيص.', 'error');
       return;
     }
     if (!form.checkValidity()) {
-      setStatus('فضلاً اكمل الحقول المطلوبة (*).', 'error');
+      setStatus('أكمل الحقول المطلوبة فقط، بدون بيانات شخصية أو حساسة.', 'error');
       form.reportValidity();
       return;
     }
@@ -480,73 +172,44 @@
     const company_handle = form.company_handle.value.trim();
     const sector = form.sector.value;
     const biggest_problem = form.biggest_problem.value.trim();
-    const fastest_lever = form.fastest_lever.value.trim();
     const target_metric = form.target_metric.value.trim();
-    const current_channels = form.current_channels.value.trim();
     const tech_level = form.tech_level.value;
-    const customer_base = form.customer_base.value;
     const company_url = form.company_url.value.trim();
-
-    // Compose the body the existing /api/v1/company-growth-beast/diagnostic
-    // endpoint accepts. Free-text answers concat into ideal_customer/offer
-    // so the engine has signal without changing schema.
+    const current_channels = form.current_channels.value.trim();
     const body = {
       company_handle,
       sector,
       biggest_problem,
-      ideal_customer: [target_metric, fastest_lever, customer_base, tech_level, company_url].filter(Boolean).join(' · '),
+      ideal_customer: [target_metric, tech_level, company_url].filter(Boolean).join(' · '),
       offer: 'free_mini_diagnostic',
       current_channels,
       consent_for_diagnostic: true,
     };
 
     setBusy(true);
-    setStatus('جاري إعداد الفحص المبدئي…', 'info');
-
+    setStatus('جاري إعداد التشخيص اللحظي…', 'info');
     try {
-      const res = await fetch(`${API_BASE}/api/v1/company-growth-beast/diagnostic`, {
+      const response = await fetch(`${API_BASE}/api/v1/company-growth-beast/diagnostic`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {'Content-Type':'application/json'},
         body: JSON.stringify(body),
       });
-      if (!res.ok) {
-        if (res.status === 422) throw new Error('validation: تحقّق من الحقول.');
-        if (res.status === 404) throw new Error('الخدمة قيد النشر — حاول بعد دقائق.');
-        throw new Error(`HTTP ${res.status}`);
+      if (!response.ok) {
+        if (response.status === 422) throw new Error('تحقق من الحقول.');
+        if (response.status === 404) throw new Error('الخدمة غير متاحة حاليًا.');
+        throw new Error(`HTTP ${response.status}`);
       }
-      const data = await res.json();
+      const data = await response.json();
       const diag = (data && data.diagnostic) || {};
-      if (diag.blocked) {
-        throw new Error(diag.reason_ar || 'تعذّر إنشاء التشخيص.');
-      }
-      // Save the contact details for the founder via the public demo-request channel
-      // (best-effort — failure here is silent so the user still sees their diagnostic).
-      fetch(`${API_BASE}/api/v1/public/demo-request`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          name: form.contact_name.value.trim(),
-          company: company_handle,
-          sector, size: customer_base,
-          phone: form.phone.value.trim(),
-          email: form.email.value.trim(),
-          message: `[free_diagnostic] ${biggest_problem}`,
-          source: 'landing/diagnostic',
-          ref: document.referrer || '',
-          consent: true,
-          ts: new Date().toISOString(),
-        }),
-      }).catch(() => {});
-
-      setStatus('✓ الفحص المبدئي جاهز أسفله — وسيخضع طلب المتابعة للمراجعة البشرية.', 'success');
+      if (diag.blocked) throw new Error(diag.reason_ar || 'تعذر إنشاء التشخيص.');
+      setStatus('✓ التشخيص جاهز. لا توجد Lead capture أو متابعة تلقائية من هذا النموذج.', 'success');
       renderResult(diag, body);
-    } catch (err) {
-      setStatus(`خطأ: ${err.message}`, 'error');
+    } catch (error) {
+      setStatus(`خطأ: ${error.message}`, 'error');
     } finally {
       setBusy(false);
     }
   });
 </script>
-
 </body>
 </html>

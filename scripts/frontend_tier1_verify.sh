@@ -1,17 +1,13 @@
 #!/usr/bin/env bash
-# Frontend Tier-1 verification — Revenue Command Center redesign (May 2026).
+# Frontend Tier-1 verification — current quote-only first-launch contract.
 #
-# Greps the static HTML in landing/ to confirm the Tier-1 contract holds:
-# repositioned hero, simplified nav, WhatsApp Decision Layer, anchor pricing,
-# L1-L5 proof ladder, 8 hard gates, agency-partner page, redirect from
-# partners.html, footer trust badges, no internal terms, no forbidden tokens.
+# Greps the static HTML in landing/ to confirm the customer-facing product
+# surfaces stay consistent with the canonical commercial authority: one
+# Revenue + Proof + Command wedge, quote-only Pilot, hard-blocked checkout,
+# approval/proof gates, and no retired fixed-price ladder.
 #
 # Prints PASS|FAIL per layer + a final DEALIX_FRONTEND_TIER1_VERDICT line.
 # Exit 0 if all PASS, 1 if any FAIL.
-#
-# Usage:
-#   bash scripts/frontend_tier1_verify.sh
-#   bash scripts/frontend_tier1_verify.sh --quiet   # suppress per-line output
 
 set -u
 
@@ -39,7 +35,6 @@ emit() {
   fi
 }
 
-# Helper: assert pattern present in file.
 check_present() {
   local key="$1" file="$2" pattern="$3"
   if grep -qE "$pattern" "$LANDING/$file" 2>/dev/null; then
@@ -49,19 +44,7 @@ check_present() {
   fi
 }
 
-# Helper: assert pattern absent from file.
-check_absent() {
-  local key="$1" file="$2" pattern="$3"
-  if grep -qE "$pattern" "$LANDING/$file" 2>/dev/null; then
-    emit "$key" FAIL "unexpected in $file: $pattern"
-  else
-    emit "$key" PASS
-  fi
-}
-
-# 1. Hero H1 word count <= 8 (Tier-1 benchmark)
-# H1 may span multiple lines; capture between class="hero__title" opening tag
-# and the next </h1>.
+# 1. Hero H1 word count <= 8
 H1=$(awk '
   /<h1[^>]*class="hero__title"/{capture=1; next}
   capture && /<\/h1>/{capture=0; exit}
@@ -78,11 +61,9 @@ else
   emit "HERO_H1_LE_8_WORDS" FAIL "<h1 class=hero__title> not found"
 fi
 
-# 2. Single primary CTA in hero CTAs block (links to /diagnostic.html)
+# 2. Single primary CTA in hero CTAs block
 HERO_CTAS=$(awk '/<div class="hero__ctas"/,/<\/div>/' "$LANDING/index.html")
 PRIMARY_COUNT=$(echo "$HERO_CTAS" | grep -cE 'btn--primary')
-DIAG_TARGET=$(echo "$HERO_CTAS" | grep -cE 'href="/diagnostic\.html"[^>]*btn--primary|btn--primary[^>]*href="/diagnostic\.html"|href="/diagnostic\.html"[^>]*btn[^"]*--primary')
-# more lenient: a single link with btn--primary AND href=/diagnostic.html
 if (( PRIMARY_COUNT == 1 )); then
   if echo "$HERO_CTAS" | grep -E 'btn--primary' | grep -qE 'href="/diagnostic\.html"'; then
     emit "SINGLE_PRIMARY_CTA" PASS "/diagnostic.html"
@@ -95,7 +76,6 @@ fi
 
 # 3. Nav primary links <= 7
 NAV_BLOCK=$(awk '/<nav class="nav__links"/,/<\/nav>/' "$LANDING/index.html")
-# Strip the mega-menu panel before counting
 NAV_NO_PANEL=$(echo "$NAV_BLOCK" | awk '
   /<div class="ds-mega-menu__panel"/{skip=1}
   skip==0{print}
@@ -141,20 +121,40 @@ else
   emit "PROOF_L1_TO_L5" FAIL "missing levels:$MISSING_LEVELS"
 fi
 
-# 8. Pricing 6 tiers
-PLAN_COUNT=$(grep -cE '<div class="plan(\s[^"]*)?"' "$LANDING/pricing.html")
-if (( PLAN_COUNT >= 6 )); then
-  emit "PRICING_6_TIERS" PASS "$PLAN_COUNT .plan cards"
+# 8. Pricing exposes exactly the current quote-only launch path, not the retired ladder.
+PRICING="$LANDING/pricing.html"
+if grep -q "Free Mini Diagnostic" "$PRICING" \
+  && grep -q "Revenue Command Pilot — 30 يومًا" "$PRICING" \
+  && grep -q "Quote-only" "$PRICING" \
+  && grep -q "Weekly Proof Pack" "$PRICING" \
+  && grep -q "Final Proof Pack" "$PRICING"; then
+  emit "PRICING_QUOTE_ONLY_PATH" PASS
 else
-  emit "PRICING_6_TIERS" FAIL "$PLAN_COUNT .plan cards (<6)"
+  emit "PRICING_QUOTE_ONLY_PATH" FAIL "diagnostic / quote-only Pilot / proof path incomplete"
 fi
 
-# 9. Pricing partner-tier first (anchor pricing)
-FIRST_PLAN=$(awk '/<div class="plans">/,/<!-- Negation/' "$LANDING/pricing.html" | grep -A 30 '<div class="plan' | head -30)
-if echo "$FIRST_PLAN" | grep -qE 'Executive Command Center|12,000|Partner'; then
-  emit "PRICING_PARTNER_FIRST" PASS
+if grep -qE '(^|[^0-9])(499|1500|2999|7999|12000)([^0-9]|$)|1,500|2,999|7,999|12,000|/checkout\.html\?tier=|SLA 99\.9%|price-lock' "$PRICING"; then
+  emit "NO_RETIRED_PUBLIC_PRICING" FAIL "retired fixed-price/self-serve term found in pricing.html"
 else
-  emit "PRICING_PARTNER_FIRST" FAIL "first .plan card should be top-tier (Partner / Executive Command Center / 12,000)"
+  emit "NO_RETIRED_PUBLIC_PRICING" PASS
+fi
+
+# 9. Checkout route is a hard-blocked information surface only.
+CHECKOUT="$LANDING/checkout.html"
+if grep -q "NO_LIVE_CHARGE" "$CHECKOUT" \
+  && grep -q "QUOTE_ONLY" "$CHECKOUT" \
+  && grep -q "NO_PUBLIC_FIXED_PRICE" "$CHECKOUT" \
+  && grep -q "NO_SELF_SERVE_CHECKOUT" "$CHECKOUT" \
+  && grep -q "REQUEST ≠ QUOTE ≠ INVOICE ≠ PAYMENT ≠ REVENUE" "$CHECKOUT"; then
+  emit "CHECKOUT_FAIL_CLOSED" PASS
+else
+  emit "CHECKOUT_FAIL_CLOSED" FAIL "checkout fail-closed contract incomplete"
+fi
+
+if grep -qE '/api/v1/payment-ops/invoice-intent|TIERS=|<form|amount_sar|bank_transfer_manual|(^|[^0-9])(499|2999|7999|12000)([^0-9]|$)' "$CHECKOUT"; then
+  emit "CHECKOUT_NO_PAYMENT_PATH" FAIL "payment/tier input path remains in checkout.html"
+else
+  emit "CHECKOUT_NO_PAYMENT_PATH" PASS
 fi
 
 # 10. Trust Center: all 8 hard gates
@@ -171,27 +171,57 @@ else
   emit "TRUST_CENTER_8_GATES" FAIL "missing gates:$MISSING_GATES"
 fi
 
-# 11. Agency Partner page exists
-if [[ -f "$LANDING/agency-partner.html" ]]; then
-  emit "AGENCY_PARTNER_EXISTS" PASS
+# 11. Services is a capability map under one product, not a parallel offer ladder.
+SERVICES="$LANDING/services.html"
+if grep -q "One Product" "$SERVICES" \
+  && grep -q "Dealix منتج واحد" "$SERVICES" \
+  && grep -q "Revenue + Proof + Command" "$SERVICES" \
+  && grep -q "Company Brain + Business Graph" "$SERVICES" \
+  && grep -q "Governed Execution" "$SERVICES"; then
+  emit "SERVICES_ONE_PRODUCT" PASS
 else
-  emit "AGENCY_PARTNER_EXISTS" FAIL "landing/agency-partner.html missing"
+  emit "SERVICES_ONE_PRODUCT" FAIL "services.html is not a one-product capability map"
+fi
+if grep -qE 'سلّم العروض|Saudi Opportunity Snapshot|Revenue Proof Sprint|AI Company OS Setup|Partner & Distributor Desk|sami\.assiri11@gmail\.com' "$SERVICES"; then
+  emit "NO_PARALLEL_PUBLIC_OFFERS" FAIL "retired offer ladder or personal contact remains in services.html"
+else
+  emit "NO_PARALLEL_PUBLIC_OFFERS" PASS
 fi
 
-# 12. Partners redirect
-if grep -q 'http-equiv="refresh"' "$LANDING/partners.html" && \
-   grep -q '/agency-partner.html' "$LANDING/partners.html"; then
-  emit "PARTNERS_REDIRECT" PASS
+# 12. Robots protects historical/operating surfaces and points at dealix.me only.
+ROBOTS="$LANDING/robots.txt"
+if grep -q 'Sitemap: https://dealix.me/sitemap.xml' "$ROBOTS" \
+  && grep -q 'Sitemap: https://dealix.me/sitemap_dealix.xml' "$ROBOTS" \
+  && grep -q 'Disallow: /checkout.html' "$ROBOTS" \
+  && grep -q 'Disallow: /annual-pricing.html' "$ROBOTS" \
+  && grep -q 'Disallow: /roi.html' "$ROBOTS" \
+  && grep -q 'Disallow: /agency-partner.html' "$ROBOTS"; then
+  emit "ROBOTS_CANONICAL_LAUNCH" PASS
 else
-  emit "PARTNERS_REDIRECT" FAIL "partners.html should be a meta-refresh redirect to /agency-partner.html"
+  emit "ROBOTS_CANONICAL_LAUNCH" FAIL "robots.txt does not protect the canonical launch boundary"
+fi
+if grep -qE 'Sitemap: https://dealix\.(sa|ai)/' "$ROBOTS"; then
+  emit "ROBOTS_NO_LEGACY_DOMAIN" FAIL "robots.txt still advertises a legacy domain"
+else
+  emit "ROBOTS_NO_LEGACY_DOMAIN" PASS
 fi
 
-# 13. Sitemaps updated
-if grep -q "/agency-partner.html" "$LANDING/sitemap.xml" && \
-   grep -q "/agency-partner.html" "$LANDING/sitemap_dealix.xml"; then
-  emit "SITEMAP_UPDATED" PASS
+# 13. Both compatibility sitemaps use dealix.me only and publish reviewed launch surfaces.
+SITEMAP_FAIL=""
+for MAP in sitemap.xml sitemap_dealix.xml; do
+  for PATHNAME in / /diagnostic.html /pricing.html /services.html /proof.html /trust-center.html; do
+    if ! grep -q "https://dealix.me${PATHNAME}" "$LANDING/$MAP"; then
+      SITEMAP_FAIL="$SITEMAP_FAIL $MAP:$PATHNAME"
+    fi
+  done
+  if grep -qE 'https://dealix\.(sa|ai)/' "$LANDING/$MAP"; then
+    SITEMAP_FAIL="$SITEMAP_FAIL $MAP:legacy-domain"
+  fi
+done
+if [[ -z "$SITEMAP_FAIL" ]]; then
+  emit "CANONICAL_SITEMAPS" PASS
 else
-  emit "SITEMAP_UPDATED" FAIL "one or both sitemap files missing /agency-partner.html"
+  emit "CANONICAL_SITEMAPS" FAIL "mismatch:$SITEMAP_FAIL"
 fi
 
 # 14. Anchor IDs preserved on homepage
@@ -208,25 +238,28 @@ else
   emit "ANCHOR_IDS_PRESERVED" FAIL "removed anchors:$MISSING_ANCHORS"
 fi
 
-# 15. Footer trust badges on Tier-1 pages
-TIER1_PAGES=(agency-partner.html trust-center.html)
-BADGE_FAIL=""
-for P in "${TIER1_PAGES[@]}"; do
-  for BADGE in "Saudi-PDPL" "Approval-first" "Proof-backed"; do
-    if ! grep -q "$BADGE" "$LANDING/$P"; then
-      BADGE_FAIL="$BADGE_FAIL $P:$BADGE"
-    fi
-  done
+# 15. Trust Center carries a clear product identity and an explicit no-certification posture.
+TRUST_BADGE_FAIL=""
+for BADGE in "Saudi-first" "Approval-first" "Proof-backed"; do
+  if ! grep -q "$BADGE" "$LANDING/trust-center.html"; then
+    TRUST_BADGE_FAIL="$TRUST_BADGE_FAIL trust-center.html:$BADGE"
+  fi
 done
-if [[ -z "$BADGE_FAIL" ]]; then
-  emit "FOOTER_TRUST_BADGES" PASS
+if ! grep -q "لا يدّعي PDPL certification" "$LANDING/trust-center.html"; then
+  TRUST_BADGE_FAIL="$TRUST_BADGE_FAIL trust-center.html:no-PDPL-certification"
+fi
+if ! grep -q "SOC 2" "$LANDING/trust-center.html" || ! grep -q "Saudi data residency" "$LANDING/trust-center.html"; then
+  TRUST_BADGE_FAIL="$TRUST_BADGE_FAIL trust-center.html:explicit-open-compliance-boundary"
+fi
+if [[ -z "$TRUST_BADGE_FAIL" ]]; then
+  emit "TRUST_BADGES" PASS
 else
-  emit "FOOTER_TRUST_BADGES" FAIL "missing:$BADGE_FAIL"
+  emit "TRUST_BADGES" FAIL "missing:$TRUST_BADGE_FAIL"
 fi
 
-# 16. RTL lang/dir on all Tier-1 pages
+# 16. RTL lang/dir on current Tier-1 public pages.
 RTL_FAIL=""
-for P in index.html customer-portal.html pricing.html proof.html trust-center.html diagnostic.html agency-partner.html; do
+for P in index.html services.html pricing.html proof.html trust-center.html diagnostic.html; do
   if ! grep -qE 'lang="ar"\s+dir="rtl"' "$LANDING/$P"; then
     RTL_FAIL="$RTL_FAIL $P"
   fi
@@ -237,12 +270,10 @@ else
   emit "RTL_LANG_DIR" FAIL "missing lang/dir:$RTL_FAIL"
 fi
 
-# 17. No internal terms in user-visible copy (excludes legitimate hrefs +
-# script API paths, which test_frontend_professional_polish allows).
+# 17. No internal terms in current user-visible copy.
 INTERNAL_TERMS="(\bv1[0-2]\b|growth_beast|stacktrace)"
 INTERNAL_FAIL=""
-for P in index.html customer-portal.html pricing.html proof.html trust-center.html agency-partner.html; do
-  # Strip <script>...</script> blocks and href="..." attribute values, then scan
+for P in index.html services.html pricing.html proof.html trust-center.html diagnostic.html; do
   STRIPPED=$(sed -E 's/<script[^>]*>.*?<\/script>//g; s/href="[^"]*"//g' "$LANDING/$P")
   if echo "$STRIPPED" | grep -qiE "$INTERNAL_TERMS"; then
     INTERNAL_FAIL="$INTERNAL_FAIL $P"
@@ -262,18 +293,16 @@ else
   emit "DEMO_LABELS" FAIL "src-pill or DEMO marker missing on customer-portal"
 fi
 
-# 19. Mobile tap targets — design-system.css has min-height 44px on .ds-wadl__chip
+# 19. Mobile tap targets
 if grep -qE "min-height:\s*44px" "$LANDING/assets/css/design-system.css"; then
   emit "MOBILE_TAP_TARGETS" PASS
 else
   emit "MOBILE_TAP_TARGETS" FAIL "44px min-height not declared in design-system.css"
 fi
 
-# 20. No forbidden tokens (delegated to pytest test) — just sanity-grep here
+# 20. No forbidden tokens on current launch surfaces.
 FORBIDDEN_FAIL=""
-# Each forbidden token is allowed only in its allowlisted file (per pytest).
-# This shell check only flags egregious leaks. Real authority is pytest.
-PUBLIC_PAGES=(index.html agency-partner.html trust-center.html pricing.html proof.html customer-portal.html diagnostic.html)
+PUBLIC_PAGES=(index.html services.html trust-center.html pricing.html proof.html diagnostic.html)
 for P in "${PUBLIC_PAGES[@]}"; do
   if grep -qE '\bguarantee[d]?\b|\bblast\b' "$LANDING/$P"; then
     FORBIDDEN_FAIL="$FORBIDDEN_FAIL $P"
@@ -285,7 +314,6 @@ else
   emit "NO_FORBIDDEN_TOKENS_SHELL" FAIL "leak detected in:$FORBIDDEN_FAIL"
 fi
 
-# Final verdict
 if (( FAILS == 0 )); then
   VERDICT="PASS"
 elif (( FAILS <= 3 )); then
@@ -295,7 +323,6 @@ else
 fi
 emit "DEALIX_FRONTEND_TIER1_VERDICT" "$VERDICT" "$FAILS check(s) failed"
 
-# Output
 if (( QUIET == 0 )); then
   printf '%s\n' "${OUTPUT[@]}"
 fi

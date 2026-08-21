@@ -1,322 +1,117 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl" data-theme="dark">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Proof — كل ادعاء بدليل · Dealix</title>
-<meta name="description" content="Proof Packs المنشورة من بايلوتات Dealix السعوديّة. كل ادعاء له evidence مرفق — لا spin، لا fake testimonials، لا revenue غير مُثبت." />
-<link rel="canonical" href="https://dealix.me/proof.html" />
-<meta property="og:type" content="website" />
-<meta property="og:title" content="Dealix Proof — كل ادعاء بدليل" />
-<meta property="og:description" content="Proof Packs from real Saudi B2B pilots. Evidence-backed, customer-approved, never fake." />
-<meta property="og:url" content="https://dealix.me/proof.html" />
-<meta property="og:locale" content="ar_SA" />
-<meta name="twitter:card" content="summary_large_image" />
-<meta name="theme-color" content="#0f172a" />
-
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" />
-
-<link rel="stylesheet" href="/styles.css" />
-<link rel="stylesheet" href="/assets/css/design-system.css" />
-
-<!-- Lucide icons (lightweight SVG icons, ~25KB compressed) -->
-<script src="https://unpkg.com/lucide@0.469.0/dist/umd/lucide.min.js" defer></script>
-
-<style>
-  body {
-    background:
-      radial-gradient(900px 500px at 80% -10%, rgba(34, 197, 94, 0.16), transparent 60%),
-      radial-gradient(900px 500px at 0% 10%, rgba(34, 211, 238, 0.16), transparent 60%),
-      linear-gradient(180deg, #050816 0%, #0b1124 60%, #1e1b4b 100%);
-    color: var(--text);
-    min-height: 100vh;
-    margin: 0;
-    font-family: var(--font-ar);
-  }
-  main { padding: var(--space-7) var(--space-5) var(--space-9); }
-
-  .proof-card {
-    display: grid;
-    gap: var(--space-3);
-    padding: var(--space-5);
-    background: var(--ds-surface-1);
-    border: 1px solid var(--ds-border);
-    border-radius: var(--radius-lg, 20px);
-    transition: border-color var(--dur-base);
-  }
-  .proof-card:hover { border-color: rgba(34, 197, 94, 0.45); }
-  .proof-head { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); flex-wrap: wrap; }
-  .proof-head h3 { margin: 0; font-size: var(--fs-lg); font-weight: 700; }
-
-  .proof-claim {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: var(--space-3);
-    padding: var(--space-4);
-    background: rgba(2, 6, 23, 0.4);
-    border-radius: var(--radius-sm, 8px);
-    border: 1px solid var(--ds-border);
-    font-size: var(--fs-sm);
-  }
-  @media (max-width: 600px) { .proof-claim { grid-template-columns: 1fr; } }
-  .proof-claim h4 { margin: 0 0 var(--space-2) 0; font-size: var(--fs-xs); color: var(--accent-2); text-transform: uppercase; letter-spacing: 0.06em; }
-
-  .proof-empty {
-    padding: var(--space-9);
-    text-align: center;
-    color: var(--text-muted);
-    border: 1px dashed var(--ds-border);
-    border-radius: var(--radius-lg, 20px);
-  }
-  .proof-empty p { margin: 0 0 var(--space-3) 0; }
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Dealix Proof — منهج الإثبات وحدود النشر</title>
+  <meta name="description" content="منهج Dealix لإثبات النتائج: نفصل الفرضية والنشاط والتسليم والقيمة والإيراد، ولا ننشر Customer Proof دون دليل مناسب وإذن نشر مستقل." />
+  <meta name="robots" content="index,follow" />
+  <link rel="canonical" href="https://dealix.me/proof.html" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Dealix Proof — Evidence before claims" />
+  <meta property="og:description" content="Evidence methodology, proof levels, publication gates, and fail-closed customer-proof boundaries." />
+  <meta property="og:url" content="https://dealix.me/proof.html" />
+  <meta property="og:locale" content="ar_SA" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="theme-color" content="#0f172a" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" />
+  <link rel="stylesheet" href="/styles.css" />
+  <link rel="stylesheet" href="/assets/css/design-system.css" />
+  <style>
+    body{background:linear-gradient(180deg,#050816 0%,#0b1124 60%,#1e1b4b 100%);color:var(--text);min-height:100vh;margin:0;font-family:var(--font-ar)}
+    main{padding:var(--space-7) var(--space-5) var(--space-9)}
+    .proof-note{padding:var(--space-5);border:1px solid var(--ds-border);border-radius:var(--radius-lg,20px);background:var(--ds-surface-1)}
+    .proof-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--space-4)}
+    .proof-card{padding:var(--space-5);border:1px solid var(--ds-border);border-radius:var(--radius-lg,20px);background:var(--ds-surface-1)}
+    .proof-card h3{margin-top:0}.proof-card p{color:var(--text-muted)}
+    .proof-empty{padding:var(--space-7);text-align:center;border:1px dashed var(--ds-border);border-radius:var(--radius-lg,20px);color:var(--text-muted)}
+    @media(max-width:700px){.proof-grid{grid-template-columns:1fr}}
+  </style>
 </head>
 <body>
 <a class="ds-skip-link" href="#main">تخطّ إلى المحتوى الرئيسي</a>
-
 <main id="main" class="ds-container--full ds-stack ds-stack--xl">
-
   <nav class="ds-breadcrumb" aria-label="مسار التنقّل">
-    <a href="/">الرئيسيّة</a>
-    <span class="ds-breadcrumb__sep" aria-hidden="true"></span>
-    <span aria-current="page">Proof</span>
+    <a href="/">الرئيسية</a><span class="ds-breadcrumb__sep" aria-hidden="true"></span><span aria-current="page">Proof</span>
   </nav>
 
   <section class="ds-banner ds-stack ds-stack--sm">
-    <span class="ds-eyebrow">Customer-approved · Evidence-backed · No fake testimonials</span>
-    <h1 class="ds-banner__title">📜 Proof — كلّ ادّعاء بدليل</h1>
-    <p class="ds-banner__subtitle">Proof Packs المنشورة من البايلوتات الحقيقيّة. كلّ ادّعاء له evidence مرفق + إذن مكتوب من العميل. لا spin، لا fake testimonials، لا revenue غير مُثبت.</p>
+    <span class="ds-eyebrow">Evidence before claims · Publication is a separate approval</span>
+    <h1 class="ds-banner__title">Proof — لا نتيجة بلا دليل مناسب</h1>
+    <p class="ds-banner__subtitle">هذه الصفحة تشرح منهج الإثبات في Dealix. وجود Capability أو Activity أو Demo لا يساوي Customer Value ولا Revenue. ولا تعتبر الصفحة وجود عميل أو إيراد أو Case Study منشورًا ما لم توجد Evidence مطابقة وإذن نشر مستقل.</p>
   </section>
 
-  <!-- KPIs -->
-  <section class="ds-grid ds-grid--narrow" aria-label="ملخّص">
-    <div class="ds-kpi"><span class="ds-kpi__num" id="kpi-packs">…</span><span class="ds-kpi__label">Proof Packs منشورة</span></div>
-    <div class="ds-kpi"><span class="ds-kpi__num" id="kpi-claims">…</span><span class="ds-kpi__label">إدعاء × evidence</span></div>
-    <div class="ds-kpi"><span class="ds-kpi__num" id="kpi-revenue">…</span><span class="ds-kpi__label">SAR مُثبت</span></div>
-    <div class="ds-kpi"><span class="ds-kpi__num">8</span><span class="ds-kpi__label">بوّابات صلبة</span></div>
+  <section class="ds-grid ds-grid--narrow" aria-label="حالة الإثبات العام">
+    <div class="ds-kpi"><span class="ds-kpi__num" id="kpi-packs">—</span><span class="ds-kpi__label">Customer Proof منشور ومتحقق فقط</span></div>
+    <div class="ds-kpi"><span class="ds-kpi__num" id="kpi-claims">—</span><span class="ds-kpi__label">Claims عامة لها Evidence</span></div>
+    <div class="ds-kpi"><span class="ds-kpi__num" id="kpi-revenue">—</span><span class="ds-kpi__label">Revenue مثبت ومسموح نشره فقط</span></div>
+    <div class="ds-kpi"><span class="ds-kpi__num">8</span><span class="ds-kpi__label">بوابات أمان أساسية</span></div>
   </section>
 
-  <!-- L1-L5 Evidence Ladder -->
+  <section class="proof-note ds-stack ds-stack--xs" aria-labelledby="public-boundary-title">
+    <h2 id="public-boundary-title" class="ds-headline">الحالة الافتراضية: لا Customer Proof عام</h2>
+    <p>إذا لم يوجد Proof Pack حقيقي مكتمل المصدر والهوية والنطاق والتاريخ والموافقة وإذن النشر، تبقى الحالة Unknown/Blocked ولا نملأ الفراغ بأرقام Demo أو Synthetic أو Internal.</p>
+  </section>
+
   <section id="evidence-levels" aria-labelledby="ladder-title" class="ds-stack ds-stack--md">
     <div>
       <span class="ds-eyebrow">Evidence Levels</span>
-      <h2 id="ladder-title" class="ds-headline" style="font-size: var(--fs-2xl); margin-top: var(--space-3);">سلّم الأدلّة — من المسوّدة إلى إيراد موثّق</h2>
-      <p class="ds-lede" style="max-width: 760px; margin-top: var(--space-3);">كلّ Proof Pack في Dealix يحمل مستوى L1 إلى L5. كلّما ارتفعت، ارتفعت الثقة. لا نخلط L1 بـ L5 — كل ادّعاء يُعرض بمستواه الحقيقي.</p>
+      <h2 id="ladder-title" class="ds-headline">سلّم الأدلة L1 → L5</h2>
+      <p class="ds-lede">المستوى يصف قوة الدليل فقط. النشر العام يحتاج فوق ذلك إذن نشر صريحًا ومحددًا.</p>
     </div>
-
     <div class="ds-evidence-ladder" role="list">
-      <div class="ds-evidence-level ds-evidence-level--l1" role="listitem">
-        <span class="ds-evidence-level__num">L1</span>
-        <h3 class="ds-evidence-level__title">Internal Draft</h3>
-        <p class="ds-evidence-level__desc">مسوّدة داخليّة. فرضيّة + رسالة جاهزة. لم تُعرض على العميل.</p>
-      </div>
-      <div class="ds-evidence-level ds-evidence-level--l2" role="listitem">
-        <span class="ds-evidence-level__num">L2</span>
-        <h3 class="ds-evidence-level__title">Customer Reviewed</h3>
-        <p class="ds-evidence-level__desc">العميل راجع الـ draft. ملاحظاته مُسجّلة. لم يُرسَل بعد.</p>
-      </div>
-      <div class="ds-evidence-level ds-evidence-level--l3" role="listitem">
-        <span class="ds-evidence-level__num">L3</span>
-        <h3 class="ds-evidence-level__title">Customer Approved</h3>
-        <p class="ds-evidence-level__desc">العميل وافق صراحة عبر واتساب. evidence_id + timestamp مُسجّلان.</p>
-      </div>
-      <div class="ds-evidence-level ds-evidence-level--l4" role="listitem">
-        <span class="ds-evidence-level__num">L4</span>
-        <h3 class="ds-evidence-level__title">Outcome Logged</h3>
-        <p class="ds-evidence-level__desc">نتيجة قابلة للتدقيق: اجتماع محجوز، عقد مُسوّد، صفقة موقّعة.</p>
-      </div>
-      <div class="ds-evidence-level ds-evidence-level--l5" role="listitem">
-        <span class="ds-evidence-level__num">L5</span>
-        <h3 class="ds-evidence-level__title">Revenue Evidence</h3>
-        <p class="ds-evidence-level__desc">رقم SAR مدعوم بفاتورة ZATCA + شهادة العميل + رابط Moyasar.</p>
-      </div>
+      <div class="ds-evidence-level ds-evidence-level--l1" role="listitem"><span class="ds-evidence-level__num">L1</span><h3 class="ds-evidence-level__title">Hypothesis / Internal Evidence</h3><p class="ds-evidence-level__desc">فرضية أو تحليل أو مسودة داخلية. ليست نتيجة عميل.</p></div>
+      <div class="ds-evidence-level ds-evidence-level--l2" role="listitem"><span class="ds-evidence-level__num">L2</span><h3 class="ds-evidence-level__title">Reviewed Evidence</h3><p class="ds-evidence-level__desc">مادة أو قرار تمت مراجعته وتوثيق مصدره، لكنه لا يثبت تسليمًا أو نتيجة وحده.</p></div>
+      <div class="ds-evidence-level ds-evidence-level--l3" role="listitem"><span class="ds-evidence-level__num">L3</span><h3 class="ds-evidence-level__title">Delivery / Outcome Evidence</h3><p class="ds-evidence-level__desc">دليل مرتبط بنفس الشركة والنطاق على إجراء أو تسليم أو Outcome محدد. لا يتحول تلقائيًا إلى قيمة مالية.</p></div>
+      <div class="ds-evidence-level ds-evidence-level--l4" role="listitem"><span class="ds-evidence-level__num">L4</span><h3 class="ds-evidence-level__title">Customer-Accepted Value Evidence</h3><p class="ds-evidence-level__desc">قيمة أو تحسن محدد له Baseline وطريقة قياس وقبول أو Evidence من نفس العميل، مع فصل التقدير عن القياس الفعلي.</p></div>
+      <div class="ds-evidence-level ds-evidence-level--l5" role="listitem"><span class="ds-evidence-level__num">L5</span><h3 class="ds-evidence-level__title">Verified Payment / Revenue Evidence</h3><p class="ds-evidence-level__desc">يتطلب سلسلة نفس الشركة: Scope معتمد + Payment request صادر فعليًا عند انطباقه + Receipt موثق + Reconciliation. وجود Proposal أو Invoice intent لا يكفي.</p></div>
     </div>
-
-    <div class="ds-disclaimer">
-      <strong>NO_FAKE_PROOF</strong>
-      كل Proof Pack منشور هنا يُصرّح بمستواه (L1→L5). لا يُعرَض L5 إلّا بفاتورة ZATCA + شهادة عميل. أرقام L4+ تظهر فقط بعد اعتماد رسمي.
-    </div>
+    <div class="ds-disclaimer"><strong>NO_FAKE_PROOF</strong> — Demo/Synthetic/Internal لا يصبح Customer Proof. Delivery وCustomer Value وPayment وRevenue وPublication Permission حالات منفصلة.</div>
   </section>
 
-  <!-- The 8 hard gates banner -->
   <section class="ds-stack ds-stack--sm" aria-labelledby="gates-title">
-    <h2 id="gates-title" class="ds-headline" style="font-size: var(--fs-2xl);">حدود الأمان الدائمة</h2>
-    <div class="ds-row" style="gap: var(--space-2); flex-wrap: wrap;">
-      <span class="ds-gate">NO_LIVE_SEND</span>
-      <span class="ds-gate">NO_LIVE_CHARGE</span>
-      <span class="ds-gate">NO_COLD_WHATSAPP</span>
-      <span class="ds-gate">NO_LINKEDIN_AUTOMATION</span>
-      <span class="ds-gate">NO_SCRAPING</span>
-      <span class="ds-gate">NO_FAKE_PROOF</span>
-      <span class="ds-gate">NO_FAKE_REVENUE</span>
-      <span class="ds-gate">NO_UNAPPROVED_TESTIMONIAL</span>
+    <h2 id="gates-title" class="ds-headline">بوابات الأمان</h2>
+    <div class="ds-row" style="gap:var(--space-2);flex-wrap:wrap">
+      <span class="ds-gate">NO_LIVE_SEND</span><span class="ds-gate">NO_LIVE_CHARGE</span><span class="ds-gate">NO_COLD_WHATSAPP</span><span class="ds-gate">NO_LINKEDIN_AUTOMATION</span><span class="ds-gate">NO_SCRAPING</span><span class="ds-gate">NO_FAKE_PROOF</span><span class="ds-gate">NO_FAKE_REVENUE</span><span class="ds-gate">NO_UNAPPROVED_TESTIMONIAL</span>
     </div>
   </section>
 
-  <!-- Proof packs list -->
+  <section aria-labelledby="publication-title" class="ds-stack ds-stack--md">
+    <div><span class="ds-eyebrow">Publication contract</span><h2 id="publication-title" class="ds-headline">متى يمكن نشر Proof؟</h2></div>
+    <div class="proof-grid">
+      <article class="proof-card"><h3>1. نفس الشركة والنطاق</h3><p>كل Claim يرتبط بمعرف شركة ونطاق Pilot/Delivery واضح، وليس بجمع أدلة من جهات مختلفة.</p></article>
+      <article class="proof-card"><h3>2. Evidence قابلة للتحقق</h3><p>المصدر والتاريخ والـowner وطريقة القياس محفوظة، ويظهر مستوى الدليل الحقيقي دون ترقية.</p></article>
+      <article class="proof-card"><h3>3. لا تعارض مع الواقع</h3><p>أي blocker في Payment أو Delivery أو Privacy أو Tenant أو Production يبقي Claim الأوسع Blocked.</p></article>
+      <article class="proof-card"><h3>4. إذن نشر مستقل</h3><p>استخدام اسم العميل أو الشهادة أو تفاصيل قابلة للتعريف يحتاج Publication Consent مستقلًا؛ الموافقة على التسليم لا تعني الموافقة على التسويق.</p></article>
+    </div>
+  </section>
+
   <section aria-labelledby="packs-title" class="ds-stack ds-stack--md">
-    <div class="ds-row" style="justify-content: space-between;">
-      <h2 id="packs-title" class="ds-headline" style="font-size: var(--fs-2xl);">Proof Packs المنشورة</h2>
-      <button class="ds-btn ds-btn--ghost ds-btn--sm" id="btn-refresh">تحديث</button>
-    </div>
-    <div id="packs-list" class="ds-stack ds-stack--md" aria-live="polite">
-      <p class="proof-empty">جاري التحميل…</p>
+    <h2 id="packs-title" class="ds-headline">Public Proof Register</h2>
+    <div id="packs-list" class="proof-empty" aria-live="polite">
+      <p>لا تعرض هذه الصفحة Customer Proof افتراضيًا. أي Proof Pack عام يجب أن يمر بعقد الإثبات وإذن النشر أعلاه قبل ظهوره.</p>
     </div>
   </section>
 
-  <!-- How proof gets here -->
-  <section aria-labelledby="how-title" class="ds-stack ds-stack--md">
-    <div>
-      <span class="ds-eyebrow">العمليّة</span>
-      <h2 id="how-title" class="ds-headline" style="font-size: var(--fs-2xl); margin-top: var(--space-3);">كيف يصل أيّ Proof Pack هنا</h2>
-    </div>
-    <div class="ds-grid ds-grid--wide">
-      <div class="ds-card ds-stack ds-stack--xs">
-        <h3 class="ds-card__title">1. عميل ينهي الـ 7-Day Pilot</h3>
-        <p class="ds-card__sub">دفع 499 SAR + ٧ أيّام تسليم + Proof Pack جاهز يوم ٧.</p>
-      </div>
-      <div class="ds-card ds-stack ds-stack--xs">
-        <h3 class="ds-card__title">2. العميل يوافق على النشر</h3>
-        <p class="ds-card__sub">signed_publish_permission=true. صفر نشر بدون إذن مكتوب — هذا ما يفرضه NO_UNAPPROVED_TESTIMONIAL gate.</p>
-      </div>
-      <div class="ds-card ds-stack ds-stack--xs">
-        <h3 class="ds-card__title">3. كل claim له evidence</h3>
-        <p class="ds-card__sub">رابط، screenshot، أو سجلّ proof_event. لا نُنشر ادّعاء بدون مصدر قابل للتحقّق.</p>
-      </div>
-      <div class="ds-card ds-stack ds-stack--xs">
-        <h3 class="ds-card__title">4. ينشر هنا — للجميع</h3>
-        <p class="ds-card__sub">صفحة Proof عامّة على dealix.me/proof.html. تتحدّث تلقائياً من /api/v1/proof-to-market endpoint.</p>
-      </div>
+  <section aria-labelledby="pilot-proof-title" class="ds-stack ds-stack--md">
+    <div><span class="ds-eyebrow">30-day Revenue Command Pilot</span><h2 id="pilot-proof-title" class="ds-headline">كيف يُبنى Proof داخل الـPilot الحالي؟</h2></div>
+    <div class="proof-grid">
+      <article class="proof-card"><h3>Baseline</h3><p>مقياس أولي ومصدره وOwner وطريقة قياسه تُحدد قبل تفسير أي تغير.</p></article>
+      <article class="proof-card"><h3>Weekly Proof Pack</h3><p>ما نُفذ، ماذا تغير، ما لم يتغير، Evidence المرفقة، والقيود أو الفرضيات المتبقية.</p></article>
+      <article class="proof-card"><h3>Final Proof Pack</h3><p>يربط Scope وBaseline وActions وOutcomes وEvidence وExceptions دون خلط Activity بالقيمة.</p></article>
+      <article class="proof-card"><h3>Outcome Review</h3><p>قرار Stop أو Expand أو Redesign مبني على Evidence، وليس على وعد مسبق بنتيجة.</p></article>
     </div>
   </section>
 
-  <!-- CTA -->
-  <section class="ds-stack ds-stack--sm" style="text-align: center; padding: var(--space-9) 0;">
-    <h2 class="ds-headline" style="font-size: var(--fs-3xl);">شركتك التالية على هذه الصفحة؟</h2>
-    <p class="ds-lede" style="max-width: 640px; margin: 0 auto;">
-      ابدأ الـ 7-Day Pilot بـ 499 SAR. خلال أسبوع: Proof Pack جاهز، إذا اخترت تنشره — يصل هنا.
-    </p>
-    <div class="ds-row" style="justify-content: center; gap: var(--space-4); margin-top: var(--space-4);">
-      <a class="ds-btn ds-btn--lg" href="/diagnostic.html">ابدأ التشخيص المجّاني</a>
-      <a class="ds-btn ds-btn--ghost ds-btn--lg" href="/start.html">احجز Pilot — 499 SAR</a>
-    </div>
+  <section class="ds-stack ds-stack--sm" style="text-align:center;padding:var(--space-9) 0">
+    <h2 class="ds-headline">ابدأ من مشكلة قابلة للقياس</h2>
+    <p class="ds-lede" style="max-width:680px;margin:0 auto">Free Mini Diagnostic أولًا. إذا اجتاز العميل Discovery والبوابات الحالية، يُحدد نطاق وسعر Revenue Command Pilot لمدة 30 يومًا في Quote معتمد خاص بالحالة.</p>
+    <div class="ds-row" style="justify-content:center;gap:var(--space-4);margin-top:var(--space-4)"><a class="ds-btn ds-btn--lg" href="/diagnostic.html">ابدأ Free Mini Diagnostic</a><a class="ds-btn ds-btn--ghost ds-btn--lg" href="/pricing.html">راجع مسار الـPilot</a></div>
   </section>
 
-  <!-- Footer -->
-  <footer class="ds-footer">
-    <div class="ds-container ds-stack ds-stack--md" style="text-align: center;">
-      <p class="ds-lede" style="max-width: 640px; margin: 0 auto; font-size: var(--fs-sm);">
-        كلّ Proof Pack هنا = عميل حقيقي + دفع موثّق + إذن نشر مكتوب.
-        لا fake testimonials، لا revenue غير مُثبت، لا spin.
-      </p>
-      <div class="ds-row" style="justify-content: center; gap: var(--space-5); flex-wrap: wrap;">
-        <a class="ds-link" href="/">الرئيسيّة</a>
-        <a class="ds-link" href="/ai-team.html">AI Operating Team</a>
-        <a class="ds-link" href="/diagnostic.html">التشخيص المجّاني</a>
-        <a class="ds-link" href="/start.html">7-Day Pilot</a>
-        <a class="ds-link" href="/dealix-beast-power.html">Beast Power</a>
-        <a class="ds-link" href="/styleguide.html">Styleguide</a>
-      </div>
-    </div>
-  </footer>
-
+  <footer class="ds-footer"><div class="ds-container" style="text-align:center"><p>© 2026 Dealix · Saudi-first · Approval-first · Proof-backed</p><p><a href="/">الرئيسية</a> · <a href="/privacy.html">الخصوصية</a> · <a href="/terms.html">الشروط</a> · <a href="/trust-center.html">Trust Center</a></p></div></footer>
 </main>
-
-<script>
-  const API_BASE = window.DEALIX_API_BASE || 'https://api.dealix.me';
-
-  function escapeHtml(s) {
-    return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
-  }
-
-  function renderEmpty() {
-    return `
-      <div class="proof-empty">
-        <p>لا Proof Packs منشورة بعد — البايلوت الأوّل قيد التشغيل.</p>
-        <p style="font-size: var(--fs-sm);">عند نهاية الأسبوع الأوّل، إذا وافق العميل على النشر — أوّل Proof Pack يظهر هنا.</p>
-        <a class="ds-link" href="/start.html">احجز بايلوتك أنت — 499 SAR</a>
-      </div>
-    `;
-  }
-
-  function renderPack(pack) {
-    const customerName = pack.customer_handle || pack.customer || 'Anonymous customer';
-    const sector = pack.sector || '—';
-    const date = pack.published_at ? new Date(pack.published_at).toLocaleDateString('ar-SA', { dateStyle: 'medium' }) : '—';
-    const claims = pack.claims || pack.evidence_pairs || [];
-    const claimsHtml = claims.map(c => `
-      <div class="proof-claim">
-        <div>
-          <h4>الادّعاء · Claim</h4>
-          <p>${escapeHtml(c.claim_ar || c.claim || c.text_ar || c.text || '—')}</p>
-        </div>
-        <div>
-          <h4>الدليل · Evidence</h4>
-          <p>${escapeHtml(c.evidence_ar || c.evidence || c.source || '—')}</p>
-        </div>
-      </div>
-    `).join('');
-    return `
-      <article class="proof-card">
-        <div class="proof-head">
-          <h3>${escapeHtml(customerName)}</h3>
-          <div class="ds-row" style="gap: var(--space-2);">
-            <span class="ds-chip">${escapeHtml(sector)}</span>
-            <span class="ds-chip ds-chip--accent">${escapeHtml(date)}</span>
-          </div>
-        </div>
-        <p class="ds-card__sub">${escapeHtml(pack.summary_ar || pack.summary || pack.description || 'Proof Pack from a 7-Day Pilot.')}</p>
-        ${claimsHtml || '<p class="ds-card__sub">No claims attached.</p>'}
-        ${pack.testimonial_ar ? `<blockquote style="margin: var(--space-3) 0; padding: var(--space-3) var(--space-4); background: rgba(34,211,238,0.06); border-inline-start: 3px solid var(--accent-2); border-radius: var(--radius-sm, 8px); font-style: italic;">${escapeHtml(pack.testimonial_ar)}</blockquote>` : ''}
-      </article>
-    `;
-  }
-
-  function renderKPIs(packs) {
-    document.getElementById('kpi-packs').textContent = packs.length;
-    const claims = packs.reduce((acc, p) => acc + ((p.claims || p.evidence_pairs || []).length), 0);
-    document.getElementById('kpi-claims').textContent = claims;
-    const revenue = packs.reduce((acc, p) => acc + (p.revenue_proven_sar || 0), 0);
-    document.getElementById('kpi-revenue').textContent = revenue.toLocaleString('en-US');
-  }
-
-  async function refresh() {
-    const list = document.getElementById('packs-list');
-    list.innerHTML = '<p class="proof-empty">جاري التحميل…</p>';
-    try {
-      // Best-effort fetch from the proof-to-market endpoint. The endpoint
-      // returns published proof events; if none exist, we render the empty state.
-      const r = await fetch(`${API_BASE}/api/v1/proof-to-market/published`, { cache: 'no-store' });
-      let packs = [];
-      if (r.ok) {
-        const data = await r.json();
-        packs = (data && (data.packs || data.events || data.items)) || [];
-      }
-      renderKPIs(packs);
-      if (!packs.length) {
-        list.innerHTML = renderEmpty();
-      } else {
-        list.innerHTML = packs.map(renderPack).join('');
-      }
-    } catch (e) {
-      list.innerHTML = renderEmpty();
-      renderKPIs([]);
-    }
-  }
-
-  document.getElementById('btn-refresh').addEventListener('click', refresh);
-  refresh();
-  setInterval(refresh, 60000);
-
-  // Initialize Lucide icons after DOM loads
-  document.addEventListener('DOMContentLoaded', function () {
-    if (window.lucide && window.lucide.createIcons) {
-      window.lucide.createIcons();
-    }
-  });
-</script>
-
 </body>
 </html>

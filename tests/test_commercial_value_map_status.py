@@ -12,7 +12,9 @@ def test_build_value_map_status_shape() -> None:
     st = build_value_map_status()
     assert st["agency_seed_rows"] >= 0
     assert "first_paid" in st
-    assert st["doc_path"].endswith("COMMERCIAL_VALUE_MAP_AR.md")
+    assert st["doc_path"].endswith("DEALIX_BUSINESS_MODEL.md")
+    assert st["commercial_identity_path"].endswith("COMMERCIAL_IDENTITY.md")
+    assert st["first_launch_gate_path"].endswith("first_launch_offer_gate.yaml")
 
 
 def test_build_commercial_value_map_includes_value_plan() -> None:

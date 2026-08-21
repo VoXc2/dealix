@@ -25,13 +25,13 @@ SKIP_PAGES = {"posthog_snippet.html"}
 
 # Pages considered "core" for the internal-link audit. Each MUST be
 # linked from at least one other page; orphan core pages are bugs.
+# Intentionally noindex/historical sector pages are not core launch surfaces.
 CORE_PAGES = {
     "index.html",
     "status.html",
     "pricing.html",
     "trust-center.html",
     "founder.html",
-    "marketers.html",
 }
 
 # Pages considered "service-page-class" — each must contain a CTA.

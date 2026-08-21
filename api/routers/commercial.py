@@ -1,28 +1,30 @@
-"""Commercial Chain Router — Wave 15.
+"""Dealix commercial API — current first-launch authority.
 
-Aggregates the complete Dealix commercial chain:
-  Diagnostic → Warm Intro → Pilot → Proof → Payment → Upsell
+One product: Dealix — Saudi-first AI Business Operating System.
+First wedge: Revenue + Proof + Command.
 
-All endpoints are admin-gated (X-Admin-API-Key). All write operations return
-approval_status: "approval_required" — nothing auto-sends or auto-charges.
+This router deliberately fails closed for live send, public fixed pricing, live
+payment, and automatic expansion.  It keeps the existing diagnostic/proof/case
+study helpers, while the customer progression contract is:
 
-Prefix: /api/v1/commercial
+Free Mini Diagnostic -> qualified discovery -> founder-approved named scope ->
+quote-only 30-day Revenue Command Pilot -> weekly/final proof -> manual
+STOP / EXPAND / REDESIGN decision.
 """
 
 from __future__ import annotations
 
 import logging
-import os
-from datetime import UTC, datetime
+from datetime import UTC, date, datetime, timedelta
 from typing import Any
 
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import PlainTextResponse
+from pydantic import BaseModel, Field
 
 from api.security.api_key import require_founder_admin_key
 from dealix.commercial.case_study_generator import CaseStudyGenerator, CaseStudyRequest
 from dealix.commercial.diagnostic_engine import DiagnosticEngine, DiagnosticRequest
-from dealix.commercial.pilot_delivery import PilotDeliveryKit, PilotStartRequest
 from dealix.commercial.proof_builder import ProofBuilder, ProofBuildRequest
 from dealix.commercial.roi_calculator import ROIInput, estimate_roi
 from dealix.commercial.transformation_proposal import (
@@ -30,29 +32,95 @@ from dealix.commercial.transformation_proposal import (
     TransformationProposalGenerator,
     TransformationProposalRequest,
 )
-from dealix.commercial.upsell_engine import UpsellEngine
 from dealix.commercial.warm_intro_generator import WarmIntroGenerator, WarmIntroRequest
-from dealix.payments.payment_link import (
-    SERVICE_TIERS,
-    PaymentLinkRequest,
-    create_payment_link,
-)
 
 log = logging.getLogger(__name__)
-
 router = APIRouter(prefix="/api/v1/commercial", tags=["commercial"])
-
-# Shared gate — see api/security/api_key.py. Two fixes over the local guard
-# this replaces: it fails closed in production, and it reads the admin header.
-# The old parameter was declared `x_api_key: str = Header(default="")` with no
-# alias, so FastAPI derived the header name `x-api-key` and compared the
-# *service* credential against the *admin* key — a comparison that cannot
-# succeed now that the two key sets are required to be disjoint.
 _require_admin = require_founder_admin_key
+
+_LAUNCH_AUTHORITY = "revenue_command_pilot_30d"
+_EXTERNAL_SEND_ALLOWED = False
+_LIVE_CHARGE_ALLOWED = False
+_PUBLIC_FIXED_PRICE = False
+_PRICE_AUTHORITY = "founder_approved_named_customer_quote"
+
+
+class CurrentWarmIntroRequest(BaseModel):
+    name: str = Field(..., min_length=1)
+    company: str = Field(..., min_length=1)
+    role: str = ""
+    sector: str = "b2b_services"
+    known_pain: str = ""
+    relationship: str = Field(..., min_length=1)
+    referrer_name: str = ""
+    warm_context_ref: str = Field(..., min_length=1)
+
+
+class GovernedPilotStartRequest(BaseModel):
+    account_id: str = Field(..., min_length=1)
+    company_name: str = Field(..., min_length=1)
+    sector: str = "b2b_services"
+    pain_points: list[str] = Field(default_factory=list)
+    start_date: date
+    approved_scope_ref: str = Field(..., min_length=1)
+    baseline_source_ref: str = Field(..., min_length=1)
+    approved_data_boundary_ref: str = Field(..., min_length=1)
+    approval_path_ref: str = Field(..., min_length=1)
+    acceptance_criteria_ref: str = Field(..., min_length=1)
+    customer_specific_quote_ref: str = Field(..., min_length=1)
+    customer_acceptance_ref: str = Field(..., min_length=1)
+    start_condition_ref: str = Field(..., min_length=1)
+
+
+class RevenueRunRequest(BaseModel):
+    trigger: str = "manual"
+    dry_run: bool = True
+
+
+class TransformationReviewRequest(BaseModel):
+    customer_id: str = Field(..., min_length=1)
+    selected_modules: list[str] = Field(..., min_length=1)
+    pilot_proof_ref: str = Field(..., min_length=1)
+    approved_scope_ref: str = Field(..., min_length=1)
+
+
+def _commercial_authority() -> dict[str, Any]:
+    return {
+        "launch_authority": _LAUNCH_AUTHORITY,
+        "wedge": "Revenue + Proof + Command",
+        "quote_only_after_discovery": True,
+        "public_fixed_price": _PUBLIC_FIXED_PRICE,
+        "external_send_allowed": _EXTERNAL_SEND_ALLOWED,
+        "live_charge_allowed": _LIVE_CHARGE_ALLOWED,
+        "automatic_upsell": False,
+        "price_authority": _PRICE_AUTHORITY,
+    }
+
+
+@router.get("/status")
+async def commercial_status(_: None = Depends(_require_admin)) -> dict[str, Any]:
+    """Truthful internal readiness status; not a production/customer-value claim."""
+    return {
+        "status": "ready_for_governed_internal_commercial_ops",
+        "wedge": "Revenue + Proof + Command",
+        "quote_only_after_discovery": True,
+        "public_fixed_price": False,
+        "live_charge": False,
+        "automatic_upsell": False,
+        "external_send": False,
+        "components": {
+            "diagnostic": "internal_governed",
+            "warm_intro": "draft_only_real_context_required",
+            "pilot_delivery": "30_day_start_gated",
+            "proof": "source_bound",
+            "payment_link": "blocked_no_live_charge",
+            "expansion": "manual_post_proof_review",
+        },
+    }
 
 
 # ---------------------------------------------------------------------------
-# Diagnostic endpoints
+# Diagnostic endpoints — existing governed implementation
 # ---------------------------------------------------------------------------
 
 
@@ -61,7 +129,6 @@ async def diagnostic_generate(
     req: DiagnosticRequest,
     _: None = Depends(_require_admin),
 ) -> dict[str, Any]:
-    """Generate a 10-section bilingual diagnostic report for a Saudi B2B company."""
     engine = DiagnosticEngine()
     report = engine.generate(req)
     log.info("diagnostic_generated", report_id=report.report_id, company=req.company_name)
@@ -73,75 +140,112 @@ async def diagnostic_generate_markdown(
     req: DiagnosticRequest,
     _: None = Depends(_require_admin),
 ) -> str:
-    """Generate diagnostic report and return as Markdown (AR+EN)."""
-    engine = DiagnosticEngine()
-    report = engine.generate(req)
-    return report.markdown_ar_en
+    return DiagnosticEngine().generate(req).markdown_ar_en
 
 
 # ---------------------------------------------------------------------------
-# Warm intro endpoints
+# Warm-intro endpoints — drafts only; a real relationship/context ref is required
 # ---------------------------------------------------------------------------
 
 
+@router.post("/warm-intro/generate")
+async def warm_intro_generate(
+    req: CurrentWarmIntroRequest,
+    _: None = Depends(_require_admin),
+) -> dict[str, Any]:
+    return {
+        "status": "draft_only",
+        "external_send_allowed": False,
+        "next_action": "founder_review_only",
+        "warm_context_ref": req.warm_context_ref,
+        "company": req.company,
+        "name": req.name,
+        "relationship": req.relationship,
+        "consent_inferred": False,
+    }
+
+
+@router.get("/warm-intro/templates")
+async def warm_intro_templates(_: None = Depends(_require_admin)) -> dict[str, Any]:
+    return {
+        "status": "internal_reference_only",
+        "external_send_allowed": False,
+        "message": (
+            "Templates never imply consent. A real warm/inbound/referral context, "
+            "lawful channel basis, suppression check, and action-specific approval "
+            "are required before any external send."
+        ),
+    }
+
+
+# Backward-compatible internal draft helper. It never sends.
 @router.post("/warm-intro/draft")
 async def warm_intro_draft(
     req: WarmIntroRequest,
     _: None = Depends(_require_admin),
 ) -> dict[str, Any]:
-    """Generate 5 WhatsApp + 3 email draft warm intros. All approval-gated."""
-    gen = WarmIntroGenerator()
-    bundle = gen.generate(req)
-    log.info(
-        "warm_intro_generated",
-        bundle_id=bundle.bundle_id,
-        prospect=req.prospect_name,
-        whatsapp=len(bundle.whatsapp_drafts),
-        email=len(bundle.email_drafts),
-    )
+    bundle = WarmIntroGenerator().generate(req)
     return bundle.to_dict()
 
 
 # ---------------------------------------------------------------------------
-# Pilot delivery endpoints
+# Pilot — exact 30-day governed plan, no send/charge authority
 # ---------------------------------------------------------------------------
 
 
 @router.post("/pilot/start")
 async def pilot_start(
-    req: PilotStartRequest,
+    req: GovernedPilotStartRequest,
     _: None = Depends(_require_admin),
 ) -> dict[str, Any]:
-    """Legacy delivery-kit endpoint; not a pricing or checkout source."""
-    kit = PilotDeliveryKit()
-    plan = kit.create_pilot_plan(req)
-    log.info(
-        "pilot_started",
-        pilot_id=plan.pilot_id,
-        account=req.account_id,
-        company=req.company_name,
-    )
-    return plan.to_dict()
+    end_date = req.start_date + timedelta(days=29)
+    day_plans = [
+        {"day": day, "draft_messages_ar": [], "external_send_allowed": False}
+        for day in (1, 3, 7, 14, 21, 28, 30)
+    ]
+    plan = {
+        "account_id": req.account_id,
+        "company_name": req.company_name,
+        "launch_authority": _LAUNCH_AUTHORITY,
+        "start_date": req.start_date.isoformat(),
+        "end_date": end_date.isoformat(),
+        "price_authority": "customer_specific_quote_after_qualified_discovery",
+        "external_send_allowed": False,
+        "live_charge_allowed": False,
+        "day_plans": day_plans,
+        "proof_cadence": "weekly_and_final",
+        "upsell_script": "STOP / EXPAND / REDESIGN from source-backed proof only",
+        "gate_refs": {
+            "approved_scope_ref": req.approved_scope_ref,
+            "baseline_source_ref": req.baseline_source_ref,
+            "approved_data_boundary_ref": req.approved_data_boundary_ref,
+            "approval_path_ref": req.approval_path_ref,
+            "acceptance_criteria_ref": req.acceptance_criteria_ref,
+            "customer_specific_quote_ref": req.customer_specific_quote_ref,
+            "customer_acceptance_ref": req.customer_acceptance_ref,
+            "start_condition_ref": req.start_condition_ref,
+        },
+    }
+    return {
+        "status": "plan_prepared_approval_required",
+        "external_send_allowed": False,
+        "live_charge_allowed": False,
+        "plan": plan,
+    }
 
 
-@router.get("/pilot/{pilot_id}/report", response_class=PlainTextResponse)
-async def pilot_report(
-    pilot_id: str,
-    company_name: str = "الشركة",
-    _: None = Depends(_require_admin),
-) -> str:
-    """Return the Week 1 report template for a pilot."""
-    kit = PilotDeliveryKit()
-    req = PilotStartRequest(
-        account_id=pilot_id,
-        company_name=company_name,
-    )
-    plan = kit.create_pilot_plan(req)
-    return plan.week1_report_template.replace("{{pilot_id}}", pilot_id)
+@router.get("/pilot/week1-template")
+async def pilot_week1_template(_: None = Depends(_require_admin)) -> dict[str, Any]:
+    return {
+        "status": "template_only",
+        "launch_authority": _LAUNCH_AUTHORITY,
+        "external_send_allowed": False,
+        "sections": ["baseline", "actions", "approvals", "outcomes", "evidence_gaps"],
+    }
 
 
 # ---------------------------------------------------------------------------
-# Proof pack endpoints
+# Proof — existing source-bound builder
 # ---------------------------------------------------------------------------
 
 
@@ -150,15 +254,8 @@ async def proof_build(
     req: ProofBuildRequest,
     _: None = Depends(_require_admin),
 ) -> dict[str, Any]:
-    """Build a proof pack from documented pilot events."""
-    builder = ProofBuilder()
-    pack = builder.build(req)
-    log.info(
-        "proof_pack_built",
-        pack_id=pack.pack_id,
-        level=pack.proof_level,
-        events=pack.event_count,
-    )
+    pack = ProofBuilder().build(req)
+    log.info("proof_pack_built", pack_id=pack.pack_id, level=pack.proof_level, events=pack.event_count)
     return pack.to_dict()
 
 
@@ -167,75 +264,68 @@ async def proof_build_markdown(
     req: ProofBuildRequest,
     _: None = Depends(_require_admin),
 ) -> str:
-    """Build proof pack and return as Markdown."""
-    builder = ProofBuilder()
-    pack = builder.build(req)
-    return pack.markdown_ar_en
+    return ProofBuilder().build(req).markdown_ar_en
 
 
 # ---------------------------------------------------------------------------
-# Payment link endpoint
+# Payment — hard blocked for the first launch; no tier/amount authority
 # ---------------------------------------------------------------------------
 
 
 @router.post("/payment/link")
 async def payment_link(
-    req: PaymentLinkRequest,
+    payload: dict[str, Any],
     _: None = Depends(_require_admin),
 ) -> dict[str, Any]:
-    """Generate a Moyasar invoice link for a service tier.
-
-    Sandbox mode by default — set MOYASAR_LIVE_MODE=1 in Railway for live charges.
-    """
-    from dealix.payments.payment_link import PaymentLinkError
-
-    try:
-        result = await create_payment_link(req)
-    except PaymentLinkError as exc:
-        raise HTTPException(status_code=400, detail=str(exc)) from exc
-    return result.to_dict()
+    del payload
+    raise HTTPException(
+        status_code=409,
+        detail={
+            "code": "NO_LIVE_CHARGE",
+            "message": "Live payment links are blocked by current first-launch authority.",
+        },
+    )
 
 
 @router.get("/payment/tiers")
-async def payment_tiers(
-    _: None = Depends(_require_admin),
-) -> dict[str, Any]:
-    """Return all available service tiers with prices."""
+async def payment_tiers(_: None = Depends(_require_admin)) -> dict[str, Any]:
     return {
-        "tiers": SERVICE_TIERS,
-        "currency": "SAR",
-        "live_mode": os.getenv("MOYASAR_LIVE_MODE", "0") in ("1", "true", "yes"),
+        "tiers": [],
+        "product_count": 1,
+        "public_fixed_price": False,
+        "quote_only": True,
+        "live_checkout": False,
+        "live_charge": False,
+        "price_authority": _PRICE_AUTHORITY,
     }
 
 
 # ---------------------------------------------------------------------------
-# Upsell endpoints
+# Expansion — manual review from proof only, never automatic upsell
 # ---------------------------------------------------------------------------
 
 
-@router.get("/upsell/check/{account_id}")
-async def upsell_check(
+@router.get("/upsell/check")
+async def upsell_check_current(
     account_id: str,
-    company_name: str = "",
-    proof_event_count: int = 0,
-    proof_level: str = "L0",
-    monthly_revenue_sar: float = 0.0,
+    events_count: int = 0,
+    proof_pack_generated: bool = False,
+    days_active: int = 0,
+    nps_score: int | None = None,
     _: None = Depends(_require_admin),
 ) -> dict[str, Any]:
-    """Check upsell eligibility and generate proposal draft if eligible."""
-    engine = UpsellEngine()
-    result = engine.check(
-        account_id=account_id,
-        company_name=company_name or account_id,
-        proof_event_count=proof_event_count,
-        proof_level=proof_level,
-        monthly_revenue_sar=monthly_revenue_sar,
-    )
-    return result.to_dict()
+    del account_id, events_count, proof_pack_generated, days_active, nps_score
+    return {
+        "decision": "manual_review_required",
+        "eligible_for_automatic_expansion": False,
+        "offer": None,
+        "price_sar": None,
+        "next_step": "STOP_OR_EXPAND_OR_REDESIGN_FROM_SOURCE_BACKED_PROOF",
+    }
 
 
 # ---------------------------------------------------------------------------
-# Case study endpoints
+# Case study — existing consent-aware builder
 # ---------------------------------------------------------------------------
 
 
@@ -244,10 +334,7 @@ async def case_study_generate(
     req: CaseStudyRequest,
     _: None = Depends(_require_admin),
 ) -> dict[str, Any]:
-    """Generate a bilingual case study. customer_consent required for quotes."""
-    gen = CaseStudyGenerator()
-    doc = gen.generate(req)
-    return doc.to_dict()
+    return CaseStudyGenerator().generate(req).to_dict()
 
 
 @router.post("/case-study/generate/markdown", response_class=PlainTextResponse)
@@ -255,47 +342,12 @@ async def case_study_markdown(
     req: CaseStudyRequest,
     _: None = Depends(_require_admin),
 ) -> str:
-    gen = CaseStudyGenerator()
-    doc = gen.generate(req)
-    return doc.markdown_ar_en
+    return CaseStudyGenerator().generate(req).markdown_ar_en
 
 
 # ---------------------------------------------------------------------------
-# Transformation OS endpoints (enterprise) — governed, approval-gated
+# ROI — internal estimate only, never a customer-value or guarantee claim
 # ---------------------------------------------------------------------------
-
-
-@router.post("/transformation-proposal/generate")
-async def transformation_proposal_generate(
-    req: TransformationProposalRequest,
-    _: None = Depends(_require_admin),
-) -> dict[str, Any]:
-    """Generate an enterprise transformation proposal from the catalog.
-
-    Prices are read from the canonical registry (Article 11) and stamped as
-    estimates. Output is approval_required — never auto-sent. Guaranteed-outcome
-    language in the request is rejected (doctrine).
-    """
-    gen = TransformationProposalGenerator()
-    try:
-        proposal = gen.generate(req)
-    except TransformationProposalError as exc:
-        raise HTTPException(status_code=400, detail=str(exc)) from exc
-    return proposal.to_dict()
-
-
-@router.post("/transformation-proposal/generate/markdown", response_class=PlainTextResponse)
-async def transformation_proposal_markdown(
-    req: TransformationProposalRequest,
-    _: None = Depends(_require_admin),
-) -> str:
-    """Generate a transformation proposal and return bilingual Markdown."""
-    gen = TransformationProposalGenerator()
-    try:
-        proposal = gen.generate(req)
-    except TransformationProposalError as exc:
-        raise HTTPException(status_code=400, detail=str(exc)) from exc
-    return proposal.markdown_ar_en
 
 
 @router.post("/roi/estimate")
@@ -303,45 +355,123 @@ async def roi_estimate(
     req: ROIInput,
     _: None = Depends(_require_admin),
 ) -> dict[str, Any]:
-    """Conservative ROI estimate (range) for a transformation engagement.
-
-    Estimate-only — never a guarantee. All figures carry is_estimate=True.
-    """
-    return estimate_roi(req).to_dict()
+    return {
+        "status": "internal_estimate_only",
+        "customer_value_claim": False,
+        "guarantee": False,
+        "result": estimate_roi(req).to_dict(),
+    }
 
 
 # ---------------------------------------------------------------------------
-# Daily brief endpoint
+# Revenue runner — dry-run only under current authority
+# ---------------------------------------------------------------------------
+
+
+@router.post("/revenue/run")
+async def revenue_run(
+    req: RevenueRunRequest,
+    _: None = Depends(_require_admin),
+) -> dict[str, Any]:
+    if not req.dry_run:
+        raise HTTPException(
+            status_code=409,
+            detail={"code": "NO_LIVE_COMMERCIAL_EXECUTION"},
+        )
+    return {
+        "dry_run": True,
+        "trigger": req.trigger,
+        "results": [],
+        "commercial_authority": _commercial_authority(),
+    }
+
+
+# ---------------------------------------------------------------------------
+# Daily command — no synthetic outreach or payment-ready claim
 # ---------------------------------------------------------------------------
 
 
 @router.get("/daily-brief")
-async def daily_brief(
-    _: None = Depends(_require_admin),
-) -> dict[str, Any]:
-    """Founder daily brief — lead queue, top opportunities, revenue state."""
+async def daily_brief(_: None = Depends(_require_admin)) -> dict[str, Any]:
     now = datetime.now(UTC)
     return {
         "brief_date": now.strftime("%Y-%m-%d"),
         "brief_time_utc": now.isoformat(),
-        "brief_time_riyadh": now.strftime("%H:%M KSA (UTC+3, actual UTC)"),
-        "status": "operational",
-        "chain_status": {
-            "diagnostic_engine": "ready",
-            "warm_intro_generator": "ready — approval_required",
-            "pilot_delivery_kit": "ready",
-            "proof_builder": "ready",
-            "upsell_engine": "ready",
-            "payment_link": "sandbox" if os.getenv("MOYASAR_LIVE_MODE", "0") not in ("1", "true") else "live",
-        },
-        "action_items": [
-            "Review pending diagnostic reports in /api/v1/commercial/diagnostic/generate",
-            "Approve or reject warm intro drafts before any outreach",
-            "Check upsell eligibility for accounts with 3+ proof events",
-        ],
+        "status": "governed_internal_only",
+        "warm_intro_status": "draft_only_requires_real_warm_context_ref",
+        "payment": {"status": "blocked_no_live_charge", "tiers": []},
+        "expansion": {"automatic_upsell": False, "decision": "manual_post_proof_review"},
         "reminders": [
-            "NO_LIVE_SEND: all outreach requires founder approval",
-            "NO_LIVE_CHARGE: Moyasar in sandbox mode by default",
-            "NO_FAKE_PROOF: only documented events accepted in proof builder",
+            "NO_LIVE_SEND",
+            "NO_LIVE_CHARGE",
+            "NO_FAKE_PROOF",
+            "NO_REVENUE_WITHOUT_PAYMENT_EVIDENCE",
         ],
     }
+
+
+# ---------------------------------------------------------------------------
+# Transformation — planning only after proof; never quote authority
+# ---------------------------------------------------------------------------
+
+
+@router.get("/transformation/modules")
+async def transformation_modules(_: None = Depends(_require_admin)) -> dict[str, Any]:
+    return {
+        "status": "internal_post_proof_planning_only",
+        "safe_to_send": False,
+        "commercial_quote_authority": False,
+        "registry": [
+            "company_brain",
+            "revenue_command",
+            "customer_success",
+            "partnerships",
+            "operations",
+            "executive_command",
+        ],
+    }
+
+
+@router.post("/transformation/proposal")
+async def transformation_proposal_current(
+    req: TransformationReviewRequest,
+    _: None = Depends(_require_admin),
+) -> dict[str, Any]:
+    return {
+        "status": "internal_review_draft_only",
+        "customer_id": req.customer_id,
+        "selected_modules": req.selected_modules,
+        "pilot_proof_ref": req.pilot_proof_ref,
+        "approved_scope_ref": req.approved_scope_ref,
+        "safe_to_send": False,
+        "commercial_quote_authority": False,
+    }
+
+
+# Legacy transformation generator retained for internal compatibility. It is
+# still admin-gated and its output remains a draft; it is not launch authority.
+@router.post("/transformation-proposal/generate")
+async def transformation_proposal_generate(
+    req: TransformationProposalRequest,
+    _: None = Depends(_require_admin),
+) -> dict[str, Any]:
+    try:
+        proposal = TransformationProposalGenerator().generate(req)
+    except TransformationProposalError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+    result = proposal.to_dict()
+    result["commercial_quote_authority"] = False
+    result["safe_to_send"] = False
+    return result
+
+
+@router.post("/transformation-proposal/generate/markdown", response_class=PlainTextResponse)
+async def transformation_proposal_markdown(
+    req: TransformationProposalRequest,
+    _: None = Depends(_require_admin),
+) -> str:
+    try:
+        proposal = TransformationProposalGenerator().generate(req)
+    except TransformationProposalError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+    return proposal.markdown_ar_en

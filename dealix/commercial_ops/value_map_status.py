@@ -10,7 +10,13 @@ from dealix.commercial_ops.first_paid_tracker import analyze_first_paid_diagnost
 from dealix.commercial_ops.paths import REPO_ROOT
 from dealix.commercial_ops.value_map_catalog import get_value_map_catalog
 
-VALUE_MAP_DOC = REPO_ROOT / "docs/commercial/COMMERCIAL_VALUE_MAP_AR.md"
+# Do not route founder decisions through the historical COMMERCIAL_VALUE_MAP_AR
+# price/package ladder. The first-launch gate names DEALIX_BUSINESS_MODEL.md as
+# canonical business-model authority and COMMERCIAL_IDENTITY.md defines the
+# current one-product wedge.
+VALUE_MAP_DOC = REPO_ROOT / "docs/DEALIX_BUSINESS_MODEL.md"
+COMMERCIAL_IDENTITY_DOC = REPO_ROOT / "COMMERCIAL_IDENTITY.md"
+FIRST_LAUNCH_GATE = REPO_ROOT / "dealix/config/first_launch_offer_gate.yaml"
 BRIEFS_INDEX = REPO_ROOT / "data/founder_briefs/index.json"
 AGENCY_CSV = REPO_ROOT / "docs/commercial/operations/targeting/agency_accounts_seed.csv"
 
@@ -45,13 +51,15 @@ def _latest_brief_date() -> str | None:
 
 
 def build_value_map_status() -> dict[str, Any]:
-    """Snapshot for COMMERCIAL_VALUE_MAP and CLI (no subprocess verify scripts)."""
+    """Snapshot for founder commercial status from current launch authority."""
     pipeline = analyze_first_paid_diagnostic()
     agency_rows = _count_csv_rows(AGENCY_CSV)
     brief_date = _latest_brief_date()
 
     artifacts: dict[str, bool] = {
         "value_map_doc": VALUE_MAP_DOC.is_file(),
+        "commercial_identity_doc": COMMERCIAL_IDENTITY_DOC.is_file(),
+        "first_launch_gate": FIRST_LAUNCH_GATE.is_file(),
         "agency_seed_csv": AGENCY_CSV.is_file(),
         "founder_briefs_index": BRIEFS_INDEX.is_file(),
         "war_room_today": (REPO_ROOT / "data/war_room_today.json").is_file(),
@@ -64,13 +72,21 @@ def build_value_map_status() -> dict[str, Any]:
         "agency_seed_strict_ok": agency_rows >= 80,
         "first_paid": pipeline,
         "artifacts": artifacts,
+        # Compatibility key retained. The value is the current launch path,
+        # not a public price/package ladder.
         "revenue_ladder_ar": pipeline.get("revenue_ladder_ar"),
         "founder_action": [
-            "Close one real Diagnostic per FIRST_PAID_DIAGNOSTIC_DOD",
+            "Qualify one real company for a customer-specific 30-day Revenue Command Pilot",
             "Sync kpi_founder_commercial_import.yaml from CRM when ready",
-            "Complete FOUNDER_ACTION in verify_paid_launch_readiness before Moyasar live",
+            "Complete FOUNDER_ACTION in verify_paid_launch_readiness before any live payment provider activation",
         ],
         "doc_path": str(VALUE_MAP_DOC.relative_to(REPO_ROOT)).replace("\\", "/"),
+        "commercial_identity_path": str(
+            COMMERCIAL_IDENTITY_DOC.relative_to(REPO_ROOT)
+        ).replace("\\", "/"),
+        "first_launch_gate_path": str(FIRST_LAUNCH_GATE.relative_to(REPO_ROOT)).replace(
+            "\\", "/"
+        ),
         "market_intel_index": "docs/commercial/MARKET_INTELLIGENCE_MASTER_INDEX_AR.md",
     }
 
@@ -103,10 +119,10 @@ def render_commercial_value_map_markdown(blob: dict[str, Any]) -> str:
     lines = [
         f"# Commercial Value Map · {vp.get('date') or st.get('generated_at', '')[:10]}",
         "",
-        f"_{vp.get('policy_ar') or 'لا توسعة قبل أول Diagnostic مدفوع + Proof.'}_",
+        f"_{vp.get('policy_ar') or 'لا توسعة قبل Pilot مدفوع + Proof موثق.'}_",
         "",
         "## North Star",
-        f"- First paid: `{fp.get('verdict', '—')}`",
+        f"- First paid Pilot: `{fp.get('verdict', '—')}`",
         f"- Payment (real): **{fp.get('payment_received_real', 0)}**",
         f"- Proof delivered (real): **{fp.get('proof_pack_delivered_real', 0)}**",
         f"- Agency seed rows: **{st.get('agency_seed_rows', 0)}**",
@@ -131,9 +147,10 @@ def render_commercial_value_map_markdown(blob: dict[str, Any]) -> str:
     lines.extend(
         [
             "",
-            "## Docs",
-            "- docs/commercial/COMMERCIAL_VALUE_MAP_AR.md",
-            "- docs/commercial/MARKET_INTELLIGENCE_MASTER_INDEX_AR.md",
+            "## Current authority",
+            f"- {st.get('doc_path') or 'docs/DEALIX_BUSINESS_MODEL.md'}",
+            f"- {st.get('commercial_identity_path') or 'COMMERCIAL_IDENTITY.md'}",
+            f"- {st.get('first_launch_gate_path') or 'dealix/config/first_launch_offer_gate.yaml'}",
             "",
             f"_Generated: {blob.get('generated_at')}_",
         ]

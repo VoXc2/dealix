@@ -1,130 +1,50 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl" data-theme="light">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>طلب بدء الباقة — Dealix</title>
-  <meta name="description" content="طلب بدء تجريبي لباقات Dealix. لا خصم ولا فاتورة حية حتى اعتماد مسار الدفع وتأكيده.">
-  <meta name="robots" content="noindex,follow">
-  <meta content="طلب بدء الباقة — Dealix" property="og:title">
-  <link rel="canonical" href="https://dealix.me/checkout.html">
-  <link rel="stylesheet" href="styles.css">
-  <link rel="stylesheet" href="/assets/css/design-system.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>الدفع غير متاح قبل العرض المعتمد — Dealix</title>
+  <meta name="description" content="Dealix لا يوفّر Checkout عامًا للـRevenue Command Pilot. السعر والدفع يبدآن فقط بعد Discovery ونطاق وعرض معتمدين للعميل المحدد." />
+  <meta name="robots" content="noindex,nofollow" />
+  <link rel="canonical" href="https://dealix.me/checkout.html" />
+  <meta property="og:title" content="الدفع غير متاح قبل العرض المعتمد — Dealix" />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="/assets/css/design-system.css" />
   <style>
-    body{margin:0;background:#f8fafc;color:#0f172a;font-family:"IBM Plex Sans Arabic",Arial,sans-serif}.wrap{max-width:780px;margin:auto;padding:48px 20px}.back{color:#475569;text-decoration:none}.hero{text-align:center;margin:28px 0}.hero h1{font-size:clamp(28px,5vw,44px);margin:0 0 8px}.muted{color:#64748b}.notice,.card,.tier{border:1px solid #cbd5e1;border-radius:16px;background:#fff;padding:22px;margin:18px 0}.notice{background:#fffbeb;border-color:#f59e0b}.tier-price{font-size:30px;font-weight:800}.tier ul{padding-right:20px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}@media(max-width:640px){.grid{grid-template-columns:1fr}}label{display:block;font-weight:700;margin:14px 0 6px}input{box-sizing:border-box;width:100%;padding:12px;border:1px solid #94a3b8;border-radius:10px;font:inherit}.method{display:flex;align-items:center;gap:8px;border:1px solid #cbd5e1;border-radius:10px;padding:12px}.method input{width:auto}.btn{width:100%;margin-top:20px;padding:14px;border:0;border-radius:10px;background:#0f172a;color:#fff;font:inherit;font-weight:800;cursor:pointer}.btn:disabled{opacity:.55}.gate{font-size:13px;line-height:1.8;background:#f1f5f9;border-radius:10px;padding:14px;margin-top:18px}.panel{display:none;margin-top:16px;padding:14px;border-radius:10px;background:#dcfce7}.panel.show{display:block}.panel.error{background:#fee2e2}.footer{text-align:center;color:#64748b;margin-top:34px}
+    body{margin:0;background:#f8fafc;color:#0f172a;font-family:"IBM Plex Sans Arabic",Arial,sans-serif}.wrap{max-width:760px;margin:auto;padding:72px 22px}.back{color:#475569;text-decoration:none}.hero{text-align:center;margin:32px 0}.hero h1{font-size:clamp(30px,5vw,48px);margin:0 0 12px;line-height:1.15}.hero p{color:#64748b;line-height:1.8;font-size:17px}.notice,.card{border:1px solid #cbd5e1;border-radius:16px;background:#fff;padding:24px;margin:20px 0}.notice{background:#fff7ed;border-color:#fdba74}.gate{font-family:ui-monospace,Menlo,monospace;direction:ltr;unicode-bidi:isolate;font-size:12px;line-height:1.8;background:#f1f5f9;border-radius:10px;padding:14px}.steps{padding-right:22px;line-height:2}.cta{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin-top:28px}.btn{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:0 22px;border-radius:11px;text-decoration:none;font-weight:800}.primary{background:#0f172a;color:#fff}.secondary{background:#fff;color:#0f172a;border:1px solid #cbd5e1}.footer{text-align:center;color:#64748b;font-size:13px;margin-top:34px}
   </style>
-  <script>window.DEALIX_API_BASE=window.DEALIX_API_BASE||'https://api.dealix.me';</script>
 </head>
 <body>
   <main class="wrap">
-    <a class="back" href="/pricing.html">← رجوع إلى الباقات</a>
+    <a class="back" href="/pricing.html">← رجوع إلى مسار بدء Dealix</a>
     <header class="hero">
-      <h1>طلب بدء تجريبي</h1>
-      <p class="muted">اختر الباقة وسجّل طلبك. هذه الصفحة لا تخصم مبلغًا ولا تصدر فاتورة حية.</p>
+      <h1>لا يوجد Checkout عام في الإطلاق الحالي</h1>
+      <p>Revenue Command Pilot هو عرض مخصص لمدة 30 يومًا. لا سعر ثابت، ولا Payment intent، ولا فاتورة، ولا خصم من الموقع قبل Discovery واعتماد نطاق وعرض خاص بالعميل.</p>
     </header>
 
-    <section class="notice" id="test-mode-banner">
-      <strong>🧪 وضع TEST — NO_LIVE_CHARGE</strong><br>
-      REQUEST ≠ INVOICE ≠ REVENUE. السعر والضريبة يؤكدان في المسار المعتمد بعد مراجعة بشرية.
+    <section class="notice">
+      <strong>NO_LIVE_CHARGE · QUOTE_ONLY</strong>
+      <p>REQUEST ≠ QUOTE ≠ INVOICE ≠ PAYMENT ≠ REVENUE. هذه الصفحة لا تنشئ أي التزام مالي أو طلب دفع.</p>
     </section>
 
-    <section class="tier" aria-live="polite">
-      <h2 id="tier-name">جاري تحميل الباقة…</h2>
-      <div class="tier-price" id="tier-price">—</div>
-      <p class="muted">المخرجات نهائية فقط بعد اعتماد النطاق؛ القائمة أدناه نطاق مبدئي قابل للمراجعة.</p>
-      <ul id="tier-features"></ul>
+    <section class="card">
+      <h2>المسار الصحيح</h2>
+      <ol class="steps">
+        <li>ابدأ بـFree Mini Diagnostic.</li>
+        <li>نجري Discovery مؤهلة ونحدد مشكلة ونطاقًا قابلين للقياس.</li>
+        <li>نراجع data boundary وapproval path وacceptance criteria.</li>
+        <li>إذا اجتازت الحالة بوابات الإطلاق، يجهز عرض سعر مخصص للمراجعة والاعتماد.</li>
+        <li>أي Invoice أو Payment request يحتاج مسارًا منفصلًا معتمدًا ودليل إصدار فعلي.</li>
+        <li>لا يُسجل الإيراد إلا بعد دليل payment_received لنفس العميل والالتزام.</li>
+      </ol>
+      <div class="gate">NO_PUBLIC_FIXED_PRICE<br>NO_SELF_SERVE_CHECKOUT<br>NO_LIVE_CHARGE<br>NO_REVENUE_WITHOUT_PAYMENT_EVIDENCE</div>
     </section>
 
-    <form class="card" id="checkoutForm">
-      <label for="company">اسم الشركة *</label>
-      <input id="company" name="customer_handle" required minlength="2" maxlength="80" autocomplete="organization">
-
-      <label for="email">البريد الإلكتروني *</label>
-      <input id="email" name="email" type="email" required autocomplete="email">
-
-      <label for="phone">الجوال *</label>
-      <input id="phone" name="phone" type="tel" required pattern="^\+?\d[\d\s-]{8,15}$" autocomplete="tel">
-
-      <label>المسار المطلوب</label>
-      <div class="grid">
-        <label class="method"><input type="radio" name="method" value="moyasar_test" checked> طلب تجريبي TEST</label>
-        <label class="method"><input type="radio" name="method" value="bank_transfer_manual"> طلب تعليمات تحويل يدوية</label>
-      </div>
-
-      <button class="btn" id="submitBtn" type="submit">إنشاء طلب بدء تجريبي</button>
-      <div class="gate">
-        🔒 لا خصم ولا فاتورة حية من هذه الصفحة.<br>
-        🔒 لا يُسجل الإيراد قبل دليل payment_received حقيقي.<br>
-        🔒 التحويل اليدوي يفتح مسودة بريد للمراجعة؛ لا يرسلها تلقائيًا.
-      </div>
-      <div class="panel" id="responsePanel" aria-live="polite"></div>
-    </form>
-
-    <footer class="footer"><strong>Saudi-PDPL · Approval-first · Proof-backed</strong></footer>
+    <div class="cta">
+      <a class="btn primary" href="/diagnostic.html">ابدأ Free Mini Diagnostic</a>
+      <a class="btn secondary" href="/proof.html">شاهد منهج Proof</a>
+    </div>
+    <p class="footer">أي شروط تجارية أو دفع فعلية لا تُعرض هنا، وتُعتمد فقط للعميل المحدد بعد المراجعة.</p>
   </main>
-
-  <script>
-    const TIERS={
-      sprint:{name_ar:'Revenue Proof Sprint',amount_sar:499,recurring:false,service_session_id:'sprint_499',features:['تحديد فجوة واحدة قابلة للقياس','قائمة فرص ومتابعة محدودة','مسودات خاضعة للموافقة','Proof Pack يوضح العمل والدليل']},
-      growth:{name_ar:'Growth OS — نطاق شهري مقترح',amount_sar:2999,recurring:true,service_session_id:'growth_os_monthly',features:['ترتيب pipeline والمتابعات','لوحة قرارات وموافقات','تقرير دوري مدعوم بالأدلة','النطاق النهائي بعد التشخيص']},
-      scale:{name_ar:'Scale OS — نطاق موسع مقترح',amount_sar:7999,recurring:true,service_session_id:'scale_os_monthly',features:['تشغيل عدة مسارات معتمدة','صلاحيات ومراجعة داخلية','تكاملات حسب الجاهزية','SLA يحدد فقط في العقد']},
-      partner:{name_ar:'Executive Command Center — نطاق مقترح',amount_sar:12000,recurring:true,service_session_id:'ecc_monthly',features:['غرفة قيادة تنفيذية','قائمة قرارات ومخاطر','تقارير Proof تنفيذية','السعر والنطاق يحتاجان اعتمادًا']},
-      enterprise:{name_ar:'Enterprise — تقييم مخصص',amount_sar:null,recurring:false,service_session_id:'enterprise_custom',features:['تقييم الاحتياج والحوكمة','متطلبات الأمن والبيانات','تصميم نطاق مخصص','لا التزام قبل عرض معتمد']}
-    };
-
-    function getTier(){const key=(new URLSearchParams(location.search).get('tier')||'sprint').toLowerCase();return {key:TIERS[key]?key:'sprint',data:TIERS[key]||TIERS.sprint};}
-    function renderTier(tier){
-      document.getElementById('tier-name').textContent=tier.data.name_ar;
-      document.getElementById('tier-price').textContent=tier.data.amount_sar===null?'تقييم مخصص':tier.data.amount_sar.toLocaleString('ar-SA')+' ر.س'+(tier.data.recurring?' / شهر':' / مرة واحدة');
-      const list=document.getElementById('tier-features');list.replaceChildren(...tier.data.features.map(text=>{const li=document.createElement('li');li.textContent=text;return li;}));
-      if(tier.data.amount_sar===null){document.getElementById('submitBtn').textContent='إنشاء Enterprise assessment request';}
-    }
-
-    document.getElementById('checkoutForm').addEventListener('submit',async function(event){
-      event.preventDefault();
-      const form=event.currentTarget;
-      if(!form.reportValidity())return;
-      const tier=getTier();
-      const data=new FormData(form);
-      const company=String(data.get('customer_handle')||'').trim();
-      const email=String(data.get('email')||'').trim();
-      const phone=String(data.get('phone')||'').trim();
-      const method=String(data.get('method')||'');
-      const btn=document.getElementById('submitBtn');
-      const panel=document.getElementById('responsePanel');
-      panel.className='panel';
-
-      if(tier.data.amount_sar===null){
-        const body=encodeURIComponent(`Enterprise assessment request\nCompany: ${company}\nEmail: ${email}\nPhone: ${phone}\nNo payment has been made.`);
-        location.href='mailto:sales@dealix.sa?subject=Enterprise%20assessment%20request&body='+body;
-        return;
-      }
-
-      if(method==='bank_transfer_manual'){
-        const body=encodeURIComponent(`طلب تعليمات التحويل\nCompany: ${company}\nEmail: ${email}\nPhone: ${phone}\nTier: ${tier.key}\nAmount shown: ${tier.data.amount_sar} SAR\nNo payment has been made. Please review and send approved instructions manually.`);
-        location.href='mailto:sales@dealix.sa?subject='+encodeURIComponent('طلب تعليمات التحويل - '+company)+'&body='+body;
-        return;
-      }
-
-      btn.disabled=true;btn.textContent='جاري تسجيل الطلب…';
-      const payload={customer_handle:company,email,phone,amount_sar:tier.data.amount_sar,method:'moyasar_test',service_session_id:tier.data.service_session_id};
-      try{
-        const apiBase=String(window.DEALIX_API_BASE||'').replace(/\/$/,'');
-        const response=await fetch(apiBase+'/api/v1/payment-ops/invoice-intent',{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify(payload)});
-        const result=await response.json().catch(()=>({}));
-        if(!response.ok)throw new Error(result.detail||result.error||('HTTP '+response.status));
-        const requestId=(result.payment&&(result.payment.id||result.payment.payment_id))||result.request_id||'';
-        panel.className='panel show';panel.textContent='✓ تم تسجيل طلب تجريبي في TEST mode. لم يتم خصم أي مبلغ.';
-        setTimeout(()=>{location.href='/checkout-success.html?request_id='+encodeURIComponent(requestId)+'&tier='+encodeURIComponent(tier.key)+'&amount='+encodeURIComponent(tier.data.amount_sar);},500);
-      }catch(error){
-        panel.className='panel show error';panel.textContent='تعذر تسجيل الطلب آليًا. افتح مسودة بريد للمراجعة دون إرسال تلقائي.';
-        const body=encodeURIComponent(`TEST start request fallback\nCompany: ${company}\nEmail: ${email}\nPhone: ${phone}\nTier: ${tier.key}\nNo payment has been made.\nError: ${String(error.message||error)}`);
-        location.href='mailto:sales@dealix.sa?subject='+encodeURIComponent('TEST start request - '+company)+'&body='+body;
-      }finally{btn.disabled=false;btn.textContent='إنشاء طلب بدء تجريبي';}
-    });
-
-    const activeTier=getTier();renderTier(activeTier);
-    if(window.posthog&&typeof window.posthog.capture==='function'){window.posthog.capture('checkout_request_viewed',{tier:activeTier.key,mode:'test_only'});}
-  </script>
 </body>
 </html>

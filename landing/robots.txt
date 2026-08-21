@@ -1,11 +1,14 @@
-# Dealix robots.txt — May 2026
-# Allows AI search crawlers (Perplexity, ChatGPT, Claude, Gemini) to
-# cite our public content per Master Plan VIII (GEO/AIO strategy).
-# Disallows /api/ and authenticated/founder routes.
+# Dealix public crawl contract — 2026-08-16
+# Canonical public domain: https://dealix.me
+# Only reviewed launch surfaces should be promoted as current commercial truth.
+# Historical/demo surfaces remain in the repository for evidence/reference but
+# are not part of the current first-launch acquisition path.
 
 User-agent: *
 Allow: /
 Disallow: /api/
+
+# No public payment / founder / operating-console indexing.
 Disallow: /checkout.html
 Disallow: /checkout-success.html
 Disallow: /founder.html
@@ -21,38 +24,27 @@ Disallow: /decisions.html
 Disallow: /command-center.html
 Disallow: /dashboard.html
 
-# AI search engines — explicit allow per Master Plan VIII (GEO/AIO).
-User-agent: PerplexityBot
-Allow: /
-Disallow: /api/
+# Retired / unaudited commercial experiments. Do not use these as current
+# price, ROI, case-study, comparison, vertical or product authority.
+Disallow: /annual-pricing.html
+Disallow: /start.html
+Disallow: /sprint-sample.html
+Disallow: /roi.html
+Disallow: /case-study.html
+Disallow: /case-study-pilot-example.html
+Disallow: /compare-gong.html
+Disallow: /compare-hubspot.html
+Disallow: /compare-salesloft.html
+Disallow: /verticals.html
+Disallow: /academy.html
+Disallow: /status.html
+Disallow: /why-saudi-ai.html
+Disallow: /ai-team.html
+Disallow: /styleguide.html
+Disallow: /dealix-beast-power.html
+Disallow: /systems-catalog.html
+Disallow: /agency-partner.html
+Disallow: /partners.html
 
-User-agent: ChatGPT-User
-Allow: /
-Disallow: /api/
-
-User-agent: GPTBot
-Allow: /
-Disallow: /api/
-
-User-agent: ClaudeBot
-Allow: /
-Disallow: /api/
-
-User-agent: anthropic-ai
-Allow: /
-Disallow: /api/
-
-User-agent: Google-Extended
-Allow: /
-Disallow: /api/
-
-User-agent: CCBot
-Allow: /
-Disallow: /api/
-
-User-agent: Applebot-Extended
-Allow: /
-Disallow: /api/
-
-Sitemap: https://dealix.sa/sitemap.xml
-Sitemap: https://dealix.sa/sitemap_dealix.xml
+Sitemap: https://dealix.me/sitemap.xml
+Sitemap: https://dealix.me/sitemap_dealix.xml

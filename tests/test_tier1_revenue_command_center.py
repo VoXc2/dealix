@@ -1,20 +1,25 @@
-"""Tier-1 Revenue Command Center frontend assertions.
+"""Tier-1 public product assertions for the current Dealix launch.
 
-These tests guard the May-2026 Tier-1 redesign: homepage repositioning,
-WhatsApp Decision Layer (WADL), simplified nav, anchor pricing, L1-L5
-proof ladder, 8 hard gates as features, agency-partner page, and
-customer-portal Today's Decision hero.
+The original May-2026 redesign tested a six-tier price ladder, Agency Partner
+funnel, PDPL-ready badge and self-serve checkout. Those are no longer launch
+authority. The current Tier-1 contract is one product and one governed path:
 
-Each assertion is intentionally narrow so we can pinpoint regressions
-without flaky text-matching.
+Free Mini Diagnostic -> qualified discovery -> quote-only 30-day Revenue
+Command Pilot -> verified Proof -> evidence-based expansion.
+
+Keep the useful UX invariants (short H1, primary diagnostic CTA, simple nav,
+DEMO label, stable anchors, customer-portal hierarchy, L1-L5 evidence ladder,
+and eight hard gates) while rejecting the retired commercial funnel.
 """
 
 from __future__ import annotations
 
 import re
 from pathlib import Path
+from urllib.parse import urlsplit
 
 import pytest
+from defusedxml import ElementTree
 
 LANDING = Path(__file__).resolve().parents[1] / "landing"
 
@@ -26,113 +31,114 @@ def _read(name: str) -> str:
 # ─── Homepage positioning ─────────────────────────────────────────────
 
 
-def test_index_has_revenue_command_center_h1():
-    """Hero H1 must reflect the Revenue Command Center positioning."""
+def test_index_h1_positions_dealix_as_operating_system() -> None:
     html = _read("index.html")
     h1_match = re.search(r'<h1[^>]*class="hero__title"[^>]*>([^<]+)</h1>', html)
     assert h1_match, "hero H1 with class 'hero__title' not found"
     h1_text = h1_match.group(1).strip()
-    assert "غرفة قيادة" in h1_text or "Revenue Command Center" in h1_text, (
-        f"hero H1 must contain Revenue Command Center positioning; got: {h1_text!r}"
-    )
+    assert "نظام تشغيل" in h1_text or "Business Operating System" in h1_text
 
 
-def test_index_hero_h1_word_count_within_tier1_bound():
-    """Tier-1 H1s should be <= 8 words (research benchmark)."""
+def test_index_hero_h1_word_count_within_tier1_bound() -> None:
     html = _read("index.html")
     h1_match = re.search(r'<h1[^>]*class="hero__title"[^>]*>([^<]+)</h1>', html)
     assert h1_match
     word_count = len(h1_match.group(1).strip().split())
-    assert word_count <= 8, f"hero H1 has {word_count} words; Tier-1 target <= 8"
+    assert word_count <= 8, f"hero H1 has {word_count} words; target <= 8"
 
 
-def test_index_primary_cta_points_to_diagnostic():
-    """Hero primary CTA should funnel into Mini Diagnostic (Free)."""
+def test_index_primary_cta_points_to_diagnostic() -> None:
     html = _read("index.html")
     cta_section = re.search(
         r'<div class="hero__ctas">(.*?)</div>', html, flags=re.DOTALL
     )
     assert cta_section, "hero CTA block not found"
     body = cta_section.group(1)
-    # Find the <a> tag whose class includes 'btn--primary' (attribute order
-    # may vary).
     for anchor in re.finditer(r'<a\s+([^>]+)>', body):
         attrs = anchor.group(1)
         if "btn--primary" in attrs:
             href = re.search(r'href="([^"]+)"', attrs)
-            assert href, "primary CTA missing href"
-            assert "/diagnostic.html" in href.group(1), (
-                f"primary CTA should target /diagnostic.html; got {href.group(1)!r}"
-            )
+            assert href
+            assert href.group(1) == "/diagnostic.html"
             return
     pytest.fail("hero primary CTA <a class containing 'btn--primary'> not found")
+
+
+def test_index_states_one_product_and_current_wedge() -> None:
+    html = _read("index.html")
+    assert "One product" in html
+    assert "Revenue + Proof + Command" in html
+    assert "Company Operating Layer" in html
+    assert "Saudi-first" in html
+    assert "Approval-first" in html
+    assert "Proof-backed" in html
 
 
 # ─── Nav simplification ───────────────────────────────────────────────
 
 
-def test_index_nav_has_at_most_seven_primary_links():
-    """Primary nav must shrink from 35+ to 6-7 visible links."""
+def test_index_nav_has_at_most_seven_primary_links() -> None:
     html = _read("index.html")
     nav_block = re.search(
         r'<nav class="nav__links"[^>]*>(.*?)</nav>', html, flags=re.DOTALL
     )
     assert nav_block, "<nav class='nav__links'> not found"
-    # Count direct <a> children (not those inside the mega-menu panel)
     body = nav_block.group(1)
-    # Strip out the mega-menu panel (its links don't count as primary)
     body_no_panel = re.sub(
         r'<div class="ds-mega-menu__panel".*?</div>\s*</div>',
         "",
         body,
         flags=re.DOTALL,
     )
-    # Also strip the trigger button block (not a link)
     primary_links = re.findall(r'<a\s+[^>]*href=', body_no_panel)
-    assert len(primary_links) <= 7, (
-        f"primary nav has {len(primary_links)} links; Tier-1 target <= 7"
-    )
+    assert len(primary_links) <= 7
 
 
-def test_index_nav_has_mega_menu():
-    """The mega-menu must be present so removed pages remain reachable."""
+def test_index_nav_has_current_surface_mega_menu() -> None:
     html = _read("index.html")
-    assert "ds-mega-menu" in html, "ds-mega-menu component missing from nav"
-    assert "ds-mega-menu__panel" in html, "ds-mega-menu__panel missing"
+    assert "ds-mega-menu" in html
+    assert "ds-mega-menu__panel" in html
+    for surface in (
+        "/diagnostic.html",
+        "/pricing.html",
+        "/proof.html",
+        "/trust-center.html",
+        "/privacy.html",
+        "/terms.html",
+    ):
+        assert surface in html
+    for retired in (
+        "/roi.html",
+        "/agency-partner.html",
+        "/ai-team.html",
+        "/checkout.html?tier=",
+    ):
+        assert retired not in html
 
 
-# ─── WhatsApp Decision Layer (killer differentiator) ──────────────────
+# ─── Daily operating layer demo ──────────────────────────────────────
 
 
-def test_index_has_wadl_section():
-    """WADL section must exist with id='wadl'."""
+def test_index_has_wadl_section() -> None:
     html = _read("index.html")
-    assert 'id="wadl"' in html, "#wadl section missing from homepage"
+    assert 'id="wadl"' in html
 
 
-def test_index_wadl_has_demo_label():
-    """WADL phone mock must carry a DEMO label (NO_FAKE_PROOF gate)."""
+def test_index_wadl_is_explicitly_demo_not_customer_proof() -> None:
     html = _read("index.html")
     wadl_block = re.search(r'id="wadl"(.*?)</section>', html, flags=re.DOTALL)
-    assert wadl_block, "#wadl block not found"
+    assert wadl_block
     body = wadl_block.group(1)
-    assert "DEMO" in body, "WADL section must include a DEMO label"
-
-
-def test_index_wadl_uses_ds_wadl_components():
-    """WADL must use the new ds-wadl-* CSS components from design-system.css."""
-    html = _read("index.html")
-    css = (LANDING / "assets/css/design-system.css").read_text(encoding="utf-8")
-    for cls in ("ds-wadl", "ds-wadl__phone", "ds-wadl__msg", "ds-wadl__chip"):
-        assert cls in html, f"homepage missing class {cls!r} in WADL section"
-        assert cls in css, f"design-system.css missing class {cls!r}"
+    assert "DEMO" in body
+    assert "ليس Claim لنتيجة عميل" in body
+    for phase in ("See reality", "Decide", "Prepare", "Prove"):
+        assert phase in body
 
 
 # ─── Homepage anchor preservation ─────────────────────────────────────
 
 
-def test_index_anchor_ids_preserved():
-    """Existing anchor IDs (referenced externally) must not be removed."""
+def test_index_anchor_ids_preserved() -> None:
     html = _read("index.html")
     for anchor in (
         "pillars",
@@ -144,99 +150,112 @@ def test_index_anchor_ids_preserved():
         "pricing",
         "faq",
         "pilot",
+        "wadl",
     ):
         assert f'id="{anchor}"' in html, f"anchor #{anchor} removed from homepage"
 
 
-def test_index_has_problem_and_portal_preview_sections():
+# ─── Current first-launch path ────────────────────────────────────────
+
+
+def test_index_exposes_quote_only_pilot_not_fixed_price_ladder() -> None:
     html = _read("index.html")
-    assert 'id="problem"' in html, "#problem section missing"
-    assert 'id="portal-preview"' in html, "#portal-preview section missing"
-    assert 'id="proof-strip"' in html, "#proof-strip section missing"
+    assert "Free Mini Diagnostic" in html
+    assert "30-day Revenue Command Pilot" in html
+    assert "الـPilot quote-only" in html
+    assert "لا 499" in html
+    assert "لا tiers عامة" in html
+    assert "لا self-serve checkout" in html
+    assert "/checkout.html?tier=" not in html
+
+
+def test_pricing_is_quote_only_not_six_tiers() -> None:
+    html = _read("pricing.html")
+    assert "Free Mini Diagnostic" in html
+    assert "Revenue Command Pilot — 30 يومًا" in html
+    assert "Quote-only" in html
+    assert "Weekly Proof Pack" in html
+    assert "Final Proof Pack" in html
+    assert not re.search(r'<div class="plan(?:\s[^"]*)?"', html)
+    assert "499" not in html
+    assert "/checkout.html?tier=" not in html
+
+
+def test_checkout_is_fail_closed() -> None:
+    html = _read("checkout.html")
+    for code in (
+        "NO_LIVE_CHARGE",
+        "QUOTE_ONLY",
+        "NO_PUBLIC_FIXED_PRICE",
+        "NO_SELF_SERVE_CHECKOUT",
+    ):
+        assert code in html
+    assert "/api/v1/payment-ops/invoice-intent" not in html
+    assert "<form" not in html
+
+
+# ─── Public Diagnostic ────────────────────────────────────────────────
+
+
+def test_diagnostic_matches_canonical_free_entry() -> None:
+    html = _read("diagnostic.html")
+    for output in (
+        "Credible leak hypothesis",
+        "Written diagnosis",
+        "Missing-evidence report",
+        "Pilot hypothesis",
+    ):
+        assert output in html
+    assert "NO_PII_CAPTURE" in html
+    assert "NO_LEAD_PERSISTENCE" in html
+    assert "/api/v1/public/demo-request" not in html
+    for pii_field in ('name="contact_name"', 'name="phone"', 'name="email"'):
+        assert pii_field not in html
 
 
 # ─── Customer portal Today's Decision hero ────────────────────────────
 
 
-def test_customer_portal_today_decision_above_ops():
-    """The Today's Decision hero must precede the dense ops grid."""
+def test_customer_portal_today_decision_above_ops() -> None:
     html = _read("customer-portal.html")
     today_idx = html.find('id="today-decision"')
     ops_idx = html.find('id="ops-grid"')
-    assert today_idx > 0, "#today-decision hero not added"
-    assert ops_idx > 0, "#ops-grid still expected to exist"
-    assert today_idx < ops_idx, (
-        "Tier-1 redesign requires #today-decision to render BEFORE #ops-grid"
-    )
+    assert today_idx > 0
+    assert ops_idx > 0
+    assert today_idx < ops_idx
 
 
-def test_customer_portal_ops_wrapped_in_collapsible_details():
-    """Heavy ops console must live inside <details class='ds-portal-deep'>."""
+def test_customer_portal_ops_wrapped_in_collapsible_details() -> None:
     html = _read("customer-portal.html")
-    assert 'class="ds-portal-deep"' in html, "ds-portal-deep wrapper missing"
+    assert 'class="ds-portal-deep"' in html
 
 
-def test_customer_portal_keeps_demo_label():
-    """DEMO src-pill must remain visible (polish rule)."""
+def test_customer_portal_keeps_demo_label() -> None:
     html = _read("customer-portal.html")
-    assert "src-pill" in html, "src-pill DEMO marker removed"
-    assert "DEMO" in html, "DEMO label removed"
+    assert "src-pill" in html
+    assert "DEMO" in html
 
 
 # ─── Proof page L1-L5 evidence ladder ─────────────────────────────────
 
 
-def test_proof_has_l1_to_l5_ladder():
+def test_proof_has_l1_to_l5_ladder() -> None:
     html = _read("proof.html")
     for level in ("L1", "L2", "L3", "L4", "L5"):
-        assert level in html, f"proof.html missing evidence level {level!r}"
-    assert "ds-evidence-ladder" in html, "ds-evidence-ladder component not used"
+        assert level in html
+    assert "ds-evidence-ladder" in html
 
 
-def test_proof_evidence_ladder_uses_correct_modifiers():
+def test_proof_evidence_ladder_uses_correct_modifiers() -> None:
     html = _read("proof.html")
     for mod in ("ds-evidence-level--l1", "ds-evidence-level--l5"):
-        assert mod in html, f"proof.html missing class {mod!r}"
+        assert mod in html
 
 
-# ─── Pricing page anchor structure ────────────────────────────────────
+# ─── Trust Center ─────────────────────────────────────────────────────
 
 
-def test_pricing_has_six_tiers():
-    html = _read("pricing.html")
-    plans = re.findall(r'<div class="plan(?:\s[^"]*)?"', html)
-    assert len(plans) >= 6, f"pricing.html should have >= 6 .plan cards; found {len(plans)}"
-
-
-def test_pricing_partner_first_anchor():
-    """Anchor pricing pattern: highest tier renders first."""
-    html = _read("pricing.html")
-    plans_block = re.search(
-        r'<div class="plans">(.*?)</div>\s*<!-- Negation', html, flags=re.DOTALL
-    )
-    assert plans_block, "Could not isolate pricing .plans grid"
-    first_plan = plans_block.group(1).split("</div>", 1)[0]
-    assert "12,000" in first_plan or "Executive Command Center" in first_plan or "Partner" in first_plan, (
-        "Top-tier anchor must lead the pricing grid (12,000 SAR / Partner / Executive Command Center)"
-    )
-
-
-def test_pricing_includes_mini_diagnostic_and_sprint():
-    html = _read("pricing.html")
-    assert "Mini Diagnostic" in html, "Mini Diagnostic tier missing from pricing"
-    assert "499" in html, "Sprint 499 SAR tier missing from pricing"
-
-
-def test_pricing_uses_iltizamat_not_damanat():
-    """Brand voice: التزامات (commitments) replaces ضمانات (guarantees)."""
-    html = _read("pricing.html")
-    assert "التزامات Dealix" in html, "Pricing trust strip should say التزامات Dealix"
-
-
-# ─── Trust Center: 8 hard gates as features ───────────────────────────
-
-
-def test_trust_center_lists_eight_hard_gates():
+def test_trust_center_lists_eight_hard_gates() -> None:
     html = _read("trust-center.html")
     for code in (
         "NO_LIVE_SEND",
@@ -248,114 +267,92 @@ def test_trust_center_lists_eight_hard_gates():
         "NO_FAKE_REVENUE",
         "NO_UNAPPROVED_TESTIMONIAL",
     ):
-        assert code in html, f"trust-center.html missing hard gate {code!r}"
+        assert code in html
 
 
-def test_trust_center_pdpl_ready_phrasing():
-    """Be honest: 'PDPL-ready' not 'PDPL certified'."""
+def test_trust_center_does_not_promote_compliance_as_certification() -> None:
     html = _read("trust-center.html")
-    assert "PDPL-ready" in html, "trust-center should call workflows 'PDPL-ready'"
+    assert "لا يدّعي PDPL certification" in html
+    assert "SOC 2" in html
+    assert "Saudi data residency" in html
+    assert "ما يزال مفتوحًا" in html
+    assert "PDPL-ready" not in html
 
 
-# ─── Agency Partner page ──────────────────────────────────────────────
+# ─── Services / one-product capability map ────────────────────────────
 
 
-def test_agency_partner_page_exists():
-    assert (LANDING / "agency-partner.html").exists(), (
-        "agency-partner.html must exist for the new Tier-1 funnel"
-    )
+def test_services_is_one_product_capability_map() -> None:
+    html = _read("services.html")
+    assert "Dealix منتج واحد" in html
+    assert "Revenue + Proof + Command" in html
+    assert "Company Brain + Business Graph" in html
+    assert "Governed Execution" in html
+    assert "Saudi Market & Partnership Intelligence" in html
+    for retired_offer in (
+        "Revenue Proof Sprint",
+        "Saudi Opportunity Snapshot",
+        "AI Company OS Setup",
+        "Partner & Distributor Desk",
+    ):
+        assert retired_offer not in html
 
 
-def test_partners_redirects_to_agency_partner():
-    html = _read("partners.html")
-    assert 'http-equiv="refresh"' in html, "partners.html should be a thin redirect"
-    assert "/agency-partner.html" in html, "redirect target must be /agency-partner.html"
+# ─── SEO/indexing boundary ────────────────────────────────────────────
 
 
-def test_sitemap_lists_agency_partner():
-    sitemap = (LANDING / "sitemap.xml").read_text(encoding="utf-8")
-    sitemap_dealix = (LANDING / "sitemap_dealix.xml").read_text(encoding="utf-8")
-    assert "/agency-partner.html" in sitemap, "sitemap.xml missing agency-partner entry"
-    assert "/agency-partner.html" in sitemap_dealix, (
-        "sitemap_dealix.xml missing agency-partner entry"
-    )
+def test_current_sitemaps_use_dealix_me_only() -> None:
+    for name in ("sitemap.xml", "sitemap_dealix.xml"):
+        root = ElementTree.fromstring(_read(name))
+        raw_urls = [
+            element.text.strip()
+            for element in root.findall(".//{*}loc")
+            if element.text and element.text.strip()
+        ]
+        assert raw_urls, f"{name} contains no sitemap URLs"
+        parsed_urls = [urlsplit(url) for url in raw_urls]
+        assert all(parsed.scheme == "https" for parsed in parsed_urls)
+        assert all(parsed.hostname == "dealix.me" for parsed in parsed_urls)
+        assert all(parsed.port is None for parsed in parsed_urls)
+        paths = {parsed.path for parsed in parsed_urls}
+        assert "/" in paths
+        for current in (
+            "/diagnostic.html",
+            "/pricing.html",
+            "/services.html",
+            "/proof.html",
+            "/trust-center.html",
+        ):
+            assert current in paths
+        retired_paths = {"/agency-partner.html", "/roi.html"}
+        assert paths.isdisjoint(retired_paths)
 
 
-# ─── Footer trust badges (polish rule reinforcement) ──────────────────
+def test_robots_quarantines_retired_funnels() -> None:
+    robots = _read("robots.txt")
+    for path in (
+        "/checkout.html",
+        "/annual-pricing.html",
+        "/roi.html",
+        "/agency-partner.html",
+        "/partners.html",
+        "/start.html",
+    ):
+        assert f"Disallow: {path}" in robots
+
+
+# ─── Current trust identity on reviewed public pages ──────────────────
 
 
 @pytest.mark.parametrize(
     "page",
     [
-        "agency-partner.html",
+        "index.html",
         "trust-center.html",
     ],
 )
-def test_tier1_pages_carry_footer_trust_badges(page):
-    """Saudi-PDPL · Approval-first · Proof-backed must appear in footer."""
+def test_current_tier1_pages_carry_evidence_bound_trust_identity(page: str) -> None:
     html = _read(page)
-    assert "Saudi-PDPL" in html, f"{page} missing Saudi-PDPL badge"
-    assert "Approval-first" in html, f"{page} missing Approval-first badge"
-    assert "Proof-backed" in html, f"{page} missing Proof-backed badge"
-
-
-# ─── Diagnostic page polish ───────────────────────────────────────────
-
-
-def test_diagnostic_promises_24h_outputs():
-    html = _read("diagnostic.html")
-    # New output-promise card lists the 5 deliverables. Numerals may be
-    # Western (3) or Arabic-Indic (٣); accept either form.
-    for token in ("فرص", "رسالة عربيّة", "أفضل قناة", "مخاطرة", "قرار التالي"):
-        assert token in html, f"diagnostic.html output promise missing {token!r}"
-
-
-# ─── Deep pages footer trust badges (Track D1) ─────────────────────────
-
-
-@pytest.mark.parametrize(
-    "page",
-    [
-        "ai-team.html",
-        "launchpad.html",
-        "compare.html",
-        "roi.html",
-    ],
-)
-def test_deep_pages_have_footer_trust_badges(page):
-    """Track D1 polish: 4 highest-impact deep pages must carry the
-    Saudi-PDPL · Approval-first · Proof-backed footer."""
-    html = _read(page)
-    for badge in ("Saudi-PDPL", "Approval-first", "Proof-backed"):
-        assert badge in html, f"{page} missing footer badge {badge!r}"
-
-
-@pytest.mark.parametrize(
-    "page",
-    [
-        "launchpad.html",
-        "compare.html",
-        "roi.html",
-    ],
-)
-def test_deep_pages_link_to_trust_center(page):
-    """Deep pages should funnel high-intent buyers toward /trust-center.html
-    where the 8 hard gates are explained as features."""
-    html = _read(page)
-    assert "/trust-center.html" in html, f"{page} should link to /trust-center.html"
-
-
-@pytest.mark.parametrize(
-    "page",
-    [
-        "launchpad.html",
-        "compare.html",
-    ],
-)
-def test_deep_pages_link_to_checkout(page):
-    """Sprint-eligible deep pages route to the new /checkout.html?tier= flow
-    (replacing the static /launchpad.html funnel)."""
-    html = _read(page)
-    assert "/checkout.html?tier=" in html, (
-        f"{page} should funnel to /checkout.html?tier=X"
-    )
+    assert "Saudi-first" in html
+    assert "Approval-first" in html
+    assert "Proof-backed" in html

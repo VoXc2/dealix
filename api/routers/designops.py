@@ -12,7 +12,7 @@ Endpoints under /api/v1/designops/:
     POST /generate/proof-pack           — bilingual proof pack
     POST /generate/executive-weekly-pack — bilingual executive weekly pack
     POST /generate/proposal-page        — bilingual proposal
-    POST /generate/pricing-page         — bilingual pricing page
+    POST /generate/pricing-page         — bilingual pricing path
     POST /generate/customer-room-dashboard — bilingual customer room
 
 Pure local composition: no LLM calls, no live sends, no external HTTP.
@@ -67,7 +67,10 @@ class ProposalPageRequest(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     customer_handle: str = Field(..., min_length=1)
-    recommended_service: str = "growth_starter"
+    # Compatibility field: the generator normalizes every proposal to the one
+    # current paid motion. Keep the default current so new callers do not learn
+    # the retired Growth Starter/package vocabulary.
+    recommended_service: str = "revenue_command_pilot_30d"
     scope_ar: str = ""
     scope_en: str = ""
     deliverables: list[str] = Field(default_factory=list)
@@ -80,6 +83,8 @@ class ProposalPageRequest(BaseModel):
 class PricingPageRequest(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
+    # Compatibility-only input. Pricing generator ignores package highlighting
+    # because current launch authority is one product / one quote-only path.
     highlight: str | None = None
 
 
@@ -129,6 +134,7 @@ async def designops_status() -> dict[str, Any]:
             "approval_required_on_every_artifact": True,
             "safe_to_send_default": False,
             "no_marketing_claim_leaks": True,
+            "one_product_quote_only": True,
         },
     }
 
@@ -158,7 +164,6 @@ async def designops_skill(name: str) -> dict[str, Any]:
             raise HTTPException(status_code=404, detail=f"skill {name!r} not found")
         if isinstance(skill, dict):
             return skill
-        # If it's a pydantic model, serialise.
         try:
             return skill.model_dump(mode="json")  # type: ignore[attr-defined]
         except Exception:
@@ -241,17 +246,27 @@ async def generate_executive_weekly_pack_endpoint(
 async def generate_proposal_page_endpoint(
     payload: ProposalPageRequest,
 ) -> dict[str, Any]:
-    return generate_proposal_page(
-        customer_handle=payload.customer_handle,
-        recommended_service=payload.recommended_service,
-        scope_ar=payload.scope_ar,
-        scope_en=payload.scope_en,
-        deliverables=payload.deliverables,
-        timeline_days=payload.timeline_days,
-        price_band_sar=payload.price_band_sar,
-        blocked_actions=payload.blocked_actions,
-        proof_plan=payload.proof_plan,
-    )
+    try:
+        return generate_proposal_page(
+            customer_handle=payload.customer_handle,
+            recommended_service=payload.recommended_service,
+            scope_ar=payload.scope_ar,
+            scope_en=payload.scope_en,
+            deliverables=payload.deliverables,
+            timeline_days=payload.timeline_days,
+            price_band_sar=payload.price_band_sar,
+            blocked_actions=payload.blocked_actions,
+            proof_plan=payload.proof_plan,
+        )
+    except ValueError as exc:
+        # Retired commercial claims are a caller/input problem, not a server
+        # error. Fail closed without echoing any secret-bearing context.
+        if str(exc).startswith("retired_commercial_authority:"):
+            raise HTTPException(
+                status_code=422,
+                detail="proposal contains retired commercial authority",
+            ) from exc
+        raise
 
 
 @router.post("/generate/pricing-page")

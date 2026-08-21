@@ -1,73 +1,147 @@
-# Dealix — Ops Runbook جاهز للتنفيذ
+# Dealix — Revenue Command Pilot Runbook
+
+> **Internal review only.** هذا الملف يجهز Discovery وScope وProof؛ لا يرسل عرضًا، لا يصدر Quote/Invoice/Payment request، ولا يمنح صلاحية تواصل أو نشر.
 
 ## الهدف
-تحويل Phase MAX من عرض تقني إلى آلة تشغيل تجارية: عرض، ديمو، إثبات، Scope، Invoice، ثم Proof Pack.
+تحويل مشكلة إيرادية/تشغيلية واحدة إلى **30-day Revenue Command Pilot** محكوم وقابل للقياس، ثم اتخاذ قرار `STOP / EXPAND / REDESIGN` من الأدلة.
 
-## الحزمة التي تقدمها في المحادثة
-1. Executive Deck: `dealix_ops_sales_kit_ar.pptx`
-2. Live Demo: `/ar/business-now#strategy`
-3. Proof Pack Sample: Evidence Ledger + Decision Passport + Value Report
-4. Diagnostic Scope: inputs / outputs / timeline / price / acceptance criteria
-5. Approval Policy: لا إرسال خارجي ولا case study ولا invoice live بدون موافقة
+## المنتج والمسار المعتمد
 
-## التشغيل مرة واحدة
-```bash
-bash scripts/run_business_now.sh
+**Dealix — Saudi-first AI Business Operating System**
+
+أول wedge: **Revenue + Proof + Command**
+
+```text
+Free Mini Diagnostic
+→ qualified discovery
+→ customer-specific quote بعد الموافقة
+→ 30-day Revenue Command Pilot
+→ weekly + final Proof
+→ STOP / EXPAND / REDESIGN
 ```
-افتح: `/ar/business-now#strategy` مع API على `:8000`.
 
-## مسار المحادثة
-### أول 30 ثانية
-Dealix helps teams turn AI experimentation and revenue operations into governed, measurable workflows — with source clarity, approval boundaries, evidence trails, and proof of value.
+لا يوجد public fixed price، ولا package ladder، ولا self-serve checkout، ولا Diagnostic مدفوع مستقل كسلطة إطلاق حالية.
 
-### سؤال discovery
-Where do AI experiments or revenue workflows currently create ambiguity, risk, or wasted follow-up?
+## الحزمة التي تُجهز داخليًا
+1. Company/problem hypothesis — بيانات شركة وتشغيل فقط قدر الإمكان.
+2. Discovery brief — المشكلة، owner، baseline، source، urgency، budget/timing.
+3. Pilot scope — **one ICP + one revenue workflow**.
+4. Approved data boundary — أقل بيانات وصلاحيات لازمة.
+5. Approval path — من يوافق على أي إجراء حساس أو خارجي.
+6. Acceptance criteria — كيف نعرف أن النطاق سُلّم كما اتفقنا.
+7. Weekly Proof Pack + weekly executive readout.
+8. Final Proof Pack + outcome review.
+9. Customer-specific quote shell — يظل `TBD` حتى qualified discovery والموافقة.
 
-### ديمو 12 دقيقة
-1. افتح `/ar/business-now#strategy`
-2. شغّل simulate حسب القطاع/المدينة/الميزانية
-3. اعرض focus الحالي بصدق
-4. افتح GTM أول 10
-5. افتح Sales Script
-6. اعرض Proof demo
-7. اختم بـ Diagnostic Scope
+## Discovery
 
-## العرض الأول الذي تبيعه
-**Governed Revenue Ops Diagnostic**
+اسأل فقط ما يلزم لتحديد نطاق قابل للقياس:
 
-السعر المقترح:
-- 4,999–9,999 SAR كبداية
-- 15,000 SAR للعميل الأقوى أو النطاق الأوسع
+- ما المشكلة المحددة؟
+- أين يحدث التسرب أو التأخير أو الغموض؟
+- من يملك العملية ومن يملك قرار الـPilot؟
+- ما baseline وما مصدره؟
+- ما البيانات الدنيا المطلوبة؟
+- ما الإجراءات التي يجب أن تبقى خلف موافقة؟
+- ما acceptance criteria؟
+- ما سبب التوقيت الآن؟
+- هل توجد ميزانية وتوقيت واقعيان إذا أثبت التشخيص أن Pilot مناسب؟
 
-## مخرجات التشخيص
-- Revenue Workflow Map
-- Source Quality Review
-- Pipeline Risk Map
-- Follow-up Gap Analysis
-- Decision Passport
-- Proof-of-Value Opportunities
-- Recommended Sprint / Retainer
+**لا تُعد المحادثة Qualified** إذا لم يوجد pain محدد + owner + data/proof path + approval willingness + budget/timing discussion.
 
-## قواعد عدم الهزل
-- لا revenue قبل invoice_paid
-- لا L5 قبل used_in_meeting
-- لا L6 قبل scope_requested
-- لا إرسال خارجي بدون founder_confirmed=true
-- لا تبني feature جديدة قبل تكرار workflow ثلاث مرات
-- أي score تجريبي يبقى `is_estimate: true`
+## Scope المقترح
 
-## 72 ساعة القادمة
-### اليوم 1
-شغّل النظام، افتح الصفحة، جهّز screenshots، وثبت الرسالة.
+**Revenue Command Pilot — 30 يومًا**
 
-### اليوم 2
-اختر 5 warm contacts فقط. أرسل يدوياً. سجّل `sent` فقط بعد الإرسال.
+- Workflow واحد فقط.
+- Baseline + first-party source، أو Missing-evidence state صريح.
+- Accountable delivery owner.
+- Approved data boundary.
+- Approval path.
+- Acceptance criteria.
+- Measured operating target؛ ليس guaranteed revenue/ROI.
+- Weekly Proof Pack.
+- Weekly executive readout.
+- Final Proof Pack.
+- Final `STOP / EXPAND / REDESIGN` decision.
 
-### اليوم 3
-صنّف الردود: interested / objection / wrong_segment / referral / silence.
+## السعر والدفع
+
+- السعر **customer-specific quote after qualified discovery** فقط.
+- لا يخرج رقم عام أو Price band من هذا Runbook.
+- قبل اعتماد Quote: راجع scope + margin + capacity + approvals + data/production blockers.
+- هذا Runbook لا يصدر Invoice أو Payment request ولا ينشئ Revenue state.
+- طريقة الدفع والجهة المصدرة والشروط والضرائب/الفوترة تحدد للحالة المعتمدة فقط.
+- Quote أو invoice intent أو payment link أو verbal interest ليست Revenue.
+- Revenue يحتاج `payment_received` حقيقيًا ومصالحة same-company حيث ينطبق.
+
+## Proof
+
+افصل الحالات دائمًا:
+
+```text
+Activity
+≠ Delivery
+≠ Payment
+≠ Revenue
+≠ Customer Value
+≠ Publication Permission
+```
+
+- Synthetic/demo/internal/stale/unsynced evidence لا يتحول إلى Customer Proof.
+- Missing evidence يبقى `UNKNOWN / BLOCKED`.
+- أي Case Study/Logo/Testimonial يحتاج publication consent منفصلًا.
+
+## حدود التنفيذ
+
+- لا customer-facing auto-send.
+- لا cold WhatsApp.
+- لا mass LinkedIn automation.
+- لا scraping مخالف.
+- لا live checkout/charge من هذا المسار.
+- لا ضمان Revenue/ROI/Conversion.
+- لا Compliance/Residency/Certification claim بلا دليل واعتماد مناسب.
+- لا بيانات حساسة أو Secrets في GitHub/Proof/Client Pack.
+- أي Production/DNS/Secret/DB mutation يحتاج موافقة مستقلة.
+
+## Minimum-data first Pilot
+
+الأفضل في أول Pilot استخدام:
+
+- public/non-personal company facts؛
+- opaque company/workflow IDs؛
+- pseudonymous opportunity IDs؛
+- stage/age/value bands؛
+- aggregate baseline metrics؛
+- role-level approval metadata؛
+- non-personal proof/run metadata.
+
+إذا احتاج النطاق personal/sensitive data، توقف ومرّر الحالة عبر privacy/tenant/retention/deletion/suppression/transfer/security/customer-terms gates المناسبة قبل توسيع البيانات.
+
+## Definition of Done
+
+```text
+[ ] qualified_discovery_complete
+[ ] one_workflow_scope_approved
+[ ] baseline_and_source_or_missing_evidence
+[ ] approved_data_boundary
+[ ] approval_path_defined
+[ ] acceptance_criteria_defined
+[ ] customer_specific_quote_approved
+[ ] start/payment condition approved for this customer
+[ ] weekly_proof_pack_x4
+[ ] weekly_executive_readout_x4
+[ ] final_proof_pack_delivered
+[ ] outcome_review_stop_expand_or_redesign
+[ ] real-source CRM/KPI sync where applicable
+```
 
 ## قرار الإغلاق
-إذا العميل مهتم: لا تعرض المنصة كاملة. اعرض Diagnostic Scope فقط.
 
-الجملة الختامية:
-إذا كان هذا يعكس مشكلة عندكم، التشخيص المدفوع يحولها إلى workflow محكوم وقابل للقياس خلال أسبوعين.
+لا توسّع تلقائي. بعد Final Proof Pack:
+
+- **STOP** إذا لا توجد قيمة قابلة للإثبات أو المخاطر أعلى من القيمة.
+- **EXPAND** إذا الدليل يبرر نطاقًا جديدًا معتمدًا.
+- **REDESIGN** إذا المشكلة صحيحة لكن النطاق/البيانات/التنفيذ يحتاج إعادة تصميم.
+
+هذا الـRunbook هو دليل تشغيل داخلي. أي نسخة Customer-facing تحتاج مراجعة واعتمادًا خاصًا بالعميل قبل المشاركة.

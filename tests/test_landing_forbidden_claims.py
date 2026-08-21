@@ -95,9 +95,6 @@ ALLOWLIST: dict[str, dict[str, str]] = {
     "diagnostic-real-estate.html": {
         "cold": "doctrine negation ('no/zero cold outreach', PDPL-safe)",
     },
-    "diagnostic.html": {
-        "cold": "doctrine negation ('no/zero cold outreach', PDPL-safe)",
-    },
     "dpo.html": {
         "guaranteed": "negation/disclaimer ('not guaranteed' outcomes footer)",
         "مضمون": "negation/disclaimer ('نتائج غير مضمونة')",
@@ -120,13 +117,6 @@ ALLOWLIST: dict[str, dict[str, str]] = {
     "pilot-day-0.html": {
         "blast": "negation/disclaimer context (verified)",
         "cold": "doctrine negation ('no/zero cold outreach', PDPL-safe)",
-        "scraping": "doctrine negation ('no scraping' / policy-blocked)",
-    },
-    "pricing.html": {
-        "guaranteed": "negation/disclaimer ('not guaranteed' outcomes footer)",
-        "مضمون": "negation/disclaimer ('نتائج غير مضمونة')",
-    },
-    "privacy.html": {
         "scraping": "doctrine negation ('no scraping' / policy-blocked)",
     },
     "roadmap.html": {
@@ -164,17 +154,10 @@ ALLOWLIST: dict[str, dict[str, str]] = {
         "scraping": "doctrine negation ('no scraping' / policy-blocked)",
     },
     "systems-catalog.html": {
-        # "لا نضمن نتائج محددة؛ … لا على ضمانات فردية" — explicit disclaimer
-        # that Dealix does NOT guarantee outcomes. Pure negation.
         "نضمن": "negation/disclaimer ('لا نضمن نتائج محددة')",
     },
-    "terms.html": {
-        "مضمون": "negation/disclaimer ('نتائج غير مضمونة')",
-    },
     "trust-center.html": {
-        "guaranteed": "negation/disclaimer ('not guaranteed' outcomes footer)",
-        "scraping": "doctrine negation ('no scraping' / policy-blocked)",
-        "مضمون": "negation/disclaimer ('نتائج غير مضمونة')",
+        "scraping": "doctrine negation ('لا Scraping مخالف')",
     },
     "trust.html": {
         "scraping": "doctrine negation ('no scraping' / policy-blocked)",
@@ -241,9 +224,6 @@ def test_review_pending_items_have_a_reason():
         for token, reason in tokens.items():
             if reason == "REVIEW_PENDING":
                 review_pending.append(f"{fname}: {token!r}")
-    # This is informational, not a failure. We assert the *count* so
-    # that whenever a founder rephrases or formally approves a phrase,
-    # they remember to update this number too.
     assert len(review_pending) == 2, (
         "REVIEW_PENDING list changed; expected 2 "
         "(roi.html: 'نضمن'; academy.html: 'cold'). "

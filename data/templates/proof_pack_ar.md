@@ -1,13 +1,17 @@
-# قالب طقم الإثبات — Proof Pack Template
-# Dealix L1-L3 Proof Pack Format (AR+EN)
-# الاستخدام: يُملأ بعد 7 أيام من التسليم — يتطلب موافقة الفاوندر
+# قالب طقم الإثبات — Dealix Proof Pack Template
+# Weekly / Final Evidence Format (AR+EN)
+# الاستخدام: يُملأ أثناء أو في نهاية Revenue Command Pilot بعد التحقق من المصادر
 
 ---
 
-# طقم إثبات Dealix — {{company_name}}
-**Dealix Proof Pack — {{company_name}}**
+# طقم إثبات Dealix — {{company_or_handle}}
+**Dealix Proof Pack — {{company_or_handle}}**
 
-المعرف: `{{pack_id}}` | المستوى: **{{proof_level}}** | التاريخ: {{date}}
+المعرف: `{{pack_id}}` | المستوى: **{{proof_level}}** | الفترة: {{period}} | التاريخ: {{date}}
+
+> **حالة الإثبات:** {{proof_readiness}}
+>
+> `READY_FOR_VERIFICATION` لا تعني تلقائيًا Customer Value أو Publication Permission. الأدلة المفقودة أو القديمة أو الاصطناعية تبقى `UNKNOWN / BLOCKED`.
 
 ---
 
@@ -17,41 +21,64 @@
 
 *{{executive_summary_en}}*
 
-الأحداث الموثقة: **{{event_count}}** | متوسط التحسن: **{{avg_improvement}}%**
+- الأحداث الموثقة من مصادر معروفة: **{{verified_event_count}}**
+- الأحداث غير المتحققة/المحجوبة: **{{unverified_event_count}}**
+- النطاق الموافق عليه: **{{approved_scope_ref}}**
+- baseline/source: **{{baseline_source_ref}}**
+
+لا تُحسب نسبة تحسن أو قيمة مالية إلا إذا وُجد before/after قابل للمقارنة ومصدر وطريقة قياس موثقة.
 
 ---
 
-## 2. المشكلة / The Problem
+## 2. المشكلة وBaseline / Problem & Baseline
 
-**ما كانت تعاني منه {{company_name}} قبل Dealix:**
+**المشكلة المعتمدة:**
 
 {{problem_ar}}
 
-*What {{company_name}} faced before Dealix:*
+*Approved problem:*
 
 *{{problem_en}}*
 
+**Baseline:** {{baseline_value}}
+
+**المصدر:** `{{baseline_source_ref}}`
+
+**نافذة القياس:** {{measurement_window}}
+
+إذا لم يوجد baseline صالح: `{{baseline_missing_reason}}`.
+
 ---
 
-## 3. الإجراءات المتخذة / Actions Taken
+## 3. الإجراءات والتسليم / Actions & Delivery
 
-| اليوم | الإجراء | النتيجة |
-|-------|---------|---------|
+| التاريخ/الفترة | الإجراء | الحالة | المصدر/الدليل |
+|---|---|---|---|
 {{#each actions}}
-| {{day}} | {{action_ar}} | {{result_ar}} |
+| {{when}} | {{action_ar}} | {{status}} | {{source_ref}} |
 {{/each}}
 
+> النشاط المنفذ لا يساوي تلقائيًا Customer Value أو Revenue.
+
 ---
 
-## 4. النتائج القابلة للقياس / Measurable Results
+## 4. النتائج القابلة للقياس / Measured Outcomes
 
 {{#each results}}
-- **{{metric_ar}}**: من {{before}} إلى {{after}} (+{{delta}}%)
+- **{{metric_ar}}**
+  - قبل: {{before}}
+  - بعد: {{after}}
+  - التغير: {{delta}}
+  - المصدر: `{{source_ref}}`
+  - الطريقة: {{method}}
+  - الحالة: {{evidence_status}}
 {{/each}}
 
-**إجمالي الوقت المُوفَّر**: {{total_hours_saved}} ساعة/أسبوع
+**الوقت الموفر (إن كان مثبتًا):** {{verified_hours_saved}}
 
-**القيمة التقديرية**: {{estimated_value_sar}} ريال/شهر
+**القيمة الاقتصادية (إن كانت مثبتة):** {{verified_value_sar}}
+
+إذا كانت القيمة تقديرية فقط، يجب وسمها `ESTIMATE` مع الافتراضات وعدم عرضها كCustomer Value محقق.
 
 ---
 
@@ -59,58 +86,100 @@
 
 {{#each evidence}}
 **{{index}}. {{title_ar}}**
-{{description_ar}}
-{{#if screenshot_url}}[لقطة الشاشة]({{screenshot_url}}){{/if}}
+
+- الوصف: {{description_ar}}
+- المصدر: `{{source_ref}}`
+- المالك/الموافق: {{owner_or_approver}}
+- الحالة: {{status}}
+{{#if screenshot_url}}
+- رابط لقطة/أصل داخلي: {{screenshot_url}}
+{{/if}}
 
 {{/each}}
 
 ---
 
-## 6. شهادة العميل / Customer Testimonial
+## 6. فصل حالات الحقيقة / Truth-State Separation
 
-{{#if customer_consent}}
+| الحالة | القيمة | الدليل |
+|---|---|---|
+| Delivery | {{delivery_status}} | {{delivery_evidence_ref}} |
+| Payment | {{payment_status}} | {{payment_evidence_ref}} |
+| Revenue | {{revenue_status}} | {{revenue_evidence_ref}} |
+| Customer Value | {{customer_value_status}} | {{customer_value_evidence_ref}} |
+| Publication Permission | {{publication_status}} | {{publication_evidence_ref}} |
+
+**قاعدة:**
+
+```text
+Activity ≠ Delivery ≠ Payment ≠ Revenue ≠ Customer Value ≠ Publication Permission
+```
+
+---
+
+## 7. شهادة/صوت العميل — Publication Gate
+
+{{#if publication_permission}}
 > "{{quote_ar}}"
-> — {{contact_name}}، {{company_name}}
-
+>
 > *"{{quote_en}}"*
-> *— {{contact_name}}, {{company_name}}*
+
+مرجع الإذن بالنشر: `{{publication_evidence_ref}}`
 {{else}}
-> ⏳ في انتظار موافقة العميل على النشر
+> **غير مسموح بالنشر.** وجود Feedback أو نتيجة مثبتة لا يمنح Publication Permission تلقائيًا.
 {{/if}}
 
----
-
-## 7. الخطوة التالية / Next Step
-
-**{{next_step_ar}}**
-
-*{{next_step_en}}*
-
-{{#if upsell_eligible}}
-### عرض Managed Ops
-
-بناءً على النتائج أعلاه، تستحق {{company_name}} برنامجاً شهرياً مستمراً:
-
-- **Managed Ops الأساسي**: 2,999 ريال/شهر (8 جلسات + KPI dashboard)
-- **Managed Ops المتقدم**: 4,999 ريال/شهر (16 جلسة + أولوية الدعم)
-
-[رابط العرض: يُضاف بعد موافقة الفاوندر]
-{{/if}}
+لا تعرض اسم شخص أو بيانات تواصل في النسخة العامة إلا إذا كان ذلك ضروريًا ومصرحًا به صراحة.
 
 ---
 
-## 8. إشعار PDPL / PDPL Notice
+## 8. القرار التالي / Next Decision
 
-تمت معالجة جميع البيانات في هذا الطقم وفق **نظام حماية البيانات الشخصية السعودي (PDPL)**. البيانات مستخدمة فقط لأغراض التحليل الداخلي وطقم الإثبات. يحق لك طلب حذفها في أي وقت.
+**{{next_decision}}** — يجب أن تكون إحدى:
 
-*All data processed under Saudi PDPL. Used solely for internal analysis and proof documentation.*
+- `STOP`
+- `EXPAND`
+- `REDESIGN`
+
+السبب والأدلة:
+
+{{next_decision_rationale}}
+
+إذا كان القرار `EXPAND`:
+
+- لا يوجد Managed Ops price tier عام تلقائي.
+- يلزم نطاق جديد معتمد، customer-specific quote، ومراجعة margin/capacity/data/approval gates.
+- لا يُفترض Retainer أو Upsell من مجرد تحسن داخلي.
 
 ---
 
-*Dealix — نظام التشغيل الذكي للشركات السعودية B2B*
+## 9. الخصوصية وحدود البيانات / Privacy & Data Boundary
+
+- Approved data boundary: `{{approved_data_boundary_ref}}`
+- Data classes used: {{data_classes_used}}
+- Retention/deletion path: {{retention_deletion_ref}}
+- Tenant/security reference: {{tenant_security_ref}}
+
+هذا الطقم **لا يدّعي** PDPL certification أو Saudi data residency أو أي استنتاج قانوني عام. يجب أن يطابق كل Claim تدفق البيانات والضوابط والمستندات الفعلية للحالة المحددة.
+
+---
+
+## 10. مراجعة الإصدار / Release Review
+
+قبل مشاركة أي Proof Pack خارج الفريق:
+
+- [ ] كل رقم له source/method أو موسوم Unknown/Estimate.
+- [ ] لا synthetic/demo/internal evidence ظاهر كCustomer Proof.
+- [ ] Payment وRevenue وCustomer Value مفصولة.
+- [ ] لا اسم/Logo/Testimonial بدون Publication Permission.
+- [ ] لا compliance/residency/certification claim غير مثبت.
+- [ ] لا fixed price أو automatic upsell من قالب Proof.
+- [ ] approval المطلوب للمشاركة الخارجية موجود.
+
+---
+
+*Dealix — Saudi-first AI Business Operating System · Revenue + Proof + Command*
+
 *معرّف الطقم: {{pack_id}} | تاريخ الإصدار: {{date}}*
 
----
-
-> **للمؤسس**: هذا الطقم يتطلب مراجعتك قبل التسليم للعميل.
-> تحقق من: (1) صحة الأرقام، (2) موافقة العميل على الشهادة، (3) مستوى الإثبات مناسب.
+> **للمشغّل:** هذا قالب داخلي حتى يمر عبر مراجعة الأدلة والموافقة المناسبة. لا إرساله تلقائيًا.

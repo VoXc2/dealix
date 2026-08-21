@@ -1,71 +1,98 @@
-# DoD — أول Diagnostic / Audit مدفوع + Proof Pack
+# DoD — أول Revenue Command Pilot مدفوع + Proof Pack
 
-**المرحلة:** 1 من [MASTER_COMMERCIAL_OPERATING_PLAN_AR.md](../MASTER_COMMERCIAL_OPERATING_PLAN_AR.md)
+> **اسم الملف Legacy للتوافق فقط.** السلطة التجارية الحالية ليست Paid Diagnostic ولا Sprint قصير. المسار المعتمد هو: Free Mini Diagnostic → qualified discovery → customer-specific quote → Revenue Command Pilot لمدة 30 يومًا → source-backed Proof → stop / expand / redesign.
+
+**مرجع السلطة:** `dealix/config/first_launch_offer_gate.yaml` + `COMMERCIAL_IDENTITY.md`
 
 ---
 
-## Definition of Done (كل البنود إلزامية)
+## Definition of Done — كل البنود إلزامية
 
-### قبل الدفع
+### قبل العرض/الدفع
 
-- [ ] Discovery السبعة مكتملة ومُسجّلة في Sales Room  
-- [ ] Motion محدد (A/B/C/D) وعرض واحد فقط (لا قائمة 8 باقات)  
-- [ ] نطاق موقّع أو التزام مكتوب (بريد/واتساب opt-in) يحدد: workflow واحد، 10 leads أو عميل وكالة واحد، مدة ~7 أيام  
-- [ ] SOAEN: Source + Owner + Approval على أي بيانات عميل  
-- [ ] `invoice_sent` مسجّل في [evidence_events_tracker.csv](evidence_events_tracker.csv)  
-- [ ] لا وعود إيراد مضمون · لا تكامل **red** في Truth Matrix  
+- [ ] Free Mini Diagnostic أو Discovery موثق بما يكفي لفهم المشكلة المحددة.
+- [ ] ICP الحالي مناسب، والمشكلة مؤلمة ومحددة، ويوجد accountable decision owner.
+- [ ] نطاق واحد فقط: **one ICP + one revenue workflow**؛ لا تحول شامل ولا قائمة باقات.
+- [ ] baseline أولي ومصدره أو Missing-evidence report صريح.
+- [ ] accountable delivery owner محدد.
+- [ ] approved data boundary محددة؛ أقل بيانات ممكنة، ولا بيانات محظورة أو غير مصرّح بها.
+- [ ] approval path وacceptance criteria موثقان قبل التنفيذ.
+- [ ] target تشغيلي قابل للقياس، وليس ضمان إيراد أو ROI.
+- [ ] customer-specific quote معتمد؛ لا يوجد public fixed price أو self-serve checkout.
+- [ ] margin floor review + tax/e-invoicing review عند انطباقها.
+- [ ] لا Quote أو Invoice/Payment request إذا كان production/privacy/tenant/payment blocker يتعارض مع نطاق العميل.
 
-### عند الدفع
+### عند الإغلاق المالي
 
-- [ ] `payment_received` مسجّل (مبلغ، تاريخ، مرجع دفع)  
-- [ ] لا upsell قبل بدء التسليم  
+- [ ] customer acceptance evidence لنفس الشركة والنطاق المعتمد.
+- [ ] `invoice_sent` أو payment-request evidence لا يسجل إلا بعد اعتماد الجهة المُصدرة وطريقة الدفع والشروط للحالة المحددة.
+- [ ] `payment_received` لا يسجل إلا من دليل استلام حقيقي، مع same-company reconciliation وعدم التكرار.
+- [ ] Quote أو invoice intent أو Payment link أو verbal interest **ليست Revenue**.
+- [ ] لا أسرار أو IBAN أو بيانات بنكية أو PII غير ضروري في GitHub أو Proof عام.
 
-### التسليم (خلال SLA المتفق — افتراض 7 أيام عمل)
+### التسليم — 30 يومًا
 
-- [ ] `delivery_started`  
-- [ ] Proof Pack يتبع [PROOF_PACK_TEMPLATE.md](../../delivery/PROOF_PACK_TEMPLATE.md) (10 أقسام)  
-- [ ] كل finding له مصدر أو `مفقود` صريح  
-- [ ] Top 3 قرارات محكومة + توصية Sprint/Retainer أو «توقف عند التشخيص»  
-- [ ] مراجعة بشرية (مؤسس) قبل الإرساء النهائي للعميل  
-- [ ] `proof_pack_delivered` + تاريخ تسليم  
+- [ ] Kickoff يثبت: scope + baseline + data boundary + owners + approval path + acceptance criteria + stop conditions.
+- [ ] Workflow واحد فقط هو محور الـPilot.
+- [ ] كل finding/action يحمل source أو `missing/unknown` صريح.
+- [ ] أي إجراء حساس أو خارجي يبقى داخل Approval Center/البوابة المناسبة؛ لا customer-facing auto-send.
+- [ ] Weekly Proof Pack كل أسبوع.
+- [ ] Weekly executive readout كل أسبوع.
+- [ ] final Proof Pack في نهاية الـPilot.
+- [ ] final outcome review يميز Delivery عن Payment وRevenue وCustomer Value وPublication Permission.
+- [ ] `proof_pack_delivered` يسجل فقط بعد التسليم الفعلي لنفس الشركة.
 
 ### بعد التسليم
 
-- [ ] اجتماع ختام 30–45 دقيقة (أو async موافق عليه)  
-- [ ] `upsell_candidate` أو `closed_lost` مع سبب  
-- [ ] تحديث [COMMERCIAL_WEEKLY_SCORECARD_AR.md](COMMERCIAL_WEEKLY_SCORECARD_AR.md) — Proof مسلّم +1  
+- [ ] القرار النهائي موثق: `STOP` أو `EXPAND` أو `REDESIGN`.
+- [ ] أي expansion مبني على Proof مقبول، وليس على توقعات غير مثبتة.
+- [ ] تحديث KPI/CRM من المصدر الفعلي؛ لا أرقام مخترعة أو synthetic/customer-like evidence.
+- [ ] أي Case Study/Testimonial/Logo يحتاج publication consent منفصلًا.
 
 ---
 
-## عروض الدخول (routing)
+## عرض الدخول الحالي
 
-| Motion | عرض دخول نموذجي | مرجع سعر |
-|--------|-----------------|----------|
-| A Agency | 10-Lead Audit / Agency Proof Pack | [DEALIX_COMMERCIAL_SCALE_SYSTEM_AR.md](../DEALIX_COMMERCIAL_SCALE_SYSTEM_AR.md) §3 |
-| B Direct | Risk Score → Audit → Diagnostic | [DEALIX_REVOPS_PACKAGES_AR.md](../DEALIX_REVOPS_PACKAGES_AR.md) |
-| C Consultant | Diagnostic layer | نفس المرجع |
-| D Executive | AI & RevOps Diagnostic | لغة Control Tower — لا «10 leads» للكبار |
+| المرحلة | السلطة الحالية |
+|---|---|
+| Entry | Free Mini Diagnostic — minimum-data، بدون دفع أو Lead persistence من الصفحة العامة |
+| Qualification | Qualified discovery + first-launch gate |
+| Paid motion | Revenue Command Pilot — **30 يومًا** |
+| Price | **Customer-specific quote فقط بعد Discovery والموافقة** |
+| Expansion | فقط بعد source-backed Proof وقرار stop / expand / redesign |
 
-**سلّم المؤسس:** Diagnostic 4,999–15,000 SAR → Sprint/Data Pack بعد قبول → Growth 2,999 فقط بعد Proof.
-
----
-
-## ممنوعات (مراجعة قبل الإغلاق)
-
-- لا أرقام CRM مخترعة في التقرير  
-- لا cold WhatsApp / LinkedIn آلي  
-- لا ادعاء «Revenue Live» قبل `payment_received`  
-- لا Proof مزيّف أو KPI بدون مصدر  
+لا توجد أسعار عامة ثابتة، ولا package ladder عامة، ولا Sprint قصير كسلطة إطلاق حالية.
 
 ---
 
-## قائمة تحقق سريعة (نسخ لكل صفقة)
+## ممنوعات قبل الإغلاق
+
+- لا أرقام CRM أو Customer Value مخترعة.
+- لا cold WhatsApp / LinkedIn automation / scraping مخالف.
+- لا Revenue قبل `payment_received` الموثق والمصالح لنفس الشركة.
+- لا Proof مزيّف أو KPI بلا source.
+- لا guaranteed revenue/ROI.
+- لا public customer proof بدون publication consent.
+- لا live checkout/charge قبل إغلاق بوابته المستقلة.
+
+---
+
+## قائمة تحقق سريعة — نسخة لكل Pilot
 
 ```text
-[ ] discovery_7_done
-[ ] scope_signed
-[ ] invoice_sent → payment_received
-[ ] proof_pack_10_sections
-[ ] proof_pack_delivered
-[ ] weekly_scorecard_updated
+[ ] qualified_discovery_complete
+[ ] one_workflow_scope_approved
+[ ] baseline_and_source_or_missing_evidence
+[ ] approved_data_boundary
+[ ] approval_path_defined
+[ ] acceptance_criteria_defined
+[ ] customer_specific_quote_approved
+[ ] customer_acceptance_evidence
+[ ] authorized_invoice_or_payment_request_issued_if_applicable
+[ ] payment_received_reconciled_if_required_to_start
+[ ] weekly_proof_pack_x4
+[ ] weekly_executive_readout_x4
+[ ] final_proof_pack_delivered
+[ ] outcome_review_stop_expand_or_redesign
+[ ] crm_kpi_synced_from_real_source
 ```

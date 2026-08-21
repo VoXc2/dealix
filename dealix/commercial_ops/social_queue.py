@@ -1,4 +1,4 @@
-"""Social content queue — today's draft post (no auto-publish)."""
+"""Social content queue — current Dealix draft posts only (no auto-publish)."""
 
 from __future__ import annotations
 
@@ -12,6 +12,49 @@ import yaml
 
 from dealix.commercial_ops.doctrine import SOAEN_CHECKLIST_AR
 from dealix.commercial_ops.paths import SOCIAL_QUEUE_YAML
+
+# Historical content can remain in the YAML as an audit trail, but it must not
+# become today's draft or be re-approved after the first-launch authority moved
+# to one quote-only 30-day Revenue Command Pilot.
+_RETIRED_COMMERCIAL_TOKENS = (
+    "4,999",
+    "15,000",
+    "1,500",
+    "2,999",
+    "499 ر.س",
+    "499 sar",
+    "sprint 499",
+    "data pack 1500",
+    "growth 2999",
+    "أول diagnostic مدفوع",
+    "first-paid-diagnostic",
+    "diagnostic → sprint",
+    "diagnostic + proof",
+    "10-lead-audit",
+    "10 leads",
+    "/ar/risk-score",
+    "/ar/proof-pack",
+)
+
+
+def _post_text(post: dict[str, Any]) -> str:
+    return "\n".join(
+        str(post.get(key) or "")
+        for key in ("title_ar", "body_ar", "cta_ar", "cta", "aeo_slug")
+    ).casefold()
+
+
+def is_current_launch_safe_post(post: dict[str, Any]) -> bool:
+    """Return False when a draft carries a retired offer/price/funnel token."""
+    text = _post_text(post)
+    return not any(token.casefold() in text for token in _RETIRED_COMMERCIAL_TOKENS)
+
+
+def _is_selectable_post(post: dict[str, Any]) -> bool:
+    """Only current-authority, not-yet-published rows can become today's draft."""
+    return is_current_launch_safe_post(post) and (
+        post.get("status") or "draft"
+    ) != "published"
 
 
 def load_social_queue(path: Path | None = None) -> dict[str, Any]:
@@ -33,14 +76,23 @@ def get_post_for_date(
     *,
     queue: dict[str, Any] | None = None,
 ) -> dict[str, Any] | None:
-    """Pick post by anchor week + weekday (Sun=0 .. Sat=6)."""
+    """Pick a current-authority draft by anchor week + weekday (Sun=0 .. Sat=6).
+
+    Unsafe historical or already-published posts are excluded even when they
+    match today's slot. If no safe unpublished row remains, return ``None``
+    rather than resurrecting stale or already-used content.
+    """
     data = queue if queue is not None else load_social_queue()
-    posts: list[dict[str, Any]] = list(data.get("posts") or [])
+    posts: list[dict[str, Any]] = [
+        dict(post)
+        for post in (data.get("posts") or [])
+        if isinstance(post, dict) and _is_selectable_post(post)
+    ]
     if not posts:
         return None
 
     d = on_date or datetime.now(UTC).date()
-    anchor_raw = (data.get("anchor_date") or "2026-05-17").strip()
+    anchor_raw = str(data.get("anchor_date") or "2026-05-17").strip()
     try:
         anchor = date.fromisoformat(anchor_raw[:10])
     except ValueError:
@@ -59,11 +111,22 @@ def get_post_for_date(
 
     for post in posts:
         if (post.get("status") or "draft") == "draft":
-            return {**post, "calendar_date": d.isoformat(), "soaen_checklist_ar": SOAEN_CHECKLIST_AR}
-    return {**posts[0], "calendar_date": d.isoformat(), "soaen_checklist_ar": SOAEN_CHECKLIST_AR}
+            return {
+                **post,
+                "calendar_date": d.isoformat(),
+                "soaen_checklist_ar": SOAEN_CHECKLIST_AR,
+            }
+    return {
+        **posts[0],
+        "calendar_date": d.isoformat(),
+        "soaen_checklist_ar": SOAEN_CHECKLIST_AR,
+    }
 
 
 def format_linkedin_draft(post: dict[str, Any]) -> str:
+    """Format a safe internal draft; never format a retired launch claim."""
+    if not is_current_launch_safe_post(post):
+        raise ValueError("refusing to format social draft with retired commercial authority")
     title = post.get("title_ar") or ""
     body = post.get("body_ar") or ""
     cta = post.get("cta_ar") or post.get("cta") or ""
@@ -74,7 +137,8 @@ def format_linkedin_draft(post: dict[str, Any]) -> str:
         "",
         f"➡️ {cta}",
         "",
-        "— Dealix · Post-Lead Revenue Ops (مسودة — راجع SOAEN قبل النشر)",
+        "— Dealix · Saudi-first AI Business Operating System · Revenue + Proof + Command",
+        "(مسودة داخلية — Approval-first، راجع SOAEN قبل أي نشر)",
     ]
     return "\n".join(lines)
 
@@ -116,21 +180,37 @@ def mark_post_status(
     status: str,
     path: Path | None = None,
 ) -> dict[str, Any]:
-    """Update queue status atomically. This never publishes externally."""
+    """Update a current-authority queue row atomically. This never publishes externally."""
     allowed = {"draft", "approved", "published"}
     if status not in allowed:
         raise ValueError(f"status must be one of {allowed}")
     p = path or SOCIAL_QUEUE_YAML
     data = load_social_queue(p)
     posts: list[dict[str, Any]] = list(data.get("posts") or [])
-    hit = False
-    for post in posts:
-        if int(post.get("week", 0)) == week and int(post.get("day", -1)) == day:
-            post["status"] = status
-            hit = True
-            break
-    if not hit:
+
+    matching_indexes = [
+        idx
+        for idx, post in enumerate(posts)
+        if int(post.get("week", 0)) == week and int(post.get("day", -1)) == day
+    ]
+    if not matching_indexes:
         raise KeyError(f"no post for week={week} day={day}")
+
+    editable_index = next(
+        (
+            idx
+            for idx in matching_indexes
+            if is_current_launch_safe_post(posts[idx])
+            and (posts[idx].get("status") or "draft") != "published"
+        ),
+        None,
+    )
+    if editable_index is None:
+        raise ValueError(
+            "refusing to approve/publish: no safe unpublished current-authority row"
+        )
+
+    posts[editable_index]["status"] = status
     data["posts"] = posts
     _atomic_dump_yaml(p, data)
     return {"week": week, "day": day, "status": status, "updated": True}
