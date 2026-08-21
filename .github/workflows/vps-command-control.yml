@@ -1,0 +1,83 @@
+name: Dealix VPS Command Control
+
+on:
+  workflow_dispatch:
+    inputs:
+      command:
+        description: "Allowlisted Dealix VPS command"
+        required: true
+        default: "status"
+        type: choice
+        options:
+          - status
+          - repo-inspect
+          - verify
+          - autonomous-dry-run
+          - daily
+          - sales-arena
+          - ollama-status
+          - n8n-status
+          - security-status
+
+permissions:
+  contents: read
+
+concurrency:
+  group: dealix-vps-command-control
+  cancel-in-progress: false
+
+jobs:
+  public-safety-validation:
+    if: ${{ github.event.repository.private != true }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Public repository safety gate
+        run: |
+          echo "Repository is public. VPS execution is intentionally disabled."
+          echo "Only static validation is allowed until the repository becomes private."
+
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Validate dispatcher syntax
+        run: bash -n scripts/ops/dealix_vps_control.sh
+
+      - name: Confirm no self-hosted execution occurred
+        run: |
+          echo "DEALIX_VPS_EXECUTION=BLOCKED_PUBLIC_REPOSITORY"
+
+  private-vps-control:
+    if: ${{ github.event.repository.private == true && github.actor == 'VoXc2' }}
+    runs-on: [self-hosted, linux, x64, dealix-vps]
+    timeout-minutes: 30
+    env:
+      DEALIX_EXTERNAL_OUTREACH_ENABLED: "false"
+      AUTO_SEND_ENABLED: "false"
+      AGENT_APPROVAL_MODE: "required"
+    steps:
+      - name: Execute allowlisted VPS command
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          CONTROL="/opt/dealix/workspace/dealix/scripts/ops/dealix_vps_control.sh"
+          test -x "$CONTROL" || chmod +x "$CONTROL"
+          "$CONTROL" "${{ inputs.command }}" | tee "/tmp/dealix-vps-command-${{ github.run_id }}.log"
+
+      - name: Upload safe command proof
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: dealix-vps-command-proof-${{ github.run_id }}
+          path: /tmp/dealix-vps-command-${{ github.run_id }}.log
+          if-no-files-found: warn
+          retention-days: 7
+
+  unauthorized-private-actor:
+    if: ${{ github.event.repository.private == true && github.actor != 'VoXc2' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - run: |
+          echo "DENIED: only the configured founder account can invoke the VPS control workflow."
+          exit 1

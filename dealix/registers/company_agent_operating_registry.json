@@ -1,0 +1,224 @@
+{
+  "schema_version": "1.0",
+  "generated_for": "Dealix-sa/dealix",
+  "purpose": "Bind the existing Hermes agents and Dealix control surfaces into one governed company operating model without creating parallel business systems.",
+  "canonical_systems": {
+    "company_context": "Dealix Company Brain / Company Intelligence",
+    "opportunities": "Dealix Opportunity Graph",
+    "actions": "Dealix Strategy Execution / Action Queue",
+    "approvals": "Dealix Approval Center",
+    "proof": "Dealix Proof Ledger / Proof Pack",
+    "learning": "Dealix Learning / Self-Improvement",
+    "production": "Railway Production Core",
+    "code": "GitHub Dealix-sa/dealix",
+    "command_node": "Hostinger VPS",
+    "founder_gateway": "OpenClaw Telegram",
+    "internal_agent_runtime": "Hermes",
+    "deterministic_workflows": "n8n + Dealix Company Autopilot",
+    "local_inference": "Ollama loopback"
+  },
+  "authority": {
+    "automatic_levels": ["L0", "L1", "L2", "L3"],
+    "conditional_repo_level": "L4",
+    "l4_rule": "Only safe branch/draft-PR/test/internal repo actions with proof and rollback; never main or production.",
+    "founder_approval_level": "L5",
+    "founder_approval_actions": [
+      "external_send",
+      "external_publish",
+      "merge_to_main",
+      "production_mutation",
+      "dns_mutation",
+      "payment_or_refund",
+      "secret_rotation_or_write",
+      "data_deletion",
+      "legal_commitment"
+    ],
+    "external_send_enabled": false,
+    "production_mutation_enabled": false,
+    "merge_to_main_enabled": false,
+    "payment_execution_enabled": false
+  },
+  "agents": [
+    {
+      "runtime_name": "company_brain",
+      "class_name": "CompanyBrainAgent",
+      "executive_role": "Chief Context Officer",
+      "mission": "Maintain evidence-backed company context and prevent decisions from using stale or invented facts.",
+      "autonomy_ceiling": "L3",
+      "primary_outputs": ["company_context", "restrictions", "offer_context", "evidence_gaps"]
+    },
+    {
+      "runtime_name": "sprint_orchestrator",
+      "class_name": "SprintOrchestratorAgent",
+      "executive_role": "Chief Operating Conductor",
+      "mission": "Sequence verified work across departments and keep the shortest path to trust, revenue, proof and learning.",
+      "autonomy_ceiling": "L3",
+      "primary_outputs": ["daily_priorities", "action_queue", "dependency_map", "blocked_items"]
+    },
+    {
+      "runtime_name": "governance",
+      "class_name": "GovernanceAgent",
+      "executive_role": "Chief Risk and Governance Officer",
+      "mission": "Enforce approval, proof, privacy, claim and execution boundaries before work becomes an external effect.",
+      "autonomy_ceiling": "L3",
+      "primary_outputs": ["risk_decisions", "approval_requirements", "proof_requirements", "policy_blocks"]
+    },
+    {
+      "runtime_name": "market_intel",
+      "class_name": "MarketIntelAgent",
+      "executive_role": "Market Intelligence Lead",
+      "mission": "Detect sourced Saudi/GCC market signals, sectors, accounts, partners and competitive changes.",
+      "autonomy_ceiling": "L2",
+      "primary_outputs": ["market_signals", "account_hypotheses", "partner_signals", "source_evidence"]
+    },
+    {
+      "runtime_name": "lead_intelligence",
+      "class_name": "LeadIntelligenceAgent",
+      "executive_role": "Account Qualification Lead",
+      "mission": "Qualify accounts and contacts from allowed sources using fit, trigger, evidence, value and risk.",
+      "autonomy_ceiling": "L3",
+      "primary_outputs": ["qualified_accounts", "scores", "reasons", "next_actions"]
+    },
+    {
+      "runtime_name": "revenue_intelligence",
+      "class_name": "RevenueIntelligenceAgent",
+      "executive_role": "Revenue Intelligence Lead",
+      "mission": "Find revenue leakage, closeability, stale pipeline, offer fit and highest money-now actions without inventing revenue.",
+      "autonomy_ceiling": "L3",
+      "primary_outputs": ["revenue_priorities", "pipeline_risk", "closeability", "proof_gaps"]
+    },
+    {
+      "runtime_name": "sales_intelligence",
+      "class_name": "SalesIntelligenceAgent",
+      "executive_role": "Sales Strategy Lead",
+      "mission": "Prepare discovery, objections, negotiation, follow-up and proposal strategy; all outbound remains draft-only.",
+      "autonomy_ceiling": "L2",
+      "primary_outputs": ["discovery_briefs", "message_drafts", "objection_responses", "negotiation_strategy"]
+    },
+    {
+      "runtime_name": "customer_acquisition",
+      "class_name": "CustomerAcquisitionAgent",
+      "executive_role": "Customer Acquisition Lead",
+      "mission": "Convert qualified opportunities into approval-ready acquisition plans and measurable experiments without spam.",
+      "autonomy_ceiling": "L3",
+      "primary_outputs": ["acquisition_plans", "channel_plan", "experiments", "approval_items"]
+    },
+    {
+      "runtime_name": "diagnostic_agent",
+      "class_name": "DiagnosticAgent",
+      "executive_role": "Diagnostic and Value Discovery Lead",
+      "mission": "Turn company and workflow evidence into falsifiable problem hypotheses, diagnostic packs and pilot hypotheses.",
+      "autonomy_ceiling": "L3",
+      "primary_outputs": ["diagnostics", "value_hypotheses", "missing_evidence", "pilot_hypotheses"]
+    },
+    {
+      "runtime_name": "data_architect",
+      "class_name": "DataArchitectAgent",
+      "executive_role": "Data and Intelligence Architect",
+      "mission": "Keep data lineage, source quality, normalization and tenant-safe inputs usable by the operating loops.",
+      "autonomy_ceiling": "L3",
+      "primary_outputs": ["data_packs", "lineage", "quality_findings", "normalization_plan"]
+    },
+    {
+      "runtime_name": "managed_ops",
+      "class_name": "ManagedOpsAgent",
+      "executive_role": "Operations and Delivery Lead",
+      "mission": "Track delivery readiness, blockers, capacity, deadlines, operating risk and weekly managed-service execution.",
+      "autonomy_ceiling": "L3",
+      "primary_outputs": ["operations_status", "delivery_risk", "blockers", "handoff_actions"]
+    }
+  ],
+  "department_workstreams": [
+    {
+      "id": "executive_command",
+      "lead": "sprint_orchestrator",
+      "support": ["company_brain", "governance", "managed_ops", "revenue_intelligence"],
+      "cadence": "daily",
+      "success_metrics": ["top_priority_has_evidence", "approval_queue_is_explicit", "no_duplicate_work", "single_highest_next_action"]
+    },
+    {
+      "id": "production_and_security",
+      "lead": "governance",
+      "support": ["managed_ops", "data_architect"],
+      "cadence": "continuous",
+      "success_metrics": ["production_health", "ci_health", "no_secret_leak", "recovery_ready"]
+    },
+    {
+      "id": "market_and_partnerships",
+      "lead": "market_intel",
+      "support": ["lead_intelligence", "company_brain"],
+      "cadence": "daily",
+      "success_metrics": ["sourced_signals", "qualified_accounts", "qualified_partners", "source_freshness"]
+    },
+    {
+      "id": "revenue_and_sales",
+      "lead": "revenue_intelligence",
+      "support": ["sales_intelligence", "lead_intelligence", "customer_acquisition", "diagnostic_agent"],
+      "cadence": "daily",
+      "success_metrics": ["money_now_action", "qualified_pipeline", "approval_ready_drafts", "payment_evidence_only_revenue"]
+    },
+    {
+      "id": "customer_value",
+      "lead": "managed_ops",
+      "support": ["diagnostic_agent", "company_brain", "governance"],
+      "cadence": "daily",
+      "success_metrics": ["delivery_readiness", "value_evidence", "risk_escalation", "expansion_signal_quality"]
+    },
+    {
+      "id": "data_and_product_learning",
+      "lead": "data_architect",
+      "support": ["company_brain", "governance", "diagnostic_agent"],
+      "cadence": "weekly",
+      "success_metrics": ["data_quality", "provenance_coverage", "root_cause_quality", "approved_playbook_improvements"]
+    }
+  ],
+  "priority_routing": [
+    {"condition": "production_or_security_red", "priority": "P0", "lead": "governance"},
+    {"condition": "closeable_revenue_or_paid_pilot_blocked", "priority": "P1", "lead": "revenue_intelligence"},
+    {"condition": "founder_manual_work_repeated", "priority": "P2", "lead": "sprint_orchestrator"},
+    {"condition": "customer_value_or_delivery_risk", "priority": "P3", "lead": "managed_ops"},
+    {"condition": "proof_gap", "priority": "P4", "lead": "governance"},
+    {"condition": "growth_opportunity_without_trust_blocker", "priority": "P5", "lead": "market_intel"}
+  ],
+  "openclaw": {
+    "role": "Founder command gateway and conversational control plane",
+    "channel_owner": "Telegram",
+    "default_authority": "L0-L2",
+    "allowed": ["status", "summaries", "priorities", "research", "drafts", "approval_preparation", "subagent_research"],
+    "blocked": ["arbitrary_shell", "file_mutation", "production_mutation", "merge_to_main", "payments", "secret_access", "automatic_external_send"],
+    "ordinary_prose_is_not_l5_approval": true
+  },
+  "hermes": {
+    "role": "Internal specialist runtime and agent council",
+    "default_authority": "L0-L3",
+    "repo_l4_requires_isolated_execution": true,
+    "cron_dangerous_command_policy": "deny",
+    "approval_mode": "manual",
+    "preferred_task_pattern": "fresh isolated job with minimum toolsets",
+    "deterministic_checks_prefer_no_agent": true
+  },
+  "agent_council": {
+    "purpose": "Synthesize current verified company state into cross-department decisions after deterministic morning automation has run.",
+    "workday_schedule_ksa": "Sun-Thu 10:15",
+    "input_policy": "safe local proof/log summaries plus public web research; never secrets or raw customer PII",
+    "output_contract": [
+      "production_status",
+      "money_now_action",
+      "technical_blocker",
+      "commercial_blocker",
+      "opportunity_priorities",
+      "department_actions",
+      "approval_queue",
+      "proof_gaps",
+      "learning_events",
+      "highest_next_action"
+    ],
+    "external_actions_executed": 0
+  },
+  "proof_contract": {
+    "required_fields": ["run_id", "timestamp", "inputs", "decision", "actions", "result", "evidence", "risk", "approval_id_if_applicable"],
+    "synthetic_is_commercial_proof": false,
+    "revenue_requires_payment_evidence": true,
+    "delivery_requires_delivery_evidence": true
+  }
+}
