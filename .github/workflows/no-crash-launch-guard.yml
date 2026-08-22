@@ -79,7 +79,7 @@ jobs:
 
       - name: Upload commercial launch diagnostics
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: no-crash-commercial-launch-diagnostics
           path: reports/ci/commercial-launch-ready.log

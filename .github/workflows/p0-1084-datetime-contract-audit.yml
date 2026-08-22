@@ -75,7 +75,7 @@ jobs:
           cat /tmp/datetime-runtime-semantics.json
 
       - name: Upload inventory evidence
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: p0-1084-datetime-contract-audit
           path: |
