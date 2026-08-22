@@ -4,6 +4,9 @@ The router imports this module during application startup, so constructors must
 not touch the filesystem or connect to the database. Reads and mutations are
 performed lazily. Production and staging default to PostgreSQL; local and test
 environments use the explicit file adapter.
+
+The same storage substrate also owns the append-only Collaboration OS event
+collection so Dealix does not introduce a parallel database or source of truth.
 """
 
 from __future__ import annotations
@@ -24,8 +27,18 @@ from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, sessionmaker
 from auto_client_acquisition.persistence.db_sync_url import sync_sqlalchemy_url
 from core.config.settings import get_settings
 
-CommunicationCollection = Literal["contact_log", "sequences"]
+CommunicationCollection = Literal[
+    "contact_log",
+    "sequences",
+    "collaboration_events",
+]
 MutationResult = TypeVar("MutationResult")
+
+_COLLECTIONS: tuple[CommunicationCollection, ...] = (
+    "contact_log",
+    "sequences",
+    "collaboration_events",
+)
 
 
 class CommunicationStorageUnavailable(RuntimeError):
@@ -33,7 +46,7 @@ class CommunicationStorageUnavailable(RuntimeError):
 
 
 class CommunicationStorage(Protocol):
-    """Storage contract used by :class:`CommunicationHub`."""
+    """Storage contract used by CommunicationHub and CollaborationHub."""
 
     backend_name: str
     durable: bool
@@ -53,7 +66,7 @@ class CommunicationStorage(Protocol):
 
 
 def _validate_collection(collection: str) -> CommunicationCollection:
-    if collection not in {"contact_log", "sequences"}:
+    if collection not in _COLLECTIONS:
         raise ValueError(f"Unknown communication collection: {collection}")
     return collection  # type: ignore[return-value]
 
@@ -66,14 +79,15 @@ class FileCommunicationStorage:
 
     def __init__(self, base_path: Path | str = Path("data/comms")) -> None:
         self._base_path = Path(base_path)
-        self._locks = {
-            "contact_log": threading.RLock(),
-            "sequences": threading.RLock(),
-        }
+        self._locks = {collection: threading.RLock() for collection in _COLLECTIONS}
 
     def _path(self, collection: CommunicationCollection) -> Path:
-        name = "contact_log.json" if collection == "contact_log" else "sequences.json"
-        return self._base_path / name
+        names = {
+            "contact_log": "contact_log.json",
+            "sequences": "sequences.json",
+            "collaboration_events": "collaboration_events.json",
+        }
+        return self._base_path / names[collection]
 
     def _read_unlocked(self, collection: CommunicationCollection) -> list[dict[str, Any]]:
         path = self._path(collection)
@@ -122,7 +136,7 @@ class FileCommunicationStorage:
 
     def readiness(self) -> dict[str, Any]:
         try:
-            for collection in ("contact_log", "sequences"):
+            for collection in _COLLECTIONS:
                 self.read(collection)
         except CommunicationStorageUnavailable:
             return {
@@ -146,7 +160,7 @@ class _CommunicationStorageBase(DeclarativeBase):
 
 
 class CommunicationSnapshotORM(_CommunicationStorageBase):
-    """One row per Communication OS collection."""
+    """One row per Communication/Collaboration OS collection."""
 
     __tablename__ = "communication_hub_snapshots"
 

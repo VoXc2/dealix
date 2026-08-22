@@ -16,6 +16,7 @@ _ROUTER_MODULES = (
     "api.routers.ops_research",
     "api.routers.ops_knowledge",
     "api.routers.ops_communication",
+    "api.routers.ops_collaboration",
     "api.routers.ops_sales",
     "api.routers.ops_growth",
     "api.routers.ops_customer_success",
