@@ -28,7 +28,7 @@ jobs:
           pip install -r requirements.txt
           pip install pytest pytest-asyncio pytest-cov pytest-timeout httpx aiosqlite
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
           node-version: "20"
           cache: npm
