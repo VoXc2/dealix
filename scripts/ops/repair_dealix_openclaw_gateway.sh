@@ -71,6 +71,16 @@ sudo -iu "$RUN_USER" "$OPENCLAW_BIN" config set channels.telegram.dmPolicy pairi
 sudo -iu "$RUN_USER" "$OPENCLAW_BIN" config set channels.telegram.groups '{}' --strict-json >/dev/null
 sudo -iu "$RUN_USER" "$OPENCLAW_BIN" config set channels.telegram.groupAllowFrom '[]' --strict-json >/dev/null
 
+# OpenClaw memory is a local retrieval cache, not a second Company Brain.
+# Current OpenClaw uses OpenAI embeddings by default; route semantic recall to
+# loopback Ollama instead so no remote embedding key, cost or data transfer is required.
+# Ollama's OpenClaw provider uses nomic-embed-text by default and can auto-pull it.
+sudo -iu "$RUN_USER" "$OPENCLAW_BIN" config set memory.search.enabled true >/dev/null
+sudo -iu "$RUN_USER" "$OPENCLAW_BIN" config set memory.search.provider ollama >/dev/null
+sudo -iu "$RUN_USER" "$OPENCLAW_BIN" config set memory.search.model nomic-embed-text >/dev/null
+sudo -iu "$RUN_USER" "$OPENCLAW_BIN" config set memory.search.fallback none >/dev/null
+sudo -iu "$RUN_USER" "$OPENCLAW_BIN" config set memory.search.rememberAcrossConversations false >/dev/null
+
 # Ensure local Ollama is healthy before gateway restart.
 echo
 echo "===== OLLAMA ====="
