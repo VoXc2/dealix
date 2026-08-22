@@ -4,20 +4,32 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$ROOT"
 
-PYTHON_BIN=""
-if [[ -x "$ROOT/.venv/Scripts/python.exe" ]]; then
-  PYTHON_BIN="$ROOT/.venv/Scripts/python.exe"
-elif [[ -x "$ROOT/.venv/bin/python" ]]; then
-  PYTHON_BIN="$ROOT/.venv/bin/python"
-else
-  PYTHON_BIN="$(command -v python3 2>/dev/null || true)"
-  if [[ -z "${PYTHON_BIN}" ]] && command -v py >/dev/null 2>&1; then
-    PYTHON_BIN="py -3"
-  fi
-fi
-if [[ -z "${PYTHON_BIN}" ]]; then
+ensure_runtime="$ROOT/scripts/ops/ensure_founder_automation_python.sh"
+if [[ ! -f "$ensure_runtime" ]]; then
   echo "FOUNDER_OPERATING_SYSTEM_VERDICT=FAIL"
-  echo "python3 not found"
+  echo "automation python bootstrap is missing: $ensure_runtime"
+  exit 1
+fi
+
+# Scheduled VPS verification must not silently fall back to a system Python that
+# lacks the repository's declared test/application dependencies. The bootstrap
+# is idempotent and syncs only when requirements-dev.txt changes or imports fail.
+RUNTIME_OUT="$(bash "$ensure_runtime" 2>&1)" || {
+  printf '%s\n' "$RUNTIME_OUT"
+  echo "FOUNDER_OPERATING_SYSTEM_VERDICT=FAIL"
+  exit 1
+}
+printf '%s\n' "$RUNTIME_OUT"
+
+PYTHON_BIN="${DEALIX_AUTOMATION_PYTHON:-$ROOT/.venv/bin/python}"
+if [[ ! -x "$PYTHON_BIN" ]]; then
+  echo "FOUNDER_OPERATING_SYSTEM_VERDICT=FAIL"
+  echo "automation python is not executable: $PYTHON_BIN"
+  exit 1
+fi
+if ! "$PYTHON_BIN" -c 'import pydantic, pytest' >/dev/null 2>&1; then
+  echo "FOUNDER_OPERATING_SYSTEM_VERDICT=FAIL"
+  echo "automation python does not provide pydantic + pytest: $PYTHON_BIN"
   exit 1
 fi
 

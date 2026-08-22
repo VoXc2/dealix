@@ -7,6 +7,8 @@ set -Eeuo pipefail
 
 ROOT="/opt/dealix/workspace/dealix"
 AUTOPILOT="/opt/dealix/control/bin/dealix_company_autopilot.sh"
+PY_BOOTSTRAP="$ROOT/scripts/ops/ensure_founder_automation_python.sh"
+PY="$ROOT/.venv/bin/python"
 COMMAND="${1:-status}"
 
 if [[ ! -d "$ROOT/.git" ]]; then
@@ -20,6 +22,34 @@ safe_service_state() {
   local service="$1"
   printf '%-20s ' "$service"
   systemctl is-active "$service" 2>/dev/null || true
+}
+
+ensure_python() {
+  if [[ ! -x "$PY_BOOTSTRAP" ]]; then
+    echo "BLOCKED: deterministic automation Python bootstrap missing: $PY_BOOTSTRAP"
+    return 1
+  fi
+  DEALIX_REPO_ROOT="$ROOT" "$PY_BOOTSTRAP"
+  [[ -x "$PY" ]] || {
+    echo "BLOCKED: deterministic automation Python missing after bootstrap: $PY"
+    return 1
+  }
+}
+
+ensure_github_git_auth() {
+  command -v gh >/dev/null 2>&1 || {
+    echo "BLOCKED: gh CLI unavailable"
+    return 1
+  }
+  gh auth status >/dev/null 2>&1 || {
+    echo "BLOCKED: gh CLI is not authenticated"
+    return 1
+  }
+  # Configure Git's GitHub credential helper without printing a token.
+  gh auth setup-git >/dev/null 2>&1 || {
+    echo "BLOCKED: could not configure non-interactive GitHub git credentials"
+    return 1
+  }
 }
 
 case "$COMMAND" in
@@ -47,7 +77,8 @@ case "$COMMAND" in
 
   repo-inspect)
     echo "===== DEALIX REPO INSPECT ====="
-    git fetch origin main --quiet
+    ensure_github_git_auth
+    GIT_TERMINAL_PROMPT=0 git fetch origin main --quiet
     echo "local=$(git rev-parse HEAD)"
     echo "origin_main=$(git rev-parse origin/main)"
     git status -sb
@@ -56,8 +87,9 @@ case "$COMMAND" in
 
   verify)
     echo "===== DEALIX SAFE VERIFY ====="
+    ensure_python
     if [[ -f scripts/verify_full_autonomous_ops_stack.py ]]; then
-      python3 scripts/verify_full_autonomous_ops_stack.py --skip-api
+      "$PY" scripts/verify_full_autonomous_ops_stack.py --skip-api
     else
       echo "MISSING scripts/verify_full_autonomous_ops_stack.py"
     fi
@@ -70,13 +102,15 @@ case "$COMMAND" in
 
   autonomous-dry-run)
     echo "===== COMPLETE AUTONOMOUS DAY DRY RUN ====="
-    python3 scripts/run_dealix_complete_autonomous_day.py --dry-run
+    ensure_python
+    "$PY" scripts/run_dealix_complete_autonomous_day.py --dry-run
     ;;
 
   daily)
     echo "===== DEALIX DAILY SAFE RUN ====="
+    ensure_python
     if [[ -f scripts/ops/dealix_daily_self_runner.py ]]; then
-      python3 scripts/ops/dealix_daily_self_runner.py
+      "$PY" scripts/ops/dealix_daily_self_runner.py
     else
       echo "MISSING scripts/ops/dealix_daily_self_runner.py"
       exit 3
@@ -85,8 +119,9 @@ case "$COMMAND" in
 
   sales-arena)
     echo "===== DEALIX SALES ARENA ====="
+    ensure_python
     if [[ -f scripts/commercial/run_sales_arena.py ]]; then
-      python3 scripts/commercial/run_sales_arena.py
+      "$PY" scripts/commercial/run_sales_arena.py
     else
       echo "MISSING scripts/commercial/run_sales_arena.py"
       exit 3

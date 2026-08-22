@@ -7,6 +7,8 @@ STAMP="$(date +%Y%m%d-%H%M%S)"
 OUT_DIR="${REPORT_ROOT}/${STAMP}"
 MD="${OUT_DIR}/money_command.md"
 JSON="${OUT_DIR}/money_command.json"
+PY_BOOTSTRAP="$REPO_ROOT/scripts/ops/ensure_founder_automation_python.sh"
+PY="${DEALIX_AUTOMATION_PYTHON:-$REPO_ROOT/.venv/bin/python}"
 
 mkdir -p "$OUT_DIR"
 
@@ -18,6 +20,19 @@ if [ ! -d "$REPO_ROOT/.git" ]; then
 fi
 
 cd "$REPO_ROOT"
+if [ ! -x "$PY_BOOTSTRAP" ]; then
+  echo "BLOCKED: deterministic automation Python bootstrap missing: $PY_BOOTSTRAP"
+  exit 21
+fi
+DEALIX_REPO_ROOT="$REPO_ROOT" "$PY_BOOTSTRAP"
+if [ ! -x "$PY" ]; then
+  echo "BLOCKED: deterministic automation Python missing after bootstrap: $PY"
+  exit 22
+fi
+# Preserve the existing command contract while ensuring every legacy `python`
+# invocation resolves to the repository-local verified runtime.
+python() { "$PY" "$@"; }
+
 BRANCH="$(git branch --show-current 2>/dev/null || true)"
 HEAD="$(git rev-parse HEAD)"
 DIRTY="false"

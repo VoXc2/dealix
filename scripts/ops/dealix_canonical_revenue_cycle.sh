@@ -8,6 +8,8 @@ OUT_ROOT="${DEALIX_REVENUE_CYCLE_OUT:-$ROOT/reports/canonical_revenue_cycle}"
 STAMP="$(date +%Y%m%d-%H%M%S)"
 OUT_DIR="$OUT_ROOT/$STAMP"
 GATE="$ROOT/dealix/config/first_launch_offer_gate.yaml"
+PY_BOOTSTRAP="$ROOT/scripts/ops/ensure_founder_automation_python.sh"
+PY="${DEALIX_AUTOMATION_PYTHON:-$ROOT/.venv/bin/python}"
 
 export TZ="${TZ:-Asia/Riyadh}"
 export DEALIX_EXTERNAL_OUTREACH_ENABLED=false
@@ -28,13 +30,22 @@ if [[ ! -f "$GATE" ]]; then
   echo "BLOCKED: canonical launch gate missing: $GATE"
   exit 3
 fi
+if [[ ! -x "$PY_BOOTSTRAP" ]]; then
+  echo "BLOCKED: deterministic automation Python bootstrap missing: $PY_BOOTSTRAP"
+  exit 5
+fi
+DEALIX_REPO_ROOT="$ROOT" "$PY_BOOTSTRAP"
+if [[ ! -x "$PY" ]]; then
+  echo "BLOCKED: deterministic automation Python missing after bootstrap: $PY"
+  exit 6
+fi
 
 case "$MODE" in
   daily|weekly|status) ;;
   *) echo "DENIED: mode must be daily, weekly, or status"; exit 64 ;;
 esac
 
-python3 - "$GATE" "$OUT_DIR/gate.json" <<'PY'
+"$PY" - "$GATE" "$OUT_DIR/gate.json" <<'PY'
 import json
 import sys
 from pathlib import Path
@@ -107,7 +118,7 @@ fi
 # Canonical governed operating board: reads the launch gate and source registry,
 # creates no external actions, and records truth state when real signals are absent.
 run_optional "commercial_intelligence" \
-  python3 scripts/commercial/run_commercial_intelligence_founder_cycle.py \
+  "$PY" scripts/commercial/run_commercial_intelligence_founder_cycle.py \
   --output "$OUT_DIR/commercial_intelligence" || true
 
 # Revenue Lab runs only when a caller supplies an explicit evidence-backed input.
@@ -118,7 +129,7 @@ if [[ -n "${DEALIX_REVENUE_LAB_INPUT:-}" ]]; then
     echo "REVENUE_LAB=BLOCKED input_missing=$INPUT"
   else
     run_optional "revenue_lab" \
-      python3 scripts/commercial/run_revenue_lab_daily.py \
+      "$PY" scripts/commercial/run_revenue_lab_daily.py \
       --input "$INPUT" \
       --mode draft-only \
       --output-dir "$OUT_DIR/revenue_lab" || true
@@ -134,7 +145,7 @@ if [[ -n "${DEALIX_MARKET_ENTRY_SIGNALS:-}" ]]; then
     echo "MARKET_ENTRY=BLOCKED signals_missing=$SIGNALS"
   else
     run_optional "market_entry" \
-      python3 scripts/commercial/run_founder_market_entry.py \
+      "$PY" scripts/commercial/run_founder_market_entry.py \
       --signals "$SIGNALS" \
       --output-dir "$OUT_DIR/market_entry" || true
   fi
@@ -145,16 +156,16 @@ fi
 # Lead-to-cash is only used as a structural safety/proof rehearsal here.
 # draft_only must block at the first external effect.
 run_optional "lead_to_cash_draft_only" \
-  python3 scripts/commercial/run_company_loop_simulation.py \
+  "$PY" scripts/commercial/run_company_loop_simulation.py \
   --loop lead_to_cash \
   --mode draft_only \
   --output "$OUT_DIR/lead_to_cash.json" || true
 
 if [[ "$MODE" == "weekly" && -f scripts/run_weekly_proof_pack.py ]]; then
-  run_optional "weekly_proof_pack" python3 scripts/run_weekly_proof_pack.py || true
+  run_optional "weekly_proof_pack" "$PY" scripts/run_weekly_proof_pack.py || true
 fi
 
-python3 - "$OUT_DIR" <<'PY'
+"$PY" - "$OUT_DIR" <<'PY'
 import json
 import sys
 from pathlib import Path
