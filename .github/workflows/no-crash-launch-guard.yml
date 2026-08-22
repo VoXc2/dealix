@@ -17,6 +17,7 @@ permissions:
 
 jobs:
   guard:
+    name: No-Crash Launch Guard
     runs-on: ubuntu-latest
     timeout-minutes: 25
 
