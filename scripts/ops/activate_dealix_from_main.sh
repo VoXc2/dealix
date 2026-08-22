@@ -216,7 +216,11 @@ if [[ -x "$HERMES" ]]; then
   sudo -iu "$RUN_USER" "$HERMES" config set approvals.mode manual >/dev/null 2>&1 || true
   sudo -iu "$RUN_USER" "$HERMES" config set approvals.cron_mode deny >/dev/null 2>&1 || true
   sudo -iu "$RUN_USER" "$HERMES" config set checkpoints.enabled true >/dev/null 2>&1 || true
-  OUT="$(timeout 300 sudo -iu "$RUN_USER" bash -lc 'export PATH="$HOME/.local/bin:$HOME/.hermes/bin:$PATH"; cd /opt/dealix/workspace/dealix; hermes --ignore-rules --toolsets terminal -z "Do not use tools. Reply with exactly: DEALIX_HERMES_8K_OK"' 2>&1 || true)"
+  # Hermes 0.20.4 has a known oneshot bug where -z silently ignores
+  # --ignore-rules. The documented chat one-shot path honors the flag while
+  # retaining the configured local provider/model. Keep the probe bounded to
+  # one harmless clarify tool schema and one turn.
+  OUT="$(timeout 300 sudo -iu "$RUN_USER" bash -lc 'export PATH="$HOME/.local/bin:$HOME/.hermes/bin:$PATH"; cd /opt/dealix/workspace/dealix; hermes chat -Q --ignore-rules --toolsets clarify --max-turns 1 -q "Do not use tools. Reply with exactly: DEALIX_HERMES_8K_OK"' 2>&1 || true)"
   if printf '%s\n' "$OUT" | grep -Fxq DEALIX_HERMES_8K_OK; then
     HERMES_OK=1
     echo "DEALIX_HERMES_8K_OK"
