@@ -1,0 +1,119 @@
+name: OpenClaw PR1150 Live Acceptance
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/openclaw-pr1150-live-acceptance.yml"
+
+permissions:
+  contents: read
+  pull-requests: read
+
+concurrency:
+  group: openclaw-pr1150-live-acceptance
+  cancel-in-progress: false
+
+jobs:
+  accept-on-dealix-vps:
+    runs-on: [self-hosted, linux, x64, dealix-vps]
+    timeout-minutes: 35
+    env:
+      TARGET_PR: "1150"
+      EXPECTED_HEAD: "a63fd4fc9dea516a8844fa8770bc6c55b9ad12e9"
+      REPO: "Dealix-sa/dealix"
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - name: Resolve and fetch exact PR repair script
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          command -v gh >/dev/null
+          ACTUAL_HEAD="$(gh pr view "$TARGET_PR" --repo "$REPO" --json headRefOid --jq '.headRefOid')"
+          echo "expected_head=$EXPECTED_HEAD"
+          echo "actual_head=$ACTUAL_HEAD"
+          if [[ "$ACTUAL_HEAD" != "$EXPECTED_HEAD" ]]; then
+            echo "BLOCKED: PR #${TARGET_PR} head moved; exact-head acceptance refused"
+            exit 40
+          fi
+
+          TMP="/tmp/openclaw-pr1150-repair-${GITHUB_RUN_ID}.sh"
+          rm -f "$TMP"
+          gh api \
+            -H 'Accept: application/vnd.github.raw+json' \
+            "repos/${REPO}/contents/scripts/ops/repair_dealix_openclaw_gateway.sh?ref=${EXPECTED_HEAD}" \
+            > "$TMP"
+          test -s "$TMP"
+          chmod 700 "$TMP"
+          bash -n "$TMP"
+          echo "EXACT_HEAD_SCRIPT=PASS"
+
+      - name: Run bounded VPS acceptance and redact proof
+        shell: bash
+        run: |
+          set -u
+          TMP="/tmp/openclaw-pr1150-repair-${GITHUB_RUN_ID}.sh"
+          RAW="/tmp/openclaw-pr1150-live-${GITHUB_RUN_ID}.raw.log"
+          SAFE="/tmp/openclaw-pr1150-live-${GITHUB_RUN_ID}.log"
+          rm -f "$RAW" "$SAFE"
+
+          set +e
+          if [[ "$(id -u)" -eq 0 ]]; then
+            bash "$TMP" >"$RAW" 2>&1
+            RC=$?
+          elif command -v sudo >/dev/null 2>&1 && sudo -n true >/dev/null 2>&1; then
+            sudo -n bash "$TMP" >"$RAW" 2>&1
+            RC=$?
+          else
+            printf '%s\n' 'BLOCKED: self-hosted runner lacks noninteractive root for bounded OpenClaw repair' >"$RAW"
+            RC=126
+          fi
+          set -e
+
+          python3 - "$RAW" "$SAFE" <<'PY'
+          import re
+          import sys
+          from pathlib import Path
+
+          raw = Path(sys.argv[1]).read_text(encoding="utf-8", errors="replace")
+          patterns = [
+              (re.compile(r"(?i)(authorization:\s*bearer\s+)[^\s]+"), r"\1[REDACTED]"),
+              (re.compile(r"\bgh[opsu]_[A-Za-z0-9_-]{10,}\b"), "[REDACTED_GITHUB_TOKEN]"),
+              (re.compile(r"\bgithub_pat_[A-Za-z0-9_-]{10,}\b"), "[REDACTED_GITHUB_TOKEN]"),
+              (re.compile(r"\bsk-[A-Za-z0-9_-]{10,}\b"), "[REDACTED_API_KEY]"),
+              (re.compile(r"\b[0-9]{6,}:[A-Za-z0-9_-]{20,}\b"), "[REDACTED_TELEGRAM_TOKEN]"),
+              (re.compile(r"(?i)\b([A-Z0-9_]*(?:TOKEN|SECRET|PASSWORD|API_KEY|PRIVATE_KEY)[A-Z0-9_]*)\s*=\s*[^\s]+"), r"\1=[REDACTED]"),
+              (re.compile(r"(?i)([?&](?:token|key|secret|password|signature)=)[^&\s]+"), r"\1[REDACTED]"),
+              (re.compile(r"[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}"), "[EMAIL_REDACTED]"),
+              (re.compile(r"(?<!\d)(?:\+?966|0)?5\d{8}(?!\d)"), "[PHONE_REDACTED]"),
+          ]
+          for pattern, repl in patterns:
+              raw = pattern.sub(repl, raw)
+          Path(sys.argv[2]).write_text(raw, encoding="utf-8")
+          PY
+
+          rm -f "$RAW" "$TMP"
+          cat "$SAFE"
+
+          if [[ "$RC" -ne 0 ]]; then
+            echo "OPENCLAW_PR1150_ACCEPTANCE=FAIL rc=$RC"
+            exit "$RC"
+          fi
+          if ! grep -Fq 'OPENCLAW_GATEWAY_AND_MEMORY=PASS' "$SAFE"; then
+            echo "OPENCLAW_PR1150_ACCEPTANCE=FAIL missing-pass-token"
+            exit 41
+          fi
+          if grep -qiE 'memory_provider_check=FAIL|ollama_embedding_probe=FAIL|OPENCLAW_GATEWAY_AND_MEMORY=DEGRADED' "$SAFE"; then
+            echo "OPENCLAW_PR1150_ACCEPTANCE=FAIL contradictory-proof"
+            exit 42
+          fi
+          echo "OPENCLAW_PR1150_ACCEPTANCE=PASS"
+
+      - name: Upload redacted acceptance proof
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: openclaw-pr1150-live-acceptance-${{ github.run_id }}
+          path: /tmp/openclaw-pr1150-live-${{ github.run_id }}.log
+          if-no-files-found: warn
+          retention-days: 7
