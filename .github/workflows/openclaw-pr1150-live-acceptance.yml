@@ -9,6 +9,7 @@ on:
 permissions:
   contents: read
   pull-requests: read
+  issues: write
 
 concurrency:
   group: openclaw-pr1150-live-acceptance
@@ -22,6 +23,7 @@ jobs:
       TARGET_PR: "1150"
       EXPECTED_HEAD: "a63fd4fc9dea516a8844fa8770bc6c55b9ad12e9"
       REPO: "Dealix-sa/dealix"
+      PROOF_ISSUE: "1119"
       GH_TOKEN: ${{ github.token }}
     steps:
       - name: Resolve and fetch exact PR repair script
@@ -108,6 +110,38 @@ jobs:
             exit 42
           fi
           echo "OPENCLAW_PR1150_ACCEPTANCE=PASS"
+
+      - name: Publish redacted verdict to private proof issue
+        if: always()
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          SAFE="/tmp/openclaw-pr1150-live-${GITHUB_RUN_ID}.log"
+          COMMENT="/tmp/openclaw-pr1150-comment-${GITHUB_RUN_ID}.md"
+          if [[ -f "$SAFE" ]] && grep -Fq 'OPENCLAW_GATEWAY_AND_MEMORY=PASS' "$SAFE"; then
+            VERDICT="PASS"
+          else
+            VERDICT="FAIL_OR_BLOCKED"
+          fi
+          {
+            echo "DEALIX_OPENCLAW_PR1150_ACCEPTANCE"
+            echo
+            echo "- verdict: ${VERDICT}"
+            echo "- pr: #${TARGET_PR}"
+            echo "- exact_head: ${EXPECTED_HEAD}"
+            echo "- workflow_run_id: ${GITHUB_RUN_ID}"
+            echo "- host_class: private self-hosted dealix-vps"
+            echo
+            echo '```text'
+            if [[ -f "$SAFE" ]]; then
+              tail -n 80 "$SAFE"
+            else
+              echo "No redacted acceptance log was produced; inspect the workflow preflight."
+            fi
+            echo '```'
+          } > "$COMMENT"
+          gh api --method POST "repos/${REPO}/issues/${PROOF_ISSUE}/comments" -F "body=@${COMMENT}" >/dev/null
+          rm -f "$COMMENT"
 
       - name: Upload redacted acceptance proof
         if: always()
