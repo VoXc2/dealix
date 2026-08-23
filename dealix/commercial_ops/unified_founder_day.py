@@ -8,10 +8,9 @@ import subprocess
 import sys
 import time
 from datetime import UTC, datetime
-from pathlib import Path
 from typing import Any
 
-from dealix.commercial_ops.paths import FOUNDER_BRIEFS_DIR, REPO_ROOT
+from dealix.commercial_ops.paths import FOUNDER_BRIEFS_DIR, REPO_ROOT, display_path
 
 RESEARCH_BENCHMARK_2026_AR = {
     "consensus": [
@@ -83,7 +82,7 @@ def _write_autopilot_artifact() -> dict[str, Any]:
     path = write_autopilot_brief()
     return {
         "ok": True,
-        "path": str(path.relative_to(REPO_ROOT)).replace("\\", "/"),
+        "path": display_path(path),
         "verdict_level": (snap.get("verdict") or {}).get("level"),
         "queue_len": len(snap.get("queue") or []),
     }
@@ -208,7 +207,7 @@ def run_unified_founder_day(
     day = payload["date"]
     path = FOUNDER_BRIEFS_DIR / f"unified_founder_day_{day}.json"
     path.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    payload["artifact_path"] = str(path.relative_to(REPO_ROOT)).replace("\\", "/")
+    payload["artifact_path"] = display_path(path)
     return payload
 
 

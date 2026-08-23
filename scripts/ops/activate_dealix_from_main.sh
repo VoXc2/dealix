@@ -9,17 +9,42 @@ ROOT="${DEALIX_REPO_ROOT:-/opt/dealix/workspace/dealix}"
 SOURCE_REF="${DEALIX_SOURCE_REF:-main}"
 LEGACY_BRANCH="ops/dealix-vps-self-hosted-control-20260820"
 MODEL="${DEALIX_LOCAL_MODEL:-qwen3:4b-instruct-2507-q4_K_M}"
+RUNTIME_ENV="/opt/dealix/control/runtime-state.env"
 STAMP="$(date +%Y%m%d-%H%M%S)"
 TMP="$(mktemp -d /tmp/dealix-main-activate.XXXXXX)"
 BACKUP="/opt/dealix/runtime-backups/main-activation-${STAMP}"
 LOG="/opt/dealix/logs/main-activation-${STAMP}.log"
+RUNTIME_STATE_READY=0
+RUNTIME_STATE_ROOT=""
+MONEY_REPORT_ROOT=""
+REVENUE_CYCLE_OUT=""
+HERMES_ACTIVE_BEFORE="$(systemctl is-active hermes-dealix.service 2>/dev/null || true)"
+HERMES_ENABLED_BEFORE="$(systemctl is-enabled hermes-dealix.service 2>/dev/null || true)"
+HERMES_QUIESCED=0
 
 mkdir -p /opt/dealix/logs "$BACKUP"
 chmod 0700 "$BACKUP"
 exec > >(tee -a "$LOG") 2>&1
-trap 'rm -rf "$TMP"' EXIT
 
 log() { printf '[%s] %s\n' "$(date -Is)" "$*"; }
+
+restore_hermes_posture() {
+  if [[ "$HERMES_QUIESCED" -eq 1 && "$HERMES_ACTIVE_BEFORE" == "active" ]]; then
+    systemctl start hermes-dealix.service >/dev/null 2>&1 || true
+    HERMES_QUIESCED=0
+  fi
+}
+
+cleanup() {
+  local rc=$?
+  trap - EXIT
+  set +e
+  restore_hermes_posture
+  rm -rf "$TMP"
+  set -e
+  exit "$rc"
+}
+trap cleanup EXIT
 
 if [[ "$(id -u)" -ne 0 ]]; then
   echo "BLOCKED: run as root on the Dealix VPS"
@@ -69,7 +94,13 @@ for unit in \
  do
   systemctl stop "$unit" 2>/dev/null || true
 done
-systemctl stop hermes-dealix.service 2>/dev/null || true
+# Hermes may share the checkout as working context, so activation can quiesce a
+# currently active gateway temporarily. The EXIT cleanup restores that exact
+# active posture even if a later activation step fails closed.
+if [[ "$HERMES_ACTIVE_BEFORE" == "active" ]]; then
+  systemctl stop hermes-dealix.service 2>/dev/null || true
+  HERMES_QUIESCED=1
+fi
 
 log "===== PRESERVE LOCAL WORKTREE ====="
 sudo -iu "$RUN_USER" git -C "$ROOT" status -sb | tee "$BACKUP/git-status-before.txt" || true
@@ -120,6 +151,52 @@ run_patched() {
   bash -n "$out"
   chmod 0700 "$out"
   bash "$out"
+}
+
+load_runtime_state_contract() {
+  local uid mode line key value resolved repo_real
+  [[ -f "$RUNTIME_ENV" && ! -L "$RUNTIME_ENV" ]] || return 1
+  uid="$(stat -c '%u' "$RUNTIME_ENV" 2>/dev/null || true)"
+  mode="$(stat -c '%a' "$RUNTIME_ENV" 2>/dev/null || true)"
+  [[ "$uid" == "0" ]] || { log "runtime_state_contract=BLOCKED_NOT_ROOT_OWNED"; return 1; }
+  [[ -n "$mode" && $((8#$mode & 0022)) -eq 0 ]] || {
+    log "runtime_state_contract=BLOCKED_WRITABLE_MODE"
+    return 1
+  }
+  repo_real="$(readlink -f "$ROOT")" || return 1
+  while IFS= read -r line || [[ -n "$line" ]]; do
+    [[ -n "$line" && "$line" != \#* ]] || continue
+    [[ "$line" == *=* ]] || { log "runtime_state_contract=BLOCKED_BAD_LINE"; return 1; }
+    key="${line%%=*}"
+    value="${line#*=}"
+    case "$key" in
+      DEALIX_RUNTIME_STATE_ROOT|DEALIX_MONEY_REPORT_ROOT|DEALIX_REVENUE_CYCLE_OUT) ;;
+      *) log "runtime_state_contract=BLOCKED_UNEXPECTED_KEY"; return 1 ;;
+    esac
+    [[ -n "$value" ]] || { log "runtime_state_contract=BLOCKED_EMPTY_VALUE"; return 1; }
+    resolved="$(readlink -m "$value")" || return 1
+    case "$resolved" in
+      /opt/dealix/*) ;;
+      *) log "runtime_state_contract=BLOCKED_PATH_OUTSIDE_OPT_DEALIX"; return 1 ;;
+    esac
+    case "$resolved" in
+      "$repo_real"|"$repo_real"/*)
+        log "runtime_state_contract=BLOCKED_PATH_INSIDE_REPO"
+        return 1
+        ;;
+    esac
+    case "$key" in
+      DEALIX_RUNTIME_STATE_ROOT) RUNTIME_STATE_ROOT="$resolved" ;;
+      DEALIX_MONEY_REPORT_ROOT) MONEY_REPORT_ROOT="$resolved" ;;
+      DEALIX_REVENUE_CYCLE_OUT) REVENUE_CYCLE_OUT="$resolved" ;;
+    esac
+  done <"$RUNTIME_ENV"
+  [[ -n "$RUNTIME_STATE_ROOT" && -n "$MONEY_REPORT_ROOT" && -n "$REVENUE_CYCLE_OUT" ]] || {
+    log "runtime_state_contract=BLOCKED_REQUIRED_KEY_MISSING"
+    return 1
+  }
+  RUNTIME_STATE_READY=1
+  log "runtime_state_contract=PASS"
 }
 
 log "===== BOUNDED LOCAL AI ====="
@@ -264,7 +341,9 @@ export AUTO_SEND_ENABLED=false
 export AGENT_APPROVAL_MODE=required
 export WHATSAPP_ALLOW_LIVE_SEND=false
 export MOYASAR_LIVE_MODE=0
-systemctl disable --now hermes-dealix.service 2>/dev/null || true
+
+restore_hermes_posture
+log "hermes_posture entry_active=${HERMES_ACTIVE_BEFORE:-unknown} final_active=$(systemctl is-active hermes-dealix.service 2>/dev/null || true)"
 
 log "===== CANONICAL AUTOPILOT VERIFIER ====="
 set +e
@@ -272,19 +351,52 @@ sudo -iu "$RUN_USER" bash -lc "cd '$ROOT' && python3 scripts/ops/verify_canonica
 VERIFY_RC=$?
 set -e
 
+log "===== VALIDATED RUNTIME STATE CONTRACT ====="
+if load_runtime_state_contract; then
+  echo "ACTIVATION_RUNTIME_STATE=PASS"
+else
+  echo "ACTIVATION_RUNTIME_STATE=FAIL_CLOSED"
+fi
+
 log "===== CANONICAL REVENUE CYCLE ====="
-set +e
-sudo -iu "$RUN_USER" bash -lc "cd '$ROOT' && DEALIX_REPO_ROOT='$ROOT' bash scripts/ops/dealix_canonical_revenue_cycle.sh status"
-REVENUE_STATUS_RC=$?
-sudo -iu "$RUN_USER" bash -lc "cd '$ROOT' && DEALIX_REPO_ROOT='$ROOT' bash scripts/ops/dealix_canonical_revenue_cycle.sh daily"
-REVENUE_DAILY_RC=$?
-set -e
+if [[ "$RUNTIME_STATE_READY" -eq 1 ]]; then
+  set +e
+  sudo -iu "$RUN_USER" env \
+    DEALIX_REPO_ROOT="$ROOT" \
+    DEALIX_RUNTIME_STATE_ROOT="$RUNTIME_STATE_ROOT" \
+    DEALIX_MONEY_REPORT_ROOT="$MONEY_REPORT_ROOT" \
+    DEALIX_REVENUE_CYCLE_OUT="$REVENUE_CYCLE_OUT" \
+    bash -lc "cd '$ROOT' && bash scripts/ops/dealix_canonical_revenue_cycle.sh status"
+  REVENUE_STATUS_RC=$?
+  sudo -iu "$RUN_USER" env \
+    DEALIX_REPO_ROOT="$ROOT" \
+    DEALIX_RUNTIME_STATE_ROOT="$RUNTIME_STATE_ROOT" \
+    DEALIX_MONEY_REPORT_ROOT="$MONEY_REPORT_ROOT" \
+    DEALIX_REVENUE_CYCLE_OUT="$REVENUE_CYCLE_OUT" \
+    bash -lc "cd '$ROOT' && bash scripts/ops/dealix_canonical_revenue_cycle.sh daily"
+  REVENUE_DAILY_RC=$?
+  set -e
+else
+  REVENUE_STATUS_RC=78
+  REVENUE_DAILY_RC=78
+  log "revenue_cycle=SKIP_FAIL_CLOSED_NO_RUNTIME_STATE"
+fi
 
 log "===== FOUNDER MONEY COMMAND ====="
-set +e
-sudo -iu "$RUN_USER" bash -lc "cd '$ROOT' && DEALIX_REPO_ROOT='$ROOT' bash scripts/ops/dealix_founder_money_command.sh"
-MONEY_RC=$?
-set -e
+if [[ "$RUNTIME_STATE_READY" -eq 1 ]]; then
+  set +e
+  sudo -iu "$RUN_USER" env \
+    DEALIX_REPO_ROOT="$ROOT" \
+    DEALIX_RUNTIME_STATE_ROOT="$RUNTIME_STATE_ROOT" \
+    DEALIX_MONEY_REPORT_ROOT="$MONEY_REPORT_ROOT" \
+    DEALIX_REVENUE_CYCLE_OUT="$REVENUE_CYCLE_OUT" \
+    bash -lc "cd '$ROOT' && bash scripts/ops/dealix_founder_money_command.sh"
+  MONEY_RC=$?
+  set -e
+else
+  MONEY_RC=78
+  log "founder_money=SKIP_FAIL_CLOSED_NO_RUNTIME_STATE"
+fi
 
 log "===== FINAL SAFE PROOF ====="
 CTL="/opt/dealix/control/bin/dealix_vps_control.sh"
@@ -311,11 +423,16 @@ STASH_REF=$STASH_REF
 WORKTREE_BACKUP=$BACKUP
 OLLAMA_8K=PASS
 HERMES_8K=$([[ "$HERMES_OK" -eq 1 ]] && echo PASS || echo FAIL_CLOSED)
+HERMES_ENTRY_ACTIVE=${HERMES_ACTIVE_BEFORE:-unknown}
+HERMES_ENTRY_ENABLED=${HERMES_ENABLED_BEFORE:-unknown}
+HERMES_FINAL_ACTIVE=$(systemctl is-active hermes-dealix.service 2>/dev/null || true)
+HERMES_FINAL_ENABLED=$(systemctl is-enabled hermes-dealix.service 2>/dev/null || true)
 AUTOPILOT_INSTALL_RC=$AUTOPILOT_RC
 ISSUE_BRIDGE_RC=$BRIDGE_RC
 OPENCLAW_RC=$OPENCLAW_RC
 COMPANY_AGENTS_RC=$AGENTS_RC
 CANONICAL_VERIFY_RC=$VERIFY_RC
+ACTIVATION_RUNTIME_STATE=$([[ "$RUNTIME_STATE_READY" -eq 1 ]] && echo PASS || echo FAIL_CLOSED)
 REVENUE_STATUS_RC=$REVENUE_STATUS_RC
 REVENUE_DAILY_RC=$REVENUE_DAILY_RC
 FOUNDER_MONEY_RC=$MONEY_RC

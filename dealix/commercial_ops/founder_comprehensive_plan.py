@@ -17,6 +17,7 @@ from dealix.commercial_ops.paths import (
     FOUNDER_WEEKLY_DECISION_DIR,
     FOUNDER_WEEKLY_DECISION_TEMPLATE,
     REPO_ROOT,
+    display_path,
 )
 
 # --- Daily anchor docs (todo: anchor-docs) ---
@@ -150,9 +151,7 @@ def analyze_gtm_codification(*, target: int = CODIFICATION_TARGET) -> dict[str, 
         "debriefs_with_notes": debrief_count,
         "registry_patterns": pattern_count,
         "recent_debriefs": debriefs[:5],
-        "registry_path": str(
-            FOUNDER_GTM_CODIFICATION_REGISTRY.relative_to(REPO_ROOT)
-        ).replace("\\", "/"),
+        "registry_path": display_path(FOUNDER_GTM_CODIFICATION_REGISTRY),
         "doc": GTM_CODIFICATION_DOC,
         "init_debrief_cmd": "py -3 scripts/founder_meeting_debrief_init.py --company \"...\"",
     }
@@ -228,13 +227,13 @@ def analyze_weekly_one_decision() -> dict[str, Any]:
             "verdict": verdict,
             "week_id": week_iso or week_id,
             "has_this_week": bool(week_iso),
-            "latest_path": str(config_path.relative_to(REPO_ROOT)).replace("\\", "/"),
+            "latest_path": display_path(config_path),
             "latest": latest,
-            "template_path": str(
-                FOUNDER_WEEKLY_DECISION_TEMPLATE.relative_to(REPO_ROOT)
-            ).replace("\\", "/")
-            if FOUNDER_WEEKLY_DECISION_TEMPLATE.is_file()
-            else None,
+            "template_path": (
+                display_path(FOUNDER_WEEKLY_DECISION_TEMPLATE)
+                if FOUNDER_WEEKLY_DECISION_TEMPLATE.is_file()
+                else None
+            ),
             "doc": WEEKLY_DECISION_DOC,
         }
 
@@ -247,7 +246,7 @@ def analyze_weekly_one_decision() -> dict[str, Any]:
     latest: dict[str, Any] | None = None
     latest_path: str | None = None
     if files:
-        latest_path = str(files[0].relative_to(REPO_ROOT)).replace("\\", "/")
+        latest_path = display_path(files[0])
         try:
             latest = yaml.safe_load(files[0].read_text(encoding="utf-8"))
         except yaml.YAMLError:
@@ -269,11 +268,11 @@ def analyze_weekly_one_decision() -> dict[str, Any]:
         "has_this_week": has_this_week,
         "latest_path": latest_path,
         "latest": latest,
-        "template_path": str(
-            FOUNDER_WEEKLY_DECISION_TEMPLATE.relative_to(REPO_ROOT)
-        ).replace("\\", "/")
-        if FOUNDER_WEEKLY_DECISION_TEMPLATE.is_file()
-        else None,
+        "template_path": (
+            display_path(FOUNDER_WEEKLY_DECISION_TEMPLATE)
+            if FOUNDER_WEEKLY_DECISION_TEMPLATE.is_file()
+            else None
+        ),
         "doc": WEEKLY_DECISION_DOC,
     }
 
@@ -375,9 +374,7 @@ def build_comprehensive_status() -> dict[str, Any]:
         "dogfooding": {
             "doc": "docs/ops/DEALIX_DOGFOODING_WAR_ROOM_AR.md",
             "sync_script": "scripts/founder_dogfooding_war_room_sync.py",
-            "war_room_json": str(
-                DEALIX_DOGFOODING_WAR_ROOM_JSON.relative_to(REPO_ROOT)
-            ).replace("\\", "/"),
+            "war_room_json": display_path(DEALIX_DOGFOODING_WAR_ROOM_JSON),
             "war_room_ready": dogfooding_file,
         },
     }

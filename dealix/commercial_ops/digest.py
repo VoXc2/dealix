@@ -24,8 +24,8 @@ from dealix.commercial_ops.outreach_drafts import attach_outreach_drafts
 from dealix.commercial_ops.paths import (
     EVIDENCE_TRACKER_CSV,
     FOUNDER_BRIEFS_DIR,
-    REPO_ROOT,
     WAR_ROOM_TODAY_JSON,
+    display_path,
 )
 from dealix.commercial_ops.social_queue import format_linkedin_draft, get_post_for_date
 from dealix.commercial_ops.strategy_refs import strategy_links_flat
@@ -127,7 +127,7 @@ def build_commercial_digest(
         "evidence": evidence,
         "evidence_all_rows": evidence_all_rows,
         "kpi_commercial": kpi_status,
-        "evidence_tracker_path": str(EVIDENCE_TRACKER_CSV.relative_to(REPO_ROOT)),
+        "evidence_tracker_path": display_path(EVIDENCE_TRACKER_CSV),
         "war_room": war_room_file,
         "social_post_due_today": social,
         "linkedin_draft": linkedin_draft,

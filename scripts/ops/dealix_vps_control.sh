@@ -9,12 +9,93 @@ ROOT="/opt/dealix/workspace/dealix"
 AUTOPILOT="/opt/dealix/control/bin/dealix_company_autopilot.sh"
 PY_BOOTSTRAP="$ROOT/scripts/ops/ensure_founder_automation_python.sh"
 PY="$ROOT/.venv/bin/python"
+RUNTIME_ENV="/opt/dealix/control/runtime-state.env"
+RUNTIME_STATE_READY=0
 COMMAND="${1:-status}"
 
 if [[ ! -d "$ROOT/.git" ]]; then
   echo "BLOCKED: canonical Dealix repo not found at $ROOT"
   exit 2
 fi
+
+load_runtime_state_env() {
+  RUNTIME_STATE_READY=0
+  [[ -e "$RUNTIME_ENV" ]] || return 0
+  [[ -f "$RUNTIME_ENV" && ! -L "$RUNTIME_ENV" ]] || {
+    echo "BLOCKED: runtime-state env must be a regular non-symlink file"
+    return 1
+  }
+  [[ "$(stat -c '%u' "$RUNTIME_ENV")" == "0" ]] || {
+    echo "BLOCKED: runtime-state env must be owned by root"
+    return 1
+  }
+  local mode
+  mode="$(stat -c '%a' "$RUNTIME_ENV")"
+  (( (8#$mode & 022) == 0 )) || {
+    echo "BLOCKED: runtime-state env must not be group/world writable"
+    return 1
+  }
+
+  local key value resolved root_real
+  local seen_state=0 seen_money=0 seen_revenue=0
+  root_real="$(readlink -f "$ROOT")" || {
+    echo "BLOCKED: cannot resolve canonical repository"
+    return 1
+  }
+  while IFS='=' read -r key value || [[ -n "${key:-}${value:-}" ]]; do
+    [[ -z "${key:-}" ]] && continue
+    [[ "$key" == \#* ]] && continue
+    case "$key" in
+      DEALIX_RUNTIME_STATE_ROOT|DEALIX_MONEY_REPORT_ROOT|DEALIX_REVENUE_CYCLE_OUT)
+        [[ -n "$value" ]] || {
+          echo "BLOCKED: runtime-state env value must not be empty"
+          return 1
+        }
+        resolved="$(readlink -m "$value")" || {
+          echo "BLOCKED: cannot resolve runtime-state path"
+          return 1
+        }
+        [[ "$resolved" == /opt/dealix/* ]] || {
+          echo "BLOCKED: runtime-state path must remain under /opt/dealix"
+          return 1
+        }
+        case "$resolved" in
+          "$root_real"|"$root_real"/*)
+            echo "BLOCKED: runtime-state path resolves inside canonical repo"
+            return 1
+            ;;
+        esac
+        export "$key=$resolved"
+        case "$key" in
+          DEALIX_RUNTIME_STATE_ROOT) seen_state=1 ;;
+          DEALIX_MONEY_REPORT_ROOT) seen_money=1 ;;
+          DEALIX_REVENUE_CYCLE_OUT) seen_revenue=1 ;;
+        esac
+        ;;
+      *)
+        echo "BLOCKED: unexpected runtime-state env key: $key"
+        return 1
+        ;;
+    esac
+  done < "$RUNTIME_ENV"
+  if [[ "$seen_state" -ne 1 || "$seen_money" -ne 1 || "$seen_revenue" -ne 1 ]]; then
+    echo "BLOCKED: runtime-state env is missing required keys"
+    return 1
+  fi
+  RUNTIME_STATE_READY=1
+}
+
+require_runtime_state() {
+  if [[ "$RUNTIME_STATE_READY" -ne 1 ]]; then
+    echo "BLOCKED: mutable direct command requires validated runtime-state isolation"
+    exit 78
+  fi
+}
+
+# Private Issue-bridge commands execute this script directly rather than inside
+# dealix-company@.service. Load the same root-owned, allowlisted runtime-state
+# contract here so mutable direct commands cannot silently fall back into Git.
+load_runtime_state_env
 
 cd "$ROOT"
 
@@ -60,6 +141,7 @@ case "$COMMAND" in
     echo "host=$(hostname)"
     echo "repo_head=$(git rev-parse HEAD)"
     echo "branch=$(git branch --show-current)"
+    echo "runtime_state_ready=$RUNTIME_STATE_READY"
     git status -sb
     echo
     safe_service_state docker
@@ -108,6 +190,7 @@ case "$COMMAND" in
 
   daily)
     echo "===== DEALIX DAILY SAFE RUN ====="
+    require_runtime_state
     ensure_python
     if [[ -f scripts/ops/dealix_daily_self_runner.py ]]; then
       "$PY" scripts/ops/dealix_daily_self_runner.py
@@ -119,6 +202,7 @@ case "$COMMAND" in
 
   sales-arena)
     echo "===== DEALIX SALES ARENA ====="
+    require_runtime_state
     ensure_python
     if [[ -f scripts/commercial/run_sales_arena.py ]]; then
       "$PY" scripts/commercial/run_sales_arena.py

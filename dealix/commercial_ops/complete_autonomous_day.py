@@ -10,10 +10,9 @@ import json
 import subprocess
 import sys
 from datetime import UTC, datetime
-from pathlib import Path
 from typing import Any
 
-from dealix.commercial_ops.paths import FOUNDER_BRIEFS_DIR, REPO_ROOT
+from dealix.commercial_ops.paths import FOUNDER_BRIEFS_DIR, REPO_ROOT, display_path
 
 RESEARCH_BENCHMARK_2026_AR = {
     "consensus": [
@@ -226,7 +225,7 @@ def run_complete_autonomous_day(
     FOUNDER_BRIEFS_DIR.mkdir(parents=True, exist_ok=True)
     out = FOUNDER_BRIEFS_DIR / f"complete_autonomous_day_{day}.json"
     out.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    payload["artifact_path"] = str(out.relative_to(REPO_ROOT)).replace("\\", "/")
+    payload["artifact_path"] = display_path(out)
     return payload
 
 

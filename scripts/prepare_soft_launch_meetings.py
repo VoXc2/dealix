@@ -16,10 +16,15 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from dealix.commercial_ops.client_pack import build_client_pack
+from dealix.commercial_ops.paths import (
+    SOFT_LAUNCH_TRACKER_YAML,
+    WAR_ROOM_TODAY_JSON,
+    display_path,
+)
 from dealix.commercial_ops.stdio_utf8 import ensure_stdout_utf8
 
-TRACKER = ROOT / "docs/commercial/operations/soft_launch_meetings_tracker.yaml"
-WAR_ROOM = ROOT / "data/war_room_today.json"
+TRACKER = SOFT_LAUNCH_TRACKER_YAML
+WAR_ROOM = WAR_ROOM_TODAY_JSON
 SOP = "docs/commercial/operations/CLIENT_PACK_SOP_AR.md"
 
 
@@ -95,11 +100,7 @@ def main() -> int:
     )
 
     print(f"SOFT_LAUNCH_MEETINGS: OK slots={len(meetings)} packs={packs_ok}")
-    try:
-        tracker_label = str(TRACKER.relative_to(ROOT))
-    except ValueError:
-        tracker_label = str(TRACKER)
-    print(f"  tracker: {tracker_label}")
+    print(f"  tracker: {display_path(TRACKER)}")
     for m in meetings:
         print(f"  [{m['slot']}] {m['company']} -> {m.get('client_pack_dir') or 'no_pack'}")
     return 0

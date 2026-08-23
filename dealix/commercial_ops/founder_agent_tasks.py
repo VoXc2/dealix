@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import json
 from datetime import UTC, datetime
-from pathlib import Path
 from typing import Any
 
 import yaml
@@ -13,6 +12,7 @@ from dealix.commercial_ops.paths import (
     FOUNDER_AGENT_QUEUE_TODAY_JSON,
     FOUNDER_AGENT_QUEUE_YAML,
     REPO_ROOT,
+    display_path,
 )
 
 AGENT_FLEET_DOC = REPO_ROOT / "docs/agentic_operations/AGENT_FLEET_OPERATING_SYSTEM_AR.md"
@@ -64,9 +64,7 @@ def seed_today_queue(*, dry_run: bool = False) -> dict[str, Any]:
             json.dumps(payload, ensure_ascii=False, indent=2) + "\n",
             encoding="utf-8",
         )
-    payload["written_path"] = str(
-        FOUNDER_AGENT_QUEUE_TODAY_JSON.relative_to(REPO_ROOT)
-    ).replace("\\", "/")
+    payload["written_path"] = display_path(FOUNDER_AGENT_QUEUE_TODAY_JSON)
     return payload
 
 
@@ -96,7 +94,7 @@ def analyze_agent_queue_status() -> dict[str, Any]:
         verdict = "FAIL"
     return {
         "verdict": verdict,
-        "config_path": str(FOUNDER_AGENT_QUEUE_YAML.relative_to(REPO_ROOT)).replace("\\", "/"),
+        "config_path": display_path(FOUNDER_AGENT_QUEUE_YAML),
         "config_exists": cfg_exists,
         "fleet_doc_exists": fleet_doc,
         "today_queue_exists": today_file,

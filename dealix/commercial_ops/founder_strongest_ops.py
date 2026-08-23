@@ -6,7 +6,6 @@ import json
 import subprocess
 import sys
 from datetime import UTC, datetime
-from pathlib import Path
 from typing import Any, Literal
 
 from dealix.commercial_ops.evidence_csv import count_evidence_events, load_evidence_rows
@@ -22,7 +21,7 @@ from dealix.commercial_ops.founder_strongest_plan import (
     strongest_plan_status,
     tasks_by_section,
 )
-from dealix.commercial_ops.paths import FOUNDER_BRIEFS_DIR, REPO_ROOT
+from dealix.commercial_ops.paths import FOUNDER_BRIEFS_DIR, REPO_ROOT, display_path
 
 CadenceMode = Literal["morning", "evening", "weekly", "full"]
 
@@ -120,7 +119,7 @@ def _ensure_weekly_decision_file() -> dict[str, Any]:
     if weekly.get("verdict") in ("MISSING", "STALE"):
         try:
             path = init_weekly_decision()
-            created = str(path.relative_to(REPO_ROOT)).replace("\\", "/")
+            created = display_path(path)
             weekly = analyze_weekly_one_decision()
         except (FileNotFoundError, ValueError, OSError) as exc:
             return {"weekly": weekly, "init_error": str(exc), "created_path": None}
@@ -227,7 +226,7 @@ def build_strongest_ops_snapshot(
         warnings_ar.append("لم يُسجَّل حدث أدلة اليوم — أضف سطراً في evidence_events_tracker.csv")
     wk = weekly_init.get("weekly") or {}
     if wk.get("verdict") in ("MISSING", "STALE"):
-        warnings_ar.append("قرار الأسبوع ناقص أو قديم — املأ data/founder_weekly/decision_*.yaml")
+        warnings_ar.append("قرار الأسبوع ناقص أو قديم — املأ قرار الأسبوع في runtime state")
     phase_gate = comprehensive.get("phase_0_1_gate") or {}
     if phase_gate.get("verdict") == "BLOCKED" and phase_gate.get("blockers_ar"):
         warnings_ar.extend(list(phase_gate["blockers_ar"])[:2])
@@ -305,7 +304,7 @@ def write_strongest_ops_brief(
     mode: CadenceMode = "morning",
     run_checks: bool = False,
 ) -> dict[str, str]:
-    """Write data/founder_briefs/strongest_ops_{date}.md and .json."""
+    """Write strongest-ops artifacts under the governed founder-briefs root."""
     FOUNDER_BRIEFS_DIR.mkdir(parents=True, exist_ok=True)
     snap = build_strongest_ops_snapshot(mode=mode, run_checks=run_checks)
     day = snap["date"]
@@ -317,8 +316,8 @@ def write_strongest_ops_brief(
     )
     md_path.write_text(_render_brief_md(snap), encoding="utf-8")
     return {
-        "json": str(json_path.relative_to(REPO_ROOT)).replace("\\", "/"),
-        "markdown": str(md_path.relative_to(REPO_ROOT)).replace("\\", "/"),
+        "json": display_path(json_path),
+        "markdown": display_path(md_path),
     }
 
 

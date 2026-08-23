@@ -7,7 +7,12 @@ from pathlib import Path
 from typing import Any
 
 from dealix.commercial_ops.first_paid_tracker import analyze_first_paid_diagnostic
-from dealix.commercial_ops.paths import REPO_ROOT
+from dealix.commercial_ops.paths import (
+    FOUNDER_BRIEFS_DIR,
+    REPO_ROOT,
+    WAR_ROOM_TODAY_JSON,
+    display_path,
+)
 from dealix.commercial_ops.value_map_catalog import get_value_map_catalog
 
 # Do not route founder decisions through the historical COMMERCIAL_VALUE_MAP_AR
@@ -17,7 +22,7 @@ from dealix.commercial_ops.value_map_catalog import get_value_map_catalog
 VALUE_MAP_DOC = REPO_ROOT / "docs/DEALIX_BUSINESS_MODEL.md"
 COMMERCIAL_IDENTITY_DOC = REPO_ROOT / "COMMERCIAL_IDENTITY.md"
 FIRST_LAUNCH_GATE = REPO_ROOT / "dealix/config/first_launch_offer_gate.yaml"
-BRIEFS_INDEX = REPO_ROOT / "data/founder_briefs/index.json"
+BRIEFS_INDEX = FOUNDER_BRIEFS_DIR / "index.json"
 AGENCY_CSV = REPO_ROOT / "docs/commercial/operations/targeting/agency_accounts_seed.csv"
 
 
@@ -62,7 +67,7 @@ def build_value_map_status() -> dict[str, Any]:
         "first_launch_gate": FIRST_LAUNCH_GATE.is_file(),
         "agency_seed_csv": AGENCY_CSV.is_file(),
         "founder_briefs_index": BRIEFS_INDEX.is_file(),
-        "war_room_today": (REPO_ROOT / "data/war_room_today.json").is_file(),
+        "war_room_today": WAR_ROOM_TODAY_JSON.is_file(),
     }
 
     return {
@@ -80,13 +85,9 @@ def build_value_map_status() -> dict[str, Any]:
             "Sync kpi_founder_commercial_import.yaml from CRM when ready",
             "Complete FOUNDER_ACTION in verify_paid_launch_readiness before any live payment provider activation",
         ],
-        "doc_path": str(VALUE_MAP_DOC.relative_to(REPO_ROOT)).replace("\\", "/"),
-        "commercial_identity_path": str(
-            COMMERCIAL_IDENTITY_DOC.relative_to(REPO_ROOT)
-        ).replace("\\", "/"),
-        "first_launch_gate_path": str(FIRST_LAUNCH_GATE.relative_to(REPO_ROOT)).replace(
-            "\\", "/"
-        ),
+        "doc_path": display_path(VALUE_MAP_DOC),
+        "commercial_identity_path": display_path(COMMERCIAL_IDENTITY_DOC),
+        "first_launch_gate_path": display_path(FIRST_LAUNCH_GATE),
         "market_intel_index": "docs/commercial/MARKET_INTELLIGENCE_MASTER_INDEX_AR.md",
     }
 
@@ -159,10 +160,8 @@ def render_commercial_value_map_markdown(blob: dict[str, Any]) -> str:
 
 
 def write_value_map_artifacts(*, day: str | None = None, motion_top_n: int = 5) -> dict[str, str]:
-    """Write JSON + MD under data/founder_briefs/ — returns relative paths."""
+    """Write JSON + MD under the governed founder-briefs root."""
     import json
-
-    from dealix.commercial_ops.paths import FOUNDER_BRIEFS_DIR
 
     day = day or datetime.now(UTC).strftime("%Y-%m-%d")
     FOUNDER_BRIEFS_DIR.mkdir(parents=True, exist_ok=True)
@@ -172,6 +171,6 @@ def write_value_map_artifacts(*, day: str | None = None, motion_top_n: int = 5) 
     json_path.write_text(json.dumps(blob, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     md_path.write_text(render_commercial_value_map_markdown(blob) + "\n", encoding="utf-8")
     return {
-        "json": str(json_path.relative_to(REPO_ROOT)).replace("\\", "/"),
-        "md": str(md_path.relative_to(REPO_ROOT)).replace("\\", "/"),
+        "json": display_path(json_path),
+        "md": display_path(md_path),
     }

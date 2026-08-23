@@ -11,10 +11,14 @@ import subprocess
 import sys
 from collections.abc import Callable
 from datetime import UTC, datetime
-from pathlib import Path
 from typing import Any
 
-from dealix.commercial_ops.paths import FOUNDER_BRIEFS_DIR, REPO_ROOT, WAR_ROOM_TODAY_JSON
+from dealix.commercial_ops.paths import (
+    FOUNDER_BRIEFS_DIR,
+    REPO_ROOT,
+    WAR_ROOM_TODAY_JSON,
+    display_path,
+)
 
 # External GTM research alignment (2025–2026) — not performance claims for Dealix.
 RESEARCH_ALIGNMENT_AR = {
@@ -86,7 +90,7 @@ def _step_war_room(*, top_n: int) -> dict[str, Any]:
     return {
         "ok": True,
         "targets": len((payload.get("targets") or {}).get("items") or []),
-        "path": str(WAR_ROOM_TODAY_JSON.relative_to(REPO_ROOT)).replace("\\", "/"),
+        "path": display_path(WAR_ROOM_TODAY_JSON),
     }
 
 
@@ -94,7 +98,7 @@ def _step_daily_pack() -> dict[str, Any]:
     from dealix.commercial_ops.daily_pack import write_daily_pack_index
 
     path = write_daily_pack_index()
-    return {"ok": True, "pack_md": str(path.relative_to(REPO_ROOT)).replace("\\", "/")}
+    return {"ok": True, "pack_md": display_path(path)}
 
 
 def _step_value_plan_export(*, top_n: int) -> dict[str, Any]:
@@ -110,7 +114,7 @@ def _step_value_plan_export(*, top_n: int) -> dict[str, Any]:
     json_path = FOUNDER_BRIEFS_DIR / f"value_plan_{day}.json"
     md_path.write_text(render_value_plan_markdown(snap) + "\n", encoding="utf-8")
     json_path.write_text(json.dumps(snap, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    return {"ok": True, "json": str(json_path.relative_to(REPO_ROOT)).replace("\\", "/")}
+    return {"ok": True, "json": display_path(json_path)}
 
 
 def _step_dogfooding(*, top_n: int = 10) -> dict[str, Any]:
@@ -127,9 +131,7 @@ def _step_dogfooding(*, top_n: int = 10) -> dict[str, Any]:
     return {
         "ok": True,
         "targets": n,
-        "path": str(DEALIX_DOGFOODING_WAR_ROOM_JSON.relative_to(REPO_ROOT)).replace(
-            "\\", "/"
-        ),
+        "path": display_path(DEALIX_DOGFOODING_WAR_ROOM_JSON),
     }
 
 
@@ -181,7 +183,7 @@ def _step_commercial_digest() -> dict[str, Any]:
     return {
         "ok": True,
         "focus_count": len(digest.get("today_focus_ar") or []),
-        "path": str(path.relative_to(REPO_ROOT)).replace("\\", "/"),
+        "path": display_path(path),
     }
 
 
@@ -196,7 +198,7 @@ def _step_autopilot_brief() -> dict[str, Any]:
     path = FOUNDER_BRIEFS_DIR / f"autopilot_{day}.md"
     snap = build_autopilot_snapshot()
     path.write_text(render_autopilot_brief_markdown(snap) + "\n", encoding="utf-8")
-    return {"ok": True, "path": str(path.relative_to(REPO_ROOT)).replace("\\", "/")}
+    return {"ok": True, "path": display_path(path)}
 
 
 MORNING_EXTENDED_STEPS: list[tuple[str, str, Callable[..., dict[str, Any]]]] = [

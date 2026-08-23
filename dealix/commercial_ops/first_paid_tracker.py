@@ -3,16 +3,20 @@
 from __future__ import annotations
 
 import csv
-from pathlib import Path
 from typing import Any
 
 from dealix.commercial_ops.evidence_csv import real_evidence_rows
-from dealix.commercial_ops.paths import REPO_ROOT
+from dealix.commercial_ops.paths import (
+    EVIDENCE_TRACKER_CSV,
+    REPO_ROOT,
+    SOFT_LAUNCH_TRACKER_YAML,
+    display_path,
+)
 
-EVIDENCE = REPO_ROOT / "docs/commercial/operations/evidence_events_tracker.csv"
+EVIDENCE = EVIDENCE_TRACKER_CSV
 KPI_YAML = REPO_ROOT / "dealix/transformation/kpi_founder_commercial_import.yaml"
 DOD_DOC = REPO_ROOT / "docs/commercial/operations/FIRST_PAID_DIAGNOSTIC_DOD_AR.md"
-SOFT_LAUNCH_TRACKER = REPO_ROOT / "docs/commercial/operations/soft_launch_meetings_tracker.yaml"
+SOFT_LAUNCH_TRACKER = SOFT_LAUNCH_TRACKER_YAML
 
 REVENUE_LADDER_AR = (
     "Free Mini Diagnostic → qualified discovery → customer-specific quote → "
@@ -83,12 +87,8 @@ def analyze_first_paid_diagnostic() -> dict[str, Any]:
         verdict = "PIPELINE_OPEN"
 
     return {
-        "evidence_path": str(EVIDENCE.relative_to(REPO_ROOT)).replace("\\", "/"),
-        "kpi_path": (
-            str(KPI_YAML.relative_to(REPO_ROOT)).replace("\\", "/")
-            if kpi_ok
-            else None
-        ),
+        "evidence_path": display_path(EVIDENCE),
+        "kpi_path": display_path(KPI_YAML) if kpi_ok else None,
         "total_events": len(events),
         "real_company_events": len(real),
         "invoice_sent_real": len(by_type.get("invoice_sent", [])),
@@ -100,10 +100,8 @@ def analyze_first_paid_diagnostic() -> dict[str, Any]:
         "proof_without_payment_companies": proof_without_payment_companies,
         "crm_kpi_pending": crm_pending,
         "first_close_ready": first_close_ready,
-        "dod_doc": str(DOD_DOC.relative_to(REPO_ROOT)).replace("\\", "/"),
+        "dod_doc": display_path(DOD_DOC),
         "verdict": verdict,
         "revenue_ladder_ar": REVENUE_LADDER_AR,
-        "soft_launch_tracker": str(SOFT_LAUNCH_TRACKER.relative_to(REPO_ROOT)).replace(
-            "\\", "/"
-        ),
+        "soft_launch_tracker": display_path(SOFT_LAUNCH_TRACKER),
     }

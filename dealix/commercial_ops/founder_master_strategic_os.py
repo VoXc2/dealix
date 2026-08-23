@@ -6,7 +6,7 @@ import json
 from datetime import UTC, datetime
 from typing import Any
 
-from dealix.commercial_ops.paths import FOUNDER_BRIEFS_DIR, REPO_ROOT
+from dealix.commercial_ops.paths import FOUNDER_BRIEFS_DIR, REPO_ROOT, display_path
 from dealix.commercial_ops.phase_01_close_path import build_phase_01_close_path
 from dealix.commercial_ops.platform_v10_readiness import analyze_platform_v10_readiness
 from dealix.commercial_ops.railway_production import analyze_railway_production
@@ -48,5 +48,5 @@ def run_founder_master_strategic_os(
     FOUNDER_BRIEFS_DIR.mkdir(parents=True, exist_ok=True)
     out = FOUNDER_BRIEFS_DIR / f"master_strategic_os_{payload['date']}.json"
     out.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    payload["artifact_path"] = str(out.relative_to(REPO_ROOT)).replace("\\", "/")
+    payload["artifact_path"] = display_path(out)
     return payload

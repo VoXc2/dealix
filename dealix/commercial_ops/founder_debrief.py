@@ -12,7 +12,7 @@ import yaml
 from dealix.commercial_ops.paths import (
     FOUNDER_DEBRIEFS_DIR,
     GTM_DEBRIEF_TEMPLATE,
-    REPO_ROOT,
+    display_path,
 )
 
 
@@ -81,7 +81,7 @@ def list_debriefs(limit: int = 20) -> list[dict[str, Any]]:
         debrief = (data or {}).get("debrief") or {}
         out.append(
             {
-                "path": str(p.relative_to(REPO_ROOT)).replace("\\", "/"),
+                "path": display_path(p),
                 "company": meeting.get("company"),
                 "date": meeting.get("date"),
                 "one_decision": debrief.get("one_decision"),

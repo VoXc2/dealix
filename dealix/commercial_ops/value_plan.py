@@ -10,7 +10,7 @@ from dealix.commercial_ops.evidence_append import evening_reminder_ar, has_evide
 from dealix.commercial_ops.evidence_csv import count_evidence_events, load_evidence_rows
 from dealix.commercial_ops.first_paid_tracker import analyze_first_paid_diagnostic
 from dealix.commercial_ops.motion_a_pipeline import build_motion_a_pipeline_plan
-from dealix.commercial_ops.paths import FOUNDER_BRIEFS_DIR, REPO_ROOT
+from dealix.commercial_ops.paths import FOUNDER_BRIEFS_DIR, WAR_ROOM_TODAY_JSON, display_path
 from dealix.commercial_ops.targeting_csv import load_targets
 from dealix.commercial_ops.weekly_scorecard_commercial import build_weekly_scorecard
 
@@ -21,7 +21,7 @@ def _brief_paths(day: str) -> dict[str, str | None]:
     def _rel(p: Path) -> str | None:
         if not p.is_file():
             return None
-        return str(p.relative_to(REPO_ROOT)).replace("\\", "/")
+        return display_path(p)
 
     return {
         "motion_a_md": _rel(d / f"motion_a_{day}.md"),
@@ -36,17 +36,13 @@ def _brief_paths(day: str) -> dict[str, str | None]:
 def _pack_status_for_day(day: str) -> dict[str, Any]:
     d = FOUNDER_BRIEFS_DIR
     pack_path = d / f"DAILY_PACK_{day}.md"
-    try:
-        pack_index = str(pack_path.relative_to(REPO_ROOT)).replace("\\", "/")
-    except ValueError:
-        pack_index = str(pack_path)
-    war_room = REPO_ROOT / "data/war_room_today.json"
+    war_room = WAR_ROOM_TODAY_JSON
     return {
         "date": day,
         "brief_exists": (d / f"brief_{day}.md").is_file(),
         "commercial_exists": (d / f"commercial_{day}.md").is_file(),
         "war_room_exists": war_room.is_file(),
-        "pack_index": pack_index,
+        "pack_index": display_path(pack_path),
     }
 
 
@@ -155,8 +151,8 @@ def build_value_plan_snapshot(*, motion_top_n: int = 5) -> dict[str, Any]:
             "verdict": strongest_ops.get("verdict"),
             "tasks_today_count": strongest_ops.get("tasks_today_count"),
             "brief_paths": {
-                "json": f"data/founder_briefs/strongest_ops_{day}.json",
-                "markdown": f"data/founder_briefs/strongest_ops_{day}.md",
+                "json": display_path(FOUNDER_BRIEFS_DIR / f"strongest_ops_{day}.json"),
+                "markdown": display_path(FOUNDER_BRIEFS_DIR / f"strongest_ops_{day}.md"),
             },
             "api_path": "/api/v1/ops-autopilot/founder/strongest-ops",
             "runner": "scripts/run_founder_strongest_ops.py",

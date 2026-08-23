@@ -9,7 +9,7 @@ from typing import Any
 
 from dealix.commercial_ops.expansion_status import build_expansion_status
 from dealix.commercial_ops.first_paid_tracker import analyze_first_paid_diagnostic
-from dealix.commercial_ops.paths import FOUNDER_BRIEFS_DIR, REPO_ROOT
+from dealix.commercial_ops.paths import FOUNDER_BRIEFS_DIR, display_path
 
 # Synthesized from founder-led RevOps cadence literature (Gong, Weflow, PMGuru, 2024–2026).
 # Dealix deliberately exceeds on governance; does not compete on unsupervised outbound volume.
@@ -88,8 +88,8 @@ def save_last_autonomous_run(payload: dict[str, Any]) -> Path:
     md = FOUNDER_BRIEFS_DIR / f"autonomous_ops_{day}.md"
     md.write_text(render_autonomous_ops_markdown(payload), encoding="utf-8")
     payload["written_paths"] = {
-        "json": str(p.relative_to(REPO_ROOT)).replace("\\", "/"),
-        "markdown": str(md.relative_to(REPO_ROOT)).replace("\\", "/"),
+        "json": display_path(p),
+        "markdown": display_path(md),
     }
     p.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     return p
