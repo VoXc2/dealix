@@ -6,7 +6,6 @@ REPO_SLUG="${DEALIX_REPO_SLUG:-Dealix-sa/dealix}"
 RUN_USER="${DEALIX_RUN_USER:-dealix}"
 REPO="${DEALIX_REPO_ROOT:-/opt/dealix/workspace/dealix}"
 PROOF_ROOT="${DEALIX_EXECUTIVE_PROOF_ROOT:-/opt/dealix/executive-proof}"
-PR_NUMBER="${DEALIX_FOUNDER_MASTER_PR:-1145}"
 TMP="$(mktemp -d /tmp/dealix-founder-repair.XXXXXX)"
 trap 'rm -rf "$TMP"' EXIT
 
@@ -35,8 +34,7 @@ export DEALIX_PROOF_MODE=verified_only
 section "1. RESOLVE CURRENT SOURCE OF TRUTH"
 MAIN_SHA="$(sudo -iu "$RUN_USER" gh api "repos/${REPO_SLUG}/commits/main" --jq '.sha')"
 LOCAL_SHA="$(sudo -iu "$RUN_USER" git -C "$REPO" rev-parse HEAD)"
-PR_HEAD="$(sudo -iu "$RUN_USER" gh pr view "$PR_NUMBER" --repo "$REPO_SLUG" --json headRefOid --jq '.headRefOid')"
-printf 'github_main=%s\nlocal_head_before=%s\nmaster_pr_head=%s\n' "$MAIN_SHA" "$LOCAL_SHA" "$PR_HEAD"
+printf 'github_main=%s\nlocal_head_before=%s\nfounder_master_ref=%s\n' "$MAIN_SHA" "$LOCAL_SHA" "$MAIN_SHA"
 
 section "2. FETCH CURRENT MAIN ACTIVATOR DIRECTLY FROM GITHUB"
 ACTIVATOR="$TMP/activate_dealix_from_main.sh"
@@ -62,6 +60,7 @@ required=(
   scripts/ops/dealix_founder_money_command.sh
   scripts/ops/dealix_canonical_revenue_cycle.sh
   scripts/ops/verify_canonical_company_autopilot.py
+  scripts/ops/dealix_founder_master_command.sh
   docs/ops/DEALIX_EXECUTIVE_AUTOPILOT_MASTER_PROMPT.md
 )
 missing=0
@@ -75,17 +74,17 @@ for rel in "${required[@]}"; do
 done
 [[ "$missing" -eq 0 ]] || { echo "BLOCKED: canonical current-main files missing"; exit 8; }
 
-section "5. FETCH AND VERIFY EXACT FOUNDER MASTER FROM PR"
+section "5. FETCH AND VERIFY FOUNDER MASTER FROM CURRENT MAIN"
 MASTER="$TMP/dealix_founder_master_command.sh"
 sudo -iu "$RUN_USER" gh api \
   -H 'Accept: application/vnd.github.raw+json' \
-  "repos/${REPO_SLUG}/contents/scripts/ops/dealix_founder_master_command.sh?ref=${PR_HEAD}" \
+  "repos/${REPO_SLUG}/contents/scripts/ops/dealix_founder_master_command.sh?ref=${MAIN_SHA}" \
   >"$MASTER"
-[[ -s "$MASTER" ]] || { echo "BLOCKED: could not fetch founder master"; exit 9; }
+[[ -s "$MASTER" ]] || { echo "BLOCKED: could not fetch founder master from current main"; exit 9; }
 chmod 0700 "$MASTER"
 bash -n "$MASTER"
 if grep -q 'MOYASIR_LIVE_MODE' "$MASTER"; then
-  echo "BLOCKED: stale Moyasar typo still present in exact PR source"
+  echo "BLOCKED: stale Moyasar typo still present in current-main source"
   exit 10
 fi
 grep -Fq 'MOYASAR_LIVE_MODE=0' "$MASTER" || { echo "BLOCKED: Moyasar live-mode kill switch missing"; exit 11; }
@@ -99,7 +98,7 @@ if grep -Fq -- '--toolsets terminal -z' "$MASTER"; then
 fi
 echo "FOUNDER_MASTER_SOURCE_GUARDS=PASS"
 
-section "6. RUN EXACT MASTER WITH CANONICAL ONE-SHOT SYNTHESIS"
+section "6. RUN CURRENT-MAIN MASTER WITH CANONICAL ONE-SHOT SYNTHESIS"
 set +e
 DEALIX_SYNC_MAIN=0 \
 DEALIX_RUN_LOCAL_AI=1 \

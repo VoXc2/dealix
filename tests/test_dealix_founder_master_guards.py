@@ -42,8 +42,10 @@ def test_repair_wrapper_rejects_obsolete_hermes_oneshot_in_fetched_master():
     assert "BLOCKED: obsolete Hermes oneshot path still present" in REPAIR
 
 
-def test_repair_wrapper_pins_exact_pr_head_and_current_main():
-    assert "PR_HEAD=" in REPAIR
+def test_repair_wrapper_sources_founder_master_only_from_current_main():
     assert "MAIN_SHA=" in REPAIR
-    assert "?ref=${PR_HEAD}" in REPAIR
-    assert "?ref=${MAIN_SHA}" in REPAIR
+    assert "PR_HEAD=" not in REPAIR
+    assert "DEALIX_FOUNDER_MASTER_PR" not in REPAIR
+    assert "founder_master_ref=%s" in REPAIR
+    assert "contents/scripts/ops/dealix_founder_master_command.sh?ref=${MAIN_SHA}" in REPAIR
+    assert "FETCH AND VERIFY FOUNDER MASTER FROM CURRENT MAIN" in REPAIR

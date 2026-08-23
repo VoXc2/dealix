@@ -24,6 +24,11 @@ def test_engineer_uses_dealix_user_and_exact_pr_head():
     assert 'git -C "$REPO" worktree add --detach "$worktree" "$head"' in ENGINEER
 
 
+def test_manual_engineer_defaults_to_review_only():
+    assert 'AUTOBUILD="${DEALIX_ENGINEER_AUTOBUILD:-0}"' in ENGINEER
+    assert 'AUTOBUILD="${DEALIX_ENGINEER_AUTOBUILD:-1}"' not in ENGINEER
+
+
 def test_hermes_is_network_and_credential_sandboxed():
     assert "IPAddressDeny=any" in ENGINEER
     assert "IPAddressAllow=localhost" in ENGINEER
