@@ -80,6 +80,23 @@ if ! flock -n 9; then
   exit 0
 fi
 
+# ---- Throughput controls (speed & throughput program) -----------------
+# Complexity-aware turn budgets instead of a blanket max for every seat.
+declare -A ROLE_TURNS=(
+  [EXECUTIVE_OPERATIONS]=3
+  [REVENUE_SALES]=4
+  [MARKET_PARTNERSHIPS]=4
+  [CUSTOMER_DELIVERY]=3
+  [PRODUCT_ENGINEERING]=4
+  [GOVERNANCE_FINANCE]=3
+)
+SYNTH_TURNS=6
+ROLE_TURNS_DEFAULT=4
+ROLE_TIMEOUT="${DEALIX_COUNCIL_ROLE_TIMEOUT:-240}"     # per-seat wall clock (sec); live CPU-4B runs need >150s per seat
+SYNTH_TIMEOUT="${DEALIX_COUNCIL_SYNTH_TIMEOUT:-180}"   # synthesis wall clock (sec)
+FAST_ROLES="${DEALIX_COUNCIL_FAST_ROLES:-}"            # comma list; empty = FULL council
+FORCE_RUN="${DEALIX_COUNCIL_FORCE:-0}"                 # 1 = ignore input-unchanged skip
+
 AVAILABLE_MB="$(( $(awk '/MemAvailable:/ {print $2}' /proc/meminfo) / 1024 ))"
 log "memory_available_mb=${AVAILABLE_MB}"
 if (( AVAILABLE_MB < 3500 )); then
@@ -144,12 +161,39 @@ PACKET="${RUN_DIR}/company_packet.txt"
 } | redact >"$PACKET"
 chmod 0640 "$PACKET"
 
+# ---- SKIP_UNCHANGED: never spend LLM calls on identical state ----------
+# Hash a DETERMINISTIC core-state fingerprint (git head + branch + canonical
+# state files). The full sanitized packet embeds volatile telemetry
+# (memory/GB, probe timestamps), which would make whole-packet hashing
+# never match.
+INPUT_HASH="$( { cd "$REPO_ROOT" && git rev-parse HEAD 2>/dev/null; git branch --show-current 2>/dev/null; \
+  md5sum docs/commercial/DEALIX_OS_EXECUTION_BOARD_SEED.csv \
+         dealix/transformation/business_now_cache.yaml \
+         dealix/transformation/kpi_baselines.yaml 2>/dev/null | awk '{print $1}'; } \
+  | sha256sum | cut -c1-16 )"
+LAST_RUN_DIR_FILE="${STATE_DIR}/last_run_dir"
+LAST_HASH_FILE="${STATE_DIR}/last_input_hash"
+LAST_RUN_DIR=""
+[[ -f "$LAST_RUN_DIR_FILE" ]] && LAST_RUN_DIR="$(cat "$LAST_RUN_DIR_FILE" 2>/dev/null || true)"
+
+if [[ "$FORCE_RUN" != "1" && -n "$LAST_RUN_DIR" && "$(cat "$LAST_HASH_FILE" 2>/dev/null || true)" == "$INPUT_HASH" && -f "${LAST_RUN_DIR}/CEO_DAILY_COMMAND.md" ]]; then
+  log "SKIP_REASON=input_unchanged reusing=${LAST_RUN_DIR}"
+  mkdir -p "$RUN_DIR"
+  cp -a "${LAST_RUN_DIR}/." "$RUN_DIR/" 2>/dev/null || true
+  printf '{"skipped":"input_unchanged","reused_from":"%s","input_hash":"%s"}\n' "$LAST_RUN_DIR" "$INPUT_HASH" >"${RUN_DIR}/PROOF.json"
+  chmod 0640 "${RUN_DIR}/PROOF.json"
+  log "AGENT_COUNCIL_COMPLETE: mode=SKIP_UNCHANGED reports=${RUN_DIR} external_actions=0"
+  exit 0
+fi
+
 run_role() {
   local role_id="$1"
   local mandate="$2"
   local focus="$3"
   local out="${RUN_DIR}/${role_id}.md"
   local prompt="${RUN_DIR}/${role_id}.prompt.txt"
+  local turns="${ROLE_TURNS[$role_id]:-$ROLE_TURNS_DEFAULT}"
+  local t0 t1
 
   cat >"$prompt" <<EOF
 You are a bounded internal member of the Dealix Agent Council.
@@ -179,43 +223,71 @@ $(cat "$PACKET")
 EOF
 
   log "ROLE_START: ${role_id}"
+  t0="$(date +%s)"
   set +e
-  "$HERMES_BIN" --ignore-rules chat --toolsets safe --max-turns 6 --query "$(cat "$prompt")" \
+  timeout --kill-after=15 --signal=TERM "$ROLE_TIMEOUT" \
+    "$HERMES_BIN" --ignore-rules chat --toolsets safe --max-turns "$turns" --query "$(cat "$prompt")" \
     2>&1 | redact | tee "$out"
   rc=${PIPESTATUS[0]}
   set -e
+  t1="$(date +%s)"
   rm -f "$prompt"
-  if [[ $rc -ne 0 ]]; then
-    log "ROLE_FAIL: ${role_id} rc=${rc}"
+  if [[ $rc -eq 124 ]] || [[ $rc -eq 137 ]]; then
+    log "ROLE_TIMEOUT: ${role_id} after ${ROLE_TIMEOUT}s (partial evidence preserved)"
+    printf '\nROLE_RUNTIME_TIMEOUT=%ss\n' "$ROLE_TIMEOUT" >>"$out"
+    RUN_FAILED=1
+    SEAT_TIMEOUT=$((SEAT_TIMEOUT + 1))
+  elif [[ $rc -ne 0 ]]; then
+    log "ROLE_FAIL: ${role_id} rc=${rc} duration=$((t1 - t0))s"
     printf '\nROLE_RUNTIME_ERROR=%s\n' "$rc" >>"$out"
   else
-    log "ROLE_OK: ${role_id}"
+    log "ROLE_OK: ${role_id} duration=$((t1 - t0))s turns=${turns}"
   fi
 }
 
-run_role "EXECUTIVE_OPERATIONS" \
-  "Act as COO/Chief of Staff over the existing Dealix operating spine." \
-  "cross-department priorities, dependencies, founder workload, execution sequencing"
+# ---- Seat selection: FULL council by default, FAST subset via env --------
+# DEALIX_COUNCIL_FAST_ROLES="REVENUE_SALES,PRODUCT_ENGINEERING" runs only
+# those seats (+ synthesis). Local provider serializes generation
+# (Ollama num_parallel=1), so seat parallelism adds queueing, not speed;
+# wall-clock wins come from budgets, timeouts, skip-unchanged and FAST mode.
+ALL_SEATS=(
+  "EXECUTIVE_OPERATIONS|Act as COO/Chief of Staff over the existing Dealix operating spine.|cross-department priorities, dependencies, founder workload, execution sequencing"
+  "REVENUE_SALES|Act as Revenue Intelligence and Sales Strategy leadership.|money-now action, closeability, qualified pipeline, diagnostics, proposal/follow-up readiness, objections"
+  "MARKET_PARTNERSHIPS|Act as Saudi/GCC Market Intelligence and Partnerships leadership.|sourced market triggers, accounts, sectors, partners, Saudi market-access opportunities; no spam"
+  "CUSTOMER_DELIVERY|Act as Customer Value, Managed Operations and Delivery leadership.|delivery readiness, onboarding, support patterns, value proof, churn/expansion signals, operating blockers"
+  "PRODUCT_ENGINEERING|Act as Product and Engineering portfolio leadership without changing code.|production trust, CI/PR state, product gaps, technical debt, highest-leverage safe engineering work"
+  "GOVERNANCE_FINANCE|Act as Governance, Risk, Proof and Finance control leadership.|approval boundaries, proof integrity, security/privacy, invoice/payment evidence, costs, margin/risk posture"
+)
+if [[ -n "$FAST_ROLES" ]]; then
+  IFS=',' read -r -a WANTED <<<"$FAST_ROLES"
+  SELECTED_SEATS=()
+  for row in "${ALL_SEATS[@]}"; do
+    for w in "${WANTED[@]}"; do
+      [[ "${row%%|*}" == "$w" ]] && SELECTED_SEATS+=("$row") && break
+    done
+  done
+  log "MODE=FAST seats=${SELECTED_SEATS[*]:-none}"
+else
+  SELECTED_SEATS=("${ALL_SEATS[@]}")
+  log "MODE=FULL seats=${#SELECTED_SEATS[@]}"
+fi
 
-run_role "REVENUE_SALES" \
-  "Act as Revenue Intelligence and Sales Strategy leadership." \
-  "money-now action, closeability, qualified pipeline, diagnostics, proposal/follow-up readiness, objections"
+if (( ${#SELECTED_SEATS[@]} == 0 )); then
+  log "BLOCKED: FAST_ROLES matched no known seat; refusing 0-seat council"
+  exit 5
+fi
 
-run_role "MARKET_PARTNERSHIPS" \
-  "Act as Saudi/GCC Market Intelligence and Partnerships leadership." \
-  "sourced market triggers, accounts, sectors, partners, Saudi market-access opportunities; no spam"
-
-run_role "CUSTOMER_DELIVERY" \
-  "Act as Customer Value, Managed Operations and Delivery leadership." \
-  "delivery readiness, onboarding, support patterns, value proof, churn/expansion signals, operating blockers"
-
-run_role "PRODUCT_ENGINEERING" \
-  "Act as Product and Engineering portfolio leadership without changing code." \
-  "production trust, CI/PR state, product gaps, technical debt, highest-leverage safe engineering work"
-
-run_role "GOVERNANCE_FINANCE" \
-  "Act as Governance, Risk, Proof and Finance control leadership." \
-  "approval boundaries, proof integrity, security/privacy, invoice/payment evidence, costs, margin/risk posture"
+COUNCIL_T0="$(date +%s)"
+SEAT_TIMEOUT=0
+SEAT_FAILED=0
+for row in "${SELECTED_SEATS[@]}"; do
+  ROLE_ID="${row%%|*}"
+  REST="${row#*|}"
+  MANDATE="${REST%%|*}"
+  FOCUS="${REST#*|}"
+  run_role "$ROLE_ID" "$MANDATE" "$FOCUS"
+done
+log "ROLES_DONE total_duration=$(( $(date +%s) - COUNCIL_T0 ))s seats=${#SELECTED_SEATS[@]}"
 
 SYNTHESIS="${RUN_DIR}/CEO_DAILY_COMMAND.md"
 SYNTH_PROMPT="${RUN_DIR}/ceo.prompt.txt"
@@ -262,11 +334,14 @@ EOF
 } >"$SYNTH_PROMPT"
 
 log "ROLE_START: CEO_CHAIR"
+S0="$(date +%s)"
 set +e
-"$HERMES_BIN" --ignore-rules chat --toolsets safe --max-turns 8 --query "$(cat "$SYNTH_PROMPT")" \
+timeout --kill-after=15 --signal=TERM "$SYNTH_TIMEOUT" \
+  "$HERMES_BIN" --ignore-rules chat --toolsets safe --max-turns "$SYNTH_TURNS" --query "$(cat "$SYNTH_PROMPT")" \
   2>&1 | redact | tee "$SYNTHESIS"
 CEO_RC=${PIPESTATUS[0]}
 set -e
+log "CEO_CHAIR duration=$(( $(date +%s) - S0 ))s turns=${SYNTH_TURNS}"
 rm -f "$SYNTH_PROMPT"
 
 if [[ $CEO_RC -eq 0 ]]; then
@@ -283,7 +358,11 @@ cat >"${RUN_DIR}/PROOF.json" <<EOF
   "timestamp": "$(date -Is)",
   "repo_head": "$(git rev-parse HEAD 2>/dev/null || echo unknown)",
   "packet": "${PACKET}",
-  "reports": 6,
+  "seats_configured": ${#SELECTED_SEATS[@]},
+  "seats_failed": ${SEAT_FAILED:-0},
+  "seats_timeout": ${SEAT_TIMEOUT:-0},
+  "mode": "${FAST_ROLES:+fast}${FAST_ROLES:-full}",
+  "total_duration_s": "$(( $(date +%s) - COUNCIL_T0 ))",
   "ceo_exit_code": ${CEO_RC},
   "external_actions_executed": 0,
   "merge_to_main": false,
@@ -301,5 +380,17 @@ ollama stop "${MODEL_PRIMARY}:latest" >/dev/null 2>&1 || true
 find "$REPORT_DIR" -type d -mindepth 2 -mtime +30 -exec rm -rf {} + 2>/dev/null || true
 find "$LOG_DIR" -type f -name '*.log' -mtime +14 -delete 2>/dev/null || true
 
-log "AGENT_COUNCIL_COMPLETE: reports=${RUN_DIR} ceo_rc=${CEO_RC} external_actions=0"
+log "AGENT_COUNCIL_COMPLETE: reports=${RUN_DIR} ceo_rc=${CEO_RC} external_actions=0 total_duration=$(( $(date +%s) - COUNCIL_T0 ))s"
+
+# Persist skip-state pointers ONLY after clean synthesis AND zero seat
+# failures/timeouts — a degraded run must never be reused as "unchanged"
+# truth by SKIP_UNCHANGED, and the exit code must not fake success.
+if [[ $CEO_RC -eq 0 && ${RUN_FAILED:-0} -eq 0 ]]; then
+  printf '%s\n' "$RUN_DIR" >"$LAST_RUN_DIR_FILE"
+  printf '%s\n' "$INPUT_HASH" >"$LAST_HASH_FILE"
+fi
+if [[ ${RUN_FAILED:-0} -ne 0 ]]; then
+  log "COUNCIL_DEGRADED: seat failures/timeouts present; pointers NOT persisted"
+  exit 1
+fi
 exit "$CEO_RC"

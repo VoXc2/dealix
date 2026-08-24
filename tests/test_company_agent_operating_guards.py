@@ -92,8 +92,24 @@ def test_council_has_hard_safe_flags_and_no_l5_primitives() -> None:
 
 def test_council_runs_bounded_safe_hermes_seats() -> None:
     text = COUNCIL.read_text(encoding="utf-8")
-    assert "--ignore-rules chat --toolsets safe --max-turns 6" in text
-    assert "--ignore-rules chat --toolsets safe --max-turns 8" in text
+    # Tool/rules scope stays pinned on BOTH seat and synthesis invocations.
+    assert text.count("--ignore-rules chat --toolsets safe") >= 2
+    # Bounded throughput contract: dynamic turn budgets + hard wall-clock
+    # timeouts per seat and for synthesis, never unbounded hermes calls.
+    assert '--toolsets safe --max-turns "$turns"' in text
+    assert "--max-turns \"$SYNTH_TURNS\"" in text
+    assert 'ROLE_TIMEOUT="${DEALIX_COUNCIL_ROLE_TIMEOUT:-240}"' in text
+    assert 'SYNTH_TIMEOUT="${DEALIX_COUNCIL_SYNTH_TIMEOUT:-180}"' in text
+    assert "timeout --kill-after=15 --signal=TERM" in text
+    # SKIP_UNCHANGED: identical state must never re-bill LLM calls, and a
+    # degraded run must never be persisted as reusable truth.
+    assert "SKIP_REASON=input_unchanged" in text
+    assert "COUNCIL_DEGRADED: seat failures/timeouts present; pointers NOT persisted" in text
+    assert "seats_failed" in text and "seats_timeout" in text
+    assert "exit 1" in text
+    assert "BLOCKED: FAST_ROLES matched no known seat" in text
+    # FAST/incremental mode without a second scheduler or council system
+    assert "DEALIX_COUNCIL_FAST_ROLES" in text
     for seat in (
         "EXECUTIVE_OPERATIONS",
         "REVENUE_SALES",
