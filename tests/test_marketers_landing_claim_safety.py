@@ -77,13 +77,12 @@ def test_services_page_is_a_governed_offer_ladder_not_a_public_price_sheet() -> 
     lowered = html.lower()
 
     required_contracts = (
-        "ابدأ بألم واحد",
-        "سلّم العروض",
-        "نطاق مكتوب",
-        "تشغيل داخلي",
-        "مراجعة دليل",
-        "لا أسعار عامة أو Refund أو SLA غير معتمدة تعاقديًا",
-        "هذه خريطة عروض Pilot وليست قائمة أسعار أو عقد خدمة أو ضمان أداء",
+        "منتج واحد. القدرات تتوسع بعد إثبات القيمة.",
+        "مسار واحد للشراء",
+        "quote-only 30-day Revenue Command Pilot",
+        "هذه ليست باقات أو أسعارًا مستقلة",
+        "Expand only if earned",
+        "إذا لم تظهر قيمة قابلة للإثبات، نتوقف أو نعيد التصميم",
     )
     for contract in required_contracts:
         assert contract in html
