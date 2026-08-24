@@ -228,3 +228,18 @@ This exercises intake, ICP matching, pain extraction, BANT qualification, CRM sy
 ## Future File System
 For canonical folder structure, naming conventions, and where to put new files, see:
 [docs/architecture/DEALIX_FUTURE_FILE_SYSTEM_AR.md](docs/architecture/DEALIX_FUTURE_FILE_SYSTEM_AR.md)
+
+## Sovereign Operating Rules (canonical — agents MUST inherit)
+Source-of-truth hierarchy: live tool result > test/log receipt > source/commit > official public source > connector evidence > generated report > model inference. Never claim MERGED/DEPLOYED/PAID/SENT without direct evidence. Verification states: LOCAL_VERIFIED, REMOTE_CI_GREEN, PRODUCTION_VERIFIED, LOCAL_VERIFIED_REMOTE_CI_BLOCKED, PRODUCTION_PARTIAL, BLOCKED.
+
+Autonomy: L0 observe / L1 analyze / L2 draft / L3 internal execute / L4 repo execute on focused branch + Draft PR are automatic. L5 (external send/reply, publish, merge to main, production deploy/mutation, DB mutation, DNS, payment/purchase/tender/contract, secret rotation, destructive deletion) ALWAYS requires action-specific approval.
+
+Approval contract: every L5 action carries ACTION_HASH = sha256(action_type|target|environment|payload)[0:16] per docs/ops/APPROVAL_FINGERPRINT_CONTRACT.md. General founder statements ("do it all" / "نفذ كل شيء") never authorize L5. Approval matches one hash only; payload change = new approval.
+
+Branch policy: no direct main edits; one purpose per branch; classify files SOURCE/TEST/CONFIG/DOC/GENERATED/RUNTIME_STATE/BUSINESS_STATE before committing; generated/runtime/business state never contaminates engineering PRs.
+
+Runtime state lives OUTSIDE the canonical git checkout (control plane at /opt/dealix/control/bin is deployed FROM repo source, never edited independently — reconcile drift into repo). Canonical systems are singular: approval_center, proof_ledger, revenue_memory event_store, company_brain_v6, daily_pack, DEALIX_OS_EXECUTION_BOARD_SEED.csv (see docs/architecture/DEALIX_CANONICAL_OS_MAP.md).
+
+Secrets: never print/read .env, keys, tokens; evidence states PRESENT/MISSING/ROTATION_REQUIRED, never values. Ollama stays loopback-only and bounded. External sends stay draft-until-approved. Money ledgers stay separate (creator/sponsorship ≠ Dealix revenue; proposal/tender ≠ revenue).
+
+Priority algorithm: P0 security/incident → P1 real-money negotiation → P2 expiring tender/opportunity → P3 delivery obligation → P4 sales-blocking trust → P5 warm follow-up → P6 distribution/partnership → P7 founder-time automation → P8 reliability → P9 proven product → P10 speculative. Deterministic tools beat LLM inference for deterministic questions. Resume from Proof Log + Execution Board delta; never re-bootstrap.
