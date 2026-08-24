@@ -56,9 +56,7 @@ ALLOWLIST: dict[str, dict[str, str]] = {
     },
     "ai-team.html": {
         "cold": "doctrine negation ('no/zero cold outreach', PDPL-safe)",
-        "guaranteed": "negation/disclaimer ('not guaranteed' outcomes footer)",
         "scraping": "doctrine negation ('no scraping' / policy-blocked)",
-        "مضمون": "negation/disclaimer ('نتائج غير مضمونة')",
     },
     "architecture.html": {
         "guaranteed": "negation/disclaimer ('not guaranteed' outcomes footer)",
@@ -108,7 +106,11 @@ ALLOWLIST: dict[str, dict[str, str]] = {
     },
     "index.html": {
         "cold": "doctrine negation ('no/zero cold outreach', PDPL-safe)",
+        "guaranteed": "negation/disclaimer (out-of-scope list: 'طلبات guaranteed revenue خارج أول cohort')",
         "scraping": "doctrine negation ('no scraping' / policy-blocked)",
+    },
+    "launchpad.html": {
+        "مضمون": "negation/disclaimer ('لا وعد بموعد بدء أو نتيجة مضمونة')",
     },
     "launch-status.html": {
         "guaranteed": "negation/disclaimer ('not guaranteed' outcomes footer)",
@@ -118,6 +120,10 @@ ALLOWLIST: dict[str, dict[str, str]] = {
         "blast": "negation/disclaimer context (verified)",
         "cold": "doctrine negation ('no/zero cold outreach', PDPL-safe)",
         "scraping": "doctrine negation ('no scraping' / policy-blocked)",
+    },
+    "pricing.html": {
+        "cold": "doctrine negation ('لا cold WhatsApp ولا LinkedIn automation')",
+        "scraping": "doctrine negation ('لا scraping مخالف')",
     },
     "roadmap.html": {
         "scraping": "doctrine negation ('no scraping' / policy-blocked)",
@@ -138,10 +144,7 @@ ALLOWLIST: dict[str, dict[str, str]] = {
         "guaranteed": "negation/disclaimer ('not guaranteed' outcomes footer)",
         "مضمون": "negation/disclaimer ('نتائج غير مضمونة')",
     },
-    "start.html": {
-        "cold": "doctrine negation ('no/zero cold outreach', PDPL-safe)",
-        "scraping": "doctrine negation ('no scraping' / policy-blocked)",
-    },
+    "start.html": {},
     "status.html": {
         "cold": "doctrine negation ('no/zero cold outreach', PDPL-safe)",
     },
@@ -156,7 +159,12 @@ ALLOWLIST: dict[str, dict[str, str]] = {
     "systems-catalog.html": {
         "نضمن": "negation/disclaimer ('لا نضمن نتائج محددة')",
     },
+    "terms.html": {
+        "cold": "doctrine negation ('لا cold WhatsApp أو mass LinkedIn automation')",
+        "scraping": "doctrine negation ('لا scraping مخالف')",
+    },
     "trust-center.html": {
+        "cold": "doctrine negation ('NO_COLD_WHATSAPP / لا Cold WhatsApp')",
         "scraping": "doctrine negation ('لا Scraping مخالف')",
     },
     "trust.html": {
