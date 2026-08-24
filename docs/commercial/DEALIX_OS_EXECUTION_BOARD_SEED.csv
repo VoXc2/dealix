@@ -16,3 +16,49 @@ Approval Queue,Approve Revenue Command Pilot offer,Revenue Execution,P0,Waiting 
 Approval Queue,Approve production config mutation,Production Trust,P0,Waiting Approval,L5 External Blocked,Only after CI and explicit approval
 Proof Ledger,Skill packaged,Skill System,P1,Done,L2 Draft,skill.zip created and validated
 Proof Ledger,GitHub execution branch created,Production Trust,P0,Done,L4 Repo Execute,Branch feat/dealix-autonomous-company-os-execution-spine created
+Action Queue,Close dealix.me public front door,Production Trust,P0,Done,L4 Repo Execute,Pages public=true + legacy pages-public publish verified 200 (proof log 2026-08-24)
+Action Queue,Decide canonical frontend architecture,Frontend,P0,In Progress,L3 Internal Execute,Railway Next.js is canonical per docs; prepare DNS cutover approval packet
+Action Queue,Resolve /ar route truth,Frontend,P1,In Progress,L3 Internal Execute,REQUIRED_ROUTE confirmed (next-intl defaultLocale=ar localePrefix=always); served only by Railway cutover
+Action Queue,Classify production/nightly unit failures,Automation,P0,Done,L4 Repo Execute,PR1242 production PASS via timer 22:13; PR1243 nightly blocked-expected; deployed to control plane
+Action Queue,Hermes caller drift audit,AI_Runtime,P1,Done,L1 Analyze,PASS: canonical path + env override + flock; no sudo/HOME drift found
+Action Queue,Railway control-plane mapping,Production Trust,P1,Done,L1 Analyze,docs/ops/RAILWAY_PRODUCTION_MAP.md sanitized; linkage prepared not executed
+Action Queue,Build ready-to-sell pack,Commercial,P0,Done,L2 Draft,docs/commercial/READY_TO_SELL_PACK_AR.md from canonical ladder only
+Action Queue,Resolve /ar route truth,Frontend,P1,Done,L1 Analyze,REQUIRED_ROUTE (defaultLocale=ar); served by Railway cutover only; probe marks pending_railway_cutover
+Action Queue,Local CI substitute V2,CI,P1,Done,L3 Internal Execute,scripts/dealix_local_stack_verify.sh is canonical LOCAL_VERIFICATION; bundle 161 passed
+Negotiation Desk,opportunity,company,contact,channel,stage,value,last_message,intent,objection,follow_up_due,draft_ready,approval,outcome
+Negotiation Desk,,,,,,,,,,,,,
+Negotiation Desk,PS-1 Innova Healthcare,Innova,Cosmos press release,formal_channel,RESEARCH,UNKNOWN,none,none,Mini Diagnostic,مراقبة+تشخيص داخلي جاهز,,draft_ready_internal,pending_approval,none
+Negotiation Desk,PS-2 Fitting,Fitting,wamda seed round,event_big5,RESEARCH,UNKNOWN,none,none,Touring Mini Diagnostic,Big5 حضور محتمل,,draft_ready_internal,pending_approval,none
+Negotiation Desk,PS-3 Augustus Media,Augustus Media,company announcement,linkedin_official,RESEARCH,UNKNOWN,none,none,Revenue Ops Setup,weekly_monitor,,not_needed,pending_approval,none
+Negotiation Desk,PS-4 AILA,AILA,wamda pre-Series A,monitor_only,RESEARCH,UNKNOWN,none,none,edtech Mini Diagnostic,weekly_monitor,,template_ready,pending_approval,none
+Negotiation Desk,PS-5 HUMAIN implementers,mid-tier integrators,HUMAIN ONE marketplace,event_deepfest,RESEARCH,PARTNER_LANE,none,none,white-label diagnostic layer,LEAP 31 Aug–3 Sep,,partner_kit_exists,pending_approval,none
+Action Queue,Daily money scan internal stores,Revenue,P0,Done,L1 Analyze,NONE VERIFIED confirmed 3rd cycle; founder must fill 5 real rows in agency_accounts_seed.csv
+Action Queue,Saudi market signal scan,Commercial,P1,Done,L1 Analyze,5 signals logged PUBLIC_RESEARCH reports/founder/MARKET_SIGNALS_2026-08-24.md; no outreach
+Proof Ledger,Mini diagnostic factory ready,Commercial,P1,Done,L2 Draft,docs/commercial/MINI_DIAGNOSTIC_TEMPLATE_SECTOR.md contech+edtech B2B templates
+Proof Ledger,Morning command artifact,Revenue,P0,Done,L2 Draft,reports/founder/MORNING_COMMAND_2026-08-24.md
+Proof Ledger,PR1242 guard-test reconciliation,CI,P0,Done,L4 Repo Execute,commit deb0d14b4 guards 9/9 green; control plane byte-synced
+Action Queue,n8n inventory assessment,Automation,P1,Done,L1 Analyze,EXPERIMENTAL/EMPTY: 0 workflows; no critical dependency; approval stays on repo queue
+Action Queue,Railway cutover readiness verify,Frontend,P1,Done,L1 Analyze,tsc clean + next build 28 pages OK locally; deploy+domain checks remain approval-gated
+Action Queue,Sector mini-diagnostics drafts,Commercial,P1,Done,L2 Draft,Fitting+AILA REAL_UNQUALIFIED drafts; no external send
+Correction,Phase-3 exhaustion claim was FALSE,Self_Improvement,P0,Corrected,L1 Analyze,reopened: alias sweep+verifier truth fix+public seeds+event briefs all executed in Phase-4
+Proof Ledger,Alias drift classification complete,AI_Runtime,P1,Done,L1 Analyze,11 refs classified: 0 ACTIVE_RUNTIME; verifier legacy_reference=false machine-confirmed
+Proof Ledger,Public signal pipeline seeded,Revenue,P0,Done,L1 Analyze,top5 REAL_PUBLIC_SIGNAL scored; NOT_CONTACTED/CONSENT_UNKNOWN enforced
+Proof Ledger,Event briefs LEAP+Big5,Commercial,P0,Done,L2 Draft,both next week Aug30-Sep3; founder attendance plan prepared
+Proof Ledger,Railway cutover pre-DNS acceptance,Frontend,P0,Done,L3 Internal Execute,docker build exit0; /ar=200 RTL proven locally; only deploy+DNS remain approval-gated
+Proof Ledger,Dependabot alerts mapped,Security,P1,Done,L1 Analyze,3 open (postcss HIGH 115; next MED x2); SECURITY_CRITICAL lane evidence-backed
+Proof Ledger,Hermes 64K hot path eliminated,AI_Runtime,P0,Done,L3 Internal Execute,~/.hermes/config.yaml default was legacy alias; fixed to qwen3:4b-instruct; 10GB freed
+Proof Ledger,Council throughput patch,Engineering,P0,Draft_PR_Open,L4 Repo Execute,PR1244 timeouts+turn budgets+SKIP_UNCHANGED+FAST mode; guards 20 passed
+Action Queue,Control-plane drift remediation,Repository,P2,Todo,L4 Repo Execute,e2e/launch scripts still read legacy CSV approval queue; migrate to approval_center
+Approval Queue,Forward iMini thread or connect Gmail connector,Revenue,P0,Waiting Approval,L5 External Blocked,iMini lead UNKNOWN - not in any internal store; founder holds the context
+Action Queue,Reconcile PR 1226 trust allowlist fix,Repository,P1,Ready After CI,L2 Draft,MERGEABLE exact-head verified; blocked on hosted CI billing
+Action Queue,Triage dependabot PR surge,CI,P1,Done,L1 Analyze,28 PRs classified: 5 workflow bumps hold-for-CI 9 majors isolated minors batch later
+Action Queue,Build ready-to-sell pack,Commercial,P0,In Progress,L2 Draft,Reuse existing commercial docs and offer ladder; no external send
+Action Queue,Verify money-now truth,Revenue,P0,Done,L1 Analyze,NO VERIFIED MONEY-NOW EVENT; pipeline synthetic-only (proposals.index.json demo accounts)
+Approval Queue,Restore GitHub Actions billing,CI,P0,Waiting Approval,L5 External Blocked,Founder payment/spending-limit; then revert Pages to workflow build and rerun deploy-pages
+Approval Queue,Approve Railway frontend DNS cutover,Frontend,P0,Waiting Approval,L5 External Blocked,Fixes /ar and unifies front door on canonical host
+Proof Ledger,Merge cascade executed,Repository,P0,Done,L4 Repo Execute,#1226-1241-1242-1243-1244 squash-merged; main=944a8038d; post-merge guards 28 passed
+Proof Ledger,Railway web service discovered live,Frontend,P0,Done,L1 Analyze,web deployed + dealix.me/www domains ACTIVE on service; /ar=200 RTL live on generated domain
+Approval Queue,Swap GoDaddy DNS to Railway values,Frontend,P0,Waiting Approval,L5 External Blocked,founder ~10min: redeploy latest main on web then swap records per Railway dashboard display
+Proof Ledger,Hermes 64K hot path eliminated,AI_Runtime,P0,Done,L3 Internal Execute,~/.hermes/config.yaml default fixed to qwen3:4b-instruct; 10GB freed
+Proof Ledger,Council throughput patch merged,Engineering,P0,Done,L4 Repo Execute,via #1244; timeouts+turn budgets+SKIP_UNCHANGED(3s)+FAST mode
+Action Queue,Control-plane drift remediation,Repository,P2,Todo,L4 Repo Execute,e2e/launch scripts still read legacy CSV approval queue; migrate to approval_center
