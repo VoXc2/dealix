@@ -82,9 +82,10 @@ def main() -> int:
         if term not in guard:
             fail(f"ai_guard_missing:{term}")
 
-    # The merged #1120 script currently contains a historical 64K fallback.
-    # This verifier does not pretend it is already removed; instead it requires
-    # the bounded runtime guard to remove that alias before activation.
+    # Defensive check: the canonical autopilot must not carry a hardcoded 64K
+    # fallback (retired by the env-override reconciliation). If a future
+    # regression reintroduces it, activation still requires the bounded
+    # runtime guard that removes the legacy alias.
     autopilot = AUTOPILOT.read_text(encoding="utf-8")
     legacy_present = 'LOCAL_MODEL_FALLBACK="dealix-qwen3-4b-64k"' in autopilot
     if legacy_present and 'ollama rm "$LEGACY_MODEL"' not in guard:

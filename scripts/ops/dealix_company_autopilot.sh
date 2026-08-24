@@ -11,7 +11,7 @@ REPORT_DIR="${AUTOPILOT_ROOT}/reports"
 ISSUE_REPO="Dealix-sa/dealix"
 ISSUE_NUMBER="1119"
 LOCAL_MODEL_PRIMARY="${DEALIX_LOCAL_MODEL:-qwen3:4b-instruct-2507-q4_K_M}"
-LOCAL_MODEL_FALLBACK="dealix-qwen3-4b-64k"
+LOCAL_MODEL_FALLBACK="${DEALIX_LOCAL_MODEL:-qwen3:4b-instruct-2507-q4_K_M}"
 
 export TZ="${TZ:-Asia/Riyadh}"
 export PYTHONIOENCODING=utf-8
@@ -220,16 +220,28 @@ heartbeat() {
 production() {
   light_lock
   log "===== PRODUCTION TRUST ====="
-  local api_health api_healthz site_ar bad=0
+  local api_health api_healthz site_root site_ar bad=0
   api_health="$(http_code https://api.dealix.me/health)"
   api_healthz="$(http_code https://api.dealix.me/healthz)"
+  site_root="$(http_code https://dealix.me/)"
   site_ar="$(http_code https://dealix.me/ar)"
   log "api_health_http=${api_health}"
   log "api_healthz_http=${api_healthz}"
+  log "site_root_http=${site_root}"
   log "site_ar_http=${site_ar}"
 
   is_http_ok "$api_health" || is_http_ok "$api_healthz" || bad=1
-  is_http_ok "$site_ar" || bad=1
+  is_http_ok "$site_root" || bad=1
+  # /ar is a Next.js route served by the canonical Railway frontend
+  # (docs/ops/DEALIX_ME_FRONTEND_DNS_RAILWAY_AR.md). Until the DNS cutover
+  # lands, the interim static host returns 404 here by design. Log it as a
+  # pending warning instead of failing every probe cycle (false-alert
+  # elimination); the root/API hard checks above still catch real outages.
+  if is_http_ok "$site_ar"; then
+    log "site_ar_status=ok"
+  else
+    log "site_ar_status=pending_railway_cutover"
+  fi
 
   local counter_file="${STATE_DIR}/production_failures"
   local failures=0
