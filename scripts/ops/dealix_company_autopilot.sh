@@ -376,7 +376,23 @@ nightly() {
     run_step "company ready docs" bash scripts/company_ready_verify.sh --docs-only --skip-go-live
   fi
   if [[ -f scripts/founder_weekly_metrics_bundle.py ]]; then
-    run_step "metrics refresh" python3 scripts/founder_weekly_metrics_bundle.py --write
+    # rc=2 means the bundle wrote its artifact but the verdict is BLOCKED on
+    # founder-side integrations (moyasar_live, whatsapp_business,
+    # gmail_external). That is an expected pending state, not broken
+    # automation - log it explicitly instead of degrading every nightly run.
+    log "STEP_START: metrics refresh"
+    set +e
+    python3 scripts/founder_weekly_metrics_bundle.py --write 2>&1 | redact_stream | tee -a "$RUN_LOG"
+    metrics_rc=${PIPESTATUS[0]}
+    set -e
+    if [[ $metrics_rc -eq 0 ]]; then
+      log "STEP_OK: metrics refresh"
+    elif [[ $metrics_rc -eq 2 ]]; then
+      log "STEP_BLOCKED_EXPECTED: metrics refresh (founder-side integrations pending; see FOUNDER_WEEKLY_METRICS_VERDICT)"
+    else
+      log "STEP_FAIL: metrics refresh rc=${metrics_rc}"
+      RUN_FAILED=1
+    fi
   fi
 }
 

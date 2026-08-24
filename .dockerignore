@@ -16,3 +16,10 @@ node_modules
 .DS_Store
 docs/generated
 *.log
+
+# VPS runtime-state dirs (root-owned on srv1916256; never part of build context)
+reports/autonomy
+reports/autopilot
+reports/company_targeting
+business/autonomy
+business/commercial
