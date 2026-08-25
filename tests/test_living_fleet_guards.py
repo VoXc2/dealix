@@ -209,3 +209,26 @@ def test_autopilot_wires_canonical_cadence_to_fleet() -> None:
     disp = DISPATCH.read_text(encoding="utf-8")
     for ev in ("morning", "midday", "evening", "nightly", "repo_watch", "strategic"):
         assert ev in disp
+
+
+def test_real_owners_allowlisted_and_static() -> None:
+    text = DISPATCH.read_text(encoding="utf-8")
+    # verified canonical owners, statically allowlisted — no NONE for these
+    assert ".venv/bin/python scripts/run_dealix_daily_ops.py --skip-api" in text
+    assert ".venv/bin/python scripts/commercial/run_negotiation_operator_day.py --dry-run --skip-api" in text
+    assert "run_owner" in text
+    # no eval / bash -c / event-controlled command construction
+    for banned in ("eval ", "bash -c \"$"):
+        assert banned not in text
+
+
+def test_opencode_project_hard_deny_config_pins_l5() -> None:
+    import json as _json, re as _re
+    cfg = (REPO / "opencode.json").read_text(encoding="utf-8")
+    d = _json.loads(_re.sub(r"^\s*//.*$", "", cfg, flags=_re.M))
+    bash_rules = d["permission"]["bash"]
+    deny = [k for k, v in bash_rules.items() if v == "deny"]
+    joined = " ".join(deny)
+    for must in ("gh pr merge", "git push origin main", "railway up",
+                 "git push --force", "alembic upgrade head", "docker push"):
+        assert must in joined, f"missing hard deny: {must}"

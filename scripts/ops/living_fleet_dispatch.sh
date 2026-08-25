@@ -127,9 +127,9 @@ bump() {
 # owner commands are VERIFIED-EXISTING canonical repo scripts, executed with
 # the canonical .venv when required. No event data ever reaches the command.
 REGISTRY=(
-  "EXEC_PM|morning,midday,evening,strategic|det|rtfile:/opt/dealix/company-autopilot/logs/evening-latest.log|NONE"
-  "REVENUE_INTEL|gmail_reply,tender_change,morning,midday|llm|file:business/_data/outreach_review_queue.json,file:business/_data/proposals.index.json|NONE"
-  "SALES_NEGOTIATION|gmail_reply|llm|file:business/_data/outreach_review_queue.json|NONE"
+  "EXEC_PM|morning,midday,evening,strategic|det|rtfile:/opt/dealix/company-autopilot/logs/evening-latest.log|.venv/bin/python scripts/run_dealix_daily_ops.py --skip-api"
+  "REVENUE_INTEL|gmail_reply,tender_change,morning,midday|llm|file:business/_data/outreach_review_queue.json,file:business/_data/proposals.index.json|.venv/bin/python scripts/commercial/run_commercial_intelligence_founder_cycle.py"
+  "SALES_NEGOTIATION|gmail_reply|llm|file:business/_data/outreach_review_queue.json|.venv/bin/python scripts/commercial/run_negotiation_operator_day.py --dry-run --skip-api"
   "MARKET_INTEL|market_signal,tender_change|llm|latest:reports/founder/MARKET_SIGNALS_*.md|NONE"
   "LEAD_INTEL|morning|det|file:business/_data/proposals.index.json|NONE"
   "CUSTOMER_ACQ|opportunity_signal|llm|file:business/_data/outreach_review_queue.json|NONE"
@@ -270,6 +270,9 @@ for role in $WANTED; do
   rc=$?
   set -e
   duration=$(( $(date +%s) - t0 ))
+
+  # Enqueue the job so collect-mode can pair it with the receipt.
+  atomic_cat_json "${pending_dir}/${JOB_ID}.json" '{"JOB_ID":"'"${JOB_ID}"'","ROLE":"'"${role}"'","EVENT":"'"${EVENT}"'","INPUT_FINGERPRINT":"'"${fp}"'","OWNER":"'"${owner}"'","STARTED_AT":"'"$STAMP"'","STATUS":"RUNNING"}'
 
   RECEIPT="${FLEET_STATE_DIR}/${role}/receipts/${JOB_ID}.json"
   mkdir -p "$(dirname "$RECEIPT")"
