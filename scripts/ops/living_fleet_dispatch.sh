@@ -26,10 +26,13 @@ MODE="${2:-dispatch}" # dispatch | collect
 case "$MODE" in dispatch|collect) ;; *) log "BLOCKED unknown mode=${MODE}"; exit 2 ;; esac
 REPO_ROOT="${DEALIX_REPO_ROOT:-/opt/dealix/workspace/dealix}"
 FLEET_STATE_DIR="${DEALIX_FLEET_STATE_DIR:-/opt/dealix/control/state/living_fleet}"
+FOUNDER_PERSONAL_STATE_DIR="${DEALIX_FOUNDER_PERSONAL_STATE_DIR:-/opt/dealix/control/state/founder_personal}"
 MIN_MEM_MB="${DEALIX_FLEET_MIN_MEM_MB:-3500}"
 STAMP="$(date -Is)"
 DAY="$(date +%F)"
 mkdir -p "$FLEET_STATE_DIR"
+install -d -m 700 "$FOUNDER_PERSONAL_STATE_DIR" 2>/dev/null \
+  || { mkdir -p "$FOUNDER_PERSONAL_STATE_DIR" && chmod 700 "$FOUNDER_PERSONAL_STATE_DIR"; }
 
 log() { printf '[%s] [fleet:%s] %s\n' "$(date -Is)" "$EVENT" "$*"; }
 
@@ -139,6 +142,9 @@ REGISTRY=(
   "GOVERNANCE|nightly,approval_changed|det|file:docs/ops/APPROVAL_FINGERPRINT_CONTRACT.md|.venv/bin/python scripts/security_smoke.py"
   "DATA_BRAIN|nightly,strategic,proof_event|det|file:dealix/transformation/business_now_cache.yaml|.venv/bin/python scripts/export_service_readiness_json.py"
   "CONTENT|proof_event,evening|llm|latest:reports/founder/PROOF_LOG_*.md|NONE"
+  "DAILY_BUILDER_RND|new_oss_candidate|llm|file:docs/ops/DAILY_BUILDER_CONTRACT.md|NONE"
+  "CAREER_INTELLIGENCE|career_reply,personal_deadline|llm|rtfile:$FOUNDER_PERSONAL_STATE_DIR/career.index.json|NONE"
+  "PRIVATE_FOUNDER_OPS|personal_deadline|det|rtfile:$FOUNDER_PERSONAL_STATE_DIR/admin.index.json|NONE"
 )
 
 roles_for_event() { # derived from REGISTRY — the ONLY routing table
@@ -190,14 +196,14 @@ if [[ "$MODE" == "collect" ]]; then
         atomic_json_set "$sf" "STATUS=SUCCEEDED" "LAST_SUCCESS_AT=$(date -Is)" \
           "LAST_PROOF=${rcpt}" "LAST_RESULT=SUCCEEDED" "OWNER=${OWNER}"
         [[ "$USEFUL" == "true" ]] && bump "$FLEET_STATE_DIR/${ROLE}.useful_count"
-        mv "$jf" "${jf%.json}.consumed.json"
+        mkdir -p "$(dirname "$jf")/consumed"; mv "$jf" "$(dirname "$jf")/consumed/$(basename "$jf")"
         log "RECEIPT_OK role=${ROLE} job=${JOB_ID} result=SUCCEEDED"
         ;;
       FAILED|DEGRADED|TIMEOUT)
         atomic_json_set "$sf" "STATUS=${RESULT}" "LAST_RESULT=${RESULT}" \
           "BLOCKER=$(json_get "$rcpt" BLOCKER)" "OWNER=${OWNER}"
         bump "$FLEET_STATE_DIR/${ROLE}.failure_count"
-        mv "$jf" "${jf%.json}.consumed.json"
+        mkdir -p "$(dirname "$jf")/consumed"; mv "$jf" "$(dirname "$jf")/consumed/$(basename "$jf")"
         log "RECEIPT_FAIL role=${ROLE} job=${JOB_ID} result=${RESULT}"
         ;;
       *) log "RECEIPT_INVALID role=${ROLE} job=${JOB_ID} result=${RESULT}" ;;
@@ -231,12 +237,47 @@ for role in $WANTED; do
   fi
 
   fp="$(fp_of "$role" "${WATCHES[@]}")"
-  last_fp="$(json_get "$sf" INPUT_FINGERPRINT)"
+  # Execution identity: changing kind/watches-declaration/owner invalidates
+  # dedupe even when business inputs are unchanged (NONE→REAL transitions,
+  # owner command rotations, contract changes).
+  OWNER_SIGNATURE="$(printf '%s|%s|%s|%s' "$role" "$kind" "$watches" "$owner" | sha256sum | cut -c1-16)"
+  EFFECTIVE_FINGERPRINT="$(printf '%s|%s' "$fp" "$OWNER_SIGNATURE" | sha256sum | cut -c1-16)"
+  last_efp="$(json_get "$sf" EFFECTIVE_FINGERPRINT)"
 
-  if [[ -n "$last_fp" && "$last_fp" == "$fp" && "${DEALIX_FLEET_FORCE:-0}" != "1" ]]; then
+  if [[ -n "$last_efp" && "$last_efp" == "$EFFECTIVE_FINGERPRINT" && "${DEALIX_FLEET_FORCE:-0}" != "1" ]]; then
     bump "$FLEET_STATE_DIR/${role}.skip_count"
-    atomic_json_set "$sf" "STATUS=IDLE_HEALTHY" "INPUT_FINGERPRINT=$fp" "LAST_RESULT=SKIP_UNCHANGED"
-    log "SKIP_UNCHANGED role=${role} fp=${fp}"
+    # Dedupe must never erase structural truth: an ownerless seat stays
+    # BLOCKED across identical re-events (SKIP_UNCHANGED_BLOCKED).
+    cur_status="$(json_get "$sf" STATUS)"
+    cur_blocker="$(json_get "$sf" BLOCKER)"
+    if [[ "$cur_status" == "BLOCKED" && -n "$cur_blocker" ]]; then
+      atomic_json_set "$sf" "STATUS=BLOCKED" "BLOCKER=$cur_blocker" \
+        "INPUT_FINGERPRINT=$fp" "OWNER_SIGNATURE=$OWNER_SIGNATURE" \
+        "EFFECTIVE_FINGERPRINT=$EFFECTIVE_FINGERPRINT" "LAST_RESULT=SKIP_UNCHANGED_BLOCKED"
+      log "SKIP_UNCHANGED_BLOCKED role=${role} blocker=${cur_blocker}"
+    else
+      atomic_json_set "$sf" "STATUS=IDLE_HEALTHY" "INPUT_FINGERPRINT=$fp" \
+        "OWNER_SIGNATURE=$OWNER_SIGNATURE" "EFFECTIVE_FINGERPRINT=$EFFECTIVE_FINGERPRINT" \
+        "LAST_RESULT=SKIP_UNCHANGED"
+      log "SKIP_UNCHANGED role=${role} fp=${fp}"
+    fi
+    continue
+  fi
+
+  # OWNER_MISSING is structural truth: it must precede host-resource
+  # semantics so RAM availability never changes owner-state honesty.
+  if [[ "$owner" == "NONE" ]]; then
+    JOB_ID="JOB-${role}-$(date +%s)-$$"
+    pending_dir="$FLEET_STATE_DIR/${role}/pending"
+    mkdir -p "$pending_dir"
+    atomic_json_set "$sf" "STATUS=BLOCKED" "BLOCKER=owner_missing" \
+      "INPUT_FINGERPRINT=$fp" "OWNER_SIGNATURE=$OWNER_SIGNATURE" \
+      "EFFECTIVE_FINGERPRINT=$EFFECTIVE_FINGERPRINT" "OWNER=NONE"
+
+    atomic_cat_json "${pending_dir}/${JOB_ID}.json" '{"JOB_ID":"'"${JOB_ID}"'","ROLE":"'"${role}"'","EVENT":"'"${EVENT}"'","INPUT_FINGERPRINT":"'"${fp}"'","OWNER":"NONE","STARTED_AT":"'"$STAMP"'","STATUS":"HANDOFF_PENDING"}'
+
+    bump "$FLEET_STATE_DIR/${role}.queued_count"
+    log "HANDOFF_PENDING role=${role} job=${JOB_ID} blocker=owner_missing"
     continue
   fi
 
@@ -249,17 +290,28 @@ for role in $WANTED; do
   JOB_ID="JOB-${role}-$(date +%s)-$$"
   pending_dir="$FLEET_STATE_DIR/${role}/pending"
   mkdir -p "$pending_dir"
+  # Supersede unresolved ownerless handoffs — preserve history, never delete.
+  for old_jf in "$pending_dir"/*.json; do
+    [[ -f "$old_jf" ]] || continue
+    python3 -c 'import json,sys;d=json.load(open(sys.argv[1]));sys.exit(0 if d.get("STATUS")=="HANDOFF_PENDING" else 1)' "$old_jf" 2>/dev/null || continue
+    OLD_ID="$(python3 -c 'import json,sys;print(json.load(open(sys.argv[1])).get("JOB_ID",""))' "$old_jf" 2>/dev/null || true)"
+    python3 - "$old_jf" "$JOB_ID" "$OWNER_SIGNATURE" <<'PY'
+import json,sys
+p=sys.argv[1]
+try: d=json.load(open(p))
+except Exception: sys.exit(0)
+d["STATUS"]="SUPERSEDED_BY_OWNER_ACTIVATION"
+d["SUPERSEDED_AT"]=__import__("datetime").datetime.now().isoformat()
+d["NEW_OWNER_SIGNATURE"]=sys.argv[3]
+d["NEW_JOB_ID"]=sys.argv[2]
+json.dump(d,open(p,"w"),indent=1)
+PY
+    log "SUPERSEDED ownerless_handoff job=${OLD_ID} by=${JOB_ID}"
+    mv "$old_jf" "${old_jf%.json}.superseded.json"
+  done
   atomic_json_set "$sf" "STATUS=QUEUED" "CURRENT_JOB=${JOB_ID}" \
-    "INPUT_FINGERPRINT=$fp" "LAST_STARTED_AT=$STAMP" "OWNER=${owner}"
-
-  if [[ "$owner" == "NONE" ]]; then
-    atomic_json_set "$sf" "STATUS=BLOCKED" "BLOCKER=owner_missing"
-    atomic_cat_json "${pending_dir}/${JOB_ID}.json" '{"JOB_ID":"'"${JOB_ID}"'","ROLE":"'"${role}"'","EVENT":"'"${EVENT}"'","INPUT_FINGERPRINT":"'"${fp}"'","OWNER":"NONE","STARTED_AT":"'"$STAMP"'","STATUS":"HANDOFF_PENDING"}'
-
-    bump "$FLEET_STATE_DIR/${role}.queued_count"
-    log "HANDOFF_PENDING role=${role} job=${JOB_ID} blocker=owner_missing"
-    continue
-  fi
+    "INPUT_FINGERPRINT=$fp" "OWNER_SIGNATURE=$OWNER_SIGNATURE" \
+    "EFFECTIVE_FINGERPRINT=$EFFECTIVE_FINGERPRINT" "LAST_STARTED_AT=$STAMP" "OWNER=${owner}"
 
   atomic_json_set "$sf" "STATUS=RUNNING"
   out_dir="$FLEET_STATE_DIR/${role}/$DAY"
@@ -286,6 +338,24 @@ for role in $WANTED; do
   COMPLETED="$(date -Is)"
   atomic_cat_json "$RECEIPT" '{"JOB_ID":"'"${JOB_ID}"'","ROLE":"'"${role}"'","EVENT":"'"${EVENT}"'","INPUT_FINGERPRINT":"'"${fp}"'","OWNER":"'"${owner}"'","STARTED_AT":"'"${STAMP}"'","COMPLETED_AT":"'"${COMPLETED}"'","RESULT":"'"${RESULT}"'","EXIT_CODE":'"${rc}"',"DURATION_S":'"${duration}"',"OUTPUT_REF":"'"${out_dir}/owner_output.txt"'","USEFUL_OUTPUT":"'"${USEFUL}"'","NEXT_ACTION":"","BLOCKER":""}'
   chmod 0640 "$RECEIPT"
+  # Synchronous owners complete within this dispatch: advance state NOW from
+  # the receipt truth (async owners would rely on collect-mode instead).
+  if [[ "$RESULT" == "SUCCEEDED" ]]; then
+    atomic_json_set "$sf" "STATUS=SUCCEEDED" "LAST_SUCCESS_AT=$COMPLETED" \
+      "LAST_PROOF=$RECEIPT" "LAST_RESULT=SUCCEEDED"
+    [[ "$USEFUL" == "true" ]] && bump "$FLEET_STATE_DIR/${role}.useful_count"
+  elif [[ "$RESULT" == "TIMEOUT" ]]; then
+    atomic_json_set "$sf" "STATUS=TIMEOUT" "BLOCKER=owner_timeout"
+    bump "$FLEET_STATE_DIR/${role}.timeout_count"
+  else
+    atomic_json_set "$sf" "STATUS=FAILED" "BLOCKER=owner_failed_rc_${rc}"
+    bump "$FLEET_STATE_DIR/${role}.failure_count"
+  fi
+  # Atomically consume the pending job: sync terminalization is the ONLY
+  # authority. Collect-mode will never see this job again.
+  for pj in "$pending_dir/${JOB_ID}.json"; do
+    mkdir -p "$(dirname "$pj")/consumed"; mv "$pj" "$(dirname "$pj")/consumed/$(basename "$pj")"
+  done
   log "OWNER_EXECUTED role=${role} job=${JOB_ID} result=${RESULT} duration=${duration}s"
 done
 

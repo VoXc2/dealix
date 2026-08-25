@@ -43,3 +43,29 @@
 
 ## الدائرة الكهربية (Circuit breakers)
 نفس المدخل+نفس الفشل مرتين → توقف، سجّل BLOCKER، انتقل لمسار آخر. المهلة الزمنية تحفظ الأدلة الجزئية وتخرج DEGRADED صادقًا.
+
+## إضافة v3 — الأدوار الخاصة والمسار الشخصي (2026-08-25)
+- **DAILY_BUILDER_RND**: عقد كامل في [DAILY_BUILDER_CONTRACT.md](DAILY_BUILDER_CONTRACT.md) — بناء واحد/يوم كحد أقصى، NEVER MERGE.
+- **CAREER_INTELLIGENCE / PRIVATE_FOUNDER_OPS**: مسار المؤسس الخاص — حالة تشغيلية فقط في `/opt/dealix/control/state/founder_personal/` (0700، خارج Git). لا بيانات شخصية في المستودع إطلاقًا. ممنوع: تقديم تلقائي، مراسلة جماعية، قرارات طبية/قانونية.
+- **REPORTING MAPPING** (بلا تكرار): 06:30 Morning = autopilot morning + daily_pack · 10:00 Builder = حدث new_oss_candidate · 20:30 Close = evening mode · Weekly = مراجعة ROI هذه الصفحة. البريد الذاتي عبر طبقة التقارير الموجودة فقط؛ Telegram للأحداث العاجلة المعرّفة فقط.
+
+## OWNER COVERAGE الحقيقي (2026-08-25)
+REAL_OWNER_VERIFIED (5): EXEC_PM · REVENUE_INTEL · SALES_NEGOTIATION · GOVERNANCE · DATA_BRAIN
+ENGINEERING=SENSOR_ONLY · DELIVERY=OWNER_MISSING/NO_REAL_WORK_DUE — التفاصيل الصحيحة في جدول v3.1 أدناه
+BLOCKED_OWNER_MISSING (8): MARKET_INTEL(Hermes seat PR قادم) · LEAD_INTEL/CUSTOMER_ACQ/DIAGNOSTIC(scripts TBD) · CONTENT(بعد أول proof_event حقيقي) · DAILY_BUILDER_RND/OpenCode-native · CAREER_INTEL/PRIVATE_FOUNDER_OPS(بانتظار ربط موصلات خاصة)
+
+
+## تصنيف v3.1 ثنائي الأبعاد (2026-08-25)
+**OWNER_STATE** (من يملك التنفيذ): REAL_OWNER_VERIFIED · OWNER_MISSING · SENSOR_ONLY · EXTERNAL_ORCHESTRATED
+**WORK_STATE** (ماذا يحدث الآن): IDLE_HEALTHY · QUEUED · RUNNING · SUCCEEDED · FAILED · TIMEOUT · WAITING_EXTERNAL · WAITING_APPROVAL · NO_REAL_WORK_DUE
+لا تُخلط الأبعاد أبدًا.
+
+### تصحيحات صادقة
+| Role | OWNER_STATE | ملاحظة |
+|---|---|---|
+| ENGINEERING | SENSOR_ONLY | الحساس يراقب؛ البناء الفعلي عبر OpenCode PRs — الحساس ليس مالك تنفيذ |
+| DELIVERY | OWNER_MISSING | لا عميل حقيقي ⇒ NO_REAL_WORK_DUE بدل ادعاء مالك وهمي |
+| DAILY_BUILDER_RND | OWNER_MISSING (Option A) | يعيش خارج نموذج تنفيذ الطاقم: بحث/تقرير → OpenCode session → Draft PR → مؤسس يدمج |
+
+### PRIVATE FOUNDER OPS عزل
+مجلد الحالة: `/opt/dealix/control/state/founder_personal` — 0700، خارج Git، لا بيانات شخصية في المستودع إطلاقًا.
