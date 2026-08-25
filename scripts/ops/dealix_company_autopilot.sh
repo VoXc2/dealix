@@ -565,4 +565,21 @@ esac
 cleanup_logs
 ln -sfn "$RUN_LOG" "$LATEST_LOG" 2>/dev/null || true
 log "RUN_COMPLETE: mode=${MODE} result=$([[ $RUN_FAILED -eq 0 ]] && echo PASS || echo DEGRADED)"
+
+# Living Fleet hand-off (Phase 8.1): the canonical cadence wakes role owners.
+# heartbeat stays sensor-only; production/preflight have no fleet seats yet.
+case "${MODE}" in
+  morning)   FLEET_EVENT="morning" ;;
+  midday)    FLEET_EVENT="midday" ;;
+  evening)   FLEET_EVENT="evening" ;;
+  nightly)   FLEET_EVENT="nightly" ;;
+  repo-watch) FLEET_EVENT="repo_watch" ;;
+  local-ai)  FLEET_EVENT="strategic" ;;
+  *)         FLEET_EVENT="heartbeat" ;; # preflight/morning-fallback/production/heartbeat
+esac
+if command -v /opt/dealix/control/bin/living_fleet_dispatch.sh >/dev/null 2>&1; then
+  set +e
+  /opt/dealix/control/bin/living_fleet_dispatch.sh "${FLEET_EVENT}" >/dev/null 2>&1 || true
+  set -e
+fi
 exit "$RUN_FAILED"

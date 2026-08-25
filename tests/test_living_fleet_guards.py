@@ -199,3 +199,13 @@ def test_concurrent_same_role_dispatch_keeps_state_valid(tmp_path: Path) -> None
     assert all(c in (0, 1) for c in codes), codes
     st = json.loads((tmp_path / "ENGINEERING.state.json").read_text())
     assert st.get("INPUT_FINGERPRINT")
+
+
+def test_autopilot_wires_canonical_cadence_to_fleet() -> None:
+    ap = (REPO / "scripts" / "ops" / "dealix_company_autopilot.sh").read_text(encoding="utf-8")
+    assert "living_fleet_dispatch.sh" in ap
+    assert 'FLEET_EVENT="heartbeat"' in ap  # sensor-only default
+    # every routed event must exist in the dispatcher registry routing
+    disp = DISPATCH.read_text(encoding="utf-8")
+    for ev in ("morning", "midday", "evening", "nightly", "repo_watch", "strategic"):
+        assert ev in disp
