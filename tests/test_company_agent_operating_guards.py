@@ -98,8 +98,8 @@ def test_council_runs_bounded_safe_hermes_seats() -> None:
     # timeouts per seat and for synthesis, never unbounded hermes calls.
     assert '--toolsets safe --max-turns "$turns"' in text
     assert "--max-turns \"$SYNTH_TURNS\"" in text
-    assert 'ROLE_TIMEOUT="${DEALIX_COUNCIL_ROLE_TIMEOUT:-240}"' in text
-    assert 'SYNTH_TIMEOUT="${DEALIX_COUNCIL_SYNTH_TIMEOUT:-180}"' in text
+    assert 'ROLE_TIMEOUT="${DEALIX_COUNCIL_ROLE_TIMEOUT:-300}"' in text
+    assert 'SYNTH_TIMEOUT="${DEALIX_COUNCIL_SYNTH_TIMEOUT:-300}"' in text
     assert "timeout --kill-after=15 --signal=TERM" in text
     # SKIP_UNCHANGED: identical state must never re-bill LLM calls, and a
     # degraded run must never be persisted as reusable truth.
@@ -110,6 +110,9 @@ def test_council_runs_bounded_safe_hermes_seats() -> None:
     assert "BLOCKED: FAST_ROLES matched no known seat" in text
     # FAST/incremental mode without a second scheduler or council system
     assert "DEALIX_COUNCIL_FAST_ROLES" in text
+    # Context slicing: provenance header survives, doctrine non-negotiable.
+    assert "want || !insec { print }" in text
+    assert '"${spec},CANONICAL RULES"' in text
     for seat in (
         "EXECUTIVE_OPERATIONS",
         "REVENUE_SALES",

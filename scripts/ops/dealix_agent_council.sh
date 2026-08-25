@@ -92,8 +92,16 @@ declare -A ROLE_TURNS=(
 )
 SYNTH_TURNS=6
 ROLE_TURNS_DEFAULT=4
-ROLE_TIMEOUT="${DEALIX_COUNCIL_ROLE_TIMEOUT:-240}"     # per-seat wall clock (sec); live CPU-4B runs need >150s per seat
-SYNTH_TIMEOUT="${DEALIX_COUNCIL_SYNTH_TIMEOUT:-180}"   # synthesis wall clock (sec)
+declare -A ROLE_SLICES=(
+  [EXECUTIVE_OPERATIONS]=""
+  [REVENUE_SALES]="PUBLIC PRODUCTION CODES,RECENT AUTOPILOT PROOF,OPEN DRAFT"
+  [MARKET_PARTNERSHIPS]="PUBLIC PRODUCTION CODES"
+  [CUSTOMER_DELIVERY]="VPS CORE,RECENT AUTOPILOT PROOF"
+  [PRODUCT_ENGINEERING]="WORKTREE,PUBLIC PRODUCTION CODES,VPS CORE,OPEN DRAFT,RECENT MAIN WORKFLOWS"
+  [GOVERNANCE_FINANCE]="VPS CORE,PUBLIC PRODUCTION CODES,CANONICAL RULES"
+)
+ROLE_TIMEOUT="${DEALIX_COUNCIL_ROLE_TIMEOUT:-300}"     # per-seat wall clock (sec); CPU-4B measured >240s per seat
+SYNTH_TIMEOUT="${DEALIX_COUNCIL_SYNTH_TIMEOUT:-300}"   # synthesis wall clock (sec); CPU-4B synthesis measured >180s
 FAST_ROLES="${DEALIX_COUNCIL_FAST_ROLES:-}"            # comma list; empty = FULL council
 FORCE_RUN="${DEALIX_COUNCIL_FORCE:-0}"                 # 1 = ignore input-unchanged skip
 
@@ -186,6 +194,24 @@ if [[ "$FORCE_RUN" != "1" && -n "$LAST_RUN_DIR" && "$(cat "$LAST_HASH_FILE" 2>/d
   exit 0
 fi
 
+
+# ---- CONTEXT SLICING: each seat reads only its relevant packet sections ----
+# Packet sections are delimited by "== NAME ==" markers. Seats declare the
+# section-name regexes they need; CANONICAL RULES + header are always included.
+slice_packet() {
+  local out="$1"; shift
+  awk -v keep="$*" '
+    /^== / {
+      name=substr($0,4)
+      want=0
+      n=split(keep, arr, ",")
+      for(i=1;i<=n;i++) if(index(name, arr[i])>0) want=1
+      insec=1
+    }
+    want || !insec { print }
+  ' "$PACKET" >"$out"
+}
+
 run_role() {
   local role_id="$1"
   local mandate="$2"
@@ -194,6 +220,13 @@ run_role() {
   local prompt="${RUN_DIR}/${role_id}.prompt.txt"
   local turns="${ROLE_TURNS[$role_id]:-$ROLE_TURNS_DEFAULT}"
   local t0 t1
+  local SLICED_PACKET=""
+  local spec="${ROLE_SLICES[$role_id]:-}"
+  if [[ -n "$spec" ]]; then
+    # CANONICAL RULES are non-negotiable in every seat context.
+    SLICED_PACKET="${RUN_DIR}/${role_id}.packet.txt"
+    slice_packet "$SLICED_PACKET" "${spec},CANONICAL RULES"
+  fi
 
   cat >"$prompt" <<EOF
 You are a bounded internal member of the Dealix Agent Council.
@@ -219,7 +252,7 @@ Return concise Markdown with exactly these headings:
 Approval Items must contain only actions that truly require founder approval. Safe Internal Actions must not include send, publish, merge, production/DNS mutation, payments/refunds, secret changes, deletion, or legal commitments.
 
 CURRENT PACKET:
-$(cat "$PACKET")
+$(cat "${SLICED_PACKET:-$PACKET}")
 EOF
 
   log "ROLE_START: ${role_id}"
