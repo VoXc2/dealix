@@ -1,8 +1,8 @@
-# Dealix public crawl contract — 2026-08-16
+# Dealix public crawl contract — 2026-08-26
 # Canonical public domain: https://dealix.me
 # Only reviewed launch surfaces should be promoted as current commercial truth.
-# Historical/demo surfaces remain in the repository for evidence/reference but
-# are not part of the current first-launch acquisition path.
+# Historical/demo surfaces may remain in Git for evidence/reference but are not
+# customer-facing price, proof, compliance, accreditation or outcome authority.
 
 User-agent: *
 Allow: /
@@ -24,27 +24,39 @@ Disallow: /decisions.html
 Disallow: /command-center.html
 Disallow: /dashboard.html
 
-# Retired / unaudited commercial experiments. Do not use these as current
-# price, ROI, case-study, comparison, vertical or product authority.
+# Retired / unaudited commercial experiments.
 Disallow: /annual-pricing.html
-Disallow: /start.html
-Disallow: /sprint-sample.html
+Disallow: /academy.html
+Disallow: /community.html
+Disallow: /data-pack.html
 Disallow: /roi.html
+Disallow: /security.html
+Disallow: /trust.html
+Disallow: /why-saudi-ai.html
 Disallow: /case-study.html
 Disallow: /case-study-pilot-example.html
+Disallow: /verticals.html
+Disallow: /pay-per-result.html
+Disallow: /systems-catalog.html
+Disallow: /start.html
+Disallow: /sprint-sample.html
 Disallow: /compare-gong.html
 Disallow: /compare-hubspot.html
 Disallow: /compare-salesloft.html
-Disallow: /verticals.html
-Disallow: /academy.html
+Disallow: /compare.html
 Disallow: /status.html
-Disallow: /why-saudi-ai.html
-Disallow: /ai-team.html
 Disallow: /styleguide.html
 Disallow: /dealix-beast-power.html
-Disallow: /systems-catalog.html
 Disallow: /agency-partner.html
 Disallow: /partners.html
+Disallow: /dealix-live-demo.html
+Disallow: /simulator.html
+Disallow: /ltv-calculator.html
+Disallow: /customer-portal.html
+Disallow: /vision.html
+
+# Reviewed supporting routes may exist but are not promoted by sitemap.
+Disallow: /ai-team.html
 
 Sitemap: https://dealix.me/sitemap.xml
 Sitemap: https://dealix.me/sitemap_dealix.xml
