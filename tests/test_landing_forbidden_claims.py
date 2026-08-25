@@ -205,6 +205,15 @@ def test_no_unallowlisted_forbidden_claims():
     )
 
 
+
+def test_annual_pricing_page_is_quote_only_redirect() -> None:
+    """Legacy public tiers must never return to the pricing page."""
+    body = (LANDING / "annual-pricing.html").read_text(encoding="utf-8")
+    for token in ("499", "2999", "7500", "5,000"):
+        assert token not in body
+    assert "/services.html" in body
+
+
 def test_allowlist_entries_actually_present():
     """Catch stale allowlist entries: if we whitelisted a token but the
     page no longer contains it, drop the entry to keep the perimeter tight.
