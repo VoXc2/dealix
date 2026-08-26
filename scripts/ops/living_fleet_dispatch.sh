@@ -213,12 +213,57 @@ if [[ "$MODE" == "collect" ]]; then
 fi
 
 # ---- DISPATCH MODE ---------------------------------------------------------
+# ---- CANARY: end-to-end internal proof that the fleet fabric is alive ----
+if [[ "$EVENT" == "dealix_internal_canary" ]]; then
+  CANARY_DIR="$FLEET_STATE_DIR/canary/$DAY"
+  mkdir -p "$CANARY_DIR"
+  CANARY_ID="canary-$(date +%s)-$$"
+  log "CANARY_START id=${CANARY_ID}"
+  # Probe 1: production API reachable
+  api_code="$(curl -sS -o /dev/null -w '%{http_code}' --max-time 10 https://api.dealix.me/health 2>/dev/null || echo 000)"
+  # Probe 2: public front door reachable
+  root_code="$(curl -sS -o /dev/null -w '%{http_code}' --max-time 10 https://dealix.me 2>/dev/null || echo 000)"
+  # Probe 3: Ollama responsive
+  ollama_ok="$(curl -sS -o /dev/null -w '%{http_code}' --max-time 5 http://127.0.0.1:11434/api/tags 2>/dev/null || echo 000)"
+  # Probe 4: fleet state readable and valid JSON
+  state_readable=false
+  for sf in "$FLEET_STATE_DIR"/*.state.json; do
+    [[ -f "$sf" ]] || continue
+    python3 -c 'import json,sys;json.load(open(sys.argv[1]))' "$sf" 2>/dev/null && { state_readable=true; break; }
+  done
+  # Probe 5: no corrupt lock files older than 1 hour
+  stale_locks=0
+  now=$(date +%s)
+  for lf in "$FLEET_STATE_DIR"/*.lock; do
+    [[ -f "$lf" ]] || continue
+    fage=$(( now - $(stat -c %Y "$lf" 2>/dev/null || echo "$now") ))
+    (( fage > 3600 )) && stale_locks=$(( stale_locks + 1 ))
+  done
+  # Write canary receipt
+  cat >"${CANARY_DIR}/${CANARY_ID}.json" <<CEOF
+{
+  "canary_id": "${CANARY_ID}",
+  "timestamp": "$(date -Is)",
+  "api_health": "${api_code}",
+  "root_health": "${root_code}",
+  "ollama_responsive": ${ollama_ok},
+  "fleet_state_readable": ${state_readable},
+  "stale_locks": ${stale_locks},
+  "result": "$([[ "$api_code" == "200" && "$root_code" == "200" && "$state_readable" == true ]] && echo PASS || echo FAIL)"
+}
+CEOF
+  chmod 0640 "${CANARY_DIR}/${CANARY_ID}.json"
+  RESULT="$([[ "$api_code" == "200" && "$root_code" == "200" ]] && echo PASS || echo FAIL)"
+  log "CANARY_COMPLETE id=${CANARY_ID} result=${RESULT} api=${api_code} root=${root_code} ollama=${ollama_ok} state_readable=${state_readable} stale_locks=${stale_locks}"
+  exit 0
+fi
 WANTED="$(roles_for_event)"
 log "dispatch start event=${EVENT} wanted=[${WANTED:-none}] mem=$(mem_available_mb)MB"
 if [[ -z "$WANTED" ]]; then
   log "NO_OP unknown-or-sensor event (honest no-op)"
   exit 0
 fi
+
 
 COUNCIL_T0="$(date +%s)"
 for role in $WANTED; do
