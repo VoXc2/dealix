@@ -1,0 +1,151 @@
+{
+  "schema_version": "1.0.0",
+  "authority": "Dealix #1317 market/product validation lane",
+  "north_star": "FIRST_VERIFIED_PAID_DEALIX_PILOT",
+  "unknown_semantics": "UNKNOWN_NOT_EVIDENCE_BACKED",
+  "outputs": {
+    "revenue_leak_map": {
+      "purpose": "Free Mini Diagnostic output that separates observed evidence from hypotheses and produces bounded next decisions.",
+      "required_sections": [
+        "metadata",
+        "account_context",
+        "evidence_inventory",
+        "observed_process",
+        "observed_leaks",
+        "hypothesized_leaks",
+        "owner_and_next_action_gaps",
+        "data_and_proof_gaps",
+        "top_interventions",
+        "pilot_hypothesis",
+        "unknowns",
+        "next_evidence",
+        "next_action"
+      ],
+      "hard_rules": [
+        "observed_leaks require evidence_refs",
+        "hypothesized_leaks must be labeled hypothesis",
+        "no invented ROI or revenue amount",
+        "no research target may be promoted to relationship",
+        "no public or fixed pilot price",
+        "top_interventions maximum is 3"
+      ]
+    },
+    "customer_proof_decision_pack": {
+      "purpose": "Buyer-facing evidence pack generated from canonical delivery and proof events.",
+      "required_sections": [
+        "metadata",
+        "baseline",
+        "agreed_objective",
+        "approved_actions",
+        "outcome_events",
+        "evidence_refs",
+        "business_interpretation",
+        "limitations",
+        "customer_validation_state",
+        "payment_evidence_state",
+        "delivery_evidence_state",
+        "decision_options",
+        "unknowns",
+        "next_evidence",
+        "next_action"
+      ],
+      "allowed_decisions": ["STOP", "EXPAND", "REDESIGN", "UNKNOWN_NOT_EVIDENCE_BACKED"],
+      "hard_rules": [
+        "proposal is not revenue",
+        "invoice is not payment",
+        "synthetic evidence is never customer proof",
+        "public proof requires explicit customer permission",
+        "business interpretation must link to evidence_refs"
+      ]
+    },
+    "executive_command": {
+      "purpose": "One-screen buyer/founder command generated from the same canonical evidence.",
+      "required_sections": [
+        "metadata",
+        "money",
+        "decisions",
+        "risks",
+        "approvals",
+        "next_action"
+      ],
+      "money_required_fields": [
+        "verified_revenue",
+        "verified_payment_state",
+        "closest_money_path",
+        "economic_evidence_refs"
+      ],
+      "decision_required_fields": [
+        "decision_id",
+        "decision",
+        "owner",
+        "evidence_refs",
+        "confidence",
+        "deadline"
+      ],
+      "risk_required_fields": [
+        "risk_id",
+        "risk_class",
+        "severity",
+        "evidence_refs",
+        "mitigation",
+        "owner"
+      ],
+      "approval_required_fields": [
+        "approval_id",
+        "action_fingerprint",
+        "authority_class",
+        "evidence_refs",
+        "expiry",
+        "decision_options"
+      ],
+      "hard_rules": [
+        "maximum 3 active decisions",
+        "maximum 3 active risks",
+        "no vanity metrics in money",
+        "unknown values remain UNKNOWN_NOT_EVIDENCE_BACKED",
+        "external effect approvals cannot be inferred from recommendations"
+      ]
+    }
+  },
+  "shared_metadata": {
+    "required_fields": [
+      "schema_version",
+      "generated_at",
+      "source_sha",
+      "tenant_or_account_id",
+      "input_evidence_refs",
+      "freshness",
+      "generator",
+      "authority_ref"
+    ],
+    "freshness_required_fields": [
+      "as_of",
+      "oldest_evidence_at",
+      "newest_evidence_at",
+      "stale_after",
+      "stale"
+    ]
+  },
+  "determinism": {
+    "same_normalized_inputs_same_output": true,
+    "sorting": "stable_lexicographic_by_id_then_timestamp",
+    "timestamps": "generated_at is metadata only and excluded from semantic equality",
+    "unknown_value": "UNKNOWN_NOT_EVIDENCE_BACKED",
+    "llm_role": "LLM may draft narrative explanations but cannot create or promote commercial state, evidence, payment, revenue, delivery, customer validation, approval, or proof eligibility"
+  },
+  "evidence_contract": {
+    "evidence_ref_required_for_fact": true,
+    "source_and_timestamp_required": true,
+    "synthetic_must_be_labeled": true,
+    "research_is_not_relationship": true,
+    "payment_proof_required_for_revenue": true,
+    "delivery_proof_required_for_customer_value": true
+  },
+  "wip_and_scope": {
+    "owner": "#1317",
+    "no_new_dashboard": true,
+    "no_new_truth_store": true,
+    "no_new_scheduler": true,
+    "no_new_agent_fleet": true
+  }
+}
