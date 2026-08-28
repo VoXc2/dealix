@@ -1,191 +1,195 @@
 #!/usr/bin/env python3
-"""Wave 6 Phase 4 — 499 SAR Pilot Brief generator.
+"""Render a non-binding 30-day Revenue Command Pilot scope draft.
 
-Generates a markdown brief for the 7-Day Revenue Proof Sprint.
+This compatibility command replaces the historical 499 SAR / 7-Day Revenue
+Proof Sprint generator. It cannot select or authorize a price, payment term,
+refund/remedy, customer outcome, external send, or contract commitment.
 
-Hard rules:
-- No invoice API call
-- No live charge
-- No fake payment
-- No revenue claim
-- amount_sar capped at 499 (Sprint tier)
-- amount_halalah computed deterministically (1 SAR = 100 halalah)
+Precondition for real customer use:
+- qualified discovery exists;
+- a named-customer quote/proposal evidence reference exists or is being prepared;
+- any commercial commitment is handled by the canonical approval/controlled
+  execution path.
+
+The artifact generated here is ``DRAFT_NOT_SENT`` and is suitable for internal
+scope preparation only.
 """
 from __future__ import annotations
 
 import argparse
 import json
 import sys
+from datetime import UTC, datetime
 from pathlib import Path
 
-LIVE_DIR = Path("docs/wave6/live")
+ROOT = Path(__file__).resolve().parents[1]
+OUT_DIR = ROOT / "data/founder_briefs"
 
 
-def build_brief(*, company: str, sector: str, amount_sar: float,
-                diagnostic_summary: str | None = None) -> dict:
-    halalah = int(round(amount_sar * 100))
+def build_brief(
+    *,
+    company: str,
+    sector: str,
+    quote_evidence_id: str,
+    diagnostic_summary: str | None = None,
+) -> dict:
     return {
+        "schema": "dealix.revenue_command_pilot_scope_draft.v1",
+        "truth_class": "DRAFT_NOT_SENT",
+        "generated_at": datetime.now(UTC).isoformat(),
         "company": company,
         "sector": sector,
-        "package": "7-Day Revenue Proof Sprint",
-        "amount_sar": amount_sar,
-        "amount_halalah": halalah,
-        "duration_days": 7,
-        "diagnostic_summary": diagnostic_summary or "—",
-        "deliverables": [
-            "Lead Quality Audit (تقييم آخر ٥٠ lead)",
-            "Pipeline Audit (تحديد leakage points)",
-            "3 Daily Decisions Briefs (نموذج للقرارات اليوميّة)",
-            "1 Sample Outreach Draft (موافقة المؤسس قبل الإرسال)",
-            "Initial Proof Pack (٣ proof events موثّقة)",
-            "30-Day Plan PDF",
-            "Day 7 Review Call (٣٠ دقيقة)",
-        ],
-        "timeline_days": [
-            "Day 1: Lead Quality Audit",
-            "Day 2: Pipeline Audit",
-            "Day 3: Sample Drafts",
-            "Day 4: Daily Decisions Brief",
-            "Day 5: Customer Portal setup",
-            "Day 6: Initial Proof Pack",
-            "Day 7: Review Call + 30-day plan",
-        ],
-        "required_inputs": [
-            "إذن PDPL مكتوب",
-            "وصول Read-only لقائمة آخر ٥٠ lead",
-            "موافقة على إرسال drafts للمراجعة (لا live send)",
-            "تحديد المؤشّر الرئيسي (KPI) للمتابعة",
-        ],
-        "what_is_excluded": [
-            "إرسال WhatsApp/Email/LinkedIn حيّ (manual فقط)",
-            "أي اتصال هاتفي بالعملاء (manual فقط)",
-            "تكامل CRM مدفوع",
-            "أي ميزة تتطلّب أكثر من ٧ أيّام",
-        ],
-        "payment": {
-            "method": "manual_bank_transfer",
-            "amount_sar": amount_sar,
-            "amount_halalah": halalah,
-            "live_charge": False,
-            "moyasar_live": False,
-            "evidence_required": True,
-            "founder_must_confirm_manually": True,
-        },
-        "kpi_commitment": {
-            "type": "evidence_based_commitment",
-            "rule_ar": "نقيس المؤشر المتفق عليه من baseline العميل؛ أي تصحيح أو استرداد يعتمد في أمر العمل ولا توجد نتيجة مضمونة",
-            "rule_en": "Measure the agreed KPI from the customer baseline; remedies are defined in the order form, and outcomes are not assured.",
-        },
-        "refund_policy": {
-            "window_days": 14,
-            "rate_pct": 100,
-            "questions_required": False,
-            "method": "bank_transfer",
-        },
-        "proof_pack_at_end": True,
-        "approval_first_statement_ar": (
-            "كل إجراء خارجي خلال الـ Sprint يحتاج موافقتك قبل التنفيذ. "
-            "لا live send. لا live charge. لا ادّعاءات بدون دليل. "
-            "Proof Pack موثّق يُسلَّم في اليوم ٧."
+        "commercial_path": (
+            "Free Mini Diagnostic -> Qualified Discovery -> Customer-Specific Quote -> "
+            "Revenue Command Pilot — 30 days -> Proof Pack -> Stop/Expand/Redesign"
         ),
-        "approval_first_statement_en": (
-            "Every external action during the Sprint requires your approval. "
-            "No live send. No live charge. No claims without evidence. "
-            "Documented Proof Pack delivered on Day 7."
-        ),
-        "no_revenue_claim": True,
-        "no_outcome_promise": True,
-        "is_template_based": True,
-        "source": "wave6_phase4_pilot_brief_generator",
+        "package": "Revenue Command Pilot — 30 days",
+        "duration_days": 30,
+        "quote_evidence_id": quote_evidence_id,
+        "diagnostic_summary": diagnostic_summary or "UNKNOWN_NOT_EVIDENCE_BACKED",
+        "scope_draft": [
+            "Confirm one qualified revenue/operating problem and accountable owner",
+            "Confirm lawful minimum-necessary data boundary and baseline",
+            "Define acceptance criteria and weekly proof cadence",
+            "Operate the agreed Revenue + Proof + Command workflow within the approved scope",
+            "Record source-bound outcomes, blockers, decisions, and limitations",
+            "Produce a final Proof Pack",
+            "Hold final Stop / Expand / Redesign review",
+        ],
+        "required_before_commitment": [
+            "qualified_discovery",
+            "customer_specific_scope",
+            "acceptance_criteria",
+            "quote_or_commercial_terms_approved_by_applicable_authority",
+            "external_action_gates_satisfied",
+        ],
+        "what_is_not_authorized_by_this_artifact": [
+            "named_price_or_discount",
+            "payment_or_invoice",
+            "refund_or_remedy",
+            "contract_or_legal_term",
+            "tender_commitment",
+            "guaranteed_revenue_roi_leads_or_conversion",
+            "external_send_or_public_publish",
+            "production_or_customer_system_mutation",
+        ],
+        "price_sar": None,
+        "payment_terms": None,
+        "refund_policy": None,
+        "outcome_guarantee": None,
+        "external_send_allowed": False,
+        "execution_allowed": False,
+        "approval_required_for_commitment": True,
+        "source": "canonical_30_day_pilot_scope_compatibility_renderer",
     }
 
 
-def render_markdown(b: dict) -> str:
-    lines = []
-    lines.append(f"# {b['package']} — {b['company']}")
-    lines.append("")
-    lines.append(f"**القطاع:** {b['sector']}  ·  **المدّة:** {b['duration_days']} أيّام  ·  **السعر:** {b['amount_sar']} ريال ({b['amount_halalah']} هللة)")
-    lines.append("")
-    lines.append("## 🎯 المخرجات")
-    for d in b["deliverables"]:
-        lines.append(f"- {d}")
-    lines.append("")
-    lines.append("## 📅 الجدول الزمني")
-    for t in b["timeline_days"]:
-        lines.append(f"- {t}")
-    lines.append("")
-    lines.append("## ✅ المدخلات المطلوبة منكم")
-    for r in b["required_inputs"]:
-        lines.append(f"- {r}")
-    lines.append("")
-    lines.append("## ❌ ما هو مُستثنى من هذه الباقة")
-    for x in b["what_is_excluded"]:
-        lines.append(f"- {x}")
-    lines.append("")
-    lines.append("## 💳 الدفع (يدوي — لا خصم آلي)")
-    lines.append(f"- المبلغ: **{b['amount_sar']} ريال** ({b['amount_halalah']} هللة)")
-    lines.append("- الطريقة: تحويل بنكي يدوي")
-    lines.append("- المؤسس يؤكّد الاستلام يدوياً")
-    lines.append("- لا live charge")
-    lines.append("")
-    lines.append("## 📈 التزام الـ KPI (التزام، لا ضمان)")
-    lines.append(f"- {b['kpi_commitment']['rule_ar']}")
-    lines.append(f"- _{b['kpi_commitment']['rule_en']}_")
-    lines.append("")
-    lines.append("## 🔄 سياسة الاسترجاع")
-    lines.append(f"- **{b['refund_policy']['rate_pct']}% خلال {b['refund_policy']['window_days']} يوم** بدون أسئلة")
-    lines.append("")
-    lines.append("## 🛡️ الالتزام بـ Approval-First")
-    lines.append(b["approval_first_statement_ar"])
-    lines.append("")
-    lines.append(f"> {b['approval_first_statement_en']}")
-    lines.append("")
-    lines.append("---")
-    lines.append("")
-    lines.append("**Proof Pack يُسلَّم في اليوم السابع — بدون أرقام مخترعة، بدون ادّعاءات.**")
-    return "\n".join(lines)
+def render_markdown(brief: dict) -> str:
+    lines = [
+        f"# {brief['package']} — {brief['company']}",
+        "",
+        f"**Sector / القطاع:** {brief['sector']}",
+        f"**Status / الحالة:** {brief['truth_class']}",
+        f"**Quote evidence / مرجع العرض:** {brief['quote_evidence_id']}",
+        "",
+        "> This is an internal scope draft, not a price quote, invoice, contract, guarantee, or sent proposal.",
+        "> هذه مسودة نطاق داخلية وليست تسعيرة أو فاتورة أو عقدًا أو ضمانًا أو عرضًا مرسلًا.",
+        "",
+        "## Current commercial path | المسار التجاري الحالي",
+        brief["commercial_path"],
+        "",
+        "## Diagnostic / discovery summary | ملخص التشخيص والاستكشاف",
+        brief["diagnostic_summary"],
+        "",
+        "## Draft scope | مسودة النطاق",
+    ]
+    for item in brief["scope_draft"]:
+        lines.append(f"- {item}")
+    lines.extend(["", "## Required before commitment | المطلوب قبل الالتزام"])
+    for item in brief["required_before_commitment"]:
+        lines.append(f"- {item}")
+    lines.extend(["", "## Not authorized here | غير مصرح به هنا"])
+    for item in brief["what_is_not_authorized_by_this_artifact"]:
+        lines.append(f"- {item}")
+    lines.extend([
+        "",
+        "**Price:** not set here — customer-specific quote authority required.",
+        "**Payment/refund/contract/outcome commitments:** not authorized by this artifact.",
+    ])
+    return "\n".join(lines) + "\n"
 
 
 def main() -> int:
-    p = argparse.ArgumentParser(description="Wave 6 Pilot Brief generator")
-    p.add_argument("--company", required=True)
-    p.add_argument("--sector", required=True)
-    p.add_argument("--diagnostic-file", default=None,
-                   help="Path to diagnostic.json (optional)")
-    p.add_argument("--amount-sar", type=float, default=499.0)
-    p.add_argument("--out-md", default=None)
-    p.add_argument("--out-json", default=None)
-    args = p.parse_args()
+    parser = argparse.ArgumentParser(description="Render 30-day Pilot scope draft (no price authority)")
+    parser.add_argument("--company", required=True)
+    parser.add_argument("--sector", required=True)
+    parser.add_argument("--quote-evidence-id", required=True)
+    parser.add_argument("--diagnostic-file", default=None)
+    parser.add_argument(
+        "--amount-sar",
+        type=float,
+        default=None,
+        help="retired compatibility option; any supplied amount is rejected",
+    )
+    parser.add_argument("--out-md", default=None)
+    parser.add_argument("--out-json", default=None)
+    parser.add_argument("--dry-run", action="store_true")
+    args = parser.parse_args()
 
-    if args.amount_sar > 499.0:
-        print("REFUSING: amount_sar > 499 (Sprint tier cap)", file=sys.stderr)
+    if args.amount_sar is not None:
+        print(
+            "REFUSING=PRICE_NOT_AUTHORIZED_BY_PILOT_BRIEF; use approved customer-specific quote authority",
+            file=sys.stderr,
+        )
+        return 2
+
+    quote_ref = args.quote_evidence_id.strip()
+    if not quote_ref:
+        print("REFUSING=QUOTE_EVIDENCE_ID_REQUIRED", file=sys.stderr)
         return 2
 
     diagnostic_summary = None
     if args.diagnostic_file:
         try:
-            d = json.loads(Path(args.diagnostic_file).read_text(encoding="utf-8"))
-            diagnostic_summary = d.get("executive_summary_ar", "")[:300]
+            data = json.loads(Path(args.diagnostic_file).read_text(encoding="utf-8"))
+            diagnostic_summary = str(
+                data.get("executive_summary_ar")
+                or data.get("executive_summary_en")
+                or data.get("summary")
+                or ""
+            )[:1000]
         except Exception as exc:
-            print(f"WARNING: could not read diagnostic-file: {exc}", file=sys.stderr)
+            print(f"WARNING=DIAGNOSTIC_FILE_UNREADABLE:{type(exc).__name__}", file=sys.stderr)
 
     brief = build_brief(
         company=args.company,
         sector=args.sector,
-        amount_sar=args.amount_sar,
+        quote_evidence_id=quote_ref,
         diagnostic_summary=diagnostic_summary,
     )
+    markdown = render_markdown(brief)
 
-    out_md = Path(args.out_md) if args.out_md else LIVE_DIR / "pilot_brief.md"
-    out_json = Path(args.out_json) if args.out_json else LIVE_DIR / "pilot_brief.json"
+    if args.dry_run:
+        print(markdown)
+        print(json.dumps(brief, ensure_ascii=False, indent=2))
+        return 0
+
+    OUT_DIR.mkdir(parents=True, exist_ok=True)
+    slug = "_".join(args.company.strip().split())[:48] or "company"
+    stamp = datetime.now(UTC).strftime("%Y-%m-%d")
+    out_md = Path(args.out_md) if args.out_md else OUT_DIR / f"pilot_scope_{slug}_{stamp}.md"
+    out_json = Path(args.out_json) if args.out_json else OUT_DIR / f"pilot_scope_{slug}_{stamp}.json"
     out_md.parent.mkdir(parents=True, exist_ok=True)
-    out_md.write_text(render_markdown(brief), encoding="utf-8")
+    out_json.parent.mkdir(parents=True, exist_ok=True)
+    out_md.write_text(markdown, encoding="utf-8")
     out_json.write_text(json.dumps(brief, ensure_ascii=False, indent=2), encoding="utf-8")
 
-    print(f"OK: wrote {out_md} + {out_json}")
-    print(f"  amount_sar: {brief['amount_sar']}")
-    print(f"  amount_halalah: {brief['amount_halalah']}")
-    print(f"  live_charge: {brief['payment']['live_charge']}")
+    print(f"WROTE={out_md}")
+    print(f"RECEIPT={out_json}")
+    print("STATUS=DRAFT_NOT_SENT")
+    print("PRICE_AUTHORIZED=false")
+    print("PAYMENT_AUTHORIZED=false")
+    print("EXECUTION_ALLOWED=false")
     return 0
 
 
