@@ -1,12 +1,8 @@
 const LS_KEY = "dealix_admin_api_key";
 
 export function getAdminApiKey(): string {
-  if (typeof window === "undefined") return process.env.NEXT_PUBLIC_DEALIX_ADMIN_API_KEY ?? "";
-  return (
-    localStorage.getItem(LS_KEY) ||
-    process.env.NEXT_PUBLIC_DEALIX_ADMIN_API_KEY ||
-    ""
-  );
+  if (typeof window === "undefined") return "";
+  return localStorage.getItem(LS_KEY) || "";
 }
 
 export function isOpsConfigured(): boolean {
@@ -15,6 +11,6 @@ export function isOpsConfigured(): boolean {
 
 export function opsMissingKeyMessage(isAr?: boolean): string {
   return isAr
-    ? "يرجى إدخال مفتاح API للمشرف للمتابعة."
-    : "Please set your admin API key to continue.";
+    ? "يرجى تسجيل الدخول أو إدخال مفتاح API للمشرف محليًا للمتابعة."
+    : "Please sign in or set your admin API key locally to continue.";
 }
