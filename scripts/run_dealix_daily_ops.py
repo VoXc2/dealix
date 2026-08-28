@@ -119,6 +119,24 @@ def step_war_room_sync() -> int:
     return subprocess.call([py, str(script)], cwd=REPO_ROOT)
 
 
+def step_growth_council_verify() -> int:
+    """Verify the unique Growth Council/Morning Command invariants only."""
+    script = REPO_ROOT / "scripts" / "verify_growth_council_morning_command.py"
+    if not script.is_file():
+        print("growth-council: verifier missing", file=sys.stderr)
+        return 1
+    return subprocess.call([sys.executable, str(script)], cwd=REPO_ROOT)
+
+
+def step_morning_revenue_command() -> int:
+    """Generate one evidence-first Founder command from current Company OS state."""
+    script = REPO_ROOT / "scripts" / "generate_morning_revenue_command.py"
+    if not script.is_file():
+        print("morning-command: generator missing", file=sys.stderr)
+        return 1
+    return subprocess.call([sys.executable, str(script)], cwd=REPO_ROOT)
+
+
 def main() -> int:
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument("--dry-run", action="store_true")
@@ -139,20 +157,22 @@ def main() -> int:
         print("4. apply_kpi_founder_commercial.py --status")
         print("5. commercial_war_room_sync.py")
         print("6. founder_commercial_digest.py")
+        print("7. verify_growth_council_morning_command.py")
+        print("8. generate_morning_revenue_command.py")
         print("DEALIX_DAILY_OPS_VERDICT=READY")
         return 0
 
     degraded = False
 
     if not args.skip_api and _api_base() and _admin_key():
-        print("== 1/6 Postgres -> Autopilot replay ==")
+        print("== 1/8 Postgres -> Autopilot replay ==")
         replay = step_replay_postgres(limit=args.replay_limit)
         if replay:
             print(json.dumps(replay, ensure_ascii=False, indent=2))
         else:
             degraded = True
 
-        print("\n== 2/6 Full Ops Health ==")
+        print("\n== 2/8 Full Ops Health ==")
         health = step_full_ops_health()
         if health:
             hp = BRIEFS_DIR / f"ops_health_{date}.json"
@@ -161,7 +181,7 @@ def main() -> int:
         else:
             degraded = True
 
-        print("\n== 3/6 Weekly marketing pack (Monday only) ==")
+        print("\n== 3/8 Weekly marketing pack (Monday only) ==")
         wp = step_weekly_pack_if_monday()
         if wp:
             print(json.dumps(wp, ensure_ascii=False, indent=2))
@@ -180,14 +200,22 @@ def main() -> int:
         print(f"\nDEALIX_DAILY_OPS_VERDICT={verdict}")
         return 0
 
-    print("\n== 4/6 KPI commercial status ==")
+    print("\n== 4/8 KPI commercial status ==")
     step_kpi_status()
 
-    print("\n== 5/6 War Room sync ==")
+    print("\n== 5/8 War Room sync ==")
     step_war_room_sync()
 
-    print("\n== 6/6 Commercial digest ==")
+    print("\n== 6/8 Commercial digest ==")
     step_commercial_digest()
+
+    print("\n== 7/8 Growth Council / Morning Command contract ==")
+    if step_growth_council_verify() != 0:
+        degraded = True
+
+    print("\n== 8/8 Morning Revenue Command ==")
+    if step_morning_revenue_command() != 0:
+        degraded = True
 
     verdict = "DEGRADED" if degraded else "READY"
     print(f"\nDEALIX_DAILY_OPS_VERDICT={verdict}")

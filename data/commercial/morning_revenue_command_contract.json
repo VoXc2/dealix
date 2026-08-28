@@ -1,0 +1,68 @@
+{
+  "schema": "dealix.morning-revenue-command.v1",
+  "version": "2026-08-28.3",
+  "purpose": "One founder-facing daily command assembled from existing systems, without creating a parallel dashboard or scheduler.",
+  "north_star": "FIRST_VERIFIED_PAID_PILOT",
+  "owners": {
+    "scheduler": "existing canonical Dealix daily runner",
+    "portfolio_decision": "President workload on existing Agent Council",
+    "economic_truth": "Dealix Company OS + Proof Ledger",
+    "relationship_truth": "Revenue Mesh + evidence firewall",
+    "crm_mirror": "HubSpot adapter",
+    "analytics": "PostHog adapter",
+    "research": "Clay adapter when bounded enrichment is eligible",
+    "creative": "Canva renderer/asset registry",
+    "workflow_bus": "n8n"
+  },
+  "connector_resilience": {
+    "principle": "Founder command availability must not depend on any external SaaS connector.",
+    "external_connectors_are_optional_inputs": true,
+    "missing_connector_evidence": "UNKNOWN_NOT_EVIDENCE_BACKED",
+    "unavailable_connector": "DEGRADED_ADAPTER_NOT_FATAL",
+    "direct_network_calls_from_generator": false,
+    "direct_connector_credentials_in_generator": false,
+    "economic_truth_source": "Dealix Company OS + Proof Ledger",
+    "relationship_truth_source": "Revenue Mesh + evidence firewall",
+    "fatal_only_when": [
+      "canonical_contract_missing_or_invalid",
+      "truth_firewall_invariant_broken",
+      "atomic_output_write_fails"
+    ]
+  },
+  "sections": [
+    {"id":"money","title":"MONEY","fields":["verified_revenue_sar","verified_paid_pilots","closest_verified_money_path","current_conversion_stage","next_evidence_required"]},
+    {"id":"pipeline","title":"PIPELINE","fields":["real_interactions","verified_relationships","qualified_problems","diagnostics_active","discoveries_active","customer_specific_proposals","paid_pilots"]},
+    {"id":"marketing","title":"MARKETING","fields":["best_channel_by_verified_outcome","best_thesis","winning_asset","weak_channel","qualified_engagement_change","content_to_relationship_movement"]},
+    {"id":"content","title":"CONTENT","fields":["assets_generated","assets_reviewed","assets_queued","assets_published","assets_blocked","block_reasons"]},
+    {"id":"market","title":"MARKET","fields":["new_high_value_signals","event_opportunities","partner_opportunities","competitor_changes","program_or_tender_watch"]},
+    {"id":"experiments","title":"EXPERIMENTS","fields":["running","completed","winning_hypotheses","losing_hypotheses","scale_reduce_stop","next_test"]},
+    {"id":"agents","title":"AGENTS","fields":["tasks_completed","tasks_running","tasks_blocked","truth_violations","governance_blocks","founder_time_saved"]},
+    {"id":"approvals","title":"APPROVALS","fields":["specific_approval_required","reason","economic_value","deadline","fallback_if_no_approval"]},
+    {"id":"next_best_action","title":"NEXT BEST ACTION","fields":["action","owner","expected_stage_movement","evidence_required","why_now"]}
+  ],
+  "truth_rules": [
+    "research accounts are not relationships",
+    "CRM records are not economic truth",
+    "drafts are not sends",
+    "provider acceptance is not delivery",
+    "proposals are not revenue",
+    "invoices are not payments",
+    "analytics events are not proof of payment",
+    "synthetic or test data never increments real business counters",
+    "verified revenue requires payment evidence",
+    "customer proof requires evidence and publication permission"
+  ],
+  "noise_policy": {
+    "max_top_moves": 5,
+    "prefer_delta_over_full_dump": true,
+    "hide_unchanged_low_value_sections": true,
+    "surface_blockers_only_when_actionable": true,
+    "vanity_metrics_are_secondary": true
+  },
+  "automation": {
+    "new_timer_created": false,
+    "new_permanent_agent_created": false,
+    "daily_generation": "reuse existing daily runner and Agent Council workload",
+    "delivery": "Founder President/Telegram command surface or existing executive report path"
+  }
+}

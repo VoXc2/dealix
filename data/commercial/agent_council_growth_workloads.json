@@ -1,0 +1,147 @@
+{
+  "schema": "dealix.agent-council-growth-workloads.v1",
+  "version": "2026-08-28.2",
+  "north_star": "FIRST_VERIFIED_PAID_PILOT",
+  "architecture_rule": "Reuse the existing Agent Council, Company Brain, Opportunity Graph, Approval Center, Proof Ledger, Revenue Mesh, n8n ownership model and canonical scheduler. Do not create a parallel CRM, scheduler, state machine, proof system or permanent agent fleet.",
+  "automation_policy": {
+    "fully_autonomous_internal": [
+      "research",
+      "market_monitoring",
+      "competitor_monitoring",
+      "account_scoring",
+      "buying_group_research",
+      "signal_classification",
+      "content_ideation",
+      "draft_generation",
+      "content_repurposing",
+      "creative_data_preparation",
+      "video_script_and_storyboard_preparation",
+      "seo_audits",
+      "aeo_audits",
+      "analytics",
+      "attribution_analysis",
+      "experiment_analysis",
+      "crm_read_reconciliation",
+      "next_best_action",
+      "diagnostic_preparation",
+      "proposal_preparation",
+      "morning_command_generation"
+    ],
+    "conditional_autonomous": [
+      "official_api_publishing_when_channel_readiness_passes",
+      "inbound_routing",
+      "consented_follow_up",
+      "content_scheduling",
+      "bounded_enrichment_after_shortlist_and_budget_gate",
+      "meeting_preparation",
+      "provider_callbacks_and_receipt_reconciliation"
+    ],
+    "specific_gate_required": [
+      "named_price_or_quote",
+      "contract_or_legal_commitment",
+      "tender_submission",
+      "payment_charge_refund_or_spend",
+      "dns_production_or_destructive_database_mutation",
+      "sensitive_secret_change",
+      "customer_proof_or_testimonial_publication_without_recorded_permission",
+      "any_action_without_required_recipient_or_platform_consent"
+    ]
+  },
+  "shared_state": {
+    "company_brain": "single",
+    "opportunity_graph": "single",
+    "proof_ledger": "single",
+    "approval_center": "single",
+    "scheduler": "existing_canonical_owner_only",
+    "crm": "external_systems_are_mirrors_or_adapters_not_economic_truth"
+  },
+  "roles": {
+    "president": {
+      "maps_to": ["Executive Operations", "portfolio_ceo"],
+      "mission": "Allocate founder time, model capacity, channel capacity and agent work toward the closest verified-money path.",
+      "inputs": ["morning_command_inputs", "opportunity_graph", "proof_ledger", "experiments", "capacity", "approval_queue"],
+      "outputs": ["top_5_moves", "stop_scale_retest_decisions", "resource_allocation", "material_decisions"],
+      "autonomy": "L0-L4_INTERNAL"
+    },
+    "market_intelligence": {
+      "maps_to": ["Market/Partnerships", "market_research"],
+      "mission": "Continuously research Saudi/GCC/global accounts, competitors, programs, events, partnerships, hiring, tenders and buyer signals using permitted sources.",
+      "inputs": ["official_public_sources", "market_sources", "events", "company_websites", "authorized_connectors"],
+      "outputs": ["source_bound_signals", "research_only_accounts", "competitor_changes", "event_targets", "partner_candidates"],
+      "autonomy": "L0-L3"
+    },
+    "revenue": {
+      "maps_to": ["Revenue/Sales", "Revenue Mesh"],
+      "mission": "Move evidence-backed accounts through relationship, problem, diagnostic, discovery, proposal, pilot, payment and proof without inflating pipeline truth.",
+      "inputs": ["verified_relationships", "qualified_problems", "offer_catalog", "buyer_context", "reply_state"],
+      "outputs": ["next_best_action", "diagnostic", "discovery_brief", "proposal", "objection_response", "negotiation_plan", "conversion_state"],
+      "autonomy": "L0-L4_INTERNAL_PLUS_CHANNEL_POLICY"
+    },
+    "content_strategist": {
+      "maps_to": ["content_strategist"],
+      "mission": "Convert market pain, proof, objections and buyer questions into an evidence-backed editorial portfolio optimized for qualified outcomes.",
+      "inputs": ["signals", "proof", "objections", "search_questions", "buyer_roles", "channel_learning"],
+      "outputs": ["editorial_calendar", "core_theses", "asset_families", "cta_map", "content_stop_rules"],
+      "autonomy": "L0-L3"
+    },
+    "creative_director": {
+      "maps_to": ["design_system", "video_studio"],
+      "mission": "Maintain one Dealix visual identity across documents, social, website and video while turning approved theses into reusable template-ready creative packets.",
+      "inputs": ["brand_authority", "approved_theses", "evidence", "format_requirements"],
+      "outputs": ["creative_briefs", "template_datasets", "storyboards", "thumbnails", "asset_qa"],
+      "autonomy": "L0-L3"
+    },
+    "distribution_manager": {
+      "maps_to": ["distribution"],
+      "mission": "Adapt approved asset families to each owned channel, enforce readiness, UTMs, queue state, cadence and platform policy, and route publishing only through approved APIs/native paths.",
+      "inputs": ["approved_assets", "channel_readiness", "platform_policy", "utm_registry", "content_queue"],
+      "outputs": ["channel_variants", "queue_entries", "publish_class", "utm_mapping", "blocked_reason"],
+      "autonomy": "L0-L4_INTERNAL_PLUS_OFFICIAL_API_WHEN_ELIGIBLE"
+    },
+    "lifecycle_agent": {
+      "maps_to": ["community_response", "Revenue/Sales"],
+      "mission": "Classify inbound, replies, nurture state, follow-up eligibility, suppression and next evidence, then route qualified movement into Revenue Mesh.",
+      "inputs": ["inbound_events", "provider_callbacks", "consent_provenance", "suppression", "relationship_state"],
+      "outputs": ["response_class", "follow_up_action", "suppression_update", "relationship_evidence", "revenue_route"],
+      "autonomy": "L0-L4_INTERNAL_PLUS_CHANNEL_POLICY"
+    },
+    "experiment_analyst": {
+      "maps_to": ["analytics"],
+      "mission": "Evaluate content, CTA, landing, offer, channel and timing experiments against qualified business movement rather than vanity metrics.",
+      "inputs": ["analytics_events", "content_registry", "channel_cost", "founder_time", "revenue_stage_changes"],
+      "outputs": ["experiment_verdict", "scale_reduce_stop", "confidence", "learning_event", "next_test"],
+      "autonomy": "L0-L3"
+    },
+    "proof_agent": {
+      "maps_to": ["governance_proof", "Customer Delivery"],
+      "mission": "Convert verified delivery outcomes into permissioned proof assets and feed evidence back into sales and distribution without fabricating claims.",
+      "inputs": ["delivery_evidence", "payment_evidence", "customer_permission", "proof_ledger"],
+      "outputs": ["proof_pack", "case_study_draft", "proof_card_dataset", "referral_trigger", "distribution_evidence"],
+      "autonomy": "L0-L3_WITH_PUBLICATION_PERMISSION_GATE"
+    },
+    "governance_agent": {
+      "maps_to": ["Governance/Finance", "governance_proof"],
+      "mission": "Fail closed on spam, unsupported claims, consent gaps, suppression, legacy commercial drift, platform violations and false economic truth.",
+      "inputs": ["all_candidate_actions", "commercial_authority", "consent", "suppression", "proof", "platform_policy"],
+      "outputs": ["PASS", "BLOCK", "SPECIFIC_APPROVAL_REQUIRED", "reason", "evidence_required"],
+      "autonomy": "HARD_GATE"
+    }
+  },
+  "workload_cadence": {
+    "event_driven": ["inbound_routing", "reply_classification", "suppression", "signal_capture", "provider_receipts", "payment_evidence", "proof_evidence"],
+    "daily_existing_runner": ["market_radar", "portfolio_scoring", "content_queue", "crm_reconciliation_read", "analytics_summary", "morning_command"],
+    "weekly_existing_runner": ["experiment_review", "proof_to_distribution", "channel_capacity_review", "competitor_summary", "self_improvement"],
+    "new_timer_created": false,
+    "new_permanent_agent_created": false
+  },
+  "economic_truth": {
+    "research_is_relationship": false,
+    "crm_contact_is_relationship": false,
+    "provider_acceptance_is_delivery": false,
+    "proposal_is_revenue": false,
+    "invoice_is_payment": false,
+    "analytics_event_is_payment": false,
+    "verified_revenue_requires_payment_evidence": true,
+    "customer_proof_requires_customer_evidence_and_permission": true
+  }
+}
