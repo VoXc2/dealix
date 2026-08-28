@@ -23,6 +23,22 @@ GOVERNED_ACCELERATION_CHAIN: tuple[str, ...] = (
     "asset",
 )
 
+# Canonical current commercial path. Legacy events/states remain below only for
+# compatibility; they do not supersede this authority.
+CANONICAL_COMMERCIAL_CHAIN: tuple[str, ...] = (
+    "real_interaction",
+    "verified_relationship",
+    "qualified_problem",
+    "free_mini_diagnostic",
+    "qualified_discovery",
+    "customer_specific_quote",
+    "pilot_decision",
+    "pilot_payment_verified",
+    "pilot_delivery",
+    "proof_review",
+    "expansion_or_stop",
+)
+
 
 @dataclass(frozen=True)
 class FactoryDefinition:
@@ -61,6 +77,7 @@ class ApprovalRule:
 class EventGuardRule:
     event_type: str
     required_prior_events: tuple[str, ...] = ()
+    required_any_prior_events: tuple[str, ...] = ()
     required_payload_fields: tuple[str, ...] = ()
     required_truthy_payload_fields: tuple[str, ...] = ()
     rejection_reason: str = "guard_failed"
@@ -89,7 +106,7 @@ class OperatingCompanyContract:
         context: Mapping[str, Any] | None = None,
     ) -> tuple[bool, str | None]:
         ctx = context or {}
-        if action_id == "start_delivery":
+        if action_id in {"start_delivery", "start_pilot_delivery"}:
             if bool(ctx.get("payment_proof")):
                 return False, None
             return True, "start_delivery_requires_payment_proof"
@@ -123,6 +140,11 @@ class OperatingCompanyContract:
         for required in guard.required_prior_events:
             if required not in seen:
                 return False, f"{guard.rejection_reason}:missing_prior={required}"
+        if guard.required_any_prior_events and not seen.intersection(
+            guard.required_any_prior_events
+        ):
+            required_any = ",".join(guard.required_any_prior_events)
+            return False, f"{guard.rejection_reason}:missing_any_prior={required_any}"
         event_payload = payload or {}
         for field in guard.required_payload_fields:
             if field not in event_payload:
@@ -145,6 +167,7 @@ class OperatingCompanyContract:
     def to_summary(self) -> dict[str, Any]:
         return {
             "governed_chain": list(GOVERNED_ACCELERATION_CHAIN),
+            "canonical_commercial_chain": list(CANONICAL_COMMERCIAL_CHAIN),
             "factories_total": len(self.factories),
             "loops_total": len(self.loops),
             "agents_total": len(self.agent_roles),
@@ -158,7 +181,10 @@ def build_operating_company_contract() -> OperatingCompanyContract:
         FactoryDefinition(
             factory_id="demand_factory",
             name="Demand Factory",
-            mission="Turn market signals into qualified opportunities.",
+            mission=(
+                "Turn market signals into evidenced real interactions and qualified "
+                "problems without promoting research into relationships."
+            ),
             primary_loops=("market_signal_loop", "partner_loop"),
         ),
         FactoryDefinition(
@@ -170,13 +196,19 @@ def build_operating_company_contract() -> OperatingCompanyContract:
         FactoryDefinition(
             factory_id="sales_factory",
             name="Sales Factory",
-            mission="Convert qualified intent to approved scope, invoice, and payment.",
+            mission=(
+                "Move evidenced relationships through Free Mini Diagnostic, qualified "
+                "Discovery, customer-specific Quote and paid 30-day Pilot."
+            ),
             primary_loops=("sales_conversion_loop",),
         ),
         FactoryDefinition(
             factory_id="delivery_factory",
             name="Delivery Factory",
-            mission="Deliver diagnostics with source, approval, and evidence discipline.",
+            mission=(
+                "Deliver only approved paid Pilot scope after verified payment, with "
+                "explicit acceptance criteria and evidence discipline."
+            ),
             primary_loops=("delivery_loop",),
         ),
         FactoryDefinition(
@@ -200,15 +232,69 @@ def build_operating_company_contract() -> OperatingCompanyContract:
     )
 
     loops = (
-        LoopDefinition("market_signal_loop", "Market Signal Loop", "target_added", "reply_received", "learning"),
-        LoopDefinition("founder_trust_loop", "Founder Trust Loop", "proof_pack_sent", "meeting_booked", "trust_compounding"),
-        LoopDefinition("proof_funnel_loop", "Proof Funnel Loop", "risk_score_completed", "scope_requested", "proof_to_scope"),
-        LoopDefinition("sales_conversion_loop", "Sales Conversion Loop", "lead_captured", "invoice_paid", "paid_conversion"),
-        LoopDefinition("delivery_loop", "Delivery Loop", "delivery_started", "value_confirmed", "value_delivery"),
-        LoopDefinition("upsell_loop", "Upsell Loop", "proof_pack_sent", "retainer_proposed", "expansion"),
-        LoopDefinition("partner_loop", "Partner Loop", "referral_requested", "qualified_A", "partner_sourced_pipeline"),
-        LoopDefinition("governance_loop", "Governance Loop", "message_prepared", "message_approved", "controlled_actions"),
-        LoopDefinition("productization_loop", "Productization Loop", "diagnostic_started", "closed_won", "service_to_module"),
+        LoopDefinition(
+            "market_signal_loop",
+            "Market Signal Loop",
+            "target_added",
+            "interaction_captured",
+            "research_to_real_interaction",
+        ),
+        LoopDefinition(
+            "founder_trust_loop",
+            "Founder Trust Loop",
+            "proof_pack_sent",
+            "meeting_booked",
+            "trust_compounding",
+        ),
+        LoopDefinition(
+            "proof_funnel_loop",
+            "Proof Funnel Loop",
+            "risk_score_completed",
+            "scope_requested",
+            "proof_to_scope",
+        ),
+        LoopDefinition(
+            "sales_conversion_loop",
+            "Sales Conversion Loop",
+            "relationship_verified",
+            "pilot_payment_verified",
+            "paid_conversion",
+        ),
+        LoopDefinition(
+            "delivery_loop",
+            "Delivery Loop",
+            "pilot_delivery_started",
+            "value_confirmed",
+            "value_delivery",
+        ),
+        LoopDefinition(
+            "upsell_loop",
+            "Upsell Loop",
+            "final_proof_pack_ready",
+            "expansion_decision",
+            "expansion",
+        ),
+        LoopDefinition(
+            "partner_loop",
+            "Partner Loop",
+            "referral_requested",
+            "relationship_verified",
+            "partner_sourced_relationship",
+        ),
+        LoopDefinition(
+            "governance_loop",
+            "Governance Loop",
+            "message_prepared",
+            "message_approved",
+            "controlled_actions",
+        ),
+        LoopDefinition(
+            "productization_loop",
+            "Productization Loop",
+            "value_confirmed",
+            "expansion_decision",
+            "service_to_module",
+        ),
     )
 
     agent_roles = (
@@ -221,7 +307,7 @@ def build_operating_company_contract() -> OperatingCompanyContract:
         ),
         AgentRole(
             agent_id="icp_scoring",
-            mission="Rank opportunities to protect founder focus.",
+            mission="Rank research hypotheses without promoting them to relationships.",
             inputs=("account_profile", "intent_signals", "pain_hypothesis"),
             outputs=("icp_grade", "fit_score", "routing_decision"),
         ),
@@ -253,52 +339,52 @@ def build_operating_company_contract() -> OperatingCompanyContract:
         ),
         AgentRole(
             agent_id="meeting_brief",
-            mission="Prepare high-signal call briefs and demo path.",
+            mission="Prepare high-signal call briefs and discovery path.",
             inputs=("account_profile", "contact_profile", "prior_events"),
             outputs=("meeting_brief", "discovery_questions", "close_path"),
         ),
         AgentRole(
             agent_id="sales_call_coach",
-            mission="Turn call notes into state decision.",
+            mission="Turn call notes into evidence-backed commercial state decisions.",
             inputs=("meeting_notes", "qualification_signals", "budget_data"),
             outputs=("state_update", "objection_map", "scope_readiness"),
         ),
         AgentRole(
             agent_id="scope_builder",
-            mission="Generate governed diagnostic scope drafts.",
-            inputs=("meeting_notes", "account_profile", "selected_offer"),
-            outputs=("scope_draft", "price_recommendation", "exclusions"),
+            mission="Generate customer-specific Pilot scope drafts only after Discovery.",
+            inputs=("discovery_notes", "account_profile", "selected_offer"),
+            outputs=("scope_draft", "commercial_options", "evidence_requirements", "exclusions"),
             forbidden_actions=("send_to_client", "final_invoice_generation"),
         ),
         AgentRole(
             agent_id="billing",
-            mission="Convert approved scope to invoice workflow.",
-            inputs=("approved_scope", "payment_terms", "contact_info"),
+            mission="Convert an approved customer-specific Quote into invoice workflow.",
+            inputs=("approved_quote", "payment_terms", "contact_info"),
             outputs=("invoice_draft", "followup_schedule", "payment_status"),
             forbidden_actions=("start_delivery_without_payment_proof",),
         ),
         AgentRole(
             agent_id="delivery_diagnostic",
-            mission="Run source-grounded diagnostics.",
-            inputs=("onboarding_form", "crm_export", "workflow_notes"),
-            outputs=("workflow_map", "risk_register", "top_decisions"),
+            mission="Prepare source-grounded Free Mini Diagnostic evidence before Discovery.",
+            inputs=("interaction_evidence", "workflow_notes", "allowed_customer_context"),
+            outputs=("revenue_leak_map", "risk_register", "top_decisions"),
         ),
         AgentRole(
             agent_id="proof_pack",
-            mission="Package findings into commercial proof assets.",
-            inputs=("diagnostic_findings", "evidence_assets", "founder_review"),
-            outputs=("proof_pack", "anonymized_insights", "upsell_hint"),
+            mission="Package verified delivery findings into commercial proof assets.",
+            inputs=("delivery_findings", "evidence_assets", "founder_review"),
+            outputs=("proof_pack", "anonymized_insights", "expansion_hint"),
             forbidden_actions=("send_without_founder_review",),
         ),
         AgentRole(
             agent_id="upsell",
-            mission="Recommend next paid step from unresolved risk.",
+            mission="Recommend expansion only from verified unresolved value or risk.",
             inputs=("proof_pack", "risk_priority", "delivery_outcome"),
-            outputs=("next_offer", "retainer_candidate", "nurture_path"),
+            outputs=("next_offer", "expansion_candidate", "nurture_path"),
         ),
         AgentRole(
             agent_id="partner",
-            mission="Build partner-led pipeline loops.",
+            mission="Build partner-led relationship loops.",
             inputs=("partner_profile", "segment_fit", "offer"),
             outputs=("partner_pitch_draft", "referral_path", "fit_score"),
             forbidden_actions=("auto_sign_agreement",),
@@ -313,6 +399,22 @@ def build_operating_company_contract() -> OperatingCompanyContract:
     )
 
     event_taxonomy = (
+        # Canonical commercial truth events.
+        "interaction_captured",
+        "relationship_verified",
+        "problem_qualified",
+        "diagnostic_started",
+        "diagnostic_completed",
+        "discovery_completed",
+        "customer_specific_quote_prepared",
+        "customer_specific_quote_approved",
+        "pilot_decision_approved",
+        "pilot_payment_verified",
+        "pilot_delivery_started",
+        "weekly_proof_ready",
+        "final_proof_pack_ready",
+        "expansion_decision",
+        # Compatibility events retained for existing runners/readers.
         "target_added",
         "message_prepared",
         "message_approved",
@@ -330,7 +432,6 @@ def build_operating_company_contract() -> OperatingCompanyContract:
         "invoice_sent",
         "invoice_paid",
         "onboarding_submitted",
-        "diagnostic_started",
         "proof_pack_drafted",
         "proof_pack_sent",
         "value_confirmed",
@@ -343,6 +444,20 @@ def build_operating_company_contract() -> OperatingCompanyContract:
     )
 
     state_machine = (
+        # Canonical commercial states.
+        "research_signal",
+        "real_interaction",
+        "verified_relationship",
+        "qualified_problem",
+        "free_diagnostic",
+        "qualified_discovery",
+        "customer_specific_quote",
+        "pilot_decision",
+        "pilot_payment_verified",
+        "pilot_delivery",
+        "proof_review",
+        "expansion_candidate",
+        # Compatibility states retained for existing runners/readers.
         "new_lead",
         "qualified_A",
         "qualified_B",
@@ -363,11 +478,26 @@ def build_operating_company_contract() -> OperatingCompanyContract:
     )
 
     transitions = {
+        # Canonical path. Research cannot jump into a commercial state.
+        "research_signal": ("real_interaction",),
+        "real_interaction": ("verified_relationship", "nurture", "closed_lost"),
+        "verified_relationship": ("qualified_problem", "nurture", "closed_lost"),
+        "qualified_problem": ("free_diagnostic", "nurture", "closed_lost"),
+        "free_diagnostic": ("qualified_discovery", "nurture", "closed_lost"),
+        "qualified_discovery": ("customer_specific_quote", "nurture", "closed_lost"),
+        "customer_specific_quote": ("pilot_decision", "closed_lost"),
+        "pilot_decision": ("pilot_payment_verified", "closed_lost"),
+        "pilot_payment_verified": ("pilot_delivery",),
+        "pilot_delivery": ("proof_review", "closed_lost"),
+        "proof_review": ("expansion_candidate", "closed_won", "closed_lost"),
+        "expansion_candidate": ("closed_won", "closed_lost"),
+        # Legacy compatibility path. It cannot create Closed Won from a partner
+        # marker and still preserves payment proof before delivery.
         "new_lead": ("qualified_A", "qualified_B", "nurture", "partner_candidate", "closed_lost"),
         "qualified_A": ("meeting_booked",),
         "qualified_B": ("meeting_booked", "nurture", "partner_candidate"),
         "nurture": ("meeting_booked", "closed_lost"),
-        "partner_candidate": ("meeting_booked", "closed_lost", "closed_won"),
+        "partner_candidate": ("meeting_booked", "closed_lost"),
         "meeting_booked": ("meeting_done", "closed_lost"),
         "meeting_done": ("scope_requested", "nurture", "partner_candidate", "closed_lost"),
         "scope_requested": ("scope_sent", "closed_lost"),
@@ -401,6 +531,11 @@ def build_operating_company_contract() -> OperatingCompanyContract:
             approval_required=True,
             reason="commercial_commitment",
         ),
+        "send_customer_specific_quote": ApprovalRule(
+            "send_customer_specific_quote",
+            approval_required=True,
+            reason="named_customer_commercial_commitment",
+        ),
         "send_invoice": ApprovalRule(
             "send_invoice",
             approval_required=True,
@@ -424,6 +559,91 @@ def build_operating_company_contract() -> OperatingCompanyContract:
     }
 
     event_guards = {
+        "interaction_captured": EventGuardRule(
+            event_type="interaction_captured",
+            required_payload_fields=("interaction_evidence_ref",),
+            rejection_reason="interaction_requires_evidence",
+        ),
+        "relationship_verified": EventGuardRule(
+            event_type="relationship_verified",
+            required_prior_events=("interaction_captured",),
+            required_payload_fields=("interaction_evidence_ref",),
+            rejection_reason="relationship_requires_real_interaction_evidence",
+        ),
+        "problem_qualified": EventGuardRule(
+            event_type="problem_qualified",
+            required_prior_events=("relationship_verified",),
+            required_payload_fields=("problem_evidence_ref",),
+            rejection_reason="qualification_requires_verified_relationship_and_problem_evidence",
+        ),
+        "diagnostic_started": EventGuardRule(
+            event_type="diagnostic_started",
+            # Current canonical path starts the Free Mini Diagnostic after a
+            # qualified problem. invoice_paid is retained as a legacy-compatible
+            # prior event for historical paid-diagnostic records only.
+            required_any_prior_events=("problem_qualified", "invoice_paid"),
+            rejection_reason="diagnostic_requires_qualified_problem_or_legacy_paid_context",
+        ),
+        "diagnostic_completed": EventGuardRule(
+            event_type="diagnostic_completed",
+            required_prior_events=("diagnostic_started",),
+            required_payload_fields=("diagnostic_output_ref",),
+            rejection_reason="diagnostic_completion_requires_evidence",
+        ),
+        "discovery_completed": EventGuardRule(
+            event_type="discovery_completed",
+            required_prior_events=("diagnostic_completed",),
+            required_payload_fields=("discovery_notes_ref",),
+            rejection_reason="discovery_requires_completed_diagnostic_and_notes",
+        ),
+        "customer_specific_quote_prepared": EventGuardRule(
+            event_type="customer_specific_quote_prepared",
+            required_prior_events=("discovery_completed",),
+            required_payload_fields=("scope_evidence_ref",),
+            rejection_reason="quote_requires_qualified_discovery_and_customer_scope",
+        ),
+        "customer_specific_quote_approved": EventGuardRule(
+            event_type="customer_specific_quote_approved",
+            required_prior_events=("customer_specific_quote_prepared",),
+            required_payload_fields=("quote_authority_ref",),
+            rejection_reason="quote_requires_explicit_authority",
+        ),
+        "pilot_decision_approved": EventGuardRule(
+            event_type="pilot_decision_approved",
+            required_prior_events=("customer_specific_quote_approved",),
+            required_payload_fields=("decision_evidence_ref",),
+            rejection_reason="pilot_decision_requires_approved_quote_and_evidence",
+        ),
+        "pilot_payment_verified": EventGuardRule(
+            event_type="pilot_payment_verified",
+            required_prior_events=("pilot_decision_approved",),
+            required_payload_fields=("payment_proof_ref",),
+            rejection_reason="pilot_payment_requires_verified_external_payment_evidence",
+        ),
+        "pilot_delivery_started": EventGuardRule(
+            event_type="pilot_delivery_started",
+            required_prior_events=("pilot_payment_verified",),
+            required_payload_fields=("payment_proof_ref",),
+            rejection_reason="pilot_delivery_requires_verified_payment",
+        ),
+        "weekly_proof_ready": EventGuardRule(
+            event_type="weekly_proof_ready",
+            required_prior_events=("pilot_delivery_started",),
+            required_payload_fields=("proof_evidence_ref",),
+            rejection_reason="weekly_proof_requires_delivery_evidence",
+        ),
+        "final_proof_pack_ready": EventGuardRule(
+            event_type="final_proof_pack_ready",
+            required_prior_events=("pilot_delivery_started",),
+            required_payload_fields=("proof_evidence_ref",),
+            rejection_reason="final_proof_requires_delivery_evidence",
+        ),
+        "expansion_decision": EventGuardRule(
+            event_type="expansion_decision",
+            required_prior_events=("final_proof_pack_ready",),
+            required_payload_fields=("decision_evidence_ref",),
+            rejection_reason="expansion_requires_final_proof_and_decision_evidence",
+        ),
         "message_sent": EventGuardRule(
             event_type="message_sent",
             required_prior_events=("message_approved",),
@@ -449,11 +669,6 @@ def build_operating_company_contract() -> OperatingCompanyContract:
             required_payload_fields=("payment_proof_ref",),
             rejection_reason="invoice_paid_requires_payment_proof",
         ),
-        "diagnostic_started": EventGuardRule(
-            event_type="diagnostic_started",
-            required_prior_events=("invoice_paid",),
-            rejection_reason="delivery_requires_paid_invoice",
-        ),
         "proof_pack_sent": EventGuardRule(
             event_type="proof_pack_sent",
             required_truthy_payload_fields=("founder_reviewed",),
@@ -463,6 +678,12 @@ def build_operating_company_contract() -> OperatingCompanyContract:
             event_type="case_study_approved",
             required_truthy_payload_fields=("client_permission",),
             rejection_reason="case_study_requires_client_permission",
+        ),
+        "closed_won": EventGuardRule(
+            event_type="closed_won",
+            required_any_prior_events=("pilot_payment_verified", "invoice_paid"),
+            required_payload_fields=("payment_proof_ref",),
+            rejection_reason="closed_won_requires_verified_payment_evidence",
         ),
     }
 
