@@ -1,80 +1,163 @@
-# Claims Guardrails
+# Dealix Claims Guardrails
 
 ## Purpose
 
-Define the non-negotiable rules for any claim Dealix makes publicly. These guardrails protect trust, compliance, and positioning. They are enforced on every asset before publish.
+Protect Dealix from brand, commercial, compliance and proof overclaim. These rules apply to website copy, decks, proposals, social/video, event collateral, agent-generated drafts, SEO/AEO content and renderer templates.
 
-## Owner
+Read `docs/brand/BRAND_AUTHORITY_MAP.md` and current commercial authority before approving any public claim.
 
-Founder / CEO. Any exception requires explicit founder approval and is logged.
+## Core rule
 
-## Daily Usage
+**A claim may be no stronger than its current source-bound evidence.**
 
-- Check every public claim against these guardrails before publish.
-- Reject any claim that violates them.
-- Log approved claims and exceptions.
+If evidence is missing, stale, synthetic, scoped differently or ambiguous, weaken the claim, label it correctly or do not publish it.
 
-## Inputs
+## Hard prohibitions
 
-- `docs/company/DEALIX_SOURCE_OF_TRUTH.md`
-- Customer evidence and proof packs
-- PDPL and compliance requirements
+Do not claim or imply without exact supporting authority/evidence:
+- guaranteed revenue, sales, conversion, savings or ROI;
+- guaranteed implementation success;
+- fake or unverified customer logos, testimonials, quotes or case studies;
+- fake partnerships, integrations, certifications or government access;
+- payment/revenue from a proposal, invoice, pipeline stage or verbal interest;
+- customer outcome from synthetic/demo/internal/runtime evidence;
+- blanket `PDPL-compliant`, `fully compliant`, `certified compliant`, or equivalent certification-style language;
+- blanket security certifications or audit results that do not exist;
+- that AI replaces accountable human owners when approval/accountability remains required;
+- that future/beta OS modules are fully deployed production capabilities;
+- a public first-launch price, checkout or guarantee not authorized by current commercial truth;
+- cold WhatsApp/LinkedIn automation as a Dealix capability when current policy/platform rules prohibit it.
 
-## Outputs
+## Compliance language
 
-- Approved claims list
-- Rejected claims log
-- Exception log (if any, with approval)
+Compliance is scope-specific.
 
-## Workflow
+Allowed patterns when truthful:
+- `PDPL-aware`
+- `designed around consent, provenance and approval controls`
+- `governed data/action boundaries`
+- `ZATCA-aware` for a relevant workflow
+- `approval-first`
+- `source-bound evidence`
 
-1. Draft the claim.
-2. Check against the guardrails below.
-3. If it passes, approve and log.
-4. If it fails, reject or revise.
-5. If an exception is needed, get founder approval and log it.
+A stronger compliance statement requires evidence for:
+- exact product/workflow scope;
+- exact control implemented;
+- date/version;
+- responsible evidence owner;
+- any external assessment/certification if the wording implies one.
 
-## Guardrails
+## Proof classes
 
-- No guaranteed revenue claims.
-- No fake testimonials.
-- No fake ROI.
-- No describing Dealix as a chatbot, CRM, or marketing agency.
-- No bypassing PDPL or approval-first.
-- All proof must be real and verifiable.
-- All claims must be approved before publish.
+Every material evidence-based claim must resolve to one class:
 
-## Acceptance Criteria
+1. `INTERNAL_CAPABILITY_PROOF`
+   - repository capability, deterministic verifier, controlled internal output.
+   - cannot be presented as customer value.
 
-- Zero guaranteed revenue claims in any public asset.
-- Zero fake testimonials or fabricated results.
-- Zero descriptions of Dealix as chatbot/CRM/agency.
-- All public claims are approved and logged.
-- All proof is real and verifiable.
+2. `SYNTHETIC_OR_DEMO_PROOF`
+   - simulated/sample/demo evidence.
+   - must be clearly labeled.
+   - cannot become relationship, customer, revenue or outcome proof.
 
-## Risks
+3. `RUNTIME_OR_PRODUCTION_PROOF`
+   - verified Dealix runtime/production behavior.
+   - proves the system behavior observed, not a customer business outcome.
 
-- A single guaranteed-revenue claim can damage trust and compliance.
-- Fabricated testimonials can trigger legal and reputational risk.
-- Drift toward chatbot/CRM/agency language dilutes the category.
+4. `CUSTOMER_DELIVERY_PROOF`
+   - real same-customer obligation + delivery evidence + acceptance where applicable.
+   - publication additionally requires the appropriate permission/anonymization decision.
 
-## What Not To Do
+5. `CUSTOMER_OUTCOME_PROOF`
+   - agreed/source-bound baseline + measured outcome + window + attribution caveats + same-customer evidence.
+   - strongest class; still must not be converted into a guarantee for another customer.
 
-- Do not claim guaranteed revenue or assured returns.
-- Do not use fabricated testimonials or results.
-- Do not describe Dealix as a chatbot, CRM, or marketing agency.
-- Do not bypass PDPL or approval-first rules.
-- Do not publish claims without approval.
+## Commercial truth rules
 
-## Next Action
+- research target != relationship;
+- relationship != qualified opportunity;
+- diagnostic/proposal != sale;
+- proposal sent != won;
+- invoice/payment request != payment;
+- payment evidence != delivery proof;
+- delivery proof != customer outcome proof;
+- estimate != verified value;
+- historical offer != current authority.
 
-Run a grep audit across docs and public copy for banned phrases.
+## Comparative claims
 
-## Related Files
+Do not say Dealix is `best`, `#1`, `safer than`, `more compliant than`, `faster than`, or similar comparative language unless the comparison methodology, population, date and evidence are supportable.
 
+Prefer mechanism-based differentiation:
+- governed approvals;
+- provenance/evidence boundaries;
+- bounded Pilot;
+- Saudi-first operating context;
+- executive command;
+- proof-before-expansion discipline.
+
+## AI / autonomy claims
+
+Use exact language about autonomy level.
+
+Do not call a workflow `fully autonomous` if it requires:
+- founder/customer approval;
+- channel eligibility;
+- consent/suppression checks;
+- human review;
+- unavailable connector credentials;
+- manual native platform action;
+- production/data gates.
+
+Prefer `automated internally`, `approval-gated`, `bounded`, `assisted`, `prepared automatically`, or another exact description.
+
+## Customer / logo policy
+
+A customer name/logo/testimonial may be public only with evidence that publication is permitted for the exact use. A real private relationship does not automatically authorize public logo use.
+
+## Government / Saudi-market claims
+
+Do not imply:
+- official government endorsement;
+- special procurement access;
+- government partnership;
+- regulatory approval;
+- Saudi-made/local-content status;
+unless exact evidence supports the exact wording.
+
+`Saudi-first` describes product/market design intent; it is not an official certification.
+
+## Evidence expiry
+
+Claims that depend on changing facts need a `last_verified_at` or equivalent review discipline. Expired event dates, feature states, integrations, prices, policies and capability status must be retired or revalidated.
+
+## Review workflow
+
+1. Identify each material factual/commercial claim.
+2. Resolve authority and evidence ID/source.
+3. Assign proof class.
+4. Check scope, date and permission.
+5. Check commercial/launch authority.
+6. Check compliance wording.
+7. Approve / revise / block.
+8. Record approved asset/claim version.
+
+## Acceptance criteria
+
+- zero guaranteed revenue/ROI claims;
+- zero fake proof/testimonials/logos;
+- zero historical price/guarantee leakage;
+- zero synthetic-to-customer proof promotion;
+- zero blanket compliance/certification claims without exact evidence;
+- every material public proof claim has a valid class/source;
+- public customer proof has publication permission appropriate to the asset;
+- estimates and hypotheses are visibly distinguished from verified facts.
+
+## Related files
+- `docs/brand/BRAND_AUTHORITY_MAP.md`
 - `docs/brand/DEALIX_BRAND_OS.md`
 - `docs/brand/POSITIONING.md`
 - `docs/brand/VOICE_AND_TONE.md`
-- `docs/brand/PUBLIC_COPY_BANK_AR.md`
-- `docs/brand/PUBLIC_COPY_BANK_EN.md`
-- `docs/company/DEALIX_SOURCE_OF_TRUTH.md`
+- `docs/brand/VISUAL_DIRECTION.md`
+- `docs/00_platform_truth/PLATFORM_SOURCE_OF_TRUTH.md`
+- `COMMERCIAL_IDENTITY.md`

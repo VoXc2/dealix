@@ -1,0 +1,110 @@
+{
+  "schema": "dealix.brand-authority.v1",
+  "generated_for": "2026-08-28",
+  "authority": {
+    "platform_positioning": "docs/00_platform_truth/PLATFORM_SOURCE_OF_TRUTH.md",
+    "commercial_truth": "docs/DEALIX_BUSINESS_MODEL.md",
+    "commercial_identity_mirror": "COMMERCIAL_IDENTITY.md",
+    "launch_gate": "dealix/config/first_launch_offer_gate.yaml",
+    "brand_expression": "docs/brand/DEALIX_BRAND_OS.md",
+    "brand_authority_map": "docs/brand/BRAND_AUTHORITY_MAP.md",
+    "claims": "docs/brand/CLAIMS_GUARDRAILS.md",
+    "active_visual_reference": "landing/index.html"
+  },
+  "canonical_identity": {
+    "masterbrand": "Dealix",
+    "category": "Saudi-first AI Business Operating System",
+    "commercial_wedge": "Revenue + Proof + Command",
+    "anti_categories": [
+      "generic chatbot",
+      "CRM replacement",
+      "lead scraper",
+      "AI automation agency",
+      "guaranteed-revenue service"
+    ]
+  },
+  "message_mechanism": [
+    "REALITY",
+    "PRIORITY",
+    "DECISION",
+    "APPROVAL",
+    "ACTION",
+    "OUTCOME",
+    "PROOF",
+    "LEARNING"
+  ],
+  "active_visual": {
+    "ink_navy": "#0F172A",
+    "deep_teal": "#164E63",
+    "signal_cyan": "#22D3EE",
+    "cloud": "#F8FAFC",
+    "arabic_font": "IBM Plex Sans Arabic",
+    "latin_font": "Inter",
+    "historical_palettes_are_authority": false
+  },
+  "proof_classes": [
+    "INTERNAL_CAPABILITY_PROOF",
+    "SYNTHETIC_OR_DEMO_PROOF",
+    "RUNTIME_OR_PRODUCTION_PROOF",
+    "CUSTOMER_DELIVERY_PROOF",
+    "CUSTOMER_OUTCOME_PROOF"
+  ],
+  "buying_group_roles": [
+    "FOUNDER_GM",
+    "REVENUE_COMMERCIAL",
+    "OPERATIONS",
+    "FINANCE_PROCUREMENT",
+    "IT_SECURITY",
+    "LEGAL_GOVERNANCE"
+  ],
+  "claim_policy": {
+    "blanket_pdpl_compliant_allowed": false,
+    "guaranteed_revenue_allowed": false,
+    "fake_testimonials_allowed": false,
+    "synthetic_as_customer_proof_allowed": false,
+    "historical_pricing_as_current_allowed": false,
+    "preferred_compliance_language": [
+      "PDPL-aware",
+      "designed around consent, provenance and approval controls",
+      "governed data/action boundaries",
+      "ZATCA-aware where relevant"
+    ]
+  },
+  "commercial_path": [
+    "FREE_MINI_DIAGNOSTIC",
+    "QUALIFIED_DISCOVERY",
+    "CUSTOMER_SPECIFIC_QUOTE",
+    "REVENUE_COMMAND_PILOT_30D",
+    "PROOF",
+    "STOP_EXPAND_REDESIGN"
+  ],
+  "distribution_roles": {
+    "website": "category + trust + proof + conversion",
+    "founder_linkedin": "operator POV + human trust; manual-native interaction",
+    "company_channels": "product + method + architecture + proof",
+    "youtube": "explanation + walkthrough + evidence",
+    "short_video": "one problem + one operating insight + one CTA",
+    "search_aeo": "durable buyer-problem knowledge",
+    "events": "real relationship acquisition",
+    "email_whatsapp": "only under current relationship/channel/consent authority"
+  },
+  "renderer_policy": {
+    "canva_is_authority": false,
+    "channel_platform_is_authority": false,
+    "required_asset_metadata": [
+      "content_id",
+      "brand_version",
+      "claim_version",
+      "template_version",
+      "buying_group_role",
+      "evidence_references",
+      "cta",
+      "channel",
+      "lifecycle_state"
+    ]
+  },
+  "legal": {
+    "trademark_clearance": "LEGAL_CLEARANCE_PENDING",
+    "do_not_claim_registered_or_globally_cleared_without_evidence": true
+  }
+}
