@@ -1,0 +1,298 @@
+{
+  "schema": "dealix.event-to-cash-field-pack.v1",
+  "generated_at": "2026-08-28T18:19:00+03:00",
+  "north_star": "FIRST_VERIFIED_PAID_DEALIX_PILOT",
+  "authority": {
+    "current_main": "2d1c52f2b81be2e7d59816072a5ce983d006ebcf",
+    "external_send_allowed_on_current_main": false,
+    "research_is_relationship": false,
+    "event_directory_is_lead": false,
+    "public_contact_is_consent": false,
+    "payment_evidence_required_for_revenue": true
+  },
+  "event_windows": {
+    "BIG5_AUG_2026": {
+      "dates": "2026-08-30/2026-09-02",
+      "daily_hours": "16:00-22:00",
+      "venue": "Riyadh Front Exhibition & Conference Center at ROSHN Front",
+      "admission": "FREE_FOR_TRADE_AND_INDUSTRY_PROFESSIONALS",
+      "official_sources": [
+        "https://www.big5constructsaudi.com/event-info/",
+        "https://exhibitors.big5constructsaudi.com/big-5-construct-saudi-2026-phase-2/Exhibitor"
+      ],
+      "freshness_recheck_before_use": true
+    },
+    "LEAP_DEEPFEST_2026": {
+      "dates": "2026-08-31/2026-09-03",
+      "venue": "Riyadh Exhibition & Convention Center, Malham",
+      "founder_actual_pass_evidence": "VISITOR_GENERAL",
+      "founder_access_time": "13:00",
+      "show_close": "21:00",
+      "official_sources": [
+        "https://connect.onegiantleap.com/event/leap2026",
+        "https://onegiantleap.com/",
+        "https://deepfest.com/"
+      ],
+      "freshness_recheck_before_use": true
+    }
+  },
+  "inbound_priority": {
+    "id": "LEAP-INBOUND-KARIZMA-20260827",
+    "person": "Eman Louzon",
+    "role": "CEO",
+    "organization_label_from_event": "KARIZMA",
+    "truth_class": "INBOUND_EVENT_SIGNAL",
+    "relationship_state": "PENDING_CONNECTION_REQUEST",
+    "identity_resolution": "AMBIGUOUS_DO_NOT_AUTO_RESOLVE",
+    "source": "FOUNDER_GMAIL_LEAP_NETWORKING_NOTIFICATION",
+    "required_next_evidence": "TWO_WAY_HUMAN_INTERACTION_IN_LEAP_CONNECT_OR_IN_PERSON",
+    "safe_internal_actions": [
+      "PUBLIC_SOURCE_RESEARCH",
+      "ACCOUNT_BRIEF",
+      "IDENTITY_DISAMBIGUATION_QUESTIONS",
+      "OFFER_HYPOTHESIS",
+      "NATIVE_REPLY_DRAFT",
+      "DISCOVERY_AGENDA_DRAFT"
+    ],
+    "blocked_promotions": [
+      "VERIFIED_RELATIONSHIP_WITHOUT_TWO_WAY_EVIDENCE",
+      "QUALIFIED_OPPORTUNITY_WITHOUT_OBSERVED_PROBLEM",
+      "PROPOSAL_WITHOUT_DISCOVERY",
+      "REVENUE_WITHOUT_PAYMENT_EVIDENCE"
+    ]
+  },
+  "big5_route": {
+    "strategy": "HALL3_THEN_HALL2_MINIMIZE_WALKING_AND_MAXIMIZE_CUSTOMER_PLUS_PARTNER_SIGNAL",
+    "must_meet_first": ["BIG5-9DEGREES", "BIG5-TRISPEC", "BIG5-ESAD"],
+    "route": [
+      "BIG5-ADEX",
+      "BIG5-WHITEHELMET",
+      "BIG5-9DEGREES",
+      "BIG5-ESAD",
+      "BIG5-CPC",
+      "BIG5-TRISPEC"
+    ]
+  },
+  "targets": [
+    {
+      "id": "BIG5-9DEGREES",
+      "company": "9 Degrees",
+      "stand": "3F68",
+      "hall": "3",
+      "truth_class": "RESEARCH_ONLY",
+      "lane": "CUSTOMER_PRIMARY",
+      "facts": [
+        "Saudi construction/scaffolding/formwork company",
+        "Public company profile reports 11-50 employees",
+        "Company site describes scaffolding, formwork, construction/design services and Saudi project coverage",
+        "Company publicly confirms Big 5 attendance at booth 3F68"
+      ],
+      "hypotheses_not_facts": [
+        "Opportunity and quotation follow-up may be fragmented across regions and projects",
+        "Executive reporting may require manual consolidation",
+        "A bounded Revenue Command workflow may improve visibility from enquiry to next action"
+      ],
+      "primary_offer_hypothesis": "FREE_MINI_DIAGNOSTIC_TO_30_DAY_REVENUE_COMMAND_PILOT",
+      "conversation_questions": [
+        "كيف تدخل الفرص عندكم اليوم من المشاريع والمقاولين، ومن يملك المتابعة حتى العرض؟",
+        "وين أكثر نقطة تضيع وقت الفريق بين الاستفسار والتسعير والمتابعة؟",
+        "لو أعطينا الإدارة لوحة واحدة تربط الفرصة بالمالك والخطوة التالية والدليل، أي جزء سيكون الأعلى قيمة؟"
+      ],
+      "next_evidence": "IN_PERSON_CONVERSATION_WITH_ROLE_PAIN_PERMISSION_AND_NEXT_STEP",
+      "sources": [
+        "https://exhibitors.big5constructsaudi.com/big-5-construct-saudi-2026-phase-2/Exhibitor",
+        "https://9degrees-ksa.com/scaffolding-and-formwork/",
+        "https://www.linkedin.com/company/9degrees-for-scaffolding-formwork-solutions"
+      ]
+    },
+    {
+      "id": "BIG5-TRISPEC",
+      "company": "Trispec Design & Build",
+      "stand": "2F158",
+      "hall": "2",
+      "truth_class": "RESEARCH_ONLY",
+      "lane": "CUSTOMER_PRIMARY",
+      "facts": [
+        "Riyadh design-build and fit-out company",
+        "Public company profile reports 11-50 employees",
+        "Services span design, engineering, procurement, fit-out, MEP and project management",
+        "Recent public hiring material describes multi-tender estimation, RFQs, commercial comparisons, deadlines and negotiation work"
+      ],
+      "hypotheses_not_facts": [
+        "Tender/proposal coordination may be a measurable Revenue Operations wedge",
+        "Handoffs across design, estimation, procurement and commercial teams may create visibility gaps",
+        "Dealix may fit first as a bounded tender-to-next-action command workflow"
+      ],
+      "primary_offer_hypothesis": "FREE_MINI_DIAGNOSTIC_TO_TENDER_REVENUE_COMMAND_PILOT",
+      "conversation_questions": [
+        "كم tender أو proposal يمر عليكم بالتوازي، وكيف تعرف الإدارة حالة كل واحد؟",
+        "أين يحصل أكبر تأخير بين RFQ والتسعير والاعتماد والمتابعة مع العميل؟",
+        "هل عندكم baseline واضح لسرعة الرد، win/loss reasons، والـnext action لكل tender؟"
+      ],
+      "next_evidence": "IN_PERSON_CONVERSATION_WITH_OBSERVED_TENDER_OR_FOLLOWUP_PAIN",
+      "sources": [
+        "https://exhibitors.big5constructsaudi.com/big-5-construct-saudi-2026/Exhibitor",
+        "https://trispec.com.sa/services/",
+        "https://www.linkedin.com/company/trispecsa"
+      ]
+    },
+    {
+      "id": "BIG5-ESAD",
+      "company": "ESAD Human Resources Solutions",
+      "stand": "2C159",
+      "hall": "2",
+      "truth_class": "RESEARCH_ONLY",
+      "lane": "CUSTOMER_OR_PARTNER",
+      "facts": [
+        "Saudi workforce and HR solutions provider",
+        "Official Big 5 directory lists ESAD at 2C159 and as a sponsor",
+        "Current public posts position ESAD around workforce solutions supporting business growth across sectors"
+      ],
+      "hypotheses_not_facts": [
+        "Multiple sector/service lines may benefit from account-level opportunity visibility",
+        "Lead-to-account handoff and executive reporting may be a useful diagnostic area",
+        "ESAD may be both a customer and a market-access/referral relationship"
+      ],
+      "primary_offer_hypothesis": "FREE_MINI_DIAGNOSTIC_OR_PARTNER_DISCOVERY",
+      "conversation_questions": [
+        "كيف توزعون فرص العملاء بين القطاعات والخدمات ومن يملك next action؟",
+        "هل التحدي الأكبر عندكم اكتساب الفرصة أم متابعة القرار والـhandoff بعد دخولها؟",
+        "هل في مجال تعاون يخدم عملاءكم في ضبط Revenue/Operations workflows بدل إضافة CRM جديد؟"
+      ],
+      "next_evidence": "REAL_CONVERSATION_CLASSIFY_CUSTOMER_VS_PARTNER_AND_CAPTURE_PERMISSION",
+      "sources": [
+        "https://exhibitors.big5constructsaudi.com/big-5-construct-saudi-2026-phase-2/Exhibitor",
+        "https://www.linkedin.com/company/esadgroup"
+      ]
+    },
+    {
+      "id": "BIG5-WHITEHELMET",
+      "company": "WhiteHelmet",
+      "stand": "3D28",
+      "hall": "3",
+      "truth_class": "RESEARCH_ONLY",
+      "lane": "PEER_PARTNER_MARKET_INTELLIGENCE",
+      "facts": [
+        "Saudi AI construction management platform",
+        "Official Big 5 exhibitor list places WhiteHelmet at 3D28 Hall 3",
+        "WhiteHelmet describes a construction AI operating platform spanning planning, design, construction and operations"
+      ],
+      "hypotheses_not_facts": [
+        "There may be complementary territory between construction project intelligence and company/revenue operating workflows",
+        "There may be integration, referral or co-delivery potential",
+        "There may also be competitive overlap in AI operating-system language"
+      ],
+      "primary_offer_hypothesis": "PARTNER_DISCOVERY_NOT_GENERIC_CUSTOMER_PITCH",
+      "conversation_questions": [
+        "وين ترسمون الحد بين project/construction intelligence وبين company-wide commercial/operating workflows؟",
+        "هل عملاؤكم يطلبون ربط التنفيذ الميداني بقرارات الإيراد أو approvals أو proof خارج المشروع؟",
+        "هل ترون مساحة integration/referral بين منصتكم وDealix بدل overlap؟"
+      ],
+      "next_evidence": "FOUNDER_OR_PRODUCT_CONVERSATION_CLASSIFY_PARTNER_PEER_COMPETITOR",
+      "sources": [
+        "https://exhibitors.big5constructsaudi.com/big-5-construct-saudi-2026/Exhibitor",
+        "https://www.whitehelmet.sa/",
+        "https://www.whitehelmet.sa/lifecycle"
+      ]
+    },
+    {
+      "id": "BIG5-ADEX",
+      "company": "Adex Contracting, Maintenance And Operation Ltd Co",
+      "stand": "3B61",
+      "hall": "3",
+      "truth_class": "RESEARCH_ONLY",
+      "lane": "ENTERPRISE_RESEARCH",
+      "facts": [
+        "Official Big 5 directory places the company at 3B61 Hall 3",
+        "Saudi Contractors Authority public record identifies the company as verified, Riyadh-based and Big Company Size"
+      ],
+      "hypotheses_not_facts": [
+        "Enterprise account and project visibility may be strategically relevant",
+        "The company is likely larger than the first-validation ICP and should not displace smaller closeable accounts"
+      ],
+      "primary_offer_hypothesis": "EXECUTIVE_DIAGNOSTIC_ONLY_IF_REAL_PAIN_EMERGES",
+      "conversation_questions": [
+        "ما أكثر جزء يحتاج الإدارة تشوفه بشكل أسرع بين المشاريع والعملاء والفرص التجارية؟",
+        "كيف تربطون follow-up التجاري بواقع التنفيذ والمشاريع؟",
+        "هل عندكم workflow واحد محدد يصلح Pilot صغير بدل transformation واسع؟"
+      ],
+      "next_evidence": "IN_PERSON_SIGNAL_THEN_DECIDE_HOLD_OR_DIAGNOSTIC",
+      "sources": [
+        "https://exhibitors.big5constructsaudi.com/big-5-construct-saudi-2026-phase-2/Exhibitor",
+        "https://muqawil.org/en/contractors/2819/0"
+      ]
+    },
+    {
+      "id": "BIG5-CPC",
+      "company": "Construction Products Holding Company",
+      "stand": "2D161",
+      "hall": "2",
+      "truth_class": "RESEARCH_ONLY",
+      "lane": "ENTERPRISE_CUSTOMER_OR_PARTNER",
+      "facts": [
+        "Official Big 5 exhibitor profile places CPC at 2D161 Hall 2",
+        "Event profile spans smart building, metal/steel/aluminum, modular construction, heavy construction and concrete/cement"
+      ],
+      "hypotheses_not_facts": [
+        "Group complexity may create cross-business opportunity and executive-reporting needs",
+        "Enterprise scope may be too broad for first pilot unless one workflow is isolated"
+      ],
+      "primary_offer_hypothesis": "BOUNDED_EXECUTIVE_DIAGNOSTIC_OR_PARTNER_DISCOVERY",
+      "conversation_questions": [
+        "عبر شركات المجموعة، أين أصعب نقطة في رؤية الفرص والـnext actions بصورة موحدة؟",
+        "هل فيه business unit واحد عنده مشكلة محددة يمكن قياسها خلال 30 يوم؟",
+        "من هم أصحاب القرار والبيانات لو أردنا Diagnostic محدود بدون تغيير الأنظمة؟"
+      ],
+      "next_evidence": "REAL_INTERACTION_IDENTIFY_ONE_BUYABLE_BOUNDED_WORKFLOW",
+      "sources": [
+        "https://exhibitors.big5constructsaudi.com/big-5-construct-saudi-2026-phase-2/Exhibitor/ExbDetails/NDUxMzY%3D"
+      ]
+    }
+  ],
+  "capture_contract": {
+    "required_after_each_real_interaction": [
+      "EVENT",
+      "TIMESTAMP",
+      "PERSON",
+      "COMPANY",
+      "ROLE",
+      "WHAT_WAS_ACTUALLY_DISCUSSSED",
+      "PAIN_OR_GOAL_IN_THEIR_WORDS",
+      "FOLLOWUP_PERMISSION_OR_PREFERRED_CHANNEL",
+      "NEXT_STEP",
+      "SOURCE",
+      "CONFIDENCE"
+    ],
+    "promotion_rule": "ONLY_REAL_HUMAN_EVIDENCE_CAN_PROMOTE_RESEARCH_ONLY_TO_RELATIONSHIP_STATE",
+    "same_day_output": [
+      "ACCOUNT_BRIEF_UPDATE",
+      "RELATIONSHIP_STATE",
+      "DEAL_DESK_RESULT",
+      "DIAGNOSTIC_HYPOTHESIS_IF_SUPPORTED",
+      "FOLLOWUP_DRAFT_IF_CHANNEL_ELIGIBLE",
+      "NEXT_EVIDENCE"
+    ]
+  },
+  "stop_rules": [
+    "DO_NOT_SPEND_FOUNDER_TIME_ON_RESEARCH_AFTER_REAL_INTERACTIONS_EXIST",
+    "DO_NOT_PITCH_WHITEHELMET_AS_GENERIC_CUSTOMER_WITHOUT_OBSERVED_PAIN",
+    "DO_NOT_CREATE_CRM_DEAL_FROM_EVENT_DIRECTORY_OR_FIT_SCORE",
+    "DO_NOT_USE_PUBLIC_EMAIL_OR_PHONE_AS_MARKETING_PERMISSION",
+    "DO_NOT_SEND_COLD_OR_BULK_WHATSAPP",
+    "DO_NOT_AUTOMATE_PERSONAL_LINKEDIN_CONNECTIONS_OR_DMS",
+    "DO_NOT_GENERATE_CUSTOMER_SPECIFIC_PROPOSAL_BEFORE_SUFFICIENT_DISCOVERY",
+    "DO_NOT_COUNT_PROPOSAL_OR_INVOICE_AS_REVENUE"
+  ],
+  "scorecard": [
+    "REAL_INTERACTIONS",
+    "VERIFIED_RELATIONSHIPS",
+    "QUALIFIED_PROBLEMS",
+    "DIAGNOSTICS_STARTED",
+    "DISCOVERIES_CREATED",
+    "CUSTOMER_SPECIFIC_PROPOSALS",
+    "PILOTS_AGREED",
+    "PAYMENTS_VERIFIED",
+    "DELIVERY_PROOF",
+    "PARTNER_REFERRAL_PATHS"
+  ]
+}

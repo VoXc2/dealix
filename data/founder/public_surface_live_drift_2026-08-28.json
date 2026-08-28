@@ -1,0 +1,52 @@
+{
+  "schema": "dealix.public-surface-live-drift.v1",
+  "observed_at": "2026-08-28T18:19:00+03:00",
+  "classification": "LIVE_DEPLOYMENT_OR_INDEX_DRIFT_CONFIRMED_FOR_ACADEMY",
+  "canonical_source": {
+    "main_sha": "2d1c52f2b81be2e7d59816072a5ce983d006ebcf",
+    "academy_path": "landing/academy.html",
+    "academy_expected_behavior": "NOINDEX_NOFOLLOW_AND_IMMEDIATE_REDIRECT_TO_PRICING",
+    "pricing_path": "landing/pricing.html",
+    "pricing_expected_behavior": "FREE_MINI_DIAGNOSTIC_TO_QUOTE_ONLY_30_DAY_PILOT_NO_PUBLIC_FIXED_PRICE",
+    "ai_team_path": "landing/ai-team.html",
+    "ai_team_expected_behavior": "NO_PUBLIC_FIXED_PRICE_NO_EXTERNAL_AUTO_SEND",
+    "manifest_path": "landing/public-surface-manifest.json",
+    "verifier_path": "scripts/verify_public_marketing_surface.py"
+  },
+  "live_observation": {
+    "url": "https://dealix.me/academy.html",
+    "status_observed_by_web_reader": 200,
+    "observed_content_contradictions": [
+      "Academy page is still rendered instead of retired redirect source",
+      "499 SAR and other fixed course prices",
+      "claims of accredited certificates",
+      "claims based on 47+ Saudi companies",
+      "cold email and cold calling training offers",
+      "public team-plan pricing and legacy Pro subscription references",
+      "dealix.sa certificate path and other legacy identity residue"
+    ],
+    "source_vs_live_match": false
+  },
+  "truth": {
+    "source_code_fix_already_present": true,
+    "new_source_rewrite_required": false,
+    "runtime_or_host_cutover_evidence_required": true,
+    "search_index_cleanup_may_be_required_after_live_fix": true,
+    "dns_or_production_mutation_authorized_by_this_artifact": false
+  },
+  "required_next_evidence": [
+    "RUN_EXISTING_PUBLIC_SURFACE_VERIFIER_WITH_LIVE_BASE_URL_FROM_TRUSTED_VPS",
+    "IDENTIFY_WHICH_DEPLOYMENT_ORIGIN_CURRENTLY_SERVES_DEALIX_ME",
+    "COMPARE_DEPLOYED_STATIC_ARTIFACT_HASH_OR_VERSION_WITH_CURRENT_MAIN",
+    "IF_STALE_DEPLOY_CONFIRMED_PREPARE_BOUNDED_CUTOVER_ROLLBACK_PLAN",
+    "AFTER_LIVE_FIX_VERIFY_200_OR_REDIRECT_BEHAVIOR_AND_NO_FORBIDDEN_CLAIMS",
+    "AFTER_LIVE_FIX_REQUEST_SEARCH_RECRAWL_OR_REMOVAL_ONLY_THROUGH_APPROVED_WEBMASTER_PATHS"
+  ],
+  "safe_command_hint": "python3 scripts/verify_public_marketing_surface.py --live-base-url https://dealix.me/",
+  "l5_gates": [
+    "PRODUCTION_DEPLOY",
+    "DNS_MUTATION",
+    "HOSTING_CUTOVER",
+    "SEARCH_CONSOLE_MUTATION_IF_ACCOUNT_ACTION_REQUIRED"
+  ]
+}

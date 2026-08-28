@@ -1,0 +1,178 @@
+{
+  "schema": "dealix.ceo-72h-money-now.v1",
+  "generated_at": "2026-08-28T19:42:00+03:00",
+  "north_star": "FIRST_VERIFIED_PAID_DEALIX_PILOT",
+  "canonical_identity": {
+    "masterbrand": "Dealix",
+    "category": "Saudi-first AI Business Operating System",
+    "commercial_wedge": "Revenue + Proof + Command",
+    "commercial_path": [
+      "FREE_MINI_DIAGNOSTIC",
+      "QUALIFIED_DISCOVERY",
+      "CUSTOMER_SPECIFIC_QUOTE",
+      "30_DAY_REVENUE_COMMAND_PILOT",
+      "PROOF",
+      "STOP_EXPAND_REDESIGN"
+    ]
+  },
+  "truth_firewall": {
+    "research_is_relationship": false,
+    "event_directory_is_lead": false,
+    "connection_request_is_verified_relationship": false,
+    "proposal_is_sale": false,
+    "invoice_is_payment": false,
+    "synthetic_is_customer_proof": false,
+    "payment_evidence_required_for_revenue": true
+  },
+  "time_critical_market_window": {
+    "big5_construct_saudi": {
+      "dates": "2026-08-30_to_2026-09-02",
+      "hours": "16:00-22:00 Asia/Riyadh",
+      "venue": "Riyadh Front Exhibition & Conference Center at ROSHN Front",
+      "commercial_use": "REAL_INTERACTION_CAPTURE_FIRST",
+      "source_status": "OFFICIAL_EVENT_SITE_REVALIDATED_2026-08-28"
+    },
+    "leap_deepfest": {
+      "dates": "2026-08-31_to_2026-09-03",
+      "venue": "Riyadh Exhibition and Convention Center, Malham",
+      "commercial_use": "INBOUND_REQUESTS_AND_FOUNDER_TO_FOUNDER_DISCOVERY_FIRST",
+      "source_status": "OFFICIAL_EVENT_SITES_REVALIDATED_2026-08-28"
+    },
+    "etimad_260839004837": {
+      "buyer": "National eLearning Center",
+      "purpose": "Generative AI and Agentic AI tools/resources/services enablement and operation",
+      "truth_class": "PUBLIC_PROGRAM_SIGNAL",
+      "submission": "NO_AUTOMATIC_SUBMISSION_OR_SPEND",
+      "source_status": "OFFICIAL_ETIMAD_IDENTITY_REVALIDATED_2026-08-28"
+    }
+  },
+  "founder_calendar_intelligence": {
+    "window_checked": "2026-08-30_to_2026-09-03",
+    "big5_specific_hold_found": false,
+    "leap_mission_holds_found": 2,
+    "leap_duplicate_or_overlapping_hold_review_needed": true,
+    "recurring_blocks_overlap_event_hours": true,
+    "recommended_priority_rule": "During the official event window, mutually useful real human interactions and already-agreed meetings outrank routine recurring founder blocks; do not create a third duplicate event hold.",
+    "calendar_mutation_performed": false
+  },
+  "portfolio": [
+    {
+      "priority": 1,
+      "lane": "LEAP_INBOUND_KARIZMA",
+      "truth_class": "INBOUND_EVENT_SIGNAL",
+      "entity": "KARIZMA",
+      "person": "Eman Louzon",
+      "role": "CEO",
+      "current_state": "PENDING_CONNECTION_REQUEST",
+      "target_state": "VERIFIED_RELATIONSHIP",
+      "required_next_evidence": "TWO_WAY_HUMAN_INTERACTION",
+      "safe_internal_actions": [
+        "PUBLIC_SOURCE_ACCOUNT_RESEARCH",
+        "ACCOUNT_BRIEF",
+        "BUYING_GROUP_HYPOTHESIS",
+        "OFFER_HYPOTHESIS",
+        "FOUNDER_READY_NATIVE_REPLY_DRAFT",
+        "DISCOVERY_AGENDA_DRAFT"
+      ],
+      "draft_status": "LEAP_NATIVE_REPLY_AND_DISCOVERY_PACKET_READY",
+      "external_action": "SPECIFIC_FOUNDER_ACTION_REQUIRED_UNDER_CURRENT_MAIN_AUTHORITY"
+    },
+    {
+      "priority": 2,
+      "lane": "PUBLIC_COMMERCIAL_TRUTH_P0",
+      "current_state": "CURRENT_MAIN_NEXTJS_DRIFT_FOUND_AND_DRAFT_FIX_OPEN",
+      "owner": "PR_1298",
+      "target_state": "REPOSITORY_VERIFIED_THEN_LIVE_SURFACE_CANONICAL",
+      "blocked_mutations": ["MAIN_MERGE", "PRODUCTION_DEPLOY", "DNS"]
+    },
+    {
+      "priority": 3,
+      "lane": "EVENT_TO_CASH",
+      "current_state": "PRE_EVENT_READY",
+      "target_state": "REAL_INTERACTION_TO_DISCOVERY",
+      "sequence": [
+        "RESEARCH_ONLY",
+        "REAL_INTERACTION",
+        "VERIFIED_RELATIONSHIP",
+        "QUALIFIED_PROBLEM",
+        "MINI_DIAGNOSTIC",
+        "DISCOVERY",
+        "CUSTOMER_SPECIFIC_QUOTE",
+        "30_DAY_PILOT",
+        "PAYMENT_EVIDENCE",
+        "DELIVERY_PROOF"
+      ]
+    },
+    {
+      "priority": 4,
+      "lane": "CRM_TRUTH",
+      "owner": "PR_1294",
+      "current_state": "HUBSPOT_READ_RECONCILED_CUSTOM_TRUTH_SCHEMA_NOT_YET_AVAILABLE_THROUGH_CURRENT_CONNECTOR",
+      "target_state": "FAIL_CLOSED_CRM_MIRROR_WITH_SUPPORTED_PROPERTY_SCHEMA"
+    },
+    {
+      "priority": 5,
+      "lane": "BRAND_AND_DISTRIBUTION_CONVERGENCE",
+      "inputs": ["PR_1292", "PR_1293"],
+      "order": ["BRAND_AUTHORITY", "RENDERER_AND_CHANNEL_ASSETS"],
+      "avoid": ["PARALLEL_BRAND_AUTHORITY", "BLIND_REVIVAL_PR_1283"]
+    },
+    {
+      "priority": 6,
+      "lane": "RECURRING_GROWTH_COMMAND",
+      "owner": "PR_1297",
+      "current_state": "DRAFT_OPEN_MERGEABLE_RUNTIME_VERIFICATION_NOT_CLAIMED",
+      "target_state": "EXISTING_DAILY_RUNNER_WITH_EVIDENCE_FIRST_MORNING_COMMAND"
+    },
+    {
+      "priority": 7,
+      "lane": "ATTRIBUTION_ACTIVATION",
+      "current_state": "NO_RECENT_PRODUCTION_EVENTS_PROVEN",
+      "target_state": "EXPLICIT_LOW_SENSITIVITY_EVENTS_FLOWING_AFTER_AUTHORIZED_DEPLOY"
+    }
+  ],
+  "agent_workloads": [
+    "PRESIDENT",
+    "MARKET_INTELLIGENCE",
+    "REVENUE",
+    "CONTENT_STRATEGIST",
+    "CREATIVE_DIRECTOR",
+    "DISTRIBUTION",
+    "LIFECYCLE",
+    "EXPERIMENT_ANALYST",
+    "PROOF",
+    "GOVERNANCE"
+  ],
+  "no_new_permanent_systems": [
+    "CRM",
+    "COMPANY_BRAIN",
+    "OPPORTUNITY_GRAPH",
+    "APPROVAL_CENTER",
+    "PROOF_LEDGER",
+    "REVENUE_ENGINE",
+    "SCHEDULER",
+    "PERMANENT_AGENT_FLEET"
+  ],
+  "l5_gates": [
+    "MAIN_MERGE",
+    "PRODUCTION_DEPLOY_OR_MUTATION",
+    "DNS_DB_SECRETS_MUTATION",
+    "PAYMENT_REFUND_SPEND",
+    "TENDER_SUBMISSION",
+    "CONTRACT_LEGAL_COMMITMENT",
+    "CUSTOMER_SEND_WHEN_NOT_ALREADY_AUTHORIZED_BY_CANONICAL_POLICY",
+    "EVENT_CONNECTION_ACCEPTANCE_OR_NATIVE_MESSAGE_WHEN_SPECIFIC_ACTION_NOT_AUTHORIZED"
+  ],
+  "daily_scorecard": [
+    "VERIFIED_REAL_RELATIONSHIPS",
+    "QUALIFIED_PROBLEMS",
+    "DIAGNOSTICS",
+    "DISCOVERIES",
+    "CUSTOMER_SPECIFIC_PROPOSALS",
+    "PILOTS_AGREED",
+    "VERIFIED_REVENUE_SAR",
+    "CUSTOMER_DELIVERY_PROOF",
+    "REFERRALS_EXPANSION",
+    "TOP_3_FOUNDER_DECISIONS"
+  ]
+}

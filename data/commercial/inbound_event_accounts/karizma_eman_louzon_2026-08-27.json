@@ -1,0 +1,82 @@
+{
+  "schema": "dealix.inbound_event_signal.v1",
+  "captured_at": "2026-08-28T19:19:00+03:00",
+  "event": {
+    "name": "LEAP x DeepFest 2026",
+    "channel": "LEAP Connect",
+    "source_type": "event_networking_notification",
+    "source_observed_at": "2026-08-27T13:16:41Z"
+  },
+  "person": {
+    "name": "Eman Louzon",
+    "role_as_stated_by_event": "CEO"
+  },
+  "account": {
+    "name_as_stated_by_event": "KARIZMA",
+    "sector": null,
+    "geography": null,
+    "website": null,
+    "identity_resolution": "UNRESOLVED",
+    "identity_confidence": "LOW",
+    "notes": "Public web and LinkedIn searches did not produce a sufficiently reliable exact entity match. Do not import facts from similarly named KARIZMA entities."
+  },
+  "truth": {
+    "truth_class": "INBOUND_EVENT_SIGNAL",
+    "relationship_state": "UNVERIFIED",
+    "real_interaction": false,
+    "verified_relationship": false,
+    "qualified_problem": false,
+    "opportunity": false,
+    "customer": false,
+    "revenue": false
+  },
+  "promotion_requirements": {
+    "REAL_INTERACTION": ["two_way_human_interaction_evidence"],
+    "VERIFIED_RELATIONSHIP": ["two_way_human_interaction_evidence", "source_bound_relationship_receipt"],
+    "QUALIFIED_PROBLEM": ["verified_relationship", "buyer_stated_or_observed_problem", "problem_owner_or_influence_evidence"],
+    "OPPORTUNITY": ["qualified_problem", "next_step_mutually_acknowledged"]
+  },
+  "safe_internal_actions": [
+    "prepare_founder_native_leap_reply",
+    "prepare_discovery_questions",
+    "research_exact_account_identity",
+    "prepare_customer_partner_referral_angle_hypotheses"
+  ],
+  "founder_native_reply_draft": {
+    "channel": "LEAP_CONNECT_NATIVE",
+    "language": "EN",
+    "status": "DRAFT_NOT_SENT",
+    "message": "Hi Eman — thanks for reaching out. Happy to connect at LEAP. I’m building Dealix, a Saudi-first AI Business Operating System focused on Revenue + Proof + Command for B2B teams. I’d be glad to learn what KARIZMA is focused on at LEAP and see whether there is a useful customer, partner, or referral overlap. If helpful, we can keep the first conversation short and practical — around 15–20 minutes during the event. What time works best for you?",
+    "why_this_message": "Acknowledges the inbound request, stays identity-safe while KARIZMA is unresolved, invites two-way context before pitching, and creates a concrete meeting/discovery next step without making price, scope, outcome, or partnership commitments."
+  },
+  "first_conversation_questions": [
+    "What are you hoping to get out of LEAP this year — customers, partnerships, investors, vendors, or something else?",
+    "What does KARIZMA do, and which buyer or market are you most focused on right now?",
+    "Where do revenue, follow-up, reporting, delivery, or AI operations currently feel most manual or fragmented?",
+    "If we found a useful overlap, would the best next step be a customer diagnostic, a partnership conversation, a referral route, or simply staying connected?",
+    "Who else on your side would need to be involved if a concrete use case emerges?"
+  ],
+  "internal_angle_hypotheses": [
+    {
+      "angle": "CUSTOMER",
+      "status": "HYPOTHESIS_ONLY",
+      "trigger": "KARIZMA states a measurable B2B revenue/operations/AI-governance problem with an owner and willingness to explore a diagnostic"
+    },
+    {
+      "angle": "PARTNER",
+      "status": "HYPOTHESIS_ONLY",
+      "trigger": "KARIZMA serves buyers who could benefit from Dealix or has complementary delivery/distribution capability"
+    },
+    {
+      "angle": "REFERRAL_ECOSYSTEM",
+      "status": "HYPOTHESIS_ONLY",
+      "trigger": "No direct fit, but a credible reciprocal introduction or ecosystem path is mutually useful"
+    }
+  ],
+  "external_action": {
+    "preferred_channel": "LEAP_CONNECT_NATIVE",
+    "status": "FOUNDER_NATIVE_ACTION_NOT_EXECUTED",
+    "note": "The Gmail notification is sent by the LEAP platform and its Reply-To is the platform address, not Eman. Do not reply by Gmail. Open the native pending connection request and use the prepared draft there."
+  },
+  "north_star": "FIRST_VERIFIED_PAID_DEALIX_PILOT"
+}
