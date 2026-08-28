@@ -13,6 +13,30 @@ from tenacity import retry, retry_if_exception_type, stop_after_attempt, wait_ex
 from core.llm.base import LLMClient, LLMResponse, Message
 
 
+def _is_local_ollama_base_url(base_url: str) -> bool:
+    """Return True only for the loopback Ollama OpenAI-compatible endpoint."""
+
+    normalized = base_url.strip().casefold().rstrip("/")
+    return normalized in {
+        "http://127.0.0.1:11434/v1",
+        "http://localhost:11434/v1",
+        "http://[::1]:11434/v1",
+    }
+
+
+def _requests_json_only(system: str | None) -> bool:
+    """Detect an explicit JSON-only response contract without broad heuristics."""
+
+    if not system:
+        return False
+    normalized = system.casefold()
+    return (
+        ("أخرج json صحيح" in normalized and "فقط" in normalized)
+        or "valid json only" in normalized
+        or "json only" in normalized
+    )
+
+
 class OpenAICompatClient(LLMClient):
     """Base OpenAI-compatible client (chat/completions endpoint)."""
 
@@ -54,6 +78,25 @@ class OpenAICompatClient(LLMClient):
             "max_tokens": max_tokens,
             "temperature": temperature,
         }
+
+        # Structured-output overrides are deliberately scoped to loopback
+        # Ollama. Remote OpenAI-compatible providers keep their existing
+        # behavior until each provider is explicitly qualified.
+        if _is_local_ollama_base_url(self.base_url):
+            explicit_format = kwargs.get("response_format")
+            if isinstance(explicit_format, dict):
+                payload["response_format"] = explicit_format
+            elif _requests_json_only(system):
+                payload["response_format"] = {"type": "json_object"}
+
+            if "response_format" in payload:
+                payload["reasoning_effort"] = str(
+                    kwargs.get("reasoning_effort") or "none"
+                )
+
+            seed = kwargs.get("seed")
+            if isinstance(seed, int):
+                payload["seed"] = seed
 
         headers = {
             "Authorization": f"Bearer {self.api_key}",

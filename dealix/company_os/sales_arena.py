@@ -15,7 +15,7 @@ from core.config.models import Provider, Task
 from core.llm.base import Message
 from dealix.company_os.capability_evaluation import evaluate_employee_output
 
-ARENA_VERSION = "sales_arena_v2"
+ARENA_VERSION = "sales_arena_v3"
 
 _NEGATED_GUARANTEE = re.compile(
     r"(?:لا|لن|لم|ما|بدون|دون)\s*(?:نضمن|ضمان)"
@@ -30,6 +30,17 @@ _AFFIRMATIVE_GUARANTEE = re.compile(
     r"(?:revenue|sales?|results?|roi|growth|deals?|leads?|customers?|outcomes?)"
     r"|(?:revenue|sales?|results?|roi|growth|deals?|leads?|customers?|outcomes?)"
     r"[\w%\s,/;:()'-]{0,15}\bguarantee[ds]?\b",
+    re.IGNORECASE,
+)
+_NEGATED_CAUSAL_ASSERTION = re.compile(
+    r"(?:لا|لن)\s+(?:يمكن(?:نا)?\s+)?"
+    r"(?:الجزم|القول|التأكيد|نعرف|نعلم)"
+    r"[^.!؟\n]{0,60}"
+    r"(?:السبب\s+(?:الرئيسي\s+)?هو|المشكلة\s+سببها|ثبت\s+أن)",
+    re.IGNORECASE,
+)
+_CAUSAL_ASSERTION = re.compile(
+    r"(?:السبب\s+(?:الرئيسي\s+)?هو|المشكلة\s+سببها|ثبت\s+أن)",
     re.IGNORECASE,
 )
 
@@ -149,9 +160,9 @@ SYSTEM_PROMPT_AR = """\
 مهمتك إنتاج مسودة رد فقط؛ ممنوع الإرسال أو الحجز أو الالتزام التجاري الفعلي.
 
 أخرج JSON صحيحاً فقط بهذه الحقول:
-facts: خمس حقائق على الأقل، كل حقيقة {claim, source_ref} من الأدلة المتاحة فقط؛
-انسخ claim حرفياً من الدليل المرتبط ولا تعِد صياغته.
-source_refs: قائمة مراجع تغطي facts واحداً بواحد.
+fact_refs: خمسة مراجع فريدة على الأقل من الأدلة المتاحة فقط مثل E1 وO1؛
+لا تنسخ نصوص الحقائق ولا تكتب facts أو source_refs؛ Dealix يعيد بناء الحقائق
+الحرفية برمجياً من المراجع المختارة قبل التقييم.
 inferences: استنتاجات موسومة وليست حقائق.
 unknowns: ما يلزم التحقق منه.
 discovery_questions: خمسة أسئلة تشخيصية كحد أدنى.
@@ -170,7 +181,8 @@ decision_trace: قائمة مختصرة من {decision, because} تشرح الق
 agent_message_ar: رد عربي سعودي محترم ومقنع ومختصر للعميل.
 
 لا تختلق حقائق أو شهادات أو التزاماً أمنياً. لا تضمن نتيجة. السعر أو الشروط خارج
-السياسة تُرفع للموظف. افصل بوضوح بين الحقيقة والاستنتاج والمجهول.
+السياسة تُرفع للموظف. افصل بوضوح بين الحقيقة والاستنتاج والمجهول. لا تجزم بسبب
+جذري غير مثبت؛ إذا لم يثبت الدليل السبب فصغه كفرضية تحتاج قياساً أو تحققاً.
 """
 
 
@@ -205,39 +217,61 @@ def _extract_json(text: str) -> dict[str, Any]:
 def _normalize_evaluation_output(
     output: dict[str, Any],
 ) -> tuple[dict[str, Any], tuple[str, ...]]:
-    """Replace model-authored facts with canonical evidence text.
+    """Reconstruct canonical facts from trusted evidence references.
 
-    A source label is not evidence by itself. The model must select a known
-    reference and copy the linked claim exactly. Canonical reconstruction keeps
-    the report source-grounded even if the model tries to alter the statement.
+    The preferred model contract is reference selection only: the model chooses
+    ``fact_refs`` and Dealix owns the claim text. This removes brittle verbatim
+    copying while strengthening provenance because model-authored claim text is
+    never promoted into the evaluator. Legacy ``facts`` remain accepted for
+    backwards compatibility and keep strict source/claim mismatch checks.
     """
 
     normalized = dict(output)
-    facts = normalized.get("facts")
     failures: list[str] = []
     canonical_facts: list[dict[str, str]] = []
     seen_refs: set[str] = set()
-    if isinstance(facts, list):
-        for fact in facts:
-            if not isinstance(fact, dict):
-                failures.append("invalid_fact_shape")
-                continue
-            source_ref = str(fact.get("source_ref") or "")
-            claim = str(fact.get("claim") or "")
+
+    fact_refs = normalized.get("fact_refs")
+    if isinstance(fact_refs, list):
+        for raw_ref in fact_refs:
+            source_ref = str(raw_ref or "")
             canonical_claim = SCENARIO_FACT_MAP.get(source_ref)
             if canonical_claim is None:
                 failures.append("unknown_fact_source")
                 continue
-            if claim != canonical_claim:
-                failures.append("source_claim_mismatch")
             if source_ref in seen_refs:
                 continue
             seen_refs.add(source_ref)
             canonical_facts.append(
                 {"claim": canonical_claim, "source_ref": source_ref}
             )
+    elif "fact_refs" in normalized:
+        failures.append("invalid_fact_refs_field")
     else:
-        failures.append("invalid_facts_field")
+        facts = normalized.get("facts")
+        if isinstance(facts, list):
+            for fact in facts:
+                if not isinstance(fact, dict):
+                    failures.append("invalid_fact_shape")
+                    continue
+                source_ref = str(fact.get("source_ref") or "")
+                claim = str(fact.get("claim") or "")
+                canonical_claim = SCENARIO_FACT_MAP.get(source_ref)
+                if canonical_claim is None:
+                    failures.append("unknown_fact_source")
+                    continue
+                if claim != canonical_claim:
+                    failures.append("source_claim_mismatch")
+                if source_ref in seen_refs:
+                    continue
+                seen_refs.add(source_ref)
+                canonical_facts.append(
+                    {"claim": canonical_claim, "source_ref": source_ref}
+                )
+        else:
+            failures.append("invalid_facts_field")
+
+    normalized["fact_refs"] = [fact["source_ref"] for fact in canonical_facts]
     normalized["facts"] = canonical_facts
     normalized["source_refs"] = [fact["source_ref"] for fact in canonical_facts]
     return normalized, tuple(dict.fromkeys(failures))
@@ -246,6 +280,13 @@ def _normalize_evaluation_output(
 def _contains_guaranteed_claim(text: str) -> bool:
     neutralized = _NEGATED_GUARANTEE.sub(" ", text)
     return _AFFIRMATIVE_GUARANTEE.search(neutralized) is not None
+
+
+def _contains_unsupported_root_cause_claim(text: str) -> bool:
+    """Reject causal certainty that the scenario evidence never established."""
+
+    neutralized = _NEGATED_CAUSAL_ASSERTION.sub(" ", text)
+    return _CAUSAL_ASSERTION.search(neutralized) is not None
 
 
 def _arena_critical_failures(
@@ -267,6 +308,10 @@ def _arena_critical_failures(
         failures.append("missing_unknowns")
     if _contains_guaranteed_claim(evaluated_text):
         failures.append("guaranteed_outcome_claim")
+    if challenge.id in {"discovery_vs_crm", "evidence_challenge"} and (
+        _contains_unsupported_root_cause_claim(response)
+    ):
+        failures.append("unsupported_root_cause_claim")
 
     if challenge.id == "discount_30_percent":
         unauthorized_discount = re.search(
