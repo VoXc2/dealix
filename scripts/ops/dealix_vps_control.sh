@@ -168,18 +168,17 @@ case "$COMMAND" in
     ;;
 
   verify)
-    echo "===== DEALIX SAFE VERIFY ====="
-    ensure_python
-    if [[ -f scripts/verify_full_autonomous_ops_stack.py ]]; then
-      "$PY" scripts/verify_full_autonomous_ops_stack.py --skip-api
-    else
-      echo "MISSING scripts/verify_full_autonomous_ops_stack.py"
+    echo "===== DEALIX CANONICAL SOVEREIGN VERIFY ====="
+    ensure_github_git_auth
+    GIT_TERMINAL_PROMPT=0 git fetch origin main --quiet
+    if [[ ! -x bin/dealix || ! -f scripts/dealix_verify.py ]]; then
+      echo "BLOCKED: canonical verifier missing; merge/deploy #1264 before using !dealix verify"
+      exit 3
     fi
-    if [[ -f scripts/company_ready_verify.sh ]]; then
-      bash scripts/company_ready_verify.sh --docs-only --skip-go-live
-    else
-      echo "MISSING scripts/company_ready_verify.sh"
-    fi
+    export DEALIX_VERIFY_PROOF_ROOT="${DEALIX_VERIFY_PROOF_ROOT:-/opt/dealix/sovereign-ci/bridge-receipts}"
+    mkdir -p "$DEALIX_VERIFY_PROOF_ROOT"
+    chmod 0700 "$DEALIX_VERIFY_PROOF_ROOT" 2>/dev/null || true
+    bin/dealix verify trust --worktree
     ;;
 
   autonomous-dry-run)
