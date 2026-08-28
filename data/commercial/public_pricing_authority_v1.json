@@ -1,0 +1,56 @@
+{
+  "schema": "dealix.public_pricing_authority.v1",
+  "as_of": "2026-08-28",
+  "north_star": "FIRST_VERIFIED_PAID_PILOT",
+  "current_commercial_path": [
+    "FREE_MINI_DIAGNOSTIC",
+    "QUALIFIED_DISCOVERY",
+    "CUSTOMER_SPECIFIC_QUOTE",
+    "30_DAY_REVENUE_COMMAND_PILOT",
+    "PAYMENT_VERIFIED",
+    "DELIVERY_PROOF",
+    "STOP_EXPAND_OR_REDESIGN"
+  ],
+  "public_fixed_pricing": false,
+  "public_checkout_authority": false,
+  "public_plan_catalog_is_commercial_authority": false,
+  "environment_flags_may_create_public_price_authority": false,
+  "service_catalog_prices_are_current_customer_quote_authority": false,
+  "customer_specific_quote_required": true,
+  "named_price_requires": [
+    "qualified_discovery_evidence",
+    "customer_specific_scope",
+    "quote_authority_reference"
+  ],
+  "payment_execution_requires_separate_authority": true,
+  "truth_firewall": [
+    "catalog_price != customer_quote",
+    "proposal != revenue",
+    "invoice != payment",
+    "provider_acceptance != payment_evidence",
+    "analytics_event != payment",
+    "synthetic_test_plan != customer_offer"
+  ],
+  "legacy_public_price_controls": {
+    "DEALIX_PUBLIC_PRICING_ENABLED": "NON_AUTHORITY_LEGACY_COMPATIBILITY_INPUT",
+    "DEALIX_PUBLIC_PLAN_IDS": "NON_AUTHORITY_LEGACY_COMPATIBILITY_INPUT",
+    "DEALIX_CHECKOUT_ENABLED": "CANNOT_CREATE_COMMERCIAL_AUTHORITY_BY_ITSELF"
+  },
+  "agent_rules": [
+    "Agents must never infer a current customer price from service catalogs, historical docs, environment variables, CRM amounts, budgets, or old proposal templates.",
+    "If a current customer-specific quote reference is absent, price remains UNKNOWN_NOT_EVIDENCE_BACKED or CUSTOMER_SPECIFIC_QUOTE_REQUIRED.",
+    "Historical 499 SAR, 7-day, fixed-tier, public checkout, refund and ROI semantics are not current authority.",
+    "A quote does not authorize payment execution, external send, contract acceptance or revenue recognition.",
+    "Payment truth requires verified payment evidence."
+  ],
+  "owner": "commercial_truth",
+  "consumers": [
+    "pricing_router",
+    "proposal_generators",
+    "negotiation_surfaces",
+    "sales_agents",
+    "growth_agents",
+    "payment_adapters",
+    "public_surface_verifiers"
+  ]
+}
