@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+set -Eeuo pipefail
+if [[ "${1:-}" == "verify" ]]; then
+  shift
+  exec python3 scripts/dealix_verify.py "$@"
+else
+  echo "Usage: bin/dealix verify <changed|pr|trust|security|runtime|full|production|commercial> [--worktree]" >&2
+  exit 2
+fi

@@ -34,6 +34,42 @@ primary_mapping:
   - pain: weak_renewal_upsell
     offer: monthly_optimization_retainer
     rationale_ar: تجديد وتوسعة مبنية على القيمة المثبتة.
+  - pain: uncertain_where_to_start
+    offer: revenue_command_pilot_30d
+    rationale_ar: التشخيص المجاني يكشف نقطة البداية ثم تجربة محكومة لمدة 30 يوماً تثبت الملاءمة.
+  - pain: no_management_visibility
+    offer: ai_command_center_os
+    rationale_ar: رؤية تنفيذية موحّدة يومية عبر لوحة قيادة عربية وحوكمة موافقات.
+  - pain: no_partner_channel
+    offer: agency_partner_os
+    rationale_ar: بناء قناة شركاء موثّقة بمتابعة عمولات وإثبات بموافقة العميل.
+  - pain: weak_referral_system
+    offer: agency_partner_os
+    rationale_ar: نظام إحالات محكوم مع تتبع إيرادات الشركاء.
+  - pain: weak_brand_positioning
+    offer: brand_intelligence_os
+    rationale_ar: نظام هوية ورسائل موحّد عربي/إنجليزي قابل لإعادة الاستخدام.
+  - pain: inconsistent_messaging
+    offer: brand_intelligence_os
+    rationale_ar: بنك رسائل ونبرة صوت موحّدة لكل القنوات.
+  - pain: manual_workflow_load
+    offer: operations_automation_os
+    rationale_ar: أتمتة عمليات متكررة مع بوابات موافقة بشرية وسجل تدقيق.
+  - pain: ai_governance_risk
+    offer: trust_governance_os
+    rationale_ar: سياسات حوكمة وموافقات ذكاء اصطناعي ومسار تدقيق.
+  - pain: compliance_uncertainty
+    offer: trust_governance_os
+    rationale_ar: تتبع موافقات وقوائم كبت وبنود إثبات ملزمة.
+  - pain: no_growth_system
+    offer: growth_engine_os
+    rationale_ar: نموذج نمو محكوم مع مسودات فقط وبدون إرسال بارد.
+  - pain: weak_partner_channel
+    offer: agency_partner_os
+    rationale_ar: تصميم قناة شركاء ومسودات تواصل خاضعة للموافقة.
+  - pain: no_existing_solution_fit
+    offer: custom_enterprise_system
+    rationale_ar: نظام تشغيل مخصص حول عمليات الشركة يبدأ باكتشاف مدفوع.
 
 # Bundles combine a primary offer with supporting sub-modules.
 bundles:

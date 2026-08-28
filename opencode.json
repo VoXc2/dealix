@@ -1,8 +1,8 @@
 {
   "$schema": "https://opencode.ai/config.json",
-  "permission": {
+  "permissions": {
     "edit": "allow",
-    "bash": {
+    "shell": {
       "*": "allow",
       "git push origin main": "deny",
       "git push origin main *": "deny",
@@ -23,7 +23,27 @@
       "alembic downgrade*": "deny",
       "kubectl delete*": "deny",
       "docker push*": "deny",
+      "cat *secret*": "deny",
+      "cat *.env": "deny",
+      "cat **/.env": "deny",
+      "cat /home/dealix/.config/dealix-secrets/*": "deny",
+      "cat ~/.openclaw/openclaw.json": "deny",
       "sudo*": "ask"
+    },
+    "subagent": {
+      "default": {
+        "permissions": {
+          "read": "allow",
+          "glob": "allow",
+          "grep": "allow",
+          "websearch": "allow",
+          "webfetch": "allow",
+          "edit": "deny",
+          "write": "deny",
+          "patch": "deny",
+          "shell": "deny"
+        }
+      }
     }
   },
   "provider": {

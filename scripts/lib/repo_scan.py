@@ -36,7 +36,11 @@ VENDORED_DIR_NAMES = frozenset(
 
 def is_virtualenv(directory: Path) -> bool:
     """Detect a Python virtualenv by its marker file rather than by name."""
-    return (directory / "pyvenv.cfg").is_file()
+    try:
+        return (directory / "pyvenv.cfg").is_file()
+    except OSError:
+        # PermissionError on root-owned 700 runtime dirs — treat as pruned
+        return True
 
 
 def _matches_path_prefix(rel: str, prefix: str) -> bool:

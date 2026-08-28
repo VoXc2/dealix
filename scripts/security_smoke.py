@@ -95,7 +95,10 @@ def rel(path: Path) -> str:
 def iter_text_files(root: Path = ROOT) -> list[Path]:
     files: list[Path] = []
     for path in iter_candidate_files(root, IGNORED_DIRS, IGNORED_PATH_PREFIXES):
-        if not path.is_file():
+        try:
+            if not path.is_file():
+                continue
+        except OSError:
             continue
         if path.name.startswith(".env") or path.suffix in TEXT_SUFFIXES:
             files.append(path)
@@ -105,7 +108,7 @@ def iter_text_files(root: Path = ROOT) -> list[Path]:
 def read_text(path: Path) -> str:
     try:
         return path.read_text(encoding="utf-8")
-    except UnicodeDecodeError:
+    except (UnicodeDecodeError, OSError, PermissionError):
         return ""
 
 

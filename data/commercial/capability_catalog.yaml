@@ -1,0 +1,492 @@
+# Dealix capability catalog — V17 Revenue Mesh (Repo Capability Miner output).
+#
+# Canonical capability records derived from executable repo/runtime evidence:
+#   - service_catalog/registry.py          (17 canonical offerings; truth registry)
+#   - data/commercial/product_catalog.yaml (offer ladder)
+#   - data/commercial/pain_to_offer.yaml   (pain -> offer mapping)
+#   - data/commercial/icp_segments.yaml    (ICP segments)
+#   - first_launch_offer_gate.yaml         (launch motion authority)
+#
+# Rules:
+#   - A capability is only listed here if it maps to executable evidence
+#     (evidence_paths point to real modules/artifacts in this repository).
+#   - No customer proof exists today. proof_available lists only internal /
+#     system / methodology evidence. proof_gaps must be explicit.
+#   - claims_blocked enforces the doctrine: no guaranteed revenue, no cold
+#     WhatsApp, no LinkedIn automation, no scraping, no fake proof.
+#   - capability_id values must match service_catalog registry ids so the
+#     loader can cross-validate. product_catalog.yaml offer ids are used for
+#     entry_offer / primary_paid_offer / expansion_offer where they exist;
+#     registry ids are used otherwise (canonical registry wins for the 17).
+
+capabilities:
+  - capability_id: free_mini_diagnostic
+    name_ar: التشخيص المجاني المختصر
+    name_en: Free Mini Diagnostic
+    description: "1-page sector-fit analysis, 3 ranked opportunities, 1 Arabic message draft, 1 best channel recommendation, 1 risk to avoid, and a decision passport — delivered within 24 hours of form submission."
+    buyer_pain: uncertain_where_to_start
+    buyer_persona: founder_or_gm_without_clear_priority
+    icp_segments: [b2b_services, real_estate, clinic, logistics, training, marketing_agency]
+    trigger_signals: [inbound_form, event_conversation, referral, network_intro]
+    entry_offer: free_mini_diagnostic
+    primary_paid_offer: revenue_command_pilot_30d
+    expansion_offer: growth_ops_monthly_2999
+    delivery_pattern: one_shot_24h
+    inputs_required: [sector, company_context, one_goal]
+    baseline_metrics: [form_completion, delivery_time_hours]
+    success_metrics: [diagnostic_delivered, qualified_conversation_started]
+    proof_available: [internal_diagnostic_engine, delivery_runbook]
+    proof_gaps: [no_customer_case_yet]
+    claims_allowed: [delivery_in_24h_of_form_submission]
+    claims_blocked: [guaranteed_revenue, guaranteed_roi, cold_whatsapp, linkedin_automation, scraping]
+    time_to_value: 1_day
+    founder_effort: low
+    delivery_risk: low
+    productization_potential: high
+    evidence_paths:
+      - auto_client_acquisition/service_catalog/registry.py
+      - auto_client_acquisition/distribution_os/proposal.py
+      - auto_client_acquisition/revenue_os/draft_pack.py
+
+  - capability_id: revenue_command_pilot_30d
+    name_ar: تجربة مركز قيادة الإيرادات — 30 يومًا
+    name_en: Revenue Command Pilot — 30 days
+    description: "30-day controlled pilot: Company Brain v1, one ICP, one revenue workflow, one approval queue, one operational baseline, weekly proof pack, and an end-of-pilot stop/expand/redesign decision. Quote-only after a documented discovery conversation."
+    buyer_pain: [lead_leakage, follow_up_chaos, weak_reporting]
+    buyer_persona: founder_or_gm_with_identifiable_revenue_ops_pain
+    icp_segments: [b2b_services, marketing_agency, real_estate, logistics]
+    trigger_signals: [qualified_problem, agreed_next_step, discovery_completed, first_party_data_available]
+    entry_offer: free_mini_diagnostic
+    primary_paid_offer: revenue_command_pilot_30d
+    expansion_offer: [growth_ops_monthly_2999, executive_command_center_7500]
+    delivery_pattern: managed_30d_pilot
+    inputs_required: [one_icp, one_revenue_workflow, first_party_baseline, accountable_owner, approved_data_boundary, approval_path]
+    baseline_metrics: [operational_baseline, workflow_metrics]
+    success_metrics: [customer_defined_success_metric, weekly_proof_pack, final_outcome_review]
+    proof_available: [internal_pilot_runbook, first_launch_gate_config]
+    proof_gaps: [no_customer_pilot_yet]
+    claims_allowed: [scope_delivery, baseline_measurement, governed_execution]
+    claims_blocked: [guaranteed_revenue, guaranteed_roi, autonomous_external_send, cold_whatsapp, linkedin_automation, unapproved_data_access]
+    time_to_value: 30_days
+    founder_effort: medium
+    delivery_risk: medium
+    productization_potential: high
+    evidence_paths:
+      - auto_client_acquisition/service_catalog/registry.py
+      - auto_client_acquisition/revenue_os/target_company_intelligence.py
+      - auto_client_acquisition/revenue_os/draft_pack.py
+      - auto_client_acquisition/safe_send_gateway/doctrine.py
+      - dealix/config/first_launch_offer_gate.yaml
+
+  - capability_id: data_to_revenue_pack_1500
+    name_ar: حزمة من البيانات إلى الإيراد (١٥٠٠ ر.س)
+    name_en: Data-to-Revenue Pack
+    description: "Clean lead board (deduplicated), duplicate report, source validation report, risk report, top 20 scored opportunities, 10 Arabic drafts, follow-up plan, and decision passports for the top 5."
+    buyer_pain: [crm_data_disorder, lead_leakage, follow_up_chaos]
+    buyer_persona: sales_lead_with_messy_lead_data
+    icp_segments: [b2b_services, marketing_agency, logistics]
+    trigger_signals: [crm_usage, lead_board_exists, duplicate_suspicion]
+    entry_offer: free_mini_diagnostic
+    primary_paid_offer: data_to_revenue_pack_1500
+    expansion_offer: [revenue_command_pilot_30d, growth_ops_monthly_2999]
+    delivery_pattern: project_pack
+    inputs_required: [lead_data, source_fields, company_context]
+    baseline_metrics: [duplicate_count, source_coverage, row_completeness]
+    success_metrics: [clean_board_delivered, source_validated, top_20_scored]
+    proof_available: [internal_dedup_engine, scoring_engine, draft_factory]
+    proof_gaps: [no_customer_case_yet]
+    claims_allowed: [data_cleaning_delivery, source_documentation, scored_rankings]
+    claims_blocked: [guaranteed_opportunity_count, guaranteed_revenue, cold_whatsapp, linkedin_automation]
+    time_to_value: 7_days
+    founder_effort: low
+    delivery_risk: low
+    productization_potential: high
+    evidence_paths:
+      - auto_client_acquisition/revenue_os/dedupe.py
+      - auto_client_acquisition/revenue_os/scoring.py
+      - auto_client_acquisition/revenue_os/source_registry.py
+      - auto_client_acquisition/revenue_os/draft_pack.py
+
+  - capability_id: growth_ops_monthly_2999
+    name_ar: عمليات النمو الشهرية (٢٩٩٩ ر.س / شهر)
+    name_en: Growth Ops Monthly
+    description: "Monthly retainer: 4 weekly pipeline audits, weekly lead board, daily approval queue, draft pack (>=20 messages/month), support insights, ongoing proof events, monthly proof pack, monthly executive summary, and an expansion recommendation."
+    buyer_pain: [follow_up_chaos, weak_reporting, weak_renewal_upsell]
+    buyer_persona: founder_or_ops_lead_wanting_ongoing_cadence
+    icp_segments: [b2b_services, marketing_agency, clinic, training]
+    trigger_signals: [pilot_completed, positive_outcome, recurring_workflow_need]
+    entry_offer: revenue_command_pilot_30d
+    primary_paid_offer: growth_ops_monthly_2999
+    expansion_offer: [executive_command_center_7500, custom_enterprise_system]
+    delivery_pattern: monthly_retainer
+    inputs_required: [pipeline_data, approval_owner, weekly_slot]
+    baseline_metrics: [pipeline_audit_done, drafts_produced, proof_events]
+    success_metrics: [monthly_proof_pack, executive_summary, expansion_recommendation]
+    proof_available: [internal_cadence_engines, draft_factory, proof_pack_factory]
+    proof_gaps: [no_customer_retainer_yet]
+    claims_allowed: [weekly_cadence, draft_delivery, proof_tracking]
+    claims_blocked: [guaranteed_revenue_growth, guaranteed_revenue, guaranteed_roi, cold_whatsapp, linkedin_automation]
+    time_to_value: 30_days
+    founder_effort: medium
+    delivery_risk: medium
+    productization_potential: high
+    evidence_paths:
+      - auto_client_acquisition/revenue_os/draft_pack.py
+      - auto_client_acquisition/revenue_os/learning_weekly.py
+      - auto_client_acquisition/distribution_os/proof_pack.py
+
+  - capability_id: support_os_addon_1500
+    name_ar: دعم Support OS (١٥٠٠ ر.س / شهر)
+    name_en: Support OS Add-on
+    description: "Ticket classification (12 categories), suggested replies (draft-only), weekly escalation list, root-cause map, customer health score updates, support proof events, and SLA breach alerts."
+    buyer_pain: [support_overload, slow_onboarding]
+    buyer_persona: customer_success_or_support_lead
+    icp_segments: [logistics, clinic, training]
+    trigger_signals: [support_ticket_volume, repeated_questions, sla_risk]
+    entry_offer: free_mini_diagnostic
+    primary_paid_offer: support_os_addon_1500
+    expansion_offer: [growth_ops_monthly_2999]
+    delivery_pattern: monthly_addon
+    inputs_required: [ticket_data, support_owner]
+    baseline_metrics: [ticket_volume, first_response_time, category_coverage]
+    success_metrics: [classification_delivered, drafts_ready, escalation_list]
+    proof_available: [internal_classifier, draft_engine]
+    proof_gaps: [no_customer_case_yet]
+    claims_allowed: [ticket_classification, draft_replies, escalation_alerts]
+    claims_blocked: [guaranteed_sla_outcome, guaranteed_satisfaction, guaranteed_revenue, cold_whatsapp, linkedin_automation]
+    time_to_value: 14_days
+    founder_effort: low
+    delivery_risk: low
+    productization_potential: medium
+    evidence_paths:
+      - auto_client_acquisition/support_journey/classifier.py
+      - auto_client_acquisition/revenue_os/draft_pack.py
+
+  - capability_id: executive_command_center_7500
+    name_ar: غرفة قيادة الإدارة (٧٥٠٠ ر.س / شهر)
+    name_en: Executive Command Center
+    description: "Daily founder brief (WhatsApp), weekly pipeline audit, monthly board pack, live revenue radar, sales pipeline view, growth signals dashboard, support health overview, delivery progress tracker, payment state view, proof ledger access, daily approval queue, and weekly risk register."
+    buyer_pain: [weak_reporting, crm_data_disorder, no_management_visibility]
+    buyer_persona: ceo_gm_needing_daily_visibility
+    icp_segments: [b2b_services, logistics, real_estate]
+    trigger_signals: [multi_team_operations, manual_reporting, no_single_view]
+    entry_offer: revenue_command_pilot_30d
+    primary_paid_offer: executive_command_center_7500
+    expansion_offer: [custom_enterprise_system]
+    delivery_pattern: monthly_managed
+    inputs_required: [operating_data, reporting_owner, approval_owner]
+    baseline_metrics: [reporting_latency, data_fragmentation]
+    success_metrics: [daily_brief_delivered, radar_live, board_pack_delivered]
+    proof_available: [internal_command_center, radar_engine, ledger_access]
+    proof_gaps: [no_customer_case_yet]
+    claims_allowed: [daily_brief_delivery, dashboard_live, report_cadence]
+    claims_blocked: [guaranteed_growth, guaranteed_revenue, guaranteed_roi, cold_whatsapp, linkedin_automation]
+    time_to_value: 30_days
+    founder_effort: medium
+    delivery_risk: medium
+    productization_potential: high
+    evidence_paths:
+      - dealix/commercial_command_center.py
+      - auto_client_acquisition/revenue_os/revenue_summary.py
+      - auto_client_acquisition/founder_command_summary/per_engagement.py
+
+  - capability_id: agency_partner_os
+    name_ar: نظام الشريك الوكالة
+    name_en: Agency Partner OS
+    description: "Partner intake document, co-branded diagnostic, client proof sprint (per client), proof pack (per client), renewal/upsell pack, partner revenue tracking, and 30% commission tracking for the first year per referred client. No proof published without signed consent."
+    buyer_pain: [no_partner_channel, weak_referral_system]
+    buyer_persona: agency_or_consultancy_owner
+    icp_segments: [marketing_agency, b2b_services]
+    trigger_signals: [agency_interest, referral_relationship, co_selling_opportunity]
+    entry_offer: free_mini_diagnostic
+    primary_paid_offer: agency_partner_os
+    expansion_offer: [custom_enterprise_system]
+    delivery_pattern: partner_program
+    inputs_required: [partner_agreement, client_consent, revenue_tracking]
+    baseline_metrics: [referral_count, partner_engagement]
+    success_metrics: [partner_intake_done, co_branded_diagnostic_live, proof_pack_delivered]
+    proof_available: [internal_partner_tracking, proof_pack_factory]
+    proof_gaps: [no_partner_yet, no_customer_case_yet]
+    claims_allowed: [commission_tracking, co_branded_delivery, consent_gated_proof]
+    claims_blocked: [guaranteed_referrals, guaranteed_revenue, cold_whatsapp, linkedin_automation, proof_without_consent]
+    time_to_value: 30_days
+    founder_effort: medium
+    delivery_risk: medium
+    productization_potential: medium
+    evidence_paths:
+      - auto_client_acquisition/service_catalog/registry.py
+      - auto_client_acquisition/distribution_os/proof_pack.py
+
+  - capability_id: ai_command_center_os
+    name_ar: مركز القيادة الذكي للأعمال
+    name_en: AI Business Command Center
+    description: "Executive command dashboard (Arabic-first), daily action board across sales/follow-up/reviews/proposals, weekly executive report, KPI definitions + semantic metric layer, team operating cadence, and approval queue wired to governance. Setup range 35,000–120,000 SAR estimate."
+    buyer_pain: [weak_reporting, no_management_visibility, crm_data_disorder]
+    buyer_persona: ceo_gm_of_20_200_person_company
+    icp_segments: [b2b_services, logistics, real_estate]
+    trigger_signals: [multi_team_operations, no_single_view, manual_reporting]
+    entry_offer: revenue_command_pilot_30d
+    primary_paid_offer: ai_command_center_os
+    expansion_offer: [custom_enterprise_system]
+    delivery_pattern: transformation_setup_plus_monthly
+    inputs_required: [operating_data, governance_owner, executive_owner]
+    baseline_metrics: [reporting_latency, decision_visibility]
+    success_metrics: [dashboard_live, daily_board_active, weekly_report_delivered]
+    proof_available: [internal_command_center, governance_wiring]
+    proof_gaps: [no_customer_case_yet, price_is_estimate]
+    claims_allowed: [setup_delivery, unified_daily_view, governance_wiring]
+    claims_blocked: [guaranteed_growth, guaranteed_revenue, guaranteed_roi, cold_whatsapp, linkedin_automation, unapproved_data_access]
+    time_to_value: 60_days
+    founder_effort: high
+    delivery_risk: high
+    productization_potential: medium
+    evidence_paths:
+      - auto_client_acquisition/service_catalog/registry.py
+      - dealix/commercial_command_center.py
+      - dealix/config/approval_policy.yaml
+
+  - capability_id: whatsapp_revenue_os
+    name_ar: نظام إيرادات واتساب
+    name_en: WhatsApp Revenue OS
+    description: "Lead intake model + pipeline stages, follow-up task system (approval-gated drafts), approved message templates (draft-only), booking + reporting flow, lost-reason analysis, weekly pipeline report. Every external message is an approval-gated draft — no cold send, no automation."
+    buyer_pain: [follow_up_chaos, lead_leakage]
+    buyer_persona: sales_lead_with_whatsapp_pipeline
+    icp_segments: [real_estate, clinic, training, b2b_services]
+    trigger_signals: [whatsapp_sales_usage, missed_followups, manual_pipeline]
+    entry_offer: free_mini_diagnostic
+    primary_paid_offer: whatsapp_revenue_os
+    expansion_offer: [executive_command_center_7500]
+    delivery_pattern: transformation_setup_plus_monthly
+    inputs_required: [whatsapp_pipeline_data, approval_owner]
+    baseline_metrics: [lead_intake_volume, followup_rate, lost_reason_coverage]
+    success_metrics: [pipeline_live, drafts_ready, weekly_report_delivered]
+    proof_available: [internal_pipeline_engine, draft_only_templates, approval_gate]
+    proof_gaps: [no_customer_case_yet, price_is_estimate]
+    claims_allowed: [pipeline_measurement, approval_gated_drafts, lost_reason_analysis]
+    claims_blocked: [cold_whatsapp, whatsapp_automation, guaranteed_conversions, guaranteed_revenue, linkedin_automation]
+    time_to_value: 30_days
+    founder_effort: medium
+    delivery_risk: medium
+    productization_potential: high
+    evidence_paths:
+      - auto_client_acquisition/revenue_os/draft_pack.py
+      - auto_client_acquisition/safe_send_gateway/doctrine.py
+      - auto_client_acquisition/whatsapp_client_os/engine.py
+
+  - capability_id: brand_intelligence_os
+    name_ar: نظام ذكاء العلامة التجارية
+    name_en: Brand Intelligence OS
+    description: "Brand strategy + positioning map, visual identity direction, tone-of-voice system (AR+EN), offer messaging bank, content pillars + social/landing templates, brand-safe AI prompt library, and content approval workflow. Setup range 15,000–60,000 SAR estimate."
+    buyer_pain: [weak_brand_positioning, inconsistent_messaging]
+    buyer_persona: marketing_or_founder_owner
+    icp_segments: [marketing_agency, b2b_services, real_estate]
+    trigger_signals: [rebrand_need, inconsistent_content, new_market_entry]
+    entry_offer: free_mini_diagnostic
+    primary_paid_offer: brand_intelligence_os
+    expansion_offer: [custom_enterprise_system]
+    delivery_pattern: transformation_setup
+    inputs_required: [brand_context, market_context, approval_owner]
+    baseline_metrics: [messaging_consistency, content_assets]
+    success_metrics: [identity_system_delivered, prompt_library_live]
+    proof_available: [internal_brand_assets]
+    proof_gaps: [no_customer_case_yet, price_is_estimate]
+    claims_allowed: [identity_system_delivery, message_bank, content_templates]
+    claims_blocked: [guaranteed_brand_growth, guaranteed_revenue, guaranteed_roi, cold_whatsapp, linkedin_automation]
+    time_to_value: 45_days
+    founder_effort: medium
+    delivery_risk: medium
+    productization_potential: medium
+    evidence_paths:
+      - auto_client_acquisition/service_catalog/registry.py
+      - data/commercial/pain_to_offer.yaml
+
+  - capability_id: ai_agent_workforce_os
+    name_ar: نظام قوى العمل من وكلاء الذكاء الاصطناعي
+    name_en: AI Agent Workforce OS
+    description: "Governed AI agent workforce with role definitions, permissions, observability, cost guardrails, and human-approval gates — configured for revenue/support/operations workflows. Setup range 40,000–150,000 SAR estimate."
+    buyer_pain: [manual_workflow_load, ai_governance_risk]
+    buyer_persona: ops_lead_with_repetitive_workflows
+    icp_segments: [b2b_services, logistics, real_estate]
+    trigger_signals: [high_manual_work, ai_experimentation, governance_concern]
+    entry_offer: revenue_command_pilot_30d
+    primary_paid_offer: ai_agent_workforce_os
+    expansion_offer: [custom_enterprise_system]
+    delivery_pattern: transformation_setup_plus_monthly
+    inputs_required: [workflow_inventory, permissions_owner, data_boundary]
+    baseline_metrics: [manual_task_count, workflow_time]
+    success_metrics: [workforce_live, permissions_active, cost_guardrails_enforced]
+    proof_available: [internal_agent_governance, permissions_system, observability]
+    proof_gaps: [no_customer_case_yet, price_is_estimate]
+    claims_allowed: [governed_agent_setup, permission_enforcement, observability]
+    claims_blocked: [autonomous_external_commitments, guaranteed_automation_savings, guaranteed_revenue, cold_whatsapp, linkedin_automation]
+    time_to_value: 60_days
+    founder_effort: high
+    delivery_risk: high
+    productization_potential: medium
+    evidence_paths:
+      - auto_client_acquisition/agent_governance/
+      - auto_client_acquisition/ai_workforce/agent_registry.py
+      - auto_client_acquisition/agent_observability/
+
+  - capability_id: client_experience_os
+    name_ar: نظام تجربة العميل
+    name_en: Client Experience OS
+    description: "Client journey mapping, onboarding workflow, health scoring, feedback loops, renewal signals, and proof-backed account reviews. Setup range 20,000–80,000 SAR estimate."
+    buyer_pain: [slow_onboarding, weak_renewal_upsell]
+    buyer_persona: customer_success_lead
+    icp_segments: [b2b_services, clinic, training]
+    trigger_signals: [churn_risk, slow_onboarding, no_renewal_process]
+    entry_offer: free_mini_diagnostic
+    primary_paid_offer: client_experience_os
+    expansion_offer: [custom_enterprise_system]
+    delivery_pattern: transformation_setup_plus_monthly
+    inputs_required: [client_journey_data, success_owner]
+    baseline_metrics: [onboarding_time, health_score_coverage, churn_signals]
+    success_metrics: [journey_live, health_scores_active, renewal_signals_tracked]
+    proof_available: [internal_cx_engines]
+    proof_gaps: [no_customer_case_yet, price_is_estimate]
+    claims_allowed: [journey_delivery, health_tracking, renewal_signal_visibility]
+    claims_blocked: [guaranteed_retention, guaranteed_growth, guaranteed_revenue, cold_whatsapp, linkedin_automation]
+    time_to_value: 45_days
+    founder_effort: medium
+    delivery_risk: medium
+    productization_potential: medium
+    evidence_paths:
+      - auto_client_acquisition/service_catalog/registry.py
+      - auto_client_acquisition/support_journey/classifier.py
+
+  - capability_id: operations_automation_os
+    name_ar: نظام أتمتة العمليات
+    name_en: Operations Automation OS
+    description: "Workflow automation for repetitive operations: intake, routing, approval gates, notifications, and audit trails — with human approval on external actions. Setup range 25,000–90,000 SAR estimate."
+    buyer_pain: [manual_workflow_load, proposal_delay, support_overload]
+    buyer_persona: ops_lead_or_coo
+    icp_segments: [logistics, b2b_services, real_estate]
+    trigger_signals: [manual_rework, approval_bottlenecks, multi_system_work]
+    entry_offer: revenue_command_pilot_30d
+    primary_paid_offer: operations_automation_os
+    expansion_offer: [custom_enterprise_system]
+    delivery_pattern: transformation_setup_plus_monthly
+    inputs_required: [workflow_inventory, system_access, approval_owner]
+    baseline_metrics: [process_time, manual_steps, error_rate]
+    success_metrics: [automation_live, approval_gates_active, audit_trail]
+    proof_available: [internal_workflow_engines, approval_system]
+    proof_gaps: [no_customer_case_yet, price_is_estimate]
+    claims_allowed: [workflow_automation_setup, approval_gate_wiring, audit_trail]
+    claims_blocked: [autonomous_external_send, guaranteed_cost_savings, guaranteed_revenue, cold_whatsapp, linkedin_automation]
+    time_to_value: 60_days
+    founder_effort: high
+    delivery_risk: high
+    productization_potential: medium
+    evidence_paths:
+      - auto_client_acquisition/revenue_os/action_catalog.py
+      - dealix/config/approval_policy.yaml
+
+  - capability_id: executive_reporting_os
+    name_ar: نظام التقارير التنفيذية
+    name_en: Executive Reporting OS
+    description: "KPI semantic layer, weekly executive report, board pack, variance analysis, and automated distribution to approved recipients. Setup range 18,000–60,000 SAR estimate."
+    buyer_pain: [weak_reporting, no_management_visibility]
+    buyer_persona: ceo_gm_or_board_owner
+    icp_segments: [b2b_services, logistics, real_estate]
+    trigger_signals: [manual_reports, board_pack_effort, no_kpi_layer]
+    entry_offer: revenue_command_pilot_30d
+    primary_paid_offer: executive_reporting_os
+    expansion_offer: [custom_enterprise_system]
+    delivery_pattern: transformation_setup_plus_monthly
+    inputs_required: [kpi_definitions, data_sources, report_owner]
+    baseline_metrics: [reporting_latency, manual_report_hours]
+    success_metrics: [kpi_layer_live, weekly_report_delivered, board_pack]
+    proof_available: [internal_reporting_engines, kpi_config]
+    proof_gaps: [no_customer_case_yet, price_is_estimate]
+    claims_allowed: [report_delivery, kpi_definitions, variance_analysis]
+    claims_blocked: [guaranteed_roi, guaranteed_growth, guaranteed_revenue, cold_whatsapp, linkedin_automation]
+    time_to_value: 45_days
+    founder_effort: medium
+    delivery_risk: medium
+    productization_potential: medium
+    evidence_paths:
+      - auto_client_acquisition/revenue_os/revenue_summary.py
+      - dealix/commercial_command_center.py
+
+  - capability_id: trust_governance_os
+    name_ar: نظام الثقة وحوكمة الذكاء الاصطناعي
+    name_en: Trust & AI Governance OS
+    description: "Governance policies, consent tracking, suppression registry, audit trails, proof contracts, and AI approval gates — configured to the customer's operating rules. Setup range 30,000–100,000 SAR estimate."
+    buyer_pain: [ai_governance_risk, compliance_uncertainty]
+    buyer_persona: compliance_or_trust_owner
+    icp_segments: [b2b_services, logistics]
+    trigger_signals: [ai_adoption, compliance_review, pdpl_concern]
+    entry_offer: revenue_command_pilot_30d
+    primary_paid_offer: trust_governance_os
+    expansion_offer: [custom_enterprise_system]
+    delivery_pattern: transformation_setup
+    inputs_required: [policy_context, consent_sources, audit_owner]
+    baseline_metrics: [policy_coverage, consent_records, audit_events]
+    success_metrics: [policy_live, suppression_active, audit_trail]
+    proof_available: [internal_governance_engines, consent_contracts, proof_contracts]
+    proof_gaps: [no_customer_case_yet, price_is_estimate]
+    claims_allowed: [policy_setup, consent_tracking, audit_trails]
+    claims_blocked: [legal_certification, guaranteed_compliance_outcome, guaranteed_revenue, cold_whatsapp, linkedin_automation]
+    time_to_value: 45_days
+    founder_effort: medium
+    delivery_risk: medium
+    productization_potential: high
+    evidence_paths:
+      - auto_client_acquisition/safe_send_gateway/doctrine.py
+      - dealix/company_intelligence/consent_contracts.py
+      - dealix/company_intelligence/proof_contracts.py
+
+  - capability_id: growth_engine_os
+    name_ar: نظام محرك النمو
+    name_en: Growth Engine OS
+    description: "Modeled growth system combining diagnostics, offer architecture, partner channel design, and governed outreach — draft-only and approval-gated. Never cold outreach or automation. Setup range 25,000–80,000 SAR estimate."
+    buyer_pain: [no_growth_system, lead_leakage, weak_partner_channel]
+    buyer_persona: founder_or_cmo
+    icp_segments: [b2b_services, marketing_agency]
+    trigger_signals: [growth_stagnation, channel_need, offer_confusion]
+    entry_offer: revenue_command_pilot_30d
+    primary_paid_offer: growth_engine_os
+    expansion_offer: [custom_enterprise_system]
+    delivery_pattern: transformation_setup_plus_monthly
+    inputs_required: [market_context, offer_stack, approval_owner]
+    baseline_metrics: [offer_clarity, channel_coverage, lead_source_quality]
+    success_metrics: [growth_model_live, draft_channel_plan, governed_outreach]
+    proof_available: [internal_growth_models, draft_only_gate]
+    proof_gaps: [no_customer_case_yet, price_is_estimate]
+    claims_allowed: [model_delivery, channel_design, governed_drafts]
+    claims_blocked: [guaranteed_growth, guaranteed_revenue, cold_whatsapp, linkedin_automation, scraping]
+    time_to_value: 60_days
+    founder_effort: high
+    delivery_risk: high
+    productization_potential: medium
+    evidence_paths:
+      - auto_client_acquisition/service_catalog/registry.py
+      - auto_client_acquisition/safe_send_gateway/doctrine.py
+
+  - capability_id: custom_enterprise_system
+    name_ar: نظام مؤسسي مخصص
+    name_en: Custom Enterprise System
+    description: "Bespoke operating system built around the company's workflows, data, and team — starting with a paid discovery sprint. Scope 100,000–500,000+ SAR estimate, set in the contract."
+    buyer_pain: [no_existing_solution_fit]
+    buyer_persona: enterprise_owner_with_unique_workflows
+    icp_segments: [b2b_services, logistics]
+    trigger_signals: [enterprise_scope, unique_workflow, transformation_budget]
+    entry_offer: revenue_command_pilot_30d
+    primary_paid_offer: custom_enterprise_system
+    expansion_offer: []
+    delivery_pattern: sow_milestone_based
+    inputs_required: [sow, paid_discovery, data_boundary, approval_path]
+    baseline_metrics: [sow_defined, milestone_plan]
+    success_metrics: [milestone_delivery, customer_acceptance]
+    proof_available: [internal_build_capacity, governance_contracts]
+    proof_gaps: [no_customer_case_yet, price_is_estimate]
+    claims_allowed: [scope_delivery, milestone_billing, governed_execution]
+    claims_blocked: [guaranteed_revenue, guaranteed_roi, autonomous_external_send, cold_whatsapp, linkedin_automation]
+    time_to_value: 90_days
+    founder_effort: high
+    delivery_risk: high
+    productization_potential: low
+    evidence_paths:
+      - auto_client_acquisition/service_catalog/registry.py
+      - dealix/config/approval_policy.yaml

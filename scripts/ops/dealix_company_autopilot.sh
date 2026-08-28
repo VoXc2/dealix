@@ -459,7 +459,7 @@ for p in files:
     except OSError:
         continue
     chunks.append(f"\n### SOURCE {p.relative_to(root)}\n{text}")
-out.write_text("\n".join(chunks)[:30000], encoding="utf-8")
+out.write_text("\n".join(chunks)[:15000], encoding="utf-8")
 PY
 
   if [[ ! -s "$source_file" ]]; then
@@ -491,7 +491,7 @@ payload = {
     "messages": [{"role": "user", "content": prompt}],
     "stream": False,
     "keep_alive": "10m",
-    "options": {"num_ctx": 8192, "num_predict": 900, "temperature": 0.2},
+    "options": {"num_ctx": 16384, "num_predict": 900, "temperature": 0.2},
 }
 Path(sys.argv[3]).write_text(json.dumps(payload, ensure_ascii=False), encoding="utf-8")
 PY

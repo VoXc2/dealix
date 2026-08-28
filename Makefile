@@ -324,3 +324,19 @@ analyze-pipeline: ## CI: analyze a pipeline CSV and print recommendations
 
 intelligence-test: ## CI: run the new intelligence layer tests
 	$(PYTHON) -m pytest tests/test_intelligence_layer.py tests/test_sales_strategist_agent.py -q
+
+# ── Sovereign Verify ─────────────────────────────────────────────
+dealix-verify: ## Run canonical verification (MODE=trust|pr|full|production|security|runtime|commercial|changed) — use MODE=...
+	@bin/dealix verify $(MODE)
+
+verify-trust: ## Alias for bin/dealix verify trust
+	bin/dealix verify trust
+
+verify-pr: ## Full PR gate via isolated worktree
+	bin/dealix verify pr --worktree
+
+verify-full: ## Full verification (trust+security+runtime+commercial)
+	bin/dealix verify full
+
+verify-production: ## External production probes only
+	bin/dealix verify production
