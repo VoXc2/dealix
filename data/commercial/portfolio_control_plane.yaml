@@ -1,0 +1,173 @@
+# Dealix Revenue Portfolio Control Plane — canonical runtime config (V18)
+# Meta-layer config for #1277. Consumes #1273/#1274 primitives; never a CRM,
+# Opportunity Graph, Approval Center, Proof Ledger or scheduler.
+
+schema_version: "1.0"
+updated: "2026-08-28"
+north_star: "FIRST VERIFIED PAID PILOT"
+
+# ── Buying group roles (Workstream A / §5) ────────────────────────────────
+# UNKNOWN_STAKEHOLDER is a valid state. Never invent a person or infer
+# decision power without evidence.
+buying_group_roles:
+  - ECONOMIC_BUYER
+  - DOMAIN_BUYER
+  - TECHNICAL_BUYER
+  - USER
+  - CHAMPION
+  - FINANCE
+  - PROCUREMENT
+  - LEGAL
+  - COMPLIANCE
+  - SECURITY
+  - OPERATIONS
+  - EXECUTIVE_SPONSOR
+  - HIDDEN_BUYER
+  - BLOCKER
+  - UNKNOWN_STAKEHOLDER
+
+role_confidence_levels:
+  - UNKNOWN
+  - LOW
+  - MEDIUM
+  - HIGH
+
+# ── Decision-defensibility factors (Workstream B / §6) ────────────────────
+decision_defensibility_factors:
+  - PROBLEM_FIT
+  - STAKEHOLDER_ALIGNMENT
+  - TRUST
+  - BRAND_FAMILIARITY
+  - PEER_PROOF
+  - CUSTOMER_PROOF
+  - IMPLEMENTATION_RISK
+  - SECURITY_CONFIDENCE
+  - GOVERNANCE_CONFIDENCE
+  - ECONOMIC_DEFENSIBILITY
+  - PROCUREMENT_READINESS
+  - CHANGE_BURDEN
+  - INTEGRATION_BURDEN
+  - DECISION_REVERSIBILITY
+  - HIDDEN_BUYER_GAP
+
+# ── Portfolio lanes (Workstream C / §7) ───────────────────────────────────
+portfolio_lanes:
+  - FIRST_FIVE_DIRECT
+  - WARM_NETWORK
+  - EVENT_RELATIONSHIP
+  - PARTNER_CHANNEL
+  - B2G_PARTNER_GO
+  - INBOUND
+  - CONTENT
+  - SEARCH_AEO
+  - PROOF_DISTRIBUTION
+  - PRODUCTIZATION
+
+# ── Distribution surfaces (Workstream C / §9) ─────────────────────────────
+distribution_surfaces:
+  - FOUNDER_LINKEDIN_NATIVE
+  - DEALIX_COMPANY_PRESENCE
+  - WEBSITE
+  - FREE_MINI_DIAGNOSTIC
+  - EMAIL_ELIGIBLE
+  - EVENTS
+  - WARM_INTRODUCTION
+  - REFERRAL
+  - PARTNER
+  - CUSTOMER_PROOF
+  - CASE_STUDY
+  - SHORT_VIDEO
+  - SEARCH_AEO
+  - B2G_PARTNER_COLLATERAL
+  - PAID_MEDIA_GATED
+
+# ── Capacity budget (Workstream F / §13) — weekly default, override at runtime
+capacity_budget_default:
+  founder_minutes: 600
+  event_hours: 20
+  research_hours: 10
+  local_llm_minutes: 240
+  cloud_llm_budget_usd: 10.0
+  proposal_bandwidth: 5
+  review_bandwidth: 10
+  delivery_capacity: 2
+  partner_followup_capacity: 5
+
+# ── Event windows (Workstream G / §14) — reverify before execution ────────
+event_windows:
+  BIG5:
+    start: "2026-08-30"
+    end: "2026-09-02"
+    hours: "16:00-22:00"
+    venue: "Riyadh Front / ROSHN Front"
+    focus: ["construction", "hvac", "fm", "industrial", "contractor", "distribution", "operations"]
+  LEAP:
+    start: "2026-08-31"
+    end: "2026-09-03"
+    hours: "09:00-18:00"
+    venue: "RECC Malham"
+    focus: ["saudi_b2b_saas", "business_services", "ai_it", "si", "partners", "enterprise_tech", "innovation_buyers"]
+  DEEPFEST:
+    start: "2026-08-31"
+    end: "2026-09-03"
+    hours: "09:00-18:00"
+    venue: "RECC Malham"
+    focus: ["ai_adoption", "ai_governance", "enterprise_ai", "agentic_ai", "ai_partners"]
+
+# ── Partner / referral paths (Workstream H / §16) ─────────────────────────
+partner_paths:
+  - CUSTOMER_REFERRAL
+  - INTERNAL_REFERRAL
+  - PARTNER_INTRODUCTION
+  - CHANNEL_PARTNERSHIP
+  - IMPLEMENTATION_PARTNERSHIP
+  - CO_DELIVERY
+  - SAUDI_MARKET_ACCESS
+  - B2G_PRIME
+  - SUBCONTRACTOR_PATH
+
+# ── Loss / no-decision reasons (Workstream I / §18) ───────────────────────
+loss_reasons:
+  - NO_REAL_PAIN
+  - NO_URGENCY
+  - WRONG_BUYER
+  - HIDDEN_BUYER_VETO
+  - TRUST_GAP
+  - PROOF_GAP
+  - BUDGET
+  - TIMING
+  - SECURITY
+  - COMPLIANCE
+  - PROCUREMENT
+  - INTEGRATION_BURDEN
+  - CHANGE_BURDEN
+  - COMPETITOR
+  - STATUS_QUO
+  - NO_DECISION
+  - DEALIX_DELIVERY_GAP
+  - BAD_PROPOSAL
+  - BAD_MESSAGE
+  - BAD_CHANNEL
+  - BAD_FOLLOWUP
+
+# ── Experiment decisions (Workstream E / §12) ─────────────────────────────
+experiment_decisions:
+  - SCALE
+  - RETEST
+  - STOP
+  - INVALID
+
+# ── Hard rules (cannot be changed by portfolio semantics) ─────────────────
+hard_rules:
+  - buyability_score_never_alters_qualification: true
+  - buying_group_member_requires_provenance: true
+  - unknown_stakeholder_remains_unknown: true
+  - proof_reuse_requires_permission: true
+  - experiment_cannot_scale_without_outcome_evidence: true
+  - capacity_allocator_cannot_overbook: true
+  - event_schedules_cannot_overlap_impossibly: true
+  - no_duplicate_scheduler_owner: true
+  - roles_1273_1274_1277_do_not_overlap_incorrectly: true
+  - external_send_allowed_stays_false: true
+  - quote_only_after_discovery: true
+  - most_restrictive_current_authority_wins: true

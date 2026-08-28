@@ -1,0 +1,355 @@
+{
+  "schema": "dealix.v18.portfolio-command.v1",
+  "generated_at": "2026-08-28T12:24:26.783623+00:00",
+  "source_truth": {
+    "real_contacts": 0,
+    "paid_pilot_markers": 1,
+    "verified_paid_pilots": 0,
+    "verified_revenue_sar": 0,
+    "generated_pipeline_pressure": "HIGH"
+  },
+  "evidence_inputs": {
+    "scoped_relationships": [
+      {
+        "entity": "iMini / Jannie",
+        "state": "REAL_RELATIONSHIP",
+        "commercial_truth": "NEGOTIATION_EXISTS_NO_VERIFIED_PAYMENT"
+      },
+      {
+        "entity": "Linnk Arabia",
+        "state": "OUTBOUND_SENT",
+        "commercial_truth": "NO_REPLY_PROVEN"
+      },
+      {
+        "entity": "Leap29 Saudi",
+        "state": "OUTBOUND_SENT",
+        "commercial_truth": "NO_REPLY_PROVEN"
+      }
+    ],
+    "event_interactions_observed": [
+      {
+        "event": "LEAP x DeepFest 2026",
+        "person": "Eman Louzon",
+        "company": "KARIZMA",
+        "state": "OBSERVED"
+      }
+    ]
+  },
+  "command": {
+    "generated_at": "2026-08-28T12:24:26.783623+00:00",
+    "north_star": "FIRST VERIFIED PAID PILOT",
+    "verified_revenue_sar": 0.0,
+    "closest_verified_money_path": "NONE — 0 verified revenue. Closest REAL path: Big 5 30 Aug–2 Sep (first evidence-backed relationship -> diagnostic -> quote -> paid pilot). iMini is founder income, not Dealix revenue.",
+    "top_moves": [
+      {
+        "item_id": "pi-nelc-naseej",
+        "lane": "B2G_PARTNER_GO",
+        "account_id": "",
+        "company": "NASEEJ FOR TECHNOLOGY (NELC prime)",
+        "current_stage": "DRAFT_READY",
+        "relationship_state": "no_relationship_yet",
+        "buyability_score": 0.0,
+        "evidence_strength": 1,
+        "expected_next_evidence": "one two-way partner conversation before 2026-09-03",
+        "time_to_evidence_days": 6,
+        "founder_minutes": 20,
+        "agent_cost": 0.3,
+        "delivery_load": 0,
+        "risk": 3,
+        "reversibility": 5,
+        "strategic_reuse": 4,
+        "proof_potential": 3,
+        "recurring_potential": 3,
+        "probability_of_movement": 0.3,
+        "assumptions": [
+          "NELC 260839004837 partner-go; highest complementarity + accessibility",
+          "draft only; send:false until founder approval",
+          "public/tender research is not a relationship"
+        ]
+      },
+      {
+        "item_id": "pi-imini-001",
+        "lane": "WARM_NETWORK",
+        "account_id": "",
+        "company": "iMini / Jannie",
+        "current_stage": "NEGOTIATION",
+        "relationship_state": "real_relationship",
+        "buyability_score": 0.0,
+        "evidence_strength": 4,
+        "expected_next_evidence": "founder-approved counter send + payment proof (founder income lane)",
+        "time_to_evidence_days": 3,
+        "founder_minutes": 10,
+        "agent_cost": 0.1,
+        "delivery_load": 1,
+        "risk": 2,
+        "reversibility": 4,
+        "strategic_reuse": 2,
+        "proof_potential": 2,
+        "recurring_potential": 0,
+        "probability_of_movement": 0.7,
+        "assumptions": [
+          "FOUNDER_INCOME scope: NOT Dealix revenue; tracked separately",
+          "AP-006 counter draft ready ($150 target, $80 fallback); send requires founder approval"
+        ]
+      },
+      {
+        "item_id": "pi-leap-karizma",
+        "lane": "EVENT_RELATIONSHIP",
+        "account_id": "",
+        "company": "KARIZMA",
+        "current_stage": "INBOUND_OBSERVED",
+        "relationship_state": "observed_only",
+        "buyability_score": 0.0,
+        "evidence_strength": 1,
+        "expected_next_evidence": "two-way exchange with Eman Louzon (KARIZMA)",
+        "time_to_evidence_days": 4,
+        "founder_minutes": 240,
+        "agent_cost": 0.3,
+        "delivery_load": 0,
+        "risk": 2,
+        "reversibility": 5,
+        "strategic_reuse": 3,
+        "proof_potential": 3,
+        "recurring_potential": 3,
+        "probability_of_movement": 0.4,
+        "assumptions": [
+          "observed LEAP connection request only; no two-way exchange verified",
+          "founder reviews connection request in LEAP app; no external send by agent"
+        ]
+      },
+      {
+        "item_id": "pi-leap29-001",
+        "lane": "WARM_NETWORK",
+        "account_id": "",
+        "company": "Leap29 Saudi",
+        "current_stage": "OUTBOUND_SENT",
+        "relationship_state": "no_reply_proven",
+        "buyability_score": 0.0,
+        "evidence_strength": 2,
+        "expected_next_evidence": "inbound reply OR bounded follow-up draft approval",
+        "time_to_evidence_days": 7,
+        "founder_minutes": 15,
+        "agent_cost": 0.1,
+        "delivery_load": 0,
+        "risk": 2,
+        "reversibility": 5,
+        "strategic_reuse": 1,
+        "proof_potential": 1,
+        "recurring_potential": 2,
+        "probability_of_movement": 0.2,
+        "assumptions": [
+          "SENT_EMAIL 2026-08-21, NO_REPLY_PROVEN; wait or bounded follow-up only"
+        ]
+      },
+      {
+        "item_id": "pi-linnk-001",
+        "lane": "WARM_NETWORK",
+        "account_id": "",
+        "company": "Linnk Arabia",
+        "current_stage": "OUTBOUND_SENT",
+        "relationship_state": "no_reply_proven",
+        "buyability_score": 0.0,
+        "evidence_strength": 2,
+        "expected_next_evidence": "inbound reply OR bounded follow-up draft approval",
+        "time_to_evidence_days": 7,
+        "founder_minutes": 15,
+        "agent_cost": 0.1,
+        "delivery_load": 0,
+        "risk": 2,
+        "reversibility": 5,
+        "strategic_reuse": 1,
+        "proof_potential": 1,
+        "recurring_potential": 2,
+        "probability_of_movement": 0.2,
+        "assumptions": [
+          "SENT_EMAIL 2026-08-21, NO_REPLY_PROVEN; wait or bounded follow-up only"
+        ]
+      }
+    ],
+    "top_buyability_gaps": [
+      "acc-karizma: ECONOMIC_BUYER_ABSENT",
+      "acc-nelc: ECONOMIC_BUYER_ABSENT"
+    ],
+    "top_decision_risks": [
+      "acc-imini-001: STAKEHOLDER_ALIGNMENT",
+      "acc-karizma: PROBLEM_FIT",
+      "acc-nelc: PROBLEM_FIT"
+    ],
+    "next_event_priority": "BIG5 2026-08-30 16-22 @ Riyadh Front / ROSHN Front",
+    "highest_value_distribution": "Free Mini Diagnostic → Big 5 construction/FM operations leaders (event conversation): book 20-minute diagnostic",
+    "experiments_scale": [],
+    "experiments_retest": [],
+    "experiments_stop": [],
+    "experiments_invalid": [],
+    "capacity_summary": "capacity feasible: EVENT_RELATIONSHIP, WARM_NETWORK, B2G_PARTNER_GO",
+    "approval_needed": [],
+    "next_autonomous_action": "B2G_PARTNER_GO: prepare one two-way partner conversation before 2026-09-03 for NASEEJ FOR TECHNOLOGY (NELC prime) (L0-L4 only, no external send)",
+    "proof_notes": [
+      "proof-imini-video: reuse blocked (PERMISSION_UNKNOWN_OR_MISSING)",
+      "proof-synthetic-event-20260827: reuse blocked (PERMISSION_UNKNOWN_OR_MISSING)"
+    ],
+    "learning": []
+  },
+  "event_plan": {
+    "feasible": true,
+    "allocations": [
+      {
+        "allocation_id": "ev-big5-day1",
+        "event_name": "BIG5",
+        "day": "2026-08-30",
+        "start_hour": 16,
+        "end_hour": 22,
+        "venue": "Riyadh Front / ROSHN Front",
+        "focus": "construction, hvac, fm, industrial",
+        "expected_relationship_value": 5,
+        "probability": 0.5,
+        "strategic_reuse": 3,
+        "travel_cost": 1,
+        "founder_hours": 6,
+        "score": 6.0
+      },
+      {
+        "allocation_id": "ev-big5-day2",
+        "event_name": "BIG5",
+        "day": "2026-08-31",
+        "start_hour": 18,
+        "end_hour": 22,
+        "venue": "Riyadh Front / ROSHN Front",
+        "focus": "construction, hvac, fm, industrial",
+        "expected_relationship_value": 4,
+        "probability": 0.4,
+        "strategic_reuse": 2,
+        "travel_cost": 1,
+        "founder_hours": 4,
+        "score": 3.0
+      },
+      {
+        "allocation_id": "ev-leap-day1",
+        "event_name": "LEAP",
+        "day": "2026-08-31",
+        "start_hour": 9,
+        "end_hour": 16,
+        "venue": "RECC Malham",
+        "focus": "saudi_b2b_saas, ai_it, partners",
+        "expected_relationship_value": 4,
+        "probability": 0.4,
+        "strategic_reuse": 3,
+        "travel_cost": 2,
+        "founder_hours": 7,
+        "score": 2.667
+      }
+    ],
+    "conflicts": [],
+    "capacity_feasible": true,
+    "capacity_violations": [],
+    "founder_hours_total": 17
+  },
+  "capacity": {
+    "feasible": true,
+    "accepted_lanes": [
+      "EVENT_RELATIONSHIP",
+      "WARM_NETWORK",
+      "B2G_PARTNER_GO"
+    ],
+    "violations": []
+  },
+  "partner_paths": [
+    {
+      "relationship_id": "rel-imini-001",
+      "path": "CUSTOMER_REFERRAL",
+      "status": "PLAUSIBLE",
+      "relationship_evidence": "TWO_WAY_EMAIL negotiation 2026-08-24",
+      "consent_state": "unknown",
+      "next_action": "ask Jannie for referral only after deal closes, with explicit consent",
+      "reasons": []
+    },
+    {
+      "relationship_id": "rel-nelc",
+      "path": "B2G_PRIME",
+      "status": "NOT_EVALUATED",
+      "relationship_evidence": "",
+      "consent_state": "unknown",
+      "next_action": "",
+      "reasons": [
+        "NO_RELATIONSHIP_EVIDENCE"
+      ]
+    }
+  ],
+  "experiments": {
+    "experiments": [
+      {
+        "experiment_id": "exp-big5-day1",
+        "hypothesis": "Evening stand conversations at Big5 yield 2+ followup permissions per 3 conversations",
+        "segment": "construction/hvac/fm",
+        "account_cohort": "big5-2026",
+        "buying_group_role": "UNKNOWN_STAKEHOLDER",
+        "offer": "Free Mini Diagnostic",
+        "channel": "event",
+        "asset": "diagnostic pitch",
+        "cta": "book diagnostic",
+        "expected_evidence": "3 two-way conversations + 2 followup permissions on 2026-08-30",
+        "start": "2026-08-30",
+        "end": "2026-08-31",
+        "founder_minutes": 360,
+        "agent_cost": 0.2,
+        "delivery_cost": 0,
+        "outcome": "",
+        "confidence": "",
+        "learning": "",
+        "decision": ""
+      },
+      {
+        "experiment_id": "exp-leap-karizma",
+        "hypothesis": "Responding to inbound LEAP connection requests within 24h yields two-way exchanges",
+        "segment": "saudi_b2b_saas",
+        "account_cohort": "leap-2026",
+        "buying_group_role": "UNKNOWN_STAKEHOLDER",
+        "offer": "Free Mini Diagnostic",
+        "channel": "LEAP app",
+        "asset": "connection reply",
+        "cta": "two-way exchange",
+        "expected_evidence": "two-way exchange with KARIZMA CEO",
+        "start": "2026-08-31",
+        "end": "2026-09-03",
+        "founder_minutes": 120,
+        "agent_cost": 0.2,
+        "delivery_cost": 0,
+        "outcome": "",
+        "confidence": "",
+        "learning": "",
+        "decision": ""
+      },
+      {
+        "experiment_id": "exp-nelc-draft",
+        "hypothesis": "A partner-go draft to the NELC prime candidate opens one two-way partner conversation",
+        "segment": "b2g",
+        "account_cohort": "nelc-260839004837",
+        "buying_group_role": "UNKNOWN_STAKEHOLDER",
+        "offer": "partner lane",
+        "channel": "email",
+        "asset": "partner draft",
+        "cta": "conversation",
+        "expected_evidence": "one two-way partner conversation before 2026-09-03",
+        "start": "2026-08-28",
+        "end": "2026-09-03",
+        "founder_minutes": 20,
+        "agent_cost": 0.3,
+        "delivery_cost": 0,
+        "outcome": "",
+        "confidence": "",
+        "learning": "",
+        "decision": ""
+      }
+    ],
+    "count": 3
+  },
+  "governance": {
+    "external_send": "APPROVAL_FIRST",
+    "merge_main": "NEVER_AUTO",
+    "production_mutation": "NEVER_AUTO",
+    "payment": "NEVER_AUTO",
+    "tender_submission": "NEVER_AUTO",
+    "infrastructure_freeze": true,
+    "self_test_quarantine": true
+  }
+}
