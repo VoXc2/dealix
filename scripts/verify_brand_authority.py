@@ -102,8 +102,19 @@ def main() -> int:
                 fail(errors, f"unguarded_legacy_claim_pattern:{pattern}")
 
     positioning = (ROOT / "docs/brand/POSITIONING.md").read_text(encoding="utf-8")
-    if "PDPL-compliant" in positioning:
-        fail(errors, "positioning_contains_blanket_pdpl_compliant")
+    # The phrase may appear inside explicit guardrails such as
+    # "Do not state blanket `PDPL-compliant`". Reject only an affirmative blanket
+    # positioning claim, while allowing scoped negative/policy examples.
+    blanket_pdpl_patterns = (
+        r"\bDealix\s+is\s+PDPL-compliant\b",
+        r"\bDealix\s+is\s+fully\s+PDPL-compliant\b",
+        r"\bwe\s+are\s+PDPL-compliant\b",
+        r"\bfully\s+PDPL-compliant\b",
+    )
+    for pattern in blanket_pdpl_patterns:
+        if re.search(pattern, positioning, flags=re.IGNORECASE):
+            fail(errors, "positioning_contains_blanket_pdpl_compliant")
+            break
 
     brand_os = (ROOT / "docs/brand/DEALIX_BRAND_OS.md").read_text(encoding="utf-8")
     for role in (

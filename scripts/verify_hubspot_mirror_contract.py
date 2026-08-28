@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import json
+import re
 from pathlib import Path
 
 
@@ -41,7 +42,20 @@ def main() -> int:
 
     require("create_deal: bool = False" in crm, "CRMAgent deal default must remain false")
     require("noemail+" not in crm, "fabricated placeholder email returned")
-    require("lead.budget" not in crm, "lead budget must not become HubSpot amount")
+
+    # Comments/docstrings are allowed to explain that lead.budget must never become
+    # HubSpot amount. Reject executable-looking assignments or payload mappings that
+    # actually source CRM amount from lead.budget instead of verified quote authority.
+    budget_to_amount_patterns = (
+        r'properties\s*\[\s*["\']amount["\']\s*\]\s*=\s*(?:str\s*\(\s*)?lead\.budget',
+        r'["\']amount["\']\s*:\s*(?:str\s*\(\s*)?lead\.budget',
+        r'amount\s*=\s*(?:str\s*\(\s*)?lead\.budget',
+    )
+    require(
+        not any(re.search(pattern, crm) for pattern in budget_to_amount_patterns),
+        "lead budget must not become HubSpot amount",
+    )
+    require("approved_quote_amount_sar" in crm, "verified quote amount mirror authority missing")
     require("evaluate_hubspot_mirror" in crm, "CRM truth gate missing")
     require("closedwon requires verified payment evidence" in crm, "closedwon payment guard missing")
 
