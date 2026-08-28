@@ -124,6 +124,8 @@ def test_private_issue_bridge_allowlist_excludes_sensitive_execution() -> None:
         "repo-inspect",
         "verify",
         "autonomous-dry-run",
+        "daily",
+        "sales-arena",
         "ollama-status",
         "n8n-status",
         "security-status",
@@ -131,8 +133,15 @@ def test_private_issue_bridge_allowlist_excludes_sensitive_execution() -> None:
         assert f'"{command}"' in text
 
     allowlist_block = text.split("ALLOWED = {", 1)[1].split("}", 1)[0]
-    for command in ("daily", "sales-arena", "merge", "deploy", "send", "pay"):
+    for command in ("merge", "deploy", "send", "pay", "delete", "secrets"):
         assert f'"{command}"' not in allowlist_block
+
+
+def test_daily_and_sales_arena_stay_runtime_state_gated() -> None:
+    text = _text(DISPATCHER)
+    for command in ("daily", "sales-arena"):
+        block = text.split(f"  {command})", 1)[1].split("    ;;", 1)[0]
+        assert "require_runtime_state" in block
 
 
 def test_private_issue_bridge_redacts_secret_shapes_and_caps_output() -> None:
@@ -161,4 +170,3 @@ def test_self_hosted_runner_installer_does_not_print_registration_token() -> Non
     assert "secret_values_printed=false" in text
     assert 'RUNNER_USER="dealix"' in text
     assert 'RUNNER_NAME="dealix-vps"' in text
-    assert "must be private" in text

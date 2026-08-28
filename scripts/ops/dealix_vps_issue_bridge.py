@@ -36,6 +36,8 @@ ALLOWED = {
     "repo-inspect",
     "verify",
     "autonomous-dry-run",
+    "daily",
+    "sales-arena",
     "ollama-status",
     "n8n-status",
     "security-status",
