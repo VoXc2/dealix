@@ -1,5 +1,5 @@
 ---
-description: قواعد المؤسس — بيع السلم، الربط، وكلاء Cursor (لا إرسال خارجي)
+description: قواعد المؤسس الحالية — مسار تجاري evidence-first بدون تسعير عام أو إرسال خارجي ذاتي
 globs:
   - docs/commercial/**
   - docs/ops/FOUNDER_*
@@ -7,42 +7,70 @@ globs:
   - docs/commercial/ops_client_pack/**
 ---
 
-# Dealix — Founder sales & go-live
+# Dealix — Founder Sales & Go-Live
 
-## سلم البيع
+## السلطة التجارية الحالية
 
-1. **Diagnostic (Ops)** 4,999–15,000 SAR — مدخل المحادثة (ليس service_id في الكتالوج)
-2. **Sprint 499** أو **Data Pack 1500** — بعد القبول والدفع
-3. **Growth 2999** — فقط بعد Proof Pack
+المسار الوحيد الحالي:
+
+1. **Real Interaction / Verified Relationship** — لا نعتبر research أو event badge أو CRM row علاقة.
+2. **Free Mini Diagnostic** — مدخل منخفض الاحتكاك بدون تسعير مدفوع عام.
+3. **Qualified Discovery** — مشكلة، مالك قرار، baseline/proof path، data boundary، budget/timing.
+4. **Customer-Specific Quote** — السعر والنطاق وشروط الدفع خاصة بالعميل وبعد discovery؛ لا تُستنتج من catalog أو budget أو ملف قديم.
+5. **30-Day Revenue Command Pilot** — يبدأ فقط بعد القبول والـgates المطلوبة.
+6. **Payment Evidence -> Delivery Evidence -> Permissioned Proof**.
+7. **STOP / EXPAND / REDESIGN** — لا automatic upsell.
+
+لا توجد حاليًا سلطة عامة لـ499 SAR / 7-day Sprint أو 1,500 Data Pack أو 2,999 retainer أو أي fixed public ladder/checkout.
 
 ## مصادر الحقيقة
 
-- **يومياً (ابدأ هنا):** `docs/commercial/MASTER_COMMERCIAL_OPERATING_PLAN_AR.md` + `docs/commercial/DEALIX_COMMERCIAL_SCALE_SYSTEM_AR.md` + `docs/commercial/FULL_OPS_CLOSE_ENGINE_AR.md` + `docs/commercial/DEALIX_SALES_GTM_SOVEREIGN_MASTER_AR.md`
-- **أمر صباح واحد:** `bash scripts/run_founder_commercial_day.sh` (Windows: `scripts/run_founder_commercial_day.ps1`)
-- تنفيذ: `docs/commercial/operations/` · config: `dealix/config/social_content_queue.yaml` · `dealix/config/icp_agency_wedge.yaml`
-- عروض: `auto_client_acquisition/service_catalog/registry.py` + `docs/COMMERCIAL_WIRING_MAP.md`
-- Ops pack: `docs/commercial/ops_client_pack/`
-- ربط: `dealix/transformation/founder_integration_truth.yaml` + `docs/ops/FOUNDER_INTEGRATION_TRUTH_MATRIX_AR.md`
-- وكلاء: `docs/ops/FOUNDER_AGENT_PLAYBOOK_AR.md`
-- غرفة تصريف يومية (هدف/قناة/proof/موافقة): `docs/ops/DEALIX_REVENUE_WAR_ROOM_AR.md`
+ابدأ من current `main` ثم:
+- `COMMERCIAL_IDENTITY.md`
+- `dealix/config/first_launch_offer_gate.yaml`
+- عقود commercial truth الحالية تحت `data/commercial/`
+- Revenue Command Center / Revenue Mesh / Agent Council الحالية
 
-## ممنوعات (غير قابلة للتفاوض)
+ملفات الخطط والتسعير التاريخية و`service_catalog` تصلح كمرجع scope/history فقط ولا تمنح سعرًا أو checkout أو payment authority للعميل.
 
-- لا إرسال واتساب بارد أو LinkedIn تلقائي
-- لا Gmail/تقويم خارجي بدون موافقة صريحة
-- لا أرقام CRM أو إيراد مخترعة — KPI من `kpi_founder_commercial_import.yaml` فقط
-- لا revenue قبل `invoice_paid` · لا upsell قبل Proof
-- لا وعود على تكامل **red** في Truth Matrix
+## Truth Firewall
 
-## أوامر تشغيل
+- research != relationship
+- signal != consent
+- CRM record != commercial truth
+- proposal != revenue
+- invoice != payment
+- provider accepted != payment evidence
+- synthetic/demo != customer proof
+- public proof requires customer evidence + permission
 
-- لقطة: `bash scripts/run_business_now.sh` أو `scripts/run_business_now.ps1`
-- تحقق: `bash scripts/founder_go_live_verify.sh`
-- ديمو UI: `/ar/business-now#strategy`
+## ما يمكن أتمتته داخليًا
+
+- research، scoring، account hypotheses
+- discovery preparation
+- buying-group hypotheses
+- AR/EN drafts
+- proposal/quote preparation بدون اعتماد نهائي
+- BATNA / MESO / give-get / objection preparation
+- content/video briefs and channel adaptations
+- attribution/experiment analysis
+- proof-gap and approval analysis
+
+## الحدود
+
+- Founder LinkedIn الشخصي: `MANUAL_NATIVE` — لا connections/messages/comments/likes آلية.
+- لا cold/bulk WhatsApp.
+- Email/WhatsApp الخارجي يحتاج relationship/consent/suppression + exact action authority.
+- لا سعر/خصم/دفع/استرجاع/عقد/قانوني/exclusivity/tender بدون gate خاص.
+- لا invoice/payment link ذاتي؛ quote authority ليست payment execution authority.
+- لا production/Railway/DNS/DB/secrets mutation فقط لفك draft blocker.
+- لا أرقام CRM أو إيراد أو proof مخترعة.
 
 ## اختيار الوكيل
 
-- مبيعات/عروض → dealix-sales
-- تسليم/Proof → dealix-delivery
-- pytest/API → dealix-engineer
-- أسبوعي/أولويات → dealix-pm
+- مبيعات/عروض/تفاوض → `dealix-sales`
+- تسليم/Proof → `dealix-delivery`
+- code/tests/verification → `dealix-engineer`
+- أولويات/portfolio/WIP=1 → `dealix-pm`
+
+كل وكيل يقرأ السلطة الحالية قبل أي sales kit أو plan تاريخي. إذا تعارض مصدر قديم مع current authority، يتم وسمه legacy/quarantined ولا يُستخدم كقرار تجاري.
