@@ -6,6 +6,7 @@ set -Eeuo pipefail
 # payments, secret changes, and destructive actions.
 
 ROOT="/opt/dealix/workspace/dealix"
+REPO_SLUG="${DEALIX_REPO_SLUG:-Dealix-sa/dealix}"
 AUTOPILOT="/opt/dealix/control/bin/dealix_company_autopilot.sh"
 PY_BOOTSTRAP="$ROOT/scripts/ops/ensure_founder_automation_python.sh"
 PY="$ROOT/.venv/bin/python"
@@ -117,7 +118,7 @@ ensure_python() {
   }
 }
 
-ensure_github_git_auth() {
+ensure_github_api_auth() {
   command -v gh >/dev/null 2>&1 || {
     echo "BLOCKED: gh CLI unavailable"
     return 1
@@ -126,11 +127,14 @@ ensure_github_git_auth() {
     echo "BLOCKED: gh CLI is not authenticated"
     return 1
   }
-  # Configure Git's GitHub credential helper without printing a token.
-  gh auth setup-git >/dev/null 2>&1 || {
-    echo "BLOCKED: could not configure non-interactive GitHub git credentials"
+  gh api user --jq '.login' >/dev/null 2>&1 || {
+    echo "BLOCKED: GitHub API authentication is unavailable"
     return 1
   }
+}
+
+tracked_status() {
+  git status -sb --untracked-files=no
 }
 
 case "$COMMAND" in
@@ -142,7 +146,7 @@ case "$COMMAND" in
     echo "repo_head=$(git rev-parse HEAD)"
     echo "branch=$(git branch --show-current)"
     echo "runtime_state_ready=$RUNTIME_STATE_READY"
-    git status -sb
+    tracked_status
     echo
     safe_service_state docker
     safe_service_state ollama
@@ -159,17 +163,27 @@ case "$COMMAND" in
 
   repo-inspect)
     echo "===== DEALIX REPO INSPECT ====="
-    ensure_github_git_auth
-    GIT_TERMINAL_PROMPT=0 git fetch origin main --quiet
-    echo "local=$(git rev-parse HEAD)"
-    echo "origin_main=$(git rev-parse origin/main)"
-    git status -sb
+    ensure_github_api_auth
+    GITHUB_MAIN="$(gh api "repos/${REPO_SLUG}/commits/main" --jq '.sha')"
+    [[ "$GITHUB_MAIN" =~ ^[0-9a-f]{40}$ ]] || {
+      echo "BLOCKED: GitHub main SHA is invalid"
+      exit 1
+    }
+    LOCAL_HEAD="$(git rev-parse HEAD)"
+    echo "local=$LOCAL_HEAD"
+    echo "github_main=$GITHUB_MAIN"
+    if [[ "$LOCAL_HEAD" == "$GITHUB_MAIN" ]]; then
+      echo "main_sync=UP_TO_DATE"
+    else
+      echo "main_sync=DRIFTED"
+    fi
+    tracked_status
     git log -5 --oneline --decorate
     ;;
 
   verify)
     echo "===== DEALIX CANONICAL SOVEREIGN VERIFY ====="
-    ensure_github_git_auth
+    ensure_github_api_auth
     GIT_TERMINAL_PROMPT=0 git fetch origin main --quiet
     if [[ ! -x bin/dealix || ! -f scripts/dealix_verify.py ]]; then
       echo "BLOCKED: canonical verifier missing; merge/deploy #1264 before using !dealix verify"

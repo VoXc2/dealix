@@ -62,6 +62,25 @@ def test_dispatcher_allowlist_excludes_l5_actions() -> None:
         assert forbidden_command not in text
 
 
+def test_repo_inspect_uses_read_only_github_api_auth() -> None:
+    text = _text(DISPATCHER)
+    assert "gh auth setup-git" not in text
+    assert "ensure_github_api_auth" in text
+    block = text.split('  repo-inspect)\n', 1)[1].split('    ;;', 1)[0]
+    assert "git fetch origin main" not in block
+    assert "gh api \"repos/${REPO_SLUG}/commits/main\" --jq '.sha'" in block
+    assert 'echo "github_main=$GITHUB_MAIN"' in block
+    assert 'echo "main_sync=UP_TO_DATE"' in block
+    assert 'echo "main_sync=DRIFTED"' in block
+
+
+def test_status_avoids_untracked_permission_noise_without_hiding_tracked_changes() -> None:
+    text = _text(DISPATCHER)
+    assert "tracked_status()" in text
+    assert "git status -sb --untracked-files=no" in text
+    assert text.count("tracked_status") >= 3
+
+
 def test_workflow_blocks_vps_execution_while_public() -> None:
     text = _text(WORKFLOW)
     assert "github.event.repository.private != true" in text
@@ -111,7 +130,6 @@ def test_private_issue_bridge_allowlist_excludes_sensitive_execution() -> None:
     ):
         assert f'"{command}"' in text
 
-    # Higher-impact runners are deliberately not exposed through the issue bridge yet.
     allowlist_block = text.split("ALLOWED = {", 1)[1].split("}", 1)[0]
     for command in ("daily", "sales-arena", "merge", "deploy", "send", "pay"):
         assert f'"{command}"' not in allowlist_block
