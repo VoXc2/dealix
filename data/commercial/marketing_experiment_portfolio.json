@@ -1,0 +1,83 @@
+{
+  "schema": "dealix.marketing-experiment-portfolio.v1",
+  "as_of": "2026-08-28",
+  "experiments": [
+    {
+      "id": "BIG5_QR_DIAGNOSTIC",
+      "window": "2026-08-30/2026-09-02",
+      "hypothesis": "A context-specific event QR with one diagnostic CTA converts qualified in-person interest better than a generic company-profile link.",
+      "audience": "Big 5 real interactions",
+      "channel": "event_qr",
+      "offer": "FREE_MINI_DIAGNOSTIC",
+      "success_event": "diagnostic_submit",
+      "stop_rule": "Stop or redesign after sufficient real interactions if qualified visits do not progress to diagnostic starts/submits.",
+      "authority": "INTERNAL_PREP_PLUS_IN_PERSON_NATIVE"
+    },
+    {
+      "id": "BIG5_SAME_DAY_FOLLOWUP",
+      "window": "2026-08-30/2026-09-02",
+      "hypothesis": "Same-day follow-up after a real booth conversation improves diagnostic/discovery progression.",
+      "audience": "documented event relationships with eligible follow-up",
+      "channel": "eligible_email_or_whatsapp",
+      "offer": "FREE_MINI_DIAGNOSTIC",
+      "success_event": "verified_relationship_to_diagnostic",
+      "stop_rule": "Pause on any reply; suppress on opt-out; stop if no new value can be added.",
+      "authority": "CHANNEL_POLICY_DEPENDENT"
+    },
+    {
+      "id": "LEAP_INBOUND_NETWORKING",
+      "window": "2026-08-31/2026-09-03",
+      "hypothesis": "Inbound networking requests converted with a contextual qualification question outperform generic company pitches.",
+      "audience": "LEAP/DeepFest inbound networking",
+      "channel": "event_native",
+      "offer": "CONTEXTUAL_QUALIFICATION_THEN_DEAL_DESK",
+      "success_event": "qualified_problem",
+      "stop_rule": "Do not personalize beyond verified identity/context; stop if the request is not business-relevant.",
+      "authority": "MANUAL_NATIVE"
+    },
+    {
+      "id": "FOUNDER_LINKEDIN_PROBLEM_TEARDOWN",
+      "window": "rolling_weekly",
+      "hypothesis": "Expert Saudi RevOps/AI operating-system teardown content drives higher-quality diagnostic interest than generic AI commentary.",
+      "audience": "Saudi B2B founders, GMs, revenue/operations leaders",
+      "channel": "linkedin_manual_native",
+      "offer": "FREE_MINI_DIAGNOSTIC",
+      "success_event": "diagnostic_start",
+      "stop_rule": "Kill themes that generate impressions without qualified replies/site progression after enough samples.",
+      "authority": "FOUNDER_NATIVE_PUBLISH"
+    },
+    {
+      "id": "ARABIC_HIGH_INTENT_SEO",
+      "window": "rolling_90d",
+      "hypothesis": "Arabic expert-led pages on concrete Saudi revenue/AI operating problems create qualified organic demand.",
+      "audience": "Saudi Arabic-searching B2B buyers",
+      "channel": "organic_search",
+      "offer": "FREE_MINI_DIAGNOSTIC",
+      "success_event": "qualified_visit_to_diagnostic",
+      "stop_rule": "Consolidate or retire thin pages that do not gain relevant impressions/clicks or downstream qualified actions.",
+      "authority": "CONTENT_REVIEW_REQUIRED"
+    },
+    {
+      "id": "PARTNER_ONE_PAGER",
+      "window": "rolling_30d",
+      "hypothesis": "A tightly scoped partner one-pager creates qualified implementation/referral conversations with Saudi SIs and consultancies.",
+      "audience": "evidence-backed partner candidates",
+      "channel": "manual_or_eligible_relationship_channel",
+      "offer": "PARTNER_DISCOVERY",
+      "success_event": "partner_discovery_completed",
+      "stop_rule": "Stop partner lane when buyer overlap, delivery fit or commercial economics are weak.",
+      "authority": "RELATIONSHIP_AND_CHANNEL_POLICY_DEPENDENT"
+    },
+    {
+      "id": "PROOF_LED_ARTICLE_REUSE",
+      "window": "rolling_30d",
+      "hypothesis": "One evidence-led implementation insight reused natively across web, founder post and sales enablement compounds trust efficiently.",
+      "audience": "Saudi B2B buyers and partners",
+      "channel": "web_plus_founder_distribution",
+      "offer": "FREE_MINI_DIAGNOSTIC",
+      "success_event": "verified_relationship",
+      "stop_rule": "Do not publish unsupported customer outcomes; retire assets when authority/evidence becomes stale.",
+      "authority": "PUBLICATION_REVIEW"
+    }
+  ]
+}

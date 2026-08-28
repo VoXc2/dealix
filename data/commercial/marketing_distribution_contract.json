@@ -1,0 +1,165 @@
+{
+  "schema": "dealix.marketing-distribution.v1",
+  "generated_on": "2026-08-28",
+  "north_star": "FIRST_VERIFIED_PAID_DEALIX_PILOT",
+  "hierarchy": {
+    "portfolio_control": "#1277",
+    "revenue_mesh": "#1273",
+    "campaign_acceptance": "#1274",
+    "marketing_execution": "#1284"
+  },
+  "commercial_path": [
+    "FREE_MINI_DIAGNOSTIC",
+    "QUALIFIED_DISCOVERY",
+    "CUSTOMER_SPECIFIC_QUOTE",
+    "REVENUE_COMMAND_PILOT_30D",
+    "PROOF_PACK",
+    "STOP_EXPAND_RECURRING"
+  ],
+  "positioning": {
+    "company": "Dealix — Saudi-first AI Business Operating System",
+    "commercial_wedge": "Revenue + Proof + Command",
+    "principle": "Sell the entry point, prove the outcome, then expand the operating system"
+  },
+  "funnel": [
+    "ATTENTION",
+    "TRUST",
+    "REAL_INTERACTION",
+    "VERIFIED_RELATIONSHIP",
+    "QUALIFIED_PROBLEM",
+    "MINI_DIAGNOSTIC",
+    "DISCOVERY",
+    "CUSTOMER_SPECIFIC_PROPOSAL",
+    "PAID_PILOT",
+    "PAYMENT_PROOF",
+    "DELIVERY_PROOF",
+    "REFERRAL_PARTNER_EXPANSION"
+  ],
+  "truth_invariants": [
+    "RESEARCH_NE_RELATIONSHIP",
+    "PROVIDER_ACCEPTED_NE_DELIVERED",
+    "PROPOSAL_NE_REVENUE",
+    "INVOICE_NE_PAYMENT",
+    "SYNTHETIC_NE_CUSTOMER_PROOF",
+    "NO_LEGACY_PUBLIC_PRICING_OR_GUARANTEES"
+  ],
+  "channels": {
+    "linkedin": {
+      "mode": "MANUAL_NATIVE",
+      "automated_messages": false,
+      "automated_engagement": false,
+      "scraping": false
+    },
+    "whatsapp": {
+      "mode": "CONSENT_OR_RELATIONSHIP_ONLY",
+      "cold_bulk": false,
+      "opt_out_suppression": true
+    },
+    "email": {
+      "mode": "SOURCE_BOUND_AND_ELIGIBILITY_GATED",
+      "endpoint_alone_is_permission": false,
+      "opt_out_suppression": true,
+      "one_active_thread_per_person": true
+    },
+    "events": {
+      "directory_record_is_relationship": false,
+      "real_interaction_required": true,
+      "same_day_evidence_processing": true
+    }
+  },
+  "website": {
+    "primary_cta": "FREE_MINI_DIAGNOSTIC",
+    "required_paths": [
+      "HOMEPAGE",
+      "ARABIC_EXPERIENCE",
+      "REVENUE_COMMAND_PILOT",
+      "FREE_MINI_DIAGNOSTIC",
+      "SAUDI_B2B_AI_BUSINESS_OS",
+      "BIG5_EVENT_LANDING",
+      "LEAP_DEEPFEST_EVENT_LANDING"
+    ],
+    "requirements": [
+      "MOBILE_FIRST",
+      "AR_EN_PARITY",
+      "UTM_SOURCE_CAPTURE",
+      "NO_UNSUPPORTED_LOGOS_OR_CLAIMS",
+      "NO_PUBLIC_FIRST_LAUNCH_PRICE_WITHOUT_CANONICAL_AUTHORITY"
+    ]
+  },
+  "seo_ai_search": {
+    "strategy": "FOUNDATIONAL_SEO_PLUS_EXPERT_NON_COMMODITY_CONTENT",
+    "anti_patterns": [
+      "KEYWORD_STUFFING",
+      "FAKE_AI_SCHEMA",
+      "INAUTHENTIC_MENTIONS",
+      "LLMS_TXT_AS_GOOGLE_RANKING_HACK",
+      "COMMODITY_AI_LISTICLES"
+    ],
+    "topic_clusters": [
+      "AI_REVENUE_OPERATIONS_SAUDI_ARABIA",
+      "B2B_SALES_FOLLOW_UP_AUTOMATION_KSA",
+      "AI_BUSINESS_OPERATING_SYSTEM_SAUDI_ARABIA",
+      "REVENUE_COMMAND_EXECUTIVE_OPERATING_SYSTEM",
+      "AI_GOVERNANCE_APPROVALS_PROOF_SAUDI_BUSINESS",
+      "SALES_PIPELINE_LEAKAGE_PROPOSAL_FOLLOW_UP",
+      "AI_AUTOMATION_SAUDI_B2B_SERVICES",
+      "AI_OPERATING_MODEL_CONTRACTORS_FM_INDUSTRIAL",
+      "SAUDI_AI_PILOT_MEASUREMENT_PROOF_PACK"
+    ]
+  },
+  "event_window": {
+    "big5": {
+      "start": "2026-08-30",
+      "end": "2026-09-02",
+      "hours": "16:00-22:00",
+      "mode": "RELATIONSHIP_ACQUISITION"
+    },
+    "leap_deepfest": {
+      "start": "2026-08-31",
+      "end": "2026-09-03",
+      "mode": "BUYER_PARTNER_RELATIONSHIP_ACQUISITION"
+    }
+  },
+  "attribution_events": [
+    "qualified_visit",
+    "diagnostic_start",
+    "diagnostic_submit",
+    "real_interaction",
+    "verified_relationship",
+    "qualified_problem",
+    "discovery_booked",
+    "discovery_completed",
+    "proposal_sent",
+    "pilot_agreed",
+    "payment_verified",
+    "delivery_proof",
+    "referral",
+    "expansion"
+  ],
+  "primary_kpis": [
+    "REAL_RELATIONSHIPS_CREATED",
+    "QUALIFIED_PROBLEMS",
+    "DIAGNOSTICS",
+    "DISCOVERY_CONVERSION",
+    "PROPOSAL_CONVERSION",
+    "PAID_PILOT_CONVERSION",
+    "DAYS_TO_PAID_PILOT",
+    "VERIFIED_REVENUE",
+    "PROOF_REFERRAL_EXPANSION_RATE"
+  ],
+  "paid_media": {
+    "readiness_allowed": true,
+    "spend_authorized": false,
+    "requires_separate_budget_approval": true
+  },
+  "scheduler_policy": "REUSE_EXISTING_CANONICAL_OWNERS_ONLY",
+  "forbidden_new_parallel_systems": [
+    "CRM",
+    "OPPORTUNITY_GRAPH",
+    "APPROVAL_CENTER",
+    "PROOF_LEDGER",
+    "REVENUE_ENGINE",
+    "AGENT_FLEET",
+    "SCHEDULER"
+  ]
+}
