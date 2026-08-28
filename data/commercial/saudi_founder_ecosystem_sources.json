@@ -1,0 +1,115 @@
+{
+  "schema": "dealix.saudi-founder-ecosystem-sources.v1",
+  "generated_at": "2026-08-28",
+  "purpose": "Source registry for founder/startup ecosystem research. All discovered entities default to RESEARCH_ONLY until relationship evidence exists.",
+  "default_state": "RESEARCH_ONLY",
+  "sources": [
+    {
+      "id": "LEAP_STARTUP_SCALEUP_DIRECTORY",
+      "name": "LEAP 2026 Startup & Scaleup Directory",
+      "url": "https://connect.onegiantleap.com/event/leap2026/exhibitors/",
+      "type": "EVENT_DIRECTORY",
+      "priority": 100,
+      "use": ["startup_universe", "sector", "country", "region", "funding_stage", "booth", "meeting_candidate"],
+      "relationship_authority": false
+    },
+    {
+      "id": "LEAP_ROCKET_FUEL",
+      "name": "LEAP Rocket Fuel 2026",
+      "url": "https://onegiantleap.com/startup/rocketfuel-pitch-competition-stage",
+      "type": "FOUNDER_COMPETITION",
+      "priority": 100,
+      "use": ["high_signal_startups", "founder_trigger", "saudi_soft_landing_signal", "meeting_candidate"],
+      "relationship_authority": false
+    },
+    {
+      "id": "LEAP_STARTUP_PROGRAM",
+      "name": "LEAP Startup & Scaleup Program",
+      "url": "https://onegiantleap.com/startup/become-a-start-up",
+      "type": "ECOSYSTEM_PROGRAM",
+      "priority": 95,
+      "use": ["founder_pass_context", "startup_pod_context", "matchmaking_context", "program_metrics"],
+      "relationship_authority": false
+    },
+    {
+      "id": "THE_GARAGE_SAUDI",
+      "name": "The Garage",
+      "url": "https://thegarage.sa/",
+      "type": "ACCELERATOR_INCUBATOR_HUB",
+      "priority": 90,
+      "use": ["saudi_tech_startups", "accelerator_cohorts", "founder_ecosystem", "partner_events"],
+      "relationship_authority": false
+    },
+    {
+      "id": "MONSHAAT_STARTUP_ECOSYSTEM",
+      "name": "Monsha'at",
+      "url": "https://www.monshaat.gov.sa/ar",
+      "type": "GOVERNMENT_STARTUP_ECOSYSTEM",
+      "priority": 85,
+      "use": ["startup_programs", "accelerators", "startup_hubs", "business_support", "ecosystem_events"],
+      "relationship_authority": false
+    },
+    {
+      "id": "NTDP_ACCELERATORS",
+      "name": "National Technology Development Program - Accelerators",
+      "url": "https://ntdp.gov.sa/empowering-accelerators",
+      "type": "TECH_STARTUP_ENABLEMENT",
+      "priority": 85,
+      "use": ["accelerators", "tech_startups", "strategic_partnerships", "ecosystem_enablement"],
+      "relationship_authority": false
+    },
+    {
+      "id": "NTDP_BOOST",
+      "name": "NTDP Boost",
+      "url": "https://ntdp.gov.sa/boost",
+      "type": "FOUNDER_INCUBATION",
+      "priority": 80,
+      "use": ["technology_founders", "incubation", "founder_support", "partner_network"],
+      "relationship_authority": false
+    },
+    {
+      "id": "NTDP_SAUDI_UNICORN",
+      "name": "NTDP Saudi Unicorn",
+      "url": "https://ntdp.gov.sa/saudi-unicorn",
+      "type": "SCALEUP_PROGRAM",
+      "priority": 90,
+      "use": ["high_growth_saudi_companies", "late_stage_founders", "corporate_partnership_signal"],
+      "relationship_authority": false
+    },
+    {
+      "id": "SVC_REPORTS",
+      "name": "Saudi Venture Capital Reports",
+      "url": "https://svc.com.sa/en/reports/",
+      "type": "ECOSYSTEM_INTELLIGENCE",
+      "priority": 75,
+      "use": ["funding_trends", "fund_manager_map", "ecosystem_context", "founder_portfolio_research"],
+      "relationship_authority": false
+    },
+    {
+      "id": "MONSHAAT_INVESTOR_DIRECTORY",
+      "name": "Monsha'at Investment Ecosystem Directory",
+      "url": "https://www.monshaat.gov.sa/ar/institutional-investors",
+      "type": "INVESTOR_DIRECTORY",
+      "priority": 70,
+      "use": ["investor_map", "portfolio_research_seed", "referral_ecosystem"],
+      "relationship_authority": false
+    }
+  ],
+  "research_rules": [
+    "public_source != relationship",
+    "program_membership != consent",
+    "funding_signal != buying_intent",
+    "founder_identity requires source and confidence",
+    "prioritize native introductions and event interactions over cold outreach",
+    "verified referrals preserve provenance"
+  ],
+  "economic_lanes": [
+    "CUSTOMER",
+    "PARTNER",
+    "REFERRAL",
+    "CO_DELIVERY",
+    "INTEGRATION",
+    "COMMUNITY",
+    "FUTURE_RESEARCH"
+  ]
+}

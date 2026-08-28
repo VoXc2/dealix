@@ -1,0 +1,189 @@
+{
+  "schema": "dealix.leap-founder-network.v1",
+  "generated_at": "2026-08-28",
+  "north_star": "FIRST_VERIFIED_PAID_PILOT",
+  "parent_issue": 1284,
+  "reuses": {
+    "revenue_mesh": 1273,
+    "campaign_acceptance": 1274,
+    "portfolio_control": 1277,
+    "marketing_distribution_os": 1286
+  },
+  "event": {
+    "name": "LEAP x DeepFest 2026",
+    "dates": ["2026-08-31", "2026-09-01", "2026-09-02", "2026-09-03"],
+    "location": "Riyadh Exhibition and Convention Center, Malham, Saudi Arabia",
+    "show_hours": {
+      "founder_priority_access": "12:00",
+      "general_admission": "13:00",
+      "close": "21:00",
+      "timezone": "Asia/Riyadh"
+    },
+    "official_sources": [
+      "https://onegiantleap.com/startup/become-a-start-up",
+      "https://onegiantleap.com/startup/rocketfuel-pitch-competition-stage",
+      "https://connect.onegiantleap.com/event/leap2026",
+      "https://connect.onegiantleap.com/event/leap2026/exhibitors/",
+      "https://deepfest.com/"
+    ],
+    "official_surface_metrics": {
+      "headline_startups": "600+",
+      "startup_scaleup_program": "725+",
+      "countries": "60+",
+      "sectors": "50+",
+      "program_meetings": "1600+",
+      "investors": "1900+",
+      "rocket_fuel_pitches": 100,
+      "rocket_fuel_countries": "32+",
+      "rocket_fuel_prize_usd": 1000000
+    },
+    "metric_note": "Persist source and observed_at for each metric; official surfaces use different count definitions and must not be collapsed into one unsourced number."
+  },
+  "default_new_record_state": "RESEARCH_ONLY",
+  "relationship_states": [
+    "RESEARCH_ONLY",
+    "IDENTIFIED",
+    "MEETING_CANDIDATE",
+    "INTERACTED",
+    "TWO_WAY",
+    "VERIFIED_RELATIONSHIP",
+    "COLLABORATION_DISCOVERY",
+    "CUSTOMER_DISCOVERY",
+    "ACTIVE_PARTNER",
+    "REFERRAL",
+    "COMMUNITY",
+    "DORMANT",
+    "CLOSED"
+  ],
+  "lanes": [
+    {
+      "id": "F0_INBOUND",
+      "priority": 100,
+      "description": "Inbound LEAP Connect requests, replies, referrals or real introductions."
+    },
+    {
+      "id": "F1_ROCKET_FUEL_100",
+      "priority": 95,
+      "description": "Research all Rocket Fuel finalists; founder time only for the highest-fit subset."
+    },
+    {
+      "id": "F2_SAUDI_B2B_AI",
+      "priority": 90,
+      "description": "Saudi or Saudi-market-active B2B, AI, SaaS, enterprise and operating-tech founders."
+    },
+    {
+      "id": "F3_FOUNDER_PASS_AND_STARTUP_PODS",
+      "priority": 85,
+      "description": "Founder-directory, matchmaking and startup-pod participants; relationship acquisition only through human/native interaction."
+    },
+    {
+      "id": "F4_DEEPFEST_AI",
+      "priority": 80,
+      "description": "AI/deep-tech founders for customer, integration, co-delivery or referral paths."
+    },
+    {
+      "id": "F5_ADJACENT_SAUDI_ECOSYSTEM",
+      "priority": 70,
+      "description": "Accelerators, VC portfolios, Monsha'at/NTDP ecosystem and verified referrals beyond LEAP."
+    }
+  ],
+  "founder_record_required_fields": [
+    "founder_network_id",
+    "event",
+    "source_url",
+    "source_type",
+    "observed_at",
+    "startup_name",
+    "country",
+    "sector",
+    "funding_stage",
+    "founder_name",
+    "founder_role",
+    "founder_source",
+    "founder_confidence",
+    "saudi_relevance",
+    "dealix_complementarity",
+    "possible_pain",
+    "possible_partner_value",
+    "possible_referral_value",
+    "relationship_state",
+    "relationship_evidence_id",
+    "channel",
+    "channel_eligibility",
+    "consent_status",
+    "suppression_status",
+    "next_human_action",
+    "next_evidence_required"
+  ],
+  "channel_policy": {
+    "leap_connect": {
+      "mode": "MANUAL_NATIVE_FOR_MESSAGES",
+      "automation_allowed": ["research", "ranking", "meeting_brief", "draft_preparation", "evidence_capture", "next_action_queue"]
+    },
+    "in_person": {
+      "mode": "PRIMARY_TRUST_CHANNEL",
+      "requires_followup_permission_capture": true
+    },
+    "linkedin_personal": {
+      "mode": "MANUAL_NATIVE",
+      "blocked": ["scraping", "auto_connect", "auto_message", "auto_comment", "auto_like"]
+    },
+    "email": {
+      "mode": "EVIDENCE_AND_POLICY_GATED",
+      "public_endpoint_alone_is_permission": false
+    },
+    "whatsapp": {
+      "mode": "CONSENT_OR_REAL_RELATIONSHIP_ONLY",
+      "blocked": ["cold", "bulk", "directory_to_blast"]
+    }
+  },
+  "hard_truth_rules": [
+    "directory_listing != lead",
+    "public_founder_name != marketing_permission",
+    "LEAP_profile != verified_relationship",
+    "connection_acceptance != qualified_opportunity",
+    "research_score != relationship_state",
+    "proposal != revenue",
+    "payment_evidence_required_for_revenue",
+    "synthetic_or_demo != customer_proof"
+  ],
+  "founder_attention_score": {
+    "founder_accessibility": 15,
+    "saudi_relevance": 15,
+    "dealix_complementarity": 15,
+    "shared_b2b_operating_pain": 15,
+    "referral_network_potential": 10,
+    "partner_co_delivery_potential": 10,
+    "proof_content_collaboration_potential": 5,
+    "current_trigger": 10,
+    "real_relationship_evidence": 5
+  },
+  "daily_capacity": {
+    "top_targets": 20,
+    "must_meet": 5,
+    "partner_candidates": 5,
+    "customer_fit_candidates": 5,
+    "ecosystem_referral_candidates": 5,
+    "rule": "Do not create physically impossible schedules; rerank from real interactions each day."
+  },
+  "post_interaction_sla": {
+    "strong_interaction_minutes": 15,
+    "same_day": ["evidence_update", "founder_brief", "lane_classification", "followup_draft", "discovery_questions", "next_action"],
+    "post_event": ["24h permissioned followup", "72h new-value followup when warranted", "7d founder relationship review"]
+  },
+  "outcomes": [
+    "VERIFIED_RELATIONSHIP",
+    "CUSTOMER_DISCOVERY",
+    "PARTNER_DISCOVERY",
+    "REFERRAL_PATH",
+    "PAID_PILOT",
+    "PROOF",
+    "COMMUNITY_RELATIONSHIP"
+  ],
+  "blocked_outcomes": [
+    "MASS_CONNECTION_COUNT_AS_SUCCESS",
+    "DIRECTORY_COUNT_AS_PIPELINE",
+    "AUTO_LINKEDIN_DM",
+    "COLD_BULK_WHATSAPP"
+  ]
+}
