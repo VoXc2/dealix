@@ -1,0 +1,164 @@
+{
+  "schema": "dealix.capability-intake.v1",
+  "version": "2026-08-28.1",
+  "owner": "capability-research",
+  "decision_owner": "founder-president",
+  "north_star": "FIRST_VERIFIED_PAID_PILOT",
+  "mission": "Continuously discover external libraries, tools, templates, MCP servers and patterns, but admit only capabilities that close a measured Dealix gap without creating duplicate authority or distracting from verified revenue movement.",
+  "input_required": [
+    "candidate_id",
+    "name",
+    "source_url",
+    "source_type",
+    "observed_at",
+    "problem_or_gap",
+    "canonical_owner_impacted",
+    "expected_business_value",
+    "integration_surface",
+    "permissions_required",
+    "data_access_required",
+    "rollback_plan",
+    "maintenance_owner"
+  ],
+  "source_types": [
+    "OFFICIAL_DOCS",
+    "OFFICIAL_GITHUB",
+    "VENDOR_DOCS",
+    "COMMUNITY_PATTERN"
+  ],
+  "admission_sequence": [
+    "SOURCE_VERIFY",
+    "GAP_VERIFY",
+    "DUPLICATION_CHECK",
+    "AUTHORITY_CHECK",
+    "SECURITY_PRIVACY_CHECK",
+    "ROI_SCORE",
+    "ISOLATED_PILOT_IF_REQUIRED",
+    "ACCEPT_OR_REJECT",
+    "RECEIPT",
+    "RETEST_OR_REMOVE"
+  ],
+  "hard_reject": [
+    "creates_parallel_company_brain",
+    "creates_parallel_opportunity_graph",
+    "creates_parallel_approval_center",
+    "creates_parallel_proof_ledger",
+    "creates_parallel_crm_truth",
+    "creates_parallel_scheduler",
+    "creates_parallel_permanent_agent_fleet",
+    "requires_secret_printing",
+    "requires_public_local_llm_endpoint",
+    "enables_cold_bulk_whatsapp",
+    "enables_unauthorized_linkedin_automation",
+    "can_self_issue_payment_or_external_execution_authority",
+    "cannot_be_rolled_back",
+    "business_value_is_only_more_agents_integrations_tokens_or_workflows"
+  ],
+  "score": {
+    "range": "0-100",
+    "dimensions": {
+      "verified_business_value": 25,
+      "founder_minutes_reduced": 15,
+      "trust_or_proof_improvement": 15,
+      "revenue_or_delivery_cycle_reduction": 15,
+      "security_privacy_fit": 10,
+      "integration_simplicity": 10,
+      "rollback_and_reversibility": 5,
+      "maintenance_burden_inverse": 5
+    },
+    "penalties": {
+      "duplicates_existing_owner": -100,
+      "requires_unbounded_external_authority": -100,
+      "requires_sensitive_payload_capture_by_default": -30,
+      "requires_new_long_running_service": -20,
+      "requires_new_persistent_database": -20,
+      "requires_new_scheduler": -30,
+      "requires_new_permanent_agent": -30
+    },
+    "thresholds": {
+      "ADOPT_NOW": 85,
+      "ADOPT_NOW_BOUNDED": 75,
+      "ADOPT_FOR_ACCEPTANCE": 70,
+      "PILOT_ISOLATED": 60,
+      "DEFER": 40,
+      "REJECT": 0
+    }
+  },
+  "pilot_contract": {
+    "default_duration_days": 14,
+    "production_mutation": false,
+    "external_customer_send": false,
+    "payment_or_spend": false,
+    "new_truth_owner": false,
+    "required_before": [
+      "baseline_metric",
+      "success_metric",
+      "rollback_plan",
+      "data_scope",
+      "permission_scope"
+    ],
+    "required_after": [
+      "measured_result",
+      "incidents_or_risks",
+      "founder_minutes_delta",
+      "business_stage_delta_if_any",
+      "cost_delta",
+      "keep_defer_or_remove_decision"
+    ]
+  },
+  "current_high_value_patterns": {
+    "playwright_test_agents": {
+      "decision": "ADOPT_FOR_ACCEPTANCE",
+      "use": "Planner -> Generator -> Healer for deterministic test planning/generation/repair in isolated engineering acceptance.",
+      "official_source": "https://playwright.dev/docs/test-agents",
+      "opencode_bootstrap": "npx playwright init-agents --loop=opencode",
+      "blocked": [
+        "customer_message_automation",
+        "linkedin_automation",
+        "production_mutation_without_existing_gate"
+      ]
+    },
+    "promptfoo_agent_mcp_eval": {
+      "decision": "PILOT_ISOLATED",
+      "use": "Regression and red-team evaluation for agent, RAG, MCP and tool-use boundaries; attach results to existing verification receipts.",
+      "official_sources": [
+        "https://www.promptfoo.dev/docs/red-team/quickstart/",
+        "https://www.promptfoo.dev/docs/red-team/guides/"
+      ],
+      "blocked": [
+        "production_attack_without_scope",
+        "customer_data_in_test_corpus_without authority",
+        "second_security_truth_store"
+      ]
+    },
+    "otel_semantic_conventions": {
+      "decision": "PILOT_ISOLATED",
+      "use": "Common telemetry naming for one bounded workflow; telemetry remains operational evidence only.",
+      "official_source": "https://opentelemetry.io/docs/specs/semconv/",
+      "privacy_default": "no prompt, retrieval, transcript or customer body capture"
+    }
+  },
+  "agent_loop": {
+    "frequency": "weekly within existing self-improvement cadence; no new timer",
+    "max_candidates_per_cycle": 10,
+    "max_isolated_pilots_concurrent": 2,
+    "priority": [
+      "current_verified_blocker",
+      "founder_friction",
+      "first_paid_pilot_conversion",
+      "delivery_and_proof",
+      "trust_and_security",
+      "general_capability_novelty"
+    ],
+    "output": [
+      "ranked_candidates",
+      "adopt_now",
+      "isolated_pilots",
+      "deferred",
+      "rejected_duplicates",
+      "rejected_policy",
+      "measured_results",
+      "removals"
+    ]
+  }
+}

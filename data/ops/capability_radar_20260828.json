@@ -1,0 +1,211 @@
+{
+  "schema": "dealix.capability_radar.v1",
+  "as_of": "2026-08-28",
+  "north_star": "FIRST_VERIFIED_PAID_PILOT",
+  "owner_agent": "capability-research",
+  "decision_values": [
+    "ADOPT_NOW",
+    "ADOPT_NOW_BOUNDED",
+    "ADOPT_FOR_ACCEPTANCE",
+    "PILOT_ISOLATED",
+    "DEFER",
+    "REJECT_DUPLICATE",
+    "REJECT_POLICY"
+  ],
+  "admission_rule": "A capability may enter only if it measurably reduces founder minutes, improves verified conversion/proof, lowers cost/risk, or closes a proven trust/delivery gap without duplicating canonical Dealix owners.",
+  "canonical_owners": {
+    "company_brain": "existing Dealix Company Brain",
+    "opportunity_graph": "existing Dealix Opportunity Graph / Revenue Mesh",
+    "approval_center": "existing canonical Approval Center",
+    "proof_ledger": "existing canonical Proof Ledger",
+    "scheduler": "existing systemd/n8n ownership model",
+    "agent_fleet": "existing OpenClaw/Hermes/Agent Council roster",
+    "crm_truth": "Dealix Company OS; HubSpot mirror only",
+    "commercial_autopilot": "PR #1307",
+    "channel_go_live": "Issue #1299"
+  },
+  "roi_dimensions": [
+    "founder_minutes_reduced",
+    "time_to_real_interaction_reduced",
+    "time_to_discovery_reduced",
+    "proposal_or_negotiation_quality_improved",
+    "verification_latency_reduced",
+    "evidence_or_proof_integrity_improved",
+    "cost_per_verified_business_event_reduced",
+    "delivery_cycle_reduced",
+    "material_security_or_compliance_risk_reduced"
+  ],
+  "non_roi_metrics": [
+    "number_of_agents",
+    "number_of_workflows",
+    "number_of_integrations",
+    "token_volume",
+    "automation_percentage_without_business_outcome",
+    "vanity_engagement"
+  ],
+  "candidates": [
+    {
+      "id": "hubspot_remote_mcp",
+      "decision": "ADOPT_NOW_BOUNDED",
+      "owner": "governance-finance + revenue-copilot",
+      "purpose": "Controlled CRM read/write adapter using HubSpot permissions; Dealix truth remains upstream.",
+      "source": "https://developers.hubspot.com/ai-tools/mcp",
+      "admission_evidence": "HubSpot remote MCP is GA in 2026 with CRM read/write and activity context.",
+      "allowed": [
+        "read existing CRM context",
+        "reconcile contacts/companies/deals with Dealix evidence",
+        "mirror evidence-backed state after canonical truth gates"
+      ],
+      "blocked": [
+        "promote CRM record to verified relationship without Dealix evidence",
+        "create revenue/won truth",
+        "write random CRM fields as commercial authority",
+        "bypass #1294 fail-closed mirror rules"
+      ],
+      "entry_gate": "#1301/#1294 truth acceptance and explicit property mapping",
+      "success_metric": "lower founder reconciliation time with zero false commercial promotions"
+    },
+    {
+      "id": "n8n_mcp_workflow_authoring",
+      "decision": "PILOT_ISOLATED",
+      "owner": "engineering-verifier + capability-research",
+      "purpose": "Use MCP-assisted workflow authoring to create or update isolated/draft n8n workflows faster.",
+      "source": "https://docs.n8n.io/",
+      "allowed": [
+        "draft workflow authoring",
+        "workflow inspection",
+        "isolated synthetic canaries"
+      ],
+      "blocked": [
+        "become scheduler truth owner",
+        "mint external execution authority",
+        "unreviewed customer send",
+        "duplicate Company OS state"
+      ],
+      "success_metric": "workflow build/repair time reduced without duplicate scheduling or authority drift"
+    },
+    {
+      "id": "openai_realtime_sip_remote_mcp",
+      "decision": "PILOT_ISOLATED",
+      "owner": "sales-negotiation + governance-finance",
+      "purpose": "Inbound disclosed Voice Front Desk with SIP and bounded MCP tools for #1291.",
+      "source": "https://platform.openai.com/docs/api-reference/realtime",
+      "allowed": [
+        "inbound call triage",
+        "grounded discovery",
+        "technical QA",
+        "ordinary objection handling",
+        "bounded handoff"
+      ],
+      "blocked": [
+        "impersonate founder",
+        "guarantee outcomes",
+        "bind legal/payment/pricing commitments without exact authority",
+        "record/transcribe without configured notice/consent/retention"
+      ],
+      "entry_gate": "#1291 provider + consent + retention + handoff acceptance",
+      "success_metric": "qualified inbound conversations handled with safe handoff and lower founder minutes"
+    },
+    {
+      "id": "openai_agents_sdk_isolated_harness",
+      "decision": "PILOT_ISOLATED",
+      "owner": "engineering-verifier + capability-research",
+      "purpose": "Isolated research/verification/diagnostic harness only where current stack has measurable latency or tooling gaps.",
+      "source": "https://platform.openai.com/docs/quickstart",
+      "allowed": [
+        "isolated evaluation",
+        "research synthesis",
+        "test-environment tool orchestration"
+      ],
+      "blocked": [
+        "replace OpenClaw/Hermes/Company Operator",
+        "create permanent parallel agent fleet",
+        "own approval/payment/commercial truth"
+      ],
+      "success_metric": "measurable founder-minute or verification-latency reduction versus current stack"
+    },
+    {
+      "id": "playwright_acceptance",
+      "decision": "ADOPT_FOR_ACCEPTANCE",
+      "owner": "engineering-verifier",
+      "purpose": "Deterministic browser acceptance for public/commercial surfaces, forms and private canaries.",
+      "source": "https://playwright.dev/",
+      "allowed": ["public-surface verification", "synthetic/private acceptance"],
+      "blocked": ["LinkedIn automation", "customer messaging automation", "circumvent platform controls"],
+      "success_metric": "fewer undetected public-surface regressions"
+    },
+    {
+      "id": "osv_scanner_v2",
+      "decision": "ADOPT_NOW",
+      "owner": "sovereign-security",
+      "purpose": "Normalize dependency vulnerability evidence inside existing security/trust receipts.",
+      "source": "https://google.github.io/osv-scanner/",
+      "blocked": ["create a second security truth store"],
+      "success_metric": "accurate actionable vulnerability classification with existing receipts"
+    },
+    {
+      "id": "uv_uvx",
+      "decision": "ADOPT_NOW",
+      "owner": "engineering-verifier",
+      "purpose": "Isolated Python tooling and reproducible ephemeral tool execution.",
+      "source": "https://docs.astral.sh/uv/",
+      "blocked": ["replace project dependency authority without migration evidence"],
+      "success_metric": "lower tooling setup time and fewer global-environment conflicts"
+    },
+    {
+      "id": "otel_genai_semantics",
+      "decision": "PILOT_ISOLATED",
+      "owner": "proof-data + engineering-verifier",
+      "purpose": "Trace model/tool latency and cost to Dealix business events without making telemetry commercial truth.",
+      "source": "https://opentelemetry.io/docs/specs/semconv/gen-ai/",
+      "blocked": ["emit relationship/payment/proof truth from telemetry", "collect sensitive payloads by default"],
+      "success_metric": "cost/latency per verified workflow or business event becomes measurable with privacy preserved"
+    },
+    {
+      "id": "github_artifact_attestations",
+      "decision": "DEFER",
+      "owner": "sovereign-security",
+      "purpose": "Build provenance for customer-facing release artifacts when distribution/productization creates real demand.",
+      "source": "https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations",
+      "entry_gate": "customer/release provenance requirement",
+      "success_metric": "customer-trust or compliance requirement demonstrably satisfied"
+    },
+    {
+      "id": "new_crm",
+      "decision": "REJECT_DUPLICATE",
+      "owner": "founder-president",
+      "reason": "HubSpot is mirror and Dealix Company OS/Revenue Mesh already own commercial truth."
+    },
+    {
+      "id": "new_vector_db_as_company_brain",
+      "decision": "REJECT_DUPLICATE",
+      "owner": "founder-president",
+      "reason": "Storage technology may be swapped behind canonical Company Brain, but must not become a parallel truth owner."
+    },
+    {
+      "id": "new_agent_framework_fleet",
+      "decision": "REJECT_DUPLICATE",
+      "owner": "founder-president",
+      "reason": "Do not add CrewAI/LangGraph/AutoGen/PydanticAI-style permanent parallel orchestration while OpenClaw/Hermes/Company Operator satisfy the role."
+    },
+    {
+      "id": "new_workflow_scheduler",
+      "decision": "REJECT_DUPLICATE",
+      "owner": "founder-president",
+      "reason": "Existing systemd/n8n scheduler ownership remains canonical until a measured failure proves replacement need."
+    },
+    {
+      "id": "generic_autonomous_sdr_bots",
+      "decision": "REJECT_POLICY",
+      "owner": "governance-finance",
+      "reason": "Cannot bypass relationship/consent, platform restrictions, suppression, claims or execution-authority gates."
+    },
+    {
+      "id": "linkedin_browser_bots",
+      "decision": "REJECT_POLICY",
+      "owner": "governance-finance",
+      "source": "https://www.linkedin.com/legal/user-agreement",
+      "reason": "LinkedIn prohibits unauthorized bots/automation for scraping, contacts, messages and engagement; Founder LinkedIn remains MANUAL_NATIVE."
+    }
+  ]
+}
