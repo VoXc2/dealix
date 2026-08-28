@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "dealix.content-asset-registry.v1",
+  "title": "Dealix governed content asset registry",
+  "type": "object",
+  "required": ["schema", "assets"],
+  "properties": {
+    "schema": {"const": "dealix.content-asset-registry.v1"},
+    "pack_generated_at": {"type": "string"},
+    "pack_policy": {"type": "object", "additionalProperties": true},
+    "assets": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["content_id","source_evidence_refs","pillar","buying_group_role","core_thesis","cta","brand_version","claim_version","language","channel","format","publish_class","status"],
+        "properties": {
+          "content_id": {"type":"string","pattern":"^DX-[A-Z0-9]{2,8}-[0-9]{8}-[A-Z0-9_-]{3,40}$"},
+          "parent_content_id": {"type":["string","null"]},
+          "source_evidence_refs": {"type":"array","minItems":1,"items":{"type":"string","minLength":1}},
+          "source_urls": {"type":"array","items":{"type":"string"}},
+          "fact_inference_split": {"type":"object","properties":{"facts":{"type":"array","items":{"type":"string"}},"inferences":{"type":"array","items":{"type":"string"}},"unknowns":{"type":"array","items":{"type":"string"}}},"additionalProperties":false},
+          "pillar": {"enum":["AI_BUSINESS_OS","REVENUE_LEAKAGE","PROOF","GOVERNED_AI","SAUDI_BUSINESS_CONTEXT","BUILD_DEALIX_ON_DEALIX"]},
+          "buying_group_role": {"enum":["FOUNDER","CEO_GM","REVENUE_SALES","OPERATIONS","IT_DATA","FINANCE_PROCUREMENT","LEGAL_GOVERNANCE","PARTNER","INVESTOR","OTHER"]},
+          "core_thesis": {"type":"string","minLength":1},
+          "cta": {"type":"string","minLength":1},
+          "brand_version": {"type":"string","pattern":"^dealix.brand-system.v[0-9]+$"},
+          "claim_version": {"type":"string","minLength":1},
+          "template_version": {"type":["string","null"]},
+          "language": {"enum":["AR","EN","AR_EN"]},
+          "channel": {"enum":["FOUNDER_LINKEDIN","DEALIX_LINKEDIN_PAGE","INSTAGRAM","FACEBOOK","YOUTUBE","TIKTOK","X","THREADS","SNAPCHAT","PINTEREST","EMAIL","WHATSAPP","WEBSITE","EVENT_NATIVE"]},
+          "format": {"enum":["TEXT","IMAGE","CAROUSEL","DOCUMENT","SHORT_VIDEO","LONG_VIDEO","STORY","THREAD","ARTICLE","EMAIL_SNIPPET","EVENT_CARD","THUMBNAIL"]},
+          "publish_class": {"enum":["AUTO_PUBLISH_ELIGIBLE","QUEUE_FOR_REVIEW","MANUAL_NATIVE","SPECIFIC_APPROVAL_REQUIRED","BLOCKED"]},
+          "status": {"enum":["IDEA","BRIEFED","DRAFT","QA_FAILED","QA_PASSED","QUEUED","PUBLISHED","PAUSED","RETIRED","BLOCKED"]},
+          "utm": {"type":["object","null"],"properties":{"utm_id":{"type":"string"},"utm_source":{"type":"string"},"utm_medium":{"type":"string"},"utm_campaign":{"type":"string"},"utm_content":{"type":"string"}},"additionalProperties":false},
+          "customer_permission_ref": {"type":["string","null"]},
+          "approval_ref": {"type":["string","null"]},
+          "published_url": {"type":["string","null"]},
+          "provider_receipt_ref": {"type":["string","null"]},
+          "outcome_refs": {"type":"array","items":{"type":"string"}},
+          "metrics": {"type":"object","properties":{"impressions":{"type":["integer","null"],"minimum":0},"views":{"type":["integer","null"],"minimum":0},"watch_time_seconds":{"type":["number","null"],"minimum":0},"qualified_clicks":{"type":["integer","null"],"minimum":0},"meaningful_inbound":{"type":["integer","null"],"minimum":0},"verified_relationships_created":{"type":["integer","null"],"minimum":0},"diagnostics_started":{"type":["integer","null"],"minimum":0},"discoveries_created":{"type":["integer","null"],"minimum":0},"paid_pilots_attributed":{"type":["integer","null"],"minimum":0}},"additionalProperties":false},
+          "freshness": {"type":"object","properties":{"recheck_before_publish":{"type":"boolean"},"as_of":{"type":"string"}},"additionalProperties":true}
+        },
+        "additionalProperties": true
+      }
+    }
+  },
+  "additionalProperties": false
+}

@@ -1,0 +1,42 @@
+{
+  "schema": "dealix.channel-readiness-registry.v2",
+  "generated_at": "2026-08-28",
+  "purpose": "One source for platform readiness, activation gates, execution mode, phone dependency, and known blockers. Does not contain credentials.",
+  "global_rules": {
+    "no_placeholder_identity": true,
+    "no_secret_material": true,
+    "no_duplicate_scheduler": true,
+    "content_must_pass_brand_and_claims_qa": true,
+    "stable_content_id_required": true,
+    "clickable_assets_require_utm": true,
+    "provider_acceptance_is_not_delivery": true,
+    "customer_or_partner_name_requires_source_or_permission_where_applicable": true,
+    "phone_is_not_global_blocker": true,
+    "paid_spend_requires_explicit_budget_authority": true,
+    "external_publish_requires_channel_capability_and_authority": true
+  },
+  "activation_switches": {
+    "PHONE_BUSINESS_NUMBER": "DEFERRED_PHONE_ACTIVATION",
+    "WHATSAPP_BUSINESS": "BLOCKED_BY_PHONE_AND_PLATFORM_READINESS",
+    "PAID_MEDIA": "PAUSED_DRAFT_ONLY",
+    "WEBSITE_DEPLOY": "PRODUCTION_AUTHORITY_REQUIRED",
+    "ORGANIC_CONTENT_FACTORY": "READY_FOR_DRAFT_QA",
+    "VIDEO_FACTORY": "READY_FOR_DRAFT_QA"
+  },
+  "channels": {
+    "website": {"priority":"A","state":"CANONICAL_CONTENT_SURFACE_READY","owned_publish_mode":"REPO_GENERATE_QA_THEN_PRODUCTION_DEPLOY_AUTHORITY","activation_evidence_required":["canonical_domain","production_health","analytics_events","current_commercial_authority","no_stale_pricing_surfaces"],"phone_dependency":false},
+    "founder_linkedin": {"priority":"A","state":"MANUAL_NATIVE_RELATIONSHIP_CHANNEL","owned_publish_mode":"NATIVE_OR_APPROVED_MEMBER_POSTING","dm_connection_mode":"MANUAL_NATIVE","automation_allowed":["research","drafting","content_qa","calendar_assistance","analytics_if_authorized"],"automation_blocked":["scraping","bot_connections","bot_dms","uncontrolled_comment_bot"],"activation_evidence_required":[],"phone_dependency":false},
+    "dealix_linkedin_page": {"priority":"A","state":"READY_FOR_API_AUTH_CONFIGURATION","owned_publish_mode":"LINKEDIN_POSTS_API_OR_NATIVE","required_capability":"w_organization_social","activation_evidence_required":["organization_admin_access","approved_app_permissions","token_storage_outside_repo"],"phone_dependency":false},
+    "instagram": {"priority":"A","state":"META_IDENTITY_CONFIGURATION_REQUIRED","owned_publish_mode":"META_APPROVED_PUBLISHING_OR_NATIVE","activation_evidence_required":["correct_business_identity","supported_instagram_professional_setup","authorized_meta_app_or_native_suite","page_or_business_linkage_where_required"],"phone_dependency":false},
+    "facebook": {"priority":"C","state":"META_IDENTITY_CONFIGURATION_REQUIRED","owned_publish_mode":"META_APPROVED_PUBLISHING_OR_NATIVE","activation_evidence_required":["dealix_page","business_portfolio_access","domain_and_dataset_plan"],"phone_dependency":false},
+    "threads": {"priority":"C","state":"LOW_PRIORITY_ADAPTER","owned_publish_mode":"AUTHORIZED_API_OR_NATIVE","activation_evidence_required":["brand_identity_ready","authorized_account_or_app_if_automated"],"phone_dependency":false},
+    "youtube": {"priority":"A","state":"CHANNEL_AND_OAUTH_READINESS_REQUIRED","owned_publish_mode":"YOUTUBE_DATA_API_VIDEOS_INSERT_OR_NATIVE","important_truth":"Uploads from unverified API projects can be restricted to private until required audit/compliance passes.","activation_evidence_required":["dealix_channel_identity","oauth_client","approved_token_storage","private_or_unlisted_upload_canary_before_public_automation"],"phone_dependency":false},
+    "tiktok": {"priority":"B","state":"DEVELOPER_APP_AUTHORIZATION_AND_AUDIT_REQUIRED_FOR_PUBLIC_DIRECT_POST","owned_publish_mode":"CONTENT_POSTING_API_DIRECT_OR_DRAFT_UPLOAD","activation_evidence_required":["scope_approval","user_authorization","audit_or_platform_eligibility_before_public_direct_post"],"phone_dependency":false},
+    "x": {"priority":"B","state":"ACCOUNT_AND_API_READINESS_REQUIRED","owned_publish_mode":"AUTHORIZED_API_OR_NATIVE","automation_blocked":["uncontrolled_reply_bot","engagement_spam"],"activation_evidence_required":["dealix_account","approved_api_access_if_automated"],"phone_dependency":false},
+    "snapchat": {"priority":"B","state":"NATIVE_FIRST_UNTIL_APPROVED_PUBLIC_PROFILE_OR_AD_CAPABILITY_IS_PROVEN","owned_publish_mode":"NATIVE_OR_APPROVED_CAPABILITY","activation_evidence_required":["public_profile_or_business_identity_if_used"],"phone_dependency":false},
+    "pinterest": {"priority":"C","state":"OPTIONAL_REUSE_CHANNEL","owned_publish_mode":"NATIVE_OR_APPROVED_API","activation_evidence_required":["reuse_cost_near_zero","searchable_visual_asset_inventory"],"phone_dependency":false},
+    "email": {"priority":"A","state":"RELATIONSHIP_GOVERNED_CHANNEL","owned_publish_mode":"GMAIL_OR_APPROVED_PROVIDER_FOR_ELIGIBLE_RELATIONSHIPS","automation_allowed":["inbound_classification","drafting","approved_followup","proposal_and_proof_delivery"],"automation_blocked":["unbounded_cold_bulk_email","send_after_opt_out","unsupported_personalization"],"activation_evidence_required":["sender_identity","domain_health","consent_or_relationship_evidence","suppression_registry"],"phone_dependency":false},
+    "whatsapp": {"priority":"A_WHEN_ACTIVATED","state":"DEFERRED_PHONE_ACTIVATION","owned_publish_mode":"BUSINESS_CONVERSATION_CHANNEL_NOT_BROADCAST_SOCIAL_FEED","automation_allowed":["eligible_relationship_followup","inbound_response","approved_template_where_required","discovery_coordination","customer_service"],"automation_blocked":["cold_whatsapp","bulk_unsolicited_whatsapp","suppressed_contact","purchased_lists","unbounded_followup"],"activation_evidence_required":["business_number_ready","business_identity_ready","official_route_ready","consent_and_suppression_ready","template_readiness_if_required","inbound_and_opt_out_canary"],"phone_dependency":true},
+    "telegram_founder": {"priority":"INTERNAL","state":"FOUNDER_COMMAND_CHANNEL","owned_publish_mode":"INTERNAL_ONLY","automation_allowed":["daily_command","decision_cards","approval_requests","material_alerts"],"automation_blocked":["default_customer_marketing","bulk_external_campaigns"],"activation_evidence_required":["founder_allowlist","gateway_health","channel_probe"],"phone_dependency":false}
+  }
+}

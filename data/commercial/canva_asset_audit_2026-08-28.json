@@ -1,0 +1,38 @@
+{
+  "schema": "dealix.canva-asset-audit.v1",
+  "generated_at": "2026-08-28",
+  "purpose": "Prevent existing Canva assets from bypassing current Brand V2, commercial authority, proof and publishing gates. Canva is a renderer, not source of truth.",
+  "assets": [
+    {
+      "canva_design_id": "DAHSuCx6z2A",
+      "title": "Dealix — Company Profile | بروفايل الشركة",
+      "pages": 17,
+      "classification": "REVIEW_AND_MIGRATE",
+      "external_use": "NOT_UNTIL_CURRENT_AUTHORITY_QA",
+      "positive": ["Current Dealix category and Revenue + Proof + Command positioning","Strong evidence-first / approval / proof narrative","30-Day Pilot engagement ladder","No fixed public pilot price detected","Clear synthetic evidence boundary"],
+      "review_items": ["Reconcile all external-effect wording with current main authority before publication.","Any technology-stack statement must match current canonical architecture.","Migrate all pages to Brand V2 tokens."],
+      "recommended_action": "Migrate visual styling to Brand V2 and perform claims/authority QA before external distribution."
+    },
+    {
+      "canva_design_id": "DAHSuBCydDk",
+      "title": "Dealix — Executive Proposal | البروبوزل التنفيذي",
+      "pages": 13,
+      "classification": "REVIEW_AND_MIGRATE",
+      "external_use": "CUSTOMIZE_AND_QA_BEFORE_SEND",
+      "positive": ["Customer-specific 30-Day Revenue Command Pilot","Quote after diagnosis/discovery rather than public fixed price","Baseline/Target/Evidence acceptance structure","No revenue guarantee","Strong Proof Pack and scope-control semantics"],
+      "review_items": ["Client-specific proposal must be customized from verified discovery evidence.","External-effect statements must match the customer's agreed governance.","Brand V2 visual migration required."],
+      "recommended_action": "Keep as primary proposal renderer candidate after Brand V2 migration and customer-specific QA."
+    },
+    {
+      "canva_design_id": "DAHPFUhUr1g",
+      "title": "Dealix AI Business OS: Company Profile & B2B Deck",
+      "pages": 23,
+      "classification": "BLOCKED_FOR_EXTERNAL_USE",
+      "external_use": "BLOCKED",
+      "blocking_findings": ["Legacy 10-working-day Pilot conflicts with current 30-Day Revenue Command Pilot.","Unsupported outcome metrics/claims including +40%, -60%, 3x, 30%+, 2x and 10x without customer proof.","Absolute compliance/data-location claims lack case-specific evidence.","Unsupported competitive-superiority language.","Legacy two-week result promise.","Uses www.dealix.ai rather than dealix.me.","Contains template residue such as Salford & Co."],
+      "recommended_action": "Do not patch piecemeal for external use. Rebuild only validated concepts into a Brand V2 deck using current authority and evidence."
+    }
+  ],
+  "agent_rule": "Any agent selecting a Canva asset must consult this audit or a newer replacement. BLOCKED assets cannot be sent, published, exported as customer collateral or used as a factual source.",
+  "permanent_edit_note": "Canva edits require preview/approval before commit. This audit itself does not modify the Canva designs."
+}

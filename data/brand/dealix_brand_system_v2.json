@@ -1,0 +1,142 @@
+{
+  "schema": "dealix.brand-system.v2",
+  "status": "CANONICAL_CANDIDATE_WAVE2",
+  "source": {
+    "website": "https://dealix.me/",
+    "repo_reference": "landing/index.html",
+    "positioning": "Saudi-first AI Business Operating System",
+    "commercial_wedge": "Revenue + Proof + Command"
+  },
+  "brand_idea": "Calm operating intelligence for Saudi businesses: precise, governed, proof-backed.",
+  "personality": [
+    "calm",
+    "precise",
+    "premium",
+    "operational",
+    "credible",
+    "technical_without_jargon_for_its_own_sake",
+    "Saudi_first_not_cliche",
+    "bilingual"
+  ],
+  "logo": {
+    "primary_wordmark": "Dealix",
+    "mark_concept": "rounded operating-node D with proof dot",
+    "minimum_clear_space": "1x mark-dot diameter around all sides",
+    "prohibited": [
+      "stretch_or_skew",
+      "unapproved_gradients_inside_logo",
+      "drop_shadow_on_logo",
+      "cyan_logo_on_low_contrast_background",
+      "busy_photography_behind_wordmark"
+    ]
+  },
+  "colors": {
+    "ink_navy": "#0F172A",
+    "deep_teal": "#164E63",
+    "signal_cyan": "#22D3EE",
+    "signal_cyan_dark": "#0891B2",
+    "cloud": "#F8FAFC",
+    "white": "#FFFFFF",
+    "slate_700": "#334155",
+    "slate_500": "#64748B",
+    "slate_300": "#CBD5E1",
+    "line": "#E2E8F0",
+    "cyan_mist": "#ECFEFF",
+    "cyan_line": "#BAE6FD",
+    "success": "#15803D",
+    "warning": "#B45309",
+    "danger": "#B91C1C"
+  },
+  "color_rules": {
+    "primary_background": "cloud_or_white",
+    "hero_and_high_authority_panels": "ink_navy",
+    "accent_ratio_max_percent": 12,
+    "signal_cyan_use": ["cta", "proof_dot", "key_metric", "active_state", "diagram_flow"],
+    "never": ["rainbow_gradient", "neon_multi_color", "blue_purple_ai_cliche", "gold_as_primary_brand_color"]
+  },
+  "typography": {
+    "arabic_primary": "IBM Plex Sans Arabic",
+    "latin_primary": "Inter",
+    "mono": "ui-monospace, Menlo, monospace",
+    "heading_weights": [600, 700],
+    "body_weights": [400, 500],
+    "numeral_style": "tabular_when_possible_for_metrics",
+    "principles": [
+      "short_headlines",
+      "generous_line_height",
+      "no_all_caps_arabic",
+      "English_terms_only_when_they_are_product_or_operating_terms"
+    ]
+  },
+  "layout": {
+    "grid": "12-column digital / 6-column compact",
+    "corner_radius_px": {"small": 10, "card": 18, "hero": 24},
+    "spacing_base_px": 4,
+    "max_content_width_px": 1200,
+    "visual_density": "low_to_medium",
+    "rules": [
+      "one_primary_message_per_frame",
+      "evidence_before_decoration",
+      "use_flow_diagrams_for_operating_logic",
+      "prefer_white_space_over_extra_graphics"
+    ]
+  },
+  "imagery": {
+    "preferred": [
+      "Saudi_business_context_without_stock_cliches",
+      "real_operating_screens_with_sensitive_data_removed",
+      "abstract_system_diagrams",
+      "architectural_detail_and_modern_Riyadh_context_when_relevant",
+      "proof_artifacts_and_process_visuals"
+    ],
+    "avoid": [
+      "generic_robot_heads",
+      "glowing_brains",
+      "fake_dashboard_numbers",
+      "handshake_stock_photos",
+      "unverified_customer_logos",
+      "government_emblems_without_authority"
+    ]
+  },
+  "motion": {
+    "style": "quiet_confident_functional",
+    "duration_ms": {"micro": 160, "standard": 280, "section": 420},
+    "preferred": ["fade", "small_translate", "line_draw", "metric_count_with_real_data_only"],
+    "avoid": ["constant_parallax", "excessive_glow", "fast_zoom", "gaming_style_transitions"]
+  },
+  "voice": {
+    "primary_language": "Arabic",
+    "secondary_language": "English",
+    "formula": "Problem truth -> operating insight -> proof boundary -> next useful action",
+    "cta_priority": [
+      "ابدأ Free Mini Diagnostic",
+      "شاهد كيف نثبت القيمة",
+      "ناقش Revenue workflow محدد",
+      "اطلب Company/Partner brief"
+    ],
+    "blocked_claims": [
+      "guaranteed_revenue",
+      "guaranteed_roi",
+      "fully_autonomous_company_without_boundaries",
+      "government_access_without_evidence",
+      "fake_customer_proof",
+      "public_fixed_pilot_price",
+      "synthetic_demo_as_customer_result"
+    ]
+  },
+  "design_families": {
+    "FOUNDATION": ["website", "company_profile", "proposal", "proof_pack", "one_pager"],
+    "SOCIAL": ["linkedin_document", "linkedin_post", "instagram_carousel", "instagram_reel", "x_post", "threads_post", "snap_story", "tiktok_video"],
+    "VIDEO": ["15s_hook", "30s_insight", "60s_operator_breakdown", "90s_case_or_framework", "youtube_explainer"],
+    "EVENT": ["event_target_card", "meeting_brief", "same_day_followup_asset", "booth_scan_card"],
+    "TRUST": ["proof_snippet", "governance_card", "methodology_diagram", "evidence_boundary_card"]
+  },
+  "governance": {
+    "repo_is_canonical": true,
+    "canva_is_renderer_not_authority": true,
+    "brand_version_required_on_assets": true,
+    "claim_version_required_on_assets": true,
+    "external_asset_requires_qa": true,
+    "customer_logo_or_testimonial_requires_permission_evidence": true
+  }
+}

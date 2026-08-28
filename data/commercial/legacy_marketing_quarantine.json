@@ -1,0 +1,14 @@
+{
+  "schema": "dealix.legacy-marketing-quarantine.v1",
+  "generated_at": "2026-08-28",
+  "purpose": "Prevent retired commercial language from re-entering current public assets while preserving historical files for audit/history.",
+  "authority": {
+    "current_entry_offer": "Free Mini Diagnostic",
+    "current_paid_motion": "Customer-specific quote after Qualified Discovery -> 30-Day Revenue Command Pilot",
+    "public_fixed_pilot_price_authorized": false,
+    "most_restrictive_wins": true
+  },
+  "blocked_tokens_case_insensitive": ["499 sar","499 ر.س","999 sar","999 ر.س","1500 sar","1,500 sar","1500 ر.س","1,500 ر.س","2999 sar","2,999 sar","4999 sar","4,999 sar","15000 sar","15,000 sar","7-day sprint","7 day sprint","7-day pilot","money-back","money back guarantee","guaranteed roi","guaranteed revenue","guaranteed replies","pdpl certified","diagnostic -> sprint","diagnostic → sprint","first-paid-diagnostic"],
+  "historical_surfaces_to_treat_as_non_authoritative_unless_reconciled": ["dealix/config/social_content_queue.yaml","legacy offer ladders","legacy campaign lane documents","legacy fixed pricing pages or cached copies","historical launch sprint materials"],
+  "rules": ["Do not delete historical evidence merely because it is retired.","Do not select, approve, adapt or publish an asset containing a blocked token unless current higher authority explicitly re-authorizes it.","A current asset may discuss a retired token only inside an explicit historical or governance context and must never present it as the live offer.","Current public CTA defaults to Free Mini Diagnostic or an evidence-supported educational/product action.","Customer-specific price or quote belongs to a qualified deal context and is not a public content token."]
+}

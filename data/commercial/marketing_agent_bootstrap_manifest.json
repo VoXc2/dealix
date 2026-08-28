@@ -1,0 +1,45 @@
+{
+  "schema": "dealix.marketing-agent-bootstrap.v2",
+  "generated_at": "2026-08-28",
+  "purpose": "Compact authority-first bootstrap for Dealix marketing/revenue specialists on current main. Prevents stale decks, historical pricing, Draft-PR authority and giant-repo prompt stuffing from becoming accidental truth.",
+  "load_order": [
+    {"priority":1,"path":"docs/00_platform_truth/PLATFORM_SOURCE_OF_TRUTH.md","reason":"product/category truth"},
+    {"priority":2,"path":"docs/DEALIX_BUSINESS_MODEL.md","reason":"commercial path and pricing semantics"},
+    {"priority":3,"path":"COMMERCIAL_IDENTITY.md","reason":"commercial authority hierarchy"},
+    {"priority":4,"path":"dealix/config/first_launch_offer_gate.yaml","reason":"current main launch/execution authority"},
+    {"priority":5,"path":"data/commercial/marketing_distribution_contract.json","reason":"merged Marketing & Distribution OS contract"},
+    {"priority":6,"path":"docs/ops/POSTHOG_EVENTS.md","reason":"merged attribution/event truth"},
+    {"priority":7,"path":"data/brand/dealix_brand_system_v2.json","reason":"Brand V2 candidate for all rendered surfaces"},
+    {"priority":8,"path":"data/commercial/channel_readiness_registry.json","reason":"platform-by-platform readiness and phone dependency"},
+    {"priority":9,"path":"data/commercial/legacy_marketing_quarantine.json","reason":"retired offers/claims firewall"},
+    {"priority":10,"path":"data/commercial/canva_asset_audit_2026-08-28.json","reason":"existing collateral safety status"},
+    {"priority":11,"path":"data/commercial/content_asset_registry.schema.json","reason":"evidence, brand, claim, UTM and outcome contract"},
+    {"priority":12,"path":"data/commercial/platform_identity_matrix.json","reason":"cross-platform identity, bios and CTA posture"},
+    {"priority":13,"path":"data/commercial/content_seed_pack_2026-08-28.json","reason":"review-only evidence-backed event/founder starting assets; freshness recheck before event publication"}
+  ],
+  "role_minimum_context": {
+    "market_research":[1,2,3,5,9,13],
+    "content_strategy":[1,2,3,5,7,8,9,11,12,13],
+    "copy_ar_en":[2,3,5,7,9,11,12,13],
+    "design":[7,9,10,11,12,13],
+    "video":[5,7,9,11,12,13],
+    "distribution":[4,5,6,8,9,11,12,13],
+    "community_response":[4,5,8,9,12],
+    "analytics":[5,6,11],
+    "governance_proof":[2,3,4,5,7,8,9,10,11,13],
+    "portfolio_ceo":[1,2,3,4,5,6,8,9,10,11,13]
+  },
+  "hard_rules": [
+    "Current main authority overrides all Draft PR and historical material.",
+    "Never use a Canva design as factual or commercial authority.",
+    "Never use BLOCKED_FOR_EXTERNAL_USE collateral externally.",
+    "Never promote research or public contact data into a verified relationship.",
+    "Never promote social engagement or analytics into revenue, payment or customer proof.",
+    "Never use legacy fixed pilot prices, guarantees or retired sprint language in current public content.",
+    "Never bypass platform authorization, consent, suppression or specific approval gates.",
+    "Phone readiness may block WhatsApp only; it must not block other owned-channel preparation.",
+    "Event facts in seed assets require freshness recheck before publication.",
+    "If evidence or authority is missing, output UNKNOWN, BLOCK or REVIEW rather than guess."
+  ],
+  "context_efficiency": {"load_whole_repo_by_default":false,"use_role_slice":true,"refresh_live_authority_before_sensitive_action":true,"prefer_retrieval_of_relevant_evidence_over_large_static_prompt":true}
+}

@@ -1,0 +1,38 @@
+{
+  "schema": "dealix.platform-identity-matrix.v1",
+  "generated_at": "2026-08-28",
+  "brand_version": "dealix.brand-system.v2",
+  "rules": {
+    "canonical_display_name": "Dealix",
+    "category": "Saudi-first AI Business Operating System",
+    "tagline_en": "Revenue + Proof + Command",
+    "tagline_ar": "إيراد + إثبات + قيادة",
+    "website": "https://dealix.me/",
+    "preferred_handle_policy": "Prefer dealix or dealixsa only after availability/ownership is verified. Never claim an unverified handle as owned.",
+    "avatar": "Dealix primary mark on Ink Navy or White with approved contrast",
+    "cover_visual": "Ink Navy -> Deep Teal field, restrained Signal Cyan flow from Signal -> Decision -> Action -> Proof",
+    "phone_cta_state": "DEFERRED_PHONE_ACTIVATION",
+    "public_phone_placeholder": false,
+    "primary_cta_now": "Free Mini Diagnostic",
+    "primary_cta_after_phone": "Free Mini Diagnostic; WhatsApp only as an additional eligible relationship channel after readiness PASS"
+  },
+  "bios": {
+    "ar_short": "Dealix — نظام تشغيل أعمال بالذكاء الاصطناعي للشركات السعودية. نحول الإشارات إلى قرارات وإجراءات وإثبات قابل للقياس. Revenue + Proof + Command.",
+    "en_short": "Dealix — Saudi-first AI Business Operating System. Turn signals into governed decisions, actions and measurable proof. Revenue + Proof + Command.",
+    "ar_compact": "AI Business OS سعودي | Revenue + Proof + Command | Free Mini Diagnostic",
+    "en_compact": "Saudi-first AI Business OS | Revenue + Proof + Command | Free Mini Diagnostic"
+  },
+  "platforms": {
+    "linkedin_founder": {"display_identity":"Founder personal identity + Dealix operator role","handle":"existing_founder_account","bio_mode":"human_operator_pov","bio":"بناء Dealix: Saudi-first AI Business Operating System. Revenue + Proof + Command. أشارك ما نتعلمه من التشغيل الحقيقي، الأتمتة المحكومة، والإثبات قبل التوسع.","cta":"Dealix / Free Mini Diagnostic / relevant event conversation","relationship_actions":"MANUAL_NATIVE"},
+    "linkedin_dealix_page": {"display_name":"Dealix","preferred_handle":"RESEARCH_REQUIRED","bio":"Saudi-first AI Business Operating System for Revenue + Proof + Command. Governed AI workflows, approvals, outcomes and proof — built for real business operations.","cta":"Free Mini Diagnostic","publish_mode":"POSTS_API_OR_NATIVE_WHEN_AUTHORIZED"},
+    "instagram": {"display_name":"Dealix","preferred_handle":"RESEARCH_REQUIRED","current_identity_note":"Existing ai_automation.sa asset must be evaluated for rename/rebrand rather than running a disconnected identity.","bio":"Saudi-first AI Business OS\nRevenue + Proof + Command\nGoverned AI. Measurable proof.\n↓ Free Mini Diagnostic","highlights":["Start Here","How It Works","Proof Method","Build Log","Events","FAQ"]},
+    "facebook": {"display_name":"Dealix","preferred_handle":"RESEARCH_REQUIRED","about":"Saudi-first AI Business Operating System. Revenue + Proof + Command. Governed workflows, approvals and measurable proof.","cta":"Free Mini Diagnostic"},
+    "youtube": {"display_name":"Dealix","preferred_handle":"RESEARCH_REQUIRED","description":"Dealix is a Saudi-first AI Business Operating System. Practical explainers on revenue operations, governed AI, proof systems and how Dealix operates on itself.","series":["Dealix Explained","Build Dealix on Dealix","Proof Before Scale","Revenue Leakage","Event Field Notes","Governed AI in Practice"],"cta":"Free Mini Diagnostic / dealix.me"},
+    "tiktok": {"display_name":"Dealix","preferred_handle":"RESEARCH_REQUIRED","bio":"Saudi-first AI Business OS | Revenue + Proof + Command | Practical AI ops, not hype.","public_direct_post_gate":"APP_SCOPE_AUTH_AUDIT_REQUIRED"},
+    "x": {"display_name":"Dealix","preferred_handle":"RESEARCH_REQUIRED","bio":"Saudi-first AI Business Operating System. Revenue + Proof + Command. Building governed AI workflows and measurable proof.","reply_bot":false},
+    "threads": {"display_name":"Dealix","preferred_handle":"RESEARCH_REQUIRED","bio":"Saudi-first AI Business OS — practical notes on revenue, governed AI and proof."},
+    "snapchat": {"display_name":"Dealix","preferred_handle":"RESEARCH_REQUIRED","bio":"Dealix | Saudi-first AI Business OS","publishing":"NATIVE_FIRST"},
+    "pinterest": {"display_name":"Dealix","preferred_handle":"RESEARCH_REQUIRED","bio":"Systems diagrams and practical AI business operating frameworks from Dealix.","boards":["AI Business OS","Revenue Operations","Governed AI","Proof Systems"]},
+    "whatsapp_business": {"display_name":"Dealix","state":"DEFERRED_PHONE_ACTIVATION","about_draft":"Saudi-first AI Business Operating System | Revenue + Proof + Command","description_draft":"Dealix helps businesses turn signals into governed decisions, actions and measurable proof. Start with a Free Mini Diagnostic.","quick_reply_drafts":["welcome","mini_diagnostic","discovery","not_now","opt_out"],"publish_number_now":false}
+  }
+}
