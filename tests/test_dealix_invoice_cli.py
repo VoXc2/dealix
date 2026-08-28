@@ -1,20 +1,9 @@
-"""Tests for scripts/dealix_invoice.py (P3 — admin Moyasar CLI).
-
-Verifies:
-  - Refuses to run when MOYASAR_SECRET_KEY is unset
-  - Refuses sk_live_ keys without --allow-live
-  - Computes amount_halalas correctly (sar × 100)
-  - Calls MoyasarClient.create_invoice with the right args
-  - Prints the founder-friendly summary by default
-  - --json prints the full response as JSON
-  - Caps abusively-large amounts (>50_000 SAR)
-"""
+"""Tests for scripts/dealix_invoice.py test-only payment compatibility CLI."""
 from __future__ import annotations
 
 import asyncio
 import json
 import sys
-from io import StringIO
 from pathlib import Path
 from unittest.mock import AsyncMock, patch
 
@@ -24,14 +13,11 @@ REPO = Path(__file__).resolve().parents[1]
 SCRIPT = REPO / "scripts" / "dealix_invoice.py"
 sys.path.insert(0, str(REPO))
 
-# Import the script's main + helpers as a module via runpy-style trick.
 import importlib.util
 
 
 def _load():
-    spec = importlib.util.spec_from_file_location(
-        "dealix_invoice_cli", str(SCRIPT)
-    )
+    spec = importlib.util.spec_from_file_location("dealix_invoice_cli", str(SCRIPT))
     mod = importlib.util.module_from_spec(spec)
     assert spec.loader is not None
     spec.loader.exec_module(mod)
@@ -41,87 +27,52 @@ def _load():
 cli = _load()
 
 
-# ─── Argparse + safety checks ───────────────────────────────────────
+class _BaseArgs:
+    email = "x@y.sa"
+    amount_sar = 1200.0
+    description = "Customer-specific quote test"
+    customer_handle = "ACME-001"
+    service_id = "customer_specific_quote_test"
+    quote_evidence_id = "quote-test-001"
+    callback_url = ""
+    allow_live = False
+    json = False
 
 
-def test_is_live_key_helper():
+def test_key_helpers():
     assert cli._is_live_key("sk_live_abc") is True
-    assert cli._is_live_key("sk_live_") is True
     assert cli._is_live_key("sk_test_xyz") is False
-    assert cli._is_live_key("") is False
+    assert cli._is_test_key("sk_test_xyz") is True
+    assert cli._is_test_key("sk_live_abc") is False
 
 
 def test_unset_secret_key_raises_system_exit(monkeypatch):
     monkeypatch.delenv("MOYASAR_SECRET_KEY", raising=False)
-
-    class _Args:
-        email = "x@y.sa"
-        amount_sar = 499.0
-        description = "test"
-        customer_handle = ""
-        service_id = "growth_starter"
-        callback_url = ""
-        allow_live = False
-        json = False
-
     with pytest.raises(SystemExit) as exc:
-        asyncio.run(cli._create(_Args()))
-    assert "MOYASAR_SECRET_KEY" in str(exc.value)
+        asyncio.run(cli._create(_BaseArgs()))
+    assert "sk_test" in str(exc.value)
 
 
-def test_live_key_without_flag_raises(monkeypatch):
+def test_live_key_is_always_blocked_even_if_legacy_flag_true(monkeypatch):
     monkeypatch.setenv("MOYASAR_SECRET_KEY", "sk_live_realdangerous")
 
-    class _Args:
-        email = "x@y.sa"
-        amount_sar = 499.0
-        description = "test"
-        customer_handle = ""
-        service_id = "growth_starter"
-        callback_url = ""
-        allow_live = False
-        json = False
+    class _Args(_BaseArgs):
+        allow_live = True
 
     with pytest.raises(SystemExit) as exc:
         asyncio.run(cli._create(_Args()))
-    assert "live" in str(exc.value).lower()
+    assert "live_invoice_blocked" in str(exc.value).lower()
 
 
-def test_live_key_with_flag_proceeds(monkeypatch):
-    """If founder explicitly passes --allow-live, the safety check
-    yields to the underlying API call (which we mock)."""
-    monkeypatch.setenv("MOYASAR_SECRET_KEY", "sk_live_real")
-
-    class _Args:
-        email = "x@y.sa"
-        amount_sar = 499.0
-        description = "test"
-        customer_handle = ""
-        service_id = "growth_starter"
-        callback_url = ""
-        allow_live = True
-        json = False
-
-    fake = {"id": "inv_live", "amount": 49900, "url": "https://x"}
-    with patch.object(cli, "MoyasarClient") as MockClient:
-        MockClient.return_value.create_invoice = AsyncMock(return_value=fake)
-        result = asyncio.run(cli._create(_Args()))
-    assert result == fake
+def test_unknown_key_class_is_blocked(monkeypatch):
+    monkeypatch.setenv("MOYASAR_SECRET_KEY", "secret_unknown")
+    with pytest.raises(SystemExit) as exc:
+        asyncio.run(cli._create(_BaseArgs()))
+    assert "sk_test" in str(exc.value).lower()
 
 
-def test_amount_halalas_conversion(monkeypatch):
+def test_test_invoice_amount_and_metadata(monkeypatch):
     monkeypatch.setenv("MOYASAR_SECRET_KEY", "sk_test_xyz")
-
-    class _Args:
-        email = "x@y.sa"
-        amount_sar = 499.0
-        description = "Pilot"
-        customer_handle = "ACME-001"
-        service_id = "growth_starter"
-        callback_url = ""
-        allow_live = False
-        json = False
-
     captured = {}
 
     async def _capture(**kwargs):
@@ -130,30 +81,25 @@ def test_amount_halalas_conversion(monkeypatch):
 
     with patch.object(cli, "MoyasarClient") as MockClient:
         MockClient.return_value.create_invoice = AsyncMock(side_effect=_capture)
-        asyncio.run(cli._create(_Args()))
+        result = asyncio.run(cli._create(_BaseArgs()))
 
-    assert captured["amount_halalas"] == 49900  # 499 SAR × 100
+    assert result["id"] == "inv_test"
+    assert captured["amount_halalas"] == 120000
     assert captured["currency"] == "SAR"
-    assert captured["description"] == "Pilot"
-    md = captured["metadata"]
-    assert md["customer_email"] == "x@y.sa"
-    assert md["customer_handle"] == "ACME-001"
-    assert md["service_id"] == "growth_starter"
-    assert md["created_by"] == "dealix_invoice_cli"
+    metadata = captured["metadata"]
+    assert metadata["customer_email"] == "x@y.sa"
+    assert metadata["customer_handle"] == "ACME-001"
+    assert metadata["service_id"] == "customer_specific_quote_test"
+    assert metadata["quote_evidence_id"] == "quote-test-001"
+    assert metadata["commercial_truth"] == "TEST_ONLY_NOT_PAYMENT_OR_REVENUE"
+    assert metadata["created_by"] == "dealix_invoice_cli_test_only"
 
 
 def test_amount_zero_or_negative_rejected(monkeypatch):
     monkeypatch.setenv("MOYASAR_SECRET_KEY", "sk_test_x")
 
-    class _Args:
-        email = "x@y.sa"
+    class _Args(_BaseArgs):
         amount_sar = 0.0
-        description = "x"
-        customer_handle = ""
-        service_id = "growth_starter"
-        callback_url = ""
-        allow_live = False
-        json = False
 
     with pytest.raises(SystemExit):
         asyncio.run(cli._create(_Args()))
@@ -162,50 +108,96 @@ def test_amount_zero_or_negative_rejected(monkeypatch):
 def test_amount_over_50k_rejected(monkeypatch):
     monkeypatch.setenv("MOYASAR_SECRET_KEY", "sk_test_x")
 
-    class _Args:
-        email = "x@y.sa"
+    class _Args(_BaseArgs):
         amount_sar = 100000.0
-        description = "x"
-        customer_handle = ""
-        service_id = "growth_starter"
-        callback_url = ""
-        allow_live = False
-        json = False
 
     with pytest.raises(SystemExit) as exc:
         asyncio.run(cli._create(_Args()))
     assert "50,000" in str(exc.value) or "50000" in str(exc.value)
 
 
-# ─── Argparse parser shape ──────────────────────────────────────────
-
-
-def test_parser_has_required_args(monkeypatch):
+def test_parser_default_is_non_live_customer_specific_test(monkeypatch):
     monkeypatch.setattr(
-        sys, "argv",
-        ["dealix_invoice.py", "--email", "a@b.sa", "--amount-sar", "499", "--description", "x"],
+        sys,
+        "argv",
+        [
+            "dealix_invoice.py",
+            "--email", "a@b.sa",
+            "--amount-sar", "1200",
+            "--description", "Quote test",
+        ],
     )
     args = cli.parse_args()
-    assert args.email == "a@b.sa"
-    assert args.amount_sar == 499.0
-    assert args.description == "x"
+    assert args.amount_sar == 1200.0
     assert args.allow_live is False
-    assert args.json is False
+    assert args.service_id == "customer_specific_quote_test"
+    assert args.quote_evidence_id == ""
 
 
-# ─── Output rendering ───────────────────────────────────────────────
+def test_main_legacy_allow_live_flag_fails_closed(monkeypatch, capsys):
+    monkeypatch.setenv("MOYASAR_SECRET_KEY", "sk_live_x")
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [
+            "dealix_invoice.py",
+            "--email", "a@b.sa",
+            "--amount-sar", "1200",
+            "--description", "Quote",
+            "--allow-live",
+        ],
+    )
+    rc = cli.main()
+    captured = capsys.readouterr()
+    assert rc == 2
+    assert "LIVE_INVOICE_BLOCKED" in captured.err
 
 
-def test_main_prints_founder_friendly_summary(monkeypatch, capsys):
+def test_dry_run_is_explicitly_non_authoritative(monkeypatch, capsys):
+    monkeypatch.delenv("MOYASAR_SECRET_KEY", raising=False)
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [
+            "dealix_invoice.py",
+            "--email", "a@b.sa",
+            "--amount-sar", "1200",
+            "--description", "Quote preview",
+            "--quote-evidence-id", "quote-123",
+            "--dry-run",
+        ],
+    )
+    rc = cli.main()
+    out = capsys.readouterr().out
+    assert rc == 0
+    assert "DRY_RUN=true" in out
+    assert "COMMERCIAL_AUTHORITY=NONE_PREVIEW_ONLY" in out
+    assert "LIVE_INVOICE_ALLOWED=false" in out
+    assert "REFUND_OR_REMEDY_AUTHORIZED=false" in out
+    assert "PAYMENT_PROOF_CREATED=false" in out
+    assert "REVENUE_CREATED=false" in out
+    assert "quote-123" in out
+    assert "7-day" not in out.lower()
+    assert "growth_starter" not in out.lower()
+
+
+def test_main_test_invoice_prints_test_only_summary(monkeypatch, capsys):
     monkeypatch.setenv("MOYASAR_SECRET_KEY", "sk_test_x")
     monkeypatch.setattr(
-        sys, "argv",
-        ["dealix_invoice.py", "--email", "a@b.sa", "--amount-sar", "499", "--description", "Pilot"],
+        sys,
+        "argv",
+        [
+            "dealix_invoice.py",
+            "--email", "a@b.sa",
+            "--amount-sar", "1200",
+            "--description", "Quote test",
+            "--quote-evidence-id", "quote-123",
+        ],
     )
 
     fake = {
         "id": "inv_print_test",
-        "amount": 49900,
+        "amount": 120000,
         "url": "https://checkout.moyasar.com/inv_print_test",
     }
     with patch.object(cli, "MoyasarClient") as MockClient:
@@ -214,31 +206,34 @@ def test_main_prints_founder_friendly_summary(monkeypatch, capsys):
 
     out = capsys.readouterr().out
     assert rc == 0
+    assert "TEST_ONLY=true" in out
     assert "INVOICE_ID=inv_print_test" in out
-    assert "PAYMENT_URL=https://checkout.moyasar.com/inv_print_test" in out
-    assert "499 SAR" in out
-    assert "manually" in out  # safety reminder line
+    assert "TEST_PAYMENT_URL=https://checkout.moyasar.com/inv_print_test" in out
+    assert "AMOUNT_SAR=1200" in out
+    assert "LIVE_INVOICE_ALLOWED=false" in out
+    assert "PAYMENT_PROOF_CREATED=false" in out
+    assert "REVENUE_CREATED=false" in out
 
 
-def test_main_json_mode_prints_raw(monkeypatch, capsys):
+def test_main_json_mode_prints_raw_test_response(monkeypatch, capsys):
     monkeypatch.setenv("MOYASAR_SECRET_KEY", "sk_test_x")
     monkeypatch.setattr(
-        sys, "argv",
+        sys,
+        "argv",
         [
             "dealix_invoice.py",
             "--email", "a@b.sa",
-            "--amount-sar", "499",
-            "--description", "Pilot",
+            "--amount-sar", "1200",
+            "--description", "Quote test",
             "--json",
         ],
     )
 
-    fake = {"id": "inv_json", "amount": 49900, "url": "https://x", "extra": True}
+    fake = {"id": "inv_json", "amount": 120000, "url": "https://x", "extra": True}
     with patch.object(cli, "MoyasarClient") as MockClient:
         MockClient.return_value.create_invoice = AsyncMock(return_value=fake)
         rc = cli.main()
 
     out = capsys.readouterr().out
     assert rc == 0
-    parsed = json.loads(out)
-    assert parsed == fake
+    assert json.loads(out) == fake

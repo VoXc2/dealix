@@ -1,34 +1,40 @@
 #!/usr/bin/env python3
-"""Moyasar payment processing — Automate invoice generation and payment links."""
+"""Legacy Moyasar adapter.
 
+Live invoice/payment-link creation is intentionally fail-closed until Dealix has a
+single durable Controlled Execution path that can consume and revalidate an exact,
+revocable payment execution-authority receipt.
+"""
+
+import base64
 import json
 import os
-import base64
-import requests
-from datetime import datetime, timedelta
+from datetime import datetime
 from pathlib import Path
 from typing import Optional
+
+import requests
 
 ROOT = Path(__file__).resolve().parents[2]
 RUNTIME_DIR = ROOT / "company" / "runtime"
 
+PAYMENT_WRITE_BLOCK_REASON = "LIVE_PAYMENT_REQUIRES_DURABLE_CONTROLLED_EXECUTION_AUTHORITY"
+
 
 class MoyasarPayments:
-    """Moyasar payment gateway integration."""
+    """Compatibility adapter for Moyasar provider reads and fail-closed writes."""
 
     def __init__(self):
-        """Initialize Moyasar API client."""
         self.api_key = os.getenv("MOYASAR_API_KEY", "")
         self.api_secret = os.getenv("MOYASAR_API_SECRET", "")
         self.base_url = "https://api.moyasar.com/v1"
+        # Retained as an observable legacy setting only. It is never execution authority.
         self.live_mode = os.getenv("MOYASAR_LIVE_MODE", "false").lower() == "true"
 
     def is_configured(self) -> bool:
-        """Check if Moyasar API is configured."""
         return bool(self.api_key and self.api_secret)
 
     def get_auth_header(self) -> dict:
-        """Generate Basic auth header for Moyasar API."""
         credentials = f"{self.api_key}:{self.api_secret}"
         encoded = base64.b64encode(credentials.encode()).decode()
         return {"Authorization": f"Basic {encoded}"}
@@ -39,89 +45,41 @@ class MoyasarPayments:
         customer_phone: str,
         customer_name: str,
         description: str,
-        amount_sar: int,
+        amount_sar: Optional[int],
         pilot_id: Optional[str] = None,
     ) -> dict:
-        """Create a Moyasar payment link for invoice.
+        """Fail closed for all provider write operations.
 
-        Args:
-            customer_email: Customer email
-            customer_phone: Customer phone
-            customer_name: Customer name
-            description: Invoice description (e.g., "Dealix Pilot - 14 days")
-            amount_sar: Amount in SAR
-            pilot_id: Optional pilot ID for tracking
-
-        Returns:
-            Payment link response
+        Presence of provider credentials, ``MOYASAR_LIVE_MODE``, a quote ID, or a
+        caller-supplied amount is not durable Dealix payment execution authority.
+        This compatibility adapter must not POST to Moyasar.
         """
-        if not self.is_configured():
-            return {
-                "status": "not_configured",
-                "error": "Moyasar API not configured. Set MOYASAR_API_KEY and MOYASAR_API_SECRET",
-                "payment_url": None,
-            }
-
-        url = f"{self.base_url}/invoices"
-        headers = self.get_auth_header()
-
-        # Amount in fils (SAR × 100)
-        amount_fils = amount_sar * 100
-
-        payload = {
-            "amount": amount_fils,
-            "currency": "SAR",
-            "description": description,
-            "customer": {
-                "email": customer_email,
-                "name": customer_name,
-                "phone": customer_phone,
-            },
-            "metadata": {
-                "pilot_id": pilot_id,
-                "created_at": datetime.now().isoformat(),
-            },
+        del customer_email, customer_phone, customer_name, description
+        return {
+            "status": "blocked",
+            "reason": PAYMENT_WRITE_BLOCK_REASON,
+            "payment_url": None,
+            "amount_sar": amount_sar,
+            "pilot_id": pilot_id,
+            "provider_write_executed": False,
+            "execution_authority_created": False,
+            "payment_proof_created": False,
+            "revenue_created": False,
+            "legacy_live_mode_observed": self.live_mode,
         }
 
-        try:
-            resp = requests.post(url, json=payload, headers=headers, timeout=10)
-            resp.raise_for_status()
-
-            data = resp.json()
-            invoice = data.get("invoice", {})
-
-            return {
-                "status": "created",
-                "invoice_id": invoice.get("id"),
-                "payment_url": invoice.get("url"),
-                "amount_sar": amount_sar,
-                "currency": "SAR",
-                "customer_email": customer_email,
-                "description": description,
-                "expires_at": invoice.get("expires_at"),
-                "created_at": datetime.now().isoformat(),
-            }
-
-        except requests.exceptions.RequestException as e:
-            return {
-                "status": "error",
-                "error": str(e),
-                "payment_url": None,
-            }
-
     def check_payment_status(self, invoice_id: str) -> dict:
-        """Check status of a payment invoice.
+        """Read provider invoice status as raw evidence only.
 
-        Args:
-            invoice_id: Moyasar invoice ID
-
-        Returns:
-            Invoice status
+        A provider status response is not by itself Dealix revenue truth. The
+        canonical payment/proof path must bind provider evidence to the approved
+        customer-specific quote and verify it before revenue is recognized.
         """
         if not self.is_configured():
             return {
                 "status": "not_configured",
                 "error": "Moyasar API not configured",
+                "evidence_class": "PROVIDER_STATUS_NOT_REVENUE_PROOF",
             }
 
         url = f"{self.base_url}/invoices/{invoice_id}"
@@ -130,24 +88,25 @@ class MoyasarPayments:
         try:
             resp = requests.get(url, headers=headers, timeout=10)
             resp.raise_for_status()
-
             data = resp.json()
             invoice = data.get("invoice", {})
 
             return {
-                "status": invoice.get("status"),  # paid, draft, sent, partial, expired
+                "status": invoice.get("status"),
                 "invoice_id": invoice.get("id"),
                 "amount_sar": invoice.get("amount", 0) / 100,
                 "paid_amount_sar": invoice.get("paid_amount", 0) / 100,
                 "customer_name": invoice.get("customer", {}).get("name"),
                 "created_at": invoice.get("created_at"),
                 "updated_at": invoice.get("updated_at"),
+                "evidence_class": "PROVIDER_STATUS_NOT_REVENUE_PROOF",
+                "revenue_verified": False,
             }
-
-        except requests.exceptions.RequestException as e:
+        except requests.exceptions.RequestException as exc:
             return {
                 "status": "error",
-                "error": str(e),
+                "error": str(exc),
+                "evidence_class": "PROVIDER_STATUS_NOT_REVENUE_PROOF",
             }
 
     def create_pilot_invoice(
@@ -157,88 +116,49 @@ class MoyasarPayments:
         customer_email: str,
         customer_phone: str,
         pilot_id: str,
-        price_sar: int = 499,
+        price_sar: Optional[int] = None,
     ) -> dict:
-        """Create invoice for pilot signup.
+        """Compatibility wrapper that cannot create a live customer invoice.
 
-        Args:
-            customer_name: Customer name
-            company_name: Company name
-            customer_email: Email
-            customer_phone: Phone
-            pilot_id: Pilot ID
-            price_sar: Price (default 499)
-
-        Returns:
-            Invoice and payment link
+        No default/fixed Pilot price or retired delivery duration is authoritative.
+        A price, when supplied by an old caller, remains inert input and cannot
+        authorize a provider write.
         """
-        description = f"Dealix Pilot - 14-Day Proof Sprint\nCompany: {company_name}\nPrice: {price_sar} SAR"
-
         return self.create_payment_link(
             customer_email=customer_email,
             customer_phone=customer_phone,
             customer_name=customer_name,
-            description=description,
+            description=f"Customer-specific Dealix quote for {company_name}",
             amount_sar=price_sar,
             pilot_id=pilot_id,
         )
 
     def log_payment(self, payment_info: dict) -> Path:
-        """Log payment request/status to file."""
+        """Log a local payment evidence record; this never proves revenue."""
         log_path = RUNTIME_DIR / "payments.jsonl"
-
-        with open(log_path, "a", encoding="utf-8") as f:
-            f.write(json.dumps(payment_info, ensure_ascii=False) + "\n")
-
+        with open(log_path, "a", encoding="utf-8") as handle:
+            handle.write(json.dumps(payment_info, ensure_ascii=False) + "\n")
         return log_path
 
 
 def main() -> int:
-    """Test Moyasar payments."""
-    print("💳 Moyasar Payments Module")
-    print("=" * 50)
-
-    moyasar = MoyasarPayments()
-
-    if not moyasar.is_configured():
-        print("⚠️  Moyasar API not configured (test mode)")
-        print("Set these environment variables to enable live payments:")
-        print("  - MOYASAR_API_KEY")
-        print("  - MOYASAR_API_SECRET")
-        print("  - MOYASAR_LIVE_MODE=true (for production)")
-
-        # Simulate payment link creation
-        print("\n📤 Simulated payment link (test mode):")
-        result = {
-            "status": "created",
-            "invoice_id": "INV_test_123",
-            "payment_url": "https://moyasar.com/pay/INV_test_123",
-            "amount_sar": 499,
-            "description": "Dealix Pilot - 14 days",
-        }
-        print(json.dumps(result, ensure_ascii=False, indent=2))
-        return 0
-
-    print("✅ Moyasar API configured (live mode)")
-
-    # Create test invoice
-    print("\n📤 Creating test invoice...")
-    invoice = moyasar.create_pilot_invoice(
-        customer_name="محمد",
-        company_name="عقارات الحمد",
-        customer_email="mohammad@qrarat.com",
-        customer_phone="+966501234567",
-        pilot_id="pilot_test_001",
-        price_sar=499,
+    print("Moyasar legacy adapter: provider writes are fail-closed")
+    print(
+        json.dumps(
+            {
+                "status": "blocked",
+                "reason": PAYMENT_WRITE_BLOCK_REASON,
+                "provider_write_executed": False,
+                "payment_proof_created": False,
+                "revenue_created": False,
+                "checked_at": datetime.now().isoformat(),
+            },
+            ensure_ascii=False,
+            indent=2,
+        )
     )
-
-    print(json.dumps(invoice, ensure_ascii=False, indent=2))
-
-    if invoice.get("status") == "created":
-        print(f"\n✅ Payment link created: {invoice.get('payment_url')}")
-
     return 0
 
 
 if __name__ == "__main__":
-    exit(main())
+    raise SystemExit(main())
