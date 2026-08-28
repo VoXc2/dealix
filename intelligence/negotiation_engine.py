@@ -1,17 +1,44 @@
 """Negotiation & Persuasion Engine.
 
-Bilingual objection handling, persuasion maps, and deal strategy for Saudi B2B
-sales. All prices reference the canonical price book only.
+Bilingual objection handling, persuasion maps, deal strategy, and scripts for
+Saudi B2B sales.
+
+COMMERCIAL SAFETY CONTRACT
+--------------------------
+This compatibility engine is *not* price, commitment, or outcome authority.
+It mirrors the current Dealix commercial path and produces negotiation support
+that remains subject to the canonical Business Model, active first-launch gate,
+and approval/evidence controls.
+
+Current customer path:
+    Free Mini Diagnostic
+    -> qualified discovery
+    -> customer-specific quote
+    -> Revenue Command Pilot — 30 days
+    -> Proof Pack
+    -> Stop / Expand / Redesign
+
+Named price, discount, contract, tender, payment/refund, public claim, and other
+commercial commitments require their specific approval/evidence gates. The
+engine must not invent ROI, customer outcomes, competitor results, or a public
+fixed Pilot price.
 """
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from enum import Enum
 from typing import Any, Literal
 
 from intelligence.bilingual import BilingualBlock, BilingualRenderer, BilingualText, LanguageCode
-from intelligence.ops_adapters import BattlecardsAdapter, PricingAdapter, validate_sku
+
+
+COMMERCIAL_PATH = (
+    "Free Mini Diagnostic -> Qualified Discovery -> Customer-Specific Quote -> "
+    "Revenue Command Pilot — 30 days -> Proof Pack -> Stop/Expand/Redesign"
+)
+COMMERCIAL_AUTHORITY = "canonical_business_model_and_active_first_launch_gate"
+QUOTE_AUTHORITY = "founder_approved_named_customer_quote_after_qualified_discovery"
 
 
 class ObjectionCategory(str, Enum):
@@ -24,7 +51,7 @@ class ObjectionCategory(str, Enum):
     RISK = "risk"
 
 
-@dataclass
+@dataclass(frozen=True)
 class Objection:
     objection_id: str
     category: ObjectionCategory
@@ -43,10 +70,12 @@ class Objection:
             "evidence_refs": self.evidence_refs,
             "requires_price_reference": self.requires_price_reference,
             "price_sku": self.price_sku,
+            "commercial_authority": COMMERCIAL_AUTHORITY,
+            "commitment_allowed": False,
         }
 
 
-@dataclass
+@dataclass(frozen=True)
 class StakeholderInfluence:
     name: str
     role: str
@@ -62,7 +91,7 @@ class StakeholderInfluence:
         }
 
 
-@dataclass
+@dataclass(frozen=True)
 class PersuasionMap:
     deal_id: str
     stakeholders: list[StakeholderInfluence]
@@ -77,10 +106,11 @@ class PersuasionMap:
             "value_props": [BilingualRenderer.filter_text(v, lang) for v in self.value_props],
             "risk_reversals": [BilingualRenderer.filter_text(r, lang) for r in self.risk_reversals],
             "recommended_sequence": self.recommended_sequence,
+            "commercial_authority": COMMERCIAL_AUTHORITY,
         }
 
 
-@dataclass
+@dataclass(frozen=True)
 class DealStrategy:
     deal_id: str
     company_name: str
@@ -105,16 +135,28 @@ class DealStrategy:
             "pricing_anchor": self.pricing_anchor,
             "close_timeline_days": self.close_timeline_days,
             "confidence_percent": self.confidence_percent,
+            "commercial_authority": COMMERCIAL_AUTHORITY,
+            "execution_allowed": False,
+            "approval_required_for_commitment": True,
         }
 
 
 class NegotiationEngine:
-    """Bilingual negotiation and persuasion engine."""
+    """Bilingual negotiation support that never authorizes a commitment."""
 
     def __init__(self) -> None:
-        self.pricing = PricingAdapter()
-        self.battlecards = BattlecardsAdapter()
         self._objection_library = self._build_objection_library()
+
+    @staticmethod
+    def _authority_payload() -> dict[str, Any]:
+        return {
+            "commercial_path": COMMERCIAL_PATH,
+            "authority": COMMERCIAL_AUTHORITY,
+            "quote_authority": QUOTE_AUTHORITY,
+            "public_fixed_pilot_price_allowed": False,
+            "invented_roi_or_outcome_claims_allowed": False,
+            "execution_allowed": False,
+        }
 
     def _build_objection_library(self) -> dict[ObjectionCategory, list[Objection]]:
         return {
@@ -127,14 +169,22 @@ class NegotiationEngine:
                         ar="خدمتكم غالية",
                     ),
                     response=BilingualBlock(
-                        title=BilingualRenderer.bt(en="Reframe as investment", ar="إطار الاستثمار"),
+                        title=BilingualRenderer.bt(en="Clarify value and scope", ar="توضيح القيمة والنطاق"),
                         body=BilingualRenderer.bt(
-                            en="Most clients see the fee as an investment once they compare it to the cost of a missed quarter. Let's run the ROI calculation together.",
-                            ar="معظم العملاء يرون الرسوم استثمارًا بمجرد مقارنتها بتكلفة ربع فائت. دعنا نحسب العائد معًا.",
+                            en=(
+                                "That is fair to examine. Rather than defend a generic price, we should first "
+                                "confirm the problem, baseline, required scope, and success evidence. If the "
+                                "opportunity qualifies after discovery, Dealix prepares a customer-specific "
+                                "quote for approval; there is no public fixed Pilot price."
+                            ),
+                            ar=(
+                                "من الطبيعي مراجعة التكلفة. بدل الدفاع عن سعر عام، نثبت أولاً المشكلة وخط "
+                                "الأساس والنطاق المطلوب ودليل النجاح. إذا تأهلت الفرصة بعد الاستكشاف، تُجهّز "
+                                "Dealix عرضًا خاصًا بالعميل للموافقة؛ ولا يوجد سعر عام ثابت للبرنامج التجريبي."
+                            ),
                         ),
                     ),
-                    evidence_refs=["roi_calculator", "case_studies"],
-                    requires_price_reference=True,
+                    evidence_refs=["COMMERCIAL_IDENTITY.md", "docs/DEALIX_BUSINESS_MODEL.md"],
                 ),
             ],
             ObjectionCategory.TIMING: [
@@ -146,13 +196,21 @@ class NegotiationEngine:
                         ar="سننظر في هذا الربع القادم",
                     ),
                     response=BilingualBlock(
-                        title=BilingualRenderer.bt(en="Cost of delay", ar="تكلفة التأجيل"),
+                        title=BilingualRenderer.bt(en="Test whether delay matters", ar="اختبار أثر التأجيل"),
                         body=BilingualRenderer.bt(
-                            en="Every month without a scored pipeline costs you leads that your competitors are already converting. A 20-minute diagnostic identifies the exact leakage this quarter.",
-                            ar="كل شهر بدون خط أنابيب مُقيّد يكلفكم عملاء محتملين يحوّلها منافسوكم بالفعل. تشخيص 20 دقيقة يحدد التسرب الدقيق هذا الربع.",
+                            en=(
+                                "We should not assume delay is costly without your data. A Free Mini Diagnostic "
+                                "can document the current workflow, the evidence gap, and whether there is a "
+                                "measurable reason to act now or defer."
+                            ),
+                            ar=(
+                                "لا ينبغي أن نفترض أن التأجيل مكلف من دون بياناتكم. يمكن للتشخيص المصغر المجاني "
+                                "توثيق سير العمل الحالي وفجوة الأدلة وتحديد ما إذا كان هناك سبب قابل للقياس "
+                                "للتحرك الآن أو التأجيل."
+                            ),
                         ),
                     ),
-                    evidence_refs=["leakage_diagnostic"],
+                    evidence_refs=["free_mini_diagnostic", "proof_requirements"],
                 ),
             ],
             ObjectionCategory.COMPETITION: [
@@ -164,13 +222,21 @@ class NegotiationEngine:
                         ar="نستخدم بالفعل أداة CRM/AI",
                     ),
                     response=BilingualBlock(
-                        title=BilingualRenderer.bt(en="Layer, not replace", ar="طبقة إضافية لا بديل"),
+                        title=BilingualRenderer.bt(en="Complement before replace", ar="التكامل قبل الاستبدال"),
                         body=BilingualRenderer.bt(
-                            en="Dealix does not replace your CRM; it sits on top and turns Saudi market signals into qualified revenue actions with approval-first governance.",
-                            ar="Dealix لا تحل محل CRM؛ بل تعمل طبقة فوقه وتحوّل إشارات السوق السعودي إلى إجراءات إيراد مؤهلة مع حوكمة الترخيص أولاً.",
+                            en=(
+                                "Dealix is not positioned as a generic CRM replacement. The relevant question is "
+                                "whether your current stack already gives you governed opportunity decisions, "
+                                "approval control, and source-bound proof. The Diagnostic can test that gap first."
+                            ),
+                            ar=(
+                                "Dealix ليست بديلًا عامًا لنظام CRM. السؤال هو هل توفر منظومتكم الحالية قرارات "
+                                "فرص محكومة وموافقات مضبوطة وإثباتًا مرتبطًا بالمصدر. يمكن للتشخيص اختبار هذه "
+                                "الفجوة أولاً."
+                            ),
                         ),
                     ),
-                    evidence_refs=["integration_map", "pilot_results"],
+                    evidence_refs=["COMMERCIAL_IDENTITY.md", "integration_map"],
                 ),
             ],
             ObjectionCategory.TRUST: [
@@ -182,13 +248,23 @@ class NegotiationEngine:
                         ar="كيف نعرف أن هذا سينجح معنا؟",
                     ),
                     response=BilingualBlock(
-                        title=BilingualRenderer.bt(en="Proof before commitment", ar="الإثبات قبل الالتزام"),
+                        title=BilingualRenderer.bt(en="Evidence before commitment", ar="الأدلة قبل الالتزام"),
                         body=BilingualRenderer.bt(
-                            en="We start with a 7-day pilot that documents baseline and improvement. You approve every external action; nothing ships without your sign-off.",
-                            ar="نبدأ ببرنامج تجريبي 7 أيام يوثق الأساس والتحسن. توافقون على كل إجراء خارجي؛ لا شيء يُرسل بدون موافقتكم.",
+                            en=(
+                                "We do not promise an outcome before evidence. We start with a Free Mini "
+                                "Diagnostic. If the problem, owner, lawful data, baseline, and proof path qualify, "
+                                "the next paid motion is a customer-specific 30-day Revenue Command Pilot with "
+                                "defined acceptance criteria, weekly proof, and a final Stop/Expand/Redesign review."
+                            ),
+                            ar=(
+                                "لا نعد بنتيجة قبل وجود دليل. نبدأ بتشخيص مصغر مجاني. إذا تأهلت المشكلة والمالك "
+                                "والبيانات النظامية وخط الأساس ومسار الإثبات، فالخطوة المدفوعة التالية هي برنامج "
+                                "Revenue Command لمدة 30 يومًا بنطاق خاص بالعميل ومعايير قبول وإثبات أسبوعي "
+                                "ومراجعة نهائية للتوقف أو التوسع أو إعادة التصميم."
+                            ),
                         ),
                     ),
-                    evidence_refs=["pilot_framework", "proof_builder"],
+                    evidence_refs=["docs/DEALIX_BUSINESS_MODEL.md", "COMMERCIAL_IDENTITY.md"],
                 ),
             ],
             ObjectionCategory.SCOPE: [
@@ -200,13 +276,21 @@ class NegotiationEngine:
                         ar="هذا أكثر مما نحتاجه الآن",
                     ),
                     response=BilingualBlock(
-                        title=BilingualRenderer.bt(en="Modular entry", ar="دخول معياري"),
+                        title=BilingualRenderer.bt(en="Start with one verified problem", ar="ابدأ بمشكلة واحدة مثبتة"),
                         body=BilingualRenderer.bt(
-                            en="We can start with the Revenue Diagnostic only. It gives you a full leakage map and a prioritized action plan without committing to the full program.",
-                            ar="يمكننا البدء بتشخيص الإيرادات فقط. يمنحكم خريطة تسرب كاملة وخطة عمل مرتبة دون الالتزام بالبرنامج الكامل.",
+                            en=(
+                                "Then we should reduce the scope. The entry step is the Free Mini Diagnostic: "
+                                "one credible operational or revenue leak, the missing evidence, and a Pilot "
+                                "hypothesis — not a company-wide transformation."
+                            ),
+                            ar=(
+                                "إذن نقلل النطاق. خطوة الدخول هي التشخيص المصغر المجاني: مشكلة تشغيلية أو "
+                                "إيرادية واحدة موثوقة، وفجوة الأدلة، وفرضية برنامج تجريبي — وليس تحولًا شاملاً "
+                                "للشركة."
+                            ),
                         ),
                     ),
-                    evidence_refs=["service_catalog"],
+                    evidence_refs=["free_mini_diagnostic", "docs/DEALIX_BUSINESS_MODEL.md"],
                 ),
             ],
             ObjectionCategory.AUTHORITY: [
@@ -218,13 +302,21 @@ class NegotiationEngine:
                         ar="أحتاج للتشاور مع مديري/الرئيس",
                     ),
                     response=BilingualBlock(
-                        title=BilingualRenderer.bt(en="Enable the champion", ar="تمكين الشخص المسؤول"),
+                        title=BilingualRenderer.bt(en="Make the decision defensible", ar="اجعل القرار قابلًا للدفاع"),
                         body=BilingualRenderer.bt(
-                            en="I will send you a one-page CEO brief in Arabic and English that explains the business case, investment, and pilot structure. You can forward it directly.",
-                            ar="سأرسل لك ملخصًا واحدًا للرئيس التنفيذي بالعربية والإنجليزية يشرح الحالة التجارية والاستثمار وهيكل البرنامج التجريبي. يمكنك إعادة توجيهه مباشرة.",
+                            en=(
+                                "We can prepare a one-page decision brief that separates observed facts, "
+                                "hypotheses, required evidence, scope, risks, and the next approval. It remains a "
+                                "draft until the applicable external-send and commercial gates permit delivery."
+                            ),
+                            ar=(
+                                "يمكننا إعداد ملخص قرار من صفحة واحدة يفصل الحقائق المرصودة والفرضيات والأدلة "
+                                "المطلوبة والنطاق والمخاطر والموافقة التالية. ويبقى مسودة حتى تسمح بوابات الإرسال "
+                                "والالتزام التجاري المطبقة بإرساله."
+                            ),
                         ),
                     ),
-                    evidence_refs=["ceo_brief_template"],
+                    evidence_refs=["buying_group", "approval_center"],
                 ),
             ],
             ObjectionCategory.RISK: [
@@ -236,13 +328,21 @@ class NegotiationEngine:
                         ar="ماذا لو لم نر نتائج؟",
                     ),
                     response=BilingualBlock(
-                        title=BilingualRenderer.bt(en="Defined success metrics", ar="مؤشرات نجاح محددة"),
+                        title=BilingualRenderer.bt(en="Define evidence and stop rules", ar="حدد الأدلة وقواعد التوقف"),
                         body=BilingualRenderer.bt(
-                            en="The pilot agreement defines measurable success metrics before work starts. If we do not hit them, you only paid the pilot fee and you keep the diagnostic outputs.",
-                            ar="اتفاقية البرنامج التجريبي تحدد مؤشرات النجاح القابلة للقياس قبل البدء. إذا لم نحققها، تكونون قد دفعتم رسوم البرنامج فقط وتحتفظون بمخرجات التشخيص.",
+                            en=(
+                                "The Pilot should define baseline, owner, data boundary, acceptance criteria, and "
+                                "proof cadence before work starts. The final review is evidence-based: Stop, "
+                                "Expand, or Redesign. We do not guarantee a commercial outcome."
+                            ),
+                            ar=(
+                                "يجب أن يحدد البرنامج التجريبي خط الأساس والمالك وحدود البيانات ومعايير القبول "
+                                "ودورية الإثبات قبل بدء العمل. وتكون المراجعة النهائية مبنية على الأدلة: توقف أو "
+                                "توسع أو إعادة تصميم. ولا نضمن نتيجة تجارية."
+                            ),
                         ),
                     ),
-                    evidence_refs=["pilot_sla"],
+                    evidence_refs=["proof_pack", "acceptance_criteria"],
                 ),
             ],
         }
@@ -252,10 +352,11 @@ class NegotiationEngine:
             {
                 "categories": [c.value for c in ObjectionCategory],
                 "objections": [
-                    o.to_dict(lang)
+                    objection.to_dict(lang)
                     for category in self._objection_library.values()
-                    for o in category
+                    for objection in category
                 ],
+                "authority": self._authority_payload(),
             },
             lang,
         )
@@ -266,25 +367,17 @@ class NegotiationEngine:
         context: dict[str, Any] | None = None,
         lang: LanguageCode = "both",
     ) -> dict[str, Any]:
-        ctx = context or {}
+        context = context or {}
         try:
-            cat = ObjectionCategory(category.lower())
+            objection_category = ObjectionCategory(category.lower())
         except ValueError:
-            cat = ObjectionCategory.TRUST
-        objections = self._objection_library.get(cat, [])
-        if not objections:
-            objections = self._objection_library[ObjectionCategory.TRUST]
-        selected = objections[0]
-
-        # Attach price reference if needed and SKU provided
-        if selected.requires_price_reference and selected.price_sku is None:
-            package = ctx.get("package_sku") or ctx.get("recommended_package") or "Revenue Diagnostic"
-            selected.price_sku = package if validate_sku(package) else None
-
+            objection_category = ObjectionCategory.TRUST
+        selected = self._objection_library[objection_category][0]
         return BilingualRenderer.wrap(
             {
                 "objection": selected.to_dict(lang),
-                "context": ctx,
+                "context": context,
+                "authority": self._authority_payload(),
             },
             lang,
         )
@@ -297,57 +390,61 @@ class NegotiationEngine:
     ) -> dict[str, Any]:
         stakeholder_objs = [
             StakeholderInfluence(
-                name=s.get("name", "Unknown"),
-                role=s.get("role", "Stakeholder"),
-                influence_level=s.get("influence_level", "influencer"),
+                name=stakeholder.get("name", "Unknown"),
+                role=stakeholder.get("role", "Stakeholder"),
+                influence_level=stakeholder.get("influence_level", "influencer"),
                 key_concern=BilingualRenderer.bt(
-                    en=s.get("key_concern_en", "Business outcome"),
-                    ar=s.get("key_concern_ar", "النتيجة التجارية"),
+                    en=stakeholder.get("key_concern_en", "Business outcome"),
+                    ar=stakeholder.get("key_concern_ar", "النتيجة التجارية"),
                 ),
             )
-            for s in stakeholders
+            for stakeholder in stakeholders
         ]
-
         value_props = [
             BilingualRenderer.bt(
-                en="Increase qualified pipeline without adding headcount",
-                ar="زيادة خط الأنابيب المؤهل دون إضافة موظفين",
+                en="Turn evidence into governed revenue decisions",
+                ar="تحويل الأدلة إلى قرارات إيراد محكومة",
             ),
             BilingualRenderer.bt(
-                en="Shorten sales cycles with Saudi-specific playbooks",
-                ar="تقصير دورات المبيعات بأدلة عمل سعودية محددة",
+                en="Keep critical external commitments approval-gated",
+                ar="إبقاء الالتزامات الخارجية الحرجة خاضعة للموافقة",
             ),
             BilingualRenderer.bt(
-                en="Reduce revenue leakage through deterministic diagnostics",
-                ar="تقليل تسرب الإيرادات من خلال تشخيصات حتمية",
+                en="Build source-bound Proof Packs for executive decisions",
+                ar="بناء حزم إثبات مرتبطة بالمصدر للقرارات التنفيذية",
             ),
         ]
-
         risk_reversals = [
             BilingualRenderer.bt(
-                en="Pilot-first entry with documented success metrics",
-                ar="دخول عبر برنامج تجريبي مع مؤشرات نجاح موثقة",
+                en="Diagnostic before paid scope",
+                ar="تشخيص قبل النطاق المدفوع",
             ),
             BilingualRenderer.bt(
-                en="Approval-first governance — no surprise commitments",
-                ar="حوكمة الترخيص أولاً — لا التزامات مفاجئة",
+                en="Evidence-based Stop / Expand / Redesign decision",
+                ar="قرار توقف أو توسع أو إعادة تصميم مبني على الأدلة",
             ),
         ]
-
-        pmap = PersuasionMap(
+        persuasion_map = PersuasionMap(
             deal_id=deal_id,
             stakeholders=stakeholder_objs,
             value_props=value_props,
             risk_reversals=risk_reversals,
             recommended_sequence=[
-                "Map stakeholders and their personal win",
-                "Share sector-specific CEO brief",
-                "Run diagnostic to create proof",
-                "Present pilot proposal with clear success metrics",
-                "Gain approval and schedule kickoff",
+                "Map the buying group and decision criteria",
+                "Separate observed facts from hypotheses",
+                "Run or complete the Free Mini Diagnostic",
+                "Confirm qualification, baseline, owner, lawful data, and proof path",
+                "Prepare a customer-specific 30-day Pilot scope and quote for approval",
+                "Proceed only through the applicable approval and external-action gates",
             ],
         )
-        return BilingualRenderer.wrap({"persuasion_map": pmap.to_dict(lang)}, lang)
+        return BilingualRenderer.wrap(
+            {
+                "persuasion_map": persuasion_map.to_dict(lang),
+                "authority": self._authority_payload(),
+            },
+            lang,
+        )
 
     def generate_deal_strategy(
         self,
@@ -359,53 +456,84 @@ class NegotiationEngine:
         employees: int = 50,
         lang: LanguageCode = "both",
     ) -> dict[str, Any]:
-        if not validate_sku(package_sku):
-            raise ValueError(f"Package '{package_sku}' is not in the price catalog")
+        """Generate a non-committing strategy draft.
 
-        price = self.pricing.recommend(package_sku, sector, employees, budget_hint=budget_hint)
+        ``package_sku`` and ``budget_hint`` are treated as context only. They do
+        not authorize pricing. Numeric price/ROI output is intentionally absent.
+        """
+        del budget_hint
 
         strategy_type: Literal["challenger", "consultative", "relationship", "value"] = "consultative"
-        if sector.lower() in {"fintech", "healthcare_tech"}:
-            strategy_type = "value"
-        elif employees <= 50:
-            strategy_type = "challenger"
+        if employees <= 50:
+            strategy_type = "relationship"
 
         win_themes = [
-            BilingualRenderer.bt(en="Prove ROI in 7 days", ar="إثبات العائد في 7 أيام"),
-            BilingualRenderer.bt(en="Saudi-first compliance and language", ar="الامتثال واللغة السعودية أولاً"),
-            BilingualRenderer.bt(en="No commitments without approval", ar="لا التزامات بدون موافقة"),
+            BilingualRenderer.bt(en="Evidence before commitment", ar="الأدلة قبل الالتزام"),
+            BilingualRenderer.bt(en="Saudi-first operating context", ar="سياق تشغيلي سعودي أولاً"),
+            BilingualRenderer.bt(en="Approval-gated critical commitments", ar="التزامات حرجة خاضعة للموافقة"),
         ]
-
         talking_points = [
             BilingualBlock(
                 title=BilingualRenderer.bt(en="Why now", ar="لماذا الآن"),
                 body=BilingualRenderer.bt(
-                    en=f"{sector} companies in {city} are moving fast on AI revenue operations. Waiting a quarter means losing scored prospects to competitors.",
-                    ar=f"شركات {sector} في {city} تتسارع في عمليات إيرادات AI. انتظار ربع يعني فقدان عملاء مؤهلين للمنافسين.",
+                    en=(
+                        f"For {company_name}, the question is whether a specific measurable revenue or "
+                        f"operating problem exists in the current {sector} workflow in {city}. The Diagnostic "
+                        "should establish that from source-bound evidence rather than market assumptions."
+                    ),
+                    ar=(
+                        f"بالنسبة إلى {company_name}، السؤال هو هل توجد مشكلة إيرادية أو تشغيلية محددة وقابلة "
+                        f"للقياس في سير عمل {sector} الحالي في {city}. يجب أن يثبت التشخيص ذلك بأدلة مرتبطة "
+                        "بالمصدر بدل افتراضات السوق."
+                    ),
                 ),
             ),
             BilingualBlock(
                 title=BilingualRenderer.bt(en="Why Dealix", ar="لماذا Dealix"),
                 body=BilingualRenderer.bt(
-                    en="We combine Saudi market intelligence, deterministic workflows, and approval-first governance so your team closes more without adding risk.",
-                    ar="نجمع بين ذكاء السوق السعودي وسير العمل الحتمي والحوكمة القائمة على الترخيص أولاً لتقفل المزيد دون إضافة مخاطر.",
+                    en=(
+                        "Dealix combines governed company context, opportunity intelligence, approval-first "
+                        "action control, outcome evidence, and executive command. Fit must be proven for the "
+                        "customer rather than assumed."
+                    ),
+                    ar=(
+                        "تجمع Dealix سياق الشركة المحكوم وذكاء الفرص والتحكم في الإجراءات بالموافقة أولاً "
+                        "وأدلة النتائج والقيادة التنفيذية. ويجب إثبات الملاءمة للعميل بدل افتراضها."
+                    ),
                 ),
             ),
             BilingualBlock(
-                title=BilingualRenderer.bt(en="Investment", ar="الاستثمار"),
+                title=BilingualRenderer.bt(en="Commercial next step", ar="الخطوة التجارية التالية"),
                 body=BilingualRenderer.bt(
-                    en=f"{package_sku} — {price.tier.value} tier at SAR {price.adjusted_price_sar:,.0f}. Payment terms: {price.payment_terms}.",
-                    ar=f"{package_sku} — باقة {price.tier.value} بقيمة {price.adjusted_price_sar:,.0f} ريال. شروط الدفع: {price.payment_terms}.",
+                    en=(
+                        "The entry step is the Free Mini Diagnostic. After qualified discovery and the active "
+                        "launch gate, Dealix may prepare a customer-specific 30-day Revenue Command Pilot scope "
+                        "and quote for approval. No public fixed Pilot price is authorized."
+                    ),
+                    ar=(
+                        "خطوة الدخول هي التشخيص المصغر المجاني. بعد الاستكشاف المؤهل واجتياز بوابة الإطلاق "
+                        "يمكن لـDealix إعداد نطاق وعرض خاص بالعميل لبرنامج Revenue Command لمدة 30 يومًا "
+                        "للموافقة. ولا يوجد سعر عام ثابت معتمد للبرنامج التجريبي."
+                    ),
                 ),
             ),
         ]
-
         playbook = [
             self._objection_library[ObjectionCategory.PRICE][0],
             self._objection_library[ObjectionCategory.TIMING][0],
             self._objection_library[ObjectionCategory.TRUST][0],
         ]
-
+        pricing_anchor = {
+            "requested_package_context": package_sku,
+            "commercial_mode": "quote_only_after_qualified_discovery",
+            "quote_authority": QUOTE_AUTHORITY,
+            "base_price_sar": None,
+            "adjusted_price_sar": None,
+            "roi_estimate_percent": None,
+            "payment_terms": None,
+            "approval_required": True,
+            "execution_allowed": False,
+        }
         strategy = DealStrategy(
             deal_id=f"deal-{company_name.lower().replace(' ', '-')}",
             company_name=company_name,
@@ -414,18 +542,17 @@ class NegotiationEngine:
             win_themes=win_themes,
             talking_points=talking_points,
             objection_playbook=playbook,
-            pricing_anchor={
-                "sku": package_sku,
-                "tier": price.tier.value,
-                "base_price_sar": price.base_price_sar,
-                "adjusted_price_sar": price.adjusted_price_sar,
-                "roi_estimate_percent": price.roi_estimate_percent,
-                "payment_terms": price.payment_terms,
-            },
-            close_timeline_days=21,
-            confidence_percent=72.0,
+            pricing_anchor=pricing_anchor,
+            close_timeline_days=30,
+            confidence_percent=50.0,
         )
-        return BilingualRenderer.wrap({"deal_strategy": strategy.to_dict(lang)}, lang)
+        return BilingualRenderer.wrap(
+            {
+                "deal_strategy": strategy.to_dict(lang),
+                "authority": self._authority_payload(),
+            },
+            lang,
+        )
 
     def get_script(
         self,
@@ -437,22 +564,43 @@ class NegotiationEngine:
                 BilingualBlock(
                     title=BilingualRenderer.bt(en="Opening", ar="المقدمة"),
                     body=BilingualRenderer.bt(
-                        en="Thank you for the time. Before I share anything about Dealix, I would like to understand how your team currently turns a new lead into a paid customer.",
-                        ar="شكرًا لوقتكم. قبل أن أشارك أي شيء عن Dealix، أود فهم كيف يحوّل فريقكم العميل المحتمل الجديد إلى عميل مدفوع حاليًا.",
+                        en=(
+                            "Thank you for the time. Before discussing a solution, I would like to understand "
+                            "the workflow, the accountable owner, the evidence you already have, and what a "
+                            "measurable improvement would mean for your team."
+                        ),
+                        ar=(
+                            "شكرًا لوقتكم. قبل مناقشة الحل، أود فهم سير العمل والمالك المسؤول والأدلة المتاحة "
+                            "لديكم وما الذي يعنيه تحسن قابل للقياس لفريقكم."
+                        ),
                     ),
                 ),
                 BilingualBlock(
-                    title=BilingualRenderer.bt(en="Pain probe", ar="استكشاف الألم"),
+                    title=BilingualRenderer.bt(en="Evidence probe", ar="استكشاف الأدلة"),
                     body=BilingualRenderer.bt(
-                        en="Where do most prospects drop out of your funnel today — and what does that cost per month?",
-                        ar="أين يخرج معظم العملاء المحتملين من قمعكم اليوم — وما تكلفة ذلك شهريًا؟",
+                        en=(
+                            "Where does the current process create the most uncertainty or leakage, and what "
+                            "source could establish the baseline?"
+                        ),
+                        ar=(
+                            "أين يخلق المسار الحالي أكبر قدر من عدم اليقين أو التسرب، وما المصدر الذي يمكنه "
+                            "إثبات خط الأساس؟"
+                        ),
                     ),
                 ),
                 BilingualBlock(
                     title=BilingualRenderer.bt(en="Value bridge", ar="جسر القيمة"),
                     body=BilingualRenderer.bt(
-                        en="Dealix scores your Saudi prospects, builds proof packs, and keeps every external commitment approval-gated. The goal is more qualified revenue without more risk.",
-                        ar="يقوم Dealix بتقييم العملاء السعوديين المحتملين وبناء حزم الإثبات ويحافظ على كل التزام خارجي خاضع للموافقة. الهدف هو المزيد من الإيرادات المؤهلة دون مزيد من المخاطر.",
+                        en=(
+                            "Dealix is a Saudi-first AI Business Operating System. The first commercial wedge is "
+                            "Revenue + Proof + Command: governed decisions, approval-controlled actions, and "
+                            "source-bound evidence rather than blind automation."
+                        ),
+                        ar=(
+                            "Dealix هو نظام تشغيل أعمال بالذكاء الاصطناعي للشركات السعودية. والمدخل التجاري "
+                            "الأول هو الإيرادات والإثبات والقيادة: قرارات محكومة وإجراءات مضبوطة بالموافقة "
+                            "وأدلة مرتبطة بالمصدر بدل الأتمتة العمياء."
+                        ),
                     ),
                 ),
             ],
@@ -460,38 +608,64 @@ class NegotiationEngine:
                 BilingualBlock(
                     title=BilingualRenderer.bt(en="Acknowledge", ar="الإقرار"),
                     body=BilingualRenderer.bt(
-                        en="I understand that budget discipline matters, especially now.",
-                        ar="أفهم أن انضباط الميزانية مهم، خاصة الآن.",
+                        en="Budget discipline matters. We should compare scope and evidence, not defend a generic price.",
+                        ar="انضباط الميزانية مهم. يجب أن نقارن النطاق والأدلة بدل الدفاع عن سعر عام.",
                     ),
                 ),
                 BilingualBlock(
-                    title=BilingualRenderer.bt(en="Reframe", ar="إعادة الإطار"),
+                    title=BilingualRenderer.bt(en="Clarify", ar="التوضيح"),
                     body=BilingualRenderer.bt(
-                        en="Can we compare the fee to the value of one additional closed customer this quarter?",
-                        ar="هل يمكننا مقارنة الرسوم بقيمة عميل إضافي واحد مُقفل هذا الربع؟",
-                    ),
-                ),
-                BilingualBlock(
-                    title=BilingualRenderer.bt(en="Offer proof", ar="عرض الإثبات"),
-                    body=BilingualRenderer.bt(
-                        en="Let us run a 7-day pilot with defined success metrics. You will see the numbers before any larger commitment.",
-                        ar="دعنا نُجري برنامجًا تجريبيًا لمدة 7 أيام مع مؤشرات نجاح محددة. سترون الأرقام قبل أي التزام أكبر.",
-                    ),
-                ),
-            ],
-            "closing": [
-                BilingualBlock(
-                    title=BilingualRenderer.bt(en="Summarize", ar="الملخص"),
-                    body=BilingualRenderer.bt(
-                        en="We agreed the pilot will run for 7 days, measure qualified pipeline growth, and cost SAR 499. You approve every external action.",
-                        ar="اتفقنا على أن يعمل البرنامج التجريبي 7 أيام، ويقيس نمو خط الأنابيب المؤهل، ويكلف 499 ريال. توافقون على كل إجراء خارجي.",
+                        en=(
+                            "What outcome or operating problem would make a paid 30-day Pilot worth considering, "
+                            "and what evidence would your team need to defend that decision internally?"
+                        ),
+                        ar=(
+                            "ما النتيجة أو المشكلة التشغيلية التي تجعل التفكير في برنامج مدفوع لمدة 30 يومًا "
+                            "منطقيًا، وما الأدلة التي يحتاجها فريقكم للدفاع عن القرار داخليًا؟"
+                        ),
                     ),
                 ),
                 BilingualBlock(
                     title=BilingualRenderer.bt(en="Next step", ar="الخطوة التالية"),
                     body=BilingualRenderer.bt(
-                        en="I will send the SOW and kickoff calendar invite within the hour. Which email should I use?",
-                        ar="سأرسل بيان نطاق العمل ودعوة تقويم الانطلاق خلال الساعة. ما البريد الذي يجب أن أستخدمه؟",
+                        en=(
+                            "Complete the Free Mini Diagnostic first. If the opportunity qualifies, prepare a "
+                            "customer-specific scope and quote for the required approval."
+                        ),
+                        ar=(
+                            "نُكمل التشخيص المصغر المجاني أولاً. إذا تأهلت الفرصة، نُعد نطاقًا وعرضًا خاصًا "
+                            "بالعميل للموافقة المطلوبة."
+                        ),
+                    ),
+                ),
+            ],
+            "closing": [
+                BilingualBlock(
+                    title=BilingualRenderer.bt(en="Confirm evidence", ar="تأكيد الأدلة"),
+                    body=BilingualRenderer.bt(
+                        en=(
+                            "Before any commitment, confirm the problem, decision owner, lawful data, baseline, "
+                            "proof path, budget/timing discussion, and applicable approval gates."
+                        ),
+                        ar=(
+                            "قبل أي التزام، نؤكد المشكلة وصاحب القرار والبيانات النظامية وخط الأساس ومسار "
+                            "الإثبات ومناقشة الميزانية والتوقيت وبوابات الموافقة المطبقة."
+                        ),
+                    ),
+                ),
+                BilingualBlock(
+                    title=BilingualRenderer.bt(en="Commercial next step", ar="الخطوة التجارية التالية"),
+                    body=BilingualRenderer.bt(
+                        en=(
+                            "If qualification and the active launch gate pass, prepare the named-customer 30-day "
+                            "Pilot scope, acceptance criteria, proof cadence, exclusions, and quote for approval. "
+                            "Do not send or commit until the relevant external-action gate permits it."
+                        ),
+                        ar=(
+                            "إذا اجتاز التأهيل وبوابة الإطلاق الفعالة، نُعد نطاق البرنامج التجريبي الخاص بالعميل "
+                            "لمدة 30 يومًا ومعايير القبول ودورية الإثبات والاستثناءات والعرض للموافقة. ولا يتم "
+                            "الإرسال أو الالتزام حتى تسمح بوابة الإجراء الخارجي ذات الصلة."
+                        ),
                     ),
                 ),
             ],
@@ -500,7 +674,8 @@ class NegotiationEngine:
         return BilingualRenderer.wrap(
             {
                 "scenario": scenario,
-                "blocks": [BilingualRenderer.filter_block(b, lang) for b in blocks],
+                "blocks": [BilingualRenderer.filter_block(block, lang) for block in blocks],
+                "authority": self._authority_payload(),
             },
             lang,
         )
