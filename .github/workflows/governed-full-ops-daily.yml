@@ -1,16 +1,19 @@
 name: Governed Full Ops Daily
 
-# Unified governed autopilot: expand (wave2) + founder day + value plan + snapshot.
-# ~08:00 KSA (05:00 UTC Sun-Thu). No external send — draft/approval only.
+# Canonical GitHub Company OS scheduler (issue #883).
+# Runs a governed internal pulse every 4 hours, 24/7.
+# This workflow is NOT external execution authority: no customer send, public
+# publish, paid spend, payment/refund, contract/tender commitment, production
+# mutation, DNS/DB/secrets mutation, or proof/revenue promotion is authorized.
 
 on:
   schedule:
-    - cron: "0 5 * * 0-4"
+    - cron: "0 */4 * * *"
   workflow_dispatch:
     inputs:
       mode:
         description: "morning | evening | commercial | full"
-        default: "morning"
+        default: "commercial"
 
 concurrency:
   group: governed-full-ops-daily
@@ -23,6 +26,14 @@ jobs:
   governed-ops:
     runs-on: ubuntu-latest
     timeout-minutes: 25
+    env:
+      # Explicit fail-closed authority boundary. Downstream code must still
+      # enforce its own canonical Approval/Controlled Execution gates.
+      DEALIX_EXTERNAL_SEND: "0"
+      DEALIX_PUBLIC_PUBLISH: "0"
+      DEALIX_PAID_SPEND: "0"
+      DEALIX_LIVE_PAYMENT: "0"
+      DEALIX_PRODUCTION_MUTATION: "0"
     steps:
       - uses: actions/checkout@v7
 
@@ -33,6 +44,28 @@ jobs:
       - name: Install minimal deps
         run: python3 -m pip install pyyaml
 
+      - name: Resolve governed pulse mode
+        id: pulse
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            MODE="${{ github.event.inputs.mode }}"
+          else
+            # Six Saudi-day pulses (UTC+3). Keep scheduled execution bounded:
+            # 03/07 KSA = morning intelligence; 11/15/19 KSA = commercial;
+            # 23 KSA = evening reconciliation.
+            HOUR="$(date -u +%H)"
+            case "$HOUR" in
+              00|04) MODE="morning" ;;
+              08|12|16) MODE="commercial" ;;
+              20) MODE="evening" ;;
+              *) MODE="commercial" ;;
+            esac
+          fi
+          echo "mode=$MODE" >> "$GITHUB_OUTPUT"
+          echo "DEALIX_GOVERNED_PULSE_MODE=$MODE"
+
       - name: Run governed autopilot
         env:
           DEALIX_SYNC_EVIDENCE: ${{ secrets.DEALIX_SYNC_EVIDENCE || '0' }}
@@ -40,7 +73,8 @@ jobs:
           DEALIX_ADMIN_API_KEY: ${{ secrets.DEALIX_ADMIN_API_KEY }}
           PYTHONIOENCODING: utf-8
         run: |
-          MODE="${{ github.event.inputs.mode || 'morning' }}"
+          set -euo pipefail
+          MODE="${{ steps.pulse.outputs.mode }}"
           if [ "$MODE" = "full" ]; then
             python3 scripts/run_dealix_complete_autonomous_day.py --weekly
           elif [ "$MODE" = "commercial" ]; then
@@ -53,10 +87,19 @@ jobs:
 
       - name: Build daily audit snapshot
         run: |
-          set -e
+          set -euo pipefail
           python3 scripts/dealix_snapshot.py
           SNAPSHOT="docs/snapshots/$(date -u +%Y-%m-%d).json"
           test -s "$SNAPSHOT"
+
+      - name: Verify fail-closed operating boundary
+        run: |
+          set -euo pipefail
+          test "$DEALIX_EXTERNAL_SEND" = "0"
+          test "$DEALIX_PUBLIC_PUBLISH" = "0"
+          test "$DEALIX_PAID_SPEND" = "0"
+          test "$DEALIX_LIVE_PAYMENT" = "0"
+          test "$DEALIX_PRODUCTION_MUTATION" = "0"
 
       - name: Upload artifacts
         if: always()
