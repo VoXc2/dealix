@@ -3,5 +3,5 @@
 # Not required for the main FastAPI app or tests.
 # 3.4.3 introduced the SSRF/DNS-rebinding hardening used by Dealix.
 # We still pass exact hosts/origins explicitly and never rely on defaults.
-fastmcp>=3.4.3,<4
+fastmcp>=3.4.7,<4
 pyyaml>=6.0.2
