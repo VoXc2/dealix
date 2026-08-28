@@ -1,8 +1,8 @@
 """Company Growth Beast engine — service for client companies.
 
-Pure-local. NO LLM. NO scraping. NO external HTTP. Reuses Growth
-Beast primitives (offer matcher, content engine) but parameterizes
-them per client company.
+Pure-local. NO LLM. NO scraping. NO external HTTP. Reuses Growth Beast
+primitives but cannot manufacture customer evidence, public claims, prices, or
+paid-scope authority.
 """
 from __future__ import annotations
 
@@ -37,7 +37,11 @@ def build_company_profile(
 
 
 def build_growth_diagnostic(profile: CompanyProfile) -> dict:
-    """One-page diagnostic. Says insufficient_evidence when consent missing."""
+    """Build a preliminary Free Mini Diagnostic outline.
+
+    Consent to prepare the diagnostic is required. The returned artifact is not
+    a paid Pilot proposal, price quote, customer proof, or execution authority.
+    """
     if not profile.consent_for_diagnostic:
         return {
             "blocked": True,
@@ -48,8 +52,9 @@ def build_growth_diagnostic(profile: CompanyProfile) -> dict:
     sector = profile.sector or "tbd"
     problem = profile.biggest_problem or "unknown"
     return {
-        "status": "preliminary_diagnostic",
-        "funnel_stage": "free_diagnostic",
+        "status": "preliminary_free_mini_diagnostic",
+        "funnel_stage": "free_mini_diagnostic",
+        "truth_class": "DRAFT_REQUIRES_SOURCE_VALIDATION",
         "requires_human_review": True,
         "requires_source_validation": True,
         "payment_required": False,
@@ -60,29 +65,38 @@ def build_growth_diagnostic(profile: CompanyProfile) -> dict:
         "biggest_opportunity": (
             f"validate a first-party baseline for {problem} before selecting paid scope"
         ),
-        "biggest_risk": "scope creep without proof events",
-        "safest_channel": "warm_intro / inbound / partner_intro",
-        "seven_day_plan": [
-            "Day 1: ICP + opportunity ranking",
-            "Day 2: offer refinement",
-            "Day 3: drafts approved + manual sends",
-            "Day 4: follow-up calendar",
-            "Day 5: risk note",
-            "Day 6: proof pack draft",
-            "Day 7: review + decision",
+        "biggest_risk": "scope or outcome claims without source-bound evidence",
+        "safest_channel": "existing relationship / inbound / permissioned event follow-up",
+        "diagnostic_workplan": [
+            "Confirm the stated problem and accountable owner",
+            "Identify lawful minimum-necessary source evidence",
+            "Establish baseline or record UNKNOWN_NOT_EVIDENCE_BACKED",
+            "Map the current workflow and observed leakage/uncertainty",
+            "Separate facts, customer-stated inputs, hypotheses, and missing evidence",
+            "Return STOP / NEEDS_EVIDENCE / QUALIFIED_FOR_DISCOVERY",
+            "If qualified, prepare discovery questions — not a price or commitment",
         ],
-        "recommended_offer": match_offer(sector=sector, signal_type=problem),
+        # Backward-compatibility key retained explicitly empty so downstream
+        # clients do not silently receive the retired 7-day launch plan.
+        "seven_day_plan": [],
+        "legacy_seven_day_plan_status": "RETIRED_NOT_COMMERCIAL_AUTHORITY",
+        "recommended_motion": match_offer(sector=sector, signal_type=problem),
         "what_we_will_not_do": [
-            "guaranteed revenue", "auto-send", "cold WhatsApp",
-            "scraping", "fake testimonials",
+            "guaranteed revenue",
+            "invented ROI",
+            "auto-send",
+            "cold WhatsApp",
+            "scraping",
+            "fake testimonials or case studies",
+            "public fixed Pilot price",
         ],
-        "next_step": "human_review_fit_before_any_paid_scope",
+        "next_step": "human_review_then_qualified_discovery_if_evidence_supports_fit",
         "action_mode": "approval_required",
     }
 
 
 def build_target_segments(profile: CompanyProfile) -> list[dict]:
-    """Top 3 target segments for this company. Pure heuristic."""
+    """Return research hypotheses for up to three target segments."""
     sector = profile.sector or "b2b_services"
     base_segments = {
         "marketing_agency": [
@@ -101,13 +115,23 @@ def build_target_segments(profile: CompanyProfile) -> list[dict]:
         ],
     }
     rows = base_segments.get(sector, [
-        ("placeholder_segment", "discover_during_pilot", 0.5),
+        ("unresolved_segment_hypothesis", "discover_from_evidence", 0.5),
     ])
-    return [{"segment": s, "pain": p, "fit_score": int(score * 100),
-             "action_mode": "suggest_only"} for s, p, score in rows]
+    return [
+        {
+            "segment": segment,
+            "pain": pain,
+            "fit_score": int(score * 100),
+            "truth_class": "RESEARCH_HYPOTHESIS",
+            "relationship_created": False,
+            "action_mode": "suggest_only",
+        }
+        for segment, pain, score in rows
+    ]
 
 
 def build_offer_recommendation(profile: CompanyProfile) -> dict:
+    """Return a diagnostic/commercial-motion recommendation, never a price."""
     return match_offer(
         sector=profile.sector or "b2b_services",
         signal_type=profile.biggest_problem or "needs_growth_clarity",
@@ -115,35 +139,33 @@ def build_offer_recommendation(profile: CompanyProfile) -> dict:
 
 
 def build_content_pack(profile: CompanyProfile) -> list[dict]:
-    """Pack of 5 content drafts for the client to publish."""
+    """Pack of five content drafts; case content fails closed without proof."""
     sector = profile.sector or "b2b_services"
     angle = profile.biggest_problem or "growth_clarity"
     types = ["linkedin_post", "sector_insight", "diagnostic_cta",
              "case_snippet", "objection_post"]
-    return [draft_content(sector=sector, angle=angle, content_type=t)
-            for t in types]
+    return [
+        draft_content(sector=sector, angle=angle, content_type=content_type)
+        for content_type in types
+    ]
 
 
 def support_to_growth_insight(*, ticket_categories: dict[str, int]) -> dict:
-    """Convert support category counts into growth insights.
-
-    Top category = repeated pain = opportunity for: KB article,
-    landing-page section, content angle.
-    """
+    """Convert support category counts into a content/research hypothesis."""
     if not ticket_categories:
         return {
             "insufficient_data": True,
-            "next_action_ar": "لا تذاكر بعد — اجمع بيانات أولاً",
-            "next_action_en": "No tickets yet — collect data first.",
+            "next_action_ar": "لا توجد بيانات كافية — اجمع بيانات أولاً",
+            "next_action_en": "Insufficient data — collect evidence first.",
         }
-    top = max(ticket_categories.items(), key=lambda kv: kv[1])
-    top_cat, top_count = top
+    top_cat, top_count = max(ticket_categories.items(), key=lambda kv: kv[1])
     return {
         "insufficient_data": False,
         "top_repeated_question": top_cat,
         "occurrences": top_count,
-        "growth_action_ar": f"اكتب KB article + LinkedIn post عن '{top_cat}'",
-        "growth_action_en": f"Write KB article + LinkedIn post about '{top_cat}'",
+        "growth_action_ar": f"حضّر مسودة KB + فرضية محتوى عن '{top_cat}' للمراجعة",
+        "growth_action_en": f"Prepare a KB draft + content hypothesis about '{top_cat}' for review",
+        "truth_class": "SOURCE_DERIVED_INTERNAL_INSIGHT",
         "action_mode": "draft_only",
     }
 
@@ -154,7 +176,7 @@ def build_weekly_report(*, profile: CompanyProfile,
                         paid_pilots: int = 0,
                         proof_events: int = 0,
                         support_categories: dict[str, int] | None = None) -> dict:
-    """One-page weekly executive report for the client company."""
+    """One-page weekly executive report from caller-supplied verified counts."""
     insights = support_to_growth_insight(
         ticket_categories=support_categories or {},
     )
@@ -167,16 +189,16 @@ def build_weekly_report(*, profile: CompanyProfile,
         "proof_events": proof_events,
         "support_insights": insights,
         "top_3_decisions_ar": [
-            "ركّز على أفضل قطاع",
-            "حسّن أعلى معدّل تحويل",
-            "وثّق Proof Pack أسبوعي",
+            "تحقق من أفضل مشكلة بالأدلة",
+            "حسّن مسار قرار واحد قابل للقياس",
+            "وثّق أدلة التسليم قبل تحويلها إلى Proof عام",
         ],
         "top_3_decisions_en": [
-            "Focus on best sector",
-            "Improve highest conversion path",
-            "Document weekly Proof Pack",
+            "Verify the highest-priority problem with evidence",
+            "Improve one measurable decision path",
+            "Document delivery evidence before turning it into public proof",
         ],
-        "next_week_focus": "scale_what_worked + cut_what_didnt",
-        "data_status": "live" if diagnostics_done > 0 else "insufficient_data",
+        "next_week_focus": "advance_verified_stage_or_stop_low_value_work",
+        "data_status": "caller_supplied_counts" if diagnostics_done > 0 else "insufficient_data",
         "action_mode": "approval_required",
     }

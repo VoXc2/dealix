@@ -87,25 +87,58 @@ def test_rank_accounts_orders_by_score() -> None:
     assert ranked[0]["placeholder"] == "Y"
 
 
-def test_offer_match_returns_499_pilot() -> None:
+def test_offer_match_is_quote_only_current_path() -> None:
     offer = match_offer(sector="marketing_agency", signal_type="no_proof_visible")
-    assert offer["price_sar"] == 499
-    assert offer["price_halalah"] == 49900
-    assert "guaranteed_revenue" in offer["blocked_claims"]
+    assert offer["entry_motion"] == "Free Mini Diagnostic"
+    assert offer["entry_price_sar"] == 0
+    assert offer["price_sar"] is None
+    assert offer["price_halalah"] is None
+    assert offer["paid_motion_duration_days"] == 30
+    assert offer["price_mode"] == "customer_specific_quote_after_qualified_discovery"
+    assert offer["execution_allowed"] is False
+    assert "public_fixed_pilot_price" in offer["blocked_claims"]
 
 
-def test_offer_match_default_for_unknown() -> None:
+def test_offer_match_default_for_unknown_fails_closed() -> None:
     offer = match_offer(sector="unknown_sector", signal_type="unknown_problem")
-    assert offer["price_sar"] == 499  # always pilot tier
+    assert offer["price_sar"] is None
+    assert offer["entry_motion"] == "Free Mini Diagnostic"
     assert offer["approval_required"] is True
+    assert "QUALIFIED_DISCOVERY" in offer["commercial_path"]
 
 
 def test_content_engine_draft_only() -> None:
     out = draft_content(sector="marketing_agency", angle="proof_pack_visibility")
     assert out["action_mode"] == "draft_only"
     assert out["approval_required"] is True
+    assert out["external_publish_allowed_by_this_draft"] is False
     assert out["draft_ar"]
     assert out["draft_en"]
+
+
+def test_content_case_snippet_requires_permissioned_proof() -> None:
+    blocked = draft_content(
+        sector="marketing_agency",
+        angle="proof_pack_visibility",
+        content_type="case_snippet",
+    )
+    assert blocked["action_mode"] == "blocked"
+    assert blocked["blocked_reason"] == "PUBLIC_CASE_REQUIRES_SOURCE_BOUND_PROOF_AND_PERMISSION"
+
+    allowed = draft_content(
+        sector="marketing_agency",
+        angle="proof_pack_visibility",
+        content_type="case_snippet",
+        proof_context={
+            "customer_approved": True,
+            "signed_publish_permission": True,
+            "audience": "public_allowed",
+            "source_ref": "proof://example",
+            "result_summary": "Verified delivery evidence",
+        },
+    )
+    assert allowed["action_mode"] == "draft_only"
+    assert allowed["truth_class"] == "PERMISSIONED_PROOF_DRAFT"
 
 
 def test_warm_route_blocks_cold_channels() -> None:
@@ -115,10 +148,12 @@ def test_warm_route_blocks_cold_channels() -> None:
         assert out["action_mode"] == "blocked"
 
 
-def test_warm_route_allows_safe_channels() -> None:
+def test_warm_route_allows_bounded_safe_draft() -> None:
     out = draft_warm_route(channel="founder_warm_intro", sector="b2b_services")
     assert out["action_mode"] == "draft_only"
-    assert out["send_method"] == "manual_only"
+    assert out["send_method"] == "manual_or_policy_governed_only"
+    assert out["relationship_or_consent_proven_by_this_function"] is False
+    assert out["external_send_allowed_by_this_function"] is False
 
 
 def test_experiment_engine_baseline() -> None:
@@ -180,37 +215,45 @@ def test_diagnostic_blocked_without_consent() -> None:
     assert diag.get("blocked") is True
 
 
-def test_diagnostic_with_consent_returns_seven_day_plan() -> None:
+def test_diagnostic_with_consent_retires_seven_day_commercial_plan() -> None:
     p = build_company_profile(company_handle="X", sector="b2b_services",
                               biggest_problem="weak_followup",
                               consent_for_diagnostic=True)
     diag = build_growth_diagnostic(p)
-    assert "seven_day_plan" in diag
-    assert len(diag["seven_day_plan"]) >= 7
+    assert diag["seven_day_plan"] == []
+    assert diag["legacy_seven_day_plan_status"] == "RETIRED_NOT_COMMERCIAL_AUTHORITY"
+    assert len(diag["diagnostic_workplan"]) >= 7
+    assert diag["funnel_stage"] == "free_mini_diagnostic"
     assert diag["action_mode"] == "approval_required"
 
 
-def test_target_segments_returns_top_3() -> None:
+def test_target_segments_returns_research_hypotheses() -> None:
     p = build_company_profile(company_handle="X", sector="marketing_agency",
                               consent_for_diagnostic=True)
     segs = build_target_segments(p)
     assert len(segs) >= 1
     assert all("fit_score" in s for s in segs)
+    assert all(s["truth_class"] == "RESEARCH_HYPOTHESIS" for s in segs)
+    assert all(s["relationship_created"] is False for s in segs)
 
 
-def test_offer_recommendation_uses_499() -> None:
+def test_offer_recommendation_uses_current_quote_authority() -> None:
     p = build_company_profile(company_handle="X", sector="marketing_agency",
                               biggest_problem="no_proof_visible",
                               consent_for_diagnostic=True)
     offer = build_offer_recommendation(p)
-    assert offer["price_sar"] == 499
+    assert offer["price_sar"] is None
+    assert offer["entry_motion"] == "Free Mini Diagnostic"
+    assert offer["paid_motion_duration_days"] == 30
 
 
-def test_content_pack_returns_5_items() -> None:
+def test_content_pack_returns_5_items_and_blocks_unproven_case() -> None:
     p = build_company_profile(company_handle="X", sector="b2b_services",
                               consent_for_diagnostic=True)
     pack = build_content_pack(p)
     assert len(pack) == 5
+    case_item = next(item for item in pack if item["content_type"] == "case_snippet")
+    assert case_item["action_mode"] == "blocked"
 
 
 def test_support_insight_no_data() -> None:
@@ -224,6 +267,7 @@ def test_support_insight_with_data() -> None:
     })
     assert out.get("insufficient_data") is False
     assert out["top_repeated_question"] == "billing"
+    assert out["truth_class"] == "SOURCE_DERIVED_INTERNAL_INSIGHT"
 
 
 def test_weekly_report_insufficient_data() -> None:
@@ -232,10 +276,10 @@ def test_weekly_report_insufficient_data() -> None:
     assert rep["data_status"] == "insufficient_data"
 
 
-def test_weekly_report_live_data() -> None:
+def test_weekly_report_caller_supplied_counts() -> None:
     p = build_company_profile(company_handle="X", consent_for_diagnostic=True)
     rep = build_weekly_report(profile=p, diagnostics_done=2)
-    assert rep["data_status"] == "live"
+    assert rep["data_status"] == "caller_supplied_counts"
 
 
 # ─────────────── B5 Proof-to-Market ───────────────
@@ -318,6 +362,8 @@ async def test_growth_beast_today() -> None:
     assert r.status_code == 200
     body = r.json()
     assert "best_offer" in body
+    assert body["best_offer"]["price_sar"] is None
+    assert body["best_offer"]["entry_motion"] == "Free Mini Diagnostic"
     assert "blocked_actions" in body
     assert "cold_whatsapp" in body["blocked_actions"]
 

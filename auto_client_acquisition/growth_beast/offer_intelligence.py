@@ -1,81 +1,104 @@
-"""Offer Intelligence — sector/pain → recommended offer."""
+"""Offer Intelligence — sector/pain -> current-authority commercial motion.
+
+This module is callable from the Growth Beast API and Company Growth Beast. It
+therefore must never resurrect historical fixed-price/7-day launch offers.
+
+Current authority:
+    Free Mini Diagnostic
+    -> Qualified Discovery
+    -> Customer-Specific Quote
+    -> Revenue Command Pilot — 30 days
+    -> Proof Pack
+    -> Stop / Expand / Redesign
+"""
 from __future__ import annotations
 
-_OFFER_MAP: dict[tuple[str, str], dict] = {
+
+_ANGLE_MAP: dict[tuple[str, str], dict] = {
     ("marketing_agency", "no_proof_visible"): {
-        "offer_name_ar": "Sprint إثبات النتائج للوكالات",
-        "offer_name_en": "Agency Proof Sprint",
-        "headline_ar": "Proof Pack أسبوعي يحتفظ لك بعملائك",
-        "headline_en": "Weekly Proof Pack that keeps your clients longer",
-        "promise": "delivered_outputs_documented_for_each_client",
-        "non_promise": "no_guaranteed_lead_count_for_their_clients",
+        "diagnostic_focus_ar": "فجوة الإثبات والتقرير للعميل",
+        "diagnostic_focus_en": "client proof and reporting gap",
+        "hypothesis_ar": "قد توجد فجوة بين التنفيذ وما يستطيع العميل إثباته أو رؤيته.",
+        "hypothesis_en": "There may be a gap between delivery and what the client can verify or see.",
     },
     ("b2b_services", "weak_followup"): {
-        "offer_name_ar": "Sprint تحويل المتابعة B2B",
-        "offer_name_en": "B2B Follow-up Conversion Sprint",
-        "headline_ar": "حوّل الاستفسارات إلى مسار متابعة منظّم خلال 7 أيام",
-        "headline_en": "Convert inquiries into an organized follow-up flow in 7 days",
-        "promise": "drafts_and_calendar",
-        "non_promise": "no_guaranteed_meetings",
+        "diagnostic_focus_ar": "تسرب المتابعة وتملّك الخطوة التالية",
+        "diagnostic_focus_en": "follow-up leakage and next-step ownership",
+        "hypothesis_ar": "قد تضيع فرص بسبب عدم وضوح المالك أو الخطوة التالية أو دليل المتابعة.",
+        "hypothesis_en": "Opportunities may be lost when owner, next step, or follow-up evidence is unclear.",
     },
     ("consulting_training", "needs_growth_clarity"): {
-        "offer_name_ar": "Sprint تحسين العرض والتسجيل",
-        "offer_name_en": "Offer & Enrollment Sprint",
-        "headline_ar": "وضّح عرضك وحسّن تحويل المهتمين",
-        "headline_en": "Clarify your offer and improve enrollment conversion",
-        "promise": "objection_bank_and_followup_drafts",
-        "non_promise": "no_guaranteed_enrollment",
+        "diagnostic_focus_ar": "وضوح العرض ومسار الاهتمام إلى قرار",
+        "diagnostic_focus_en": "offer clarity and interest-to-decision flow",
+        "hypothesis_ar": "قد تكون فجوة التحويل مرتبطة بوضوح العرض أو مسار القرار، ويجب إثبات ذلك بالبيانات.",
+        "hypothesis_en": "Conversion friction may relate to offer clarity or the decision path and must be proven with evidence.",
     },
     ("saas", "support_complaints"): {
-        "offer_name_ar": "Sprint اكتشاف ثغرات الدعم",
-        "offer_name_en": "SaaS Support Gap Sprint",
-        "headline_ar": "صنّف تذاكرك واكتشف ثغرات KB",
-        "headline_en": "Classify tickets and discover KB gaps",
-        "promise": "tickets_classified_and_drafts",
-        "non_promise": "no_full_support_replacement",
+        "diagnostic_focus_ar": "أنماط الدعم وفجوات المعرفة والتصعيد",
+        "diagnostic_focus_en": "support patterns, knowledge gaps, and escalation",
+        "hypothesis_ar": "قد تكشف بيانات الدعم عن أسئلة متكررة أو فجوات معرفة قابلة للمعالجة.",
+        "hypothesis_en": "Support evidence may reveal repeated questions or knowledge gaps worth addressing.",
     },
     ("ecommerce", "support_complaints"): {
-        "offer_name_ar": "Sprint رؤى الدعم للتجارة الإلكترونية",
-        "offer_name_en": "Ecommerce Support Insight Sprint",
-        "headline_ar": "ردود أسرع + تعلم من أسئلة العملاء",
-        "headline_en": "Faster responses + learning from customer questions",
-        "promise": "categorized_support_drafts_only",
-        "non_promise": "no_auto_refund_no_live_send",
+        "diagnostic_focus_ar": "أنماط أسئلة العملاء وفجوات الرد والتصعيد",
+        "diagnostic_focus_en": "customer-question patterns, response gaps, and escalation",
+        "hypothesis_ar": "قد تظهر من أسئلة العملاء فرص لتحسين الردود أو المعرفة، بدون افتراض أثر إيرادي.",
+        "hypothesis_en": "Customer questions may reveal response or knowledge improvements without assuming revenue impact.",
     },
 }
 
-
-_DEFAULT_OFFER = {
-    "offer_name_ar": "Sprint نمو مخصّص — 7 أيّام",
-    "offer_name_en": "Custom 7-Day Growth Proof Sprint",
-    "headline_ar": "نخرج معك خلال 7 أيّام بـ Proof Pack داخلي وخطة تنفيذ",
-    "headline_en": "We deliver in 7 days an internal Proof Pack and execution plan",
-    "promise": "diagnostic_plan_drafts_proof_pack",
-    "non_promise": "no_guaranteed_revenue",
+_DEFAULT_ANGLE = {
+    "diagnostic_focus_ar": "مشكلة إيرادية أو تشغيلية واحدة قابلة للإثبات",
+    "diagnostic_focus_en": "one evidence-testable revenue or operating problem",
+    "hypothesis_ar": "لا توجد فرضية قطاعية كافية؛ ابدأ من دليل العميل ومشكلته المعلنة.",
+    "hypothesis_en": "There is not enough sector-specific evidence; start with the customer's stated problem and source evidence.",
 }
 
 
 def match_offer(*, sector: str, signal_type: str) -> dict:
-    """Pick the best-fit offer template. Always 499 SAR pilot tier
-    unless the founder explicitly upgrades the customer to 30-day
-    or monthly later."""
+    """Return a safe commercial-motion recommendation, never a fixed price.
+
+    ``sector`` and ``signal_type`` choose a diagnostic angle only. Research or
+    heuristics cannot authorize a relationship, price, commercial outcome, or
+    paid scope.
+    """
     key = (sector.lower(), signal_type.lower())
-    base = _OFFER_MAP.get(key, _DEFAULT_OFFER)
+    angle = _ANGLE_MAP.get(key, _DEFAULT_ANGLE)
     return {
-        **base,
-        "price_sar": 499,
-        "price_halalah": 49900,
-        "duration_days": 7,
-        "seven_day_plan": [
-            "Day 0: intake + diagnostic kickoff",
-            "Day 1-2: opportunities + drafts",
-            "Day 3: approved manual sends",
-            "Day 4: follow-up plan",
-            "Day 5: risk note",
-            "Day 6: proof pack draft",
-            "Day 7: review + upsell decision",
+        **angle,
+        "entry_motion": "Free Mini Diagnostic",
+        "entry_price_sar": 0,
+        "paid_motion": "Revenue Command Pilot — 30 days",
+        "paid_motion_duration_days": 30,
+        "price_mode": "customer_specific_quote_after_qualified_discovery",
+        # Backward-compatible fields are intentionally null. A caller that
+        # requires a number must obtain approved named-customer quote evidence.
+        "price_sar": None,
+        "price_halalah": None,
+        "duration_days": None,
+        "commercial_path": [
+            "FREE_MINI_DIAGNOSTIC",
+            "QUALIFIED_DISCOVERY",
+            "CUSTOMER_SPECIFIC_QUOTE",
+            "30_DAY_REVENUE_COMMAND_PILOT",
+            "PROOF_PACK",
+            "STOP_EXPAND_REDESIGN",
         ],
-        "blocked_claims": ["guaranteed_revenue", "guaranteed_leads", "guaranteed_roi"],
+        "required_before_paid_scope": [
+            "verified_relationship_or_valid_inbound_context",
+            "buyer_stated_or_source_bound_problem",
+            "qualified_discovery",
+            "scope_and_acceptance_criteria",
+            "customer_specific_quote_approval",
+        ],
+        "blocked_claims": [
+            "guaranteed_revenue",
+            "guaranteed_leads",
+            "guaranteed_roi",
+            "invented_case_study",
+            "public_fixed_pilot_price",
+        ],
         "approval_required": True,
+        "execution_allowed": False,
         "action_mode": "draft_only",
     }
