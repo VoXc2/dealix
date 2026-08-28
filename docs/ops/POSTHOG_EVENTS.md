@@ -1,115 +1,146 @@
-# PostHog — Event Schema & Funnel Setup
+# PostHog — Marketing & Revenue Attribution Contract
 
-> Single source of truth for analytics events. Any new event must be added here **first**, then implemented.
+> Canonical analytics contract for Dealix marketing and commercial attribution.
+> Business truth comes from Revenue Mesh / evidence state. Analytics may observe it; analytics must never promote a state by itself.
 
-## Account
-- URL: https://app.posthog.com (US cloud) — confirmed for performance reasons; PII is minimised so cross-border is acceptable per PDPL with proper consent.
-- Owner: founder
-- Plan: Free (1M events/mo)
+## Current activation truth — 2026-08-28
 
-## Env Vars
-```env
-POSTHOG_API_KEY=phc_xxxxx
-POSTHOG_HOST=https://us.i.posthog.com
-```
+- The connected PostHog project exists, but the current project reports no captured events in the last 30 days.
+- Snippet onboarding is not complete.
+- Therefore no acquisition/conversion dashboard is currently evidence-backed.
+- Do not infer zero traffic or zero buyer interest from an inactive analytics pipeline.
 
-Backend client: `api/deps.py::get_posthog_client()`.
-Frontend snippet: `landing/posthog_snippet.html` (include on every page).
+## Commercial authority
 
-## Identification rules
-- **Anonymous browse** → use auto-generated distinct_id (PostHog default)
-- **Submitted demo form** → `posthog.identify(email_hash, { company, role })`
-  - **Never** send raw email as distinct_id — use SHA-256 hex of lowercased email
-- **Paying customer** → `posthog.identify(customer_id, { plan, signed_at })`
+Current buying path:
 
-## Core funnel events
+`Free Mini Diagnostic -> Qualified Discovery -> customer-specific quote -> 30-Day Revenue Command Pilot -> Proof -> Stop/Expand/Recurring`
 
-Names are **snake_case**, properties are JSON. Every event has `$insert_id` set server-side to allow idempotent replay.
+Retired analytics concepts must not return:
+- no `$1 pilot` funnel;
+- no public checkout funnel;
+- no `starter/growth/scale` public tiers;
+- no fixed public pilot amount;
+- no `checkout_success == verified revenue` shortcut.
 
-### Landing & top-of-funnel
-| Event | When | Properties |
-|-------|------|------------|
-| `page_view` | client auto | `path`, `referrer`, `utm_*` |
-| `pricing_viewed` | landing/pricing.html load | `plan_visible[]` |
-| `cta_clicked` | any CTA button | `cta_id`, `page` |
-| `diagnostic_started` | diagnostic.html step 1 | `sector` |
-| `diagnostic_completed` | diagnostic.html final step | `sector`, `score`, `archetype` |
+## Privacy / data-minimization boundary
 
-### Demo & qualification
-| Event | When | Properties |
-|-------|------|------------|
-| `demo_request_submitted` | server: POST /api/v1/public/demo-request returns 200 | `company_size`, `sector`, `source` |
-| `demo_request_failed` | server: same endpoint returns 4xx/5xx | `reason` |
-| `calendly_booked` | calendly webhook → /api/v1/webhooks/calendly | `slot_at`, `meeting_type` |
+Before production activation, verify the actual data-flow, hosting region, consent/notice, retention, transfer basis and customer-specific obligations.
 
-### Checkout (payments funnel)
-| Event | When | Properties |
-|-------|------|------------|
-| `checkout_started` | client: pricing.html plan click | `plan`, `amount_sar` |
-| `checkout_session_created` | server: POST /api/v1/checkout returns 200 | `plan`, `payment_id` |
-| `checkout_redirected_to_moyasar` | client: window.location → moyasar | `payment_id` |
-| `checkout_success` | server: webhook payment_paid → DB row | `plan`, `amount_sar`, `customer_id` |
-| `checkout_failed` | server: webhook payment_failed | `plan`, `reason` |
-| `checkout_refunded` | server: webhook payment_refunded | `plan`, `amount_sar` |
+Client-side analytics must not send raw:
+- email;
+- phone;
+- national ID;
+- message body;
+- form free text;
+- secret/token;
+- customer confidential data.
 
-### Product usage (post-paid)
-| Event | When | Properties |
-|-------|------|------------|
-| `dashboard_login` | server: successful /auth/login | `role` |
-| `lead_imported` | server: import_leads.py | `count`, `source_type` |
-| `lead_scored` | server: scoring pipeline | `priority`, `quality` |
-| `approval_requested` | server: any A1/A2/A3 class output | `class`, `module` |
-| `approval_decided` | server: human approval submitted | `decision`, `latency_sec` |
+Anonymous browsing stays anonymous. Session recording is disabled by default for the public marketing surface. Person identification is not required for marketing attribution.
 
-### Reliability
-| Event | When | Properties |
-|-------|------|------------|
-| `webhook_received` | any /webhooks/* hit | `source`, `signature_valid` |
-| `webhook_dlq_pushed` | dlq.push() | `queue`, `attempts`, `error_class` |
-| `retention_job_completed` | scheduled job | `job`, `deleted_count` |
-| `backup_completed` | hourly_backup.sh | `size_bytes`, `s3_uploaded` |
+## Layer A — anonymous marketing telemetry
 
-## Funnels to build (in PostHog UI)
+These events describe interaction, not commercial truth.
 
-### Funnel A — Landing → Pilot ($1)
-1. `page_view (path=/)`
-2. `pricing_viewed`
-3. `checkout_started (plan=pilot_1sar)`
-4. `checkout_session_created`
-5. `checkout_success (plan=pilot_1sar)`
+| Event | When | Minimum non-PII properties |
+|---|---|---|
+| `$pageview` | SDK page load | current URL, referrer (SDK) |
+| `cta_clicked` | reviewed CTA click | `cta_id`, `page`, `destination`, `utm_*` when present |
+| `qualified_visit` | only after an explicit, documented qualification rule; never every pageview | `source`, `channel`, `page`, `rule_version` |
+| `diagnostic_start` | first real interaction with the Mini Diagnostic | `source`, `channel`, `page`, optional non-PII segment |
+| `diagnostic_submit` | Mini Diagnostic accepted | `source`, `channel`, optional non-PII segment, `diagnostic_id` |
 
-Target conversion: ≥ 2% landing → pilot
+`qualified_visit` is intentionally not automatic. Bot filtering, visit depth, or an approved qualification rule must be defined before emitting it.
 
-### Funnel B — Pilot → Paid plan
-1. `checkout_success (plan=pilot_1sar)`
-2. `dashboard_login`
-3. `checkout_success (plan IN [starter, growth, scale])`
+## Layer B — evidence-backed commercial events
 
-Target conversion: ≥ 25% pilot → paid within 14 days
+These events are emitted only from the canonical evidence/revenue state or a verified adapter. A browser click cannot create them.
 
-### Funnel C — Demo → Calendly → Pilot
-1. `demo_request_submitted`
-2. `calendly_booked`
-3. `checkout_success`
+| Event | Truth requirement | Required references |
+|---|---|---|
+| `real_interaction` | real two-way/in-person/inbound interaction evidence | `evidence_id`, `source`, `channel` |
+| `verified_relationship` | relationship promotion passed Truth Firewall | `relationship_id`, `evidence_id`, `provenance` |
+| `qualified_problem` | qualified buyer problem with source/evidence | `opportunity_id`, `relationship_id`, `evidence_id` |
+| `discovery_booked` | booking/commitment evidence | `opportunity_id`, `evidence_id`, `source` |
+| `discovery_completed` | actual completed discovery evidence | `opportunity_id`, `evidence_id` |
+| `proposal_sent` | actual delivery/send receipt, not a draft | `opportunity_id`, `proposal_id`, `delivery_evidence_id` |
+| `pilot_agreed` | customer agreement evidence | `opportunity_id`, `agreement_evidence_id` |
+| `payment_verified` | verified payment evidence | `opportunity_id`, `payment_evidence_id`, `amount_sar` |
+| `delivery_proof` | customer delivery/outcome proof | `opportunity_id`, `proof_id` |
+| `referral` | verified referral event | `relationship_id`, `evidence_id` |
+| `expansion` | verified expansion/renewal agreement | `opportunity_id`, `evidence_id` |
 
-## Cohorts to build
+## Truth invariants
 
-- **Saudi enterprises** — `country == 'SA'` AND `company_size in ['51-200', '200+']`
-- **Hot pilots** — submitted demo AND booked Calendly within 24h
-- **At-risk paid** — `dashboard_login` not seen in 14 days
+- `pageview != qualified_visit`
+- `directory_record != real_interaction`
+- `research != verified_relationship`
+- `draft != proposal_sent`
+- `provider_accepted != delivered`
+- `invoice != payment_verified`
+- `synthetic_demo != delivery_proof`
+- `analytics_event != authority_to_change_revenue_state`
 
-## Dashboards to pin
+## Attribution dimensions
 
-1. **Acquisition** — landing visits, source breakdown, top UTM combos
-2. **Conversion** — Funnel A + B side-by-side
-3. **Reliability** — webhook_dlq_pushed rate, error rate vs Sentry
-4. **Revenue** — checkout_success count + sum(amount_sar) over time
+Use only when known and source-bound:
+- `source`
+- `channel`
+- `campaign`
+- `content`
+- `event_name`
+- `language`
+- `page`
+- `offer`
+- `account_scope_id` (pseudonymous/internal identifier only)
+- `opportunity_id`
+- `evidence_id`
 
-## PII rules
-- Never send raw `email`, `phone`, `national_id`, `card_*`
-- Always hash: `sha256(email.lower())`
-- IP capture: off (set `disable_session_recording=true`, `ip=None` server side)
-- Geo: only country-level
+UTM convention:
 
-## Schema enforcement
-Add to CI: `tests/test_posthog_schema.py` parses this file and verifies every `posthog.capture(event=...)` in code matches a row above. Any new event without a doc entry fails CI.
+`utm_source / utm_medium / utm_campaign / utm_content / utm_term`
+
+Event campaigns should use stable identifiers such as `big5_2026_aug`, `leap_2026`, `deepfest_2026`, not ad-hoc prose.
+
+## Canonical funnels
+
+### Funnel A — Discover -> Diagnostic
+1. `qualified_visit`
+2. `diagnostic_start`
+3. `diagnostic_submit`
+
+### Funnel B — Relationship -> Discovery
+1. `real_interaction`
+2. `verified_relationship`
+3. `qualified_problem`
+4. `discovery_booked`
+5. `discovery_completed`
+
+### Funnel C — Discovery -> Verified money
+1. `discovery_completed`
+2. `proposal_sent`
+3. `pilot_agreed`
+4. `payment_verified`
+
+### Funnel D — Proof -> Compounding distribution
+1. `payment_verified`
+2. `delivery_proof`
+3. `referral` and/or `expansion`
+
+## Dashboard activation gate
+
+Do not create/pin a production acquisition dashboard until:
+1. `$pageview` or equivalent public telemetry is observed in PostHog;
+2. at least `cta_clicked` and diagnostic events are observed from the intended public origin;
+3. test/internal traffic can be identified and excluded;
+4. source/UTM properties are verified from captured schema;
+5. business events remain server/evidence-backed.
+
+Once active, dashboard order is:
+1. Public acquisition and CTA movement.
+2. Diagnostic funnel.
+3. Relationship/discovery funnel.
+4. Discovery-to-payment funnel.
+5. Proof/referral/expansion.
+
+North Star remains `FIRST VERIFIED PAID DEALIX PILOT`; analytics does not redefine revenue truth.
