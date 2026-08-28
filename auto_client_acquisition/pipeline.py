@@ -1,11 +1,15 @@
 """
-Phase 8 Pipeline — orchestrates the full client acquisition funnel.
-خط إنتاج المرحلة 8 — ينسق قمع اكتساب العميل بالكامل.
+Legacy acquisition pipeline compatibility orchestrator.
 
 Flow:
-  raw payload → Intake → ICP Matcher → Pain Extractor → Qualification
-              → CRM sync → Booking → Proposal (if warm+)
-              → AutonomousDistributionEngine (product routing + proposal queue)
+  raw payload → Intake → ICP/Pain analysis → Qualification questions
+              → truth-gated CRM mirror → truth-gated booking/proposal/distribution
+
+IMPORTANT:
+Dealix Revenue Mesh / Company OS owns commercial truth. This compatibility
+pipeline may analyze unverified input, but it must not promote research or a
+fit score into a CRM relationship, deal, booking, proposal, or distribution
+candidate without evidence-backed authority metadata.
 """
 
 from __future__ import annotations
@@ -21,6 +25,7 @@ from auto_client_acquisition.agents.intake import IntakeAgent, Lead, LeadSource,
 from auto_client_acquisition.agents.pain_extractor import ExtractionResult, PainExtractorAgent
 from auto_client_acquisition.agents.proposal import Proposal, ProposalAgent
 from auto_client_acquisition.agents.qualification import QualificationAgent, QualificationResult
+from auto_client_acquisition.revenue_os.crm_mirror_policy import evaluate_hubspot_mirror
 from autonomous_growth.distribution_engine import (
     AutonomousDistributionEngine,
     DistributionEngineResult,
@@ -57,7 +62,7 @@ class PipelineResult:
 
 
 class AcquisitionPipeline:
-    """High-level orchestrator for Phase 8."""
+    """Compatibility orchestrator with fail-closed commercial side effects."""
 
     def __init__(self) -> None:
         self.intake = IntakeAgent()
@@ -76,17 +81,41 @@ class AcquisitionPipeline:
         *,
         source: LeadSource | str = LeadSource.WEBSITE,
         use_llm_pain: bool = True,
-        auto_book: bool = True,
+        auto_book: bool = False,
         auto_proposal: bool = False,
     ) -> PipelineResult:
-        """Run the full pipeline for a single payload."""
+        """Run analysis for one payload; commercial writes fail closed."""
         result = PipelineResult(lead=Lead(id="pending", source=LeadSource.MANUAL))
 
-        # Step 1 — Intake
+        # Step 1 — Intake. Intake normalizes input but does NOT verify commercial
+        # authority. Trusted adapters must stamp evidence metadata separately.
         lead = await self.intake.run(payload=payload, source=source)
         result.lead = lead
 
-        # Step 2 — Pain extraction (conditional on message presence)
+        # Preserve only an explicit trusted-adapter envelope. Browser/user fields
+        # alone are never authority. Internal adapters can pass this object after
+        # they have verified it against the canonical evidence plane.
+        trusted = payload.get("_dealix_verified")
+        if isinstance(trusted, dict) and trusted.get("authority_verified") is True:
+            allowed_keys = {
+                "authority_verified",
+                "truth_class",
+                "relationship_state",
+                "evidence_id",
+                "opportunity_id",
+                "consent_state",
+                "self_test",
+                "synthetic",
+                "suppressed",
+                "opted_out",
+                "quote_evidence_id",
+                "approved_quote_amount_sar",
+                "payment_verified",
+                "payment_evidence_id",
+            }
+            lead.metadata.update({k: trusted[k] for k in allowed_keys if k in trusted})
+
+        # Step 2 — Pain extraction (analysis only)
         if lead.message:
             try:
                 extraction = await self.pain_extractor.run(
@@ -101,7 +130,7 @@ class AcquisitionPipeline:
                 self.log.warning("pain_extraction_skipped", error=str(e))
                 result.warnings.append(f"pain_extraction_failed: {e}")
 
-        # Step 3 — ICP match
+        # Step 3 — ICP match (analysis only; fit != relationship)
         try:
             fit = await self.icp_matcher.run(lead=lead)
             result.fit_score = fit
@@ -110,7 +139,8 @@ class AcquisitionPipeline:
             self.log.warning("icp_match_failed", error=str(e))
             result.warnings.append(f"icp_match_failed: {e}")
 
-        # Step 4 — Qualification question set
+        # Step 4 — Qualification question set. A model/status result does not by
+        # itself authorize CRM/deal/contact promotion.
         try:
             qual = await self.qualification.run(lead=lead, fit_score=result.fit_score)
             result.qualification = qual
@@ -119,16 +149,27 @@ class AcquisitionPipeline:
             self.log.warning("qualification_failed", error=str(e))
             result.warnings.append(f"qualification_failed: {e}")
 
-        # Step 5 — CRM sync (best-effort)
-        try:
-            sync = await self.crm.run(lead=lead, fit_score=result.fit_score)
-            result.crm_sync = sync
-        except Exception as e:
-            self.log.warning("crm_sync_failed", error=str(e))
-            result.warnings.append(f"crm_sync_failed: {e}")
+        mirror = evaluate_hubspot_mirror(lead)
 
-        # Step 6 — Booking (only if decent fit)
-        if auto_book and result.fit_score and result.fit_score.overall_score >= 0.5:
+        # Step 5 — CRM mirror (best-effort, contact-only by default). The adapter
+        # independently re-evaluates the same truth policy.
+        if mirror.allow_contact:
+            try:
+                sync = await self.crm.run(
+                    lead=lead,
+                    fit_score=result.fit_score,
+                    create_deal=False,
+                )
+                result.crm_sync = sync
+            except Exception as e:
+                self.log.warning("crm_sync_failed", error=str(e))
+                result.warnings.append(f"crm_sync_failed: {e}")
+        else:
+            result.warnings.append("crm_mirror_blocked: " + ",".join(mirror.reasons))
+
+        # Step 6 — Booking requires evidence-backed relationship authority in
+        # addition to fit. Fit score alone can never schedule a buyer.
+        if auto_book and mirror.allow_contact and result.fit_score and result.fit_score.overall_score >= 0.5:
             try:
                 booking = await self.booking.run(lead=lead)
                 result.booking = booking
@@ -136,9 +177,11 @@ class AcquisitionPipeline:
                 self.log.warning("booking_failed", error=str(e))
                 result.warnings.append(f"booking_failed: {e}")
 
-        # Step 7 — Proposal (only for warm/hot and opt-in)
+        # Step 7 — Proposal remains internal/draft and requires the same verified
+        # relationship boundary plus qualified status.
         if (
             auto_proposal
+            and mirror.allow_contact
             and result.fit_score
             and result.fit_score.overall_score >= 0.7
             and lead.status in (LeadStatus.QUALIFIED, LeadStatus.DISCOVERY, LeadStatus.PROPOSAL)
@@ -150,42 +193,40 @@ class AcquisitionPipeline:
                 self.log.warning("proposal_failed", error=str(e))
                 result.warnings.append(f"proposal_failed: {e}")
 
-        # Step 8 — Autonomous distribution (product routing + proposal queue)
-        # Routes the qualified lead to the right Dealix product tier and
-        # generates a bilingual proposal draft that awaits founder approval.
-        try:
-            dist_payload = {
-                "lead_id": lead.id,
-                "icp_score": result.fit_score.overall_score if result.fit_score else 0.4,
-                "sector": getattr(lead, "sector", ""),
-                "company_name": lead.company_name if hasattr(lead, "company_name") else "",
-                "company_size": getattr(lead, "company_size", "medium"),
-                "budget_signal": getattr(lead, "budget_signal", None),
-                "locale": lead.locale,
-            }
-            result.distribution = await self.distribution_engine.process_lead(dist_payload)
-        except Exception as e:
-            self.log.warning("distribution_engine_skipped", error=str(e))
-            result.warnings.append(f"distribution_engine_failed: {e}")
+        # Step 8 — Legacy distribution is blocked for unverified research. The
+        # canonical Revenue Mesh remains the authority for offer/channel routing.
+        if mirror.allow_contact:
+            try:
+                dist_payload = {
+                    "lead_id": lead.id,
+                    "icp_score": result.fit_score.overall_score if result.fit_score else 0.4,
+                    "sector": getattr(lead, "sector", ""),
+                    "company_name": lead.company_name if hasattr(lead, "company_name") else "",
+                    "company_size": getattr(lead, "company_size", "medium"),
+                    "budget_signal": None,
+                    "locale": lead.locale,
+                }
+                result.distribution = await self.distribution_engine.process_lead(dist_payload)
+            except Exception as e:
+                self.log.warning("distribution_engine_skipped", error=str(e))
+                result.warnings.append(f"distribution_engine_failed: {e}")
+        else:
+            result.warnings.append("distribution_blocked_unverified_relationship")
 
         self.log.info(
             "pipeline_complete",
             lead_id=lead.id,
             tier=result.fit_score.tier if result.fit_score else "?",
             status=lead.status.value,
+            commercial_authority=mirror.allow_contact,
             distribution_tier=(
                 result.distribution.product_route.recommended_tier.value
                 if result.distribution and result.distribution.product_route
-                else "?"
+                else "blocked_or_none"
             ),
             warnings=len(result.warnings),
         )
         return result
-
-    # ───────────────────────────────────────────────────────
-    # BATCH MODE — combines multiple leads into concurrent pipeline runs
-    # وضع الدفعات — يشغّل عدة عملاء محتملين بالتوازي
-    # ───────────────────────────────────────────────────────
 
     BATCH_MIN_SIZE = 5
     BATCH_MAX_CONCURRENCY = 8
@@ -196,19 +237,11 @@ class AcquisitionPipeline:
         *,
         source: LeadSource | str = LeadSource.WEBSITE,
         use_llm_pain: bool = True,
-        auto_book: bool = True,
+        auto_book: bool = False,
         auto_proposal: bool = False,
         concurrency: int | None = None,
     ) -> list[PipelineResult]:
-        """
-        Run the pipeline for a batch of payloads concurrently.
-        يشغل المعالجة لمجموعة من العملاء بالتوازي.
-
-        When len(payloads) >= BATCH_MIN_SIZE, leads share LLM calls where
-        possible (pain extraction and ICP match are batched by agents that
-        support it).  Otherwise each runs as a standalone pipeline with a
-        bounded concurrency semaphore.
-        """
+        """Run a bounded batch; every item keeps its own truth gate."""
         if not payloads:
             return []
 

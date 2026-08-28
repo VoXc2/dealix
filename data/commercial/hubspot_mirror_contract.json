@@ -1,0 +1,60 @@
+{
+  "schema": "dealix.hubspot-mirror-contract.v1",
+  "truth_owner": "DEALIX_COMPANY_OS",
+  "hubspot_role": "CRM_MIRROR",
+  "north_star": "FIRST_VERIFIED_PAID_PILOT",
+  "contact_mirror": {
+    "default_allowed": false,
+    "requires": [
+      "authority_verified",
+      "truth_class_REAL",
+      "evidence_id",
+      "verified_relationship_state",
+      "real_contact_identifier"
+    ],
+    "blocked_flags": [
+      "self_test",
+      "synthetic",
+      "suppressed",
+      "opted_out"
+    ]
+  },
+  "deal_mirror": {
+    "default_allowed": false,
+    "requires": [
+      "contact_mirror_allowed",
+      "qualified_opportunity_state",
+      "opportunity_id"
+    ],
+    "closedwon_requires": [
+      "payment_verified",
+      "payment_evidence_id"
+    ]
+  },
+  "amount_semantics": {
+    "lead_budget_is_crm_amount": false,
+    "crm_amount_is_verified_revenue": false,
+    "approved_quote_amount_requires_quote_evidence": true
+  },
+  "hard_invariants": [
+    "research_is_not_relationship",
+    "fit_score_is_not_relationship",
+    "crm_contact_is_not_verified_relationship",
+    "crm_deal_is_not_verified_opportunity",
+    "crm_closedwon_is_not_payment_without_payment_evidence",
+    "invoice_is_not_payment",
+    "draft_is_not_sent",
+    "synthetic_is_not_customer_proof",
+    "enrichment_is_not_consent",
+    "public_contact_data_is_not_channel_permission"
+  ],
+  "recommended_properties": [
+    "dealix_truth_class",
+    "dealix_relationship_state",
+    "dealix_evidence_id",
+    "dealix_consent_state",
+    "dealix_channel_status",
+    "dealix_opportunity_id",
+    "dealix_next_evidence"
+  ]
+}
