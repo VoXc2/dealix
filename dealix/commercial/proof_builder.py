@@ -1,9 +1,9 @@
 """Evidence-bound Proof Pack Builder.
 
 Only source-linked, timestamped, non-synthetic events can contribute to proof
-readiness. This compatibility builder creates an internal review draft only. It
-must not create payment truth, verified revenue, customer value, or external
-commercial authority from raw reference strings.
+readiness. The builder creates an internal review draft; it never sends,
+publishes, charges, creates payment/revenue truth, or infers customer value from
+proposals, invoices, or unverified evidence references.
 """
 
 from __future__ import annotations
@@ -16,7 +16,13 @@ from typing import Any
 from pydantic import BaseModel, ConfigDict, Field
 
 UNKNOWN = "UNKNOWN_NOT_EVIDENCE_BACKED"
-REFERENCE_ONLY = "REFERENCE_PRESENT_NOT_VERIFIED"
+EVIDENCE_REF_PRESENT = "EVIDENCE_REF_PRESENT_NOT_INDEPENDENTLY_VERIFIED"
+RECORDED_NOT_VALIDATED = "RECORDED_MEASUREMENT_NOT_CUSTOMER_VALIDATED"
+PARTIALLY_VALIDATED = "PARTIALLY_CUSTOMER_VALIDATED_MEASUREMENTS"
+CUSTOMER_VALIDATED_WITH_DELIVERY_REF = (
+    "CUSTOMER_VALIDATED_MEASUREMENTS_WITH_DELIVERY_EVIDENCE_REF_PRESENT"
+)
+PUBLIC_REUSE_REQUIRES_PERMISSION = "SPECIFIC_CUSTOMER_PERMISSION_REQUIRED"
 
 
 class ProofEvent(BaseModel):
@@ -69,6 +75,8 @@ class ProofPackDocument(BaseModel):
     verified_result_state: str = UNKNOWN
     delivery_evidence_state: str = UNKNOWN
     payment_evidence_state: str = UNKNOWN
+    public_reuse_authorized: bool = False
+    public_reuse_state: str = PUBLIC_REUSE_REQUIRES_PERMISSION
 
     def to_dict(self) -> dict[str, Any]:
         return json.loads(self.model_dump_json())
@@ -79,17 +87,34 @@ class ProofPackDocument(BaseModel):
         return data
 
 
-_LEVEL_THRESHOLDS = {"L0": 0, "L1": 3, "L2": 6, "L3": 9}
+_LEVEL_THRESHOLDS = {
+    "L0": 0,
+    "L1": 3,
+    "L2": 6,
+    "L3": 9,
+}
 
 
 class ProofBuilder:
     """Build an approval-gated, source-bound internal proof draft."""
 
     @staticmethod
-    def _eligible_event(event: ProofEvent) -> bool:
+    def _valid_timestamp(value: str) -> bool:
+        text = value.strip()
+        if not text:
+            return False
+        normalized = f"{text[:-1]}+00:00" if text.endswith("Z") else text
+        try:
+            parsed = datetime.fromisoformat(normalized)
+        except ValueError:
+            return False
+        return parsed.tzinfo is not None
+
+    @classmethod
+    def _eligible_event(cls, event: ProofEvent) -> bool:
         return bool(
             event.source_ref.strip()
-            and event.recorded_at.strip()
+            and cls._valid_timestamp(event.recorded_at)
             and not event.synthetic
         )
 
@@ -100,6 +125,14 @@ class ProofBuilder:
             and event.delta_pct is not None
             and bool(event.metric_before.strip())
             and bool(event.metric_after.strip())
+        )
+
+    @classmethod
+    def _customer_validated_event(cls, event: ProofEvent) -> bool:
+        return bool(
+            cls._measured_event(event)
+            and event.customer_validated
+            and event.customer_validation_ref.strip()
         )
 
     @staticmethod
@@ -119,18 +152,12 @@ class ProofBuilder:
             "events": sorted(
                 (event.model_dump(mode="json") for event in req.events),
                 key=lambda event: json.dumps(
-                    event,
-                    ensure_ascii=False,
-                    sort_keys=True,
-                    separators=(",", ":"),
+                    event, ensure_ascii=False, sort_keys=True, separators=(",", ":")
                 ),
             ),
         }
         payload = json.dumps(
-            normalized,
-            ensure_ascii=False,
-            sort_keys=True,
-            separators=(",", ":"),
+            normalized, ensure_ascii=False, sort_keys=True, separators=(",", ":")
         )
         return hashlib.sha256(payload.encode("utf-8")).hexdigest()[:16]
 
@@ -166,65 +193,67 @@ class ProofBuilder:
         return min(base + bonus, 100) if approved else min(bonus, 20)
 
     @classmethod
+    def _result_state(
+        cls,
+        measured: list[ProofEvent],
+        delivery_refs: list[str],
+    ) -> str:
+        if not measured:
+            return UNKNOWN
+        validated_count = sum(cls._customer_validated_event(event) for event in measured)
+        if validated_count == len(measured) and delivery_refs:
+            return CUSTOMER_VALIDATED_WITH_DELIVERY_REF
+        if validated_count:
+            return PARTIALLY_VALIDATED
+        return RECORDED_NOT_VALIDATED
+
+    @classmethod
+    def _as_of(cls, events: list[ProofEvent]) -> str:
+        parsed: list[datetime] = []
+        for event in events:
+            if not cls._valid_timestamp(event.recorded_at):
+                continue
+            text = event.recorded_at.strip()
+            normalized = f"{text[:-1]}+00:00" if text.endswith("Z") else text
+            parsed.append(datetime.fromisoformat(normalized))
+        if not parsed:
+            return UNKNOWN
+        return max(parsed).astimezone(UTC).isoformat().replace("+00:00", "Z")
+
+    @classmethod
     def build(cls, req: ProofBuildRequest) -> ProofPackDocument:
         if any(
-            event.metric_after == ""
-            and event.delta_pct is not None
-            and event.delta_pct > 0
+            event.metric_after == "" and event.delta_pct is not None and event.delta_pct > 0
             for event in req.events
         ):
             raise ValueError("NO_FAKE_PROOF: delta_pct set without metric_after")
 
         pack_id = cls._pack_id(req)
-        level = cls._compute_level(
-            req.events,
-            approved_by_founder=req.approved_by_founder,
-        )
+        level = cls._compute_level(req.events, approved_by_founder=req.approved_by_founder)
         evidence_refs = cls._refs(
             [event.source_ref for event in req.events if cls._eligible_event(event)]
         )
         measured = [event for event in req.events if cls._measured_event(event)]
-        customer_validated = any(
-            event.customer_validated and event.customer_validation_ref.strip()
-            for event in measured
-        )
-
-        # These are untyped compatibility refs. Presence may be reported, but this
-        # builder cannot verify payment/delivery truth. Canonical typed evidence
-        # validation lives in the buyer/proof evidence path.
-        delivery_state = (
-            REFERENCE_ONLY if cls._refs(req.delivery_evidence_refs) else UNKNOWN
-        )
-        payment_state = (
-            REFERENCE_ONLY if cls._refs(req.payment_evidence_refs) else UNKNOWN
-        )
-
-        if measured and customer_validated:
-            verified_result_state = "RECORDED_MEASUREMENT_CUSTOMER_VALIDATED_DELIVERY_UNVERIFIED"
-        elif measured:
-            verified_result_state = "RECORDED_MEASUREMENT_NOT_CUSTOMER_VALIDATED"
-        else:
-            verified_result_state = UNKNOWN
+        delivery_refs = cls._refs(req.delivery_evidence_refs)
+        payment_refs = cls._refs(req.payment_evidence_refs)
+        delivery_state = EVIDENCE_REF_PRESENT if delivery_refs else UNKNOWN
+        payment_state = EVIDENCE_REF_PRESENT if payment_refs else UNKNOWN
+        result_state = cls._result_state(measured, delivery_refs)
 
         sections = cls._build_sections(
             req,
             level,
             measured,
-            verified_result_state,
+            result_state,
             delivery_state,
             payment_state,
         )
-        markdown = cls._render_markdown(
-            req,
-            sections,
-            pack_id,
-            level,
-            evidence_refs,
-        )
+        markdown = cls._render_markdown(req, sections, pack_id, level, evidence_refs)
         eligible_events = [event for event in req.events if cls._eligible_event(event)]
         fake_gate = bool(
             req.approved_by_founder
-            and eligible_events
+            and measured
+            and req.events
             and len(eligible_events) == len(req.events)
         )
 
@@ -240,9 +269,11 @@ class ProofBuilder:
             score=cls._compute_score(req.events, level, req.approved_by_founder),
             is_fake_proof_gate_passed=fake_gate,
             customer_value_claim=False,
-            verified_result_state=verified_result_state,
+            verified_result_state=result_state,
             delivery_evidence_state=delivery_state,
             payment_evidence_state=payment_state,
+            public_reuse_authorized=False,
+            public_reuse_state=PUBLIC_REUSE_REQUIRES_PERMISSION,
         )
 
     @classmethod
@@ -265,7 +296,7 @@ class ProofBuilder:
             + (
                 f" [المصدر: {event.source_ref}]"
                 if cls._eligible_event(event)
-                else " [غير مثبت المصدر]"
+                else " [دليل غير مؤهل]"
             )
             for event in req.events
         )
@@ -279,7 +310,7 @@ class ProofBuilder:
             + (
                 f" [source: {event.source_ref}]"
                 if cls._eligible_event(event)
-                else " [source not verified]"
+                else " [evidence not eligible]"
             )
             for event in req.events
         )
@@ -294,12 +325,12 @@ class ProofBuilder:
             for event in measured
         ) or UNKNOWN
         result_notice_ar = (
-            "القياسات مرتبطة بمراجع مصدرية، لكنها لا تصبح قيمة عميل مثبتة أو دليل تسليم/دفع متحققًا داخل هذا المسار."
+            "القياسات مرتبطة بمراجع مصدرية، لكنها لا تصبح قيمة عميل أو إيرادًا مثبتًا من هذا الـbuilder."
             if measured
             else "لا توجد نتيجة قياس مصدرية مكتملة."
         )
         result_notice_en = (
-            "Measurements are source-linked, but this compatibility path does not turn them or raw refs into verified customer value, delivery, or payment truth."
+            "Measurements have source references, but this builder does not turn them into verified customer value or revenue."
             if measured
             else "No complete source-linked measurement is available."
         )
@@ -319,20 +350,20 @@ class ProofBuilder:
             "results_ar": f"{results_ar}\n\n{result_notice_ar}",
             "results_en": f"{results_en}\n\n{result_notice_en}",
             "evidence_ar": (
-                f"حالة مرجع التسليم: {delivery_state} | حالة مرجع الدفع: {payment_state} | "
-                f"حالة النتيجة: {verified_result_state}"
+                f"مرجع دليل التسليم: {delivery_state} | مرجع دليل الدفع: {payment_state} | "
+                f"حالة القياس: {verified_result_state}"
             ),
             "evidence_en": (
-                f"Delivery reference state: {delivery_state} | Payment reference state: {payment_state} | "
-                f"Result state: {verified_result_state}"
+                f"Delivery evidence ref: {delivery_state} | Payment evidence ref: {payment_state} | "
+                f"Measurement state: {verified_result_state}"
             ),
             "next_steps_ar": (
-                "مراجعة المؤسس ثم التحقق عبر مسار الأدلة canonical قبل أي قرار STOP / EXPAND / REDESIGN."
+                "مراجعة المؤسس ثم مراجعة العميل للأدلة قبل أي قرار STOP / EXPAND / REDESIGN أو إعادة استخدام عام."
                 if level in ("L1", "L2", "L3")
                 else "جمع أدلة مصدرية مؤرخة ومقياس أساس معتمد قبل رفع مستوى الإثبات."
             ),
             "next_steps_en": (
-                "Founder review followed by canonical evidence verification before any STOP / EXPAND / REDESIGN decision."
+                "Founder review followed by customer evidence review before any STOP / EXPAND / REDESIGN or public reuse decision."
                 if level in ("L1", "L2", "L3")
                 else "Collect dated source evidence and an approved baseline before raising proof level."
             ),
@@ -347,86 +378,87 @@ class ProofBuilder:
         level: str,
         evidence_refs: list[str],
     ) -> str:
-        as_of = max(
-            (event.recorded_at for event in req.events if event.recorded_at),
-            default=UNKNOWN,
-        )
+        as_of = cls._as_of(req.events)
         return f"""# طقم الإثبات — {req.company_name}
 **Proof Pack — {req.company_name}**
 
 المعرف: `{pack_id}` | المستوى: **{level}** | as_of: {as_of}
 الحالة: **يتطلب موافقة المؤسس** | الأحداث: {len(req.events)}
 مراجع الأدلة: {", ".join(evidence_refs) or UNKNOWN}
+إعادة الاستخدام العام: **{PUBLIC_REUSE_REQUIRES_PERMISSION}**
 
 ---
 
 ## الملخص التنفيذي / Executive Summary
 
-**{sections['executive_summary_ar']}**
+**{sections["executive_summary_ar"]}**
 
-*{sections['executive_summary_en']}*
+*{sections["executive_summary_en"]}*
 
 ---
 
 ## المشكلة / Problem
 
-**{sections['problem_ar']}**
+**{sections["problem_ar"]}**
 
-*{sections['problem_en']}*
+*{sections["problem_en"]}*
 
 ---
 
 ## الإجراءات المتخذة / Actions Taken
 
-{sections['actions_ar']}
+{sections["actions_ar"]}
 
 ---
 *Actions (EN):*
 
-{sections['actions_en']}
+{sections["actions_en"]}
 
 ---
 
 ## النتائج / Results
 
-{sections['results_ar']}
+{sections["results_ar"]}
 
 ---
 *Results (EN):*
 
-{sections['results_en']}
+{sections["results_en"]}
 
 ---
 
 ## Evidence State / حالة الدليل
 
-**{sections['evidence_ar']}**
+**{sections["evidence_ar"]}**
 
-*{sections['evidence_en']}*
+*{sections["evidence_en"]}*
 
 ---
 
 ## الخطوة التالية / Next Step
 
-**{sections['next_steps_ar']}**
+**{sections["next_steps_ar"]}**
 
-*{sections['next_steps_en']}*
+*{sections["next_steps_en"]}*
 
 ---
 
-> هذا الطقم للمراجعة الداخلية فقط — لن يُسلَّم للعميل دون موافقة المؤسس.
-> This pack is for internal review only — will not be delivered without founder approval.
+> هذا الطقم للمراجعة الداخلية فقط — لن يُسلَّم أو يُنشر دون موافقة صريحة مناسبة.
+> This pack is for internal review only — it will not be delivered or published without appropriate explicit approval.
 
-> Raw payment or delivery references are not verification. Canonical typed evidence is required.
 > **القيمة التقديرية ليست قيمة مُتحقَّقة** — Estimated value is not Verified value.
 """
 
 
 __all__ = [
+    "CUSTOMER_VALIDATED_WITH_DELIVERY_REF",
+    "EVIDENCE_REF_PRESENT",
+    "PARTIALLY_VALIDATED",
+    "PUBLIC_REUSE_REQUIRES_PERMISSION",
+    "RECORDED_NOT_VALIDATED",
     "ProofBuildRequest",
     "ProofBuilder",
     "ProofEvent",
     "ProofPackDocument",
-    "REFERENCE_ONLY",
     "UNKNOWN",
 ]
