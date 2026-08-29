@@ -226,7 +226,7 @@ class RevenueLabEngine:
                     expected_objections=objections,
                     response_principles=(
                         "Separate sourced facts, hypotheses, and unknowns.",
-                        "Offer a bounded proof sprint instead of a guarantee.",
+                        "After qualified discovery, prepare a customer-specific 30-day pilot rather than a guarantee or fixed public offer.",
                         "Do not replace the customer's current system by default.",
                         "Escalate pricing, legal, privacy, and production commitments.",
                     ),
@@ -251,7 +251,7 @@ class RevenueLabEngine:
                         "Run the workflow with human approvals and daily reporting.",
                         "Produce a before/after proof pack from client-sourced actuals.",
                     ),
-                    timeline_days=14,
+                    timeline_days=30,
                     success_metrics=(
                         "baseline captured from an attributable source",
                         "approved actions completed",
@@ -261,7 +261,10 @@ class RevenueLabEngine:
                     ),
                     roi=_roi(signal),
                     assumptions=tuple(
-                        ["Pain points remain hypotheses until client validation."]
+                        [
+                            "Pain points remain hypotheses until client validation.",
+                            "Thirty days is an internal planning seed only; final scope, timeline, and price require qualified discovery plus customer-specific quote authority.",
+                        ]
                         + [f"Unknown: {item}" for item in signal.unknowns]
                     ),
                 )
@@ -270,25 +273,25 @@ class RevenueLabEngine:
             delivery_plans.append(
                 DeliveryPlan(
                     account_id=signal.account_id,
-                    timeline_days=14,
+                    timeline_days=30,
                     phases=(
                         {
-                            "days": "1-2",
+                            "days": "1-5",
                             "name": "baseline",
                             "exit_gate": "source-backed baseline approved",
                         },
                         {
-                            "days": "3-5",
+                            "days": "6-10",
                             "name": "workflow design",
                             "exit_gate": "scope and acceptance criteria approved",
                         },
                         {
-                            "days": "6-11",
+                            "days": "11-25",
                             "name": "governed run",
                             "exit_gate": "actions and exceptions logged",
                         },
                         {
-                            "days": "12-14",
+                            "days": "26-30",
                             "name": "proof and decision",
                             "exit_gate": "proof pack reviewed",
                         },
