@@ -23,9 +23,9 @@ from fastapi.responses import PlainTextResponse
 from pydantic import BaseModel, Field
 
 from api.security.api_key import require_founder_admin_key
+from dealix.commercial.buyer_outputs import BuyerEvidenceSnapshot, BuyerOutputsEngine
 from dealix.commercial.case_study_generator import CaseStudyGenerator, CaseStudyRequest
 from dealix.commercial.diagnostic_engine import DiagnosticEngine, DiagnosticRequest
-from dealix.commercial.buyer_outputs import BuyerEvidenceSnapshot, BuyerOutputsEngine
 from dealix.commercial.proof_builder import ProofBuilder, ProofBuildRequest
 from dealix.commercial.roi_calculator import ROIInput, estimate_roi
 from dealix.commercial.transformation_proposal import (
