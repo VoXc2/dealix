@@ -161,7 +161,11 @@ class WorkloadEconomicsAttribution:
             )
 
         evidence_state = "RECORDED" if output_refs else UNKNOWN
-        payment_state = "VERIFIED" if payment_refs and not run.synthetic_output else UNKNOWN
+        payment_state = (
+            "REFERENCE_RECORDED_REQUIRES_CANONICAL_VERIFICATION"
+            if payment_refs and not run.synthetic_output
+            else UNKNOWN
+        )
         return AttributionRecord(
             run_id=run.run_id,
             workload_id=run.workload_id,
@@ -179,7 +183,7 @@ class WorkloadEconomicsAttribution:
             cost_basis=cost_basis,
             evidence_state=evidence_state,
             payment_proof_state=payment_state,
-            payment_proof_refs=payment_refs if payment_state == "VERIFIED" else [],
+            payment_proof_refs=payment_refs if payment_state != UNKNOWN else [],
         )
 
     def summarize(self, runs: list[WorkloadMeasurement]) -> AttributionReport:
