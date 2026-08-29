@@ -51,11 +51,13 @@ def test_verified_payment_and_delivery_are_evidence_bound() -> None:
             EvidenceItem(
                 evidence_id="E-PAYMENT",
                 source_ref="payment-provider-event-1",
+                kind="payment_provider_event",
                 observed_at="2026-08-29T07:00:00+00:00",
             ),
             EvidenceItem(
                 evidence_id="E-DELIVERY",
                 source_ref="delivery-log-1",
+                kind="delivery_proof",
                 observed_at="2026-08-29T07:30:00+00:00",
                 customer_validated=True,
             ),
@@ -78,6 +80,7 @@ def test_verified_payment_and_delivery_are_evidence_bound() -> None:
             "delivery_proof_refs": ["E-DELIVERY"],
         },
         customer_validation_state="CONFIRMED",
+        customer_validation_refs=["E-CALL"],
     )
 
     outputs = BuyerOutputsEngine().build(snapshot).to_dict()
@@ -171,3 +174,36 @@ def test_reference_order_is_normalized_for_semantic_equality() -> None:
     second = BuyerOutputsEngine().build(second_snapshot)
 
     assert first.semantic_dict() == second.semantic_dict()
+
+
+def test_customer_validation_state_without_reference_stays_unknown() -> None:
+    snapshot = BuyerEvidenceSnapshot(
+        tenant_or_account_id="acct-1",
+        company_name="Acme",
+        source_sha="source-sha-1",
+        as_of="2026-08-29T08:00:00+00:00",
+        customer_validation_state="CONFIRMED",
+    )
+    output = BuyerOutputsEngine().build(snapshot).to_dict()
+    assert output["customer_proof_decision_pack"]["customer_validation_state"] == "UNKNOWN_NOT_EVIDENCE_BACKED"
+
+
+def test_untyped_evidence_cannot_become_payment_proof() -> None:
+    snapshot = BuyerEvidenceSnapshot(
+        tenant_or_account_id="acct-1",
+        company_name="Acme",
+        source_sha="source-sha-1",
+        as_of="2026-08-29T08:00:00+00:00",
+        evidence=[EvidenceItem(
+            evidence_id="E-NOTE",
+            source_ref="internal-note-1",
+            observed_at="2026-08-29T07:00:00+00:00",
+        )],
+        payment_evidence=PaymentEvidence(
+            status="VERIFIED",
+            payment_proof_refs=["E-NOTE"],
+            verified_revenue_sar=1500,
+        ),
+    )
+    with pytest.raises(ValueError, match="non-synthetic payment evidence"):
+        BuyerOutputsEngine().build(snapshot)
