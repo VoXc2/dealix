@@ -1,0 +1,134 @@
+{
+  "schema_version": "1.1",
+  "surface_id": "dealix_slack_founder_room_v1",
+  "workspace": {
+    "name": "Dealix",
+    "team_id": "T0AV61YPQ9X",
+    "domain": "dealixworkspace.slack.com"
+  },
+  "role": "FOUNDER_COMMAND_DECISION_PROOF_MIRROR_NOT_TRUTH_OWNER",
+  "canonical_truth_owners": [
+    "GitHub",
+    "Dealix Company OS",
+    "Commercial State",
+    "Proof Ledger",
+    "verified external evidence"
+  ],
+  "channels": {
+    "dealix-command": {
+      "id": "C0BTMAWR3NY",
+      "purpose": "Founder and President command surface; concise operating briefs and bounded internal execution requests"
+    },
+    "dealix-decisions": {
+      "id": "UNKNOWN_NOT_EVIDENCE_BACKED",
+      "purpose": "CASH / DECISIONS / RISKS / APPROVALS / NEXT ACTION"
+    },
+    "dealix-proof-log": {
+      "id": "UNKNOWN_NOT_EVIDENCE_BACKED",
+      "purpose": "Receipts, verification results and evidence mirrors"
+    },
+    "dealix-revenue": {
+      "id": "UNKNOWN_NOT_EVIDENCE_BACKED",
+      "purpose": "Revenue OS internal operating mirror"
+    },
+    "dealix-build": {
+      "id": "UNKNOWN_NOT_EVIDENCE_BACKED",
+      "purpose": "Development Factory, repository and verification mirror"
+    }
+  },
+  "bridge": {
+    "transport": "slack_socket_mode",
+    "service": "dealix-slack-founder.service",
+    "adapter": "/opt/dealix/control/bin/dealix_slack_founder_bridge.py",
+    "secret_file": "/opt/dealix/control/etc/slack-founder.env",
+    "command_channel_env": "DEALIX_SLACK_COMMAND_CHANNEL_ID",
+    "founder_user_env": "DEALIX_SLACK_FOUNDER_USER_ID",
+    "receipt_dir": "/opt/dealix/control/runs/slack-founder-receipts",
+    "scheduler_created": false,
+    "parallel_agent_fleet_created": false,
+    "source_sha_policy": "RECEIPT_MUST_MATCH_RUNTIME_EXACT_HEAD",
+    "acceptance": {
+      "required": [
+        "socket_mode_authenticated",
+        "bot_installed_in_workspace",
+        "bot_invited_to_private_command_channel",
+        "service_active_restart_safe",
+        "command_produces_workload_id",
+        "command_produces_source_sha",
+        "command_produces_receipt_reference",
+        "receipt_matches_slack_response",
+        "receipt_source_sha_matches_runtime_exact_head",
+        "canonical_company_autopilot_consumption_proven"
+      ],
+      "status": "BLOCKED_UNTIL_VALID_SOCKET_MODE_CREDENTIALS_AND_END_TO_END_RECEIPT"
+    }
+  },
+  "pro_trial": {
+    "temporary_surface_only": true,
+    "critical_runtime_dependency_allowed": false,
+    "free_fallback_required": true,
+    "allowed_high_leverage_surfaces": [
+      "canvases",
+      "lists",
+      "workflow_builder",
+      "conversation_summaries",
+      "huddle_notes",
+      "custom_sidebar_sections",
+      "app_integrations"
+    ],
+    "free_fallback_law": "No canonical business truth, authority, proof or execution state may exist only in a Pro-only Slack surface"
+  },
+  "pro_canvases": [
+    "Founder Operating Constitution",
+    "Company Machine Map",
+    "Revenue Desk Playbook",
+    "Proof and Governance Playbook",
+    "Development Factory Runbook"
+  ],
+  "pro_lists": [
+    "Action Queue",
+    "Approval Queue",
+    "Relationship and Opportunity Queue",
+    "Proof Queue",
+    "Build Gap Queue"
+  ],
+  "pro_workflows": [
+    "Founder Command Intake",
+    "Approval Request",
+    "Real Interaction Capture",
+    "Proof Receipt Intake",
+    "Proven Gap Build Request",
+    "Incident Risk Capture"
+  ],
+  "authority": {
+    "internal_l0_l4": "AUTO_OR_POLICY_GOVERNED",
+    "external_l5": "SPECIFIC_APPROVAL_REQUIRED",
+    "customer_send": false,
+    "public_publish": false,
+    "paid_spend": false,
+    "live_payment_or_refund": false,
+    "contract_or_legal_commitment": false,
+    "named_quote_commitment": false,
+    "production_mutation": false,
+    "dns_db_secret_mutation": false,
+    "main_merge": false
+  },
+  "truth_firewall": [
+    "slack_message!=execution",
+    "draft!=sent",
+    "proposal!=revenue",
+    "invoice!=payment",
+    "research!=relationship",
+    "public_contact_data!=consent",
+    "synthetic!=customer_proof"
+  ],
+  "founder_surface": [
+    "CASH",
+    "DECISIONS",
+    "RISKS",
+    "APPROVALS",
+    "NEXT_ACTION"
+  ],
+  "contract_base_sha": "8027b25f442125873bcad597f8dbb97316edc723",
+  "owner_issue": "#1337"
+}
