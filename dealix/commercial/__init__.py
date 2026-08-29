@@ -5,6 +5,24 @@ All modules enforce constitutional guardrails:
   NO_LIVE_SEND, NO_LIVE_CHARGE, NO_FAKE_PROOF, NO_UNAPPROVED_TESTIMONIAL.
 """
 
+from dealix.commercial.buyer_outputs import (
+    ApprovedAction,
+    BaselineMetric,
+    BuyerEvidenceSnapshot,
+    BuyerOutputsBundle,
+    BuyerOutputsEngine,
+    DecisionCandidate,
+    DeliveryEvidence,
+    EvidenceItem,
+    HypothesizedLeak,
+    Intervention,
+    ObservedLeak,
+    OutcomeEvent,
+    OwnerGap,
+    PaymentEvidence,
+    ProcessObservation,
+    RiskInput,
+)
 from dealix.commercial.case_study_generator import (
     CaseStudyDocument,
     CaseStudyGenerator,
@@ -59,22 +77,3 @@ __all__ = [
     "WarmIntroGenerator",
     "WarmIntroRequest",
 ]
-
-from dealix.commercial.buyer_outputs import (
-    ApprovedAction,
-    BaselineMetric,
-    BuyerEvidenceSnapshot,
-    BuyerOutputsBundle,
-    BuyerOutputsEngine,
-    DecisionCandidate,
-    DeliveryEvidence,
-    EvidenceItem,
-    HypothesizedLeak,
-    Intervention,
-    ObservedLeak,
-    OutcomeEvent,
-    OwnerGap,
-    PaymentEvidence,
-    ProcessObservation,
-    RiskInput,
-)
