@@ -64,6 +64,63 @@ def test_relationship_requires_real_interaction_evidence():
     assert reason is None
 
 
+def test_authoritative_reference_fields_reject_blank_placeholders():
+    cases = (
+        ("interaction_captured", (), "interaction_evidence_ref"),
+        ("relationship_verified", ("interaction_captured",), "interaction_evidence_ref"),
+        ("problem_qualified", ("relationship_verified",), "problem_evidence_ref"),
+        ("diagnostic_completed", ("diagnostic_started",), "diagnostic_output_ref"),
+        ("discovery_completed", ("diagnostic_completed",), "discovery_notes_ref"),
+        ("customer_specific_quote_prepared", ("discovery_completed",), "scope_evidence_ref"),
+        (
+            "customer_specific_quote_approved",
+            ("customer_specific_quote_prepared",),
+            "quote_authority_ref",
+        ),
+        (
+            "pilot_decision_approved",
+            ("customer_specific_quote_approved",),
+            "decision_evidence_ref",
+        ),
+        ("pilot_payment_verified", ("pilot_decision_approved",), "payment_proof_ref"),
+        ("pilot_delivery_started", ("pilot_payment_verified",), "payment_proof_ref"),
+        ("weekly_proof_ready", ("pilot_delivery_started",), "proof_evidence_ref"),
+        ("final_proof_pack_ready", ("pilot_delivery_started",), "proof_evidence_ref"),
+        ("expansion_decision", ("final_proof_pack_ready",), "decision_evidence_ref"),
+        ("meeting_done", (), "meeting_notes_ref"),
+        ("invoice_paid", (), "payment_proof_ref"),
+        ("closed_won", ("pilot_payment_verified",), "payment_proof_ref"),
+    )
+
+    for event_type, history, field in cases:
+        for blank in ("", "   ", None):
+            ok, reason = DEFAULT_OPERATING_COMPANY_CONTRACT.validate_event(
+                event_type=event_type,
+                history=history,
+                payload={field: blank},
+            )
+            assert ok is False, (event_type, field, blank)
+            assert f"field_not_substantive={field}" in (reason or "")
+
+
+def test_truthy_guard_strings_are_trimmed_before_authority():
+    ok, reason = DEFAULT_OPERATING_COMPANY_CONTRACT.validate_event(
+        event_type="case_study_approved",
+        history=(),
+        payload={"client_permission": "   "},
+    )
+    assert ok is False
+    assert "field_not_truthy=client_permission" in (reason or "")
+
+    ok, reason = DEFAULT_OPERATING_COMPANY_CONTRACT.validate_event(
+        event_type="case_study_approved",
+        history=(),
+        payload={"client_permission": True},
+    )
+    assert ok is True
+    assert reason is None
+
+
 def test_free_diagnostic_starts_after_qualified_problem_not_payment():
     ok, reason = DEFAULT_OPERATING_COMPANY_CONTRACT.validate_event(
         event_type="diagnostic_started",

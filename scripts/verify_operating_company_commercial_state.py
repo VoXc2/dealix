@@ -45,6 +45,14 @@ def main() -> int:
     )
     require(ok, "relationship should accept real interaction evidence")
 
+    for blank in ("", "   ", None):
+        ok, _ = contract.validate_event(
+            event_type="relationship_verified",
+            history=("interaction_captured",),
+            payload={"interaction_evidence_ref": blank},
+        )
+        require(not ok, "blank interaction reference must not verify relationship")
+
     ok, _ = contract.validate_event(
         event_type="diagnostic_started",
         history=("problem_qualified",),
@@ -65,6 +73,14 @@ def main() -> int:
         payload={},
     )
     require(not ok, "pilot payment cannot verify without payment evidence")
+
+    for blank in ("", "   ", None):
+        ok, _ = contract.validate_event(
+            event_type="pilot_payment_verified",
+            history=("pilot_decision_approved",),
+            payload={"payment_proof_ref": blank},
+        )
+        require(not ok, "blank payment reference must not verify pilot payment")
 
     ok, _ = contract.validate_event(
         event_type="pilot_payment_verified",
@@ -94,6 +110,20 @@ def main() -> int:
     )
     require(not ok, "closed_won must not promote without payment evidence")
 
+    ok, _ = contract.validate_event(
+        event_type="closed_won",
+        history=("pilot_payment_verified",),
+        payload={"payment_proof_ref": "   "},
+    )
+    require(not ok, "whitespace payment reference must not create closed_won truth")
+
+    ok, _ = contract.validate_event(
+        event_type="case_study_approved",
+        history=(),
+        payload={"client_permission": "   "},
+    )
+    require(not ok, "whitespace permission must not authorize case-study approval")
+
     quote_approval, _ = contract.requires_approval_for_action(
         action_id="send_customer_specific_quote"
     )
@@ -101,6 +131,9 @@ def main() -> int:
 
     print("PASS: operating-company commercial state contract")
     print("chain=" + " -> ".join(CANONICAL_COMMERCIAL_CHAIN))
+    print("blank_evidence_refs=BLOCKED")
+    print("whitespace_evidence_refs=BLOCKED")
+    print("blank_truthy_permissions=BLOCKED")
     return 0
 
 

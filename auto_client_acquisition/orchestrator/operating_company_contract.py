@@ -149,8 +149,14 @@ class OperatingCompanyContract:
         for field in guard.required_payload_fields:
             if field not in event_payload:
                 return False, f"{guard.rejection_reason}:missing_field={field}"
+            value = event_payload[field]
+            if value is None or (isinstance(value, str) and not value.strip()):
+                return False, f"{guard.rejection_reason}:field_not_substantive={field}"
         for field in guard.required_truthy_payload_fields:
-            if not event_payload.get(field):
+            value = event_payload.get(field)
+            if isinstance(value, str):
+                value = value.strip()
+            if not value:
                 return False, f"{guard.rejection_reason}:field_not_truthy={field}"
         return True, None
 
