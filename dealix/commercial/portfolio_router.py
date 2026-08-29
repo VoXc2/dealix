@@ -4,10 +4,11 @@ Routing is an internal recommendation. It cannot create a relationship,
 consent, offer, price, quote, send, payment, proof, execution, deployment, or
 production authority.
 
-Public/CRM research is never a relationship. Interaction/inbound references are
-only evidence-presence signals; they cannot by themselves promote canonical
-relationship truth. A verified relationship must be supplied by the canonical
-relationship owner and accompanied by supporting interaction/inbound evidence.
+Public/CRM research is never a relationship. Raw interaction/inbound references
+are evidence-presence only and cannot by themselves prove that an interaction
+occurred. Commercial package routing requires the canonical interaction state
+plus its matching evidence reference. Verified relationship truth remains owned
+by the canonical relationship state owner.
 """
 
 from __future__ import annotations
@@ -40,6 +41,7 @@ class DemandSignal(BaseModel):
     source_ref: str = ""
     observed_at: str = Field(..., min_length=1)
     evidence_refs: list[str] = Field(default_factory=list)
+    real_interaction_state: str = "UNKNOWN"
     real_interaction_ref: str = ""
     explicit_inbound_ref: str = ""
     relationship_state: str = UNKNOWN
@@ -136,6 +138,7 @@ class PortfolioPackageRouter:
         "UNKNOWN",
     }
     _RISK_CLASSES = {"LOW", "STANDARD", "HIGH", "PROHIBITED", "UNKNOWN"}
+    _INTERACTION_STATES = {"REAL_INTERACTION", "EXPLICIT_INBOUND"}
 
     @staticmethod
     def _normalized(values: list[str]) -> set[str]:
@@ -183,29 +186,28 @@ class PortfolioPackageRouter:
             *[ref.strip() for ref in signal.evidence_refs if ref.strip()],
             *([signal.source_ref.strip()] if signal.source_ref.strip() else []),
         }
+        real_interaction_ref = signal.real_interaction_ref.strip()
+        explicit_inbound_ref = signal.explicit_inbound_ref.strip()
         interaction_refs = {
-            *(
-                [signal.real_interaction_ref.strip()]
-                if signal.real_interaction_ref.strip()
-                else []
-            ),
-            *(
-                [signal.explicit_inbound_ref.strip()]
-                if signal.explicit_inbound_ref.strip()
-                else []
-            ),
+            *([real_interaction_ref] if real_interaction_ref else []),
+            *([explicit_inbound_ref] if explicit_inbound_ref else []),
         }
         refs = sorted(source_refs | interaction_refs)
-        demand_evidence_present = bool(interaction_refs)
+
+        interaction_state = signal.real_interaction_state.strip().upper() or UNKNOWN
+        interaction_evidenced = (
+            interaction_state == "REAL_INTERACTION" and bool(real_interaction_ref)
+        ) or (
+            interaction_state == "EXPLICIT_INBOUND" and bool(explicit_inbound_ref)
+        )
 
         declared_relationship = signal.relationship_state.strip().upper() or UNKNOWN
         relationship_verified = (
-            declared_relationship == "VERIFIED_RELATIONSHIP"
-            and demand_evidence_present
+            declared_relationship == "VERIFIED_RELATIONSHIP" and interaction_evidenced
         )
         if relationship_verified:
             relationship_state = "VERIFIED_RELATIONSHIP"
-        elif demand_evidence_present:
+        elif interaction_evidenced:
             relationship_state = INTERACTION_EVIDENCE_PRESENT
         else:
             relationship_state = UNKNOWN
@@ -226,15 +228,22 @@ class PortfolioPackageRouter:
 
         if not source_refs:
             missing.append("source-linked evidence")
-        if not demand_evidence_present:
-            missing.append("real interaction or explicit inbound evidence")
-        if declared_relationship == "VERIFIED_RELATIONSHIP" and not demand_evidence_present:
-            missing.append("supporting interaction evidence for verified relationship")
-        elif demand_evidence_present and not relationship_verified:
+        if interaction_state not in self._INTERACTION_STATES:
+            missing.append("canonical real interaction or explicit inbound state")
+        elif not interaction_evidenced:
+            missing.append("matching interaction evidence reference")
+        if declared_relationship == "VERIFIED_RELATIONSHIP" and not interaction_evidenced:
+            missing.append("supporting canonical interaction state and evidence")
+        elif interaction_evidenced and not relationship_verified:
             missing.append("canonical verified relationship state")
         if consent in {"UNKNOWN", "EXPIRED"}:
             missing.append("current channel consent or eligibility state")
-        if not statement and not tags and not signal.partner_intent and not signal.ksa_market_entry_intent:
+        if (
+            not statement
+            and not tags
+            and not signal.partner_intent
+            and not signal.ksa_market_entry_intent
+        ):
             missing.append("problem statement or capability request")
         if signal.economic_relevance == "UNKNOWN":
             missing.append("economic relevance")
@@ -243,8 +252,6 @@ class PortfolioPackageRouter:
         if risk == "UNKNOWN":
             missing.append("risk or regulatory class")
 
-        # Suppression and prohibited-risk states always win. Package fit never
-        # becomes permission to contact or progress externally.
         if consent in {"OPTED_OUT", "SUPPRESSED"}:
             package = EntryPackage.RESEARCH_NURTURE_SUPPRESS
             reasons.append("CHANNEL_SUPPRESSED")
@@ -263,13 +270,12 @@ class PortfolioPackageRouter:
             status = "GOVERNANCE_BLOCKED"
             authority_class = "NO_COMMERCIAL_PROGRESSION_AUTHORITY"
             expiry_hours = 0
-        # Public/CRM/source research cannot package-route itself. A real
-        # interaction or explicit inbound evidence item is required, but the
-        # presence of that reference still does not verify a relationship.
-        elif not demand_evidence_present:
+        elif not interaction_evidenced:
             package = EntryPackage.RESEARCH_NURTURE_SUPPRESS
             reasons.append("RESEARCH_IS_NOT_RELATIONSHIP_OR_LEGITIMATE_DEMAND")
-            next_action = "CAPTURE_REAL_INTERACTION_OR_EXPLICIT_INBOUND_EVIDENCE"
+            if interaction_refs:
+                reasons.append("RAW_INTERACTION_REFERENCE_NOT_CANONICAL_STATE")
+            next_action = "CAPTURE_CANONICAL_REAL_INTERACTION_OR_EXPLICIT_INBOUND_STATE"
             owner = "lead_acquisition"
             confidence = "HIGH"
             status = "RESEARCH_ONLY"
@@ -307,8 +313,6 @@ class PortfolioPackageRouter:
                 next_action = "RUN_REVENUE_MINI_DIAGNOSTIC"
                 owner = "revenue_intelligence"
                 confidence = "MEDIUM"
-            # This is a package hypothesis only. Even a verified relationship
-            # does not create offer, price, send, payment or execution authority.
             status = "INTERNAL_ROUTING_RECOMMENDATION"
             authority_class = "PACKAGE_HYPOTHESIS_ONLY"
             expiry_hours = 24
@@ -334,8 +338,8 @@ class PortfolioPackageRouter:
             authority_class = "GOVERNANCE_REVIEW_REQUIRED"
             confidence = "LOW" if confidence == "LOW" else "MEDIUM"
 
-        if demand_evidence_present and not relationship_verified:
-            reasons.append("INTERACTION_REFERENCE_IS_NOT_VERIFIED_RELATIONSHIP")
+        if interaction_evidenced and not relationship_verified:
+            reasons.append("INTERACTION_EVIDENCE_IS_NOT_VERIFIED_RELATIONSHIP")
         if consent in {"UNKNOWN", "EXPIRED"}:
             reasons.append("DIRECT_MARKETING_PERMISSION_NOT_ESTABLISHED")
         if not source_refs:
@@ -376,7 +380,7 @@ class PortfolioPackageRouter:
             next_evidence_required=missing,
             next_action=next_action,
             owner=owner,
-            sla_minutes=15 if demand_evidence_present else 240,
+            sla_minutes=15 if interaction_evidenced else 240,
             expiry_hours=expiry_hours,
             authority_class=authority_class,
             risk_class=risk,

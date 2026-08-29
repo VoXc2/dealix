@@ -33,8 +33,16 @@ def main() -> int:
     contract = json.loads(CONTRACT.read_text(encoding="utf-8"))
 
     require(contract.get("schema") == "dealix.package-routing.v1", "wrong schema", errors)
-    require(contract.get("positioning") == "Saudi-first AI Business Operating System", "positioning drift", errors)
-    require(contract.get("portfolio_objective") == "CASH_READY_AUTONOMOUS_DEALIX_COMPANY", "portfolio objective drift", errors)
+    require(
+        contract.get("positioning") == "Saudi-first AI Business Operating System",
+        "positioning drift",
+        errors,
+    )
+    require(
+        contract.get("portfolio_objective") == "CASH_READY_AUTONOMOUS_DEALIX_COMPANY",
+        "portfolio objective drift",
+        errors,
+    )
 
     owners = contract.get("canonical_owners", {})
     require(owners.get("company_brain") == "existing_canonical_owner", "parallel Company Brain not allowed", errors)
@@ -43,6 +51,13 @@ def main() -> int:
     require(owners.get("proof_ledger") == "existing_canonical_owner", "parallel Proof Ledger not allowed", errors)
     require(owners.get("scheduler") == "existing_canonical_owner_only", "duplicate scheduler not allowed", errors)
     require(owners.get("crm") == "mirror_only", "CRM must remain mirror-only", errors)
+
+    required_inputs = set(contract.get("required_input_fields", []))
+    require(
+        "real_interaction_state" in required_inputs,
+        "contract must require canonical real_interaction_state",
+        errors,
+    )
 
     truth = contract.get("truth_firewall", {})
     require(truth.get("research_is_relationship") is False, "research must not equal relationship", errors)
@@ -63,7 +78,6 @@ def main() -> int:
         "PARTNER_IMPLEMENTATION_PROOF_LAYER",
     }
     require(set(packages) == expected_packages, "package portfolio drift", errors)
-
     for package_name in expected_packages:
         package = packages.get(package_name, {})
         require(bool(package.get("purpose")), f"missing purpose for {package_name}", errors)
@@ -73,7 +87,11 @@ def main() -> int:
 
     market_access = packages.get("SAUDI_MARKET_ACCESS_SPRINT", {})
     prohibited = set(market_access.get("prohibited_claims", []))
-    for required in ("guaranteed_government_access", "guaranteed_tender_or_contract", "unverified_official_relationship"):
+    for required in (
+        "guaranteed_government_access",
+        "guaranteed_tender_or_contract",
+        "unverified_official_relationship",
+    ):
         require(required in prohibited, f"missing prohibited market-access claim: {required}", errors)
 
     brain = packages.get("COMPANY_BRAIN_GOVERNED_AI_SPRINT", {})
@@ -124,15 +142,15 @@ def main() -> int:
     require(wip.get("max_active_build_prs_per_owner") == 2, "build PR WIP drift", errors)
     require(wip.get("max_experiments_per_funnel_stage") == 1, "experiment WIP drift", errors)
 
-    # Runtime truth boundary: a source row never promotes itself into a package,
-    # and interaction/inbound reference presence never becomes relationship truth.
     router = PortfolioPackageRouter()
+
     research = router.route(
         DemandSignal(
             signal_id="verify-research-only",
             company_name="Research Account",
             observed_at="2026-08-29T10:00:00+00:00",
             source_ref="crm://public-research/1",
+            real_interaction_state="UNKNOWN",
             relationship_state="VERIFIED_RELATIONSHIP",
             problem_tags=["revenue"],
             problem_statement="Revenue follow-up gap",
@@ -144,12 +162,31 @@ def main() -> int:
     require(research.relationship_state == UNKNOWN, "source row must not create verified relationship", errors)
     require(research.recommended_package == EntryPackage.RESEARCH_NURTURE_SUPPRESS, "research row must not package-route", errors)
 
+    raw_ref = router.route(
+        DemandSignal(
+            signal_id="verify-raw-ref-only",
+            company_name="Raw Ref Account",
+            observed_at="2026-08-29T10:00:00+00:00",
+            source_ref="source://1",
+            real_interaction_state="UNKNOWN",
+            real_interaction_ref="interaction://1",
+            problem_tags=["revenue"],
+            problem_statement="Revenue follow-up gap",
+            urgency="HIGH",
+            economic_relevance="HIGH",
+        )
+    )
+    require(raw_ref.status == "RESEARCH_ONLY", "raw interaction ref without canonical state must remain research-only", errors)
+    require(raw_ref.relationship_state == UNKNOWN, "raw interaction ref must not create interaction/relationship truth", errors)
+    require("RAW_INTERACTION_REFERENCE_NOT_CANONICAL_STATE" in raw_ref.reason_codes, "raw ref rejection reason missing", errors)
+
     interaction = router.route(
         DemandSignal(
-            signal_id="verify-interaction-ref",
+            signal_id="verify-interaction-state",
             company_name="Interaction Account",
             observed_at="2026-08-29T10:00:00+00:00",
             source_ref="source://1",
+            real_interaction_state="REAL_INTERACTION",
             real_interaction_ref="interaction://1",
             relationship_state=UNKNOWN,
             problem_tags=["revenue"],
@@ -158,9 +195,26 @@ def main() -> int:
             economic_relevance="HIGH",
         )
     )
-    require(interaction.relationship_state == INTERACTION_EVIDENCE_PRESENT, "interaction ref must remain evidence-presence only", errors)
+    require(interaction.relationship_state == INTERACTION_EVIDENCE_PRESENT, "canonical interaction state+ref must remain below relationship truth", errors)
     require(interaction.authority.get("relationship") is False, "router must not grant relationship authority", errors)
     require(interaction.authority.get("external_send") is False, "router must not grant send authority", errors)
+
+    mismatched = router.route(
+        DemandSignal(
+            signal_id="verify-mismatched-state",
+            company_name="Mismatched Account",
+            observed_at="2026-08-29T10:00:00+00:00",
+            source_ref="source://1",
+            real_interaction_state="EXPLICIT_INBOUND",
+            real_interaction_ref="interaction://wrong-kind",
+            explicit_inbound_ref="",
+            problem_tags=["revenue"],
+            problem_statement="Revenue follow-up gap",
+            urgency="HIGH",
+            economic_relevance="HIGH",
+        )
+    )
+    require(mismatched.status == "RESEARCH_ONLY", "mismatched interaction state/reference must fail closed", errors)
 
     verified = router.route(
         DemandSignal(
@@ -168,6 +222,7 @@ def main() -> int:
             company_name="Verified Account",
             observed_at="2026-08-29T10:00:00+00:00",
             source_ref="source://1",
+            real_interaction_state="REAL_INTERACTION",
             real_interaction_ref="interaction://1",
             relationship_state="VERIFIED_RELATIONSHIP",
             problem_tags=["revenue"],
@@ -176,7 +231,7 @@ def main() -> int:
             economic_relevance="HIGH",
         )
     )
-    require(verified.relationship_state == "VERIFIED_RELATIONSHIP", "canonical verified state plus evidence must be preserved", errors)
+    require(verified.relationship_state == "VERIFIED_RELATIONSHIP", "canonical verified relationship plus canonical interaction evidence must be preserved", errors)
     require(all(value is False for value in verified.authority.values()), "package router must grant no downstream authority", errors)
 
     if errors:
@@ -188,8 +243,9 @@ def main() -> int:
     print("DEALIX_PACKAGE_ROUTER_VERDICT=PASS")
     print(f"SCHEMA={contract['schema']}")
     print("PACKAGES=4")
-    print("TRUTH_PROMOTION=BLOCKED")
-    print("INTERACTION_REF_IS_VERIFIED_RELATIONSHIP=NO")
+    print("REAL_INTERACTION_STATE_CONTRACT=ENFORCED")
+    print("RAW_INTERACTION_REF_TRUTH_PROMOTION=BLOCKED")
+    print("ROUTER_RELATIONSHIP_PROMOTION=BLOCKED")
     print("EXTERNAL_AUTO_SEND=BLOCKED")
     print("PRICE_OR_CONTRACT_COMMIT=BLOCKED")
     print("NO_EVIDENCE_FALLBACK=RESEARCH_ONLY")

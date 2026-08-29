@@ -15,6 +15,7 @@ def _signal(**overrides: object) -> DemandSignal:
         "company_name": "Example Co",
         "observed_at": "2026-08-29T10:00:00+00:00",
         "source_ref": "source://account-research/1",
+        "real_interaction_state": "REAL_INTERACTION",
         "real_interaction_ref": "interaction://event/1",
         "relationship_state": UNKNOWN,
         "consent_state": "UNKNOWN",
@@ -31,6 +32,7 @@ def _signal(**overrides: object) -> DemandSignal:
 def test_public_or_crm_research_never_routes_itself_into_commercial_package() -> None:
     decision = PortfolioPackageRouter().route(
         _signal(
+            real_interaction_state="UNKNOWN",
             real_interaction_ref="",
             explicit_inbound_ref="",
             relationship_state="VERIFIED_RELATIONSHIP",
@@ -41,22 +43,48 @@ def test_public_or_crm_research_never_routes_itself_into_commercial_package() ->
     assert decision.status == "RESEARCH_ONLY"
     assert decision.relationship_state == UNKNOWN
     assert "RESEARCH_IS_NOT_RELATIONSHIP_OR_LEGITIMATE_DEMAND" in decision.reason_codes
-    assert "supporting interaction evidence for verified relationship" in decision.missing_evidence
+    assert "supporting canonical interaction state and evidence" in decision.missing_evidence
     assert all(value is False for value in decision.authority.values())
 
 
-def test_interaction_reference_is_evidence_presence_not_verified_relationship() -> None:
+def test_raw_interaction_reference_without_canonical_state_stays_research_only() -> None:
+    decision = PortfolioPackageRouter().route(
+        _signal(real_interaction_state="UNKNOWN")
+    )
+    assert decision.recommended_package == EntryPackage.RESEARCH_NURTURE_SUPPRESS
+    assert decision.status == "RESEARCH_ONLY"
+    assert decision.relationship_state == UNKNOWN
+    assert "RAW_INTERACTION_REFERENCE_NOT_CANONICAL_STATE" in decision.reason_codes
+    assert all(value is False for value in decision.authority.values())
+
+
+def test_mismatched_interaction_state_and_reference_fail_closed() -> None:
+    decision = PortfolioPackageRouter().route(
+        _signal(
+            real_interaction_state="EXPLICIT_INBOUND",
+            real_interaction_ref="interaction://wrong-kind",
+            explicit_inbound_ref="",
+        )
+    )
+    assert decision.recommended_package == EntryPackage.RESEARCH_NURTURE_SUPPRESS
+    assert decision.status == "RESEARCH_ONLY"
+    assert decision.relationship_state == UNKNOWN
+    assert "matching interaction evidence reference" in decision.missing_evidence
+    assert all(value is False for value in decision.authority.values())
+
+
+def test_canonical_interaction_state_and_ref_create_internal_hypothesis_not_relationship() -> None:
     decision = PortfolioPackageRouter().route(_signal())
     assert decision.recommended_package == EntryPackage.REVENUE_COMMAND
     assert decision.relationship_state == INTERACTION_EVIDENCE_PRESENT
     assert decision.authority_class == "PACKAGE_HYPOTHESIS_ONLY"
-    assert "INTERACTION_REFERENCE_IS_NOT_VERIFIED_RELATIONSHIP" in decision.reason_codes
+    assert "INTERACTION_EVIDENCE_IS_NOT_VERIFIED_RELATIONSHIP" in decision.reason_codes
     assert "canonical verified relationship state" in decision.missing_evidence
     assert decision.authority["relationship"] is False
     assert decision.authority["external_send"] is False
 
 
-def test_verified_relationship_requires_canonical_state_and_supporting_evidence() -> None:
+def test_verified_relationship_requires_canonical_state_and_matching_interaction_evidence() -> None:
     decision = PortfolioPackageRouter().route(
         _signal(relationship_state="VERIFIED_RELATIONSHIP")
     )
@@ -67,9 +95,13 @@ def test_verified_relationship_requires_canonical_state_and_supporting_evidence(
     assert decision.authority["external_send"] is False
 
 
-def test_explicit_inbound_can_create_internal_package_hypothesis_not_relationship_truth() -> None:
+def test_explicit_inbound_requires_matching_state_and_ref() -> None:
     decision = PortfolioPackageRouter().route(
-        _signal(real_interaction_ref="", explicit_inbound_ref="inbound://diagnostic/1")
+        _signal(
+            real_interaction_state="EXPLICIT_INBOUND",
+            real_interaction_ref="",
+            explicit_inbound_ref="inbound://diagnostic/1",
+        )
     )
     assert decision.recommended_package == EntryPackage.REVENUE_COMMAND
     assert decision.relationship_state == INTERACTION_EVIDENCE_PRESENT
