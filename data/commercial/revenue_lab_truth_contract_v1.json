@@ -1,0 +1,34 @@
+{
+  "schema_version": "1.0.0",
+  "authority_ref": "Dealix Autonomous Company Machine V2",
+  "purpose": "Keep Revenue Lab identity, learning, and proof summaries deterministic and evidence-bound.",
+  "run_identity": {
+    "same_normalized_signals_and_outcomes_same_run_id": true,
+    "generated_at_is_not_part_of_run_id": true,
+    "account_and_outcome_order_is_normalized": true
+  },
+  "outcome_truth": {
+    "source_ref_alone_is_not_customer_proof": true,
+    "customer_proof_requires": [
+      "customer_validated",
+      "customer_validation_ref",
+      "delivery_proof_ref",
+      "non_demo_source_ref"
+    ],
+    "verified_customer_outcome_summary_requires_explicit_proof": true,
+    "payment_or_invoice_state_is_not_inferred": true,
+    "unknown_semantics": "UNKNOWN_NOT_EVIDENCE_BACKED"
+  },
+  "learning": {
+    "recommendations_are_review_only": true,
+    "weight_change_applied_by_revenue_lab": false,
+    "experiment_approval_required": true
+  },
+  "scope": {
+    "external_actions_executed": 0,
+    "production_changes": 0,
+    "no_new_truth_store": true,
+    "no_new_scheduler": true,
+    "no_new_agent_fleet": true
+  }
+}

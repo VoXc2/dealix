@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 import hashlib
+import json
+from dataclasses import asdict
 from collections.abc import Iterable
 from datetime import UTC, datetime
 from typing import Any
@@ -124,7 +126,20 @@ class RevenueLabEngine:
     ) -> RevenueLabBundle:
         signal_list = list(signals)
         outcome_list = list(outcomes)
-        run_seed = "|".join(sorted(item.account_id for item in signal_list)) + _now()
+        stable_input = {
+            "signals": [
+                asdict(item)
+                for item in sorted(signal_list, key=lambda signal: signal.account_id)
+            ],
+            "outcomes": [
+                asdict(item)
+                for item in sorted(
+                    outcome_list,
+                    key=lambda outcome: (outcome.account_id, outcome.outcome, outcome.source_ref),
+                )
+            ],
+        }
+        run_seed = json.dumps(stable_input, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
         run_id = f"rlab_{hashlib.sha256(run_seed.encode()).hexdigest()[:12]}"
 
         opportunities: list[OpportunityNode] = []
@@ -348,7 +363,7 @@ class RevenueLabEngine:
             "external_actions_executed": 0,
             "production_changes": 0,
             "verified_customer_outcomes": sum(
-                bool(item.source_ref) and not item.demo for item in outcome_list
+                item.is_customer_proof() for item in outcome_list
             ),
         }
         return RevenueLabBundle(

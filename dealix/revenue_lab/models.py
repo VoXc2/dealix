@@ -131,7 +131,11 @@ class CompanySignal:
 
 @dataclass(frozen=True)
 class OutcomeEvent:
-    """A real or explicitly demo commercial outcome used for learning."""
+    """A real or explicitly demo commercial outcome used for learning.
+
+    A source-linked outcome is not customer proof by itself. Customer proof
+    requires explicit customer validation and a delivery-proof reference.
+    """
 
     account_id: str
     outcome: str
@@ -139,12 +143,34 @@ class OutcomeEvent:
     observed_at: str
     notes: str = ""
     demo: bool = False
+    customer_validated: bool = False
+    customer_validation_ref: str = ""
+    delivery_proof_ref: str = ""
+    payment_proof_ref: str = ""
 
     def __post_init__(self) -> None:
         if not self.account_id.strip() or not self.outcome.strip():
             raise ValueError("account_id and outcome are required")
+        if not self.observed_at.strip():
+            raise ValueError("observed_at is required")
         if not self.source_ref.strip() and not self.demo:
             raise ValueError("real outcomes require source_ref")
+        if self.customer_validated and not self.customer_validation_ref.strip():
+            raise ValueError("customer validation requires customer_validation_ref")
+        if any(
+            ref.strip()
+            for ref in (self.delivery_proof_ref, self.payment_proof_ref)
+        ) and not self.source_ref.strip():
+            raise ValueError("proof references require source_ref")
+
+    def is_customer_proof(self) -> bool:
+        return (
+            not self.demo
+            and bool(self.source_ref.strip())
+            and self.customer_validated
+            and bool(self.customer_validation_ref.strip())
+            and bool(self.delivery_proof_ref.strip())
+        )
 
     @classmethod
     def from_dict(cls, payload: dict[str, Any]) -> OutcomeEvent:
@@ -155,6 +181,10 @@ class OutcomeEvent:
             observed_at=str(payload.get("observed_at") or ""),
             notes=str(payload.get("notes") or ""),
             demo=bool(payload.get("demo", False)),
+            customer_validated=bool(payload.get("customer_validated", False)),
+            customer_validation_ref=str(payload.get("customer_validation_ref") or ""),
+            delivery_proof_ref=str(payload.get("delivery_proof_ref") or ""),
+            payment_proof_ref=str(payload.get("payment_proof_ref") or ""),
         )
 
 
