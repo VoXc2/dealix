@@ -541,7 +541,7 @@ class BuyerOutputsEngine:
             cls._model_dict_with_refs(item, "evidence_refs")
             for item in sorted(snapshot.outcome_events, key=lambda item: (item.outcome_id, item.recorded_at))
         ]
-        customer_validated = cls._customer_validation_state(snapshot.customer_validation_state) != UNKNOWN
+        customer_validated = cls._customer_validation_state(snapshot.customer_validation_state, snapshot.customer_validation_refs) != UNKNOWN
         interpretation_refs = sorted(set(delivery_refs if customer_validated else []))
         business_interpretation: dict[str, Any]
         if interpretation_refs:
@@ -584,7 +584,7 @@ class BuyerOutputsEngine:
                 "Public proof requires explicit customer permission.",
                 "No result, ROI, or customer-value claim is inferred from missing evidence.",
             ],
-            "customer_validation_state": cls._customer_validation_state(snapshot.customer_validation_state),
+            "customer_validation_state": cls._customer_validation_state(snapshot.customer_validation_state, snapshot.customer_validation_refs),
             "payment_evidence_state": {
                 "status": "VERIFIED" if payment_refs else UNKNOWN,
                 "payment_proof_refs": payment_refs,
