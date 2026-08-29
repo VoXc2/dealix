@@ -3,7 +3,11 @@
   "version": "2026-08-28.1",
   "north_star": "FIRST_VERIFIED_PAID_PILOT",
   "positioning": "Saudi-first AI Business Operating System",
-  "commercial_wedge": ["Revenue", "Proof", "Command"],
+  "commercial_wedge": [
+    "Revenue",
+    "Proof",
+    "Command"
+  ],
   "canonical_path": [
     "FREE_MINI_DIAGNOSTIC",
     "QUALIFIED_DISCOVERY",
@@ -74,9 +78,7 @@
       "morning_command_generation"
     ],
     "CONDITIONAL_AUTOMATION": [
-      "official_api_owned_channel_publish_when_readiness_passes",
       "inbound_routing",
-      "consented_follow_up",
       "provider_callback_reconciliation",
       "bounded_enrichment_after_shortlist",
       "content_scheduling"
@@ -93,7 +95,9 @@
       "payment_charge_refund_or_spend",
       "exclusivity_or_warranty",
       "public_customer_proof_without_recorded_permission",
-      "production_dns_secret_or_material_database_mutation"
+      "production_dns_secret_or_material_database_mutation",
+      "approved_external_send_or_publish",
+      "consented_follow_up_send"
     ],
     "BLOCKED": [
       "cold_bulk_whatsapp",
@@ -207,7 +211,13 @@
     ]
   },
   "experiments": {
-    "required_fields": ["hypothesis", "segment", "exposure", "primary_metric", "stop_rule"],
+    "required_fields": [
+      "hypothesis",
+      "segment",
+      "exposure",
+      "primary_metric",
+      "stop_rule"
+    ],
     "families": [
       "ICP",
       "FOUNDER_OPENER",
