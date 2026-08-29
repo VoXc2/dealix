@@ -23,6 +23,7 @@ from fastapi.responses import PlainTextResponse
 from pydantic import BaseModel, Field
 
 from api.security.api_key import require_founder_admin_key
+from dealix.commercial.buyer_outputs import BuyerEvidenceSnapshot, BuyerOutputsEngine
 from dealix.commercial.case_study_generator import CaseStudyGenerator, CaseStudyRequest
 from dealix.commercial.diagnostic_engine import DiagnosticEngine, DiagnosticRequest
 from dealix.commercial.proof_builder import ProofBuilder, ProofBuildRequest
@@ -141,6 +142,28 @@ async def diagnostic_generate_markdown(
     _: None = Depends(_require_admin),
 ) -> str:
     return DiagnosticEngine().generate(req).markdown_ar_en
+
+# ---------------------------------------------------------------------------
+# Deterministic buyer outputs — one evidence snapshot, three governed views
+# ---------------------------------------------------------------------------
+
+
+@router.post("/buyer-outputs/generate")
+async def buyer_outputs_generate(
+    req: BuyerEvidenceSnapshot,
+    _: None = Depends(_require_admin),
+) -> dict[str, Any]:
+    try:
+        bundle = BuyerOutputsEngine().build(req)
+    except ValueError as exc:
+        raise HTTPException(
+            status_code=422,
+            detail={
+                "code": "EVIDENCE_CONTRACT_FAILED",
+                "message": str(exc),
+            },
+        ) from exc
+    return bundle.to_dict()
 
 
 # ---------------------------------------------------------------------------
