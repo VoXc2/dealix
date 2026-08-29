@@ -83,6 +83,8 @@ def main() -> int:
         "contract_or_legal_commitment",
         "payment_charge_refund_or_spend",
         "production_dns_secret_or_material_database_mutation",
+        "approved_external_send_or_publish",
+        "consented_follow_up_send",
     ):
         require(required in specific, f"missing specific approval gate: {required}", errors)
 
