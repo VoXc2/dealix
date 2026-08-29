@@ -27,7 +27,7 @@ def test_outputs_are_deterministic_except_generated_at() -> None:
 
     assert first.semantic_dict() == second.semantic_dict()
     assert len(first.revenue_leak_map["top_interventions"]) <= 3
-    assert first.customer_proof_decision_pack["money"] if False else True
+    assert "UNKNOWN_NOT_EVIDENCE_BACKED" in first.customer_proof_decision_pack["decision_options"]
     assert first.executive_command["money"]["verified_revenue"] == "UNKNOWN_NOT_EVIDENCE_BACKED"
     assert first.executive_command["money"]["verified_payment_state"] == "UNKNOWN_NOT_EVIDENCE_BACKED"
 
