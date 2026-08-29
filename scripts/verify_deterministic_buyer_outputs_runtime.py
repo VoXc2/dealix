@@ -36,7 +36,7 @@ def main() -> int:
         "customer_proof_decision_pack",
         "executive_command",
     }
-    assert first.revenue_leak_map["metadata"]["unknown_semantics"] if False else True
+    assert "UNKNOWN_NOT_EVIDENCE_BACKED" in first.customer_proof_decision_pack["decision_options"]
     assert first.executive_command["money"]["verified_payment_state"] == "UNKNOWN_NOT_EVIDENCE_BACKED"
     assert first.customer_proof_decision_pack["payment_evidence_state"]["status"] == (
         "UNKNOWN_NOT_EVIDENCE_BACKED"
