@@ -180,6 +180,7 @@ class BuyerEvidenceSnapshot(BaseModel):
     approved_actions: list[ApprovedAction] = Field(default_factory=list)
     outcome_events: list[OutcomeEvent] = Field(default_factory=list)
     customer_validation_state: str = "UNKNOWN"
+    customer_validation_refs: list[str] = Field(default_factory=list)
     payment_evidence: PaymentEvidence = Field(default_factory=PaymentEvidence)
     delivery_evidence: DeliveryEvidence = Field(default_factory=DeliveryEvidence)
     decision_candidates: list[DecisionCandidate] = Field(default_factory=list)
@@ -285,6 +286,28 @@ class BuyerOutputsEngine:
         require_known(snapshot.payment_evidence.payment_proof_refs, "payment_proof")
         require_known(snapshot.payment_evidence.invoice_refs, "invoice")
         require_known(snapshot.delivery_evidence.delivery_proof_refs, "delivery_proof")
+        require_known(snapshot.customer_validation_refs, "customer_validation")
+
+        invalid_payment_refs = [
+            ref for ref in snapshot.payment_evidence.payment_proof_refs
+            if index[ref].synthetic or index[ref].kind.lower() not in {"payment", "payment_proof", "payment_provider_event"}
+        ]
+        if invalid_payment_refs:
+            raise ValueError(f"payment proof refs must be non-synthetic payment evidence: {sorted(invalid_payment_refs)}")
+
+        invalid_delivery_refs = [
+            ref for ref in snapshot.delivery_evidence.delivery_proof_refs
+            if index[ref].synthetic or index[ref].kind.lower() not in {"delivery", "delivery_proof", "accepted_delivery"}
+        ]
+        if invalid_delivery_refs:
+            raise ValueError(f"delivery proof refs must be non-synthetic delivery evidence: {sorted(invalid_delivery_refs)}")
+
+        invalid_validation_refs = [
+            ref for ref in snapshot.customer_validation_refs
+            if index[ref].synthetic or not index[ref].customer_validated
+        ]
+        if invalid_validation_refs:
+            raise ValueError(f"customer validation refs must be non-synthetic customer-validated evidence: {sorted(invalid_validation_refs)}")
         for item in snapshot.decision_candidates:
             require_known(item.evidence_refs, item.decision_id)
         for item in snapshot.risks:
@@ -366,10 +389,11 @@ class BuyerOutputsEngine:
             data[field] = cls._refs(data.get(field, []))
         return data
 
-    @classmethod
     @staticmethod
-    def _customer_validation_state(value: str) -> str:
+    def _customer_validation_state(value: str, validation_refs: list[str]) -> str:
         normalized = value.strip().upper()
+        if not validation_refs:
+            return UNKNOWN
         return normalized if normalized in {"VALIDATED", "CONFIRMED"} else UNKNOWN
 
     @classmethod
@@ -385,7 +409,7 @@ class BuyerOutputsEngine:
             unknowns.append("Payment is not verified; invoice or proposal artifacts are not payment proof.")
         if not snapshot.delivery_evidence.delivery_proof_refs:
             unknowns.append("Delivery evidence is not verified.")
-        if cls._customer_validation_state(snapshot.customer_validation_state) == UNKNOWN:
+        if cls._customer_validation_state(snapshot.customer_validation_state, snapshot.customer_validation_refs) == UNKNOWN:
             unknowns.append("Customer validation remains unknown.")
         return unknowns
 
