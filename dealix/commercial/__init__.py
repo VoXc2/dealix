@@ -23,6 +23,19 @@ from dealix.commercial.buyer_outputs import (
     ProcessObservation,
     RiskInput,
 )
+from dealix.commercial.company_brain_sprint import (
+    BrainSource,
+    CompanyBrainSprintAssessment,
+    CompanyBrainSprintPlanner,
+    CompanyBrainSprintRequest,
+    WorkflowCandidate,
+)
+from dealix.commercial.portfolio_router import (
+    DemandSignal,
+    EntryPackage,
+    PackageRouteDecision,
+    PortfolioPackageRouter,
+)
 from dealix.commercial.case_study_generator import (
     CaseStudyDocument,
     CaseStudyGenerator,
@@ -43,6 +56,15 @@ from dealix.commercial.warm_intro_generator import (
 )
 
 __all__ = [
+    "BrainSource",
+    "CompanyBrainSprintAssessment",
+    "CompanyBrainSprintPlanner",
+    "CompanyBrainSprintRequest",
+    "DemandSignal",
+    "EntryPackage",
+    "PackageRouteDecision",
+    "PortfolioPackageRouter",
+    "WorkflowCandidate",
     "CaseStudyDocument",
     "CaseStudyGenerator",
     "CaseStudyRequest",

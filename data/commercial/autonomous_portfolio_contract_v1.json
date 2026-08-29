@@ -1,0 +1,79 @@
+{
+  "schema": "dealix.autonomous-portfolio.v1",
+  "version": "1.0.0",
+  "parent_issue": "#1346",
+  "north_star": "MAX_VERIFIED_ECONOMIC_MOVEMENT_PER_FOUNDER_MINUTE_COST_RISK",
+  "architecture": {
+    "company_brain": "reuse_existing",
+    "opportunity_graph": "reuse_existing",
+    "approval_center": "reuse_existing",
+    "proof_ledger": "reuse_existing",
+    "scheduler": "reuse_existing",
+    "crm": "mirror_only",
+    "new_permanent_agents": 0
+  },
+  "entry_packages": [
+    "REVENUE_COMMAND_PILOT",
+    "COMPANY_BRAIN_GOVERNED_AI_SPRINT",
+    "SAUDI_MARKET_ACCESS_SPRINT",
+    "PARTNER_IMPLEMENTATION_PROOF_LAYER"
+  ],
+  "fallback_routes": [
+    "FREE_MINI_DIAGNOSTIC_THEN_QUALIFIED_DISCOVERY",
+    "RESEARCH_NURTURE_OR_SUPPRESS"
+  ],
+  "routing_required_fields": [
+    "source_ref",
+    "observed_at",
+    "evidence_refs",
+    "relationship_or_inbound_ref",
+    "consent_state",
+    "problem_or_capability",
+    "economic_relevance",
+    "urgency",
+    "next_action",
+    "owner",
+    "sla"
+  ],
+  "truth_invariants": {
+    "research_is_relationship": false,
+    "route_is_offer": false,
+    "route_is_quote": false,
+    "route_is_send_authority": false,
+    "route_is_execution_authority": false,
+    "source_context_is_customer_validation": false,
+    "payment_requires_canonical_proof": true,
+    "synthetic_is_customer_proof": false
+  },
+  "company_brain_sprint": {
+    "one_selected_workflow": true,
+    "requires": [
+      "verified relationship",
+      "qualified discovery",
+      "authority audit",
+      "approved data boundary",
+      "permissioned source registry",
+      "baseline",
+      "accountable owner",
+      "approval path",
+      "acceptance criteria",
+      "customer validation reference"
+    ],
+    "deliverables": [
+      "context and authority audit",
+      "permissioned source registry",
+      "single bounded workflow",
+      "evaluation and exception plan",
+      "handover playbook",
+      "proof method"
+    ],
+    "quote_authority": false,
+    "deployment_authority": false,
+    "production_authority": false
+  },
+  "wip": {
+    "company_p0_max": 3,
+    "build_prs_per_owner_max": 2,
+    "experiment_per_funnel_stage_max": 1
+  }
+}
