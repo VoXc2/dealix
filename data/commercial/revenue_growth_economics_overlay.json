@@ -1,0 +1,143 @@
+{
+  "schema": "dealix.revenue-growth-economics-overlay.v1",
+  "version": "2026-08-28.1",
+  "parent_contract": "data/commercial/revenue_growth_autopilot_contract.json",
+  "north_star": "FIRST_VERIFIED_PAID_PILOT",
+  "purpose": "Rank internal commercial capacity by verified movement economics without creating a second source of commercial truth.",
+  "truth_boundary": {
+    "ranking_only": true,
+    "cannot_promote_relationship": true,
+    "cannot_promote_stage": true,
+    "cannot_create_consent": true,
+    "cannot_create_payment": true,
+    "cannot_create_revenue": true,
+    "cannot_create_customer_proof": true,
+    "missing_evidence_value": "UNKNOWN_NOT_EVIDENCE_BACKED"
+  },
+  "canonical_movement_order": [
+    "REAL_INTERACTION",
+    "VERIFIED_RELATIONSHIP",
+    "QUALIFIED_PROBLEM",
+    "DIAGNOSTIC",
+    "DISCOVERY",
+    "CUSTOMER_SPECIFIC_QUOTE",
+    "PILOT_AGREED",
+    "PAYMENT_PROOF",
+    "DELIVERY_PROOF",
+    "PERMISSIONED_PROOF",
+    "EXPANSION_OR_REFERRAL"
+  ],
+  "economics_fields": [
+    "workload_id",
+    "owner",
+    "current_movement_state",
+    "target_movement_state",
+    "verified_movement_value",
+    "founder_minutes",
+    "agent_compute_cost",
+    "elapsed_minutes",
+    "risk_score",
+    "uncertainty_score",
+    "evidence_refs",
+    "result"
+  ],
+  "capacity_ranking": {
+    "formula": "verified_movement_value / max(founder_minutes + normalized_agent_compute_cost + risk_penalty + uncertainty_penalty, floor)",
+    "use": "INTERNAL_PRIORITY_ONLY",
+    "must_not_mutate_truth": true,
+    "preferred_outcome": "MAX_VERIFIED_COMMERCIAL_MOVEMENT_PER_FOUNDER_MINUTE"
+  },
+  "non_goal_metrics": [
+    "followers",
+    "impressions",
+    "messages_generated",
+    "agents_spawned",
+    "workflow_count",
+    "token_volume",
+    "crm_record_count",
+    "raw_lead_count"
+  ],
+  "experiment_contract": {
+    "required_fields": [
+      "hypothesis",
+      "segment",
+      "channel_or_surface",
+      "expected_verified_movement",
+      "founder_minutes_budget",
+      "agent_cost_budget",
+      "risk_budget",
+      "evidence_required",
+      "stop_rule",
+      "result",
+      "decision"
+    ],
+    "decisions": ["SCALE", "RETEST", "HOLD", "STOP", "INVALID"],
+    "vanity_only_scaling_blocked": true
+  },
+  "runtime_alias_map": {
+    "dealix-pm": ["founder-president"],
+    "dealix-sales": ["revenue-copilot", "sales-negotiation", "market-partner-scout"],
+    "dealix-delivery": ["delivery-success", "proof-data"],
+    "dealix-engineer": ["engineering-verifier", "sovereign-security", "production-sre", "capability-research"],
+    "dealix-content": ["existing_content_workload_on_agent_council"]
+  },
+  "alias_rules": {
+    "aliases_are_workload_labels_not_agents": true,
+    "new_permanent_agents": 0,
+    "new_schedulers": 0,
+    "alias_cannot_expand_authority": true,
+    "runtime_agent_authority_remains_canonical": true
+  },
+  "negotiation_concession_ledger": {
+    "required_fields": [
+      "give",
+      "get",
+      "economic_cost",
+      "strategic_value",
+      "authority",
+      "expiry",
+      "evidence"
+    ],
+    "rules": [
+      "NO_MATERIAL_GIVE_WITHOUT_RECIPROCAL_GET_UNLESS_SPECIFICALLY_APPROVED",
+      "TRADE_SCOPE_BEFORE_PRICE",
+      "DO_NOT_NEGOTIATE_AGAINST_SELF",
+      "NO_AUTONOMOUS_FINAL_PRICE_OR_DISCOUNT",
+      "NO_AUTONOMOUS_PAYMENT_LEGAL_EXCLUSIVITY_OR_GUARANTEE_COMMITMENT"
+    ],
+    "preferred_trade_dimensions_before_price": [
+      "scope",
+      "timeline",
+      "data_access",
+      "implementation_responsibility",
+      "milestones",
+      "support_level",
+      "proof_case_permission",
+      "referral_introduction",
+      "renewal_or_expansion_option"
+    ],
+    "required_output": [
+      "BEST_MOVE",
+      "FALLBACK_MOVE",
+      "DO_NOT_DO",
+      "GIVE_GET",
+      "EVIDENCE_GAP",
+      "HANDOFF_TRIGGER",
+      "NEXT_EVIDENCE"
+    ]
+  },
+  "event_override": {
+    "active_through": "2026-09-03",
+    "priority_order": [
+      "INBOUND_OR_EVENT_REAL_INTERACTION",
+      "VERIFIED_RELATIONSHIP",
+      "QUALIFIED_PROBLEM",
+      "DIAGNOSTIC",
+      "DISCOVERY",
+      "NEGOTIATION_OR_QUOTE_PREP",
+      "PAYMENT_PATH",
+      "CONTENT_FROM_VERIFIED_MARKET_CONVERSATIONS",
+      "OTHER_OPTIMIZATION"
+    ]
+  }
+}
