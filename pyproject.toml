@@ -98,6 +98,9 @@ observability = [
     "opentelemetry-instrumentation-sqlalchemy>=0.49b0",
     "prometheus-client>=0.21.0",
 ]
+runtime-controls = [
+    "openfeature-sdk==0.10.0",
+]
 security = [
     "pip-audit>=2.7.3",
     "cyclonedx-bom>=5.1.1",
