@@ -1,5 +1,5 @@
 {
-  "schema_version": "1.0",
+  "schema_version": "1.1",
   "surface_id": "dealix_slack_founder_room_v1",
   "workspace": {
     "name": "Dealix",
@@ -46,6 +46,7 @@
     "receipt_dir": "/opt/dealix/control/runs/slack-founder-receipts",
     "scheduler_created": false,
     "parallel_agent_fleet_created": false,
+    "source_sha_policy": "RECEIPT_MUST_MATCH_RUNTIME_EXACT_HEAD",
     "acceptance": {
       "required": [
         "socket_mode_authenticated",
@@ -56,9 +57,10 @@
         "command_produces_source_sha",
         "command_produces_receipt_reference",
         "receipt_matches_slack_response",
+        "receipt_source_sha_matches_runtime_exact_head",
         "canonical_company_autopilot_consumption_proven"
       ],
-      "status": "BLOCKED_UNTIL_NEW_WORKSPACE_SOCKET_MODE_CREDENTIALS_AND_END_TO_END_RECEIPT"
+      "status": "BLOCKED_UNTIL_VALID_SOCKET_MODE_CREDENTIALS_AND_END_TO_END_RECEIPT"
     }
   },
   "pro_trial": {
@@ -127,6 +129,6 @@
     "APPROVALS",
     "NEXT_ACTION"
   ],
-  "source_main_sha": "4c5e7863489443b2d6b89ce4dd9aeed26f24d3f9",
+  "contract_base_sha": "8027b25f442125873bcad597f8dbb97316edc723",
   "owner_issue": "#1337"
 }
