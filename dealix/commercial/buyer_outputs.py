@@ -367,6 +367,7 @@ class BuyerOutputsEngine:
         return data
 
     @classmethod
+    @staticmethod
     def _customer_validation_state(value: str) -> str:
         normalized = value.strip().upper()
         return normalized if normalized in {"VALIDATED", "CONFIRMED"} else UNKNOWN
