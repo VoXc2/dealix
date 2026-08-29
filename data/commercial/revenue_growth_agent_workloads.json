@@ -27,7 +27,13 @@
         "agent_handoff_audit",
         "founder_brief"
       ],
-      "forbidden": ["production_deploy", "customer_send", "payment", "secret_change", "legal_commitment"]
+      "forbidden": [
+        "production_deploy",
+        "customer_send",
+        "payment",
+        "secret_change",
+        "legal_commitment"
+      ]
     },
     "dealix-sales": {
       "class": "revenue",
@@ -44,7 +50,14 @@
         "negotiation_plan",
         "follow_up_draft"
       ],
-      "forbidden": ["external_send_without_channel_gate", "named_price_commitment", "contract_commitment", "payment_commitment", "linkedin_automation", "cold_bulk_whatsapp"]
+      "forbidden": [
+        "external_send_without_channel_gate",
+        "named_price_commitment",
+        "contract_commitment",
+        "payment_commitment",
+        "linkedin_automation",
+        "cold_bulk_whatsapp"
+      ]
     },
     "dealix-delivery": {
       "class": "delivery_proof",
@@ -59,7 +72,11 @@
         "expansion_hypothesis",
         "referral_trigger_preparation"
       ],
-      "forbidden": ["fabricated_proof", "public_customer_proof_without_permission", "unapproved_scope_commitment"]
+      "forbidden": [
+        "fabricated_proof",
+        "public_customer_proof_without_permission",
+        "unapproved_scope_commitment"
+      ]
     },
     "dealix-engineer": {
       "class": "product_qa",
@@ -76,7 +93,13 @@
         "osv_normalization",
         "n8n_disabled_first_workflow_authoring"
       ],
-      "forbidden": ["production_deploy", "secret_mutation", "payment", "main_merge_without_gate", "disable_guard_tests"]
+      "forbidden": [
+        "production_deploy",
+        "secret_mutation",
+        "payment",
+        "main_merge_without_gate",
+        "disable_guard_tests"
+      ]
     },
     "dealix-content": {
       "class": "content",
@@ -92,16 +115,43 @@
         "objection_asset",
         "proof_asset_draft"
       ],
-      "forbidden": ["unsupported_claim", "fake_case_study", "public_fixed_pilot_price", "guaranteed_outcome", "pii_in_case_study"]
+      "forbidden": [
+        "unsupported_claim",
+        "fake_case_study",
+        "public_fixed_pilot_price",
+        "guaranteed_outcome",
+        "pii_in_case_study"
+      ]
     }
   },
   "internal_swarm": {
-    "market_research": ["market_monitoring", "account_research", "event_research", "founder_ecosystem_research"],
-    "competitor": ["competitor_changes", "positioning_deltas", "category_signal_capture"],
-    "sector_intel": ["sector_pain_hypotheses", "saudi_context", "program_tender_watch"],
-    "enrichment": ["bounded_enrichment_after_shortlist_only"],
-    "distribution": ["owned_channel_adaptation", "utm_preparation", "queue_preparation"],
-    "proposal_sender": ["DRAFT_OR_QUEUE_ONLY_UNTIL_CHANNEL_POLICY_PASS"]
+    "market_research": [
+      "market_monitoring",
+      "account_research",
+      "event_research",
+      "founder_ecosystem_research"
+    ],
+    "competitor": [
+      "competitor_changes",
+      "positioning_deltas",
+      "category_signal_capture"
+    ],
+    "sector_intel": [
+      "sector_pain_hypotheses",
+      "saudi_context",
+      "program_tender_watch"
+    ],
+    "enrichment": [
+      "bounded_enrichment_after_shortlist_only"
+    ],
+    "distribution": [
+      "owned_channel_adaptation",
+      "utm_preparation",
+      "queue_preparation"
+    ],
+    "proposal_sender": [
+      "DRAFT_OR_QUEUE_ONLY_UNTIL_CHANNEL_POLICY_PASS"
+    ]
   },
   "wip_policy": {
     "global_primary_revenue_bets": 3,
@@ -139,26 +189,44 @@
       "owner": "dealix-engineer",
       "priority": "P0",
       "status": "READY_INTERNAL",
-      "mission": "Close #1301 verifier false positives with exact-head isolated acceptance.",
-      "acceptance": ["brand verifier PASS", "HubSpot mirror verifier PASS", "current authority suite PASS"],
+      "mission": "Run exact-head commercial truth, diagnostic, buyer-output and authority verification on current main after #1339/#1341/#1342 integration.",
+      "acceptance": [
+        "exact current-main SHA recorded",
+        "commercial truth verifier PASS",
+        "diagnostic evidence verifier PASS",
+        "buyer outputs verifier PASS",
+        "no authority regression"
+      ],
       "external_side_effect": false
     },
     {
       "id": "RG-002",
-      "owner": "dealix-engineer",
+      "owner": "dealix-pm",
       "priority": "P0",
       "status": "READY_INTERNAL",
-      "mission": "Close #1298 public commercial truth with type/build/browser acceptance.",
-      "acceptance": ["typecheck PASS", "production build PASS", "public-surface verifier PASS", "Playwright key-route canaries PASS", "no legacy price/refund/guarantee drift"],
+      "mission": "Implement #1346 package router over the existing Opportunity Graph and Company Brain.",
+      "acceptance": [
+        "one canonical router",
+        "four entry packages",
+        "real-interaction and consent states preserved",
+        "unclear demand routes to diagnostic",
+        "0 new CRM/brain/scheduler"
+      ],
       "external_side_effect": false
     },
     {
       "id": "RG-003",
-      "owner": "dealix-pm",
+      "owner": "dealix-engineer",
       "priority": "P0",
       "status": "READY_INTERNAL",
-      "mission": "Reconcile #1297 recurring command against current main and #1314 without duplicating commercial state.",
-      "acceptance": ["single daily owner", "connector failures nonfatal", "Morning Command evidence-first", "0 new scheduler", "0 new permanent agents"],
+      "mission": "Implement the bounded Company Brain & Governed AI Sprint assessment and output contract from #1346.",
+      "acceptance": [
+        "one named outcome",
+        "baseline and authority map",
+        "source/freshness/provenance fields",
+        "one bounded workflow",
+        "proof method and handover"
+      ],
       "external_side_effect": false
     },
     {
@@ -166,17 +234,28 @@
       "owner": "dealix-sales",
       "priority": "P0",
       "status": "READY_INTERNAL",
-      "mission": "Prepare top evidence-backed event/inbound/founder relationship briefs and exact next actions.",
-      "acceptance": ["research not promoted to relationship", "buying-group hypotheses source-bound", "each target has next evidence requirement", "no unauthorized send"],
+      "mission": "Prepare source-backed event, inbound, warm-introduction and technical-capability briefs with package routing and next evidence.",
+      "acceptance": [
+        "research not relationship",
+        "buying-group hypotheses source-bound",
+        "technical requests can route to Company Brain Sprint",
+        "no unauthorized send"
+      ],
       "external_side_effect": false
     },
     {
       "id": "RG-005",
-      "owner": "dealix-content",
+      "owner": "dealix-pm",
       "priority": "P1",
       "status": "READY_INTERNAL",
-      "mission": "Generate evidence-backed bilingual founder/company content assets from current high-value theses and objections.",
-      "acceptance": ["source refs present", "claim QA pass", "brand authority pass", "CTA maps to current commercial path"],
+      "mission": "Design the explicit consented Human Review handoff after the anonymous Mini Diagnostic.",
+      "acceptance": [
+        "diagnostic remains no-PII by default",
+        "separate explicit opt-in",
+        "retention notice",
+        "channel choice",
+        "no marketing consent inference"
+      ],
       "external_side_effect": false
     },
     {
@@ -185,7 +264,13 @@
       "priority": "P1",
       "status": "PILOT_ISOLATED",
       "mission": "Pilot Playwright commercial-surface regression and trace artifacts.",
-      "acceptance": ["isolated environment", "approved routes only", "trace retained", "no credential exposure", "no outreach automation"],
+      "acceptance": [
+        "isolated environment",
+        "approved routes only",
+        "trace retained",
+        "no credential exposure",
+        "no outreach automation"
+      ],
       "external_side_effect": false
     },
     {
@@ -193,17 +278,27 @@
       "owner": "dealix-engineer",
       "priority": "P1",
       "status": "PILOT_ISOLATED",
-      "mission": "Create credential-scrubbed Promptfoo truth/governance red-team pack.",
-      "acceptance": ["isolated runner", "seeded truth-inflation regression detected", "unsafe tool escalation detected", "unsupported claim regression detected"],
+      "mission": "Create a credential-scrubbed Promptfoo truth/governance red-team pack.",
+      "acceptance": [
+        "isolated runner",
+        "truth-inflation regression detected",
+        "unsafe tool escalation detected",
+        "unsupported claim regression detected"
+      ],
       "external_side_effect": false
     },
     {
       "id": "RG-008",
       "owner": "dealix-engineer",
-      "priority": "P2",
-      "status": "PILOT_ISOLATED",
-      "mission": "Map existing receipts to an OpenTelemetry-compatible lightweight schema without adding a backend.",
-      "acceptance": ["no prompt/customer content by default", "cost/latency/result correlation available", "no new observability database"],
+      "priority": "P1",
+      "status": "READY_INTERNAL",
+      "mission": "Integrate #1343 workload economics and time-to-evidence attribution with existing OTel/CostTracker semantics.",
+      "acceptance": [
+        "no new truth store",
+        "founder minutes and cost measured",
+        "time-to-evidence measured",
+        "synthetic/payment quarantine"
+      ],
       "external_side_effect": false
     },
     {
@@ -211,17 +306,27 @@
       "owner": "dealix-engineer",
       "priority": "P2",
       "status": "PILOT_ISOLATED",
-      "mission": "Pilot n8n MCP disabled-first workflow authoring against existing n8n ownership model.",
-      "acceptance": ["workflow disabled by default", "synthetic canary before activation", "no duplicate scheduler", "no customer send/payment during acceptance"],
+      "mission": "Pilot n8n deterministic intake/draft/proof routing against existing ownership.",
+      "acceptance": [
+        "disabled by default",
+        "synthetic canary",
+        "no duplicate scheduler",
+        "no customer send/payment during acceptance"
+      ],
       "external_side_effect": false
     },
     {
       "id": "RG-010",
       "owner": "dealix-pm",
       "priority": "P2",
-      "status": "DEFER_UNTIL_VOLUME",
-      "mission": "Prepare paid-media conversion architecture only after real conversion volume and budget gate.",
-      "acceptance": ["first-party measurement design", "verified conversion stages", "privacy/legal review", "founder-approved spend cap"],
+      "status": "DEFER_UNTIL_PROOF",
+      "mission": "Prepare paid-media architecture only after verified conversion volume, proof and budget gate.",
+      "acceptance": [
+        "first-party measurement",
+        "verified conversion stages",
+        "privacy/legal review",
+        "founder-approved spend cap"
+      ],
       "external_side_effect": true
     }
   ]
