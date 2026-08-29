@@ -1,0 +1,227 @@
+{
+  "schema": "dealix.package-routing.v1",
+  "as_of": "2026-08-29T12:50:00+03:00",
+  "portfolio_objective": "CASH_READY_AUTONOMOUS_DEALIX_COMPANY",
+  "north_star_metric": "VERIFIED_ECONOMIC_MOVEMENT_PER_FOUNDER_MINUTE_PER_COST_PER_RISK",
+  "positioning": "Saudi-first AI Business Operating System",
+  "commercial_path": [
+    "REAL_INTERACTION_OR_EXPLICIT_INBOUND",
+    "QUALIFIED_PROBLEM",
+    "FREE_MINI_DIAGNOSTIC",
+    "QUALIFIED_DISCOVERY",
+    "CUSTOMER_SPECIFIC_SCOPE_AND_QUOTE",
+    "PILOT_DECISION",
+    "VERIFIED_PAYMENT",
+    "DELIVERY",
+    "ACCEPTED_PROOF",
+    "EXPANSION_OR_REFERRAL_OR_PRODUCTIZATION"
+  ],
+  "canonical_owners": {
+    "company_brain": "existing_canonical_owner",
+    "opportunity_graph": "existing_canonical_owner",
+    "approval_center": "existing_canonical_owner",
+    "proof_ledger": "existing_canonical_owner",
+    "scheduler": "existing_canonical_owner_only",
+    "crm": "mirror_only"
+  },
+  "truth_firewall": {
+    "research_is_relationship": false,
+    "lead_row_is_consent": false,
+    "draft_is_sent": false,
+    "proposal_is_revenue": false,
+    "invoice_is_payment": false,
+    "delivery_is_customer_accepted_value": false,
+    "synthetic_is_customer_proof": false,
+    "verified_payment_requires_external_payment_evidence": true,
+    "public_customer_proof_requires_permission": true
+  },
+  "required_input_fields": [
+    "source_ref",
+    "source_timestamp",
+    "company_or_account_ref",
+    "real_interaction_state",
+    "consent_or_channel_eligibility_state",
+    "problem_evidence",
+    "problem_urgency_if_evidenced",
+    "economic_relevance_if_evidenced",
+    "data_or_integration_requirements_if_known",
+    "risk_or_regulatory_class",
+    "buying_group_hypothesis_if_known",
+    "current_stage",
+    "next_evidence_required"
+  ],
+  "unknown_policy": "UNKNOWN_NOT_EVIDENCE_BACKED",
+  "packages": {
+    "REVENUE_COMMAND_PILOT": {
+      "purpose": "Revenue leakage, follow-up, quote, buying-group, decision and proof operating problems.",
+      "entry_signals": [
+        "revenue_leakage",
+        "follow_up_gap",
+        "quote_delay",
+        "pipeline_visibility_gap",
+        "buying_group_gap",
+        "handoff_gap",
+        "commercial_proof_gap"
+      ],
+      "required_before_paid_scope": [
+        "qualified_problem",
+        "qualified_discovery",
+        "customer_specific_scope",
+        "quote_authority_ref"
+      ],
+      "outputs": [
+        "revenue_leak_map",
+        "buying_group_and_evidence_gap_map",
+        "next_best_action_queue",
+        "approval_ready_followup_or_proposal_drafts",
+        "weekly_proof_decision_pack",
+        "executive_command"
+      ]
+    },
+    "COMPANY_BRAIN_GOVERNED_AI_SPRINT": {
+      "purpose": "Enterprise context, knowledge fragmentation, governed AI agents, bounded workflow automation and technical operating demand.",
+      "entry_signals": [
+        "knowledge_fragmentation",
+        "enterprise_context_gap",
+        "agent_or_workflow_automation_request",
+        "document_intelligence_request",
+        "technical_ai_operating_problem",
+        "tool_governance_gap"
+      ],
+      "required_before_paid_scope": [
+        "qualified_problem",
+        "named_bounded_use_case",
+        "source_and_owner_map",
+        "authority_map",
+        "baseline_or_evidence_gap",
+        "proof_method"
+      ],
+      "outputs": [
+        "context_and_authority_audit",
+        "company_brain_source_registry_seed",
+        "one_bounded_workflow",
+        "identity_tool_and_approval_controls",
+        "evaluation_and_handover_pack",
+        "thirty_day_proof_plan"
+      ],
+      "anti_scope": [
+        "generic_chatbot",
+        "unlimited_agent_build",
+        "parallel_company_brain"
+      ]
+    },
+    "SAUDI_MARKET_ACCESS_SPRINT": {
+      "purpose": "Evidence-backed Saudi market, account, partner, localization and buyer-entry operating support.",
+      "entry_signals": [
+        "ksa_market_entry",
+        "partner_mapping",
+        "localization_gap",
+        "saudi_buyer_narrative_gap",
+        "market_opportunity_mapping",
+        "eligibility_or_readiness_question"
+      ],
+      "required_before_paid_scope": [
+        "qualified_problem",
+        "market_or_partner_evidence",
+        "no_false_access_claim",
+        "customer_specific_scope"
+      ],
+      "outputs": [
+        "sourced_market_account_partner_map",
+        "eligibility_and_localization_gap_map",
+        "relationship_plan",
+        "saudi_buyer_narrative",
+        "approval_ready_followups",
+        "decision_pack"
+      ],
+      "prohibited_claims": [
+        "guaranteed_government_access",
+        "guaranteed_tender_or_contract",
+        "unverified_official_relationship"
+      ]
+    },
+    "PARTNER_IMPLEMENTATION_PROOF_LAYER": {
+      "purpose": "Referral, co-sell, implementation, proof, prime/subcontract and joint market-access motions with real partners.",
+      "entry_signals": [
+        "crm_erp_consultancy",
+        "system_integrator",
+        "managed_service_provider",
+        "ai_consultancy",
+        "revenue_agency",
+        "implementation_partner_request",
+        "co_sell_or_referral_request"
+      ],
+      "required_before_paid_scope": [
+        "real_partner_interaction",
+        "mutual_value_hypothesis",
+        "attribution_model",
+        "authority_and_role_map"
+      ],
+      "outputs": [
+        "partner_qualification_packet",
+        "joint_value_map",
+        "co_sell_or_referral_playbook",
+        "implementation_and_proof_boundary",
+        "attribution_and_next_action"
+      ]
+    }
+  },
+  "routing_rules": [
+    {
+      "priority": 10,
+      "when_any": ["revenue_leakage", "follow_up_gap", "quote_delay", "pipeline_visibility_gap", "buying_group_gap", "handoff_gap", "commercial_proof_gap"],
+      "route": "REVENUE_COMMAND_PILOT"
+    },
+    {
+      "priority": 20,
+      "when_any": ["knowledge_fragmentation", "enterprise_context_gap", "agent_or_workflow_automation_request", "document_intelligence_request", "technical_ai_operating_problem", "tool_governance_gap"],
+      "route": "COMPANY_BRAIN_GOVERNED_AI_SPRINT"
+    },
+    {
+      "priority": 30,
+      "when_any": ["ksa_market_entry", "partner_mapping", "localization_gap", "saudi_buyer_narrative_gap", "market_opportunity_mapping", "eligibility_or_readiness_question"],
+      "route": "SAUDI_MARKET_ACCESS_SPRINT"
+    },
+    {
+      "priority": 40,
+      "when_any": ["crm_erp_consultancy", "system_integrator", "managed_service_provider", "ai_consultancy", "revenue_agency", "implementation_partner_request", "co_sell_or_referral_request"],
+      "route": "PARTNER_IMPLEMENTATION_PROOF_LAYER"
+    }
+  ],
+  "fallback_rules": {
+    "plausible_but_unclear": "FREE_MINI_DIAGNOSTIC_OR_DISCOVERY",
+    "low_fit": "RESEARCH_OR_NURTURE_WITH_REASON",
+    "no_evidence": "RESEARCH_ONLY",
+    "no_permission_for_direct_marketing": "SUPPRESS_EXTERNAL_OUTREACH",
+    "opted_out": "SUPPRESSED"
+  },
+  "router_output_contract": [
+    "recommended_package",
+    "routing_reason",
+    "confidence",
+    "input_evidence_refs",
+    "missing_evidence",
+    "next_evidence_required",
+    "next_action",
+    "owner",
+    "sla",
+    "expiry",
+    "authority_class",
+    "risk_class"
+  ],
+  "decision_constraints": {
+    "router_may_create_relationship_truth": false,
+    "router_may_create_consent": false,
+    "router_may_create_payment_truth": false,
+    "router_may_create_customer_proof": false,
+    "router_may_commit_price_or_contract": false,
+    "router_may_auto_send_external_message": false,
+    "router_may_rank_and_prepare_internal_work": true
+  },
+  "president_wip": {
+    "max_company_p0s": 3,
+    "max_active_build_prs_per_owner": 2,
+    "max_experiments_per_funnel_stage": 1,
+    "kill_after_reviews_without_customer_economic_or_trust_movement": 2
+  }
+}

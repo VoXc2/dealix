@@ -1,0 +1,127 @@
+{
+  "schema": "dealix.event-to-cash-priority.v1",
+  "as_of": "2026-08-29T12:55:00+03:00",
+  "timezone": "Asia/Riyadh",
+  "priority_window": {
+    "start": "2026-08-29",
+    "end": "2026-09-03",
+    "priority_override": true,
+    "events": [
+      {
+        "name": "Big 5 Construct Saudi 2026",
+        "dates": "2026-08-30/2026-09-02",
+        "hours": "16:00-22:00",
+        "official_source": "https://www.big5constructsaudi.com/event-info/"
+      },
+      {
+        "name": "LEAP 2026",
+        "dates": "2026-08-31/2026-09-03",
+        "official_source": "https://onegiantleap.com/"
+      },
+      {
+        "name": "DeepFest 2026",
+        "dates": "2026-08-31/2026-09-03",
+        "official_source": "https://deepfest.com/"
+      }
+    ]
+  },
+  "north_star": "VERIFIED_ECONOMIC_MOVEMENT_PER_FOUNDER_MINUTE_PER_COST_PER_RISK",
+  "commercial_milestone": "FIRST_VERIFIED_PAID_PILOT",
+  "truth_invariants": {
+    "research_target_is_relationship": false,
+    "event_attendee_is_relationship": false,
+    "badge_scan_is_relationship": false,
+    "connection_request_is_relationship": false,
+    "message_sent_is_relationship": false,
+    "proposal_is_revenue": false,
+    "invoice_is_payment": false,
+    "synthetic_is_customer_proof": false
+  },
+  "relationship_promotion_requires": [
+    "real_two_way_interaction_evidence",
+    "counterparty_identity_or_bounded_identifier",
+    "interaction_timestamp",
+    "event_or_channel_source_ref"
+  ],
+  "priority_order": [
+    "VERIFIED_INBOUND_OR_EXISTING_WARM",
+    "PENDING_EVENT_NETWORKING_REQUEST",
+    "FOUNDER_TO_FOUNDER_REAL_INTERACTION",
+    "STRATEGIC_PARTNER_REAL_INTERACTION",
+    "HIGH_FIT_ACCOUNT_WITH_SPECIFIC_PAIN_HYPOTHESIS",
+    "BROAD_RESEARCH_ONLY"
+  ],
+  "daily_wip": {
+    "max_active_company_p0s": 3,
+    "max_event_target_accounts": 12,
+    "max_same_day_followup_drafts": 8,
+    "required_next_evidence_per_task": true
+  },
+  "interaction_receipt_fields": [
+    "person_or_contact_ref",
+    "company",
+    "role_if_known",
+    "event_or_channel",
+    "timestamp",
+    "interaction_type",
+    "what_they_actually_said",
+    "problem_or_goal",
+    "urgency_if_evidenced",
+    "systems_or_tools_if_evidenced",
+    "followup_permission_state",
+    "evidence_ref",
+    "next_evidence_required",
+    "next_action",
+    "owner"
+  ],
+  "stage_path": [
+    "RESEARCH",
+    "REAL_INTERACTION",
+    "VERIFIED_RELATIONSHIP",
+    "QUALIFIED_PROBLEM",
+    "FREE_MINI_DIAGNOSTIC",
+    "QUALIFIED_DISCOVERY",
+    "CUSTOMER_SPECIFIC_QUOTE",
+    "PILOT_DECISION",
+    "VERIFIED_PAYMENT",
+    "DELIVERY",
+    "ACCEPTED_PROOF",
+    "EXPANSION_OR_REFERRAL"
+  ],
+  "funnel_economics_required": [
+    "verified_stage_delta",
+    "founder_minutes",
+    "elapsed_minutes",
+    "agent_or_model_cost_if_available",
+    "risk_class",
+    "evidence_refs",
+    "next_evidence_required"
+  ],
+  "unknown_policy": "UNKNOWN_NOT_EVIDENCE_BACKED",
+  "same_day_targets_minutes": {
+    "interaction_to_capture": 5,
+    "capture_to_research_enrichment": 10,
+    "capture_to_followup_draft": 20,
+    "capture_to_diagnostic_seed": 30
+  },
+  "authority": {
+    "auto_research": true,
+    "auto_capture_internal_receipt": true,
+    "auto_prepare_followup_draft": true,
+    "auto_prepare_diagnostic_seed": true,
+    "external_send": false,
+    "public_publish": false,
+    "payment_execution": false,
+    "quote_or_contract_commitment": false
+  },
+  "stop_rules": [
+    "No exhibitor scraping into relationship truth.",
+    "No mass event outreach.",
+    "No cold WhatsApp blasting.",
+    "No personal LinkedIn automation.",
+    "No consent or suppression bypass.",
+    "No new CRM, scheduler, permanent agent fleet, Company Brain, Opportunity Graph, Approval Center or Proof Ledger.",
+    "No content-volume optimization ahead of verified commercial movement.",
+    "No event urgency may bypass authority, payment proof or customer-proof rules."
+  ]
+}
