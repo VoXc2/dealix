@@ -55,6 +55,7 @@ class DiagnosticRequest(BaseModel):
     evidence_refs: list[str] = Field(default_factory=list)
     baseline_ref: str = ""
     source_context: str = ""
+    customer_validation_ref: str = ""
 
 
 class DiagnosticSection(BaseModel):
@@ -83,6 +84,8 @@ class DiagnosticReport(BaseModel):
     approval_status: str = "approval_required"
     governance_decision: str = "pending"
     llm_used: bool = False
+    customer_validation_ref: str = ""
+    customer_validation_status: str = "UNKNOWN_NOT_EVIDENCE_BACKED"
 
     def to_dict(self) -> dict[str, Any]:
         return json.loads(self.model_dump_json())
@@ -99,6 +102,7 @@ class DiagnosticEngine:
             "evidence_refs": sorted({r.strip() for r in req.evidence_refs if r.strip()}),
             "baseline_ref": req.baseline_ref.strip(),
             "source_context": req.source_context.strip(),
+            "customer_validation_ref": req.customer_validation_ref.strip(),
         }
         report_id = hashlib.sha256(
             json.dumps(normalized, ensure_ascii=False, sort_keys=True).encode("utf-8")
@@ -116,8 +120,8 @@ class DiagnosticEngine:
             "No source-linked evidence was supplied."
             if not req.evidence_refs
             else "",
-            "Observed business impact remains unknown until the customer validates it."
-            if not req.source_context.strip()
+            "Observed business impact remains unknown until a customer-validation reference is supplied."
+            if not req.customer_validation_ref.strip()
             else "",
         ]
         unknowns = [item for item in unknowns if item]
@@ -129,6 +133,12 @@ class DiagnosticEngine:
             pains_ar=pains_ar,
             pains_en=pains_en,
             unknowns=unknowns,
+            customer_validation_ref=req.customer_validation_ref.strip(),
+            customer_validation_status=(
+                "CUSTOMER_VALIDATED_WITH_REFERENCE"
+                if req.customer_validation_ref.strip()
+                else UNKNOWN
+            ),
         )
         markdown = self._render_markdown(req, sections, report_id, unknowns)
         return DiagnosticReport(
