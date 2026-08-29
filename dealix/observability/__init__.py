@@ -1,5 +1,11 @@
 """Observability: cost tracking, OpenTelemetry tracing, Sentry."""
 
+from dealix.observability.economic_attribution import (
+    AttributionRecord,
+    AttributionReport,
+    WorkloadEconomicsAttribution,
+    WorkloadMeasurement,
+)
 from dealix.observability.cost_tracker import (
     MODEL_PRICES,
     CostEntry,
@@ -17,6 +23,10 @@ from dealix.observability.otel import (
 from dealix.observability.sentry import setup_sentry
 
 __all__ = [
+    "AttributionRecord",
+    "AttributionReport",
+    "WorkloadEconomicsAttribution",
+    "WorkloadMeasurement",
     "MODEL_PRICES",
     "CostEntry",
     "CostTracker",
