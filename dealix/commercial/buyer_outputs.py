@@ -348,6 +348,7 @@ class BuyerOutputsEngine:
             "freshness": freshness,
             "generator": "BuyerOutputsEngine",
             "authority_ref": snapshot.authority_ref or AUTHORITY_REF,
+            "unknown_semantics": UNKNOWN,
         }
 
     @staticmethod
@@ -357,6 +358,13 @@ class BuyerOutputsEngine:
     @staticmethod
     def _refs(values: list[str]) -> list[str]:
         return sorted({value.strip() for value in values if value.strip()})
+
+    @classmethod
+    def _model_dict_with_refs(cls, item: BaseModel, *ref_fields: str) -> dict[str, Any]:
+        data = item.model_dump(mode="json")
+        for field in ref_fields:
+            data[field] = cls._refs(data.get(field, []))
+        return data
 
     @classmethod
     def _unknowns(cls, snapshot: BuyerEvidenceSnapshot, index: dict[str, EvidenceItem]) -> list[str]:
@@ -388,7 +396,7 @@ class BuyerOutputsEngine:
             needs.append("If a pilot is accepted, record external payment proof before delivery.")
         if not snapshot.delivery_evidence.delivery_proof_refs:
             needs.append("Record delivery evidence before interpreting customer value.")
-        return list(dict.fromkeys(needs))
+        return sorted(dict.fromkeys(needs))
 
     @classmethod
     def _next_action(cls, snapshot: BuyerEvidenceSnapshot, index: dict[str, EvidenceItem]) -> dict[str, Any]:
@@ -422,16 +430,16 @@ class BuyerOutputsEngine:
     ) -> dict[str, Any]:
         unknowns = cls._unknowns(snapshot, index)
         interventions = sorted(
-            (item.model_dump(mode="json") for item in snapshot.proposed_interventions),
+            (cls._model_dict_with_refs(item, "evidence_refs") for item in snapshot.proposed_interventions),
             key=lambda item: (item["intervention_id"], item["title"]),
         )[:3]
         observed_leaks = [
-            item.model_dump(mode="json")
+            cls._model_dict_with_refs(item, "evidence_refs")
             for item in sorted(snapshot.observed_leaks, key=lambda item: item.leak_id)
         ]
         hypotheses = []
         for item in sorted(snapshot.hypothesized_leaks, key=lambda item: item.hypothesis_id):
-            data = item.model_dump(mode="json")
+            data = cls._model_dict_with_refs(item, "supporting_refs")
             data["classification"] = "HYPOTHESIS"
             hypotheses.append(data)
         return {
@@ -446,13 +454,13 @@ class BuyerOutputsEngine:
                 cls._evidence_dict(item) for item in sorted(index.values(), key=lambda item: item.evidence_id)
             ],
             "observed_process": [
-                item.model_dump(mode="json")
+                cls._model_dict_with_refs(item, "evidence_refs")
                 for item in sorted(snapshot.process_observations, key=lambda item: item.observation_id)
             ],
             "observed_leaks": observed_leaks,
             "hypothesized_leaks": hypotheses,
             "owner_and_next_action_gaps": [
-                item.model_dump(mode="json")
+                cls._model_dict_with_refs(item, "evidence_refs")
                 for item in sorted(snapshot.owner_gaps, key=lambda item: item.gap_id)
             ],
             "data_and_proof_gaps": unknowns,
@@ -500,7 +508,7 @@ class BuyerOutputsEngine:
         payment_refs = cls._verified_payment_refs(snapshot, index)
         delivery_refs = cls._verified_delivery_refs(snapshot, index)
         outcome_events = [
-            item.model_dump(mode="json")
+            cls._model_dict_with_refs(item, "evidence_refs")
             for item in sorted(snapshot.outcome_events, key=lambda item: (item.outcome_id, item.recorded_at))
         ]
         customer_validated = snapshot.customer_validation_state.upper() in {"VALIDATED", "CONFIRMED"}
@@ -524,7 +532,7 @@ class BuyerOutputsEngine:
         return {
             "metadata": deepcopy(metadata),
             "baseline": [
-                item.model_dump(mode="json")
+                cls._model_dict_with_refs(item, "evidence_refs")
                 for item in sorted(snapshot.baseline, key=lambda item: item.metric_id)
             ] or UNKNOWN,
             "agreed_objective": {
@@ -532,7 +540,7 @@ class BuyerOutputsEngine:
                 "evidence_refs": cls._refs(snapshot.agreed_objective_evidence_refs),
             },
             "approved_actions": [
-                item.model_dump(mode="json")
+                cls._model_dict_with_refs(item, "evidence_refs")
                 for item in sorted(snapshot.approved_actions, key=lambda item: item.action_id)
                 if item.approved and item.approval_ref
             ] or UNKNOWN,
@@ -588,7 +596,7 @@ class BuyerOutputsEngine:
             closest_money_path = "REAL_INTERACTION"
 
         decisions = [
-            item.model_dump(mode="json")
+            cls._model_dict_with_refs(item, "evidence_refs")
             for item in sorted(snapshot.decision_candidates, key=lambda item: item.decision_id)
         ][:3]
         if not decisions:
@@ -601,7 +609,7 @@ class BuyerOutputsEngine:
                 "deadline": UNKNOWN,
             }]
         risks = [
-            item.model_dump(mode="json")
+            cls._model_dict_with_refs(item, "evidence_refs")
             for item in sorted(snapshot.risks, key=lambda item: item.risk_id)
         ][:3]
         if not risks:
