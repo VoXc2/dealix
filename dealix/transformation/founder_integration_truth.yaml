@@ -1,90 +1,102 @@
-# Founder integration truth matrix — edit status after manual verify (no invented PASS).
+# Founder integration truth matrix — edit status only after direct verification.
 # Consumed by: dealix.business_now.integration_truth, founder_go_live_verify.sh
-version: 1
-updated_note_ar: "حدّث status بعد كل اختبار يدوي — green/yellow/red فقط"
+# Commercial authority is governed by current Platform/Commercial Truth; legacy
+# catalog IDs below are compatibility rows only and MUST NOT create offer/price authority.
+version: 2
+updated_note_ar: "حدّث status بعد اختبار مباشر فقط؛ الأحمر قد يكون مقصوداً ولا يحجب Weekly Metrics إلا إذا blocks_weekly_metrics=true"
 
 ladder:
   - id: ops_diagnostic
-    label_ar: "Governed Revenue Ops Diagnostic"
-    price_sar: "4999-15000"
+    label_ar: "Governed Revenue Ops Diagnostic — legacy compatibility row"
+    price_sar: "legacy_not_authorized"
     endpoint: "POST /api/v1/service-setup/qualify"
     verify_script: "manual qualify + founder proposal"
     status: yellow
-    founder_says_ar: "تشخيص مدفوع أسبوعان — العقد والفاتورة يدوياً أو sandbox حتى Moyasar live"
+    commercial_authority: false
+    founder_says_ar: "ليس عرضاً مدفوعاً عاماً؛ المسار الحالي يبدأ Free Mini Diagnostic ثم Discovery ثم Customer-Specific Quote"
   - id: free_mini_diagnostic
     label_ar: "تشخيص مجاني"
     price_sar: "0"
     endpoint: "POST /api/v1/company-growth-beast/diagnostic"
     verify_script: "curl intake or landing"
     status: green
-    founder_says_ar: "مجاني — مراجعة يدوية من المؤسس"
+    commercial_authority: true
+    founder_says_ar: "المدخل العام الحالي؛ لا دفع مطلوب قبل التشخيص"
   - id: revenue_command_pilot_30d
-    label_ar: "تجربة مركز قيادة الإيرادات — 30 يوماً"
+    label_ar: "Revenue Command Pilot — 30 يوماً"
     price_sar: "quote_after_discovery"
     endpoint: "POST /api/v1/sprint/run"
     verify_script: "tests/test_revenue_os_golden_chain_smoke.py"
     status: green
-    founder_says_ar: "نطاق 30 يوماً + Proof Pack؛ السعر يحدد بعرض موثق بعد الاكتشاف وموافقة المؤسس"
+    commercial_authority: true
+    founder_says_ar: "نطاق 30 يوماً + Proof Pack؛ السعر خاص بالعميل بعد Discovery وموافقة محددة"
   - id: data_to_revenue_pack_1500
-    label_ar: "حزمة بيانات 1500"
-    price_sar: "1500"
+    label_ar: "Data-to-Revenue Pack — legacy compatibility row"
+    price_sar: "legacy_not_authorized"
     endpoint: "POST /api/v1/data-os/import-preview/upload"
     verify_script: "tests/test_data_os_quality.py"
-    status: green
-    founder_says_ar: "رفع CSV + DQ score — لا ادّعاء L5 قبل اجتماع"
+    status: yellow
+    commercial_authority: false
+    founder_says_ar: "قدرة داخل المنصة وليست سعراً عاماً أو عرضاً مستقلاً حالياً"
   - id: growth_ops_monthly_2999
-    label_ar: "عمليات نمو شهرية"
-    price_sar: "2999/mo"
+    label_ar: "Growth Ops Monthly — legacy compatibility row"
+    price_sar: "legacy_not_authorized"
     endpoint: "GET /api/v1/value/{handle}/report/monthly"
     verify_script: "tenant + monthly report manual"
     status: yellow
-    founder_says_ar: "بعد Sprint و Proof — يحتاج tenant فعّال"
+    commercial_authority: false
+    founder_says_ar: "لا اشتراك عام أو سعر عام؛ أي توسع يأتي بعد Proof وبعرض خاص"
   - id: support_os_addon_1500
-    label_ar: "إضافة دعم"
-    price_sar: "1500/mo"
+    label_ar: "Support OS Add-on — legacy compatibility row"
+    price_sar: "legacy_not_authorized"
     endpoint: "support_os module"
     verify_script: "dealix_capability_verify.sh"
     status: yellow
-    founder_says_ar: "بعد أول عميل مدفوع — مسودات دعم فقط"
+    commercial_authority: false
+    founder_says_ar: "قدرة Phase 2؛ لا بيع عام أو سعر ثابت"
   - id: executive_command_center_7500
-    label_ar: "غرفة قيادة تنفيذية"
-    price_sar: "7500/mo"
+    label_ar: "Executive Command Center — legacy compatibility row"
+    price_sar: "legacy_not_authorized"
     endpoint: "GET founder command center"
     verify_script: "WAVE6_REAL_DEMO_RUNBOOK"
     status: yellow
-    founder_says_ar: "ديمو ECC — لا بيع قبل Proof على طبقة أدنى"
+    commercial_authority: false
+    founder_says_ar: "قدرة ضمن Command OS؛ لا سعر عام ولا عرض مستقل بدون Discovery وQuote"
 
 integrations:
   - id: postgres_redis
     label_ar: "Postgres + Redis"
     status: green
     verify_script: "docker compose up -d postgres redis"
-    founder_says_ar: "أساس كل الاختبار المحلي"
+    founder_says_ar: "أساس الاختبار المحلي"
   - id: moyasar_live
     label_ar: "Moyasar live"
     status: red
+    blocks_weekly_metrics: false
     verify_script: "POST /api/v1/payment-ops/invoice-intent"
-    founder_says_ar: "KYC أو فاتورة يدوية — sandbox للاختبار التقني فقط"
+    founder_says_ar: "Live payment غير مفعل؛ لا يعتبر ذلك عطل Weekly Metrics"
   - id: moyasar_sandbox
     label_ar: "Moyasar sandbox"
     status: yellow
     verify_script: "MOYASAR_SECRET_KEY=sk_test_* + invoice-intent"
-    founder_says_ar: "ضع sk_test في .env ثم أعد الاختبار"
+    founder_says_ar: "Sandbox تقني فقط؛ لا يثبت Revenue"
   - id: whatsapp_business
     label_ar: "WhatsApp Business API"
     status: red
+    blocks_weekly_metrics: false
     verify_script: "integrations/whatsapp.py"
-    founder_says_ar: "ديمو = مسودات + موافقة — لا إرسال بارد"
+    founder_says_ar: "ديمو/مسودات + موافقة؛ لا cold WhatsApp ولا live send افتراضياً"
   - id: hubspot_crm
     label_ar: "HubSpot CRM"
     status: yellow
     verify_script: "POST /api/v1/leads (sync skipped without key)"
-    founder_says_ar: "CRM يدوي + kpi_founder_commercial_import.yaml"
+    founder_says_ar: "CRM mirror/execution adapter؛ ليس Economic Truth"
   - id: gmail_external
     label_ar: "Gmail خارجي"
     status: red
+    blocks_weekly_metrics: false
     verify_script: "approval gate"
-    founder_says_ar: "لا إرسال بدون founder_confirmed"
+    founder_says_ar: "External send approval-gated؛ بقاؤه red لا يحجب Weekly Metrics"
 
 platform_checks:
   - id: golden_chain
