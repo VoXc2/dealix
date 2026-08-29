@@ -367,6 +367,11 @@ class BuyerOutputsEngine:
         return data
 
     @classmethod
+    def _customer_validation_state(value: str) -> str:
+        normalized = value.strip().upper()
+        return normalized if normalized in {"VALIDATED", "CONFIRMED"} else UNKNOWN
+
+    @classmethod
     def _unknowns(cls, snapshot: BuyerEvidenceSnapshot, index: dict[str, EvidenceItem]) -> list[str]:
         unknowns: list[str] = []
         if not index:
@@ -379,7 +384,7 @@ class BuyerOutputsEngine:
             unknowns.append("Payment is not verified; invoice or proposal artifacts are not payment proof.")
         if not snapshot.delivery_evidence.delivery_proof_refs:
             unknowns.append("Delivery evidence is not verified.")
-        if snapshot.customer_validation_state.upper() not in {"VALIDATED", "CONFIRMED"}:
+        if cls._customer_validation_state(snapshot.customer_validation_state) == UNKNOWN:
             unknowns.append("Customer validation remains unknown.")
         return unknowns
 
@@ -511,7 +516,7 @@ class BuyerOutputsEngine:
             cls._model_dict_with_refs(item, "evidence_refs")
             for item in sorted(snapshot.outcome_events, key=lambda item: (item.outcome_id, item.recorded_at))
         ]
-        customer_validated = snapshot.customer_validation_state.upper() in {"VALIDATED", "CONFIRMED"}
+        customer_validated = cls._customer_validation_state(snapshot.customer_validation_state) != UNKNOWN
         interpretation_refs = sorted(set(delivery_refs if customer_validated else []))
         business_interpretation: dict[str, Any]
         if interpretation_refs:
@@ -554,7 +559,7 @@ class BuyerOutputsEngine:
                 "Public proof requires explicit customer permission.",
                 "No result, ROI, or customer-value claim is inferred from missing evidence.",
             ],
-            "customer_validation_state": snapshot.customer_validation_state or UNKNOWN,
+            "customer_validation_state": cls._customer_validation_state(snapshot.customer_validation_state),
             "payment_evidence_state": {
                 "status": "VERIFIED" if payment_refs else UNKNOWN,
                 "payment_proof_refs": payment_refs,
