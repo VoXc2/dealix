@@ -1,0 +1,290 @@
+{
+  "schema": "dealix.revenue-growth-autopilot.v1",
+  "version": "2026-08-28.1",
+  "north_star": "FIRST_VERIFIED_PAID_PILOT",
+  "positioning": "Saudi-first AI Business Operating System",
+  "commercial_wedge": [
+    "Revenue",
+    "Proof",
+    "Command"
+  ],
+  "canonical_path": [
+    "FREE_MINI_DIAGNOSTIC",
+    "QUALIFIED_DISCOVERY",
+    "CUSTOMER_SPECIFIC_QUOTE",
+    "THIRTY_DAY_REVENUE_COMMAND_PILOT",
+    "PAYMENT_PROOF",
+    "DELIVERY_PROOF",
+    "STOP_EXPAND_RECURRING"
+  ],
+  "truth_invariants": {
+    "research_is_relationship": false,
+    "crm_record_is_commercial_truth": false,
+    "provider_acceptance_is_delivery": false,
+    "proposal_is_revenue": false,
+    "invoice_is_payment": false,
+    "synthetic_is_customer_proof": false,
+    "verified_revenue_requires_payment_evidence": true,
+    "public_customer_proof_requires_permission": true
+  },
+  "architecture": {
+    "company_brain": "reuse_existing",
+    "opportunity_graph": "reuse_existing",
+    "approval_center": "reuse_existing",
+    "proof_ledger": "reuse_existing",
+    "crm": "mirror_only",
+    "scheduler": "existing_canonical_owner_only",
+    "agent_fleet": "reuse_existing",
+    "workflow_bus": "n8n_existing_owner"
+  },
+  "commercial_state_machine": [
+    "RESEARCH_ONLY",
+    "IDENTIFIED",
+    "INTERACTED",
+    "TWO_WAY",
+    "VERIFIED_RELATIONSHIP",
+    "QUALIFIED_PROBLEM",
+    "DIAGNOSTIC",
+    "DISCOVERY",
+    "BUYING_GROUP_MAPPED",
+    "PROPOSAL_DRAFT",
+    "PROPOSAL_PRESENTED",
+    "NEGOTIATION",
+    "DECISION_PENDING",
+    "PAID_PILOT",
+    "DELIVERY",
+    "PROOF",
+    "EXPANSION_REFERRAL_OR_STOP"
+  ],
+  "automation_classes": {
+    "FULLY_AUTONOMOUS_INTERNAL": [
+      "market_research",
+      "competitor_research",
+      "event_research",
+      "account_scoring",
+      "buying_group_hypothesis",
+      "content_ideation",
+      "draft_generation",
+      "content_repurposing",
+      "video_script_storyboard",
+      "seo_aeo_audits",
+      "analytics_analysis",
+      "experiment_analysis",
+      "crm_read_reconciliation",
+      "diagnostic_preparation",
+      "discovery_preparation",
+      "proposal_preparation",
+      "negotiation_preparation",
+      "morning_command_generation"
+    ],
+    "CONDITIONAL_AUTOMATION": [
+      "inbound_routing",
+      "provider_callback_reconciliation",
+      "bounded_enrichment_after_shortlist",
+      "content_scheduling"
+    ],
+    "MANUAL_NATIVE": [
+      "founder_linkedin_connection",
+      "founder_linkedin_message",
+      "founder_linkedin_comment"
+    ],
+    "SPECIFIC_APPROVAL_REQUIRED": [
+      "named_price_or_quote",
+      "contract_or_legal_commitment",
+      "tender_submission",
+      "payment_charge_refund_or_spend",
+      "exclusivity_or_warranty",
+      "public_customer_proof_without_recorded_permission",
+      "production_dns_secret_or_material_database_mutation",
+      "approved_external_send_or_publish",
+      "consented_follow_up_send"
+    ],
+    "BLOCKED": [
+      "cold_bulk_whatsapp",
+      "unauthorized_linkedin_automation",
+      "fabricated_customer_proof",
+      "fabricated_compliance_claim",
+      "guaranteed_roi_or_outcome_without_evidence",
+      "suppression_or_optout_bypass"
+    ]
+  },
+  "buying_group_roles": [
+    "ECONOMIC_BUYER",
+    "REVENUE_BUSINESS_BUYER",
+    "TECHNICAL_SECURITY_BUYER",
+    "FINANCE_LEGAL_PROCUREMENT",
+    "OPERATOR_USER",
+    "CHAMPION",
+    "BLOCKER_UNKNOWN"
+  ],
+  "negotiation": {
+    "objective": "maximize evidence-adjusted expected verified value, not headline price",
+    "required_fields": [
+      "counterpart_position",
+      "constraint_evidence",
+      "our_batna",
+      "their_batna_hypothesis",
+      "reservation_boundary",
+      "ideal_outcome",
+      "tradable_variables",
+      "non_tradable_boundaries",
+      "concessions_used",
+      "next_ask",
+      "next_proof_required"
+    ],
+    "tradable_variables_before_price": [
+      "scope",
+      "timeline",
+      "data_access",
+      "implementation_responsibility",
+      "payment_timing",
+      "milestones",
+      "support_level",
+      "proof_case_permission",
+      "referral_introduction",
+      "renewal_expansion_option"
+    ],
+    "concession_rule": "NEVER_GIVE_ALWAYS_TRADE",
+    "objection_classes": [
+      "PRICE",
+      "TIMING",
+      "PRIORITY",
+      "TRUST",
+      "SECURITY_DATA",
+      "INTEGRATION",
+      "INTERNAL_BUILD",
+      "COMPETITOR",
+      "NO_BUDGET",
+      "NO_AUTHORITY",
+      "NO_URGENCY",
+      "PROCUREMENT_LEGAL",
+      "UNKNOWN"
+    ],
+    "response_sequence": [
+      "ACKNOWLEDGE",
+      "CLARIFY",
+      "EVIDENCE",
+      "REFRAME",
+      "OPTION",
+      "CONFIRM_NEXT_STEP"
+    ],
+    "walk_away_triggers": [
+      "unlawful_or_unsafe_use",
+      "fabricated_claim_or_proof_request",
+      "unacceptable_collection_risk",
+      "unmet_security_data_requirement",
+      "scope_outside_current_delivery_capability",
+      "economics_below_approved_floor",
+      "unsupported_guarantee_requirement",
+      "bad_faith_or_abusive_negotiation"
+    ]
+  },
+  "marketing": {
+    "content_pillars": [
+      "AI_BUSINESS_OS",
+      "REVENUE_LEAKAGE",
+      "PROOF",
+      "GOVERNED_AI",
+      "SAUDI_BUSINESS_CONTEXT",
+      "BUILD_DEALIX_ON_DEALIX"
+    ],
+    "source_hierarchy": [
+      "permissioned_verified_customer_proof",
+      "real_founder_interactions_and_events",
+      "buyer_questions_and_objections",
+      "product_method_evidence",
+      "public_market_evidence",
+      "explicitly_labeled_research_hypotheses"
+    ],
+    "asset_pipeline": [
+      "EVIDENCE",
+      "FACTS",
+      "THESIS",
+      "ANGLES",
+      "MASTER_ASSET",
+      "CHANNEL_ADAPTATIONS",
+      "BRAND_AND_CLAIM_QA",
+      "QUEUE",
+      "PUBLISH_ELIGIBILITY",
+      "ANALYTICS",
+      "RELATIONSHIP_OR_REVENUE_MOVEMENT"
+    ]
+  },
+  "experiments": {
+    "required_fields": [
+      "hypothesis",
+      "segment",
+      "exposure",
+      "primary_metric",
+      "stop_rule"
+    ],
+    "families": [
+      "ICP",
+      "FOUNDER_OPENER",
+      "DIAGNOSTIC_CTA",
+      "LANDING_MESSAGE",
+      "PROOF_FORMAT",
+      "OBJECTION_RESPONSE",
+      "CHANNEL_TIMING",
+      "VIDEO_HOOK",
+      "PROPOSAL_STRUCTURE",
+      "DISCOVERY_SEQUENCE"
+    ],
+    "primary_outcomes": [
+      "verified_relationship_rate",
+      "qualified_problem_rate",
+      "diagnostic_completion",
+      "discovery_conversion",
+      "proposal_decision_rate",
+      "paid_pilot_conversion",
+      "time_to_stage",
+      "founder_minutes_per_verified_movement",
+      "contribution_margin",
+      "proof_or_referral_generation"
+    ]
+  },
+  "tooling": {
+    "keep_extend": [
+      "Dealix_Company_OS",
+      "Revenue_Mesh",
+      "Revenue_Portfolio_Control_Plane",
+      "GitHub",
+      "Railway",
+      "VPS_systemd",
+      "OpenClaw",
+      "Hermes",
+      "n8n",
+      "HubSpot_mirror",
+      "PostHog_adapter",
+      "Canva_renderer"
+    ],
+    "controlled_additions": [
+      "Playwright_MCP_Test",
+      "Promptfoo_isolated_evals",
+      "OpenTelemetry_compatible_receipts",
+      "uv_uvx",
+      "OSV_normalization",
+      "n8n_MCP_disabled_first_authoring"
+    ],
+    "reject_duplicate_by_default": [
+      "new_CRM",
+      "new_scheduler_or_workflow_engine",
+      "new_agent_orchestration_framework",
+      "new_vector_database_without_measured_gap",
+      "mass_unauthorized_social_outreach_automation"
+    ]
+  },
+  "daily_command": {
+    "max_top_moves": 5,
+    "fields": [
+      "closest_verified_money_path",
+      "top_relationship_account_moves",
+      "strongest_inbound_event_signals",
+      "negotiation_decisions_required",
+      "highest_value_content_distribution_action",
+      "proof_gaps",
+      "experiment_decisions",
+      "material_approval_gates"
+    ]
+  }
+}
