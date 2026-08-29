@@ -5,7 +5,12 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from dealix.commercial.diagnostic_engine import DiagnosticEngine, DiagnosticRequest, UNKNOWN
+from dealix.commercial.diagnostic_engine import (
+    DiagnosticEngine,
+    DiagnosticRequest,
+    REFERENCE_SUPPLIED_NOT_VERIFIED,
+    UNKNOWN,
+)
 
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE = ROOT / "dealix" / "commercial" / "diagnostic_engine.py"
@@ -51,7 +56,7 @@ def main() -> int:
     assert context_only.customer_validation_status == UNKNOWN
     assert "customer_validated_business_impact" in context_only.unknowns
 
-    validated = engine.generate(
+    reference_only = engine.generate(
         DiagnosticRequest(
             company_name="Verification Co",
             pain_points=["automation"],
@@ -60,13 +65,17 @@ def main() -> int:
             customer_validation_ref="verification://customer/1",
         )
     )
-    assert validated.customer_validation_status == "CUSTOMER_VALIDATED_WITH_REFERENCE"
-    assert validated.unknowns == []
-    assert validated.recommendation_status == "HYPOTHESIS_ONLY"
+    assert reference_only.customer_validation_status == REFERENCE_SUPPLIED_NOT_VERIFIED
+    assert reference_only.customer_validation_status != "CUSTOMER_VALIDATED_WITH_REFERENCE"
+    assert UNKNOWN in reference_only.unknowns
+    assert "customer_validated_business_impact" in reference_only.unknowns
+    assert reference_only.customer_value_claim is False
+    assert reference_only.recommendation_status == "HYPOTHESIS_ONLY"
 
     print("DEALIX_DIAGNOSTIC_EVIDENCE_BOUND=PASS")
     print("UNKNOWN_SEMANTICS=PASS")
-    print("CUSTOMER_VALIDATION_REQUIRES_REFERENCE=PASS")
+    print("CUSTOMER_VALIDATION_AUTHORITY=CANONICAL_EVIDENCE_OWNER_ONLY")
+    print("UNVERIFIED_VALIDATION_REFERENCE=PRESERVED_NOT_PROMOTED")
     print("UNSUPPORTED_BENCHMARKS=BLOCKED")
     print("CUSTOMER_VALUE_CLAIM=FALSE")
     print("AUTOMATIC_SEND=FALSE")

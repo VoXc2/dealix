@@ -2,7 +2,12 @@
 
 from __future__ import annotations
 
-from dealix.commercial.diagnostic_engine import DiagnosticEngine, DiagnosticRequest, UNKNOWN
+from dealix.commercial.diagnostic_engine import (
+    DiagnosticEngine,
+    DiagnosticRequest,
+    REFERENCE_SUPPLIED_NOT_VERIFIED,
+    UNKNOWN,
+)
 
 
 def test_diagnostic_is_deterministic_and_non_committing() -> None:
@@ -24,7 +29,9 @@ def test_diagnostic_is_deterministic_and_non_committing() -> None:
     assert first.baseline_ref == "baseline://1"
     assert first.source_context_present is True
     assert first.customer_validation_ref == "customer://validation/1"
-    assert first.customer_validation_status == "CUSTOMER_VALIDATED_WITH_REFERENCE"
+    assert first.customer_validation_status == REFERENCE_SUPPLIED_NOT_VERIFIED
+    assert UNKNOWN in first.unknowns
+    assert "customer_validated_business_impact" in first.unknowns
     assert first.customer_value_claim is False
     assert first.guarantee is False
     assert first.payment_url_placeholder == ""
@@ -35,7 +42,7 @@ def test_diagnostic_is_deterministic_and_non_committing() -> None:
     assert "20-35%" not in first.markdown_ar_en
     assert "15,000" not in first.markdown_ar_en
     assert "+40%" not in first.markdown_ar_en
-    assert UNKNOWN not in first.markdown_ar_en
+    assert UNKNOWN in first.markdown_ar_en
 
 
 def test_missing_evidence_stays_unknown() -> None:
@@ -67,6 +74,24 @@ def test_source_context_alone_never_becomes_customer_validation() -> None:
     assert report.customer_validation_ref == ""
     assert report.customer_validation_status == UNKNOWN
     assert "customer_validated_business_impact" in report.unknowns
+
+
+def test_arbitrary_validation_reference_never_creates_validation_truth() -> None:
+    report = DiagnosticEngine().generate(
+        DiagnosticRequest(
+            company_name="Example Co",
+            evidence_refs=["evidence://source/1"],
+            baseline_ref="baseline://1",
+            customer_validation_ref="placeholder://not-resolved-by-evidence-owner",
+        )
+    )
+
+    assert report.customer_validation_ref
+    assert report.customer_validation_status == REFERENCE_SUPPLIED_NOT_VERIFIED
+    assert report.customer_validation_status != "CUSTOMER_VALIDATED_WITH_REFERENCE"
+    assert UNKNOWN in report.unknowns
+    assert "customer_validated_business_impact" in report.unknowns
+    assert report.customer_value_claim is False
 
 
 def test_evidence_order_does_not_change_report_identity() -> None:

@@ -16,6 +16,7 @@ from typing import Any
 from pydantic import BaseModel, Field
 
 UNKNOWN = "UNKNOWN_NOT_EVIDENCE_BACKED"
+REFERENCE_SUPPLIED_NOT_VERIFIED = "REFERENCE_SUPPLIED_NOT_VERIFIED"
 
 SECTORS = {
     "b2b_saas": {"ar": "برمجيات B2B", "en": "B2B SaaS"},
@@ -122,12 +123,14 @@ class DiagnosticEngine:
             unknown_details.append("customer_approved_baseline")
         if not evidence_refs:
             unknown_details.append("source_linked_evidence")
-        if not customer_validation_ref:
-            unknown_details.append("customer_validated_business_impact")
 
-        unknowns = [UNKNOWN, *unknown_details] if unknown_details else []
+        # Diagnostic is not the customer-validation truth owner. Even a supplied
+        # reference remains unverified until the canonical evidence owner resolves
+        # it to known, non-synthetic, customer-validated evidence.
+        unknown_details.append("customer_validated_business_impact")
+        unknowns = [UNKNOWN, *unknown_details]
         customer_validation_status = (
-            "CUSTOMER_VALIDATED_WITH_REFERENCE" if customer_validation_ref else UNKNOWN
+            REFERENCE_SUPPLIED_NOT_VERIFIED if customer_validation_ref else UNKNOWN
         )
 
         sector_ar = SECTORS.get(req.sector, {}).get("ar", req.sector)
@@ -143,7 +146,7 @@ class DiagnosticEngine:
             pains_en=pains_en,
             baseline_ref=baseline_ref,
             evidence_refs=evidence_refs,
-            customer_validation_ref=customer_validation_ref,
+            customer_validation_status=customer_validation_status,
         )
         markdown = self._render_markdown(
             req=req,
@@ -186,15 +189,13 @@ class DiagnosticEngine:
         pains_en: str,
         baseline_ref: str,
         evidence_refs: list[str],
-        customer_validation_ref: str,
+        customer_validation_status: str,
     ) -> list[DiagnosticSection]:
         name = req.company_name.strip()
         pains_known = pains_en != UNKNOWN
         evidence_state = "EVIDENCE_LINKED" if evidence_refs else UNKNOWN
         baseline_state = "BASELINE_LINKED" if baseline_ref else UNKNOWN
-        validation_state = (
-            "CUSTOMER_VALIDATED_WITH_REFERENCE" if customer_validation_ref else UNKNOWN
-        )
+        validation_state = customer_validation_status
 
         pain_ar = (
             f"المشكلات المدخلة في الطلب: {pains_ar}."
@@ -364,7 +365,11 @@ class DiagnosticEngine:
             [
                 "## Unknowns / المجهولات",
                 "",
-                *([f"- {item}" for item in unknowns] if unknowns else ["- NONE_RECORDED_FROM_SUPPLIED_INPUT"]),
+                *(
+                    [f"- {item}" for item in unknowns]
+                    if unknowns
+                    else ["- NONE_RECORDED_FROM_SUPPLIED_INPUT"]
+                ),
                 "",
                 "---",
                 "",
@@ -382,5 +387,6 @@ __all__ = [
     "DiagnosticReport",
     "DiagnosticRequest",
     "DiagnosticSection",
+    "REFERENCE_SUPPLIED_NOT_VERIFIED",
     "UNKNOWN",
 ]
