@@ -42,6 +42,7 @@ def main() -> int:
         "UNKNOWN_NOT_EVIDENCE_BACKED"
     )
     assert len(first.revenue_leak_map["top_interventions"]) <= 3
+    assert first.revenue_leak_map["metadata"]["unknown_semantics"] == "UNKNOWN_NOT_EVIDENCE_BACKED"
     print("PASS: deterministic buyer outputs runtime")
     return 0
 
