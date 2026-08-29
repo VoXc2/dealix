@@ -30,6 +30,7 @@
     "time_to_evidence requires a source-linked output evidence ref and an in-window timestamp",
     "cost is attributable only when provider/model/token counts are present",
     "payment proof is not inferred from an invoice, proposal, recommendation, or successful workload",
+    "attribution may record a payment reference but only the canonical Proof Ledger may verify payment or revenue",
     "customer value and revenue remain UNKNOWN_NOT_EVIDENCE_BACKED",
     "synthetic evidence must remain labeled and cannot become customer proof",
     "no new truth store, dashboard, scheduler, or agent fleet"
