@@ -4,6 +4,14 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
+from dealix.commercial.portfolio_router import (
+    INTERACTION_EVIDENCE_PRESENT,
+    UNKNOWN,
+    DemandSignal,
+    EntryPackage,
+    PortfolioPackageRouter,
+)
+
 ROOT = Path(__file__).resolve().parents[1]
 CONTRACT = ROOT / "data/commercial/package_routing_contract_v1.json"
 
@@ -116,6 +124,61 @@ def main() -> int:
     require(wip.get("max_active_build_prs_per_owner") == 2, "build PR WIP drift", errors)
     require(wip.get("max_experiments_per_funnel_stage") == 1, "experiment WIP drift", errors)
 
+    # Runtime truth boundary: a source row never promotes itself into a package,
+    # and interaction/inbound reference presence never becomes relationship truth.
+    router = PortfolioPackageRouter()
+    research = router.route(
+        DemandSignal(
+            signal_id="verify-research-only",
+            company_name="Research Account",
+            observed_at="2026-08-29T10:00:00+00:00",
+            source_ref="crm://public-research/1",
+            relationship_state="VERIFIED_RELATIONSHIP",
+            problem_tags=["revenue"],
+            problem_statement="Revenue follow-up gap",
+            urgency="HIGH",
+            economic_relevance="HIGH",
+        )
+    )
+    require(research.status == "RESEARCH_ONLY", "public/CRM research must stay research-only", errors)
+    require(research.relationship_state == UNKNOWN, "source row must not create verified relationship", errors)
+    require(research.recommended_package == EntryPackage.RESEARCH_NURTURE_SUPPRESS, "research row must not package-route", errors)
+
+    interaction = router.route(
+        DemandSignal(
+            signal_id="verify-interaction-ref",
+            company_name="Interaction Account",
+            observed_at="2026-08-29T10:00:00+00:00",
+            source_ref="source://1",
+            real_interaction_ref="interaction://1",
+            relationship_state=UNKNOWN,
+            problem_tags=["revenue"],
+            problem_statement="Revenue follow-up gap",
+            urgency="HIGH",
+            economic_relevance="HIGH",
+        )
+    )
+    require(interaction.relationship_state == INTERACTION_EVIDENCE_PRESENT, "interaction ref must remain evidence-presence only", errors)
+    require(interaction.authority.get("relationship") is False, "router must not grant relationship authority", errors)
+    require(interaction.authority.get("external_send") is False, "router must not grant send authority", errors)
+
+    verified = router.route(
+        DemandSignal(
+            signal_id="verify-relationship",
+            company_name="Verified Account",
+            observed_at="2026-08-29T10:00:00+00:00",
+            source_ref="source://1",
+            real_interaction_ref="interaction://1",
+            relationship_state="VERIFIED_RELATIONSHIP",
+            problem_tags=["revenue"],
+            problem_statement="Revenue follow-up gap",
+            urgency="HIGH",
+            economic_relevance="HIGH",
+        )
+    )
+    require(verified.relationship_state == "VERIFIED_RELATIONSHIP", "canonical verified state plus evidence must be preserved", errors)
+    require(all(value is False for value in verified.authority.values()), "package router must grant no downstream authority", errors)
+
     if errors:
         print("DEALIX_PACKAGE_ROUTER_VERDICT=FAIL")
         for error in errors:
@@ -126,6 +189,7 @@ def main() -> int:
     print(f"SCHEMA={contract['schema']}")
     print("PACKAGES=4")
     print("TRUTH_PROMOTION=BLOCKED")
+    print("INTERACTION_REF_IS_VERIFIED_RELATIONSHIP=NO")
     print("EXTERNAL_AUTO_SEND=BLOCKED")
     print("PRICE_OR_CONTRACT_COMMIT=BLOCKED")
     print("NO_EVIDENCE_FALLBACK=RESEARCH_ONLY")
