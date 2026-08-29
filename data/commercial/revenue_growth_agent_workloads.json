@@ -1,0 +1,333 @@
+{
+  "schema": "dealix.revenue-growth-agent-workloads.v1",
+  "version": "2026-08-28.1",
+  "north_star": "FIRST_VERIFIED_PAID_PILOT",
+  "policy": {
+    "reuse_existing_agents_only": true,
+    "new_permanent_agents": 0,
+    "new_schedulers": 0,
+    "deterministic_execution_required_for_side_effects": true,
+    "critical_external_commitments_require_specific_gate": true,
+    "one_company_brain": true,
+    "one_opportunity_graph": true,
+    "one_approval_center": true,
+    "one_proof_ledger": true,
+    "hubspot_is_mirror_not_truth": true
+  },
+  "canonical_agents": {
+    "dealix-pm": {
+      "class": "orchestrator",
+      "mission": "Own the revenue-growth queue, WIP limits, handoffs and founder Morning Command.",
+      "autonomy": "L0-L3_INTERNAL",
+      "workloads": [
+        "queue_prioritization",
+        "top_5_moves",
+        "dependency_resolution",
+        "stop_scale_retest",
+        "agent_handoff_audit",
+        "founder_brief"
+      ],
+      "forbidden": [
+        "production_deploy",
+        "customer_send",
+        "payment",
+        "secret_change",
+        "legal_commitment"
+      ]
+    },
+    "dealix-sales": {
+      "class": "revenue",
+      "mission": "Move evidence-backed relationships through qualification, diagnostic, discovery, proposal and negotiation preparation.",
+      "autonomy": "L0-L4_INTERNAL",
+      "workloads": [
+        "account_research_synthesis",
+        "buying_group_hypotheses",
+        "qualification",
+        "diagnostic_preparation",
+        "discovery_brief",
+        "proposal_draft",
+        "objection_classification",
+        "negotiation_plan",
+        "follow_up_draft"
+      ],
+      "forbidden": [
+        "external_send_without_channel_gate",
+        "named_price_commitment",
+        "contract_commitment",
+        "payment_commitment",
+        "linkedin_automation",
+        "cold_bulk_whatsapp"
+      ]
+    },
+    "dealix-delivery": {
+      "class": "delivery_proof",
+      "mission": "Turn sold scope into evidence-backed delivery, Proof Pack, learning and expansion/referral hypotheses.",
+      "autonomy": "L0-L3_INTERNAL",
+      "workloads": [
+        "delivery_plan",
+        "evidence_capture",
+        "proof_gap_detection",
+        "proof_pack_preparation",
+        "capital_asset_preparation",
+        "expansion_hypothesis",
+        "referral_trigger_preparation"
+      ],
+      "forbidden": [
+        "fabricated_proof",
+        "public_customer_proof_without_permission",
+        "unapproved_scope_commitment"
+      ]
+    },
+    "dealix-engineer": {
+      "class": "product_qa",
+      "mission": "Implement the smallest safe code, connector, instrumentation and verification changes required by the revenue-growth queue.",
+      "autonomy": "L0-L3_REPO",
+      "workloads": [
+        "truth_gate_repairs",
+        "public_surface_acceptance",
+        "analytics_instrumentation",
+        "connector_adapter_work",
+        "playwright_acceptance",
+        "promptfoo_sandbox_eval_pack",
+        "otel_receipt_schema",
+        "osv_normalization",
+        "n8n_disabled_first_workflow_authoring"
+      ],
+      "forbidden": [
+        "production_deploy",
+        "secret_mutation",
+        "payment",
+        "main_merge_without_gate",
+        "disable_guard_tests"
+      ]
+    },
+    "dealix-content": {
+      "class": "content",
+      "mission": "Convert verified evidence, buyer questions and approved theses into bilingual revenue-supporting assets.",
+      "autonomy": "L0-L2_DOCS",
+      "workloads": [
+        "founder_linkedin_draft",
+        "dealix_page_draft",
+        "carousel_copy",
+        "video_script",
+        "faq_aeo_asset",
+        "sales_snippet",
+        "objection_asset",
+        "proof_asset_draft"
+      ],
+      "forbidden": [
+        "unsupported_claim",
+        "fake_case_study",
+        "public_fixed_pilot_price",
+        "guaranteed_outcome",
+        "pii_in_case_study"
+      ]
+    }
+  },
+  "internal_swarm": {
+    "market_research": [
+      "market_monitoring",
+      "account_research",
+      "event_research",
+      "founder_ecosystem_research"
+    ],
+    "competitor": [
+      "competitor_changes",
+      "positioning_deltas",
+      "category_signal_capture"
+    ],
+    "sector_intel": [
+      "sector_pain_hypotheses",
+      "saudi_context",
+      "program_tender_watch"
+    ],
+    "enrichment": [
+      "bounded_enrichment_after_shortlist_only"
+    ],
+    "distribution": [
+      "owned_channel_adaptation",
+      "utm_preparation",
+      "queue_preparation"
+    ],
+    "proposal_sender": [
+      "DRAFT_OR_QUEUE_ONLY_UNTIL_CHANNEL_POLICY_PASS"
+    ]
+  },
+  "wip_policy": {
+    "global_primary_revenue_bets": 3,
+    "per_agent_primary_tasks": 1,
+    "founder_top_moves": 5,
+    "priority_order": [
+      "inbound_or_real_interaction",
+      "verified_relationship_to_qualified_problem",
+      "diagnostic_to_discovery",
+      "discovery_to_customer_specific_pilot",
+      "negotiation_to_payment",
+      "delivery_to_proof",
+      "proof_to_expansion_or_referral",
+      "marketing_and_capability_work_that_removes_a_proven_blocker"
+    ]
+  },
+  "handoff_contract": [
+    "workload_id",
+    "owner",
+    "source_refs",
+    "facts",
+    "inferences",
+    "unknowns",
+    "current_state",
+    "next_state",
+    "next_evidence_required",
+    "proposed_action",
+    "risk_class",
+    "approval_class",
+    "acceptance_test"
+  ],
+  "execution_queue": [
+    {
+      "id": "RG-001",
+      "owner": "dealix-engineer",
+      "priority": "P0",
+      "status": "READY_INTERNAL",
+      "mission": "Run exact-head commercial truth, diagnostic, buyer-output and authority verification on current main after #1339/#1341/#1342 integration.",
+      "acceptance": [
+        "exact current-main SHA recorded",
+        "commercial truth verifier PASS",
+        "diagnostic evidence verifier PASS",
+        "buyer outputs verifier PASS",
+        "no authority regression"
+      ],
+      "external_side_effect": false
+    },
+    {
+      "id": "RG-002",
+      "owner": "dealix-pm",
+      "priority": "P0",
+      "status": "READY_INTERNAL",
+      "mission": "Implement #1346 package router over the existing Opportunity Graph and Company Brain.",
+      "acceptance": [
+        "one canonical router",
+        "four entry packages",
+        "real-interaction and consent states preserved",
+        "unclear demand routes to diagnostic",
+        "0 new CRM/brain/scheduler"
+      ],
+      "external_side_effect": false
+    },
+    {
+      "id": "RG-003",
+      "owner": "dealix-engineer",
+      "priority": "P0",
+      "status": "READY_INTERNAL",
+      "mission": "Implement the bounded Company Brain & Governed AI Sprint assessment and output contract from #1346.",
+      "acceptance": [
+        "one named outcome",
+        "baseline and authority map",
+        "source/freshness/provenance fields",
+        "one bounded workflow",
+        "proof method and handover"
+      ],
+      "external_side_effect": false
+    },
+    {
+      "id": "RG-004",
+      "owner": "dealix-sales",
+      "priority": "P0",
+      "status": "READY_INTERNAL",
+      "mission": "Prepare source-backed event, inbound, warm-introduction and technical-capability briefs with package routing and next evidence.",
+      "acceptance": [
+        "research not relationship",
+        "buying-group hypotheses source-bound",
+        "technical requests can route to Company Brain Sprint",
+        "no unauthorized send"
+      ],
+      "external_side_effect": false
+    },
+    {
+      "id": "RG-005",
+      "owner": "dealix-pm",
+      "priority": "P1",
+      "status": "READY_INTERNAL",
+      "mission": "Design the explicit consented Human Review handoff after the anonymous Mini Diagnostic.",
+      "acceptance": [
+        "diagnostic remains no-PII by default",
+        "separate explicit opt-in",
+        "retention notice",
+        "channel choice",
+        "no marketing consent inference"
+      ],
+      "external_side_effect": false
+    },
+    {
+      "id": "RG-006",
+      "owner": "dealix-engineer",
+      "priority": "P1",
+      "status": "PILOT_ISOLATED",
+      "mission": "Pilot Playwright commercial-surface regression and trace artifacts.",
+      "acceptance": [
+        "isolated environment",
+        "approved routes only",
+        "trace retained",
+        "no credential exposure",
+        "no outreach automation"
+      ],
+      "external_side_effect": false
+    },
+    {
+      "id": "RG-007",
+      "owner": "dealix-engineer",
+      "priority": "P1",
+      "status": "PILOT_ISOLATED",
+      "mission": "Create a credential-scrubbed Promptfoo truth/governance red-team pack.",
+      "acceptance": [
+        "isolated runner",
+        "truth-inflation regression detected",
+        "unsafe tool escalation detected",
+        "unsupported claim regression detected"
+      ],
+      "external_side_effect": false
+    },
+    {
+      "id": "RG-008",
+      "owner": "dealix-engineer",
+      "priority": "P1",
+      "status": "READY_INTERNAL",
+      "mission": "Integrate #1343 workload economics and time-to-evidence attribution with existing OTel/CostTracker semantics.",
+      "acceptance": [
+        "no new truth store",
+        "founder minutes and cost measured",
+        "time-to-evidence measured",
+        "synthetic/payment quarantine"
+      ],
+      "external_side_effect": false
+    },
+    {
+      "id": "RG-009",
+      "owner": "dealix-engineer",
+      "priority": "P2",
+      "status": "PILOT_ISOLATED",
+      "mission": "Pilot n8n deterministic intake/draft/proof routing against existing ownership.",
+      "acceptance": [
+        "disabled by default",
+        "synthetic canary",
+        "no duplicate scheduler",
+        "no customer send/payment during acceptance"
+      ],
+      "external_side_effect": false
+    },
+    {
+      "id": "RG-010",
+      "owner": "dealix-pm",
+      "priority": "P2",
+      "status": "DEFER_UNTIL_PROOF",
+      "mission": "Prepare paid-media architecture only after verified conversion volume, proof and budget gate.",
+      "acceptance": [
+        "first-party measurement",
+        "verified conversion stages",
+        "privacy/legal review",
+        "founder-approved spend cap"
+      ],
+      "external_side_effect": true
+    }
+  ]
+}
