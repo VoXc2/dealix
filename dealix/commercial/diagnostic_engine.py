@@ -326,9 +326,11 @@ class DiagnosticEngine:
             [
                 "## Unknowns / المجهولات",
                 "",
-                *[f"- {item}" for item in unknowns]
-                if unknowns
-                else ["- No material unknowns recorded from the supplied request."],
+                *(
+                    [f"- {item}" for item in unknowns]
+                    if unknowns
+                    else ["- No material unknowns recorded from the supplied request."]
+                ),
                 "",
                 "---",
                 "",
