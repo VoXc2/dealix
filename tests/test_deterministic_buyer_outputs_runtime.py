@@ -27,6 +27,7 @@ def test_outputs_are_deterministic_except_generated_at() -> None:
 
     assert first.semantic_dict() == second.semantic_dict()
     assert len(first.revenue_leak_map["top_interventions"]) <= 3
+    assert first.revenue_leak_map["metadata"]["unknown_semantics"] == "UNKNOWN_NOT_EVIDENCE_BACKED"
     assert "UNKNOWN_NOT_EVIDENCE_BACKED" in first.customer_proof_decision_pack["decision_options"]
     assert first.executive_command["money"]["verified_revenue"] == "UNKNOWN_NOT_EVIDENCE_BACKED"
     assert first.executive_command["money"]["verified_payment_state"] == "UNKNOWN_NOT_EVIDENCE_BACKED"
@@ -141,3 +142,32 @@ def test_invoice_alone_never_becomes_payment() -> None:
 
     assert payment["status"] == "UNKNOWN_NOT_EVIDENCE_BACKED"
     assert payment["verified_revenue_sar"] == "UNKNOWN_NOT_EVIDENCE_BACKED"
+
+
+def test_reference_order_is_normalized_for_semantic_equality() -> None:
+    first_snapshot = BuyerEvidenceSnapshot(
+        tenant_or_account_id="acct-1",
+        company_name="Acme",
+        source_sha="source-sha-1",
+        as_of="2026-08-29T08:00:00+00:00",
+        evidence=[
+            EvidenceItem(
+                evidence_id="E-2",
+                source_ref="source-2",
+                observed_at="2026-08-29T07:00:00+00:00",
+            ),
+            EvidenceItem(
+                evidence_id="E-1",
+                source_ref="source-1",
+                observed_at="2026-08-29T06:00:00+00:00",
+            ),
+        ],
+    )
+    second_snapshot = first_snapshot.model_copy(
+        update={"evidence": list(reversed(first_snapshot.evidence))}
+    )
+
+    first = BuyerOutputsEngine().build(first_snapshot)
+    second = BuyerOutputsEngine().build(second_snapshot)
+
+    assert first.semantic_dict() == second.semantic_dict()
