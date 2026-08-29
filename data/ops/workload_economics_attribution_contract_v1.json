@@ -1,0 +1,50 @@
+{
+  "schema_version": "1.0.0",
+  "authority_ref": "Dealix #1317 and Autonomous Company Machine V2",
+  "purpose": "Measure internal workload economics and time-to-evidence without promoting activity to commercial value.",
+  "required_run_fields": [
+    "run_id",
+    "workload_id",
+    "agent_id",
+    "account_id",
+    "started_at",
+    "completed_at",
+    "status",
+    "input_evidence_refs",
+    "output_evidence_refs",
+    "founder_minutes",
+    "provider",
+    "model",
+    "input_tokens",
+    "output_tokens",
+    "cached_tokens"
+  ],
+  "derived_fields": [
+    "duration_ms",
+    "time_to_evidence_ms",
+    "llm_cost_usd",
+    "evidence_state",
+    "payment_proof_state"
+  ],
+  "hard_rules": [
+    "time_to_evidence requires a source-linked output evidence ref and an in-window timestamp",
+    "cost is attributable only when provider/model/token counts are present",
+    "payment proof is not inferred from an invoice, proposal, recommendation, or successful workload",
+    "customer value and revenue remain UNKNOWN_NOT_EVIDENCE_BACKED",
+    "synthetic evidence must remain labeled and cannot become customer proof",
+    "no new truth store, dashboard, scheduler, or agent fleet"
+  ],
+  "aggregation": {
+    "required": [
+      "run_count",
+      "success_count",
+      "founder_minutes_total",
+      "llm_cost_usd_total",
+      "output_evidence_runs",
+      "time_to_evidence_ms_p50",
+      "time_to_evidence_known_runs"
+    ],
+    "sorting": "stable lexicographic by workload_id then run_id",
+    "generated_at": "metadata only and excluded from semantic equality"
+  }
+}
