@@ -33,7 +33,8 @@ def test_measurement_attributes_time_cost_and_evidence() -> None:
     assert record["duration_ms"] == 3_600_000.0
     assert record["time_to_evidence_ms"] == 900_000.0
     assert record["output_evidence_refs"] == ["evidence-1", "evidence-2"]
-    assert record["payment_proof_state"] == "VERIFIED"
+    assert record["payment_proof_state"] == "REFERENCE_RECORDED_REQUIRES_CANONICAL_VERIFICATION"
+    assert record["verified_revenue"] == UNKNOWN
     assert record["customer_value_state"] == UNKNOWN
     assert record["llm_cost_usd"] == 0.00028
     assert record["cost_basis"] == "MODEL_PRICE_TABLE"
