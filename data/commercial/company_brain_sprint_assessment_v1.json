@@ -1,0 +1,183 @@
+{
+  "schema": "dealix.company-brain-sprint-assessment.v1",
+  "as_of": "2026-08-29T13:00:00+03:00",
+  "package": "COMPANY_BRAIN_GOVERNED_AI_SPRINT",
+  "positioning": "Saudi-first AI Business Operating System",
+  "canonical_owner": "Dealix Company Brain",
+  "owner_mode": "REUSE_AND_EXTEND_EXISTING_ONLY",
+  "prohibited_new_owners": [
+    "parallel_company_brain",
+    "parallel_vector_truth_store",
+    "parallel_crm_truth",
+    "parallel_approval_center",
+    "parallel_proof_ledger",
+    "parallel_scheduler",
+    "new_permanent_agent_fleet"
+  ],
+  "commercial_entry": {
+    "allowed_from": [
+      "REAL_INTERACTION",
+      "VERIFIED_RELATIONSHIP",
+      "QUALIFIED_PROBLEM",
+      "FREE_MINI_DIAGNOSTIC",
+      "QUALIFIED_DISCOVERY"
+    ],
+    "paid_scope_requires": [
+      "qualified_problem",
+      "named_bounded_use_case",
+      "source_and_owner_map",
+      "authority_map",
+      "baseline_or_evidence_gap",
+      "success_and_proof_method",
+      "customer_specific_scope",
+      "quote_authority_ref"
+    ],
+    "public_fixed_price_authority": false,
+    "generic_chatbot_offer": false,
+    "unlimited_agent_build_offer": false
+  },
+  "assessment_inputs": [
+    "company_or_tenant_ref",
+    "business_objective",
+    "named_problem",
+    "current_workflow",
+    "source_systems",
+    "document_or_data_classes",
+    "owners",
+    "freshness_expectations",
+    "permissions_and_access_boundaries",
+    "allowed_and_prohibited_claims",
+    "current_manual_steps",
+    "baseline_or_unknowns",
+    "risk_and_regulatory_class",
+    "desired_outcome",
+    "proof_method",
+    "integration_constraints"
+  ],
+  "unknown_policy": "UNKNOWN_NOT_EVIDENCE_BACKED",
+  "use_case_score": {
+    "dimensions": [
+      "business_value",
+      "urgency",
+      "measurability",
+      "source_readiness",
+      "authority_clarity",
+      "time_to_proof",
+      "repeatability",
+      "integration_effort",
+      "privacy_security_risk",
+      "founder_or_operator_minutes_removed"
+    ],
+    "selection_rule": "select one bounded use case with the best evidence-backed value-to-risk-to-effort path; do not bundle unrelated use cases",
+    "no_evidence_result": "ASSESSMENT_ONLY_NO_BUILD"
+  },
+  "company_brain_source_registry": {
+    "required_per_source": [
+      "source_id",
+      "source_type",
+      "system_owner",
+      "tenant_scope",
+      "purpose",
+      "authority_or_lawful_basis",
+      "access_class",
+      "freshness_sla",
+      "last_verified_at",
+      "provenance_ref",
+      "retention_or_expiry",
+      "allowed_claims",
+      "prohibited_uses",
+      "pii_or_sensitive_class_if_any"
+    ],
+    "missing_freshness": "STALE_OR_UNKNOWN",
+    "missing_authority": "BLOCK_USE",
+    "public_data_is_consent": false
+  },
+  "bounded_workflow_contract": {
+    "required": [
+      "workflow_name",
+      "single_named_outcome",
+      "trigger",
+      "input_contract",
+      "deterministic_steps",
+      "ai_reasoning_steps_if_needed",
+      "tool_allowlist",
+      "authority_class",
+      "approval_points",
+      "output_contract",
+      "evidence_receipt",
+      "idempotency_key",
+      "retry_policy",
+      "rollback_or_safe_failure",
+      "human_handoff",
+      "evaluation_cases"
+    ],
+    "ai_may_self_expand_tool_authority": false,
+    "workflow_may_auto_create_external_commitment": false,
+    "workflow_may_bypass_tenant_scope": false,
+    "workflow_may_promote_unknown_to_fact": false
+  },
+  "delivery_phases": [
+    {"phase": "CONTEXT_AND_AUTHORITY_AUDIT", "outputs": ["source_map", "owner_map", "authority_map", "unknowns", "risk_map"]},
+    {"phase": "BOUNDED_USE_CASE_SELECTION", "outputs": ["scored_use_cases", "selected_use_case", "baseline", "proof_method", "stop_conditions"]},
+    {"phase": "COMPANY_BRAIN_SEED_OR_EXTENSION", "outputs": ["source_registry_delta", "provenance_map", "freshness_policy", "claim_policy"]},
+    {"phase": "ONE_BOUNDED_WORKFLOW", "outputs": ["workflow_contract", "approval_map", "receipts", "exception_paths"]},
+    {"phase": "EVALUATION_AND_HANDOVER", "outputs": ["evaluation_results", "failure_cases", "operator_runbook", "known_limits", "rollback"]},
+    {"phase": "THIRTY_DAY_PROOF", "outputs": ["weekly_proof_inputs", "founder_minutes", "time_to_evidence", "cost", "accepted_outcome_or_unknown", "continue_stop_redesign_decision"]}
+  ],
+  "standard_workflow_packs": [
+    "EXECUTIVE_KNOWLEDGE",
+    "SALES_CRM_INTELLIGENCE",
+    "SUPPORT_OPS",
+    "DOCUMENT_TENDER_PROPOSAL_INTELLIGENCE",
+    "FINANCE_ADMIN",
+    "ENGINEERING_IT"
+  ],
+  "evaluation_contract": {
+    "required_dimensions": [
+      "task_success",
+      "groundedness_or_source_support",
+      "authority_compliance",
+      "tenant_isolation",
+      "unknown_handling",
+      "unsafe_action_refusal",
+      "latency",
+      "cost",
+      "operator_minutes",
+      "evidence_completeness"
+    ],
+    "customer_value_requires_customer_validation": true,
+    "technical_pass_is_customer_value": false,
+    "synthetic_eval_is_customer_proof": false
+  },
+  "proof_output": {
+    "required": [
+      "baseline",
+      "scope",
+      "approved_actions",
+      "work_receipts",
+      "measured_outcomes",
+      "limitations",
+      "customer_validation_state",
+      "evidence_refs",
+      "continue_stop_redesign"
+    ],
+    "public_use_requires_permission": true
+  },
+  "agent_routing": {
+    "dealix-pm": ["portfolio decision", "WIP", "continue_stop_redesign"],
+    "dealix-sales": ["problem qualification", "discovery", "business case", "customer-specific scope"],
+    "dealix-engineer": ["source integration", "bounded workflow", "tests", "verification", "safe Draft PR if code needed"],
+    "dealix-delivery": ["onboarding", "acceptance criteria", "operator handover", "delivery evidence"],
+    "dealix-content": ["proof-safe enablement and documentation only when source/permission allows"]
+  },
+  "stop_rules": [
+    "No build when the business problem is not evidenced.",
+    "No second Company Brain or truth store.",
+    "No generic chatbot as the default deliverable.",
+    "No unlimited agent or automation scope.",
+    "No production mutation from assessment authority.",
+    "No external send/publish/payment/legal commitment without the canonical authority gate.",
+    "No customer-value claim from synthetic or technical-only evidence.",
+    "Stop or redesign if the selected use case does not show measurable movement inside its evidence window."
+  ]
+}
