@@ -1,9 +1,9 @@
-"""
-Proposal Sender Agent — generates bilingual proposal drafts and queues them for
-founder approval. Nothing is ever sent automatically.
+"""Legacy proposal-draft compatibility surface.
 
-وكيل إرسال العروض — يُنشئ مسوّدات عروض ثنائية اللغة ويضعها في قائمة الانتظار
-للموافقة. لا شيء يُرسَل تلقائياً.
+The current commercial entry motion is a Free Mini Diagnostic. This module may
+prepare an internal review draft but never creates quote, send, payment, or
+execution authority. Retired catalog tiers may be referenced only as capability
+hypotheses and can never inject their historical price/duration into the draft.
 """
 
 from __future__ import annotations
@@ -21,7 +21,6 @@ from core.utils import generate_id, utcnow
 
 log = get_logger(__name__)
 
-# JSONL queue path — overridable by environment variable
 _DEFAULT_QUEUE_PATH = "data/proposal_queue.jsonl"
 _QUEUE_ENV_VAR = "DEALIX_PROPOSAL_QUEUE_PATH"
 
@@ -30,24 +29,33 @@ def _queue_path() -> Path:
     return Path(os.environ.get(_QUEUE_ENV_VAR, _DEFAULT_QUEUE_PATH))
 
 
-ProposalStatus = str  # "pending_approval" | "approved" | "sent"
+ProposalStatus = str
 
 
 @dataclass
 class ProposalDraft:
-    """A bilingual proposal draft awaiting founder approval."""
+    """Bilingual internal draft; approval state does not authorize a send."""
 
     id: str
     product_tier: ProductTier
     lead_name: str
-    locale: str                         # primary locale for the proposal
+    locale: str
     subject_ar: str
     subject_en: str
     body_ar: str
     body_en: str
     cta_url: str
-    status: ProposalStatus = "pending_approval"   # always starts here
+    status: ProposalStatus = "pending_approval"
     created_at: datetime = field(default_factory=utcnow)
+    draft_kind: str = "FREE_MINI_DIAGNOSTIC_INVITE"
+    commercial_authority: bool = False
+    quote_authority: bool = False
+    send_authority: bool = False
+    execution_authority: bool = False
+    external_effect: bool = False
+    price_included: bool = False
+    delivery_commitment_included: bool = False
+    source_product_authority: str = "UNKNOWN_NOT_EVIDENCE_BACKED"
 
     def to_dict(self) -> dict[str, Any]:
         return {
@@ -62,10 +70,19 @@ class ProposalDraft:
             "cta_url": self.cta_url,
             "status": self.status,
             "created_at": self.created_at.isoformat(),
+            "draft_kind": self.draft_kind,
+            "commercial_authority": self.commercial_authority,
+            "quote_authority": self.quote_authority,
+            "send_authority": self.send_authority,
+            "execution_authority": self.execution_authority,
+            "external_effect": self.external_effect,
+            "price_included": self.price_included,
+            "delivery_commitment_included": self.delivery_commitment_included,
+            "source_product_authority": self.source_product_authority,
         }
 
     @classmethod
-    def from_dict(cls, data: dict[str, Any]) -> ProposalDraft:
+    def from_dict(cls, data: dict[str, Any]) -> "ProposalDraft":
         created = data.get("created_at")
         if isinstance(created, str):
             created = datetime.fromisoformat(created)
@@ -81,15 +98,19 @@ class ProposalDraft:
             cta_url=data.get("cta_url", ""),
             status=data.get("status", "pending_approval"),
             created_at=created or utcnow(),
+            draft_kind=data.get("draft_kind", "FREE_MINI_DIAGNOSTIC_INVITE"),
+            commercial_authority=bool(data.get("commercial_authority", False)),
+            quote_authority=bool(data.get("quote_authority", False)),
+            send_authority=bool(data.get("send_authority", False)),
+            execution_authority=bool(data.get("execution_authority", False)),
+            external_effect=bool(data.get("external_effect", False)),
+            price_included=bool(data.get("price_included", False)),
+            delivery_commitment_included=bool(data.get("delivery_commitment_included", False)),
+            source_product_authority=data.get("source_product_authority", "UNKNOWN_NOT_EVIDENCE_BACKED"),
         )
 
 
-# ---------------------------------------------------------------------------
-# Queue helpers (pure I/O; no BaseAgent dependency)
-# ---------------------------------------------------------------------------
-
 def _append_to_queue(draft: ProposalDraft) -> None:
-    """Append a single ProposalDraft to the JSONL queue file."""
     path = _queue_path()
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("a", encoding="utf-8") as fh:
@@ -97,7 +118,6 @@ def _append_to_queue(draft: ProposalDraft) -> None:
 
 
 def _read_queue() -> list[ProposalDraft]:
-    """Read all drafts from the JSONL queue file."""
     path = _queue_path()
     if not path.exists():
         return []
@@ -114,7 +134,6 @@ def _read_queue() -> list[ProposalDraft]:
 
 
 def _rewrite_queue(drafts: list[ProposalDraft]) -> None:
-    """Overwrite the JSONL queue with the provided list."""
     path = _queue_path()
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("w", encoding="utf-8") as fh:
@@ -122,26 +141,11 @@ def _rewrite_queue(drafts: list[ProposalDraft]) -> None:
             fh.write(json.dumps(draft.to_dict(), ensure_ascii=False) + "\n")
 
 
-# ---------------------------------------------------------------------------
-# Agent
-# ---------------------------------------------------------------------------
-
-# Import BaseAgent only at class definition time — keeps the module importable
-# even if the heavy core stack is unavailable during unit tests.
 from core.agents.base import BaseAgent  # noqa: E402
 
 
 class ProposalSenderAgent(BaseAgent):
-    """
-    Generates a bilingual proposal draft for a given product and lead profile,
-    then stores it in the proposal queue with status 'pending_approval'.
-
-    The agent NEVER sends proposals to external parties. Sending is a manual
-    founder action after reviewing the draft in the approval queue.
-
-    يُنشئ مسوّدة عرض ثنائية اللغة لمنتج محدد وملف عميل، ثم يحفظها في قائمة
-    الانتظار بحالة 'pending_approval'. لا يُرسل شيئاً تلقائياً أبداً.
-    """
+    """Prepare a Free Mini Diagnostic invitation draft for internal review only."""
 
     name = "proposal_sender"
 
@@ -151,25 +155,9 @@ class ProposalSenderAgent(BaseAgent):
         product: Product,
         lead_profile: dict[str, Any],
         locale: str = "ar",
-        cta_url: str = "https://dealix.ai/book",
+        cta_url: str = "",
         **_: Any,
     ) -> ProposalDraft:
-        """
-        Generate a bilingual proposal draft and queue it for approval.
-
-        Parameters
-        ----------
-        product:
-            The Product to propose.
-        lead_profile:
-            Dict containing at minimum ``name`` (str) and optionally
-            ``company``, ``sector``, ``pain_points`` (list[str]).
-        locale:
-            Primary locale for the proposal body. Both languages are always
-            generated regardless of this setting.
-        cta_url:
-            The call-to-action URL to embed in the proposal.
-        """
         lead_name = lead_profile.get("name") or lead_profile.get("company") or "العميل"
         company = lead_profile.get("company", "")
         pain_points: list[str] = lead_profile.get("pain_points") or []
@@ -190,85 +178,59 @@ class ProposalSenderAgent(BaseAgent):
             body_en=body_en,
             cta_url=cta_url,
             status="pending_approval",
+            source_product_authority=product.commercial_authority,
         )
-
         _append_to_queue(draft)
 
         self.log.info(
-            "proposal_draft_queued",
+            "diagnostic_draft_queued",
             proposal_id=draft.id,
-            product_tier=product.tier.value,
+            capability_hypothesis=product.tier.value,
             lead_name=lead_name,
             status=draft.status,
+            send_authority=False,
+            quote_authority=False,
         )
         return draft
 
-    # ── Draft builders ─────────────────────────────────────────────
-
     @staticmethod
     def _build_subjects(product: Product, lead_name: str) -> tuple[str, str]:
-        subject_ar = f"عرض {product.name_ar} لـ {lead_name}"
-        subject_en = f"{product.name_en} proposal for {lead_name}"
-        return subject_ar, subject_en
+        del product
+        return (
+            f"تشخيص مصغر مجاني لـ {lead_name}",
+            f"Free Mini Diagnostic for {lead_name}",
+        )
 
     @staticmethod
-    def _build_body_ar(
-        product: Product,
-        lead_name: str,
-        company: str,
-        pain_text: str,
-        cta_url: str,
-    ) -> str:
+    def _build_body_ar(product: Product, lead_name: str, company: str, pain_text: str, cta_url: str) -> str:
         company_line = f" في {company}" if company else ""
-        pain_line = (
-            f"\n\nفهمنا أن أبرز التحديات{company_line} تشمل: {pain_text}."
-            if pain_text
-            else ""
+        pain_line = f"\n\nالمشكلات المذكورة حتى الآن: {pain_text}." if pain_text else ""
+        capability_note = (
+            f"\n\nالتصنيف الداخلي الحالي للقدرة: {product.name_ar}. هذا تصنيف أولي فقط وليس عرضاً أو سعراً أو التزاماً."
+            if product.tier != ProductTier.FREE_DIAGNOSTIC else ""
         )
-        price_line = (
-            f"{product.price_sar:,} ريال"
-            if product.price_sar == product.price_max_sar
-            else f"{product.price_sar:,} – {product.price_max_sar:,} ريال"
-        )
-        outcomes = "\n".join(f"- {o}" for o in product.key_outcomes if "Arabic" not in o or True)
+        cta_line = f"\n\nالخطوة المقترحة: تشخيص مصغر مجاني عبر {cta_url}." if cta_url else "\n\nالخطوة المقترحة: تشخيص مصغر مجاني قصير لتحديد المشكلة والأدلة والخطوة التالية."
         return (
             f"السيد/السيدة {lead_name}،\n\n"
-            f"يسعدنا تقديم عرض {product.name_ar}{company_line}.{pain_line}\n\n"
-            f"**الوصف:**\n{product.description_ar}\n\n"
-            f"**النتائج الرئيسية:**\n{outcomes}\n\n"
-            f"**السعر:** {price_line}\n"
-            f"**مدة التسليم:** {product.delivery_days} يوم\n\n"
-            f"لحجز موعد لمناقشة التفاصيل: {cta_url}\n\n"
+            f"أعددنا مسودة داخلية لبدء تشخيص مصغر مجاني{company_line}."
+            f"{pain_line}{capability_note}{cta_line}\n\n"
+            "لا تتضمن هذه المسودة سعراً أو مدة تسليم أو التزاماً تجارياً، ولا تمنح صلاحية إرسال.\n\n"
             "مع التقدير،\nفريق Dealix"
         )
 
     @staticmethod
-    def _build_body_en(
-        product: Product,
-        lead_name: str,
-        company: str,
-        pain_text: str,
-        cta_url: str,
-    ) -> str:
+    def _build_body_en(product: Product, lead_name: str, company: str, pain_text: str, cta_url: str) -> str:
         company_line = f" at {company}" if company else ""
-        pain_line = (
-            f"\n\nWe understand that key challenges{company_line} include: {pain_text}."
-            if pain_text
-            else ""
+        pain_line = f"\n\nProblems stated so far: {pain_text}." if pain_text else ""
+        capability_note = (
+            f"\n\nCurrent internal capability hypothesis: {product.name_en}. This is a hypothesis only, not an offer, price, or commitment."
+            if product.tier != ProductTier.FREE_DIAGNOSTIC else ""
         )
-        price_line = (
-            f"{product.price_sar:,} SAR"
-            if product.price_sar == product.price_max_sar
-            else f"{product.price_sar:,} – {product.price_max_sar:,} SAR"
-        )
-        outcomes = "\n".join(f"- {o}" for o in product.key_outcomes)
+        cta_line = f"\n\nSuggested next step: a Free Mini Diagnostic via {cta_url}." if cta_url else "\n\nSuggested next step: a short Free Mini Diagnostic to clarify the problem, evidence, and next step."
         return (
             f"Dear {lead_name},\n\n"
-            f"We are pleased to present our {product.name_en} proposal{company_line}.{pain_line}\n\n"
-            f"**Description:**\n{product.description_en}\n\n"
-            f"**Key Outcomes:**\n{outcomes}\n\n"
-            f"**Price:** {price_line}\n"
-            f"**Delivery:** {product.delivery_days} days\n\n"
-            f"To schedule a call and discuss the details: {cta_url}\n\n"
+            f"We prepared an internal draft to start with a Free Mini Diagnostic{company_line}."
+            f"{pain_line}{capability_note}{cta_line}\n\n"
+            "This draft contains no price, delivery commitment, or binding commercial term, and grants no send authority.\n\n"
             "Best regards,\nDealix Team"
         )

@@ -1,18 +1,19 @@
-"""Commercial catalog surface for the Revenue Execution OS.
+"""Legacy capability catalog adapter for the Revenue Execution OS.
 
-The single source of truth for products and prices is the EXISTING catalog —
-``autonomous_growth.product_catalog`` (the five-rung ladder) plus the
-higher-touch RevOps packages documented in
-``docs/commercial/DEALIX_REVOPS_PACKAGES_AR.md``. This module does NOT invent
-new products or prices; it provides lookup + ladder helpers over the existing
-catalog so every draft / proposal / payment handoff links to a real product.
+This adapter intentionally does not expose paid price authority. The historical
+five-rung taxonomy is compatibility metadata only. Current paid commercial terms
+must come from qualified discovery + a customer-specific approved quote.
 """
 
 from __future__ import annotations
 
-from autonomous_growth.product_catalog import PRODUCT_CATALOG, Product, ProductTier
+from autonomous_growth.product_catalog import (
+    CURRENT_PAID_MOTION,
+    PRODUCT_CATALOG,
+    Product,
+    ProductTier,
+)
 
-# Ordered ladder (rung 0 → rung 4). Upsell moves one rung up the tuple.
 LADDER: tuple[ProductTier, ...] = (
     ProductTier.FREE_DIAGNOSTIC,
     ProductTier.SPRINT,
@@ -23,7 +24,6 @@ LADDER: tuple[ProductTier, ...] = (
 
 
 def all_products() -> list[Product]:
-    """All catalog products, in ladder order."""
     return [PRODUCT_CATALOG[tier] for tier in LADDER]
 
 
@@ -48,19 +48,17 @@ def is_valid_product_id(product_id: str) -> bool:
 
 
 def price_band(product_id: str) -> tuple[int, int]:
-    """Return ``(min_sar, max_sar)`` from the catalog. Raises on unknown id.
-
-    Pricing is never invented here — it is read from the existing catalog.
-    """
+    """Expose only the zero-price Free Mini Diagnostic entry motion."""
     product = product_by_id(product_id)
     if product is None:
         raise KeyError(f"unknown_product_id:{product_id}")
-    high = product.price_max_sar or product.price_sar
-    return (product.price_sar, high)
+    if product.tier != ProductTier.FREE_DIAGNOSTIC:
+        raise PermissionError("CUSTOMER_SPECIFIC_QUOTE_REQUIRED")
+    return (0, 0)
 
 
 def next_rung(product_id: str) -> Product | None:
-    """The next product up the ladder (the natural upsell), or ``None`` at top."""
+    """Compatibility taxonomy navigation only; never a commercial recommendation."""
     product = product_by_id(product_id)
     if product is None:
         return None
@@ -71,7 +69,6 @@ def next_rung(product_id: str) -> Product | None:
 
 
 def ladder_summary() -> list[dict[str, object]]:
-    """Lightweight, serialisable ladder view for reports / API."""
     summary: list[dict[str, object]] = []
     for rung, tier in enumerate(LADDER):
         product = PRODUCT_CATALOG[tier]
@@ -82,13 +79,20 @@ def ladder_summary() -> list[dict[str, object]]:
                 "tier": tier.value,
                 "name_ar": product.name_ar,
                 "name_en": product.name_en,
-                "price_min_sar": product.price_sar,
-                "price_max_sar": product.price_max_sar or product.price_sar,
-                "delivery_days": product.delivery_days,
+                "price_min_sar": 0 if tier == ProductTier.FREE_DIAGNOSTIC else None,
+                "price_max_sar": 0 if tier == ProductTier.FREE_DIAGNOSTIC else None,
+                "delivery_days": product.delivery_days if product.delivery_authorized else None,
                 "min_icp_score": product.min_icp_score,
+                "active_offer": product.active_offer,
+                "commercial_authority": product.commercial_authority,
+                "quote_required": product.quote_required,
             }
         )
     return summary
+
+
+def current_paid_motion() -> dict[str, object]:
+    return dict(CURRENT_PAID_MOTION)
 
 
 __all__ = [
@@ -96,6 +100,7 @@ __all__ = [
     "Product",
     "ProductTier",
     "all_products",
+    "current_paid_motion",
     "is_valid_product_id",
     "ladder_summary",
     "next_rung",
