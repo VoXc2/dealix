@@ -1,13 +1,17 @@
 from __future__ import annotations
 
+import inspect
 import logging
 import uuid
+from collections.abc import Awaitable, Callable
 from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
 from typing import Any
 
 logger = logging.getLogger(__name__)
+
+UNKNOWN = "UNKNOWN_NOT_EVIDENCE_BACKED"
 
 
 class RiskLevel(str, Enum):
@@ -28,6 +32,32 @@ class ImprovementCategory(str, Enum):
     SCALABILITY = "scalability"
 
 
+@dataclass(frozen=True)
+class MetricObservation:
+    """A measured input that can admit an improvement proposal.
+
+    The legacy package no longer invents measurements. A provider must supply a
+    real value plus at least one evidence reference. Synthetic observations are
+    allowed for tests/fixtures but cannot enter the real proposal queue.
+    """
+
+    value: float
+    evidence_refs: tuple[str, ...] = ()
+    source: str = ""
+    observed_at: datetime | None = None
+    synthetic: bool = False
+
+    @property
+    def evidence_backed(self) -> bool:
+        return bool(tuple(ref.strip() for ref in self.evidence_refs if ref.strip())) and not self.synthetic
+
+
+MetricProvider = Callable[
+    [str],
+    MetricObservation | None | Awaitable[MetricObservation | None],
+]
+
+
 @dataclass
 class ImprovementSignal:
     signal_id: str = field(default_factory=lambda: str(uuid.uuid4()))
@@ -38,6 +68,9 @@ class ImprovementSignal:
     gap: float = 0.0
     context: dict[str, Any] = field(default_factory=dict)
     detected_at: datetime = field(default_factory=datetime.utcnow)
+    evidence_refs: list[str] = field(default_factory=list)
+    evidence_state: str = UNKNOWN
+    synthetic: bool = False
 
 
 @dataclass
@@ -53,13 +86,23 @@ class ImprovementProposal:
     config_changes: dict[str, Any] = field(default_factory=dict)
     rollback_plan: str = ""
     signals: list[ImprovementSignal] = field(default_factory=list)
+    evidence_refs: list[str] = field(default_factory=list)
+    authority_class: str = "APPROVAL_REQUIRED"
     score: float = 0.0
     created_at: datetime = field(default_factory=datetime.utcnow)
     source: str = "automated_scan"
 
 
 class ImprovementGenerator:
-    def __init__(self):
+    """Legacy compatibility scanner with fail-closed evidence semantics.
+
+    Real self-improvement authority belongs to the canonical Development
+    Factory. This package may prepare evidence-backed proposals only; it may not
+    fabricate telemetry or create apply/commit/merge authority.
+    """
+
+    def __init__(self, metric_provider: MetricProvider | None = None):
+        self._metric_provider = metric_provider
         self._scan_history: list[datetime] = []
         self._generated_proposals: list[ImprovementProposal] = []
         self._scanners: list[dict[str, Any]] = [
@@ -107,33 +150,39 @@ class ImprovementGenerator:
         prioritized = await self.prioritize(proposals)
 
         self._generated_proposals.extend(prioritized)
-        logger.info("Scan generated %d improvement proposals", len(prioritized))
+        logger.info("Scan generated %d evidence-backed improvement proposals", len(prioritized))
         return prioritized
 
     async def generate_proposal(
         self,
         signal: ImprovementSignal,
     ) -> ImprovementProposal:
+        if signal.synthetic or not any(ref.strip() for ref in signal.evidence_refs):
+            raise ValueError("EVIDENCE_REQUIRED: simulated or source-less signals cannot create real improvements")
+
         category = self._signal_to_category(signal)
         risk = self._assess_risk(signal)
         config_changes = self._generate_config(signal)
         title = f"Improve {signal.metric}: {signal.current_value:.2f} -> {signal.expected_value:.2f}"
         description = (
-            f"Detected gap of {signal.gap:.2%} in '{signal.metric}'. "
+            f"Detected evidence-backed gap of {signal.gap:.2%} in '{signal.metric}'. "
             f"Current: {signal.current_value:.4f}, Expected: {signal.expected_value:.4f}. "
             f"Source: {signal.source}"
         )
 
+        refs = sorted({ref.strip() for ref in signal.evidence_refs if ref.strip()})
         return ImprovementProposal(
             title=title,
             description=description,
             category=category,
             risk_level=risk,
             expected_impact=signal.gap,
-            auto_appliable=risk in (RiskLevel.LOW,),
+            auto_appliable=False,
             config_changes=config_changes,
-            rollback_plan=f"Revert config changes for {signal.metric}",
+            rollback_plan=f"Revert bounded change for {signal.metric}",
             signals=[signal],
+            evidence_refs=refs,
+            authority_class="APPROVAL_REQUIRED",
             score=self._calculate_score(signal, risk),
         )
 
@@ -142,9 +191,9 @@ class ImprovementGenerator:
         proposals: list[ImprovementProposal],
     ) -> list[ImprovementProposal]:
         scored = sorted(proposals, key=lambda p: p.score, reverse=True)
-        for i, p in enumerate(scored):
-            p.score = max(0.0, p.score - (i * 0.05))
-        return sorted(scored, key=lambda p: p.score, reverse=True)
+        for i, proposal in enumerate(scored):
+            proposal.score = max(0.0, proposal.score - (i * 0.05))
+        return sorted(scored, key=lambda proposal: proposal.score, reverse=True)
 
     async def get_proposals(
         self,
@@ -154,22 +203,30 @@ class ImprovementGenerator:
     ) -> list[ImprovementProposal]:
         results = list(self._generated_proposals)
         if category:
-            results = [p for p in results if p.category == category]
+            results = [proposal for proposal in results if proposal.category == category]
         if risk_level:
-            results = [p for p in results if p.risk_level == risk_level]
-        return sorted(results, key=lambda p: p.score, reverse=True)[:limit]
+            results = [proposal for proposal in results if proposal.risk_level == risk_level]
+        return sorted(results, key=lambda proposal: proposal.score, reverse=True)[:limit]
 
     async def get_proposal(self, proposal_id: str) -> ImprovementProposal | None:
-        for p in self._generated_proposals:
-            if p.proposal_id == proposal_id:
-                return p
+        for proposal in self._generated_proposals:
+            if proposal.proposal_id == proposal_id:
+                return proposal
         return None
 
     async def _run_scanner(
         self,
         scanner: dict[str, Any],
     ) -> ImprovementSignal | None:
-        current_value = await self._get_metric_value(scanner["metric"])
+        observation = await self._get_metric_observation(scanner["metric"])
+        if observation is None:
+            logger.debug("Metric %s remains %s", scanner["metric"], UNKNOWN)
+            return None
+        if not observation.evidence_backed:
+            logger.info("Ignoring synthetic or source-less observation for %s", scanner["metric"])
+            return None
+
+        current_value = observation.value
         threshold = scanner["threshold"]
         gap = 0.0
 
@@ -184,27 +241,41 @@ class ImprovementGenerator:
             return None
 
         expected = (
-            threshold * 0.8 if scanner["metric"] in ("error_rate", "avg_latency_ms", "cost_per_call")
+            threshold * 0.8
+            if scanner["metric"] in ("error_rate", "avg_latency_ms", "cost_per_call")
             else min(1.0, threshold * 1.15)
         )
-
+        refs = sorted({ref.strip() for ref in observation.evidence_refs if ref.strip()})
         return ImprovementSignal(
-            source=scanner["name"],
+            source=observation.source or scanner["name"],
             metric=scanner["metric"],
             current_value=current_value,
             expected_value=expected,
             gap=gap,
-            context={"threshold": threshold, "scanner": scanner["name"]},
+            context={
+                "threshold": threshold,
+                "scanner": scanner["name"],
+                "observed_at": observation.observed_at.isoformat() if observation.observed_at else UNKNOWN,
+            },
+            evidence_refs=refs,
+            evidence_state="EVIDENCE_BACKED",
+            synthetic=False,
         )
 
-    async def _get_metric_value(self, metric: str) -> float:
-        simulated = {
-            "avg_latency_ms": 1500.0,
-            "error_rate": 0.05,
-            "cost_per_call": 0.02,
-            "success_rate": 0.92,
-        }
-        return simulated.get(metric, 0.0)
+    async def _get_metric_observation(self, metric: str) -> MetricObservation | None:
+        if self._metric_provider is None:
+            return None
+        result = self._metric_provider(metric)
+        if inspect.isawaitable(result):
+            result = await result
+        if result is not None and not isinstance(result, MetricObservation):
+            raise TypeError("metric_provider must return MetricObservation or None")
+        return result
+
+    async def _get_metric_value(self, metric: str) -> float | None:
+        """Compatibility helper. Missing evidence remains unknown, never simulated."""
+        observation = await self._get_metric_observation(metric)
+        return observation.value if observation and observation.evidence_backed else None
 
     def _signal_to_category(self, signal: ImprovementSignal) -> ImprovementCategory:
         mapping = {
@@ -254,22 +325,29 @@ class ImprovementGenerator:
         self,
         proposals: list[ImprovementProposal],
     ) -> None:
-        if len(proposals) >= 3:
-            categories = [p.category for p in proposals]
-            freq = {}
-            for cat in categories:
-                freq[cat] = freq.get(cat, 0) + 1
-            for cat, count in freq.items():
-                if count >= 2:
-                    recurring = [p for p in proposals if p.category == cat]
-                    combined = ImprovementProposal(
-                        title=f"Multiple {cat.value} improvements detected",
-                        description=f"Found {count} related improvement signals in {cat.value}",
-                        category=cat,
-                        risk_level=RiskLevel.MEDIUM,
-                        expected_impact=sum(p.expected_impact for p in recurring) / len(recurring),
-                        auto_appliable=False,
-                        config_changes={"pattern_detected": True, "count": count},
-                        source="pattern_detection",
-                    )
-                    proposals.append(combined)
+        if len(proposals) < 3:
+            return
+        categories = [proposal.category for proposal in proposals]
+        frequency: dict[ImprovementCategory, int] = {}
+        for category in categories:
+            frequency[category] = frequency.get(category, 0) + 1
+        for category, count in frequency.items():
+            if count < 2:
+                continue
+            recurring = [proposal for proposal in proposals if proposal.category == category]
+            refs = sorted({ref for proposal in recurring for ref in proposal.evidence_refs})
+            proposals.append(
+                ImprovementProposal(
+                    title=f"Multiple {category.value} improvements detected",
+                    description=f"Found {count} evidence-backed signals in {category.value}",
+                    category=category,
+                    risk_level=RiskLevel.MEDIUM,
+                    expected_impact=sum(proposal.expected_impact for proposal in recurring) / len(recurring),
+                    auto_appliable=False,
+                    config_changes={"pattern_detected": True, "count": count},
+                    rollback_plan="No automatic application; route through canonical Development Factory",
+                    evidence_refs=refs,
+                    authority_class="APPROVAL_REQUIRED",
+                    source="pattern_detection",
+                )
+            )
