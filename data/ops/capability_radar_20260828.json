@@ -1,211 +1,200 @@
 {
   "schema": "dealix.capability_radar.v1",
-  "as_of": "2026-08-28",
-  "north_star": "FIRST_VERIFIED_PAID_PILOT",
-  "owner_agent": "capability-research",
-  "decision_values": [
-    "ADOPT_NOW",
-    "ADOPT_NOW_BOUNDED",
-    "ADOPT_FOR_ACCEPTANCE",
-    "PILOT_ISOLATED",
-    "DEFER",
-    "REJECT_DUPLICATE",
-    "REJECT_POLICY"
-  ],
-  "admission_rule": "A capability may enter only if it measurably reduces founder minutes, improves verified conversion/proof, lowers cost/risk, or closes a proven trust/delivery gap without duplicating canonical Dealix owners.",
+  "as_of": "2026-08-29",
+  "north_star": "CASH_READY_AUTONOMOUS_DEALIX_COMPANY",
+  "primary_metric": "VERIFIED_ECONOMIC_MOVEMENT_PER_FOUNDER_MINUTE_PER_COST_PER_RISK",
+  "owner_agent": "dealix-pm",
+  "owner_workload": "capability_research",
+  "decision_values": ["ADOPT_NOW", "ADOPT_NOW_BOUNDED", "ADOPT_FOR_ACCEPTANCE", "PILOT_ISOLATED", "DEFER", "REJECT_DUPLICATE", "REJECT_POLICY"],
+  "admission_rule": "A capability may enter only if it measurably reduces founder minutes, improves verified economic movement/conversion/proof, lowers cost/risk, or closes a proven trust/delivery gap without duplicating canonical Dealix owners.",
   "canonical_owners": {
     "company_brain": "existing Dealix Company Brain",
     "opportunity_graph": "existing Dealix Opportunity Graph / Revenue Mesh",
     "approval_center": "existing canonical Approval Center",
     "proof_ledger": "existing canonical Proof Ledger",
     "scheduler": "existing systemd/n8n ownership model",
-    "agent_fleet": "existing OpenClaw/Hermes/Agent Council roster",
+    "agent_fleet": "five canonical Dealix agents with OpenClaw/Hermes bounded runtimes and .codex/agents profiles",
     "crm_truth": "Dealix Company OS; HubSpot mirror only",
-    "commercial_autopilot": "PR #1307",
-    "channel_go_live": "Issue #1299"
+    "commercial_autopilot": "data/commercial/revenue_growth_autopilot_contract.json + scripts/verify_revenue_growth_autopilot.py",
+    "channel_go_live": "Governance OS + explicit execution authority + consent/suppression/channel policy",
+    "observability": "existing privacy-safe Dealix OpenTelemetry owner; telemetry is operational evidence only",
+    "runtime_switches": "existing Governance OS + authority-lowering OpenFeature adapter"
   },
-  "roi_dimensions": [
-    "founder_minutes_reduced",
-    "time_to_real_interaction_reduced",
-    "time_to_discovery_reduced",
-    "proposal_or_negotiation_quality_improved",
-    "verification_latency_reduced",
-    "evidence_or_proof_integrity_improved",
-    "cost_per_verified_business_event_reduced",
-    "delivery_cycle_reduced",
-    "material_security_or_compliance_risk_reduced"
-  ],
-  "non_roi_metrics": [
-    "number_of_agents",
-    "number_of_workflows",
-    "number_of_integrations",
-    "token_volume",
-    "automation_percentage_without_business_outcome",
-    "vanity_engagement"
-  ],
+  "roi_dimensions": ["founder_minutes_reduced", "time_to_real_interaction_reduced", "time_to_discovery_reduced", "proposal_or_negotiation_quality_improved", "verification_latency_reduced", "evidence_or_proof_integrity_improved", "cost_per_verified_business_event_reduced", "delivery_cycle_reduced", "material_security_or_compliance_risk_reduced"],
+  "non_roi_metrics": ["number_of_agents", "number_of_workflows", "number_of_integrations", "token_volume", "automation_percentage_without_business_outcome", "vanity_engagement"],
   "candidates": [
     {
       "id": "hubspot_remote_mcp",
       "decision": "ADOPT_NOW_BOUNDED",
-      "owner": "governance-finance + revenue-copilot",
-      "purpose": "Controlled CRM read/write adapter using HubSpot permissions; Dealix truth remains upstream.",
+      "owner": "dealix-sales + dealix-engineer",
+      "purpose": "Controlled CRM adapter; Dealix truth remains upstream.",
       "source": "https://developers.hubspot.com/ai-tools/mcp",
-      "admission_evidence": "HubSpot remote MCP is GA in 2026 with CRM read/write and activity context.",
-      "allowed": [
-        "read existing CRM context",
-        "reconcile contacts/companies/deals with Dealix evidence",
-        "mirror evidence-backed state after canonical truth gates"
-      ],
-      "blocked": [
-        "promote CRM record to verified relationship without Dealix evidence",
-        "create revenue/won truth",
-        "write random CRM fields as commercial authority",
-        "bypass #1294 fail-closed mirror rules"
-      ],
-      "entry_gate": "#1301/#1294 truth acceptance and explicit property mapping",
+      "allowed": ["read existing CRM context", "reconcile records with Dealix evidence", "mirror evidence-backed state after canonical gates"],
+      "blocked": ["promote CRM record to verified relationship without Dealix evidence", "create revenue/won truth", "bypass fail-closed mirror rules"],
       "success_metric": "lower founder reconciliation time with zero false commercial promotions"
     },
     {
       "id": "n8n_mcp_workflow_authoring",
       "decision": "PILOT_ISOLATED",
-      "owner": "engineering-verifier + capability-research",
-      "purpose": "Use MCP-assisted workflow authoring to create or update isolated/draft n8n workflows faster.",
+      "owner": "dealix-engineer",
+      "purpose": "MCP-assisted draft workflow authoring over the existing n8n connector fabric.",
       "source": "https://docs.n8n.io/",
-      "allowed": [
-        "draft workflow authoring",
-        "workflow inspection",
-        "isolated synthetic canaries"
-      ],
-      "blocked": [
-        "become scheduler truth owner",
-        "mint external execution authority",
-        "unreviewed customer send",
-        "duplicate Company OS state"
-      ],
+      "allowed": ["draft workflow authoring", "workflow inspection", "isolated synthetic canaries"],
+      "blocked": ["become scheduler truth owner", "mint external execution authority", "unreviewed customer send", "duplicate Company OS state"],
       "success_metric": "workflow build/repair time reduced without duplicate scheduling or authority drift"
     },
     {
       "id": "openai_realtime_sip_remote_mcp",
       "decision": "PILOT_ISOLATED",
-      "owner": "sales-negotiation + governance-finance",
-      "purpose": "Inbound disclosed Voice Front Desk with SIP and bounded MCP tools for #1291.",
+      "owner": "dealix-sales + dealix-engineer",
+      "purpose": "Inbound disclosed Voice Front Desk only after provider, consent, retention and handoff gates are proven.",
       "source": "https://platform.openai.com/docs/api-reference/realtime",
-      "allowed": [
-        "inbound call triage",
-        "grounded discovery",
-        "technical QA",
-        "ordinary objection handling",
-        "bounded handoff"
-      ],
-      "blocked": [
-        "impersonate founder",
-        "guarantee outcomes",
-        "bind legal/payment/pricing commitments without exact authority",
-        "record/transcribe without configured notice/consent/retention"
-      ],
-      "entry_gate": "#1291 provider + consent + retention + handoff acceptance",
+      "allowed": ["inbound call triage", "grounded discovery", "technical QA", "ordinary objection handling", "bounded handoff"],
+      "blocked": ["impersonate founder", "guarantee outcomes", "bind legal/payment/pricing commitments without exact authority", "record/transcribe without configured notice/consent/retention"],
       "success_metric": "qualified inbound conversations handled with safe handoff and lower founder minutes"
     },
     {
       "id": "openai_agents_sdk_isolated_harness",
       "decision": "PILOT_ISOLATED",
-      "owner": "engineering-verifier + capability-research",
-      "purpose": "Isolated research/verification/diagnostic harness only where current stack has measurable latency or tooling gaps.",
-      "source": "https://platform.openai.com/docs/quickstart",
-      "allowed": [
-        "isolated evaluation",
-        "research synthesis",
-        "test-environment tool orchestration"
-      ],
-      "blocked": [
-        "replace OpenClaw/Hermes/Company Operator",
-        "create permanent parallel agent fleet",
-        "own approval/payment/commercial truth"
-      ],
+      "owner": "dealix-engineer",
+      "purpose": "Isolated workspace-heavy research/verification harness where current stack has a measured gap.",
+      "source": "https://openai.github.io/openai-agents-python/",
+      "allowed": ["isolated evaluation", "research synthesis", "test-environment tool orchestration"],
+      "blocked": ["replace OpenClaw/Hermes/Company Operator", "create permanent parallel agent fleet", "own approval/payment/commercial truth"],
       "success_metric": "measurable founder-minute or verification-latency reduction versus current stack"
     },
     {
       "id": "playwright_acceptance",
       "decision": "ADOPT_FOR_ACCEPTANCE",
-      "owner": "engineering-verifier",
+      "owner": "dealix-engineer",
       "purpose": "Deterministic browser acceptance for public/commercial surfaces, forms and private canaries.",
-      "source": "https://playwright.dev/",
-      "allowed": ["public-surface verification", "synthetic/private acceptance"],
-      "blocked": ["LinkedIn automation", "customer messaging automation", "circumvent platform controls"],
-      "success_metric": "fewer undetected public-surface regressions"
+      "source": "https://playwright.dev/python/docs/browsers",
+      "admission_evidence": "Current live /academy.html drift proved public-surface acceptance has material value.",
+      "allowed": ["public-surface verification", "synthetic/private acceptance", "Chromium/Firefox/WebKit regression testing"],
+      "blocked": ["LinkedIn automation", "customer messaging automation", "circumvent platform controls", "production mutation"],
+      "success_metric": "fewer undetected public-surface and commercial-truth regressions"
     },
     {
       "id": "osv_scanner_v2",
       "decision": "ADOPT_NOW",
-      "owner": "sovereign-security",
-      "purpose": "Normalize dependency vulnerability evidence inside existing security/trust receipts.",
-      "source": "https://google.github.io/osv-scanner/",
-      "blocked": ["create a second security truth store"],
+      "owner": "dealix-engineer",
+      "purpose": "Normalize dependency vulnerability evidence into existing security/trust receipts.",
+      "source": "https://github.com/google/osv-scanner",
+      "allowed": ["source/lockfile/SBOM scan", "read-only vulnerability evidence"],
+      "blocked": ["create a second security truth store", "automatic remediation without review", "run untrusted remediation scripts"],
       "success_metric": "accurate actionable vulnerability classification with existing receipts"
     },
     {
       "id": "uv_uvx",
       "decision": "ADOPT_NOW",
-      "owner": "engineering-verifier",
+      "owner": "dealix-engineer",
       "purpose": "Isolated Python tooling and reproducible ephemeral tool execution.",
-      "source": "https://docs.astral.sh/uv/",
-      "blocked": ["replace project dependency authority without migration evidence"],
+      "source": "https://github.com/astral-sh/uv",
+      "blocked": ["replace project dependency authority without migration evidence", "execute untrusted build/install scripts with privileged credentials", "remain on a known-vulnerable uv release"],
       "success_metric": "lower tooling setup time and fewer global-environment conflicts"
     },
     {
       "id": "otel_genai_semantics",
+      "decision": "ADOPT_NOW_BOUNDED",
+      "implementation_state": "BOUNDED_IMPLEMENTATION_ON_MAIN",
+      "implementation_evidence": "merge:6a591cdbbf7dc84724815a1ff9813f54069854c9",
+      "owner": "dealix-engineer",
+      "purpose": "Use the existing privacy-safe OpenTelemetry owner for workload/model/tool latency, cost, evidence and authority correlation.",
+      "source": "https://opentelemetry.io/docs/specs/semconv/",
+      "blocked": ["emit relationship/payment/proof truth from telemetry", "collect prompts/customer content/credentials by default", "add a new observability database", "use telemetry as approval authority"],
+      "success_metric": "cost/latency per verified workload or business event becomes measurable with privacy preserved"
+    },
+    {
+      "id": "openfeature_kill_switch",
+      "decision": "ADOPT_NOW_BOUNDED",
+      "implementation_state": "BOUNDED_IMPLEMENTATION_ON_MAIN",
+      "implementation_evidence": "merge:0db54b99e7cd28e6977ff559123368ff6e663b16",
+      "owner": "dealix-engineer",
+      "purpose": "Use integrated kill switches only to lower/disable effective authority and experimental workloads.",
+      "source": "https://openfeature.dev/docs/reference/sdks/server/python/",
+      "allowed": ["authority-lowering flags", "connector/model/experimental workload kill switches", "provider readiness/failure canaries"],
+      "blocked": ["grant authority absent from Governance/Commercial contracts", "become second policy or approval engine", "default sensitive flags to true", "create price/send/payment/legal/production authority"],
+      "success_metric": "fast reversible kill-switching with zero authority escalation"
+    },
+    {
+      "id": "promptfoo_agent_redteam",
       "decision": "PILOT_ISOLATED",
-      "owner": "proof-data + engineering-verifier",
-      "purpose": "Trace model/tool latency and cost to Dealix business events without making telemetry commercial truth.",
-      "source": "https://opentelemetry.io/docs/specs/semconv/gen-ai/",
-      "blocked": ["emit relationship/payment/proof truth from telemetry", "collect sensitive payloads by default"],
-      "success_metric": "cost/latency per verified workflow or business event becomes measurable with privacy preserved"
+      "implementation_state": "NOT_WIRED_TO_PRODUCTION",
+      "owner": "dealix-engineer",
+      "purpose": "Sandbox regression/red-team for prompt injection, tool misuse, authority escalation, RAG/MCP and truth-firewall failures.",
+      "source": "https://github.com/promptfoo/promptfoo/blob/main/SECURITY.md",
+      "security_model": "Promptfoo configs/providers/hooks/transforms may execute with local user permissions; treat them as code and isolate adversarial runs.",
+      "allowed": ["isolated test corpus", "bounded agent/MCP targets", "verification receipt attachment", "local-model red-team generation where useful"],
+      "blocked": ["production attack without scope", "untrusted promptfoo config with write-capable credentials", "customer or secret-bearing corpus without authority", "public exposure of local web/MCP interfaces", "PR-controlled eval config with production/repository-write credentials"],
+      "success_metric": "measurable reduction in truth/authority/tool-use escape regressions"
+    },
+    {
+      "id": "docling_document_ingestion",
+      "decision": "PILOT_ISOLATED",
+      "owner": "dealix-engineer",
+      "purpose": "Provenance-preserving document ingestion into existing Data OS/Company Brain.",
+      "source": "https://github.com/docling-project/docling",
+      "allowed": ["isolated document parsing", "lossless extraction", "source/page provenance preservation"],
+      "blocked": ["become parallel Company Brain/vector truth store", "promote extraction to verified business truth without source/authority", "unbounded OCR/model install without resource budget"],
+      "success_metric": "document-to-evidence preparation time reduced with provenance retained"
+    },
+    {
+      "id": "schemathesis_api_acceptance",
+      "decision": "PILOT_ISOLATED",
+      "owner": "dealix-engineer",
+      "purpose": "Property-based OpenAPI/API acceptance for local/test-safe targets.",
+      "source": "https://github.com/schemathesis/schemathesis",
+      "allowed": ["local/ASGI acceptance", "test/staging-safe fuzzing", "reproducible failing-case capture"],
+      "blocked": ["destructive/write-heavy fuzzing against production", "become parallel CI/verification truth owner", "treat fuzz output as commercial truth"],
+      "success_metric": "API regressions found earlier with bounded test cost and reproducible evidence"
+    },
+    {
+      "id": "github_custom_agents",
+      "decision": "DEFER",
+      "implementation_state": "REFERENCE_PATTERN_ONLY",
+      "owner": "dealix-engineer",
+      "purpose": "Use narrow tool/subagent/profile patterns as reference only; `.codex/agents` is the canonical Dealix roster.",
+      "source": "https://docs.github.com/en/copilot/customizing-copilot/creating-custom-agents-for-copilot-coding-agent",
+      "blocked": ["duplicate canonical agent roster", "new agent self-authority", "parallel engineering governance"],
+      "entry_gate": "measured leverage not achievable by current .codex/agents",
+      "success_metric": "no duplicate authority while preserving bounded agent leverage"
+    },
+    {
+      "id": "github_agentic_workflows_repo_ops",
+      "decision": "DEFER",
+      "implementation_state": "HOSTED_RUNNER_PLANE_NOT_TRUSTED_FOR_COMPANY_AUTONOMY",
+      "owner": "dealix-engineer",
+      "purpose": "Re-evaluate GitHub Agentic Workflows only after Actions reliably allocates runners and executes repository steps.",
+      "source": "https://github.github.com/gh-aw/",
+      "blocked": ["become a second scheduler or Company OS", "become a second verification truth owner", "merge main or mutate production", "customer send or public publish", "run untrusted repository content with privileged credentials"],
+      "entry_gate": "reliable runner + exact-head repository-step receipts + least-privilege token",
+      "success_metric": "measurable repo-maintenance time reduction with zero authority duplication"
+    },
+    {
+      "id": "langfuse_legacy_adapter",
+      "decision": "DEFER",
+      "owner": "dealix-engineer",
+      "purpose": "Contain the legacy Langfuse adapter; do not expand it into another observability or truth platform.",
+      "source": "https://langfuse.com/docs",
+      "allowed": ["maintain required compatibility", "read-only migration assessment"],
+      "blocked": ["expand Langfuse as a second truth store", "duplicate OTel receipt ownership", "send prompt/customer/secret content without authority"],
+      "entry_gate": "measured migration value + compatibility plan + privacy evidence",
+      "success_metric": "legacy dependency risk reduced without observability duplication"
     },
     {
       "id": "github_artifact_attestations",
       "decision": "DEFER",
-      "owner": "sovereign-security",
-      "purpose": "Build provenance for customer-facing release artifacts when distribution/productization creates real demand.",
+      "owner": "dealix-engineer",
+      "purpose": "Build provenance for customer-facing release artifacts when productization creates real demand.",
       "source": "https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations",
       "entry_gate": "customer/release provenance requirement",
       "success_metric": "customer-trust or compliance requirement demonstrably satisfied"
     },
-    {
-      "id": "new_crm",
-      "decision": "REJECT_DUPLICATE",
-      "owner": "founder-president",
-      "reason": "HubSpot is mirror and Dealix Company OS/Revenue Mesh already own commercial truth."
-    },
-    {
-      "id": "new_vector_db_as_company_brain",
-      "decision": "REJECT_DUPLICATE",
-      "owner": "founder-president",
-      "reason": "Storage technology may be swapped behind canonical Company Brain, but must not become a parallel truth owner."
-    },
-    {
-      "id": "new_agent_framework_fleet",
-      "decision": "REJECT_DUPLICATE",
-      "owner": "founder-president",
-      "reason": "Do not add CrewAI/LangGraph/AutoGen/PydanticAI-style permanent parallel orchestration while OpenClaw/Hermes/Company Operator satisfy the role."
-    },
-    {
-      "id": "new_workflow_scheduler",
-      "decision": "REJECT_DUPLICATE",
-      "owner": "founder-president",
-      "reason": "Existing systemd/n8n scheduler ownership remains canonical until a measured failure proves replacement need."
-    },
-    {
-      "id": "generic_autonomous_sdr_bots",
-      "decision": "REJECT_POLICY",
-      "owner": "governance-finance",
-      "reason": "Cannot bypass relationship/consent, platform restrictions, suppression, claims or execution-authority gates."
-    },
-    {
-      "id": "linkedin_browser_bots",
-      "decision": "REJECT_POLICY",
-      "owner": "governance-finance",
-      "source": "https://www.linkedin.com/legal/user-agreement",
-      "reason": "LinkedIn prohibits unauthorized bots/automation for scraping, contacts, messages and engagement; Founder LinkedIn remains MANUAL_NATIVE."
-    }
+    {"id": "new_crm", "decision": "REJECT_DUPLICATE", "owner": "dealix-pm", "reason": "HubSpot is mirror and Dealix Company OS/Revenue Mesh own commercial truth."},
+    {"id": "new_vector_db_as_company_brain", "decision": "REJECT_DUPLICATE", "owner": "dealix-pm", "reason": "Storage may change behind the canonical Company Brain but must not become a parallel truth owner."},
+    {"id": "new_agent_framework_fleet", "decision": "REJECT_DUPLICATE", "owner": "dealix-pm", "reason": "The five canonical agents plus OpenClaw/Hermes/Company Operator already own the role."},
+    {"id": "new_workflow_scheduler", "decision": "REJECT_DUPLICATE", "owner": "dealix-pm", "reason": "Existing systemd/n8n/company cadence remains canonical until measured failure proves replacement need."},
+    {"id": "generic_autonomous_sdr_bots", "decision": "REJECT_POLICY", "owner": "dealix-engineer", "reason": "Cannot bypass relationship/consent/platform/suppression/claims/execution-authority gates."},
+    {"id": "linkedin_browser_bots", "decision": "REJECT_POLICY", "owner": "dealix-engineer", "source": "https://www.linkedin.com/legal/user-agreement", "reason": "Founder LinkedIn remains MANUAL_NATIVE; unauthorized scraping/message/engagement bots are prohibited."}
   ]
 }

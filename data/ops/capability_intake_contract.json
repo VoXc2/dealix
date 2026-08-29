@@ -1,43 +1,15 @@
 {
   "schema": "dealix.capability-intake.v1",
-  "version": "2026-08-28.1",
-  "owner": "capability-research",
-  "decision_owner": "founder-president",
-  "north_star": "FIRST_VERIFIED_PAID_PILOT",
-  "mission": "Continuously discover external libraries, tools, templates, MCP servers and patterns, but admit only capabilities that close a measured Dealix gap without creating duplicate authority or distracting from verified revenue movement.",
-  "input_required": [
-    "candidate_id",
-    "name",
-    "source_url",
-    "source_type",
-    "observed_at",
-    "problem_or_gap",
-    "canonical_owner_impacted",
-    "expected_business_value",
-    "integration_surface",
-    "permissions_required",
-    "data_access_required",
-    "rollback_plan",
-    "maintenance_owner"
-  ],
-  "source_types": [
-    "OFFICIAL_DOCS",
-    "OFFICIAL_GITHUB",
-    "VENDOR_DOCS",
-    "COMMUNITY_PATTERN"
-  ],
-  "admission_sequence": [
-    "SOURCE_VERIFY",
-    "GAP_VERIFY",
-    "DUPLICATION_CHECK",
-    "AUTHORITY_CHECK",
-    "SECURITY_PRIVACY_CHECK",
-    "ROI_SCORE",
-    "ISOLATED_PILOT_IF_REQUIRED",
-    "ACCEPT_OR_REJECT",
-    "RECEIPT",
-    "RETEST_OR_REMOVE"
-  ],
+  "version": "2026-08-29.3",
+  "owner": "dealix-pm",
+  "owner_workload": "capability_research",
+  "decision_owner": "dealix-pm",
+  "north_star": "CASH_READY_AUTONOMOUS_DEALIX_COMPANY",
+  "primary_metric": "VERIFIED_ECONOMIC_MOVEMENT_PER_FOUNDER_MINUTE_PER_COST_PER_RISK",
+  "mission": "Continuously discover external libraries, tools, templates, MCP servers and patterns, but admit only capabilities that close a measured Dealix gap without creating duplicate authority or distracting from verified economic movement, customer value, proof, reliability or founder leverage.",
+  "input_required": ["candidate_id", "name", "source_url", "source_type", "observed_at", "problem_or_gap", "canonical_owner_impacted", "expected_business_value", "integration_surface", "permissions_required", "data_access_required", "rollback_plan", "maintenance_owner"],
+  "source_types": ["OFFICIAL_DOCS", "OFFICIAL_GITHUB", "VENDOR_DOCS", "COMMUNITY_PATTERN"],
+  "admission_sequence": ["SOURCE_VERIFY", "GAP_VERIFY", "DUPLICATION_CHECK", "AUTHORITY_CHECK", "SECURITY_PRIVACY_CHECK", "ROI_SCORE", "ISOLATED_PILOT_IF_REQUIRED", "ACCEPT_OR_REJECT", "RECEIPT", "RETEST_OR_REMOVE"],
   "hard_reject": [
     "creates_parallel_company_brain",
     "creates_parallel_opportunity_graph",
@@ -75,14 +47,7 @@
       "requires_new_scheduler": -30,
       "requires_new_permanent_agent": -30
     },
-    "thresholds": {
-      "ADOPT_NOW": 85,
-      "ADOPT_NOW_BOUNDED": 75,
-      "ADOPT_FOR_ACCEPTANCE": 70,
-      "PILOT_ISOLATED": 60,
-      "DEFER": 40,
-      "REJECT": 0
-    }
+    "thresholds": {"ADOPT_NOW": 85, "ADOPT_NOW_BOUNDED": 75, "ADOPT_FOR_ACCEPTANCE": 70, "PILOT_ISOLATED": 60, "DEFER": 40, "REJECT": 0}
   },
   "pilot_contract": {
     "default_duration_days": 14,
@@ -90,75 +55,75 @@
     "external_customer_send": false,
     "payment_or_spend": false,
     "new_truth_owner": false,
-    "required_before": [
-      "baseline_metric",
-      "success_metric",
-      "rollback_plan",
-      "data_scope",
-      "permission_scope"
-    ],
-    "required_after": [
-      "measured_result",
-      "incidents_or_risks",
-      "founder_minutes_delta",
-      "business_stage_delta_if_any",
-      "cost_delta",
-      "keep_defer_or_remove_decision"
-    ]
+    "required_before": ["baseline_metric", "success_metric", "rollback_plan", "data_scope", "permission_scope"],
+    "required_after": ["measured_result", "incidents_or_risks", "founder_minutes_delta", "business_stage_delta_if_any", "cost_delta", "keep_defer_or_remove_decision"]
   },
   "current_high_value_patterns": {
     "playwright_test_agents": {
       "decision": "ADOPT_FOR_ACCEPTANCE",
-      "use": "Planner -> Generator -> Healer for deterministic test planning/generation/repair in isolated engineering acceptance.",
-      "official_source": "https://playwright.dev/docs/test-agents",
-      "opencode_bootstrap": "npx playwright init-agents --loop=opencode",
-      "blocked": [
-        "customer_message_automation",
-        "linkedin_automation",
-        "production_mutation_without_existing_gate"
-      ]
+      "implementation_state": "ADMITTED_NOT_COMPANY_RUNTIME_OWNER",
+      "use": "Deterministic browser acceptance for public/commercial surfaces, forms and private canaries. Use browser automation only for testing, never for LinkedIn/customer messaging automation.",
+      "official_source": "https://playwright.dev/python/docs/browsers",
+      "entry_evidence": "A current live Academy route still serves retired commercial claims while repository main is quarantined, proving browser/public-surface acceptance has material value.",
+      "blocked": ["customer_message_automation", "linkedin_automation", "production_mutation_without_existing_gate"]
     },
     "promptfoo_agent_mcp_eval": {
       "decision": "PILOT_ISOLATED",
+      "implementation_state": "NOT_WIRED_TO_PRODUCTION",
       "use": "Regression and red-team evaluation for agent, RAG, MCP and tool-use boundaries; attach results to existing verification receipts.",
-      "official_sources": [
-        "https://www.promptfoo.dev/docs/red-team/quickstart/",
-        "https://www.promptfoo.dev/docs/red-team/guides/"
-      ],
-      "blocked": [
-        "production_attack_without_scope",
-        "customer_data_in_test_corpus_without authority",
-        "second_security_truth_store"
-      ]
+      "official_sources": ["https://github.com/promptfoo/promptfoo/blob/main/site/docs/red-team/configuration.md", "https://github.com/promptfoo/promptfoo/blob/main/SECURITY.md"],
+      "blocked": ["production_attack_without_scope", "customer_data_in_test_corpus_without_authority", "untrusted_promptfoo_config_with_write_capable_credentials", "public_exposure_of_local_promptfoo_interfaces", "second_security_truth_store"]
     },
     "otel_semantic_conventions": {
+      "decision": "ADOPT_NOW_BOUNDED",
+      "implementation_state": "BOUNDED_IMPLEMENTATION_ON_MAIN",
+      "implementation_evidence": "merge:6a591cdbbf7dc84724815a1ff9813f54069854c9",
+      "use": "Deepen the existing OpenTelemetry stack with common workload/tool/model naming and cost/latency/evidence correlation; telemetry remains operational evidence only.",
+      "official_sources": ["https://opentelemetry.io/docs/specs/semconv/", "https://opentelemetry.io/docs/specs/semconv/registry/attributes/gen-ai/"],
+      "privacy_default": "no prompt, retrieval, transcript, customer body, credential or secret capture by default"
+    },
+    "openfeature_authority_lowering": {
+      "decision": "ADOPT_NOW_BOUNDED",
+      "implementation_state": "BOUNDED_IMPLEMENTATION_ON_MAIN",
+      "implementation_evidence": "merge:0db54b99e7cd28e6977ff559123368ff6e663b16",
+      "use": "Vendor-neutral kill-switch abstraction for runtime flags that can only reduce effective authority. Missing/not-ready providers resolve to explicit safe defaults.",
+      "official_source": "https://openfeature.dev/docs/reference/sdks/server/python/",
+      "blocked": ["grant_authority_not_present_in_governance_contracts", "become_a_second_approval_or_policy_engine", "default_sensitive_side_effect_flags_to_true"]
+    },
+    "docling_provenance_ingestion": {
       "decision": "PILOT_ISOLATED",
-      "use": "Common telemetry naming for one bounded workflow; telemetry remains operational evidence only.",
-      "official_source": "https://opentelemetry.io/docs/specs/semconv/",
-      "privacy_default": "no prompt, retrieval, transcript or customer body capture"
+      "implementation_state": "NOT_ADMITTED_TO_TRUTH_OWNER",
+      "use": "Parse customer/tender/market documents into a provenance-preserving adapter feeding the existing Data OS/Company Brain.",
+      "official_sources": ["https://github.com/docling-project/docling", "https://github.com/docling-project/docling/blob/main/docs/usage/supported_formats.md"],
+      "blocked": ["become_a_parallel_company_brain_or_vector_truth_store", "promote_extracted_text_to_verified_business_truth_without_source_and_authority", "unbounded_ocr_or_model_install_on_vps_without_resource_budget"]
+    },
+    "schemathesis_api_acceptance": {
+      "decision": "PILOT_ISOLATED",
+      "implementation_state": "LOCAL_OR_TEST_SAFE_ONLY",
+      "use": "Property-based OpenAPI/API acceptance in local, test or explicitly safe environments.",
+      "official_sources": ["https://github.com/schemathesis/schemathesis", "https://github.com/schemathesis/schemathesis/blob/master/docs/tutorials/cli.md"],
+      "blocked": ["destructive_or_write_heavy_fuzzing_against_production", "treat_fuzzer_output_as_business_truth", "create_a_parallel_ci_or_verification_owner"]
+    },
+    "github_custom_agents": {
+      "decision": "DEFER",
+      "implementation_state": "REFERENCE_PATTERN_ONLY",
+      "use": "Use narrow tool/subagent/profile patterns as design guidance only. The repository already has a canonical `.codex/agents` roster.",
+      "official_source": "https://docs.github.com/en/copilot/customizing-copilot/creating-custom-agents-for-copilot-coding-agent",
+      "blocked": ["duplicate_canonical_agent_roster", "new_agent_self_authority", "parallel_engineering_governance"]
+    },
+    "github_agentic_workflows": {
+      "decision": "DEFER",
+      "implementation_state": "HOSTED_RUNNER_PLANE_NOT_TRUSTED_FOR_COMPANY_AUTONOMY",
+      "use": "Re-evaluate only after hosted Actions consistently allocates a runner and executes repository steps with reliable exact-head receipts.",
+      "official_source": "https://github.github.com/gh-aw/",
+      "blocked": ["make_runnerless_ci_company_scheduler", "grant_write_or_external_authority_without_existing_governance", "duplicate_existing_company_cadence"]
     }
   },
   "agent_loop": {
     "frequency": "weekly within existing self-improvement cadence; no new timer",
     "max_candidates_per_cycle": 10,
     "max_isolated_pilots_concurrent": 2,
-    "priority": [
-      "current_verified_blocker",
-      "founder_friction",
-      "first_paid_pilot_conversion",
-      "delivery_and_proof",
-      "trust_and_security",
-      "general_capability_novelty"
-    ],
-    "output": [
-      "ranked_candidates",
-      "adopt_now",
-      "isolated_pilots",
-      "deferred",
-      "rejected_duplicates",
-      "rejected_policy",
-      "measured_results",
-      "removals"
-    ]
+    "priority": ["current_verified_blocker", "founder_friction", "verified_economic_movement", "delivery_and_proof", "trust_and_security", "general_capability_novelty"],
+    "output": ["ranked_candidates", "adopt_now", "isolated_pilots", "deferred", "rejected_duplicates", "rejected_policy", "measured_results", "removals"]
   }
 }
