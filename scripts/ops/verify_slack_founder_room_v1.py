@@ -34,7 +34,7 @@ def main() -> int:
     slack = load_json(SLACK_CONTRACT)
     machine = load_json(MACHINE_CONTRACT)
 
-    assert slack["schema_version"] == "1.0"
+    assert slack["schema_version"] == "1.1"
     assert slack["surface_id"] == "dealix_slack_founder_room_v1"
     assert slack["workspace"]["name"] == "Dealix"
     assert slack["workspace"]["team_id"] == EXPECTED_TEAM_ID
@@ -59,9 +59,12 @@ def main() -> int:
     assert bridge["transport"] == "slack_socket_mode"
     assert bridge["scheduler_created"] is False
     assert bridge["parallel_agent_fleet_created"] is False
-    assert "workload_id" in " ".join(bridge["acceptance"]["required"])
-    assert "source_sha" in " ".join(bridge["acceptance"]["required"])
-    assert "receipt" in " ".join(bridge["acceptance"]["required"])
+    assert bridge["source_sha_policy"] == "RECEIPT_MUST_MATCH_RUNTIME_EXACT_HEAD"
+    acceptance = " ".join(bridge["acceptance"]["required"])
+    assert "workload_id" in acceptance
+    assert "source_sha" in acceptance
+    assert "receipt" in acceptance
+    assert "runtime_exact_head" in acceptance
 
     authority = slack["authority"]
     for key in (
@@ -105,6 +108,7 @@ def main() -> int:
     print("slack_truth_owner=false")
     print("parallel_scheduler=false")
     print("parallel_agent_fleet=false")
+    print("source_sha_policy=RUNTIME_EXACT_HEAD")
     print("external_effects=FAIL_CLOSED")
     return 0
 
