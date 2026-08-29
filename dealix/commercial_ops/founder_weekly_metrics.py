@@ -32,11 +32,26 @@ def _iso_week(d: datetime | None = None) -> str:
 
 
 def load_truth_matrix_summary() -> dict[str, Any]:
+    """Summarize Truth Matrix posture without hiding intentionally red gates.
+
+    ``red`` remains the complete truth surface. ``blocking_red`` is the subset
+    explicitly required to make the current weekly operating loop ready.
+    Rows default to blocking for backward compatibility; an approval-gated or
+    later-stage connector must opt out explicitly in the source YAML.
+    """
+
     truth_path = _truth_matrix_path()
     if truth_path is None:
-        return {"exists": False, "red": [], "yellow": [], "green": []}
+        return {
+            "exists": False,
+            "red": [],
+            "blocking_red": [],
+            "yellow": [],
+            "green": [],
+        }
     data = yaml.safe_load(truth_path.read_text(encoding="utf-8")) or {}
     buckets: dict[str, list[str]] = {"red": [], "yellow": [], "green": []}
+    blocking_red: list[str] = []
     for section in ("ladder", "integrations"):
         for row in data.get(section) or []:
             if not isinstance(row, dict):
@@ -45,9 +60,12 @@ def load_truth_matrix_summary() -> dict[str, Any]:
             label = (row.get("id") or row.get("label_ar") or "?").strip()
             if status in buckets:
                 buckets[status].append(label)
+            if status == "red" and row.get("blocks_weekly_metrics", True) is not False:
+                blocking_red.append(label)
     return {
         "exists": True,
         "updated_note_ar": data.get("updated_note_ar"),
+        "blocking_red": blocking_red,
         **buckets,
     }
 
@@ -64,8 +82,12 @@ def build_founder_weekly_metrics(*, week_end: datetime | None = None) -> dict[st
         blockers.append(
             f"{len(kpi['pending'])} KPI معلّقة — املأ kpi_founder_commercial_import.yaml من CRM"
         )
-    if truth.get("red"):
-        blockers.append(f"Truth Matrix red: {', '.join(truth['red'][:5])}")
+    blocking_red = truth.get("blocking_red")
+    if blocking_red is None:
+        # Compatibility for callers/tests supplying a legacy summary shape.
+        blocking_red = truth.get("red") or []
+    if blocking_red:
+        blockers.append(f"Truth Matrix blocking red: {', '.join(blocking_red[:5])}")
 
     return {
         "iso_week": iso_week,
