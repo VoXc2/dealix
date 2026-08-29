@@ -1,0 +1,43 @@
+{
+  "schema": "dealix.openfeature-runtime-control-pilot.v1",
+  "status": "PILOT_ISOLATED_NOT_WIRED_TO_LIVE_SIDE_EFFECTS",
+  "canonical_authority_owner": "Dealix Governance/Commercial Authority",
+  "runtime_control_role": "AUTHORITY_LOWERING_ONLY",
+  "provider_required_for_live_enable": true,
+  "missing_provider_default": false,
+  "provider_error_default": false,
+  "may_raise_canonical_authority": false,
+  "creates_new_truth_owner": false,
+  "creates_new_scheduler": false,
+  "creates_new_service": false,
+  "creates_new_database": false,
+  "sensitive_switches": [
+    "external_send",
+    "public_publish",
+    "paid_spend",
+    "live_payment",
+    "production_mutation",
+    "connector_write",
+    "cloud_model_route",
+    "experimental_agent_workload",
+    "personal_linkedin_automation",
+    "whatsapp_outbound"
+  ],
+  "acceptance": [
+    "canonical_denial_cannot_be_overridden_by_true_flag",
+    "missing_provider_returns_false",
+    "provider_failure_returns_false",
+    "unknown_switch_is_rejected",
+    "no_side_effect_adapter_is_wired_by_this_pilot"
+  ],
+  "next_gate_before_live_wiring": [
+    "select_one_existing_side_effect_owner",
+    "prove_existing_authority_decision_is_input",
+    "prove_false_default_on provider absence",
+    "add exact-head targeted tests",
+    "add rollback",
+    "add evidence receipt",
+    "sovereign verification"
+  ],
+  "official_reference": "https://openfeature.dev/docs/reference/sdks/server/python/"
+}
