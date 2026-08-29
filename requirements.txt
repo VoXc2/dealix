@@ -27,7 +27,6 @@ idna>=3.7
 # LLM SDKs (optional — router falls back gracefully if missing)
 anthropic>=0.40.0
 openai>=1.54.0,<3
-google-generativeai>=0.8.0
 
 # Data
 sqlalchemy[asyncio]>=2.0.35,<3
