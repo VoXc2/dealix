@@ -1,6 +1,9 @@
-"""
-Product Router Agent — matches a lead profile to the optimal product tier.
-وكيل توجيه المنتجات — يطابق ملف العميل مع المنتج الأنسب.
+"""Legacy capability router — evidence-first compatibility mode.
+
+The router may rank a capability hypothesis from ICP/company signals, but it may
+never turn that hypothesis into a current paid offer, price, relationship,
+consent, quote, or execution authority. The commercial next step remains the
+Free Mini Diagnostic followed by qualified discovery.
 """
 
 from __future__ import annotations
@@ -14,17 +17,12 @@ from core.logging import get_logger
 
 log = get_logger(__name__)
 
-# Company-size buckets — map from free-text signal to canonical key
 _SIZE_LARGE_TOKENS: frozenset[str] = frozenset(
     {"large", "enterprise", "كبيرة", "مؤسسة", "enterprise_large"}
 )
-
-# ICP score band boundaries
 _BAND_COLD = 0.3
 _BAND_WARM = 0.5
 _BAND_HOT = 0.7
-
-# Tiers that always require founder approval before a proposal is sent
 _APPROVAL_REQUIRED_TIERS: frozenset[ProductTier] = frozenset(
     {ProductTier.MANAGED_OPS, ProductTier.CUSTOM_AI}
 )
@@ -32,15 +30,23 @@ _APPROVAL_REQUIRED_TIERS: frozenset[ProductTier] = frozenset(
 
 @dataclass
 class ProductRouteDecision:
-    """Decision produced by ProductRouterAgent."""
+    """Internal capability-routing result; not a commercial offer decision."""
 
     recommended_tier: ProductTier
     product: Product
-    confidence: float                       # 0.0 – 1.0
+    confidence: float
     reasoning_ar: str
     reasoning_en: str
     upsell_tier: ProductTier | None
     requires_founder_approval: bool
+    route_class: str = "CAPABILITY_HYPOTHESIS_ONLY"
+    commercial_next_step: str = "FREE_MINI_DIAGNOSTIC_THEN_QUALIFIED_DISCOVERY"
+    relationship_verified: bool = False
+    consent_verified: bool = False
+    offer_authorized: bool = False
+    price_authorized: bool = False
+    quote_authorized: bool = False
+    execution_authorized: bool = False
 
     def to_dict(self) -> dict[str, Any]:
         return {
@@ -51,17 +57,19 @@ class ProductRouteDecision:
             "reasoning_en": self.reasoning_en,
             "upsell_tier": self.upsell_tier.value if self.upsell_tier else None,
             "requires_founder_approval": self.requires_founder_approval,
+            "route_class": self.route_class,
+            "commercial_next_step": self.commercial_next_step,
+            "relationship_verified": self.relationship_verified,
+            "consent_verified": self.consent_verified,
+            "offer_authorized": self.offer_authorized,
+            "price_authorized": self.price_authorized,
+            "quote_authorized": self.quote_authorized,
+            "execution_authorized": self.execution_authorized,
         }
 
 
 class ProductRouterAgent(BaseAgent):
-    """
-    Routes a lead to the most appropriate product tier using ICP score,
-    company size, sector, and optional budget signal.
-
-    يوجّه العميل المحتمل إلى المنتج الأنسب بناءً على درجة ICP وحجم الشركة
-    والقطاع وإشارة الميزانية.
-    """
+    """Rank a legacy capability hypothesis without granting commercial authority."""
 
     name = "product_router"
 
@@ -75,17 +83,8 @@ class ProductRouterAgent(BaseAgent):
         budget_signal: str | None = None,
         **_: Any,
     ) -> ProductRouteDecision:
-        """
-        Determine the best product tier for the lead.
-
-        Routing logic:
-          icp_score < 0.3   → Free Diagnostic
-          0.3 – 0.5         → Sprint
-          0.5 – 0.7         → Data Pack (default) or Managed Ops if budget allows
-          0.7+              → Managed Ops (default) or Custom AI if large/enterprise
-          Large enterprise  → always consider Custom AI at score 0.7+
-        """
-        icp_score = max(0.0, min(1.0, icp_score))  # clamp
+        del lead_profile
+        icp_score = max(0.0, min(1.0, icp_score))
         size_lower = (company_size or "").lower().strip()
         budget_lower = (budget_signal or "").lower().strip()
 
@@ -95,32 +94,31 @@ class ProductRouterAgent(BaseAgent):
             budget_lower=budget_lower,
             sector=sector,
         )
-
-        upsell_tier = self._upsell(tier)
         product = PRODUCT_CATALOG[tier]
-        requires_approval = tier in _APPROVAL_REQUIRED_TIERS
-
+        route_class = "ENTRY_MOTION" if tier == ProductTier.FREE_DIAGNOSTIC else "CAPABILITY_HYPOTHESIS_ONLY"
         decision = ProductRouteDecision(
             recommended_tier=tier,
             product=product,
             confidence=confidence,
             reasoning_ar=reasoning_ar,
             reasoning_en=reasoning_en,
-            upsell_tier=upsell_tier,
-            requires_founder_approval=requires_approval,
+            upsell_tier=self._upsell(tier),
+            requires_founder_approval=tier in _APPROVAL_REQUIRED_TIERS,
+            route_class=route_class,
         )
 
         self.log.info(
-            "product_routed",
+            "capability_routed",
             tier=tier.value,
             confidence=confidence,
             icp_score=icp_score,
             company_size=company_size,
-            requires_approval=requires_approval,
+            route_class=route_class,
+            offer_authorized=False,
+            price_authorized=False,
+            execution_authorized=False,
         )
         return decision
-
-    # ── Private routing helpers ────────────────────────────────────
 
     def _route(
         self,
@@ -130,65 +128,60 @@ class ProductRouterAgent(BaseAgent):
         budget_lower: str,
         sector: str,
     ) -> tuple[ProductTier, float, str, str]:
-        """Return (tier, confidence, reasoning_ar, reasoning_en)."""
-
+        del sector
         is_large = size_lower in _SIZE_LARGE_TOKENS or any(
-            t in size_lower for t in ("enterprise", "large", "+500", ">500")
+            token in size_lower for token in ("enterprise", "large", "+500", ">500")
         )
-        has_budget = any(
-            kw in budget_lower
-            for kw in ("high", "enterprise", "unlimited", "مرتفع", "مفتوح")
+        has_budget_hypothesis = any(
+            keyword in budget_lower
+            for keyword in ("high", "enterprise", "unlimited", "مرتفع", "مفتوح")
         )
 
         if icp_score < _BAND_COLD:
             return (
                 ProductTier.FREE_DIAGNOSTIC,
                 0.9,
-                "درجة ICP منخفضة — يُنصح بالتشخيص المجاني أولاً لفهم احتياجات الشركة.",
-                "Low ICP score — recommend the free diagnostic to understand the company's needs first.",
+                "الخطوة التجارية الوحيدة المسموح بها هنا هي التشخيص المصغر المجاني؛ لا عرض مدفوع قبل الاكتشاف المؤهل.",
+                "The only current commercial next step here is the Free Mini Diagnostic; no paid offer is authorized before qualified discovery.",
             )
-
         if icp_score < _BAND_WARM:
             return (
                 ProductTier.SPRINT,
                 0.75,
-                "درجة ICP متوسطة — سبرينت ذكاء الإيرادات هو الخطوة الأنسب لبناء الأساس.",
-                "Moderate ICP score — the Revenue Intelligence Sprint is the right step to build the foundation.",
+                "فرضية قدرة داخلية قديمة فقط؛ تبدأ الحركة التجارية بالتشخيص المصغر المجاني ثم اكتشاف مؤهل.",
+                "Legacy internal capability hypothesis only; the commercial motion still starts with a Free Mini Diagnostic and qualified discovery.",
             )
-
         if icp_score < _BAND_HOT:
-            if has_budget or is_large:
+            if has_budget_hypothesis or is_large:
                 return (
                     ProductTier.MANAGED_OPS,
                     0.7,
-                    "درجة ICP جيدة مع ميزانية مرتفعة — العمليات المُدارة توفر أعلى قيمة.",
-                    "Good ICP score with high budget signal — Managed Ops delivers the highest value.",
+                    "فرضية قدرة داخلية مبنية على إشارات غير سلطوية؛ لا سعر أو عرض أو صلاحية تنفيذ.",
+                    "Internal capability hypothesis from non-authoritative signals; no price, offer, or execution authority is created.",
                 )
             return (
                 ProductTier.DATA_PACK,
                 0.72,
-                "درجة ICP جيدة — حزمة البيانات توفر تحليلاً عميقاً للانطلاق بثقة.",
-                "Good ICP score — the Data Pack provides deep analysis to move forward confidently.",
+                "فرضية قدرة داخلية فقط؛ يجب التحقق من المشكلة عبر التشخيص والاكتشاف قبل أي عرض.",
+                "Internal capability hypothesis only; validate the problem through diagnostic and discovery before any offer.",
             )
-
-        # icp_score >= 0.7
         if is_large:
             return (
                 ProductTier.CUSTOM_AI,
                 0.8,
-                "درجة ICP عالية وشركة كبيرة — حل الذكاء الاصطناعي المخصص هو الأنسب.",
-                "High ICP score and large/enterprise company — the Custom AI solution is the best fit.",
+                "فرضية قدرة مخصصة فقط؛ لا تُعد عرضاً ولا تصريحاً سعرياً أو تعاقدياً.",
+                "Custom-capability hypothesis only; this is not an offer or pricing/contract authority.",
             )
         return (
             ProductTier.MANAGED_OPS,
             0.82,
-            "درجة ICP عالية — العمليات المُدارة هي الخيار الأمثل لتحقيق نمو مستدام.",
-            "High ICP score — Managed Ops is the optimal choice for sustainable growth.",
+            "فرضية قدرة داخلية فقط؛ المسار التجاري الحالي يظل تشخيصاً ثم اكتشافاً ثم عرضاً خاصاً بالعميل.",
+            "Internal capability hypothesis only; current commercial path remains diagnostic, discovery, then a customer-specific quote.",
         )
 
     @staticmethod
     def _upsell(tier: ProductTier) -> ProductTier | None:
-        """Return the next tier up, or None if already at the top."""
+        """Legacy capability navigation only; never an upsell authorization."""
         ladder = [
             ProductTier.FREE_DIAGNOSTIC,
             ProductTier.SPRINT,
