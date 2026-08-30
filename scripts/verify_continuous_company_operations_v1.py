@@ -41,6 +41,7 @@ EXPECTED_MODES = {
     "midday",
     "evening",
     "nightly",
+    "market-radar",
     "weekly",
     "local-ai",
 }
@@ -242,6 +243,7 @@ def main() -> None:
     print(f"always_on_workloads={len(EXPECTED_WORKLOADS)}")
     print(f"receipt_fields={len(REQUIRED_RECEIPT_FIELDS)}")
     print("scheduler=EXISTING_DEALIX_COMPANY_AUTOPILOT_ONLY")
+    print("allowed_existing_mode=market-radar")
     print("activation_dependencies=CURRENT_MAIN_AND_SOVEREIGN_RECEIPTS")
     print("external_or_irreversible_authority=ACTION_SPECIFIC_APPROVAL_REQUIRED")
 

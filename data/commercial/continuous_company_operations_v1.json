@@ -1,6 +1,6 @@
 {
   "schema": "dealix.continuous-company-operations.v1",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "generated_at": "2026-08-30",
   "status": "DRAFT_REVIEW_ONLY",
   "purpose": "Make the existing Dealix Company Machine operate continuously in the founder's economic interest through bounded internal autonomy, evidence receipts, recovery and learning. This is a subordinate operating contract and does not create a scheduler, agent fleet, truth store or execution authority.",
@@ -32,6 +32,7 @@
       "midday",
       "evening",
       "nightly",
+      "market-radar",
       "weekly",
       "local-ai"
     ]
