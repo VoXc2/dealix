@@ -1,0 +1,611 @@
+{
+  "schema": "dealix.brand-growth-portfolio.v2",
+  "version": "2.0.0",
+  "generated_at": "2026-08-30",
+  "purpose": "One portfolio contract for Dealix brand, demand, distribution, relationships, revenue, delivery, proof and learning arms. It composes existing canonical owners and does not create parallel truth, scheduling or agent systems.",
+  "parents": {
+    "portfolio_os": "#1346",
+    "market_radar_mission": "#1403",
+    "market_radar_implementation": "#1405",
+    "brand_growth_program": "#1406",
+    "revenue_command": "#1310",
+    "portfolio_allocation": "#1277",
+    "revenue_mesh": "#1273",
+    "marketing_distribution": "#1284",
+    "commercial_go_live": "#1299",
+    "market_validation_proof": "#1317",
+    "capability_intake": "#1304"
+  },
+  "north_star": "MAXIMIZE_VERIFIED_ECONOMIC_MOVEMENT_PER_FOUNDER_MINUTE_PER_COST_PER_RISK",
+  "commercial_path": [
+    "REAL_INTERACTION_OR_EXPLICIT_INBOUND",
+    "VERIFIED_RELATIONSHIP",
+    "QUALIFIED_PROBLEM",
+    "FREE_MINI_DIAGNOSTIC",
+    "QUALIFIED_DISCOVERY",
+    "CUSTOMER_SPECIFIC_QUOTE",
+    "REVENUE_COMMAND_PILOT_30D",
+    "VERIFIED_PAYMENT",
+    "DELIVERY_EVIDENCE",
+    "CUSTOMER_VALIDATED_PROOF",
+    "EXPANSION_OR_REFERRAL"
+  ],
+  "growth_loop": [
+    "MARKET_SIGNAL",
+    "SOURCE_BOUND_EVIDENCE",
+    "BRAND_THESIS",
+    "ASSET_OR_EXPERIENCE",
+    "GOVERNED_DISTRIBUTION",
+    "REAL_INTERACTION",
+    "VERIFIED_RELATIONSHIP",
+    "QUALIFIED_PROBLEM",
+    "BOUNDED_PACKAGE",
+    "DIAGNOSTIC_OR_DISCOVERY",
+    "PROPOSAL_OR_NEGOTIATION",
+    "PAYMENT",
+    "DELIVERY",
+    "PROOF",
+    "REUSE",
+    "LEARNING"
+  ],
+  "truth_invariants": [
+    "research != relationship",
+    "attention != demand_truth",
+    "public_contact != consent",
+    "event_directory != pipeline",
+    "score != purchase_probability",
+    "draft != sent_or_published",
+    "proposal_or_invoice != payment",
+    "provider_accepted != delivered",
+    "technical_or_synthetic != customer_outcome_proof",
+    "CRM_mirror != commercial_truth_owner"
+  ],
+  "canonical_workers": [
+    "dealix-pm",
+    "dealix-sales",
+    "dealix-content",
+    "dealix-delivery",
+    "dealix-engineer"
+  ],
+  "arms": [
+    {
+      "id": "BRAND_AUTHORITY",
+      "owner": [
+        "#1292",
+        "#1299"
+      ],
+      "inputs": [
+        "platform_truth",
+        "customer_evidence",
+        "approved_claims"
+      ],
+      "outputs": [
+        "message_house",
+        "ar_en_voice",
+        "visual_tokens",
+        "claims_status",
+        "asset_metadata"
+      ],
+      "primary_evidence": "approved authority and source-bound claims",
+      "success_signal": "buyer comprehension and qualified problem movement"
+    },
+    {
+      "id": "WEBSITE_CONVERSION",
+      "owner": [
+        "#1284",
+        "#1299"
+      ],
+      "inputs": [
+        "brand_authority",
+        "problem_playbooks",
+        "diagnostic_contract"
+      ],
+      "outputs": [
+        "problem_pages",
+        "package_pages",
+        "diagnostic_entry",
+        "source_utm_receipt"
+      ],
+      "primary_evidence": "qualified visit, diagnostic start and diagnostic submission",
+      "success_signal": "verified inbound or explicit contact"
+    },
+    {
+      "id": "SEARCH_SEO_AEO",
+      "owner": [
+        "#1405",
+        "#1284"
+      ],
+      "inputs": [
+        "search_signals",
+        "official_sources",
+        "first_party_expertise"
+      ],
+      "outputs": [
+        "intent_clusters",
+        "original_answer_assets",
+        "technical_search_queue"
+      ],
+      "primary_evidence": "source-bound search observation and downstream qualified action",
+      "success_signal": "qualified problem movement, not rank alone"
+    },
+    {
+      "id": "FOUNDER_THOUGHT_LEADERSHIP",
+      "owner": [
+        "#1284",
+        "#1290"
+      ],
+      "inputs": [
+        "verified_insights",
+        "field_evidence",
+        "brand_authority"
+      ],
+      "outputs": [
+        "native_post_drafts",
+        "talking_points",
+        "ranked_human_replies"
+      ],
+      "primary_evidence": "approved draft and real two-way interaction",
+      "success_signal": "relationship or qualified inbound movement"
+    },
+    {
+      "id": "COMPANY_SOCIAL_VIDEO",
+      "owner": [
+        "#1284",
+        "#1293"
+      ],
+      "inputs": [
+        "master_evidence_asset",
+        "channel_registry",
+        "claims_qa"
+      ],
+      "outputs": [
+        "native_channel_drafts",
+        "video_scripts",
+        "captions",
+        "thumbnail_specs"
+      ],
+      "primary_evidence": "asset QA and platform receipt when authorized",
+      "success_signal": "useful interaction or diagnostic movement"
+    },
+    {
+      "id": "EVENT_FIELD_INTELLIGENCE",
+      "owner": [
+        "#1405",
+        "#1290",
+        "#1273"
+      ],
+      "inputs": [
+        "event_sources",
+        "target_playbooks",
+        "real_interaction_receipts"
+      ],
+      "outputs": [
+        "target_cards",
+        "route_plan",
+        "interaction_dossiers",
+        "same_day_next_actions"
+      ],
+      "primary_evidence": "two-way interaction evidence with permission/channel state",
+      "success_signal": "verified relationship and qualified problem"
+    },
+    {
+      "id": "PARTNER_MARKET_ACCESS",
+      "owner": [
+        "#1277",
+        "#1310"
+      ],
+      "inputs": [
+        "sector_playbooks",
+        "partner_signals",
+        "mutual_value_evidence"
+      ],
+      "outputs": [
+        "partner_dossiers",
+        "fit_hypotheses",
+        "co_sell_or_delivery_drafts"
+      ],
+      "primary_evidence": "real partner interaction and validated mutual value",
+      "success_signal": "qualified partner path or referred opportunity"
+    },
+    {
+      "id": "ACCOUNT_ABM_INTELLIGENCE",
+      "owner": [
+        "#1405",
+        "#1273",
+        "#1277"
+      ],
+      "inputs": [
+        "radar_receipts",
+        "company_brain_context",
+        "relationship_state"
+      ],
+      "outputs": [
+        "account_dossier",
+        "buying_group_hypothesis",
+        "next_evidence",
+        "best_route"
+      ],
+      "primary_evidence": "source-bound account facts plus human-validated problem",
+      "success_signal": "next-best action with evidence and owner"
+    },
+    {
+      "id": "INBOUND_DIAGNOSTIC_CAPTURE",
+      "owner": [
+        "#1310",
+        "#1317",
+        "#1273"
+      ],
+      "inputs": [
+        "website_inbound",
+        "explicit_requests",
+        "diagnostic_contract"
+      ],
+      "outputs": [
+        "revenue_leak_map_seed",
+        "company_brain_assessment",
+        "market_access_assessment"
+      ],
+      "primary_evidence": "submitted input, authority state and evidence refs",
+      "success_signal": "qualified diagnostic or discovery"
+    },
+    {
+      "id": "EMAIL_LIFECYCLE",
+      "owner": [
+        "#1310",
+        "#1284"
+      ],
+      "inputs": [
+        "eligible_relationship",
+        "new_value_evidence",
+        "suppression_state"
+      ],
+      "outputs": [
+        "personalized_drafts",
+        "reply_classification",
+        "objection_map",
+        "followup_queue"
+      ],
+      "primary_evidence": "relationship/channel eligibility and provider receipts",
+      "success_signal": "reply, next meeting, diagnostic or discovery"
+    },
+    {
+      "id": "PR_MEDIA_COMMUNITY_SPEAKING",
+      "owner": [
+        "#1284",
+        "#1277"
+      ],
+      "inputs": [
+        "approved_thesis",
+        "audience_fit",
+        "proof_status"
+      ],
+      "outputs": [
+        "opportunity_cards",
+        "pitch_drafts",
+        "webinar_or_panel_briefs"
+      ],
+      "primary_evidence": "source-backed opportunity and accepted invitation",
+      "success_signal": "qualified relationship or reusable authority"
+    },
+    {
+      "id": "PROOF_ADVOCACY_REFERRAL",
+      "owner": [
+        "#1317",
+        "#1310"
+      ],
+      "inputs": [
+        "delivery_evidence",
+        "customer_validation",
+        "permission_state"
+      ],
+      "outputs": [
+        "proof_pack",
+        "claim_units",
+        "referral_draft",
+        "reuse_candidates"
+      ],
+      "primary_evidence": "customer validation, limitations and permission",
+      "success_signal": "accepted proof, referral or expansion"
+    },
+    {
+      "id": "PAID_MEDIA_READINESS",
+      "owner": [
+        "#1284",
+        "#1299",
+        "#1277"
+      ],
+      "inputs": [
+        "organic_baseline",
+        "conversion_events",
+        "unit_economics"
+      ],
+      "outputs": [
+        "readiness_card",
+        "creative_matrix",
+        "budget_decision_card"
+      ],
+      "primary_evidence": "instrumented conversion and explicit budget authority",
+      "success_signal": "approved experiment only; no spend by this contract"
+    },
+    {
+      "id": "DEEP_TECHNICAL_DEMAND",
+      "owner": [
+        "#1405",
+        "#1317",
+        "#1304"
+      ],
+      "inputs": [
+        "technical_inbound",
+        "company_brain_context",
+        "capability_registry"
+      ],
+      "outputs": [
+        "bounded_sprint_hypothesis",
+        "workflow_pack",
+        "assessment_and_proof_plan"
+      ],
+      "primary_evidence": "named outcome, bounded sources, access boundary and evaluation plan",
+      "success_signal": "qualified Company Brain Sprint discovery"
+    },
+    {
+      "id": "MARKET_INTELLIGENCE_EXPERIMENTATION",
+      "owner": [
+        "#1405",
+        "#1277",
+        "#1310"
+      ],
+      "inputs": [
+        "all_source_bound_signals",
+        "portfolio_capacity",
+        "experiment_history"
+      ],
+      "outputs": [
+        "attention_rank",
+        "experiment_card",
+        "scale_iterate_stop_invalid"
+      ],
+      "primary_evidence": "fresh receipt, outcome evidence and cost/founder-minute record",
+      "success_signal": "higher verified movement per constrained resource"
+    }
+  ],
+  "allocation_model": {
+    "formula": "expected_verified_movement * evidence * urgency * reuse / founder_minutes / agent_tool_cost / risk / capacity",
+    "max_active_growth_bets_per_week": 3,
+    "max_active_build_prs_per_owner": 2,
+    "founder_output_sections": [
+      "MONEY",
+      "RELATIONSHIPS",
+      "BRAND_DISTRIBUTION",
+      "MARKET_EVENTS",
+      "DECISIONS",
+      "RISKS",
+      "APPROVALS",
+      "EXPERIMENTS",
+      "NEXT_ACTION"
+    ],
+    "vanity_metrics_are_diagnostic_only": true
+  },
+  "authority": {
+    "new_scheduler": false,
+    "new_permanent_agent_fleet": false,
+    "new_crm": false,
+    "new_company_brain": false,
+    "new_opportunity_graph": false,
+    "new_approval_center": false,
+    "new_proof_ledger": false,
+    "new_analytics_truth_store": false,
+    "external_send": false,
+    "public_publish": false,
+    "paid_spend": false,
+    "payment_or_refund": false,
+    "quote_discount_contract": false,
+    "tender_submission": false,
+    "production_dns_db_secrets": false,
+    "main_merge": false,
+    "public_customer_proof": false,
+    "personal_linkedin_automation": false,
+    "cold_or_bulk_whatsapp": false
+  },
+  "channel_policy": {
+    "founder_linkedin": "MANUAL_NATIVE",
+    "email": "ELIGIBLE_RELATIONSHIP_DRAFT_AND_APPROVAL_FIRST",
+    "whatsapp": "INBOUND_OR_KNOWN_CONSENTED_ONLY",
+    "company_social_video": "OFFICIAL_OR_NATIVE_AFTER_CAPABILITY_AND_AUTHORITY",
+    "website": "REPO_QA_AND_PRODUCTION_AUTHORITY",
+    "paid_media": "READINESS_ONLY_NO_SPEND"
+  },
+  "radar_activation": {
+    "wave_a": "official_and_first_party_read_only",
+    "wave_b": "authorized_intelligence_reporting_read_only",
+    "wave_c": "at_most_one_research_adapter_after_measured_gap",
+    "allowed_adapters": [
+      "TAVILY",
+      "FIRECRAWL",
+      "APIFY_CRAWLEE"
+    ],
+    "max_admitted_web_research_adapters": 1,
+    "blocked_if_unmeasured": true
+  },
+  "productization_gate": {
+    "minimum_paid_deployments_same_family": 3,
+    "minimum_customer_accepted_proof_packs": 2,
+    "requires_measured_setup_delivery_effort": true,
+    "requires_known_exceptions_and_approvals": true,
+    "requires_declining_founder_minutes": true,
+    "no_public_pricing_before_evidence": true
+  },
+  "activation_gate": {
+    "depends_on": [
+      "#1405_exact_head_acceptance",
+      "#1299_channel_readiness",
+      "#1310_revenue_authority"
+    ],
+    "requires": [
+      "exact_head_targeted_tests",
+      "sovereign_trust_receipt",
+      "fresh_source_and_claim_recheck",
+      "no_authority_drift",
+      "Big5_LEAP_real_interaction_stress_test"
+    ],
+    "status_before_acceptance": "DRAFT_REVIEW_ONLY"
+  },
+  "portfolio_objective": "CASH_READY_AUTONOMOUS_DEALIX_COMPANY",
+  "composite_arms": [
+    {
+      "id": "MARKET_INTELLIGENCE_FORESIGHT",
+      "owner": [
+        "#1405",
+        "#1277"
+      ],
+      "composes": [
+        "SEARCH_SEO_AEO",
+        "EVENT_FIELD_INTELLIGENCE",
+        "ACCOUNT_ABM_INTELLIGENCE",
+        "MARKET_INTELLIGENCE_EXPERIMENTATION"
+      ],
+      "outcome": "fresh source-bound market and buyer evidence"
+    },
+    {
+      "id": "BRAND_CATEGORY_AUTHORITY",
+      "owner": [
+        "#1292",
+        "#1299"
+      ],
+      "composes": [
+        "BRAND_AUTHORITY"
+      ],
+      "outcome": "one Saudi-native category, message, visual and claims system"
+    },
+    {
+      "id": "CONTENT_SEARCH_DISTRIBUTION",
+      "owner": [
+        "#1284",
+        "#1293"
+      ],
+      "composes": [
+        "WEBSITE_CONVERSION",
+        "SEARCH_SEO_AEO",
+        "FOUNDER_THOUGHT_LEADERSHIP",
+        "COMPANY_SOCIAL_VIDEO",
+        "PR_MEDIA_COMMUNITY_SPEAKING"
+      ],
+      "outcome": "evidence-backed assets that create qualified interaction"
+    },
+    {
+      "id": "RELATIONSHIP_REVENUE",
+      "owner": [
+        "#1310",
+        "#1273"
+      ],
+      "composes": [
+        "EVENT_FIELD_INTELLIGENCE",
+        "ACCOUNT_ABM_INTELLIGENCE",
+        "INBOUND_DIAGNOSTIC_CAPTURE",
+        "EMAIL_LIFECYCLE"
+      ],
+      "outcome": "real interaction to verified payment through the canonical commercial path"
+    },
+    {
+      "id": "COMPANY_BRAIN_DEEP_TECH",
+      "owner": [
+        "#1405",
+        "#1317",
+        "#1304"
+      ],
+      "composes": [
+        "DEEP_TECHNICAL_DEMAND",
+        "INBOUND_DIAGNOSTIC_CAPTURE"
+      ],
+      "outcome": "bounded technical workflow with named outcome and proof"
+    },
+    {
+      "id": "SAUDI_MARKET_ACCESS_PARTNERS",
+      "owner": [
+        "#1277",
+        "#1310"
+      ],
+      "composes": [
+        "PARTNER_MARKET_ACCESS",
+        "EVENT_FIELD_INTELLIGENCE",
+        "PR_MEDIA_COMMUNITY_SPEAKING"
+      ],
+      "outcome": "evidence-backed partner, referral and market-entry paths"
+    },
+    {
+      "id": "PROOF_EXPANSION_PRODUCTIZATION",
+      "owner": [
+        "#1317",
+        "#1310"
+      ],
+      "composes": [
+        "PROOF_ADVOCACY_REFERRAL",
+        "PAID_MEDIA_READINESS"
+      ],
+      "outcome": "validated delivery becomes permissioned proof, reuse, expansion and repeatable offer"
+    },
+    {
+      "id": "DEVELOPMENT_LEARNING_FACTORY",
+      "owner": [
+        "#1277",
+        "#1310",
+        "#1304"
+      ],
+      "composes": [
+        "MARKET_INTELLIGENCE_EXPERIMENTATION",
+        "PROOF_ADVOCACY_REFERRAL"
+      ],
+      "outcome": "measured gaps become small verified improvements without authority escalation"
+    }
+  ],
+  "president_contract": {
+    "autonomy_levels": {
+      "L0_observe": "automatic",
+      "L1_analyze": "automatic",
+      "L2_draft": "automatic",
+      "L3_bounded_internal_execute": "automatic_when_reversible_and_allowlisted",
+      "L4_repository_execute": "branch_tests_draft_pr_and_verification",
+      "L5_external_or_irreversible": "action_specific_approval_only"
+    },
+    "required_receipt_fields": [
+      "workload_id",
+      "system",
+      "arm",
+      "agent",
+      "state_before",
+      "state_after",
+      "input_evidence",
+      "output_evidence",
+      "founder_minutes",
+      "agent_minutes",
+      "elapsed_time",
+      "model_cost",
+      "tool_cost",
+      "risk",
+      "authority",
+      "economic_delta",
+      "next_evidence",
+      "next_action"
+    ],
+    "unknown_value": "UNKNOWN_NOT_EVIDENCE_BACKED",
+    "founder_output": [
+      "MONEY",
+      "DECISIONS",
+      "RISKS",
+      "APPROVALS",
+      "NEXT_ACTION"
+    ]
+  },
+  "continuous_loop": [
+    "OBSERVE",
+    "RECONCILE",
+    "PRIORITIZE",
+    "DELEGATE",
+    "EXECUTE",
+    "VERIFY",
+    "RECEIPT",
+    "MEASURE",
+    "LEARN",
+    "IMPROVE",
+    "REPEAT"
+  ]
+}

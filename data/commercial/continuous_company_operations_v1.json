@@ -1,0 +1,242 @@
+{
+  "schema": "dealix.continuous-company-operations.v1",
+  "version": "1.0.0",
+  "generated_at": "2026-08-30",
+  "status": "DRAFT_REVIEW_ONLY",
+  "purpose": "Make the existing Dealix Company Machine operate continuously in the founder's economic interest through bounded internal autonomy, evidence receipts, recovery and learning. This is a subordinate operating contract for #1406 and does not create a scheduler, agent fleet, truth store or execution authority.",
+  "parents": {
+    "company_machine": "current_main_canonical_company_machine",
+    "market_radar": "#1405",
+    "brand_growth_portfolio": "#1406",
+    "commercial_go_live": "#1299",
+    "revenue_authority": "#1310",
+    "capability_intake": "#1304"
+  },
+  "portfolio_objective": "CASH_READY_AUTONOMOUS_DEALIX_COMPANY",
+  "optimization_objective": "MAXIMIZE_VERIFIED_ECONOMIC_MOVEMENT_PER_FOUNDER_MINUTE_PER_COST_PER_RISK",
+  "runtime_ownership": {
+    "scheduler_owner": "EXISTING_DEALIX_COMPANY_AUTOPILOT_ONLY",
+    "new_scheduler_allowed": false,
+    "new_timer_allowed": false,
+    "new_permanent_agent_allowed": false,
+    "new_company_os_allowed": false,
+    "new_truth_store_allowed": false,
+    "allowed_existing_modes": [
+      "status",
+      "heartbeat",
+      "production",
+      "repo-watch",
+      "preflight",
+      "morning-fallback",
+      "midday",
+      "evening",
+      "nightly",
+      "weekly",
+      "local-ai"
+    ]
+  },
+  "canonical_workers": [
+    "dealix-pm",
+    "dealix-sales",
+    "dealix-content",
+    "dealix-delivery",
+    "dealix-engineer"
+  ],
+  "always_on_workloads": [
+    {
+      "id": "RUNTIME_TRUST_WATCH",
+      "owner": "dealix-engineer",
+      "scope": ["service_health", "repo_drift", "verification_freshness", "security_posture", "connector_health"],
+      "output": "trust_and_recovery_receipt",
+      "side_effects": "INTERNAL_BOUNDED_ONLY"
+    },
+    {
+      "id": "MARKET_EVENT_RADAR",
+      "owner": "dealix-sales",
+      "scope": ["market_signals", "events", "tenders", "partners", "competitors", "regulation", "technology_changes", "search_demand"],
+      "output": "source_bound_market_signal_receipts",
+      "side_effects": "RESEARCH_ATTENTION_ONLY"
+    },
+    {
+      "id": "BRAND_CONTENT_OPPORTUNITY_QUEUE",
+      "owner": "dealix-content",
+      "scope": ["approved_thesis", "source_bound_insights", "seo_aeo", "event_assets", "sales_assets", "proof_safe_reuse"],
+      "output": "draft_assets_and_qa_receipts",
+      "side_effects": "DRAFT_ONLY_UNLESS_SEPARATELY_AUTHORIZED"
+    },
+    {
+      "id": "RELATIONSHIP_REVENUE_QUEUE",
+      "owner": "dealix-sales",
+      "scope": ["real_interactions", "explicit_inbound", "qualification", "diagnostic", "discovery", "proposal_preparation", "negotiation_preparation", "followup_eligibility"],
+      "output": "next_best_commercial_action_receipts",
+      "side_effects": "NO_EXTERNAL_SEND_OR_BINDING_COMMITMENT"
+    },
+    {
+      "id": "DELIVERY_PROOF_LOOP",
+      "owner": "dealix-delivery",
+      "scope": ["delivery_readiness", "acceptance_criteria", "outcome_evidence", "proof_gaps", "customer_validation", "expansion_readiness"],
+      "output": "delivery_and_proof_receipts",
+      "side_effects": "NO_CUSTOMER_CLAIM_WITHOUT_PERMISSION"
+    },
+    {
+      "id": "PORTFOLIO_ECONOMICS_AND_DECISIONS",
+      "owner": "dealix-pm",
+      "scope": ["cash", "decisions", "risks", "approvals", "next_action", "founder_minutes", "agent_minutes", "tool_cost", "economic_delta"],
+      "output": "founder_command_receipt",
+      "side_effects": "PRIORITIZATION_ONLY"
+    },
+    {
+      "id": "EVIDENCE_DRIVEN_DEVELOPMENT_FACTORY",
+      "owner": "dealix-engineer",
+      "scope": ["proven_gap", "canonical_owner_lookup", "issue", "isolated_worktree", "smallest_patch", "targeted_tests", "draft_pr", "exact_head_verification", "learning_event"],
+      "output": "engineering_improvement_receipt",
+      "side_effects": "L4_REPO_WORK_ONLY_NO_MAIN_MERGE_OR_DEPLOY"
+    }
+  ],
+  "active_event_mode": {
+    "enabled_when": "OFFICIAL_OR_FIRST_PARTY_SOURCE_PROVES_AN_ACTIVE_EVENT_WINDOW",
+    "priority": "HIGH_WHEN_BUYER_DENSITY_AND_FIT_ARE_HIGH",
+    "conversion_path": [
+      "RESEARCH_TARGET",
+      "PRIORITY_CARD",
+      "REAL_TWO_WAY_INTERACTION",
+      "INTERACTION_EVIDENCE",
+      "VERIFIED_RELATIONSHIP_BY_CANONICAL_OWNER",
+      "QUALIFIED_PROBLEM",
+      "DIAGNOSTIC_OR_DISCOVERY"
+    ],
+    "forbidden_promotions": [
+      "EXHIBITOR_AS_LEAD",
+      "BADGE_SCAN_AS_RELATIONSHIP",
+      "PUBLIC_EMAIL_AS_CONSENT",
+      "EVENT_DIRECTORY_AS_PIPELINE"
+    ]
+  },
+  "autonomy_ladder": {
+    "L0_OBSERVE": "AUTOMATIC",
+    "L1_ANALYZE": "AUTOMATIC",
+    "L2_DRAFT": "AUTOMATIC",
+    "L3_INTERNAL_EXECUTE": "AUTOMATIC_IF_BOUNDED_REVERSIBLE_AND_CANONICAL",
+    "L4_REPO_EXECUTE": "AUTOMATIC_FOR_BRANCH_WORKTREE_TESTS_DRAFT_PR_AND_INTERNAL_RECEIPTS",
+    "L5_EXTERNAL_OR_IRREVERSIBLE": "ACTION_SPECIFIC_APPROVAL_REQUIRED"
+  },
+  "l5_actions": [
+    "external_customer_send",
+    "public_publish",
+    "paid_spend",
+    "payment_or_refund",
+    "binding_quote_or_discount",
+    "legal_commitment",
+    "tender_submission",
+    "main_merge",
+    "production_mutation",
+    "dns_mutation",
+    "database_mutation",
+    "secret_or_credential_mutation",
+    "public_customer_proof"
+  ],
+  "universal_work_receipt": {
+    "required_fields": [
+      "workload_id",
+      "system_id",
+      "agent_owner",
+      "objective",
+      "input_evidence_refs",
+      "source_sha",
+      "state_before",
+      "action",
+      "authority_class",
+      "started_at",
+      "finished_at",
+      "result",
+      "state_after",
+      "output_evidence_refs",
+      "next_evidence",
+      "next_action",
+      "founder_minutes",
+      "agent_minutes",
+      "elapsed_seconds",
+      "ai_cost",
+      "tool_cost",
+      "risk",
+      "economic_delta",
+      "idempotency_key",
+      "rollback_or_safe_failure"
+    ],
+    "unknown_value": "UNKNOWN_NOT_EVIDENCE_BACKED",
+    "no_secret_or_customer_payload_capture": true
+  },
+  "service_objectives": {
+    "unauthorized_external_effects": 0,
+    "truth_promotion_violations": 0,
+    "parallel_scheduler_count": 0,
+    "parallel_company_os_count": 0,
+    "parallel_permanent_agent_fleets": 0,
+    "unreceipted_internal_mutations": 0,
+    "lost_required_receipts": 0,
+    "stale_critical_source_behavior": "DEGRADE_OR_BLOCK_NEVER_INVENT",
+    "missing_evidence_behavior": "UNKNOWN_NOT_EVIDENCE_BACKED",
+    "founder_attention_behavior": "MATERIAL_ONLY_BATCH_LOW_URGENCY_APPROVALS",
+    "vanity_metric_authority": "DIAGNOSTIC_ONLY"
+  },
+  "recovery_policy": {
+    "bounded_retry_required": true,
+    "idempotency_required": true,
+    "safe_failure_required": true,
+    "rollback_required_when_mutating_internal_state": true,
+    "persistent_failure_action": "OPEN_OR_UPDATE_CANONICAL_ISSUE_OR_DRAFT_PR_WITH_EVIDENCE",
+    "never_self_grant_authority": true,
+    "never_repair_by_disabling_truth_or_security_gates": true
+  },
+  "self_improvement_policy": {
+    "evidence_backed_observation_required": true,
+    "simulated_metrics_can_authorize_mutation": false,
+    "synthetic_evidence_can_authorize_commercial_truth": false,
+    "path": [
+      "VERIFIED_GAP",
+      "CANONICAL_OWNER_LOOKUP",
+      "ISSUE",
+      "FRESH_MAIN_ISOLATED_WORKTREE",
+      "SMALLEST_PATCH",
+      "TARGETED_TESTS",
+      "DRAFT_PR",
+      "EXACT_HEAD_SOVEREIGN_VERIFICATION",
+      "KEEP_OR_REVERT_DECISION",
+      "LEARNING_EVENT"
+    ]
+  },
+  "research_policy": {
+    "official_and_first_party_first": true,
+    "authorized_reporting_read_only_first": true,
+    "public_data_does_not_create_relationship_or_consent": true,
+    "maximum_admitted_web_research_adapters": 1,
+    "adapter_requires_measured_coverage_gap": true,
+    "linkedin_personal_automation": false,
+    "cold_bulk_whatsapp": false
+  },
+  "founder_interface": {
+    "sections": ["MONEY", "DECISIONS", "RISKS", "APPROVALS", "NEXT_ACTION"],
+    "maximum_active_growth_bets": 3,
+    "default_low_urgency_behavior": "BATCH_AND_DELEGATE",
+    "escalate_when": [
+      "L5_ACTION_REQUIRED",
+      "MATERIAL_CASH_OR_CONTRACT_DECISION",
+      "TRUST_OR_SECURITY_REGRESSION",
+      "CUSTOMER_VALUE_RISK",
+      "EVIDENCE_CONFLICT",
+      "PERSISTENT_AUTOMATION_FAILURE"
+    ]
+  },
+  "activation_gate": {
+    "depends_on": [
+      "#1405_EXACT_HEAD_ACCEPTANCE",
+      "#1406_EXACT_HEAD_ACCEPTANCE",
+      "CURRENT_VPS_RUNTIME_RECEIPT",
+      "SOVEREIGN_TRUST_RECEIPT"
+    ],
+    "before_gate": "CONTRACT_READY_RUNTIME_UNVERIFIED",
+    "after_gate": "BOUNDED_24X7_AUTONOMY_ACTIVE",
+    "main_merge_authority": false,
+    "production_activation_authority": false
+  }
+}
