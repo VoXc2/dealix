@@ -82,45 +82,45 @@ def test_strategic_ai_demand_families_route_to_bounded_company_brain() -> None:
         assert not any(decision.authority.values()), case_id
 
 
-def test_read_only_runner_ranks_research_without_authority(tmp_path: Path) -> None:
-    signals = {
-        "signals": [
-            {
-                "signal_id": "signal-search-ai-sa-1",
-                "source_id": "AHREFS",
-                "source_ref": "ahrefs://keywords/ai-automation-sa",
-                "observed_at": "2026-08-29T10:00:00+00:00",
-                "ingested_at": "2026-08-29T10:01:00+00:00",
-                "provenance_ref": "ahrefs://query/2026-08-29/ai-automation-sa",
-                "fresh_until": "2026-09-05T10:00:00+00:00",
-                "signal_family": "SEARCH_DEMAND",
-                "market": "SA",
-                "sector_family": "ICT",
-                "business_archetype": "RECURRING_SAAS_OR_SERVICES",
-                "company_or_subject": "Synthetic unit-test Saudi AI automation search demand",
-                "evidence_refs": ["test-evidence://ahrefs/query/ai-automation-sa"],
-                "facts": ["synthetic unit-test source observation only"],
-                "inferences": ["content and diagnostic demand hypothesis"],
-                "unknowns": ["buyer identity", "relationship", "purchase intent"],
-                "risk_class": "LOW",
-                "allowed_use": "SEO_AEO_AND_CONTENT_HYPOTHESIS",
-                "next_evidence": ["validate intent cluster", "map to buyer question"],
-                "authority": AUTHORITY,
-                "priority_factors": {
-                    "economic_pain": 4,
-                    "measurable_outcome": 4,
-                    "buyer_access": 3,
-                    "data_availability": 4,
-                    "repeatability": 5,
-                    "readiness": 5,
-                    "distribution_density": 4,
-                    "regulatory_friction": 2,
-                    "integration_complexity": 2,
-                    "founder_minutes": 2
-                }
-            }
-        ]
+def _rankable_signal(source_id: str = "COMPANY_OWNED_WEB") -> dict:
+    return {
+        "signal_id": f"signal-{source_id.lower()}-1",
+        "source_id": source_id,
+        "source_ref": "https://example.com/official-company-update",
+        "observed_at": "2026-08-30T10:00:00+00:00",
+        "ingested_at": "2026-08-30T10:01:00+00:00",
+        "provenance_ref": "https://example.com/official-company-update#snapshot-2026-08-30",
+        "fresh_until": "2026-09-02T10:00:00+00:00",
+        "signal_family": "COMPANY_CHANGE",
+        "market": "SA",
+        "sector_family": "ICT",
+        "business_archetype": "RECURRING_SAAS_OR_SERVICES",
+        "company_or_subject": "Synthetic unit-test public company change",
+        "evidence_refs": ["test-evidence://company-owned-web/update-1"],
+        "facts": ["synthetic unit-test source observation only"],
+        "inferences": ["account research hypothesis"],
+        "unknowns": ["buyer identity", "relationship", "purchase intent"],
+        "risk_class": "LOW",
+        "allowed_use": "ACCOUNT_RESEARCH",
+        "next_evidence": ["reverify official source", "map business implication"],
+        "authority": AUTHORITY,
+        "priority_factors": {
+            "economic_pain": 4,
+            "measurable_outcome": 4,
+            "buyer_access": 3,
+            "data_availability": 4,
+            "repeatability": 5,
+            "readiness": 5,
+            "distribution_density": 4,
+            "regulatory_friction": 2,
+            "integration_complexity": 2,
+            "founder_minutes": 2,
+        },
     }
+
+
+def test_read_only_runner_ranks_research_without_authority(tmp_path: Path) -> None:
+    signals = {"signals": [_rankable_signal()]}
     input_path = tmp_path / "signals.json"
     output_path = tmp_path / "brief.json"
     input_path.write_text(json.dumps(signals), encoding="utf-8")
@@ -139,6 +139,8 @@ def test_read_only_runner_ranks_research_without_authority(tmp_path: Path) -> No
     assert brief["schema"] == "dealix.universal-market-radar-brief.v1"
     assert brief["admitted_signal_count"] == 1
     assert brief["invalid_signal_count"] == 0
+    assert "AHREFS" in brief["blocked_source_ids"]
+    assert brief["blocked_source_semantics"] == "BLOCKED_CAPABILITY_IS_UNKNOWN_NOT_ZERO_DEMAND"
     row = brief["ranked_research_signals"][0]
     assert isinstance(row["priority_score"], (int, float))
     assert row["priority_score_semantics"] == "INTERNAL_RESEARCH_PRIORITY_ONLY_NOT_PURCHASE_PROBABILITY"
@@ -146,6 +148,37 @@ def test_read_only_runner_ranks_research_without_authority(tmp_path: Path) -> No
     assert not any(brief["authority"].values())
     assert brief["external_send_or_spend"] is False
     assert brief["new_scheduler"] is False
+
+
+def test_runner_rejects_currently_blocked_ahrefs_source(tmp_path: Path) -> None:
+    signal = _rankable_signal("AHREFS")
+    signal.update(
+        {
+            "source_ref": "ahrefs://keywords/ai-automation-sa",
+            "provenance_ref": "ahrefs://query/2026-08-30/ai-automation-sa",
+            "signal_family": "SEARCH_DEMAND",
+            "allowed_use": "SEO_AEO_AND_CONTENT_HYPOTHESIS",
+        }
+    )
+    input_path = tmp_path / "signals.json"
+    output_path = tmp_path / "brief.json"
+    input_path.write_text(json.dumps({"signals": [signal]}), encoding="utf-8")
+
+    result = run(
+        "scripts/commercial/run_universal_market_radar_v1.py",
+        "--signals",
+        str(input_path),
+        "--out",
+        str(output_path),
+    )
+    assert result.returncode == 0, result.stdout + result.stderr
+    brief = json.loads(output_path.read_text(encoding="utf-8"))
+    assert brief["admitted_signal_count"] == 0
+    assert brief["invalid_signal_count"] == 1
+    row = brief["invalid_signals"][0]
+    assert row["status"] == "INVALID_NOT_ADMITTED_TO_RADAR"
+    assert any("AHREFS:BLOCKED_CAPABILITY:INSUFFICIENT_PLAN" in error for error in row["errors"])
+    assert brief["blocked_source_semantics"] == "BLOCKED_CAPABILITY_IS_UNKNOWN_NOT_ZERO_DEMAND"
 
 
 def test_runner_rejects_unknown_source_and_missing_receipt_fields(tmp_path: Path) -> None:

@@ -1,0 +1,18 @@
+{
+  "schema": "dealix.market-radar-source-access-state.v1",
+  "version": "2026-08-30.1",
+  "observed_at": "2026-08-30T18:25:00+03:00",
+  "purpose": "Overlay current connector/access truth on the static Universal Market Radar source registry. A source may remain conceptually supported while current access is blocked. Blocked access never becomes zero market demand and never grants authority.",
+  "unknown_literal": "UNKNOWN_NOT_EVIDENCE_BACKED",
+  "source_states": {
+    "AHREFS": {
+      "state": "BLOCKED_CAPABILITY",
+      "reason": "INSUFFICIENT_PLAN",
+      "evidence_class": "LIVE_CONNECTOR_ERROR",
+      "admit_new_receipts": false,
+      "treat_missing_metrics_as": "UNKNOWN_NOT_EVIDENCE_BACKED",
+      "retry_policy": "RECHECK_ONLY_AFTER_PLAN_OR_ACCESS_CHANGE",
+      "can_create_commercial_authority": false
+    }
+  }
+}

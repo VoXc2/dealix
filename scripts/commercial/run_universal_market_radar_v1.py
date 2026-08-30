@@ -20,6 +20,7 @@ from typing import Any
 ROOT = Path(__file__).resolve().parents[2]
 RADAR_PATH = ROOT / "data/commercial/universal_market_radar_v1.json"
 PLAYBOOK_PATH = ROOT / "data/commercial/universal_market_playbooks_v1.json"
+SOURCE_ACCESS_PATH = ROOT / "data/commercial/market_radar_source_access_state_v1.json"
 DEFAULT_OUT = ROOT / "data/founder_briefs/universal_market_radar_latest.json"
 UNKNOWN = "UNKNOWN_NOT_EVIDENCE_BACKED"
 
@@ -53,6 +54,24 @@ AUTHORITY = {
 
 def load_json(path: Path) -> Any:
     return json.loads(path.read_text(encoding="utf-8"))
+
+
+def load_source_access_state() -> dict[str, Any]:
+    if not SOURCE_ACCESS_PATH.exists():
+        return {
+            "schema": "dealix.market-radar-source-access-state.v1",
+            "observed_at": UNKNOWN,
+            "source_states": {},
+        }
+    payload = load_json(SOURCE_ACCESS_PATH)
+    if not isinstance(payload, dict):
+        raise ValueError("source access state must be a JSON object")
+    if payload.get("schema") != "dealix.market-radar-source-access-state.v1":
+        raise ValueError("unexpected source access state schema")
+    states = payload.get("source_states")
+    if not isinstance(states, dict):
+        raise ValueError("source access state source_states must be an object")
+    return payload
 
 
 def parse_time(value: Any) -> datetime | None:
@@ -160,15 +179,25 @@ def build_sector_index(playbooks: dict[str, Any]) -> dict[str, dict[str, Any]]:
     }
 
 
+def blocked_source_ids(access: dict[str, Any]) -> set[str]:
+    blocked: set[str] = set()
+    for source_id, state in access.get("source_states", {}).items():
+        if isinstance(state, dict) and state.get("admit_new_receipts") is False:
+            blocked.add(str(source_id))
+    return blocked
+
+
 def build_brief(signals: list[Any]) -> dict[str, Any]:
     radar = load_json(RADAR_PATH)
     playbooks = load_json(PLAYBOOK_PATH)
+    source_access = load_source_access_state()
     required = set(radar.get("market_signal_receipt_contract", {}).get("required", []))
     source_ids = {
         str(row.get("source_id"))
         for row in radar.get("source_registry", [])
         if isinstance(row, dict) and row.get("source_id")
     }
+    blocked_sources = blocked_source_ids(source_access)
     sector_index = build_sector_index(playbooks)
     now = datetime.now(UTC)
 
@@ -180,6 +209,13 @@ def build_brief(signals: list[Any]) -> dict[str, Any]:
             source_id = str(raw.get("source_id", "")).strip()
             if source_id not in source_ids:
                 errors.append(f"source_id is not admitted by registry: {source_id}")
+            elif source_id in blocked_sources:
+                source_state = source_access["source_states"].get(source_id, {})
+                state = source_state.get("state", "BLOCKED_CAPABILITY")
+                reason = source_state.get("reason", UNKNOWN)
+                errors.append(
+                    f"source_id is blocked by current access state: {source_id}:{state}:{reason}"
+                )
             sector_id = str(raw.get("sector_family", "")).strip()
             if sector_id not in sector_index:
                 errors.append(f"sector_family is not in the 15-sector universe: {sector_id}")
@@ -258,6 +294,9 @@ def build_brief(signals: list[Any]) -> dict[str, Any]:
         "invalid_signal_count": len(invalid_rows),
         "ranked_research_signals": valid_rows,
         "invalid_signals": invalid_rows,
+        "source_access_state_observed_at": source_access.get("observed_at", UNKNOWN),
+        "blocked_source_ids": sorted(blocked_sources),
+        "blocked_source_semantics": "BLOCKED_CAPABILITY_IS_UNKNOWN_NOT_ZERO_DEMAND",
         "canonical_next_stage_owner": "dealix/commercial/portfolio_router.py",
         "new_scheduler": False,
         "new_permanent_agent": False,
@@ -268,6 +307,7 @@ def build_brief(signals: list[Any]) -> dict[str, Any]:
             "A radar signal cannot create relationship, consent, opportunity, package authority, quote, payment, proof, execution or production truth.",
             "Commercial package routing remains owned by the canonical portfolio router and requires its canonical interaction/inbound evidence semantics.",
             "Expired signals must be reverified before downstream use.",
+            "A conceptually supported source with blocked current access cannot admit a new handoff; missing metrics stay UNKNOWN_NOT_EVIDENCE_BACKED rather than zero.",
         ],
     }
 
