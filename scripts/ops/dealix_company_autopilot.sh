@@ -8,6 +8,7 @@ AUTOPILOT_ROOT="${DEALIX_AUTOPILOT_ROOT:-/opt/dealix/company-autopilot}"
 LOG_DIR="${AUTOPILOT_ROOT}/logs"
 STATE_DIR="${AUTOPILOT_ROOT}/state"
 REPORT_DIR="${AUTOPILOT_ROOT}/reports"
+SIGNAL_INBOX_DIR="${DEALIX_MARKET_RADAR_INBOX_DIR:-${AUTOPILOT_ROOT}/inbox}"
 ISSUE_REPO="Dealix-sa/dealix"
 ISSUE_NUMBER="1119"
 LOCAL_MODEL_PRIMARY="${DEALIX_LOCAL_MODEL:-qwen3:4b-instruct-2507-q4_K_M}"
@@ -22,8 +23,8 @@ export AGENT_APPROVAL_MODE=required
 export WHATSAPP_ALLOW_LIVE_SEND=false
 export MOYASAR_LIVE_MODE=0
 
-mkdir -p "$LOG_DIR" "$STATE_DIR" "$REPORT_DIR"
-chmod 0750 "$AUTOPILOT_ROOT" "$LOG_DIR" "$STATE_DIR" "$REPORT_DIR" 2>/dev/null || true
+mkdir -p "$LOG_DIR" "$STATE_DIR" "$REPORT_DIR" "$SIGNAL_INBOX_DIR"
+chmod 0750 "$AUTOPILOT_ROOT" "$LOG_DIR" "$STATE_DIR" "$REPORT_DIR" "$SIGNAL_INBOX_DIR" 2>/dev/null || true
 
 if [[ ! -d "$ROOT/.git" ]]; then
   echo "BLOCKED: canonical Dealix repository missing at $ROOT"
@@ -326,10 +327,51 @@ morning_fallback() {
   fi
 }
 
+market_radar_run() {
+  local radar_script input_file output_file
+  radar_script="${ROOT}/scripts/commercial/run_universal_market_radar_v1.py"
+  input_file="${DEALIX_MARKET_RADAR_SIGNALS_FILE:-${SIGNAL_INBOX_DIR}/market-radar-signals.json}"
+  output_file="${REPORT_DIR}/universal-market-radar-${RUN_STAMP}.json"
+
+  if [[ ! -f "$radar_script" ]]; then
+    log "MARKET_RADAR_BLOCKED: runner missing at $radar_script"
+    RUN_FAILED=1
+    return 0
+  fi
+  if [[ ! -f "$input_file" ]]; then
+    log "MARKET_RADAR_STATE=WAITING_FOR_CANONICAL_SIGNAL_INPUT"
+    log "MARKET_RADAR_INPUT=NONE (no collector or connector has supplied a source-bound handoff)"
+    return 0
+  fi
+  if [[ ! -r "$input_file" ]]; then
+    log "MARKET_RADAR_BLOCKED: signal handoff is not readable"
+    RUN_FAILED=1
+    return 0
+  fi
+
+  log "MARKET_RADAR_INPUT=SOURCE_BOUND_HANDOFF"
+  run_step "read-only market radar brief" python3 "$radar_script" --signals "$input_file" --out "$output_file"
+  if [[ -s "$output_file" ]]; then
+    chmod 0640 "$output_file" 2>/dev/null || true
+    log "MARKET_RADAR_REPORT=${output_file}"
+  else
+    log "MARKET_RADAR_BLOCKED: runner did not produce a report"
+    RUN_FAILED=1
+  fi
+}
+
+market_radar() {
+  heavy_lock
+  resource_guard 1200 || return 0
+  log "===== MARKET RADAR READ-ONLY ====="
+  market_radar_run
+}
+
 midday() {
   heavy_lock
   resource_guard 1600 || return 0
   log "===== MIDDAY COMPANY PULSE ====="
+  market_radar_run
   if [[ -f scripts/founder_comprehensive_plan_status.py ]]; then
     run_step "comprehensive plan" python3 scripts/founder_comprehensive_plan_status.py
   fi
@@ -552,12 +594,13 @@ case "$MODE" in
   midday) midday ;;
   evening) evening ;;
   nightly) nightly ;;
+  market-radar) market_radar ;;
   weekly) weekly ;;
   local-ai) local_ai ;;
   status) status ;;
   *)
     echo "DENIED: unsupported mode '$MODE'"
-    echo "Allowed: status heartbeat production repo-watch preflight morning-fallback midday evening nightly weekly local-ai"
+    echo "Allowed: status heartbeat production repo-watch preflight morning-fallback midday evening nightly market-radar weekly local-ai"
     exit 64
     ;;
 esac
@@ -573,6 +616,7 @@ case "${MODE}" in
   midday)    FLEET_EVENT="midday" ;;
   evening)   FLEET_EVENT="evening" ;;
   nightly)   FLEET_EVENT="nightly" ;;
+  market-radar) FLEET_EVENT="heartbeat" ;; # reuse existing event; no new fleet event
   repo-watch) FLEET_EVENT="repo_watch" ;;
   local-ai)  FLEET_EVENT="strategic" ;;
   *)         FLEET_EVENT="heartbeat" ;; # preflight/morning-fallback/production/heartbeat
