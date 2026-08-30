@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Sync War Room and emit a daily internal commercial activation queue."""
+"""Sync War Room and emit daily internal commercial activation + execution-fabric state."""
 
 from __future__ import annotations
 
@@ -42,28 +42,9 @@ def _activation_dir(explicit: str | None) -> Path:
     return root / "reports"
 
 
-def write_activation_artifacts(payload: dict, *, war_room_path: Path, activation_dir: Path) -> int:
-    activation_dir.mkdir(parents=True, exist_ok=True)
-    command_path = activation_dir / "commercial-activation-command-latest.json"
-    queue_path = activation_dir / "commercial-agent-workload-queue-latest.json"
-
-    command = build_activation_command(payload, source_ref=_source_ref(war_room_path))
-    _atomic_json(command_path, command)
-
-    router = REPO_ROOT / "scripts/commercial/route_commercial_agent_workloads_v1.py"
-    if not router.is_file():
-        print(f"BLOCKED commercial activation router missing: {router}", file=sys.stderr)
-        return 2
-
+def _run_child(label: str, argv: list[str]) -> int:
     proc = subprocess.run(
-        [
-            sys.executable,
-            str(router),
-            "--command",
-            str(command_path),
-            "--output",
-            str(queue_path),
-        ],
+        argv,
         cwd=REPO_ROOT,
         text=True,
         capture_output=True,
@@ -74,11 +55,54 @@ def write_activation_artifacts(payload: dict, *, war_room_path: Path, activation
     if proc.stderr:
         print(proc.stderr, end="", file=sys.stderr)
     if proc.returncode != 0:
-        print(f"DEALIX_COMMERCIAL_ACTIVATION=FAIL router_rc={proc.returncode}", file=sys.stderr)
-        return proc.returncode
+        print(f"{label}=FAIL rc={proc.returncode}", file=sys.stderr)
+    return proc.returncode
+
+
+def write_activation_artifacts(payload: dict, *, war_room_path: Path, activation_dir: Path) -> int:
+    activation_dir.mkdir(parents=True, exist_ok=True)
+    command_path = activation_dir / "commercial-activation-command-latest.json"
+    queue_path = activation_dir / "commercial-agent-workload-queue-latest.json"
+    fabric_path = activation_dir / "commercial-execution-fabric-latest.json"
+
+    command = build_activation_command(payload, source_ref=_source_ref(war_room_path))
+    _atomic_json(command_path, command)
+
+    router = REPO_ROOT / "scripts/commercial/route_commercial_agent_workloads_v1.py"
+    if not router.is_file():
+        print(f"BLOCKED commercial activation router missing: {router}", file=sys.stderr)
+        return 2
+
+    rc = _run_child(
+        "DEALIX_COMMERCIAL_ACTIVATION",
+        [sys.executable, str(router), "--command", str(command_path), "--output", str(queue_path)],
+    )
+    if rc != 0:
+        return rc
+
+    fabric_runner = REPO_ROOT / "scripts/commercial/run_commercial_execution_fabric_v2.py"
+    if not fabric_runner.is_file():
+        print(f"BLOCKED commercial execution fabric runner missing: {fabric_runner}", file=sys.stderr)
+        return 3
+    rc = _run_child(
+        "DEALIX_COMMERCIAL_EXECUTION_FABRIC_V2",
+        [
+            sys.executable,
+            str(fabric_runner),
+            "--command",
+            str(command_path),
+            "--queue",
+            str(queue_path),
+            "--out",
+            str(fabric_path),
+        ],
+    )
+    if rc != 0:
+        return rc
 
     print(f"DEALIX_COMMERCIAL_ACTIVATION_COMMAND={command_path}")
     print(f"DEALIX_COMMERCIAL_AGENT_QUEUE={queue_path}")
+    print(f"DEALIX_COMMERCIAL_EXECUTION_FABRIC={fabric_path}")
     print("DEALIX_COMMERCIAL_ACTIVATION=PASS")
     print("EXTERNAL_EFFECTS=NONE")
     return 0
