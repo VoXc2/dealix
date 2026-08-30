@@ -1,0 +1,435 @@
+{
+  "schema": "dealix.universal-market-radar.v1",
+  "generated_at": "2026-08-29",
+  "parent_issue": "#1403",
+  "parent_portfolio": "#1346",
+  "scope": "dealix_company",
+  "objective": "VERIFIED_ECONOMIC_MOVEMENT_PER_FOUNDER_MINUTE_PER_COST_PER_RISK",
+  "mission": "Continuously convert permitted market and first-party observations into source-bound signals, problem and buyer hypotheses, package/workflow hypotheses, next evidence and bounded experiments without creating commercial truth or external authority.",
+  "canonical_integration": {
+    "company_brain": "EXISTING_CANONICAL_OWNER_ONLY",
+    "portfolio_router": "dealix/commercial/portfolio_router.py",
+    "channel_registry": "data/commercial/channel_readiness_registry.json",
+    "agent_workloads": "data/commercial/agent_council_growth_workloads.json",
+    "company_autopilot": "EXISTING_CANONICAL_SCHEDULER_ONLY",
+    "proof_owner": "EXISTING_PROOF_LEDGER_ONLY",
+    "approval_owner": "EXISTING_APPROVAL_CENTER_ONLY",
+    "crm_semantics": "MIRROR_OR_ADAPTER_NOT_ECONOMIC_TRUTH"
+  },
+  "hard_truth_boundaries": {
+    "research_is_relationship": false,
+    "public_contact_is_consent": false,
+    "event_attendee_or_badge_is_relationship": false,
+    "search_or_social_engagement_is_qualified_opportunity": false,
+    "crm_row_is_economic_truth": false,
+    "signal_score_is_purchase_probability": false,
+    "telemetry_is_commercial_truth": false,
+    "proposal_is_revenue": false,
+    "invoice_is_payment": false,
+    "provider_acceptance_is_delivery": false,
+    "synthetic_result_is_customer_proof": false,
+    "source_or_tool_may_self_promote_truth": false
+  },
+  "market_signal_receipt_contract": {
+    "schema": "dealix.market-signal-receipt.v1",
+    "required": [
+      "signal_id",
+      "source_id",
+      "source_ref",
+      "observed_at",
+      "ingested_at",
+      "provenance_ref",
+      "fresh_until",
+      "signal_family",
+      "market",
+      "sector_family",
+      "business_archetype",
+      "evidence_refs",
+      "facts",
+      "inferences",
+      "unknowns",
+      "risk_class",
+      "allowed_use",
+      "next_evidence",
+      "authority"
+    ],
+    "unknown_literal": "UNKNOWN_NOT_EVIDENCE_BACKED",
+    "authority": {
+      "relationship": false,
+      "consent": false,
+      "offer": false,
+      "price": false,
+      "quote": false,
+      "contract": false,
+      "external_send": false,
+      "payment": false,
+      "customer_proof": false,
+      "execution": false,
+      "production": false
+    },
+    "stale_behavior": "REVERIFY_OR_KEEP_RESEARCH_ONLY",
+    "promotion_owner": "CANONICAL_DOWNSTREAM_STATE_OWNER_ONLY"
+  },
+  "signal_families": [
+    {
+      "id": "FIRST_PARTY_INBOUND",
+      "examples": ["website diagnostic", "explicit inquiry", "authorized form"],
+      "default_use": "QUALIFICATION_PREPARATION",
+      "freshness_hours": 24
+    },
+    {
+      "id": "EXPLICIT_EMAIL_REPLY",
+      "examples": ["reply", "requested follow-up", "documented business question"],
+      "default_use": "RELATIONSHIP_EVIDENCE_INPUT",
+      "freshness_hours": 24
+    },
+    {
+      "id": "WARM_INTRODUCTION",
+      "examples": ["partner intro", "known-network intro", "customer referral"],
+      "default_use": "RELATIONSHIP_EVIDENCE_INPUT",
+      "freshness_hours": 72
+    },
+    {
+      "id": "EVENT_OR_FIELD",
+      "examples": ["exhibition", "conference", "roundtable", "booth research"],
+      "default_use": "RESEARCH_AND_INTERACTION_PREPARATION",
+      "freshness_hours": 168
+    },
+    {
+      "id": "TENDER_OR_PROCUREMENT",
+      "examples": ["RFP", "RFI", "public tender", "supplier opportunity"],
+      "default_use": "TENDER_INTELLIGENCE_RESEARCH",
+      "freshness_hours": 24
+    },
+    {
+      "id": "COMPANY_CHANGE",
+      "examples": ["launch", "expansion", "funding", "M&A", "new Saudi entity"],
+      "default_use": "ACCOUNT_RESEARCH",
+      "freshness_hours": 72
+    },
+    {
+      "id": "HIRING_OR_ORG_CHANGE",
+      "examples": ["new role", "team growth", "new department", "leadership change"],
+      "default_use": "BUYER_AND_PAIN_HYPOTHESIS",
+      "freshness_hours": 168
+    },
+    {
+      "id": "TECHNOLOGY_OR_PLATFORM_CHANGE",
+      "examples": ["new stack", "API change", "GitHub activity", "migration"],
+      "default_use": "TECHNICAL_CAPABILITY_RESEARCH",
+      "freshness_hours": 72
+    },
+    {
+      "id": "COMPETITOR_CHANGE",
+      "examples": ["positioning", "pricing", "launch", "content", "feature"],
+      "default_use": "COMPETITIVE_INTELLIGENCE",
+      "freshness_hours": 72
+    },
+    {
+      "id": "SEARCH_DEMAND",
+      "examples": ["Search Console", "Ahrefs", "Google Trends when authorized"],
+      "default_use": "SEO_AEO_AND_CONTENT_HYPOTHESIS",
+      "freshness_hours": 168
+    },
+    {
+      "id": "PARTNER_OR_ECOSYSTEM",
+      "examples": ["distributor", "SI", "MSP", "consultancy", "association"],
+      "default_use": "PARTNER_RESEARCH",
+      "freshness_hours": 168
+    },
+    {
+      "id": "REGULATION_OR_POLICY",
+      "examples": ["PDPL", "sector regulator", "platform policy", "procurement rule"],
+      "default_use": "GOVERNANCE_AND_PLAYBOOK_REVIEW",
+      "freshness_hours": 24
+    },
+    {
+      "id": "FIRST_PARTY_OPERATING_TELEMETRY",
+      "examples": ["CRM", "support", "product", "delivery", "analytics"],
+      "default_use": "INTERNAL_LEARNING_ONLY_UNLESS_CANONICAL_EVIDENCE",
+      "freshness_hours": 24
+    },
+    {
+      "id": "OFFICIAL_SOCIAL_OR_PAID_REPORTING",
+      "examples": ["company-page analytics", "ad reporting", "video analytics"],
+      "default_use": "ATTRIBUTION_AND_EXPERIMENT_ANALYSIS",
+      "freshness_hours": 24
+    },
+    {
+      "id": "CUSTOMER_LEARNING",
+      "examples": ["objection", "discovery note", "support theme", "accepted proof"],
+      "default_use": "PLAYBOOK_AND_PRODUCT_LEARNING",
+      "freshness_hours": 168
+    }
+  ],
+  "source_registry": [
+    {
+      "source_id": "GASTAT_OFFICIAL",
+      "kind": "OFFICIAL_PUBLIC_STATISTICS",
+      "authority_class": "OBSERVATIONAL_SOURCE_ONLY",
+      "provenance": "official Saudi statistical publication",
+      "freshness_sla_hours": 720,
+      "cost_class": "FREE_OR_PUBLIC",
+      "policy_risk": "LOW",
+      "access_state": "PUBLIC_READ",
+      "allowed_uses": ["sector sizing", "technology adoption context", "market baseline"],
+      "prohibited_uses": ["relationship promotion", "consent inference", "customer claim"],
+      "can_create_commercial_authority": false
+    },
+    {
+      "source_id": "MONSHAAT_OFFICIAL",
+      "kind": "OFFICIAL_PUBLIC_SME_STATISTICS",
+      "authority_class": "OBSERVATIONAL_SOURCE_ONLY",
+      "provenance": "official SME reports and programs",
+      "freshness_sla_hours": 720,
+      "cost_class": "FREE_OR_PUBLIC",
+      "policy_risk": "LOW",
+      "access_state": "PUBLIC_READ",
+      "allowed_uses": ["SME market context", "program and ecosystem research"],
+      "prohibited_uses": ["relationship promotion", "consent inference"],
+      "can_create_commercial_authority": false
+    },
+    {
+      "source_id": "INVEST_SAUDI_OFFICIAL",
+      "kind": "OFFICIAL_INVESTMENT_AND_SECTOR_SOURCE",
+      "authority_class": "OBSERVATIONAL_SOURCE_ONLY",
+      "provenance": "official Invest Saudi sector and opportunity pages",
+      "freshness_sla_hours": 168,
+      "cost_class": "FREE_OR_PUBLIC",
+      "policy_risk": "LOW",
+      "access_state": "PUBLIC_READ",
+      "allowed_uses": ["sector universe", "market-entry research", "opportunity context"],
+      "prohibited_uses": ["government access claim", "relationship promotion"],
+      "can_create_commercial_authority": false
+    },
+    {
+      "source_id": "SAUDI_OPEN_DATA_AND_REGULATORS",
+      "kind": "OFFICIAL_PUBLIC_DATA_AND_REGULATION",
+      "authority_class": "OBSERVATIONAL_OR_POLICY_SOURCE_ONLY",
+      "provenance": "Saudi Open Data and named sector-regulator publications",
+      "freshness_sla_hours": 24,
+      "cost_class": "FREE_OR_PUBLIC",
+      "policy_risk": "LOW",
+      "access_state": "PUBLIC_READ",
+      "allowed_uses": ["regulatory change", "sector requirements", "public indicators"],
+      "prohibited_uses": ["legal certification claim", "relationship promotion"],
+      "can_create_commercial_authority": false
+    },
+    {
+      "source_id": "ETIMAD_PUBLIC_PROCUREMENT",
+      "kind": "OFFICIAL_PROCUREMENT_SOURCE",
+      "authority_class": "TENDER_OBSERVATION_ONLY",
+      "provenance": "official Etimad/public procurement surface",
+      "freshness_sla_hours": 24,
+      "cost_class": "ACCESS_DEPENDENT",
+      "policy_risk": "LOW_TO_MEDIUM",
+      "access_state": "READ_WHERE_AUTHORIZED_OR_PUBLIC",
+      "allowed_uses": ["tender discovery", "deadline extraction", "requirements brief"],
+      "prohibited_uses": ["automatic tender submission", "bid commitment", "government access claim"],
+      "can_create_commercial_authority": false
+    },
+    {
+      "source_id": "COMPANY_OWNED_WEB",
+      "kind": "PUBLIC_FIRST_PARTY_COMPANY_SOURCE",
+      "authority_class": "PUBLIC_FACT_SOURCE_ONLY",
+      "provenance": "company website, sitemap, RSS or press release",
+      "freshness_sla_hours": 72,
+      "cost_class": "FREE_OR_PUBLIC",
+      "policy_risk": "LOW_TO_MEDIUM",
+      "access_state": "PUBLIC_READ_RESPECT_POLICY",
+      "allowed_uses": ["account research", "launch and expansion signals", "buyer hypothesis"],
+      "prohibited_uses": ["consent inference", "relationship promotion", "scraping around access controls"],
+      "can_create_commercial_authority": false
+    },
+    {
+      "source_id": "GOOGLE_SEARCH_CONSOLE",
+      "kind": "AUTHORIZED_FIRST_PARTY_SEARCH_REPORTING",
+      "authority_class": "ANALYTICS_ONLY",
+      "provenance": "official Google Search Console API",
+      "freshness_sla_hours": 72,
+      "cost_class": "CONNECTED_ACCOUNT",
+      "policy_risk": "LOW",
+      "access_state": "ADOPT_READ_ONLY_WHEN_CONNECTED",
+      "allowed_uses": ["query demand", "landing performance", "SEO experiments"],
+      "prohibited_uses": ["commercial truth promotion", "relationship inference"],
+      "can_create_commercial_authority": false
+    },
+    {
+      "source_id": "AHREFS",
+      "kind": "AUTHORIZED_SEARCH_AND_COMPETITIVE_RESEARCH",
+      "authority_class": "RESEARCH_ONLY",
+      "provenance": "Ahrefs API/MCP under connected plan",
+      "freshness_sla_hours": 168,
+      "cost_class": "PLAN_AND_API_UNITS_DEPENDENT",
+      "policy_risk": "LOW_WHEN_USED_AS_AUTHORIZED",
+      "access_state": "CONNECTED_CAPABILITY_AVAILABLE",
+      "allowed_uses": ["keyword demand", "SERP research", "competitor discovery", "content gaps", "AI visibility research"],
+      "prohibited_uses": ["purchase-probability claim", "relationship promotion", "commercial authority"],
+      "can_create_commercial_authority": false
+    },
+    {
+      "source_id": "GOOGLE_TRENDS_API_ALPHA",
+      "kind": "AUTHORIZED_TREND_RESEARCH",
+      "authority_class": "RESEARCH_ONLY",
+      "provenance": "official Google Trends API when account access exists",
+      "freshness_sla_hours": 24,
+      "cost_class": "ACCESS_DEPENDENT",
+      "policy_risk": "LOW",
+      "access_state": "PILOT_WHEN_ACCESS_EXISTS",
+      "allowed_uses": ["trend direction", "relative demand context"],
+      "prohibited_uses": ["commercial truth promotion"],
+      "can_create_commercial_authority": false
+    },
+    {
+      "source_id": "OFFICIAL_AD_AND_SOCIAL_REPORTING_APIS",
+      "kind": "AUTHORIZED_CHANNEL_REPORTING",
+      "authority_class": "ANALYTICS_ONLY",
+      "provenance": "Google Ads, LinkedIn Marketing, YouTube, Meta, TikTok, Snap or other official APIs when connected",
+      "freshness_sla_hours": 24,
+      "cost_class": "CONNECTED_ACCOUNT_OR_SPEND_DEPENDENT",
+      "policy_risk": "MEDIUM",
+      "access_state": "READ_ONLY_FIRST",
+      "allowed_uses": ["performance reporting", "attribution", "experiment analysis"],
+      "prohibited_uses": ["spend mutation without authority", "personal-profile automation", "relationship promotion from engagement"],
+      "can_create_commercial_authority": false
+    },
+    {
+      "source_id": "FIRST_PARTY_INBOUND_AND_RELATIONSHIP",
+      "kind": "PERMITTED_FIRST_PARTY_BUSINESS_EVIDENCE",
+      "authority_class": "EVIDENCE_INPUT_TO_CANONICAL_STATE_OWNER",
+      "provenance": "authorized website, email, event or partner interaction receipt",
+      "freshness_sla_hours": 24,
+      "cost_class": "INTERNAL",
+      "policy_risk": "MEDIUM",
+      "access_state": "CANONICAL_CONNECTORS_ONLY",
+      "allowed_uses": ["interaction evidence", "qualification preparation", "diagnostic preparation"],
+      "prohibited_uses": ["self-creating verified relationship", "self-creating consent", "self-creating send authority"],
+      "can_create_commercial_authority": false
+    },
+    {
+      "source_id": "CRM_SUPPORT_PRODUCT_TELEMETRY",
+      "kind": "PERMITTED_FIRST_PARTY_OPERATING_DATA",
+      "authority_class": "MIRROR_OR_EVIDENCE_INPUT_ONLY",
+      "provenance": "authorized CRM, support, product or analytics connector",
+      "freshness_sla_hours": 24,
+      "cost_class": "CONNECTED_ACCOUNT",
+      "policy_risk": "MEDIUM",
+      "access_state": "PURPOSE_AND_TENANT_SCOPED",
+      "allowed_uses": ["customer-learning signals", "workflow diagnostics", "operational baseline"],
+      "prohibited_uses": ["payment truth without payment evidence", "customer value without validation", "consent inference"],
+      "can_create_commercial_authority": false
+    }
+  ],
+  "web_research_adapter_admission": {
+    "candidates": ["TAVILY", "FIRECRAWL", "APIFY_OR_CRAWLEE"],
+    "selected": [],
+    "maximum_selected": 1,
+    "admission_rule": "PILOT_ONLY_AFTER_MEASURED_COVERAGE_GAP_AND_SECURITY_COST_POLICY_REVIEW",
+    "adapter_is_authority_owner": false,
+    "install_all_by_default": false
+  },
+  "channel_intelligence": {
+    "canonical_registry": "data/commercial/channel_readiness_registry.json",
+    "families": [
+      {
+        "id": "OWNED",
+        "channels": ["website", "dealix_linkedin_page", "youtube", "instagram", "facebook", "threads", "x", "tiktok", "snapchat", "pinterest"],
+        "allowed": ["research", "drafting", "QA", "official reporting where authorized"],
+        "mutation_rule": "USE_CANONICAL_CHANNEL_READINESS_AND_ACTION_SPECIFIC_AUTHORITY"
+      },
+      {
+        "id": "DIRECT_RELATIONSHIP",
+        "channels": ["email", "whatsapp"],
+        "allowed": ["inbound classification", "drafting", "eligible relationship follow-up preparation"],
+        "mutation_rule": "CONSENT_SUPPRESSION_CHANNEL_POLICY_AND_ACTION_SPECIFIC_AUTHORITY_REQUIRED"
+      },
+      {
+        "id": "FOUNDER_RELATIONSHIP",
+        "channels": ["founder_linkedin"],
+        "allowed": ["research", "drafting", "analytics when authorized"],
+        "mutation_rule": "MANUAL_NATIVE_OR_EXPLICITLY_APPROVED_OFFICIAL_CAPABILITY_ONLY"
+      },
+      {
+        "id": "FIELD_EVENT_PARTNER",
+        "channels": [],
+        "allowed": ["target research", "priority cards", "interaction receipt preparation", "partner research"],
+        "mutation_rule": "REAL_HUMAN_INTERACTION_OR_EXPLICIT_INBOUND_REQUIRED_FOR_RELATIONSHIP_PROGRESSION"
+      },
+      {
+        "id": "PAID_MEDIA",
+        "channels": [],
+        "allowed": ["read-only reporting", "experiment planning"],
+        "mutation_rule": "PAID_SPEND_REQUIRES_EXPLICIT_BUDGET_AND_PLATFORM_AUTHORITY"
+      }
+    ],
+    "blocked_patterns": [
+      "personal LinkedIn scraping or auto-DM",
+      "cold WhatsApp blasting",
+      "unbounded cold bulk email",
+      "fake engagement",
+      "platform-policy circumvention",
+      "generic scraping-to-pipeline promotion"
+    ]
+  },
+  "canonical_agent_routing": {
+    "dealix-pm": ["portfolio prioritization", "radar allocation", "keep-kill decisions", "regulation and risk escalation"],
+    "dealix-sales": ["sector research", "account research", "event research", "tender intelligence", "partner and buying-group research", "qualification preparation"],
+    "dealix-content": ["search demand", "content gaps", "SEO/AEO", "channel adaptation", "proof-safe content opportunities"],
+    "dealix-delivery": ["delivery fit", "proof requirements", "customer-learning signals", "workflow feasibility"],
+    "dealix-engineer": ["source adapters", "data quality and provenance", "API/platform change radar", "verification"]
+  },
+  "ephemeral_specialist_workloads": [
+    "sector_analyst",
+    "competitor_analyst",
+    "search_demand_analyst",
+    "event_analyst",
+    "tender_analyst",
+    "regulatory_analyst",
+    "technology_signal_analyst",
+    "partner_radar",
+    "paid_media_analyst",
+    "experiment_analyst"
+  ],
+  "new_permanent_agent_created": false,
+  "new_scheduler_created": false,
+  "priority_scoring": {
+    "formula": "economic_pain * measurable_outcome * buyer_access * data_availability * repeatability * readiness * distribution_density / regulatory_friction / integration_complexity / founder_minutes",
+    "input_scale": "1_TO_5_EACH_FACTOR",
+    "purpose": "INTERNAL_RESEARCH_PRIORITY_ONLY",
+    "score_is_purchase_probability": false,
+    "score_may_promote_relationship_or_opportunity": false,
+    "missing_factor_behavior": "UNKNOWN_NOT_EVIDENCE_BACKED_AND_RESEARCH_NEXT"
+  },
+  "freshness_and_expiry": {
+    "source_specific_sla_required": true,
+    "expired_signal_state": "STALE_REVERIFY_REQUIRED",
+    "stale_signal_may_trigger_external_action": false,
+    "stale_signal_may_promote_commercial_truth": false
+  },
+  "experiment_contract": {
+    "verdicts": ["SCALE", "ITERATE", "STOP", "INVALID"],
+    "required": ["experiment_id", "hypothesis", "baseline_ref", "target_metric", "evidence_refs", "founder_minutes", "tool_cost", "risk_class", "result", "verdict", "next_action"],
+    "scale_requires_verified_movement_or_proven_trust_cycle_cost_gain": true,
+    "vanity_metric_only_may_scale": false,
+    "external_mutation_authority": false
+  },
+  "autopilot_consumption": {
+    "mode": "READ_ONLY_REGISTRY_INPUT_TO_EXISTING_RUNNERS",
+    "new_timer": false,
+    "required_surfaces": ["Morning Command", "market research workloads", "content opportunity workloads", "Revenue package router"],
+    "outbound_or_spend_enabled": false
+  },
+  "global_authority": {
+    "relationship": false,
+    "consent": false,
+    "offer": false,
+    "price": false,
+    "quote": false,
+    "contract": false,
+    "external_send": false,
+    "payment": false,
+    "customer_proof": false,
+    "execution": false,
+    "production": false
+  }
+}

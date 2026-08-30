@@ -1,0 +1,260 @@
+{
+  "schema": "dealix.universal-market-playbooks.v1",
+  "generated_at": "2026-08-29",
+  "scope": "dealix_company",
+  "doctrine": "ONE_HORIZONTAL_DEALIX_CORE_MANY_VERTICAL_PLAYBOOKS",
+  "commercial_authority": "CUSTOMER_SPECIFIC_QUOTE_ONLY_AFTER_CANONICAL_DISCOVERY_AND_AUTHORITY",
+  "core_spine": [
+    "SIGNAL",
+    "EVIDENCE",
+    "COMPANY_BRAIN",
+    "QUALIFICATION",
+    "PACKAGE_ROUTING",
+    "DIAGNOSTIC",
+    "HUMAN_REVIEW_OR_DISCOVERY",
+    "PROPOSAL_AND_NEGOTIATION",
+    "PAYMENT_PROOF",
+    "DELIVERY",
+    "PROOF",
+    "LEARNING",
+    "DEVELOPMENT_FACTORY"
+  ],
+  "sector_families": [
+    {"id":"AGRICULTURE_FOOD","cluster":"COMPLEX_B2B_DISTRIBUTION","priority":"B"},
+    {"id":"ENERGY","cluster":"PROJECT_ASSET","priority":"C_GOVERNED"},
+    {"id":"HEALTHCARE_LIFE_SCIENCES","cluster":"REGULATED_HIGH_TRUST","priority":"B"},
+    {"id":"ENVIRONMENTAL_SERVICES","cluster":"PROJECT_ASSET","priority":"B"},
+    {"id":"MANUFACTURING","cluster":"COMPLEX_B2B_DISTRIBUTION","priority":"A"},
+    {"id":"PHARMA_BIOTECH","cluster":"REGULATED_HIGH_TRUST","priority":"C_GOVERNED"},
+    {"id":"CHEMICALS","cluster":"COMPLEX_B2B_DISTRIBUTION","priority":"B"},
+    {"id":"REAL_ESTATE","cluster":"PROJECT_ASSET","priority":"A"},
+    {"id":"FINANCIAL_SERVICES","cluster":"REGULATED_HIGH_TRUST","priority":"C_GOVERNED"},
+    {"id":"TRANSPORT_LOGISTICS","cluster":"COMPLEX_B2B_DISTRIBUTION","priority":"A"},
+    {"id":"MINING_METALS","cluster":"PROJECT_ASSET","priority":"C_GOVERNED"},
+    {"id":"TOURISM_QUALITY_OF_LIFE","cluster":"CONSUMER_MULTI_SITE","priority":"B"},
+    {"id":"ICT","cluster":"KNOWLEDGE_DIGITAL","priority":"A"},
+    {"id":"HUMAN_CAPITAL_INNOVATION","cluster":"KNOWLEDGE_DIGITAL","priority":"B"},
+    {"id":"AVIATION_DEFENSE","cluster":"REGULATED_HIGH_TRUST","priority":"C_GOVERNED"}
+  ],
+  "business_archetypes": [
+    "FOUNDER_LED_SME",
+    "MID_MARKET_MULTI_TEAM",
+    "ENTERPRISE_BUSINESS_UNIT",
+    "PROJECT_BASED_CONTRACTOR_OR_CONSULTANT",
+    "DISTRIBUTOR_OR_MANUFACTURER",
+    "RECURRING_SAAS_OR_SERVICES",
+    "MULTI_SITE_FRANCHISE_OR_OPERATOR",
+    "MARKETPLACE_OR_ECOMMERCE_MERCHANT",
+    "FOREIGN_ENTRANT_OR_LOCAL_PARTNER_SEEKER",
+    "REGULATED_INSTITUTION_OR_B2G_SUPPLIER"
+  ],
+  "cluster_playbooks": {
+    "PROJECT_ASSET": {
+      "examples": ["construction", "FM", "real estate", "infrastructure", "energy", "mining"],
+      "pain_taxonomy": ["tender fragmentation", "quote and variation delay", "project handoff gaps", "procurement visibility", "field-to-office information gaps", "document control", "executive reporting"],
+      "buyer_map": ["CEO/GM", "COO", "commercial director", "project director", "procurement lead", "PMO", "IT/digital lead"],
+      "source_families": ["EVENT_OR_FIELD", "TENDER_OR_PROCUREMENT", "COMPANY_CHANGE", "HIRING_OR_ORG_CHANGE", "FIRST_PARTY_OPERATING_TELEMETRY"],
+      "evidence_required": ["named workflow", "source-bound delay or exception", "accountable owner", "baseline or evidence gap", "data and approval boundary"],
+      "package_fit": ["REVENUE_COMMAND_PILOT", "COMPANY_BRAIN_GOVERNED_AI_SPRINT", "SAUDI_MARKET_ACCESS_SPRINT"],
+      "channel_hypotheses": ["field/event", "partner introduction", "relationship-governed email", "owned diagnostic"],
+      "risk_profile": "STANDARD_TO_HIGH_BY_SUBSECTOR",
+      "proof_methods": ["cycle-time delta", "handoff completeness", "document retrieval accuracy", "quote/tender readiness", "accepted operational outcome"]
+    },
+    "COMPLEX_B2B_DISTRIBUTION": {
+      "examples": ["manufacturing", "industrial distribution", "chemicals", "medical devices", "logistics", "wholesale"],
+      "pain_taxonomy": ["account fragmentation", "distributor visibility", "quote leakage", "service handoffs", "inventory/customer context fragmentation", "partner operations", "manual reporting"],
+      "buyer_map": ["CEO/GM", "commercial director", "sales director", "distribution/channel lead", "operations lead", "service lead", "IT/digital lead"],
+      "source_families": ["COMPANY_CHANGE", "HIRING_OR_ORG_CHANGE", "PARTNER_OR_ECOSYSTEM", "EVENT_OR_FIELD", "FIRST_PARTY_OPERATING_TELEMETRY"],
+      "evidence_required": ["account or distributor workflow", "buyer and process owner", "source inventory", "measurable leakage or delay", "approval path"],
+      "package_fit": ["REVENUE_COMMAND_PILOT", "COMPANY_BRAIN_GOVERNED_AI_SPRINT", "PARTNER_IMPLEMENTATION_PROOF_LAYER"],
+      "channel_hypotheses": ["partner ecosystem", "industry events", "relationship-governed email", "owned proof/content"],
+      "risk_profile": "STANDARD",
+      "proof_methods": ["follow-up coverage", "quote cycle time", "account context completeness", "exception reduction", "accepted workflow outcome"]
+    },
+    "KNOWLEDGE_DIGITAL": {
+      "examples": ["ICT", "SaaS", "professional services", "consulting", "agencies", "education/training"],
+      "pain_taxonomy": ["knowledge fragmentation", "proposal delay", "CRM context gaps", "manual research", "support repetition", "AI governance", "reporting overhead"],
+      "buyer_map": ["Founder/CEO", "GM", "COO", "CRO", "head of sales", "head of customer success", "CTO/CIO", "AI/digital lead"],
+      "source_families": ["SEARCH_DEMAND", "TECHNOLOGY_OR_PLATFORM_CHANGE", "HIRING_OR_ORG_CHANGE", "FIRST_PARTY_INBOUND", "CUSTOMER_LEARNING"],
+      "evidence_required": ["named knowledge or workflow problem", "bounded use case", "source/owner map", "baseline", "authority map", "proof method"],
+      "package_fit": ["COMPANY_BRAIN_GOVERNED_AI_SPRINT", "REVENUE_COMMAND_PILOT", "PARTNER_IMPLEMENTATION_PROOF_LAYER"],
+      "channel_hypotheses": ["SEO/AEO", "founder/company content", "web diagnostic", "events", "warm intros", "relationship-governed email"],
+      "risk_profile": "LOW_TO_STANDARD",
+      "proof_methods": ["task success", "groundedness", "operator minutes", "cycle time", "adoption", "customer-validated outcome"]
+    },
+    "REGULATED_HIGH_TRUST": {
+      "examples": ["finance", "healthcare", "pharma", "aviation", "defense", "government/B2G"],
+      "pain_taxonomy": ["decision evidence", "approval burden", "document intelligence", "auditability", "policy compliance", "tender/procurement intelligence", "controlled knowledge access"],
+      "buyer_map": ["business unit GM", "COO", "CIO/CTO", "data/AI lead", "compliance/risk", "procurement", "operations owner"],
+      "source_families": ["REGULATION_OR_POLICY", "TENDER_OR_PROCUREMENT", "COMPANY_CHANGE", "FIRST_PARTY_INBOUND", "FIRST_PARTY_OPERATING_TELEMETRY"],
+      "evidence_required": ["lawful purpose", "data classification", "tenant/access boundary", "named accountable owner", "human approval points", "audit/proof method"],
+      "package_fit": ["COMPANY_BRAIN_GOVERNED_AI_SPRINT", "SAUDI_MARKET_ACCESS_SPRINT", "PARTNER_IMPLEMENTATION_PROOF_LAYER"],
+      "channel_hypotheses": ["trusted partner", "industry association/event", "explicit inbound", "procurement/tender path"],
+      "risk_profile": "HIGH_GOVERNANCE",
+      "proof_methods": ["policy adherence", "audit completeness", "retrieval precision", "approval-cycle measurement", "accepted bounded outcome"]
+    },
+    "CONSUMER_MULTI_SITE": {
+      "examples": ["retail", "e-commerce", "hospitality", "tourism", "F&B", "clinic chains", "education chains"],
+      "pain_taxonomy": ["multi-site reporting", "customer operations", "inbound routing", "local demand intelligence", "service consistency", "lifecycle fragmentation", "content and campaign operations"],
+      "buyer_map": ["CEO/GM", "COO", "CMO", "head of growth", "customer operations", "regional operations", "IT/digital lead"],
+      "source_families": ["SEARCH_DEMAND", "OFFICIAL_SOCIAL_OR_PAID_REPORTING", "FIRST_PARTY_OPERATING_TELEMETRY", "CUSTOMER_LEARNING", "COMPANY_CHANGE"],
+      "evidence_required": ["site/channel scope", "first-party baseline", "consent and suppression model", "measurable service or funnel outcome", "owner"],
+      "package_fit": ["COMPANY_BRAIN_GOVERNED_AI_SPRINT", "REVENUE_COMMAND_PILOT"],
+      "channel_hypotheses": ["owned search/content", "official paid reporting", "inbound lifecycle", "partner/referral", "events"],
+      "risk_profile": "STANDARD_WITH_CONSENT_SENSITIVITY",
+      "proof_methods": ["response/routing time", "service consistency", "qualified conversion movement", "operator minutes", "accepted customer operations outcome"]
+    },
+    "FOREIGN_MARKET_ENTRY_PARTNER_LED": {
+      "examples": ["international SaaS", "industrial vendor", "technology provider", "consultancy", "manufacturer"],
+      "pain_taxonomy": ["market uncertainty", "buyer mapping", "partner/distributor discovery", "localization", "procurement readiness", "Saudi narrative", "relationship plan"],
+      "buyer_map": ["CEO", "international expansion lead", "regional GM", "VP sales", "partnerships", "market-entry lead"],
+      "source_families": ["INVESTMENT_AND_SECTOR", "PARTNER_OR_ECOSYSTEM", "EVENT_OR_FIELD", "TENDER_OR_PROCUREMENT", "COMPANY_CHANGE", "REGULATION_OR_POLICY"],
+      "evidence_required": ["Saudi objective", "target segment", "entry constraint", "buyer/partner hypothesis", "source-backed local context", "no government-access claim"],
+      "package_fit": ["SAUDI_MARKET_ACCESS_SPRINT", "COMPANY_BRAIN_GOVERNED_AI_SPRINT", "PARTNER_IMPLEMENTATION_PROOF_LAYER"],
+      "channel_hypotheses": ["partner introductions", "events", "associations", "relationship-governed email", "owned market-entry content"],
+      "risk_profile": "STANDARD_TO_HIGH_BY_SECTOR",
+      "proof_methods": ["validated buyer/partner map", "qualified conversations", "localization gaps closed", "decision pack acceptance", "repeatable market-entry evidence"]
+    }
+  },
+  "demand_to_package_playbooks": [
+    {
+      "demand": "AI_OR_AI_STRATEGY",
+      "phrases": ["AI", "ذكاء اصطناعي", "AI transformation", "AI strategy"],
+      "likely_problems": ["unclear valuable use case", "fragmented data/context", "governance uncertainty", "experiments without operating model"],
+      "buyers": ["CEO/GM", "COO", "CIO/CTO", "digital/AI lead"],
+      "primary_route": "COMPANY_BRAIN_GOVERNED_AI_SPRINT",
+      "workflow_packs": ["EXECUTIVE_KNOWLEDGE", "SUPPORT_AND_OPS", "ENGINEERING_AND_IT"],
+      "first_evidence": ["named business outcome", "bounded use case", "source and owner map", "authority boundary", "baseline or gap"],
+      "proof_method": "bounded task success + groundedness + authority compliance + operator minutes + customer validation"
+    },
+    {
+      "demand": "AUTOMATION_OR_WORKFLOW",
+      "phrases": ["automation", "workflow", "أتمتة", "process automation"],
+      "likely_problems": ["manual repetition", "handoff delay", "approval bottleneck", "multi-system work"],
+      "buyers": ["COO", "operations lead", "business process owner", "IT/digital lead"],
+      "primary_route": "COMPANY_BRAIN_GOVERNED_AI_SPRINT",
+      "workflow_packs": ["SUPPORT_AND_OPS", "FINANCE_AND_ADMIN", "SALES_AND_CRM_INTELLIGENCE"],
+      "first_evidence": ["current workflow", "manual steps", "owner", "baseline time/error", "tool and approval boundary"],
+      "proof_method": "cycle time + manual-step reduction + exception rate + audit receipt + accepted outcome"
+    },
+    {
+      "demand": "COMPANY_KNOWLEDGE_OR_COMPANY_BRAIN",
+      "phrases": ["company knowledge", "knowledge base", "company brain", "RAG", "enterprise search"],
+      "likely_problems": ["fragmented documents", "stale knowledge", "unknown source authority", "slow decision retrieval"],
+      "buyers": ["CEO/GM", "COO", "CIO/CTO", "knowledge/operations owner"],
+      "primary_route": "COMPANY_BRAIN_GOVERNED_AI_SPRINT",
+      "workflow_packs": ["EXECUTIVE_KNOWLEDGE", "DOCUMENT_TENDER_AND_PROPOSAL_INTELLIGENCE"],
+      "first_evidence": ["source inventory", "owners", "freshness", "permissions", "allowed claims", "retrieval use case"],
+      "proof_method": "grounded retrieval + freshness + source coverage + access compliance + decision-time measurement"
+    },
+    {
+      "demand": "AI_AGENTS_OR_COPILOTS",
+      "phrases": ["agents", "AI agents", "copilot", "agentic workflow"],
+      "likely_problems": ["unbounded agent scope", "missing tool authority", "no observability", "unsafe external actions", "unclear ROI"],
+      "buyers": ["CTO/CIO", "COO", "AI lead", "business workflow owner"],
+      "primary_route": "COMPANY_BRAIN_GOVERNED_AI_SPRINT",
+      "workflow_packs": ["ENGINEERING_AND_IT", "SUPPORT_AND_OPS", "SALES_AND_CRM_INTELLIGENCE"],
+      "first_evidence": ["single named outcome", "tool allowlist", "approval points", "idempotency", "rollback", "evaluation cases"],
+      "proof_method": "task success + unsafe-action refusal + latency/cost + human handoff + customer validation"
+    },
+    {
+      "demand": "DECISION_INTELLIGENCE",
+      "phrases": ["decision intelligence", "executive command", "management insights", "decision support"],
+      "likely_problems": ["manual reporting", "metric disagreement", "slow executive context assembly", "no evidence trail"],
+      "buyers": ["CEO/GM", "CFO", "COO", "strategy/PMO", "data lead"],
+      "primary_route": "COMPANY_BRAIN_GOVERNED_AI_SPRINT",
+      "workflow_packs": ["EXECUTIVE_KNOWLEDGE", "FINANCE_AND_ADMIN"],
+      "first_evidence": ["decision cadence", "metric/source map", "owner", "current latency", "evidence gaps"],
+      "proof_method": "reporting latency + evidence completeness + decision owner acceptance + unknown handling"
+    },
+    {
+      "demand": "TENDER_RFP_PROPOSAL_INTELLIGENCE",
+      "phrases": ["tender intelligence", "RFP", "RFI", "proposal automation", "bid intelligence"],
+      "likely_problems": ["document overload", "requirement extraction delay", "evidence reuse gaps", "approval and deadline risk"],
+      "buyers": ["commercial director", "bid/tender manager", "sales operations", "legal/procurement liaison", "GM"],
+      "primary_route": "COMPANY_BRAIN_GOVERNED_AI_SPRINT",
+      "workflow_packs": ["DOCUMENT_TENDER_AND_PROPOSAL_INTELLIGENCE"],
+      "first_evidence": ["sample permitted tender/documents", "requirements workflow", "deadline owner", "claim/evidence policy", "approval path"],
+      "proof_method": "requirement coverage + source citations + preparation cycle time + unsupported-claim rate + human acceptance"
+    },
+    {
+      "demand": "CUSTOMER_OPERATIONS",
+      "phrases": ["customer operations", "support automation", "customer success AI", "service operations"],
+      "likely_problems": ["repeated support work", "slow routing", "fragmented customer context", "weak escalation", "renewal risk signals"],
+      "buyers": ["COO", "customer success lead", "support lead", "service operations", "CIO/CTO"],
+      "primary_route": "COMPANY_BRAIN_GOVERNED_AI_SPRINT",
+      "workflow_packs": ["SUPPORT_AND_OPS", "EXECUTIVE_KNOWLEDGE"],
+      "first_evidence": ["ticket/workflow baseline", "knowledge sources", "escalation rules", "PII/data boundary", "acceptance criteria"],
+      "proof_method": "routing/resolution cycle time + grounded answer quality + escalation accuracy + operator minutes + customer validation"
+    },
+    {
+      "demand": "REVENUE_SALES_REVOPS",
+      "phrases": ["RevOps", "pipeline", "sales automation", "follow-up", "quote leakage"],
+      "likely_problems": ["lead leakage", "follow-up chaos", "quote delay", "handoff gaps", "weak proof"],
+      "buyers": ["CEO/GM", "CRO", "sales director", "RevOps", "commercial director"],
+      "primary_route": "REVENUE_COMMAND_PILOT",
+      "workflow_packs": ["SALES_AND_CRM_INTELLIGENCE"],
+      "first_evidence": ["qualified problem", "workflow baseline", "relationship state", "owner", "data boundary"],
+      "proof_method": "verified stage movement + cycle time + follow-up ownership + accepted Proof/Decision Pack"
+    },
+    {
+      "demand": "SAUDI_MARKET_ENTRY",
+      "phrases": ["Saudi market entry", "enter KSA", "Saudi partner", "distributor Saudi", "localization"],
+      "likely_problems": ["buyer uncertainty", "partner discovery", "localization gaps", "procurement uncertainty", "weak Saudi narrative"],
+      "buyers": ["CEO", "regional GM", "international expansion", "VP sales", "partnerships"],
+      "primary_route": "SAUDI_MARKET_ACCESS_SPRINT",
+      "workflow_packs": ["EXECUTIVE_KNOWLEDGE", "DOCUMENT_TENDER_AND_PROPOSAL_INTELLIGENCE"],
+      "first_evidence": ["market objective", "target segment", "entry constraints", "source-backed context", "partner/buyer hypothesis"],
+      "proof_method": "validated market map + qualified relationship movement + decision pack acceptance",
+      "routing_note": "If market-entry demand is combined with a distinct AI/automation/Company Brain problem family, route to Diagnostic/Discovery to resolve the primary bounded scope instead of silently forcing one package."
+    },
+    {
+      "demand": "PARTNER_IMPLEMENTATION_OR_WHITE_LABEL",
+      "phrases": ["implementation partner", "SI", "white label", "co-sell", "ERP/CRM partner"],
+      "likely_problems": ["delivery capacity", "proof gap", "local market access", "AI implementation governance", "co-sell handoff"],
+      "buyers": ["agency owner", "consulting partner", "SI practice lead", "MSP owner", "alliances lead"],
+      "primary_route": "PARTNER_IMPLEMENTATION_PROOF_LAYER",
+      "workflow_packs": ["ENGINEERING_AND_IT", "DOCUMENT_TENDER_AND_PROPOSAL_INTELLIGENCE"],
+      "first_evidence": ["partner intent", "mutual value", "delivery capability", "customer/market boundary", "proof and attribution rules"],
+      "proof_method": "joint delivery acceptance + attributable influenced revenue + permissioned proof"
+    }
+  ],
+  "company_brain_workflow_packs": {
+    "EXECUTIVE_KNOWLEDGE": {
+      "outcome_examples": ["evidence-bound executive brief", "decision context retrieval", "policy-aware management Q&A"],
+      "blocked_default": ["generic chatbot", "unbounded enterprise assistant"]
+    },
+    "SALES_AND_CRM_INTELLIGENCE": {
+      "outcome_examples": ["account context assembly", "proposal preparation", "source-bound next action", "CRM quality diagnosis"],
+      "blocked_default": ["cold bulk outreach", "relationship fabrication"]
+    },
+    "SUPPORT_AND_OPS": {
+      "outcome_examples": ["case classification", "procedure retrieval", "exception routing", "bounded workflow automation"],
+      "blocked_default": ["unreviewed high-impact customer commitment"]
+    },
+    "DOCUMENT_TENDER_AND_PROPOSAL_INTELLIGENCE": {
+      "outcome_examples": ["requirement extraction", "evidence matrix", "compliance/unknown map", "proposal seed"],
+      "blocked_default": ["automatic tender submission", "unsupported claim generation"]
+    },
+    "FINANCE_AND_ADMIN": {
+      "outcome_examples": ["document routing", "reconciliation preparation", "management variance explanation"],
+      "blocked_default": ["payment execution", "financial truth without canonical evidence"]
+    },
+    "ENGINEERING_AND_IT": {
+      "outcome_examples": ["bounded engineering copilot", "incident/runbook intelligence", "API/change analysis", "governed agent workflow"],
+      "blocked_default": ["production mutation without authority", "secret access expansion"]
+    }
+  },
+  "playbook_rules": {
+    "sector_name_never_overrides_problem_evidence": true,
+    "package_is_hypothesis_until_canonical_router": true,
+    "fixed_public_price_authority": false,
+    "one_named_outcome_required_for_company_brain_sprint": true,
+    "customer_value_requires_customer_validation": true,
+    "technical_pass_is_customer_value": false,
+    "synthetic_eval_is_customer_proof": false,
+    "external_send_or_publish_authority": false,
+    "payment_or_spend_authority": false,
+    "production_mutation_authority": false
+  }
+}

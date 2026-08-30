@@ -7,19 +7,21 @@ from dealix.commercial.company_brain_sprint import (
     WorkflowCandidate,
 )
 from dealix.commercial.portfolio_router import (
+    INTERACTION_EVIDENCE_PRESENT,
     DemandSignal,
     EntryPackage,
     PortfolioPackageRouter,
 )
 
 
-def test_technical_demand_routes_to_company_brain_without_authority() -> None:
+def test_technical_demand_routes_to_company_brain_without_authority_or_relationship_promotion() -> None:
     decision = PortfolioPackageRouter().route(
         DemandSignal(
             signal_id="sig-1",
             company_name="Acme",
             observed_at="2026-08-29T09:00:00+00:00",
             source_ref="form://request/1",
+            real_interaction_state="EXPLICIT_INBOUND",
             explicit_inbound_ref="inbound://1",
             consent_state="CONSENTED",
             problem_statement="We need a governed company brain and workflow automation.",
@@ -27,8 +29,10 @@ def test_technical_demand_routes_to_company_brain_without_authority() -> None:
         )
     )
     assert decision.recommended_package == EntryPackage.COMPANY_BRAIN
-    assert decision.relationship_state == "VERIFIED_RELATIONSHIP"
+    assert decision.relationship_state == INTERACTION_EVIDENCE_PRESENT
     assert decision.next_action == "RUN_COMPANY_BRAIN_SPRINT_ASSESSMENT"
+    assert decision.authority_class == "PACKAGE_HYPOTHESIS_ONLY"
+    assert decision.authority["relationship"] is False
     assert all(value is False for value in decision.authority.values())
 
 
@@ -45,6 +49,26 @@ def test_research_without_evidence_never_becomes_lead_or_offer() -> None:
     assert decision.relationship_state == "UNKNOWN_NOT_EVIDENCE_BACKED"
     assert decision.authority["offer"] is False
     assert decision.authority["external_send"] is False
+
+
+def test_raw_inbound_reference_without_canonical_state_stays_research_only() -> None:
+    decision = PortfolioPackageRouter().route(
+        DemandSignal(
+            signal_id="sig-raw-inbound",
+            company_name="Acme",
+            observed_at="2026-08-29T09:00:00+00:00",
+            source_ref="form://request/raw",
+            explicit_inbound_ref="inbound://raw",
+            consent_state="CONSENTED",
+            problem_statement="We need company brain automation.",
+            requested_capabilities=["company_brain", "automation"],
+        )
+    )
+    assert decision.recommended_package == EntryPackage.RESEARCH_NURTURE_SUPPRESS
+    assert decision.status == "RESEARCH_ONLY"
+    assert decision.relationship_state == "UNKNOWN_NOT_EVIDENCE_BACKED"
+    assert "RAW_INTERACTION_REFERENCE_NOT_CANONICAL_STATE" in decision.reason_codes
+    assert all(value is False for value in decision.authority.values())
 
 
 def test_suppression_overrides_package_interest() -> None:
@@ -230,6 +254,7 @@ def test_routing_and_assessment_are_deterministic() -> None:
         signal_id="sig-4",
         company_name="Acme",
         observed_at="2026-08-29T09:00:00+00:00",
+        real_interaction_state="EXPLICIT_INBOUND",
         explicit_inbound_ref="inbound://4",
         problem_tags=["sales"],
     )
