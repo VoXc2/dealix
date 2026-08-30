@@ -16,7 +16,7 @@
         launch-validate launch-vertical-score launch-icp-score launch-trust-preflight \
         launch-outreach-drafts launch-proposal launch-founder-command launch-weekly-review \
         launch-content launch-pipeline launch-all-dry-runs test-launch \
-        score-prospect score-batch analyze-pipeline intelligence-test
+        score-prospect score-batch analyze-pipeline intelligence-test brand-growth-verify brand-growth-run
 
 # Python binary (override with PYTHON=python3.12 make ...)
 PYTHON ?= python3
@@ -324,6 +324,19 @@ analyze-pipeline: ## CI: analyze a pipeline CSV and print recommendations
 
 intelligence-test: ## CI: run the new intelligence layer tests
 	$(PYTHON) -m pytest tests/test_intelligence_layer.py tests/test_sales_strategist_agent.py -q
+
+
+# ── Brand & Growth Portfolio V2 ─────────────────────────────────
+
+brand-growth-verify: ## Verify the multi-arm portfolio contract and runtime gates
+	$(PYTHON) scripts/verify_brand_growth_portfolio_v2.py
+	$(PYTHON) scripts/verify_brand_growth_portfolio_runtime_v1.py
+
+brand-growth-run: ## Compile an explicit Market Radar snapshot (RADAR_SNAPSHOT=...)
+	@test -n "$(RADAR_SNAPSHOT)" || (echo "RADAR_SNAPSHOT is required; no synthetic input is allowed" >&2; exit 2)
+	$(PYTHON) scripts/commercial/run_brand_growth_portfolio_v2.py \
+		--input "$(RADAR_SNAPSHOT)" \
+		--out "data/founder_briefs/brand_growth_portfolio_$(date -u +%F).json"
 
 # ── Sovereign Verify ─────────────────────────────────────────────
 dealix-verify: ## Run canonical verification (MODE=trust|pr|full|production|security|runtime|commercial|changed) — use MODE=...
