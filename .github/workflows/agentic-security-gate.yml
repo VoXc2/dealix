@@ -21,43 +21,34 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v7
 
+      - name: Verify workflow trust contract
+        run: python scripts/security/verify_workflow_trust_v1.py
+
       - name: Check workflow permission blocks
         id: permission-check
         run: |
           echo "=== Workflow Security Gate ==="
-          
-          # Block dangerous patterns
           DANGEROUS=0
-          
           for workflow in .github/workflows/*.yml .github/workflows/**/*.yml; do
             if [ -f "$workflow" ]; then
               echo "Checking: $workflow"
-              
-              # Check for pull_request_target
               if grep -q "pull_request_target:" "$workflow"; then
                 echo "⚠️  WARNING: $workflow uses pull_request_target"
                 DANGEROUS=1
               fi
-              
-              # Check for issue_comment with write
               if grep -q "issue_comment:" "$workflow"; then
                 echo "⚠️  WARNING: $workflow uses issue_comment trigger"
                 DANGEROUS=1
               fi
-              
-              # Check for broad permissions
               if grep -q "permissions: \*" "$workflow"; then
                 echo "⚠️  WARNING: $workflow uses broad permissions"
                 DANGEROUS=1
               fi
-              
-              # Check for secrets in untrusted workflows
               if grep -q "secrets:" "$workflow" && ! grep -q "contents: read" "$workflow"; then
                 echo "⚠️  WARNING: $workflow may have excessive secret access"
               fi
             fi
           done
-          
           if [ $DANGEROUS -eq 1 ]; then
             echo "::warning::Workflow contains potentially dangerous patterns"
           else
@@ -68,19 +59,15 @@ jobs:
         id: send-check
         run: |
           echo "=== External Send Check ==="
-          
           SEND_PATTERNS=0
-          
           for workflow in .github/workflows/*.yml .github/workflows/**/*.yml; do
             if [ -f "$workflow" ]; then
-              # Check for email/WhatsApp send commands
               if grep -iqE "(send.*email|send.*whatsapp|send.*sms)" "$workflow"; then
                 echo "⚠️  WARNING: $workflow may contain external send"
                 SEND_PATTERNS=1
               fi
             fi
           done
-          
           if [ $SEND_PATTERNS -eq 1 ]; then
             echo "::warning::Workflow may contain external send commands"
           else
@@ -91,19 +78,15 @@ jobs:
         id: deploy-check
         run: |
           echo "=== Production Deploy Check ==="
-          
           DEPLOY_FOUND=0
-          
           for workflow in .github/workflows/*.yml .github/workflows/**/*.yml; do
             if [ -f "$workflow" ]; then
-              # Check for production deploy
               if grep -iqE "(deploy.*production|production.*deploy)" "$workflow"; then
                 echo "⚠️  INFO: $workflow contains production deploy"
                 DEPLOY_FOUND=1
               fi
             fi
           done
-          
           if [ $DEPLOY_FOUND -eq 1 ]; then
             echo "::notice::Production deploys require founder approval"
           else
@@ -125,19 +108,24 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
       - name: List all workflows
         run: |
           echo "=== Workflow Inventory ==="
-          find .github/workflows -name "*.yml" -o -name "*.yaml" | while read wf; do
+          WORKFLOW_COUNT="$(find .github/workflows -type f \( -name '*.yml' -o -name '*.yaml' \) | wc -l)"
+          test "$WORKFLOW_COUNT" -gt 0
+          find .github/workflows -type f \( -name '*.yml' -o -name '*.yaml' \) | sort | while read -r wf; do
             echo "- $wf"
           done
           echo ""
-          echo "Total workflows: $(find .github/workflows -name "*.yml" -o -name "*.yaml" | wc -l)"
+          echo "Total workflows: $WORKFLOW_COUNT"
 
       - name: Check default permissions
         run: |
           echo "=== Default Permissions Check ==="
-          DEFAULT_PERMS=$(grep -r "^permissions:" .github/workflows/*.yml 2>/dev/null | head -5)
+          DEFAULT_PERMS="$(grep -r "^permissions:" .github/workflows/*.yml 2>/dev/null | head -5 || true)"
           if [ -n "$DEFAULT_PERMS" ]; then
             echo "Workflows with explicit permissions found"
           else
