@@ -1,0 +1,235 @@
+{
+  "schema": "dealix.event-market-intelligence.v1",
+  "observed_at": "2026-08-30",
+  "status": "RESEARCH_ONLY_NO_RELATIONSHIP_TRUTH",
+  "portfolio_objective": "CASH_READY_AUTONOMOUS_DEALIX_COMPANY",
+  "purpose": "Compress the active Big 5 / LEAP / DeepFest windows into founder-efficient research routes, conversation hypotheses and next-evidence requirements without converting directories, badges, speakers or exhibitors into leads or relationships.",
+  "truth_firewall": {
+    "event_directory_is_lead": false,
+    "exhibitor_is_relationship": false,
+    "speaker_is_relationship": false,
+    "badge_scan_is_relationship": false,
+    "public_contact_is_consent": false,
+    "research_priority_is_purchase_probability": false,
+    "conversation_hypothesis_is_customer_pain": false
+  },
+  "authority": {
+    "relationship": false,
+    "consent": false,
+    "opportunity": false,
+    "external_send": false,
+    "quote": false,
+    "contract": false,
+    "payment": false,
+    "public_claim": false
+  },
+  "event_windows": [
+    {
+      "event_id": "BIG5_CONSTRUCT_SAUDI_PHASE2_2026",
+      "dates": "2026-08-30/2026-09-02",
+      "venue": "Riyadh Front Exhibition & Conference Center / ROSHN Front",
+      "official_directory_snapshot": "557 exhibitor records visible in the Phase 2 directory snapshot",
+      "official_event_scale": "1000+ exhibitors stated on current event site",
+      "count_note": "Do not force the directory snapshot count and total co-located event scale into one exact number; they may represent different scopes.",
+      "sources": [
+        "https://exhibitors.big5constructsaudi.com/big-5-construct-saudi-2026-phase-2/Exhibitor",
+        "https://ar.big5constructsaudi.com/"
+      ]
+    },
+    {
+      "event_id": "LEAP_2026",
+      "dates": "2026-08-31/2026-09-03",
+      "venue": "Riyadh Exhibition & Convention Centre, Malham",
+      "visitor_hours": "13:00-21:00; selected priority/VIP categories from 12:00",
+      "official_scale": "1800+ global tech brands; 1000+ speakers; 600+ startups; 1900+ investors; 201000+ attendance",
+      "sources": [
+        "https://onegiantleap.com/",
+        "https://onegiantleap.com/faq",
+        "https://onegiantleap.com/exhibit/our-2026-exhibitors",
+        "https://onegiantleap.com/2026-speakers"
+      ]
+    },
+    {
+      "event_id": "DEEPFEST_2026",
+      "dates": "2026-08-31/2026-09-03",
+      "venue": "Co-located with LEAP 2026, RECC Malham",
+      "positioning": "AI-dense buyer, platform, governance and partner research surface",
+      "sources": [
+        "https://deepfest.com/",
+        "https://deepfest.com/2026-speakers"
+      ]
+    }
+  ],
+  "big5_founder_route": [
+    {
+      "route_order": 1,
+      "hall": "Hall 4",
+      "targets": [
+        {
+          "company": "Hussein & AlHassan G. Shaker Bros. For Modern Trading Co. LTD. / Shaker Group",
+          "stand": "4A139",
+          "official_facts": [
+            "Official Big 5 directory lists the company at Hall 4 stand 4A139.",
+            "Shaker Group describes six business sectors spanning manufacturing, project solutions, distribution, retail, logistics and aftersales services."
+          ],
+          "dealix_hypothesis": "Cross-business handoffs, project visibility, aftersales/customer operations or logistics-to-commercial context may create a Revenue + Proof + Command or Company Brain use case. This is an inference until stated by the company.",
+          "conversation_questions": [
+            "بين المشاريع واللوجستيات وما بعد البيع، وين أكثر نقطة تحتاجون تجمعون فيها السياق والقرار بدل ما يبقى موزع بين الأنظمة والفرق؟",
+            "إذا عندكم حالة واحدة تتأخر بسبب handoff أو approval أو نقص رؤية، كيف تعرفون اليوم من المالك وما الإجراء التالي؟",
+            "لو قدرنا نثبت نتيجة خلال 30 يوم، أي workflow واحد يستحق نبدأ به؟"
+          ],
+          "next_evidence": ["real two-way interaction", "stated workflow pain", "current owner/system", "follow-up eligibility"],
+          "package_hypotheses_only": ["REVENUE_COMMAND_PILOT", "COMPANY_BRAIN_GOVERNED_AI_SPRINT"]
+        },
+        {
+          "company": "GRUNDFOS Saudi Arabia Co. Ltd",
+          "stand": "4A119",
+          "official_facts": [
+            "Official Big 5 directory lists Grundfos Saudi Arabia at Hall 4 stand 4A119.",
+            "Grundfos Saudi support surfaces expose sales/project support, quotations, order status, service agreements, digital service and a broad authorised partner network."
+          ],
+          "dealix_hypothesis": "Quote/service/partner handoffs and decision visibility could be a useful Company Brain or customer-operations diagnostic; no pain is assumed.",
+          "conversation_questions": [
+            "وين تكون أصعب handoff عندكم: من project support للquotation، ولا من البيع للخدمة والشريك؟",
+            "كيف تعرفون أن inquiry أو quotation أو service request ما ضاع بين القنوات والشركاء؟",
+            "لو عندكم executive view واحدة تجمع context + next action + proof، أي رحلة عميل أو شريك أهم شيء تبدأ بها؟"
+          ],
+          "next_evidence": ["real interaction", "Saudi workflow owner", "specific handoff example", "data/source boundary"],
+          "package_hypotheses_only": ["COMPANY_BRAIN_GOVERNED_AI_SPRINT", "PARTNER_IMPLEMENTATION_PROOF_LAYER"]
+        },
+        {
+          "company": "Wilo Saudi Arabia Company Ltd",
+          "stand": "4B111",
+          "official_facts": [
+            "Official Big 5 directory lists Wilo Saudi Arabia at Hall 4 stand 4B111.",
+            "Wilo publicly describes a Saudi regional headquarters and assembly facility serving building services, water management and industrial sectors."
+          ],
+          "dealix_hypothesis": "Saudi growth plus multi-segment operations may create partner, market-access, service or operational-knowledge opportunities; this remains research only.",
+          "conversation_questions": [
+            "مع توسع التشغيل المحلي في السعودية، أي workflow صار أصعب في التنسيق بين السوق والمصنع/الخدمة والشركاء؟",
+            "وش القرار اللي يحتاج اليوم أكثر من نظام أو أكثر من شخص عشان يكتمل؟",
+            "لو في use case واحد نقدر نقيسه بسرعة، هل هو partner operations، service، quotations، ولا management visibility؟"
+          ],
+          "next_evidence": ["real interaction", "current Saudi operating priority", "named workflow", "mutual-value path"],
+          "package_hypotheses_only": ["SAUDI_MARKET_ACCESS_SPRINT", "COMPANY_BRAIN_GOVERNED_AI_SPRINT", "PARTNER_IMPLEMENTATION_PROOF_LAYER"]
+        }
+      ]
+    },
+    {
+      "route_order": 2,
+      "hall": "Hall 2",
+      "targets": [
+        {
+          "company": "Construction Products Holding Company (CPC)",
+          "stand": "2D161",
+          "official_facts": [
+            "Official Big 5 directory lists CPC at Hall 2 stand 2D161.",
+            "CPC describes a multi-company building-products group serving mega-projects with products, services and logistics support."
+          ],
+          "dealix_hypothesis": "Multi-company project, document, procurement, logistics and customer handoffs are plausible diagnostic areas; no internal problem is asserted.",
+          "conversation_questions": [
+            "في المشاريع الكبيرة، وين أكثر information handoff يسبب تأخير: المواصفات، العرض، التوريد، اللوجستيات، أو متابعة العميل؟",
+            "كيف تربطون اليوم سياق المشروع بين الشركات التابعة بدون ما يصير القرار معتمد على تجميع يدوي؟",
+            "إذا بنينا diagnostic صغير، وش workflow واحد نقدر نقيس فيه ownership والnext action بوضوح؟"
+          ],
+          "next_evidence": ["real interaction", "specific project workflow", "systems involved", "measurable outcome"],
+          "package_hypotheses_only": ["REVENUE_COMMAND_PILOT", "COMPANY_BRAIN_GOVERNED_AI_SPRINT"]
+        },
+        {
+          "company": "Zamil Steel Holding Company",
+          "stand": "2D131",
+          "official_facts": [
+            "Official Big 5 directory lists Zamil Steel at Hall 2 stand 2D131.",
+            "Zamil Steel describes large Saudi manufacturing capacity, engineering/project-management operations and global project delivery; its site shows current 2026 delivery news."
+          ],
+          "dealix_hypothesis": "Engineering-to-project-to-site coordination, document intelligence, project decision context or proof visibility may be relevant; this remains an inference.",
+          "conversation_questions": [
+            "في المشاريع من engineering إلى fabrication إلى site، وين أكثر قرار يتأخر لأن السياق موزع؟",
+            "كيف تتابعون revisions والowner والnext action إذا تغيرت متطلبات المشروع أثناء التنفيذ؟",
+            "لو Company Brain يربط documents + project state + approvals، أي جزء يستحق اختبار bounded أول؟"
+          ],
+          "next_evidence": ["real interaction", "named coordination pain", "document/system boundary", "proof method"],
+          "package_hypotheses_only": ["COMPANY_BRAIN_GOVERNED_AI_SPRINT", "REVENUE_COMMAND_PILOT"]
+        }
+      ]
+    },
+    {
+      "route_order": 3,
+      "hall": "Hall 1",
+      "targets": [
+        {
+          "company": "Al-Futtaim Contracting",
+          "stand": "1D59",
+          "official_facts": [
+            "Official Big 5 directory lists Al-Futtaim Contracting at Hall 1 stand 1D59.",
+            "Al-Futtaim publicly describes Saudi operations across construction, MEP, fire protection, elevators, IT infrastructure, facilities management, IoT, cybersecurity and digital transformation."
+          ],
+          "dealix_hypothesis": "Cross-division operational context, FM/service workflows and implementation-partner alignment make this a high-information conversation for Company Brain, governed AI or partner delivery; no buying intent is implied.",
+          "conversation_questions": [
+            "مع MEP وFM وIT والتحول الرقمي تحت نفس المظلة، وين أكبر gap بين data الموجودة والقرار التنفيذي القابل للمتابعة؟",
+            "هل عندكم workflow يتكرر بين المشروع والتشغيل يحتاج context + approval + proof بشكل أوضح؟",
+            "هل الأنسب لكم buyer use case داخلي، ولا partnership layer نركبها فوق الأنظمة الحالية بدون rip-and-replace؟"
+          ],
+          "next_evidence": ["real interaction", "buyer-vs-partner classification", "named workflow", "current system and authority boundary"],
+          "package_hypotheses_only": ["COMPANY_BRAIN_GOVERNED_AI_SPRINT", "PARTNER_IMPLEMENTATION_PROOF_LAYER"]
+        }
+      ]
+    }
+  ],
+  "leap_deepfest_research_lanes": [
+    {
+      "lane": "SAUDI_IMPLEMENTATION_PARTNERS",
+      "research_targets": ["Accenture Saudi Arabia Limited", "Alnafitha IT"],
+      "why": "Official LEAP exhibitor surfaces show both in the 2026 universe; Alnafitha appears with Microsoft/Nintex/Veeam booth variants. Treat as partner/SI research only.",
+      "conversation_goal": "Determine complementarity: Dealix governance/proof/company-context layer versus their existing implementation portfolio.",
+      "next_evidence": ["real interaction", "joint-account or delivery fit", "non-overlap", "mutual economic value"]
+    },
+    {
+      "lane": "PLATFORM_DATA_ECOSYSTEM",
+      "research_targets": ["Amazon Web Services", "Alteryx MEA"],
+      "why": "Both appear on official LEAP 2026 exhibitor surfaces; current LEAP/DeepFest speaker lists also expose senior AWS/Alteryx participation.",
+      "conversation_goal": "Map technical/ecosystem compatibility and customer proof opportunities, not generic reseller status.",
+      "next_evidence": ["specific integration use case", "partner program relevance", "customer scenario", "technical boundary"]
+    },
+    {
+      "lane": "GOVERNANCE_AND_COMPETITIVE_INTELLIGENCE",
+      "research_targets": ["NDMO data regulation leadership", "Salesforce", "Mistral AI"],
+      "why": "Official DeepFest speaker list includes Dr. Majed Alshammari (NDMO), Mashhour Bedaiwi (Salesforce), and Mohamed Zouari (Mistral AI). These are research/learning signals, not assumed commercial relationships.",
+      "conversation_goal": "Learn current governance, enterprise-agent and model-ecosystem patterns that can strengthen Dealix claims, controls and package design.",
+      "next_evidence": ["public session insight or real conversation", "source citation", "specific Dealix implication", "keep/iterate/stop decision"]
+    },
+    {
+      "lane": "REGULATED_OR_COMPLEX_BUYER_RESEARCH",
+      "research_targets": ["Abdul Latif Jameel United Finance Company", "Abunayyan Holding"],
+      "why": "Both appear on the official LEAP 2026 exhibitor directory. Their presence only justifies account research; it does not prove fit, pain or relationship.",
+      "conversation_goal": "Test whether decision/proof/governed Company Brain problems exist in a high-trust or industrial environment.",
+      "next_evidence": ["real interaction", "stated problem", "data/governance boundary", "economic measurability"]
+    }
+  ],
+  "founder_capture_minimum": [
+    "event_id",
+    "company",
+    "person_and_role_as_stated",
+    "timestamp_and_location",
+    "what_they_actually_said",
+    "named_or_observed_pain",
+    "current_workflow_or_owner_if_known",
+    "follow_up_permission_or_channel_eligibility",
+    "next_evidence",
+    "next_action"
+  ],
+  "post_interaction_internal_sla": {
+    "target": "same day",
+    "outputs": [
+      "interaction evidence receipt",
+      "account context card",
+      "qualified-problem hypothesis with unknowns",
+      "package hypothesis only",
+      "mini diagnostic outline",
+      "discovery questions",
+      "channel-eligible follow-up draft",
+      "founder decision card only for material decisions"
+    ],
+    "external_send": false
+  }
+}
