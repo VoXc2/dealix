@@ -1,0 +1,111 @@
+{
+  "schema": "dealix.canonical-five-agent-authority.v1",
+  "version": "2026-08-30.1",
+  "status": "AUTHORITY_OVERLAY_ONLY",
+  "purpose": "Keep the existing VPS runtime services and specialist profiles as bounded implementation components while making the five canonical Dealix agents the only accountable execution owners.",
+  "operating_law": "FIVE_CANONICAL_AGENTS_MANY_BOUNDED_WORKLOADS_NO_PARALLEL_FLEET",
+  "canonical_agents": {
+    "dealix-pm": {
+      "role": "President / portfolio / governance economics",
+      "authority_scope": ["portfolio allocation", "priority and WIP", "decision economics", "governance coordination", "founder command"]
+    },
+    "dealix-sales": {
+      "role": "Market / relationship / revenue / negotiation",
+      "authority_scope": ["market intelligence", "account intelligence", "qualification", "diagnostic and discovery preparation", "proposal and negotiation preparation", "partner market access"]
+    },
+    "dealix-delivery": {
+      "role": "Client / delivery / support / proof",
+      "authority_scope": ["client context", "delivery preparation", "support", "acceptance evidence", "proof preparation", "expansion readiness"]
+    },
+    "dealix-engineer": {
+      "role": "Repository / reliability / security / verification / development factory",
+      "authority_scope": ["repo work", "tests", "verification", "security implementation", "SRE preparation", "capability intake implementation", "evidence-driven self-improvement"]
+    },
+    "dealix-content": {
+      "role": "Brand / content / search / Academy / distribution assets",
+      "authority_scope": ["brand system", "content intelligence", "creative assets", "SEO and AEO drafts", "channel adaptation", "Academy and partner collateral"]
+    }
+  },
+  "lane_authority": {
+    "executive_portfolio": "dealix-pm",
+    "market_radar": "dealix-sales",
+    "account_intelligence": "dealix-sales",
+    "client_context": "dealix-delivery",
+    "revenue_qualification": "dealix-sales",
+    "diagnostic_discovery": "dealix-sales",
+    "proposal_negotiation": "dealix-sales",
+    "brand_content_strategy": "dealix-content",
+    "creative_video": "dealix-content",
+    "channel_distribution": "dealix-content",
+    "lifecycle_inbound": "dealix-sales",
+    "partner_market_access": "dealix-sales",
+    "delivery_customer_success": "dealix-delivery",
+    "support_operations": "dealix-delivery",
+    "proof_evidence": "dealix-delivery",
+    "finance_commercial_truth": "dealix-pm",
+    "governance_security": "dealix-engineer",
+    "product_engineering": "dealix-engineer",
+    "production_sre": "dealix-engineer",
+    "learning_cost_friction": "dealix-pm"
+  },
+  "legacy_runtime_bindings": {
+    "company_brain": {"canonical_owner": "dealix-pm", "authority_owner": false, "self_schedule": false, "l5_authority": false},
+    "sprint_orchestrator": {"canonical_owner": "dealix-pm", "authority_owner": false, "self_schedule": false, "l5_authority": false},
+    "governance": {"canonical_owner": "dealix-pm", "authority_owner": false, "self_schedule": false, "l5_authority": false},
+    "market_intel": {"canonical_owner": "dealix-sales", "authority_owner": false, "self_schedule": false, "l5_authority": false},
+    "lead_intelligence": {"canonical_owner": "dealix-sales", "authority_owner": false, "self_schedule": false, "l5_authority": false},
+    "revenue_intelligence": {"canonical_owner": "dealix-sales", "authority_owner": false, "self_schedule": false, "l5_authority": false},
+    "sales_intelligence": {"canonical_owner": "dealix-sales", "authority_owner": false, "self_schedule": false, "l5_authority": false},
+    "customer_acquisition": {"canonical_owner": "dealix-sales", "authority_owner": false, "self_schedule": false, "l5_authority": false},
+    "diagnostic_agent": {"canonical_owner": "dealix-sales", "authority_owner": false, "self_schedule": false, "l5_authority": false},
+    "data_architect": {"canonical_owner": "dealix-engineer", "authority_owner": false, "self_schedule": false, "l5_authority": false},
+    "managed_ops": {"canonical_owner": "dealix-delivery", "authority_owner": false, "self_schedule": false, "l5_authority": false}
+  },
+  "specialist_profile_bindings": {
+    "founder-president": "dealix-pm",
+    "sovereign-security": "dealix-engineer",
+    "engineering-verifier": "dealix-engineer",
+    "production-sre": "dealix-engineer",
+    "revenue-copilot": "dealix-sales",
+    "market-partner-scout": "dealix-sales",
+    "sales-negotiation": "dealix-sales",
+    "delivery-success": "dealix-delivery",
+    "proof-data": "dealix-delivery",
+    "governance-finance": "dealix-pm",
+    "capability-research": "dealix-engineer",
+    "self-improvement": "dealix-engineer"
+  },
+  "growth_workload_bindings": {
+    "president": "dealix-pm",
+    "market_intelligence": "dealix-sales",
+    "revenue": "dealix-sales",
+    "content_strategist": "dealix-content",
+    "creative_director": "dealix-content",
+    "distribution_manager": "dealix-content",
+    "lifecycle_agent": "dealix-sales",
+    "experiment_analyst": "dealix-pm",
+    "proof_agent": "dealix-delivery",
+    "governance_agent": "dealix-pm"
+  },
+  "compatibility_policy": {
+    "legacy_names_may_continue_running": true,
+    "legacy_names_are_truth_owners": false,
+    "legacy_names_are_portfolio_authority_owners": false,
+    "legacy_names_may_create_new_cadence": false,
+    "legacy_names_may_self_escalate_authority": false,
+    "legacy_names_may_execute_l5_without_action_specific_authority": false,
+    "canonical_agents_remain_accountable_when_legacy_runtime_executes": true
+  },
+  "authority_defaults": {
+    "customer_send": false,
+    "public_publish": false,
+    "paid_spend": false,
+    "payment_or_refund": false,
+    "binding_quote_or_discount": false,
+    "legal_commitment": false,
+    "tender_submission": false,
+    "main_merge": false,
+    "production_mutation": false,
+    "dns_db_secret_mutation": false
+  }
+}

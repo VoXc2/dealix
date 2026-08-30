@@ -1,0 +1,95 @@
+{
+  "schema": "dealix.agent-orchestration-guardrails.v1",
+  "version": "2026-08-30.1",
+  "status": "PATTERN_CONTRACT_ONLY_NO_NEW_RUNTIME",
+  "purpose": "Apply current manager-specialist, tool-guardrail, human-approval and tracing patterns to the existing Dealix Agent Council without installing another agent framework or creating another fleet.",
+  "research_basis": {
+    "checked_at": "2026-08-30",
+    "openai_agents_orchestration": "https://openai.github.io/openai-agents-python/multi_agent/",
+    "openai_tool_guardrails": "https://openai.github.io/openai-agents-python/guardrails/",
+    "openai_handoffs": "https://openai.github.io/openai-agents-python/handoffs/",
+    "openai_tracing": "https://openai.github.io/openai-agents-python/tracing/",
+    "otel_genai_semconv": "https://opentelemetry.io/docs/specs/semconv/registry/attributes/gen-ai/"
+  },
+  "dependency_policy": {
+    "openai_agents_sdk_installed_by_this_contract": false,
+    "new_agent_framework_installed_by_this_contract": false,
+    "adoption_requires_capability_intake": true,
+    "existing_openclaw_hermes_runtime_remains_owner": true
+  },
+  "controller_pattern": {
+    "founder_facing_accountable_agent": "dealix-pm",
+    "default_pattern": "MANAGER_CALLS_BOUNDED_SPECIALISTS",
+    "manager_retains_final_founder_response": true,
+    "specialists_may_own_truth": false,
+    "specialists_may_self_schedule": false,
+    "specialists_may_self_escalate_authority": false,
+    "handoff_is_exception_not_default": true,
+    "handoff_requires_typed_reason_and_target": true,
+    "handoff_authority_check_at_start": true
+  },
+  "tool_guardrails": {
+    "applies_to_every_custom_side_effect_tool": true,
+    "pre_execution_policy_check_required": true,
+    "post_execution_receipt_check_required": true,
+    "schema_validation_required": true,
+    "timeout_and_failure_policy_required": true,
+    "idempotency_required_for_mutating_internal_tools": true,
+    "fail_closed_on_guardrail_error": true,
+    "raw_model_output_may_execute_side_effect": false,
+    "raw_model_output_may_promote_truth": false
+  },
+  "human_approval": {
+    "L0_L4_bounded_internal_may_continue": true,
+    "L5_external_or_irreversible_requires_action_specific_approval": true,
+    "approval_may_be_inferred_from_general_delegation": false,
+    "approval_receipt_required_before_effect": true,
+    "expired_or_mismatched_approval_blocks_effect": true
+  },
+  "handoff_boundary": {
+    "tool_guardrails_do_not_substitute_for_handoff_authorization": true,
+    "authorization_must_be_checked_before_handoff_side_effects": true,
+    "handoff_metadata_is_not_application_truth": true,
+    "receiving_specialist_must_use_canonical_context": true
+  },
+  "observability": {
+    "reuse_existing_opentelemetry": true,
+    "gen_ai_operation_names": [
+      "invoke_agent",
+      "invoke_workflow",
+      "execute_tool"
+    ],
+    "workflow_name_attribute": "gen_ai.workflow.name",
+    "operation_name_attribute": "gen_ai.operation.name",
+    "required_business_attributes": [
+      "dealix.system_id",
+      "dealix.workload_id",
+      "dealix.source_sha",
+      "dealix.authority_class",
+      "dealix.result"
+    ],
+    "capture_prompt_content_by_default": false,
+    "capture_customer_content_by_default": false,
+    "capture_secrets_by_default": false,
+    "capture_raw_credentials_by_default": false
+  },
+  "truth_and_authority": {
+    "research_is_relationship": false,
+    "public_data_is_consent": false,
+    "score_is_purchase_probability": false,
+    "draft_is_sent": false,
+    "proposal_or_invoice_is_payment": false,
+    "technical_or_synthetic_is_customer_proof": false,
+    "agent_trace_is_business_truth": false,
+    "tool_success_is_customer_outcome": false
+  },
+  "definition_of_done": [
+    "one founder-facing manager remains accountable",
+    "bounded specialists cannot become truth or authority owners",
+    "every side-effect tool is policy-guarded and receipted",
+    "handoffs are typed and authority-checked",
+    "L5 remains action-specific approval-gated",
+    "telemetry reuses OpenTelemetry and excludes sensitive content by default",
+    "no new agent runtime or framework is created by this contract"
+  ]
+}
