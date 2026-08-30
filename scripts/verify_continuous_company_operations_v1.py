@@ -89,6 +89,15 @@ REQUIRED_L5 = {
     "public_customer_proof",
 }
 
+REQUIRED_ACTIVATION_DEPENDENCIES = {
+    "CURRENT_MAIN_MARKET_RADAR_ACCEPTANCE",
+    "CURRENT_MAIN_BRAND_GROWTH_ACCEPTANCE",
+    "CURRENT_MAIN_SERVER_AGENT_MODEL_ACCEPTANCE",
+    "CURRENT_MAIN_GROWTH_AUTOPILOT_WIRING_ACCEPTANCE",
+    "CURRENT_VPS_RUNTIME_RECEIPT",
+    "SOVEREIGN_TRUST_RECEIPT",
+}
+
 EXPECTED_FOUNDER_SECTIONS = ["MONEY", "DECISIONS", "RISKS", "APPROVALS", "NEXT_ACTION"]
 
 
@@ -220,10 +229,10 @@ def main() -> None:
     require(founder.get("default_low_urgency_behavior") == "BATCH_AND_DELEGATE", "founder attention policy drift")
 
     activation = data.get("activation_gate", {})
-    require("#1405_EXACT_HEAD_ACCEPTANCE" in activation.get("depends_on", []), "#1405 acceptance dependency missing")
-    require("#1406_EXACT_HEAD_ACCEPTANCE" in activation.get("depends_on", []), "#1406 acceptance dependency missing")
-    require("CURRENT_VPS_RUNTIME_RECEIPT" in activation.get("depends_on", []), "current VPS receipt dependency missing")
-    require("SOVEREIGN_TRUST_RECEIPT" in activation.get("depends_on", []), "sovereign trust dependency missing")
+    require(
+        REQUIRED_ACTIVATION_DEPENDENCIES.issubset(set(activation.get("depends_on", []))),
+        "current-main activation dependencies drift",
+    )
     require(activation.get("main_merge_authority") is False, "contract cannot authorize main merge")
     require(activation.get("production_activation_authority") is False, "contract cannot authorize production activation")
 
@@ -233,6 +242,7 @@ def main() -> None:
     print(f"always_on_workloads={len(EXPECTED_WORKLOADS)}")
     print(f"receipt_fields={len(REQUIRED_RECEIPT_FIELDS)}")
     print("scheduler=EXISTING_DEALIX_COMPANY_AUTOPILOT_ONLY")
+    print("activation_dependencies=CURRENT_MAIN_AND_SOVEREIGN_RECEIPTS")
     print("external_or_irreversible_authority=ACTION_SPECIFIC_APPROVAL_REQUIRED")
 
 

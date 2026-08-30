@@ -1,13 +1,14 @@
 {
   "schema": "dealix.continuous-company-operations.v1",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "generated_at": "2026-08-30",
   "status": "DRAFT_REVIEW_ONLY",
-  "purpose": "Make the existing Dealix Company Machine operate continuously in the founder's economic interest through bounded internal autonomy, evidence receipts, recovery and learning. This is a subordinate operating contract for #1406 and does not create a scheduler, agent fleet, truth store or execution authority.",
+  "purpose": "Make the existing Dealix Company Machine operate continuously in the founder's economic interest through bounded internal autonomy, evidence receipts, recovery and learning. This is a subordinate operating contract and does not create a scheduler, agent fleet, truth store or execution authority.",
   "parents": {
     "company_machine": "current_main_canonical_company_machine",
-    "market_radar": "#1405",
-    "brand_growth_portfolio": "#1406",
+    "market_radar": "current_main_market_radar",
+    "brand_growth_portfolio": "current_main_brand_growth_portfolio",
+    "server_agent_model": "current_main_server_agent_operating_model",
     "commercial_go_live": "#1299",
     "revenue_authority": "#1310",
     "capability_intake": "#1304"
@@ -229,8 +230,10 @@
   },
   "activation_gate": {
     "depends_on": [
-      "#1405_EXACT_HEAD_ACCEPTANCE",
-      "#1406_EXACT_HEAD_ACCEPTANCE",
+      "CURRENT_MAIN_MARKET_RADAR_ACCEPTANCE",
+      "CURRENT_MAIN_BRAND_GROWTH_ACCEPTANCE",
+      "CURRENT_MAIN_SERVER_AGENT_MODEL_ACCEPTANCE",
+      "CURRENT_MAIN_GROWTH_AUTOPILOT_WIRING_ACCEPTANCE",
       "CURRENT_VPS_RUNTIME_RECEIPT",
       "SOVEREIGN_TRUST_RECEIPT"
     ],

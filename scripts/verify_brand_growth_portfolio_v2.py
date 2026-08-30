@@ -71,6 +71,15 @@ REQUIRED_TRUTH_INVARIANTS = {
     "technical_or_synthetic != customer_outcome_proof",
 }
 
+REQUIRED_ACTIVATION_DEPENDENCIES = {
+    "CURRENT_MAIN_MARKET_RADAR_ACCEPTANCE",
+    "CURRENT_MAIN_BRAND_GROWTH_ACCEPTANCE",
+    "CURRENT_MAIN_SERVER_AGENT_MODEL_ACCEPTANCE",
+    "CURRENT_MAIN_GROWTH_AUTOPILOT_WIRING_ACCEPTANCE",
+    "CURRENT_VPS_RUNTIME_RECEIPT",
+    "SOVEREIGN_TRUST_RECEIPT",
+}
+
 
 def fail(message: str) -> None:
     raise SystemExit(f"DEALIX_BRAND_GROWTH_PORTFOLIO_VERDICT=FAIL\nFAIL: {message}")
@@ -217,14 +226,8 @@ def main() -> int:
     activation = continuity.get("activation_gate", {})
     if activation.get("main_merge_authority") is not False or activation.get("production_activation_authority") is not False:
         fail("continuous operations contract may not authorize merge or production activation")
-    required_dependencies = {
-        "#1405_EXACT_HEAD_ACCEPTANCE",
-        "#1406_EXACT_HEAD_ACCEPTANCE",
-        "CURRENT_VPS_RUNTIME_RECEIPT",
-        "SOVEREIGN_TRUST_RECEIPT",
-    }
-    if not required_dependencies.issubset(set(activation.get("depends_on", []))):
-        fail("continuous operations activation dependencies drift")
+    if not REQUIRED_ACTIVATION_DEPENDENCIES.issubset(set(activation.get("depends_on", []))):
+        fail("continuous operations current-main activation dependencies drift")
 
     print("DEALIX_BRAND_GROWTH_PORTFOLIO_VERDICT=PASS")
     print("MULTI_ARM_REGISTRY=PASS")
