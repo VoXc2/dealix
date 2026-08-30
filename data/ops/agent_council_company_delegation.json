@@ -117,106 +117,348 @@
       "accountable": "sprint_orchestrator",
       "specialist": "founder-president",
       "workload": "president",
-      "support": ["company_brain", "revenue_intelligence", "governance", "managed_ops"],
+      "support": [
+        "company_brain",
+        "revenue_intelligence",
+        "governance",
+        "managed_ops"
+      ],
       "mission": "Continuously choose the highest verified-value objective, allocate founder time and agent capacity, stop low-value work and publish one evidence-first next-best-action.",
-      "automatic": ["priority_ranking", "capacity_allocation", "dependency_map", "stop_scale_retest", "morning_command", "approval_card_preparation"],
-      "kpis": ["verified_stage_movement", "founder_time_saved", "blocked_work_age", "highest_next_action_has_evidence"]
+      "automatic": [
+        "priority_ranking",
+        "capacity_allocation",
+        "dependency_map",
+        "stop_scale_retest",
+        "morning_command",
+        "approval_card_preparation"
+      ],
+      "kpis": [
+        "verified_stage_movement",
+        "founder_time_saved",
+        "blocked_work_age",
+        "highest_next_action_has_evidence"
+      ]
     },
     "production_trust_security": {
       "accountable": "governance",
-      "specialists": ["sovereign-security", "engineering-verifier", "production-sre"],
-      "support": ["managed_ops", "data_architect"],
+      "specialists": [
+        "sovereign-security",
+        "engineering-verifier",
+        "production-sre"
+      ],
+      "support": [
+        "managed_ops",
+        "data_architect"
+      ],
       "mission": "Keep production, runtime, CI evidence, dependencies, secrets posture and rollback readiness truthful without consuming growth capacity when no regression exists.",
-      "automatic": ["read_only_health", "security_analysis", "exact_sha_verification", "dependency_triage", "receipt_review", "incident_classification", "rollback_preparation"],
-      "kpis": ["material_regressions_open", "verification_receipt_freshness", "security_findings_triaged", "false_incident_rate"]
+      "automatic": [
+        "read_only_health",
+        "security_analysis",
+        "exact_sha_verification",
+        "dependency_triage",
+        "receipt_review",
+        "incident_classification",
+        "rollback_preparation"
+      ],
+      "kpis": [
+        "material_regressions_open",
+        "verification_receipt_freshness",
+        "security_findings_triaged",
+        "false_incident_rate"
+      ]
     },
     "product_engineering_capability": {
       "accountable": "sprint_orchestrator",
-      "specialists": ["engineering-verifier", "capability-research", "self-improvement"],
-      "support": ["data_architect", "governance"],
+      "specialists": [
+        "engineering-verifier",
+        "capability-research",
+        "self-improvement"
+      ],
+      "support": [
+        "data_architect",
+        "governance"
+      ],
       "mission": "Build only evidence-backed, reusable product or automation improvements that remove a current trust, revenue, delivery or founder-friction constraint.",
-      "automatic": ["gap_analysis", "architecture_review", "tool_research", "prototype", "focused_test", "safe_branch", "draft_pr", "learning_proposal"],
-      "stop_rules": ["no_customer_or_operating_evidence", "duplicate_existing_capability", "maintenance_cost_exceeds_expected_value", "requires_l5_without_material_value"],
-      "kpis": ["reused_improvements", "founder_minutes_removed", "defect_recurrence", "time_to_verified_fix"]
+      "automatic": [
+        "gap_analysis",
+        "architecture_review",
+        "tool_research",
+        "prototype",
+        "focused_test",
+        "safe_branch",
+        "draft_pr",
+        "learning_proposal"
+      ],
+      "stop_rules": [
+        "no_customer_or_operating_evidence",
+        "duplicate_existing_capability",
+        "maintenance_cost_exceeds_expected_value",
+        "requires_l5_without_material_value"
+      ],
+      "kpis": [
+        "reused_improvements",
+        "founder_minutes_removed",
+        "defect_recurrence",
+        "time_to_verified_fix"
+      ]
     },
     "market_competitor_partner_intelligence": {
       "accountable": "market_intel",
       "specialist": "market-partner-scout",
       "workload": "market_intelligence",
-      "support": ["lead_intelligence", "company_brain", "capability-research"],
+      "support": [
+        "lead_intelligence",
+        "company_brain",
+        "capability-research"
+      ],
       "mission": "Maintain sourced Saudi/GCC/global market, competitor, event, program, tender, partner and account intelligence while keeping every discovery research-only until human evidence changes its state.",
-      "automatic": ["research", "monitoring", "source_refresh", "account_scoring", "buying_group_hypotheses", "event_targeting", "partner_mapping", "program_watch"],
-      "kpis": ["fresh_high_value_signals", "source_freshness", "signals_converted_to_real_interactions", "research_false_promotion_count"]
+      "automatic": [
+        "research",
+        "monitoring",
+        "source_refresh",
+        "account_scoring",
+        "buying_group_hypotheses",
+        "event_targeting",
+        "partner_mapping",
+        "program_watch"
+      ],
+      "kpis": [
+        "fresh_high_value_signals",
+        "source_freshness",
+        "signals_converted_to_real_interactions",
+        "research_false_promotion_count"
+      ]
     },
     "revenue_sales_negotiation": {
       "accountable": "revenue_intelligence",
-      "specialists": ["revenue-copilot", "sales-negotiation"],
+      "specialists": [
+        "revenue-copilot",
+        "sales-negotiation"
+      ],
       "workload": "revenue",
-      "support": ["lead_intelligence", "sales_intelligence", "customer_acquisition", "diagnostic_agent"],
+      "support": [
+        "lead_intelligence",
+        "sales_intelligence",
+        "customer_acquisition",
+        "diagnostic_agent"
+      ],
       "mission": "Move evidence-backed relationships through qualified problem, diagnostic, discovery, customer-specific proposal, pilot, payment and proof with no pipeline inflation.",
-      "automatic": ["next_best_action", "diagnostic_preparation", "discovery_brief", "proposal_draft", "objection_analysis", "negotiation_options", "follow_up_draft", "closeability_analysis"],
-      "kpis": ["verified_relationships", "qualified_problems", "diagnostics", "discoveries", "customer_specific_proposals", "paid_pilots", "verified_revenue", "days_to_paid_pilot"]
+      "automatic": [
+        "next_best_action",
+        "diagnostic_preparation",
+        "discovery_brief",
+        "proposal_draft",
+        "objection_analysis",
+        "negotiation_options",
+        "follow_up_draft",
+        "closeability_analysis"
+      ],
+      "kpis": [
+        "verified_relationships",
+        "qualified_problems",
+        "diagnostics",
+        "discoveries",
+        "customer_specific_proposals",
+        "paid_pilots",
+        "verified_revenue",
+        "days_to_paid_pilot"
+      ]
     },
     "brand_content_distribution": {
       "accountable": "customer_acquisition",
-      "specialists": ["market-partner-scout", "proof-data"],
-      "workloads": ["content_strategist", "creative_director", "distribution_manager"],
-      "support": ["company_brain", "governance"],
+      "specialists": [
+        "market-partner-scout",
+        "proof-data"
+      ],
+      "workloads": [
+        "content_strategist",
+        "creative_director",
+        "distribution_manager"
+      ],
+      "support": [
+        "company_brain",
+        "governance"
+      ],
       "mission": "Convert verified market pain, buyer questions and proof into one governed Brand/Content/Distribution portfolio with channel-specific adaptation and no commercial-truth drift.",
-      "automatic": ["editorial_planning", "content_ideation", "repurposing", "creative_briefs", "video_scripts", "template_datasets", "channel_adaptation", "utm_mapping", "queue_preparation", "seo_aeo_audits"],
-      "kpis": ["qualified_engagement", "content_to_relationship_movement", "assets_blocked_by_truth_gate", "proof_reuse_rate"]
+      "automatic": [
+        "editorial_planning",
+        "content_ideation",
+        "repurposing",
+        "creative_briefs",
+        "video_scripts",
+        "template_datasets",
+        "channel_adaptation",
+        "utm_mapping",
+        "queue_preparation",
+        "seo_aeo_audits"
+      ],
+      "kpis": [
+        "qualified_engagement",
+        "content_to_relationship_movement",
+        "assets_blocked_by_truth_gate",
+        "proof_reuse_rate"
+      ]
     },
     "lifecycle_inbound_relationships": {
       "accountable": "customer_acquisition",
       "workload": "lifecycle_agent",
       "specialist": "revenue-copilot",
-      "support": ["sales_intelligence", "governance", "managed_ops"],
+      "support": [
+        "sales_intelligence",
+        "governance",
+        "managed_ops"
+      ],
       "mission": "Classify inbound and replies, maintain consent/suppression/cadence state and turn real interactions into the next evidence-backed relationship step.",
-      "automatic": ["inbound_classification", "reply_classification", "suppression_processing", "consent_provenance_check", "follow_up_eligibility", "next_evidence", "handoff_to_revenue"],
-      "kpis": ["inbound_response_time", "verified_relationship_conversion", "suppression_violations", "stale_relationships"]
+      "automatic": [
+        "inbound_classification",
+        "reply_classification",
+        "suppression_processing",
+        "consent_provenance_check",
+        "follow_up_eligibility",
+        "next_evidence",
+        "handoff_to_revenue"
+      ],
+      "kpis": [
+        "inbound_response_time",
+        "verified_relationship_conversion",
+        "suppression_violations",
+        "stale_relationships"
+      ]
     },
     "customer_delivery_success": {
       "accountable": "managed_ops",
       "specialist": "delivery-success",
-      "support": ["diagnostic_agent", "company_brain", "governance", "proof-data"],
+      "support": [
+        "diagnostic_agent",
+        "company_brain",
+        "governance",
+        "proof-data"
+      ],
       "mission": "Turn an approved pilot into controlled onboarding, delivery, outcome evidence, risk escalation, renewal and expansion signals.",
-      "automatic": ["delivery_plan", "readiness_check", "risk_tracking", "customer_value_evidence_collection", "handoff_tracking", "expansion_signal_detection"],
-      "kpis": ["delivery_on_time", "proof_coverage", "customer_value_verified", "delivery_blocker_age", "expansion_signal_quality"]
+      "automatic": [
+        "delivery_plan",
+        "readiness_check",
+        "risk_tracking",
+        "customer_value_evidence_collection",
+        "handoff_tracking",
+        "expansion_signal_detection"
+      ],
+      "kpis": [
+        "delivery_on_time",
+        "proof_coverage",
+        "customer_value_verified",
+        "delivery_blocker_age",
+        "expansion_signal_quality"
+      ]
     },
     "data_proof_analytics_experiments": {
       "accountable": "data_architect",
       "specialist": "proof-data",
-      "workloads": ["proof_agent", "experiment_analyst"],
-      "support": ["company_brain", "managed_ops"],
+      "workloads": [
+        "proof_agent",
+        "experiment_analyst"
+      ],
+      "support": [
+        "company_brain",
+        "managed_ops"
+      ],
       "mission": "Maintain provenance, data quality, analytics truth, experiment verdicts and proof reuse so decisions optimize business movement instead of vanity activity.",
-      "automatic": ["data_quality", "lineage", "analytics_summary", "attribution_analysis", "experiment_analysis", "proof_pack_preparation", "case_study_draft", "proof_to_distribution_dataset"],
-      "kpis": ["provenance_coverage", "unknown_rate", "experiment_decision_latency", "verified_proof_assets", "analytics_truth_violations"]
+      "automatic": [
+        "data_quality",
+        "lineage",
+        "analytics_summary",
+        "attribution_analysis",
+        "experiment_analysis",
+        "proof_pack_preparation",
+        "case_study_draft",
+        "proof_to_distribution_dataset"
+      ],
+      "kpis": [
+        "provenance_coverage",
+        "unknown_rate",
+        "experiment_decision_latency",
+        "verified_proof_assets",
+        "analytics_truth_violations"
+      ]
     },
     "governance_finance_compliance": {
       "accountable": "governance",
       "specialist": "governance-finance",
       "workload": "governance_agent",
-      "support": ["data_architect", "revenue_intelligence"],
+      "support": [
+        "data_architect",
+        "revenue_intelligence"
+      ],
       "mission": "Fail closed on consent, spam, claims, payment truth, financial commitments, legal commitments, public proof and irreversible actions.",
-      "automatic": ["risk_classification", "claim_check", "consent_check", "suppression_check", "payment_evidence_check", "approval_classification", "legacy_commercial_drift_detection"],
-      "kpis": ["truth_violations", "consent_violations", "unsupported_claims", "false_revenue_count", "approval_turnaround"]
+      "automatic": [
+        "risk_classification",
+        "claim_check",
+        "consent_check",
+        "suppression_check",
+        "payment_evidence_check",
+        "approval_classification",
+        "legacy_commercial_drift_detection"
+      ],
+      "kpis": [
+        "truth_violations",
+        "consent_violations",
+        "unsupported_claims",
+        "false_revenue_count",
+        "approval_turnaround"
+      ]
     },
     "partner_market_access_ecosystem": {
       "accountable": "market_intel",
       "specialist": "market-partner-scout",
-      "support": ["revenue_intelligence", "sales_intelligence", "governance"],
+      "support": [
+        "revenue_intelligence",
+        "sales_intelligence",
+        "governance"
+      ],
       "mission": "Build Saudi market-access, implementation, referral and co-delivery paths from sourced partner evidence without claiming privileged access or guaranteed outcomes.",
-      "automatic": ["partner_research", "fit_scoring", "co_delivery_hypothesis", "partner_brief", "market_access_map", "founder_to_founder_preparation"],
-      "kpis": ["verified_partner_relationships", "qualified_partner_paths", "co_delivery_opportunities", "referral_opportunities"]
+      "automatic": [
+        "partner_research",
+        "fit_scoring",
+        "co_delivery_hypothesis",
+        "partner_brief",
+        "market_access_map",
+        "founder_to_founder_preparation"
+      ],
+      "kpis": [
+        "verified_partner_relationships",
+        "qualified_partner_paths",
+        "co_delivery_opportunities",
+        "referral_opportunities"
+      ]
     },
     "self_improvement_cost_friction": {
       "accountable": "sprint_orchestrator",
-      "specialists": ["self-improvement", "capability-research"],
+      "specialists": [
+        "self-improvement",
+        "capability-research"
+      ],
       "workload": "experiment_analyst",
-      "support": ["governance", "data_architect"],
+      "support": [
+        "governance",
+        "data_architect"
+      ],
       "mission": "Convert failures, repeated founder work, wasted tokens/cost, latency and missed opportunities into bounded verified improvements without self-expanding authority.",
-      "automatic": ["failure_clustering", "root_cause_hypothesis", "friction_measurement", "cost_review", "bounded_experiment", "playbook_proposal", "retest"],
-      "kpis": ["repeat_failure_rate", "founder_minutes_saved", "cost_per_verified_stage_movement", "automation_reuse", "rollback_success"]
+      "automatic": [
+        "failure_clustering",
+        "root_cause_hypothesis",
+        "friction_measurement",
+        "cost_review",
+        "bounded_experiment",
+        "playbook_proposal",
+        "retest"
+      ],
+      "kpis": [
+        "repeat_failure_rate",
+        "founder_minutes_saved",
+        "cost_per_verified_stage_movement",
+        "automation_reuse",
+        "rollback_success"
+      ]
     }
   },
   "handoff_contract": {
@@ -271,9 +513,31 @@
     "event_rule": "Inbound and real human interaction outrank cold research. Every real interaction must receive same-day evidence capture and next action."
   },
   "cadence": {
-    "event_driven": ["inbound", "reply", "suppression", "provider_receipt", "payment_evidence", "delivery_evidence", "critical_health_signal"],
-    "daily_existing_runner": ["portfolio_priority", "market_radar", "revenue_next_best_action", "crm_read_reconciliation", "analytics_summary", "content_queue", "morning_command"],
-    "weekly_existing_runner": ["experiment_review", "proof_to_distribution", "partner_review", "cost_friction_review", "self_improvement"],
+    "event_driven": [
+      "inbound",
+      "reply",
+      "suppression",
+      "provider_receipt",
+      "payment_evidence",
+      "delivery_evidence",
+      "critical_health_signal"
+    ],
+    "daily_existing_runner": [
+      "portfolio_priority",
+      "market_radar",
+      "revenue_next_best_action",
+      "crm_read_reconciliation",
+      "analytics_summary",
+      "content_queue",
+      "morning_command"
+    ],
+    "weekly_existing_runner": [
+      "experiment_review",
+      "proof_to_distribution",
+      "partner_review",
+      "cost_friction_review",
+      "self_improvement"
+    ],
     "new_scheduler_created": false,
     "new_agent_created": false
   },
@@ -288,6 +552,20 @@
       "stop_doing"
     ],
     "no_founder_action_when": "the council can continue safely at L0-L4",
-    "never_report_vanity_as_success": ["token_count", "lead_universe_size", "draft_count", "connection_count", "provider_accepted_count"]
+    "never_report_vanity_as_success": [
+      "token_count",
+      "lead_universe_size",
+      "draft_count",
+      "connection_count",
+      "provider_accepted_count"
+    ]
+  },
+  "server_operating_model": {
+    "manifest": "data/ops/server_agent_operating_manifest_v1.json",
+    "status": "STACKED_DRAFT_BINDING",
+    "runtime_installation_required": true,
+    "activation_claim": "NOT_CLAIMED",
+    "new_permanent_agents": 0,
+    "new_timers_or_cron": 0
   }
 }

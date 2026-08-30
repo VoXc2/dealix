@@ -1,0 +1,1190 @@
+{
+  "schema": "dealix.server-agent-operating-model.v1",
+  "version": "2026-08-30.1",
+  "status": "MANIFEST_READY_RUNTIME_INSTALLATION_REQUIRED",
+  "purpose": "Bind the existing Dealix VPS services, Agent Council responsibilities, canonical systems, workloads and evidence receipts into one governed operating structure.",
+  "doctrine": "ONE_DEALIX_CORE_MANY_BOUNDED_WORKLOADS_ONE_TRUTH",
+  "based_on": {
+    "repository": "Dealix-sa/dealix",
+    "main_sha": "b7115e09ef051ceaaf18d4d307cf3044a203f051",
+    "radar_pr": 1405,
+    "radar_head": "5ad4cb40113cdc7092630f862f6772f1fac6d7e3",
+    "stack_branch": "codex/1405-server-agent-operating-structure-v1",
+    "activation_claim": "NOT_CLAIMED"
+  },
+  "north_star": "FIRST_VERIFIED_PAID_PILOT",
+  "portfolio_objective": "CASH_READY_AUTONOMOUS_DEALIX_COMPANY",
+  "commercial_wedge": "Revenue + Proof + Command",
+  "source_hierarchy": [
+    "live_git_main_and_exact_head_prs",
+    "current_machine_readable_contracts",
+    "direct_runtime_receipts",
+    "proof_and_payment_evidence",
+    "authorized_connector_evidence",
+    "historical_reports_only_when_current_sources_are_silent"
+  ],
+  "canonical_owners": {
+    "code": "GitHub Dealix-sa/dealix",
+    "production": "Railway Production Core",
+    "command_node": "Hostinger VPS",
+    "company_context": "Dealix Company Brain",
+    "opportunities": "Dealix Opportunity Graph",
+    "approvals": "Dealix Approval Center",
+    "proof": "Dealix Proof Ledger",
+    "daily_command": "scripts/run_dealix_daily_ops.py",
+    "full_day": "scripts/run_dealix_complete_autonomous_day.py",
+    "deterministic_workflows": "systemd + existing Dealix scripts + n8n",
+    "internal_agent_runtime": "existing Hermes company agents",
+    "founder_control": "OpenClaw founder-president + existing specialist profiles",
+    "model_routing": "existing dealix-llm-router",
+    "local_inference": "existing Ollama",
+    "observability": "existing OpenTelemetry stack"
+  },
+  "runtime_bindings": {
+    "activation_model": "reuse_existing_services_and_runners",
+    "services": [
+      {
+        "id": "openclaw",
+        "role": "founder_command_gateway",
+        "truth_owner": false,
+        "external_effect_default": false,
+        "allowed": [
+          "receive founder command",
+          "render command/approval state",
+          "route bounded internal work"
+        ],
+        "forbidden": [
+          "invent authority",
+          "send customer messages",
+          "merge main",
+          "mutate production"
+        ]
+      },
+      {
+        "id": "hermes_dealix",
+        "role": "bounded_reasoning_and_synthesis",
+        "truth_owner": false,
+        "external_effect_default": false,
+        "allowed": [
+          "synthesize evidence",
+          "prepare drafts",
+          "route typed handoffs"
+        ],
+        "forbidden": [
+          "treat inference as fact",
+          "bypass governance",
+          "execute irreversible effects"
+        ]
+      },
+      {
+        "id": "dealix_llm_router",
+        "role": "policy_bound_model_routing",
+        "truth_owner": false,
+        "external_effect_default": false,
+        "allowed": [
+          "select configured model route",
+          "record model/cost receipt",
+          "fail over within policy"
+        ],
+        "forbidden": [
+          "change authority",
+          "exfiltrate secrets",
+          "make raw model output a state transition"
+        ]
+      },
+      {
+        "id": "ollama",
+        "role": "private_local_inference_fallback",
+        "truth_owner": false,
+        "external_effect_default": false,
+        "allowed": [
+          "bounded low-cost internal inference"
+        ],
+        "forbidden": [
+          "customer-facing commitment",
+          "unreviewed external send",
+          "truth promotion"
+        ]
+      },
+      {
+        "id": "n8n",
+        "role": "connector_event_execution_fabric",
+        "truth_owner": false,
+        "external_effect_default": false,
+        "allowed": [
+          "receive approved events",
+          "run deterministic connector steps",
+          "emit provider receipts"
+        ],
+        "forbidden": [
+          "become a second CRM/ledger/scheduler",
+          "send without channel gate",
+          "charge/payment mutation"
+        ]
+      },
+      {
+        "id": "systemd",
+        "role": "host_lifecycle_for_existing_units",
+        "truth_owner": false,
+        "external_effect_default": false,
+        "allowed": [
+          "run already-owned timers/services",
+          "restart only under existing runbook authority"
+        ],
+        "forbidden": [
+          "new timer from this manifest",
+          "parallel scheduler",
+          "self-authorize production mutation"
+        ]
+      }
+    ],
+    "server_state": {
+      "installed_by_this_change": false,
+      "restart_performed": false,
+      "production_changed": false,
+      "secret_changed": false,
+      "runtime_acceptance_required": true,
+      "inspection_script": "scripts/ops/inspect_server_agent_runtime_v1.sh"
+    }
+  },
+  "existing_runtime_agents": [
+    "company_brain",
+    "sprint_orchestrator",
+    "governance",
+    "market_intel",
+    "lead_intelligence",
+    "revenue_intelligence",
+    "sales_intelligence",
+    "customer_acquisition",
+    "diagnostic_agent",
+    "data_architect",
+    "managed_ops"
+  ],
+  "existing_specialist_profiles": [
+    "founder-president",
+    "sovereign-security",
+    "engineering-verifier",
+    "production-sre",
+    "revenue-copilot",
+    "market-partner-scout",
+    "sales-negotiation",
+    "delivery-success",
+    "proof-data",
+    "governance-finance",
+    "capability-research",
+    "self-improvement"
+  ],
+  "existing_growth_overlays": [
+    "president",
+    "market_intelligence",
+    "revenue",
+    "content_strategist",
+    "creative_director",
+    "distribution_manager",
+    "lifecycle_agent",
+    "experiment_analyst",
+    "proof_agent",
+    "governance_agent"
+  ],
+  "logical_lanes_are_not_new_runtimes": true,
+  "responsibility_lanes": [
+    {
+      "id": "executive_portfolio",
+      "runtime_agents": [
+        "sprint_orchestrator",
+        "company_brain"
+      ],
+      "specialists": [
+        "founder-president"
+      ],
+      "workload": "president",
+      "accountable_system": "command_os",
+      "autonomy": "L0-L4_INTERNAL",
+      "triggers": [
+        "daily_existing_runner",
+        "material_change",
+        "founder_command"
+      ],
+      "outputs": [
+        "one_primary_wip",
+        "top_moves",
+        "stop_scale_retest",
+        "approval_cards"
+      ],
+      "blocked_effects": [
+        "main_merge",
+        "production_mutation",
+        "external_send",
+        "payment",
+        "legal_commitment"
+      ]
+    },
+    {
+      "id": "market_radar",
+      "runtime_agents": [
+        "market_intel",
+        "lead_intelligence"
+      ],
+      "specialists": [
+        "market-partner-scout",
+        "capability-research"
+      ],
+      "workload": "market_intelligence",
+      "accountable_system": "data_os",
+      "autonomy": "L0-L3_RESEARCH",
+      "triggers": [
+        "daily_existing_runner",
+        "source_refresh",
+        "event_or_program_change"
+      ],
+      "outputs": [
+        "source_bound_signals",
+        "sector_playbooks",
+        "account_dossiers",
+        "partner_hypotheses"
+      ],
+      "blocked_effects": [
+        "relationship_promotion",
+        "consent_inference",
+        "opportunity_creation",
+        "customer_send",
+        "tender_submission"
+      ]
+    },
+    {
+      "id": "account_intelligence",
+      "runtime_agents": [
+        "lead_intelligence",
+        "company_brain"
+      ],
+      "specialists": [
+        "market-partner-scout",
+        "revenue-copilot"
+      ],
+      "workload": "market_intelligence",
+      "accountable_system": "data_os",
+      "autonomy": "L0-L3_RESEARCH",
+      "triggers": [
+        "shortlist_created",
+        "real_interaction_receipt",
+        "inbound"
+      ],
+      "outputs": [
+        "company_context",
+        "buying_group_hypotheses",
+        "evidence_gaps",
+        "next_evidence"
+      ],
+      "blocked_effects": [
+        "fake_personalization",
+        "contact_consent_inference",
+        "quote",
+        "send"
+      ]
+    },
+    {
+      "id": "client_context",
+      "runtime_agents": [
+        "managed_ops",
+        "company_brain"
+      ],
+      "specialists": [
+        "delivery-success"
+      ],
+      "workload": "lifecycle_agent",
+      "accountable_system": "client_os",
+      "autonomy": "L0-L3_INTERNAL",
+      "triggers": [
+        "client_event",
+        "stakeholder_change",
+        "health_signal",
+        "renewal_or_expansion_signal"
+      ],
+      "outputs": [
+        "client_context",
+        "stakeholder_map",
+        "commitment_tracking",
+        "health_and_risk_snapshot",
+        "renewal_expansion_hypothesis"
+      ],
+      "blocked_effects": [
+        "unapproved_customer_action",
+        "unsupported_health_claim",
+        "scope_commitment",
+        "public_proof"
+      ]
+    },
+    {
+      "id": "revenue_qualification",
+      "runtime_agents": [
+        "revenue_intelligence",
+        "sales_intelligence",
+        "customer_acquisition"
+      ],
+      "specialists": [
+        "revenue-copilot"
+      ],
+      "workload": "revenue",
+      "accountable_system": "revenue_os",
+      "autonomy": "L0-L4_INTERNAL",
+      "triggers": [
+        "real_interaction",
+        "explicit_inbound",
+        "reply",
+        "referral"
+      ],
+      "outputs": [
+        "qualification",
+        "problem_hypothesis",
+        "next_best_action",
+        "diagnostic_intake"
+      ],
+      "blocked_effects": [
+        "pipeline_inflation",
+        "named_price_commitment",
+        "contract",
+        "payment",
+        "cold_whatsapp",
+        "linkedin_automation"
+      ]
+    },
+    {
+      "id": "diagnostic_discovery",
+      "runtime_agents": [
+        "diagnostic_agent",
+        "revenue_intelligence",
+        "company_brain"
+      ],
+      "specialists": [
+        "revenue-copilot",
+        "sales-negotiation"
+      ],
+      "workload": "revenue",
+      "accountable_system": "revenue_os",
+      "autonomy": "L0-L4_INTERNAL",
+      "triggers": [
+        "qualified_problem",
+        "diagnostic_requested",
+        "discovery_scheduled"
+      ],
+      "outputs": [
+        "diagnostic",
+        "discovery_brief",
+        "baseline",
+        "authority_map",
+        "proof_plan"
+      ],
+      "blocked_effects": [
+        "unsupported_roi",
+        "generic_quote",
+        "customer_send_without_gate",
+        "scope_commitment"
+      ]
+    },
+    {
+      "id": "proposal_negotiation",
+      "runtime_agents": [
+        "revenue_intelligence",
+        "sales_intelligence"
+      ],
+      "specialists": [
+        "sales-negotiation",
+        "governance-finance"
+      ],
+      "workload": "revenue",
+      "accountable_system": "revenue_os",
+      "autonomy": "L0-L4_INTERNAL",
+      "triggers": [
+        "discovery_complete",
+        "objection",
+        "proposal_revision"
+      ],
+      "outputs": [
+        "recommended_proposal",
+        "fallback_proposal",
+        "concession_ledger",
+        "negotiation_boundaries"
+      ],
+      "blocked_effects": [
+        "binding_quote",
+        "discount_commitment",
+        "contract",
+        "tender_submission",
+        "payment"
+      ]
+    },
+    {
+      "id": "brand_content_strategy",
+      "runtime_agents": [
+        "customer_acquisition",
+        "company_brain"
+      ],
+      "specialists": [
+        "market-partner-scout",
+        "proof-data"
+      ],
+      "workload": "content_strategist",
+      "accountable_system": "academy_os",
+      "autonomy": "L0-L3_DRAFT",
+      "triggers": [
+        "market_signal",
+        "buyer_question",
+        "proof_event",
+        "weekly_existing_runner"
+      ],
+      "outputs": [
+        "editorial_portfolio",
+        "bilingual_theses",
+        "cta_map",
+        "content_stop_rules"
+      ],
+      "blocked_effects": [
+        "unsupported_claim",
+        "commercial_truth_drift",
+        "public_publish",
+        "fake_case_study"
+      ]
+    },
+    {
+      "id": "creative_video",
+      "runtime_agents": [
+        "customer_acquisition"
+      ],
+      "specialists": [
+        "capability-research"
+      ],
+      "workload": "creative_director",
+      "accountable_system": "academy_os",
+      "autonomy": "L0-L3_DRAFT",
+      "triggers": [
+        "approved_thesis",
+        "asset_request",
+        "template_refresh"
+      ],
+      "outputs": [
+        "creative_brief",
+        "storyboard",
+        "template_dataset",
+        "thumbnail",
+        "asset_qa"
+      ],
+      "blocked_effects": [
+        "brand_override",
+        "unsupported_visual_claim",
+        "public_publish",
+        "customer_logo_without_permission"
+      ]
+    },
+    {
+      "id": "channel_distribution",
+      "runtime_agents": [
+        "customer_acquisition",
+        "governance"
+      ],
+      "specialists": [
+        "proof-data",
+        "governance-finance"
+      ],
+      "workload": "distribution_manager",
+      "accountable_system": "academy_os",
+      "autonomy": "L0-L4_PREPARE_AND_HOLD",
+      "triggers": [
+        "approved_asset",
+        "channel_readiness",
+        "content_queue"
+      ],
+      "outputs": [
+        "channel_variant",
+        "utm_mapping",
+        "queue_entry",
+        "publish_class",
+        "blocked_reason"
+      ],
+      "blocked_effects": [
+        "automatic_linkedin_messaging",
+        "cold_whatsapp",
+        "public_publish_without_gate",
+        "paid_spend"
+      ]
+    },
+    {
+      "id": "lifecycle_inbound",
+      "runtime_agents": [
+        "customer_acquisition",
+        "sales_intelligence"
+      ],
+      "specialists": [
+        "revenue-copilot",
+        "governance-finance"
+      ],
+      "workload": "lifecycle_agent",
+      "accountable_system": "revenue_os",
+      "autonomy": "L0-L4_INTERNAL_PLUS_CHANNEL_POLICY",
+      "triggers": [
+        "inbound",
+        "reply",
+        "comment",
+        "form",
+        "provider_receipt",
+        "suppression"
+      ],
+      "outputs": [
+        "response_class",
+        "relationship_evidence",
+        "follow_up_draft",
+        "suppression_update",
+        "revenue_handoff"
+      ],
+      "blocked_effects": [
+        "send_without_eligibility",
+        "ignore_opt_out",
+        "consent_inference",
+        "duplicate_touch"
+      ]
+    },
+    {
+      "id": "partner_market_access",
+      "runtime_agents": [
+        "market_intel",
+        "revenue_intelligence"
+      ],
+      "specialists": [
+        "market-partner-scout",
+        "sales-negotiation"
+      ],
+      "workload": "market_intelligence",
+      "accountable_system": "partner_os",
+      "autonomy": "L0-L3_RESEARCH_AND_DRAFT",
+      "triggers": [
+        "partner_signal",
+        "event",
+        "market_entry_request",
+        "referral"
+      ],
+      "outputs": [
+        "partner_dossier",
+        "mutual_value_hypothesis",
+        "co_delivery_brief",
+        "market_access_map"
+      ],
+      "blocked_effects": [
+        "government_access_claim",
+        "guaranteed_introduction",
+        "agreement",
+        "external_send_without_gate"
+      ]
+    },
+    {
+      "id": "delivery_customer_success",
+      "runtime_agents": [
+        "managed_ops",
+        "diagnostic_agent",
+        "company_brain"
+      ],
+      "specialists": [
+        "delivery-success"
+      ],
+      "workload": "proof_agent",
+      "accountable_system": "delivery_os",
+      "autonomy": "L0-L3_INTERNAL",
+      "triggers": [
+        "paid_evidence",
+        "approved_scope",
+        "delivery_event",
+        "exception"
+      ],
+      "outputs": [
+        "delivery_plan",
+        "readiness",
+        "risk_register",
+        "acceptance_packet",
+        "expansion_hypothesis"
+      ],
+      "blocked_effects": [
+        "unapproved_scope",
+        "provider_acceptance_as_delivery",
+        "fabricated_outcome",
+        "public_proof"
+      ]
+    },
+    {
+      "id": "support_operations",
+      "runtime_agents": [
+        "managed_ops",
+        "company_brain"
+      ],
+      "specialists": [
+        "delivery-success",
+        "governance-finance"
+      ],
+      "workload": "lifecycle_agent",
+      "accountable_system": "support_os",
+      "autonomy": "L0-L3_INTERNAL",
+      "triggers": [
+        "client_inbound",
+        "support_event",
+        "knowledge_gap"
+      ],
+      "outputs": [
+        "triage",
+        "grounded_answer_draft",
+        "handoff",
+        "incident_or_learning_event"
+      ],
+      "blocked_effects": [
+        "unsafe_answer",
+        "secret_in_chat",
+        "sensitive_action_without_human",
+        "unsupported_resolution"
+      ]
+    },
+    {
+      "id": "proof_evidence",
+      "runtime_agents": [
+        "data_architect",
+        "managed_ops",
+        "company_brain"
+      ],
+      "specialists": [
+        "proof-data"
+      ],
+      "workload": "proof_agent",
+      "accountable_system": "proof_os",
+      "autonomy": "L0-L3_WITH_PERMISSION_GATE",
+      "triggers": [
+        "delivery_evidence",
+        "payment_evidence",
+        "customer_validation",
+        "weekly_existing_runner"
+      ],
+      "outputs": [
+        "proof_pack",
+        "case_study_draft",
+        "proof_card_dataset",
+        "permission_check",
+        "learning_event"
+      ],
+      "blocked_effects": [
+        "synthetic_as_customer_proof",
+        "payment_claim_without_evidence",
+        "public_customer_proof_without_permission"
+      ]
+    },
+    {
+      "id": "finance_commercial_truth",
+      "runtime_agents": [
+        "governance",
+        "data_architect",
+        "revenue_intelligence"
+      ],
+      "specialists": [
+        "governance-finance"
+      ],
+      "workload": "governance_agent",
+      "accountable_system": "finance_os",
+      "autonomy": "L0-L4_INTERNAL",
+      "triggers": [
+        "quote_draft",
+        "invoice_event",
+        "payment_provider_receipt",
+        "cost_event"
+      ],
+      "outputs": [
+        "commercial_classification",
+        "payment_reconciliation",
+        "margin_snapshot",
+        "approval_card"
+      ],
+      "blocked_effects": [
+        "charge",
+        "refund",
+        "price_commitment",
+        "revenue_promotion_without_payment_evidence"
+      ]
+    },
+    {
+      "id": "governance_security",
+      "runtime_agents": [
+        "governance",
+        "data_architect"
+      ],
+      "specialists": [
+        "sovereign-security",
+        "engineering-verifier"
+      ],
+      "workload": "governance_agent",
+      "accountable_system": "governance_os",
+      "autonomy": "HARD_GATE",
+      "triggers": [
+        "every_candidate_action",
+        "policy_change",
+        "security_signal",
+        "approval_request"
+      ],
+      "outputs": [
+        "PASS",
+        "BLOCK",
+        "SPECIFIC_APPROVAL_REQUIRED",
+        "evidence_required",
+        "audit_receipt"
+      ],
+      "blocked_effects": [
+        "fail_open",
+        "secret_logging",
+        "consent_bypass",
+        "authority_escalation"
+      ]
+    },
+    {
+      "id": "product_engineering",
+      "runtime_agents": [
+        "sprint_orchestrator",
+        "data_architect",
+        "governance"
+      ],
+      "specialists": [
+        "engineering-verifier",
+        "capability-research",
+        "self-improvement"
+      ],
+      "workload": "experiment_analyst",
+      "accountable_system": "venture_os",
+      "autonomy": "L0-L4_REPO",
+      "triggers": [
+        "proven_gap",
+        "trust_regression",
+        "repeated_manual_work",
+        "measured_cost_or_latency_failure"
+      ],
+      "outputs": [
+        "issue",
+        "smallest_patch",
+        "targeted_tests",
+        "draft_pr",
+        "learning_proposal"
+      ],
+      "blocked_effects": [
+        "random_feature_factory",
+        "main_merge",
+        "production_mutation",
+        "secret_change",
+        "guard_disable"
+      ]
+    },
+    {
+      "id": "production_sre",
+      "runtime_agents": [
+        "governance",
+        "managed_ops"
+      ],
+      "specialists": [
+        "production-sre",
+        "sovereign-security"
+      ],
+      "workload": "governance_agent",
+      "accountable_system": "governance_os",
+      "autonomy": "L0-L4_READ_ONLY_AND_PREPARE",
+      "triggers": [
+        "health_signal",
+        "deployment_receipt",
+        "CI_failure",
+        "incident"
+      ],
+      "outputs": [
+        "health_snapshot",
+        "incident_classification",
+        "rollback_preparation",
+        "trust_receipt"
+      ],
+      "blocked_effects": [
+        "production_restart_without_gate",
+        "deployment",
+        "DNS",
+        "database_mutation",
+        "secret_rotation"
+      ]
+    },
+    {
+      "id": "learning_cost_friction",
+      "runtime_agents": [
+        "sprint_orchestrator",
+        "data_architect",
+        "company_brain"
+      ],
+      "specialists": [
+        "self-improvement",
+        "capability-research"
+      ],
+      "workload": "experiment_analyst",
+      "accountable_system": "venture_os",
+      "autonomy": "L0-L3_INTERNAL",
+      "triggers": [
+        "failure_cluster",
+        "founder_friction",
+        "cost_spike",
+        "latency_spike",
+        "weekly_existing_runner"
+      ],
+      "outputs": [
+        "root_cause_hypothesis",
+        "bounded_experiment",
+        "before_after_measurement",
+        "scale_iterate_stop_invalid"
+      ],
+      "blocked_effects": [
+        "self_relax_authority",
+        "self_change_legal_truth",
+        "unmeasured_rollout",
+        "unbounded_loop"
+      ]
+    }
+  ],
+  "canonical_system_coverage": [
+    {
+      "id": "command_os",
+      "accountable_owner": "executive_portfolio",
+      "source_owner": "Dealix Daily Command",
+      "existing_cadence": "daily_existing_runner"
+    },
+    {
+      "id": "revenue_os",
+      "accountable_owner": "revenue_qualification",
+      "source_owner": "Revenue Mesh / canonical commercial path",
+      "existing_cadence": "event_driven_plus_daily"
+    },
+    {
+      "id": "proof_os",
+      "accountable_owner": "proof_evidence",
+      "source_owner": "Dealix Proof Ledger",
+      "existing_cadence": "event_driven_plus_weekly"
+    },
+    {
+      "id": "client_os",
+      "accountable_owner": "client_context",
+      "source_owner": "existing client context surfaces",
+      "existing_cadence": "event_driven_plus_daily"
+    },
+    {
+      "id": "delivery_os",
+      "accountable_owner": "delivery_customer_success",
+      "source_owner": "existing Delivery OS",
+      "existing_cadence": "event_driven"
+    },
+    {
+      "id": "support_os",
+      "accountable_owner": "support_operations",
+      "source_owner": "existing Support OS",
+      "existing_cadence": "event_driven"
+    },
+    {
+      "id": "finance_os",
+      "accountable_owner": "finance_commercial_truth",
+      "source_owner": "existing finance/payment truth",
+      "existing_cadence": "event_driven_plus_daily"
+    },
+    {
+      "id": "data_os",
+      "accountable_owner": "market_radar",
+      "source_owner": "Company Brain/Data OS adapters",
+      "existing_cadence": "event_driven_plus_daily"
+    },
+    {
+      "id": "governance_os",
+      "accountable_owner": "governance_security",
+      "source_owner": "Dealix Approval/Governance owners",
+      "existing_cadence": "every_action"
+    },
+    {
+      "id": "academy_os",
+      "accountable_owner": "brand_content_strategy",
+      "source_owner": "existing content/academy surfaces",
+      "existing_cadence": "daily_plus_weekly"
+    },
+    {
+      "id": "partner_os",
+      "accountable_owner": "partner_market_access",
+      "source_owner": "existing partner/market-access surfaces",
+      "existing_cadence": "event_driven_plus_weekly"
+    },
+    {
+      "id": "venture_os",
+      "accountable_owner": "product_engineering",
+      "source_owner": "Development Factory / Learning Factory",
+      "existing_cadence": "evidence_triggered"
+    }
+  ],
+  "execution_lifecycle": [
+    "TRIGGER_RECEIVED",
+    "SOURCE_AND_SCOPE_VALIDATED",
+    "COMPANY_BRAIN_CONTEXT_ASSEMBLED",
+    "SPECIALIST_WORKLOAD_ROUTED",
+    "GOVERNANCE_AND_PROOF_CHECK",
+    "INTERNAL_ACTION_OR_APPROVAL_PACKET",
+    "RECEIPT_AND_STATE_RECONCILIATION",
+    "FOUNDER_COMMAND_UPDATE",
+    "LEARNING_OR_STOP_SCALE_RETEST"
+  ],
+  "handoff_contract": {
+    "schema": "dealix.agent_workload_receipt.v1",
+    "required_fields": [
+      "work_id",
+      "timestamp",
+      "source_owner",
+      "target_owner",
+      "system_id",
+      "workload_id",
+      "objective",
+      "truth_class",
+      "evidence_refs",
+      "facts",
+      "inferences",
+      "unknowns",
+      "current_state",
+      "next_state",
+      "next_evidence_required",
+      "proposed_action",
+      "execution_boundary",
+      "autonomy_level",
+      "approval_class",
+      "idempotency_key",
+      "stop_condition",
+      "result",
+      "output_evidence_refs",
+      "founder_minutes",
+      "agent_minutes",
+      "elapsed_ms",
+      "ai_cost",
+      "tool_cost",
+      "economic_delta"
+    ],
+    "forbidden_transitions": [
+      "research_to_relationship_without_real_interaction_evidence",
+      "public_data_to_consent",
+      "score_to_purchase_probability",
+      "draft_to_sent_without_provider_receipt",
+      "proposal_or_invoice_to_payment_without_payment_evidence",
+      "provider_acceptance_to_delivery_without_customer_acceptance",
+      "synthetic_or_technical_to_customer_proof",
+      "unknown_to_fact"
+    ]
+  },
+  "autonomy_policy": {
+    "L0": [
+      "observe",
+      "read_health",
+      "read_authorized_sources"
+    ],
+    "L1": [
+      "analyze",
+      "classify",
+      "rank",
+      "detect_drift"
+    ],
+    "L2": [
+      "draft",
+      "prepare_packets",
+      "prepare_content",
+      "prepare_proposals"
+    ],
+    "L3": [
+      "safe_reversible_internal_work",
+      "reconcile_internal_state",
+      "run_tests",
+      "prepare_receipts"
+    ],
+    "L4": [
+      "isolated_branch",
+      "targeted_verification",
+      "internal_commit",
+      "draft_pr",
+      "bounded_status"
+    ],
+    "L5_requires_specific_approval": [
+      "merge_to_main",
+      "production_deploy_or_mutation",
+      "dns_mutation",
+      "material_database_mutation",
+      "secret_write_or_rotation",
+      "payment_charge_refund_or_spend",
+      "named_price_quote_or_discount_commitment",
+      "contract_or_legal_commitment",
+      "tender_submission",
+      "customer_facing_send_without_proven_eligibility",
+      "public_customer_proof_without_permission",
+      "destructive_deletion"
+    ],
+    "founder_interrupt_policy": "Surface only the single highest-value irreducible L5 decision and continue independent L0-L4 work."
+  },
+  "external_effect_defaults": {
+    "customer_send": false,
+    "public_publish": false,
+    "paid_spend": false,
+    "live_payment_or_refund": false,
+    "named_quote_commitment": false,
+    "contract_or_legal_commitment": false,
+    "tender_submission": false,
+    "production_mutation": false,
+    "dns_db_secret_mutation": false,
+    "main_merge": false
+  },
+  "kill_switches": {
+    "default_state": "OFF",
+    "semantics": "A switch may only reduce authority; it may never grant authority.",
+    "switches": [
+      "external_send",
+      "public_publish",
+      "paid_spend",
+      "live_payment",
+      "production_mutation",
+      "connector_write",
+      "cloud_model_route",
+      "experimental_agent_workload"
+    ]
+  },
+  "cadence_binding": {
+    "event_driven_existing": [
+      "inbound_routing",
+      "reply_classification",
+      "suppression",
+      "signal_capture",
+      "provider_receipts",
+      "payment_evidence",
+      "delivery_evidence",
+      "proof_evidence",
+      "critical_health_signal"
+    ],
+    "daily_existing": [
+      "portfolio_priority",
+      "market_radar",
+      "account_reconciliation_read",
+      "content_queue",
+      "analytics_summary",
+      "morning_command"
+    ],
+    "weekly_existing": [
+      "experiment_review",
+      "proof_to_distribution",
+      "partner_review",
+      "competitor_summary",
+      "cost_friction_review",
+      "self_improvement"
+    ],
+    "new_permanent_agents": 0,
+    "new_timers_or_cron": 0,
+    "parallel_scheduler_created": false
+  },
+  "wip_and_capacity": {
+    "global_primary_wip": 1,
+    "per_agent_primary_tasks": 1,
+    "domain_parallelism": "parallelize independent read/analyze/draft work; serialize overlapping writers and irreversible changes",
+    "overlapping_writer_serialization": true,
+    "unbounded_agent_loops": false,
+    "stale_work_rule": "Downgrade or stop work that does not move verified trust, relationship, revenue, proof, delivery or founder friction within its evidence window."
+  },
+  "quality_gates": [
+    "SOURCE_AND_PROVENANCE",
+    "FACT_INFERENCE_UNKNOWN_SEPARATION",
+    "COMPANY_BRAIN_SCOPE_AND_TENANT_BOUNDARY",
+    "COMMERCIAL_AUTHORITY",
+    "CONSENT_SUPPRESSION_AND_CHANNEL_POLICY",
+    "CLAIM_PROOF_AND_PERMISSION",
+    "IDEMPOTENCY_RETRY_ROLLBACK_AND_HUMAN_HANDOFF"
+  ],
+  "founder_surface": {
+    "canonical": "OpenClaw founder command + existing Daily Command",
+    "commands_reuse_existing": [
+      "dealix-revenue radar",
+      "dealix-revenue account <id>",
+      "dealix-revenue recommend <id>",
+      "dealix-revenue proposal <id>",
+      "dealix-revenue drafts",
+      "dealix-revenue approvals",
+      "dealix-revenue replies",
+      "dealix-revenue next",
+      "dealix-revenue money"
+    ],
+    "daily_output": [
+      "what_changed",
+      "closest_verified_money",
+      "top_3_agent_moves",
+      "single_highest_value_founder_action_if_any",
+      "material_risk",
+      "proof_gap",
+      "stop_doing"
+    ]
+  },
+  "development_factory": {
+    "admission": [
+      "proven_customer_or_revenue_blocker",
+      "trust_or_security_regression",
+      "repeated_manual_work",
+      "measured_latency_or_cost_failure",
+      "market_or_regulation_change",
+      "governed_capability_intake"
+    ],
+    "sequence": [
+      "PROVEN_GAP",
+      "CANONICAL_OWNER",
+      "ISSUE",
+      "FRESH_MAIN_WORKTREE",
+      "SMALLEST_PATCH",
+      "TARGETED_TESTS",
+      "DRAFT_PR",
+      "EXACT_HEAD_SOVEREIGN_VERIFY",
+      "READY_DECISION",
+      "LEARNING"
+    ],
+    "max_unverified_prs_per_lane": 1,
+    "random_feature_factory_allowed": false
+  },
+  "learning_factory": {
+    "sequence": [
+      "LEARNING_EVENT",
+      "HYPOTHESIS",
+      "BASELINE",
+      "BOUNDED_CHANGE",
+      "VERIFY",
+      "POST_MEASURE",
+      "SCALE_ITERATE_STOP_INVALID"
+    ],
+    "may_change_authority": false,
+    "may_change_legal_or_commercial_truth": false,
+    "requires_before_after_measurement": true
+  },
+  "observability": {
+    "reuse_existing_stack": true,
+    "capture_minimum": [
+      "system_id",
+      "workload_id",
+      "source_sha",
+      "evidence_refs",
+      "authority_class",
+      "result",
+      "latency_ms",
+      "founder_minutes",
+      "agent_minutes",
+      "ai_cost",
+      "tool_cost",
+      "economic_delta"
+    ],
+    "do_not_capture_by_default": [
+      "secrets",
+      "raw_credentials",
+      "unnecessary_customer_content",
+      "unredacted_personal_data"
+    ]
+  },
+  "definition_of_done": [
+    "one_current_manifest",
+    "all_12_canonical_systems_have_one_accountable_lane",
+    "all_lanes_map_to_existing_runtime_agents",
+    "all_workloads_use_typed_handoffs_and_receipts",
+    "governance_is_a_hard_gate",
+    "external_effects_default_false",
+    "no_new_agent_runtime",
+    "no_new_scheduler",
+    "founder_command_is_one_surface",
+    "runtime_inspection_is_read_only",
+    "exact_head_runtime_acceptance_is_recorded_before_activation_claim"
+  ]
+}
