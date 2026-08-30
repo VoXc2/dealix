@@ -137,6 +137,47 @@ def step_morning_revenue_command() -> int:
     return subprocess.call([sys.executable, str(script)], cwd=REPO_ROOT)
 
 
+def step_growth_portfolio_runtime() -> int:
+    """Run the bounded growth compiler from an explicit radar snapshot only."""
+    verifier = REPO_ROOT / "scripts" / "verify_brand_growth_portfolio_runtime_v1.py"
+    if verifier.is_file():
+        if subprocess.call([sys.executable, str(verifier)], cwd=REPO_ROOT) != 0:
+            return 1
+
+    snapshot_value = os.environ.get("DEALIX_MARKET_RADAR_SNAPSHOT", "").strip()
+    if not snapshot_value:
+        print(
+            "growth-portfolio: skip (DEALIX_MARKET_RADAR_SNAPSHOT not configured; "
+            "no synthetic radar input)"
+        )
+        return 0
+
+    snapshot = Path(snapshot_value)
+    if not snapshot.is_file():
+        print(
+            f"growth-portfolio: BLOCKED (snapshot missing: {snapshot})",
+            file=sys.stderr,
+        )
+        return 1
+
+    script = REPO_ROOT / "scripts" / "commercial" / "run_brand_growth_portfolio_v2.py"
+    if not script.is_file():
+        print("growth-portfolio: compiler missing", file=sys.stderr)
+        return 1
+    out = BRIEFS_DIR / f"brand_growth_portfolio_{datetime.now(UTC):%Y-%m-%d}.json"
+    return subprocess.call(
+        [
+            sys.executable,
+            str(script),
+            "--input",
+            str(snapshot),
+            "--out",
+            str(out),
+        ],
+        cwd=REPO_ROOT,
+    )
+
+
 def main() -> int:
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument("--dry-run", action="store_true")
@@ -159,20 +200,21 @@ def main() -> int:
         print("6. founder_commercial_digest.py")
         print("7. verify_growth_council_morning_command.py")
         print("8. generate_morning_revenue_command.py")
+        print("9. verify and compile Brand Growth Portfolio from explicit radar snapshot")
         print("DEALIX_DAILY_OPS_VERDICT=READY")
         return 0
 
     degraded = False
 
     if not args.skip_api and _api_base() and _admin_key():
-        print("== 1/8 Postgres -> Autopilot replay ==")
+        print("== 1/9 Postgres -> Autopilot replay ==")
         replay = step_replay_postgres(limit=args.replay_limit)
         if replay:
             print(json.dumps(replay, ensure_ascii=False, indent=2))
         else:
             degraded = True
 
-        print("\n== 2/8 Full Ops Health ==")
+        print("\n== 2/9 Full Ops Health ==")
         health = step_full_ops_health()
         if health:
             hp = BRIEFS_DIR / f"ops_health_{date}.json"
@@ -181,7 +223,7 @@ def main() -> int:
         else:
             degraded = True
 
-        print("\n== 3/8 Weekly marketing pack (Monday only) ==")
+        print("\n== 3/9 Weekly marketing pack (Monday only) ==")
         wp = step_weekly_pack_if_monday()
         if wp:
             print(json.dumps(wp, ensure_ascii=False, indent=2))
@@ -200,21 +242,25 @@ def main() -> int:
         print(f"\nDEALIX_DAILY_OPS_VERDICT={verdict}")
         return 0
 
-    print("\n== 4/8 KPI commercial status ==")
+    print("\n== 4/9 KPI commercial status ==")
     step_kpi_status()
 
-    print("\n== 5/8 War Room sync ==")
+    print("\n== 5/9 War Room sync ==")
     step_war_room_sync()
 
-    print("\n== 6/8 Commercial digest ==")
+    print("\n== 6/9 Commercial digest ==")
     step_commercial_digest()
 
-    print("\n== 7/8 Growth Council / Morning Command contract ==")
+    print("\n== 7/9 Growth Council / Morning Command contract ==")
     if step_growth_council_verify() != 0:
         degraded = True
 
-    print("\n== 8/8 Morning Revenue Command ==")
+    print("\n== 8/9 Morning Revenue Command ==")
     if step_morning_revenue_command() != 0:
+        degraded = True
+
+    print("\n== 9/9 Brand Growth Portfolio ==")
+    if step_growth_portfolio_runtime() != 0:
         degraded = True
 
     verdict = "DEGRADED" if degraded else "READY"
