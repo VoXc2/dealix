@@ -1,4 +1,4 @@
-"""Governed first-touch outreach snippets for War Room P0 targets (no send)."""
+"""Governed commercial drafts for War Room targets (never a send authority)."""
 
 from __future__ import annotations
 
@@ -11,7 +11,18 @@ from dealix.commercial_ops.paths import ICP_AGENCY_YAML, REPO_ROOT
 
 OBJECTION_PATH = REPO_ROOT / "docs/commercial/operations/objection_engine_registry.yaml"
 
-CTA_AR = "هل يناسبكم Risk Score مجاني أو Sample Proof Pack على 10 leads عندكم؟"
+CTA_AR = "إذا يناسبكم، أجهز Mini Diagnostic مجاني ومحدد على واقعكم، وبعده نقرر هل تستحق Discovery."
+CURRENT_POSITIONING_AR = (
+    "Dealix تربط السياق والإشارات التجارية بأولوية واضحة، تنفيذ محكوم، وإثبات قابل للمراجعة فوق أدواتكم الحالية."
+)
+CURRENT_PATH_AR = "المسار إذا ظهر fit: Mini Diagnostic مجاني -> Discovery مؤهلة -> عرض مخصص؛ لا سعر أو التزام قبل Discovery."
+LEGACY_COMMERCIAL_LITERALS = (
+    "499",
+    "7-day",
+    "7 day",
+    "10 leads",
+    "pilot صغير",
+)
 
 
 def _load_yaml(path: Path) -> dict[str, Any]:
@@ -36,49 +47,59 @@ def _load_objections() -> list[dict[str, str]]:
     return out
 
 
+def _truth_safe_snippet(value: str) -> str:
+    text = value.strip()
+    lowered = text.lower()
+    if any(literal.lower() in lowered for literal in LEGACY_COMMERCIAL_LITERALS):
+        return ""
+    return text
+
+
 def _default_objection_snippet(objections: list[dict[str, str]]) -> str:
     for ob in objections:
         if ob.get("id") == "crm_exists" and ob.get("response_draft_ar"):
-            return ob["response_draft_ar"].split("\n")[0].strip()
+            return _truth_safe_snippet(ob["response_draft_ar"].split("\n")[0])
     return ""
 
 
 def build_outreach_draft_ar(row: dict[str, str], *, icp: dict[str, Any], objection_snippet: str) -> str:
+    # ``icp`` is retained for API compatibility only. Canonical commercial
+    # wording is intentionally not sourced from historical ICP/pricing files.
+    del icp
     company = (row.get("company") or "فريقكم").strip()
     pain = (row.get("pain_hypothesis") or "").strip()
-    core = str(icp.get("core_message_ar") or "").strip().replace("\n", " ")
-    motion = (row.get("motion") or icp.get("motion") or "A").strip()
     channel = (row.get("channel") or "linkedin_manual").strip()
 
     opener = f"مرحباً {company} —"
     if channel.startswith("email"):
-        opener = f"الموضوع: متابعة ما بعد الحملة — {company}\n\nمرحباً،"
+        opener = f"الموضوع: تشخيص تشغيلي مختصر — {company}\n\nمرحباً،"
 
+    safe_objection = _truth_safe_snippet(objection_snippet)
     lines = [
         opener,
         "",
-        pain or "بعد الحملة، السؤال عادة: من رد؟ من يتابع؟ وهل عندكم دليل؟",
+        pain or "أراجع أين يتشتت السياق التجاري بين الأدوات، ومن يملك الإجراء التالي، وكيف تثبت النتيجة.",
+        "",
+        CURRENT_POSITIONING_AR,
+        "",
+        CURRENT_PATH_AR,
         "",
     ]
-    if core:
-        lines.append(core[:280])
-        lines.append("")
-    if objection_snippet:
-        lines.append(objection_snippet[:200])
+    if safe_objection:
+        lines.append(safe_objection[:200])
         lines.append("")
     lines.extend(
         [
-            f"Motion {motion} — نبدأ بـ pilot صغير (10 leads) بدون أتمتة إرسال.",
             CTA_AR,
             "",
-            "— سامي · Dealix (مسودة — موافقة قبل أي إرسال)",
+            "— Dealix (مسودة داخلية — لا إرسال بدون أهلية القناة وصلاحية تنفيذ محددة)",
         ]
     )
     return "\n".join(lines).strip()
 
 
 def attach_outreach_drafts(payload: dict[str, Any]) -> dict[str, Any]:
-    """Mutate war_room payload targets with outreach_draft_ar per item."""
+    """Mutate War Room payload targets with current-truth draft copy only."""
     icp = _load_yaml(ICP_AGENCY_YAML)
     objections = _load_objections()
     snippet = _default_objection_snippet(objections)
@@ -94,5 +115,9 @@ def attach_outreach_drafts(payload: dict[str, Any]) -> dict[str, Any]:
         if isinstance(row, dict) and not (row.get("outreach_draft_ar") or "").strip():
             row["outreach_draft_ar"] = build_outreach_draft_ar(row, icp=icp, objection_snippet=snippet)
 
-    payload["outreach_policy_ar"] = "مسودات لمسة أولى فقط — لا إرسال LinkedIn/WhatsApp آلي."
+    payload["outreach_policy_ar"] = (
+        "مسودات داخلية فقط؛ target/status لا يساوي علاقة أو موافقة أو صلاحية إرسال. "
+        "أي أثر خارجي يحتاج أهلية القناة، consent/suppression عند اللزوم، وصلاحية تنفيذ محددة قابلة للانتهاء."
+    )
+    payload["commercial_path_ar"] = CURRENT_PATH_AR
     return payload

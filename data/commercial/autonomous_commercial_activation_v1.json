@@ -1,0 +1,105 @@
+{
+  "schema": "dealix.autonomous-commercial-activation.v1",
+  "portfolio_objective": "CASH_READY_AUTONOMOUS_DEALIX_COMPANY",
+  "runtime_owner": "EXISTING_DEALIX_COMPANY_AUTOPILOT_ONLY",
+  "daily_entrypoint": "scripts/commercial_war_room_sync.py",
+  "cadence_owner": "dealix-company-midday.timer",
+  "new_scheduler": false,
+  "new_permanent_agent": false,
+  "new_crm_or_truth_store": false,
+  "canonical_agents": ["dealix-pm", "dealix-sales", "dealix-delivery", "dealix-engineer", "dealix-content"],
+  "commercial_path": [
+    "REAL_INTERACTION_OR_EXPLICIT_INBOUND",
+    "VERIFIED_RELATIONSHIP",
+    "QUALIFIED_PROBLEM",
+    "FREE_MINI_DIAGNOSTIC",
+    "QUALIFIED_DISCOVERY",
+    "CUSTOMER_SPECIFIC_QUOTE",
+    "PILOT_DECISION",
+    "VERIFIED_PAYMENT",
+    "DELIVERY",
+    "VERIFIED_PROOF",
+    "EXPANSION_REFERRAL_OR_STOP"
+  ],
+  "daily_internal_automation": [
+    "market_and_account_research",
+    "account_dossier",
+    "buying_group_hypotheses",
+    "qualification_preparation",
+    "diagnostic_preparation",
+    "discovery_brief",
+    "proposal_draft",
+    "objection_classification",
+    "negotiation_plan",
+    "concession_ledger",
+    "follow_up_draft",
+    "approval_packet_preparation",
+    "reply_classification",
+    "pipeline_aging",
+    "next_evidence",
+    "experiment_learning"
+  ],
+  "external_effect_defaults": {
+    "customer_send": false,
+    "public_publish": false,
+    "paid_spend": false,
+    "named_quote_or_discount": false,
+    "contract_or_legal_commitment": false,
+    "payment_or_refund": false,
+    "tender_submission": false,
+    "production_dns_db_secret_mutation": false,
+    "main_merge": false
+  },
+  "approval_minimization": {
+    "goal": "PREPARE_EXACT_ACTION_PACKETS_SO_FOUNDER_ONLY_DECIDES_WHEN_A_REAL_EXTERNAL_EFFECT_IS_READY",
+    "required_before_external_handoff": [
+      "exact_recipient_or_destination",
+      "purpose",
+      "channel",
+      "exact_artifact_or_content_hash",
+      "consent_or_relationship_evidence_when_required",
+      "suppression_check_ref",
+      "risk_class",
+      "action_fingerprint",
+      "exact_scope",
+      "expires_at",
+      "approval_state_ref"
+    ],
+    "missing_field_semantics": "NOT_EXECUTION_ELIGIBLE",
+    "broad_blanket_authority_allowed": false,
+    "approval_can_be_reused_outside_exact_scope": false,
+    "expired_or_revoked_approval_executes": false
+  },
+  "research_adapter_decision": {
+    "selected_first_pilot": "TAVILY_READ_ONLY",
+    "why": "ONE_API_SEARCH_EXTRACT_CRAWL_MAP_RESEARCH_SMALLEST_INITIAL_SURFACE",
+    "admission_state": "PILOT_ONLY_AFTER_API_KEY_AND_SOURCE_RECEIPT_ACCEPTANCE",
+    "fallback_if_measured_js_heavy_gap": "FIRECRAWL",
+    "self_host_option_if_control_or_cost_gap_proven": "CRAWLEE",
+    "parallel_install_all_candidates": false,
+    "adapter_is_truth_owner": false,
+    "public_web_result_creates_relationship_or_consent": false
+  },
+  "truth_firewall": [
+    "research!=relationship",
+    "target!=qualified_opportunity",
+    "public_contact!=consent",
+    "draft!=sent",
+    "approval_label!=execution_authority",
+    "quote!=invoice",
+    "invoice!=payment",
+    "activity!=outcome",
+    "synthetic!=customer_proof"
+  ],
+  "negotiation": {
+    "reuse_existing_engine": true,
+    "required": ["BATNA", "counterparty_constraints", "reservation_boundary", "tradable_variables", "give_get", "walk_away_triggers", "evidence_refs"],
+    "material_give_requires_reciprocal_get_unless_specifically_approved": true,
+    "autonomous_final_price_discount_legal_payment": false
+  },
+  "self_improvement": {
+    "sequence": ["VERIFIED_GAP", "CANONICAL_OWNER", "ISSUE", "FRESH_MAIN_WORKTREE", "SMALLEST_PATCH", "TARGETED_TESTS", "DRAFT_PR", "EXACT_HEAD_VERIFICATION", "KEEP_REVERT", "LEARNING"],
+    "simulated_metrics_can_authorize_mutation": false,
+    "new_library_requires_measured_gap_roi_security_privacy_review": true
+  }
+}
