@@ -140,6 +140,8 @@ def validate_source_signal(
     authority = signal.get("authority")
     if not isinstance(authority, Mapping):
         errors.append("MISSING_AUTHORITY_OBJECT")
+    elif set(AUTHORITY_KEYS) - set(authority):
+        errors.append("SOURCE_RECEIPT_AUTHORITY_FIELDS_INCOMPLETE")
     elif any(value is not False for value in authority.values()):
         errors.append("SOURCE_RECEIPT_AUTHORITY_MUST_BE_ZERO")
 

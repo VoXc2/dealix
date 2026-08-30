@@ -115,6 +115,18 @@ The execution layer enforces these rules:
 - external sends, public publishing, spend, payments, contracts, tender
   submission, production changes and main merge remain blocked.
 
+## Existing daily-runner handoff
+
+The existing scripts/run_dealix_daily_ops.py remains the cadence owner. It now:
+
+1. runs the runtime smoke verifier;
+2. skips compilation when DEALIX_MARKET_RADAR_SNAPSHOT is not configured, so no synthetic market input is invented;
+3. compiles the snapshot when that explicit file path exists;
+4. writes an internal founder brief only; it does not send, publish, spend or mutate production.
+
+For a local/manual run, the Makefile exposes brand-growth-verify and
+brand-growth-run with RADAR_SNAPSHOT. No new timer is created.
+
 ## Activation sequence
 
 1. Accept #1405 with exact-head sovereign evidence.
