@@ -172,10 +172,11 @@ def test_president_allocation_is_bounded_and_not_purchase_probability() -> None:
     result = allocate_portfolio(items, limit=1)
     assert result["status"] == "READ_ONLY"
     assert len(result["items"]) == 1
+    assert result["items"][0]["item_id"] == "content-1"
     assert result["items"][0]["priority_semantics"].endswith("NOT_PURCHASE_PROBABILITY")
-    assert result["items"][0]["worker"] == "dealix-sales"
+    assert result["items"][0]["worker"] == "dealix-content"
     assert not any(result["authority"].values())
-    assert "purchase_probability" in score_portfolio_item(
+    assert "PURCHASE_PROBABILITY_NOT_ALLOWED" in score_portfolio_item(
         {**items[0], "purchase_probability": 0.99}
     )["errors"]
 
@@ -272,3 +273,25 @@ def test_runner_compiles_a_fail_closed_snapshot(tmp_path: Path) -> None:
     assert output["summary"]["proof_reuse_ready"] == 1
     assert output["external_send_or_spend"] is False
     assert output["new_scheduler"] is False
+
+
+def test_runtime_verifier_is_directly_invocable_without_pythonpath() -> None:
+    env = dict(os.environ)
+    env.pop("PYTHONPATH", None)
+    result = subprocess.run(
+        [sys.executable, "scripts/verify_brand_growth_portfolio_runtime_v1.py"],
+        cwd=ROOT,
+        env=env,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    assert result.returncode == 0, result.stdout + result.stderr
+    assert "DEALIX_BRAND_GROWTH_PORTFOLIO_RUNTIME_VERDICT=PASS" in result.stdout
+
+
+def test_daily_ops_executes_growth_portfolio_step_fail_closed() -> None:
+    source = (ROOT / "scripts" / "run_dealix_daily_ops.py").read_text(encoding="utf-8")
+    assert "if step_growth_portfolio_runtime() != 0:" in source
+    assert "DEALIX_MARKET_RADAR_SNAPSHOT" in source
+    assert "no synthetic radar input" in source
