@@ -1,0 +1,81 @@
+{
+  "schema": "dealix.growth-channel-governance.v1",
+  "version": "2026-08-30.1",
+  "status": "POLICY_CONTRACT_NO_CHANNEL_ACTIVATION",
+  "purpose": "Bind Dealix search/AI-search and direct-marketing growth work to current official platform and Saudi privacy rules without granting send, publish or spend authority.",
+  "research_basis": {
+    "checked_at": "2026-08-30",
+    "google_ai_search_guide": "https://developers.google.com/search/docs/fundamentals/ai-optimization-guide",
+    "google_search_updates": "https://developers.google.com/search/updates",
+    "google_genai_search_console_reports": "https://developers.google.com/search/blog/2026/06/gen-ai-performance-reports",
+    "saudi_pdpl_implementing_regulations": "https://dgp.sdaia.gov.sa/wps/portal/pdp/knowledgecenter/details/PDPL2"
+  },
+  "search_and_ai_visibility": {
+    "seo_fundamentals_remain_authoritative": true,
+    "special_geo_or_aeo_hack_subsystem_allowed": false,
+    "original_non_commodity_content_required": true,
+    "scaled_low_value_ai_content_allowed": false,
+    "search_console_is_read_only": true,
+    "genai_search_console_reporting_when_available": true,
+    "missing_genai_report_means_zero_visibility": false,
+    "rank_or_impression_is_demand_truth": false,
+    "ai_overview_or_ai_mode_visibility_is_revenue": false,
+    "search_signal_requires_downstream_business_evidence": true
+  },
+  "direct_marketing": {
+    "direct_marketing_requires_consent": true,
+    "consent_must_be_documented_for_future_verification": true,
+    "consent_requires_clear_specific_purpose": true,
+    "consent_record_requires_time_and_method": true,
+    "separate_consent_per_processing_purpose": true,
+    "advertising_or_awareness_without_prior_interaction_requires_consent": true,
+    "prior_interaction_auto_grants_direct_marketing_consent": false,
+    "public_contact_auto_grants_consent": false,
+    "relationship_auto_grants_marketing_consent": false,
+    "sender_identity_must_be_clear": true,
+    "opt_out_mechanism_required": true,
+    "opt_out_must_be_easy_and_free": true,
+    "withdrawal_requires_stop_without_undue_delay": true,
+    "suppression_overrides_campaign_or_sequence": true
+  },
+  "channel_boundaries": {
+    "email_research_and_drafting": "L0_L2_AUTOMATIC",
+    "email_live_send": "ACTION_AND_CHANNEL_AUTHORITY_REQUIRED",
+    "whatsapp": "INBOUND_OR_KNOWN_CONSENTED_ONLY",
+    "founder_linkedin": "MANUAL_NATIVE",
+    "company_social_publish": "OFFICIAL_OR_NATIVE_AFTER_EXACT_PERMISSION_AND_AUTHORITY",
+    "paid_media": "READINESS_AND_REPORTING_ONLY_UNTIL_SPEND_AUTHORITY",
+    "public_publish_default": false,
+    "external_send_default": false,
+    "paid_spend_default": false
+  },
+  "truth_firewall": {
+    "public_contact_is_consent": false,
+    "search_visibility_is_relationship": false,
+    "search_visibility_is_qualified_demand": false,
+    "click_is_commercial_truth": false,
+    "event_directory_is_pipeline": false,
+    "draft_is_sent": false,
+    "provider_acceptance_is_customer_outcome": false,
+    "analytics_event_is_revenue": false
+  },
+  "required_receipts_for_any_future_live_send": [
+    "identity_or_relationship_ref",
+    "consent_or_channel_eligibility_ref",
+    "purpose_ref",
+    "suppression_check_ref",
+    "claim_evidence_refs",
+    "approval_or_execution_authority_ref",
+    "idempotency_key",
+    "provider_receipt"
+  ],
+  "authority": {
+    "create_consent": false,
+    "promote_relationship": false,
+    "external_send": false,
+    "public_publish": false,
+    "paid_spend": false,
+    "quote_or_contract": false,
+    "payment": false
+  }
+}
