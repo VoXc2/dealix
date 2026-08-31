@@ -26,7 +26,7 @@ idna>=3.7
 
 # LLM SDKs (optional — router falls back gracefully if missing)
 anthropic>=0.40.0
-openai>=1.54.0,<3
+openai>=1.54.0,<4
 
 # Data
 sqlalchemy[asyncio]>=2.0.35,<3
@@ -52,7 +52,7 @@ python-dateutil>=2.9.0
 
 # Observability
 structlog>=24.4.0
-langfuse>=2.50.0,<3
+langfuse>=2.50.0,<5
 
 # Integrations
 hubspot-api-client>=11.0.0
@@ -81,7 +81,7 @@ pyyaml>=6.0.2
 # CVEs (CVE-2024-33663, CVE-2024-33664) that affected 3.3.x.
 # cryptography pinned to >=44 explicitly (was implicit transitive).
 python-jose[cryptography]>=3.5.0,<4
-cryptography>=49.0.0,<50
+cryptography>=50.0.1,<51
 # cffi lower bound follows cryptography: 49 requires cffi>=2.0.0, so the
 # previous <2 ceiling made requirements.txt unresolvable.
 cffi>=2.0.0,<3
