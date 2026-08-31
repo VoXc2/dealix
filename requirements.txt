@@ -81,7 +81,7 @@ pyyaml>=6.0.2
 # CVEs (CVE-2024-33663, CVE-2024-33664) that affected 3.3.x.
 # cryptography pinned to >=44 explicitly (was implicit transitive).
 python-jose[cryptography]>=3.5.0,<4
-cryptography>=49.0.0,<50
+cryptography>=50.0.1,<51
 # cffi lower bound follows cryptography: 49 requires cffi>=2.0.0, so the
 # previous <2 ceiling made requirements.txt unresolvable.
 cffi>=2.0.0,<3
