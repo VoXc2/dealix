@@ -93,6 +93,9 @@ def test_runtime_acceptance_is_exact_head_read_only_and_secret_safe() -> None:
     assert "telegram_dm_admission_contains_non_owner" in text
     assert "telegram_token_file_permissions_not_0600" in text
     assert "port_18789_loopback_only" in text
+    assert 'oc_args("secrets", "audit", "--check")' in text
+    assert "openclaw_secretref_audit" in text
+    assert "secrets_audit=" in text
     assert "secret_values_printed=false" in text
     assert "owner_raw_id_printed=false" in text
 
