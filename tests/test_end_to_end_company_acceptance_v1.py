@@ -87,6 +87,26 @@ def test_connector_apps_are_adapters_not_parallel_truth_stores() -> None:
     assert mirrors["canva_gamma_drive"] is False
 
 
+def test_telegram_openclaw_is_canonical_founder_connector_and_slack_is_not_a_launch_dependency() -> None:
+    data = _data()
+    founder_control = data["founder_control_contract"]
+    assert founder_control["primary_channel"] == "telegram_openclaw"
+    assert founder_control["slack_status"] == "OPTIONAL_DORMANT_CAPABILITY"
+    assert founder_control["slack_launch_dependency"] is False
+    assert founder_control["current_vps_runtime_receipt_required"] is True
+
+    connectors = {row["id"]: row for row in data["connector_control_plane"]}
+    assert "slack_telegram" not in connectors
+    assert connectors["telegram_openclaw"]["owner"] == "dealix-pm"
+    assert connectors["telegram_openclaw"]["role"] == "canonical_founder_command_approvals_and_receipts"
+    assert connectors["telegram_openclaw"]["truth_owner"] is False
+    assert connectors["telegram_openclaw"]["write_ceiling"] == "INTERNAL_ONLY"
+
+    a2 = next(row for row in data["acceptance_levels"] if row["id"] == "A2_CHANNEL_AND_FOUNDER_CONTROL")
+    assert "telegram_openclaw_e2e_receipt" in a2["evidence"]
+    assert "slack_or_telegram_e2e_receipt" not in a2["evidence"]
+
+
 def test_full_commercial_and_saas_claims_require_real_proof() -> None:
     data = _data()
     activation = data["activation_state"]
