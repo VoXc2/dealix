@@ -37,7 +37,8 @@ def main() -> int:
     ids = [str(row.get("id") or "") for row in sources]
     assert len(ids) == len(set(ids))
 
-    unresolved = set((data.get("closure") or {}).get("unresolved_ids") or [])
+    closure = data.get("closure") or {}
+    unresolved = set(closure.get("unresolved_ids") or [])
     retired_ids: set[str] = set()
 
     for row in sources:
@@ -60,14 +61,21 @@ def main() -> int:
 
         if classification == "CURRENT_CANONICAL_AUTHORITY":
             assert row.get("fixed_public_price_authority") is False
-        if classification == "RETIRED_RUNTIME_AUTHORITY":
+        elif classification == "CURRENT_FAIL_CLOSED_COMPATIBILITY":
+            assert row.get("authority") is False
+            assert row.get("runtime_consumed") is False
+            assert row.get("fixed_public_price_authority") is False
+        elif classification == "RETIRED_RUNTIME_AUTHORITY":
             assert row.get("runtime_consumed") is True
             retired_ids.add(source_id)
 
     assert retired_ids == unresolved
-    closure = data.get("closure") or {}
-    assert closure.get("verdict") == "BLOCKED_RETIRED_RUNTIME_AUTHORITY"
-    assert closure.get("ready_for_issue_closure") is False
+    if retired_ids:
+        assert closure.get("verdict") == "BLOCKED_RETIRED_RUNTIME_AUTHORITY"
+        assert closure.get("ready_for_issue_closure") is False
+    else:
+        assert closure.get("verdict") == "PASS"
+        assert closure.get("ready_for_issue_closure") is True
 
     guardrails = data.get("guardrails") or {}
     for key in (
