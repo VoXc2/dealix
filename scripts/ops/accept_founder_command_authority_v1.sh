@@ -321,8 +321,8 @@ if config and not checks["tool_surface_bounded"]:
 
 # OpenClaw 2026.7.1-2 stores DM pairing approvals under credentials/*. Newer
 # builds may migrate them to SQLite; inspect both forms read-only. The expected
-# payload is {"version":1,"allowFrom":["<sender>"]}; only allowFrom values are
-# parsed so timestamps/codes can never be mistaken for identities.
+# file payload is {"version":1,"allowFrom":["<sender>"]}; only allowFrom values
+# are parsed so timestamps or pairing codes cannot be mistaken for identities.
 pairing_state_readable = True
 credentials_dir = OPENCLAW_HOME / "credentials"
 if credentials_dir.is_dir():
@@ -369,8 +369,8 @@ checks["dm_admission_exact_owner_only"] = owner_id is not None and approved_ids 
 if owner_id and approved_ids - {owner_id}:
     safety_issues.append("telegram_dm_admission_contains_non_owner")
 
-# Runtime probes are read-only: no config set, install, restart, repair, approval,
-# publish, send, merge, payment, or production mutation is invoked.
+# Runtime probes are read-only: no config mutation, install, restart, repair,
+# approval, publish, send, merge, payment, or production mutation is invoked.
 version = "unknown"
 node_path = str(node_dir) if node_dir else ""
 openclaw_path = ":".join(
@@ -396,12 +396,17 @@ if checks["openclaw_binary"] and checks["bundled_node_runtime"]:
     checks["gateway_rpc"] = run(oc_args("gateway", "status", "--require-rpc")).returncode == 0
     checks["telegram_probe"] = run(oc_args("channels", "status", "--channel", "telegram", "--probe")).returncode == 0
     checks["pairing_cli_read"] = run(oc_args("pairing", "list", "telegram", "--json")).returncode == 0
+    # This is the canonical read-only audit required by #1186 for plaintext
+    # gateway/provider secrets. Suppress all audit output so no secret-bearing
+    # config value can leak into the founder receipt or terminal transcript.
+    checks["secrets_audit"] = run(oc_args("secrets", "audit", "--check")).returncode == 0
 else:
     checks["gateway_rpc"] = False
     checks["telegram_probe"] = False
     checks["pairing_cli_read"] = False
+    checks["secrets_audit"] = False
 
-for name in ("gateway_rpc", "telegram_probe", "pairing_cli_read"):
+for name in ("gateway_rpc", "telegram_probe", "pairing_cli_read", "secrets_audit"):
     if not checks[name]:
         hold_reasons.append(f"runtime_{name}_not_proven")
 
@@ -450,6 +455,7 @@ pass_requirements = (
     checks["gateway_rpc"],
     checks["telegram_probe"],
     checks["pairing_cli_read"],
+    checks["secrets_audit"],
     checks["port_18789_loopback_only"],
 )
 
@@ -475,7 +481,7 @@ receipt = {
     "telegram_unknown_identity_deny": "VERIFIED" if checks["unknown_identity_deny"] else "UNKNOWN_NOT_EVIDENCE_BACKED",
     "telegram_gateway_loopback": "VERIFIED" if checks["gateway_config_loopback"] and checks["port_18789_loopback_only"] else "UNKNOWN_NOT_EVIDENCE_BACKED",
     "telegram_groups_disabled_by_default": "VERIFIED" if checks["telegram_groups_disabled"] else "FAILED",
-    "openclaw_secretref_audit": "VERIFIED" if checks["telegram_secret_file_private"] else "UNKNOWN_NOT_EVIDENCE_BACKED",
+    "openclaw_secretref_audit": "VERIFIED" if checks["telegram_secret_file_private"] and checks["secrets_audit"] else "UNKNOWN_NOT_EVIDENCE_BACKED",
     "checks": checks,
     "safety_issues": sorted(set(safety_issues)),
     "hold_reasons": sorted(set(hold_reasons)),
@@ -492,6 +498,7 @@ print(f"openclaw_version={version}")
 print(f"owner_identity_fingerprint={owner_fp or 'unknown'}")
 print(f"gateway_rpc={'PASS' if checks['gateway_rpc'] else 'NOT_PASS'}")
 print(f"telegram_probe={'PASS' if checks['telegram_probe'] else 'NOT_PASS'}")
+print(f"secrets_audit={'PASS' if checks['secrets_audit'] else 'NOT_PASS'}")
 print(f"loopback_listener={'PASS' if checks['port_18789_loopback_only'] else 'NOT_PASS'}")
 print("secret_values_printed=false")
 print("owner_raw_id_printed=false")
