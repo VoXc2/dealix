@@ -1,0 +1,4 @@
+# Dedicated dependency surface for the Slack Founder Room bridge.
+# Keep Slack transport dependencies out of the main API/runtime environment.
+# Latest stable release verified on PyPI on 2026-09-02.
+slack-bolt==1.30.0

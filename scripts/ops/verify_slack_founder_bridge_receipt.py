@@ -1,15 +1,5 @@
 #!/usr/bin/env python3
-"""Verify a Dealix Slack Founder Room bridge receipt.
-
-The live Socket Mode bridge is intentionally outside Git because it contains
-runtime integration details and loads secrets from a protected environment file.
-This verifier validates the evidence it emits without needing Slack credentials.
-
-Usage:
-    python scripts/ops/verify_slack_founder_bridge_receipt.py \
-        /opt/dealix/control/runs/slack-founder-receipts/slack-....json \
-        --expected-source-sha <40-char-git-sha>
-"""
+"""Verify an evidence-bound Dealix Slack Founder Room bridge receipt."""
 
 from __future__ import annotations
 
@@ -22,6 +12,7 @@ ROOT = Path(__file__).resolve().parents[2]
 CONTRACT_PATH = ROOT / "data" / "ops" / "dealix_slack_founder_room_v1.json"
 UNKNOWN = "UNKNOWN_NOT_EVIDENCE_BACKED"
 SHA_RE = re.compile(r"^[0-9a-f]{40}$")
+HASH_RE = re.compile(r"^[0-9a-f]{64}$")
 SLACK_REF_RE = re.compile(r"^slack:[CG][A-Z0-9]+:[0-9]+(?:\.[0-9]+)?$")
 SECRET_PATTERNS = (
     re.compile(r"xox[baprs]-[A-Za-z0-9-]{8,}"),
@@ -87,7 +78,6 @@ def main() -> int:
 
     contract = load_json(CONTRACT_PATH)
     receipt = load_json(args.receipt)
-
     missing = sorted(REQUIRED_FIELDS - set(receipt))
     assert not missing, f"missing required receipt fields: {missing}"
 
@@ -101,7 +91,7 @@ def main() -> int:
     ) or str(receipt["runner"]).endswith("/dealix_company_autopilot.sh")
 
     workload_id = receipt["workload_id"]
-    assert isinstance(workload_id, str) and workload_id.startswith("slack-")
+    assert isinstance(workload_id, str) and re.fullmatch(r"slack-[0-9a-f]{20}", workload_id)
     assert receipt["idempotency_key"] == workload_id
 
     source_sha = receipt["source_sha"]
@@ -137,6 +127,16 @@ def main() -> int:
         if receipt["result"] == "EXECUTED":
             assert receipt["state_after"] == "CANONICAL_AUTOPILOT_COMPLETED"
             assert receipt.get("runner_rc") == 0
+            assert receipt.get("source_branch") == "main"
+            assert receipt.get("origin_main_sha") == source_sha
+            assert receipt.get("source_clean") is True
+            assert receipt.get("source_canonical") is True
+            assert len(output_refs) >= 2, "executed receipt must bind a runner log"
+            assert str(output_refs[1]).startswith(expected_receipt_dir)
+            assert str(output_refs[1]).endswith(f"/{workload_id}.runner.log")
+            assert HASH_RE.fullmatch(str(receipt.get("runner_log_sha256", ""))), (
+                "executed receipt must bind a SHA-256 runner log digest"
+            )
         elif receipt["result"] == "FAILED":
             assert receipt["state_after"] in {"CANONICAL_AUTOPILOT_FAILED", "FAILED"}
         elif receipt["result"] == "DEGRADED":

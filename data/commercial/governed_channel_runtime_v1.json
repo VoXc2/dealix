@@ -1,0 +1,314 @@
+{
+  "schema": "dealix.governed-channel-runtime.v1",
+  "generated_at": "2026-09-02",
+  "objective": "Maximize autonomous research, service preparation, drafting, reply intelligence, analytics and internal execution while keeping material external effects fail-closed until canonical eligibility, capability, evidence and action-bound authority are proven.",
+  "authority_model": {
+    "owner": "existing_dealix_company_machine",
+    "canonical_channel_registry": "data/commercial/channel_readiness_registry.json",
+    "parallel_company_os": false,
+    "parallel_company_brain": false,
+    "parallel_crm": false,
+    "parallel_opportunity_graph": false,
+    "parallel_approval_center": false,
+    "parallel_proof_ledger": false,
+    "parallel_scheduler": false,
+    "parallel_agent_fleet": false,
+    "parallel_model_router": false
+  },
+  "truth_firewall": [
+    "research_is_not_relationship",
+    "public_contact_is_not_consent",
+    "engagement_is_not_buyer_intent",
+    "draft_is_not_sent",
+    "provider_acceptance_is_not_delivery",
+    "quote_is_not_invoice",
+    "invoice_is_not_payment",
+    "synthetic_is_not_customer_proof"
+  ],
+  "state_machine": [
+    "RESEARCH_ONLY",
+    "REAL_INTERACTION_EVIDENCED",
+    "CHANNEL_ELIGIBLE",
+    "DRAFTED",
+    "APPROVAL_REQUIRED",
+    "AUTHORIZED",
+    "DISPATCHED",
+    "DELIVERY_RECEIPT",
+    "REPLIED_OR_RESOLVED"
+  ],
+  "state_rules": {
+    "research_cannot_promote_relationship": true,
+    "public_data_cannot_promote_consent": true,
+    "raw_engagement_cannot_promote_opportunity": true,
+    "relationship_truth_must_come_from_canonical_relationship_owner": true,
+    "payment_truth_requires_payment_evidence": true,
+    "proof_truth_requires_customer_or_source_evidence": true
+  },
+  "global_external_effects_default": {
+    "email_send": false,
+    "whatsapp_send": false,
+    "linkedin_member_dm": false,
+    "linkedin_connection": false,
+    "social_publish": false,
+    "paid_spend": false,
+    "payment_or_refund": false,
+    "tender_submission": false,
+    "legal_commitment": false,
+    "merge_main": false,
+    "production_mutation": false,
+    "dns_db_secret_mutation": false
+  },
+  "dispatch_gates": [
+    "canonical_real_interaction_or_purpose_specific_consent",
+    "suppression_and_opt_out_check",
+    "sender_or_channel_health",
+    "official_channel_capability",
+    "approved_identity_and_credentials_outside_repo",
+    "content_brand_claims_and_policy_qa",
+    "action_bound_approval",
+    "durable_idempotency_key",
+    "provider_effect_receipt",
+    "delivery_or_failure_receipt"
+  ],
+  "channels": {
+    "email": {
+      "mode": "RELATIONSHIP_GOVERNED_DRAFT_FIRST",
+      "autonomous_allowed": [
+        "inbound_classification",
+        "research",
+        "personalization_draft",
+        "reply_intelligence",
+        "followup_draft",
+        "proposal_draft",
+        "proof_delivery_draft",
+        "health_analysis"
+      ],
+      "blocked": [
+        "unbounded_cold_bulk_email",
+        "send_after_opt_out",
+        "unsupported_personalization",
+        "live_send_without_action_bound_authority"
+      ]
+    },
+    "founder_linkedin": {
+      "mode": "MANUAL_NATIVE_RELATIONSHIP_CHANNEL",
+      "autonomous_allowed": [
+        "research",
+        "dossier",
+        "post_draft",
+        "comment_draft",
+        "content_qa",
+        "analytics_if_authorized"
+      ],
+      "blocked": [
+        "scraping",
+        "bot_connections",
+        "bot_dms",
+        "mass_member_messaging",
+        "uncontrolled_comment_bot"
+      ]
+    },
+    "dealix_linkedin_page": {
+      "mode": "OFFICIAL_API_OR_NATIVE_AFTER_CAPABILITY",
+      "autonomous_allowed": [
+        "content_draft",
+        "repurposing",
+        "claims_qa",
+        "analytics_if_authorized"
+      ],
+      "blocked": [
+        "publish_without_org_admin_and_app_permission",
+        "publish_without_action_bound_authority"
+      ]
+    },
+    "whatsapp": {
+      "mode": "INBOUND_AND_ELIGIBLE_RELATIONSHIP_ONLY",
+      "autonomous_allowed": [
+        "inbound_classification",
+        "response_draft",
+        "eligible_followup_draft",
+        "discovery_coordination_draft",
+        "customer_service_draft"
+      ],
+      "blocked": [
+        "cold_whatsapp",
+        "bulk_unsolicited_whatsapp",
+        "purchased_lists",
+        "suppressed_contact",
+        "unbounded_followup",
+        "live_send_without_action_bound_authority"
+      ]
+    },
+    "instagram_facebook_threads_x": {
+      "mode": "OWNED_CONTENT_DRAFT_AND_ANALYTICS",
+      "autonomous_allowed": [
+        "research",
+        "content_draft",
+        "repurposing",
+        "creative_brief",
+        "claims_qa",
+        "analytics_if_authorized"
+      ],
+      "blocked": [
+        "credential_bypass",
+        "engagement_spam",
+        "uncontrolled_reply_bot",
+        "public_publish_without_official_capability_and_authority"
+      ]
+    },
+    "youtube_tiktok": {
+      "mode": "VIDEO_FACTORY_DRAFT_FIRST",
+      "autonomous_allowed": [
+        "topic_research",
+        "script_draft",
+        "storyboard",
+        "metadata_draft",
+        "claims_qa",
+        "analytics_if_authorized"
+      ],
+      "blocked": [
+        "public_upload_without_platform_authorization_and_canary",
+        "public_publish_without_action_bound_authority"
+      ]
+    },
+    "website_chat": {
+      "mode": "FIRST_PARTY_INBOUND_SERVICE_SURFACE",
+      "autonomous_allowed": [
+        "inbound_intake",
+        "classification",
+        "qualification_questions",
+        "diagnostic_draft",
+        "support_answer_draft",
+        "handoff_preparation"
+      ],
+      "blocked": [
+        "production_publish_without_production_authority",
+        "binding_quote_without_commercial_authority",
+        "payment_execution"
+      ]
+    },
+    "slack_telegram_founder": {
+      "mode": "INTERNAL_COMMAND_AND_PROOF_ONLY",
+      "autonomous_allowed": [
+        "command_intake",
+        "decision_cards",
+        "approval_requests",
+        "status",
+        "evidence_receipts",
+        "material_alerts"
+      ],
+      "blocked": [
+        "default_customer_marketing",
+        "bulk_external_campaigns",
+        "authority_escalation"
+      ]
+    }
+  },
+  "slack_founder_bridge": {
+    "status": "SOURCE_CONTROLLED_PENDING_RUNTIME_E2E_RECEIPT",
+    "transport": "SLACK_SOCKET_MODE",
+    "framework": "slack-bolt==1.30.0",
+    "adapter": "scripts/ops/dealix_slack_founder_bridge.py",
+    "dedicated_requirements": "scripts/ops/requirements-slack-founder.txt",
+    "installer": "scripts/ops/install_slack_founder_bridge_v2.sh",
+    "receipt_verifier": "scripts/ops/verify_slack_founder_bridge_receipt.py",
+    "policy_tests": "tests/test_slack_founder_bridge_policy_v2.py",
+    "canonical_runner": "/opt/dealix/control/bin/dealix_company_autopilot.sh",
+    "arbitrary_shell": false,
+    "arbitrary_agent_prompt_execution": false,
+    "customer_outreach_authority": false,
+    "public_publish_authority": false,
+    "payment_authority": false,
+    "merge_authority": false,
+    "production_mutation_authority": false,
+    "founder_and_channel_allowlist_required": true,
+    "duplicate_event_idempotency_required": true,
+    "default_install_mode": "INSTALL_ONLY_NOT_ACTIVATED",
+    "activation_requires_runtime_credentials_outside_git": true,
+    "activation_requires_end_to_end_receipt": true
+  },
+  "customer_service_loop": [
+    "INBOUND",
+    "IDENTITY_AND_CONTEXT",
+    "INTENT_CLASSIFICATION",
+    "PROCEDURE_OR_KNOWLEDGE_RETRIEVAL",
+    "ANSWER_OR_ACTION_DRAFT",
+    "CONFIDENCE_AND_POLICY_CHECK",
+    "DETERMINISTIC_BOUNDED_TOOL_ACTION_OR_HUMAN_ESCALATION",
+    "RESOLUTION_RECEIPT",
+    "LEARNING"
+  ],
+  "customer_service_hard_stops": [
+    "financial_commitment_without_authority",
+    "legal_commitment_without_authority",
+    "irreversible_account_change_without_authority",
+    "secret_or_sensitive_data_exposure",
+    "unsupported_customer_claim"
+  ],
+  "service_model": {
+    "permanent_agent_count": 5,
+    "canonical_agents": [
+      "dealix-pm",
+      "dealix-sales",
+      "dealix-delivery",
+      "dealix-engineer",
+      "dealix-content"
+    ],
+    "dealix_pm": [
+      "portfolio",
+      "prioritization",
+      "authority_routing",
+      "founder_brief"
+    ],
+    "dealix_sales": [
+      "market_research",
+      "account_dossier",
+      "qualification",
+      "reply_intelligence",
+      "negotiation_drafts"
+    ],
+    "dealix_delivery": [
+      "client_context",
+      "support",
+      "delivery",
+      "proof",
+      "escalation"
+    ],
+    "dealix_engineer": [
+      "adapters",
+      "tests",
+      "observability",
+      "reliability",
+      "policy_enforcement"
+    ],
+    "dealix_content": [
+      "brand",
+      "content",
+      "seo_aeo",
+      "video",
+      "channel_repurposing"
+    ]
+  },
+  "open_source_intake": {
+    "rule": "adopt_only_after_measured_gap_and_capability_intake",
+    "do_not_install_duplicate_agent_framework": true,
+    "do_not_install_duplicate_scheduler_or_workflow_engine": true,
+    "prefer_existing_opentelemetry_sentry_langfuse_n8n_stack": true,
+    "openai_agents_sdk": "REFERENCE_PATTERNS_ONLY_UNLESS_MEASURED_RUNTIME_GAP",
+    "slack_bolt_socket_mode": "SELECTED_BOUNDED_ADAPTER_SOURCE_CONTROLLED_PENDING_RUNTIME_END_TO_END_RECEIPT",
+    "firecrawl": "EVALUATE_AS_BOUNDED_RESEARCH_ADAPTER_ONLY_IF_CURRENT_WEB_RESEARCH_STACK_HAS_MEASURED_GAP_AND_ROBOTS_TOS_PDPL_BOUNDARIES_ARE_ENFORCED",
+    "crawl4ai": "EVALUATE_AS_BOUNDED_SELF_HOSTED_RESEARCH_ADAPTER_ONLY_IF_FIRECRAWL_OR_CURRENT_WEB_STACK_CANNOT_SATISFY_A_MEASURED_GAP",
+    "chatwoot": "EVALUATE_ONLY_WHEN_CUSTOMER_INBOX_GAP_IS_PROVEN;_NEVER_AS_PARALLEL_CRM_OR_TRUTH_OWNER",
+    "temporal_triggerdev_langgraph_pydanticai": "DEFER_BY_DEFAULT_TO_AVOID_DUPLICATING_EXISTING_COMPANY_AUTOPILOT_N8N_AND_GUARDRAILS"
+  },
+  "acceptance": {
+    "verifier": "scripts/verify_governed_channel_runtime_v1.py",
+    "tests": "tests/test_governed_channel_runtime_v1.py",
+    "slack_policy_tests": "tests/test_slack_founder_bridge_policy_v2.py",
+    "slack_receipt_verifier": "scripts/ops/verify_slack_founder_bridge_receipt.py",
+    "slack_installer": "scripts/ops/install_slack_founder_bridge_v2.sh",
+    "required_result": "GOVERNED_CHANNEL_RUNTIME_V1_PASS",
+    "live_send_activation_requires_separate_action_bound_change": true,
+    "slack_runtime_activation_requires_end_to_end_receipt": true
+  }
+}
