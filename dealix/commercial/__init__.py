@@ -23,6 +23,11 @@ from dealix.commercial.buyer_outputs import (
     ProcessObservation,
     RiskInput,
 )
+from dealix.commercial.case_study_generator import (
+    CaseStudyDocument,
+    CaseStudyGenerator,
+    CaseStudyRequest,
+)
 from dealix.commercial.company_brain_sprint import (
     BrainSource,
     CompanyBrainSprintAssessment,
@@ -30,23 +35,18 @@ from dealix.commercial.company_brain_sprint import (
     CompanyBrainSprintRequest,
     WorkflowCandidate,
 )
-from dealix.commercial.portfolio_router import (
-    DemandSignal,
-    EntryPackage,
-    PackageRouteDecision,
-    PortfolioPackageRouter,
-)
-from dealix.commercial.case_study_generator import (
-    CaseStudyDocument,
-    CaseStudyGenerator,
-    CaseStudyRequest,
-)
 from dealix.commercial.diagnostic_engine import (
     DiagnosticEngine,
     DiagnosticReport,
     DiagnosticRequest,
 )
 from dealix.commercial.pilot_delivery import PilotDeliveryKit, PilotPlan, PilotStartRequest
+from dealix.commercial.portfolio_router import (
+    DemandSignal,
+    EntryPackage,
+    PackageRouteDecision,
+    PortfolioPackageRouter,
+)
 from dealix.commercial.proof_builder import ProofBuilder, ProofBuildRequest, ProofPackDocument
 from dealix.commercial.upsell_engine import UpsellCheckResult, UpsellEngine
 from dealix.commercial.warm_intro_generator import (

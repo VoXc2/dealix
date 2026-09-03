@@ -29,6 +29,7 @@ from auto_client_acquisition.email.compliance import (
     get_daily_limit,
 )
 from auto_client_acquisition.email.gmail_send import (
+    LIVE_GMAIL_SEND_QUARANTINE_REASON,
     get_oauth_setup_instructions,
     send_email,
 )
@@ -63,6 +64,17 @@ def _new_id(prefix: str = "") -> str:
 
 def _utcnow() -> datetime:
     return datetime.now(UTC).replace(tzinfo=None)
+
+
+def _legacy_external_send_quarantine() -> dict[str, Any]:
+    """Canonical response for the retired legacy email execution routes."""
+    return {
+        "status": "quarantined",
+        "reasons": [LIVE_GMAIL_SEND_QUARANTINE_REASON],
+        "next_action": (
+            "USE_DRAFT_ONLY_OR_WIRE_CANONICAL_FRESH_AUTHORITY_AND_DURABLE_IDEMPOTENCY"
+        ),
+    }
 
 
 @router.post("/connect/gmail")
@@ -193,6 +205,11 @@ async def send_approved(body: dict[str, Any] = Body(...)) -> dict[str, Any]:
         sequence_step (default 0)
         force (default False — skips DB compliance, NEVER skips Gmail config check)
     """
+    # This endpoint is retained only as a compatibility surface. It must not
+    # perform compliance work or touch the provider while the legacy path is
+    # quarantined.
+    return _legacy_external_send_quarantine()
+
     to_email = str(body.get("to_email") or "").strip()
     subject = str(body.get("subject") or "").strip()
     body_plain = str(body.get("body_plain") or "").strip()
@@ -298,6 +315,9 @@ async def send_batch(body: dict[str, Any] = Body(default={})) -> dict[str, Any]:
         max: int (default = EMAIL_BATCH_SIZE)
         only_status: 'approved' (default) — skips 'queued' which still need approval
     """
+    # Batch execution shares the same retired legacy provider surface.
+    return _legacy_external_send_quarantine()
+
     max_n = int(body.get("max") or get_batch_size())
     only_status = str(body.get("only_status") or "approved")
     if max_n < 1 or max_n > 50:

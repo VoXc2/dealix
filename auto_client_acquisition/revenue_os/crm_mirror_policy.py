@@ -17,7 +17,6 @@ from typing import Any
 
 from auto_client_acquisition.agents.intake import Lead, LeadStatus
 
-
 REAL_TRUTH_CLASSES = frozenset({"real"})
 CONTACT_MIRROR_STATES = frozenset(
     {

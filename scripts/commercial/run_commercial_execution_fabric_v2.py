@@ -63,9 +63,13 @@ def build_snapshot(*, command: dict[str, Any], queue: dict[str, Any]) -> dict[st
         },
         "provider_execution": {
             "gmail_api_adapter_present": True,
-            "execution_requires_exact_action_fingerprint": True,
-            "execution_requires_current_approval": True,
-            "execution_requires_runtime_authority": True,
+            "live_provider_default": "QUARANTINED",
+            "canonical_action_hash_required": True,
+            "packet_integrity_recomputed": True,
+            "fresh_canonical_authority_resolver_required": True,
+            "durable_idempotency_required": True,
+            "unknown_provider_outcome_requires_reconciliation": True,
+            "caller_supplied_approval_is_execution_authority": False,
             "current_snapshot_executes_provider": False,
         },
         "truth_firewall": [
@@ -76,6 +80,7 @@ def build_snapshot(*, command: dict[str, Any], queue: dict[str, Any]) -> dict[st
             "invoice!=payment",
             "provider_acceptance!=customer_outcome",
             "synthetic!=customer_proof",
+            "cached_approval!=fresh_execution_authority",
         ],
     }
 
@@ -94,6 +99,7 @@ def main() -> int:
     _atomic(args.out, payload)
     print(f"DEALIX_COMMERCIAL_EXECUTION_FABRIC_SNAPSHOT={args.out}")
     print("DEALIX_COMMERCIAL_EXECUTION_FABRIC_V2=PASS")
+    print("LIVE_PROVIDER_DEFAULT=QUARANTINED")
     print("NEW_SCHEDULER=NO")
     print("NEW_PERMANENT_AGENT=NO")
     print("EXTERNAL_EFFECTS_EXECUTED=NO")

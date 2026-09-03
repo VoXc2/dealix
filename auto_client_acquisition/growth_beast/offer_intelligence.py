@@ -13,7 +13,6 @@ Current authority:
 """
 from __future__ import annotations
 
-
 _ANGLE_MAP: dict[tuple[str, str], dict] = {
     ("marketing_agency", "no_proof_visible"): {
         "diagnostic_focus_ar": "فجوة الإثبات والتقرير للعميل",

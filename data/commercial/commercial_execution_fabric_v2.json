@@ -7,12 +7,19 @@
   "new_scheduler": false,
   "new_permanent_agent": false,
   "new_crm_or_truth_store": false,
+  "trust_incident_remediation": {
+    "incident_issue": 1440,
+    "external_provider_default": "QUARANTINED_UNTIL_CANONICAL_FRESH_AUTHORITY_RESOLVER_AND_DURABLE_IDEMPOTENCY_ARE_PRESENT",
+    "caller_supplied_approval_is_execution_authority": false,
+    "caller_supplied_runtime_switches_are_execution_authority": false,
+    "independent_review_before_merge_required_for_l5_changes": true
+  },
   "factories": {
     "signal_factory": {"owner": "dealix-sales", "output": "SOURCE_BOUND_SIGNAL_RECEIPTS"},
     "research_browser_factory": {"owner": "dealix-sales", "output": "SOURCE_BOUND_RESEARCH_EVIDENCE"},
     "document_tender_factory": {"owner": "dealix-engineer", "output": "PROVENANCE_PRESERVING_DOCUMENT_EVIDENCE"},
     "conversation_negotiation_factory": {"owner": "dealix-sales", "output": "REPLY_NEGOTIATION_AND_NEXT_EVIDENCE_PACKS"},
-    "external_execution_gate": {"owner": "dealix-engineer", "output": "EXACT_ACTION_PACKET_AND_EXECUTION_DECISION"},
+    "external_execution_gate": {"owner": "dealix-engineer", "output": "CANONICAL_ACTION_HASH_PACKET_INTEGRITY_AND_FRESH_AUTHORITY_DECISION"},
     "learning_capability_factory": {"owner": "dealix-pm", "output": "MEASURED_KEEP_ITERATE_STOP_REMOVE_DECISION"}
   },
   "research_admission": {
@@ -30,32 +37,22 @@
   "external_execution": {
     "provider_adapters_may_execute_only_after_exact_gate_pass": true,
     "default_runtime_authority": "ALL_FALSE",
-    "required_packet_fields": [
-      "destination",
-      "channel",
-      "purpose_class",
-      "artifact_ref",
-      "content_sha256",
-      "identity_or_relationship_ref_when_required",
-      "consent_or_channel_eligibility_ref_when_required",
-      "suppression_check_ref",
-      "claim_evidence_refs",
-      "sender_identity_ref",
-      "opt_out_mechanism_ref_when_required",
-      "risk_class",
-      "exact_scope",
-      "action_fingerprint",
-      "approval_state_ref",
-      "expires_at",
-      "idempotency_key",
-      "provider"
-    ],
-    "fingerprint_change_invalidates_prior_approval": true,
+    "canonical_approval_identity": "ACTION_HASH=sha256(action_type|target|environment|payload)[0:16]",
+    "packet_integrity_identity": "FULL_SHA256_SEPARATE_FROM_APPROVAL_AUTHORITY",
+    "recompute_integrity_and_action_hash_before_execution": true,
+    "fresh_canonical_authority_resolver_required": true,
+    "fresh_authority_max_age_seconds": 30,
+    "durable_idempotency_reservation_before_provider": true,
+    "idempotency_same_key_same_committed_action": "RETURN_PRIOR_RECEIPT_NO_REPLAY",
+    "idempotency_same_key_different_action": "REJECT",
+    "idempotency_unknown_or_inflight": "RECONCILE_NO_BLIND_RETRY",
+    "gmail_exactly_once_claim": false,
+    "gmail_semantics": "DURABLE_AT_MOST_ONCE_REPLAY_PREVENTION_WITH_UNKNOWN_RECONCILIATION_BOUNDARY",
     "expired_revoked_suppressed_executes": false,
     "provider_receipt_is_customer_outcome": false
   },
   "channel_policy": {
-    "email": "AUTOMATE_RESEARCH_DRAFT_REPLY_NEGOTIATION_AND_EXECUTE_ONLY_EXACT_APPROVED_PACKET",
+    "email": "RESEARCH_DRAFT_REPLY_NEGOTIATION_AUTOMATIC_LIVE_PROVIDER_QUARANTINED_UNTIL_CANONICAL_FRESH_AUTHORITY",
     "whatsapp": "INBOUND_OR_KNOWN_CONSENTED_ONLY_NO_COLD_BULK",
     "founder_linkedin": "MANUAL_NATIVE",
     "company_social": "OFFICIAL_NATIVE_AFTER_EXACT_AUTHORITY",
@@ -71,10 +68,12 @@
     "invoice!=payment",
     "provider_acceptance!=customer_outcome",
     "synthetic!=customer_proof",
-    "telemetry!=commercial_truth"
+    "telemetry!=commercial_truth",
+    "cached_approval!=fresh_execution_authority",
+    "caller_supplied_nonempty_ref!=canonical_evidence"
   ],
   "self_improvement": {
-    "sequence": ["VERIFIED_GAP", "CANONICAL_OWNER", "CAPABILITY_INTAKE", "ISOLATED_PILOT_OR_SMALLEST_PATCH", "TEST", "DRAFT_PR", "EXACT_HEAD_VERIFY", "MEASURE", "KEEP_ITERATE_STOP_REMOVE"],
+    "sequence": ["VERIFIED_GAP", "CANONICAL_OWNER", "CAPABILITY_INTAKE", "ISOLATED_PILOT_OR_SMALLEST_PATCH", "TEST", "DRAFT_PR", "EXACT_HEAD_VERIFY", "INDEPENDENT_REVIEW", "MEASURE", "KEEP_ITERATE_STOP_REMOVE"],
     "may_self_increase_authority": false,
     "max_parallel_new_capability_pilots": 2
   }

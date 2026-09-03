@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import pytest
+
 from auto_client_acquisition.distribution_os import catalog
 from autonomous_growth.product_catalog import PRODUCT_CATALOG
 
@@ -15,10 +17,17 @@ def test_all_products_match_existing_catalog() -> None:
     assert ladder[-1].id == "prod_custom_ai_v1"
 
 
-def test_price_band_reads_from_catalog_not_invented() -> None:
-    assert catalog.price_band("prod_sprint_v1") == (499, 499)
-    assert catalog.price_band("prod_managed_ops_v1") == (2999, 4999)
-    assert catalog.price_band("prod_custom_ai_v1") == (5000, 25000)
+def test_price_band_fail_closes_paid_tiers() -> None:
+    # V100 §20 / §22: no public fixed price becomes customer authority.
+    # price_band() only exposes the zero-price Free Mini Diagnostic entry motion
+    # and fails closed for every paid tier (CUSTOMER_SPECIFIC_QUOTE_REQUIRED).
+    with pytest.raises(PermissionError, match="CUSTOMER_SPECIFIC_QUOTE_REQUIRED"):
+        catalog.price_band("prod_sprint_v1")
+    with pytest.raises(PermissionError, match="CUSTOMER_SPECIFIC_QUOTE_REQUIRED"):
+        catalog.price_band("prod_managed_ops_v1")
+    with pytest.raises(PermissionError, match="CUSTOMER_SPECIFIC_QUOTE_REQUIRED"):
+        catalog.price_band("prod_custom_ai_v1")
+    assert catalog.price_band("prod_diagnostic_v1") == (0, 0)
 
 
 def test_unknown_product_id_is_invalid() -> None:
