@@ -89,6 +89,20 @@ def main() -> int:
     ):
         assert guardrails.get(key) is True, f"guardrail must remain true: {key}"
 
+    # Canonical invoice authority must never regress to a caller-supplied amount
+    # that merely labels itself as an approved quote. The runtime must bind exact
+    # lead/amount/discovery/scope facts to Approval Center with a deterministic
+    # fingerprint and reject post-approval substitution.
+    runtime_text = (ROOT / "api/routers/commercial_runtime_truth.py").read_text(encoding="utf-8")
+    for marker in (
+        '"/api/v1/quotes/authority/request"',
+        '"invoice_requires_approved_quote_fingerprint": True',
+        'QUOTE_AUTHORITY_SCHEMA = "dealix.customer-specific-quote-authority.v1"',
+        '"quote_authority_fingerprint_mismatch"',
+        '"approved_customer_specific_quote_fingerprint"',
+    ):
+        assert marker in runtime_text, f"canonical quote/invoice authority marker missing: {marker}"
+
     print("COMMERCIAL_AUTHORITY_SOURCE_MAP_V1_PASS")
     print(f"closure_verdict={closure['verdict']}")
     print(f"unresolved_count={len(unresolved)}")
