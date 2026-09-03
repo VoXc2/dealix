@@ -34,6 +34,9 @@ def verify_acceptance_source() -> None:
         "telegram_dm_admission_contains_non_owner",
         "telegram_token_file_permissions_not_0600",
         "port_18789_loopback_only",
+        'oc_args("secrets", "audit", "--check")',
+        "openclaw_secretref_audit",
+        "secrets_audit=",
         "secret_values_printed=false",
         "owner_raw_id_printed=false",
     ):
