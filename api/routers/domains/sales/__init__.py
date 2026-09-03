@@ -10,6 +10,7 @@ from fastapi import APIRouter
 from api.routers import (
     case_study_engine,
     commercial_intelligence,
+    commercial_map,
     commercial_runtime_truth,
     company_targeting,
     dominance,
@@ -76,15 +77,47 @@ _LEGACY_COMMERCIAL_RUNTIME_PATHS = {
 }
 
 # Quarantine the three retired commercial-authority routes before api.main later
-# includes AUTOPILOT_ROUTERS. The canonical replacements below preserve the paths
-# but remove seven-day/fixed-tier pricing authority and require a customer-specific
-# approved quote for invoice drafting.
+# includes AUTOPILOT_ROUTERS. Their source is retained for rollback/history, but
+# they are not mounted and therefore cannot act as launch pricing authority.
 for _autopilot_router in revenue_ops_autopilot.AUTOPILOT_ROUTERS:
     _autopilot_router.routes[:] = [
         route
         for route in _autopilot_router.routes
         if getattr(route, "path", None) not in _LEGACY_COMMERCIAL_RUNTIME_PATHS
     ]
+
+_LEGACY_PRICING_RUNTIME_PATHS = {
+    "/api/v1/pricing/plans",
+    "/api/v1/pricing/usage",
+    "/api/v1/pricing/menu",
+    "/api/v1/checkout",
+    "/api/v1/pricing/outcome-simulate",
+}
+
+# Current commercial authority is quote-only after qualified discovery and
+# live charge is false. Keep the Moyasar webhook mounted for reconciliation of
+# already-existing provider events, but remove every route that can publish a
+# price, create usage-based billable state, simulate a legacy price ladder, or
+# mint a new checkout invoice/payment link.
+pricing.router.routes[:] = [
+    route
+    for route in pricing.router.routes
+    if getattr(route, "path", None) not in _LEGACY_PRICING_RUNTIME_PATHS
+]
+
+_LEGACY_COMMERCIAL_MAP_PATHS = {
+    "/api/v1/commercial-map",
+    "/api/v1/commercial-map/markdown",
+}
+
+# The legacy public commercial map is still useful as internal source/history,
+# but it contains retired SKU names, checkout links and price ladders. Remove
+# its HTTP exposure while retaining module helpers for non-authoritative reads.
+commercial_map.router.routes[:] = [
+    route
+    for route in commercial_map.router.routes
+    if getattr(route, "path", None) not in _LEGACY_COMMERCIAL_MAP_PATHS
+]
 
 
 _ROUTERS = [
