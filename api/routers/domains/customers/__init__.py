@@ -33,13 +33,27 @@ from api.routers import (
 )
 from api.routers.customer import dashboard as customer_dashboard_router
 
+_LEGACY_BILLING_MUTATION_PATHS = {
+    "/api/v1/billing/plans",
+    "/api/v1/billing/subscribe",
+    "/api/v1/billing/upgrade",
+    "/api/v1/billing/cancel",
+    "/api/v1/billing/invoices/{invoice_id}/pay",
+}
+
+# Launch authority is quote-only and live charge is disabled. Keep read-only
+# subscription/invoice/features views for existing tenants, but do not expose
+# the legacy SaaS plan catalogue or any endpoint that mutates a subscription or
+# creates a Moyasar payment link. Source code remains available for rollback and
+# historical reference; mounting is the authority boundary.
+billing.router.routes[:] = [
+    route
+    for route in billing.router.routes
+    if getattr(route, "path", None) not in _LEGACY_BILLING_MUTATION_PATHS
+]
+
+
 _ROUTERS = [
-    # /api/v1/billing — subscribe, upgrade, cancel, invoices, features.
-    # This module existed in full, with auth and tenant scoping on every
-    # route, but was never imported anywhere, so none of its routes were
-    # mounted: the product had no billing API at all. The three tests that
-    # exercise it are xfailed for a missing PostgreSQL, which is true and
-    # which also hid the 404s underneath.
     billing.router,
     company_brain_mvp_router.router,
     customer_success.router,
