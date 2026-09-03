@@ -14,8 +14,9 @@ def test_build_outreach_draft_contains_company_and_cta() -> None:
     }
     text = build_outreach_draft_ar(row, icp={"core_message_ar": "Dealix يثبت ما بعد الـ lead."}, objection_snippet="")
     assert "وكالة اختبار" in text
-    assert "Risk Score" in text
-    assert "مسودة" in text
+    assert "Mini Diagnostic" in text
+    assert "مسودة داخلية" in text
+    assert "Risk Score" not in text
 
 
 def test_attach_outreach_drafts_mutates_payload() -> None:
