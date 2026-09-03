@@ -48,6 +48,7 @@ _REQUIRED_SAFE_PATHS = {
     "/api/v1/commercial-map",
     "/api/v1/commercial-map/markdown",
     "/api/v1/ops-autopilot/leads/{lead_id}/meeting-brief",
+    "/api/v1/quotes/authority/request",
     "/api/v1/invoices/draft",
     "/api/v1/webhooks/moyasar",
     "/api/v1/billing/subscription",
@@ -92,6 +93,7 @@ def test_launch_runtime_does_not_mount_retired_price_charge_or_parallel_authorit
         "/api/v1/commercial-map",
         "/api/v1/commercial-map/markdown",
         "/api/v1/ops-autopilot/leads/{lead_id}/meeting-brief",
+        "/api/v1/quotes/authority/request",
         "/api/v1/invoices/draft",
     ):
         assert mounted_list.count(path) == 1, path
@@ -154,6 +156,7 @@ def test_safe_commercial_map_keeps_compatibility_url_without_price_or_checkout()
     assert data["primary_offer"]["price_model"] == "customer_specific_quote_only"
     assert data["guardrails"]["no_public_fixed_price"] is True
     assert data["guardrails"]["no_public_checkout"] is True
+    assert data["guardrails"]["invoice_requires_approved_quote_fingerprint"] is True
     rendered = repr(data)
     for retired in (
         "seven_day_governance_diagnostic",
