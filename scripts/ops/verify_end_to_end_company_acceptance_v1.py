@@ -97,6 +97,15 @@ REQUIRED_ACCEPTANCE_LEVELS = {
     "A5_REAL_COMMERCIAL_PROOF",
     "A6_REPEATABILITY",
 }
+FORBIDDEN_ACTIVE_AI_WORKFORCE_MOTION = {
+    "499 SAR Pilot invoice draft prepared",
+    "مسوّدة فاتورة 499 ريال",
+    'tier_id="growth_starter_pilot"',
+    'return "growth_starter"',
+    'recommended_service: str = "growth_starter"',
+    "7-Day Revenue Command Room Sprint",
+    "7-Day Operating Diagnostic",
+}
 
 
 def _load(path: Path) -> dict[str, Any]:
@@ -270,8 +279,65 @@ def verify() -> list[str]:
     _error(errors, list(operating.CANONICAL_COMMERCIAL_CHAIN) == EXPECTED_COMMERCIAL_CHAIN, "operating_commercial_chain")
     built = operating.build_operating_company_contract()
     summary = built.to_summary()
-    _error(errors, summary.get("agents_total", 0) >= 5, "operating_agents")
+    _error(errors, summary.get("agents_total", 0) >= 5, "operating_specialist_roles_present")
     _error(errors, summary.get("loops_total", 0) >= 7, "operating_loops")
+
+    delegation = importlib.import_module("auto_client_acquisition.ai_workforce.canonical_delegation")
+    registry_module = importlib.import_module("auto_client_acquisition.ai_workforce.agent_registry")
+    factory_module = importlib.import_module("auto_client_acquisition.ai_workforce.canonical_revenue_factory")
+    runtime_mapping = dict(delegation.RUNTIME_SPECIALIST_DELEGATION)
+    revenue_mapping = dict(delegation.REVENUE_SPECIALIST_DELEGATION)
+    canonical_agents = set(delegation.CANONICAL_AGENTS)
+    _error(errors, canonical_agents == EXPECTED_AGENTS, "ai_workforce_canonical_agents")
+    _error(errors, set(registry_module.AGENT_REGISTRY) == set(runtime_mapping), "runtime_specialist_role_set")
+    _error(errors, set(runtime_mapping.values()) <= EXPECTED_AGENTS, "runtime_specialist_owner_set")
+    _error(errors, set(revenue_mapping.values()) <= EXPECTED_AGENTS, "revenue_specialist_owner_set")
+    _error(
+        errors,
+        set(runtime_mapping.values()) | set(revenue_mapping.values()) == EXPECTED_AGENTS,
+        "specialist_workloads_cover_five_agents",
+    )
+
+    blueprint = factory_module.build_canonical_revenue_factory_blueprint()
+    _error(errors, blueprint.get("canonical_agents_total") == 5, "revenue_factory_canonical_agents_total")
+    _error(errors, set(blueprint.get("canonical_agents") or []) == EXPECTED_AGENTS, "revenue_factory_canonical_agents")
+    _error(errors, blueprint.get("specialist_roles_total") == 15, "revenue_factory_specialist_roles_total")
+    _error(errors, len(blueprint.get("automation_plays") or []) == 30, "revenue_factory_automation_plays")
+    _error(
+        errors,
+        {row.get("agent_id") for row in blueprint.get("agent_contracts") or []} == set(revenue_mapping),
+        "revenue_factory_specialist_role_set",
+    )
+    _error(
+        errors,
+        all(row.get("canonical_owner") in EXPECTED_AGENTS for row in blueprint.get("agent_contracts") or []),
+        "revenue_factory_contract_ownership",
+    )
+    _error(
+        errors,
+        all(row.get("canonical_owner") in EXPECTED_AGENTS for row in blueprint.get("daily_schedule") or []),
+        "revenue_factory_schedule_ownership",
+    )
+
+    active_ai_sources = "\n".join(
+        (ROOT / rel).read_text(encoding="utf-8")
+        for rel in (
+            "auto_client_acquisition/ai_workforce/agent_contracts.py",
+            "auto_client_acquisition/ai_workforce/orchestrator.py",
+            "auto_client_acquisition/ai_workforce/schemas.py",
+        )
+    )
+    for retired in FORBIDDEN_ACTIVE_AI_WORKFORCE_MOTION:
+        _error(errors, retired not in active_ai_sources, f"retired_ai_workforce_motion:{retired}")
+    for required in (
+        "free_mini_diagnostic",
+        "revenue_command_pilot_30d",
+        "customer_specific_quote",
+        "verified_payment",
+        "customer_validated_proof",
+        "canonical_owner",
+    ):
+        _error(errors, required in active_ai_sources, f"missing_ai_workforce_truth:{required}")
 
     activation = contract.get("activation_state") or {}
     _error(
@@ -296,6 +362,9 @@ def main() -> int:
         return 1
     print("DEALIX_END_TO_END_COMPANY_ACCEPTANCE_V1=PASS")
     print("agents=5")
+    print("runtime_specialist_roles=12")
+    print("revenue_factory_specialist_roles=15")
+    print("automation_plays=30")
     print("systems=12")
     print("lifecycle_stages=18")
     print("internal_autonomy=L0-L4")
