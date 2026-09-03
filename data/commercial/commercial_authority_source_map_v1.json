@@ -65,54 +65,110 @@
     },
     {
       "id": "runtime-public-services",
-      "path": "api/routers/revenue_ops_autopilot.py",
+      "path": "api/routers/commercial_runtime_truth.py",
       "surface": "GET /api/v1/public/services",
-      "classification": "RETIRED_RUNTIME_AUTHORITY",
+      "classification": "CURRENT_CANONICAL_AUTHORITY",
       "runtime_consumed": true,
       "customer_facing": true,
       "authority": true,
-      "fixed_public_price_authority": true,
+      "fixed_public_price_authority": false,
       "expected_markers": [
+        "revenue_command_pilot_30d",
+        "free_mini_diagnostic",
+        "customer_specific_quote_only",
+        "public_fixed_pricing\": False",
+        "public_checkout\": False"
+      ],
+      "forbidden_markers": [
         "seven_day_governance_diagnostic",
         "tiers_sar",
         "4999",
         "9999",
         "15000"
       ],
-      "forbidden_markers": [],
-      "state": "UNRESOLVED_TRANCHE_B"
+      "state": "RESOLVED_TRANCHE_B"
     },
     {
       "id": "runtime-meeting-brief-fallback",
-      "path": "api/routers/revenue_ops_autopilot.py",
-      "surface": "meeting brief recommended_offer fallback",
-      "classification": "RETIRED_RUNTIME_AUTHORITY",
+      "path": "api/routers/commercial_runtime_truth.py",
+      "surface": "meeting brief recommended offer",
+      "classification": "CURRENT_CANONICAL_AUTHORITY",
       "runtime_consumed": true,
       "customer_facing": false,
       "authority": true,
       "fixed_public_price_authority": false,
-      "expected_markers": ["lead.offer_id or \"seven_day_governance_diagnostic\""],
-      "forbidden_markers": [],
-      "state": "UNRESOLVED_TRANCHE_B"
+      "expected_markers": [
+        "recommended_offer\": CANONICAL_PRIMARY_OFFER_ID",
+        "FREE_MINI_DIAGNOSTIC",
+        "REVENUE_COMMAND_PILOT_30D"
+      ],
+      "forbidden_markers": [
+        "lead.offer_id or \"seven_day_governance_diagnostic\"",
+        "٧ أيام"
+      ],
+      "state": "RESOLVED_TRANCHE_B"
     },
     {
       "id": "runtime-invoice-tier-catalog",
-      "path": "api/routers/revenue_ops_autopilot.py",
-      "surface": "POST /api/v1/invoices/draft tier-to-amount mapping",
-      "classification": "RETIRED_RUNTIME_AUTHORITY",
+      "path": "api/routers/commercial_runtime_truth.py",
+      "surface": "POST /api/v1/invoices/draft from approved customer-specific quote",
+      "classification": "CURRENT_CANONICAL_AUTHORITY",
       "runtime_consumed": true,
       "customer_facing": false,
       "authority": true,
-      "fixed_public_price_authority": true,
+      "fixed_public_price_authority": false,
       "expected_markers": [
+        "approved_amount_sar",
+        "qualified_discovery_ref",
+        "customer_specific_scope_ref",
+        "quote_authority_ref",
+        "customer_specific_quote",
+        "approved_customer_specific_quote"
+      ],
+      "forbidden_markers": [
         "_TIER_AMOUNT",
         "starter\": 4999.0",
         "standard\": 9999.0",
         "executive\": 15000.0",
         "تشخيص ٧ أيام"
       ],
+      "state": "RESOLVED_TRANCHE_B"
+    },
+    {
+      "id": "legacy-runtime-commercial-routes",
+      "path": "api/routers/revenue_ops_autopilot.py",
+      "surface": "retired functions retained as unreachable compatibility source",
+      "classification": "CURRENT_FAIL_CLOSED_COMPATIBILITY",
+      "runtime_consumed": false,
+      "customer_facing": false,
+      "authority": false,
+      "fixed_public_price_authority": false,
+      "expected_markers": [
+        "seven_day_governance_diagnostic",
+        "_TIER_AMOUNT",
+        "تشخيص ٧ أيام"
+      ],
       "forbidden_markers": [],
-      "state": "UNRESOLVED_TRANCHE_B"
+      "state": "QUARANTINED_NOT_REGISTERED"
+    },
+    {
+      "id": "legacy-runtime-route-quarantine",
+      "path": "api/routers/domains/sales/__init__.py",
+      "surface": "route registration quarantine",
+      "classification": "CURRENT_CANONICAL_AUTHORITY",
+      "runtime_consumed": true,
+      "customer_facing": false,
+      "authority": false,
+      "fixed_public_price_authority": false,
+      "expected_markers": [
+        "_LEGACY_COMMERCIAL_RUNTIME_PATHS",
+        "/api/v1/public/services",
+        "/api/v1/ops-autopilot/leads/{lead_id}/meeting-brief",
+        "/api/v1/invoices/draft",
+        "commercial_runtime_truth.router"
+      ],
+      "forbidden_markers": [],
+      "state": "ACTIVE_QUARANTINE"
     },
     {
       "id": "business-now-client-pack-pricing",
@@ -165,13 +221,9 @@
     }
   ],
   "closure": {
-    "verdict": "BLOCKED_RETIRED_RUNTIME_AUTHORITY",
-    "unresolved_ids": [
-      "runtime-public-services",
-      "runtime-meeting-brief-fallback",
-      "runtime-invoice-tier-catalog"
-    ],
-    "ready_for_issue_closure": false
+    "verdict": "PASS",
+    "unresolved_ids": [],
+    "ready_for_issue_closure": true
   },
   "guardrails": {
     "no_new_pricing_catalog": true,
