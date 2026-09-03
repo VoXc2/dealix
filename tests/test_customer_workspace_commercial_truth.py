@@ -58,3 +58,15 @@ def test_expansion_file_cannot_auto_upsell() -> None:
     assert "not an automatic upsell surface" in review
     assert "No automatic renewal/upsell" in review
     assert "Indicative price" not in review
+
+
+def test_synthetic_e2e_isolated_from_source_worktree() -> None:
+    scaffolder = (ROOT / "scripts" / "create_customer_workspace.py").read_text(encoding="utf-8")
+    dry_run = (ROOT / "scripts" / "run_dealix_e2e_dry_run.py").read_text(encoding="utf-8")
+
+    assert "output_root: Path | None = None" in scaffolder
+    assert "TemporaryDirectory" in dry_run
+    assert "output_root=Path(tmp)" in dry_run
+    assert "DEALIX_VERIFY_PROOF_ROOT" in dry_run
+    assert "Source Worktree Hygiene" in dry_run
+    assert "git status" in dry_run
