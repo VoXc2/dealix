@@ -1,9 +1,49 @@
 #!/usr/bin/env bash
 set -Eeuo pipefail
+
+SOURCE="${BASH_SOURCE[0]}"
+SYMLINK_DEPTH=0
+MAX_SYMLINK_DEPTH=40
+
+while [[ -L "$SOURCE" ]]; do
+  SYMLINK_DEPTH=$((SYMLINK_DEPTH + 1))
+  if (( SYMLINK_DEPTH > MAX_SYMLINK_DEPTH )); then
+    echo "Too many symbolic links while resolving Dealix CLI: ${BASH_SOURCE[0]}" >&2
+    exit 2
+  fi
+
+  SOURCE_DIR="$(CDPATH= cd -P -- "$(dirname -- "$SOURCE")" && pwd)"
+  LINK_TARGET="$(readlink -- "$SOURCE")"
+  if [[ "$LINK_TARGET" == /* ]]; then
+    SOURCE="$LINK_TARGET"
+  else
+    SOURCE="$SOURCE_DIR/$LINK_TARGET"
+  fi
+done
+
+ROOT="$(CDPATH= cd -P -- "$(dirname -- "$SOURCE")/.." && pwd)"
+VERIFY_SCRIPT="$ROOT/scripts/dealix_verify.py"
+PYTHON_BIN="${DEALIX_AUTOMATION_PYTHON:-$ROOT/.venv/bin/python}"
+
+if [[ ! -f "$VERIFY_SCRIPT" ]]; then
+  echo "Dealix verifier not found: $VERIFY_SCRIPT" >&2
+  exit 2
+fi
+
+if [[ ! -x "$PYTHON_BIN" ]]; then
+  PYTHON_BIN="$(command -v python3 || true)"
+fi
+
+if [[ -z "$PYTHON_BIN" || ! -x "$PYTHON_BIN" ]]; then
+  echo "No usable Python runtime found for Dealix verifier" >&2
+  exit 2
+fi
+
 if [[ "${1:-}" == "verify" ]]; then
   shift
-  exec python3 scripts/dealix_verify.py "$@"
+  cd "$ROOT"
+  exec "$PYTHON_BIN" "$VERIFY_SCRIPT" "$@"
 else
-  echo "Usage: bin/dealix verify <changed|pr|trust|security|runtime|full|production|commercial> [--worktree]" >&2
+  echo "Usage: bin/dealix verify <changed|pr|trust|security|runtime|full|production|commercial> [--worktree|--sha <git-sha>]" >&2
   exit 2
 fi
