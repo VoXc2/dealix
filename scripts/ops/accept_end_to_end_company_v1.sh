@@ -61,7 +61,10 @@ run governed_channels \
 run commercial_fabric \
   "$PYTHON_BIN" scripts/verify_commercial_execution_fabric_v2.py
 run focused_tests \
-  "$PYTHON_BIN" -m pytest -q tests/test_end_to_end_company_acceptance_v1.py
+  "$PYTHON_BIN" -m pytest -q \
+    tests/test_end_to_end_company_acceptance_v1.py \
+    tests/test_ai_workforce_canonical_delegation.py \
+    tests/test_ai_workforce_revenue_factory_blueprint.py
 
 python_version="$($PYTHON_BIN --version 2>&1)"
 created_at="$(date -u +%FT%TZ)"
@@ -76,8 +79,12 @@ cat > "$PROOF_ROOT/receipt.json" <<EOF_RECEIPT
   "authority_class": "L4_INTERNAL_VERIFICATION",
   "external_effects": "NONE_FAIL_CLOSED",
   "agents": 5,
+  "runtime_specialist_roles": 12,
+  "revenue_factory_specialist_roles": 15,
+  "automation_plays": 30,
   "systems": 12,
   "lifecycle_stages": 18,
+  "founder_control": "TELEGRAM_OPENCLAW_E2E_RECEIPT_REQUIRED_SEPARATELY",
   "next_action": "independent_same_head_review_then_runtime_and_production_gates"
 }
 EOF_RECEIPT
