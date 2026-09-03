@@ -1,5 +1,5 @@
 {
-  "schema_version": "1.1",
+  "schema_version": "1.2",
   "generated_from_main_sha": "7274c766dd43a23ec391b4cfbeb4fae8ae665763",
   "closure_issue": 1162,
   "canonical_commercial_path": [
@@ -365,6 +365,97 @@
         "estimate_note"
       ],
       "state": "INTAKE_ONLY_NO_AUTOMATIC_PRICE"
+    },
+    {
+      "id": "founder-command-room-commercial-path",
+      "path": "api/routers/founder_command_room.py",
+      "surface": "authenticated founder command-room commercial path",
+      "classification": "CURRENT_CANONICAL_AUTHORITY",
+      "runtime_consumed": true,
+      "customer_facing": false,
+      "authority": true,
+      "fixed_public_price_authority": false,
+      "expected_markers": [
+        "Customer-Specific Quote",
+        "Revenue Command Pilot",
+        "Invoice ≠ Payment",
+        "Stop / Expand / Redesign"
+      ],
+      "forbidden_markers": [
+        "Micro Sprint",
+        "Data Pack",
+        "Managed Ops",
+        "Transformation Diagnostic Sprint",
+        "Custom Enterprise System",
+        "1,500 SAR",
+        "2,999–4,999 SAR/شهر",
+        "7,500–25,000 SAR",
+        "25,000–100,000+ SAR"
+      ],
+      "state": "PATCHED_IN_PR_1494_QUOTE_ONLY"
+    },
+    {
+      "id": "unified-command-room-commercial-path",
+      "path": "scripts/dealix_unified_command_room.py",
+      "surface": "offline founder command-day commercial path renderer",
+      "classification": "CURRENT_CANONICAL_AUTHORITY",
+      "runtime_consumed": true,
+      "customer_facing": false,
+      "authority": true,
+      "fixed_public_price_authority": false,
+      "expected_markers": [
+        "Customer-Specific Quote",
+        "Revenue Command Pilot",
+        "Invoice ≠ Payment",
+        "Commercial path"
+      ],
+      "forbidden_markers": [
+        "Micro Sprint",
+        "Data Pack",
+        "Managed Ops",
+        "Transformation Diagnostic Sprint",
+        "Custom Enterprise System",
+        "499 SAR",
+        "1,500 SAR",
+        "2,999–4,999 SAR/شهر",
+        "7,500–25,000 SAR",
+        "25,000–100,000+ SAR"
+      ],
+      "state": "PATCHED_IN_PR_1494_QUOTE_ONLY"
+    },
+    {
+      "id": "founder-command-commercial-path-regression",
+      "path": "tests/test_founder_command_room_api.py",
+      "surface": "regression guard for authenticated founder commercial path",
+      "classification": "CURRENT_CANONICAL_AUTHORITY",
+      "runtime_consumed": false,
+      "customer_facing": false,
+      "authority": false,
+      "fixed_public_price_authority": false,
+      "expected_markers": [
+        "test_snapshot_shape_and_launch_readiness",
+        "Customer-Specific Quote",
+        "Invoice ≠ Payment"
+      ],
+      "forbidden_markers": [],
+      "state": "REGRESSION_ADDED_IN_PR_1494"
+    },
+    {
+      "id": "unified-command-commercial-path-regression",
+      "path": "tests/test_unified_command_room.py",
+      "surface": "regression guard for offline founder command-day commercial path",
+      "classification": "CURRENT_CANONICAL_AUTHORITY",
+      "runtime_consumed": false,
+      "customer_facing": false,
+      "authority": false,
+      "fixed_public_price_authority": false,
+      "expected_markers": [
+        "test_commercial_path_is_quote_only_and_contains_no_retired_price_ladder",
+        "Customer-Specific Quote",
+        "Invoice ≠ Payment"
+      ],
+      "forbidden_markers": [],
+      "state": "REGRESSION_ADDED_IN_PR_1494"
     },
     {
       "id": "legacy-payments-router-unmounted-regression",
