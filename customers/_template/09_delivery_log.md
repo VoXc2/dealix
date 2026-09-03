@@ -1,16 +1,25 @@
-# 09 — Delivery Log / سجل التسليم
+# 09 — 30-Day Pilot Delivery Log / سجل تسليم البايلوت 30 يومًا
 
-> Append-only, dated record of what was actually delivered during the
-> Command Sprint. Feeds the Proof Register and the Proof Pack.
+> Append-only, dated record of what was actually executed for the authorized
+> customer scope. Owned by `dealix-delivery`. Feeds the Proof Register and Proof
+> Pack. Activity is not automatically delivery or customer value.
 
-| Date | What was done / ما تم تنفيذه | Artifact / المخرج | Hours | Notes |
-| --- | --- | --- | --- | --- |
-| | | | | |
+| Date/time | Workflow step / action | Owner | Artifact / receipt | Approval ref (if material) | Delivery state | Notes |
+| --- | --- | --- | --- | --- | --- | --- |
+| | | | | | | |
 
-## Daily standup notes / ملاحظات يومية
-### Day 1
+## Week 1 — Baseline & readiness
 -
-### Day 2
+
+## Week 2 — Governed execution
 -
-### Day 3
+
+## Week 3 — Evidence-led improvement
+-
+
+## Week 4 — Final reconciliation
+-
+
+## Exceptions / failures
+<!-- Failures are evidence. Record retry/rollback/handoff; do not hide them. -->
 -
