@@ -64,17 +64,26 @@ def test_commercial_path_is_quote_only_and_contains_no_retired_price_ladder() ->
         assert retired not in rendered
 
 
-def test_crm_summary_computes_value_and_paid() -> None:
+def test_crm_summary_keeps_won_separate_from_verified_paid() -> None:
     mod = _load_module()
     rows = [
         {"company": "A", "status": "needs_review", "deal_value_sar": "10000", "probability": "20"},
         {"company": "B", "status": "won", "deal_value_sar": "12500", "probability": "100"},
         {"company": "C", "status": "lost", "deal_value_sar": "5000", "probability": "0"},
         {"company": "D", "status": "replied", "deal_value_sar": "8000", "probability": "50"},
+        {
+            "company": "E",
+            "status": "won",
+            "deal_value_sar": "4000",
+            "probability": "100",
+            "payment_status": "verified",
+            "payment_evidence_id": "pay_receipt_123",
+        },
     ]
     summary = mod.crm_summary(rows)
+    assert summary["won"] == 2
     assert summary["paid"] == 1
-    assert summary["total"] == 4
+    assert summary["total"] == 5
     # Open pipeline excludes won + lost: 10000 + 8000.
     assert summary["pipeline_value"] == 18000
     # Weighted: 10000*0.2 + 8000*0.5 = 2000 + 4000.
