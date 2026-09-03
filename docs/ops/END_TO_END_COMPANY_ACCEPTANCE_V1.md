@@ -21,6 +21,16 @@ Agents may use an approved founder style profile to produce natural Arabic or En
 
 When automation is material, external identity must be an authorized Dealix assistant or team representative. An agent must not falsely claim to be the human founder, invent a personal memory or relationship, fabricate experience, or hide automation in a way that misleads the recipient.
 
+## Canonical Founder Control
+
+Founder Control is a dependency, not a new truth store.
+
+Current canonical path is owned by #1500:
+
+`Telegram DM -> OpenClaw -> existing Dealix Company Machine -> durable receipt -> Founder brief`
+
+The acceptance contract therefore uses connector id `telegram_openclaw` and requires `telegram_openclaw_e2e_receipt` at A2. Slack is an optional dormant capability and must not be a launch dependency or a substitute for a current Telegram/OpenClaw VPS receipt.
+
 ## Canonical ownership
 
 | Customer lifecycle | Primary owner | Supporting owners |
@@ -44,7 +54,7 @@ Priority order:
 
 Public data and enrichment can create a research hypothesis, not a relationship or consent. Scraping, purchased lists, cold WhatsApp, mass LinkedIn automation, identity deception, and rate-limit or platform-policy bypass remain blocked.
 
-## Exact-head acceptance
+## Exact-head source/internal acceptance
 
 Run from an isolated worktree at the exact candidate SHA:
 
@@ -59,7 +69,7 @@ Expected terminal result:
 DEALIX_E2E_ACCEPTANCE=PASS
 ```
 
-The receipt must contain the exact Git SHA and remain paired with an independent same-head review.
+The receipt must contain the exact Git SHA and remain paired with an independent same-head review. This source/internal PASS is A0/A1 evidence only; it does not prove A2-A6.
 
 ## Launch gates
 
@@ -67,21 +77,23 @@ A source-contract PASS is not a production or commercial-proof claim.
 
 - `A0`: source consistency and no parallel owners.
 - `A1`: exact-head five-agent/twelve-system internal runtime acceptance.
-- `A2`: official channel capability and Founder Control end-to-end receipt.
-- `A3`: deployed SHA, API/web health, rollback, and public truth.
+- `A2`: official channel capability + **current Telegram/OpenClaw Founder Control E2E receipt** + sender health/idempotency.
+- `A3`: canonical `dealix-apps-web` deployed SHA, API/web health, rollback, and Public Truth.
 - `A4`: explicitly synthetic dry run plus an inbound or consented channel canary.
 - `A5`: one real path with interaction, qualified problem, customer-specific quote, verified payment, delivered scope, and customer-validated proof.
 - `A6`: multiple paid cycles, measured delivery economics, low founder intervention, repeatable playbook, and renewal, expansion, or referral.
 
 Only A5 supports a full commercial-proof claim. Only A6 supports a SaaS-scale or repeatability claim.
 
-## Merge order and current dependency
+## Merge order and current dependencies
 
-This acceptance layer is based on current `main@7274c766dd43a23ec391b4cfbeb4fae8ae665763`. It does not supersede the open commercial-authority closure or public-truth work. Before production launch, reconcile and exact-head verify:
+This acceptance layer is based on current `main@7274c766dd43a23ec391b4cfbeb4fae8ae665763`. It does not supersede the current owners. Before production launch, reconcile and exact-head verify:
 
-1. PR #1494 commercial/runtime/public-web authority;
-2. Railway production and deployed SHA;
-3. PR #1496 or the current canonical public-truth owner;
-4. Founder Control and governed channel runtime;
-5. this end-to-end company acceptance;
+1. #1494 commercial/runtime/public-web authority;
+2. #1497 canonical Railway Production/Front Door identity: `dealix-apps-web / Dealix-sa/dealix / apps/web / exact deployed SHA` plus generated-domain and custom-domain/certificate evidence;
+3. #1496 or the current canonical Public Truth owner;
+4. #1500 Telegram/OpenClaw Founder Control current VPS receipt;
+5. this #1501 end-to-end company acceptance;
 6. controlled commercial canary and real paid-pilot proof.
+
+A legacy Railway service named `web` or a legacy `frontend/` build does not substitute for #1497 canonical production evidence. Hosted workflow failures before repository steps do not substitute for exact-head acceptance.
