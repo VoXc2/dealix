@@ -8,6 +8,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 CONTRACT = ROOT / "data/ops/founder_command_authority_v1.json"
 VERIFIER = ROOT / "scripts/ops/verify_founder_command_authority_v1.py"
+UNKNOWN = "UNKNOWN_NOT_EVIDENCE_BACKED"
 
 
 def _contract() -> dict:
@@ -46,9 +47,34 @@ def test_founder_command_does_not_expand_material_authority() -> None:
     assert all(value is False for value in payload["architecture_guards"].values())
 
 
+def test_activation_requirements_are_not_runtime_proof() -> None:
+    payload = _contract()
+    requirements = payload["activation_requirements"]
+    assert requirements["telegram_owner_identity_required"] is True
+    assert requirements["telegram_unknown_identity_deny_required"] is True
+    assert requirements["telegram_gateway_loopback_required"] is True
+    assert requirements["telegram_groups_disabled_by_default_required"] is True
+    assert requirements["openclaw_secretref_audit_required"] is True
+    assert requirements["current_vps_runtime_receipt_required"] is True
+
+    runtime = payload["runtime_evidence"]
+    assert runtime["status"] == UNKNOWN
+    assert runtime["receipt_ref"] is None
+    assert runtime["source_sha"] is None
+    for key in (
+        "telegram_owner_identity",
+        "telegram_unknown_identity_deny",
+        "telegram_gateway_loopback",
+        "telegram_groups_disabled_by_default",
+        "openclaw_secretref_audit",
+    ):
+        assert runtime[key] == UNKNOWN
+
+
 def test_command_messages_require_current_receipts_before_execution_claims() -> None:
     truth = _contract()["truth"]
     assert truth["command_message_is_not_execution_proof"] is True
     assert truth["receipt_required_for_execution_claim"] is True
     assert truth["historical_receipt_is_not_current_runtime_proof"] is True
-    assert truth["missing_current_receipt"] == "UNKNOWN_NOT_EVIDENCE_BACKED"
+    assert truth["requirements_are_not_runtime_evidence"] is True
+    assert truth["missing_current_receipt"] == UNKNOWN
