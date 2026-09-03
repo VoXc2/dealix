@@ -118,30 +118,37 @@
       "id": "business-now-client-pack-pricing",
       "path": "dealix/business_now/commercial_strategy.py",
       "surface": "Business NOW ops client pack",
-      "classification": "RETIRED_RUNTIME_AUTHORITY",
+      "classification": "CURRENT_CANONICAL_AUTHORITY",
       "runtime_consumed": true,
       "customer_facing": false,
       "authority": true,
-      "fixed_public_price_authority": true,
+      "fixed_public_price_authority": false,
       "expected_markers": [
-        "suggested_price_sar_range\": [4999, 9999]",
-        "suggested_price_premium_sar\": 15000"
+        "customer_specific_quote_after_qualified_discovery",
+        "public_fixed_price\": False",
+        "quote_requires_founder_approval\": True"
       ],
-      "forbidden_markers": [],
-      "state": "UNRESOLVED_TRANCHE_C"
+      "forbidden_markers": [
+        "suggested_price_sar_range",
+        "suggested_price_premium_sar"
+      ],
+      "state": "RESOLVED_TRANCHE_C"
     },
     {
       "id": "business-now-sprint-499",
       "path": "dealix/business_now/commercial_strategy.py",
       "surface": "Business NOW next-best action",
-      "classification": "RETIRED_RUNTIME_AUTHORITY",
+      "classification": "CURRENT_CANONICAL_AUTHORITY",
       "runtime_consumed": true,
       "customer_facing": false,
       "authority": true,
-      "fixed_public_price_authority": true,
-      "expected_markers": ["Sprint 499"],
-      "forbidden_markers": [],
-      "state": "UNRESOLVED_TRANCHE_C"
+      "fixed_public_price_authority": false,
+      "expected_markers": [
+        "Revenue Command Pilot لمدة 30 يوماً",
+        "بعد قبول العرض المخصص وإثبات الدفع"
+      ],
+      "forbidden_markers": ["Sprint 499"],
+      "state": "RESOLVED_TRANCHE_C"
     },
     {
       "id": "historical-pricing-archives",
@@ -162,9 +169,7 @@
     "unresolved_ids": [
       "runtime-public-services",
       "runtime-meeting-brief-fallback",
-      "runtime-invoice-tier-catalog",
-      "business-now-client-pack-pricing",
-      "business-now-sprint-499"
+      "runtime-invoice-tier-catalog"
     ],
     "ready_for_issue_closure": false
   },
