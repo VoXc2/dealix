@@ -81,7 +81,7 @@ REQUIRED_CONNECTORS = {
     "gmail",
     "whatsapp_business",
     "linkedin",
-    "slack_telegram",
+    "telegram_openclaw",
     "airtable_hubspot",
     "posthog_sentry_otel_langfuse",
     "canva_gamma_drive",
@@ -160,11 +160,22 @@ def verify() -> list[str]:
     connector_ids = [row.get("id") for row in connectors]
     _error(errors, len(connector_ids) == len(set(connector_ids)), "duplicate_connector")
     _error(errors, REQUIRED_CONNECTORS <= set(connector_ids), "required_connectors")
+    _error(errors, "slack_telegram" not in set(connector_ids), "legacy_founder_connector_reintroduced")
     for row in connectors:
         cid = row.get("id", "unknown")
         _error(errors, row.get("owner") in EXPECTED_AGENTS, f"connector_owner:{cid}")
         _error(errors, bool(row.get("role")), f"connector_role:{cid}")
         _error(errors, bool(row.get("write_ceiling")), f"connector_write_ceiling:{cid}")
+
+    founder_connector = next((row for row in connectors if row.get("id") == "telegram_openclaw"), {})
+    _error(errors, founder_connector.get("owner") == "dealix-pm", "founder_connector_owner")
+    _error(
+        errors,
+        founder_connector.get("role") == "canonical_founder_command_approvals_and_receipts",
+        "founder_connector_role",
+    )
+    _error(errors, founder_connector.get("truth_owner") is False, "founder_connector_truth_owner")
+    _error(errors, founder_connector.get("write_ceiling") == "INTERNAL_ONLY", "founder_connector_write_ceiling")
 
     lifecycle = contract.get("client_lifecycle") or []
     stage_names = [row.get("stage") for row in lifecycle]
@@ -220,6 +231,11 @@ def verify() -> list[str]:
         _error(errors, bool(row.get("result_required")), f"acceptance_result:{aid}")
         _error(errors, bool(row.get("evidence")), f"acceptance_evidence:{aid}")
 
+    a2 = next((row for row in acceptance if row.get("id") == "A2_CHANNEL_AND_FOUNDER_CONTROL"), {})
+    a2_evidence = set(a2.get("evidence") or [])
+    _error(errors, "telegram_openclaw_e2e_receipt" in a2_evidence, "a2_telegram_openclaw_receipt")
+    _error(errors, "slack_or_telegram_e2e_receipt" not in a2_evidence, "a2_legacy_slack_or_telegram_receipt")
+
     contract_paths = contract.get("canonical_contracts") or {}
     for name, rel in contract_paths.items():
         _error(errors, (ROOT / rel).is_file(), f"canonical_contract_missing:{name}:{rel}")
@@ -247,7 +263,7 @@ def verify() -> list[str]:
     _error(errors, set(service_model.get("canonical_agents") or []) == EXPECTED_AGENTS, "channel_agents")
     channel_effects = channel.get("global_external_effects_default") or {}
     _error(errors, all(value is False for value in channel_effects.values()), "channel_external_effect_defaults")
-    _error(errors, (channel.get("slack_founder_bridge") or {}).get("arbitrary_shell") is False, "slack_arbitrary_shell")
+    _error(errors, (channel.get("slack_founder_bridge") or {}).get("arbitrary_shell") is False, "legacy_slack_arbitrary_shell_guard")
 
     sys.path.insert(0, str(ROOT))
     operating = importlib.import_module("auto_client_acquisition.orchestrator.operating_company_contract")
@@ -284,6 +300,7 @@ def main() -> int:
     print("lifecycle_stages=18")
     print("internal_autonomy=L0-L4")
     print("external_authority=L5_ACTION_BOUND")
+    print("founder_control=TELEGRAM_OPENCLAW")
     print("founder_voice=AUTHORIZED_REPRESENTATIVE_NO_IMPERSONATION")
     return 0
 
