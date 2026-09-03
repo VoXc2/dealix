@@ -82,6 +82,24 @@ finance_os.router.routes[:] = [
     if getattr(route, "path", None) not in _LEGACY_FINANCE_PRICE_AUTHORITY_PATHS
 ]
 
+_LEGACY_COMMAND_CENTER_AUTHORITY_PATHS = {
+    "/api/v1/command-center/agents",
+    "/api/v1/command-center/agents/{agent_id}",
+    "/api/v1/command-center/leaks",
+    "/api/v1/command-center/proof-pack",
+}
+
+# The historical command-center module exposes an 11-agent catalogue plus
+# economic/proof generators with fixed default values. That conflicts with the
+# five canonical company agents and evidence-bound economic truth. Preserve the
+# remaining signal/benchmark/playbook utilities, but do not mount these four
+# authority-bearing compatibility routes until they are explicitly reconciled.
+command_center.router.routes[:] = [
+    route
+    for route in command_center.router.routes
+    if getattr(route, "path", None) not in _LEGACY_COMMAND_CENTER_AUTHORITY_PATHS
+]
+
 
 _ROUTERS = [
     health.router,
