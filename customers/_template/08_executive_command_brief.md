@@ -1,24 +1,35 @@
-# 08 — Executive Command Brief / موجز القيادة التنفيذي
+# 08 — Executive Customer Command Brief / موجز قيادة العميل
 
-> One-screen status the founder reads before any customer touchpoint.
-> Internal (A1). Pulls the headline from the other files — does not invent.
+> One-screen account truth for the founder / President Agent. Generated from
+> workspace evidence; never upgrades a stage from inference or activity alone.
 
-## Where we are / أين نحن
-<!-- One paragraph. -->
+## MONEY / المال
+| State | Verified value / evidence |
+| --- | --- |
+| Customer-specific quote | |
+| Invoice | |
+| Payment evidence | |
+| Verified Dealix revenue | |
 
-## Decision needed from founder / قرار مطلوب
-- [ ]
-
-## Risks / المخاطر
+## DECISIONS / القرارات
 -
 
-## This week's single most important move / أهم خطوة هذا الأسبوع
-<!-- Exactly one. -->
+## RISKS / المخاطر
+-
 
-## Money state / حالة المال
-| | |
+## APPROVALS / الموافقات
+<!-- Only material actions actually waiting on current authority. -->
+-
+
+## DELIVERY / التسليم
+| State | Evidence |
 | --- | --- |
-| Offer sent? | ☐ |
-| Paid? | ☐ |
-| Amount (SAR) | |
-| Upsell open? | ☐ |
+| Approved scope / start condition | |
+| Baseline ready | |
+| Delivery evidence | |
+| Customer-value confirmation | |
+| Publication permission | |
+
+## NEXT_ACTION
+<!-- Exactly one highest-leverage next action with owner + due date. -->
+-
