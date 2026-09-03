@@ -5,6 +5,7 @@ Admin domain — health, config, founder ops, executive reporting, roles.
 
 from __future__ import annotations
 
+from copy import copy
 from typing import Any
 
 from fastapi import APIRouter
@@ -58,10 +59,20 @@ async def _blocked_auto_send_adapter(**_kwargs: Any) -> None:
     )
 
 
+def _filtered_router(source: APIRouter, blocked_paths: set[str]) -> APIRouter:
+    """Return a launch-safe router view without mutating shared router state."""
+
+    filtered = copy(source)
+    filtered.routes = [
+        route
+        for route in source.routes
+        if getattr(route, "path", None) not in blocked_paths
+    ]
+    return filtered
+
+
 # The legacy revenue-machine module still contains an exploratory auto-send
-# branch. The production application registers it only through this domain, so
-# bind the current product doctrine before exposing the router. This preserves
-# draft generation while making the env flag incapable of granting send power.
+# branch. Bind the current product doctrine while preserving draft generation.
 drafts._auto_send_low_risk_enabled = _retired_auto_send_gate
 drafts.gmail_send_email = _blocked_auto_send_adapter
 
@@ -71,16 +82,9 @@ _LEGACY_FINANCE_PRICE_AUTHORITY_PATHS = {
     "/api/v1/finance/invoice/draft",
 }
 
-# Finance OS remains the economic-truth/readiness surface, but the launch motion
-# is quote-only after qualified discovery. Retire its old tier catalogue and
-# tier-based invoice DTO endpoints from HTTP registration while retaining
-# /api/v1/finance/status. This prevents a second pricing/invoice authority from
-# competing with the canonical customer-specific quote path.
-finance_os.router.routes[:] = [
-    route
-    for route in finance_os.router.routes
-    if getattr(route, "path", None) not in _LEGACY_FINANCE_PRICE_AUTHORITY_PATHS
-]
+# Finance OS remains the economic-truth/readiness surface. Use a filtered view
+# so /api/v1/finance/status remains available without mutating the source router.
+_finance_os_router = _filtered_router(finance_os.router, _LEGACY_FINANCE_PRICE_AUTHORITY_PATHS)
 
 _LEGACY_COMMAND_CENTER_AUTHORITY_PATHS = {
     "/api/v1/command-center/agents",
@@ -89,16 +93,12 @@ _LEGACY_COMMAND_CENTER_AUTHORITY_PATHS = {
     "/api/v1/command-center/proof-pack",
 }
 
-# The historical command-center module exposes an 11-agent catalogue plus
-# economic/proof generators with fixed default values. That conflicts with the
-# five canonical company agents and evidence-bound economic truth. Preserve the
-# remaining signal/benchmark/playbook utilities, but do not mount these four
-# authority-bearing compatibility routes until they are explicitly reconciled.
-command_center.router.routes[:] = [
-    route
-    for route in command_center.router.routes
-    if getattr(route, "path", None) not in _LEGACY_COMMAND_CENTER_AUTHORITY_PATHS
-]
+# Preserve non-authoritative command-center utilities, but do not mount the
+# historical 11-agent/economic/proof authority surfaces at launch.
+_command_center_router = _filtered_router(
+    command_center.router,
+    _LEGACY_COMMAND_CENTER_AUTHORITY_PATHS,
+)
 
 
 _ROUTERS = [
@@ -108,7 +108,7 @@ _ROUTERS = [
     sectors.router,
     data.router,
     business.router,
-    finance_os.router,
+    _finance_os_router,
     founder.router,
     founder_command_summary_router.router,
     founder_beast_command_center.router,
@@ -118,7 +118,7 @@ _ROUTERS = [
     executive_os.router,
     executive_command_center_router.router,
     approval_center.router,
-    command_center.router,
+    _command_center_router,
     full_ops.router,
     full_os.router,
     drafts.router,
