@@ -41,6 +41,27 @@ The acceptance contract therefore uses connector id `telegram_openclaw` and requ
 | Brand, content, video, AEO/SEO, sales assets, permissioned proof reuse | `dealix-content` | `dealix-sales`, `dealix-delivery` |
 | Portfolio, priorities, exceptions, authority routing, founder command, productization decisions | `dealix-pm` | all canonical agents |
 
+## Legacy AI Workforce specialization
+
+The repository contains valuable historical AI Workforce and Revenue Factory specialist roles. They are preserved as capabilities, but they are not additional permanent Dealix agents.
+
+Canonical runtime truth is:
+
+- **5 permanent canonical agents:** `dealix-pm`, `dealix-sales`, `dealix-delivery`, `dealix-engineer`, `dealix-content`.
+- **12 runtime specialist role handlers:** bounded workloads delegated to one of the five canonical agents.
+- **15 Revenue Factory specialist contracts:** bounded workloads delegated to one of the five canonical agents.
+- **30 Revenue Factory automation plays:** preserved as reusable plays; their execution owner, budget, authority, evidence, and receipts remain attached to a canonical agent.
+
+Every specialist task must emit a `canonical_owner`. Unknown specialist roles fail closed rather than silently becoming new agent owners. Compatibility fields such as historical `assigned_agents`, `agents_registered`, or `agents_total` may remain for callers, but their semantics are explicitly specialist-role counts, not permanent-agent truth.
+
+The AI Workforce may research, analyze, draft, compose diagnostics, prepare delivery plans, summarize proof, and recommend next actions. It may not independently create relationship consent, public prices, discounts, invoices, charges, payment authority, binding commitments, customer-facing sends, public publish, merge, deploy, DNS/DB/secret mutation, or any new L5 authority.
+
+Active commercial motion inside the specialist runtime is restricted to:
+
+`Free Mini Diagnostic -> Qualified Discovery -> Customer-Specific Quote -> 30-Day Revenue Command Pilot -> Verified Payment / Start Evidence -> Delivery -> Customer-Validated Proof -> Stop / Expand / Redesign`
+
+Legacy `499 SAR`, `growth_starter_pilot`, fixed tiers, and 7-Day paid offers are acceptance failures. Finance remains blocked until an approved customer-specific quote exists; Delivery remains blocked until accepted scope and verified payment/start authority exist.
+
 ## Lead and signal acquisition
 
 Priority order:
@@ -69,6 +90,8 @@ Expected terminal result:
 DEALIX_E2E_ACCEPTANCE=PASS
 ```
 
+The exact-head runner must pass the Company Machine, Continuous Operations, Governed Channel Runtime, Commercial Fabric, the end-to-end lifecycle contract, canonical AI Workforce delegation tests, and Revenue Factory ownership tests. Its receipt records 5 canonical agents, 12 runtime specialist roles, 15 Revenue Factory specialist roles, 30 automation plays, 12 systems, and 18 lifecycle stages.
+
 The receipt must contain the exact Git SHA and remain paired with an independent same-head review. This source/internal PASS is A0/A1 evidence only; it does not prove A2-A6.
 
 ## Launch gates
@@ -76,7 +99,7 @@ The receipt must contain the exact Git SHA and remain paired with an independent
 A source-contract PASS is not a production or commercial-proof claim.
 
 - `A0`: source consistency and no parallel owners.
-- `A1`: exact-head five-agent/twelve-system internal runtime acceptance.
+- `A1`: exact-head five-agent/twelve-system internal runtime acceptance, including specialist-role delegation and retired-commercial-motion guards.
 - `A2`: official channel capability + **current Telegram/OpenClaw Founder Control E2E receipt** + sender health/idempotency.
 - `A3`: canonical `dealix-apps-web` deployed SHA, API/web health, rollback, and Public Truth.
 - `A4`: explicitly synthetic dry run plus an inbound or consented channel canary.
