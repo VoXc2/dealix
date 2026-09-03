@@ -8,6 +8,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 CONTRACT = ROOT / "data/ops/founder_command_authority_v1.json"
 VERIFIER = ROOT / "scripts/ops/verify_founder_command_authority_v1.py"
+ACCEPTANCE = ROOT / "scripts/ops/accept_founder_command_authority_v1.sh"
 UNKNOWN = "UNKNOWN_NOT_EVIDENCE_BACKED"
 
 
@@ -78,3 +79,43 @@ def test_command_messages_require_current_receipts_before_execution_claims() -> 
     assert truth["historical_receipt_is_not_current_runtime_proof"] is True
     assert truth["requirements_are_not_runtime_evidence"] is True
     assert truth["missing_current_receipt"] == UNKNOWN
+
+
+def test_runtime_acceptance_is_exact_head_read_only_and_secret_safe() -> None:
+    text = ACCEPTANCE.read_text(encoding="utf-8")
+    assert "BLOCKED_EXPECTED_SHA_REQUIRED" in text
+    assert "BLOCKED_HEAD_MISMATCH" in text
+    assert "dealix.founder-command-runtime-receipt.v1" in text
+    assert "L4_READ_ONLY_RUNTIME_ACCEPTANCE" in text
+    assert "/opt/dealix/control/proof/founder-command/" in text
+    assert "commands\", \"ownerAllowFrom" in text
+    assert "telegram_dm_policy_not_pairing" in text
+    assert "telegram_dm_admission_contains_non_owner" in text
+    assert "telegram_token_file_permissions_not_0600" in text
+    assert "port_18789_loopback_only" in text
+    assert "secret_values_printed=false" in text
+    assert "owner_raw_id_printed=false" in text
+
+    # No OpenClaw mutation may be added to the acceptance path. Comments can
+    # mention forbidden commands, so assert the executable argument patterns.
+    forbidden_runtime_mutations = (
+        'oc_args("config", "set"',
+        'oc_args("gateway", "restart"',
+        'oc_args("gateway", "install"',
+        'oc_args("pairing", "approve"',
+        'oc_args("doctor", "--fix"',
+    )
+    for marker in forbidden_runtime_mutations:
+        assert marker not in text
+
+
+def test_runtime_acceptance_compiles_before_any_runtime_access() -> None:
+    result = subprocess.run(
+        ["bash", str(ACCEPTANCE)],
+        cwd=ROOT,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    assert result.returncode == 2, result.stdout + result.stderr
+    assert "DEALIX_FOUNDER_COMMAND_ACCEPTANCE=BLOCKED_EXPECTED_SHA_REQUIRED" in result.stdout
