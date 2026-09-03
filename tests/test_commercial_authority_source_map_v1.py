@@ -21,8 +21,8 @@ def test_commercial_authority_source_map_matches_live_repository() -> None:
     )
 
     assert "COMMERCIAL_AUTHORITY_SOURCE_MAP_V1_PASS" in completed.stdout
-    assert "closure_verdict=BLOCKED_RETIRED_RUNTIME_AUTHORITY" in completed.stdout
-    assert "unresolved_count=3" in completed.stdout
+    assert "closure_verdict=PASS" in completed.stdout
+    assert "unresolved_count=0" in completed.stdout
     assert completed.stderr == ""
 
 
