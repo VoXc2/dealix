@@ -10,6 +10,7 @@ from fastapi import APIRouter
 from api.routers import (
     case_study_engine,
     commercial_intelligence,
+    commercial_runtime_truth,
     company_targeting,
     dominance,
     email_send,
@@ -20,6 +21,7 @@ from api.routers import (
     pricing,
     prospect,
     revenue,
+    revenue_ops_autopilot,
     revenue_os,
     revenue_pipeline,
     revops,
@@ -67,8 +69,26 @@ dominance.router.routes[:] = [
     if getattr(route, "path", None) not in _LEGACY_DOMINANCE_PATHS
 ]
 
+_LEGACY_COMMERCIAL_RUNTIME_PATHS = {
+    "/api/v1/public/services",
+    "/api/v1/ops-autopilot/leads/{lead_id}/meeting-brief",
+    "/api/v1/invoices/draft",
+}
+
+# Quarantine the three retired commercial-authority routes before api.main later
+# includes AUTOPILOT_ROUTERS. The canonical replacements below preserve the paths
+# but remove seven-day/fixed-tier pricing authority and require a customer-specific
+# approved quote for invoice drafting.
+for _autopilot_router in revenue_ops_autopilot.AUTOPILOT_ROUTERS:
+    _autopilot_router.routes[:] = [
+        route
+        for route in _autopilot_router.routes
+        if getattr(route, "path", None) not in _LEGACY_COMMERCIAL_RUNTIME_PATHS
+    ]
+
 
 _ROUTERS = [
+    commercial_runtime_truth.router,
     company_targeting.router,
     commercial_intelligence.router,
     decision_passport_router.router,
