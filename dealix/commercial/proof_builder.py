@@ -16,12 +16,16 @@ from typing import Any
 from pydantic import BaseModel, ConfigDict, Field
 
 UNKNOWN = "UNKNOWN_NOT_EVIDENCE_BACKED"
-EVIDENCE_REF_PRESENT = "EVIDENCE_REF_PRESENT_NOT_INDEPENDENTLY_VERIFIED"
+REFERENCE_ONLY = "REFERENCE_PRESENT_NOT_VERIFIED"
 RECORDED_NOT_VALIDATED = "RECORDED_MEASUREMENT_NOT_CUSTOMER_VALIDATED"
-PARTIALLY_VALIDATED = "PARTIALLY_CUSTOMER_VALIDATED_MEASUREMENTS"
-CUSTOMER_VALIDATED_WITH_DELIVERY_REF = (
-    "CUSTOMER_VALIDATED_MEASUREMENTS_WITH_DELIVERY_EVIDENCE_REF_PRESENT"
+CUSTOMER_VALIDATED_DELIVERY_UNVERIFIED = (
+    "RECORDED_MEASUREMENT_CUSTOMER_VALIDATED_DELIVERY_UNVERIFIED"
 )
+# Backwards-compatible names remain importable, but raw references no longer
+# carry stronger semantics than REFERENCE_ONLY / delivery-unverified.
+EVIDENCE_REF_PRESENT = REFERENCE_ONLY
+PARTIALLY_VALIDATED = CUSTOMER_VALIDATED_DELIVERY_UNVERIFIED
+CUSTOMER_VALIDATED_WITH_DELIVERY_REF = CUSTOMER_VALIDATED_DELIVERY_UNVERIFIED
 PUBLIC_REUSE_REQUIRES_PERMISSION = "SPECIFIC_CUSTOMER_PERMISSION_REQUIRED"
 
 
@@ -201,10 +205,11 @@ class ProofBuilder:
         if not measured:
             return UNKNOWN
         validated_count = sum(cls._customer_validated_event(event) for event in measured)
-        if validated_count == len(measured) and delivery_refs:
-            return CUSTOMER_VALIDATED_WITH_DELIVERY_REF
         if validated_count:
-            return PARTIALLY_VALIDATED
+            # A customer-validation reference can validate the measurement record,
+            # but a raw delivery reference is still only a reference. This builder
+            # has no authority to upgrade it into verified delivery/customer value.
+            return CUSTOMER_VALIDATED_DELIVERY_UNVERIFIED
         return RECORDED_NOT_VALIDATED
 
     @classmethod
@@ -236,8 +241,8 @@ class ProofBuilder:
         measured = [event for event in req.events if cls._measured_event(event)]
         delivery_refs = cls._refs(req.delivery_evidence_refs)
         payment_refs = cls._refs(req.payment_evidence_refs)
-        delivery_state = EVIDENCE_REF_PRESENT if delivery_refs else UNKNOWN
-        payment_state = EVIDENCE_REF_PRESENT if payment_refs else UNKNOWN
+        delivery_state = REFERENCE_ONLY if delivery_refs else UNKNOWN
+        payment_state = REFERENCE_ONLY if payment_refs else UNKNOWN
         result_state = cls._result_state(measured, delivery_refs)
 
         sections = cls._build_sections(
@@ -350,11 +355,11 @@ class ProofBuilder:
             "results_ar": f"{results_ar}\n\n{result_notice_ar}",
             "results_en": f"{results_en}\n\n{result_notice_en}",
             "evidence_ar": (
-                f"مرجع دليل التسليم: {delivery_state} | مرجع دليل الدفع: {payment_state} | "
+                f"حالة مرجع دليل التسليم: {delivery_state} | حالة مرجع دليل الدفع: {payment_state} | "
                 f"حالة القياس: {verified_result_state}"
             ),
             "evidence_en": (
-                f"Delivery evidence ref: {delivery_state} | Payment evidence ref: {payment_state} | "
+                f"Delivery reference state: {delivery_state} | Payment reference state: {payment_state} | "
                 f"Measurement state: {verified_result_state}"
             ),
             "next_steps_ar": (
@@ -451,11 +456,13 @@ class ProofBuilder:
 
 
 __all__ = [
+    "CUSTOMER_VALIDATED_DELIVERY_UNVERIFIED",
     "CUSTOMER_VALIDATED_WITH_DELIVERY_REF",
     "EVIDENCE_REF_PRESENT",
     "PARTIALLY_VALIDATED",
     "PUBLIC_REUSE_REQUIRES_PERMISSION",
     "RECORDED_NOT_VALIDATED",
+    "REFERENCE_ONLY",
     "ProofBuildRequest",
     "ProofBuilder",
     "ProofEvent",
