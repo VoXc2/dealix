@@ -25,6 +25,16 @@ def _isolated_autopilot_store() -> None:
 _ADMIN = {"X-Admin-API-Key": "dev"}
 
 
+def _approved_quote_invoice_payload(lead_id: str) -> dict[str, object]:
+    return {
+        "lead_id": lead_id,
+        "approved_amount_sar": 12345.0,
+        "qualified_discovery_ref": "discovery:test:001",
+        "customer_specific_scope_ref": "scope:test:001",
+        "quote_authority_ref": "quote-authority:test:001",
+    }
+
+
 def test_support_blocks_financial_guarantee_ar():
     from dealix.revenue_ops_autopilot.support_pipeline import analyze_support
 
@@ -75,14 +85,36 @@ def test_invoice_draft_blocked_before_scope_sent_api():
     r = cli.post(
         "/api/v1/invoices/draft",
         headers=_ADMIN,
-        json={"lead_id": "lea_pre_scope", "tier": "starter"},
+        json=_approved_quote_invoice_payload("lea_pre_scope"),
     )
     assert r.status_code == 422, r.text
     body = r.json()
     assert body["detail"]["reason"] == "invoice_draft_blocked_until_scope_sent"
 
 
-def test_invoice_draft_ok_when_scope_sent():
+def test_invoice_draft_rejects_retired_tier_catalog_payload():
+    from api.main import app
+    from dealix.revenue_ops_autopilot.store import get_autopilot_store
+
+    st = get_autopilot_store()
+    st.upsert_lead(
+        FunnelLeadRecord(
+            id="lea_legacy_tier",
+            email="legacy@example.com",
+            company="Legacy",
+            stage="scope_sent",
+        ),
+    )
+    cli = TestClient(app)
+    r = cli.post(
+        "/api/v1/invoices/draft",
+        headers=_ADMIN,
+        json={"lead_id": "lea_legacy_tier", "tier": "starter"},
+    )
+    assert r.status_code == 422, r.text
+
+
+def test_invoice_draft_ok_when_scope_sent_and_quote_authorized():
     from api.main import app
     from dealix.revenue_ops_autopilot.store import get_autopilot_store
 
@@ -99,10 +131,15 @@ def test_invoice_draft_ok_when_scope_sent():
     r = cli.post(
         "/api/v1/invoices/draft",
         headers=_ADMIN,
-        json={"lead_id": "lea_scoped", "tier": "starter"},
+        json=_approved_quote_invoice_payload("lea_scoped"),
     )
     assert r.status_code == 200, r.text
-    assert r.json()["item"]["lead_id"] == "lea_scoped"
+    data = r.json()
+    assert data["item"]["lead_id"] == "lea_scoped"
+    assert data["item"]["tier"] == "customer_specific_quote"
+    assert data["item"]["amount_sar"] == 12345.0
+    assert data["authority"]["amount_source"] == "approved_customer_specific_quote"
+    assert data["authority"]["payment_verified"] is False
 
 
 def test_full_ops_health_endpoint():
