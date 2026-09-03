@@ -5,6 +5,8 @@ Customers domain — success, CRM, portal, inbox, support.
 
 from __future__ import annotations
 
+from copy import copy
+
 from fastapi import APIRouter
 
 from api.routers import (
@@ -34,6 +36,23 @@ from api.routers import (
 )
 from api.routers.customer import dashboard as customer_dashboard_router
 
+
+def _filtered_router(source: APIRouter, blocked_paths: set[str]) -> APIRouter:
+    """Return a router copy with launch-retired paths excluded.
+
+    Never mutate module-level ``APIRouter.routes`` during import: those routers are
+    reused by the FastAPI app factory and by compatibility imports/tests.
+    """
+
+    filtered = copy(source)
+    filtered.routes = [
+        route
+        for route in source.routes
+        if getattr(route, "path", None) not in blocked_paths
+    ]
+    return filtered
+
+
 _LEGACY_BILLING_MUTATION_PATHS = {
     "/api/v1/billing/plans",
     "/api/v1/billing/subscribe",
@@ -42,34 +61,23 @@ _LEGACY_BILLING_MUTATION_PATHS = {
     "/api/v1/billing/invoices/{invoice_id}/pay",
 }
 
-# Launch authority is quote-only and live charge is disabled. Keep read-only
-# subscription/invoice/features views for existing tenants, but do not expose
-# the legacy SaaS plan catalogue or any endpoint that mutates a subscription or
-# creates a Moyasar payment link. Source code remains available for rollback and
-# historical reference; mounting is the authority boundary.
-billing.router.routes[:] = [
-    route
-    for route in billing.router.routes
-    if getattr(route, "path", None) not in _LEGACY_BILLING_MUTATION_PATHS
-]
+# Keep read-only existing-tenant subscription/invoice/features views while
+# excluding the retired SaaS plan catalogue and subscription/payment mutations.
+_billing_router = _filtered_router(billing.router, _LEGACY_BILLING_MUTATION_PATHS)
 
 _LEGACY_SELF_SERVE_ONBOARDING_PATHS = {
     "/api/v1/onboarding/plans",
     "/api/v1/onboarding/signup",
 }
 
-# Self-serve free/starter/growth signup is a retired SaaS motion. Preserve the
-# existing-tenant wizard and invitation flows, but do not expose a public plan
-# ladder or create subscriptions from unaffiliated self-serve signup.
-onboarding.router.routes[:] = [
-    route
-    for route in onboarding.router.routes
-    if getattr(route, "path", None) not in _LEGACY_SELF_SERVE_ONBOARDING_PATHS
-]
+# api.main later includes onboarding.router explicitly. Rebind the exported
+# reference to a filtered copy rather than deleting routes from the shared
+# APIRouter object. Existing-tenant wizard/invite flows remain mounted.
+onboarding.router = _filtered_router(onboarding.router, _LEGACY_SELF_SERVE_ONBOARDING_PATHS)
 
 
 _ROUTERS = [
-    billing.router,
+    _billing_router,
     company_brain_mvp_router.router,
     customer_success.router,
     customer_success_os.router,
