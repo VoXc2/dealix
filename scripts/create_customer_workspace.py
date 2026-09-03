@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 """Create a governed 30-Day Revenue Command Pilot customer workspace.
 
-Copies the canonical customer workspace into ``customers/<slug>/``. The file
-names are kept stable for repository compatibility, while current commercial
-authority is:
+Copies the canonical customer workspace into ``customers/<slug>/`` by default.
+Callers that need isolated verification may pass ``output_root`` so synthetic
+state never touches the repository customer directory. The file names are kept
+stable for repository compatibility, while current commercial authority is:
 
 real interaction -> Free Mini Diagnostic -> Qualified Discovery ->
 customer-specific Quote -> 30-Day Revenue Command Pilot -> payment/start
@@ -48,13 +49,24 @@ def slugify(name: str) -> str:
     return slug.strip("-") or "customer"
 
 
-def create_workspace(name: str, force: bool = False) -> tuple[Path, list[str]]:
-    """Create the workspace; return (path, list of file names written)."""
+def create_workspace(
+    name: str,
+    force: bool = False,
+    *,
+    output_root: Path | None = None,
+) -> tuple[Path, list[str]]:
+    """Create the workspace; return (path, list of file names written).
+
+    ``output_root`` is intentionally keyword-only. Production/operator callers
+    keep the historical ``customers/<slug>/`` default, while verification can
+    use a temporary directory without mutating the source worktree.
+    """
     if not TEMPLATE_DIR.is_dir():
         raise FileNotFoundError(f"Template directory missing: {TEMPLATE_DIR}")
 
     slug = slugify(name)
-    target = CUSTOMERS_DIR / slug
+    root = output_root if output_root is not None else CUSTOMERS_DIR
+    target = root / slug
 
     if target.exists() and not force:
         print("CUSTOMER_WORKSPACE_EXISTS")
