@@ -17,6 +17,7 @@ from api.routers import (
     customer_success,
     customer_success_os,
     executive_pack_per_customer,
+    onboarding,
     support_os,
 )
 from api.routers import (
@@ -50,6 +51,20 @@ billing.router.routes[:] = [
     route
     for route in billing.router.routes
     if getattr(route, "path", None) not in _LEGACY_BILLING_MUTATION_PATHS
+]
+
+_LEGACY_SELF_SERVE_ONBOARDING_PATHS = {
+    "/api/v1/onboarding/plans",
+    "/api/v1/onboarding/signup",
+}
+
+# Self-serve free/starter/growth signup is a retired SaaS motion. Preserve the
+# existing-tenant wizard and invitation flows, but do not expose a public plan
+# ladder or create subscriptions from unaffiliated self-serve signup.
+onboarding.router.routes[:] = [
+    route
+    for route in onboarding.router.routes
+    if getattr(route, "path", None) not in _LEGACY_SELF_SERVE_ONBOARDING_PATHS
 ]
 
 
