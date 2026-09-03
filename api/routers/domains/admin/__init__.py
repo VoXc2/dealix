@@ -65,6 +65,23 @@ async def _blocked_auto_send_adapter(**_kwargs: Any) -> None:
 drafts._auto_send_low_risk_enabled = _retired_auto_send_gate
 drafts.gmail_send_email = _blocked_auto_send_adapter
 
+_LEGACY_FINANCE_PRICE_AUTHORITY_PATHS = {
+    "/api/v1/finance/pricing",
+    "/api/v1/finance/pricing/{tier_id}",
+    "/api/v1/finance/invoice/draft",
+}
+
+# Finance OS remains the economic-truth/readiness surface, but the launch motion
+# is quote-only after qualified discovery. Retire its old tier catalogue and
+# tier-based invoice DTO endpoints from HTTP registration while retaining
+# /api/v1/finance/status. This prevents a second pricing/invoice authority from
+# competing with the canonical customer-specific quote path.
+finance_os.router.routes[:] = [
+    route
+    for route in finance_os.router.routes
+    if getattr(route, "path", None) not in _LEGACY_FINANCE_PRICE_AUTHORITY_PATHS
+]
+
 
 _ROUTERS = [
     health.router,
