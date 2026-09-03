@@ -221,6 +221,23 @@
       "state": "ACTIVE_QUARANTINE"
     },
     {
+      "id": "self-serve-onboarding-quarantine",
+      "path": "api/routers/domains/customers/__init__.py",
+      "surface": "legacy public SaaS plans and subscription-creating signup quarantine",
+      "classification": "CURRENT_CANONICAL_AUTHORITY",
+      "runtime_consumed": true,
+      "customer_facing": false,
+      "authority": false,
+      "fixed_public_price_authority": false,
+      "expected_markers": [
+        "_LEGACY_SELF_SERVE_ONBOARDING_PATHS",
+        "/api/v1/onboarding/plans",
+        "/api/v1/onboarding/signup"
+      ],
+      "forbidden_markers": [],
+      "state": "ACTIVE_QUARANTINE_EXISTING_TENANT_WIZARD_AND_INVITES_RETAINED"
+    },
+    {
       "id": "finance-runtime-quarantine",
       "path": "api/routers/domains/admin/__init__.py",
       "surface": "Finance OS tier catalogue and tier-invoice route quarantine",
