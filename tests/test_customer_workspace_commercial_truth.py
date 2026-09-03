@@ -69,4 +69,4 @@ def test_synthetic_e2e_isolated_from_source_worktree() -> None:
     assert "output_root=Path(tmp)" in dry_run
     assert "DEALIX_VERIFY_PROOF_ROOT" in dry_run
     assert "Source Worktree Hygiene" in dry_run
-    assert "git status" in dry_run
+    assert '"status", "--porcelain=v1"' in dry_run
