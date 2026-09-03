@@ -180,11 +180,29 @@ async def proof_pack_demo() -> dict[str, Any]:
 
 @router.post("/proof-pack/roi-summary")
 async def proof_pack_roi(body: dict[str, Any] = Body(...)) -> dict[str, Any]:
-    return calculate_roi_summary(
-        subscription_sar=float(body.get("subscription_sar", 2999)),
-        influenced_revenue_sar=float(body.get("influenced_revenue_sar", 40000)),
-        hours_saved=float(body.get("hours_saved", 12)),
+    if "subscription_sar" not in body:
+        raise HTTPException(
+            status_code=422,
+            detail="customer_specific_quote_amount_required",
+        )
+    try:
+        quote_amount_sar = float(body["subscription_sar"])
+    except (TypeError, ValueError) as exc:
+        raise HTTPException(status_code=422, detail="invalid_customer_specific_quote_amount") from exc
+    if quote_amount_sar <= 0:
+        raise HTTPException(status_code=422, detail="invalid_customer_specific_quote_amount")
+    result = calculate_roi_summary(
+        subscription_sar=quote_amount_sar,
+        influenced_revenue_sar=float(body.get("influenced_revenue_sar", 0)),
+        hours_saved=float(body.get("hours_saved", 0)),
     )
+    return {
+        "status": "internal_estimate_only",
+        "customer_value_claim": False,
+        "guarantee": False,
+        "quote_amount_source": "caller_supplied_customer_specific_quote",
+        "result": result,
+    }
 
 
 @router.post("/account-health")
