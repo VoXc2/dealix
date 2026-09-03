@@ -9,6 +9,7 @@ from dealix.business_now.commercial_strategy import _next_best_actions, _ops_cli
 
 ROOT = Path(__file__).resolve().parents[1]
 VERIFIER = ROOT / "scripts" / "verify_commercial_authority_source_map_v1.py"
+COMPANY_BRAIN_PACK_GENERATOR = ROOT / "scripts" / "commercial" / "generate_company_brain_pack.py"
 
 
 def test_commercial_authority_source_map_matches_live_repository() -> None:
@@ -45,3 +46,33 @@ def test_business_now_pilot_action_uses_canonical_paid_motion() -> None:
     assert "Revenue Command Pilot" in primary
     assert "30 يوماً" in primary
     assert "إثبات الدفع" in primary
+
+
+def test_company_brain_pack_generator_cannot_recreate_retired_offer_ladder() -> None:
+    text = COMPANY_BRAIN_PACK_GENERATOR.read_text(encoding="utf-8")
+
+    for forbidden in (
+        "7-Day Operating Diagnostic",
+        "7-Day Revenue Command Room Sprint",
+        "Offer a 7-day proof sprint",
+        "499 SAR",
+        "999 SAR",
+        "1,500 SAR",
+        "monthly operating retainer",
+    ):
+        assert forbidden not in text
+
+    for required in (
+        'CANONICAL_ENTRY_OFFER = "Free Mini Diagnostic"',
+        'CANONICAL_PAID_OFFER = "30-Day Revenue Command Pilot"',
+        "Customer-Specific Quote",
+        "Verified Payment",
+        "Customer-Validated Proof",
+        "Stop / Expand / Redesign",
+        '"public_fixed_price": False',
+        '"public_checkout": False',
+        '"customer_specific_quote_only": True',
+        '"live_send_allowed": False',
+        '"live_charge_allowed": False',
+    ):
+        assert required in text
