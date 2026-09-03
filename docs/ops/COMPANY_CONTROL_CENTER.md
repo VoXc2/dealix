@@ -1,253 +1,132 @@
-# 🎛️ Dealix — Company Control Center
+# Dealix — Canonical Company Control Center
 
-**Single source of truth for today's operating state.** Everything else is reference.
+**Status:** ACTIVE OPERATING CONTRACT  
+**Authority:** Founder-controlled; this page is the compact command surface, not a second OS.  
+**Last reconciled:** 2026-09-01 UTC  
+**Repository truth:** `Dealix-sa/dealix` → `main@2d39f58fb438d50cf3a99f6a1c643773944c4cf0`
 
-Last updated: 2026-04-24 · Keep this file fresh — update it before/after every operating session.
+## Executive objective
 
-> 🌅 **Start here every morning:** [`docs/ops/TODAY.md`](TODAY.md) — the 60-minute command page.
-> 💰 **When a prospect says yes:** [`docs/ops/FIRST_REVENUE_ATTEMPT.md`](FIRST_REVENUE_ATTEMPT.md) — 15-min close-to-paid script.
-> 🧾 **Generate an invoice:** `bash docs/ops/moyasar_live_test.sh customer@email.com 999 starter`
+> **Verified Economic Movement per Founder Minute / Cost / Risk**
 
----
+Dealix is measured by movement from evidence to money, proof, and repeatability—not agents, commits, posts, raw leads, or generated signals.
 
-## 🚦 Decision State
+## One company loop
 
-| Area | State | Evidence |
-|------|-------|----------|
-| Backend | ✅ LIVE | `curl https://web-dealix.up.railway.app/healthz` → 200 |
-| Landing | ✅ LIVE | https://dealix-sa.github.io/dealix |
-| Demo form | ✅ VERIFIED | POST → `{ok: true, calendly_url, message}` |
-| Partner form | ✅ VERIFIED | POST → `{ok: true, message}` |
-| Pricing API | ✅ LIVE | Returns 3 plans JSON |
-| Monitoring | ✅ AUTO | GitHub Actions healthcheck every 15 min → auto-creates P0 issue on fail |
-| Revenue (Moyasar live) | 🔴 BLOCKED | `account_inactive_error` — KYC pending |
-| Revenue (manual) | ✅ READY | `MANUAL_PAYMENT_SOP.md` — bank transfer / STC Pay |
-| Sentry | 🟡 SDK READY | DSN empty — Sami provides DSN → I set via Railway |
-| First DM | ⏸️ QUEUED | Exact text in `today_send_queue.md` |
+`Market Signal → Source-Bound Evidence → Real Interaction → Qualified Problem → Mini Diagnostic → Discovery → Customer-Specific Quote → 30-Day Pilot → Payment Evidence → Delivery → Customer-Validated Proof → Expansion / Referral / Productization`
 
-**Overall: COMPANY_OPERATING_MANUAL_REVENUE**
+Every record must keep research, relationship, consent, commercial commitment, payment, outcome, and proof distinct.
 
----
+## Current control state
 
-## 🔗 Live URLs
+| Control | Current state | Rule |
+|---|---|---|
+| Main | `2d39f58` | Current repository head; re-check before every decision |
+| Main protection | NOT VERIFIED AS ACTIVE | Do not treat policy text as a technical barrier |
+| Trust Kernel | PR #1466, Draft | First merge-train priority; current-head sovereign verification and independent review required |
+| PostCSS remediation | PR #1469, Draft | Second priority; exact-head install/typecheck/build/audit required |
+| LEAP capability harvest | PR #1463, Draft | Research/capability hypotheses only; no relationship or runtime authority |
+| Hosted CI | NON-AUTHORITY UNTIL JOB STEPS RUN | `steps=[]` / `runner_id=0` is infrastructure non-evidence |
+| Production owner | Railway | Require deployment SHA → runtime `/version` SHA → public front door parity |
+| External effects | FAIL-CLOSED | No send, publish, spend, payment, legal commitment, or production mutation by default |
+| Commercial truth | UNVERIFIED UNTIL EVIDENCE | Research and drafts never count as contact, quote, payment, outcome, or proof |
 
-| Purpose | URL |
-|---------|-----|
-| **Homepage (custom domain)** | **https://dealix.me** ✅ SSL live |
-| Homepage (fallback) | https://dealix-sa.github.io/dealix/ |
-| Marketers page | https://dealix.me/marketers.html |
-| Pricing page | https://dealix.me/pricing.html |
-| Partners page | https://dealix.me/partners.html |
-| **Backend API (custom)** | https://api.dealix.me 🟡 Railway routing finalizing |
-| Backend API (fallback) | https://web-dealix.up.railway.app |
-| Backend docs | https://web-dealix.up.railway.app/docs |
-| Book demo | https://calendly.com/sami-assiri11/dealix-demo |
-| Repo | https://github.com/Dealix-sa/dealix |
+## Authority boundary
 
----
+L0–L4 may run automatically for internal work: read, research, analysis, drafts, tests, local verification, evidence organization, queues, branch creation, and Draft PR preparation.
 
-## 💳 Payment Paths (3 parallel)
+L5 always requires a fresh, action-bound founder approval and a reversible receipt:
 
-### Path A — Moyasar Live (BLOCKED, waiting on KYC)
-- Sami must complete KYC at https://dashboard.moyasar.com/settings/business
-- Required: CR/freelance license · National ID · Bank IBAN · Business address
-- Activation: 1-3 business days after submission
-- Once active: Sami sends new `sk_live_...` → I update Railway env → verify 1 SAR flow
+- merge or update `main`;
+- external email, LinkedIn, WhatsApp, SMS, or public publication;
+- customer-specific price, scope, or legal commitment;
+- payment, refund, tender submission, or spend;
+- production, Railway, DNS, database, secret, or destructive mutation;
+- any action that creates or changes an external relationship.
 
-### Path B — Moyasar Test (INSTANT unblock option)
-- Sami creates sandbox account at Moyasar → gets `sk_test_...` key
-- Sends to me → I set in Railway → verify full automated flow today (using test cards)
-- Not real money but proves the entire technical revenue round-trip works
+A broad delegation is not a current approval. Any material payload, target, environment, evidence basis, or SHA change invalidates prior approval.
 
-### Path C — Manual Revenue (AVAILABLE NOW)
-- Use `docs/ops/MANUAL_PAYMENT_SOP.md`
-- Bank transfer to Sami's business IBAN
-- STC Pay to Sami's number
-- Customer pays → Sami confirms in bank → updates `pipeline_tracker.csv` → starts onboarding
-- **Valid for first 10 customers** — after that, automate
+## Canonical account record
 
-**Current path in use:** C (Manual)
+One account row only, owned by the existing commercial/Company Brain path:
 
----
+`company | stage | consent_state | evidence_refs | pain | economic_impact | package_hypothesis | owner | next_action | due | approval | blocker | expiry`
 
-## 🎯 Top 10 Priority Leads (from `pipeline_tracker.csv`)
+The `stage` field uses the existing `CanonicalOpportunity.stage` state machine exactly:
 
-### Tier A — Direct customers (5)
-1. **عبدالله العسيري** · Lucidya CEO · LinkedIn · Priority: surname affinity
-2. **Ahmad Al-Zaini** · Foodics CEO · LinkedIn · Series C $170M
-3. **Nawaf Hariri** · Salla CEO · Twitter + LinkedIn · 70K merchants distribution
-4. **Hisham Al-Falih** · Lean Technologies CEO · LinkedIn · 300+ API customers
-5. **Ibrahim Manna** · BRKZ Founder · LinkedIn · $30M debt contech
+`research → qualify → approval → conversation → pilot → proof → commercial → won | lost | parked`
 
-### Tier B — Agency partners (5)
-6. **Peak Content** · Service exchange target
-7. **Digital8** · Full-service agency
-8. **Brand Lounge** · Referral partner
-9. **Qatar Digital** · KSA/UAE agency
-10. **Wavy Saudi** · White-label candidate
+The adapter event mapping is normative: `warm_intro_selected|message_drafted→research`, `founder_sent_manually|replied→qualify`, `diagnostic_requested|diagnostic_delivered→approval`, `pilot_offered→conversation`, `commitment_received→pilot`, `payment_received→proof`, `delivery_started|delivered|proof_pack_delivered→commercial`, `upsell_offered|closed_won→won`, `closed_lost→lost`. Unknown events fail closed to `research`.
 
----
+No transition may be inferred from a web page, exhibitor/speaker listing, badge scan, public contact, social engagement, generated text, draft, quote marker, invoice marker, paid-pilot marker, or synthetic record. Each transition requires evidence appropriate to that exact state.
 
-## 📤 Today's Send Queue (Priority 1)
+## Four commercial offers
 
-See `docs/ops/today_send_queue.md` — 10 ready-to-send messages across LinkedIn direct + agency partner track.
+The Package Router may route only to these bounded offers:
 
-**Execution rule:** 5 per hour max. Respond to replies within 30 min.
+1. Revenue Command Pilot
+2. Company Brain & Governed AI Sprint
+3. Saudi Market Access Sprint
+4. Partner Implementation & Proof
 
----
-
-## 📝 Today's Content Queue
+The Free Mini Diagnostic is the entry point into the existing `DIAGNOSTIC` path, not a fifth offer. A request outside the four bounded offers routes to Discovery, Reject, or Partner handling—not an ungoverned package.
 
-Today (publish 1): **Founder Launch Post** (from `launch_content_queue.md`)
-
-Rest of week:
-- Day +1: Agency angle post
-- Day +2: Problem angle post
-- Day +3: Reply to 3 relevant tweets with Dealix angle
-- Day +4: Customer pain post
-- Day +5: Partner invitation post
-- Day +6: AI sales rep positioning post
-
-All copy is ready. Publishing requires Sami's LinkedIn/X identity.
-
----
-
-## 🤝 Partner Queue
-
-10 agency targets in tracker (rows 22-29 + 2 freelance). Partner DM template ready in `launch_content_queue.md`. Send max 2/day to avoid burn.
-
-Partner packages:
-- **Starter:** 3,000 SAR setup + 20% of client MRR
-- **Growth:** 8,000 SAR setup + 25% of client MRR
-- **Scale:** 25,000 SAR setup + 30% of client MRR + white-label option
-
----
-
-## 🚫 Open Blockers
-
-| # | Blocker | Owner | Unblock action | ETA |
-|---|---------|-------|----------------|-----|
-| 1 | Moyasar KYC | Sami | Complete dashboard KYC OR send test key | 1-3 days OR instant |
-| 2 | SENTRY_DSN empty | Sami | Create Sentry project → send DSN | 5 min |
-| 3 | First LinkedIn DM not sent | Sami | Open LinkedIn → paste → send | 3 min |
-| 4 | POSTHOG_KEY placeholder in landing | Sami (or me once new key provided) | Send real key | 2 min |
-
-None of these block **selling today** via manual path.
-
----
-
-## 🎬 Next 5 Actions (executable now)
-
-| # | Action | Owner | Due | Status |
-|---|--------|-------|-----|--------|
-| 1 | Send LinkedIn DM #1 to Abdullah Al-Assiri | Sami | Today | ⏸️ Ready in `today_send_queue.md` |
-| 2 | Publish Founder Launch post on LinkedIn/X | Sami | Today | ⏸️ Copy in `launch_content_queue.md` |
-| 3 | Complete Moyasar KYC OR send sandbox test key | Sami | Today | ⏸️ Dashboard access needed |
-| 4 | Send Sentry DSN (create project → copy DSN) | Sami | Today | ⏸️ 5 min |
-| 5 | Send 2 agency partner DMs | Sami | Today | ⏸️ Copy in `launch_content_queue.md` |
-
----
-
-## 📊 Daily Scorecard Template (fill end-of-day)
+## Production acceptance
 
-```
-Date: ____
-INPUTS           | target | actual
----------------- | ------ | ------
-New leads added  | 10     | __
-DMs sent         | 5      | __
-Follow-ups       | 5      | __
-Partner DMs      | 2      | __
-Content posts    | 1      | __
-
-RESPONSES
-Replies          | 1-2    | __
-Demos booked     | 0-1    | __
-Demos completed  | 0-1    | __
-
-REVENUE
-Pilots started   | 0-1    | __
-Payments req'd   | 0-1    | __
-Payments recv'd  | 0      | __
-MRR added        | 0 SAR  | __ SAR
-
-LEARNING
-Best channel     |        | __
-Biggest blocker  |        | __
-Tomorrow change  |        | __
-```
-
----
-
-## 📚 Reference Documents
-
-| File | Purpose |
-|------|---------|
-| `docs/ops/TODAY.md` | 🌅 Morning 60-min command page — open this first |
-| `docs/ops/FIRST_REVENUE_ATTEMPT.md` | 💰 15-min close-to-paid playbook |
-| `docs/ops/moyasar_live_test.sh` | 🧾 One-command invoice generator (Pilot/Starter/Growth/Scale) |
-| `docs/ops/pipeline_tracker.csv` | 50 leads, source of truth |
-| `docs/ops/launch_content_queue.md` | All outreach + content copy |
-| `docs/ops/today_send_queue.md` | Today's ready-to-send 10 messages |
-| `docs/ops/MANUAL_PAYMENT_SOP.md` | How to collect money without Moyasar automation |
-| `docs/ops/FIRST_CUSTOMER_ONBOARDING_CHECKLIST.md` | Intake → Day 1 → Day 7 |
-| `docs/ops/FIRST_CUSTOMER_DELIVERY_TEMPLATE.md` | How to manually deliver Dealix until dashboard exists |
-| `docs/ops/DAILY_OPERATING_LOOP.md` | Hour-by-hour daily system |
-| `docs/ops/THREE_CUSTOMERS_PER_DAY_OPERATING_MODEL.md` | Staged math + 4-tier growth plan |
-| `.github/workflows/scheduled_healthcheck.yml` | Auto-monitor with issue creation on failure |
-| `DEALIX_COMPANY_OPERATIONAL_STATE.md` | Full state snapshot (repo root) |
-
----
-
-## 🎯 Week 1 Target (conservative)
-
-- 50 touches
-- 21 follow-ups
-- 5-7 demos
-- 1-2 pilots signed (manual payment if needed)
-- 0-1 paid customers
-
-## 30-Day Target
-
-- 250 touches
-- 20-25 demos
-- 5-10 pilots
-- 2-3 paid customers (pending Moyasar or via manual)
-- 1 agency partner signed
-
-## 90-Day Target
-
-- 750 touches
-- 60-80 demos
-- 25-30 pilots
-- 10-15 paid customers
-- 3-5 agency partners
-- First referral won
-
-Full math in `THREE_CUSTOMERS_PER_DAY_OPERATING_MODEL.md`.
-
----
-
-## 🚨 Production Failure Protocol
-
-1. GitHub Actions healthcheck auto-creates Issue labeled `production-down` + `P0`
-2. Sami sees issue in repo notifications / email
-3. Runbook: `docs/ops/INCIDENT_RUNBOOK.md`
-4. Common fix: Railway → Deployments → rollback last successful
-5. Sentry (when DSN set): will capture 5xx errors with Slack alert (when integration configured)
-
----
-
-## ⚡ If a customer says yes TODAY
-
-1. Confirm plan (Starter 999 / Growth 2,999 / Scale 7,999 / Pilot 1 SAR)
-2. Send manual invoice from `MANUAL_PAYMENT_SOP.md` (bank IBAN + STC Pay)
-3. Customer pays → Sami confirms within 30 min
-4. Sami updates `pipeline_tracker.csv` row: `payment_status=paid, revenue_sar=[amount]`
-5. Sami starts `FIRST_CUSTOMER_ONBOARDING_CHECKLIST.md` kickoff call within 24 hours
-6. Manual fulfillment per `FIRST_CUSTOMER_DELIVERY_TEMPLATE.md` for first 10 customers
-
----
-
-**Owner:** Sami Assiri · sami.assiri11@gmail.com
-**This file is law until changed.** Any operating decision must be reflected here first.
+Railway is the production core unless live evidence proves a cutover. Before claiming production readiness, record one immutable receipt containing:
+
+`deployment_status | intended_sha | railway_sha | runtime_version_sha | /health | /healthz | /ar | / | dns/certificate | three_consecutive_smokes | rollback_target`
+
+Missing direct evidence is `UNKNOWN`, never PASS. Railway deployment health is readiness evidence; it is not a substitute for continuous independent monitoring.
+
+## Founder Approval Digest
+
+Show the founder only high-value decisions:
+
+| Type | Minimum packet |
+|---|---|
+| Merge | PR, exact head SHA, verifier receipt, independent review, merge method, `ACTION_HASH`, expiry |
+| External send/publish | recipient/audience, exact content hash, consent/suppression, `ACTION_HASH`, expiry |
+| Quote | customer, scope, price, assumptions, `ACTION_HASH`, expiry |
+| Payment | amount, destination, evidence, reconciliation state, `ACTION_HASH`, expiry |
+| Production | SHA, mutation, blast radius, rollback, `ACTION_HASH`, expiry, rollback target |
+| DNS/data/legal | before/after, authority, reversibility, `ACTION_HASH`, expiry |
+
+All approvals expire and are invalidated by relevant state or payload changes. Every L5 packet must bind `action_type | target | environment | payload` and carry the canonical `ACTION_HASH`; a missing, stale, or mismatched hash is BLOCKED. A broad delegation is never a packet.
+
+Record verification as independent axes, not one collapsed result:
+
+- `LOCAL_VERIFIED`: exact-head local verifier passed.
+- `REMOTE_CI_GREEN`: hosted jobs actually executed and passed.
+- `REMOTE_CI_EXECUTION_PLANE_BLOCKED`: hosted jobs were unavailable/non-executing (for example `steps=[]` or `runner_id=0`).
+- `PRODUCTION_VERIFIED`: deployment SHA, runtime SHA, front-door health, and required consecutive smokes are evidenced.
+- `PRODUCTION_UNKNOWN`: production acceptance evidence is missing or stale.
+- `PASS`: reserved for the complete applicable acceptance packet; it must never hide a missing remote-CI or production axis.
+- `LOCAL_VERIFIED_REMOTE_CI_BLOCKED`: a compact composite label only when local verification passed and remote CI itself is unavailable; it does not describe a merely pending production acceptance.
+
+## Company scorecard
+
+Track only:
+
+`exact_head_acceptance | production_sha_parity | real_interactions | qualified_problems | diagnostics | discoveries | customer_specific_quotes | verified_payments | accepted_proof_packs | expansion_or_referral | founder_minutes_per_stage_move | time_to_evidence`
+
+Use `MONEY / DECISIONS / RISKS / APPROVALS / NEXT_ACTION` as the executive output.
+
+## Stop rules
+
+Kill, pause, or downgrade any initiative that fails two reviews to produce at least one of:
+
+`TRUST_GAIN | REVENUE_MOVEMENT | PROOF_GAIN | FOUNDER_TIME_SAVING | COST_REDUCTION`
+
+No new agent, scheduler, CRM, Company Brain, Approval Center, Proof Ledger, router, or production owner may be added to solve a gap that an existing canonical owner can handle.
+
+## Canonical references
+
+- `docs/ops/GITHUB_RULESET_AND_IDENTITY_PROPOSAL.md`
+- `docs/ops/APPROVAL_FINGERPRINT_CONTRACT.md` (when present on the accepted Trust Kernel)
+- `docs/ops/DAILY_OPERATING_LOOP.md`
+- `docs/commercial/`
+- `data/ops/`
+- `scripts/verify_*`
+
+This page governs operating interpretation. Live GitHub, Railway, runtime, and evidence receipts override any stale prose.

@@ -1,51 +1,96 @@
 # GitHub Ruleset Proposal — main branch protection
-**STATUS: PROPOSAL ONLY — NOT APPLIED · يحتاج قرار المؤسس وتطبيقه يدويًا من إعدادات المستودع**
+**STATUS: PROPOSAL ONLY — NOT APPLIED · يحتاج قرار المؤسس وتطبيقه من إعدادات المستودع**
 
-## السياق
-مراجعة 2026-08-25 أظهرت عدم وجود Rulesets مفعّلة على الفرع الرئيسي، مع سجل استثناء حوكمة موثق (GOVERNANCE_MERGE_EXCEPTION_2026-08-25.md). هذا المقترح يغلق الباب.
+## Live snapshot — 2026-09-01
+- Branch metadata reports `main` as `protected=false`; do not treat branch-protection prose as an active technical barrier.
+- Two repository rulesets exist but are **disabled**: `19473525` and `15443641`.
+- Ruleset `15443641` (`V`) is not safe to enable blindly because its broad restriction set is not scoped by a useful branch condition. Leave it disabled; create or repair a narrowly scoped ruleset instead.
+- Current `main` head: `2d39f58fb438d50cf3a99f6a1c643773944c4cf0`.
+- Hosted Actions currently fail before runner allocation (`steps=[]`, `runner_id=0`), so hosted status checks are infrastructure non-evidence until runner execution is restored.
 
-## STAGE A — فعّل الآن (لا يعتمد على CI)
+## STAGE A — حماية قابلة للتطبيق بدون hosted CI
+
+Create a **new, narrowly scoped default-branch ruleset** rather than activating the old broad `V` ruleset.
+
 | Control | Value |
 |---|---|
-| Target | `~DEFAULT_BRANCH` (main) |
-| Require pull request before merging | **ON** (required approvals: 1 — المؤسس) |
+| Target | default branch / `main` only |
+| Enforcement | **Active** |
+| Require pull request before merging | **ON** |
+| Required approving reviews | **0 initially for the single-founder topology** |
+| Required conversation resolution | **ON** |
 | Block force pushes | **ON** |
 | Block deletions | **ON** |
-| Bypass list | **فارغ** — لا بایپس لأي حساب/تطبيق (بما فيها هوية الأجهزة) |
-| Required conversations resolution | ON إن توفر |
+| Require linear history | Optional; enable only after confirming the chosen merge method |
+| Bypass list | Empty by default; add only an explicitly justified break-glass actor if operationally necessary |
+| Required hosted checks | **OFF temporarily** while jobs cannot acquire runners |
 
-## STAGE B — بعد استعادة GitHub Actions billing
-- Required status checks: `verify` · CodeQL · Dependency Review + فحوصات الثقة الحرجة (exact-head)
-- Code scanning: block merge on new critical/high alerts
+### Why zero required approvals in Stage A?
+GitHub does not allow an author to approve their own PR. Requiring one approval without an independent eligible reviewer can deadlock a single-founder repository while providing no real trust gain. Current-head independent review and the sovereign exact-head receipt remain mandatory operating evidence even when GitHub cannot technically enforce an approval count.
 
-## لماذا مرحليًا؟
-التحقق المستضيف معطّل حاليًا بحظر فوترة (ACCOUNT_LEVEL_ACTIONS_BLOCKER). اشتراط checks ميتة = تجميد مستودع. Stage A يغلق ثغرات الدفع/الحذف اليوم دون كسر أي شيء.
+Once an independent human or governed review identity is available, move required approvals to **1** and require dismissal of stale approvals / latest-reviewable-push behavior.
 
-## خطوات التطبيق (يدوي، ~5 دقائق)
-GitHub → Dealix-sa/dealix → Settings → Rules → Rulesets → New branch ruleset → أدخل الجدول أعلاه → Enforce.
+## STAGE B — after Actions runner execution is restored
 
-## الأثر على الطاقم الحي
-Living Fleet dispatcher لا يدمج أبدًا — لن يتأثر. OpenCode سيُمنع هيكليًا حتى لو صدر أمر عام.
+Only add required checks that demonstrably execute real steps on the exact PR head:
 
-# Machine Identity Plan — هوية آلة منفصلة
+- sovereign exact-head verification (`bin/dealix verify trust --sha <EXACT_HEAD>` or the accepted canonical equivalent);
+- critical Trust/No-Send acceptance;
+- CodeQL / security checks that actually execute;
+- dependency/build checks appropriate to the changed surface.
+
+Required checks must bind to the exact head and must not be satisfied by stale runs. Code scanning should block new critical/high findings after the repository has a functioning execution plane.
+
+## Activation acceptance
+
+Before enabling the new ruleset:
+
+1. confirm its branch condition targets only the default branch;
+2. confirm direct pushes, force pushes, and deletion behavior match the intended founder workflow;
+3. confirm no disabled/stale rule is being treated as enforcement;
+4. confirm the founder cannot accidentally deadlock the repository through an impossible self-approval requirement;
+5. save the ruleset ID and a before/after snapshot in repository evidence.
+
+After activation, verify through current branch/ruleset metadata and record the result. If the available API surface cannot prove enforcement, mark it `UNKNOWN` rather than PASS.
+
+## Effect on the living fleet
+
+The Living Fleet and internal agents may create/update feature branches and Draft PRs within their bounded authority. They do not gain merge authority from this ruleset. `main` merge remains an L5 action bound to the exact reviewed SHA and the canonical approval packet.
+
+# Machine Identity Plan — separate bounded machine identity
 **STATUS: PROPOSAL ONLY**
 
-## الهدف
-فصل هوية OpenCode/الطاقم عن حساب المؤسس الإداري.
+## Goal
+Separate the machine/agent credential from the founder's administrative identity and keep the machine structurally unable to exercise founder-only authority.
 
-| | FOUNDER | MACHINE (مقترح) |
-|---|---|---|
-| Admin/merge final authority | ✓ | ✗ |
+| Capability | FOUNDER | MACHINE |
+|---|---:|---:|
+| Repository admin/settings | ✓ | ✗ |
+| Final merge authority | ✓ | ✗ |
 | Push feature branches | ✓ | ✓ |
 | Open/update Draft PRs | ✓ | ✓ |
-| Read CI/issues | ✓ | ✓ |
-| Ruleset bypass | n/a | **لا يوجد** |
-| Secrets/production | ✓ | ✗ |
+| Read CI/issues/PRs | ✓ | ✓ |
+| Ruleset bypass | only break-glass if explicitly configured | ✗ |
+| Production/secrets/billing | ✓ | ✗ |
 
-## الخيار الموصى به: GitHub App (أو Fine-grained PAT باسم جهاز)
-1. إنشاء GitHub App مملوك للمؤسسة بصلاحيات: Contents(Read+Write على feature branches فقط عبر قاعدة)، PullRequests(Write)، Issues(Read)
-2. تثبيته على مستودع dealix فقط
-3. تحديث `gh`/git remote credential للجهاز لاستخدام توكن التطبيق القصير الأجل
-4. سحب صلاحية admin عن أي توكن طويل الأجل على VPS
+## Recommended identity
+Prefer a repository-scoped GitHub App with short-lived installation tokens. A fine-grained PAT is a fallback, not the preferred long-lived machine architecture.
 
-**لن أنشئ الحساب أو التوكن تلقائيًا** — حزمة التنفيذ هذه تحتاج قرار المؤسس وإنشاءه من واجهة GitHub.
+Minimum repository permissions should be bounded to the tasks actually needed, for example:
+
+- Contents: Read/Write for feature-branch work;
+- Pull requests: Read/Write;
+- Issues: Read/Write only if the operating workflow needs issue updates;
+- Actions: Read for evidence collection where supported;
+- Administration, environments, secrets, organization settings, billing: **No access**.
+
+Repository rulesets must enforce the branch boundary; credential scope alone does not guarantee that a Contents:Write token cannot target `main`.
+
+## Rotation / revocation
+
+- use short-lived installation tokens where possible;
+- remove any long-lived admin credential from VPS agent workflows;
+- rotate or revoke on suspected exposure, machine replacement, or authority change;
+- never print tokens into logs, issues, PRs, receipts, or model prompts.
+
+**No account, app, token, or repository settings mutation is authorized merely by this proposal.**
