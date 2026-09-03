@@ -142,6 +142,15 @@
     ],
     "vertical_pack_rule": "EXTEND_CANONICAL_COMPANY_BRAIN_AND_PLAYBOOKS_NEVER_FORK_THE_COMPANY_OS"
   },
+  "founder_control_contract": {
+    "primary_channel": "telegram_openclaw",
+    "owner": "dealix-pm",
+    "canonical_path": "Telegram DM -> OpenClaw -> existing Dealix Company Machine -> durable receipt -> Founder brief",
+    "slack_status": "OPTIONAL_DORMANT_CAPABILITY",
+    "slack_launch_dependency": false,
+    "current_vps_runtime_receipt_required": true,
+    "runtime_truth_until_receipt": "UNKNOWN_NOT_EVIDENCE_BACKED"
+  },
   "connector_control_plane": [
     {"id": "github", "owner": "dealix-engineer", "role": "code_backlog_and_receipt_truth", "truth_owner": true, "write_ceiling": "L4_DRAFT_PR"},
     {"id": "vps", "owner": "dealix-engineer", "role": "command_ai_verification_research_and_proof_node", "truth_owner": false, "write_ceiling": "BOUNDED_INTERNAL"},
@@ -152,7 +161,7 @@
     {"id": "whatsapp_business", "owner": "dealix-sales", "role": "inbound_opt_in_customer_channel", "truth_owner": false, "write_ceiling": "ACTION_BOUND_NO_COLD_OUTBOUND"},
     {"id": "linkedin", "owner": "dealix-content", "role": "founder_native_relationship_and_company_page_distribution", "truth_owner": false, "write_ceiling": "DRAFT_OR_OFFICIAL_API_ACTION_BOUND"},
     {"id": "owned_social_and_video", "owner": "dealix-content", "role": "brand_content_video_and_distribution", "truth_owner": false, "write_ceiling": "DRAFT_UNLESS_ACTION_BOUND"},
-    {"id": "slack_telegram", "owner": "dealix-pm", "role": "internal_founder_command_approvals_and_receipts", "truth_owner": false, "write_ceiling": "INTERNAL_ONLY"},
+    {"id": "telegram_openclaw", "owner": "dealix-pm", "role": "canonical_founder_command_approvals_and_receipts", "truth_owner": false, "write_ceiling": "INTERNAL_ONLY"},
     {"id": "airtable_hubspot", "owner": "dealix-sales", "role": "operating_and_crm_mirrors", "truth_owner": false, "write_ceiling": "MIRROR_ONLY"},
     {"id": "posthog_sentry_otel_langfuse", "owner": "dealix-engineer", "role": "behavior_reliability_cost_and_agent_observability", "truth_owner": false, "write_ceiling": "PRIVACY_BOUNDED"},
     {"id": "canva_gamma_drive", "owner": "dealix-content", "role": "rendering_assets_decks_profiles_and_proof_packs", "truth_owner": false, "write_ceiling": "DRAFT_OR_APPROVED_ASSET"},
@@ -402,7 +411,7 @@
     {
       "id": "A2_CHANNEL_AND_FOUNDER_CONTROL",
       "result_required": "PASS",
-      "evidence": ["official_capability", "credential_refs_outside_git", "sender_health", "slack_or_telegram_e2e_receipt", "duplicate_event_idempotency"]
+      "evidence": ["official_capability", "credential_refs_outside_git", "sender_health", "telegram_openclaw_e2e_receipt", "duplicate_event_idempotency"]
     },
     {
       "id": "A3_PRODUCTION_AND_PUBLIC_TRUTH",
