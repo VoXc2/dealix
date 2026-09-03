@@ -69,6 +69,15 @@ def _mounted_paths() -> list[str]:
     return [getattr(route, "path", "") for route in create_app().routes]
 
 
+def test_create_app_route_registration_is_idempotent() -> None:
+    first = _mounted_paths()
+    second = _mounted_paths()
+
+    assert first == second
+    assert _REQUIRED_SAFE_PATHS <= set(first)
+    assert _BLOCKED_RUNTIME_PATHS.isdisjoint(first)
+
+
 def test_launch_runtime_does_not_mount_retired_price_charge_or_parallel_authority() -> None:
     mounted_list = _mounted_paths()
     mounted = set(mounted_list)
