@@ -152,9 +152,9 @@
       "state": "QUARANTINED_NOT_REGISTERED"
     },
     {
-      "id": "legacy-runtime-route-quarantine",
+      "id": "sales-domain-commercial-quarantine",
       "path": "api/routers/domains/sales/__init__.py",
-      "surface": "route registration quarantine",
+      "surface": "retired autopilot, pricing, checkout and commercial-map route quarantine",
       "classification": "CURRENT_CANONICAL_AUTHORITY",
       "runtime_consumed": true,
       "customer_facing": false,
@@ -162,13 +162,125 @@
       "fixed_public_price_authority": false,
       "expected_markers": [
         "_LEGACY_COMMERCIAL_RUNTIME_PATHS",
+        "_LEGACY_PRICING_RUNTIME_PATHS",
+        "_LEGACY_COMMERCIAL_MAP_PATHS",
         "/api/v1/public/services",
-        "/api/v1/ops-autopilot/leads/{lead_id}/meeting-brief",
         "/api/v1/invoices/draft",
+        "/api/v1/checkout",
+        "/api/v1/commercial-map",
         "commercial_runtime_truth.router"
       ],
       "forbidden_markers": [],
       "state": "ACTIVE_QUARANTINE"
+    },
+    {
+      "id": "legacy-pricing-router-source",
+      "path": "api/routers/pricing.py",
+      "surface": "legacy price catalogue/checkout helpers retained for webhook reconciliation/history",
+      "classification": "CURRENT_FAIL_CLOSED_COMPATIBILITY",
+      "runtime_consumed": false,
+      "customer_facing": false,
+      "authority": false,
+      "fixed_public_price_authority": false,
+      "expected_markers": [
+        "Pricing + Moyasar checkout endpoints",
+        "POST /api/v1/webhooks/moyasar"
+      ],
+      "forbidden_markers": [],
+      "state": "MUTATION_AND_CATALOG_ROUTES_QUARANTINED_WEBHOOK_RETAINED"
+    },
+    {
+      "id": "legacy-commercial-map-source",
+      "path": "api/routers/commercial_map.py",
+      "surface": "legacy public commercial map retained as non-mounted source/history",
+      "classification": "CURRENT_FAIL_CLOSED_COMPATIBILITY",
+      "runtime_consumed": false,
+      "customer_facing": false,
+      "authority": false,
+      "fixed_public_price_authority": false,
+      "expected_markers": ["commercial-map"],
+      "forbidden_markers": [],
+      "state": "HTTP_ROUTES_QUARANTINED"
+    },
+    {
+      "id": "billing-runtime-quarantine",
+      "path": "api/routers/domains/customers/__init__.py",
+      "surface": "legacy SaaS billing plan/subscription/payment mutation quarantine",
+      "classification": "CURRENT_CANONICAL_AUTHORITY",
+      "runtime_consumed": true,
+      "customer_facing": false,
+      "authority": false,
+      "fixed_public_price_authority": false,
+      "expected_markers": [
+        "_LEGACY_BILLING_MUTATION_PATHS",
+        "/api/v1/billing/plans",
+        "/api/v1/billing/subscribe",
+        "/api/v1/billing/invoices/{invoice_id}/pay"
+      ],
+      "forbidden_markers": [],
+      "state": "ACTIVE_QUARANTINE"
+    },
+    {
+      "id": "finance-runtime-quarantine",
+      "path": "api/routers/domains/admin/__init__.py",
+      "surface": "Finance OS tier catalogue and tier-invoice route quarantine",
+      "classification": "CURRENT_CANONICAL_AUTHORITY",
+      "runtime_consumed": true,
+      "customer_facing": false,
+      "authority": false,
+      "fixed_public_price_authority": false,
+      "expected_markers": [
+        "_LEGACY_FINANCE_PRICE_AUTHORITY_PATHS",
+        "/api/v1/finance/pricing",
+        "/api/v1/finance/pricing/{tier_id}",
+        "/api/v1/finance/invoice/draft"
+      ],
+      "forbidden_markers": [],
+      "state": "ACTIVE_QUARANTINE_STATUS_ONLY"
+    },
+    {
+      "id": "launch-service-catalog",
+      "path": "api/routers/service_catalog.py",
+      "surface": "public launch-authorized service catalog",
+      "classification": "CURRENT_CANONICAL_AUTHORITY",
+      "runtime_consumed": true,
+      "customer_facing": true,
+      "authority": true,
+      "fixed_public_price_authority": false,
+      "expected_markers": [
+        "_LAUNCH_AUTHORIZED_SERVICE_IDS",
+        "free_mini_diagnostic",
+        "revenue_command_pilot_30d",
+        "customer_specific_quote_after_qualified_discovery",
+        "no_public_fixed_price_catalog",
+        "service_not_publicly_launch_authorized"
+      ],
+      "forbidden_markers": [
+        "All 7 offerings in display order",
+        "return offering.model_dump()"
+      ],
+      "state": "PUBLIC_CATALOG_RESTRICTED_TO_LAUNCH_OFFERS"
+    },
+    {
+      "id": "business-pricing-compatibility",
+      "path": "api/routers/business.py",
+      "surface": "business pricing/ROI compatibility endpoints",
+      "classification": "CURRENT_CANONICAL_AUTHORITY",
+      "runtime_consumed": true,
+      "customer_facing": false,
+      "authority": false,
+      "fixed_public_price_authority": false,
+      "expected_markers": [
+        "legacy_pricing_authority_retired",
+        "customer_specific_quote_after_qualified_discovery",
+        "public_fixed_price\": False",
+        "live_charge_allowed\": False"
+      ],
+      "forbidden_markers": [
+        "return get_pricing_tiers()",
+        "return recommend_plan("
+      ],
+      "state": "FAIL_CLOSED_COMPATIBILITY"
     },
     {
       "id": "business-now-client-pack-pricing",
