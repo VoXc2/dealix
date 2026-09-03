@@ -1,53 +1,72 @@
 "use client";
 
 import PageShell from "@/components/PageShell";
-import SectionHeader from "@/components/SectionHeader";
 import CTA from "@/components/CTA";
 
 export default function BookPage() {
   return (
     <PageShell>
-      <section className="card dot-pattern" style={{ position: "relative", overflow: "hidden", paddingTop: "clamp(40px,6vw,72px)", paddingBottom: "clamp(40px,6vw,72px)" }}>
-        <p className="eyebrow">احجز الآن</p>
-        <h1 style={{ maxWidth: 860 }}>احجز مراجعة تشغيلية استراتيجية</h1>
-        <p style={{ maxWidth: 680, fontSize: "1.15rem", lineHeight: 1.7 }}>
-          جلسة مدتها ٢٠ دقيقة. نستمع إلى أكبر ألم تشغيلي تواجهه، ونرسل لك خريطة واضحة للتحسين.
-          لا بيع. لا ضغط. فقط تشخيص.
+      <section
+        className="card dot-pattern"
+        style={{
+          position: "relative",
+          overflow: "hidden",
+          paddingTop: "clamp(40px,6vw,72px)",
+          paddingBottom: "clamp(40px,6vw,72px)",
+        }}
+      >
+        <p className="eyebrow">Free Mini Diagnostic</p>
+        <h1 style={{ maxWidth: 860 }}>ابدأ بتشخيص مشكلة تشغيلية واحدة — مجانًا</h1>
+        <p style={{ maxWidth: 720, fontSize: "1.15rem", lineHeight: 1.7 }}>
+          نراجع مشكلة واحدة تؤثر على الإيراد أو المتابعة أو القرار اليومي، ونحدد هل تستحق Discovery أعمق.
+          لا بطاقة، لا Checkout، ولا التزام بشراء Pilot.
         </p>
 
         <div className="divider-gold" />
 
-        <h3>ما الذي يحدث في الجلسة؟</h3>
-        <ul style={{ maxWidth: 680 }}>
-          <li>نستمع إلى وضعك التشغيلي الحالي</li>
-          <li>نحدد تسريب الإيرادات الأكثر احتمالاً</li>
-          <li>نرسل لك ملخصاً تشخيصياً خلال ٢٤ ساعة</li>
-          <li>نقترح خطوة واحدة يمكنك تنفيذها فوراً</li>
+        <h3>ماذا نحتاج منك؟</h3>
+        <ul style={{ maxWidth: 720 }}>
+          <li>المشكلة التي تريد حلها الآن، بصياغة عملية وليست عامة.</li>
+          <li>من يملك القرار والمتابعة داخل الشركة.</li>
+          <li>ما البيانات أو الأدوات التي تعتمدون عليها اليوم.</li>
+          <li>كيف تعرفون أن المشكلة تحسنت: وقت، conversion، متابعة، cash أو KPI آخر.</li>
         </ul>
 
-        <h3>لمن هذه الجلسة؟</h3>
-        <ul style={{ maxWidth: 680 }}>
-          <li>أصحاب الشركات B2B في السعودية</li>
-          <li>فرق المبيعات التي تريد نظاماً بدلاً من الفوضى</li>
-          <li>من يريد تحويل متابعات الواتساب إلى مسار منظم</li>
+        <h3>ماذا يحدث بعده؟</h3>
+        <ul style={{ maxWidth: 720 }}>
+          <li>إذا لم تكن المشكلة مناسبة لـDealix، نتوقف بدون التزام.</li>
+          <li>إذا كانت مؤهلة، ننتقل إلى Qualified Discovery لتثبيت baseline والنطاق.</li>
+          <li>لا يصدر سعر إلا في Customer-Specific Quote بعد Discovery.</li>
+          <li>الـRevenue Command Pilot مدته 30 يومًا ويبدأ فقط بعد قبول العرض وإثبات الدفع.</li>
         </ul>
 
-        <h3>لمن ليست هذه الجلسة؟</h3>
-        <ul style={{ maxWidth: 680 }}>
-          <li>من يبحث عن حل سحري بدون تغيير عمليات</li>
-          <li>من لا يملك صلاحية اتخاذ قرار في الشركة</li>
-          <li>من يريد ضمان عائد استثمار محدد مسبقاً</li>
+        <h3>لمن هذا المسار؟</h3>
+        <ul style={{ maxWidth: 720 }}>
+          <li>شركات B2B في السعودية لديها ألم تشغيلي واضح وصاحب قرار معروف.</li>
+          <li>فرق تحتاج Revenue + Proof + Command بدل إضافة أدوات جديدة.</li>
+          <li>شركات تقبل human approvals وتستطيع توفير بيانات مشروعة وقابلة للقياس.</li>
         </ul>
 
-        <h3>ما الذي تحتاج تحضيره؟</h3>
-        <p style={{ maxWidth: 680 }}>
-          لا شيء معقد. فقط أجب عن هذا السؤال قبل الجلسة: ما أكبر شيء يستنزف وقت فريقك اليوم؟
-        </p>
+        <h3>لمن ليس هذا المسار؟</h3>
+        <ul style={{ maxWidth: 720 }}>
+          <li>من يريد ضمان عائد أو نتيجة مالية محددة مسبقًا.</li>
+          <li>من يريد mass outreach أو cold WhatsApp أو صلاحيات خارجية بلا حوكمة.</li>
+          <li>من لا يستطيع تحديد owner أو baseline أو طريق واضح للإثبات.</li>
+        </ul>
 
-        <CTA href="mailto:founder@dealix.sa?subject=طلب%20مراجعة%20تشغيلية" label="ارسل طلب مراجعة عبر البريد" />
+        <CTA
+          href="mailto:founder@dealix.sa?subject=طلب%20Mini%20Diagnostic%20مجاني"
+          label="اطلب Mini Diagnostic عبر البريد"
+        />
 
-        <p style={{ fontSize: "0.82rem", color: "rgba(255,255,255,0.40)", marginTop: "var(--sp-4)" }}>
-          أو تواصل معنا عبر واتساب على الرقم الموضح في صفحة التواصل. لا نستخدم حجز خارجي تلقائي.
+        <p
+          style={{
+            fontSize: "0.82rem",
+            color: "rgba(255,255,255,0.40)",
+            marginTop: "var(--sp-4)",
+          }}
+        >
+          الإرسال عبر البريد هنا هو طلب منك أنت؛ Dealix لا تحول بيانات عامة إلى موافقة تواصل ولا تبدأ مراسلات خارجية تلقائيًا.
         </p>
       </section>
     </PageShell>
