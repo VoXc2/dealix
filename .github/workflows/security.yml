@@ -53,9 +53,15 @@ jobs:
 
     steps:
       - name: Checkout
+        if: >-
+          github.event.repository.security_and_analysis.dependency_graph.status == 'enabled' &&
+          github.event.repository.security_and_analysis.advanced_security.status == 'enabled'
         uses: actions/checkout@v7
 
       - name: Dependency review
+        if: >-
+          github.event.repository.security_and_analysis.dependency_graph.status == 'enabled' &&
+          github.event.repository.security_and_analysis.advanced_security.status == 'enabled'
         uses: actions/dependency-review-action@v4
         with:
           # Allowlist two specific known-moderate advisories in the legacy,
@@ -66,3 +72,20 @@ jobs:
           # stays fully strict (blocks every critical/high, and all other
           # advisories) for apps/web and all Python dependencies.
           allow-ghsas: GHSA-4c35-wcg5-mm9h, GHSA-8f24-v5vv-gm5j
+
+      - name: Record unavailable dependency-review capability
+        if: >-
+          github.event.repository.security_and_analysis.dependency_graph.status != 'enabled' ||
+          github.event.repository.security_and_analysis.advanced_security.status != 'enabled'
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          echo "::warning title=Dependency Review unavailable::BLOCKED_CAPABILITY — enable Dependency Graph and GitHub Advanced Security for this private repository."
+          {
+            echo "### Dependency Review"
+            echo
+            echo "- State: `BLOCKED_CAPABILITY`"
+            echo "- Cause: Dependency Graph and GitHub Advanced Security are not both enabled."
+            echo "- This result does not certify dependency safety."
+            echo "- Exact-head Trivy, OSV and package-manager audit evidence remains required before Ready/Merge."
+          } >> "$GITHUB_STEP_SUMMARY"
