@@ -5,6 +5,8 @@ Sales domain — leads, revenue, outreach, pricing, payments.
 
 from __future__ import annotations
 
+from copy import copy
+
 from fastapi import APIRouter
 
 from api.routers import (
@@ -57,18 +59,33 @@ from api.routers import (
     revenue_profitability as revenue_profitability_router,
 )
 
+
+def _filtered_router(source: APIRouter, blocked_paths: set[str]) -> APIRouter:
+    """Return a launch-safe router view without mutating the shared source router.
+
+    FastAPI routers are module-level singletons across app-factory calls. Mutating
+    ``source.routes`` during import makes route registration depend on import order
+    and can remove unrelated compatibility routes from later ``create_app()`` runs.
+    A shallow router copy preserves router metadata while giving this launch view
+    its own route list.
+    """
+
+    filtered = copy(source)
+    filtered.routes = [
+        route
+        for route in source.routes
+        if getattr(route, "path", None) not in blocked_paths
+    ]
+    return filtered
+
+
 _LEGACY_DOMINANCE_PATHS = {
     "/api/v1/customers/{customer_id}/proof-pack",
 }
 
-# The legacy dominance proof-pack endpoint emits unsupported fixed prices,
-# seven-day claims, fabricated outcome placeholders and referral economics.
-# Keep the useful dominance intelligence routes, but do not expose that endpoint.
-dominance.router.routes[:] = [
-    route
-    for route in dominance.router.routes
-    if getattr(route, "path", None) not in _LEGACY_DOMINANCE_PATHS
-]
+# Keep useful dominance intelligence routes while excluding the retired proof
+# generator from the launch router view. The shared source router is untouched.
+_dominance_router = _filtered_router(dominance.router, _LEGACY_DOMINANCE_PATHS)
 
 _LEGACY_COMMERCIAL_RUNTIME_PATHS = {
     "/api/v1/public/services",
@@ -76,15 +93,13 @@ _LEGACY_COMMERCIAL_RUNTIME_PATHS = {
     "/api/v1/invoices/draft",
 }
 
-# Quarantine the three retired commercial-authority routes before api.main later
-# includes AUTOPILOT_ROUTERS. Their source is retained for rollback/history, but
-# they are not mounted and therefore cannot act as launch pricing authority.
-for _autopilot_router in revenue_ops_autopilot.AUTOPILOT_ROUTERS:
-    _autopilot_router.routes[:] = [
-        route
-        for route in _autopilot_router.routes
-        if getattr(route, "path", None) not in _LEGACY_COMMERCIAL_RUNTIME_PATHS
-    ]
+# api.main later mounts AUTOPILOT_ROUTERS directly, so publish an explicit
+# launch-safe list instead of deleting routes from the shared module-level
+# APIRouter instances. The canonical replacement router below owns these URLs.
+revenue_ops_autopilot.AUTOPILOT_ROUTERS = [
+    _filtered_router(router, _LEGACY_COMMERCIAL_RUNTIME_PATHS)
+    for router in revenue_ops_autopilot.AUTOPILOT_ROUTERS
+]
 
 _LEGACY_PRICING_RUNTIME_PATHS = {
     "/api/v1/pricing/plans",
@@ -95,29 +110,20 @@ _LEGACY_PRICING_RUNTIME_PATHS = {
 }
 
 # Current commercial authority is quote-only after qualified discovery and
-# live charge is false. Keep the Moyasar webhook mounted for reconciliation of
-# already-existing provider events, but remove every route that can publish a
-# price, create usage-based billable state, simulate a legacy price ladder, or
-# mint a new checkout invoice/payment link.
-pricing.router.routes[:] = [
-    route
-    for route in pricing.router.routes
-    if getattr(route, "path", None) not in _LEGACY_PRICING_RUNTIME_PATHS
-]
+# live charge is false. Use a launch-safe router view so safe reconciliation
+# endpoints (including the Moyasar webhook) remain available without mutating
+# the original pricing router.
+_pricing_router = _filtered_router(pricing.router, _LEGACY_PRICING_RUNTIME_PATHS)
 
 _LEGACY_COMMERCIAL_MAP_PATHS = {
     "/api/v1/commercial-map",
     "/api/v1/commercial-map/markdown",
 }
 
-# The legacy public commercial map is still useful as internal source/history,
-# but it contains retired SKU names, checkout links and price ladders. Remove
-# its HTTP exposure while retaining module helpers for non-authoritative reads.
-commercial_map.router.routes[:] = [
-    route
-    for route in commercial_map.router.routes
-    if getattr(route, "path", None) not in _LEGACY_COMMERCIAL_MAP_PATHS
-]
+# api.main later imports commercial_map.router explicitly. Rebind only the
+# exported router reference to a launch-safe copy; the original router object is
+# not modified. The canonical commercial_runtime_truth router owns these URLs.
+commercial_map.router = _filtered_router(commercial_map.router, _LEGACY_COMMERCIAL_MAP_PATHS)
 
 
 _ROUTERS = [
@@ -141,11 +147,11 @@ _ROUTERS = [
     revenue_profitability_router.router,
     outreach.router,
     prospect.router,
-    pricing.router,
+    _pricing_router,
     payment_ops_router.router,
     leadops_spine.router,
     leadops_reliability.router,
-    dominance.router,
+    _dominance_router,
     email_send.router,
     case_study_engine.router,
 ]
