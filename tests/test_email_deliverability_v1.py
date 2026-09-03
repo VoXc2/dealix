@@ -14,6 +14,7 @@ Article 4 (NO_BLAST) reinforced: even ``ready_for_marketing`` returns a
 cap recommendation, never a green light to spam.
 Article 8: ``founder_action_needed`` returns a NEXT action (founder
 configures DNS) — never silently passes when records absent.
+Sender-health metrics crossing a threshold pause transactional and marketing sends.
 """
 from __future__ import annotations
 
@@ -167,3 +168,51 @@ def test_dataclass_is_frozen_and_immutable() -> None:
         status.overall_status = "ready_for_marketing"  # type: ignore[misc]
     with pytest.raises((AttributeError, Exception)):
         status.spf.is_valid = True  # type: ignore[misc]
+
+
+# ─────────────────────────────────────────────────────────────────────
+# Sender-health circuit breaker
+# ─────────────────────────────────────────────────────────────────────
+
+
+def _ready_status(**metrics: float) -> DeliverabilityStatus:
+    return check_deliverability(
+        domain="dealix.me",
+        spf_record=_VALID_SPF,
+        dkim_record=_VALID_DKIM,
+        dmarc_record=_VALID_DMARC,
+        one_click_unsubscribe_header_supported=True,
+        **metrics,
+    )
+
+
+def test_spam_rate_at_google_stop_threshold_pauses_all_sending() -> None:
+    status = _ready_status(spam_rate=0.003)
+    assert status.overall_status == "metrics_pause"
+    assert status.metrics_blocked is True
+    assert status.safe_to_send_marketing is False
+    assert status.safe_to_send_transactional is False
+    assert status.daily_cap_recommended == 0
+
+
+def test_bounce_rate_threshold_pauses_all_sending() -> None:
+    status = _ready_status(bounce_rate=0.05)
+    assert status.overall_status == "metrics_pause"
+    assert "bounce_rate" in status.metrics_blockers[0]
+
+
+def test_unsubscribe_rate_threshold_pauses_all_sending() -> None:
+    status = _ready_status(unsubscribe_rate=0.02)
+    assert status.overall_status == "metrics_pause"
+    assert "unsubscribe_rate" in status.metrics_blockers[0]
+
+
+def test_negative_reply_rate_threshold_pauses_all_sending() -> None:
+    status = _ready_status(negative_reply_rate=0.10)
+    assert status.overall_status == "metrics_pause"
+    assert "negative_reply_rate" in status.metrics_blockers[0]
+
+
+def test_invalid_health_metric_is_rejected() -> None:
+    with pytest.raises(ValueError, match="between 0 and 1"):
+        check_deliverability(domain="dealix.me", spam_rate=1.1)

@@ -23,8 +23,11 @@ Limits Google enforces on a personal Gmail address:
 ### What Sami should monitor weekly
 
 - Gmail Postmaster Tools → reputation: keep IP and domain at "High"
-- Spam-reported rate: keep under 0.1% (Google enforces 0.3% cap)
-- Bounce rate: keep under 5%; if >10% → Dealix auto-pauses sends
+- Spam-reported rate: target <0.10%; pause external sending at ≥0.30% (Google’s stop threshold)
+- Bounce rate: Dealix operational stop rule at ≥5%; this is a conservative product guard, not a Google limit
+- Unsubscribe rate: Dealix operational stop rule at ≥2%
+- Negative-reply rate: Dealix operational stop rule at ≥10%
+- Any triggered stop rule sets `metrics_pause`, daily cap `0`, and blocks both transactional and marketing sends until reviewed
 
 ## Phase 2 — Move sender to @dealix.me (after first 3 paid pilots)
 
@@ -94,6 +97,8 @@ body: {"email": "x@example.com", "reason": "manual_complaint_2026_05"}
 - `gmail_configured`
 
 If `sent_today > 40` and it's before noon → pause sends until tomorrow (likely spam-trap risk).
+
+The deliverability guard also accepts measured `bounce_rate`, `spam_rate`, `unsubscribe_rate`, and `negative_reply_rate`. It fails closed when any threshold is crossed; no metric-based pause is a claim that a message was sent.
 
 ## Quarterly: rotate sender names
 

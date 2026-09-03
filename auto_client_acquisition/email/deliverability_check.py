@@ -6,6 +6,7 @@ any outbound email goes out. Per Google sender requirements (May 2024+):
 - DKIM: required for senders >5K/day
 - DMARC: required for senders >5K/day; recommended for all
 - One-click unsubscribe: required for marketing emails
+- Metrics circuit-breaker: pause external sending when measured sender-health rates cross policy thresholds
 
 Hard rule: when DNS records are missing/incomplete, email status
 returns ``founder_action_needed`` so the caller MUST hold the email
@@ -18,6 +19,17 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from typing import Literal
+
+
+# Operational circuit-breaker thresholds. Google’s 0.30% spam value is a
+# hard stop for this guard; the other limits are conservative Dealix stop
+# rules and are not claims about a provider or statute.
+_RATE_PAUSE_THRESHOLDS: dict[str, float] = {
+    "bounce_rate": 0.05,
+    "spam_rate": 0.003,
+    "unsubscribe_rate": 0.02,
+    "negative_reply_rate": 0.10,
+}
 
 
 @dataclass(frozen=True, slots=True)
@@ -49,11 +61,14 @@ class DeliverabilityStatus:
         "needs_dmarc",                # SPF + DKIM OK, DMARC missing
         "founder_action_needed",     # SPF missing or invalid
         "blocked_marketing",         # Marketing blocked because requirements not met
+        "metrics_pause",              # Sender-health metrics crossed a stop rule
     ]
     safe_to_send_marketing: bool
     safe_to_send_transactional: bool
     next_founder_action_ar: str
     next_founder_action_en: str
+    metrics_blocked: bool = False
+    metrics_blockers: tuple[str, ...] = field(default_factory=tuple)
 
 
 def check_deliverability(
@@ -63,6 +78,10 @@ def check_deliverability(
     dkim_record: str | None = None,
     dmarc_record: str | None = None,
     one_click_unsubscribe_header_supported: bool = False,
+    bounce_rate: float | None = None,
+    spam_rate: float | None = None,
+    unsubscribe_rate: float | None = None,
+    negative_reply_rate: float | None = None,
 ) -> DeliverabilityStatus:
     """Validate the 3 DNS records for a sending domain.
 
@@ -79,6 +98,12 @@ def check_deliverability(
         DeliverabilityStatus with readiness + safe_to_send flags +
         next_founder_action.
     """
+    metrics_blockers = _metric_blockers(
+        bounce_rate=bounce_rate,
+        spam_rate=spam_rate,
+        unsubscribe_rate=unsubscribe_rate,
+        negative_reply_rate=negative_reply_rate,
+    )
     spf = _check_spf(domain, spf_record)
     dkim = _check_dkim(domain, dkim_record)
     dmarc = _check_dmarc(domain, dmarc_record)
@@ -87,7 +112,7 @@ def check_deliverability(
     status: Literal[
         "ready_for_marketing", "ready_for_transactional",
         "needs_dkim", "needs_dmarc",
-        "founder_action_needed", "blocked_marketing",
+        "founder_action_needed", "blocked_marketing", "metrics_pause",
     ]
     safe_marketing = False
     safe_transactional = False
@@ -154,6 +179,15 @@ def check_deliverability(
         safe_marketing = True
         daily_cap = 50000
 
+    if metrics_blockers:
+        status = "metrics_pause"
+        safe_marketing = False
+        safe_transactional = False
+        daily_cap = 0
+        joined = ", ".join(metrics_blockers)
+        action_ar = f"تم إيقاف الإرسال مؤقتًا بسبب مؤشرات صحة المرسل: {joined}. راجع المصدر قبل أي إرسال."
+        action_en = f"External sending is paused because sender-health metrics crossed a stop rule: {joined}. Review the source before any send."
+
     return DeliverabilityStatus(
         domain=domain,
         spf=spf, dkim=dkim, dmarc=dmarc,
@@ -164,7 +198,37 @@ def check_deliverability(
         safe_to_send_transactional=safe_transactional,
         next_founder_action_ar=action_ar,
         next_founder_action_en=action_en,
+        metrics_blocked=bool(metrics_blockers),
+        metrics_blockers=metrics_blockers,
     )
+
+
+def _metric_blockers(
+    *,
+    bounce_rate: float | None,
+    spam_rate: float | None,
+    unsubscribe_rate: float | None,
+    negative_reply_rate: float | None,
+) -> tuple[str, ...]:
+    values = {
+        "bounce_rate": bounce_rate,
+        "spam_rate": spam_rate,
+        "unsubscribe_rate": unsubscribe_rate,
+        "negative_reply_rate": negative_reply_rate,
+    }
+    blockers: list[str] = []
+    for name, raw_value in values.items():
+        if raw_value is None:
+            continue
+        if isinstance(raw_value, bool) or not isinstance(raw_value, (int, float)):
+            raise ValueError(f"{name} must be a numeric rate between 0 and 1")
+        value = float(raw_value)
+        if not 0 <= value <= 1:
+            raise ValueError(f"{name} must be between 0 and 1")
+        threshold = _RATE_PAUSE_THRESHOLDS[name]
+        if value >= threshold:
+            blockers.append(f"{name}>={threshold:.2%}")
+    return tuple(blockers)
 
 
 def _check_spf(domain: str, raw: str | None) -> DNSRecord:
