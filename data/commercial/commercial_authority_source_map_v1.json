@@ -1,0 +1,180 @@
+{
+  "schema_version": "1.0",
+  "generated_from_main_sha": "7274c766dd43a23ec391b4cfbeb4fae8ae665763",
+  "closure_issue": 1162,
+  "canonical_commercial_path": [
+    "FREE_MINI_DIAGNOSTIC",
+    "QUALIFIED_DISCOVERY",
+    "CUSTOMER_SPECIFIC_QUOTE",
+    "REVENUE_COMMAND_PILOT_30D",
+    "VERIFIED_PAYMENT",
+    "DELIVERY",
+    "CUSTOMER_VALIDATED_PROOF",
+    "STOP_EXPAND_REDESIGN"
+  ],
+  "allowed_classifications": [
+    "CURRENT_CANONICAL_AUTHORITY",
+    "CURRENT_FAIL_CLOSED_COMPATIBILITY",
+    "RETIRED_RUNTIME_AUTHORITY",
+    "HISTORICAL_REFERENCE"
+  ],
+  "sources": [
+    {
+      "id": "canonical-primary-icp",
+      "path": "dealix/config/icp_primary.yaml",
+      "surface": "primary_offer_id",
+      "classification": "CURRENT_CANONICAL_AUTHORITY",
+      "runtime_consumed": true,
+      "customer_facing": false,
+      "authority": true,
+      "fixed_public_price_authority": false,
+      "expected_markers": ["primary_offer_id: revenue_command_pilot_30d"],
+      "forbidden_markers": ["primary_offer_id: seven_day_governance_diagnostic"],
+      "state": "PATCHED_IN_PR_1494"
+    },
+    {
+      "id": "canonical-focus-override",
+      "path": "dealix/transformation/commercial_focus_override.yaml",
+      "surface": "founder commercial focus override",
+      "classification": "CURRENT_CANONICAL_AUTHORITY",
+      "runtime_consumed": true,
+      "customer_facing": false,
+      "authority": true,
+      "fixed_public_price_authority": false,
+      "expected_markers": ["revenue_command_pilot_30d"],
+      "forbidden_markers": [],
+      "state": "CURRENT_MAIN"
+    },
+    {
+      "id": "fail-closed-invoice-cli",
+      "path": "scripts/dealix_invoice.py",
+      "surface": "test/preview invoice compatibility CLI",
+      "classification": "CURRENT_FAIL_CLOSED_COMPATIBILITY",
+      "runtime_consumed": false,
+      "customer_facing": false,
+      "authority": false,
+      "fixed_public_price_authority": false,
+      "expected_markers": [
+        "customer-specific quote",
+        "LIVE_INVOICE_ALLOWED=false",
+        "PAYMENT_PROOF_CREATED=false",
+        "REVENUE_CREATED=false"
+      ],
+      "forbidden_markers": ["seven_day_governance_diagnostic"],
+      "state": "CURRENT_MAIN"
+    },
+    {
+      "id": "runtime-public-services",
+      "path": "api/routers/revenue_ops_autopilot.py",
+      "surface": "GET /api/v1/public/services",
+      "classification": "RETIRED_RUNTIME_AUTHORITY",
+      "runtime_consumed": true,
+      "customer_facing": true,
+      "authority": true,
+      "fixed_public_price_authority": true,
+      "expected_markers": [
+        "seven_day_governance_diagnostic",
+        "tiers_sar",
+        "4999",
+        "9999",
+        "15000"
+      ],
+      "forbidden_markers": [],
+      "state": "UNRESOLVED_TRANCHE_B"
+    },
+    {
+      "id": "runtime-meeting-brief-fallback",
+      "path": "api/routers/revenue_ops_autopilot.py",
+      "surface": "meeting brief recommended_offer fallback",
+      "classification": "RETIRED_RUNTIME_AUTHORITY",
+      "runtime_consumed": true,
+      "customer_facing": false,
+      "authority": true,
+      "fixed_public_price_authority": false,
+      "expected_markers": ["lead.offer_id or \"seven_day_governance_diagnostic\""],
+      "forbidden_markers": [],
+      "state": "UNRESOLVED_TRANCHE_B"
+    },
+    {
+      "id": "runtime-invoice-tier-catalog",
+      "path": "api/routers/revenue_ops_autopilot.py",
+      "surface": "POST /api/v1/invoices/draft tier-to-amount mapping",
+      "classification": "RETIRED_RUNTIME_AUTHORITY",
+      "runtime_consumed": true,
+      "customer_facing": false,
+      "authority": true,
+      "fixed_public_price_authority": true,
+      "expected_markers": [
+        "_TIER_AMOUNT",
+        "starter\": 4999.0",
+        "standard\": 9999.0",
+        "executive\": 15000.0",
+        "تشخيص ٧ أيام"
+      ],
+      "forbidden_markers": [],
+      "state": "UNRESOLVED_TRANCHE_B"
+    },
+    {
+      "id": "business-now-client-pack-pricing",
+      "path": "dealix/business_now/commercial_strategy.py",
+      "surface": "Business NOW ops client pack",
+      "classification": "RETIRED_RUNTIME_AUTHORITY",
+      "runtime_consumed": true,
+      "customer_facing": false,
+      "authority": true,
+      "fixed_public_price_authority": true,
+      "expected_markers": [
+        "suggested_price_sar_range\": [4999, 9999]",
+        "suggested_price_premium_sar\": 15000"
+      ],
+      "forbidden_markers": [],
+      "state": "UNRESOLVED_TRANCHE_C"
+    },
+    {
+      "id": "business-now-sprint-499",
+      "path": "dealix/business_now/commercial_strategy.py",
+      "surface": "Business NOW next-best action",
+      "classification": "RETIRED_RUNTIME_AUTHORITY",
+      "runtime_consumed": true,
+      "customer_facing": false,
+      "authority": true,
+      "fixed_public_price_authority": true,
+      "expected_markers": ["Sprint 499"],
+      "forbidden_markers": [],
+      "state": "UNRESOLVED_TRANCHE_C"
+    },
+    {
+      "id": "historical-pricing-archives",
+      "path": "docs/** historical offer/pricing plans",
+      "surface": "historical archive",
+      "classification": "HISTORICAL_REFERENCE",
+      "runtime_consumed": false,
+      "customer_facing": false,
+      "authority": false,
+      "fixed_public_price_authority": false,
+      "expected_markers": [],
+      "forbidden_markers": [],
+      "state": "PRESERVE_DO_NOT_MASS_EDIT"
+    }
+  ],
+  "closure": {
+    "verdict": "BLOCKED_RETIRED_RUNTIME_AUTHORITY",
+    "unresolved_ids": [
+      "runtime-public-services",
+      "runtime-meeting-brief-fallback",
+      "runtime-invoice-tier-catalog",
+      "business-now-client-pack-pricing",
+      "business-now-sprint-499"
+    ],
+    "ready_for_issue_closure": false
+  },
+  "guardrails": {
+    "no_new_pricing_catalog": true,
+    "no_public_checkout": true,
+    "no_automatic_quote_discount_or_payment": true,
+    "no_historical_mass_rewrite": true,
+    "draft_is_not_sent": true,
+    "invoice_is_not_payment": true,
+    "payment_requires_independent_evidence": true
+  }
+}
