@@ -9,7 +9,7 @@ commercial launch into one self-contained, offline HTML page:
   * Pipeline by stage and value (from the CRM).
   * Follow-ups due today.
   * Sector breakdown with reply rates.
-  * The 6-rung offer ladder.
+  * The 6-step canonical commercial path (quote-only; no public price catalogue).
   * Today's priority actions (derived from the CRM + ready drafts).
   * The 4 pending founder launch actions.
 
@@ -64,11 +64,12 @@ RUNTIME = REPO_ROOT / "company" / "runtime"
 OUT_HTML = REPO_ROOT / "reports" / "command_room" / "index.html"
 
 # ---------------------------------------------------------------------------
-# Static launch context (sourced from docs; no network, no secrets).
+# Static launch context (sourced from canonical commercial truth; no network,
+# no secrets, no public fixed-price authority).
 # ---------------------------------------------------------------------------
 
-LAUNCH_STATUS = "PARTIAL"  # Engineering 100% — see docs/COMMERCIAL_LAUNCH_PLAN_AR.md
-ARTICLE_13_TARGET = 3      # paid customers needed to trip the commercial gate
+LAUNCH_STATUS = "PARTIAL"
+ARTICLE_13_TARGET = 3      # validation target; never a guarantee or revenue claim
 
 # The 4 pending founder actions (docs/WAVE17_FOUNDER_DAY1_LAUNCH_KIT.md).
 FOUNDER_ACTIONS: list[tuple[str, str]] = [
@@ -78,14 +79,15 @@ FOUNDER_ACTIONS: list[tuple[str, str]] = [
     ("دمج PR الانحدار المعلّق", "Merge the pending regression PR"),
 ]
 
-# The 6-rung offer ladder (docs/DEALIX_BUSINESS_MODEL.md).
+# Compatibility name retained for the renderer/tests. This is the canonical
+# launch path, not a catalogue of public tiers or fixed prices.
 OFFER_LADDER: list[tuple[str, str]] = [
-    ("التشخيص المجاني / Free Diagnostic", "مغناطيس عملاء · 30 دقيقة"),
-    ("Micro Sprint", "499 SAR · إثبات سريع"),
-    ("Data Pack", "1,500 SAR · أصل بيانات لمرة واحدة"),
-    ("Managed Ops", "2,999–4,999 SAR/شهر"),
-    ("Transformation Diagnostic Sprint", "7,500–25,000 SAR · المدخل المدفوع الأساسي"),
-    ("Custom Enterprise System", "25,000–100,000+ SAR"),
+    ("التشخيص المصغّر المجاني / Free Mini Diagnostic", "دخول مجاني · evidence + problem qualification"),
+    ("اكتشاف مؤهل / Qualified Discovery", "تأكيد المشكلة والمالك والبيانات وخط الأساس"),
+    ("عرض خاص بالعميل / Customer-Specific Quote", "سلطة السعر الوحيدة · بعد discovery · لا سعر عام ثابت"),
+    ("Revenue Command Pilot", "30 يومًا · governed delivery · quote-only"),
+    ("دفع مثبت ثم تسليم / Verified Payment → Delivery", "Invoice ≠ Payment · يبدأ المدفوع فقط بعد دليل الدفع"),
+    ("Proof Review", "Customer-validated proof → Stop / Expand / Redesign"),
 ]
 
 OPEN_STATUSES = ("needs_review", "replied", "discovery_booked", "proposal_sent", "negotiating")
@@ -398,14 +400,14 @@ def render_html(
       </table>
     </section>
     <section>
-      <h2>سلّم العروض / Offer ladder</h2>
+      <h2>المسار التجاري / Commercial path</h2>
       {_offer_rows()}
     </section>
   </div>
 </main>
 <footer>
-  Dealix — نظام تشغيل الإيرادات. كل المسودات تنتظر مراجعتك. لا إرسال تلقائي.<br>
-  الـ 11 non-negotiables سارية: الذكاء يصوغ، المؤسس يوافق، النظام يتتبّع.<br>
+  Dealix — Saudi-first AI Business Operating System · Revenue + Proof + Command.<br>
+  كل المسودات تنتظر المراجعة؛ لا إرسال تلقائي ولا سعر عام ثابت.<br>
   Generated offline · {today}
 </footer>
 </body>
@@ -459,7 +461,6 @@ def main() -> int:
     args = ap.parse_args()
 
     if args.dry_run:
-        today = date.today().isoformat()
         log_path, used_template = resolve_log(args.log)
         if used_template:
             print(f"[تنبيه] لا يوجد سجل حقيقي ({args.log}) — استخدمت القالب: {log_path}")
