@@ -8,6 +8,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 CONTRACT = ROOT / "data/ops/founder_command_authority_v1.json"
+UNKNOWN = "UNKNOWN_NOT_EVIDENCE_BACKED"
+VERIFIED = "VERIFIED"
 
 
 class VerificationError(RuntimeError):
@@ -44,7 +46,10 @@ def main() -> int:
         } <= posture,
         "Telegram/OpenClaw posture incomplete",
     )
-    require(command.get("founder_brief_sections") == ["MONEY", "DECISIONS", "RISKS", "APPROVALS", "NEXT_ACTION"], "founder brief drift")
+    require(
+        command.get("founder_brief_sections") == ["MONEY", "DECISIONS", "RISKS", "APPROVALS", "NEXT_ACTION"],
+        "founder brief drift",
+    )
 
     slack = payload.get("optional_channels", {}).get("slack", {})
     require(slack.get("status") == "OPTIONAL_DORMANT_CAPABILITY", "Slack must remain optional/dormant")
@@ -77,24 +82,46 @@ def main() -> int:
     for key in required_effects:
         require(effects[key] is False, f"external effect must default deny: {key}")
 
-    acceptance = payload.get("activation_acceptance", {})
+    requirements = payload.get("activation_requirements", {})
     for key in (
-        "telegram_owner_configured",
-        "telegram_unknown_identity_denied",
-        "telegram_gateway_loopback_only",
-        "telegram_groups_disabled_by_default",
+        "telegram_owner_identity_required",
+        "telegram_unknown_identity_deny_required",
+        "telegram_gateway_loopback_required",
+        "telegram_groups_disabled_by_default_required",
         "openclaw_secretref_audit_required",
         "current_vps_runtime_receipt_required",
     ):
-        require(acceptance.get(key) is True, f"missing Telegram/OpenClaw acceptance: {key}")
-    require(acceptance.get("slack_runtime_receipt_required") is False, "Slack receipt must not gate launch")
-    require(acceptance.get("slack_credentials_required") is False, "Slack credentials must not gate launch")
+        require(requirements.get(key) is True, f"missing Telegram/OpenClaw activation requirement: {key}")
+    require(requirements.get("slack_runtime_receipt_required") is False, "Slack receipt must not gate launch")
+    require(requirements.get("slack_credentials_required") is False, "Slack credentials must not gate launch")
+
+    runtime = payload.get("runtime_evidence", {})
+    runtime_status = runtime.get("status")
+    require(runtime_status in {UNKNOWN, VERIFIED}, "invalid runtime evidence status")
+    evidence_keys = (
+        "telegram_owner_identity",
+        "telegram_unknown_identity_deny",
+        "telegram_gateway_loopback",
+        "telegram_groups_disabled_by_default",
+        "openclaw_secretref_audit",
+    )
+    if runtime_status == UNKNOWN:
+        for key in evidence_keys:
+            require(runtime.get(key) == UNKNOWN, f"unverified runtime field must remain UNKNOWN: {key}")
+        require(runtime.get("receipt_ref") is None, "unknown runtime must not cite a receipt")
+        require(runtime.get("source_sha") is None, "unknown runtime must not claim a source SHA")
+    else:
+        for key in evidence_keys:
+            require(runtime.get(key) == VERIFIED, f"verified runtime missing proof state: {key}")
+        require(bool(runtime.get("receipt_ref")), "verified runtime requires receipt_ref")
+        require(bool(runtime.get("source_sha")), "verified runtime requires source_sha")
 
     truth = payload.get("truth", {})
     require(truth.get("command_message_is_not_execution_proof") is True, "command/proof truth weakened")
     require(truth.get("receipt_required_for_execution_claim") is True, "receipt requirement missing")
     require(truth.get("historical_receipt_is_not_current_runtime_proof") is True, "historical receipt truth weakened")
-    require(truth.get("missing_current_receipt") == "UNKNOWN_NOT_EVIDENCE_BACKED", "unknown semantic drift")
+    require(truth.get("requirements_are_not_runtime_evidence") is True, "requirements/runtime truth weakened")
+    require(truth.get("missing_current_receipt") == UNKNOWN, "unknown semantic drift")
 
     print("FOUNDER_COMMAND_AUTHORITY_V1_PASS")
     return 0
