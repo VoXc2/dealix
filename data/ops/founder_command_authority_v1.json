@@ -60,20 +60,31 @@
     "production_mutation": false,
     "dns_db_secret_mutation": false
   },
-  "activation_acceptance": {
-    "telegram_owner_configured": true,
-    "telegram_unknown_identity_denied": true,
-    "telegram_gateway_loopback_only": true,
-    "telegram_groups_disabled_by_default": true,
+  "activation_requirements": {
+    "telegram_owner_identity_required": true,
+    "telegram_unknown_identity_deny_required": true,
+    "telegram_gateway_loopback_required": true,
+    "telegram_groups_disabled_by_default_required": true,
     "openclaw_secretref_audit_required": true,
     "current_vps_runtime_receipt_required": true,
     "slack_runtime_receipt_required": false,
     "slack_credentials_required": false
   },
+  "runtime_evidence": {
+    "status": "UNKNOWN_NOT_EVIDENCE_BACKED",
+    "telegram_owner_identity": "UNKNOWN_NOT_EVIDENCE_BACKED",
+    "telegram_unknown_identity_deny": "UNKNOWN_NOT_EVIDENCE_BACKED",
+    "telegram_gateway_loopback": "UNKNOWN_NOT_EVIDENCE_BACKED",
+    "telegram_groups_disabled_by_default": "UNKNOWN_NOT_EVIDENCE_BACKED",
+    "openclaw_secretref_audit": "UNKNOWN_NOT_EVIDENCE_BACKED",
+    "receipt_ref": null,
+    "source_sha": null
+  },
   "truth": {
     "command_message_is_not_execution_proof": true,
     "receipt_required_for_execution_claim": true,
     "historical_receipt_is_not_current_runtime_proof": true,
+    "requirements_are_not_runtime_evidence": true,
     "missing_current_receipt": "UNKNOWN_NOT_EVIDENCE_BACKED"
   }
 }
