@@ -1,0 +1,292 @@
+#!/usr/bin/env python3
+"""Verify the Dealix end-to-end company acceptance composition contract."""
+from __future__ import annotations
+
+import importlib
+import json
+import re
+import sys
+from pathlib import Path
+from typing import Any
+
+ROOT = Path(__file__).resolve().parents[2]
+CONTRACT_PATH = ROOT / "data/ops/end_to_end_company_acceptance_v1.json"
+
+EXPECTED_AGENTS = {
+    "dealix-pm",
+    "dealix-sales",
+    "dealix-delivery",
+    "dealix-engineer",
+    "dealix-content",
+}
+EXPECTED_SYSTEMS = {
+    "command_os",
+    "revenue_os",
+    "proof_os",
+    "client_os",
+    "delivery_os",
+    "support_os",
+    "finance_os",
+    "data_os",
+    "governance_os",
+    "academy_os",
+    "partner_os",
+    "venture_os",
+}
+EXPECTED_STAGES = [
+    "MARKET_SIGNAL",
+    "ACCOUNT_RESEARCH",
+    "ELIGIBILITY_IDENTITY_AND_CONSENT",
+    "CONTENT_AND_DEMAND",
+    "REAL_INTERACTION",
+    "QUALIFIED_PROBLEM",
+    "FREE_MINI_DIAGNOSTIC",
+    "QUALIFIED_DISCOVERY",
+    "CUSTOMER_SPECIFIC_QUOTE",
+    "NEGOTIATION_AND_DECISION",
+    "PAYMENT_VERIFICATION",
+    "ONBOARDING",
+    "DELIVERY_PLANNING",
+    "DELIVERY_EXECUTION",
+    "SUPPORT_AND_CUSTOMER_SUCCESS",
+    "PROOF_ACCEPTANCE_AND_HANDOVER",
+    "RENEWAL_EXPANSION_PARTNER_AND_REFERRAL",
+    "LEARNING_AND_PRODUCTIZATION",
+]
+EXPECTED_COMMERCIAL_CHAIN = [
+    "real_interaction",
+    "verified_relationship",
+    "qualified_problem",
+    "free_mini_diagnostic",
+    "qualified_discovery",
+    "customer_specific_quote",
+    "pilot_decision",
+    "pilot_payment_verified",
+    "pilot_delivery",
+    "proof_review",
+    "expansion_or_stop",
+]
+REQUIRED_FORBIDDEN_ACQUISITION = {
+    "scraping",
+    "cold_whatsapp",
+    "mass_linkedin_automation",
+    "identity_deception",
+    "consent_inference_from_public_data",
+}
+REQUIRED_CONNECTORS = {
+    "github",
+    "vps",
+    "railway",
+    "n8n",
+    "gmail",
+    "whatsapp_business",
+    "linkedin",
+    "slack_telegram",
+    "airtable_hubspot",
+    "posthog_sentry_otel_langfuse",
+    "canva_gamma_drive",
+    "apollo_clay_ahrefs",
+    "official_signal_sources",
+}
+REQUIRED_ACCEPTANCE_LEVELS = {
+    "A0_SOURCE_CONSISTENCY",
+    "A1_EXACT_HEAD_INTERNAL_MACHINE",
+    "A2_CHANNEL_AND_FOUNDER_CONTROL",
+    "A3_PRODUCTION_AND_PUBLIC_TRUTH",
+    "A4_CONTROLLED_LIFECYCLE_CANARY",
+    "A5_REAL_COMMERCIAL_PROOF",
+    "A6_REPEATABILITY",
+}
+
+
+def _load(path: Path) -> dict[str, Any]:
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
+def _error(errors: list[str], condition: bool, code: str) -> None:
+    if not condition:
+        errors.append(code)
+
+
+def verify() -> list[str]:
+    errors: list[str] = []
+    _error(errors, CONTRACT_PATH.is_file(), "missing_contract")
+    if errors:
+        return errors
+
+    contract = _load(CONTRACT_PATH)
+    _error(errors, contract.get("schema") == "dealix.end-to-end-company-acceptance.v1", "schema")
+    _error(errors, contract.get("version") == "1.0.0", "version")
+    _error(errors, contract.get("status") == "DRAFT_EXACT_HEAD_ACCEPTANCE_REQUIRED", "status")
+    source_sha = str(contract.get("source_main_sha", ""))
+    _error(errors, bool(re.fullmatch(r"[0-9a-f]{40}", source_sha)), "source_main_sha")
+
+    agents = set(contract.get("canonical_agents") or [])
+    systems = set(contract.get("canonical_systems") or [])
+    _error(errors, agents == EXPECTED_AGENTS, "canonical_agents")
+    _error(errors, systems == EXPECTED_SYSTEMS, "canonical_systems")
+
+    composition = contract.get("composition_only") or {}
+    _error(errors, bool(composition), "composition_only_missing")
+    for key, value in composition.items():
+        _error(errors, value is False, f"parallel_or_new_owner_enabled:{key}")
+
+    founder = contract.get("founder_attention_model") or {}
+    _error(errors, founder.get("automatic_levels") == ["L0", "L1", "L2", "L3", "L4"], "automatic_levels")
+    _error(errors, founder.get("external_level") == "L5_ACTION_BOUND", "external_level")
+    _error(errors, founder.get("may_self_grant_external_authority") is False, "self_grant_external_authority")
+
+    voice = contract.get("founder_voice_policy") or {}
+    _error(errors, voice.get("drafting_from_approved_style_profile") is True, "voice_drafting")
+    for key in (
+        "may_claim_human_founder_identity",
+        "may_fabricate_personal_experience",
+        "may_fabricate_relationship_or_memory",
+        "may_hide_material_automation",
+    ):
+        _error(errors, voice.get(key) is False, f"voice_policy:{key}")
+    _error(
+        errors,
+        voice.get("external_identity") == "AUTHORIZED_DEALIX_AI_OR_TEAM_REPRESENTATIVE_DISCLOSURE_REQUIRED",
+        "external_identity",
+    )
+
+    acquisition = contract.get("lead_acquisition_policy") or {}
+    forbidden = set(acquisition.get("forbidden") or [])
+    _error(errors, REQUIRED_FORBIDDEN_ACQUISITION <= forbidden, "lead_acquisition_forbidden_set")
+    _error(errors, bool(acquisition.get("promotion_requirements")), "lead_promotion_requirements")
+
+    connectors = contract.get("connector_control_plane") or []
+    connector_ids = [row.get("id") for row in connectors]
+    _error(errors, len(connector_ids) == len(set(connector_ids)), "duplicate_connector")
+    _error(errors, REQUIRED_CONNECTORS <= set(connector_ids), "required_connectors")
+    for row in connectors:
+        cid = row.get("id", "unknown")
+        _error(errors, row.get("owner") in EXPECTED_AGENTS, f"connector_owner:{cid}")
+        _error(errors, bool(row.get("role")), f"connector_role:{cid}")
+        _error(errors, bool(row.get("write_ceiling")), f"connector_write_ceiling:{cid}")
+
+    lifecycle = contract.get("client_lifecycle") or []
+    stage_names = [row.get("stage") for row in lifecycle]
+    orders = [row.get("order") for row in lifecycle]
+    _error(errors, stage_names == EXPECTED_STAGES, "lifecycle_stage_order")
+    _error(errors, orders == list(range(1, len(EXPECTED_STAGES) + 1)), "lifecycle_order")
+    covered_systems: set[str] = set()
+    covered_owners: set[str] = set()
+    for row in lifecycle:
+        stage = row.get("stage", "unknown")
+        owner = row.get("owner")
+        stage_systems = set(row.get("systems") or [])
+        covered_owners.add(owner)
+        covered_systems.update(stage_systems)
+        _error(errors, owner in EXPECTED_AGENTS, f"lifecycle_owner:{stage}")
+        _error(errors, stage_systems <= EXPECTED_SYSTEMS, f"lifecycle_system:{stage}")
+        _error(errors, bool(row.get("required_evidence")), f"lifecycle_evidence:{stage}")
+        _error(errors, bool(row.get("outputs")), f"lifecycle_outputs:{stage}")
+        _error(errors, bool(row.get("automation_default")), f"lifecycle_automation:{stage}")
+        _error(errors, bool(row.get("external_effect_class")), f"lifecycle_effect:{stage}")
+    _error(errors, covered_systems == EXPECTED_SYSTEMS, "system_coverage")
+    _error(errors, covered_owners == EXPECTED_AGENTS, "agent_owner_coverage")
+
+    receipts = set(contract.get("universal_work_receipt_required") or [])
+    for field in {
+        "workload_id",
+        "system_id",
+        "agent_owner",
+        "tenant_or_company_scope",
+        "source_sha",
+        "input_evidence_refs",
+        "authority_class",
+        "result",
+        "output_evidence_refs",
+        "idempotency_key",
+        "rollback_or_safe_failure",
+        "founder_minutes",
+        "agent_minutes",
+        "ai_cost",
+        "tool_cost",
+        "risk",
+        "economic_delta",
+        "learning_signal",
+    }:
+        _error(errors, field in receipts, f"receipt_field:{field}")
+
+    acceptance = contract.get("acceptance_levels") or []
+    acceptance_ids = [row.get("id") for row in acceptance]
+    _error(errors, len(acceptance_ids) == len(set(acceptance_ids)), "duplicate_acceptance_level")
+    _error(errors, set(acceptance_ids) == REQUIRED_ACCEPTANCE_LEVELS, "acceptance_levels")
+    for row in acceptance:
+        aid = row.get("id", "unknown")
+        _error(errors, bool(row.get("result_required")), f"acceptance_result:{aid}")
+        _error(errors, bool(row.get("evidence")), f"acceptance_evidence:{aid}")
+
+    contract_paths = contract.get("canonical_contracts") or {}
+    for name, rel in contract_paths.items():
+        _error(errors, (ROOT / rel).is_file(), f"canonical_contract_missing:{name}:{rel}")
+
+    machine = _load(ROOT / contract_paths["company_machine"])
+    _error(errors, set(machine.get("agent_roster") or {}) == EXPECTED_AGENTS, "machine_agents")
+    _error(errors, {row.get("id") for row in machine.get("systems") or []} == EXPECTED_SYSTEMS, "machine_systems")
+    machine_effects = machine.get("external_effect_defaults") or {}
+    _error(errors, all(value is False for value in machine_effects.values()), "machine_external_effect_defaults")
+
+    continuous = _load(ROOT / contract_paths["continuous_operations"])
+    _error(errors, set(continuous.get("canonical_workers") or []) == EXPECTED_AGENTS, "continuous_workers")
+    runtime_ownership = continuous.get("runtime_ownership") or {}
+    for key in (
+        "new_scheduler_allowed",
+        "new_timer_allowed",
+        "new_permanent_agent_allowed",
+        "new_company_os_allowed",
+        "new_truth_store_allowed",
+    ):
+        _error(errors, runtime_ownership.get(key) is False, f"continuous_runtime:{key}")
+
+    channel = _load(ROOT / contract_paths["channel_runtime"])
+    service_model = channel.get("service_model") or {}
+    _error(errors, set(service_model.get("canonical_agents") or []) == EXPECTED_AGENTS, "channel_agents")
+    channel_effects = channel.get("global_external_effects_default") or {}
+    _error(errors, all(value is False for value in channel_effects.values()), "channel_external_effect_defaults")
+    _error(errors, (channel.get("slack_founder_bridge") or {}).get("arbitrary_shell") is False, "slack_arbitrary_shell")
+
+    sys.path.insert(0, str(ROOT))
+    operating = importlib.import_module("auto_client_acquisition.orchestrator.operating_company_contract")
+    _error(errors, list(operating.CANONICAL_COMMERCIAL_CHAIN) == EXPECTED_COMMERCIAL_CHAIN, "operating_commercial_chain")
+    built = operating.build_operating_company_contract()
+    summary = built.to_summary()
+    _error(errors, summary.get("agents_total", 0) >= 5, "operating_agents")
+    _error(errors, summary.get("loops_total", 0) >= 7, "operating_loops")
+
+    activation = contract.get("activation_state") or {}
+    _error(
+        errors,
+        activation.get("external_customer_autonomy") == "PREPARED_NOT_GLOBALLY_ACTIVATED",
+        "external_customer_autonomy_state",
+    )
+    _error(
+        errors,
+        activation.get("full_commercial_proof") == "BLOCKED_UNTIL_A5_REAL_COMMERCIAL_PROOF",
+        "full_commercial_proof_state",
+    )
+    return errors
+
+
+def main() -> int:
+    errors = verify()
+    if errors:
+        print("DEALIX_END_TO_END_COMPANY_ACCEPTANCE_V1=FAIL")
+        for error in errors:
+            print(f"- {error}")
+        return 1
+    print("DEALIX_END_TO_END_COMPANY_ACCEPTANCE_V1=PASS")
+    print("agents=5")
+    print("systems=12")
+    print("lifecycle_stages=18")
+    print("internal_autonomy=L0-L4")
+    print("external_authority=L5_ACTION_BOUND")
+    print("founder_voice=AUTHORIZED_REPRESENTATIVE_NO_IMPERSONATION")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
