@@ -4,76 +4,8 @@ umask 077
 
 ROOT="$(git rev-parse --show-toplevel)"
 EXPECTED_SHA="${1:-}"
-ACTUAL_SHA="$(git -C "$ROOT" rev-parse HEAD)"
-RUN_USER="dealix"
-OPENCLAW_HOME="/home/${RUN_USER}/.openclaw"
-OPENCLAW_BIN="${OPENCLAW_HOME}/bin/openclaw"
-CONFIG="${OPENCLAW_HOME}/openclaw.json"
-PROOF_ROOT="${DEALIX_FOUNDER_COMMAND_PROOF_ROOT:-/opt/dealix/control/proof/founder-command/${ACTUAL_SHA}}"
 
-if [[ -z "$EXPECTED_SHA" ]]; then
-  echo "DEALIX_FOUNDER_COMMAND_ACCEPTANCE=BLOCKED_EXPECTED_SHA_REQUIRED"
-  exit 2
-fi
-
-if [[ "$ACTUAL_SHA" != "$EXPECTED_SHA" ]]; then
-  echo "DEALIX_FOUNDER_COMMAND_ACCEPTANCE=BLOCKED_HEAD_MISMATCH"
-  echo "expected=$EXPECTED_SHA"
-  echo "actual=$ACTUAL_SHA"
-  exit 2
-fi
-
-if [[ "$(id -u)" -ne 0 ]]; then
-  echo "DEALIX_FOUNDER_COMMAND_ACCEPTANCE=BLOCKED_ROOT_REQUIRED_FOR_READ_ONLY_RUNTIME_EVIDENCE"
-  exit 3
-fi
-
-mkdir -p "$PROOF_ROOT"
-chmod 0700 "$PROOF_ROOT"
-
-export DEALIX_EXTERNAL_SEND=0
-export DEALIX_EMAIL_LIVE_SEND=0
-export DEALIX_WHATSAPP_OUTBOUND=0
-export DEALIX_PUBLIC_PUBLISH=0
-export DEALIX_PAID_SPEND=0
-export DEALIX_PAYMENT_EXECUTION=0
-export DEALIX_PRODUCTION_MUTATION=0
-export DEALIX_DNS_MUTATION=0
-export DEALIX_DB_MUTATION=0
-export DEALIX_SECRET_MUTATION=0
-export DEALIX_IDENTITY_MUTATION=0
-export DEALIX_AGENT_SELF_AUTHORITY=0
-export DEALIX_AUTONOMY_LEVEL=4
-export DEALIX_MODE=draft-only
-
-# OpenClaw may use a private bundled Node runtime that is absent from the login
-# shell PATH. Discover it read-only; never install or mutate runtime state here.
-OPENCLAW_NODE_DIR="${DEALIX_OPENCLAW_NODE_DIR:-}"
-if [[ -z "$OPENCLAW_NODE_DIR" && -d "$OPENCLAW_HOME/tools" ]]; then
-  OPENCLAW_NODE_DIR="$(
-    find "$OPENCLAW_HOME/tools" -maxdepth 3 -type f -name node -path '*/bin/node' -perm -111 -printf '%h\n' 2>/dev/null \
-      | sort -V \
-      | tail -1
-  )"
-fi
-OPENCLAW_PATH="${OPENCLAW_NODE_DIR}:${OPENCLAW_HOME}/bin:/home/${RUN_USER}/.local/bin:/usr/local/bin:/usr/bin:/bin"
-
-oc() {
-  sudo -iu "$RUN_USER" env \
-    HOME="/home/${RUN_USER}" \
-    PATH="$OPENCLAW_PATH" \
-    "$OPENCLAW_BIN" "$@"
-}
-
-BINARY_OK=0
-NODE_OK=0
-CONFIG_PRESENT=0
-[[ -x "$OPENCLAW_BIN" ]] && BINARY_OK=1
-[[ -n "$OPENCLAW_NODE_DIR" && -x "$OPENCLAW_NODE_DIR/node" ]] && NODE_OK=1
-[[ -f "$CONFIG" && ! -L "$CONFIG" ]] && CONFIG_PRESENT=1
-
-CONFIG_EVIDENCE="$({
-  /usr/bin/python3 - "$CONFIG" "$OPENCLAW_HOME" "$RUN_USER" <<'PY'
+exec /usr/bin/python3 - "$ROOT" "$EXPECTED_SHA" <<'PY'
 from __future__ import annotations
 
 import hashlib
@@ -83,392 +15,487 @@ import pwd
 import re
 import sqlite3
 import stat
+import subprocess
 import sys
 from pathlib import Path
 from typing import Any
 
-config_path = Path(sys.argv[1])
-home = Path(sys.argv[2])
-run_user = sys.argv[3]
-
-result: dict[str, Any] = {
-    "config_safety_ok": False,
-    "owner_identity_proven": False,
-    "dm_access_proven": False,
-    "secret_reference_ok": False,
-    "owner_fingerprint": None,
-    "issues": [],
-}
-issues: list[str] = result["issues"]
-
-try:
-    run_uid = pwd.getpwnam(run_user).pw_uid
-except KeyError:
-    issues.append("dealix_user_missing")
-    print(json.dumps(result, sort_keys=True))
-    raise SystemExit(0)
-
-if not config_path.is_file() or config_path.is_symlink():
-    issues.append("openclaw_config_missing_or_symlink")
-    print(json.dumps(result, sort_keys=True))
-    raise SystemExit(0)
-
-st = config_path.stat()
-if stat.S_IMODE(st.st_mode) & 0o077:
-    issues.append("openclaw_config_permissions_too_broad")
-
-try:
-    cfg = json.loads(config_path.read_text(encoding="utf-8"))
-except Exception:
-    issues.append("openclaw_config_invalid_json")
-    print(json.dumps(result, sort_keys=True))
-    raise SystemExit(0)
+ROOT = Path(sys.argv[1])
+EXPECTED_SHA = sys.argv[2]
+RUN_USER = "dealix"
+OPENCLAW_HOME = Path(f"/home/{RUN_USER}/.openclaw")
+OPENCLAW_BIN = OPENCLAW_HOME / "bin/openclaw"
+CONFIG = OPENCLAW_HOME / "openclaw.json"
 
 
-def get_path(obj: Any, *keys: str, default: Any = None) -> Any:
-    cur = obj
-    for key in keys:
-        if not isinstance(cur, dict) or key not in cur:
-            return default
-        cur = cur[key]
-    return cur
+def run(argv: list[str], *, cwd: Path | None = None, capture: bool = False) -> subprocess.CompletedProcess[str]:
+    return subprocess.run(
+        argv,
+        cwd=cwd,
+        text=True,
+        stdout=subprocess.PIPE if capture else subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+        check=False,
+    )
 
 
-def strings(value: Any) -> list[str]:
-    out: list[str] = []
+def normalize_sender(value: object) -> str | None:
+    text = str(value).strip()
+    match = re.fullmatch(r"(?:telegram:|tg:)?([0-9]{4,20})", text, flags=re.IGNORECASE)
+    return match.group(1) if match else None
+
+
+def recursive_values(value: Any) -> list[str]:
     if isinstance(value, str):
-        out.append(value)
-    elif isinstance(value, (int, float)) and not isinstance(value, bool):
-        out.append(str(value))
-    elif isinstance(value, list):
+        return [value]
+    if isinstance(value, (int, float)) and not isinstance(value, bool):
+        return [str(value)]
+    if isinstance(value, list):
+        out: list[str] = []
         for item in value:
-            out.extend(strings(item))
-    elif isinstance(value, dict):
+            out.extend(recursive_values(item))
+        return out
+    if isinstance(value, dict):
+        out = []
         for item in value.values():
-            out.extend(strings(item))
-    return out
+            out.extend(recursive_values(item))
+        return out
+    return []
 
 
-def normalize_sender(value: str) -> str | None:
-    value = value.strip()
-    m = re.fullmatch(r"(?:telegram:|tg:)?([0-9]{4,20})", value, flags=re.IGNORECASE)
-    return m.group(1) if m else None
+def exact_mode(path: Path, mode: int) -> bool:
+    return path.is_file() and not path.is_symlink() and stat.S_IMODE(path.stat().st_mode) == mode
 
-# Core gateway posture.
-if get_path(cfg, "gateway", "mode") != "local":
-    issues.append("gateway_mode_not_local")
-if get_path(cfg, "gateway", "bind") != "loopback":
-    issues.append("gateway_bind_not_loopback")
-if int(get_path(cfg, "gateway", "port", default=0) or 0) != 18789:
-    issues.append("gateway_port_not_18789")
 
-telegram = get_path(cfg, "channels", "telegram", default={})
+def safe_owner_fingerprint(owner_id: str | None) -> str | None:
+    if not owner_id:
+        return None
+    digest = hashlib.sha256(f"telegram:{owner_id}".encode("utf-8")).hexdigest()[:20]
+    return f"sha256:{digest}"
+
+
+def write_receipt(path: Path, payload: dict[str, Any]) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True, mode=0o700)
+    os.chmod(path.parent, 0o700)
+    path.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    os.chmod(path, 0o600)
+    digest = hashlib.sha256(path.read_bytes()).hexdigest()
+    digest_path = path.with_suffix(".sha256")
+    digest_path.write_text(f"{digest}  {path.name}\n", encoding="utf-8")
+    os.chmod(digest_path, 0o600)
+
+
+if not EXPECTED_SHA:
+    print("DEALIX_FOUNDER_COMMAND_ACCEPTANCE=BLOCKED_EXPECTED_SHA_REQUIRED")
+    raise SystemExit(2)
+
+head = run(["git", "rev-parse", "HEAD"], cwd=ROOT, capture=True).stdout.strip()
+if head != EXPECTED_SHA:
+    print("DEALIX_FOUNDER_COMMAND_ACCEPTANCE=BLOCKED_HEAD_MISMATCH")
+    print(f"expected={EXPECTED_SHA}")
+    print(f"actual={head or 'unknown'}")
+    raise SystemExit(2)
+
+if os.geteuid() != 0:
+    print("DEALIX_FOUNDER_COMMAND_ACCEPTANCE=BLOCKED_ROOT_REQUIRED_FOR_READ_ONLY_RUNTIME_EVIDENCE")
+    raise SystemExit(3)
+
+proof_root = Path(
+    os.environ.get(
+        "DEALIX_FOUNDER_COMMAND_PROOF_ROOT",
+        f"/opt/dealix/control/proof/founder-command/{head}",
+    )
+)
+receipt_path = proof_root / "receipt.json"
+
+# Preserve the Company Machine's fail-closed external-effect posture for the
+# acceptance process itself. These variables do not mutate OpenClaw config.
+os.environ.update(
+    {
+        "DEALIX_EXTERNAL_SEND": "0",
+        "DEALIX_EMAIL_LIVE_SEND": "0",
+        "DEALIX_WHATSAPP_OUTBOUND": "0",
+        "DEALIX_PUBLIC_PUBLISH": "0",
+        "DEALIX_PAID_SPEND": "0",
+        "DEALIX_PAYMENT_EXECUTION": "0",
+        "DEALIX_PRODUCTION_MUTATION": "0",
+        "DEALIX_DNS_MUTATION": "0",
+        "DEALIX_DB_MUTATION": "0",
+        "DEALIX_SECRET_MUTATION": "0",
+        "DEALIX_IDENTITY_MUTATION": "0",
+        "DEALIX_AGENT_SELF_AUTHORITY": "0",
+        "DEALIX_AUTONOMY_LEVEL": "4",
+        "DEALIX_MODE": "draft-only",
+    }
+)
+
+safety_issues: list[str] = []
+hold_reasons: list[str] = []
+checks: dict[str, bool] = {}
+owner_id: str | None = None
+owner_fp: str | None = None
+approved_ids: set[str] = set()
+
+try:
+    dealix_uid = pwd.getpwnam(RUN_USER).pw_uid
+except KeyError:
+    dealix_uid = -1
+    hold_reasons.append("dealix_runtime_user_missing")
+
+checks["openclaw_binary"] = OPENCLAW_BIN.is_file() and os.access(OPENCLAW_BIN, os.X_OK)
+if not checks["openclaw_binary"]:
+    hold_reasons.append("openclaw_binary_missing")
+
+# Resolve the bundled Node runtime without installation or PATH mutation on disk.
+node_candidates = [
+    path
+    for path in OPENCLAW_HOME.glob("tools/**/bin/node")
+    if path.is_file() and os.access(path, os.X_OK)
+]
+node_candidates.sort(key=lambda path: str(path))
+node_dir = node_candidates[-1].parent if node_candidates else None
+checks["bundled_node_runtime"] = node_dir is not None
+if node_dir is None:
+    hold_reasons.append("openclaw_bundled_node_runtime_missing")
+
+checks["openclaw_config_regular_0600"] = exact_mode(CONFIG, 0o600)
+if not CONFIG.is_file() or CONFIG.is_symlink():
+    hold_reasons.append("openclaw_config_missing_or_symlink")
+elif not checks["openclaw_config_regular_0600"]:
+    safety_issues.append("openclaw_config_permissions_not_0600")
+
+config: dict[str, Any] = {}
+if CONFIG.is_file() and not CONFIG.is_symlink():
+    try:
+        loaded = json.loads(CONFIG.read_text(encoding="utf-8"))
+        if isinstance(loaded, dict):
+            config = loaded
+        else:
+            safety_issues.append("openclaw_config_not_object")
+    except Exception:
+        safety_issues.append("openclaw_config_invalid_json")
+
+
+def get_path(*keys: str, default: Any = None) -> Any:
+    current: Any = config
+    for key in keys:
+        if not isinstance(current, dict) or key not in current:
+            return default
+        current = current[key]
+    return current
+
+
+checks["gateway_config_loopback"] = (
+    get_path("gateway", "mode") == "local"
+    and get_path("gateway", "bind") == "loopback"
+    and int(get_path("gateway", "port", default=0) or 0) == 18789
+)
+if config and not checks["gateway_config_loopback"]:
+    safety_issues.append("gateway_config_not_local_loopback_18789")
+
+telegram = get_path("channels", "telegram", default={})
 if not isinstance(telegram, dict):
     telegram = {}
-    issues.append("telegram_config_missing")
-if telegram.get("enabled") is not True:
-    issues.append("telegram_not_enabled")
-if telegram.get("dmPolicy") != "pairing":
-    issues.append("telegram_dm_policy_not_pairing")
-if telegram.get("groups", {}) != {}:
-    issues.append("telegram_groups_not_empty")
-if telegram.get("groupAllowFrom", []) not in ([], None):
-    issues.append("telegram_group_allow_from_not_empty")
 
-allow_from_raw = strings(telegram.get("allowFrom", []))
-if any(item.strip() == "*" for item in allow_from_raw):
-    issues.append("telegram_dm_wildcard_present")
-explicit_dm_ids = {norm for item in allow_from_raw if (norm := normalize_sender(item))}
+checks["telegram_enabled"] = telegram.get("enabled") is True
+if config and not checks["telegram_enabled"]:
+    hold_reasons.append("telegram_channel_not_enabled")
 
-# Secret-bearing Telegram credential must be referenced through a private file.
-if telegram.get("botToken") not in (None, ""):
-    issues.append("telegram_inline_bot_token_present")
-token_file_raw = telegram.get("tokenFile")
-if not isinstance(token_file_raw, str) or not token_file_raw.startswith("/"):
-    issues.append("telegram_token_file_missing_or_not_absolute")
-else:
-    token_file = Path(token_file_raw)
-    allowed_secret_root = Path(f"/home/{run_user}/.config/dealix-secrets")
+checks["telegram_dm_pairing"] = telegram.get("dmPolicy") == "pairing"
+if config and not checks["telegram_dm_pairing"]:
+    safety_issues.append("telegram_dm_policy_not_pairing")
+
+checks["telegram_groups_disabled"] = (
+    telegram.get("groups", {}) == {}
+    and telegram.get("groupAllowFrom", []) in ([], None)
+)
+if config and not checks["telegram_groups_disabled"]:
+    safety_issues.append("telegram_groups_or_group_senders_enabled")
+
+explicit_allow_values = recursive_values(telegram.get("allowFrom", []))
+if any(value.strip() == "*" for value in explicit_allow_values):
+    safety_issues.append("telegram_dm_wildcard_present")
+explicit_allow_ids = {
+    normalized
+    for value in explicit_allow_values
+    if (normalized := normalize_sender(value)) is not None
+}
+approved_ids.update(explicit_allow_ids)
+
+# Telegram credential must live outside source/config as a private file. Never
+# read or print the secret value.
+inline_token = telegram.get("botToken")
+if inline_token not in (None, ""):
+    safety_issues.append("telegram_inline_bot_token_present")
+
+token_file_value = telegram.get("tokenFile")
+checks["telegram_secret_file_private"] = False
+if isinstance(token_file_value, str) and token_file_value.startswith("/"):
+    token_file = Path(token_file_value)
+    secret_root = Path(f"/home/{RUN_USER}/.config/dealix-secrets")
     try:
-        token_file.relative_to(allowed_secret_root)
+        token_file.relative_to(secret_root)
+        inside_secret_root = True
     except ValueError:
-        issues.append("telegram_token_file_outside_dealix_secret_root")
-    if not token_file.is_file() or token_file.is_symlink():
-        issues.append("telegram_token_file_missing_or_symlink")
+        inside_secret_root = False
+    if not inside_secret_root:
+        safety_issues.append("telegram_token_file_outside_dealix_secret_root")
+    elif not token_file.is_file() or token_file.is_symlink():
+        hold_reasons.append("telegram_token_file_missing_or_symlink")
     else:
         token_stat = token_file.stat()
-        if token_stat.st_uid != run_uid:
-            issues.append("telegram_token_file_wrong_owner")
+        if token_stat.st_uid != dealix_uid:
+            safety_issues.append("telegram_token_file_wrong_owner")
         if stat.S_IMODE(token_stat.st_mode) != 0o600:
-            issues.append("telegram_token_file_permissions_not_0600")
-        if not issues or not any(code.startswith("telegram_token_file_") for code in issues):
-            result["secret_reference_ok"] = True
+            safety_issues.append("telegram_token_file_permissions_not_0600")
+        checks["telegram_secret_file_private"] = (
+            token_stat.st_uid == dealix_uid and stat.S_IMODE(token_stat.st_mode) == 0o600
+        )
+else:
+    hold_reasons.append("telegram_token_file_reference_missing")
 
-# Owner-only privileged command identity must be exactly one Telegram numeric ID.
-owner_values = strings(get_path(cfg, "commands", "ownerAllowFrom", default=[]))
-owner_ids: list[str] = []
+# Founder command owner must be exactly one Telegram numeric identity. The raw
+# ID never leaves memory; the durable receipt stores a one-way fingerprint.
+owner_values = recursive_values(get_path("commands", "ownerAllowFrom", default=[]))
+valid_owner_ids: list[str] = []
+invalid_owner_entries = False
 for value in owner_values:
     match = re.fullmatch(r"telegram:([0-9]{4,20})", value.strip(), flags=re.IGNORECASE)
     if match:
-        owner_ids.append(match.group(1))
+        valid_owner_ids.append(match.group(1))
     else:
-        issues.append("non_telegram_or_invalid_command_owner")
-owner_ids = sorted(set(owner_ids))
-if len(owner_ids) != 1:
-    issues.append("exactly_one_telegram_command_owner_required")
-    owner_id = None
+        invalid_owner_entries = True
+if invalid_owner_entries or len(set(valid_owner_ids)) > 1:
+    safety_issues.append("command_owner_not_exactly_one_telegram_identity")
+elif len(set(valid_owner_ids)) == 1:
+    owner_id = next(iter(set(valid_owner_ids)))
+    owner_fp = safe_owner_fingerprint(owner_id)
 else:
-    owner_id = owner_ids[0]
-    result["owner_identity_proven"] = True
-    result["owner_fingerprint"] = "sha256:" + hashlib.sha256(
-        f"telegram:{owner_id}".encode("utf-8")
-    ).hexdigest()[:20]
+    hold_reasons.append("telegram_command_owner_not_configured")
+checks["exact_telegram_command_owner"] = owner_id is not None
 
-# commands.allowFrom, when present in this OpenClaw generation, is a separate
-# command authorization boundary. It must never contain a wildcard. If Telegram
-# has an explicit command allowlist, it must contain only the exact owner.
-command_allow = get_path(cfg, "commands", "allowFrom", default=None)
+# In OpenClaw 2026.7.x commands.allowFrom is an independent authorization
+# boundary when present. For a one-founder command surface it may be absent, or
+# it may contain only the exact Telegram owner. Global/provider-spanning rules
+# fail closed.
+command_allow = get_path("commands", "allowFrom", default=None)
+checks["command_allowlist_narrow"] = True
 if command_allow is not None:
-    if any(value.strip() == "*" for value in strings(command_allow)):
-        issues.append("command_allow_from_wildcard_present")
-    if isinstance(command_allow, dict) and owner_id:
-        telegram_cmd = command_allow.get("telegram")
-        if telegram_cmd is not None:
-            command_ids = {norm for item in strings(telegram_cmd) if (norm := normalize_sender(item))}
-            if command_ids != {owner_id}:
-                issues.append("telegram_command_allowlist_not_exact_owner")
+    if not isinstance(command_allow, dict):
+        safety_issues.append("commands_allow_from_not_object")
+        checks["command_allowlist_narrow"] = False
+    else:
+        if set(command_allow) - {"telegram"}:
+            safety_issues.append("commands_allow_from_has_non_telegram_scope")
+            checks["command_allowlist_narrow"] = False
+        telegram_command_values = recursive_values(command_allow.get("telegram", []))
+        if any(value.strip() == "*" for value in telegram_command_values):
+            safety_issues.append("commands_allow_from_wildcard_present")
+            checks["command_allowlist_narrow"] = False
+        command_ids = {
+            normalized
+            for value in telegram_command_values
+            if (normalized := normalize_sender(value)) is not None
+        }
+        if owner_id and command_ids != {owner_id}:
+            safety_issues.append("commands_allow_from_not_exact_founder")
+            checks["command_allowlist_narrow"] = False
+        elif not owner_id and command_ids:
+            safety_issues.append("commands_allow_from_exists_without_exact_owner")
+            checks["command_allowlist_narrow"] = False
 
-# Tool surface must remain messaging-only and explicitly deny runtime/fs writes.
-tools = get_path(cfg, "tools", default={})
+# The Telegram-facing agent is messaging-only; runtime/filesystem/shell mutation
+# must remain denied regardless of founder identity.
+tools = get_path("tools", default={})
 if not isinstance(tools, dict):
     tools = {}
-if tools.get("profile") != "messaging":
-    issues.append("tools_profile_not_messaging")
 required_denies = {"group:runtime", "group:fs", "exec", "process", "write", "edit", "apply_patch"}
-deny_values = set(strings(tools.get("deny", [])))
-if not required_denies <= deny_values:
-    issues.append("required_tool_denies_missing")
-elevated_enabled = get_path(cfg, "tools", "elevated", "enabled", default=False)
-if elevated_enabled is True:
-    issues.append("elevated_tools_enabled")
+tool_denies = set(recursive_values(tools.get("deny", [])))
+checks["tool_surface_bounded"] = (
+    tools.get("profile") == "messaging"
+    and required_denies <= tool_denies
+    and get_path("tools", "elevated", "enabled", default=False) is not True
+)
+if config and not checks["tool_surface_bounded"]:
+    safety_issues.append("openclaw_tool_surface_not_bounded")
 
-# Verify the owner has actual DM admission evidence. OpenClaw 2026.7.1-2 uses
-# credential allowFrom files; newer installations may migrate this state to
-# SQLite. Read both forms without exposing the sender ID.
-approved_ids: set[str] = set(explicit_dm_ids)
-credentials = home / "credentials"
-if credentials.is_dir():
-    for path in credentials.glob("telegram*-allowFrom.json"):
+# OpenClaw 2026.7.1-2 stores DM pairing approvals under credentials/*. Newer
+# builds may migrate them to SQLite; inspect both forms read-only. The expected
+# payload is {"version":1,"allowFrom":["<sender>"]}; only allowFrom values are
+# parsed so timestamps/codes can never be mistaken for identities.
+pairing_state_readable = True
+credentials_dir = OPENCLAW_HOME / "credentials"
+if credentials_dir.is_dir():
+    for path in credentials_dir.glob("telegram*-allowFrom.json"):
+        if not path.is_file() or path.is_symlink():
+            continue
         try:
-            if path.is_file() and not path.is_symlink():
-                payload = json.loads(path.read_text(encoding="utf-8"))
-                for value in strings(payload):
-                    if norm := normalize_sender(value):
-                        approved_ids.add(norm)
+            payload = json.loads(path.read_text(encoding="utf-8"))
+            allow_values = payload.get("allowFrom", []) if isinstance(payload, dict) else payload
+            for value in recursive_values(allow_values):
+                if (normalized := normalize_sender(value)) is not None:
+                    approved_ids.add(normalized)
         except Exception:
-            issues.append("telegram_pairing_store_unreadable")
+            pairing_state_readable = False
 
-state_db = home / "state/openclaw.sqlite"
+state_db = OPENCLAW_HOME / "state/openclaw.sqlite"
 if state_db.is_file() and not state_db.is_symlink():
     try:
         conn = sqlite3.connect(f"file:{state_db}?mode=ro", uri=True)
         try:
-            exists = conn.execute(
+            has_table = conn.execute(
                 "SELECT 1 FROM sqlite_master WHERE type='table' AND name='channel_pairing_allow_entries'"
             ).fetchone()
-            if exists:
-                rows = conn.execute(
+            if has_table:
+                for (entry,) in conn.execute(
                     "SELECT entry FROM channel_pairing_allow_entries WHERE lower(channel_key)='telegram'"
-                ).fetchall()
-                for (entry,) in rows:
-                    if norm := normalize_sender(str(entry)):
-                        approved_ids.add(norm)
+                ).fetchall():
+                    if (normalized := normalize_sender(entry)) is not None:
+                        approved_ids.add(normalized)
         finally:
             conn.close()
     except Exception:
-        issues.append("telegram_pairing_state_db_unreadable")
+        pairing_state_readable = False
 
-if owner_id and owner_id in approved_ids:
-    result["dm_access_proven"] = True
-else:
-    issues.append("telegram_owner_not_found_in_dm_admission_state")
+checks["pairing_state_readable"] = pairing_state_readable
+if not pairing_state_readable:
+    hold_reasons.append("telegram_pairing_state_unreadable")
 
-# Safety posture excludes owner/pairing availability and secret-file presence;
-# those are acceptance prerequisites that should HOLD rather than falsely PASS.
-safety_issue_prefixes = (
-    "gateway_",
-    "telegram_dm_policy_",
-    "telegram_groups_",
-    "telegram_group_allow_",
-    "telegram_dm_wildcard_",
-    "telegram_inline_",
-    "command_allow_",
-    "telegram_command_allowlist_",
-    "tools_profile_",
-    "required_tool_denies_",
-    "elevated_tools_",
-    "non_telegram_or_invalid_command_owner",
+checks["owner_has_dm_admission"] = owner_id is not None and owner_id in approved_ids
+if owner_id and not checks["owner_has_dm_admission"]:
+    hold_reasons.append("telegram_owner_not_in_dm_admission_state")
+
+checks["dm_admission_exact_owner_only"] = owner_id is not None and approved_ids == {owner_id}
+if owner_id and approved_ids - {owner_id}:
+    safety_issues.append("telegram_dm_admission_contains_non_owner")
+
+# Runtime probes are read-only: no config set, install, restart, repair, approval,
+# publish, send, merge, payment, or production mutation is invoked.
+version = "unknown"
+node_path = str(node_dir) if node_dir else ""
+openclaw_path = ":".join(
+    [node_path, str(OPENCLAW_HOME / "bin"), f"/home/{RUN_USER}/.local/bin", "/usr/local/bin", "/usr/bin", "/bin"]
 )
-result["config_safety_ok"] = not any(issue.startswith(safety_issue_prefixes) for issue in issues)
 
-print(json.dumps(result, sort_keys=True))
-PY
-} 2>/dev/null)"
+def oc_args(*args: str) -> list[str]:
+    return [
+        "sudo",
+        "-iu",
+        RUN_USER,
+        "env",
+        f"HOME=/home/{RUN_USER}",
+        f"PATH={openclaw_path}",
+        str(OPENCLAW_BIN),
+        *args,
+    ]
 
-CONFIG_SAFETY_OK="$(/usr/bin/python3 -c 'import json,sys; print(1 if json.loads(sys.argv[1]).get("config_safety_ok") else 0)' "$CONFIG_EVIDENCE")"
-OWNER_PROVEN="$(/usr/bin/python3 -c 'import json,sys; print(1 if json.loads(sys.argv[1]).get("owner_identity_proven") else 0)' "$CONFIG_EVIDENCE")"
-DM_ACCESS_PROVEN="$(/usr/bin/python3 -c 'import json,sys; print(1 if json.loads(sys.argv[1]).get("dm_access_proven") else 0)' "$CONFIG_EVIDENCE")"
-SECRET_REF_OK="$(/usr/bin/python3 -c 'import json,sys; print(1 if json.loads(sys.argv[1]).get("secret_reference_ok") else 0)' "$CONFIG_EVIDENCE")"
-OWNER_FINGERPRINT="$(/usr/bin/python3 -c 'import json,sys; print(json.loads(sys.argv[1]).get("owner_fingerprint") or "unknown")' "$CONFIG_EVIDENCE")"
-ISSUES_JSON="$(/usr/bin/python3 -c 'import json,sys; print(json.dumps(json.loads(sys.argv[1]).get("issues", []), separators=(",",":")))' "$CONFIG_EVIDENCE")"
+if checks["openclaw_binary"] and checks["bundled_node_runtime"]:
+    version_run = run(oc_args("--version"), capture=True)
+    if version_run.returncode == 0:
+        version = re.sub(r"[^A-Za-z0-9.+_ -]", "", version_run.stdout.strip())[:80] or "unknown"
+    checks["gateway_rpc"] = run(oc_args("gateway", "status", "--require-rpc")).returncode == 0
+    checks["telegram_probe"] = run(oc_args("channels", "status", "--channel", "telegram", "--probe")).returncode == 0
+    checks["pairing_cli_read"] = run(oc_args("pairing", "list", "telegram", "--json")).returncode == 0
+else:
+    checks["gateway_rpc"] = False
+    checks["telegram_probe"] = False
+    checks["pairing_cli_read"] = False
 
-VERSION="unknown"
-GATEWAY_RPC_OK=0
-TELEGRAM_PROBE_OK=0
-PAIRING_CLI_OK=0
-LOOPBACK_LISTENER_OK=0
+for name in ("gateway_rpc", "telegram_probe", "pairing_cli_read"):
+    if not checks[name]:
+        hold_reasons.append(f"runtime_{name}_not_proven")
 
-if [[ "$BINARY_OK" -eq 1 && "$NODE_OK" -eq 1 ]]; then
-  VERSION="$(oc --version 2>/dev/null | head -1 | tr -cd '[:alnum:].+_- ' || true)"
-  if oc gateway status --require-rpc >/dev/null 2>&1; then
-    GATEWAY_RPC_OK=1
-  fi
-  if oc channels status --channel telegram --probe >/dev/null 2>&1; then
-    TELEGRAM_PROBE_OK=1
-  fi
-  if oc pairing list telegram --json >/dev/null 2>&1; then
-    PAIRING_CLI_OK=1
-  fi
-fi
+listeners_run = run(["ss", "-ltnH"], capture=True)
+listener_addresses: list[str] = []
+if listeners_run.returncode == 0:
+    for line in listeners_run.stdout.splitlines():
+        parts = line.split()
+        if len(parts) >= 4 and parts[3].endswith(":18789"):
+            listener_addresses.append(parts[3])
+allowed_listener_addresses = {"127.0.0.1:18789", "[::1]:18789", "::1:18789"}
+checks["port_18789_loopback_only"] = bool(listener_addresses) and set(listener_addresses) <= allowed_listener_addresses
+if listener_addresses and not checks["port_18789_loopback_only"]:
+    safety_issues.append("openclaw_listener_not_loopback_only")
+elif not listener_addresses:
+    hold_reasons.append("openclaw_listener_not_observed")
 
-LISTENERS="$(ss -ltnH 2>/dev/null | awk '$4 ~ /:18789$/ {print $4}' || true)"
-if [[ -n "$LISTENERS" ]]; then
-  LOOPBACK_LISTENER_OK=1
-  while IFS= read -r addr; do
-    case "$addr" in
-      127.0.0.1:18789|[[]::1[]]:18789|::1:18789) ;;
-      *) LOOPBACK_LISTENER_OK=0 ;;
-    esac
-  done <<< "$LISTENERS"
-fi
+unknown_identity_deny_ok = (
+    checks["telegram_dm_pairing"]
+    and checks["command_allowlist_narrow"]
+    and owner_id is not None
+    and checks["dm_admission_exact_owner_only"]
+)
+checks["unknown_identity_deny"] = unknown_identity_deny_ok
+if owner_id and not unknown_identity_deny_ok and not safety_issues:
+    hold_reasons.append("unknown_identity_deny_not_fully_proven")
 
-FINAL="PASS"
-EXIT_CODE=0
-if [[ "$CONFIG_SAFETY_OK" -ne 1 || "$LOOPBACK_LISTENER_OK" -ne 1 ]]; then
-  FINAL="FAIL"
-  EXIT_CODE=1
-elif [[ \
-  "$BINARY_OK" -ne 1 || \
-  "$NODE_OK" -ne 1 || \
-  "$CONFIG_PRESENT" -ne 1 || \
-  "$OWNER_PROVEN" -ne 1 || \
-  "$DM_ACCESS_PROVEN" -ne 1 || \
-  "$SECRET_REF_OK" -ne 1 || \
-  "$GATEWAY_RPC_OK" -ne 1 || \
-  "$TELEGRAM_PROBE_OK" -ne 1 || \
-  "$PAIRING_CLI_OK" -ne 1 \
-]]; then
-  FINAL="HOLD"
-  EXIT_CODE=4
-fi
+# PASS requires every runtime/identity prerequisite. Unsafe authorization or
+# secret posture is FAIL. Safe but incomplete runtime evidence is HOLD.
+pass_requirements = (
+    checks["openclaw_binary"],
+    checks["bundled_node_runtime"],
+    checks["openclaw_config_regular_0600"],
+    checks["gateway_config_loopback"],
+    checks["telegram_enabled"],
+    checks["telegram_dm_pairing"],
+    checks["telegram_groups_disabled"],
+    checks["telegram_secret_file_private"],
+    checks["exact_telegram_command_owner"],
+    checks["command_allowlist_narrow"],
+    checks["tool_surface_bounded"],
+    checks["pairing_state_readable"],
+    checks["owner_has_dm_admission"],
+    checks["dm_admission_exact_owner_only"],
+    checks["unknown_identity_deny"],
+    checks["gateway_rpc"],
+    checks["telegram_probe"],
+    checks["pairing_cli_read"],
+    checks["port_18789_loopback_only"],
+)
 
-CREATED_AT="$(date -u +%FT%TZ)"
-/usr/bin/python3 - \
-  "$PROOF_ROOT/receipt.json" \
-  "$ACTUAL_SHA" \
-  "$CREATED_AT" \
-  "$VERSION" \
-  "$FINAL" \
-  "$OWNER_FINGERPRINT" \
-  "$ISSUES_JSON" \
-  "$BINARY_OK" \
-  "$NODE_OK" \
-  "$CONFIG_PRESENT" \
-  "$CONFIG_SAFETY_OK" \
-  "$OWNER_PROVEN" \
-  "$DM_ACCESS_PROVEN" \
-  "$SECRET_REF_OK" \
-  "$GATEWAY_RPC_OK" \
-  "$TELEGRAM_PROBE_OK" \
-  "$PAIRING_CLI_OK" \
-  "$LOOPBACK_LISTENER_OK" <<'PY'
-from __future__ import annotations
-
-import json
-import sys
-from pathlib import Path
-
-(
-    receipt_path,
-    sha,
-    created_at,
-    version,
-    verdict,
-    owner_fp,
-    issues_json,
-    binary_ok,
-    node_ok,
-    config_present,
-    config_safety_ok,
-    owner_proven,
-    dm_access_proven,
-    secret_ref_ok,
-    gateway_rpc_ok,
-    telegram_probe_ok,
-    pairing_cli_ok,
-    loopback_listener_ok,
-) = sys.argv[1:]
-
-def b(value: str) -> bool:
-    return value == "1"
+if safety_issues:
+    verdict = "FAIL"
+    exit_code = 1
+elif all(pass_requirements):
+    verdict = "PASS"
+    exit_code = 0
+else:
+    verdict = "HOLD"
+    exit_code = 4
 
 receipt = {
     "schema": "dealix.founder-command-runtime-receipt.v1",
-    "source_sha": sha,
-    "created_at": created_at,
+    "source_sha": head,
     "verdict": verdict,
     "authority_class": "L4_READ_ONLY_RUNTIME_ACCEPTANCE",
     "external_effects": "NONE_FAIL_CLOSED",
     "openclaw_version": version,
-    "telegram_owner_identity": "VERIFIED" if b(owner_proven) and b(dm_access_proven) else "UNKNOWN_NOT_EVIDENCE_BACKED",
-    "telegram_owner_fingerprint": owner_fp if owner_fp != "unknown" else None,
-    "telegram_unknown_identity_deny": "VERIFIED" if b(config_safety_ok) else "FAILED",
-    "telegram_gateway_loopback": "VERIFIED" if b(loopback_listener_ok) else "FAILED",
-    "telegram_groups_disabled_by_default": "VERIFIED" if b(config_safety_ok) else "FAILED",
-    "openclaw_secretref_audit": "VERIFIED" if b(secret_ref_ok) else "UNKNOWN_NOT_EVIDENCE_BACKED",
-    "checks": {
-        "openclaw_binary": b(binary_ok),
-        "bundled_node_runtime": b(node_ok),
-        "config_present_regular_file": b(config_present),
-        "config_safety": b(config_safety_ok),
-        "exact_telegram_owner": b(owner_proven),
-        "owner_has_dm_admission": b(dm_access_proven),
-        "telegram_token_external_private_file": b(secret_ref_ok),
-        "gateway_rpc": b(gateway_rpc_ok),
-        "telegram_probe": b(telegram_probe_ok),
-        "pairing_cli_read": b(pairing_cli_ok),
-        "port_18789_loopback_only": b(loopback_listener_ok),
-    },
-    "issues": json.loads(issues_json),
+    "telegram_owner_identity": "VERIFIED" if checks["exact_telegram_command_owner"] and checks["owner_has_dm_admission"] else "UNKNOWN_NOT_EVIDENCE_BACKED",
+    "telegram_owner_fingerprint": owner_fp,
+    "telegram_unknown_identity_deny": "VERIFIED" if checks["unknown_identity_deny"] else "UNKNOWN_NOT_EVIDENCE_BACKED",
+    "telegram_gateway_loopback": "VERIFIED" if checks["gateway_config_loopback"] and checks["port_18789_loopback_only"] else "UNKNOWN_NOT_EVIDENCE_BACKED",
+    "telegram_groups_disabled_by_default": "VERIFIED" if checks["telegram_groups_disabled"] else "FAILED",
+    "openclaw_secretref_audit": "VERIFIED" if checks["telegram_secret_file_private"] else "UNKNOWN_NOT_EVIDENCE_BACKED",
+    "checks": checks,
+    "safety_issues": sorted(set(safety_issues)),
+    "hold_reasons": sorted(set(hold_reasons)),
     "secret_values_printed": False,
+    "owner_raw_id_printed": False,
     "openclaw_config_mutated": False,
     "gateway_restarted": False,
 }
-Path(receipt_path).write_text(json.dumps(receipt, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+write_receipt(receipt_path, receipt)
+
+print(f"DEALIX_FOUNDER_COMMAND_ACCEPTANCE={verdict}")
+print(f"source_sha={head}")
+print(f"openclaw_version={version}")
+print(f"owner_identity_fingerprint={owner_fp or 'unknown'}")
+print(f"gateway_rpc={'PASS' if checks['gateway_rpc'] else 'NOT_PASS'}")
+print(f"telegram_probe={'PASS' if checks['telegram_probe'] else 'NOT_PASS'}")
+print(f"loopback_listener={'PASS' if checks['port_18789_loopback_only'] else 'NOT_PASS'}")
+print("secret_values_printed=false")
+print("owner_raw_id_printed=false")
+print("openclaw_config_mutated=false")
+print(f"receipt={receipt_path}")
+raise SystemExit(exit_code)
 PY
-chmod 0600 "$PROOF_ROOT/receipt.json"
-sha256sum "$PROOF_ROOT/receipt.json" > "$PROOF_ROOT/receipt.sha256"
-chmod 0600 "$PROOF_ROOT/receipt.sha256"
-
-echo "DEALIX_FOUNDER_COMMAND_ACCEPTANCE=$FINAL"
-echo "source_sha=$ACTUAL_SHA"
-echo "openclaw_version=$VERSION"
-echo "owner_identity_fingerprint=$OWNER_FINGERPRINT"
-echo "gateway_rpc=$([[ "$GATEWAY_RPC_OK" -eq 1 ]] && echo PASS || echo NOT_PASS)"
-echo "telegram_probe=$([[ "$TELEGRAM_PROBE_OK" -eq 1 ]] && echo PASS || echo NOT_PASS)"
-echo "loopback_listener=$([[ "$LOOPBACK_LISTENER_OK" -eq 1 ]] && echo PASS || echo NOT_PASS)"
-echo "secret_values_printed=false"
-echo "openclaw_config_mutated=false"
-echo "receipt=$PROOF_ROOT/receipt.json"
-
-exit "$EXIT_CODE"
