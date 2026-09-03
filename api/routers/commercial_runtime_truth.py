@@ -5,6 +5,7 @@ from __future__ import annotations
 from typing import Any
 
 from fastapi import APIRouter, Depends, HTTPException
+from fastapi.responses import PlainTextResponse
 from pydantic import BaseModel, ConfigDict, Field
 
 from api.security.api_key import require_admin_key
@@ -18,6 +19,48 @@ router = APIRouter(tags=["commercial-runtime-truth"])
 
 CANONICAL_PRIMARY_OFFER_ID = "revenue_command_pilot_30d"
 CANONICAL_ENTRY_OFFER_ID = "free_mini_diagnostic"
+
+
+def _canonical_commercial_map() -> dict[str, Any]:
+    return {
+        "authority": "launch_commercial_truth",
+        "entry_offer": {
+            "id": CANONICAL_ENTRY_OFFER_ID,
+            "label_ar": "Mini Diagnostic مجاني",
+            "label_en": "Free Mini Diagnostic",
+            "price_model": "free",
+            "public_checkout": False,
+        },
+        "primary_offer": {
+            "id": CANONICAL_PRIMARY_OFFER_ID,
+            "label_ar": "Revenue Command Pilot — 30 يومًا",
+            "label_en": "Revenue Command Pilot — 30 Days",
+            "duration_days": 30,
+            "price_model": "customer_specific_quote_only",
+            "public_fixed_pricing": False,
+            "public_checkout": False,
+        },
+        "buying_path": [
+            "FREE_MINI_DIAGNOSTIC",
+            "QUALIFIED_DISCOVERY",
+            "CUSTOMER_SPECIFIC_QUOTE",
+            "REVENUE_COMMAND_PILOT_30D",
+            "VERIFIED_PAYMENT",
+            "DELIVERY",
+            "CUSTOMER_VALIDATED_PROOF",
+            "STOP_EXPAND_REDESIGN",
+        ],
+        "guardrails": {
+            "no_public_fixed_price": True,
+            "no_public_checkout": True,
+            "quote_requires_qualified_discovery": True,
+            "quote_requires_explicit_authority": True,
+            "invoice_is_not_payment": True,
+            "payment_requires_independent_evidence": True,
+            "no_automatic_discount": True,
+            "no_automatic_payment": True,
+        },
+    }
 
 
 class CustomerSpecificInvoiceDraftPayload(BaseModel):
@@ -66,39 +109,37 @@ def _append_evidence_event(
 @router.get("/api/v1/public/services")
 async def public_services_catalog_canonical() -> dict[str, Any]:
     """Expose the current quote-only buying path with no public price authority."""
-    return {
-        "entry_offer": {
-            "id": CANONICAL_ENTRY_OFFER_ID,
-            "label_ar": "Mini Diagnostic مجاني",
-            "label_en": "Free Mini Diagnostic",
-            "price_model": "free",
-        },
-        "primary_offer": {
-            "id": CANONICAL_PRIMARY_OFFER_ID,
-            "label_ar": "Revenue Command Pilot — 30 يومًا",
-            "label_en": "Revenue Command Pilot — 30 Days",
-            "duration_days": 30,
-            "price_model": "customer_specific_quote_only",
-            "public_fixed_pricing": False,
-            "public_checkout": False,
-        },
-        "buying_path": [
-            "FREE_MINI_DIAGNOSTIC",
-            "QUALIFIED_DISCOVERY",
-            "CUSTOMER_SPECIFIC_QUOTE",
-            "REVENUE_COMMAND_PILOT_30D",
-            "VERIFIED_PAYMENT",
-            "DELIVERY",
-            "CUSTOMER_VALIDATED_PROOF",
-        ],
-        "guardrails": {
-            "no_public_fixed_price": True,
-            "no_public_checkout": True,
-            "quote_requires_qualified_discovery": True,
-            "quote_requires_explicit_authority": True,
-            "invoice_is_not_payment": True,
-        },
-    }
+    return _canonical_commercial_map()
+
+
+@router.get("/api/v1/commercial-map")
+async def commercial_map_canonical() -> dict[str, Any]:
+    """Compatibility URL backed only by the launch-authorized commercial truth."""
+    return _canonical_commercial_map()
+
+
+@router.get("/api/v1/commercial-map/markdown", response_class=PlainTextResponse)
+async def commercial_map_markdown_canonical() -> str:
+    """Human-readable compatibility view without fixed-price or checkout authority."""
+    return "\n".join(
+        [
+            "# Dealix Commercial Path",
+            "",
+            "Free Mini Diagnostic",
+            "→ Qualified Discovery",
+            "→ Customer-Specific Quote",
+            "→ Revenue Command Pilot — 30 Days",
+            "→ Verified Payment",
+            "→ Delivery",
+            "→ Customer-Validated Proof",
+            "→ Stop / Expand / Redesign",
+            "",
+            "Public fixed pricing: false",
+            "Public checkout: false",
+            "Price authority: customer-specific quote after qualified discovery",
+            "Invoice is not payment.",
+        ]
+    ) + "\n"
 
 
 @router.get(
