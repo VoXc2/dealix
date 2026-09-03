@@ -2,8 +2,9 @@
 """Dealix canonical end-to-end customer-journey dry run.
 
 Exercises the current commercial/delivery spine using a clearly synthetic test
-customer. Synthetic state is isolated and never becomes a relationship,
-payment, revenue, delivery, or customer-proof claim. No external effect occurs.
+customer. Synthetic state is isolated in a temporary workspace and never
+becomes a relationship, payment, revenue, delivery, or customer-proof claim.
+No external effect occurs and the source worktree must remain unchanged.
 
 Stages:
     1. Market signal / research truth
@@ -16,10 +17,14 @@ Stages:
     8. Proof Pack truth separation
     9. STOP / EXPAND / REDESIGN outcome review
     10. Governance / zero external effects
+    11. Source worktree hygiene
 """
 from __future__ import annotations
 
+import os
+import subprocess
 import sys
+import tempfile
 from dataclasses import dataclass, field
 from datetime import date
 from pathlib import Path
@@ -53,6 +58,26 @@ class Stage:
 def _read(rel: str) -> str:
     path = REPO / rel
     return path.read_text(encoding="utf-8", errors="ignore") if path.is_file() else ""
+
+
+def _git_status() -> str:
+    proc = subprocess.run(
+        ["git", "status", "--porcelain=v1", "--untracked-files=all"],
+        cwd=REPO,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    if proc.returncode != 0:
+        return f"__GIT_STATUS_ERROR__:{proc.returncode}:{(proc.stderr or '').strip()}"
+    return proc.stdout
+
+
+def _proof_root() -> Path:
+    configured = os.getenv("DEALIX_VERIFY_PROOF_ROOT", "").strip()
+    root = Path(configured).expanduser() if configured else Path(tempfile.gettempdir()) / "dealix-verify"
+    root.mkdir(parents=True, exist_ok=True)
+    return root
 
 
 def stage_market_signal_truth() -> Stage:
@@ -124,7 +149,7 @@ def stage_workspace(ws: Path) -> Stage:
     if missing:
         stage.fail("missing workspace files: " + ", ".join(missing))
         return stage
-    stage.ok(f"all {len(PILOT_WORKSPACE_FILES)} governed Pilot workspace files present")
+    stage.ok(f"all {len(PILOT_WORKSPACE_FILES)} governed Pilot workspace files present in isolated temporary storage")
     return stage
 
 
@@ -197,6 +222,18 @@ def stage_governance() -> Stage:
     return stage
 
 
+def stage_worktree_hygiene(before: str, after: str) -> Stage:
+    stage = Stage("worktree", "Source Worktree Hygiene")
+    if before.startswith("__GIT_STATUS_ERROR__") or after.startswith("__GIT_STATUS_ERROR__"):
+        stage.fail("could not prove source worktree status")
+        return stage
+    if before != after:
+        stage.fail("synthetic E2E changed source worktree state")
+        return stage
+    stage.ok("git status is byte-identical before/after synthetic workspace execution")
+    return stage
+
+
 def render_report(stages: list[Stage], verdict: str) -> str:
     lines = [
         "# Dealix Canonical E2E Customer-Journey Dry Run",
@@ -223,24 +260,38 @@ def main() -> int:
     except (AttributeError, OSError):
         pass
 
-    try:
-        ws, _ = create_workspace(DRY_RUN_CLIENT, force=True)
-    except Exception as exc:
-        print(f"FATAL: could not create dry-run workspace: {exc}", file=sys.stderr)
+    status_before = _git_status()
+    if status_before.startswith("__GIT_STATUS_ERROR__"):
+        print(f"FATAL: {status_before}", file=sys.stderr)
         return 1
 
-    stages = [
-        stage_market_signal_truth(),
-        stage_relationship_gate(),
-        stage_diagnostic(ws),
-        stage_quote_authority(ws),
-        stage_workspace(ws),
-        stage_payment_gate(ws),
-        stage_delivery(ws),
-        stage_proof(ws),
-        stage_outcome_review(ws),
-        stage_governance(),
-    ]
+    with tempfile.TemporaryDirectory(prefix="dealix-e2e-workspace-") as tmp:
+        try:
+            ws, _ = create_workspace(
+                DRY_RUN_CLIENT,
+                force=True,
+                output_root=Path(tmp),
+            )
+        except Exception as exc:
+            print(f"FATAL: could not create isolated dry-run workspace: {exc}", file=sys.stderr)
+            return 1
+
+        stages = [
+            stage_market_signal_truth(),
+            stage_relationship_gate(),
+            stage_diagnostic(ws),
+            stage_quote_authority(ws),
+            stage_workspace(ws),
+            stage_payment_gate(ws),
+            stage_delivery(ws),
+            stage_proof(ws),
+            stage_outcome_review(ws),
+            stage_governance(),
+        ]
+
+    status_after_workspace = _git_status()
+    hygiene = stage_worktree_hygiene(status_before, status_after_workspace)
+    stages.append(hygiene)
     verdict = "PASS" if all(stage.passed for stage in stages) else "NO_GO"
 
     for index, stage in enumerate(stages, start=1):
@@ -248,10 +299,16 @@ def main() -> int:
         for note in stage.notes:
             print(f"    {note}")
 
-    out = REPO / "reports" / "verification" / "e2e_dry_run_latest.md"
-    out.parent.mkdir(parents=True, exist_ok=True)
+    out = _proof_root() / "e2e_dry_run_latest.md"
     out.write_text(render_report(stages, verdict), encoding="utf-8")
-    print(f"WROTE {out.relative_to(REPO)}")
+
+    status_after_receipt = _git_status()
+    if status_after_receipt != status_before:
+        hygiene.fail("receipt path changed source worktree state; use an external/ignored DEALIX_VERIFY_PROOF_ROOT")
+        verdict = "NO_GO"
+        out.write_text(render_report(stages, verdict), encoding="utf-8")
+
+    print(f"WROTE {out}")
     print(f"E2E_DRY_RUN_VERDICT={verdict}")
     print(f"DEALIX_E2E_DRY_RUN_OK={'true' if verdict == 'PASS' else 'false'}")
     return 0 if verdict == "PASS" else 1
