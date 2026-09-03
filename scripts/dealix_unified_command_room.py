@@ -131,11 +131,24 @@ def _to_float(value: str) -> float:
         return 0.0
 
 
+def _payment_verified(row: dict[str, str]) -> bool:
+    """Count cash only when status and external payment evidence are both explicit."""
+    status = (row.get("payment_status") or "").strip().lower()
+    evidence = (
+        row.get("payment_evidence_id")
+        or row.get("payment_evidence")
+        or row.get("payment_receipt")
+        or ""
+    ).strip()
+    return status in {"verified", "paid", "settled"} and bool(evidence)
+
+
 def crm_summary(rows: list[dict[str, str]]) -> dict[str, object]:
-    """Aggregate the CRM into stage counts, weighted value, and paid count."""
+    """Aggregate CRM stages without promoting won deals into verified payment."""
     by_stage: dict[str, dict[str, float]] = {}
     pipeline_value = 0.0
     weighted_value = 0.0
+    won = 0
     paid = 0
     for row in rows:
         status = row.get("status") or "needs_review"
@@ -147,11 +160,14 @@ def crm_summary(rows: list[dict[str, str]]) -> dict[str, object]:
             pipeline_value += value
             weighted_value += value * (_to_float(row.get("probability", "")) / 100.0)
         if status == "won":
+            won += 1
+        if _payment_verified(row):
             paid += 1
     return {
         "by_stage": by_stage,
         "pipeline_value": round(pipeline_value),
         "weighted_value": round(weighted_value),
+        "won": won,
         "paid": paid,
         "total": len(rows),
     }
@@ -285,7 +301,7 @@ def render_html(
         _kpi_card("سجلات CRM / CRM rows", crm["total"], PRIMARY),
         _kpi_card("ردود / Replies", kpis["replies"], ACCENT),
         _kpi_card("اجتماعات / Meetings", kpis["meetings"], ACCENT),
-        _kpi_card("صفقات / Won", crm["paid"], PRIMARY),
+        _kpi_card("صفقات / Won", crm["won"], PRIMARY),
         _kpi_card("نسبة الرد / Reply rate", f"{kpis['reply_rate']}%", ACCENT),
     ])
 
