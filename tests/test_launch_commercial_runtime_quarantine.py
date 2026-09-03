@@ -12,7 +12,7 @@ from api.routers.business import proof_pack_roi, recommend_plan_endpoint
 
 
 # Paths that must not be mounted at launch because they expose legacy fixed-price,
-# checkout, subscription mutation, or parallel tier-invoice authority.
+# checkout, subscription mutation, self-serve SaaS, or parallel tier-invoice authority.
 _BLOCKED_RUNTIME_PATHS = {
     "/api/v1/pricing/plans",
     "/api/v1/pricing/usage",
@@ -29,6 +29,8 @@ _BLOCKED_RUNTIME_PATHS = {
     "/api/v1/finance/pricing",
     "/api/v1/finance/pricing/{tier_id}",
     "/api/v1/finance/invoice/draft",
+    "/api/v1/onboarding/plans",
+    "/api/v1/onboarding/signup",
 }
 
 _REQUIRED_SAFE_PATHS = {
@@ -46,6 +48,8 @@ _REQUIRED_SAFE_PATHS = {
     "/api/v1/commercial/status",
     "/api/v1/services/status",
     "/api/v1/services/catalog",
+    "/api/v1/onboarding/wizard",
+    "/api/v1/onboarding/invite",
 }
 
 
