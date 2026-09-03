@@ -1,0 +1,435 @@
+{
+  "schema": "dealix.end-to-end-company-acceptance.v1",
+  "version": "1.0.0",
+  "status": "DRAFT_EXACT_HEAD_ACCEPTANCE_REQUIRED",
+  "source_main_sha": "7274c766dd43a23ec391b4cfbeb4fae8ae665763",
+  "objective": "Prove that the existing Dealix Company Machine can operate the complete customer lifecycle with the five canonical agents and twelve canonical systems, while minimizing founder intervention and preserving evidence, consent, identity, security, and action-bound authority.",
+  "composition_only": {
+    "new_company_os": false,
+    "new_company_brain": false,
+    "new_crm": false,
+    "new_opportunity_graph": false,
+    "new_approval_center": false,
+    "new_proof_ledger": false,
+    "new_scheduler": false,
+    "new_permanent_agent_fleet": false,
+    "new_model_router": false,
+    "new_observability_database": false
+  },
+  "canonical_contracts": {
+    "platform_truth": "docs/00_platform_truth/PLATFORM_SOURCE_OF_TRUTH.md",
+    "company_machine": "data/ops/dealix_autonomous_company_machine_v2.json",
+    "continuous_operations": "data/commercial/continuous_company_operations_v1.json",
+    "channel_runtime": "data/commercial/governed_channel_runtime_v1.json",
+    "operating_company": "auto_client_acquisition/orchestrator/operating_company_contract.py",
+    "commercial_execution_fabric": "scripts/commercial/run_commercial_execution_fabric_v2.py",
+    "company_autopilot": "scripts/run_dealix_complete_autonomous_day.py",
+    "daily_command": "scripts/run_dealix_daily_ops.py"
+  },
+  "canonical_agents": [
+    "dealix-pm",
+    "dealix-sales",
+    "dealix-delivery",
+    "dealix-engineer",
+    "dealix-content"
+  ],
+  "canonical_systems": [
+    "command_os",
+    "revenue_os",
+    "proof_os",
+    "client_os",
+    "delivery_os",
+    "support_os",
+    "finance_os",
+    "data_os",
+    "governance_os",
+    "academy_os",
+    "partner_os",
+    "venture_os"
+  ],
+  "founder_attention_model": {
+    "target": "MATERIAL_EXCEPTIONS_AND_DECISIONS_ONLY",
+    "automatic_levels": ["L0", "L1", "L2", "L3", "L4"],
+    "external_level": "L5_ACTION_BOUND",
+    "standing_delegation_effect": "AUTHORIZE_PRIORITIZATION_DRAFTING_INTERNAL_EXECUTION_AND_REPO_WORK_WITHIN_EXISTING_POLICY",
+    "may_self_grant_external_authority": false,
+    "escalate_only_for": [
+      "binding_customer_commitment",
+      "live_external_dispatch_without_existing_action_token",
+      "public_publish",
+      "paid_spend_or_payment_or_refund",
+      "legal_or_tender_commitment",
+      "main_merge",
+      "production_dns_database_secret_or_identity_mutation",
+      "material_customer_value_or_security_risk",
+      "persistent_evidence_conflict"
+    ]
+  },
+  "founder_voice_policy": {
+    "drafting_from_approved_style_profile": true,
+    "external_identity": "AUTHORIZED_DEALIX_AI_OR_TEAM_REPRESENTATIVE_DISCLOSURE_REQUIRED",
+    "may_claim_human_founder_identity": false,
+    "may_fabricate_personal_experience": false,
+    "may_fabricate_relationship_or_memory": false,
+    "may_hide_material_automation": false,
+    "may_use_founder_name_in_authorized_signature": true,
+    "required_behavior": [
+      "sound_natural_specific_and_context_aware",
+      "state_only_evidence_backed_facts",
+      "preserve_recipient_language_and_tone",
+      "identify_as_authorized_dealix_assistant_or_team_when_automation_is_material",
+      "escalate_negotiation_terms_outside_current_authority",
+      "never_pressure_or_deceive"
+    ]
+  },
+  "lead_acquisition_policy": {
+    "priority_sources": [
+      "first_party_inbound",
+      "existing_relationship",
+      "warm_introduction",
+      "event_interaction",
+      "partner_referral",
+      "official_public_market_signal",
+      "permissioned_form_or_subscription",
+      "customer_owned_data_with_documented_purpose"
+    ],
+    "research_only_sources": [
+      "public_company_information",
+      "official_regulatory_data",
+      "public_tender_data",
+      "clinical_trial_registry_data",
+      "licensed_research_and_enrichment_tools"
+    ],
+    "forbidden": [
+      "scraping",
+      "purchased_contact_lists",
+      "cold_whatsapp",
+      "mass_linkedin_automation",
+      "identity_deception",
+      "consent_inference_from_public_data",
+      "unbounded_cold_bulk_email",
+      "platform_rate_limit_or_policy_bypass"
+    ],
+    "promotion_requirements": [
+      "source_and_timestamp",
+      "real_interaction_or_purpose_specific_consent",
+      "canonical_relationship_owner_decision",
+      "suppression_and_opt_out_check",
+      "why_them_and_why_now",
+      "next_evidence"
+    ],
+    "scoring_dimensions": [
+      "verified_problem_fit",
+      "signal_recency",
+      "buyer_and_workflow_relevance",
+      "relationship_strength",
+      "ability_to_deliver_and_prove_value",
+      "economic_potential",
+      "cost_and_risk"
+    ]
+  },
+  "service_scope_model": {
+    "horizontal_core": "Revenue + Proof + Command",
+    "public_entry": "Free Mini Diagnostic",
+    "paid_entry": "Customer-Specific Quote then 30-Day Revenue Command Pilot",
+    "client_specific_context_required": true,
+    "vertical_knowledge_packs": [
+      "saudi_b2b_saas_and_business_services",
+      "consulting_system_integrators_and_partners",
+      "construction_industrial_and_project_delivery",
+      "saudi_market_access",
+      "health_and_life_sciences_intelligence"
+    ],
+    "vertical_pack_rule": "EXTEND_CANONICAL_COMPANY_BRAIN_AND_PLAYBOOKS_NEVER_FORK_THE_COMPANY_OS"
+  },
+  "connector_control_plane": [
+    {"id": "github", "owner": "dealix-engineer", "role": "code_backlog_and_receipt_truth", "truth_owner": true, "write_ceiling": "L4_DRAFT_PR"},
+    {"id": "vps", "owner": "dealix-engineer", "role": "command_ai_verification_research_and_proof_node", "truth_owner": false, "write_ceiling": "BOUNDED_INTERNAL"},
+    {"id": "railway", "owner": "dealix-engineer", "role": "production_core", "truth_owner": true, "write_ceiling": "L5_ACTION_BOUND"},
+    {"id": "n8n", "owner": "dealix-engineer", "role": "deterministic_connector_and_event_bus", "truth_owner": false, "write_ceiling": "POLICY_BOUNDED"},
+    {"id": "gmail", "owner": "dealix-sales", "role": "relationship_evidence_inbound_and_drafts", "truth_owner": false, "write_ceiling": "DRAFT_UNLESS_ACTION_BOUND"},
+    {"id": "google_contacts_calendar", "owner": "dealix-sales", "role": "known_relationship_and_scheduling_evidence", "truth_owner": false, "write_ceiling": "POLICY_BOUNDED"},
+    {"id": "whatsapp_business", "owner": "dealix-sales", "role": "inbound_opt_in_customer_channel", "truth_owner": false, "write_ceiling": "ACTION_BOUND_NO_COLD_OUTBOUND"},
+    {"id": "linkedin", "owner": "dealix-content", "role": "founder_native_relationship_and_company_page_distribution", "truth_owner": false, "write_ceiling": "DRAFT_OR_OFFICIAL_API_ACTION_BOUND"},
+    {"id": "owned_social_and_video", "owner": "dealix-content", "role": "brand_content_video_and_distribution", "truth_owner": false, "write_ceiling": "DRAFT_UNLESS_ACTION_BOUND"},
+    {"id": "slack_telegram", "owner": "dealix-pm", "role": "internal_founder_command_approvals_and_receipts", "truth_owner": false, "write_ceiling": "INTERNAL_ONLY"},
+    {"id": "airtable_hubspot", "owner": "dealix-sales", "role": "operating_and_crm_mirrors", "truth_owner": false, "write_ceiling": "MIRROR_ONLY"},
+    {"id": "posthog_sentry_otel_langfuse", "owner": "dealix-engineer", "role": "behavior_reliability_cost_and_agent_observability", "truth_owner": false, "write_ceiling": "PRIVACY_BOUNDED"},
+    {"id": "canva_gamma_drive", "owner": "dealix-content", "role": "rendering_assets_decks_profiles_and_proof_packs", "truth_owner": false, "write_ceiling": "DRAFT_OR_APPROVED_ASSET"},
+    {"id": "apollo_clay_ahrefs", "owner": "dealix-sales", "role": "bounded_research_enrichment_and_demand_intelligence", "truth_owner": false, "write_ceiling": "RESEARCH_ONLY"},
+    {"id": "official_signal_sources", "owner": "dealix-sales", "role": "government_regulatory_market_tender_and_health_signals", "truth_owner": false, "write_ceiling": "READ_ONLY"}
+  ],
+  "client_lifecycle": [
+    {
+      "order": 1,
+      "stage": "MARKET_SIGNAL",
+      "owner": "dealix-sales",
+      "supporting_agents": ["dealix-engineer"],
+      "systems": ["data_os", "revenue_os"],
+      "required_evidence": ["source", "source_url_or_record_id", "observed_at", "provenance", "freshness"],
+      "outputs": ["market_signal_receipt", "research_hypothesis"],
+      "automation_default": "AUTO_INTERNAL",
+      "external_effect_class": "NONE"
+    },
+    {
+      "order": 2,
+      "stage": "ACCOUNT_RESEARCH",
+      "owner": "dealix-sales",
+      "supporting_agents": ["dealix-content"],
+      "systems": ["revenue_os", "data_os", "partner_os"],
+      "required_evidence": ["account_identity", "source_bound_signals", "buyer_roles", "workflow_hypothesis"],
+      "outputs": ["account_dossier", "buying_group_map", "why_them_why_now", "next_evidence"],
+      "automation_default": "AUTO_INTERNAL",
+      "external_effect_class": "NONE"
+    },
+    {
+      "order": 3,
+      "stage": "ELIGIBILITY_IDENTITY_AND_CONSENT",
+      "owner": "dealix-engineer",
+      "supporting_agents": ["dealix-sales"],
+      "systems": ["governance_os", "data_os", "client_os"],
+      "required_evidence": ["relationship_state", "consent_or_purpose", "channel_eligibility", "suppression_state", "sender_identity"],
+      "outputs": ["allow_deny_or_research_only_decision", "audit_receipt"],
+      "automation_default": "AUTO_FAIL_CLOSED",
+      "external_effect_class": "NONE"
+    },
+    {
+      "order": 4,
+      "stage": "CONTENT_AND_DEMAND",
+      "owner": "dealix-content",
+      "supporting_agents": ["dealix-sales", "dealix-pm"],
+      "systems": ["academy_os", "revenue_os", "proof_os"],
+      "required_evidence": ["approved_thesis", "audience", "source_packet", "claims_boundary", "single_cta"],
+      "outputs": ["founder_post_draft", "company_asset_draft", "sales_enablement_snippet", "qa_receipt"],
+      "automation_default": "AUTO_DRAFT",
+      "external_effect_class": "L5_PUBLIC_PUBLISH"
+    },
+    {
+      "order": 5,
+      "stage": "REAL_INTERACTION",
+      "owner": "dealix-sales",
+      "supporting_agents": ["dealix-pm"],
+      "systems": ["revenue_os", "client_os", "governance_os"],
+      "required_evidence": ["two_way_interaction_or_inbound", "person_company_role", "channel", "timestamp", "actual_statements", "followup_permission_state"],
+      "outputs": ["interaction_receipt", "relationship_decision", "next_best_action"],
+      "automation_default": "AUTO_CLASSIFY_AND_DRAFT",
+      "external_effect_class": "L5_EXTERNAL_DISPATCH"
+    },
+    {
+      "order": 6,
+      "stage": "QUALIFIED_PROBLEM",
+      "owner": "dealix-sales",
+      "supporting_agents": ["dealix-delivery"],
+      "systems": ["revenue_os", "client_os", "proof_os"],
+      "required_evidence": ["problem_statement", "current_workflow", "impact", "urgency", "decision_owner", "proof_gap"],
+      "outputs": ["qualification_receipt", "diagnostic_hypothesis", "discovery_questions"],
+      "automation_default": "AUTO_INTERNAL",
+      "external_effect_class": "NONE"
+    },
+    {
+      "order": 7,
+      "stage": "FREE_MINI_DIAGNOSTIC",
+      "owner": "dealix-sales",
+      "supporting_agents": ["dealix-delivery", "dealix-engineer"],
+      "systems": ["revenue_os", "proof_os", "data_os", "governance_os"],
+      "required_evidence": ["allowed_customer_context", "source_map", "baseline", "limitations", "three_priority_findings"],
+      "outputs": ["mini_diagnostic", "revenue_leak_map", "risk_register", "recommended_discovery_scope"],
+      "automation_default": "AUTO_PREPARE",
+      "external_effect_class": "L5_CUSTOMER_DELIVERY"
+    },
+    {
+      "order": 8,
+      "stage": "QUALIFIED_DISCOVERY",
+      "owner": "dealix-sales",
+      "supporting_agents": ["dealix-delivery", "dealix-pm"],
+      "systems": ["revenue_os", "client_os", "command_os"],
+      "required_evidence": ["meeting_notes", "goals", "constraints", "systems", "stakeholders", "success_measure", "decision_process"],
+      "outputs": ["discovery_receipt", "scope_readiness", "objection_map", "commercial_next_action"],
+      "automation_default": "AUTO_BRIEF_AND_SYNTHESIS",
+      "external_effect_class": "NONE"
+    },
+    {
+      "order": 9,
+      "stage": "CUSTOMER_SPECIFIC_QUOTE",
+      "owner": "dealix-sales",
+      "supporting_agents": ["dealix-engineer", "dealix-pm"],
+      "systems": ["revenue_os", "finance_os", "governance_os"],
+      "required_evidence": ["qualified_discovery_ref", "approved_scope", "assumptions", "exclusions", "price_authority", "validity", "acceptance_criteria"],
+      "outputs": ["customer_specific_quote_draft", "approval_packet", "commercial_risk_receipt"],
+      "automation_default": "AUTO_DRAFT",
+      "external_effect_class": "L5_BINDING_QUOTE"
+    },
+    {
+      "order": 10,
+      "stage": "NEGOTIATION_AND_DECISION",
+      "owner": "dealix-sales",
+      "supporting_agents": ["dealix-pm", "dealix-engineer"],
+      "systems": ["revenue_os", "command_os", "governance_os", "finance_os"],
+      "required_evidence": ["counterparty_response", "concession_ledger", "authority_ceiling", "decision_terms", "expiry"],
+      "outputs": ["negotiation_draft", "accept_reject_modify_recommendation", "decision_receipt"],
+      "automation_default": "AUTO_ANALYZE_AND_DRAFT",
+      "external_effect_class": "L5_BINDING_COMMITMENT"
+    },
+    {
+      "order": 11,
+      "stage": "PAYMENT_VERIFICATION",
+      "owner": "dealix-engineer",
+      "supporting_agents": ["dealix-delivery", "dealix-sales"],
+      "systems": ["finance_os", "proof_os", "governance_os"],
+      "required_evidence": ["approved_quote_ref", "invoice_ref", "provider_or_bank_evidence", "amount_currency", "payer", "timestamp", "reconciliation_state"],
+      "outputs": ["payment_evidence_receipt", "cash_classification", "delivery_release_or_block"],
+      "automation_default": "AUTO_RECONCILE_FAIL_CLOSED",
+      "external_effect_class": "L5_PAYMENT_OR_REFUND"
+    },
+    {
+      "order": 12,
+      "stage": "ONBOARDING",
+      "owner": "dealix-delivery",
+      "supporting_agents": ["dealix-engineer", "dealix-pm"],
+      "systems": ["client_os", "data_os", "governance_os", "delivery_os"],
+      "required_evidence": ["tenant_identity", "paid_or_free_scope_authority", "stakeholders", "data_boundaries", "access_inventory", "success_baseline", "communication_plan"],
+      "outputs": ["client_context", "onboarding_receipt", "readiness_status", "delivery_plan_seed"],
+      "automation_default": "AUTO_PREPARE_AND_INTERNAL_EXECUTE",
+      "external_effect_class": "POLICY_BOUNDED_CLIENT_ACTION"
+    },
+    {
+      "order": 13,
+      "stage": "DELIVERY_PLANNING",
+      "owner": "dealix-delivery",
+      "supporting_agents": ["dealix-engineer", "dealix-pm"],
+      "systems": ["delivery_os", "command_os", "proof_os"],
+      "required_evidence": ["approved_scope", "payment_or_free_delivery_authority", "work_breakdown", "owners", "acceptance_criteria", "proof_plan", "rollback_or_exception_plan"],
+      "outputs": ["delivery_plan", "weekly_cadence", "proof_capture_plan", "risk_and_exception_queue"],
+      "automation_default": "AUTO_INTERNAL",
+      "external_effect_class": "NONE"
+    },
+    {
+      "order": 14,
+      "stage": "DELIVERY_EXECUTION",
+      "owner": "dealix-delivery",
+      "supporting_agents": ["dealix-engineer", "dealix-content"],
+      "systems": ["delivery_os", "data_os", "proof_os", "governance_os"],
+      "required_evidence": ["authorized_work_item", "input_state", "idempotency_key", "execution_receipt", "output_state", "exception_and_rollback_state"],
+      "outputs": ["delivered_work", "action_receipts", "weekly_proof", "exception_or_acceptance_request"],
+      "automation_default": "AUTO_IF_BOUNDED_REVERSIBLE_AND_AUTHORIZED",
+      "external_effect_class": "POLICY_OR_L5_DEPENDING_ON_ACTION"
+    },
+    {
+      "order": 15,
+      "stage": "SUPPORT_AND_CUSTOMER_SUCCESS",
+      "owner": "dealix-delivery",
+      "supporting_agents": ["dealix-engineer", "dealix-sales"],
+      "systems": ["support_os", "client_os", "delivery_os", "academy_os"],
+      "required_evidence": ["inbound_case", "identity_context", "intent", "procedure_or_source", "confidence", "risk", "resolution_or_handoff"],
+      "outputs": ["answer_or_action_draft", "resolution_receipt", "health_update", "knowledge_gap"],
+      "automation_default": "AUTO_TRIAGE_DRAFT_AND_BOUNDED_ACTION",
+      "external_effect_class": "POLICY_BOUNDED_OR_L5"
+    },
+    {
+      "order": 16,
+      "stage": "PROOF_ACCEPTANCE_AND_HANDOVER",
+      "owner": "dealix-delivery",
+      "supporting_agents": ["dealix-content", "dealix-pm"],
+      "systems": ["proof_os", "delivery_os", "client_os", "command_os"],
+      "required_evidence": ["baseline", "action_receipts", "measured_outcomes", "limitations", "customer_validation_state", "reuse_permission_state"],
+      "outputs": ["final_proof_pack", "acceptance_or_gap_log", "handover", "permissioned_reuse_assets"],
+      "automation_default": "AUTO_ASSEMBLE_AND_QA",
+      "external_effect_class": "L5_CUSTOMER_CLAIM_OR_PUBLIC_PROOF"
+    },
+    {
+      "order": 17,
+      "stage": "RENEWAL_EXPANSION_PARTNER_AND_REFERRAL",
+      "owner": "dealix-sales",
+      "supporting_agents": ["dealix-pm", "dealix-delivery", "dealix-content"],
+      "systems": ["revenue_os", "client_os", "finance_os", "partner_os", "proof_os"],
+      "required_evidence": ["verified_value_or_unresolved_risk", "customer_health", "economic_and_delivery_evidence", "permission_state", "next_scope_hypothesis"],
+      "outputs": ["stop_expand_redesign_recommendation", "renewal_or_expansion_draft", "partner_or_referral_path"],
+      "automation_default": "AUTO_ANALYZE_AND_DRAFT",
+      "external_effect_class": "L5_BINDING_COMMITMENT"
+    },
+    {
+      "order": 18,
+      "stage": "LEARNING_AND_PRODUCTIZATION",
+      "owner": "dealix-pm",
+      "supporting_agents": ["dealix-engineer", "dealix-content", "dealix-sales", "dealix-delivery"],
+      "systems": ["venture_os", "academy_os", "data_os", "governance_os", "command_os"],
+      "required_evidence": ["verified_repeated_work", "before_after_measure", "cost_and_time", "failure_or_success_pattern", "customer_and_authority_boundaries"],
+      "outputs": ["learning_event", "playbook_update_proposal", "automation_candidate", "scale_iterate_stop_or_archive_decision"],
+      "automation_default": "AUTO_INTERNAL_AND_L4_REPO",
+      "external_effect_class": "NONE"
+    }
+  ],
+  "universal_work_receipt_required": [
+    "workload_id",
+    "system_id",
+    "agent_owner",
+    "tenant_or_company_scope",
+    "objective",
+    "source_sha",
+    "input_evidence_refs",
+    "state_before",
+    "action",
+    "authority_class",
+    "started_at",
+    "finished_at",
+    "result",
+    "state_after",
+    "output_evidence_refs",
+    "next_evidence",
+    "next_action",
+    "idempotency_key",
+    "rollback_or_safe_failure",
+    "founder_minutes",
+    "agent_minutes",
+    "elapsed_seconds",
+    "ai_cost",
+    "tool_cost",
+    "risk",
+    "economic_delta",
+    "learning_signal"
+  ],
+  "acceptance_levels": [
+    {
+      "id": "A0_SOURCE_CONSISTENCY",
+      "result_required": "PASS",
+      "evidence": ["composite_verifier", "contract_tests", "no_parallel_owner_check"]
+    },
+    {
+      "id": "A1_EXACT_HEAD_INTERNAL_MACHINE",
+      "result_required": "PASS",
+      "evidence": ["git_sha_receipt", "five_agent_load", "twelve_system_registry", "continuous_operations", "no_external_effect_canary"]
+    },
+    {
+      "id": "A2_CHANNEL_AND_FOUNDER_CONTROL",
+      "result_required": "PASS",
+      "evidence": ["official_capability", "credential_refs_outside_git", "sender_health", "slack_or_telegram_e2e_receipt", "duplicate_event_idempotency"]
+    },
+    {
+      "id": "A3_PRODUCTION_AND_PUBLIC_TRUTH",
+      "result_required": "PASS",
+      "evidence": ["deployed_sha", "api_and_web_health", "protected_smoke", "rollback", "canonical_public_pages", "legacy_surface_retirement"]
+    },
+    {
+      "id": "A4_CONTROLLED_LIFECYCLE_CANARY",
+      "result_required": "PASS",
+      "evidence": ["synthetic_dry_run_explicitly_labeled", "inbound_or_consented_channel_canary", "diagnostic_to_quote_gates", "payment_block", "delivery_and_proof_receipts"]
+    },
+    {
+      "id": "A5_REAL_COMMERCIAL_PROOF",
+      "result_required": "PASS_FOR_FULL_COMMERCIAL_CLAIM",
+      "evidence": ["real_interaction", "qualified_problem", "customer_specific_quote", "verified_payment", "delivered_scope", "customer_validated_proof"]
+    },
+    {
+      "id": "A6_REPEATABILITY",
+      "result_required": "PASS_FOR_SAAS_SCALE_CLAIM",
+      "evidence": ["multiple_paid_cycles", "measured_delivery_economics", "low_founder_intervention", "repeatable_playbook", "renewal_expansion_or_referral"]
+    }
+  ],
+  "activation_state": {
+    "internal_company_autonomy": "READY_FOR_EXACT_HEAD_RUNTIME_ACCEPTANCE",
+    "external_customer_autonomy": "PREPARED_NOT_GLOBALLY_ACTIVATED",
+    "full_public_launch": "BLOCKED_UNTIL_CURRENT_COMMERCIAL_PRODUCTION_PUBLIC_TRUTH_GATES_PASS",
+    "full_commercial_proof": "BLOCKED_UNTIL_A5_REAL_COMMERCIAL_PROOF",
+    "saas_scale_claim": "BLOCKED_UNTIL_A6_REPEATABILITY"
+  }
+}
