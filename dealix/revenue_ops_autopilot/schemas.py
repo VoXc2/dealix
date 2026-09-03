@@ -167,7 +167,12 @@ class InvoiceDraftRecord(BaseModel):
     id: str
     lead_id: str | None = None
     opportunity_id: str | None = None
-    tier: Literal["starter", "standard", "executive"] = "starter"
+    tier: Literal[
+        "starter",
+        "standard",
+        "executive",
+        "customer_specific_quote",
+    ] = "customer_specific_quote"
     amount_sar: float
     line_items_ar: list[str] = Field(default_factory=list)
     status: Literal["draft", "approval_required", "sent", "paid"] = "approval_required"
