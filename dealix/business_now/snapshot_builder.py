@@ -72,25 +72,27 @@ def _kpi_snapshots() -> dict[str, Any]:
 
 
 def _offers_summary() -> list[dict[str, Any]]:
-    from api.routers.commercial_map import _build_payload
-
-    payload = _build_payload()
-    out: list[dict[str, Any]] = []
-    for o in payload.get("offers") or []:
-        w = o.get("wiring") or {}
-        out.append(
-            {
-                "service_id": o.get("service_id"),
-                "name_ar": o.get("name_ar"),
-                "name_en": o.get("name_en"),
-                "price_sar": o.get("price_sar"),
-                "price_unit": o.get("price_unit"),
-                "intake_endpoint": w.get("intake_endpoint") or w.get("lead_capture_endpoint"),
-                "founder_surface": w.get("founder_surface"),
-                "landing_url": w.get("landing_url"),
-            }
-        )
-    return out
+    """Return only the launch-authorized buying path; never read legacy price ladders."""
+    return [
+        {
+            "service_id": "free_mini_diagnostic",
+            "name_ar": "Mini Diagnostic مجاني",
+            "name_en": "Free Mini Diagnostic",
+            "price_model": "free",
+            "public_fixed_price": False,
+            "price_authority": "none_required_free_entry",
+            "next_offer": "revenue_command_pilot_30d",
+        },
+        {
+            "service_id": "revenue_command_pilot_30d",
+            "name_ar": "Revenue Command Pilot — 30 يومًا",
+            "name_en": "Revenue Command Pilot — 30 Days",
+            "price_model": "customer_specific_quote_only",
+            "public_fixed_price": False,
+            "price_authority": "customer_specific_quote_after_qualified_discovery",
+            "next_offer": None,
+        },
+    ]
 
 
 def _run_verify_transformation() -> str:
@@ -261,7 +263,7 @@ def build_today_actions(snapshot: dict[str, Any]) -> list[dict[str, Any]]:
         actions.append(
             {
                 "priority": 2,
-                "action_ar": f"ابدأ بايلوت {template_ready[0].get('id', '')} — نفّذ PILOT_EXECUTION_RUNBOOK",
+                "action_ar": f"راجع قالب التسليم {template_ready[0].get('id', '')} ضمن Revenue Command Pilot — لا يبدأ تنفيذ مدفوع قبل الدفع المثبت",
                 "href": "/business-now",
             }
         )
@@ -346,6 +348,8 @@ def build_business_now_snapshot(
                 "commercial_kpi_ready": commercial_reg["ready_count"],
                 "pending_keys": commercial_reg["pending_keys"],
                 "value_ladder_doc": "docs/value_capture/VALUE_CAPTURE_LADDER.md",
+                "price_authority": "customer_specific_quote_after_qualified_discovery",
+                "public_fixed_price": False,
             },
             "gtm": _gtm_pillar(),
             "delivery": {
@@ -416,6 +420,7 @@ def render_snapshot_markdown(snapshot: dict[str, Any]) -> str:
     c = snapshot["pillars"]["commercial"]
     lines.append(f"- pending: {c.get('commercial_kpi_pending')}")
     lines.append(f"- ready: {c.get('commercial_kpi_ready')}")
+    lines.append("- pricing: customer-specific quote after qualified discovery")
     lines.append("")
     lines.append("## Pilot sprints")
     for s in snapshot["pillars"]["delivery"].get("pilot_sprints") or []:
@@ -425,9 +430,9 @@ def render_snapshot_markdown(snapshot: dict[str, Any]) -> str:
     for a in snapshot.get("today_actions") or []:
         lines.append(f"- P{a['priority']}: {a['action_ar']}")
     lines.append("")
-    lines.append("## Offers (summary)")
+    lines.append("## Offers (launch-authorized)")
     for o in c.get("offers") or []:
         lines.append(
-            f"- {o.get('service_id')}: {o.get('price_sar')} SAR — {o.get('name_ar', o.get('name_en'))}"
+            f"- {o.get('service_id')}: {o.get('price_model')} — {o.get('name_ar', o.get('name_en'))}"
         )
     return "\n".join(lines) + "\n"
