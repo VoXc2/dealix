@@ -15,16 +15,11 @@ const nextConfig = {
   reactStrictMode: true,
   compress: true,
 
-  // Keep the legacy client variable working while the canonical deployment
-  // contract moves to NEXT_PUBLIC_DEALIX_API_BASE.
   env: {
     NEXT_PUBLIC_API_URL: dealixApiBase,
     NEXT_PUBLIC_DEALIX_API_BASE: dealixApiBase,
   },
 
-  // Existing pages that still call relative /api/v1 paths are proxied to the
-  // canonical Railway API. Browser Authorization headers remain intact and no
-  // platform API key is embedded in the frontend bundle.
   async rewrites() {
     return [
       {
@@ -34,7 +29,6 @@ const nextConfig = {
     ];
   },
 
-  // Security & performance headers
   async headers() {
     return [
       {
@@ -72,18 +66,26 @@ const nextConfig = {
     ];
   },
 
-  // Canonical Company OS pages. Self-serve /signup is intentionally active;
-  // the previous redirect to /book belonged to the older service-only flow.
+  // Public launch truth: one service-led buying path. Old static/SaaS URLs are
+  // redirected here so a DNS/origin cutover cannot resurrect retired offers,
+  // public checkout or self-serve starter/growth subscriptions.
   async redirects() {
     return [
       { source: "/landing", destination: "/", permanent: true },
       { source: "/ar", destination: "/", permanent: true },
+      { source: "/pricing.html", destination: "/pricing", permanent: true },
+      { source: "/academy.html", destination: "/pricing", permanent: true },
+      { source: "/customer-portal.html", destination: "/proof-vault", permanent: true },
+      { source: "/proof.html", destination: "/proof-vault", permanent: true },
+      { source: "/checkout.html", destination: "/pricing", permanent: true },
+      { source: "/signup", destination: "/book", permanent: true },
+      { source: "/offers", destination: "/pricing", permanent: true },
       { source: "/ar/pricing", destination: "/pricing", permanent: true },
-      { source: "/ar/offers", destination: "/offers", permanent: true },
-      { source: "/ar/p1", destination: "/offers", permanent: true },
-      { source: "/ar/p2", destination: "/offers", permanent: true },
-      { source: "/ar/p3", destination: "/offers", permanent: true },
-      { source: "/ar/diagnostic-sprint", destination: "/offers", permanent: true },
+      { source: "/ar/offers", destination: "/pricing", permanent: true },
+      { source: "/ar/p1", destination: "/pricing", permanent: true },
+      { source: "/ar/p2", destination: "/pricing", permanent: true },
+      { source: "/ar/p3", destination: "/pricing", permanent: true },
+      { source: "/ar/diagnostic-sprint", destination: "/book", permanent: true },
       { source: "/ar/demo", destination: "/book", permanent: true },
       { source: "/ar/intake", destination: "/book", permanent: true },
       { source: "/ar/case-studies", destination: "/cases", permanent: true },
