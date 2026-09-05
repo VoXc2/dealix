@@ -234,8 +234,12 @@ def _revision_metadata(path: Path) -> tuple[str, tuple[str, ...]]:
 
 def test_migration_extends_the_actual_single_alembic_head() -> None:
     versions = Path(__file__).resolve().parents[1] / "db/migrations/versions"
-    metadata = dict(_revision_metadata(path) for path in versions.glob("*.py"))
-    assert len(metadata) == len(list(versions.glob("*.py"))), "duplicate revision id"
+    migration_paths = [
+        path for path in versions.glob("*.py") if path.name != "__init__.py"
+    ]
+    revision_rows = [_revision_metadata(path) for path in migration_paths]
+    metadata = dict(revision_rows)
+    assert len(metadata) == len(revision_rows), "duplicate revision id"
 
     new_revision = "20260905_022_approval_center_snapshots"
     previous_head = "20260823_021_collaboration_events"
