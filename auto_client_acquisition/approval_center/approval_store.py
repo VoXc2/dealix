@@ -1,12 +1,13 @@
-"""In-memory, thread-safe ApprovalStore.
+"""Approval Center store contract and explicit backend factory.
 
-This is the v6 stopgap before a Redis-backed store ships. The public
-methods (``create``, ``approve``, ``reject``, ``edit``, ``list_pending``,
-``list_history``, ``get``) form the contract that the Redis variant will
-implement verbatim.
+The in-memory implementation remains the safe local/test default. Production can
+opt into Postgres with ``DEALIX_APPROVAL_STORE_BACKEND=postgres`` only when a real
+DSN is supplied and the Alembic-managed snapshot table already exists. Explicit
+Postgres selection never falls back to process memory.
 """
 from __future__ import annotations
 
+import os
 import threading
 from datetime import UTC, datetime
 from typing import Any
@@ -22,6 +23,11 @@ from auto_client_acquisition.approval_center.schemas import (
     ApprovalStatus,
 )
 
+_BACKEND_ENV = "DEALIX_APPROVAL_STORE_BACKEND"
+_DATABASE_URL_ENV = "DEALIX_APPROVAL_DATABASE_URL"
+_MEMORY_BACKENDS = {"", "memory", "in-memory", "in_memory"}
+_POSTGRES_BACKENDS = {"postgres", "postgresql"}
+
 
 class ApprovalStore:
     """Thread-safe in-memory store of ApprovalRequests."""
@@ -30,10 +36,7 @@ class ApprovalStore:
         self._lock = threading.Lock()
         self._items: dict[str, ApprovalRequest] = {}
 
-    # ─── Mutations ───────────────────────────────────────────────
-
     def create(self, req: ApprovalRequest) -> ApprovalRequest:
-        """Persist a new request. Runs safety policy at create time."""
         evaluate_safety(req)
         with self._lock:
             self._items[req.approval_id] = req
@@ -47,24 +50,12 @@ class ApprovalStore:
         content: str = "",
         engine: Any = None,
     ) -> ApprovalRequest:
-        """Persist a new request and attempt founder-rule auto-approval
-        atomically (the entire safety + match + transition happens under
-        the store lock so concurrent readers never observe partial state).
-
-        Channel gates (whatsapp/linkedin/phone) and risk gates remain
-        immutable — see founder_rules.py. If no rule matches, the
-        request stays pending and behaves identically to ``create()``.
-        """
-        # Defer import to avoid a hard dependency cycle at module load.
         from auto_client_acquisition.approval_center.founder_rules_integration import (
             try_auto_approve_via_founder_rule,
         )
 
         evaluate_safety(req)
         with self._lock:
-            # Mutate under the lock so external readers see only the
-            # final pending-or-approved state, never the intermediate
-            # "pending stored, approved next" race window.
             try_auto_approve_via_founder_rule(
                 req,
                 confidence=confidence,
@@ -75,7 +66,6 @@ class ApprovalStore:
         return req
 
     def approve(self, approval_id: str, who: str) -> ApprovalRequest:
-        """Mark a request approved. Raises ValueError on illegal transitions."""
         with self._lock:
             req = self._require(approval_id)
             assert_can_approve(req)
@@ -85,15 +75,12 @@ class ApprovalStore:
         return req
 
     def reject(self, approval_id: str, who: str, reason: str) -> ApprovalRequest:
-        """Mark a request rejected with reason. Raises on illegal transitions."""
         with self._lock:
             req = self._require(approval_id)
             assert_can_reject(req)
             req.status = ApprovalStatus.REJECTED
             req.reject_reason = reason
-            req.edit_history.append(
-                self._audit_entry(who, "reject", {"reason": reason})
-            )
+            req.edit_history.append(self._audit_entry(who, "reject", {"reason": reason}))
             req.updated_at = datetime.now(UTC)
         return req
 
@@ -103,14 +90,9 @@ class ApprovalStore:
         who: str,
         patch: dict[str, Any],
     ) -> ApprovalRequest:
-        """Apply an edit. Records the patch in ``edit_history`` without
-        mutating prior entries. Only safe-list fields are patched."""
         with self._lock:
             req = self._require(approval_id)
             assert_can_edit(req)
-
-            # Whitelist: never let an edit flip status / approval_id /
-            # created_at / edit_history itself.
             allowed = {
                 "summary_ar",
                 "summary_en",
@@ -125,17 +107,10 @@ class ApprovalStore:
                 if key in allowed:
                     setattr(req, key, value)
                     applied[key] = value
-
-            # Re-run safety in case action_mode / risk_level changed.
             evaluate_safety(req)
-
-            req.edit_history.append(
-                self._audit_entry(who, "edit", {"patch": applied})
-            )
+            req.edit_history.append(self._audit_entry(who, "edit", {"patch": applied}))
             req.updated_at = datetime.now(UTC)
         return req
-
-    # ─── Reads ───────────────────────────────────────────────────
 
     def get(self, approval_id: str) -> ApprovalRequest | None:
         with self._lock:
@@ -144,14 +119,14 @@ class ApprovalStore:
     def list_pending(self) -> list[ApprovalRequest]:
         with self._lock:
             rows = [
-                r for r in self._items.values()
+                r
+                for r in self._items.values()
                 if ApprovalStatus(r.status) == ApprovalStatus.PENDING
             ]
         rows.sort(key=lambda r: r.created_at)
         return rows
 
     def list_history(self, limit: int = 50) -> list[ApprovalRequest]:
-        """Return most-recent requests in any status, newest first."""
         limit = max(1, min(int(limit), 500))
         with self._lock:
             rows = list(self._items.values())
@@ -159,11 +134,6 @@ class ApprovalStore:
         return rows[:limit]
 
     def expire_overdue(self) -> int:
-        """Sweep pending requests whose expires_at has passed.
-
-        Flips status pending → expired. Returns count of expired items.
-        Designed to be called by a background job (cron / sleeper).
-        """
         now = datetime.now(UTC)
         expired_count = 0
         with self._lock:
@@ -175,9 +145,7 @@ class ApprovalStore:
                 ):
                     req.status = ApprovalStatus.EXPIRED
                     req.updated_at = now
-                    req.edit_history.append(
-                        self._audit_entry("system", "expire", {})
-                    )
+                    req.edit_history.append(self._audit_entry("system", "expire", {}))
                     expired_count += 1
         return expired_count
 
@@ -188,28 +156,28 @@ class ApprovalStore:
         proof_impact_prefix: str | None = None,
         approval_ids: list[str] | None = None,
     ) -> dict[str, Any]:
-        """Bulk-approve all pending requests matching either criterion.
-
-        Either provide approval_ids OR proof_impact_prefix (e.g.
-        "leadops:" to approve every draft from one leadops record).
-
-        Returns {'approved': [...ids], 'failed': [{'id', 'reason'}], 'total'}.
-        """
         approved: list[str] = []
         failed: list[dict[str, Any]] = []
         with self._lock:
             candidates: list[ApprovalRequest]
             if approval_ids:
-                candidates = [r for r in self._items.values() if r.approval_id in approval_ids]
+                candidates = [
+                    r for r in self._items.values() if r.approval_id in approval_ids
+                ]
             elif proof_impact_prefix:
                 candidates = [
-                    r for r in self._items.values()
+                    r
+                    for r in self._items.values()
                     if (r.proof_impact or "").startswith(proof_impact_prefix)
                     and ApprovalStatus(r.status) == ApprovalStatus.PENDING
                 ]
             else:
-                return {"approved": [], "failed": [], "total": 0,
-                        "reason": "either approval_ids or proof_impact_prefix required"}
+                return {
+                    "approved": [],
+                    "failed": [],
+                    "total": 0,
+                    "reason": "either approval_ids or proof_impact_prefix required",
+                }
 
             for req in candidates:
                 try:
@@ -220,21 +188,17 @@ class ApprovalStore:
                     )
                     req.updated_at = datetime.now(UTC)
                     approved.append(req.approval_id)
-                except Exception as e:
-                    failed.append({"id": req.approval_id, "reason": str(e)})
+                except Exception as exc:
+                    failed.append({"id": req.approval_id, "reason": str(exc)})
         return {
             "approved": approved,
             "failed": failed,
             "total": len(approved) + len(failed),
         }
 
-    # ─── Test helpers ────────────────────────────────────────────
-
     def clear(self) -> None:
         with self._lock:
             self._items.clear()
-
-    # ─── Internal ────────────────────────────────────────────────
 
     def _require(self, approval_id: str) -> ApprovalRequest:
         req = self._items.get(approval_id)
@@ -253,12 +217,146 @@ class ApprovalStore:
         return entry
 
 
-# Module-level singleton (process-scoped).
-_DEFAULT: ApprovalStore | None = None
+_DEFAULT: Any | None = None
+_DEFAULT_LOCK = threading.Lock()
 
 
-def get_default_approval_store() -> ApprovalStore:
+def _requested_backend() -> str:
+    return os.environ.get(_BACKEND_ENV, "memory").strip().lower()
+
+
+def _approval_database_url_from_env() -> str:
+    raw = (
+        os.environ.get(_DATABASE_URL_ENV, "").strip()
+        or os.environ.get("DATABASE_URL", "").strip()
+    )
+    if not raw:
+        raise RuntimeError(
+            "approval_store_postgres_requested_but_database_url_missing"
+        )
+    from auto_client_acquisition.persistence.db_sync_url import sync_sqlalchemy_url
+
+    return sync_sqlalchemy_url(raw)
+
+
+def approval_store_backend_status() -> dict[str, Any]:
+    """Return a redacted, read-only backend readiness receipt."""
+    backend = _requested_backend()
+    if backend in _MEMORY_BACKENDS:
+        return {
+            "verdict": "HOLD",
+            "backend": "memory",
+            "process_scoped": True,
+            "database_url_configured": False,
+            "schema_ready": False,
+            "reason": "approval_center_process_scoped",
+        }
+    if backend not in _POSTGRES_BACKENDS:
+        return {
+            "verdict": "FAIL",
+            "backend": backend or "unknown",
+            "process_scoped": False,
+            "database_url_configured": False,
+            "schema_ready": False,
+            "reason": "unsupported_approval_store_backend",
+        }
+
+    try:
+        database_url = _approval_database_url_from_env()
+    except RuntimeError as exc:
+        return {
+            "verdict": "HOLD",
+            "backend": "postgres",
+            "process_scoped": False,
+            "database_url_configured": False,
+            "schema_ready": False,
+            "reason": str(exc),
+        }
+
+    try:
+        from auto_client_acquisition.approval_center.postgres_store import (
+            PostgresApprovalStore,
+        )
+
+        store = PostgresApprovalStore(database_url=database_url, create_tables=False)
+        store.assert_ready()
+    except RuntimeError as exc:
+        reason = str(exc)
+        if reason not in {
+            "approval_center_schema_not_migrated",
+            "approval_center_postgres_unavailable",
+        }:
+            reason = "approval_center_postgres_unavailable"
+        return {
+            "verdict": "HOLD",
+            "backend": "postgres",
+            "process_scoped": False,
+            "database_url_configured": True,
+            "schema_ready": False,
+            "reason": reason,
+        }
+    except Exception:
+        return {
+            "verdict": "HOLD",
+            "backend": "postgres",
+            "process_scoped": False,
+            "database_url_configured": True,
+            "schema_ready": False,
+            "reason": "approval_center_postgres_unavailable",
+        }
+    return {
+        "verdict": "PASS",
+        "backend": "postgres",
+        "process_scoped": False,
+        "database_url_configured": True,
+        "schema_ready": True,
+        "reason": "approval_center_postgres_ready",
+    }
+
+
+def _build_default_approval_store() -> Any:
+    backend = _requested_backend()
+    if backend in _MEMORY_BACKENDS:
+        return ApprovalStore()
+    if backend in _POSTGRES_BACKENDS:
+        from auto_client_acquisition.approval_center.postgres_store import (
+            PostgresApprovalStore,
+        )
+
+        try:
+            store = PostgresApprovalStore(
+                database_url=_approval_database_url_from_env(),
+                create_tables=False,
+            )
+            store.assert_ready()
+        except RuntimeError:
+            raise
+        except Exception as exc:
+            raise RuntimeError("approval_center_postgres_unavailable") from exc
+        return store
+    raise RuntimeError(f"unsupported_approval_store_backend:{backend}")
+
+
+def get_default_approval_store() -> Any:
     global _DEFAULT
     if _DEFAULT is None:
-        _DEFAULT = ApprovalStore()
+        with _DEFAULT_LOCK:
+            if _DEFAULT is None:
+                _DEFAULT = _build_default_approval_store()
     return _DEFAULT
+
+
+def reset_default_approval_store_for_tests(store: Any | None = None) -> Any | None:
+    """Reset/inject the singleton for isolated tests only."""
+    global _DEFAULT
+    with _DEFAULT_LOCK:
+        _DEFAULT = store
+    return store
+
+
+__all__ = [
+    "ApprovalStore",
+    "approval_store_backend_status",
+    "get_default_approval_store",
+    "reset_default_approval_store_for_tests",
+]
