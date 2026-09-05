@@ -2,12 +2,11 @@
 
 Routes every "approval_required" action through one queryable queue
 with a uniform shape: pending list, create, approve, reject, edit
-(audit-trailed), history. Backed by the canonical ApprovalStore backend.
+(audit-trailed), history. Backed by the in-memory ``ApprovalStore``.
 
 Hard rules (mirrored at module level):
   - No live external send happens here. UI lives elsewhere.
   - "blocked" requests can never be approved (returns 400).
-  - Caller-supplied transitioned creation state fails closed (returns 400).
   - Schema is ``extra='forbid'`` so unknown fields surface as 422.
 """
 from __future__ import annotations
@@ -32,10 +31,11 @@ log = get_logger(__name__)
 async def status() -> dict[str, Any]:
     return {
         "module": "approval_center",
+        "backend": "in_memory",
+        "swappable_to_redis": True,
         "guardrails": {
             "no_live_send": True,
             "blocked_cannot_be_approved": True,
-            "transitioned_create_rejected": True,
             "edit_history_append_only": True,
             "no_pii_in_logs": True,
         },
@@ -63,12 +63,8 @@ async def pending() -> dict[str, Any]:
 
 @router.post("/create")
 async def create(payload: dict[str, Any] = Body(...)) -> dict[str, Any]:
-    """Create a new approval request.
-
-    Unknown fields fail validation. Caller-supplied transitioned states are
-    rejected by the store policy and surfaced as a bounded 400 rather than an
-    unhandled server error.
-    """
+    """Create a new approval request. Body must match ``ApprovalRequest``
+    minus auto-generated fields. Unknown fields → 422 (extra='forbid')."""
     try:
         req = ApprovalRequest.model_validate(payload)
     except ValidationError as exc:
