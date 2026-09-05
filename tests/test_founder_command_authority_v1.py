@@ -28,9 +28,10 @@ def test_founder_command_authority_verifier_passes() -> None:
     assert "FOUNDER_COMMAND_AUTHORITY_V1_PASS" in result.stdout
 
 
-def test_telegram_openclaw_is_the_only_required_founder_command_channel() -> None:
+def test_telegram_openclaw_is_the_only_canonical_primary_founder_channel() -> None:
     payload = _contract()
     assert payload["founder_command"]["primary_channel"] == "telegram_openclaw"
+
     slack = payload["optional_channels"]["slack"]
     assert slack["status"] == "OPTIONAL_DORMANT_CAPABILITY"
     assert slack["launch_dependency"] is False
@@ -38,6 +39,21 @@ def test_telegram_openclaw_is_the_only_required_founder_command_channel() -> Non
     assert slack["required_for_company_machine"] is False
     assert slack["required_for_customer_delivery"] is False
     assert slack["token_request_allowed_without_new_founder_decision"] is False
+
+    failover = payload["optional_channels"]["github_issue_vps_failover"]
+    assert failover["status"] == "INTERNAL_FAILOVER_ADAPTER"
+    assert failover["primary_founder_channel"] is False
+    assert failover["launch_dependency"] is False
+    assert failover["truth_owner"] is False
+    assert failover["new_authority_system"] is False
+    assert failover["same_dispatcher_and_durable_state_required"] is True
+    assert failover["private_repo_required"] is True
+    assert failover["founder_identity_required"] is True
+    assert failover["allowlist_only"] is True
+    assert failover["arbitrary_shell"] is False
+    assert failover["l5_allowed"] is False
+    assert failover["external_effect_authority"] is False
+    assert failover["runtime_status"] == UNKNOWN
 
 
 def test_founder_command_does_not_expand_material_authority() -> None:
@@ -57,6 +73,10 @@ def test_activation_requirements_are_not_runtime_proof() -> None:
     assert requirements["telegram_groups_disabled_by_default_required"] is True
     assert requirements["openclaw_secretref_audit_required"] is True
     assert requirements["current_vps_runtime_receipt_required"] is True
+    assert requirements["slack_runtime_receipt_required"] is False
+    assert requirements["slack_credentials_required"] is False
+    assert requirements["github_issue_failover_runtime_receipt_required"] is False
+    assert requirements["github_issue_failover_must_share_dispatcher_state"] is True
 
     runtime = payload["runtime_evidence"]
     assert runtime["status"] == UNKNOWN
@@ -74,6 +94,9 @@ def test_activation_requirements_are_not_runtime_proof() -> None:
 
 def test_command_messages_require_current_receipts_before_execution_claims() -> None:
     truth = _contract()["truth"]
+    assert truth["primary_channel_is_telegram_openclaw"] is True
+    assert truth["failover_adapter_is_not_primary_founder_channel"] is True
+    assert truth["failover_adapter_is_not_separate_authority"] is True
     assert truth["command_message_is_not_execution_proof"] is True
     assert truth["receipt_required_for_execution_claim"] is True
     assert truth["historical_receipt_is_not_current_runtime_proof"] is True
@@ -99,8 +122,6 @@ def test_runtime_acceptance_is_exact_head_read_only_and_secret_safe() -> None:
     assert "secret_values_printed=false" in text
     assert "owner_raw_id_printed=false" in text
 
-    # No OpenClaw mutation may be added to the acceptance path. Comments can
-    # mention forbidden commands, so assert the executable argument patterns.
     forbidden_runtime_mutations = (
         'oc_args("config", "set"',
         'oc_args("gateway", "restart"',
