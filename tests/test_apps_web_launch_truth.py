@@ -55,9 +55,9 @@ def test_next_redirects_retire_legacy_public_and_self_serve_surfaces() -> None:
 
     required_redirects = {
         '{ source: "/pricing.html", destination: "/pricing", permanent: true }',
-        '{ source: "/academy.html", destination: "/pricing", permanent: true }',
-        '{ source: "/customer-portal.html", destination: "/proof-vault", permanent: true }',
-        '{ source: "/proof.html", destination: "/proof-vault", permanent: true }',
+        '{ source: "/academy.html", destination: "/", permanent: true }',
+        '{ source: "/customer-portal.html", destination: "/", permanent: true }',
+        '{ source: "/proof.html", destination: "/", permanent: true }',
         '{ source: "/checkout.html", destination: "/pricing", permanent: true }',
         '{ source: "/signup", destination: "/book", permanent: true }',
         '{ source: "/offers", destination: "/pricing", permanent: true }',
@@ -65,4 +65,7 @@ def test_next_redirects_retire_legacy_public_and_self_serve_surfaces() -> None:
     for redirect in required_redirects:
         assert redirect in text
 
+    # Public legacy URLs must never be routed into founder/RBAC-only surfaces.
+    assert '{ source: "/customer-portal.html", destination: "/proof-vault"' not in text
+    assert '{ source: "/proof.html", destination: "/proof-vault"' not in text
     assert "Self-serve /signup is intentionally active" not in text
