@@ -8,7 +8,9 @@ Security model:
 - no arbitrary shell evaluation
 - no L5 operations
 - command output is redacted and capped before it is posted back to GitHub
-- state prevents replay of old comments
+- durable state prevents automatic redispatch; ambiguous outcomes fail closed
+- explicit bootstrap skips ALL historical comments; missing/corrupt state never resets
+- receipt publication can retry without rerunning a completed command
 - native issue-comment events are a failover path over the same dispatcher/state,
   not a second authority system
 """
@@ -24,9 +26,10 @@ import sys
 import tempfile
 import time
 from contextlib import contextmanager
-from datetime import UTC, datetime
+from datetime import UTC, datetime, timedelta
 from pathlib import Path
 from typing import Any, Iterator
+from urllib.parse import urlencode
 
 REPO = "Dealix-sa/dealix"
 ISSUE = 1119
@@ -37,6 +40,8 @@ STATE = Path("/opt/dealix/control/state/issue_bridge.json")
 LOCK = Path("/opt/dealix/control/state/issue_bridge.lock")
 MAX_OUTPUT_CHARS = 6000
 DEFAULT_NATIVE_GRACE_SECONDS = 75
+MAX_COMMENT_PAGES = 100
+PROOF_AUTHORS = {FOUNDER, "github-actions[bot]"}
 
 ALLOWED = {
     "status",
@@ -111,35 +116,89 @@ def gh_comment(body: str) -> None:
         Path(temp_name).unlink(missing_ok=True)
 
 
+def _timestamp(value: Any) -> str:
+    if not isinstance(value, str) or not re.fullmatch(
+        r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?Z", value
+    ):
+        raise ValueError("invalid timestamp")
+    datetime.fromisoformat(value.replace("Z", "+00:00"))
+    return value
+
+
+def _comment_id(value: Any, *, allow_zero: bool = False) -> int:
+    if type(value) is not int or value < (0 if allow_zero else 1):
+        raise ValueError("invalid comment id")
+    return value
+
+
 def load_state() -> dict[str, Any]:
-    if not STATE.exists():
-        return {"last_comment_id": 0, "last_created_at": "1970-01-01T00:00:00Z"}
+    """Never recover missing/corrupt state by replaying the historical queue."""
+    if STATE.is_symlink() or not STATE.is_file():
+        raise RuntimeError("BRIDGE_HOLD_STATE_MISSING_OR_UNSAFE")
     try:
         payload = json.loads(STATE.read_text(encoding="utf-8"))
-    except (json.JSONDecodeError, OSError):
-        return {"last_comment_id": 0, "last_created_at": "1970-01-01T00:00:00Z"}
-    return {
-        "last_comment_id": int(payload.get("last_comment_id") or 0),
-        "last_created_at": str(payload.get("last_created_at") or "1970-01-01T00:00:00Z"),
-    }
+        _comment_id(payload["last_comment_id"], allow_zero=True)
+        _timestamp(payload["last_created_at"])
+        pending = payload.get("pending")
+        if pending is not None:
+            if not isinstance(pending, dict):
+                raise ValueError("invalid pending state")
+            if _comment_id(pending["id"]) <= payload["last_comment_id"]:
+                raise ValueError("pending id is behind cursor")
+            _timestamp(pending["created_at"])
+            _timestamp(pending["started_at"])
+            if pending["command"] not in ALLOWED:
+                raise ValueError("invalid pending command")
+            if pending["phase"] not in {"STARTED", "FINISHED"}:
+                raise ValueError("invalid pending phase")
+            if pending["phase"] == "FINISHED":
+                proof = pending["proof"]
+                if (type(pending["exit_code"]) is not int
+                        or not isinstance(proof, str)
+                        or len(proof) > MAX_OUTPUT_CHARS + 2000
+                        or not proof.startswith("DEALIX_VPS_COMMAND_PROOF\n")
+                        or f'- source_comment_id: `{pending["id"]}`' not in proof.splitlines()
+                        or f'- command: `{pending["command"]}`' not in proof.splitlines()):
+                    raise ValueError("invalid finished proof")
+        return payload
+    except (OSError, ValueError, KeyError, TypeError):
+        raise RuntimeError("BRIDGE_HOLD_STATE_INVALID") from None
+
+
+def _write_state(payload: dict[str, Any]) -> None:
+    """Caller holds execution_lock; atomically replace and fsync one state file."""
+    STATE.parent.mkdir(parents=True, exist_ok=True)
+    if STATE.is_symlink():
+        raise RuntimeError("BRIDGE_HOLD_STATE_SYMLINK")
+    payload = {**payload, "updated_at": now_iso()}
+    with tempfile.NamedTemporaryFile(
+        "w", encoding="utf-8", dir=STATE.parent, prefix=".issue-bridge-", delete=False
+    ) as handle:
+        temporary = Path(handle.name)
+        try:
+            os.fchmod(handle.fileno(), 0o600)
+            handle.write(json.dumps(payload, indent=2) + "\n")
+            handle.flush()
+            os.fsync(handle.fileno())
+            os.replace(temporary, STATE)
+            directory = os.open(STATE.parent, os.O_RDONLY | os.O_DIRECTORY)
+            try:
+                os.fsync(directory)
+            finally:
+                os.close(directory)
+        finally:
+            temporary.unlink(missing_ok=True)
 
 
 def save_state(comment_id: int, created_at: str) -> None:
-    STATE.parent.mkdir(parents=True, exist_ok=True)
-    tmp = STATE.with_suffix(".tmp")
-    tmp.write_text(
-        json.dumps(
-            {
-                "last_comment_id": int(comment_id),
-                "last_created_at": created_at,
-                "updated_at": now_iso(),
-            },
-            indent=2,
-        )
-        + "\n",
-        encoding="utf-8",
-    )
-    os.replace(tmp, STATE)
+    state = load_state()
+    if _comment_id(comment_id, allow_zero=True) < state["last_comment_id"]:
+        raise RuntimeError("BRIDGE_HOLD_CURSOR_REGRESSION")
+    _write_state({
+        "last_comment_id": comment_id,
+        "last_created_at": _timestamp(created_at),
+        "pending": None,
+    })
 
 
 @contextmanager
@@ -186,20 +245,69 @@ def ensure_private_repo() -> None:
         raise RuntimeError("repository is not private")
 
 
+def list_comments(*, since: str | None = None) -> list[dict[str, Any]]:
+    """Read a bounded complete snapshot, including pages of edited old comments.
+
+    GitHub's `since` selects update time, not just creation time. A first page
+    containing only old IDs must not starve newer commands on subsequent pages.
+    No cursor is advanced on partial reads or a pagination-cap failure.
+    """
+    found: dict[int, dict[str, Any]] = {}
+    for page in range(1, MAX_COMMENT_PAGES + 1):
+        query: dict[str, Any] = {"per_page": 100, "page": page}
+        if since is not None:
+            query["since"] = _timestamp(since)
+        rows = gh_json(f"repos/{REPO}/issues/{ISSUE}/comments?{urlencode(query)}")
+        if not isinstance(rows, list):
+            raise RuntimeError("BRIDGE_HOLD_COMMENT_PAGE_INVALID")
+        try:
+            for row in rows:
+                ident = _comment_id(row["id"])
+                _timestamp(row["created_at"])
+                if not isinstance(row.get("body"), str) or not isinstance(row.get("user"), dict):
+                    raise ValueError("malformed comment")
+                if ident in found and row != found[ident]:
+                    raise ValueError("comment changed during pagination")
+                found[ident] = row
+        except (ValueError, KeyError, TypeError):
+            raise RuntimeError("BRIDGE_HOLD_COMMENT_INVALID_OR_CHANGED") from None
+        if len(rows) < 100:
+            return [found[key] for key in sorted(found)]
+    raise RuntimeError("BRIDGE_HOLD_PAGINATION_LIMIT")
+
+
+def _since(created_at: str) -> str:
+    # Overlap one second; exact comment IDs provide deduplication.
+    stamp = datetime.fromisoformat(_timestamp(created_at).replace("Z", "+00:00"))
+    return (stamp - timedelta(seconds=1)).strftime("%Y-%m-%dT%H:%M:%SZ")
+
+
 def bootstrap_state() -> int:
-    comments = gh_json(f"repos/{REPO}/issues/{ISSUE}/comments?per_page=100")
-    if comments:
-        latest = comments[-1]
-        save_state(int(latest["id"]), str(latest["created_at"]))
-    else:
-        save_state(0, now_iso())
+    """Explicit first initialization skips history; never reset existing state."""
+    with execution_lock():
+        if STATE.exists() or STATE.is_symlink():
+            raise RuntimeError("BRIDGE_HOLD_BOOTSTRAP_STATE_EXISTS")
+        comments = list_comments()
+        latest = comments[-1] if comments else None
+        _write_state({
+            "last_comment_id": latest["id"] if latest else 0,
+            "last_created_at": latest["created_at"] if latest else now_iso(),
+            "pending": None,
+        })
     return 0
 
 
-def proof_exists(comment_id: int) -> bool:
-    comments = gh_json(f"repos/{REPO}/issues/{ISSUE}/comments?per_page=100")
-    needle = f"source_comment_id: `{comment_id}`"
-    return any(needle in str(item.get("body") or "") for item in comments)
+def proof_exists(comment_id: int, command: str | None = None, *, since: str | None = None) -> bool:
+    comments = list_comments(since=since)
+    needle = f"- source_comment_id: `{comment_id}`"
+    for item in comments:
+        body = item["body"]
+        if (item["user"].get("login") in PROOF_AUTHORS
+                and body.startswith("DEALIX_VPS_COMMAND_PROOF\n")
+                and needle in body.splitlines()
+                and (command is None or f"- command: `{command}`" in body.splitlines())):
+            return True
+    return False
 
 
 def event_comment(event: dict[str, Any]) -> dict[str, Any] | None:
@@ -218,46 +326,97 @@ def event_comment(event: dict[str, Any]) -> dict[str, Any] | None:
     return comment
 
 
-def execute_comment(comment: dict[str, Any]) -> int:
-    comment_id = int(comment.get("id") or 0)
-    created_at = str(comment.get("created_at") or now_iso())
-    body = str(comment.get("body") or "")
-    command = parse_command(body)
+def resume_pending() -> int:
+    """Retry receipt publication, NEVER redispatch an ambiguous command.
 
-    if not command:
+    This is at-most-once automatic dispatch, not a distributed exactly-once
+    guarantee. A crash after STARTED requires evidence review. A completed
+    command with a temporarily unavailable GitHub API is safely publishable.
+    """
+    state = load_state()
+    pending = state.get("pending")
+    if pending is None:
+        return 0
+    if pending["phase"] != "FINISHED":
+        raise RuntimeError("BRIDGE_HOLD_AMBIGUOUS_DISPATCH_REVIEW_REQUIRED")
+    if not proof_exists(pending["id"], pending["command"], since=_since(pending["created_at"])):
+        gh_comment(pending["proof"])
+    save_state(pending["id"], pending["created_at"])
+    return pending["exit_code"]
+
+
+def execute_comment(comment: dict[str, Any]) -> int:
+    """Called only under the shared lock after sequential queue selection."""
+    state = load_state()
+    if state.get("pending") is not None:
+        raise RuntimeError("BRIDGE_HOLD_PENDING_COMMAND")
+    comment_id = _comment_id(comment["id"])
+    created_at = _timestamp(comment["created_at"])
+    if comment_id <= state["last_comment_id"]:
+        return 0
+    author = str((comment.get("user") or {}).get("login") or "")
+    command = parse_command(str(comment.get("body") or ""))
+    if author != FOUNDER or command is None:
+        # Founder notes and proof comments must advance the durable cursor too.
+        save_state(comment_id, created_at)
         return 0
     if command == "__DENIED__":
-        gh_comment(
-            "DENIED: unsupported Dealix VPS command. "
-            "Only the private bridge allowlist may execute."
-        )
+        save_state(comment_id, created_at)
+        print("DEALIX_VPS_COMMAND=DENIED_ALLOWLIST")
+        return 0
+    if proof_exists(comment_id, command, since=_since(created_at)):
         save_state(comment_id, created_at)
         return 0
 
     started = now_iso()
+    pending = {"id": comment_id, "created_at": created_at, "command": command,
+               "started_at": started, "phase": "STARTED"}
+    _write_state({**state, "pending": pending})
     proc = subprocess.run(
-        [str(CONTROL), command],
-        text=True,
-        capture_output=True,
-        check=False,
+        [str(CONTROL), command], text=True, capture_output=True, check=False,
         timeout=3300,
         env={**os.environ, "PATH": os.environ.get("PATH", "/usr/local/bin:/usr/bin:/bin")},
     )
-    finished = now_iso()
     safe_output = redact((proc.stdout or "") + ("\n" + proc.stderr if proc.stderr else ""))
     proof = (
         f"DEALIX_VPS_COMMAND_PROOF\n\n"
         f"- source_comment_id: `{comment_id}`\n"
         f"- command: `{command}`\n"
         f"- started_at: `{started}`\n"
-        f"- finished_at: `{finished}`\n"
+        f"- finished_at: `{now_iso()}`\n"
         f"- exit_code: `{proc.returncode}`\n"
         f"- host: `srv1916256`\n\n"
         f"```text\n{safe_output}\n```"
     )
-    gh_comment(proof)
-    save_state(comment_id, created_at)
-    return proc.returncode
+    pending.update(phase="FINISHED", proof=proof, exit_code=proc.returncode)
+    _write_state({**state, "pending": pending})
+    return resume_pending()
+
+
+def drain_queue(*, target: dict[str, Any] | None = None) -> int:
+    """Both poll and native events drain in order; native events cannot leapfrog."""
+    result = resume_pending()
+    if result:
+        return result
+    state = load_state()
+    if target is not None and _comment_id(target["id"]) <= state["last_comment_id"]:
+        return 0
+    comments = list_comments(since=_since(state["last_created_at"]))
+    if target is not None:
+        matches = [row for row in comments if row["id"] == target["id"]]
+        if not matches:
+            raise RuntimeError("BRIDGE_HOLD_EVENT_NOT_VISIBLE")
+        current = matches[0]
+        if any(current.get(key) != target.get(key) for key in ("body", "created_at")) or (
+            current["user"].get("login") != (target.get("user") or {}).get("login")
+        ):
+            raise RuntimeError("BRIDGE_HOLD_EVENT_CHANGED")
+        comments = [row for row in comments if row["id"] <= target["id"]]
+    for comment in comments:
+        result = execute_comment(comment)
+        if result:
+            return result
+    return 0
 
 
 def process_native_event() -> int:
@@ -274,7 +433,6 @@ def process_native_event() -> int:
         print("DEALIX_VPS_NATIVE_EVENT=IGNORED")
         return 0
 
-    comment_id = int(comment.get("id") or 0)
     command = parse_command(str(comment.get("body") or ""))
     if command is None:
         print("DEALIX_VPS_NATIVE_EVENT=IGNORED_NO_COMMAND")
@@ -285,47 +443,18 @@ def process_native_event() -> int:
         time.sleep(grace)
 
     with execution_lock():
-        state = load_state()
-        if comment_id <= int(state["last_comment_id"]):
-            print("DEALIX_VPS_NATIVE_EVENT=SKIPPED_STATE_ALREADY_ADVANCED")
-            return 0
-        if proof_exists(comment_id):
-            save_state(comment_id, str(comment.get("created_at") or now_iso()))
-            print("DEALIX_VPS_NATIVE_EVENT=SKIPPED_PROOF_ALREADY_EXISTS")
-            return 0
-        result = execute_comment(comment)
+        result = drain_queue(target=comment)
 
-    print(f"DEALIX_VPS_NATIVE_EVENT=EXECUTED exit_code={result}")
-    return 0 if result == 0 else result
+    print(f"DEALIX_VPS_NATIVE_EVENT=QUEUE_DRAINED exit_code={result}")
+    return result
 
 
 def process_poll_cycle() -> int:
     ensure_private_repo()
     if not CONTROL.is_file():
         raise RuntimeError(f"control dispatcher missing: {CONTROL}")
-
     with execution_lock():
-        state = load_state()
-        last_id = int(state["last_comment_id"])
-        since = str(state["last_created_at"])
-        comments = gh_json(
-            f"repos/{REPO}/issues/{ISSUE}/comments?per_page=100&since={since}"
-        )
-
-        for comment in comments:
-            comment_id = int(comment.get("id") or 0)
-            created_at = str(comment.get("created_at") or now_iso())
-            if comment_id <= last_id:
-                continue
-
-            author = str((comment.get("user") or {}).get("login") or "")
-            if author == FOUNDER:
-                execute_comment(comment)
-            else:
-                save_state(comment_id, created_at)
-
-            last_id = comment_id
-    return 0
+        return drain_queue()
 
 
 def main() -> int:
@@ -340,9 +469,10 @@ def main() -> int:
 if __name__ == "__main__":
     try:
         raise SystemExit(main())
-    except subprocess.TimeoutExpired as exc:
-        print(f"bridge timeout: {exc}", file=sys.stderr)
+    except subprocess.TimeoutExpired:
+        print("BRIDGE_HOLD_TIMEOUT_OUTCOME_UNKNOWN", file=sys.stderr)
         raise SystemExit(124)
     except Exception as exc:
-        print(f"bridge blocked: {type(exc).__name__}: {exc}", file=sys.stderr)
+        reason = str(exc) if re.fullmatch(r"BRIDGE_HOLD_[A-Z_]+", str(exc)) else type(exc).__name__
+        print(f"bridge blocked: {reason}", file=sys.stderr)
         raise SystemExit(1)
