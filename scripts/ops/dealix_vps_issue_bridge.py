@@ -9,19 +9,24 @@ Security model:
 - no L5 operations
 - command output is redacted and capped before it is posted back to GitHub
 - state prevents replay of old comments
+- native issue-comment events are a failover path over the same dispatcher/state,
+  not a second authority system
 """
 
 from __future__ import annotations
 
+import fcntl
 import json
 import os
 import re
 import subprocess
 import sys
 import tempfile
+import time
+from contextlib import contextmanager
 from datetime import UTC, datetime
 from pathlib import Path
-from typing import Any
+from typing import Any, Iterator
 
 REPO = "Dealix-sa/dealix"
 ISSUE = 1119
@@ -29,7 +34,9 @@ FOUNDER = "VoXc2"
 PREFIX = "!dealix "
 CONTROL = Path("/opt/dealix/control/bin/dealix_vps_control.sh")
 STATE = Path("/opt/dealix/control/state/issue_bridge.json")
+LOCK = Path("/opt/dealix/control/state/issue_bridge.lock")
 MAX_OUTPUT_CHARS = 6000
+DEFAULT_NATIVE_GRACE_SECONDS = 75
 
 ALLOWED = {
     "status",
@@ -135,6 +142,17 @@ def save_state(comment_id: int, created_at: str) -> None:
     os.replace(tmp, STATE)
 
 
+@contextmanager
+def execution_lock() -> Iterator[None]:
+    LOCK.parent.mkdir(parents=True, exist_ok=True)
+    with LOCK.open("a+", encoding="utf-8") as handle:
+        fcntl.flock(handle.fileno(), fcntl.LOCK_EX)
+        try:
+            yield
+        finally:
+            fcntl.flock(handle.fileno(), fcntl.LOCK_UN)
+
+
 def redact(text: str) -> str:
     cleaned = text.replace("\x00", "")
     for pattern in SECRET_PATTERNS:
@@ -178,64 +196,145 @@ def bootstrap_state() -> int:
     return 0
 
 
-def main() -> int:
+def proof_exists(comment_id: int) -> bool:
+    comments = gh_json(f"repos/{REPO}/issues/{ISSUE}/comments?per_page=100")
+    needle = f"source_comment_id: `{comment_id}`"
+    return any(needle in str(item.get("body") or "") for item in comments)
+
+
+def event_comment(event: dict[str, Any]) -> dict[str, Any] | None:
+    if str(event.get("action") or "") != "created":
+        return None
+    repository = event.get("repository") or {}
+    if str(repository.get("full_name") or "") != REPO or repository.get("private") is not True:
+        return None
+    issue = event.get("issue") or {}
+    if int(issue.get("number") or 0) != ISSUE:
+        return None
+    comment = event.get("comment") or {}
+    author = str((comment.get("user") or {}).get("login") or "")
+    if author != FOUNDER:
+        return None
+    return comment
+
+
+def execute_comment(comment: dict[str, Any]) -> int:
+    comment_id = int(comment.get("id") or 0)
+    created_at = str(comment.get("created_at") or now_iso())
+    body = str(comment.get("body") or "")
+    command = parse_command(body)
+
+    if not command:
+        return 0
+    if command == "__DENIED__":
+        gh_comment(
+            "DENIED: unsupported Dealix VPS command. "
+            "Only the private bridge allowlist may execute."
+        )
+        save_state(comment_id, created_at)
+        return 0
+
+    started = now_iso()
+    proc = subprocess.run(
+        [str(CONTROL), command],
+        text=True,
+        capture_output=True,
+        check=False,
+        timeout=3300,
+        env={**os.environ, "PATH": os.environ.get("PATH", "/usr/local/bin:/usr/bin:/bin")},
+    )
+    finished = now_iso()
+    safe_output = redact((proc.stdout or "") + ("\n" + proc.stderr if proc.stderr else ""))
+    proof = (
+        f"DEALIX_VPS_COMMAND_PROOF\n\n"
+        f"- source_comment_id: `{comment_id}`\n"
+        f"- command: `{command}`\n"
+        f"- started_at: `{started}`\n"
+        f"- finished_at: `{finished}`\n"
+        f"- exit_code: `{proc.returncode}`\n"
+        f"- host: `srv1916256`\n\n"
+        f"```text\n{safe_output}\n```"
+    )
+    gh_comment(proof)
+    save_state(comment_id, created_at)
+    return proc.returncode
+
+
+def process_native_event() -> int:
     ensure_private_repo()
     if not CONTROL.is_file():
         raise RuntimeError(f"control dispatcher missing: {CONTROL}")
 
-    if "--bootstrap" in sys.argv:
-        return bootstrap_state()
+    event_path = Path(os.environ.get("GITHUB_EVENT_PATH", ""))
+    if not event_path.is_file():
+        raise RuntimeError("GITHUB_EVENT_PATH missing")
+    event = json.loads(event_path.read_text(encoding="utf-8"))
+    comment = event_comment(event)
+    if comment is None:
+        print("DEALIX_VPS_NATIVE_EVENT=IGNORED")
+        return 0
 
-    state = load_state()
-    last_id = int(state["last_comment_id"])
-    since = str(state["last_created_at"])
-    comments = gh_json(
-        f"repos/{REPO}/issues/{ISSUE}/comments?per_page=100&since={since}"
-    )
+    comment_id = int(comment.get("id") or 0)
+    command = parse_command(str(comment.get("body") or ""))
+    if command is None:
+        print("DEALIX_VPS_NATIVE_EVENT=IGNORED_NO_COMMAND")
+        return 0
 
-    for comment in comments:
-        comment_id = int(comment.get("id") or 0)
-        created_at = str(comment.get("created_at") or now_iso())
-        if comment_id <= last_id:
-            continue
+    grace = max(0, int(os.environ.get("DEALIX_NATIVE_EVENT_GRACE_SECONDS", DEFAULT_NATIVE_GRACE_SECONDS)))
+    if grace:
+        time.sleep(grace)
 
-        author = str((comment.get("user") or {}).get("login") or "")
-        body = str(comment.get("body") or "")
-        command = parse_command(body)
+    with execution_lock():
+        state = load_state()
+        if comment_id <= int(state["last_comment_id"]):
+            print("DEALIX_VPS_NATIVE_EVENT=SKIPPED_STATE_ALREADY_ADVANCED")
+            return 0
+        if proof_exists(comment_id):
+            save_state(comment_id, str(comment.get("created_at") or now_iso()))
+            print("DEALIX_VPS_NATIVE_EVENT=SKIPPED_PROOF_ALREADY_EXISTS")
+            return 0
+        result = execute_comment(comment)
 
-        if author == FOUNDER and command == "__DENIED__":
-            gh_comment(
-                "DENIED: unsupported Dealix VPS command. "
-                "Only the private bridge allowlist may execute."
-            )
-        elif author == FOUNDER and command:
-            started = now_iso()
-            proc = subprocess.run(
-                [str(CONTROL), command],
-                text=True,
-                capture_output=True,
-                check=False,
-                timeout=3300,
-                env={**os.environ, "PATH": os.environ.get("PATH", "/usr/local/bin:/usr/bin:/bin")},
-            )
-            finished = now_iso()
-            safe_output = redact((proc.stdout or "") + ("\n" + proc.stderr if proc.stderr else ""))
-            proof = (
-                f"DEALIX_VPS_COMMAND_PROOF\n\n"
-                f"- source_comment_id: `{comment_id}`\n"
-                f"- command: `{command}`\n"
-                f"- started_at: `{started}`\n"
-                f"- finished_at: `{finished}`\n"
-                f"- exit_code: `{proc.returncode}`\n"
-                f"- host: `srv1916256`\n\n"
-                f"```text\n{safe_output}\n```"
-            )
-            gh_comment(proof)
+    print(f"DEALIX_VPS_NATIVE_EVENT=EXECUTED exit_code={result}")
+    return 0 if result == 0 else result
 
-        save_state(comment_id, created_at)
-        last_id = comment_id
 
+def process_poll_cycle() -> int:
+    ensure_private_repo()
+    if not CONTROL.is_file():
+        raise RuntimeError(f"control dispatcher missing: {CONTROL}")
+
+    with execution_lock():
+        state = load_state()
+        last_id = int(state["last_comment_id"])
+        since = str(state["last_created_at"])
+        comments = gh_json(
+            f"repos/{REPO}/issues/{ISSUE}/comments?per_page=100&since={since}"
+        )
+
+        for comment in comments:
+            comment_id = int(comment.get("id") or 0)
+            created_at = str(comment.get("created_at") or now_iso())
+            if comment_id <= last_id:
+                continue
+
+            author = str((comment.get("user") or {}).get("login") or "")
+            if author == FOUNDER:
+                execute_comment(comment)
+            else:
+                save_state(comment_id, created_at)
+
+            last_id = comment_id
     return 0
+
+
+def main() -> int:
+    if "--bootstrap" in sys.argv:
+        ensure_private_repo()
+        return bootstrap_state()
+    if "--event" in sys.argv:
+        return process_native_event()
+    return process_poll_cycle()
 
 
 if __name__ == "__main__":
