@@ -88,9 +88,20 @@ def test_installer_has_resource_and_filesystem_guards():
         assert needle in text
 
 
-def test_founder_command_bridge_reuses_canonical_verifier():
+def test_founder_command_bridge_reuses_canonical_verifier_and_pr_poller():
     text = CONTROL.read_text(encoding="utf-8")
     assert "DEALIX CANONICAL SOVEREIGN VERIFY" in text
     assert "bin/dealix verify trust --worktree" in text
+    assert 'SOVEREIGN_ADAPTER="/opt/dealix/control/bin/dealix_sovereign_adapter.py"' in text
+    assert 'SOVEREIGN_PR_POLL=BLOCKED_ADAPTER_NOT_INSTALLED' in text
+    assert '/usr/bin/python3 "$SOVEREIGN_ADAPTER" poll' in text
     assert "scripts/verify_full_autonomous_ops_stack.py --skip-api" not in text
     assert "scripts/company_ready_verify.sh --docs-only --skip-go-live" not in text
+
+
+def test_founder_verify_does_not_add_dynamic_pr_or_sha_input_surface():
+    text = CONTROL.read_text(encoding="utf-8")
+    assert 'verify-pr:*)' not in text
+    assert 'verify-sha:*)' not in text
+    assert 'git fetch origin "$' not in text
+    assert 'eval ' not in text
