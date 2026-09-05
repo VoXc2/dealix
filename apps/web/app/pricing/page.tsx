@@ -1,36 +1,36 @@
 import Link from "next/link";
 
 export const metadata = {
-  title: "مسار الشراء — Dealix",
+  title: "Engagement Path — Dealix",
   description:
-    "Dealix تبدأ بـMini Diagnostic مجاني، ثم Qualified Discovery، ثم عرض مخصص لـRevenue Command Pilot لمدة 30 يومًا. لا سعر عام ولا Checkout عام.",
+    "Dealix تبدأ بـExecution Diagnostic، ثم Qualified Discovery وعرض خاص بالعميل، ثم Outcome Sprint وDealix Runtime عند ثبوت القيمة. لا سعر عام ولا Checkout عام.",
 };
 
 const buyingPath = [
   {
     step: "01",
-    title: "Free Mini Diagnostic",
-    text: "نحدد مشكلة تشغيلية واحدة قابلة للقياس، صاحب القرار، والبيانات المتاحة. لا بطاقة ولا التزام شراء.",
+    title: "Execution Diagnostic",
+    text: "نحدد workflow واحدًا قابلًا للتنفيذ والقياس، baseline وصاحب قرار وحدود البيانات. لا بطاقة ولا التزام شراء.",
   },
   {
     step: "02",
-    title: "Qualified Discovery",
-    text: "إذا كانت المشكلة مؤهلة، نثبت baseline، نطاق المسؤولية، مصدر البيانات، وطريقة قياس القيمة قبل أي عرض.",
+    title: "Qualified Discovery + Customer-Specific Quote",
+    text: "نثبت المشكلة والنطاق ومعايير الإثبات، ثم نحدد السعر والنطاق لشركة محددة فقط. لا قائمة أسعار عامة أو خصومات آلية أو Checkout عام.",
   },
   {
     step: "03",
-    title: "Customer-Specific Quote",
-    text: "السعر والنطاق يحددان لشركة محددة بعد Discovery. لا توجد قائمة أسعار عامة أو خصومات آلية أو Checkout عام.",
+    title: "Outcome Sprint",
+    text: "تنفيذ محكوم يركز على نتيجة محددة قابلة للقياس. المدة يحددها النطاق، وعادة تكون نحو 4–6 أسابيع عندما يكون ذلك مناسبًا؛ ليست ضمانًا زمنيًا عامًا.",
   },
   {
     step: "04",
-    title: "Revenue Command Pilot — 30 Days",
-    text: "Pilot محكوم لمدة 30 يومًا، يبدأ بعد قبول العرض وإثبات الدفع. AI يقترح، والتنفيذ الحساس يبقى بموافقة بشرية.",
+    title: "Proof Review",
+    text: "نقارن النتيجة بالـbaseline ونفصل activity عن value. لا synthetic/demo evidence يتحول إلى Customer Proof.",
   },
   {
     step: "05",
-    title: "Proof → Stop / Expand / Redesign",
-    text: "نقيس النتيجة مقابل baseline. التوسع لا يحدث تلقائيًا؛ يُبنى فقط على Proof مقبول من العميل.",
+    title: "Dealix Runtime",
+    text: "إذا أثبت الـSprint قيمة قابلة للتكرار، يمكن توسيع Dealix إلى Runtime مستمر للمراقبة والتنفيذ والإثبات. التوسع ليس تلقائيًا.",
   },
 ];
 
@@ -39,11 +39,11 @@ export default function PricingPage() {
     <main className="min-h-screen bg-[#070A12] text-white">
       <div className="mx-auto max-w-5xl px-6 py-16">
         <header>
-          <p className="text-xs uppercase tracking-[0.3em] text-amber-300/80">Revenue + Proof + Command</p>
-          <h1 className="mt-3 text-4xl font-semibold">مسار شراء واحد، بدون باقات عامة</h1>
+          <p className="text-xs uppercase tracking-[0.3em] text-cyan-300/80">Signal → Decision → Action → Proof</p>
+          <h1 className="mt-3 text-4xl font-semibold">مسار تنفيذ واحد، بدون باقات عامة</h1>
           <p className="mt-4 max-w-3xl text-base leading-8 text-white/70">
-            Dealix لا تبيع سبع باقات ولا اشتراكًا ذاتي التسجيل في مرحلة التدشين. نبدأ بمشكلة حقيقية،
-            نثبتها، ثم نحدد نطاقًا وسعرًا خاصين بالعميل إذا كان Pilot لمدة 30 يومًا هو الخطوة الصحيحة.
+            Dealix لا تبيع قائمة خدمات أو اشتراكًا ذاتي التسجيل في مرحلة التدشين. نبدأ بحالة تنفيذ حقيقية،
+            نثبتها، ثم نحدد نطاقًا وسعرًا خاصين بالعميل إذا كان Outcome Sprint هو الخطوة الصحيحة.
           </p>
         </header>
 
@@ -51,7 +51,7 @@ export default function PricingPage() {
           {buyingPath.map((item) => (
             <article key={item.step} className="rounded-2xl border border-white/10 bg-white/[0.03] p-6">
               <div className="flex gap-4">
-                <span className="text-sm font-semibold text-amber-300">{item.step}</span>
+                <span className="text-sm font-semibold text-cyan-300">{item.step}</span>
                 <div>
                   <h2 className="text-xl font-semibold">{item.title}</h2>
                   <p className="mt-2 leading-7 text-white/70">{item.text}</p>
@@ -61,28 +61,28 @@ export default function PricingPage() {
           ))}
         </section>
 
-        <section className="mt-10 rounded-2xl border border-amber-300/20 bg-amber-300/5 p-6">
-          <h2 className="text-lg font-semibold text-amber-200">قواعد Dealix التجارية</h2>
+        <section className="mt-10 rounded-2xl border border-cyan-300/20 bg-cyan-300/5 p-6">
+          <h2 className="text-lg font-semibold text-cyan-200">قواعد Dealix التجارية</h2>
           <ul className="mt-3 space-y-2 text-sm leading-6 text-white/75">
-            <li>• Mini Diagnostic مجاني ولا يحتاج بطاقة.</li>
-            <li>• لا سعر عام ولا Checkout عام للـRevenue Command Pilot.</li>
+            <li>• Execution Diagnostic لا يمنح أي سلطة إرسال أو دفع.</li>
+            <li>• لا سعر عام ولا Checkout عام للـOutcome Sprint أو Dealix Runtime.</li>
             <li>• كل عرض مرتبط بعميل محدد وبعد Qualified Discovery.</li>
-            <li>• Invoice ليست Payment، وبدء التسليم المدفوع يحتاج إثبات دفع مستقل.</li>
-            <li>• لا ضمان ROI أو نتيجة مالية محددة مسبقًا.</li>
-            <li>• أي توسع أو Retainer يأتي بعد Proof، وليس قبلها.</li>
+            <li>• Quote ليست Invoice، وInvoice ليست Payment، وبدء التسليم المدفوع يحتاج إثبات دفع مستقل.</li>
+            <li>• لا ضمان ROI أو نتيجة مالية أو مدة ثابتة لكل عميل.</li>
+            <li>• Dealix Runtime يأتي بعد Proof مناسب، وليس قبلها.</li>
           </ul>
         </section>
 
         <section className="mt-10 text-center">
-          <h2 className="text-2xl font-semibold">ابدأ بالمشكلة، لا بالباقـة</h2>
+          <h2 className="text-2xl font-semibold">ابدأ بالـworkflow، لا بالباقـة</h2>
           <p className="mx-auto mt-3 max-w-2xl text-sm leading-7 text-white/65">
-            إذا عندك تسريب إيراد أو متابعة متقطعة أو قرار يومي مبني على أدوات متفرقة، ابدأ بـMini Diagnostic.
+            إذا عندك قرار أو workflow مهم لا يتحول اليوم إلى تنفيذ محكوم ونتيجة قابلة للإثبات، ابدأ بـExecution Diagnostic.
           </p>
           <Link
             href="/book"
-            className="mt-6 inline-block rounded-full bg-amber-300 px-8 py-3 text-sm font-semibold text-black transition hover:bg-amber-200"
+            className="mt-6 inline-block rounded-full bg-cyan-300 px-8 py-3 text-sm font-semibold text-black transition hover:bg-cyan-200"
           >
-            اطلب Mini Diagnostic مجاني
+            اطلب Execution Diagnostic
           </Link>
         </section>
       </div>
