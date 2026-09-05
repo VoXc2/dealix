@@ -67,7 +67,7 @@ def _canonical_commercial_map() -> dict[str, Any]:
             "quote_requires_qualified_discovery": True,
             "quote_requires_explicit_authority": True,
             "invoice_requires_approved_quote_fingerprint": True,
-            "invoice_requires_durable_approval_record": True,
+            "invoice_requires_approval_record_before_persistence": True,
             "invoice_draft_is_idempotent": True,
             "invoice_is_not_payment": True,
             "payment_requires_independent_evidence": True,
