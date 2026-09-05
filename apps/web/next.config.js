@@ -68,15 +68,15 @@ const nextConfig = {
 
   // Public launch truth: one service-led buying path. Old static/SaaS URLs are
   // redirected here so a DNS/origin cutover cannot resurrect retired offers,
-  // public checkout or self-serve starter/growth subscriptions.
+  // public checkout, synthetic customer state, or protected founder surfaces.
   async redirects() {
     return [
       { source: "/landing", destination: "/", permanent: true },
       { source: "/ar", destination: "/", permanent: true },
       { source: "/pricing.html", destination: "/pricing", permanent: true },
-      { source: "/academy.html", destination: "/pricing", permanent: true },
-      { source: "/customer-portal.html", destination: "/proof-vault", permanent: true },
-      { source: "/proof.html", destination: "/proof-vault", permanent: true },
+      { source: "/academy.html", destination: "/", permanent: true },
+      { source: "/customer-portal.html", destination: "/", permanent: true },
+      { source: "/proof.html", destination: "/", permanent: true },
       { source: "/checkout.html", destination: "/pricing", permanent: true },
       { source: "/signup", destination: "/book", permanent: true },
       { source: "/offers", destination: "/pricing", permanent: true },
