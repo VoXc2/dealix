@@ -56,6 +56,7 @@ Dealix remains **Saudi-first** and internally operates as an **AI Business Opera
 ### Pricing / commercial authority
 
 - الأسعار **customer-specific quote only** بعد Discovery.
+- No public fixed-price table.
 - لا public fixed-price table.
 - لا public checkout authority.
 - لا guaranteed revenue / ROI / result claim.
