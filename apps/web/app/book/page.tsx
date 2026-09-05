@@ -15,48 +15,49 @@ export default function BookPage() {
           paddingBottom: "clamp(40px,6vw,72px)",
         }}
       >
-        <p className="eyebrow">Free Mini Diagnostic</p>
-        <h1 style={{ maxWidth: 860 }}>ابدأ بتشخيص مشكلة تشغيلية واحدة — مجانًا</h1>
+        <p className="eyebrow">Execution Diagnostic</p>
+        <h1 style={{ maxWidth: 860 }}>ابدأ بحالة تنفيذ واحدة قابلة للقياس والإثبات</h1>
         <p style={{ maxWidth: 720, fontSize: "1.15rem", lineHeight: 1.7 }}>
-          نراجع مشكلة واحدة تؤثر على الإيراد أو المتابعة أو القرار اليومي، ونحدد هل تستحق Discovery أعمق.
-          لا بطاقة، لا Checkout، ولا التزام بشراء Pilot.
+          نراجع workflow أو قرارًا تشغيليًا واحدًا ونحدد الإشارة، صاحب القرار، baseline، حدود البيانات،
+          وما إذا كان يمكن تحويله إلى تنفيذ محكوم ونتيجة قابلة للإثبات. لا Checkout ولا التزام شراء.
         </p>
 
         <div className="divider-gold" />
 
         <h3>ماذا نحتاج منك؟</h3>
         <ul style={{ maxWidth: 720 }}>
-          <li>المشكلة التي تريد حلها الآن، بصياغة عملية وليست عامة.</li>
+          <li>الـworkflow أو القرار الذي تريد تحسينه الآن، بصياغة عملية وليست عامة.</li>
           <li>من يملك القرار والمتابعة داخل الشركة.</li>
           <li>ما البيانات أو الأدوات التي تعتمدون عليها اليوم.</li>
-          <li>كيف تعرفون أن المشكلة تحسنت: وقت، conversion، متابعة، cash أو KPI آخر.</li>
+          <li>كيف تعرفون أن الوضع تحسن: وقت، conversion، cash، جودة، سرعة قرار أو KPI آخر.</li>
         </ul>
 
         <h3>ماذا يحدث بعده؟</h3>
         <ul style={{ maxWidth: 720 }}>
-          <li>إذا لم تكن المشكلة مناسبة لـDealix، نتوقف بدون التزام.</li>
-          <li>إذا كانت مؤهلة، ننتقل إلى Qualified Discovery لتثبيت baseline والنطاق.</li>
+          <li>إذا لم توجد حالة تنفيذ مناسبة لـDealix، نتوقف بدون التزام.</li>
+          <li>إذا كانت مناسبة، ننتقل إلى Qualified Discovery لتثبيت baseline والنطاق ومعايير الإثبات.</li>
           <li>لا يصدر سعر إلا في Customer-Specific Quote بعد Discovery.</li>
-          <li>الـRevenue Command Pilot مدته 30 يومًا ويبدأ فقط بعد قبول العرض وإثبات الدفع.</li>
+          <li>إذا اتفقنا على التنفيذ، يبدأ Outcome Sprint بعد قبول النطاق واستيفاء شروط البدء والدفع المناسبة.</li>
+          <li>بعد Proof Review فقط نقرر Stop / Redesign / Expand إلى Dealix Runtime.</li>
         </ul>
 
         <h3>لمن هذا المسار؟</h3>
         <ul style={{ maxWidth: 720 }}>
-          <li>شركات B2B في السعودية لديها ألم تشغيلي واضح وصاحب قرار معروف.</li>
-          <li>فرق تحتاج Revenue + Proof + Command بدل إضافة أدوات جديدة.</li>
+          <li>شركات تعمل في السعودية ولديها workflow اقتصادي أو تشغيلي واضح وصاحب قرار معروف.</li>
+          <li>فرق لديها AI وCRM/ERP/Email/WhatsApp وأدوات متعددة لكن القرار والتنفيذ والإثبات غير مترابطة.</li>
           <li>شركات تقبل human approvals وتستطيع توفير بيانات مشروعة وقابلة للقياس.</li>
         </ul>
 
         <h3>لمن ليس هذا المسار؟</h3>
         <ul style={{ maxWidth: 720 }}>
-          <li>من يريد ضمان عائد أو نتيجة مالية محددة مسبقًا.</li>
+          <li>من يريد ضمان عائد أو نتيجة مالية أو مدة ثابتة قبل فهم النطاق.</li>
           <li>من يريد mass outreach أو cold WhatsApp أو صلاحيات خارجية بلا حوكمة.</li>
           <li>من لا يستطيع تحديد owner أو baseline أو طريق واضح للإثبات.</li>
         </ul>
 
         <CTA
-          href="mailto:founder@dealix.sa?subject=طلب%20Mini%20Diagnostic%20مجاني"
-          label="اطلب Mini Diagnostic عبر البريد"
+          href="mailto:founder@dealix.sa?subject=طلب%20Execution%20Diagnostic"
+          label="اطلب Execution Diagnostic عبر البريد"
         />
 
         <p
