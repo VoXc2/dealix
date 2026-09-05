@@ -8,6 +8,8 @@ ROOT = Path(__file__).resolve().parents[1]
 MATRIX = ROOT / "dealix/config/railway_services.json"
 WEB_CONFIG = ROOT / "apps/web/railway.toml"
 ROOT_CONFIG = ROOT / "railway.toml"
+NEXT_CONFIG = ROOT / "apps/web/next.config.js"
+DOCKERFILE = ROOT / "apps/web/Dockerfile"
 
 
 def _matrix_web() -> dict:
@@ -46,3 +48,17 @@ def test_repo_root_config_is_not_the_canonical_web_config() -> None:
     assert "preDeployCommand" in root_config["deploy"]
     assert "preDeployCommand" not in web_config["deploy"]
     assert _matrix_web()["providerConfigFile"] != "/railway.toml"
+
+
+def test_railway_app_root_build_keeps_next_standalone_entrypoint_at_root() -> None:
+    next_config = NEXT_CONFIG.read_text(encoding="utf-8")
+    dockerfile = DOCKERFILE.read_text(encoding="utf-8")
+
+    # The repository intentionally has lockfiles at both repo root and apps/web.
+    # Pin tracing to the Next application so direct VPS builds and Railway's
+    # apps/web Docker context resolve the same standalone entrypoint contract.
+    assert "output: \"standalone\"" in next_config
+    assert "outputFileTracingRoot: __dirname" in next_config
+    assert "path.join(__dirname, \"../../\")" not in next_config
+    assert 'COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./' in dockerfile
+    assert 'CMD ["node", "server.js"]' in dockerfile

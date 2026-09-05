@@ -1,4 +1,3 @@
-const path = require("path");
 const { withSentryConfig } = require("@sentry/nextjs");
 
 const dealixApiBase = (
@@ -10,7 +9,13 @@ const dealixApiBase = (
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   output: "standalone",
-  outputFileTracingRoot: path.join(__dirname, "../../"),
+  // Pin tracing to the Next application itself. The repository intentionally
+  // contains lockfiles both at the repo root and under apps/web, so leaving
+  // tracing-root inference implicit can make a direct VPS build select the
+  // repository root and nest the standalone entrypoint. Railway builds this
+  // service with apps/web as its build root. __dirname makes both environments
+  // resolve the same contract: .next/standalone/server.js -> /app/server.js.
+  outputFileTracingRoot: __dirname,
   poweredByHeader: false,
   reactStrictMode: true,
   compress: true,
