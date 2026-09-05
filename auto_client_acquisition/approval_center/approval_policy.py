@@ -13,24 +13,23 @@ from auto_client_acquisition.approval_center.schemas import (
 
 
 def assert_fresh_creation(req: ApprovalRequest) -> None:
-    """Reject caller-supplied terminal/approved state on first persistence.
+    """Reject caller-supplied states that would bypass a tracked transition.
 
-    A new approval must enter storage as PENDING. Policy may then derive
-    BLOCKED during ``evaluate_safety`` or a separately audited founder rule may
-    transition it to APPROVED. Accepting caller-supplied APPROVED/REJECTED/
-    EXPIRED/BLOCKED state at creation would bypass the Approval Center state
-    transition and its audit evidence.
+    Normal new approvals enter as PENDING. BLOCKED is also safe to re-evaluate
+    because it cannot grant execution authority and keeps ``evaluate_safety``
+    idempotent. APPROVED, REJECTED and EXPIRED must only arise through their
+    governed transition paths, never from caller-controlled creation payloads.
     """
     status = ApprovalStatus(req.status)
-    if status != ApprovalStatus.PENDING:
+    if status not in {ApprovalStatus.PENDING, ApprovalStatus.BLOCKED}:
         raise ValueError(
-            f"approval_creation_status_must_be_pending:{req.approval_id}:{status.value}"
+            f"approval_creation_status_not_allowed:{req.approval_id}:{status.value}"
         )
 
 
 def evaluate_safety(req: ApprovalRequest) -> ApprovalRequest:
-    """Inspect a freshly-created request and force ``blocked`` status
-    if policy demands it. Idempotent."""
+    """Inspect a create/edit candidate and apply fail-closed safety policy."""
+    assert_fresh_creation(req)
     if req.action_mode == "blocked" or req.risk_level == "blocked":
         req.status = ApprovalStatus.BLOCKED
     # Per-channel hard rules
@@ -101,7 +100,12 @@ def assert_can_reject(req: ApprovalRequest) -> None:
 def assert_can_edit(req: ApprovalRequest) -> None:
     """Raise ValueError if the request cannot be edited."""
     status = ApprovalStatus(req.status)
-    if status in (ApprovalStatus.APPROVED, ApprovalStatus.REJECTED, ApprovalStatus.BLOCKED):
+    if status in (
+        ApprovalStatus.APPROVED,
+        ApprovalStatus.REJECTED,
+        ApprovalStatus.EXPIRED,
+        ApprovalStatus.BLOCKED,
+    ):
         raise ValueError(
             f"approval {req.approval_id} is {status.value}; edits no longer allowed"
         )
