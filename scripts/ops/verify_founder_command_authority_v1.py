@@ -82,7 +82,8 @@ def main() -> int:
         "founder brief drift",
     )
 
-    slack = payload.get("optional_channels", {}).get("slack", {})
+    optional = payload.get("optional_channels", {})
+    slack = optional.get("slack", {})
     require(slack.get("status") == "OPTIONAL_DORMANT_CAPABILITY", "Slack must remain optional/dormant")
     for key in (
         "launch_dependency",
@@ -93,6 +94,27 @@ def main() -> int:
         "token_request_allowed_without_new_founder_decision",
     ):
         require(slack.get(key) is False, f"Slack authority drift: {key}")
+
+    failover = optional.get("github_issue_vps_failover", {})
+    require(failover.get("status") == "INTERNAL_FAILOVER_ADAPTER", "GitHub issue failover classification drift")
+    for key in (
+        "primary_founder_channel",
+        "launch_dependency",
+        "truth_owner",
+        "new_authority_system",
+        "arbitrary_shell",
+        "l5_allowed",
+        "external_effect_authority",
+    ):
+        require(failover.get(key) is False, f"GitHub issue failover authority drift: {key}")
+    for key in (
+        "same_dispatcher_and_durable_state_required",
+        "private_repo_required",
+        "founder_identity_required",
+        "allowlist_only",
+    ):
+        require(failover.get(key) is True, f"GitHub issue failover guard missing: {key}")
+    require(failover.get("runtime_status") == UNKNOWN, "GitHub issue failover runtime must remain unproven without receipt")
 
     guards = payload.get("architecture_guards", {})
     for key, value in guards.items():
@@ -121,10 +143,12 @@ def main() -> int:
         "telegram_groups_disabled_by_default_required",
         "openclaw_secretref_audit_required",
         "current_vps_runtime_receipt_required",
+        "github_issue_failover_must_share_dispatcher_state",
     ):
-        require(requirements.get(key) is True, f"missing Telegram/OpenClaw activation requirement: {key}")
+        require(requirements.get(key) is True, f"missing Founder Control activation requirement: {key}")
     require(requirements.get("slack_runtime_receipt_required") is False, "Slack receipt must not gate launch")
     require(requirements.get("slack_credentials_required") is False, "Slack credentials must not gate launch")
+    require(requirements.get("github_issue_failover_runtime_receipt_required") is False, "failover receipt must not gate launch")
 
     runtime = payload.get("runtime_evidence", {})
     runtime_status = runtime.get("status")
@@ -148,6 +172,9 @@ def main() -> int:
         require(bool(runtime.get("source_sha")), "verified runtime requires source_sha")
 
     truth = payload.get("truth", {})
+    require(truth.get("primary_channel_is_telegram_openclaw") is True, "primary founder channel truth weakened")
+    require(truth.get("failover_adapter_is_not_primary_founder_channel") is True, "failover/primary truth weakened")
+    require(truth.get("failover_adapter_is_not_separate_authority") is True, "failover authority truth weakened")
     require(truth.get("command_message_is_not_execution_proof") is True, "command/proof truth weakened")
     require(truth.get("receipt_required_for_execution_claim") is True, "receipt requirement missing")
     require(truth.get("historical_receipt_is_not_current_runtime_proof") is True, "historical receipt truth weakened")
