@@ -80,6 +80,7 @@ receipt = {
     "external_effects": "FAIL_CLOSED_FLAGS_CONFIGURED_NOT_AN_EGRESS_ATTESTATION",
     "agents": 5,
     "runtime_specialist_roles": 12,
+    "operating_company_specialist_roles": 15,
     "revenue_factory_specialist_roles": 15,
     "automation_plays": 30,
     "systems": 12,
