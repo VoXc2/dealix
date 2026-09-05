@@ -1,10 +1,16 @@
 from __future__ import annotations
 
+import asyncio
 from pathlib import Path
 
 import pytest
+from fastapi import HTTPException
 
-from auto_client_acquisition.approval_center.approval_store import ApprovalStore
+from api.routers.approval_center import create as create_approval_endpoint
+from auto_client_acquisition.approval_center.approval_store import (
+    ApprovalStore,
+    reset_default_approval_store_for_tests,
+)
 from auto_client_acquisition.approval_center.postgres_store import PostgresApprovalStore
 from auto_client_acquisition.approval_center.schemas import (
     ApprovalRequest,
@@ -110,3 +116,20 @@ def test_founder_rule_create_rejects_caller_supplied_approved_status(
         store.create_with_founder_rules(req)
 
     assert store.get("apr_preapproved_founder") is None
+
+
+def test_http_create_surfaces_preapproved_payload_as_bounded_400() -> None:
+    store = ApprovalStore()
+    reset_default_approval_store_for_tests(store)
+    payload = _request(approval_id="apr_http_preapproved").model_dump(mode="json")
+    payload["status"] = "approved"
+    try:
+        with pytest.raises(HTTPException) as caught:
+            asyncio.run(create_approval_endpoint(payload))
+        assert caught.value.status_code == 400
+        assert "approval_creation_status_not_allowed:apr_http_preapproved:approved" in str(
+            caught.value.detail
+        )
+        assert store.get("apr_http_preapproved") is None
+    finally:
+        reset_default_approval_store_for_tests(None)
