@@ -1,7 +1,7 @@
-"""Create the durable Approval Center snapshot and merge current heads.
+"""Create the durable Approval Center snapshot after the current Alembic head.
 
 Revision ID: 20260905_022_approval_center_snapshots
-Revises: 20260823_021_collaboration_events, 20260815_020_governed_orchestrator_state
+Revises: 20260823_021_collaboration_events
 Create Date: 2026-09-05
 
 Applying this migration to production remains a separate governed operation.
@@ -16,10 +16,7 @@ from alembic import op
 from sqlalchemy.dialects.postgresql import JSONB
 
 revision: str = "20260905_022_approval_center_snapshots"
-down_revision: str | Sequence[str] | None = (
-    "20260823_021_collaboration_events",
-    "20260815_020_governed_orchestrator_state",
-)
+down_revision: str | Sequence[str] | None = "20260823_021_collaboration_events"
 branch_labels: str | Sequence[str] | None = None
 depends_on: str | Sequence[str] | None = None
 

@@ -25,8 +25,9 @@ authority and exact-head evidence.
 
 1. Exact source SHA accepted on VPS; abort if the branch head moves.
 2. Full Approval Center contract tests PASS for memory and Postgres.
-3. Alembic reports the expected two predecessor heads before the new merge
-   migration, then one head after migration.
+3. Alembic reports the single current head
+   `20260823_021_collaboration_events` before this migration and the single new
+   head `20260905_022_approval_center_snapshots` after migration.
 4. A database backup/restore reference exists and is recorded without secrets.
 5. External sends, payment execution, public publish, and paid spend remain off.
 6. Approval intake is briefly frozen so no process-memory approval can be created
@@ -55,7 +56,8 @@ Before migration the verifier must return `HOLD` with
    GitHub comments or CI logs.
 4. Apply `alembic upgrade 20260905_022_approval_center_snapshots` under the
    separately authorized database-change window.
-5. Confirm `alembic heads` reports one head and the table exists.
+5. Confirm `alembic heads` reports exactly
+   `20260905_022_approval_center_snapshots` and the table exists.
 6. Import the captured snapshot exactly once when it is non-empty; verify record
    count, IDs, statuses, timestamps, and audit history.
 7. Set `DEALIX_APPROVAL_STORE_BACKEND=postgres`. Use

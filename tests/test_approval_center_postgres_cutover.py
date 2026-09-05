@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-import importlib.util
+import ast
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
 from types import SimpleNamespace
@@ -202,20 +202,57 @@ def test_postgres_failed_mutation_rolls_back(tmp_path: Path) -> None:
     assert store.get("apr_partial") is None
 
 
-def test_migration_merges_both_current_heads() -> None:
-    path = (
-        Path(__file__).resolve().parents[1]
-        / "db/migrations/versions/20260905_022_approval_center_snapshots.py"
-    )
-    spec = importlib.util.spec_from_file_location("approval_center_migration", path)
-    assert spec and spec.loader
-    module = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(module)
-    assert module.revision == "20260905_022_approval_center_snapshots"
-    assert set(module.down_revision) == {
-        "20260823_021_collaboration_events",
-        "20260815_020_governed_orchestrator_state",
+def _revision_metadata(path: Path) -> tuple[str, tuple[str, ...]]:
+    tree = ast.parse(path.read_text(encoding="utf-8"), filename=str(path))
+    values: dict[str, object] = {}
+    for node in tree.body:
+        name: str | None = None
+        value_node = None
+        if isinstance(node, ast.Assign) and len(node.targets) == 1:
+            target = node.targets[0]
+            if isinstance(target, ast.Name):
+                name = target.id
+                value_node = node.value
+        elif isinstance(node, ast.AnnAssign) and isinstance(node.target, ast.Name):
+            name = node.target.id
+            value_node = node.value
+        if name in {"revision", "down_revision"} and value_node is not None:
+            values[name] = ast.literal_eval(value_node)
+    revision = values.get("revision")
+    assert isinstance(revision, str) and revision
+    raw_down = values.get("down_revision")
+    if raw_down is None:
+        downs: tuple[str, ...] = ()
+    elif isinstance(raw_down, str):
+        downs = (raw_down,)
+    else:
+        assert isinstance(raw_down, (tuple, list))
+        assert all(isinstance(item, str) for item in raw_down)
+        downs = tuple(raw_down)
+    return revision, downs
+
+
+def test_migration_extends_the_actual_single_alembic_head() -> None:
+    versions = Path(__file__).resolve().parents[1] / "db/migrations/versions"
+    metadata = dict(_revision_metadata(path) for path in versions.glob("*.py"))
+    assert len(metadata) == len(list(versions.glob("*.py"))), "duplicate revision id"
+
+    new_revision = "20260905_022_approval_center_snapshots"
+    previous_head = "20260823_021_collaboration_events"
+    assert metadata[new_revision] == (previous_head,)
+
+    prior_metadata = {
+        revision: downs
+        for revision, downs in metadata.items()
+        if revision != new_revision
     }
+    prior_referenced = {down for downs in prior_metadata.values() for down in downs}
+    prior_heads = set(prior_metadata) - prior_referenced
+    assert prior_heads == {previous_head}
+
+    referenced = {down for downs in metadata.values() for down in downs}
+    heads = set(metadata) - referenced
+    assert heads == {new_revision}
 
 
 def test_backend_status_is_redacted_and_read_only(monkeypatch, tmp_path: Path) -> None:
