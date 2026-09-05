@@ -33,6 +33,20 @@ _MEMORY_BACKENDS = {"", "memory", "in-memory", "in_memory"}
 _POSTGRES_BACKENDS = {"postgres", "postgresql"}
 
 
+def _request_contract(req: ApprovalRequest) -> dict[str, Any]:
+    """Immutable creation facts used to reject approval-ID substitution."""
+    return req.model_dump(
+        mode="json",
+        exclude={
+            "status",
+            "edit_history",
+            "reject_reason",
+            "created_at",
+            "updated_at",
+        },
+    )
+
+
 class ApprovalStore:
     """Thread-safe in-memory store of ApprovalRequests."""
 
@@ -40,11 +54,19 @@ class ApprovalStore:
         self._lock = threading.Lock()
         self._items: dict[str, ApprovalRequest] = {}
 
+    def _insert_or_replay(self, req: ApprovalRequest) -> ApprovalRequest:
+        existing = self._items.get(req.approval_id)
+        if existing is None:
+            self._items[req.approval_id] = req
+            return req
+        if _request_contract(existing) != _request_contract(req):
+            raise ValueError(f"approval_idempotency_conflict:{req.approval_id}")
+        return existing
+
     def create(self, req: ApprovalRequest) -> ApprovalRequest:
         evaluate_safety(req)
         with self._lock:
-            self._items[req.approval_id] = req
-        return req
+            return self._insert_or_replay(req)
 
     def create_with_founder_rules(
         self,
@@ -60,6 +82,9 @@ class ApprovalStore:
 
         evaluate_safety(req)
         with self._lock:
+            existing = self._items.get(req.approval_id)
+            if existing is not None:
+                return self._insert_or_replay(req)
             try_auto_approve_via_founder_rule(
                 req,
                 confidence=confidence,
@@ -67,7 +92,7 @@ class ApprovalStore:
                 engine=engine,
             )
             self._items[req.approval_id] = req
-        return req
+            return req
 
     def approve(self, approval_id: str, who: str) -> ApprovalRequest:
         with self._lock:
