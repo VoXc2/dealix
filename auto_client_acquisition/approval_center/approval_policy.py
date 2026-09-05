@@ -2,7 +2,7 @@
 
 Centralizes the rules that govern when an approval may transition
 state. Kept independent of storage so it can be unit-tested in
-isolation and reused by the Redis backend later.
+isolation and reused by durable backends.
 """
 from __future__ import annotations
 
@@ -10,6 +10,22 @@ from auto_client_acquisition.approval_center.schemas import (
     ApprovalRequest,
     ApprovalStatus,
 )
+
+
+def assert_fresh_creation(req: ApprovalRequest) -> None:
+    """Reject caller-supplied terminal/approved state on first persistence.
+
+    A new approval must enter storage as PENDING. Policy may then derive
+    BLOCKED during ``evaluate_safety`` or a separately audited founder rule may
+    transition it to APPROVED. Accepting caller-supplied APPROVED/REJECTED/
+    EXPIRED/BLOCKED state at creation would bypass the Approval Center state
+    transition and its audit evidence.
+    """
+    status = ApprovalStatus(req.status)
+    if status != ApprovalStatus.PENDING:
+        raise ValueError(
+            f"approval_creation_status_must_be_pending:{req.approval_id}:{status.value}"
+        )
 
 
 def evaluate_safety(req: ApprovalRequest) -> ApprovalRequest:
