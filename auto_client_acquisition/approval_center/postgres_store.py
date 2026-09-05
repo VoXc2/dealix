@@ -38,6 +38,20 @@ class ApprovalCenterSnapshotORM(_ApprovalStoreBase):
     updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
 
 
+def _request_contract(req: ApprovalRequest) -> dict[str, Any]:
+    """Immutable creation facts used to reject approval-ID substitution."""
+    return req.model_dump(
+        mode="json",
+        exclude={
+            "status",
+            "edit_history",
+            "reject_reason",
+            "created_at",
+            "updated_at",
+        },
+    )
+
+
 class PostgresApprovalStore:
     """ApprovalStore-compatible JSON snapshot backed by one DB transaction.
 
@@ -146,14 +160,22 @@ class PostgresApprovalStore:
                 flag_modified(row, "data")
             return result
 
-    def create(self, req: ApprovalRequest) -> ApprovalRequest:
-        evaluate_safety(req)
-
-        def _apply(items: dict[str, ApprovalRequest]) -> ApprovalRequest:
+    @staticmethod
+    def _insert_or_replay(
+        items: dict[str, ApprovalRequest],
+        req: ApprovalRequest,
+    ) -> ApprovalRequest:
+        existing = items.get(req.approval_id)
+        if existing is None:
             items[req.approval_id] = req
             return req
+        if _request_contract(existing) != _request_contract(req):
+            raise ValueError(f"approval_idempotency_conflict:{req.approval_id}")
+        return existing
 
-        return self._mutate(_apply)
+    def create(self, req: ApprovalRequest) -> ApprovalRequest:
+        evaluate_safety(req)
+        return self._mutate(lambda items: self._insert_or_replay(items, req))
 
     def create_with_founder_rules(
         self,
@@ -170,6 +192,9 @@ class PostgresApprovalStore:
         evaluate_safety(req)
 
         def _apply(items: dict[str, ApprovalRequest]) -> ApprovalRequest:
+            existing = items.get(req.approval_id)
+            if existing is not None:
+                return self._insert_or_replay(items, req)
             try_auto_approve_via_founder_rule(
                 req,
                 confidence=confidence,
