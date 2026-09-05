@@ -2,8 +2,9 @@
 
 The in-memory implementation remains the safe local/test default. Production can
 opt into Postgres with ``DEALIX_APPROVAL_STORE_BACKEND=postgres`` only when a real
-DSN is supplied and the Alembic-managed snapshot table already exists. Explicit
-Postgres selection never falls back to process memory.
+PostgreSQL DSN is supplied and the Alembic-managed snapshot table already exists.
+Explicit Postgres selection never falls back to process memory or a non-Postgres
+SQLAlchemy backend.
 """
 from __future__ import annotations
 
@@ -11,6 +12,8 @@ import os
 import threading
 from datetime import UTC, datetime
 from typing import Any
+
+from sqlalchemy.engine import make_url
 
 from auto_client_acquisition.approval_center.approval_policy import (
     assert_can_approve,
@@ -25,6 +28,7 @@ from auto_client_acquisition.approval_center.schemas import (
 
 _BACKEND_ENV = "DEALIX_APPROVAL_STORE_BACKEND"
 _DATABASE_URL_ENV = "DEALIX_APPROVAL_DATABASE_URL"
+_SQLITE_TEST_OVERRIDE_ENV = "DEALIX_APPROVAL_ALLOW_SQLITE_TEST_BACKEND"
 _MEMORY_BACKENDS = {"", "memory", "in-memory", "in_memory"}
 _POSTGRES_BACKENDS = {"postgres", "postgresql"}
 
@@ -225,6 +229,38 @@ def _requested_backend() -> str:
     return os.environ.get(_BACKEND_ENV, "memory").strip().lower()
 
 
+def _sqlite_test_override_enabled() -> bool:
+    app_env = os.environ.get("APP_ENV", "").strip().lower()
+    enabled = os.environ.get(_SQLITE_TEST_OVERRIDE_ENV, "").strip() == "1"
+    return app_env in {"test", "testing"} and enabled
+
+
+def _normalize_approval_database_url(raw: str) -> str:
+    """Return a sync PostgreSQL URL and reject wrong production dialects.
+
+    SQLite is accepted only behind an explicit two-part test override so unit tests
+    can exercise the store contract without weakening the production backend gate.
+    """
+    from auto_client_acquisition.persistence.db_sync_url import sync_sqlalchemy_url
+
+    normalized = sync_sqlalchemy_url(raw)
+    if normalized.startswith("postgres://"):
+        normalized = "postgresql+psycopg://" + normalized.removeprefix("postgres://")
+    elif normalized.startswith("postgresql://"):
+        normalized = "postgresql+psycopg://" + normalized.removeprefix("postgresql://")
+
+    try:
+        backend = make_url(normalized).get_backend_name()
+    except Exception:
+        raise RuntimeError("approval_store_database_url_invalid") from None
+
+    if backend == "postgresql":
+        return normalized
+    if backend == "sqlite" and _sqlite_test_override_enabled():
+        return normalized
+    raise RuntimeError("approval_store_postgres_requires_postgresql_url")
+
+
 def _approval_database_url_from_env() -> str:
     raw = (
         os.environ.get(_DATABASE_URL_ENV, "").strip()
@@ -234,9 +270,7 @@ def _approval_database_url_from_env() -> str:
         raise RuntimeError(
             "approval_store_postgres_requested_but_database_url_missing"
         )
-    from auto_client_acquisition.persistence.db_sync_url import sync_sqlalchemy_url
-
-    return sync_sqlalchemy_url(raw)
+    return _normalize_approval_database_url(raw)
 
 
 def approval_store_backend_status() -> dict[str, Any]:
@@ -268,7 +302,10 @@ def approval_store_backend_status() -> dict[str, Any]:
             "verdict": "HOLD",
             "backend": "postgres",
             "process_scoped": False,
-            "database_url_configured": False,
+            "database_url_configured": bool(
+                os.environ.get(_DATABASE_URL_ENV, "").strip()
+                or os.environ.get("DATABASE_URL", "").strip()
+            ),
             "schema_ready": False,
             "reason": str(exc),
         }
