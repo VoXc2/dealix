@@ -67,6 +67,8 @@ def _canonical_commercial_map() -> dict[str, Any]:
             "quote_requires_qualified_discovery": True,
             "quote_requires_explicit_authority": True,
             "invoice_requires_approved_quote_fingerprint": True,
+            "invoice_requires_durable_approval_record": True,
+            "invoice_draft_is_idempotent": True,
             "invoice_is_not_payment": True,
             "payment_requires_independent_evidence": True,
             "no_automatic_discount": True,
@@ -92,9 +94,10 @@ class CustomerSpecificQuoteAuthorityPayload(BaseModel):
 
 
 class CustomerSpecificInvoiceDraftPayload(CustomerSpecificQuoteAuthorityPayload):
-    """Record an invoice draft from an Approval-Center-authorized quote fingerprint."""
+    """Record an idempotent invoice draft from an approved quote fingerprint."""
 
     quote_authority_ref: str = Field(..., min_length=1)
+    idempotency_key: str = Field(..., min_length=8, max_length=512)
 
 
 def _require_non_blank(value: str, *, field_name: str) -> str:
@@ -161,6 +164,23 @@ def _quote_authority_fingerprint(material: dict[str, str]) -> str:
     return hashlib.sha256(encoded.encode("utf-8")).hexdigest()
 
 
+def _invoice_identity(
+    *,
+    quote_fingerprint: str,
+    idempotency_key: str,
+) -> tuple[str, str, str, str]:
+    normalized_key = _require_non_blank(idempotency_key, field_name="idempotency_key")
+    digest = hashlib.sha256(
+        f"{quote_fingerprint}\n{normalized_key}".encode("utf-8")
+    ).hexdigest()
+    return (
+        normalized_key,
+        digest,
+        f"inv_{digest[:32]}",
+        f"apr_invoice_{digest[:24]}",
+    )
+
+
 def _append_evidence_event(
     *,
     event_type: str,
@@ -182,6 +202,47 @@ def _append_evidence_event(
 
 def _approval_is_unexpired(approval: ApprovalRequest) -> bool:
     return approval.expires_at is None or approval.expires_at > datetime.now(UTC)
+
+
+def _approval_contract(approval: ApprovalRequest) -> dict[str, Any]:
+    """Immutable approval identity used to reject conflicting replays."""
+    return {
+        "approval_id": approval.approval_id,
+        "object_type": approval.object_type,
+        "object_id": approval.object_id,
+        "action_type": approval.action_type,
+        "action_mode": approval.action_mode,
+        "channel": approval.channel,
+        "risk_level": approval.risk_level,
+        "proof_impact": approval.proof_impact,
+        "action_id": approval.action_id,
+        "lead_id": approval.lead_id,
+        "audit_ref": approval.audit_ref,
+        "proof_target": approval.proof_target,
+    }
+
+
+def _ensure_approval_request(req: ApprovalRequest) -> tuple[ApprovalRequest, bool]:
+    """Create an approval once; fail closed on storage failure or ID conflict."""
+    approval_store = get_default_approval_store()
+    existing = approval_store.get(req.approval_id)
+    if existing is not None:
+        if _approval_contract(existing) != _approval_contract(req):
+            raise HTTPException(
+                status_code=409,
+                detail={
+                    "reason": "approval_idempotency_conflict",
+                    "approval_id": req.approval_id,
+                },
+            )
+        return existing, False
+    try:
+        return approval_store.create(req), True
+    except Exception as exc:
+        raise HTTPException(
+            status_code=503,
+            detail={"reason": "approval_center_unavailable"},
+        ) from exc
 
 
 def _resolve_quote_authority(
@@ -371,30 +432,36 @@ async def request_customer_specific_quote_authority(
             break
 
     if existing is None:
-        existing = approval_store.create(
-            ApprovalRequest(
-                object_type=QUOTE_AUTHORITY_OBJECT_TYPE,
-                object_id=fingerprint,
-                action_type=QUOTE_AUTHORITY_ACTION_TYPE,
-                action_mode="approval_required",
-                channel="finance_manual",
-                summary_ar=(
-                    "موافقة عرض عميل مخصص — Revenue Command Pilot لمدة 30 يومًا — "
-                    f"المبلغ SAR {material['approved_amount_sar']}؛ لا إرسال ولا دفع تلقائي."
+        try:
+            existing = approval_store.create(
+                ApprovalRequest(
+                    object_type=QUOTE_AUTHORITY_OBJECT_TYPE,
+                    object_id=fingerprint,
+                    action_type=QUOTE_AUTHORITY_ACTION_TYPE,
+                    action_mode="approval_required",
+                    channel="finance_manual",
+                    summary_ar=(
+                        "موافقة عرض عميل مخصص — Revenue Command Pilot لمدة 30 يومًا — "
+                        f"المبلغ SAR {material['approved_amount_sar']}؛ لا إرسال ولا دفع تلقائي."
+                    ),
+                    summary_en=(
+                        "Customer-specific quote approval — 30-day Revenue Command Pilot — "
+                        f"amount SAR {material['approved_amount_sar']}; no automatic send or charge."
+                    ),
+                    risk_level="high",
+                    proof_impact=f"customer_specific_quote:{fingerprint}",
+                    expires_at=datetime.now(UTC) + timedelta(days=QUOTE_AUTHORITY_TTL_DAYS),
+                    action_id=action_id,
+                    lead_id=lead_id,
+                    audit_ref=material["qualified_discovery_ref"],
+                    proof_target=f"invoice_authority:{fingerprint}",
                 ),
-                summary_en=(
-                    "Customer-specific quote approval — 30-day Revenue Command Pilot — "
-                    f"amount SAR {material['approved_amount_sar']}; no automatic send or charge."
-                ),
-                risk_level="high",
-                proof_impact=f"customer_specific_quote:{fingerprint}",
-                expires_at=datetime.now(UTC) + timedelta(days=QUOTE_AUTHORITY_TTL_DAYS),
-                action_id=action_id,
-                lead_id=lead_id,
-                audit_ref=material["qualified_discovery_ref"],
-                proof_target=f"invoice_authority:{fingerprint}",
-            ),
-        )
+            )
+        except Exception as exc:
+            raise HTTPException(
+                status_code=503,
+                detail={"reason": "approval_center_unavailable"},
+            ) from exc
 
     _append_evidence_event(
         event_type="customer_specific_quote_authority_requested",
@@ -462,10 +529,43 @@ async def invoice_create_draft_from_approved_quote(
         quote_authority_ref=quote_authority_ref,
         material=material,
     )
-    approved_amount = float(Decimal(material["approved_amount_sar"]))
+    normalized_idempotency_key, invoice_digest, invoice_id, invoice_approval_id = (
+        _invoice_identity(
+            quote_fingerprint=quote_fingerprint,
+            idempotency_key=body.idempotency_key,
+        )
+    )
+    invoice_action_id = f"invoice:{invoice_digest}"
 
+    invoice_approval_request = ApprovalRequest(
+        approval_id=invoice_approval_id,
+        object_type="invoice_draft",
+        object_id=invoice_id,
+        action_type="invoice_draft",
+        action_mode="approval_required",
+        channel="finance_manual",
+        summary_ar=(
+            "مسودة فاتورة من عرض عميل مخصص معتمد ببصمة ثابتة؛ "
+            "تحتاج موافقة مستقلة قبل أي إرسال أو طلب دفع."
+        ),
+        summary_en=(
+            "Invoice draft from an approved customer-specific quote fingerprint; "
+            "independent approval is required before any send or payment request."
+        ),
+        risk_level="high",
+        proof_impact=f"invoice_draft:{invoice_id}",
+        action_id=invoice_action_id,
+        lead_id=lead_id,
+        audit_ref=quote_authority_ref,
+        proof_target=f"payment_evidence:{invoice_id}",
+    )
+    invoice_approval, approval_created = _ensure_approval_request(
+        invoice_approval_request
+    )
+
+    approved_amount = float(Decimal(material["approved_amount_sar"]))
     inv = InvoiceDraftRecord(
-        id=uid("inv"),
+        id=invoice_id,
         lead_id=lead_id,
         tier="customer_specific_quote",
         amount_sar=approved_amount,
@@ -478,51 +578,50 @@ async def invoice_create_draft_from_approved_quote(
             "مسودة فقط: لا إرسال، لا رابط دفع، ولا تحصيل تلقائي. "
             "تتطلب موافقة مستقلة وإثبات دفع مستقل."
         ),
+        qualified_discovery_ref=material["qualified_discovery_ref"],
+        customer_specific_scope_ref=material["customer_specific_scope_ref"],
+        quote_authority_ref=quote_authority_ref,
+        quote_fingerprint=quote_fingerprint,
+        idempotency_key=normalized_idempotency_key,
+        approval_id=invoice_approval.approval_id,
+        quote_authority_state="verified_approval_center_fingerprint",
     )
-    store.append_invoice_draft(inv)
-
-    try:
-        get_default_approval_store().create(
-            ApprovalRequest(
-                object_type="invoice_draft",
-                object_id=inv.id,
-                action_type="invoice_draft",
-                action_mode="approval_required",
-                channel="finance_manual",
-                summary_ar=(
-                    "مسودة فاتورة من عرض عميل مخصص معتمد ببصمة ثابتة؛ "
-                    "تحتاج موافقة مستقلة قبل أي إرسال أو طلب دفع."
-                ),
-                risk_level="high",
-                proof_impact=f"invoice_draft:{inv.id}",
-                action_id=f"invoice:{inv.id}",
-                lead_id=lead_id,
-                audit_ref=quote_authority_ref,
-                proof_target=f"payment_evidence:{inv.id}",
-            ),
-        )
-    except Exception:
-        # Invoice persistence is canonical to the Revenue Ops store. Approval Center
-        # availability is separately observable and must never create live send/charge.
-        pass
-
-    _append_evidence_event(
-        event_type="invoice_draft_created_from_customer_specific_quote",
+    evidence = EvidenceEvent(
+        id=f"ev_invoice_{invoice_digest[:32]}",
+        event_type="invoice_draft_created_from_verified_quote_fingerprint",
+        entity_type="invoice_draft",
+        entity_id=invoice_id,
         summary=(
-            f"id={inv.id} lead_id={lead_id} "
+            f"id={invoice_id} lead_id={lead_id} "
             f"qualified_discovery_ref={material['qualified_discovery_ref']} "
             f"customer_specific_scope_ref={material['customer_specific_scope_ref']} "
             f"quote_authority_ref={quote_authority_ref} "
             f"quote_fingerprint={quote_fingerprint} "
+            f"invoice_approval_id={invoice_approval.approval_id} "
             f"approved_amount_sar={material['approved_amount_sar']} "
             "payment_verified=false"
         ),
-        entity_type="invoice_draft",
-        entity_id=inv.id,
-        approval_id=quote_approval.approval_id,
+        approval_id=invoice_approval.approval_id,
     )
+
+    try:
+        stored, created = store.create_invoice_draft_idempotent(
+            inv,
+            evidence=evidence,
+        )
+    except ValueError as exc:
+        raise HTTPException(
+            status_code=409,
+            detail={"reason": "invoice_idempotency_conflict"},
+        ) from exc
+    except Exception as exc:
+        raise HTTPException(
+            status_code=503,
+            detail={"reason": "invoice_store_unavailable"},
+        ) from exc
+
     return {
-        "item": inv.model_dump(mode="json"),
+        "item": stored.model_dump(mode="json"),
         "authority": {
             "qualified_discovery_ref": material["qualified_discovery_ref"],
             "customer_specific_scope_ref": material["customer_specific_scope_ref"],
@@ -530,6 +629,10 @@ async def invoice_create_draft_from_approved_quote(
             "quote_fingerprint": quote_fingerprint,
             "quote_approval_status": ApprovalStatus(quote_approval.status).value,
             "amount_source": "approved_customer_specific_quote_fingerprint",
+            "invoice_approval_id": invoice_approval.approval_id,
+            "invoice_approval_status": ApprovalStatus(invoice_approval.status).value,
+            "approval_idempotent_replay": not approval_created,
+            "idempotent_replay": not created,
             "payment_verified": False,
         },
     }

@@ -10,7 +10,7 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
-from pydantic import TypeAdapter
+from pydantic import BaseModel, TypeAdapter
 
 from dealix.revenue_ops_autopilot.schemas import (
     DiagnosticDeliveryRecord,
@@ -49,6 +49,11 @@ def _utcnow_iso() -> str:
 
 def _new(prefix: str) -> str:
     return f"{prefix}_{uuid.uuid4().hex[:12]}"
+
+
+def _contract_dump(model: BaseModel) -> dict[str, Any]:
+    """Comparable business content, excluding record-creation clock noise."""
+    return model.model_dump(mode="json", exclude={"created_at"})
 
 
 class AutopilotJSONStore:
@@ -157,6 +162,23 @@ class AutopilotJSONStore:
 
         return self._mutate(_fn)
 
+    def append_evidence_idempotent(self, event: EvidenceEvent) -> tuple[EvidenceEvent, bool]:
+        """Append evidence once by deterministic ID; reject conflicting replay."""
+
+        def _fn(blob: dict[str, Any]) -> tuple[EvidenceEvent, bool]:
+            rows = _EVID_TA.validate_python(blob.get("evidence_events") or [])
+            for existing in rows:
+                if existing.id != event.id:
+                    continue
+                if _contract_dump(existing) != _contract_dump(event):
+                    raise ValueError(f"evidence_idempotency_conflict:{event.id}")
+                return existing, False
+            rows.append(event)
+            blob["evidence_events"] = [row.model_dump(mode="json") for row in rows]
+            return event, True
+
+        return self._mutate(_fn)
+
     def list_evidence(self, *, limit: int = 100) -> list[EvidenceEvent]:
         blob = self._read_raw()
         evs = _EVID_TA.validate_python(blob.get("evidence_events") or [])
@@ -221,6 +243,58 @@ class AutopilotJSONStore:
             return inv
 
         return self._mutate(_fn)
+
+    def create_invoice_draft_idempotent(
+        self,
+        inv: InvoiceDraftRecord,
+        *,
+        evidence: EvidenceEvent | None = None,
+    ) -> tuple[InvoiceDraftRecord, bool]:
+        """Persist an invoice draft and evidence exactly once by stable IDs.
+
+        The mutation is one JSON-store critical section. The Postgres adapter
+        overrides ``_mutate`` with a single row-locked transaction, so retries
+        and concurrent workers cannot produce duplicate commercial records.
+        """
+
+        def _fn(blob: dict[str, Any]) -> tuple[InvoiceDraftRecord, bool]:
+            rows = _INV_TA.validate_python(blob.get("invoice_drafts") or [])
+            existing_invoice = next((row for row in rows if row.id == inv.id), None)
+            if existing_invoice is not None:
+                if _contract_dump(existing_invoice) != _contract_dump(inv):
+                    raise ValueError(f"invoice_idempotency_conflict:{inv.id}")
+                stored = existing_invoice
+                created = False
+            else:
+                rows.append(inv)
+                blob["invoice_drafts"] = [row.model_dump(mode="json") for row in rows]
+                stored = inv
+                created = True
+
+            if evidence is not None:
+                evidence_rows = _EVID_TA.validate_python(blob.get("evidence_events") or [])
+                existing_event = next(
+                    (row for row in evidence_rows if row.id == evidence.id),
+                    None,
+                )
+                if existing_event is not None:
+                    if _contract_dump(existing_event) != _contract_dump(evidence):
+                        raise ValueError(f"evidence_idempotency_conflict:{evidence.id}")
+                else:
+                    evidence_rows.append(evidence)
+                    blob["evidence_events"] = [
+                        row.model_dump(mode="json") for row in evidence_rows
+                    ]
+
+            return stored, created
+
+        return self._mutate(_fn)
+
+    def list_invoice_drafts(self, *, limit: int = 100) -> list[InvoiceDraftRecord]:
+        blob = self._read_raw()
+        rows = _INV_TA.validate_python(blob.get("invoice_drafts") or [])
+        rows.sort(key=lambda x: x.created_at, reverse=True)
+        return rows[:limit]
 
     def append_diagnostic(self, rec: DiagnosticDeliveryRecord) -> DiagnosticDeliveryRecord:
         def _fn(blob: dict[str, Any]) -> DiagnosticDeliveryRecord:

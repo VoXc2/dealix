@@ -179,4 +179,16 @@ class InvoiceDraftRecord(BaseModel):
     governance_note_ar: str = (
         "لا يتم إرسال الفاتورة تلقائياً؛ يحتاج موافقة المؤسس وفق سياسة Dealix."
     )
+    # Defaults preserve readability of historical snapshots while every new
+    # canonical invoice draft records its exact quote/approval provenance.
+    qualified_discovery_ref: str = ""
+    customer_specific_scope_ref: str = ""
+    quote_authority_ref: str = ""
+    quote_fingerprint: str = ""
+    idempotency_key: str = ""
+    approval_id: str | None = None
+    quote_authority_state: Literal[
+        "legacy_unverified",
+        "verified_approval_center_fingerprint",
+    ] = "legacy_unverified"
     created_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
