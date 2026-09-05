@@ -1,38 +1,36 @@
 import Link from "next/link";
-import { PREMIUM_OFFERS } from "@/lib/sales-machine/ultimate-sales-os";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://dealix.me";
 
-// Homepage shows a highlight subset of the same PREMIUM_OFFERS ladder that
-// drives /pricing, /offers, and /cases — the single source of truth for
-// pricing, so this page can never show a different number than those do.
-const homepageOfferIds = ["diagnostic_sprint", "revenue_os", "delivery_os", "custom_enterprise"];
-const launchOffers = PREMIUM_OFFERS.filter((o) => homepageOfferIds.includes(o.id));
-
-const proofBlocks = [
-  ["No fake ROI", "لا نعد بدخل مضمون؛ نثبت الأثر بتقارير وقرارات وقياسات تشغيلية."],
-  ["Draft-first", "كل تواصل خارجي يبدأ كمسودة، ثم يراجعها الإنسان قبل الإرسال."],
-  ["Saudi B2B", "اللغة، القطاعات، التسعير، وطرق البيع مبنية على واقع الشركات السعودية."],
-  ["Proof Pack", "كل مشروع ينتهي بملف قبل/بعد، قرارات، مخاطر، وأعمال منجزة."],
+const valueBlocks = [
+  ["Revenue", "نربط الإشارات التجارية بأولوية واضحة وحركة اقتصادية يمكن تتبعها، بدل نشاط منفصل عن النتيجة."],
+  ["Proof", "نفصل activity عن value، ونقيس baseline ونتيجة قابلة للمراجعة بدل ادعاءات ROI أو قصص غير مثبتة."],
+  ["Command", "نحوّل الإشارات والبيانات إلى قرار يومي، queue، موافقات، وreceipt واضح لما تم وما لم يتم."],
 ];
 
-const sectors = [
-  "العيادات",
-  "العقار",
-  "اللوجستيات",
-  "التدريب",
-  "وكالات التسويق",
-  "خدمات B2B",
-  "معارض السيارات",
-  "المكاتب المهنية",
+const buyingPath = [
+  ["01", "Execution Diagnostic", "نحدد workflow واحدًا ذا أثر اقتصادي، baseline واضحًا، وصاحب قرار — بدون بطاقة أو التزام شراء."],
+  ["02", "Qualified Discovery + Quote", "نثبت البيانات والنطاق ومعايير الإثبات، ثم نصدر عرضًا خاصًا بالعميل فقط إذا كانت هناك حالة تنفيذ واضحة."],
+  ["03", "Outcome Sprint", "تنفيذ محكوم يركز على نتيجة محددة قابلة للقياس؛ المدة والنطاق وشروط البدء تُحدد فقط في العرض الخاص بالعميل بعد Discovery."],
+  ["04", "Proof Review", "نقارن النتيجة بالـbaseline ونراجع ما تحرك اقتصاديًا وما لم يتحرك، بدون تحويل synthetic أو activity إلى customer proof."],
+  ["05", "Dealix Runtime", "إذا أثبت الـSprint قيمة قابلة للتكرار، نوسع إلى Runtime مستمر للمراقبة والتنفيذ والإثبات؛ لا توسع تلقائي قبل Proof."],
 ];
 
-const processSteps = [
-  ["01", "Map", "نفهم الإيراد، العملاء، القنوات، المتابعة، والبيانات الموجودة."],
-  ["02", "Design", "نحوّل الألم إلى workflow واحد واضح، قبولاته محددة ومخاطره معروفة."],
-  ["03", "Build", "نبني dashboard، ledgers، drafts، reports، وapproval gates بدون تعطيل أنظمتك الحالية."],
-  ["04", "Operate", "نشغل اليوم التجاري: فرص، متابعات، عروض، قرارات، وتقرير مؤسس يومي."],
-  ["05", "Scale", "بعد proof، نضيف التكاملات والإرسال المحكوم والـretainer الشهري."],
+const qualification = [
+  "شركة تعمل في السعودية أو لديها مسار واضح لدخول السوق السعودي.",
+  "Workflow أو قرار تشغيلي واضح يمكن ربطه بنتيجة اقتصادية أو تشغيلية.",
+  "Founder / GM / owner أو صاحب قرار مسمى يمكنه اعتماد النطاق والموافقات.",
+  "بيانات مشروعة يمكن استخدامها لبناء baseline وقياس النتيجة.",
+  "استعداد لتشغيل AI داخل حدود واضحة مع موافقات بشرية عند الأفعال الحساسة.",
+];
+
+const truthRules = [
+  "Research ليست Relationship.",
+  "Public contact ليست Consent.",
+  "Draft ليست Sent.",
+  "Quote ليست Invoice.",
+  "Invoice ليست Payment.",
+  "Synthetic/Demo ليست Customer Proof.",
 ];
 
 const structuredData = {
@@ -42,13 +40,13 @@ const structuredData = {
   url: siteUrl,
   areaServed: { "@type": "Country", name: "Saudi Arabia" },
   description:
-    "Dealix builds AI operating systems for Saudi B2B companies: revenue command rooms, company brain, follow-up OS, client delivery, and AI trust controls.",
+    "Dealix is a governed AI execution platform for Saudi business that turns company signals into decisions, controlled action, and measurable proof.",
   knowsAbout: [
+    "Governed AI Execution",
     "Revenue Operations",
     "AI Governance",
-    "B2B Sales Operations",
-    "Saudi Business Automation",
-    "Client Delivery Systems",
+    "Saudi Market Intelligence",
+    "Operational Proof",
   ],
 };
 
@@ -56,21 +54,16 @@ export default function HomePage() {
   return (
     <>
       <nav className="navbar" aria-label="Primary navigation">
-        <Link href="/" className="navbar-brand" aria-label="Dealix Home">
-          Dealix
-        </Link>
+        <Link href="/" className="navbar-brand" aria-label="Dealix Home">Dealix</Link>
         <ul className="navbar-links" role="list">
-          <li><Link href="/revenue-machine">نظام الإيراد</Link></li>
-          <li><Link href="/brain">العقل التجاري</Link></li>
-          <li><Link href="/pricing">الأسعار</Link></li>
-          <li><Link href="/founder/command-room">غرفة القيادة</Link></li>
+          <li><Link href="/brain">Company Brain</Link></li>
+          <li><Link href="/pricing">Engagement Path</Link></li>
+          <li><Link href="/proof-vault">Proof</Link></li>
+          <li><Link href="/safety">Safety</Link></li>
         </ul>
         <div className="actions" style={{ marginTop: 0 }}>
-          <Link href="/ar" style={{ minHeight: 38, padding: "0 18px", fontSize: "0.82rem" }}>
-            عربي
-          </Link>
           <Link href="/book" style={{ minHeight: 38, padding: "0 18px", fontSize: "0.82rem" }}>
-            احجز مراجعة →
+            Execution Diagnostic →
           </Link>
         </div>
       </nav>
@@ -99,30 +92,28 @@ export default function HomePage() {
               inset: "-120px auto auto -120px",
               width: 460,
               height: 460,
-              background: "radial-gradient(circle, rgba(212,175,55,0.14), transparent 68%)",
+              background: "radial-gradient(circle, rgba(34,211,238,0.14), transparent 68%)",
               pointerEvents: "none",
             }}
           />
-
-          <p className="eyebrow">Saudi B2B · Founder-led · Approval-first AI</p>
+          <p className="eyebrow">Saudi Business · Governed AI · Measurable Proof</p>
           <h1 id="hero-title" style={{ maxWidth: 980 }}>
-            نبني للشركات السعودية <span className="gradient-text">AI Operating Systems</span>
-            <br /> تضبط الإيراد، المتابعة، والقرار اليومي.
+            منصة التنفيذ الذكي المحكوم للأعمال<br />
+            <span className="gradient-text">Signal → Decision → Action → Proof</span>
           </h1>
-          <p style={{ maxWidth: 760, fontSize: "1.16rem", lineHeight: 1.85 }}>
-            Dealix ليست شات بوت ولا CRM عادي. نحن نبني نظام تشغيل عملي يربط المبيعات، واتساب، العروض،
-            التقارير، التسليم، والحوكمة في workflow يومي قابل للقياس — مع مراجعة بشرية قبل أي إجراء خارجي حساس.
+          <p style={{ maxWidth: 790, fontSize: "1.16rem", lineHeight: 1.85 }}>
+            Dealix تحوّل إشارات شركتك إلى قرارات وتنفيذ محكوم ونتائج قابلة للإثبات. نعمل فوق أدواتك الحالية،
+            ونبقي الأفعال الخارجية الحساسة مرتبطة بالموافقة والدليل.
           </p>
-
           <div className="actions" aria-label="Primary actions">
-            <Link href="/book">احجز مراجعة تشغيلية</Link>
-            <Link href="/pricing">شاهد الباقات</Link>
-            <Link href="/safety">كيف نحافظ على الأمان؟</Link>
+            <Link href="/book">ابدأ Execution Diagnostic</Link>
+            <Link href="/pricing">شاهد Engagement Path</Link>
+            <Link href="/safety">كيف نحكم الـAI؟</Link>
           </div>
         </section>
 
-        <section className="grid-3" aria-label="Commercial proof points">
-          {proofBlocks.map(([title, text]) => (
+        <section className="grid-3" aria-label="Dealix architecture">
+          {valueBlocks.map(([title, text]) => (
             <article className="card" key={title}>
               <span className="badge badge-gold">{title}</span>
               <p style={{ marginTop: "var(--sp-4)" }}>{text}</p>
@@ -130,120 +121,92 @@ export default function HomePage() {
           ))}
         </section>
 
-        <section
-          aria-labelledby="problem-title"
-          style={{ borderTop: "1px solid rgba(255,255,255,0.07)", paddingTop: "var(--sp-10)" }}
-        >
-          <h2 id="problem-title">الشركة لا تحتاج أدوات أكثر؛ تحتاج نظام تشغيل يومي.</h2>
+        <section aria-labelledby="why-title" style={{ borderTop: "1px solid rgba(255,255,255,0.07)", paddingTop: "var(--sp-10)" }}>
+          <p className="eyebrow">The execution gap</p>
+          <h2 id="why-title">المشكلة ليست نقص أدوات؛ المشكلة أن الإشارة والقرار والتنفيذ والإثبات منفصلة.</h2>
           <div className="grid-2">
             <div>
-              <h3>قبل Dealix</h3>
+              <h3>ما نربطه</h3>
               <ul>
-                <li>فرص تأتي من واتساب، إيميل، اتصال، موقع — ولا تدخل في قرار يومي.</li>
-                <li>العروض تُرسل ثم تختفي المتابعة.</li>
-                <li>الإدارة ترى أرقامًا متأخرة بدل next action اليوم.</li>
-                <li>AI يُستخدم بشكل عشوائي بدون سياسة أو approval gates.</li>
+                <li>Signals وMarket Intelligence.</li>
+                <li>Company Brain والسياق التجاري.</li>
+                <li>Opportunity / next action / approvals.</li>
+                <li>Execution وDelivery وProof وlearning.</li>
               </ul>
             </div>
             <div>
-              <h3>بعد Dealix</h3>
+              <h3>ما لا ندّعيه</h3>
               <ul>
-                <li>كل فرصة لها owner، status، next action، وreview date.</li>
-                <li>كل follow-up يظهر في queue واضحة.</li>
-                <li>كل صباح يوجد CEO decision وcommercial command report.</li>
-                <li>كل رسالة خارجية تبدأ draft وتحتاج مراجعة بشرية.</li>
+                <li>لا ROI مضمون أو نتيجة مالية مضمونة.</li>
+                <li>لا mass outreach أو cold WhatsApp كاختصار للنمو.</li>
+                <li>لا اعتبار بيانات عامة موافقة تواصل.</li>
+                <li>لا اعتبار demo أو synthetic data دليل عميل.</li>
               </ul>
             </div>
           </div>
         </section>
 
-        <section aria-labelledby="offers-title">
-          <p className="eyebrow">What we sell first</p>
-          <h2 id="offers-title">أنظمة استراتيجية، ليست باقات عامة — لا تفوّت الأنسب لشركتك.</h2>
-          <div className="cards">
-            {launchOffers.map((offer) => (
-              <article className="card" key={offer.id}>
-                <span className="badge badge-emerald">{offer.nameAr}</span>
-                <h3 style={{ marginTop: "var(--sp-4)" }}>{offer.name}</h3>
-                <p>{offer.positioningAr}</p>
-                <Link href="/offers" className="btn btn-secondary">افتح التفاصيل →</Link>
-              </article>
-            ))}
-          </div>
-          <div className="actions">
-            <Link href="/offers">شاهد كل العروض السبعة →</Link>
-          </div>
-        </section>
-
-        <section
-          aria-labelledby="process-title"
-          style={{ borderTop: "1px solid rgba(255,255,255,0.07)", paddingTop: "var(--sp-10)" }}
-        >
-          <h2 id="process-title">Map → Design → Build → Operate → Scale</h2>
+        <section aria-labelledby="path-title">
+          <p className="eyebrow">One governed engagement path</p>
+          <h2 id="path-title">نبدأ بتشخيص التنفيذ، ثم نوسع فقط عندما يثبت الدليل.</h2>
           <div className="grid-3">
-            {processSteps.map(([step, title, text]) => (
-              <article key={step} style={{ padding: "var(--sp-4)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: "var(--r-lg)" }}>
-                <span className="badge badge-gold">{step}</span>
-                <h3 style={{ marginTop: "var(--sp-3)" }}>{title}</h3>
+            {buyingPath.map(([step, title, text]) => (
+              <article className="card" key={step}>
+                <span className="badge badge-emerald">{step}</span>
+                <h3 style={{ marginTop: "var(--sp-4)" }}>{title}</h3>
                 <p>{text}</p>
               </article>
             ))}
           </div>
+          <div className="actions">
+            <Link href="/pricing">تفاصيل Engagement Path →</Link>
+          </div>
         </section>
 
-        <section className="card card-gold" aria-labelledby="sectors-title">
-          <h2 id="sectors-title">نبدأ من القطاعات التي يظهر فيها ألم المتابعة والإيراد بسرعة.</h2>
-          <div style={{ display: "flex", flexWrap: "wrap", gap: "var(--sp-2)" }}>
-            {sectors.map((sector) => (
-              <span className="badge badge-gold" key={sector}>{sector}</span>
+        <section className="card card-gold" aria-labelledby="fit-title">
+          <p className="eyebrow">Best-fit starting point</p>
+          <h2 id="fit-title">الأولوية لحالة تنفيذ يمكن إثبات قيمتها، لا لأي lead عابر.</h2>
+          <ul>
+            {qualification.map((item) => <li key={item}>{item}</li>)}
+          </ul>
+        </section>
+
+        <section aria-labelledby="truth-title" style={{ borderTop: "1px solid rgba(255,255,255,0.07)", paddingTop: "var(--sp-10)" }}>
+          <p className="eyebrow">Truth Firewall</p>
+          <h2 id="truth-title">النظام لا يرقّي الحقيقة بلا دليل.</h2>
+          <div className="grid-3">
+            {truthRules.map((rule) => (
+              <article className="card" key={rule}><p>{rule}</p></article>
             ))}
           </div>
         </section>
 
-        <section
-          aria-labelledby="outbound-title"
-          style={{ borderTop: "1px solid rgba(255,255,255,0.07)", paddingTop: "var(--sp-10)" }}
-        >
-          <h2 id="outbound-title">استهداف يومي قوي، لكن يحافظ على السمعة والدومين.</h2>
-          <p>
-            النظام الصحيح ليس إرسال عشوائي. النظام الصحيح: 100 شركة تُبحث يوميًا، 40 تُتحقق،
-            25 مسودة تُكتب، 10–15 رسالة تُراجع يدويًا، 3 مكالمات، وعرض واحد واضح — مع opt-out وsource_url لكل target.
-          </p>
-          <div className="actions">
-            <Link href="/outreach-review">راجع مسودات الاستهداف</Link>
-            <Link href="/command-center">افتح غرفة القيادة</Link>
-          </div>
-        </section>
-
         <section className="card" aria-labelledby="final-cta-title" style={{ textAlign: "center" }}>
-          <p className="eyebrow">Start small. Prove fast. Scale safely.</p>
-          <h2 id="final-cta-title">ابدأ بـ7 أيام على ألم واحد واضح.</h2>
+          <p className="eyebrow">Start with one executable problem</p>
+          <h2 id="final-cta-title">عندك workflow أو قرار مهم لا يتحول اليوم إلى تنفيذ وProof واضح؟</h2>
           <p style={{ maxWidth: 720, margin: "0 auto var(--sp-6)" }}>
-            إذا كان عندك واتساب مزدحم، عروض بلا متابعة، أو فريق لا يعرف أولويات اليوم،
-            نبدأ بتشخيص سريع ثم نبني sprint واضح بنتائج تشغيلية قابلة للمراجعة.
+            ابدأ بـExecution Diagnostic. إذا لم توجد حالة تنفيذ قابلة للقياس نتوقف؛ وإذا كانت مناسبة ننتقل إلى Discovery وعرض خاص بالعميل ثم Outcome Sprint.
           </p>
           <div className="actions" style={{ justifyContent: "center" }}>
-            <Link href="/book">احجز مراجعة Dealix</Link>
-            <Link href="/offers">شاهد العروض</Link>
+            <Link href="/book">ابدأ Execution Diagnostic</Link>
+            <Link href="/proof-vault">شاهد منهج الإثبات</Link>
           </div>
         </section>
 
         <footer style={{ textAlign: "center", paddingTop: "var(--sp-8)", borderTop: "1px solid rgba(255,255,255,0.07)" }}>
-          <p className="navbar-brand" style={{ justifyContent: "center", fontSize: "1.2rem", marginBottom: "var(--sp-3)" }}>
-            Dealix
-          </p>
+          <p className="navbar-brand" style={{ justifyContent: "center", fontSize: "1.2rem", marginBottom: "var(--sp-3)" }}>Dealix</p>
           <div style={{ display: "flex", justifyContent: "center", gap: "var(--sp-4)", marginBottom: "var(--sp-4)", flexWrap: "wrap" }}>
-            <Link href="/revenue-machine" style={{ color: "rgba(255,255,255,0.46)", fontWeight: 500, fontSize: "0.82rem" }}>Revenue OS</Link>
             <Link href="/brain" style={{ color: "rgba(255,255,255,0.46)", fontWeight: 500, fontSize: "0.82rem" }}>Company Brain</Link>
-            <Link href="/pricing" style={{ color: "rgba(255,255,255,0.46)", fontWeight: 500, fontSize: "0.82rem" }}>Pricing</Link>
-            <Link href="/book" style={{ color: "rgba(255,255,255,0.46)", fontWeight: 500, fontSize: "0.82rem" }}>Book</Link>
+            <Link href="/pricing" style={{ color: "rgba(255,255,255,0.46)", fontWeight: 500, fontSize: "0.82rem" }}>Engagement Path</Link>
+            <Link href="/proof-vault" style={{ color: "rgba(255,255,255,0.46)", fontWeight: 500, fontSize: "0.82rem" }}>Proof</Link>
+            <Link href="/book" style={{ color: "rgba(255,255,255,0.46)", fontWeight: 500, fontSize: "0.82rem" }}>Diagnostic</Link>
             <Link href="/legal" style={{ color: "rgba(255,255,255,0.46)", fontWeight: 500, fontSize: "0.82rem" }}>Legal</Link>
           </div>
-          <p style={{ fontSize: "0.78rem", color: "rgba(255,255,255,0.30)", maxWidth: 620, margin: "0 auto var(--sp-3)" }}>
-            لا نضمن نتائج محددة أو عائد استثمار مضمون؛ كل رقم في هذه الصفحة يعتمد على دليل موثّق يُبنى أثناء التنفيذ، لا على وعد مسبق.
+          <p style={{ fontSize: "0.78rem", color: "rgba(255,255,255,0.30)", maxWidth: 680, margin: "0 auto var(--sp-3)" }}>
+            لا نضمن نتيجة أو عائدًا ماليًا محددًا. كل claim خارجي يجب أن يكون مبنيًا على Evidence قابل للمراجعة وموافقة مناسبة.
           </p>
           <p style={{ fontSize: "0.82rem", color: "rgba(255,255,255,0.34)" }}>
-            © 2026 Dealix · Saudi-first AI Operating Systems · no uncontrolled external sending
+            © 2026 Dealix · Governed AI Execution Platform for Saudi Business · Signal → Decision → Action → Proof
           </p>
         </footer>
       </main>

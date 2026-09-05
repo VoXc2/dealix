@@ -69,7 +69,10 @@ async def create(payload: dict[str, Any] = Body(...)) -> dict[str, Any]:
         req = ApprovalRequest.model_validate(payload)
     except ValidationError as exc:
         raise HTTPException(status_code=422, detail=exc.errors()) from exc
-    stored = get_default_approval_store().create(req)
+    try:
+        stored = get_default_approval_store().create(req)
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
     log.info("approval_center_create", approval_id=stored.approval_id, action_type=stored.action_type)
     return {
         "approval": stored.model_dump(mode="json"),

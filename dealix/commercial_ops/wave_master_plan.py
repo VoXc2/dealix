@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from typing import Any
 
+from auto_client_acquisition.approval_center import approval_store_backend_status
 from dealix.commercial_ops.agent_eval_harness import run_agent_eval_harness
 from dealix.commercial_ops.ceo_master_plan import build_ceo_master_plan_snapshot
 from dealix.commercial_ops.gtm_blitz_tracker import build_gtm_blitz_snapshot
@@ -34,12 +35,24 @@ def build_wave_master_plan_snapshot() -> dict[str, Any]:
             "scripts/apply_kpi_founder_commercial.py",
         ],
     }
+    approval_backend = approval_store_backend_status()
     wave1_pg = {
-        "verdict": "READY",
+        # Approval Center is now verifiable, but this combined wave must remain
+        # HOLD until both approval and autopilot Postgres backends have runtime
+        # receipts. Code presence or environment intent is not production proof.
+        "verdict": "HOLD_RUNTIME_PROOF",
+        "approval_center": approval_backend,
+        "autopilot_store": {
+            "verdict": "HOLD_UNTIL_VERIFIED",
+            "required_backend": "postgres",
+            "runtime_receipt_required": True,
+        },
         "env": {
             "DEALIX_APPROVAL_STORE_BACKEND": "postgres",
             "DEALIX_AUTOPILOT_STORE_BACKEND": "postgres",
         },
+        "migration": "20260905_022_approval_center_snapshots",
+        "approval_verifier": "python scripts/verify_approval_center_backend.py --json",
         "modules": [
             "auto_client_acquisition.approval_center.postgres_store",
             "dealix.revenue_ops_autopilot.postgres_store",
@@ -67,7 +80,10 @@ def build_wave_master_plan_snapshot() -> dict[str, Any]:
     }
 
     waves = [wave0_prod, wave0_rev, wave1_pg, wave1_repeat, wave2, wave3]
-    code_ready = all(w.get("verdict") in {"PASS", "READY"} for w in [wave1_pg, wave2, wave3])
+    code_ready = all(
+        wave.get("verdict") in {"PASS", "READY"}
+        for wave in [wave1_pg, wave2, wave3]
+    )
     overall = "IN_PROGRESS"
     if wave0_rev["verdict"] == "PASS" and wave0_prod["verdict"] == "PASS":
         overall = "PASS"

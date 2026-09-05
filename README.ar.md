@@ -1,144 +1,137 @@
 <div align="center" dir="rtl">
 
-# 🏢 Dealix — نظام تشغيل أعمال بالذكاء الاصطناعي للشركات السعودية
+# Dealix — منصة التنفيذ الذكي المحكوم للأعمال في السعودية
 
-### Dealix نظام تشغيل أعمال بالذكاء الاصطناعي للشركات السعودية. أول مدخل تجاري له هو الإيرادات + الإثبات + القيادة، لكن بنيته بعيدة المدى تغطي قلب تشغيل الشركة: النمو، العملاء، التسليم، الدعم، المالية، الحوكمة، المعرفة، والقيادة التنفيذية.
-### راجع [مصدر الحقيقة للمنصة](docs/00_platform_truth/PLATFORM_SOURCE_OF_TRUTH.md). Revenue OS هو أول مدخل تجاري داخل منصة Dealix Business OS الأوسع.
+**حوّل إشارات شركتك إلى قرارات وتنفيذ ونتائج قابلة للإثبات.**
 
-[![CI](https://github.com/Dealix-sa/dealix/actions/workflows/ci.yml/badge.svg)](https://github.com/Dealix-sa/dealix/actions/workflows/ci.yml)
-[![الرخصة: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Python 3.12](https://img.shields.io/badge/python-3.12-blue.svg)](https://www.python.org/downloads/)
+`Signal -> Decision -> Action -> Proof`
+
+سعودي أولًا · عرض خاص بالعميل · تنفيذ محكوم بالدليل والموافقة
 
 **العربية** · **[English](README.md)**
 
+[مصدر الحقيقة](docs/00_platform_truth/PLATFORM_SOURCE_OF_TRUTH.md) · [التدشين](docs/ops/LAUNCH_OPERATOR_RUNBOOK.md) · [جاهزية الإنتاج](docs/ops/PRODUCTION_READINESS_CHECKLIST.md) · [بوابة الإطلاق التجاري](docs/ops/COMMERCIAL_GO_LIVE_GATE.md)
+
 </div>
 
 ---
 
-## 🌟 نظرة عامة
+## ما هي Dealix؟
 
-**شركة AI السعودية** منصة ذكاء اصطناعي متعددة الوكلاء جاهزة للإنتاج، تُؤتمت:
+Dealix **منصة تنفيذ ذكي محكوم للأعمال في السعودية**. تربط الإشارات الرسمية/الأولية الخاصة بالشركة بالبحث والدليل والأولوية والقرار، ثم تضبط التنفيذ ضمن حدود صلاحية واضحة وتوثق ما حدث فعليًا وما الذي ثبت من قيمة.
 
-- **المرحلة 8 — اكتساب العملاء تلقائياً:** استقبال العملاء، مطابقة ICP، استخلاص المشاكل، التأهيل BANT، الحجز، مزامنة HubSpot، توليد العروض، الوصول، ومتابعات متدرّجة.
-- **المرحلة 9 — النمو المستقل:** ذكاء القطاعات السعودية، توليد محتوى ثنائي اللغة، نشر متعدد القنوات، إثراء العملاء، مراقبة المنافسين، وبحث السوق.
+تحت الواجهة السوقية تعمل Dealix كـ **AI Business Operating System / Company Machine** واحدة تشمل 12 نظام تشغيل: Command وRevenue وProof وClient وDelivery وSupport وFinance وData وGovernance وAcademy وPartner وVenture. وتبقى **Revenue + Proof + Command** لغة قدرة ومدخل اقتصادي مهم، لكنها ليست العنوان العام الحالي لفئة Dealix في السوق.
 
-مصمّمة للسوق **السعودي والخليجي** مع دعم **عربي من الدرجة الأولى**، أسعار بـ **الريال السعودي**، معرفة بـ **توقيت آسيا/الرياض**، ومتناغمة مع برامج **رؤية 2030**.
+Dealix ليست Chatbot عامًا، ولا CRM بديلًا، ولا Lead Scraper، ولا ماكينة رسائل جماعية، ولا أسطول Agents غير محكوم، ولا خدمة تضمن الإيراد.
 
-## ✨ المزايا الرئيسية
+قاعدة التشغيل:
 
-- 🧠 **توجيه ذكي لنماذج LLM** — يوزّع المهام بين **Anthropic Claude** (منطق)، **Gemini** (بحث)، **Groq** (تصنيف سريع)، **DeepSeek** (كود)، **GLM** (عربي). سلسلة احتياط تلقائية عند الفشل.
-- 🤖 **أكثر من 15 وكيلاً إنتاجياً** — كل وكيل بمدخلات/مخرجات مُعرَّفة، سجلات مهيكلة، تقهقر لطيف، واختبارات.
-- 🌍 **ثنائي اللغة AR/EN** — محتوى، سكربتات مبيعات، prompts، واجهات تدعم العربية أولاً.
-- 🔒 **الأمن أولاً** — الإعدادات من `.env` فقط، استخدام `SecretStr` لكل سر، فحوصات gitleaks + detect-secrets + bandit قبل كل commit، تكامل LinkedIn آمن من حيث الشروط.
-- 🐳 **جاهز للسحابة** — Dockerfile متعدد المراحل، حاوية بمستخدم غير جذري، stack كامل بـ Docker Compose (التطبيق + Postgres + Redis + MongoDB)، CI/CD عبر GitHub Actions.
-- 📊 **قابل للمراقبة** — سجلات مهيكلة بـ structlog، تتبع LLM اختياري عبر Langfuse، تتبع الاستخدام لكل مزود.
-- 🇸🇦 **سعودي أصيل** — ١٢ قطاعاً ببيانات منسّقة (عقار، صحة، تعليم، لوجستيات، فينتك…)، مرجع للمنظّمين السعوديين، أسعار بـ SAR/USD، أعياد سعودية.
+> الذكاء الاصطناعي يستكشف ويحلل ويقترح. الـworkflows المحكومة تنفذ. الأفعال الخارجية المادية تحتاج السلطة والدليل المناسبين في وقت التنفيذ.
 
-## 🚀 البدء السريع
+## مسار التعامل الكنسي
 
-### المتطلبات
+1. **Execution Diagnostic** — نحدد workflow واحدًا ذا أثر اقتصادي، baseline، التسرب أو الاختناق، الأنظمة، صاحب القرار، حدود البيانات ومعايير الإثبات.
+2. **Qualified Discovery + Customer-Specific Quote** — نثبت النطاق وشروط البدء ثم نصدر عرضًا خاصًا بالعميل.
+3. **Outcome Sprint** — تنفيذ محكوم لحالة محددة بمعايير قبول قابلة للقياس؛ المدة والنطاق خاصان بالعميل.
+4. **Proof Review** — نقارن النتيجة بالـbaseline ونفصل النشاط عن القيمة المثبتة.
+5. **Dealix Runtime** — تشغيل مستمر مُدار/منصّي فقط للـworkflows التي أثبتت قيمة قابلة للتكرار.
 
-- Python 3.11 أو 3.12
-- Docker + Docker Compose (اختياري)
-- على الأقل مفتاح API واحد لـ LLM (يُنصح بـ Anthropic)
+**لا توجد قائمة أسعار عامة، ولا Checkout عام، ولا ضمان عائد أو إيراد أو نتيجة.**
 
-### 1. استنساخ المشروع وإعداد البيئة
+قد تبقى معرفات داخلية تاريخية مثل `free_mini_diagnostic` و`revenue_command_pilot_30d` كـcompatibility IDs إلى أن يكتمل migration تشغيلي مقبول. هذه المعرفات لا تعيد الأسماء السوقية القديمة ولا تمنح سلطة تسعير عامة.
+
+## شركة واحدة / خمسة ملاك دائمين
+
+- `dealix-pm` — الرئيس: المال، الأولويات، القرارات، المخاطر، الموافقات والخطوة التالية.
+- `dealix-sales` — الإشارات، بحث الحسابات، التأهيل، التشخيص، Discovery، وتحضير التفاوض.
+- `dealix-delivery` — Onboarding، التنفيذ، الدعم، القبول وإعداد الـProof.
+- `dealix-engineer` — الاعتمادية، التكاملات، بوابات الثقة وأي تطوير يزيد Cash أو Trust أو Repeatability.
+- `dealix-content` — محتوى المؤسس/الشركة/البحث والتوزيع المبني على دليل.
+
+أي specialist هو workload محدود تحت هؤلاء، وليس Agent دائمًا جديدًا. لا نبني Company OS أو Brain أو CRM أو Opportunity Graph أو Approval Center أو Proof Ledger أو Scheduler أو Model Router أو Control Plane موازية.
+
+## Truth Firewall
+
+لا تخلط Dealix بين:
+
+- research != relationship
+- public contact != consent
+- lead != buyer intent
+- draft != sent
+- quote != invoice
+- invoice != payment
+- synthetic/demo != customer proof
+- PR != production
+- historical PASS != current exact-head PASS
+
+## ضوابط التواصل والنمو
+
+- لا scraping كاختصار للنمو.
+- لا cold WhatsApp automation.
+- لا mass/unapproved LinkedIn automation.
+- لا إرسال خارجي آلي دون السلطة الحالية المطلوبة.
+- لا proof مزيف ولا علاقات مزيفة ولا انتحال هوية ولا ban-evasion.
+- يمكن تجهيز رسائل Founder-quality بوضوح على أنها من Dealix أو نيابةً عن المؤسس.
+
+## البدء السريع
 
 ```bash
-git clone https://github.com/YOUR-ORG/ai-company-saudi.git
-cd ai-company-saudi
-
-# إعداد لمرة واحدة
+git clone https://github.com/Dealix-sa/dealix.git
+cd dealix
 make setup
-```
-
-### 2. إعداد الأسرار
-
-عدّل `.env` وأضف مفاتيح الـ API. **الحد الأدنى:** `ANTHROPIC_API_KEY`.
-
-> ⚠️ **لا ترفع `.env` أبداً.** المشروع يحميك بـ `.gitignore` و pre-commit hook عبر gitleaks.
-
-### 3. التشغيل
-
-```bash
-# محلياً
+cp .env.example .env
 make run
-# → http://localhost:8000/docs
-
-# أو الـ stack الكامل
-make docker-up
-make docker-logs
 ```
 
-### 4. جرّب
+توثيق الـAPI محليًا: `http://localhost:8000/docs`
+
+تحقق شبيه بالإنتاج:
 
 ```bash
-# إرسال عميل محتمل عبر قمع اكتساب العملاء الكامل
-curl -X POST http://localhost:8000/api/v1/leads \
-  -H "Content-Type: application/json" \
-  -d '{
-    "company": "شركة التقنية المتقدمة",
-    "name": "أحمد محمد",
-    "email": "ahmed@example.sa",
-    "phone": "+966501234567",
-    "sector": "technology",
-    "region": "Saudi Arabia",
-    "budget": 50000,
-    "message": "نحتاج نظام AI لإدارة المبيعات"
-  }'
+make prod-verify
 ```
 
-## 📊 وكلاء المرحلة 8 — الاكتساب
+فحوص مفيدة:
 
-| الوكيل | الوظيفة |
-| --- | --- |
-| Intake | التقاط العملاء من مصادر متعددة، توحيد، تكرار |
-| ICP Matcher | تقييم بـ ٥ أبعاد + تصنيف (A/B/C/D) |
-| Pain Extractor | استخلاص المشاكل ودرجة الاستعجال (عربي + إنجليزي) |
-| Qualification | أسئلة BANT وتحديث المرحلة |
-| Booking | Calendly → Google Calendar → يدوي |
-| CRM | مزامنة HubSpot (contact + deal) |
-| Proposal | عروض مُعدّة بـ Claude، أسعار حسب المنطقة |
-| Outreach | افتتاحيات وصول باردة ثنائية اللغة |
-| Follow-up | رسائل متابعة متدرّجة |
+```bash
+make env-check
+make api-contract-check
+make security-smoke
+make production-smoke
+make dependency-inventory
+make release-manifest
+make test
+make security
+```
 
-## 📈 وكلاء المرحلة 9 — النمو
+## نموذج المعمارية
 
-| الوكيل | الوظيفة |
-| --- | --- |
-| Sector Intel | ١٢ قطاعاً سعودياً ببيانات منسّقة |
-| Content Creator | مقالات + LinkedIn + دراسات حالة ثنائية اللغة |
-| Distribution | جدولة متعددة القنوات (توقيت الرياض) |
-| Enrichment | إثراء العميل من النطاق + LLM |
-| Competitor Monitor | تحليل المنافسين واقتراح ردود |
-| Market Research | بحث سوقي عبر Gemini بمصادر |
+| الطبقة | المسؤولية |
+|---|---|
+| Decision | Agents، reasoning، synthesis وتجميع الأدلة. |
+| Execution | workflows حتمية، retries، compensation والتزامات محكومة. |
+| Trust | policy، approval، audit، verification وProof. |
+| Data | الحقيقة التشغيلية، lineage، metrics والتكاملات. |
+| Operating | CI/CD، Docker، الانضباط الإصدارّي، حوكمة الريبو وrunbooks. |
 
-## 📚 التوثيق
+## حقيقة التدشين والإنتاج
 
-| الوثيقة | الوصف |
-| --- | --- |
-| [`docs/architecture.md`](docs/architecture.md) | هيكل النظام |
-| [`docs/agents.md`](docs/agents.md) | كل وكيل مُوثّق |
-| [`docs/api.md`](docs/api.md) | مرجع REST API |
-| [`docs/deployment.md`](docs/deployment.md) | النشر الإنتاجي |
-| [`docs/pricing.md`](docs/pricing.md) | الأسعار |
+قبل أي تفعيل تجاري/عام مادي، اعتمد الدليل الحي وليس ادعاءات README:
 
-## 🤝 المساهمة
+- [مصدر الحقيقة للمنصة](docs/00_platform_truth/PLATFORM_SOURCE_OF_TRUTH.md)
+- [Launch Operator Runbook](docs/ops/LAUNCH_OPERATOR_RUNBOOK.md)
+- [Production Readiness Checklist](docs/ops/PRODUCTION_READINESS_CHECKLIST.md)
+- [Commercial Go-Live Gate](docs/ops/COMMERCIAL_GO_LIVE_GATE.md)
+- [Domain Operations](docs/ops/DOMAIN_OPERATIONS_RUNBOOK.md)
+- [No-overclaim register](dealix/registers/no_overclaim.yaml)
+- [Saudi compliance register](dealix/registers/compliance_saudi.yaml)
 
-راجع [docs/contributing/CONTRIBUTING.md](docs/contributing/CONTRIBUTING.md).
+وجود الكود في الريبو أو حالة Provider خضراء أو PASS تاريخي لا يثبت وحده هوية الإنتاج الحالية أو وجود عميل مدفوع أو Proof تجاري.
 
-## 📜 الرخصة
+## الأمن والسياق السعودي
+
+Dealix مصممة حول least privilege، وحدود الموافقات والأدلة، وإبقاء الأسرار خارج المصدر، والتحقق من هوية الـruntime/provider، والسياق التشغيلي السعودي. وثائق الامتثال ليست شهادة قانونية شاملة؛ كل claim يبقى محدودًا بما تثبته الأدلة والضوابط الفعلية.
+
+## الرخصة
 
 MIT — راجع [LICENSE](LICENSE).
-
-## خطة الإكمال الشاملة
-
-من الدمج إلى `main` حتى أول عميل وProof: **[COMPREHENSIVE_COMPLETION_PLAN_AR.md](docs/COMPREHENSIVE_COMPLETION_PLAN_AR.md)**
-
----
-
-<div align="center" dir="rtl">
-
-**[📖 التوثيق](docs/)** · **[🐛 المشاكل](../../issues)** · **[💬 النقاشات](../../discussions)**
-
-</div>

@@ -1,10 +1,9 @@
 #!/usr/bin/env python3
-"""Dealix Self-Operating Company OS runner.
+"""Canonical Dealix self-operating company cycle.
 
-This runner creates a realistic, approval-first operating cycle for Dealix.
-It automates internal thinking, prioritisation, queue generation, draft planning,
-proof logging, and commercial execution reports. It intentionally does not send,
-publish, charge, merge, deploy, or mutate production.
+This is an internal, evidence-first Company OS runner. It may research, score,
+prioritize, draft, log proof gaps, and prepare approval packets. It never sends,
+publishes, charges, merges, deploys, or mutates production.
 
 Usage:
     python scripts/commercial/run_self_operating_company_os.py --mode draft-only --limit 50
@@ -18,13 +17,40 @@ import os
 from dataclasses import asdict, dataclass
 from datetime import UTC, datetime
 from pathlib import Path
-from typing import Any, Dict, Iterable, List
+from typing import Any
 
 ROOT = Path(__file__).resolve().parents[2]
 OUT_ROOT = ROOT / "reports" / "self_operating_company_os"
 DATA_ROOT = ROOT / "data" / "self_operating_company_os"
 
+CANONICAL_COMMERCIAL_PATH = [
+    "REAL_INTERACTION",
+    "VERIFIED_RELATIONSHIP",
+    "QUALIFIED_PROBLEM",
+    "FREE_MINI_DIAGNOSTIC",
+    "QUALIFIED_DISCOVERY",
+    "CUSTOMER_SPECIFIC_QUOTE",
+    "30_DAY_REVENUE_COMMAND_PILOT",
+    "PAYMENT_EVIDENCE",
+    "DELIVERY_EVIDENCE",
+    "CUSTOMER_VALIDATED_PROOF",
+    "EXPAND_OR_REDESIGN",
+]
+
+CANONICAL_ENTRY_OFFER = "Free Mini Diagnostic"
+CANONICAL_PILOT = "30-Day Revenue Command Pilot"
+
 FORBIDDEN_ENV_FLAGS = {
+    "DEALIX_EXTERNAL_SEND": "1",
+    "DEALIX_EMAIL_LIVE_SEND": "1",
+    "DEALIX_WHATSAPP_OUTBOUND": "1",
+    "DEALIX_PUBLIC_PUBLISH": "1",
+    "DEALIX_PAID_SPEND": "1",
+    "DEALIX_PAYMENT_EXECUTION": "1",
+    "DEALIX_PRODUCTION_MUTATION": "1",
+    "DEALIX_DNS_MUTATION": "1",
+    "DEALIX_DB_MUTATION": "1",
+    "DEALIX_SECRET_MUTATION": "1",
     "EXTERNAL_SEND_ENABLED": "true",
     "AUTO_WHATSAPP_ENABLED": "true",
     "AUTO_LINKEDIN_ENABLED": "true",
@@ -33,142 +59,80 @@ FORBIDDEN_ENV_FLAGS = {
     "PRODUCTION_MUTATION_ENABLED": "true",
 }
 
+REAL_RELATIONSHIP_STATES = {
+    "REAL_INTERACTION",
+    "VERIFIED_RELATIONSHIP",
+    "INBOUND",
+}
+PURPOSE_CONSENT_STATES = {
+    "PURPOSE_SPECIFIC",
+    "INBOUND_REQUEST",
+}
+SUPPRESSED_STATES = {"SUPPRESSED", "OPTED_OUT", "WITHDRAWN"}
+
 PLAYBOOKS = [
     {
-        "name": "production_trust",
-        "goal": "Clear production, Railway, smoke, and security blockers before commercial scaling.",
+        "name": "production_and_trust",
         "priority": 100,
+        "goal": "Close #1476, #1494 and #1121 evidence before public scale.",
         "safe_actions": [
-            "review PR #872 production-smoke API-key alignment",
-            "review PR #858 Railway config foundation",
-            "summarise failed or cancelled CI gates",
-            "prepare next maintainer action",
+            "reconcile current main and production evidence",
+            "classify exact-head trust blockers without weakening gates",
+            "prepare rollback-aware public-truth closure evidence",
         ],
-        "approval_required_for": ["merge PR", "production config change", "secret update"],
-        "kpi": "Production Smoke green on main and Railway config drift prevented.",
     },
     {
-        "name": "first_paid_client",
-        "goal": "Close the first 499 SAR Revenue Proof Sprint through manual payment and proof-pack delivery.",
+        "name": "market_signal_intake",
         "priority": 95,
+        "goal": "Turn official and first-party signals into evidence-backed research attention.",
         "safe_actions": [
-            "prepare 499 SAR offer brief",
-            "prepare manual close checklist",
-            "prepare payment evidence object",
-            "prepare proof-pack delivery checklist",
+            "ingest source-bound market signals",
+            "deduplicate companies and evidence references",
+            "create research hypotheses without promoting relationship or consent",
         ],
-        "approval_required_for": ["send offer", "send invoice", "mark payment received"],
-        "kpi": "One confirmed payment received and proof pack delivered.",
     },
     {
-        "name": "grand_targeting",
-        "goal": "Build a ranked acquisition queue from safe sources and generate approval-ready drafts.",
+        "name": "relationship_and_revenue",
         "priority": 90,
+        "goal": "Move only real interactions through the canonical commercial path.",
         "safe_actions": [
-            "rank targets by fit, urgency, access, proof, and payment likelihood",
-            "match each target to one offer",
-            "generate draft-only outreach and follow-up actions",
-            "route all external actions to approval queue",
+            "qualify evidenced interactions",
+            "prepare Free Mini Diagnostic drafts",
+            "prepare discovery and customer-specific quote inputs",
         ],
-        "approval_required_for": ["email", "WhatsApp", "LinkedIn", "phone", "meeting booking"],
-        "kpi": "Top 10 reviewed targets and at least 3 founder-approved next actions.",
     },
     {
-        "name": "market_access",
-        "goal": "Target foreign companies and local Saudi companies with Market Access and Revenue Command offers.",
+        "name": "delivery_and_proof",
         "priority": 85,
+        "goal": "Prepare governed 30-day delivery and customer-validated Proof Packs.",
         "safe_actions": [
-            "identify foreign-market-entry candidates",
-            "identify local B2B growth candidates",
-            "create one-page Saudi opportunity snapshot drafts",
-            "prepare partner/distributor desk recommendations",
+            "validate scope baseline and data-boundary evidence",
+            "prepare delivery work queues and acceptance criteria",
+            "assemble proof gaps without inventing customer outcomes",
         ],
-        "approval_required_for": ["external outreach", "partner introduction", "commercial proposal"],
-        "kpi": "Five high-fit market access opportunities ready for founder review.",
     },
     {
-        "name": "content_and_proof",
-        "goal": "Turn daily work into trust assets: proof packs, LinkedIn drafts, case notes, and SEO report drafts.",
-        "priority": 80,
+        "name": "content_and_distribution",
+        "priority": 75,
+        "goal": "Turn evidence into brand-safe drafts that support the commercial wedge.",
         "safe_actions": [
-            "generate LinkedIn draft from proof evidence",
-            "generate weekly proof-pack outline",
-            "generate Saudi market insight draft",
-            "generate one short founder update draft",
+            "prepare founder insight drafts from verified evidence",
+            "prepare Dealix Page and website content drafts",
+            "prepare proof-safe repurposing packs",
         ],
-        "approval_required_for": ["publish post", "publish case study", "use client name"],
-        "kpi": "Three proof-based content drafts and one proof-pack outline.",
     },
     {
         "name": "learning_loop",
-        "goal": "Update priorities from replies, no-replies, meetings, invoices, payments, and proof-pack delivery.",
-        "priority": 75,
+        "priority": 70,
+        "goal": "Improve priorities and playbooks from verified outcomes and failures.",
         "safe_actions": [
-            "record outcome placeholders",
-            "adjust score rules",
-            "identify repeated objections",
-            "recommend tomorrow's highest-leverage action",
+            "classify failed or stale actions",
+            "extract repeated objections and delivery friction",
+            "recommend the next bounded internal improvement",
         ],
-        "approval_required_for": ["change pricing", "change public promise", "change production workflow"],
-        "kpi": "Tomorrow's plan reflects today's evidence.",
     },
 ]
 
-OFFER_LADDER = [
-    {"name": "Revenue Proof Sprint", "price": "499 SAR", "best_for": "first paid proof and quick manual close"},
-    {"name": "Market Access Snapshot", "price": "499-1,500 SAR", "best_for": "foreign or Saudi market validation"},
-    {"name": "Revenue Leak Diagnostic", "price": "4,999 SAR", "best_for": "companies with clear follow-up leakage"},
-    {"name": "Saudi Market Entry Sprint", "price": "8,000-20,000 SAR", "best_for": "foreign B2B companies testing KSA"},
-    {"name": "B2G Readiness Sprint", "price": "10,000-50,000 SAR", "best_for": "enterprise/B2G readiness without access claims"},
-    {"name": "Revenue Command Room", "price": "monthly retainer", "best_for": "ongoing sales operations and proof packs"},
-]
-
-SEED_TARGETS = [
-    {
-        "company_name": "Warm inbound prospect",
-        "target_type": "inbound",
-        "sector": "Saudi B2B services",
-        "pain_hypothesis": "Follow-up and proposal leakage after customer inquiries.",
-        "source": "manual/warm",
-        "urgency": 90,
-        "accessibility": 85,
-        "value": 70,
-        "risk": 15,
-    },
-    {
-        "company_name": "Local clinic or training center",
-        "target_type": "local_b2b",
-        "sector": "healthcare/training",
-        "pain_hypothesis": "WhatsApp and call leads are not consistently followed up.",
-        "source": "manual list",
-        "urgency": 80,
-        "accessibility": 75,
-        "value": 65,
-        "risk": 20,
-    },
-    {
-        "company_name": "Foreign B2B SaaS entering KSA",
-        "target_type": "foreign_market_entry",
-        "sector": "software",
-        "pain_hypothesis": "Needs Saudi market access, partner mapping, Arabic pitch, and first pilots.",
-        "source": "approved public research",
-        "urgency": 75,
-        "accessibility": 60,
-        "value": 90,
-        "risk": 30,
-    },
-    {
-        "company_name": "Saudi supplier seeking B2G readiness",
-        "target_type": "b2g_readiness",
-        "sector": "services/supply",
-        "pain_hypothesis": "Needs capability statement, proposal readiness, and partner mapping.",
-        "source": "manual/referral",
-        "urgency": 70,
-        "accessibility": 60,
-        "value": 85,
-        "risk": 35,
-    },
-]
 
 @dataclass
 class ActionItem:
@@ -180,17 +144,20 @@ class ActionItem:
     approval_required: bool
     risk_level: str
 
+
 @dataclass
 class TargetCard:
     id: str
     company_name: str
-    target_type: str
-    sector: str
+    segment: str
+    source: str
+    evidence_refs: list[str]
+    relationship_state: str
+    consent_state: str
+    suppression_state: str
+    commercial_stage: str
     pain_hypothesis: str
-    offer_fit: str
     score: int
-    risk_level: str
-    recommended_channel: str
     next_action: str
     approval_status: str
 
@@ -204,99 +171,143 @@ def date_stamp() -> str:
 
 
 def ensure_dirs() -> None:
-    for path in [OUT_ROOT / "daily", OUT_ROOT / "actions", OUT_ROOT / "approvals", OUT_ROOT / "targets", OUT_ROOT / "proof", OUT_ROOT / "content", DATA_ROOT]:
+    for path in [
+        OUT_ROOT / "daily",
+        OUT_ROOT / "actions",
+        OUT_ROOT / "approvals",
+        OUT_ROOT / "targets",
+        OUT_ROOT / "proof",
+        OUT_ROOT / "content",
+        DATA_ROOT,
+    ]:
         path.mkdir(parents=True, exist_ok=True)
 
 
-def env_tripwire() -> List[str]:
-    violations = []
+def env_tripwire() -> list[str]:
+    violations: list[str] = []
     for key, bad_value in FORBIDDEN_ENV_FLAGS.items():
-        if os.getenv(key, "").strip().lower() == bad_value:
+        if os.getenv(key, "").strip().lower() == bad_value.lower():
             violations.append(f"{key}={bad_value}")
     return violations
 
 
-def load_targets() -> List[Dict[str, Any]]:
+def _string_list(value: Any) -> list[str]:
+    if not isinstance(value, list):
+        return []
+    return [str(item).strip() for item in value if str(item).strip()]
+
+
+def load_targets() -> list[dict[str, Any]]:
+    """Load only real/evidence-bearing inputs; never synthesize commercial targets."""
     path = DATA_ROOT / "targets.json"
-    if path.exists():
-        try:
-            data = json.loads(path.read_text(encoding="utf-8"))
-            if isinstance(data, list):
-                return data
-        except json.JSONDecodeError:
-            pass
-    return SEED_TARGETS
+    if not path.exists():
+        return []
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError:
+        return []
+    if not isinstance(data, list):
+        return []
+    return [item for item in data if isinstance(item, dict)]
 
 
-def pick_offer(target: Dict[str, Any]) -> str:
-    target_type = target.get("target_type", "")
-    if target_type == "foreign_market_entry":
-        return "Market Access Snapshot"
-    if target_type == "b2g_readiness":
-        return "B2G Readiness Sprint"
-    if target.get("urgency", 0) >= 85:
-        return "Revenue Proof Sprint"
-    return "Revenue Leak Diagnostic"
-
-
-def score_target(target: Dict[str, Any]) -> int:
-    urgency = int(target.get("urgency", 50))
-    accessibility = int(target.get("accessibility", 50))
-    value = int(target.get("value", 50))
-    risk = int(target.get("risk", 30))
-    proof_bonus = 10 if target.get("source") in {"manual/warm", "manual/referral"} else 0
-    score = round((urgency * 0.30) + (accessibility * 0.25) + (value * 0.30) + proof_bonus - (risk * 0.15))
+def score_target(target: dict[str, Any]) -> int:
+    fit = int(target.get("fit_score", 50))
+    urgency = int(target.get("urgency_score", 50))
+    evidence = int(target.get("evidence_score", 50))
+    access = int(target.get("access_score", 25))
+    risk = int(target.get("risk_score", 30))
+    score = round(
+        (fit * 0.30)
+        + (urgency * 0.25)
+        + (evidence * 0.25)
+        + (access * 0.20)
+        - (risk * 0.15)
+    )
     return max(0, min(100, score))
 
 
-def risk_level(score: int, target: Dict[str, Any]) -> str:
-    risk = int(target.get("risk", 30))
-    if risk >= 40:
-        return "medium"
-    if score >= 80:
-        return "low"
-    return "review"
+def _dispatch_eligible(target: dict[str, Any]) -> bool:
+    relationship = str(target.get("relationship_state", "RESEARCH")).upper()
+    consent = str(target.get("consent_state", "NONE")).upper()
+    suppression = str(target.get("suppression_state", "CLEAR")).upper()
+    if suppression in SUPPRESSED_STATES:
+        return False
+    return relationship in REAL_RELATIONSHIP_STATES or consent in PURPOSE_CONSENT_STATES
 
 
-def build_target_cards(limit: int) -> List[TargetCard]:
-    cards: List[TargetCard] = []
+def _next_action(target: dict[str, Any]) -> str:
+    evidence_refs = _string_list(target.get("evidence_refs"))
+    source = str(target.get("source", "")).strip()
+    stage = str(target.get("commercial_stage", "RESEARCH")).upper()
+
+    if not source or not evidence_refs:
+        return "BLOCKED: add source and evidence references before commercial progression"
+    if stage == "RESEARCH":
+        return "capture a real interaction or purpose-specific consent; no outbound promotion"
+    if stage in {"REAL_INTERACTION", "VERIFIED_RELATIONSHIP", "QUALIFIED_PROBLEM"}:
+        return f"prepare {CANONICAL_ENTRY_OFFER} draft and evidence gaps"
+    if stage == "FREE_MINI_DIAGNOSTIC":
+        return "prepare qualified discovery agenda and baseline questions"
+    if stage == "QUALIFIED_DISCOVERY":
+        return "prepare customer-specific quote draft; no global price authority"
+    if stage == "CUSTOMER_SPECIFIC_QUOTE":
+        return "wait for approved customer acceptance and payment/start-condition evidence"
+    if stage in {"VERIFIED_PAYMENT", "PAYMENT_EVIDENCE"}:
+        return f"handoff authorized scope to dealix-delivery for {CANONICAL_PILOT}"
+    if stage in {"DELIVERY", "DELIVERY_EVIDENCE"}:
+        return "continue governed delivery and assemble customer evidence gaps"
+    if stage in {"CUSTOMER_VALIDATED_PROOF", "PERMISSIONED_PROOF"}:
+        return "prepare STOP / EXPAND / REDESIGN decision; no automatic upsell"
+    return "review stage against canonical commercial path"
+
+
+def build_target_cards(limit: int) -> list[TargetCard]:
+    cards: list[TargetCard] = []
     for idx, target in enumerate(load_targets()[:limit], start=1):
-        score = score_target(target)
-        offer = pick_offer(target)
-        channel = "manual founder review"
-        if target.get("target_type") == "inbound":
-            channel = "reply to warm inbound only after approval"
-        elif target.get("target_type") == "foreign_market_entry":
-            channel = "LinkedIn/email draft for approval"
+        evidence_refs = _string_list(target.get("evidence_refs"))
+        source = str(target.get("source", "")).strip()
+        relationship = str(target.get("relationship_state", "RESEARCH")).upper()
+        consent = str(target.get("consent_state", "NONE")).upper()
+        suppression = str(target.get("suppression_state", "CLEAR")).upper()
+        stage = str(target.get("commercial_stage", "RESEARCH")).upper()
+        evidence_ready = bool(source and evidence_refs)
+        dispatch_ready = evidence_ready and _dispatch_eligible(target)
         cards.append(
             TargetCard(
                 id=f"TGT-{idx:04d}",
-                company_name=str(target.get("company_name", "Unknown target")),
-                target_type=str(target.get("target_type", "unknown")),
-                sector=str(target.get("sector", "unknown")),
-                pain_hypothesis=str(target.get("pain_hypothesis", "needs discovery")),
-                offer_fit=offer,
-                score=score,
-                risk_level=risk_level(score, target),
-                recommended_channel=channel,
-                next_action=f"Prepare founder-approved draft for {offer}",
-                approval_status="pending_founder_review",
+                company_name=str(target.get("company_name", "Unknown company")),
+                segment=str(target.get("segment", "unknown")),
+                source=source or "UNKNOWN_NOT_EVIDENCE_BACKED",
+                evidence_refs=evidence_refs,
+                relationship_state=relationship,
+                consent_state=consent,
+                suppression_state=suppression,
+                commercial_stage=stage,
+                pain_hypothesis=str(target.get("pain_hypothesis", "UNKNOWN_NOT_EVIDENCE_BACKED")),
+                score=score_target(target) if evidence_ready else 0,
+                next_action=_next_action(target),
+                approval_status=(
+                    "pending_action_bound_approval"
+                    if dispatch_ready
+                    else "internal_only_not_dispatch_eligible"
+                ),
             )
         )
     return sorted(cards, key=lambda card: card.score, reverse=True)
 
 
-def build_actions() -> List[ActionItem]:
-    actions: List[ActionItem] = []
+def build_actions() -> list[ActionItem]:
+    actions: list[ActionItem] = []
     counter = 1
-    for playbook in sorted(PLAYBOOKS, key=lambda p: p["priority"], reverse=True):
-        for action in playbook["safe_actions"][:3]:
+    for playbook in sorted(PLAYBOOKS, key=lambda item: item["priority"], reverse=True):
+        for action in playbook["safe_actions"]:
             actions.append(
                 ActionItem(
                     id=f"ACT-{counter:04d}",
                     playbook=playbook["name"],
                     action=action,
-                    owner="Dealix OS",
+                    owner="Dealix Company OS",
                     status="queued_internal",
                     approval_required=False,
                     risk_level="low",
@@ -306,87 +317,135 @@ def build_actions() -> List[ActionItem]:
     return actions
 
 
-def build_approval_queue(cards: Iterable[TargetCard]) -> List[Dict[str, Any]]:
-    queue: List[Dict[str, Any]] = []
+def _draft_for(card: TargetCard) -> str:
+    return (
+        f"السلام عليكم [الاسم]، معك مؤسس Dealix. لاحظت سياقًا مرتبطًا بـ {card.company_name} "
+        f"وأبغى أتأكد من فرضية واحدة بدل ما أفترض: {card.pain_hypothesis}. "
+        "Dealix نبدأ فيه بـ Free Mini Diagnostic لتحديد أين يضيع القرار أو المتابعة، "
+        "وما الدليل المتاح، وهل يوجد Pilot صغير قابل للقياس خلال 30 يوم. "
+        "إذا مناسب، أرسل لك التشخيص المختصر ونقرر بعدها هل يستحق Discovery أو لا."
+    )
+
+
+def build_approval_queue(cards: list[TargetCard]) -> list[dict[str, Any]]:
+    queue: list[dict[str, Any]] = []
     for card in cards:
+        if card.approval_status != "pending_action_bound_approval":
+            continue
         queue.append(
             {
                 "target_id": card.id,
                 "company_name": card.company_name,
-                "action_type": "external_follow_up_draft",
-                "channel": card.recommended_channel,
-                "draft_text": build_draft(card),
-                "risk_flags": ["external_action_requires_founder_approval", "no_auto_send"],
-                "proof_to_attach": "Use only real proof pack or public Dealix docs; do not invent client proof.",
-                "status": "pending_founder_approval",
+                "action_type": "relationship_governed_follow_up_draft",
+                "commercial_stage": card.commercial_stage,
+                "relationship_state": card.relationship_state,
+                "consent_state": card.consent_state,
+                "suppression_state": card.suppression_state,
+                "evidence_refs": card.evidence_refs,
+                "draft_text": _draft_for(card),
+                "risk_flags": [
+                    "external_action_requires_action_bound_approval",
+                    "sender_health_required",
+                    "suppression_recheck_required",
+                    "provider_receipt_required",
+                    "no_auto_send",
+                ],
+                "status": "pending_action_bound_approval",
             }
         )
     return queue
-
-
-def build_draft(card: TargetCard) -> str:
-    if card.target_type == "foreign_market_entry":
-        return (
-            f"Hi [Name], I am based in Riyadh and help B2B companies test Saudi market opportunities through a practical Dealix {card.offer_fit}. "
-            f"For {card.company_name}, the likely opportunity is: {card.pain_hypothesis}. "
-            "Would it be useful if I send a one-page Saudi opportunity snapshot?"
-        )
-    return (
-        f"السلام عليكم [الاسم]، أشتغل على Dealix لمساعدة الشركات على ترتيب الفرص والمتابعة. "
-        f"بالنسبة لـ {card.company_name}، الفرضية عندنا: {card.pain_hypothesis}. "
-        f"أقترح نبدأ بـ {card.offer_fit} بشكل صغير وواضح، مع تقرير وإثبات عمل. هل يناسب أرسل لك صفحة مختصرة؟"
-    )
 
 
 def write_json(path: Path, payload: Any) -> None:
     path.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
 
-def write_daily_report(cards: List[TargetCard], actions: List[ActionItem], approvals: List[Dict[str, Any]], tripwire: List[str]) -> Path:
+def write_content_queue(cards: list[TargetCard]) -> Path:
+    today = date_stamp()
+    path = OUT_ROOT / "content" / f"{today}.md"
+    lines = [
+        f"# Dealix evidence-backed content queue — {today}",
+        "",
+        "All outputs are internal drafts until the matching publish authority exists.",
+        "",
+        "- Founder draft: why Revenue + Proof + Command is an operating wedge, not an agent demo.",
+        "- Proof draft: what separates activity, delivery, payment, value and publication permission.",
+        "- Market draft: why a real interaction is more valuable than a scraped contact list.",
+        "",
+        "## Evidence-derived angles",
+    ]
+    for card in cards[:5]:
+        if card.evidence_refs:
+            lines.append(
+                f"- {card.company_name}: {card.pain_hypothesis} "
+                f"(stage={card.commercial_stage}; evidence={len(card.evidence_refs)})"
+            )
+    path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    return path
+
+
+def write_daily_report(
+    cards: list[TargetCard],
+    actions: list[ActionItem],
+    approvals: list[dict[str, Any]],
+    tripwire: list[str],
+) -> Path:
     today = date_stamp()
     path = OUT_ROOT / "daily" / f"{today}.md"
     lines = [
         f"# Dealix Self-Operating Company OS — {today}",
         "",
         "## Verdict",
-        "SAFE_TO_RUN_INTERNAL_DRAFT_ONLY" if not tripwire else "HALTED_BY_ENV_TRIPWIRE",
+        "SAFE_INTERNAL_AUTONOMY" if not tripwire else "HALTED_BY_ENV_TRIPWIRE",
         "",
-        "## Operating rule",
-        "Automate internal intelligence, scoring, drafting, proof logging, and reporting. Require founder approval for every external action.",
+        "## Canonical commercial path",
+        " -> ".join(CANONICAL_COMMERCIAL_PATH),
         "",
-        "## Top commercial targets",
+        "## Top evidence-backed targets",
     ]
+    if not cards:
+        lines.append("- No evidence-backed targets loaded; synthetic targets are intentionally disabled.")
     for card in cards[:10]:
-        lines.append(f"- **{card.id} — {card.company_name}** | score {card.score} | offer: {card.offer_fit} | next: {card.next_action}")
+        lines.append(
+            f"- **{card.id} — {card.company_name}** | score={card.score} | "
+            f"stage={card.commercial_stage} | next={card.next_action}"
+        )
     lines.extend(["", "## Top internal actions"])
     for action in actions[:12]:
         lines.append(f"- **{action.id}** [{action.playbook}] {action.action}")
-    lines.extend(["", "## Pending approval queue"])
+    lines.extend(["", "## Approval-ready relationship actions"])
+    if not approvals:
+        lines.append("- None. Research/public contact data cannot create send authority.")
     for item in approvals[:10]:
-        lines.append(f"- **{item['target_id']}** {item['action_type']} via {item['channel']} — {item['status']}")
-    lines.extend([
-        "",
-        "## Revenue focus",
-        "1. Finish production trust: #872 then #858.",
-        "2. Close first 499 SAR Revenue Proof Sprint through #873 manual payment + proof pack path.",
-        "3. Use #871/#874 queues to pick the best founder-reviewed targets.",
-        "4. Let #869 repeat the loop after payment/proof path is stable.",
-        "",
-        "## Forbidden actions",
-        "- No cold WhatsApp.",
-        "- No automated external sending.",
-        "- No fake proof.",
-        "- No guaranteed revenue claims.",
-        "- No payment/revenue status before confirmed payment.",
-        "- No production mutation or PR merge without explicit approval.",
-    ])
+        lines.append(f"- **{item['target_id']}** {item['action_type']} — {item['status']}")
+    lines.extend(
+        [
+            "",
+            "## Current executive focus",
+            "1. #1494 exact-head commercial/runtime acceptance.",
+            "2. #1476 production recovery + governed GTM activation.",
+            "3. #1121 canonical apps/web front-door truth.",
+            "4. First verified paid 30-Day Revenue Command Pilot with payment evidence.",
+            "5. Delivery evidence -> customer-validated Proof -> STOP / EXPAND / REDESIGN.",
+            "",
+            "## Truth firewall",
+            "- Research != relationship.",
+            "- Public contact != consent.",
+            "- Draft != sent.",
+            "- Quote != invoice.",
+            "- Invoice != payment.",
+            "- Activity != delivery.",
+            "- Synthetic/demo != customer proof.",
+            "- Customer outcome != publication permission.",
+        ]
+    )
     if tripwire:
-        lines.extend(["", "## Tripwire violations", *[f"- {v}" for v in tripwire]])
+        lines.extend(["", "## Tripwire violations", *[f"- {item}" for item in tripwire]])
     path.write_text("\n".join(lines) + "\n", encoding="utf-8")
     return path
 
 
-def verify_outputs() -> Dict[str, Any]:
+def verify_outputs() -> dict[str, Any]:
     today = date_stamp()
     required = [
         OUT_ROOT / "daily" / f"{today}.md",
@@ -400,24 +459,6 @@ def verify_outputs() -> Dict[str, Any]:
     return {"ok": not missing, "missing": missing}
 
 
-def write_content_queue(cards: List[TargetCard]) -> Path:
-    today = date_stamp()
-    path = OUT_ROOT / "content" / f"{today}.md"
-    ideas = [
-        "LinkedIn draft: Why Saudi B2B companies lose money in follow-up before they lose it in sales.",
-        "Market insight draft: How foreign B2B companies should test Saudi demand before hiring or opening full operations.",
-        "Founder update draft: Building Dealix as an approval-first revenue operating system, not a spam bot.",
-    ]
-    lines = [f"# Content queue — {today}", "", "All posts are drafts. Do not publish without founder approval.", ""]
-    for idea in ideas:
-        lines.append(f"- {idea}")
-    lines.extend(["", "## Target-derived angles"])
-    for card in cards[:5]:
-        lines.append(f"- {card.sector}: {card.pain_hypothesis} -> {card.offer_fit}")
-    path.write_text("\n".join(lines) + "\n", encoding="utf-8")
-    return path
-
-
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--mode", default="draft-only", choices=["draft-only"])
@@ -427,7 +468,6 @@ def main() -> int:
     ensure_dirs()
     today = date_stamp()
     tripwire = env_tripwire()
-
     cards = build_target_cards(args.limit)
     actions = build_actions()
     approvals = build_approval_queue(cards)
@@ -435,11 +475,19 @@ def main() -> int:
     proof_log = {
         "generated_at": utc_stamp(),
         "mode": args.mode,
+        "source_sha": os.getenv("DEALIX_SOURCE_SHA", "UNKNOWN_NOT_EVIDENCE_BACKED"),
         "tripwire_violations": tripwire,
-        "proof_rule": "append-only evidence; no revenue before payment_received; no closed_won before proof_pack_delivered",
+        "truth_firewall": [
+            "research_is_not_relationship",
+            "public_contact_is_not_consent",
+            "draft_is_not_sent",
+            "invoice_is_not_payment",
+            "synthetic_is_not_customer_proof",
+        ],
+        "commercial_path": CANONICAL_COMMERCIAL_PATH,
         "safe_actions_count": len(actions),
-        "target_count": len(cards),
-        "approval_count": len(approvals),
+        "evidence_backed_target_count": len(cards),
+        "approval_ready_count": len(approvals),
     }
 
     write_json(OUT_ROOT / "targets" / f"{today}.json", [asdict(card) for card in cards])

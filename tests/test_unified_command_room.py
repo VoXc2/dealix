@@ -1,7 +1,9 @@
 """Tests for the Unified Command Room (scripts/dealix_unified_command_room.py).
 
 Guards the doctrine: read-only, stdlib-only, never sends; and the operational
-promise: every panel degrades gracefully when its source is missing.
+promise: every panel degrades gracefully when its source is missing. The
+founder-facing commercial path must remain quote-only and free of retired fixed
+price authority.
 """
 from __future__ import annotations
 
@@ -34,21 +36,54 @@ def test_builds_with_no_sources(tmp_path: Path) -> None:
     assert doc.lstrip().startswith("<!DOCTYPE html>")
     assert "غرفة القيادة الموحّدة" in doc
     # All major panels present even on empty inputs.
-    for marker in ("Funnel", "Pipeline by stage", "Follow-ups due", "Offer ladder", "Article 13"):
+    for marker in ("Funnel", "Pipeline by stage", "Follow-ups due", "Commercial path", "Article 13"):
         assert marker in doc
 
 
-def test_crm_summary_computes_value_and_paid() -> None:
+def test_commercial_path_is_quote_only_and_contains_no_retired_price_ladder() -> None:
+    mod = _load_module()
+    rendered = repr(mod.OFFER_LADDER)
+    assert len(mod.OFFER_LADDER) == 6
+    assert "Customer-Specific Quote" in rendered
+    assert "Revenue Command Pilot" in rendered
+    assert "Invoice ≠ Payment" in rendered
+    for retired in (
+        "Micro Sprint",
+        "Data Pack",
+        "Managed Ops",
+        "Transformation Diagnostic Sprint",
+        "Custom Enterprise System",
+        "499 SAR",
+        "1,500 SAR",
+        "2,999",
+        "4,999",
+        "7,500",
+        "25,000",
+        "100,000",
+    ):
+        assert retired not in rendered
+
+
+def test_crm_summary_keeps_won_separate_from_verified_paid() -> None:
     mod = _load_module()
     rows = [
         {"company": "A", "status": "needs_review", "deal_value_sar": "10000", "probability": "20"},
         {"company": "B", "status": "won", "deal_value_sar": "12500", "probability": "100"},
         {"company": "C", "status": "lost", "deal_value_sar": "5000", "probability": "0"},
         {"company": "D", "status": "replied", "deal_value_sar": "8000", "probability": "50"},
+        {
+            "company": "E",
+            "status": "won",
+            "deal_value_sar": "4000",
+            "probability": "100",
+            "payment_status": "verified",
+            "payment_evidence_id": "pay_receipt_123",
+        },
     ]
     summary = mod.crm_summary(rows)
+    assert summary["won"] == 2
     assert summary["paid"] == 1
-    assert summary["total"] == 4
+    assert summary["total"] == 5
     # Open pipeline excludes won + lost: 10000 + 8000.
     assert summary["pipeline_value"] == 18000
     # Weighted: 10000*0.2 + 8000*0.5 = 2000 + 4000.

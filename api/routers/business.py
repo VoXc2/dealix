@@ -1,10 +1,10 @@
-"""Business strategy, pricing, GTM, and unit economics API (deterministic)."""
+"""Business strategy and GTM API — commercial pricing authority is quote-only."""
 
 from __future__ import annotations
 
 from typing import Any, cast
 
-from fastapi import APIRouter, Body
+from fastapi import APIRouter, Body, HTTPException
 
 from auto_client_acquisition.ai.model_router import ModelTask, get_model_route, requires_guardrail
 from auto_client_acquisition.business import (
@@ -16,23 +16,16 @@ from auto_client_acquisition.business import (
     estimate_cac_payback,
     estimate_gross_margin,
     estimate_ltv,
-    estimate_mrr_path,
-    estimate_roi,
     first_10_customers_plan,
     first_100_customers_plan,
     founder_led_sales_script,
     north_star_metrics,
     partner_strategy,
     positioning_statement,
-    recommend_plan,
     retention_metrics,
     revenue_metrics,
 )
 from auto_client_acquisition.business.market_positioning import Segment
-from auto_client_acquisition.business.pricing_strategy import (
-    calculate_performance_fee,
-    get_pricing_tiers,
-)
 from auto_client_acquisition.business.proof_pack import (
     build_demo_proof_pack,
     calculate_roi_summary,
@@ -42,27 +35,55 @@ from auto_client_acquisition.business.verticals import get_vertical_playbooks, r
 
 router = APIRouter(prefix="/api/v1/business", tags=["business"])
 
+_CANONICAL_COMMERCIAL_PATH = [
+    "free_mini_diagnostic",
+    "qualified_discovery",
+    "customer_specific_quote",
+    "revenue_command_pilot_30d",
+]
+_PRICE_AUTHORITY = "customer_specific_quote_after_qualified_discovery"
+
+
+def _legacy_pricing_retired_detail(*, use_endpoint: str | None = None) -> dict[str, Any]:
+    detail: dict[str, Any] = {
+        "reason": "legacy_pricing_authority_retired",
+        "launch_authority": "revenue_command_pilot_30d",
+        "commercial_path": list(_CANONICAL_COMMERCIAL_PATH),
+        "price_authority": _PRICE_AUTHORITY,
+        "public_fixed_price": False,
+        "live_charge_allowed": False,
+    }
+    if use_endpoint:
+        detail["use_endpoint"] = use_endpoint
+    return detail
+
 
 @router.get("/pricing")
 async def pricing() -> dict[str, Any]:
-    return get_pricing_tiers()
+    """Compatibility surface: never publishes a fixed price or tier catalogue."""
+    return {
+        "status": "quote_only",
+        "launch_authority": "revenue_command_pilot_30d",
+        "entry_offer_id": "free_mini_diagnostic",
+        "commercial_path": list(_CANONICAL_COMMERCIAL_PATH),
+        "price_authority": _PRICE_AUTHORITY,
+        "public_fixed_price": False,
+        "live_charge_allowed": False,
+    }
 
 
 @router.post("/recommend-plan")
 async def recommend_plan_endpoint(body: dict[str, Any] = Body(...)) -> dict[str, Any]:
-    return recommend_plan(
-        company_size=str(body.get("company_size", "sme")),
-        monthly_budget_sar=float(body.get("monthly_budget_sar", 2500)),
-        goal=str(body.get("goal", "growth")),
-    )
+    del body
+    raise HTTPException(status_code=409, detail=_legacy_pricing_retired_detail())
 
 
 @router.post("/roi")
 async def roi_endpoint(body: dict[str, Any] = Body(...)) -> dict[str, Any]:
-    return estimate_roi(
-        plan_price_sar=float(body.get("plan_price_sar", 2999)),
-        expected_pipeline_sar=float(body.get("expected_pipeline_sar", 90000)),
-        expected_revenue_sar=float(body.get("expected_revenue_sar", 25000)),
+    del body
+    raise HTTPException(
+        status_code=409,
+        detail=_legacy_pricing_retired_detail(use_endpoint="/api/v1/commercial/roi/estimate"),
     )
 
 
@@ -100,20 +121,20 @@ async def metrics() -> dict[str, Any]:
 @router.get("/unit-economics/demo")
 async def unit_economics_demo() -> dict[str, Any]:
     return {
+        "status": "internal_estimate_only",
+        "customer_value_claim": False,
+        "price_authority": _PRICE_AUTHORITY,
+        "public_fixed_price": False,
         "gross_margin": estimate_gross_margin(),
         "cac_payback": estimate_cac_payback(),
         "ltv": estimate_ltv(),
-        "mrr_path": estimate_mrr_path(),
     }
 
 
 @router.post("/performance-fee/demo")
 async def performance_fee_demo(body: dict[str, Any] = Body(default_factory=dict)) -> dict[str, Any]:
-    return calculate_performance_fee(
-        qualified_leads=int(body.get("qualified_leads", 5)),
-        booked_meetings=int(body.get("booked_meetings", 2)),
-        won_revenue_sar=float(body.get("won_revenue_sar", 80000)),
-    )
+    del body
+    raise HTTPException(status_code=409, detail=_legacy_pricing_retired_detail())
 
 
 @router.get("/positioning/{segment}")
@@ -159,11 +180,29 @@ async def proof_pack_demo() -> dict[str, Any]:
 
 @router.post("/proof-pack/roi-summary")
 async def proof_pack_roi(body: dict[str, Any] = Body(...)) -> dict[str, Any]:
-    return calculate_roi_summary(
-        subscription_sar=float(body.get("subscription_sar", 2999)),
-        influenced_revenue_sar=float(body.get("influenced_revenue_sar", 40000)),
-        hours_saved=float(body.get("hours_saved", 12)),
+    if "subscription_sar" not in body:
+        raise HTTPException(
+            status_code=422,
+            detail="customer_specific_quote_amount_required",
+        )
+    try:
+        quote_amount_sar = float(body["subscription_sar"])
+    except (TypeError, ValueError) as exc:
+        raise HTTPException(status_code=422, detail="invalid_customer_specific_quote_amount") from exc
+    if quote_amount_sar <= 0:
+        raise HTTPException(status_code=422, detail="invalid_customer_specific_quote_amount")
+    result = calculate_roi_summary(
+        subscription_sar=quote_amount_sar,
+        influenced_revenue_sar=float(body.get("influenced_revenue_sar", 0)),
+        hours_saved=float(body.get("hours_saved", 0)),
     )
+    return {
+        "status": "internal_estimate_only",
+        "customer_value_claim": False,
+        "guarantee": False,
+        "quote_amount_source": "caller_supplied_customer_specific_quote",
+        "result": result,
+    }
 
 
 @router.post("/account-health")

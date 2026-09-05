@@ -1,0 +1,83 @@
+from __future__ import annotations
+
+import importlib.util
+import json
+import sys
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+RUNNER = ROOT / "scripts" / "commercial" / "run_self_operating_company_os.py"
+
+
+def load_runner():
+    spec = importlib.util.spec_from_file_location("dealix_self_operating_company_os", RUNNER)
+    assert spec is not None and spec.loader is not None
+    module = importlib.util.module_from_spec(spec)
+    sys.modules[spec.name] = module
+    spec.loader.exec_module(module)
+    return module
+
+
+def test_runner_does_not_reintroduce_retired_fixed_price_authority() -> None:
+    text = RUNNER.read_text(encoding="utf-8")
+    for forbidden in (
+        "499 SAR",
+        "499-1,500 SAR",
+        "4,999 SAR",
+        "8,000-20,000 SAR",
+        "10,000-50,000 SAR",
+        "Revenue Proof Sprint",
+        "Revenue Leak Diagnostic",
+    ):
+        assert forbidden not in text
+    assert "Free Mini Diagnostic" in text
+    assert "30-Day Revenue Command Pilot" in text
+
+
+def test_runner_has_no_synthetic_default_target_fallback(tmp_path) -> None:
+    module = load_runner()
+    module.DATA_ROOT = tmp_path
+    assert module.load_targets() == []
+    assert module.build_target_cards(50) == []
+
+
+def test_research_contact_cannot_enter_external_approval_queue(tmp_path) -> None:
+    module = load_runner()
+    module.DATA_ROOT = tmp_path
+    target = {
+        "company_name": "Evidence Research Co",
+        "segment": "Saudi B2B",
+        "source": "official-source",
+        "evidence_refs": ["https://example.test/evidence"],
+        "relationship_state": "RESEARCH",
+        "consent_state": "NONE",
+        "suppression_state": "CLEAR",
+        "commercial_stage": "RESEARCH",
+    }
+    (tmp_path / "targets.json").write_text(json.dumps([target]), encoding="utf-8")
+    cards = module.build_target_cards(50)
+    assert len(cards) == 1
+    assert cards[0].approval_status == "internal_only_not_dispatch_eligible"
+    assert module.build_approval_queue(cards) == []
+
+
+def test_real_interaction_can_prepare_draft_but_not_send(tmp_path) -> None:
+    module = load_runner()
+    module.DATA_ROOT = tmp_path
+    target = {
+        "company_name": "Warm Co",
+        "segment": "Saudi B2B",
+        "source": "first-party-interaction",
+        "evidence_refs": ["interaction:123"],
+        "relationship_state": "REAL_INTERACTION",
+        "consent_state": "NONE",
+        "suppression_state": "CLEAR",
+        "commercial_stage": "REAL_INTERACTION",
+        "pain_hypothesis": "Follow-up ownership is unclear.",
+    }
+    (tmp_path / "targets.json").write_text(json.dumps([target]), encoding="utf-8")
+    cards = module.build_target_cards(50)
+    queue = module.build_approval_queue(cards)
+    assert len(queue) == 1
+    assert queue[0]["status"] == "pending_action_bound_approval"
+    assert "no_auto_send" in queue[0]["risk_flags"]
