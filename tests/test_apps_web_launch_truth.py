@@ -26,7 +26,8 @@ def test_homepage_uses_v3_market_labels_without_public_price_or_proof_drift() ->
     assert "شاهد كل العروض السبعة" not in text
     assert "ابدأ بـ7 أيام" not in text
     assert "100 شركة تُبحث يوميًا" not in text
-    assert "ROI مضمون" not in text
+    assert "نضمن ROI" not in text
+    assert "ROI مضمون خلال" not in text
 
 
 def test_pricing_page_is_customer_specific_quote_only_and_not_self_serve() -> None:
@@ -62,7 +63,7 @@ def test_book_page_is_execution_diagnostic_then_quote_only_governed_delivery() -
 
     # Market-facing names must not grant public pricing, checkout, or guaranteed results.
     assert "سعر ثابت" not in text
-    assert "ROI مضمون" not in text
+    assert "نضمن ROI" not in text
 
 
 def test_next_redirects_retire_legacy_public_and_self_serve_surfaces() -> None:
