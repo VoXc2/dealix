@@ -5,7 +5,10 @@ import subprocess
 import sys
 from pathlib import Path
 
-from auto_client_acquisition.ai_workforce.canonical_delegation import CANONICAL_AGENTS
+from auto_client_acquisition.ai_workforce.canonical_delegation import (
+    CANONICAL_AGENTS,
+    OPERATING_COMPANY_SPECIALIST_DELEGATION,
+)
 from auto_client_acquisition.orchestrator.canonical_operating_company import (
     build_canonical_operating_company_summary,
 )
@@ -55,6 +58,8 @@ def test_operating_company_summary_exposes_five_canonical_agents_only() -> None:
     assert set(summary["canonical_agents"]) == set(CANONICAL_AGENTS)
     assert summary["specialist_roles_total"] == 15
     assert summary["specialist_role_semantics"] == "BOUNDED_WORKLOAD_NOT_PERMANENT_AGENT"
+    assert summary["specialist_role_owners"] == OPERATING_COMPANY_SPECIALIST_DELEGATION
+    assert set(summary["specialist_role_owners"].values()) <= set(CANONICAL_AGENTS)
     assert summary["legacy_agents_total_compatibility"] == 15
     assert summary["legacy_agents_total_authoritative"] is False
     assert "agents_total" not in summary
