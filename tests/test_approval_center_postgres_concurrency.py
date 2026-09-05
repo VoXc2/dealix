@@ -86,7 +86,7 @@ def test_multi_worker_unique_creates_have_no_lost_updates(
     assert {row.approval_id for row in history} == set(created)
 
 
-def test_multi_worker_conflicting_id_has_one_winner(
+def test_multi_worker_conflicting_id_has_exactly_one_winner(
     isolated_postgres_url: str,
 ) -> None:
     approval_id = f"apr_conflict_{uuid4().hex[:12]}"
@@ -107,13 +107,16 @@ def test_multi_worker_conflicting_id_has_one_winner(
         outcomes = list(pool.map(_attempt, range(16)))
 
     winners = [lead_id for status, lead_id in outcomes if status == "ok"]
-    assert winners
+    conflicts = [lead_id for status, lead_id in outcomes if status == "conflict"]
+    assert len(winners) == 1
+    assert len(conflicts) == 15
+
     stored = PostgresApprovalStore(
         database_url=isolated_postgres_url,
         create_tables=False,
     ).get(approval_id)
     assert stored is not None
-    assert stored.lead_id in winners
+    assert stored.lead_id == winners[0]
     assert len([row for row in stored.edit_history if row.get("action") == "approve"]) == 0
 
     with create_engine(isolated_postgres_url, future=True).connect() as conn:
