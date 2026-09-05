@@ -1,51 +1,51 @@
-# Primary ICP — Governed AI Execution Platform for Saudi Business
-version: 2
+# Primary ICP — Saudi-first B2B (GTM reference; tune weekly in War Room)
+version: 1
 positioning_ar: >
-  نحول إشارات الشركة إلى قرارات وتنفيذ محكوم ونتائج قابلة للإثبات —
-  بوضوح مصادر، حدود موافقة، مسارات أدلة، وقياس قيمة.
+  نشغّل الإيراد والذكاء الاصطناعي بطريقة محكومة ومثبتة وقابلة للتوسع —
+  وضوح مصادر، حدود موافقة، مسارات أدلة، إثبات قيمة.
 positioning_en: >
-  Governed AI execution for Saudi business: turn company signals into decisions,
-  controlled action, and measurable proof.
+  Governed Revenue and AI Operations with source clarity, approval boundaries,
+  evidence trails, and proof of value.
 
-market_identity: governed_ai_execution_platform
-mechanism: signal_decision_action_proof
-entry_offer_id: execution_diagnostic
-primary_offer_id: outcome_sprint
-expansion_offer_id: dealix_runtime
-pricing_authority: customer_specific_quote_only
-public_fixed_price: false
-public_checkout: false
+primary_offer_id: revenue_command_pilot_30d
 
 segments:
-  - id: saudi_midmarket_b2b_tech_services
-    label_ar: شركات التقنية وخدمات B2B المتوسطة في السعودية
+  - id: b2b_services_founder_led
+    label_ar: خدمات B2B — مبيعات بقيادة المؤسس
     pain_signals:
-      - فرص ومتابعات موزعة بين أنظمة متعددة
-      - قرار تشغيلي غير مربوط بالتنفيذ والإثبات
-      - تجارب AI لا تتحول إلى workflow اقتصادي قابل للقياس
-  - id: it_si_consulting_professional_services
-    label_ar: تكامل الأنظمة والاستشارات والخدمات المهنية
+      - pipeline غير موثوق
+      - follow-up غير موثّق
+      - قرارات بلا دليل
+  - id: crm_revops_gap
+    label_ar: CRM / RevOps — بيانات غير جاهزة للـAI
     pain_signals:
-      - handoff بين البيع والتسليم غير موثق
-      - صعوبة إثبات القيمة للعميل
-      - تعدد الأدوات بدون طبقة command موحدة
-  - id: crm_erp_msp_ai_partner
-    label_ar: شركاء ERP / CRM / MSP / AI
+      - مصادر متضاربة
+      - أتمتة بلا حوكمة
+  - id: ai_without_governance
+    label_ar: تجارب AI بلا حوكمة تشغيلية
     pain_signals:
-      - العملاء يحتاجون governed execution فوق أنظمة قائمة
-      - الحاجة إلى Proof & Command layer بدل استبدال stack العميل
-  - id: international_saudi_market_entry
-    label_ar: شركات دولية تدخل السوق السعودي
+      - agents بلا موافقة
+      - لا evidence trail
+  - id: agency_followup
+    label_ar: وكالة — متابعة عملاء ضعيفة
     pain_signals:
-      - إشارات سوق وشركاء متفرقة
-      - صعوبة تحويل intelligence إلى next action محكوم
-      - الحاجة إلى evidence-backed market access
+      - تسرّب إيراد
+      - تقارير بلا مصدر
+  - id: clinic_lead_followup
+    label_ar: عيادات / خدمات — متابعة leads
+    pain_signals:
+      - مواعيد تضيع
+      - لا مسار موافقة
+  - id: crm_implementer_partner
+    label_ar: شريك — منفّذ CRM (إحالة)
+    pain_signals:
+      - عملاء يحتاجون readiness قبل AI
 
 disqualifiers:
   - student_or_job_seeker
   - vague_ai_curiosity_no_workflow
   - no_company_name
-  - no_named_workflow_or_measurable_problem
+  - budget_under_5k_sar_unless_partner_referral
 
 routing_from_score:
   qualified_a_min: 15
@@ -56,5 +56,6 @@ materials:
   close_engine: docs/commercial/FULL_OPS_CLOSE_ENGINE_AR.md
   ops_client_pack: docs/commercial/ops_client_pack/
   demo_path: "/{locale}/business-now#strategy"
-  diagnostic_landing: "/book"
-  proof_pack_sample: "/proof-vault"
+  diagnostic_landing: "/{locale}/dealix-diagnostic"
+  risk_score: "/{locale}/risk-score"
+  proof_pack_sample: "/{locale}/proof-pack"
