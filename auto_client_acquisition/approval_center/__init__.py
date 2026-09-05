@@ -24,9 +24,16 @@ from auto_client_acquisition.approval_center.schemas import (
 )
 
 
-def create_approval(req: ApprovalRequest) -> ApprovalRequest:
+def _coerce_approval_request(req: ApprovalRequest | dict[str, Any]) -> ApprovalRequest:
+    """Normalize legacy dictionary payloads into the canonical schema."""
+    if isinstance(req, ApprovalRequest):
+        return req
+    return ApprovalRequest.model_validate(req)
+
+
+def create_approval(req: ApprovalRequest | dict[str, Any]) -> ApprovalRequest:
     """Create an approval in the configured default store."""
-    return get_default_approval_store().create(req)
+    return get_default_approval_store().create(_coerce_approval_request(req))
 
 
 def approve(approval_id: str, who: str) -> ApprovalRequest:
