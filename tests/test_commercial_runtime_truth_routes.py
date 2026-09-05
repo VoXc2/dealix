@@ -20,6 +20,25 @@ _RETIRED_PATHS = {
 }
 
 
+def _collect_paths(routes: object, parent_prefix: str = "") -> list[str]:
+    """Collect effective paths across old flat and FastAPI >=0.137 router trees."""
+    paths: list[str] = []
+    for route in routes:  # type: ignore[union-attr]
+        if type(route).__name__ == "_IncludedRouter":
+            ctx = getattr(route, "include_context", None)
+            prefix = (getattr(ctx, "prefix", "") or "") if ctx is not None else ""
+            original_router = getattr(route, "original_router", None)
+            if original_router is not None:
+                paths.extend(
+                    _collect_paths(original_router.routes, parent_prefix + prefix)
+                )
+            continue
+        path = getattr(route, "path", "")
+        if path:
+            paths.append(parent_prefix + path)
+    return paths
+
+
 @pytest.fixture(autouse=True)
 def _isolated_autopilot_store() -> None:
     with tempfile.NamedTemporaryFile(suffix=".json", delete=False) as fh:
@@ -40,7 +59,7 @@ def test_legacy_autopilot_commercial_routes_are_quarantined() -> None:
     }
     assert _RETIRED_PATHS.isdisjoint(legacy_paths)
 
-    active_paths = [getattr(route, "path", "") for route in app.routes]
+    active_paths = _collect_paths(app.routes)
     for path in _RETIRED_PATHS:
         assert active_paths.count(path) == 1, path
 
