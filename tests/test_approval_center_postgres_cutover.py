@@ -36,12 +36,19 @@ def _reset_backend(monkeypatch):
     for key in (
         "DEALIX_APPROVAL_STORE_BACKEND",
         "DEALIX_APPROVAL_DATABASE_URL",
+        "DEALIX_APPROVAL_ALLOW_SQLITE_TEST_BACKEND",
         "DATABASE_URL",
+        "APP_ENV",
     ):
         monkeypatch.delenv(key, raising=False)
     reset_default_approval_store_for_tests()
     yield
     reset_default_approval_store_for_tests()
+
+
+def _enable_sqlite_factory_test_override(monkeypatch) -> None:
+    monkeypatch.setenv("APP_ENV", "test")
+    monkeypatch.setenv("DEALIX_APPROVAL_ALLOW_SQLITE_TEST_BACKEND", "1")
 
 
 def _request(
@@ -84,8 +91,49 @@ def test_explicit_postgres_requires_database_url(monkeypatch) -> None:
         get_default_approval_store()
 
 
+def test_explicit_postgres_rejects_sqlite_without_test_override(
+    monkeypatch, tmp_path: Path
+) -> None:
+    database_url = f"sqlite:///{tmp_path / 'must-not-be-production.sqlite3'}"
+    monkeypatch.setenv("DEALIX_APPROVAL_STORE_BACKEND", "postgres")
+    monkeypatch.setenv("DEALIX_APPROVAL_DATABASE_URL", database_url)
+
+    with pytest.raises(
+        RuntimeError,
+        match="approval_store_postgres_requires_postgresql_url",
+    ):
+        get_default_approval_store()
+
+    from auto_client_acquisition.approval_center import approval_store_backend_status
+
+    receipt = approval_store_backend_status()
+    assert receipt["verdict"] == "HOLD"
+    assert receipt["backend"] == "postgres"
+    assert receipt["database_url_configured"] is True
+    assert receipt["schema_ready"] is False
+    assert receipt["reason"] == "approval_store_postgres_requires_postgresql_url"
+    assert database_url not in repr(receipt)
+
+
+def test_sqlite_factory_override_is_test_environment_only(
+    monkeypatch, tmp_path: Path
+) -> None:
+    database_url = f"sqlite:///{tmp_path / 'override-prod.sqlite3'}"
+    monkeypatch.setenv("DEALIX_APPROVAL_STORE_BACKEND", "postgres")
+    monkeypatch.setenv("DEALIX_APPROVAL_DATABASE_URL", database_url)
+    monkeypatch.setenv("DEALIX_APPROVAL_ALLOW_SQLITE_TEST_BACKEND", "1")
+    monkeypatch.setenv("APP_ENV", "production")
+
+    with pytest.raises(
+        RuntimeError,
+        match="approval_store_postgres_requires_postgresql_url",
+    ):
+        get_default_approval_store()
+
+
 def test_explicit_postgres_requires_migrated_schema(monkeypatch, tmp_path: Path) -> None:
     database_url = f"sqlite:///{tmp_path / 'unmigrated.sqlite3'}"
+    _enable_sqlite_factory_test_override(monkeypatch)
     monkeypatch.setenv("DEALIX_APPROVAL_STORE_BACKEND", "postgres")
     monkeypatch.setenv("DEALIX_APPROVAL_DATABASE_URL", database_url)
     with pytest.raises(RuntimeError, match="approval_center_schema_not_migrated"):
@@ -101,6 +149,7 @@ def test_unknown_backend_fails_closed(monkeypatch) -> None:
 def test_postgres_factory_survives_singleton_reset(monkeypatch, tmp_path: Path) -> None:
     database_url = f"sqlite:///{tmp_path / 'approval.sqlite3'}"
     PostgresApprovalStore(database_url=database_url, create_tables=True)
+    _enable_sqlite_factory_test_override(monkeypatch)
     monkeypatch.setenv("DEALIX_APPROVAL_STORE_BACKEND", "postgres")
     monkeypatch.setenv("DEALIX_APPROVAL_DATABASE_URL", database_url)
 
@@ -264,6 +313,7 @@ def test_backend_status_is_redacted_and_read_only(monkeypatch, tmp_path: Path) -
 
     database_url = f"sqlite:///{tmp_path / 'status.sqlite3'}"
     PostgresApprovalStore(database_url=database_url, create_tables=True)
+    _enable_sqlite_factory_test_override(monkeypatch)
     monkeypatch.setenv("DEALIX_APPROVAL_STORE_BACKEND", "postgres")
     monkeypatch.setenv("DEALIX_APPROVAL_DATABASE_URL", database_url)
 
@@ -284,6 +334,7 @@ def test_read_only_verifier_never_prints_database_url(monkeypatch, tmp_path: Pat
 
     database_url = f"sqlite:///{tmp_path / 'verifier.sqlite3'}"
     PostgresApprovalStore(database_url=database_url, create_tables=True)
+    _enable_sqlite_factory_test_override(monkeypatch)
     monkeypatch.setenv("DEALIX_APPROVAL_STORE_BACKEND", "postgres")
     monkeypatch.setenv("DEALIX_APPROVAL_DATABASE_URL", database_url)
     monkeypatch.setattr("sys.argv", ["verify_approval_center_backend.py", "--json"])
