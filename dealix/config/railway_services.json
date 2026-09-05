@@ -1,7 +1,17 @@
 {
+  "productionProviderAuthority": {
+    "provider": "railway",
+    "projectId": "03e6bb4b-bdf5-4aa7-86ed-bc94fa293c0e",
+    "environmentId": "38e3d38f-53b2-44fa-a3f9-ef91d863bd83",
+    "environmentName": "production",
+    "evidenceMode": "read_only_provider_receipt"
+  },
   "services": [
     {
       "name": "dealix-api",
+      "role": "canonical_api",
+      "productionAuthority": true,
+      "expectedSourceRepository": "Dealix-sa/dealix",
       "rootDirectory": ".",
       "dockerfilePath": "Dockerfile",
       "railwayConfig": "railway.json",
@@ -30,6 +40,8 @@
     },
     {
       "name": "founder-os-worker",
+      "role": "background_worker",
+      "productionAuthority": false,
       "rootDirectory": ".",
       "dockerfilePath": "Dockerfile.worker",
       "startCommand": "python scripts/founder_os_worker.py",
@@ -50,6 +62,8 @@
     },
     {
       "name": "dealix-watchdog",
+      "role": "background_watchdog",
+      "productionAuthority": false,
       "rootDirectory": ".",
       "dockerfilePath": "Dockerfile.watchdog",
       "startCommand": "python scripts/railway_watchdog.py",
@@ -61,10 +75,14 @@
         "DEALIX_API_URL",
         "DEALIX_HEALTH_PATH"
       ],
+      "restartPolicyType": "ON_FAILURE",
+      "restartPolicyMaxRetries": 10,
       "runsPredeploy": false
     },
     {
       "name": "dealix-frontend",
+      "role": "legacy_public_web",
+      "productionAuthority": false,
       "rootDirectory": "frontend",
       "dockerfilePath": "Dockerfile",
       "railwayConfig": "frontend/railway.json",
@@ -83,9 +101,13 @@
     },
     {
       "name": "dealix-apps-web",
+      "role": "canonical_public_web",
+      "productionAuthority": true,
+      "expectedSourceRepository": "Dealix-sa/dealix",
       "rootDirectory": "apps/web",
       "dockerfilePath": "Dockerfile",
-      "railwayConfig": "apps/web/railway.json",
+      "railwayConfig": "apps/web/railway.toml",
+      "providerConfigFile": "/apps/web/railway.toml",
       "healthcheckPath": "/healthz",
       "publicHealthUrl": "https://dealix.me/healthz",
       "publicNetworking": true,

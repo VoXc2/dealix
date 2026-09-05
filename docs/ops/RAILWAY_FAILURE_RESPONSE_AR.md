@@ -1,24 +1,38 @@
 # خطة استجابة فشل Railway — Dealix
 
-هذه الخطة تختصر التعامل مع تنبيهات `Build failed` و `Deploy failed` حتى لا يتحول الفشل إلى تعطيل للنظام.
+هذه الخطة تختصر التعامل مع تنبيهات `Build failed` و`Deploy failed` بدون تخمين أو إصلاح الخدمة الخطأ.
 
-## 1) تحديد الخدمة المتأثرة
+## 1) ابدأ بهوية الخدمة لا باسمها الظاهر فقط
 
-- خدمة API: تستخدم جذر الريبو، وتبني من `Dockerfile` في الجذر، وتتحقق من `/healthz`.
-- خدمة `frontend`: تستخدم Root Directory = `frontend`، وتبني من `frontend/Dockerfile`، وتتحقق من `/healthz`.
-- خدمة `apps/web`: تستخدم Root Directory = `apps/web`، وتبني من `apps/web/Dockerfile`، وتتحقق من `/healthz`.
-- أي خدمة باسم `web` أو `cv` يجب ربطها بمسارها الحقيقي فقط. لا تربط خدمة واجهة بجذر الريبو إلا إذا كانت مقصودة كـ API.
+المرجع الكنسي: `dealix/config/railway_services.json`.
 
-## 2) إعدادات Railway الموصى بها
+- `dealix-api`: `role=canonical_api`, `productionAuthority=true`, root=`.`.
+- `dealix-apps-web`: `role=canonical_public_web`, `productionAuthority=true`, root=`apps/web`, provider Config File=`/apps/web/railway.toml`.
+- `dealix-frontend`: `role=legacy_public_web`, `productionAuthority=false`, root=`frontend`.
 
-### API service
+أي تنبيه يذكر `Service: web` أو اسمًا عامًا آخر **لا يثبت** أنه فشل الواجهة الكنسية. قبل التصنيف سجّل read-only:
 
-- Root Directory: فارغ / repo root
+1. project/environment.
+2. exact Railway service/id.
+3. source repository.
+4. branch/ref.
+5. Root Directory.
+6. effective Provider Config File.
+7. deployment ID/status/source SHA/failure stage.
+8. generated domain/healthcheck.
+
+إذا ظهر repo آخر، أو root=`frontend`, أو SHA غير معروف، أو web Config File=`/railway.toml`، فالحالة HOLD إلى أن يثبت العكس. لا تنفذ redeploy/rollback/source/config change من إشعار البريد وحده.
+
+## 2) إعدادات الخدمات الكنسية
+
+### API — `dealix-api`
+
+- Root Directory: repo root
 - Builder: Dockerfile
-- Dockerfile path: `Dockerfile`
-- Healthcheck path: `/healthz`
-- Start command: اتركه فارغًا ليستخدم `CMD` من Dockerfile
-- متغيرات إلزامية في الإنتاج:
+- Dockerfile path داخل service root: `Dockerfile`
+- Healthcheck: `/healthz`
+- Production Authority: `true`
+- Required production variables:
   - `APP_ENV=production`
   - `APP_SECRET_KEY`
   - `JWT_SECRET_KEY`
@@ -26,32 +40,63 @@
   - `ADMIN_API_KEYS`
   - `DATABASE_URL` عند استخدام Postgres
 
-### Frontend service
+### Canonical web — `dealix-apps-web`
 
-- Root Directory: `frontend`
-- Builder: Dockerfile
-- Dockerfile path: `Dockerfile`
-- Healthcheck path: `/healthz`
-- Start command: اتركه فارغًا
-- متغيرات عامة آمنة فقط:
-  - `NEXT_PUBLIC_API_URL=https://api.dealix.me`
-  - `NEXT_PUBLIC_SITE_URL=https://dealix.me`
-  - `NEXT_PUBLIC_USE_DEALIX_OPS_PROXY=1`
-
-### Apps web service
-
+- Role: `canonical_public_web`
+- Production Authority: `true`
+- Source repo: `Dealix-sa/dealix`
 - Root Directory: `apps/web`
-- Builder: Dockerfile
-- Dockerfile path: `Dockerfile`
-- Healthcheck path: `/healthz`
-- Start command: اتركه فارغًا
-- متغيرات عامة آمنة فقط:
+- Dockerfile path داخل service root: `Dockerfile`
+- Repository Railway config: `apps/web/railway.toml`
+- Effective provider Config File: `/apps/web/railway.toml`
+- Pre-deploy: **none** for canonical web
+- Healthcheck: `/healthz`
+- Runtime port: `3000`
+- Browser-safe env only:
   - `NEXT_PUBLIC_API_URL=https://api.dealix.me`
   - `NEXT_PUBLIC_SITE_URL=https://dealix.me`
 
-لا تضع مفاتيح Admin داخل متغيرات `NEXT_PUBLIC_*` لأنها تصبح جزءًا من حزمة المتصفح.
+لا تضف Admin/API private key داخل `NEXT_PUBLIC_*`.
 
-## 3) فحوصات بعد الإصلاح
+**مهم:** repo-root `/railway.toml` قد يحمل backend/API `preDeployCommand`. لا تستخدمه كConfig File للويب ولا تحذف backend migration منه كحل لفشل web. أصلح فقط provider Config File للخدمة المرشحة بعد exact-head source acceptance وإجراء إنتاجي منفصل.
+
+### Legacy web — `dealix-frontend`
+
+- Role: `legacy_public_web`
+- Production Authority: `false`
+- Root Directory: `frontend`
+
+قد يبقى buildable لأسباب compatibility، لكن **لا يصلح تلقائيًا كهدف `dealix.me`** ولا يجب إصلاحه قبل إثبات أن المشكلة تخصه فعلًا.
+
+## 3) فحوصات source قبل أي production action
+
+```bash
+python scripts/verify_railway_surfaces.py
+python -m py_compile \
+  scripts/verify_railway_surfaces.py \
+  scripts/railway_frontend_dns_gate.py \
+  scripts/railway_production_identity_gate.py
+pytest -q \
+  tests/test_railway_web_config_contract.py \
+  tests/test_railway_frontend_dns_gate_truth.py \
+  tests/test_railway_production_identity_gate_truth.py \
+  tests/test_production_ops_gates.py
+cd apps/web
+npm ci
+npm run typecheck
+npm run build
+cd ../..
+```
+
+API عند الحاجة:
+
+```bash
+docker build -t dealix-api .
+```
+
+لا تجعل legacy `frontend/` build شرطًا لـcanonical web acceptance.
+
+## 4) فحوصات runtime read-only
 
 API:
 
@@ -61,42 +106,70 @@ curl -fsS https://api.dealix.me/ready
 curl -fsS 'https://api.dealix.me/healthz?deep=1'
 ```
 
-Frontend أو apps/web:
+Public web بعد إثبات service identity:
 
 ```bash
+curl -fsSIL https://dealix.me/
+curl -fsSIL https://dealix.me/ar
 curl -fsS https://dealix.me/healthz
 ```
 
-فحص محلي سريع:
+قبل custom-domain/DNS cutover اختبر generated domain الخاص بـ`dealix-apps-web` نفسه على root و`/healthz` و`/ar`، واربط النتيجة بالـdeployment/source SHA وبـprovider Config File `/apps/web/railway.toml`.
 
-```bash
-python scripts/verify_railway_surfaces.py
-cd frontend && npm ci && npm run build
-cd ../apps/web && npm ci && npm run build
-```
+HTTP reachable وحده لا يثبت service identity.
 
-فحص Docker محلي:
+## 5) عند استمرار الفشل
 
-```bash
-docker build -t dealix-api .
-docker build -t dealix-frontend frontend
-docker build -t dealix-apps-web apps/web
-```
+استخرج **أول causal error حقيقي** من build/deploy logs، لا عنوان الإيميل فقط. افصل المراحل:
 
-## 4) عند استمرار الفشل
+- source/snapshot.
+- install/dependency.
+- compile/typecheck/build.
+- image export/push.
+- pre-deploy.
+- container start.
+- port/healthcheck.
+- routing/domain.
 
-انسخ أول خطأ حقيقي من Railway build logs، وليس عنوان الإيميل فقط. غالبًا يكون السبب واحدًا من:
+صنّفه إلى أحد الآتي:
 
-- Root Directory غير صحيح.
-- Railway يستخدم خدمة `apps/web` بينما Root Directory مضبوط على `frontend`، أو العكس.
-- عدم وجود `output: 'standalone'` في Next.js مع Dockerfile يعتمد على `.next/standalone`.
-- preDeploy migration من API يعمل داخل image واجهة.
-- متغير إنتاج إلزامي مفقود يجعل API يفشل عند startup.
-- Healthcheck مضبوط على مسار غير موجود.
+- wrong service identity / legacy service.
+- wrong repository or branch.
+- wrong Root Directory.
+- wrong effective Provider Config File.
+- Dockerfile/Railway config mismatch.
+- dependency/install failure.
+- Next.js compile/type failure.
+- pre-deploy failure.
+- missing runtime env/startup secret.
+- healthcheck failure بعد build success.
+- provider/control-plane failure.
 
-## 5) سياسة حماية الإنتاج
+إذا كان build/image PASS ثم failureStage=`PRE_DEPLOY_COMMAND` والـweb effective config=`/railway.toml`، فالمشكلة المثبتة هي **wrong-layer config/pre-deploy contract**. لا تدّعِ shell subfailure أدق إذا provider logs لا تثبته.
 
-- لا يتم تجاوز فشل الأسرار في الإنتاج. أصلح المتغيرات بدل تعطيل التحقق.
-- شغّل migrations فقط عندما تكون قاعدة البيانات جاهزة: `RUN_RAILWAY_PRE_DEPLOY_MIGRATE=1`.
-- أبقِ healthcheck سريعًا على `/healthz`، واستخدم الفحص العميق يدويًا بعد النشر.
-- أي تعديل Deployment جديد يجب أن يمر عبر `scripts/verify_railway_surfaces.py` و Docker build في CI.
+لا تعالج الاحتمالات كلها دفعة واحدة؛ اربط كل إصلاح بالدليل الأول وexact SHA.
+
+## 6) custom domain / DNS
+
+لا تخمن CNAME/A/TXT.
+
+قبل أي تغيير احفظ:
+
+- Railway exact `dnsRecords`.
+- TXT `verificationToken` إن وجد.
+- certificate/custom-domain state.
+- current apex/www/api DNS + TTL.
+- rollback values.
+
+ثم فقط بعد action-specific L5 approval يمكن تغيير apex/www. لا تغيّر `api.dealix.me` إذا كان API سليمًا، ولا تفعل DNSSEC في نفس cutover.
+
+## 7) سياسة حماية الإنتاج
+
+- لا تتجاوز production secret validation.
+- API فقط يشغّل migrations عند readiness مثبتة وauthority مناسب.
+- web لا يشغّل API predeploy migration.
+- provider receipt للويب يجب أن يثبت `/apps/web/railway.toml`.
+- أبقِ healthcheck سريعًا على `/healthz`.
+- أي deployment fix يجب أن يمر `scripts/verify_railway_surfaces.py` + exact-source acceptance.
+- أي service identity أو config file غير مثبت = `UNKNOWN_NOT_EVIDENCE_BACKED`.
+- لا Deploy/Redeploy/Rollback/Domain/DNS/Secret mutation من runbook التشخيص نفسه.
