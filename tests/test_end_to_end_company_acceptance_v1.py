@@ -5,6 +5,11 @@ import subprocess
 import sys
 from pathlib import Path
 
+from auto_client_acquisition.ai_workforce.canonical_delegation import CANONICAL_AGENTS
+from auto_client_acquisition.orchestrator.canonical_operating_company import (
+    build_canonical_operating_company_summary,
+)
+
 ROOT = Path(__file__).resolve().parents[1]
 CONTRACT = ROOT / "data/ops/end_to_end_company_acceptance_v1.json"
 VERIFIER = ROOT / "scripts/ops/verify_end_to_end_company_acceptance_v1.py"
@@ -42,6 +47,17 @@ def test_all_agents_and_systems_own_real_work() -> None:
     lifecycle = data["client_lifecycle"]
     assert {row["owner"] for row in lifecycle} == agents
     assert {system for row in lifecycle for system in row["systems"]} == systems
+
+
+def test_operating_company_summary_exposes_five_canonical_agents_only() -> None:
+    summary = build_canonical_operating_company_summary()
+    assert summary["canonical_agents_total"] == 5
+    assert set(summary["canonical_agents"]) == set(CANONICAL_AGENTS)
+    assert summary["specialist_roles_total"] == 15
+    assert summary["specialist_role_semantics"] == "BOUNDED_WORKLOAD_NOT_PERMANENT_AGENT"
+    assert summary["legacy_agents_total_compatibility"] == 15
+    assert summary["legacy_agents_total_authoritative"] is False
+    assert "agents_total" not in summary
 
 
 def test_low_founder_intervention_does_not_self_grant_l5() -> None:
