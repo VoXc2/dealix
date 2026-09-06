@@ -6,7 +6,9 @@ This verifier is intentionally conservative and non-disclosing:
 - secret values are never emitted;
 - findings report path + line + detector only;
 - detector source code such as ``sk-proj-[A-Za-z...]`` does not match because
-  it is not a credential-shaped literal.
+  it is not a credential-shaped literal;
+- a tiny exact-value allowlist covers repository test fixtures that are
+  deliberately credential-shaped. It does not exempt test paths or detectors.
 
 Exit codes:
   0 = no credential-shaped literals found
@@ -29,6 +31,16 @@ DETECTORS: tuple[tuple[str, re.Pattern[str]], ...] = (
     ("github_token", re.compile(r"gh[opusr]_[A-Za-z0-9]{30,}")),
     ("slack_token", re.compile(r"xox[baprs]-[A-Za-z0-9-]{20,}")),
     ("aws_access_key", re.compile(r"AKIA[0-9A-Z]{16}")),
+)
+
+# These are deterministic synthetic values used by security/redaction tests.
+# Construct them from parts so this verifier never embeds a credential-shaped
+# literal that would match its own detectors. Never add a production value here.
+SYNTHETIC_TEST_FIXTURES: frozenset[tuple[str, str]] = frozenset(
+    {
+        ("github_token", "ghp_" + ("a" * 32)),
+        ("aws_access_key", "AKIA" + "0123456789ABCDEF"),
+    }
 )
 
 SKIP_SUFFIXES = {
@@ -61,7 +73,9 @@ def scan_file(path: Path) -> list[tuple[int, str]]:
     findings: list[tuple[int, str]] = []
     for lineno, line in enumerate(text.splitlines(), start=1):
         for detector, pattern in DETECTORS:
-            if pattern.search(line):
+            for match in pattern.finditer(line):
+                if (detector, match.group(0)) in SYNTHETIC_TEST_FIXTURES:
+                    continue
                 findings.append((lineno, detector))
     return findings
 
