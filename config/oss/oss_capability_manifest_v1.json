@@ -1,0 +1,147 @@
+{
+  "schema_version": 1,
+  "north_star": "CASH_READY_AUTONOMOUS_DEALIX_COMPANY",
+  "optimization": "Verified Economic Movement / Founder Minute / Cost / Risk",
+  "law": {
+    "one_company_machine": true,
+    "parallel_truth_systems_forbidden": true,
+    "production_promotion_requires_benchmark": true,
+    "live_customer_effects_from_oss_bootstrap": false
+  },
+  "components": [
+    {
+      "id": "presidio",
+      "source": "https://github.com/microsoft/presidio",
+      "classification": "ADOPT_NOW_LIBRARY",
+      "surface": "python_venv",
+      "purpose": "PII detection, masking, anonymization and proof-safe preprocessing",
+      "production_runtime": false,
+      "promotion_gate": "Arabic/English false-positive and false-negative benchmark plus bounded recognizer policy"
+    },
+    {
+      "id": "schemathesis",
+      "source": "https://github.com/schemathesis/schemathesis",
+      "classification": "ADOPT_NOW_TEST_ONLY",
+      "surface": "python_venv",
+      "purpose": "OpenAPI/GraphQL contract, edge-case and stateful API testing",
+      "production_runtime": false,
+      "promotion_gate": "Run only against local/staging or explicitly authorized targets"
+    },
+    {
+      "id": "checkdmarc",
+      "source": "https://github.com/domainaware/checkdmarc",
+      "classification": "ADOPT_NOW_LIBRARY",
+      "surface": "python_venv",
+      "purpose": "SPF, DMARC, BIMI, MX, MTA-STS and TLS reporting validation",
+      "production_runtime": false,
+      "promotion_gate": "Use as read-only email deliverability evidence"
+    },
+    {
+      "id": "docling",
+      "source": "https://github.com/docling-project/docling",
+      "classification": "ADOPT_NOW_LIBRARY",
+      "surface": "python_venv",
+      "purpose": "Tender, proposal, proof-pack and document ingestion across PDF/DOCX/PPTX/XLSX and related formats",
+      "production_runtime": false,
+      "promotion_gate": "Benchmark Arabic tables/layout fidelity and resource usage before pipeline promotion"
+    },
+    {
+      "id": "promptfoo",
+      "source": "https://github.com/promptfoo/promptfoo",
+      "classification": "ADOPT_NOW_LIBRARY",
+      "surface": "node_prefix",
+      "purpose": "Arabic/English agent regression, tool-use evals and LLM red-team testing",
+      "production_runtime": false,
+      "promotion_gate": "Pin resolved version and keep evaluation data outside customer truth state"
+    },
+    {
+      "id": "faster-whisper",
+      "source": "https://github.com/SYSTRAN/faster-whisper",
+      "classification": "ADOPT_NOW_LIBRARY",
+      "surface": "python_venv",
+      "purpose": "Local transcription benchmark for calls, meetings and evidence extraction",
+      "production_runtime": false,
+      "promotion_gate": "Arabic/English WER, latency and memory benchmark with explicit recording/consent policy"
+    },
+    {
+      "id": "camel-tools",
+      "source": "https://github.com/CAMeL-Lab/camel_tools",
+      "classification": "ADOPT_NOW_LIBRARY",
+      "surface": "python_venv",
+      "purpose": "Arabic language normalization, morphology and quality utilities",
+      "production_runtime": false,
+      "promotion_gate": "Benchmark Saudi Arabic and code-switching utility on Dealix task corpus"
+    },
+    {
+      "id": "livekit-agents",
+      "source": "https://github.com/livekit/agents",
+      "classification": "SANDBOX_BENCHMARK",
+      "surface": "python_venv",
+      "purpose": "Voice Front Desk candidate for SIP/WebRTC realtime agents",
+      "production_runtime": false,
+      "promotion_gate": "Compete against Pipecat on Arabic/English latency, interruption, tool success, transcript fidelity, handoff and cost; select one"
+    },
+    {
+      "id": "pipecat",
+      "source": "https://github.com/pipecat-ai/pipecat",
+      "classification": "SANDBOX_BENCHMARK",
+      "surface": "python_venv",
+      "purpose": "Composable realtime voice and multimodal pipeline candidate",
+      "production_runtime": false,
+      "promotion_gate": "Compete against LiveKit Agents; select one canonical voice runtime"
+    },
+    {
+      "id": "changedetection",
+      "source": "https://github.com/dgtlmoon/changedetection.io",
+      "classification": "SANDBOX_BENCHMARK",
+      "surface": "docker_image_only",
+      "purpose": "Monitor changes on permitted public evidence sources",
+      "production_runtime": false,
+      "promotion_gate": "No public ports; robots/ToS-aware sources; changes are signals not relationships"
+    },
+    {
+      "id": "zaproxy",
+      "source": "https://github.com/zaproxy/zaproxy",
+      "classification": "ADOPT_NOW_TEST_ONLY",
+      "surface": "docker_image_only",
+      "purpose": "DAST and passive security regression testing",
+      "production_runtime": false,
+      "promotion_gate": "Never active-scan production or third-party targets without explicit authorization"
+    },
+    {
+      "id": "mailpit",
+      "source": "https://github.com/axllent/mailpit",
+      "classification": "ADOPT_NOW_TEST_ONLY",
+      "surface": "docker_image_only",
+      "purpose": "Internal SMTP capture for outbound workflow testing",
+      "production_runtime": false,
+      "promotion_gate": "Loopback/internal only; never expose default ports publicly"
+    }
+  ],
+  "deferred": [
+    {
+      "id": "formbricks",
+      "reason": "Benchmark later for customer-validated proof collection; must not become truth owner"
+    },
+    {
+      "id": "papermark",
+      "reason": "Benchmark later for proposal/proof-pack delivery; document engagement is not buyer intent"
+    },
+    {
+      "id": "chatwoot",
+      "reason": "Only if a named inbound-support gap exists; must remain channel adapter, not CRM"
+    },
+    {
+      "id": "firecrawl-or-crawl4ai",
+      "reason": "Retest only when canonical research/browser stack shows a measured public-web extraction gap; do not keep two permanent web-context engines"
+    }
+  ],
+  "explicit_rejects": [
+    "parallel CRM",
+    "parallel operational database",
+    "new scheduler or workflow engine without a named blocker",
+    "unofficial WhatsApp-Web outbound automation",
+    "mass LinkedIn botting/scraping",
+    "new model router or observability stack without measured gap"
+  ]
+}
