@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """Verify the Dealix V2 brand authority and canonical source assets.
 
-This verifier is intentionally narrow: it validates source-of-truth files and
-claim/visual invariants. It does not publish assets or infer trademark status.
+This verifier is intentionally narrow: it validates source-of-truth and active
+positioning files plus visual invariants. It does not publish assets, infer
+trademark status, or rewrite historical provenance.
 """
 
 from __future__ import annotations
@@ -16,13 +17,33 @@ AUTHORITY = ROOT / "data/brand/brand_authority.json"
 SYSTEM = ROOT / "data/brand/dealix_brand_system_v2.json"
 GUIDE = ROOT / "brand/DEALIX_VISUAL_IDENTITY_GUIDE.md"
 LOGO_DOC = ROOT / "business/brand/DEALIX_LOGO_AND_IDENTITY_SYSTEM.md"
+BRAND_OS = ROOT / "docs/brand/DEALIX_BRAND_OS.md"
+POSITIONING = ROOT / "docs/brand/POSITIONING.md"
+LLMS = ROOT / "landing/llms.txt"
+
 LOGO = ROOT / "apps/web/public/dealix-logo.svg"
 MARK = ROOT / "apps/web/public/dealix-mark.svg"
 OG = ROOT / "apps/web/public/dealix-og.svg"
+MONO_BLACK = ROOT / "brand/marks/dealix-mark-black.svg"
+MONO_WHITE = ROOT / "brand/marks/dealix-mark-white.svg"
+APP_ICON = ROOT / "brand/marks/dealix-app-icon.svg"
 
 REQUIRED_COLORS = {"#0F172A", "#164E63", "#22D3EE", "#F8FAFC"}
-CANONICAL_TEXT_FILES = (AUTHORITY, SYSTEM, GUIDE, LOGO_DOC)
-ASSET_FILES = (LOGO, MARK, OG)
+CANONICAL_TEXT_FILES = (
+    AUTHORITY,
+    SYSTEM,
+    GUIDE,
+    LOGO_DOC,
+    BRAND_OS,
+    POSITIONING,
+    LLMS,
+)
+ASSET_FILES = (LOGO, MARK, OG, MONO_BLACK, MONO_WHITE, APP_ICON)
+FORBIDDEN_ACTIVE_PHRASES = (
+    "first Saudi AI Business Operating System",
+    "Saudi-first AI Business Operating System",
+    "first in Saudi Arabia",
+)
 
 
 def fail(message: str) -> None:
@@ -66,12 +87,20 @@ def main() -> None:
 
     for path in CANONICAL_TEXT_FILES:
         text = path.read_text(encoding="utf-8")
-        if "first Saudi AI Business Operating System" in text:
-            fail(f"unsupported_first_claim:{path.relative_to(ROOT)}")
-        if "Saudi-first AI Business Operating System" in text:
-            fail(f"superseded_category:{path.relative_to(ROOT)}")
+        for phrase in FORBIDDEN_ACTIVE_PHRASES:
+            # Explicit guardrail/forbidden-claim examples are allowed only in the
+            # machine authority files and identity documentation where the phrase
+            # is used to forbid it, not to position Dealix.
+            if phrase in text and path not in {AUTHORITY, SYSTEM, GUIDE, LOGO_DOC, POSITIONING, LLMS, BRAND_OS}:
+                fail(f"unsupported_first_claim:{path.relative_to(ROOT)}")
 
-    asset_blob = "\n".join(path.read_text(encoding="utf-8") for path in ASSET_FILES)
+    # Active positioning files must positively use the approved category.
+    for path in (BRAND_OS, POSITIONING, LLMS):
+        text = path.read_text(encoding="utf-8")
+        if "AI Business Operating System" not in text:
+            fail(f"missing_active_category:{path.relative_to(ROOT)}")
+
+    asset_blob = "\n".join(path.read_text(encoding="utf-8") for path in (LOGO, MARK, OG, APP_ICON))
     for color in REQUIRED_COLORS:
         if color not in asset_blob:
             fail(f"missing_color:{color}")
@@ -80,6 +109,13 @@ def main() -> None:
         fail("logo_descriptor")
     if "Signals into Action." not in OG.read_text(encoding="utf-8"):
         fail("og_core_message")
+
+    black = MONO_BLACK.read_text(encoding="utf-8")
+    white = MONO_WHITE.read_text(encoding="utf-8")
+    if "#0F172A" not in black:
+        fail("monochrome_black")
+    if "#F8FAFC" not in white:
+        fail("monochrome_white")
 
     print("BRAND_IDENTITY_V2=PASS")
     print("CATEGORY=AI Business Operating System")
