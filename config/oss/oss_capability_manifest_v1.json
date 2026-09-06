@@ -1,0 +1,251 @@
+{
+  "schema_version": 2,
+  "north_star": "CASH_READY_AUTONOMOUS_DEALIX_COMPANY",
+  "optimization": "Verified Economic Movement / Founder Minute / Cost / Risk",
+  "law": {
+    "one_company_machine": true,
+    "parallel_truth_systems_forbidden": true,
+    "production_promotion_requires_benchmark": true,
+    "live_customer_effects_from_oss_bootstrap": false,
+    "package_install_is_not_production_adoption": true,
+    "model_download_requires_explicit_benchmark_need": true
+  },
+  "existing_canonical_capabilities": [
+    {
+      "id": "rapidfuzz",
+      "status": "USE_EXISTING_PROJECT_DEPENDENCY",
+      "purpose": "Conservative entity/name similarity fallback for Targeting Intelligence; already present in the Dealix eval dependency group"
+    },
+    {
+      "id": "pgvector",
+      "status": "USE_EXISTING_DATA_LAYER",
+      "purpose": "Semantic/vector retrieval in canonical Postgres; do not add Qdrant/Faiss as a second truth/search store"
+    },
+    {
+      "id": "langfuse",
+      "status": "USE_EXISTING_OBSERVABILITY",
+      "purpose": "LLM tracing/evals/cost and prompt evidence; already a Dealix dependency"
+    },
+    {
+      "id": "opentelemetry",
+      "status": "USE_EXISTING_OBSERVABILITY",
+      "purpose": "Vendor-neutral traces/metrics instrumentation; already present in Dealix observability extras"
+    }
+  ],
+  "components": [
+    {
+      "id": "presidio",
+      "source": "https://github.com/microsoft/presidio",
+      "license": "MIT",
+      "classification": "ADOPT_NOW_LIBRARY",
+      "profile": "core",
+      "surface": "python_venv",
+      "purpose": "PII detection, masking, anonymization and proof-safe preprocessing",
+      "production_runtime": false,
+      "promotion_gate": "Arabic/English false-positive and false-negative benchmark plus bounded Saudi recognizer policy"
+    },
+    {
+      "id": "schemathesis",
+      "source": "https://github.com/schemathesis/schemathesis",
+      "classification": "ADOPT_NOW_TEST_ONLY",
+      "profile": "core",
+      "surface": "python_venv",
+      "purpose": "OpenAPI/GraphQL contract, edge-case and stateful API testing",
+      "production_runtime": false,
+      "promotion_gate": "Run only against local/staging or explicitly authorized targets"
+    },
+    {
+      "id": "checkdmarc",
+      "source": "https://github.com/domainaware/checkdmarc",
+      "classification": "ADOPT_NOW_LIBRARY",
+      "profile": "core",
+      "surface": "python_venv",
+      "purpose": "SPF, DMARC, BIMI, MX, MTA-STS and TLS reporting validation",
+      "production_runtime": false,
+      "promotion_gate": "Use as read-only email deliverability evidence"
+    },
+    {
+      "id": "docling",
+      "source": "https://github.com/docling-project/docling",
+      "license": "MIT",
+      "classification": "ADOPT_NOW_LIBRARY",
+      "profile": "core",
+      "surface": "python_venv",
+      "purpose": "Tender, proposal, proof-pack and document ingestion across PDF/DOCX/PPTX/XLSX and related formats",
+      "production_runtime": false,
+      "promotion_gate": "Benchmark Arabic tables/layout fidelity and resource usage before pipeline promotion"
+    },
+    {
+      "id": "camel-tools",
+      "source": "https://github.com/CAMeL-Lab/camel_tools",
+      "license": "MIT",
+      "classification": "ADOPT_NOW_LIBRARY",
+      "profile": "core",
+      "surface": "python_venv",
+      "purpose": "Arabic normalization, morphology, dialect identification, NER and quality utilities",
+      "production_runtime": false,
+      "promotion_gate": "Benchmark Saudi Arabic, Gulf Arabic and Arabic/English code-switching on Dealix task corpus"
+    },
+    {
+      "id": "promptfoo",
+      "source": "https://github.com/promptfoo/promptfoo",
+      "license": "MIT",
+      "classification": "ADOPT_NOW_LIBRARY",
+      "profile": "core",
+      "surface": "node_prefix",
+      "purpose": "Arabic/English agent regression, tool-use evals and LLM red-team testing",
+      "production_runtime": false,
+      "promotion_gate": "Pin resolved version and keep evaluation data outside customer truth state"
+    },
+    {
+      "id": "faster-whisper",
+      "source": "https://github.com/SYSTRAN/faster-whisper",
+      "classification": "ADOPT_NOW_LIBRARY",
+      "profile": "full",
+      "surface": "python_venv",
+      "purpose": "Local transcription benchmark for calls, meetings and evidence extraction",
+      "production_runtime": false,
+      "promotion_gate": "Arabic/English WER, latency and memory benchmark with explicit recording/consent policy; model download is separate"
+    },
+    {
+      "id": "livekit-agents",
+      "source": "https://github.com/livekit/agents",
+      "license": "Apache-2.0 framework; turn-detector models have separate model license",
+      "classification": "SANDBOX_BENCHMARK",
+      "profile": "full",
+      "surface": "python_venv",
+      "purpose": "Voice Front Desk candidate for SIP/WebRTC realtime agents",
+      "production_runtime": false,
+      "promotion_gate": "Compete against Pipecat on Arabic/English latency, interruption, tool success, transcript fidelity, handoff and cost; select one"
+    },
+    {
+      "id": "pipecat",
+      "source": "https://github.com/pipecat-ai/pipecat",
+      "license": "BSD-2-Clause",
+      "classification": "SANDBOX_BENCHMARK",
+      "profile": "full",
+      "surface": "python_venv",
+      "purpose": "Composable realtime voice and multimodal pipeline candidate",
+      "production_runtime": false,
+      "promotion_gate": "Compete against LiveKit Agents; select one canonical voice runtime"
+    },
+    {
+      "id": "changedetection",
+      "source": "https://github.com/dgtlmoon/changedetection.io",
+      "classification": "SANDBOX_BENCHMARK",
+      "profile": "full",
+      "surface": "docker_image_only",
+      "purpose": "Monitor changes on permitted public evidence sources",
+      "production_runtime": false,
+      "promotion_gate": "No public ports; robots/ToS-aware sources; changes are signals not relationships"
+    },
+    {
+      "id": "zaproxy",
+      "source": "https://github.com/zaproxy/zaproxy",
+      "classification": "ADOPT_NOW_TEST_ONLY",
+      "profile": "full",
+      "surface": "docker_image_only",
+      "purpose": "DAST and passive security regression testing",
+      "production_runtime": false,
+      "promotion_gate": "Never active-scan production or third-party targets without explicit authorization"
+    },
+    {
+      "id": "mailpit",
+      "source": "https://github.com/axllent/mailpit",
+      "classification": "ADOPT_NOW_TEST_ONLY",
+      "profile": "full",
+      "surface": "docker_image_only",
+      "purpose": "Internal SMTP capture for outbound workflow testing",
+      "production_runtime": false,
+      "promotion_gate": "Loopback/internal only; never expose default ports publicly"
+    },
+    {
+      "id": "trivy",
+      "source": "https://github.com/aquasecurity/trivy",
+      "classification": "ADOPT_NOW_TEST_ONLY",
+      "profile": "full",
+      "surface": "docker_image_only",
+      "purpose": "Filesystem/container vulnerability, SBOM, secret, license and misconfiguration evidence",
+      "production_runtime": false,
+      "promotion_gate": "Read-only scan of Dealix-owned repositories/images; pin release/digest before trustworthy CI promotion"
+    },
+    {
+      "id": "crawl4ai",
+      "source": "https://github.com/unclecode/crawl4ai",
+      "license": "Apache-2.0",
+      "classification": "SANDBOX_BENCHMARK",
+      "profile": "extended",
+      "surface": "python_venv_package_only",
+      "purpose": "LLM-ready public-web research and structured evidence extraction",
+      "production_runtime": false,
+      "promotion_gate": "No browser download or crawl during bootstrap; benchmark permitted sources against canonical research stack before promotion"
+    },
+    {
+      "id": "paddleocr",
+      "source": "https://github.com/PaddlePaddle/PaddleOCR",
+      "license": "Apache-2.0",
+      "classification": "SANDBOX_BENCHMARK",
+      "profile": "extended",
+      "surface": "python_venv_package_only",
+      "purpose": "Arabic/English OCR and structured document parsing challenger for scans, tenders, invoices and proof packs",
+      "production_runtime": false,
+      "promotion_gate": "Benchmark Arabic OCR/layout/table fidelity against Docling/RapidOCR; no model download during bootstrap"
+    },
+    {
+      "id": "flagembedding",
+      "source": "https://github.com/FlagOpen/FlagEmbedding",
+      "classification": "SANDBOX_BENCHMARK",
+      "profile": "extended",
+      "surface": "python_venv_package_only",
+      "purpose": "BGE-M3 multilingual dense/sparse/multi-vector retrieval and reranking candidate for Arabic/English evidence matching",
+      "production_runtime": false,
+      "promotion_gate": "Package install only; BGE-M3 model download requires a bounded Arabic/English retrieval benchmark and must reuse canonical pgvector"
+    },
+    {
+      "id": "splink",
+      "source": "https://github.com/moj-analytical-services/splink",
+      "license": "MIT",
+      "classification": "ADOPT_LATER_WHEN_SCALE_JUSTIFIES",
+      "profile": "extended",
+      "surface": "python_venv",
+      "purpose": "Probabilistic company/contact entity resolution when deterministic domain + RapidFuzz no longer suffice",
+      "production_runtime": false,
+      "promotion_gate": "Only adopt after measured duplicate ambiguity at scale; never auto-merge uncertain identities"
+    }
+  ],
+  "deferred": [
+    {
+      "id": "firecrawl",
+      "reason": "Benchmark against Crawl4AI/canonical browser only after a measured JS-heavy extraction gap; AGPL self-hosting and hosted-vs-OSS feature boundaries require explicit review"
+    },
+    {
+      "id": "formbricks",
+      "reason": "Benchmark later for customer-validated proof collection; must not become truth owner"
+    },
+    {
+      "id": "papermark",
+      "reason": "Benchmark later for proposal/proof-pack delivery; document engagement is not buyer intent"
+    },
+    {
+      "id": "chatwoot",
+      "reason": "Only if a named inbound-support gap exists; must remain channel adapter, not CRM"
+    },
+    {
+      "id": "listmonk",
+      "reason": "Opt-in newsletter/content distribution only after audience consent and suppression pipeline are proven; never cold B2B blast"
+    }
+  ],
+  "explicit_rejects": [
+    "twentyhq/twenty or other parallel CRM",
+    "nocodb/baserow or other parallel operational database",
+    "Qdrant/Faiss as a second production vector store while canonical pgvector is sufficient",
+    "Arize Phoenix as a second observability/eval platform while Langfuse plus OpenTelemetry are canonical",
+    "PyArabic in the distributable Dealix runtime without explicit GPLv3 licensing review",
+    "NeMo Guardrails or another parallel runtime authority layer unless a measured policy-enforcement gap exists",
+    "new scheduler or workflow engine while n8n/canonical scheduler are available",
+    "unofficial WhatsApp-Web outbound automation",
+    "mass LinkedIn botting/scraping",
+    "autonomous sales-agent stacks that bypass the five canonical Dealix agents",
+    "new model router while the canonical router exists"
+  ]
+}
