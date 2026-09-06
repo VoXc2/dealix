@@ -21,6 +21,18 @@ The latest VPS acceptance exposed three independent problems:
 A fourth symptom — a broad "possible OpenAI-style key" grep — did not provide a
 safe filename-only triage path.
 
+Live Railway reconciliation exposed a fifth issue: the canonical API service is
+now correctly configured as Dockerfile + `railway.json` + governed pre-deploy,
+but provider watch paths were too narrow to cover canonical root packages such
+as `api/**`, `app/**`, and `db/**`. Railway documents that when watch paths are
+configured, a commit that does not match them is skipped. The source contract in
+this branch therefore watches Python runtime changes globally plus the build,
+dependency, migration-predeploy, config, template, and prompt authorities.
+
+References:
+- https://docs.railway.com/builds/build-configuration
+- https://docs.railway.com/config-as-code/reference
+
 ## Changes in this branch
 
 ### 1. CWD-independent verifiers
@@ -31,7 +43,8 @@ fail-closed assertions.
 
 ### 2. Bounded Git metadata guard
 
-`scripts/ops/git_metadata_permission_guard.py` audits only:
+`scripts/ops/git_metadata_permission_guard.py` audits only the **common** Git
+metadata directory, including when invoked from a linked worktree:
 
 - `.git/objects`
 - `.git/refs`
@@ -74,26 +87,78 @@ DATABASE_URL=<existing Dealix PostgreSQL URL>
 
 The backend reuses the existing `data_suppression_list` table and existing
 `psycopg` dependency. It is fail-closed: database uncertainty suppresses rather
-than authorizes a recipient, readiness is false unless the table can be proven,
-and the durable backend cannot be bulk-cleared by the test helper.
+than authorizes a recipient. Readiness is false unless the canonical table and
+`SELECT` / `INSERT` / `DELETE` privileges are proven. Durable suppression cannot
+be bulk-cleared by the test helper, and durable removal is blocked unless the
+process is explicitly started with `DEALIX_SUPPRESSION_ALLOW_REMOVE=true`.
 
 No environment variable in this branch enables outbound by itself. The
 canonical policy gate still requires external-send authority, controlled-live
 mode, channel flags, approval, relationship/consent, unsubscribe requirements,
 rate limits, and durable suppression.
 
+### 5. Railway API trigger authority
+
+`railway.json` now carries canonical API watch patterns and
+`dealix/config/railway_services.json` records the same expected contract. The
+patterns include all Python runtime files plus the Dockerfile, Railway config,
+dependency manifests, governed pre-deploy script, configs, templates, and
+prompts. `scripts/ops/verify_railway_api_watch_contract.py` fails closed on
+source drift.
+
+This is source authority only. Provider configuration and actual deployment SHA
+must still be verified independently.
+
+## Railway infrastructure-as-code migration deadline
+
+Railway's current documentation marks legacy Config as Code (`railway.json` /
+`railway.toml`) as deprecated for existing services with a **hard cutoff on
+2026-12-01**. Railway recommends Infrastructure as Code with
+`.railway/railway.ts` and exposes:
+
+```text
+railway config init
+railway config pull
+railway config plan
+railway config apply
+```
+
+Reference:
+https://docs.railway.com/config-as-code
+
+Do not perform this migration as an incidental launch change. Before the cutoff,
+create a separate exact-state migration packet: pull current provider state,
+compare it to Dealix source authority, plan with zero unintended domain/DB/secret
+changes, test in a non-production environment, then apply to Production only with
+rollback evidence and action-bound approval.
+
+## Public search/index residue
+
+A fresh external search still surfaced historical cached pages such as
+`/pricing.html`, `/customer-portal.html`, and other legacy snippets with fixed
+prices/demo claims, while the current public authority is quote-only and the
+current Next.js source redirects those legacy routes. This is **search-index
+residue, not current price authority**.
+
+The live front door must be fixed first. After canonical custom-domain routing
+is proven, verify the permanent redirects from the public origin and then use
+normal search-engine recrawl/removal workflows for stale URLs. Do not re-add
+legacy pages or fixed pricing merely to match cached search snippets.
+
 ## Production follow-up — separate material actions
 
 These remain separate action-bound gates:
 
 1. Prove exact-current-main source acceptance on the VPS.
-2. Set `DEALIX_SUPPRESSION_BACKEND=postgres` only after the production table is
-   verified and a rollback packet exists.
+2. Set `DEALIX_SUPPRESSION_BACKEND=postgres` only after the production table and
+   privileges are verified and a rollback packet exists.
 3. Prove Railway API release parity and Approval Center/Postgres runtime truth.
 4. Fix the custom front door only from provider control-plane evidence.
 5. Apply a Stage-A GitHub ruleset/branch protection: PR required, block force
    pushes/deletions, audited bypass. Do not require flaky hosted checks until
    their execution plane is trustworthy.
+6. Migrate Railway Config as Code to Railway IaC before 2026-12-01 as an isolated
+   production-change program, not as hidden launch scope.
 
 GitHub rulesets can require pull requests and block force pushes while exposing
 rules to auditors. Reference:
@@ -116,6 +181,7 @@ https://www.postgresql.org/docs/current/ddl-rowsecurity.html
 ```bash
 python scripts/ops/verify_secret_literals.py
 python scripts/ops/git_metadata_permission_guard.py --repo /opt/dealix/workspace/dealix
+python scripts/ops/verify_railway_api_watch_contract.py
 python scripts/ops/verify_self_improvement_truth_quarantine.py
 python scripts/ops/verify_voice_front_desk_realtime_2_1.py
 pytest -q \
@@ -125,6 +191,6 @@ pytest -q \
 ```
 
 On a production-like environment with the Postgres backend configured and the
-existing table reachable, `verify_controlled_live_readiness.py` should advance
-past the two suppression durability failures. This does **not** itself authorize
-or perform any live customer send.
+existing table + privileges reachable, `verify_controlled_live_readiness.py`
+should advance past the two suppression durability failures. This does **not**
+itself authorize or perform any live customer send.
