@@ -28,6 +28,9 @@ from dealix.company_intelligence.targeting_bridge import (
     TargetingSignalBinding,
     build_target_dossier_from_canonical_signals,
 )
+from dealix.company_intelligence.targeting_daily_overlay import (
+    daily_targeting_overlay_payload,
+)
 
 
 def _features() -> TargetValueFeatures:
@@ -166,6 +169,18 @@ def main() -> int:
     checks += 1
 
     assert target.signal_family == SignalFamily.REVENUE_LEAKAGE
+    checks += 1
+
+    overlay = daily_targeting_overlay_payload([target, held], target_count=20)
+    assert overlay["mode"] == "targeting_v1_evidence_overlay"
+    assert overlay["selected_count"] == 1
+    assert overlay["approval_required"] is True
+    assert overlay["live_execution_authorized"] is False
+    assert overlay["external_effects"] == "NONE"
+    row = overlay["selected"][0]
+    assert row["dossier_id"] == target.dossier_id
+    assert row["approval_required"] is True
+    assert row["live_execution_authorized"] is False
     checks += 1
 
     print(f"TARGETING_INTELLIGENCE_V1_CHECKS={checks}")
