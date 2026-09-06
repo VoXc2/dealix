@@ -30,6 +30,15 @@ def route(module: str = "api.routers.agents"):
     return Node(endpoint=endpoint(module), tags=[], path="/health")
 
 
+class Mount:
+    """Synthetic Mount fixture with the same structural contract as Mount.app."""
+
+    def __init__(self, app=None, endpoint_value=None):
+        self.routes = []
+        self.app = object() if app is None else app
+        self.endpoint = endpoint() if endpoint_value is None else endpoint_value
+
+
 class TestQuarantineVerifier(unittest.TestCase):
     def test_comments_and_docstrings_are_not_imports(self):
         source = '# api.routers.autonomous remains deliberately unregistered\n'
@@ -81,18 +90,27 @@ class TestQuarantineVerifier(unittest.TestCase):
         self.assertIn("legacy_tag", q._inspect_routes([lazy])[1])
 
     def test_mount_app_is_traversed(self):
-        mounted = Node(app=Node(routes=[route(q.LEGACY_MODULE)]))
+        mounted = Mount(app=Node(routes=[route(q.LEGACY_MODULE)]))
         self.assertIn("legacy_endpoint_module", q._inspect_routes([mounted])[1])
 
     def test_opaque_mount_endpoint_does_not_hide_uninspectable_app(self):
-        class Mount:
-            routes = []
-            app = object()
-            endpoint = staticmethod(endpoint())
-
         with self.assertRaises(q.InspectionError) as caught:
             q._inspect_routes([Mount()])
         self.assertEqual(caught.exception.code, "opaque_route_node")
+        self.assertEqual(caught.exception.detail, "builtins.object")
+        self.assertEqual(
+            caught.exception.parent,
+            f"{Mount.__module__}.{Mount.__qualname__}",
+        )
+        self.assertEqual(caught.exception.edge, "app")
+
+    def test_empty_fastapi_apirouter_app_method_is_not_structural_child(self):
+        from fastapi import APIRouter
+
+        with self.assertRaises(q.InspectionError) as caught:
+            q._inspect_routes([APIRouter()])
+
+        self.assertEqual(caught.exception.code, "empty_route_inventory")
 
     def test_route_cycle_terminates_and_reused_nodes_deduplicate(self):
         leaf = route()
@@ -123,6 +141,29 @@ class TestQuarantineVerifier(unittest.TestCase):
         with self.assertRaises(q.InspectionError) as caught:
             q._inspect_routes([route(), object()])
         self.assertEqual(caught.exception.code, "opaque_route_node")
+        self.assertEqual(caught.exception.detail, "builtins.object")
+        self.assertIsNone(caught.exception.parent)
+        self.assertEqual(caught.exception.edge, "root")
+
+    def test_opaque_child_reports_safe_parent_and_ingress_edge(self):
+        parent = Node(routes=[object(), route()])
+        with self.assertRaises(q.InspectionError) as caught:
+            q._inspect_routes([parent])
+        self.assertEqual(caught.exception.code, "opaque_route_node")
+        self.assertEqual(caught.exception.detail, "builtins.object")
+        self.assertEqual(caught.exception.parent, "types.SimpleNamespace")
+        self.assertEqual(caught.exception.edge, "routes")
+
+    def test_unsafe_inspection_metadata_is_suppressed(self):
+        err = q.InspectionError(
+            "opaque_route_node",
+            "unsafe detail with spaces",
+            "unsafe parent with spaces",
+            "untrusted-edge",
+        )
+        self.assertIsNone(err.detail)
+        self.assertIsNone(err.parent)
+        self.assertIsNone(err.edge)
 
     def test_wrong_source_module_rejected(self):
         with patch.object(q.importlib, "import_module", return_value=Node(__file__="/other.py")):
@@ -171,11 +212,14 @@ class TestQuarantineVerifier(unittest.TestCase):
         self.assertEqual(code, 3)
         self.assertIn("legacy_endpoint_module", output)
 
-    def test_structural_inspection_hold_exposes_only_safe_stage_and_code(self):
+    def test_structural_inspection_hold_exposes_only_safe_provenance(self):
         code, output = self._main_fixture("# quarantine\n", [object()])
         self.assertEqual(code, 4)
         self.assertIn("inspection_stage=application_routes", output)
         self.assertIn("inspection_code=opaque_route_node", output)
+        self.assertIn("inspection_detail=builtins.object", output)
+        self.assertIn("inspection_parent=types.SimpleNamespace", output)
+        self.assertIn("inspection_edge=routes", output)
         self.assertIn("error_type=InspectionError", output)
 
     def test_incomplete_import_holds_without_leaking_exception_content(self):

@@ -1,30 +1,58 @@
 {
-  "schema": "dealix.brand-authority.v1",
-  "generated_for": "2026-08-28",
+  "schema": "dealix.brand-authority.v2",
+  "generated_for": "2026-09-06",
   "authority": {
     "platform_positioning": "docs/00_platform_truth/PLATFORM_SOURCE_OF_TRUTH.md",
     "commercial_truth": "docs/DEALIX_BUSINESS_MODEL.md",
     "commercial_identity_mirror": "COMMERCIAL_IDENTITY.md",
     "launch_gate": "dealix/config/first_launch_offer_gate.yaml",
-    "brand_expression": "docs/brand/DEALIX_BRAND_OS.md",
+    "brand_expression": "brand/DEALIX_VISUAL_IDENTITY_GUIDE.md",
+    "logo_system": "business/brand/DEALIX_LOGO_AND_IDENTITY_SYSTEM.md",
     "brand_authority_map": "docs/brand/BRAND_AUTHORITY_MAP.md",
     "claims": "docs/brand/CLAIMS_GUARDRAILS.md",
-    "active_visual_reference": "landing/index.html"
+    "active_visual_reference": "apps/web/public/dealix-logo.svg"
   },
   "canonical_identity": {
     "masterbrand": "Dealix",
-    "category": "Saudi-first AI Business Operating System",
+    "category": "AI Business Operating System",
+    "market_context": "Built for governed business execution with Saudi-market context where relevant",
     "commercial_wedge": "Revenue + Proof + Command",
+    "core_promise": "Signals into Action. Execution with Governance. Measurable Outcomes.",
+    "short_promise": "From Opportunity to Outcome",
     "anti_categories": [
       "generic chatbot",
       "CRM replacement",
       "lead scraper",
       "AI automation agency",
       "guaranteed-revenue service"
+    ],
+    "forbidden_positioning_claims": [
+      "first Saudi AI Business Operating System",
+      "first in Saudi Arabia",
+      "market-leading unless independently evidenced",
+      "guaranteed revenue"
+    ]
+  },
+  "symbol_system": {
+    "primary_mark": "D + Forward Signal",
+    "meaning": {
+      "D": "Dealix, deals, decisions and durable business value",
+      "forward_signal": "Signal -> Decision -> Action",
+      "negative_space": "governance boundary, approval and controlled execution",
+      "open_direction": "opportunity converted into measurable outcome"
+    },
+    "design_rules": [
+      "must remain recognizable at 16px",
+      "must work in one color",
+      "must work on dark and light backgrounds",
+      "must not require a gradient to remain identifiable",
+      "must not place descriptive copy inside the standalone mark",
+      "must avoid generic robot, brain, circuit and sparkle clichés"
     ]
   },
   "message_mechanism": [
-    "REALITY",
+    "SIGNAL",
+    "EVIDENCE",
     "PRIORITY",
     "DECISION",
     "APPROVAL",
@@ -38,9 +66,11 @@
     "deep_teal": "#164E63",
     "signal_cyan": "#22D3EE",
     "cloud": "#F8FAFC",
+    "proof_gold": "#D4AF37",
     "arabic_font": "IBM Plex Sans Arabic",
     "latin_font": "Inter",
-    "historical_palettes_are_authority": false
+    "historical_palettes_are_authority": false,
+    "gold_usage": "proof/premium accent only; never the dominant brand color"
   },
   "proof_classes": [
     "INTERNAL_CAPABILITY_PROOF",
@@ -59,6 +89,7 @@
   ],
   "claim_policy": {
     "blanket_pdpl_compliant_allowed": false,
+    "first_in_market_claim_allowed": false,
     "guaranteed_revenue_allowed": false,
     "fake_testimonials_allowed": false,
     "synthetic_as_customer_proof_allowed": false,
@@ -91,6 +122,9 @@
   "renderer_policy": {
     "canva_is_authority": false,
     "channel_platform_is_authority": false,
+    "primary_logo": "apps/web/public/dealix-logo.svg",
+    "primary_mark": "apps/web/public/dealix-mark.svg",
+    "social_og": "apps/web/public/dealix-og.svg",
     "required_asset_metadata": [
       "content_id",
       "brand_version",

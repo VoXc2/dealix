@@ -1,0 +1,379 @@
+{
+  "schema_version": 2,
+  "date": "2026-09-06",
+  "north_star": "CASH_READY_AUTONOMOUS_DEALIX_COMPANY",
+  "optimization": "Verified Economic Movement / Founder Minute / Cost / Risk",
+  "source_main_sha": "699ded3b0cabeb565bf6a2bbd0aa57645a26d808",
+  "law": {
+    "one_company_machine": true,
+    "parallel_truth_systems_forbidden": true,
+    "production_promotion_requires_benchmark": true,
+    "license_review_required": true,
+    "live_customer_effects_from_oss_bootstrap": false,
+    "model_weights_are_separate_licensing_artifacts": true,
+    "research_is_not_relationship": true,
+    "high_target_score_is_not_send_authority": true
+  },
+  "profiles": {
+    "core": [
+      "presidio",
+      "schemathesis",
+      "checkdmarc",
+      "docling",
+      "promptfoo",
+      "rapidfuzz",
+      "trafilatura"
+    ],
+    "research": [
+      "rapidfuzz",
+      "trafilatura",
+      "crawl4ai"
+    ],
+    "arabic": [
+      "camel-tools",
+      "surya-ocr"
+    ],
+    "voice": [
+      "faster-whisper",
+      "silero-vad",
+      "livekit-agents",
+      "pipecat"
+    ],
+    "full": [
+      "presidio",
+      "schemathesis",
+      "checkdmarc",
+      "docling",
+      "promptfoo",
+      "rapidfuzz",
+      "trafilatura",
+      "crawl4ai",
+      "camel-tools",
+      "surya-ocr",
+      "faster-whisper",
+      "silero-vad",
+      "livekit-agents",
+      "pipecat",
+      "changedetection",
+      "zaproxy",
+      "mailpit"
+    ]
+  },
+  "components": [
+    {
+      "id": "presidio",
+      "source": "https://github.com/microsoft/presidio",
+      "license": "MIT",
+      "classification": "ADOPT_NOW_LIBRARY",
+      "surface": "python_venv",
+      "purpose": "PII detection, masking, anonymization and proof-safe preprocessing",
+      "production_runtime": false,
+      "promotion_gate": "Arabic/English false-positive and false-negative benchmark plus bounded recognizer policy; automated PII detection is not treated as complete coverage"
+    },
+    {
+      "id": "schemathesis",
+      "source": "https://github.com/schemathesis/schemathesis",
+      "license": "MIT",
+      "classification": "ADOPT_NOW_TEST_ONLY",
+      "surface": "python_venv",
+      "purpose": "OpenAPI/GraphQL contract, edge-case and stateful API testing",
+      "production_runtime": false,
+      "promotion_gate": "Run only against local/staging or explicitly authorized targets"
+    },
+    {
+      "id": "checkdmarc",
+      "source": "https://github.com/domainaware/checkdmarc",
+      "license": "Apache-2.0",
+      "classification": "ADOPT_NOW_LIBRARY",
+      "surface": "python_venv",
+      "purpose": "SPF, DMARC, BIMI, MX, MTA-STS and TLS reporting validation",
+      "production_runtime": false,
+      "promotion_gate": "Use as read-only deliverability evidence; never infer inbox placement from DNS validity alone"
+    },
+    {
+      "id": "docling",
+      "source": "https://github.com/docling-project/docling",
+      "license": "MIT-code-model-licenses-separate",
+      "classification": "ADOPT_NOW_LIBRARY",
+      "surface": "python_venv",
+      "purpose": "Tender, proposal, proof-pack, email and document ingestion across PDF/DOCX/PPTX/XLSX/images and related formats",
+      "production_runtime": false,
+      "promotion_gate": "Benchmark Arabic tables/layout fidelity, resource use and model licensing before pipeline promotion"
+    },
+    {
+      "id": "promptfoo",
+      "source": "https://github.com/promptfoo/promptfoo",
+      "license": "MIT",
+      "classification": "ADOPT_NOW_LIBRARY",
+      "surface": "node_prefix",
+      "purpose": "Arabic/English agent regression, tool-use evaluation and bounded LLM red-team testing",
+      "production_runtime": false,
+      "promotion_gate": "Pin resolved version; trusted configs only; evaluation data never becomes customer truth state"
+    },
+    {
+      "id": "rapidfuzz",
+      "source": "https://github.com/rapidfuzz/RapidFuzz",
+      "license": "MIT",
+      "classification": "ADOPT_NOW_LIBRARY",
+      "surface": "python_venv",
+      "purpose": "Fast deterministic fuzzy company/contact matching after exact domain/legal-name rules",
+      "production_runtime": false,
+      "promotion_gate": "Benchmark Arabic/English company-name false merges; fuzzy score never overrides deterministic conflicts or provenance"
+    },
+    {
+      "id": "trafilatura",
+      "source": "https://github.com/adbar/trafilatura",
+      "license": "Apache-2.0-current",
+      "classification": "ADOPT_NOW_LIBRARY",
+      "surface": "python_venv",
+      "purpose": "Lightweight public-web text/metadata extraction for permitted evidence sources without a new service",
+      "production_runtime": false,
+      "promotion_gate": "Allowed-source policy, robots/terms review, source URL + timestamp provenance, and extraction-quality benchmark"
+    },
+    {
+      "id": "crawl4ai",
+      "source": "https://github.com/unclecode/crawl4ai",
+      "license": "Apache-2.0",
+      "classification": "SANDBOX_BENCHMARK",
+      "surface": "python_venv_package_only",
+      "purpose": "Dynamic LLM-ready web extraction candidate for sources where static extraction is insufficient",
+      "production_runtime": false,
+      "promotion_gate": "Package only by default: no browser setup, no self-hosted API, no proxy/anti-bot escalation; security version review and permitted-source benchmark required"
+    },
+    {
+      "id": "camel-tools",
+      "source": "https://github.com/CAMeL-Lab/camel_tools",
+      "license": "MIT",
+      "classification": "ADOPT_NOW_LIBRARY",
+      "surface": "python_venv",
+      "purpose": "Arabic normalization, morphology, tokenization, dialect identification, NER and sentiment utilities",
+      "production_runtime": false,
+      "promotion_gate": "Benchmark Saudi Arabic, Modern Standard Arabic and Arabic/English code-switching on Dealix task corpora"
+    },
+    {
+      "id": "surya-ocr",
+      "source": "https://github.com/datalab-to/surya",
+      "license": "Apache-2.0-code-model-weights-separate",
+      "classification": "SANDBOX_BENCHMARK",
+      "surface": "python_venv_package_only",
+      "purpose": "Arabic-capable OCR, layout, reading-order and table-recognition benchmark when Docling extraction is insufficient",
+      "production_runtime": false,
+      "promotion_gate": "No model download in bootstrap; verify model-weight commercial terms, Arabic accuracy, CPU/GPU cost and privacy before use"
+    },
+    {
+      "id": "faster-whisper",
+      "source": "https://github.com/SYSTRAN/faster-whisper",
+      "license": "MIT",
+      "classification": "ADOPT_NOW_LIBRARY",
+      "surface": "python_venv",
+      "purpose": "Local transcription benchmark for consented calls, meetings and evidence extraction",
+      "production_runtime": false,
+      "promotion_gate": "Arabic/English WER, latency and memory benchmark plus recording/consent/retention policy"
+    },
+    {
+      "id": "silero-vad",
+      "source": "https://github.com/snakers4/silero-vad",
+      "license": "MIT",
+      "classification": "ADOPT_NOW_LIBRARY",
+      "surface": "python_venv_package_only",
+      "purpose": "Voice activity detection for interruption handling, endpointing and call audio segmentation",
+      "production_runtime": false,
+      "promotion_gate": "No model load during bootstrap; benchmark noisy Saudi telephony, false cutoffs and latency"
+    },
+    {
+      "id": "livekit-agents",
+      "source": "https://github.com/livekit/agents",
+      "license": "Apache-2.0",
+      "classification": "SANDBOX_BENCHMARK",
+      "surface": "python_venv",
+      "purpose": "Voice Front Desk candidate for SIP/WebRTC realtime agents and telephony",
+      "production_runtime": false,
+      "promotion_gate": "Compete against Pipecat on Arabic/English latency, interruption, tool success, transcript fidelity, handoff and cost; select one canonical voice runtime"
+    },
+    {
+      "id": "pipecat",
+      "source": "https://github.com/pipecat-ai/pipecat",
+      "license": "BSD-2-Clause",
+      "classification": "SANDBOX_BENCHMARK",
+      "surface": "python_venv",
+      "purpose": "Composable realtime voice and multimodal pipeline candidate",
+      "production_runtime": false,
+      "promotion_gate": "Compete against LiveKit Agents; select one canonical voice runtime and avoid parallel telephony stacks"
+    },
+    {
+      "id": "changedetection",
+      "source": "https://github.com/dgtlmoon/changedetection.io",
+      "license": "Apache-2.0",
+      "classification": "SANDBOX_BENCHMARK",
+      "surface": "docker_image_only",
+      "purpose": "Monitor changes on permitted public evidence sources",
+      "production_runtime": false,
+      "promotion_gate": "No public ports; permitted sources only; page changes are signals, not relationships or buyer intent"
+    },
+    {
+      "id": "zaproxy",
+      "source": "https://github.com/zaproxy/zaproxy",
+      "license": "Apache-2.0",
+      "classification": "ADOPT_NOW_TEST_ONLY",
+      "surface": "docker_image_only",
+      "purpose": "DAST and passive security regression testing",
+      "production_runtime": false,
+      "promotion_gate": "Never active-scan Production or third-party targets without explicit authorization"
+    },
+    {
+      "id": "mailpit",
+      "source": "https://github.com/axllent/mailpit",
+      "license": "MIT",
+      "classification": "ADOPT_NOW_TEST_ONLY",
+      "surface": "docker_image_only",
+      "purpose": "Internal SMTP capture for outbound workflow testing",
+      "production_runtime": false,
+      "promotion_gate": "Loopback/internal only; never expose default ports publicly"
+    }
+  ],
+  "catalogue_only": [
+    {
+      "id": "splink",
+      "source": "https://github.com/moj-analytical-services/splink",
+      "license": "MIT",
+      "decision": "DEFER_UNTIL_SCALE",
+      "reason": "Probabilistic linkage is valuable only after deterministic + RapidFuzz ambiguity becomes a measured bottleneck"
+    },
+    {
+      "id": "dedupe",
+      "source": "https://github.com/dedupeio/dedupe",
+      "license": "MIT",
+      "decision": "DEFER_UNTIL_LABELED_DATA",
+      "reason": "Requires human training examples; avoid adding a second linkage decision layer before a labeled corpus exists"
+    },
+    {
+      "id": "firecrawl",
+      "source": "https://github.com/mendableai/firecrawl",
+      "license": "AGPL/core-terms-review-required",
+      "decision": "DEFER_SERVICE",
+      "reason": "Useful web-context service, but do not run a second permanent crawler service unless Trafilatura/Crawl4AI show a measured gap"
+    },
+    {
+      "id": "scrapy",
+      "source": "https://github.com/scrapy/scrapy",
+      "license": "BSD-3-Clause",
+      "decision": "DEFER_ALTERNATIVE",
+      "reason": "Strong crawler, but one canonical extraction stack is enough until a scale-specific gap is proven"
+    },
+    {
+      "id": "crawlee-python",
+      "source": "https://github.com/apify/crawlee-python",
+      "license": "Apache-2.0",
+      "decision": "DEFER_ALTERNATIVE",
+      "reason": "Useful asyncio/browser crawler; avoid running it in parallel with Crawl4AI without a benchmark winner"
+    },
+    {
+      "id": "pyarabic",
+      "source": "https://github.com/linuxscout/pyarabic",
+      "license": "GPLv3",
+      "decision": "DEFER_LICENSE_OVERLAP",
+      "reason": "Useful Arabic text functions but overlaps CAMeL Tools and adds GPL obligations; benchmark only if CAMeL lacks a named function"
+    },
+    {
+      "id": "qalsadi",
+      "source": "https://github.com/linuxscout/qalsadi",
+      "license": "GPL",
+      "decision": "DEFER_LICENSE_OVERLAP",
+      "reason": "Arabic morphology/lemmatization overlap with CAMeL Tools; no production admission without legal and benchmark justification"
+    },
+    {
+      "id": "tashaphyne",
+      "source": "https://github.com/linuxscout/tashaphyne",
+      "license": "GPL-3.0",
+      "decision": "DEFER_LICENSE_OVERLAP",
+      "reason": "Arabic stemming utility; CAMeL Tools remains the permissive canonical first choice"
+    },
+    {
+      "id": "arabert",
+      "source": "https://github.com/aub-mind/arabert",
+      "license": "custom-and-transitive-model-terms",
+      "decision": "DEFER_MODEL_BENCHMARK",
+      "reason": "Model and preprocessing lineage requires explicit license/model review; use only if task benchmarks beat current model stack"
+    },
+    {
+      "id": "arbml-masader",
+      "source": "https://github.com/ARBML/masader",
+      "license": "GPL-3.0-catalogue",
+      "decision": "RESEARCH_RESOURCE_ONLY",
+      "reason": "Arabic dataset catalogue for finding licensed evaluation corpora; never ingest a dataset without checking its individual license and provenance"
+    },
+    {
+      "id": "arbml-klaam",
+      "source": "https://github.com/ARBML/klaam",
+      "license": "MIT",
+      "decision": "DEFER_LEGACY_BENCHMARK",
+      "reason": "Arabic ASR/TTS research reference; benchmark only if modern realtime/local voice candidates leave a measured gap"
+    },
+    {
+      "id": "paddleocr",
+      "source": "https://github.com/PaddlePaddle/PaddleOCR",
+      "license": "Apache-2.0",
+      "decision": "DEFER_OCR_ALTERNATIVE",
+      "reason": "Arabic multilingual OCR alternative; compare only if Docling + Surya do not meet Arabic tender/document accuracy"
+    },
+    {
+      "id": "marker",
+      "source": "https://github.com/datalab-to/marker",
+      "license": "GPL-3.0",
+      "decision": "DEFER_LICENSE_OVERLAP",
+      "reason": "Strong document conversion but overlaps Docling/Surya and introduces GPL obligations"
+    },
+    {
+      "id": "unstructured",
+      "source": "https://github.com/Unstructured-IO/unstructured",
+      "license": "review-required",
+      "decision": "DEFER_OVERLAP",
+      "reason": "Document ETL overlap with Docling; do not add another document truth pipeline without a measured format gap"
+    },
+    {
+      "id": "pyannote-audio",
+      "source": "https://github.com/pyannote/pyannote-audio",
+      "license": "MIT-code-model-access-separate",
+      "decision": "DEFER_MULTI_SPEAKER",
+      "reason": "Useful diarization when real multi-speaker recordings exist; model access and runtime cost should be justified by that use case"
+    },
+    {
+      "id": "langfuse",
+      "source": "https://github.com/langfuse/langfuse",
+      "license": "MIT-core-ee-exceptions",
+      "decision": "NO_NEW_STACK_UNLESS_GAP",
+      "reason": "Dealix already has OpenTelemetry/Sentry and Langfuse references; do not create a second observability truth store without a measured gap"
+    },
+    {
+      "id": "ragas-deepeval-phoenix",
+      "decision": "DEFER_EVAL_ALTERNATIVES",
+      "reason": "Promptfoo plus native Dealix verifiers are canonical first; add one alternative only for a metric Promptfoo cannot express"
+    },
+    {
+      "id": "gobl-sa-zatca",
+      "source": "https://github.com/invopop/gobl.sa.zatca",
+      "license": "Apache-2.0",
+      "decision": "SANDBOX_COMPLIANCE_REVIEW",
+      "reason": "Promising 2026 ZATCA addon; no Production invoice authority until official ZATCA validator, accountant/tax review, sandbox tests and canonical payment/invoice truth gates pass"
+    },
+    {
+      "id": "fatoora-rs",
+      "source": "https://github.com/mqqz/fatoora-rs",
+      "license": "review-required",
+      "decision": "DEFER_ZATCA_ALTERNATIVE",
+      "reason": "Keep as independent reference; never run two invoice signing authorities"
+    }
+  ],
+  "explicit_rejects": [
+    "parallel CRM such as Twenty as Dealix core",
+    "parallel operational database or vector store when canonical Postgres/pgvector is sufficient",
+    "new scheduler/workflow engine when canonical scheduler and n8n already cover the need",
+    "unofficial WhatsApp-Web outbound automation or cold WhatsApp blasting",
+    "mass LinkedIn botting, connection automation or terms-violating scraping",
+    "Mautic/listmonk-style bulk marketing engines as a shortcut around consent and channel eligibility",
+    "new autonomous sales-agent fleets that bypass the five canonical agents",
+    "new model router or observability truth store without a measured gap",
+    "anti-bot bypass, credential scraping, active vulnerability scanning for prospecting, or bypass of source terms",
+    "production promotion of any model/code asset whose license or model-weight terms are not verified"
+  ]
+}
