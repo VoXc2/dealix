@@ -1,13 +1,16 @@
 {
   "schema": "dealix.brand-system.v2",
-  "status": "CANONICAL_CANDIDATE_WAVE2",
+  "status": "FOUNDER_APPROVED_REPO_CANDIDATE",
   "source": {
     "website": "https://dealix.me/",
-    "repo_reference": "landing/index.html",
-    "positioning": "Saudi-first AI Business Operating System",
+    "repo_reference": "apps/web/public/dealix-logo.svg",
+    "positioning": "AI Business Operating System",
+    "market_context": "Saudi business context where relevant",
     "commercial_wedge": "Revenue + Proof + Command"
   },
-  "brand_idea": "Calm operating intelligence for Saudi businesses: precise, governed, proof-backed.",
+  "brand_idea": "Governed operating intelligence that turns signals into action and measurable outcomes.",
+  "core_promise": "Signals into Action. Execution with Governance. Measurable Outcomes.",
+  "short_promise": "From Opportunity to Outcome",
   "personality": [
     "calm",
     "precise",
@@ -15,34 +18,42 @@
     "operational",
     "credible",
     "technical_without_jargon_for_its_own_sake",
-    "Saudi_first_not_cliche",
-    "bilingual"
+    "bilingual",
+    "evidence_first"
   ],
   "logo": {
     "primary_wordmark": "Dealix",
-    "mark_concept": "rounded operating-node D with proof dot",
-    "minimum_clear_space": "1x mark-dot diameter around all sides",
+    "arabic_wordmark": "ديليكس",
+    "descriptor": "AI BUSINESS OPERATING SYSTEM",
+    "mark_concept": "geometric D with forward signal",
+    "mark_meaning": {
+      "D": "Dealix, deals, decisions and durable business value",
+      "forward_signal": "Signal -> Decision -> Action",
+      "negative_space": "governance and approval boundary",
+      "forward_direction": "opportunity converted into outcome"
+    },
+    "minimum_clear_space": "25% of mark width around all sides",
     "prohibited": [
       "stretch_or_skew",
-      "unapproved_gradients_inside_logo",
-      "drop_shadow_on_logo",
-      "cyan_logo_on_low_contrast_background",
-      "busy_photography_behind_wordmark"
+      "busy_photography_behind_wordmark",
+      "robot_brain_or_circuit_logo_cliches",
+      "descriptor_inside_standalone_mark",
+      "unapproved_alternate_palette",
+      "unsupported_first_in_market_claim"
     ]
   },
   "colors": {
     "ink_navy": "#0F172A",
     "deep_teal": "#164E63",
     "signal_cyan": "#22D3EE",
-    "signal_cyan_dark": "#0891B2",
+    "signal_cyan_light": "#67E8F9",
     "cloud": "#F8FAFC",
     "white": "#FFFFFF",
+    "proof_gold": "#D4AF37",
     "slate_700": "#334155",
     "slate_500": "#64748B",
     "slate_300": "#CBD5E1",
     "line": "#E2E8F0",
-    "cyan_mist": "#ECFEFF",
-    "cyan_line": "#BAE6FD",
     "success": "#15803D",
     "warning": "#B45309",
     "danger": "#B91C1C"
@@ -51,14 +62,15 @@
     "primary_background": "cloud_or_white",
     "hero_and_high_authority_panels": "ink_navy",
     "accent_ratio_max_percent": 12,
-    "signal_cyan_use": ["cta", "proof_dot", "key_metric", "active_state", "diagram_flow"],
-    "never": ["rainbow_gradient", "neon_multi_color", "blue_purple_ai_cliche", "gold_as_primary_brand_color"]
+    "signal_cyan_use": ["cta", "action", "active_state", "diagram_flow", "forward_signal"],
+    "proof_gold_use": ["verified_proof", "premium_accent", "small_separator", "selected_verified_outcome"],
+    "never": ["rainbow_gradient", "neon_multi_color", "blue_purple_ai_cliche", "gold_as_primary_brand_color", "emerald_as_active_primary_brand_color"]
   },
   "typography": {
     "arabic_primary": "IBM Plex Sans Arabic",
     "latin_primary": "Inter",
-    "mono": "ui-monospace, Menlo, monospace",
-    "heading_weights": [600, 700],
+    "mono": "IBM Plex Mono, JetBrains Mono, ui-monospace, monospace",
+    "heading_weights": [600, 700, 750],
     "body_weights": [400, 500],
     "numeral_style": "tabular_when_possible_for_metrics",
     "principles": [
@@ -85,8 +97,8 @@
     "preferred": [
       "Saudi_business_context_without_stock_cliches",
       "real_operating_screens_with_sensitive_data_removed",
-      "abstract_system_diagrams",
-      "architectural_detail_and_modern_Riyadh_context_when_relevant",
+      "abstract_system_and_signal_flow_diagrams",
+      "architectural_detail_and_modern_Riyadh_context_when relevant",
       "proof_artifacts_and_process_visuals"
     ],
     "avoid": [
@@ -101,13 +113,13 @@
   "motion": {
     "style": "quiet_confident_functional",
     "duration_ms": {"micro": 160, "standard": 280, "section": 420},
-    "preferred": ["fade", "small_translate", "line_draw", "metric_count_with_real_data_only"],
+    "preferred": ["fade", "small_translate", "line_draw", "signal_convergence", "metric_count_with_real_data_only"],
     "avoid": ["constant_parallax", "excessive_glow", "fast_zoom", "gaming_style_transitions"]
   },
   "voice": {
     "primary_language": "Arabic",
     "secondary_language": "English",
-    "formula": "Problem truth -> operating insight -> proof boundary -> next useful action",
+    "formula": "Problem truth -> operating insight -> governed action -> proof boundary -> next useful action",
     "cta_priority": [
       "ابدأ Free Mini Diagnostic",
       "شاهد كيف نثبت القيمة",
@@ -115,6 +127,8 @@
       "اطلب Company/Partner brief"
     ],
     "blocked_claims": [
+      "first_saudi_ai_business_operating_system",
+      "first_in_saudi_arabia",
       "guaranteed_revenue",
       "guaranteed_roi",
       "fully_autonomous_company_without_boundaries",
@@ -137,6 +151,7 @@
     "brand_version_required_on_assets": true,
     "claim_version_required_on_assets": true,
     "external_asset_requires_qa": true,
-    "customer_logo_or_testimonial_requires_permission_evidence": true
+    "customer_logo_or_testimonial_requires_permission_evidence": true,
+    "trademark_clearance": "LEGAL_CLEARANCE_PENDING"
   }
 }
