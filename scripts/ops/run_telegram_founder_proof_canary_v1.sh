@@ -2,7 +2,8 @@
 set -Eeuo pipefail
 umask 077
 
-ROOT="$(git rev-parse --show-toplevel)"
+SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)"
+ROOT="$(cd -- "$SCRIPT_DIR/../.." && pwd -P)"
 EXPECTED_SHA="${1:-}"
 CANARY_AUTH="${DEALIX_FOUNDER_TELEGRAM_CANARY:-0}"
 RUN_USER="dealix"
@@ -19,10 +20,17 @@ fail() {
 
 [[ -n "$EXPECTED_SHA" ]] || fail "EXPECTED_SHA_REQUIRED"
 [[ "$CANARY_AUTH" == "1" ]] || fail "EXPLICIT_CANARY_FLAG_REQUIRED"
-[[ "$(git -C "$ROOT" rev-parse HEAD)" == "$EXPECTED_SHA" ]] || fail "HEAD_MISMATCH"
+[[ "$(sudo -u "$RUN_USER" git -C "$ROOT" rev-parse HEAD)" == "$EXPECTED_SHA" ]] || fail "HEAD_MISMATCH"
 [[ "$(id -u)" -eq 0 ]] || fail "ROOT_REQUIRED_FOR_RUNTIME_ACCEPTANCE"
 [[ -x "$OPENCLAW_BIN" ]] || fail "OPENCLAW_BINARY_MISSING"
 [[ -f "$CONFIG" && ! -L "$CONFIG" ]] || fail "OPENCLAW_CONFIG_UNSAFE"
+
+# The exact detached worktree is owned by dealix while this canary must run as
+# root for read-only runtime evidence. Keep Git trust process-local and exact;
+# never persist a wildcard/global safe.directory mutation.
+export GIT_CONFIG_COUNT=1
+export GIT_CONFIG_KEY_0=safe.directory
+export GIT_CONFIG_VALUE_0="$ROOT"
 
 export DEALIX_EXTERNAL_SEND=0
 export DEALIX_EMAIL_LIVE_SEND=0
