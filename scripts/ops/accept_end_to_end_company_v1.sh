@@ -133,7 +133,7 @@ run autonomous_quarantine \
 run composite_contract \
   "$PYTHON_BIN" scripts/ops/verify_end_to_end_company_acceptance_v1.py
 run company_machine \
-  "$PYTHON_BIN" scripts/ops/verify_autonomous_company_machine_v2.py
+  "$PYTHON_BIN" scripts/ops/verify_autonomous_company_machine_v2.py --source-sha "$ACTUAL_SHA"
 run continuous_operations \
   "$PYTHON_BIN" scripts/verify_continuous_company_operations_v1.py
 run governed_channels \
@@ -145,6 +145,7 @@ run focused_tests \
     tests/test_end_to_end_company_acceptance_v1.py \
     tests/test_ai_workforce_canonical_delegation.py \
     tests/test_ai_workforce_revenue_factory_blueprint.py \
+    tests/test_autonomous_company_machine_source_awareness.py \
     tests/test_end_to_end_acceptance_runner_integrity.py
 
 STAGE=final_worktree_integrity
