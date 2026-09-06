@@ -1,16 +1,22 @@
 """Suppression authority for recipients who must never receive outbound messages.
 
 The default implementation remains in-memory and is suitable only for unit
- tests, synthetic drills, and draft-only execution.  Controlled-live execution
+tests, synthetic drills, and draft-only execution. Controlled-live execution
 can opt into the existing PostgreSQL ``data_suppression_list`` truth store with:
 
     DEALIX_SUPPRESSION_BACKEND=postgres
     DATABASE_URL=<existing Dealix PostgreSQL URL>
 
-The Postgres path is fail-closed: an unavailable database, missing table, or
-query error never becomes permission to send.  No backend switch enables live
-send by itself; the outbound policy gate still requires all other authority,
-consent, approval, rate-limit and channel controls.
+The Postgres path is fail-closed: an unavailable database, missing table,
+insufficient privileges, or query error never becomes permission to send. No
+backend switch enables live send by itself; the outbound policy gate still
+requires all other authority, consent, approval, rate-limit and channel
+controls.
+
+Removing a durable suppression record is itself authority-sensitive. The
+Postgres backend therefore refuses removal unless the process is explicitly
+started with ``DEALIX_SUPPRESSION_ALLOW_REMOVE=true``. The default remains
+fail-closed.
 """
 
 from __future__ import annotations
@@ -67,9 +73,31 @@ def _postgres_connection() -> Iterator[Any]:
 
 
 def _postgres_table_ready() -> bool:
+    """Read-only proof that the canonical table and required privileges exist."""
+
     try:
         with _postgres_connection() as conn, conn.cursor() as cur:
-            cur.execute("SELECT to_regclass('public.data_suppression_list') IS NOT NULL")
+            cur.execute(
+                """
+                SELECT
+                    to_regclass('public.data_suppression_list') IS NOT NULL
+                    AND has_table_privilege(
+                        current_user,
+                        'public.data_suppression_list',
+                        'SELECT'
+                    )
+                    AND has_table_privilege(
+                        current_user,
+                        'public.data_suppression_list',
+                        'INSERT'
+                    )
+                    AND has_table_privilege(
+                        current_user,
+                        'public.data_suppression_list',
+                        'DELETE'
+                    )
+                """
+            )
             row = cur.fetchone()
             return bool(row and row[0] is True)
     except Exception:
@@ -92,7 +120,7 @@ def suppression_backend_status() -> dict[str, Any]:
     if backend == _MEMORY_BACKEND:
         reason = "in_memory_suppression_is_not_durable"
     elif persistent:
-        reason = "postgres_suppression_table_verified"
+        reason = "postgres_suppression_table_and_privileges_verified"
     else:
         reason = "postgres_suppression_not_verified"
     return {
@@ -206,7 +234,14 @@ def add_suppression(
         entry.add(channel or ALL_CHANNELS)
 
 
+def _durable_remove_authorized() -> bool:
+    return os.getenv("DEALIX_SUPPRESSION_ALLOW_REMOVE", "").strip().lower() == "true"
+
+
 def _postgres_remove(identifier: str, channel: str | None) -> None:
+    if not _durable_remove_authorized():
+        raise RuntimeError("durable suppression removal requires explicit authority")
+
     column, value = _target(identifier, channel or ALL_CHANNELS)
     if not value:
         return
