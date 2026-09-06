@@ -185,8 +185,10 @@ def _inspect_routes(roots: Iterable[object]) -> tuple[int, list[str]]:
         if original is not None:
             children.append((original, "original_router"))
         # Mount.app can be the only access path for a mounted ASGI application.
+        # Do not treat generic framework callables such as APIRouter.app as
+        # structural children: the app edge is a Mount-specific traversal edge.
         app = getattr(item, "app", None)
-        if (endpoint is None or is_mount) and not children and app is not None and app is not item:
+        if is_mount and not children and app is not None and app is not item:
             children.append((app, "app"))
         if endpoint is None and not children and routes is None:
             _inspection_error(
