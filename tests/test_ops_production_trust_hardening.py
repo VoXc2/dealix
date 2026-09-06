@@ -64,3 +64,11 @@ def test_verifier_entrypoints_bootstrap_repo_root_before_project_imports():
 
     assert self_improvement.index("sys.path.insert") < self_improvement.index("from self_evolving_os import")
     assert voice.index("sys.path.insert") < voice.index("def main()")
+
+
+def test_railway_api_watch_contract_matches_source_authority():
+    verifier = load_module(
+        "dealix_railway_watch_contract",
+        "scripts/ops/verify_railway_api_watch_contract.py",
+    )
+    assert verifier.main() == 0
