@@ -10,6 +10,7 @@ import ast
 import importlib
 import importlib.util
 import os
+import re
 import sys
 from collections.abc import Iterable
 from pathlib import Path
@@ -41,20 +42,28 @@ INSPECTION_CODES = {
     "empty_route_inventory",
     "module_source_mismatch",
 }
+_SAFE_DETAIL_RE = re.compile(r"^[A-Za-z0-9_.:-]{1,160}$")
 
 
 class InspectionError(ValueError):
     """A verifier-owned, non-secret structural inspection failure."""
 
-    def __init__(self, code: str):
+    def __init__(self, code: str, detail: str | None = None):
         if code not in INSPECTION_CODES:
             raise ValueError("invalid_inspection_code")
         self.code = code
+        self.detail = detail if detail and _SAFE_DETAIL_RE.fullmatch(detail) else None
         super().__init__(code)
 
 
-def _inspection_error(code: str) -> None:
-    raise InspectionError(code)
+def _inspection_error(code: str, detail: str | None = None) -> None:
+    raise InspectionError(code, detail)
+
+
+def _type_fingerprint(item: object) -> str:
+    """Return only a bounded module/class identifier; never repr/str/object state."""
+    cls = type(item)
+    return f"{getattr(cls, '__module__', 'unknown')}.{getattr(cls, '__qualname__', cls.__name__)}"
 
 
 def _legacy(name: str) -> bool:
@@ -157,7 +166,7 @@ def _inspect_routes(roots: Iterable[object]) -> tuple[int, list[str]]:
         if (endpoint is None or is_mount) and not children and app is not None and app is not item:
             children.append(app)
         if endpoint is None and not children and routes is None:
-            _inspection_error("opaque_route_node")
+            _inspection_error("opaque_route_node", _type_fingerprint(item))
         pending.extend(children)
     if endpoints == 0:
         _inspection_error("empty_route_inventory")
@@ -206,6 +215,8 @@ def main() -> int:
         print("reason=inspection_incomplete")
         print("inspection_stage=" + (stage if stage in INSPECTION_STAGES else "unknown"))
         print("inspection_code=" + exc.code)
+        if exc.detail:
+            print("inspection_detail=" + exc.detail)
         print("error_type=InspectionError")
         return 4
     except Exception as exc:
