@@ -61,15 +61,31 @@ def realtime_truncation_config() -> dict[str, Any]:
     }
 
 
+def _client_for(config: VoiceAIConfig) -> Any:
+    if not config.openai_api_key:
+        raise RuntimeError("OPENAI_API_KEY is not configured")
+    if not config.webhook_secret:
+        raise RuntimeError("OPENAI_WEBHOOK_SECRET is not configured")
+    from openai import OpenAI
+
+    return OpenAI(
+        api_key=config.openai_api_key,
+        webhook_secret=config.webhook_secret,
+        timeout=15.0,
+        max_retries=1,
+    )
+
+
 def handle_openai_realtime_webhook(
     raw_body: str,
     headers: Mapping[str, str],
     config: VoiceAIConfig,
-    client: Any,
+    client: Any | None = None,
 ) -> VoiceWebhookResult:
     """Verify and admit one OpenAI SIP call with the hardened Dealix session."""
 
-    event = client.webhooks.unwrap(raw_body, headers)
+    openai_client = client or _client_for(config)
+    event = openai_client.webhooks.unwrap(raw_body, headers)
     event_type = str(getattr(event, "type", "unknown"))
     if event_type != "realtime.call.incoming":
         return VoiceWebhookResult(event_type=event_type, action="ignored")
@@ -80,14 +96,14 @@ def handle_openai_realtime_webhook(
         raise RuntimeError("verified_realtime_call_missing_call_id")
 
     if not config.enabled:
-        client.realtime.calls.reject(call_id=call_id, status_code=603)
+        openai_client.realtime.calls.reject(call_id=call_id, status_code=603)
         return VoiceWebhookResult(
             event_type=event_type,
             action="rejected_feature_disabled",
             call_id=call_id,
         )
 
-    client.realtime.calls.accept(
+    openai_client.realtime.calls.accept(
         call_id=call_id,
         type="realtime",
         model=VOICE_MODEL,
