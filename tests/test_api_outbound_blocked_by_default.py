@@ -2,12 +2,10 @@
 
 import os
 
-import pytest
 from fastapi.testclient import TestClient
 
 import app.outbound.policy_gate as policy_gate
 
-# Set safe env before importing app
 os.environ.setdefault("APP_ENV", "test")
 os.environ.setdefault("ENVIRONMENT", "test")
 os.environ.setdefault("DATABASE_URL", "sqlite+aiosqlite:///./dealix_test_outbound.db")
@@ -30,13 +28,10 @@ client = TestClient(app, raise_server_exceptions=False)
 class TestOutboundBlockedByDefault:
     def test_send_email_blocked(self):
         response = client.post("/api/outbound/send/email", json={
-            "channel": "email",
-            "to": "test@example.com",
-            "subject": "Test",
-            "body": "Test body",
+            "channel": "email", "to": "test@example.com", "subject": "Test", "body": "Test body",
         })
-        assert response.status_code == 200
         data = response.json()
+        assert response.status_code == 200
         assert data["allowed"] is False
         assert data["safe_to_send"] is False
         assert data["mode"] == "draft_only"
@@ -44,70 +39,51 @@ class TestOutboundBlockedByDefault:
 
     def test_send_whatsapp_blocked(self):
         response = client.post("/api/outbound/send/whatsapp", json={
-            "channel": "whatsapp",
-            "to": "+966****0000",
-            "body": "Test message",
+            "channel": "whatsapp", "to": "+966****0000", "body": "Test message",
         })
-        assert response.status_code == 200
         data = response.json()
+        assert response.status_code == 200
         assert data["allowed"] is False
         assert data["safe_to_send"] is False
-        # WhatsApp may be blocked because it's not enabled/live, or because
-        # external send is globally disabled. Both are valid safety responses.
         assert data["reason"] in ("external_send_disabled", "whatsapp_not_enabled_or_not_live")
 
     def test_send_sms_blocked(self):
         response = client.post("/api/outbound/send/sms", json={
-            "channel": "sms",
-            "to": "+966500000000",
-            "body": "Test SMS",
+            "channel": "sms", "to": "+966500000000", "body": "Test SMS",
         })
-        assert response.status_code == 200
         data = response.json()
+        assert response.status_code == 200
         assert data["allowed"] is False
         assert data["safe_to_send"] is False
         assert data["reason"] == "external_send_disabled"
 
     def test_outbound_safety_status(self):
-        response = client.get("/api/outbound/safety")
-        assert response.status_code == 200
-        data = response.json()
+        data = client.get("/api/outbound/safety").json()
         assert data["external_send_enabled"] is False
         assert data["outbound_mode"] == "draft_only"
         assert data["email_send_enabled"] is False
         assert data["whatsapp_send_enabled"] is False
         assert data["whatsapp_allow_live_send"] is False
         assert data["sms_send_enabled"] is False
+        assert data["persistent_suppression_ready"] is False
+        assert data["persistent_consent_ready"] is False
         assert data["safe_to_send"] is False
 
     def test_outbound_channels(self):
-        response = client.get("/api/outbound/channels")
-        assert response.status_code == 200
-        data = response.json()
-        assert "email" in data
-        assert "whatsapp" in data
-        assert "sms" in data
+        data = client.get("/api/outbound/channels").json()
+        assert set(("email", "whatsapp", "sms")).issubset(data)
         assert data["email"]["enabled"] is False
         assert data["whatsapp"]["enabled"] is False
         assert data["sms"]["enabled"] is False
 
     def test_email_readiness_not_ready(self):
-        response = client.get("/api/outbound/readiness/email")
-        assert response.status_code == 200
-        data = response.json()
-        assert data["ready"] is False
+        assert client.get("/api/outbound/readiness/email").json()["ready"] is False
 
     def test_whatsapp_readiness_not_ready(self):
-        response = client.get("/api/outbound/readiness/whatsapp")
-        assert response.status_code == 200
-        data = response.json()
-        assert data["ready"] is False
+        assert client.get("/api/outbound/readiness/whatsapp").json()["ready"] is False
 
     def test_sms_readiness_not_ready(self):
-        response = client.get("/api/outbound/readiness/sms")
-        assert response.status_code == 200
-        data = response.json()
-        assert data["ready"] is False
+        assert client.get("/api/outbound/readiness/sms").json()["ready"] is False
 
 
 def test_controlled_live_api_blocks_memory_suppression_backend(monkeypatch):
@@ -115,18 +91,10 @@ def test_controlled_live_api_blocks_memory_suppression_backend(monkeypatch):
     monkeypatch.setenv("OUTBOUND_MODE", "controlled_live")
     monkeypatch.setenv("EMAIL_SEND_ENABLED", "true")
 
-    response = client.post(
+    data = client.post(
         "/api/outbound/send/email",
-        json={
-            "channel": "email",
-            "to": "test@example.com",
-            "subject": "Test",
-            "body": "Test body. Unsubscribe anytime.",
-        },
-    )
-
-    assert response.status_code == 200
-    data = response.json()
+        json={"channel": "email", "to": "test@example.com", "subject": "Test", "body": "Test body. Unsubscribe anytime."},
+    ).json()
     assert data["allowed"] is False
     assert data["safe_to_send"] is False
     assert "persistent suppression backend is not verified" in data["reasons"]
@@ -138,7 +106,24 @@ def test_controlled_live_api_blocks_memory_suppression_backend(monkeypatch):
     safety = client.get("/api/outbound/safety").json()
     assert safety["safe_to_send"] is False
     assert safety["persistent_suppression_ready"] is False
+    assert safety["persistent_consent_ready"] is False
     assert safety["reason"] == "persistent_suppression_not_verified"
+
+
+def test_controlled_live_api_blocks_memory_consent_after_suppression_is_durable(monkeypatch):
+    monkeypatch.setenv("EXTERNAL_SEND_ENABLED", "true")
+    monkeypatch.setenv("OUTBOUND_MODE", "controlled_live")
+    monkeypatch.setenv("EMAIL_SEND_ENABLED", "true")
+    monkeypatch.setattr(policy_gate, "persistent_suppression_ready", lambda: True)
+
+    readiness = client.get("/api/outbound/readiness/email").json()
+    assert readiness["ready"] is False
+    assert readiness["reason"] == "persistent_consent_not_verified"
+
+    safety = client.get("/api/outbound/safety").json()
+    assert safety["persistent_suppression_ready"] is True
+    assert safety["persistent_consent_ready"] is False
+    assert safety["reason"] == "persistent_consent_not_verified"
 
 
 def test_active_api_requires_recipient_policy_evidence_even_when_durable(monkeypatch):
@@ -146,19 +131,12 @@ def test_active_api_requires_recipient_policy_evidence_even_when_durable(monkeyp
     monkeypatch.setenv("OUTBOUND_MODE", "controlled_live")
     monkeypatch.setenv("EMAIL_SEND_ENABLED", "true")
     monkeypatch.setattr(policy_gate, "persistent_suppression_ready", lambda: True)
+    monkeypatch.setattr(policy_gate, "persistent_consent_ready", lambda: True)
 
-    response = client.post(
+    data = client.post(
         "/api/outbound/send/email",
-        json={
-            "channel": "email",
-            "to": "test@example.com",
-            "subject": "Test",
-            "body": "Test body. Unsubscribe anytime.",
-        },
-    )
-
-    assert response.status_code == 200
-    data = response.json()
+        json={"channel": "email", "to": "test@example.com", "subject": "Test", "body": "Test body. Unsubscribe anytime."},
+    ).json()
     assert data["allowed"] is False
     assert data["safe_to_send"] is False
     assert data["reason"] == "message.status must be approved"
