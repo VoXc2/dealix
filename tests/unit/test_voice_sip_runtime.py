@@ -6,6 +6,7 @@ from dealix.voice_ai.front_desk import VoiceAIConfig
 from dealix.voice_ai.sip_runtime import (
     VOICE_MODEL,
     VOICE_OUTPUT_VOICE,
+    canonical_positioning_overlay,
     handle_openai_realtime_webhook,
     normalized_reasoning_effort,
     realtime_audio_config,
@@ -71,6 +72,15 @@ def test_context_strategy_is_bounded_and_cache_friendly():
     assert truncation["token_limits"]["post_instructions"] == 16000
 
 
+def test_positioning_overlay_matches_current_brand_authority():
+    overlay = canonical_positioning_overlay()
+    assert "Dealix — AI Business Operating System" in overlay
+    assert "Signals into Action. Execution with Governance. Measurable Outcomes." in overlay
+    assert "From Opportunity to Outcome." in overlay
+    assert "NEVER claim Dealix is the first Saudi company" in overlay
+    assert "Command, Revenue, Proof, Client, Delivery, Support, Finance" in overlay
+
+
 def test_accept_uses_cedar_semantic_vad_and_validated_reasoning():
     event = SimpleNamespace(
         type="realtime.call.incoming",
@@ -90,6 +100,7 @@ def test_accept_uses_cedar_semantic_vad_and_validated_reasoning():
     assert accepted["audio"]["input"]["turn_detection"]["type"] == "semantic_vad"
     assert accepted["reasoning"] == {"effort": "medium"}
     assert accepted["truncation"]["type"] == "retention_ratio"
+    assert "AI Business Operating System" in accepted["instructions"]
 
 
 def test_disabled_runtime_rejects_call_before_model_session():
