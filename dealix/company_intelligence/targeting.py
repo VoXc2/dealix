@@ -20,7 +20,7 @@ from dataclasses import dataclass
 from datetime import UTC, datetime, timedelta
 from enum import StrEnum
 from hashlib import sha256
-from typing import Iterable, Sequence
+from typing import Iterable
 from urllib.parse import urlparse
 import re
 import unicodedata
@@ -78,6 +78,21 @@ class PriorityBand(StrEnum):
     DEFER = "DEFER"
 
 
+class DuplicateMatchKind(StrEnum):
+    """Entity-linkage result. Fuzzy matches are candidates, never auto-merges."""
+
+    EXACT_DOMAIN = "exact_domain"
+    FUZZY_NAME_CANDIDATE = "fuzzy_name_candidate"
+    NO_MATCH = "no_match"
+
+
+def _require_aware_datetime(value: datetime, field_name: str) -> None:
+    """Fail closed on timezone-naive evidence timestamps."""
+
+    if value.tzinfo is None or value.utcoffset() is None:
+        raise ValueError(f"{field_name} must be timezone-aware")
+
+
 @dataclass(frozen=True)
 class EvidenceItem:
     source_id: str
@@ -95,6 +110,11 @@ class EvidenceItem:
             raise ValueError("claim is required")
         if not 0.0 <= self.confidence <= 1.0:
             raise ValueError("confidence must be in [0,1]")
+        _require_aware_datetime(self.observed_at, "observed_at")
+        if self.expires_at is not None:
+            _require_aware_datetime(self.expires_at, "expires_at")
+            if self.expires_at < self.observed_at:
+                raise ValueError("expires_at cannot precede observed_at")
 
     @property
     def stale(self) -> bool:
@@ -327,6 +347,27 @@ def fuzzy_name_similarity(left: str, right: str) -> float:
     return ratio(a, b) / 100.0
 
 
+def classify_duplicate(
+    *,
+    left_domain: str,
+    left_name: str,
+    right_domain: str,
+    right_name: str,
+    fuzzy_threshold: float = 0.92,
+) -> DuplicateMatchKind:
+    """Classify an entity-linkage candidate without granting merge authority."""
+
+    if not 0.0 <= fuzzy_threshold <= 1.0:
+        raise ValueError("fuzzy_threshold must be in [0,1]")
+    left_host = normalize_domain(left_domain)
+    right_host = normalize_domain(right_domain)
+    if left_host and right_host and left_host == right_host:
+        return DuplicateMatchKind.EXACT_DOMAIN
+    if fuzzy_name_similarity(left_name, right_name) >= fuzzy_threshold:
+        return DuplicateMatchKind.FUZZY_NAME_CANDIDATE
+    return DuplicateMatchKind.NO_MATCH
+
+
 def possible_duplicate(
     *,
     left_domain: str,
@@ -335,16 +376,19 @@ def possible_duplicate(
     right_name: str,
     fuzzy_threshold: float = 0.92,
 ) -> bool:
-    """Conservative duplicate candidate detector.
+    """Backward-compatible duplicate candidate check.
 
     Exact canonical domain match is strong evidence. Fuzzy name similarity only
     raises a candidate; callers must hold ambiguous merges for review.
     """
-    left_host = normalize_domain(left_domain)
-    right_host = normalize_domain(right_domain)
-    if left_host and right_host and left_host == right_host:
-        return True
-    return fuzzy_name_similarity(left_name, right_name) >= fuzzy_threshold
+
+    return classify_duplicate(
+        left_domain=left_domain,
+        left_name=left_name,
+        right_domain=right_domain,
+        right_name=right_name,
+        fuzzy_threshold=fuzzy_threshold,
+    ) != DuplicateMatchKind.NO_MATCH
 
 
 @dataclass(frozen=True)
@@ -394,6 +438,8 @@ def rank_dossiers(dossiers: Iterable[TargetDossier]) -> list[tuple[TargetDossier
 
 def evidence_expiry(*, observed_at: datetime, tier: EvidenceTier) -> datetime:
     """Default recency policy; callers may provide stricter source-specific TTLs."""
+
+    _require_aware_datetime(observed_at, "observed_at")
     days = {
         EvidenceTier.DIRECT_INTERACTION: 90,
         EvidenceTier.FIRST_PARTY_OFFICIAL: 45,
