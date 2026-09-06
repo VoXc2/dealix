@@ -43,21 +43,35 @@ INSPECTION_CODES = {
     "module_source_mismatch",
 }
 _SAFE_DETAIL_RE = re.compile(r"^[A-Za-z0-9_.:-]{1,160}$")
+_SAFE_EDGES = {"root", "routes", "original_router", "app"}
 
 
 class InspectionError(ValueError):
     """A verifier-owned, non-secret structural inspection failure."""
 
-    def __init__(self, code: str, detail: str | None = None):
+    def __init__(
+        self,
+        code: str,
+        detail: str | None = None,
+        parent: str | None = None,
+        edge: str | None = None,
+    ):
         if code not in INSPECTION_CODES:
             raise ValueError("invalid_inspection_code")
         self.code = code
         self.detail = detail if detail and _SAFE_DETAIL_RE.fullmatch(detail) else None
+        self.parent = parent if parent and _SAFE_DETAIL_RE.fullmatch(parent) else None
+        self.edge = edge if edge in _SAFE_EDGES else None
         super().__init__(code)
 
 
-def _inspection_error(code: str, detail: str | None = None) -> None:
-    raise InspectionError(code, detail)
+def _inspection_error(
+    code: str,
+    detail: str | None = None,
+    parent: str | None = None,
+    edge: str | None = None,
+) -> None:
+    raise InspectionError(code, detail, parent, edge)
 
 
 def _type_fingerprint(item: object) -> str:
@@ -132,13 +146,20 @@ def _endpoint_is_legacy(endpoint: object) -> bool:
 
 
 def _inspect_routes(roots: Iterable[object]) -> tuple[int, list[str]]:
-    """Traverse eager routers, lazy inclusions and mounted route trees; reject opaque nodes."""
-    pending = list(roots)
+    """Traverse eager/lazy/mounted routes and fail closed on opaque nodes.
+
+    Traversal provenance is retained only as bounded type fingerprints plus an
+    allowlisted edge name. This exists strictly to diagnose fail-closed HOLDs;
+    it must never serialize object state, repr/str values, paths, or exceptions.
+    """
+    pending: list[tuple[object, str | None, str]] = [
+        (root, None, "root") for root in roots
+    ]
     visited: set[int] = set()
     findings: set[str] = set()
     endpoints = 0
     while pending:
-        item = pending.pop()
+        item, parent_type, ingress_edge = pending.pop()
         if id(item) in visited:
             continue
         visited.add(id(item))
@@ -154,20 +175,30 @@ def _inspect_routes(roots: Iterable[object]) -> tuple[int, list[str]]:
             endpoints += 1
             if _endpoint_is_legacy(endpoint):
                 findings.add("legacy_endpoint_module")
-        children: list[object] = []
+
+        parent_for_children = _type_fingerprint(item)
+        children: list[tuple[object, str]] = []
         routes = getattr(item, "routes", None)
         if routes is not None:
-            children.extend(list(routes))
+            children.extend((child, "routes") for child in list(routes))
         original = getattr(item, "original_router", None)
         if original is not None:
-            children.append(original)
+            children.append((original, "original_router"))
         # Mount.app can be the only access path for a mounted ASGI application.
         app = getattr(item, "app", None)
         if (endpoint is None or is_mount) and not children and app is not None and app is not item:
-            children.append(app)
+            children.append((app, "app"))
         if endpoint is None and not children and routes is None:
-            _inspection_error("opaque_route_node", _type_fingerprint(item))
-        pending.extend(children)
+            _inspection_error(
+                "opaque_route_node",
+                _type_fingerprint(item),
+                parent_type,
+                ingress_edge,
+            )
+        pending.extend(
+            (child, parent_for_children, child_edge)
+            for child, child_edge in children
+        )
     if endpoints == 0:
         _inspection_error("empty_route_inventory")
     return endpoints, sorted(findings)
@@ -217,6 +248,10 @@ def main() -> int:
         print("inspection_code=" + exc.code)
         if exc.detail:
             print("inspection_detail=" + exc.detail)
+        if exc.parent:
+            print("inspection_parent=" + exc.parent)
+        if exc.edge:
+            print("inspection_edge=" + exc.edge)
         print("error_type=InspectionError")
         return 4
     except Exception as exc:
