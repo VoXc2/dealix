@@ -1,7 +1,8 @@
-"""Pydantic v2 schemas for the AI Workforce orchestrator.
+"""Pydantic v2 schemas for the AI Workforce specialist-role orchestrator.
 
-Defines the contracts for the 12 specialized agents the founder can
-spin up over the existing v5/v6 layers. No LLM, no external HTTP.
+The historical 12 role handlers are bounded specialist workloads delegated to
+Dealix's five canonical agents. They are not a second permanent agent fleet,
+truth owner, scheduler, or approval authority. No LLM, no external HTTP.
 """
 from __future__ import annotations
 
@@ -30,7 +31,7 @@ class RiskLevel(StrEnum):
 
 
 class AgentSpec(BaseModel):
-    """Static description of one agent's contract + autonomy budget."""
+    """Static description of one bounded specialist role contract."""
 
     model_config = ConfigDict(extra="forbid", use_enum_values=True)
 
@@ -50,7 +51,7 @@ class AgentSpec(BaseModel):
 
 
 class WorkforceGoal(BaseModel):
-    """Founder-supplied goal for a workforce run."""
+    """Founder-supplied goal for a bounded specialist-workload run."""
 
     model_config = ConfigDict(extra="forbid", use_enum_values=True)
 
@@ -69,11 +70,12 @@ class WorkforceGoal(BaseModel):
 
 
 class AgentTask(BaseModel):
-    """One agent's contribution to a workforce run."""
+    """One specialist role's contribution owned by a canonical Dealix agent."""
 
     model_config = ConfigDict(extra="forbid", use_enum_values=True)
 
     agent_id: str
+    canonical_owner: str
     role_ar: str
     role_en: str
     action_summary_ar: str
@@ -87,16 +89,20 @@ class AgentTask(BaseModel):
 
 
 class WorkforceRun(BaseModel):
-    """Aggregated result of one workforce orchestration run."""
+    """Aggregated result of one bounded AI Workforce orchestration run."""
 
     model_config = ConfigDict(extra="forbid", use_enum_values=True)
 
     run_id: str = Field(default_factory=lambda: f"run_{uuid4().hex[:12]}")
     summary_ar: str = ""
     summary_en: str = ""
+    # Backward-compatible historical role ids. These are specialist roles, not
+    # permanent Dealix agents.
     assigned_agents: list[str] = Field(default_factory=list)
+    specialist_roles_used: list[str] = Field(default_factory=list)
+    canonical_agents_used: list[str] = Field(default_factory=list)
     task_plan: list[AgentTask] = Field(default_factory=list)
-    recommended_service: str = "growth_starter"
+    recommended_service: str = "free_mini_diagnostic"
     approval_requests: list[dict[str, Any]] = Field(default_factory=list)
     blocked_actions: list[dict[str, Any]] = Field(default_factory=list)
     evidence: list[str] = Field(default_factory=list)
