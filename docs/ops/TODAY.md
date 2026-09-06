@@ -2,206 +2,160 @@
 
 **Current operating page for a governed founder/operator day.**
 
-This page prepares internal work and approval packets. It does **not** authorize external sending, publication, payment, secret rotation, Railway/DNS/production changes, or customer-data expansion.
+This page prepares internal work and approval packets. It does **not** authorize external sending, publication, payment, merge, secret rotation, Railway/DNS/production changes, or customer-data expansion.
 
 Current product authority:
 
-**Dealix — Saudi-first AI Business Operating System**
+**Dealix — AI Business Operating System**
 
-Current first-launch path:
+Current North Star:
+
+**`CASH_READY_AUTONOMOUS_DEALIX_COMPANY`**
+
+Optimize:
+
+**`Verified Economic Movement / Founder Minute / Cost / Risk`**
+
+Current market wedge:
+
+**Revenue + Proof + Command**
+
+Core operating path:
 
 ```text
-Free Mini Diagnostic
-→ qualified discovery
-→ customer-specific quote after approval
-→ 30-day Revenue Command Pilot
-→ weekly + final Proof
-→ STOP / EXPAND / REDESIGN
+Signal
+-> Evidence
+-> Decision
+-> Approval
+-> Action
+-> Outcome
+-> Proof
+-> Learning
 ```
 
+Commercial path:
+
+```text
+Real Interaction
+-> Qualified Problem
+-> Execution Diagnostic / Free Mini Diagnostic as current authority allows
+-> Qualified Discovery
+-> Customer-Specific Quote
+-> Verified Payment
+-> Governed Delivery
+-> Customer-Validated Proof
+-> Expansion / Referral
+-> Repeatability
+```
+
+Saudi Arabia is a launch/operating context, not a `first Saudi` or market-superiority claim.
+
 ---
 
-## 60-Minute Morning Block
+## 60-Minute Founder Block
 
-| Minute | Internal task | Evidence / output | Check |
-|---|---|---|---|
-| 0–10 | Read current repository/production trust state | exact main/PR SHA + failed/green gates | ☐ |
-| 10–20 | Review inbound/warm/consented commercial context only | qualified / needs-evidence / not-qualified list | ☐ |
-| 20–30 | Review current first-launch gate and one-product authority | `COMMERCIAL_IDENTITY.md` + `dealix/config/first_launch_offer_gate.yaml` | ☐ |
-| 30–40 | Prepare the next best internal commercial draft | discovery brief / proposal draft / Pilot scope / negotiation give-get | ☐ |
-| 40–50 | Review Proof and blockers | baseline/source gaps, privacy/tenant/payment/production gates | ☐ |
-| 50–60 | Build approval packet for any sensitive next action | exact action + evidence + rollback/stop condition | ☐ |
+| Minute | Internal task | Evidence / output |
+|---|---|---|
+| 0–10 | Production Trust | exact main/release identity + true blockers |
+| 10–20 | Revenue truth | inbound/qualified movement + payment/proof truth |
+| 20–30 | Top opportunity | one evidence-backed account/problem/next action |
+| 30–40 | Commercial preparation | diagnostic/discovery/quote/negotiation draft |
+| 40–50 | Proof + risks | baseline gaps, delivery evidence, privacy/production blockers |
+| 50–60 | Approval packet | exact action + evidence + rollback/stop condition |
 
-No step above implies that a message was sent, a post was published, a payment was collected, or production changed.
+No row above implies a live external effect.
 
----
+## Qualification
 
-## Commercial Qualification
+Count a company as qualified only when evidence supports the current canonical criteria, including:
 
-Count a company as qualified only when evidence supports:
-
-- one painful, specific problem;
+- one painful specific problem;
 - accountable decision owner;
-- one bounded workflow;
-- minimum/approved data path;
+- bounded workflow;
+- lawful/approved data path;
 - baseline or explicit missing-evidence path;
 - approval willingness;
 - budget/timing discussion;
-- no guaranteed-outcome, prohibited-data, uncontrolled-automation, or compliance-bypass request.
+- no prohibited guarantee, data, compliance-bypass or uncontrolled-automation request.
 
-Status must be one of:
+Interest, a meeting, public contact or research signal alone is not qualification.
 
-```text
-QUALIFIED
-NEEDS_EVIDENCE
-NOT_QUALIFIED
-```
+## Truth Firewall
 
-Interest, a meeting, a public contact, or a diagnostic alone is not qualification.
+- research != relationship
+- public contact != consent
+- draft != sent
+- quote != invoice
+- invoice != payment
+- activity != delivery
+- delivery != customer value
+- synthetic/demo != customer proof
+- PR != Production
+- historical PASS != current exact-head PASS
+- HTTP 200 != canonical release identity
 
----
-
-## If a Real Customer Wants to Proceed
+## If a real customer wants to proceed
 
 Prepare internally, in this order:
 
-1. Verify qualified discovery evidence.
-2. Lock **one workflow** and accountable owner.
+1. Verify real interaction and qualification evidence.
+2. Lock one workflow and accountable owner.
 3. Record baseline/source or missing-evidence state.
 4. Record approved data boundary.
 5. Record approval path and acceptance criteria.
-6. Prepare a **customer-specific quote draft**; no public/fixed price is authority.
-7. Review margin, capacity, privacy/tenant/production blockers, and finance/payment requirements.
-8. Prepare the exact external-send approval packet if sharing the quote/proposal is appropriate.
-9. Prepare payment/invoicing instructions only after the accountable finance/tax/issuer path is approved.
-10. Start the 30-day Pilot only when its explicit start conditions are evidenced.
-
-A quote, invoice intent, payment-link draft, verbal yes, or CRM stage is **not Revenue**.
-
----
-
-## Payment / Revenue Truth
-
-Keep states separate:
-
-```text
-customer_acceptance
-invoice_or_payment_request_issued
-payment_received
-reconciled_same_company
-revenue_recognized_for_reporting
-```
-
-Do not store or paste bank credentials, live payment-provider secrets, or private payment destinations in this page or public repository files.
-
-If a payment already exists, verify it through the authorized evidence source before updating any revenue metric. Do not create or send a payment request from this page.
-
----
+6. Prepare a customer-specific quote draft; no public/fixed price is authority.
+7. Review margin, capacity, privacy/tenant/production blockers and finance/payment requirements.
+8. Prepare the exact external-send approval packet if sharing is allowed by current product/channel authority.
+9. Prepare invoicing/payment instructions only after the accountable finance/tax/issuer path is approved.
+10. Start paid delivery only when its explicit start conditions and payment evidence are satisfied.
 
 ## Production / Railway / DNS
 
 Read-only health and evidence checks are allowed.
 
-Any of the following require separate action-specific approval before execution:
+Any live deploy, provider-config change, DNS/custom-domain mutation, secret change, production DB migration, branch-protection mutation, public publish or merge requires the applicable exact action-specific authority.
 
-- setting or rotating live secrets;
-- changing Railway variables;
-- deploying/promoting production;
-- changing GitHub Pages ownership;
-- changing DNS/custom domains;
-- running a live charge/test charge with financial impact;
-- database mutation/migration in production.
+Production truth must come from current release identity + health + migration/backend + public front-door evidence, not a stale document.
 
-Current production decision must come from verifiable checks, not a stale instruction embedded in this document.
-
----
-
-## External Communication / Publishing
-
-Current first-launch product gate is **no customer-facing auto-send**.
+## External communication
 
 Allowed internally:
 
-- draft a reply to a real inbound message;
-- draft a warm/consented introduction where the relationship is evidenced;
-- draft a discovery invitation;
-- draft a customer-specific proposal;
-- draft a founder social post;
-- draft a follow-up after a completed meeting.
+- research and qualification;
+- contextual drafts;
+- warm/known-contact preparation;
+- discovery/proposal/negotiation preparation;
+- founder-content drafts;
+- permissioned follow-up preparation.
 
-Blocked until the exact action is approved and all applicable gates pass:
+Do not infer live authority from a draft. No cold WhatsApp blast, mass LinkedIn automation, prohibited scraping, fake proof or unsupported compliance/market-first claim.
 
-- sending the message;
-- publishing the post;
-- contacting anonymous/public scraped lists;
-- cold WhatsApp;
-- mass LinkedIn automation;
-- publishing customer name/logo/testimonial/case study.
+## End-of-day close
 
----
-
-## Proof Review
-
-For every Pilot / internal dogfood proof:
-
-- Baseline must have a source or be explicitly missing.
-- Activity is not Delivery.
-- Delivery is not Customer Value.
-- Invoice/payment intent is not Payment.
-- Payment is not automatically Revenue/Customer Value.
-- Customer Value needs source + method + attribution appropriate to the claim.
-- Publication needs separate permission.
-- Synthetic/demo/internal/stale/unsynced evidence never becomes public customer proof.
-
-Decision at the end:
-
-```text
-STOP
-EXPAND
-REDESIGN
-```
-
-No automatic upsell or retainer follows from a green metric.
-
----
-
-## End-of-Day Close
-
-Record only verified values:
+Record verified values only:
 
 ```text
 Date: YYYY-MM-DD
-Qualified companies: __
-Needs evidence: __
-Discovery drafts prepared: __
-Customer-specific quote drafts prepared: __
-External sends actually approved and executed: __
-Pilots actually started: __
+Production Trust: __
+Qualified real interactions: __
+Qualified problems: __
+Customer-specific quotes actually authorized/sent: __
 Payments actually received/reconciled: __
-Proof packs verified: __
-Open production/privacy/tenant/payment blockers: __
-Tomorrow's single highest-impact internal action: ____________
+Deliveries actually accepted: __
+Customer-validated proof: __
+Open MONEY / DECISIONS / RISKS / APPROVALS: __
+Tomorrow's single highest-value action: __
 ```
 
-If a value is unknown, write `UNKNOWN`; do not backfill it with synthetic or assumed numbers.
+If unknown, write `UNKNOWN_NOT_EVIDENCE_BACKED`.
 
----
+## What not to do today
 
-## What NOT to Do Today
+- Do not build another CRM, Company Machine, Brain, Graph, Scheduler or permanent Agent Fleet.
+- Do not optimize message volume or lead count as the North Star.
+- Do not treat historical brand/pricing/production receipts as current authority.
+- Do not send/publish/charge/merge/deploy merely because a draft or test is green.
 
-- Do not rebuild systems that already exist.
-- Do not create another pricing ladder or separate product.
-- Do not send/publish externally merely because a draft exists.
-- Do not turn public contact data into consent.
-- Do not claim customer/revenue/proof/compliance outcomes without evidence.
-- Do not activate live payment or production to unblock a draft.
-- Do not change DNS/Pages/Railway/secrets without action-specific production approval.
-- Do not broaden customer data until the relevant privacy/tenant/security gates are closed.
+## One-sentence mission
 
----
-
-## One-Sentence Mission
-
-**Close the highest-value verified blocker to the first real, bounded, source-backed Revenue Command Pilot — without faking demand, proof, payment, or production readiness.**
-
-Current authority beats historical sales kits, old price ladders, old prompts, or old TODAY instructions if they conflict.
+**Close the highest-value verified blocker between Dealix and Production Trust, Real Interaction, Verified Cash or Customer Proof — without inventing authority or evidence.**
