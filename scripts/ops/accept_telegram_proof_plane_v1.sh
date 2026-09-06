@@ -79,7 +79,8 @@ sha256sum \
   "$PROOF_ROOT/pytest.log" \
   "$PROOF_ROOT/builder.log" \
   > "$PROOF_ROOT/sha256sums.txt"
-chmod 0600 "$PROOF_ROOT"/* 2>/dev/null || true
+find "$PROOF_ROOT" -type d -exec chmod 0700 {} +
+find "$PROOF_ROOT" -type f -exec chmod 0600 {} +
 
 cat > "$PROOF_ROOT/receipt.env" <<EOF
 DEALIX_TELEGRAM_PROOF_ACCEPTANCE=PASS
