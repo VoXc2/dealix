@@ -13,19 +13,9 @@ def _client() -> TestClient:
     return TestClient(app)
 
 
-def test_voice_readiness_is_non_secret(monkeypatch):
-    monkeypatch.setenv("OPENAI_API_KEY", "secret-api-key")
-    monkeypatch.setenv("OPENAI_WEBHOOK_SECRET", "secret-webhook-key")
-    monkeypatch.setenv("VOICE_AI_ENABLED", "false")
-
+def test_public_webhook_surface_has_no_readiness_endpoint():
     response = _client().get("/api/v1/webhooks/openai/voice-readiness")
-    assert response.status_code == 200
-    data = response.json()
-    assert data["openai_api_key_configured"] is True
-    assert data["webhook_secret_configured"] is True
-    assert data["enabled"] is False
-    assert "secret-api-key" not in response.text
-    assert "secret-webhook-key" not in response.text
+    assert response.status_code == 404
 
 
 def test_realtime_webhook_requires_both_secrets(monkeypatch):
