@@ -21,6 +21,7 @@ _ROUTER_MODULES = (
     "api.routers.ops_growth",
     "api.routers.ops_customer_success",
     "api.routers.ops_health",
+    "api.routers.ops_voice_ai",
 )
 
 
