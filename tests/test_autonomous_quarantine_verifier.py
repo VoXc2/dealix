@@ -93,6 +93,7 @@ class TestQuarantineVerifier(unittest.TestCase):
         with self.assertRaises(q.InspectionError) as caught:
             q._inspect_routes([Mount()])
         self.assertEqual(caught.exception.code, "opaque_route_node")
+        self.assertEqual(caught.exception.detail, "builtins.object")
 
     def test_route_cycle_terminates_and_reused_nodes_deduplicate(self):
         leaf = route()
@@ -123,6 +124,11 @@ class TestQuarantineVerifier(unittest.TestCase):
         with self.assertRaises(q.InspectionError) as caught:
             q._inspect_routes([route(), object()])
         self.assertEqual(caught.exception.code, "opaque_route_node")
+        self.assertEqual(caught.exception.detail, "builtins.object")
+
+    def test_unsafe_inspection_detail_is_suppressed(self):
+        err = q.InspectionError("opaque_route_node", "unsafe detail with spaces")
+        self.assertIsNone(err.detail)
 
     def test_wrong_source_module_rejected(self):
         with patch.object(q.importlib, "import_module", return_value=Node(__file__="/other.py")):
@@ -171,11 +177,12 @@ class TestQuarantineVerifier(unittest.TestCase):
         self.assertEqual(code, 3)
         self.assertIn("legacy_endpoint_module", output)
 
-    def test_structural_inspection_hold_exposes_only_safe_stage_and_code(self):
+    def test_structural_inspection_hold_exposes_only_safe_stage_code_and_type(self):
         code, output = self._main_fixture("# quarantine\n", [object()])
         self.assertEqual(code, 4)
         self.assertIn("inspection_stage=application_routes", output)
         self.assertIn("inspection_code=opaque_route_node", output)
+        self.assertIn("inspection_detail=builtins.object", output)
         self.assertIn("error_type=InspectionError", output)
 
     def test_incomplete_import_holds_without_leaking_exception_content(self):
