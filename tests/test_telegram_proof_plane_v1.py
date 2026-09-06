@@ -4,6 +4,8 @@ import importlib.util
 import json
 from pathlib import Path
 
+import pytest
+
 ROOT = Path(__file__).resolve().parents[1]
 CONTRACT = ROOT / "data/ops/telegram_proof_plane_v1.json"
 BUILDER = ROOT / "scripts/ops/build_telegram_founder_proof.py"
@@ -54,6 +56,30 @@ def test_canonical_bytes_are_order_independent_for_objects():
     a = {"b": 2, "a": {"z": False, "x": [1, "y"]}}
     b = {"a": {"x": [1, "y"], "z": False}, "b": 2}
     assert builder.canonical_bytes(a) == builder.canonical_bytes(b)
+
+
+def test_previous_envelope_integrity_is_recomputed(tmp_path: Path):
+    builder = _load_builder()
+    out = tmp_path / "proof"
+    out.mkdir()
+    core = {
+        "specversion": "1.0",
+        "id": "proof_0123456789abcdef",
+        "source": "dealix://test",
+        "type": "com.dealix.founder.proof.v1",
+        "subject": "test",
+    }
+    digest = builder.sha256_hex(builder.canonical_bytes(core))
+    payload = {**core, "envelope_sha256": digest}
+    previous = out / "proof_0123456789abcdef.json"
+    previous.write_text(json.dumps(payload), encoding="utf-8")
+    (out / "LATEST").write_text(previous.name + "\n", encoding="utf-8")
+    assert builder.read_previous_digest(out) == digest
+
+    payload["subject"] = "tampered"
+    previous.write_text(json.dumps(payload), encoding="utf-8")
+    with pytest.raises(builder.ProofError, match="integrity"):
+        builder.read_previous_digest(out)
 
 
 def test_contract_keeps_l5_false_by_default():
