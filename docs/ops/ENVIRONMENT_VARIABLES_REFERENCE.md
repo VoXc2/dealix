@@ -21,6 +21,22 @@
 | DEALIX_ORCHESTRATOR_DATABASE_URL | DATABASE_URL | No | Optional dedicated PostgreSQL URL for workflow/task state. Empty reuses `DATABASE_URL`. |
 | DEALIX_ORCHESTRATOR_STATE_PATH | (empty) | JSON only | Prefix for atomic JSON task/run state in single-node non-production deployments. Creates `.tasks.json` and `.runs.json`. |
 
+## Dealix Voice Front Desk — OpenAI Realtime 2.1
+| Variable | Default | Required | Description |
+|----------|---------|----------|-------------|
+| OPENAI_API_KEY | (unset) | Voice live | Secret project API key. Never commit or paste into logs/chat. |
+| OPENAI_WEBHOOK_SECRET | (unset) | Voice live | Secret used to verify OpenAI webhook signatures. |
+| VOICE_AI_ENABLED | false | No | Master inbound Voice AI switch. Keep false until SIP + exact-release acceptance pass. |
+| VOICE_AI_MAX_OUTPUT_TOKENS | 900 | No | Per-response ceiling, clamped to 128–4096. |
+| VOICE_AI_REASONING_EFFORT | medium | No | Realtime reasoning effort. |
+| VOICE_AI_TRACING_ENABLED | true | No | Enable OpenAI Realtime trace metadata; does not enable raw recording. |
+| VOICE_RECORDING_ENABLED | false | No | Governance flag. Current adapter does not persist raw audio/transcripts. |
+| VOICE_OUTBOUND_ENABLED | false | No | Outbound voice remains fail-closed by default. |
+| VOICE_AI_HANDOFF_TARGET_URI | (empty) | No | Optional human transfer target (`tel:` or `sip:`) after verified configuration. |
+| CALENDLY_URL | (empty) | No | Canonical discovery/diagnostic booking link exposed by the voice booking tool. |
+
+The live Voice AI model is intentionally locked in code to `gpt-realtime-2.1`; an environment variable cannot silently downgrade it to a mini or unrelated model.
+
 ## Outbound Safety (all disabled by default)
 | Variable | Default | Description |
 |----------|---------|-------------|
@@ -35,9 +51,12 @@
 - DATABASE_URL is set by Railway Postgres plugin: `${{Postgres.DATABASE_URL}}`
 - REDIS_URL is set by Railway Redis plugin: `${{Redis.REDIS_URL}}`
 - All outbound safety flags must remain false unless explicitly approved
+- Store `OPENAI_API_KEY` and `OPENAI_WEBHOOK_SECRET` only as Railway secrets/variables, never in repository files
+- Deploy Voice Front Desk code with `VOICE_AI_ENABLED=false` first; enable only after verified webhook + SIP canary
 
 ## Safety Rules
 - Never commit real secrets to the repo
 - Never set EXTERNAL_SEND_ENABLED=true in .env.example
 - Never set OUTBOUND_MODE to anything other than draft_only in examples
+- Never enable VOICE_OUTBOUND_ENABLED in examples
 - Generate secrets with: `python -c "import secrets; print(secrets.token_hex(32))"`
