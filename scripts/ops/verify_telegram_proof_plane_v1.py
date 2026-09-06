@@ -9,6 +9,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 CONTRACT = ROOT / "data/ops/telegram_proof_plane_v1.json"
 BUILDER = ROOT / "scripts/ops/build_telegram_founder_proof.py"
+CANARY = ROOT / "scripts/ops/run_telegram_founder_proof_canary_v1.sh"
 
 
 class VerificationError(RuntimeError):
@@ -23,6 +24,7 @@ def require(condition: bool, message: str) -> None:
 def main() -> int:
     require(CONTRACT.is_file(), "missing Telegram proof-plane contract")
     require(BUILDER.is_file(), "missing Telegram proof builder")
+    require(CANARY.is_file(), "missing Telegram proof canary")
 
     payload = json.loads(CONTRACT.read_text(encoding="utf-8"))
     require(payload.get("schema") == "dealix.telegram-proof-plane.v1", "schema drift")
@@ -76,7 +78,9 @@ def main() -> int:
     ):
         require(security.get(key) is False, f"security guard weakened: {key}")
 
+    contract_text = CONTRACT.read_text(encoding="utf-8")
     builder = BUILDER.read_text(encoding="utf-8")
+    canary = CANARY.read_text(encoding="utf-8")
     required_markers = (
         "TELEGRAM_SENT=false",
         "L5_EXECUTED=false",
@@ -89,9 +93,9 @@ def main() -> int:
         "/opt/dealix/control/proof/telegram-founder",
     )
     for marker in required_markers:
-        require(marker in builder or marker in CONTRACT.read_text(encoding="utf-8"), f"builder/contract marker missing: {marker}")
+        require(marker in builder or marker in contract_text, f"builder/contract marker missing: {marker}")
 
-    forbidden_markers = (
+    forbidden_builder_markers = (
         "api.telegram.org",
         "sendMessage",
         "requests.post",
@@ -100,8 +104,34 @@ def main() -> int:
         "railway up",
         "gh pr merge",
     )
-    for marker in forbidden_markers:
+    for marker in forbidden_builder_markers:
         require(marker not in builder, f"builder contains forbidden side effect: {marker}")
+
+    # The canary is the only network-send surface in this V1 and must be
+    # explicitly armed, founder-only, silent, proof-gated, and authority-free.
+    canary_markers = (
+        'DEALIX_FOUNDER_TELEGRAM_CANARY:-0',
+        'EXPLICIT_CANARY_FLAG_REQUIRED',
+        'accept_telegram_proof_plane_v1.sh',
+        'accept_founder_command_authority_v1.sh',
+        'commands',
+        'ownerAllowFrom',
+        '--channel telegram',
+        '--target "$OWNER_ID"',
+        '--silent',
+        'TELEGRAM_MESSAGE_IS_EXECUTION_PROOF=false',
+        'APPROVAL_BUTTON_PRESENT=false',
+        'L5_EXECUTED=false',
+        'CUSTOMER_SEND=false',
+        'PUBLIC_PUBLISH=false',
+        'PAYMENT_EXECUTION=false',
+        'PRODUCTION_MUTATION=false',
+        'DNS_DB_SECRET_MUTATION=false',
+    )
+    for marker in canary_markers:
+        require(marker in canary, f"canary guard missing: {marker}")
+    for marker in ('api.telegram.org', 'botToken', 'gh pr merge', 'railway up'):
+        require(marker not in canary, f"canary contains forbidden direct authority: {marker}")
 
     truth = payload.get("truth", {})
     for key in (
