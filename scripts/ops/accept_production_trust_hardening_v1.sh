@@ -35,7 +35,6 @@ PY="${DEALIX_PYTHON:-$CANONICAL_REPO/.venv/bin/python}"
 EXPECTED_SHA="${DEALIX_EXPECTED_SHA:-}"
 PROOF="${DEALIX_PROOF_DIR:-/tmp/dealix-production-trust-$(date +%Y%m%d-%H%M%S)}"
 mkdir -p "$PROOF"
-
 exec > >(tee -a "$PROOF/acceptance.log") 2>&1
 
 cd "$ROOT"
@@ -96,10 +95,11 @@ run "focused pytest" \
   "$PY" -m pytest -q \
     tests/test_ops_production_trust_hardening.py \
     tests/test_postgres_suppression_backend.py \
-    tests/test_controlled_live_outbound_policy.py
+    tests/test_controlled_live_outbound_policy.py \
+    tests/test_api_outbound_blocked_by_default.py
 
-# Default state must remain fail-closed.  A durable Postgres proof is a separate
-# production-like acceptance and is deliberately not auto-enabled here.
+# Default state must remain fail-closed. Durable Postgres suppression is a
+# separate proof and durable consent is intentionally still pending (#1533).
 unset DEALIX_SUPPRESSION_BACKEND || true
 unset DEALIX_SUPPRESSION_ALLOW_REMOVE || true
 
@@ -119,6 +119,10 @@ if ! grep -q 'CONTROLLED_LIVE_READINESS=NOT_READY' "$PROOF/controlled-live-defau
   echo "CONTROLLED_LIVE_DEFAULT=FAIL reason=expected_not_ready_marker_missing"
   exit 13
 fi
+if ! grep -q 'consent backend is not process memory' "$PROOF/controlled-live-default.log"; then
+  echo "CONTROLLED_LIVE_DEFAULT=FAIL reason=durable_consent_gate_missing"
+  exit 14
+fi
 echo "CONTROLLED_LIVE_DEFAULT=PASS_FAIL_CLOSED"
 
 {
@@ -127,6 +131,7 @@ echo "CONTROLLED_LIVE_DEFAULT=PASS_FAIL_CLOSED"
   echo "expected_sha=${EXPECTED_SHA:-UNSET}"
   echo "source_acceptance=PASS"
   echo "controlled_live_default=FAIL_CLOSED"
+  echo "durable_consent=HOLD"
   echo "merge=false"
   echo "deploy=false"
   echo "dns_mutation=false"
@@ -139,4 +144,5 @@ echo "CONTROLLED_LIVE_DEFAULT=PASS_FAIL_CLOSED"
 
 sha256sum "$PROOF/receipt.env"
 echo "PRODUCTION_TRUST_HARDENING_SOURCE_ACCEPTANCE=PASS"
-echo "NEXT=ISOLATED_POSTGRES_SUPPRESSION_PROOF_THEN_REVIEW"
+echo "CONTROLLED_LIVE=HOLD_DURABLE_CONSENT"
+echo "NEXT=POSTGRES_SUPPRESSION_PROOF_PLUS_ISSUE_1533_DURABLE_CONSENT"
