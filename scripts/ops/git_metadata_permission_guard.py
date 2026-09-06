@@ -6,13 +6,14 @@ remote refs created when operational scripts invoke Git as root.
 
 Safety properties:
 - worktree files are never traversed or changed;
-- only .git/objects, .git/refs, .git/logs and .git/packed-refs are in scope;
+- only the common Git directory's objects/refs/logs/packed-refs are in scope;
+- linked worktrees cannot produce a false PASS by hiding the shared object DB;
 - ownership is never recursively reassigned;
 - --repair changes group/mode only for root-owned metadata that is not usable by
   the configured Dealix group;
 - secret values are never read or printed.
 
-Default mode is read-only.  --repair requires uid 0.
+Default mode is read-only. --repair requires uid 0.
 """
 
 from __future__ import annotations
@@ -20,7 +21,6 @@ from __future__ import annotations
 import argparse
 import grp
 import os
-import pwd
 import stat
 import subprocess
 from dataclasses import dataclass
@@ -40,14 +40,19 @@ class Finding:
 
 
 def git_dir(repo: Path) -> Path:
+    """Return the common Git directory, including from a linked worktree."""
+
     proc = subprocess.run(
-        ["git", "-C", str(repo), "rev-parse", "--absolute-git-dir"],
+        ["git", "-C", str(repo), "rev-parse", "--git-common-dir"],
         check=True,
         text=True,
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
     )
-    return Path(proc.stdout.strip()).resolve()
+    raw = Path(proc.stdout.strip())
+    if not raw.is_absolute():
+        raw = repo / raw
+    return raw.resolve()
 
 
 def shared_repository(repo: Path) -> str:
@@ -134,7 +139,6 @@ def main() -> int:
     args = parser.parse_args()
 
     repo = Path(args.repo).resolve()
-    target_uid = pwd.getpwnam(args.user).pw_uid
     target_gid = grp.getgrnam(args.group).gr_gid
     gdir = git_dir(repo)
 
@@ -165,7 +169,7 @@ def main() -> int:
             apply_repair(item, target_gid)
         print(f"GIT_METADATA_REPAIRED={len(findings)}")
 
-        # Validate that the target account can traverse objects and resolve HEAD.
+        # Validate that the canonical target account can resolve the repository.
         proc = subprocess.run(
             [
                 "sudo", "-u", args.user, "-H", "git", "-C", str(repo),
