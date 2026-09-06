@@ -35,6 +35,32 @@ def test_secret_scanner_ignores_detector_source_but_flags_literal(tmp_path):
     assert findings == [(1, "openai_project_key")]
 
 
+def test_secret_fixture_allowlist_is_exact_path_detector_and_digest(tmp_path):
+    scanner = load_module("dealix_secret_scan_fixture", "scripts/ops/verify_secret_literals.py")
+
+    synthetic = "AKIA" + "0123456789ABCDEF"
+    assert scanner.is_allowlisted_fixture(
+        "tests/test_v5_layers_pt4.py",
+        "aws_access_key",
+        synthetic,
+    ) is True
+
+    # Same value outside the one exact file remains a finding.
+    candidate = tmp_path / "candidate.py"
+    candidate.write_text(f"AWS_ACCESS_KEY={synthetic}\n", encoding="utf-8")
+    assert scanner.scan_file(candidate, relative_path="tests/another_test.py") == [
+        (1, "aws_access_key")
+    ]
+
+    # Any value drift in the allowlisted file also remains a finding.
+    changed = "AKIA" + "1123456789ABCDEF"
+    candidate.write_text(f"AWS_ACCESS_KEY={changed}\n", encoding="utf-8")
+    assert scanner.scan_file(
+        candidate,
+        relative_path="tests/test_v5_layers_pt4.py",
+    ) == [(1, "aws_access_key")]
+
+
 def test_git_metadata_scope_never_walks_worktree(tmp_path):
     guard = load_module("dealix_git_guard", "scripts/ops/git_metadata_permission_guard.py")
 
