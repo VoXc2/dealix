@@ -1,166 +1,224 @@
-# Dealix Visual Identity System
-## Complete Brand Guidelines v1.0
+# Dealix Visual Identity System — V2
+
+Status: **FOUNDER APPROVED / REPO CANDIDATE**  
+Date: 2026-09-06
 
 ---
 
-## 1. Brand Essence
+## 1. Brand essence
 
-**Dealix** is a Saudi-first B2B AI Revenue / Growth / Trust Operating System. Our identity communicates:
-- **Trust & Authority**: Deep emerald — the color of Saudi heritage and growth
-- **Premium Innovation**: Gold accents — excellence and forward momentum
-- **Intelligence**: Clean geometry — precision and AI sophistication
-- **Saudi Roots**: Subtle Islamic geometric patterns reimagined for modern business
+Dealix is an **AI Business Operating System** focused on turning business signals into governed execution and measurable outcomes.
 
----
+The visual system must communicate:
 
-## 2. Color System
+- **Trust** — executive-grade, durable, calm.
+- **Intelligence** — structured decisions rather than AI spectacle.
+- **Execution** — movement from signal to action.
+- **Governance** — controlled authority boundaries and evidence.
+- **Proof** — outcomes that can be verified rather than claimed.
 
-### Primary Palette
-| Token | Hex | Usage |
-|-------|-----|-------|
-| **Deep Emerald** | `#1B5E3B` | Primary brand color, headers, CTAs, key elements |
-| **Gold** | `#C9A94C` | Accents, highlights, premium indicators, decorative lines |
-| **Dark Charcoal** | `#1A1A1A` | Dark backgrounds, hero sections, premium surfaces |
-| **Warm White** | `#F5F3EF` | Light backgrounds, clean sections |
+Commercial wedge: **Revenue + Proof + Command**.
 
-### Secondary Palette
-| Token | Hex | Usage |
-|-------|-----|-------|
-| **Forest Green** | `#0D2818` | Dark variant for depth, gradients |
-| **Light Gold** | `#E8D5A3` | Hover states, subtle highlights |
-| **Cool Gray** | `#6B7280` | Body text, secondary info |
-| **Soft Cream** | `#FAF8F5` | Card backgrounds, subtle fills |
+Core promise:
 
-### Gradient Combinations
-- **Hero Gradient**: `linear-gradient(135deg, #0D2818 0%, #1A1A1A 50%, #1B5E3B 100%)`
-- **Gold Accent**: `linear-gradient(90deg, #C9A94C, #E8D5A3)`
-- **Emerald Depth**: `linear-gradient(180deg, #1B5E3B, #0D2818)`
+> Signals into Action. Execution with Governance. Measurable Outcomes.
+
+Short promise:
+
+> From Opportunity to Outcome.
+
+Saudi business context is important to Dealix. It should appear through relevant content, market understanding, bilingual execution and operational credibility — not through unsupported "first Saudi" or market-first claims.
 
 ---
 
-## 3. Typography
+## 2. Logo concept
 
-### Primary Font: Liter
-- **Usage**: All headings, UI elements, navigation
-- **Weights**: 400 (Regular), 700 (Bold)
-- **Treatment**: Clean, modern, low contrast
-- **Fallback**: system-ui, -apple-system, sans-serif
+### D + Forward Signal
 
-### Secondary Font: QuattrocentoSans
-- **Usage**: Body text, descriptions, long-form content
-- **Weights**: 400 (Regular), 700 (Bold)
-- **Treatment**: Classic elegance, highly readable
-- **Fallback**: Georgia, serif
+The V2 mark combines:
 
-### Type Scale
-| Level | Size | Weight | Usage |
-|-------|------|--------|-------|
-| Display | 72px | 700 | Hero headlines |
-| H1 | 48px | 700 | Page titles |
-| H2 | 36px | 700 | Section headers |
-| H3 | 24px | 700 | Subsection titles |
-| Body | 18px | 400 | Paragraphs |
-| Caption | 14px | 400 | Labels, metadata |
-| Small | 12px | 700 | Badges, tags (uppercase) |
+- a geometric **D** for Dealix / deal / decision;
+- a cyan **forward signal** for `Signal -> Decision -> Action`;
+- governed negative space representing approval boundaries and controlled execution;
+- an open forward direction representing opportunity converted into outcome.
 
----
+The symbol deliberately avoids generic robot, brain, neural-network, circuit-board and sparkle clichés.
 
-## 4. Logo System
+Canonical files:
 
-### Primary Logo
-- **File**: `dealix-logo-primary.png`
-- **Colors**: Deep Emerald + Gold on transparent
-- **Usage**: Default for all applications
+- `apps/web/public/dealix-logo.svg`
+- `apps/web/public/dealix-mark.svg`
+- `apps/web/public/dealix-og.svg`
+- `brand/logo.svg`
+- `brand/logo-white.svg`
+- `brand/logo-icon.svg`
 
-### Logo Clear Space
-- Minimum clear space: 1x logo height on all sides
-- Minimum size: 120px width for digital
-
-### Logo Variants
-| Variant | Background | Usage |
-|---------|-----------|-------|
-| Primary (dark) | Light backgrounds | Default |
-| White version | Dark backgrounds | Hero sections, dark themes |
-| Icon only | Favicons, app icons | Square containers |
+SVG is the design authority. PNG/JPG exports are derived channel assets only.
 
 ---
 
-## 5. Visual Elements
+## 3. Color system
 
-### Geometric Patterns
-- Islamic geometric motifs reimagined in modern corporate style
-- Usage: Background textures, presentation dividers, decorative elements
-- Colors: Monochrome (Emerald on Emerald) or Gold on Dark
+| Token | Hex | Primary meaning |
+|---|---|---|
+| Ink Navy | `#0F172A` | trust, stability, executive depth |
+| Deep Teal | `#164E63` | intelligence, systems, operating control |
+| Signal Cyan | `#22D3EE` | action, clarity, motion, progress |
+| Cloud | `#F8FAFC` | simplicity, balance, proof readability |
+| Proof Gold | `#D4AF37` | verified impact, premium confidence |
 
-### Icon Style
-- Outline icons preferred (2px stroke)
-- Consistent corner radius (2px)
-- Color: Emerald primary, Gold for active/featured states
+### Color hierarchy
 
-### Photography Style
-- Professional corporate photography
-- Warm golden-hour lighting preferred
-- Saudi business context (Riyadh skyline, modern offices)
-- Authentic, diverse, professional
+1. Navy / Cloud establish the surface.
+2. Teal structures system and intelligence layers.
+3. Cyan carries motion, actions, active states and forward signals.
+4. Gold is **accent-only** for proof, verified-impact moments and premium emphasis.
 
-### Illustration Style
-- Abstract data visualization aesthetics
-- Glowing particles, neural network patterns
-- Emerald + Gold color scheme
-- Premium, sophisticated, minimal
+Do not return to Emerald/Gold or Navy/Gold as competing active palettes.
 
 ---
 
-## 6. Layout Principles
+## 4. Typography
 
-### Grid System
-- 12-column grid
-- Gutter: 24px
-- Max content width: 1280px
-- Section padding: 80px vertical (desktop), 48px (mobile)
+### Latin
 
-### Spacing Scale
-| Token | Value | Usage |
-|-------|-------|-------|
-| xs | 4px | Tight gaps |
-| sm | 8px | Icon gaps |
-| md | 16px | Component padding |
-| lg | 24px | Card padding |
-| xl | 48px | Section gaps |
-| 2xl | 80px | Section padding |
+**Inter** — primary display and body family.
+
+### Arabic
+
+**IBM Plex Sans Arabic** — primary Arabic family.
+
+### Evidence / technical
+
+**IBM Plex Mono** or **JetBrains Mono**.
+
+Typography should feel modern, exact and credible. Avoid ornamental futurist fonts that reduce enterprise readability.
 
 ---
 
-## 7. Application Guidelines
+## 5. Wordmark and descriptor
+
+Primary wordmark: **Dealix**  
+Arabic support lockup: **ديليكس**  
+Primary descriptor: **AI BUSINESS OPERATING SYSTEM**
+
+The descriptor is supporting text, not part of the standalone icon. At small sizes use the mark alone.
+
+Approved message family:
+
+- `Signals into Action.`
+- `Execution with Governance.`
+- `Measurable Outcomes.`
+- `Revenue + Proof + Command`
+- `From Opportunity to Outcome`
+
+---
+
+## 6. Visual language
+
+### Shapes
+
+- forward vectors;
+- controlled channels / rails;
+- evidence nodes;
+- convergence of multiple signals into one decision;
+- structured grids and restrained data geometry.
+
+### Avoid
+
+- floating robot heads;
+- generic AI brains;
+- circuit-board backgrounds as the primary identity;
+- neon overload;
+- Saudi swords/palm marks inside the logo;
+- fake dashboards or fabricated customer metrics;
+- decorative complexity that breaks at small sizes.
+
+---
+
+## 7. Layout principles
+
+- 12-column desktop grid where relevant.
+- Generous negative space.
+- Strong hierarchy with one primary action per section.
+- Proof and evidence should be easy to scan.
+- Cyan should guide attention, not flood the page.
+- Gold should be rarer than cyan.
+- Dark executive surfaces should use Ink Navy instead of pure black where possible.
+
+---
+
+## 8. Application system
 
 ### Website
-- Dark hero sections with gold accents
-- Clean white content sections
-- Emerald CTAs with gold hover states
-- Subtle geometric patterns as section dividers
+
+- Ink Navy / Cloud primary surfaces.
+- Signal Cyan for active execution states and CTAs.
+- Deep Teal for system structure.
+- Proof Gold only for verified evidence or premium proof moments.
 
 ### Presentations
-- Cover: Full-bleed image + gradient mask + centered text
-- Content: White background, emerald headers, gold highlights
-- Tables: Emerald header, alternating cream/white rows
-- Charts: Emerald primary series, gold secondary
 
-### Documents
-- White background
-- Emerald headings
-- Gold horizontal rules
-- Professional, clean, spacious
+- Clean executive cover with mark + Dealix wordmark.
+- High-contrast evidence pages.
+- One key claim per slide with evidence references.
+- Charts use Navy/Teal/Cyan hierarchy and Gold only for selected verified result.
+
+### Social
+
+- Avatar: standalone D + Forward Signal mark.
+- Covers: core promise + restrained system motif.
+- No microcopy inside the avatar.
+
+### Documents / proposals
+
+- White/Cloud background default.
+- Navy headings.
+- Teal substructure.
+- Cyan for actions and status.
+- Gold for accepted proof / final outcome highlights.
 
 ---
 
-## 8. Brand Assets
+## 9. Required channel exports
 
-| Asset | File | Dimensions |
-|-------|------|-----------|
-| Primary Logo | `dealix-logo-primary.png` | 1024x1024 |
-| Hero Background | `hero-bg-dark.jpg` | 1920x1080 |
-| Light Slide BG | `slide-bg-light.jpg` | 1920x1080 |
-| Saudi Executive | `executive-saudi.jpg` | 768x1024 |
-| AI Analytics | `ai-analytics-visual.jpg` | 1920x1080 |
-| Riyadh Skyline | `riyadh-skyline.jpg` | 1920x1080 |
-| Dark Pattern | `pattern-dark.jpg` | 1920x1080 |
+Derived exports should include:
+
+- avatar 400×400 and 800×800;
+- LinkedIn company logo 400×400;
+- LinkedIn company cover 1512×256;
+- favicon 16×16 / 32×32 / 48×48;
+- app icon 512×512;
+- OG / social share 1200×630;
+- transparent PNG horizontal logo at 1×/2×;
+- monochrome dark and light variants.
+
+Renderers may generate these from the SVG source. They must not edit the source-of-truth design independently.
+
+---
+
+## 10. Logo quality gates
+
+Before public replacement:
+
+- recognizable at 16px, 24px and 32px;
+- passes one-color black and white tests;
+- passes light and dark background tests;
+- remains recognizable without the wordmark;
+- no descriptor embedded in favicon/standalone mark;
+- no gradient dependency for silhouette recognition;
+- no unsupported market-first or trademark claim.
+
+---
+
+## 11. Historical assets
+
+The Emerald/Gold V1 visual guide, the Navy/Gold dot-D web identity and the diamond-D legacy family are historical provenance. They are not active visual authority after V2 is merged.
+
+---
+
+## 12. Legal / governance
+
+Trademark clearance is still **LEGAL_CLEARANCE_PENDING**. Do not represent the name or symbol as registered or globally cleared until evidence exists.
+
+Brand rendering does not override commercial, claims, privacy, approval or external-action authority.

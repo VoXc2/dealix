@@ -1,7 +1,7 @@
 # Dealix Brand Authority Map
 
-Status: PROPOSED CANONICAL BRAND EXPRESSION CONTRACT  
-Date: 2026-08-28
+Status: FOUNDER-APPROVED V2 REPO CANDIDATE  
+Date: 2026-09-06
 
 ## Purpose
 
@@ -12,15 +12,21 @@ Prevent brand, commercial, visual, claims, channel and proof drift across Dealix
 ### 1. Company/category identity
 Authority: `docs/00_platform_truth/PLATFORM_SOURCE_OF_TRUTH.md`
 
-Canonical company identity:
+Current founder-approved company identity:
 
-> Dealix is a Saudi-first AI Business Operating System.
+> Dealix is an AI Business Operating System.
+
+Core promise:
+
+> Signals into Action. Execution with Governance. Measurable Outcomes.
 
 Commercial wedge:
 
 > Revenue + Proof + Command.
 
-Rule: sell the wedge; build the platform; never reduce the company identity to a revenue tool, chatbot, CRM, agency or generic AI-automation vendor.
+Saudi Arabia is an important launch market and operating context. It is not a `first Saudi`, `first in Saudi Arabia`, market-leadership or government-access claim.
+
+Rule: sell the executable problem; prove the outcome; expand the runtime. Never reduce the company identity to a revenue tool, chatbot, CRM, agency or generic AI-automation vendor.
 
 ### 2. Commercial offer, pricing and launch authority
 Authority, in order:
@@ -37,8 +43,15 @@ Current public path:
 
 No historical 499/999/1500 SAR offer, 7-day sprint/pilot, public tier table, checkout, guarantee or money-back language may become current authority merely because it exists in the repository or search index.
 
+Commercial documents cannot override the active masterbrand category or visual identity defined by the higher platform/brand authority.
+
 ### 3. Brand expression
-Authority: `docs/brand/DEALIX_BRAND_OS.md` plus its directly referenced brand files.
+Authority:
+1. `data/brand/brand_authority.json` — active machine-readable authority.
+2. `brand/DEALIX_VISUAL_IDENTITY_GUIDE.md` — visual expression.
+3. `business/brand/DEALIX_LOGO_AND_IDENTITY_SYSTEM.md` — logo usage.
+4. `docs/brand/DEALIX_BRAND_OS.md` — narrative/brand operating system.
+5. `docs/brand/POSITIONING.md` — readable market positioning mirror.
 
 This layer governs message architecture, voice, visual grammar, buying-group adaptation and public asset QA. It cannot weaken platform or commercial truth.
 
@@ -47,21 +60,28 @@ Authority:
 - `docs/brand/CLAIMS_GUARDRAILS.md`
 - canonical proof/evidence systems and current proof records
 
-No public asset may promote synthetic/demo evidence into customer proof, activity into outcome, invoice into payment, or estimate into verified value.
+No public asset may promote synthetic/demo evidence into customer proof, activity into outcome, invoice into payment, estimate into verified value, or Saudi context into an unsupported first-in-market claim.
 
 ### 5. Active visual implementation
-Until an explicitly approved migration replaces it, the current canonical `landing/index.html` visual language is the active public implementation reference.
+The V2 repo candidate uses these canonical source assets:
 
-Verified current tokens in the canonical landing source:
+- `apps/web/public/dealix-logo.svg`
+- `apps/web/public/dealix-mark.svg`
+- `apps/web/public/dealix-og.svg`
+- `brand/marks/dealix-mark-black.svg`
+- `brand/marks/dealix-mark-white.svg`
+- `brand/marks/dealix-app-icon.svg`
+
+Canonical tokens:
 - Ink Navy `#0F172A`
 - Deep Teal `#164E63`
 - Signal Cyan `#22D3EE`
-- Cloud / near-white `#F8FAFC`
-- Slate family for neutral text/lines
+- Cloud `#F8FAFC`
+- Proof Gold `#D4AF37` — accent only
 - Arabic: `IBM Plex Sans Arabic`
 - Latin: `Inter`
 
-Historical Navy/Gold, Emerald/Gold and Saudi-Green/Gold documents remain reference/history unless and until deliberately migrated into the canonical public implementation and this authority map is updated.
+Historical Navy/Gold, Emerald/Gold, Saudi-Green/Gold and diamond-D documents/assets remain reference/provenance only after V2 acceptance. They cannot become active authority merely because a renderer or old presentation still references them.
 
 Semantic success/warning/error colors are status colors, not alternate brand palettes.
 
@@ -90,6 +110,16 @@ Command OS, Revenue OS, Proof OS, Governance OS, Data OS and later systems are p
 
 Do not create a distinct logo/color system for every OS, channel, event, agent or campaign.
 
+## D + Forward Signal symbol
+
+The active V2 mark represents:
+- D = Dealix / deal / decision / durable business value;
+- forward signal = `Signal -> Decision -> Action`;
+- negative space = governance and approval boundaries;
+- forward direction = opportunity converted into outcome.
+
+It intentionally avoids generic AI robot/brain/circuit/sparkle symbolism.
+
 ## Buying-group brand requirement
 
 A B2B asset is incomplete if it only persuades one champion. For material opportunities, adapt the same evidence-backed Dealix story to the concerns of:
@@ -113,15 +143,16 @@ Public proof must state its class:
 
 Classes 4-5 require real same-customer evidence and the permissions appropriate to publication.
 
-## Saudi-first expression
+## Saudi-market expression
 
-Saudi-first means:
-- Arabic is a first-class authored experience, not a literal afterthought.
-- use Saudi business language and operating realities when actually relevant.
-- avoid decorative national clichés, unsupported government-access claims and token localization.
+Saudi-market context means:
+- Arabic is a first-class authored experience when relevant, not a literal afterthought.
+- use Saudi business language and operating realities when relevant.
+- understand local buyer, governance, partner and ecosystem context.
+- avoid decorative national clichés, unsupported market-first/government-access claims and token localization.
 - compliance language must be scoped and evidenced.
 
-Prefer `PDPL-aware`, `PDPL-governed controls`, `designed around consent/provenance/approval controls`, or an exact verified statement over blanket `PDPL-compliant` claims.
+Prefer `PDPL-aware`, `designed around consent/provenance/approval controls`, `governed data/action boundaries`, or an exact verified statement over blanket `PDPL-compliant` claims.
 
 ## Legacy / reference policy
 
@@ -150,6 +181,7 @@ Brand strategy does not equal legal clearance. Before material paid scale, forma
 
 - no fake proof, logos, testimonials, customers or outcomes
 - no guaranteed revenue/ROI
+- no unsupported `first Saudi`, `first in Saudi Arabia`, market-leadership or government-access claim
 - no generic `AI automation agency` positioning
 - no blanket compliance certification claim without exact evidence
 - no renderer/platform inventing its own palette or commercial offer

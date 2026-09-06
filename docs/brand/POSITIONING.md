@@ -2,35 +2,41 @@
 
 ## Canonical market category
 
-> **Dealix — Governed AI Execution Platform for Saudi Business.**
+> **Dealix — AI Business Operating System.**
 
 Canonical promise:
 
-> **Turn company signals into governed execution and measurable proof.**
+> **Signals into Action. Execution with Governance. Measurable Outcomes.**
 
 Arabic:
 
-> **حوّل إشارات شركتك إلى قرارات وتنفيذ ونتائج قابلة للإثبات.**
+> **حوّل إشارات شركتك إلى قرارات وتنفيذ محكوم ونتائج قابلة للإثبات.**
+
+Short promise:
+
+> **From Opportunity to Outcome.**
 
 Mechanism:
 
-`Signal -> Decision -> Action -> Proof`
+`Signal -> Evidence -> Decision -> Approval -> Action -> Outcome -> Proof`
 
-This positioning is inherited from `docs/00_platform_truth/PLATFORM_SOURCE_OF_TRUTH.md` and must not be replaced by a narrower or historical brand document.
+This positioning follows the founder-approved V2 brand authority. Higher product/commercial authority still governs exact capability, offer, pricing, proof and external-action claims.
 
 ## Architecture language vs market headline
 
-Dealix remains Saudi-first and its underlying company architecture is an AI Business Operating System / Company Machine with twelve Operating Systems. **Revenue + Proof + Command**, Company Brain and agents remain valid capability language.
+Dealix's underlying company architecture is an AI Business Operating System / Company Machine with twelve Operating Systems. **Revenue + Proof + Command**, Company Brain and agents remain valid capability language.
 
-They are **not** the current generic category headline. Do not reintroduce `Saudi-first AI Business Operating System` as the top-level public category claim unless a newer founder-adopted doctrine explicitly changes it.
+Saudi Arabia remains an important launch and operating context. Express that through bilingual execution, local buyer relevance, Saudi operating realities and governance awareness — not through unsupported `first Saudi`, `first in Saudi Arabia` or market-leadership claims.
 
 ## Market problem
 
-Saudi B2B companies often have signals, CRM/ERP, email, WhatsApp, spreadsheets, AI tools and people, but the path from signal to decision to controlled execution to evidence remains fragmented. Dealix closes that execution gap without asking the customer to hand uncontrolled authority to AI.
+B2B companies often have signals, CRM/ERP, email, WhatsApp, spreadsheets, AI tools and people, but the path from signal to decision to controlled execution to evidence remains fragmented. Dealix closes that execution gap without asking the customer to hand uncontrolled authority to AI.
+
+In Saudi-market work, Dealix should reflect relevant local operating context, Arabic/English workflows and governance constraints without turning market context into an exclusivity or superiority claim.
 
 ## Positioning statement
 
-For Saudi businesses that need AI to move beyond recommendations while preserving accountability, Dealix turns company signals into governed decisions and controlled actions, then records evidence that supports the result.
+For businesses that need AI to move beyond recommendations while preserving accountability, Dealix turns company signals into governed decisions and controlled actions, then records evidence that supports the result.
 
 The first engagement begins with one economically meaningful workflow. Dealix expands only after evidence supports the next scope.
 
@@ -44,16 +50,16 @@ The first engagement begins with one economically meaningful workflow. Dealix ex
 
 No public fixed price, public checkout or guaranteed result is implied.
 
-Internal compatibility IDs such as `free_mini_diagnostic` and `revenue_command_pilot_30d` may remain in runtime contracts until a separately accepted authority migration. They are not market-facing authority for the superseded labels.
+Internal compatibility IDs such as `free_mini_diagnostic` and `revenue_command_pilot_30d` may remain in runtime contracts until a separately accepted authority migration. They are not market-facing authority for superseded labels.
 
 ## Differentiation stack
 
-1. **Saudi operating context** — Arabic/English and Saudi business realities.
-2. **Governed execution** — provenance, permissions, approvals, deterministic controls and receipts around sensitive actions.
-3. **Signal intelligence** — official/first-party signals become evidence-backed decisions, not scraped lead volume.
-4. **Proof discipline** — baseline, action, outcome and evidence are separate facts.
-5. **Executive command** — owners, decisions, blockers, approvals and next actions compressed into an accountable command layer.
-6. **Integration posture** — work above the customer's existing CRM/ERP/email/files/cloud where practical rather than demand wholesale replacement.
+1. **Governed execution** — provenance, permissions, approvals, deterministic controls and receipts around sensitive actions.
+2. **Signal intelligence** — official/first-party signals become evidence-backed decisions, not scraped lead volume.
+3. **Proof discipline** — baseline, action, outcome and evidence are separate facts.
+4. **Executive command** — owners, decisions, blockers, approvals and next actions compressed into an accountable command layer.
+5. **Integration posture** — work above the customer's existing CRM/ERP/email/files/cloud where practical rather than demand wholesale replacement.
+6. **Market-context fluency** — bilingual and local operating context where it materially improves execution.
 7. **Learning loop** — repeatable customer workflows feed productization only after validated outcomes.
 
 ## Buyer-specific positioning
@@ -95,10 +101,12 @@ Automation may prepare contextual Arabic/English communication that is clearly f
 
 ## Claims guardrails
 
-Do not state blanket `PDPL-compliant`, `fully compliant`, `certified`, guaranteed ROI, guaranteed revenue or equivalent claims without exact evidence covering the scope claimed.
+Do not state `first Saudi`, `first in Saudi Arabia`, blanket `PDPL-compliant`, `fully compliant`, `certified`, guaranteed ROI, guaranteed revenue or equivalent claims without exact independent evidence covering the scope claimed.
 
 Preferred scoped language includes:
-- Saudi-first;
+- AI Business Operating System;
+- governed execution;
+- Saudi-market context where relevant;
 - PDPL-aware;
 - governed data/action boundaries;
 - consent/provenance/approval controls;
@@ -106,11 +114,11 @@ Preferred scoped language includes:
 
 ## Arabic short explanation
 
-> **Dealix منصة تنفيذ ذكي محكوم للأعمال في السعودية.** تربط إشارات الشركة بالقرار والتنفيذ والإثبات، وتبدأ بحالة تشغيل واحدة قابلة للقياس قبل أي توسع.
+> **Dealix نظام تشغيل أعمال بالذكاء الاصطناعي يحوّل إشارات الشركة إلى قرارات وتنفيذ محكوم ونتائج قابلة للإثبات، مع فهم للسياق التشغيلي السعودي عند الحاجة.**
 
 ## English short explanation
 
-> **Dealix is a governed AI execution platform for Saudi business.** It turns company signals into decisions, controlled action and measurable proof, starting with one workflow before expanding.
+> **Dealix is an AI Business Operating System that turns company signals into governed action and measurable proof, with Saudi-market operating context where relevant.**
 
 ## Review rule
 
@@ -123,6 +131,8 @@ Review this positioning when any of the following changes materially:
 - product capability state.
 
 ## Related files
+- `data/brand/brand_authority.json`
+- `brand/DEALIX_VISUAL_IDENTITY_GUIDE.md`
 - `docs/00_platform_truth/PLATFORM_SOURCE_OF_TRUTH.md`
 - `docs/brand/BRAND_AUTHORITY_MAP.md`
 - `docs/brand/DEALIX_BRAND_OS.md`

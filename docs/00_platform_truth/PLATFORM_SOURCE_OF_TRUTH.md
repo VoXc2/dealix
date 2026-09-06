@@ -10,25 +10,33 @@
 
 ## 1. التموضع السوقي الكنسي / Canonical market identity
 
-**Dealix — Governed AI Execution Platform for Saudi Business**
+**Dealix — AI Business Operating System**
 
 الوعد العام:
 
-> **حوّل إشارات شركتك إلى قرارات وتنفيذ ونتائج قابلة للإثبات.**
+> **حوّل إشارات شركتك إلى قرارات وتنفيذ محكوم ونتائج قابلة للإثبات.**
 
 Public promise:
 
-> **Turn company signals into governed execution and measurable proof.**
+> **Signals into Action. Execution with Governance. Measurable Outcomes.**
+
+Short promise:
+
+> **From Opportunity to Outcome.**
 
 الآلية / Mechanism:
 
-`Signal -> Decision -> Action -> Proof`
+`Signal -> Evidence -> Decision -> Approval -> Action -> Outcome -> Proof -> Learning`
 
-### ما الذي يبقى صحيحًا من هوية Business OS؟
+### موقع التنفيذ المحكوم والسياق السعودي
 
-Dealix ما زالت **Saudi-first**، وتعمل داخليًا كـ **AI Business Operating System / Company Machine** باثني عشر Operating Systems. كما أن **Revenue + Proof + Command** تظل لغة قدرة ومدخلًا اقتصاديًا مهمًا. لكن هذه المصطلحات تصف البنية والقدرات، وليست العنوان العام أو category claim الحالي في السوق.
+Dealix تعمل كـ **AI Business Operating System / Company Machine** باثني عشر Operating Systems، وتحوّل الإشارات إلى قرارات وتنفيذ محكوم وإثبات. **Revenue + Proof + Command** تظل المدخل التجاري الأول ولغة قيمة مهمة.
 
-Dealix remains **Saudi-first** and internally operates as an **AI Business Operating System / Company Machine** spanning twelve Operating Systems. **Revenue + Proof + Command** remains important capability and wedge language. These describe the architecture and value system; they are not the current generic market headline/category claim.
+السعودية هي سوق انطلاق وسياق تشغيلي مهم لـDealix، ويظهر ذلك عبر العربية/الإنجليزية، وفهم واقع الشركات، والحوكمة والامتثال ذي الصلة، ومسارات السوق والشركاء. هذا **ليس** ادعاءً بأن Dealix هي "الأولى سعوديًا" أو "الأولى في السعودية" أو متصدرة السوق دون دليل مستقل.
+
+Dealix operates as an **AI Business Operating System / Company Machine** spanning twelve Operating Systems. **Revenue + Proof + Command** remains the first commercial wedge and an important value language.
+
+Saudi Arabia is an important launch market and operating context. Express that through bilingual execution, local buyer relevance, governance awareness and market fluency — not through unsupported `first Saudi`, `first in Saudi Arabia`, market-leadership or government-access claims.
 
 قاعدة الانطلاق:
 
@@ -79,6 +87,8 @@ Dealix remains **Saudi-first** and internally operates as an **AI Business Opera
 الـworkflow الأول:
 
 `Opportunity -> Follow-up -> Decision -> Proposal -> Handoff -> Delivery -> Proof`
+
+هذه beachheads هي **أولوية GTM** وليست ادعاء فئة أو أسبقية سوقية.
 
 ---
 
@@ -207,6 +217,7 @@ And everywhere:
 - no mass/unapproved LinkedIn account automation;
 - no external auto-send without the required current authority;
 - no fake proof, fake relationships or guaranteed ROI/revenue claims;
+- no unsupported `first Saudi`, `first in Saudi Arabia` or market-leadership claims;
 - no PII in public case studies without appropriate authority;
 - no external action on a customer's behalf without explicit applicable approval;
 - no public fixed price/checkout authority unless a later accepted doctrine explicitly changes this.
@@ -223,7 +234,9 @@ No new feature or dependency unless it materially improves one of:
 
 Current launch sequence remains evidence-gated:
 
-`Commercial exact-head acceptance -> canonical Railway production proof -> Public Truth -> Telegram/OpenClaw current receipt -> five-agent/12-OS A0-A4 -> controlled launch -> first real paid/delivered/customer-validated outcome -> multiple-cycle repeatability -> broader productization`
+`Production Trust -> canonical Railway production proof -> Public Truth -> Founder Control current receipt -> controlled launch -> first real paid/delivered/customer-validated outcome -> multiple-cycle repeatability -> broader productization`
+
+Brand or visual work cannot redefine Production Green, payment truth or customer proof.
 
 ---
 
@@ -231,8 +244,11 @@ Current launch sequence remains evidence-gated:
 
 - Live verified state always overrides static documentation.
 - This document governs market positioning, README, GTM, public copy and brand positioning unless a newer explicit founder doctrine supersedes it.
-- Architecture docs may continue to use **Business OS**, **Revenue + Proof + Command**, Company Brain and the 12 OS as capability/architecture language, but must not present the superseded V2 category as the current generic market headline.
-- Historical materials may remain when clearly marked historical and cannot be consumed as current pricing, commercial, relationship, proof or production authority.
+- The current founder-approved category is **AI Business Operating System**.
+- Architecture docs may use **AI Business Operating System**, **Company Machine**, **Revenue + Proof + Command**, Company Brain and the 12 OS as capability/architecture language.
+- `Governed AI Execution` remains a core mechanism and differentiator, not a competing masterbrand/category.
+- Saudi context remains a GTM/operating-context truth where relevant, not an unsupported first-in-market claim.
+- Historical materials may remain when clearly marked historical and cannot be consumed as current pricing, commercial, relationship, proof, production or brand authority.
 
 ---
 
@@ -242,5 +258,6 @@ Current launch sequence remains evidence-gated:
 - [Product Family Map](./PRODUCT_FAMILY_MAP.md)
 - [Wedge Strategy](../01_go_to_market/WEDGE_STRATEGY.md)
 - [Brand Positioning](../brand/POSITIONING.md)
+- [Brand Authority](../../data/brand/brand_authority.json)
 
 > Estimated value is not Verified value / القيمة التقديرية ليست قيمة مُتحقَّقة
