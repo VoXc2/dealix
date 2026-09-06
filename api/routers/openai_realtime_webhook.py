@@ -7,7 +7,7 @@ import logging
 
 from fastapi import APIRouter, HTTPException, Request
 
-from dealix.voice_ai.front_desk import VoiceAIConfig, get_voice_readiness, run_voice_sideband
+from dealix.voice_ai.front_desk import VoiceAIConfig, run_voice_sideband
 from dealix.voice_ai.sip_runtime import handle_openai_realtime_webhook
 
 router = APIRouter(prefix="/api/v1/webhooks/openai", tags=["Webhooks", "Voice AI"])
@@ -28,16 +28,6 @@ def _retain_task(task: asyncio.Task[None]) -> None:
             logger.warning("voice sideband task finalizer failed: %s", type(exc).__name__)
 
     task.add_done_callback(_done)
-
-
-@router.get("/voice-readiness")
-async def voice_readiness() -> dict[str, object]:
-    """Return non-secret Voice AI readiness state."""
-
-    state = get_voice_readiness()
-    state["raw_recording_persistence"] = False
-    state["live_voice"] = "cedar"
-    return state
 
 
 @router.post("/realtime")
