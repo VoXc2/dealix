@@ -11,6 +11,7 @@ from api.routers import (
     channel_policy_gateway as channel_policy_gateway_router,
 )
 from api.routers import (
+    openai_realtime_webhook,
     support_webhook,
     webhooks,
 )
@@ -23,6 +24,7 @@ _ROUTERS = [
     support_webhook.router,
     whatsapp_decision_bot_router.router,
     channel_policy_gateway_router.router,
+    openai_realtime_webhook.router,
 ]
 
 
