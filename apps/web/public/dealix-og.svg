@@ -1,29 +1,46 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630" role="img" aria-label="Dealix — AI Business Operating System">
   <defs>
-    <linearGradient id="bg" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" stop-color="#0E1A33"/>
-      <stop offset="100%" stop-color="#070A12"/>
+    <linearGradient id="bg" x1="0" y1="0" x2="1200" y2="630" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#07101E"/>
+      <stop offset="0.55" stop-color="#0F172A"/>
+      <stop offset="1" stop-color="#164E63"/>
     </linearGradient>
-    <linearGradient id="gold" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%" stop-color="#F2C66A"/>
-      <stop offset="100%" stop-color="#E2A53A"/>
+    <linearGradient id="d" x1="0" y1="0" x2="180" y2="180" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#F8FAFC"/>
+      <stop offset="0.22" stop-color="#22D3EE"/>
+      <stop offset="0.7" stop-color="#164E63"/>
+      <stop offset="1" stop-color="#0F172A"/>
+    </linearGradient>
+    <linearGradient id="signal" x1="0" y1="0" x2="90" y2="80" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#67E8F9"/>
+      <stop offset="1" stop-color="#22D3EE"/>
     </linearGradient>
   </defs>
   <rect width="1200" height="630" fill="url(#bg)"/>
-  <g transform="translate(80 110)">
-    <rect x="0" y="0" width="120" height="120" rx="24" fill="#070A12" stroke="url(#gold)" stroke-width="3"/>
-    <path d="M30 24 L60 24 C84 24 100 42 100 60 C100 78 84 96 60 96 L30 96 Z M44 40 L44 80 L60 80 C76 80 90 70 90 60 C90 50 76 40 60 40 Z" fill="url(#gold)"/>
-    <circle cx="104" cy="22" r="6" fill="url(#gold)"/>
+  <circle cx="1030" cy="80" r="240" fill="#22D3EE" opacity="0.04"/>
+  <circle cx="1080" cy="570" r="300" fill="#D4AF37" opacity="0.025"/>
+  <g transform="translate(78 92) scale(2.5)">
+    <path fill="url(#d)" fill-rule="evenodd" clip-rule="evenodd" d="M12 8h20c14 0 24 10.75 24 24S46 56 32 56H12V8Zm10 10v28h10c8.2 0 14-6.1 14-14s-5.8-14-14-14H22Z"/>
+    <path d="M6 21.5 24.5 32 6 42.5Z" fill="url(#signal)"/>
   </g>
-  <g transform="translate(230 175)" font-family="Inter, Segoe UI, Arial, sans-serif" fill="#FFFFFF">
-    <text x="0" y="0" font-size="84" font-weight="700" letter-spacing="2">DEALIX</text>
-    <text x="0" y="48" font-size="22" font-weight="500" fill="#E2A53A" letter-spacing="8">AI OPERATING SYSTEMS FOR COMPANIES</text>
+  <g transform="translate(280 112)" font-family="Inter, Arial, sans-serif">
+    <text x="0" y="72" font-size="92" font-weight="760" letter-spacing="-3" fill="#F8FAFC">Dealix</text>
+    <text x="4" y="118" font-family="IBM Plex Sans Arabic, Arial, sans-serif" font-size="34" font-weight="600" fill="#A5F3FC">ديليكس</text>
+    <text x="4" y="164" font-size="18" font-weight="650" letter-spacing="5" fill="#CBD5E1">AI BUSINESS OPERATING SYSTEM</text>
   </g>
-  <g transform="translate(80 380)" font-family="Inter, Segoe UI, Arial, sans-serif" fill="#FFFFFF">
-    <text x="0" y="0" font-size="36" font-weight="500" opacity="0.85">From scattered sales, WhatsApp, reputation, and reports</text>
-    <text x="0" y="50" font-size="36" font-weight="500" opacity="0.85">to measurable, human-reviewed, proof-driven systems.</text>
+  <g transform="translate(80 360)" font-family="Inter, Arial, sans-serif">
+    <text x="0" y="0" font-size="46" font-weight="640" fill="#F8FAFC">Signals into Action.</text>
+    <text x="0" y="62" font-size="46" font-weight="640" fill="#22D3EE">Execution with Governance.</text>
+    <text x="0" y="124" font-size="46" font-weight="640" fill="#F8FAFC">Measurable Outcomes.</text>
+    <rect x="0" y="166" width="62" height="4" rx="2" fill="#D4AF37"/>
+    <text x="84" y="174" font-size="18" font-weight="650" letter-spacing="4" fill="#D4AF37">REVENUE + PROOF + COMMAND</text>
   </g>
-  <g transform="translate(80 540)" font-family="Inter, Segoe UI, Arial, sans-serif" fill="#E2A53A" font-size="18" letter-spacing="3">
-    <text x="0" y="0">COMMAND CENTERS · REVENUE OS · DELIVERY OS · REVIEW OS</text>
+  <g transform="translate(895 338)" font-family="Inter, Arial, sans-serif" font-size="15" letter-spacing="3" fill="#94A3B8">
+    <text x="0" y="0">SIGNAL</text>
+    <text x="0" y="44">EVIDENCE</text>
+    <text x="0" y="88">DECISION</text>
+    <text x="0" y="132">EXECUTION</text>
+    <text x="0" y="176">OUTCOME</text>
+    <text x="0" y="220">PROOF</text>
   </g>
 </svg>
