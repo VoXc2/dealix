@@ -2,119 +2,136 @@
 
 North Star: `CASH_READY_AUTONOMOUS_DEALIX_COMPANY`
 
-This note records source-side hardening only. It grants no authority to deploy,
-change DNS/DB/secrets, enable live outbound, activate voice, or mutate `main`
-protection.
+This branch is source-side hardening only. It grants no authority to merge,
+deploy, change DNS/DB/secrets, enable live outbound/voice, publish, pay, or alter
+`main` protection.
 
-## Why this patch exists
+## Live problems this branch closes or makes explicit
 
-The latest VPS acceptance exposed three independent problems:
+1. **Git metadata permissions:** root-run Git operations created loose objects
+   and refs unreadable to the canonical `dealix` account.
+2. **Verifier harness drift:** self-improvement and Voice verifiers depended on
+   caller CWD/PYTHONPATH and could fail before testing product behavior.
+3. **Suppression durability:** controlled-live correctly stayed blocked because
+   suppression was process-memory only despite an existing canonical
+   PostgreSQL `data_suppression_list`.
+4. **Secret triage quality:** the prior broad grep could report possible
+   OpenAI-style keys without a non-disclosing filename/line proof path.
+5. **Railway API trigger drift:** live API is now correctly Dockerfile +
+   `railway.json` + governed preDeploy, but provider Watch Paths omitted
+   canonical root runtime packages such as `api/**`, `app/**`, and `db/**`.
+6. **Consent durability:** current consent evidence is process-memory. Saudi
+   PDPL direct-marketing controls require consent/withdrawal evidence that can
+   be verified later. Recipient flags remain useful for drafts but are not
+   enough to unlock controlled-live.
 
-1. Git metadata written by root became unreadable to the canonical `dealix`
-   account, breaking `git fsck`/fetch despite an otherwise valid repository.
-2. Two verifier entrypoints depended on the caller's CWD/PYTHONPATH and failed
-   before they could test product behavior.
-3. Controlled-live outbound remained correctly blocked because suppression was
-   process-memory only, even though Dealix already owns a canonical PostgreSQL
-   `data_suppression_list` model.
+## Implemented source controls
 
-A fourth symptom — a broad "possible OpenAI-style key" grep — did not provide a
-safe filename-only triage path.
+### CWD-independent verifiers
 
-Live Railway reconciliation exposed a fifth issue: the canonical API service is
-now correctly configured as Dockerfile + `railway.json` + governed pre-deploy,
-but provider watch paths were too narrow to cover canonical root packages such
-as `api/**`, `app/**`, and `db/**`. Railway documents that when watch paths are
-configured, a commit that does not match them is skipped. The source contract in
-this branch therefore watches Python runtime changes globally plus the build,
-dependency, migration-predeploy, config, template, and prompt authorities.
+Both affected verifier entrypoints bootstrap the repository root before Dealix
+imports. Their fail-closed assertions are unchanged.
 
-References:
-- https://docs.railway.com/builds/build-configuration
-- https://docs.railway.com/config-as-code/reference
+### Bounded common-Git-directory guard
 
-## Changes in this branch
-
-### 1. CWD-independent verifiers
-
-Both verifier scripts add the repository root to `sys.path` before importing
-Dealix packages. This removes harness dependence without weakening their
-fail-closed assertions.
-
-### 2. Bounded Git metadata guard
-
-`scripts/ops/git_metadata_permission_guard.py` audits only the **common** Git
-metadata directory, including when invoked from a linked worktree:
+`scripts/ops/git_metadata_permission_guard.py` audits the **common** Git
+metadata directory, including linked worktrees, and scopes itself to:
 
 - `.git/objects`
 - `.git/refs`
 - `.git/logs`
 - `.git/packed-refs`
 
-It never traverses or mutates worktree files. Read-only mode is the default.
-`--repair` requires root and changes only group/mode for root-owned metadata
-that the `dealix` group cannot safely use; it does not recursively chown the
-repository.
+Read-only is the default. `--repair` requires root and changes only group/mode
+for root-owned metadata that the Dealix group cannot safely use. It never walks
+or recursively chowns worktree files.
 
-Git's official documentation states that `core.sharedRepository=group` makes
-Git metadata group-writable and is the intended mode for repositories shared
-between users. Reference:
-https://git-scm.com/docs/git-init
+Git reference: https://git-scm.com/docs/git-init
 
-### 3. Non-disclosing secret-literal triage
+### Non-disclosing literal-secret verifier
 
-`scripts/ops/verify_secret_literals.py` scans Git-tracked text files for
-credential-shaped literals and emits only file path, line number, and detector
-name. Secret values are never printed. Detector source code itself is not a
-credential-shaped literal.
+`scripts/ops/verify_secret_literals.py` scans Git-tracked text and emits only:
 
-GitHub secret scanning supports provider-specific and generic patterns and push
-protection for many credential types. Reference:
+```text
+path + line + detector
+```
+
+It never prints the candidate secret value. This complements existing Gitleaks,
+detect-secrets, CodeQL and GitHub secret scanning rather than replacing them.
+
+GitHub reference:
 https://docs.github.com/en/code-security/reference/secret-security/supported-secret-scanning-patterns
 
-This local verifier complements — not replaces — repository-side Gitleaks,
-CodeQL, detect-secrets, and GitHub secret scanning.
+### Optional PostgreSQL suppression authority
 
-### 4. Optional PostgreSQL suppression authority
-
-`app/outbound/suppression.py` keeps `memory` as the default backend. A
-controlled-live environment may explicitly set:
+`app/outbound/suppression.py` keeps `memory` as default. Postgres is explicit:
 
 ```text
 DEALIX_SUPPRESSION_BACKEND=postgres
 DATABASE_URL=<existing Dealix PostgreSQL URL>
 ```
 
-The backend reuses the existing `data_suppression_list` table and existing
-`psycopg` dependency. It is fail-closed: database uncertainty suppresses rather
-than authorizes a recipient. Readiness is false unless the canonical table and
-`SELECT` / `INSERT` / `DELETE` privileges are proven. Durable suppression cannot
-be bulk-cleared by the test helper, and durable removal is blocked unless the
-process is explicitly started with `DEALIX_SUPPRESSION_ALLOW_REMOVE=true`.
+Readiness requires the canonical table plus `SELECT` / `INSERT` / `DELETE`
+privileges. Database/query uncertainty fails closed. Durable bulk-clear is
+disabled, and durable unsuppression requires:
 
-No environment variable in this branch enables outbound by itself. The
-canonical policy gate still requires external-send authority, controlled-live
-mode, channel flags, approval, relationship/consent, unsubscribe requirements,
-rate limits, and durable suppression.
+```text
+DEALIX_SUPPRESSION_ALLOW_REMOVE=true
+```
 
-### 5. Railway API trigger authority
+That flag does not enable sending; it only gates an authority-sensitive removal
+operation.
 
-`railway.json` now carries canonical API watch patterns and
-`dealix/config/railway_services.json` records the same expected contract. The
-patterns include all Python runtime files plus the Dockerfile, Railway config,
-dependency manifests, governed pre-deploy script, configs, templates, and
-prompts. `scripts/ops/verify_railway_api_watch_contract.py` fails closed on
-source drift.
+### Durable consent is now an independent live gate
 
-This is source authority only. Provider configuration and actual deployment SHA
-must still be verified independently.
+`app/outbound/consent.py` explicitly reports:
 
-## Railway infrastructure-as-code migration deadline
+```text
+consent_backend_kind=memory
+persistent_consent_ready=false
+```
 
-Railway's current documentation marks legacy Config as Code (`railway.json` /
-`railway.toml`) as deprecated for existing services with a **hard cutoff on
-2026-12-01**. Railway recommends Infrastructure as Code with
-`.railway/railway.ts` and exposes:
+The canonical policy gate and `/api/outbound/readiness/*` require **both**:
+
+```text
+persistent_suppression_ready() == true
+AND
+persistent_consent_ready() == true
+```
+
+Therefore Postgres suppression alone cannot produce a false-green live posture.
+Issue #1533 owns the dedicated durable channel/purpose consent migration.
+
+Engineering control map:
+`docs/compliance/PDPL_DIRECT_MARKETING_CONTROL_MAP_2026-09-06.md`
+
+Saudi PDPL portal:
+https://dgp.sdaia.gov.sa/wps/portal/pdp/knowledgecenter/details/PDPL
+
+### Railway API trigger authority
+
+`railway.json` and `dealix/config/railway_services.json` now share one expected
+Watch Path contract covering:
+
+- all Python runtime files;
+- Dockerfile;
+- Railway config;
+- dependency manifests;
+- governed preDeploy;
+- config/templates/prompts.
+
+`scripts/ops/verify_railway_api_watch_contract.py` fails closed on drift.
+Provider config and deployed SHA still require independent control-plane proof.
+
+Railway references:
+- https://docs.railway.com/deployments/monorepo#watch-paths
+- https://docs.railway.com/builds/build-configuration#configure-watch-paths
+
+## Railway IaC deadline
+
+Railway currently marks legacy Config as Code (`railway.json` /
+`railway.toml`) deprecated with a **2026-12-01 hard cutoff** for existing
+services. Issue #1531 owns an isolated migration to `.railway/railway.ts` using:
 
 ```text
 railway config init
@@ -123,74 +140,69 @@ railway config plan
 railway config apply
 ```
 
-Reference:
-https://docs.railway.com/config-as-code
+Do not mix that migration into launch execution without exact-state plan,
+non-production proof, rollback evidence, and action-bound Production approval.
 
-Do not perform this migration as an incidental launch change. Before the cutoff,
-create a separate exact-state migration packet: pull current provider state,
-compare it to Dealix source authority, plan with zero unintended domain/DB/secret
-changes, test in a non-production environment, then apply to Production only with
-rollback evidence and action-bound approval.
+Reference: https://docs.railway.com/config-as-code
 
-## Public search/index residue
+## Public search-index residue
 
-A fresh external search still surfaced historical cached pages such as
-`/pricing.html`, `/customer-portal.html`, and other legacy snippets with fixed
-prices/demo claims, while the current public authority is quote-only and the
-current Next.js source redirects those legacy routes. This is **search-index
-residue, not current price authority**.
+External search still surfaces stale historical URLs/snippets such as
+`/pricing.html` and `/customer-portal.html` with legacy fixed-price/demo claims.
+Current Next.js source already redirects legacy routes and current commercial
+authority is quote-only. Treat this as **search-index residue**, not current
+price authority.
 
-The live front door must be fixed first. After canonical custom-domain routing
-is proven, verify the permanent redirects from the public origin and then use
-normal search-engine recrawl/removal workflows for stale URLs. Do not re-add
-legacy pages or fixed pricing merely to match cached search snippets.
+First close the canonical front door. Then verify public permanent redirects and
+request normal recrawl/removal of stale URLs. Never restore obsolete fixed
+pricing merely to match cached search results.
 
-## Production follow-up — separate material actions
+## Hosted CI interpretation
 
-These remain separate action-bound gates:
+Current GitHub-hosted jobs for this branch again fail before repository steps:
+`steps=[]`, `runner_id=0`. That is not source-test evidence. Exact-head VPS
+acceptance remains the execution authority until the hosted runner plane
+actually executes repository steps reliably.
 
-1. Prove exact-current-main source acceptance on the VPS.
-2. Set `DEALIX_SUPPRESSION_BACKEND=postgres` only after the production table and
-   privileges are verified and a rollback packet exists.
-3. Prove Railway API release parity and Approval Center/Postgres runtime truth.
-4. Fix the custom front door only from provider control-plane evidence.
-5. Apply a Stage-A GitHub ruleset/branch protection: PR required, block force
-   pushes/deletions, audited bypass. Do not require flaky hosted checks until
-   their execution plane is trustworthy.
-6. Migrate Railway Config as Code to Railway IaC before 2026-12-01 as an isolated
-   production-change program, not as hidden launch scope.
+## Acceptance
 
-GitHub rulesets can require pull requests and block force pushes while exposing
-rules to auditors. Reference:
-https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-rulesets/about-rulesets
-
-## Future data isolation hardening
-
-Dealix already models tenant ownership in several tables. PostgreSQL Row-Level
-Security is a strong later hardening layer for tenant-owned records because,
-once enabled, row access must be allowed by policy and the absence of a policy
-becomes default-deny. It should be introduced only with explicit role design,
-migration tests, and production rollback evidence — not as an ad-hoc launch
-mutation.
-
-Reference:
-https://www.postgresql.org/docs/current/ddl-rowsecurity.html
-
-## Acceptance target for this branch
+Prefer the repo-owned executor:
 
 ```bash
-python scripts/ops/verify_secret_literals.py
-python scripts/ops/git_metadata_permission_guard.py --repo /opt/dealix/workspace/dealix
-python scripts/ops/verify_railway_api_watch_contract.py
-python scripts/ops/verify_self_improvement_truth_quarantine.py
-python scripts/ops/verify_voice_front_desk_realtime_2_1.py
-pytest -q \
-  tests/test_ops_production_trust_hardening.py \
-  tests/test_postgres_suppression_backend.py \
-  tests/test_controlled_live_outbound_policy.py
+DEALIX_EXPECTED_SHA=<exact-pr-head> \
+  bash scripts/ops/accept_production_trust_hardening_v1.sh
 ```
 
-On a production-like environment with the Postgres backend configured and the
-existing table + privileges reachable, `verify_controlled_live_readiness.py`
-should advance past the two suppression durability failures. This does **not**
-itself authorize or perform any live customer send.
+It runs the Git guard, secret scanner, Railway watch verifier, self-improvement
+and Voice verifiers, quarantine, launch/enterprise checks, focused outbound/API
+regressions, and verifies that default controlled-live remains fail-closed.
+
+Expected source result:
+
+```text
+PRODUCTION_TRUST_HARDENING_SOURCE_ACCEPTANCE=PASS
+CONTROLLED_LIVE=HOLD_DURABLE_CONSENT
+```
+
+The second line is intentional until #1533 is implemented and accepted.
+
+## Separate material gates after source acceptance
+
+1. Merge #1529 — explicit approval must account for possible Railway autodeploy
+   because `railway.json` changes are in the PR.
+2. Prove/apply Production suppression backend separately.
+3. Implement and later migrate durable consent separately (#1533).
+4. Prove Railway API exact-release and Approval Center/Postgres parity.
+5. Fix the custom front door only from provider control-plane evidence.
+6. Apply Stage-A `main` protection separately (#1371).
+7. Migrate Railway Config as Code to IaC before 2026-12-01 (#1531).
+
+## Future tenant isolation
+
+PostgreSQL Row-Level Security remains a strong later hardening layer: with RLS
+enabled, row access must be allowed by policy and absence of a policy defaults
+to deny. Introduce it only with explicit role design, migration tests and
+rollback evidence — not as incidental launch scope.
+
+PostgreSQL reference:
+https://www.postgresql.org/docs/current/ddl-rowsecurity.html
