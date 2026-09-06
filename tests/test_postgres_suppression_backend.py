@@ -23,14 +23,14 @@ def test_asyncpg_database_url_is_normalized_for_psycopg(monkeypatch):
     assert suppression._postgres_dsn() == "postgresql://user:pass@db.example/dealix"
 
 
-def test_postgres_status_requires_verified_table(monkeypatch):
+def test_postgres_status_requires_verified_table_and_privileges(monkeypatch):
     monkeypatch.setenv("DEALIX_SUPPRESSION_BACKEND", "postgres")
     monkeypatch.setattr(suppression, "_postgres_table_ready", lambda: True)
     assert suppression.suppression_backend_status() == {
         "backend": "postgres",
         "persistent": True,
         "live_send_eligible": True,
-        "reason": "postgres_suppression_table_verified",
+        "reason": "postgres_suppression_table_and_privileges_verified",
     }
 
 
@@ -50,3 +50,10 @@ def test_durable_suppression_cannot_be_bulk_cleared(monkeypatch):
     monkeypatch.setenv("DEALIX_SUPPRESSION_BACKEND", "postgres")
     with pytest.raises(RuntimeError, match="disabled for durable suppression"):
         suppression.clear_suppressions()
+
+
+def test_durable_unsuppression_requires_explicit_authority(monkeypatch):
+    monkeypatch.setenv("DEALIX_SUPPRESSION_BACKEND", "postgres")
+    monkeypatch.delenv("DEALIX_SUPPRESSION_ALLOW_REMOVE", raising=False)
+    with pytest.raises(RuntimeError, match="requires explicit authority"):
+        suppression.remove_suppression("buyer@example.com", channel="email")
