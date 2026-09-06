@@ -11,6 +11,7 @@ LAB_ROOT="${DEALIX_OSS_ROOT:-/opt/dealix/labs/oss}"
 CONTROL="${DEALIX_CONTROL:-/opt/dealix/control}"
 DEALIX_USER="${DEALIX_USER:-dealix}"
 DEALIX_GROUP="${DEALIX_GROUP:-dealix}"
+NODE_ROOT="$LAB_ROOT/node"
 STAMP="$(date +%Y%m%d-%H%M%S)"
 PROOF="$CONTROL/proof/oss-smoke/$STAMP"
 EMAIL_DOMAIN="${DEALIX_OSS_EMAIL_DOMAIN:-dealix.me}"
@@ -28,7 +29,11 @@ pass(){ PASS=$((PASS+1)); printf '%s\tPASS\t%s\n' "$1" "${2:-ok}" >> "$RESULTS";
 fail(){ FAIL=$((FAIL+1)); printf '%s\tFAIL\t%s\n' "$1" "${2:-failed}" >> "$RESULTS"; echo "[FAIL] $1 ${2:-}"; }
 hold(){ HOLD=$((HOLD+1)); printf '%s\tHOLD\t%s\n' "$1" "${2:-hold}" >> "$RESULTS"; echo "[HOLD] $1 ${2:-}"; }
 
-as_dealix(){ sudo -u "$DEALIX_USER" -H "$@"; }
+as_dealix(){
+  sudo -u "$DEALIX_USER" -H -- \
+    env PATH="$NODE_ROOT/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin" \
+    "$@"
+}
 
 check_py_import(){
   local name="$1" import_stmt="$2"
@@ -58,6 +63,10 @@ check_py_import faster-whisper 'import faster_whisper'
 check_py_import camel-tools 'import camel_tools'
 check_py_import livekit-agents 'from livekit import agents'
 check_py_import pipecat 'import pipecat'
+
+if [[ -x "$NODE_ROOT/bin/node" ]]; then
+  "$NODE_ROOT/bin/node" --version > "$PROOF/node-version.txt"
+fi
 check_cmd promptfoo "$LAB_ROOT/promptfoo/node_modules/.bin/promptfoo"
 
 CHECKDMARC="$LAB_ROOT/checkdmarc/venv/bin/checkdmarc"
@@ -100,7 +109,7 @@ fi
 
 cat > "$PROOF/receipt.json" <<EOF
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "timestamp": "$STAMP",
   "pass": $PASS,
   "fail": $FAIL,
