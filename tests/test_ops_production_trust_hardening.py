@@ -1,0 +1,62 @@
+from __future__ import annotations
+
+import importlib.util
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+
+
+def load_module(name: str, relative: str):
+    path = ROOT / relative
+    spec = importlib.util.spec_from_file_location(name, path)
+    assert spec and spec.loader
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+def test_secret_scanner_ignores_detector_source_but_flags_literal(tmp_path):
+    scanner = load_module("dealix_secret_scan", "scripts/ops/verify_secret_literals.py")
+
+    detector_source = tmp_path / "detector.py"
+    detector_source.write_text(
+        'PATTERN = r"sk-proj-[A-Za-z0-9_-]{20,}"\n',
+        encoding="utf-8",
+    )
+    assert scanner.scan_file(detector_source) == []
+
+    literal = tmp_path / "candidate.txt"
+    literal.write_text("TOKEN=sk-proj-" + "A" * 24 + "\n", encoding="utf-8")
+    findings = scanner.scan_file(literal)
+    assert findings == [(1, "openai_project_key")]
+
+
+def test_git_metadata_scope_never_walks_worktree(tmp_path):
+    guard = load_module("dealix_git_guard", "scripts/ops/git_metadata_permission_guard.py")
+
+    gitdir = tmp_path / ".git"
+    (gitdir / "objects" / "aa").mkdir(parents=True)
+    (gitdir / "refs" / "remotes").mkdir(parents=True)
+    (gitdir / "logs" / "refs").mkdir(parents=True)
+    (gitdir / "objects" / "aa" / "object").write_text("x", encoding="utf-8")
+    (gitdir / "refs" / "remotes" / "origin").write_text("x", encoding="utf-8")
+    (gitdir / "logs" / "refs" / "head").write_text("x", encoding="utf-8")
+    (gitdir / "packed-refs").write_text("x", encoding="utf-8")
+
+    worktree_file = tmp_path / "app" / "important.py"
+    worktree_file.parent.mkdir()
+    worktree_file.write_text("do_not_touch = True\n", encoding="utf-8")
+
+    scoped = {path.resolve() for path, _kind in guard.in_scope_paths(gitdir)}
+    assert worktree_file.resolve() not in scoped
+    assert all(str(path).startswith(str(gitdir.resolve())) for path in scoped)
+
+
+def test_verifier_entrypoints_bootstrap_repo_root_before_project_imports():
+    self_improvement = (ROOT / "scripts/ops/verify_self_improvement_truth_quarantine.py").read_text(
+        encoding="utf-8"
+    )
+    voice = (ROOT / "scripts/ops/verify_voice_front_desk_realtime_2_1.py").read_text(encoding="utf-8")
+
+    assert self_improvement.index("sys.path.insert") < self_improvement.index("from self_evolving_os import")
+    assert voice.index("sys.path.insert") < voice.index("def main()")
