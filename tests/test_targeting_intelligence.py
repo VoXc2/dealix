@@ -7,6 +7,7 @@ from dealix.company_intelligence.targeting import (
     ChannelEligibility,
     CommercialOutcome,
     ConsentState,
+    DuplicateMatchKind,
     EvidenceItem,
     EvidenceTier,
     PriorityBand,
@@ -14,6 +15,7 @@ from dealix.company_intelligence.targeting import (
     SignalFamily,
     TargetDossier,
     TargetValueFeatures,
+    classify_duplicate,
     deterministic_entity_key,
     evidence_expiry,
     normalize_company_name,
@@ -142,6 +144,60 @@ def test_duplicate_detector_prefers_domain_then_conservative_fuzzy_name():
     )
 
 
+def test_duplicate_classification_never_treats_fuzzy_as_exact_merge_authority():
+    assert classify_duplicate(
+        left_domain="example.sa",
+        left_name="Different Name",
+        right_domain="www.example.sa",
+        right_name="Another Name",
+    ) == DuplicateMatchKind.EXACT_DOMAIN
+    assert classify_duplicate(
+        left_domain="alpha.sa",
+        left_name="Acme Saudi Technology LLC",
+        right_domain="beta.sa",
+        right_name="Acme Saudi Technology",
+        fuzzy_threshold=0.90,
+    ) == DuplicateMatchKind.FUZZY_NAME_CANDIDATE
+
+
+def test_invalid_fuzzy_threshold_fails_closed():
+    with pytest.raises(ValueError, match="fuzzy_threshold"):
+        classify_duplicate(
+            left_domain="",
+            left_name="A",
+            right_domain="",
+            right_name="A",
+            fuzzy_threshold=1.1,
+        )
+
+
+def test_evidence_requires_timezone_aware_timestamps():
+    naive = datetime(2026, 9, 6, 12, 0)
+    with pytest.raises(ValueError, match="observed_at must be timezone-aware"):
+        EvidenceItem(
+            source_id="source",
+            source_url="https://example.sa",
+            tier=EvidenceTier.FIRST_PARTY_OFFICIAL,
+            observed_at=naive,
+            claim="Observed claim",
+            confidence=0.8,
+        )
+
+
+def test_evidence_expiry_cannot_precede_observation():
+    observed = datetime(2026, 9, 6, 12, 0, tzinfo=UTC)
+    with pytest.raises(ValueError, match="expires_at cannot precede observed_at"):
+        EvidenceItem(
+            source_id="source",
+            source_url="https://example.sa",
+            tier=EvidenceTier.FIRST_PARTY_OFFICIAL,
+            observed_at=observed,
+            expires_at=observed - timedelta(seconds=1),
+            claim="Observed claim",
+            confidence=0.8,
+        )
+
+
 def test_outcome_truth_cannot_skip_economic_stages():
     with pytest.raises(ValueError, match="cannot skip evidence"):
         CommercialOutcome(
@@ -184,3 +240,11 @@ def test_evidence_expiry_is_tier_specific():
     observed = datetime(2026, 9, 6, tzinfo=UTC)
     assert evidence_expiry(observed_at=observed, tier=EvidenceTier.FIRST_PARTY_OFFICIAL) == observed + timedelta(days=45)
     assert evidence_expiry(observed_at=observed, tier=EvidenceTier.SOCIAL_CHATTER) == observed + timedelta(days=14)
+
+
+def test_evidence_expiry_rejects_naive_input():
+    with pytest.raises(ValueError, match="observed_at must be timezone-aware"):
+        evidence_expiry(
+            observed_at=datetime(2026, 9, 6),
+            tier=EvidenceTier.FIRST_PARTY_OFFICIAL,
+        )
