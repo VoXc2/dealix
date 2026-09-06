@@ -7,8 +7,9 @@ This verifier is intentionally conservative and non-disclosing:
 - findings report path + line + detector only;
 - detector source code such as ``sk-proj-[A-Za-z...]`` does not match because
   it is not a credential-shaped literal;
-- a tiny exact-value allowlist covers repository test fixtures that are
-  deliberately credential-shaped. It does not exempt test paths or detectors.
+- synthetic test exceptions, when unavoidable, are scoped by exact
+  ``path + detector + SHA-256(candidate)``. No directory-wide test skip or
+  plaintext fixture allowlist is permitted.
 
 Exit codes:
   0 = no credential-shaped literals found
@@ -19,9 +20,9 @@ Exit codes:
 from __future__ import annotations
 
 import argparse
+import hashlib
 import re
 import subprocess
-import sys
 from pathlib import Path
 
 DETECTORS: tuple[tuple[str, re.Pattern[str]], ...] = (
@@ -33,16 +34,6 @@ DETECTORS: tuple[tuple[str, re.Pattern[str]], ...] = (
     ("aws_access_key", re.compile(r"AKIA[0-9A-Z]{16}")),
 )
 
-# These are deterministic synthetic values used by security/redaction tests.
-# Construct them from parts so this verifier never embeds a credential-shaped
-# literal that would match its own detectors. Never add a production value here.
-SYNTHETIC_TEST_FIXTURES: frozenset[tuple[str, str]] = frozenset(
-    {
-        ("github_token", "ghp_" + ("a" * 32)),
-        ("aws_access_key", "AKIA" + "0123456789ABCDEF"),
-    }
-)
-
 SKIP_SUFFIXES = {
     ".7z", ".avi", ".bin", ".bmp", ".class", ".db", ".dll", ".docx",
     ".dylib", ".gif", ".gz", ".ico", ".jar", ".jpeg", ".jpg", ".lock",
@@ -50,6 +41,16 @@ SKIP_SUFFIXES = {
     ".sqlite", ".sqlite3", ".tar", ".tgz", ".webp", ".woff", ".woff2",
     ".xlsx", ".zip",
 }
+
+# Exact synthetic fixture exceptions only. The raw candidate is intentionally
+# absent from source. Any path, detector, or value drift becomes a fresh HOLD.
+FIXTURE_ALLOWLIST: frozenset[tuple[str, str, str]] = frozenset({
+    (
+        "tests/test_v5_layers_pt4.py",
+        "aws_access_key",
+        "d5bde4de080e64fc9b093e0d14e164c828c4b4195a6932fa7c53d25472f43000",
+    ),
+})
 
 
 def tracked_files(repo: Path) -> list[Path]:
@@ -62,7 +63,12 @@ def tracked_files(repo: Path) -> list[Path]:
     return [repo / item.decode("utf-8") for item in proc.stdout.split(b"\0") if item]
 
 
-def scan_file(path: Path) -> list[tuple[int, str]]:
+def is_allowlisted_fixture(relative_path: str, detector: str, candidate: str) -> bool:
+    digest = hashlib.sha256(candidate.encode("utf-8")).hexdigest()
+    return (relative_path, detector, digest) in FIXTURE_ALLOWLIST
+
+
+def scan_file(path: Path, *, relative_path: str | None = None) -> list[tuple[int, str]]:
     if path.suffix.lower() in SKIP_SUFFIXES or not path.is_file():
         return []
     try:
@@ -74,7 +80,8 @@ def scan_file(path: Path) -> list[tuple[int, str]]:
     for lineno, line in enumerate(text.splitlines(), start=1):
         for detector, pattern in DETECTORS:
             for match in pattern.finditer(line):
-                if (detector, match.group(0)) in SYNTHETIC_TEST_FIXTURES:
+                candidate = match.group(0)
+                if relative_path and is_allowlisted_fixture(relative_path, detector, candidate):
                     continue
                 findings.append((lineno, detector))
     return findings
@@ -89,8 +96,9 @@ def main() -> int:
     try:
         findings: list[tuple[str, int, str]] = []
         for path in tracked_files(repo):
-            for lineno, detector in scan_file(path):
-                findings.append((path.relative_to(repo).as_posix(), lineno, detector))
+            relative_path = path.relative_to(repo).as_posix()
+            for lineno, detector in scan_file(path, relative_path=relative_path):
+                findings.append((relative_path, lineno, detector))
     except (subprocess.CalledProcessError, OSError) as exc:
         print(f"SECRET_LITERAL_SCAN=ERROR error_type={type(exc).__name__}")
         print("SECRET_VALUES_PRINTED=false")
