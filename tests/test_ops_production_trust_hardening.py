@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import importlib.util
+import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -11,6 +12,9 @@ def load_module(name: str, relative: str):
     spec = importlib.util.spec_from_file_location(name, path)
     assert spec and spec.loader
     module = importlib.util.module_from_spec(spec)
+    # dataclasses and postponed annotations expect the defining module to be
+    # present in sys.modules while the module body executes.
+    sys.modules[name] = module
     spec.loader.exec_module(module)
     return module
 
