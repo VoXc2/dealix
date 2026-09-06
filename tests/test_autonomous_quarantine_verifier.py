@@ -90,8 +90,9 @@ class TestQuarantineVerifier(unittest.TestCase):
             app = object()
             endpoint = staticmethod(endpoint())
 
-        with self.assertRaises(ValueError):
+        with self.assertRaises(q.InspectionError) as caught:
             q._inspect_routes([Mount()])
+        self.assertEqual(caught.exception.code, "opaque_route_node")
 
     def test_route_cycle_terminates_and_reused_nodes_deduplicate(self):
         leaf = route()
@@ -113,17 +114,21 @@ class TestQuarantineVerifier(unittest.TestCase):
 
     def test_empty_inventory_is_not_a_pass(self):
         for roots in ([], [Node(routes=[])]):
-            with self.assertRaises(ValueError):
-                q._inspect_routes(roots)
+            with self.subTest(roots=roots):
+                with self.assertRaises(q.InspectionError) as caught:
+                    q._inspect_routes(roots)
+                self.assertEqual(caught.exception.code, "empty_route_inventory")
 
     def test_opaque_nodes_are_not_silently_skipped(self):
-        with self.assertRaises(ValueError):
+        with self.assertRaises(q.InspectionError) as caught:
             q._inspect_routes([route(), object()])
+        self.assertEqual(caught.exception.code, "opaque_route_node")
 
     def test_wrong_source_module_rejected(self):
         with patch.object(q.importlib, "import_module", return_value=Node(__file__="/other.py")):
-            with self.assertRaises(ValueError):
+            with self.assertRaises(q.InspectionError) as caught:
                 q._checked_import("api.main", Path("/expected.py"))
+            self.assertEqual(caught.exception.code, "module_source_mismatch")
 
     def test_missing_safety_flags_hold_without_imports(self):
         with patch.dict(os.environ, {}, clear=True), patch.object(q, "_checked_import") as load:
@@ -166,9 +171,17 @@ class TestQuarantineVerifier(unittest.TestCase):
         self.assertEqual(code, 3)
         self.assertIn("legacy_endpoint_module", output)
 
+    def test_structural_inspection_hold_exposes_only_safe_stage_and_code(self):
+        code, output = self._main_fixture("# quarantine\n", [object()])
+        self.assertEqual(code, 4)
+        self.assertIn("inspection_stage=application_routes", output)
+        self.assertIn("inspection_code=opaque_route_node", output)
+        self.assertIn("error_type=InspectionError", output)
+
     def test_incomplete_import_holds_without_leaking_exception_content(self):
         code, output = self._main_fixture("# quarantine\n", load_error=RuntimeError("sensitive-test-value"))
         self.assertEqual(code, 4)
+        self.assertIn("inspection_stage=domain_import", output)
         self.assertIn("error_type=RuntimeError", output)
         self.assertNotIn("sensitive-test-value", output)
 
