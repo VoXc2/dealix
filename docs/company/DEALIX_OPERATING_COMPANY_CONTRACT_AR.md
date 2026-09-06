@@ -1,8 +1,8 @@
 # Dealix Operating Company Contract (Governed Acceleration)
 
-هذا المستند يربط الرؤية التشغيلية الكبرى بـ **عقد تنفيذي داخل الكود** بدلاً من بقائها كنص نظري فقط.
+هذا المستند يربط الرؤية التشغيلية الكبرى بعقد تنفيذي داخل الكود بدل بقائها كنص نظري فقط.
 
-المرجع البرمجي:
+المراجع البرمجية:
 
 - `auto_client_acquisition/orchestrator/operating_company_contract.py`
 - `auto_client_acquisition/orchestrator/policies.py`
@@ -10,79 +10,118 @@
 
 ## المعادلة التشغيلية
 
-Dealix = Saudi-first AI Business Operating System، ومدخلها التجاري الحالي هو **Revenue + Proof + Command**.
+Dealix = **AI Business Operating System**، ومدخلها التجاري الحالي هو **Revenue + Proof + Command**.
+
+السعودية سوق انطلاق وسياق تشغيلي مهم، وليست ادعاء `الأول سعوديًا` أو أسبقية/تفوق سوقي دون دليل مستقل.
+
+الـNorth Star:
+
+`CASH_READY_AUTONOMOUS_DEALIX_COMPANY`
+
+التحسين:
+
+`Verified Economic Movement / Founder Minute / Cost / Risk`
 
 القاعدة الثابتة:
 
 **No autonomous chaos. Governed acceleration.**
 
-سلسلة القرار التشغيلية العامة:
+سلسلة القرار:
 
-Signal → Source → Risk → Approval → Action → Evidence → Decision → Value → Asset
+`Signal -> Evidence -> Decision -> Approval -> Action -> Outcome -> Proof -> Learning`
 
-وسلسلة الحقيقة التجارية الحالية هي:
+وسلسلة الحقيقة التجارية:
 
-**Real Interaction → Verified Relationship → Qualified Problem → Free Mini Diagnostic → Qualified Discovery → Customer-Specific Quote → Pilot Decision → Verified Payment → Pilot Delivery → Proof Review → Expand / Stop**
+`Real Interaction -> Qualified Problem -> Execution Diagnostic -> Qualified Discovery -> Customer-Specific Quote -> Verified Payment -> Governed Delivery -> Customer-Validated Proof -> Expand / Stop / Redesign -> Repeatability`
 
-> أحداث وحالات الـlegacy تبقى فقط للتوافق مع القرّاء/runners التاريخيين، ولا تنشئ authority تجارية جديدة ولا تتغلب على السلسلة الحالية.
+> أحداث وحالات legacy تبقى فقط للتوافق مع القرّاء/runners التاريخيين، ولا تنشئ authority تجارية جديدة ولا تتغلب على السلسلة الحالية.
 
-## ما الذي تم ترميزه (Codified) داخل العقد؟
+## Five canonical agents فقط
 
-1. **المصانع السبعة** كنماذج تشغيلية واضحة:
-   - Demand Factory
-   - Trust Factory
-   - Sales Factory
-   - Delivery Factory
-   - Proof Factory
-   - Product Learning Factory
-   - Governance Factory
+- `dealix-pm`
+- `dealix-sales`
+- `dealix-delivery`
+- `dealix-engineer`
+- `dealix-content`
 
-2. **اللوبات التسعة** مع إعادة توجيه الحركة التجارية إلى العلاقة الحقيقية والدفع والإثبات، لا إلى عدد leads أو markers.
+أي specialist هو bounded workload تحت أحد هؤلاء، وليس permanent agent جديدًا.
 
-3. **Taxonomy موحّد للأحداث** يحتوي أحداث الحقيقة التجارية الحالية (`interaction_captured`, `relationship_verified`, `problem_qualified`, `diagnostic_started`, `discovery_completed`, `pilot_payment_verified`, `pilot_delivery_started`, `final_proof_pack_ready`) مع إبقاء أحداث legacy للتوافق فقط.
+## One Company Machine
 
-4. **State Machine** يحمي المسار الحالي من `research_signal` حتى `proof_review/closed_won`، مع منع القفز من research إلى relationship أو payment.
+لا يتم إنشاء CRM أو Company Brain أو Opportunity Graph أو Approval Center أو Proof Ledger أو Scheduler أو Workflow Engine أو permanent Agent Fleet موازية بلا blocker مقاس يثبت أن المالك الحالي غير كافٍ.
 
-5. **قواعد لا تُكسر (Event Guards):**
-   - لا `relationship_verified` بدون `interaction_captured` و`interaction_evidence_ref`.
-   - لا `problem_qualified` بدون علاقة مثبتة ودليل مشكلة.
-   - **Free Mini Diagnostic لا يتطلب دفعًا**؛ يبدأ بعد `problem_qualified`.
-   - يمكن قبول `invoice_paid` كـlegacy prior event لقراءة السجلات التاريخية فقط، وليس كمسار authority جديد.
-   - لا `discovery_completed` بدون Diagnostic مكتمل وملاحظات Discovery موثقة.
-   - لا Customer-Specific Quote بدون Discovery ودليل scope.
-   - لا `pilot_payment_verified` بدون `payment_proof_ref`.
-   - لا `pilot_delivery_started` بدون حدث دفع مثبت + مرجع إثبات الدفع.
-   - لا `closed_won` بدون دليل دفع مثبت.
-   - لا `proof_pack_sent` قبل `founder_reviewed=true` في مسار legacy.
-   - لا `case_study_approved` بدون `client_permission=true`.
+## ما الذي يجب أن يحميه العقد؟
 
-6. **Approval Matrix قابلة للاستدعاء برمجياً:**
-   - إرسال Customer-Specific Quote أو scope خارجي يبقى التزامًا تجاريًا محكومًا.
-   - `start_delivery` / `start_pilot_delivery` يبقى fail-closed بدون payment proof.
-   - `send_invoice` التزام مالي محكوم.
-   - `security_claim` و`publish_case_study` و`final_diagnostic` تبقى خاضعة للحوكمة الحالية.
-   - `agent_tool_action` يتطلب موافقة عند مخاطر متوسطة فأعلى.
+1. **Relationship truth**
+   - لا `relationship_verified` بدون real interaction + evidence.
+   - public email/phone ≠ consent.
+   - research/exhibitor/badge/CRM row ≠ relationship.
+
+2. **Problem / qualification truth**
+   - لا problem qualified بلا relationship/interaction evidence والمشكلة المحددة وصاحب القرار/الـworkflow المطلوب حسب السلطة التجارية الحالية.
+
+3. **Diagnostic / discovery truth**
+   - Free Mini Diagnostic أو Execution Diagnostic لا يتحول تلقائيًا إلى بيع أو Payment.
+   - discovery completion يحتاج evidence وscope واضحين.
+
+4. **Quote / negotiation truth**
+   - Customer-Specific Quote يحتاج discovery/scope authority.
+   - quote ≠ invoice ≠ payment.
+   - named price/discount/payment terms/contract remain governed.
+
+5. **Payment truth**
+   - لا `pilot_payment_verified` بلا `payment_proof_ref` أو الدليل المعتمد المكافئ.
+   - لا Closed Won/Verified Cash من stage marker أو proposal أو invoice draft.
+
+6. **Delivery truth**
+   - paid delivery لا يبدأ بلا start conditions المطلوبة وإثبات الدفع عندما تكون الصفقة مدفوعة.
+   - activity ≠ delivery.
+   - delivery ≠ customer value.
+
+7. **Proof truth**
+   - synthetic/demo/internal ≠ customer proof.
+   - customer outcome يحتاج baseline + measured result + evidence + attribution caveats + customer acceptance عندما يوحي الادعاء بقيمة مؤكدة من العميل.
+   - case study/public proof يحتاج publication permission.
+
+## Approval Matrix
+
+الأفعال الحساسة تبقى محكومة، ومنها:
+
+- customer-facing send;
+- quote/scope commitment عندما يترتب عليه التزام؛
+- invoice/payment/refund/spend;
+- contract/legal/exclusivity/warranty/tender;
+- public publish/customer logo/testimonial/case study;
+- Production deploy/config;
+- DNS/material DB/secrets mutation;
+- unsupported security/compliance/market-first claim.
+
+وجود Draft أو Agent recommendation لا يمنح authority.
 
 ## Truth Firewall
 
-العقد لا يسمح بالترقيات التالية بلا دليل:
+- Research ≠ Relationship
+- Public contact ≠ Consent
+- Draft ≠ Sent
+- Quote ≠ Invoice
+- Invoice ≠ Payment
+- Activity ≠ Delivery
+- Delivery ≠ Customer Value
+- Synthetic/Demo ≠ Customer Proof
+- PR ≠ Production
+- Historical PASS ≠ Current Exact-Head PASS
+- HTTP 200 ≠ Canonical Release Identity
 
-- Research ≠ Relationship.
-- Exhibitor / badge / CRM row ≠ Relationship.
-- Public email/phone ≠ Consent.
-- Proposal / Quote ≠ Revenue.
-- Invoice ≠ Payment.
-- Demo / synthetic evidence ≠ Customer Proof.
-- Closed Won يحتاج payment evidence؛ لا يُشتق من partner marker أو proposal state.
+## WIP / investment law
 
-## لماذا هذا مهم؟
+أي عمل جديد يجب أن يثبت أنه يحرك واحدًا من:
 
-- يطابق العقد التنفيذي مع المسار التجاري الحالي: Free Mini Diagnostic قبل Discovery والدفع.
-- يفصل Free Diagnostic عن paid Pilot Delivery.
-- يمنع تضخم حالات الإيراد أو العلاقة أو التسليم بلا دليل.
-- يبقي توافق السجلات القديمة بدون أن يعيد إحياء 7-day / 499 SAR / fixed-price authority.
-- يجعل كل قرار قابلًا للتدقيق (audit-ready).
-- يحول التشغيل اليومي إلى evidence وplaybooks قابلة للمنتجة لاحقًا.
+- Production Trust
+- Real Interaction
+- Verified Cash
+- Customer Proof
+
+إذا لا، يدخل backlog بدل أن يفتح architecture جديدة.
 
 ## التحقق المطلوب
 
@@ -96,12 +135,12 @@ python3 -m py_compile \
   scripts/verify_operating_company_commercial_state.py
 ```
 
-ثم شغّل exact-head sovereign verification عبر العقد الموجود `bin/dealix verify ...` على الـVPS. لا تعتبر GitHub-hosted checks التي لم تبدأ steps دليل قبول للكود.
+ثم exact-head sovereign verification عبر العقد الموجود `bin/dealix verify ...` على الـVPS. GitHub-hosted checks التي لا تبدأ repository steps ليست code acceptance.
 
-## Execution Hooks التالية
+## Execution hooks التالية
 
-1. ربط `validate_event(...)` على كل بوابة كتابة canonical commercial events بدل الاعتماد على UI filtering.
-2. ربط Big 5 / LEAP Interaction Receipts مباشرة بـ `interaction_captured` ثم `relationship_verified` فقط عند وجود evidence.
-3. جعل Revenue Leak Map + Decision Pack + Executive Command outputs deterministic/versioned/evidence-bound.
-4. إبقاء paid delivery وClosed Won محميين بإثبات الدفع.
-5. تسجيل violations وstate promotions في Proof/Trust receipts حتى تصل للـPresident تحت RISKS/DECISIONS بدل dashboard موازٍ.
+1. ربط `validate_event(...)` على كل بوابة كتابة canonical commercial events.
+2. ربط Interaction Receipts بـreal interaction/relationship state فقط عند evidence.
+3. جعل Targeting / Revenue / Decision / Proof outputs deterministic/versioned/evidence-bound قدر الإمكان.
+4. إبقاء paid delivery وVerified Cash محميين بإثبات الدفع.
+5. تسجيل violations/state promotions في Proof/Trust receipts لتظهر للرئيس تحت `MONEY / DECISIONS / RISKS / APPROVALS / NEXT_ACTION` بدل dashboard موازٍ.
