@@ -125,6 +125,11 @@ def read_previous_digest(out_root: Path) -> str | None:
     digest = str(payload.get("envelope_sha256") or "")
     if not re.fullmatch(r"[0-9a-f]{64}", digest):
         raise ProofError("previous envelope digest invalid")
+    previous_core = dict(payload)
+    previous_core.pop("envelope_sha256", None)
+    actual = sha256_hex(canonical_bytes(previous_core))
+    if actual != digest:
+        raise ProofError("previous envelope integrity check failed")
     return digest
 
 
