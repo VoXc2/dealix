@@ -1,23 +1,34 @@
-# 02 — Diagnostic Summary / ملخص التشخيص
+# 02 — Free Mini Diagnostic Summary / ملخص التشخيص المجاني
 
-> Output of the free/paid diagnostic. Internal analysis (A1) until the
-> founder reviews it; becomes a customer-facing draft (A2) only after review.
+> `dealix-sales` prepares this from the customer context and evidence in this
+> workspace. `dealix-pm` checks commercial truth and next-best-action. Internal
+> until the exact customer-facing use is authorized.
 
 ## Top findings / أبرز النتائج
-<!-- 3–5 findings. Each tied to evidence in 01 or to what the customer said. -->
+<!-- 3–5 findings. Every finding must cite a source or customer statement. -->
 1.
 2.
 3.
 
-## Where revenue leaks / أين يتسرب الإيراد
-<!-- Specific, observable. No invented numbers. -->
+## Revenue / decision leakage / تسرب الإيراد أو القرار
+<!-- Specific and observable. Missing evidence stays UNKNOWN. -->
 -
 
-## Quick wins (0–30 days) / مكاسب سريعة
+## Baseline & evidence gaps / خط الأساس وفجوات الدليل
+| Metric / state | Baseline | Evidence ref | Confidence |
+| --- | --- | --- | --- |
+| | | | low / med / high |
+
+## Smallest useful intervention / أصغر تدخل مفيد
+<!-- One workflow only. No unbounded transformation. -->
 -
 
-## Recommended next step / الخطوة التالية الموصى بها
-- [ ] Command Sprint scope (see `03_command_sprint_scope.md`)
+## Recommended next step / الخطوة التالية
+- [ ] Not qualified — stop / collect missing evidence
+- [ ] Qualified Discovery — validate problem, owner, baseline, data boundary, approvals, budget, timing
+
+> The next paid step, if discovery qualifies, is a **customer-specific quote**
+> for the **30-Day Revenue Command Pilot**. There is no public fixed Pilot price.
 
 ## Confidence / مستوى الثقة
 | Finding | Confidence | Basis |

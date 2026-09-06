@@ -1,26 +1,9 @@
-"""Sector Intelligence Reports — R4 productization (W7.2).
+"""Sector Intelligence Reports — research/delivery capability, not price authority.
 
-Generates a Saudi-sector monthly research report from the data the
-platform already has: 287 Saudi B2B accounts (loaded), proof events,
-market signals, lead-engine enrichments.
-
-Two endpoints:
-
-  GET  /api/v1/sector-intel/sectors
-       Lists available sectors and last-generated report timestamps.
-
-  POST /api/v1/sector-intel/generate
-       Generates a fresh sector report. Admin-gated for production
-       (each generation costs API quota). Body specifies sector +
-       optional date range. Returns report metadata + presigned link.
-
-  GET  /api/v1/sector-intel/reports/{report_id}
-       Read-only fetch of a specific report (JSON payload).
-
-This is the SCAFFOLD layer for R4: the report payload uses real
-account/signal data from the DB where present, and labeled placeholder
-sections where data hasn't been collected yet. Productization graduates
-each placeholder to real data once a customer asks for that section.
+Generates Saudi-sector research from source-bound platform data. The capability
+is useful for diagnostics, discovery, delivery and proof preparation, but it is
+not a standalone public fixed-price product. Any customer commercial scope must
+flow through the canonical customer-specific quote path.
 """
 from __future__ import annotations
 
@@ -30,14 +13,13 @@ import os
 from datetime import UTC, datetime
 from typing import Any
 
-from fastapi import APIRouter, Header, HTTPException, Path, Query
+from fastapi import APIRouter, Header, HTTPException, Path
 from pydantic import BaseModel, ConfigDict, Field
 
 log = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/api/v1/sector-intel", tags=["sector-intel"])
 
-# Supported sectors (matches v4 §3 R4 target ICPs + the 4 customers we sequence)
 SUPPORTED_SECTORS = {
     "saudi_saas",
     "real_estate",
@@ -49,15 +31,11 @@ SUPPORTED_SECTORS = {
     "government",
 }
 
-REPORT_PRICE_SAR = {
-    "saudi_saas": 1500,
-    "real_estate": 5000,
-    "hospitality": 2500,
-    "logistics": 3000,
-    "fintech": 5000,
-    "healthcare": 7500,  # regulated, premium
-    "retail": 2000,
-    "government": 10000,  # custom
+_COMMERCIAL_AUTHORITY = {
+    "mode": "internal_research_delivery_capability",
+    "price_authority": "customer_specific_quote_after_qualified_discovery",
+    "public_fixed_price": False,
+    "live_charge_allowed": False,
 }
 
 
@@ -67,11 +45,11 @@ class _GenerateRequest(BaseModel):
     period_start: str | None = Field(default=None, description="YYYY-MM-DD")
     period_end: str | None = Field(default=None, description="YYYY-MM-DD")
     customer_handle: str | None = Field(default=None, max_length=64,
-                                        description="optional — bill against this tenant")
+                                        description="optional delivery context; not billing authority")
 
 
 def _require_admin(authorization: str | None) -> None:
-    """Same gate as tenant_theming.py — admin-only for paid actions."""
+    """Admin-only because generation can consume research/API resources."""
     allowed = (os.environ.get("ADMIN_API_KEYS") or "").split(",")
     allowed = [k.strip() for k in allowed if k.strip()]
     if not allowed:
@@ -89,7 +67,7 @@ def _report_id(sector: str, generated_at: datetime) -> str:
 
 
 async def _collect_sector_accounts(sector: str) -> list[dict[str, Any]]:
-    """Pull all known Saudi B2B accounts in this sector. Returns [] if DB unreachable."""
+    """Pull known Saudi B2B accounts in this sector. Returns [] if DB unreachable."""
     try:
         from sqlalchemy import select
 
@@ -119,6 +97,7 @@ async def _collect_sector_accounts(sector: str) -> list[dict[str, Any]]:
 
 async def _collect_market_signals(sector: str, days: int = 30) -> list[dict[str, Any]]:
     """Pull recent market signals scoped to this sector. Returns [] if DB unreachable."""
+    del days
     try:
         from sqlalchemy import desc, select
 
@@ -147,39 +126,31 @@ async def _collect_market_signals(sector: str, days: int = 30) -> list[dict[str,
 
 
 def _placeholder_section(name: str, sector: str) -> dict[str, Any]:
-    """Returns an honest placeholder rather than fabricated data.
-
-    Per v4 §6 PDPL principle: don't invent customer data. If we don't
-    have it, label the section clearly so the buyer knows what's real.
-    """
+    """Return an honest placeholder rather than fabricated data."""
     return {
         "section": name,
         "status": "placeholder",
         "note": (
             f"This section is a placeholder. Real data will populate once "
-            f"3+ customers in '{sector}' generate proof events through Dealix. "
-            f"See docs/ops/LAAS_DELIVERY_RUNBOOK.md for data sourcing."
+            f"evidence-backed customer/market observations exist for '{sector}'."
         ),
         "sector": sector,
     }
 
 
-# ── Endpoints ──────────────────────────────────────────────────────
-
 @router.get("/sectors")
 async def list_sectors() -> dict[str, Any]:
-    """List all sectors Dealix can produce reports for, with pricing."""
+    """List research sectors without publishing prices or sales authority."""
     return {
         "sectors": [
             {
                 "key": s,
-                "price_sar": REPORT_PRICE_SAR[s],
                 "data_maturity": "placeholder" if s in ("government", "healthcare") else "partial",
             }
             for s in sorted(SUPPORTED_SECTORS)
         ],
-        "currency": "SAR",
-        "note": "Reports are R4 in the v4 §3 stream — activated after customer #5.",
+        "commercial_authority": dict(_COMMERCIAL_AUTHORITY),
+        "note": "Sector intelligence supports diagnostics/discovery/delivery; it is not a public fixed-price offer.",
     }
 
 
@@ -188,7 +159,7 @@ async def generate_report(
     body: _GenerateRequest,
     authorization: str | None = Header(default=None),
 ) -> dict[str, Any]:
-    """Generate a sector intelligence report. Admin-gated."""
+    """Generate a source-bound sector report. Admin-gated; no billing side effect."""
     _require_admin(authorization)
 
     if body.sector not in SUPPORTED_SECTORS:
@@ -207,7 +178,7 @@ async def generate_report(
         "report_id": report_id,
         "sector": body.sector,
         "generated_at": generated_at.isoformat(),
-        "price_sar": REPORT_PRICE_SAR[body.sector],
+        "commercial_authority": dict(_COMMERCIAL_AUTHORITY),
         "period_start": body.period_start,
         "period_end": body.period_end,
         "customer_handle": body.customer_handle,
@@ -219,8 +190,7 @@ async def generate_report(
                 "account_count": len(accounts),
                 "sample_top_10": accounts[:10],
                 "note": (
-                    f"{len(accounts)} known accounts indexed. "
-                    "Full list available in the paid report."
+                    f"{len(accounts)} known accounts indexed. Full account data remains evidence-bound."
                 ) if accounts else "No accounts indexed yet for this sector.",
             },
             "market_signals_30d": {
@@ -241,17 +211,16 @@ async def generate_report(
             "compliance_notes": {
                 "section": "compliance_notes",
                 "status": "real",
-                "pdpl": "PDPL-compliant: all data sourced from public Saudi "
-                        "business registries (MCI, Chamber directories, SDAIA "
-                        "Open Data) — no PII collected.",
-                "zatca": f"Invoice for this report follows ZATCA Phase 2 spec; "
-                         f"price {REPORT_PRICE_SAR[body.sector]} SAR ex-VAT.",
+                "pdpl": (
+                    "Use lawful/public/first-party sources only; public business data does not imply consent or relationship."
+                ),
+                "commercial": (
+                    "No standalone report price or payment authority. Any customer scope follows qualified discovery and a customer-specific quote."
+                ),
             },
         },
     }
 
-    # W8.2 — persist to DB if available (graceful fallback if DB unreachable
-    # or migration 008 not yet applied — caller still gets the report inline).
     persisted = await _persist_report(
         report_id=report_id,
         sector=body.sector,
@@ -266,6 +235,7 @@ async def generate_report(
         "report": report,
         "persisted": persisted,
         "presigned_url": f"/api/v1/sector-intel/reports/{report_id}",
+        "commercial_authority": dict(_COMMERCIAL_AUTHORITY),
     }
 
 
@@ -278,11 +248,7 @@ async def _persist_report(
     period_end: str | None,
     payload: dict[str, Any],
 ) -> bool:
-    """Upsert a sector report into the sector_reports table.
-
-    Returns True on successful write, False on graceful skip (DB layer
-    unavailable, migration 008 not applied, etc.).
-    """
+    """Persist research output using legacy table fields without creating billing truth."""
     try:
         from sqlalchemy import select
 
@@ -304,22 +270,23 @@ async def _persist_report(
                     id=report_id,
                     sector=sector,
                     customer_handle=customer_handle,
-                    price_sar=REPORT_PRICE_SAR[sector],
+                    price_sar=0,
                     period_start=period_start,
                     period_end=period_end,
                     payload=payload,
-                    payment_status="pending",
+                    payment_status="not_applicable",
                 )
                 session.add(row)
             else:
                 existing.payload = payload
                 existing.period_start = period_start
                 existing.period_end = period_end
+                existing.price_sar = 0
+                existing.payment_status = "not_applicable"
             await session.commit()
             return True
     except Exception as exc:
-        log.warning("sector_report_persist_failed report_id=%s error=%s",
-                    report_id, exc)
+        log.warning("sector_report_persist_failed report_id=%s error=%s", report_id, exc)
         return False
 
 
@@ -327,12 +294,7 @@ async def _persist_report(
 async def fetch_report(
     report_id: str = Path(..., pattern=r"^sr_[a-f0-9]{20}$"),
 ) -> dict[str, Any]:
-    """Fetch a previously-generated report by ID.
-
-    W8.2 — reads from sector_reports table. Returns 404 only when the
-    record genuinely doesn't exist; degrades gracefully if the DB
-    layer is unavailable.
-    """
+    """Fetch a previously-generated research report by ID."""
     try:
         from sqlalchemy import select
 
@@ -355,11 +317,9 @@ async def fetch_report(
                 )
             ).scalar_one_or_none()
     except (ConnectionError, OSError) as exc:
-        # DB unreachable (no Postgres / migration not applied) — persistence is
-        # deferred per v4 §7, so the report is simply not persisted yet.
         log.warning("sector_report_fetch_db_unavailable error=%s", exc)
         row = None
-    except Exception as exc:  # SQLAlchemy OperationalError etc.
+    except Exception as exc:
         if "connect" in str(exc).lower() or exc.__class__.__name__ in (
             "OperationalError",
             "InterfaceError",
@@ -387,26 +347,19 @@ async def fetch_report(
         "report_id": row.id,
         "sector": row.sector,
         "customer_handle": row.customer_handle,
-        "price_sar": row.price_sar,
         "period_start": row.period_start,
         "period_end": row.period_end,
-        "payment_status": row.payment_status,
         "delivered_at": row.delivered_at.isoformat() if row.delivered_at else None,
         "created_at": row.created_at.isoformat() if row.created_at else None,
         "payload": row.payload,
+        "commercial_authority": dict(_COMMERCIAL_AUTHORITY),
+        "legacy_storage_fields_are_not_commercial_authority": True,
     }
-
-
-# ── Wave 14D.3: public sample endpoint ──────────────────────────────
 
 
 @router.get("/sample/{sector}")
 async def sample_report(sector: str) -> dict[str, Any]:
-    """Wave 14D.3 — return a pre-generated case-safe Saudi sector sample.
-
-    Reads from docs/sector-reports/{sector}_sample.md if present; otherwise
-    falls back to the Wave 5 benchmark_os generator (synthetic + aggregated).
-    """
+    """Return a case-safe Saudi sector sample; sample is not customer proof."""
     from pathlib import Path
 
     repo_root = Path(__file__).resolve().parent.parent.parent
@@ -418,6 +371,7 @@ async def sample_report(sector: str) -> dict[str, Any]:
             "markdown": candidate.read_text(encoding="utf-8"),
             "is_sample": True,
             "governance_decision": "allow",
+            "commercial_authority": dict(_COMMERCIAL_AUTHORITY),
         }
 
     from auto_client_acquisition.benchmark_os.report_generator import generate_readiness_report
@@ -432,4 +386,5 @@ async def sample_report(sector: str) -> dict[str, Any]:
         "markdown": report.to_markdown(),
         "is_sample": True,
         "governance_decision": "allow_with_review",
+        "commercial_authority": dict(_COMMERCIAL_AUTHORITY),
     }

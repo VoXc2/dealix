@@ -2,15 +2,16 @@
 
 Kept separate from approval_store.py so the rule engine can be wired
 in without breaking the existing v6 store contract. Callers invoke
-``try_auto_approve_via_founder_rule`` on a freshly-persisted PENDING
-ApprovalRequest; if a signed, non-expired rule matches, the request
-transitions pending → approved and an audit breadcrumb is written.
+``try_auto_approve_via_founder_rule`` while a PENDING ApprovalRequest is
+being created; if a signed, non-expired rule matches *and its usage audit
+is recorded successfully*, the request transitions pending -> approved and
+a durable approval breadcrumb is written.
 
 Hard guarantees (enforced both here AND in founder_rules.py):
   - WhatsApp / LinkedIn / Phone are NEVER auto-approved.
   - High / blocked risk levels are NEVER auto-approved.
   - Idempotent: an already-approved request is returned unchanged.
-  - Fail-closed: any unexpected error returns the request unchanged.
+  - Fail-closed: match or rule-usage audit failures leave the request pending.
 """
 from __future__ import annotations
 
@@ -50,13 +51,17 @@ def try_auto_approve_via_founder_rule(
     content: str = "",
     engine: FounderRuleEngine | None = None,
 ) -> ApprovalRequest:
-    """If a founder rule matches, transition pending → approved and
-    record an audit breadcrumb. Otherwise return req unchanged.
+    """Auto-approve only when both rule matching and rule-use audit succeed.
+
+    The approval record itself receives the durable breadcrumb, while the rule
+    engine records use of the founder rule. A rule-engine audit failure is a
+    trust failure, so the request remains PENDING instead of gaining execution
+    authority with incomplete evidence.
 
     NEVER overrides whatsapp / linkedin / phone gates.
     Idempotent on already-approved requests.
     """
-    # ── Hard gates that no rule can bend ────────────────────────
+    # Hard gates that no rule can bend.
     if (req.channel or "").lower() in _BLOCKED_AUTO_CHANNELS:
         return req
     if ApprovalStatus(req.status) != ApprovalStatus.PENDING:
@@ -80,9 +85,15 @@ def try_auto_approve_via_founder_rule(
     if rule is None:
         return req
 
-    # Match found — transition + audit breadcrumb in edit_history.
-    # Only ``approval_required`` requests reach this point (gate above),
-    # so escalating to ``approved_execute`` is correct here.
+    # Record founder-rule use before granting execution authority. If the
+    # rule-use audit cannot be written, fail closed and persist the request as
+    # PENDING. This prevents a multi-worker/restart-safe Approval Center from
+    # containing an APPROVED transition whose authorizing rule use is missing.
+    try:
+        eng.record_match(rule, req, confidence=confidence)
+    except Exception:
+        return req
+
     req.status = ApprovalStatus.APPROVED
     req.action_mode = "approved_execute"
     entry: dict[str, Any] = {
@@ -95,14 +106,6 @@ def try_auto_approve_via_founder_rule(
     }
     req.edit_history.append(entry)
     req.updated_at = datetime.now(UTC)
-
-    try:
-        eng.record_match(rule, req, confidence=confidence)
-    except Exception:
-        # Audit-write failure must NOT unwind a successful auto-approve.
-        # The edit_history breadcrumb above is the durable record.
-        pass
-
     return req
 
 

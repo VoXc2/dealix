@@ -1,25 +1,29 @@
-# 11 — Upsell Recommendation / توصية التوسّع
+# 11 — Outcome Review & Expansion Decision / مراجعة النتيجة وقرار التوسع
 
-> Internal analysis (A1) → becomes A2 when offered to the customer.
-> Grounded in what the sprint actually surfaced. No pressure, no guarantees.
+> Compatibility filename retained; this is **not an automatic upsell surface**.
+> `dealix-pm` and `dealix-delivery` prepare an internal recommendation only from
+> verified Pilot evidence. Any expansion is a new scope + discovery/commercial
+> decision with a customer-specific quote and current authority.
 
-## Signal from the sprint / إشارة من السبرنت
-<!-- The specific finding that justifies a next engagement. -->
+## Evidence from the Pilot / دليل من البايلوت
+<!-- Specific verified finding(s) from 10_proof_pack.md. -->
+-
 
-## Recommended offer / العرض الموصى به
-| Option | Scope | Indicative price (SAR) | Fit |
-| --- | --- | --- | --- |
-| Managed Ops (retainer) | | | |
-| Data Pack | | | |
-| Custom AI build | | | |
+## Customer objective after Day 30 / هدف العميل بعد اليوم 30
+-
 
-## Why this, why now / لماذا هذا الآن
-<!-- Tied to the verified outcomes in 10_proof_pack.md. -->
+## Decision / القرار
+- [ ] **STOP** — objective reached / no justified next scope
+- [ ] **EXPAND** — a new bounded workflow is evidence-backed
+- [ ] **REDESIGN** — current hypothesis/scope needs another design
 
-## Founder decision / قرار المؤسس
-- [ ] Offer now
-- [ ] Wait — reason:
-- [ ] No upsell — reason:
+## If EXPAND: bounded next-scope hypothesis / فرضية نطاق التوسع
+| Workflow | Customer problem | Evidence | New acceptance criteria | Quote status |
+| --- | --- | --- | --- | --- |
+| | | | | `NOT_PREPARED / DRAFT / APPROVED` |
 
-> Reminder: presenting this to the customer is an A2 action → founder
-> review first; sending it externally is A3 → explicit approval.
+## Commercial guardrails / ضوابط تجارية
+- No generic package, tier, retainer, fixed range, performance fee, or automatic discount authority.
+- No automatic renewal/upsell.
+- New scope requires current customer-specific commercial authority.
+- External presentation/send remains action-bound and channel/policy gated.

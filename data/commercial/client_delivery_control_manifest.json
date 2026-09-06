@@ -1,51 +1,86 @@
 {
   "company": "Dealix",
   "control_name": "Client Delivery Control",
-  "delivery_method": "Map → Design → Build → Operate → Scale",
-  "purpose": "turn a sold sprint into a controlled delivery workflow with proof and renewal path",
+  "delivery_method": "Qualify -> Authorize -> Baseline -> Execute -> Prove -> Decide",
+  "purpose": "turn an approved 30-Day Revenue Command Pilot into bounded delivery with one governed commercial-to-delivery handoff and customer-validated proof",
+  "commercial_account_workspace": "customers/<slug>/",
+  "delivery_workspace": "clients/<slug>/",
+  "commercial_handoff": {
+    "source_of_truth": "customers/<slug>/",
+    "delivery_target": "clients/<slug>/",
+    "required_before_delivery_workspace": [
+      "qualified_discovery_evidence_ref",
+      "approved_scope_ref",
+      "approved_named_customer_quote_ref",
+      "customer_acceptance_ref",
+      "payment_or_documented_start_condition_ref",
+      "approved_data_boundary_ref"
+    ],
+    "delivery_evidence_source": "clients/<slug>/05_proof/",
+    "customer_facing_proof_pack": "customers/<slug>/10_proof_pack.md",
+    "rule": "delivery workspace never creates commercial, payment, relationship, consent, or publication truth by itself"
+  },
+  "agent_owners": {
+    "commercial_handoff": "dealix-sales + dealix-pm",
+    "delivery": "dealix-delivery",
+    "engineering_changes": "dealix-engineer",
+    "executive_command": "dealix-pm",
+    "permissioned_distribution": "dealix-content"
+  },
   "stages": [
     {
-      "name": "Intake",
-      "goal": "capture business context, stakeholders, data sources, risks, and success criteria",
-      "outputs": ["intake form", "stakeholder map", "access checklist", "success metric"]
+      "name": "Commercial Handoff Gate",
+      "goal": "accept only a qualified, authorized customer scope with explicit start/data-boundary evidence",
+      "outputs": ["commercial workspace ref", "scope ref", "quote ref", "acceptance ref", "start-condition ref", "data-boundary ref"]
     },
     {
-      "name": "Diagnosis",
-      "goal": "map current state, bottlenecks, opportunity, risk, and first workflow recommendation",
-      "outputs": ["current state map", "pain map", "bottleneck report", "opportunity map", "risk register"]
+      "name": "Baseline & Readiness",
+      "goal": "capture stakeholders, current state, access, risks, baseline, instrumentation, and acceptance criteria",
+      "outputs": ["stakeholder map", "access checklist", "current state", "risk register", "baseline", "acceptance criteria"]
     },
     {
-      "name": "Blueprint",
-      "goal": "turn diagnosis into a clear system scope and workflow design",
-      "outputs": ["system blueprint", "workflow map", "data model", "AI policy", "acceptance criteria"]
+      "name": "Bounded Workflow Blueprint",
+      "goal": "design one in-scope workflow without expanding commercial authority",
+      "outputs": ["system blueprint", "workflow map", "data model", "AI policy", "test plan"]
     },
     {
-      "name": "Sprint Delivery",
-      "goal": "build the first working operating workflow with human review gates",
-      "outputs": ["sprint plan", "test plan", "UAT notes", "operator guide", "admin guide"]
+      "name": "Governed 30-Day Delivery",
+      "goal": "execute the approved workflow with deterministic controls, approval receipts, failure handling, and weekly evidence",
+      "outputs": ["delivery plan", "action receipts", "failure/rollback receipts", "UAT notes", "operator guide"]
     },
     {
-      "name": "Proof Pack",
-      "goal": "prove what changed and define the next improvement cycle",
-      "outputs": ["before/after", "weekly command report", "decisions log", "actions completed", "next 30 days"]
+      "name": "Weekly Proof & Command",
+      "goal": "reconcile activity, delivery, outcome, risk, approval, and evidence without promoting estimates into value",
+      "outputs": ["weekly command report", "decisions log", "actions completed", "open risks", "client feedback"]
     },
     {
-      "name": "Renewal Path",
-      "goal": "convert one-off sprint into managed monthly operating partnership",
-      "outputs": ["retainer recommendation", "monthly KPI tree", "next sprint backlog", "renewal memo"]
+      "name": "Final Proof Pack",
+      "goal": "separate delivery, payment, customer value, and publication permission and assemble only verified evidence",
+      "outputs": ["before/after evidence", "final outcome evidence", "customer confirmation", "proof-pack inputs"]
+    },
+    {
+      "name": "Stop / Expand / Redesign",
+      "goal": "make the Day-30 decision from verified evidence; any expansion is a new bounded scope and customer-specific commercial decision",
+      "outputs": ["outcome review", "decision", "next-scope hypothesis if justified"]
     }
   ],
   "client_files_required": [
     "clients/_template/00_intake/intake_form.md",
     "clients/_template/01_diagnosis/current_state.md",
     "clients/_template/02_solution/system_blueprint.md",
-    "clients/_template/05_proof/before_after.md"
+    "clients/_template/03_delivery/sprint_plan.md",
+    "clients/_template/05_proof/before_after.md",
+    "clients/_template/05_proof/client_feedback.md"
   ],
   "delivery_guardrails": [
-    "no scope expansion without acceptance criteria",
-    "no sensitive data access without documented need",
-    "no AI external action without owner approval",
-    "proof pack required before renewal pitch",
-    "client success metric required before build"
+    "no clients/<slug> delivery workspace without commercial handoff/start evidence except explicit synthetic test mode",
+    "no scope expansion without new acceptance criteria and commercial authority",
+    "no sensitive data access without documented need and approved data boundary",
+    "no material external action without current action-bound authority and channel gates",
+    "no delivery claim without delivery evidence",
+    "no customer-value claim without customer confirmation",
+    "no public reuse without publication permission",
+    "no automatic renewal or upsell",
+    "proof pack required before Stop/Expand/Redesign decision"
   ]
 }

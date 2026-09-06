@@ -16,12 +16,10 @@ from auto_client_acquisition.business import (
     first_10_customers_plan,
     first_100_customers_plan,
     founder_led_sales_script,
-    get_pricing_tiers,
     north_star_metrics,
     partner_strategy,
     positioning_statement,
 )
-from auto_client_acquisition.business.pricing_strategy import recommend_plan
 from auto_client_acquisition.business.verticals import get_vertical_playbooks, recommend_vertical
 from auto_client_acquisition.value_capture_os import (
     ClientQualityDimensions,
@@ -84,8 +82,8 @@ def _offers_from_commercial_map() -> list[dict[str, Any]]:
                 "service_id": sid,
                 "name_ar": o.get("name_ar"),
                 "name_en": o.get("name_en"),
-                "price_sar": o.get("price_sar"),
-                "price_unit": o.get("price_unit"),
+                "price_authority": "customer_specific_quote_after_qualified_discovery",
+                "public_fixed_price": False,
                 "next_offer": w.get("next_offer"),
                 "success_metric_ar": pb.get("success_metric_ar", o.get("kpi_commitment_ar")),
                 "first_touch_ar": pb.get("first_touch_ar"),
@@ -160,9 +158,10 @@ def _ops_client_pack() -> dict[str, Any]:
         "runbook_doc": "docs/commercial/ops_client_pack/dealix_ops_runbook_ar.md",
         "sales_kit_deck": "docs/commercial/ops_client_pack/dealix_ops_sales_kit_ar.pptx",
         "ui_demo_path": "/business-now#strategy",
-        "primary_offer_pitch_ar": "Governed Revenue Ops Diagnostic",
-        "suggested_price_sar_range": [4999, 9999],
-        "suggested_price_premium_sar": 15000,
+        "primary_offer_pitch_ar": "Free Mini Diagnostic → 30-Day Revenue Command Pilot",
+        "price_authority": "customer_specific_quote_after_qualified_discovery",
+        "public_fixed_price": False,
+        "quote_requires_founder_approval": True,
         "conversation_opener_en": (
             "Dealix helps teams turn AI experimentation and revenue operations into "
             "governed, measurable workflows — with source clarity, approval boundaries, "
@@ -177,11 +176,11 @@ def _ops_client_pack() -> dict[str, Any]:
             "شغّل simulate للقطاع/المدينة/الميزانية",
             "اعرض focus الحالي بصدق",
             "GTM أول 10 + Sales Script + Proof demo",
-            "اختم بـ Diagnostic Scope",
+            "اختم بـ Mini Diagnostic ثم Qualified Discovery",
         ],
         "closing_line_ar": (
-            "إذا كان هذا يعكس مشكلة عندكم، التشخيص المدفوع يحولها إلى workflow محكوم "
-            "وقابل للقياس خلال أسبوعين."
+            "إذا كان هذا يعكس مشكلة عندكم، نبدأ بـ Mini Diagnostic مجاني ثم Discovery؛ "
+            "وعند ثبوت الملاءمة يصدر عرض مخصص لتجربة Revenue Command لمدة 30 يوماً."
         ),
         "deliverables_ar": [
             "Revenue Workflow Map",
@@ -190,7 +189,7 @@ def _ops_client_pack() -> dict[str, Any]:
             "Follow-up Gap Analysis",
             "Decision Passport",
             "Proof-of-Value Opportunities",
-            "Recommended Sprint / Retainer",
+            "Customer-Specific Pilot Recommendation",
         ],
     }
 
@@ -310,7 +309,10 @@ def _next_best_actions(focus: dict[str, Any]) -> list[dict[str, Any]]:
         actions.append(
             {
                 "priority": 1,
-                "action_ar": "نفّذ بايلوت Sprint 499 مع عميل واحد",
+                "action_ar": (
+                    "نفّذ Revenue Command Pilot لمدة 30 يوماً لعميل واحد فقط "
+                    "بعد قبول العرض المخصص وإثبات الدفع"
+                ),
                 "href": "/clients",
                 "api_hint": "docs/transformation/enterprise_package/PILOT_EXECUTION_RUNBOOK_AR.md",
             }
@@ -396,11 +398,15 @@ def build_commercial_strategy_simulate(
 ) -> dict[str, Any]:
     """Founder-facing bundle — deterministic, not CRM-backed."""
     vertical = recommend_vertical(industry=industry, city=city, goal=goal)
-    plan = recommend_plan(
-        company_size=company_size,
-        monthly_budget_sar=monthly_budget_sar,
-        goal=goal,
-    )
+    plan = {
+        "status": "canonical_quote_only_motion",
+        "entry_offer_id": "free_mini_diagnostic",
+        "primary_offer_id": "revenue_command_pilot_30d",
+        "price_authority": "customer_specific_quote_after_qualified_discovery",
+        "public_fixed_price": False,
+        "budget_input_sar": monthly_budget_sar,
+        "budget_is_customer_context_only": True,
+    }
     return {
         "generated_at": datetime.now(UTC).isoformat(),
         "inputs": {
@@ -417,7 +423,7 @@ def build_commercial_strategy_simulate(
             "sme": positioning_statement("sme"),
         },
         "is_estimate": True,
-        "notes_ar": "محاكاة حتمية من منطق business module — ليست أرقام CRM",
+        "notes_ar": "محاكاة حتمية من منطق business module — ليست أرقام CRM ولا عرض سعر",
     }
 
 
@@ -472,7 +478,6 @@ def build_commercial_strategy_snapshot(
     for row in upsell:
         row["label_ar"] = proof_signal_label_ar(str(row.get("proof_signal", "")))
 
-    tiers = get_pricing_tiers()
     gross = estimate_gross_margin()
     cac = estimate_cac_payback()
 
@@ -517,7 +522,8 @@ def build_commercial_strategy_snapshot(
         "unit_economics": {
             "gross_margin_demo": {**gross, "is_estimate": True},
             "cac_payback_demo": {**cac, "is_estimate": True},
-            "pricing_tiers_summary": tiers.get("tiers") if isinstance(tiers, dict) else tiers,
+            "pricing_authority": "customer_specific_quote_after_qualified_discovery",
+            "public_fixed_price": False,
         },
         "verticals_priority": _verticals_priority(),
         "north_star": _north_star_table(),
@@ -575,7 +581,7 @@ def render_commercial_strategy_markdown(snapshot: dict[str, Any]) -> str:
     lines.append("## Offers")
     for o in snapshot.get("offers_playbook") or []:
         lines.append(
-            f"- {o.get('service_id')}: {o.get('price_sar')} SAR — {o.get('success_metric_ar')}"
+            f"- {o.get('service_id')}: customer-specific quote — {o.get('success_metric_ar')}"
         )
     lines.append("")
     lines.append("## Weekly motions")

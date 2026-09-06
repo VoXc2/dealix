@@ -1,0 +1,110 @@
+{
+  "schema": "dealix.founder-command-authority.v1",
+  "generated_at": "2026-09-05",
+  "objective": "Keep one canonical primary founder command surface for Dealix while allowing bounded internal failover adapters that share the existing Company Machine, dispatcher, durable state, authority model and evidence receipts.",
+  "canonical_owner": "existing_dealix_company_machine",
+  "founder_command": {
+    "primary_channel": "telegram_openclaw",
+    "gateway": "openclaw",
+    "transport": "telegram_dm_pairing",
+    "runtime_role": "founder_command_gateway_not_truth_owner",
+    "required_posture": [
+      "exact_founder_owner_identity",
+      "dm_pairing_only",
+      "groups_disabled_by_default",
+      "gateway_loopback_only",
+      "owner_only_privileged_diagnostics",
+      "unknown_identity_denied",
+      "secretrefs_for_secret_bearing_fields",
+      "durable_evidence_receipts"
+    ],
+    "founder_brief_sections": [
+      "MONEY",
+      "DECISIONS",
+      "RISKS",
+      "APPROVALS",
+      "NEXT_ACTION"
+    ]
+  },
+  "optional_channels": {
+    "slack": {
+      "status": "OPTIONAL_DORMANT_CAPABILITY",
+      "launch_dependency": false,
+      "required_for_founder_command": false,
+      "required_for_company_machine": false,
+      "required_for_customer_delivery": false,
+      "activation_requested": false,
+      "token_request_allowed_without_new_founder_decision": false
+    },
+    "github_issue_vps_failover": {
+      "status": "INTERNAL_FAILOVER_ADAPTER",
+      "primary_founder_channel": false,
+      "launch_dependency": false,
+      "truth_owner": false,
+      "new_authority_system": false,
+      "same_dispatcher_and_durable_state_required": true,
+      "private_repo_required": true,
+      "founder_identity_required": true,
+      "allowlist_only": true,
+      "arbitrary_shell": false,
+      "l5_allowed": false,
+      "external_effect_authority": false,
+      "runtime_status": "UNKNOWN_NOT_EVIDENCE_BACKED"
+    }
+  },
+  "architecture_guards": {
+    "new_company_os": false,
+    "new_company_brain": false,
+    "new_crm": false,
+    "new_opportunity_graph": false,
+    "new_approval_center": false,
+    "new_proof_ledger": false,
+    "new_scheduler": false,
+    "new_agent_fleet": false,
+    "new_model_router": false,
+    "arbitrary_shell_from_founder_channel": false,
+    "founder_channel_as_truth_store": false
+  },
+  "external_effect_defaults": {
+    "customer_send": false,
+    "public_publish": false,
+    "paid_spend": false,
+    "payment_or_refund": false,
+    "legal_or_contract_commitment": false,
+    "main_merge": false,
+    "production_mutation": false,
+    "dns_db_secret_mutation": false
+  },
+  "activation_requirements": {
+    "telegram_owner_identity_required": true,
+    "telegram_unknown_identity_deny_required": true,
+    "telegram_gateway_loopback_required": true,
+    "telegram_groups_disabled_by_default_required": true,
+    "openclaw_secretref_audit_required": true,
+    "current_vps_runtime_receipt_required": true,
+    "slack_runtime_receipt_required": false,
+    "slack_credentials_required": false,
+    "github_issue_failover_runtime_receipt_required": false,
+    "github_issue_failover_must_share_dispatcher_state": true
+  },
+  "runtime_evidence": {
+    "status": "UNKNOWN_NOT_EVIDENCE_BACKED",
+    "telegram_owner_identity": "UNKNOWN_NOT_EVIDENCE_BACKED",
+    "telegram_unknown_identity_deny": "UNKNOWN_NOT_EVIDENCE_BACKED",
+    "telegram_gateway_loopback": "UNKNOWN_NOT_EVIDENCE_BACKED",
+    "telegram_groups_disabled_by_default": "UNKNOWN_NOT_EVIDENCE_BACKED",
+    "openclaw_secretref_audit": "UNKNOWN_NOT_EVIDENCE_BACKED",
+    "receipt_ref": null,
+    "source_sha": null
+  },
+  "truth": {
+    "primary_channel_is_telegram_openclaw": true,
+    "failover_adapter_is_not_primary_founder_channel": true,
+    "failover_adapter_is_not_separate_authority": true,
+    "command_message_is_not_execution_proof": true,
+    "receipt_required_for_execution_claim": true,
+    "historical_receipt_is_not_current_runtime_proof": true,
+    "requirements_are_not_runtime_evidence": true,
+    "missing_current_receipt": "UNKNOWN_NOT_EVIDENCE_BACKED"
+  }
+}

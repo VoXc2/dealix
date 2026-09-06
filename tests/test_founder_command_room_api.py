@@ -3,7 +3,7 @@
 Mounts the router in isolation (no DB / no full-app lifespan) so the test is
 fast and self-contained. Guards the admin-key auth contract and the aggregated
 snapshot shape, including that launch readiness reflects the live war-room
-summary and the response stays draft-only.
+summary and the response stays draft-only and quote-only.
 """
 from __future__ import annotations
 
@@ -43,10 +43,31 @@ def test_snapshot_shape_and_launch_readiness(client: TestClient) -> None:
     assert {"generated_at", "mode", "launch", "offer_ladder", "summary"} <= set(j)
     assert j["mode"] == "draft_only"
 
-    # Offer ladder = 6 rungs; founder actions = 4 pending items.
+    # Compatibility ladder = 6 canonical commercial states; founder actions = 4 pending items.
     assert len(j["offer_ladder"]) == 6
     assert len(j["launch"]["founder_actions"]) == 4
     assert j["launch"]["article13_target"] == 3
+
+    # The founder-facing path must never recreate a public fixed-price catalogue.
+    rendered_ladder = repr(j["offer_ladder"])
+    assert "Customer-Specific Quote" in rendered_ladder
+    assert "Revenue Command Pilot" in rendered_ladder
+    assert "Invoice ≠ Payment" in rendered_ladder
+    for retired in (
+        "Micro Sprint",
+        "Data Pack",
+        "Managed Ops",
+        "Transformation Diagnostic Sprint",
+        "Custom Enterprise System",
+        "499 SAR",
+        "1,500 SAR",
+        "2,999",
+        "4,999",
+        "7,500",
+        "25,000",
+        "100,000",
+    ):
+        assert retired not in rendered_ladder
 
     # Launch readiness reflects the live war-room summary.
     summary = j["summary"]

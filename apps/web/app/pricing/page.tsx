@@ -1,64 +1,88 @@
 import Link from "next/link";
-import { PREMIUM_OFFERS } from "@/lib/sales-machine/ultimate-sales-os";
 
 export const metadata = {
-  title: "Pricing — Dealix",
-  description: "Seven strategic engagements, scoped to your company after a diagnostic call.",
+  title: "Engagement Path — Dealix",
+  description:
+    "Dealix تبدأ بـExecution Diagnostic، ثم Qualified Discovery وعرض خاص بالعميل، ثم Outcome Sprint وDealix Runtime عند ثبوت القيمة. لا سعر عام ولا Checkout عام.",
 };
+
+const buyingPath = [
+  {
+    step: "01",
+    title: "Execution Diagnostic",
+    text: "نحدد workflow واحدًا قابلًا للتنفيذ والقياس، baseline وصاحب قرار وحدود البيانات. لا بطاقة ولا التزام شراء.",
+  },
+  {
+    step: "02",
+    title: "Qualified Discovery + Customer-Specific Quote",
+    text: "نثبت المشكلة والنطاق ومعايير الإثبات، ثم نحدد السعر والنطاق لشركة محددة فقط. لا قائمة أسعار عامة أو خصومات آلية أو Checkout عام.",
+  },
+  {
+    step: "03",
+    title: "Outcome Sprint",
+    text: "تنفيذ محكوم يركز على نتيجة محددة قابلة للقياس. المدة والنطاق وشروط البدء تحدد فقط في العرض الخاص بالعميل بعد Qualified Discovery؛ لا توجد مدة عامة ملزمة.",
+  },
+  {
+    step: "04",
+    title: "Proof Review",
+    text: "نقارن النتيجة بالـbaseline ونفصل activity عن value. لا synthetic/demo evidence يتحول إلى Customer Proof.",
+  },
+  {
+    step: "05",
+    title: "Dealix Runtime",
+    text: "إذا أثبت الـSprint قيمة قابلة للتكرار، يمكن توسيع Dealix إلى Runtime مستمر للمراقبة والتنفيذ والإثبات. التوسع ليس تلقائيًا.",
+  },
+];
 
 export default function PricingPage() {
   return (
     <main className="min-h-screen bg-[#070A12] text-white">
-      <div className="mx-auto max-w-6xl px-6 py-16">
+      <div className="mx-auto max-w-5xl px-6 py-16">
         <header>
-          <p className="text-xs uppercase tracking-[0.3em] text-amber-300/80">Pricing</p>
-          <h1 className="mt-3 text-4xl font-semibold">سبع أنظمة استراتيجية، ليست باقات جاهزة</h1>
-          <p className="mt-3 max-w-2xl text-sm text-white/70">
-            كل نظام هنا مصمم لمشكلة تشغيلية حقيقية تُكلّف الشركة إيراداً أو وقتاً كل أسبوع تتأخر
-            فيه. النطاق والسعر يُحددان بعد تشخيص سريع لحجم شركتك وحدة المشكلة — لا رقم عام يصلح
-            للجميع، ولا شركة نجدها تحتاج نفس النطاق بالضبط.
+          <p className="text-xs uppercase tracking-[0.3em] text-cyan-300/80">Signal → Decision → Action → Proof</p>
+          <h1 className="mt-3 text-4xl font-semibold">مسار تنفيذ واحد، بدون باقات عامة</h1>
+          <p className="mt-4 max-w-3xl text-base leading-8 text-white/70">
+            Dealix لا تبيع قائمة خدمات أو اشتراكًا ذاتي التسجيل في مرحلة التدشين. نبدأ بحالة تنفيذ حقيقية،
+            نثبتها، ثم نحدد نطاقًا وسعرًا خاصين بالعميل إذا كان Outcome Sprint هو الخطوة الصحيحة.
           </p>
         </header>
 
-        <section className="mt-10 overflow-hidden rounded-2xl border border-white/10">
-          <table className="w-full text-sm">
-            <thead className="bg-white/5 text-xs uppercase tracking-widest text-amber-300/80">
-              <tr>
-                <th className="px-4 py-3 text-left">Offer</th>
-                <th className="px-4 py-3 text-left">لماذا لا تفوّته</th>
-                <th className="px-4 py-3 text-left">الأنسب لـ</th>
-              </tr>
-            </thead>
-            <tbody>
-              {PREMIUM_OFFERS.map((o) => (
-                <tr key={o.id} className="border-t border-white/10">
-                  <td className="px-4 py-3 align-top">
-                    <p className="font-medium">{o.name}</p>
-                    <p className="text-xs text-white/60">{o.nameAr}</p>
-                  </td>
-                  <td className="px-4 py-3 align-top text-white/80">{o.positioningAr}</td>
-                  <td className="px-4 py-3 align-top text-xs text-white/60">{o.bestFor.join(", ")}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+        <section className="mt-10 grid gap-4">
+          {buyingPath.map((item) => (
+            <article key={item.step} className="rounded-2xl border border-white/10 bg-white/[0.03] p-6">
+              <div className="flex gap-4">
+                <span className="text-sm font-semibold text-cyan-300">{item.step}</span>
+                <div>
+                  <h2 className="text-xl font-semibold">{item.title}</h2>
+                  <p className="mt-2 leading-7 text-white/70">{item.text}</p>
+                </div>
+              </div>
+            </article>
+          ))}
         </section>
 
-        <section className="mt-8 rounded-2xl border border-amber-300/20 bg-amber-300/5 p-6 text-sm text-white/80">
-          <p className="font-medium text-amber-200">قواعد التسعير</p>
-          <ul className="mt-2 space-y-1">
-            <li>• لا رقم يُنشر بدون تشخيص — أي سعر مذكور خارج هذه الصفحة قبل مكالمة تشخيصية غير معتمد.</li>
-            <li>• كل setup قابل للاسترداد خلال 14 يوم إذا لم يثبت قيمته.</li>
-            <li>• الاشتراك الشهري قابل للإلغاء بإشعار 30 يوم، بدون auto-renewal بصمت.</li>
+        <section className="mt-10 rounded-2xl border border-cyan-300/20 bg-cyan-300/5 p-6">
+          <h2 className="text-lg font-semibold text-cyan-200">قواعد Dealix التجارية</h2>
+          <ul className="mt-3 space-y-2 text-sm leading-6 text-white/75">
+            <li>• Execution Diagnostic لا يمنح أي سلطة إرسال أو دفع.</li>
+            <li>• لا سعر عام ولا Checkout عام للـOutcome Sprint أو Dealix Runtime.</li>
+            <li>• كل عرض مرتبط بعميل محدد وبعد Qualified Discovery.</li>
+            <li>• Quote ليست Invoice، وInvoice ليست Payment، وبدء التسليم المدفوع يحتاج إثبات دفع مستقل.</li>
+            <li>• لا ضمان ROI أو نتيجة مالية أو مدة ثابتة لكل عميل.</li>
+            <li>• Dealix Runtime يأتي بعد Proof مناسب، وليس قبلها.</li>
           </ul>
         </section>
 
-        <section className="mt-8 text-center">
+        <section className="mt-10 text-center">
+          <h2 className="text-2xl font-semibold">ابدأ بالـworkflow، لا بالباقـة</h2>
+          <p className="mx-auto mt-3 max-w-2xl text-sm leading-7 text-white/65">
+            إذا عندك قرار أو workflow مهم لا يتحول اليوم إلى تنفيذ محكوم ونتيجة قابلة للإثبات، ابدأ بـExecution Diagnostic.
+          </p>
           <Link
             href="/book"
-            className="inline-block rounded-full bg-amber-300 px-8 py-3 text-sm font-semibold text-black transition hover:bg-amber-200"
+            className="mt-6 inline-block rounded-full bg-cyan-300 px-8 py-3 text-sm font-semibold text-black transition hover:bg-cyan-200"
           >
-            احجز تشخيص واعرف السعر الفعلي لشركتك
+            اطلب Execution Diagnostic
           </Link>
         </section>
       </div>

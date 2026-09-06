@@ -8,6 +8,7 @@ set -Eeuo pipefail
 ROOT="/opt/dealix/workspace/dealix"
 REPO_SLUG="${DEALIX_REPO_SLUG:-Dealix-sa/dealix}"
 AUTOPILOT="/opt/dealix/control/bin/dealix_company_autopilot.sh"
+SOVEREIGN_ADAPTER="/opt/dealix/control/bin/dealix_sovereign_adapter.py"
 PY_BOOTSTRAP="$ROOT/scripts/ops/ensure_founder_automation_python.sh"
 PY="$ROOT/.venv/bin/python"
 RUNTIME_ENV="/opt/dealix/control/runtime-state.env"
@@ -193,6 +194,13 @@ case "$COMMAND" in
     mkdir -p "$DEALIX_VERIFY_PROOF_ROOT"
     chmod 0700 "$DEALIX_VERIFY_PROOF_ROOT" 2>/dev/null || true
     bin/dealix verify trust --worktree
+
+    echo "===== DEALIX SOVEREIGN PR POLL ====="
+    if [[ ! -f "$SOVEREIGN_ADAPTER" || -L "$SOVEREIGN_ADAPTER" ]]; then
+      echo "SOVEREIGN_PR_POLL=BLOCKED_ADAPTER_NOT_INSTALLED"
+      exit 3
+    fi
+    /usr/bin/python3 "$SOVEREIGN_ADAPTER" poll
     ;;
 
   autonomous-dry-run)

@@ -1,31 +1,50 @@
-# 10 — Proof Pack / حزمة الإثبات
+# 10 — Final Proof Pack / حزمة الإثبات النهائية
 
-> The Command Sprint deliverable. Customer-facing draft (A2) →
-> requires founder review. If any item is published externally it becomes
-> A3 and needs explicit approval **and** the customer's publication consent.
+> Customer-facing 30-Day Revenue Command Pilot deliverable. `dealix-delivery`
+> assembles it from actual engagement evidence. External delivery needs the
+> matching action authority; public reuse additionally needs recorded customer
+> publication permission.
 >
-> **Skeleton only until real delivery fills it. No placeholder result may
-> be presented as an achieved result.**
+> **Skeleton only until real delivery fills it. No placeholder or simulated
+> result may be presented as an achieved customer result.**
 
-## 1. What we set out to do / ما الذي قصدناه
-<!-- From 03_command_sprint_scope.md -->
+## 1. Authorized objective & scope / الهدف والنطاق المعتمدان
+<!-- From 03_command_sprint_scope.md compatibility filename. -->
 
-## 2. What we found / ما الذي وجدناه
-<!-- From 02_diagnostic_summary.md + 04_revenue_map.md, with sources -->
+## 2. Baseline & evidence quality / خط الأساس وجودة الدليل
+| Measure / state | Baseline | Source | Confidence |
+| --- | --- | --- | --- |
+| | | | |
 
-## 3. What we did / ما الذي نفّذناه
-<!-- From 09_delivery_log.md -->
+## 3. What Dealix executed / ما نفّذته Dealix
+<!-- From 09_delivery_log.md and matching action receipts. -->
 
 ## 4. Verified outcomes / النتائج المؤكدة
-<!-- Only rows marked Verified in 05_proof_register.md. -->
-| Outcome | Evidence | Verified |
-| --- | --- | --- |
-| | | ☐ |
+| Outcome | Evidence ref | Verification state | Customer confirmation |
+| --- | --- | --- | --- |
+| | | `UNKNOWN / VERIFIED / REJECTED` | |
 
-## 5. Recommended next step / الخطوة التالية
-<!-- Links to 11_upsell_recommendation.md -->
+## 5. Economic truth / الحقيقة الاقتصادية
+| State | Evidence |
+| --- | --- |
+| Quote | |
+| Invoice | |
+| Payment | |
+| Verified revenue | |
+
+## 6. Separate truth states / حالات الحقيقة المنفصلة
+- Delivery evidence: `UNKNOWN / VERIFIED`
+- Payment evidence: `UNKNOWN / VERIFIED`
+- Customer value: `UNKNOWN / CUSTOMER_CONFIRMED`
+- Publication permission: `NONE / LIMITED / GRANTED`
+
+## 7. Final outcome review / مراجعة النتيجة
+- [ ] STOP
+- [ ] EXPAND — requires a new approved scope + customer-specific quote
+- [ ] REDESIGN — define the next bounded hypothesis
 
 ## Disclosure / إفصاح
-- Figures are the customer's own data unless stated otherwise.
-- No outcome is guaranteed; results describe what was observed during the sprint.
-- Customer identity is withheld unless written publication consent is on file.
+- Figures come from cited customer/approved sources unless stated otherwise.
+- No outcome is guaranteed; the pack describes verified observations only.
+- Payment, delivery, customer value, and publication permission are different states.
+- Customer identity/outcomes remain private unless the exact reuse permission is recorded.

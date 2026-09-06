@@ -32,14 +32,25 @@ def markdown(payload: dict) -> str:
         "",
         payload["delivery_method"],
         "",
-        "## Stages",
+        "## Canonical commercial → delivery handoff",
         "",
+        f"- Commercial account workspace: `{payload['commercial_account_workspace']}`",
+        f"- Delivery workspace: `{payload['delivery_workspace']}`",
     ]
+    for item in payload["commercial_handoff"].get("required_before_delivery_workspace", []):
+        lines.append(f"- Required gate: `{item}`")
+    lines += ["", "## Agent owners", ""]
+    for lane, owner in payload["agent_owners"].items():
+        lines.append(f"- {lane}: `{owner}`")
+    lines += ["", "## Stages", ""]
     for stage in payload["stages"]:
         lines.append(f"- {stage['name']}: {stage['goal']}")
-    lines += ["", "## Required files", ""]
+    lines += ["", "## Required delivery template files", ""]
     for item in payload["client_files_status"]:
         lines.append(f"- {item['status']}: `{item['path']}`")
+    lines += ["", "## Guardrails", ""]
+    for item in payload["delivery_guardrails"]:
+        lines.append(f"- {item}")
     lines += ["", "## Next actions", ""]
     for item in payload["next_delivery_actions"]:
         lines.append(f"- {item}")
@@ -54,18 +65,27 @@ def main() -> int:
         "generated_at": datetime.now(UTC).isoformat(),
         "company": manifest.get("company", "Dealix"),
         "control_name": manifest.get("control_name", "Client Delivery Control"),
-        "delivery_method": manifest.get("delivery_method", "Map, Design, Build, Operate, Scale"),
-        "purpose": manifest.get("purpose", "controlled client delivery"),
-        "verdict": "CLIENT_DELIVERY_CONTROL_READY" if not has_missing else "CLIENT_DELIVERY_TEMPLATE_REVIEW_NEEDED",
+        "delivery_method": manifest.get("delivery_method", "Qualify -> Authorize -> Baseline -> Execute -> Prove -> Decide"),
+        "purpose": manifest.get("purpose", "governed client delivery"),
+        "verdict": (
+            "CLIENT_DELIVERY_TEMPLATE_READY_FOR_GOVERNED_HANDOFF"
+            if not has_missing
+            else "CLIENT_DELIVERY_TEMPLATE_REVIEW_NEEDED"
+        ),
+        "commercial_account_workspace": manifest.get("commercial_account_workspace", "customers/<slug>/"),
+        "delivery_workspace": manifest.get("delivery_workspace", "clients/<slug>/"),
+        "commercial_handoff": manifest.get("commercial_handoff", {}),
+        "agent_owners": manifest.get("agent_owners", {}),
         "stages": manifest.get("stages", []),
         "client_files_status": file_status,
         "delivery_guardrails": manifest.get("delivery_guardrails", []),
         "next_delivery_actions": [
-            "Create a workspace from clients/_template for every new client.",
-            "Confirm outcome, owner, workflow, and acceptance criteria before build.",
-            "Start with one high-value workflow before expanding scope.",
-            "Generate proof notes before renewal or expansion.",
-            "Keep client delivery visible in the command center."
+            "Let dealix-sales complete the customers/<slug> commercial packet through approved scope/quote/acceptance/start evidence.",
+            "Create clients/<slug> only from the governed commercial handoff; synthetic tests must be explicitly labelled.",
+            "Let dealix-delivery establish baseline, access/data boundary, acceptance criteria, and the one in-scope workflow.",
+            "Capture action, failure, rollback, delivery, and customer-feedback evidence throughout the 30-day Pilot.",
+            "Assemble final customer-facing Proof from verified delivery inputs, then let dealix-pm choose Stop / Expand / Redesign.",
+            "Let dealix-content reuse customer identity/results only when publication permission is recorded."
         ],
     }
     OUT.mkdir(parents=True, exist_ok=True)
@@ -78,7 +98,7 @@ def main() -> int:
     )
     print(f"CLIENT_DELIVERY_CONTROL={payload['verdict']}")
     print("CLIENT_DELIVERY_CONTROL_REPORT=reports/client_delivery_control/latest.md")
-    return 0
+    return 0 if not has_missing else 2
 
 
 if __name__ == "__main__":

@@ -3,13 +3,15 @@
 from __future__ import annotations
 
 import threading
+from copy import deepcopy
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
-from sqlalchemy import JSON, DateTime, String, create_engine, text
+from sqlalchemy import JSON, DateTime, String, create_engine, select, text
 from sqlalchemy.engine import Engine
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, sessionmaker
+from sqlalchemy.orm.attributes import flag_modified
 
 from auto_client_acquisition.persistence.db_sync_url import sync_sqlalchemy_url
 from dealix.revenue_ops_autopilot.store import AutopilotJSONStore, _utcnow_iso
@@ -41,9 +43,10 @@ def _empty_blob() -> dict[str, Any]:
 
 
 class AutopilotPostgresStore(AutopilotJSONStore):
-    """Single-row JSONB blob store — same public API as :class:`AutopilotJSONStore`."""
+    """Single-row JSON store with transaction-bound mutation semantics."""
 
     SNAPSHOT_ID = "default"
+    _ADVISORY_LOCK_KEY = "dealix:autopilot-store-snapshot:v1"
 
     def __init__(
         self,
@@ -52,9 +55,7 @@ class AutopilotPostgresStore(AutopilotJSONStore):
         database_url: str | None = None,
         create_tables: bool = True,
     ) -> None:
-        # Reentrant: _mutate() (inherited) holds the lock and then calls the
-        # overridden _read_raw()/_write_atomic() which re-acquire it. A plain
-        # Lock would self-deadlock here.
+        # Reentrant because read helpers can be called from inherited methods.
         self._lock = threading.RLock()
         if engine is None:
             url = database_url or "sqlite:///:memory:"
@@ -73,24 +74,65 @@ class AutopilotPostgresStore(AutopilotJSONStore):
             data = row.data
             if not isinstance(data, dict):
                 return _empty_blob()
-            return data
+            return deepcopy(data)
 
     def _write_atomic(self, data: dict[str, Any]) -> None:
-        data["generated_at"] = _utcnow_iso()
+        payload = deepcopy(data)
+        payload["generated_at"] = _utcnow_iso()
         now = datetime.now(UTC)
-        with self._lock, self._sessionmaker() as session:
+        with self._lock, self._sessionmaker() as session, session.begin():
             row = session.get(AutopilotStoreSnapshotORM, self.SNAPSHOT_ID)
             if row is None:
                 row = AutopilotStoreSnapshotORM(
                     id=self.SNAPSHOT_ID,
-                    data=data,
+                    data=payload,
                     updated_at=now,
                 )
                 session.add(row)
             else:
-                row.data = data
+                row.data = payload
                 row.updated_at = now
-            session.commit()
+                flag_modified(row, "data")
+
+    def _mutate(self, fn: Any) -> Any:
+        """Run read-modify-write in one transaction and one writer lock.
+
+        PostgreSQL uses an advisory transaction lock plus ``FOR UPDATE`` so
+        different API workers cannot both accept the same idempotency key or
+        overwrite each other's snapshot mutation. SQLite tests rely on the
+        process-local RLock because SQLite ignores row-level ``FOR UPDATE``.
+        """
+
+        with self._lock, self._sessionmaker() as session, session.begin():
+            if self._engine.dialect.name == "postgresql":
+                session.execute(
+                    text("SELECT pg_advisory_xact_lock(hashtext(:lock_key))"),
+                    {"lock_key": self._ADVISORY_LOCK_KEY},
+                )
+            stmt = (
+                select(AutopilotStoreSnapshotORM)
+                .where(AutopilotStoreSnapshotORM.id == self.SNAPSHOT_ID)
+                .with_for_update()
+            )
+            row = session.execute(stmt).scalar_one_or_none()
+            if row is None:
+                data = _empty_blob()
+                row = AutopilotStoreSnapshotORM(
+                    id=self.SNAPSHOT_ID,
+                    data=data,
+                    updated_at=datetime.now(UTC),
+                )
+                session.add(row)
+                session.flush()
+            else:
+                data = deepcopy(row.data) if isinstance(row.data, dict) else _empty_blob()
+
+            out = fn(data)
+            data["generated_at"] = _utcnow_iso()
+            row.data = data
+            row.updated_at = datetime.now(UTC)
+            flag_modified(row, "data")
+            return out
 
 
 def sync_database_url_from_env() -> str | None:

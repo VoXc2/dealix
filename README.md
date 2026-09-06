@@ -1,20 +1,16 @@
 <div align="center">
 
-# Dealix — Saudi-first AI Business Operating System
+# Dealix — Governed AI Execution Platform for Saudi Business
 
-**Revenue + Proof + Command for Saudi companies.**
+**Turn company signals into governed execution and measurable proof.**
 
-PDPL-native · ZATCA-aware · Approval-first
+`Signal -> Decision -> Action -> Proof`
 
-[![CI](https://github.com/Dealix-sa/dealix/actions/workflows/ci.yml/badge.svg)](https://github.com/Dealix-sa/dealix/actions/workflows/ci.yml)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
-[![FastAPI](https://img.shields.io/badge/FastAPI-0.115-green)](https://fastapi.tiangolo.com/)
-[![PDPL: native](https://img.shields.io/badge/PDPL-native-success)](integrations/pdpl.py)
+Saudi-first · Customer-specific · Approval/evidence bounded
 
 **[العربية](README.ar.md)** · **English**
 
-[Launch](docs/ops/LAUNCH_OPERATOR_RUNBOOK.md) · [Production](docs/ops/PRODUCTION_READINESS_CHECKLIST.md) · [Go-Live](docs/ops/COMMERCIAL_GO_LIVE_GATE.md) · [Domain](docs/ops/DOMAIN_OPERATIONS_RUNBOOK.md)
+[Platform Truth](docs/00_platform_truth/PLATFORM_SOURCE_OF_TRUTH.md) · [Launch](docs/ops/LAUNCH_OPERATOR_RUNBOOK.md) · [Production](docs/ops/PRODUCTION_READINESS_CHECKLIST.md) · [Go-Live](docs/ops/COMMERCIAL_GO_LIVE_GATE.md)
 
 </div>
 
@@ -22,55 +18,62 @@ PDPL-native · ZATCA-aware · Approval-first
 
 ## What Dealix is
 
-Dealix is a Saudi-first AI Business Operating System. Revenue OS is the first commercial wedge inside the broader Dealix Business OS — see the [Platform Source of Truth](docs/00_platform_truth/PLATFORM_SOURCE_OF_TRUTH.md). The platform delivers three core engines:
+Dealix is a **governed AI execution platform for Saudi business**. It turns official/first-party company signals into evidence-backed priorities and decisions, prepares or controls execution within explicit authority boundaries, and records proof of what actually happened.
 
-1. **Lead Engine** — Saudi B2B lead discovery, enrichment, ICP scoring, duplicate suppression, and PDPL-aware usage controls.
-2. **Service Engine** — productized AI services for diagnostics, sales assistance, decision packs, customer health, proof curation, growth signals, and executive command.
-3. **Trust Engine** — approval-first execution, audit trails, evidence packs, policy checks, and compliance registers for Saudi operating requirements.
+Under the market-facing layer, Dealix operates as one Saudi-first **AI Business Operating System / Company Machine**. Its twelve Operating Systems cover Command, Revenue, Proof, Client, Delivery, Support, Finance, Data, Governance, Academy, Partner and Venture. **Revenue + Proof + Command** remains core capability language, but it is not the current generic category headline.
 
-It is **not** a generic CRM, chatbot, or blind sales automation tool. Its operating rule is:
+Dealix is not a generic chatbot, CRM replacement, lead scraper, mass-outreach bot, uncontrolled agent fleet or guaranteed-revenue service.
 
-> AI explores, analyzes, and recommends. Deterministic workflows execute. Humans approve critical external commitments.
+Operating rule:
 
----
+> AI explores, analyzes and recommends. Governed workflows execute. Material external actions require the applicable current authority and evidence.
 
-## Commercial readiness
+## Canonical engagement path
 
-| Gate | Status | Link |
-|---|---|---|
-| Production readiness | Tracked | [Checklist](docs/ops/PRODUCTION_READINESS_CHECKLIST.md) |
-| Commercial go-live | Tracked | [Gate](docs/ops/COMMERCIAL_GO_LIVE_GATE.md) |
-| Trust & evidence | Active | [Trust docs](trust/) |
-| Saudi compliance | Native | [PDPL integration](integrations/pdpl.py) |
+1. **Execution Diagnostic** — identify one economically meaningful workflow, baseline, leakage, systems, owner, data boundary and proof criteria.
+2. **Qualified Discovery + Customer-Specific Quote** — confirm scope, start conditions and customer-specific commercial terms.
+3. **Outcome Sprint** — execute a bounded workflow against measurable acceptance criteria; duration and scope are customer-specific.
+4. **Proof Review** — compare outcome with baseline and separate activity from verified value.
+5. **Dealix Runtime** — recurring managed/platform execution only after the workflow demonstrates repeatable value.
 
----
+There is **no public fixed-price table, no public checkout authority, and no guaranteed revenue/ROI/result claim**.
 
-## What is in this repository
+Internal compatibility IDs may retain historical names such as `free_mini_diagnostic` or `revenue_command_pilot_30d` until an accepted runtime migration changes them. Those IDs do not restore superseded market labels or public pricing authority.
 
-| Area | Contents |
-|---|---|
-| Backend | FastAPI, SQLAlchemy async, Postgres-oriented persistence, routers across sales, compliance, analytics, agents, and webhooks. |
-| Frontend | Static landing assets plus a Next.js app under `apps/web`. |
-| Trust/compliance | PDPL-aware controls, no-overclaim register, Saudi compliance register, approval classes, and audit/evidence concepts. |
-| Operations | Docker, docker-compose, Makefile, CI, production readiness docs, deploy/runbook material. |
-| Commercial kit | Pricing, service catalog, onboarding, Saudi B2B accounts, outreach/channel material, and service packaging docs. |
-| V3 Commercial OS | Daily operator script, lead scoring, outreach drafts, proposal generator, founder dashboard, industry playbooks, and closing system. |
+## One Company Machine
 
----
+Permanent owners remain exactly five:
 
-## Daily Operator (V3)
+- `dealix-pm` — President / portfolio / decisions / approvals / next action.
+- `dealix-sales` — signals, account research, qualification, diagnostic, discovery and negotiation preparation.
+- `dealix-delivery` — onboarding, execution, support, acceptance and proof preparation.
+- `dealix-engineer` — reliability, integrations, trust gates and productization that improves Cash, Trust or Repeatability.
+- `dealix-content` — evidence-safe founder/company/search/distribution assets.
 
-Run the full daily commercial sequence in one command:
+Specialists are bounded workloads under these owners. Do not create a parallel Company OS, Company Brain, CRM, Opportunity Graph, Approval Center, Proof Ledger, scheduler, model router, truth store, control plane or permanent agent fleet.
 
-```bash
-# Demo mode — no external APIs needed
-python3 scripts/dealix_daily_operator.py --mode demo
+## Truth firewall
 
-# Production mode — requires leads CSV
-python3 scripts/dealix_daily_operator.py --mode production --leads data/imports/leads.csv
-```
+Dealix never collapses these states:
 
-Outputs: outreach drafts (pending review), prospect packs, CEO brief, pipeline report.
+- research != relationship
+- public contact != consent
+- lead != buyer intent
+- draft != sent
+- quote != invoice
+- invoice != payment
+- synthetic/demo != customer proof
+- PR != production
+- historical PASS != current exact-head PASS
+
+## Communication / growth constraints
+
+- No scraping as a growth shortcut.
+- No cold WhatsApp automation.
+- No mass/unapproved LinkedIn account automation.
+- No external auto-send without the applicable current authority.
+- No fake proof, fake relationships, identity deception or ban-evasion.
+- Founder-quality messaging may be prepared as clearly from Dealix / on behalf of the founder.
 
 ## Quick start
 
@@ -79,192 +82,58 @@ git clone https://github.com/Dealix-sa/dealix.git
 cd dealix
 make setup
 cp .env.example .env
-# edit .env, then:
 make run
-# API docs: http://localhost:8000/docs
 ```
 
-Full local stack:
+Local API docs: `http://localhost:8000/docs`
 
-```bash
-make docker-up
-curl http://localhost:8000/health
-```
-
-Production-style verification bundle:
+Production-style verification:
 
 ```bash
 make prod-verify
 ```
 
-Useful verification commands:
+Useful checks:
 
 ```bash
-make env-check             # checks backend and frontend env templates
-make api-contract-check    # checks OpenAPI contract stability
-make security-smoke        # dependency-free repository security smoke
-make production-smoke      # smoke production API when PRODUCTION_BASE_URL is set
-make dependency-inventory  # export lightweight dependency inventory
-make release-manifest      # export production release manifest
-make test                  # test suite with project pytest defaults
-make security              # Bandit + detect-secrets baseline scan when configured
+make env-check
+make api-contract-check
+make security-smoke
+make production-smoke
+make dependency-inventory
+make release-manifest
+make test
+make security
 ```
-
----
-
-## Live production gates
-
-Before paid traffic, public demos, or enterprise pilots, review these in order:
-
-| Gate | Document / command |
-|---|---|
-| Launch operator runbook | [`docs/ops/LAUNCH_OPERATOR_RUNBOOK.md`](docs/ops/LAUNCH_OPERATOR_RUNBOOK.md) |
-| Production readiness | [`docs/ops/PRODUCTION_READINESS_CHECKLIST.md`](docs/ops/PRODUCTION_READINESS_CHECKLIST.md) |
-| Commercial go-live | [`docs/ops/COMMERCIAL_GO_LIVE_GATE.md`](docs/ops/COMMERCIAL_GO_LIVE_GATE.md) |
-| Domain operations | [`docs/ops/DOMAIN_OPERATIONS_RUNBOOK.md`](docs/ops/DOMAIN_OPERATIONS_RUNBOOK.md) |
-| Frontend production | [`docs/ops/FRONTEND_PRODUCTION_RUNBOOK.md`](docs/ops/FRONTEND_PRODUCTION_RUNBOOK.md) |
-| Server hardening | [`docs/ops/SERVER_HARDENING_CHECKLIST.md`](docs/ops/SERVER_HARDENING_CHECKLIST.md) |
-| Monitoring | [`docs/ops/MONITORING_MATRIX.md`](docs/ops/MONITORING_MATRIX.md) |
-| Incident drill | [`docs/ops/LIVE_DOMAIN_INCIDENT_DRILL.md`](docs/ops/LIVE_DOMAIN_INCIDENT_DRILL.md) |
-| Founder rhythm | [`docs/ops/FOUNDER_DAILY_OPERATING_RHYTHM.md`](docs/ops/FOUNDER_DAILY_OPERATING_RHYTHM.md) |
-| Finalization status | [`docs/ops/PRODUCTION_FINALIZATION_STATUS.md`](docs/ops/PRODUCTION_FINALIZATION_STATUS.md) |
-
----
-
-## Public endpoints
-
-Public endpoints intentionally available without application auth include:
-
-- `/health`
-- `/api/v1/public/demo-request`
-- `/api/v1/pricing/plans`
-- `/api/v1/checkout`
-- `/api/v1/webhooks/moyasar`
-
-Admin, customer, and privileged operational routes must remain protected by their configured API-key or future RBAC boundary.
-
----
-
-## Repository operating controls
-
-Dealix now has explicit repository controls for the most important production risks:
-
-| Control | File / command |
-|---|---|
-| Python and web CI | `.github/workflows/ci.yml` |
-| CodeQL and dependency review | `.github/workflows/security.yml` |
-| Secret and filesystem vulnerability scans | `.github/workflows/repository-hardening.yml` |
-| OpenSSF Scorecard | `.github/workflows/scorecard.yml` |
-| Web lockfile generation workflow | `.github/workflows/generate-web-lockfile.yml` |
-| Environment contract validation | `scripts/check_env_contract.py`, `make env-check` |
-| OpenAPI contract export/check | `scripts/export_openapi.py`, `scripts/check_openapi_contract.py` |
-| Dependency inventory | `scripts/export_dependency_inventory.py`, `make dependency-inventory` |
-| Release manifest | `scripts/export_release_manifest.py`, `make release-manifest` |
-| Production launch checklist | `docs/ops/PRODUCTION_READINESS_CHECKLIST.md` |
-| Repository gap register | `docs/architecture/REPO_GAP_AUDIT.md` |
-| Production verification bundle | `make prod-verify` |
-
----
 
 ## Architecture model
 
-Dealix is organized into five planes. Features should cross planes through explicit contracts, not hidden shared state.
-
-| Plane | Responsibility | Example modules |
-|---|---|---|
-| Decision | Agents, reasoning, synthesis, recommendation, evidence assembly | `auto_client_acquisition/`, `autonomous_growth/`, `core/agents/` |
-| Execution | Deterministic workflows, retries, compensation, external commitments | `auto_client_acquisition/pipeline.py`, `dealix/execution/` |
-| Trust | Policy, approval, audit, verification, evidence packs | `dealix/trust/`, `dealix/registers/` |
-| Data | Operational source of truth, lineage, metrics, integrations | `db/`, `integrations/` |
-| Operating | CI/CD, Docker, release discipline, repo governance, runbooks | `.github/`, `Dockerfile`, `Makefile`, `docs/ops/` |
-
-Full blueprint: [`docs/blueprint/master-architecture.md`](docs/blueprint/master-architecture.md).
-
----
-
-## Trust and safety posture
-
-Dealix is designed around:
-
-- Structured outputs with approval, reversibility, and sensitivity classes.
-- Policy evaluation before high-impact external actions.
-- Human approval for pricing commitments, contract changes, sensitive exports, legal/regulatory messages, and other high-stakes actions.
-- Evidence packs for decisions that need traceability.
-- Public claim tracking through [`dealix/registers/no_overclaim.yaml`](dealix/registers/no_overclaim.yaml).
-
-Security posture includes `.env`-based configuration, sensitive settings patterns, webhook verification where implemented, Docker hardening, CI checks, and local/CI-compatible security commands. Keep README/security claims aligned with actual configured CI jobs.
-
----
-
-## Saudi compliance posture
-
-Designed from inception for Saudi B2B operating constraints, including:
-
-- PDPL consent, lawful basis, retention, suppression, breach, and transfer posture.
-- Saudi-specific business language, SAR pricing, Riyadh-time operations, and Arabic/English workflows.
-- Compliance mappings and registers under [`dealix/registers/`](dealix/registers/).
-
-Compliance documentation does not replace legal review. Production launch requires evidence from tests, controls, logs, and operational procedures.
-
----
-
-## Development workflow
-
-```bash
-make install-dev
-make lint
-make test
-make env-check
-make api-contract-check
-```
-
-Before a production release:
-
-```bash
-make prod-verify
-```
-
-Then review:
-
-- [`docs/ops/LAUNCH_OPERATOR_RUNBOOK.md`](docs/ops/LAUNCH_OPERATOR_RUNBOOK.md)
-- [`docs/ops/PRODUCTION_READINESS_CHECKLIST.md`](docs/ops/PRODUCTION_READINESS_CHECKLIST.md)
-- [`docs/ops/COMMERCIAL_GO_LIVE_GATE.md`](docs/ops/COMMERCIAL_GO_LIVE_GATE.md)
-- [`docs/architecture/REPO_GAP_AUDIT.md`](docs/architecture/REPO_GAP_AUDIT.md)
-- [`dealix/registers/no_overclaim.yaml`](dealix/registers/no_overclaim.yaml)
-
----
-
-## Key docs
-
-| Purpose | Document |
+| Plane | Responsibility |
 |---|---|
-| Master architecture | [`docs/blueprint/master-architecture.md`](docs/blueprint/master-architecture.md) |
-| API map | [`docs/architecture/API_MAP.md`](docs/architecture/API_MAP.md) |
-| API contract policy | [`docs/architecture/API_CONTRACT_POLICY.md`](docs/architecture/API_CONTRACT_POLICY.md) |
-| Gap audit | [`docs/architecture/REPO_GAP_AUDIT.md`](docs/architecture/REPO_GAP_AUDIT.md) |
-| Launch operator runbook | [`docs/ops/LAUNCH_OPERATOR_RUNBOOK.md`](docs/ops/LAUNCH_OPERATOR_RUNBOOK.md) |
-| Production readiness | [`docs/ops/PRODUCTION_READINESS_CHECKLIST.md`](docs/ops/PRODUCTION_READINESS_CHECKLIST.md) |
-| Commercial go-live | [`docs/ops/COMMERCIAL_GO_LIVE_GATE.md`](docs/ops/COMMERCIAL_GO_LIVE_GATE.md) |
-| Deploy runbook | [`docs/ops/DEPLOY_RUNBOOK.md`](docs/ops/DEPLOY_RUNBOOK.md) |
-| Domain operations | [`docs/ops/DOMAIN_OPERATIONS_RUNBOOK.md`](docs/ops/DOMAIN_OPERATIONS_RUNBOOK.md) |
-| Frontend production | [`docs/ops/FRONTEND_PRODUCTION_RUNBOOK.md`](docs/ops/FRONTEND_PRODUCTION_RUNBOOK.md) |
-| Server hardening | [`docs/ops/SERVER_HARDENING_CHECKLIST.md`](docs/ops/SERVER_HARDENING_CHECKLIST.md) |
-| Monitoring | [`docs/ops/MONITORING_MATRIX.md`](docs/ops/MONITORING_MATRIX.md) |
-| Founder operating rhythm | [`docs/ops/FOUNDER_DAILY_OPERATING_RHYTHM.md`](docs/ops/FOUNDER_DAILY_OPERATING_RHYTHM.md) |
-| Supply chain policy | [`docs/ops/SBOM_AND_SUPPLY_CHAIN_POLICY.md`](docs/ops/SBOM_AND_SUPPLY_CHAIN_POLICY.md) |
-| No-overclaim register | [`dealix/registers/no_overclaim.yaml`](dealix/registers/no_overclaim.yaml) |
-| Saudi compliance register | [`dealix/registers/compliance_saudi.yaml`](dealix/registers/compliance_saudi.yaml) |
+| Decision | Agents, reasoning, synthesis and evidence assembly. |
+| Execution | Deterministic workflows, retries, compensation and bounded commitments. |
+| Trust | Policy, approval, audit, verification and proof. |
+| Data | Operational truth, lineage, metrics and integrations. |
+| Operating | CI/CD, Docker, release discipline, repo governance and runbooks. |
 
----
+## Launch / production truth
+
+Before any material commercial/public activation, use current evidence rather than README claims:
+
+- [Platform Source of Truth](docs/00_platform_truth/PLATFORM_SOURCE_OF_TRUTH.md)
+- [Launch Operator Runbook](docs/ops/LAUNCH_OPERATOR_RUNBOOK.md)
+- [Production Readiness Checklist](docs/ops/PRODUCTION_READINESS_CHECKLIST.md)
+- [Commercial Go-Live Gate](docs/ops/COMMERCIAL_GO_LIVE_GATE.md)
+- [Domain Operations](docs/ops/DOMAIN_OPERATIONS_RUNBOOK.md)
+- [No-overclaim register](dealix/registers/no_overclaim.yaml)
+- [Saudi compliance register](dealix/registers/compliance_saudi.yaml)
+
+Repository source, a green provider status or an older acceptance receipt does not by itself prove current production identity or commercial proof.
+
+## Security / Saudi posture
+
+Dealix is designed around least privilege, approval and evidence boundaries, secrets outside source control, provider/runtime verification and Saudi operating context. Compliance documentation is not a blanket legal certification; claims remain scoped to verified controls and evidence.
 
 ## License
 
 MIT — see [LICENSE](LICENSE).
-
----
-
-<div align="center">
-
-**[🚀 Launch](docs/ops/LAUNCH_OPERATOR_RUNBOOK.md)** · **[✅ Production](docs/ops/PRODUCTION_READINESS_CHECKLIST.md)** · **[💼 Go-Live](docs/ops/COMMERCIAL_GO_LIVE_GATE.md)** · **[🧭 Gap Audit](docs/architecture/REPO_GAP_AUDIT.md)** · **[🇸🇦 Compliance](dealix/registers/compliance_saudi.yaml)**
-
-</div>

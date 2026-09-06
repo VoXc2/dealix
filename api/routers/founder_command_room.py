@@ -2,8 +2,8 @@
 
 Composes the live war-room operating summary (the same source the existing
 ``/api/v1/ops-autopilot/war-room/summary`` endpoint uses) with launch readiness
-and the offer ladder, so the front-end can render the whole command room from a
-single, stable call.
+and the canonical commercial path, so the front-end can render the whole command
+room from a single, stable call.
 
 Doctrine-safe: read-only. It never sends anything and issues no invoices. The
 non-negotiables surface back to the UI via ``summary["risks"]``.
@@ -44,14 +44,33 @@ FOUNDER_ACTIONS: list[dict[str, str]] = [
     {"ar": "دمج PR الانحدار المعلّق", "en": "Merge the pending regression PR"},
 ]
 
-# The 6-rung offer ladder (docs/DEALIX_BUSINESS_MODEL.md).
+# Compatibility field name retained for the founder UI, but its authority is the
+# quote-only launch path. It is a state/path ladder, not a public price catalogue.
 OFFER_LADDER: list[dict[str, str]] = [
-    {"name": "التشخيص المجاني / Free Diagnostic", "detail": "مغناطيس عملاء · 30 دقيقة"},
-    {"name": "Revenue Command Pilot", "detail": "30 يومًا · Quote بعد discovery"},
-    {"name": "Data Pack", "detail": "1,500 SAR · أصل بيانات لمرة واحدة"},
-    {"name": "Managed Ops", "detail": "2,999–4,999 SAR/شهر"},
-    {"name": "Transformation Diagnostic Sprint", "detail": "7,500–25,000 SAR · المدخل المدفوع الأساسي"},
-    {"name": "Custom Enterprise System", "detail": "25,000–100,000+ SAR"},
+    {
+        "name": "التشخيص المصغّر المجاني / Free Mini Diagnostic",
+        "detail": "دخول مجاني · evidence + problem qualification",
+    },
+    {
+        "name": "اكتشاف مؤهل / Qualified Discovery",
+        "detail": "تأكيد المشكلة والمالك والبيانات وخط الأساس",
+    },
+    {
+        "name": "عرض خاص بالعميل / Customer-Specific Quote",
+        "detail": "سلطة السعر الوحيدة · بعد discovery · لا سعر عام ثابت",
+    },
+    {
+        "name": "Revenue Command Pilot",
+        "detail": "30 يومًا · governed delivery · quote-only",
+    },
+    {
+        "name": "دفع مثبت ثم تسليم / Verified Payment → Delivery",
+        "detail": "Invoice ≠ Payment · يبدأ المدفوع فقط بعد دليل الدفع",
+    },
+    {
+        "name": "Proof Review",
+        "detail": "Customer-validated proof → Stop / Expand / Redesign",
+    },
 ]
 
 
@@ -98,7 +117,8 @@ async def founder_command_room() -> dict[str, Any]:
     summary = build_daily_summary(store.list_leads(limit=600))
     paid = int(summary.get("revenue", {}).get("paid", 0) or 0)
 
-    # Build intelligence snapshot from current pipeline data
+    # Build intelligence snapshot from current pipeline data. The public response
+    # model remains intentionally narrow/read-only and filters non-contract fields.
     leads = store.list_leads(limit=600)
     engine = RevenueIntelligenceEngine()
     deals = []

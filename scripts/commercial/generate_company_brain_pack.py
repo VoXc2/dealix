@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""Generate the Company Brain launch pack.
+"""Generate the Company Brain launch pack from canonical commercial truth.
 
-Local-only generator. It creates product, pain, proposal, and negotiation notes
-for founder review.
+Local-only generator. It creates capability, pain, proposal, and negotiation notes
+for founder review. It must not recreate retired fixed-price or seven-day offers.
 """
 from __future__ import annotations
 
@@ -13,58 +13,65 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 OUT_DIR = ROOT / "reports" / "commercial"
 
-SERVICES = [
+CANONICAL_ENTRY_OFFER = "Free Mini Diagnostic"
+CANONICAL_PAID_OFFER = "30-Day Revenue Command Pilot"
+CANONICAL_PAID_PATH = (
+    "Qualified Discovery -> Customer-Specific Quote -> 30-Day Revenue Command Pilot "
+    "-> Verified Payment -> Delivery -> Customer-Validated Proof -> Stop / Expand / Redesign"
+)
+
+CAPABILITIES = [
     {
-        "service": "Company Brain OS",
+        "capability": "Company Brain OS",
         "buyer": "CEO / Founder / GM",
-        "pain": "unclear daily priorities across revenue, ops, and risk",
-        "first_offer": "7-Day Operating Diagnostic",
-        "deliverable": "daily CEO decision, risk radar, 30-day execution plan",
+        "pain": "unclear daily priorities across revenue, operations, and risk",
+        "diagnostic_angle": "find decision, ownership, and evidence gaps that block execution",
+        "delivery_value": "daily executive decisions, risk radar, and governed execution context",
     },
     {
-        "service": "Revenue Command Room OS",
+        "capability": "Revenue Command Room OS",
         "buyer": "Sales Director / Founder",
-        "pain": "pipeline and follow-up not visible enough",
-        "first_offer": "7-Day Revenue Command Room Sprint",
-        "deliverable": "hot opportunities, overdue follow-ups, proposal status",
+        "pain": "pipeline, follow-up, and next actions are not visible enough",
+        "diagnostic_angle": "find revenue leakage, stalled opportunities, and missing next actions",
+        "delivery_value": "priority opportunities, follow-up control, and evidence-backed deal movement",
     },
     {
-        "service": "Follow-up Recovery OS",
+        "capability": "Follow-up Recovery OS",
         "buyer": "Sales / Operations Manager",
         "pain": "inquiries and conversations are not converted into clear actions",
-        "first_offer": "Follow-up Recovery Sprint",
-        "deliverable": "reply queue, escalation rules, lost-opportunity log",
+        "diagnostic_angle": "find relationship-state, response, and ownership gaps",
+        "delivery_value": "governed reply queue, escalation rules, and lost-opportunity evidence",
     },
     {
-        "service": "Proposal Co-Pilot",
+        "capability": "Proposal Co-Pilot",
         "buyer": "Founder / Sales Manager",
-        "pain": "discounting starts before scope is protected",
-        "first_offer": "Proposal and Negotiation Sprint",
-        "deliverable": "objection map, price-floor rules, scope tradeables",
+        "pain": "scope and negotiation discipline break before value is proven",
+        "diagnostic_angle": "find scope, objection, approval, and decision-process gaps",
+        "delivery_value": "customer-specific proposal support, objection map, and governed trade-offs",
     },
     {
-        "service": "Client Delivery OS",
+        "capability": "Client Delivery OS",
         "buyer": "Operations / Account Manager",
-        "pain": "delivery quality depends on people, not a repeatable system",
-        "first_offer": "Delivery OS Setup",
-        "deliverable": "intake, scope card, acceptance criteria, proof pack",
+        "pain": "delivery quality depends on people rather than a repeatable evidence loop",
+        "diagnostic_angle": "find intake, ownership, acceptance, and proof gaps",
+        "delivery_value": "intake, scope card, acceptance criteria, delivery receipts, and Proof Pack",
     },
     {
-        "service": "AI Trust OS",
+        "capability": "AI Trust OS",
         "buyer": "CEO / Compliance / IT",
-        "pain": "AI is used without clear policy or approval gates",
-        "first_offer": "AI Trust Setup Sprint",
-        "deliverable": "policy, data rules, approval map, audit log",
+        "pain": "AI is used without clear authority, data, or approval boundaries",
+        "diagnostic_angle": "find authority, data, identity, and audit gaps",
+        "delivery_value": "policy, data rules, approval map, and evidence-backed audit trail",
     },
 ]
 
 SECTOR_ANGLES = {
-    "clinics": "recover bookings and patient follow-ups",
-    "real_estate": "stop lead leakage after first inquiry",
-    "logistics": "track proposals and B2B account follow-up",
-    "training": "convert inquiries into registrations",
-    "marketing_agencies": "standardize delivery and client reporting",
-    "b2b_services": "turn proposals and follow-ups into a daily command room",
+    "clinics": "map operational and commercial follow-up leakage without treating patient data as sales permission",
+    "real_estate": "find lead leakage after first inquiry and preserve channel/consent evidence",
+    "logistics": "track proposals, B2B accounts, delivery decisions, and proof",
+    "training": "convert permissioned inquiries into governed next actions and registrations",
+    "marketing_agencies": "standardize delivery, customer proof, and expansion decisions",
+    "b2b_services": "turn proposals and follow-ups into an evidence-backed Revenue Command Room",
 }
 
 
@@ -75,16 +82,26 @@ def build_markdown() -> str:
         "",
         "## Executive positioning",
         "",
-        "Dealix should be sold as a company operating layer: brain, revenue command, follow-up recovery, proposal discipline, delivery proof, and AI trust.",
+        "Dealix is a Saudi-first AI Business Operating System. The commercial wedge is Revenue + Proof + Command; capabilities are not standalone public offers.",
         "",
-        "## Service matrix",
+        "## Canonical buying path",
         "",
-        "| Service | Buyer | Pain | First offer | Deliverable |",
+        f"`{CANONICAL_ENTRY_OFFER} -> {CANONICAL_PAID_PATH}`",
+        "",
+        "- public_fixed_price: false",
+        "- public_checkout: false",
+        "- customer_specific_quote_only: true",
+        "- live_send_allowed: false unless action-bound authority and channel eligibility are proven",
+        "- live_charge_allowed: false unless action-bound payment authority and independent evidence are proven",
+        "",
+        "## Capability matrix",
+        "",
+        "| Capability | Buyer | Pain | Diagnostic angle | Delivery value |",
         "|---|---|---|---|---|",
     ]
-    for item in SERVICES:
+    for item in CAPABILITIES:
         lines.append(
-            f"| {item['service']} | {item['buyer']} | {item['pain']} | {item['first_offer']} | {item['deliverable']} |"
+            f"| {item['capability']} | {item['buyer']} | {item['pain']} | {item['diagnostic_angle']} | {item['delivery_value']} |"
         )
     lines += [
         "",
@@ -99,15 +116,17 @@ def build_markdown() -> str:
         "",
         "## Dealix pitch formula",
         "",
-        "1. Identify visible pain.",
-        "2. Ask one diagnostic question.",
-        "3. Offer a 7-day proof sprint.",
-        "4. Show command-room output before proposing a large build.",
-        "5. Convert proof into monthly operating retainer.",
+        "1. Start from a source-bound signal or a real inbound/relationship context.",
+        "2. Identify one visible business pain and ask one diagnostic question.",
+        f"3. Offer the {CANONICAL_ENTRY_OFFER}; do not invent a paid sprint or public price.",
+        "4. If the problem is qualified, run discovery and prepare a customer-specific quote.",
+        f"5. Start the {CANONICAL_PAID_OFFER} only after accepted scope and verified payment/start evidence.",
+        "6. Deliver against acceptance criteria and produce customer-validated proof.",
+        "7. Decide Stop / Expand / Redesign from measured value; do not infer recurring authority.",
         "",
         "## Negotiation rule",
         "",
-        "Protect scope first, then price. If the client wants a lower entry price, reduce integrations or dashboard depth, not the proof pack.",
+        "Protect evidence, acceptance criteria, and delivery scope before price. Any commercial concession must remain inside customer-specific quote authority; no global price floor or automatic discount is created by this pack.",
     ]
     return "\n".join(lines) + "\n"
 
@@ -116,7 +135,17 @@ def main() -> int:
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     payload = {
         "generated_at": datetime.now(UTC).isoformat(),
-        "services": SERVICES,
+        "commercial_truth": {
+            "entry_offer": CANONICAL_ENTRY_OFFER,
+            "paid_offer": CANONICAL_PAID_OFFER,
+            "paid_path": CANONICAL_PAID_PATH,
+            "public_fixed_price": False,
+            "public_checkout": False,
+            "customer_specific_quote_only": True,
+            "live_send_allowed": False,
+            "live_charge_allowed": False,
+        },
+        "capabilities": CAPABILITIES,
         "sector_angles": SECTOR_ANGLES,
         "status": "ready_for_founder_review",
     }
