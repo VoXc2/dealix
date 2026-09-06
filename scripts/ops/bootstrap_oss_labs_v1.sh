@@ -36,6 +36,7 @@ PROFILE="${DEALIX_OSS_PROFILE:-full}"
 UPDATE_EXISTING="${DEALIX_OSS_UPDATE:-0}"
 INSTALL_PREREQS="${DEALIX_OSS_INSTALL_PREREQS:-1}"
 PULL_IMAGES="${DEALIX_OSS_PULL_IMAGES:-1}"
+NODE_VERSION="${DEALIX_OSS_NODE_VERSION:-v24.20.0}"
 
 case "$PROFILE" in
   core|full) ;;
@@ -50,6 +51,7 @@ STAMP="$(date +%Y%m%d-%H%M%S)"
 PROOF="$CONTROL/proof/oss-bootstrap/$STAMP"
 STATE="$CONTROL/state/oss-harvest"
 BIN="$LAB_ROOT/bin"
+NODE_ROOT="$LAB_ROOT/node"
 LOCK="$CONTROL/locks/oss-bootstrap.lock"
 
 install -d -o root -g "$DEALIX_GROUP" -m 0750 \
@@ -114,7 +116,9 @@ skip_component() {
 }
 
 as_dealix() {
-  sudo -u "$DEALIX_USER" -H "$@"
+  sudo -u "$DEALIX_USER" -H -- \
+    env PATH="$NODE_ROOT/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin" \
+    "$@"
 }
 
 ensure_prereqs() {
@@ -122,6 +126,8 @@ ensure_prereqs() {
     command -v python3 >/dev/null
     command -v git >/dev/null
     command -v jq >/dev/null
+    command -v curl >/dev/null
+    command -v xz >/dev/null
     return 0
   fi
 
@@ -129,7 +135,7 @@ ensure_prereqs() {
   apt-get update
   apt-get install -y --no-install-recommends \
     python3 python3-venv python3-pip \
-    git jq curl ca-certificates build-essential pkg-config
+    git jq curl ca-certificates build-essential pkg-config xz-utils
 }
 
 ensure_venv() {
@@ -143,15 +149,18 @@ ensure_venv() {
     as_dealix "$dir/venv/bin/python" -m pip install -U pip wheel setuptools
     as_dealix touch "$dir/.pip-ready"
   fi
-  printf '%s' "$dir"
 }
 
 install_python_component() {
   local name="$1"
   local smoke="$2"
   shift 2
-  local dir
-  dir="$(ensure_venv "$name")"
+  local dir="$LAB_ROOT/$name"
+
+  # Do not capture ensure_venv stdout into a path variable. Package installers
+  # legitimately write to stdout; command substitution previously polluted
+  # $dir with pip output and cascaded into bogus touch/cp/sudo failures.
+  ensure_venv "$name"
 
   if [[ "$UPDATE_EXISTING" == "1" || ! -s "$dir/.installed" ]]; then
     as_dealix "$dir/venv/bin/python" -m pip install -U "$@"
@@ -165,6 +174,76 @@ install_python_component() {
   chmod 0640 "$dir/requirements.lock.txt"
 
   as_dealix "$dir/venv/bin/python" -c "$smoke"
+}
+
+version_ge() {
+  local have="${1#v}"
+  local need="${2#v}"
+  [[ "$(printf '%s\n%s\n' "$need" "$have" | sort -V | head -n1)" == "$need" ]]
+}
+
+ensure_node_runtime() {
+  local system_node=""
+  local system_version=""
+  if command -v node >/dev/null 2>&1; then
+    system_node="$(command -v node)"
+    system_version="$($system_node --version 2>/dev/null || true)"
+  fi
+
+  if [[ -x "$NODE_ROOT/bin/node" ]]; then
+    local_version="$($NODE_ROOT/bin/node --version)"
+    if version_ge "$local_version" "v22.22.0"; then
+      echo "NODE_RUNTIME=lab-local:$local_version"
+      return 0
+    fi
+  fi
+
+  if [[ -n "$system_version" ]] && version_ge "$system_version" "v22.22.0"; then
+    install -d -o "$DEALIX_USER" -g "$DEALIX_GROUP" -m 0750 "$NODE_ROOT/bin"
+    ln -sfn "$system_node" "$NODE_ROOT/bin/node"
+    if command -v npm >/dev/null 2>&1; then
+      ln -sfn "$(command -v npm)" "$NODE_ROOT/bin/npm"
+    fi
+    echo "NODE_RUNTIME=system-compatible:$system_version"
+    return 0
+  fi
+
+  local arch=""
+  case "$(uname -m)" in
+    x86_64|amd64) arch="x64" ;;
+    aarch64|arm64) arch="arm64" ;;
+    *) echo "[FAIL] unsupported Node architecture: $(uname -m)"; return 31 ;;
+  esac
+
+  local base="https://nodejs.org/dist/$NODE_VERSION"
+  local tar="node-$NODE_VERSION-linux-$arch.tar.xz"
+  local tmp
+  tmp="$(mktemp -d)"
+  trap 'rm -rf "$tmp"' RETURN
+
+  curl -fsSLo "$tmp/SHASUMS256.txt" "$base/SHASUMS256.txt"
+  curl -fsSLo "$tmp/$tar" "$base/$tar"
+  (
+    cd "$tmp"
+    grep -E "^[0-9a-f]{64}[[:space:]]+$tar$" SHASUMS256.txt > expected.sha256
+    [[ -s expected.sha256 ]]
+    sha256sum -c expected.sha256
+  )
+
+  rm -rf "$NODE_ROOT.new"
+  install -d -o "$DEALIX_USER" -g "$DEALIX_GROUP" -m 0750 "$NODE_ROOT.new"
+  tar -xJf "$tmp/$tar" --strip-components=1 -C "$NODE_ROOT.new"
+  chown -R "$DEALIX_USER:$DEALIX_GROUP" "$NODE_ROOT.new"
+  rm -rf "$NODE_ROOT"
+  mv "$NODE_ROOT.new" "$NODE_ROOT"
+
+  local installed_version
+  installed_version="$($NODE_ROOT/bin/node --version)"
+  version_ge "$installed_version" "v22.22.0" || {
+    echo "[FAIL] isolated Node runtime too old: $installed_version"
+    return 32
+  }
+  echo "NODE_RUNTIME=lab-local:$installed_version"
 }
 
 install_presidio() {
@@ -229,14 +308,20 @@ install_pipecat() {
 }
 
 install_promptfoo() {
-  command -v node >/dev/null
-  command -v npm >/dev/null
+  ensure_node_runtime
+
+  local node_version
+  node_version="$($NODE_ROOT/bin/node --version)"
+  version_ge "$node_version" "v22.22.0" || {
+    echo "[FAIL] Promptfoo requires Node >=22.22.0; resolved $node_version"
+    return 33
+  }
 
   local dir="$LAB_ROOT/promptfoo"
   install -d -o "$DEALIX_USER" -g "$DEALIX_GROUP" -m 0750 "$dir"
 
   if [[ "$UPDATE_EXISTING" == "1" || ! -x "$dir/node_modules/.bin/promptfoo" ]]; then
-    as_dealix npm install \
+    as_dealix "$NODE_ROOT/bin/npm" install \
       --prefix "$dir" \
       --no-fund \
       --no-audit \
@@ -244,10 +329,10 @@ install_promptfoo() {
   fi
 
   as_dealix "$dir/node_modules/.bin/promptfoo" --version
-  as_dealix npm ls --prefix "$dir" --depth=0 --json \
+  as_dealix "$NODE_ROOT/bin/npm" ls --prefix "$dir" --depth=0 --json \
     > "$PROOF/promptfoo.npm-lock-summary.json" || true
   set +e
-  as_dealix npm audit --prefix "$dir" --omit=dev --json \
+  as_dealix "$NODE_ROOT/bin/npm" audit --prefix "$dir" --omit=dev --json \
     > "$PROOF/promptfoo.audit.json" 2> "$PROOF/promptfoo.audit.err"
   set -e
   ln -sfn "$dir/node_modules/.bin/promptfoo" "$BIN/promptfoo"
@@ -278,10 +363,11 @@ write_runtime_receipt() {
 
   cat > "$PROOF/runtime-receipt.json" <<EOF
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "timestamp": "$STAMP",
   "profile": "$PROFILE",
   "lab_root": "$LAB_ROOT",
+  "node_version_requested": "$NODE_VERSION",
   "pass": $PASS,
   "fail": $FAIL,
   "skip": $SKIP,
@@ -314,6 +400,7 @@ rm -rf \
   "$LAB_ROOT/camel-tools" \
   "$LAB_ROOT/livekit-agents" \
   "$LAB_ROOT/pipecat" \
+  "$LAB_ROOT/node" \
   "$LAB_ROOT/bin"
 echo "Dealix OSS lab files removed. Docker images, if pulled, were intentionally left in the shared Docker cache."
 EOF
