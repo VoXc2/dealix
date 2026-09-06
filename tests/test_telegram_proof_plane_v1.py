@@ -9,6 +9,7 @@ import pytest
 ROOT = Path(__file__).resolve().parents[1]
 CONTRACT = ROOT / "data/ops/telegram_proof_plane_v1.json"
 BUILDER = ROOT / "scripts/ops/build_telegram_founder_proof.py"
+CANARY = ROOT / "scripts/ops/run_telegram_founder_proof_canary_v1.sh"
 
 
 def _load_builder():
@@ -101,3 +102,14 @@ def test_one_owner_hardening_target_is_explicit_but_separately_activated():
     assert target["tools_elevated"] is False
     assert target["inline_buttons"] == "dm"
     assert target["activation_requires_separate_runtime_change"] is True
+
+
+def test_canary_bounds_root_git_trust_to_exact_worktree():
+    text = CANARY.read_text(encoding="utf-8")
+    assert 'ROOT="$(git rev-parse --show-toplevel)"' not in text
+    assert 'SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)"' in text
+    assert 'sudo -u "$RUN_USER" git -C "$ROOT" rev-parse HEAD' in text
+    assert 'GIT_CONFIG_KEY_0=safe.directory' in text
+    assert 'GIT_CONFIG_VALUE_0="$ROOT"' in text
+    assert 'safe.directory=*' not in text
+    assert 'git config --global' not in text
