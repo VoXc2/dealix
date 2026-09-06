@@ -1,5 +1,15 @@
+import pytest
+
 import app.outbound.policy_gate as policy_gate
 from app.outbound.suppression import suppression_backend_status
+
+
+@pytest.fixture(autouse=True)
+def _memory_suppression_default(monkeypatch):
+    """Keep unit tests deterministic even on a production-like host."""
+
+    monkeypatch.delenv("DEALIX_SUPPRESSION_BACKEND", raising=False)
+    monkeypatch.delenv("DATABASE_URL", raising=False)
 
 
 def _email_contact() -> dict[str, object]:
