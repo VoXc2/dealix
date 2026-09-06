@@ -28,6 +28,33 @@ SAFE_FLAGS = (
     "DEALIX_PRODUCTION_MUTATION", "DEALIX_DNS_MUTATION", "DEALIX_DB_MUTATION",
     "DEALIX_SECRET_MUTATION", "DEALIX_IDENTITY_MUTATION", "DEALIX_AGENT_SELF_AUTHORITY",
 )
+INSPECTION_STAGES = {
+    "source_read",
+    "domain_import",
+    "domain_routes",
+    "application_import",
+    "application_routes",
+}
+INSPECTION_CODES = {
+    "route_graph_limit",
+    "opaque_route_node",
+    "empty_route_inventory",
+    "module_source_mismatch",
+}
+
+
+class InspectionError(ValueError):
+    """A verifier-owned, non-secret structural inspection failure."""
+
+    def __init__(self, code: str):
+        if code not in INSPECTION_CODES:
+            raise ValueError("invalid_inspection_code")
+        self.code = code
+        super().__init__(code)
+
+
+def _inspection_error(code: str) -> None:
+    raise InspectionError(code)
 
 
 def _legacy(name: str) -> bool:
@@ -107,7 +134,7 @@ def _inspect_routes(roots: Iterable[object]) -> tuple[int, list[str]]:
             continue
         visited.add(id(item))
         if len(visited) > 100000:
-            raise ValueError("route_graph_limit")
+            _inspection_error("route_graph_limit")
         context = getattr(item, "include_context", None)
         for obj in (item, context):
             if obj is not None and "autonomous" in (getattr(obj, "tags", None) or []):
@@ -130,10 +157,10 @@ def _inspect_routes(roots: Iterable[object]) -> tuple[int, list[str]]:
         if (endpoint is None or is_mount) and not children and app is not None and app is not item:
             children.append(app)
         if endpoint is None and not children and routes is None:
-            raise ValueError("opaque_route_node")
+            _inspection_error("opaque_route_node")
         pending.extend(children)
     if endpoints == 0:
-        raise ValueError("empty_route_inventory")
+        _inspection_error("empty_route_inventory")
     return endpoints, sorted(findings)
 
 
@@ -141,7 +168,7 @@ def _checked_import(name: str, path: Path) -> object:
     module = importlib.import_module(name)
     origin = getattr(module, "__file__", None)
     if not origin or Path(origin).resolve() != path.resolve():
-        raise ValueError("module_source_mismatch")
+        _inspection_error("module_source_mismatch")
     return module
 
 
@@ -152,6 +179,7 @@ def main() -> int:
         print("AUTONOMOUS_QUARANTINE=HOLD")
         print("reason=test_environment_and_fail_closed_flags_required")
         return 4
+    stage = "source_read"
     try:
         source = DOMAIN_INIT.read_text(encoding="utf-8")
         paths = _route_paths(LEGACY_ROUTER.read_text(encoding="utf-8"))
@@ -161,18 +189,31 @@ def main() -> int:
             return 2
         # Executing this script by pathname otherwise prioritizes scripts/ops.
         sys.path.insert(0, str(ROOT))
+        stage = "domain_import"
         domain = _checked_import("api.routers.domains.agents", DOMAIN_INIT)
+        stage = "domain_routes"
         domain_count, domain_bad = _inspect_routes(domain.get_routers())
+        stage = "application_import"
         application = _checked_import("api.main", ROOT / "api/main.py")
+        stage = "application_routes"
         app_count, app_bad = _inspect_routes([application.app])
         if domain_bad or app_bad:
             print("AUTONOMOUS_QUARANTINE=FAIL")
             print("reason=" + ",".join(sorted(set(domain_bad + app_bad))))
             return 3
-    except Exception as exc:
-        # Exception messages can contain DSNs or credentials. Emit type only.
+    except InspectionError as exc:
         print("AUTONOMOUS_QUARANTINE=HOLD")
         print("reason=inspection_incomplete")
+        print("inspection_stage=" + (stage if stage in INSPECTION_STAGES else "unknown"))
+        print("inspection_code=" + exc.code)
+        print("error_type=InspectionError")
+        return 4
+    except Exception as exc:
+        # Exception messages can contain DSNs or credentials. Emit only type +
+        # verifier-owned stage, never repr(exc), str(exc), env values, or paths.
+        print("AUTONOMOUS_QUARANTINE=HOLD")
+        print("reason=inspection_incomplete")
+        print("inspection_stage=" + (stage if stage in INSPECTION_STAGES else "unknown"))
         print("error_type=" + type(exc).__name__)
         return 4
     print("AUTONOMOUS_QUARANTINE=PASS")
