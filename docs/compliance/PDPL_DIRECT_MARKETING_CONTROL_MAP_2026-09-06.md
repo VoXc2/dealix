@@ -1,7 +1,7 @@
 # Dealix — PDPL Direct-Marketing Control Map
 
-Date: 2026-09-06  
-Scope: Dealix outbound email / WhatsApp / SMS controlled-live eligibility.  
+Date: 2026-09-06
+Scope: Dealix outbound email / WhatsApp / SMS controlled-live eligibility.
 North Star: `CASH_READY_AUTONOMOUS_DEALIX_COMPANY`
 
 This is an engineering control map, not legal advice. It intentionally keeps
