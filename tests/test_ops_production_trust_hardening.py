@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import importlib.util
+import json
 import sys
 from pathlib import Path
 
@@ -117,3 +118,20 @@ def test_railway_api_watch_contract_matches_source_authority():
         "scripts/ops/verify_railway_api_watch_contract.py",
     )
     assert verifier.main() == 0
+
+
+def test_railway_api_watch_contract_covers_canonical_runtime_trees():
+    railway = json.loads((ROOT / "railway.json").read_text(encoding="utf-8"))
+    matrix = json.loads((ROOT / "dealix/config/railway_services.json").read_text(encoding="utf-8"))
+
+    actual = set(railway["build"]["watchPatterns"])
+    api_authority = next(
+        service
+        for service in matrix["services"]
+        if service.get("role") == "canonical_api" and service.get("productionAuthority") is True
+    )
+    expected = set(api_authority["expectedWatchPatterns"])
+    canonical_runtime_trees = {"/api/**", "/app/**", "/db/**"}
+
+    assert canonical_runtime_trees <= actual
+    assert canonical_runtime_trees <= expected
