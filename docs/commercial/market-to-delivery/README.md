@@ -1,106 +1,132 @@
-# Dealix Market-to-Delivery - execution plan v1
+# Dealix Market-to-Delivery — execution plan v1
 
-Founder-approved direction, 2026-09-07. Source implementation is separate from deployment, customer permission, commercial approval and proven delivery. This plan extends the existing Company Machine; it is not a second CRM, scheduler, Approval Center or agent fleet.
+Founder-approved direction, 2026-09-07. Source implementation is separate from deployment, customer permission, commercial approval and proven delivery. This extends the existing Dealix Company Machine; it is not a second CRM, scheduler, Approval Center, consent system, proof system, model router, or permanent agent fleet.
 
 ## Product decision
 
-Keep **Dealix - AI Business Operating System**, the approved D + Forward Signal identity and Revenue + Proof + Command. Broaden the existing service-catalog interface, not the company identity. The home page remains unchanged in this implementation. The existing `/app/service-catalog` becomes a bilingual research-and-intake workspace. Eight service arms and 100 hypotheses are not 100 verified offers.
+Keep **Dealix — AI Business Operating System**, the D + Forward Signal identity, and the strategic wedge **Revenue + Proof + Command**. Broaden the existing service-catalog interface rather than creating another company/product identity.
 
-Use one customer path: need -> authorized discovery -> evidence -> diagnostic -> delivery-route hypothesis -> customer-specific quote -> existing commercial approval -> verified payment/start -> scoped project cell -> implementation -> independent acceptance -> customer proof -> support/expansion.
+The existing `/app/service-catalog` becomes a bilingual research-and-intake workspace. The 8 service arms, 20 sectors and 100 project hypotheses are discovery coverage, **not 100 proven offers**.
 
-## Commercial arms and routes
+Canonical path:
 
-1. Automation and system integration: implementation + maintenance.
-2. Data, BI and document intelligence: discovery + implementation + managed reporting.
-3. Custom software and portals: milestones + support + reusable IP where rights allow.
-4. Enterprise AI and knowledge: setup + bounded usage + evaluation.
-5. Cloud and delivery reliability: scoped hardening + defined managed service.
-6. Governance/security engineering: evidence operations; specialist work requires qualification.
-7. Industrial/field operations: read-only analytics, field workflows and qualified partners.
-8. Managed digital operations: defined monthly output, bounded capacity and support.
+`Need -> Authorized Evidence -> L1 Problem Signal -> Qualification -> Diagnostic -> Discovery -> Customer-Specific Quote -> Existing Commercial Approval -> Verified Payment/Start -> Project Cell -> Delivery -> Independent Acceptance -> Customer Validation -> Proof -> Support/Expansion`
 
-Route each opportunity to BUILD, ADAPT, INTEGRATE_EXISTING, QUALIFIED_PARTNER, SUBCONTRACT_UNDER_APPROVED_PRIME, REFER_WITH_DISCLOSURE or DECLINE_OR_DEFER after evidence. The preparation adapter emits route hypotheses, not dispatch or procurement authority. No fixed public prices or guaranteed results. Existing compatibility offer IDs are unchanged.
+## Commercial arms
 
-## Scope preserved from the adopted pack
+1. Automation and system integration.
+2. Data, BI and document intelligence.
+3. Custom software, portals and APIs.
+4. Enterprise AI, knowledge and inbound voice.
+5. Cloud, platform and delivery reliability.
+6. Governance and security engineering.
+7. Industrial and field operations.
+8. Managed digital operations.
 
-The source catalogue contains 20 sectors and all 100 original project hypotheses, suggested buyers, route hints, acceptance measures and unverified readiness semantics in compact normalized form. The original source file SHA-256 is embedded. The source pack is `DEALIX_MARKET_TO_DELIVERY_2026-09-07.zip`; public sources and the initial 15 organization research seeds remain research, not relationships, partners or customers. This implementation does not import those organizations into CRM, extract personal contacts, spend enrichment credits or send outreach.
+Delivery route is selected after evidence and capability review: direct build, adapt existing, integrate a third-party product, qualified partner, subcontract under an approved prime, disclosed referral, or decline/defer. A route hypothesis is not dispatch, procurement, partner qualification or commercial authority.
 
 ## Canonical owners
 
 - `dealix-pm`: portfolio allocation, policy, risk, approvals and review.
-- `dealix-sales`: authorized intake, evidence, discovery and commercial preparation.
+- `dealix-sales`: authorized intake, evidence, qualification, discovery and commercial preparation.
 - `dealix-delivery`: scope/start/capacity checks, project cells and acceptance.
 - `dealix-engineer`: source, tests, integration, reliability and technical delivery.
-- `dealix-content`: drafts derived from permitted evidence; never fabricated proof.
+- `dealix-content`: drafts derived from permissioned verified evidence.
 
-Temporary specialist workloads may be attached to a customer project. They do not become permanent agents or gain broader authority. Check installed runtime schema/version before using upstream examples. Never widen the founder-facing bot to give project workers more power.
+Temporary specialists are bounded project workloads under these five owners. They do not become permanent agents or inherit broader authority.
 
-## Implemented in this slice
+## Implemented in this PR
 
-- Canonical research catalogue under the existing `auto_client_acquisition/service_catalog` package.
-- Deterministic preparation adapter: validation, missing-data questions, route hypothesis, diagnostic structure, quote draft, internal cost-floor calculation, negotiation alternatives and project-cell draft.
-- Admin-protected preparation endpoints added to the existing Service Catalog router, reusing founder authentication. Missing configured credentials fail closed even outside production. No evidence fetching, state-store write, approval or send occurs.
-- Private, idempotent local artifact writer with replay integrity checks. These files are preparatory exports, not another Proof Ledger.
-- Explicit public DTO generator; it excludes buyers, research accounts, prices, evidence and customer data. Generator check detects drift.
-- Existing catalog page replaced with a responsive Arabic/English interface: search, sector filter, hypothesis selection and browser-local request export. No customer submission API or admin key is exposed in the browser.
-- Unit tests, full-repository HTTP boundary tests and exact-head acceptance command.
+### Research/catalog layer
 
-## Still required before end-to-end automation can be claimed
+- Canonical research catalog under the existing `auto_client_acquisition/service_catalog` package.
+- 8 service arms, 20 sectors and 100 project hypotheses.
+- Every hypothesis remains explicitly unverified until current evidence and capability acceptance exist.
+- Explicit public DTO projection excludes buyer lists, research accounts, prices, evidence, tenant data and customer records.
 
-The website draft currently exports a request for a trusted operator; it is NOT connected to a durable authenticated customer submission workflow. The server preparation endpoint returns a draft without persistence. Bind authenticated tenant identity, durable data authority, canonical opportunity/diagnostic storage and the existing quote approval workflow in the next slice. Never replace those missing integrations with a browser boolean, fabricated consent, localStorage truth or a generic admin-key proxy.
+### Diagnostic/commercial preparation
 
-No scheduler has been added or changed. Add preparation to the existing daily cycle only after integration and failure/replay tests. A saved plan does not prove that an agent has read it or will continue after this session.
+- Deterministic preparation adapter with strict input validation.
+- Missing-data questions instead of fabricated baseline/scope/outcomes.
+- Diagnostic structure, route hypothesis, quote draft, internal cost-floor calculation, negotiation alternatives and project-cell draft.
+- Internal cost floor is **not** a market price or approved quote.
+- Admin-protected pure preparation endpoints reuse the existing founder authentication layer; they do not persist, approve, send, charge or provision.
 
-## Wave plan and acceptance gates
+### Canonical durable intake bridge
 
-| Wave | Owner | Deliverable | Completion evidence |
-| --- | --- | --- | --- |
-| 1. Repository integration | engineer | Catalogue, planner, UI and tests | Exact-head checks; not production green |
-| 2. Trust repair | engineer | Founder group/tool restrictions; truthful rc128/receipt attribution | Current runtime receipts; preserve existing #1529/#1535 owners |
-| 3. Durable intake | sales/engineer | Authenticated tenant-bound request into current Opportunity/Diagnostic store | Auth, tenant isolation, durability, idempotency, retention tests |
-| 4. Data/consent | pm/engineer | Channel-purpose consent, suppression and data authority remain separate | Existing #1533 or successor; withdrawal/restart/concurrency proof |
-| 5. Full diagnostic | sales/delivery | Evidence-backed baseline, process, hypothesis, scope and acceptance | No invented data; customer-approved measurement plan |
-| 6. Commercial authority | pm/sales | Policy-bound negotiation and quote approval through current Approval Center | Exact amount/scope/terms fingerprint, expiry and single-use execution |
-| 7. Delivery cells | delivery/engineer | Tenant-specific workers and qualified partner route | Scope, verified start, accountable human, data region, budget, TTL, independent reviewer |
-| 8. Release | engineer | Current Web/API release and healthy front door | Exact deployed identity, TLS, migrations, rollback; explicit release action |
-| 9. Market evidence | sales | Bounded sector scans and current first-party interactions | Proven source/freshness; research never silently becomes consent |
-| 10. Delivery proof | delivery | Actual output and customer validation | Baseline/action/outcome separated; publish permission independent |
-| 11. Recurring revenue | pm/delivery | Maintenance, defined operations and reusable components | Collected cash, true margin, support capacity, rights and retention |
-| 12. Learning | pm/content | Improvements and permissioned content drafts | Actual vs estimated cost, rework, failure, outcome and founder minutes |
+`POST /api/v1/commercial-intelligence/market-to-delivery/intake`
 
-## Commercial delegation
+- Reuses the existing Sales authentication and Commercial Intelligence/Postgres store.
+- Tenant identity comes from the authenticated user, not browser input.
+- Requires an existing active tenant-bound canonical source.
+- Accepts only owned/CRM/email/client-provided/partner/manual source kinds; public-registry/open-data research cannot masquerade as a customer intake.
+- Requires authorization to use submitted data for preparation, but **does not infer marketing consent**.
+- Persists **only** an `L1_HYPOTHESIS` `CommercialSignalRecord`.
+- Does not create relationship, consent, opportunity, quote approval, send authority or project workers.
+- Exact request replay is idempotent. A changed payload under the same request identity fails closed with a conflict rather than silently creating another truth record.
+- Persistence failure rolls back and fails closed.
 
-The founder delegates useful internal research, analysis, code branches, preparation and tests. Routine non-binding negotiation preparation should not interrupt the founder. Binding quotes remain founder-approved until explicit policy bands, margins, standard terms and capability evidence are approved in the existing authority system. No policy activation can be inferred from this document or from model output.
+This is durable **signal-level intake**, not end-to-end customer qualification. Opportunity creation remains owned by the existing Commercial Intelligence workflow, where evidence, objectives, relationships and current service authority are checked.
 
-Always escalate unproven capability, new SLA/service credits, guaranteed outcome, exceptional payment terms, unlimited liability, unapproved subprocessor/data region, regulated or safety-critical decisions, budget overrun and contract signature. External dispatch also requires the current recipient/channel/data/consent/suppression authority; a commercial decision is not a send permission.
+### UI
 
-## Project cell contract
+- `/app/service-catalog` is an Arabic/English research workspace.
+- Search and sector filtering.
+- Project-hypothesis selection with candidate acceptance measure.
+- Browser-local JSON draft export only.
+- No admin key in the browser, no customer POST from this workspace, no checkout and no public fixed price.
 
-Each project needs: tenant and project IDs; approved scope digest; customer data authorization; verified payment or start authority; accountable human; qualified specialist when applicable; reviewer independent of implementer; isolated compute/storage/database/credentials; region and subprocessor decision; model and compute spend caps; worker concurrency cap; expiry and stop rules; acceptance and rollback; retention and exit plan.
+### Verification assets
 
-Drafting this contract does not provision a worker. A worker must not share customer memory, mount production secrets for builds, purchase infrastructure, control safety-critical equipment or change production without separate authority. Broad sector coverage never substitutes for qualification or licensing.
+- Unit tests for deterministic preparation and authority boundaries.
+- HTTP tests for admin preparation authentication.
+- Intake-bridge tests for tenant isolation, source policy, data authorization, idempotency/conflict behavior, no authority promotion and DB fail-closed behavior.
+- Public projection drift check.
+- JS syntax check.
+- Playwright browser gate for catalog count/filter/search/local export/bilingual behavior/no POST.
+- Exact-head source acceptance command: `scripts/commercial/accept_market_to_delivery_v1.sh`.
 
-## First 90 days (operating targets, not forecasts)
+## What is NOT yet proven
 
-Days 1-3: close truthful source/runtime blockers while validating three starter service packages. Days 4-14: bounded research and real problem interviews across construction/facilities, professional services/integrators and administrative manufacturing/supply-chain workflows. Days 15-30: customer-specific proposals and a bounded paid engagement only if the evidence supports one. Days 31-60: deliver, measure, seek customer validation and test maintenance/partner repeatability. Days 61-90: deepen one or two sectors with proven demand and capacity; keep broader market research active.
+- Current exact-head source acceptance has not been proven merely because these files exist.
+- Hosted GitHub jobs that terminate with `steps=[]` and `runner_id=0` are execution-plane failures, not proof that this source passed or failed.
+- The browser-local workspace is not yet a public authenticated customer-submission surface.
+- An L1 intake signal is not a qualified opportunity.
+- Referenced evidence is not independently verified evidence.
+- Relationship and channel-purpose consent are separate authorities.
+- A prepared quote is not an approved/binding quote.
+- A project-cell draft does not provision workers.
+- No Production deployment, current release identity, verified cash, delivery or customer proof is claimed by this PR.
 
-Track real interactions, qualified problems, valid diagnostics, approved quotes, collected cash, contribution margin, delivery variance/rework, accepted outcomes, recurring service obligations and founder minutes. No account, quote, invoice or synthetic fixture is counted as customer revenue.
+## Next integration gates
 
-## Current known dependencies (historical until rechecked)
+| Wave | Owner | Next evidence |
+| --- | --- | --- |
+| Exact-head acceptance | engineer | Run repo-owned acceptance on current PR SHA from isolated worktree; Next build and browser gate where dependencies exist |
+| Trust dependencies | engineer/pm | Resolve existing Production Trust, Founder Control, durable consent, Railway API parity and front-door owners without duplicating them |
+| Qualification | sales | Convert only evidenced L1 signals through current Commercial Intelligence source/signal/objective/relationship/opportunity contracts |
+| Full diagnostic | sales/delivery | Current evidence, baseline, workflow, measurement plan and customer validation of assumptions |
+| Commercial authority | pm/sales | Reuse current Finance/Approval flows with action/amount/scope/terms fingerprint, expiry and exception boundaries |
+| Delivery cells | delivery/engineer | Verified scope/start, capacity, tenant isolation, accountable human, reviewer, budget/TTL, rollback and exit |
+| Release | engineer | Exact deployed identity, migrations, TLS/health, rollback and explicit material action approval |
+| Proof/learning | delivery/content | Actual delivery/outcome/customer validation; independent publish permission |
 
-User-supplied VPS receipt at 2026-09-07 02:46 +03 showed founder group/tool policy failures, source acceptance rc128, three failed Dealix units, Web 404/API health 200 and unproven release parity. Do not label rc128 an application regression without stderr. Do not repeat the obsolete 'unexposed invariant' diagnosis: the earlier receipt already identified `telegram_groups_disabled=false` and `tool_surface_bounded=false`. Current exact-head/runtime revalidation is still required.
+## Project-cell contract
 
-Existing #1513 remains the executive coordination owner. #1529/#1535/#1533 and replacements remain their source owners; this work does not merge them, reopen closed work or mutate runtime settings.
+Before any large-project worker provisioning: tenant/project identity, approved scope digest, customer data authorization, verified payment/start authority, accountable human, qualified specialist when needed, independent reviewer, isolated compute/storage/database/credentials, approved region/subprocessors, model and compute spend caps, concurrency cap, expiry/stop rules, acceptance/rollback, retention and exit plan.
+
+Workers must not share customer memory, mount unrestricted production secrets for builds, purchase infrastructure, control safety-critical equipment, or change production without separate authority.
+
+## First 90 days — operating targets, not forecasts
+
+Days 1–14: exact source/runtime trust plus bounded real problem interviews and three starter service packages. Days 15–30: evidence-backed diagnostics and customer-specific proposals; begin a paid bounded engagement only when capability and start/payment truth support it. Days 31–60: deliver, measure, seek customer validation and test maintenance/partner repeatability. Days 61–90: deepen one or two sectors with proven demand, margin and capacity while keeping broad research active.
+
+Measure real interactions, qualified problems, diagnostics, discoveries, approved quotes, collected cash, contribution margin, delivery variance/rework, accepted outcomes, recurring obligations and founder minutes. Account records, quotes, invoices and synthetic fixtures are not revenue.
+
+## Current known trust dependencies
+
+Historical runtime evidence on 2026-09-07 identified actual Founder Control failures `telegram_groups_disabled=false` and `tool_surface_bounded=false`; do not regress to the obsolete “unexposed invariant” diagnosis. Source/runtime state must still be revalidated at the exact current heads. Existing Production Trust, Founder Control, consent, Railway and front-door owners remain authoritative; this PR does not replace them.
 
 ## Safety and deployment
 
-Source/PR work is allowed; this slice includes no main merge, production/DNS/DB/secret mutation, reboot, paid spend, customer send, public publishing, live voice activation, signature or payment. Release approval must bind the exact current SHA and acknowledge possible provider autodeploy.
-
-## Sources reviewed for implementation
-
-- https://nextjs.org/docs/app/guides/data-security : privileged data stays server-side; a component or route name is not authorization.
-- https://docs.openclaw.ai/tools/multi-agent-sandbox-tools : nested policies cannot restore tools denied earlier; installed-version compatibility must be checked.
-- https://docs.openclaw.ai/gateway/sandboxing : session separation alone is not a sufficient security boundary.
-- https://git-scm.com/docs/git-worktree.html : isolated worktrees without disturbing the canonical dirty tree.
-
-These sources informed implementation boundaries; they do not verify the user's live configuration or commercial/legal readiness.
+This source/PR work performs no merge to main, production deploy, DNS/Production DB/secret mutation, reboot, paid spend, customer send, public publish, live voice activation, legal signature or payment execution. Any later material action must bind the exact accepted SHA/configuration, expected side effects and rollback.
