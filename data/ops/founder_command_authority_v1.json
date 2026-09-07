@@ -1,16 +1,17 @@
 {
   "schema": "dealix.founder-command-authority.v1",
-  "generated_at": "2026-09-05",
+  "generated_at": "2026-09-07",
   "objective": "Keep one canonical primary founder command surface for Dealix while allowing bounded internal failover adapters that share the existing Company Machine, dispatcher, durable state, authority model and evidence receipts.",
   "canonical_owner": "existing_dealix_company_machine",
   "founder_command": {
     "primary_channel": "telegram_openclaw",
     "gateway": "openclaw",
-    "transport": "telegram_dm_pairing",
+    "transport": "telegram_dm_owner_allowlist",
     "runtime_role": "founder_command_gateway_not_truth_owner",
     "required_posture": [
       "exact_founder_owner_identity",
-      "dm_pairing_only",
+      "explicit_numeric_dm_allowlist",
+      "dm_allowlist_exact_owner_only",
       "groups_disabled_by_default",
       "gateway_loopback_only",
       "owner_only_privileged_diagnostics",
@@ -80,6 +81,7 @@
     "telegram_unknown_identity_deny_required": true,
     "telegram_gateway_loopback_required": true,
     "telegram_groups_disabled_by_default_required": true,
+    "telegram_explicit_owner_allowlist_required": true,
     "openclaw_secretref_audit_required": true,
     "current_vps_runtime_receipt_required": true,
     "slack_runtime_receipt_required": false,
@@ -99,6 +101,8 @@
   },
   "truth": {
     "primary_channel_is_telegram_openclaw": true,
+    "one_owner_prefers_explicit_numeric_allowlist": true,
+    "pairing_is_not_required_for_one_owner_runtime": true,
     "failover_adapter_is_not_primary_founder_channel": true,
     "failover_adapter_is_not_separate_authority": true,
     "command_message_is_not_execution_proof": true,
