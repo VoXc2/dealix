@@ -7,6 +7,11 @@ export LC_ALL="${LC_ALL:-C.UTF-8}"
 export LANG="${LANG:-C.UTF-8}"
 
 ROOT="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/../.." && pwd -P)"
+
+# Keep pydantic-settings env_file=".env" and any other relative runtime reads
+# scoped to the isolated exact-head worktree, never to the caller's cwd.
+cd "$ROOT"
+
 PY="${DEALIX_AUTOMATION_PYTHON:-}"
 if [[ -z "$PY" || ! -x "$PY" ]]; then
   if [[ -x "$ROOT/.venv/bin/python" ]]; then
