@@ -12,6 +12,12 @@ ROOT="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/../.." && pwd -P)"
 # scoped to the isolated exact-head worktree, never to the caller's cwd.
 cd "$ROOT"
 
+# Executing verifier scripts by absolute path makes Python put the script
+# directory (scripts/commercial) on sys.path, not the repository root. Export
+# the exact worktree root so canonical packages such as api/, db/, and dealix/
+# resolve without depending on the caller's environment or canonical workspace.
+export PYTHONPATH="$ROOT${PYTHONPATH:+:$PYTHONPATH}"
+
 PY="${DEALIX_AUTOMATION_PYTHON:-}"
 if [[ -z "$PY" || ! -x "$PY" ]]; then
   if [[ -x "$ROOT/.venv/bin/python" ]]; then
