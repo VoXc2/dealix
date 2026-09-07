@@ -41,6 +41,25 @@ def _source(**overrides):
     return SimpleNamespace(**values)
 
 
+def _artifact_digest(body=None):
+    body = body or _body()
+    preparation = router_module.prepare(
+        router_module._preparation_payload(body, "tenant-a")
+    )
+    return preparation["artifact_digest"]
+
+
+def _existing_for(body=None):
+    return SimpleNamespace(
+        id="sig-existing",
+        evidence_level="l1_hypothesis",
+        payload_json={
+            "preparation_status": "DRAFT_PREPARED_FOR_REVIEW",
+            "artifact_digest": _artifact_digest(body),
+        },
+    )
+
+
 class _Scalars:
     def __init__(self, record):
         self.record = record
@@ -121,6 +140,7 @@ async def test_intake_persists_only_l1_signal(monkeypatch):
     assert signal.account_id == "account-1"
     assert signal.source_id == "source-1"
     assert signal.signal_type == "market_to_delivery_intake"
+    assert signal.evidence_ref == "mtd://request/mtd-test-001"
     assert signal.evidence_level == "l1_hypothesis"
     assert signal.confidence == 40
     assert signal.payload_json["relationship_inferred"] is False
@@ -131,11 +151,7 @@ async def test_intake_persists_only_l1_signal(monkeypatch):
 
 @pytest.mark.asyncio
 async def test_exact_replay_returns_existing_without_second_write(monkeypatch):
-    existing = SimpleNamespace(
-        id="sig-existing",
-        evidence_level="l1_hypothesis",
-        payload_json={"preparation_status": "DRAFT_PREPARED_FOR_REVIEW"},
-    )
+    existing = _existing_for()
     session = _Session(existing=existing)
     _patch_session(monkeypatch, session)
 
@@ -146,6 +162,24 @@ async def test_exact_replay_returns_existing_without_second_write(monkeypatch):
 
     assert result["status"] == "existing"
     assert result["signal_id"] == "sig-existing"
+    assert session.added == []
+    assert session.commits == 0
+
+
+@pytest.mark.asyncio
+async def test_changed_payload_under_same_request_id_conflicts(monkeypatch):
+    existing = _existing_for()
+    session = _Session(existing=existing)
+    _patch_session(monkeypatch, session)
+
+    with pytest.raises(HTTPException) as error:
+        await router_module.persist_market_to_delivery_intake(
+            _body(problem="Changed synthetic requirement under same request id."),
+            current_user={"tenant_id": "tenant-a"},
+        )
+
+    assert error.value.status_code == 409
+    assert error.value.detail == "market_to_delivery_request_id_payload_conflict"
     assert session.added == []
     assert session.commits == 0
 
