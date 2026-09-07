@@ -31,7 +31,8 @@ def verify_acceptance_source() -> None:
         "dealix.founder-command-runtime-receipt.v1",
         "L4_READ_ONLY_RUNTIME_ACCEPTANCE",
         "/opt/dealix/control/proof/founder-command/",
-        "telegram_dm_admission_contains_non_owner",
+        "telegram_dm_policy_not_owner_allowlist",
+        "telegram_dm_allowlist_not_exact_founder",
         "telegram_token_file_permissions_not_0600",
         "port_18789_loopback_only",
         'oc_args("secrets", "audit", "--check")',
@@ -39,6 +40,7 @@ def verify_acceptance_source() -> None:
         "secrets_audit=",
         "secret_values_printed=false",
         "owner_raw_id_printed=false",
+        "safe.directory=",
     ):
         require(marker in text, f"runtime acceptance missing safety marker: {marker}")
 
@@ -48,8 +50,10 @@ def verify_acceptance_source() -> None:
         'oc_args("gateway", "install"',
         'oc_args("pairing", "approve"',
         'oc_args("doctor", "--fix"',
+        "safe.directory=*",
+        "--global",
     ):
-        require(marker not in text, f"runtime acceptance contains forbidden mutation: {marker}")
+        require(marker not in text, f"runtime acceptance contains forbidden mutation/trust widening: {marker}")
 
 
 def main() -> int:
@@ -62,13 +66,14 @@ def main() -> int:
     command = payload.get("founder_command", {})
     require(command.get("primary_channel") == "telegram_openclaw", "Telegram/OpenClaw must remain primary")
     require(command.get("gateway") == "openclaw", "gateway drift")
-    require(command.get("transport") == "telegram_dm_pairing", "Telegram transport drift")
+    require(command.get("transport") == "telegram_dm_owner_allowlist", "Telegram transport drift")
     require(command.get("runtime_role") == "founder_command_gateway_not_truth_owner", "runtime ownership drift")
     posture = set(command.get("required_posture", []))
     require(
         {
             "exact_founder_owner_identity",
-            "dm_pairing_only",
+            "explicit_numeric_dm_allowlist",
+            "dm_allowlist_exact_owner_only",
             "groups_disabled_by_default",
             "gateway_loopback_only",
             "unknown_identity_denied",
@@ -141,6 +146,7 @@ def main() -> int:
         "telegram_unknown_identity_deny_required",
         "telegram_gateway_loopback_required",
         "telegram_groups_disabled_by_default_required",
+        "telegram_explicit_owner_allowlist_required",
         "openclaw_secretref_audit_required",
         "current_vps_runtime_receipt_required",
         "github_issue_failover_must_share_dispatcher_state",
@@ -173,6 +179,8 @@ def main() -> int:
 
     truth = payload.get("truth", {})
     require(truth.get("primary_channel_is_telegram_openclaw") is True, "primary founder channel truth weakened")
+    require(truth.get("one_owner_prefers_explicit_numeric_allowlist") is True, "one-owner allowlist truth missing")
+    require(truth.get("pairing_is_not_required_for_one_owner_runtime") is True, "pairing legacy truth missing")
     require(truth.get("failover_adapter_is_not_primary_founder_channel") is True, "failover/primary truth weakened")
     require(truth.get("failover_adapter_is_not_separate_authority") is True, "failover authority truth weakened")
     require(truth.get("command_message_is_not_execution_proof") is True, "command/proof truth weakened")
