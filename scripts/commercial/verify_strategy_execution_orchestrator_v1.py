@@ -6,16 +6,75 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 CONFIG = ROOT / "config" / "company" / "strategy_execution_orchestrator_v1.json"
+ECONOMICS = ROOT / "config" / "company" / "economic_truth_metrics_v1.json"
 
 
 def fail(message: str) -> None:
     raise SystemExit(f"DEALIX_STRATEGY_ORCHESTRATOR_VERIFY=FAIL: {message}")
 
 
+def _load(path: Path) -> dict:
+    if not path.is_file():
+        fail(f"config missing: {path.name}")
+    data = json.loads(path.read_text(encoding="utf-8"))
+    if not isinstance(data, dict):
+        fail(f"config must be an object: {path.name}")
+    return data
+
+
+def _verify_economic_truth(data: dict) -> None:
+    if data.get("north_star") != "CASH_READY_AUTONOMOUS_DEALIX_COMPANY":
+        fail("economic north star drift")
+    if data.get("owner") != "strategy_execution_orchestrator_v1":
+        fail("economic metrics must stay owned by the strategy orchestrator")
+
+    principles = data.get("principles") or {}
+    for key in (
+        "unknown_is_not_zero",
+        "no_fabricated_denominators",
+        "historical_pass_is_not_current_proof",
+        "research_is_not_relationship",
+        "public_contact_is_not_consent",
+        "draft_is_not_sent",
+        "quote_is_not_payment",
+        "invoice_is_not_payment",
+        "synthetic_is_not_customer_proof",
+    ):
+        if principles.get(key) is not True:
+            fail(f"economic truth principle missing: {key}")
+
+    required_metrics = {
+        "production_exact_release_parity",
+        "real_interactions",
+        "qualified_problems",
+        "customer_specific_quotes",
+        "verified_payments",
+        "verified_cash_sar",
+        "time_to_first_verified_value",
+        "gross_margin_per_project",
+        "runtime_cost_per_delivered_outcome",
+        "founder_minutes_per_paid_outcome",
+        "customer_validated_proofs",
+        "repeatable_paid_cycles",
+    }
+    metrics = data.get("metrics") or []
+    ids = {str(item.get("id")) for item in metrics if isinstance(item, dict)}
+    if ids != required_metrics:
+        fail(f"economic metric drift: {sorted(ids)}")
+    for item in metrics:
+        if not item.get("source") or not item.get("truth_guard"):
+            fail(f"economic metric lacks evidence guard: {item.get('id')}")
+
+    later = {str(item.get("id")): item for item in (data.get("later_stage_metrics") or [])}
+    for metric_id in ("logo_retention", "net_revenue_retention"):
+        item = later.get(metric_id)
+        if not item or not item.get("available_when") or not item.get("truth_guard"):
+            fail(f"later-stage metric must remain evidence gated: {metric_id}")
+
+
 def main() -> int:
-    if not CONFIG.is_file():
-        fail("config missing")
-    data = json.loads(CONFIG.read_text(encoding="utf-8"))
+    data = _load(CONFIG)
+    economics = _load(ECONOMICS)
 
     if data.get("north_star") != "CASH_READY_AUTONOMOUS_DEALIX_COMPANY":
         fail("north star drift")
@@ -92,6 +151,8 @@ def main() -> int:
         if not item.get("source"):
             fail(f"OSS {item.get('id')} missing source")
 
+    _verify_economic_truth(economics)
+
     print("DEALIX_STRATEGY_ORCHESTRATOR_VERIFY=PASS")
     print("ONE_COMPANY_LAW=PASS")
     print("PORTFOLIOS_EXACT=PASS")
@@ -99,6 +160,8 @@ def main() -> int:
     print("MATERIAL_AUTHORITY_ALL_FALSE=PASS")
     print("VENTURE_BUILD_GUARD=PASS")
     print("OSS_AUTOINSTALL_FALSE=PASS")
+    print("ECONOMIC_TRUTH_METRICS=PASS")
+    print("NO_PREMATURE_SAAS_METRICS=PASS")
     return 0
 
 
