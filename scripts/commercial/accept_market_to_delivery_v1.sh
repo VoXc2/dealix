@@ -5,6 +5,13 @@ umask 077
 ROOT="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/../.." && pwd -P)"
 EXPECTED="${1:-}"
 
+# Anchor all relative runtime configuration lookups (notably pydantic-settings
+# env_file=".env") to the exact detached worktree instead of inheriting the
+# caller's cwd. This keeps acceptance independent from /root or other parent
+# directories and prevents permission failures without reading or mutating any
+# external .env file.
+cd "$ROOT"
+
 if [[ "$EUID" -eq 0 ]]; then
   printf '%s\n' 'MTD_ACCEPTANCE=HOLD_RUN_AS_REPOSITORY_OWNER_NOT_ROOT'
   exit 2
