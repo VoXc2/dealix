@@ -1,12 +1,14 @@
-# Dealix Ω∞ — Canonical Execution Master
+# Dealix Ω∞ — Execution Doctrine Reference
 
 Date context: 2026-09-07 (Asia/Riyadh)
 
 ## Authority
 
-This document is the canonical planning/orchestration layer for Dealix. It does **not** replace live runtime/source authority.
+This document is a **reference doctrine** for Dealix strategy and operating constraints. It is not a second runtime orchestrator, scheduler, Company Machine, approval authority, or truth store.
 
-`LIVE VERIFIED STATE > this document > historical receipts/prompts`
+Runtime orchestration belongs to the existing governed Company OS cycle / Strategy Execution Orchestrator owner. Live source/runtime evidence always wins.
+
+`LIVE VERIFIED STATE > canonical runtime/source owners > this reference > historical receipts/prompts`
 
 North Star:
 
@@ -72,7 +74,7 @@ Real interactions, D3/D4 demand, diagnostics, proposals/quotes, bids, partner di
 ### COMPOUNDING
 Reusable delivery modules, proof/content/referral loops, partner/provider admission, OSS labs, market intelligence, learning and productization.
 
-A blocker in one portfolio must not stop safe L0–L4 work in the others.
+A blocker in one portfolio must not stop safe L0-L4 work in the others.
 
 ## WIP Law
 
@@ -245,7 +247,7 @@ Provider marketing claims are baseline input only. Dealix benchmark evidence is 
 
 ## OSS Admission
 
-Use the existing OSS Labs V2 as the canonical capability lab. Do not reinstall or duplicate admitted components.
+Use the existing OSS Labs as the canonical capability-lab family. Do not reinstall or duplicate admitted components.
 
 Admission requires:
 
@@ -296,16 +298,17 @@ Protect the canonical dirty workspace. Do not use `git reset --hard`, `git clean
 
 Discover exact heads dynamically before action. Logical owners currently include:
 
+- Phase constitution / President control: #1513
 - Production Trust: #1529
 - Durable Consent: #1533
 - Founder Proof / Founder Control: #1535
 - Market-to-Delivery: #1536
-- Recurring Company OS Cycle: #1548
+- Recurring Company OS / Strategy Orchestrator: #1548
 - Revenue Radar / Market Advantage: #1549 / #1553
 - Partner benchmark/admission: #1550
 - Venture Foundry: #1554
 
-Do not collapse them into one mega-PR. This master orchestrates owners; it does not replace them.
+Do not collapse them into one mega-PR. This reference describes the owners; it does not replace them.
 
 ## Railway Deadline
 
