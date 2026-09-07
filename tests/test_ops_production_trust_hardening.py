@@ -102,6 +102,14 @@ def test_git_metadata_source_has_no_persistent_or_wildcard_trust():
     assert "safe.directory=*" not in source
 
 
+def test_production_trust_acceptance_uses_exact_process_local_safe_directory():
+    source = (ROOT / "scripts/ops/accept_production_trust_hardening_v1.sh").read_text(
+        encoding="utf-8"
+    )
+    assert 'git -c "safe.directory=$ROOT" -C "$ROOT" rev-parse HEAD' in source
+    assert "safe.directory=*" not in source
+
+
 def test_verifier_entrypoints_bootstrap_repo_root_before_project_imports():
     self_improvement = (ROOT / "scripts/ops/verify_self_improvement_truth_quarantine.py").read_text(
         encoding="utf-8"
