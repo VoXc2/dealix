@@ -7,6 +7,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 SCRIPT = ROOT / "scripts" / "commercial" / "run_strategy_execution_orchestrator_v1.py"
 CONFIG = ROOT / "config" / "company" / "strategy_execution_orchestrator_v1.json"
+ECONOMICS = ROOT / "config" / "company" / "economic_truth_metrics_v1.json"
 
 
 def load_module():
@@ -58,3 +59,28 @@ def test_oss_requires_named_gap():
     chosen = module.choose_oss(data, {"named_capability_gap": "sbom evidence"})
     assert len(chosen) <= 1
     assert chosen[0]["automatic_install"] is False
+
+
+def test_economic_truth_metrics_are_evidence_gated_and_not_saas_theater():
+    data = json.loads(ECONOMICS.read_text(encoding="utf-8"))
+    principles = data["principles"]
+    assert principles["unknown_is_not_zero"] is True
+    assert principles["no_fabricated_denominators"] is True
+    assert principles["invoice_is_not_payment"] is True
+    assert principles["synthetic_is_not_customer_proof"] is True
+
+    metrics = {item["id"]: item for item in data["metrics"]}
+    for metric_id in (
+        "verified_cash_sar",
+        "gross_margin_per_project",
+        "founder_minutes_per_paid_outcome",
+        "customer_validated_proofs",
+        "repeatable_paid_cycles",
+    ):
+        assert metric_id in metrics
+        assert metrics[metric_id]["source"]
+        assert metrics[metric_id]["truth_guard"]
+
+    later = {item["id"]: item for item in data["later_stage_metrics"]}
+    assert "real recurring customer cohorts" in later["logo_retention"]["available_when"]
+    assert "verified recurring revenue cohorts" in later["net_revenue_retention"]["available_when"]
