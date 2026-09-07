@@ -1,0 +1,128 @@
+{
+  "schema_version": 1,
+  "north_star": "CASH_READY_AUTONOMOUS_DEALIX_COMPANY",
+  "optimization": "Verified Economic Movement / Founder Minute / Cost / Risk",
+  "owner": "strategy_execution_orchestrator_v1",
+  "principles": {
+    "unknown_is_not_zero": true,
+    "no_fabricated_denominators": true,
+    "historical_pass_is_not_current_proof": true,
+    "research_is_not_relationship": true,
+    "public_contact_is_not_consent": true,
+    "draft_is_not_sent": true,
+    "quote_is_not_payment": true,
+    "invoice_is_not_payment": true,
+    "synthetic_is_not_customer_proof": true
+  },
+  "funnel": [
+    "raw_signal",
+    "qualified_dossier",
+    "real_interaction",
+    "qualified_problem",
+    "execution_diagnostic",
+    "customer_specific_quote",
+    "verified_payment",
+    "governed_delivery",
+    "customer_validated_proof",
+    "expansion_or_referral",
+    "repeatable_paid_cycle"
+  ],
+  "metrics": [
+    {
+      "id": "production_exact_release_parity",
+      "stage": "trust",
+      "unit": "boolean",
+      "source": "deployment_evidence",
+      "truth_guard": "HTTP success alone is insufficient without exact release identity"
+    },
+    {
+      "id": "real_interactions",
+      "stage": "market",
+      "unit": "count",
+      "source": "communication_runtime",
+      "truth_guard": "requires evidence of actual inbound, reply, meeting or conversation"
+    },
+    {
+      "id": "qualified_problems",
+      "stage": "commercial",
+      "unit": "count",
+      "source": "commercial_runtime",
+      "truth_guard": "must be confirmed through a real interaction; research hypothesis is insufficient"
+    },
+    {
+      "id": "customer_specific_quotes",
+      "stage": "commercial",
+      "unit": "count",
+      "source": "commercial_authority",
+      "truth_guard": "internal quote preparation and binding customer quote are separate states"
+    },
+    {
+      "id": "verified_payments",
+      "stage": "money",
+      "unit": "count",
+      "source": "payment_evidence",
+      "truth_guard": "invoice, checkout, verbal acceptance or payment marker is not verified payment"
+    },
+    {
+      "id": "verified_cash_sar",
+      "stage": "money",
+      "unit": "SAR",
+      "source": "payment_evidence",
+      "truth_guard": "sum only collected payments attributable to Dealix with durable evidence"
+    },
+    {
+      "id": "time_to_first_verified_value",
+      "stage": "delivery",
+      "unit": "duration",
+      "source": "payment_plus_proof_evidence",
+      "truth_guard": "starts only after verified payment or an explicitly approved pilot start and ends at first useful verified customer output"
+    },
+    {
+      "id": "gross_margin_per_project",
+      "stage": "unit_economics",
+      "unit": "SAR_and_percent",
+      "source": "finance_plus_delivery_receipts",
+      "truth_guard": "requires collected or contract-backed revenue attribution and direct delivery cost evidence"
+    },
+    {
+      "id": "runtime_cost_per_delivered_outcome",
+      "stage": "unit_economics",
+      "unit": "SAR_per_outcome",
+      "source": "observability_plus_proof_ledger",
+      "truth_guard": "calculate only where runtime cost and delivered outcome attribution are both evidenced"
+    },
+    {
+      "id": "founder_minutes_per_paid_outcome",
+      "stage": "unit_economics",
+      "unit": "minutes_per_outcome",
+      "source": "execution_receipts",
+      "truth_guard": "unknown founder time remains unknown rather than zero"
+    },
+    {
+      "id": "customer_validated_proofs",
+      "stage": "proof",
+      "unit": "count",
+      "source": "proof_ledger",
+      "truth_guard": "requires customer validation; model, demo, benchmark and internal evidence do not count"
+    },
+    {
+      "id": "repeatable_paid_cycles",
+      "stage": "repeatability",
+      "unit": "count",
+      "source": "payment_delivery_proof_evidence",
+      "truth_guard": "requires repeated verified payment plus governed delivery plus customer proof, not repeated drafts or demos"
+    }
+  ],
+  "later_stage_metrics": [
+    {
+      "id": "logo_retention",
+      "available_when": "real recurring customer cohorts exist",
+      "truth_guard": "do not calculate from prospects, free users or one-shot pilots"
+    },
+    {
+      "id": "net_revenue_retention",
+      "available_when": "verified recurring revenue cohorts exist",
+      "truth_guard": "do not estimate before recurring revenue exists"
+    }
+  ]
+}
