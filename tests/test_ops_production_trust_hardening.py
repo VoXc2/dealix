@@ -82,6 +82,25 @@ def test_git_metadata_scope_never_walks_worktree(tmp_path):
     assert all(str(path).startswith(str(gitdir.resolve())) for path in scoped)
 
 
+def test_git_metadata_git_command_uses_exact_process_local_safe_directory(tmp_path):
+    guard = load_module("dealix_git_guard_command", "scripts/ops/git_metadata_permission_guard.py")
+
+    repo = tmp_path / "repo"
+    repo.mkdir()
+    command = guard._git_command(repo.resolve(), "rev-parse", "--git-common-dir")
+
+    assert command[:3] == ["git", "-c", f"safe.directory={repo.resolve()}"]
+    assert command[3:5] == ["-C", str(repo.resolve())]
+    assert command[5:] == ["rev-parse", "--git-common-dir"]
+    assert "safe.directory=*" not in command
+
+
+def test_git_metadata_source_has_no_persistent_or_wildcard_trust():
+    source = (ROOT / "scripts/ops/git_metadata_permission_guard.py").read_text(encoding="utf-8")
+    assert "--global" not in source
+    assert "safe.directory=*" not in source
+
+
 def test_verifier_entrypoints_bootstrap_repo_root_before_project_imports():
     self_improvement = (ROOT / "scripts/ops/verify_self_improvement_truth_quarantine.py").read_text(
         encoding="utf-8"
