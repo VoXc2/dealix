@@ -52,6 +52,9 @@ def main() -> int:
         "/pyproject.toml",
         "/requirements*.txt",
         "/scripts/railway_predeploy.sh",
+        "/api/**",
+        "/app/**",
+        "/db/**",
     }
     missing = sorted(minimum.difference(actual))
     if missing:
@@ -60,6 +63,7 @@ def main() -> int:
         return 1
 
     print(f"RAILWAY_API_WATCH_PATTERN_COUNT={len(actual)}")
+    print("RAILWAY_API_CANONICAL_RUNTIME_TREES_COVERED=true")
     print("RAILWAY_API_PYTHON_RUNTIME_CHANGES_TRIGGER_DEPLOY=true")
     print("RAILWAY_API_WATCH_CONTRACT=PASS")
     return 0
