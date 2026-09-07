@@ -33,11 +33,16 @@ PY="${DEALIX_AUTOMATION_PYTHON:-$ROOT/.venv/bin/python}"
 printf '%s\n' '=== MARKET-TO-DELIVERY EXACT-HEAD ACCEPTANCE ===' "SOURCE_SHA=$ACTUAL"
 
 "$PY" "$ROOT/scripts/commercial/verify_market_to_delivery_wedge_policy_v1.py"
+"$PY" -m py_compile \
+  "$ROOT/scripts/commercial/verify_market_to_delivery_postgres_v1.py"
 "$PY" -m unittest discover -s "$ROOT/tests" -p 'test_market_to_delivery_preparation.py' -v
 "$PY" -m unittest discover -s "$ROOT/tests" -p 'test_market_to_delivery_http.py' -v
-"$PY" -m pytest -q "$ROOT/tests/test_market_to_delivery_intake_bridge.py"
+"$PY" -m pytest -q \
+  "$ROOT/tests/test_market_to_delivery_intake_bridge.py" \
+  "$ROOT/tests/test_market_to_delivery_postgres_acceptance_v1.py"
 "$PY" "$ROOT/scripts/commercial/generate_market_to_delivery_projection.py" --check
 node --check "$ROOT/apps/web/public/market-to-delivery-workspace.js"
+bash -n "$ROOT/scripts/commercial/run_market_to_delivery_postgres_acceptance_v1.sh"
 
 WEB_STATUS='NOT_RUN_MISSING_INSTALLED_DEPENDENCIES'
 if [[ -f "$ROOT/apps/web/node_modules/next/dist/bin/next" ]]; then
@@ -67,6 +72,8 @@ printf '%s\n' \
   'ACTIVE_GTM_WEDGES_MAX=3' \
   'SCALE_POLICY=EVIDENCE_GATED' \
   'CANONICAL_SIGNAL_INTAKE=SOURCE_VERIFIED' \
+  'POSTGRES_ACCEPTANCE_GUARDS=SOURCE_VERIFIED' \
+  'REAL_POSTGRES_RESTART_ACCEPTANCE=SEPARATE_RUNTIME_GATE' \
   'RELATIONSHIP_AUTO_CREATE=false' \
   'CONSENT_AUTO_CREATE=false' \
   'OPPORTUNITY_AUTO_CREATE=false' \
