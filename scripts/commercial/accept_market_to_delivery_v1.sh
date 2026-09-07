@@ -32,6 +32,7 @@ PY="${DEALIX_AUTOMATION_PYTHON:-$ROOT/.venv/bin/python}"
 
 printf '%s\n' '=== MARKET-TO-DELIVERY EXACT-HEAD ACCEPTANCE ===' "SOURCE_SHA=$ACTUAL"
 
+"$PY" "$ROOT/scripts/commercial/verify_market_to_delivery_wedge_policy_v1.py"
 "$PY" -m unittest discover -s "$ROOT/tests" -p 'test_market_to_delivery_preparation.py' -v
 "$PY" -m unittest discover -s "$ROOT/tests" -p 'test_market_to_delivery_http.py' -v
 "$PY" -m pytest -q "$ROOT/tests/test_market_to_delivery_intake_bridge.py"
@@ -62,6 +63,9 @@ printf '%s\n' \
   'MTD_SOURCE_ACCEPTANCE=PASS' \
   "SOURCE_SHA=$ACTUAL" \
   "NEXT_TYPECHECK_BUILD=$WEB_STATUS" \
+  'WEDGE_POLICY=SOURCE_VERIFIED' \
+  'ACTIVE_GTM_WEDGES_MAX=3' \
+  'SCALE_POLICY=EVIDENCE_GATED' \
   'CANONICAL_SIGNAL_INTAKE=SOURCE_VERIFIED' \
   'RELATIONSHIP_AUTO_CREATE=false' \
   'CONSENT_AUTO_CREATE=false' \
