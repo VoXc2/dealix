@@ -1,5 +1,16 @@
+import pytest
+
 import app.outbound.policy_gate as policy_gate
+from app.outbound.consent import consent_backend_status
 from app.outbound.suppression import suppression_backend_status
+
+
+@pytest.fixture(autouse=True)
+def _memory_backends_default(monkeypatch):
+    """Keep unit tests deterministic even on a production-like host."""
+
+    monkeypatch.delenv("DEALIX_SUPPRESSION_BACKEND", raising=False)
+    monkeypatch.delenv("DATABASE_URL", raising=False)
 
 
 def _email_contact() -> dict[str, object]:
@@ -29,12 +40,20 @@ def test_email_blocked_by_default():
 
 
 def test_current_suppression_backend_is_not_live_eligible():
-    status = suppression_backend_status()
-    assert status == {
+    assert suppression_backend_status() == {
         "backend": "memory",
         "persistent": False,
         "live_send_eligible": False,
         "reason": "in_memory_suppression_is_not_durable",
+    }
+
+
+def test_current_consent_backend_is_not_live_eligible():
+    assert consent_backend_status() == {
+        "backend": "memory",
+        "persistent": False,
+        "live_send_eligible": False,
+        "reason": "in_memory_consent_is_not_durable",
     }
 
 
@@ -49,8 +68,21 @@ def test_controlled_live_is_blocked_until_suppression_persistence_is_proven():
     assert "persistent suppression backend is not verified" in result.reasons
 
 
-def test_email_allowed_only_when_controlled_compliant_and_durable(monkeypatch):
+def test_controlled_live_is_blocked_until_consent_persistence_is_proven(monkeypatch):
     monkeypatch.setattr(policy_gate, "persistent_suppression_ready", lambda: True)
+    env = {
+        "EXTERNAL_SEND_ENABLED": "true",
+        "EMAIL_SEND_ENABLED": "true",
+        "OUTBOUND_MODE": "controlled_live",
+    }
+    result = policy_gate.can_send_email(_email_contact(), _approved_email(), env)
+    assert not result.allowed
+    assert "persistent consent backend is not verified" in result.reasons
+
+
+def test_email_allowed_only_when_both_durability_gates_are_proven(monkeypatch):
+    monkeypatch.setattr(policy_gate, "persistent_suppression_ready", lambda: True)
+    monkeypatch.setattr(policy_gate, "persistent_consent_ready", lambda: True)
     env = {
         "EXTERNAL_SEND_ENABLED": "true",
         "EMAIL_SEND_ENABLED": "true",
@@ -100,8 +132,9 @@ def test_whatsapp_requires_opt_in_and_template():
     assert any("opt-in" in reason for reason in result.reasons)
 
 
-def test_whatsapp_allowed_only_with_opt_in_template_and_durable_suppression(monkeypatch):
+def test_whatsapp_allowed_only_when_policy_and_both_durability_gates_pass(monkeypatch):
     monkeypatch.setattr(policy_gate, "persistent_suppression_ready", lambda: True)
+    monkeypatch.setattr(policy_gate, "persistent_consent_ready", lambda: True)
     env = {
         "EXTERNAL_SEND_ENABLED": "true",
         "WHATSAPP_SEND_ENABLED": "true",

@@ -4,9 +4,15 @@
 from __future__ import annotations
 
 import os
+import sys
 from pathlib import Path
 
+# Entry-point invariant: this verifier must work from any cwd.  Executing a
+# script under scripts/ops directly otherwise leaves only scripts/ops on
+# sys.path and makes imports of api/ and dealix/ depend on PYTHONPATH.
 ROOT = Path(__file__).resolve().parents[2]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
 
 
 def require(condition: bool, message: str) -> None:

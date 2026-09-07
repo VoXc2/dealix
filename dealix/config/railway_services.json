@@ -15,6 +15,21 @@
       "rootDirectory": ".",
       "dockerfilePath": "Dockerfile",
       "railwayConfig": "railway.json",
+      "expectedWatchPatterns": [
+        "/*.py",
+        "/**/*.py",
+        "/Dockerfile",
+        "/railway.json",
+        "/pyproject.toml",
+        "/requirements*.txt",
+        "/scripts/railway_predeploy.sh",
+        "/api/**",
+        "/app/**",
+        "/db/**",
+        "/config/**",
+        "/templates/**",
+        "/prompts/**"
+      ],
       "healthcheckPath": "/healthz",
       "publicHealthUrl": "https://api.dealix.me/healthz",
       "publicNetworking": true,
@@ -34,7 +49,8 @@
         "GROQ_API_KEY",
         "GOOGLE_API_KEY",
         "DEALIX_ADMIN_API_KEY",
-        "CORS_ORIGINS"
+        "CORS_ORIGINS",
+        "DEALIX_SUPPRESSION_BACKEND"
       ],
       "runsPredeploy": true
     },
