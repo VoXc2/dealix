@@ -23,6 +23,9 @@
         "/pyproject.toml",
         "/requirements*.txt",
         "/scripts/railway_predeploy.sh",
+        "/api/**",
+        "/app/**",
+        "/db/**",
         "/config/**",
         "/templates/**",
         "/prompts/**"
