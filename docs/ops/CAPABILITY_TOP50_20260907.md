@@ -3,10 +3,11 @@
 ## Mission
 Expand the existing Dealix Capability Radar with a curated, evidence-oriented Top-50 of open-source tools/libraries that can improve Production Trust, reliability, AI evaluation, document/data handling, public-signal research, and founder leverage **without creating parallel company architecture**.
 
-## Live base used for this expansion
-- `main`: `8443836729cfa8eff79c0f4eb2c68bbacd4f17d8`
-- #1529 Production Trust was merged before this expansion.
-- The capability registry remains subordinate to `CASH_READY_AUTONOMOUS_DEALIX_COMPANY`.
+## Live reconciliation
+- #1529 Production Trust is merged.
+- Latest `main` observed while reconciling this PR: `2dedf0a7427d7894379751198cb27b999cdc6812`.
+- The runner never pins that SHA; every execution fetches current `origin/main`.
+- Live state always overrides this document.
 
 ## Admission law
 - `REJECT_DUPLICATE_BY_DEFAULT`.
@@ -17,15 +18,24 @@ Expand the existing Dealix Capability Radar with a curated, evidence-oriented To
 - Missing tools are **not auto-installed** by the admission runner.
 - All material L5 effects remain disabled: merge, Production deploy, DNS, Production DB/schema, secrets/identity, external customer send, public publish, spend/payment/refund, binding legal/commercial commitments, live voice activation.
 
+## Files
+- `config/oss/capability_top50_v1.tsv` — the curated Top-50 registry.
+- `scripts/ops/run_capability_top50_admission_v1.sh` — live reconciliation + audit/pilot runner.
+
 ## How to run
 ```bash
+bash -n scripts/ops/run_capability_top50_admission_v1.sh
 bash scripts/ops/run_capability_top50_admission_v1.sh audit
+```
+
+Optional bounded version probes for tools that are **already installed**:
+```bash
 bash scripts/ops/run_capability_top50_admission_v1.sh pilot
 ```
 
-`audit` reconciles current `origin/main`, checks GitHub source reachability, scans the current repo for likely duplication, records local tool availability, and creates durable receipts.
+`audit` reconciles current `origin/main`, validates that the registry has exactly 50 unique candidates, checks public GitHub source reachability, scans current Dealix source for likely duplication/reference hits, records local tool availability, and writes JSON/TSV/SHA256 receipts.
 
-`pilot` adds bounded `--version` probes only for tools already present on the host. It still does not install missing tools.
+`pilot` adds only bounded `--version` probes for tools already available on the host. It still does not install missing tools.
 
 ## Priority interpretation
 The Top-50 is not a shopping list. Decisions are intentionally mixed:
@@ -49,6 +59,3 @@ The Top-50 is not a shopping list. Decisions are intentionally mixed:
 - Do not add another vector database as a parallel Company Brain.
 - Do not add another model gateway unless the existing Dealix router has a measured gap.
 - Do not use browser/crawler tools for LinkedIn automation, cold WhatsApp, consent bypass, or platform-control circumvention.
-
-## Files
-- `scripts/ops/run_capability_top50_admission_v1.sh`
