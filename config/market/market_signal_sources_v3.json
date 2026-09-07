@@ -1,0 +1,111 @@
+{
+  "schema_version": 3,
+  "date": "2026-09-07",
+  "north_star": "CASH_READY_AUTONOMOUS_DEALIX_COMPANY",
+  "authority": {
+    "source_registry_is_not_opportunity_graph": true,
+    "research_is_not_relationship": true,
+    "public_contact_is_not_consent": true,
+    "signal_is_not_buyer_intent": true,
+    "external_sources_may_not_self_create_commercial_authority": true
+  },
+  "demand_grades": {
+    "D4": "Explicit RFP/RFQ/tender/paid implementation request/direct commercial request",
+    "D3": "Customer-confirmed problem or verified active discovery",
+    "D2": "Fresh economic trigger with evidence",
+    "D1": "Sector hypothesis/directory/news/event signal"
+  },
+  "sources": [
+    {
+      "id": "muqawil_consortium",
+      "name": "Saudi Contractors Authority — Muqawil Consortium",
+      "url": "https://muqawil.org/en/consortium/home/projects",
+      "lane": "CONSTRUCTION_FM",
+      "default_grade": "D2",
+      "purpose": "Project/alliance discovery and contractor ecosystem mapping",
+      "allowed_outputs": ["research_signal", "account_research", "partner_research", "bid_no_bid_research"],
+      "forbidden_inference": ["buyer_intent", "relationship", "consent", "award"],
+      "freshness_hours": 24,
+      "notes": "Treat project/alliance publication as an economic trigger only; verify project/entity/eligibility independently."
+    },
+    {
+      "id": "pif_musahama",
+      "name": "PIF Musahama",
+      "url": "https://musahama.pif.gov.sa/",
+      "lane": "MARKET_ACCESS",
+      "default_grade": "D2",
+      "purpose": "Supplier readiness and PIF portfolio procurement ecosystem research",
+      "allowed_outputs": ["supplier_readiness", "portfolio_company_research", "market_access_research"],
+      "forbidden_inference": ["buyer_intent", "procurement_award", "relationship", "consent"],
+      "freshness_hours": 72,
+      "notes": "Registration/discoverability is not an opportunity or award."
+    },
+    {
+      "id": "misa_matchmaking",
+      "name": "Ministry of Investment — Matchmaking",
+      "url": "https://eservices.misa.gov.sa/en/matchmaking",
+      "lane": "MARKET_ACCESS",
+      "default_grade": "D2",
+      "purpose": "Partnership matching, opportunity listing and partner access research",
+      "allowed_outputs": ["partner_research", "opportunity_research", "market_entry_research"],
+      "forbidden_inference": ["partnership", "buyer_intent", "consent"],
+      "freshness_hours": 72
+    },
+    {
+      "id": "sidf_future_factories",
+      "name": "SIDF Future Factories / Tanafusiya",
+      "url": "https://www.sidf.gov.sa/Initiatives/Industrial-Sector-Support-Initiative/Future-Factories",
+      "lane": "MANUFACTURING_SUPPLY_CHAIN_ADMIN",
+      "default_grade": "D2",
+      "purpose": "Identify economically grounded automation/digitization/energy-efficiency problem families for brownfield factories",
+      "allowed_outputs": ["sector_research", "factory_qualification_hypothesis", "diagnostic_template_input"],
+      "forbidden_inference": ["factory_eligibility", "budget", "buyer_intent", "consent"],
+      "freshness_hours": 168,
+      "notes": "Program requires commercially proven technology and economic feasibility; validate each factory/project separately."
+    },
+    {
+      "id": "nca_ai_cybersecurity",
+      "name": "National Cybersecurity Authority — AI Cybersecurity Guidelines",
+      "url": "https://nca.gov.sa/en/news/2354/",
+      "lane": "TRUST",
+      "default_grade": "D1",
+      "purpose": "Security/governance evidence for generative and agentic AI delivery posture",
+      "allowed_outputs": ["security_control_research", "project_cell_guardrail_input", "provider_admission_input"],
+      "forbidden_inference": ["certification", "compliance_status", "government_endorsement"],
+      "freshness_hours": 720,
+      "required_dimensions": ["governance", "defense", "resilience", "third_party_cybersecurity"]
+    },
+    {
+      "id": "railway_docs",
+      "name": "Railway Documentation",
+      "url": "https://docs.railway.com/",
+      "lane": "TRUST",
+      "default_grade": "D1",
+      "purpose": "Provider behavior/configuration authority for deployments, watch paths and IaC migration",
+      "allowed_outputs": ["production_trust_research", "migration_plan_input", "release_parity_rule"],
+      "forbidden_inference": ["current_deployment_state", "current_service_config"],
+      "freshness_hours": 72,
+      "notes": "Current Dealix Railway state must come from the connected provider control plane, not docs."
+    }
+  ],
+  "signal_contract": {
+    "required_fields": [
+      "source_id",
+      "source_url",
+      "observed_at",
+      "entity",
+      "event",
+      "evidence_excerpt_or_digest",
+      "freshness",
+      "sector",
+      "geography",
+      "demand_grade",
+      "relationship_state",
+      "consent_state",
+      "confidence",
+      "next_safe_action"
+    ],
+    "default_relationship_state": "RESEARCH_ONLY",
+    "default_consent_state": "NOT_PROVEN"
+  }
+}
