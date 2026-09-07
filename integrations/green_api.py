@@ -76,6 +76,12 @@ def payload_instance_matches(payload: dict[str, Any], expected: str | None = Non
 def _direct_phone(sender: str, chat_id: str) -> str | None:
     """Return E.164-like digits for direct chats; reject groups/broadcasts."""
 
+    # GREEN-API group payloads can carry an individual participant in
+    # ``sender`` while ``chatId`` is still the group. Reject based on the chat
+    # envelope before looking at the participant identity.
+    if chat_id.endswith("@g.us") or chat_id.endswith("@broadcast"):
+        return None
+
     candidate = sender or chat_id
     if not candidate:
         return None
