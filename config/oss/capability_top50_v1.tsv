@@ -48,4 +48,4 @@ rank	id	category	decision	repository	purpose
 47	apprise	OPS_MARKET	PILOT_ISOLATED	caronc/apprise	Unified internal notification adapter; no customer outreach authority.
 48	opencode	OPS_MARKET	ADOPT_NOW_BOUNDED	anomalyco/opencode	Coding-agent governance and repo exploration patterns only; reuse AGENTS.md and explicit permissions, no parallel permanent fleet.
 49	crawl4ai	OPS_MARKET	PILOT_ISOLATED	unclecode/crawl4ai	Public web research extraction for official/economic signal ingestion; obey source terms/robots.
-50	n8n_mcp	OPS_MARKET	PILOT_ISOLATED	n8n-io/n8n	MCP-assisted disabled-first workflow authoring over existing n8n owner; no second scheduler.
+50	n8n_skills	OPS_MARKET	ADOPT_NOW_BOUNDED	n8n-io/skills	Official n8n Skills paired with existing instance-level MCP for governed workflow authoring; no second scheduler or n8n instance.
