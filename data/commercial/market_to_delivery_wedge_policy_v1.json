@@ -1,0 +1,248 @@
+{
+  "schema_version": "dealix.market-to-delivery.wedge-policy.v1",
+  "as_of": "2026-09-07",
+  "north_star": "CASH_READY_AUTONOMOUS_DEALIX_COMPANY",
+  "optimization": "Verified Economic Movement / Founder Minute / Cost / Risk",
+  "authority": {
+    "external_send": false,
+    "commercial_commitment": false,
+    "payment_execution": false,
+    "public_publish": false,
+    "production_mutation": false,
+    "merge_main": false
+  },
+  "portfolio_weights": {
+    "when_production_trust_not_green": {
+      "TRUST": 30,
+      "MONEY_NOW": 50,
+      "COMPOUNDING": 20
+    },
+    "when_production_trust_green": {
+      "TRUST": 10,
+      "MONEY_NOW": 70,
+      "COMPOUNDING": 20
+    }
+  },
+  "market_law": {
+    "research_scope": "BROAD_20_SECTOR_RADAR",
+    "max_simultaneous_active_gtm_wedges": 3,
+    "demand_evidence_ladder": [
+      "EXPLICIT_RFP_OR_TENDER",
+      "CUSTOMER_CONFIRMED_PROBLEM",
+      "CURRENT_COMPANY_SIGNAL",
+      "SECTOR_HYPOTHESIS"
+    ],
+    "commercial_qualification_requires": [
+      "REAL_INTERACTION_OR_EXPLICIT_PROCUREMENT_PATH",
+      "PROBLEM_EVIDENCE",
+      "ELIGIBLE_CHANNEL_OR_PROCUREMENT_ROUTE"
+    ],
+    "forbidden_promotions": [
+      "RESEARCH_TO_RELATIONSHIP",
+      "PUBLIC_CONTACT_TO_CONSENT",
+      "SIGNAL_SCORE_TO_BUYER_INTENT",
+      "QUOTE_TO_PAYMENT",
+      "INTERNAL_METRIC_TO_CUSTOMER_PROOF"
+    ]
+  },
+  "active_wedge_hypotheses": [
+    {
+      "id": "CONSTRUCTION_FM",
+      "priority": 1,
+      "segments": ["construction", "property_facilities"],
+      "problem_families": [
+        "RFI_SUBMITTAL_AGING",
+        "PURCHASE_ORDER_INVOICE_EVIDENCE",
+        "CHANGE_ORDER_EVIDENCE",
+        "FIELD_PROGRESS_HANDOVER",
+        "TENANT_SERVICE_DISPATCH",
+        "PREVENTIVE_MAINTENANCE_EVIDENCE"
+      ],
+      "initial_solution_routes": ["BUILD_DIRECT", "ADAPT_EXISTING", "INTEGRATE_EXISTING_PRODUCT"],
+      "why_now_hypothesis": "Project-heavy operating environments create measurable workflow, evidence, handoff and rework problems that can often be bounded without replacing core systems.",
+      "entry_offer": "EXECUTION_DIAGNOSTIC_TO_BOUNDED_OUTCOME_SPRINT",
+      "proof_targets": ["CYCLE_TIME", "OVERDUE_RATE", "EVIDENCE_COMPLETENESS", "REWORK_RATE"],
+      "stop_conditions": [
+        "NO_REAL_INTERACTIONS_AFTER_TEST_WINDOW",
+        "NO_MEASURABLE_BASELINE",
+        "DELIVERY_DEPENDS_ON_UNPROVEN_SAFETY_CRITICAL_CAPABILITY",
+        "EXPECTED_MARGIN_BELOW_APPROVED_FLOOR"
+      ]
+    },
+    {
+      "id": "SI_MSP_IMPLEMENTERS",
+      "priority": 2,
+      "segments": ["ict_integrators", "professional_services"],
+      "problem_families": [
+        "WHITE_LABEL_INTEGRATION_DELIVERY",
+        "CUSTOMER_ONBOARDING_MIGRATION",
+        "RELEASE_TEST_EVIDENCE",
+        "SUPPORT_KNOWLEDGE_TRIAGE",
+        "CUSTOMER_OUTCOME_REPORTING",
+        "PROPOSAL_TO_DELIVERY_HANDOFF"
+      ],
+      "initial_solution_routes": ["SUBCONTRACT_PACKAGE", "QUALIFIED_PARTNER", "BUILD_DIRECT"],
+      "why_now_hypothesis": "Implementers can provide distribution and delivery leverage while Dealix adds governed execution, proof and bounded specialist capacity instead of competing as another generic SI.",
+      "entry_offer": "PARTNER_DISCOVERY_TO_BOUNDED_CO_DELIVERY_PACKAGE",
+      "proof_targets": ["DELIVERY_MARGIN", "ACCEPTANCE_PASS_RATE", "ONBOARDING_TIME", "VERIFIED_OUTCOME_COVERAGE"],
+      "stop_conditions": [
+        "NO_MUTUAL_VALUE_MODEL",
+        "PARTNER_ECONOMICS_DESTROY_MARGIN",
+        "UNCLEAR_CUSTOMER_OWNERSHIP_OR_LIABILITY",
+        "NO_DATA_OR_DELIVERY_BOUNDARY"
+      ]
+    },
+    {
+      "id": "MANUFACTURING_SUPPLY_CHAIN_ADMIN",
+      "priority": 3,
+      "segments": ["manufacturing", "logistics", "agriculture_food"],
+      "problem_families": [
+        "QUALITY_NONCONFORMANCE_WORKFLOW",
+        "ERP_WAREHOUSE_RECONCILIATION",
+        "SHIPMENT_EXCEPTION_HANDLING",
+        "PROOF_OF_DELIVERY_RECONCILIATION",
+        "SUPPLIER_QUALIFICATION_EVIDENCE",
+        "PRODUCTION_REPORTING_DATA_READINESS"
+      ],
+      "initial_solution_routes": ["INTEGRATE_EXISTING_PRODUCT", "BUILD_DIRECT", "QUALIFIED_PARTNER"],
+      "why_now_hypothesis": "Administrative digitization, data quality, reporting and exception workflows can create measurable value before any safety-critical shop-floor control work.",
+      "entry_offer": "WORKFLOW_AND_DATA_DIAGNOSTIC_TO_MEASURED_ADMIN_SPRINT",
+      "proof_targets": ["RECONCILIATION_ACCURACY", "CLOSURE_LEAD_TIME", "EXCEPTION_AGE", "DUPLICATE_ENTRY_REDUCTION"],
+      "stop_conditions": [
+        "REQUIRES_UNAUTHORIZED_OT_CONTROL",
+        "NO_APPROVED_DATA_ACCESS",
+        "NO_VERIFIABLE_BASELINE",
+        "SPECIALIST_REQUIREMENT_UNFILLED"
+      ]
+    }
+  ],
+  "solution_route_decision": {
+    "allowed_routes": [
+      "BUILD_DIRECT",
+      "ADAPT_EXISTING",
+      "INTEGRATE_EXISTING_PRODUCT",
+      "QUALIFIED_PARTNER",
+      "SUBCONTRACT_PACKAGE",
+      "REFER_WITH_DISCLOSURE",
+      "DECLINE_OR_DEFER"
+    ],
+    "required_inputs": [
+      "PROBLEM_CLARITY",
+      "DATA_ACCESS_QUALITY",
+      "ACCEPTANCE_TESTABILITY",
+      "PROVEN_CAPABILITY",
+      "SPECIALIST_OR_LICENSE_NEED",
+      "SECURITY_PRIVACY_BURDEN",
+      "PARTNER_COST",
+      "WORKING_CAPITAL_REQUIREMENT",
+      "LIABILITY",
+      "DELIVERY_CAPACITY",
+      "REUSE_POTENTIAL"
+    ],
+    "no_route_may_override": ["CONSENT", "AUTHORITY", "LICENSING", "SAFETY", "TENANT_ISOLATION"]
+  },
+  "opportunity_score": {
+    "numerator": ["VERIFIED_ECONOMIC_VALUE", "URGENCY", "EVIDENCE_CONFIDENCE", "REUSABILITY", "COLLECTION_PROBABILITY"],
+    "denominator": ["FOUNDER_MINUTES", "DELIVERY_COST", "WORKING_CAPITAL_RISK", "OPERATIONAL_RISK", "COMPLIANCE_RISK"],
+    "score_is_not": ["BUYER_INTENT", "CONSENT", "EXECUTION_AUTHORITY", "PURCHASE_PROBABILITY"]
+  },
+  "commercial_authority_ladder": {
+    "phase_0": "FOUNDER_APPROVAL_FOR_BINDING_QUOTES_AND_MATERIAL_EXCEPTIONS",
+    "phase_1": "AUTOMATE_DIAGNOSTIC_COST_MARGIN_QUOTE_PREPARATION",
+    "phase_2": "FOUNDER_APPROVES_STANDARD_POLICY_BANDS_FROM_REAL_ECONOMICS",
+    "phase_3": "AUTO_APPROVE_ONLY_INSIDE_PROVEN_BANDS_WITH_NO_MATERIAL_EXCEPTION",
+    "always_escalate": [
+      "UNUSUAL_DISCOUNT",
+      "NON_STANDARD_SLA",
+      "GUARANTEE",
+      "NON_STANDARD_PAYMENT_TERMS",
+      "LEGAL_LIABILITY",
+      "EXCEPTIONAL_SCOPE",
+      "LARGE_PARTNER_COMMITMENT"
+    ]
+  },
+  "project_cell_contract": {
+    "required_before_provisioning": [
+      "TENANT_PROJECT_ID",
+      "APPROVED_SCOPE_DIGEST",
+      "VERIFIED_START_OR_PAYMENT_AUTHORITY",
+      "DATA_AUTHORIZATION",
+      "ACCOUNTABLE_HUMAN",
+      "QUALIFIED_SPECIALIST_IF_REQUIRED",
+      "INDEPENDENT_REVIEWER",
+      "ISOLATED_WORKSPACE_STORAGE_CREDENTIALS",
+      "APPROVED_DATA_REGION_AND_SUBPROCESSORS",
+      "BUDGET_CAP",
+      "MODEL_API_SPEND_CAP",
+      "CONCURRENCY_CAP",
+      "TTL_AND_STOP_CONDITIONS",
+      "ACCEPTANCE_TESTS",
+      "ROLLBACK_AND_EXIT_PLAN"
+    ],
+    "delivery_gates": [
+      "BASELINE",
+      "FUNCTIONAL",
+      "INTEGRATION",
+      "DATA_ISOLATION",
+      "SECURITY_PRIVACY",
+      "CUSTOMER_UAT",
+      "AUTHORIZED_RELEASE",
+      "POST_RELEASE_VERIFICATION",
+      "OUTCOME_PROOF"
+    ]
+  },
+  "scale_policy": {
+    "minimum_evidence_window": "REAL_CYCLES_REQUIRED",
+    "decision_classes": ["SCALE", "ITERATE", "STOP", "INVALID"],
+    "scale_requires": [
+      "REPEATED_REAL_DEMAND",
+      "POSITIVE_OR_APPROVED_UNIT_ECONOMICS",
+      "DELIVERY_ACCEPTANCE",
+      "COLLECTION_EVIDENCE",
+      "CUSTOMER_VALIDATED_PROOF_OR_CLEAR_PROGRESS_TO_IT",
+      "REUSABLE_DELIVERY_PATTERN"
+    ],
+    "iterate_when": [
+      "DEMAND_EXISTS_BUT_MESSAGE_OR_SCOPE_WEAK",
+      "DELIVERY_WORKS_BUT_MARGIN_OR_FOUNDER_MINUTES_TOO_HIGH",
+      "PROOF_GAP_IS_FIXABLE",
+      "PARTNER_ROUTE_REQUIRES_REFINEMENT"
+    ],
+    "stop_when": [
+      "NO_VERIFIED_DEMAND_AFTER_BOUNDED_TEST",
+      "UNACCEPTABLE_MARGIN_OR_COLLECTION_RISK",
+      "REPEATED_DELIVERY_FAILURE",
+      "REGULATORY_OR_LIABILITY_BURDEN_EXCEEDS_VALUE",
+      "FOUNDER_MINUTES_REMAIN_STRUCTURALLY_HIGH_WITH_LOW_REUSE"
+    ],
+    "invalid_when": [
+      "DATA_OR_EVIDENCE_NOT_TRUSTWORTHY",
+      "SYNTHETIC_ACTIVITY_MISTAKEN_FOR_CUSTOMER_DEMAND",
+      "RESEARCH_SIGNAL_MISTAKEN_FOR_RELATIONSHIP",
+      "UNVERIFIED_PAYMENT_OR_PROOF"
+    ]
+  },
+  "kpis": [
+    "REAL_INTERACTIONS",
+    "QUALIFIED_PROBLEMS",
+    "DIAGNOSTIC_TO_DISCOVERY_RATE",
+    "DISCOVERY_TO_QUOTE_RATE",
+    "QUOTE_TO_VERIFIED_CASH_RATE",
+    "COLLECTION_DAYS",
+    "DIRECT_DELIVERY_COST",
+    "CONTRIBUTION_MARGIN",
+    "DELIVERY_VARIANCE",
+    "REWORK_RATE",
+    "CUSTOMER_ACCEPTANCE_RATE",
+    "CUSTOMER_VALIDATED_PROOF_RATE",
+    "EXPANSION_REFERRAL_RATE",
+    "REPEATED_PAID_CYCLES",
+    "FOUNDER_MINUTES_PER_VERIFIED_ECONOMIC_MOVEMENT",
+    "AUTOMATION_COVERAGE_BY_LIFECYCLE_STAGE",
+    "EXCEPTION_AND_HUMAN_HANDOFF_RATE"
+  ],
+  "milestones": {
+    "A5": "REAL_PAID_CUSTOMER_DELIVERED_SCOPE_AND_CUSTOMER_VALIDATED_PROOF",
+    "A6": "MULTIPLE_PAID_CYCLES_WITH_MEASURED_UNIT_ECONOMICS_AND_MATERIALLY_LOWER_FOUNDER_MINUTES"
+  }
+}
