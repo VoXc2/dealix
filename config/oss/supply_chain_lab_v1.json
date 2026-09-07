@@ -59,6 +59,21 @@
       "promotion_gate": "Do not make artifact attestation a required release gate while hosted CI is still failing before repository steps."
     }
   ],
+  "classification": {
+    "scanner_execution_failure": "tool could not execute or output could not be parsed",
+    "findings_present": "one or more findings were reported",
+    "no_findings_observed": "tool completed and reported no findings in its covered surface",
+    "tool_unavailable": "tool is not currently admitted in the isolated evidence lane",
+    "unknown_not_evidence_backed": "coverage, reachability, exploitability, or business impact is not proven"
+  },
+  "rules": [
+    "A scanner finding is not automatically exploitable, reachable, or business-critical.",
+    "Duplicate CVEs from multiple scanners map to one canonical risk record, not multiple business risks.",
+    "Fix suggestions are proposals only and never self-authorize dependency mutation.",
+    "Generated SBOM and vulnerability artifacts are evidence inputs, not Production Green authority.",
+    "No scan may target a third-party system, customer surface, or active Production network target without an explicit action-bound authorization.",
+    "Secrets, customer payloads, prompts, tokens, credentials, and PII must not be embedded in receipts."
+  ],
   "evidence_contract": {
     "required_fields": [
       "source_sha",
