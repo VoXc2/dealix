@@ -1,8 +1,8 @@
 """Tenant-bound Market-to-Delivery intake bridge into Commercial Intelligence.
 
-This module deliberately creates ONLY a canonical CommercialSignalRecord.  It
+This module deliberately creates ONLY a canonical CommercialSignalRecord. It
 never creates a relationship, consent record, opportunity, quote approval,
-external send, or project worker.  Qualification remains owned by the existing
+external send, or project worker. Qualification remains owned by the existing
 Commercial Intelligence flow.
 """
 from __future__ import annotations
@@ -48,7 +48,11 @@ class IntakeEvidenceRef(_StrictBody):
 
 
 class MarketToDeliveryIntakeBody(_StrictBody):
-    request_id: str = Field(min_length=1, max_length=80, pattern=r"^[A-Za-z0-9][A-Za-z0-9_.:-]{0,79}$")
+    request_id: str = Field(
+        min_length=1,
+        max_length=80,
+        pattern=r"^[A-Za-z0-9][A-Za-z0-9_.:-]{0,79}$",
+    )
     account_id: str = Field(min_length=1, max_length=64)
     company_name: str = Field(min_length=1, max_length=255)
     source_id: str = Field(min_length=1, max_length=64)
@@ -61,8 +65,18 @@ class MarketToDeliveryIntakeBody(_StrictBody):
     constraints: str | None = Field(default=None, max_length=4000)
     evidence_refs: list[IntakeEvidenceRef] = Field(default_factory=list, max_length=20)
     data_authorized: bool
-    estimated_cost_sar: Decimal | None = Field(default=None, ge=0, le=1_000_000_000, decimal_places=2)
-    target_margin_pct: Decimal | None = Field(default=None, ge=0, le=90, decimal_places=2)
+    estimated_cost_sar: Decimal | None = Field(
+        default=None,
+        ge=0,
+        le=1_000_000_000,
+        decimal_places=2,
+    )
+    target_margin_pct: Decimal | None = Field(
+        default=None,
+        ge=0,
+        le=90,
+        decimal_places=2,
+    )
 
 
 def _tenant_id(current_user: Any) -> str:
@@ -79,7 +93,10 @@ def _tenant_id(current_user: Any) -> str:
     return clean
 
 
-def _preparation_payload(body: MarketToDeliveryIntakeBody, tenant_id: str) -> dict[str, Any]:
+def _preparation_payload(
+    body: MarketToDeliveryIntakeBody,
+    tenant_id: str,
+) -> dict[str, Any]:
     return {
         "tenant_id": tenant_id,
         "request_id": body.request_id,
@@ -95,13 +112,25 @@ def _preparation_payload(body: MarketToDeliveryIntakeBody, tenant_id: str) -> di
             for item in body.evidence_refs
         ],
         "data_authorized": body.data_authorized,
-        "estimated_cost_sar": str(body.estimated_cost_sar) if body.estimated_cost_sar is not None else None,
-        "target_margin_pct": str(body.target_margin_pct) if body.target_margin_pct is not None else None,
+        "estimated_cost_sar": (
+            str(body.estimated_cost_sar)
+            if body.estimated_cost_sar is not None
+            else None
+        ),
+        "target_margin_pct": (
+            str(body.target_margin_pct)
+            if body.target_margin_pct is not None
+            else None
+        ),
     }
 
 
-def _signal_evidence_ref(body: MarketToDeliveryIntakeBody, artifact_digest: str) -> str:
-    return f"mtd://{body.request_id}/{artifact_digest}"
+def _signal_evidence_ref(body: MarketToDeliveryIntakeBody) -> str:
+    # The canonical Commercial Intelligence uniqueness constraint is scoped by
+    # tenant + account + source + evidence_ref. Keeping request_id stable in the
+    # ref makes retries idempotent and lets us reject a changed payload under the
+    # same request identity instead of silently creating another truth record.
+    return f"mtd://request/{body.request_id}"
 
 
 def _signal_payload(
@@ -148,6 +177,16 @@ async def _find_existing(
     return result.scalars().first()
 
 
+def _require_same_replay(
+    record: CommercialSignalRecord,
+    *,
+    artifact_digest: str,
+) -> None:
+    stored = (record.payload_json or {}).get("artifact_digest")
+    if stored != artifact_digest:
+        raise HTTPException(409, "market_to_delivery_request_id_payload_conflict")
+
+
 def _response(record: CommercialSignalRecord, *, replay: bool) -> dict[str, Any]:
     return {
         "status": "existing" if replay else "created",
@@ -167,7 +206,7 @@ async def persist_market_to_delivery_intake(
     body: MarketToDeliveryIntakeBody,
     current_user: Any = Depends(require_sales_manager),
 ) -> dict[str, Any]:
-    """Persist a tenant-bound problem signal without upgrading its commercial state."""
+    """Persist a tenant-bound problem signal without upgrading commercial state."""
     tenant_id = _tenant_id(current_user)
     try:
         preparation = prepare(_preparation_payload(body, tenant_id))
@@ -177,7 +216,7 @@ async def persist_market_to_delivery_intake(
             reason = "invalid_market_to_delivery_intake"
         raise HTTPException(422, reason) from exc
 
-    evidence_ref = _signal_evidence_ref(body, preparation["artifact_digest"])
+    evidence_ref = _signal_evidence_ref(body)
     observed_at = datetime.now(UTC)
 
     async with async_session_factory()() as session:
@@ -197,6 +236,10 @@ async def persist_market_to_delivery_intake(
             evidence_ref=evidence_ref,
         )
         if existing is not None:
+            _require_same_replay(
+                existing,
+                artifact_digest=preparation["artifact_digest"],
+            )
             return _response(existing, replay=True)
 
         record = CommercialSignalRecord(
@@ -207,8 +250,8 @@ async def persist_market_to_delivery_intake(
             signal_type="market_to_delivery_intake",
             claim=body.problem.strip(),
             evidence_ref=evidence_ref,
-            # Intake is a stated problem/hypothesis until independent/current evidence
-            # is attached through the canonical Commercial Intelligence flow.
+            # Intake is a stated problem/hypothesis until independent/current
+            # evidence is attached through canonical Commercial Intelligence.
             evidence_level=EvidenceLevel.L1_HYPOTHESIS.value,
             confidence=40,
             observed_at=observed_at,
@@ -222,7 +265,7 @@ async def persist_market_to_delivery_intake(
         except IntegrityError:
             await session.rollback()
             # Race-safe replay: the canonical uniqueness constraint is
-            # (tenant, account, source, evidence_ref).
+            # tenant + account + source + evidence_ref.
             existing = await _find_existing(
                 session,
                 tenant_id=tenant_id,
@@ -232,6 +275,10 @@ async def persist_market_to_delivery_intake(
             )
             if existing is None:
                 raise HTTPException(409, "market_to_delivery_intake_conflict")
+            _require_same_replay(
+                existing,
+                artifact_digest=preparation["artifact_digest"],
+            )
             return _response(existing, replay=True)
         except Exception as exc:
             await session.rollback()
