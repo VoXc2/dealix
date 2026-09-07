@@ -2,16 +2,26 @@
 set -Eeuo pipefail
 umask 077
 
-ROOT="$(git rev-parse --show-toplevel)"
+# Resolve the candidate repository from this script, not from the caller's CWD.
+# This keeps exact-head acceptance isolated and avoids depending on root/global
+# Git safe.directory state when invoked from a detached worktree.
+ROOT="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/../.." && pwd -P)"
 EXPECTED_SHA="${1:-}"
-PY="${DEALIX_AUTOMATION_PYTHON:-$ROOT/.venv/bin/python}"
+PY="${DEALIX_AUTOMATION_PYTHON:-}"
+if [[ -z "$PY" || ! -x "$PY" ]]; then
+  if [[ -x "$ROOT/.venv/bin/python" ]]; then
+    PY="$ROOT/.venv/bin/python"
+  else
+    PY="$(command -v python3 2>/dev/null || true)"
+  fi
+fi
 
 if [[ -z "$EXPECTED_SHA" ]]; then
   echo "DEALIX_TELEGRAM_PROOF_ACCEPTANCE=BLOCKED_EXPECTED_SHA_REQUIRED"
   exit 2
 fi
 
-HEAD_SHA="$(git -C "$ROOT" rev-parse HEAD)"
+HEAD_SHA="$(git -c safe.directory="$ROOT" -C "$ROOT" rev-parse HEAD)"
 if [[ "$HEAD_SHA" != "$EXPECTED_SHA" ]]; then
   echo "DEALIX_TELEGRAM_PROOF_ACCEPTANCE=BLOCKED_HEAD_MISMATCH"
   echo "expected=$EXPECTED_SHA"
@@ -19,7 +29,7 @@ if [[ "$HEAD_SHA" != "$EXPECTED_SHA" ]]; then
   exit 2
 fi
 
-if [[ ! -x "$PY" ]]; then
+if [[ -z "$PY" || ! -x "$PY" ]]; then
   echo "DEALIX_TELEGRAM_PROOF_ACCEPTANCE=BLOCKED_PYTHON_MISSING"
   exit 3
 fi
@@ -44,6 +54,7 @@ export DEALIX_AUTONOMY_LEVEL=4
 export DEALIX_MODE=draft-only
 
 cd "$ROOT"
+export PYTHONPATH="$ROOT${PYTHONPATH:+:$PYTHONPATH}"
 
 "$PY" scripts/ops/verify_telegram_proof_plane_v1.py \
   | tee "$PROOF_ROOT/source-verifier.log"
