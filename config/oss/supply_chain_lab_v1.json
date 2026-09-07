@@ -1,0 +1,79 @@
+{
+  "schema_version": 1,
+  "date": "2026-09-07",
+  "north_star": "CASH_READY_AUTONOMOUS_DEALIX_COMPANY",
+  "purpose": "Close the measured software supply-chain evidence gap without creating a second security truth store or changing Production runtime.",
+  "authority": {
+    "isolated_lab_only": true,
+    "production_runtime": false,
+    "production_mutation": false,
+    "deployment_authority": false,
+    "network_target_scanning": false,
+    "customer_effects": false,
+    "promotion_requires_benchmark": true,
+    "reject_duplicate_by_default": true
+  },
+  "components": [
+    {
+      "id": "osv-scanner",
+      "source": "https://github.com/google/osv-scanner",
+      "version": "v2.5.1",
+      "license": "Apache-2.0",
+      "classification": "ADOPT_ISOLATED_SOURCE_SCAN",
+      "purpose": "Dependency/source vulnerability evidence using OSV data",
+      "install_surface": "/opt/dealix/labs/supply-chain/bin/osv-scanner",
+      "verification": "official release checksum file before install",
+      "promotion_gate": "Source scans only by default; image scanning requires an explicitly selected local image and a receipt. Findings do not automatically mutate dependencies."
+    },
+    {
+      "id": "syft",
+      "source": "https://github.com/anchore/syft",
+      "version": "v1.51.1",
+      "license": "Apache-2.0",
+      "classification": "ADOPT_ISOLATED_SBOM",
+      "purpose": "Generate CycloneDX/SPDX SBOM evidence for Dealix source/images",
+      "install_surface": "/opt/dealix/labs/supply-chain/bin/syft",
+      "verification": "official release checksum file before install",
+      "promotion_gate": "SBOM output is evidence only and must be attached to the exact source/image identity it describes."
+    },
+    {
+      "id": "grype",
+      "source": "https://github.com/anchore/grype",
+      "version": "v0.118.0",
+      "license": "Apache-2.0",
+      "classification": "ADOPT_ISOLATED_SBOM_SCAN",
+      "purpose": "Scan Syft/local SBOM evidence for known vulnerabilities",
+      "install_surface": "/opt/dealix/labs/supply-chain/bin/grype",
+      "verification": "official release checksum file before install",
+      "promotion_gate": "No network target scanning; vulnerability result must preserve package/source provenance and severity/fix availability."
+    },
+    {
+      "id": "github-artifact-attestations",
+      "source": "https://docs.github.com/actions/security-for-github-actions/using-artifact-attestations",
+      "version": "provider_capability",
+      "license": "GitHub platform feature",
+      "classification": "BENCHMARK_AFTER_CI_TRUST",
+      "purpose": "Build provenance / artifact attestation after exact-head CI becomes a trustworthy execution plane",
+      "install_surface": "none",
+      "verification": "GitHub-native verification",
+      "promotion_gate": "Do not make artifact attestation a required release gate while hosted CI is still failing before repository steps."
+    }
+  ],
+  "evidence_contract": {
+    "required_fields": [
+      "source_sha",
+      "tool",
+      "tool_version",
+      "target_kind",
+      "target_identity",
+      "started_at",
+      "completed_at",
+      "exit_code",
+      "result_digest",
+      "production_mutation",
+      "customer_effects"
+    ],
+    "production_mutation": false,
+    "customer_effects": false
+  }
+}
