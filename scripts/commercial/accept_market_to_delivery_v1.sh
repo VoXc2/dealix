@@ -34,6 +34,7 @@ printf '%s\n' '=== MARKET-TO-DELIVERY EXACT-HEAD ACCEPTANCE ===' "SOURCE_SHA=$AC
 
 "$PY" -m unittest discover -s "$ROOT/tests" -p 'test_market_to_delivery_preparation.py' -v
 "$PY" -m unittest discover -s "$ROOT/tests" -p 'test_market_to_delivery_http.py' -v
+"$PY" -m pytest -q "$ROOT/tests/test_market_to_delivery_intake_bridge.py"
 "$PY" "$ROOT/scripts/commercial/generate_market_to_delivery_projection.py" --check
 node --check "$ROOT/apps/web/public/market-to-delivery-workspace.js"
 
@@ -61,6 +62,10 @@ printf '%s\n' \
   'MTD_SOURCE_ACCEPTANCE=PASS' \
   "SOURCE_SHA=$ACTUAL" \
   "NEXT_TYPECHECK_BUILD=$WEB_STATUS" \
+  'CANONICAL_SIGNAL_INTAKE=SOURCE_VERIFIED' \
+  'RELATIONSHIP_AUTO_CREATE=false' \
+  'CONSENT_AUTO_CREATE=false' \
+  'OPPORTUNITY_AUTO_CREATE=false' \
   'BROWSER_QA=SEPARATE_PLAYWRIGHT_GATE' \
   'LIVE_EXECUTION=false' \
   'PRODUCTION_READY=UNPROVEN'
