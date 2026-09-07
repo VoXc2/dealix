@@ -8,6 +8,7 @@ import pytest
 ROOT = Path(__file__).resolve().parents[1]
 VERIFIER = ROOT / "scripts" / "commercial" / "verify_market_to_delivery_postgres_v1.py"
 RUNNER = ROOT / "scripts" / "commercial" / "run_market_to_delivery_postgres_acceptance_v1.sh"
+ACCEPTANCE = ROOT / "scripts" / "commercial" / "accept_market_to_delivery_v1.sh"
 
 
 def load_module():
@@ -45,6 +46,14 @@ def test_runner_is_loopback_ephemeral_and_no_implicit_image_pull():
     assert '"${DEALIX_ALLOW_TEST_IMAGE_PULL:-0}" != "1"' in text
     assert "production_db=false" in text
     assert "customer_effects=false" in text
+
+
+def test_acceptance_harnesses_anchor_relative_env_reads_to_exact_worktree():
+    for path in (ACCEPTANCE, RUNNER):
+        text = path.read_text(encoding="utf-8")
+        root_index = text.index('ROOT="$(cd --')
+        cd_index = text.index('cd "$ROOT"')
+        assert cd_index > root_index
 
 
 def test_verifier_has_two_restart_phases_and_truth_guards():
