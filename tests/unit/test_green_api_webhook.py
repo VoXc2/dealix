@@ -55,7 +55,7 @@ def test_text_message_is_normalized_for_canonical_intake():
     assert message.raw_type == "textMessage"
 
 
-def test_group_message_is_rejected_from_customer_intake():
+def test_group_message_is_rejected_even_when_sender_is_an_individual_participant():
     payload = _payload(
         senderData={
             "chatId": "120363123456789@g.us",
@@ -63,10 +63,6 @@ def test_group_message_is_rejected_from_customer_intake():
             "senderName": "Sami",
         }
     )
-    # chatId is a group even though an individual sender is present. Replace
-    # sender as group as well so direct-phone extraction cannot treat group
-    # traffic as a direct customer conversation.
-    payload["senderData"]["sender"] = "120363123456789@g.us"
     assert parse_incoming(payload) is None
 
 
