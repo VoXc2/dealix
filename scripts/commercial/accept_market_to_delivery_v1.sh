@@ -5,12 +5,11 @@ umask 077
 ROOT="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/../.." && pwd -P)"
 EXPECTED="${1:-}"
 
-# Anchor all relative runtime configuration lookups (notably pydantic-settings
-# env_file=".env") to the exact detached worktree instead of inheriting the
-# caller's cwd. This keeps acceptance independent from /root or other parent
-# directories and prevents permission failures without reading or mutating any
-# external .env file.
+# Anchor all relative runtime configuration lookups and Python imports to the
+# exact detached worktree. Acceptance must not depend on the caller's cwd.
 cd "$ROOT"
+export PYTHONDONTWRITEBYTECODE=1
+export PYTHONPATH="$ROOT${PYTHONPATH:+:$PYTHONPATH}"
 
 if [[ "$EUID" -eq 0 ]]; then
   printf '%s\n' 'MTD_ACCEPTANCE=HOLD_RUN_AS_REPOSITORY_OWNER_NOT_ROOT'
@@ -33,7 +32,6 @@ if [[ -n "$(git -C "$ROOT" status --porcelain --untracked-files=no)" ]]; then
   exit 2
 fi
 
-export PYTHONDONTWRITEBYTECODE=1
 PY="${DEALIX_AUTOMATION_PYTHON:-$ROOT/.venv/bin/python}"
 [[ -x "$PY" ]] || PY="$(command -v python3)"
 
@@ -42,11 +40,12 @@ printf '%s\n' '=== MARKET-TO-DELIVERY EXACT-HEAD ACCEPTANCE ===' "SOURCE_SHA=$AC
 "$PY" "$ROOT/scripts/commercial/verify_market_to_delivery_wedge_policy_v1.py"
 "$PY" -m py_compile \
   "$ROOT/scripts/commercial/verify_market_to_delivery_postgres_v1.py"
-"$PY" -m unittest discover -s "$ROOT/tests" -p 'test_market_to_delivery_preparation.py' -v
-"$PY" -m unittest discover -s "$ROOT/tests" -p 'test_market_to_delivery_http.py' -v
+"$PY" -m unittest discover -s "$ROOT/tests" -t "$ROOT" -p 'test_market_to_delivery_preparation.py' -v
+"$PY" -m unittest discover -s "$ROOT/tests" -t "$ROOT" -p 'test_market_to_delivery_http.py' -v
 "$PY" -m pytest -q \
   "$ROOT/tests/test_market_to_delivery_intake_bridge.py" \
-  "$ROOT/tests/test_market_to_delivery_postgres_acceptance_v1.py"
+  "$ROOT/tests/test_market_to_delivery_postgres_acceptance_v1.py" \
+  "$ROOT/tests/test_market_to_delivery_acceptance_harness_v1.py"
 "$PY" "$ROOT/scripts/commercial/generate_market_to_delivery_projection.py" --check
 node --check "$ROOT/apps/web/public/market-to-delivery-workspace.js"
 bash -n "$ROOT/scripts/commercial/run_market_to_delivery_postgres_acceptance_v1.sh"
@@ -80,6 +79,7 @@ printf '%s\n' \
   'SCALE_POLICY=EVIDENCE_GATED' \
   'CANONICAL_SIGNAL_INTAKE=SOURCE_VERIFIED' \
   'POSTGRES_ACCEPTANCE_GUARDS=SOURCE_VERIFIED' \
+  'CALLER_CWD_INDEPENDENT_IMPORTS=SOURCE_VERIFIED' \
   'REAL_POSTGRES_RESTART_ACCEPTANCE=SEPARATE_RUNTIME_GATE' \
   'RELATIONSHIP_AUTO_CREATE=false' \
   'CONSENT_AUTO_CREATE=false' \
