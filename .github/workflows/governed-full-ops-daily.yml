@@ -4,7 +4,8 @@ name: Governed Full Ops Daily
 # Runs a governed internal pulse every 4 hours, 24/7.
 # This workflow is NOT external execution authority: no customer send, public
 # publish, paid spend, payment/refund, contract/tender commitment, production
-# mutation, DNS/DB/secrets mutation, or proof/revenue promotion is authorized.
+# mutation, DNS/DB/secrets mutation, voice activation, or proof/revenue
+# promotion is authorized.
 
 on:
   schedule:
@@ -22,18 +23,35 @@ concurrency:
 permissions:
   contents: read
 
+defaults:
+  run:
+    shell: bash
+
 jobs:
   governed-ops:
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    timeout-minutes: 30
     env:
       # Explicit fail-closed authority boundary. Downstream code must still
       # enforce its own canonical Approval/Controlled Execution gates.
       DEALIX_EXTERNAL_SEND: "0"
+      DEALIX_EMAIL_LIVE_SEND: "0"
+      DEALIX_WHATSAPP_OUTBOUND: "0"
       DEALIX_PUBLIC_PUBLISH: "0"
       DEALIX_PAID_SPEND: "0"
       DEALIX_LIVE_PAYMENT: "0"
+      DEALIX_PAYMENT_EXECUTION: "0"
       DEALIX_PRODUCTION_MUTATION: "0"
+      DEALIX_DNS_MUTATION: "0"
+      DEALIX_DB_MUTATION: "0"
+      DEALIX_SECRET_MUTATION: "0"
+      DEALIX_IDENTITY_MUTATION: "0"
+      DEALIX_AGENT_SELF_AUTHORITY: "0"
+      DEALIX_AUTONOMY_LEVEL: "4"
+      DEALIX_MODE: "draft-only"
+      VOICE_AI_ENABLED: "false"
+      VOICE_OUTBOUND_ENABLED: "false"
+      VOICE_RECORDING_ENABLED: "false"
     steps:
       - uses: actions/checkout@v7
 
@@ -46,7 +64,6 @@ jobs:
 
       - name: Resolve governed pulse mode
         id: pulse
-        shell: bash
         run: |
           set -euo pipefail
           if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
@@ -85,6 +102,21 @@ jobs:
             python3 scripts/run_dealix_complete_autonomous_day.py --skip-commercial-day
           fi
 
+      - name: Run canonical Company OS L0-L4 cycle
+        run: |
+          set -euo pipefail
+          python3 scripts/commercial/run_company_os_daily.py \
+            --client dealix \
+            --mode draft-only \
+            --limit 100
+          python3 scripts/commercial/run_autonomous_growth_daily.py \
+            --autonomy-level 4 \
+            --mode draft-only \
+            --limit 100
+          python3 scripts/commercial/run_self_improvement_daily.py \
+            --client dealix \
+            --mode draft-only
+
       - name: Build daily audit snapshot
         run: |
           set -euo pipefail
@@ -96,10 +128,23 @@ jobs:
         run: |
           set -euo pipefail
           test "$DEALIX_EXTERNAL_SEND" = "0"
+          test "$DEALIX_EMAIL_LIVE_SEND" = "0"
+          test "$DEALIX_WHATSAPP_OUTBOUND" = "0"
           test "$DEALIX_PUBLIC_PUBLISH" = "0"
           test "$DEALIX_PAID_SPEND" = "0"
           test "$DEALIX_LIVE_PAYMENT" = "0"
+          test "$DEALIX_PAYMENT_EXECUTION" = "0"
           test "$DEALIX_PRODUCTION_MUTATION" = "0"
+          test "$DEALIX_DNS_MUTATION" = "0"
+          test "$DEALIX_DB_MUTATION" = "0"
+          test "$DEALIX_SECRET_MUTATION" = "0"
+          test "$DEALIX_IDENTITY_MUTATION" = "0"
+          test "$DEALIX_AGENT_SELF_AUTHORITY" = "0"
+          test "$DEALIX_AUTONOMY_LEVEL" = "4"
+          test "$DEALIX_MODE" = "draft-only"
+          test "$VOICE_AI_ENABLED" = "false"
+          test "$VOICE_OUTBOUND_ENABLED" = "false"
+          test "$VOICE_RECORDING_ENABLED" = "false"
 
       - name: Upload artifacts
         if: always()
@@ -110,5 +155,6 @@ jobs:
             data/founder_briefs/
             data/war_room_today.json
             docs/snapshots/*.json
+            reports/self_operating_company_os/
           retention-days: 14
           if-no-files-found: ignore
