@@ -8,6 +8,8 @@ Safety properties:
 - ownership is never recursively reassigned;
 - --repair changes group/mode only for root-owned metadata unusable by the
   configured Dealix group;
+- Git discovery uses process-local trust for the exact repo only; no wildcard
+  or persistent global safe.directory mutation is performed;
 - secret values are never read or printed.
 
 Default mode is read-only. --repair requires uid 0.
@@ -36,9 +38,22 @@ class Finding:
     needs_group_exec: bool
 
 
+def _git_command(repo: Path, *args: str) -> list[str]:
+    """Build a Git command with process-local trust for exactly ``repo``."""
+
+    return [
+        "git",
+        "-c",
+        f"safe.directory={repo}",
+        "-C",
+        str(repo),
+        *args,
+    ]
+
+
 def git_dir(repo: Path) -> Path:
     proc = subprocess.run(
-        ["git", "-C", str(repo), "rev-parse", "--git-common-dir"],
+        _git_command(repo, "rev-parse", "--git-common-dir"),
         check=True,
         text=True,
         stdout=subprocess.PIPE,
@@ -52,7 +67,7 @@ def git_dir(repo: Path) -> Path:
 
 def shared_repository(repo: Path) -> str:
     proc = subprocess.run(
-        ["git", "-C", str(repo), "config", "--get", "core.sharedRepository"],
+        _git_command(repo, "config", "--get", "core.sharedRepository"),
         check=False,
         text=True,
         stdout=subprocess.PIPE,
@@ -151,6 +166,7 @@ def main() -> int:
     print(f"UNUSABLE_ROOT_OWNED_METADATA={len(findings)}")
     print("WORKTREE_MUTATION=false")
     print("SECRET_VALUES_PRINTED=false")
+    print("GIT_SAFE_DIRECTORY_SCOPE=PROCESS_LOCAL_EXACT_REPO")
 
     if args.repair:
         if os.geteuid() != 0:
