@@ -1,29 +1,39 @@
 """
-Multi-provider WhatsApp send adapter — Green API → Ultramsg → Fonnte → Meta Cloud.
+Governed multi-provider WhatsApp send adapter.
 
-Smart fallback: tries each configured provider in priority order; if the call
-fails (5xx, timeout, instance disconnected), falls through to the next.
+Canonical production target: Meta WhatsApp Cloud API.
+Transitional transport: GREEN-API while the official Meta Business Platform
+sender is being verified and activated.
 
-CRITICAL — All non-Meta options use WhatsApp Web (not the official Business API).
-DO NOT bind your primary phone — use a secondary SIM. WhatsApp may rate-limit
-or block numbers that send too aggressively.
+CRITICAL:
+- GREEN-API / Ultramsg / Fonnte are not the canonical official Meta Cloud path.
+- Never silently fall back from a configured Meta sender to an unofficial
+  transport after a Meta error; that could bypass template/window/compliance
+  semantics.
+- Live sends remain globally blocked unless ``WHATSAPP_ALLOW_LIVE_SEND=true``.
+- Durable channel-purpose consent and suppression remain independent gates in
+  Dealix; transport configuration is never consent authority.
 
-Recommended stack for Saudi B2B:
-1. Green API   — free dev tier, ~5 min setup. PRIMARY.
-2. Ultramsg    — $13/mo paid; lives in repo as legacy. SECONDARY.
-3. Fonnte      — $2-5/mo, Asian market. TERTIARY.
-4. Meta Cloud  — official, requires Business verification + approved templates. FALLBACK.
-
-Env vars:
+Environment variables:
     GREEN_API_INSTANCE_ID, GREEN_API_TOKEN
-    ULTRAMSG_INSTANCE_ID,  ULTRAMSG_TOKEN
+    ULTRAMSG_INSTANCE_ID, ULTRAMSG_TOKEN
     FONNTE_TOKEN
+
+Canonical Meta names:
+    WHATSAPP_PHONE_NUMBER_ID, WHATSAPP_ACCESS_TOKEN
+
+Legacy Meta names are read only for migration compatibility:
     META_WHATSAPP_PHONE_NUMBER_ID, META_WHATSAPP_ACCESS_TOKEN
 
-Set WHATSAPP_MOCK_MODE=true to short-circuit all providers (CI / dev).
+Provider selection:
+    WHATSAPP_PROVIDER_PREFERENCE=auto|meta_cloud|green_api|ultramsg|fonnte
 
-Live sends require WHATSAPP_ALLOW_LIVE_SEND=true (see `Settings.whatsapp_allow_live_send`);
-otherwise `send_whatsapp_smart` returns status ``blocked`` after phone validation.
+``auto`` is fail-safe official-first behavior:
+- if Meta credentials exist, only Meta is attempted;
+- otherwise transitional providers are attempted in Green -> Ultramsg ->
+  Fonnte order.
+
+Set ``WHATSAPP_MOCK_MODE=true`` to short-circuit all providers in CI/dev.
 """
 
 from __future__ import annotations
@@ -32,7 +42,7 @@ import logging
 import os
 import re
 from dataclasses import asdict, dataclass
-from typing import Any
+from typing import Any, Awaitable, Callable
 
 import httpx
 
@@ -69,6 +79,23 @@ def _normalize_phone(phone: str) -> str:
     return digits
 
 
+def _meta_credentials() -> tuple[str, str]:
+    """Return canonical Meta credentials, retaining legacy names as fallback."""
+    phone_id = (
+        os.getenv("WHATSAPP_PHONE_NUMBER_ID", "").strip()
+        or os.getenv("META_WHATSAPP_PHONE_NUMBER_ID", "").strip()
+    )
+    token = (
+        os.getenv("WHATSAPP_ACCESS_TOKEN", "").strip()
+        or os.getenv("META_WHATSAPP_ACCESS_TOKEN", "").strip()
+    )
+    return phone_id, token
+
+
+def _provider_preference() -> str:
+    return os.getenv("WHATSAPP_PROVIDER_PREFERENCE", "auto").strip().lower() or "auto"
+
+
 # ── Provider implementations ──────────────────────────────────────
 async def _send_via_green_api(
     client: httpx.AsyncClient, phone: str, message: str
@@ -87,11 +114,11 @@ async def _send_via_green_api(
     if r.status_code == 200:
         body = r.json() or {}
         return WhatsAppSendResult(
-            status="ok", provider="green_api",
-            message_id=body.get("idMessage"),
+            status="ok", provider="green_api", message_id=body.get("idMessage")
         )
     return WhatsAppSendResult(
-        status="http_error", provider="green_api",
+        status="http_error",
+        provider="green_api",
         error=f"HTTP {r.status_code}: {r.text[:200]}",
     )
 
@@ -114,11 +141,13 @@ async def _send_via_ultramsg(
         body = r.json() or {}
         if body.get("sent") in (True, "true", "True"):
             return WhatsAppSendResult(
-                status="ok", provider="ultramsg",
+                status="ok",
+                provider="ultramsg",
                 message_id=str(body.get("id") or ""),
             )
     return WhatsAppSendResult(
-        status="http_error", provider="ultramsg",
+        status="http_error",
+        provider="ultramsg",
         error=f"HTTP {r.status_code}: {r.text[:200]}",
     )
 
@@ -142,11 +171,11 @@ async def _send_via_fonnte(
         body = r.json() or {}
         if body.get("status") in (True, "true"):
             return WhatsAppSendResult(
-                status="ok", provider="fonnte",
-                message_id=str(body.get("id") or ""),
+                status="ok", provider="fonnte", message_id=str(body.get("id") or "")
             )
     return WhatsAppSendResult(
-        status="http_error", provider="fonnte",
+        status="http_error",
+        provider="fonnte",
         error=f"HTTP {r.status_code}: {r.text[:200]}",
     )
 
@@ -154,18 +183,22 @@ async def _send_via_fonnte(
 async def _send_via_meta_cloud(
     client: httpx.AsyncClient, phone: str, message: str
 ) -> WhatsAppSendResult | None:
-    pid = os.getenv("META_WHATSAPP_PHONE_NUMBER_ID", "").strip()
-    tok = os.getenv("META_WHATSAPP_ACCESS_TOKEN", "").strip()
-    if not (pid and tok):
+    phone_id, token = _meta_credentials()
+    if not (phone_id and token):
         return None
-    url = f"https://graph.facebook.com/v18.0/{pid}/messages"
+    url = f"https://graph.facebook.com/v20.0/{phone_id}/messages"
     try:
         r = await client.post(
             url,
-            headers={"Authorization": f"Bearer {tok}", "Content-Type": "application/json"},
+            headers={
+                "Authorization": f"Bearer {token}",
+                "Content-Type": "application/json",
+            },
             json={
-                "messaging_product": "whatsapp", "to": phone, "type": "text",
-                "text": {"body": message},
+                "messaging_product": "whatsapp",
+                "to": phone,
+                "type": "text",
+                "text": {"body": message, "preview_url": False},
             },
             timeout=15.0,
         )
@@ -175,40 +208,71 @@ async def _send_via_meta_cloud(
         body = r.json() or {}
         msgs = body.get("messages") or []
         return WhatsAppSendResult(
-            status="ok", provider="meta_cloud",
+            status="ok",
+            provider="meta_cloud",
             message_id=msgs[0].get("id") if msgs else None,
         )
     return WhatsAppSendResult(
-        status="http_error", provider="meta_cloud",
+        status="http_error",
+        provider="meta_cloud",
         error=f"HTTP {r.status_code}: {r.text[:200]}",
     )
 
 
-# ── Public API ────────────────────────────────────────────────────
-PROVIDER_CHAIN = [
+ProviderFn = Callable[
+    [httpx.AsyncClient, str, str], Awaitable[WhatsAppSendResult | None]
+]
+
+# Static declaration is canonical priority, useful for inspection/tests. Runtime
+# selection below deliberately prevents Meta -> unofficial silent fallback.
+PROVIDER_CHAIN: list[tuple[str, ProviderFn]] = [
+    ("meta_cloud", _send_via_meta_cloud),
     ("green_api", _send_via_green_api),
     ("ultramsg", _send_via_ultramsg),
     ("fonnte", _send_via_fonnte),
-    ("meta_cloud", _send_via_meta_cloud),
 ]
+_PROVIDER_MAP = dict(PROVIDER_CHAIN)
+_ALLOWED_PREFERENCES = {"auto", *_PROVIDER_MAP.keys()}
 
 
 def configured_providers() -> list[str]:
-    """Which providers have credentials in env. Useful for /os/test-send."""
+    """Return configured transports in canonical inspection order."""
     out: list[str] = []
+    phone_id, token = _meta_credentials()
+    if phone_id and token:
+        out.append("meta_cloud")
     if os.getenv("GREEN_API_INSTANCE_ID") and os.getenv("GREEN_API_TOKEN"):
         out.append("green_api")
     if os.getenv("ULTRAMSG_INSTANCE_ID") and os.getenv("ULTRAMSG_TOKEN"):
         out.append("ultramsg")
     if os.getenv("FONNTE_TOKEN"):
         out.append("fonnte")
-    if os.getenv("META_WHATSAPP_PHONE_NUMBER_ID") and os.getenv("META_WHATSAPP_ACCESS_TOKEN"):
-        out.append("meta_cloud")
     return out
 
 
+def runtime_provider_chain() -> list[tuple[str, ProviderFn]]:
+    """Resolve the live transport chain without bypassing official Meta policy."""
+    preference = _provider_preference()
+    if preference not in _ALLOWED_PREFERENCES:
+        return []
+    if preference != "auto":
+        return [(preference, _PROVIDER_MAP[preference])]
+
+    configured = configured_providers()
+    if "meta_cloud" in configured:
+        # Meta configured means Meta is the sole automatic transport. A Meta
+        # failure must be surfaced, not silently rerouted to WhatsApp Web.
+        return [("meta_cloud", _send_via_meta_cloud)]
+
+    return [
+        (name, fn)
+        for name, fn in PROVIDER_CHAIN
+        if name in {"green_api", "ultramsg", "fonnte"}
+    ]
+
+
 async def send_whatsapp_smart(phone: str, message: str) -> WhatsAppSendResult:
-    """Send via the first available WhatsApp provider in priority order."""
+    """Send through the governed provider selected for this runtime."""
     if os.getenv("WHATSAPP_MOCK_MODE", "").lower() in {"true", "1", "yes"}:
         log.info("whatsapp_mock_mode phone=%s msg_len=%d", phone, len(message))
         return WhatsAppSendResult(status="mock", provider="mock")
@@ -228,30 +292,38 @@ async def send_whatsapp_smart(phone: str, message: str) -> WhatsAppSendResult:
             fallback_chain_tried=[],
         )
 
+    preference = _provider_preference()
+    if preference not in _ALLOWED_PREFERENCES:
+        return WhatsAppSendResult(
+            status="http_error",
+            provider="policy",
+            error="invalid_whatsapp_provider_preference",
+            fallback_chain_tried=[],
+        )
+
     tried: list[str] = []
     last: WhatsAppSendResult | None = None
     async with httpx.AsyncClient() as client:
-        for name, fn in PROVIDER_CHAIN:
+        for name, fn in runtime_provider_chain():
             result = await fn(client, normalized, message)
             if result is None:
-                continue  # not configured
+                continue
             tried.append(name)
             if result.status == "ok":
                 result.fallback_chain_tried = tried
                 return result
             last = result
-            log.info("whatsapp_fallback_from=%s status=%s", name, result.status)
+            log.info("whatsapp_provider_failed provider=%s status=%s", name, result.status)
 
     if not tried:
         return WhatsAppSendResult(
             status="no_keys",
-            error="no_whatsapp_provider_configured",
+            error="no_selected_whatsapp_provider_configured",
             fallback_chain_tried=[],
         )
     if last:
         last.fallback_chain_tried = tried
         return last
     return WhatsAppSendResult(
-        status="all_providers_failed",
-        fallback_chain_tried=tried,
+        status="all_providers_failed", fallback_chain_tried=tried
     )
