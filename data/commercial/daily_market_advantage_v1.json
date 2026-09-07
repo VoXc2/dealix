@@ -1,0 +1,118 @@
+{
+  "schema": "dealix.daily-market-advantage.v1",
+  "parent_issue": "#1551",
+  "objective": "VERIFIED_ECONOMIC_MOVEMENT_PER_FOUNDER_MINUTE_PER_COST_PER_RISK",
+  "input_contract": "dealix.universal-market-radar-brief.v1",
+  "authority": {
+    "relationship": false,
+    "consent": false,
+    "offer": false,
+    "price": false,
+    "quote": false,
+    "contract": false,
+    "external_send": false,
+    "payment": false,
+    "customer_proof": false,
+    "execution": false,
+    "production": false
+  },
+  "demand_grades": {
+    "D4": {
+      "label": "EXPLICIT_PROCUREMENT_SIGNAL",
+      "signal_families": ["TENDER_OR_PROCUREMENT"],
+      "requires_extra_evidence": false,
+      "deep_qualification_allowed": true
+    },
+    "D3": {
+      "label": "CONFIRMED_PROBLEM_FROM_REAL_INTERACTION",
+      "signal_families": ["FIRST_PARTY_INBOUND", "EXPLICIT_EMAIL_REPLY", "WARM_INTRODUCTION", "CUSTOMER_LEARNING"],
+      "requires_extra_evidence": true,
+      "deep_qualification_allowed": true
+    },
+    "D2": {
+      "label": "RECENT_COMPANY_OR_SECTOR_SIGNAL",
+      "signal_families": [
+        "COMPANY_CHANGE",
+        "HIRING_OR_ORG_CHANGE",
+        "TECHNOLOGY_OR_PLATFORM_CHANGE",
+        "PARTNER_OR_ECOSYSTEM",
+        "REGULATION_OR_POLICY",
+        "EVENT_OR_FIELD",
+        "OFFICIAL_SOCIAL_OR_PAID_REPORTING",
+        "SEARCH_DEMAND"
+      ],
+      "requires_extra_evidence": false,
+      "deep_qualification_allowed": false
+    },
+    "D1": {
+      "label": "SECTOR_OR_RESEARCH_HYPOTHESIS",
+      "signal_families": ["FIRST_PARTY_OPERATING_TELEMETRY"],
+      "requires_extra_evidence": false,
+      "deep_qualification_allowed": false
+    }
+  },
+  "lanes": [
+    "EXPLICIT_DEMAND",
+    "PROJECT_AND_ALLIANCE",
+    "SUPPLIER_ACCESS",
+    "CAPITAL_AND_CONTRACT_AWARDS",
+    "CLOUD_AND_AI_INFRASTRUCTURE",
+    "AI_GOVERNANCE_AND_DATA",
+    "INDUSTRIAL_DIGITIZATION",
+    "PARTNER_AND_CHANNEL",
+    "FREELANCE_CASH_NOW",
+    "WORKFORCE_AND_SKILL_SIGNALS",
+    "OSS_AND_VENDOR_CAPABILITY",
+    "RELATIONSHIP_AND_WARM_SIGNAL"
+  ],
+  "signal_lane_map": {
+    "TENDER_OR_PROCUREMENT": "EXPLICIT_DEMAND",
+    "COMPANY_CHANGE": "CAPITAL_AND_CONTRACT_AWARDS",
+    "HIRING_OR_ORG_CHANGE": "WORKFORCE_AND_SKILL_SIGNALS",
+    "TECHNOLOGY_OR_PLATFORM_CHANGE": "CLOUD_AND_AI_INFRASTRUCTURE",
+    "PARTNER_OR_ECOSYSTEM": "PARTNER_AND_CHANNEL",
+    "REGULATION_OR_POLICY": "AI_GOVERNANCE_AND_DATA",
+    "EVENT_OR_FIELD": "PROJECT_AND_ALLIANCE",
+    "SEARCH_DEMAND": "WORKFORCE_AND_SKILL_SIGNALS",
+    "FIRST_PARTY_INBOUND": "RELATIONSHIP_AND_WARM_SIGNAL",
+    "EXPLICIT_EMAIL_REPLY": "RELATIONSHIP_AND_WARM_SIGNAL",
+    "WARM_INTRODUCTION": "RELATIONSHIP_AND_WARM_SIGNAL",
+    "CUSTOMER_LEARNING": "RELATIONSHIP_AND_WARM_SIGNAL",
+    "FIRST_PARTY_OPERATING_TELEMETRY": "OSS_AND_VENDOR_CAPABILITY",
+    "OFFICIAL_SOCIAL_OR_PAID_REPORTING": "CAPITAL_AND_CONTRACT_AWARDS"
+  },
+  "execution_route_by_grade": {
+    "D4": "BID_OR_PARTNER_BID_REVIEW",
+    "D3": "DIAGNOSTIC_PREPARATION",
+    "D2": "DEEP_RESEARCH_TOP_ONLY",
+    "D1": "KEEP_RESEARCH_ONLY"
+  },
+  "wip": {
+    "max_deep_qualified": 10,
+    "max_diagnostics_in_preparation": 3,
+    "max_live_project_cells": 2,
+    "max_capability_benchmarks": 1,
+    "max_material_approval_packets": 1,
+    "top_actions_per_cycle": 3
+  },
+  "score": {
+    "research_score_cap": 60,
+    "demand_grade_bonus": {"D4": 30, "D3": 25, "D2": 10, "D1": 0},
+    "stale_penalty": 40,
+    "missing_priority_penalty": 10,
+    "semantics": "INTERNAL_EXECUTION_PRIORITY_ONLY_NOT_WIN_OR_PURCHASE_PROBABILITY"
+  },
+  "truth_firewall": [
+    "Research != Relationship",
+    "Public Contact != Consent",
+    "Tender != Win",
+    "Supplier Registration != Buyer Intent",
+    "Job Posting != Confirmed Problem",
+    "Benchmark PASS != Customer Proof",
+    "Configured Integration != Production Capability",
+    "Quote != Invoice",
+    "Invoice != Payment",
+    "Payment Marker != Verified Cash",
+    "Historical PASS != Current Exact-Head PASS"
+  ]
+}
