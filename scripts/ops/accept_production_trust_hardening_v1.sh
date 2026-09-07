@@ -38,7 +38,7 @@ mkdir -p "$PROOF"
 exec > >(tee -a "$PROOF/acceptance.log") 2>&1
 
 cd "$ROOT"
-ACTUAL_SHA="$(git rev-parse HEAD)"
+ACTUAL_SHA="$(git -c "safe.directory=$ROOT" -C "$ROOT" rev-parse HEAD)"
 
 echo "======================================================================"
 echo " DEALIX — PRODUCTION TRUST HARDENING V1"
