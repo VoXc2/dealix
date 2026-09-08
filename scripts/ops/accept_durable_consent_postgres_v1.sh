@@ -94,6 +94,7 @@ PY
 cleanup() {
   set +e
   unset DATABASE_URL DEALIX_CONSENT_BACKEND DEALIX_SUPPRESSION_BACKEND
+  unset DEALIX_ALLOW_FRESH_DB_BOOTSTRAP
   docker rm -f "$CONTAINER" >/dev/null 2>&1 || true
 }
 trap cleanup EXIT
@@ -134,9 +135,15 @@ export DEALIX_CONSENT_BACKEND=postgres
 export DEALIX_SUPPRESSION_BACKEND=postgres
 unset DEALIX_CONSENT_DEFAULT_TENANT || true
 
-# Apply the canonical migration chain only to the disposable database.
+# Historical Dealix Alembic roots predate a formal baseline and begin with
+# ALTER operations. They are not a valid fresh-database bootstrap path. Use the
+# repository-owned canonical bootstrap for a genuinely empty disposable DB;
+# it creates the complete current schema, proves no schema drift, and stamps
+# exactly the checkout's Alembic heads. Production is never involved here.
 "$PY" scripts/check_alembic_single_head.py
-"$PY" -m alembic upgrade head
+export DEALIX_ALLOW_FRESH_DB_BOOTSTRAP=1
+"$PY" scripts/ops/bootstrap_fresh_database.py --confirm-empty-bootstrap
+unset DEALIX_ALLOW_FRESH_DB_BOOTSTRAP
 
 # Prove the exact durable behavior against the real disposable PostgreSQL.
 "$PY" - <<'PY'
@@ -350,7 +357,8 @@ cat <<EOF
 EXACT_SHA=$EXPECTED
 ISOLATED_POSTGRES_IMAGE=$POSTGRES_IMAGE
 ALEMBIC_SINGLE_HEAD=PASS
-ISOLATED_POSTGRES_MIGRATION=PASS
+FRESH_DB_BOOTSTRAP=PASS
+ISOLATED_POSTGRES_SCHEMA=PASS
 DURABLE_CONSENT_REAL_POSTGRES_BEHAVIOR=PASS
 DURABLE_SUPPRESSION_REAL_POSTGRES_BEHAVIOR=PASS
 PRODUCTION_DATABASE_USED=false
