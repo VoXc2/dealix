@@ -1,0 +1,149 @@
+{
+  "version": "1.0.0",
+  "north_star": "CASH_READY_AUTONOMOUS_DEALIX_COMPANY",
+  "objective": "Maximize verified economic movement while minimizing founder minutes, cost and risk.",
+  "owners": {
+    "portfolio": "dealix-pm",
+    "market_and_revenue": "dealix-sales",
+    "delivery": "dealix-delivery",
+    "technical": "dealix-engineer",
+    "distribution": "dealix-content"
+  },
+  "truth_firewall": [
+    "research != relationship",
+    "public_contact != consent",
+    "signal != opportunity",
+    "draft != sent",
+    "quote != invoice",
+    "invoice != payment",
+    "synthetic_proof != customer_validated_proof",
+    "unknown_probability != evidence"
+  ],
+  "authority": {
+    "autonomy_level": 4,
+    "mode": "draft-only",
+    "external_send": false,
+    "public_publish": false,
+    "paid_spend": false,
+    "payment_execution": false,
+    "production_mutation": false,
+    "dns_mutation": false,
+    "db_mutation": false,
+    "secret_mutation": false,
+    "identity_mutation": false
+  },
+  "capacity_ceiling_per_operating_day": {
+    "raw_signal_refresh": 1500,
+    "verified_relevant_signals": 300,
+    "account_hypotheses": 75,
+    "buying_committee_maps": 30,
+    "personalized_diagnostic_drafts": 15,
+    "deep_commercial_wip": 3,
+    "material_action_packets": 1
+  },
+  "capacity_semantics": "Ceilings are processing capacity targets, not claims that valid opportunities exist at those volumes.",
+  "economic_motions": [
+    "regulatory_deadline",
+    "revenue_leakage",
+    "workflow_approval_evidence_gap",
+    "data_rag_agent_execution",
+    "customer_service_field_execution",
+    "procurement_supplier_readiness",
+    "localization_industrial_digitization",
+    "partner_subcontract_capacity_gap",
+    "expansion_award_major_program_trigger",
+    "managed_operations_governance_proof"
+  ],
+  "route_options": [
+    "PRIME",
+    "BUILD_DIRECT",
+    "CONFIGURE_ADAPT",
+    "INTEGRATE_EXISTING_PRODUCT",
+    "QUALIFIED_PARTNER",
+    "SUBCONTRACT_PACKAGE",
+    "DISCLOSED_REFERRAL",
+    "RESEARCH_ONLY",
+    "DECLINE_DEFER"
+  ],
+  "probability_components": [
+    "p_real_problem",
+    "p_reach_decision_maker",
+    "p_response_given_eligible_channel",
+    "p_qualified_discovery",
+    "p_close"
+  ],
+  "value_components": [
+    "expected_margin",
+    "proof_value",
+    "partner_leverage",
+    "repeatability_value"
+  ],
+  "cost_risk_components": [
+    "founder_minutes",
+    "delivery_risk",
+    "compliance_risk",
+    "cash_collection_risk"
+  ],
+  "score_formula": "EV = product(known_probability_components) * (expected_margin + proof_value + partner_leverage + repeatability_value) / max(1, founder_minutes + delivery_risk + compliance_risk + cash_collection_risk)",
+  "unknown_probability_policy": "UNKNOWN_NOT_EVIDENCE_BACKED",
+  "allocation_policy": {
+    "method": "bounded_adaptive_exploration",
+    "exploration_share": 0.2,
+    "exploitation_share": 0.8,
+    "minimum_real_observations_before_exploitation": 5,
+    "allocation_dimensions": [
+      "sector_or_economic_motion",
+      "offer",
+      "source_family",
+      "buyer_role",
+      "message_angle",
+      "eligible_channel",
+      "prime_vs_partner_route"
+    ],
+    "prohibited_overrides": [
+      "suppression",
+      "opt_out",
+      "channel_ineligibility",
+      "legal_contract_gate",
+      "truth_firewall"
+    ]
+  },
+  "attempt_ladder": [
+    "refresh_account_trigger",
+    "enrich_buying_committee",
+    "prepare_founder_email_draft_1",
+    "prepare_evidence_based_follow_up_draft",
+    "search_warm_intro_or_partner_route",
+    "prepare_founder_linkedin_manual_route",
+    "prepare_call_or_whatsapp_only_if_channel_eligible",
+    "recycle_to_nurture_or_research"
+  ],
+  "stop_loss": [
+    "suppressed_or_opted_out",
+    "channel_not_eligible",
+    "evidence_shows_no_fit",
+    "no_meaningful_new_information_for_next_attempt",
+    "delivery_route_not_credible",
+    "founder_minutes_exceed_expected_value",
+    "compliance_or_contract_risk_dominates_value"
+  ],
+  "learning_outputs": [
+    "targeting_rule",
+    "objection_pattern",
+    "eligibility_gap",
+    "partner_need",
+    "missing_capability",
+    "offer_adjustment",
+    "delivery_lesson",
+    "proof_pattern"
+  ],
+  "real_outcome_updates": [
+    "reply",
+    "qualified_problem",
+    "discovery",
+    "quote_requested",
+    "verified_payment",
+    "delivery_acceptance",
+    "permissioned_customer_proof"
+  ]
+}
