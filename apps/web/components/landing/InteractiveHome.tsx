@@ -52,7 +52,7 @@ export function InteractiveHome() {
     <div className="dx-home">
       <header className="dx-nav-wrap">
         <nav className="dx-nav" aria-label="التنقل الرئيسي">
-          <Link href="/" className="dx-logo-link" aria-label="Dealix — الصفحة الرئيسية"><img src="/dealix-logo.svg" alt="Dealix — AI Business Operating System" className="dx-logo" /></Link>
+          <Link href="/" className="dx-logo-link" aria-label="Dealix — الصفحة الرئيسية"><img src="/dealix-logo.svg" alt="Dealix — AI Business Operating System" className="dx-logo" width={400} height={96} loading="eager" decoding="async" /></Link>
           <div className="dx-nav-links" role="list"><Link href="/services">القدرات</Link><Link href="/cases">الاستخدامات</Link><Link href="/proof-vault">Proof</Link><Link href="/safety">الحوكمة</Link></div>
           <Link href="/book" className="dx-nav-cta">التشخيص المجاني <span aria-hidden="true">↗</span></Link>
         </nav>
@@ -70,7 +70,7 @@ export function InteractiveHome() {
           </div>
 
           <div className="dx-command-card" aria-label="Dealix execution loop">
-            <div className="dx-command-head"><span>DEALIX EXECUTION LOOP</span><span className="dx-command-status"><i /> LIVE MODEL</span></div>
+            <div className="dx-command-head"><span>DEALIX EXECUTION LOOP</span><span className="dx-command-status"><i /> GOVERNED MODEL</span></div>
             <div className="dx-flow">{systemFlow.map((item, index) => (
               <div className="dx-flow-row" key={item.label} style={{ "--dx-delay": `${index * 0.14}s` } as CSSProperties}>
                 <div className="dx-flow-index">0{index + 1}</div><div><span>{item.label}</span><strong>{item.title}</strong><p>{item.text}</p></div><div className="dx-flow-pulse" aria-hidden="true" />
@@ -102,7 +102,7 @@ export function InteractiveHome() {
         </section>
       </main>
 
-      <footer className="dx-footer"><div className="dx-footer-inner"><img src="/dealix-logo.svg" alt="Dealix" className="dx-footer-logo" /><div className="dx-footer-links"><Link href="/pricing">Engagement Path</Link><Link href="/services">Services</Link><Link href="/proof-vault">Proof</Link><Link href="/safety">Safety</Link><Link href="/legal">Legal</Link></div><p>لا نضمن ROI أو revenue محددًا. الادعاءات الخارجية يجب أن تبنى على evidence وموافقة مناسبة.</p><small>© 2026 Dealix · AI Business Operating System · Signal → Decision → Action → Proof</small></div></footer>
+      <footer className="dx-footer"><div className="dx-footer-inner"><img src="/dealix-logo.svg" alt="Dealix — AI Business Operating System" className="dx-footer-logo" width={400} height={96} loading="lazy" decoding="async" /><div className="dx-footer-links"><Link href="/pricing">Engagement Path</Link><Link href="/services">Services</Link><Link href="/proof-vault">Proof</Link><Link href="/safety">Safety</Link><Link href="/legal">Legal</Link></div><p>لا نضمن ROI أو revenue محددًا. الادعاءات الخارجية يجب أن تبنى على evidence وموافقة مناسبة.</p><small>© 2026 Dealix · AI Business Operating System · Signal → Decision → Action → Proof</small></div></footer>
     </div>
   );
 }
