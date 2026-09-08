@@ -79,6 +79,8 @@ def test_deep_wip_requires_attributable_evidence():
     engine = load_engine()
     weak = {
         "company_name": "Weak hypothesis",
+        "source": "manual-score-only",
+        "evidence_score": 100,
         "fit_score": 100,
         "urgency_score": 100,
         "access_score": 100,
@@ -87,7 +89,6 @@ def test_deep_wip_requires_attributable_evidence():
     strong = {
         "company_name": "Evidence-backed target",
         "source": "https://example.test/tender",
-        "evidence_refs": ["official-source-1"],
         "fit_score": 80,
         "urgency_score": 80,
         "evidence_score": 80,
@@ -97,7 +98,26 @@ def test_deep_wip_requires_attributable_evidence():
     ranked = engine.rank_targets([weak, strong], deep_wip=3)
     by_name = {row["company_name"]: row for row in ranked}
     assert by_name["Weak hypothesis"]["deep_wip_candidate"] is False
+    assert by_name["Weak hypothesis"]["truth"]["source_attributable"] is False
     assert by_name["Evidence-backed target"]["deep_wip_candidate"] is True
+    assert by_name["Evidence-backed target"]["truth"]["source_attributable"] is True
+
+
+def test_explicit_evidence_reference_can_make_non_url_source_attributable():
+    engine = load_engine()
+    target = {
+        "company_name": "Evidence-ref target",
+        "source": "Etimad export",
+        "evidence_refs": ["etimad:tender:123"],
+        "fit_score": 80,
+        "urgency_score": 90,
+        "evidence_score": 90,
+        "access_score": 30,
+        "risk_score": 20,
+    }
+    row = engine.rank_targets([target], deep_wip=3)[0]
+    assert row["truth"]["source_attributable"] is True
+    assert row["deep_wip_candidate"] is True
 
 
 def test_known_ev_without_evidence_is_blocked_from_deep_wip():
@@ -112,6 +132,44 @@ def test_known_ev_without_evidence_is_blocked_from_deep_wip():
     assert row["expected_value"] is not None
     assert row["disposition"] == "EV_BLOCKED_EVIDENCE_GAP"
     assert row["deep_wip_candidate"] is False
+
+
+def test_duplicate_company_records_cannot_consume_multiple_deep_wip_slots():
+    engine = load_engine()
+    first = {
+        "company_name": "ACME Saudi Co.",
+        "source": "https://example.test/acme/1",
+        "fit_score": 90,
+        "urgency_score": 90,
+        "evidence_score": 90,
+        "access_score": 50,
+        "risk_score": 10,
+    }
+    duplicate = {
+        "company_name": "acme saudi co",
+        "source": "https://example.test/acme/2",
+        "fit_score": 85,
+        "urgency_score": 85,
+        "evidence_score": 85,
+        "access_score": 45,
+        "risk_score": 15,
+    }
+    other = {
+        "company_name": "Other Company",
+        "source": "https://example.test/other",
+        "fit_score": 80,
+        "urgency_score": 80,
+        "evidence_score": 80,
+        "access_score": 40,
+        "risk_score": 20,
+    }
+    ranked = engine.rank_targets([first, duplicate, other], deep_wip=3)
+    active = [row for row in ranked if row["deep_wip_candidate"]]
+    assert len(active) == 2
+    assert len({row["company_key"] for row in active}) == 2
+    duplicate_rows = [row for row in ranked if row["company_key"] == engine.canonical_company_key("ACME Saudi Co.")]
+    assert sum(1 for row in duplicate_rows if row["deep_wip_candidate"]) == 1
+    assert any(row["duplicate_deep_wip_company"] for row in duplicate_rows)
 
 
 def test_runtime_limit_is_clamped_to_contract_ceiling():
