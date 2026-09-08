@@ -10,7 +10,8 @@ Live send is only possible when:
   - channel-specific flags are enabled
   - message is approved
   - contact is verified and has not opted out
-  - recipient-level channel consent is present
+  - an explicit consent purpose is present
+  - recipient-level channel-purpose consent is present
   - durable consent evidence is independently proven
   - rate limits are respected
   - the recipient is not on the suppression list
@@ -55,7 +56,7 @@ class SendEvaluation:
 
     ``safe_to_send`` can only become true in controlled-live mode after every
     recipient-level and cross-cutting guard, including durable suppression and
-    durable consent evidence, succeeds.
+    channel-purpose consent evidence, succeeds.
     """
 
     allowed: bool
@@ -198,8 +199,12 @@ def _contact_identifier(channel: str, contact: Mapping[str, Any]) -> str:
     return str(contact.get("email") or contact.get("whatsapp") or contact.get("phone") or "").lower().strip()
 
 
+def _consent_purpose(message: Mapping[str, Any]) -> str:
+    return str(message.get("consent_purpose") or message.get("purpose") or "").strip().lower()
+
+
 def _apply_cross_cutting(channel: str, contact: Mapping[str, Any], message: Mapping[str, Any], env: Mapping[str, str], reasons: list[str]) -> None:
-    """Append durability, suppression, consent and rate-limit blockers."""
+    """Append durability, suppression, purpose-consent and rate-limit blockers."""
 
     controlled_live = is_external_send_enabled(env) and get_outbound_mode(env) == "controlled_live"
     if controlled_live and not persistent_suppression_ready():
@@ -207,9 +212,17 @@ def _apply_cross_cutting(channel: str, contact: Mapping[str, Any], message: Mapp
     if controlled_live and not persistent_consent_ready():
         reasons.append("persistent consent backend is not verified")
 
+    purpose = _consent_purpose(message)
+    if controlled_live and not purpose:
+        reasons.append("consent purpose is required for controlled live")
+
+    # Draft/testing behavior remains backward compatible with the historical
+    # direct-marketing default. Controlled-live never receives an implicit
+    # purpose: the missing-purpose blocker above remains authoritative.
+    consent_purpose = purpose or "direct_marketing"
     identifier = _contact_identifier(channel, contact)
     if is_suppressed(identifier, channel=channel): reasons.append("recipient is on suppression list")
-    if not has_consent(channel, contact): reasons.append("consent not recorded for channel")
+    if not has_consent(channel, contact, purpose=consent_purpose): reasons.append("consent not recorded for channel and purpose")
     if not within_rate_limits(channel, identifier): reasons.append("rate limit exceeded for channel")
 
 

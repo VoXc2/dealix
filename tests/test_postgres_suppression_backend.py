@@ -57,3 +57,42 @@ def test_durable_unsuppression_requires_explicit_authority(monkeypatch):
     monkeypatch.delenv("DEALIX_SUPPRESSION_ALLOW_REMOVE", raising=False)
     with pytest.raises(RuntimeError, match="requires explicit authority"):
         suppression.remove_suppression("buyer@example.com", channel="email")
+
+
+def test_postgres_add_writes_created_at_for_raw_sql_path(monkeypatch):
+    """Raw SQL must satisfy the ORM's NOT NULL client-default timestamp contract."""
+
+    calls: list[tuple[str, tuple[object, ...] | None]] = []
+
+    class Cursor:
+        def execute(self, sql, params=None):
+            calls.append((str(sql), params))
+
+        def fetchone(self):
+            return None
+
+        def __enter__(self):
+            return self
+
+        def __exit__(self, exc_type, exc, tb):
+            return False
+
+    class Connection:
+        def cursor(self):
+            return Cursor()
+
+    @contextmanager
+    def fake_connection():
+        yield Connection()
+
+    monkeypatch.setattr(suppression, "_postgres_connection", fake_connection)
+
+    suppression._postgres_add("buyer@example.com", "email", "acceptance")
+
+    insert_sql, params = calls[-1]
+    normalized = " ".join(insert_sql.split()).lower()
+    assert "insert into data_suppression_list" in normalized
+    assert "created_at" in normalized
+    assert "current_timestamp" in normalized
+    assert params is not None
+    assert params[1:] == ("buyer@example.com", "acceptance")

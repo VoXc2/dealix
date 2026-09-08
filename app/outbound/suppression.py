@@ -209,8 +209,13 @@ def _postgres_add(identifier: str, channel: str, reason: str) -> None:
         )
         if cur.fetchone() is not None:
             return
+        # ``SuppressionRecord.created_at`` uses a SQLAlchemy client-side default,
+        # not a PostgreSQL server default. This raw SQL path must therefore write
+        # the timestamp explicitly or a freshly bootstrapped canonical schema
+        # correctly rejects the row as NOT NULL.
         cur.execute(
-            f"INSERT INTO data_suppression_list (id, {column}, reason) VALUES (%s, %s, %s)",
+            f"INSERT INTO data_suppression_list (id, {column}, reason, created_at) "
+            "VALUES (%s, %s, %s, CURRENT_TIMESTAMP)",
             (uuid.uuid4().hex, value, reason or "opt_out"),
         )
 

@@ -10,6 +10,8 @@ def _memory_backends_default(monkeypatch):
     """Keep unit tests deterministic even on a production-like host."""
 
     monkeypatch.delenv("DEALIX_SUPPRESSION_BACKEND", raising=False)
+    monkeypatch.delenv("DEALIX_CONSENT_BACKEND", raising=False)
+    monkeypatch.delenv("DEALIX_CONSENT_DEFAULT_TENANT", raising=False)
     monkeypatch.delenv("DATABASE_URL", raising=False)
 
 
@@ -26,6 +28,7 @@ def _approved_email() -> dict[str, str]:
     return {
         "status": "approved",
         "body": "Hello from Dealix. You can unsubscribe anytime.",
+        "consent_purpose": "direct_marketing",
     }
 
 
@@ -92,6 +95,46 @@ def test_email_allowed_only_when_both_durability_gates_are_proven(monkeypatch):
     assert result.allowed, result.reasons
 
 
+def test_controlled_live_requires_explicit_consent_purpose(monkeypatch):
+    monkeypatch.setattr(policy_gate, "persistent_suppression_ready", lambda: True)
+    monkeypatch.setattr(policy_gate, "persistent_consent_ready", lambda: True)
+    monkeypatch.setattr(policy_gate, "has_consent", lambda *args, **kwargs: True)
+    env = {
+        "EXTERNAL_SEND_ENABLED": "true",
+        "EMAIL_SEND_ENABLED": "true",
+        "OUTBOUND_MODE": "controlled_live",
+    }
+    message = {
+        "status": "approved",
+        "body": "Hello from Dealix. You can unsubscribe anytime.",
+    }
+    result = policy_gate.can_send_email(_email_contact(), message, env)
+    assert not result.allowed
+    assert "consent purpose is required for controlled live" in result.reasons
+
+
+def test_policy_gate_forwards_exact_consent_purpose(monkeypatch):
+    monkeypatch.setattr(policy_gate, "persistent_suppression_ready", lambda: True)
+    monkeypatch.setattr(policy_gate, "persistent_consent_ready", lambda: True)
+    observed: list[str | None] = []
+
+    def _has_consent(channel, contact, purpose=None):
+        observed.append(purpose)
+        return True
+
+    monkeypatch.setattr(policy_gate, "has_consent", _has_consent)
+    env = {
+        "EXTERNAL_SEND_ENABLED": "true",
+        "EMAIL_SEND_ENABLED": "true",
+        "OUTBOUND_MODE": "controlled_live",
+    }
+    message = _approved_email()
+    message["consent_purpose"] = "partner_discovery"
+    result = policy_gate.can_send_email(_email_contact(), message, env)
+    assert result.allowed, result.reasons
+    assert observed == ["partner_discovery"]
+
+
 def test_email_requires_unsubscribe():
     env = {
         "EXTERNAL_SEND_ENABLED": "true",
@@ -101,6 +144,7 @@ def test_email_requires_unsubscribe():
     message = {
         "status": "approved",
         "body": "Hello from Dealix.",
+        "consent_purpose": "direct_marketing",
     }
     result = policy_gate.can_send_email(_email_contact(), message, env)
     assert not result.allowed
@@ -126,6 +170,7 @@ def test_whatsapp_requires_opt_in_and_template():
         "status": "approved",
         "template_name": "dealix_intro_ar",
         "body": "السلام عليكم",
+        "consent_purpose": "direct_marketing",
     }
     result = policy_gate.can_send_whatsapp(contact, message, env)
     assert not result.allowed
@@ -153,6 +198,7 @@ def test_whatsapp_allowed_only_when_policy_and_both_durability_gates_pass(monkey
         "status": "approved",
         "template_name": "dealix_intro_ar",
         "body": "السلام عليكم",
+        "consent_purpose": "direct_marketing",
     }
     result = policy_gate.can_send_whatsapp(contact, message, env)
     assert result.allowed, result.reasons
@@ -167,6 +213,7 @@ def test_blocks_fake_guarantees():
     message = {
         "status": "approved",
         "body": "نضمن لك 100% نتائج. unsubscribe anytime.",
+        "consent_purpose": "direct_marketing",
     }
     result = policy_gate.can_send_email(_email_contact(), message, env)
     assert not result.allowed
