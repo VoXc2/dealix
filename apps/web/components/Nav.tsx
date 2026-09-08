@@ -20,7 +20,7 @@ const commandLinks = [
 export default function Nav() {
   return (
     <nav className="navbar" aria-label="Primary navigation">
-      <Link href="/" className="navbar-brand" aria-label="Dealix Home">
+      <Link href="/" className="navbar-brand brand-logo-link" aria-label="Dealix Home">
         <img
           className="brand-logo"
           src="/dealix-logo-white.svg"
