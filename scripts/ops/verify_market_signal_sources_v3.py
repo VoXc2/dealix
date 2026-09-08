@@ -29,6 +29,9 @@ ALLOWED_SOURCE_FAMILIES = {
     "TECH_PARTNERSHIP",
     "EVENT_MARKET_ACCESS",
     "PUBLIC_COMPANY_ECONOMIC_SIGNAL",
+    "HEALTHCARE_PROCUREMENT",
+    "GROWTH_ENABLEMENT",
+    "EXPORT_MARKET_ACCESS",
     "TRUST_PROVIDER_AUTHORITY",
 }
 CORE_SOURCE_IDS = {
@@ -47,18 +50,28 @@ CORE_SOURCE_IDS = {
     "qiddiya_vendors",
     "new_murabba_vendors",
     "roshn_partnerships",
+    "nhc_procurement_gate",
+    "rcu_supplier_portal",
+    "jeddah_central_suppliers",
+    "diriyah_company_vendors",
     "aramco_suppliers",
     "aramco_marketplace",
     "maaden_supplier_portal",
     "sec_vendor_registration",
     "sec_ebid",
     "sabic_supplier_portal",
+    "nupco_tenders",
     "riyadh_air_mar",
+    "alat_partnerships",
+    "ntdp_programs",
+    "saudi_exports_incentives",
+    "saudi_exports_directory",
     "saudi_exchange_announcements",
     "smart_cities_saudi_expo",
     "hotel_hospitality_expo_saudi",
     "rega_proptech_hub",
     "saudi_build_2026",
+    "biban_2026",
     "cityscape_global_2026",
     "global_logistics_forum_2026",
     "future_projects_forum_2026",
@@ -244,12 +257,15 @@ def main() -> None:
     missing_core = sorted(CORE_SOURCE_IDS - seen_ids)
     if missing_core:
         _fail(f"core Saudi opportunity sources missing: {missing_core}")
+    if seen_ids != CORE_SOURCE_IDS:
+        unexpected = sorted(seen_ids - CORE_SOURCE_IDS)
+        _fail(f"unreviewed source ids require verifier admission: {unexpected}")
     if observed_families != ALLOWED_SOURCE_FAMILIES:
         _fail("every declared source family must have at least one source")
     if observed_agents != PERMANENT_AGENTS:
         _fail("the complete mesh must exercise all five permanent agents")
-    if d4_count < 3:
-        _fail("mesh must preserve multiple explicit-demand D4 intake channels")
+    if d4_count < 4:
+        _fail("mesh must preserve four or more explicit-demand D4 intake channels")
 
     contract = data.get("signal_contract") or {}
     required_fields = set(contract.get("required_fields") or [])
