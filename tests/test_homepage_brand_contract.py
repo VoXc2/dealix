@@ -7,6 +7,9 @@ LAYOUT = ROOT / "apps" / "web" / "app" / "layout.tsx"
 LOGO = ROOT / "apps" / "web" / "public" / "dealix-logo.svg"
 MARK = ROOT / "apps" / "web" / "public" / "dealix-mark.svg"
 OG = ROOT / "apps" / "web" / "public" / "dealix-og.svg"
+LEGACY_PLAYWRIGHT = ROOT / ".github" / "workflows" / "playwright_smoke.yml"
+WEB_PLAYWRIGHT = ROOT / ".github" / "workflows" / "web_interactive_smoke.yml"
+INTERACTIVE_SPEC = ROOT / "tests" / "playwright" / "interactive_home.spec.js"
 
 
 def test_interactive_home_uses_canonical_brand_assets():
@@ -83,3 +86,26 @@ def test_below_fold_sections_use_dependency_free_render_containment():
     assert 'contentVisibility: "auto"' in home
     assert 'containIntrinsicSize: "auto 720px"' in home
     assert home.count("style={deferredSectionStyle}") >= 4
+
+
+def test_interactive_browser_smoke_targets_next_not_legacy_static_landing():
+    legacy = LEGACY_PLAYWRIGHT.read_text(encoding="utf-8")
+    web = WEB_PLAYWRIGHT.read_text(encoding="utf-8")
+    spec = INTERACTIVE_SPEC.read_text(encoding="utf-8")
+
+    assert INTERACTIVE_SPEC.exists()
+    assert "Dealix V2 interactive front door" in spec
+
+    # The legacy workflow owns only the historical static landing surface.
+    assert "tier1_smoke.spec.js" in legacy
+    assert "market_to_delivery.spec.js" in legacy
+    assert "interactive_home.spec.js" not in legacy
+    assert "python3 -m http.server 8765" in legacy
+
+    # The canonical interactive home is rendered by Next.js under apps/web.
+    assert '"apps/web/**"' in web
+    assert "working-directory: apps/web" in web
+    assert "npm run dev" in web
+    assert "http://127.0.0.1:3100" in web
+    assert "interactive_home.spec.js" in web
+    assert "PLAYWRIGHT_BASE_URL: http://127.0.0.1:3100" in web
