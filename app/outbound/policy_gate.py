@@ -216,9 +216,13 @@ def _apply_cross_cutting(channel: str, contact: Mapping[str, Any], message: Mapp
     if controlled_live and not purpose:
         reasons.append("consent purpose is required for controlled live")
 
+    # Draft/testing behavior remains backward compatible with the historical
+    # direct-marketing default. Controlled-live never receives an implicit
+    # purpose: the missing-purpose blocker above remains authoritative.
+    consent_purpose = purpose or "direct_marketing"
     identifier = _contact_identifier(channel, contact)
     if is_suppressed(identifier, channel=channel): reasons.append("recipient is on suppression list")
-    if not has_consent(channel, contact, purpose=purpose or None): reasons.append("consent not recorded for channel and purpose")
+    if not has_consent(channel, contact, purpose=consent_purpose): reasons.append("consent not recorded for channel and purpose")
     if not within_rate_limits(channel, identifier): reasons.append("rate limit exceeded for channel")
 
 
