@@ -1,8 +1,8 @@
 """
-Public intake endpoints — unauthenticated and rate-limited by the API layer.
+Public intake endpoints — unauthenticated and rate-limited.
 
 The legacy custom-AI request remains founder-reviewed. The canonical website
-entry point is now POST /api/v1/public/execution-diagnostic: it captures a
+entry point is POST /api/v1/public/execution-diagnostic: it captures a
 customer-initiated Free Execution Diagnostic, creates an internal handoff for
 the five canonical Dealix agents, and mirrors the intake into the ONE Revenue
 Ops Autopilot store.
@@ -19,12 +19,13 @@ import json
 import logging
 from datetime import UTC, datetime
 from pathlib import Path
-from typing import Literal
+from typing import Callable, Literal, TypeVar
 from uuid import uuid4
 
-from fastapi import APIRouter
+from fastapi import APIRouter, Request
 from pydantic import BaseModel, Field
 
+from api.security.rate_limit import LIMITS, limiter
 from auto_client_acquisition.diagnostic_intake_orchestrator import (
     build_agent_handoff,
     mirror_to_revenue_autopilot,
@@ -35,6 +36,14 @@ logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api/v1/public", tags=["public-intake"])
 
 VAR_DIR = Path("var")
+_F = TypeVar("_F", bound=Callable)
+
+
+def _public_intake_limit(func: _F) -> _F:
+    """Use the canonical lead-creation throttle; no silent custom limiter."""
+    if limiter is None:
+        return func
+    return limiter.limit(LIMITS["leads_create"])(func)
 
 
 class CustomAIRequest(BaseModel):
@@ -76,8 +85,10 @@ class ExecutionDiagnosticIntake(BaseModel):
 
 
 @router.post("/custom-ai-request")
-def submit_custom_ai_request(payload: CustomAIRequest) -> dict:
+@_public_intake_limit
+def submit_custom_ai_request(request: Request, payload: CustomAIRequest) -> dict:
     """Accept the legacy Rung-4 Custom AI intake for founder review."""
+    del request  # required by the canonical slowapi decorator
     VAR_DIR.mkdir(parents=True, exist_ok=True)
     record = {
         "submitted_at": datetime.now(UTC).isoformat(),
@@ -114,7 +125,8 @@ def submit_custom_ai_request(payload: CustomAIRequest) -> dict:
 
 
 @router.post("/execution-diagnostic")
-def submit_execution_diagnostic(payload: ExecutionDiagnosticIntake) -> dict:
+@_public_intake_limit
+def submit_execution_diagnostic(request: Request, payload: ExecutionDiagnosticIntake) -> dict:
     """Start the internal evidence-first diagnostic workflow for an inbound lead.
 
     This endpoint performs only internal, reversible work: capture, evidence-gap
@@ -122,6 +134,7 @@ def submit_execution_diagnostic(payload: ExecutionDiagnosticIntake) -> dict:
     reply, declare a qualified problem, create an opportunity, issue a quote,
     charge, publish, or mutate production infrastructure.
     """
+    del request  # required by the canonical slowapi decorator
     intake_id = f"webdiag_{uuid4().hex[:16]}"
     submitted_at = datetime.now(UTC).isoformat()
     diagnostic_context = {
