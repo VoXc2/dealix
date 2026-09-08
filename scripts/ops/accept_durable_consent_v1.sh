@@ -84,6 +84,7 @@ cd "$ROOT"
 "$PY" -m pytest -q \
   tests/test_postgres_consent_backend.py \
   tests/test_durable_consent_migration_graph.py \
+  tests/test_durable_consent_postgres_acceptance_contract.py \
   tests/test_controlled_live_outbound_policy.py \
   tests/test_ops_production_trust_hardening.py \
   tests/test_postgres_suppression_backend.py
@@ -104,6 +105,7 @@ cat <<EOF
 EXACT_SHA=$EXPECTED
 SOURCE_COMPILE=PASS
 MIGRATION_GRAPH=PASS
+POSTGRES_ACCEPTANCE_CONTRACT=PASS
 FOCUSED_TESTS=PASS
 SECRET_LITERAL_VERIFIER=PASS
 GIT_SAFE_DIRECTORY=PROCESS_LOCAL_EXACT_ROOT
