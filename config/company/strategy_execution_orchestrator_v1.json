@@ -1,0 +1,288 @@
+{
+  "schema_version": 1,
+  "date_context": "2026-09-07",
+  "north_star": "CASH_READY_AUTONOMOUS_DEALIX_COMPANY",
+  "optimization": "Verified Economic Movement / Founder Minute / Cost / Risk",
+  "one_company_law": {
+    "company_machine_count": 1,
+    "opportunity_graph_count": 1,
+    "approval_authority_count": 1,
+    "proof_model_count": 1,
+    "consent_authority_count": 1,
+    "scheduler_count": 1,
+    "model_router_count": 1,
+    "permanent_agents": [
+      "dealix-pm",
+      "dealix-sales",
+      "dealix-delivery",
+      "dealix-engineer",
+      "dealix-content"
+    ]
+  },
+  "portfolios": {
+    "TRUST": {"weight_when_trust_hold": 30, "weight_when_trust_green": 10},
+    "MONEY_NOW": {"weight_when_trust_hold": 50, "weight_when_trust_green": 70},
+    "COMPOUNDING": {"weight_when_trust_hold": 20, "weight_when_trust_green": 20}
+  },
+  "wip_limits": {
+    "top_actions_per_cycle": 3,
+    "deep_qualified": 10,
+    "diagnostics_in_preparation": 3,
+    "live_project_cells": 2,
+    "active_venture_experiments": 2,
+    "capability_benchmarks": 1,
+    "material_approval_packets": 1
+  },
+  "material_authority": {
+    "external_customer_send": false,
+    "whatsapp_outbound": false,
+    "public_publish": false,
+    "paid_spend": false,
+    "payment_or_refund": false,
+    "binding_contract": false,
+    "tender_submission": false,
+    "merge_main": false,
+    "production_deploy": false,
+    "dns_mutation": false,
+    "db_or_schema_mutation": false,
+    "secret_or_identity_mutation": false,
+    "voice_outbound_or_live_activation": false
+  },
+  "truth_firewall": [
+    "research_is_not_relationship",
+    "public_contact_is_not_consent",
+    "signal_is_not_opportunity",
+    "score_is_not_buyer_intent",
+    "draft_is_not_sent",
+    "quote_is_not_invoice",
+    "invoice_is_not_payment",
+    "payment_marker_is_not_verified_cash",
+    "synthetic_proof_is_not_customer_proof",
+    "pr_merge_is_not_production_green",
+    "http_200_is_not_exact_release_identity",
+    "historical_pass_is_not_current_exact_head_pass",
+    "model_output_is_not_authority"
+  ],
+  "build_buy_partner_law": [
+    "REUSE_CANONICAL",
+    "OFFICIAL_API",
+    "QUALIFIED_PARTNER",
+    "BUILD"
+  ],
+  "canonical_owners": {
+    "phase_constitution": {"type": "issue", "number": 1513},
+    "production_trust": {"type": "pr", "number": 1529},
+    "durable_consent": {"type": "issue", "number": 1533},
+    "founder_control": {"type": "pr", "number": 1535},
+    "market_to_delivery": {"type": "pr", "number": 1536},
+    "daily_company_cycle": {"type": "pr", "number": 1548},
+    "revenue_radar": {"type": "issue", "number": 1549},
+    "provider_admission": {"type": "issue", "number": 1550},
+    "daily_market_advantage": {"type": "issue", "number": 1551},
+    "d4_bid_no_bid": {"type": "issue", "number": 1552},
+    "daily_market_advantage_source": {"type": "pr", "number": 1553},
+    "venture_foundry": {"type": "issue", "number": 1554}
+  },
+  "strategies": [
+    {
+      "id": "production_trust_closure",
+      "portfolio": "TRUST",
+      "priority": 100,
+      "owner": "dealix-engineer",
+      "action": "reconcile exact-head trust evidence, classify blockers, and prepare rollback-aware closure",
+      "requires": ["current_exact_head", "acceptance_receipt"],
+      "promotion_authority": "none"
+    },
+    {
+      "id": "founder_control_proof_plane",
+      "portfolio": "TRUST",
+      "priority": 98,
+      "owner": "dealix-pm",
+      "action": "verify one-owner Founder Control, proof projection, and bounded approval surface",
+      "requires": ["founder_identity_authority", "runtime_acceptance"],
+      "promotion_authority": "none"
+    },
+    {
+      "id": "durable_consent_and_release_parity",
+      "portfolio": "TRUST",
+      "priority": 96,
+      "owner": "dealix-engineer",
+      "action": "prove durable channel-purpose consent and exact Web/API/Approval release identity without enabling live send",
+      "requires": ["durable_consent_evidence", "release_identity_evidence"],
+      "promotion_authority": "none"
+    },
+    {
+      "id": "daily_market_advantage_top3",
+      "portfolio": "MONEY_NOW",
+      "priority": 100,
+      "owner": "dealix-sales",
+      "action": "rank fresh D1-D4 signals and prepare only the top three evidence-backed next actions",
+      "requires": ["market_signal_receipts"],
+      "promotion_authority": "none"
+    },
+    {
+      "id": "market_to_delivery_diagnostic",
+      "portfolio": "MONEY_NOW",
+      "priority": 97,
+      "owner": "dealix-sales",
+      "action": "convert a qualified problem into diagnostic, route, scope, economics, quote and proof-plan preparation",
+      "requires": ["qualified_problem_evidence"],
+      "promotion_authority": "none"
+    },
+    {
+      "id": "d4_procurement_bid_no_bid",
+      "portfolio": "MONEY_NOW",
+      "priority": 95,
+      "owner": "dealix-pm",
+      "action": "prepare BID / PARTNER_BID / SUBCONTRACT / NO_BID dossier for explicit procurement without submission authority",
+      "requires": ["official_procurement_evidence"],
+      "promotion_authority": "none"
+    },
+    {
+      "id": "partner_provider_admission",
+      "portfolio": "MONEY_NOW",
+      "priority": 90,
+      "owner": "dealix-delivery",
+      "action": "resolve delivery gaps through bounded partner/provider discovery, benchmark, economics and exit review",
+      "requires": ["named_capability_gap"],
+      "promotion_authority": "none"
+    },
+    {
+      "id": "saudi_market_access",
+      "portfolio": "MONEY_NOW",
+      "priority": 88,
+      "owner": "dealix-sales",
+      "action": "prepare supplier-readiness, partner maps and opportunity dossiers from official Saudi access channels",
+      "requires": ["official_source_evidence"],
+      "promotion_authority": "none"
+    },
+    {
+      "id": "venture_foundry_validation",
+      "portfolio": "COMPOUNDING",
+      "priority": 92,
+      "owner": "dealix-pm",
+      "action": "run at most two evidence-gated venture validation experiments and kill or park weak ideas",
+      "requires": ["venture_scorecard"],
+      "promotion_authority": "none"
+    },
+    {
+      "id": "oss_capability_admission",
+      "portfolio": "COMPOUNDING",
+      "priority": 82,
+      "owner": "dealix-engineer",
+      "action": "admit at most one OSS capability benchmark tied to a measured active gap",
+      "requires": ["named_capability_gap", "license_security_maintenance_review"],
+      "promotion_authority": "none"
+    },
+    {
+      "id": "proof_content_referral_loop",
+      "portfolio": "COMPOUNDING",
+      "priority": 75,
+      "owner": "dealix-content",
+      "action": "turn verified evidence into internal proof assets and publication drafts without public authority",
+      "requires": ["verified_evidence"],
+      "promotion_authority": "none"
+    }
+  ],
+  "venture_candidates": [
+    {
+      "id": "AI_GOVERNANCE_AGENT_CONTROL_DESK",
+      "priority": 100,
+      "stage": "CATEGORY_VALIDATED",
+      "next_validation": "five control-gap problem conversations or one explicit procurement route",
+      "build_allowed_without_paid_pain": false,
+      "evidence": ["https://nca.gov.sa/en/news/2354/"]
+    },
+    {
+      "id": "CONSTRUCTION_DOCUMENT_TO_CASH",
+      "priority": 95,
+      "stage": "CATEGORY_VALIDATED",
+      "next_validation": "one RFI/change-order/progress-payment workflow diagnostic",
+      "build_allowed_without_paid_pain": false,
+      "evidence": []
+    },
+    {
+      "id": "FATOORA_INTEGRATION_OPS",
+      "priority": 92,
+      "stage": "CATEGORY_VALIDATED",
+      "next_validation": "technical readiness and exception-operations willingness-to-pay test",
+      "build_allowed_without_paid_pain": false,
+      "evidence": ["https://zatca.gov.sa/en/MediaCenter/News/Pages/Wave25-E-invoicing.aspx"]
+    },
+    {
+      "id": "SAUDI_MARKET_ACCESS_DESK",
+      "priority": 88,
+      "stage": "CATEGORY_VALIDATED",
+      "next_validation": "one supplier/partner-readiness engagement with measurable acceptance",
+      "build_allowed_without_paid_pain": false,
+      "evidence": ["https://eservices.misa.gov.sa/en/matchmaking", "https://musahama.pif.gov.sa/"]
+    },
+    {
+      "id": "MANAGED_AI_OPERATIONS_DESK",
+      "priority": 85,
+      "stage": "DISCOVERED",
+      "next_validation": "one recurring workflow with weekly measurable outcome and founder-minute budget",
+      "build_allowed_without_paid_pain": false,
+      "evidence": []
+    },
+    {
+      "id": "ENTERPRISE_KNOWLEDGE_TO_ACTION",
+      "priority": 80,
+      "stage": "DISCOVERED",
+      "next_validation": "one bounded knowledge-to-action workflow with approval and proof receipts",
+      "build_allowed_without_paid_pain": false,
+      "evidence": []
+    }
+  ],
+  "oss_admission": [
+    {
+      "id": "opentelemetry_genai_semconv",
+      "decision": "ADOPT_SPEC_NOW",
+      "automatic_install": false,
+      "purpose": "standardize model/tool/token/latency telemetry without creating a new observability truth store",
+      "source": "https://opentelemetry.io/docs/specs/semconv/gen-ai/"
+    },
+    {
+      "id": "osv_scanner_v2",
+      "decision": "ADOPT_TEST_ONLY_AFTER_VERSION_PIN",
+      "automatic_install": false,
+      "purpose": "source/dependency vulnerability evidence",
+      "source": "https://google.github.io/osv-scanner/"
+    },
+    {
+      "id": "syft",
+      "decision": "BENCHMARK_SBOM_ONLY",
+      "automatic_install": false,
+      "purpose": "SBOM generation for accepted source/build artifacts",
+      "source": "https://github.com/anchore/syft"
+    },
+    {
+      "id": "grype",
+      "decision": "BENCHMARK_VULN_SCAN_ONLY",
+      "automatic_install": false,
+      "purpose": "scan SBOM/container artifacts after Syft admission",
+      "source": "https://github.com/anchore/grype"
+    },
+    {
+      "id": "k6",
+      "decision": "BOUNDED_STAGING_SMOKE_ONLY",
+      "automatic_install": false,
+      "purpose": "bounded latency/load acceptance on local or explicitly authorized staging targets",
+      "source": "https://github.com/grafana/k6"
+    },
+    {
+      "id": "docling",
+      "decision": "KEEP_EXISTING_ADMISSION",
+      "automatic_install": false,
+      "purpose": "document/tender/proposal ingestion after Arabic accuracy and model-license benchmark",
+      "source": "https://github.com/docling-project/docling"
+    },
+    {
+      "id": "presidio",
+      "decision": "KEEP_EXISTING_ADMISSION",
+      "automatic_install": false,
+      "purpose": "PII detection/anonymization before proof or document processing",
+      "source": "https://github.com/data-privacy-stack/presidio"
+    }
+  ]
+}
