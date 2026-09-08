@@ -13,14 +13,18 @@ from __future__ import annotations
 
 import json
 import os
+import sys
 from datetime import UTC, datetime
 from pathlib import Path
 
-from auto_client_acquisition.diagnostic_intake_orchestrator import (
+ROOT = Path(__file__).resolve().parents[2]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
+from auto_client_acquisition.diagnostic_intake_orchestrator import (  # noqa: E402
     load_company_os_inbound_diagnostics,
 )
 
-ROOT = Path(__file__).resolve().parents[2]
 OUT_DIR = ROOT / "reports" / "self_operating_company_os" / "inbound_diagnostics"
 
 CANONICAL_AGENTS = [
