@@ -102,6 +102,7 @@ PY
 
 cleanup() {
   set +e
+  unset DEALIX_ALLOW_FRESH_DB_BOOTSTRAP
   docker rm -f "$NAME" >/dev/null 2>&1 || true
   docker volume rm -f "$VOLUME" >/dev/null 2>&1 || true
 }
@@ -143,8 +144,14 @@ wait_ready
 
 URL="postgresql+asyncpg://${USER}:${PASS}@127.0.0.1:${PORT}/${DB}"
 
-DATABASE_URL="$URL" APP_ENV=test \
-  "$PY" -m alembic -c "$ROOT/alembic.ini" upgrade head
+# Dealix historical migration roots begin with ALTER operations and cannot
+# bootstrap a truly empty PostgreSQL database. The repository-owned bootstrap
+# is the canonical contract: build current metadata, prove schema drift-free,
+# then stamp the checkout's Alembic heads. This target is loopback-only and
+# disposable, never Production.
+"$PY" scripts/check_alembic_single_head.py
+DEALIX_ALLOW_FRESH_DB_BOOTSTRAP=1 DATABASE_URL="$URL" APP_ENV=test \
+  "$PY" "$ROOT/scripts/ops/bootstrap_fresh_database.py" --confirm-empty-bootstrap
 
 DATABASE_URL="$URL" APP_ENV=test DEALIX_CONSENT_BACKEND=postgres \
   "$PY" "$ROOT/scripts/ops/verify_durable_consent_postgres_v1.py" --phase setup
@@ -168,7 +175,8 @@ END_HEAD="$(git -c "safe.directory=$ROOT" -C "$ROOT" rev-parse HEAD)"
 
 cat <<EOF
 EXACT_SHA=$EXPECTED
-ALEMBIC_ISOLATED_POSTGRES=PASS
+FRESH_DB_BOOTSTRAP=PASS
+ALEMBIC_HEADS_STAMPED=PASS
 CONSENT_REAL_POSTGRES_BEHAVIOR=PASS
 RESTART_PERSISTENCE=PASS
 PRODUCTION_DB=false
