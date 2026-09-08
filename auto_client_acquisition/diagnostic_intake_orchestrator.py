@@ -9,6 +9,7 @@ proof.
 Truth rules preserved:
 - inbound request != qualified problem
 - public/contact data != marketing consent
+- customer-reported context != independently verified evidence
 - diagnostic hypothesis != customer proof
 - draft/internal work != sent
 - quote != invoice != payment
@@ -36,6 +37,20 @@ _DIAGNOSTIC_FIELDS = (
     ("target_outcome", "ما النتيجة المستهدفة أو الحد الأدنى المقبول؟"),
 )
 
+_CONTEXT_EVENT_FIELDS = (
+    "workflow",
+    "decision_owner",
+    "tools_data",
+    "business_impact",
+    "proof_metric",
+    "baseline",
+    "target_outcome",
+    "urgency",
+    "website",
+    "role",
+    "preferred_contact",
+)
+
 
 def _parse_context(record: dict[str, Any]) -> dict[str, str]:
     raw = record.get("diagnostic_context")
@@ -52,6 +67,17 @@ def _parse_context(record: dict[str, Any]) -> dict[str, str]:
             return {str(k): str(v or "").strip() for k, v in parsed.items()}
 
     return {"workflow": str(message or "").strip()}
+
+
+def _material_authority_false() -> dict[str, bool]:
+    return {
+        "external_send": False,
+        "public_publish": False,
+        "paid_spend": False,
+        "payment_execution": False,
+        "production_mutation": False,
+        "binding_commercial_commitment": False,
+    }
 
 
 def build_agent_handoff(record: dict[str, Any]) -> dict[str, Any]:
@@ -118,14 +144,7 @@ def build_agent_handoff(record: dict[str, Any]) -> dict[str, Any]:
             "binding_quote": False,
             "payment": False,
         },
-        "material_authority": {
-            "external_send": False,
-            "public_publish": False,
-            "paid_spend": False,
-            "payment_execution": False,
-            "production_mutation": False,
-            "binding_commercial_commitment": False,
-        },
+        "material_authority": _material_authority_false(),
     }
 
 
@@ -133,8 +152,10 @@ def mirror_to_revenue_autopilot(record: dict[str, Any], handoff: dict[str, Any])
     """Mirror an inbound intake to the ONE Revenue Ops Autopilot store.
 
     Idempotency is derived from the lead-inbox record ID. The mirror creates an
-    internal lead, an intake-stage diagnostic record and one evidence event.
-    It never creates an opportunity, quote, invoice, send or payment state.
+    internal lead, an intake-stage diagnostic record and attributable evidence
+    events for the customer-reported diagnostic context. Customer-reported
+    statements remain explicitly unverified. It never creates an opportunity,
+    quote, invoice, send or payment state.
     """
     from dealix.revenue_ops_autopilot.schemas import (
         DiagnosticDeliveryRecord,
@@ -152,6 +173,7 @@ def mirror_to_revenue_autopilot(record: dict[str, Any], handoff: dict[str, Any])
     diagnostic_id = f"diag_{lead_id}"
     evidence_id = f"ev_{lead_id}_intake"
     context = handoff.get("context") or {}
+    followup_requested = bool(record.get("followup_requested", False))
 
     lead = FunnelLeadRecord(
         id=lead_id,
@@ -165,12 +187,18 @@ def mirror_to_revenue_autopilot(record: dict[str, Any], handoff: dict[str, Any])
         source="website_free_execution_diagnostic",
         pain=str(context.get("workflow") or record.get("message") or "")[:1500],
         urgency=str(context.get("urgency") or record.get("urgency") or ""),
+        crm_status=(
+            "inbound_followup_requested"
+            if followup_requested
+            else "inbound_no_followup_requested"
+        ),
         consent_marketing=False,
         consent_proof_pack=False,
         lead_score=0,
         score_breakdown={},
         stage="new_lead",
         war_room_status="not_contacted",
+        segment="inbound_execution_diagnostic",
         pain_hypothesis=str(context.get("business_impact") or "")[:1000],
         offer_id="free_execution_diagnostic",
         next_action="complete_evidence_backed_diagnostic",
@@ -203,17 +231,104 @@ def mirror_to_revenue_autopilot(record: dict[str, Any], handoff: dict[str, Any])
         source="website_free_execution_diagnostic",
         summary=(
             f"Inbound diagnostic intake received; problem_state={handoff.get('problem_state')}; "
-            f"evidence_completeness_pct={handoff.get('evidence_completeness_pct')}."
+            f"evidence_completeness_pct={handoff.get('evidence_completeness_pct')}; "
+            f"followup_requested={str(followup_requested).lower()}."
         ),
-        confidence="high",
+        confidence="direct_submission_unverified",
     )
     store.append_evidence_idempotent(event)
+
+    context_event_ids: list[str] = []
+    for key in _CONTEXT_EVENT_FIELDS:
+        value = str(context.get(key) or "").strip()
+        if not value:
+            continue
+        context_event_id = f"ev_{lead_id}_customer_reported_{key}"
+        store.append_evidence_idempotent(
+            EvidenceEvent(
+                id=context_event_id,
+                event_type="customer_reported_diagnostic_context",
+                entity_type="lead",
+                entity_id=lead_id,
+                source="website_free_execution_diagnostic",
+                summary=f"{key}: {value[:4000]}",
+                confidence="customer_reported_unverified",
+            )
+        )
+        context_event_ids.append(context_event_id)
 
     return {
         "mirrored": True,
         "lead_id": lead_id,
         "diagnostic_id": diagnostic_id,
         "evidence_id": evidence_id,
+        "context_evidence_ids": context_event_ids,
         "stage": "new_lead",
         "external_action": "none",
     }
+
+
+def load_company_os_inbound_diagnostics(limit: int = 50) -> list[dict[str, Any]]:
+    """Expose website diagnostics to the canonical Company OS internal cycle.
+
+    This is a read-only bridge over the existing Revenue Ops store. It does not
+    create a second queue/store. Cases without an explicit follow-up request are
+    still visible for internal evidence analysis but are marked ineligible for
+    external follow-up.
+    """
+    from dealix.revenue_ops_autopilot.store import get_autopilot_store
+
+    store = get_autopilot_store()
+    leads = [
+        lead
+        for lead in store.list_leads(limit=max(100, limit * 4))
+        if lead.source == "website_free_execution_diagnostic"
+    ][:limit]
+    evidence = store.list_evidence(limit=max(500, limit * 20))
+
+    cases: list[dict[str, Any]] = []
+    for lead in leads:
+        followup_requested = lead.crm_status == "inbound_followup_requested"
+        diagnostic = store.get_diagnostic(f"diag_{lead.id}")
+        case_events = [event for event in evidence if event.entity_id == lead.id]
+        evidence_refs = [f"revenue_autopilot:{event.id}" for event in case_events]
+        context: dict[str, str] = {}
+        for event in case_events:
+            if event.event_type != "customer_reported_diagnostic_context":
+                continue
+            key, sep, value = event.summary.partition(": ")
+            if sep and key in _CONTEXT_EVENT_FIELDS:
+                context[key] = value
+
+        record = {
+            "id": lead.id,
+            "company": lead.company,
+            "sector": lead.industry or "unknown",
+            "diagnostic_context": context,
+        }
+        handoff = build_agent_handoff(record)
+        cases.append(
+            {
+                "lead_id": lead.id,
+                "company_name": lead.company,
+                "sector": lead.industry or "unknown",
+                "source": lead.source,
+                "relationship_state": "INBOUND" if followup_requested else "INBOUND_NO_FOLLOWUP",
+                "consent_state": "INBOUND_REQUEST" if followup_requested else "NONE",
+                "followup_requested": followup_requested,
+                "commercial_stage": "REAL_INTERACTION",
+                "problem_state": handoff["problem_state"],
+                "evidence_completeness_pct": handoff["evidence_completeness_pct"],
+                "evidence_refs": evidence_refs,
+                "next_questions": (
+                    list(diagnostic.onboarding_checklist)
+                    if diagnostic is not None
+                    else list(handoff["next_questions"])
+                ),
+                "work_packets": handoff["work_packets"],
+                "next_action": "complete_evidence_backed_diagnostic_internal",
+                "external_followup_eligible": followup_requested,
+                "material_authority": _material_authority_false(),
+            }
+        )
+    return cases
