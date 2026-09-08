@@ -33,6 +33,8 @@ These items are intentionally kept outside the canonical ranks 51–100 until a 
 - **OpenSSF Scorecard** — read-only upstream/repository security-practice evidence for dependencies and partner OSS; use as one evidence source, never as automatic admission or rejection authority.
 - **Sigstore cosign** — candidate for signing/verifying Dealix-built container/artifact provenance after a measured release-integrity gap; signing-key/identity setup is a separate material authority surface and must not be auto-created.
 - **in-toto Attestations** — candidate standard for verifiable build/test/release claims feeding the existing Dealix Proof model; do not create a second proof store or treat attestation presence as deployment correctness.
+- **GitHub Artifact Attestations** — future native provenance/SBOM route once hosted Actions is trustworthy and the repository/account plan is confirmed eligible. Verify attestations on artifacts that are actually consumed; attestation presence alone does not prove security or correct production release identity.
+- **slsa-verifier** — conditional verification candidate when Dealix consumes or publishes SLSA provenance. Prefer verification of a concrete released artifact over creating a new supply-chain service.
 - **GUAC** — candidate graph for correlating SBOM/provenance/vulnerability evidence only if current Syft/OSV/Grype receipts become too fragmented; it must not become a second Company Graph or operational source of truth.
 
 ### GitHub Actions execution-plane recovery
