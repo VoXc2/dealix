@@ -32,16 +32,30 @@ const systemFlow = [
 
 export function InteractiveHome() {
   const heroRef = useRef<HTMLDivElement>(null);
+  const pointerFrameRef = useRef<number | null>(null);
 
   function handlePointerMove(event: ReactPointerEvent<HTMLDivElement>) {
-    const hero = heroRef.current;
-    if (!hero) return;
-    const rect = hero.getBoundingClientRect();
-    hero.style.setProperty("--dx-pointer-x", `${event.clientX - rect.left}px`);
-    hero.style.setProperty("--dx-pointer-y", `${event.clientY - rect.top}px`);
+    if (event.pointerType !== "mouse" || pointerFrameRef.current !== null) return;
+
+    const clientX = event.clientX;
+    const clientY = event.clientY;
+
+    pointerFrameRef.current = window.requestAnimationFrame(() => {
+      pointerFrameRef.current = null;
+      const hero = heroRef.current;
+      if (!hero) return;
+      const rect = hero.getBoundingClientRect();
+      hero.style.setProperty("--dx-pointer-x", `${clientX - rect.left}px`);
+      hero.style.setProperty("--dx-pointer-y", `${clientY - rect.top}px`);
+    });
   }
 
   function handlePointerLeave() {
+    if (pointerFrameRef.current !== null) {
+      window.cancelAnimationFrame(pointerFrameRef.current);
+      pointerFrameRef.current = null;
+    }
+
     const hero = heroRef.current;
     if (!hero) return;
     hero.style.setProperty("--dx-pointer-x", "72%");
@@ -52,7 +66,7 @@ export function InteractiveHome() {
     <div className="dx-home">
       <header className="dx-nav-wrap">
         <nav className="dx-nav" aria-label="التنقل الرئيسي">
-          <Link href="/" className="dx-logo-link" aria-label="Dealix — الصفحة الرئيسية"><img src="/dealix-logo.svg" alt="Dealix — AI Business Operating System" className="dx-logo" width={400} height={96} loading="eager" decoding="async" /></Link>
+          <Link href="/" className="dx-logo-link" aria-label="Dealix — الصفحة الرئيسية"><img src="/dealix-logo.svg" alt="Dealix — AI Business Operating System" className="dx-logo" width={400} height={96} loading="eager" decoding="async" fetchPriority="high" /></Link>
           <div className="dx-nav-links" role="list"><Link href="/services">القدرات</Link><Link href="/cases">الاستخدامات</Link><Link href="/proof-vault">Proof</Link><Link href="/safety">الحوكمة</Link></div>
           <Link href="/book" className="dx-nav-cta">التشخيص المجاني <span aria-hidden="true">↗</span></Link>
         </nav>
