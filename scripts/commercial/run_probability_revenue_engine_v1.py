@@ -10,6 +10,7 @@ from __future__ import annotations
 import argparse
 import json
 import math
+import unicodedata
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
@@ -80,6 +81,13 @@ def finite_nonnegative(value: Any) -> float | None:
     return number
 
 
+def canonical_company_key(value: Any) -> str:
+    """Normalize company identity enough to stop duplicate records consuming Top-3 WIP."""
+    text = unicodedata.normalize("NFKC", str(value or "")).casefold().strip()
+    key = "".join(char for char in text if char.isalnum())
+    return key or "unknown"
+
+
 def truth_flags(target: dict[str, Any]) -> dict[str, Any]:
     source = str(target.get("source", "")).strip()
     refs = target.get("evidence_refs")
@@ -87,8 +95,10 @@ def truth_flags(target: dict[str, Any]) -> dict[str, Any]:
     suppression = str(target.get("suppression_state", "CLEAR")).upper()
     relationship = str(target.get("relationship_state", "RESEARCH")).upper()
     consent = str(target.get("consent_state", "NONE")).upper()
+    source_is_url = source.startswith("https://") or source.startswith("http://")
     return {
         "source_present": bool(source),
+        "source_attributable": source_is_url or bool(evidence_refs),
         "evidence_ref_count": len(evidence_refs),
         "suppression_state": suppression,
         "relationship_state": relationship,
@@ -98,11 +108,12 @@ def truth_flags(target: dict[str, Any]) -> dict[str, Any]:
 
 
 def evidence_ready_for_deep_wip(target: dict[str, Any], flags: dict[str, Any]) -> bool:
-    """Require attributable evidence before consuming scarce deep commercial WIP."""
-    if not flags["source_present"]:
-        return False
-    evidence_score = finite_nonnegative(target.get("evidence_score"))
-    return flags["evidence_ref_count"] > 0 or (evidence_score is not None and evidence_score >= 50.0)
+    """Require attributable evidence before consuming scarce deep commercial WIP.
+
+    A scalar evidence score is a prioritization hint, not evidence. Deep WIP needs
+    an attributable URL or an explicit evidence reference.
+    """
+    return bool(flags["source_present"] and flags["source_attributable"])
 
 
 def probability_ev(target: dict[str, Any]) -> tuple[float | None, dict[str, Any]]:
@@ -144,7 +155,7 @@ def evidence_priority(target: dict[str, Any], flags: dict[str, Any]) -> float:
     evidence = score("evidence_score", 25 if flags["source_present"] else 0)
     access = score("access_score", 10)
     risk = score("risk_score", 50)
-    completeness_bonus = min(10.0, flags["evidence_ref_count"] * 2.0) + (5.0 if flags["source_present"] else 0.0)
+    completeness_bonus = min(10.0, flags["evidence_ref_count"] * 2.0) + (5.0 if flags["source_attributable"] else 0.0)
     raw = fit * 0.30 + urgency * 0.25 + evidence * 0.25 + access * 0.20 - risk * 0.15 + completeness_bonus
     return round(max(0.0, min(100.0, raw)), 3)
 
@@ -156,6 +167,7 @@ def rank_targets(targets: list[dict[str, Any]], deep_wip: int) -> list[dict[str,
         ev, details = probability_ev(target)
         evidence_score = evidence_priority(target, flags)
         deep_wip_evidence_ready = evidence_ready_for_deep_wip(target, flags)
+        company_name = str(target.get("company_name", "Unknown company"))
         if flags["hard_stop"]:
             disposition = "STOP_SUPPRESSED"
             rank_key = (-1.0, -1.0)
@@ -172,7 +184,8 @@ def rank_targets(targets: list[dict[str, Any]], deep_wip: int) -> list[dict[str,
         rows.append(
             {
                 "source_index": index,
-                "company_name": str(target.get("company_name", "Unknown company")),
+                "company_name": company_name,
+                "company_key": canonical_company_key(company_name),
                 "segment": str(target.get("segment", "unknown")),
                 "commercial_stage": str(target.get("commercial_stage", "RESEARCH")).upper(),
                 "disposition": disposition,
@@ -188,17 +201,22 @@ def rank_targets(targets: list[dict[str, Any]], deep_wip: int) -> list[dict[str,
 
     rows.sort(key=lambda item: item["_rank_key"], reverse=True)
     active = 0
+    active_company_keys: set[str] = set()
     for position, row in enumerate(rows, start=1):
         row["rank"] = position
+        duplicate_deep_wip_company = row["company_key"] in active_company_keys
         if (
             row["disposition"] != "STOP_SUPPRESSED"
             and row["deep_wip_evidence_ready"] is True
+            and not duplicate_deep_wip_company
             and active < deep_wip
         ):
             row["deep_wip_candidate"] = True
             active += 1
+            active_company_keys.add(row["company_key"])
         else:
             row["deep_wip_candidate"] = False
+        row["duplicate_deep_wip_company"] = duplicate_deep_wip_company
         row.pop("_rank_key", None)
     return rows
 
@@ -234,6 +252,7 @@ def main() -> int:
         "raw_signal_ceiling": raw_signal_ceiling,
         "target_count": len(targets),
         "deep_wip_limit": deep_wip,
+        "deep_wip_unique_company_count": sum(1 for row in ranked if row["deep_wip_candidate"]),
         "unknown_probability_policy": contract["unknown_probability_policy"],
         "external_send_authority": False,
         "ranked_targets": ranked,
