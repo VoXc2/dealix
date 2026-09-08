@@ -2,8 +2,9 @@
 """Compatibility view for Dealix growth work inside the canonical Company OS.
 
 Growth is a workload lane, not a second operating system. This adapter ensures
-that today's canonical Company OS cycle exists, then reports the existing
-market/revenue/content actions. It never creates synthetic leads or sends.
+that today's canonical Company OS cycle exists, reports the existing
+market/revenue/content actions, then runs the read-only Probability Revenue
+Engine to rank real canonical targets. It never creates synthetic leads or sends.
 """
 from __future__ import annotations
 
@@ -16,7 +17,9 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 CANONICAL = ROOT / "scripts" / "commercial" / "run_self_operating_company_os.py"
+PROBABILITY_ENGINE = ROOT / "scripts" / "commercial" / "run_probability_revenue_engine_v1.py"
 REPORT_ROOT = ROOT / "reports" / "self_operating_company_os"
+PROBABILITY_REPORT_ROOT = ROOT / "reports" / "probability_revenue_engine"
 
 
 def today() -> str:
@@ -32,6 +35,24 @@ def ensure_cycle(mode: str, limit: int) -> int:
         cwd=ROOT,
         check=False,
     ).returncode
+
+
+def run_probability_selector(limit: int) -> tuple[int, dict]:
+    if not PROBABILITY_ENGINE.is_file():
+        return 2, {"status": "BLOCKED_PROBABILITY_ENGINE_MISSING"}
+    rc = subprocess.run(
+        [sys.executable, str(PROBABILITY_ENGINE), "--limit", str(limit)],
+        cwd=ROOT,
+        check=False,
+    ).returncode
+    report_path = PROBABILITY_REPORT_ROOT / f"{today()}.json"
+    if rc != 0:
+        return rc, {"status": "BLOCKED_PROBABILITY_ENGINE_FAILED", "returncode": rc}
+    try:
+        report = json.loads(report_path.read_text(encoding="utf-8"))
+    except (json.JSONDecodeError, OSError):
+        return 2, {"status": "BLOCKED_PROBABILITY_REPORT_UNREADABLE"}
+    return 0, report
 
 
 def main() -> int:
@@ -57,8 +78,36 @@ def main() -> int:
         return 2
     lanes = {"market_signal_intake", "relationship_and_revenue", "content_and_distribution"}
     selected = [item for item in actions if isinstance(item, dict) and item.get("playbook") in lanes]
-    print(json.dumps({"delegated": True, "canonical_action_count": len(selected), "actions": selected}, ensure_ascii=False, indent=2))
-    print("AUTONOMOUS_GROWTH=DELEGATED_TO_CANONICAL_COMPANY_OS")
+
+    probability_rc, probability_report = run_probability_selector(max(args.limit, 1500))
+    if probability_rc != 0:
+        print(json.dumps({
+            "delegated": True,
+            "canonical_action_count": len(selected),
+            "actions": selected,
+            "probability_selector": probability_report,
+        }, ensure_ascii=False, indent=2))
+        print("AUTONOMOUS_GROWTH=HOLD_PROBABILITY_SELECTOR")
+        return probability_rc
+
+    top_targets = [
+        item for item in probability_report.get("ranked_targets", [])
+        if isinstance(item, dict) and item.get("deep_wip_candidate") is True
+    ]
+    print(json.dumps({
+        "delegated": True,
+        "canonical_action_count": len(selected),
+        "actions": selected,
+        "probability_selector": {
+            "target_count": probability_report.get("target_count", 0),
+            "deep_wip_limit": probability_report.get("deep_wip_limit", 3),
+            "top_targets": top_targets,
+            "external_send_authority": False,
+        },
+    }, ensure_ascii=False, indent=2))
+    print("AUTONOMOUS_GROWTH=DELEGATED_TO_CANONICAL_COMPANY_OS_WITH_PROBABILITY_RANKING")
+    print("EXTERNAL_SEND_AUTHORITY=false")
+    print("L5_EXECUTED=NONE")
     return 0
 
 
