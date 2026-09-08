@@ -27,9 +27,9 @@ def test_registry_verifier_passes_current_contract(capsys):
     module.main()
     out = capsys.readouterr().out
     assert "DEALIX_MARKET_SIGNAL_SOURCES_V3=PASS" in out
-    assert "source_count=32" in out
-    assert "source_family_count=12" in out
-    assert "d4_source_count=3" in out
+    assert "source_count=42" in out
+    assert "source_family_count=15" in out
+    assert "d4_source_count=4" in out
     assert "permanent_agent_count=5" in out
     assert "commercial_authority_from_external_sources=false" in out
     assert "default_relationship_state=RESEARCH_ONLY" in out
@@ -50,7 +50,7 @@ def test_saudi_opportunity_mesh_preserves_core_channels_and_five_agents():
     data = _registry()
     sources = data["sources"]
 
-    assert len(sources) == 32
+    assert len(sources) == 42
     assert {source["id"] for source in sources} == module.CORE_SOURCE_IDS
     assert set(data["source_families"]) == module.ALLOWED_SOURCE_FAMILIES
     assert set(data["execution_policy"]["permanent_agents"]) == module.PERMANENT_AGENTS
@@ -58,6 +58,27 @@ def test_saudi_opportunity_mesh_preserves_core_channels_and_five_agents():
 
     routed_agents = {agent for source in sources for agent in source["agent_route"]}
     assert routed_agents == module.PERMANENT_AGENTS
+
+
+def test_expansion_families_have_explicit_owned_sources():
+    data = _registry()
+    by_id = {source["id"]: source for source in data["sources"]}
+
+    assert by_id["nupco_tenders"]["lane"] == "HEALTHCARE_PROCUREMENT"
+    assert by_id["ntdp_programs"]["lane"] == "GROWTH_ENABLEMENT"
+    assert by_id["saudi_exports_incentives"]["lane"] == "EXPORT_MARKET_ACCESS"
+    assert by_id["saudi_exports_directory"]["lane"] == "EXPORT_MARKET_ACCESS"
+
+    for source_id in (
+        "nhc_procurement_gate",
+        "rcu_supplier_portal",
+        "jeddah_central_suppliers",
+        "diriyah_company_vendors",
+    ):
+        assert by_id[source_id]["lane"] == "SUPPLIER_NETWORK"
+
+    assert by_id["alat_partnerships"]["lane"] == "TECH_PARTNERSHIP"
+    assert by_id["biban_2026"]["lane"] == "EVENT_MARKET_ACCESS"
 
 
 def test_material_execution_stays_exact_l5_and_sources_stay_research_safe():
@@ -81,10 +102,25 @@ def test_material_execution_stays_exact_l5_and_sources_stay_research_safe():
         assert set(source["forbidden_inference"]) & module.FORBIDDEN_AUTHORITY_TERMS
 
 
+def test_explicit_demand_sources_remain_narrow_and_governed():
+    data = _registry()
+    d4 = {s["id"] for s in data["sources"] if s["default_grade"] == "D4"}
+    assert d4 == {
+        "etimad_tenders",
+        "aramco_marketplace",
+        "sec_ebid",
+        "nupco_tenders",
+    }
+    for source in data["sources"]:
+        if source["id"] in d4:
+            assert "award" in source["forbidden_inference"]
+            assert source["access_mode"]
+
+
 def test_event_sources_are_explicitly_time_bounded():
     data = _registry()
     events = [s for s in data["sources"] if s["lane"] == "EVENT_MARKET_ACCESS"]
-    assert len(events) >= 7
+    assert len(events) >= 8
     for source in events:
         assert source["event_window"].count("/") == 1
         start, end = source["event_window"].split("/", 1)
