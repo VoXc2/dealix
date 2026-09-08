@@ -464,3 +464,65 @@ input::placeholder, textarea::placeholder { color: rgba(255,255,255,0.30); }
   .navbar, .actions { display: none; }
   .card { border: 1px solid #ccc; background: #fff; }
 }
+
+/* ── DEALIX V2 BRAND SURFACES ──────────────────────────── */
+.navbar-brand.brand-logo-link {
+  gap: 0;
+}
+
+.navbar-brand.brand-logo-link::before {
+  content: none;
+}
+
+.brand-logo {
+  display: block;
+  width: 178px;
+  height: auto;
+  object-fit: contain;
+}
+
+.navbar .nav-actions {
+  margin-top: 0;
+  flex-wrap: nowrap;
+  gap: var(--sp-3);
+}
+
+.navbar .nav-actions .nav-secondary-action {
+  min-height: 38px;
+  padding: 0 16px;
+  font-size: 0.82rem;
+}
+
+.navbar .nav-actions .nav-primary-action {
+  min-height: 38px;
+  padding: 0 18px;
+  border-radius: var(--r-pill);
+  background: #22D3EE;
+  color: #0F172A;
+  box-shadow: 0 0 24px rgba(34, 211, 238, 0.18);
+  font-size: 0.82rem;
+}
+
+.navbar .nav-actions .nav-primary-action:hover {
+  background: #67E8F9;
+  color: #0F172A;
+  box-shadow: 0 0 32px rgba(34, 211, 238, 0.32);
+  transform: translateY(-2px);
+  opacity: 1;
+  text-decoration: none;
+}
+
+.navbar .nav-actions .nav-secondary-action:hover {
+  color: #22D3EE;
+  border-color: rgba(34, 211, 238, 0.35);
+}
+
+@media (max-width: 768px) {
+  .brand-logo {
+    width: 150px;
+  }
+
+  .navbar .nav-actions {
+    display: none;
+  }
+}
