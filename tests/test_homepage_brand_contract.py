@@ -75,3 +75,11 @@ def test_interactive_pointer_effect_is_bounded_to_mouse_animation_frames():
     assert "window.requestAnimationFrame" in home
     assert "window.cancelAnimationFrame" in home
     assert 'fetchPriority="high"' in home
+
+
+def test_below_fold_sections_use_dependency_free_render_containment():
+    home = HOME.read_text(encoding="utf-8")
+
+    assert 'contentVisibility: "auto"' in home
+    assert 'containIntrinsicSize: "auto 720px"' in home
+    assert home.count("style={deferredSectionStyle}") >= 4
