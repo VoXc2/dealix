@@ -21,7 +21,7 @@ def valid_payload() -> dict:
         "one_company_law": sorted(MOD.REQUIRED_ONE_COMPANY),
         "truth_firewall": sorted(MOD.REQUIRED_TRUTH),
         "canonical_commercial_loop": sorted(MOD.REQUIRED_COMMERCIAL_STAGES),
-        "active_gtm_wedges": MOD.EXPECTED_WEDGES,
+        "active_gtm_wedges": MOD.CURRENT_SEED_WEDGES,
         "active_gtm_wedge_limit": 3,
         "opportunity_allocation": {
             "top_active_actions_per_cycle": 3,
@@ -70,10 +70,14 @@ def test_sixth_permanent_agent_fails():
 
 def test_fourth_gtm_wedge_fails():
     payload = valid_payload()
-    payload["active_gtm_wedges"] = [*MOD.EXPECTED_WEDGES, "EXTRA_WEDGE"]
-    failures = MOD.verify(payload)
-    assert "ACTIVE_GTM_WEDGES" in failures
-    assert "ACTIVE_GTM_WIP" in failures
+    payload["active_gtm_wedges"] = [*MOD.CURRENT_SEED_WEDGES, "EXTRA_WEDGE"]
+    assert "ACTIVE_GTM_WIP" in MOD.verify(payload)
+
+
+def test_alternative_three_wedge_policy_is_allowed():
+    payload = valid_payload()
+    payload["active_gtm_wedges"] = ["A", "B", "C"]
+    assert MOD.verify(payload) == []
 
 
 def test_whatsapp_permission_shortcut_fails():
