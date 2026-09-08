@@ -6,7 +6,7 @@ import CTA from "@/components/CTA";
 import PageShell from "@/components/PageShell";
 
 const founderEmail = process.env.NEXT_PUBLIC_FOUNDER_EMAIL ?? "sami.assiri11@gmail.com";
-const founderPhone = process.env.NEXT_PUBLIC_FOUNDER_PHONE?.trim();
+const founderPhone = process.env.NEXT_PUBLIC_FOUNDER_PHONE?.trim() || "+966 59 778 8539";
 const whatsappUrl = process.env.NEXT_PUBLIC_WHATSAPP_URL?.trim();
 
 type DiagnosticResponse = {
@@ -40,7 +40,7 @@ const labelStyle = {
 
 export default function BookPage() {
   const emailHref = `mailto:${founderEmail}?subject=${encodeURIComponent("طلب Free Execution Diagnostic — Dealix")}`;
-  const telHref = founderPhone ? `tel:${founderPhone.replace(/[^+\d]/g, "")}` : undefined;
+  const telHref = `tel:${founderPhone.replace(/[^+\d]/g, "")}`;
 
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
@@ -253,7 +253,7 @@ export default function BookPage() {
         <h3>تواصل مباشر مع Founder Office</h3>
         <div className="actions" style={{ marginTop: "var(--sp-3)", flexWrap: "wrap" }}>
           <CTA href={emailHref} label={`Email: ${founderEmail}`} />
-          {telHref && founderPhone ? <CTA href={telHref} label={`Phone: ${founderPhone}`} /> : null}
+          <CTA href={telHref} label={`Phone: ${founderPhone}`} />
           {whatsappUrl ? <CTA href={whatsappUrl} label="WhatsApp — Founder Office" /> : null}
         </div>
 
