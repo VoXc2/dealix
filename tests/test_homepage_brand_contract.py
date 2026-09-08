@@ -66,3 +66,12 @@ def test_interactive_home_keeps_accessible_motion_contract():
     assert "prefers-reduced-motion: reduce" in css
     assert "animation-duration: .001ms" in css
     assert ".dx-nav-links a:hover, .dx-nav-links a:focus-visible" in css
+
+
+def test_interactive_pointer_effect_is_bounded_to_mouse_animation_frames():
+    home = HOME.read_text(encoding="utf-8")
+
+    assert 'event.pointerType !== "mouse"' in home
+    assert "window.requestAnimationFrame" in home
+    assert "window.cancelAnimationFrame" in home
+    assert 'fetchPriority="high"' in home
