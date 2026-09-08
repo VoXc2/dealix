@@ -1,0 +1,81 @@
+# Dealix Capability Frontier V2 — Unique Harvest
+
+Date: 2026-09-08
+Canonical frontier owner: PR #1580
+
+## Purpose
+
+Preserve useful, non-duplicative findings discovered in concurrent capability-expansion lanes without creating a second capability registry or a second control plane.
+
+This document is an **annex/backlog**, not an installation list and not an authority surface.
+
+Permanent rules:
+
+- `AUTO_INSTALL=false`
+- `MAX_ACTIVE_BENCHMARKS=1`
+- ONE Company Machine / Brain / Scheduler / Model Router / Approval / Consent / Proof authority.
+- Exactly five permanent agents: `dealix-pm`, `dealix-sales`, `dealix-delivery`, `dealix-engineer`, `dealix-content`.
+- Tool discovery != admission != production deployment.
+- External send, publish, payment, merge, deploy, DNS, production DB, secrets and identity remain exact action-bound material actions.
+
+## Unique candidates harvested from concurrent expansion work
+
+These items are intentionally kept outside the canonical ranks 51–100 until a measured gap admits a next-frontier rank. They must not be installed in bulk.
+
+### TRUST / release reliability
+
+- **ShellCheck** — bounded static analysis for Bash/sh installers, acceptance runners and VPS control scripts.
+- **Hadolint** — Dockerfile linting; pilot only if it adds signal beyond existing Docker/build checks.
+- **Squawk** — PostgreSQL migration safety linting for locking/downtime hazards before isolated acceptance.
+- **lychee** — bounded broken-link verification for repository docs and Dealix-owned public surfaces.
+- **SSLyze** — TLS/certificate/protocol evidence for Dealix-owned endpoints only.
+- **Lynis** — read-only VPS hardening assessment normalized into the existing TRUST proof lane; never automatic remediation.
+
+### Email trust / test-only delivery quality
+
+- **checkdmarc** is already represented in the canonical frontier; retain it as read-only sender health evidence only.
+- **parsedmarc** — parse DMARC reports after reports exist; no second marketing/customer truth store.
+- **Mailpit** — local/test SMTP sink for templates, MIME, attachments and retry behavior with zero external send.
+- **MJML** — responsive HTML-email rendering for draft/testing lanes only.
+
+### Saudi Arabic and document intelligence
+
+- **MarkItDown** — lightweight file-to-Markdown conversion; use narrow converters and isolate untrusted inputs.
+- **PaddleOCR** is already represented in the canonical frontier; benchmark only on difficult Arabic/English scans.
+- **CAMeL Tools** — Arabic normalization/morphology/dialect/NER pilot for Saudi text extraction.
+- **Gotenberg** — isolated document-render/PDF conversion candidate where current artifact tooling has a measured gap.
+
+### Security / OSS evidence
+
+- **ScanCode Toolkit** — license/copyright/package-provenance evidence; compare with Syft/REUSE before admission.
+- **OWASP WSTG** — reference scenarios for Dealix-owned web/API testing.
+- **OWASP ZAP** — bounded DAST against Dealix-owned local/staging/public surfaces only; never third-party scanning.
+- **REUSE** is already represented in the canonical frontier.
+
+### AI / MCP evaluation and security
+
+- **Inspect AI** — reproducible model/tool-use evaluation candidate; receipts must feed existing Proof/Learning owners.
+- **garak** is already represented in the canonical frontier.
+- **MCP Scan** — isolated inspection of Dealix-owned MCP configurations/tool metadata for poisoning/shadowing/rug-pull signals.
+
+### API contracts
+
+- **Spectral** — OpenAPI/JSON/YAML linting; no runtime gateway authority.
+- **Pact Python** — isolated consumer/provider contract testing on one high-value boundary.
+- **WireMock** — local provider simulation for retries, signatures, failures and error mapping; never a production proxy.
+
+### Browser research
+
+- **Stagehand** and **Browser Use** are already represented in the canonical frontier as isolated pilots. Playwright remains deterministic acceptance authority.
+
+## Candidate admission law
+
+`Measured Gap -> Canonical Owner -> Duplication Check -> License/Security/Data Boundary -> Isolated Pilot -> Benchmark -> Receipt -> ADOPT / REJECT / DEFER`
+
+No candidate in this annex may create a second scheduler, CRM, browser authority, observability truth store, policy authority, agent fleet or proof store.
+
+## Immediate order
+
+Production/release TRUST remains ahead of capability expansion. If a single benchmark slot is available, prefer the candidate tied directly to the current measured gap; otherwise run no benchmark.
+
+`L5_EXECUTED=NONE`
