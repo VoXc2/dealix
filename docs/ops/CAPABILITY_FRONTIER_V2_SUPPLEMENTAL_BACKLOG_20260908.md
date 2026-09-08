@@ -2,7 +2,7 @@
 
 Status: `BACKLOG_ONLY_NOT_ADMITTED`.
 
-Canonical ranked frontier remains `config/oss/capability_frontier_v2.tsv` (51–100). This file harvests useful candidates from overlapping expansion work without creating a second registry or raising the active frontier beyond 100.
+Canonical ranked frontier remains `config/oss/capability_frontier_v2.tsv` (51–100). This file harvests useful candidates from overlapping expansion work and fresh Internet research without creating a second registry or raising the active frontier beyond 100.
 
 ## Candidates worth future substitution/admission if a ranked 51–100 item is rejected
 
@@ -41,6 +41,12 @@ Canonical ranked frontier remains `config/oss/capability_frontier_v2.tsv` (51–
 | slsa-framework/slsa-github-generator | SLSA provenance generation in GitHub workflows | defer until trustworthy hosted Actions execution is restored; never use current blocked CI as provenance authority |
 | pikepdf/pikepdf | deterministic QPDF-backed PDF read/write/repair/optimization utility | fallback only for low-level PDF cases not covered by pypdf/frontier parser stack; preserve MPL-2.0 obligations |
 | ocrmypdf/OCRmyPDF | searchable-PDF OCR pipeline for scan-heavy documents | pilot only on public/authorized documents after language/model/dependency/license review; compare with PaddleOCR/Docling/MinerU |
+| vercel-labs/agent-browser | coding-agent-oriented browser CLI alternative with deterministic commands and snapshots | benchmark only if Playwright CLI/Stagehand leave a measured agent-browser ergonomics gap; never final acceptance authority |
+| sbdchd/pg-migration-lint | static PostgreSQL migration hazard analysis with SARIF/reporting | compare against Squawk on the same migration corpus; admit only for unique high-signal rules, no DB mutation |
+| sagekit/magnitude | vision-first browser-agent alternative with Playwright fallback/caching | defer by default because it overlaps Stagehand/Browser Use; benchmark only on a proven visual-navigation failure |
+| hyperbrowserai/HyperAgent | Playwright-compatible AI browser automation/fallback candidate | defer by default; no third browser-agent stack without evidence that current candidates fail |
+| mcp-agent-security-gateway (research candidate) | MCP tool-call security monitoring concepts such as prompt-injection/PII/tool shadowing | low-confidence research only until upstream maturity, ownership and independent evidence justify consideration; no runtime admission |
+| arabic-extract (research candidate) | Arabic PDF/scanned-text extraction combining OCR and visual-order repair | low-confidence niche benchmark only on a labeled Arabic corpus after Docling/PaddleOCR/MinerU fail; no canonical parser authority |
 
 ## Replacement rule
 
@@ -59,13 +65,20 @@ Do not benchmark this backlog in parallel. If a ranked candidate is rejected and
 2. `import-linter` for architectural boundary enforcement if dependency drift threatens One-Company Law.
 3. `deptry` or `knip` for dependency hygiene in the language where a concrete unused/missing-dependency problem is measured.
 4. `mcp-inspector` for Dealix-owned MCP development/debugging when MCP metadata/tooling changes materially.
-5. `pgTAP` only if SQL/database invariants are hard to prove through the existing Python + disposable-Postgres acceptance stack.
-6. `ssh-audit` only as bounded read-only evidence for the Dealix VPS.
-7. `in-toto` / SLSA provenance only after the release execution plane is trustworthy.
-8. OCR/PDF fallback candidates only on a failing document corpus with ground truth.
+5. `pg-migration-lint` only if it detects material migration hazards that Squawk misses on the same fixture corpus.
+6. `agent-browser` only if Playwright CLI/Stagehand create measurable friction for coding-agent browser work; deterministic Playwright remains acceptance authority.
+7. `pgTAP` only if SQL/database invariants are hard to prove through the existing Python + disposable-Postgres acceptance stack.
+8. `ssh-audit` only as bounded read-only evidence for the Dealix VPS.
+9. `in-toto` / SLSA provenance only after the release execution plane is trustworthy.
+10. OCR/PDF fallback candidates only on a failing document corpus with ground truth.
+11. Magnitude/HyperAgent remain substitution candidates, not a third/fourth active browser stack.
 
 ## Explicit duplicate/control-plane rejection remains
 
 Do not admit parallel Company Brain, CRM, scheduler/orchestrator, approval authority, consent authority, proof store, model router, or permanent agent fleet. Tools such as Temporal, Prefect, Airflow, LangChain/LlamaIndex-as-platform, Renovate beside Dependabot, another marketing CRM, another analytics authority, or another uptime/status truth store remain reject-by-default absent a future measured gap and architecture review.
+
+## Evidence confidence rule for Internet harvest
+
+Fresh Internet discovery is not admission evidence. Candidates with small communities, unclear governance, unclear licensing, unverifiable claims, or overlapping architecture remain `research candidate`/`DEFER` until upstream provenance, license, maintenance activity, security posture and a Dealix-specific benchmark are independently verified. Popularity alone does not raise authority.
 
 `L5_EXECUTED=NONE`
