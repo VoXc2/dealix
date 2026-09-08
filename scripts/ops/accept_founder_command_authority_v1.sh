@@ -2,7 +2,8 @@
 set -Eeuo pipefail
 umask 077
 
-ROOT="$(git rev-parse --show-toplevel)"
+SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)"
+ROOT="$(cd -- "$SCRIPT_DIR/../.." && pwd -P)"
 EXPECTED_SHA="${1:-}"
 
 exec /usr/bin/python3 - "$ROOT" "$EXPECTED_SHA" <<'PY'
@@ -13,14 +14,13 @@ import json
 import os
 import pwd
 import re
-import sqlite3
 import stat
 import subprocess
 import sys
 from pathlib import Path
 from typing import Any
 
-ROOT = Path(sys.argv[1])
+ROOT = Path(sys.argv[1]).resolve()
 EXPECTED_SHA = sys.argv[2]
 RUN_USER = "dealix"
 OPENCLAW_HOME = Path(f"/home/{RUN_USER}/.openclaw")
@@ -37,6 +37,10 @@ def run(argv: list[str], *, cwd: Path | None = None, capture: bool = False) -> s
         stderr=subprocess.DEVNULL,
         check=False,
     )
+
+
+def git_args(*args: str) -> list[str]:
+    return ["git", "-c", f"safe.directory={ROOT}", "-C", str(ROOT), *args]
 
 
 def normalize_sender(value: object) -> str | None:
@@ -56,7 +60,7 @@ def recursive_values(value: Any) -> list[str]:
             out.extend(recursive_values(item))
         return out
     if isinstance(value, dict):
-        out = []
+        out: list[str] = []
         for item in value.values():
             out.extend(recursive_values(item))
         return out
@@ -89,7 +93,8 @@ if not EXPECTED_SHA:
     print("DEALIX_FOUNDER_COMMAND_ACCEPTANCE=BLOCKED_EXPECTED_SHA_REQUIRED")
     raise SystemExit(2)
 
-head = run(["git", "rev-parse", "HEAD"], cwd=ROOT, capture=True).stdout.strip()
+head_run = run(git_args("rev-parse", "HEAD"), capture=True)
+head = head_run.stdout.strip() if head_run.returncode == 0 else ""
 if head != EXPECTED_SHA:
     print("DEALIX_FOUNDER_COMMAND_ACCEPTANCE=BLOCKED_HEAD_MISMATCH")
     print(f"expected={EXPECTED_SHA}")
@@ -108,8 +113,9 @@ proof_root = Path(
 )
 receipt_path = proof_root / "receipt.json"
 
-# Preserve the Company Machine's fail-closed external-effect posture for the
-# acceptance process itself. These variables do not mutate OpenClaw config.
+# Acceptance is read-only and fail-closed. It never changes OpenClaw config,
+# pairing/allowlist state, services, secrets, production, DNS, DB, payments,
+# customer messaging, public surfaces or repository branches.
 os.environ.update(
     {
         "DEALIX_EXTERNAL_SEND": "0",
@@ -134,7 +140,6 @@ hold_reasons: list[str] = []
 checks: dict[str, bool] = {}
 owner_id: str | None = None
 owner_fp: str | None = None
-approved_ids: set[str] = set()
 
 try:
     dealix_uid = pwd.getpwnam(RUN_USER).pw_uid
@@ -146,7 +151,6 @@ checks["openclaw_binary"] = OPENCLAW_BIN.is_file() and os.access(OPENCLAW_BIN, o
 if not checks["openclaw_binary"]:
     hold_reasons.append("openclaw_binary_missing")
 
-# Resolve the bundled Node runtime without installation or PATH mutation on disk.
 node_candidates = [
     path
     for path in OPENCLAW_HOME.glob("tools/**/bin/node")
@@ -201,9 +205,12 @@ checks["telegram_enabled"] = telegram.get("enabled") is True
 if config and not checks["telegram_enabled"]:
     hold_reasons.append("telegram_channel_not_enabled")
 
-checks["telegram_dm_pairing"] = telegram.get("dmPolicy") == "pairing"
-if config and not checks["telegram_dm_pairing"]:
-    safety_issues.append("telegram_dm_policy_not_pairing")
+# Current OpenClaw guidance for a one-owner bot is an explicit numeric
+# allowlist. Do not regress a restrictive live allowlist back to pairing merely
+# to satisfy historical source authority.
+checks["telegram_dm_owner_allowlist_policy"] = telegram.get("dmPolicy") == "allowlist"
+if config and not checks["telegram_dm_owner_allowlist_policy"]:
+    safety_issues.append("telegram_dm_policy_not_owner_allowlist")
 
 checks["telegram_groups_disabled"] = (
     telegram.get("groups", {}) == {}
@@ -213,17 +220,18 @@ if config and not checks["telegram_groups_disabled"]:
     safety_issues.append("telegram_groups_or_group_senders_enabled")
 
 explicit_allow_values = recursive_values(telegram.get("allowFrom", []))
-if any(value.strip() == "*" for value in explicit_allow_values):
+checks["telegram_dm_no_wildcard"] = not any(value.strip() == "*" for value in explicit_allow_values)
+if not checks["telegram_dm_no_wildcard"]:
     safety_issues.append("telegram_dm_wildcard_present")
 explicit_allow_ids = {
     normalized
     for value in explicit_allow_values
     if (normalized := normalize_sender(value)) is not None
 }
-approved_ids.update(explicit_allow_ids)
+checks["telegram_dm_allowlist_numeric_only"] = len(explicit_allow_ids) == len(explicit_allow_values)
+if explicit_allow_values and not checks["telegram_dm_allowlist_numeric_only"]:
+    safety_issues.append("telegram_dm_allowlist_contains_non_numeric_sender")
 
-# Telegram credential must live outside source/config as a private file. Never
-# read or print the secret value.
 inline_token = telegram.get("botToken")
 if inline_token not in (None, ""):
     safety_issues.append("telegram_inline_bot_token_present")
@@ -254,8 +262,6 @@ if isinstance(token_file_value, str) and token_file_value.startswith("/"):
 else:
     hold_reasons.append("telegram_token_file_reference_missing")
 
-# Founder command owner must be exactly one Telegram numeric identity. The raw
-# ID never leaves memory; the durable receipt stores a one-way fingerprint.
 owner_values = recursive_values(get_path("commands", "ownerAllowFrom", default=[]))
 valid_owner_ids: list[str] = []
 invalid_owner_entries = False
@@ -265,7 +271,7 @@ for value in owner_values:
         valid_owner_ids.append(match.group(1))
     else:
         invalid_owner_entries = True
-if invalid_owner_entries or len(set(valid_owner_ids)) > 1:
+if invalid_owner_entries or len(set(valid_owner_ids)) > 1 or len(valid_owner_ids) != len(set(valid_owner_ids)):
     safety_issues.append("command_owner_not_exactly_one_telegram_identity")
 elif len(set(valid_owner_ids)) == 1:
     owner_id = next(iter(set(valid_owner_ids)))
@@ -274,10 +280,10 @@ else:
     hold_reasons.append("telegram_command_owner_not_configured")
 checks["exact_telegram_command_owner"] = owner_id is not None
 
-# In OpenClaw 2026.7.x commands.allowFrom is an independent authorization
-# boundary when present. For a one-founder command surface it may be absent, or
-# it may contain only the exact Telegram owner. Global/provider-spanning rules
-# fail closed.
+checks["telegram_dm_allowlist_exact_owner"] = owner_id is not None and explicit_allow_ids == {owner_id}
+if owner_id and not checks["telegram_dm_allowlist_exact_owner"]:
+    safety_issues.append("telegram_dm_allowlist_not_exact_founder")
+
 command_allow = get_path("commands", "allowFrom", default=None)
 checks["command_allowlist_narrow"] = True
 if command_allow is not None:
@@ -297,6 +303,9 @@ if command_allow is not None:
             for value in telegram_command_values
             if (normalized := normalize_sender(value)) is not None
         }
+        if len(command_ids) != len(telegram_command_values):
+            safety_issues.append("commands_allow_from_contains_non_numeric_sender")
+            checks["command_allowlist_narrow"] = False
         if owner_id and command_ids != {owner_id}:
             safety_issues.append("commands_allow_from_not_exact_founder")
             checks["command_allowlist_narrow"] = False
@@ -304,8 +313,8 @@ if command_allow is not None:
             safety_issues.append("commands_allow_from_exists_without_exact_owner")
             checks["command_allowlist_narrow"] = False
 
-# The Telegram-facing agent is messaging-only; runtime/filesystem/shell mutation
-# must remain denied regardless of founder identity.
+# Telegram Founder Control remains messaging-only. Founder identity is not an
+# authorization bypass for shell, filesystem, process or patch capabilities.
 tools = get_path("tools", default={})
 if not isinstance(tools, dict):
     tools = {}
@@ -319,63 +328,24 @@ checks["tool_surface_bounded"] = (
 if config and not checks["tool_surface_bounded"]:
     safety_issues.append("openclaw_tool_surface_not_bounded")
 
-# OpenClaw 2026.7.1-2 stores DM pairing approvals under credentials/*. Newer
-# builds may migrate them to SQLite; inspect both forms read-only. The expected
-# file payload is {"version":1,"allowFrom":["<sender>"]}; only allowFrom values
-# are parsed so timestamps or pairing codes cannot be mistaken for identities.
-pairing_state_readable = True
-credentials_dir = OPENCLAW_HOME / "credentials"
-if credentials_dir.is_dir():
-    for path in credentials_dir.glob("telegram*-allowFrom.json"):
-        if not path.is_file() or path.is_symlink():
-            continue
-        try:
-            payload = json.loads(path.read_text(encoding="utf-8"))
-            allow_values = payload.get("allowFrom", []) if isinstance(payload, dict) else payload
-            for value in recursive_values(allow_values):
-                if (normalized := normalize_sender(value)) is not None:
-                    approved_ids.add(normalized)
-        except Exception:
-            pairing_state_readable = False
+# Unknown identities are denied only when DM access and owner/command authority
+# are all bound to the same exact founder identity with no wildcard.
+checks["unknown_identity_deny"] = (
+    checks["telegram_dm_owner_allowlist_policy"]
+    and checks["telegram_dm_no_wildcard"]
+    and checks["telegram_dm_allowlist_numeric_only"]
+    and checks["telegram_dm_allowlist_exact_owner"]
+    and checks["command_allowlist_narrow"]
+)
+if owner_id and not checks["unknown_identity_deny"] and not safety_issues:
+    hold_reasons.append("unknown_identity_deny_not_fully_proven")
 
-state_db = OPENCLAW_HOME / "state/openclaw.sqlite"
-if state_db.is_file() and not state_db.is_symlink():
-    try:
-        conn = sqlite3.connect(f"file:{state_db}?mode=ro", uri=True)
-        try:
-            has_table = conn.execute(
-                "SELECT 1 FROM sqlite_master WHERE type='table' AND name='channel_pairing_allow_entries'"
-            ).fetchone()
-            if has_table:
-                for (entry,) in conn.execute(
-                    "SELECT entry FROM channel_pairing_allow_entries WHERE lower(channel_key)='telegram'"
-                ).fetchall():
-                    if (normalized := normalize_sender(entry)) is not None:
-                        approved_ids.add(normalized)
-        finally:
-            conn.close()
-    except Exception:
-        pairing_state_readable = False
-
-checks["pairing_state_readable"] = pairing_state_readable
-if not pairing_state_readable:
-    hold_reasons.append("telegram_pairing_state_unreadable")
-
-checks["owner_has_dm_admission"] = owner_id is not None and owner_id in approved_ids
-if owner_id and not checks["owner_has_dm_admission"]:
-    hold_reasons.append("telegram_owner_not_in_dm_admission_state")
-
-checks["dm_admission_exact_owner_only"] = owner_id is not None and approved_ids == {owner_id}
-if owner_id and approved_ids - {owner_id}:
-    safety_issues.append("telegram_dm_admission_contains_non_owner")
-
-# Runtime probes are read-only: no config mutation, install, restart, repair,
-# approval, publish, send, merge, payment, or production mutation is invoked.
 version = "unknown"
 node_path = str(node_dir) if node_dir else ""
 openclaw_path = ":".join(
     [node_path, str(OPENCLAW_HOME / "bin"), f"/home/{RUN_USER}/.local/bin", "/usr/local/bin", "/usr/bin", "/bin"]
 )
+
 
 def oc_args(*args: str) -> list[str]:
     return [
@@ -389,24 +359,20 @@ def oc_args(*args: str) -> list[str]:
         *args,
     ]
 
+
 if checks["openclaw_binary"] and checks["bundled_node_runtime"]:
     version_run = run(oc_args("--version"), capture=True)
     if version_run.returncode == 0:
         version = re.sub(r"[^A-Za-z0-9.+_ -]", "", version_run.stdout.strip())[:80] or "unknown"
     checks["gateway_rpc"] = run(oc_args("gateway", "status", "--require-rpc")).returncode == 0
     checks["telegram_probe"] = run(oc_args("channels", "status", "--channel", "telegram", "--probe")).returncode == 0
-    checks["pairing_cli_read"] = run(oc_args("pairing", "list", "telegram", "--json")).returncode == 0
-    # This is the canonical read-only audit required by #1186 for plaintext
-    # gateway/provider secrets. Suppress all audit output so no secret-bearing
-    # config value can leak into the founder receipt or terminal transcript.
     checks["secrets_audit"] = run(oc_args("secrets", "audit", "--check")).returncode == 0
 else:
     checks["gateway_rpc"] = False
     checks["telegram_probe"] = False
-    checks["pairing_cli_read"] = False
     checks["secrets_audit"] = False
 
-for name in ("gateway_rpc", "telegram_probe", "pairing_cli_read", "secrets_audit"):
+for name in ("gateway_rpc", "telegram_probe", "secrets_audit"):
     if not checks[name]:
         hold_reasons.append(f"runtime_{name}_not_proven")
 
@@ -424,37 +390,24 @@ if listener_addresses and not checks["port_18789_loopback_only"]:
 elif not listener_addresses:
     hold_reasons.append("openclaw_listener_not_observed")
 
-unknown_identity_deny_ok = (
-    checks["telegram_dm_pairing"]
-    and checks["command_allowlist_narrow"]
-    and owner_id is not None
-    and checks["dm_admission_exact_owner_only"]
-)
-checks["unknown_identity_deny"] = unknown_identity_deny_ok
-if owner_id and not unknown_identity_deny_ok and not safety_issues:
-    hold_reasons.append("unknown_identity_deny_not_fully_proven")
-
-# PASS requires every runtime/identity prerequisite. Unsafe authorization or
-# secret posture is FAIL. Safe but incomplete runtime evidence is HOLD.
 pass_requirements = (
     checks["openclaw_binary"],
     checks["bundled_node_runtime"],
     checks["openclaw_config_regular_0600"],
     checks["gateway_config_loopback"],
     checks["telegram_enabled"],
-    checks["telegram_dm_pairing"],
+    checks["telegram_dm_owner_allowlist_policy"],
     checks["telegram_groups_disabled"],
+    checks["telegram_dm_no_wildcard"],
+    checks["telegram_dm_allowlist_numeric_only"],
     checks["telegram_secret_file_private"],
     checks["exact_telegram_command_owner"],
+    checks["telegram_dm_allowlist_exact_owner"],
     checks["command_allowlist_narrow"],
     checks["tool_surface_bounded"],
-    checks["pairing_state_readable"],
-    checks["owner_has_dm_admission"],
-    checks["dm_admission_exact_owner_only"],
     checks["unknown_identity_deny"],
     checks["gateway_rpc"],
     checks["telegram_probe"],
-    checks["pairing_cli_read"],
     checks["secrets_audit"],
     checks["port_18789_loopback_only"],
 )
@@ -476,7 +429,8 @@ receipt = {
     "authority_class": "L4_READ_ONLY_RUNTIME_ACCEPTANCE",
     "external_effects": "NONE_FAIL_CLOSED",
     "openclaw_version": version,
-    "telegram_owner_identity": "VERIFIED" if checks["exact_telegram_command_owner"] and checks["owner_has_dm_admission"] else "UNKNOWN_NOT_EVIDENCE_BACKED",
+    "telegram_dm_policy": "allowlist" if checks["telegram_dm_owner_allowlist_policy"] else "UNVERIFIED",
+    "telegram_owner_identity": "VERIFIED" if checks["exact_telegram_command_owner"] and checks["telegram_dm_allowlist_exact_owner"] else "UNKNOWN_NOT_EVIDENCE_BACKED",
     "telegram_owner_fingerprint": owner_fp,
     "telegram_unknown_identity_deny": "VERIFIED" if checks["unknown_identity_deny"] else "UNKNOWN_NOT_EVIDENCE_BACKED",
     "telegram_gateway_loopback": "VERIFIED" if checks["gateway_config_loopback"] and checks["port_18789_loopback_only"] else "UNKNOWN_NOT_EVIDENCE_BACKED",

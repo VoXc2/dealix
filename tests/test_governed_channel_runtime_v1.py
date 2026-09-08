@@ -7,11 +7,16 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 CONTRACT = ROOT / "data/commercial/governed_channel_runtime_v1.json"
+REGISTRY = ROOT / "data/commercial/channel_readiness_registry.json"
 VERIFIER = ROOT / "scripts/verify_governed_channel_runtime_v1.py"
 
 
 def _contract() -> dict:
     return json.loads(CONTRACT.read_text(encoding="utf-8"))
+
+
+def _registry() -> dict:
+    return json.loads(REGISTRY.read_text(encoding="utf-8"))
 
 
 def test_governed_channel_runtime_verifier_passes() -> None:
@@ -61,3 +66,70 @@ def test_research_cannot_manufacture_commercial_truth() -> None:
     assert rules["public_data_cannot_promote_consent"] is True
     assert rules["raw_engagement_cannot_promote_opportunity"] is True
     assert rules["payment_truth_requires_payment_evidence"] is True
+
+
+def test_channel_eligibility_is_deterministic_and_fail_closed() -> None:
+    registry = _registry()
+    gate = registry["channel_eligibility_contract"]
+    required = set(gate["required_inputs"])
+    assert {
+        "tenant",
+        "account",
+        "recipient_or_audience",
+        "channel",
+        "purpose",
+        "relationship_basis",
+        "consent_evidence_when_required",
+        "suppression_state",
+        "sender_identity",
+        "provider_capability",
+        "policy_state",
+        "fresh_until",
+    } <= required
+    assert gate["score_or_public_contact_may_override"] is False
+    assert gate["deny_precedence"][0] == "SUPPRESSED_OR_OPTED_OUT"
+    assert "ELIGIBLE_PENDING_ACTION_AUTHORITY" in gate["decision"]
+
+
+def test_expanded_channel_registry_preserves_safe_roles() -> None:
+    channels = _registry()["channels"]
+    assert {
+        "website",
+        "founder_linkedin",
+        "dealix_linkedin_page",
+        "instagram",
+        "facebook",
+        "threads",
+        "youtube",
+        "tiktok",
+        "x",
+        "snapchat",
+        "pinterest",
+        "google_business_profile",
+        "email",
+        "whatsapp",
+        "sms",
+        "voice",
+        "rcs",
+        "calendar",
+        "telegram_founder",
+    } <= set(channels)
+    assert "cold_whatsapp" in channels["whatsapp"]["automation_blocked"]
+    assert "cold_bulk_sms" in channels["sms"]["automation_blocked"]
+    assert "cold_autodialing" in channels["voice"]["automation_blocked"]
+    assert "cold_promotional_blast" in channels["rcs"]["automation_blocked"]
+    assert "bot_dms" in channels["founder_linkedin"]["automation_blocked"]
+    assert "fake_reviews" in channels["google_business_profile"]["automation_blocked"]
+
+
+def test_renderer_or_scheduler_cannot_become_truth_owner() -> None:
+    policy = _registry()["distribution_renderer_policy"]
+    assert policy["canonical_truth_owner"] == "DEALIX_COMPANY_MACHINE"
+    assert set(policy["metricool_or_equivalent_may_not_be"]) == {
+        "crm",
+        "consent_owner",
+        "opportunity_truth",
+        "proof_owner",
+        "economic_truth",
+    }
+    assert policy["public_publish_still_action_bound"] is True

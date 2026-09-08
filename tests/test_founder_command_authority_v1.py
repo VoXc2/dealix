@@ -30,7 +30,12 @@ def test_founder_command_authority_verifier_passes() -> None:
 
 def test_telegram_openclaw_is_the_only_canonical_primary_founder_channel() -> None:
     payload = _contract()
-    assert payload["founder_command"]["primary_channel"] == "telegram_openclaw"
+    command = payload["founder_command"]
+    assert command["primary_channel"] == "telegram_openclaw"
+    assert command["transport"] == "telegram_dm_owner_allowlist"
+    assert "explicit_numeric_dm_allowlist" in command["required_posture"]
+    assert "dm_allowlist_exact_owner_only" in command["required_posture"]
+    assert "dm_pairing_only" not in command["required_posture"]
 
     slack = payload["optional_channels"]["slack"]
     assert slack["status"] == "OPTIONAL_DORMANT_CAPABILITY"
@@ -71,6 +76,7 @@ def test_activation_requirements_are_not_runtime_proof() -> None:
     assert requirements["telegram_unknown_identity_deny_required"] is True
     assert requirements["telegram_gateway_loopback_required"] is True
     assert requirements["telegram_groups_disabled_by_default_required"] is True
+    assert requirements["telegram_explicit_owner_allowlist_required"] is True
     assert requirements["openclaw_secretref_audit_required"] is True
     assert requirements["current_vps_runtime_receipt_required"] is True
     assert requirements["slack_runtime_receipt_required"] is False
@@ -95,6 +101,8 @@ def test_activation_requirements_are_not_runtime_proof() -> None:
 def test_command_messages_require_current_receipts_before_execution_claims() -> None:
     truth = _contract()["truth"]
     assert truth["primary_channel_is_telegram_openclaw"] is True
+    assert truth["one_owner_prefers_explicit_numeric_allowlist"] is True
+    assert truth["pairing_is_not_required_for_one_owner_runtime"] is True
     assert truth["failover_adapter_is_not_primary_founder_channel"] is True
     assert truth["failover_adapter_is_not_separate_authority"] is True
     assert truth["command_message_is_not_execution_proof"] is True
@@ -112,8 +120,8 @@ def test_runtime_acceptance_is_exact_head_read_only_and_secret_safe() -> None:
     assert "L4_READ_ONLY_RUNTIME_ACCEPTANCE" in text
     assert "/opt/dealix/control/proof/founder-command/" in text
     assert "commands\", \"ownerAllowFrom" in text
-    assert "telegram_dm_policy_not_pairing" in text
-    assert "telegram_dm_admission_contains_non_owner" in text
+    assert "telegram_dm_policy_not_owner_allowlist" in text
+    assert "telegram_dm_allowlist_not_exact_founder" in text
     assert "telegram_token_file_permissions_not_0600" in text
     assert "port_18789_loopback_only" in text
     assert 'oc_args("secrets", "audit", "--check")' in text
@@ -121,6 +129,9 @@ def test_runtime_acceptance_is_exact_head_read_only_and_secret_safe() -> None:
     assert "secrets_audit=" in text
     assert "secret_values_printed=false" in text
     assert "owner_raw_id_printed=false" in text
+    assert "safe.directory=" in text
+    assert "safe.directory=*" not in text
+    assert "--global" not in text
 
     forbidden_runtime_mutations = (
         'oc_args("config", "set"',

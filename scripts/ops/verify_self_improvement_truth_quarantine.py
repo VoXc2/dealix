@@ -4,17 +4,23 @@
 from __future__ import annotations
 
 import asyncio
+import sys
 from pathlib import Path
 
-from self_evolving_os import (
+# Entry-point invariant: this verifier must work from any cwd.  Running a file
+# under scripts/ops directly makes Python place scripts/ops (not the repository
+# root) on sys.path, so project imports would otherwise depend on PYTHONPATH.
+ROOT = Path(__file__).resolve().parents[2]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
+from self_evolving_os import (  # noqa: E402
     LEGACY_COMPATIBILITY_ONLY,
     AutoApplier,
     ImprovementGenerator,
     ImprovementProposal,
     MetricObservation,
 )
-
-ROOT = Path(__file__).resolve().parents[2]
 
 
 def run(coro):

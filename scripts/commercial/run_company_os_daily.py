@@ -5,6 +5,9 @@ This file exists because older VPS orchestration calls this path. It delegates
 one-for-one to ``run_self_operating_company_os.py`` and then runs the bounded
 Strategy Execution Orchestrator. Neither layer owns a parallel state store,
 authority model, target source, scheduler, CRM, approval system, or proof ledger.
+
+Before delegation, it verifies the permanent Dealix operating constitution.
+That makes company-law drift fail closed without creating a second Company OS.
 """
 from __future__ import annotations
 
@@ -15,6 +18,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 CANONICAL = ROOT / "scripts" / "commercial" / "run_self_operating_company_os.py"
+CONSTITUTION_VERIFY = ROOT / "scripts" / "commercial" / "verify_dealix_operating_constitution.py"
 ORCHESTRATOR = ROOT / "scripts" / "commercial" / "run_strategy_execution_orchestrator_v1.py"
 VERIFIER = ROOT / "scripts" / "commercial" / "verify_strategy_execution_orchestrator_v1.py"
 
@@ -29,6 +33,14 @@ def main() -> int:
     parser.add_argument("--mode", default="draft-only", choices=["draft-only"])
     parser.add_argument("--limit", type=int, default=50)
     args = parser.parse_args()
+
+    if not CONSTITUTION_VERIFY.is_file():
+        print("COMPANY_OS_DAILY=BLOCKED_CONSTITUTION_VERIFIER_MISSING")
+        return 2
+    constitution_rc = run([sys.executable, str(CONSTITUTION_VERIFY)])
+    if constitution_rc != 0:
+        print("COMPANY_OS_DAILY=BLOCKED_CONSTITUTION_INVALID")
+        return constitution_rc
 
     if not CANONICAL.is_file():
         print("COMPANY_OS_DAILY=BLOCKED_CANONICAL_RUNNER_MISSING")

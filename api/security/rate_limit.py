@@ -31,15 +31,20 @@ from fastapi.responses import JSONResponse
 from core.config.settings import get_settings
 
 # Patch Starlette's Config reader so .env files are read as UTF-8 on Windows.
-# This prevents slowapi from crashing when .env contains Arabic comments.
+# Keep the signature compatible with modern Starlette, which passes an
+# explicit encoding argument to Config._read_file().
 try:
     from starlette import config as _starlette_config
 
     _original_read_file = _starlette_config.Config._read_file
 
-    def _read_file_utf8(self, file_name: str | Path) -> dict[str, str]:
+    def _read_file_utf8(
+        self,
+        file_name: str | Path,
+        encoding: str | None = None,
+    ) -> dict[str, str]:
         file_values: dict[str, str] = {}
-        with open(file_name, encoding="utf-8") as input_file:
+        with open(file_name, encoding=encoding or "utf-8") as input_file:
             for line in input_file.readlines():
                 line = line.strip()
                 if "=" in line and not line.startswith("#"):

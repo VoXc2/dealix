@@ -1,61 +1,133 @@
 """Suppression authority for recipients who must never receive outbound messages.
 
-The current implementation is intentionally in-memory and is suitable only for
-unit tests, synthetic drills, and draft-only execution. It cannot prove that an
-opt-out survives a process restart, horizontal replica, restore, or re-import.
+The default implementation remains in-memory and is suitable only for unit
+tests, synthetic drills, and draft-only execution. Controlled-live execution
+can opt into the existing PostgreSQL ``data_suppression_list`` truth store with:
 
-The outbound policy gate therefore treats this backend as *not persistent* and
-will not permit controlled live sending while it is the active implementation.
-A future durable adapter must preserve the public interface below and provide an
-independently tested ``persistent_suppression_ready()`` implementation before
-live send can become eligible.
+    DEALIX_SUPPRESSION_BACKEND=postgres
+    DATABASE_URL=<existing Dealix PostgreSQL URL>
 
-Suppression covers:
-  - opt-outs (unsubscribe)
-  - hard bounces
-  - complaints
-  - manual do-not-contact
-  - legal/regulatory blocks (for example a scoped erasure/suppression request)
+The Postgres path is fail-closed: an unavailable database, missing table,
+insufficient privileges, or query error never becomes permission to send. No
+backend switch enables live send by itself; the outbound policy gate still
+requires all other authority, consent, approval, rate-limit and channel
+controls.
+
+Removing a durable suppression record is itself authority-sensitive. The
+Postgres backend therefore refuses removal unless the process is explicitly
+started with ``DEALIX_SUPPRESSION_ALLOW_REMOVE=true``. The default remains
+fail-closed.
 """
 
 from __future__ import annotations
 
+import os
+import uuid
+from contextlib import contextmanager
 from threading import Lock
-from typing import Any
+from typing import Any, Iterator
 
 _LOCK = Lock()
 # _SUPPRESSED[identifier] = set(channels) | {"__all__"}
 _SUPPRESSED: "dict[str, set[str]]" = {}
 
 ALL_CHANNELS = "__all__"
-BACKEND_KIND = "memory"
+_MEMORY_BACKEND = "memory"
+_POSTGRES_BACKEND = "postgres"
 
 
 def suppression_backend_kind() -> str:
-    """Return the active suppression backend identifier."""
+    """Return the configured suppression backend identifier.
 
-    return BACKEND_KIND
+    Unknown values deliberately collapse to ``memory`` rather than silently
+    activating a new persistence mode.
+    """
+
+    value = os.getenv("DEALIX_SUPPRESSION_BACKEND", _MEMORY_BACKEND).strip().lower()
+    return _POSTGRES_BACKEND if value == _POSTGRES_BACKEND else _MEMORY_BACKEND
+
+
+def _postgres_dsn() -> str | None:
+    value = os.getenv("DATABASE_URL", "").strip()
+    if not value:
+        return None
+    if value.startswith("postgresql+asyncpg://"):
+        return "postgresql://" + value.removeprefix("postgresql+asyncpg://")
+    if value.startswith("postgres://"):
+        return "postgresql://" + value.removeprefix("postgres://")
+    if value.startswith("postgresql://"):
+        return value
+    return None
+
+
+@contextmanager
+def _postgres_connection() -> Iterator[Any]:
+    dsn = _postgres_dsn()
+    if not dsn:
+        raise RuntimeError("postgres suppression backend requires PostgreSQL DATABASE_URL")
+
+    import psycopg
+
+    with psycopg.connect(dsn, connect_timeout=3, autocommit=True) as conn:
+        yield conn
+
+
+def _postgres_table_ready() -> bool:
+    """Read-only proof that the canonical table and required privileges exist."""
+
+    try:
+        with _postgres_connection() as conn, conn.cursor() as cur:
+            cur.execute(
+                """
+                SELECT
+                    to_regclass('public.data_suppression_list') IS NOT NULL
+                    AND has_table_privilege(
+                        current_user,
+                        'public.data_suppression_list',
+                        'SELECT'
+                    )
+                    AND has_table_privilege(
+                        current_user,
+                        'public.data_suppression_list',
+                        'INSERT'
+                    )
+                    AND has_table_privilege(
+                        current_user,
+                        'public.data_suppression_list',
+                        'DELETE'
+                    )
+                """
+            )
+            row = cur.fetchone()
+            return bool(row and row[0] is True)
+    except Exception:
+        return False
 
 
 def persistent_suppression_ready() -> bool:
-    """Whether suppression durability is proven for controlled live sends.
+    """Whether suppression durability is proven for controlled live sends."""
 
-    This implementation deliberately returns ``False``. The in-memory store is
-    process-local and cannot satisfy the privacy evidence requirement that an
-    opt-out remains enforced after restart, replay, re-import, or restore.
-    """
-
-    return False
+    if suppression_backend_kind() != _POSTGRES_BACKEND:
+        return False
+    return _postgres_table_ready()
 
 
 def suppression_backend_status() -> dict[str, Any]:
     """Return a non-sensitive status record for diagnostics and proof packs."""
 
+    backend = suppression_backend_kind()
+    persistent = persistent_suppression_ready()
+    if backend == _MEMORY_BACKEND:
+        reason = "in_memory_suppression_is_not_durable"
+    elif persistent:
+        reason = "postgres_suppression_table_and_privileges_verified"
+    else:
+        reason = "postgres_suppression_not_verified"
     return {
-        "backend": suppression_backend_kind(),
-        "persistent": persistent_suppression_ready(),
-        "live_send_eligible": persistent_suppression_ready(),
-        "reason": "in_memory_suppression_is_not_durable",
+        "backend": backend,
+        "persistent": persistent,
+        "live_send_eligible": persistent,
+        "reason": reason,
     }
 
 
@@ -63,12 +135,62 @@ def _norm(identifier: str) -> str:
     return (identifier or "").strip().lower()
 
 
+def _looks_phone(identifier: str) -> bool:
+    compact = identifier.replace(" ", "").replace("-", "")
+    return compact.startswith("+") or compact.isdigit()
+
+
+def _target(identifier: str, channel: str) -> tuple[str, str]:
+    ident = _norm(identifier)
+    if channel == "email" or "@" in ident:
+        return "email", ident
+    if channel in {"sms", "whatsapp"} or _looks_phone(ident):
+        return "phone", ident
+    return "domain", ident
+
+
+def _postgres_is_suppressed(identifier: str, channel: str) -> bool:
+    column, value = _target(identifier, channel)
+    if not value:
+        return False
+
+    try:
+        with _postgres_connection() as conn, conn.cursor() as cur:
+            if column == "email":
+                domain = value.rsplit("@", 1)[1] if "@" in value else ""
+                cur.execute(
+                    """
+                    SELECT 1
+                      FROM data_suppression_list
+                     WHERE lower(email) = lower(%s)
+                        OR (%s <> '' AND lower(domain) = lower(%s))
+                     LIMIT 1
+                    """,
+                    (value, domain, domain),
+                )
+            else:
+                cur.execute(
+                    f"SELECT 1 FROM data_suppression_list WHERE lower({column}) = lower(%s) LIMIT 1",
+                    (value,),
+                )
+            return cur.fetchone() is not None
+    except Exception:
+        # Suppression uncertainty must never turn into live-send permission.
+        return True
+
+
 def is_suppressed(identifier: str, channel: str = "email") -> bool:
-    """True if ``identifier`` is suppressed for ``channel`` or globally."""
+    """True if ``identifier`` is suppressed for ``channel`` or globally.
+
+    Postgres errors fail closed and return True.
+    """
 
     ident = _norm(identifier)
     if not ident:
         return False
+    if suppression_backend_kind() == _POSTGRES_BACKEND:
+        return _postgres_is_suppressed(ident, channel)
+
     with _LOCK:
         entry = _SUPPRESSED.get(ident)
         if not entry:
@@ -76,25 +198,73 @@ def is_suppressed(identifier: str, channel: str = "email") -> bool:
         return ALL_CHANNELS in entry or channel in entry
 
 
+def _postgres_add(identifier: str, channel: str, reason: str) -> None:
+    column, value = _target(identifier, channel)
+    if not value:
+        return
+    with _postgres_connection() as conn, conn.cursor() as cur:
+        cur.execute(
+            f"SELECT 1 FROM data_suppression_list WHERE lower({column}) = lower(%s) LIMIT 1",
+            (value,),
+        )
+        if cur.fetchone() is not None:
+            return
+        # ``SuppressionRecord.created_at`` uses a SQLAlchemy client-side default,
+        # not a PostgreSQL server default. This raw SQL path must therefore write
+        # the timestamp explicitly or a freshly bootstrapped canonical schema
+        # correctly rejects the row as NOT NULL.
+        cur.execute(
+            f"INSERT INTO data_suppression_list (id, {column}, reason, created_at) "
+            "VALUES (%s, %s, %s, CURRENT_TIMESTAMP)",
+            (uuid.uuid4().hex, value, reason or "opt_out"),
+        )
+
+
 def add_suppression(
     identifier: str,
     channel: str = ALL_CHANNELS,
     reason: str = "",
 ) -> None:
-    """Add ``identifier`` to the process-local suppression list."""
+    """Add ``identifier`` to the active suppression authority."""
 
     ident = _norm(identifier)
     if not ident:
         return
+    if suppression_backend_kind() == _POSTGRES_BACKEND:
+        _postgres_add(ident, channel, reason)
+        return
+
     with _LOCK:
         entry = _SUPPRESSED.setdefault(ident, set())
         entry.add(channel or ALL_CHANNELS)
 
 
+def _durable_remove_authorized() -> bool:
+    return os.getenv("DEALIX_SUPPRESSION_ALLOW_REMOVE", "").strip().lower() == "true"
+
+
+def _postgres_remove(identifier: str, channel: str | None) -> None:
+    if not _durable_remove_authorized():
+        raise RuntimeError("durable suppression removal requires explicit authority")
+
+    column, value = _target(identifier, channel or ALL_CHANNELS)
+    if not value:
+        return
+    with _postgres_connection() as conn, conn.cursor() as cur:
+        cur.execute(
+            f"DELETE FROM data_suppression_list WHERE lower({column}) = lower(%s)",
+            (value,),
+        )
+
+
 def remove_suppression(identifier: str, channel: str | None = None) -> None:
-    """Remove an entry from this process-local test backend."""
+    """Remove an entry from the active suppression authority."""
 
     ident = _norm(identifier)
+    if suppression_backend_kind() == _POSTGRES_BACKEND:
+        _postgres_remove(ident, channel)
+        return
+
     with _LOCK:
         if channel is None:
             _SUPPRESSED.pop(ident, None)
@@ -110,19 +280,33 @@ def suppressed_channels(identifier: str) -> set[str]:
     """Return channels suppressed for ``identifier`` (may include ``__all__``)."""
 
     ident = _norm(identifier)
+    if not ident:
+        return set()
+    if suppression_backend_kind() == _POSTGRES_BACKEND:
+        if "@" in ident:
+            return {"email"} if _postgres_is_suppressed(ident, "email") else set()
+        if _looks_phone(ident):
+            return {"sms", "whatsapp"} if _postgres_is_suppressed(ident, "sms") else set()
+        return {ALL_CHANNELS} if _postgres_is_suppressed(ident, ALL_CHANNELS) else set()
+
     with _LOCK:
         return set(_SUPPRESSED.get(ident, set()))
 
 
 def clear_suppressions() -> None:
-    """Clear process-local suppression state; used by tests only."""
+    """Clear process-local suppression state; used by tests only.
 
+    Durable suppression must never be bulk-cleared through a test helper.
+    """
+
+    if suppression_backend_kind() == _POSTGRES_BACKEND:
+        raise RuntimeError("clear_suppressions is disabled for durable suppression")
     with _LOCK:
         _SUPPRESSED.clear()
 
 
 def load_suppressions(items: list[dict[str, Any]]) -> None:
-    """Bulk-load process-local suppression entries from dictionaries."""
+    """Bulk-load suppression entries through the active authority."""
 
     for item in items:
         add_suppression(
