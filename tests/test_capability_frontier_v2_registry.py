@@ -60,7 +60,7 @@ def test_no_bulk_install_or_parallel_authority_language() -> None:
     assert "no live outbound calling" in text or "no external dialing" in text
 
 
-def test_restrictive_or_conditional_document_tools_have_explicit_license_gates() -> None:
+def test_restrictive_conditional_or_unmaintained_tools_have_explicit_gates() -> None:
     gates = {row["id"]: row for row in _read(LICENSE_GATES)}
     assert gates["pymupdf"]["license_state"] == "HOLD_LICENSE_REVIEW"
     assert "AGPL" in gates["pymupdf"]["requirement"]
@@ -68,3 +68,5 @@ def test_restrictive_or_conditional_document_tools_have_explicit_license_gates()
     assert "model-weight" in gates["marker"]["requirement"]
     assert gates["mineru"]["license_state"] == "PILOT_WITH_ATTRIBUTION_AND_THRESHOLD_CHECK"
     assert "attribution" in gates["mineru"]["requirement"].lower()
+    assert gates["llm_guard"]["license_state"] == "REJECT_ARCHIVED_UPSTREAM"
+    assert "archived" in gates["llm_guard"]["requirement"].lower()
