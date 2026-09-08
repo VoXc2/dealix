@@ -523,6 +523,17 @@ input::placeholder, textarea::placeholder { color: rgba(255,255,255,0.30); }
   }
 
   .navbar .nav-actions {
+    display: flex;
+    gap: var(--sp-2);
+  }
+
+  .navbar .nav-actions .nav-secondary-action {
     display: none;
+  }
+
+  .navbar .nav-actions .nav-primary-action {
+    width: auto;
+    min-height: 38px;
+    padding-inline: 14px;
   }
 }
