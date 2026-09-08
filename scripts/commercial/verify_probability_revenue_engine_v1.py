@@ -6,6 +6,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 CONTRACT = ROOT / "config/commercial/probability_revenue_engine_v1.json"
+RUNNER = ROOT / "scripts/commercial/run_probability_revenue_engine_v1.py"
 
 EXPECTED_AGENTS = {
     "dealix-pm",
@@ -51,6 +52,7 @@ REQUIRED_ROUTES = {
 
 def main() -> int:
     data = json.loads(CONTRACT.read_text(encoding="utf-8"))
+    runner = RUNNER.read_text(encoding="utf-8")
 
     assert data["north_star"] == "CASH_READY_AUTONOMOUS_DEALIX_COMPANY"
     assert data["authority"]["autonomy_level"] == 4
@@ -86,9 +88,17 @@ def main() -> int:
     assert "verified_payment" in data["real_outcome_updates"]
     assert "permissioned_customer_proof" in data["real_outcome_updates"]
 
+    # Runtime enforcement must match the contract rather than merely documenting it.
+    assert "effective_limit = min(requested_limit, raw_signal_ceiling)" in runner
+    assert "deep_wip_evidence_ready" in runner
+    assert "EV_BLOCKED_EVIDENCE_GAP" in runner
+    assert 'flags["evidence_ref_count"] > 0' in runner
+
     print("DEALIX_PROBABILITY_REVENUE_ENGINE_VERIFY=PASS")
     print(f"RAW_SIGNAL_CAPACITY={ceilings['raw_signal_refresh']}")
     print(f"DEEP_COMMERCIAL_WIP={ceilings['deep_commercial_wip']}")
+    print("DEEP_WIP_EVIDENCE_GATE=ENFORCED")
+    print("RUNTIME_VOLUME_CEILING=ENFORCED")
     print("EXTERNAL_SEND_AUTHORITY=false")
     print("L5_EXECUTED=NONE")
     return 0
