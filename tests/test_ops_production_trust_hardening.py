@@ -62,6 +62,26 @@ def test_secret_fixture_allowlist_is_exact_path_detector_and_digest(tmp_path):
     ) == [(1, "aws_access_key")]
 
 
+def test_secret_scanner_git_command_uses_exact_process_local_safe_directory(tmp_path):
+    scanner = load_module("dealix_secret_scan_git_command", "scripts/ops/verify_secret_literals.py")
+
+    repo = tmp_path / "repo"
+    repo.mkdir()
+    command = scanner._git_command(repo, "ls-files", "-z")
+    resolved = repo.resolve()
+
+    assert command[:3] == ["git", "-c", f"safe.directory={resolved}"]
+    assert command[3:5] == ["-C", str(resolved)]
+    assert command[5:] == ["ls-files", "-z"]
+    assert "safe.directory=*" not in command
+
+
+def test_secret_scanner_source_has_no_persistent_or_wildcard_trust():
+    source = (ROOT / "scripts/ops/verify_secret_literals.py").read_text(encoding="utf-8")
+    assert "--global" not in source
+    assert "safe.directory=*" not in source
+
+
 def test_git_metadata_scope_never_walks_worktree(tmp_path):
     guard = load_module("dealix_git_guard", "scripts/ops/git_metadata_permission_guard.py")
 
