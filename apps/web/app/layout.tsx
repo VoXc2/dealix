@@ -1,4 +1,5 @@
 import "./globals.css";
+import "./interactive-home.css";
 import type { Metadata, Viewport } from "next";
 import type { ReactNode } from "react";
 import { PostHogProviderWithInit } from "@/lib/analytics/posthog"; // posthog.tsx (JSX)
@@ -23,9 +24,6 @@ export const metadata: Metadata = {
   authors: [{ name: "Dealix", url: siteUrl }],
   creator: "Dealix",
   publisher: "Dealix",
-  // /ar currently redirects permanently to /. Do not emit hreflang alternates
-  // that point to redirecting URLs or pretend an English locale is separately
-  // served. Add language alternates only when independent locale URLs exist.
   alternates: {
     canonical: "/",
   },
@@ -39,7 +37,7 @@ export const metadata: Metadata = {
       "Signals into Action. Execution with Governance. Measurable Outcomes.",
     images: [
       {
-        url: `${siteUrl}/og-image.png`,
+        url: `${siteUrl}/dealix-og.svg`,
         width: 1200,
         height: 630,
         alt: "Dealix — AI Business Operating System",
@@ -48,12 +46,10 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    site: "@dealixsa",
-    creator: "@dealixsa",
     title: "Dealix — AI Business Operating System",
     description:
       "Signals into Action. Execution with Governance. Measurable Outcomes.",
-    images: [`${siteUrl}/og-image.png`],
+    images: [`${siteUrl}/dealix-og.svg`],
   },
   robots: {
     index: true,
@@ -77,19 +73,22 @@ export const viewport: Viewport = {
   initialScale: 1,
   maximumScale: 5,
   themeColor: [
-    { media: "(prefers-color-scheme: dark)",  color: "#0F172A" },
-    { media: "(prefers-color-scheme: light)", color: "#0F172A" },
+    { media: "(prefers-color-scheme: dark)", color: "#0F172A" },
+    { media: "(prefers-color-scheme: light)", color: "#F8FAFC" },
   ],
-  colorScheme: "dark",
+  colorScheme: "light dark",
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="ar" dir="rtl">
       <head>
-        {/* Preconnect to Google Fonts for performance */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap"
+          rel="stylesheet"
+        />
       </head>
       <body>
         <PostHogProviderWithInit>{children}</PostHogProviderWithInit>
