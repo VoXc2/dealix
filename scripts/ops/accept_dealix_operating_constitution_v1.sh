@@ -53,8 +53,12 @@ export PYTHONNOUSERSITE=1
 
 cd "$ROOT"
 
-"$PY" -m py_compile scripts/commercial/verify_dealix_operating_constitution.py
+"$PY" -m py_compile \
+  scripts/commercial/verify_dealix_operating_constitution.py \
+  scripts/ops/dealix_north_star_status.py
+
 "$PY" scripts/commercial/verify_dealix_operating_constitution.py
+"$PY" scripts/ops/dealix_north_star_status.py
 "$PY" -m pytest -q tests/test_dealix_operating_constitution.py
 
 # The compatibility entrypoint must delegate to exactly one canonical runner
@@ -67,8 +71,21 @@ assert "verify_dealix_operating_constitution.py" in text
 assert "run_self_operating_company_os.py" in text
 assert "BLOCKED_CONSTITUTION_INVALID" in text
 assert "DELEGATED_TO_CANONICAL_COMPANY_OS" in text
+scorecard = root / "docs/ops/DEALIX_PERMANENT_NORTH_STAR_SCORECARD.md"
+assert scorecard.is_file()
+score_text = scorecard.read_text(encoding="utf-8")
+for needle in (
+    "VERIFIED_CASH_SAR",
+    "CUSTOMER_ACCEPTED_PROOF_PACKS",
+    "M5 — Q1 Revenue",
+    "No stage may be inferred from the stage before it.",
+):
+    assert needle in score_text
 print("COMPANY_OS_CONSTITUTION_PREFLIGHT=PASS")
+print("NORTH_STAR_SCORECARD_CONTRACT=PASS")
 PY
+
+git_safe diff --check
 
 if [[ -n "$(git_safe status --porcelain)" ]]; then
   echo "DEALIX_OPERATING_CONSTITUTION_ACCEPTANCE=BLOCKED_DIRTY_WORKTREE"
@@ -83,6 +100,8 @@ fi
 cat <<EOF
 EXACT_SHA=$EXPECTED
 CONSTITUTION_VERIFIER=PASS
+NORTH_STAR_STATUS=PASS
+NORTH_STAR_SCORECARD_CONTRACT=PASS
 FOCUSED_TESTS=PASS
 COMPANY_OS_CONSTITUTION_PREFLIGHT=PASS
 PERMANENT_AGENTS=5
