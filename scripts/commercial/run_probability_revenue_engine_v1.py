@@ -97,6 +97,14 @@ def truth_flags(target: dict[str, Any]) -> dict[str, Any]:
     }
 
 
+def evidence_ready_for_deep_wip(target: dict[str, Any], flags: dict[str, Any]) -> bool:
+    """Require attributable evidence before consuming scarce deep commercial WIP."""
+    if not flags["source_present"]:
+        return False
+    evidence_score = finite_nonnegative(target.get("evidence_score"))
+    return flags["evidence_ref_count"] > 0 or (evidence_score is not None and evidence_score >= 50.0)
+
+
 def probability_ev(target: dict[str, Any]) -> tuple[float | None, dict[str, Any]]:
     probabilities = {key: bounded_probability(target.get(key)) for key in PROBABILITY_KEYS}
     missing = [key for key, value in probabilities.items() if value is None]
@@ -147,12 +155,16 @@ def rank_targets(targets: list[dict[str, Any]], deep_wip: int) -> list[dict[str,
         flags = truth_flags(target)
         ev, details = probability_ev(target)
         evidence_score = evidence_priority(target, flags)
+        deep_wip_evidence_ready = evidence_ready_for_deep_wip(target, flags)
         if flags["hard_stop"]:
             disposition = "STOP_SUPPRESSED"
             rank_key = (-1.0, -1.0)
-        elif ev is not None:
+        elif ev is not None and deep_wip_evidence_ready:
             disposition = "EV_EVIDENCE_READY"
             rank_key = (2.0, ev)
+        elif ev is not None:
+            disposition = "EV_BLOCKED_EVIDENCE_GAP"
+            rank_key = (1.0, evidence_score)
         else:
             disposition = "PROBABILITY_UNKNOWN_RESEARCH_ONLY"
             rank_key = (1.0, evidence_score)
@@ -166,6 +178,7 @@ def rank_targets(targets: list[dict[str, Any]], deep_wip: int) -> list[dict[str,
                 "disposition": disposition,
                 "expected_value": round(ev, 8) if ev is not None else None,
                 "evidence_priority": evidence_score,
+                "deep_wip_evidence_ready": deep_wip_evidence_ready,
                 "truth": flags,
                 "ev_detail": details,
                 "next_action": str(target.get("next_action", "")).strip(),
@@ -177,7 +190,11 @@ def rank_targets(targets: list[dict[str, Any]], deep_wip: int) -> list[dict[str,
     active = 0
     for position, row in enumerate(rows, start=1):
         row["rank"] = position
-        if row["disposition"] != "STOP_SUPPRESSED" and active < deep_wip:
+        if (
+            row["disposition"] != "STOP_SUPPRESSED"
+            and row["deep_wip_evidence_ready"] is True
+            and active < deep_wip
+        ):
             row["deep_wip_candidate"] = True
             active += 1
         else:
@@ -199,8 +216,12 @@ def main() -> int:
         print("PROBABILITY_REVENUE_ENGINE=BLOCKED_EXTERNAL_SEND_AUTHORITY")
         return 2
 
+    raw_signal_ceiling = int(contract["capacity_ceiling_per_operating_day"]["raw_signal_refresh"])
+    requested_limit = max(0, args.limit)
+    effective_limit = min(requested_limit, raw_signal_ceiling)
+
     raw_targets = load_json(TARGETS_PATH, [])
-    targets = [item for item in raw_targets if isinstance(item, dict)][: max(0, args.limit)] if isinstance(raw_targets, list) else []
+    targets = [item for item in raw_targets if isinstance(item, dict)][:effective_limit] if isinstance(raw_targets, list) else []
     deep_wip = int(contract["capacity_ceiling_per_operating_day"]["deep_commercial_wip"])
     ranked = rank_targets(targets, deep_wip)
 
@@ -208,6 +229,9 @@ def main() -> int:
     report = {
         "generated_at": utc_stamp(),
         "mode": "draft-only",
+        "requested_limit": requested_limit,
+        "effective_limit": effective_limit,
+        "raw_signal_ceiling": raw_signal_ceiling,
         "target_count": len(targets),
         "deep_wip_limit": deep_wip,
         "unknown_probability_policy": contract["unknown_probability_policy"],
