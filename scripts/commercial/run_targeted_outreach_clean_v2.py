@@ -16,10 +16,12 @@ PROBABILITY_REPORT=ROOT/'reports/probability_revenue_engine'
 REAL_RELATIONSHIP={'REAL_INTERACTION','VERIFIED_RELATIONSHIP','INBOUND','WARM','REFERRED'}
 CONSENT_OK={'PURPOSE_SPECIFIC','INBOUND_REQUEST','CONSENTED'}
 SUPPRESSED={'SUPPRESSED','OPTED_OUT','WITHDRAWN','DO_NOT_CONTACT'}
+CHANNEL_DRAFT_BLOCKED={'BLOCKED','RESEARCH_ONLY','INBOUND_ONLY'}
+CHANNEL_DISPATCH_OK={'ELIGIBLE_PENDING_ACTION_AUTHORITY'}
 EMAIL_RE=re.compile(r'^[^@\s]+@[^@\s]+\.[^@\s]+$')
 @dataclass
 class Candidate:
-    company:str; email:str; contact_name:str; language:str; source:str; evidence_refs:list[str]; relationship_state:str; consent_state:str; suppression_state:str; pain_hypothesis:str; why_now:str; offer:str; evidence_score:int; draft_eligible:bool; dispatch_eligible:bool; blocker:str; probability_rank:int|None
+    company:str; email:str; contact_name:str; language:str; source:str; evidence_refs:list[str]; relationship_state:str; consent_state:str; suppression_state:str; channel_eligibility_state:str; pain_hypothesis:str; why_now:str; offer:str; evidence_score:int; draft_eligible:bool; dispatch_eligible:bool; blocker:str; probability_rank:int|None
 def today(): return datetime.now(UTC).strftime('%Y-%m-%d')
 def utc_now(): return datetime.now(UTC).isoformat(timespec='seconds')
 def to_list(v:Any)->list[str]:
@@ -41,13 +43,14 @@ def probability_ranks()->dict[str,int]:
         if isinstance(row,dict) and row.get('deep_wip_candidate') is True and row.get('company_name') and isinstance(row.get('rank'),int): result[str(row['company_name']).strip().casefold()]=int(row['rank'])
     return result
 def normalize(item:dict[str,Any],ranks:dict[str,int])->Candidate:
-    company=str(item.get('company_name') or item.get('company') or '').strip(); email=str(item.get('verified_email') or item.get('email') or '').strip(); source=str(item.get('source') or item.get('source_url') or '').strip(); evidence=to_list(item.get('evidence_refs') or item.get('evidence')); rel=str(item.get('relationship_state') or 'RESEARCH').upper().strip(); consent=str(item.get('consent_state') or 'NONE').upper().strip(); suppression=str(item.get('suppression_state') or 'CLEAR').upper().strip(); blockers=[]
+    company=str(item.get('company_name') or item.get('company') or '').strip(); email=str(item.get('verified_email') or item.get('email') or '').strip(); source=str(item.get('source') or item.get('source_url') or '').strip(); evidence=to_list(item.get('evidence_refs') or item.get('evidence')); rel=str(item.get('relationship_state') or 'RESEARCH').upper().strip(); consent=str(item.get('consent_state') or 'NONE').upper().strip(); suppression=str(item.get('suppression_state') or 'CLEAR').upper().strip(); channel=str(item.get('email_channel_eligibility') or item.get('channel_eligibility_state') or item.get('channel_eligibility') or 'UNKNOWN_NOT_EVIDENCE_BACKED').upper().strip(); blockers=[]
     if not company: blockers.append('company_missing')
     if suppression in SUPPRESSED: blockers.append('suppressed')
+    if channel in CHANNEL_DRAFT_BLOCKED: blockers.append(f'channel_{channel.lower()}')
     if not source or not evidence: blockers.append('evidence_missing')
     if not email or not EMAIL_RE.match(email): blockers.append('verified_email_missing')
-    draft_ok=not blockers; dispatch=draft_ok and (rel in REAL_RELATIONSHIP or consent in CONSENT_OK)
-    return Candidate(company or 'Unknown company',email,str(item.get('contact_name') or '').strip(),'ar' if str(item.get('language') or item.get('language_pref') or 'en').lower().startswith('ar') else 'en',source or 'UNKNOWN_NOT_EVIDENCE_BACKED',evidence,rel,consent,suppression,str(item.get('pain_hypothesis') or item.get('pain_angle') or 'UNKNOWN_NOT_EVIDENCE_BACKED').strip(),str(item.get('why_now') or item.get('trigger') or item.get('economic_trigger') or 'Current evidence suggests this workflow may be worth validating now.').strip(),str(item.get('recommended_offer') or item.get('offer') or 'Free Execution Diagnostic').strip(),evidence_score(item),draft_ok,dispatch,','.join(blockers),ranks.get(company.casefold()) if company else None)
+    draft_ok=not blockers; dispatch=draft_ok and channel in CHANNEL_DISPATCH_OK and (rel in REAL_RELATIONSHIP or consent in CONSENT_OK)
+    return Candidate(company or 'Unknown company',email,str(item.get('contact_name') or '').strip(),'ar' if str(item.get('language') or item.get('language_pref') or 'en').lower().startswith('ar') else 'en',source or 'UNKNOWN_NOT_EVIDENCE_BACKED',evidence,rel,consent,suppression,channel,str(item.get('pain_hypothesis') or item.get('pain_angle') or 'UNKNOWN_NOT_EVIDENCE_BACKED').strip(),str(item.get('why_now') or item.get('trigger') or item.get('economic_trigger') or 'Current evidence suggests this workflow may be worth validating now.').strip(),str(item.get('recommended_offer') or item.get('offer') or 'Free Execution Diagnostic').strip(),evidence_score(item),draft_ok,dispatch,','.join(blockers),ranks.get(company.casefold()) if company else None)
 def load_items(path:Path)->list[dict[str,Any]]:
     if not path.is_file(): return []
     if path.suffix.lower()=='.csv':
