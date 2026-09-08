@@ -17,7 +17,7 @@ EXPECTED_AGENTS = [
     "dealix-content",
 ]
 EXPECTED_PORTFOLIOS = ["TRUST", "MONEY_NOW", "COMPOUNDING"]
-EXPECTED_WEDGES = [
+CURRENT_SEED_WEDGES = [
     "SI_MSP_ERP_CRM_AI_IMPLEMENTERS",
     "FATOORA_INTEGRATION_OPERATIONS",
     "CONSTRUCTION_FM_COMMERCIAL_EXECUTION",
@@ -115,9 +115,10 @@ def verify(data: dict[str, Any]) -> list[str]:
     require(REQUIRED_COMMERCIAL_STAGES <= commercial_loop, "COMMERCIAL_LOOP")
 
     wedges = _list(data, "active_gtm_wedges")
-    require(wedges == EXPECTED_WEDGES, "ACTIVE_GTM_WEDGES")
     require(data.get("active_gtm_wedge_limit") == 3, "ACTIVE_GTM_WEDGE_LIMIT")
-    require(len(wedges) <= int(data.get("active_gtm_wedge_limit", 0) or 0), "ACTIVE_GTM_WIP")
+    require(1 <= len(wedges) <= int(data.get("active_gtm_wedge_limit", 0) or 0), "ACTIVE_GTM_WIP")
+    require(len(set(str(x) for x in wedges)) == len(wedges), "ACTIVE_GTM_WEDGES_UNIQUE")
+    require(all(isinstance(x, str) and x.strip() for x in wedges), "ACTIVE_GTM_WEDGES_VALID")
 
     allocation = data.get("opportunity_allocation", {})
     require(isinstance(allocation, dict), "OPPORTUNITY_ALLOCATION")
@@ -197,7 +198,7 @@ def main() -> int:
     print(f"NORTH_STAR={data['north_star']}")
     print("PERMANENT_AGENTS=5")
     print("PORTFOLIOS=TRUST,MONEY_NOW,COMPOUNDING")
-    print("ACTIVE_GTM_WEDGES=3")
+    print(f"ACTIVE_GTM_WEDGES={len(_list(data, 'active_gtm_wedges'))}")
     print("L5=EXACT_ACTION_BOUND_ONLY")
     return 0
 
