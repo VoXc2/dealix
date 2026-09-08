@@ -22,17 +22,17 @@ def test_book_page_submits_to_canonical_execution_diagnostic_endpoint():
     assert "لا يتم اعتبار المشكلة أو العائد أو Proof مثبتًا" in text
 
 
-def test_founder_public_contact_is_environment_backed_not_hardcoded_phone():
+def test_founder_public_contact_is_explicit_and_environment_overrideable():
     page = BOOK.read_text(encoding="utf-8")
     env = ENV_EXAMPLE.read_text(encoding="utf-8")
 
     assert "NEXT_PUBLIC_FOUNDER_EMAIL" in page
     assert "NEXT_PUBLIC_FOUNDER_PHONE" in page
     assert "NEXT_PUBLIC_WHATSAPP_URL" in page
+    assert '"+966 59 778 8539"' in page
     assert "NEXT_PUBLIC_FOUNDER_EMAIL=sami.assiri11@gmail.com" in env
-    assert "NEXT_PUBLIC_FOUNDER_PHONE=" in env
+    assert "NEXT_PUBLIC_FOUNDER_PHONE=+966597788539" in env
     assert "NEXT_PUBLIC_WHATSAPP_URL=" in env
-    assert "+9665" not in env
 
 
 def test_public_intake_creates_internal_agent_handoff_without_material_authority():
