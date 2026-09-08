@@ -240,9 +240,9 @@ jobs:
         run: python scripts/run_evals.py
 
   web-build:
-    name: Web verify, typecheck, build
+    name: Web verify (typecheck + build)
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    timeout-minutes: 20
 
     defaults:
       run:
@@ -264,12 +264,6 @@ jobs:
 
       - name: Verify web app
         run: npm run verify
-
-      - name: Typecheck web
-        run: npm run typecheck
-
-      - name: Build web
-        run: npm run build
 
   railway-docker-builds:
     name: Railway Docker image builds
