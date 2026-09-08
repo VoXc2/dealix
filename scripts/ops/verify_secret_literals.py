@@ -53,14 +53,28 @@ FIXTURE_ALLOWLIST: frozenset[tuple[str, str, str]] = frozenset({
 })
 
 
+def _git_command(repo: Path, *args: str) -> list[str]:
+    """Build an exact process-local trusted Git command for one repository."""
+    resolved = repo.resolve()
+    return [
+        "git",
+        "-c",
+        f"safe.directory={resolved}",
+        "-C",
+        str(resolved),
+        *args,
+    ]
+
+
 def tracked_files(repo: Path) -> list[Path]:
+    resolved = repo.resolve()
     proc = subprocess.run(
-        ["git", "-C", str(repo), "ls-files", "-z"],
+        _git_command(resolved, "ls-files", "-z"),
         check=True,
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
     )
-    return [repo / item.decode("utf-8") for item in proc.stdout.split(b"\0") if item]
+    return [resolved / item.decode("utf-8") for item in proc.stdout.split(b"\0") if item]
 
 
 def is_allowlisted_fixture(relative_path: str, detector: str, candidate: str) -> bool:
