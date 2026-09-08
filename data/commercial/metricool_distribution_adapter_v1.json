@@ -1,0 +1,144 @@
+{
+  "schema": "dealix.metricool-distribution-adapter.v1",
+  "version": "2026-09-08.1",
+  "observed_at": "2026-09-08T05:52:00+03:00",
+  "north_star": "CASH_READY_AUTONOMOUS_DEALIX_COMPANY",
+  "canonical_truth_owner": "DEALIX_COMPANY_MACHINE",
+  "purpose": "Bounded social analytics, draft review and distribution rendering for Dealix. Metricool is never CRM, consent authority, opportunity truth, proof truth, economic truth, approval authority or company brain.",
+  "metricool_connection": {
+    "brand_id": "6882336",
+    "timezone": "Asia/Riyadh",
+    "control_plane_state": "CONNECTED",
+    "provider_networks_observed": [],
+    "provider_readiness": "PROVIDERS_PENDING",
+    "scheduled_posts_observed": 0,
+    "analytics_schema_access": "AVAILABLE",
+    "review_capability": "UNPROVEN_UNTIL_PLAN_AND_PROVIDER_SUPPORT_ARE_VERIFIED"
+  },
+  "supported_distribution_targets": [
+    "dealix_linkedin_page",
+    "instagram",
+    "facebook",
+    "threads",
+    "x",
+    "tiktok",
+    "youtube",
+    "pinterest",
+    "google_business_profile"
+  ],
+  "explicit_exclusions": [
+    "founder_linkedin_personal_automation",
+    "whatsapp",
+    "email",
+    "sms",
+    "voice",
+    "telegram_customer_marketing"
+  ],
+  "default_mode": "DRAFT_OR_REVIEW_ONLY",
+  "authority": {
+    "public_publish_is_material": true,
+    "public_publish_requires_action_bound_authority": true,
+    "auto_publish_default": false,
+    "paid_boost_default": false,
+    "paid_spend_requires_separate_authority": true,
+    "metricool_may_self_authorize": false,
+    "metricool_may_override_channel_eligibility": false,
+    "metricool_may_override_suppression": false,
+    "metricool_may_promote_engagement_to_buyer_intent": false,
+    "metricool_may_promote_metrics_to_customer_proof": false
+  },
+  "allowed_operations_before_provider_activation": [
+    "read_brand_settings",
+    "inspect_available_analytics_metrics",
+    "inspect_scheduled_posts",
+    "prepare_channel_native_drafts_in_dealix",
+    "prepare_media_requirements",
+    "prepare_utm_contracts",
+    "prepare_review_packets"
+  ],
+  "allowed_operations_after_provider_activation_without_public_publish_authority": [
+    "read_analytics",
+    "read_best_time_to_post",
+    "create_draft_only_planner_items",
+    "send_draft_for_review_if_plan_supports_it",
+    "update_existing_drafts",
+    "measure_owned_channel_performance"
+  ],
+  "blocked_operations_without_exact_material_authority": [
+    "auto_publish",
+    "schedule_auto_publish",
+    "public_post",
+    "public_reply_bot",
+    "paid_boost",
+    "paid_campaign",
+    "delete_or_rewrite_public_history",
+    "connect_founder_personal_linkedin_for_automation"
+  ],
+  "content_atom_contract": {
+    "required_fields": [
+      "content_id",
+      "source_signal_or_thesis",
+      "evidence_refs",
+      "claims_status",
+      "language",
+      "target_audience",
+      "single_cta",
+      "channel_variant",
+      "planned_provider",
+      "utm_campaign",
+      "media_requirements",
+      "ai_disclosure_requirement",
+      "fresh_until"
+    ],
+    "states": [
+      "DRAFT",
+      "CLAIMS_QA_PASS",
+      "READY_FOR_REVIEW",
+      "SCHEDULED_PENDING_AUTHORITY",
+      "PUBLISHED",
+      "MEASURED"
+    ],
+    "publish_transition_requires": [
+      "provider_connected",
+      "channel_identity_verified",
+      "claims_qa_pass",
+      "brand_qa_pass",
+      "fresh_evidence",
+      "action_bound_publish_authority"
+    ]
+  },
+  "measurement_contract": {
+    "metricool_metrics_are_observations_only": true,
+    "engagement_is_not_buyer_intent": true,
+    "click_is_not_qualified_problem": true,
+    "lead_form_is_not_verified_revenue": true,
+    "target_business_chain": [
+      "qualified_attention",
+      "diagnostic_intent",
+      "real_conversation",
+      "qualified_problem",
+      "discovery",
+      "customer_specific_quote",
+      "verified_payment",
+      "delivery_acceptance",
+      "permissioned_customer_proof"
+    ]
+  },
+  "provider_activation_gate": {
+    "current_verdict": "HOLD_PROVIDERS_PENDING",
+    "required_before_metricool_draft_or_review_operations": [
+      "at_least_one_supported_provider_visible_in_metricool_brand_settings",
+      "provider_identity_matches_dealix",
+      "correct_organization_or_brand_account",
+      "no_founder_personal_linkedin_automation",
+      "provider_permissions_verified"
+    ],
+    "required_before_public_publish": [
+      "all_draft_or_review_requirements",
+      "exact_content_atom",
+      "exact_provider",
+      "exact_publication_time_or_window",
+      "action_bound_publish_authority"
+    ]
+  }
+}
