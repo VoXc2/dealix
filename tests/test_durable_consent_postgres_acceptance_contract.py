@@ -33,7 +33,8 @@ def test_postgres_acceptance_does_not_replay_historical_roots_on_empty_db() -> N
 
 def test_fresh_bootstrap_explains_and_guards_the_historical_root_contract() -> None:
     text = _text(BOOTSTRAP)
-    assert "Historical Alembic roots predate a formal baseline" in text
+    normalized = " ".join(text.split())
+    assert "Historical Alembic roots predate a formal baseline" in normalized
     assert "refusing fresh bootstrap on non-empty database" in text
     assert "build_fresh_schema_metadata()" in text
     assert "metadata.create_all(connection)" in text
