@@ -6,6 +6,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 V1 = ROOT / "config" / "oss" / "capability_top50_v1.tsv"
 V2 = ROOT / "config" / "oss" / "capability_frontier_v2.tsv"
+LICENSE_GATES = ROOT / "config" / "oss" / "capability_frontier_v2_license_gates.tsv"
 
 ALLOWED = {
     "ADOPT_NOW",
@@ -57,3 +58,13 @@ def test_no_bulk_install_or_parallel_authority_language() -> None:
     assert "bulk install" not in text
     assert "automatic dns mutation" not in text
     assert "no live outbound calling" in text or "no external dialing" in text
+
+
+def test_restrictive_or_conditional_document_tools_have_explicit_license_gates() -> None:
+    gates = {row["id"]: row for row in _read(LICENSE_GATES)}
+    assert gates["pymupdf"]["license_state"] == "HOLD_LICENSE_REVIEW"
+    assert "AGPL" in gates["pymupdf"]["requirement"]
+    assert gates["marker"]["license_state"] == "HOLD_MODEL_WEIGHT_LICENSE_REVIEW"
+    assert "model-weight" in gates["marker"]["requirement"]
+    assert gates["mineru"]["license_state"] == "PILOT_WITH_ATTRIBUTION_AND_THRESHOLD_CHECK"
+    assert "attribution" in gates["mineru"]["requirement"].lower()
