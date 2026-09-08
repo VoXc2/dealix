@@ -30,6 +30,15 @@ These items are intentionally kept outside the canonical ranks 51–100 until a 
 - **lychee** — bounded broken-link verification for repository docs and Dealix-owned public surfaces.
 - **SSLyze** — TLS/certificate/protocol evidence for Dealix-owned endpoints only.
 - **Lynis** — read-only VPS hardening assessment normalized into the existing TRUST proof lane; never automatic remediation.
+- **OpenSSF Scorecard** — read-only upstream/repository security-practice evidence for dependencies and partner OSS; use as one evidence source, never as automatic admission or rejection authority.
+- **Sigstore cosign** — candidate for signing/verifying Dealix-built container/artifact provenance after a measured release-integrity gap; signing-key/identity setup is a separate material authority surface and must not be auto-created.
+- **in-toto Attestations** — candidate standard for verifiable build/test/release claims feeding the existing Dealix Proof model; do not create a second proof store or treat attestation presence as deployment correctness.
+- **GUAC** — candidate graph for correlating SBOM/provenance/vulnerability evidence only if current Syft/OSV/Grype receipts become too fragmented; it must not become a second Company Graph or operational source of truth.
+
+### GitHub Actions execution-plane recovery
+
+- **nektos/act** is already represented in the canonical frontier. It is suitable only as non-authoritative local workflow rehearsal while GitHub-hosted execution is blocked; local PASS != GitHub-hosted PASS.
+- **Self-hosted GitHub runner** — architecture option, not an auto-install candidate. It can avoid hosted-minute consumption, but registration tokens, repository access, patch execution and persistent runner security make activation a separately reviewed infrastructure/identity action. Prefer ephemeral/isolated execution if ever adopted.
 
 ### Email trust / test-only delivery quality
 
@@ -56,7 +65,7 @@ These items are intentionally kept outside the canonical ranks 51–100 until a 
 
 - **Inspect AI** — reproducible model/tool-use evaluation candidate; receipts must feed existing Proof/Learning owners.
 - **garak** is already represented in the canonical frontier.
-- **MCP Scan** — isolated inspection of Dealix-owned MCP configurations/tool metadata for poisoning/shadowing/rug-pull signals.
+- **MCP Scan** — isolated inspection of Dealix-owned MCP configurations/tool metadata for prompt injection, tool poisoning, shadowing and tool-change/rug-pull signals. Prefer passive/local-only evaluation first. Its non-local scan path can disclose tool names/descriptions to a third-party service, so data-boundary review is mandatory before any connected scan. Runtime proxy/guardrail mode must not silently become a second policy authority.
 
 ### API contracts
 
@@ -77,5 +86,12 @@ No candidate in this annex may create a second scheduler, CRM, browser authority
 ## Immediate order
 
 Production/release TRUST remains ahead of capability expansion. If a single benchmark slot is available, prefer the candidate tied directly to the current measured gap; otherwise run no benchmark.
+
+Current priority order:
+
+1. restore trustworthy CI execution or establish a separately governed ephemeral substitute;
+2. close exact-current-main Railway Web/API release parity;
+3. front-door/TLS acceptance for Dealix-owned domains;
+4. only then consume the single capability-benchmark slot for a measured gap.
 
 `L5_EXECUTED=NONE`
