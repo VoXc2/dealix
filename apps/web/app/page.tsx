@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://dealix.me";
+const founderEmail = process.env.NEXT_PUBLIC_FOUNDER_EMAIL ?? "sami.assiri11@gmail.com";
 
 const valueBlocks = [
   ["Revenue", "نربط الإشارات التجارية بأولوية واضحة وحركة اقتصادية يمكن تتبعها، بدل نشاط منفصل عن النتيجة."],
@@ -9,7 +10,7 @@ const valueBlocks = [
 ];
 
 const buyingPath = [
-  ["01", "Execution Diagnostic", "نحدد workflow واحدًا ذا أثر اقتصادي، baseline واضحًا، وصاحب قرار — بدون بطاقة أو التزام شراء."],
+  ["01", "Free Execution Diagnostic", "نبدأ بمشكلة تنفيذ واحدة، نفصل الحقائق عن الفرضيات، ونحدد ما الذي يستحق التحقق — بدون بطاقة أو التزام شراء."],
   ["02", "Qualified Discovery + Quote", "نثبت البيانات والنطاق ومعايير الإثبات، ثم نصدر عرضًا خاصًا بالعميل فقط إذا كانت هناك حالة تنفيذ واضحة."],
   ["03", "Outcome Sprint", "تنفيذ محكوم يركز على نتيجة محددة قابلة للقياس؛ المدة والنطاق وشروط البدء تُحدد فقط في العرض الخاص بالعميل بعد Discovery."],
   ["04", "Proof Review", "نقارن النتيجة بالـbaseline ونراجع ما تحرك اقتصاديًا وما لم يتحرك، بدون تحويل synthetic أو activity إلى customer proof."],
@@ -38,6 +39,7 @@ const structuredData = {
   "@type": "Organization",
   name: "Dealix",
   url: siteUrl,
+  email: founderEmail,
   areaServed: { "@type": "Country", name: "Saudi Arabia" },
   description:
     "Dealix is a governed AI execution platform for Saudi business that turns company signals into decisions, controlled action, and measurable proof.",
@@ -63,7 +65,7 @@ export default function HomePage() {
         </ul>
         <div className="actions" style={{ marginTop: 0 }}>
           <Link href="/book" style={{ minHeight: 38, padding: "0 18px", fontSize: "0.82rem" }}>
-            Execution Diagnostic →
+            Free Diagnostic →
           </Link>
         </div>
       </nav>
@@ -106,7 +108,7 @@ export default function HomePage() {
             ونبقي الأفعال الخارجية الحساسة مرتبطة بالموافقة والدليل.
           </p>
           <div className="actions" aria-label="Primary actions">
-            <Link href="/book">ابدأ Execution Diagnostic</Link>
+            <Link href="/book">احصل على Free Execution Diagnostic</Link>
             <Link href="/pricing">شاهد Engagement Path</Link>
             <Link href="/safety">كيف نحكم الـAI؟</Link>
           </div>
@@ -148,7 +150,7 @@ export default function HomePage() {
 
         <section aria-labelledby="path-title">
           <p className="eyebrow">One governed engagement path</p>
-          <h2 id="path-title">نبدأ بتشخيص التنفيذ، ثم نوسع فقط عندما يثبت الدليل.</h2>
+          <h2 id="path-title">نبدأ بتشخيص مجاني ومحدد، ثم نوسع فقط عندما يثبت الدليل.</h2>
           <div className="grid-3">
             {buyingPath.map(([step, title, text]) => (
               <article className="card" key={step}>
@@ -185,10 +187,10 @@ export default function HomePage() {
           <p className="eyebrow">Start with one executable problem</p>
           <h2 id="final-cta-title">عندك workflow أو قرار مهم لا يتحول اليوم إلى تنفيذ وProof واضح؟</h2>
           <p style={{ maxWidth: 720, margin: "0 auto var(--sp-6)" }}>
-            ابدأ بـExecution Diagnostic. إذا لم توجد حالة تنفيذ قابلة للقياس نتوقف؛ وإذا كانت مناسبة ننتقل إلى Discovery وعرض خاص بالعميل ثم Outcome Sprint.
+            ابدأ بتشخيص أولي مجاني. إذا لم توجد حالة تنفيذ قابلة للقياس نتوقف؛ وإذا كانت مناسبة ننتقل إلى Discovery وعرض خاص بالعميل ثم Outcome Sprint.
           </p>
           <div className="actions" style={{ justifyContent: "center" }}>
-            <Link href="/book">ابدأ Execution Diagnostic</Link>
+            <Link href="/book">ابدأ التشخيص المجاني</Link>
             <Link href="/proof-vault">شاهد منهج الإثبات</Link>
           </div>
         </section>
@@ -199,7 +201,7 @@ export default function HomePage() {
             <Link href="/brain" style={{ color: "rgba(255,255,255,0.46)", fontWeight: 500, fontSize: "0.82rem" }}>Company Brain</Link>
             <Link href="/pricing" style={{ color: "rgba(255,255,255,0.46)", fontWeight: 500, fontSize: "0.82rem" }}>Engagement Path</Link>
             <Link href="/proof-vault" style={{ color: "rgba(255,255,255,0.46)", fontWeight: 500, fontSize: "0.82rem" }}>Proof</Link>
-            <Link href="/book" style={{ color: "rgba(255,255,255,0.46)", fontWeight: 500, fontSize: "0.82rem" }}>Diagnostic</Link>
+            <Link href="/book" style={{ color: "rgba(255,255,255,0.46)", fontWeight: 500, fontSize: "0.82rem" }}>Free Diagnostic</Link>
             <Link href="/legal" style={{ color: "rgba(255,255,255,0.46)", fontWeight: 500, fontSize: "0.82rem" }}>Legal</Link>
           </div>
           <p style={{ fontSize: "0.78rem", color: "rgba(255,255,255,0.30)", maxWidth: 680, margin: "0 auto var(--sp-3)" }}>
