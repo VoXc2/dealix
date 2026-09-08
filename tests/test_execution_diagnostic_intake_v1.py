@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from auto_client_acquisition.diagnostic_intake_orchestrator import (
     build_agent_handoff,
+    load_company_os_inbound_diagnostics,
     mirror_to_revenue_autopilot,
 )
 from dealix.revenue_ops_autopilot.store import reset_autopilot_store_for_tests
@@ -16,7 +17,7 @@ CANONICAL_AGENTS = [
 ]
 
 
-def _record() -> dict:
+def _record(*, followup_requested: bool = True) -> dict:
     return {
         "id": "webdiag_test_001",
         "name": "Example Buyer",
@@ -26,6 +27,7 @@ def _record() -> dict:
         "role": "COO",
         "sector": "manufacturing",
         "message": "",
+        "followup_requested": followup_requested,
         "diagnostic_context": {
             "role": "COO",
             "workflow": "Reduce manual order-to-delivery handoffs across the operations team.",
@@ -37,7 +39,7 @@ def _record() -> dict:
             "target_outcome": "6 days or less",
             "urgency": "this quarter",
             "preferred_contact": "email",
-            "followup_requested": "true",
+            "followup_requested": str(followup_requested).lower(),
         },
     }
 
@@ -92,6 +94,7 @@ def test_mirror_is_idempotent_and_never_grants_marketing_consent(tmp_path):
     assert lead.source == "website_free_execution_diagnostic"
     assert lead.stage == "new_lead"
     assert lead.war_room_status == "not_contacted"
+    assert lead.crm_status == "inbound_followup_requested"
     assert lead.consent_marketing is False
     assert lead.consent_proof_pack is False
     assert lead.offer_id == "free_execution_diagnostic"
@@ -100,6 +103,43 @@ def test_mirror_is_idempotent_and_never_grants_marketing_consent(tmp_path):
     assert diagnostic is not None
     assert diagnostic.stage == "intake"
 
-    evidence = store.list_evidence(limit=20)
+    evidence = store.list_evidence(limit=50)
     assert len([row for row in evidence if row.id == first["evidence_id"]]) == 1
+    assert any(row.event_type == "customer_reported_diagnostic_context" for row in evidence)
+    assert all(
+        row.confidence in {"direct_submission_unverified", "customer_reported_unverified"}
+        for row in evidence
+        if row.entity_id == first["lead_id"]
+    )
     assert store.list_invoice_drafts(limit=20) == []
+
+
+def test_company_os_bridge_preserves_followup_scope_and_five_agent_work(tmp_path):
+    reset_autopilot_store_for_tests(tmp_path / "autopilot.json")
+    record = _record(followup_requested=True)
+    mirror_to_revenue_autopilot(record, build_agent_handoff(record))
+
+    cases = load_company_os_inbound_diagnostics(limit=20)
+    assert len(cases) == 1
+    case = cases[0]
+    assert case["relationship_state"] == "INBOUND"
+    assert case["consent_state"] == "INBOUND_REQUEST"
+    assert case["external_followup_eligible"] is True
+    assert [packet["agent"] for packet in case["work_packets"]] == CANONICAL_AGENTS
+    assert all(value is False for value in case["material_authority"].values())
+    assert case["problem_state"] == "HYPOTHESIS_WITH_BASELINE_PENDING_VALIDATION"
+    assert case["evidence_refs"]
+
+
+def test_company_os_bridge_blocks_external_followup_when_customer_did_not_request_it(tmp_path):
+    reset_autopilot_store_for_tests(tmp_path / "autopilot.json")
+    record = _record(followup_requested=False)
+    mirror_to_revenue_autopilot(record, build_agent_handoff(record))
+
+    cases = load_company_os_inbound_diagnostics(limit=20)
+    assert len(cases) == 1
+    case = cases[0]
+    assert case["relationship_state"] == "INBOUND_NO_FOLLOWUP"
+    assert case["consent_state"] == "NONE"
+    assert case["external_followup_eligible"] is False
+    assert all(value is False for value in case["material_authority"].values())
