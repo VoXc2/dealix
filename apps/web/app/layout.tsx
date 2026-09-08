@@ -8,43 +8,41 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://dealix.me";
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: "Dealix — نظام إيراد AI للشركات السعودية",
+    default: "Dealix — AI Business Operating System",
     template: "%s | Dealix"
   },
   description:
-    "Dealix يحوّل بيانات المبيعات والمتابعات إلى Revenue OS عملي خلال أسبوع واحد. تشخيص مدفوع، تشغيل شهري، غرفة قيادة تنفيذية للشركات B2B السعودية.",
+    "Dealix يحوّل إشارات الشركة إلى تنفيذ محكوم ونتائج قابلة للقياس، مع ربط القرارات والإجراءات والأدلة فوق الأدوات التي تستخدمها الشركة بالفعل.",
   applicationName: "Dealix",
   keywords: [
-    "Dealix", "Revenue OS", "نظام إيراد", "شركات سعودية",
-    "B2B سعودي", "AI مبيعات", "PDPL", "ZATCA",
-    "متابعة عملاء", "تشغيل مبيعات", "Saudi Arabia",
-    "Saudi B2B", "AI revenue engine", "sales automation"
+    "Dealix", "AI Business Operating System", "Revenue + Proof + Command",
+    "حوكمة الذكاء الاصطناعي", "تنفيذ الأعمال", "إثبات النتائج",
+    "شركات سعودية", "B2B سعودي", "Saudi Arabia", "Saudi B2B",
+    "Revenue Operations", "AI governance", "governed execution"
   ],
   authors: [{ name: "Dealix", url: siteUrl }],
   creator: "Dealix",
   publisher: "Dealix",
+  // /ar currently redirects permanently to /. Do not emit hreflang alternates
+  // that point to redirecting URLs or pretend an English locale is separately
+  // served. Add language alternates only when independent locale URLs exist.
   alternates: {
     canonical: "/",
-    languages: {
-      "ar-SA": "/ar",
-      "en-US": "/",
-    },
   },
   openGraph: {
     type: "website",
     locale: "ar_SA",
-    alternateLocale: ["en_US"],
     url: siteUrl,
     siteName: "Dealix",
-    title: "Dealix — نظام إيراد AI للشركات السعودية",
+    title: "Dealix — AI Business Operating System",
     description:
-      "Dealix يحوّل بيانات المبيعات إلى Revenue OS خلال أسبوع واحد. تشغيل مدفوع، Proof Pack، حوكمة AI.",
+      "Signals into Action. Execution with Governance. Measurable Outcomes.",
     images: [
       {
         url: `${siteUrl}/og-image.png`,
         width: 1200,
         height: 630,
-        alt: "Dealix — Revenue OS للشركات السعودية",
+        alt: "Dealix — AI Business Operating System",
       }
     ],
   },
@@ -52,9 +50,9 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     site: "@dealixsa",
     creator: "@dealixsa",
-    title: "Dealix — نظام إيراد AI للشركات السعودية",
+    title: "Dealix — AI Business Operating System",
     description:
-      "Dealix يحوّل بيانات المبيعات إلى Revenue OS خلال أسبوع. AI يكتب، أنت ترسل.",
+      "Signals into Action. Execution with Governance. Measurable Outcomes.",
     images: [`${siteUrl}/og-image.png`],
   },
   robots: {
@@ -79,8 +77,8 @@ export const viewport: Viewport = {
   initialScale: 1,
   maximumScale: 5,
   themeColor: [
-    { media: "(prefers-color-scheme: dark)",  color: "#001F3F" },
-    { media: "(prefers-color-scheme: light)", color: "#001F3F" },
+    { media: "(prefers-color-scheme: dark)",  color: "#0F172A" },
+    { media: "(prefers-color-scheme: light)", color: "#0F172A" },
   ],
   colorScheme: "dark",
 };
