@@ -1,7 +1,9 @@
+import json
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 WORKFLOW = ROOT / ".github" / "workflows" / "ci.yml"
+WEB_PACKAGE = ROOT / "apps" / "web" / "package.json"
 
 
 def _workflow_text() -> str:
@@ -10,9 +12,10 @@ def _workflow_text() -> str:
 
 def test_ci_runs_full_push_only_on_main_and_prs_into_main():
     text = _workflow_text()
+    header = text.split("permissions:", 1)[0]
 
-    assert "push:\n    branches:\n      - main" in text
-    assert "pull_request:\n    branches:\n      - main" in text
+    assert "push:\n    branches:\n      - main" in header
+    assert "pull_request:\n    branches:\n      - main" in header
 
     for duplicate_branch_trigger in [
         "dealix-v3-autonomous-revenue-os",
@@ -23,7 +26,7 @@ def test_ci_runs_full_push_only_on_main_and_prs_into_main():
         "'claude/**'",
         "'release/**'",
     ]:
-        assert duplicate_branch_trigger not in text
+        assert duplicate_branch_trigger not in header
 
 
 def test_ci_keeps_superseded_revision_cancellation():
@@ -33,20 +36,18 @@ def test_ci_keeps_superseded_revision_cancellation():
     assert "cancel-in-progress: true" in text
 
 
-def test_ci_consolidates_web_validation_without_dropping_gates():
+def test_ci_consolidates_web_validation_without_repeating_typecheck_or_build():
     text = _workflow_text()
+    package = json.loads(WEB_PACKAGE.read_text(encoding="utf-8"))
 
+    assert package["scripts"]["verify"] == "npm run typecheck && npm run build"
     assert "web-build:" in text
     assert "frontend-build:" not in text
     assert text.count("working-directory: apps/web") == 1
-
-    for required_web_gate in [
-        "npm ci",
-        "npm run verify",
-        "npm run typecheck",
-        "npm run build",
-    ]:
-        assert required_web_gate in text
+    assert text.count("run: npm ci") == 1
+    assert text.count("run: npm run verify") == 1
+    assert "run: npm run typecheck" not in text
+    assert "run: npm run build" not in text
 
 
 def test_ci_preserves_core_trust_jobs_and_doctrine_guards():
