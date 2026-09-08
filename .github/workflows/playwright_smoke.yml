@@ -1,17 +1,8 @@
-# Track D5 — Playwright Tier-1 smoke.
+# Track D5 — legacy static landing Playwright smoke.
 #
-# Runs on PRs touching landing/ or tests/playwright/, asserts:
-#   - Hero H1 + single primary CTA
-#   - WADL section + DEMO label
-#   - No horizontal scroll (320 / 768 / 1280)
-#   - Pricing → /checkout flow
-#   - Customer Portal Today's Decision above ops grid
-#   - Customer Decisions DEMO fallback
-#   - Proof L1-L5 ladder
-#   - Trust Center 8 gates
-#   - Login magic-link UX
-#
-# Plan: /root/.claude/plans/vivid-baking-quokka.md Track D5.
+# This workflow intentionally serves `landing/` only. The Next.js interactive
+# front door under `apps/web` has a separate browser-smoke workflow so the two
+# render authorities cannot be accidentally tested against the wrong server.
 
 name: Playwright Tier-1 smoke
 
@@ -19,16 +10,27 @@ on:
   pull_request:
     paths:
       - "landing/**"
-      - "tests/playwright/**"
+      - "tests/playwright/tier1_smoke.spec.js"
+      - "tests/playwright/market_to_delivery.spec.js"
+      - "tests/playwright/playwright.config.js"
+      - "tests/playwright/package.json"
       - ".github/workflows/playwright_smoke.yml"
   push:
     branches: [main]
     paths:
       - "landing/**"
-      - "tests/playwright/**"
+      - "tests/playwright/tier1_smoke.spec.js"
+      - "tests/playwright/market_to_delivery.spec.js"
+      - "tests/playwright/playwright.config.js"
+      - "tests/playwright/package.json"
+      - ".github/workflows/playwright_smoke.yml"
 
 permissions:
   contents: read
+
+concurrency:
+  group: playwright-landing-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 
 jobs:
   playwright:
@@ -57,12 +59,15 @@ jobs:
           echo "PID=$!" >> $GITHUB_ENV
           sleep 2
 
-      - name: Run Playwright tests
+      - name: Run legacy landing Playwright tests
         env:
           PLAYWRIGHT_BASE_URL: http://localhost:8765
           CI: "true"
         run: |
-          npx playwright test --config playwright.config.js
+          npx playwright test \
+            tier1_smoke.spec.js \
+            market_to_delivery.spec.js \
+            --config playwright.config.js
 
       - name: Stop server
         if: always()
@@ -72,6 +77,6 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v7
         with:
-          name: playwright-report
+          name: playwright-landing-report
           path: tests/playwright/playwright-report/
           retention-days: 14
