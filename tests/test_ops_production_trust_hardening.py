@@ -163,3 +163,29 @@ def test_railway_api_watch_contract_covers_canonical_runtime_trees():
 
     assert canonical_runtime_trees <= actual
     assert canonical_runtime_trees <= expected
+
+
+def test_railway_runtime_drift_gate_passes_current_source_contract():
+    verifier = load_module(
+        "dealix_railway_runtime_drift_gate",
+        "scripts/ops/verify_railway_runtime_drift_gate_v1.py",
+    )
+    result = verifier.verify()
+
+    assert result["status"] == "PASS_SOURCE_CONTRACT_ONLY"
+    assert result["start_command"] in (None, "")
+    assert {"/api/**", "/app/**", "/db/**"} <= set(result["watch_patterns"])
+    assert result["provider_parity_proven"] is False
+    assert result["production_green"] is False
+    assert result["l5_executed"] == "NONE"
+
+
+def test_railway_runtime_drift_gate_forbids_relative_start_override():
+    source = (ROOT / "scripts/ops/verify_railway_runtime_drift_gate_v1.py").read_text(
+        encoding="utf-8"
+    )
+    railway = json.loads((ROOT / "railway.json").read_text(encoding="utf-8"))
+
+    assert railway["deploy"].get("startCommand") in (None, "")
+    assert 'FORBIDDEN_START_OVERRIDES = {"./start.sh", "start.sh"}' in source
+    assert 'CMD ["/app/start.sh"]' in (ROOT / "Dockerfile").read_text(encoding="utf-8")
