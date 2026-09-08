@@ -4,22 +4,25 @@ import Link from "next/link";
 
 export default function Footer() {
   return (
-    <footer style={{ textAlign: "center", paddingTop: "var(--sp-8)", borderTop: "1px solid rgba(255,255,255,0.07)" }}>
-      <p className="navbar-brand" style={{ justifyContent: "center", fontSize: "1.2rem", marginBottom: "var(--sp-3)" }}>
-        Dealix
-      </p>
-      <div style={{ display: "flex", justifyContent: "center", gap: "var(--sp-4)", marginBottom: "var(--sp-4)", flexWrap: "wrap" }}>
-        <Link href="/sales-machine" style={{ color: "rgba(255,255,255,0.40)", fontWeight: 500, fontSize: "0.82rem" }}>آلة المبيعات</Link>
-        <Link href="/offers" style={{ color: "rgba(255,255,255,0.40)", fontWeight: 500, fontSize: "0.82rem" }}>العروض</Link>
-        <Link href="/pricing" style={{ color: "rgba(255,255,255,0.40)", fontWeight: 500, fontSize: "0.82rem" }}>التسعير</Link>
-        <Link href="/book" style={{ color: "rgba(255,255,255,0.40)", fontWeight: 500, fontSize: "0.82rem" }}>احجز مراجعة</Link>
-        <Link href="/safety" style={{ color: "rgba(255,255,255,0.40)", fontWeight: 500, fontSize: "0.82rem" }}>الأمان</Link>
+    <footer className="site-footer">
+      <Link href="/" className="footer-logo" aria-label="Dealix Home">
+        <img
+          src="/dealix-logo-white.svg"
+          alt="Dealix — AI Business Operating System"
+          width="178"
+          height="43"
+        />
+      </Link>
+      <div className="footer-links">
+        <Link href="/sales-machine">آلة المبيعات</Link>
+        <Link href="/services">الخدمات</Link>
+        <Link href="/pricing">Engagement Path</Link>
+        <Link href="/book">التشخيص المجاني</Link>
+        <Link href="/safety">الثقة والأمان</Link>
+        <Link href="/legal">Legal</Link>
       </div>
-      <p style={{ fontSize: "0.82rem", color: "rgba(255,255,255,0.30)" }}>
-        © 2026 Dealix · Saudi-first AI Revenue Operations ·{" "}
-        <Link href="/safety" style={{ color: "rgba(255,255,255,0.40)", fontWeight: 500 }}>Safety</Link>
-        {" · "}
-        <a href="https://github.com/Dealix-sa/dealix" style={{ color: "rgba(255,255,255,0.40)", fontWeight: 500 }}>GitHub</a>
+      <p>
+        © 2026 Dealix · Signals into Action · Execution with Governance · Measurable Outcomes
       </p>
     </footer>
   );
