@@ -1,0 +1,121 @@
+{
+  "schema": "dealix.telegram-proof-plane.v1",
+  "generated_at": "2026-09-07",
+  "objective": "Project durable Dealix proof, approvals, and founder briefs into Telegram without making Telegram a truth store or granting the channel independent execution authority.",
+  "canonical_owner": "existing_dealix_company_machine",
+  "channel": {
+    "id": "telegram_openclaw",
+    "role": "founder_proof_projection_not_truth_store",
+    "primary_surface": "telegram_dm",
+    "gateway": "openclaw",
+    "one_owner": true,
+    "groups_enabled": false,
+    "inline_buttons_scope": "dm",
+    "message_parse_mode": "plain_text",
+    "message_max_chars": 3900,
+    "telegram_api_message_limit_chars": 4096,
+    "callback_data_max_bytes": 64,
+    "callback_payload": "opaque_token_only"
+  },
+  "durable_proof": {
+    "output_root": "/opt/dealix/control/proof/telegram-founder",
+    "directory_mode": "0700",
+    "file_mode": "0600",
+    "envelope_schema": "dealix.telegram-proof-envelope.v1",
+    "event_metadata_model": "cloudevents_1_0_subset",
+    "event_id_unique": true,
+    "source_plus_id_deduplicates": true,
+    "timestamp_format": "rfc3339_utc",
+    "trace_id_format": "w3c_32_lower_hex",
+    "evidence_content_embedded": false,
+    "evidence_digest_algorithm": "sha256",
+    "hash_chain": true,
+    "tamper_evident_not_nonrepudiation": true,
+    "deterministic_hash_canonicalization": "dealix_restricted_json_v1"
+  },
+  "proof_sections": [
+    "MONEY",
+    "DECISIONS",
+    "RISKS",
+    "APPROVALS",
+    "NEXT_ACTION"
+  ],
+  "truth_classes": [
+    "VERIFIED",
+    "EXECUTED",
+    "HOLD",
+    "DRAFT",
+    "PLAN",
+    "UNKNOWN_NOT_EVIDENCE_BACKED"
+  ],
+  "statuses": [
+    "PASS",
+    "WARN",
+    "HOLD",
+    "FAIL",
+    "INFO"
+  ],
+  "approval_transport": {
+    "action_bound": true,
+    "approval_is_not_execution_proof": true,
+    "server_side_pending_state_required": true,
+    "opaque_callback_token_required": true,
+    "exact_action_fingerprint_required": true,
+    "expiry_required": true,
+    "one_time_decision_required": true,
+    "founder_identity_revalidation_required": true,
+    "preconditions_revalidated_before_execution": true,
+    "stale_packet_fails_closed": true,
+    "callback_must_not_embed_target_sha_config_or_secret": true,
+    "telegram_decision_does_not_self_grant_l5": true
+  },
+  "openclaw_hardening_target": {
+    "one_owner_dm_policy": "allowlist",
+    "explicit_numeric_allow_from": true,
+    "commands_owner_allow_from_exact_founder": true,
+    "config_writes": false,
+    "commands_bash": false,
+    "commands_config": false,
+    "commands_mcp": false,
+    "commands_plugins": false,
+    "commands_debug": false,
+    "commands_restart": false,
+    "tools_elevated": false,
+    "inline_buttons": "dm",
+    "exec_approvals_target": "dm",
+    "exec_approvals_expiry_minutes_max": 30,
+    "webhook_secret_required_if_webhook_enabled": true,
+    "activation_requires_separate_runtime_change": true
+  },
+  "security": {
+    "raw_secrets_in_telegram": false,
+    "raw_customer_data_in_telegram": false,
+    "raw_founder_telegram_id_in_receipt": false,
+    "evidence_paths_must_remain_under_proof_root": true,
+    "symlink_evidence_allowed": false,
+    "group_or_world_writable_evidence_allowed": false,
+    "control_characters_removed": true,
+    "token_like_values_redacted": true,
+    "network_send_in_builder": false,
+    "production_mutation_in_builder": false,
+    "l5_execution_in_builder": false
+  },
+  "observability": {
+    "trace_id_required": true,
+    "proof_id_required": true,
+    "source_sha_required": true,
+    "evidence_digests_required_when_evidence_present": true,
+    "telegram_message_contains_envelope_digest": true,
+    "telegram_message_contains_source_sha": true,
+    "telegram_message_contains_truth_class": true
+  },
+  "truth": {
+    "telegram_message_is_not_truth_store": true,
+    "telegram_delivery_is_not_execution_proof": true,
+    "approval_click_is_not_execution_proof": true,
+    "durable_receipt_required_for_execution_claim": true,
+    "hash_chain_is_tamper_evidence_only": true,
+    "historical_receipt_is_not_current_proof": true,
+    "missing_current_receipt": "UNKNOWN_NOT_EVIDENCE_BACKED"
+  }
+}
