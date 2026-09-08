@@ -125,17 +125,103 @@ Candidate tools:
 
 `OCR_OUTPUT != VERIFIED_FACT` and `DOCUMENT_MENTION != BUYER_INTENT`.
 
+## 6. Identity / SSO / access-control delivery
+
+### Keycloak — `keycloak/keycloak`
+Candidate route: `INTEGRATE_EXISTING_PRODUCT / QUALIFIED_PARTNER`.
+
+Current upstream positions Keycloak as open-source Identity and Access Management for modern applications/services, with SSO, identity brokering/social login and fine-grained authorization capabilities. Current source is Apache-2.0 licensed.
+
+Use when a customer scope requires a self-hosted or controlled identity plane for applications, portals or integrations and the customer's existing IdP does not already solve the requirement.
+
+Dealix role:
+- identity/domain discovery and federation design;
+- OIDC/SAML/client integration;
+- role/group/authorization mapping;
+- MFA/step-up/session requirements;
+- audit, acceptance and handover;
+- integration with the customer's authoritative HR/directory/identity source.
+
+Do not introduce Keycloak where Microsoft Entra ID, Okta, an existing national/customer IdP or another established identity authority already satisfies the requirement. Dealix must not become the customer's identity master by default.
+
+## 7. Analytics / command dashboards
+
+### Apache Superset — `apache/superset`
+Candidate route: `INTEGRATE_EXISTING_PRODUCT / CONFIGURE_ADAPT`.
+
+Apache Superset is an Apache-2.0 open-source data exploration and visualization platform with SQL connectivity, dashboards and a broad visualization surface. It is a customer-side BI/visualization substrate, not Dealix's Proof Ledger or Company Brain.
+
+Use when a customer needs governed self-service analytics or operational dashboards over existing SQL/data platforms and an existing BI standard does not already own that surface.
+
+Dealix role:
+- KPI/metric semantics and evidence lineage;
+- datasource/semantic-layer configuration;
+- access/RLS model;
+- operational dashboard and drill-down design;
+- acceptance around decision usefulness, freshness and authorization.
+
+Prefer the customer's incumbent Power BI/Tableau/Looker/SAP/Oracle analytics plane when already standardized. Do not create another dashboard estate simply because Superset is open source.
+
+## 8. GIS / spatial / field-delivery substrate
+
+### GeoServer — `geoserver/geoserver`
+Candidate route: `INTEGRATE_EXISTING_PRODUCT / QUALIFIED_PARTNER`.
+
+GeoServer is an open-source server for publishing/sharing geospatial data through interoperable OGC standards. Current upstream is GPLv2-or-later with its stated Eclipse-library exception; exact distribution/integration obligations must be reviewed for a customer project.
+
+Useful for water, utility, industrial-city, FM, field-service and infrastructure scopes that require interoperable spatial layers/services rather than a custom map backend.
+
+### QGIS — `qgis/QGIS`
+Candidate route: `CONFIGURE_ADAPT / DELIVERY_TOOL / QUALIFIED_PARTNER`.
+
+QGIS is GPLv2+ open-source GIS for desktop spatial visualization, editing, analysis, reporting and field-oriented workflows. Use it as an analyst/engineering delivery substrate where customer workflows need serious GIS capability; do not embed/distribute it inside proprietary Dealix product code without license review.
+
+Dealix role across GIS substrates:
+- asset/location model and source mapping;
+- GIS-to-ERP/CAFM/CMMS/IoT integration;
+- work-order/event/inspection geospatial context;
+- spatial acceptance and evidence;
+- operational dashboards and proof.
+
+For RCJY/NWC/SWPC-style infrastructure work, GIS is a probable cross-cutting substrate, not proof of project scope. A tender/customer requirement must establish the actual GIS need.
+
+## 9. Object storage / evidence-file substrate
+
+### MinIO — license-gated candidate
+Candidate route: `HOLD_LICENSE_AND_SUPPORT_REVIEW / INTEGRATE_EXISTING_PRODUCT`.
+
+MinIO provides S3-compatible object storage, but current vendor materials state dual GNU AGPLv3/commercial licensing and explicitly call out commercial/OEM/MSP paths. Therefore it is **not** a default Dealix/customer substrate for proprietary delivery without explicit license/commercial review.
+
+Use decision order:
+1. prefer the customer's incumbent governed object-storage/cloud service when available;
+2. compare support, data-residency, encryption/key ownership, backup/DR, S3 compatibility and TCO;
+3. if MinIO is proposed, resolve AGPL/commercial licensing and support before architecture commitment;
+4. never infer that open-source availability equals unrestricted proprietary/OEM/managed-service rights.
+
+`MINIO_DEFAULT_ADMISSION=HOLD_LICENSE_AND_SUPPORT_REVIEW`.
+
 ## Top-3 application
 
 ### Imam Turki — Data Office / RAG / AI Agents
 First substrate decision to test after eligibility:
-`DataHub vs OpenMetadata` for catalog/governance/lineage/context + current Dealix RAG/eval stack for the AI layer. Do not prematurely build a custom catalog.
+`DataHub vs OpenMetadata` for catalog/governance/lineage/context + current Dealix RAG/eval stack for the AI layer. Keycloak/identity, Superset/BI, object storage and GIS should be selected only if exact tender requirements create those boundaries. Do not prematurely build a custom catalog.
 
 ### HRDF — AI Governance & Ethics
 Use Dealix governance operating model + Saudi reference map + bounded model/fairness/eval instruments. Do not sell a red-team/fairness library as a complete governance program.
 
 ### Eastern Province — Facility Management System
-Prioritize proven CAFM/product/implementation partner selection. Use ThingsBoard only when IoT/telemetry integration is materially in scope. Dealix adds integration, governed workflow, command and proof.
+Prioritize proven CAFM/product/implementation partner selection. Use ThingsBoard only when IoT/telemetry integration is materially in scope. Use GeoServer/QGIS only when spatial/asset requirements justify GIS. Dealix adds integration, governed workflow, command and proof.
+
+## Water / industrial-city application
+
+For NWC / SWPC / RCJY opportunity research:
+- GIS/spatial may support asset, network, field, inspection and project-operating contexts;
+- ThingsBoard may support telemetry/IoT when devices/alarms/meters are in scope;
+- Keycloak may support controlled portals/app identity where the customer lacks an incumbent IdP;
+- Superset may support governed operational analytics where no incumbent BI plane exists;
+- object storage must follow the customer's security/data-residency and license/support requirements.
+
+None of these substrate hypotheses promotes a supplier-registration or project-pipeline signal into buyer intent, eligibility or award.
 
 ## Promotion / project-cell rule
 
