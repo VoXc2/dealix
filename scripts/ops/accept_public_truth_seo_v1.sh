@@ -37,6 +37,7 @@ cd "$ROOT"
 
 "$PY" -m py_compile scripts/ops/verify_public_truth_seo.py
 "$PY" scripts/ops/verify_public_truth_seo.py --repo "$ROOT"
+"$PY" -m pytest -q tests/test_public_truth_seo_contract.py
 
 if [[ ! -d apps/web/node_modules ]]; then
   echo "DEALIX_PUBLIC_TRUTH_SEO_ACCEPTANCE=BLOCKED_WEB_DEPENDENCIES_NOT_INSTALLED"
@@ -58,6 +59,7 @@ fi
 cat <<EOF
 EXACT_SHA=$EXPECTED
 PUBLIC_TRUTH_VERIFIER=PASS
+FOCUSED_TESTS=PASS
 WEB_TYPECHECK=PASS
 WEB_BUILD=PASS
 PUBLIC_PUBLISH=false
